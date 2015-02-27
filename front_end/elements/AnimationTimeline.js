@@ -26,6 +26,7 @@ WebInspector.AnimationTimeline = function(stylesPane)
     this._animationsContainer = this.contentElement.createChild("div");
     this._duration = this._defaultDuration();
     this._scrubberRadius = 25;
+    this._timelineControlsWidth = 200;
     /** @type {!Map.<!DOMAgent.BackendNodeId, !WebInspector.AnimationTimeline.NodeUI>} */
     this._nodesMap = new Map();
     this._symbol = Symbol("animationTimeline");
@@ -203,7 +204,12 @@ WebInspector.AnimationTimeline.prototype = {
         var uiAnimation = new WebInspector.AnimationUI(this._stylesPane, animation, this, nodeRow.element);
         animation.source().getNode(nodeResolved.bind(this));
         nodeRow.animations.push(uiAnimation);
-        this.redraw();
+
+        // Only draw at most once per frame
+        if (!this._redrawing) {
+            this._redrawing = true;
+            this._animationsContainer.window().requestAnimationFrame(this.redraw.bind(this));
+        }
     },
 
     /**
@@ -219,7 +225,7 @@ WebInspector.AnimationTimeline.prototype = {
 
     _renderGrid: function()
     {
-        this._grid.setAttribute("width", Math.max(0, parseInt(window.getComputedStyle(this._grid.parentElement).width, 10) - 200));
+        this._grid.setAttribute("width", Math.max(0, parseInt(window.getComputedStyle(this._grid.parentElement).width, 10) - this._timelineControlsWidth));
         this._grid.setAttribute("height", "100%");
         this._grid.setAttribute("shape-rendering", "crispEdges");
         this._grid.removeChildren();
@@ -232,8 +238,12 @@ WebInspector.AnimationTimeline.prototype = {
         }
     },
 
-    redraw: function()
+    /**
+     * @param {number=} timestamp
+     */
+    redraw: function(timestamp)
     {
+        delete this._redrawing;
         for (var nodeUI of this._nodesMap.values())
             nodeUI.redraw();
         this._renderGrid();
@@ -241,6 +251,7 @@ WebInspector.AnimationTimeline.prototype = {
 
     onResize: function()
     {
+        this._cachedTimelineWidth = this._animationsContainer.offsetWidth - this._timelineControlsWidth || 0;
         this.redraw();
         if (this._scrubberPlayer)
             this._animateTime();
@@ -270,10 +281,9 @@ WebInspector.AnimationTimeline.prototype = {
     {
         var oldPlayer = this._scrubberPlayer;
 
-        var width = this._animationsContainer.offsetWidth - 200 || 0;
         this._scrubberPlayer = this._timelineScrubber.animate([
             { transform: "translateX(0px)" },
-            { transform: "translateX(" +  (width - this._scrubberRadius) + "px)" }
+            { transform: "translateX(" +  (this._cachedTimelineWidth - this._scrubberRadius) + "px)" }
         ], { duration: this.duration() - this._scrubberRadius / this.pixelMsRatio(), fill: "forwards" });
         this._scrubberPlayer.playbackRate = this._animationsPlaybackRate;
 
@@ -295,7 +305,7 @@ WebInspector.AnimationTimeline.prototype = {
      */
     pixelMsRatio: function()
     {
-        return (this._animationsContainer.offsetWidth - 200) / this.duration() || 0;
+        return this._cachedTimelineWidth / this.duration() || 0;
     },
 
     /**
@@ -461,6 +471,7 @@ WebInspector.AnimationUI = function(stylesPane, animation, timeline, parentEleme
     this._svg.addEventListener("mousedown", this._mouseDown.bind(this, WebInspector.AnimationUI.MouseEvents.AnimationDrag, null));
     this._svgGroup = this._svg.createSVGChild("g");
 
+    this._svgPoints = {};
     this._movementInMs = 0;
     this.redraw();
 }
@@ -494,12 +505,13 @@ WebInspector.AnimationUI.prototype = {
 
     _drawAnimationLine: function()
     {
-        var line = this._svgGroup.createSVGChild("line", "animation-line");
-        line.setAttribute("x1", WebInspector.AnimationUI.Options.AnimationMargin);
-        line.setAttribute("y1", WebInspector.AnimationUI.Options.AnimationHeight);
-        line.setAttribute("x2", this._duration() * this._timeline.pixelMsRatio() +  WebInspector.AnimationUI.Options.AnimationMargin);
-        line.setAttribute("y2", WebInspector.AnimationUI.Options.AnimationHeight);
-        line.style.stroke = this._color().asString(WebInspector.Color.Format.RGB);
+        if (!this._animationLine)
+            this._animationLine = this._svg.createSVGChild("line", "animation-line");
+        this._animationLine.setAttribute("x1", WebInspector.AnimationUI.Options.AnimationMargin);
+        this._animationLine.setAttribute("y1", WebInspector.AnimationUI.Options.AnimationHeight);
+        this._animationLine.setAttribute("x2", this._duration() * this._timeline.pixelMsRatio() +  WebInspector.AnimationUI.Options.AnimationMargin);
+        this._animationLine.setAttribute("y2", WebInspector.AnimationUI.Options.AnimationHeight);
+        this._animationLine.style.stroke = this._color();
     },
 
     /**
@@ -508,22 +520,28 @@ WebInspector.AnimationUI.prototype = {
      */
     _drawPoint: function(x, keyframeIndex)
     {
-        var circle = this._svgGroup.createSVGChild("circle", keyframeIndex <= 0 ? "animation-endpoint" : "animation-keyframe-point");
+        if (this._svgPoints[keyframeIndex]) {
+            this._svgPoints[keyframeIndex].setAttribute("cx", x);
+            return;
+        }
+
+        var circle = this._svg.createSVGChild("circle", keyframeIndex <= 0 ? "animation-endpoint" : "animation-keyframe-point");
         circle.setAttribute("cx", x);
         circle.setAttribute("cy", WebInspector.AnimationUI.Options.AnimationHeight);
-        circle.style.stroke = this._color().asString(WebInspector.Color.Format.RGB);
+        circle.style.stroke = this._color();
         circle.setAttribute("r", WebInspector.AnimationUI.Options.AnimationMargin / 2);
 
         if (keyframeIndex <= 0)
-            circle.style.fill = this._color().asString(WebInspector.Color.Format.RGB);
+            circle.style.fill = this._color();
 
-        if (keyframeIndex == 0) {
+        if (keyframeIndex === 0) {
             circle.addEventListener("mousedown", this._mouseDown.bind(this, WebInspector.AnimationUI.MouseEvents.StartEndpointMove, keyframeIndex));
-        } else if (keyframeIndex == -1) {
+        } else if (keyframeIndex === -1) {
             circle.addEventListener("mousedown", this._mouseDown.bind(this, WebInspector.AnimationUI.MouseEvents.FinishEndpointMove, keyframeIndex));
         } else {
             circle.addEventListener("mousedown", this._mouseDown.bind(this, WebInspector.AnimationUI.MouseEvents.KeyframeMove, keyframeIndex));
         }
+        this._svgPoints[keyframeIndex] = circle;
     },
 
     /**
@@ -535,7 +553,7 @@ WebInspector.AnimationUI.prototype = {
     {
         var path = this._svgGroup.createSVGChild("path", "animation-keyframe");
         path.style.transform = "translateX(" + leftDistance + "px)";
-        path.style.fill = this._color().asString(WebInspector.Color.Format.RGB);
+        path.style.fill = this._color();
         WebInspector.BezierUI.drawVelocityChart(bezier, path, width);
     },
 
@@ -557,6 +575,10 @@ WebInspector.AnimationUI.prototype = {
             this._drawPoint(WebInspector.AnimationUI.Options.AnimationMargin, 0);
         } else {
             console.assert(this._keyframes.length > 1);
+            // Rebuild if keyframes have changed
+            if (this._keyframes.length !== Object.keys(this._svgPoints).length)
+                this._svgPoints = {};
+
             for (var i = 0; i < this._keyframes.length - 1; i++) {
                 var leftDistance = this._offset(i) * this._duration() * this._timeline.pixelMsRatio() + WebInspector.AnimationUI.Options.AnimationMargin;
                 var width = this._duration() * (this._offset(i + 1) - this._offset(i)) * this._timeline.pixelMsRatio();
@@ -722,7 +744,7 @@ WebInspector.AnimationUI.prototype = {
     },
 
     /**
-     * @return {!WebInspector.Color}
+     * @return {string}
      */
     _color: function()
     {
@@ -740,7 +762,8 @@ WebInspector.AnimationUI.prototype = {
 
         if (!this._selectedColor) {
             var names = Object.keys(WebInspector.AnimationUI.Colors);
-            this._selectedColor = WebInspector.AnimationUI.Colors[names[hash(this._animation.name() || this._animation.id()) % names.length]];
+            var color = WebInspector.AnimationUI.Colors[names[hash(this._animation.name() || this._animation.id()) % names.length]];
+            this._selectedColor = color.asString(WebInspector.Color.Format.RGB);
         }
         return this._selectedColor;
     }

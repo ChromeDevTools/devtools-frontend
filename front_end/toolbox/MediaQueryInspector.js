@@ -67,6 +67,7 @@ WebInspector.MediaQueryInspector.prototype = {
         target.cssModel.removeEventListener(WebInspector.CSSStyleModel.Events.StyleSheetRemoved, this._scheduleMediaQueriesUpdate, this);
         target.cssModel.removeEventListener(WebInspector.CSSStyleModel.Events.StyleSheetChanged, this._scheduleMediaQueriesUpdate, this);
         target.cssModel.removeEventListener(WebInspector.CSSStyleModel.Events.MediaQueryResultChanged, this._scheduleMediaQueriesUpdate, this);
+        delete this._target;
     },
 
     /**
@@ -130,6 +131,9 @@ WebInspector.MediaQueryInspector.prototype = {
      */
     _onContextMenu: function(event)
     {
+        if (!this._target || !this._target.cssModel.isEnabled())
+            return;
+
         var mediaQueryMarker = event.target.enclosingNodeOrSelfWithClass("media-inspector-marker");
         if (!mediaQueryMarker)
             return;
@@ -174,7 +178,7 @@ WebInspector.MediaQueryInspector.prototype = {
      */
     _refetchMediaQueries: function(finishCallback)
     {
-        if (!this._enabled) {
+        if (!this._enabled || !this._target) {
             finishCallback();
             return;
         }

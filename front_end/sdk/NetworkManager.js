@@ -42,7 +42,8 @@ WebInspector.NetworkManager = function(target)
     target.registerNetworkDispatcher(this._dispatcher);
     if (WebInspector.settings.cacheDisabled.get())
         this._networkAgent.setCacheDisabled(true);
-
+    if (WebInspector.settings.monitoringXHREnabled.get())
+        this._networkAgent.setMonitoringXHREnabled(true);
     this._networkAgent.enable();
 
     WebInspector.settings.cacheDisabled.addChangeListener(this._cacheDisabledSettingChanged, this);

@@ -791,7 +791,7 @@ WebInspector.ConsoleView.prototype = {
     _monitoringXHREnabledSettingChanged: function(event)
     {
         var enabled = /** @type {boolean} */ (event.data);
-        WebInspector.targetManager.targets().forEach(function(target) {target.consoleAgent().setMonitoringXHREnabled(enabled);});
+        WebInspector.targetManager.targets().forEach(function(target) {target.networkAgent().setMonitoringXHREnabled(enabled);});
     },
 
     /**

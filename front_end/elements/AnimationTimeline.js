@@ -24,13 +24,13 @@ WebInspector.AnimationTimeline = function(stylesPane)
 
     this.contentElement.appendChild(this._createHeader());
     this._animationsContainer = this.contentElement.createChild("div");
-    this._animations = [];
-    this._uiAnimations = [];
     this._duration = this._defaultDuration();
-
     this._scrubberRadius = 25;
-
+    /** @type {!Map.<!DOMAgent.BackendNodeId, !WebInspector.AnimationTimeline.NodeUI>} */
+    this._nodesMap = new Map();
+    this._symbol = Symbol("animationTimeline");
     WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._mainFrameNavigated, this);
+    WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
 }
 
 WebInspector.AnimationTimeline.prototype = {
@@ -146,11 +146,10 @@ WebInspector.AnimationTimeline.prototype = {
 
     _reset: function()
     {
-        if (!this._animations.length)
+        if (!this._nodesMap.size)
             return;
 
-        this._animations = [];
-        this._uiAnimations = [];
+        this._nodesMap.clear();
         this._animationsContainer.removeChildren();
         this._duration = this._defaultDuration();
         delete this._startTime;
@@ -176,13 +175,13 @@ WebInspector.AnimationTimeline.prototype = {
     addAnimation: function(animation, resetTimeline)
     {
         /**
-         * @param {!Element} description
          * @param {?WebInspector.DOMNode} node
+         * @this {WebInspector.AnimationTimeline}
          */
-        function nodeResolved(description, node)
+        function nodeResolved(node)
         {
-            description.appendChild(WebInspector.DOMPresentationUtils.linkifyNodeReference(node));
             uiAnimation.setNode(node);
+            node[this._symbol] = nodeUI;
         }
 
         if (resetTimeline)
@@ -192,17 +191,30 @@ WebInspector.AnimationTimeline.prototype = {
         if (animation.type() === "WebAnimation" && animation.source().keyframesRule().keyframes().length === 0)
             return;
 
-        var row = this._animationsContainer.createChild("div", "animation-row");
-        var description = row.createChild("div", "animation-node-description");
-        animation.source().getNode(nodeResolved.bind(null, description));
-        var container = row.createChild("div", "animation-timeline-row");
-
         this._resizeWindow(animation);
-        this._animations.push(animation);
 
-        var uiAnimation = new WebInspector.AnimationUI(this._stylesPane, animation, this, container);
-        this._uiAnimations.push(uiAnimation);
+        var nodeUI = this._nodesMap.get(animation.source().backendNodeId());
+        if (!nodeUI) {
+            nodeUI = new WebInspector.AnimationTimeline.NodeUI(animation.source());
+            this._animationsContainer.appendChild(nodeUI.element);
+            this._nodesMap.set(animation.source().backendNodeId(), nodeUI);
+        }
+        var nodeRow = nodeUI.findRow(animation);
+        var uiAnimation = new WebInspector.AnimationUI(this._stylesPane, animation, this, nodeRow.element);
+        animation.source().getNode(nodeResolved.bind(this));
+        nodeRow.animations.push(uiAnimation);
         this.redraw();
+    },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _nodeRemoved: function(event)
+    {
+        var node = event.data.node;
+        if (node[this._symbol])
+            node[this._symbol].nodeRemoved();
+
     },
 
     _renderGrid: function()
@@ -222,8 +234,8 @@ WebInspector.AnimationTimeline.prototype = {
 
     redraw: function()
     {
-        for (var i = 0; i < this._uiAnimations.length; i++)
-            this._uiAnimations[i].redraw();
+        for (var nodeUI of this._nodesMap.values())
+            nodeUI.redraw();
         this._renderGrid();
     },
 
@@ -352,6 +364,80 @@ WebInspector.AnimationTimeline.prototype = {
 
 /**
  * @constructor
+ * @param {!WebInspector.AnimationModel.AnimationNode} animationNode
+ */
+WebInspector.AnimationTimeline.NodeUI = function(animationNode) {
+    /**
+     * @param {?WebInspector.DOMNode} node
+     */
+    function nodeResolved(node)
+    {
+        description.appendChild(WebInspector.DOMPresentationUtils.linkifyNodeReference(node));
+    }
+
+    this._rows = [];
+    this.element = createElementWithClass("div", "animation-node-row");
+    var description = this.element.createChild("div", "animation-node-description");
+    animationNode.getNode(nodeResolved);
+    this._timelineElement = this.element.createChild("div", "animation-node-timeline");
+}
+
+/** @typedef {{element: !Element, animations: !Array<!WebInspector.AnimationUI>}} */
+WebInspector.AnimationTimeline.NodeRow;
+
+WebInspector.AnimationTimeline.NodeUI.prototype = {
+    /**
+     * @param {!WebInspector.AnimationModel.AnimationPlayer} animation
+     * @return {!WebInspector.AnimationTimeline.NodeRow}
+     */
+    findRow: function(animation)
+    {
+        // Check if it can fit into an existing row
+        var existingRow = this._collapsibleIntoRow(animation);
+        if (existingRow)
+            return existingRow;
+
+        // Create new row
+        var container = this._timelineElement.createChild("div", "animation-timeline-row");
+        var nodeRow = {element: container, animations: []};
+        this._rows.push(nodeRow);
+        return nodeRow;
+    },
+
+    redraw: function()
+    {
+        for (var nodeRow of this._rows) {
+            for (var ui of nodeRow.animations)
+                ui.redraw();
+        }
+    },
+
+    /**
+     * @param {!WebInspector.AnimationModel.AnimationPlayer} animation
+     * @return {?WebInspector.AnimationTimeline.NodeRow}
+     */
+    _collapsibleIntoRow: function(animation)
+    {
+        if (animation.endTime() === Infinity)
+            return null;
+        for (var nodeRow of this._rows) {
+            var overlap = false;
+            for (var ui of nodeRow.animations)
+                overlap |= animation.overlaps(ui.animation());
+            if (!overlap)
+                return nodeRow;
+        }
+        return null;
+    },
+
+    nodeRemoved: function()
+    {
+        this.element.classList.add("animation-node-removed");
+    }
+}
+
+/**
+ * @constructor
  * @param {!WebInspector.StylesSidebarPane} stylesPane
  * @param {!WebInspector.AnimationModel.AnimationPlayer} animation
  * @param {!WebInspector.AnimationTimeline} timeline
@@ -369,7 +455,7 @@ WebInspector.AnimationUI = function(stylesPane, animation, timeline, parentEleme
     this._nameElement = parentElement.createChild("div", "animation-name");
     this._nameElement.textContent = this._animation.name();
 
-    this._svg = parentElement.createSVGChild("svg");
+    this._svg = parentElement.createSVGChild("svg", "animation-ui");
     this._svg.setAttribute("height", WebInspector.AnimationUI.Options.AnimationSVGHeight);
     this._svg.style.marginLeft = "-" + WebInspector.AnimationUI.Options.AnimationMargin + "px";
     this._svg.addEventListener("mousedown", this._mouseDown.bind(this, WebInspector.AnimationUI.MouseEvents.AnimationDrag, null));
@@ -390,6 +476,14 @@ WebInspector.AnimationUI.MouseEvents = {
 }
 
 WebInspector.AnimationUI.prototype = {
+    /**
+     * @return {!WebInspector.AnimationModel.AnimationPlayer}
+     */
+    animation: function()
+    {
+        return this._animation;
+    },
+
     /**
      * @param {?WebInspector.DOMNode} node
      */
@@ -646,7 +740,7 @@ WebInspector.AnimationUI.prototype = {
 
         if (!this._selectedColor) {
             var names = Object.keys(WebInspector.AnimationUI.Colors);
-            this._selectedColor = WebInspector.AnimationUI.Colors[names[hash(this._animation.name()) % names.length]];
+            this._selectedColor = WebInspector.AnimationUI.Colors[names[hash(this._animation.name() || this._animation.id()) % names.length]];
         }
         return this._selectedColor;
     }

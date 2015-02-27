@@ -769,7 +769,7 @@ WebInspector.HeapSnapshotView.prototype = {
         var selectedNode = event.target.selectedNode;
         var target = this._profile.target();
         if (target && selectedNode instanceof WebInspector.HeapSnapshotGenericObjectNode)
-            target.consoleAgent().addInspectedHeapObject(selectedNode.snapshotNodeId);
+            target.heapProfilerAgent().addInspectedHeapObject(String(selectedNode.snapshotNodeId));
     },
 
     /**

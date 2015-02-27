@@ -305,6 +305,9 @@ WebInspector.TimelinePanel.prototype = {
         garbageCollectButton.addEventListener("click", this._garbageCollectButtonClicked, this);
         this._panelToolbar.appendStatusBarItem(garbageCollectButton);
 
+        var viewModeLabel = new WebInspector.StatusBarText(WebInspector.UIString("View Mode:"), "timeline-status-bar-group-label");
+        this._panelToolbar.appendStatusBarItem(viewModeLabel);
+
         var framesToggleButton = new WebInspector.StatusBarButton(WebInspector.UIString("Frames view. (Activity split into frames)"), "histogram-status-bar-item");
         framesToggleButton.setToggled(this._overviewModeSetting.get() === WebInspector.TimelinePanel.OverviewMode.Frames);
         framesToggleButton.addEventListener("click", this._overviewModeChanged.bind(this, framesToggleButton));
@@ -314,6 +317,9 @@ WebInspector.TimelinePanel.prototype = {
         this._flameChartToggleButton.setToggled(this._flameChartEnabledSetting.get());
         this._flameChartToggleButton.addEventListener("click", this._flameChartEnabledChanged.bind(this));
         this._panelToolbar.appendStatusBarItem(this._flameChartToggleButton);
+
+        var captureSettingsLabel = new WebInspector.StatusBarText(WebInspector.UIString("Capture Details:"), "timeline-status-bar-group-label");
+        this._panelToolbar.appendStatusBarItem(captureSettingsLabel);
 
         this._captureCausesSetting = WebInspector.settings.createSetting("timelineCaptureCauses", true);
         this._captureCausesSetting.addChangeListener(this._refreshViews, this);
@@ -378,7 +384,7 @@ WebInspector.TimelinePanel.prototype = {
         var categories = WebInspector.TimelineUIUtils.categories();
         for (var categoryName in categories) {
             var category = categories[categoryName];
-            if (category.overviewStripGroupIndex < 0)
+            if (!category.visible)
                 continue;
             var filter = new WebInspector.CheckboxFilterUI(category.name, category.title);
             this._filters._categoryFiltersUI[category.name] = filter;
@@ -462,6 +468,8 @@ WebInspector.TimelinePanel.prototype = {
         this.registerShortcuts(WebInspector.ShortcutsScreen.TimelinePanelShortcuts.StartStopRecording, this._toggleTimelineButtonClicked.bind(this));
         this.registerShortcuts(WebInspector.ShortcutsScreen.TimelinePanelShortcuts.SaveToFile, this._saveToFile.bind(this));
         this.registerShortcuts(WebInspector.ShortcutsScreen.TimelinePanelShortcuts.LoadFromFile, this._selectFileToLoad.bind(this));
+        this.registerShortcuts(WebInspector.ShortcutsScreen.TimelinePanelShortcuts.JumpToPreviousFrame, this._jumpToFrame.bind(this, -1));
+        this.registerShortcuts(WebInspector.ShortcutsScreen.TimelinePanelShortcuts.JumpToNextFrame, this._jumpToFrame.bind(this, 1));
     },
 
     _createFileSelector: function()
@@ -988,7 +996,8 @@ WebInspector.TimelinePanel.prototype = {
             if (frame.layerTree) {
                 var layersView = this._layersView();
                 layersView.showLayerTree(frame.layerTree, frame.paints);
-                this._detailsView.appendTab(WebInspector.TimelinePanel.DetailsTab.LayerViewer, WebInspector.UIString("Layers"), layersView);
+                if (!this._detailsView.hasTab(WebInspector.TimelinePanel.DetailsTab.LayerViewer))
+                    this._detailsView.appendTab(WebInspector.TimelinePanel.DetailsTab.LayerViewer, WebInspector.UIString("Layers"), layersView);
             }
             break;
         case WebInspector.TimelineSelection.Type.Range:
@@ -997,6 +1006,50 @@ WebInspector.TimelinePanel.prototype = {
         }
 
         this._detailsView.updateContents(this._selection);
+    },
+
+    /**
+     * @param {!WebInspector.TimelineSelection} selection
+     * @return {?WebInspector.TimelineFrame}
+     */
+    _frameForSelection: function(selection)
+    {
+        switch (selection.type()) {
+        case WebInspector.TimelineSelection.Type.Frame:
+            return /** @type {!WebInspector.TimelineFrame} */ (selection.object());
+        case WebInspector.TimelineSelection.Type.Range:
+            return null;
+        case WebInspector.TimelineSelection.Type.Record:
+        case WebInspector.TimelineSelection.Type.TraceEvent:
+            return this._frameModel().filteredFrames(selection._endTime, selection._endTime)[0];
+        default:
+            console.assert(false, "Should never be reached");
+            return null;
+        }
+    },
+
+    /**
+     * @param {number} offset
+     */
+    _jumpToFrame: function(offset)
+    {
+        var currentFrame = this._frameForSelection(this._selection);
+        if (!currentFrame)
+            return;
+        var frames = this._frameModel().frames();
+        var index = frames.indexOf(currentFrame);
+        console.assert(index >= 0, "Can't find current frame in the frame list");
+        index = Number.constrain(index + offset, 0, frames.length - 1);
+        var newFrame = frames[index];
+        var timeShift = 0;
+        if (this._windowEndTime < newFrame.endTime)
+            timeShift = newFrame.endTime - this._windowEndTime;
+        else if (this._windowStartTime > newFrame.startTime)
+            timeShift = newFrame.startTime - this._windowStartTime;
+        if (timeShift)
+            this.requestWindowTimes(this._windowStartTime + timeShift, this._windowEndTime + timeShift);
+        this.select(WebInspector.TimelineSelection.fromFrame(newFrame));
+        return true;
     },
 
     /**

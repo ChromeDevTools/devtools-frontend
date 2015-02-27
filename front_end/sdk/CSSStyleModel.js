@@ -70,11 +70,12 @@ WebInspector.CSSStyleModel.parseRuleMatchArrayPayload = function(cssModel, match
 }
 
 WebInspector.CSSStyleModel.Events = {
+    MediaQueryResultChanged: "MediaQueryResultChanged",
     ModelWasEnabled: "ModelWasEnabled",
+    PseudoStateForced: "PseudoStateForced",
     StyleSheetAdded: "StyleSheetAdded",
     StyleSheetChanged: "StyleSheetChanged",
-    StyleSheetRemoved: "StyleSheetRemoved",
-    MediaQueryResultChanged: "MediaQueryResultChanged",
+    StyleSheetRemoved: "StyleSheetRemoved"
 }
 
 WebInspector.CSSStyleModel.MediaTypes = ["all", "braille", "embossed", "handheld", "print", "projection", "screen", "speech", "tty", "tv"];
@@ -84,11 +85,11 @@ WebInspector.CSSStyleModel.prototype = {
     {
         this._agent.disable();
         this._isEnabled = false;
-        this._resetStyleSheets();
     },
 
     resumeModel: function()
     {
+        this._resetStyleSheets();
         this._agent.enable(this._wasEnabled.bind(this));
     },
 
@@ -277,6 +278,7 @@ WebInspector.CSSStyleModel.prototype = {
         }
 
         this._agent.forcePseudoState(node.id, pseudoClasses);
+        this.dispatchEventToListeners(WebInspector.CSSStyleModel.Events.PseudoStateForced, { node: node, pseudoClass: pseudoClass, enable: enable });
         return true;
     },
 

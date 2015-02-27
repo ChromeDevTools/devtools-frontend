@@ -181,8 +181,8 @@ TreeOutline.prototype = {
             console.error("Unbinding element that was not bound: " + new Error().stack);
 
         element.deselect();
-        element.treeOutline = null;
         element.onunbind();
+        element.treeOutline = null;
     },
 
     /**

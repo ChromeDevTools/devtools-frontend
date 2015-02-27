@@ -1,20 +1,14 @@
 {
     "extensions": [
         {
-            "type": "@WebInspector.App",
+            "type": "@WebInspector.AppProvider",
             "condition": "can_dock",
-            "className": "WebInspector.AdvancedApp",
+            "className": "WebInspector.AdvancedAppProvider",
             "order": 0
         },
         {
-            "type": "@WebInspector.App",
-            "condition": "remoteFrontend",
-            "className": "WebInspector.ScreencastApp",
-            "order": 1
-        },
-        {
-            "type": "@WebInspector.App",
-            "className": "WebInspector.SimpleApp",
+            "type": "@WebInspector.AppProvider",
+            "className": "WebInspector.SimpleAppProvider",
             "order": 10
         },
         {
@@ -219,12 +213,6 @@
             "location": "toolbar-right"
         },
         {
-            "type": "@WebInspector.StatusBarItem.Provider",
-            "className": "WebInspector.ScreencastApp.StatusBarButtonProvider",
-            "order": 5,
-            "location": "toolbar-right"
-        },
-        {
             "type": "ui-setting",
             "title": "Disable cache (while DevTools is open)",
             "settingName": "cacheDisabled",
@@ -268,17 +256,14 @@
         "extensions",
         "host",
         "platform",
-        "screencast",
         "sdk",
         "toolbox"
     ],
     "scripts": [
         "HelpScreenUntilReload.js",
-        "App.js",
         "AdvancedApp.js",
         "OverridesView.js",
         "RenderingOptions.js",
-        "ScreencastApp.js",
         "SimpleApp.js",
         "TestController.js",
         "Tests.js",

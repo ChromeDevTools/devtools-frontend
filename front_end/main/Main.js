@@ -240,16 +240,16 @@ WebInspector.Main.prototype = {
         this._registerForwardedShortcuts();
         this._registerMessageSinkListener();
 
-        var appExtension = self.runtime.extensions(WebInspector.App)[0];
+        var appExtension = self.runtime.extensions(WebInspector.AppProvider)[0];
         appExtension.instancePromise().then(createApp).then(this._initApp.bind(this));
 
         /**
-         * @param {!Object} app
+         * @param {!Object} appProvider
          * FIXME: don't save to global WebInspector.app once we split apps to separate modules.
          */
-        function createApp(app)
+        function createApp(appProvider)
         {
-            WebInspector.app = /** @type {!WebInspector.App} */ (app);
+            WebInspector.app = /** @type {!WebInspector.AppProvider} */ (appProvider).createApp();
         }
     },
 

@@ -48,8 +48,6 @@ WebInspector.ElementsTreeElement = function(node, elementCloseTag)
     this._expandedChildrenLimit = WebInspector.ElementsTreeElement.InitialChildrenLimit;
 }
 
-WebInspector.ElementsTreeElement.symbol = Symbol("treeElement");
-
 WebInspector.ElementsTreeElement.InitialChildrenLimit = 500;
 
 // A union of HTML4 and HTML5-Draft elements that explicitly
@@ -64,13 +62,6 @@ WebInspector.ElementsTreeElement.EditTagBlacklist = [
     "html", "head", "body"
 ].keySet();
 
-/** @enum {number} */
-WebInspector.ElementsTreeElement.ChildrenDisplayMode = {
-    NoChildren: 0,
-    InlineText: 1,
-    HasChildren: 2
-}
-
 /**
  * @param {!WebInspector.ElementsTreeElement} treeElement
  */
@@ -78,6 +69,45 @@ WebInspector.ElementsTreeElement.animateOnDOMUpdate = function(treeElement)
 {
     var tagName = treeElement.listItemElement.querySelector(".webkit-html-tag-name");
     WebInspector.runCSSAnimationOnce(tagName || treeElement.listItemElement, "dom-update-highlight");
+}
+
+/**
+ * @param {!WebInspector.DOMNode} node
+ * @return {!Array<!WebInspector.DOMNode>}
+ */
+WebInspector.ElementsTreeElement.visibleShadowRoots = function(node)
+{
+    var roots = node.shadowRoots();
+    if (roots.length && !WebInspector.settings.showUAShadowDOM.get())
+        roots = roots.filter(filter);
+
+    /**
+     * @param {!WebInspector.DOMNode} root
+     */
+    function filter(root)
+    {
+        return root.shadowRootType() === WebInspector.DOMNode.ShadowRootTypes.Author;
+    }
+    return roots;
+}
+
+/**
+ * @param {!WebInspector.DOMNode} node
+ * @return {boolean}
+ */
+WebInspector.ElementsTreeElement.canShowInlineText = function(node)
+{
+    if (node.importedDocument() || node.templateContent() || WebInspector.ElementsTreeElement.visibleShadowRoots(node).length || node.hasPseudoElements())
+        return false;
+    if (node.nodeType() !== Node.ELEMENT_NODE)
+        return false;
+    if (!node.firstChild || node.firstChild !== node.lastChild || node.firstChild.nodeType() !== Node.TEXT_NODE)
+        return false;
+    var textChild = node.firstChild;
+    var maxInlineTextChildLength = 80;
+    if (textChild.nodeValue().length < maxInlineTextChildLength)
+        return true;
+    return false;
 }
 
 WebInspector.ElementsTreeElement.prototype = {
@@ -115,7 +145,7 @@ WebInspector.ElementsTreeElement.prototype = {
 
         this._searchQuery = searchQuery;
         this._searchHighlightsVisible = true;
-        this.updateTitle(true);
+        this.updateTitle(null, true);
     },
 
     hideSearchHighlights: function()
@@ -196,22 +226,6 @@ WebInspector.ElementsTreeElement.prototype = {
         this._expandedChildrenLimit = expandedChildrenLimit;
     },
 
-    /**
-     * @return {!WebInspector.ElementsTreeElement.ChildrenDisplayMode}
-     */
-    childrenDisplayMode: function()
-    {
-        return this._childrenDisplayMode;
-    },
-
-    /**
-     * @param {!WebInspector.ElementsTreeElement.ChildrenDisplayMode} displayMode
-     */
-    setChildrenDisplayMode: function(displayMode)
-    {
-        this._childrenDisplayMode = displayMode;
-    },
-
     updateSelection: function()
     {
         var listItemElement = this.listItemElement;
@@ -243,7 +257,7 @@ WebInspector.ElementsTreeElement.prototype = {
     onbind: function()
     {
         if (!this._elementCloseTag)
-            this._node[WebInspector.ElementsTreeElement.symbol] = this;
+            this._node[this.treeOutline.treeElementSymbol()] = this;
     },
 
     /**
@@ -251,8 +265,8 @@ WebInspector.ElementsTreeElement.prototype = {
      */
     onunbind: function()
     {
-        if (this._node[WebInspector.ElementsTreeElement.symbol] === this)
-            this._node[WebInspector.ElementsTreeElement.symbol] = null;
+        if (this._node[this.treeOutline.treeElementSymbol()] === this)
+            this._node[this.treeOutline.treeElementSymbol()] = null;
     },
 
     /**
@@ -284,14 +298,6 @@ WebInspector.ElementsTreeElement.prototype = {
     {
         this.populated = true;
         this.treeOutline.populateTreeElement(this);
-    },
-
-    /**
-     * @param {?WebInspector.ElementsTreeOutline.UpdateInfo} updateInfo
-     */
-    setUpdateInfo: function(updateInfo)
-    {
-        this._updateInfo = updateInfo;
     },
 
     expandRecursively: function()
@@ -502,11 +508,9 @@ WebInspector.ElementsTreeElement.prototype = {
         if (attribute && !newAttribute)
             contextMenu.appendItem(WebInspector.UIString.capitalize("Edit ^attribute"), this._startEditingAttribute.bind(this, attribute, event.target));
         contextMenu.appendSeparator();
-        if (this.treeOutline.setPseudoClassCallback) {
-            var pseudoSubMenu = contextMenu.appendSubMenuItem(WebInspector.UIString.capitalize("Force ^element ^state"));
-            this._populateForcedPseudoStateItems(pseudoSubMenu);
-            contextMenu.appendSeparator();
-        }
+        var pseudoSubMenu = contextMenu.appendSubMenuItem(WebInspector.UIString.capitalize("Force ^element ^state"));
+        this._populateForcedPseudoStateItems(pseudoSubMenu, treeElement.node());
+        contextMenu.appendSeparator();
         this.populateNodeContextMenu(contextMenu);
         this.populateScrollIntoView(contextMenu);
     },
@@ -520,15 +524,26 @@ WebInspector.ElementsTreeElement.prototype = {
         contextMenu.appendItem(WebInspector.UIString.capitalize("Scroll into ^view"), this._scrollIntoView.bind(this));
     },
 
-    _populateForcedPseudoStateItems: function(subMenu)
+    /**
+     * @param {!WebInspector.ContextSubMenuItem} subMenu
+     * @param {!WebInspector.DOMNode} node
+     */
+    _populateForcedPseudoStateItems: function(subMenu, node)
     {
         const pseudoClasses = ["active", "hover", "focus", "visited"];
-        var node = this._node;
-        var forcedPseudoState = (node ? node.getUserProperty("pseudoState") : null) || [];
+        var forcedPseudoState = node.getUserProperty(WebInspector.CSSStyleModel.PseudoStatePropertyName) || [];
         for (var i = 0; i < pseudoClasses.length; ++i) {
             var pseudoClassForced = forcedPseudoState.indexOf(pseudoClasses[i]) >= 0;
-            var setPseudoClassCallback = this.treeOutline.setPseudoClassCallback.bind(this.treeOutline, node, pseudoClasses[i], !pseudoClassForced);
-            subMenu.appendCheckboxItem(":" + pseudoClasses[i], setPseudoClassCallback, pseudoClassForced, false);
+            subMenu.appendCheckboxItem(":" + pseudoClasses[i], setPseudoStateCallback.bind(null, pseudoClasses[i], !pseudoClassForced), pseudoClassForced, false);
+        }
+
+        /**
+         * @param {string} pseudoState
+         * @param {boolean} enabled
+         */
+        function setPseudoStateCallback(pseudoState, enabled)
+        {
+            node.target().cssModel.forcePseudoState(node, pseudoState, enabled);
         }
     },
 
@@ -542,7 +557,7 @@ WebInspector.ElementsTreeElement.prototype = {
     populateNodeContextMenu: function(contextMenu)
     {
         // Add free-form node-related actions.
-        var openTagElement = this._node[WebInspector.ElementsTreeElement.symbol] || this;
+        var openTagElement = this._node[this.treeOutline.treeElementSymbol()] || this;
         var isEditable = this.hasEditableNode();
         if (isEditable && !this._editing)
             contextMenu.appendItem(WebInspector.UIString("Edit as HTML"), openTagElement.toggleEditAsHTML.bind(openTagElement));
@@ -594,7 +609,7 @@ WebInspector.ElementsTreeElement.prototype = {
         // Cannot just convert the textual html into an element without
         // a parent node. Use a temporary span container for the HTML.
         var container = createElement("span");
-        this._buildAttributeDOM(container, " ", "");
+        this._buildAttributeDOM(container, " ", "", null);
         var attr = container.firstElementChild;
         attr.style.marginLeft = "2px"; // overrides the .editing margin rule
         attr.style.marginRight = "2px"; // overrides the .editing margin rule
@@ -978,7 +993,6 @@ WebInspector.ElementsTreeElement.prototype = {
             var newTreeItem = treeOutline.selectNodeAfterEdit(wasExpanded, error, nodeId);
             moveToNextAttributeIfNeeded.call(newTreeItem);
         }
-
         this._node.setNodeName(newText, changeTagNameCallback);
     },
 
@@ -1035,9 +1049,10 @@ WebInspector.ElementsTreeElement.prototype = {
     },
 
     /**
+     * @param {?WebInspector.ElementsTreeOutline.UpdateRecord=} updateRecord
      * @param {boolean=} onlySearchQueryChanged
      */
-    updateTitle: function(onlySearchQueryChanged)
+    updateTitle: function(updateRecord, onlySearchQueryChanged)
     {
         // If we are editing, return early to prevent canceling the edit.
         // After editing is committed updateTitle will be called.
@@ -1047,7 +1062,7 @@ WebInspector.ElementsTreeElement.prototype = {
         if (onlySearchQueryChanged) {
             this._hideSearchHighlight();
         } else {
-            var nodeInfo = this._nodeTitleInfo(WebInspector.linkifyURLAsNode);
+            var nodeInfo = this._nodeTitleInfo(updateRecord || null);
             if (this._node.nodeType() === Node.DOCUMENT_FRAGMENT_NODE && this._node.isInShadowTree() && this._node.shadowRootType())
                 this.listItemElement.classList.add("shadow-root");
             var highlightElement = createElement("span");
@@ -1113,11 +1128,11 @@ WebInspector.ElementsTreeElement.prototype = {
      * @param {!Node} parentElement
      * @param {string} name
      * @param {string} value
+     * @param {?WebInspector.ElementsTreeOutline.UpdateRecord} updateRecord
      * @param {boolean=} forceValue
      * @param {!WebInspector.DOMNode=} node
-     * @param {function(string, string, string, boolean=, string=)=} linkify
      */
-    _buildAttributeDOM: function(parentElement, name, value, forceValue, node, linkify)
+    _buildAttributeDOM: function(parentElement, name, value, updateRecord, forceValue, node)
     {
         var closingPunctuationRegex = /[\/;:\)\]\}]/g;
         var highlightIndex = 0;
@@ -1167,8 +1182,7 @@ WebInspector.ElementsTreeElement.prototype = {
 
         var attrValueElement = attrSpanElement.createChild("span", "webkit-html-attribute-value");
 
-        var updates = this._updateInfo;
-        if (updates && updates.isAttributeModified(name))
+        if (updateRecord && updateRecord.isAttributeModified(name))
             WebInspector.runCSSAnimationOnce(hasText ? attrValueElement : attrNameElement, "dom-update-highlight");
 
         /**
@@ -1187,14 +1201,14 @@ WebInspector.ElementsTreeElement.prototype = {
             value = value.replace(closingPunctuationRegex, "$&\u200B");
             if (value.startsWith("data:"))
                 value = value.trimMiddle(60);
-            var anchor = linkify(rewrittenHref, value, "", node.nodeName().toLowerCase() === "a");
+            var anchor = WebInspector.linkifyURLAsNode(rewrittenHref, value, "", node.nodeName().toLowerCase() === "a");
             anchor.preventFollow = true;
             return anchor;
         }
 
-        if (linkify && (name === "src" || name === "href")) {
+        if (node && name === "src" || name === "href") {
             attrValueElement.appendChild(linkifyValue.call(this, value));
-        } else if (linkify && node.nodeName().toLowerCase() === "img" && name === "srcset") {
+        } else if (node && node.nodeName().toLowerCase() === "img" && name === "srcset") {
             var sources = value.split(",");
             for (var i = 0; i < sources.length; ++i) {
                 if (i > 0)
@@ -1230,9 +1244,9 @@ WebInspector.ElementsTreeElement.prototype = {
      * @param {string} tagName
      * @param {boolean} isClosingTag
      * @param {boolean} isDistinctTreeElement
-     * @param {function(string, string, string, boolean=, string=)=} linkify
+     * @param {?WebInspector.ElementsTreeOutline.UpdateRecord} updateRecord
      */
-    _buildTagDOM: function(parentElement, tagName, isClosingTag, isDistinctTreeElement, linkify)
+    _buildTagDOM: function(parentElement, tagName, isClosingTag, isDistinctTreeElement, updateRecord)
     {
         var node = this._node;
         var classes = [ "webkit-html-tag" ];
@@ -1248,26 +1262,15 @@ WebInspector.ElementsTreeElement.prototype = {
                 for (var i = 0; i < attributes.length; ++i) {
                     var attr = attributes[i];
                     tagElement.createTextChild(" ");
-                    this._buildAttributeDOM(tagElement, attr.name, attr.value, false, node, linkify);
+                    this._buildAttributeDOM(tagElement, attr.name, attr.value, updateRecord, false, node);
                 }
             }
-            var hasUpdates;
-            var updates = this._updateInfo;
-            if (updates) {
-                hasUpdates |= updates.hasRemovedAttributes();
-                var hasInlineText = this._childrenDisplayMode === WebInspector.ElementsTreeElement.ChildrenDisplayMode.InlineText;
-
-                hasUpdates |= (!hasInlineText || this.expanded) && updates.hasChangedChildren();
-
-                // Highlight the tag name, as the inserted node is not visible (either child of a collapsed tree element or empty inline text).
-                hasUpdates |= !this.expanded && updates.hasInsertedNodes() && (!hasInlineText || this._node.firstChild.nodeValue().length === 0);
-
-                // Highlight the tag name, as the inline text node value has been cleared.
-                // The respective empty node will be highlighted, but the highlight will not be visible to the user.
-                hasUpdates |= hasInlineText && (updates.isCharDataModified() || updates.hasChangedChildren()) && this._node.firstChild.nodeValue().length === 0;
+            if (updateRecord) {
+                var hasUpdates = updateRecord.hasRemovedAttributes() || updateRecord.hasRemovedChildren();
+                hasUpdates |= !this.expanded && updateRecord.hasChangedChildren();
+                if (hasUpdates)
+                    WebInspector.runCSSAnimationOnce(tagNameElement, "dom-update-highlight");
             }
-            if (hasUpdates)
-                WebInspector.runCSSAnimationOnce(tagNameElement, "dom-update-highlight");
         }
 
         tagElement.createTextChild(">");
@@ -1300,17 +1303,17 @@ WebInspector.ElementsTreeElement.prototype = {
     },
 
     /**
-     * @param {function(string, string, string, boolean=, string=)=} linkify
+     * @param {?WebInspector.ElementsTreeOutline.UpdateRecord} updateRecord
      * @return {!DocumentFragment} result
      */
-    _nodeTitleInfo: function(linkify)
+    _nodeTitleInfo: function(updateRecord)
     {
         var node = this._node;
         var titleDOM = createDocumentFragment();
 
         switch (node.nodeType()) {
             case Node.ATTRIBUTE_NODE:
-                this._buildAttributeDOM(titleDOM, /** @type {string} */ (node.name), /** @type {string} */ (node.value), true);
+                this._buildAttributeDOM(titleDOM, /** @type {string} */ (node.name), /** @type {string} */ (node.value), updateRecord, true);
                 break;
 
             case Node.ELEMENT_NODE:
@@ -1322,42 +1325,38 @@ WebInspector.ElementsTreeElement.prototype = {
 
                 var tagName = node.nodeNameInCorrectCase();
                 if (this._elementCloseTag) {
-                    this._buildTagDOM(titleDOM, tagName, true, true);
+                    this._buildTagDOM(titleDOM, tagName, true, true, updateRecord);
                     break;
                 }
 
-                this._buildTagDOM(titleDOM, tagName, false, false, linkify);
+                this._buildTagDOM(titleDOM, tagName, false, false, updateRecord);
 
-                switch (this._childrenDisplayMode) {
-                case WebInspector.ElementsTreeElement.ChildrenDisplayMode.HasChildren:
+                if (this.isExpandable()) {
                     if (!this.expanded) {
                         var textNodeElement = titleDOM.createChild("span", "webkit-html-text-node bogus");
                         textNodeElement.textContent = "\u2026";
                         titleDOM.createTextChild("\u200B");
-                        this._buildTagDOM(titleDOM, tagName, true, false);
+                        this._buildTagDOM(titleDOM, tagName, true, false, updateRecord);
                     }
                     break;
+                }
 
-                case WebInspector.ElementsTreeElement.ChildrenDisplayMode.InlineText:
+                if (WebInspector.ElementsTreeElement.canShowInlineText(node)) {
                     var textNodeElement = titleDOM.createChild("span", "webkit-html-text-node");
                     var result = this._convertWhitespaceToEntities(node.firstChild.nodeValue());
                     textNodeElement.textContent = result.text;
                     WebInspector.highlightRangesWithStyleClass(textNodeElement, result.entityRanges, "webkit-html-entity-value");
                     titleDOM.createTextChild("\u200B");
-                    this._buildTagDOM(titleDOM, tagName, true, false);
-                    var updates = this._updateInfo;
-                    if (updates && (updates.hasInsertedNodes() || updates.hasChangedChildren()))
+                    this._buildTagDOM(titleDOM, tagName, true, false, updateRecord);
+                    if (updateRecord && updateRecord.hasChangedChildren())
                         WebInspector.runCSSAnimationOnce(textNodeElement, "dom-update-highlight");
-                    updates = this._updateInfo;
-                    if (updates && updates.isCharDataModified())
+                    if (updateRecord && updateRecord.isCharDataModified())
                         WebInspector.runCSSAnimationOnce(textNodeElement, "dom-update-highlight");
-                    break;
-
-                case WebInspector.ElementsTreeElement.ChildrenDisplayMode.NoChildren:
-                    if (this.treeOutline.isXMLMimeType || !WebInspector.ElementsTreeElement.ForbiddenClosingTagElements[tagName])
-                        this._buildTagDOM(titleDOM, tagName, true, false);
                     break;
                 }
+
+                if (this.treeOutline.isXMLMimeType || !WebInspector.ElementsTreeElement.ForbiddenClosingTagElements[tagName])
+                    this._buildTagDOM(titleDOM, tagName, true, false, updateRecord);
                 break;
 
             case Node.TEXT_NODE:
@@ -1380,8 +1379,7 @@ WebInspector.ElementsTreeElement.prototype = {
                     textNodeElement.textContent = result.text;
                     WebInspector.highlightRangesWithStyleClass(textNodeElement, result.entityRanges, "webkit-html-entity-value");
                     titleDOM.createTextChild("\"");
-                    var updates = this._updateInfo;
-                    if (updates && updates.isCharDataModified())
+                    if (updateRecord && updateRecord.isCharDataModified())
                         WebInspector.runCSSAnimationOnce(textNodeElement, "dom-update-highlight");
                 }
                 break;

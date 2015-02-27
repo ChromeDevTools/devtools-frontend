@@ -4,33 +4,30 @@
  * found in the LICENSE file.
  */
 
-.animation-row {
-    height: 40px;
+.animation-node-row {
     width: 100%;
     display: flex;
+    border-bottom: 1px dashed #ccc;
 }
 
 .animation-node-description {
     display: inline-block;
-    height: 100%;
-    vertical-align: top;
-    line-height: 40px;
     min-width: 200px;
     max-width: 200px;
     padding-left: 15px;
     overflow: hidden;
     border-right: 1px solid #ccc;
+    position: relative;
+    transform-style: preserve-3d;
 }
 
-.animation-row:nth-child(odd) > .animation-node-description {
+.animation-node-row:nth-child(odd) {
     background-color: #f6f6f6;
 }
 
 .animation-timeline-row {
+    height: 40px;
     position: relative;
-    display: inline-block;
-    flex-grow: 1;
-    border-bottom: 1px dashed #ccc;
 }
 
 path.animation-keyframe {
@@ -172,4 +169,23 @@ svg.animation-timeline-grid {
 
 rect.animation-timeline-grid-line {
     fill: #ccc;
+}
+
+.animation-timeline-row > svg.animation-ui {
+    position: absolute;
+}
+
+.animation-node-timeline {
+    flex-grow: 1;
+}
+
+.animation-node-description > div {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    max-height: 100%;
+}
+
+.animation-node-row.animation-node-removed {
+    background-color: #fff0f0;
 }

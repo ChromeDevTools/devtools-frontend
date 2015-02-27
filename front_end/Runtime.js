@@ -481,17 +481,7 @@ Runtime.prototype = {
         {
             if (extension._type !== type && extension._typeClass() !== type)
                 return false;
-            var activatorExperiment = extension.descriptor()["experiment"];
-            if (activatorExperiment && !Runtime.experiments.isEnabled(activatorExperiment))
-                return false;
-            activatorExperiment = extension._module._descriptor["experiment"];
-            if (activatorExperiment && !Runtime.experiments.isEnabled(activatorExperiment))
-                return false;
-            var condition = extension.descriptor()["condition"];
-            if (condition && !Runtime.queryParam(condition))
-                return false;
-            condition = extension._module._descriptor["condition"];
-            if (condition && !Runtime.queryParam(condition))
+            if (!extension.enabled())
                 return false;
             return !context || extension.isApplicable(context);
         }
@@ -638,12 +628,29 @@ Runtime.Module.prototype = {
     },
 
     /**
+     * @return {boolean}
+     */
+    enabled: function()
+    {
+        var activatorExperiment = this._descriptor["experiment"];
+        if (activatorExperiment && !Runtime.experiments.isEnabled(activatorExperiment))
+            return false;
+        var condition = this._descriptor["condition"];
+        if (condition && !Runtime.queryParam(condition))
+            return false;
+        return true;
+    },
+
+    /**
      * @return {!Promise.<undefined>}
      */
     _loadPromise: function()
     {
         if (this._loaded)
             return Promise.resolve();
+
+        if (!this.enabled())
+            return Promise.reject(new Error("Module " + this._name + " is not enabled"));
 
         if (this._pendingLoadPromise)
             return this._pendingLoadPromise;
@@ -781,6 +788,20 @@ Runtime.Extension.prototype = {
     module: function()
     {
         return this._module;
+    },
+
+    /**
+     * @return {boolean}
+     */
+    enabled: function()
+    {
+        var activatorExperiment = this.descriptor()["experiment"];
+        if (activatorExperiment && !Runtime.experiments.isEnabled(activatorExperiment))
+            return false;
+        var condition = this.descriptor()["condition"];
+        if (condition && !Runtime.queryParam(condition))
+            return false;
+        return this._module.enabled();
     },
 
     /**

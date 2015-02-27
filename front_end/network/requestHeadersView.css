@@ -31,6 +31,8 @@
     width: 9px;
     height: 9px;
     -webkit-mask-position: -4px -98px;
+    background-image: none;
+    opacity: 1;
 }
 
 .request-headers-view .outline-disclosure li.parent.expanded::before {
@@ -38,7 +40,7 @@
 }
 
 .request-headers-view .properties-tree li.parent {
-    margin-left: -1px;
+    margin-left: 10px;
 }
 
 .request-headers-view .outline-disclosure .children li {
@@ -95,14 +97,6 @@
 .resource-status-image {
     margin-top: -2px;
     margin-right: 3px;
-}
-
-.request-headers-view .section {
-    margin-left: -16px;
-}
-
-.request-headers-view .section.expanded .properties {
-    -webkit-padding-start: 0;
 }
 
 .request-headers-view .filter-input {

@@ -282,6 +282,7 @@ WebInspector.ShortcutsScreen.registerShortcuts = function()
     section.addAlternateKeys(WebInspector.ShortcutsScreen.TimelinePanelShortcuts.StartStopRecording, WebInspector.UIString("Start/stop recording"));
     section.addAlternateKeys(WebInspector.ShortcutsScreen.TimelinePanelShortcuts.SaveToFile, WebInspector.UIString("Save timeline data"));
     section.addAlternateKeys(WebInspector.ShortcutsScreen.TimelinePanelShortcuts.LoadFromFile, WebInspector.UIString("Load timeline data"));
+    section.addRelatedKeys(WebInspector.ShortcutsScreen.TimelinePanelShortcuts.JumpToPreviousFrame.concat(WebInspector.ShortcutsScreen.TimelinePanelShortcuts.JumpToNextFrame), WebInspector.UIString("Jump to previous/next frame"));
 
 
     // Profiles panel
@@ -495,6 +496,14 @@ WebInspector.ShortcutsScreen.TimelinePanelShortcuts = {
 
     LoadFromFile: [
         WebInspector.KeyboardShortcut.makeDescriptor("o", WebInspector.KeyboardShortcut.Modifiers.CtrlOrMeta)
+    ],
+
+    JumpToPreviousFrame: [
+        WebInspector.KeyboardShortcut.makeDescriptor(WebInspector.KeyboardShortcut.Keys.LeftSquareBracket)
+    ],
+
+    JumpToNextFrame: [
+        WebInspector.KeyboardShortcut.makeDescriptor(WebInspector.KeyboardShortcut.Keys.RightSquareBracket)
     ]
 };
 

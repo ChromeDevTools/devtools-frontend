@@ -7,7 +7,6 @@
     { "name": "host", "type": "autostart" },
     { "name": "common", "type": "autostart" },
     { "name": "toolbox", "type": "autostart" },
-    { "name": "screencast", "type": "autostart" },
     { "name": "workspace", "type": "autostart" },
     { "name": "bindings", "type": "autostart" },
     { "name": "extensions", "type": "autostart" },
@@ -26,6 +25,7 @@
     { "name": "devices" },
     { "name": "layers" },
     { "name": "promises" },
+    { "name": "screencast", "condition": "remoteFrontend" },
 
     { "name": "heap_snapshot_worker", "type": "worker" },
     { "name": "script_formatter_worker", "type": "worker" },

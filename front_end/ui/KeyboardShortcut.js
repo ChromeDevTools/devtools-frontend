@@ -104,6 +104,8 @@ WebInspector.KeyboardShortcut.Keys = {
     QuestionMark: { code: 191, name: "?" },
     Apostrophe: { code: 192, name: "`" },
     Tilde: { code: 192, name: "Tilde" },
+    LeftSquareBracket: { code: 219, name: "[" },
+    RightSquareBracket: { code: 221, name: "]" },
     Backslash: { code: 220, name: "\\" },
     SingleQuote: { code: 222, name: "\'" },
     get CtrlOrMeta()

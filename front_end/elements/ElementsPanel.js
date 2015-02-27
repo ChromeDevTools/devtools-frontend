@@ -64,7 +64,7 @@ WebInspector.ElementsPanel = function()
     this.sidebarPanes = {};
     this.sidebarPanes.platformFonts = new WebInspector.PlatformFontsSidebarPane();
     this.sidebarPanes.computedStyle = new WebInspector.ComputedStyleSidebarPane();
-    this.sidebarPanes.styles = new WebInspector.StylesSidebarPane(this.sidebarPanes.computedStyle, this._setPseudoClassForNode.bind(this));
+    this.sidebarPanes.styles = new WebInspector.StylesSidebarPane(this.sidebarPanes.computedStyle);
     this.sidebarPanes.styles.addEventListener(WebInspector.StylesSidebarPane.Events.SelectorEditingStarted, this._onEditingSelectorStarted.bind(this));
     this.sidebarPanes.styles.addEventListener(WebInspector.StylesSidebarPane.Events.SelectorEditingEnded, this._onEditingSelectorEnded.bind(this));
 
@@ -97,6 +97,7 @@ WebInspector.ElementsPanel = function()
     WebInspector.settings.showUAShadowDOM.addChangeListener(this._showUAShadowDOMChanged.bind(this));
     WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.DocumentUpdated, this._documentUpdatedEvent, this);
     WebInspector.targetManager.addModelListener(WebInspector.CSSStyleModel, WebInspector.CSSStyleModel.Events.ModelWasEnabled, this._updateSidebars, this);
+    WebInspector.targetManager.addModelListener(WebInspector.CSSStyleModel, WebInspector.CSSStyleModel.Events.PseudoStateForced, this._pseudoStateForced, this);
     WebInspector.extensionServer.addEventListener(WebInspector.ExtensionServer.Events.SidebarPaneAdded, this._extensionSidebarPaneAdded, this);
 }
 
@@ -119,7 +120,7 @@ WebInspector.ElementsPanel.prototype = {
      */
     targetAdded: function(target)
     {
-        var treeOutline = new WebInspector.ElementsTreeOutline(target, true, true, this._setPseudoClassForNode.bind(this));
+        var treeOutline = new WebInspector.ElementsTreeOutline(target, true, true);
         treeOutline.setWordWrap(WebInspector.settings.domWordWrap.get());
         treeOutline.wireToDOMModel();
         treeOutline.addEventListener(WebInspector.ElementsTreeOutline.Events.SelectedNodeChanged, this._selectedNodeChanged, this);
@@ -231,24 +232,19 @@ WebInspector.ElementsPanel.prototype = {
     },
 
     /**
-     * @param {!WebInspector.DOMNode} node
-     * @param {string} pseudoClass
-     * @param {boolean} enable
+     * @param {!WebInspector.Event} event
      */
-    _setPseudoClassForNode: function(node, pseudoClass, enable)
+    _pseudoStateForced: function(event)
     {
-        if (!node || !node.target().cssModel.forcePseudoState(node, pseudoClass, enable))
-            return;
-
+        var node = /** @type {!WebInspector.DOMNode} */ (event.data["node"]);
         this._treeOutlineForNode(node).updateOpenCloseTags(node);
-
         this._updateCSSSidebars();
 
         WebInspector.notifications.dispatchEventToListeners(WebInspector.UserMetrics.UserAction, {
             action: WebInspector.UserMetrics.UserActionNames.ForcedElementState,
             selector: WebInspector.DOMPresentationUtils.fullQualifiedSelector(node, false),
-            enabled: enable,
-            state: pseudoClass
+            enabled: event.data["enable"],
+            state: event.data["pseudoClass"]
         });
     },
 
@@ -281,7 +277,7 @@ WebInspector.ElementsPanel.prototype = {
         this._updateSidebars();
 
         if (selectedNode) {
-            selectedNode.target().consoleAgent().addInspectedNode(selectedNode.id);
+            selectedNode.setAsInspectedNode();
             this._lastValidSelectedNode = selectedNode;
         }
         WebInspector.notifications.dispatchEventToListeners(WebInspector.NotificationService.Events.SelectedNodeChanged);

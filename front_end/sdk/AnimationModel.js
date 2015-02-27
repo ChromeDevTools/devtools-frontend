@@ -110,7 +110,7 @@ WebInspector.AnimationModel.AnimationPlayer.prototype = {
      */
     name: function()
     {
-        return this.source().name() || this.id();
+        return this.source().name();
     },
 
     /**
@@ -148,6 +148,16 @@ WebInspector.AnimationModel.AnimationPlayer.prototype = {
     /**
      * @return {number}
      */
+    endTime: function()
+    {
+        if (!this.source().iterations)
+            return Infinity;
+        return this.startTime() + this.source().duration() * this.source().iterations();
+    },
+
+    /**
+     * @return {number}
+     */
     currentTime: function()
     {
         return this._payload.currentTime;
@@ -167,6 +177,21 @@ WebInspector.AnimationModel.AnimationPlayer.prototype = {
     type: function()
     {
         return this._payload.type;
+    },
+
+    /**
+     * @param {!WebInspector.AnimationModel.AnimationPlayer} animation
+     * @return {boolean}
+     */
+    overlaps: function(animation)
+    {
+        // Infinite animations
+        if (!this.source().iterations() || !animation.source().iterations())
+            return true;
+
+        var firstAnimation = this.startTime() < animation.startTime() ? this : animation;
+        var secondAnimation = firstAnimation === this ? animation : this;
+        return firstAnimation.endTime() >= secondAnimation.startTime();
     },
 
     __proto__: WebInspector.SDKObject.prototype
@@ -286,6 +311,14 @@ WebInspector.AnimationModel.AnimationNode.prototype = {
             callback(this.target().domModel.nodeForId(this.nodeId));
         else
             this._target.domModel.pushNodesByBackendIdsToFrontend([this._payload.backendNodeId], nodePushedCallback.bind(this));
+    },
+
+    /**
+     * @return {!DOMAgent.BackendNodeId}
+     */
+    backendNodeId: function()
+    {
+        return this._payload.backendNodeId;
     },
 
     /**

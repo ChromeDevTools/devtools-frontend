@@ -1086,29 +1086,6 @@
                 "description": "Clears console messages collected in the browser."
             },
             {
-                "name": "setMonitoringXHREnabled",
-                "parameters": [
-                    { "name": "enabled", "type": "boolean", "description": "Monitoring enabled state." }
-                ],
-                "description": "Toggles monitoring of XMLHttpRequest. If <code>true</code>, console will receive messages upon each XHR issued.",
-                "hidden": true
-            },
-            {
-                "name": "addInspectedNode",
-                "parameters": [
-                    { "name": "nodeId", "$ref": "DOM.NodeId", "description": "DOM node id to be accessible by means of $x command line API." }
-                ],
-                "description": "Enables console to refer to the node with given id via $x (see Command Line API for more details $x functions).",
-                "hidden": true
-            },
-            {
-                "name": "addInspectedHeapObject",
-                "parameters": [
-                    { "name": "heapObjectId", "type": "integer" }
-                ],
-                "hidden": true
-            },
-            {
                 "name": "setLastEvaluationResult",
                 "parameters": [
                     { "name": "objectId", "$ref": "Runtime.RemoteObjectId", "description": "Identifier of the object to set as last evaluation result." }
@@ -1320,6 +1297,14 @@
                 "parameters": [
                     { "name": "requestId", "$ref": "RequestId", "description": "Identifier of XHR to replay." }
                 ],
+                "hidden": true
+            },
+            {
+                "name": "setMonitoringXHREnabled",
+                "parameters": [
+                    { "name": "enabled", "type": "boolean", "description": "Monitoring enabled state." }
+                ],
+                "description": "Toggles monitoring of XMLHttpRequest. If <code>true</code>, console will receive messages upon each XHR issued.",
                 "hidden": true
             },
             {
@@ -2532,6 +2517,14 @@
                     { "name": "nodeIds", "type": "array", "items": {"$ref": "NodeId"}, "description": "The array of ids of pushed nodes that correspond to the backend ids specified in backendNodeIds." }
                 ],
                 "description": "Requests that a batch of nodes is sent to the caller given their backend node ids.",
+                "hidden": true
+            },
+            {
+                "name": "setInspectedNode",
+                "parameters": [
+                    { "name": "nodeId", "$ref": "NodeId", "description": "DOM node id to be accessible by means of $x command line API." }
+                ],
+                "description": "Enables console to refer to the node with given id via $x (see Command Line API for more details $x functions).",
                 "hidden": true
             },
             {
@@ -4009,6 +4002,13 @@
                 "returns": [
                     { "name": "result", "$ref": "Runtime.RemoteObject", "description": "Evaluation result." }
                 ]
+            },
+            {
+                "name": "addInspectedHeapObject",
+                "parameters": [
+                    { "name": "heapObjectId", "$ref": "HeapSnapshotObjectId", "description": "Heap snapshot object id to be accessible by means of $x command line API." }
+                ],
+                "description": "Enables console to refer to the node with given id via $x (see Command Line API for more details $x functions)."
             },
             {
                 "name": "getHeapObjectId",

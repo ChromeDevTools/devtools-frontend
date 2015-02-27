@@ -55,9 +55,6 @@ WebInspector.ConsoleModel.Events = {
 WebInspector.ConsoleModel.prototype = {
     _enableAgent: function()
     {
-        if (WebInspector.settings.monitoringXHREnabled.get())
-            this._consoleAgent.setMonitoringXHREnabled(true);
-
         this._enablingConsole = true;
 
         /**

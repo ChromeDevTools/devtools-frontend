@@ -212,6 +212,25 @@ WebInspector.AdvancedApp.prototype = {
 
 /**
  * @constructor
+ * @implements {WebInspector.AppProvider}
+ */
+WebInspector.AdvancedAppProvider = function()
+{
+};
+
+WebInspector.AdvancedAppProvider.prototype = {
+    /**
+     * @override
+     * @return {!WebInspector.App}
+     */
+    createApp: function()
+    {
+        return new WebInspector.AdvancedApp();
+    }
+};
+
+/**
+ * @constructor
  * @implements {WebInspector.StatusBarItem.Provider}
  */
 WebInspector.AdvancedApp.DeviceCounter = function()

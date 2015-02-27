@@ -55,7 +55,7 @@ WebInspector.RequestHeadersView = function(request)
         this._filterInput.value = WebInspector.RequestHeadersView._requestHeaderFilterSetting.get() || "";
     }
 
-    var root = new TreeOutline();
+    var root = new TreeOutline(true);
     root.element.classList.add("outline-disclosure");
     root.expandTreeElementsWhenArrowing = true;
     this.element.appendChild(root.element);

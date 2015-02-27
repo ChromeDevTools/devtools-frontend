@@ -158,6 +158,9 @@ class ReleaseBuilder(AppBuilder):
             # Stylesheets list is not used at runtime.
             if stylesheets is not None:
                 del module['stylesheets']
+            condition = self.descriptors.application[name].get('condition')
+            if condition:
+                module['condition'] = condition
             result.append(module)
         return json.dumps(result)
 

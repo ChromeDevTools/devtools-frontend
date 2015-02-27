@@ -1034,6 +1034,22 @@ WebInspector.DOMNode.prototype = {
         this._agent.getBoxModel(this.id, this._domModel._wrapClientCallback(callback));
     },
 
+    setAsInspectedNode: function()
+    {
+        var node = this;
+        while (true) {
+            var ancestor = node.ancestorClosedShadowRoot();
+            if (!ancestor)
+                break;
+            ancestor = node.ancestorShadowHost();
+            if (!ancestor)
+                break
+            // User agent shadow root, keep climbing up.
+            node = ancestor;
+        }
+        this._agent.setInspectedNode(node.id);
+    },
+
     __proto__: WebInspector.SDKObject.prototype
 }
 

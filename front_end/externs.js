@@ -39,6 +39,9 @@ Object.observe = function(object, callback) {}
 /** @type {boolean} */
 Event.prototype.isMetaOrCtrlForTest;
 
+/** @type {string} */
+Event.prototype.code;
+
 /**
  * @type {number}
  */

@@ -23,3 +23,22 @@ WebInspector.SimpleApp.prototype = {
         rootView.attachToDocument(document);
     }
 };
+
+/**
+ * @constructor
+ * @implements {WebInspector.AppProvider}
+ */
+WebInspector.SimpleAppProvider = function()
+{
+};
+
+WebInspector.SimpleAppProvider.prototype = {
+    /**
+     * @override
+     * @return {!WebInspector.App}
+     */
+    createApp: function()
+    {
+        return new WebInspector.SimpleApp();
+    }
+};

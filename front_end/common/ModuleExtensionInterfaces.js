@@ -85,3 +85,36 @@ WebInspector.Revealer.prototype = {
      */
     reveal: function(object, lineNumber) {}
 }
+
+/**
+ * @interface
+ */
+WebInspector.App = function()
+{
+};
+
+WebInspector.App.prototype = {
+    /**
+     * @param {!Document} document
+     */
+    presentUI: function(document) { }
+};
+
+/**
+ * @interface
+ */
+WebInspector.AppProvider = function()
+{
+};
+
+WebInspector.AppProvider.prototype = {
+    /**
+     * @return {!WebInspector.App}
+     */
+    createApp: function() { }
+};
+
+/**
+ * @type {!WebInspector.App}
+ */
+WebInspector.app;

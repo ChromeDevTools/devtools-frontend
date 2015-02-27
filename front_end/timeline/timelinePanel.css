@@ -879,3 +879,9 @@
 .invalidations-group > .content > .node-list {
     border-left: 1px solid #e1e1e1;
 }
+
+.timeline.panel .status-bar::shadow .timeline-status-bar-group-label {
+    margin-left: 12px;
+    margin-right: 6px;
+    color: #888;
+}

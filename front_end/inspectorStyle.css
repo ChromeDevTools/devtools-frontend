@@ -169,7 +169,8 @@ body.undocked.platform-mac.inactive .inspector-view-tabbed-pane.tabbed-pane::sha
 .console-formatted-iterator,
 .console-formatted-generator,
 .console-formatted-node,
-.console-formatted-array {
+.console-formatted-array,
+.console-formatted-error {
     position: relative;
     display: inline-block;
     vertical-align: top;

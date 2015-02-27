@@ -57,7 +57,8 @@ WebInspector.ConsoleViewMessage = function(consoleMessage, linkifier, nestingLev
         "set": this._formatParameterAsObject,
         "iterator": this._formatParameterAsObject,
         "generator": this._formatParameterAsObject,
-        "string": this._formatParameterAsString
+        "string": this._formatParameterAsString,
+        "error": this._formatParameterAsError
     };
 }
 
@@ -740,6 +741,16 @@ WebInspector.ConsoleViewMessage.prototype = {
         elem.createTextChild("\"");
         elem.appendChild(span);
         elem.createTextChild("\"");
+    },
+
+    /**
+     * @param {!WebInspector.RemoteObject} output
+     * @param {!Element} elem
+     */
+    _formatParameterAsError: function(output, elem)
+    {
+        var span = elem.createChild("span", "console-formatted-error source-code");
+        span.appendChild(WebInspector.linkifyStringAsFragment(output.description || ""));
     },
 
     /**

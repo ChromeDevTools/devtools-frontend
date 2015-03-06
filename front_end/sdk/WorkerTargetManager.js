@@ -36,12 +36,12 @@ WebInspector.WorkerTargetManager.prototype = {
      */
     _onWorkerAdded: function(event)
     {
-        var data = /** @type {{workerId: number, url: string, inspectorConnected: boolean}} */ (event.data);
+        var data = /** @type {{workerId: string, url: string, inspectorConnected: boolean}} */ (event.data);
         new WebInspector.WorkerConnection(this._mainTarget, data.workerId, data.inspectorConnected, onConnectionReady.bind(this, data.workerId));
 
         /**
          * @this {WebInspector.WorkerTargetManager}
-         * @param {number} workerId
+         * @param {string} workerId
          * @param {!InspectorBackendClass.Connection} connection
          */
         function onConnectionReady(workerId, connection)
@@ -53,7 +53,7 @@ WebInspector.WorkerTargetManager.prototype = {
 
         /**
          * @this {WebInspector.WorkerTargetManager}
-         * @param {number} workerId
+         * @param {string} workerId
          * @param {?WebInspector.Target} target
          */
         function targetCreated(workerId, target)
@@ -124,7 +124,7 @@ WebInspector.WorkerTargetManager.prototype = {
     },
 
     /**
-     * @param {number} workerId
+     * @param {string} workerId
      * @return {?WebInspector.Target}
      */
     targetByWorkerId: function(workerId)
@@ -137,7 +137,7 @@ WebInspector.WorkerTargetManager.prototype = {
  * @constructor
  * @extends {InspectorBackendClass.Connection}
  * @param {!WebInspector.Target} target
- * @param {number} workerId
+ * @param {string} workerId
  * @param {boolean} inspectorConnected
  * @param {function(!InspectorBackendClass.Connection)} onConnectionReady
  */
@@ -165,7 +165,7 @@ WebInspector.WorkerConnection.prototype = {
      */
     _dispatchMessageFromWorker: function(event)
     {
-        var data = /** @type {{workerId: number, command: string, message: !Object}} */ (event.data);
+        var data = /** @type {{workerId: string, message: string}} */ (event.data);
         if (data.workerId === this._workerId)
             this.dispatch(data.message);
     },
@@ -176,7 +176,7 @@ WebInspector.WorkerConnection.prototype = {
      */
     sendMessage: function(messageObject)
     {
-        this._workerAgent.sendMessageToWorker(this._workerId, messageObject);
+        this._workerAgent.sendMessageToWorker(this._workerId, JSON.stringify(messageObject));
     },
 
     /**
@@ -184,7 +184,7 @@ WebInspector.WorkerConnection.prototype = {
      */
     _onWorkerRemoved: function(event)
     {
-        var workerId = /** @type {number} */ (event.data);
+        var workerId = /** @type {string} */ (event.data);
         if (workerId === this._workerId)
             this._close();
     },

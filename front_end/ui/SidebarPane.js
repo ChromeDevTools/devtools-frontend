@@ -43,10 +43,6 @@ WebInspector.SidebarPane = function(title)
     this._expandCallback = null;
 }
 
-WebInspector.SidebarPane.EventTypes = {
-    wasShown: "wasShown"
-}
-
 WebInspector.SidebarPane.prototype = {
     /**
      * @return {string}
@@ -56,18 +52,9 @@ WebInspector.SidebarPane.prototype = {
         return this._title;
     },
 
-    /**
-     * @param {function()=} callback
-     */
-    prepareContent: function(callback)
-    {
-        if (callback)
-            callback();
-    },
-
     expand: function()
     {
-        this.prepareContent(this.onContentReady.bind(this));
+        this.onContentReady();
     },
 
     onContentReady: function()
@@ -88,12 +75,6 @@ WebInspector.SidebarPane.prototype = {
             delete this._expandPending;
             this._expandCallback();
         }
-    },
-
-    wasShown: function()
-    {
-        WebInspector.View.prototype.wasShown.call(this);
-        this.dispatchEventToListeners(WebInspector.SidebarPane.EventTypes.wasShown);
     },
 
     __proto__: WebInspector.View.prototype
@@ -119,7 +100,6 @@ WebInspector.SidebarPaneTitle = function(container, pane)
 }
 
 WebInspector.SidebarPaneTitle.prototype = {
-
     _expand: function()
     {
         this.element.classList.add("expanded");

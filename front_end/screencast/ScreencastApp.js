@@ -9,16 +9,10 @@
  */
 WebInspector.ScreencastApp = function()
 {
-    var lastScreencastState = WebInspector.settings.createSetting("lastScreencastState", "left");
-    this._currentScreencastState = WebInspector.settings.createSetting("currentScreencastState", "disabled");
-    this._toggleScreencastButton = new WebInspector.StatusBarStatesSettingButton(
-        "screencast-status-bar-item",
-        ["disabled", "left", "top"],
-        [WebInspector.UIString("Disable screencast."), WebInspector.UIString("Switch to portrait screencast."), WebInspector.UIString("Switch to landscape screencast.")],
-        this._currentScreencastState.get(),
-        this._currentScreencastState,
-        lastScreencastState,
-        this._onStatusBarButtonStateChanged.bind(this));
+    this._enabledSetting = WebInspector.settings.createSetting("screencastEnabled", true);
+    this._toggleButton = new WebInspector.StatusBarButton(WebInspector.UIString("Toggle screencast."), "screencast-status-bar-item");
+    this._toggleButton.setToggled(this._enabledSetting.get());
+    this._toggleButton.addEventListener("click", this._toggleButtonClicked, this);
     WebInspector.targetManager.observeTargets(this);
 };
 
@@ -32,6 +26,8 @@ WebInspector.ScreencastApp.prototype = {
         var rootView = new WebInspector.RootView();
 
         this._rootSplitView = new WebInspector.SplitView(false, true, "InspectorView.screencastSplitViewState", 300, 300);
+        this._rootSplitView.setVertical(true);
+        this._rootSplitView.setSecondIsSidebar(true);
         this._rootSplitView.show(rootView.element);
         this._rootSplitView.hideMain();
 
@@ -53,11 +49,10 @@ WebInspector.ScreencastApp.prototype = {
             this._screencastView = new WebInspector.ScreencastView(target);
             this._rootSplitView.setMainView(this._screencastView);
             this._screencastView.initialize();
-            this._onStatusBarButtonStateChanged(this._currentScreencastState.get());
         } else {
-            this._onStatusBarButtonStateChanged("disabled");
-            this._toggleScreencastButton.setEnabled(false);
+            this._toggleButton.setEnabled(false);
         }
+        this._onScreencastEnabledChanged();
     },
 
     /**
@@ -70,32 +65,30 @@ WebInspector.ScreencastApp.prototype = {
             delete this._target;
             if (!this._screencastView)
                 return;
-            this._onStatusBarButtonStateChanged("disabled");
-            this._toggleScreencastButton.setEnabled(false);
+            this._toggleButton.setEnabled(false);
             this._screencastView.detach();
             delete this._screencastView;
+            this._onScreencastEnabledChanged();
         }
     },
 
-    /**
-     * @param {string} state
-     */
-    _onStatusBarButtonStateChanged: function(state)
+    _toggleButtonClicked: function()
+    {
+        var enabled = !this._toggleButton.toggled();
+        this._enabledSetting.set(enabled);
+        this._onScreencastEnabledChanged();
+    },
+
+    _onScreencastEnabledChanged: function()
     {
         if (!this._rootSplitView)
             return;
-        if (state === "disabled") {
-            this._rootSplitView.toggleResizer(this._rootSplitView.resizerElement(), false);
-            this._rootSplitView.toggleResizer(WebInspector.inspectorView.topResizerElement(), false);
+        var enabled = this._enabledSetting.get() && this._screencastView;
+        this._toggleButton.setToggled(enabled);
+        if (enabled)
+            this._rootSplitView.showBoth();
+        else
             this._rootSplitView.hideMain();
-            return;
-        }
-
-        this._rootSplitView.setVertical(state === "left");
-        this._rootSplitView.setSecondIsSidebar(true);
-        this._rootSplitView.toggleResizer(this._rootSplitView.resizerElement(), true);
-        this._rootSplitView.toggleResizer(WebInspector.inspectorView.topResizerElement(), state === "top");
-        this._rootSplitView.showBoth();
     }
 };
 
@@ -128,7 +121,7 @@ WebInspector.ScreencastApp.StatusBarButtonProvider.prototype = {
      */
     item: function()
     {
-        return WebInspector.ScreencastApp._instance()._toggleScreencastButton;
+        return WebInspector.ScreencastApp._instance()._toggleButton;
     }
 }
 

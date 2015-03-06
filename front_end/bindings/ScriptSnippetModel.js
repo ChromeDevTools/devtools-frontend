@@ -53,6 +53,9 @@ WebInspector.ScriptSnippetModel = function(workspace)
     WebInspector.targetManager.observeTargets(this);
 }
 
+WebInspector.ScriptSnippetModel.snippetSourceURLPrefix = "snippets:///";
+
+
 WebInspector.ScriptSnippetModel.prototype = {
 
     /**
@@ -77,25 +80,9 @@ WebInspector.ScriptSnippetModel.prototype = {
      * @param {!WebInspector.Target} target
      * @return {!WebInspector.SnippetScriptMapping|undefined}
      */
-    snippetScriptMapping: function(target) {
+    snippetScriptMapping: function(target)
+    {
         return this._mappingForTarget.get(target);
-    },
-
-    /**
-     * @param {!WebInspector.Script} script
-     */
-    addScript: function(script)
-    {
-        this._mappingForTarget.get(script.target()).addScript(script);
-    },
-
-    /**
-     * @param {!WebInspector.Target} target
-     * @return {!WebInspector.SnippetScriptMapping}
-     */
-    createSnippetScriptMapping: function(target)
-    {
-        return new WebInspector.SnippetScriptMapping(target, this);
     },
 
     /**
@@ -242,18 +229,18 @@ WebInspector.ScriptSnippetModel.prototype = {
         var evaluationUrl = mapping._evaluationSourceURL(uiSourceCode);
         var expression = uiSourceCode.workingCopy();
         WebInspector.console.show();
-        target.debuggerAgent().compileScript(expression, evaluationUrl, true, executionContext.id, compileCallback.bind(this, target));
+        target.debuggerAgent().compileScript(expression, "", true, executionContext.id, compileCallback.bind(this));
 
         /**
-         * @param {!WebInspector.Target} target
          * @param {?string} error
          * @param {!DebuggerAgent.ScriptId=} scriptId
          * @param {?DebuggerAgent.ExceptionDetails=} exceptionDetails
          * @this {WebInspector.ScriptSnippetModel}
          */
-        function compileCallback(target, error, scriptId, exceptionDetails)
+        function compileCallback(error, scriptId, exceptionDetails)
         {
-            if (!uiSourceCode || this._mappingForTarget.get(target).evaluationIndex(uiSourceCode) !== evaluationIndex)
+            var mapping = this._mappingForTarget.get(target);
+            if (mapping.evaluationIndex(uiSourceCode) !== evaluationIndex)
                 return;
 
             if (error) {
@@ -266,6 +253,7 @@ WebInspector.ScriptSnippetModel.prototype = {
                 return;
             }
 
+            mapping._addScript(target.debuggerModel.scriptForId(scriptId), uiSourceCode);
             var breakpointLocations = this._removeBreakpoints(uiSourceCode);
             this._restoreBreakpoints(uiSourceCode, breakpointLocations);
 
@@ -387,7 +375,7 @@ WebInspector.ScriptSnippetModel.prototype = {
      */
     _snippetIdForSourceURL: function(sourceURL)
     {
-        var snippetPrefix = WebInspector.Script.snippetSourceURLPrefix;
+        var snippetPrefix = WebInspector.ScriptSnippetModel.snippetSourceURLPrefix;
         if (!sourceURL.startsWith(snippetPrefix))
             return null;
         var splitURL = sourceURL.substring(snippetPrefix.length).split("_");
@@ -458,7 +446,7 @@ WebInspector.SnippetScriptMapping.prototype = {
     {
         var evaluationSuffix = "_" + this._evaluationIndexForUISourceCode.get(uiSourceCode);
         var snippetId = this._scriptSnippetModel._snippetIdForUISourceCode.get(uiSourceCode);
-        return WebInspector.Script.snippetSourceURLPrefix + snippetId + evaluationSuffix;
+        return WebInspector.ScriptSnippetModel.snippetSourceURLPrefix + snippetId + evaluationSuffix;
     },
 
     _reset: function()
@@ -500,27 +488,11 @@ WebInspector.SnippetScriptMapping.prototype = {
     },
 
     /**
-     * @param {string} sourceURL
-     * @return {?string}
-     */
-    snippetIdForSourceURL: function(sourceURL)
-    {
-        return this._scriptSnippetModel._snippetIdForSourceURL(sourceURL);
-    },
-
-    /**
      * @param {!WebInspector.Script} script
+     * @param {!WebInspector.UISourceCode} uiSourceCode
      */
-    addScript: function(script)
+    _addScript: function(script, uiSourceCode)
     {
-        var snippetId = this.snippetIdForSourceURL(script.sourceURL);
-        if (!snippetId)
-            return;
-        var uiSourceCode = this._scriptSnippetModel._uiSourceCodeForSnippetId[snippetId];
-
-        if (!uiSourceCode || this._evaluationSourceURL(uiSourceCode) !== script.sourceURL)
-            return;
-
         console.assert(!this._scriptForUISourceCode.get(uiSourceCode));
         WebInspector.debuggerWorkspaceBinding.setSourceMapping(this._target, uiSourceCode, this);
         this._uiSourceCodeForScriptId[script.scriptId] = uiSourceCode;

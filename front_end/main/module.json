@@ -145,6 +145,7 @@
             "type": "@WebInspector.ActionDelegate",
             "actionId": "main.toggle-device-mode",
             "className": "WebInspector.AdvancedApp.ToggleDeviceModeActionDelegate",
+            "condition": "can_dock",
             "bindings": [
                 {
                     "platform": "windows,linux",
@@ -185,12 +186,15 @@
         {
             "type": "@WebInspector.StatusBarItem.Provider",
             "className": "WebInspector.AdvancedApp.EmulationButtonProvider",
+            "condition": "can_dock",
             "order": 1,
             "location": "toolbar-left"
         },
         {
             "type": "@WebInspector.StatusBarItem.Provider",
             "className": "WebInspector.AdvancedApp.DeviceCounter",
+            "condition": "can_dock",
+            "experiment": "devicesPanel",
             "order": 0,
             "location": "toolbar-right"
         },
@@ -267,6 +271,7 @@
         "SimpleApp.js",
         "TestController.js",
         "Tests.js",
+        "OverlayController.js",
         "Main.js"
     ],
     "skip_compilation": [

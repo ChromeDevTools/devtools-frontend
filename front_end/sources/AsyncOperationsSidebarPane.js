@@ -41,9 +41,10 @@ WebInspector.AsyncOperationsSidebarPane = function()
     WebInspector.targetManager.observeTargets(this);
 }
 
-WebInspector.AsyncOperationsSidebarPane._operationIdSymbol = Symbol("operationId");
-
 WebInspector.AsyncOperationsSidebarPane.prototype = {
+    _operationIdSymbol: Symbol("operationId"),
+    _checkedSymbol: Symbol("checked"),
+
     /**
      * @override
      * @param {!WebInspector.Target} target
@@ -78,12 +79,14 @@ WebInspector.AsyncOperationsSidebarPane.prototype = {
     },
 
     /**
-     * @param {!WebInspector.Target} target
+     * @param {?WebInspector.Target} target
      * @param {number} operationId
      * @return {?DebuggerAgent.AsyncOperation}
      */
     operationById: function(target, operationId)
     {
+        if (!target)
+            return null;
         var operationsMap = this._asyncOperationsByTarget.get(target);
         if (!operationsMap)
             return null;
@@ -159,20 +162,22 @@ WebInspector.AsyncOperationsSidebarPane.prototype = {
      */
     highlightBreakpoint: function(operationId)
     {
+        this._breakpointHitId = operationId;
         var element = this._operationIdToElement.get(operationId);
         if (!element)
             return;
         this.expand();
         element.classList.add("breakpoint-hit");
-        this._highlightedElement = element;
     },
 
     clearBreakpointHighlight: function()
     {
-        if (this._highlightedElement) {
-            this._highlightedElement.classList.remove("breakpoint-hit");
-            delete this._highlightedElement;
-        }
+        if (!this._breakpointHitId)
+            return;
+        var element = this._operationIdToElement.get(this._breakpointHitId);
+        if (element)
+            element.classList.remove("breakpoint-hit");
+        delete this._breakpointHitId;
     },
 
     /**
@@ -274,7 +279,7 @@ WebInspector.AsyncOperationsSidebarPane.prototype = {
         var element = createElementWithClass("li", "async-operation");
 
         var title = operation.description || WebInspector.UIString("Async Operation");
-        var label = createCheckboxLabel(title, false);
+        var label = createCheckboxLabel(title, operation[this._checkedSymbol]);
         label.classList.add("checkbox-elem");
         label.checkboxElement.addEventListener("click", this._checkboxClicked.bind(this, operation.id), false);
         element.appendChild(label);
@@ -283,9 +288,14 @@ WebInspector.AsyncOperationsSidebarPane.prototype = {
         if (callFrame)
             element.createChild("div").appendChild(this._linkifier.linkifyConsoleCallFrame(this._target, callFrame));
 
-        element[WebInspector.AsyncOperationsSidebarPane._operationIdSymbol] = operation.id;
+        element[this._operationIdSymbol] = operation.id;
         this._operationIdToElement.set(operation.id, element);
         this.addListElement(element, this.listElement.firstChild);
+
+        if (operation.id === this._breakpointHitId) {
+            element.classList.add("breakpoint-hit");
+            this.expand();
+        }
     },
 
     /**
@@ -294,6 +304,10 @@ WebInspector.AsyncOperationsSidebarPane.prototype = {
      */
     _checkboxClicked: function(operationId, event)
     {
+        var operation = this.operationById(this._target, operationId);
+        if (!operation)
+            return;
+        operation[this._checkedSymbol] = event.target.checked;
         if (event.target.checked)
             this._target.debuggerAgent().setAsyncOperationBreakpoint(operationId);
         else
@@ -353,7 +367,7 @@ WebInspector.AsyncOperationsSidebarPane.prototype = {
         var anchor = element.enclosingNodeOrSelfWithClass("async-operation");
         if (!anchor)
             return null;
-        var operationId = anchor[WebInspector.AsyncOperationsSidebarPane._operationIdSymbol];
+        var operationId = anchor[this._operationIdSymbol];
         var operation = operationId && asyncOperations.get(operationId);
         if (!operation || !operation.stackTrace)
             return null;

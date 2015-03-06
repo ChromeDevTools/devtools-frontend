@@ -792,10 +792,10 @@ Node.prototype.setTextContentTruncatedIfNeeded = function(text, placeholder)
     // Huge texts in the UI reduce rendering performance drastically.
     // Moreover, Blink/WebKit uses <unsigned short> internally for storing text content
     // length, so texts longer than 65535 are inherently displayed incorrectly.
-    const maxTextContentLength = 65535;
+    const maxTextContentLength = 10000;
 
     if (typeof text === "string" && text.length > maxTextContentLength) {
-        this.textContent = typeof placeholder === "string" ? placeholder : text.trimEnd(maxTextContentLength);
+        this.textContent = typeof placeholder === "string" ? placeholder : text.trimMiddle(maxTextContentLength);
         return true;
     }
 

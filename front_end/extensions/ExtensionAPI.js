@@ -889,7 +889,7 @@ ExtensionServerClient.prototype = {
      */
     nextObjectId: function()
     {
-        return injectedScriptId + "_" + ++this._lastObjectId;
+        return injectedScriptId.toString() + "_" + ++this._lastObjectId;
     },
 
     _registerCallback: function(callback)

@@ -84,6 +84,26 @@ WebInspector.CodeMirrorUtils.changeObjectToEditOperation = function(changeObject
     };
 }
 
+/**
+ * @param {!CodeMirror} codeMirror
+ * @param {number} linesCount
+ * @return {!Array.<string>}
+ */
+WebInspector.CodeMirrorUtils.pullLines = function(codeMirror, linesCount)
+{
+    var lines = [];
+    codeMirror.eachLine(0, linesCount, onLineHandle);
+    return lines;
+
+    /**
+     * @param {!{text: string}} lineHandle
+     */
+    function onLineHandle(lineHandle)
+    {
+        lines.push(lineHandle.text);
+    }
+}
+
 WebInspector.CodeMirrorUtils.prototype = {
     /**
      * @override

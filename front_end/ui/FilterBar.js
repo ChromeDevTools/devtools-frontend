@@ -56,10 +56,11 @@ WebInspector.FilterBar.FilterBarState = {
 WebInspector.FilterBar.prototype = {
     /**
      * @param {string} name
+     * @param {boolean=} visibleByDefault
      */
-    setName: function(name)
+    setName: function(name, visibleByDefault)
     {
-        this._stateSetting = WebInspector.settings.createSetting("filterBar-" + name + "-toggled", false);
+        this._stateSetting = WebInspector.settings.createSetting("filterBar-" + name + "-toggled", !!visibleByDefault);
         this._setState(this._stateSetting.get());
     },
 

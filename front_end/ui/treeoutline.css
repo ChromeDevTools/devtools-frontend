@@ -31,7 +31,7 @@
 
 .tree-outline li.selected .selection {
     display: block;
-    background-color: rgb(161, 161, 161);
+    background-color: #ddd;
 }
 
 .tree-outline li.in-clipboard .highlight {
@@ -69,7 +69,7 @@ ol.tree-outline,
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-    height: 17px;
+    min-height: 17px;
     padding-top: 2px;
 }
 

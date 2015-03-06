@@ -278,6 +278,7 @@ function TreeOutlineInShadow()
     this._shadowRoot = this.element.createShadowRoot();
     this._shadowRoot.appendChild(WebInspector.View.createStyleElement("ui/treeoutline.css"));
     this._shadowRoot.appendChild(innerElement);
+    WebInspector.installComponentRootStyles(innerElement);
     this._renderSelection = true;
 }
 
@@ -865,7 +866,8 @@ TreeElement.prototype = {
             return false;
         this.treeOutline.selectedTreeElement = this;
         this._listItemNode.classList.add("selected");
-
+        if (this._selectionElement)
+            this._selectionElement.style.height = this._listItemNode.offsetHeight + "px";
         return this.onselect(selectedByUser);
     },
 

@@ -36,7 +36,6 @@
  */
 WebInspector.WorkerManager = function(target, isMainFrontend)
 {
-    this._reset();
     target.registerWorkerDispatcher(new WebInspector.WorkerDispatcher(this));
     if (isMainFrontend) {
         target.workerAgent().enable();
@@ -48,38 +47,34 @@ WebInspector.WorkerManager.Events = {
     WorkerAdded: "WorkerAdded",
     WorkerRemoved: "WorkerRemoved",
     WorkersCleared: "WorkersCleared",
-    WorkerSelectionChanged: "WorkerSelectionChanged",
     WorkerDisconnected: "WorkerDisconnected",
     MessageFromWorker: "MessageFromWorker",
 }
 
-WebInspector.WorkerManager.MainThreadId = 0;
-
 WebInspector.WorkerManager.prototype = {
 
-    _reset: function()
-    {
-        /** @type {!Object.<number, string>} */
-        this._threadUrlByThreadId = {};
-        this._threadUrlByThreadId[WebInspector.WorkerManager.MainThreadId] = WebInspector.UIString("Thread: Main");
-        this._threadsList = [WebInspector.WorkerManager.MainThreadId];
-        this._selectedThreadId = WebInspector.WorkerManager.MainThreadId;
-    },
-
+    /**
+     * @param {string} workerId
+     * @param {string} url
+     * @param {boolean} inspectorConnected
+     */
     _workerCreated: function(workerId, url, inspectorConnected)
     {
-        this._threadsList.push(workerId);
-        this._threadUrlByThreadId[workerId] = url;
         this.dispatchEventToListeners(WebInspector.WorkerManager.Events.WorkerAdded, {workerId: workerId, url: url, inspectorConnected: inspectorConnected});
      },
 
+    /**
+     * @param {string} workerId
+     */
     _workerTerminated: function(workerId)
     {
-        this._threadsList.remove(workerId);
-        delete this._threadUrlByThreadId[workerId];
         this.dispatchEventToListeners(WebInspector.WorkerManager.Events.WorkerRemoved, workerId);
     },
 
+    /**
+     * @param {string} workerId
+     * @param {string} message
+     */
     _dispatchMessageFromWorker: function(workerId, message)
     {
         this.dispatchEventToListeners(WebInspector.WorkerManager.Events.MessageFromWorker, {workerId: workerId, message: message});
@@ -90,43 +85,12 @@ WebInspector.WorkerManager.prototype = {
         this.dispatchEventToListeners(WebInspector.WorkerManager.Events.WorkerDisconnected);
     },
 
+    /**
+     * @param {!WebInspector.Event} event
+     */
     _mainFrameNavigated: function(event)
     {
-        this._reset();
         this.dispatchEventToListeners(WebInspector.WorkerManager.Events.WorkersCleared);
-    },
-
-    /**
-     * @return {!Array.<number>}
-     */
-    threadsList: function()
-    {
-        return this._threadsList;
-    },
-
-    /**
-     * @param {number} threadId
-     * @return {string}
-     */
-    threadUrl: function(threadId)
-    {
-        return this._threadUrlByThreadId[threadId];
-    },
-
-    /**
-     * @param {number} threadId
-     */
-    setSelectedThreadId: function(threadId)
-    {
-        this._selectedThreadId = threadId;
-    },
-
-    /**
-     * @return {number}
-     */
-    selectedThreadId: function()
-    {
-        return this._selectedThreadId;
     },
 
     __proto__: WebInspector.Object.prototype
@@ -144,7 +108,7 @@ WebInspector.WorkerDispatcher = function(workerManager)
 WebInspector.WorkerDispatcher.prototype = {
     /**
      * @override
-     * @param {number} workerId
+     * @param {string} workerId
      * @param {string} url
      * @param {boolean} inspectorConnected
      */
@@ -155,7 +119,7 @@ WebInspector.WorkerDispatcher.prototype = {
 
     /**
      * @override
-     * @param {number} workerId
+     * @param {string} workerId
      */
     workerTerminated: function(workerId)
     {
@@ -164,8 +128,8 @@ WebInspector.WorkerDispatcher.prototype = {
 
     /**
      * @override
-     * @param {number} workerId
-     * @param {!Object} message
+     * @param {string} workerId
+     * @param {string} message
      */
     dispatchMessageFromWorker: function(workerId, message)
     {

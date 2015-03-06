@@ -35,7 +35,7 @@ WebInspector.SourcesPanel = function(workspaceForTest)
 {
     WebInspector.Panel.call(this, "sources");
     this.registerRequiredCSS("sources/sourcesPanel.css");
-    new WebInspector.UpgradeFileSystemDropTarget(this.element);
+    new WebInspector.DropTarget(this.element, [WebInspector.DropTarget.Types.Files], WebInspector.UIString("Drop workspace folder here"), this._handleDrop.bind(this));
 
     this._workspace = workspaceForTest || WebInspector.workspace;
     this._networkMapping = WebInspector.networkMapping;
@@ -1241,49 +1241,12 @@ WebInspector.SourcesPanel.prototype = {
         this._sidebarPaneStack.togglePaneHidden(this.sidebarPanes.threads, false);
     },
 
-    __proto__: WebInspector.Panel.prototype
-}
-
-/**
- * @constructor
- * @param {!Element} element
- */
-WebInspector.UpgradeFileSystemDropTarget = function(element)
-{
-    element.addEventListener("dragenter", this._onDragEnter.bind(this), true);
-    element.addEventListener("dragover", this._onDragOver.bind(this), true);
-    this._element = element;
-}
-
-WebInspector.UpgradeFileSystemDropTarget.dragAndDropFilesType = "Files";
-
-WebInspector.UpgradeFileSystemDropTarget.prototype = {
-    _onDragEnter: function(event)
+    /**
+     * @param {!DataTransfer} dataTransfer
+     */
+    _handleDrop: function(dataTransfer)
     {
-        if (event.dataTransfer.types.indexOf(WebInspector.UpgradeFileSystemDropTarget.dragAndDropFilesType) === -1)
-            return;
-        event.consume(true);
-    },
-
-    _onDragOver: function(event)
-    {
-        if (event.dataTransfer.types.indexOf(WebInspector.UpgradeFileSystemDropTarget.dragAndDropFilesType) === -1)
-            return;
-        event.dataTransfer.dropEffect = "copy";
-        event.consume(true);
-        if (this._dragMaskElement)
-            return;
-        this._dragMaskElement = this._element.createChild("div", "fill drag-mask");
-        this._dragMaskElement.createChild("div", "fill drag-mask-inner").textContent = WebInspector.UIString("Drop workspace folder here");
-        this._dragMaskElement.addEventListener("drop", this._onDrop.bind(this), true);
-        this._dragMaskElement.addEventListener("dragleave", this._onDragLeave.bind(this), true);
-    },
-
-    _onDrop: function(event)
-    {
-        event.consume(true);
-        this._removeMask();
-        var items = /** @type {!Array.<!DataTransferItem>} */ (event.dataTransfer.items);
+        var items = dataTransfer.items;
         if (!items.length)
             return;
         var entry = items[0].webkitGetAsEntry();
@@ -1292,17 +1255,7 @@ WebInspector.UpgradeFileSystemDropTarget.prototype = {
         InspectorFrontendHost.upgradeDraggedFileSystemPermissions(entry.filesystem);
     },
 
-    _onDragLeave: function(event)
-    {
-        event.consume(true);
-        this._removeMask();
-    },
-
-    _removeMask: function()
-    {
-        this._dragMaskElement.remove();
-        delete this._dragMaskElement;
-    }
+    __proto__: WebInspector.Panel.prototype
 }
 
 /**

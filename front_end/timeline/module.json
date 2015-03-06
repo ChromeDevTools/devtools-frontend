@@ -13,6 +13,11 @@
             "title": "Hide chrome frame in Layers view",
             "settingName": "frameViewerHideChromeWindow",
             "settingType": "checkbox"
+        },
+        {
+            "type": "@WebInspector.QueryParamHandler",
+            "name": "loadTimelineFromURL",
+            "className": "WebInspector.LoadTimelineHandler"
         }
     ],
     "dependencies": [

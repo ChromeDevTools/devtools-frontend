@@ -522,7 +522,7 @@ Date.prototype.toConsoleTime = function()
      */
     function leadZero3(x)
     {
-        return (Array(4 - x.toString().length)).join('0') + x;
+        return "0".repeat(3 - x.toString().length) + x;
     }
 
     return this.getFullYear() + "-" +
@@ -1264,7 +1264,7 @@ function countRegexMatches(regex, content)
  */
 function spacesPadding(spacesCount)
 {
-    return Array(spacesCount).join("\u00a0");
+    return "\u00a0".repeat(spacesCount);
 }
 
 /**

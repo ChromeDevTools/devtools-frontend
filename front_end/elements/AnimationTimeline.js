@@ -134,7 +134,7 @@ WebInspector.AnimationTimeline.prototype = {
     setDuration: function(duration)
     {
         this._duration = duration;
-        this.redraw();
+        this.scheduleRedraw();
     },
 
     /**
@@ -192,7 +192,8 @@ WebInspector.AnimationTimeline.prototype = {
         if (animation.type() === "WebAnimation" && animation.source().keyframesRule().keyframes().length === 0)
             return;
 
-        this._resizeWindow(animation);
+        if (this._resizeWindow(animation))
+            this.scheduleRedraw();
 
         var nodeUI = this._nodesMap.get(animation.source().backendNodeId());
         if (!nodeUI) {
@@ -204,12 +205,6 @@ WebInspector.AnimationTimeline.prototype = {
         var uiAnimation = new WebInspector.AnimationUI(this._stylesPane, animation, this, nodeRow.element);
         animation.source().getNode(nodeResolved.bind(this));
         nodeRow.animations.push(uiAnimation);
-
-        // Only draw at most once per frame
-        if (!this._redrawing) {
-            this._redrawing = true;
-            this._animationsContainer.window().requestAnimationFrame(this.redraw.bind(this));
-        }
     },
 
     /**
@@ -238,10 +233,17 @@ WebInspector.AnimationTimeline.prototype = {
         }
     },
 
+    scheduleRedraw: function() {
+        if (this._redrawing)
+            return;
+        this._redrawing = true;
+        this._animationsContainer.window().requestAnimationFrame(this._redraw.bind(this));
+    },
+
     /**
      * @param {number=} timestamp
      */
-    redraw: function(timestamp)
+    _redraw: function(timestamp)
     {
         delete this._redrawing;
         for (var nodeUI of this._nodesMap.values())
@@ -252,26 +254,39 @@ WebInspector.AnimationTimeline.prototype = {
     onResize: function()
     {
         this._cachedTimelineWidth = this._animationsContainer.offsetWidth - this._timelineControlsWidth || 0;
-        this.redraw();
+        this.scheduleRedraw();
         if (this._scrubberPlayer)
             this._animateTime();
     },
 
     /**
+     * @return {number}
+     */
+    width: function()
+    {
+        return this._cachedTimelineWidth || 0;
+    },
+
+    /**
      * @param {!WebInspector.AnimationModel.AnimationPlayer} animation
+     * @return {boolean}
      */
     _resizeWindow: function(animation)
     {
+        var resized = false;
         if (!this._startTime)
             this._startTime = animation.startTime();
 
         // This shows at most 2 iterations
         var iterations = animation.source().iterations() || 1;
-        var duration = animation.source().duration() * Math.min(2, iterations);
+        var duration = animation.source().duration() * Math.min(3, iterations);
         var requiredDuration = animation.startTime() + duration + animation.source().delay() - this.startTime();
-        if (requiredDuration > this._duration * 0.8)
+        if (requiredDuration > this._duration * 0.8) {
+            resized = true;
             this._duration = requiredDuration * 1.5;
-        this._animateTime(animation.startTime() - this.startTime());
+            this._animateTime(animation.startTime() - this.startTime());
+        }
+        return resized;
     },
 
     /**
@@ -469,9 +484,10 @@ WebInspector.AnimationUI = function(stylesPane, animation, timeline, parentEleme
     this._svg.setAttribute("height", WebInspector.AnimationUI.Options.AnimationSVGHeight);
     this._svg.style.marginLeft = "-" + WebInspector.AnimationUI.Options.AnimationMargin + "px";
     this._svg.addEventListener("mousedown", this._mouseDown.bind(this, WebInspector.AnimationUI.MouseEvents.AnimationDrag, null));
-    this._svgGroup = this._svg.createSVGChild("g");
 
-    this._svgPoints = {};
+    /** @type {!Array.<{group: ?Element, animationLine: ?Element, keyframePoints: !Object.<number, !Element>, beziers: !Object.<number, !Element>}>} */
+    this._cachedElements = [];
+
     this._movementInMs = 0;
     this.redraw();
 }
@@ -503,29 +519,37 @@ WebInspector.AnimationUI.prototype = {
         this._node = node;
     },
 
-    _drawAnimationLine: function()
+    /**
+     * @param {number} iteration
+     * @param {!Element} parentElement
+     */
+    _drawAnimationLine: function(iteration, parentElement)
     {
-        if (!this._animationLine)
-            this._animationLine = this._svg.createSVGChild("line", "animation-line");
-        this._animationLine.setAttribute("x1", WebInspector.AnimationUI.Options.AnimationMargin);
-        this._animationLine.setAttribute("y1", WebInspector.AnimationUI.Options.AnimationHeight);
-        this._animationLine.setAttribute("x2", this._duration() * this._timeline.pixelMsRatio() +  WebInspector.AnimationUI.Options.AnimationMargin);
-        this._animationLine.setAttribute("y2", WebInspector.AnimationUI.Options.AnimationHeight);
-        this._animationLine.style.stroke = this._color();
+        var cache = this._cachedElements[iteration];
+        if (!cache.animationLine)
+            cache.animationLine = parentElement.createSVGChild("line", "animation-line");
+        cache.animationLine.setAttribute("y1", WebInspector.AnimationUI.Options.AnimationHeight);
+        cache.animationLine.setAttribute("x1", WebInspector.AnimationUI.Options.AnimationMargin);
+        cache.animationLine.setAttribute("x2", this._duration() * this._timeline.pixelMsRatio() + WebInspector.AnimationUI.Options.AnimationMargin);
+        cache.animationLine.setAttribute("y2", WebInspector.AnimationUI.Options.AnimationHeight);
+        cache.animationLine.style.stroke = this._color();
     },
 
     /**
+     * @param {number} iteration
+     * @param {!Element} parentElement
      * @param {number} x
      * @param {number} keyframeIndex
+     * @param {boolean} attachEvents
      */
-    _drawPoint: function(x, keyframeIndex)
+    _drawPoint: function(iteration, parentElement, x, keyframeIndex, attachEvents)
     {
-        if (this._svgPoints[keyframeIndex]) {
-            this._svgPoints[keyframeIndex].setAttribute("cx", x);
+        if (this._cachedElements[iteration].keyframePoints[keyframeIndex]) {
+            this._cachedElements[iteration].keyframePoints[keyframeIndex].setAttribute("cx", x);
             return;
         }
 
-        var circle = this._svg.createSVGChild("circle", keyframeIndex <= 0 ? "animation-endpoint" : "animation-keyframe-point");
+        var circle = parentElement.createSVGChild("circle", keyframeIndex <= 0 ? "animation-endpoint" : "animation-keyframe-point");
         circle.setAttribute("cx", x);
         circle.setAttribute("cy", WebInspector.AnimationUI.Options.AnimationHeight);
         circle.style.stroke = this._color();
@@ -534,6 +558,11 @@ WebInspector.AnimationUI.prototype = {
         if (keyframeIndex <= 0)
             circle.style.fill = this._color();
 
+        this._cachedElements[iteration].keyframePoints[keyframeIndex] = circle;
+
+        if (!attachEvents)
+            return;
+
         if (keyframeIndex === 0) {
             circle.addEventListener("mousedown", this._mouseDown.bind(this, WebInspector.AnimationUI.MouseEvents.StartEndpointMove, keyframeIndex));
         } else if (keyframeIndex === -1) {
@@ -541,55 +570,86 @@ WebInspector.AnimationUI.prototype = {
         } else {
             circle.addEventListener("mousedown", this._mouseDown.bind(this, WebInspector.AnimationUI.MouseEvents.KeyframeMove, keyframeIndex));
         }
-        this._svgPoints[keyframeIndex] = circle;
     },
 
     /**
+     * @param {number} iteration
+     * @param {number} keyframeIndex
+     * @param {!Element} parentElement
      * @param {number} leftDistance
      * @param {number} width
      * @param {!WebInspector.Geometry.CubicBezier} bezier
      */
-    _renderBezierKeyframe: function(leftDistance, width, bezier)
+    _renderBezierKeyframe: function(iteration, keyframeIndex, parentElement, leftDistance, width, bezier)
     {
-        var path = this._svgGroup.createSVGChild("path", "animation-keyframe");
-        path.style.transform = "translateX(" + leftDistance + "px)";
-        path.style.fill = this._color();
-        WebInspector.BezierUI.drawVelocityChart(bezier, path, width);
+        var bezierCache = this._cachedElements[iteration].beziers;
+        if (!bezierCache[keyframeIndex])
+            bezierCache[keyframeIndex] = parentElement.createSVGChild("path", "animation-keyframe");
+        bezierCache[keyframeIndex].style.transform = "translateX(" + leftDistance + "px)";
+        bezierCache[keyframeIndex].style.fill = this._color();
+        WebInspector.BezierUI.drawVelocityChart(bezier, bezierCache[keyframeIndex], width);
     },
 
     redraw: function()
     {
-        var animationWidth = this._duration() * this._timeline.pixelMsRatio() + 2 * WebInspector.AnimationUI.Options.AnimationMargin;
+        var iterationWidth = this._duration() * this._timeline.pixelMsRatio();
+        var svgWidth = this._animation.source().iterations() ? Math.min(this._timeline.width(), iterationWidth * this._animation.source().iterations()) : this._timeline.width();
+        svgWidth += 2 * WebInspector.AnimationUI.Options.AnimationMargin;
         var leftMargin = (this._animation.startTime() - this._timeline.startTime() + this._delay()) * this._timeline.pixelMsRatio();
-        this._svg.setAttribute("width", animationWidth);
+        this._svg.setAttribute("width", svgWidth);
         this._svg.style.transform = "translateX(" + leftMargin  + "px)";
         this._nameElement.style.transform = "translateX(" + leftMargin + "px)";
-        this._nameElement.style.width = animationWidth + "px";
-        this._svgGroup.removeChildren();
-        this._drawAnimationLine();
-        if (this._animation.type() == "CSSTransition") {
-            var bezier = WebInspector.Geometry.CubicBezier.parse(this._animation.source().easing());
+        this._nameElement.style.width = svgWidth + "px";
+
+        if (this._animation.type() === "CSSTransition") {
+            this._renderTransition();
+            return;
+        }
+
+        var numIterations = this._animation.source().iterations() ? this._animation.source().iterations() : Infinity;
+        this._renderIteration(this._svg, 0);
+        if (!this._tailGroup)
+            this._tailGroup = this._svg.createSVGChild("g", "animation-tail-iterations");
+        for (var iteration = 1; iteration < numIterations && iterationWidth * (iteration - 1) < this._timeline.width(); iteration++)
+            this._renderIteration(this._tailGroup, iteration);
+    },
+
+    _renderTransition: function()
+    {
+        if (!this._cachedElements[0])
+            this._cachedElements[0] = { animationLine: null, keyframePoints: {}, beziers: {}, group: null };
+        this._drawAnimationLine(0, this._svg);
+        var bezier = WebInspector.Geometry.CubicBezier.parse(this._animation.source().easing());
+        // FIXME: add support for step functions
+        if (bezier)
+            this._renderBezierKeyframe(0, 0, this._svg, WebInspector.AnimationUI.Options.AnimationMargin, this._duration() * this._timeline.pixelMsRatio(), bezier);
+        this._drawPoint(0, this._svg, WebInspector.AnimationUI.Options.AnimationMargin, 0, true);
+        this._drawPoint(0, this._svg, this._duration() * this._timeline.pixelMsRatio() + WebInspector.AnimationUI.Options.AnimationMargin, -1, true);
+    },
+
+    /**
+     * @param {!Element} parentElement
+     * @param {number} iteration
+     */
+    _renderIteration: function(parentElement, iteration)
+    {
+        if (!this._cachedElements[iteration])
+            this._cachedElements[iteration] = { animationLine: null, keyframePoints: {}, beziers: {}, group: parentElement.createSVGChild("g") };
+        var group = this._cachedElements[iteration].group;
+        group.style.transform = "translateX(" + (iteration * this._duration() * this._timeline.pixelMsRatio()) + "px)";
+        this._drawAnimationLine(iteration, group);
+        console.assert(this._keyframes.length > 1);
+        for (var i = 0; i < this._keyframes.length - 1; i++) {
+            var leftDistance = this._offset(i) * this._duration() * this._timeline.pixelMsRatio() + WebInspector.AnimationUI.Options.AnimationMargin;
+            var width = this._duration() * (this._offset(i + 1) - this._offset(i)) * this._timeline.pixelMsRatio();
+            var bezier = WebInspector.Geometry.CubicBezier.parse(this._keyframes[i].easing());
             // FIXME: add support for step functions
             if (bezier)
-                this._renderBezierKeyframe(WebInspector.AnimationUI.Options.AnimationMargin, this._duration() * this._timeline.pixelMsRatio(), bezier);
-            this._drawPoint(WebInspector.AnimationUI.Options.AnimationMargin, 0);
-        } else {
-            console.assert(this._keyframes.length > 1);
-            // Rebuild if keyframes have changed
-            if (this._keyframes.length !== Object.keys(this._svgPoints).length)
-                this._svgPoints = {};
-
-            for (var i = 0; i < this._keyframes.length - 1; i++) {
-                var leftDistance = this._offset(i) * this._duration() * this._timeline.pixelMsRatio() + WebInspector.AnimationUI.Options.AnimationMargin;
-                var width = this._duration() * (this._offset(i + 1) - this._offset(i)) * this._timeline.pixelMsRatio();
-                var bezier = WebInspector.Geometry.CubicBezier.parse(this._keyframes[i].easing());
-                // FIXME: add support for step functions
-                if (bezier)
-                    this._renderBezierKeyframe(leftDistance, width, bezier);
-                this._drawPoint(leftDistance, i);
-            }
+                this._renderBezierKeyframe(iteration, i, group, leftDistance, width, bezier);
+            if (i || (!i && iteration === 0))
+                this._drawPoint(iteration, group, leftDistance, i, iteration === 0);
         }
-        this._drawPoint(this._duration() * this._timeline.pixelMsRatio() +  WebInspector.AnimationUI.Options.AnimationMargin, -1);
+        this._drawPoint(iteration, group, this._duration() * this._timeline.pixelMsRatio() + WebInspector.AnimationUI.Options.AnimationMargin, -1, iteration === 0);
     },
 
     /**

@@ -120,22 +120,6 @@
     overflow: auto;
 }
 
-.panel.sources .drag-mask {
-    background-color: rgba(255,255,255,0.8);
-    z-index: 1000;
-}
-
-.panel.sources .drag-mask-inner {
-    font-size: 30px;
-    color: #999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 20px;
-    border: 4px dashed #ddd;
-    pointer-events: none;
-}
-
 .source-frame-breakpoint-condition {
     z-index: 30;
     padding: 4px;

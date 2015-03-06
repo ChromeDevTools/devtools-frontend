@@ -55,8 +55,6 @@ WebInspector.PromisePane = function()
     ];
     this._dataGrid = new WebInspector.DataGrid(columns, undefined, undefined, undefined, this._onContextMenu.bind(this));
     this._dataGrid.show(this._dataGridContainer.element);
-    this._shouldScrollToBottom = true;
-    this._dataGrid.scrollContainer.addEventListener("scroll", this._onScroll.bind(this), true);
 
     this._linkifier = new WebInspector.Linkifier();
 
@@ -303,7 +301,6 @@ WebInspector.PromisePane.prototype = {
      */
     _attachDataGridNode: function(details)
     {
-        var attachingNewNode = !this._promiseIdToNode.has(details.id);
         var node = this._createDataGridNode(details);
         var parentNode = this._findVisibleParentNodeDetails(details);
         if (parentNode !== node.parent)
@@ -314,8 +311,6 @@ WebInspector.PromisePane.prototype = {
             parentNode.expanded = true;
         else
             node.remove();
-        if (attachingNewNode)
-            this._scrollToBottomIfNeeded();
     },
 
     /**
@@ -423,7 +418,6 @@ WebInspector.PromisePane.prototype = {
         }
 
         this._updateFilterStatus();
-        this._scrollToBottomIfNeeded();
     },
 
     _clear: function()
@@ -434,18 +428,6 @@ WebInspector.PromisePane.prototype = {
         this._hidePopover();
         this._dataGrid.rootNode().removeChildren();
         this._linkifier.reset();
-        this._shouldScrollToBottom = true;
-    },
-
-    _onScroll: function()
-    {
-        this._shouldScrollToBottom = this._dataGrid.scrollContainer.isScrolledToBottom();
-    },
-
-    _scrollToBottomIfNeeded: function()
-    {
-        if (this._shouldScrollToBottom)
-            this._dataGrid.scrollContainer.scrollTop = this._dataGrid.scrollContainer.scrollHeight;
     },
 
     /**
@@ -481,19 +463,17 @@ WebInspector.PromisePane.prototype = {
         {
             if (error || !promise)
                 return;
-
-            target.consoleAgent().setLastEvaluationResult(promise.objectId);
-            var message = new WebInspector.ConsoleMessage(target,
-                                                          WebInspector.ConsoleMessage.MessageSource.Other,
-                                                          WebInspector.ConsoleMessage.MessageLevel.Log,
-                                                          "",
-                                                          WebInspector.ConsoleMessage.MessageType.Log,
-                                                          undefined,
-                                                          undefined,
-                                                          undefined,
-                                                          undefined,
-                                                          [promise]);
-            target.consoleModel.addMessage(message);
+            var object = target.runtimeModel.createRemoteObject(promise);
+            object.callFunction(dumpIntoConsole);
+            object.release();
+            /**
+             * @suppressReceiverCheck
+             * @this {Object}
+             */
+            function dumpIntoConsole()
+            {
+                console.log(this);
+            }
             WebInspector.console.show();
         }
     },

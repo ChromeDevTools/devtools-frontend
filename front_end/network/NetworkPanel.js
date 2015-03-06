@@ -44,7 +44,7 @@ WebInspector.NetworkPanel = function()
     this._filtersContainer = this.element.createChild("div", "network-filters-header hidden");
     this._filtersContainer.appendChild(this._filterBar.filtersElement());
     this._filterBar.addEventListener(WebInspector.FilterBar.Events.FiltersToggled, this._onFiltersToggled, this);
-    this._filterBar.setName("networkPanel");
+    this._filterBar.setName("networkPanel", true);
 
     this._searchableView = new WebInspector.SearchableView(this);
     this._searchableView.show(this.element);

@@ -660,6 +660,13 @@ Set.prototype = {
     $$iterator: function() { }
 }
 
+// FIXME: This should be removed once transpilation is not required for closure compiler ES6
+/**
+ * @param {number} count
+ * @return {string}
+ */
+String.prototype.repeat = function(count) {}
+
 /**
  * @constructor
  * @template K, V

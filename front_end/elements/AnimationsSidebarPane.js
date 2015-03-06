@@ -61,7 +61,7 @@ WebInspector.AnimationsSidebarPane.prototype = {
         }
 
         this._target.animationModel.ensureEnabled();
-        this._timeline.redraw();
+        this._timeline.scheduleRedraw();
         finishCallback();
     },
 

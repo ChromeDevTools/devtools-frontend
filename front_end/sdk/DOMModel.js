@@ -1155,6 +1155,7 @@ WebInspector.DOMModel.prototype = {
     resumeModel: function()
     {
         this._agent.enable();
+        this._setDocument(null);
     },
 
     /**
@@ -1580,11 +1581,12 @@ WebInspector.DOMModel.prototype = {
     },
 
     /**
-     * @param {!DOMAgent.NodeId} nodeId
+     * @param {!DOMAgent.BackendNodeId} backendNodeId
      */
-    _inspectNodeRequested: function(nodeId)
+    _inspectNodeRequested: function(backendNodeId)
     {
-        this.dispatchEventToListeners(WebInspector.DOMModel.Events.NodeInspected, this.nodeForId(nodeId));
+        var deferredNode = new WebInspector.DeferredDOMNode(this.target(), backendNodeId);
+        this.dispatchEventToListeners(WebInspector.DOMModel.Events.NodeInspected, deferredNode);
     },
 
     /**

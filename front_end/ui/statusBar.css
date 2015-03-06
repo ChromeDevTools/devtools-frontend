@@ -309,17 +309,8 @@ select.status-bar-item {
     -webkit-mask-position: -224px 0;
 }
 
-
-.screencast-status-bar-item.toggled-left .glyph {
-    -webkit-mask-position: -256px -96px;
-}
-
-.screencast-status-bar-item.toggled-top .glyph {
-    -webkit-mask-position: -288px -96px;
-}
-
-.screencast-status-bar-item.toggled-disabled .glyph {
-    -webkit-mask-position: 0 -120px;
+.screencast-status-bar-item .glyph {
+    -webkit-mask-position: -160px 0;
 }
 
 .record-status-bar-item .glyph {

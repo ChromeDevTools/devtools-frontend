@@ -189,3 +189,11 @@ rect.animation-timeline-grid-line {
 .animation-node-row.animation-node-removed {
     background-color: #fff0f0;
 }
+
+svg.animation-ui g:first-child {
+    opacity: 1;
+}
+
+.animation-tail-iterations {
+    opacity: 0.5;
+}

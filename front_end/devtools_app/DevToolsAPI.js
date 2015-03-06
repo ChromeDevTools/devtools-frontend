@@ -23,7 +23,7 @@ function DevToolsAPIImpl()
     this._lastCallId = 0;
 
     /**
-     * @type {!Object.<number, function(?string)>}
+     * @type {!Object.<number, function(?Object)>}
      */
     this._callbacks = {};
 }
@@ -31,20 +31,20 @@ function DevToolsAPIImpl()
 DevToolsAPIImpl.prototype = {
     /**
      * @param {number} id
-     * @param {?string} error
+     * @param {?Object} arg
      */
-    embedderMessageAck: function(id, error)
+    embedderMessageAck: function(id, arg)
     {
         var callback = this._callbacks[id];
         delete this._callbacks[id];
         if (callback)
-            callback(error);
+            callback(arg);
     },
 
     /**
      * @param {string} method
      * @param {!Array.<*>} args
-     * @param {?function(?string)} callback
+     * @param {?function(?Object)} callback
      */
     sendMessageToEmbedder: function(method, args, callback)
     {
@@ -318,6 +318,15 @@ DevToolsAPIImpl.prototype = {
     showConsole: function()
     {
         this._dispatchOnInspectorFrontendAPI("showConsole", []);
+    },
+
+    /**
+     * @param {number} id
+     * @param {string} chunk
+     */
+    streamWrite: function(id, chunk)
+    {
+        this._dispatchOnInspectorFrontendAPI("streamWrite", [id, chunk]);
     }
 }
 

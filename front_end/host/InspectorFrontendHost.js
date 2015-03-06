@@ -37,10 +37,23 @@ function InspectorFrontendHostAPI()
     this.events;
 }
 
-/** @typedef {{type:string, id:(number|undefined),
-               label:(string|undefined), enabled:(boolean|undefined), checked:(boolean|undefined),
-               subItems:(!Array.<!InspectorFrontendHostAPI.ContextMenuDescriptor>|undefined)}} */
+/** @typedef
+{{
+    type: string,
+    id: (number|undefined),
+    label: (string|undefined),
+    enabled: (boolean|undefined),
+    checked: (boolean|undefined),
+    subItems: (!Array.<!InspectorFrontendHostAPI.ContextMenuDescriptor>|undefined)
+}} */
 InspectorFrontendHostAPI.ContextMenuDescriptor;
+
+/** @typedef
+{{
+    statusCode: number,
+    headers: (!Object.<string, string>|undefined)
+}} */
+InspectorFrontendHostAPI.LoadNetworkResourceResult;
 
 InspectorFrontendHostAPI.Events = {
     AddExtensions: "addExtensions",
@@ -190,6 +203,14 @@ InspectorFrontendHostAPI.prototype = {
      * @return {?DOMFileSystem}
      */
     isolatedFileSystem: function(fileSystemId, registeredName) { },
+
+    /**
+     * @param {string} url
+     * @param {string} headers
+     * @param {number} streamId
+     * @param {function(!InspectorFrontendHostAPI.LoadNetworkResourceResult)} callback
+     */
+    loadNetworkResource: function(url, headers, streamId, callback) { },
 
     /**
      * @param {!FileSystem} fileSystem
@@ -489,6 +510,18 @@ WebInspector.InspectorFrontendHostStub.prototype = {
 
     /**
      * @override
+     * @param {string} url
+     * @param {string} headers
+     * @param {number} streamId
+     * @param {function(!InspectorFrontendHostAPI.LoadNetworkResourceResult)} callback
+     */
+    loadNetworkResource: function(url, headers, streamId, callback)
+    {
+        callback({statusCode : 404});
+    },
+
+    /**
+     * @override
      * @param {!FileSystem} fileSystem
      */
     upgradeDraggedFileSystemPermissions: function(fileSystem)
@@ -693,6 +726,15 @@ var InspectorFrontendHost = window.InspectorFrontendHost || null;
                     data[signature[i]] = params[i];
                 InspectorFrontendHost.events.dispatchEventToListeners(name, data);
             }
+        },
+
+        /**
+         * @param {number} id
+         * @param {string} chunk
+         */
+        streamWrite: function(id, chunk)
+        {
+            WebInspector.Streams.streamWrite(id, chunk);
         }
     }
 

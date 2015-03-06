@@ -12,10 +12,6 @@
             {
                 "name": "disable",
                 "description": "Disables inspector domain notifications."
-            },
-            {
-                "name": "reset",
-                "description": "Resets all domains."
             }
         ],
         "events": [
@@ -155,37 +151,6 @@
                   { "name": "id", "type": "integer", "description": "Unique id of the navigation history entry." },
                   { "name": "url", "type": "string", "description": "URL of the navigation history entry." },
                   { "name": "title", "type": "string", "description": "Title of the navigation history entry." }
-                ],
-                "hidden": true
-            },
-            {
-                "id": "Quota",
-                "type": "object",
-                "description": "Quota information",
-                "properties": [
-                    { "name": "temporary", "type": "number", "description": "Quota for temporary storage shared among all security origins" },
-                    { "name": "persistent", "type": "number", "description": "Quota for persistent storage for the security origin." }
-                ],
-                "hidden": true
-            },
-            {
-                "id": "Usage",
-                "type": "object",
-                "description": "Usage information",
-                "properties": [
-                    { "name": "temporary", "type": "array", "items": { "$ref": "Page.UsageItem" }, "description": "Temporary storage usage." },
-                    { "name": "persistent", "type": "array", "items": { "$ref": "Page.UsageItem" }, "description": "Persistent storage usage." },
-                    { "name": "syncable", "type": "array", "items": { "$ref": "Page.UsageItem" }, "description": "Syncable storage." }
-                ],
-                "hidden": true
-            },
-            {
-                "id": "UsageItem",
-                "type": "object",
-                "description": "Usage information for a client and storage type",
-                "properties": [
-                    { "name": "id", "type": "string", "enum": ["filesystem", "database", "appcache", "indexeddatabase"], "description": "Item id." },
-                    { "name": "value", "type": "number", "description": "Item usage value." }
                 ],
                 "hidden": true
             },
@@ -595,20 +560,6 @@
                     { "name": "showGrid", "type": "boolean", "optional": true, "description": "Whether to paint grid as well." }
                 ],
                 "hidden": true
-            },
-            {
-                "name": "queryUsageAndQuota",
-                "async": true,
-                "parameters": [
-                    { "name": "securityOrigin", "type": "string", "description": "Security origin quota and usage requested for" }
-                ],
-                "returns": [
-                    { "name": "quota", "$ref": "Quota", "description": "Quota for requested security origin." },
-                    { "name": "usage", "$ref": "Usage", "description": "Current usage for requested security origin." }
-                ],
-                "description": "Queries more detailed quota and usage data than Storage API provides.",
-                "hidden": true,
-                "handlers": ["browser"]
             },
             {
                 "name": "setColorPickerEnabled",
@@ -1084,14 +1035,6 @@
             {
                 "name": "clearMessages",
                 "description": "Clears console messages collected in the browser."
-            },
-            {
-                "name": "setLastEvaluationResult",
-                "parameters": [
-                    { "name": "objectId", "$ref": "Runtime.RemoteObjectId", "description": "Identifier of the object to set as last evaluation result." }
-                ],
-                "hidden": true,
-                "description": "Sets last evaluation result in console. Can be accessed via <code>$_</code> command line API."
             }
         ],
         "events": [
@@ -1358,21 +1301,6 @@
                     { "name": "cacheDisabled", "type": "boolean", "description": "Cache disabled state." }
                 ],
                 "description": "Toggles ignoring cache for each request. If <code>true</code>, cache will not be used."
-            },
-            {
-                "name": "loadResourceForFrontend",
-                "async": true,
-                "parameters": [
-                    { "name": "url", "type": "string", "description": "URL of the resource to load." },
-                    { "name": "requestHeaders", "$ref": "Network.Headers", "optional": true, "description": "Request headers." }
-                ],
-                "returns": [
-                    { "name": "statusCode", "type": "number", "description": "HTTP status code." },
-                    { "name": "responseHeaders", "$ref": "Network.Headers", "description": "Response headers." },
-                    { "name": "content", "type": "string", "description": "Resource content." }
-                ],
-                "description": "Loads a resource in the context of a frame on the inspected page without cross origin checks.",
-                "hidden": true
             },
             {
                 "name": "setDataSizeLimitsForTest",
@@ -2660,7 +2588,7 @@
             {
                 "name": "inspectNodeRequested",
                 "parameters": [
-                    { "name": "nodeId", "$ref": "NodeId", "description": "Id of the node to inspect." }
+                    { "name": "backendNodeId", "$ref": "BackendNodeId", "description": "Id of the node to inspect." }
                 ],
                 "description": "Fired when the node should be inspected. This happens after call to <code>setInspectModeEnabled</code>.",
                 "hidden" : true
@@ -3377,8 +3305,7 @@
                 "name": "setSkipAllPauses",
                 "hidden": true,
                 "parameters": [
-                    { "name": "skipped", "type": "boolean", "description": "New value for skip pauses state." },
-                    { "name": "untilReload", "type": "boolean", "optional": true, "description": "Whether page reload should set skipped to false." }
+                    { "name": "skipped", "type": "boolean", "description": "New value for skip pauses state." }
                 ],
                 "description": "Makes page not interrupt on any pauses (breakpoint, exception, dom exception etc)."
             },
@@ -4069,8 +3996,8 @@
             {
                 "name": "sendMessageToWorker",
                 "parameters": [
-                    { "name": "workerId", "type": "integer" },
-                    { "name": "message", "type": "object" }
+                    { "name": "workerId", "type": "string" },
+                    { "name": "message", "type": "string" }
                 ]
             },
             {
@@ -4083,13 +4010,13 @@
             {
                 "name": "connectToWorker",
                 "parameters": [
-                    { "name": "workerId", "type": "integer" }
+                    { "name": "workerId", "type": "string" }
                 ]
             },
             {
                 "name": "disconnectFromWorker",
                 "parameters": [
-                    { "name": "workerId", "type": "integer" }
+                    { "name": "workerId", "type": "string" }
                 ],
                 "handlers": ["browser", "renderer"]
             },
@@ -4104,7 +4031,7 @@
             {
                 "name": "workerCreated",
                 "parameters": [
-                    { "name": "workerId", "type": "integer" },
+                    { "name": "workerId", "type": "string" },
                     { "name": "url", "type": "string" },
                     { "name": "inspectorConnected", "type": "boolean" }
                 ]
@@ -4112,14 +4039,14 @@
             {
                 "name": "workerTerminated",
                 "parameters": [
-                    { "name": "workerId", "type": "integer" }
+                    { "name": "workerId", "type": "string" }
                 ]
             },
             {
                 "name": "dispatchMessageFromWorker",
                 "parameters": [
-                    { "name": "workerId", "type": "integer" },
-                    { "name": "message", "type": "object" }
+                    { "name": "workerId", "type": "string" },
+                    { "name": "message", "type": "string" }
                 ]
             },
             {
@@ -4892,7 +4819,7 @@
                     { "name": "nodeId", "$ref": "DOM.NodeId", "description": "ID of node to get accessibility node for." }
                 ],
                 "returns": [
-                    { "name": "accessibilityNode", "$ref": "AXNode", "description": "The <code>Accessibility.AXNode</code> for this DOM node, if it exists." }
+                    { "name": "accessibilityNode", "$ref": "AXNode", "description": "The <code>Accessibility.AXNode</code> for this DOM node, if it exists.", "optional": true }
                 ],
                 "description": "Fetches the accessibility node for this DOM node, if it exists.",
                 "hidden": true

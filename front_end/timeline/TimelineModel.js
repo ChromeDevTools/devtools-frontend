@@ -1196,8 +1196,18 @@ WebInspector.TimelineModel.prototype = {
     {
         var delegate = new WebInspector.TimelineModelLoadFromFileDelegate(this, progress);
         var fileReader = this._createFileReader(file, delegate);
-        var loader = this.createLoader(fileReader, progress);
+        var loader = new WebInspector.TracingModelLoader(this, new WebInspector.ProgressStub(), fileReader.cancel.bind(fileReader));
         fileReader.start(loader);
+    },
+
+    /**
+     * @param {string} url
+     * @param {!WebInspector.Progress} progress
+     */
+    loadFromURL: function(url, progress)
+    {
+        var stream = new WebInspector.TracingModelLoader(this, progress);
+        WebInspector.NetworkManager.loadResourceAsStream(url, null, stream);
     },
 
     _createFileReader: function(file, delegate)
@@ -1279,16 +1289,6 @@ WebInspector.TimelineModel.prototype = {
     virtualThreads: function()
     {
         return this._virtualThreads;
-    },
-
-    /**
-     * @param {!WebInspector.ChunkedFileReader} fileReader
-     * @param {!WebInspector.Progress} progress
-     * @return {!WebInspector.OutputStream}
-     */
-    createLoader: function(fileReader, progress)
-    {
-        return new WebInspector.TracingModelLoader(this, fileReader, progress);
     },
 
     /**
@@ -1539,18 +1539,27 @@ WebInspector.ExclusiveTraceEventNameFilter.prototype = {
  * @constructor
  * @implements {WebInspector.OutputStream}
  * @param {!WebInspector.TimelineModel} model
- * @param {!{cancel: function()}} reader
  * @param {!WebInspector.Progress} progress
+ * @param {function()=} canceledCallback
  */
-WebInspector.TracingModelLoader = function(model, reader, progress)
+WebInspector.TracingModelLoader = function(model, progress, canceledCallback)
 {
     this._model = model;
-    this._reader = reader;
-    this._progress = progress;
-    this._buffer = "";
-    this._firstChunk = true;
     this._loader = new WebInspector.TracingModel.Loader(model._tracingModel);
+
+    this._canceledCallback = canceledCallback;
+    this._progress = progress;
+    this._progress.setTitle(WebInspector.UIString("Loading"));
+    this._progress.setTotalWork(WebInspector.TracingModelLoader._totalProgress);  // Unknown, will loop the values.
+
+    this._firstChunk = true;
+    this._wasCanceledOnce = false;
+
+    this._loadedBytes = 0;
+    this._jsonTokenizer = new WebInspector.TextUtils.BalancedJSONTokenizer(this._writeBalancedJSON.bind(this), true);
 }
+
+WebInspector.TracingModelLoader._totalProgress = 100000;
 
 WebInspector.TracingModelLoader.prototype = {
     /**
@@ -1559,19 +1568,23 @@ WebInspector.TracingModelLoader.prototype = {
      */
     write: function(chunk)
     {
-        var data = this._buffer + chunk;
-        var lastIndex = 0;
-        var index;
-        do {
-            index = lastIndex;
-            lastIndex = WebInspector.TextUtils.findBalancedCurlyBrackets(data, index);
-        } while (lastIndex !== -1);
-
-        var json = data.slice(0, index) + "]";
-        this._buffer = data.slice(index);
-
-        if (!index)
+        this._loadedBytes += chunk.length;
+        if (this._progress.isCanceled() && !this._wasCanceledOnce) {
+            this._wasCanceled = true;
+            this._reportErrorAndCancelLoading();
             return;
+        }
+        this._progress.setWorked(this._loadedBytes % WebInspector.TracingModelLoader._totalProgress,
+                                 WebInspector.UIString("Loaded %s", Number.bytesToString(this._loadedBytes)));
+        this._jsonTokenizer.write(chunk);
+    },
+
+    /**
+     * @param {string} data
+     */
+    _writeBalancedJSON: function(data)
+    {
+        var json = data + "]";
 
         if (this._firstChunk) {
             this._model._startCollectingTraceEvents(true);
@@ -1586,14 +1599,14 @@ WebInspector.TracingModelLoader.prototype = {
         try {
             items = /** @type {!Array.<!WebInspector.TracingManager.EventPayload>} */ (JSON.parse(json));
         } catch (e) {
-            this._reportErrorAndCancelLoading("Malformed timeline data: " + e);
+            this._reportErrorAndCancelLoading(WebInspector.UIString("Malformed timeline data: " + e));
             return;
         }
 
         if (this._firstChunk) {
             this._firstChunk = false;
             if (this._looksLikeAppVersion(items[0])) {
-                this._reportErrorAndCancelLoading("Old Timeline format is not supported.");
+                this._reportErrorAndCancelLoading(WebInspector.UIString("Legacy Timeline format is not supported."));
                 return;
             }
         }
@@ -1601,17 +1614,22 @@ WebInspector.TracingModelLoader.prototype = {
         try {
             this._loader.loadNextChunk(items);
         } catch(e) {
-            this._reportErrorAndCancelLoading("Malformed timeline data: " + e);
+            this._reportErrorAndCancelLoading(WebInspector.UIString("Malformed timeline data: " + e));
             return;
         }
     },
 
-    _reportErrorAndCancelLoading: function(messsage)
+    /**
+     * @param {string=} message
+     */
+    _reportErrorAndCancelLoading: function(message)
     {
-        WebInspector.console.error(messsage);
+        if (message)
+            WebInspector.console.error(message);
         this._model.tracingComplete();
         this._model.reset();
-        this._reader.cancel();
+        if (this._canceledCallback)
+            this._canceledCallback();
         this._progress.done();
     },
 
@@ -1627,6 +1645,8 @@ WebInspector.TracingModelLoader.prototype = {
     {
         this._loader.finish();
         this._model.tracingComplete();
+        if (this._progress)
+            this._progress.done();
     }
 }
 

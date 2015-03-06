@@ -327,12 +327,6 @@ WebInspector.DebuggerWorkspaceBinding.TargetData.prototype = {
     {
         var script = /** @type {!WebInspector.Script} */ (event.data);
         this._defaultMapping.addScript(script);
-
-        if (script.isSnippet()) {
-            WebInspector.scriptSnippetModel.addScript(script);
-            return;
-        }
-
         this._resourceMapping.addScript(script);
 
         if (WebInspector.settings.jsSourceMapsEnabled.get())

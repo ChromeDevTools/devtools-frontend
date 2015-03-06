@@ -59,8 +59,6 @@ WebInspector.Script.Events = {
     SourceMapURLAdded: "SourceMapURLAdded",
 }
 
-WebInspector.Script.snippetSourceURLPrefix = "snippets:///";
-
 WebInspector.Script.sourceURLRegex = /\n[\040\t]*\/\/[@#]\ssourceURL=\s*(\S*?)\s*$/mg;
 
 /**
@@ -254,14 +252,6 @@ WebInspector.Script.prototype = {
     isAnonymousScript: function()
     {
         return !this.sourceURL;
-    },
-
-    /**
-     * @return {boolean}
-     */
-    isSnippet: function()
-    {
-        return !!this.sourceURL && this.sourceURL.startsWith(WebInspector.Script.snippetSourceURLPrefix);
     },
 
     /**

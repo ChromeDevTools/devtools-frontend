@@ -122,7 +122,8 @@ WebInspector.HeapSnapshotLoader.prototype = {
      */
     write: function(chunk)
     {
-        this._json += chunk;
+        if (this._json !== null)
+            this._json += chunk;
         while (true) {
             switch (this._state) {
             case "find-snapshot-info": {
@@ -130,18 +131,19 @@ WebInspector.HeapSnapshotLoader.prototype = {
                 var snapshotTokenIndex = this._json.indexOf(snapshotToken);
                 if (snapshotTokenIndex === -1)
                     throw new Error("Snapshot token not found");
-                this._json = this._json.slice(snapshotTokenIndex + snapshotToken.length + 1);
+
+                var json = this._json.slice(snapshotTokenIndex + snapshotToken.length + 1);
                 this._state = "parse-snapshot-info";
                 this._progress.updateStatus("Loading snapshot info\u2026");
-                break;
+                this._json = null;  // tokenizer takes over input.
+                this._jsonTokenizer = new WebInspector.TextUtils.BalancedJSONTokenizer(this._writeBalancedJSON.bind(this));
+                // Fall through with adjusted payload.
+                chunk = json;
             }
             case "parse-snapshot-info": {
-                var closingBracketIndex = WebInspector.TextUtils.findBalancedCurlyBrackets(this._json);
-                if (closingBracketIndex === -1)
-                    return;
-                this._snapshot.snapshot = /** @type {!HeapSnapshotHeader} */ (JSON.parse(this._json.slice(0, closingBracketIndex)));
-                this._json = this._json.slice(closingBracketIndex);
-                this._state = "find-nodes";
+                this._jsonTokenizer.write(chunk);
+                if (this._jsonTokenizer)
+                    return;  // no remainder to process.
                 break;
             }
             case "find-nodes": {
@@ -265,5 +267,16 @@ WebInspector.HeapSnapshotLoader.prototype = {
                 return;
             }
         }
+    },
+
+    /**
+     * @param {string} data
+     */
+    _writeBalancedJSON: function(data)
+    {
+        this._json = this._jsonTokenizer.remainder();  // tokenizer releases input.
+        this._jsonTokenizer = null;
+        this._state = "find-nodes";
+        this._snapshot.snapshot = /** @type {!HeapSnapshotHeader} */ (JSON.parse(data));
     }
-};
+}

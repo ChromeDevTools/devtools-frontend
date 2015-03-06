@@ -167,7 +167,7 @@ WebInspector.ObjectPropertyTreeElement.prototype = {
     {
         var editableElement = this.valueElement;
         if ((this.property.writable || this.property.setter) && event.target.isSelfOrDescendant(editableElement))
-            this.startEditing(event);
+            this._startEditing();
         return false;
     },
 
@@ -224,88 +224,78 @@ WebInspector.ObjectPropertyTreeElement.prototype = {
             this.parent.invalidateChildren();
     },
 
-    /**
-     * @param {!Event=} event
-     */
-    startEditing: function(event)
+    _startEditing: function()
     {
-        var valueToEdit = (typeof this.valueElement._originalTextContent === "string") ? this.valueElement._originalTextContent : undefined;
-
-        if (WebInspector.isBeingEdited(this.valueElement) || !this.treeOutline.section.editable || this._readOnly)
+        if (this._prompt || !this.treeOutline.section.editable || this._readOnly)
             return;
 
-        // Edit original source.
-        if (typeof valueToEdit !== "undefined")
-            this.valueElement.setTextContentTruncatedIfNeeded(valueToEdit, WebInspector.UIString("<string is too large to edit>"));
+        this._editableDiv = this.listItemElement.createChild("span");
 
-        var context = { expanded: this.expanded, previousContent: this.valueElement.textContent };
+        var text = this.property.value.description;
+        if (this.property.value.type === "string" && typeof text === "string")
+            text = "\"" + text + "\"";
+
+        this._editableDiv.setTextContentTruncatedIfNeeded(text, WebInspector.UIString("<string is too large to edit>"));
+        var originalContent = this._editableDiv.textContent;
+
+        this.valueElement.classList.add("hidden");
 
         // Lie about our children to prevent expanding on double click and to collapse subproperties.
         this.setExpandable(false);
-
         this.listItemElement.classList.add("editing-sub-part");
 
         this._prompt = new WebInspector.ObjectPropertyPrompt();
 
-        /**
-         * @this {WebInspector.ObjectPropertyTreeElement}
-         */
-        function blurListener()
-        {
-            this.editingCommitted(null, this.valueElement.textContent, context.previousContent, context);
-        }
-
-        var proxyElement = this._prompt.attachAndStartEditing(this.valueElement, blurListener.bind(this));
-        this.listItemElement.getComponentSelection().setBaseAndExtent(this.valueElement, 0, this.valueElement, 1);
-        proxyElement.addEventListener("keydown", this._promptKeyDown.bind(this, context), false);
+        var proxyElement = this._prompt.attachAndStartEditing(this._editableDiv, this._editingCommitted.bind(this, originalContent));
+        this.listItemElement.getComponentSelection().setBaseAndExtent(this._editableDiv, 0, this._editableDiv, 1);
+        proxyElement.addEventListener("keydown", this._promptKeyDown.bind(this, originalContent), false);
     },
 
-    /**
-     * @return {boolean}
-     */
-    isEditing: function()
-    {
-        return !!this._prompt;
-    },
-
-    editingEnded: function(context)
+    _editingEnded: function()
     {
         this._prompt.detach();
         delete this._prompt;
-
+        this._editableDiv.remove();
+        this.setExpandable(this.property.value.hasChildren && !this.property.wasThrown);
         this.listItemElement.scrollLeft = 0;
         this.listItemElement.classList.remove("editing-sub-part");
-        if (context.expanded)
-            this.expand();
     },
 
-    editingCancelled: function(element, context)
+    _editingCancelled: function()
     {
-        this.editingEnded(context);
-        this.update();
+        this.valueElement.classList.remove("hidden");
+        this._editingEnded();
     },
 
-    editingCommitted: function(element, userInput, previousContent, context)
+    /**
+     * @param {string} originalContent
+     */
+    _editingCommitted: function(originalContent)
     {
-        if (userInput === previousContent) {
-            this.editingCancelled(element, context); // nothing changed, so cancel
+        var userInput = this._prompt.text();
+        if (userInput === originalContent) {
+            this._editingCancelled(); // nothing changed, so cancel
             return;
         }
 
-        this.editingEnded(context);
-        this.applyExpression(userInput);
+        this._editingEnded();
+        this._applyExpression(userInput);
     },
 
-    _promptKeyDown: function(context, event)
+    /**
+     * @param {string} originalContent
+     * @param {!Event} event
+     */
+    _promptKeyDown: function(originalContent, event)
     {
         if (isEnterKey(event)) {
             event.consume(true);
-            this.editingCommitted(null, this.valueElement.textContent, context.previousContent, context);
+            this._editingCommitted(originalContent);
             return;
         }
         if (event.keyIdentifier === "U+001B") { // Esc
             event.consume();
-            this.editingCancelled(null, context);
+            this._editingCancelled();
             return;
         }
     },
@@ -313,7 +303,7 @@ WebInspector.ObjectPropertyTreeElement.prototype = {
     /**
      * @param {string} expression
      */
-    applyExpression: function(expression)
+    _applyExpression: function(expression)
     {
         var property = WebInspector.RemoteObject.toCallArgument(this.property.symbol || this.property.name);
         expression = expression.trim();
@@ -1034,11 +1024,9 @@ WebInspector.ObjectPropertiesSection.createValueElement = function(value, wasThr
         prefix = "\"";
         valueText = description.replace(/\n/g, "\u21B5");
         suffix = "\"";
-        valueElement._originalTextContent = "\"" + description + "\"";
     } else if (type === "function" && typeof description === "string") {
         // Render function description until the first \n.
         valueText = /.*/.exec(description)[0].replace(/\s+$/g, "");
-        valueElement._originalTextContent = description;
     } else if (type !== "object" || subtype !== "node") {
         valueText = description;
     }

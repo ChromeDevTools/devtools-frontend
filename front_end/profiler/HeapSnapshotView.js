@@ -1551,7 +1551,7 @@ WebInspector.HeapProfileHeader.prototype = {
         this._bufferedWriter.write([chunk]);
 
         ++this._totalNumberOfChunks;
-        this._receiver.write(chunk, function() {});
+        this._receiver.write(chunk);
     },
 
     _snapshotReceived: function(snapshotProxy)

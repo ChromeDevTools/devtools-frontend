@@ -339,9 +339,11 @@ WebInspector.ElementsPanel.prototype = {
             if (!candidateFocusNode)
                 return;
 
-            this.selectDOMNode(candidateFocusNode);
-            if (treeOutline.selectedTreeElement)
-                treeOutline.selectedTreeElement.expand();
+            if (!this._pendingNodeReveal) {
+                this.selectDOMNode(candidateFocusNode);
+                if (treeOutline.selectedTreeElement)
+                    treeOutline.selectedTreeElement.expand();
+            }
         }
 
         /**
@@ -1008,6 +1010,9 @@ WebInspector.ElementsPanel.DOMNodeRevealer.prototype = {
      */
     reveal: function(node)
     {
+        var panel = WebInspector.ElementsPanel.instance();
+        panel._pendingNodeReveal = true;
+
         return new Promise(revealPromise);
 
         /**
@@ -1016,21 +1021,24 @@ WebInspector.ElementsPanel.DOMNodeRevealer.prototype = {
          */
         function revealPromise(resolve, reject)
         {
-            var panel = WebInspector.ElementsPanel.instance();
-            if (node instanceof WebInspector.DOMNode)
+            if (node instanceof WebInspector.DOMNode) {
                 onNodeResolved(/** @type {!WebInspector.DOMNode} */ (node));
-            else if (node instanceof WebInspector.DeferredDOMNode)
+            } else if (node instanceof WebInspector.DeferredDOMNode) {
                 (/** @type {!WebInspector.DeferredDOMNode} */ (node)).resolve(onNodeResolved);
-            else if (node instanceof WebInspector.RemoteObject)
+            } else if (node instanceof WebInspector.RemoteObject) {
                 (/** @type {!WebInspector.RemoteObject} */ (node)).pushNodeToFrontend(onNodeResolved);
-            else
+            } else {
                 reject(new Error("Can't reveal a non-node."));
+                panel._pendingNodeReveal = false;
+            }
 
             /**
              * @param {?WebInspector.DOMNode} resolvedNode
              */
             function onNodeResolved(resolvedNode)
             {
+                panel._pendingNodeReveal = false;
+
                 if (resolvedNode) {
                     panel.revealAndSelectNode(resolvedNode);
                     resolve(undefined);

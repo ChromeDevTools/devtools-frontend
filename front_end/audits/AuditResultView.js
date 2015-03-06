@@ -59,11 +59,9 @@ WebInspector.AuditResultView.prototype = {
 WebInspector.AuditCategoryResultPane = function(categoryResult)
 {
     WebInspector.SidebarPane.call(this, categoryResult.title);
-    this.bodyElement.classList.add("audit-result-tree");
-
-    this._treeOutline = new TreeOutline();
+    this._treeOutline = new TreeOutlineInShadow();
+    this._treeOutline.element.classList.add("audit-result-tree");
     this.bodyElement.appendChild(this._treeOutline.element);
-
     this._treeOutline.expandTreeElementsWhenArrowing = true;
 
     function ruleSorter(a, b)
@@ -109,6 +107,7 @@ WebInspector.AuditCategoryResultPane.prototype = {
         titleFragment.createTextChild(title);
 
         var treeElement = new TreeElement(titleFragment, !!result.children);
+        treeElement.selectable = false;
         parentTreeNode.appendChild(treeElement);
 
         if (result.className)

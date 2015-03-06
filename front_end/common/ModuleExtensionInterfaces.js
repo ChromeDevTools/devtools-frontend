@@ -91,30 +91,39 @@ WebInspector.Revealer.prototype = {
  */
 WebInspector.App = function()
 {
-};
+}
 
 WebInspector.App.prototype = {
     /**
      * @param {!Document} document
      */
     presentUI: function(document) { }
-};
+}
 
 /**
  * @interface
  */
 WebInspector.AppProvider = function()
 {
-};
+}
 
 WebInspector.AppProvider.prototype = {
     /**
      * @return {!WebInspector.App}
      */
     createApp: function() { }
-};
+}
 
 /**
- * @type {!WebInspector.App}
+ * @interface
  */
-WebInspector.app;
+WebInspector.QueryParamHandler = function()
+{
+}
+
+WebInspector.QueryParamHandler.prototype = {
+    /**
+     * @param {string} value
+     */
+    handleQueryParam: function(value) { }
+}

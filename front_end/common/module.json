@@ -18,6 +18,7 @@
         "ResourceType.js",
         "Settings.js",
         "StaticContentProvider.js",
+        "Streams.js",
         "TextRange.js",
         "TextUtils.js",
         "Throttler.js",

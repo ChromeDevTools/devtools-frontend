@@ -55,23 +55,6 @@ WebInspector.OutputStreamDelegate.prototype = {
 /**
  * @interface
  */
-WebInspector.OutputStream = function()
-{
-}
-
-WebInspector.OutputStream.prototype = {
-    /**
-     * @param {string} data
-     * @param {function(!WebInspector.OutputStream)=} callback
-     */
-    write: function(data, callback) { },
-
-    close: function() { }
-}
-
-/**
- * @interface
- */
 WebInspector.ChunkedReader = function()
 {
 }

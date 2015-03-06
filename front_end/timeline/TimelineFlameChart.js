@@ -568,16 +568,14 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
         }
 
         var event = this._entryEvents[entryIndex];
-        var warning = event && event.warning;
-        warning = warning || event && event.name === WebInspector.TimelineModel.RecordType.JSFrame && event.args.data.deoptReason && event.args.data.deoptReason !== "no reason";
-        if (warning) {
+        if (event && event.warning) {
             context.save();
 
             context.rect(barX, barY, barWidth, this.barHeight());
             context.clip();
 
             context.beginPath();
-            var /** @const */ triangleSize = 6;
+            var /** @const */ triangleSize = 10;
             context.fillStyle = "red";
             context.moveTo(barX + barWidth - triangleSize, barY + 1);
             context.lineTo(barX + barWidth - 1, barY + 1);

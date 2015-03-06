@@ -266,8 +266,10 @@ Runtime.startApplication = function(appName)
          */
         function instantiateRuntime(moduleDescriptors)
         {
-            for (var i = 0; !Runtime.isReleaseMode() && i < moduleDescriptors.length; ++i)
+            for (var i = 0; !Runtime.isReleaseMode() && i < moduleDescriptors.length; ++i) {
                 moduleDescriptors[i]["name"] = configuration[i]["name"];
+                moduleDescriptors[i]["condition"] = configuration[i]["condition"];
+            }
             self.runtime = new Runtime(moduleDescriptors, coreModuleNames);
         }
     }
@@ -1016,7 +1018,8 @@ Runtime.Experiment.prototype = {
     var params = queryParams.substring(1).split("&");
     for (var i = 0; i < params.length; ++i) {
         var pair = params[i].split("=");
-        Runtime._queryParamsObject[pair[0]] = pair[1];
+        var name = pair.shift();
+        Runtime._queryParamsObject[name] = pair.join("=");
     }
 
     // Patch settings from the URL param (for tests).

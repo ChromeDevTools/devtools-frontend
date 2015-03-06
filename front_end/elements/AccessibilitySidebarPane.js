@@ -45,6 +45,7 @@ WebInspector.AccessibilitySidebarPane.prototype = {
         this._rootElement.selectable = false;
         this._treeOutline.appendChild(this._rootElement);
         this.bodyElement.appendChild(this._treeOutline.element);
+        this._populateWithProperties([]);
         this._rootElement.expand();
 
         WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.AttrModified, this._onNodeChange, this);
@@ -116,12 +117,21 @@ WebInspector.AccessibilitySidebarPane.prototype = {
 
         // FIXME: do not use object property section.
         this._rootElement.removeChildren();
+        this._populateWithProperties(nodeProperties);
+    },
+
+    /**
+     * @param {!Array.<!WebInspector.RemoteObjectProperty>} properties
+     */
+    _populateWithProperties: function(properties)
+    {
         WebInspector.ObjectPropertyTreeElement.populateWithProperties(
             this._rootElement,
-            nodeProperties,
+            properties,
             null,
             true /* doSkipProto */,
-            null);
+            null,
+            "No accessibility node");
     },
 
     /**
@@ -130,7 +140,6 @@ WebInspector.AccessibilitySidebarPane.prototype = {
     _onNodeChange: function(event)
     {
         var node = this._axNode;
-        this._axNode = null;
         this._setNode(node);
     },
 

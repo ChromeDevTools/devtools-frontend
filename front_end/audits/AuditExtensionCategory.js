@@ -129,7 +129,8 @@ WebInspector.AuditExtensionCategoryResults.prototype = {
     addResult: function(displayName, description, severity, details)
     {
         var result = new WebInspector.AuditRuleResult(displayName);
-        result.addChild(description);
+        if (description)
+            result.addChild(description);
         result.severity = severity;
         if (details)
             this._addNode(result, details);

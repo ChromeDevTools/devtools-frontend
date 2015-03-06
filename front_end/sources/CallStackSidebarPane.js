@@ -173,10 +173,7 @@ WebInspector.CallStackSidebarPane.prototype = {
         contextMenu.appendItem(WebInspector.UIString.capitalize("Copy ^stack ^trace"), this._copyStackTrace.bind(this));
 
         var script = callFrame._callFrame.script;
-        if (!script.isSnippet()) {
-            contextMenu.appendSeparator();
-            this.appendBlackboxURLContextMenuItems(contextMenu, script.sourceURL, script.isContentScript());
-        }
+        this.appendBlackboxURLContextMenuItems(contextMenu, script.sourceURL, script.isContentScript());
 
         contextMenu.show();
     },
@@ -204,10 +201,15 @@ WebInspector.CallStackSidebarPane.prototype = {
     appendBlackboxURLContextMenuItems: function(contextMenu, url, isContentScript)
     {
         var blackboxed = WebInspector.BlackboxSupport.isBlackboxed(url, isContentScript);
+        var canBlackBox = WebInspector.BlackboxSupport.canBlackboxURL(url);
+        if (!blackboxed && !isContentScript && !canBlackBox)
+            return;
+
+        contextMenu.appendSeparator();
         if (blackboxed) {
             contextMenu.appendItem(WebInspector.UIString.capitalize("Stop ^blackboxing"), this._handleContextMenuBlackboxURL.bind(this, url, isContentScript, false));
         } else {
-            if (WebInspector.BlackboxSupport.canBlackboxURL(url))
+            if (canBlackBox)
                 contextMenu.appendItem(WebInspector.UIString.capitalize("Blackbox ^script"), this._handleContextMenuBlackboxURL.bind(this, url, false, true));
             if (isContentScript)
                 contextMenu.appendItem(WebInspector.UIString.capitalize("Blackbox ^all ^content ^scripts"), this._handleContextMenuBlackboxURL.bind(this, url, true, true));

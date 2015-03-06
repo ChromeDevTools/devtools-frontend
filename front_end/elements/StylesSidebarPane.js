@@ -395,6 +395,7 @@ WebInspector.StylesSidebarPane.prototype = {
             this._target.domModel.removeEventListener(WebInspector.DOMModel.Events.AttrModified, this._attributeChanged, this);
             this._target.domModel.removeEventListener(WebInspector.DOMModel.Events.AttrRemoved, this._attributeChanged, this);
             this._target.resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.EventTypes.FrameResized, this._frameResized, this);
+            this._target.resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._updateAnimationsPlaybackRate, this);
         }
         this._target = target;
         this._target.cssModel.addEventListener(WebInspector.CSSStyleModel.Events.StyleSheetAdded, this._styleSheetOrMediaQueryResultChanged, this);
@@ -404,6 +405,8 @@ WebInspector.StylesSidebarPane.prototype = {
         this._target.domModel.addEventListener(WebInspector.DOMModel.Events.AttrModified, this._attributeChanged, this);
         this._target.domModel.addEventListener(WebInspector.DOMModel.Events.AttrRemoved, this._attributeChanged, this);
         this._target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.FrameResized, this._frameResized, this);
+        this._target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._updateAnimationsPlaybackRate, this);
+        this._updateAnimationsPlaybackRate();
     },
 
     /**
@@ -746,8 +749,6 @@ WebInspector.StylesSidebarPane.prototype = {
             this._updateFilter();
 
         this._nodeStylesUpdatedForTest(node, true);
-
-        this._updateAnimationsPlaybackRate();
     },
 
     /**
@@ -1086,7 +1087,10 @@ WebInspector.StylesSidebarPane.prototype = {
         this._elementStatePane.classList.remove("expanded");
     },
 
-    _updateAnimationsPlaybackRate: function()
+    /**
+     * @param {!WebInspector.Event=} event
+     */
+    _updateAnimationsPlaybackRate: function(event)
     {
         /**
          * @param {?Protocol.Error} error
@@ -1098,6 +1102,7 @@ WebInspector.StylesSidebarPane.prototype = {
             this._animationsPlaybackSlider.value = WebInspector.AnimationsSidebarPane.GlobalPlaybackRates.indexOf(playbackRate);
             this._animationsPlaybackLabel.textContent = playbackRate + "x";
         }
+
         if (this._target)
             this._target.animationAgent().getPlaybackRate(setPlaybackRate.bind(this));
     },
@@ -1131,7 +1136,6 @@ WebInspector.StylesSidebarPane.prototype = {
 
         this._animationsPaused = false;
         this._animationsPlaybackRate = 1;
-        this._updateAnimationsPlaybackRate();
 
         this._animationsControlPane = createElementWithClass("div", "styles-animations-controls-pane");
         var labelElement = createElement("div");
@@ -2360,14 +2364,6 @@ WebInspector.StylePropertyTreeElementBase.prototype = {
         return !this.parsedOk && WebInspector.StylesSidebarPane.ignoreErrorsForProperty(this.property);
     },
 
-    set inherited(x)
-    {
-        if (x === this._inherited)
-            return;
-        this._inherited = x;
-        this.updateState();
-    },
-
     get overloaded()
     {
         return this._overloaded;
@@ -2378,7 +2374,7 @@ WebInspector.StylePropertyTreeElementBase.prototype = {
         if (x === this._overloaded)
             return;
         this._overloaded = x;
-        this.updateState();
+        this._updateState();
     },
 
     get disabled()
@@ -2436,7 +2432,7 @@ WebInspector.StylePropertyTreeElementBase.prototype = {
     {
         var value = this.value;
 
-        this.updateState();
+        this._updateState();
 
         var nameElement = createElement("span");
         nameElement.className = "webkit-css-property";
@@ -2562,7 +2558,7 @@ WebInspector.StylePropertyTreeElementBase.prototype = {
         return iconHelper.icon();
     },
 
-    updateState: function()
+    _updateState: function()
     {
         if (!this.listItemElement)
             return;
@@ -2943,7 +2939,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
             this.editingCommitted(event.target.textContent, context, moveDirection);
         }
 
-        delete this.originalPropertyText;
+        this._originalPropertyText = this.property.propertyText;
 
         this._parentPane._isEditingStyle = true;
         if (selectElement.parentElement)
@@ -3063,7 +3059,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
     {
         var valueText = this.valueElement.textContent;
         if (valueText.indexOf(";") === -1)
-            this.applyStyleText(this.nameElement.textContent + ": " + valueText, false, false, false);
+            this.applyStyleText(this.nameElement.textContent + ": " + valueText, false);
     },
 
     kickFreeFlowStyleEditForTest: function()
@@ -3076,6 +3072,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
      */
     editingEnded: function(context)
     {
+        delete this._originalPropertyText;
         this._resetMouseDownElement();
 
         this.setExpandable(context.hasChildren);
@@ -3096,19 +3093,15 @@ WebInspector.StylePropertyTreeElement.prototype = {
     editingCancelled: function(element, context)
     {
         this._removePrompt();
-        this._revertStyleUponEditingCanceled(this.originalPropertyText);
+        this._revertStyleUponEditingCanceled();
         // This should happen last, as it clears the info necessary to restore the property value after [Page]Up/Down changes.
         this.editingEnded(context);
     },
 
-    /**
-     * @param {string} originalPropertyText
-     */
-    _revertStyleUponEditingCanceled: function(originalPropertyText)
+    _revertStyleUponEditingCanceled: function()
     {
-        if (typeof originalPropertyText === "string") {
-            delete this.originalPropertyText;
-            this.applyStyleText(originalPropertyText, true, false, true);
+        if (typeof this._originalPropertyText === "string") {
+            this.applyStyleText(this._originalPropertyText, false);
         } else {
             if (this._newProperty)
                 this.treeOutline.removeChild(this);
@@ -3176,7 +3169,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
                 else
                     propertyText = this.property.name + ": " + userInput;
             }
-            this.applyStyleText(propertyText, true, true, false);
+            this.applyStyleText(propertyText, true);
         } else {
             if (isEditingName)
                 this.property.name = userInput;
@@ -3270,84 +3263,60 @@ WebInspector.StylePropertyTreeElement.prototype = {
      */
     _hasBeenModifiedIncrementally: function()
     {
-        // New properties applied via up/down or live editing have an originalPropertyText and will be deleted later
+        // New properties applied via up/down or live editing have an _originalPropertyText and will be deleted later
         // on, if cancelled, when the empty string gets applied as their style text.
-        return typeof this.originalPropertyText === "string" || (!!this.property.propertyText && this._newProperty);
+        return typeof this._originalPropertyText === "string" || (!!this.property.propertyText && this._newProperty);
     },
 
-    styleTextAppliedForTest: function()
-    {
-    },
+    styleTextAppliedForTest: function() { },
 
     /**
      * @param {string} styleText
-     * @param {boolean} updateInterface
      * @param {boolean} majorChange
-     * @param {boolean} isRevert
      */
-    applyStyleText: function(styleText, updateInterface, majorChange, isRevert)
+    applyStyleText: function(styleText, majorChange)
     {
-        this._applyStyleThrottler.schedule(this._innerApplyStyleText.bind(this, styleText, updateInterface, majorChange, isRevert));
+        this._applyStyleThrottler.schedule(this._innerApplyStyleText.bind(this, styleText, majorChange));
     },
 
     /**
      * @param {string} styleText
-     * @param {boolean} updateInterface
      * @param {boolean} majorChange
-     * @param {boolean} isRevert
      * @param {!WebInspector.Throttler.FinishCallback} finishedCallback
      */
-    _innerApplyStyleText: function(styleText, updateInterface, majorChange, isRevert, finishedCallback)
+    _innerApplyStyleText: function(styleText, majorChange, finishedCallback)
     {
-        /**
-         * @param {!WebInspector.StylesSidebarPane} parentPane
-         * @param {boolean} updateInterface
-         */
-        function userOperationFinishedCallback(parentPane, updateInterface)
-        {
-            if (updateInterface)
-                delete parentPane._userOperation;
+        if (!this.treeOutline) {
             finishedCallback();
-        }
-
-        // Leave a way to cancel editing after incremental changes.
-        if (!isRevert && !updateInterface && !this._hasBeenModifiedIncrementally()) {
-            // Remember the rule's original CSS text on [Page](Up|Down), so it can be restored
-            // if the editing is canceled.
-            this.originalPropertyText = this.property.propertyText;
-        }
-
-        if (!this.treeOutline)
             return;
+        }
 
-        var section = this.section();
         styleText = styleText.replace(/\s/g, " ").trim(); // Replace &nbsp; with whitespace.
-        var styleTextLength = styleText.length;
-        if (!styleTextLength && updateInterface && !isRevert && this._newProperty && !this._hasBeenModifiedIncrementally()) {
+        if (!styleText.length && majorChange && this._newProperty && !this._hasBeenModifiedIncrementally()) {
             // The user deleted everything and never applied a new property value via Up/Down scrolling/live editing, so remove the tree element and update.
+            var section = this.section();
             this.parent.removeChild(this);
             section.afterUpdate();
             return;
         }
 
         var currentNode = this._parentPane.node();
-        if (updateInterface)
-            this._parentPane._userOperation = true;
+        this._parentPane._userOperation = true;
 
         /**
-         * @param {function()} userCallback
-         * @param {string} originalPropertyText
          * @param {?WebInspector.CSSStyleDeclaration} newStyle
          * @this {WebInspector.StylePropertyTreeElement}
          */
-        function callback(userCallback, originalPropertyText, newStyle)
+        function callback(newStyle)
         {
+            delete this._parentPane._userOperation;
+
             if (!newStyle) {
-                if (updateInterface) {
+                if (majorChange) {
                     // It did not apply, cancel editing.
-                    this._revertStyleUponEditingCanceled(originalPropertyText);
+                    this._revertStyleUponEditingCanceled();
                 }
-                userCallback();
+                finishedCallback();
                 this.styleTextAppliedForTest();
                 return;
             }
@@ -3358,10 +3327,11 @@ WebInspector.StylePropertyTreeElement.prototype = {
 
             this.property = newStyle.propertyAt(this.property.index);
 
-            if (updateInterface && currentNode === this.node())
+            // We are happy to update UI if user is not editing.
+            if (!this._parentPane._isEditingStyle && currentNode === this.node())
                 this._updatePane();
 
-            userCallback();
+            finishedCallback();
             this.styleTextAppliedForTest();
         }
 
@@ -3370,8 +3340,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
         if (styleText.length && !/;\s*$/.test(styleText))
             styleText += ";";
         var overwriteProperty = !!(!this._newProperty || this._newPropertyInStyle);
-        var boundCallback = callback.bind(this, userOperationFinishedCallback.bind(null, this._parentPane, updateInterface), this.originalPropertyText);
-        this.property.setText(styleText, majorChange, overwriteProperty, boundCallback);
+        this.property.setText(styleText, majorChange, overwriteProperty, callback.bind(this));
     },
 
     /**
@@ -3400,16 +3369,16 @@ WebInspector.StylePropertyTreeElement.prototype = {
  * @constructor
  * @extends {WebInspector.TextPrompt}
  * @param {!WebInspector.CSSMetadata} cssCompletions
- * @param {!WebInspector.StylePropertyTreeElement} sidebarPane
+ * @param {!WebInspector.StylePropertyTreeElement} treeElement
  * @param {boolean} isEditingName
  */
-WebInspector.StylesSidebarPane.CSSPropertyPrompt = function(cssCompletions, sidebarPane, isEditingName)
+WebInspector.StylesSidebarPane.CSSPropertyPrompt = function(cssCompletions, treeElement, isEditingName)
 {
     // Use the same callback both for applyItemCallback and acceptItemCallback.
     WebInspector.TextPrompt.call(this, this._buildPropertyCompletions.bind(this), WebInspector.StyleValueDelimiters);
     this.setSuggestBoxEnabled(true);
     this._cssCompletions = cssCompletions;
-    this._sidebarPane = sidebarPane;
+    this._treeElement = treeElement;
     this._isEditingName = isEditingName;
 
     if (!isEditingName)
@@ -3483,7 +3452,7 @@ WebInspector.StylesSidebarPane.CSSPropertyPrompt.prototype = {
         function finishHandler(originalValue, replacementString)
         {
             // Synthesize property text disregarding any comments, custom whitespace etc.
-            this._sidebarPane.applyStyleText(this._sidebarPane.nameElement.textContent + ": " + this._sidebarPane.valueElement.textContent, false, false, false);
+            this._treeElement.applyStyleText(this._treeElement.nameElement.textContent + ": " + this._treeElement.valueElement.textContent, false);
         }
 
         /**
@@ -3495,13 +3464,13 @@ WebInspector.StylesSidebarPane.CSSPropertyPrompt.prototype = {
          */
         function customNumberHandler(prefix, number, suffix)
         {
-            if (number !== 0 && !suffix.length && WebInspector.CSSMetadata.isLengthProperty(this._sidebarPane.property.name))
+            if (number !== 0 && !suffix.length && WebInspector.CSSMetadata.isLengthProperty(this._treeElement.property.name))
                 suffix = "px";
             return prefix + number + suffix;
         }
 
         // Handle numeric value increment/decrement only at this point.
-        if (!this._isEditingName && WebInspector.handleElementValueModifications(event, this._sidebarPane.valueElement, finishHandler.bind(this), this._isValueSuggestion.bind(this), customNumberHandler.bind(this)))
+        if (!this._isEditingName && WebInspector.handleElementValueModifications(event, this._treeElement.valueElement, finishHandler.bind(this), this._isValueSuggestion.bind(this), customNumberHandler.bind(this)))
             return true;
 
         return false;

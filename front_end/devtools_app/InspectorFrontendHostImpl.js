@@ -92,6 +92,18 @@ WebInspector.InspectorFrontendHostImpl.prototype = {
 
     /**
      * @override
+     * @param {string} url
+     * @param {string} headers
+     * @param {number} streamId
+     * @param {function(!InspectorFrontendHostAPI.LoadNetworkResourceResult)} callback
+     */
+    loadNetworkResource: function(url, headers, streamId, callback)
+    {
+        DevToolsAPI.sendMessageToEmbedder("loadNetworkResource", [url, headers, streamId], /** @type {function(?Object)} */ (callback));
+    },
+
+    /**
+     * @override
      * @param {string} origin
      * @param {string} script
      */

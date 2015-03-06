@@ -8,8 +8,8 @@
         {
             "type": "@WebInspector.StatusBarItem.Provider",
             "className": "WebInspector.ScreencastApp.StatusBarButtonProvider",
-            "order": 5,
-            "location": "toolbar-right"
+            "order": 1,
+            "location": "toolbar-left"
         }
     ],
     "dependencies": [

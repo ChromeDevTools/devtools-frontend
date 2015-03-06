@@ -219,6 +219,7 @@ WebInspector.Main.prototype = {
         WebInspector.scriptSnippetModel = new WebInspector.ScriptSnippetModel(WebInspector.workspace);
         WebInspector.extensionServer = new WebInspector.ExtensionServer();
 
+        new WebInspector.OverlayController();
         new WebInspector.ContentScriptProjectDecorator();
         new WebInspector.ExecutionContextSelector();
 
@@ -241,27 +242,20 @@ WebInspector.Main.prototype = {
         this._registerMessageSinkListener();
 
         var appExtension = self.runtime.extensions(WebInspector.AppProvider)[0];
-        appExtension.instancePromise().then(createApp).then(this._initApp.bind(this));
-
-        /**
-         * @param {!Object} appProvider
-         * FIXME: don't save to global WebInspector.app once we split apps to separate modules.
-         */
-        function createApp(appProvider)
-        {
-            WebInspector.app = /** @type {!WebInspector.AppProvider} */ (appProvider).createApp();
-        }
+        appExtension.instancePromise().then(this._showAppUI.bind(this));
     },
 
     /**
+     * @param {!Object} appProvider
      * @suppressGlobalPropertiesCheck
      */
-    _initApp: function()
+    _showAppUI: function(appProvider)
     {
+        var app = /** @type {!WebInspector.AppProvider} */ (appProvider).createApp();
         // It is important to kick controller lifetime after apps are instantiated.
         WebInspector.dockController.initialize();
         console.timeStamp("Main._presentUI");
-        WebInspector.app.presentUI(document);
+        app.presentUI(document);
 
         if (!WebInspector.isWorkerFrontend())
             WebInspector.inspectElementModeController = new WebInspector.InspectElementModeController();
@@ -269,8 +263,23 @@ WebInspector.Main.prototype = {
 
         InspectorFrontendHost.loadCompleted();
 
+        var extensions = self.runtime.extensions(WebInspector.QueryParamHandler);
+        for (var extension of extensions) {
+            var value = Runtime.queryParam(extension.descriptor()["name"]);
+            if (value !== null)
+                extension.instancePromise().then(handleQueryParam.bind(null, value));
+        }
         // Give UI cycles to repaint, then proceed with creating connection.
         setTimeout(this._createConnection.bind(this), 0);
+
+        /**
+         * @param {string} value
+         * @param {!WebInspector.QueryParamHandler} handler
+         */
+        function handleQueryParam(value, handler)
+        {
+            handler.handleQueryParam(value);
+        }
     },
 
     _createConnection: function()
@@ -632,8 +641,8 @@ WebInspector.Main.prototype = {
 
 WebInspector.reload = function()
 {
-    for (var target of WebInspector.targetManager.targets())
-        target.inspectorAgent().reset();
+    if (WebInspector.dockController.canDock() && WebInspector.dockController.dockSide() === WebInspector.DockController.State.Undocked)
+        InspectorFrontendHost.setIsDocked(true, function() {});
     window.top.location.reload();
 }
 
@@ -797,10 +806,6 @@ WebInspector.Main._reloadPage = function(hard)
         return false;
     if (WebInspector.isWorkerFrontend())
         return false;
-
-    var targets = WebInspector.targetManager.targets();
-    for (var i = 0; i < targets.length; ++i)
-        targets[i].debuggerModel.skipAllPauses(true, true);
     WebInspector.targetManager.reloadPage(hard);
     return true;
 }
@@ -907,7 +912,8 @@ WebInspector.Main.InspectedNodeRevealer.prototype = {
      */
     _inspectNode: function(event)
     {
-        WebInspector.Revealer.reveal(/** @type {!WebInspector.DOMNode} */ (event.data));
+        var deferredNode = /** @type {!WebInspector.DeferredDOMNode} */ (event.data);
+        WebInspector.Revealer.reveal(deferredNode);
     }
 }
 

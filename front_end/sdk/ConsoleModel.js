@@ -80,9 +80,6 @@ WebInspector.ConsoleModel.prototype = {
      */
     addMessage: function(msg)
     {
-        if (WebInspector.NetworkManager.hasDevToolsRequestHeader(msg.request))
-            return;
-
         msg.index = this._messages.length;
         this._messages.push(msg);
         this._incrementErrorWarningCount(msg);

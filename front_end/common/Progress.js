@@ -90,6 +90,7 @@ WebInspector.CompositeProgress = function(parent)
     this._childrenDone = 0;
     this._parent.setTotalWork(1);
     this._parent.setWorked(0);
+    // FIXME: there should be no "progress events"
     parent.addEventListener(WebInspector.Progress.Events.Canceled, this._parentCanceled.bind(this));
 }
 
@@ -104,6 +105,7 @@ WebInspector.CompositeProgress.prototype = {
 
     _parentCanceled: function()
     {
+        // FIXME: there should be no "progress events"
         this.dispatchEventToListeners(WebInspector.Progress.Events.Canceled);
         for (var i = 0; i < this._children.length; ++i) {
             this._children[i].dispatchEventToListeners(WebInspector.Progress.Events.Canceled);
@@ -178,6 +180,7 @@ WebInspector.SubProgress.prototype = {
     {
         this.setWorked(this._totalWork);
         this._composite._childDone();
+        // FIXME: there should be no "progress events"
         this.dispatchEventToListeners(WebInspector.Progress.Events.Done);
     },
 
@@ -211,6 +214,68 @@ WebInspector.SubProgress.prototype = {
     worked: function(worked)
     {
         this.setWorked(this._worked + (worked || 1));
+    },
+
+    __proto__: WebInspector.Object.prototype
+}
+
+/**
+ * @constructor
+ * @extends {WebInspector.Object}
+ * @implements {WebInspector.Progress}
+ */
+WebInspector.ProgressStub = function()
+{
+}
+
+WebInspector.ProgressStub.prototype = {
+    /**
+     * @override
+     * @return {boolean}
+     */
+    isCanceled: function()
+    {
+        return false;
+    },
+
+    /**
+     * @override
+     * @param {string} title
+     */
+    setTitle: function(title)
+    {
+    },
+
+    /**
+     * @override
+     */
+    done: function()
+    {
+    },
+
+    /**
+     * @override
+     * @param {number} totalWork
+     */
+    setTotalWork: function(totalWork)
+    {
+    },
+
+    /**
+     * @override
+     * @param {number} worked
+     * @param {string=} title
+     */
+    setWorked: function(worked, title)
+    {
+    },
+
+    /**
+     * @override
+     * @param {number=} worked
+     */
+    worked: function(worked)
+    {
     },
 
     __proto__: WebInspector.Object.prototype

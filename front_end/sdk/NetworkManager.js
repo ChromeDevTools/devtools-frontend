@@ -101,30 +101,52 @@ WebInspector.NetworkManager._MIMETypes = {
     "text/vtt":                    {"texttrack": true},
 }
 
-// Keep in sync with kDevToolsRequestInitiator defined in InspectorResourceAgent.cpp
-WebInspector.NetworkManager._devToolsRequestHeader = "X-DevTools-Request-Initiator";
-
 /**
- * @param {?WebInspector.NetworkRequest} request
- * @return {boolean}
+ * @param {string} url
+ * @param {?Object.<string, string>} headers
+ * @param {function(number, !Object.<string, string>, string)} callback
  */
-WebInspector.NetworkManager.hasDevToolsRequestHeader = function(request)
+WebInspector.NetworkManager.loadResourceForFrontend = function(url, headers, callback)
 {
-    return !!request && !!request.requestHeaderValue(WebInspector.NetworkManager._devToolsRequestHeader);
+    var stream = new WebInspector.StringOutputStream();
+    WebInspector.NetworkManager.loadResourceAsStream(url, headers, stream, mycallback);
+
+    /**
+     * @param {number} statusCode
+     * @param {!Object.<string, string>} headers
+     */
+    function mycallback(statusCode, headers)
+    {
+        callback(statusCode, headers, stream.data());
+    }
 }
 
 /**
  * @param {string} url
- * @param {!NetworkAgent.Headers|undefined} headers
- * @param {function(?Protocol.Error, number, !NetworkAgent.Headers, string)} callback
+ * @param {?Object.<string, string>} headers
+ * @param {!WebInspector.OutputStream} stream
+ * @param {function(number, !Object.<string, string>)=} callback
  */
-WebInspector.NetworkManager.loadResourceForFrontend = function(url, headers, callback)
+WebInspector.NetworkManager.loadResourceAsStream = function(url, headers, stream, callback)
 {
-    var target = WebInspector.targetManager.mainTarget();
-    if (target)
-        target.networkAgent().loadResourceForFrontend(url, headers, callback);
-    else
-        callback("No target to load resource available", 0, {}, "");
+    var rawHeaders = [];
+    if (headers) {
+        for (var key in headers)
+            rawHeaders.push(key + ": " + headers[key]);
+    }
+    var streamId = WebInspector.Streams.bindOutputStream(stream);
+
+    InspectorFrontendHost.loadNetworkResource(url, rawHeaders.join("\r\n"), streamId, mycallback);
+
+    /**
+     * @param {!InspectorFrontendHostAPI.LoadNetworkResourceResult} response
+     */
+    function mycallback(response)
+    {
+        if (callback)
+            callback(response.statusCode, response.headers || {});
+        WebInspector.Streams.discardOutputStream(streamId);
+    }
 }
 
 WebInspector.NetworkManager.prototype = {

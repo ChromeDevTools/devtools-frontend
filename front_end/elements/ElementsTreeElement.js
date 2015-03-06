@@ -232,16 +232,6 @@ WebInspector.ElementsTreeElement.prototype = {
         if (!listItemElement)
             return;
 
-        if (!this._readyToUpdateSelection) {
-            if (listItemElement.ownerDocument.body.offsetWidth > 0)
-                this._readyToUpdateSelection = true;
-            else {
-                // The stylesheet hasn't loaded yet or the window is closed,
-                // so we can't calculate what we need. Return early.
-                return;
-            }
-        }
-
         if (!this.selectionElement) {
             this.selectionElement = createElement("div");
             this.selectionElement.className = "selection selected";
@@ -669,7 +659,7 @@ WebInspector.ElementsTreeElement.prototype = {
 
         var attributeValue = attributeName && attributeValueElement ? this._node.getAttribute(attributeName) : undefined;
         if (attributeValue !== undefined)
-            attributeValueElement.textContent = attributeValue;
+            attributeValueElement.setTextContentTruncatedIfNeeded(attributeValue, WebInspector.UIString("<value is too large to edit>"));
 
         // Remove zero-width spaces that were added by nodeTitleInfo.
         removeZeroWidthSpaceRecursive(attribute);
@@ -1168,7 +1158,7 @@ WebInspector.ElementsTreeElement.prototype = {
                 result.entityRanges[highlightIndex].offset += additionalHighlightOffset;
                 ++highlightIndex;
             }
-            element.textContent = value;
+            element.setTextContentTruncatedIfNeeded(value);
             WebInspector.highlightRangesWithStyleClass(element, result.entityRanges, "webkit-html-entity-value");
         }
 

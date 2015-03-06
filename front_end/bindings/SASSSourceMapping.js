@@ -98,7 +98,7 @@ WebInspector.SASSSourceMapping.prototype = {
 
     /**
      * @param {string} headerName
-     * @param {!NetworkAgent.Headers} headers
+     * @param {!Object.<string, string>} headers
      * @return {?string}
      */
     _headerValue: function(headerName, headers)
@@ -115,7 +115,7 @@ WebInspector.SASSSourceMapping.prototype = {
     },
 
     /**
-     * @param {!NetworkAgent.Headers} headers
+     * @param {!Object.<string, string>} headers
      * @return {?Date}
      */
     _lastModified: function(headers)
@@ -130,7 +130,7 @@ WebInspector.SASSSourceMapping.prototype = {
     },
 
     /**
-     * @param {!NetworkAgent.Headers} headers
+     * @param {!Object.<string, string>} headers
      * @param {string} url
      * @return {?Date}
      */
@@ -163,19 +163,18 @@ WebInspector.SASSSourceMapping.prototype = {
         if (wasLoadedFromFileSystem)
             sassFile.requestMetadata(metadataReceived.bind(this));
         else
-            WebInspector.NetworkManager.loadResourceForFrontend(sassURL, undefined, sassLoadedViaNetwork.bind(this));
+            WebInspector.NetworkManager.loadResourceForFrontend(sassURL, null, sassLoadedViaNetwork.bind(this));
 
         /**
-         * @param {?Protocol.Error} error
          * @param {number} statusCode
-         * @param {!NetworkAgent.Headers} headers
+         * @param {!Object.<string, string>} headers
          * @param {string} content
          * @this {WebInspector.SASSSourceMapping}
          */
-        function sassLoadedViaNetwork(error, statusCode, headers, content)
+        function sassLoadedViaNetwork(statusCode, headers, content)
         {
-            if (error || statusCode >= 400) {
-                console.error("Could not load content for " + sassURL + " : " + (error || ("HTTP status code: " + statusCode)));
+            if (statusCode >= 400) {
+                console.error("Could not load content for " + sassURL + " : " + "HTTP status code: " + statusCode);
                 return;
             }
             var lastModified = this._checkLastModified(headers, sassURL);
@@ -287,16 +286,15 @@ WebInspector.SASSSourceMapping.prototype = {
         WebInspector.NetworkManager.loadResourceForFrontend(cssURL, headers, contentLoaded.bind(this));
 
         /**
-         * @param {?Protocol.Error} error
          * @param {number} statusCode
-         * @param {!NetworkAgent.Headers} headers
+         * @param {!Object.<string, string>} headers
          * @param {string} content
          * @this {WebInspector.SASSSourceMapping}
          */
-        function contentLoaded(error, statusCode, headers, content)
+        function contentLoaded(statusCode, headers, content)
         {
-            if (error || statusCode >= 400) {
-                console.error("Could not load content for " + cssURL + " : " + (error || ("HTTP status code: " + statusCode)));
+            if (statusCode >= 400) {
+                console.error("Could not load content for " + cssURL + " : " + "HTTP status code: " + statusCode);
                 callback(cssURL, sassURL, true);
                 return;
             }

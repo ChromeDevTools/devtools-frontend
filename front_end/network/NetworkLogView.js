@@ -1213,8 +1213,7 @@ WebInspector.NetworkLogView.prototype = {
     {
         var requests = this._nodesByRequestId.valuesArray().map(function(node) { return node.request(); });
         var httpRequests = requests.filter(WebInspector.NetworkLogView.HTTPRequestsFilter);
-        httpRequests = httpRequests.filter(WebInspector.NetworkLogView.FinishedRequestsFilter);
-        return httpRequests.filter(WebInspector.NetworkLogView.NonDevToolsRequestsFilter);
+        return httpRequests.filter(WebInspector.NetworkLogView.FinishedRequestsFilter);
     },
 
     _copyAll: function()
@@ -1944,15 +1943,6 @@ WebInspector.NetworkLogView._statusCodeFilter = function(value, request)
 WebInspector.NetworkLogView.HTTPRequestsFilter = function(request)
 {
     return request.parsedURL.isValid && (request.scheme in WebInspector.NetworkLogView.HTTPSchemas);
-}
-
-/**
- * @param {!WebInspector.NetworkRequest} request
- * @return {boolean}
- */
-WebInspector.NetworkLogView.NonDevToolsRequestsFilter = function(request)
-{
-    return !WebInspector.NetworkManager.hasDevToolsRequestHeader(request);
 }
 
 /**

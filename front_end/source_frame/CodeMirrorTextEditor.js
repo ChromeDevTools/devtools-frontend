@@ -121,9 +121,9 @@ WebInspector.CodeMirrorTextEditor = function(url, delegate)
         fallthrough: "devtools-common"
     };
 
-    WebInspector.settings.textEditorIndent.addChangeListener(this._updateEditorIndentation, this);
-    WebInspector.settings.textEditorAutoDetectIndent.addChangeListener(this._updateEditorIndentation, this);
-    this._updateEditorIndentation();
+    WebInspector.settings.textEditorIndent.addChangeListener(this._onUpdateEditorIndentation, this);
+    WebInspector.settings.textEditorAutoDetectIndent.addChangeListener(this._onUpdateEditorIndentation, this);
+    this._onUpdateEditorIndentation();
     WebInspector.settings.showWhitespacesInEditor.addChangeListener(this._updateCodeMirrorMode, this);
     WebInspector.settings.textEditorBracketMatching.addChangeListener(this._enableBracketMatchingIfNeeded, this);
     this._enableBracketMatchingIfNeeded();
@@ -333,6 +333,51 @@ CodeMirror.commands.dismissMultipleSelections = function(codemirror)
 WebInspector.CodeMirrorTextEditor.LongLineModeLineLengthThreshold = 2000;
 WebInspector.CodeMirrorTextEditor.MaximumNumberOfWhitespacesPerSingleSpan = 16;
 WebInspector.CodeMirrorTextEditor.MaxEditableTextSize = 1024 * 1024 * 10;
+
+WebInspector.CodeMirrorTextEditor.LinesToScanForIndentationGuessing = 1000;
+
+/**
+ * @param {!Array.<string>} lines
+ * @return {string}
+ */
+WebInspector.CodeMirrorTextEditor._guessIndentationLevel = function(lines)
+{
+    var tabRegex = /^\t+/;
+    var tabLines = 0;
+    var indents = {};
+
+    for (var lineNumber = 0; lineNumber < lines.length; ++lineNumber) {
+        var text = lines[lineNumber];
+        if (text.length === 0 || !WebInspector.TextUtils.isSpaceChar(text[0]))
+            continue;
+        if (tabRegex.test(text)) {
+            ++tabLines;
+            continue;
+        }
+        var i = 0;
+        while (i < text.length && WebInspector.TextUtils.isSpaceChar(text[i]))
+            ++i;
+        if (i % 2 !== 0)
+            continue;
+        indents[i] = 1 + (indents[i] || 0);
+    }
+
+    var linesCountPerIndentThreshold = 3 * lines.length / 100;
+    if (tabLines && tabLines > linesCountPerIndentThreshold)
+        return "\t";
+    var minimumIndent = Infinity;
+    for (var i in indents) {
+        if (indents[i] < linesCountPerIndentThreshold)
+            continue;
+        var indent = parseInt(i, 10);
+        if (minimumIndent > indent)
+            minimumIndent = indent;
+    }
+    if (minimumIndent === Infinity)
+        return WebInspector.settings.textEditorIndent.get();
+    return " ".repeat(minimumIndent);
+}
+
 
 WebInspector.CodeMirrorTextEditor.prototype = {
     /**
@@ -546,8 +591,8 @@ WebInspector.CodeMirrorTextEditor.prototype = {
 
     dispose: function()
     {
-        WebInspector.settings.textEditorIndent.removeChangeListener(this._updateEditorIndentation, this);
-        WebInspector.settings.textEditorAutoDetectIndent.removeChangeListener(this._updateEditorIndentation, this);
+        WebInspector.settings.textEditorIndent.removeChangeListener(this._onUpdateEditorIndentation, this);
+        WebInspector.settings.textEditorAutoDetectIndent.removeChangeListener(this._onUpdateEditorIndentation, this);
         WebInspector.settings.showWhitespacesInEditor.removeChangeListener(this._updateCodeMirrorMode, this);
         WebInspector.settings.textEditorBracketMatching.removeChangeListener(this._enableBracketMatchingIfNeeded, this);
         WebInspector.settings.textEditorAutocompletion.removeChangeListener(this._enableAutocompletionIfNeeded, this);
@@ -577,52 +622,20 @@ WebInspector.CodeMirrorTextEditor.prototype = {
         delete this._editorSizeInSync;
     },
 
-    _guessIndentationLevel: function()
+    _onUpdateEditorIndentation: function()
     {
-        var tabRegex = /^\t+/;
-        var tabLines = 0;
-        var indents = {};
-        var maxScanLines = 1000;
-        function processLine(lineHandle)
-        {
-            var text = lineHandle.text;
-            if (text.length === 0 || !WebInspector.TextUtils.isSpaceChar(text[0]))
-                return;
-            if (tabRegex.test(text)) {
-                ++tabLines;
-                return;
-            }
-            var i = 0;
-            while (i < text.length && WebInspector.TextUtils.isSpaceChar(text[i]))
-                ++i;
-            if (i % 2 !== 0)
-                return;
-            indents[i] = 1 + (indents[i] || 0);
-        }
-        this._codeMirror.eachLine(0, maxScanLines, processLine);
-
-        var linesCountPerIndentThreshold = 3 * Math.min(maxScanLines, this.linesCount) / 100;
-        if (tabLines && tabLines > linesCountPerIndentThreshold)
-            return "\t";
-        var minimumIndent = Infinity;
-        for (var i in indents) {
-            if (indents[i] < linesCountPerIndentThreshold)
-                continue;
-            var indent = parseInt(i, 10);
-            if (minimumIndent > indent)
-                minimumIndent = indent;
-        }
-        if (minimumIndent === Infinity)
-            return WebInspector.settings.textEditorIndent.get();
-        return new Array(minimumIndent + 1).join(" ");
+        this._setEditorIndentation(WebInspector.CodeMirrorUtils.pullLines(this._codeMirror, WebInspector.CodeMirrorTextEditor.LinesToScanForIndentationGuessing));
     },
 
-    _updateEditorIndentation: function()
+    /**
+     * @param {!Array.<string>} lines
+     */
+    _setEditorIndentation: function(lines)
     {
         var extraKeys = {};
         var indent = WebInspector.settings.textEditorIndent.get();
         if (WebInspector.settings.textEditorAutoDetectIndent.get())
-            indent = this._guessIndentationLevel();
+            indent = WebInspector.CodeMirrorTextEditor._guessIndentationLevel(lines);
         if (indent === WebInspector.TextUtils.Indent.TabCharacter) {
             this._codeMirror.setOption("indentWithTabs", true);
             this._codeMirror.setOption("indentUnit", 4);
@@ -1225,7 +1238,7 @@ WebInspector.CodeMirrorTextEditor.prototype = {
         var newRange = WebInspector.CodeMirrorUtils.toRange(pos.start, this._codeMirror.posFromIndex(this._codeMirror.indexFromPos(pos.start) + text.length));
         this._delegate.onTextChanged(range, newRange);
         if (WebInspector.settings.textEditorAutoDetectIndent.get())
-            this._updateEditorIndentation();
+            this._onUpdateEditorIndentation();
         return newRange;
     },
 
@@ -1435,8 +1448,9 @@ WebInspector.CodeMirrorTextEditor.prototype = {
             this._autocompleteController.setEnabled(false);
             this.setReadOnly(true);
         }
+
+        this._setEditorIndentation(text.split("\n").slice(0, WebInspector.CodeMirrorTextEditor.LinesToScanForIndentationGuessing));
         this._codeMirror.setValue(text);
-        this._updateEditorIndentation();
         if (this._shouldClearHistory) {
             this._codeMirror.clearHistory();
             this._shouldClearHistory = false;

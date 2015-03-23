@@ -30,28 +30,64 @@
 
 /**
  * @constructor
- * @extends {WebInspector.Object}
+ * @extends {WebInspector.SDKObject}
  * @param {!WebInspector.Target} target
- * @param {boolean} isMainFrontend
  */
-WebInspector.WorkerManager = function(target, isMainFrontend)
+WebInspector.WorkerManager = function(target)
 {
+    WebInspector.SDKObject.call(this, target);
     target.registerWorkerDispatcher(new WebInspector.WorkerDispatcher(this));
-    if (isMainFrontend) {
-        target.workerAgent().enable();
-        target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._mainFrameNavigated, this);
-    }
-}
+    this._lastAnonymousTargetId = 0;
+    /** @type {!Map.<string, !WebInspector.WorkerConnection>} */
+    this._connections = new Map();
 
-WebInspector.WorkerManager.Events = {
-    WorkerAdded: "WorkerAdded",
-    WorkerRemoved: "WorkerRemoved",
-    WorkersCleared: "WorkersCleared",
-    WorkerDisconnected: "WorkerDisconnected",
-    MessageFromWorker: "MessageFromWorker",
+    /** @type {!Map.<string, !WebInspector.Target>} */
+    this._targetsByWorkerId = new Map();
+
+    WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
+    this._onSuspendStateChanged();
+    this.enable();
 }
 
 WebInspector.WorkerManager.prototype = {
+    enable: function()
+    {
+        if (this._enabled)
+            return;
+        this._enabled = true;
+
+        this.target().workerAgent().enable();
+        this.target().resourceTreeModel.addEventListener(WebInspector.TargetManager.Events.MainFrameNavigated, this._mainFrameNavigated, this);
+    },
+
+    disable: function()
+    {
+        if (!this._enabled)
+            return;
+        this._enabled = false;
+        this._reset();
+        this.target().workerAgent().disable();
+        this.target().resourceTreeModel.removeEventListener(WebInspector.TargetManager.Events.MainFrameNavigated, this._mainFrameNavigated, this);
+    },
+
+    dispose: function()
+    {
+        this._reset();
+    },
+
+    _reset: function()
+    {
+        for (var connection of this._connections.values())
+            connection._close();
+        this._connections.clear();
+        this._targetsByWorkerId.clear();
+    },
+
+    _onSuspendStateChanged: function()
+    {
+        var suspended = WebInspector.targetManager.allTargetsSuspended();
+        this.target().workerAgent().setAutoconnectToWorkers(!suspended);
+    },
 
     /**
      * @param {string} workerId
@@ -60,15 +96,61 @@ WebInspector.WorkerManager.prototype = {
      */
     _workerCreated: function(workerId, url, inspectorConnected)
     {
-        this.dispatchEventToListeners(WebInspector.WorkerManager.Events.WorkerAdded, {workerId: workerId, url: url, inspectorConnected: inspectorConnected});
-     },
+        var connection = new WebInspector.WorkerConnection(this, workerId, inspectorConnected, onConnectionReady.bind(this));
+        this._connections.set(workerId, connection);
+
+        /**
+         * @param {!InspectorBackendClass.Connection} connection
+         * @this {WebInspector.WorkerManager}
+         */
+        function onConnectionReady(connection)
+        {
+            var parsedURL = url.asParsedURL();
+            var workerName = parsedURL ? parsedURL.lastPathComponentWithFragment() : "#" + (++this._lastAnonymousTargetId);
+            var title = WebInspector.UIString("\u2699 %s", workerName);
+            WebInspector.targetManager.createTarget(title, WebInspector.Target.Type.DedicatedWorker, connection, this.target(), targetCreated.bind(this));
+        }
+
+        /**
+         * @param {?WebInspector.Target} target
+         * @this {WebInspector.WorkerManager}
+         */
+        function targetCreated(target)
+        {
+            if (!target)
+                return;
+            this._targetsByWorkerId.set(workerId, target);
+
+            if (inspectorConnected)
+                target.runtimeAgent().isRunRequired(pauseInDebuggerAndRunIfRequired.bind(null, target));
+        }
+
+        /**
+         * @param {!WebInspector.Target} target
+         * @param {?Protocol.Error} error
+         * @param {boolean} required
+         */
+        function pauseInDebuggerAndRunIfRequired(target, error, required)
+        {
+            // Only pause new worker if debugging SW - we are going through the
+            // pause on start checkbox.
+            var mainIsServiceWorker = WebInspector.targetManager.mainTarget().isServiceWorker();
+            if (mainIsServiceWorker && required)
+                target.debuggerAgent().pause();
+            target.runtimeAgent().run();
+        }
+    },
 
     /**
      * @param {string} workerId
      */
     _workerTerminated: function(workerId)
     {
-        this.dispatchEventToListeners(WebInspector.WorkerManager.Events.WorkerRemoved, workerId);
+        var connection = this._connections.get(workerId);
+        if (connection)
+            connection._close();
+        this._connections.delete(workerId);
+        this._targetsByWorkerId.delete(workerId);
     },
 
     /**
@@ -77,12 +159,9 @@ WebInspector.WorkerManager.prototype = {
      */
     _dispatchMessageFromWorker: function(workerId, message)
     {
-        this.dispatchEventToListeners(WebInspector.WorkerManager.Events.MessageFromWorker, {workerId: workerId, message: message});
-    },
-
-    _disconnectedFromWorker: function()
-    {
-        this.dispatchEventToListeners(WebInspector.WorkerManager.Events.WorkerDisconnected);
+        var connection = this._connections.get(workerId);
+        if (connection)
+            connection.dispatch(message);
     },
 
     /**
@@ -90,10 +169,19 @@ WebInspector.WorkerManager.prototype = {
      */
     _mainFrameNavigated: function(event)
     {
-        this.dispatchEventToListeners(WebInspector.WorkerManager.Events.WorkersCleared);
+        this._reset();
     },
 
-    __proto__: WebInspector.Object.prototype
+    /**
+     * @param {string} workerId
+     * @return {?WebInspector.Target}
+     */
+    targetByWorkerId: function(workerId)
+    {
+        return this._targetsByWorkerId.get(workerId) || null;
+    },
+
+    __proto__: WebInspector.SDKObject.prototype
 }
 
 /**
@@ -134,13 +222,46 @@ WebInspector.WorkerDispatcher.prototype = {
     dispatchMessageFromWorker: function(workerId, message)
     {
         this._workerManager._dispatchMessageFromWorker(workerId, message);
-    },
+    }
+}
 
+/**
+ * @constructor
+ * @extends {InspectorBackendClass.Connection}
+ * @param {!WebInspector.WorkerManager} workerManager
+ * @param {string} workerId
+ * @param {boolean} inspectorConnected
+ * @param {function(!InspectorBackendClass.Connection)} onConnectionReady
+ */
+WebInspector.WorkerConnection = function(workerManager, workerId, inspectorConnected, onConnectionReady)
+{
+    InspectorBackendClass.Connection.call(this);
+    //FIXME: remove resourceTreeModel and others from worker targets
+    this.suppressErrorsForDomains(["Worker", "Page", "CSS", "DOM", "DOMStorage", "Database", "Network", "IndexedDB", "ServiceWorkerCache"]);
+    this._agent = workerManager.target().workerAgent();
+    this._workerId = workerId;
+
+
+    if (!inspectorConnected)
+        this._agent.connectToWorker(workerId, onConnectionReady.bind(null, this));
+    else
+        onConnectionReady.call(null, this);
+}
+
+WebInspector.WorkerConnection.prototype = {
     /**
      * @override
+     * @param {!Object} messageObject
      */
-    disconnectedFromWorker: function()
+    sendMessage: function(messageObject)
     {
-        this._workerManager._disconnectedFromWorker();
-    }
+        this._agent.sendMessageToWorker(this._workerId, JSON.stringify(messageObject));
+    },
+
+    _close: function()
+    {
+        this.connectionClosed("worker_terminated");
+    },
+
+    __proto__: InspectorBackendClass.Connection.prototype
 }

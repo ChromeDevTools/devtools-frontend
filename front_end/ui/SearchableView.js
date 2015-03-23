@@ -73,7 +73,11 @@ WebInspector.SearchableView = function(searchable, settingName)
     // Column 1
     var searchControlElementColumn = this._firstRowElement.createChild("td");
     this._searchControlElement = searchControlElementColumn.createChild("span", "toolbar-search-control");
-    this._searchInputElement = this._searchControlElement.createChild("input", "search-replace");
+
+    this._searchInputElement = WebInspector.HistoryInput.create();
+    this._searchInputElement.classList.add("search-replace");
+    this._searchControlElement.appendChild(this._searchInputElement);
+
     this._searchInputElement.id = "search-input-field";
     this._searchInputElement.placeholder = WebInspector.UIString("Find");
 

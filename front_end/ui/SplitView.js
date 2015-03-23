@@ -820,7 +820,7 @@ WebInspector.SplitView.prototype = {
     _restoreAndApplyShowModeFromSettings: function()
     {
         var orientationState = this._settingForOrientation();
-        this._savedShowMode = orientationState ? orientationState.showMode : WebInspector.SplitView.ShowMode.Both;
+        this._savedShowMode = orientationState && orientationState.showMode ? orientationState.showMode : WebInspector.SplitView.ShowMode.Both;
         this._showMode = this._savedShowMode;
 
         switch (this._savedShowMode) {

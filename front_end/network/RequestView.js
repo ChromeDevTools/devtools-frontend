@@ -68,7 +68,7 @@ WebInspector.RequestView.nonSourceViewForRequest = function(request)
     case WebInspector.resourceTypes.Image:
         return new WebInspector.ImageView(request.url, request.mimeType, request);
     case WebInspector.resourceTypes.Font:
-        return new WebInspector.FontView(request.url);
+        return new WebInspector.FontView(request.url, request.mimeType, request);
     default:
         return new WebInspector.RequestView(request);
     }

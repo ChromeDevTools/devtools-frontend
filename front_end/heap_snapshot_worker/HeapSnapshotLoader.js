@@ -196,10 +196,15 @@ WebInspector.HeapSnapshotLoader.prototype = {
                 this._snapshot.edges = this._array;
                 this._array = null;
                 // If there is allocation info parse it, otherwise jump straight to strings.
-                if (this._snapshot.snapshot.trace_function_count)
+                if (this._snapshot.snapshot.trace_function_count) {
                     this._state = "find-trace-function-infos";
-                else
+                    this._progress.updateStatus("Loading allocation traces\u2026");
+                } else if (this._snapshot.snapshot.meta.sample_fields) {
+                    this._state = "find-samples";
+                    this._progress.updateStatus("Loading samples\u2026");
+                } else {
                     this._state = "find-strings";
+                }
                 break;
             }
             case "find-trace-function-infos": {
@@ -240,13 +245,42 @@ WebInspector.HeapSnapshotLoader.prototype = {
                 break;
             }
             case "parse-trace-tree": {
-                var stringsToken = "\"strings\"";
-                var stringsTokenIndex = this._json.indexOf(stringsToken);
-                if (stringsTokenIndex === -1)
+                // If there is samples array parse it, otherwise jump straight to strings.
+                var nextToken = this._snapshot.snapshot.meta.sample_fields ? "\"samples\"" : "\"strings\"";
+                var nextTokenIndex = this._json.indexOf(nextToken);
+                if (nextTokenIndex === -1)
                     return;
-                var bracketIndex = this._json.lastIndexOf("]", stringsTokenIndex);
+                var bracketIndex = this._json.lastIndexOf("]", nextTokenIndex);
                 this._snapshot.trace_tree = JSON.parse(this._json.substring(0, bracketIndex + 1));
-                this._json = this._json.slice(bracketIndex);
+                this._json = this._json.slice(bracketIndex + 1);
+                if (this._snapshot.snapshot.meta.sample_fields) {
+                    this._state = "find-samples";
+                    this._progress.updateStatus("Loading samples\u2026");
+                } else {
+                    this._state = "find-strings";
+                    this._progress.updateStatus("Loading strings\u2026");
+                }
+                break;
+            }
+            case "find-samples": {
+                var samplesToken = "\"samples\"";
+                var samplesTokenIndex = this._json.indexOf(samplesToken);
+                if (samplesTokenIndex === -1)
+                    return;
+                var bracketIndex = this._json.indexOf("[", samplesTokenIndex);
+                if (bracketIndex === -1)
+                    return;
+                this._json = this._json.slice(bracketIndex + 1);
+                this._array = [];
+                this._arrayIndex = 0;
+                this._state = "parse-samples";
+                break;
+            }
+            case "parse-samples": {
+                if (this._parseUintArray())
+                    return;
+                this._snapshot.samples = this._array;
+                this._array = null;
                 this._state = "find-strings";
                 this._progress.updateStatus("Loading strings\u2026");
                 break;

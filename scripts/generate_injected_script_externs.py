@@ -73,34 +73,6 @@ other_externs = """
 var inspectedWindow;
 /** @type {number} */
 var injectedScriptId;
-
-// FIXME: Remove once ES6 is supported natively by JS compiler.
-
-/** @typedef {string} */
-var symbol;
-
-/**
- * @param {string} description
- * @return {symbol}
- */
-function Symbol(description) {}
-
-/**
- * @interface
- * @extends $jscomp.Iterable.<T>
- * @template T
- */
-var Iterator = function() { }
-
-Iterator.prototype = {
-    /**
-     * @return {{done: boolean, value: (T|undefined)}}
-     */
-    next: function() { },
-
-    // FIXME: This should be removed once transpilation is not required for closure compiler ES6
-    $$iterator: function() { }
-}
 """
 
 

@@ -895,6 +895,10 @@ WebInspector.HeapSnapshot = function(profile, progress)
     this.containmentEdges = profile.edges;
     /** @type {!HeapSnapshotMetainfo} */
     this._metaNode = profile.snapshot.meta;
+    /** @type {!Array.<number>} */
+    this._rawSamples = profile.samples;
+    /** @type {?WebInspector.HeapSnapshotCommon.Samples} */
+    this._samples = null;
     /** @type {!Array.<string>} */
     this.strings = profile.strings;
     this._progress = progress;
@@ -945,6 +949,7 @@ function HeapSnapshotMetainfo()
     this.edge_types = [];
     this.trace_function_info_fields = [];
     this.trace_node_fields = [];
+    this.sample_fields = [];
     this.type_strings = {};
 }
 
@@ -958,6 +963,7 @@ function HeapSnapshotHeader()
     this.meta = new HeapSnapshotMetainfo();
     this.node_count = 0;
     this.edge_count = 0;
+    this.trace_function_count = 0;
 }
 
 WebInspector.HeapSnapshot.prototype = {
@@ -1028,6 +1034,8 @@ WebInspector.HeapSnapshot.prototype = {
         this._buildDominatedNodes();
         this._progress.updateStatus("Calculating statistics\u2026");
         this._calculateStatistics();
+        this._progress.updateStatus("Calculating samples\u2026");
+        this._buildSamples();
         this._progress.updateStatus("Finished processing.");
     },
 
@@ -1916,6 +1924,53 @@ WebInspector.HeapSnapshot.prototype = {
             dominatedRefIndex += (--dominatedNodes[dominatedRefIndex]);
             dominatedNodes[dominatedRefIndex] = nodeOrdinal * nodeFieldCount;
         }
+    },
+
+    _buildSamples: function()
+    {
+        var samples = this._rawSamples;
+        if (!samples || !samples.length)
+            return;
+        var sampleCount = samples.length / 2;
+        var sizeForRange = new Array(sampleCount);
+        var timestamps = new Array(sampleCount);
+        var lastAssignedIds = new Array(sampleCount);
+
+        var timestampOffset = this._metaNode.sample_fields.indexOf("timestamp_us");
+        var lastAssignedIdOffset = this._metaNode.sample_fields.indexOf("last_assigned_id");
+        for (var i = 0; i < sampleCount; i++) {
+            sizeForRange[i] = 0;
+            timestamps[i] = (samples[2 * i + timestampOffset]) / 1000;
+            lastAssignedIds[i] = samples[2 * i + lastAssignedIdOffset];
+        }
+
+        var nodes = this.nodes;
+        var nodesLength = nodes.length;
+        var nodeFieldCount = this._nodeFieldCount;
+        var node = this.rootNode();
+        for (var nodeIndex = 0; nodeIndex < nodesLength; nodeIndex += nodeFieldCount) {
+            node.nodeIndex = nodeIndex;
+
+            var nodeId = node.id();
+            // JS objects have odd ids, skip native objects.
+            if (nodeId % 2 === 0)
+                continue;
+            var rangeIndex = lastAssignedIds.lowerBound(nodeId);
+            if (rangeIndex === sampleCount) {
+                // TODO: make heap profiler not allocate while taking snapshot
+                continue;
+            }
+            sizeForRange[rangeIndex] += node.selfSize();
+        }
+        this._samples = new WebInspector.HeapSnapshotCommon.Samples(timestamps, lastAssignedIds, sizeForRange);
+    },
+
+    /**
+     * @return {?WebInspector.HeapSnapshotCommon.Samples}
+     */
+    getSamples: function()
+    {
+        return this._samples;
     },
 
     _calculateFlags: function()

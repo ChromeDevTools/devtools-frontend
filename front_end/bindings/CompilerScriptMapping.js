@@ -88,7 +88,7 @@ WebInspector.CompilerScriptMapping.prototype = {
         if (!entry || entry.length === 2)
             return null;
         var url = /** @type {string} */ (entry[2]);
-        var uiSourceCode = this._networkMapping.uiSourceCodeForURL(url);
+        var uiSourceCode = this._networkMapping.uiSourceCodeForURL(url, this._target);
         if (!uiSourceCode)
             return null;
         return uiSourceCode.uiLocation(/** @type {number} */ (entry[3]), /** @type {number} */ (entry[4]));
@@ -194,11 +194,11 @@ WebInspector.CompilerScriptMapping.prototype = {
             if (this._sourceMapForURL.get(sourceURL))
                 continue;
             this._sourceMapForURL.set(sourceURL, sourceMap);
-            if (!this._networkMapping.hasMappingForURL(sourceURL) && !this._networkMapping.uiSourceCodeForURL(sourceURL)) {
+            if (!this._networkMapping.hasMappingForURL(sourceURL) && !this._networkMapping.uiSourceCodeForURL(sourceURL, script.target())) {
                 var contentProvider = sourceMap.sourceContentProvider(sourceURL, WebInspector.resourceTypes.Script);
                 this._networkProject.addFileForURL(sourceURL, contentProvider, script.isContentScript());
             }
-            var uiSourceCode = this._networkMapping.uiSourceCodeForURL(sourceURL);
+            var uiSourceCode = this._networkMapping.uiSourceCodeForURL(sourceURL, this._target);
             if (uiSourceCode) {
                 this._bindUISourceCode(uiSourceCode);
             } else {
@@ -279,7 +279,7 @@ WebInspector.CompilerScriptMapping.prototype = {
     {
         // script.sourceURL can be a random string, but is generally an absolute path -> complete it to inspected page url for
         // relative links.
-        var scriptURL = WebInspector.ParsedURL.completeURL(script.target().resourceTreeModel.inspectedPageURL(), script.sourceURL);
+        var scriptURL = WebInspector.ParsedURL.completeURL(this._target.resourceTreeModel.inspectedPageURL(), script.sourceURL);
         if (!scriptURL) {
             callback(null);
             return;
@@ -337,7 +337,7 @@ WebInspector.CompilerScriptMapping.prototype = {
          */
         function unbindUISourceCodeForURL(sourceURL)
         {
-            var uiSourceCode = this._networkMapping.uiSourceCodeForURL(sourceURL);
+            var uiSourceCode = this._networkMapping.uiSourceCodeForURL(sourceURL, this._target);
             if (!uiSourceCode)
                 return;
             this._unbindUISourceCode(uiSourceCode);

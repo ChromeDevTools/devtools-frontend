@@ -29,7 +29,7 @@
 
 /**
  * @param {!Array.<number>} rgba
- * @param {string=} format
+ * @param {!WebInspector.Color.Format} format
  * @param {string=} originalText
  * @constructor
  */
@@ -37,7 +37,7 @@ WebInspector.Color = function(rgba, format, originalText)
 {
     this._rgba = rgba;
     this._originalText = originalText || null;
-    this._format = format || null;
+    this._format = format;
     if (typeof this._rgba[3] === "undefined")
         this._rgba[3] = 1;
     for (var i = 0; i < 4; ++i) {
@@ -46,6 +46,20 @@ WebInspector.Color = function(rgba, format, originalText)
         if (this._rgba[i] > 1)
             this._rgba[i] = 1;
     }
+}
+
+/**
+ * @enum {string}
+ */
+WebInspector.Color.Format = {
+    Original: "original",
+    Nickname: "nickname",
+    HEX: "hex",
+    ShortHEX: "shorthex",
+    RGB: "rgb",
+    RGBA: "rgba",
+    HSL: "hsl",
+    HSLA: "hsla"
 }
 
 /**
@@ -87,7 +101,7 @@ WebInspector.Color.parse = function(text)
                 var rgba = WebInspector.Color.Nicknames[nickname];
                 var color = WebInspector.Color.fromRGBA(rgba);
                 color._format = WebInspector.Color.Format.Nickname;
-                color._originalText = nickname;
+                color._originalText = text;
                 return color;
             }
             return null;
@@ -138,7 +152,7 @@ WebInspector.Color.parse = function(text)
  */
 WebInspector.Color.fromRGBA = function(rgba)
 {
-    return new WebInspector.Color([rgba[0] / 255, rgba[1] / 255, rgba[2] / 255, rgba[3]]);
+    return new WebInspector.Color([rgba[0] / 255, rgba[1] / 255, rgba[2] / 255, rgba[3]], WebInspector.Color.Format.RGBA);
 }
 
 /**
@@ -163,7 +177,7 @@ WebInspector.Color.fromHSVA = function(hsva)
 
 WebInspector.Color.prototype = {
     /**
-     * @return {?string}
+     * @return {!WebInspector.Color.Format}
      */
     format: function()
     {
@@ -365,7 +379,7 @@ WebInspector.Color.prototype = {
         rgba[1] = 1 - this._rgba[1];
         rgba[2] = 1 - this._rgba[2];
         rgba[3] = this._rgba[3];
-        return new WebInspector.Color(rgba);
+        return new WebInspector.Color(rgba, WebInspector.Color.Format.RGBA);
     },
 
     /**
@@ -376,7 +390,7 @@ WebInspector.Color.prototype = {
      {
          var rgba = this._rgba.slice();
          rgba[3] = alpha;
-         return new WebInspector.Color(rgba);
+         return new WebInspector.Color(rgba, WebInspector.Color.Format.RGBA);
      }
 }
 
@@ -633,18 +647,4 @@ WebInspector.Color.PageHighlight = {
     EventTarget: WebInspector.Color.fromRGBA([255, 196, 196, .66]),
     Shape: WebInspector.Color.fromRGBA([96, 82, 177, 0.8]),
     ShapeMargin: WebInspector.Color.fromRGBA([96, 82, 127, .6])
-}
-
-/**
- * @enum {string}
- */
-WebInspector.Color.Format = {
-    Original: "original",
-    Nickname: "nickname",
-    HEX: "hex",
-    ShortHEX: "shorthex",
-    RGB: "rgb",
-    RGBA: "rgba",
-    HSL: "hsl",
-    HSLA: "hsla"
 }

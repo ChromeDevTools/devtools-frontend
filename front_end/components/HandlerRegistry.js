@@ -180,7 +180,7 @@ WebInspector.HandlerRegistry.prototype = {
         if (!resourceURL)
             return;
 
-        var uiSourceCode = WebInspector.networkMapping.uiSourceCodeForURL(resourceURL);
+        var uiSourceCode = WebInspector.networkMapping.uiSourceCodeForURLForAnyTarget(resourceURL);
         function open()
         {
             WebInspector.Revealer.reveal(uiSourceCode);

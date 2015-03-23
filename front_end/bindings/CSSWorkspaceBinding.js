@@ -5,21 +5,20 @@
 /**
  * @constructor
  * @implements {WebInspector.TargetManager.Observer}
+ * @param {!WebInspector.TargetManager} targetManager
  * @param {!WebInspector.Workspace} workspace
  * @param {!WebInspector.NetworkMapping} networkMapping
- * @param {!WebInspector.NetworkProject} networkProject
  */
-WebInspector.CSSWorkspaceBinding = function(workspace, networkMapping, networkProject)
+WebInspector.CSSWorkspaceBinding = function(targetManager, workspace, networkMapping)
 {
     this._workspace = workspace;
     this._networkMapping = networkMapping;
-    this._networkProject = networkProject;
 
     /** @type {!Map.<!WebInspector.Target, !WebInspector.CSSWorkspaceBinding.TargetInfo>} */
     this._targetToTargetInfo = new Map();
-    WebInspector.targetManager.observeTargets(this);
+    targetManager.observeTargets(this);
 
-    WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._mainFrameCreatedOrNavigated, this);
+    targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._mainFrameCreatedOrNavigated, this);
 }
 
 WebInspector.CSSWorkspaceBinding.prototype = {
@@ -29,7 +28,7 @@ WebInspector.CSSWorkspaceBinding.prototype = {
      */
     targetAdded: function(target)
     {
-        this._targetToTargetInfo.set(target, new WebInspector.CSSWorkspaceBinding.TargetInfo(target, this._workspace, this._networkMapping, this._networkProject));
+        this._targetToTargetInfo.set(target, new WebInspector.CSSWorkspaceBinding.TargetInfo(target, this._workspace, this._networkMapping));
     },
 
     /**
@@ -68,7 +67,7 @@ WebInspector.CSSWorkspaceBinding.prototype = {
     {
         var targetInfo = this._targetToTargetInfo.get(header.target());
         if (!targetInfo) {
-            targetInfo = new WebInspector.CSSWorkspaceBinding.TargetInfo(header.target(), this._workspace, this._networkMapping, this._networkProject);
+            targetInfo = new WebInspector.CSSWorkspaceBinding.TargetInfo(header.target(), this._workspace, this._networkMapping);
             this._targetToTargetInfo.set(header.target(), targetInfo);
         }
         return targetInfo._ensureInfoForHeader(header);
@@ -181,15 +180,14 @@ WebInspector.CSSWorkspaceBinding.prototype = {
  * @param {!WebInspector.Target} target
  * @param {!WebInspector.Workspace} workspace
  * @param {!WebInspector.NetworkMapping} networkMapping
- * @param {!WebInspector.NetworkProject} networkProject
  */
-WebInspector.CSSWorkspaceBinding.TargetInfo = function(target, workspace, networkMapping, networkProject)
+WebInspector.CSSWorkspaceBinding.TargetInfo = function(target, workspace, networkMapping)
 {
     this._target = target;
 
     var cssModel = target.cssModel;
     this._stylesSourceMapping = new WebInspector.StylesSourceMapping(cssModel, workspace, networkMapping);
-    this._sassSourceMapping = new WebInspector.SASSSourceMapping(cssModel, workspace, networkMapping, networkProject);
+    this._sassSourceMapping = new WebInspector.SASSSourceMapping(cssModel, workspace, networkMapping, WebInspector.NetworkProject.forTarget(target));
 
     /** @type {!Map.<string, !WebInspector.CSSWorkspaceBinding.HeaderInfo>} */
     this._headerInfoById = new Map();
@@ -281,7 +279,7 @@ WebInspector.CSSWorkspaceBinding.HeaderInfo.prototype = {
      */
     _removeLocation: function(location)
     {
-        this._locations.remove(location);
+        this._locations.delete(location);
     },
 
     _updateLocations: function()
@@ -390,7 +388,7 @@ WebInspector.CSSWorkspaceBinding.LiveLocation.prototype = {
             var headerInfo = this._binding._headerInfo(this._header);
             return headerInfo._rawLocationToUILocation(cssLocation.lineNumber, cssLocation.columnNumber);
         }
-        var uiSourceCode = this._binding._networkMapping.uiSourceCodeForURL(cssLocation.url);
+        var uiSourceCode = this._binding._networkMapping.uiSourceCodeForURL(cssLocation.url, cssLocation.target());
         if (!uiSourceCode)
             return null;
         return uiSourceCode.uiLocation(cssLocation.lineNumber, cssLocation.columnNumber);

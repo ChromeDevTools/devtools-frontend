@@ -367,7 +367,7 @@ WebInspector.ExtensionServer.prototype = {
 
     _onOpenResource: function(message)
     {
-        var uiSourceCode = WebInspector.networkMapping.uiSourceCodeForURL(message.url);
+        var uiSourceCode = WebInspector.networkMapping.uiSourceCodeForURLForAnyTarget(message.url);
         if (uiSourceCode) {
             WebInspector.Revealer.reveal(uiSourceCode.uiLocation(message.lineNumber, 0));
             return this._status.OK();

@@ -724,9 +724,12 @@ WebInspector.TextPrompt.prototype = {
         var selection = this._element.getComponentSelection();
         var selectionRange = this._createRange();
 
-        var offset = this._element.childNodes.length;
-        selectionRange.setStart(this._element, offset);
-        selectionRange.setEnd(this._element, offset);
+        var container = this._element;
+        while (container.childNodes.length)
+            container = container.lastChild;
+        var offset = container.nodeType === Node.TEXT_NODE ? container.textContent.length : 0;
+        selectionRange.setStart(container, offset);
+        selectionRange.setEnd(container, offset);
 
         selection.removeAllRanges();
         selection.addRange(selectionRange);

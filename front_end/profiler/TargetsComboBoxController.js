@@ -29,6 +29,8 @@ WebInspector.TargetsComboBoxController.prototype = {
      */
     targetAdded: function(target)
     {
+        if (!target.hasJSContext())
+            return;
         var option = this._selectElement.createChild("option");
         option.text = target.name();
         option.__target = target;
@@ -45,6 +47,8 @@ WebInspector.TargetsComboBoxController.prototype = {
      */
     targetRemoved: function(target)
     {
+        if (!target.hasJSContext())
+            return;
         var option = this._targetToOption.remove(target);
         this._selectElement.removeChild(option);
         this._updateVisibility();

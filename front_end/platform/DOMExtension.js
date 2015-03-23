@@ -133,8 +133,8 @@ Node.prototype.traverseNextTextNode = function(stayWithin)
     var node = this.traverseNextNode(stayWithin);
     if (!node)
         return null;
-
-    while (node && node.nodeType !== Node.TEXT_NODE)
+    var nonTextTags = { "STYLE": 1, "SCRIPT": 1 };
+    while (node && (node.nodeType !== Node.TEXT_NODE || nonTextTags[node.parentElement.nodeName]))
         node = node.traverseNextNode(stayWithin);
 
     return node;
@@ -358,6 +358,20 @@ function createElement(tagName, customElementType)
 }
 
 /**
+ * @param {string} type
+ * @param {boolean} bubbles
+ * @param {boolean} cancelable
+ * @return {!Event}
+ * @suppressGlobalPropertiesCheck
+ */
+function createEvent(type, bubbles, cancelable)
+{
+    var event = document.createEvent("Event");
+    event.initEvent(type, bubbles, cancelable);
+    return event;
+}
+
+/**
  * @param {number|string} data
  * @return {!Text}
  * @suppressGlobalPropertiesCheck
@@ -391,6 +405,30 @@ Document.prototype.createElementWithClass = function(elementName, className, cus
 function createElementWithClass(elementName, className, customElementType)
 {
     return document.createElementWithClass(elementName, className, customElementType);
+}
+
+/**
+ * @param {string} childType
+ * @param {string=} className
+ * @return {!Element}
+ */
+Document.prototype.createSVGElement = function(childType, className)
+{
+    var element = this.createElementNS("http://www.w3.org/2000/svg", childType);
+    if (className)
+        element.setAttribute("class", className);
+    return element;
+}
+
+/**
+ * @param {string} childType
+ * @param {string=} className
+ * @return {!Element}
+ * @suppressGlobalPropertiesCheck
+ */
+function createSVGElement(childType, className)
+{
+    return document.createSVGElement(childType, className);
 }
 
 /**
@@ -496,10 +534,8 @@ Element.prototype.scrollOffset = function()
  */
 Element.prototype.createSVGChild = function(childType, className)
 {
-    var child = this.ownerDocument.createElementNS("http://www.w3.org/2000/svg", childType);
+    var child = this.ownerDocument.createSVGElement(childType, className);
     this.appendChild(child);
-    if (className)
-        child.setAttribute("class", className);
     return child;
 }
 
@@ -837,11 +873,22 @@ Document.prototype.deepElementFromPoint = function(x, y)
 }
 
 /**
+ * @param {!Event} event
  * @return {boolean}
  */
-function isEnterKey(event) {
+function isEnterKey(event)
+{
     // Check if in IME.
     return event.keyCode !== 229 && event.keyIdentifier === "Enter";
+}
+
+/**
+ * @param {!Event} event
+ * @return {boolean}
+ */
+function isEscKey(event)
+{
+    return event.keyCode === 27;
 }
 
 function consumeEvent(e)

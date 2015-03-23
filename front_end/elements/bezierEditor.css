@@ -5,13 +5,15 @@
  */
 
 :host {
-    width: 264px;
-    height: 340px;
+    width: 252px;
+    height: 328px;
     -webkit-user-select: none;
-    padding: 16px;
+    padding-left: 16px;
+    padding-top: 16px;
+    overflow: hidden;
 }
 
-.bezier-preset-selected > svg{
+.bezier-preset-selected > svg {
     background-color: rgb(56, 121, 217);
 }
 

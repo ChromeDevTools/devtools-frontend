@@ -16,7 +16,7 @@ WebInspector.ProfileTypeRegistry = function()
     this.trackingHeapSnapshotProfileType = new WebInspector.TrackingHeapSnapshotProfileType();
     this._addProfileType(this.trackingHeapSnapshotProfileType);
 
-    if (!WebInspector.isWorkerFrontend() && Runtime.experiments.isEnabled("canvasInspection")) {
+    if (Runtime.experiments.isEnabled("canvasInspection")) {
         this.canvasProfileType = new WebInspector.CanvasProfileType();
         this._addProfileType(this.canvasProfileType);
     }

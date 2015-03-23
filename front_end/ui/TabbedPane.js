@@ -435,16 +435,6 @@ WebInspector.TabbedPane.prototype = {
             tab.view = view;
     },
 
-    /**
-     * @param {string} id
-     * @param {string=} tabTooltip
-     */
-    changeTabTooltip: function(id, tabTooltip)
-    {
-        var tab = this._tabsById[id];
-        tab.tooltip = tabTooltip;
-    },
-
     onResize: function()
     {
         this._updateTabElements();

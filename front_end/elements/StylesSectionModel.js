@@ -298,7 +298,7 @@ WebInspector.SectionCascade.prototype = {
     _usedPropertiesForModel: function(model)
     {
         this._recomputeUsedPropertiesIfNeeded();
-        return this._usedPropertiesPerModel.get(model);
+        return /**@type {!Set.<string>}*/ (this._usedPropertiesPerModel.get(model));
     }
 }
 

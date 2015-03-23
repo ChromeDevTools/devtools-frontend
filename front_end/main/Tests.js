@@ -40,144 +40,17 @@
 function createTestSuite(domAutomationController)
 {
 
-var ___interactiveUiTestsMode = true;
-
 /**
  * Test suite for interactive UI tests.
  * @constructor
  */
 function TestSuite()
 {
-    this.controlTaken_ = false;
-    this.timerId_ = -1;
+    WebInspector.TestBase.call(this, domAutomationController);
 };
 
-
-/**
- * Reports test failure.
- * @param {string} message Failure description.
- */
-TestSuite.prototype.fail = function(message)
-{
-    if (this.controlTaken_)
-        this.reportFailure_(message);
-    else
-        throw message;
-};
-
-
-/**
- * Equals assertion tests that expected === actual.
- * @param {!Object} expected Expected object.
- * @param {!Object} actual Actual object.
- * @param {string} opt_message User message to print if the test fails.
- */
-TestSuite.prototype.assertEquals = function(expected, actual, opt_message)
-{
-    if (expected !== actual) {
-        var message = "Expected: '" + expected + "', but was '" + actual + "'";
-        if (opt_message)
-            message = opt_message + "(" + message + ")";
-        this.fail(message);
-    }
-};
-
-/**
- * True assertion tests that value == true.
- * @param {!Object} value Actual object.
- * @param {string} opt_message User message to print if the test fails.
- */
-TestSuite.prototype.assertTrue = function(value, opt_message)
-{
-    this.assertEquals(true, !!value, opt_message);
-};
-
-
-/**
- * HasKey assertion tests that object has given key.
- * @param {!Object} object
- * @param {string} key
- */
-TestSuite.prototype.assertHasKey = function(object, key)
-{
-    if (!object.hasOwnProperty(key))
-        this.fail("Expected object to contain key '" + key + "'");
-};
-
-
-/**
- * Contains assertion tests that string contains substring.
- * @param {string} string Outer.
- * @param {string} substring Inner.
- */
-TestSuite.prototype.assertContains = function(string, substring)
-{
-    if (string.indexOf(substring) === -1)
-        this.fail("Expected to: '" + string + "' to contain '" + substring + "'");
-};
-
-
-/**
- * Takes control over execution.
- */
-TestSuite.prototype.takeControl = function()
-{
-    this.controlTaken_ = true;
-    // Set up guard timer.
-    var self = this;
-    this.timerId_ = setTimeout(function() {
-        self.reportFailure_("Timeout exceeded: 20 sec");
-    }, 20000);
-};
-
-
-/**
- * Releases control over execution.
- */
-TestSuite.prototype.releaseControl = function()
-{
-    if (this.timerId_ !== -1) {
-        clearTimeout(this.timerId_);
-        this.timerId_ = -1;
-    }
-    this.reportOk_();
-};
-
-
-/**
- * Async tests use this one to report that they are completed.
- */
-TestSuite.prototype.reportOk_ = function()
-{
-    domAutomationController.send("[OK]");
-};
-
-
-/**
- * Async tests use this one to report failures.
- */
-TestSuite.prototype.reportFailure_ = function(error)
-{
-    if (this.timerId_ !== -1) {
-        clearTimeout(this.timerId_);
-        this.timerId_ = -1;
-    }
-    domAutomationController.send("[FAILED] " + error);
-};
-
-
-/**
- * Runs all global functions starting with "test" as unit tests.
- */
-TestSuite.prototype.runTest = function(testName)
-{
-    try {
-        this[testName]();
-        if (!this.controlTaken_)
-            this.reportOk_();
-    } catch (e) {
-        this.reportFailure_(e);
-    }
+TestSuite.prototype = {
+    __proto__: WebInspector.TestBase.prototype
 };
 
 
@@ -187,75 +60,6 @@ TestSuite.prototype.runTest = function(testName)
 TestSuite.prototype.showPanel = function(panelName)
 {
     return WebInspector.inspectorView.showPanel(panelName);
-};
-
-
-/**
- * Overrides the method with specified name until it's called first time.
- * @param {!Object} receiver An object whose method to override.
- * @param {string} methodName Name of the method to override.
- * @param {!Function} override A function that should be called right after the
- *     overridden method returns.
- * @param {boolean} opt_sticky Whether restore original method after first run
- *     or not.
- */
-TestSuite.prototype.addSniffer = function(receiver, methodName, override, opt_sticky)
-{
-    var orig = receiver[methodName];
-    if (typeof orig !== "function")
-        this.fail("Cannot find method to override: " + methodName);
-    var test = this;
-    receiver[methodName] = function(var_args) {
-        try {
-            var result = orig.apply(this, arguments);
-        } finally {
-            if (!opt_sticky)
-                receiver[methodName] = orig;
-        }
-        // In case of exception the override won't be called.
-        try {
-            override.apply(this, arguments);
-        } catch (e) {
-            test.fail("Exception in overriden method '" + methodName + "': " + e);
-        }
-        return result;
-    };
-};
-
-/**
- * Waits for current throttler invocations, if any.
- * @param {!WebInspector.Throttler} throttler
- * @param {function} callback
- */
-TestSuite.prototype.waitForThrottler = function(throttler, callback)
-{
-    var test = this;
-    var scheduleShouldFail = true;
-    test.addSniffer(throttler, "schedule", onSchedule);
-
-    function hasSomethingScheduled()
-    {
-        return throttler._isRunningProcess || throttler._process;
-    }
-
-    function checkState()
-    {
-        if (!hasSomethingScheduled()) {
-            scheduleShouldFail = false;
-            callback();
-            return;
-        }
-
-        test.addSniffer(throttler, "_processCompletedForTests", checkState);
-    }
-
-    function onSchedule()
-    {
-        if (scheduleShouldFail)
-            test.fail("Unexpected Throttler.schedule");
-    }
-
-    checkState();
 };
 
 // UI Tests
@@ -641,7 +445,7 @@ TestSuite.prototype.testDeviceMetricsOverrides = function()
 
     function testOverrides(params, metrics, callback)
     {
-        WebInspector.targetManager.mainTarget().pageAgent().invoke_setDeviceMetricsOverride(params, getMetrics);
+        WebInspector.targetManager.mainTarget().emulationAgent().invoke_setDeviceMetricsOverride(params, getMetrics);
 
         function getMetrics()
         {
@@ -709,51 +513,6 @@ TestSuite.prototype.waitForTestResultsInConsole = function()
     this.takeControl();
 };
 
-TestSuite.prototype.checkLogAndErrorMessages = function()
-{
-    var messages = WebInspector.multitargetConsoleModel.messages();
-
-    var matchesCount = 0;
-    function validMessage(message)
-    {
-        if (message.text === "log" && message.level === WebInspector.ConsoleMessage.MessageLevel.Log) {
-            ++matchesCount;
-            return true;
-        }
-
-        if (message.text === "error" && message.level === WebInspector.ConsoleMessage.MessageLevel.Error) {
-            ++matchesCount;
-            return true;
-        }
-        return false;
-    }
-
-    for (var i = 0; i < messages.length; ++i) {
-        if (validMessage(messages[i]))
-            continue;
-        this.fail(messages[i].text + ":" + messages[i].level); // This will throw.
-    }
-
-    if (matchesCount === 2)
-        return;
-
-    // Wait for more messages.
-    function onConsoleMessage(event)
-    {
-        var message = event.data;
-        if (validMessage(message)) {
-            if (matchesCount === 2) {
-                this.releaseControl();
-                return;
-            }
-        } else
-            this.fail(message.text + ":" + messages[i].level);
-    }
-
-    WebInspector.multitargetConsoleModel.addEventListener(WebInspector.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
-    this.takeControl();
-};
-
 /**
  * Serializes array of uiSourceCodes to string.
  * @param {!Array.<!WebInspectorUISourceCode>} uiSourceCodes
@@ -807,7 +566,7 @@ TestSuite.prototype.evaluateInConsole_ = function(code, callback)
 
         this.addSniffer(WebInspector.ConsoleView.prototype, "_consoleMessageAddedForTest",
             function(viewMessage) {
-                callback(viewMessage.toMessageElement().textContent);
+                callback(viewMessage.toMessageElement().deepTextContent());
             }.bind(this));
     }
 
@@ -859,28 +618,6 @@ TestSuite.prototype._waitForScriptPause = function(callback)
 
 
 /**
- * Waits until all the scripts are parsed and asynchronously executes the code
- * in the inspected page.
- */
-TestSuite.prototype._executeCodeWhenScriptsAreParsed = function(code, expectedScripts)
-{
-    var test = this;
-
-    function executeFunctionInInspectedPage() {
-        // Since breakpoints are ignored in evals' calculate() function is
-        // execute after zero-timeout so that the breakpoint is hit.
-        test.evaluateInConsole_(
-            'setTimeout("' + code + '" , 0)',
-            function(resultText) {
-                test.assertTrue(!isNaN(resultText), "Failed to get timer id: " + resultText + ". Code: " + code);
-            });
-    }
-
-    test._waitUntilScriptsAreParsed(expectedScripts, executeFunctionInInspectedPage);
-};
-
-
-/**
  * Waits until all the scripts are parsed and invokes the callback.
  */
 TestSuite.prototype._waitUntilScriptsAreParsed = function(expectedScripts, callback)
@@ -908,44 +645,32 @@ TestSuite.createKeyEvent = function(keyIdentifier)
     return evt;
 };
 
-
 /**
- * Run each test from the test suit on a fresh instance of the suite.
- */
-TestSuite._runAllTests = function()
-{
-    // For debugging purposes.
-    for (var name in TestSuite.prototype) {
-        if (name.substring(0, 4) === "test" && typeof TestSuite.prototype[name] === "function")
-            TestSuite._runTest(name);
-    }
-};
-
-
-/**
- * Run specified test on a fresh instance of the test suite.
+ * Run specified test.
  * @param {string} name Name of a test method from TestSuite class.
+ * @override
  */
-TestSuite._runTest = function(name)
+TestSuite.prototype.runTest = function(name)
 {
+    var test = WebInspector.TestBase.prototype.runTest.bind(this, name);
     if (TestSuite._populatedInterface)
-        new TestSuite().runTest(name);
+        test();
     else
-        TestSuite._pendingTestName = name;
+        TestSuite._pendingTest = test;
 };
 
 function runTests()
 {
     TestSuite._populatedInterface = true;
-    var name = TestSuite._pendingTestName;
-    delete TestSuite._pendingTestName;
-    if (name)
-        new TestSuite().runTest(name);
+    var test = TestSuite._pendingTest;
+    delete TestSuite._pendingTest;
+    if (test)
+        test();
 }
 
 WebInspector.notifications.addEventListener(WebInspector.NotificationService.Events.InspectorAgentEnabledForTests, runTests);
 
-return TestSuite;
+return new TestSuite();
 
 }
 

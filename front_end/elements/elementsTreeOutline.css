@@ -121,7 +121,8 @@
 .elements-tree-outline li.shadow-root + ol {
     margin-left: 5px;
     padding-left: 5px;
-    border-left: 1px solid gray;
+    border-left: 1px solid rgb(190, 190, 190);
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 .elements-tree-editor {
@@ -268,53 +269,15 @@ button, input, select {
     padding-left: 2px;
 }
 
-.shadow-host-display-mode-toolbar .shadow-host-display-mode-toolbar-button {
-    border: 0;
-    margin: 0;
-    background-color: inherit;
-    height: 13px;
-    opacity: 0.2;
+.elements-tree-shortcut-title {
+    color: rgb(87, 87, 87);
 }
 
-.shadow-host-display-mode-toolbar .shadow-host-display-mode-toolbar-button.toggled {
-    opacity: 0.7;
+ol:hover > li > .elements-tree-shortcut-link {
+    display: initial;
 }
 
-li.hovered .shadow-host-display-mode-toolbar .shadow-host-display-mode-toolbar-button {
-    opacity: 1;
-}
-
-.shadow-host-display-mode-toolbar-button.toggled {
-    color: rgb(66, 129, 235);
-}
-
-.shadow-host-display-mode-toolbar .shadow-host-display-mode-toolbar-button.toggled.custom-mode {
-    opacity: 1;
-}
-
-li.selected  .shadow-host-display-mode-toolbar .shadow-host-display-mode-toolbar-button {
-    opacity: 0.3;
-}
-
-li.selected  .shadow-host-display-mode-toolbar .shadow-host-display-mode-toolbar-button.toggled {
-    opacity: 0.8;
-}
-
-li.selected  .shadow-host-display-mode-toolbar .shadow-host-display-mode-toolbar-button.toggled.custom-mode {
-    opacity: 1;
-    color: rgb(36, 114, 245);
-}
-
-.elements-disclosure ol:focus li.selected .shadow-host-display-mode-toolbar .shadow-host-display-mode-toolbar-button {
-    color: rgb(255, 255, 255);
-    opacity: 0.7;
-}
-
-.elements-disclosure ol:focus li.selected.hovered .shadow-host-display-mode-toolbar .shadow-host-display-mode-toolbar-button {
-    opacity: 1;
-}
-
-.elements-disclosure ol:focus li.selected  .shadow-host-display-mode-toolbar .shadow-host-display-mode-toolbar-button.toggled {
-    color: rgb(235, 242, 255);
-    opacity: 1;
+.elements-tree-shortcut-link {
+    color: rgb(87, 87, 87);
+    display: none;
 }

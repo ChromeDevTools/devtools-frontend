@@ -485,6 +485,7 @@ WebInspector.DebuggerModel.prototype = {
      * @param {string=} sourceMapURL
      * @param {boolean=} hasSourceURL
      * @param {boolean=} hasSyntaxError
+     * @return {!WebInspector.Script}
      */
     _parsedScriptSource: function(scriptId, sourceURL, startLine, startColumn, endLine, endColumn, isContentScript, isInternalScript, sourceMapURL, hasSourceURL, hasSyntaxError)
     {
@@ -494,6 +495,7 @@ WebInspector.DebuggerModel.prototype = {
             this.dispatchEventToListeners(WebInspector.DebuggerModel.Events.ParsedScriptSource, script);
         else
             this.dispatchEventToListeners(WebInspector.DebuggerModel.Events.FailedToParseScriptSource, script);
+        return script;
     },
 
     /**
@@ -629,35 +631,6 @@ WebInspector.DebuggerModel.prototype = {
         }
 
         this.selectedCallFrame().evaluate(code, objectGroup, includeCommandLineAPI, doNotPauseOnExceptionsAndMuteConsole, returnByValue, generatePreview, didEvaluate.bind(this));
-    },
-
-    /**
-     * @param {function(!Object)} callback
-     */
-    getSelectedCallFrameVariables: function(callback)
-    {
-        var result = { this: true };
-
-        var selectedCallFrame = this._selectedCallFrame;
-        if (!selectedCallFrame)
-            callback(result);
-
-        var pendingRequests = 0;
-
-        function propertiesCollected(properties)
-        {
-            for (var i = 0; properties && i < properties.length; ++i)
-                result[properties[i].name] = true;
-            if (--pendingRequests == 0)
-                callback(result);
-        }
-
-        for (var i = 0; i < selectedCallFrame.scopeChain.length; ++i) {
-            var scope = selectedCallFrame.scopeChain[i];
-            var object = this.target().runtimeModel.createRemoteObject(scope.object);
-            pendingRequests++;
-            object.getAllProperties(false, propertiesCollected);
-        }
     },
 
     /**
@@ -965,6 +938,16 @@ WebInspector.DebuggerModel.CallFrame = function(target, script, payload, isAsync
     this._payload = payload;
     this._isAsync = isAsync;
     this._location = WebInspector.DebuggerModel.Location.fromPayload(target, payload.location);
+    this._scopeChain = [];
+    this._localScope = null;
+    for (var i = 0; i < payload.scopeChain.length; ++i) {
+        var scope = new WebInspector.DebuggerModel.Scope(this, i);
+        this._scopeChain.push(scope);
+        if (scope.type() === DebuggerAgent.ScopeType.Local)
+            this._localScope = scope;
+    }
+    if (payload.functionLocation)
+        this._functionLocation = WebInspector.DebuggerModel.Location.fromPayload(target, payload.functionLocation);
 }
 
 /**
@@ -1004,11 +987,19 @@ WebInspector.DebuggerModel.CallFrame.prototype = {
     },
 
     /**
-     * @return {!Array.<!DebuggerAgent.Scope>}
+     * @return {!Array.<!WebInspector.DebuggerModel.Scope>}
      */
-    get scopeChain()
+    scopeChain: function()
     {
-        return this._payload.scopeChain;
+        return this._scopeChain;
+    },
+
+    /**
+     * @return {?WebInspector.DebuggerModel.Scope}
+     */
+    localScope: function()
+    {
+        return this._localScope;
     },
 
     /**
@@ -1041,6 +1032,14 @@ WebInspector.DebuggerModel.CallFrame.prototype = {
     location: function()
     {
         return this._location;
+    },
+
+    /**
+     * @return {?WebInspector.DebuggerModel.Location}
+     */
+    functionLocation: function()
+    {
+        return this._functionLocation || null;
     },
 
     /**
@@ -1102,7 +1101,81 @@ WebInspector.DebuggerModel.CallFrame.prototype = {
         this._debuggerAgent.restartFrame(this._payload.callFrameId, protocolCallback.bind(this));
     },
 
+    /**
+     * @param {function(!Object)} callback
+     */
+    variableNames: function(callback)
+    {
+        var result = { this: true };
+
+        function propertiesCollected(properties)
+        {
+            for (var i = 0; properties && i < properties.length; ++i)
+                result[properties[i].name] = true;
+            if (--pendingRequests == 0)
+                callback(result);
+        }
+
+        var scopeChain = this.scopeChain();
+        var pendingRequests = scopeChain.length;
+        for (var i = 0; i < scopeChain.length; ++i) {
+            var scope = scopeChain[i];
+            var object = scope.object();
+            object.getAllProperties(false, propertiesCollected);
+        }
+    },
+
     __proto__: WebInspector.SDKObject.prototype
+}
+
+/**
+ * @constructor
+ * @param {!WebInspector.DebuggerModel.CallFrame} callFrame
+ * @param {number} ordinal
+ */
+WebInspector.DebuggerModel.Scope = function(callFrame, ordinal)
+{
+    this._callFrame = callFrame;
+    this._payload = callFrame._payload.scopeChain[ordinal];
+    this._type = this._payload.type;
+    this._ordinal = ordinal;
+}
+
+WebInspector.DebuggerModel.Scope.prototype = {
+    /**
+     * @return {string}
+     */
+    type: function()
+    {
+        return this._type;
+    },
+
+    /**
+     * @return {!WebInspector.RemoteObject}
+     */
+    object: function()
+    {
+        if (this._object)
+            return this._object;
+        var runtimeModel = this._callFrame.target().runtimeModel;
+
+        var declarativeScope = this._type !== DebuggerAgent.ScopeType.With && this._type !== DebuggerAgent.ScopeType.Global;
+        if (declarativeScope)
+            this._object = runtimeModel.createScopeRemoteObject(this._payload.object, new WebInspector.ScopeRef(this._ordinal, this._callFrame.id, undefined));
+        else
+            this._object = runtimeModel.createRemoteObject(this._payload.object);
+
+        return this._callFrame.target().runtimeModel.createRemoteObject(this._payload.object);
+    },
+
+    /**
+     * @return {string}
+     */
+    description: function()
+    {
+        var declarativeScope = this._type !== DebuggerAgent.ScopeType.With && this._type !== DebuggerAgent.ScopeType.Global;
+        return declarativeScope ? "" : (this._payload.object.description || "");
+    }
 }
 
 /**

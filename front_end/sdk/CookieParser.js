@@ -260,6 +260,14 @@ WebInspector.Cookie.prototype = {
     /**
      * @return {boolean}
      */
+    firstPartyOnly: function ()
+    {
+        return "first-party-only" in this._attributes;
+    },
+
+    /**
+     * @return {boolean}
+     */
     session: function()
     {
         // RFC 2965 suggests using Discard attribute to mark session cookies, but this does not seem to be widely used.
@@ -420,6 +428,8 @@ WebInspector.Cookies._parseProtocolCookie = function(target, protocolCookie)
         cookie.addAttribute("httpOnly");
     if (protocolCookie["secure"])
         cookie.addAttribute("secure");
+    if (protocolCookie["firstPartyOnly"])
+        cookie.addAttribute("first-party-only");
     cookie.setSize(protocolCookie["size"]);
     return cookie;
 }

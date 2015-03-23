@@ -1,0 +1,88 @@
+/*
+ * Copyright 2015 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.service-workers-view {
+    overflow: auto;
+}
+
+.service-workers-root {
+    margin: 0;
+    padding: 5px;
+}
+
+.service-workers-root ol {
+    list-style-type: none;
+    padding-left: 12px;
+}
+
+.service-workers-origin {
+    padding: 5px;
+}
+
+.service-workers-origin-title {
+    font-size: 20px;
+}
+
+.service-workers-registration {
+    padding: 5px;
+}
+
+.service-workers-registration-title {
+    font-size: 15px;
+}
+
+.service-workers-versions-table {
+    border-left: 1px solid #e1e1e1;
+    border-right: 1px solid #e1e1e1;
+    border-top: 1px solid #e1e1e1;
+    margin: 5px;
+}
+
+.service-workers-version-mode-row {
+    border-bottom: 1px solid #e1e1e1;
+    display: flex;
+}
+
+.service-workers-version-mode-row-installing {
+    background-color: #eee;
+}
+
+.service-workers-version-mode-row-active {
+    background-color: #eee;
+}
+
+.service-workers-version-row {
+    display: flex;
+    height: 30px;
+}
+
+.service-workers-version-mode {
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 70px;
+}
+
+.service-workers-version-status {
+    border-left: 1px solid #e1e1e1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 70px;
+}
+
+.service-workers-version-running-status {
+    border-left: 1px solid #e1e1e1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 70px;
+}
+
+.service-workers-version-script-url {
+    border-left: 1px solid #e1e1e1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 200px;
+}

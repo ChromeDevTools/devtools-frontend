@@ -1293,16 +1293,6 @@ Array.from = function(iterator)
 }
 
 /**
- * @param {!Array.<!T>} array
- * @return {!Set.<T>}
- * @template T
- */
-Set.fromArray = function(array)
-{
-    return new Set(array);
-}
-
-/**
  * @return {!Array.<T>}
  * @template T
  */
@@ -1310,8 +1300,6 @@ Set.prototype.valuesArray = function()
 {
     return Array.from(this.values());
 }
-
-Set.prototype.remove = Set.prototype.delete;
 
 /**
  * @return {T}
@@ -1388,9 +1376,9 @@ StringMultimap.prototype = {
     remove: function(key, value)
     {
         var values = this.get(key);
-        values.remove(value);
+        values.delete(value);
         if (!values.size)
-            this._map.remove(key);
+            this._map.delete(key);
     },
 
     /**
@@ -1398,7 +1386,7 @@ StringMultimap.prototype = {
      */
     removeAll: function(key)
     {
-        this._map.remove(key);
+        this._map.delete(key);
     },
 
     /**
@@ -1522,7 +1510,7 @@ self.setImmediate = function(callback)
 }
 
 /**
- * @param {function(...[?])} callback
+ * @param {function(...?)} callback
  * @return {!Promise.<T>}
  * @template T
  */

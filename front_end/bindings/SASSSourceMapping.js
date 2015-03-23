@@ -158,7 +158,7 @@ WebInspector.SASSSourceMapping.prototype = {
         if (!WebInspector.settings.cssReloadEnabled.get())
             return;
 
-        var sassFile = this._networkMapping.uiSourceCodeForURL(sassURL);
+        var sassFile = this._networkMapping.uiSourceCodeForURL(sassURL, this._cssModel.target());
         console.assert(sassFile);
         if (wasLoadedFromFileSystem)
             sassFile.requestMetadata(metadataReceived.bind(this));
@@ -256,7 +256,7 @@ WebInspector.SASSSourceMapping.prototype = {
      */
     _reloadCSS: function(cssURL, sassURL, callback)
     {
-        var cssUISourceCode = this._networkMapping.uiSourceCodeForURL(cssURL);
+        var cssUISourceCode = this._networkMapping.uiSourceCodeForURL(cssURL, this._cssModel.target());
         if (!cssUISourceCode) {
             WebInspector.console.warn(WebInspector.UIString("%s resource missing. Please reload the page.", cssURL));
             callback(cssURL, sassURL, true);
@@ -541,7 +541,7 @@ WebInspector.SASSSourceMapping.prototype = {
         for (var i = 0; i < sources.length; ++i) {
             var url = sources[i];
             this._addCSSURLforSASSURL(rawURL, url);
-            if (!this._networkMapping.hasMappingForURL(url) && !this._networkMapping.uiSourceCodeForURL(url)) {
+            if (!this._networkMapping.hasMappingForURL(url) && !this._networkMapping.uiSourceCodeForURL(url, header.target())) {
                 var contentProvider = sourceMap.sourceContentProvider(url, WebInspector.resourceTypes.Stylesheet);
                 this._networkProject.addFileForURL(url, contentProvider);
             }
@@ -562,7 +562,7 @@ WebInspector.SASSSourceMapping.prototype = {
         entry = sourceMap.findEntry(rawLocation.lineNumber, rawLocation.columnNumber);
         if (!entry || entry.length === 2)
             return null;
-        var uiSourceCode = this._networkMapping.uiSourceCodeForURL(entry[2]);
+        var uiSourceCode = this._networkMapping.uiSourceCodeForURL(entry[2], rawLocation.target());
         if (!uiSourceCode)
             return null;
         return uiSourceCode.uiLocation(entry[3], entry[4]);

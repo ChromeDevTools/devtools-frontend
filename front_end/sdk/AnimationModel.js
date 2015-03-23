@@ -16,7 +16,8 @@ WebInspector.AnimationModel = function(target)
 }
 
 WebInspector.AnimationModel.Events = {
-    AnimationPlayerCreated: "AnimationPlayerCreated"
+    AnimationPlayerCreated: "AnimationPlayerCreated",
+    AnimationPlayerCanceled: "AnimationPlayerCanceled"
 }
 
 WebInspector.AnimationModel.prototype = {
@@ -52,6 +53,14 @@ WebInspector.AnimationModel.prototype = {
     {
         var player = WebInspector.AnimationModel.AnimationPlayer.parsePayload(this.target(), payload);
         this.dispatchEventToListeners(WebInspector.AnimationModel.Events.AnimationPlayerCreated, { "player": player, "resetTimeline": resetTimeline });
+    },
+
+    /**
+     * @param {string} playerId
+     */
+    animationPlayerCanceled: function(playerId)
+    {
+        this.dispatchEventToListeners(WebInspector.AnimationModel.Events.AnimationPlayerCanceled, { "playerId": playerId });
     },
 
     ensureEnabled: function()
@@ -126,7 +135,15 @@ WebInspector.AnimationModel.AnimationPlayer.prototype = {
      */
     playState: function()
     {
-        return this._payload.playState;
+        return this._playState || this._payload.playState;
+    },
+
+    /**
+     * @param {string} playState
+     */
+    setPlayState: function(playState)
+    {
+        this._playState = playState;
     },
 
     /**
@@ -152,7 +169,7 @@ WebInspector.AnimationModel.AnimationPlayer.prototype = {
     {
         if (!this.source().iterations)
             return Infinity;
-        return this.startTime() + this.source().duration() * this.source().iterations();
+        return this.startTime() + this.source().delay() + this.source().duration() * this.source().iterations() + this.source().endDelay();
     },
 
     /**
@@ -233,6 +250,14 @@ WebInspector.AnimationModel.AnimationNode.prototype = {
     /**
      * @return {number}
      */
+    endDelay: function()
+    {
+        return this._payload.endDelay;
+    },
+
+    /**
+     * @return {number}
+     */
     playbackRate: function()
     {
         return this._payload.playbackRate;
@@ -251,7 +276,7 @@ WebInspector.AnimationModel.AnimationNode.prototype = {
      */
     iterations: function()
     {
-        return this._payload.iterations;
+        return this._payload.iterations || Infinity;
     },
 
     /**
@@ -292,29 +317,15 @@ WebInspector.AnimationModel.AnimationNode.prototype = {
     },
 
     /**
-     * @param {function(?WebInspector.DOMNode)} callback
+     * @return {!WebInspector.DeferredDOMNode}
      */
-    getNode: function(callback)
+    deferredNode: function()
     {
-        /**
-         * @this {WebInspector.AnimationModel.AnimationNode}
-         * @param {?Array.<number>} nodeIds
-         */
-        function nodePushedCallback(nodeIds)
-        {
-            if (nodeIds)
-                this.nodeId = nodeIds[0];
-            callback(this.target().domModel.nodeForId(this.nodeId));
-        }
-
-        if (this.nodeId)
-            callback(this.target().domModel.nodeForId(this.nodeId));
-        else
-            this._target.domModel.pushNodesByBackendIdsToFrontend([this._payload.backendNodeId], nodePushedCallback.bind(this));
+        return new WebInspector.DeferredDOMNode(this.target(), this.backendNodeId());
     },
 
     /**
-     * @return {!DOMAgent.BackendNodeId}
+     * @return {number}
      */
     backendNodeId: function()
     {
@@ -461,5 +472,14 @@ WebInspector.AnimationDispatcher.prototype = {
     animationPlayerCreated: function(payload, resetTimeline)
     {
         this._animationModel.animationPlayerCreated(payload, resetTimeline);
+    },
+
+    /**
+     * @override
+     * @param {string} playerId
+     */
+    animationPlayerCanceled: function(playerId)
+    {
+        this._animationModel.animationPlayerCanceled(playerId);
     }
 }

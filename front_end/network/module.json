@@ -43,6 +43,7 @@
         "NetworkItemView.js",
         "NetworkTimeCalculator.js",
         "NetworkLogView.js",
+        "NetworkOverview.js",
         "RequestCookiesView.js",
         "RequestHeadersView.js",
         "RequestHTMLView.js",

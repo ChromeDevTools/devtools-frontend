@@ -31,20 +31,30 @@
 /**
  * @constructor
  * @extends {WebInspector.ContentProviderBasedProjectDelegate}
+ * @param {!WebInspector.Target} target
  * @param {!WebInspector.Workspace} workspace
  * @param {string} projectId
- * @param {string} projectName
+ * @param {string} projectURL
  * @param {!WebInspector.projectTypes} projectType
  */
-WebInspector.NetworkProjectDelegate = function(workspace, projectId, projectName, projectType)
+WebInspector.NetworkProjectDelegate = function(target, workspace, projectId, projectURL, projectType)
 {
-    this._name = projectName;
+    this._url = projectURL;
+    this._target = target;
     this._id = projectId;
     WebInspector.ContentProviderBasedProjectDelegate.call(this, workspace, projectId, projectType);
     this._lastUniqueSuffix = 0;
 }
 
 WebInspector.NetworkProjectDelegate.prototype = {
+    /**
+     * @return {!WebInspector.Target}
+     */
+    target: function()
+    {
+        return this._target;
+    },
+
     /**
      * @return {string}
      */
@@ -61,18 +71,15 @@ WebInspector.NetworkProjectDelegate.prototype = {
     {
         if (typeof this._displayName !== "undefined")
             return this._displayName;
-        if (!this._name) {
-            this._displayName = WebInspector.UIString("(no domain)");
+
+        var targetSuffix = this._target.isPage() ? "" : " \u2014 " + this._target.name();
+        if (!this._url) {
+            this._displayName = WebInspector.UIString("(no domain)") + targetSuffix;
             return this._displayName;
         }
-        var parsedURL = new WebInspector.ParsedURL(this._name);
-        if (parsedURL.isValid) {
-            this._displayName = parsedURL.host + (parsedURL.port ? (":" + parsedURL.port) : "");
-            if (!this._displayName)
-                this._displayName = this._name;
-        }
-        else
-            this._displayName = this._name;
+        var parsedURL = new WebInspector.ParsedURL(this._url);
+        var prettyURL = parsedURL.isValid ? parsedURL.host + (parsedURL.port ? (":" + parsedURL.port) : "") : "";
+        this._displayName = (prettyURL || this._url) + targetSuffix;
         return this._displayName;
     },
 
@@ -82,7 +89,7 @@ WebInspector.NetworkProjectDelegate.prototype = {
      */
     url: function()
     {
-        return this._name;
+        return this._url;
     },
 
     /**
@@ -102,41 +109,119 @@ WebInspector.NetworkProjectDelegate.prototype = {
 
 /**
  * @constructor
- * @extends {WebInspector.Object}
+ * @param {!WebInspector.TargetManager} targetManager
  * @param {!WebInspector.Workspace} workspace
  * @param {!WebInspector.NetworkMapping} networkMapping
+ * @implements {WebInspector.TargetManager.Observer}
  */
-WebInspector.NetworkProject = function(workspace, networkMapping)
+WebInspector.NetworkProjectManager = function(targetManager, workspace, networkMapping)
 {
     this._workspace = workspace;
     this._networkMapping = networkMapping;
+    this._projectSymbol = Symbol("networkProject");
+    targetManager.observeTargets(this);
+}
+
+WebInspector.NetworkProjectManager.prototype = {
+    /**
+     * @override
+     * @param {!WebInspector.Target} target
+     */
+    targetAdded: function(target)
+    {
+        new WebInspector.NetworkProject(target, this._workspace, this._networkMapping);
+    },
+
+    /**
+     * @override
+     * @param {!WebInspector.Target} target
+     */
+    targetRemoved: function(target)
+    {
+        WebInspector.NetworkProject.forTarget(target)._dispose();
+    }
+}
+
+/**
+ * @constructor
+ * @extends {WebInspector.SDKObject}
+ * @param {!WebInspector.Target} target
+ * @param {!WebInspector.Workspace} workspace
+ * @param {!WebInspector.NetworkMapping} networkMapping
+ */
+WebInspector.NetworkProject = function(target, workspace, networkMapping)
+{
+    WebInspector.SDKObject.call(this, target);
+    this._workspace = workspace;
+    this._networkMapping = networkMapping;
     this._projectDelegates = {};
-
-    this._sourceCodeContentType = new WeakMap();
-
     this._processedURLs = {};
-    WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.EventTypes.ResourceAdded, this._resourceAdded, this);
-    WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._mainFrameNavigated, this);
-    WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this);
-    WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.FailedToParseScriptSource, this._parsedScriptSource, this);
-    WebInspector.targetManager.addModelListener(WebInspector.CSSStyleModel, WebInspector.CSSStyleModel.Events.StyleSheetAdded, this._styleSheetAdded, this);
-    WebInspector.targetManager.addModelListener(WebInspector.CSSStyleModel, WebInspector.CSSStyleModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this);
+    target[WebInspector.NetworkProject._networkProjectSymbol] = this;
+
+    target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.ResourceAdded, this._resourceAdded, this);
+    target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._mainFrameNavigated, this);
+    target.debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this);
+    target.debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.FailedToParseScriptSource, this._parsedScriptSource, this);
+    target.cssModel.addEventListener(WebInspector.CSSStyleModel.Events.StyleSheetAdded, this._styleSheetAdded, this);
+    target.cssModel.addEventListener(WebInspector.CSSStyleModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this);
+}
+
+WebInspector.NetworkProject._networkProjectSymbol = Symbol("networkProject");
+WebInspector.NetworkProject._targetSymbol = Symbol("target");
+WebInspector.NetworkProject._contentTypeSymbol = Symbol("networkContentType");
+
+/**
+ * @param {!WebInspector.Target} target
+ * @param {string} projectURL
+ * @param {boolean} isContentScripts
+ * @return {string}
+ */
+WebInspector.NetworkProject.projectId = function(target, projectURL, isContentScripts)
+{
+    return target.id() + ":" + (isContentScripts ? "contentscripts:" : "") + projectURL;
+}
+
+/**
+ * @param {!WebInspector.Target} target
+ * @return {!WebInspector.NetworkProject}
+ */
+WebInspector.NetworkProject.forTarget = function(target)
+{
+    return target[WebInspector.NetworkProject._networkProjectSymbol];
+}
+
+/**
+ * @param {!WebInspector.UISourceCode} uiSourceCode
+ * @return {?WebInspector.Target} target
+ */
+WebInspector.NetworkProject.targetForUISourceCode = function(uiSourceCode)
+{
+    return uiSourceCode[WebInspector.NetworkProject._targetSymbol];
+}
+
+/**
+ * @param {!WebInspector.UISourceCode} uiSourceCode
+ * @return {(!WebInspector.ResourceType|undefined)}
+ */
+WebInspector.NetworkProject.uiSourceCodeContentType = function(uiSourceCode)
+{
+    return uiSourceCode[WebInspector.NetworkProject._contentTypeSymbol];
 }
 
 WebInspector.NetworkProject.prototype = {
     /**
-     * @param {string} projectName
+     * @param {string} projectURL
      * @param {boolean} isContentScripts
      * @return {!WebInspector.NetworkProjectDelegate}
      */
-    _projectDelegate: function(projectName, isContentScripts)
+    _projectDelegate: function(projectURL, isContentScripts)
     {
-        var projectId = (isContentScripts ? "contentscripts:" : "") + projectName;
+        var projectId = WebInspector.NetworkProject.projectId(this.target(), projectURL, isContentScripts);
         var projectType = isContentScripts ? WebInspector.projectTypes.ContentScripts : WebInspector.projectTypes.Network;
 
         if (this._projectDelegates[projectId])
             return this._projectDelegates[projectId];
-        var projectDelegate = new WebInspector.NetworkProjectDelegate(this._workspace, projectId, projectName, projectType);
+        var projectDelegate = new WebInspector.NetworkProjectDelegate(this.target(), this._workspace, projectId, projectURL, projectType);
         this._projectDelegates[projectId] = projectDelegate;
         return projectDelegate;
     },
@@ -150,12 +235,13 @@ WebInspector.NetworkProject.prototype = {
     addFileForURL: function(url, contentProvider, isContentScript)
     {
         var splitURL = WebInspector.ParsedURL.splitURLIntoPathComponents(url);
-        var projectName = splitURL[0];
+        var projectURL = splitURL[0];
         var parentPath = splitURL.slice(1, -1).join("/");
         var name = splitURL.peekLast() || "";
-        var projectDelegate = this._projectDelegate(projectName, isContentScript || false);
+        var projectDelegate = this._projectDelegate(projectURL, isContentScript || false);
         var path = projectDelegate.addFile(parentPath, name, url, contentProvider);
         var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (this._workspace.uiSourceCode(projectDelegate.id(), path));
+        uiSourceCode[WebInspector.NetworkProject._targetSymbol] = this.target();
         console.assert(uiSourceCode);
         return uiSourceCode;
     },
@@ -163,26 +249,16 @@ WebInspector.NetworkProject.prototype = {
     /**
      * @param {string} url
      */
-    removeFileForURL: function(url)
+    _removeFileForURL: function(url)
     {
         var splitURL = WebInspector.ParsedURL.splitURLIntoPathComponents(url);
-        var projectName = splitURL[0];
+        var projectURL = splitURL[0];
         var path = splitURL.slice(1).join("/");
-        var projectDelegate = this._projectDelegates[projectName];
+        var projectDelegate = this._projectDelegates[WebInspector.NetworkProject.projectId(this.target(), projectURL, false)];
         projectDelegate.removeFile(path);
     },
 
-    reset: function()
-    {
-        for (var projectId in this._projectDelegates)
-            this._projectDelegates[projectId].reset();
-        this._projectDelegates = {};
-    },
-
-    /**
-     * @param {!WebInspector.Target} target
-     */
-    _populate: function(target)
+    _populate: function()
     {
         /**
          * @param {!WebInspector.ResourceTreeFrame} frame
@@ -198,7 +274,7 @@ WebInspector.NetworkProject.prototype = {
                 this._addFile(resources[i].url, new WebInspector.NetworkProject.FallbackResource(resources[i]));
         }
 
-        var mainFrame = target.resourceTreeModel.mainFrame;
+        var mainFrame = this.target().resourceTreeModel.mainFrame;
         if (mainFrame)
             populateFrame.call(this, mainFrame);
     },
@@ -258,9 +334,8 @@ WebInspector.NetworkProject.prototype = {
      */
     _mainFrameNavigated: function(event)
     {
-        var resourceTreeModel = /** @type {!WebInspector.ResourceTreeModel} */ (event.target);
-        //We assume that mainFrameNavigated could be fired only in one main target
-        this._reset(resourceTreeModel.target());
+        this._reset();
+        this._populate();
     },
 
     /**
@@ -280,16 +355,7 @@ WebInspector.NetworkProject.prototype = {
             return;
         this._processedURLs[url] = true;
         var uiSourceCode = this.addFileForURL(url, contentProvider, isContentScript);
-        this._sourceCodeContentType.set(uiSourceCode, type);
-    },
-
-    /**
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     * @return {(!WebInspector.ResourceType|undefined)}
-     */
-    uiSourceCodeContentType: function(uiSourceCode)
-    {
-        return this._sourceCodeContentType.get(uiSourceCode);
+        uiSourceCode[WebInspector.NetworkProject._contentTypeSymbol] = type;
     },
 
     /**
@@ -299,21 +365,31 @@ WebInspector.NetworkProject.prototype = {
     {
         if (!this._processedURLs[url])
             return;
-        this._processedURLs[url] = false;
-        this.removeFileForURL(url);
+        delete this._processedURLs[url];
+        this._removeFileForURL(url);
     },
 
-    /**
-     * @param {!WebInspector.Target} target
-     */
-    _reset: function(target)
+    _dispose: function()
+    {
+        this._reset();
+        var target = this.target();
+        target.resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.EventTypes.ResourceAdded, this._resourceAdded, this);
+        target.resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._mainFrameNavigated, this);
+        target.debuggerModel.removeEventListener(WebInspector.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this);
+        target.debuggerModel.removeEventListener(WebInspector.DebuggerModel.Events.FailedToParseScriptSource, this._parsedScriptSource, this);
+        target.cssModel.removeEventListener(WebInspector.CSSStyleModel.Events.StyleSheetAdded, this._styleSheetAdded, this);
+        target.cssModel.removeEventListener(WebInspector.CSSStyleModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this);
+    },
+
+    _reset: function()
     {
         this._processedURLs = {};
-        this.reset();
-        this._populate(target);
+        for (var projectId in this._projectDelegates)
+            this._projectDelegates[projectId].reset();
+        this._projectDelegates = {};
     },
 
-    __proto__: WebInspector.Object.prototype
+    __proto__: WebInspector.SDKObject.prototype
 }
 
 /**
@@ -421,8 +497,3 @@ WebInspector.NetworkProject.FallbackResource.prototype = {
         this._resource.searchInContent(query, caseSensitive, isRegex, callback);
     }
 }
-
-/**
- * @type {!WebInspector.NetworkProject}
- */
-WebInspector.networkProject;

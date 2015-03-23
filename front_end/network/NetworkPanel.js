@@ -48,17 +48,19 @@ WebInspector.NetworkPanel = function()
 
     this._searchableView = new WebInspector.SearchableView(this);
     this._searchableView.show(this.element);
-    var contentsElement = this._searchableView.element;
+
+    this._overview = new WebInspector.NetworkOverview();
 
     this._splitView = new WebInspector.SplitView(true, false, "networkPanelSplitViewState");
-    this._splitView.show(contentsElement);
     this._splitView.hideMain();
+
+    this._splitView.show(this._searchableView.element);
 
     this._progressBarContainer = createElement("div");
     this._createStatusbarButtons();
 
     /** @type {!WebInspector.NetworkLogView} */
-    this._networkLogView = new WebInspector.NetworkLogView(this._filterBar, this._progressBarContainer);
+    this._networkLogView = new WebInspector.NetworkLogView(this._overview, this._filterBar, this._progressBarContainer);
     this._splitView.setSidebarView(this._networkLogView);
 
     this._detailsView = new WebInspector.VBox();
@@ -70,7 +72,7 @@ WebInspector.NetworkPanel = function()
     this._closeButtonElement.addEventListener("click", this._showRequest.bind(this, null), false);
 
     this._toggleRecordButton(true);
-    this._toggleHideColumnsButton(WebInspector.settings.networkLogHideColumns.get());
+    this._toggleShowOverviewButton(WebInspector.settings.networkLogShowOverview.get());
     this._toggleLargerRequests(WebInspector.settings.networkLogLargeRows.get());
     this._dockSideChanged();
 
@@ -105,13 +107,13 @@ WebInspector.NetworkPanel.prototype = {
 
         this._panelStatusBar.appendStatusBarItem(this._filterBar.filterButton());
 
-        this._largerRequestsButton = new WebInspector.StatusBarButton("", "large-list-status-bar-item");
+        this._largerRequestsButton = new WebInspector.StatusBarButton(WebInspector.UIString(""), "large-list-status-bar-item");
         this._largerRequestsButton.addEventListener("click", this._onLargerRequestsClicked, this);
         this._panelStatusBar.appendStatusBarItem(this._largerRequestsButton);
 
-        this._hideColumnsButton = new WebInspector.StatusBarButton("", "waterfall-status-bar-item");
-        this._hideColumnsButton.addEventListener("click", this._onHideColumnsButtonClicked, this);
-        this._panelStatusBar.appendStatusBarItem(this._hideColumnsButton);
+        this._showOverviewButton = new WebInspector.StatusBarButton(WebInspector.UIString(""), "waterfall-status-bar-item");
+        this._showOverviewButton.addEventListener("click", this._onShowOverviewButtonClicked, this);
+        this._panelStatusBar.appendStatusBarItem(this._showOverviewButton);
 
         this._preserveLogCheckbox = new WebInspector.StatusBarCheckbox(WebInspector.UIString("Preserve log"), WebInspector.UIString("Do not clear log on page reload / navigation."));
         this._preserveLogCheckbox.inputElement.addEventListener("change", this._onPreserveLogCheckboxChanged.bind(this), false);
@@ -156,6 +158,7 @@ WebInspector.NetworkPanel.prototype = {
      */
     _onClearButtonClicked: function(event)
     {
+        this._overview.reset();
         this._networkLogView.reset();
     },
 
@@ -191,19 +194,24 @@ WebInspector.NetworkPanel.prototype = {
     /**
      * @param {!WebInspector.Event} event
      */
-    _onHideColumnsButtonClicked: function(event)
+    _onShowOverviewButtonClicked: function(event)
     {
-        this._toggleHideColumnsButton(!WebInspector.settings.networkLogHideColumns.get());
+        this._toggleShowOverviewButton(!WebInspector.settings.networkLogShowOverview.get());
     },
 
     /**
      * @param {boolean} toggled
      */
-    _toggleHideColumnsButton: function(toggled)
+    _toggleShowOverviewButton: function(toggled)
     {
-        WebInspector.settings.networkLogHideColumns.set(toggled);
-        this._hideColumnsButton.title = toggled ? WebInspector.UIString("Show columns.") : WebInspector.UIString("Hide columns.");
-        this._hideColumnsButton.setToggled(toggled);
+        WebInspector.settings.networkLogShowOverview.set(toggled);
+        this._showOverviewButton.setTitle(toggled ? WebInspector.UIString("Hide overview.") : WebInspector.UIString("Show overview."));
+        this._showOverviewButton.setToggled(toggled);
+        if (toggled) {
+            this._overview.show(this._searchableView.element, this._splitView.element);
+        } else {
+            this._overview.detach();
+        }
     },
 
     /**

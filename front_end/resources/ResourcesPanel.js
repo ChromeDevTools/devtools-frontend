@@ -54,11 +54,6 @@ WebInspector.ResourcesPanel = function()
     this.indexedDBListTreeElement = new WebInspector.IndexedDBTreeElement(this);
     this._sidebarTree.appendChild(this.indexedDBListTreeElement);
 
-    if (WebInspector.isWorkerFrontend()) {
-        this.serviceWorkerCacheListTreeElement = new WebInspector.ServiceWorkerCacheTreeElement(this);
-        this._sidebarTree.appendChild(this.serviceWorkerCacheListTreeElement);
-    }
-
     this.localStorageListTreeElement = new WebInspector.StorageCategoryTreeElement(this, WebInspector.UIString("Local Storage"), "LocalStorage", ["domstorage-storage-tree-item", "local-storage"]);
     this._sidebarTree.appendChild(this.localStorageListTreeElement);
 
@@ -74,6 +69,11 @@ WebInspector.ResourcesPanel = function()
     if (Runtime.experiments.isEnabled("fileSystemInspection")) {
         this.fileSystemListTreeElement = new WebInspector.FileSystemListTreeElement(this);
         this._sidebarTree.appendChild(this.fileSystemListTreeElement);
+    }
+
+    if (Runtime.experiments.isEnabled("serviceWorkersInResources")) {
+        this.serviceWorkersTreeElement = new WebInspector.ServiceWorkersTreeElement(this);
+        this._sidebarTree.appendChild(this.serviceWorkersTreeElement);
     }
 
     var mainView = new WebInspector.VBox();
@@ -127,6 +127,11 @@ WebInspector.ResourcesPanel.prototype = {
             return;
         this._target = target;
 
+        if (target.isServiceWorker()) {
+            this.serviceWorkerCacheListTreeElement = new WebInspector.ServiceWorkerCacheTreeElement(this);
+            this._sidebarTree.appendChild(this.serviceWorkerCacheListTreeElement);
+        }
+
         if (target.resourceTreeModel.cachedResourcesLoaded())
             this._initialize();
 
@@ -168,7 +173,8 @@ WebInspector.ResourcesPanel.prototype = {
         this._target.domStorageModel.enable();
         this._target.indexedDBModel.enable();
 
-        this._populateResourceTree();
+        if (this._target.isPage())
+            this._populateResourceTree();
         this._populateDOMStorageTree();
         this._populateApplicationCacheTree();
         this.indexedDBListTreeElement._initialize();
@@ -485,7 +491,7 @@ WebInspector.ResourcesPanel.prototype = {
         case WebInspector.resourceTypes.Image:
             return new WebInspector.ImageView(resource.url, resource.mimeType, resource);
         case WebInspector.resourceTypes.Font:
-            return new WebInspector.FontView(resource.url);
+            return new WebInspector.FontView(resource.url, resource.mimeType, resource);
         default:
             return new WebInspector.EmptyView(resource.url);
         }
@@ -548,6 +554,14 @@ WebInspector.ResourcesPanel.prototype = {
      * @param {!WebInspector.View} view
      */
     showServiceWorkerCache: function(view)
+    {
+        this._innerShowView(view);
+    },
+
+    /**
+     * @param {!WebInspector.View} view
+     */
+     showServiceWorkersView: function(view)
     {
         this._innerShowView(view);
     },
@@ -1451,7 +1465,7 @@ WebInspector.ServiceWorkerCacheTreeElement.prototype = {
      */
     targetAdded: function(target)
     {
-        if (target.isWorkerTarget() && target.serviceWorkerCacheModel)
+        if (target.isServiceWorker() && target.serviceWorkerCacheModel)
             this._refreshCaches();
     },
 
@@ -1607,6 +1621,34 @@ WebInspector.SWCacheTreeElement.prototype = {
     },
 
     __proto__: WebInspector.BaseStorageTreeElement.prototype
+}
+
+
+/**
+ * @constructor
+ * @extends {WebInspector.StorageCategoryTreeElement}
+ * @param {!WebInspector.ResourcesPanel} storagePanel
+ */
+WebInspector.ServiceWorkersTreeElement = function(storagePanel)
+{
+    WebInspector.StorageCategoryTreeElement.call(this, storagePanel, WebInspector.UIString("Service Workers"), "Service Workers", ["service-workers-tree-item"]);
+}
+
+WebInspector.ServiceWorkersTreeElement.prototype = {
+    /**
+     * @override
+     * @return {boolean}
+     */
+    onselect: function(selectedByUser)
+    {
+        WebInspector.StorageCategoryTreeElement.prototype.onselect.call(this, selectedByUser);
+        if (!this._view)
+            this._view = new WebInspector.ServiceWorkersView();
+        this._storagePanel.showServiceWorkersView(this._view);
+        return false;
+    },
+
+    __proto__: WebInspector.StorageCategoryTreeElement.prototype
 }
 
 

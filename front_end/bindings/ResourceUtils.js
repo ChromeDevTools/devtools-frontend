@@ -66,7 +66,7 @@ WebInspector.displayNameForURL = function(url)
     if (resource)
         return resource.displayName;
 
-    var uiSourceCode = WebInspector.networkMapping.uiSourceCodeForURL(url);
+    var uiSourceCode = WebInspector.networkMapping.uiSourceCodeForURLForAnyTarget(url);
     if (uiSourceCode)
         return uiSourceCode.displayName();
 
@@ -143,7 +143,7 @@ WebInspector.linkifyStringAsFragment = function(string)
      */
     function linkifier(title, url, lineNumber, columnNumber)
     {
-        var isExternal = !WebInspector.resourceForURL(url) && !WebInspector.networkMapping.uiSourceCodeForURL(url);
+        var isExternal = !WebInspector.resourceForURL(url) && !WebInspector.networkMapping.uiSourceCodeForURLForAnyTarget(url);
         var urlNode = WebInspector.linkifyURLAsNode(url, title, undefined, isExternal);
         if (typeof lineNumber !== "undefined") {
             urlNode.lineNumber = lineNumber;
@@ -186,6 +186,16 @@ WebInspector.linkifyURLAsNode = function(url, linkText, classes, isExternal, too
         a.setAttribute("target", "_blank");
 
     return a;
+}
+
+/**
+ * @param {string} article
+ * @param {string} title
+ * @return {!Element}
+ */
+WebInspector.linkifyDocumentationURLAsNode = function(article, title)
+{
+    return WebInspector.linkifyURLAsNode("https://developer.chrome.com/devtools/docs/" + article, title, undefined, true);
 }
 
 /**

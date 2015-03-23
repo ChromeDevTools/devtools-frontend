@@ -5,11 +5,12 @@
 
 .popover {
     position: absolute;
-    -webkit-border-image: url(Images/popoverBackground.png) 25 25 25 25;
-    border-width: 25px;
     z-index: 600;
     pointer-events: none;
     display: flex;
+    background-color: white;
+    box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.3), 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 1px 4px 0 rgba(0, 0, 0, 0.37);
+    border-radius: 2px;
 }
 
 .popover .content {
@@ -18,11 +19,12 @@
     -webkit-user-select: text;
     line-height: 11px;
     flex: auto;
+    margin: 6px;
 }
 
-.popover .content.fixed-height {
-    overflow: hidden;
-} 
+.popover .content.no-margin {
+    margin: 0;
+}
 
 .popover .arrow {
     position: absolute;
@@ -30,7 +32,7 @@
     width: 19px;
     height: 19px;
     margin-left: 15px;
-    margin-top: -24px;
+    margin-top: -19px;
     top: 0;
     left: 0;
 }
@@ -40,7 +42,7 @@
 }
 
 .popover.top-right-arrow .arrow {
-    right: 24px;
+    right: 19px;
     left: auto;
 }
 
@@ -48,7 +50,7 @@
     top: auto;
     bottom: 0;
     margin-top: 0;
-    margin-bottom: -24px;
+    margin-bottom: -19px;
     background-position: 0 -19px;
 }
 
@@ -58,7 +60,7 @@
     top: auto;
     bottom: 0;
     margin-top: 0;
-    margin-bottom: -24px;
+    margin-bottom: -19px;
     background-position: 0 -19px;
 }
 
@@ -74,7 +76,7 @@
     border-top: 1px solid rgb(184, 184, 184);
     overflow: auto;
     position: absolute;
-    top: 15px;
+    top: 5px;
     bottom: 0;
     left: 0;
     right: 0;

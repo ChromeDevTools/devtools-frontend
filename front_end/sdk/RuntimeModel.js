@@ -40,7 +40,8 @@ WebInspector.RuntimeModel = function(target)
     this._debuggerModel = target.debuggerModel;
     this._agent = target.runtimeAgent();
     this.target().registerRuntimeDispatcher(new WebInspector.RuntimeDispatcher(this));
-    this._agent.enable();
+    if (target.hasJSContext())
+        this._agent.enable();
     /**
      * @type {!Object.<number, !WebInspector.ExecutionContext>}
      */
@@ -81,7 +82,7 @@ WebInspector.RuntimeModel.prototype = {
         if (context.name == WebInspector.RuntimeModel._privateScript && !context.origin && !Runtime.experiments.isEnabled("privateScriptInspection")) {
             return;
         }
-        var executionContext = new WebInspector.ExecutionContext(this.target(), context.id, context.name, context.origin, context.isPageContext, context.frameId);
+        var executionContext = new WebInspector.ExecutionContext(this.target(), context.id, context.name, context.origin, !!context.isPageContext, context.frameId);
         this._executionContextById[executionContext.id] = executionContext;
         this.dispatchEventToListeners(WebInspector.RuntimeModel.Events.ExecutionContextCreated, executionContext);
     },
@@ -224,6 +225,27 @@ WebInspector.ExecutionContext = function(target, id, name, origin, isPageContext
  */
 WebInspector.ExecutionContext.comparator = function(a, b)
 {
+    /**
+     * @param {!WebInspector.Target} target
+     * @return {number}
+     */
+    function targetWeight(target)
+    {
+        if (target.isPage())
+            return 3;
+        if (target.isDedicatedWorker())
+            return 2;
+        return 1;
+    }
+
+    var weightDiff = targetWeight(a.target()) - targetWeight(b.target());
+    if (weightDiff)
+        return -weightDiff;
+
+    var frameIdDiff = a.frameId.hashCode() - b.frameId.hashCode();
+    if (frameIdDiff)
+        return frameIdDiff;
+
     // Main world context should always go first.
     if (a.isMainWorldContext)
         return -1;
@@ -329,7 +351,7 @@ WebInspector.ExecutionContext.prototype = {
         }
 
         if (!expressionString && this._debuggerModel.selectedCallFrame())
-            this._debuggerModel.getSelectedCallFrameVariables(receivedPropertyNames.bind(this));
+            this._debuggerModel.selectedCallFrame().variableNames(receivedPropertyNames.bind(this));
         else
             this.evaluate(expressionString, "completion", true, true, false, false, evaluated.bind(this));
 

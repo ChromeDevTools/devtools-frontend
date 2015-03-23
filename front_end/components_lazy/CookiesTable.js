@@ -50,7 +50,8 @@ WebInspector.CookiesTable = function(expandable, refreshCallback, selectedCallba
         {id: "expires", title: WebInspector.UIString("Expires / Max-Age"), sortable: true, weight: 7},
         {id: "size", title: WebInspector.UIString("Size"), sortable: true, align: WebInspector.DataGrid.Align.Right, weight: 7},
         {id: "httpOnly", title: WebInspector.UIString("HTTP"), sortable: true, align: WebInspector.DataGrid.Align.Center, weight: 7},
-        {id: "secure", title: WebInspector.UIString("Secure"), sortable: true, align: WebInspector.DataGrid.Align.Center, weight: 7}
+        {id: "secure", title: WebInspector.UIString("Secure"), sortable: true, align: WebInspector.DataGrid.Align.Center, weight: 7},
+        {id: "firstPartyOnly", title: WebInspector.UIString("First-Party"), sortable: true, align: WebInspector.DataGrid.Align.Center, weight: 7}
     ];
 
     if (readOnly)
@@ -143,7 +144,7 @@ WebInspector.CookiesTable.prototype = {
         for (var i = 0; i < this._data.length; ++i) {
             var item = this._data[i];
             if (item.folderName) {
-                var groupData = {name: item.folderName, value: "", domain: "", path: "", expires: "", size: this._totalSize(item.cookies), httpOnly: "", secure: ""};
+                var groupData = {name: item.folderName, value: "", domain: "", path: "", expires: "", size: this._totalSize(item.cookies), httpOnly: "", secure: "", firstPartyOnly: ""};
                 var groupNode = new WebInspector.DataGridNode(groupData);
                 groupNode.selectable = true;
                 this._dataGrid.rootNode().appendChild(groupNode);
@@ -226,6 +227,7 @@ WebInspector.CookiesTable.prototype = {
             case "size": comparator = numberCompare.bind(null, WebInspector.Cookie.prototype.size); break;
             case "httpOnly": comparator = compareTo.bind(null, WebInspector.Cookie.prototype.httpOnly); break;
             case "secure": comparator = compareTo.bind(null, WebInspector.Cookie.prototype.secure); break;
+            case "firstPartyOnly": comparator = compareTo.bind(null, WebInspector.Cookie.prototype.firstPartyOnly); break;
             default: compareTo.bind(null, WebInspector.Cookie.prototype.name);
         }
 
@@ -259,6 +261,7 @@ WebInspector.CookiesTable.prototype = {
         const checkmark = "\u2713";
         data.httpOnly = (cookie.httpOnly() ? checkmark : "");
         data.secure = (cookie.secure() ? checkmark : "");
+        data.firstPartyOnly = (cookie.firstPartyOnly() ? checkmark : "");
 
         var node = new WebInspector.DataGridNode(data);
         node.cookie = cookie;

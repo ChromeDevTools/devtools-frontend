@@ -42,8 +42,8 @@ WebInspector.ObjectPropertiesSection = function(object, title, subtitle, emptyPl
     this.extraProperties = extraProperties;
     this.editable = true;
     this._skipProto = false;
-
     WebInspector.PropertiesSection.call(this, title || "", subtitle);
+    this.registerRequiredCSS("components/objectValue.css");
 }
 
 /** @const */
@@ -197,7 +197,7 @@ WebInspector.ObjectPropertyTreeElement.prototype = {
         } else if (this.property.getter) {
             this.valueElement = WebInspector.ObjectPropertyTreeElement.createRemoteObjectAccessorPropertySpan(this.property.parentObject, [this.property.name], this._onInvokeGetterClick.bind(this));
         } else {
-            this.valueElement = createElementWithClass("span", "console-formatted-undefined");
+            this.valueElement = createElementWithClass("span", "object-value-undefined");
             this.valueElement.textContent = WebInspector.UIString("<unreadable>");
             this.valueElement.title = WebInspector.UIString("No property getter");
         }
@@ -498,7 +498,7 @@ WebInspector.ObjectPropertyTreeElement.createRemoteObjectAccessorPropertySpan = 
     element.textContent = WebInspector.UIString("(...)");
     if (!object)
         return rootElement;
-    element.classList.add("properties-calculate-value-button");
+    element.classList.add("object-value-calculate-value-button");
     element.title = WebInspector.UIString("Invoke property getter");
     element.addEventListener("click", onInvokeGetterClick, false);
 
@@ -1003,7 +1003,7 @@ WebInspector.ObjectPropertiesSection.createNameElement = function(name)
 /**
  * @param {!WebInspector.RemoteObject} value
  * @param {boolean} wasThrown
- * @param {!Element} parentElement
+ * @param {!Element=} parentElement
  * @return {!Element}
  */
 WebInspector.ObjectPropertiesSection.createValueElement = function(value, wasThrown, parentElement)
@@ -1038,18 +1038,19 @@ WebInspector.ObjectPropertiesSection.createValueElement = function(value, wasThr
             valueElement.createTextChild(suffix);
     } else {
         var numberParts = valueText.split("e");
-        var mantissa = valueElement.createChild("span", "scientific-notation-mantissa");
+        var mantissa = valueElement.createChild("span", "object-value-scientific-notation-mantissa");
         mantissa.textContent = numberParts[0];
-        var exponent = valueElement.createChild("span", "scientific-notation-exponent");
+        var exponent = valueElement.createChild("span", "object-value-scientific-notation-exponent");
         exponent.textContent = "e" + numberParts[1];
-        valueElement.classList.add("scientific-notation-number");
-        parentElement.classList.add("hbox");
+        valueElement.classList.add("object-value-scientific-notation-number");
+        if (parentElement)  // FIXME: do it in the caller.
+            parentElement.classList.add("hbox");
     }
 
     if (wasThrown)
         valueElement.classList.add("error");
     if (subtype || type)
-        valueElement.classList.add("console-formatted-" + (subtype || type));
+        valueElement.classList.add("object-value-" + (subtype || type));
 
     if (type === "object" && subtype === "node" && description) {
         WebInspector.DOMPresentationUtils.createSpansForNodeTitle(valueElement, description);
@@ -1061,12 +1062,12 @@ WebInspector.ObjectPropertiesSection.createValueElement = function(value, wasThr
 
     function mouseMove()
     {
-        value.highlightAsDOMNode();
+        value.target().domModel.highlightObjectAsDOMNode(value);
     }
 
     function mouseLeave()
     {
-        value.hideDOMNodeHighlight();
+        value.target().domModel.hideDOMNodeHighlight();
     }
 
     return valueElement;

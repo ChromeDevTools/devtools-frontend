@@ -8,14 +8,18 @@
  * @constructor
  * @extends {Protocol.Agents}
  * @param {string} name
+ * @param {string} type
  * @param {!InspectorBackendClass.Connection} connection
+ * @param {?WebInspector.Target} parentTarget
  * @param {function(?WebInspector.Target)=} callback
  */
-WebInspector.Target = function(name, connection, callback)
+WebInspector.Target = function(name, type, connection, parentTarget, callback)
 {
     Protocol.Agents.call(this, connection.agentsMap());
     this._name = name;
+    this._type = type;
     this._connection = connection;
+    this._parentTarget = parentTarget;
     connection.addEventListener(InspectorBackendClass.Connection.Events.Disconnected, this._onDisconnect, this);
     this._id = WebInspector.Target._nextId++;
 
@@ -24,9 +28,9 @@ WebInspector.Target = function(name, connection, callback)
 
     /** @type {!Object.<string, boolean>} */
     this._capabilities = {};
-    this.pageAgent().canScreencast(this._initializeCapability.bind(this, WebInspector.Target.Capabilities.CanScreencast, null));
-    this.pageAgent().canEmulate(this._initializeCapability.bind(this, WebInspector.Target.Capabilities.CanEmulate, null));
-    this.workerAgent().canInspectWorkers(this._initializeCapability.bind(this, WebInspector.Target.Capabilities.CanInspectWorkers, this._loadedWithCapabilities.bind(this, callback)));
+    if (this.supportsEmulation())
+        this.emulationAgent().canEmulate(this._initializeCapability.bind(this, WebInspector.Target.Capabilities.CanEmulate, null));
+    this.pageAgent().canScreencast(this._initializeCapability.bind(this, WebInspector.Target.Capabilities.CanScreencast, this._loadedWithCapabilities.bind(this, callback)));
 }
 
 /**
@@ -35,8 +39,16 @@ WebInspector.Target = function(name, connection, callback)
 WebInspector.Target.Capabilities = {
     CanScreencast: "CanScreencast",
     HasTouchInputs: "HasTouchInputs",
-    CanInspectWorkers: "CanInspectWorkers",
     CanEmulate: "CanEmulate"
+}
+
+/**
+ * @enum {string}
+ */
+WebInspector.Target.Type = {
+    DedicatedWorker: "DedicatedWorker",
+    Page: "Page",
+    ServiceWorker: "ServiceWorker"
 }
 
 WebInspector.Target._nextId = 1;
@@ -71,6 +83,15 @@ WebInspector.Target.prototype = {
     name: function()
     {
         return this._name;
+    },
+
+    /**
+     * @param {string} label
+     * @return {string}
+     */
+    decorateLabel: function(label)
+    {
+        return this.isWorker() ? "\u2699 " + label : label;
     },
 
     /**
@@ -121,8 +142,8 @@ WebInspector.Target.prototype = {
         this.domModel = new WebInspector.DOMModel(this);
         /** @type {!WebInspector.CSSStyleModel} */
         this.cssModel = new WebInspector.CSSStyleModel(this);
-        /** @type {!WebInspector.WorkerManager} */
-        this.workerManager = new WebInspector.WorkerManager(this, this.hasCapability(WebInspector.Target.Capabilities.CanInspectWorkers));
+        /** @type {?WebInspector.WorkerManager} */
+        this.workerManager = !this.isDedicatedWorker() ? new WebInspector.WorkerManager(this) : null;
         /** @type {!WebInspector.DatabaseModel} */
         this.databaseModel = new WebInspector.DatabaseModel(this);
         /** @type {!WebInspector.DOMStorageModel} */
@@ -140,12 +161,15 @@ WebInspector.Target.prototype = {
         /** @type {!WebInspector.AccessibilityModel} */
         this.accessibilityModel = new WebInspector.AccessibilityModel(this);
 
-        if (WebInspector.isWorkerFrontend() && this.isWorkerTarget()) {
+        if (this._parentTarget && this._parentTarget.isServiceWorker()) {
             /** @type {!WebInspector.ServiceWorkerCacheModel} */
             this.serviceWorkerCacheModel = new WebInspector.ServiceWorkerCacheModel(this);
         }
 
         this.tracingManager = new WebInspector.TracingManager(this);
+
+        if (this.isPage() && (Runtime.experiments.isEnabled("serviceWorkersInPageFrontend") || Runtime.experiments.isEnabled("serviceWorkersInResources")))
+            this.serviceWorkerManager = new WebInspector.ServiceWorkerManager(this);
 
         if (callback)
             callback(this);
@@ -164,9 +188,57 @@ WebInspector.Target.prototype = {
     /**
      * @return {boolean}
      */
-    isWorkerTarget: function()
+    supportsEmulation: function()
     {
-        return !this.hasCapability(WebInspector.Target.Capabilities.CanInspectWorkers);
+        return this.isPage();
+    },
+
+    /**
+     * @return {boolean}
+     */
+    isPage: function()
+    {
+        return this._type === WebInspector.Target.Type.Page;
+    },
+
+    /**
+     * @return {boolean}
+     */
+    isWorker: function()
+    {
+        return this.isDedicatedWorker() || this.isServiceWorker();
+    },
+
+    /**
+     * @return {boolean}
+     */
+    isDedicatedWorker: function()
+    {
+        return this._type === WebInspector.Target.Type.DedicatedWorker;
+    },
+
+    /**
+     * @return {boolean}
+     */
+    isServiceWorker: function()
+    {
+        return this._type === WebInspector.Target.Type.ServiceWorker;
+    },
+
+    /**
+     * @return {boolean}
+     */
+    hasJSContext: function()
+    {
+        return !this.isServiceWorker();
+    },
+
+    /**
+     * @return {?WebInspector.Target}
+     */
+    parentTarget: function()
+    {
+        return this._parentTarget;
     },
 
     /**
@@ -190,6 +262,8 @@ WebInspector.Target.prototype = {
         this.cpuProfilerModel.dispose();
         if (this.serviceWorkerCacheModel)
             this.serviceWorkerCacheModel.dispose();
+        if (this.workerManager)
+            this.workerManager.dispose();
     },
 
     /**
@@ -404,12 +478,14 @@ WebInspector.TargetManager.prototype = {
 
     /**
      * @param {string} name
+     * @param {string} type
      * @param {!InspectorBackendClass.Connection} connection
+     * @param {?WebInspector.Target} parentTarget
      * @param {function(?WebInspector.Target)=} callback
      */
-    createTarget: function(name, connection, callback)
+    createTarget: function(name, type, connection, parentTarget, callback)
     {
-        new WebInspector.Target(name, connection, callbackWrapper.bind(this));
+        new WebInspector.Target(name, type, connection, parentTarget, callbackWrapper.bind(this));
 
         /**
          * @this {WebInspector.TargetManager}
@@ -490,6 +566,19 @@ WebInspector.TargetManager.prototype = {
     targets: function()
     {
         return this._targets.slice();
+    },
+
+    /**
+     * @return {!Array.<!WebInspector.Target>}
+     */
+    targetsWithJSContext: function()
+    {
+        var result = [];
+        for (var target of this._targets) {
+            if (target.hasJSContext())
+                result.push(target);
+        }
+        return result;
     },
 
     /**

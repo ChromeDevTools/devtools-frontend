@@ -40,6 +40,11 @@ line.animation-line {
     fill: none;
 }
 
+line.animation-delay-line {
+    stroke-width: 2;
+    stroke-dasharray: 6, 4;
+}
+
 circle.animation-endpoint {
     stroke-width: 3;
 }
@@ -52,7 +57,7 @@ circle.animation-keyframe-point {
 .animation-name {
     position: absolute;
     top: 15px;
-    color: #777;
+    color: #333;
     text-align: center;
     margin-left: -8px;
 }
@@ -196,4 +201,10 @@ svg.animation-ui g:first-child {
 
 .animation-tail-iterations {
     opacity: 0.5;
+}
+
+
+svg.animation-ui.animation-ui-canceled {
+    -webkit-filter: grayscale(100%) blur(1px);
+    transition: -webkit-filter 100ms cubic-bezier(0, 0, 0.2, 1);
 }

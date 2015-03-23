@@ -270,7 +270,7 @@ WebInspector.RequestTimingView.createTimingTable = function(request, navigationS
     var footer = tableElement.createChild("tr", "network-timing-footer");
     var note = footer.createChild("td");
     note.colSpan = 2;
-    note.appendChild(WebInspector.createDocumentationAnchor("network#resource-network-timing", WebInspector.UIString("Explanation")));
+    note.appendChild(WebInspector.linkifyDocumentationURLAsNode("network#resource-network-timing", WebInspector.UIString("Explanation")));
     footer.createChild("td").createTextChild(Number.secondsToString(totalDuration, true));
 
     return tableElement;

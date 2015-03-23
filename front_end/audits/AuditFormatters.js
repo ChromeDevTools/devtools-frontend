@@ -76,7 +76,7 @@ WebInspector.AuditFormatters.Registry = {
      */
     url: function(url, displayText)
     {
-        return WebInspector.createExternalAnchor(url, displayText);
+        return WebInspector.linkifyURLAsNode(url, displayText, undefined, true);
     },
 
     /**

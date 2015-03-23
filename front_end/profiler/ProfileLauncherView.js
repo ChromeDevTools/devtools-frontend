@@ -87,7 +87,7 @@ WebInspector.ProfileLauncherView.prototype = {
 
     _updateLoadButtonLayout: function()
     {
-        this._loadButton.classList.toggle("multi-target", WebInspector.targetManager.targets().length > 1);
+        this._loadButton.classList.toggle("multi-target", WebInspector.targetManager.targetsWithJSContext().length > 1);
     },
 
     /**

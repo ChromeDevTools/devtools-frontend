@@ -36,41 +36,59 @@ WebInspector.NetworkMapping.prototype = {
 
     /**
      * @param {string} url
+     * @param {!WebInspector.Target} target
      * @return {?WebInspector.UISourceCode}
      */
-    _networkUISourceCodeForURL: function(url)
+    _networkUISourceCodeForURL: function(url, target)
     {
         var splitURL = WebInspector.ParsedURL.splitURLIntoPathComponents(url);
-        var projectId = splitURL[0];
+        var projectId = WebInspector.NetworkProject.projectId(target, splitURL[0], false);
         var project = this._workspace.project(projectId);
         return project ? project.uiSourceCode(splitURL.slice(1).join("/")) : null;
     },
 
     /**
      * @param {string} url
+     * @param {!WebInspector.Target} target
      * @return {?WebInspector.UISourceCode}
      */
-    _contentScriptUISourceCodeForURL: function(url)
+    _contentScriptUISourceCodeForURL: function(url, target)
     {
         var splitURL = WebInspector.ParsedURL.splitURLIntoPathComponents(url);
-        var projectId = "contentscripts:" + splitURL[0];
+        var projectId = WebInspector.NetworkProject.projectId(target, splitURL[0], true);
         var project = this._workspace.project(projectId);
         return project ? project.uiSourceCode(splitURL.slice(1).join("/")) : null;
     },
 
     /**
      * @param {string} url
+     * @param {!WebInspector.Target} target
      * @return {?WebInspector.UISourceCode}
      */
-    uiSourceCodeForURL: function(url)
+    uiSourceCodeForURL: function(url, target)
     {
         var file = this._fileSystemMapping.fileForURL(url);
-        if (!file)
-            return this._networkUISourceCodeForURL(url) || this._contentScriptUISourceCodeForURL(url);
+        if (file) {
+            var projectId = WebInspector.FileSystemWorkspaceBinding.projectId(file.fileSystemPath);
+            var project = this._workspace.project(projectId);
+            return project ? project.uiSourceCode(file.filePath) : null;
+        }
 
-        var projectId = WebInspector.FileSystemWorkspaceBinding.projectId(file.fileSystemPath);
-        var project = this._workspace.project(projectId);
-        return project ? project.uiSourceCode(file.filePath) : null;
+        return this._networkUISourceCodeForURL(url, target) || this._contentScriptUISourceCodeForURL(url, target);
+    },
+
+    /**
+     * @param {string} url
+     * @return {?WebInspector.UISourceCode}
+     */
+    uiSourceCodeForURLForAnyTarget: function(url)
+    {
+        for (var target of WebInspector.targetManager.targets()) {
+            var result = this.uiSourceCodeForURL(url, target);
+            if (result)
+                return result;
+        }
+        return null;
     },
 
     /**
@@ -114,7 +132,7 @@ WebInspector.NetworkMapping.prototype = {
         var lineNumber = /** @type {number} */ (event.data["lineNumber"]);
         var columnNumber = /** @type {number} */ (event.data["columnNumber"]);
 
-        var uiSourceCode = this.uiSourceCodeForURL(url);
+        var uiSourceCode = this.uiSourceCodeForURLForAnyTarget(url);
         if (uiSourceCode) {
             WebInspector.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, columnNumber));
             return;

@@ -393,9 +393,10 @@ WebInspector.ScreencastView.prototype = {
      * @override
      * @param {?WebInspector.DOMNode} node
      * @param {?DOMAgent.HighlightConfig} config
+     * @param {!DOMAgent.BackendNodeId=} backendNodeId
      * @param {!RuntimeAgent.RemoteObjectId=} objectId
      */
-    highlightDOMNode: function(node, config, objectId)
+    highlightDOMNode: function(node, config, backendNodeId, objectId)
     {
         this._highlightNode = node;
         this._highlightConfig = config;

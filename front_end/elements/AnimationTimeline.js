@@ -30,6 +30,8 @@ WebInspector.AnimationTimeline = function(stylesPane)
     /** @type {!Map.<!DOMAgent.BackendNodeId, !WebInspector.AnimationTimeline.NodeUI>} */
     this._nodesMap = new Map();
     this._symbol = Symbol("animationTimeline");
+    /** @type {!Map.<string, !WebInspector.AnimationModel.AnimationPlayer>} */
+    this._animationsMap = new Map();
     WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._mainFrameNavigated, this);
     WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
 }
@@ -151,6 +153,7 @@ WebInspector.AnimationTimeline.prototype = {
             return;
 
         this._nodesMap.clear();
+        this._animationsMap.clear();
         this._animationsContainer.removeChildren();
         this._duration = this._defaultDuration();
         delete this._startTime;
@@ -203,8 +206,19 @@ WebInspector.AnimationTimeline.prototype = {
         }
         var nodeRow = nodeUI.findRow(animation);
         var uiAnimation = new WebInspector.AnimationUI(this._stylesPane, animation, this, nodeRow.element);
-        animation.source().getNode(nodeResolved.bind(this));
+        animation.source().deferredNode().resolve(nodeResolved.bind(this));
         nodeRow.animations.push(uiAnimation);
+        this._animationsMap.set(animation.id(), animation);
+    },
+
+    /**
+     * @param {string} playerId
+     */
+    cancelAnimation: function(playerId)
+    {
+        var animation = this._animationsMap.get(playerId);
+        animation.setPlayState("idle");
+        this.scheduleRedraw();
     },
 
     /**
@@ -277,10 +291,9 @@ WebInspector.AnimationTimeline.prototype = {
         if (!this._startTime)
             this._startTime = animation.startTime();
 
-        // This shows at most 2 iterations
-        var iterations = animation.source().iterations() || 1;
-        var duration = animation.source().duration() * Math.min(3, iterations);
-        var requiredDuration = animation.startTime() + duration + animation.source().delay() - this.startTime();
+        // This shows at most 3 iterations
+        var duration = animation.source().duration() * Math.min(3, animation.source().iterations());
+        var requiredDuration = animation.startTime() + animation.source().delay() + duration + animation.source().endDelay() - this.startTime();
         if (requiredDuration > this._duration * 0.8) {
             resized = true;
             this._duration = requiredDuration * 1.5;
@@ -298,7 +311,7 @@ WebInspector.AnimationTimeline.prototype = {
 
         this._scrubberPlayer = this._timelineScrubber.animate([
             { transform: "translateX(0px)" },
-            { transform: "translateX(" +  (this._cachedTimelineWidth - this._scrubberRadius) + "px)" }
+            { transform: "translateX(" +  (this.width() - this._scrubberRadius) + "px)" }
         ], { duration: this.duration() - this._scrubberRadius / this.pixelMsRatio(), fill: "forwards" });
         this._scrubberPlayer.playbackRate = this._animationsPlaybackRate;
 
@@ -320,7 +333,7 @@ WebInspector.AnimationTimeline.prototype = {
      */
     pixelMsRatio: function()
     {
-        return this._cachedTimelineWidth / this.duration() || 0;
+        return this.width() / this.duration() || 0;
     },
 
     /**
@@ -328,6 +341,8 @@ WebInspector.AnimationTimeline.prototype = {
      */
     _updateScrubber: function(timestamp)
     {
+        if (!this._scrubberPlayer)
+            return;
         this._timelineScrubberHead.textContent = WebInspector.UIString(Number.millisToString(this._scrubberPlayer.currentTime));
         if (this._scrubberPlayer.playState === "pending" || this._scrubberPlayer.playState === "running") {
             this._timelineScrubberHead.window().requestAnimationFrame(this._updateScrubber.bind(this));
@@ -394,16 +409,17 @@ WebInspector.AnimationTimeline.prototype = {
 WebInspector.AnimationTimeline.NodeUI = function(animationNode) {
     /**
      * @param {?WebInspector.DOMNode} node
+     * @this {WebInspector.AnimationTimeline.NodeUI}
      */
     function nodeResolved(node)
     {
-        description.appendChild(WebInspector.DOMPresentationUtils.linkifyNodeReference(node));
+        this._description.appendChild(WebInspector.DOMPresentationUtils.linkifyNodeReference(node));
     }
 
     this._rows = [];
     this.element = createElementWithClass("div", "animation-node-row");
-    var description = this.element.createChild("div", "animation-node-description");
-    animationNode.getNode(nodeResolved);
+    this._description = this.element.createChild("div", "animation-node-description");
+    animationNode.deferredNode().resolve(nodeResolved.bind(this));
     this._timelineElement = this.element.createChild("div", "animation-node-timeline");
 }
 
@@ -484,6 +500,7 @@ WebInspector.AnimationUI = function(stylesPane, animation, timeline, parentEleme
     this._svg.setAttribute("height", WebInspector.AnimationUI.Options.AnimationSVGHeight);
     this._svg.style.marginLeft = "-" + WebInspector.AnimationUI.Options.AnimationMargin + "px";
     this._svg.addEventListener("mousedown", this._mouseDown.bind(this, WebInspector.AnimationUI.MouseEvents.AnimationDrag, null));
+    this._activeIntervalGroup = this._svg.createSVGChild("g");
 
     /** @type {!Array.<{group: ?Element, animationLine: ?Element, keyframePoints: !Object.<number, !Element>, beziers: !Object.<number, !Element>}>} */
     this._cachedElements = [];
@@ -520,6 +537,20 @@ WebInspector.AnimationUI.prototype = {
     },
 
     /**
+     * @param {!Element} parentElement
+     * @param {string} className
+     */
+    _createLine: function(parentElement, className)
+    {
+        var line = parentElement.createSVGChild("line", className);
+        line.setAttribute("x1", WebInspector.AnimationUI.Options.AnimationMargin);
+        line.setAttribute("y1", WebInspector.AnimationUI.Options.AnimationHeight);
+        line.setAttribute("y2", WebInspector.AnimationUI.Options.AnimationHeight);
+        line.style.stroke = this._color();
+        return line;
+    },
+
+    /**
      * @param {number} iteration
      * @param {!Element} parentElement
      */
@@ -527,12 +558,25 @@ WebInspector.AnimationUI.prototype = {
     {
         var cache = this._cachedElements[iteration];
         if (!cache.animationLine)
-            cache.animationLine = parentElement.createSVGChild("line", "animation-line");
-        cache.animationLine.setAttribute("y1", WebInspector.AnimationUI.Options.AnimationHeight);
-        cache.animationLine.setAttribute("x1", WebInspector.AnimationUI.Options.AnimationMargin);
-        cache.animationLine.setAttribute("x2", this._duration() * this._timeline.pixelMsRatio() + WebInspector.AnimationUI.Options.AnimationMargin);
-        cache.animationLine.setAttribute("y2", WebInspector.AnimationUI.Options.AnimationHeight);
-        cache.animationLine.style.stroke = this._color();
+            cache.animationLine = this._createLine(parentElement, "animation-line");
+        cache.animationLine.setAttribute("x2", (this._duration() * this._timeline.pixelMsRatio() + WebInspector.AnimationUI.Options.AnimationMargin).toFixed(2));
+    },
+
+    /**
+     * @param {!Element} parentElement
+     */
+    _drawDelayLine: function(parentElement)
+    {
+        if (!this._delayLine) {
+            this._delayLine = this._createLine(parentElement, "animation-delay-line");
+            this._endDelayLine = this._createLine(parentElement, "animation-delay-line");
+        }
+        this._delayLine.setAttribute("x1", WebInspector.AnimationUI.Options.AnimationMargin);
+        this._delayLine.setAttribute("x2", (this._delay() * this._timeline.pixelMsRatio() + WebInspector.AnimationUI.Options.AnimationMargin).toFixed(2));
+        var leftMargin = (this._delay() + this._duration() * this._animation.source().iterations()) * this._timeline.pixelMsRatio();
+        this._endDelayLine.style.transform = "translateX(" + Math.min(leftMargin, this._timeline.width()).toFixed(2) + "px)";
+        this._endDelayLine.setAttribute("x1", WebInspector.AnimationUI.Options.AnimationMargin);
+        this._endDelayLine.setAttribute("x2", (this._animation.source().endDelay() * this._timeline.pixelMsRatio() + WebInspector.AnimationUI.Options.AnimationMargin).toFixed(2));
     },
 
     /**
@@ -545,12 +589,12 @@ WebInspector.AnimationUI.prototype = {
     _drawPoint: function(iteration, parentElement, x, keyframeIndex, attachEvents)
     {
         if (this._cachedElements[iteration].keyframePoints[keyframeIndex]) {
-            this._cachedElements[iteration].keyframePoints[keyframeIndex].setAttribute("cx", x);
+            this._cachedElements[iteration].keyframePoints[keyframeIndex].setAttribute("cx", x.toFixed(2));
             return;
         }
 
         var circle = parentElement.createSVGChild("circle", keyframeIndex <= 0 ? "animation-endpoint" : "animation-keyframe-point");
-        circle.setAttribute("cx", x);
+        circle.setAttribute("cx", x.toFixed(2));
         circle.setAttribute("cy", WebInspector.AnimationUI.Options.AnimationHeight);
         circle.style.stroke = this._color();
         circle.setAttribute("r", WebInspector.AnimationUI.Options.AnimationMargin / 2);
@@ -585,32 +629,36 @@ WebInspector.AnimationUI.prototype = {
         var bezierCache = this._cachedElements[iteration].beziers;
         if (!bezierCache[keyframeIndex])
             bezierCache[keyframeIndex] = parentElement.createSVGChild("path", "animation-keyframe");
-        bezierCache[keyframeIndex].style.transform = "translateX(" + leftDistance + "px)";
+        bezierCache[keyframeIndex].style.transform = "translateX(" + leftDistance.toFixed(2) + "px)";
         bezierCache[keyframeIndex].style.fill = this._color();
         WebInspector.BezierUI.drawVelocityChart(bezier, bezierCache[keyframeIndex], width);
     },
 
     redraw: function()
     {
-        var iterationWidth = this._duration() * this._timeline.pixelMsRatio();
-        var svgWidth = this._animation.source().iterations() ? Math.min(this._timeline.width(), iterationWidth * this._animation.source().iterations()) : this._timeline.width();
-        svgWidth += 2 * WebInspector.AnimationUI.Options.AnimationMargin;
-        var leftMargin = (this._animation.startTime() - this._timeline.startTime() + this._delay()) * this._timeline.pixelMsRatio();
-        this._svg.setAttribute("width", svgWidth);
+        var durationWithDelay = this._delay() + this._duration() * this._animation.source().iterations() + this._animation.source().endDelay();
+        var svgWidth = Math.min(this._timeline.width(), durationWithDelay * this._timeline.pixelMsRatio());
+        var leftMargin = ((this._animation.startTime() - this._timeline.startTime()) * this._timeline.pixelMsRatio()).toFixed(2);
+
+        this._svg.classList.toggle("animation-ui-canceled", this._animation.playState() === "idle");
+        this._svg.setAttribute("width", (svgWidth + 2 * WebInspector.AnimationUI.Options.AnimationMargin).toFixed(2));
         this._svg.style.transform = "translateX(" + leftMargin  + "px)";
-        this._nameElement.style.transform = "translateX(" + leftMargin + "px)";
-        this._nameElement.style.width = svgWidth + "px";
+        this._activeIntervalGroup.style.transform = "translateX(" + (this._delay() * this._timeline.pixelMsRatio()).toFixed(2) + "px)";
+
+        this._nameElement.style.transform = "translateX(" + (leftMargin + this._delay() * this._timeline.pixelMsRatio() + WebInspector.AnimationUI.Options.AnimationMargin) + "px)";
+        this._nameElement.style.width = this._duration() * this._timeline.pixelMsRatio() + "px";
+        this._drawDelayLine(this._svg);
 
         if (this._animation.type() === "CSSTransition") {
             this._renderTransition();
             return;
         }
 
-        var numIterations = this._animation.source().iterations() ? this._animation.source().iterations() : Infinity;
-        this._renderIteration(this._svg, 0);
+        this._renderIteration(this._activeIntervalGroup, 0);
         if (!this._tailGroup)
-            this._tailGroup = this._svg.createSVGChild("g", "animation-tail-iterations");
-        for (var iteration = 1; iteration < numIterations && iterationWidth * (iteration - 1) < this._timeline.width(); iteration++)
+            this._tailGroup = this._activeIntervalGroup.createSVGChild("g", "animation-tail-iterations");
+        var iterationWidth = this._duration() * this._timeline.pixelMsRatio();
+        for (var iteration = 1; iteration < this._animation.source().iterations() && iterationWidth * (iteration - 1) < this._timeline.width(); iteration++)
             this._renderIteration(this._tailGroup, iteration);
     },
 
@@ -618,13 +666,13 @@ WebInspector.AnimationUI.prototype = {
     {
         if (!this._cachedElements[0])
             this._cachedElements[0] = { animationLine: null, keyframePoints: {}, beziers: {}, group: null };
-        this._drawAnimationLine(0, this._svg);
+        this._drawAnimationLine(0, this._activeIntervalGroup);
         var bezier = WebInspector.Geometry.CubicBezier.parse(this._animation.source().easing());
         // FIXME: add support for step functions
         if (bezier)
-            this._renderBezierKeyframe(0, 0, this._svg, WebInspector.AnimationUI.Options.AnimationMargin, this._duration() * this._timeline.pixelMsRatio(), bezier);
-        this._drawPoint(0, this._svg, WebInspector.AnimationUI.Options.AnimationMargin, 0, true);
-        this._drawPoint(0, this._svg, this._duration() * this._timeline.pixelMsRatio() + WebInspector.AnimationUI.Options.AnimationMargin, -1, true);
+            this._renderBezierKeyframe(0, 0, this._activeIntervalGroup, WebInspector.AnimationUI.Options.AnimationMargin, this._duration() * this._timeline.pixelMsRatio(), bezier);
+        this._drawPoint(0, this._activeIntervalGroup, WebInspector.AnimationUI.Options.AnimationMargin, 0, true);
+        this._drawPoint(0, this._activeIntervalGroup, this._duration() * this._timeline.pixelMsRatio() + WebInspector.AnimationUI.Options.AnimationMargin, -1, true);
     },
 
     /**
@@ -636,7 +684,7 @@ WebInspector.AnimationUI.prototype = {
         if (!this._cachedElements[iteration])
             this._cachedElements[iteration] = { animationLine: null, keyframePoints: {}, beziers: {}, group: parentElement.createSVGChild("g") };
         var group = this._cachedElements[iteration].group;
-        group.style.transform = "translateX(" + (iteration * this._duration() * this._timeline.pixelMsRatio()) + "px)";
+        group.style.transform = "translateX(" + (iteration * this._duration() * this._timeline.pixelMsRatio()).toFixed(2) + "px)";
         this._drawAnimationLine(iteration, group);
         console.assert(this._keyframes.length > 1);
         for (var i = 0; i < this._keyframes.length - 1; i++) {
@@ -658,7 +706,7 @@ WebInspector.AnimationUI.prototype = {
     _delay: function()
     {
         var delay = this._animation.source().delay();
-        if (this._mouseEventType === WebInspector.AnimationUI.MouseEvents.AnimationDrag || this._mouseEventType    === WebInspector.AnimationUI.MouseEvents.StartEndpointMove)
+        if (this._mouseEventType === WebInspector.AnimationUI.MouseEvents.AnimationDrag || this._mouseEventType === WebInspector.AnimationUI.MouseEvents.StartEndpointMove)
             delay += this._movementInMs;
         // FIXME: add support for negative start delay
         return Math.max(0, delay);
@@ -673,7 +721,7 @@ WebInspector.AnimationUI.prototype = {
         if (this._mouseEventType === WebInspector.AnimationUI.MouseEvents.FinishEndpointMove)
             duration += this._movementInMs;
         else if (this._mouseEventType === WebInspector.AnimationUI.MouseEvents.StartEndpointMove)
-            duration -= this._movementInMs;
+            duration -= Math.max(this._movementInMs, -this._animation.source().delay()); // Cannot have negative delay
         return Math.max(0, duration);
     },
 
@@ -700,6 +748,8 @@ WebInspector.AnimationUI.prototype = {
      */
     _mouseDown: function(mouseEventType, keyframeIndex, event)
     {
+        if (this._animation.playState() === "idle")
+            return;
         this._mouseEventType = mouseEventType;
         this._keyframeMoved = keyframeIndex;
         this._downMouseX = event.clientX;
@@ -736,8 +786,16 @@ WebInspector.AnimationUI.prototype = {
         if (this._mouseEventType === WebInspector.AnimationUI.MouseEvents.KeyframeMove) {
             this._keyframes[this._keyframeMoved].setOffset(this._offset(this._keyframeMoved));
         } else {
-            this._setDelay(this._delay());
-            this._setDuration(this._duration());
+            var delay = this._delay();
+            var duration = this._duration();
+            this._setDelay(delay);
+            this._setDuration(duration);
+            // FIXME: Transition timing updates currently not supported
+            if (this._animation.type() == "WebAnimation") {
+                var target = WebInspector.targetManager.mainTarget();
+                if (target)
+                    target.animationAgent().setTiming(this._animation.id(), duration, delay);
+            }
         }
 
         this._movementInMs = 0;
@@ -767,7 +825,7 @@ WebInspector.AnimationUI.prototype = {
         else if (this._animation.type() == "CSSAnimation")
             propertyName = "animation-delay";
         else
-            return; // FIXME: support web animations
+            return;
         this._setNodeStyle(propertyName, Math.round(value) + "ms");
     },
 
@@ -786,7 +844,7 @@ WebInspector.AnimationUI.prototype = {
         else if (this._animation.type() == "CSSAnimation")
             propertyName = "animation-duration";
         else
-            return; // FIXME: support web animations
+            return;
         this._setNodeStyle(propertyName, Math.round(value) + "ms");
     },
 

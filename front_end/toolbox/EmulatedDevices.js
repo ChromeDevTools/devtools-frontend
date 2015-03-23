@@ -650,7 +650,7 @@ WebInspector.EmulatedDevicesList.prototype = {
         for (var i = 0; i < to.length; ++i) {
             var title = to[i].title;
             if (deviceById.has(title))
-                to[i].copyShowFrom(deviceById.get(title));
+                to[i].copyShowFrom(/** @type {!WebInspector.EmulatedDevice} */ (deviceById.get(title)));
         }
     },
 

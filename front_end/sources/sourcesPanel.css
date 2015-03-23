@@ -262,3 +262,7 @@
     background-color: #F0F0F0;
     padding-right: 14px;
 }
+
+.sidebar-pane-stack .watch-expressions {
+    margin-top: 0px;
+}

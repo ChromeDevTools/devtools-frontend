@@ -463,7 +463,7 @@ WebInspector.TimelineUIUtils.buildTraceEventDetails = function(event, model, lin
         callbackWrapper();
         return;
     }
-    var relatedNode = null;
+    var relatedNodes = null;
     var barrier = new CallbackBarrier();
     if (!event.previewElement) {
         if (event.url)
@@ -471,10 +471,13 @@ WebInspector.TimelineUIUtils.buildTraceEventDetails = function(event, model, lin
         else if (event.picture)
             WebInspector.TimelineUIUtils.buildPicturePreviewContent(event, target, barrier.createCallback(saveImage));
     }
+    var nodeIdsToResolve = new Set();
     if (event.backendNodeId)
-        target.domModel.pushNodesByBackendIdsToFrontend([event.backendNodeId], barrier.createCallback(setRelatedNode));
+        nodeIdsToResolve.add(event.backendNodeId);
     if (event.invalidationTrackingEvents)
-        WebInspector.TimelineUIUtils._pushInvalidationNodeIdsToFrontend(event, target, barrier.createCallback(updateInvalidationNodeIds));
+        WebInspector.TimelineUIUtils._collectInvalidationNodeIds(nodeIdsToResolve, event.invalidationTrackingEvents);
+    if (nodeIdsToResolve.size)
+        target.domModel.pushNodesByBackendIdsToFrontend(nodeIdsToResolve, barrier.createCallback(setRelatedNodeMap));
     barrier.callWhenDone(callbackWrapper);
 
     /**
@@ -486,43 +489,16 @@ WebInspector.TimelineUIUtils.buildTraceEventDetails = function(event, model, lin
     }
 
     /**
-     * @param {?Array.<!DOMAgent.NodeId>} nodeIds
+     * @param {?Map<number, ?WebInspector.DOMNode>} nodeMap
      */
-    function setRelatedNode(nodeIds)
+    function setRelatedNodeMap(nodeMap)
     {
-        if (nodeIds)
-            relatedNode = target.domModel.nodeForId(nodeIds[0]);
-    }
-
-    /**
-     * @param {?Array.<!DOMAgent.NodeId>} frontendNodeIds
-     * @param {?Array.<!DOMAgent.NodeId>} backendNodeIds
-     */
-    function updateInvalidationNodeIds(frontendNodeIds, backendNodeIds)
-    {
-        if (!frontendNodeIds)
-            return;
-        if (frontendNodeIds.length !== backendNodeIds.length) {
-            console.error("Did not resolve the correct number of invalidation node ids.");
-            return;
-        }
-
-        var backendToFrontendNodeIdMap = {};
-        backendNodeIds.forEach(function(backendNodeId, index) {
-            backendToFrontendNodeIdMap[backendNodeId] = frontendNodeIds[index];
-        });
-
-        if (event.nodeId)
-            event.frontendNodeId = backendToFrontendNodeIdMap[event.nodeId];
-        event.invalidationTrackingEvents.forEach(function(invalidation) {
-            if (invalidation.nodeId)
-                invalidation.frontendNodeId = backendToFrontendNodeIdMap[invalidation.nodeId];
-        });
+        relatedNodes = nodeMap;
     }
 
     function callbackWrapper()
     {
-        callback(WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously(event, model, linkifier, relatedNode));
+        callback(WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously(event, model, linkifier, relatedNodes));
     }
 }
 
@@ -530,10 +506,10 @@ WebInspector.TimelineUIUtils.buildTraceEventDetails = function(event, model, lin
  * @param {!WebInspector.TracingModel.Event} event
  * @param {!WebInspector.TimelineModel} model
  * @param {!WebInspector.Linkifier} linkifier
- * @param {?WebInspector.DOMNode} relatedNode
+ * @param {?Map<number, ?WebInspector.DOMNode>} relatedNodesMap
  * @return {!DocumentFragment}
  */
-WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(event, model, linkifier, relatedNode)
+WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(event, model, linkifier, relatedNodesMap)
 {
     var fragment = createDocumentFragment();
     var stats = {};
@@ -542,7 +518,7 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
     // This message may vary per event.name;
     var relatedNodeLabel;
 
-    var contentHelper = new WebInspector.TimelineDetailsContentHelper(model.target(), linkifier, true);
+    var contentHelper = new WebInspector.TimelineDetailsContentHelper(model.target(), linkifier, relatedNodesMap, true);
     contentHelper.appendTextRow(WebInspector.UIString("Type"), WebInspector.TimelineUIUtils.eventTitle(event));
     contentHelper.appendTextRow(WebInspector.UIString("Total Time"), Number.millisToString(event.duration || 0, true));
     contentHelper.appendTextRow(WebInspector.UIString("Self Time"), Number.millisToString(event.selfTime, true));
@@ -577,7 +553,7 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
     case recordTypes.ResourceReceiveResponse:
     case recordTypes.ResourceReceivedData:
     case recordTypes.ResourceFinish:
-        var url = (event.name === recordTypes.ResourceSendRequest) ? eventData["url"] : initiator.args["data"]["url"];
+        var url = (event.name === recordTypes.ResourceSendRequest) ? eventData["url"] : initiator && initiator.args["data"]["url"];
         if (url)
             contentHelper.appendElementRow(WebInspector.UIString("Resource"), WebInspector.linkifyResourceAsNode(url));
         if (eventData["requestMethod"])
@@ -661,6 +637,7 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
         break;
     }
 
+    var relatedNode = contentHelper.nodeForBackendId(event.backendNodeId);
     if (relatedNode)
         contentHelper.appendElementRow(relatedNodeLabel || WebInspector.UIString("Related node"), WebInspector.DOMPresentationUtils.linkifyNodeReference(relatedNode));
 
@@ -855,7 +832,7 @@ WebInspector.TimelineUIUtils._generateInvalidationsForType = function(type, targ
      */
     function createInvalidationNode(invalidation, showUnknownNodes)
     {
-        var node = target.domModel.nodeForId(invalidation.frontendNodeId);
+        var node = contentHelper.nodeForBackendId(invalidation.nodeId);
         if (node)
             return WebInspector.DOMPresentationUtils.linkifyNodeReference(node);
         if (invalidation.nodeName) {
@@ -974,29 +951,15 @@ WebInspector.TimelineUIUtils._generateInvalidationsForType = function(type, targ
 }
 
 /**
- * @param {!WebInspector.TracingModel.Event} event
- * @param {!WebInspector.Target} target
- * @param {function(?Array.<number>, ?Array.<number>)} callback
+ * @param {!Set<number>} nodeIds
+ * @param {!WebInspector.InvalidationTrackingEvent} invalidations
  */
-WebInspector.TimelineUIUtils._pushInvalidationNodeIdsToFrontend = function(event, target, callback)
+WebInspector.TimelineUIUtils._collectInvalidationNodeIds = function(nodeIds, invalidations)
 {
-    var backendNodeIds = [];
-    var dedupedNodeIds = {};
-
-    if (event.nodeId) {
-        backendNodeIds.push(event.nodeId);
-        dedupedNodeIds[event.nodeId] = true;
+    for (var i = 0; i < invalidations.length; ++i) {
+        if (invalidations[i].nodeId)
+            nodeIds.add(invalidations[i].nodeId);
     }
-    event.invalidationTrackingEvents.forEach(function(invalidation) {
-        if (invalidation.nodeId && !dedupedNodeIds[invalidation.nodeId]) {
-            backendNodeIds.push(invalidation.nodeId);
-            dedupedNodeIds[invalidation.nodeId] = true;
-        }
-    });
-
-    target.domModel.pushNodesByBackendIdsToFrontend(backendNodeIds, function(frontendNodeIds) {
-        callback(frontendNodeIds, backendNodeIds);
-    });
 }
 
 /**
@@ -1200,6 +1163,28 @@ WebInspector.TimelineUIUtils.categories = function()
 };
 
 /**
+ * @constructor
+ * @param {string} title
+ */
+WebInspector.AsyncEventGroup = function(title)
+{
+    this.title = title;
+}
+
+/**
+ * @return {!Object<string, !WebInspector.AsyncEventGroup>}
+ */
+WebInspector.TimelineUIUtils.asyncEventGroups = function()
+{
+    if (WebInspector.TimelineUIUtils._asyncEventGroups)
+        return WebInspector.TimelineUIUtils._asyncEventGroups;
+    WebInspector.TimelineUIUtils._asyncEventGroups = {
+        console: new WebInspector.AsyncEventGroup(WebInspector.UIString("Console"))
+    };
+    return WebInspector.TimelineUIUtils._asyncEventGroups;
+}
+
+/**
  * @param {!WebInspector.TimelineModel} model
  * @param {!{name: string, tasks: !Array.<!WebInspector.TimelineModel.Record>, firstTaskIndex: number, lastTaskIndex: number}} info
  * @return {!Element}
@@ -1304,7 +1289,7 @@ WebInspector.TimelineUIUtils.generateDetailsContentForFrame = function(frameMode
     var durationText = WebInspector.UIString("%s (at %s)", Number.millisToString(frame.endTime - frame.startTime, true),
         Number.millisToString(frame.startTimeOffset, true));
     var pieChart = WebInspector.TimelineUIUtils.generatePieChart(frame.timeByCategory);
-    var contentHelper = new WebInspector.TimelineDetailsContentHelper(null, null, true);
+    var contentHelper = new WebInspector.TimelineDetailsContentHelper(null, null, null, true);
     contentHelper.appendTextRow(WebInspector.UIString("Duration"), durationText);
     contentHelper.appendTextRow(WebInspector.UIString("FPS"), Math.floor(1000 / durationInMillis));
     contentHelper.appendTextRow(WebInspector.UIString("CPU time"), Number.millisToString(frame.cpuTime, true));
@@ -1380,6 +1365,188 @@ WebInspector.TimelineUIUtils.quadWidth = function(quad)
 WebInspector.TimelineUIUtils.quadHeight = function(quad)
 {
     return Math.round(Math.sqrt(Math.pow(quad[0] - quad[6], 2) + Math.pow(quad[1] - quad[7], 2)));
+}
+
+/**
+ * @param {!Array.<!WebInspector.TracingModel.Event>} events
+ * @return {number}
+ */
+WebInspector.TimelineUIUtils.calculateNetworkBandsCount = function(events)
+{
+    var openBands = new Set();
+    var maxBands = 0;
+    for (var i = 0; i < events.length; ++i) {
+        var e = events[i];
+        switch (e.name) {
+        case WebInspector.TimelineModel.RecordType.ResourceSendRequest:
+            var reqId = e.args["data"]["requestId"];
+            openBands.add(reqId);
+            maxBands = Math.max(maxBands, openBands.size);
+            break;
+        case WebInspector.TimelineModel.RecordType.ResourceReceiveResponse:
+        case WebInspector.TimelineModel.RecordType.ResourceReceivedData:
+        case WebInspector.TimelineModel.RecordType.ResourceFinish:
+            var reqId = e.args["data"]["requestId"];
+            if (!openBands.has(reqId)) {
+                openBands.add(reqId);
+                ++maxBands;
+            }
+            if (e.name === WebInspector.TimelineModel.RecordType.ResourceFinish)
+                openBands.delete(reqId);
+            break;
+        }
+    }
+    return maxBands;
+}
+
+/**
+ * @param {!Array.<!WebInspector.TracingModel.Event>} events
+ * @param {number} bandsCount
+ * @param {function(number, number, number, ?WebInspector.TracingModel.Event)} callback
+ */
+WebInspector.TimelineUIUtils.iterateNetworkRequestsInRoundRobin = function(events, bandsCount, callback)
+{
+    var bandsInUse = new Array(bandsCount);
+    var requestsInFlight = new Map();
+    var lastBand = -1;
+
+    // Invoke synthetic calls for events that are missing ResourceSendRequest
+    var requestsWithSend = new Set();
+    for (var i = 0; i < events.length; ++i) {
+        var event = events[i];
+        switch (event.name) {
+        case WebInspector.TimelineModel.RecordType.ResourceSendRequest:
+            var reqId = event.args["data"]["requestId"];
+            requestsWithSend.add(reqId);
+            break;
+        case WebInspector.TimelineModel.RecordType.ResourceReceivedData:
+        case WebInspector.TimelineModel.RecordType.ResourceReceiveResponse:
+        case WebInspector.TimelineModel.RecordType.ResourceFinish:
+            var reqId = event.args["data"]["requestId"];
+            if (!requestsWithSend.has(reqId)) {
+                requestsWithSend.add(reqId);
+                var reqInfo = new RequestInfo(seizeBand(), 0);
+                requestsInFlight.set(reqId, reqInfo);
+                callback(reqInfo.band, 0, 0, null);
+            }
+            if (event.name === WebInspector.TimelineModel.RecordType.ResourceFinish)
+                requestsWithSend.delete(reqId);
+            break;
+        }
+    }
+    requestsWithSend = null;
+
+    /**
+     * @constructor
+     * @param {number} band
+     * @param {number} time
+     */
+    function RequestInfo(band, time)
+    {
+        this.band = band;
+        this.time = time;
+    }
+
+    /**
+     * @return {number}
+     */
+    function seizeBand()
+    {
+        var i = 0;
+        do {
+            lastBand = (lastBand + 1) % bandsInUse.length;
+            console.assert(i++ < bandsInUse.length);
+        } while (bandsInUse[lastBand]);
+        bandsInUse[lastBand] = true;
+        return lastBand;
+    }
+
+    /**
+     * @param {number} band
+     */
+    function releaseBand(band)
+    {
+        bandsInUse[band] = false;
+    }
+
+    /**
+     * @param {string} reqId
+     * @param {?WebInspector.TracingModel.Event} event
+     * @param {boolean} first
+     * @return {!RequestInfo}
+     */
+    function getOrCreateRequestInfo(reqId, event, first)
+    {
+        var reqInfo = requestsInFlight.get(reqId);
+        if (!reqInfo) {
+            reqInfo = new RequestInfo(seizeBand(), event.startTime);
+            requestsInFlight.set(reqId, reqInfo);
+            if (!first)
+                callback(reqInfo.band, 0, event.startTime, event);
+        }
+        return reqInfo;
+    }
+
+    for (var i = 0; i < events.length; ++i) {
+        var event = events[i];
+        switch (event.name) {
+        case WebInspector.TimelineModel.RecordType.ResourceSendRequest:
+            var reqId = event.args["data"]["requestId"];
+            var reqInfo = getOrCreateRequestInfo(reqId, event, true);
+            callback(reqInfo.band, reqInfo.time, event.startTime, event);
+            break;
+        case WebInspector.TimelineModel.RecordType.ResourceReceivedData:
+        case WebInspector.TimelineModel.RecordType.ResourceReceiveResponse:
+        case WebInspector.TimelineModel.RecordType.ResourceFinish:
+            var reqId = event.args["data"]["requestId"];
+            var reqInfo = getOrCreateRequestInfo(reqId, event, false);
+            callback(reqInfo.band, reqInfo.time, event.startTime, event);
+            if (event.name === WebInspector.TimelineModel.RecordType.ResourceFinish) {
+                releaseBand(reqInfo.band);
+                requestsInFlight.delete(reqId);
+            } else {
+                reqInfo.time = event.startTime;
+            }
+            break;
+        }
+    }
+
+    for (var reqInfo of requestsInFlight.values())
+        callback(reqInfo.band, reqInfo.time, Infinity, null);
+}
+
+/**
+ * @constructor
+ * @param {number} priority
+ * @param {string} color
+ * @param {!Array.<string>} eventTypes
+ */
+WebInspector.TimelineUIUtils.EventDispatchTypeDescriptor = function(priority, color, eventTypes)
+{
+    this.priority = priority;
+    this.color = color;
+    this.eventTypes = eventTypes;
+}
+
+/**
+ * @return {!Array.<!WebInspector.TimelineUIUtils.EventDispatchTypeDescriptor>}
+ */
+WebInspector.TimelineUIUtils.eventDispatchDesciptors = function()
+{
+    if (WebInspector.TimelineUIUtils._eventDispatchDesciptors)
+        return WebInspector.TimelineUIUtils._eventDispatchDesciptors;
+    var lightOrange = "hsl(40,100%,80%)";
+    var orange = "hsl(40,100%,50%)";
+    var green = "hsl(90,100%,40%)";
+    var purple = "hsl(256,100%,75%)";
+    WebInspector.TimelineUIUtils._eventDispatchDesciptors = [
+        new WebInspector.TimelineUIUtils.EventDispatchTypeDescriptor(1, lightOrange, ["mousemove", "mouseenter", "mouseleave", "mouseout", "mouseover"]),
+        new WebInspector.TimelineUIUtils.EventDispatchTypeDescriptor(2, green, ["wheel"]),
+        new WebInspector.TimelineUIUtils.EventDispatchTypeDescriptor(3, orange, ["click", "mousedown", "mouseup"]),
+        new WebInspector.TimelineUIUtils.EventDispatchTypeDescriptor(3, orange, ["touchstart", "touchend", "touchmove", "touchcancel"]),
+        new WebInspector.TimelineUIUtils.EventDispatchTypeDescriptor(3, purple, ["keydown", "keyup", "keypress"])
+    ];
+    return WebInspector.TimelineUIUtils._eventDispatchDesciptors;
 }
 
 /**
@@ -1583,12 +1750,14 @@ WebInspector.TimelinePopupContentHelper.prototype = {
  * @constructor
  * @param {?WebInspector.Target} target
  * @param {?WebInspector.Linkifier} linkifier
+ * @param {?Map<number, ?WebInspector.DOMNode>} relatedNodesMap
  * @param {boolean} monospaceValues
  */
-WebInspector.TimelineDetailsContentHelper = function(target, linkifier, monospaceValues)
+WebInspector.TimelineDetailsContentHelper = function(target, linkifier, relatedNodesMap, monospaceValues)
 {
     this._linkifier = linkifier;
     this._target = target;
+    this._relatedNodesMap = relatedNodesMap;
     this.element = createElement("div");
     this.element.className = "timeline-details-view-block";
     this._monospaceValues = monospaceValues;
@@ -1601,6 +1770,17 @@ WebInspector.TimelineDetailsContentHelper.prototype = {
     linkifier: function()
     {
         return this._linkifier;
+    },
+
+    /**
+     * @param {?number} backendNodeId
+     * @return {?WebInspector.DOMNode}
+     */
+    nodeForBackendId: function(backendNodeId)
+    {
+        if (!backendNodeId || !this._relatedNodesMap)
+            return null;
+        return this._relatedNodesMap.get(backendNodeId) || null;
     },
 
     /**

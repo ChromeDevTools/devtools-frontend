@@ -306,7 +306,7 @@ WebInspector.ScriptFormatterEditorAction.prototype = {
         this._formatData.remove(formattedUISourceCode);
         var path = formatData.projectId + ":" + formatData.path;
         this._formattedPaths.remove(path);
-        this._pathsToFormatOnLoad.remove(path);
+        this._pathsToFormatOnLoad.delete(path);
         for (var i = 0; i < formatData.scripts.length; ++i) {
             this._uiSourceCodes.remove(formatData.scripts[i]);
             WebInspector.debuggerWorkspaceBinding.popSourceMapping(formatData.scripts[i]);

@@ -110,8 +110,11 @@ WebInspector.TimelineOverviewPane.prototype = {
     _updateEventDividers: function()
     {
         this._overviewGrid.removeEventDividers();
+        var recordTypes = WebInspector.TimelineModel.RecordType;
         var dividers = new Map();
         for (var record of this._model.eventDividerRecords()) {
+            if (record.type() === recordTypes.TimeStamp || record.type() === recordTypes.ConsoleTime)
+                continue;
             var dividerPosition = Math.round(this._overviewCalculator.computePosition(record.startTime()));
             // Limit the number of dividers to one per pixel.
             if (dividers.has(dividerPosition))

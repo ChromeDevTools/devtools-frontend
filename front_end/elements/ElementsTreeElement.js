@@ -348,7 +348,7 @@ WebInspector.ElementsTreeElement.prototype = {
     {
         if (this._editing)
             return false;
-        if (this.treeOutline.handlePickNode(this.title, this._node))
+        if (selectedByUser && this.treeOutline.handlePickNode(this.title, this._node))
             return true;
         return TreeElement.prototype.select.call(this, omitFocus, selectedByUser);
     },
@@ -1403,20 +1403,6 @@ WebInspector.ElementsTreeElement.prototype = {
             case Node.DOCUMENT_FRAGMENT_NODE:
                 var fragmentElement = titleDOM.createChild("span", "webkit-html-fragment");
                 fragmentElement.textContent = node.nodeNameInCorrectCase().collapseWhitespace();
-                delete this.shadowHostToolbar;
-                if (node.isInShadowTree()) {
-                    var shadowRootType = node.shadowRootType();
-                    if (shadowRootType) {
-                        if (Runtime.experiments.isEnabled("composedShadowDOM")) {
-                            var isYoungestShadowRoot = node === node.parentNode.shadowRoots()[0];
-                            if (isYoungestShadowRoot) {
-                                var toolbarElement = titleDOM.createChild("span", "webkit-html-fragment");
-                                this.shadowHostToolbar = this._createShadowHostToolbar();
-                                toolbarElement.appendChild(this.shadowHostToolbar);
-                            }
-                        }
-                    }
-                }
                 break;
             default:
                 titleDOM.createTextChild(node.nodeNameInCorrectCase().collapseWhitespace());
@@ -1432,67 +1418,6 @@ WebInspector.ElementsTreeElement.prototype = {
         }
 
         return titleDOM;
-    },
-
-    /**
-     * @param {?WebInspector.ElementsTreeOutline.ShadowHostDisplayMode} mode
-     */
-    setShadowHostToolbarMode: function(mode)
-    {
-        this._shadowHostToolbarMode = mode;
-    },
-
-    /**
-     * @return {!Element}
-     */
-    _createShadowHostToolbar: function()
-    {
-        /**
-         * @this {WebInspector.ElementsTreeElement}
-         * @param {string} label
-         * @param {string} tooltip
-         * @param {?WebInspector.ElementsTreeOutline.ShadowHostDisplayMode} mode
-         */
-        function createButton(label, tooltip, mode)
-        {
-            var button = createElement("button");
-            button.className = "shadow-host-display-mode-toolbar-button";
-            button.textContent = label;
-            button.title = tooltip;
-            button.tabIndex = -1;
-            button.mode = mode;
-            if (mode)
-                button.classList.add("custom-mode")
-            button.addEventListener("click", buttonClicked.bind(this), true);
-            toolbar.appendChild(button);
-            return button;
-        }
-
-        /**
-         * @this {WebInspector.ElementsTreeElement}
-         * @param {!Event} event
-         */
-        function buttonClicked(event)
-        {
-            var button = event.target;
-            if (button.disabled)
-                return;
-            this.treeOutline.setShadowHostDisplayMode(this._node.parentNode, button.mode);
-            event.consume();
-        }
-
-        var toolbar = createElementWithClass("span", "shadow-host-display-mode-toolbar");
-
-        var buttons = [];
-        buttons.push(createButton.call(this, "Logical", WebInspector.UIString("Logical view \n(Light and Shadow DOM are shown separately)."), null));
-        buttons.push(createButton.call(this, "Composed", WebInspector.UIString("Composed view\n(Light DOM is shown as distributed into Shadow DOM)."), WebInspector.ElementsTreeOutline.ShadowHostDisplayMode.Composed));
-        var mode = this._shadowHostToolbarMode || null;
-        for (var i = 0; i < buttons.length; ++i) {
-            var currentModeButton = mode === buttons[i].mode;
-            buttons[i].classList.toggle("toggled", currentModeButton);
-            buttons[i].disabled = currentModeButton;
-        }
-        return toolbar;
     },
 
     remove: function()

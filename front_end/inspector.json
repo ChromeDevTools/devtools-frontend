@@ -22,9 +22,9 @@
     { "name": "console" },
     { "name": "source_frame" },
     { "name": "settings" },
-    { "name": "devices" },
     { "name": "layers" },
     { "name": "promises" },
+    { "name": "snippets"},
     { "name": "screencast", "condition": "remoteFrontend" },
 
     { "name": "heap_snapshot_worker", "type": "worker" },

@@ -112,9 +112,14 @@ public final class ProtoFollowsExtendsChecker extends ContextTrackingChecker {
         if (extendedType == null) {
             return;
         }
+        String annotationTypeString = AstUtil.getAnnotationTypeString(extendedType);
+        if (annotationTypeString.startsWith("HTML")) {
+            return;
+        }
+
         reportErrorAtNodeStart(AstUtil.getFunctionNameNode(function.functionNode),
                 String.format("Type %s extends %s but does not properly invoke its constructor",
-                        function.name, AstUtil.getAnnotationTypeString(extendedType)));
+                        function.name, annotationTypeString));
     }
 
     private JSTypeExpression getExtendedTypeToCheck(FunctionRecord function) {

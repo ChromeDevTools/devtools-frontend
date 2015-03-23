@@ -1,13 +1,16 @@
 # [Google Closure Compiler](https://developers.google.com/closure/compiler/)
 
+[![Build Status](https://travis-ci.org/google/closure-compiler.svg?branch=master)](https://travis-ci.org/google/closure-compiler)
+
 The [Closure Compiler](https://developers.google.com/closure/compiler/) is a tool for making JavaScript download and run faster. It is a true compiler for JavaScript. Instead of compiling from a source language to machine code, it compiles from JavaScript to better JavaScript. It parses your JavaScript, analyzes it, removes dead code and rewrites and minimizes what's left. It also checks syntax, variable references, and types, and warns about common JavaScript pitfalls.
 
 ## Getting Started
- * [Download the latest version](http://dl.google.com/closure-compiler/compiler-latest.zip)
+ * [Download the latest version](http://dl.google.com/closure-compiler/compiler-latest.zip) ([Release details here](https://github.com/google/closure-compiler/wiki/Releases))
+ * [Download a specific version](https://github.com/google/closure-compiler/wiki/Binary-Downloads)
  * See the [Google Developers Site](https://developers.google.com/closure/compiler/docs/gettingstarted_app) for documentation including instructions for running the compiler from the command line.
 
 ## Options for Getting Help
-1. Post in the [Closure Compiler Discuss Group] (https://groups.google.com/forum/#!forum/closure-compiler-discuss)
+1. Post in the [Closure Compiler Discuss Group](https://groups.google.com/forum/#!forum/closure-compiler-discuss)
 2. Ask a question on [Stack Overflow](http://stackoverflow.com/questions/tagged/google-closure-compiler)
 3. Consult the [FAQ](https://github.com/google/closure-compiler/wiki/FAQ)
 
@@ -31,7 +34,7 @@ Note: The Closure Compiler requires [Java 7 or higher](http://www.java.com/).
 ### Using [Eclipse](http://www.eclipse.org/)
 
 1. Download and open the [Eclipse IDE](http://www.eclipse.org/).
-2. Navigate to ```File > New > Project ...``` and create a Java Projet. Give
+2. Navigate to ```File > New > Project ...``` and create a Java Project. Give
    the project a name.
 3. Select ```Create project from existing source``` and choose the root of the
    checked-out source tree as the existing directory.
@@ -41,10 +44,10 @@ Note: The Closure Compiler requires [Java 7 or higher](http://www.java.com/).
 
 ## Running
 
-On the command line, type
+On the command line, at the root of this project, type
 
 ```
-java -jar compiler.jar
+java -jar build/compiler.jar
 ```
 
 This starts the compiler in interactive mode. Type
@@ -140,41 +143,6 @@ limitations under the License.
 
 ### Rhino
 
-Two copies of Rhino exist in this repository:
-
-<table>
-  <tr>
-    <td>Code Path</td>
-    <td><code>lib/rhino</code></td>
-  </tr>
-
-  <tr>
-    <td>URL</td>
-    <td>http://www.mozilla.org/rhino</td>
-  </tr>
-  
-  <tr>
-    <td>Version</td>
-    <td>Trunk</td>
-  </tr>
-  
-  <tr>
-    <td>License</td>
-    <td>Netscape Public License and MPL / GPL dual license</td>
-  </tr>
-  
-  <tr>
-    <td>Description</td>
-    <td>Mozilla Rhino is an implementation of JavaScript for the JVM.</td>
-  </tr>
-  
-  <tr>
-    <td>Local Modifications</td>
-    <td>Minor changes to parsing JSDoc that usually get pushed
-  up-stream to Rhino trunk.</td>
-  </tr>
-</table>
-
 <table>
   <tr>
     <td>Code Path</td>
@@ -187,29 +155,29 @@ Two copies of Rhino exist in this repository:
     <td>URL</td>
     <td>http://www.mozilla.org/rhino</td>
   </tr>
-  
+
   <tr>
     <td>Version</td>
     <td>1.5R3, with heavy modifications</td>
   </tr>
-  
+
   <tr>
     <td>License</td>
     <td>Netscape Public License and MPL / GPL dual license</td>
   </tr>
-  
+
   <tr>
     <td>Description</td>
     <td>A partial copy of Mozilla Rhino. Mozilla Rhino is an
-implementation of JavaScript for the JVM.  The JavaScript parser and
-the parse tree data structures were extracted and modified
+implementation of JavaScript for the JVM.  The JavaScript
+parse tree data structures were extracted and modified
 significantly for use by Google's JavaScript compiler.</td>
   </tr>
-  
+
   <tr>
     <td>Local Modifications</td>
     <td>The packages have been renamespaced. All code not
-relevant to parsing has been removed. A JsDoc parser and static typing
+relevant to the parse tree has been removed. A JsDoc parser and static typing
 system have been added.</td>
   </tr>
 </table>
@@ -226,23 +194,23 @@ system have been added.</td>
     <td>URL</td>
     <td>https://args4j.dev.java.net/</td>
   </tr>
-  
+
   <tr>
     <td>Version</td>
     <td>2.0.26</td>
   </tr>
-  
+
   <tr>
     <td>License</td>
     <td>MIT</td>
   </tr>
-  
+
   <tr>
     <td>Description</td>
     <td>args4j is a small Java class library that makes it easy to parse command line
 options/arguments in your CUI application.</td>
   </tr>
-  
+
   <tr>
     <td>Local Modifications</td>
     <td>None</td>
@@ -259,24 +227,24 @@ options/arguments in your CUI application.</td>
 
   <tr>
     <td>URL</td>
-    <td>http://code.google.com/p/guava-libraries/</td>
+    <td>https://github.com/google/guava</td>
   </tr>
-  
+
   <tr>
     <td>Version</td>
-    <td>17.0</td>
+    <td>18.0</td>
   </tr>
-  
+
   <tr>
     <td>License</td>
     <td>Apache License 2.0</td>
   </tr>
-  
+
   <tr>
     <td>Description</td>
     <td>Google's core Java libraries.</td>
   </tr>
-  
+
   <tr>
     <td>Local Modifications</td>
     <td>None</td>
@@ -295,56 +263,22 @@ options/arguments in your CUI application.</td>
     <td>URL</td>
     <td>http://code.google.com/p/jsr-305/</td>
   </tr>
-  
+
   <tr>
     <td>Version</td>
     <td>svn revision 47</td>
   </tr>
-  
+
   <tr>
     <td>License</td>
     <td>BSD License</td>
   </tr>
-  
+
   <tr>
     <td>Description</td>
     <td>Annotations for software defect detection.</td>
   </tr>
-  
-  <tr>
-    <td>Local Modifications</td>
-    <td>None</td>
-  </tr>
-</table>
 
-### Jar Jar Links
-
-<table>
-  <tr>
-    <td>Code Path</td>
-    <td><code>lib/jarjar.jar</code></td>
-  </tr>
-
-  <tr>
-    <td>URL</td>
-    <td>http://jarjar.googlecode.com/</td>
-  </tr>
-  
-  <tr>
-    <td>Version</td>
-    <td>1.1</td>
-  </tr>
-  
-  <tr>
-    <td>License</td>
-    <td>Apache License 2.0</td>
-  </tr>
-  
-  <tr>
-    <td>Description</td>
-    <td>A utility for repackaging Java libraries.</td>
-  </tr>
-  
   <tr>
     <td>Local Modifications</td>
     <td>None</td>
@@ -363,22 +297,22 @@ options/arguments in your CUI application.</td>
     <td>URL</td>
     <td>http://sourceforge.net/projects/junit/</td>
   </tr>
-  
+
   <tr>
     <td>Version</td>
     <td>4.11</td>
   </tr>
-  
+
   <tr>
     <td>License</td>
     <td>Common Public License 1.0</td>
   </tr>
-  
+
   <tr>
     <td>Description</td>
     <td>A framework for writing and running automated tests in Java.</td>
   </tr>
-  
+
   <tr>
     <td>Local Modifications</td>
     <td>None</td>
@@ -397,23 +331,57 @@ options/arguments in your CUI application.</td>
     <td>URL</td>
     <td>http://code.google.com/p/protobuf/</td>
   </tr>
-  
+
   <tr>
     <td>Version</td>
     <td>2.5.0</td>
   </tr>
-  
+
   <tr>
     <td>License</td>
     <td>New BSD License</td>
   </tr>
-  
+
   <tr>
     <td>Description</td>
     <td>Supporting libraries for protocol buffers,
 an encoding of structured data.</td>
   </tr>
-  
+
+  <tr>
+    <td>Local Modifications</td>
+    <td>None</td>
+  </tr>
+</table>
+
+### Truth
+
+<table>
+  <tr>
+    <td>Code Path</td>
+    <td><code>lib/truth.jar</code></td>
+  </tr>
+
+  <tr>
+    <td>URL</td>
+    <td>https://github.com/google/truth</td>
+  </tr>
+
+  <tr>
+    <td>Version</td>
+    <td>0.24</td>
+  </tr>
+
+  <tr>
+    <td>License</td>
+    <td>Apache License 2.0</td>
+  </tr>
+
+  <tr>
+    <td>Description</td>
+    <td>Assertion/Proposition framework for Java unit tests</td>
+  </tr>
+
   <tr>
     <td>Local Modifications</td>
     <td>None</td>
@@ -434,130 +402,93 @@ an encoding of structured data.</td>
     <td>URL</td>
     <td>http://ant.apache.org/bindownload.cgi</td>
   </tr>
-  
+
   <tr>
     <td>Version</td>
     <td>1.8.1</td>
   </tr>
-  
+
   <tr>
     <td>License</td>
     <td>Apache License 2.0</td>
   </tr>
-  
+
   <tr>
     <td>Description</td>
     <td>Ant is a Java based build tool. In theory it is kind of like "make"
 without make's wrinkles and with the full portability of pure java code.</td>
   </tr>
-  
+
   <tr>
     <td>Local Modifications</td>
     <td>None</td>
   </tr>
 </table>
 
-### JSON
+### GSON
 
 <table>
   <tr>
     <td>Code Path</td>
-    <td><code>lib/json.jar</code></td>
+    <td><code>lib/gson.jar</code></td>
   </tr>
 
   <tr>
     <td>URL</td>
-    <td>http://json.org/java/index.html</td>
+    <td>https://code.google.com/p/google-gson/</td>
   </tr>
-  
+
   <tr>
     <td>Version</td>
-    <td>JSON version 20090211</td>
+    <td>2.2.4</td>
   </tr>
-  
+
   <tr>
     <td>License</td>
-    <td>MIT license</td>
+    <td>Apache license 2.0</td>
   </tr>
-  
+
   <tr>
     <td>Description</td>
-    <td>JSON is a set of java files for use in transmitting data in JSON format.</td>
+    <td>A Java library to convert JSON to Java objects and vice-versa</td>
   </tr>
-  
+
   <tr>
     <td>Local Modifications</td>
     <td>None</td>
   </tr>
 </table>
 
-### Mockito
+### Node.js Closure Compiler Externs
 
 <table>
   <tr>
     <td>Code Path</td>
-    <td><code>lib/mockito-core.jar</code></td>
+    <td><code>contrib/nodejs</code></td>
   </tr>
 
   <tr>
     <td>URL</td>
-    <td>https://code.google.com/p/mockito</td>
+    <td>https://github.com/dcodeIO/node.js-closure-compiler-externs</td>
   </tr>
-  
+
   <tr>
     <td>Version</td>
-    <td>1.9.5</td>
-  </tr>
-  
-  <tr>
-    <td>License</td>
-    <td>MIT license</td>
-  </tr>
-  
-  <tr>
-    <td>Description</td>
-    <td>Mockito is an open source testing framework for Java. The framework allows the
-creation of Test Double objects (called "Mock Objects") in automated unit tests
-for the purpose of Test-driven Development (TDD) or Behavior Driven Development
-(BDD).</td>
-  </tr>
-  
-  <tr>
-    <td>Local Modifications</td>
-    <td>None</td>
-  </tr>
-</table>
-
-### Objenesis
-
-<table>
-  <tr>
-    <td>Code Path</td>
-    <td><code>lib/objenesis.jar</code></td>
+    <td>e891b4fbcf5f466cc4307b0fa842a7d8163a073a</td>
   </tr>
 
-  <tr>
-    <td>URL</td>
-    <td>http://objenesis.org</td>
-  </tr>
-  
-  <tr>
-    <td>Version</td>
-    <td>1.2</td>
-  </tr>
-  
   <tr>
     <td>License</td>
     <td>Apache 2.0 license</td>
   </tr>
-  
+
   <tr>
     <td>Description</td>
-    <td>Depended by lib/mockito-core.jar, not used directly.</td>
+    <td>Type contracts for NodeJS APIs</td>
   </tr>
-  
+
   <tr>
     <td>Local Modifications</td>
-    <td>None</td>
+    <td>Substantial changes to make them compatible with NpmCommandLineRunner.</td>
   </tr>
 </table>

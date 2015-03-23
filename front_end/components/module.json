@@ -15,7 +15,7 @@
         "ui"
     ],
     "scripts": [
-        "NativeBreakpointsSidebarPane.js",
+        "BreakpointsSidebarPaneBase.js",
         "DebuggerPresentationUtils.js",
         "DOMBreakpointsSidebarPane.js",
         "DOMPresentationUtils.js",
@@ -27,10 +27,12 @@
         "InspectorView.js",
         "ObjectPopoverHelper.js",
         "ObjectPropertiesSection.js",
+        "RemoteObjectPreviewFormatter.js",
         "ShortcutsScreen.js"
     ],
     "stylesheets": [
         "breakpointsList.css",
-        "nodeLink.css"
+        "nodeLink.css",
+        "objectValue.css"
     ]
 }

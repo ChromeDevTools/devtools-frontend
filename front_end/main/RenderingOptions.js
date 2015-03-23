@@ -59,7 +59,7 @@ WebInspector.RenderingOptions.prototype = {
             var setting = settings[i];
             if (setting.get()) {
                 var setterName = this._setterNames.get(setting);
-                target.pageAgent()[setterName](true);
+                target.renderingAgent()[setterName](true);
             }
         }
     },
@@ -85,7 +85,7 @@ WebInspector.RenderingOptions.prototype = {
         {
             var targets = WebInspector.targetManager.targets();
             for (var i = 0; i < targets.length; ++i)
-                targets[i].pageAgent()[setterName](setting.get());
+                targets[i].renderingAgent()[setterName](setting.get());
         }
     }
 }

@@ -38,13 +38,6 @@
         {
             "type": "ui-setting",
             "section": "Elements",
-            "title": "Show user agent styles",
-            "settingName": "showUserAgentStyles",
-            "settingType": "checkbox"
-        },
-        {
-            "type": "ui-setting",
-            "section": "Elements",
             "title": "Show user agent shadow DOM",
             "settingName": "showUAShadowDOM",
             "settingType": "checkbox"
@@ -100,6 +93,7 @@
         "animationTimeline.css",
         "bezierEditor.css",
         "breadcrumbs.css",
+        "computedStyleSidebarPane.css",
         "elementsPanel.css",
         "elementsTreeOutline.css",
         "spectrum.css"

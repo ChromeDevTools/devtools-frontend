@@ -30,11 +30,11 @@
 
 /**
  * @constructor
- * @extends {WebInspector.NativeBreakpointsSidebarPane}
+ * @extends {WebInspector.BreakpointsSidebarPaneBase}
  */
 WebInspector.DOMBreakpointsSidebarPane = function()
 {
-    WebInspector.NativeBreakpointsSidebarPane.call(this, WebInspector.UIString("DOM Breakpoints"));
+    WebInspector.BreakpointsSidebarPaneBase.call(this, WebInspector.UIString("DOM Breakpoints"));
 
     this._breakpointElements = {};
 
@@ -113,7 +113,7 @@ WebInspector.DOMBreakpointsSidebarPane.prototype = {
         var domModel = details.target().domModel;
         if (auxData.type === this._breakpointTypes.SubtreeModified) {
             var targetNodeObject = details.target().runtimeModel.createRemoteObject(auxData["targetNode"]);
-            targetNodeObject.pushNodeToFrontend(didPushNodeToFrontend.bind(this));
+            domModel.pushObjectAsNodeToFrontend(targetNodeObject, didPushNodeToFrontend.bind(this));
         } else {
             this._doCreateBreakpointHitStatusMessage(auxData, domModel.nodeForId(auxData.nodeId), null, callback);
         }
@@ -427,7 +427,7 @@ WebInspector.DOMBreakpointsSidebarPane.prototype = {
             this._proxies[i].onContentReady();
     },
 
-    __proto__: WebInspector.NativeBreakpointsSidebarPane.prototype
+    __proto__: WebInspector.BreakpointsSidebarPaneBase.prototype
 }
 
 /**

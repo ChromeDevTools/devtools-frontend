@@ -25,11 +25,13 @@
         "FileContentView.js",
         "FileSystemView.js",
         "ResourcesPanel.js",
-        "ServiceWorkerCacheViews.js"
+        "ServiceWorkerCacheViews.js",
+        "ServiceWorkersView.js"
     ],
     "stylesheets": [
         "indexedDBViews.css",
         "resourcesPanel.css",
-        "serviceWorkerCacheViews.css"
+        "serviceWorkerCacheViews.css",
+        "serviceWorkersView.css"
     ]
 }

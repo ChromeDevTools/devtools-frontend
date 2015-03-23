@@ -31,7 +31,7 @@ WebInspector.CustomPreviewSection = function(object, prefixML)
     this._sectionElement.appendChild(header);
 }
 
-WebInspector.CustomPreviewSection._tagsWhiteList = Set.fromArray(["span", "div", "ol", "li","table", "tr", "td"]);
+WebInspector.CustomPreviewSection._tagsWhiteList = new Set(["span", "div", "ol", "li","table", "tr", "td"]);
 
 WebInspector.CustomPreviewSection._attributes = [
     "background-color",
@@ -41,7 +41,7 @@ WebInspector.CustomPreviewSection._attributes = [
     "margin", "margin-top", "margin-right", "margin-bottom", "margin-left",
     "padding", "padding-top", "padding-right", "padding-bottom", "padding-left"];
 
-WebInspector.CustomPreviewSection._attributesWhiteList = Set.fromArray(WebInspector.CustomPreviewSection._attributes);
+WebInspector.CustomPreviewSection._attributesWhiteList = new Set(WebInspector.CustomPreviewSection._attributes);
 
 WebInspector.CustomPreviewSection.prototype = {
 

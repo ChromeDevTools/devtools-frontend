@@ -162,28 +162,16 @@
     border-top: 0 none;
 }
 
-.styles-section.user-rule {
-    display: none;
-}
-
-.show-user-styles .styles-section.user-rule {
-    display: block;
-}
-
 .styles-sidebar-placeholder {
     height: 16px;
 }
 
-.styles-section.read-only:not(.computed-style) {
+.styles-section.read-only {
     background-color: #eee;
 }
 
 .styles-section .style-properties li.not-parsed-ok {
     margin-left: 0;
-}
-
-.styles-section.computed-style .style-properties li.not-parsed-ok {
-    margin-left: -6px;
 }
 
 .styles-section .style-properties li.filter-match,
@@ -275,11 +263,11 @@
     padding-left: 0;
 }
 
-.styles-section.no-affect .style-properties li {
+.no-affect .style-properties li {
     opacity: 0.5;
 }
 
-.styles-section.no-affect .style-properties li.editing {
+.no-affect .style-properties li.editing {
     opacity: 1.0;
 }
 
@@ -290,14 +278,6 @@
     text-overflow: ellipsis;
     overflow: hidden;
     cursor: auto;
-}
-
-.styles-section.computed-style .style-properties > li {
-    padding-left: 0;
-}
-
-.styles-section.computed-style .style-properties > li .webkit-css-property {
-    margin-left: 0;
 }
 
 .styles-section .style-properties li .webkit-css-property {
@@ -406,11 +386,6 @@
 
 .styles-section .style-properties .has-ignorable-error .webkit-css-property {
     color: inherit;
-}
-
-.styles-section.computed-style .style-properties .disabled {
-    text-decoration: none;
-    opacity: 0.5;
 }
 
 .styles-section .style-properties .implicit,

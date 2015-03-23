@@ -93,6 +93,12 @@ WebInspector.NetworkTimeCalculator.prototype = {
         this._boundaryChanged();
     },
 
+    setInitialUserFriendlyBoundaries: function()
+    {
+        this._minimumBoundary = 0;
+        this._maximumBoundary = 1;
+    },
+
     /**
      * @override
      * @return {number}

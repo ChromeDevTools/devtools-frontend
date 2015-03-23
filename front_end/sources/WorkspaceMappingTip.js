@@ -14,8 +14,12 @@ WebInspector.WorkspaceMappingTip = function(sourcesPanel, workspace)
     this._workspace = workspace;
 
     this._sourcesView = this._sourcesPanel.sourcesView();
-    this._sourcesView.addEventListener(WebInspector.SourcesView.Events.EditorSelected, this._editorSelected.bind(this));
     this._workspaceInfobarAllowedSetting = WebInspector.settings.createSetting("workspaceInfobarAllowed", true);
+    this._workspaceMappingInfobarAllowedSetting = WebInspector.settings.createSetting("workspaceMappingInfobarAllowed", true);
+
+    if (!this._workspaceInfobarAllowedSetting.get() && !this._workspaceMappingInfobarAllowedSetting.get())
+        return;
+    this._sourcesView.addEventListener(WebInspector.SourcesView.Events.EditorSelected, this._editorSelected.bind(this));
 }
 
 WebInspector.WorkspaceMappingTip._infobarSymbol = Symbol("infobar");
@@ -45,7 +49,7 @@ WebInspector.WorkspaceMappingTip.prototype = {
             return;
 
         // First try mapping filesystem -> network.
-        if (uiSourceCode.project().type() === WebInspector.projectTypes.FileSystem) {
+        if (this._workspaceMappingInfobarAllowedSetting.get() && uiSourceCode.project().type() === WebInspector.projectTypes.FileSystem) {
             var networkURL = WebInspector.networkMapping.networkURL(uiSourceCode);
             var hasMappings = !!networkURL;
             if (hasMappings)
@@ -73,7 +77,7 @@ WebInspector.WorkspaceMappingTip.prototype = {
             if (!this._isLocalHost(uiSourceCode.originURL()))
                 return;
             var networkURL = WebInspector.networkMapping.networkURL(uiSourceCode);
-            if (WebInspector.networkMapping.uiSourceCodeForURL(networkURL) !== uiSourceCode)
+            if (WebInspector.networkMapping.uiSourceCodeForURLForAnyTarget(networkURL) !== uiSourceCode)
                 return;
 
             var filesystemProjects = this._workspace.projectsForType(WebInspector.projectTypes.FileSystem);
@@ -82,11 +86,13 @@ WebInspector.WorkspaceMappingTip.prototype = {
                 var fsUiSourceCodes = filesystemProjects[i].uiSourceCodes();
                 for (var j = 0; j < fsUiSourceCodes.length; ++j) {
                     if (fsUiSourceCodes[j].name() === name) {
-                        this._showMappingInfobar(uiSourceCode, true);
+                        if (this._workspaceMappingInfobarAllowedSetting.get())
+                            this._showMappingInfobar(uiSourceCode, true);
                         return;
                     }
                 }
             }
+
             if (this._workspaceInfobarAllowedSetting.get())
                 this._showWorkspaceInfobar(uiSourceCode);
         }
@@ -118,6 +124,11 @@ WebInspector.WorkspaceMappingTip.prototype = {
         this._workspaceInfobarAllowedSetting.set(false);
     },
 
+    _onWorkspaceMappingInfobarDispose: function()
+    {
+        this._workspaceMappingInfobarAllowedSetting.set(false);
+    },
+
     /**
      * @param {!WebInspector.UISourceCode} uiSourceCode
      * @param {boolean} isNetwork
@@ -130,7 +141,7 @@ WebInspector.WorkspaceMappingTip.prototype = {
         else
             title = WebInspector.UIString("Map workspace resource '%s' to network?", uiSourceCode.path());
 
-        var infobar = new WebInspector.UISourceCodeFrame.Infobar(WebInspector.UISourceCodeFrame.Infobar.Level.Info, title);
+        var infobar = new WebInspector.UISourceCodeFrame.Infobar(WebInspector.UISourceCodeFrame.Infobar.Level.Info, title, this._onWorkspaceMappingInfobarDispose.bind(this));
         infobar.createDetailsRowMessage(WebInspector.UIString("You can map files in your workspace to the ones loaded over the network. As a result, changes made in DevTools will be persisted to disk."));
         infobar.createDetailsRowMessage(WebInspector.UIString("Use context menu to establish the mapping at any time."));
         var anchor = createElementWithClass("a", "link");
@@ -162,7 +173,7 @@ WebInspector.WorkspaceMappingTip.prototype = {
         var uiSourceCodeFrame = this._sourcesView.viewForFile(uiSourceCode);
 
         var rowElement = infobar.createDetailsRowMessage(WebInspector.UIString("For more information on workspaces, refer to the "));
-        rowElement.appendChild(WebInspector.createDocumentationAnchor("workspaces", WebInspector.UIString("workspaces documentation")));
+        rowElement.appendChild(WebInspector.linkifyDocumentationURLAsNode("workspaces", WebInspector.UIString("workspaces documentation")));
         rowElement.createTextChild(".");
         uiSourceCode[WebInspector.WorkspaceMappingTip._infobarSymbol] = infobar;
         uiSourceCodeFrame.attachInfobars([infobar]);

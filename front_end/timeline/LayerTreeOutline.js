@@ -205,7 +205,7 @@ WebInspector.LayerTreeOutline.prototype = {
      */
     _selectionForNode: function(node)
     {
-        return node ? new WebInspector.LayerView.LayerSelection(node._layer) : null;
+        return node && node._layer ? new WebInspector.LayerView.LayerSelection(node._layer) : null;
     },
 
     __proto__: WebInspector.Object.prototype

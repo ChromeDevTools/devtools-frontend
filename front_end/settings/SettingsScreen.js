@@ -712,6 +712,8 @@ WebInspector.DevicesSettingsTab.prototype = {
     _createEditDeviceElement: function()
     {
         this._editDeviceElement = createElementWithClass("div", "devices-edit-container");
+        this._editDeviceElement.addEventListener("keydown", onKeyDown.bind(null, isEscKey, this._stopEditing.bind(this)), false);
+        this._editDeviceElement.addEventListener("keydown", onKeyDown.bind(null, isEnterKey, this._editDeviceCommitClicked.bind(this)), false);
         this._editDeviceCheckbox = this._editDeviceElement.createChild("input", "devices-edit-checkbox");
         this._editDeviceCheckbox.type = "checkbox";
         var fields = this._editDeviceElement.createChild("div", "devices-edit-fields");
@@ -734,7 +736,21 @@ WebInspector.DevicesSettingsTab.prototype = {
         this._editDeviceCommitButton = createTextButton("", this._editDeviceCommitClicked.bind(this));
         buttonsRow.appendChild(this._editDeviceCommitButton);
         this._editDeviceCancelButton = createTextButton(WebInspector.UIString("Cancel"), this._stopEditing.bind(this));
+        this._editDeviceCancelButton.addEventListener("keydown", onKeyDown.bind(null, isEnterKey, this._stopEditing.bind(this)), false);
         buttonsRow.appendChild(this._editDeviceCancelButton);
+
+        /**
+         * @param {function(!Event):boolean} predicate
+         * @param {function()} callback
+         * @param {!Event} event
+         */
+        function onKeyDown(predicate, callback, event)
+        {
+            if (predicate(event)) {
+                event.consume(true);
+                callback();
+            }
+        }
     },
 
     /**
@@ -749,27 +765,7 @@ WebInspector.DevicesSettingsTab.prototype = {
         if (width)
             input.style.width = width;
         input.placeholder = title;
-
         input.addEventListener("input", this._validateInputs.bind(this), false);
-        input.addEventListener("keydown", onKeyDown.bind(this), false);
-
-        /**
-         * @param {!Event} event
-         * @this {WebInspector.DevicesSettingsTab}
-         */
-        function onKeyDown(event)
-        {
-            if (event.keyCode === WebInspector.KeyboardShortcut.Keys.Esc.code) {
-                event.consume(true);
-                this._stopEditing();
-            }
-            if (isEnterKey(event)) {
-                event.consume(true);
-                if (!this._editDeviceCommitButton.disabled)
-                    this._editDeviceCommitClicked();
-            }
-        }
-
         return input;
     },
 
@@ -835,6 +831,9 @@ WebInspector.DevicesSettingsTab.prototype = {
 
     _editDeviceCommitClicked: function()
     {
+        if (this._editDeviceCommitButton.disabled)
+            return;
+
         this._editDevice.setShow(this._editDeviceCheckbox.checked);
         this._editDevice.title = this._editDeviceTitle.value;
         this._editDevice.vertical.width = this._editDeviceWidth.value ? parseInt(this._editDeviceWidth.value, 10) : 0;

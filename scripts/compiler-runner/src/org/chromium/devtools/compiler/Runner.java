@@ -1,20 +1,15 @@
 package org.chromium.devtools.compiler;
 
 import com.google.common.collect.Lists;
-import com.google.javascript.jscomp.CheckLevel;
-import com.google.javascript.jscomp.CommandLineRunner;
-import com.google.javascript.jscomp.CompilerOptions;
+import com.google.common.io.Resources;
+import com.google.javascript.jscomp.*;
 
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
+import javax.xml.transform.Source;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -173,8 +168,22 @@ public class Runner {
 
     private static class LocalCommandLineRunner extends CommandLineRunner {
 
+        private static final String EXCLUDED_EXTERNS_ES6_JS = "externs.zip//es6.js";
+
         protected LocalCommandLineRunner(String[] args, PrintStream out, PrintStream err) {
             super(args, out, err);
+        }
+
+        @Override
+        protected List<SourceFile> createExterns() throws FlagUsageException, IOException {
+            List<SourceFile> externs = super.createExterns();
+            ArrayList<SourceFile> result = new ArrayList<>(externs.size());
+            for (SourceFile sourceFile: externs) {
+                if (!EXCLUDED_EXTERNS_ES6_JS.equals(sourceFile.getName())) {
+                    result.add(sourceFile);
+                }
+            }
+            return result;
         }
 
         @Override

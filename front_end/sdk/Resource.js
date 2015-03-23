@@ -303,7 +303,7 @@ WebInspector.Resource.prototype = {
     {
         /**
          * @param {?Protocol.Error} error
-         * @param {!Array.<!PageAgent.SearchMatch>} searchMatches
+         * @param {!Array.<!DebuggerAgent.SearchMatch>} searchMatches
          */
         function callbackWrapper(error, searchMatches)
         {

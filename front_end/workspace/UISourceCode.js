@@ -123,11 +123,11 @@ WebInspector.UISourceCode.prototype = {
     uri: function()
     {
         var path = this.path();
-        if (!this._project.id())
+        if (!this._project.url())
             return path;
         if (!path)
-            return this._project.id();
-        return this._project.id() + "/" + path;
+            return this._project.url();
+        return this._project.url() + "/" + path;
     },
 
     /**
@@ -621,7 +621,7 @@ WebInspector.UILocation.prototype = {
      */
     id: function()
     {
-        return this.uiSourceCode.uri() + ":" + this.lineNumber + ":" + this.columnNumber;
+        return this.uiSourceCode.project().id() + ":" + this.uiSourceCode.uri() + ":" + this.lineNumber + ":" + this.columnNumber;
     },
 
     /**

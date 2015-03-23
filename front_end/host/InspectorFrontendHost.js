@@ -692,7 +692,7 @@ var InspectorFrontendHost = window.InspectorFrontendHost || null;
      */
     function InspectorFrontendAPIImpl()
     {
-        this._debugFrontend = !!Runtime.queryParam("debugFrontend");
+        this._debugFrontend = !!Runtime.queryParam("debugFrontend") || (window["InspectorTest"] && window["InspectorTest"]["debugTest"]);
 
         var descriptors = InspectorFrontendHostAPI.EventDescriptors;
         for (var i = 0; i < descriptors.length; ++i)
@@ -718,13 +718,21 @@ var InspectorFrontendHost = window.InspectorFrontendHost || null;
             {
                 // Single argument methods get dispatched with the param.
                 if (signature.length < 2) {
-                    InspectorFrontendHost.events.dispatchEventToListeners(name, params[0]);
+                    try {
+                        InspectorFrontendHost.events.dispatchEventToListeners(name, params[0]);
+                    } catch(e) {
+                        console.error(e + " " + e.stack);
+                    }
                     return;
                 }
                 var data = {};
                 for (var i = 0; i < signature.length; ++i)
                     data[signature[i]] = params[i];
-                InspectorFrontendHost.events.dispatchEventToListeners(name, data);
+                try {
+                    InspectorFrontendHost.events.dispatchEventToListeners(name, data);
+                } catch(e) {
+                    console.error(e + " " + e.stack);
+                }
             }
         },
 

@@ -63,6 +63,8 @@ def validate_injected_script(fileName):
 
     errors_found = False
     for i, line in enumerate(lines):
+        if line.find("suppressBlacklist"):
+            continue
         for match in re.finditer(black_list_call_regex, line):
             errors_found = True
             print "ERROR: Black listed expression in %s at line %02d column %02d: %s" % (os.path.basename(fileName), i + 1, match.start(), match.group(0))

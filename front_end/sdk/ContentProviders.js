@@ -138,7 +138,7 @@ WebInspector.ConcatenatedScriptsContentProvider.prototype = {
 
         /**
          * @param {!WebInspector.Script} script
-         * @param {!Array.<!PageAgent.SearchMatch>} searchMatches
+         * @param {!Array.<!DebuggerAgent.SearchMatch>} searchMatches
          */
         function searchCallback(script, searchMatches)
         {

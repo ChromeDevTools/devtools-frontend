@@ -78,10 +78,10 @@ WebInspector.HeapSnapshotWorkerProxy.prototype = {
     },
 
     /**
-     * @param {?function(...[?])} callback
+     * @param {?function(...?)} callback
      * @param {string} objectId
      * @param {string} methodName
-     * @param {function(new:T, ...[?])} proxyConstructor
+     * @param {function(new:T, ...?)} proxyConstructor
      * @return {?Object}
      * @template T
      */
@@ -213,9 +213,9 @@ WebInspector.HeapSnapshotProxyObject.prototype = {
     },
 
     /**
-     * @param {?function(...[?])} callback
+     * @param {?function(...?)} callback
      * @param {string} methodName
-     * @param {function (new:T, ...[?])} proxyConstructor
+     * @param {function (new:T, ...?)} proxyConstructor
      * @param {...*} var_args
      * @return {!T}
      * @template T
@@ -483,6 +483,14 @@ WebInspector.HeapSnapshotProxy.prototype = {
     getStatistics: function()
     {
         return this._callMethodPromise("getStatistics");
+    },
+
+    /**
+     * @return {!Promise.<?WebInspector.HeapSnapshotCommon.Samples>}
+     */
+    getSamples: function()
+    {
+        return this._callMethodPromise("getSamples");
     },
 
     get totalSize()

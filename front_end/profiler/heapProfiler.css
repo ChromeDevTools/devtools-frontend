@@ -54,8 +54,8 @@
     width: 32px;
 }
 
-.heap-snapshot-view .console-formatted-object,
-.console-formatted-node {
+.heap-snapshot-view .object-value-object,
+.object-value-node {
     display: inline;
     position: static;
 }
@@ -64,11 +64,11 @@
     background-color: #FF9999;
 }
 
-.heap-snapshot-view .console-formatted-string {
+.heap-snapshot-view .object-value-string {
     white-space: nowrap;
 }
 
-.heap-snapshot-view tr:not(.selected) .console-formatted-id {
+.heap-snapshot-view tr:not(.selected) .object-value-id {
     color: grey;
 }
 

@@ -8,13 +8,11 @@
  * @param {!WebInspector.TargetManager} targetManager
  * @param {!WebInspector.Workspace} workspace
  * @param {!WebInspector.NetworkMapping} networkMapping
- * @param {!WebInspector.NetworkProject} networkProject
  */
-WebInspector.DebuggerWorkspaceBinding = function(targetManager, workspace, networkMapping, networkProject)
+WebInspector.DebuggerWorkspaceBinding = function(targetManager, workspace, networkMapping)
 {
     this._workspace = workspace;
     this._networkMapping = networkMapping;
-    this._networkProject = networkProject;
 
     /** @type {!Map.<!WebInspector.Target, !WebInspector.DebuggerWorkspaceBinding.TargetData>} */
     this._targetToData = new Map();
@@ -186,6 +184,21 @@ WebInspector.DebuggerWorkspaceBinding.prototype = {
     },
 
     /**
+     * @param {!WebInspector.UILocation} uiLocation
+     * @return {!WebInspector.UILocation}
+     */
+    normalizeUILocation: function(uiLocation)
+    {
+        var target = WebInspector.NetworkProject.targetForUISourceCode(uiLocation.uiSourceCode);
+        if (target) {
+            var rawLocation = this.uiLocationToRawLocation(target, uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber);
+            if (rawLocation)
+                return this.rawLocationToUILocation(rawLocation);
+        }
+        return uiLocation;
+    },
+
+    /**
      * @param {!WebInspector.UISourceCode} uiSourceCode
      * @param {number} lineNumber
      * @return {boolean}
@@ -310,7 +323,7 @@ WebInspector.DebuggerWorkspaceBinding.TargetData = function(target, debuggerWork
 
     this._defaultMapping = new WebInspector.DefaultScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
     this._resourceMapping = new WebInspector.ResourceScriptMapping(debuggerModel, workspace, networkMapping, debuggerWorkspaceBinding);
-    this._compilerMapping = new WebInspector.CompilerScriptMapping(debuggerModel, workspace, networkMapping, debuggerWorkspaceBinding._networkProject, debuggerWorkspaceBinding);
+    this._compilerMapping = new WebInspector.CompilerScriptMapping(debuggerModel, workspace, networkMapping, WebInspector.NetworkProject.forTarget(target), debuggerWorkspaceBinding);
 
     /** @type {!Map.<!WebInspector.UISourceCode, !WebInspector.DebuggerSourceMapping>} */
     this._uiSourceCodeToSourceMapping = new Map();
@@ -439,7 +452,7 @@ WebInspector.DebuggerWorkspaceBinding.ScriptInfo.prototype = {
      */
     _removeLocation: function(location)
     {
-        this._locations.remove(location);
+        this._locations.delete(location);
     },
 
     _updateLocations: function()

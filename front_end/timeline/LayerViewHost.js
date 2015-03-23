@@ -83,6 +83,7 @@ WebInspector.LayerView.Selection.prototype = {
  */
 WebInspector.LayerView.LayerSelection = function(layer)
 {
+    console.assert(layer, "LayerSelection with empty layer");
     WebInspector.LayerView.Selection.call(this, WebInspector.LayerView.Selection.Type.Layer, layer);
 }
 

@@ -3,6 +3,7 @@
     width: 205px;
     height: 220px;
     -webkit-user-select: none;
+    margin: 6px;
 }
 
 .spectrum-color {
@@ -98,6 +99,7 @@
     width: 20px;
     height:20px;
     margin: 0;
+    background-image: url(Images/checker.png);
 }
 
 .swatch-inner {

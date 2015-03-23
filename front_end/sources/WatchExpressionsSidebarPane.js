@@ -34,13 +34,13 @@
  */
 WebInspector.WatchExpressionsSidebarPane = function()
 {
-    WebInspector.SidebarPane.call(this, WebInspector.UIString("Watch Expressions"));
+    WebInspector.SidebarPane.call(this, WebInspector.UIString("Watch"));
 
     this._requiresUpdate = true;
     /** @type {!Array.<!WebInspector.WatchExpression>} */
     this._watchExpressions = [];
 
-
+    this.registerRequiredCSS("components/objectValue.css");
     this.bodyElement.classList.add("vbox", "watch-expressions");
     this.bodyElement.addEventListener("contextmenu", this._contextMenu.bind(this), false);
 
@@ -330,7 +330,7 @@ WebInspector.WatchExpression.prototype = {
         var titleElement = createElementWithClass("div", "watch-expression-title");
         this._nameElement = WebInspector.ObjectPropertiesSection.createNameElement(this._expression);
         if (wasThrown || !result) {
-            this._valueElement = createElementWithClass("span", "console-formatted-undefined value");
+            this._valueElement = createElementWithClass("span", "error-message value");
             titleElement.classList.add("dimmed");
             this._valueElement.textContent = WebInspector.UIString("<not available>");
         } else {

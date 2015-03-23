@@ -90,7 +90,6 @@ WebInspector.ObjectPopoverHelper.prototype = {
                     }
                 }
             }
-            popoverContentElement.textContent = this._formattedObjectDescription(funcObject);
             funcObject.functionDetails(didGetFunctionDetails.bind(this, popoverContentElement, anchorElement));
         }
 
@@ -122,12 +121,10 @@ WebInspector.ObjectPopoverHelper.prototype = {
         }
 
         /**
-         * @param {!Element} popoverContentElement
-         * @param {!Element} anchorElement
          * @param {?WebInspector.DebuggerModel.GeneratorObjectDetails} response
          * @this {WebInspector.ObjectPopoverHelper}
          */
-        function didGetGeneratorObjectDetails(popoverContentElement, anchorElement, response)
+        function didGetGeneratorObjectDetails(response)
         {
             if (!response || popover.disposed)
                 return;
@@ -159,40 +156,40 @@ WebInspector.ObjectPopoverHelper.prototype = {
             var description = this._formattedObjectDescription(result);
             var popoverContentElement = null;
             if (result.type !== "object") {
-                popoverContentElement = createElementWithClass("span", "monospace console-formatted-" + result.type);
-                popoverContentElement.style.whiteSpace = "pre";
+                popoverContentElement =  createElement("span");
+                popoverContentElement.appendChild(WebInspector.View.createStyleElement("components/objectValue.css"));
+                var valueElement = popoverContentElement.createChild("span", "monospace object-value-" + result.type);
+                valueElement.style.whiteSpace = "pre";
+
+                if (result.type === "string")
+                    valueElement.createTextChildren("\"", description, "\"");
+                else
+                    valueElement.textContent = description;
+
                 if (result.type === "function") {
                     result.getOwnProperties(didGetFunctionProperties.bind(this, result, popoverContentElement, anchorElement));
                     return;
                 }
-                if (result.type === "string")
-                    popoverContentElement.createTextChildren("\"", description, "\"");
-                else
-                    popoverContentElement.textContent = description;
                 popover.showForAnchor(popoverContentElement, anchorElement);
             } else {
                 if (result.subtype === "node") {
-                    result.highlightAsDOMNode();
+                    result.target().domModel.highlightObjectAsDOMNode(result);
                     this._resultHighlightedAsDOM = result;
                 }
                 popoverContentElement = createElement("div");
 
                 this._titleElement = popoverContentElement.createChild("div", "monospace");
-                this._titleTextElement = this._titleElement.createChild("span", "source-frame-popover-title").textContent = description;
+                this._titleElement.createChild("span", "source-frame-popover-title").textContent = description;
 
                 var section = new WebInspector.ObjectPropertiesSection(result);
-                // For HTML DOM wrappers, append "#id" to title, if not empty.
-                if (description.substr(0, 4) === "HTML") {
-                    this._sectionUpdateProperties = section.updateProperties.bind(section);
-                    section.updateProperties = this._updateHTMLId.bind(this);
-                }
+
                 section.expand();
                 section.element.classList.add("source-frame-popover-tree");
                 section.headerElement.classList.add("hidden");
                 popoverContentElement.appendChild(section.element);
 
                 if (result.subtype === "generator")
-                    result.generatorObjectDetails(didGetGeneratorObjectDetails.bind(this, popoverContentElement, anchorElement));
+                    result.generatorObjectDetails(didGetGeneratorObjectDetails.bind(this));
 
                 var popoverWidth = 300;
                 var popoverHeight = 250;
@@ -229,18 +226,6 @@ WebInspector.ObjectPopoverHelper.prototype = {
         if (!this._linkifier)
             this._linkifier = new WebInspector.Linkifier();
         return this._linkifier;
-    },
-
-    _updateHTMLId: function(properties, rootTreeElementConstructor, rootPropertyComparer)
-    {
-        for (var i = 0; i < properties.length; ++i) {
-            if (properties[i].name === "id") {
-                if (properties[i].value.description)
-                    this._titleTextElement.textContent += "#" + properties[i].value.description;
-                break;
-            }
-        }
-        this._sectionUpdateProperties(properties, rootTreeElementConstructor, rootPropertyComparer);
     },
 
     __proto__: WebInspector.PopoverHelper.prototype

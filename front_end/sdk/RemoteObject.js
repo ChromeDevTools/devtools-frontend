@@ -360,7 +360,7 @@ WebInspector.RemoteObjectImpl.prototype = {
      */
     getOwnProperties: function(callback)
     {
-        this.doGetProperties(true, false, callback);
+        this.doGetProperties(true, false, false, callback);
     },
 
     /**
@@ -370,7 +370,7 @@ WebInspector.RemoteObjectImpl.prototype = {
      */
     getAllProperties: function(accessorPropertiesOnly, callback)
     {
-        this.doGetProperties(false, accessorPropertiesOnly, callback);
+        this.doGetProperties(false, accessorPropertiesOnly, false, callback);
     },
 
     /**
@@ -400,9 +400,10 @@ WebInspector.RemoteObjectImpl.prototype = {
     /**
      * @param {boolean} ownProperties
      * @param {boolean} accessorPropertiesOnly
+     * @param {boolean} generatePreview
      * @param {function(?Array.<!WebInspector.RemoteObjectProperty>, ?Array.<!WebInspector.RemoteObjectProperty>)} callback
      */
-    doGetProperties: function(ownProperties, accessorPropertiesOnly, callback)
+    doGetProperties: function(ownProperties, accessorPropertiesOnly, generatePreview, callback)
     {
         if (!this._objectId) {
             callback(null, null);
@@ -451,7 +452,7 @@ WebInspector.RemoteObjectImpl.prototype = {
             }
             callback(result, internalPropertiesResult);
         }
-        this._runtimeAgent.getProperties(this._objectId, ownProperties, accessorPropertiesOnly, remoteObjectBinder.bind(this));
+        this._runtimeAgent.getProperties(this._objectId, ownProperties, accessorPropertiesOnly, generatePreview, remoteObjectBinder.bind(this));
     },
 
     /**
@@ -553,27 +554,6 @@ WebInspector.RemoteObjectImpl.prototype = {
             else
                 callback();
         }
-    },
-
-    /**
-     * @param {function(?WebInspector.DOMNode)} callback
-     */
-    pushNodeToFrontend: function(callback)
-    {
-        if (this.isNode())
-            this._domModel.pushNodeToFrontend(this._objectId, callback);
-        else
-            callback(null);
-    },
-
-    highlightAsDOMNode: function()
-    {
-        this._domModel.highlightDOMNode(undefined, undefined, this._objectId);
-    },
-
-    hideDOMNodeHighlight: function()
-    {
-        this._domModel.hideDOMNodeHighlight();
     },
 
     /**
@@ -801,14 +781,16 @@ WebInspector.ScopeRemoteObject.prototype = {
      * @override
      * @param {boolean} ownProperties
      * @param {boolean} accessorPropertiesOnly
+     * @param {boolean} generatePreview
      * @param {function(?Array.<!WebInspector.RemoteObjectProperty>, ?Array.<!WebInspector.RemoteObjectProperty>)} callback
      */
-    doGetProperties: function(ownProperties, accessorPropertiesOnly, callback)
+    doGetProperties: function(ownProperties, accessorPropertiesOnly, generatePreview, callback)
     {
         if (accessorPropertiesOnly) {
             callback([], []);
             return;
         }
+
         if (this._savedScopeProperties) {
             // No need to reload scope variables, as the remote object never
             // changes its properties. If variable is updated, the properties
@@ -829,7 +811,10 @@ WebInspector.ScopeRemoteObject.prototype = {
             callback(properties, internalProperties);
         }
 
-        WebInspector.RemoteObjectImpl.prototype.doGetProperties.call(this, ownProperties, accessorPropertiesOnly, wrappedCallback.bind(this));
+        // Scope objects always fetch preview.
+        generatePreview = true;
+
+        WebInspector.RemoteObjectImpl.prototype.doGetProperties.call(this, ownProperties, accessorPropertiesOnly, generatePreview, wrappedCallback.bind(this));
     },
 
     /**

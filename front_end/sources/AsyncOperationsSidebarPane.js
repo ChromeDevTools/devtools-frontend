@@ -4,12 +4,12 @@
 
 /**
  * @constructor
- * @extends {WebInspector.NativeBreakpointsSidebarPane}
+ * @extends {WebInspector.BreakpointsSidebarPaneBase}
  * @implements {WebInspector.TargetManager.Observer}
  */
 WebInspector.AsyncOperationsSidebarPane = function()
 {
-    WebInspector.NativeBreakpointsSidebarPane.call(this, WebInspector.UIString("Async Operation Breakpoints"));
+    WebInspector.BreakpointsSidebarPaneBase.call(this, WebInspector.UIString("Async Operation Breakpoints"));
     this.bodyElement.classList.add("async-operations");
     this._updateEmptyElement();
 
@@ -90,7 +90,7 @@ WebInspector.AsyncOperationsSidebarPane.prototype = {
         var operationsMap = this._asyncOperationsByTarget.get(target);
         if (!operationsMap)
             return null;
-        return operationsMap.get(operationId);
+        return operationsMap.get(operationId) || null;
     },
 
     _asyncStackTracesStateChanged: function()
@@ -374,5 +374,5 @@ WebInspector.AsyncOperationsSidebarPane.prototype = {
         return operation;
     },
 
-    __proto__: WebInspector.NativeBreakpointsSidebarPane.prototype
+    __proto__: WebInspector.BreakpointsSidebarPaneBase.prototype
 }

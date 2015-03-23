@@ -10,6 +10,8 @@
 WebInspector.ThreadsSidebarPane = function()
 {
     WebInspector.SidebarPane.call(this, WebInspector.UIString("Threads"));
+    this.setVisible(false);
+
     /** @type {!Map.<!WebInspector.Target, !WebInspector.UIList.Item>} */
     this._targetsToListItems = new Map();
     /** @type {!Map.<!WebInspector.UIList.Item, !WebInspector.Target>} */
@@ -31,6 +33,10 @@ WebInspector.ThreadsSidebarPane.prototype = {
      */
     targetAdded: function(target)
     {
+        if (target.isServiceWorker()) {
+            this._updateVisibility();
+            return;
+        }
         var listItem = new WebInspector.UIList.Item(target.name(), "");
         listItem.element.addEventListener("click", this._onListItemClick.bind(this, listItem), false);
         var currentTarget = WebInspector.context.flavor(WebInspector.Target);
@@ -41,6 +47,12 @@ WebInspector.ThreadsSidebarPane.prototype = {
         this._listItemsToTargets.set(listItem, target);
         this.threadList.addItem(listItem);
         this._updateDebuggerState(target);
+        this._updateVisibility();
+    },
+
+    _updateVisibility: function()
+    {
+        this.setVisible(this._targetsToListItems.size > 1);
     },
 
     /**
@@ -50,8 +62,11 @@ WebInspector.ThreadsSidebarPane.prototype = {
     targetRemoved: function(target)
     {
         var listItem = this._targetsToListItems.remove(target);
-        this._listItemsToTargets.remove(listItem);
-        this.threadList.removeItem(listItem);
+        if (listItem) {
+            this._listItemsToTargets.remove(listItem);
+            this.threadList.removeItem(listItem);
+        }
+        this._updateVisibility();
     },
 
     /**

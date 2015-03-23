@@ -98,6 +98,7 @@ WebInspector.TracingManager.prototype = {
         this._eventsRetrieved = 0;
         this._activeClient.tracingComplete();
         this._activeClient = null;
+        WebInspector.targetManager.resumeAllTargets();
     },
 
     /**
@@ -120,7 +121,6 @@ WebInspector.TracingManager.prototype = {
     stop: function()
     {
         this._target.tracingAgent().end();
-        WebInspector.targetManager.resumeAllTargets();
     }
 }
 

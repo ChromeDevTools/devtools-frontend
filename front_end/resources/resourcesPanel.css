@@ -334,6 +334,10 @@ li.selected .base-storage-tree-element-subtitle {
     content: url(Images/indexedDB.png);
 }
 
+.service-workers-tree-item .icon {
+    content: url(Images/serviceWorker.svg);
+}
+
 .domstorage-storage-tree-item.local-storage .icon {
     content: url(Images/localStorage.png);
 }

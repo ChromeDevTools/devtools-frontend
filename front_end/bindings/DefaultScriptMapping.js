@@ -173,6 +173,15 @@ WebInspector.DebuggerProjectDelegate.prototype = {
     },
 
     /**
+     * @override
+     * @return {string}
+     */
+    url: function()
+    {
+        return "debugger:";
+    },
+
+    /**
      * @param {!WebInspector.Script} script
      * @return {string}
      */

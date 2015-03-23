@@ -107,9 +107,10 @@ function normalizePath(path)
 
 /**
  * @param {!Array.<string>} scriptNames
+ * @param {string=} base
  * @return {!Promise.<undefined>}
  */
-function loadScriptsPromise(scriptNames)
+function loadScriptsPromise(scriptNames, base)
 {
     /** @type {!Array.<!Promise.<string>>} */
     var promises = [];
@@ -119,7 +120,7 @@ function loadScriptsPromise(scriptNames)
     var scriptToEval = 0;
     for (var i = 0; i < scriptNames.length; ++i) {
         var scriptName = scriptNames[i];
-        var sourceURL = self._importScriptPathPrefix + scriptName;
+        var sourceURL = (base || self._importScriptPathPrefix) + scriptName;
         var schemaIndex = sourceURL.indexOf("://") + 3;
         sourceURL = sourceURL.substring(0, schemaIndex) + normalizePath(sourceURL.substring(schemaIndex));
         if (_loadedScripts[sourceURL])
@@ -366,6 +367,10 @@ Runtime._assert = function(value, message)
 }
 
 Runtime.prototype = {
+    useTestBase: function()
+    {
+        Runtime._remoteBase = "http://localhost:8000/inspector-sources/";
+    },
 
     /**
      * @param {!Runtime.ModuleDescriptor} descriptor
@@ -579,6 +584,11 @@ Runtime.ModuleDescriptor = function()
      * @type {!Array.<string>}
      */
     this.scripts;
+
+    /**
+     * @type {boolean|undefined}
+     */
+    this.remote;
 }
 
 /**
@@ -721,8 +731,10 @@ Runtime.Module.prototype = {
         if (!this._descriptor.scripts)
             return Promise.resolve();
 
-        if (Runtime.isReleaseMode())
-            return loadScriptsPromise([this._name + "_module.js"]);
+        if (Runtime.isReleaseMode()) {
+            var base = this._descriptor.remote && Runtime._remoteBase || undefined;
+            return loadScriptsPromise([this._name + "_module.js"], base);
+        }
 
         return loadScriptsPromise(this._descriptor.scripts.map(this._modularizeURL, this));
     },
@@ -1038,6 +1050,11 @@ Runtime.Experiment.prototype = {
 
 // This must be constructed after the query parameters have been parsed.
 Runtime.experiments = new Runtime.ExperimentsSupport();
+
+/**
+ * @type {?string}
+ */
+Runtime._remoteBase = Runtime.queryParam("remoteBase");
 
 /** @type {!Runtime} */
 var runtime;

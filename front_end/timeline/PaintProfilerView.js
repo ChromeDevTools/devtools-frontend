@@ -355,7 +355,7 @@ WebInspector.PaintProfilerCommandLogView.prototype = {
   */
 WebInspector.LogTreeElement = function(ownerView, logItem)
 {
-    TreeElement.call(this, "", !!this._logItem.params);
+    TreeElement.call(this, "", !!logItem.params);
     this._logItem = logItem;
     this._ownerView = ownerView;
     this._filled = false;

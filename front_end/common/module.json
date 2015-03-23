@@ -19,10 +19,14 @@
         "Settings.js",
         "StaticContentProvider.js",
         "Streams.js",
+        "TestBase.js",
         "TextRange.js",
         "TextUtils.js",
         "Throttler.js",
         "UIString.js",
         "ModuleExtensionInterfaces.js"
+    ],
+    "skip_compilation": [
+        "TestBase.js"
     ]
 }

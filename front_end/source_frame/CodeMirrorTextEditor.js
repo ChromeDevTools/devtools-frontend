@@ -687,9 +687,6 @@ WebInspector.CodeMirrorTextEditor.prototype = {
                     this.setSelection(range);
                 else
                     this.setSelection(WebInspector.TextRange.createFromLocation(range.startLine, range.startColumn));
-            } else {
-                // Collapse selection to end on search start so that we jump to next occurrence on the first enter press.
-                this.setSelection(this.selection().collapseToEnd());
             }
             this._tokenHighlighter.highlightSearchResults(regex, range);
         }
@@ -988,6 +985,14 @@ WebInspector.CodeMirrorTextEditor.prototype = {
     {
         if (!--this._nestedUpdatesCounter)
             this._codeMirror.refresh();
+    },
+
+    /**
+     * @param {function()} operation
+     */
+    operation: function(operation)
+    {
+        this._codeMirror.operation(operation);
     },
 
     /**

@@ -47,7 +47,6 @@ WebInspector.Settings = function()
     this.consoleTimestampsEnabled = this.createSetting("consoleTimestampsEnabled", false);
     this.resourceViewTab = this.createSetting("resourceViewTab", "preview");
     this.showInheritedComputedStyleProperties = this.createSetting("showInheritedComputedStyleProperties", false);
-    this.showUserAgentStyles = this.createSetting("showUserAgentStyles", true);
     this.watchExpressions = this.createSetting("watchExpressions", []);
     this.breakpoints = this.createSetting("breakpoints", []);
     this.eventListenerBreakpoints = this.createSetting("eventListenerBreakpoints", []);
@@ -73,8 +72,8 @@ WebInspector.Settings = function()
     this.workerInspectorWidth = this.createSetting("workerInspectorWidth", 600);
     this.workerInspectorHeight = this.createSetting("workerInspectorHeight", 600);
     this.messageURLFilters = this.createSetting("messageURLFilters", {});
-    this.networkLogHideColumns = this.createSetting("networkLogHideColumns", false);
     this.networkLogLargeRows = this.createSetting("networkLogLargeRows", false);
+    this.networkLogShowOverview = this.createSetting("networkLogShowOverview", true);
     this.networkHideDataURL = this.createSetting("networkHideDataURL", false);
     this.networkResourceTypeFilters = this.createSetting("networkResourceTypeFilters", {});
     this.networkShowPrimaryLoadWaterfall = this.createSetting("networkShowPrimaryLoadWaterfall", false);
@@ -96,6 +95,7 @@ WebInspector.Settings = function()
     this.frameViewerHideChromeWindow = this.createSetting("frameViewerHideChromeWindow", false);
     this.highlightDOMUpdates = this.createSetting("highlightDOMUpdates", true);
     this.enableCustomFormatters = this.createSetting("customFormatters", false);
+    this.javaScriptValuesInSource = this.createSetting("javaScriptValuesInSource", true);
 
     // Rendering options
     this.showPaintRects = this.createSetting("showPaintRects", false);

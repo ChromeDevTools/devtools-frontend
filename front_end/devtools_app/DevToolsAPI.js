@@ -26,6 +26,11 @@ function DevToolsAPIImpl()
      * @type {!Object.<number, function(?Object)>}
      */
     this._callbacks = {};
+
+    /**
+     * @type {?function(!Array.<!Adb.Device>)}
+     */
+    this._devicesUpdatedCallback = null;
 }
 
 DevToolsAPIImpl.prototype = {
@@ -55,6 +60,14 @@ DevToolsAPIImpl.prototype = {
         if (args.length)
             message.params = args;
         DevToolsHost.sendMessageToEmbedder(JSON.stringify(message));
+    },
+
+    /**
+     * @param {function(!Array.<!Adb.Device>)} callback
+     */
+    setDevicesUpdatedCallback: function(callback)
+    {
+        this._devicesUpdatedCallback = callback;
     },
 
     /**
@@ -163,6 +176,8 @@ DevToolsAPIImpl.prototype = {
      */
     devicesUpdated: function(devices)
     {
+        if (this._devicesUpdatedCallback)
+            this._devicesUpdatedCallback.call(null, devices);
         this._dispatchOnInspectorFrontendAPI("devicesUpdated", [devices]);
     },
 

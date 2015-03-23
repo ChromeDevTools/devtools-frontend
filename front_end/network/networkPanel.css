@@ -195,6 +195,54 @@
     max-width: 312px;
 }
 
+#network-overview-container {
+    overflow: hidden;
+    flex: auto;
+    display: flex;
+    position: relative;
+}
+
+.network-overview-canvas-container {
+    position: absolute;
+    top: 20px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: white;
+    z-index: 200;
+    border-bottom: 1px solid #CDCDCD;
+}
+
+.network-overview-canvas-container canvas {
+    width: 100%;
+    height: 100%;
+}
+
+#network-overview-grid {
+    flex: auto;
+}
+
+.network-overview {
+    flex: 0 0 100px !important;
+}
+
+.network-overview .overview-grid-window,
+.network-overview .overview-grid-dividers-background {
+    height: 100%;
+}
+
+.network-overview .resources-dividers-label-bar {
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+.network-overview .resources-dividers-label-bar .resources-divider {
+    background-color: transparent;
+}
+
+.network-overview .resources-dividers {
+    z-index: 250;
+}
+
 .request-view.json {
     padding: 5px;
 }

@@ -163,85 +163,6 @@ body.undocked.platform-mac.inactive .inspector-view-tabbed-pane.tabbed-pane::sha
     border-radius: 7px;
 }
 
-.console-formatted-object,
-.console-formatted-map,
-.console-formatted-set,
-.console-formatted-iterator,
-.console-formatted-generator,
-.console-formatted-node,
-.console-formatted-array,
-.console-formatted-error {
-    position: relative;
-    display: inline-block;
-    vertical-align: top;
-    color: inherit;
-}
-
-.console-formatted-node:hover {
-    background-color: rgba(56, 121, 217, 0.1);
-}
-
-.console-formatted-object .section,
-.console-formatted-map .section,
-.console-formatted-set .section,
-.console-formatted-iterator .section,
-.console-formatted-generator .section,
-.console-formatted-node .section,
-.console-formatted-array .section {
-    position: static;
-}
-
-.console-formatted-object .section > .header::before {
-    margin-top: 0;
-}
-
-.console-formatted-object .properties-tree,
-.console-formatted-map .properties-tree,
-.console-formatted-set .properties-tree,
-.console-formatted-iterator .properties-tree,
-.console-formatted-generator .properties-tree,
-.console-formatted-node .properties-tree {
-    padding-left: 0 !important;
-}
-
-.console-formatted-number,
-.console-formatted-boolean {
-    color: rgb(28, 0, 207);
-}
-
-.scientific-notation-exponent {
-    flex-shrink: 0;
-}
-
-.scientific-notation-mantissa {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex-shrink: 1;
-    min-width: 1ex;
-}
-
-.scientific-notation-number {
-    display: flex !important;
-}
-
-.console-formatted-string,
-.console-formatted-regexp,
-.console-formatted-symbol {
-    color: rgb(196, 26, 22);
-    white-space: pre-wrap;
-    unicode-bidi: -webkit-isolate;
-}
-
-.console-formatted-null,
-.console-formatted-undefined {
-    color: rgb(128, 128, 128);
-}
-
-.console-formatted-preview-node,
-.section .console-formatted-node {
-    color: rgb(136, 18, 128);
-}
-
 .object-info-state-note {
     display: inline-block;
     width: 11px;
@@ -409,10 +330,6 @@ ol.outline-disclosure:focus li.selected * {
 
 .outline-disclosure ol.children.expanded {
     display: block;
-}
-
-.properties-calculate-value-button:hover {
-    text-decoration: underline;
 }
 
 .properties-accessor-property-name {

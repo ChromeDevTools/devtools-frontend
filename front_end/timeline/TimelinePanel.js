@@ -322,6 +322,13 @@ WebInspector.TimelinePanel.prototype = {
         var captureSettingsLabel = new WebInspector.StatusBarText(WebInspector.UIString("Capture Details:"), "timeline-status-bar-group-label");
         this._panelToolbar.appendStatusBarItem(captureSettingsLabel);
 
+        this._captureNetworkSetting = WebInspector.settings.createSetting("timelineCaptureNetwork", false);
+        this._captureNetworkSetting.addChangeListener(this._onNetworkChanged, this);
+        if (Runtime.experiments.isEnabled("networkRequestsOnTimeline")) {
+            this._panelToolbar.appendStatusBarItem(this._createSettingCheckbox(WebInspector.UIString("Network"),
+                                                                          this._captureNetworkSetting,
+                                                                          WebInspector.UIString("Capture network requests information")));
+        }
         this._captureCausesSetting = WebInspector.settings.createSetting("timelineCaptureCauses", true);
         this._captureCausesSetting.addChangeListener(this._refreshViews, this);
         this._panelToolbar.appendStatusBarItem(this._createSettingCheckbox(WebInspector.UIString("Causes"),
@@ -594,9 +601,11 @@ WebInspector.TimelinePanel.prototype = {
         if (this._flameChartEnabledSetting.get()) {
             this._filterBar.filterButton().setEnabled(false);
             this._filtersContainer.classList.toggle("hidden", true);
-            var dataProvider = new WebInspector.TimelineFlameChartDataProvider(this._model, this._frameModel());
-            this._addModeView(new WebInspector.TimelineFlameChart(this, this._model, dataProvider));
+            this._flameChart = new WebInspector.TimelineFlameChartView(this, this._model, this._frameModel());
+            this._onNetworkChanged();
+            this._addModeView(this._flameChart);
         } else {
+            this._flameChart = null;
             this._filterBar.filterButton().setEnabled(true);
             this._filtersContainer.classList.toggle("hidden", !this._filterBar.filtersToggled());
             this._addModeView(this._timelineView());
@@ -618,6 +627,12 @@ WebInspector.TimelinePanel.prototype = {
         this._updateSelectionDetails();
 
         this._stackView.show(this._searchableView.element);
+    },
+
+    _onNetworkChanged: function()
+    {
+        if (this._flameChart)
+            this._flameChart.enableNetworkPane(this._captureNetworkSetting.get());
     },
 
     /**
@@ -1162,7 +1177,7 @@ WebInspector.TimelinePanel.prototype = {
             aggregatedTotal += aggregatedStats[categoryName];
         aggregatedStats["idle"] = Math.max(0, endTime - startTime - aggregatedTotal);
 
-        var contentHelper = new WebInspector.TimelineDetailsContentHelper(null, null, true);
+        var contentHelper = new WebInspector.TimelineDetailsContentHelper(null, null, null, true);
         var pieChart = WebInspector.TimelineUIUtils.generatePieChart(aggregatedStats);
 
         var startOffset = startTime - this._model.minimumRecordTime();
@@ -1332,6 +1347,7 @@ WebInspector.TimelineDetailsView.prototype = {
 /**
  * @constructor
  * @implements {WebInspector.TimelineModeViewDelegate}
+ * @implements {WebInspector.FlameChartDelegate}
  * @extends {WebInspector.VBox}
  */
 WebInspector.TimelineDetailsView.BottomUpChartView = function(model) {
@@ -1345,7 +1361,7 @@ WebInspector.TimelineDetailsView.BottomUpChartView.prototype = {
         if (this._heavyChart)
             return;
         this._dataProvider = new WebInspector.TimelineFlameChartBottomUpDataProvider(this._model);
-        this._heavyChart = new WebInspector.TimelineFlameChart(this, this._model, this._dataProvider);
+        this._heavyChart = new WebInspector.FlameChart(this._dataProvider, this, true);
         this._heavyChart.show(this.element);
     },
 
@@ -1389,6 +1405,15 @@ WebInspector.TimelineDetailsView.BottomUpChartView.prototype = {
      * @param {!Node} node
      */
     showInDetails: function(node) {},
+
+    /**
+     * @override
+     * @param {number} startTime
+     * @param {number} endTime
+     */
+    updateBoxSelection: function(startTime, endTime)
+    {
+    },
 
     __proto__: WebInspector.VBox.prototype
 }

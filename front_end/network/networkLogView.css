@@ -587,32 +587,3 @@
 #network-container.brief-mode .network-timeline-grid {
     display: none;
 }
-
-.network-expand-timeline-button {
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 10px;
-    display: flex;
-    align-items: center;
-}
-
-.network-expand-timeline-glyph {
-    width: 10px;
-    height: 10px;
-    background-color: #888;
-    -webkit-mask-image: url(Images/statusbarButtonGlyphs.png);
-    -webkit-mask-size: 320px 144px;
-    -webkit-mask-position: -4px -96px;
-}
-
-@media (-webkit-min-device-pixel-ratio: 1.5) {
-.network-expand-timeline-glyph {
-    -webkit-mask-image: url(Images/statusbarButtonGlyphs_2x.png);
-}
-} /* media */
-
-.network-expand-timeline-button:hover .network-expand-timeline-glyph {
-    background-color: #000;
-}

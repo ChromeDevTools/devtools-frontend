@@ -461,7 +461,7 @@ WebInspector.SourceFrame.prototype = {
      */
     _searchResultIndexForCurrentSelection: function()
     {
-        return insertionIndexForObjectInListSortedByFunction(this._textEditor.selection(), this._searchResults, WebInspector.TextRange.comparator);
+        return insertionIndexForObjectInListSortedByFunction(this._textEditor.selection().collapseToEnd(), this._searchResults, WebInspector.TextRange.comparator);
     },
 
     jumpToNextSearchResult: function()

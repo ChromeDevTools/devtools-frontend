@@ -10,7 +10,7 @@
 WebInspector.CodeMirrorDictionary = function(codeMirror, additionalWordChars)
 {
     this._codeMirror = codeMirror;
-    this._additionalWordChars = new Set(additionalWordChars);
+    this._additionalWordChars = new Set(/** @type {!Iterable} */ (additionalWordChars));
     this._dictionary = new WebInspector.TextDictionary();
     this._addText(this._codeMirror.getValue());
 

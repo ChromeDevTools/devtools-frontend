@@ -246,45 +246,6 @@ WebInspector.AdvancedAppProvider.prototype = {
  * @constructor
  * @implements {WebInspector.StatusBarItem.Provider}
  */
-WebInspector.AdvancedApp.DeviceCounter = function()
-{
-    this._counter = new WebInspector.StatusBarCounter(["device-icon"]);
-    this._counter.addEventListener("click", showDevices);
-
-    function showDevices()
-    {
-        WebInspector.inspectorView.showViewInDrawer("devices", true);
-    }
-
-    InspectorFrontendHost.setDeviceCountUpdatesEnabled(true);
-    InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.DeviceCountUpdated, this._onDeviceCountUpdated, this);
-}
-
-WebInspector.AdvancedApp.DeviceCounter.prototype = {
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _onDeviceCountUpdated: function(event)
-    {
-        var count = /** @type {number} */ (event.data);
-        this._counter.setCounter("device-icon", count, WebInspector.UIString(count > 1 ? "%d devices found" : "%d device found", count));
-        WebInspector.inspectorView.toolbarItemResized();
-    },
-
-    /**
-     * @override
-     * @return {?WebInspector.StatusBarItem}
-     */
-    item: function()
-    {
-        return this._counter;
-    }
-}
-
-/**
- * @constructor
- * @implements {WebInspector.StatusBarItem.Provider}
- */
 WebInspector.AdvancedApp.EmulationButtonProvider = function()
 {
 }

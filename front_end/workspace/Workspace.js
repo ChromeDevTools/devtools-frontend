@@ -451,7 +451,8 @@ WebInspector.Project.prototype = {
             }
             var oldPath = uiSourceCode.path();
             var newPath = uiSourceCode.parentPath() ? uiSourceCode.parentPath() + "/" + newName : newName;
-            this._uiSourceCodesMap.set(newPath, this._uiSourceCodesMap.get(oldPath));
+            var value = /** @type {!{uiSourceCode: !WebInspector.UISourceCode, index: number}} */ (this._uiSourceCodesMap.get(oldPath));
+            this._uiSourceCodesMap.set(newPath, value);
             this._uiSourceCodesMap.delete(oldPath);
             callback(true, newName, newURL, newOriginURL, newContentType);
         }

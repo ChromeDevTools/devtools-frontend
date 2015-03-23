@@ -216,8 +216,14 @@ WebInspector.BreakpointManager.prototype = {
      */
     setBreakpoint: function(uiSourceCode, lineNumber, columnNumber, condition, enabled)
     {
+        var uiLocation = new WebInspector.UILocation(uiSourceCode, lineNumber, columnNumber);
+        var normalizedLocation = this._debuggerWorkspaceBinding.normalizeUILocation(uiLocation);
+        if (normalizedLocation.id() !== uiLocation.id()) {
+            WebInspector.Revealer.reveal(normalizedLocation);
+            uiLocation = normalizedLocation;
+        }
         this.setBreakpointsActive(true);
-        return this._innerSetBreakpoint(uiSourceCode, lineNumber, columnNumber, condition, enabled);
+        return this._innerSetBreakpoint(uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber, condition, enabled);
     },
 
     /**

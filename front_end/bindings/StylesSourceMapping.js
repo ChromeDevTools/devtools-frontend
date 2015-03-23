@@ -61,7 +61,7 @@ WebInspector.StylesSourceMapping.prototype = {
     rawLocationToUILocation: function(rawLocation)
     {
         var location = /** @type WebInspector.CSSLocation */ (rawLocation);
-        var uiSourceCode = this._networkMapping.uiSourceCodeForURL(location.url);
+        var uiSourceCode = this._networkMapping.uiSourceCodeForURL(location.url, rawLocation.target());
         if (!uiSourceCode)
             return null;
         return uiSourceCode.uiLocation(location.lineNumber, location.columnNumber);
@@ -129,7 +129,7 @@ WebInspector.StylesSourceMapping.prototype = {
             map.set(header.frameId, headersById);
         }
         headersById.set(header.id, header);
-        var uiSourceCode = this._networkMapping.uiSourceCodeForURL(url);
+        var uiSourceCode = this._networkMapping.uiSourceCodeForURL(url, header.target());
         if (uiSourceCode)
             this._bindUISourceCode(uiSourceCode, header);
     },
@@ -153,7 +153,7 @@ WebInspector.StylesSourceMapping.prototype = {
             map.remove(header.frameId);
             if (!map.size) {
                 delete this._urlToHeadersByFrameId[url];
-                var uiSourceCode = this._networkMapping.uiSourceCodeForURL(url);
+                var uiSourceCode = this._networkMapping.uiSourceCodeForURL(url, header.target());
                 if (uiSourceCode)
                     this._unbindUISourceCode(uiSourceCode);
             }
@@ -230,7 +230,7 @@ WebInspector.StylesSourceMapping.prototype = {
     _mainFrameNavigated: function(event)
     {
         for (var url in this._urlToHeadersByFrameId) {
-            var uiSourceCode = this._networkMapping.uiSourceCodeForURL(url);
+            var uiSourceCode = this._networkMapping.uiSourceCodeForURL(url, this._cssModel.target());
             if (!uiSourceCode)
                 continue;
             this._unbindUISourceCode(uiSourceCode);
@@ -313,7 +313,7 @@ WebInspector.StylesSourceMapping.prototype = {
         var styleSheetURL = header.resourceURL();
         if (!styleSheetURL)
             return;
-        var uiSourceCode = this._networkMapping.uiSourceCodeForURL(styleSheetURL);
+        var uiSourceCode = this._networkMapping.uiSourceCodeForURL(styleSheetURL, header.target());
         if (!uiSourceCode)
             return;
         header.requestContent(callback.bind(this, uiSourceCode));

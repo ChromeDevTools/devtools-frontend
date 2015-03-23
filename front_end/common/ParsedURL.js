@@ -246,6 +246,14 @@ WebInspector.ParsedURL.prototype = {
     isDataURL: function()
     {
         return this.scheme === "data";
+    },
+
+    /**
+     * @return {string}
+     */
+    lastPathComponentWithFragment: function()
+    {
+       return this.lastPathComponent + (this.fragment ? "#" + this.fragment : "");
     }
 }
 

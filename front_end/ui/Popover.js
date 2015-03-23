@@ -138,10 +138,21 @@ WebInspector.Popover.prototype = {
         this._disposed = true;
     },
 
+    /**
+     * @param {boolean} canShrink
+     */
     setCanShrink: function(canShrink)
     {
         this._hasFixedHeight = !canShrink;
         this._contentDiv.classList.toggle("fixed-height", this._hasFixedHeight);
+    },
+
+    /**
+     * @param {boolean} noMargins
+     */
+    setNoMargins: function(noMargins)
+    {
+        this._contentDiv.classList.toggle("no-margin", noMargins);
     },
 
     /**
@@ -152,11 +163,11 @@ WebInspector.Popover.prototype = {
      */
     _positionElement: function(anchorElement, preferredWidth, preferredHeight, arrowDirection)
     {
-        const borderWidth = 25;
+        const borderWidth = 7;
         const scrollerWidth = this._hasFixedHeight ? 0 : 11;
         const arrowHeight = 15;
         const arrowOffset = 10;
-        const borderRadius = 10;
+        const borderRadius = 4;
 
         // Skinny tooltips are not pretty, their arrow location is not nice.
         preferredWidth = Math.max(preferredWidth, 50);

@@ -30,7 +30,7 @@
  */
 WebInspector.ScopeChainSidebarPane = function()
 {
-    WebInspector.SidebarPane.call(this, WebInspector.UIString("Scope Variables"));
+    WebInspector.SidebarPane.call(this, WebInspector.UIString("Scope"));
     this._sections = [];
     /** @type {!Set.<?string>} */
     this._expandedSections = new Set();
@@ -67,15 +67,14 @@ WebInspector.ScopeChainSidebarPane.prototype = {
         this._sections = [];
 
         var foundLocalScope = false;
-        var scopeChain = callFrame.scopeChain;
+        var scopeChain = callFrame.scopeChain();
         for (var i = 0; i < scopeChain.length; ++i) {
             var scope = scopeChain[i];
             var title = null;
             var emptyPlaceholder = null;
             var extraProperties = [];
-            var declarativeScope = true;
 
-            switch (scope.type) {
+            switch (scope.type()) {
             case DebuggerAgent.ScopeType.Local:
                 foundLocalScope = true;
                 title = WebInspector.UIString("Local");
@@ -110,34 +109,26 @@ WebInspector.ScopeChainSidebarPane.prototype = {
                 break;
             case DebuggerAgent.ScopeType.With:
                 title = WebInspector.UIString("With Block");
-                declarativeScope = false;
                 break;
             case DebuggerAgent.ScopeType.Global:
                 title = WebInspector.UIString("Global");
-                declarativeScope = false;
                 break;
             }
 
-            var subtitle = declarativeScope ? undefined : scope.object.description;
+            var subtitle = scope.description();
             if (!title || title === subtitle)
                 subtitle = undefined;
 
-            var runtimeModel = callFrame.target().runtimeModel;
-            if (declarativeScope)
-                var scopeObject = runtimeModel.createScopeRemoteObject(scope.object, new WebInspector.ScopeRef(i, callFrame.id, undefined));
-            else
-                var scopeObject = runtimeModel.createRemoteObject(scope.object);
-
-            var section = new WebInspector.ObjectPropertiesSection(scopeObject, title, subtitle, emptyPlaceholder, true, extraProperties);
+            var section = new WebInspector.ObjectPropertiesSection(scope.object(), title, subtitle, emptyPlaceholder, true, extraProperties);
             section.propertiesTreeOutline.addEventListener(TreeOutline.Events.ElementAttached, this._elementAttached, this);
             section.propertiesTreeOutline.addEventListener(TreeOutline.Events.ElementExpanded, this._elementExpanded, this);
             section.propertiesTreeOutline.addEventListener(TreeOutline.Events.ElementCollapsed, this._elementCollapsed, this);
             section.editInSelectedCallFrameWhenPaused = true;
             section.pane = this;
 
-            if (scope.type === DebuggerAgent.ScopeType.Global)
+            if (scope.type() === DebuggerAgent.ScopeType.Global)
                 section.collapse();
-            else if (!foundLocalScope || scope.type === DebuggerAgent.ScopeType.Local || this._expandedSections.has(title))
+            else if (!foundLocalScope || scope.type() === DebuggerAgent.ScopeType.Local || this._expandedSections.has(title))
                 section.expand();
 
             this._sections.push(section);

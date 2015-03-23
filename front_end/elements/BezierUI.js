@@ -117,9 +117,9 @@ WebInspector.BezierUI.drawVelocityChart = function(bezier, path, width)
         var slope = (current.y - prev.y) / (current.x - prev.x);
         var weightedX = prev.x * (1 - t) + current.x * t;
         slope = Math.tanh(slope / 1.5); // Normalise slope
-        pathBuilder = pathBuilder.concat(["L", weightedX * width, height - slope * height ]);
+        pathBuilder = pathBuilder.concat(["L", (weightedX * width).toFixed(2), (height - slope * height).toFixed(2) ]);
         prev = current;
     }
-    pathBuilder = pathBuilder.concat(["L", width, height, "Z"]);
+    pathBuilder = pathBuilder.concat(["L", width.toFixed(2), height, "Z"]);
     path.setAttribute("d", pathBuilder.join(" "));
 }

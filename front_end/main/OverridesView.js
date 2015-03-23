@@ -197,7 +197,7 @@ WebInspector.OverridesView.DeviceTab = function()
     this.element.appendChild(this._createDeviceElement());
 
     var footnote = this.element.createChild("p", "help-footnote");
-    footnote.appendChild(WebInspector.createDocumentationAnchor("device-mode", WebInspector.UIString("More information about screen emulation")));
+    footnote.appendChild(WebInspector.linkifyDocumentationURLAsNode("device-mode", WebInspector.UIString("More information about screen emulation")));
 }
 
 WebInspector.OverridesView.DeviceTab.prototype = {

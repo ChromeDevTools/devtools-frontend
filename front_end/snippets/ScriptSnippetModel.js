@@ -690,4 +690,4 @@ WebInspector.SnippetsProjectDelegate.prototype = {
 /**
  * @type {!WebInspector.ScriptSnippetModel}
  */
-WebInspector.scriptSnippetModel;
+WebInspector.scriptSnippetModel = new WebInspector.ScriptSnippetModel(WebInspector.workspace);

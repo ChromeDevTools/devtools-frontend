@@ -31,8 +31,9 @@
  * @constructor
  * @extends {WebInspector.ElementsSidebarPane}
  * @param {!WebInspector.ComputedStyleSidebarPane} computedStylePane
+ * @param {function()} requestShowCallback
  */
-WebInspector.StylesSidebarPane = function(computedStylePane)
+WebInspector.StylesSidebarPane = function(computedStylePane, requestShowCallback)
 {
     WebInspector.ElementsSidebarPane.call(this, WebInspector.UIString("Styles"));
 
@@ -66,7 +67,8 @@ WebInspector.StylesSidebarPane = function(computedStylePane)
     computedStylePane.setHostingPane(this);
     this.element.addEventListener("contextmenu", this._contextMenuEventFired.bind(this), true);
     WebInspector.settings.colorFormat.addChangeListener(this._colorFormatSettingChanged.bind(this));
-    WebInspector.settings.showUserAgentStyles.addChangeListener(this._showUserAgentStylesSettingChanged.bind(this));
+
+    this._requestShowCallback = requestShowCallback;
 
     this._createElementStatePane();
     this.bodyElement.appendChild(this._elementStatePane);
@@ -76,13 +78,10 @@ WebInspector.StylesSidebarPane = function(computedStylePane)
     this.bodyElement.appendChild(this._sectionsContainer);
 
     this._stylesPopoverHelper = new WebInspector.StylesPopoverHelper();
-    this._spectrum = new WebInspector.Spectrum();
-    this._bezierEditor = new WebInspector.BezierEditor();
 
     this._linkifier = new WebInspector.Linkifier(new WebInspector.Linkifier.DefaultCSSFormatter());
 
     this.element.classList.add("styles-pane");
-    this.element.classList.toggle("show-user-styles", WebInspector.settings.showUserAgentStyles.get());
     this.element.addEventListener("mousemove", this._mouseMovedOverElement.bind(this), false);
     this._keyDownBound = this._keyDown.bind(this);
     this._keyUpBound = this._keyUp.bind(this);
@@ -97,9 +96,6 @@ WebInspector.StylesSidebarPane.PseudoIdNames = [
     "-webkit-scrollbar-thumb", "-webkit-scrollbar-button", "-webkit-scrollbar-track", "-webkit-scrollbar-track-piece",
     "-webkit-scrollbar-corner", "-webkit-resizer"
 ];
-
-WebInspector.StylesSidebarPane._colorRegex = /((?:rgb|hsl)a?\([^)]+\)|#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|\b\w+\b(?!-))/g;
-WebInspector.StylesSidebarPane._bezierRegex = /((cubic-bezier\([^)]+\))|\b(linear|ease-in-out|ease-in|ease-out|ease)\b)/g;
 
 /**
  * @enum {string}
@@ -259,14 +255,9 @@ WebInspector.StylesSidebarPane.prototype = {
     {
         if (!editedRule.styleSheetId)
             return;
-        for (var pseudoId in this.sections) {
-            var styleRuleSections = this.sections[pseudoId];
-            for (var i = 0; i < styleRuleSections.length; ++i) {
-                var section = styleRuleSections[i];
-                if (section.computedStyle)
-                    continue;
+        for (var block of this._sectionBlocks) {
+            for (var section of block.sections)
                 section._styleSheetRuleEdited(editedRule, oldRange, newRange);
-            }
         }
     },
 
@@ -278,14 +269,9 @@ WebInspector.StylesSidebarPane.prototype = {
     {
         if (!oldMedia.parentStyleSheetId)
             return;
-        for (var pseudoId in this.sections) {
-            var styleRuleSections = this.sections[pseudoId];
-            for (var i = 0; i < styleRuleSections.length; ++i) {
-                var section = styleRuleSections[i];
-                if (section.computedStyle)
-                    continue;
+        for (var block of this._sectionBlocks) {
+            for (var section of block.sections)
                 section._styleSheetMediaEdited(oldMedia, newMedia);
-            }
         }
     },
 
@@ -306,27 +292,26 @@ WebInspector.StylesSidebarPane.prototype = {
      */
     setFilterBoxContainer: function(matchedStylesElement)
     {
-        matchedStylesElement.appendChild(this._createCSSFilterControl());
+        this._filterInput = WebInspector.StylesSidebarPane.createPropertyFilterElement(WebInspector.UIString("Find in Styles"), this._onFilterChanged.bind(this));
+        matchedStylesElement.appendChild(this._filterInput);
     },
 
     /**
-     * @return {!Element}
+     * @param {string} propertyName
      */
-    _createCSSFilterControl: function()
+    tracePropertyName: function(propertyName)
     {
-        var filterInput = WebInspector.StylesSidebarPane.createPropertyFilterElement(WebInspector.UIString("Find in Styles"), searchHandler.bind(this));
+        this._requestShowCallback();
+        this._filterInput.setFilterValue(WebInspector.CSSMetadata.canonicalPropertyName(propertyName));
+    },
 
-        /**
-         * @param {?RegExp} regex
-         * @this {WebInspector.StylesSidebarPane}
-         */
-        function searchHandler(regex)
-        {
-            this._filterRegex = regex;
-            this._updateFilter();
-        }
-
-        return filterInput;
+    /**
+     * @param {?RegExp} regex
+     */
+    _onFilterChanged: function(regex)
+    {
+        this._filterRegex = regex;
+        this._updateFilter();
     },
 
     /**
@@ -363,8 +348,14 @@ WebInspector.StylesSidebarPane.prototype = {
      */
     setNode: function(node)
     {
-        this._stylesPopoverHelper.hide();
-        this._discardElementUnderMouse();
+        // We should update SSP on main frame navigation only.
+        if (!node || !this.node() || node.ownerDocument === this.node().ownerDocument) {
+            this.element.classList.toggle("no-affect", this._isEditingStyle);
+            if (this._isEditingStyle) {
+                this._pendingNode = node;
+                return;
+            }
+        }
 
         if (node && node.nodeType() === Node.TEXT_NODE && node.parentNode)
             node = node.parentNode;
@@ -414,13 +405,22 @@ WebInspector.StylesSidebarPane.prototype = {
      */
     _refreshUpdate: function(editedSection)
     {
-        var node = this._validateNode();
+        var node = this.node();
         if (!node)
             return;
 
-        this._innerRefreshUpdate(node, editedSection);
+        for (var block of this._sectionBlocks) {
+            for (var section of block.sections) {
+                if (section.isBlank)
+                    continue;
+                section.update(section === editedSection);
+            }
+        }
+
+        this._computedStylePane.update();
         if (this._filterRegex)
             this._updateFilter();
+        this._nodeStylesUpdatedForTest(node, false);
     },
 
     /**
@@ -430,12 +430,7 @@ WebInspector.StylesSidebarPane.prototype = {
     doUpdate: function(finishedCallback)
     {
         this._updateForcedPseudoStateInputs();
-
-        var node = this._validateNode();
-        if (!node) {
-            finishedCallback();
-            return;
-        }
+        this._discardElementUnderMouse();
 
         this._fetchMatchedCascade()
             .then(this._innerRebuildUpdate.bind(this))
@@ -450,7 +445,7 @@ WebInspector.StylesSidebarPane.prototype = {
 
     _resetComputedCache: function()
     {
-        delete this._computedCascadePromise;
+        delete this._computedStylePromise;
         delete this._animationPropertiesPromise;
     },
 
@@ -485,17 +480,17 @@ WebInspector.StylesSidebarPane.prototype = {
     },
 
     /**
-     * @return {!Promise.<?WebInspector.SectionCascade>}
+     * @return {!Promise.<?WebInspector.CSSStyleDeclaration>}
      */
-    _fetchComputedCascade: function()
+    _fetchComputedStyle: function()
     {
         var node = this.node();
         if (!node)
-            return Promise.resolve(/** @type {?WebInspector.SectionCascade} */(null));
-        if (!this._computedCascadePromise)
-            this._computedCascadePromise = new Promise(getComputedStyle.bind(null, node)).then(buildComputedCascade.bind(this, node));
+            return Promise.resolve(/** @type {?WebInspector.CSSStyleDeclaration} */(null));
+        if (!this._computedStylePromise)
+            this._computedStylePromise = new Promise(getComputedStyle.bind(null, node)).then(verifyOutdated.bind(this, node));
 
-        return this._computedCascadePromise;
+        return this._computedStylePromise;
 
         /**
          * @param {!WebInspector.DOMNode} node
@@ -508,20 +503,13 @@ WebInspector.StylesSidebarPane.prototype = {
 
         /**
          * @param {!WebInspector.DOMNode} node
-         * @param {?WebInspector.CSSStyleDeclaration} styles
-         * @return {?WebInspector.SectionCascade}
+         * @param {?WebInspector.CSSStyleDeclaration} style
+         * @return {?WebInspector.CSSStyleDeclaration}
          * @this {WebInspector.StylesSidebarPane}
          */
-        function buildComputedCascade(node, styles)
+        function verifyOutdated(node, style)
         {
-            if (node !== this.node())
-                return null;
-            if (!styles)
-                return null;
-
-            var computedCascade = new WebInspector.SectionCascade();
-            computedCascade.appendModelFromStyle(styles, "");
-            return computedCascade;
+            return node !== this.node() ? null : style;
         }
     },
 
@@ -620,22 +608,18 @@ WebInspector.StylesSidebarPane.prototype = {
         }
     },
 
-    _validateNode: function()
-    {
-        if (!this.node()) {
-            this._sectionsContainer.removeChildren();
-            this.sections = {};
-            return null;
-        }
-        return this.node();
-    },
-
     /**
      * @param {boolean} editing
      */
     setEditingStyle: function(editing)
     {
+        if (this._isEditingStyle === editing)
+            return;
         this._isEditingStyle = editing;
+        if (!editing && this._pendingNode) {
+            this.setNode(this._pendingNode);
+            delete this._pendingNode;
+        }
     },
 
     _styleSheetOrMediaQueryResultChanged: function()
@@ -695,60 +679,46 @@ WebInspector.StylesSidebarPane.prototype = {
     },
 
     /**
-     * @param {!WebInspector.DOMNode} node
-     * @param {!WebInspector.StylePropertiesSection=} editedSection
-     */
-    _innerRefreshUpdate: function(node, editedSection)
-    {
-        for (var pseudoId in this.sections) {
-            var sections = this.sections[pseudoId].filter(nonBlankSections);
-            for (var section of sections)
-                section.update(section === editedSection);
-        }
-
-        this._computedStylePane.update();
-
-        this._nodeStylesUpdatedForTest(node, false);
-
-        /**
-         * @param {!WebInspector.StylePropertiesSection} section
-         * @return {boolean}
-         */
-        function nonBlankSections(section)
-        {
-            return !section.isBlank;
-        }
-    },
-
-    /**
      * @param {?{matched: !WebInspector.SectionCascade, pseudo: !Map.<number, !WebInspector.SectionCascade>}} cascades
      */
     _innerRebuildUpdate: function(cascades)
     {
         this._linkifier.reset();
         this._sectionsContainer.removeChildren();
-        this.sections = {};
+        this._sectionBlocks = [];
 
         var node = this.node();
         if (!cascades || !node)
             return;
 
+        this._sectionBlocks = this._rebuildSectionsForMatchedStyleRules(cascades.matched);
+        var pseudoIds = cascades.pseudo.keysArray().sort();
+        for (var pseudoId of pseudoIds) {
+            var block = WebInspector.SectionBlock.createPseudoIdBlock(pseudoId);
+            var cascade = cascades.pseudo.get(pseudoId);
+            for (var sectionModel of cascade.sectionModels()) {
+                var section = new WebInspector.StylePropertiesSection(this, sectionModel);
+                block.sections.push(section);
+            }
+            this._sectionBlocks.push(block);
+        }
+
         if (!!node.pseudoType())
             this._appendTopPadding();
 
-        this.sections[0] = this._rebuildSectionsForStyleRules(cascades.matched);
-        this._computedStylePane.update();
-
-        var pseudoIds = cascades.pseudo.keysArray().sort();
-        for (var pseudoId of pseudoIds) {
-            this._appendSectionPseudoIdSeparator(pseudoId);
-            this.sections[pseudoId] = this._rebuildSectionsForStyleRules(cascades.pseudo.get(pseudoId));
+        for (var block of this._sectionBlocks) {
+            var titleElement = block.titleElement();
+            if (titleElement)
+                this._sectionsContainer.appendChild(titleElement);
+            for (var section of block.sections)
+                this._sectionsContainer.appendChild(section.element);
         }
 
         if (this._filterRegex)
             this._updateFilter();
 
         this._nodeStylesUpdatedForTest(node, true);
+        this._computedStylePane.update();
     },
 
     /**
@@ -852,55 +822,25 @@ WebInspector.StylesSidebarPane.prototype = {
     },
 
     /**
-     * @param {number} pseudoId
+     * @param {!WebInspector.SectionCascade} matchedCascade
+     * @return {!Array.<!WebInspector.SectionBlock>}
      */
-    _appendSectionPseudoIdSeparator: function(pseudoId)
+    _rebuildSectionsForMatchedStyleRules: function(matchedCascade)
     {
-        var separatorElement = createElement("div");
-        separatorElement.className = "sidebar-separator";
-        var pseudoName = WebInspector.StylesSidebarPane.PseudoIdNames[pseudoId];
-        if (pseudoName)
-            separatorElement.textContent = WebInspector.UIString("Pseudo ::%s element", pseudoName);
-        else
-            separatorElement.textContent = WebInspector.UIString("Pseudo element");
-        this._sectionsContainer.appendChild(separatorElement);
-    },
-
-    /**
-     * @param {!WebInspector.DOMNode} node
-     */
-    _appendSectionInheritedNodeSeparator: function(node)
-    {
-        var separatorElement = createElement("div");
-        separatorElement.className = "sidebar-separator";
-        var link = WebInspector.DOMPresentationUtils.linkifyNodeReference(node);
-        separatorElement.createTextChild(WebInspector.UIString("Inherited from") + " ");
-        separatorElement.appendChild(link);
-        this._sectionsContainer.appendChild(separatorElement);
-    },
-
-    /**
-     * @param {!WebInspector.SectionCascade} cascade
-     * @return {!Array.<!WebInspector.StylePropertiesSection>}
-     */
-    _rebuildSectionsForStyleRules: function(cascade)
-    {
-        var sections = [];
+        var blocks = [new WebInspector.SectionBlock(null)];
         var lastParentNode = null;
-        for (var sectionModel of cascade.sectionModels()) {
+        for (var sectionModel of matchedCascade.sectionModels()) {
             var parentNode = sectionModel.parentNode();
             if (parentNode && parentNode !== lastParentNode) {
                 lastParentNode = parentNode;
-                this._appendSectionInheritedNodeSeparator(lastParentNode);
+                var block = WebInspector.SectionBlock.createInheritedNodeBlock(lastParentNode);
+                blocks.push(block);
             }
 
             var section = new WebInspector.StylePropertiesSection(this, sectionModel);
-            section._markSelectorMatches();
-            section.onpopulate();
-            this._sectionsContainer.appendChild(section.element);
-            sections.push(section);
+            blocks.peekLast().sections.push(section);
         }
-        return sections;
+        return blocks;
     },
 
     /**
@@ -924,10 +864,9 @@ WebInspector.StylesSidebarPane.prototype = {
      */
     _colorFormatSettingChanged: function(event)
     {
-        for (var pseudoId in this.sections) {
-            var sections = this.sections[pseudoId];
-            for (var i = 0; i < sections.length; ++i)
-                sections[i].update(true);
+        for (var block of this._sectionBlocks) {
+            for (var section of block.sections)
+                section.update(true);
         }
     },
 
@@ -969,7 +908,7 @@ WebInspector.StylesSidebarPane.prototype = {
         {
             var lines = text.split("\n");
             var range = WebInspector.TextRange.createFromLocation(lines.length - 1, lines[lines.length - 1].length);
-            this._addBlankSection(this.sections[0][0], styleSheetId, range);
+            this._addBlankSection(this._sectionBlocks[0].sections[0], styleSheetId, range);
         }
     },
 
@@ -986,9 +925,13 @@ WebInspector.StylesSidebarPane.prototype = {
 
         this._sectionsContainer.insertBefore(blankSection.element, insertAfterSection.element.nextSibling);
 
-        var index = this.sections[0].indexOf(insertAfterSection);
-        this.sections[0].splice(index + 1, 0, blankSection);
-        blankSection.startEditingSelector();
+        for (var block of this._sectionBlocks) {
+            var index = block.sections.indexOf(insertAfterSection);
+            if (index === -1)
+                continue;
+            block.sections.splice(index + 1, 0, blankSection);
+            blankSection.startEditingSelector();
+        }
     },
 
     /**
@@ -996,12 +939,11 @@ WebInspector.StylesSidebarPane.prototype = {
      */
     removeSection: function(section)
     {
-        for (var pseudoId in this.sections) {
-            var sections = this.sections[pseudoId];
-            var index = sections.indexOf(section);
+        for (var block of this._sectionBlocks) {
+            var index = block.sections.indexOf(section);
             if (index === -1)
                 continue;
-            sections.splice(index, 1);
+            block.sections.splice(index, 1);
             section.element.remove();
         }
     },
@@ -1037,7 +979,7 @@ WebInspector.StylesSidebarPane.prototype = {
          */
         function clickListener(event)
         {
-            var node = this._validateNode();
+            var node = this.node();
             if (!node)
                 return;
             node.target().cssModel.forcePseudoState(node, event.target.state, event.target.checked);
@@ -1170,22 +1112,8 @@ WebInspector.StylesSidebarPane.prototype = {
 
     _updateFilter: function()
     {
-        for (var pseudoId in this.sections) {
-            var sections = this.sections[pseudoId];
-            for (var i = 0; i < sections.length; ++i) {
-                var section = sections[i];
-                section._updateFilter();
-            }
-        }
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _showUserAgentStylesSettingChanged: function(event)
-    {
-        var showStyles = /** @type {boolean} */ (event.data);
-        this.element.classList.toggle("show-user-styles", showStyles);
+        for (var block of this._sectionBlocks)
+            block.updateFilter();
     },
 
     /**
@@ -1263,7 +1191,7 @@ WebInspector.StylesSidebarPane.prototype = {
 WebInspector.StylesSidebarPane.createPropertyFilterElement = function(placeholder, filterCallback)
 {
     var input = createElement("input");
-    input.type = "text";
+    input.type = "search";
     input.placeholder = placeholder;
 
     function searchHandler()
@@ -1288,7 +1216,78 @@ WebInspector.StylesSidebarPane.createPropertyFilterElement = function(placeholde
     }
     input.addEventListener("keydown", keydownHandler, false);
 
+    input.setFilterValue = setFilterValue;
+
+    /**
+     * @param {string} value
+     */
+    function setFilterValue(value)
+    {
+        input.value = value;
+        input.focus();
+        searchHandler();
+    }
+
     return input;
+}
+
+/**
+ * @constructor
+ * @param {?Element} titleElement
+ */
+WebInspector.SectionBlock = function(titleElement)
+{
+    this._titleElement = titleElement;
+    this.sections = [];
+}
+
+/**
+ * @param {number} pseudoId
+ * @return {!WebInspector.SectionBlock}
+ */
+WebInspector.SectionBlock.createPseudoIdBlock = function(pseudoId)
+{
+    var separatorElement = createElement("div");
+    separatorElement.className = "sidebar-separator";
+    var pseudoName = WebInspector.StylesSidebarPane.PseudoIdNames[pseudoId];
+    if (pseudoName)
+        separatorElement.textContent = WebInspector.UIString("Pseudo ::%s element", pseudoName);
+    else
+        separatorElement.textContent = WebInspector.UIString("Pseudo element");
+    return new WebInspector.SectionBlock(separatorElement);
+}
+
+/**
+ * @param {!WebInspector.DOMNode} node
+ * @return {!WebInspector.SectionBlock}
+ */
+WebInspector.SectionBlock.createInheritedNodeBlock = function(node)
+{
+    var separatorElement = createElement("div");
+    separatorElement.className = "sidebar-separator";
+    var link = WebInspector.DOMPresentationUtils.linkifyNodeReference(node);
+    separatorElement.createTextChild(WebInspector.UIString("Inherited from") + " ");
+    separatorElement.appendChild(link);
+    return new WebInspector.SectionBlock(separatorElement);
+}
+
+WebInspector.SectionBlock.prototype = {
+    updateFilter: function()
+    {
+        var hasAnyVisibleSection = false;
+        for (var section of this.sections)
+            hasAnyVisibleSection |= section._updateFilter();
+        if (this._titleElement)
+            this._titleElement.classList.toggle("hidden", !hasAnyVisibleSection);
+    },
+
+    /**
+     * @return {?Element}
+     */
+    titleElement: function()
+    {
+        return this._titleElement;
+    }
 }
 
 /**
@@ -1303,8 +1302,7 @@ WebInspector.StylePropertiesSection = function(parentPane, styleRule)
     this.editable = styleRule.editable();
 
     var rule = styleRule.rule();
-    var extraClasses = (rule && (rule.isInjected || rule.isUserAgent) ? " user-rule" : "");
-    this.element = createElementWithClass("div", "styles-section matched-styles monospace" + extraClasses);
+    this.element = createElementWithClass("div", "styles-section matched-styles monospace");
     this.element._section = this;
 
     this.titleElement = this.element.createChild("div", "styles-section-title " + (rule ? "styles-selector" : ""));
@@ -1363,6 +1361,9 @@ WebInspector.StylePropertiesSection = function(parentPane, styleRule)
 
     if (!this.editable)
         this.element.classList.add("read-only");
+
+    this._markSelectorMatches();
+    this.onpopulate();
 }
 
 WebInspector.StylePropertiesSection.prototype = {
@@ -1683,21 +1684,24 @@ WebInspector.StylePropertiesSection.prototype = {
         }
     },
 
+    /**
+     * @return {boolean}
+     */
     _updateFilter: function()
     {
         if (this.styleRule.isAttribute())
-            return;
-        var regex = this._parentPane.filterRegex();
-        var hideRule = regex && !regex.test(this.element.textContent);
-        this.element.classList.toggle("hidden", hideRule);
-        if (hideRule)
-            return;
+            return true;
 
+        var hasMatchingChild = false;
         for (var child of this.propertiesTreeOutline.rootElement().children())
-            child._updateFilter();
+            hasMatchingChild |= child._updateFilter();
 
-        if (this.styleRule.rule())
+        var regex = this._parentPane.filterRegex();
+        var hideRule = !hasMatchingChild && regex && !regex.test(this.element.textContent);
+        this.element.classList.toggle("hidden", hideRule);
+        if (!hideRule && this.styleRule.rule())
             this._markSelectorHighlights();
+        return !hideRule;
     },
 
     _markSelectorMatches: function()
@@ -1829,7 +1833,7 @@ WebInspector.StylePropertiesSection.prototype = {
         WebInspector.InplaceEditor.startEditing(element, config);
 
         element.getComponentSelection().setBaseAndExtent(element, 0, element, 1);
-        this._parentPane._isEditingStyle = true;
+        this._parentPane.setEditingStyle(true);
         var parentMediaElement = element.enclosingNodeOrSelfWithClass("media");
         parentMediaElement.classList.add("editing-media");
 
@@ -1841,7 +1845,7 @@ WebInspector.StylePropertiesSection.prototype = {
      */
     _editingMediaFinished: function(element)
     {
-        delete this._parentPane._isEditingStyle;
+        this._parentPane.setEditingStyle(false);
         var parentMediaElement = element.enclosingNodeOrSelfWithClass("media");
         parentMediaElement.classList.remove("editing-media");
     },
@@ -1878,7 +1882,7 @@ WebInspector.StylePropertiesSection.prototype = {
      */
     _editingMediaCommitted: function(media, element, newContent, oldContent, context, moveDirection)
     {
-        delete this._parentPane._isEditingStyle;
+        this._parentPane.setEditingStyle(false);
         this._editingMediaFinished(element);
 
         if (newContent)
@@ -1960,7 +1964,7 @@ WebInspector.StylePropertiesSection.prototype = {
         WebInspector.InplaceEditor.startEditing(this._selectorElement, config);
 
         element.getComponentSelection().setBaseAndExtent(element, 0, element, 1);
-        this._parentPane._isEditingStyle = true;
+        this._parentPane.setEditingStyle(true);
         this._parentPane._startEditingSelector(this);
     },
 
@@ -2080,7 +2084,7 @@ WebInspector.StylePropertiesSection.prototype = {
 
     _editingSelectorEnded: function()
     {
-        delete this._parentPane._isEditingStyle;
+        this._parentPane.setEditingStyle(false);
         this._parentPane._finishEditingSelector();
     },
 
@@ -2328,22 +2332,6 @@ WebInspector.StylePropertyTreeElementBase.prototype = {
     },
 
     /**
-     * @return {?WebInspector.StylesSidebarPane}
-     */
-    editablePane: function()
-    {
-        return null;  // Overridden by ancestors.
-    },
-
-    /**
-     * @return {boolean}
-     */
-    isEditableStyleRule: function()
-    {
-        return !!(this._styleRule && this._styleRule.editable());
-    },
-
-    /**
      * @return {!WebInspector.StylesSidebarPane|!WebInspector.ComputedStyleSidebarPane}
      */
     parentPane: function()
@@ -2430,84 +2418,28 @@ WebInspector.StylePropertyTreeElementBase.prototype = {
 
     updateTitle: function()
     {
-        var value = this.value;
-
         this._updateState();
-
-        var nameElement = createElement("span");
-        nameElement.className = "webkit-css-property";
-        nameElement.textContent = this.name;
-        nameElement.title = this.property.propertyText;
-        this.nameElement = nameElement;
-
         this._expandElement = createElement("span");
         this._expandElement.className = "expand-element";
 
-        var valueElement = createElement("span");
-        valueElement.className = "value";
-        this.valueElement = valueElement;
-
-        /**
-         * @param {string} value
-         * @return {!RegExp}
-         */
-        function urlRegex(value)
-        {
-            // Heuristically choose between single-quoted, double-quoted or plain URL regex.
-            if (/url\(\s*'.*\s*'\s*\)/.test(value))
-                return /url\(\s*('.+')\s*\)/g;
-            if (/url\(\s*".*\s*"\s*\)/.test(value))
-                return /url\(\s*(".+")\s*\)/g;
-            return /url\(\s*([^)]+)\s*\)/g;
-        }
-
-        /**
-         * @param {string} url
-         * @return {!Node}
-         * @this {WebInspector.StylePropertyTreeElementBase}
-         */
-        function linkifyURL(url)
-        {
-            var hrefUrl = url;
-            var match = hrefUrl.match(/['"]?([^'"]+)/);
-            if (match)
-                hrefUrl = match[1];
-            var container = createDocumentFragment();
-            container.createTextChild("url(");
-            if (this._styleRule.rule() && this._styleRule.rule().resourceURL())
-                hrefUrl = WebInspector.ParsedURL.completeURL(this._styleRule.rule().resourceURL(), hrefUrl);
-            else if (this.node())
-                hrefUrl = this.node().resolveURL(hrefUrl);
-            var hasResource = hrefUrl && !!WebInspector.resourceForURL(hrefUrl);
-            // FIXME: WebInspector.linkifyURLAsNode() should really use baseURI.
-            container.appendChild(WebInspector.linkifyURLAsNode(hrefUrl || url, url, undefined, !hasResource));
-            container.createTextChild(")");
-            return container;
-        }
-
-        if (value) {
-            var formatter = new WebInspector.StringFormatter();
-            formatter.addProcessor(urlRegex(value), linkifyURL.bind(this));
-            if (WebInspector.CSSMetadata.isBezierAwareProperty(this.name) && this.parsedOk)
-                formatter.addProcessor(WebInspector.StylesSidebarPane._bezierRegex, this._processBezier.bind(this, nameElement, valueElement));
-            if (WebInspector.CSSMetadata.isColorAwareProperty(this.name) && this.parsedOk)
-                formatter.addProcessor(WebInspector.StylesSidebarPane._colorRegex, this._processColor.bind(this, nameElement, valueElement));
-
-            valueElement.appendChild(formatter.formatText(value));
+        var propertyRenderer = new WebInspector.StylesSidebarPropertyRenderer(this._styleRule.rule(), this.node(), this.name, this.value);
+        if (this.parsedOk) {
+            propertyRenderer.setColorHandler(this._processColor.bind(this));
+            propertyRenderer.setBezierHandler(this._processBezier.bind(this));
         }
 
         this.listItemElement.removeChildren();
-        nameElement.normalize();
-        valueElement.normalize();
-
+        this.nameElement = propertyRenderer.renderName();
+        this.nameElement.title = this.property.propertyText;
+        this.valueElement = propertyRenderer.renderValue();
         if (!this.treeOutline)
             return;
 
         this.listItemElement.createChild("span", "styles-clipboard-only").createTextChild(this.disabled ? "  /* " : "  ");
-        this.listItemElement.appendChild(nameElement);
+        this.listItemElement.appendChild(this.nameElement);
         this.listItemElement.createTextChild(": ");
         this.listItemElement.appendChild(this._expandElement);
-        this.listItemElement.appendChild(valueElement);
+        this.listItemElement.appendChild(this.valueElement);
         this.listItemElement.createTextChild(";");
         if (this.disabled)
             this.listItemElement.createChild("span", "styles-clipboard-only").createTextChild(" */");
@@ -2524,38 +2456,74 @@ WebInspector.StylePropertyTreeElementBase.prototype = {
         this._updateFilter();
     },
 
+    /**
+     * @return {boolean}
+     */
     _updateFilter: function()
     {
-        var regEx = this.parentPane().filterRegex();
-        this.listItemElement.classList.toggle("filter-match", !!regEx && (regEx.test(this.property.name) || regEx.test(this.property.value)));
+        var regex = this.parentPane().filterRegex();
+        var matches = !!regex && (regex.test(this.property.name) || regex.test(this.property.value));
+        this.listItemElement.classList.toggle("filter-match", matches);
+
+        this.onpopulate();
+        var hasMatchingChildren = false;
+        for (var i = 0; i < this.childCount(); ++i)
+            hasMatchingChildren |= this.childAt(i)._updateFilter();
+
+        if (!regex) {
+            if (this._expandedDueToFilter)
+                this.collapse();
+            this._expandedDueToFilter = false;
+        } else if (hasMatchingChildren && !this.expanded) {
+            this.expand();
+            this._expandedDueToFilter = true;
+        } else if (!hasMatchingChildren && this.expanded && this._expandedDueToFilter) {
+            this.collapse();
+            this._expandedDueToFilter = false;
+        }
+        return matches;
     },
 
     /**
-     * @param {!Element} nameElement
-     * @param {!Element} valueElement
      * @param {string} text
      * @return {!Node}
      */
-    _processColor: function(nameElement, valueElement, text)
+    _processColor: function(text)
     {
-        var spectrum = this.editablePane() && this.editablePane()._spectrum;
-        var stylesPopoverHelper = this.editablePane() && this.editablePane()._stylesPopoverHelper;
-        var iconHelper = new WebInspector.ColorSwatchIcon(this, stylesPopoverHelper, spectrum, nameElement, valueElement, text);
-        return iconHelper.icon();
+        // We can be called with valid non-color values of |text| (like 'none' from border style)
+        var color = WebInspector.Color.parse(text);
+        if (!color)
+            return createTextNode(text);
+
+        if (!this._styleRule.editable()) {
+            var swatch = WebInspector.ColorSwatch.create();
+            swatch.setColorText(text);
+            return swatch;
+        }
+
+        var stylesPopoverHelper = this.parentPane()._stylesPopoverHelper;
+        return new WebInspector.ColowSwatchPopoverIcon(this, stylesPopoverHelper, text).element();
     },
 
-   /**
-    * @param {!Element} nameElement
-    * @param {!Element} valueElement
-    * @param {string} text
-    * @return {!Node}
-    */
-    _processBezier: function(nameElement, valueElement, text)
+    /**
+     * @return {string}
+     */
+    renderedPropertyText: function()
     {
-        var bezierEditor = this.editablePane() && this.editablePane()._bezierEditor;
-        var stylesPopoverHelper = this.editablePane() && this.editablePane()._stylesPopoverHelper;
-        var iconHelper = new WebInspector.BezierIcon(this, stylesPopoverHelper, bezierEditor, nameElement, valueElement, text);
-        return iconHelper.icon();
+        return this.nameElement.textContent + ": " + this.valueElement.textContent;
+    },
+
+    /**
+     * @param {string} text
+     * @return {!Node}
+     */
+    _processBezier: function(text)
+    {
+        var geometry = WebInspector.Geometry.CubicBezier.parse(text);
+        if (!geometry || !this._styleRule.editable())
+            return createTextNode(text);
+        var stylesPopoverHelper = this.parentPane()._stylesPopoverHelper;
+        return new WebInspector.BezierPopoverIcon(this, stylesPopoverHelper, text).element();
     },
 
     _updateState: function()
@@ -2621,15 +2589,6 @@ WebInspector.StylePropertyTreeElement.prototype = {
     node: function()
     {
         return this._parentPane.node();
-    },
-
-    /**
-     * @override
-     * @return {?WebInspector.StylesSidebarPane}
-     */
-    editablePane: function()
-    {
-        return this._parentPane;
     },
 
     /**
@@ -2941,7 +2900,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
 
         this._originalPropertyText = this.property.propertyText;
 
-        this._parentPane._isEditingStyle = true;
+        this._parentPane.setEditingStyle(true);
         if (selectElement.parentElement)
             selectElement.parentElement.scrollIntoViewIfNeeded(false);
 
@@ -3083,7 +3042,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
         if (editedElement.parentElement)
             editedElement.parentElement.classList.remove("child-editing");
 
-        delete this._parentPane._isEditingStyle;
+        this._parentPane.setEditingStyle(false);
     },
 
     /**
@@ -3515,6 +3474,114 @@ WebInspector.StylesSidebarPane.CSSPropertyPrompt.prototype = {
     },
 
     __proto__: WebInspector.TextPrompt.prototype
+}
+
+/**
+ * @constructor
+ * @param {?WebInspector.CSSRule} rule
+ * @param {?WebInspector.DOMNode} node
+ * @param {string} name
+ * @param {string} value
+ */
+WebInspector.StylesSidebarPropertyRenderer = function(rule, node, name, value)
+{
+    this._rule = rule;
+    this._node = node;
+    this._propertyName = name;
+    this._propertyValue = value;
+}
+
+WebInspector.StylesSidebarPropertyRenderer._colorRegex = /((?:rgb|hsl)a?\([^)]+\)|#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|\b\w+\b(?!-))/g;
+WebInspector.StylesSidebarPropertyRenderer._bezierRegex = /((cubic-bezier\([^)]+\))|\b(linear|ease-in-out|ease-in|ease-out|ease)\b)/g;
+
+/**
+ * @param {string} value
+ * @return {!RegExp}
+ */
+WebInspector.StylesSidebarPropertyRenderer._urlRegex = function(value)
+{
+    // Heuristically choose between single-quoted, double-quoted or plain URL regex.
+    if (/url\(\s*'.*\s*'\s*\)/.test(value))
+        return /url\(\s*('.+')\s*\)/g;
+    if (/url\(\s*".*\s*"\s*\)/.test(value))
+        return /url\(\s*(".+")\s*\)/g;
+    return /url\(\s*([^)]+)\s*\)/g;
+}
+
+WebInspector.StylesSidebarPropertyRenderer.prototype = {
+    /**
+     * @param {function(string):!Node} handler
+     */
+    setColorHandler: function(handler)
+    {
+        this._colorHandler = handler;
+    },
+
+    /**
+     * @param {function(string):!Node} handler
+     */
+    setBezierHandler: function(handler)
+    {
+        this._bezierHandler = handler;
+    },
+
+    /**
+     * @return {!Element}
+     */
+    renderName: function()
+    {
+        var nameElement = createElement("span");
+        nameElement.className = "webkit-css-property";
+        nameElement.textContent = this._propertyName;
+        nameElement.normalize();
+        return nameElement;
+    },
+
+    /**
+     * @return {!Element}
+     */
+    renderValue: function()
+    {
+        var valueElement = createElement("span");
+        valueElement.className = "value";
+
+        if (!this._propertyValue)
+            return valueElement;
+
+        var formatter = new WebInspector.StringFormatter();
+        formatter.addProcessor(WebInspector.StylesSidebarPropertyRenderer._urlRegex(this._propertyValue), this._processURL.bind(this));
+        if (this._bezierHandler && WebInspector.CSSMetadata.isBezierAwareProperty(this._propertyName))
+            formatter.addProcessor(WebInspector.StylesSidebarPropertyRenderer._bezierRegex, this._bezierHandler);
+        if (this._colorHandler && WebInspector.CSSMetadata.isColorAwareProperty(this._propertyName))
+            formatter.addProcessor(WebInspector.StylesSidebarPropertyRenderer._colorRegex, this._colorHandler);
+
+        valueElement.appendChild(formatter.formatText(this._propertyValue));
+        valueElement.normalize();
+        return valueElement;
+    },
+
+    /**
+     * @param {string} url
+     * @return {!Node}
+     */
+    _processURL: function(url)
+    {
+        var hrefUrl = url;
+        var match = hrefUrl.match(/['"]?([^'"]+)/);
+        if (match)
+            hrefUrl = match[1];
+        var container = createDocumentFragment();
+        container.createTextChild("url(");
+        if (this._rule && this._rule.resourceURL())
+            hrefUrl = WebInspector.ParsedURL.completeURL(this._rule.resourceURL(), hrefUrl);
+        else if (this._node)
+            hrefUrl = this._node.resolveURL(hrefUrl);
+        var hasResource = hrefUrl && !!WebInspector.resourceForURL(hrefUrl);
+        // FIXME: WebInspector.linkifyURLAsNode() should really use baseURI.
+        container.appendChild(WebInspector.linkifyURLAsNode(hrefUrl || url, url, undefined, !hasResource));
+        container.createTextChild(")");
+        return container;
+    }
 }
 
 /**

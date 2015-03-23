@@ -64,7 +64,7 @@ WebInspector.ElementsPanel = function()
     this.sidebarPanes = {};
     this.sidebarPanes.platformFonts = new WebInspector.PlatformFontsSidebarPane();
     this.sidebarPanes.computedStyle = new WebInspector.ComputedStyleSidebarPane();
-    this.sidebarPanes.styles = new WebInspector.StylesSidebarPane(this.sidebarPanes.computedStyle);
+    this.sidebarPanes.styles = new WebInspector.StylesSidebarPane(this.sidebarPanes.computedStyle, this._showStylesSidebar.bind(this));
     this.sidebarPanes.styles.addEventListener(WebInspector.StylesSidebarPane.Events.SelectorEditingStarted, this._onEditingSelectorStarted.bind(this));
     this.sidebarPanes.styles.addEventListener(WebInspector.StylesSidebarPane.Events.SelectorEditingEnded, this._onEditingSelectorEnded.bind(this));
 
@@ -120,6 +120,8 @@ WebInspector.ElementsPanel.prototype = {
      */
     targetAdded: function(target)
     {
+        if (!target.isPage())
+            return;
         var treeOutline = new WebInspector.ElementsTreeOutline(target, true, true);
         treeOutline.setWordWrap(WebInspector.settings.domWordWrap.get());
         treeOutline.wireToDOMModel();
@@ -140,6 +142,8 @@ WebInspector.ElementsPanel.prototype = {
      */
     targetRemoved: function(target)
     {
+        if (!target.isPage())
+            return;
         var treeOutline = this._targetToTreeOutline.remove(target);
         treeOutline.unwireFromDOMModel();
         this._treeOutlines.remove(treeOutline);
@@ -281,7 +285,10 @@ WebInspector.ElementsPanel.prototype = {
             this._lastValidSelectedNode = selectedNode;
         }
         WebInspector.notifications.dispatchEventToListeners(WebInspector.NotificationService.Events.SelectedNodeChanged);
+        this._selectedNodeChangedForTest();
     },
+
+    _selectedNodeChangedForTest: function() { },
 
     _updateSidebars: function()
     {
@@ -828,6 +835,11 @@ WebInspector.ElementsPanel.prototype = {
             this._treeOutlines[i].update();
     },
 
+    _showStylesSidebar: function()
+    {
+        this.sidebarPaneView.selectTab(this.sidebarPanes.styles.title());
+    },
+
     /**
      * @param {boolean} vertically
      */
@@ -1026,7 +1038,7 @@ WebInspector.ElementsPanel.DOMNodeRevealer.prototype = {
             } else if (node instanceof WebInspector.DeferredDOMNode) {
                 (/** @type {!WebInspector.DeferredDOMNode} */ (node)).resolve(onNodeResolved);
             } else if (node instanceof WebInspector.RemoteObject) {
-                (/** @type {!WebInspector.RemoteObject} */ (node)).pushNodeToFrontend(onNodeResolved);
+                (/** @type {!WebInspector.RemoteObject} */ (node)).target().domModel.pushObjectAsNodeToFrontend(node, onNodeResolved);
             } else {
                 reject(new Error("Can't reveal a non-node."));
                 panel._pendingNodeReveal = false;

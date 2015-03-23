@@ -141,6 +141,10 @@ WebInspector.ProfileDataGridNode.prototype = {
             "total-percent": formatPercent(this.totalPercent),
             "total": formatMilliseconds(this.totalTime),
         };
+        if (this.profileNode === this.tree.profileView.profile.idleNode) {
+            this.data['self-percent'] = undefined;
+            this.data['total-percent'] = undefined
+        }
     },
 
     select: function(supressSelectedEvent)
@@ -376,7 +380,8 @@ WebInspector.ProfileDataGridTree = function(profileView, rootProfileNode)
 
     this.profileView = profileView;
 
-    this.totalTime = rootProfileNode.totalTime;
+    var idleNode = profileView.profile.idleNode;
+    this.totalTime = rootProfileNode.totalTime - (idleNode ? idleNode.totalTime : 0);
     this.lastComparator = null;
 
     this.childrenByCallUID = {};

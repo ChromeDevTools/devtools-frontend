@@ -34,10 +34,13 @@ WebInspector.AnimationsSidebarPane.prototype = {
     {
         if (this._target === target)
             return;
-        if (this._target)
+        if (this._target) {
             this._target.animationModel.removeEventListener(WebInspector.AnimationModel.Events.AnimationPlayerCreated, this._animationPlayerCreated, this);
+            this._target.animationModel.removeEventListener(WebInspector.AnimationModel.Events.AnimationPlayerCanceled, this._animationPlayerCanceled, this);
+        }
         this._target = target;
         this._target.animationModel.addEventListener(WebInspector.AnimationModel.Events.AnimationPlayerCreated, this._animationPlayerCreated, this);
+        this._target.animationModel.addEventListener(WebInspector.AnimationModel.Events.AnimationPlayerCanceled, this._animationPlayerCanceled, this);
     },
 
     /**
@@ -46,6 +49,11 @@ WebInspector.AnimationsSidebarPane.prototype = {
     _animationPlayerCreated: function(event)
     {
         this._timeline.addAnimation(/** @type {!WebInspector.AnimationModel.AnimationPlayer} */ (event.data.player), event.data.resetTimeline);
+    },
+
+    _animationPlayerCanceled: function(event)
+    {
+        this._timeline.cancelAnimation(/** @type {string} */ (event.data.playerId));
     },
 
     /**

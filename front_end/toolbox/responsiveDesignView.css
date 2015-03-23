@@ -298,7 +298,7 @@
     top: 3px;
 }
 
-.responsive-design-icon:disabled {
+div.responsive-design-icon:disabled {
     opacity: 1 !important;
 }
 

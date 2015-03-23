@@ -171,8 +171,7 @@ WebInspector.TracingModel.prototype = {
     tracingComplete: function()
     {
         this._processMetadataEvents();
-        for (var process in this._processById)
-            this._processById[process]._tracingComplete(this._maximumRecordTime);
+        this._processPendingAsyncEvents();
         this._backingStorage.finishWriting();
     },
 
@@ -188,6 +187,12 @@ WebInspector.TracingModel.prototype = {
         this._devtoolsWorkerMetadataEvents = [];
         this._backingStorage.reset();
         this._appendDelimiter = false;
+        /** @type {!Array<!WebInspector.TracingModel.Event>} */
+        this._asyncEvents = [];
+        /** @type {!Map<string, !WebInspector.TracingModel.AsyncEvent>} */
+        this._openAsyncEvents = new Map();
+        /** @type {!Map<string, !Array<!WebInspector.TracingModel.AsyncEvent>>} */
+        this._openNestableAsyncEvents = new Map();
     },
 
     /**
@@ -225,6 +230,11 @@ WebInspector.TracingModel.prototype = {
             var event = process._addEvent(payload);
             if (!event)
                 return;
+            // Build async event when we've got events from all threads & processes, so we can sort them and process in the
+            // chronological order. However, also add individual async events to the thread flow (above), so we can easily
+            // display them on the same chart as other events, should we choose so.
+            if (WebInspector.TracingModel.isAsyncPhase(payload.ph))
+                this._asyncEvents.push(event);
             event._setBackingStorage(backingStorage);
             if (event.name === WebInspector.TracingModel.DevToolsMetadataEvent.TracingStartedInPage &&
                 event.category === WebInspector.TracingModel.DevToolsMetadataEventCategory) {
@@ -282,7 +292,7 @@ WebInspector.TracingModel.prototype = {
 
         var idList = Object.keys(mismatchingIds);
         if (idList.length)
-            WebInspector.console.error("Timeline recording was started in more than one page simulaniously. Session id mismatch: " + this._sessionId + " and " + idList + ".");
+            WebInspector.console.error("Timeline recording was started in more than one page simultaneously. Session id mismatch: " + this._sessionId + " and " + idList + ".");
     },
 
     /**
@@ -316,6 +326,114 @@ WebInspector.TracingModel.prototype = {
     processByName: function(name)
     {
         return this._processByName.get(name);
+    },
+
+    _processPendingAsyncEvents: function()
+    {
+        this._asyncEvents.sort(WebInspector.TracingModel.Event.compareStartTime);
+        for (var i = 0; i < this._asyncEvents.length; ++i) {
+            var event = this._asyncEvents[i];
+            if (WebInspector.TracingModel.isNestableAsyncPhase(event.phase))
+                this._addNestableAsyncEvent(event);
+            else
+                this._addAsyncEvent(event);
+        }
+        this._asyncEvents = [];
+        this._closeOpenAsyncEvents();
+    },
+
+    _closeOpenAsyncEvents: function()
+    {
+        for (var event of this._openAsyncEvents.values()) {
+            event.setEndTime(this._maximumRecordTime);
+            // FIXME: remove this once we figure a better way to convert async console
+            // events to sync [waterfall] timeline records.
+            event.steps[0].setEndTime(this._maximumRecordTime);
+        }
+        this._openAsyncEvents.clear();
+
+        for (var eventStack of this._openNestableAsyncEvents.values()) {
+            while (eventStack.length)
+                eventStack.pop().setEndTime(this._maximumRecordTime);
+        }
+        this._openNestableAsyncEvents.clear();
+    },
+
+    /**
+     * @param {!WebInspector.TracingModel.Event} event
+     */
+    _addNestableAsyncEvent: function(event)
+    {
+        var phase = WebInspector.TracingModel.Phase;
+        var key = event.category + "." + event.id;
+        var openEventsStack = this._openNestableAsyncEvents.get(key);
+
+        switch (event.phase) {
+        case phase.NestableAsyncBegin:
+            if (!openEventsStack) {
+                openEventsStack = [];
+                this._openNestableAsyncEvents.set(key, openEventsStack);
+            }
+            var asyncEvent = new WebInspector.TracingModel.AsyncEvent(event);
+            openEventsStack.push(asyncEvent);
+            event.thread._addAsyncEvent(asyncEvent);
+            break;
+
+        case phase.NestableAsyncInstant:
+            if (openEventsStack && openEventsStack.length)
+                openEventsStack.peekLast()._addStep(event);
+            break;
+
+        case phase.NestableAsyncEnd:
+            if (!openEventsStack || !openEventsStack.length)
+                break;
+            var top = openEventsStack.pop();
+            if (top.name !== event.name) {
+                console.error("Begin/end event mismatch for nestable async event, " + top.name + " vs. " + event.name);
+                break;
+            }
+            top._addStep(event);
+        }
+    },
+
+    /**
+     * @param {!WebInspector.TracingModel.Event} event
+     */
+    _addAsyncEvent: function(event)
+    {
+        var phase = WebInspector.TracingModel.Phase;
+        var key = event.category + "." + event.name + "." + event.id;
+        var asyncEvent = this._openAsyncEvents.get(key);
+
+        if (event.phase === phase.AsyncBegin) {
+            if (asyncEvent) {
+                console.error("Event " + event.name + " has already been started");
+                return;
+            }
+            asyncEvent = new WebInspector.TracingModel.AsyncEvent(event);
+            this._openAsyncEvents.set(key, asyncEvent);
+            event.thread._addAsyncEvent(asyncEvent);
+            return;
+        }
+        if (!asyncEvent) {
+            // Quietly ignore stray async events, we're probably too late for the start.
+            return;
+        }
+        if (event.phase === phase.AsyncEnd) {
+            asyncEvent._addStep(event);
+            this._openAsyncEvents.delete(key);
+            return;
+        }
+        if (event.phase === phase.AsyncStepInto || event.phase === phase.AsyncStepPast) {
+            var lastStep = asyncEvent.steps.peekLast();
+            if (lastStep.phase !== phase.AsyncBegin && lastStep.phase !== event.phase) {
+                console.assert(false, "Async event step phase mismatch: " + lastStep.phase + " at " + lastStep.startTime + " vs. " + event.phase + " at " + event.startTime);
+                return;
+            }
+            asyncEvent._addStep(event);
+            return;
+        }
+        console.assert(false, "Invalid async event phase");
     },
 }
 
@@ -556,6 +674,35 @@ WebInspector.TracingModel.ObjectSnapshot.prototype = {
     __proto__: WebInspector.TracingModel.Event.prototype
 }
 
+/**
+ * @constructor
+ * @param {!WebInspector.TracingModel.Event} startEvent
+ * @extends {WebInspector.TracingModel.Event}
+ */
+WebInspector.TracingModel.AsyncEvent = function(startEvent)
+{
+    WebInspector.TracingModel.Event.call(this, startEvent.category, startEvent.name, startEvent.phase, startEvent.startTime, startEvent.thread)
+    this.addArgs(startEvent.args);
+    this.steps = [startEvent];
+}
+
+WebInspector.TracingModel.AsyncEvent.prototype = {
+    /**
+     * @param {!WebInspector.TracingModel.Event} event
+     */
+    _addStep: function(event)
+    {
+        this.steps.push(event)
+        if (event.phase === WebInspector.TracingModel.Phase.AsyncEnd || event.phase === WebInspector.TracingModel.Phase.NestableAsyncEnd) {
+            this.setEndTime(event.startTime);
+            // FIXME: ideally, we shouldn't do this, but this makes the logic of converting
+            // async console events to sync ones much simpler.
+            this.steps[0].setEndTime(event.startTime);
+        }
+    },
+
+    __proto__: WebInspector.TracingModel.Event.prototype
+}
 
 /**
  * @constructor
@@ -621,12 +768,6 @@ WebInspector.TracingModel.Process = function(id)
     this._threads = {};
     this._threadByName = new Map();
     this._objects = {};
-    /** @type {!Array.<!WebInspector.TracingModel.Event>} */
-    this._asyncEvents = [];
-    /** @type {!Object.<string, ?Array.<!WebInspector.TracingModel.Event>>} */
-    this._openAsyncEvents = {};
-    /** @type {!Object.<string, !Array.<!WebInspector.TracingModel.Event>>} */
-    this._openNestableAsyncEvents = {};
 }
 
 WebInspector.TracingModel.Process.prototype = {
@@ -658,7 +799,7 @@ WebInspector.TracingModel.Process.prototype = {
      */
     threadByName: function(name)
     {
-        return this._threadByName.get(name);
+        return this._threadByName.get(name) || null;
     },
 
     /**
@@ -681,118 +822,9 @@ WebInspector.TracingModel.Process.prototype = {
         var event = this.threadById(payload.tid)._addEvent(payload);
         if (!event)
             return null;
-        // Build async event when we've got events from all threads, so we can sort them and process in the chronological order.
-        // However, also add individual async events to the thread flow (above), so we can easily display them on the same chart as
-        // other events, should we choose so.
-        if (WebInspector.TracingModel.isAsyncPhase(payload.ph))
-            this._asyncEvents.push(event);
         if (payload.ph === phase.SnapshotObject)
             this.objectsByName(event.name).push(event);
         return event;
-    },
-
-    /**
-     * @param {number} lastEventTimeMs
-     */
-    _tracingComplete: function(lastEventTimeMs)
-    {
-        this._asyncEvents.sort(WebInspector.TracingModel.Event.compareStartTime);
-        for (var i = 0; i < this._asyncEvents.length; ++i) {
-            var event = this._asyncEvents[i];
-            if (WebInspector.TracingModel.isNestableAsyncPhase(event.phase))
-                this._addNestableAsyncEvent(event);
-            else
-                this._addAsyncEvent(event);
-        }
-
-        for (var key in this._openAsyncEvents) {
-            var steps = this._openAsyncEvents[key];
-            if (!steps)
-                continue;
-            var startEvent = steps[0];
-            var syntheticEndEvent = new WebInspector.TracingModel.Event(startEvent.category, startEvent.name, WebInspector.TracingModel.Phase.AsyncEnd, lastEventTimeMs, startEvent.thread);
-            steps.push(syntheticEndEvent);
-            startEvent.setEndTime(lastEventTimeMs);
-        }
-        for (var key in this._openNestableAsyncEvents) {
-            var openEvents = this._openNestableAsyncEvents[key];
-            while (openEvents.length)
-                openEvents.pop().setEndTime(lastEventTimeMs);
-        }
-        this._asyncEvents = [];
-        this._openAsyncEvents = {};
-        this._openNestableAsyncEvents = {};
-    },
-
-    /**
-     * @param {!WebInspector.TracingModel.Event} event
-     */
-    _addNestableAsyncEvent: function(event)
-    {
-        var phase = WebInspector.TracingModel.Phase;
-        var key = event.category + "." + event.id;
-        var openEventsStack = this._openNestableAsyncEvents[key];
-
-        switch (event.phase) {
-        case phase.NestableAsyncBegin:
-            if (!openEventsStack) {
-                openEventsStack = [];
-                this._openNestableAsyncEvents[key] = openEventsStack;
-            }
-            openEventsStack.push(event);
-            // fall-through intended
-        case phase.NestableAsyncInstant:
-            event.thread._addAsyncEventSteps([event]);
-            break;
-        case phase.NestableAsyncEnd:
-            if (!openEventsStack)
-                break;
-            var top = openEventsStack.pop();
-            if (top.name !== event.name) {
-                console.error("Begin/end event mismatch for nestable async event, " + top.name + " vs. " + event.name);
-                break;
-            }
-            top.setEndTime(event.startTime);
-        }
-    },
-
-    /**
-     * @param {!WebInspector.TracingModel.Event} event
-     */
-    _addAsyncEvent: function(event)
-    {
-        var phase = WebInspector.TracingModel.Phase;
-        var key = event.category + "." + event.name + "." + event.id;
-        var steps = this._openAsyncEvents[key];
-
-        if (event.phase === phase.AsyncBegin) {
-            if (steps) {
-                console.error("Event " + event.name + " has already been started");
-                return;
-            }
-            steps = [event];
-            this._openAsyncEvents[key] = steps;
-            event.thread._addAsyncEventSteps(steps);
-            return;
-        }
-        if (!steps) {
-            console.error("Unexpected async event " + event.name + ", phase " + event.phase);
-            return;
-        }
-        if (event.phase === phase.AsyncEnd) {
-            steps.push(event);
-            steps[0].setEndTime(event.startTime);
-            delete this._openAsyncEvents[key];
-        } else if (event.phase === phase.AsyncStepInto || event.phase === phase.AsyncStepPast) {
-            var lastPhase = steps.peekLast().phase;
-            if (lastPhase !== phase.AsyncBegin && lastPhase !== event.phase) {
-                console.assert(false, "Async event step phase mismatch: " + lastPhase + " at " + steps.peekLast().startTime + " vs. " + event.phase + " at " + event.startTime);
-                return;
-            }
-            steps.push(event);
-        } else {
-            console.assert(false, "Invalid async event phase");
-        }
     },
 
     /**
@@ -889,11 +921,11 @@ WebInspector.TracingModel.Thread.prototype = {
     },
 
     /**
-     * @param {!Array.<!WebInspector.TracingModel.Event>} eventSteps
+     * @param {!WebInspector.TracingModel.AsyncEvent} asyncEvent
      */
-    _addAsyncEventSteps: function(eventSteps)
+    _addAsyncEvent: function(asyncEvent)
     {
-        this._asyncEvents.push(eventSteps);
+        this._asyncEvents.push(asyncEvent);
     },
 
     /**
@@ -931,7 +963,7 @@ WebInspector.TracingModel.Thread.prototype = {
     },
 
     /**
-     * @return {!Array.<!WebInspector.TracingModel.Event>}
+     * @return {!Array.<!WebInspector.TracingModel.AsyncEvent>}
      */
     asyncEvents: function()
     {

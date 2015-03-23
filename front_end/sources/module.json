@@ -37,6 +37,87 @@
         },
         {
             "type": "@WebInspector.ActionDelegate",
+            "actionId": "debugger.step-over",
+            "className": "WebInspector.SourcesPanel.StepOverActionDelegate",
+            "contextTypes": ["WebInspector.SourcesPanel"],
+            "bindings": [
+                {
+                    "platform": "windows,linux",
+                    "shortcut": "F10 Ctrl+'"
+                },
+                {
+                    "platform": "mac",
+                    "shortcut": "F10 Meta+'"
+                }
+            ]
+        },
+        {
+            "type": "@WebInspector.ActionDelegate",
+            "actionId": "debugger.step-into",
+            "className": "WebInspector.SourcesPanel.StepIntoActionDelegate",
+            "contextTypes": ["WebInspector.SourcesPanel"],
+            "bindings": [
+                {
+                    "platform": "windows,linux",
+                    "shortcut": "F11 Ctrl+;"
+                },
+                {
+                    "platform": "mac",
+                    "shortcut": "F11 Meta+;"
+                }
+            ]
+        },
+        {
+            "type": "@WebInspector.ActionDelegate",
+            "actionId": "debugger.step-into-async",
+            "experiment": "stepIntoAsync",
+            "className": "WebInspector.SourcesPanel.StepIntoAsyncActionDelegate",
+            "contextTypes": ["WebInspector.SourcesPanel"],
+            "bindings": [
+                {
+                    "platform": "windows,linux",
+                    "shortcut": "Alt+F11 Alt+Ctrl+;"
+                },
+                {
+                    "platform": "mac",
+                    "shortcut": "Alt+F11 Alt+Meta+;"
+                }
+            ]
+        },
+        {
+            "type": "@WebInspector.ActionDelegate",
+            "actionId": "debugger.step-out",
+            "className": "WebInspector.SourcesPanel.StepOutActionDelegate",
+            "contextTypes": ["WebInspector.SourcesPanel"],
+            "bindings": [
+                {
+                    "platform": "windows,linux",
+                    "shortcut": "Shift+F11 Shift+Ctrl+;"
+                },
+                {
+                    "platform": "mac",
+                    "shortcut": "Shift+F11 Shift+Meta+;"
+                }
+            ]
+        },
+        {
+            "type": "@WebInspector.ActionDelegate",
+            "actionId": "debugger.run-snippet",
+            "className": "WebInspector.SourcesPanel.RunSnippetActionDelegate",
+            "contextTypes": ["WebInspector.SourcesPanel"],
+            "bindings": [
+                {
+                    "platform": "windows,linux",
+                    "shortcut": "Ctrl+Enter"
+                },
+                {
+                    "platform": "mac",
+                    "shortcut": "Meta+Enter"
+                }
+            ]
+        },
+        {
+            "type": "@WebInspector.ActionDelegate",
             "actionId": "sources.search.toggle",
             "className": "WebInspector.AdvancedSearchView.ToggleDrawerViewActionDelegate",
             "bindings": [
@@ -122,12 +203,6 @@
         },
         {
             "type": "ui-setting",
-            "settingName": "javaScriptDisabled",
-            "settingType": "custom",
-            "className": "WebInspector.SourcesPanel.DisableJavaScriptSettingDelegate"
-        },
-        {
-            "type": "ui-setting",
             "section": "Sources",
             "title": "Search in content scripts",
             "settingName": "searchInContentScripts",
@@ -171,6 +246,13 @@
         {
             "type": "ui-setting",
             "section": "Sources",
+            "title": "Show scope values inline",
+            "settingName": "javaScriptValuesInSource",
+            "settingType": "checkbox"
+        },
+        {
+            "type": "ui-setting",
+            "section": "Sources",
             "title": "Enable CSS source maps",
             "settingName": "cssSourceMapsEnabled",
             "settingType": "checkbox"
@@ -185,6 +267,7 @@
     ],
     "dependencies": [
         "source_frame",
+        "snippets",
         "extensions"
     ],
     "scripts": [
@@ -192,18 +275,20 @@
         "UIList.js",
         "AddSourceMapURLDialog.js",
         "AsyncOperationsSidebarPane.js",
-        "BreakpointsSidebarPane.js",
         "CallStackSidebarPane.js",
         "SimpleHistoryManager.js",
         "EditingLocationHistoryManager.js",
+        "EventListenerBreakpointsSidebarPane.js",
         "FilePathScoreFunction.js",
         "FilteredItemSelectionDialog.js",
         "UISourceCodeFrame.js",
+        "JavaScriptBreakpointsSidebarPane.js",
         "JavaScriptSourceFrame.js",
         "CSSSourceFrame.js",
         "NavigatorView.js",
         "RevisionHistoryView.js",
         "ScopeChainSidebarPane.js",
+        "ServiceWorkersSidebarPane.js",
         "SourcesNavigator.js",
         "StyleSheetOutlineDialog.js",
         "TabbedEditorContainer.js",
@@ -218,6 +303,7 @@
         "SourcesSearchScope.js",
         "SourcesPanel.js",
         "WorkspaceMappingTip.js",
+        "XHRBreakpointsSidebarPane.js",
         "JavaScriptCompiler.js"
     ],
     "skip_compilation": [
@@ -228,6 +314,7 @@
         "uiList.css",
         "navigatorView.css",
         "revisionHistory.css",
+        "serviceWorkersSidebar.css",
         "sourcesPanel.css",
         "sourcesSearch.css",
         "sourcesView.css"

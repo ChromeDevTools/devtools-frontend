@@ -61,16 +61,18 @@
     position: relative;
     padding: 1px 22px 1px 0;
     margin-left: 24px;
-    min-height: 16px;
+    min-height: 18px;  /* Sync with ConsoleViewMessage.js */
     white-space: pre-wrap;
     -webkit-user-modify: read-write-plaintext-only;
+    display: flex;
+    align-items: center;
 }
 
 #console-prompt::before {
     background-position: -192px -96px;
 }
 
-.console-user-command-result.console-log-level::before {
+.console-log-level .console-user-command-result::before {
     background-position: -202px -96px;
 }
 
@@ -78,10 +80,15 @@
 .console-user-command {
     clear: right;
     position: relative;
-    border-bottom: 1px solid rgb(240, 240, 240);
     padding: 1px 22px 1px 0;
     margin-left: 24px;
-    min-height: 16px;
+    min-height: 18px;  /* Sync with ConsoleViewMessage.js */
+    flex: auto;
+    display: flex;
+    align-items: center;
+}
+
+.console-message > * {
     flex: auto;
 }
 
@@ -143,6 +150,7 @@
     color: white;
     margin-top: -1px;
     border-radius: 7px;
+    flex: none;
 }
 
 .console-message .bubble-repeat-count {
@@ -150,10 +158,10 @@
     margin-left: -18px;
 }
 
-.repeated-message.console-error-level::before,
-.repeated-message.console-warning-level:before,
-.repeated-message.console-debug-level:before,
-.repeated-message.console-info-level:before {
+.console-error-level .repeated-message::before,
+.console-warning-level .repeated-message::before,
+.console-debug-level .repeated-message::before,
+.console-info-level .repeated-message::before {
     visibility: hidden;
 }
 
@@ -162,11 +170,11 @@
     flex: 1;
 }
 
-.console-warning-level.repeated-message,
-.console-error-level.repeated-message,
-.console-log-level.repeated-message,
-.console-debug-level.repeated-message,
-.console-info-level.repeated-message {
+.console-warning-level .repeated-message,
+.console-error-level .repeated-message,
+.console-log-level .repeated-message,
+.console-debug-level .repeated-message,
+.console-info-level .repeated-message {
     display: flex;
 }
 
@@ -217,6 +225,19 @@
 
 .console-message-wrapper {
     display: flex;
+    border-bottom: 1px solid rgb(240, 240, 240);
+}
+
+.console-message-wrapper.console-error-level {
+    border-top: 1px solid rgb(255, 216, 216);
+    border-bottom: 1px solid rgb(255, 216, 216);
+    margin-top: -1px;
+}
+
+.console-message-wrapper.console-warning-level {
+    border-top: 1px solid hsl(50, 100%, 88%);
+    border-bottom: 1px solid hsl(50, 100%, 88%);
+    margin-top: -1px;
 }
 
 .console-message-wrapper .nesting-level-marker {
@@ -248,6 +269,18 @@
     box-sizing: border-box;
 }
 
+.console-error-level {
+    background-color: rgb(255, 239, 239);
+}
+
+.console-warning-level {
+    background-color: hsl(50, 100%, 95%);
+}
+
+.console-warning-level .console-message-text {
+    color: hsl(39, 100%, 18%);
+}
+
 .console-error-level .console-message-text,
 .console-error-level .section > .header .title {
     color: red !important;
@@ -257,10 +290,14 @@
     color: blue;
 }
 
-.console-error-level::before,
-.console-warning-level::before,
-.console-debug-level::before,
-.console-info-level::before {
+.console-message.console-warning-level {
+    background-color: rgb(255, 250, 224);
+}
+
+.console-error-level .console-message::before,
+.console-warning-level .console-message::before,
+.console-debug-level .console-message::before,
+.console-info-level .console-message::before {
     background-image: url(Images/statusbarButtonGlyphs.png);
     background-size: 320px 144px;
     width: 10px;
@@ -268,23 +305,23 @@
 }
 
 @media (-webkit-min-device-pixel-ratio: 1.5) {
-.console-error-level::before,
-.console-warning-level::before,
-.console-debug-level::before,
-.console-info-level::before {
+.console-error-level .console-message::before,
+.console-warning-level .console-message::before,
+.console-debug-level .console-message::before,
+.console-info-level .console-message::before {
     background-image: url(Images/statusbarButtonGlyphs_2x.png);
 }
 } /* media */
 
-.console-warning-level::before {
+.console-warning-level .console-message::before {
     background-position: -202px -107px;
 }
 
-.console-error-level::before {
+.console-error-level .console-message::before {
     background-position: -213px -96px;
 }
 
-.console-info-level::before {
+.console-info-level .console-message::before {
     background-position: -213px -107px;
 }
 
@@ -296,10 +333,6 @@
 
 .console-user-command::before {
     background-position: -192px -107px;
-}
-
-.console-user-command-result {
-    display: block;
 }
 
 #console-messages .link {
@@ -356,6 +389,10 @@
 
 .console-message-text {
     white-space: pre-wrap;
+}
+
+.console-message-formatted-table {
+    clear: both;
 }
 
 .console-message-url {

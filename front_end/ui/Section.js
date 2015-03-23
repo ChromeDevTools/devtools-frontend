@@ -130,7 +130,7 @@ WebInspector.Section.prototype = {
      */
     registerRequiredCSS: function(cssFile)
     {
-        this.element.appendChild(WebInspector.View.createStyleElement(cssFile));
+        this.element.insertBefore(WebInspector.View.createStyleElement(cssFile), this.headerElement);
     },
 
     /**

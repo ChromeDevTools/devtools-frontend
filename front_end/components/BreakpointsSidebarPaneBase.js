@@ -32,7 +32,7 @@
  * @constructor
  * @extends {WebInspector.SidebarPane}
  */
-WebInspector.NativeBreakpointsSidebarPane = function(title)
+WebInspector.BreakpointsSidebarPaneBase = function(title)
 {
     WebInspector.SidebarPane.call(this, title);
     this.registerRequiredCSS("components/breakpointsList.css");
@@ -47,7 +47,7 @@ WebInspector.NativeBreakpointsSidebarPane = function(title)
     this.bodyElement.appendChild(this.emptyElement);
 }
 
-WebInspector.NativeBreakpointsSidebarPane.prototype = {
+WebInspector.BreakpointsSidebarPaneBase.prototype = {
     /**
      * @param {!Element} element
      * @param {?Node=} beforeNode

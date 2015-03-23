@@ -1325,6 +1325,12 @@ WebInspector.DataGridNode.prototype = {
         if (alignment)
             cell.classList.add(alignment);
 
+        if (columnIdentifier === this.dataGrid.disclosureColumnIdentifier) {
+            cell.classList.add("disclosure");
+            if (this.leftPadding)
+                cell.style.setProperty("padding-left", this.leftPadding + "px");
+        }
+
         return cell;
     },
 
@@ -1343,12 +1349,6 @@ WebInspector.DataGridNode.prototype = {
             cell.textContent = data;
             if (this.dataGrid._columns[columnIdentifier].longText)
                 cell.title = data;
-        }
-
-        if (columnIdentifier === this.dataGrid.disclosureColumnIdentifier) {
-            cell.classList.add("disclosure");
-            if (this.leftPadding)
-                cell.style.setProperty("padding-left", this.leftPadding + "px");
         }
 
         return cell;

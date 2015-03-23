@@ -339,7 +339,7 @@ WebInspector.TimelineView.prototype = {
                 idle -= aggregatedStats[category];
             aggregatedStats["idle"] = idle;
 
-            var contentHelper = new WebInspector.TimelineDetailsContentHelper(null, null, true);
+            var contentHelper = new WebInspector.TimelineDetailsContentHelper(null, null, null, true);
             var pieChart = WebInspector.TimelineUIUtils.generatePieChart(aggregatedStats);
             var title = WebInspector.TimelineUIUtils.eventTitle(presentationRecord.record().traceEvent());
             contentHelper.appendTextRow(WebInspector.UIString("Type"), title);

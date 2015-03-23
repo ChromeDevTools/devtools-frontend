@@ -151,7 +151,7 @@ WebInspector.SortableDataGrid.prototype = {
         children.sort(this._sortingFunction);
         for (var i = 0; i < children.length; ++i)
             children[i].recalculateSiblings(i);
-        this.scheduleUpdate();
+        this.scheduleUpdateStructure();
     },
 
     __proto__: WebInspector.ViewportDataGrid.prototype

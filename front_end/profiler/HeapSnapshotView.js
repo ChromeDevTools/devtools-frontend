@@ -494,6 +494,8 @@ WebInspector.HeapSnapshotView.prototype = {
         function profileCallback(heapSnapshotProxy)
         {
             heapSnapshotProxy.getStatistics().then(this._gotStatistics.bind(this));
+            if (this._profile.profileType().id === WebInspector.TrackingHeapSnapshotProfileType.TypeId)
+                heapSnapshotProxy.getSamples().then(this._gotSamples.bind(this));
             var list = this._profiles();
             var profileIndex = list.indexOf(this._profile);
             this._baseSelect.setSelectedIndex(Math.max(0, profileIndex - 1));
@@ -515,6 +517,14 @@ WebInspector.HeapSnapshotView.prototype = {
         this._statisticsView.addRecord(statistics.native, WebInspector.UIString("Typed Arrays"), "#fc5");
         this._statisticsView.addRecord(statistics.system, WebInspector.UIString("System Objects"), "#98f");
         this._statisticsView.addRecord(statistics.total, WebInspector.UIString("Total"));
+    },
+
+    /**
+     * @param {?WebInspector.HeapSnapshotCommon.Samples} samples
+     */
+    _gotSamples: function(samples)
+    {
+        this._trackingOverviewGrid._setSamples(samples);
     },
 
     _onIdsRangeChanged: function(event)
@@ -1311,11 +1321,11 @@ WebInspector.TrackingHeapSnapshotProfileType.prototype = {
         this.setProfileBeingRecorded(new WebInspector.HeapProfileHeader(target, this, undefined, withAllocationStacks));
         this._lastSeenIndex = -1;
         this._profileSamples = {
-            'sizes': [],
-            'ids': [],
-            'timestamps': [],
-            'max': [],
-            'totalTime': 30000
+            "sizes": [],
+            "ids": [],
+            "timestamps": [],
+            "max": [],
+            "totalTime": 30000
         };
         this._profileBeingRecorded._profileSamples = this._profileSamples;
         this._recording = true;
@@ -1802,6 +1812,27 @@ WebInspector.HeapTrackingOverviewGrid.prototype = {
     {
         this._profileSamples = event.data;
         this._scheduleUpdate();
+    },
+
+     /**
+      * @param {?WebInspector.HeapSnapshotCommon.Samples} samples
+      */
+    _setSamples: function(samples)
+    {
+        if (!samples)
+            return;
+        var profileSamples = this._profileSamples;
+        console.assert(!profileSamples || profileSamples.ids.length === samples.lastAssignedIds.length);
+        var totalTime = profileSamples ? profileSamples.totalTime : samples.timestamps.peekLast();
+        var max = profileSamples ? profileSamples.max : samples.sizes;
+        this._profileSamples = {
+            "sizes": samples.sizes,
+            "ids": samples.lastAssignedIds,
+            "timestamps": samples.timestamps,
+            "max": max,
+            "totalTime": totalTime
+        };
+        this.update();
     },
 
      /**

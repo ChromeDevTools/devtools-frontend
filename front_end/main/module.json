@@ -192,14 +192,6 @@
         },
         {
             "type": "@WebInspector.StatusBarItem.Provider",
-            "className": "WebInspector.AdvancedApp.DeviceCounter",
-            "condition": "can_dock",
-            "experiment": "devicesPanel",
-            "order": 0,
-            "location": "toolbar-right"
-        },
-        {
-            "type": "@WebInspector.StatusBarItem.Provider",
             "className": "WebInspector.Main.WarningErrorCounter",
             "order": 1,
             "location": "toolbar-right"
@@ -220,6 +212,12 @@
             "type": "ui-setting",
             "title": "Disable cache (while DevTools is open)",
             "settingName": "cacheDisabled",
+            "settingType": "checkbox"
+        },
+        {
+            "type": "ui-setting",
+            "title": "Disable JavaScript",
+            "settingName": "javaScriptDisabled",
             "settingType": "checkbox"
         },
         {

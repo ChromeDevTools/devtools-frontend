@@ -114,6 +114,7 @@ WebInspector.CodeMirrorTextEditor = function(url, delegate)
         "Cmd-Left": "goLineStartSmart",
         "Cmd-Right": "goLineEnd",
         "Cmd-Backspace": "delLineLeft",
+        "Cmd-Delete": "delLineRight",
         "Alt-Backspace": "delGroupBefore",
         "Alt-Delete": "delGroupAfter",
         "Cmd-/": "toggleComment",

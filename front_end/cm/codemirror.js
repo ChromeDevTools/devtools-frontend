@@ -4856,6 +4856,12 @@
         return {from: Pos(range.from().line, 0), to: range.from()};
       });
     },
+    delLineRight: function(cm) {
+      deleteNearSelection(cm, function(range) {
+        var len = getLine(cm.doc, range.head.line).text.length;
+        return {from: range.from(), to: Pos(range.from().line, len)};
+      });
+    },
     delWrappedLineLeft: function(cm) {
       deleteNearSelection(cm, function(range) {
         var top = cm.charCoords(range.head, "div").top + 5;

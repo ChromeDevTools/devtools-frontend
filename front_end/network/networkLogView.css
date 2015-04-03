@@ -513,6 +513,7 @@
 .network-event-divider {
     position: absolute;
     width: 2px;
+    margin-left: -1px;
     top: 31px;
     bottom: 0;
     z-index: 300;
@@ -524,6 +525,10 @@
 
 .network-timeline-grid.small .network-event-divider {
     top: 23px;
+}
+
+.network-orange-divider {
+    background-color: rgba(255, 120, 0, 0.5);
 }
 
 .network-red-divider {

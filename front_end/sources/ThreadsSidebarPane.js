@@ -52,7 +52,8 @@ WebInspector.ThreadsSidebarPane.prototype = {
 
     _updateVisibility: function()
     {
-        this.setVisible(this._targetsToListItems.size > 1);
+        this._wasVisibleAtLeastOnce = this._wasVisibleAtLeastOnce || this._targetsToListItems.size > 1;
+        this.setVisible(this._wasVisibleAtLeastOnce);
     },
 
     /**

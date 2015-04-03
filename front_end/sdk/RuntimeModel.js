@@ -242,7 +242,7 @@ WebInspector.ExecutionContext.comparator = function(a, b)
     if (weightDiff)
         return -weightDiff;
 
-    var frameIdDiff = a.frameId.hashCode() - b.frameId.hashCode();
+    var frameIdDiff = String.hashCode(a.frameId) - String.hashCode(b.frameId);
     if (frameIdDiff)
         return frameIdDiff;
 

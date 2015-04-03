@@ -102,7 +102,6 @@ WebInspector.ProfileLauncherView.prototype = {
             this._innerContentElement.appendChild(decorationElement);
         this._isInstantProfile = profileType.isInstantProfile();
         this._isEnabled = profileType.isEnabled();
-        this._profileTypeId = profileType.id;
     },
 
     _controlButtonClicked: function()
@@ -155,7 +154,6 @@ WebInspector.ProfileLauncherView.prototype = {
         this._isInstantProfile = profileType.isInstantProfile();
         this._recordButtonEnabled = recordButtonEnabled;
         this._isEnabled = profileType.isEnabled();
-        this._profileTypeId = profileType.id;
         this._updateControls();
     },
 
@@ -242,7 +240,6 @@ WebInspector.MultiProfileLauncherView.prototype = {
         this.dispatchEventToListeners(WebInspector.MultiProfileLauncherView.EventTypes.ProfileTypeSelected, profileType);
         this._isInstantProfile = profileType.isInstantProfile();
         this._isEnabled = profileType.isEnabled();
-        this._profileTypeId = profileType.id;
         this._updateControls();
         WebInspector.settings.selectedProfileType.set(profileType.id);
     },

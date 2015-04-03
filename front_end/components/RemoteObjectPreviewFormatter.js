@@ -23,11 +23,25 @@ WebInspector.RemoteObjectPreviewFormatter.prototype = {
             parentElement.appendChild(this.renderPropertyPreview(preview.type, preview.subtype, description));
             return true;
         }
-        if (description && preview.subtype !== "array")
-            parentElement.createTextChildren(description, " ");
+        if (description && preview.subtype !== "array") {
+            var text = preview.subtype ? description : this._abbreviateFullQualifiedClassName(description);
+            parentElement.createTextChildren(text, " ");
+        }
         if (preview.entries)
             return this._appendEntriesPreview(parentElement, preview);
         return this._appendPropertiesPreview(parentElement, preview, object);
+    },
+
+    /**
+     * @param {string} description
+     * @return {string}
+     */
+    _abbreviateFullQualifiedClassName: function(description)
+    {
+        var abbreviatedDescription = description.split(".");
+        for (var i = 0; i < abbreviatedDescription.length - 1; ++i)
+            abbreviatedDescription[i] = abbreviatedDescription[i].trimMiddle(3);
+        return abbreviatedDescription.join(".");
     },
 
     /**
@@ -127,11 +141,6 @@ WebInspector.RemoteObjectPreviewFormatter.prototype = {
     _renderPropertyPreviewOrAccessor: function(propertyPath)
     {
         var property = propertyPath.peekLast();
-        if (property.type === "accessor") {
-            var valueElement = createElement("span");
-            valueElement.textContent = WebInspector.UIString("(...)");
-            return valueElement;
-        }
         return this.renderPropertyPreview(property.type, /** @type {string} */ (property.subtype), property.value);
     },
 
@@ -159,6 +168,11 @@ WebInspector.RemoteObjectPreviewFormatter.prototype = {
 
         if (type === "string") {
             span.createTextChildren("\"", description.replace(/\n/g, "\u21B5"), "\"");
+            return span;
+        }
+
+        if (type === "object" && !subtype) {
+            span.textContent = this._abbreviateFullQualifiedClassName(description);
             return span;
         }
 

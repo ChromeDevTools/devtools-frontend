@@ -5,12 +5,10 @@
 /**
  * @constructor
  * @extends {WebInspector.VBox}
- * @param {!WebInspector.StylesSidebarPane} stylesPane
  */
-WebInspector.AnimationTimeline = function(stylesPane)
+WebInspector.AnimationTimeline = function()
 {
     WebInspector.VBox.call(this, true);
-    this._stylesPane = stylesPane;
     this.registerRequiredCSS("elements/animationTimeline.css");
     this.element.classList.add("animations-timeline");
 
@@ -50,14 +48,14 @@ WebInspector.AnimationTimeline.prototype = {
             if (target)
                 target.animationAgent().setPlaybackRate(this._animationsPlaybackRate);
             this._playbackLabel.textContent = this._animationsPlaybackRate + "x";
-            WebInspector.userMetrics.AnimationsPlaybackRateChanged.record();
+            WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Actions.AnimationsPlaybackRateChanged);
             if (this._scrubberPlayer)
                 this._scrubberPlayer.playbackRate = this._animationsPlaybackRate;
         }
 
         var container = createElementWithClass("div", "animation-timeline-header");
         var controls = container.createChild("div", "animation-controls");
-        this._gridMarkers = container.createChild("div", "animation-timeline-markers");
+        container.createChild("div", "animation-timeline-markers");
 
         var replayButton = controls.createSVGChild("svg", "animation-control-replay");
         replayButton.setAttribute("height", 24);
@@ -205,7 +203,7 @@ WebInspector.AnimationTimeline.prototype = {
             this._nodesMap.set(animation.source().backendNodeId(), nodeUI);
         }
         var nodeRow = nodeUI.findRow(animation);
-        var uiAnimation = new WebInspector.AnimationUI(this._stylesPane, animation, this, nodeRow.element);
+        var uiAnimation = new WebInspector.AnimationUI(animation, this, nodeRow.element);
         animation.source().deferredNode().resolve(nodeResolved.bind(this));
         nodeRow.animations.push(uiAnimation);
         this._animationsMap.set(animation.id(), animation);
@@ -479,13 +477,11 @@ WebInspector.AnimationTimeline.NodeUI.prototype = {
 
 /**
  * @constructor
- * @param {!WebInspector.StylesSidebarPane} stylesPane
  * @param {!WebInspector.AnimationModel.AnimationPlayer} animation
  * @param {!WebInspector.AnimationTimeline} timeline
  * @param {!Element} parentElement
  */
-WebInspector.AnimationUI = function(stylesPane, animation, timeline, parentElement) {
-    this._stylesPane = stylesPane;
+WebInspector.AnimationUI = function(animation, timeline, parentElement) {
     this._animation = animation;
     this._timeline = timeline;
     this._parentElement = parentElement;
@@ -638,15 +634,15 @@ WebInspector.AnimationUI.prototype = {
     {
         var durationWithDelay = this._delay() + this._duration() * this._animation.source().iterations() + this._animation.source().endDelay();
         var svgWidth = Math.min(this._timeline.width(), durationWithDelay * this._timeline.pixelMsRatio());
-        var leftMargin = ((this._animation.startTime() - this._timeline.startTime()) * this._timeline.pixelMsRatio()).toFixed(2);
+        var leftMargin = ((this._animation.startTime() - this._timeline.startTime()) * this._timeline.pixelMsRatio());
 
         this._svg.classList.toggle("animation-ui-canceled", this._animation.playState() === "idle");
         this._svg.setAttribute("width", (svgWidth + 2 * WebInspector.AnimationUI.Options.AnimationMargin).toFixed(2));
-        this._svg.style.transform = "translateX(" + leftMargin  + "px)";
+        this._svg.style.transform = "translateX(" + leftMargin.toFixed(2)  + "px)";
         this._activeIntervalGroup.style.transform = "translateX(" + (this._delay() * this._timeline.pixelMsRatio()).toFixed(2) + "px)";
 
-        this._nameElement.style.transform = "translateX(" + (leftMargin + this._delay() * this._timeline.pixelMsRatio() + WebInspector.AnimationUI.Options.AnimationMargin) + "px)";
-        this._nameElement.style.width = this._duration() * this._timeline.pixelMsRatio() + "px";
+        this._nameElement.style.transform = "translateX(" + (leftMargin + this._delay() * this._timeline.pixelMsRatio() + WebInspector.AnimationUI.Options.AnimationMargin).toFixed(2) + "px)";
+        this._nameElement.style.width = (this._duration() * this._timeline.pixelMsRatio().toFixed(2)) + "px";
         this._drawDelayLine(this._svg);
 
         if (this._animation.type() === "CSSTransition") {
@@ -790,8 +786,7 @@ WebInspector.AnimationUI.prototype = {
             var duration = this._duration();
             this._setDelay(delay);
             this._setDuration(duration);
-            // FIXME: Transition timing updates currently not supported
-            if (this._animation.type() == "WebAnimation") {
+            if (this._animation.type() !== "CSSAnimation") {
                 var target = WebInspector.targetManager.mainTarget();
                 if (target)
                     target.animationAgent().setTiming(this._animation.id(), duration, delay);

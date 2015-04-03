@@ -141,22 +141,6 @@ Node.prototype.traverseNextTextNode = function(stayWithin)
 }
 
 /**
- * @param {number} offset
- * @return {!{container: !Node, offset: number}}
- */
-Node.prototype.rangeBoundaryForOffset = function(offset)
-{
-    var node = this.traverseNextTextNode(this);
-    while (node && offset > node.nodeValue.length) {
-        offset -= node.nodeValue.length;
-        node = node.traverseNextTextNode(this);
-    }
-    if (!node)
-        return { container: this, offset: 0 };
-    return { container: node, offset: offset };
-}
-
-/**
  * @param {number|undefined} x
  * @param {number|undefined} y
  * @param {!Element=} relativeTo
@@ -780,26 +764,57 @@ Node.prototype.isSelfOrDescendant = function(node)
  */
 Node.prototype.traverseNextNode = function(stayWithin)
 {
-    if (this.firstChild)
-        return this.firstChild;
-
     if (this.shadowRoot)
         return this.shadowRoot;
 
-    if (stayWithin && this === stayWithin)
+    var distributedNodes = this.getDistributedNodes ? this.getDistributedNodes() : [];
+
+    if (distributedNodes.length)
+        return distributedNodes[0];
+
+    if (this.firstChild)
+        return this.firstChild;
+
+    var node = this;
+    while (node) {
+        if (stayWithin && node === stayWithin)
+            return null;
+
+        var sibling = nextSibling(node);
+        if (sibling)
+            return sibling;
+
+        node = insertionPoint(node) || node.parentNodeOrShadowHost();
+    }
+
+    /**
+     * @param {!Node} node
+     * @return {?Node}
+     */
+    function nextSibling(node)
+    {
+        var parent = insertionPoint(node);
+        if (!parent)
+            return node.nextSibling;
+        var distributedNodes = parent.getDistributedNodes ? parent.getDistributedNodes() : [];
+
+        var position = Array.prototype.indexOf.call(distributedNodes, node);
+        if (position + 1 < distributedNodes.length)
+            return distributedNodes[position + 1];
         return null;
+    }
 
-    var node = this.nextSibling;
-    if (node)
-        return node;
+    /**
+     * @param {!Node} node
+     * @return {?Node}
+     */
+    function insertionPoint(node)
+    {
+        var insertionPoints =  node.getDestinationInsertionPoints  ? node.getDestinationInsertionPoints() : [];
+        return insertionPoints.length > 0 ? insertionPoints[insertionPoints.length - 1] : null;
+    }
 
-    node = this;
-    while (node && !node.nextSibling && (!stayWithin || !node.parentNodeOrShadowHost() || node.parentNodeOrShadowHost() !== stayWithin))
-        node = node.parentNodeOrShadowHost();
-    if (!node)
-        return null;
-
-    return node.nextSibling;
+    return null;
 }
 
 /**

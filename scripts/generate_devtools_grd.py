@@ -133,7 +133,7 @@ def main(argv):
 
     for dirname in parsed_args.image_dirs:
         for filename in os.listdir(dirname):
-            if not filename.endswith('.png') and not filename.endswith('.gif'):
+            if not filename.endswith('.png') and not filename.endswith('.gif') and not filename.endswith('.svg'):
                 continue
             shutil.copy(path.join(dirname, filename),
                         path.join(output_directory, 'Images'))

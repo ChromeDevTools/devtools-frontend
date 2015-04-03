@@ -250,11 +250,6 @@ DevToolsHost.isHostedMode = function() { }
 
 // FIXME: remove everything below.
 var FormatterWorker = {}
-var WebInspector = {}
-
-WebInspector.panels = {};
-
-WebInspector.reload = function() { }
 
 /** Extensions API */
 

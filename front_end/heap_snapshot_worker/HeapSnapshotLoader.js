@@ -164,7 +164,7 @@ WebInspector.HeapSnapshotLoader.prototype = {
             }
             case "parse-nodes": {
                 var hasMoreData = this._parseUintArray();
-                this._progress.updateProgress("Loading nodes\u2026 %d\%", this._arrayIndex, this._array.length);
+                this._progress.updateProgress("Loading nodes\u2026 %d%%", this._arrayIndex, this._array.length);
                 if (hasMoreData)
                     return;
                 this._snapshot.nodes = this._array;
@@ -190,7 +190,7 @@ WebInspector.HeapSnapshotLoader.prototype = {
             }
             case "parse-edges": {
                 var hasMoreData = this._parseUintArray();
-                this._progress.updateProgress("Loading edges\u2026 %d\%", this._arrayIndex, this._array.length);
+                this._progress.updateProgress("Loading edges\u2026 %d%%", this._arrayIndex, this._array.length);
                 if (hasMoreData)
                     return;
                 this._snapshot.edges = this._array;

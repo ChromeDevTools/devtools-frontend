@@ -807,19 +807,6 @@ WebInspector.highlightSearchResults = function(element, resultRanges, changes)
 
 /**
  * @param {!Element} element
- * @param {string} styleClass
- */
-WebInspector.removeSearchResultsHighlight = function(element, styleClass)
-{
-    var highlightBits = element.querySelectorAll("." + styleClass);
-    for (var i = 0; i < highlightBits.length; ++i) {
-        var span = highlightBits[i];
-        span.parentElement.replaceChild(createTextNode(span.textContent), span);
-    }
-}
-
-/**
- * @param {!Element} element
  * @param {string} className
  */
 WebInspector.runCSSAnimationOnce = function(element, className)

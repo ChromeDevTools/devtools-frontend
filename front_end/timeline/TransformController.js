@@ -21,7 +21,6 @@ WebInspector.TransformController = function(element, disableRotate)
     element.addEventListener("keydown", this._onKeyDown.bind(this), false);
     element.addEventListener("keyup", this._onKeyUp.bind(this), false);
     element.addEventListener("mousewheel", this._onMouseWheel.bind(this), false);
-    this._disableRotate = disableRotate;
     this._minScale = 0;
     this._maxScale = Infinity;
 

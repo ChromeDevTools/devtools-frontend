@@ -11,8 +11,6 @@ WebInspector.ServiceWorkerCacheModel = function(target)
 {
     WebInspector.SDKModel.call(this, WebInspector.ServiceWorkerCacheModel, target);
 
-    /** @type {!Map.<!WebInspector.ServiceWorkerCacheModel.CacheId, !WebInspector.ServiceWorkerCacheModel.Cache>} */
-    this._caches = new Map();
     /** @type {!Set.<string>} */
     this._cacheNames = new Set();
 

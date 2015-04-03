@@ -908,53 +908,14 @@ WebInspector.ConsoleView.prototype = {
         if (!result)
             return;
 
-        var target = result.target();
-        /**
-         * @param {string=} url
-         * @param {number=} lineNumber
-         * @param {number=} columnNumber
-         */
-        function addMessage(url, lineNumber, columnNumber)
-        {
-            var level = wasThrown ? WebInspector.ConsoleMessage.MessageLevel.Error : WebInspector.ConsoleMessage.MessageLevel.Log;
-            var message;
-            if (!wasThrown)
-                message = new WebInspector.ConsoleMessage(target, WebInspector.ConsoleMessage.MessageSource.JS, level, "", WebInspector.ConsoleMessage.MessageType.Result, url, lineNumber, columnNumber, undefined, [result]);
-            else
-                message = new WebInspector.ConsoleMessage(target, WebInspector.ConsoleMessage.MessageSource.JS, level, exceptionDetails.text, WebInspector.ConsoleMessage.MessageType.Result, exceptionDetails.url, exceptionDetails.line, exceptionDetails.column, undefined, [WebInspector.UIString("Uncaught"), result], exceptionDetails.stackTrace, undefined, undefined, undefined, exceptionDetails.scriptId);
-            message.setOriginatingMessage(originatingConsoleMessage);
-            target.consoleModel.addMessage(message);
-        }
-
-        if (result.type !== "function") {
-            addMessage();
-            return;
-        }
-
-        result.functionDetails(didGetDetails);
-
-        /**
-         * @param {?WebInspector.DebuggerModel.FunctionDetails} response
-         */
-        function didGetDetails(response)
-        {
-            if (!response || !response.location) {
-                addMessage();
-                return;
-            }
-            var url;
-            var lineNumber;
-            var columnNumber;
-            var script = target.debuggerModel.scriptForId(response.location.scriptId);
-            if (script && script.sourceURL) {
-                url = script.sourceURL;
-                // FIXME(WK62725): Debugger line/column are 0-based, while console ones are 1-based.
-                lineNumber = response.location.lineNumber + 1;
-                columnNumber = response.location.columnNumber + 1;
-            }
-            // FIXME: this should be using live location.
-            addMessage(url, lineNumber, columnNumber);
-        }
+        var level = wasThrown ? WebInspector.ConsoleMessage.MessageLevel.Error : WebInspector.ConsoleMessage.MessageLevel.Log;
+        var message;
+        if (!wasThrown)
+            message = new WebInspector.ConsoleMessage(result.target(), WebInspector.ConsoleMessage.MessageSource.JS, level, "", WebInspector.ConsoleMessage.MessageType.Result, undefined, undefined, undefined, undefined, [result]);
+        else
+            message = new WebInspector.ConsoleMessage(result.target(), WebInspector.ConsoleMessage.MessageSource.JS, level, exceptionDetails.text, WebInspector.ConsoleMessage.MessageType.Result, exceptionDetails.url, exceptionDetails.line, exceptionDetails.column, undefined, [WebInspector.UIString("Uncaught"), result], exceptionDetails.stackTrace, undefined, undefined, undefined, exceptionDetails.scriptId);
+        message.setOriginatingMessage(originatingConsoleMessage);
+        result.target().consoleModel.addMessage(message);
     },
 
     /**
@@ -963,7 +924,6 @@ WebInspector.ConsoleView.prototype = {
      */
     _appendCommand: function(text, useCommandLineAPI)
     {
-
         this._prompt.setText("");
         var currentExecutionContext = WebInspector.context.flavor(WebInspector.ExecutionContext);
         if (currentExecutionContext)
@@ -1285,7 +1245,10 @@ WebInspector.ConsoleCommand = function(message, linkifier, nestingLevel)
 WebInspector.ConsoleCommand.prototype = {
     clearHighlights: function()
     {
-        WebInspector.removeSearchResultsHighlight(this._formattedCommand, WebInspector.highlightedSearchResultClassName);
+        if (this._higlightNodeChanges) {
+            WebInspector.revertDomChanges(this._higlightNodeChanges);
+            this._higlightNodeChanges = null;
+        }
     },
 
     /**
@@ -1336,9 +1299,10 @@ WebInspector.ConsoleCommand.prototype = {
     highlightMatches: function(ranges)
     {
         var highlightNodes = [];
-        if (this._formattedCommand) {
-            highlightNodes = WebInspector.highlightRangesWithStyleClass(this._formattedCommand, ranges, WebInspector.highlightedSearchResultClassName);
-        }
+        this._higlightNodeChanges = [];
+        if (this._formattedCommand)
+            highlightNodes = WebInspector.highlightRangesWithStyleClass(this._formattedCommand, ranges, WebInspector.highlightedSearchResultClassName, this._higlightNodeChanges);
+
         return highlightNodes;
     },
 

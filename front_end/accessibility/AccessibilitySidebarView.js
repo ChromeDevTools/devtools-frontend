@@ -4,14 +4,14 @@
 
 /**
  * @constructor
- * @extends {WebInspector.ElementsSidebarPane}
+ * @extends {WebInspector.ThrottledElementsSidebarView}
  */
-WebInspector.AccessibilitySidebarPane = function()
+WebInspector.AccessibilitySidebarView = function()
 {
-    WebInspector.ElementsSidebarPane.call(this, WebInspector.UIString("Accessibility"));
+    WebInspector.ThrottledElementsSidebarView.call(this);
 }
 
-WebInspector.AccessibilitySidebarPane.prototype = {
+WebInspector.AccessibilitySidebarView.prototype = {
     /**
      * @override
      * @param {!WebInspector.Throttler.FinishCallback} finishCallback
@@ -19,16 +19,8 @@ WebInspector.AccessibilitySidebarPane.prototype = {
      */
     doUpdate: function(finishCallback)
     {
-        /**
-         * @param {?AccessibilityAgent.AXNode} accessibilityNode
-         * @this {WebInspector.AccessibilitySidebarPane}
-         */
-        function accessibilityNodeCallback(accessibilityNode)
-        {
-            this._setAXNode(accessibilityNode);
-            finishCallback();
-        }
-        this.node().target().accessibilityModel.getAXNode(this.node().id, accessibilityNodeCallback.bind(this));
+        if (this._axNodeSubPane)
+            this._axNodeSubPane.doUpdate(finishCallback);
     },
 
     /**
@@ -37,15 +29,72 @@ WebInspector.AccessibilitySidebarPane.prototype = {
     wasShown: function()
     {
         WebInspector.ElementsSidebarPane.prototype.wasShown.call(this);
-        if (this._treeOutline)
+        if (this._axNodeSubPane)
             return;
 
-        this._treeOutline = new TreeOutlineInShadow();
-        this._rootElement = new TreeElement("Accessibility Node", true);
-        this._rootElement.selectable = false;
-        this._treeOutline.appendChild(this._rootElement);
-        this.bodyElement.appendChild(this._treeOutline.element);
-        this._rootElement.expand();
+        this._axNodeSubPane = new WebInspector.AXNodeSubPane();
+        this._axNodeSubPane.show(this.element);
+        this._axNodeSubPane.expand();
+
+        var sidebarPaneStack = new WebInspector.SidebarPaneStack();
+        sidebarPaneStack.element.classList.add("flex-auto");
+        sidebarPaneStack.show(this.element);
+        sidebarPaneStack.addPane(this._axNodeSubPane);
+    },
+
+
+    __proto__: WebInspector.ThrottledElementsSidebarView.prototype
+};
+
+
+/**
+ * @constructor
+ * @extends {WebInspector.SidebarPane}
+ */
+WebInspector.AXNodeSubPane = function()
+{
+    WebInspector.SidebarPane.call(this, WebInspector.UIString("Accessibility Node"));
+
+    this.registerRequiredCSS("elements/accessibilityNode.css");
+
+    this._computedNameElement = this.bodyElement.createChild("div", "ax-computed-name");
+
+    this._infoElement = createElementWithClass("div", "info hidden");
+    this._infoElement.textContent = WebInspector.UIString("No Accessibility Node");
+    this.bodyElement.appendChild(this._infoElement);
+
+    this._treeOutline = new TreeOutlineInShadow('monospace');
+    this._treeOutline.registerRequiredCSS("elements/accessibilityNode.css");
+    this._treeOutline.registerRequiredCSS("components/objectValue.css");
+    this.bodyElement.appendChild(this._treeOutline.element);
+};
+
+
+WebInspector.AXNodeSubPane.prototype = {
+    /**
+     * @param {!WebInspector.Throttler.FinishCallback} callback
+     */
+    doUpdate: function(callback)
+    {
+        /**
+         * @param {?AccessibilityAgent.AXNode} accessibilityNode
+         * @this {WebInspector.AXNodeSubPane}
+         */
+        function accessibilityNodeCallback(accessibilityNode)
+        {
+            this._setAXNode(accessibilityNode);
+            callback();
+        }
+        var node = this.parentView().parentView().node();
+        WebInspector.AccessibilityModel.fromTarget(node.target()).getAXNode(node.id, accessibilityNodeCallback.bind(this));
+    },
+
+    /**
+     * @override
+     */
+    wasShown: function()
+    {
+        WebInspector.SidebarPane.prototype.wasShown.call(this);
 
         WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.AttrModified, this._onNodeChange, this);
         WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.AttrRemoved, this._onNodeChange, this);
@@ -73,22 +122,33 @@ WebInspector.AccessibilitySidebarPane.prototype = {
             return;
         this._axNode = axNode;
 
-        var rootElement = this._rootElement;
-        rootElement.removeChildren();
+        var treeOutline = this._treeOutline;
+        treeOutline.removeChildren();
 
-        if (!axNode)
+        if (!axNode) {
+            this._computedNameElement.classList.add("hidden");
+            treeOutline.element.classList.add("hidden");
+            this._infoElement.classList.remove("hidden");
             return;
+        }
+        this._computedNameElement.classList.remove("hidden");
+        treeOutline.element.classList.remove("hidden");
+        this._infoElement.classList.add("hidden");
 
-        var target = this.node().target();
+        var target = this.parentView().parentView().node().target();
+
+        this._computedNameElement.removeChildren();
+        if (axNode.name && axNode.name.value)
+            this._computedNameElement.textContent = axNode.name.value;
 
         function addProperty(property)
         {
-            rootElement.appendChild(new WebInspector.AXNodePropertyTreeElement(property, target));
+            treeOutline.appendChild(new WebInspector.AXNodePropertyTreeElement(property, target));
         }
 
         addProperty({name: "role", value: axNode.role});
 
-        for (var propertyName of ["name", "description", "help", "value"]) {
+        for (var propertyName of ["description", "help", "value"]) {
             if (propertyName in axNode)
                 addProperty({name: propertyName, value: axNode[propertyName]});
         }
@@ -116,7 +176,7 @@ WebInspector.AccessibilitySidebarPane.prototype = {
         this._setAXNode(node);
     },
 
-    __proto__: WebInspector.ElementsSidebarPane.prototype
+    __proto__: WebInspector.SidebarPane.prototype
 };
 
 /**
@@ -197,7 +257,7 @@ WebInspector.AXNodePropertyTreeElement.populateWithNode = function(treeNode, axN
  */
 WebInspector.AXNodePropertyTreeElement.createNameElement = function(name)
 {
-    var nameElement = createElementWithClass("span", "name");
+    var nameElement = createElementWithClass("span", "ax-name");
     if (/^\s|\s$|^$|\n/.test(name))
         nameElement.createTextChildren("\"", name.replace(/\n/g, "\u21B5"), "\"");
     else
@@ -234,22 +294,36 @@ WebInspector.AXNodePropertyTreeElement.createRelationshipValueElement = function
  */
 WebInspector.AXNodePropertyTreeElement.createValueElement = function(value, parentElement)
 {
-    var valueElement = createElementWithClass("span", "value");
+    var valueElement = createElementWithClass("span", "object-value");
     var type = value.type;
     var prefix;
     var valueText;
     var suffix;
-    if (type === "string") {
+    switch (type) {
+    case "string":
         // Render \n as a nice unicode cr symbol.
         // TODO(aboxhall): overflow ellipsis style
         prefix = "\"";
         valueText = value.value.replace(/\n/g, "\u21B5");
         suffix = "\"";
         valueElement._originalTextContent = "\"" + value.value + "\"";
-    } else {
-        // TODO(aboxhall): styles for all value types
+        valueElement.classList.add("object-value-string");
+        break;
+    case "boolean":
+    case "booleanOrUndefined":
+    case "tristate":
+        valueText = String(value.value);
+        valueElement.classList.add("object-value-boolean");
+        break;
+    case "number":
+    case "integer":
+        valueText = String(value.value);
+        valueElement.classList.add("object-value-number");
+        break;
+    default:
         valueText = String(value.value);
     }
+
     valueElement.setTextContentTruncatedIfNeeded(valueText || "");
     if (prefix)
         valueElement.insertBefore(createTextNode(prefix), valueElement.firstChild);

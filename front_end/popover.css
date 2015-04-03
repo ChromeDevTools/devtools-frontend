@@ -24,6 +24,7 @@
 
 .popover .content.no-margin {
     margin: 0;
+    overflow: hidden;
 }
 
 .popover .arrow {

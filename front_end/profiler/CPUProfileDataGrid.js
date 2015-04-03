@@ -120,7 +120,7 @@ WebInspector.ProfileDataGridNode.prototype = {
         }
         function formatPercent(value)
         {
-            return WebInspector.UIString("%.2f\u2009%", value);
+            return WebInspector.UIString("%.2f\u2009%%", value);
         }
 
         var functionName;

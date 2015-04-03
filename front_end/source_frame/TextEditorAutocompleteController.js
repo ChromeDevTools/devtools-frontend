@@ -24,14 +24,6 @@ WebInspector.TextEditorAutocompleteController = function(textEditor, codeMirror)
 }
 
 WebInspector.TextEditorAutocompleteController.prototype = {
-    /**
-     * @return {boolean}
-     */
-    _ready: function()
-    {
-        return !!(this._enabled && this._initialized && this._delegate);
-    },
-
     _initializeIfNeeded: function()
     {
         if (this._initialized)

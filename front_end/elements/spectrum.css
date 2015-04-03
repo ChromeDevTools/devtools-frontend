@@ -1,9 +1,9 @@
 /* https://github.com/bgrins/spectrum */
 :host {
-    width: 205px;
-    height: 220px;
+    width: 217px;
+    height: 232px;
     -webkit-user-select: none;
-    margin: 6px;
+    padding: 6px;
 }
 
 .spectrum-color {

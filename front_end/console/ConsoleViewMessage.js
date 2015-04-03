@@ -50,15 +50,16 @@ WebInspector.ConsoleViewMessage = function(consoleMessage, linkifier, nestingLev
 
     /** @type {!Object.<string, function(!WebInspector.RemoteObject, !Element, boolean=)>} */
     this._customFormatters = {
-        "object": this._formatParameterAsObject,
         "array": this._formatParameterAsArray,
-        "node": this._formatParameterAsNode,
-        "map": this._formatParameterAsObject,
-        "set": this._formatParameterAsObject,
-        "iterator": this._formatParameterAsObject,
+        "error": this._formatParameterAsError,
+        "function": this._formatParameterAsFunction,
         "generator": this._formatParameterAsObject,
-        "string": this._formatParameterAsString,
-        "error": this._formatParameterAsError
+        "iterator": this._formatParameterAsObject,
+        "map": this._formatParameterAsObject,
+        "node": this._formatParameterAsNode,
+        "object": this._formatParameterAsObject,
+        "set": this._formatParameterAsObject,
+        "string": this._formatParameterAsString
     };
     this._previewFormatter = new WebInspector.RemoteObjectPreviewFormatter();
 }
@@ -455,6 +456,90 @@ WebInspector.ConsoleViewMessage.prototype = {
     },
 
     /**
+     * @param {!WebInspector.RemoteObject} func
+     * @param {!Element} element
+     */
+    _formatParameterAsFunction: function(func, element)
+    {
+        func.functionDetails(didGetDetails.bind(this));
+
+        /**
+         * @param {?WebInspector.DebuggerModel.FunctionDetails} response
+         * @this {WebInspector.ConsoleViewMessage}
+         */
+        function didGetDetails(response)
+        {
+            if (!response) {
+                element.createTextChild(func.description || "");
+                return;
+            }
+
+            var title = (response.functionName || "anonymous")+ "()";
+            if (!response.location) {
+                element.createTextChild(title);
+                return;
+            }
+
+            var anchor = createElement("span");
+            element.addEventListener("click", WebInspector.Revealer.reveal.bind(WebInspector.Revealer, response.location, undefined));
+            anchor.textContent = title;
+            element.appendChild(anchor);
+            element.addEventListener("contextmenu", this._contextMenuEventFired.bind(this, func), false);
+            response.location.script().requestContent(contentAvailable);
+
+            // Format function parameters.
+            /**
+             * @param {?string} content
+             */
+            function contentAvailable(content)
+            {
+                if (!content)
+                    return;
+
+                self.runtime.instancePromise(WebInspector.TokenizerFactory).then(processTokens);
+
+                var params = [];
+
+                /**
+                 * @param {!WebInspector.TokenizerFactory} tokenizerFactory
+                 */
+                function processTokens(tokenizerFactory)
+                {
+                    var lines = content.split("\n");
+                    var lineNumber = response.location.lineNumber - response.location.script().lineOffset;
+                    var columnNumber = response.location.columnNumber - (response.location.lineNumber ? 0 : response.location.script().columnOffset);
+
+                    var budget = 200;
+                    var tokenize = tokenizerFactory.createTokenizer("text/javascript");
+                    for (var i = lineNumber; budget > 0 && i < lines.length; ++i) {
+                        var nextLine = lines[i].substring(columnNumber, budget);
+                        tokenize(nextLine, processToken);
+                        budget -= nextLine.length;
+                        columnNumber = 0;
+                    }
+                    if (params.length)
+                        anchor.textContent = (response.functionName || "anonymous")+ "(" + params.join(", ") + ")";
+                }
+
+                var doneProcessing = false;
+
+                /**
+                 * @param {string} token
+                 * @param {?string} tokenType
+                 * @param {number} column
+                 * @param {number} newColumn
+                 */
+                function processToken(token, tokenType, column, newColumn)
+                {
+                    doneProcessing = doneProcessing || token === ")";
+                    if (!doneProcessing && tokenType === "js-variable")
+                        params.push(token);
+                }
+            }
+        }
+    },
+
+    /**
      * @param {!WebInspector.RemoteObject} obj
      * @param {!Event} event
      */
@@ -835,10 +920,10 @@ WebInspector.ConsoleViewMessage.prototype = {
 
     clearHighlights: function()
     {
-        if (!this._formattedMessage)
-            return;
-
-        WebInspector.removeSearchResultsHighlight(this._formattedMessage, WebInspector.highlightedSearchResultClassName);
+        if (this._higlightNodeChanges) {
+            WebInspector.revertDomChanges(this._higlightNodeChanges);
+            this._higlightNodeChanges = null;
+        }
     },
 
     /**
@@ -858,14 +943,14 @@ WebInspector.ConsoleViewMessage.prototype = {
      */
     updateTimestamp: function(show)
     {
-        if (!this._element)
+        if (!this._formattedMessage)
             return;
 
         if (show && !this.timestampElement) {
-            this.timestampElement = this._element.createChild("span", "console-timestamp");
+            this.timestampElement = createElementWithClass("span", "console-timestamp");
             this.timestampElement.textContent = (new Date(this._message.timestamp)).toConsoleTime() + " ";
             var afterRepeatCountChild = this._repeatCountElement && this._repeatCountElement.nextSibling;
-            this._element.insertBefore(this.timestampElement, afterRepeatCountChild || this._element.firstChild);
+            this._formattedMessage.insertBefore(this.timestampElement, this._formattedMessage.firstChild);
             return;
         }
 
@@ -1131,8 +1216,9 @@ WebInspector.ConsoleViewMessage.prototype = {
     highlightMatches: function(ranges)
     {
         var highlightNodes = [];
+        this._higlightNodeChanges = [];
         if (this._formattedMessage)
-            highlightNodes = WebInspector.highlightSearchResults(this._messageElement, ranges);
+            highlightNodes = WebInspector.highlightSearchResults(this._messageElement, ranges, this._higlightNodeChanges);
         return highlightNodes;
     },
 

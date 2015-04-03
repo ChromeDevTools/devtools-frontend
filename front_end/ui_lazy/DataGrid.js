@@ -208,7 +208,7 @@ WebInspector.DataGrid.prototype = {
             }
             this._headerRow.appendChild(this._headerTableHeaders[columnIdentifier]);
             this._topFillerRow.createChild("td", "top-filler-td");
-            this._bottomFillerRow.createChild("td", "bottom-filler-td");
+            this._bottomFillerRow.createChild("td", "bottom-filler-td").columnIdentifier_ = columnIdentifier;
         }
 
         this._headerRow.createChild("th", "corner");

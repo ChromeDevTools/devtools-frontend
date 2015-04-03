@@ -241,6 +241,15 @@ WebInspector.NetworkTimeCalculator.prototype = {
         return 0;
     },
 
+    /**
+     * @param {number} percentage
+     * @return {number}
+     */
+    percentageToTime: function(percentage)
+    {
+        return percentage * this.boundarySpan() / 100 + this.minimumBoundary();
+    },
+
     _boundaryChanged: function()
     {
         this._boundryChangedEventThrottler.schedule(this.dispatchEventToListeners.bind(this, WebInspector.NetworkTimeCalculator.Events.BoundariesChanged));

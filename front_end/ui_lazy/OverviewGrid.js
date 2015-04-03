@@ -76,15 +76,6 @@ WebInspector.OverviewGrid.prototype = {
         this._grid.removeEventDividers();
     },
 
-    /**
-     * @param {?number} start
-     * @param {?number} end
-     */
-    setWindowPosition: function(start, end)
-    {
-        this._window._setWindowPosition(start, end);
-    },
-
     reset: function()
     {
         this._window.reset();
@@ -160,9 +151,9 @@ WebInspector.OverviewGrid.Window = function(parentElement, dividersLabelBarEleme
 {
     this._parentElement = parentElement;
 
-    WebInspector.installDragHandle(this._parentElement, this._startWindowSelectorDragging.bind(this), this._windowSelectorDragging.bind(this), this._endWindowSelectorDragging.bind(this), "ew-resize", null);
+    WebInspector.installDragHandle(this._parentElement, this._startWindowSelectorDragging.bind(this), this._windowSelectorDragging.bind(this), this._endWindowSelectorDragging.bind(this), "text", null);
     if (dividersLabelBarElement)
-        WebInspector.installDragHandle(dividersLabelBarElement, this._startWindowDragging.bind(this), this._windowDragging.bind(this), null, "move");
+        WebInspector.installDragHandle(dividersLabelBarElement, this._startWindowDragging.bind(this), this._windowDragging.bind(this), null, "-webkit-grabbing", "-webkit-grab");
 
     this.windowLeft = 0.0;
     this.windowRight = 1.0;
@@ -174,6 +165,12 @@ WebInspector.OverviewGrid.Window = function(parentElement, dividersLabelBarEleme
     this._overviewWindowElement.appendChild(WebInspector.View.createStyleElement("ui_lazy/overviewGrid.css"));
     this._overviewWindowBordersElement = parentElement.createChild("div", "overview-grid-window-rulers");
     parentElement.createChild("div", "overview-grid-dividers-background");
+
+    this._currentPositionElement = parentElement.createChild("div", "overview-grid-current-position");
+    this._currentPositionArea = parentElement.createChild("div", "overview-grid-window-area");
+    this._currentPositionArea.addEventListener("mousemove", this._onMouseMove.bind(this), true);
+    this._currentPositionArea.addEventListener("mouseover", this._onMouseOver.bind(this, true), true);
+    this._currentPositionArea.addEventListener("mouseout", this._onMouseOver.bind(this, false), true);
 
     this._leftResizeElement = parentElement.createChild("div", "overview-grid-window-resizer");
     this._leftResizeElement.style.left = 0;
@@ -213,6 +210,28 @@ WebInspector.OverviewGrid.Window.prototype = {
         if (this._enabled === enabled)
             return;
         this._enabled = enabled;
+        this._currentPositionArea.style.cursor = enabled ? "text" : "";
+    },
+
+    /**
+     * @param {boolean} entered
+     */
+    _onMouseOver: function(entered)
+    {
+        if (!this._enabled)
+            return;
+        this._currentPositionElement.style.visibility = entered ? "" : "hidden";
+    },
+
+    /**
+     * @param {!Event} event
+     */
+    _onMouseMove: function(event)
+    {
+        if (!this._enabled)
+            return;
+        var x = event.offsetX + event.target.offsetLeft;
+        this._currentPositionElement.style.left = x + "px";
     },
 
     /**

@@ -35,18 +35,21 @@ html /deep/ .platform-windows {
 }
 
 html /deep/ .platform-mac .monospace,
+html /deep/ .platform-mac.monospace,
 html /deep/ .platform-mac .source-code {
     font-size: 11px !important;
     font-family: Menlo, monospace;
 }
 
 html /deep/ .platform-windows .monospace,
+html /deep/ .platform-windows.monospace,
 html /deep/ .platform-windows .source-code {
     font-size: 12px !important;
     font-family: Consolas, Lucida Console, monospace;
 }
 
 html /deep/ .platform-linux .monospace,
+html /deep/ .platform-linux.monospace,
 html /deep/ .platform-linux .source-code {
     font-size: 11px !important;
     font-family: dejavu sans mono, monospace;

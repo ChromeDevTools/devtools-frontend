@@ -1053,8 +1053,16 @@ WebInspector.ElementsTreeElement.prototype = {
             this._hideSearchHighlight();
         } else {
             var nodeInfo = this._nodeTitleInfo(updateRecord || null);
-            if (this._node.nodeType() === Node.DOCUMENT_FRAGMENT_NODE && this._node.isInShadowTree() && this._node.shadowRootType())
-                this.listItemElement.classList.add("shadow-root");
+            if (this._node.nodeType() === Node.DOCUMENT_FRAGMENT_NODE && this._node.isInShadowTree() && this._node.shadowRootType()) {
+                this.childrenListElement.classList.add("shadow-root");
+                var depth = 5;
+                for (var node = this._node; depth > 0 && node; node = node.parentNode) {
+                    if (node.nodeType() === Node.DOCUMENT_FRAGMENT_NODE)
+                        depth--;
+                }
+                if (depth > 0)
+                    this.childrenListElement.classList.add("shadow-root-deep");
+            }
             var highlightElement = createElement("span");
             highlightElement.className = "highlight";
             highlightElement.appendChild(nodeInfo);

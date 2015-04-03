@@ -152,8 +152,6 @@ WebInspector.ScreencastView.prototype = {
         this._imageElement.src = "data:image/jpg;base64," + base64Data;
         this._pageScaleFactor = metadata.pageScaleFactor;
         this._screenOffsetTop = metadata.offsetTop;
-        this._deviceWidth = metadata.deviceWidth;
-        this._deviceHeight = metadata.deviceHeight;
         this._scrollOffsetX = metadata.scrollOffsetX;
         this._scrollOffsetY = metadata.scrollOffsetY;
 

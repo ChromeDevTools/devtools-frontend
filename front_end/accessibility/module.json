@@ -1,0 +1,15 @@
+{
+    "extensions": [
+        {
+            "title": "Accessibility",
+            "type": "@WebInspector.ElementsSidebarView",
+            "className": "WebInspector.AccessibilitySidebarView"
+        }
+    ],
+    "dependencies": ["elements"],
+    "experiment": "accessibilityInspection",
+    "scripts": [
+        "AccessibilityModel.js",
+        "AccessibilitySidebarView.js"
+    ]
+}

@@ -134,8 +134,9 @@ WebInspector.Main.prototype = {
     _initializeExperiments: function()
     {
         Runtime.experiments.register("accessibilityInspection", "Accessibility Inspection", true);
-        Runtime.experiments.register("animationInspection", "Animation Inspection", true);
+        Runtime.experiments.register("animationInspection", "Animation Inspection");
         Runtime.experiments.register("applyCustomStylesheet", "Allow custom UI themes");
+        Runtime.experiments.register("blackboxJSFramesOnTimeline", "Blackbox JavaScript frames on Timeline");
         Runtime.experiments.register("canvasInspection", "Canvas inspection");
         Runtime.experiments.register("timelineDetailsChart", "Costly functions view in Timeline details", true);
         Runtime.experiments.register("customObjectFormatters", "Custom object formatters", true);
@@ -148,30 +149,37 @@ WebInspector.Main.prototype = {
         Runtime.experiments.register("networkRequestsOnTimeline", "Network requests on Timeline");
         Runtime.experiments.register("privateScriptInspection", "Private script inspection");
         Runtime.experiments.register("promiseTracker", "Promise inspector");
+        Runtime.experiments.register("recordFilmStrimInNetworkPanel", "Record Filmstrip in Network Panel", true);
         Runtime.experiments.register("serviceWorkersInPageFrontend", "Service workers in DevTools for page");
         Runtime.experiments.register("serviceWorkersInResources", "Service workers in Resources panel", true);
         Runtime.experiments.register("showPrimaryLoadWaterfallInNetworkTimeline", "Show primary load waterfall in Network timeline", true);
         Runtime.experiments.register("stepIntoAsync", "Step into async");
         Runtime.experiments.register("timelineInvalidationTracking", "Timeline invalidation tracking", true);
+        Runtime.experiments.register("timelineTracingJSProfile", "Timeline tracing based JS profiler", true);
         Runtime.experiments.register("timelineFlowEvents", "Timeline flow events", true);
+        Runtime.experiments.register("inlineVariableValues", "Display variable values inline while debugging");
+
         Runtime.experiments.cleanUpStaleExperiments();
 
         if (InspectorFrontendHost.isUnderTest()) {
             // Enable experiments for testing.
             var testPath = WebInspector.settings.testPath.get();
-            if (testPath.indexOf("timeline/") !== -1 || testPath.indexOf("layers/") !== -1)
-                Runtime.experiments.enableForTest("layersPanel");
-            if (testPath.indexOf("elements/") !== -1)
-                Runtime.experiments.enableForTest("animationInspection");
             if (testPath.indexOf("debugger/promise") !== -1)
                 Runtime.experiments.enableForTest("promiseTracker");
-            if (testPath.indexOf("/service-workers/") !== -1)
+            if (testPath.indexOf("elements/") !== -1)
+                Runtime.experiments.enableForTest("animationInspection");
+            if (testPath.indexOf("layers/") !== -1)
+                Runtime.experiments.enableForTest("layersPanel");
+            if (testPath.indexOf("service-workers/") !== -1)
                 Runtime.experiments.enableForTest("serviceWorkersInResources");
-        } else {
-            Runtime.experiments.setDefaultExperiments([
-                "serviceWorkersInPageFrontend"
-            ]);
+            if (testPath.indexOf("timeline/") !== -1 || testPath.indexOf("layers/") !== -1)
+                Runtime.experiments.enableForTest("layersPanel");
         }
+
+        Runtime.experiments.setDefaultExperiments([
+            "inlineVariableValues",
+            "serviceWorkersInPageFrontend"
+        ]);
     },
 
     /**
@@ -345,7 +353,15 @@ WebInspector.Main.prototype = {
         if (this._mainTarget.isServiceWorker())
             this._mainTarget.runtimeAgent().run();
 
-        target.inspectorAgent().enable(inspectorAgentEnableCallback);
+        WebInspector.overridesSupport.applyInitialOverrides(overridesApplied);
+
+        function overridesApplied()
+        {
+            if (!WebInspector.overridesSupport.responsiveDesignAvailable() && WebInspector.overridesSupport.emulationEnabled())
+                WebInspector.inspectorView.showViewInDrawer("emulation", true);
+
+            target.inspectorAgent().enable(inspectorAgentEnableCallback);
+        }
 
         function inspectorAgentEnableCallback()
         {
@@ -354,10 +370,6 @@ WebInspector.Main.prototype = {
             // Asynchronously run the extensions.
             setTimeout(function() { WebInspector.extensionServer.initializeExtensions(); }, 0);
         }
-
-        WebInspector.overridesSupport.applyInitialOverrides();
-        if (!WebInspector.overridesSupport.responsiveDesignAvailable() && WebInspector.overridesSupport.emulationEnabled())
-            WebInspector.inspectorView.showViewInDrawer("emulation", true);
     },
 
     _registerForwardedShortcuts: function()
@@ -624,13 +636,6 @@ WebInspector.Main.prototype = {
     }
 }
 
-WebInspector.reload = function()
-{
-    if (WebInspector.dockController.canDock() && WebInspector.dockController.dockSide() === WebInspector.DockController.State.Undocked)
-        InspectorFrontendHost.setIsDocked(true, function() {});
-    window.top.location.reload();
-}
-
 /**
  * @constructor
  * @implements {WebInspector.ActionDelegate}
@@ -684,7 +689,7 @@ WebInspector.Main.DebugReloadActionDelegate.prototype = {
      */
     handleAction: function()
     {
-        WebInspector.reload();
+        WebInspector.AppUtils.reload();
         return true;
     }
 }
@@ -956,7 +961,7 @@ WebInspector.DisableJavaScriptObserver.prototype = {
      */
     targetAdded: function(target)
     {
-        if (target.supportsEmulation())
+        if (WebInspector.OverridesSupport.targetSupportsEmulation(target))
             target.emulationAgent().setScriptExecutionDisabled(this._setting.get());
     },
 
@@ -974,11 +979,9 @@ WebInspector.DisableJavaScriptObserver.prototype = {
     _settingChanged: function(event)
     {
         var value = this._setting.get();
-        var targets = WebInspector.targetManager.targets();
-        for (var i = 0; i < targets.length; ++i) {
-            if (targets[i].supportsEmulation())
-                targets[i].emulationAgent().setScriptExecutionDisabled(value);
-        }
+        var targets = WebInspector.OverridesSupport.targetsSupportingEmulation();
+        for (var i = 0; i < targets.length; ++i)
+            targets[i].emulationAgent().setScriptExecutionDisabled(value);
     }
 }
 

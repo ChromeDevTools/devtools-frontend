@@ -424,7 +424,7 @@ WebInspector.UISourceCode.prototype = {
             this.addRevision(content);
         }
 
-        WebInspector.userMetrics.RevisionApplied.record();
+        WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Actions.RevisionApplied);
         this.requestOriginalContent(callback.bind(this));
     },
 
@@ -447,7 +447,7 @@ WebInspector.UISourceCode.prototype = {
             callback(this);
         }
 
-        WebInspector.userMetrics.RevisionApplied.record();
+        WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Actions.RevisionApplied);
         this.requestOriginalContent(revert.bind(this));
     },
 
@@ -683,7 +683,7 @@ WebInspector.Revision.prototype = {
             if (this._uiSourceCode._content !== content)
                 this._uiSourceCode.addRevision(content);
         }
-        WebInspector.userMetrics.RevisionApplied.record();
+        WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Actions.RevisionApplied);
         this.requestContent(revert.bind(this));
     },
 

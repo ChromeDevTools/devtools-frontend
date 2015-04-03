@@ -95,7 +95,7 @@ WebInspector.Settings = function()
     this.frameViewerHideChromeWindow = this.createSetting("frameViewerHideChromeWindow", false);
     this.highlightDOMUpdates = this.createSetting("highlightDOMUpdates", true);
     this.enableCustomFormatters = this.createSetting("customFormatters", false);
-    this.javaScriptValuesInSource = this.createSetting("javaScriptValuesInSource", true);
+    this.inlineVariableValues = this.createSetting("inlineVariableValues", true);
 
     // Rendering options
     this.showPaintRects = this.createSetting("showPaintRects", false);

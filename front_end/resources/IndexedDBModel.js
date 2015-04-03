@@ -518,3 +518,16 @@ WebInspector.IndexedDBModel.Index.prototype = {
         return WebInspector.IndexedDBModel.keyPathStringFromIDBKeyPath(this.keyPath);
     }
 }
+
+WebInspector.IndexedDBModel._symbol = Symbol("IndexedDBModel");
+/**
+ * @param {!WebInspector.Target} target
+ * @return {!WebInspector.IndexedDBModel}
+ */
+WebInspector.IndexedDBModel.fromTarget = function(target)
+{
+    if (!target[WebInspector.IndexedDBModel._symbol])
+        target[WebInspector.IndexedDBModel._symbol] = new WebInspector.IndexedDBModel(target);
+
+    return target[WebInspector.IndexedDBModel._symbol];
+}

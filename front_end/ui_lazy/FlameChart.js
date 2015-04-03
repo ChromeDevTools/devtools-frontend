@@ -326,7 +326,7 @@ WebInspector.FlameChart.ColorGenerator.prototype = {
      */
     _generateColorForID: function(id)
     {
-        var hash = id.hashCode();
+        var hash = Math.abs(String.hashCode(id));
         var h = this._indexToValueInSpace(hash, this._hueSpace);
         var s = this._indexToValueInSpace(hash, this._satSpace);
         var l = this._indexToValueInSpace(hash, this._lightnessSpace);
@@ -1351,7 +1351,6 @@ WebInspector.FlameChart.prototype = {
         this._pixelWindowWidth = this._offsetWidth - this._paddingLeft;
         this._totalPixels = Math.floor(this._pixelWindowWidth / this._windowWidth);
         this._pixelWindowLeft = Math.floor(this._totalPixels * this._windowLeft);
-        this._pixelWindowRight = Math.floor(this._totalPixels * this._windowRight);
 
         this._timeToPixel = this._totalPixels / this._totalTime;
         this._pixelToTime = this._totalTime / this._totalPixels;

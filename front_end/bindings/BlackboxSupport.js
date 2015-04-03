@@ -118,3 +118,21 @@ WebInspector.BlackboxSupport.isBlackboxed = function(url, isContentScript)
         return true;
     return WebInspector.BlackboxSupport.isBlackboxedURL(url);
 }
+
+/**
+ * @param {function(!WebInspector.Event)} listener
+ * @param {!Object=} thisObject
+ */
+WebInspector.BlackboxSupport.addChangeListener = function(listener, thisObject)
+{
+    WebInspector.settings.skipStackFramesPattern.addChangeListener(listener, thisObject);
+}
+
+/**
+ * @param {function(!WebInspector.Event)} listener
+ * @param {!Object=} thisObject
+ */
+WebInspector.BlackboxSupport.removeChangeListener = function(listener, thisObject)
+{
+    WebInspector.settings.skipStackFramesPattern.removeChangeListener(listener, thisObject);
+}

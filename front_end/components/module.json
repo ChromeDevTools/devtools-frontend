@@ -15,6 +15,7 @@
         "ui"
     ],
     "scripts": [
+        "AppUtils.js",
         "BreakpointsSidebarPaneBase.js",
         "DebuggerPresentationUtils.js",
         "DOMBreakpointsSidebarPane.js",

@@ -27,3 +27,16 @@ WebInspector.AccessibilityModel.prototype = {
 
     __proto__: WebInspector.SDKModel.prototype
 }
+
+WebInspector.AccessibilityModel._symbol = Symbol("AccessibilityModel");
+/**
+ * @param {!WebInspector.Target} target
+ * @return {!WebInspector.AccessibilityModel}
+ */
+WebInspector.AccessibilityModel.fromTarget = function(target)
+{
+    if (!target[WebInspector.AccessibilityModel._symbol])
+        target[WebInspector.AccessibilityModel._symbol] = new WebInspector.AccessibilityModel(target);
+
+    return target[WebInspector.AccessibilityModel._symbol];
+}

@@ -28,8 +28,6 @@ WebInspector.Target = function(name, type, connection, parentTarget, callback)
 
     /** @type {!Object.<string, boolean>} */
     this._capabilities = {};
-    if (this.supportsEmulation())
-        this.emulationAgent().canEmulate(this._initializeCapability.bind(this, WebInspector.Target.Capabilities.CanEmulate, null));
     this.pageAgent().canScreencast(this._initializeCapability.bind(this, WebInspector.Target.Capabilities.CanScreencast, this._loadedWithCapabilities.bind(this, callback)));
 }
 
@@ -37,9 +35,7 @@ WebInspector.Target = function(name, type, connection, parentTarget, callback)
  * @enum {string}
  */
 WebInspector.Target.Capabilities = {
-    CanScreencast: "CanScreencast",
-    HasTouchInputs: "HasTouchInputs",
-    CanEmulate: "CanEmulate"
+    CanScreencast: "CanScreencast"
 }
 
 /**
@@ -144,22 +140,14 @@ WebInspector.Target.prototype = {
         this.cssModel = new WebInspector.CSSStyleModel(this);
         /** @type {?WebInspector.WorkerManager} */
         this.workerManager = !this.isDedicatedWorker() ? new WebInspector.WorkerManager(this) : null;
-        /** @type {!WebInspector.DatabaseModel} */
-        this.databaseModel = new WebInspector.DatabaseModel(this);
-        /** @type {!WebInspector.DOMStorageModel} */
-        this.domStorageModel = new WebInspector.DOMStorageModel(this);
         /** @type {!WebInspector.CPUProfilerModel} */
         this.cpuProfilerModel = new WebInspector.CPUProfilerModel(this);
         /** @type {!WebInspector.HeapProfilerModel} */
         this.heapProfilerModel = new WebInspector.HeapProfilerModel(this);
-        /** @type {!WebInspector.IndexedDBModel} */
-        this.indexedDBModel = new WebInspector.IndexedDBModel(this);
         /** @type {!WebInspector.LayerTreeModel} */
         this.layerTreeModel = new WebInspector.LayerTreeModel(this);
         /** @type {!WebInspector.AnimationModel} */
         this.animationModel = new WebInspector.AnimationModel(this);
-        /** @type {!WebInspector.AccessibilityModel} */
-        this.accessibilityModel = new WebInspector.AccessibilityModel(this);
 
         if (this._parentTarget && this._parentTarget.isServiceWorker()) {
             /** @type {!WebInspector.ServiceWorkerCacheModel} */
@@ -183,14 +171,6 @@ WebInspector.Target.prototype = {
     registerDispatcher: function(domain, dispatcher)
     {
         this._connection.registerDispatcher(domain, dispatcher);
-    },
-
-    /**
-     * @return {boolean}
-     */
-    supportsEmulation: function()
-    {
-        return this.isPage();
     },
 
     /**
@@ -239,14 +219,6 @@ WebInspector.Target.prototype = {
     parentTarget: function()
     {
         return this._parentTarget;
-    },
-
-    /**
-     * @return {boolean}
-     */
-    canEmulate: function()
-    {
-        return this.hasCapability(WebInspector.Target.Capabilities.CanEmulate);
     },
 
     _onDisconnect: function()

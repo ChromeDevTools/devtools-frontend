@@ -72,8 +72,8 @@ WebInspector.StylesSidebarPane = function(computedStylePane, requestShowCallback
 
     this._createElementStatePane();
     this.bodyElement.appendChild(this._elementStatePane);
-    this._createAnimationsControlPane();
-    this.bodyElement.appendChild(this._animationsControlPane);
+    this._animationsControlPane = new WebInspector.AnimationControlPane();
+    this.bodyElement.appendChild(this._animationsControlPane.element);
     this._sectionsContainer = createElement("div");
     this.bodyElement.appendChild(this._sectionsContainer);
 
@@ -87,9 +87,9 @@ WebInspector.StylesSidebarPane = function(computedStylePane, requestShowCallback
     this._keyUpBound = this._keyUp.bind(this);
 }
 
-// Keep in sync with LayoutStyleConstants.h PseudoId enum. Array below contains pseudo id names for corresponding enum indexes.
+// Keep in sync with ComputedStyleConstants.h PseudoId enum. Array below contains pseudo id names for corresponding enum indexes.
 // First item is empty due to its artificial NOPSEUDO nature in the enum.
-// FIXME: find a way of generating this mapping or getting it from combination of LayoutStyleConstants and CSSSelector.cpp at
+// FIXME: find a way of generating this mapping or getting it from combination of ComputedStyleConstants and CSSSelector.cpp at
 // runtime.
 WebInspector.StylesSidebarPane.PseudoIdNames = [
     "", "first-line", "first-letter", "before", "after", "backdrop", "selection", "", "-webkit-scrollbar",
@@ -349,7 +349,8 @@ WebInspector.StylesSidebarPane.prototype = {
     setNode: function(node)
     {
         // We should update SSP on main frame navigation only.
-        if (!node || !this.node() || node.ownerDocument === this.node().ownerDocument) {
+        var mainFrameNavigated = node && this.node() && node.ownerDocument !== this.node().ownerDocument;
+        if (!mainFrameNavigated && node !== this.node()) {
             this.element.classList.toggle("no-affect", this._isEditingStyle);
             if (this._isEditingStyle) {
                 this._pendingNode = node;
@@ -368,6 +369,7 @@ WebInspector.StylesSidebarPane.prototype = {
 
         this._resetCache();
         this._computedStylePane.setNode(node);
+        this._animationsControlPane.setNode(node);
         WebInspector.ElementsSidebarPane.prototype.setNode.call(this, node);
     },
 
@@ -386,7 +388,6 @@ WebInspector.StylesSidebarPane.prototype = {
             this._target.domModel.removeEventListener(WebInspector.DOMModel.Events.AttrModified, this._attributeChanged, this);
             this._target.domModel.removeEventListener(WebInspector.DOMModel.Events.AttrRemoved, this._attributeChanged, this);
             this._target.resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.EventTypes.FrameResized, this._frameResized, this);
-            this._target.resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._updateAnimationsPlaybackRate, this);
         }
         this._target = target;
         this._target.cssModel.addEventListener(WebInspector.CSSStyleModel.Events.StyleSheetAdded, this._styleSheetOrMediaQueryResultChanged, this);
@@ -396,8 +397,6 @@ WebInspector.StylesSidebarPane.prototype = {
         this._target.domModel.addEventListener(WebInspector.DOMModel.Events.AttrModified, this._attributeChanged, this);
         this._target.domModel.addEventListener(WebInspector.DOMModel.Events.AttrRemoved, this._attributeChanged, this);
         this._target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.FrameResized, this._frameResized, this);
-        this._target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._updateAnimationsPlaybackRate, this);
-        this._updateAnimationsPlaybackRate();
     },
 
     /**
@@ -446,7 +445,6 @@ WebInspector.StylesSidebarPane.prototype = {
     _resetComputedCache: function()
     {
         delete this._computedStylePromise;
-        delete this._animationPropertiesPromise;
     },
 
     /**
@@ -514,31 +512,6 @@ WebInspector.StylesSidebarPane.prototype = {
     },
 
     /**
-     * @return {!Promise.<!Map.<string, string>>}
-     */
-    _fetchAnimationProperties: function()
-    {
-        var node = this.node();
-        if (!node)
-            return Promise.resolve(new Map());
-        if (!this._animationPropertiesPromise)
-            this._animationPropertiesPromise = new Promise(this._getAnimationPropertiesForNode.bind(this, node)).then(onAnimationProperties.bind(this));
-
-        return this._animationPropertiesPromise;
-
-        /**
-         * @param {!Map.<string, string>} properties
-         * @return {!Map.<string, string>}
-         * @this {WebInspector.StylesSidebarPane}
-         */
-        function onAnimationProperties(properties)
-        {
-            return this.node() !== node ? new Map() : properties;
-        }
-
-    },
-
-    /**
      * @param {!WebInspector.DOMNode} node
      * @param {function(!WebInspector.StylesSidebarPane.MatchedRulesPayload)} callback
      */
@@ -571,40 +544,6 @@ WebInspector.StylesSidebarPane.prototype = {
                 payload.inherited = /** @type {?Array.<{matchedCSSRules: !Array.<!WebInspector.CSSRule>}>} */(matchedResult.inherited);
             }
             callback(payload);
-        }
-    },
-
-    /**
-     * @param {!WebInspector.DOMNode} node
-     * @param {function(!Map<string, string>)} callback
-     */
-    _getAnimationPropertiesForNode: function(node, callback)
-    {
-        if (Runtime.experiments.isEnabled("animationInspection"))
-            node.target().animationModel.getAnimationPlayers(node.id, false, animationPlayersCallback);
-        else
-            callback(new Map());
-
-        /**
-         * @param {?Array.<!WebInspector.AnimationModel.AnimationPlayer>} animationPlayers
-         */
-        function animationPlayersCallback(animationPlayers)
-        {
-            var animationProperties = new Map();
-            if (!animationPlayers)
-                return;
-            for (var i = 0; i < animationPlayers.length; i++) {
-                var player = animationPlayers[i];
-                if (!player.source().keyframesRule())
-                    continue;
-                var animationCascade = new WebInspector.SectionCascade();
-                var keyframes = player.source().keyframesRule().keyframes();
-                for (var j = 0; j < keyframes.length; j++)
-                    animationCascade.appendModelFromStyle(keyframes[j].style(), "");
-                for (var property of animationCascade.allUsedProperties())
-                    animationProperties.set(property, player.name());
-            }
-            callback(animationProperties);
         }
     },
 
@@ -961,7 +900,7 @@ WebInspector.StylesSidebarPane.prototype = {
         this._elementStateButton.classList.toggle("toggled", buttonToggled);
         this._elementStatePane.classList.toggle("expanded", buttonToggled);
         this._animationsControlButton.classList.remove("toggled");
-        this._animationsControlPane.classList.remove("expanded");
+        this._animationsControlPane.element.classList.remove("expanded");
     },
 
     _createElementStatePane: function()
@@ -1024,82 +963,9 @@ WebInspector.StylesSidebarPane.prototype = {
         if (buttonToggled)
             this.expand();
         this._animationsControlButton.classList.toggle("toggled", buttonToggled);
-        this._animationsControlPane.classList.toggle("expanded", buttonToggled);
+        this._animationsControlPane.element.classList.toggle("expanded", buttonToggled);
         this._elementStateButton.classList.remove("toggled");
         this._elementStatePane.classList.remove("expanded");
-    },
-
-    /**
-     * @param {!WebInspector.Event=} event
-     */
-    _updateAnimationsPlaybackRate: function(event)
-    {
-        /**
-         * @param {?Protocol.Error} error
-         * @param {number} playbackRate
-         * @this {WebInspector.StylesSidebarPane}
-         */
-        function setPlaybackRate(error, playbackRate)
-        {
-            this._animationsPlaybackSlider.value = WebInspector.AnimationsSidebarPane.GlobalPlaybackRates.indexOf(playbackRate);
-            this._animationsPlaybackLabel.textContent = playbackRate + "x";
-        }
-
-        if (this._target)
-            this._target.animationAgent().getPlaybackRate(setPlaybackRate.bind(this));
-    },
-
-    _createAnimationsControlPane: function()
-    {
-        /**
-         * @param {!Event} event
-         * @this {WebInspector.StylesSidebarPane}
-         */
-        function playbackSliderInputHandler(event)
-        {
-            this._animationsPlaybackRate = WebInspector.AnimationsSidebarPane.GlobalPlaybackRates[event.target.value];
-            this._target.animationAgent().setPlaybackRate(this._animationsPaused ? 0 : this._animationsPlaybackRate);
-            this._animationsPlaybackLabel.textContent = this._animationsPlaybackRate + "x";
-            WebInspector.userMetrics.AnimationsPlaybackRateChanged.record();
-        }
-
-        /**
-         * @this {WebInspector.StylesSidebarPane}
-         */
-        function pauseButtonHandler()
-        {
-            this._animationsPaused = !this._animationsPaused;
-            this._target.animationAgent().setPlaybackRate(this._animationsPaused ? 0 : this._animationsPlaybackRate);
-            WebInspector.userMetrics.AnimationsPlaybackRateChanged.record();
-            this._animationsPauseButton.element.classList.toggle("pause-status-bar-item");
-            this._animationsPauseButton.element.classList.toggle("play-status-bar-item");
-        }
-
-
-        this._animationsPaused = false;
-        this._animationsPlaybackRate = 1;
-
-        this._animationsControlPane = createElementWithClass("div", "styles-animations-controls-pane");
-        var labelElement = createElement("div");
-        labelElement.createTextChild("Animations");
-        this._animationsControlPane.appendChild(labelElement);
-        var container = this._animationsControlPane.createChild("div", "animations-controls");
-
-        var statusBar = new WebInspector.StatusBar();
-        this._animationsPauseButton = new WebInspector.StatusBarButton("", "pause-status-bar-item");
-        statusBar.appendStatusBarItem(this._animationsPauseButton);
-        this._animationsPauseButton.addEventListener("click", pauseButtonHandler.bind(this));
-        container.appendChild(statusBar.element);
-
-        this._animationsPlaybackSlider = container.createChild("input");
-        this._animationsPlaybackSlider.type = "range";
-        this._animationsPlaybackSlider.min = 0;
-        this._animationsPlaybackSlider.max = WebInspector.AnimationsSidebarPane.GlobalPlaybackRates.length - 1;
-        this._animationsPlaybackSlider.value = this._animationsPlaybackSlider.max;
-        this._animationsPlaybackSlider.addEventListener("input", playbackSliderInputHandler.bind(this));
-
-        this._animationsPlaybackLabel = container.createChild("div", "playback-label");
-        this._animationsPlaybackLabel.createTextChild("1x");
     },
 
     /**
@@ -1689,12 +1555,12 @@ WebInspector.StylePropertiesSection.prototype = {
      */
     _updateFilter: function()
     {
-        if (this.styleRule.isAttribute())
-            return true;
-
         var hasMatchingChild = false;
         for (var child of this.propertiesTreeOutline.rootElement().children())
             hasMatchingChild |= child._updateFilter();
+
+        if (this.styleRule.isAttribute())
+            return true;
 
         var regex = this._parentPane.filterRegex();
         var hideRule = !hasMatchingChild && regex && !regex.test(this.element.textContent);
@@ -3059,14 +2925,12 @@ WebInspector.StylePropertyTreeElement.prototype = {
 
     _revertStyleUponEditingCanceled: function()
     {
-        if (typeof this._originalPropertyText === "string") {
+        if (this._propertyHasBeenEditedIncrementally)
             this.applyStyleText(this._originalPropertyText, false);
-        } else {
-            if (this._newProperty)
-                this.treeOutline.removeChild(this);
-            else
-                this.updateTitle();
-        }
+        else if (this._newProperty)
+            this.treeOutline.removeChild(this);
+        else
+            this.updateTitle();
     },
 
     /**
@@ -3217,16 +3081,6 @@ WebInspector.StylePropertyTreeElement.prototype = {
         }
     },
 
-    /**
-     * @return {boolean}
-     */
-    _hasBeenModifiedIncrementally: function()
-    {
-        // New properties applied via up/down or live editing have an _originalPropertyText and will be deleted later
-        // on, if cancelled, when the empty string gets applied as their style text.
-        return typeof this._originalPropertyText === "string" || (!!this.property.propertyText && this._newProperty);
-    },
-
     styleTextAppliedForTest: function() { },
 
     /**
@@ -3251,7 +3105,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
         }
 
         styleText = styleText.replace(/\s/g, " ").trim(); // Replace &nbsp; with whitespace.
-        if (!styleText.length && majorChange && this._newProperty && !this._hasBeenModifiedIncrementally()) {
+        if (!styleText.length && majorChange && this._newProperty && !this._propertyHasBeenEditedIncrementally) {
             // The user deleted everything and never applied a new property value via Up/Down scrolling/live editing, so remove the tree element and update.
             var section = this.section();
             this.parent.removeChild(this);
@@ -3281,9 +3135,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
             }
             this._applyNewStyle(newStyle);
 
-            if (this._newProperty)
-                this._newPropertyInStyle = true;
-
+            this._propertyHasBeenEditedIncrementally = true;
             this.property = newStyle.propertyAt(this.property.index);
 
             // We are happy to update UI if user is not editing.
@@ -3298,7 +3150,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
         // FIXME: this does not handle trailing comments.
         if (styleText.length && !/;\s*$/.test(styleText))
             styleText += ";";
-        var overwriteProperty = !!(!this._newProperty || this._newPropertyInStyle);
+        var overwriteProperty = !this._newProperty || this._propertyHasBeenEditedIncrementally;
         this.property.setText(styleText, majorChange, overwriteProperty, callback.bind(this));
     },
 

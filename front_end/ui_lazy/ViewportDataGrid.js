@@ -313,6 +313,7 @@ WebInspector.ViewportDataGridNode.prototype = {
      */
     insertChild: function(child, index)
     {
+        child.remove();
         child.parent = this;
         child.dataGrid = this.dataGrid;
         if (!this.children.length)

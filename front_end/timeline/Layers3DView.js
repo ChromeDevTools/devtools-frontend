@@ -57,8 +57,6 @@ WebInspector.Layers3DView = function(layerViewHost)
     this._canvasElement.addEventListener("contextmenu", this._onContextMenu.bind(this), false);
 
     this._lastSelection = {};
-    this._picturesForLayer = {};
-    this._scrollRectQuadsForLayer = {};
     this._layerTree = null;
     this._textureManager = new WebInspector.LayerTextureManager();
     this._textureManager.addEventListener(WebInspector.LayerTextureManager.Events.TextureUpdated, this._update, this);

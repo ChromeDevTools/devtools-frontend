@@ -68,7 +68,7 @@ WebInspector.Console.prototype = {
 
     /**
      * @param {string} text
-     * @param {!WebInspector.Console.MessageLevel} level
+     * @param {!WebInspector.Console.MessageLevel=} level
      * @param {boolean=} show
      */
     addMessage: function(text, level, show)

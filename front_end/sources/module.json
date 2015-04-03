@@ -138,6 +138,11 @@
         },
         {
             "type": "@WebInspector.Revealer",
+            "contextTypes": ["WebInspector.DebuggerModel.Location"],
+            "className": "WebInspector.SourcesPanel.DebuggerLocationRevealer"
+        },
+        {
+            "type": "@WebInspector.Revealer",
             "contextTypes": ["WebInspector.UISourceCode"],
             "className": "WebInspector.SourcesPanel.UISourceCodeRevealer"
         },
@@ -246,8 +251,8 @@
         {
             "type": "ui-setting",
             "section": "Sources",
-            "title": "Show scope values inline",
-            "settingName": "javaScriptValuesInSource",
+            "title": "Display variable values inline while debugging",
+            "settingName": "inlineVariableValues",
             "settingType": "checkbox"
         },
         {

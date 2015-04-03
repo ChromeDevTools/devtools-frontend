@@ -264,13 +264,13 @@ WebInspector.BezierEditor.prototype = {
         const numberOnionSlices = 20;
 
         var keyframes = [{ offset: 0, transform: "translateX(0px)", easing: this._bezier.asCSSText(), opacity: 1 },
-            { offset: 0.9, transform: "translateX(210px)", opacity: 1 },
-            { offset: 1, transform: "translateX(210px)", opacity: 0 }];
+            { offset: 0.9, transform: "translateX(218px)", opacity: 1 },
+            { offset: 1, transform: "translateX(218px)", opacity: 0 }];
         this._previewAnimation = this._previewElement.animate(keyframes, animationDuration);
         this._previewOnion.removeChildren();
         for (var i = 0; i <= numberOnionSlices; i++) {
             var slice = this._previewOnion.createChild("div", "bezier-preview-animation");
-            var player = slice.animate([{ transform: "translateX(0px)", easing: this._bezier.asCSSText() }, { transform: "translateX(210px)" }],
+            var player = slice.animate([{ transform: "translateX(0px)", easing: this._bezier.asCSSText() }, { transform: "translateX(218px)" }],
                 { duration: animationDuration, fill: "forwards" });
             player.pause();
             player.currentTime = animationDuration * i / numberOnionSlices;

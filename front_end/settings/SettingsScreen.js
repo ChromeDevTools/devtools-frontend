@@ -223,7 +223,7 @@ WebInspector.GenericSettingsTab = function()
     {
         if (window.localStorage)
             window.localStorage.clear();
-        WebInspector.reload();
+        WebInspector.AppUtils.reload();
     }
 }
 
@@ -235,10 +235,10 @@ WebInspector.GenericSettingsTab.prototype = {
 
         var allExtensions = self.runtime.extensions("ui-setting");
 
-        /** @type {!StringMultimap.<!Runtime.Extension>} */
-        var extensionsBySectionId = new StringMultimap();
-        /** @type {!StringMultimap.<!Runtime.Extension>} */
-        var childSettingExtensionsByParentName = new StringMultimap();
+        /** @type {!Multimap.<string, !Runtime.Extension>} */
+        var extensionsBySectionId = new Multimap();
+        /** @type {!Multimap.<string, !Runtime.Extension>} */
+        var childSettingExtensionsByParentName = new Multimap();
 
         allExtensions.forEach(function(extension) {
             var descriptor = extension.descriptor();
@@ -268,7 +268,7 @@ WebInspector.GenericSettingsTab.prototype = {
     /**
      * @param {string} sectionName
      * @param {!Array.<!Runtime.Extension>} extensions
-     * @param {!StringMultimap.<!Runtime.Extension>} childSettingExtensionsByParentName
+     * @param {!Multimap.<string, !Runtime.Extension>} childSettingExtensionsByParentName
      */
     _addSectionWithExtensionProvidedSettings: function(sectionName, extensions, childSettingExtensionsByParentName)
     {

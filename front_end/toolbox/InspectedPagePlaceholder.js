@@ -62,27 +62,6 @@ WebInspector.InspectedPagePlaceholder.prototype = {
         this._updateId = this.element.window().requestAnimationFrame(this.update.bind(this));
     },
 
-    /**
-     * @return {!Size}
-     */
-    dipPageSize: function()
-    {
-        var rect = this._dipPageRect();
-        return new Size(Math.round(rect.width), Math.round(rect.height));
-    },
-
-    /**
-     * @return {!Size}
-     */
-    cssElementSize: function()
-    {
-        var zoomFactor = WebInspector.zoomManager.zoomFactor();
-        var rect = this.element.getBoundingClientRect();
-        var width = rect.width - (this._margins.left + this._margins.right) / zoomFactor;
-        var height = rect.height - (this._margins.top + this._margins.bottom) / zoomFactor;
-        return new Size(width, height);
-    },
-
     restoreMinimumSizeAndMargins: function()
     {
         this._useMargins = true;

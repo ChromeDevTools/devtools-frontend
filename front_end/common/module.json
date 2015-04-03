@@ -12,7 +12,6 @@
         "Geometry.js",
         "Console.js",
         "ContentProvider.js",
-        "Lock.js",
         "ParsedURL.js",
         "Progress.js",
         "ResourceType.js",

@@ -1108,17 +1108,6 @@ WebInspector.CSSRule.prototype = {
         return styleSheetHeader.columnNumberInSource(selector.range.startLine, selector.range.startColumn);
     },
 
-    /**
-     * @param {number} index
-     * @return {!WebInspector.CSSLocation}
-     */
-    rawSelectorLocation: function(index)
-    {
-        var lineNumber = this.lineNumberInSource(index);
-        var columnNumber = this.columnNumberInSource(index);
-        return new WebInspector.CSSLocation(this._cssModel.target(), this.styleSheetId || null, this.resourceURL(), lineNumber, columnNumber);
-    },
-
     get isUserAgent()
     {
         return this.origin === "user-agent";

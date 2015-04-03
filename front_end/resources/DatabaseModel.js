@@ -171,15 +171,6 @@ WebInspector.DatabaseModel.prototype = {
     },
 
     /**
-     * @param {!DatabaseAgent.DatabaseId} databaseId
-     * @return {!WebInspector.Database}
-     */
-    databaseForId: function(databaseId)
-    {
-        return this._databases[databaseId];
-    },
-
-    /**
      * @param {!WebInspector.Database} database
      */
     _addDatabase: function(database)
@@ -215,4 +206,17 @@ WebInspector.DatabaseDispatcher.prototype = {
             payload.name,
             payload.version));
     }
+}
+
+WebInspector.DatabaseModel._symbol = Symbol("DatabaseModel");
+/**
+ * @param {!WebInspector.Target} target
+ * @return {!WebInspector.DatabaseModel}
+ */
+WebInspector.DatabaseModel.fromTarget = function(target)
+{
+    if (!target[WebInspector.DatabaseModel._symbol])
+        target[WebInspector.DatabaseModel._symbol] = new WebInspector.DatabaseModel(target);
+
+    return target[WebInspector.DatabaseModel._symbol];
 }

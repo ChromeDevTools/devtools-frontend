@@ -1026,7 +1026,7 @@ WebInspector.ObjectPropertiesSection.createValueElement = function(value, wasThr
         suffix = "\"";
     } else if (type === "function" && typeof description === "string") {
         // Render function description until the first \n.
-        valueText = /.*/.exec(description)[0].replace(/\s+$/g, "");
+        valueText = /.*/.exec(description)[0].replace(/\s+$/g, "").replace(/^function /, "");
     } else if (type !== "object" || subtype !== "node") {
         valueText = description;
     }

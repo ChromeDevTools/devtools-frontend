@@ -43,7 +43,6 @@ WebInspector.NetworkProjectDelegate = function(target, workspace, projectId, pro
     this._target = target;
     this._id = projectId;
     WebInspector.ContentProviderBasedProjectDelegate.call(this, workspace, projectId, projectType);
-    this._lastUniqueSuffix = 0;
 }
 
 WebInspector.NetworkProjectDelegate.prototype = {

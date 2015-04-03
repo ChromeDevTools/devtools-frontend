@@ -48,14 +48,6 @@ WebInspector.FileManager.EventTypes = {
 
 WebInspector.FileManager.prototype = {
     /**
-     * @return {boolean}
-     */
-    canSave: function()
-    {
-        return true;
-    },
-
-    /**
      * @param {string} url
      * @param {string} content
      * @param {boolean} forceSaveAs

@@ -12,20 +12,10 @@
 }
 
 .service-worker-scope {
-    color: #aaa;
+    color: #777;
     flex: auto;
-}
-
-.service-worker-stop {
-    width: 10px;
-    height: 10px;
-    background-color: #f33;
-    margin-left: 10px;
-    margin-right: 3px;
-    border: 1px solid #a00;
-    cursor: pointer;
-}
-
-.service-worker-stop:hover {
-    background-color: red;
+    margin: 5px 5px 0 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

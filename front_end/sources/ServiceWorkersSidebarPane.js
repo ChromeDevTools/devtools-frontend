@@ -16,6 +16,8 @@ WebInspector.ServiceWorkersSidebarPane = function()
     /** @type {?WebInspector.ServiceWorkerManager} */
     this._manager = null;
     WebInspector.targetManager.observeTargets(this);
+    this._placeholderElement = createElementWithClass("div", "info");
+    this._placeholderElement.textContent = WebInspector.UIString("No service workers control this page");
 }
 
 WebInspector.ServiceWorkersSidebarPane.prototype = {
@@ -46,24 +48,31 @@ WebInspector.ServiceWorkersSidebarPane.prototype = {
     _update: function()
     {
         this._updateVisibility();
+        this.bodyElement.removeChildren();
 
-        if (!this.isShowing() || !this._manager || !this._manager.hasWorkers())
+        if (!this.isShowing() || !this._manager)
             return;
 
-        this.bodyElement.removeChildren();
+        if (!this._manager.hasWorkers()) {
+            this.bodyElement.appendChild(this._placeholderElement);
+            return;
+        }
+
         for (var worker of this._manager.workers()) {
             var workerElement = this.bodyElement.createChild("div", "service-worker");
-            workerElement.createChild("span").textContent = worker.name();
-            workerElement.createChild("span", "service-worker-scope").textContent = " \u2014 " + worker.scope();
-            var stopButton = workerElement.createChild("div", "service-worker-stop");
-            stopButton.title = WebInspector.UIString("Stop");
-            stopButton.addEventListener("click", worker.stop.bind(worker), false);
+            var leftBox = workerElement.createChild("div", "vbox flex-auto");
+            leftBox.appendChild(WebInspector.linkifyURLAsNode(worker.url(), worker.name()));
+            var scopeElement = leftBox.createChild("span", "service-worker-scope");
+            scopeElement.textContent = worker.scope();
+            scopeElement.title = worker.scope();
+            workerElement.appendChild(createTextButton(WebInspector.UIString("Unregister"), worker.stop.bind(worker)));
         }
     },
 
     _updateVisibility: function()
     {
-        this.setVisible(!!this._manager && this._manager.hasWorkers());
+        this._wasVisibleAtLeastOnce = this._wasVisibleAtLeastOnce || !!this._manager && this._manager.hasWorkers();
+        this.setVisible(this._wasVisibleAtLeastOnce);
     },
 
     wasShown: function()

@@ -334,3 +334,16 @@ WebInspector.DOMStorageDispatcher.prototype = {
         this._model._domStorageItemUpdated(storageId, key, oldValue, value);
     },
 }
+
+WebInspector.DOMStorageModel._symbol = Symbol("DomStorage");
+/**
+ * @param {!WebInspector.Target} target
+ * @return {!WebInspector.DOMStorageModel}
+ */
+WebInspector.DOMStorageModel.fromTarget = function(target)
+{
+    if (!target[WebInspector.DOMStorageModel._symbol])
+        target[WebInspector.DOMStorageModel._symbol] = new WebInspector.DOMStorageModel(target);
+
+    return target[WebInspector.DOMStorageModel._symbol];
+}

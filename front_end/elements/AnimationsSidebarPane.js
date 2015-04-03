@@ -6,11 +6,10 @@
  * @constructor
  * @extends {WebInspector.ElementsSidebarPane}
  */
-WebInspector.AnimationsSidebarPane = function(stylesPane)
+WebInspector.AnimationsSidebarPane = function()
 {
     WebInspector.ElementsSidebarPane.call(this, WebInspector.UIString("Animations"));
-    this._stylesPane = stylesPane;
-    this._timeline = new WebInspector.AnimationTimeline(this._stylesPane);
+    this._timeline = new WebInspector.AnimationTimeline();
     this._timeline.show(this.bodyElement);
 }
 

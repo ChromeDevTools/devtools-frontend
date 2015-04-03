@@ -28,9 +28,16 @@ WebInspector.NetworkOverview = function()
     this._restoringWindow = false;
     /** @type {boolean} */
     this._updateScheduled = false;
+    /** @type {number} */
+    this._canvasWidth = 0;
+    /** @type {number} */
+    this._canvasHeight = 0;
 
     this._overviewGrid.addEventListener(WebInspector.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
     this.element.appendChild(this._overviewGrid.element);
+    WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.EventTypes.Load, this._loadEventFired, this);
+    WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.EventTypes.DOMContentLoaded, this._domContentLoadedEventFired, this);
+
     this.reset();
 }
 
@@ -68,6 +75,28 @@ WebInspector.NetworkOverview.prototype = {
             this._windowEnd = startTime + right * totalTime;
         }
         this.dispatchEventToListeners(WebInspector.NetworkOverview.Events.WindowChanged, {start: this._windowStart, end: this._windowEnd});
+    },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _loadEventFired: function(event)
+    {
+        var data = /** @type {number} */ (event.data);
+        if (data)
+            this._loadEvents.push(data);
+        this.scheduleUpdate();
+    },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _domContentLoadedEventFired: function(event)
+    {
+        var data = /** @type {number} */ (event.data);
+        if (data)
+            this._domContentLoadedEvents.push(data);
+        this.scheduleUpdate();
     },
 
     /**
@@ -120,7 +149,7 @@ WebInspector.NetworkOverview.prototype = {
         var height = this._overviewContainer.offsetHeight;
         this._calculator.setDisplayWindow(width);
         this._resetCanvas(width, height);
-        var numBands = (((height - 1) / WebInspector.NetworkOverview._bandHeight) - 1) | 0;
+        var numBands = (((height - WebInspector.NetworkOverview._dividersBarHeight - 1) / WebInspector.NetworkOverview._bandHeight) - 1) | 0;
         this._numBands = (numBands > 0) ? numBands : 1;
         this.scheduleUpdate();
     },
@@ -145,6 +174,10 @@ WebInspector.NetworkOverview.prototype = {
         this._requestsList = [];
         /** @type {!Set.<!WebInspector.NetworkRequest>} */
         this._requestsSet = new Set();
+        /** @type {!Array.<number>} */
+        this._loadEvents = [];
+        /** @type {!Array.<number>} */
+        this._domContentLoadedEvents = [];
 
         // Clear screen.
         var width = this._overviewContainer.offsetWidth;
@@ -189,6 +222,7 @@ WebInspector.NetworkOverview.prototype = {
         var context = this._overviewCanvas.getContext("2d");
         var calculator = this._calculator;
         var linesByType = {};
+        var paddingTop = WebInspector.NetworkOverview._dividersBarHeight;
 
         /**
          * @param {string} type
@@ -203,7 +237,7 @@ WebInspector.NetworkOverview.prototype = {
             context.beginPath();
             context.strokeStyle = strokeStyle;
             for (var i = 0; i < n;) {
-                var y = lines[i++] * WebInspector.NetworkOverview._bandHeight + 2;
+                var y = lines[i++] * WebInspector.NetworkOverview._bandHeight + 2 + paddingTop;
                 var startTime = lines[i++];
                 var endTime = lines[i++];
                 if (endTime === Number.MAX_VALUE)
@@ -247,6 +281,9 @@ WebInspector.NetworkOverview.prototype = {
         context.clearRect(0, 0, this._overviewCanvas.width, this._overviewCanvas.height);
         context.save();
         context.scale(window.devicePixelRatio, window.devicePixelRatio);
+        context.fillStyle = "white";
+        context.lineWidth = 0;
+        context.fillRect(0, paddingTop, this._canvasWidth, this._canvasHeight - paddingTop);
         context.lineWidth = 2;
         drawLines(WebInspector.RequestTimeRangeNames.Total, "#CCCCCC");
         drawLines(WebInspector.RequestTimeRangeNames.Blocking, "#AAAAAA");
@@ -259,6 +296,25 @@ WebInspector.NetworkOverview.prototype = {
         drawLines(WebInspector.RequestTimeRangeNames.Sending, "#B0BEC5");
         drawLines(WebInspector.RequestTimeRangeNames.Waiting, "#00C853");
         drawLines(WebInspector.RequestTimeRangeNames.Receiving, "#03A9F4");
+
+        context.lineWidth = 1;
+        context.beginPath();
+        context.strokeStyle = "#8080FF"; // Keep in sync with .network-blue-divider CSS rule.
+        for (var i = this._domContentLoadedEvents.length; i >= 0; --i) {
+            var x = Math.round(calculator.computePosition(this._domContentLoadedEvents[i]));
+            context.moveTo(x + 0.5, 0);
+            context.lineTo(x + 0.5, this._canvasHeight);
+        }
+        context.stroke();
+        context.beginPath();
+        context.strokeStyle = "#FF8080"; // Keep in sync with .network-red-divider CSS rule.
+        for (var i = this._loadEvents.length; i >= 0; --i) {
+            var x = Math.round(calculator.computePosition(this._loadEvents[i]));
+            context.moveTo(x + 0.5, 0);
+            context.lineTo(x + 0.5, this._canvasHeight);
+        }
+        context.stroke();
+
         context.restore();
     },
 
@@ -268,6 +324,8 @@ WebInspector.NetworkOverview.prototype = {
      */
     _resetCanvas: function(width, height)
     {
+        this._canvasWidth = width;
+        this._canvasHeight = height;
         this._overviewCanvas.width = width * window.devicePixelRatio;
         this._overviewCanvas.height = height * window.devicePixelRatio;
         this._overviewGrid.updateDividers(this._calculator);

@@ -10,10 +10,10 @@
 WebInspector.ShortcutRegistry = function(actionRegistry, document)
 {
     this._actionRegistry = actionRegistry;
-    /** @type {!StringMultimap.<string>} */
-    this._defaultKeyToActions = new StringMultimap();
-    /** @type {!StringMultimap.<!WebInspector.KeyboardShortcut.Descriptor>} */
-    this._defaultActionToShortcut = new StringMultimap();
+    /** @type {!Multimap.<string, string>} */
+    this._defaultKeyToActions = new Multimap();
+    /** @type {!Multimap.<string, !WebInspector.KeyboardShortcut.Descriptor>} */
+    this._defaultActionToShortcut = new Multimap();
     this._registerBindings(document);
 }
 

@@ -64,8 +64,6 @@
     min-height: 18px;  /* Sync with ConsoleViewMessage.js */
     white-space: pre-wrap;
     -webkit-user-modify: read-write-plaintext-only;
-    display: flex;
-    align-items: center;
 }
 
 #console-prompt::before {
@@ -116,7 +114,7 @@
     top: 0.8em;
     width: 10px;
     height: 10px;
-    margin-top: -6px;
+    margin-top: -5px;
     -webkit-user-select: none;
     background-image: url(Images/statusbarButtonGlyphs.png);
     background-size: 320px 144px;

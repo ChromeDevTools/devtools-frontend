@@ -603,7 +603,7 @@ WebInspector.CPUProfileHeader.prototype = {
      */
     onChunkTransferred: function(reader)
     {
-        this.updateStatus(WebInspector.UIString("Loading\u2026 %d\%", Number.bytesToString(this._jsonifiedProfile.length)));
+        this.updateStatus(WebInspector.UIString("Loading\u2026 %d%%", Number.bytesToString(this._jsonifiedProfile.length)));
     },
 
     /**

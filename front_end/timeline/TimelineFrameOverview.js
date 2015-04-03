@@ -83,7 +83,6 @@ WebInspector.TimelineFrameOverview.prototype = {
      */
     reset: function()
     {
-        this._recordsPerBar = 1;
         /** @type {!Array.<!{startTime:number, endTime:number}>} */
         this._barTimes = [];
     },

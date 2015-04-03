@@ -17,6 +17,7 @@
     padding-left: 10px;
     padding-right: 10px;
     -webkit-user-select: none;
+    flex: none;
 }
 
 :host-context(body.inactive),

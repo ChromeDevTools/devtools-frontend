@@ -25,6 +25,7 @@
     { "name": "layers" },
     { "name": "promises" },
     { "name": "snippets"},
+    { "name": "accessibility"},
     { "name": "screencast", "condition": "remoteFrontend" },
 
     { "name": "heap_snapshot_worker", "type": "worker" },

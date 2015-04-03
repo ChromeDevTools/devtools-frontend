@@ -182,12 +182,6 @@ InspectorFrontendHostAPI.prototype = {
 
     bringToFront: function() { },
 
-    /**
-     * @param {string} browserId
-     * @param {string} url
-     */
-    openUrlOnRemoteDeviceAndInspect: function(browserId, url) { },
-
     closeWindow: function() { },
 
     copyText: function(text) { },
@@ -236,11 +230,6 @@ InspectorFrontendHostAPI.prototype = {
      * @param {string} message
      */
     sendMessageToBackend: function(message) { },
-
-    /**
-     * @param {boolean} enabled
-     */
-    setDeviceCountUpdatesEnabled: function(enabled) { },
 
     /**
      * @param {boolean} enabled
@@ -600,23 +589,6 @@ WebInspector.InspectorFrontendHostStub.prototype = {
     isUnderTest: function()
     {
         return false;
-    },
-
-    /**
-     * @override
-     * @param {string} browserId
-     * @param {string} url
-     */
-    openUrlOnRemoteDeviceAndInspect: function(browserId, url)
-    {
-    },
-
-    /**
-     * @override
-     * @param {boolean} enabled
-     */
-    setDeviceCountUpdatesEnabled: function(enabled)
-    {
     },
 
     /**

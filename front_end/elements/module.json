@@ -70,12 +70,14 @@
     ],
     "scripts": [
         "BezierUI.js",
+        "AnimationControlPane.js",
         "AnimationTimeline.js",
         "StylesPopoverHelper.js",
         "BezierEditor.js",
         "Spectrum.js",
         "ElementsBreadcrumbs.js",
         "ElementsSidebarPane.js",
+        "ElementsSidebarView.js",
         "ElementsTreeElement.js",
         "ElementsTreeOutline.js",
         "EventListenersSidebarPane.js",
@@ -86,10 +88,10 @@
         "StylesSidebarPane.js",
         "ComputedStyleSidebarPane.js",
         "ElementsPanel.js",
-        "AnimationsSidebarPane.js",
-        "AccessibilitySidebarPane.js"
+        "AnimationsSidebarPane.js"
     ],
     "stylesheets": [
+        "accessibilityNode.css",
         "animationTimeline.css",
         "bezierEditor.css",
         "breadcrumbs.css",

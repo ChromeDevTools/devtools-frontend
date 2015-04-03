@@ -112,7 +112,7 @@ WebInspector.CPUProfilerModel.prototype = {
         this._isRecording = true;
         this.target().profilerAgent().start();
         this.dispatchEventToListeners(WebInspector.CPUProfilerModel.EventTypes.ProfileStarted);
-        WebInspector.userMetrics.ProfilesCPUProfileTaken.record();
+        WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Actions.ProfilesCPUProfileTaken);
     },
 
     /**

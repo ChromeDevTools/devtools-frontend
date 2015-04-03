@@ -17,10 +17,13 @@
     "scripts": [
         "ApplicationCacheItemsView.js",
         "CookieItemsView.js",
+        "DatabaseModel.js",
+        "DOMStorageModel.js",
         "DOMStorageItemsView.js",
         "DatabaseQueryView.js",
         "DatabaseTableView.js",
         "DirectoryContentView.js",
+        "IndexedDBModel.js",
         "IndexedDBViews.js",
         "FileContentView.js",
         "FileSystemView.js",

@@ -108,7 +108,7 @@ WebInspector.ResourceTreeModel.prototype = {
         /** @type {!Object.<string, !WebInspector.ResourceTreeFrame>} */
         this._frames = {};
 
-        if (!this.target().isPage()) {
+        if (this.target().isDedicatedWorker()) {
             this._cachedResourcesProcessed = true;
             return;
         }
@@ -126,7 +126,13 @@ WebInspector.ResourceTreeModel.prototype = {
 
         this.dispatchEventToListeners(WebInspector.ResourceTreeModel.EventTypes.WillLoadCachedResources);
         this._inspectedPageURL = mainFramePayload.frame.url;
-        this._addFramesRecursively(null, mainFramePayload);
+
+        // Do not process SW resources.
+        if (this.target().isPage())
+            this._addFramesRecursively(null, mainFramePayload);
+        else
+            this._addSecurityOrigin(mainFramePayload.frame.securityOrigin);
+
         this._dispatchInspectedURLChanged();
         this._cachedResourcesProcessed = true;
         this.dispatchEventToListeners(WebInspector.ResourceTreeModel.EventTypes.CachedResourcesLoaded);

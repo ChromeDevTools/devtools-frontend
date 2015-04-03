@@ -13,6 +13,7 @@ div {
 
 div.error-icon,
 div.warning-icon,
+div.info-icon,
 div.device-icon,
 div.red-ball,
 div.green-ball,
@@ -24,6 +25,7 @@ div.orange-ball {
 @media (-webkit-min-device-pixel-ratio: 1.5) {
 div.error-icon,
 div.warning-icon,
+div.info-icon,
 div.device-icon,
 div.red-ball,
 div.green-ball,
@@ -38,6 +40,10 @@ div.error-icon {
 
 div.warning-icon {
     background-position: -202px -107px;
+}
+
+div.info-icon {
+    background-position: -213px -107px;
 }
 
 div.device-icon {

@@ -295,23 +295,27 @@ String.prototype.endsWith = function(substring)
 }
 
 /**
+ * @param {string|undefined} string
  * @return {number}
  */
-String.prototype.hashCode = function()
+String.hashCode = function(string)
 {
+    if (!string)
+        return 0;
     var result = 0;
-    for (var i = 0; i < this.length; ++i)
-        result = (result * 3 + this.charCodeAt(i)) | 0;
+    for (var i = 0; i < string.length; ++i)
+        result = (result * 3 + string.charCodeAt(i)) | 0;
     return result;
 }
 
 /**
+ * @param {string} string
  * @param {number} index
  * @return {boolean}
  */
-String.prototype.isDigitAt = function(index)
+String.isDigitAt = function(string, index)
 {
-    var c = this.charCodeAt(index);
+    var c = string.charCodeAt(index);
     return 48 <= c && c <= 57;
 }
 
@@ -1027,6 +1031,8 @@ String.tokenizeFormatString = function(format, formatters)
 
     var index = 0;
     for (var precentIndex = format.indexOf("%", index); precentIndex !== -1; precentIndex = format.indexOf("%", index)) {
+        if (format.length === index)  // unescaped % sign at the end of the format string.
+            break;
         addStringToken(format.substring(index, precentIndex));
         index = precentIndex + 1;
 
@@ -1037,10 +1043,10 @@ String.tokenizeFormatString = function(format, formatters)
             continue;
         }
 
-        if (format.isDigitAt(index)) {
+        if (String.isDigitAt(format, index)) {
             // The first character is a number, it might be a substitution index.
             var number = parseInt(format.substring(index), 10);
-            while (format.isDigitAt(index))
+            while (String.isDigitAt(format, index))
                 ++index;
 
             // If the number is greater than zero and ends with a "$",
@@ -1060,7 +1066,7 @@ String.tokenizeFormatString = function(format, formatters)
             if (isNaN(precision))
                 precision = 0;
 
-            while (format.isDigitAt(index))
+            while (String.isDigitAt(format, index))
                 ++index;
         }
 
@@ -1334,18 +1340,18 @@ Map.prototype.keysArray = function()
 
 /**
  * @constructor
- * @template T
+ * @template K, V
  */
-var StringMultimap = function()
+var Multimap = function()
 {
-    /** @type {!Map.<string, !Set.<!T>>} */
+    /** @type {!Map.<K, !Set.<!V>>} */
     this._map = new Map();
 }
 
-StringMultimap.prototype = {
+Multimap.prototype = {
     /**
-     * @param {string} key
-     * @param {T} value
+     * @param {K} key
+     * @param {V} value
      */
     set: function(key, value)
     {
@@ -1358,8 +1364,8 @@ StringMultimap.prototype = {
     },
 
     /**
-     * @param {string} key
-     * @return {!Set.<!T>}
+     * @param {K} key
+     * @return {!Set.<!V>}
      */
     get: function(key)
     {
@@ -1370,8 +1376,8 @@ StringMultimap.prototype = {
     },
 
     /**
-     * @param {string} key
-     * @param {T} value
+     * @param {K} key
+     * @param {V} value
      */
     remove: function(key, value)
     {
@@ -1382,7 +1388,7 @@ StringMultimap.prototype = {
     },
 
     /**
-     * @param {string} key
+     * @param {K} key
      */
     removeAll: function(key)
     {
@@ -1390,7 +1396,7 @@ StringMultimap.prototype = {
     },
 
     /**
-     * @return {!Array.<string>}
+     * @return {!Array.<K>}
      */
     keysArray: function()
     {
@@ -1398,7 +1404,7 @@ StringMultimap.prototype = {
     },
 
     /**
-     * @return {!Array.<!T>}
+     * @return {!Array.<!V>}
      */
     valuesArray: function()
     {

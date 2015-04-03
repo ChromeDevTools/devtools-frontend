@@ -80,6 +80,7 @@ WebInspector.TimelineModel.RecordType = {
     LayoutInvalidationTracking: "LayoutInvalidationTracking",
     LayerInvalidationTracking: "LayerInvalidationTracking",
     PaintInvalidationTracking: "PaintInvalidationTracking",
+    ScrollInvalidationTracking: "ScrollInvalidationTracking",
 
     ParseHTML: "ParseHTML",
     ParseAuthorStyleSheet: "ParseAuthorStyleSheet",
@@ -109,6 +110,12 @@ WebInspector.TimelineModel.RecordType = {
     GCEvent: "GCEvent",
     JSFrame: "JSFrame",
     JSSample: "JSSample",
+    // V8Sample events are coming from tracing and contain raw stacks with function addresses.
+    // After being processed with help of JitCodeAdded and JitCodeMoved events they
+    // get translated into function infos and stored as stacks in JSSample events.
+    V8Sample: "V8Sample",
+    JitCodeAdded: "JitCodeAdded",
+    JitCodeMoved: "JitCodeMoved",
 
     UpdateCounters: "UpdateCounters",
 
@@ -454,15 +461,16 @@ WebInspector.TimelineModel.prototype = {
                                  disabledByDefault("ipc.flow"),
                                  disabledByDefault("devtools.timeline.top-level-task"));
         }
+        if (Runtime.experiments.isEnabled("timelineTracingJSProfile") && enableJSSampling)
+            categoriesArray.push(disabledByDefault("v8.cpu_profile"));
         if (captureCauses || enableJSSampling)
             categoriesArray.push(disabledByDefault("devtools.timeline.stack"));
         if (captureCauses && Runtime.experiments.isEnabled("timelineInvalidationTracking"))
             categoriesArray.push(disabledByDefault("devtools.timeline.invalidationTracking"));
         if (capturePictures) {
-            categoriesArray = categoriesArray.concat([
-                disabledByDefault("devtools.timeline.layers"),
-                disabledByDefault("devtools.timeline.picture"),
-                disabledByDefault("blink.graphics_context_annotations")]);
+            categoriesArray.push(disabledByDefault("devtools.timeline.layers"),
+                                 disabledByDefault("devtools.timeline.picture"),
+                                 disabledByDefault("blink.graphics_context_annotations"));
         }
         var categories = categoriesArray.join(",");
         this._startRecordingWithCategories(categories, enableJSSampling);
@@ -642,7 +650,7 @@ WebInspector.TimelineModel.prototype = {
     {
         if (!this._targets.length)
             return;
-        if (enableJSSampling)
+        if (enableJSSampling && !Runtime.experiments.isEnabled("timelineTracingJSProfile"))
             this._startProfilingOnAllTargets();
         this._targets[0].tracingManager.start(this, categories, "");
     },
@@ -918,18 +926,25 @@ WebInspector.TimelineModel.prototype = {
      */
     _processThreadEvents: function(startTime, endTime, mainThread, thread)
     {
-        var events = thread.events();
+        var events = thread.events().stableSort(WebInspector.TracingModel.Event.compareStartTime);
         var asyncEvents = thread.asyncEvents();
 
-        var cpuProfileEvent = events.peekLast();
-        if (cpuProfileEvent && cpuProfileEvent.name === WebInspector.TimelineModel.RecordType.CpuProfile) {
-            var cpuProfile = cpuProfileEvent.args["data"]["cpuProfile"];
-            if (cpuProfile) {
-                var jsSamples = WebInspector.TimelineJSProfileProcessor.generateTracingEventsFromCpuProfile(cpuProfile, thread);
-                events = events.mergeOrdered(jsSamples, WebInspector.TracingModel.Event.orderedCompareStartTime);
-                var jsFrameEvents = WebInspector.TimelineJSProfileProcessor.generateJSFrameEvents(events);
-                events = jsFrameEvents.mergeOrdered(events, WebInspector.TracingModel.Event.orderedCompareStartTime);
+        var jsSamples;
+        if (Runtime.experiments.isEnabled("timelineTracingJSProfile")) {
+            jsSamples = WebInspector.TimelineJSProfileProcessor.processRawV8Samples(events);
+        } else {
+            var cpuProfileEvent = events.peekLast();
+            if (cpuProfileEvent && cpuProfileEvent.name === WebInspector.TimelineModel.RecordType.CpuProfile) {
+                var cpuProfile = cpuProfileEvent.args["data"]["cpuProfile"];
+                if (cpuProfile)
+                    jsSamples = WebInspector.TimelineJSProfileProcessor.generateTracingEventsFromCpuProfile(cpuProfile, thread);
             }
+        }
+
+        if (jsSamples) {
+            events = events.mergeOrdered(jsSamples, WebInspector.TracingModel.Event.orderedCompareStartTime);
+            var jsFrameEvents = WebInspector.TimelineJSProfileProcessor.generateJSFrameEvents(events);
+            events = jsFrameEvents.mergeOrdered(events, WebInspector.TracingModel.Event.orderedCompareStartTime);
         }
 
         var threadEvents;
@@ -1062,6 +1077,7 @@ WebInspector.TimelineModel.prototype = {
         case recordTypes.LayoutInvalidationTracking:
         case recordTypes.LayerInvalidationTracking:
         case recordTypes.PaintInvalidationTracking:
+        case recordTypes.ScrollInvalidationTracking:
             this._invalidationTracker.addInvalidation(new WebInspector.InvalidationTrackingEvent(event));
             break;
 
@@ -1897,7 +1913,7 @@ WebInspector.InvalidationTracker.prototype = {
         for (var i = 0; i < styleInvalidatorInvalidation.invalidationList.length; i++) {
             var setId = styleInvalidatorInvalidation.invalidationList[i]["id"];
             var lastScheduleStyleRecalculation;
-            var nodeInvalidations = this._invalidationsByNodeId[styleInvalidatorInvalidation.nodeId];
+            var nodeInvalidations = this._invalidationsByNodeId[styleInvalidatorInvalidation.nodeId] || [];
             for (var j = 0; j < nodeInvalidations.length; j++) {
                 var invalidation = nodeInvalidations[j];
                 if (invalidation.frame !== frameId || invalidation.invalidationSet !== setId || invalidation.type !== WebInspector.TimelineModel.RecordType.ScheduleStyleInvalidationTracking)
@@ -1966,7 +1982,8 @@ WebInspector.InvalidationTracker.prototype = {
         var paintFrameId = paintEvent.args["data"]["frame"];
         var types = [WebInspector.TimelineModel.RecordType.StyleRecalcInvalidationTracking,
             WebInspector.TimelineModel.RecordType.LayoutInvalidationTracking,
-            WebInspector.TimelineModel.RecordType.PaintInvalidationTracking];
+            WebInspector.TimelineModel.RecordType.PaintInvalidationTracking,
+            WebInspector.TimelineModel.RecordType.ScrollInvalidationTracking];
         for (var invalidation of this._invalidationsOfTypes(types)) {
             if (invalidation.paintId === effectivePaintId)
                 this._addInvalidationToEvent(paintEvent, paintFrameId, invalidation);

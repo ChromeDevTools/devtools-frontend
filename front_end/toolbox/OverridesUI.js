@@ -249,7 +249,7 @@ WebInspector.OverridesUI.createUserAgentSelectAndInput = function()
 }
 
 /** @type {!Array.<*>} */
-WebInspector.OverridesUI._phones = [
+WebInspector.OverridesUI.phones = [
     {title: "Apple iPhone 4", width: 320, height: 480, deviceScaleFactor: 2, userAgent: "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_2_1 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8C148 Safari/6533.18.5", touch: true, mobile: true},
     {title: "Apple iPhone 5", width: 320, height: 568, deviceScaleFactor: 2, userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 7_0 like Mac OS X; en-us) AppleWebKit/537.51.1 (KHTML, like Gecko) Version/7.0 Mobile/11A465 Safari/9537.53", touch: true, mobile: true},
     {title: "Apple iPhone 6", width: 375, height: 667, deviceScaleFactor: 2, userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/600.1.3 (KHTML, like Gecko) Version/8.0 Mobile/12A4345d Safari/600.1.4", touch: true, mobile: true},
@@ -265,7 +265,7 @@ WebInspector.OverridesUI._phones = [
 ];
 
 /** @type {!Array.<*>} */
-WebInspector.OverridesUI._tablets = [
+WebInspector.OverridesUI.tablets = [
     {title: "Amazon Kindle Fire HDX", width: 2560, height: 1600, deviceScaleFactor: 2, userAgent: "Mozilla/5.0 (Linux; U; en-us; KFAPWI Build/JDQ39) AppleWebKit/535.19 (KHTML, like Gecko) Silk/3.13 Safari/535.19 Silk-Accelerated=true", touch: true, mobile: true},
     {title: "Apple iPad Mini", width: 1024, height: 768, deviceScaleFactor: 1, userAgent: "Mozilla/5.0 (iPad; CPU OS 4_3_5 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8L1 Safari/6533.18.5", touch: true, mobile: true},
     {title: "Apple iPad", width: 1024, height: 768, deviceScaleFactor: 2, userAgent: "Mozilla/5.0 (iPad; CPU OS 7_0 like Mac OS X) AppleWebKit/537.51.1 (KHTML, like Gecko) Version/7.0 Mobile/11A465 Safari/9537.53", touch: true, mobile: true},
@@ -277,7 +277,7 @@ WebInspector.OverridesUI._tablets = [
 ];
 
 /** @type {!Array.<*>} */
-WebInspector.OverridesUI._notebooks = [
+WebInspector.OverridesUI.notebooks = [
     {title: "Laptop with touch", width: 1280, height: 950, deviceScaleFactor: 1, userAgent: "", touch: true, mobile: false},
     {title: "Laptop with HiDPI screen", width: 1440, height: 900, deviceScaleFactor: 2, userAgent: "", touch: false, mobile: false},
     {title: "Laptop with MDPI screen", width: 1280, height: 800, deviceScaleFactor: 1, userAgent: "", touch: false, mobile: false}

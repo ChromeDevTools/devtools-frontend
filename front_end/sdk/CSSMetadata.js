@@ -46,6 +46,8 @@ WebInspector.CSSMetadata = function(properties)
             continue;
         }
         var propertyName = property.name;
+        if (!CSS.supports(propertyName, "initial"))
+            continue;
         this._values.push(propertyName);
 
         var longhands = properties[i].longhands;
@@ -540,16 +542,16 @@ WebInspector.CSSMetadata._propertyDataMap = {
     "transition-timing-function": { values: [
         "ease", "linear", "ease-in", "ease-out", "ease-in-out", "step-start", "step-end", "steps", "cubic-bezier"
     ] },
-    "-webkit-animation-timing-function": { values: [
+    "animation-timing-function": { values: [
         "ease", "linear", "ease-in", "ease-out", "ease-in-out", "step-start", "step-end", "steps", "cubic-bezier"
     ] },
-    "-webkit-animation-direction": { values: [
+    "animation-direction": { values: [
         "normal", "reverse", "alternate", "alternate-reverse"
     ] },
-    "-webkit-animation-play-state": { values: [
+    "animation-play-state": { values: [
         "running", "paused"
     ] },
-    "-webkit-animation-fill-mode": { values: [
+    "animation-fill-mode": { values: [
         "none", "forwards", "backwards", "both"
     ] },
     "-webkit-backface-visibility": { values: [
@@ -650,7 +652,15 @@ WebInspector.CSSMetadata.Weight = {
     "align-content": 57,
     "align-items": 129,
     "align-self": 55,
-    "animation": 24,
+    "animation": 175,
+    "animation-delay": 114,
+    "animation-direction": 113,
+    "animation-duration": 137,
+    "animation-fill-mode": 132,
+    "animation-iteration-count": 124,
+    "animation-name": 139,
+    "animation-play-state": 104,
+    "animation-timing-function": 141,
     "backface-visibility": 123,
     "background": 249,
     "background-attachment": 119,
@@ -818,15 +828,6 @@ WebInspector.CSSMetadata.Weight = {
     "unicode-range": 136,
     "vertical-align": 236,
     "visibility": 242,
-    "-webkit-animation": 175,
-    "-webkit-animation-delay": 114,
-    "-webkit-animation-direction": 113,
-    "-webkit-animation-duration": 137,
-    "-webkit-animation-fill-mode": 132,
-    "-webkit-animation-iteration-count": 124,
-    "-webkit-animation-name": 139,
-    "-webkit-animation-play-state": 104,
-    "-webkit-animation-timing-function": 141,
     "-webkit-appearance": 191,
     "-webkit-backface-visibility": 154,
     "-webkit-background-clip": 164,

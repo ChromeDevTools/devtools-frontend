@@ -70,13 +70,6 @@ WebInspector.AuditsPanel = function()
 }
 
 WebInspector.AuditsPanel.prototype = {
-    /**
-     * @return {boolean}
-     */
-    canSearch: function()
-    {
-        return false;
-    },
 
     /**
      * @return {!Object.<string, !WebInspector.AuditCategory>}

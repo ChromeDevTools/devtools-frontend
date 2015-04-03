@@ -48,6 +48,7 @@ WebInspector.TracingModel.MetadataEvent = {
 }
 
 WebInspector.TracingModel.DevToolsMetadataEventCategory = "disabled-by-default-devtools.timeline";
+WebInspector.TracingModel.DevToolsTimelineEventCategory = "disabled-by-default-devtools.timeline";
 
 WebInspector.TracingModel.ConsoleEventCategory = "blink.console";
 WebInspector.TracingModel.TopLevelEventCategory = "disabled-by-default-devtools.timeline.top-level-task";
@@ -914,6 +915,7 @@ WebInspector.TracingModel.Thread.prototype = {
             : WebInspector.TracingModel.Event.fromPayload(payload, this);
         if (payload.ph === WebInspector.TracingModel.Phase.Begin)
             this._stack.push(event);
+        // TODO(alph): According to the spec events are not required to come in a sorted order.
         if (this._events.length && this._events.peekLast().startTime > event.startTime)
             console.assert(false, "Event is out of order: " + event.name);
         this._events.push(event);

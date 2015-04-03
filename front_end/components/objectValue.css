@@ -18,6 +18,21 @@
     background-color: rgba(56, 121, 217, 0.1);
 }
 
+.object-value-function::before {
+    content: "function";
+    color: rgb(170, 13, 145);
+    padding-right: 5px;
+}
+
+.object-value-function {
+    font-style: italic;
+}
+
+.object-value-function:hover > span {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .object-value-object,
 .object-value-map,
 .object-value-set,

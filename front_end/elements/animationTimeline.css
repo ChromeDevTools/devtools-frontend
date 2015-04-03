@@ -19,6 +19,7 @@
     border-right: 1px solid #ccc;
     position: relative;
     transform-style: preserve-3d;
+    line-height: 40px;
 }
 
 .animation-node-row:nth-child(odd) {

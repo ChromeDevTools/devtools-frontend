@@ -236,6 +236,13 @@ select.status-bar-item {
     border-right: 1px solid #CCC;
 }
 
+.status-bar-group-label {
+    margin-left: 6px;
+    margin-right: 3px;
+    color: #888;
+}
+
+
 /* Predefined items */
 
 .dock-status-bar-item.toggled-undocked .glyph {
@@ -319,6 +326,14 @@ select.status-bar-item {
 
 button.record-status-bar-item.toggled-on .glyph {
     -webkit-mask-position: -288px -24px;
+    background-color: rgb(216, 0, 0) !important;
+}
+
+.record-filmstrip-status-bar-item .glyph {
+    -webkit-mask-position: -96px -24px;
+}
+
+button.record-filmstrip-status-bar-item.toggled-on .glyph {
     background-color: rgb(216, 0, 0) !important;
 }
 

@@ -283,7 +283,6 @@ WebInspector.TimelineFlameChartDataProvider = function(model, frameModel)
 }
 
 WebInspector.TimelineFlameChartDataProvider.InstantEventVisibleDurationMs = 0.001;
-WebInspector.TimelineFlameChartDataProvider.JSFrameCoalesceThresholdMs = 1.1;
 
 WebInspector.TimelineFlameChartDataProvider.prototype = {
     /**
@@ -297,7 +296,8 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
         if (event) {
             if (event.phase === WebInspector.TracingModel.Phase.AsyncStepInto || event.phase === WebInspector.TracingModel.Phase.AsyncStepPast)
                 return event.name + ":" + event.args["step"];
-
+            if (event._blackboxRoot)
+                return WebInspector.UIString("Blackboxed");
             var name = WebInspector.TimelineUIUtils.eventStyle(event).title;
             // TODO(yurys): support event dividers
             var detailsText = WebInspector.TimelineUIUtils.buildDetailsTextForTraceEvent(event, this._model.target());
@@ -315,6 +315,20 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
 
     /**
      * @override
+     * @param {number} index
+     * @return {string}
+     */
+    textColor: function(index)
+    {
+        var event = this._entryEvents[index];
+        if (event && event._blackboxRoot)
+            return "#888";
+        else
+            return WebInspector.TimelineFlameChartDataProviderBase.prototype.textColor.call(this, index);
+    },
+
+    /**
+     * @override
      */
     reset: function()
     {
@@ -326,6 +340,8 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
         this._markers = [];
         this._entryIndexToFrame = {};
         this._asyncColorByCategory = {};
+        /** @type {!Map<string, boolean>} */
+        this._blackboxingURLCache = new Map();
     },
 
     /**
@@ -343,7 +359,8 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
         this._minimumBoundary = this._model.minimumRecordTime();
         this._timeSpan = this._model.isEmpty() ?  1000 : this._model.maximumRecordTime() - this._minimumBoundary;
         this._currentLevel = 0;
-        this._appendFrameBars(this._frameModel.frames());
+        if (this._frameModel)
+            this._appendFrameBars(this._frameModel.frames());
         this._appendThreadTimelineData(WebInspector.UIString("Main Thread"), this._model.mainThreadEvents(), this._model.mainThreadAsyncEvents());
         if (Runtime.experiments.isEnabled("gpuTimeline"))
             this._appendGPUEvents();
@@ -389,6 +406,7 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
     {
         var openEvents = [];
         var flowEventsEnabled = Runtime.experiments.isEnabled("timelineFlowEvents");
+        var blackboxingEnabled = Runtime.experiments.isEnabled("blackboxJSFramesOnTimeline");
 
         /**
          * @param {!WebInspector.TracingModel.Event} event
@@ -416,6 +434,13 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
             }
             while (openEvents.length && openEvents.peekLast().endTime <= e.startTime)
                 openEvents.pop();
+            e._blackboxRoot = false;
+            if (blackboxingEnabled && this._isBlackboxedEvent(e)) {
+                var parent = openEvents.peekLast();
+                if (parent && parent._blackboxRoot)
+                    continue;
+                e._blackboxRoot = true;
+            }
             if (headerName) {
                 this._appendHeaderRecord(headerName, this._currentLevel++);
                 headerName = null;
@@ -429,6 +454,31 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
                 openEvents.push(e);
         }
         this._currentLevel += maxStackDepth;
+    },
+
+    /**
+     * @param {!WebInspector.TracingModel.Event} event
+     * @return {boolean}
+     */
+    _isBlackboxedEvent: function(event)
+    {
+        if (event.name !== WebInspector.TimelineModel.RecordType.JSFrame)
+            return false;
+        var url = event.args["data"]["url"];
+        return url && this._isBlackboxedURL(url);
+    },
+
+    /**
+     * @param {string} url
+     * @return {boolean}
+     */
+    _isBlackboxedURL: function(url)
+    {
+        if (this._blackboxingURLCache.has(url))
+            return /** @type {boolean} */ (this._blackboxingURLCache.get(url));
+        var result = WebInspector.BlackboxSupport.isBlackboxedURL(url);
+        this._blackboxingURLCache.set(url, result);
+        return result;
     },
 
     /**
@@ -1375,6 +1425,7 @@ WebInspector.TimelineFlameChartView = function(delegate, timelineModel, frameMod
     this._model.addEventListener(WebInspector.TimelineModel.Events.RecordingStarted, this._onRecordingStarted, this);
     this._mainView.addEventListener(WebInspector.FlameChart.Events.EntrySelected, this._onMainEntrySelected, this);
     this._networkView.addEventListener(WebInspector.FlameChart.Events.EntrySelected, this._onNetworkEntrySelected, this);
+    WebInspector.BlackboxSupport.addChangeListener(this._refresh, this);
 }
 
 WebInspector.TimelineFlameChartView.prototype = {
@@ -1386,6 +1437,7 @@ WebInspector.TimelineFlameChartView.prototype = {
         this._model.removeEventListener(WebInspector.TimelineModel.Events.RecordingStarted, this._onRecordingStarted, this);
         this._mainView.removeEventListener(WebInspector.FlameChart.Events.EntrySelected, this._onMainEntrySelected, this);
         this._networkView.removeEventListener(WebInspector.FlameChart.Events.EntrySelected, this._onNetworkEntrySelected, this);
+        WebInspector.BlackboxSupport.removeChangeListener(this._refresh, this);
     },
 
     /**
@@ -1414,10 +1466,7 @@ WebInspector.TimelineFlameChartView.prototype = {
      */
     refreshRecords: function(textFilter)
     {
-        this._dataProvider.reset();
-        this._mainView.scheduleUpdate();
-        this._networkDataProvider.reset();
-        this._networkView.scheduleUpdate();
+        this._refresh();
     },
 
     /**
@@ -1524,13 +1573,22 @@ WebInspector.TimelineFlameChartView.prototype = {
 
     /**
      * @param {boolean} enable
+     * @param {boolean=} animate
      */
-    enableNetworkPane: function(enable)
+    enableNetworkPane: function(enable, animate)
     {
         if (enable)
-            this._splitView.showBoth(true);
+            this._splitView.showBoth(animate);
         else
-            this._splitView.hideSidebar(true);
+            this._splitView.hideSidebar(animate);
+    },
+
+    _refresh: function()
+    {
+        this._dataProvider.reset();
+        this._mainView.scheduleUpdate();
+        this._networkDataProvider.reset();
+        this._networkView.scheduleUpdate();
     },
 
     __proto__: WebInspector.VBox.prototype

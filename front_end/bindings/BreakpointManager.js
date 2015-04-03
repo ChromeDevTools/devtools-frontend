@@ -49,8 +49,8 @@ WebInspector.BreakpointManager = function(breakpointStorage, workspace, networkM
     this._breakpointsActive = true;
     this._breakpointsForUISourceCode = new Map();
     this._breakpointsForPrimaryUISourceCode = new Map();
-    /** @type {!StringMultimap.<!WebInspector.BreakpointManager.Breakpoint>} */
-    this._provisionalBreakpoints = new StringMultimap();
+    /** @type {!Multimap.<string, !WebInspector.BreakpointManager.Breakpoint>} */
+    this._provisionalBreakpoints = new Multimap();
 
     this._workspace.addEventListener(WebInspector.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
     this._workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);

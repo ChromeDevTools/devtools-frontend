@@ -487,6 +487,7 @@ WebInspector.HeapSnapshotView.prototype = {
     {
         this._profile._loadPromise.then(profileCallback.bind(this));
 
+
         /**
          * @param {!WebInspector.HeapSnapshotProxy} heapSnapshotProxy
          * @this {WebInspector.HeapSnapshotView}
@@ -494,15 +495,35 @@ WebInspector.HeapSnapshotView.prototype = {
         function profileCallback(heapSnapshotProxy)
         {
             heapSnapshotProxy.getStatistics().then(this._gotStatistics.bind(this));
-            if (this._profile.profileType().id === WebInspector.TrackingHeapSnapshotProfileType.TypeId)
-                heapSnapshotProxy.getSamples().then(this._gotSamples.bind(this));
+            if (this._profile.profileType().id === WebInspector.TrackingHeapSnapshotProfileType.TypeId && this._profile.fromFile())
+                heapSnapshotProxy.getSamples().then(didGetSamples.bind(this, heapSnapshotProxy));
+            else
+                setSnapshotProxy.call(this, heapSnapshotProxy);
+        }
+
+        /**
+         * @param {!WebInspector.HeapSnapshotProxy} heapSnapshotProxy
+         * @param {?WebInspector.HeapSnapshotCommon.Samples} samples
+         * @this {WebInspector.HeapSnapshotView}
+         */
+        function didGetSamples(heapSnapshotProxy, samples)
+        {
+            setSnapshotProxy.call(this, heapSnapshotProxy);
+            this._trackingOverviewGrid._setSamples(samples);
+        }
+
+        /**
+         * @param {!WebInspector.HeapSnapshotProxy} heapSnapshotProxy
+         * @this {WebInspector.HeapSnapshotView}
+         */
+        function setSnapshotProxy(heapSnapshotProxy)
+        {
             var list = this._profiles();
             var profileIndex = list.indexOf(this._profile);
             this._baseSelect.setSelectedIndex(Math.max(0, profileIndex - 1));
             this._dataGrid.setDataSource(heapSnapshotProxy);
-            if (this._trackingOverviewGrid)
-                this._trackingOverviewGrid._updateGrid();
         }
+
     },
 
     /**
@@ -517,14 +538,6 @@ WebInspector.HeapSnapshotView.prototype = {
         this._statisticsView.addRecord(statistics.native, WebInspector.UIString("Typed Arrays"), "#fc5");
         this._statisticsView.addRecord(statistics.system, WebInspector.UIString("System Objects"), "#98f");
         this._statisticsView.addRecord(statistics.total, WebInspector.UIString("Total"));
-    },
-
-    /**
-     * @param {?WebInspector.HeapSnapshotCommon.Samples} samples
-     */
-    _gotSamples: function(samples)
-    {
-        this._trackingOverviewGrid._setSamples(samples);
     },
 
     _onIdsRangeChanged: function(event)
@@ -1101,7 +1114,7 @@ WebInspector.HeapSnapshotProfileType.prototype = {
     buttonClicked: function()
     {
         this._takeHeapSnapshot(function() {});
-        WebInspector.userMetrics.ProfilesHeapProfileTaken.record();
+        WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Actions.ProfilesHeapProfileTaken);
         return false;
     },
 
@@ -1171,7 +1184,7 @@ WebInspector.HeapSnapshotProfileType.prototype = {
         if (!profile)
             return;
         var data = /** @type {{done: number, total: number, finished: boolean}} */ (event.data);
-        profile.updateStatus(WebInspector.UIString("%.0f%", (data.done / data.total) * 100), true);
+        profile.updateStatus(WebInspector.UIString("%.0f%%", (data.done / data.total) * 100), true);
         if (data.finished)
             profile._prepareToLoad();
     },
@@ -1206,6 +1219,24 @@ WebInspector.TrackingHeapSnapshotProfileType.TypeId = "HEAP-RECORD";
 WebInspector.TrackingHeapSnapshotProfileType.HeapStatsUpdate = "HeapStatsUpdate";
 WebInspector.TrackingHeapSnapshotProfileType.TrackingStarted = "TrackingStarted";
 WebInspector.TrackingHeapSnapshotProfileType.TrackingStopped = "TrackingStopped";
+
+
+/**
+ * @constructor
+ */
+WebInspector.TrackingHeapSnapshotProfileType.Samples = function()
+{
+    /** @type {!Array.<number>} */
+    this.sizes = [];
+    /** @type {!Array.<number>} */
+    this.ids = [];
+    /** @type {!Array.<number>} */
+    this.timestamps = [];
+    /** @type {!Array.<number>} */
+    this.max = [];
+    /** @type {number} */
+    this.totalTime = 30000;
+}
 
 WebInspector.TrackingHeapSnapshotProfileType.prototype = {
 
@@ -1319,14 +1350,7 @@ WebInspector.TrackingHeapSnapshotProfileType.prototype = {
     {
         var target =  WebInspector.context.flavor(WebInspector.Target);
         this.setProfileBeingRecorded(new WebInspector.HeapProfileHeader(target, this, undefined, withAllocationStacks));
-        this._lastSeenIndex = -1;
-        this._profileSamples = {
-            "sizes": [],
-            "ids": [],
-            "timestamps": [],
-            "max": [],
-            "totalTime": 30000
-        };
+        this._profileSamples = new WebInspector.TrackingHeapSnapshotProfileType.Samples();
         this._profileBeingRecorded._profileSamples = this._profileSamples;
         this._recording = true;
         this.addProfile(this._profileBeingRecorded);
@@ -1366,6 +1390,15 @@ WebInspector.TrackingHeapSnapshotProfileType.prototype = {
         return this._recording;
     },
 
+    /**
+     * @override
+     * @return {string}
+     */
+    fileExtension: function()
+    {
+        return ".heaptimeline";
+    },
+
     get treeItemTitle()
     {
         return WebInspector.UIString("HEAP TIMELINES");
@@ -1387,7 +1420,6 @@ WebInspector.TrackingHeapSnapshotProfileType.prototype = {
         this.setProfileBeingRecorded(null);
         WebInspector.HeapSnapshotProfileType.prototype._resetProfiles.call(this);
         this._profileSamples = null;
-        this._lastSeenIndex = -1;
         if (wasRecording)
             this._addNewProfile(recordingAllocationStacks);
     },
@@ -1631,7 +1663,7 @@ WebInspector.HeapProfileHeader.prototype = {
     _updateSaveProgress: function(value, total)
     {
         var percentValue = ((total ? (value / total) : 0) * 100).toFixed(0);
-        this.updateStatus(WebInspector.UIString("Saving\u2026 %d\%", percentValue));
+        this.updateStatus(WebInspector.UIString("Saving\u2026 %d%%", percentValue));
     },
 
     /**
@@ -1779,16 +1811,14 @@ WebInspector.HeapTrackingOverviewGrid = function(heapProfileHeader)
     this._overviewCalculator = new WebInspector.HeapTrackingOverviewGrid.OverviewCalculator();
     this._overviewGrid.addEventListener(WebInspector.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
 
-    this._profileSamples = heapProfileHeader._profileSamples;
-    if (heapProfileHeader.profileType().profileBeingRecorded() === heapProfileHeader) {
-        this._profileType = heapProfileHeader.profileType();
+    this._profileSamples = heapProfileHeader.fromFile() ? new WebInspector.TrackingHeapSnapshotProfileType.Samples() : heapProfileHeader._profileSamples;
+    this._profileType = heapProfileHeader.profileType();
+    if (!heapProfileHeader.fromFile() && heapProfileHeader.profileType().profileBeingRecorded() === heapProfileHeader) {
         this._profileType.addEventListener(WebInspector.TrackingHeapSnapshotProfileType.HeapStatsUpdate, this._onHeapStatsUpdate, this);
         this._profileType.addEventListener(WebInspector.TrackingHeapSnapshotProfileType.TrackingStopped, this._onStopTracking, this);
     }
-    var timestamps = this._profileSamples.timestamps;
-    var totalTime = this._profileSamples.totalTime;
     this._windowLeft = 0.0;
-    this._windowRight = totalTime && timestamps.length ? (timestamps[timestamps.length - 1] - timestamps[0]) / totalTime : 1.0;
+    this._windowRight = 1.0;
     this._overviewGrid.setWindow(this._windowLeft, this._windowRight);
     this._yScale = new WebInspector.HeapTrackingOverviewGrid.SmoothScale();
     this._xScale = new WebInspector.HeapTrackingOverviewGrid.SmoothScale();
@@ -1821,17 +1851,14 @@ WebInspector.HeapTrackingOverviewGrid.prototype = {
     {
         if (!samples)
             return;
-        var profileSamples = this._profileSamples;
-        console.assert(!profileSamples || profileSamples.ids.length === samples.lastAssignedIds.length);
-        var totalTime = profileSamples ? profileSamples.totalTime : samples.timestamps.peekLast();
-        var max = profileSamples ? profileSamples.max : samples.sizes;
-        this._profileSamples = {
-            "sizes": samples.sizes,
-            "ids": samples.lastAssignedIds,
-            "timestamps": samples.timestamps,
-            "max": max,
-            "totalTime": totalTime
-        };
+        console.assert(!this._profileSamples.timestamps.length, "Should only call this method when loading from file.");
+        console.assert(samples.timestamps.length);
+        this._profileSamples = new WebInspector.TrackingHeapSnapshotProfileType.Samples();
+        this._profileSamples.sizes = samples.sizes;
+        this._profileSamples.ids = samples.lastAssignedIds;
+        this._profileSamples.timestamps = samples.timestamps;
+        this._profileSamples.max = samples.sizes;
+        this._profileSamples.totalTime = /** @type{number} */(samples.timestamps.peekLast());
         this.update();
     },
 

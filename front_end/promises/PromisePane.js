@@ -53,7 +53,8 @@ WebInspector.PromisePane = function()
         { id: "settled", title: WebInspector.UIString("Settled"), weight: 10 },
         { id: "tts", title: WebInspector.UIString("Time to settle"), weight: 10 }
     ];
-    this._dataGrid = new WebInspector.DataGrid(columns, undefined, undefined, undefined, this._onContextMenu.bind(this));
+    this._dataGrid = new WebInspector.ViewportDataGrid(columns, undefined, undefined, undefined, this._onContextMenu.bind(this));
+    this._dataGrid.setStickToBottom(true);
     this._dataGrid.show(this._dataGridContainer.element);
 
     this._linkifier = new WebInspector.Linkifier();
@@ -75,8 +76,7 @@ WebInspector.PromisePane = function()
     WebInspector.targetManager.observeTargets(this);
 }
 
-// FIXME: Bump the limit up once we use viewport DataGrid.
-WebInspector.PromisePane._maxPromiseCount = 1000;
+WebInspector.PromisePane._maxPromiseCount = 10000;
 
 WebInspector.PromisePane.prototype = {
     /**
@@ -285,7 +285,7 @@ WebInspector.PromisePane.prototype = {
 
             // Check for the fast path on GC events.
             if (eventType === "gc" && node && node.parent && !this._filter.shouldHideCollectedPromises())
-                node.element().classList.add("promise-gc");
+                node.update(details);
             else
                 this._attachDataGridNode(details);
 
@@ -306,8 +306,6 @@ WebInspector.PromisePane.prototype = {
         var parentNode = this._findVisibleParentNodeDetails(details);
         if (parentNode !== node.parent)
             parentNode.appendChild(node);
-        if (details.__isGarbageCollected)
-            node.element().classList.add("promise-gc");
         if (this._filter.shouldBeVisible(details, node))
             parentNode.expanded = true;
         else
@@ -342,40 +340,12 @@ WebInspector.PromisePane.prototype = {
      */
     _createDataGridNode: function(details)
     {
-        var title = "";
-        switch (details.status) {
-        case "pending":
-            title = WebInspector.UIString("Pending");
-            break;
-        case "resolved":
-            title = WebInspector.UIString("Fulfilled");
-            break;
-        case "rejected":
-            title = WebInspector.UIString("Rejected");
-            break;
-        }
-        if (details.__isGarbageCollected)
-            title += " " + WebInspector.UIString("(garbage collected)");
-
-        var statusElement = createElementWithClass("div", "status " + details.status);
-        statusElement.title = title;
-        var data = {
-            status: statusElement,
-            promiseId: details.id,
-            function: WebInspector.beautifyFunctionName(details.callFrame ? details.callFrame.functionName : "")
-        };
-        if (details.callFrame)
-            data.created = this._linkifier.linkifyConsoleCallFrame(this._target, details.callFrame);
-        if (details.settlementStack && details.settlementStack[0])
-            data.settled = this._linkifier.linkifyConsoleCallFrame(this._target, details.settlementStack[0]);
-        if (details.creationTime && details.settlementTime && details.settlementTime >= details.creationTime)
-            data.tts = Number.millisToString(details.settlementTime - details.creationTime);
         var node = this._promiseIdToNode.get(details.id);
         if (!node) {
-            node = new WebInspector.DataGridNode(data, false);
+            node = new WebInspector.PromiseDataGridNode(details, this._target, this._linkifier, this._dataGrid);
             this._promiseIdToNode.set(details.id, node);
         } else {
-            node.data = data;
+            node.update(details);
         }
         return node;
     },
@@ -415,8 +385,6 @@ WebInspector.PromisePane.prototype = {
             var node = nodesToInsert[id].node;
             var details = nodesToInsert[id].details;
             node.expanded = true;
-            if (details.__isGarbageCollected)
-                node.element().classList.add("promise-gc");
         }
 
         this._updateFilterStatus();
@@ -442,7 +410,7 @@ WebInspector.PromisePane.prototype = {
         if (!target)
             return;
 
-        var promiseId = node.data.promiseId;
+        var promiseId = node.promiseId();
         if (this._promiseDetailsByTarget.has(target)) {
             var details = this._promiseDetailsByTarget.get(target).get(promiseId);
             if (details.__isGarbageCollected)
@@ -492,7 +460,7 @@ WebInspector.PromisePane.prototype = {
         var node = this._dataGrid.dataGridNodeFromNode(element);
         if (!node)
             return undefined;
-        var details = this._promiseDetailsByTarget.get(this._target).get(node.data.promiseId);
+        var details = this._promiseDetailsByTarget.get(this._target).get(node.promiseId());
         if (!details)
             return undefined;
         var anchor = element.enclosingNodeOrSelfWithClass("created-column");
@@ -509,7 +477,7 @@ WebInspector.PromisePane.prototype = {
     _showPopover: function(anchor, popover)
     {
         var node = this._dataGrid.dataGridNodeFromNode(anchor);
-        var details = this._promiseDetailsByTarget.get(this._target).get(node.data.promiseId);
+        var details = this._promiseDetailsByTarget.get(this._target).get(node.promiseId());
 
         var stackTrace;
         var asyncStackTrace;
@@ -527,6 +495,182 @@ WebInspector.PromisePane.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
+}
+
+/**
+ * @constructor
+ * @extends {WebInspector.ViewportDataGridNode}
+ * @param {!DebuggerAgent.PromiseDetails} details
+ * @param {!WebInspector.Target} target
+ * @param {!WebInspector.Linkifier} linkifier
+ * @param {!WebInspector.ViewportDataGrid} dataGrid
+ */
+WebInspector.PromiseDataGridNode = function(details, target, linkifier, dataGrid)
+{
+    WebInspector.ViewportDataGridNode.call(this, {});
+    this._details = details;
+    this._target = target;
+    this._linkifier = linkifier;
+    /** @type {!Array.<!Element>} */
+    this._linkifiedAnchors = [];
+    this.dataGrid = dataGrid;
+}
+
+WebInspector.PromiseDataGridNode.prototype = {
+    _disposeAnchors: function()
+    {
+        for (var i = 0; i < this._linkifiedAnchors.length; ++i)
+            this._linkifier.disposeAnchor(this._target, this._linkifiedAnchors[i]);
+        this._linkifiedAnchors = [];
+    },
+
+    /**
+     * @param {!DebuggerAgent.PromiseDetails} details
+     */
+    update: function(details)
+    {
+        this._disposeAnchors();
+        this._details = details;
+        this.refresh();
+    },
+
+    /**
+     * @override
+     */
+    wasDetached: function()
+    {
+        this._disposeAnchors();
+    },
+
+    /**
+     * @override
+     * @return {number}
+     */
+    nodeSelfHeight: function()
+    {
+        return 24;
+    },
+
+    /**
+     * @return {number}
+     */
+    promiseId: function()
+    {
+        return this._details.id;
+    },
+
+    /**
+     * @override
+     */
+    createCells: function()
+    {
+        this._element.classList.toggle("promise-gc", !!this._details.__isGarbageCollected);
+        WebInspector.ViewportDataGridNode.prototype.createCells.call(this);
+    },
+
+    /**
+     * @param {!Element} cell
+     * @param {?ConsoleAgent.CallFrame=} callFrame
+     */
+    _appendCallFrameAnchor: function(cell, callFrame)
+    {
+        if (!callFrame)
+            return;
+        var anchor = this._linkifier.linkifyConsoleCallFrame(this._target, callFrame);
+        this._linkifiedAnchors.push(anchor);
+        cell.appendChild(anchor);
+    },
+
+    /**
+     * @override
+     * @param {string} columnIdentifier
+     * @return {!Element}
+     */
+    createCell: function(columnIdentifier)
+    {
+        var cell = this.createTD(columnIdentifier);
+        var details = this._details;
+
+        switch (columnIdentifier) {
+        case "status":
+            var title = "";
+            switch (details.status) {
+            case "pending":
+                title = WebInspector.UIString("Pending");
+                break;
+            case "resolved":
+                title = WebInspector.UIString("Fulfilled");
+                break;
+            case "rejected":
+                title = WebInspector.UIString("Rejected");
+                break;
+            }
+            if (details.__isGarbageCollected)
+                title += " " + WebInspector.UIString("(garbage collected)");
+            cell.createChild("div", "status " + details.status).title = title;
+            break;
+
+        case "function":
+            cell.createTextChild(WebInspector.beautifyFunctionName(details.callFrame ? details.callFrame.functionName : ""));
+            break;
+
+        case "created":
+            this._appendCallFrameAnchor(cell, details.callFrame);
+            break;
+
+        case "settled":
+            this._appendCallFrameAnchor(cell, details.settlementStack ? details.settlementStack[0] : null);
+            break;
+
+        case "tts":
+            cell.createTextChild(this._ttsCellText());
+            break;
+        }
+
+        return cell;
+    },
+
+    /**
+     * @return {string}
+     */
+    _ttsCellText: function()
+    {
+        var details = this._details;
+        if (details.creationTime && details.settlementTime && details.settlementTime >= details.creationTime)
+            return Number.millisToString(details.settlementTime - details.creationTime);
+        return "";
+    },
+
+    /**
+     * @param {?ConsoleAgent.CallFrame=} callFrame
+     * @return {string}
+     */
+    _callFrameAnchorTextForSearch: function(callFrame)
+    {
+        if (!callFrame)
+            return "";
+        var script = callFrame.scriptId ? this._target.debuggerModel.scriptForId(callFrame.scriptId) : null;
+        var sourceURL = script ? script.sourceURL : callFrame.url;
+        var lineNumber = callFrame.lineNumber || 0;
+        return WebInspector.displayNameForURL(sourceURL) + ":" + lineNumber;
+    },
+
+    /**
+     * @return {string}
+     */
+    dataTextForSearch: function()
+    {
+        var details = this._details;
+        var texts = [
+            WebInspector.beautifyFunctionName(details.callFrame ? details.callFrame.functionName : ""),
+            this._callFrameAnchorTextForSearch(details.callFrame),
+            this._callFrameAnchorTextForSearch(details.settlementStack ? details.settlementStack[0] : null),
+            this._ttsCellText().replace(/\u2009/g, " ") // \u2009 is a thin space.
+        ];
+        return texts.join(" ");
+    },
+
+    __proto__: WebInspector.ViewportDataGridNode.prototype
 }
 
 /**
@@ -605,26 +749,9 @@ WebInspector.PromisePaneFilter.prototype = {
         if (!regex)
             return true;
 
-        var text = this._createDataTextForSearch(node);
+        var text = node.dataTextForSearch();
         regex.lastIndex = 0;
         return regex.test(text);
-    },
-
-    /**
-     * @param {!WebInspector.DataGridNode} node
-     * @return {string}
-     */
-    _createDataTextForSearch: function(node)
-    {
-        var texts = [];
-        var data = node.data;
-        for (var key in data) {
-            var value = data[key];
-            var text = (value instanceof Node) ? value.textContent : String(value);
-            if (text)
-                texts.push(text);
-        }
-        return texts.join(" ");
     },
 
     /**

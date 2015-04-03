@@ -5,11 +5,10 @@
  */
 
 :host {
-    width: 252px;
-    height: 328px;
+    width: 270px;
+    height: 350px;
     -webkit-user-select: none;
-    padding-left: 16px;
-    padding-top: 16px;
+    padding: 16px;
     overflow: hidden;
 }
 

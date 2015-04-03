@@ -127,6 +127,9 @@ WebInspector.ComputedStyleSidebarPane.prototype = {
             var inherited = this._isPropertyInherited(cascades.matched, property.name);
             if (!showInherited && inherited && !(property.name in this._alwaysShowComputedProperties))
                 continue;
+            var canonicalName = WebInspector.CSSMetadata.canonicalPropertyName(property.name);
+            if (property.name !== canonicalName && property.value === computedStyle.getPropertyValue(canonicalName))
+                continue;
             var item = this._propertiesContainer.createChild("div", "computed-style-property");
             item[WebInspector.ComputedStyleSidebarPane._propertySymbol] = property;
             item.classList.toggle("computed-style-property-inherited", inherited);
@@ -151,7 +154,8 @@ WebInspector.ComputedStyleSidebarPane.prototype = {
          */
         function propertySorter(a, b)
         {
-            return a.name.compareTo(b.name);
+            var canonicalName = WebInspector.CSSMetadata.canonicalPropertyName;
+            return canonicalName(a.name).compareTo(canonicalName(b.name));
         }
     },
 

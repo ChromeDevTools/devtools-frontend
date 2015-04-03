@@ -4,4 +4,4 @@
  * found in the LICENSE file.
  */
 
-self.WebInspector = {}
+var WebInspector = {}

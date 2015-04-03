@@ -41,7 +41,7 @@ def properties_from_file(file_name):
     with open(file_name, "r") as f:
         for line in f:
             line = line.strip()
-            if not line or line.startswith("//") or "alias_for" in line or "runtime_flag" in line:
+            if not line or line.startswith("//") or "alias_for" in line:
                 continue
             name = line.partition(" ")[0]
             entry = {"name": name}

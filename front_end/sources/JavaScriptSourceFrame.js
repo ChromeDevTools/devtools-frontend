@@ -715,7 +715,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
 
     _generateValuesInSource: function()
     {
-        if (!WebInspector.settings.javaScriptValuesInSource.get())
+        if (!Runtime.experiments.isEnabled("inlineVariableValues") || !WebInspector.settings.inlineVariableValues.get())
             return;
         var executionContext = WebInspector.context.flavor(WebInspector.ExecutionContext);
         if (!executionContext)
@@ -828,6 +828,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
             var left = offset.x - base.x + codeMirrorLinesLeftPadding;
             widget.style.left = left + "px";
             widget.__nameToToken = new Map();
+            widget.__lineNumber = i;
 
             var renderedNameCount = 0;
             for (var name of names) {
@@ -850,20 +851,27 @@ WebInspector.JavaScriptSourceFrame.prototype = {
                 ++renderedNameCount;
             }
 
+            var widgetChanged = true;
             if (oldWidget) {
+                widgetChanged = false;
                 for (var name of widget.__nameToToken.keys()) {
                     var oldText = oldWidget.__nameToToken.get(name) ? oldWidget.__nameToToken.get(name).textContent : "";
                     var newText = widget.__nameToToken.get(name) ? widget.__nameToToken.get(name).textContent : "";
                     if (newText !== oldText) {
+                        widgetChanged = true;
                         // value has changed, update it.
                         WebInspector.runCSSAnimationOnce(/** @type {!Element} */ (widget.__nameToToken.get(name)), "source-frame-value-update-highlight");
                     }
                 }
-                this._valueWidgets.delete(i);
-                this.textEditor.removeDecoration(i, oldWidget);
+                if (widgetChanged) {
+                    this._valueWidgets.delete(i);
+                    this.textEditor.removeDecoration(i, oldWidget);
+                }
             }
-            this._valueWidgets.set(i, widget);
-            this.textEditor.addDecoration(i, widget);
+            if (widgetChanged) {
+                this._valueWidgets.set(i, widget);
+                this.textEditor.addDecoration(i, widget);
+            }
         }
     },
 
@@ -1068,7 +1076,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
     _createNewBreakpoint: function(lineNumber, columnNumber, condition, enabled)
     {
         this._setBreakpoint(lineNumber, columnNumber, condition, enabled);
-        WebInspector.userMetrics.ScriptsBreakpointSet.record();
+        WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Actions.ScriptsBreakpointSet);
     },
 
     toggleBreakpointOnCurrentLine: function()

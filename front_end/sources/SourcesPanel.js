@@ -92,7 +92,6 @@ WebInspector.SourcesPanel = function(workspaceForTest)
 
     this._lastSelectedTabSetting = WebInspector.settings.createSetting("lastSelectedSourcesSidebarPaneTab", this.sidebarPanes.scopechain.title());
 
-    this._extensionSidebarPanes = [];
     this._installDebuggerSidebarController();
 
     WebInspector.dockController.addEventListener(WebInspector.DockController.Events.DockSideChanged, this._dockSideChanged.bind(this));
@@ -330,26 +329,24 @@ WebInspector.SourcesPanel.prototype = {
      * @param {!WebInspector.UISourceCode} uiSourceCode
      * @param {number=} lineNumber 0-based
      * @param {number=} columnNumber
-     * @param {boolean=} forceShowInPanel
      */
-    showUISourceCode: function(uiSourceCode, lineNumber, columnNumber, forceShowInPanel)
+    showUISourceCode: function(uiSourceCode, lineNumber, columnNumber)
     {
-        this._showEditor(forceShowInPanel);
+        this._showEditor();
         this._sourcesView.showSourceLocation(uiSourceCode, lineNumber, columnNumber);
     },
 
-    _showEditor: function(forceShowInPanel)
+    _showEditor: function()
     {
         WebInspector.inspectorView.setCurrentPanel(this);
     },
 
     /**
      * @param {!WebInspector.UILocation} uiLocation
-     * @param {boolean=} forceShowInPanel
      */
-    showUILocation: function(uiLocation, forceShowInPanel)
+    showUILocation: function(uiLocation)
     {
-        this.showUISourceCode(uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber, forceShowInPanel);
+        this.showUISourceCode(uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber);
     },
 
     /**
@@ -656,7 +653,7 @@ WebInspector.SourcesPanel.prototype = {
     _hiddenCallFramesRevealedInSidebar: function()
     {
         if (Runtime.experiments.isEnabled("stepIntoAsync"))
-            this.sidebarPanes.asyncOperationBreakpoints.revealHiddenCallFrames(WebInspector.context.flavor(WebInspector.Target));
+            this.sidebarPanes.asyncOperationBreakpoints.revealHiddenCallFrames(/** @type {!WebInspector.Target} */ (WebInspector.context.flavor(WebInspector.Target)));
     },
 
     /**
@@ -826,7 +823,7 @@ WebInspector.SourcesPanel.prototype = {
     _suggestReload: function()
     {
         if (window.confirm(WebInspector.UIString("It is recommended to restart inspector after making these changes. Would you like to restart it?")))
-            WebInspector.reload();
+            WebInspector.AppUtils.reload();
     },
 
     /**
@@ -1029,7 +1026,7 @@ WebInspector.SourcesPanel.prototype = {
             if (wasThrown || !result || result.type !== "string")
                 failedToSave(result);
             else
-                WebInspector.ConsoleModel.evaluateCommandInConsole(currentExecutionContext, result.value);
+                WebInspector.ConsoleModel.evaluateCommandInConsole(/** @type {!WebInspector.ExecutionContext} */ (currentExecutionContext), result.value);
         }
 
         /**
@@ -1078,7 +1075,7 @@ WebInspector.SourcesPanel.prototype = {
 
         var uiLocation = WebInspector.debuggerWorkspaceBinding.rawLocationToUILocation(location);
         if (uiLocation)
-            this.showUILocation(uiLocation, true);
+            this.showUILocation(uiLocation);
     },
 
     showGoToSourceDialog: function()
@@ -1259,6 +1256,29 @@ WebInspector.SourcesPanel.UILocationRevealer.prototype = {
         if (!(uiLocation instanceof WebInspector.UILocation))
             return Promise.reject(new Error("Internal error: not a ui location"));
         WebInspector.SourcesPanel.instance().showUILocation(uiLocation);
+        return Promise.resolve();
+    }
+}
+
+/**
+ * @constructor
+ * @implements {WebInspector.Revealer}
+ */
+WebInspector.SourcesPanel.DebuggerLocationRevealer = function()
+{
+}
+
+WebInspector.SourcesPanel.DebuggerLocationRevealer.prototype = {
+    /**
+     * @override
+     * @param {!Object} rawLocation
+     * @return {!Promise}
+     */
+    reveal: function(rawLocation)
+    {
+        if (!(rawLocation instanceof WebInspector.DebuggerModel.Location))
+            return Promise.reject(new Error("Internal error: not a debugger location"));
+        WebInspector.SourcesPanel.instance().showUILocation(WebInspector.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation));
         return Promise.resolve();
     }
 }

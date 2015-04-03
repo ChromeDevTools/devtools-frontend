@@ -33,17 +33,14 @@
  */
 WebInspector.UserMetrics = function()
 {
-    for (var actionName in WebInspector.UserMetrics._ActionCodes) {
-        var actionCode = WebInspector.UserMetrics._ActionCodes[actionName];
-        this[actionName] = new WebInspector.UserMetrics._Recorder(actionCode);
-    }
 }
 
 // Codes below are used to collect UMA histograms in the Chromium port.
 // Do not change the values below, additional actions are needed on the Chromium side
 // in order to add more codes.
 
-WebInspector.UserMetrics._ActionCodes = {
+/** @enum {number} */
+WebInspector.UserMetrics.Actions = {
     WindowDocked: 1,
     WindowUndocked: 2,
     ScriptsBreakpointSet: 3,
@@ -89,22 +86,14 @@ WebInspector.UserMetrics.prototype = {
     panelShown: function(panelName)
     {
         InspectorFrontendHost.recordPanelShown(WebInspector.UserMetrics._PanelCodes[panelName] || 0);
-    }
-}
+    },
 
-/**
- * @constructor
- */
-WebInspector.UserMetrics._Recorder = function(actionCode)
-{
-    this._actionCode = actionCode;
-}
-
-WebInspector.UserMetrics._Recorder.prototype = {
-    record: function()
+    /**
+     * @param {!WebInspector.UserMetrics.Actions} action
+     */
+    actionTaken: function(action)
     {
-        InspectorFrontendHost.recordActionTaken(this._actionCode);
+        InspectorFrontendHost.recordActionTaken(action);
     }
 }
-
 WebInspector.userMetrics = new WebInspector.UserMetrics();

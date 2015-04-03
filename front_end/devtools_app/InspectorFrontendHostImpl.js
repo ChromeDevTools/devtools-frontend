@@ -315,25 +315,6 @@ WebInspector.InspectorFrontendHostImpl.prototype = {
 
     /**
      * @override
-     * @param {string} browserId
-     * @param {string} url
-     */
-    openUrlOnRemoteDeviceAndInspect: function(browserId, url)
-    {
-        DevToolsAPI.sendMessageToEmbedder("openUrlOnRemoteDeviceAndInspect", [browserId, url], null);
-    },
-
-    /**
-     * @override
-     * @param {boolean} enabled
-     */
-    setDeviceCountUpdatesEnabled: function(enabled)
-    {
-        DevToolsAPI.sendMessageToEmbedder("setDeviceCountUpdatesEnabled", [enabled], null);
-    },
-
-    /**
-     * @override
      * @param {boolean} enabled
      */
     setDevicesUpdatesEnabled: function(enabled)

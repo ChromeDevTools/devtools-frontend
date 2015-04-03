@@ -158,16 +158,6 @@
                     { "name": "timestamp", "type": "number", "optional": true, "hidden": true, "description": "Frame swap timestamp." }
                 ],
                 "hidden": true
-            },
-            {
-                "id": "RecordedFrame",
-                "type": "object",
-                "description": "Compressed frame data.",
-                "properties": [
-                    { "name": "data", "type": "string", "description": "Base64-encoded compressed image." },
-                    { "name": "timestamp", "type": "number", "description": "Frame swap timestamp." }
-                ],
-                "hidden": true
             }
         ],
         "commands": [
@@ -413,27 +403,6 @@
                 "description": "Acknowledges that a screencast frame has been received by the frontend.",
                 "parameters": [
                     { "name": "frameNumber", "type": "integer", "description": "Frame number." }
-                ],
-                "hidden": true,
-                "handlers": ["browser"]
-            },
-            {
-                "name": "startRecordingFrames",
-                "description": "Starts recording each frame to the buffer.",
-                "parameters": [
-                    { "name": "maxFrameCount", "type": "integer", "description": "Maximal number of frames to record from range. Actual maximum depends on implementation." }
-                ],
-                "hidden": true,
-                "handlers": ["browser"]
-            },
-            {
-                "name": "stopRecordingFrames",
-                "async": true,
-                "description": "Stops recording, encodes and returns images.",
-                "parameters": [
-                ],
-                "returns": [
-                    { "name": "frames", "type": "array", "items": { "$ref": "RecordedFrame" }, "description": "Encoded recorded frames." }
                 ],
                 "hidden": true,
                 "handlers": ["browser"]
@@ -2742,7 +2711,7 @@
                 "id": "PseudoIdMatches",
                 "type": "object",
                 "properties": [
-                    { "name": "pseudoId", "type": "integer", "description": "Pseudo style identifier (see <code>enum PseudoId</code> in <code>LayoutStyleConstants.h</code>)."},
+                    { "name": "pseudoId", "type": "integer", "description": "Pseudo style identifier (see <code>enum PseudoId</code> in <code>ComputedStyleConstants.h</code>)."},
                     { "name": "matches", "type": "array", "items": { "$ref": "RuleMatch" }, "description": "Matches of CSS rules applicable to the pseudo style."}
                 ],
                 "description": "CSS rule collection for a single pseudo style."
@@ -3182,7 +3151,7 @@
                 "hidden": true,
                 "type": "object",
                 "properties": [
-                    { "name": "location", "$ref": "Location", "description": "Location of the function." },
+                    { "name": "location", "$ref": "Location", "optional": true, "description": "Location of the function, none for native functions." },
                     { "name": "functionName", "type": "string", "description": "Name of the function." },
                     { "name": "isGenerator", "type": "boolean", "description": "Whether this is a generator function." },
                     { "name": "scopeChain", "type": "array", "optional": true, "items": { "$ref": "Scope" }, "description": "Scope chain for this closure." }
@@ -4089,13 +4058,11 @@
             {
                 "id": "ServiceWorkerVersionRunningStatus",
                 "type": "string",
-                "hidden": true,
                 "enum": ["stopped", "starting", "running", "stopping"]
             },
             {
                 "id": "ServiceWorkerVersionStatus",
                 "type": "string",
-                "hidden": true,
                 "enum": ["new", "installing", "installed", "activating", "activated", "redundant"]
             },
             {
@@ -4107,7 +4074,22 @@
                     { "name": "registrationId", "type": "string" },
                     { "name": "scriptURL", "type": "string" },
                     { "name": "runningStatus", "$ref": "ServiceWorkerVersionRunningStatus" },
-                    { "name": "status", "$ref": "ServiceWorkerVersionStatus" }
+                    { "name": "status", "$ref": "ServiceWorkerVersionStatus" },
+                    { "name": "scriptLastModified", "type": "number", "optional": true, "description": "The Last-Modified header value of the main script." },
+                    { "name": "scriptResponseTime", "type": "number", "optional": true, "description": "The time at which the response headers of the main script were received from the server.  For cached script it is the last time the cache entry was validated." }
+                ]
+            },
+            {
+                "id": "ServiceWorkerErrorMessage",
+                "type": "object",
+                "description": "ServiceWorker error message.",
+                "properties": [
+                    { "name": "errorMessage", "type": "string" },
+                    { "name": "registrationId", "type": "string" },
+                    { "name": "versionId", "type": "string" },
+                    { "name": "sourceURL", "type": "string" },
+                    { "name": "lineNumber", "type": "integer" },
+                    { "name": "columnNumber", "type": "integer" }
                 ]
             }
         ],
@@ -4132,6 +4114,41 @@
                 "name": "stop",
                 "parameters": [
                     { "name": "workerId", "type": "string" }
+                ],
+                "handlers": ["browser"]
+            },
+            {
+                "name": "unregister",
+                "parameters": [
+                    { "name": "scopeURL", "type": "string" }
+                ],
+                "handlers": ["browser"]
+            },
+            {
+                "name": "startWorker",
+                "parameters": [
+                    { "name": "scopeURL", "type": "string" }
+                ],
+                "handlers": ["browser"]
+            },
+            {
+                "name": "stopWorker",
+                "parameters": [
+                    { "name": "versionId", "type": "string" }
+                ],
+                "handlers": ["browser"]
+            },
+            {
+                "name": "inspectWorker",
+                "parameters": [
+                    { "name": "versionId", "type": "string" }
+                ],
+                "handlers": ["browser"]
+            },
+            {
+                "name": "setDebugOnStart",
+                "parameters": [
+                    { "name": "debugOnStart", "type": "boolean" }
                 ],
                 "handlers": ["browser"]
             }
@@ -4171,6 +4188,20 @@
                 "name": "workerVersionUpdated",
                 "parameters": [
                     { "name": "versions", "type": "array", "items": { "$ref": "ServiceWorkerVersion" } }
+                ],
+                "handlers": ["browser"]
+            },
+            {
+                "name": "workerErrorReported",
+                "parameters": [
+                    { "name": "errorMessage", "$ref": "ServiceWorkerErrorMessage" }
+                ],
+                "handlers": ["browser"]
+            },
+            {
+                "name": "debugOnStartUpdated",
+                "parameters": [
+                    { "name": "debugOnStart", "type": "boolean" }
                 ],
                 "handlers": ["browser"]
             }
@@ -4934,7 +4965,7 @@
             {
                 "id": "AXValueType",
                 "type": "string",
-                "enum": [ "boolean", "tristate", "booleanOrUndefined", "idref", "idrefList", "integer", "number", "string", "token", "tokenList", "domRelation" ],
+                "enum": [ "boolean", "tristate", "booleanOrUndefined", "idref", "idrefList", "integer", "number", "string", "token", "tokenList", "domRelation", "role" ],
                 "description": "Enum of possible property types."
             },
             {

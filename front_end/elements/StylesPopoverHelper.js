@@ -16,9 +16,20 @@ WebInspector.StylesPopoverHelper = function()
     this._hideProxy = this.hide.bind(this, true);
     this._boundOnKeyDown = this._onKeyDown.bind(this);
     this._repositionBound = this._reposition.bind(this);
+    this._boundFocusOut = this._onFocusOut.bind(this);
 }
 
 WebInspector.StylesPopoverHelper.prototype = {
+    /**
+     * @param {!Event} event
+     */
+    _onFocusOut: function(event)
+    {
+        if (!event.relatedTarget || event.relatedTarget.isSelfOrDescendant(this._view.contentElement))
+            return;
+        this._hideProxy();
+    },
+
     /**
      * @return {boolean}
      */
@@ -65,7 +76,10 @@ WebInspector.StylesPopoverHelper.prototype = {
     {
         if (!this._previousFocusElement)
             this._previousFocusElement = WebInspector.currentFocusElement();
+        // Unbind "blur" listener to avoid reenterability: |popover.showView| will hide the popover and trigger it synchronously.
+        this._view.contentElement.removeEventListener("focusout", this._boundFocusOut, false);
         this._popover.showView(this._view, this._anchorElement);
+        this._view.contentElement.addEventListener("focusout", this._boundFocusOut, false);
         WebInspector.setCurrentFocusElement(this._view.contentElement);
     },
 
@@ -95,6 +109,7 @@ WebInspector.StylesPopoverHelper.prototype = {
         if (this._view) {
             this._view.detach();
             this._view.contentElement.removeEventListener("keydown", this._boundOnKeyDown, false);
+            this._view.contentElement.removeEventListener("focusout", this._boundFocusOut, false);
             delete this._view;
         }
     },

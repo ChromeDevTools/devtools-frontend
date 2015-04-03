@@ -134,7 +134,6 @@
 .cm-execution-line {
     background-color: rgb(171, 191, 254);
     outline: 1px solid rgb(64, 115, 244);
-    z-index: 4;
 }
 
 .cm-execution-line .CodeMirror-linenumber {
@@ -233,7 +232,7 @@
 
 .CodeMirror .text-editor-value-decoration {
     position: absolute;
-    top: -13px;
+    bottom: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

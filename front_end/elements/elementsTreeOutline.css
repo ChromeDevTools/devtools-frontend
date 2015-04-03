@@ -118,11 +118,15 @@
     background-color: rgb(56, 121, 217);
 }
 
-.elements-tree-outline li.shadow-root + ol {
+.elements-tree-outline ol.shadow-root {
     margin-left: 5px;
     padding-left: 5px;
     border-left: 1px solid rgb(190, 190, 190);
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: rgba(0, 0, 0, 0.04);
+}
+
+.elements-tree-outline ol.shadow-root-deep {
+    background-color: transparent;
 }
 
 .elements-tree-editor {

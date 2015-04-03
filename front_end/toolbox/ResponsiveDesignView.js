@@ -111,8 +111,7 @@ WebInspector.ResponsiveDesignView.prototype = {
      */
     targetAdded: function(target)
     {
-        // FIXME: adapt this to multiple targets.
-        if (this._target || !target.supportsEmulation())
+        if (this._target || !WebInspector.OverridesSupport.targetSupportsEmulation(target))
             return;
         this._target = target;
         target.registerEmulationDispatcher(new WebInspector.EmulationDispatcher(this));
@@ -146,7 +145,7 @@ WebInspector.ResponsiveDesignView.prototype = {
     {
         var enabled = WebInspector.overridesSupport.emulationEnabled();
         if (enabled && !this._enabled) {
-            WebInspector.userMetrics.DeviceModeEnabled.record();
+            WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Actions.DeviceModeEnabled);
             this._invalidateCache();
             this._ignoreResize = true;
             this._enabled = true;

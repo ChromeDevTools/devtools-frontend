@@ -329,6 +329,15 @@ button.record-status-bar-item.toggled-on .glyph {
     background-color: rgb(216, 0, 0) !important;
 }
 
+@keyframes pulse-effect {
+    from {transform: scale(0.8);}
+    to {transform: scale(1.1);}
+}
+
+button.record-status-bar-item.toggled-on .pulse {
+    animation: pulse-effect 2.5s infinite alternate ease-in-out ;
+}
+
 .record-filmstrip-status-bar-item .glyph {
     -webkit-mask-position: -96px -24px;
 }

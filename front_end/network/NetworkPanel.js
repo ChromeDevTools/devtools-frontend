@@ -152,7 +152,6 @@ WebInspector.NetworkPanel.prototype = {
     _createStatusbarButtons: function()
     {
         this._recordButton = new WebInspector.StatusBarButton("", "record-status-bar-item");
-        this._recordButton._glyphElement.classList.add("pulse"); /* Issue 472339: DevTools: provide affordance during recording */
         this._recordButton.addEventListener("click", this._onRecordButtonClicked, this);
         this._panelStatusBar.appendStatusBarItem(this._recordButton);
 

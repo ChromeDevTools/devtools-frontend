@@ -39,6 +39,9 @@ WebInspector.NetworkPanel = function()
     WebInspector.Panel.call(this, "network");
     this.registerRequiredCSS("network/networkPanel.css");
 
+    this._networkLogLargeRowsSetting = WebInspector.settings.createSetting("networkLogLargeRows", false);
+    this._networkLogShowOverviewSetting = WebInspector.settings.createSetting("networkLogShowOverview", true);
+
     /** @type {?WebInspector.NetworkFilmStripView} */
     this._filmStripView = null;
     /** @type {boolean} */
@@ -65,24 +68,23 @@ WebInspector.NetworkPanel = function()
     this._createStatusbarButtons();
 
     /** @type {!WebInspector.NetworkLogView} */
-    this._networkLogView = new WebInspector.NetworkLogView(this._overview, this._filterBar, this._progressBarContainer);
+    this._networkLogView = new WebInspector.NetworkLogView(this._overview, this._filterBar, this._progressBarContainer, this._networkLogLargeRowsSetting);
     this._splitView.setSidebarView(this._networkLogView);
 
     this._detailsView = new WebInspector.VBox();
     this._detailsView.element.classList.add("network-details-view");
     this._splitView.setMainView(this._detailsView);
 
-    this._closeButtonElement = createElementWithClass("div", "close-button");
-    this._closeButtonElement.classList.add("network-close-button");
+    this._closeButtonElement = createElementWithClass("div", "network-close-button", "dt-close-button");
     this._closeButtonElement.addEventListener("click", this._showRequest.bind(this, null), false);
 
     this._toggleRecordButton(true);
-    this._toggleShowOverviewButton(WebInspector.settings.networkLogShowOverview.get());
-    this._toggleLargerRequests(WebInspector.settings.networkLogLargeRows.get());
+    this._toggleShowOverviewButton(this._networkLogShowOverviewSetting.get());
+    this._toggleLargerRequests(this._networkLogLargeRowsSetting.get());
     this._dockSideChanged();
 
     WebInspector.dockController.addEventListener(WebInspector.DockController.Events.DockSideChanged, this._dockSideChanged.bind(this));
-    WebInspector.settings.splitVerticallyWhenDockedToRight.addChangeListener(this._dockSideChanged.bind(this));
+    WebInspector.moduleSetting("splitVerticallyWhenDockedToRight").addChangeListener(this._dockSideChanged.bind(this));
     WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.EventTypes.WillReloadPage, this._willReloadPage, this);
     WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.EventTypes.Load, this._load, this);
     WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._mainFrameNavigated, this);
@@ -185,7 +187,7 @@ WebInspector.NetworkPanel.prototype = {
         this._preserveLogCheckbox.inputElement.addEventListener("change", this._onPreserveLogCheckboxChanged.bind(this), false);
         this._panelStatusBar.appendStatusBarItem(this._preserveLogCheckbox);
 
-        this._disableCacheCheckbox = new WebInspector.StatusBarCheckbox(WebInspector.UIString("Disable cache"), WebInspector.UIString("Disable cache (while DevTools is open)."), WebInspector.settings.cacheDisabled);
+        this._disableCacheCheckbox = new WebInspector.StatusBarCheckbox(WebInspector.UIString("Disable cache"), WebInspector.UIString("Disable cache (while DevTools is open)."), WebInspector.moduleSetting("cacheDisabled"));
         this._panelStatusBar.appendStatusBarItem(this._disableCacheCheckbox);
 
         this._panelStatusBar.appendStatusBarItem(new WebInspector.StatusBarItem(this._progressBarContainer));
@@ -305,7 +307,7 @@ WebInspector.NetworkPanel.prototype = {
      */
     _toggleLargerRequests: function(toggled)
     {
-        WebInspector.settings.networkLogLargeRows.set(toggled);
+        this._networkLogLargeRowsSetting.set(toggled);
         this._largerRequestsButton.setToggled(toggled);
         this._largerRequestsButton.setTitle(WebInspector.UIString(toggled ? "Use small request rows." : "Use large request rows."));
         this._updateUI();
@@ -316,7 +318,7 @@ WebInspector.NetworkPanel.prototype = {
      */
     _onShowOverviewButtonClicked: function(event)
     {
-        this._toggleShowOverviewButton(!WebInspector.settings.networkLogShowOverview.get());
+        this._toggleShowOverviewButton(!this._networkLogShowOverviewSetting.get());
     },
 
     /**
@@ -324,7 +326,7 @@ WebInspector.NetworkPanel.prototype = {
      */
     _toggleShowOverviewButton: function(toggled)
     {
-        WebInspector.settings.networkLogShowOverview.set(toggled);
+        this._networkLogShowOverviewSetting.set(toggled);
         this._showOverviewButton.setTitle(toggled ? WebInspector.UIString("Hide overview.") : WebInspector.UIString("Show overview."));
         this._showOverviewButton.setToggled(toggled);
         if (toggled) {
@@ -339,7 +341,7 @@ WebInspector.NetworkPanel.prototype = {
      */
     _isDetailsPaneAtBottom: function()
     {
-        return WebInspector.settings.splitVerticallyWhenDockedToRight.get() && WebInspector.dockController.isVertical();
+        return WebInspector.moduleSetting("splitVerticallyWhenDockedToRight").get() && WebInspector.dockController.isVertical();
     },
 
     _dockSideChanged: function()
@@ -468,7 +470,7 @@ WebInspector.NetworkPanel.prototype = {
     _updateUI: function()
     {
         var detailsPaneAtBottom = this._isDetailsPaneAtBottom();
-        this._detailsView.element.classList.toggle("network-details-view-tall-header", WebInspector.settings.networkLogLargeRows.get() && !detailsPaneAtBottom);
+        this._detailsView.element.classList.toggle("network-details-view-tall-header", this._networkLogLargeRowsSetting.get() && !detailsPaneAtBottom);
         this._networkLogView.switchViewMode(!this._splitView.isResizable() || detailsPaneAtBottom);
     },
 

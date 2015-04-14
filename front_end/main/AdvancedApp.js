@@ -272,13 +272,12 @@ WebInspector.AdvancedApp.ToggleDeviceModeActionDelegate = function()
 WebInspector.AdvancedApp.ToggleDeviceModeActionDelegate.prototype = {
     /**
      * @override
-     * @return {boolean}
+     * @param {!WebInspector.Context} context
+     * @param {string} actionId
      */
-    handleAction: function()
+    handleAction: function(context, actionId)
     {
-        if (!WebInspector.overridesSupport.responsiveDesignAvailable())
-            return false;
-        WebInspector.AdvancedApp._instance()._toggleEmulationEnabled();
-        return true;
+        if (WebInspector.overridesSupport.responsiveDesignAvailable())
+            WebInspector.AdvancedApp._instance()._toggleEmulationEnabled();
     }
 }

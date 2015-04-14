@@ -17,7 +17,7 @@
         "ResourceType.js",
         "Settings.js",
         "StaticContentProvider.js",
-        "Streams.js",
+        "OutputStream.js",
         "TestBase.js",
         "TextRange.js",
         "TextUtils.js",

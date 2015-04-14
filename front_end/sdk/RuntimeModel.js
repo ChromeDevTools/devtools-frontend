@@ -50,10 +50,10 @@ WebInspector.RuntimeModel = function(target)
     if (!Runtime.experiments.isEnabled("customObjectFormatters"))
         return;
 
-    if (WebInspector.settings.enableCustomFormatters.get())
+    if (WebInspector.moduleSetting("customFormatters").get())
         this._agent.setCustomObjectFormatterEnabled(true);
 
-    WebInspector.settings.enableCustomFormatters.addChangeListener(this._enableCustomFormattersStateChanged.bind(this));
+    WebInspector.moduleSetting("customFormatters").addChangeListener(this._customFormattersStateChanged.bind(this));
 }
 
 WebInspector.RuntimeModel.Events = {
@@ -149,7 +149,7 @@ WebInspector.RuntimeModel.prototype = {
     /**
      * @param {!WebInspector.Event} event
      */
-    _enableCustomFormattersStateChanged: function(event)
+    _customFormattersStateChanged: function(event)
     {
         var enabled = /** @type {boolean} */ (event.data);
         this._agent.setCustomObjectFormatterEnabled(enabled);

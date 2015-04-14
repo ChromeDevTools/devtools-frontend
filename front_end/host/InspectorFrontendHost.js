@@ -217,14 +217,11 @@ InspectorFrontendHostAPI.prototype = {
     platform: function() { },
 
     /**
+     * @param {string} actionName
      * @param {number} actionCode
+     * @param {number} bucketSize
      */
-    recordActionTaken: function(actionCode) { },
-
-    /**
-     * @param {number} panelCode
-     */
-    recordPanelShown: function(panelCode) { },
+    recordEnumeratedHistogram: function(actionName, actionCode, bucketSize) { },
 
     /**
      * @param {string} message
@@ -450,17 +447,11 @@ WebInspector.InspectorFrontendHostStub.prototype = {
 
     /**
      * @override
+     * @param {string} actionName
      * @param {number} actionCode
+     * @param {number} bucketSize
      */
-    recordActionTaken: function(actionCode)
-    {
-    },
-
-    /**
-     * @override
-     * @param {number} panelCode
-     */
-    recordPanelShown: function(panelCode)
+    recordEnumeratedHistogram: function(actionName, actionCode, bucketSize)
     {
     },
 
@@ -714,7 +705,7 @@ var InspectorFrontendHost = window.InspectorFrontendHost || null;
          */
         streamWrite: function(id, chunk)
         {
-            WebInspector.Streams.streamWrite(id, chunk);
+            WebInspector.ResourceLoader.streamWrite(id, chunk);
         }
     }
 

@@ -95,12 +95,12 @@ WebInspector.SourcesPanel = function(workspaceForTest)
     this._installDebuggerSidebarController();
 
     WebInspector.dockController.addEventListener(WebInspector.DockController.Events.DockSideChanged, this._dockSideChanged.bind(this));
-    WebInspector.settings.splitVerticallyWhenDockedToRight.addChangeListener(this._dockSideChanged.bind(this));
+    WebInspector.moduleSetting("splitVerticallyWhenDockedToRight").addChangeListener(this._dockSideChanged.bind(this));
     this._dockSideChanged();
 
     this._updateDebuggerButtons();
     this._pauseOnExceptionEnabledChanged();
-    WebInspector.settings.pauseOnExceptionEnabled.addChangeListener(this._pauseOnExceptionEnabledChanged, this);
+    WebInspector.moduleSetting("pauseOnExceptionEnabled").addChangeListener(this._pauseOnExceptionEnabledChanged, this);
     this._setTarget(WebInspector.context.flavor(WebInspector.Target));
     WebInspector.breakpointManager.addEventListener(WebInspector.BreakpointManager.Events.BreakpointsActiveStateChanged, this._breakpointsActiveStateChanged, this);
     WebInspector.context.addFlavorChangeListener(WebInspector.Target, this._onCurrentTargetChanged, this);
@@ -421,7 +421,7 @@ WebInspector.SourcesPanel.prototype = {
 
     _pauseOnExceptionEnabledChanged: function()
     {
-        var enabled = WebInspector.settings.pauseOnExceptionEnabled.get();
+        var enabled = WebInspector.moduleSetting("pauseOnExceptionEnabled").get();
         this._pauseOnExceptionButton.setToggled(enabled);
         this._pauseOnExceptionButton.setTitle(WebInspector.UIString(enabled ? "Don't pause on exceptions." : "Pause on exceptions."));
         this._debugToolbarDrawer.classList.toggle("expanded", enabled);
@@ -491,7 +491,7 @@ WebInspector.SourcesPanel.prototype = {
 
     _togglePauseOnExceptions: function()
     {
-        WebInspector.settings.pauseOnExceptionEnabled.set(!this._pauseOnExceptionButton.toggled());
+        WebInspector.moduleSetting("pauseOnExceptionEnabled").set(!this._pauseOnExceptionButton.toggled());
     },
 
     /**
@@ -653,7 +653,7 @@ WebInspector.SourcesPanel.prototype = {
     _hiddenCallFramesRevealedInSidebar: function()
     {
         if (Runtime.experiments.isEnabled("stepIntoAsync"))
-            this.sidebarPanes.asyncOperationBreakpoints.revealHiddenCallFrames(/** @type {!WebInspector.Target} */ (WebInspector.context.flavor(WebInspector.Target)));
+            this.sidebarPanes.asyncOperationBreakpoints.revealHiddenCallFrames(WebInspector.context.flavor(WebInspector.Target));
     },
 
     /**
@@ -744,7 +744,7 @@ WebInspector.SourcesPanel.prototype = {
         var debugToolbarDrawer = createElementWithClass("div", "scripts-debug-toolbar-drawer");
 
         var label = WebInspector.UIString("Pause On Caught Exceptions");
-        var setting = WebInspector.settings.pauseOnCaughtException;
+        var setting = WebInspector.moduleSetting("pauseOnCaughtException");
         debugToolbarDrawer.appendChild(WebInspector.SettingsUI.createSettingCheckbox(label, setting, true));
 
         return debugToolbarDrawer;
@@ -823,7 +823,7 @@ WebInspector.SourcesPanel.prototype = {
     _suggestReload: function()
     {
         if (window.confirm(WebInspector.UIString("It is recommended to restart inspector after making these changes. Would you like to restart it?")))
-            WebInspector.AppUtils.reload();
+            WebInspector.reload();
     },
 
     /**
@@ -1026,7 +1026,7 @@ WebInspector.SourcesPanel.prototype = {
             if (wasThrown || !result || result.type !== "string")
                 failedToSave(result);
             else
-                WebInspector.ConsoleModel.evaluateCommandInConsole(/** @type {!WebInspector.ExecutionContext} */ (currentExecutionContext), result.value);
+                WebInspector.ConsoleModel.evaluateCommandInConsole(currentExecutionContext, result.value);
         }
 
         /**
@@ -1085,7 +1085,7 @@ WebInspector.SourcesPanel.prototype = {
 
     _dockSideChanged: function()
     {
-        var vertically = WebInspector.dockController.isVertical() && WebInspector.settings.splitVerticallyWhenDockedToRight.get();
+        var vertically = WebInspector.dockController.isVertical() && WebInspector.moduleSetting("splitVerticallyWhenDockedToRight").get();
         this._splitVertically(vertically);
     },
 
@@ -1125,8 +1125,7 @@ WebInspector.SourcesPanel.prototype = {
             this.sidebarPaneView = vbox;
 
             this.sidebarPanes.scopechain.expand();
-            if (WebInspector.settings.watchExpressions.get().length > 0)
-                this.sidebarPanes.watchExpressions.expand();
+            this.sidebarPanes.watchExpressions.expandIfNecessary();
         } else {
             var splitView = new WebInspector.SplitView(true, true, "sourcesPanelDebuggerSidebarSplitViewState", 0.5);
             splitView.setMainView(vbox);
@@ -1331,19 +1330,26 @@ WebInspector.SourcesPanel.DebuggerPausedDetailsRevealer.prototype = {
  * @constructor
  * @implements {WebInspector.ActionDelegate}
  */
-WebInspector.SourcesPanel.ShowGoToSourceDialogActionDelegate = function() {}
+WebInspector.SourcesPanel.RevealingActionDelegate = function() {}
 
-WebInspector.SourcesPanel.ShowGoToSourceDialogActionDelegate.prototype = {
+WebInspector.SourcesPanel.RevealingActionDelegate.prototype = {
     /**
      * @override
-     * @return {boolean}
+     * @param {!WebInspector.Context} context
+     * @param {string} actionId
      */
-    handleAction: function()
+    handleAction: function(context, actionId)
     {
         var panel = WebInspector.SourcesPanel.instance();
         WebInspector.inspectorView.setCurrentPanel(panel);
-        panel.showGoToSourceDialog();
-        return true;
+        switch (actionId) {
+        case "debugger.toggle-pause":
+            panel.togglePause();
+            break;
+        case "sources.go-to-source":
+            panel.showGoToSourceDialog();
+            break;
+        }
     }
 }
 
@@ -1351,108 +1357,38 @@ WebInspector.SourcesPanel.ShowGoToSourceDialogActionDelegate.prototype = {
  * @constructor
  * @implements {WebInspector.ActionDelegate}
  */
-WebInspector.SourcesPanel.TogglePauseActionDelegate = function()
+WebInspector.SourcesPanel.DebuggingActionDelegate = function()
 {
 }
 
-WebInspector.SourcesPanel.TogglePauseActionDelegate.prototype = {
+WebInspector.SourcesPanel.DebuggingActionDelegate.prototype = {
     /**
      * @override
-     * @return {boolean}
+     * @param {!WebInspector.Context} context
+     * @param {string} actionId
      */
-    handleAction: function()
+    handleAction: function(context, actionId)
     {
         var panel = WebInspector.SourcesPanel.instance();
-        WebInspector.inspectorView.setCurrentPanel(panel);
-        panel.togglePause();
-        return true;
+        switch (actionId) {
+        case "debugger.step-over":
+            panel._stepOverClicked();
+            break;
+        case "debugger.step-into":
+            panel._stepIntoClicked();
+            break;
+        case "debugger.step-into-async":
+            panel._stepIntoAsyncClicked();
+            break;
+        case "debugger.step-out":
+            panel._stepOutClicked();
+            break;
+        case "debugger.run-snippet":
+            panel._runSnippet();
+            break;
+
+        }
     }
-}
-
-/**
- * @constructor
- * @implements {WebInspector.ActionDelegate}
- * @param {function(this:WebInspector.SourcesPanel):boolean} handler
- */
-WebInspector.SourcesPanel.BaseActionDelegate = function(handler)
-{
-    this._handler = handler;
-}
-
-WebInspector.SourcesPanel.BaseActionDelegate.prototype = {
-    /**
-     * @override
-     * @return {boolean}
-     */
-    handleAction: function()
-    {
-        return this._handler.call(WebInspector.SourcesPanel.instance());
-    }
-}
-
-/**
- * @constructor
- * @extends {WebInspector.SourcesPanel.BaseActionDelegate}
- */
-WebInspector.SourcesPanel.StepOverActionDelegate = function()
-{
-    WebInspector.SourcesPanel.BaseActionDelegate.call(this, WebInspector.SourcesPanel.prototype._stepOverClicked);
-}
-
-WebInspector.SourcesPanel.StepOverActionDelegate.prototype = {
-    __proto__: WebInspector.SourcesPanel.BaseActionDelegate.prototype
-}
-
-/**
- * @constructor
- * @extends {WebInspector.SourcesPanel.BaseActionDelegate}
- */
-WebInspector.SourcesPanel.StepIntoActionDelegate = function()
-{
-    WebInspector.SourcesPanel.BaseActionDelegate.call(this, WebInspector.SourcesPanel.prototype._stepIntoClicked);
-}
-
-WebInspector.SourcesPanel.StepIntoActionDelegate.prototype = {
-    __proto__: WebInspector.SourcesPanel.BaseActionDelegate.prototype
-}
-
-/**
- * @constructor
- * @extends {WebInspector.SourcesPanel.BaseActionDelegate}
- */
-WebInspector.SourcesPanel.StepIntoAsyncActionDelegate = function()
-{
-    WebInspector.SourcesPanel.BaseActionDelegate.call(this, WebInspector.SourcesPanel.prototype._stepIntoAsyncClicked);
-}
-
-WebInspector.SourcesPanel.StepIntoAsyncActionDelegate.prototype = {
-    __proto__: WebInspector.SourcesPanel.BaseActionDelegate.prototype
-}
-
-/**
- * @constructor
- * @extends {WebInspector.SourcesPanel.BaseActionDelegate}
- */
-WebInspector.SourcesPanel.StepOutActionDelegate = function()
-{
-    WebInspector.SourcesPanel.BaseActionDelegate.call(this, WebInspector.SourcesPanel.prototype._stepOutClicked);
-}
-
-WebInspector.SourcesPanel.StepOutActionDelegate.prototype = {
-    __proto__: WebInspector.SourcesPanel.BaseActionDelegate.prototype
-}
-
-/**
- * @constructor
- * @extends {WebInspector.SourcesPanel.BaseActionDelegate}
- */
-WebInspector.SourcesPanel.RunSnippetActionDelegate = function()
-{
-    WebInspector.SourcesPanel.BaseActionDelegate.call(this, WebInspector.SourcesPanel.prototype._runSnippet);
-}
-
-WebInspector.SourcesPanel.RunSnippetActionDelegate.prototype = {
-    __proto__: WebInspector.SourcesPanel.BaseActionDelegate.prototype
 }
 
 WebInspector.SourcesPanel.show = function()

@@ -225,7 +225,7 @@ WebInspector.CompilerSourceMappingContentProvider.prototype = {
      */
     requestContent: function(callback)
     {
-        WebInspector.NetworkManager.loadResourceForFrontend(this._sourceURL, {}, contentLoaded.bind(this));
+        WebInspector.ResourceLoader.load(this._sourceURL, {}, contentLoaded.bind(this));
 
         /**
          * @param {number} statusCode

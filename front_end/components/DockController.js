@@ -42,8 +42,8 @@ WebInspector.DockController = function(canDock)
         return;
     }
 
-    WebInspector.settings.currentDockState = WebInspector.settings.createSetting("currentDockState", "");
-    WebInspector.settings.lastDockState = WebInspector.settings.createSetting("lastDockState", "");
+    this._currentDockStateSetting = WebInspector.settings.createSetting("currentDockState", "");
+    this._lastDockStateSetting = WebInspector.settings.createSetting("lastDockState", "");
 
     /** @type {!WebInspector.StatusBarStatesSettingButton|undefined} */
     this._dockToggleButton;
@@ -72,7 +72,7 @@ WebInspector.DockController.prototype = {
 
         this._states = [WebInspector.DockController.State.DockedToRight, WebInspector.DockController.State.DockedToBottom, WebInspector.DockController.State.Undocked];
         this._titles = [WebInspector.UIString("Dock to main window."), WebInspector.UIString("Dock to main window."), WebInspector.UIString("Undock into separate window.")];
-        var initialState = WebInspector.settings.currentDockState.get();
+        var initialState = this._currentDockStateSetting.get();
         initialState = this._states.indexOf(initialState) >= 0 ? initialState : this._states[0];
         this._dockSideChanged(initialState);
     },
@@ -182,8 +182,8 @@ WebInspector.DockController.ButtonProvider.prototype = {
                     WebInspector.dockController._states,
                     WebInspector.dockController._titles,
                     WebInspector.dockController.dockSide(),
-                    WebInspector.settings.currentDockState,
-                    WebInspector.settings.lastDockState,
+                    WebInspector.dockController._currentDockStateSetting,
+                    WebInspector.dockController._lastDockStateSetting,
                     WebInspector.dockController._dockSideChanged.bind(WebInspector.dockController));
         }
         return WebInspector.dockController._dockToggleButton;
@@ -201,15 +201,15 @@ WebInspector.DockController.ToggleDockActionDelegate = function()
 WebInspector.DockController.ToggleDockActionDelegate.prototype = {
     /**
      * @override
-     * @return {boolean}
+     * @param {!WebInspector.Context} context
+     * @param {string} actionId
      */
-    handleAction: function()
+    handleAction: function(context, actionId)
     {
         var toggleButton = new WebInspector.DockController.ButtonProvider().item();
         if (!toggleButton || !toggleButton.enabled())
-            return false;
+            return;
         /** @type {!WebInspector.StatusBarStatesSettingButton} */ (toggleButton).toggle();
-        return true;
     }
 }
 

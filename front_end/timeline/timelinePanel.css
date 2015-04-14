@@ -55,7 +55,9 @@
     background-color: rgb(255, 255, 255);
 }
 
-.timeline-overview-frames-mode #timeline-overview-grid {
+.timeline-overview-frames-mode #timeline-overview-grid,
+.timeline-overview-frames-mode .overview-grid-window-area,
+.timeline-overview-frames-mode .overview-grid-current-position {
     display: none;
 }
 
@@ -247,9 +249,10 @@
 #timeline-overview-events,
 #timeline-overview-memory,
 #timeline-overview-power {
-    flex: 0 0 60px;
+    flex: 0 0 59px;
     z-index: 160;
     width: 100%;
+    margin-bottom: 1px;
 }
 
 #timeline-overview-memory {
@@ -257,7 +260,7 @@
 }
 
 #timeline-overview-frames {
-    flex-basis: 79px;
+    flex-basis: 80px;
 }
 
 #timeline-overview-pane {
@@ -281,7 +284,8 @@
 
 #timeline-overview-frames canvas {
     z-index: 200;
-    background-color: rgba(255, 255, 255, 0.8);
+    opacity: 0.8;
+    background-color: rgb(255, 255, 255);
 }
 
 #timeline-graphs {
@@ -510,7 +514,7 @@
 
 #timeline-grid-header {
     pointer-events: none;
-    height: 19px;
+    height: 20px;
 }
 
 #timeline-graph-records-header {
@@ -861,21 +865,4 @@
 
 .timeline-gap {
     flex: none;
-}
-
-.invalidations-group {
-    margin-top: 4px;
-    line-height: normal;
-}
-
-.invalidations-group > .header {
-    padding-left: 0;
-}
-
-.invalidations-group > .content {
-    margin-left: 25px;
-}
-
-.invalidations-group > .content > .node-list {
-    border-left: 1px solid #e1e1e1;
 }

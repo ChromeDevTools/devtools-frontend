@@ -136,7 +136,7 @@ WebInspector.AuditController.prototype = {
         else
             this._reloadResources(startAuditWhenResourcesReady.bind(this));
 
-        WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Actions.AuditsStarted);
+        WebInspector.userMetrics.AuditsStarted.record();
     },
 
     /**

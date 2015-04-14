@@ -11,5 +11,8 @@
     "scripts": [
         "AccessibilityModel.js",
         "AccessibilitySidebarView.js"
+    ],
+    "stylesheets": [
+        "accessibilityNode.css"
     ]
 }

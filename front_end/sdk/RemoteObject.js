@@ -690,19 +690,6 @@ WebInspector.RemoteObjectImpl.prototype = {
 
 /**
  * @param {!WebInspector.RemoteObject} object
- * @param {boolean} flattenProtoChain
- * @param {function(?Array.<!WebInspector.RemoteObjectProperty>, ?Array.<!WebInspector.RemoteObjectProperty>)} callback
- */
-WebInspector.RemoteObject.loadFromObject = function(object, flattenProtoChain, callback)
-{
-    if (flattenProtoChain)
-        object.getAllProperties(false, callback);
-    else
-        WebInspector.RemoteObject.loadFromObjectPerProto(object, callback);
-};
-
-/**
- * @param {!WebInspector.RemoteObject} object
  * @param {function(?Array.<!WebInspector.RemoteObjectProperty>, ?Array.<!WebInspector.RemoteObjectProperty>)} callback
  */
 WebInspector.RemoteObject.loadFromObjectPerProto = function(object, callback)

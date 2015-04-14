@@ -169,6 +169,7 @@ WebInspector.Popover.prototype = {
         const arrowHeight = this._hasNoMargins ? 8 : 15;
         const arrowOffset = 10;
         const borderRadius = 4;
+        const arrowRadius = 6;
 
         // Skinny tooltips are not pretty, their arrow location is not nice.
         preferredWidth = Math.max(preferredWidth, 50);
@@ -213,11 +214,13 @@ WebInspector.Popover.prototype = {
         }
 
         var horizontalAlignment;
+        this._popupArrowElement.removeAttribute("style");
         if (anchorBox.x + newElementPosition.width < totalWidth) {
             newElementPosition.x = Math.max(borderRadius, anchorBox.x - borderRadius - arrowOffset);
             horizontalAlignment = "left";
+            this._popupArrowElement.style.left = arrowOffset + "px";
         } else if (newElementPosition.width + borderRadius * 2 < totalWidth) {
-            newElementPosition.x = totalWidth - newElementPosition.width - borderRadius;
+            newElementPosition.x = totalWidth - newElementPosition.width - borderRadius - 2 * borderWidth;
             horizontalAlignment = "right";
             // Position arrow accurately.
             var arrowRightPosition = Math.max(0, totalWidth - anchorBox.x - anchorBox.width - borderRadius - arrowOffset);
@@ -232,13 +235,12 @@ WebInspector.Popover.prototype = {
             if (verticalAlignment === WebInspector.Popover.Orientation.Bottom)
                 newElementPosition.y -= scrollerWidth;
             // Position arrow accurately.
-            this._popupArrowElement.style.left = Math.max(0, anchorBox.x - borderRadius * 2 - arrowOffset) + "px";
-            this._popupArrowElement.style.left += anchorBox.width / 2;
+            this._popupArrowElement.style.left = Math.max(0, anchorBox.x - newElementPosition.x - borderRadius - arrowRadius + anchorBox.width / 2) + "px";
         }
 
         this.element.className = WebInspector.Popover._classNamePrefix + " " + verticalAlignment + "-" + horizontalAlignment + "-arrow";
         WebInspector.installComponentRootStyles(this.element);
-        this.element.positionAt(newElementPosition.x - borderWidth, newElementPosition.y - borderWidth, container);
+        this.element.positionAt(newElementPosition.x, newElementPosition.y - borderWidth, container);
         this.element.style.width = newElementPosition.width + borderWidth * 2 + "px";
         this.element.style.height = newElementPosition.height + borderWidth * 2 + "px";
     },

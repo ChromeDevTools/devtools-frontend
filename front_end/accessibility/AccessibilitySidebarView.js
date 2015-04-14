@@ -55,7 +55,7 @@ WebInspector.AXNodeSubPane = function()
 {
     WebInspector.SidebarPane.call(this, WebInspector.UIString("Accessibility Node"));
 
-    this.registerRequiredCSS("elements/accessibilityNode.css");
+    this.registerRequiredCSS("accessibility/accessibilityNode.css");
 
     this._computedNameElement = this.bodyElement.createChild("div", "ax-computed-name");
 
@@ -64,7 +64,7 @@ WebInspector.AXNodeSubPane = function()
     this.bodyElement.appendChild(this._infoElement);
 
     this._treeOutline = new TreeOutlineInShadow('monospace');
-    this._treeOutline.registerRequiredCSS("elements/accessibilityNode.css");
+    this._treeOutline.registerRequiredCSS("accessibility/accessibilityNode.css");
     this._treeOutline.registerRequiredCSS("components/objectValue.css");
     this.bodyElement.appendChild(this._treeOutline.element);
 };
@@ -211,10 +211,7 @@ WebInspector.AXNodePropertyTreeElement.prototype = {
         this._nameElement = WebInspector.AXNodePropertyTreeElement.createNameElement(this._property.name);
 
         var value = this._property.value;
-        if (this._property.name === "role" && value.value === "") {
-            this._valueElement = createElement("span");
-            this._valueElement.textContent = WebInspector.UIString("<No matching ARIA role>");
-        } else if (value.type === "idref") {
+        if (value.type === "idref") {
             this._valueElement = WebInspector.AXNodePropertyTreeElement.createRelationshipValueElement(value, this._target);
         } else if (value.type === "idrefList") {
             var relatedNodes = value.relatedNodeArrayValue;
@@ -299,30 +296,18 @@ WebInspector.AXNodePropertyTreeElement.createValueElement = function(value, pare
     var prefix;
     var valueText;
     var suffix;
-    switch (type) {
-    case "string":
+    if (type === "string") {
         // Render \n as a nice unicode cr symbol.
-        // TODO(aboxhall): overflow ellipsis style
         prefix = "\"";
         valueText = value.value.replace(/\n/g, "\u21B5");
         suffix = "\"";
         valueElement._originalTextContent = "\"" + value.value + "\"";
-        valueElement.classList.add("object-value-string");
-        break;
-    case "boolean":
-    case "booleanOrUndefined":
-    case "tristate":
-        valueText = String(value.value);
-        valueElement.classList.add("object-value-boolean");
-        break;
-    case "number":
-    case "integer":
-        valueText = String(value.value);
-        valueElement.classList.add("object-value-number");
-        break;
-    default:
+    } else {
         valueText = String(value.value);
     }
+
+    if (type in WebInspector.AXNodePropertyTreeElement.TypeStyles)
+        valueElement.classList.add(WebInspector.AXNodePropertyTreeElement.TypeStyles[type]);
 
     valueElement.setTextContentTruncatedIfNeeded(valueText || "");
     if (prefix)
@@ -369,4 +354,16 @@ WebInspector.AXRelatedNodeTreeElement.prototype = {
     },
 
     __proto__: TreeElement.prototype
+};
+
+/** @type {!Object<string, string>} */
+WebInspector.AXNodePropertyTreeElement.TypeStyles = {
+    boolean: "object-value-boolean",
+    booleanOrUndefined: "object-value-boolean",
+    tristate: "object-value-boolean",
+    number: "object-value-number",
+    integer: "object-value-number",
+    string: "object-value-string",
+    role: "ax-role",
+    internalRole: "ax-internal-role"
 };

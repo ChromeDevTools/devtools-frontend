@@ -271,6 +271,10 @@ WebInspector.SWRegistrationElement = function(manager, registration)
     this._deleteButton = headerNode.createChild("button", "service-workers-button service-workers-delete-button");
     this._deleteButton.addEventListener("click", this._deleteButtonClicked.bind(this), false);
     this._deleteButton.title = WebInspector.UIString("Delete");
+    this._pushButton = headerNode.createChild("button", "service-workers-button service-workers-push-button");
+    this._pushButton.addEventListener("click", this._pushButtonClicked.bind(this), false);
+    this._pushButton.title = WebInspector.UIString("Emulate push event");
+    this._pushButton.disabled = true
     this._childrenListNode = this._element.createChild("ol");
     this._updateRegistration(registration);
 }
@@ -283,7 +287,7 @@ WebInspector.SWRegistrationElement.prototype = {
     {
         this._registration = registration;
         this._titleNode.textContent = WebInspector.UIString(registration.isDeleted ? "Scope: %s - deleted" : "Scope: %s", registration.scopeURL.asParsedURL().path);
-        this._deleteButton.classList.toggle("hidden", registration.isDeleted);
+        this._deleteButton.disabled = !!registration.isDeleted;
         this._updateVersionList();
     },
 
@@ -295,6 +299,9 @@ WebInspector.SWRegistrationElement.prototype = {
         versions = versions.filter(function(version) {
             return !version.isStoppedAndRedundant() || version.errorMessages.length;
         });
+        var activeVersions = versions.filter(function(version) { return version.isActivating() || version.isActivated(); });
+        this._pushButton.disabled = !activeVersions.length || !!this._registration.isDeleted;
+
         tableElement.appendChild(this._createVersionModeRow(
             versions.filter(function(version) { return version.isNew() || version.isInstalling(); }),
             "installing",
@@ -304,7 +311,7 @@ WebInspector.SWRegistrationElement.prototype = {
             "waiting",
             WebInspector.UIString("waiting")));
         tableElement.appendChild(this._createVersionModeRow(
-            versions.filter(function(version) { return version.isActivating() || version.isActivated(); }),
+            activeVersions,
             "active",
             WebInspector.UIString("active")));
         tableElement.appendChild(this._createVersionModeRow(
@@ -393,6 +400,15 @@ WebInspector.SWRegistrationElement.prototype = {
     _deleteButtonClicked: function(event)
     {
         this._manager.deleteRegistration(this._registration.id);
+    },
+
+    /**
+     * @param {!Event} event
+     */
+    _pushButtonClicked: function(event)
+    {
+        var data = "Test push message from DevTools."
+        this._manager.deliverPushMessage(this._registration.id, data);
     },
 
     /**

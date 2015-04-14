@@ -32,7 +32,6 @@
     background-image: url(Images/popoverArrows.png);
     width: 19px;
     height: 19px;
-    margin-left: 15px;
     margin-top: -19px;
     top: 0;
     left: 0;
@@ -76,11 +75,12 @@
 .source-frame-popover-tree {
     border-top: 1px solid rgb(184, 184, 184);
     overflow: auto;
-    position: absolute;
+    position: relative;
     top: 5px;
     bottom: 0;
     left: 0;
     right: 0;
+    margin-top: 1px;
 }
 
 /* Custom popup scrollers */

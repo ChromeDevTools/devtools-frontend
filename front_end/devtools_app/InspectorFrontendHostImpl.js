@@ -171,20 +171,13 @@ WebInspector.InspectorFrontendHostImpl.prototype = {
 
     /**
      * @override
+     * @param {string} actionName
      * @param {number} actionCode
+     * @param {number} bucketSize
      */
-    recordActionTaken: function(actionCode)
+    recordEnumeratedHistogram: function(actionName, actionCode, bucketSize)
     {
-        DevToolsAPI.sendMessageToEmbedder("recordActionUMA", ["DevTools.ActionTaken", actionCode], null);
-    },
-
-    /**
-     * @override
-     * @param {number} panelCode
-     */
-    recordPanelShown: function(panelCode)
-    {
-        DevToolsAPI.sendMessageToEmbedder("recordActionUMA", ["DevTools.PanelShown", panelCode], null);
+        DevToolsAPI.sendMessageToEmbedder("recordEnumeratedHistogram", [actionName, actionCode, bucketSize], null);
     },
 
     /**
@@ -343,6 +336,8 @@ WebInspector.InspectorFrontendHostImpl.prototype = {
         return DevToolsHost.isHostedMode();
     },
 
+    // Backward-compatible methods below this line --------------------------------------------
+
     /**
      * Support for legacy front-ends (<M41).
      * @return {string}
@@ -443,5 +438,23 @@ WebInspector.InspectorFrontendHostImpl.prototype = {
      */
     close: function(url)
     {
+    },
+
+    /**
+     * Support for legacy front-ends (<M44).
+     * @param {number} actionCode
+     */
+    recordActionTaken: function(actionCode)
+    {
+        this.recordEnumeratedHistogram("DevTools.ActionTaken", actionCode, 100);
+    },
+
+    /**
+     * Support for legacy front-ends (<M44).
+     * @param {number} panelCode
+     */
+    recordPanelShown: function(panelCode)
+    {
+        this.recordEnumeratedHistogram("DevTools.PanelShown", panelCode, 20);
     }
 }

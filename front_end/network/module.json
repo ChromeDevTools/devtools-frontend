@@ -18,19 +18,21 @@
             "className": "WebInspector.NetworkPanel.RequestRevealer"
         },
         {
-            "type": "ui-setting",
-            "section": "Network",
+            "type": "setting",
+            "category": "Network",
             "title": "Show primary load waterfall",
             "settingName": "networkShowPrimaryLoadWaterfall",
-            "settingType": "checkbox",
-            "experiment": "showPrimaryLoadWaterfallInNetworkTimeline"
+            "settingType": "boolean",
+            "experiment": "showPrimaryLoadWaterfallInNetworkTimeline",
+            "defaultValue": false
         },
         {
-            "type": "ui-setting",
-            "section": "Network",
+            "type": "setting",
+            "category": "Network",
             "title": "Color-code resource types",
             "settingName": "networkColorCodeResourceTypes",
-            "settingType": "checkbox"
+            "settingType": "boolean",
+            "defaultValue": false
         }
     ],
     "dependencies": ["source_frame", "components_lazy", "ui_lazy"],

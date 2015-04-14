@@ -95,7 +95,7 @@ WebInspector.ScriptFormatter = function(mimeType, content, callback)
     var parameters = {
         mimeType: mimeType,
         content: content,
-        indentString: WebInspector.settings.textEditorIndent.get()
+        indentString: WebInspector.moduleSetting("textEditorIndent").get()
     };
     this._worker.postMessage({ method: "format", params: parameters });
 }

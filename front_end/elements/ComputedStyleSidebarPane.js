@@ -37,11 +37,13 @@ WebInspector.ComputedStyleSidebarPane = function()
     this.registerRequiredCSS("elements/computedStyleSidebarPane.css");
     this._alwaysShowComputedProperties = { "display": true, "height": true, "width": true };
 
-    var inheritedCheckBox = WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Show inherited properties"), WebInspector.settings.showInheritedComputedStyleProperties, true);
+    this._showInheritedComputedStylePropertiesSetting = WebInspector.settings.createSetting("showInheritedComputedStyleProperties", false);
+
+    var inheritedCheckBox = WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Show inherited properties"), this._showInheritedComputedStylePropertiesSetting, true);
     inheritedCheckBox.classList.add("checkbox-with-label");
     this.bodyElement.appendChild(inheritedCheckBox);
     this.bodyElement.classList.add("computed-style-sidebar-pane");
-    WebInspector.settings.showInheritedComputedStyleProperties.addChangeListener(this._showInheritedComputedStyleChanged.bind(this));
+    this._showInheritedComputedStylePropertiesSetting.addChangeListener(this._showInheritedComputedStyleChanged.bind(this));
 
     this._propertiesContainer = this.bodyElement.createChild("div", "monospace");
     this._propertiesContainer.classList.add("computed-properties");
@@ -121,7 +123,7 @@ WebInspector.ComputedStyleSidebarPane.prototype = {
         var uniqueProperties = computedStyle.allProperties.slice();
         uniqueProperties.sort(propertySorter);
 
-        var showInherited = WebInspector.settings.showInheritedComputedStyleProperties.get();
+        var showInherited = this._showInheritedComputedStylePropertiesSetting.get();
         for (var i = 0; i < uniqueProperties.length; ++i) {
             var property = uniqueProperties[i];
             var inherited = this._isPropertyInherited(cascades.matched, property.name);

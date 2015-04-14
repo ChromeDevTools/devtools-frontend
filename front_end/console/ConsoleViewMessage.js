@@ -62,6 +62,7 @@ WebInspector.ConsoleViewMessage = function(consoleMessage, linkifier, nestingLev
         "string": this._formatParameterAsString
     };
     this._previewFormatter = new WebInspector.RemoteObjectPreviewFormatter();
+    this._searchRegex = null;
 }
 
 WebInspector.ConsoleViewMessage.prototype = {
@@ -254,12 +255,6 @@ WebInspector.ConsoleViewMessage.prototype = {
         }
     },
 
-    _formattedMessageText: function()
-    {
-        this.formattedMessage();
-        return this._messageElement.deepTextContent();
-    },
-
     /**
      * @return {!Element}
      */
@@ -395,8 +390,7 @@ WebInspector.ConsoleViewMessage.prototype = {
     _formatParameter: function(output, forceObjectFormat, includePreview)
     {
         if (output.customPreview()) {
-            var customSection = new WebInspector.CustomPreviewSection(output);
-            return customSection.element();
+            return WebInspector.CustomPreviewSection.createInShadow(output);
         }
 
         var type = forceObjectFormat ? "object" : (output.subtype || output.type);
@@ -445,14 +439,19 @@ WebInspector.ConsoleViewMessage.prototype = {
                 return;
             }
         } else {
-            titleElement.createTextChild(obj.description || "");
+            if (obj.type === "function") {
+                WebInspector.ObjectPropertiesSection.formatObjectAsFunction(obj, titleElement, false);
+                titleElement.classList.add("object-value-function");
+            } else {
+                titleElement.createTextChild(obj.description || "");
+            }
         }
+        var note = titleElement.createChild("span", "object-info-state-note");
+        note.title = WebInspector.UIString("Object state below is captured upon first expansion");
         var section = new WebInspector.ObjectPropertiesSection(obj, titleElement);
         section.enableContextMenu();
         elem.appendChild(section.element);
-
-        var note = section.titleElement.createChild("span", "object-info-state-note");
-        note.title = WebInspector.UIString("Object state below is captured upon first expansion");
+        section.element.classList.add("console-view-object-properties-section");
     },
 
     /**
@@ -461,82 +460,8 @@ WebInspector.ConsoleViewMessage.prototype = {
      */
     _formatParameterAsFunction: function(func, element)
     {
-        func.functionDetails(didGetDetails.bind(this));
-
-        /**
-         * @param {?WebInspector.DebuggerModel.FunctionDetails} response
-         * @this {WebInspector.ConsoleViewMessage}
-         */
-        function didGetDetails(response)
-        {
-            if (!response) {
-                element.createTextChild(func.description || "");
-                return;
-            }
-
-            var title = (response.functionName || "anonymous")+ "()";
-            if (!response.location) {
-                element.createTextChild(title);
-                return;
-            }
-
-            var anchor = createElement("span");
-            element.addEventListener("click", WebInspector.Revealer.reveal.bind(WebInspector.Revealer, response.location, undefined));
-            anchor.textContent = title;
-            element.appendChild(anchor);
-            element.addEventListener("contextmenu", this._contextMenuEventFired.bind(this, func), false);
-            response.location.script().requestContent(contentAvailable);
-
-            // Format function parameters.
-            /**
-             * @param {?string} content
-             */
-            function contentAvailable(content)
-            {
-                if (!content)
-                    return;
-
-                self.runtime.instancePromise(WebInspector.TokenizerFactory).then(processTokens);
-
-                var params = [];
-
-                /**
-                 * @param {!WebInspector.TokenizerFactory} tokenizerFactory
-                 */
-                function processTokens(tokenizerFactory)
-                {
-                    var lines = content.split("\n");
-                    var lineNumber = response.location.lineNumber - response.location.script().lineOffset;
-                    var columnNumber = response.location.columnNumber - (response.location.lineNumber ? 0 : response.location.script().columnOffset);
-
-                    var budget = 200;
-                    var tokenize = tokenizerFactory.createTokenizer("text/javascript");
-                    for (var i = lineNumber; budget > 0 && i < lines.length; ++i) {
-                        var nextLine = lines[i].substring(columnNumber, budget);
-                        tokenize(nextLine, processToken);
-                        budget -= nextLine.length;
-                        columnNumber = 0;
-                    }
-                    if (params.length)
-                        anchor.textContent = (response.functionName || "anonymous")+ "(" + params.join(", ") + ")";
-                }
-
-                var doneProcessing = false;
-
-                /**
-                 * @param {string} token
-                 * @param {?string} tokenType
-                 * @param {number} column
-                 * @param {number} newColumn
-                 */
-                function processToken(token, tokenType, column, newColumn)
-                {
-                    doneProcessing = doneProcessing || token === ")";
-                    if (!doneProcessing && tokenType === "js-variable")
-                        params.push(token);
-                }
-            }
-        }
+        WebInspector.ObjectPropertiesSection.formatObjectAsFunction(func, element, true);
+        element.addEventListener("contextmenu", this._contextMenuEventFired.bind(this, func), false);
     },
 
     /**
@@ -918,21 +843,13 @@ WebInspector.ConsoleViewMessage.prototype = {
         return String.format(format, parameters, formatters, formattedResult, append);
     },
 
-    clearHighlights: function()
-    {
-        if (this._higlightNodeChanges) {
-            WebInspector.revertDomChanges(this._higlightNodeChanges);
-            this._higlightNodeChanges = null;
-        }
-    },
-
     /**
      * @return {boolean}
      */
-    matchesRegex: function(regexObject)
+    matchesFilterRegex: function(regexObject)
     {
         regexObject.lastIndex = 0;
-        var text = this._formattedMessageText();
+        var text = this.searchableElement().deepTextContent();
         if (this._anchorElement)
             text += " " + this._anchorElement.textContent;
         return regexObject.test(text);
@@ -1011,7 +928,7 @@ WebInspector.ConsoleViewMessage.prototype = {
         if (this._repeatCount > 1)
             this._showRepeatCountElement();
 
-        this.updateTimestamp(WebInspector.settings.consoleTimestampsEnabled.get());
+        this.updateTimestamp(WebInspector.moduleSetting("consoleTimestampsEnabled").get());
 
         return this._element;
     },
@@ -1200,26 +1117,60 @@ WebInspector.ConsoleViewMessage.prototype = {
     },
 
     /**
-     * @return {string}
+     * @param {?RegExp} regex
      */
-    renderedText: function ()
+    setSearchRegex: function(regex)
     {
-        if (!this._messageElement)
-            return "";
-        return this._messageElement.deepTextContent();
+        if (this._searchHiglightNodeChanges && this._searchHiglightNodeChanges.length)
+            WebInspector.revertDomChanges(this._searchHiglightNodeChanges);
+        this._searchRegex = regex;
+        this._searchHighlightNodes = [];
+        this._searchHiglightNodeChanges = [];
+        if (!this._searchRegex)
+            return;
+
+        var text = this.searchableElement().deepTextContent();
+        var match;
+        this._searchRegex.lastIndex = 0;
+        var sourceRanges = [];
+        while ((match = this._searchRegex.exec(text)) && match[0])
+            sourceRanges.push(new WebInspector.SourceRange(match.index, match[0].length));
+
+        if (sourceRanges.length && this.searchableElement())
+            this._searchHighlightNodes = WebInspector.highlightSearchResults(this.searchableElement(), sourceRanges, this._searchHiglightNodeChanges);
     },
 
     /**
-     * @param {!Array.<!Object>} ranges
-     * @return {!Array.<!Element>}
+     * @return {?RegExp}
      */
-    highlightMatches: function(ranges)
+    searchRegex: function()
     {
-        var highlightNodes = [];
-        this._higlightNodeChanges = [];
-        if (this._formattedMessage)
-            highlightNodes = WebInspector.highlightSearchResults(this._messageElement, ranges, this._higlightNodeChanges);
-        return highlightNodes;
+        return this._searchRegex;
+    },
+
+    /**
+     * @return {number}
+     */
+    searchCount: function()
+    {
+        return this._searchHighlightNodes.length;
+    },
+
+    /**
+     * @return {!Element}
+     */
+    searchHighlightNode: function(index)
+    {
+        return this._searchHighlightNodes[index];
+    },
+
+    /**
+     * @return {!Element}
+     */
+    searchableElement: function()
+    {
+        this.formattedMessage();
+        return this._messageElement;
     },
 
     /**

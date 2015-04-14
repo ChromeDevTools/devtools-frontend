@@ -33,14 +33,17 @@
  */
 WebInspector.UserMetrics = function()
 {
+    for (var actionName in WebInspector.UserMetrics._ActionCodes) {
+        var actionCode = WebInspector.UserMetrics._ActionCodes[actionName];
+        this[actionName] = new WebInspector.UserMetrics._Recorder(actionCode);
+    }
 }
 
 // Codes below are used to collect UMA histograms in the Chromium port.
 // Do not change the values below, additional actions are needed on the Chromium side
 // in order to add more codes.
 
-/** @enum {number} */
-WebInspector.UserMetrics.Actions = {
+WebInspector.UserMetrics._ActionCodes = {
     WindowDocked: 1,
     WindowUndocked: 2,
     ScriptsBreakpointSet: 3,
@@ -52,7 +55,9 @@ WebInspector.UserMetrics.Actions = {
     FileSavedInWorkspace: 9,
     DeviceModeEnabled: 10,
     AnimationsPlaybackRateChanged: 11,
-    RevisionApplied: 12
+    RevisionApplied: 12,
+    FileSystemDirectoryContentReceived: 13,
+    StyleRuleEdited: 14
 }
 
 WebInspector.UserMetrics._PanelCodes = {
@@ -63,7 +68,8 @@ WebInspector.UserMetrics._PanelCodes = {
     timeline: 5,
     profiles: 6,
     audits: 7,
-    console: 8
+    console: 8,
+    layers: 9
 }
 
 WebInspector.UserMetrics.UserAction = "UserAction";
@@ -83,17 +89,31 @@ WebInspector.UserMetrics.UserActionNames = {
 };
 
 WebInspector.UserMetrics.prototype = {
+    /**
+     * @param {string} panelName
+     */
     panelShown: function(panelName)
     {
-        InspectorFrontendHost.recordPanelShown(WebInspector.UserMetrics._PanelCodes[panelName] || 0);
-    },
-
-    /**
-     * @param {!WebInspector.UserMetrics.Actions} action
-     */
-    actionTaken: function(action)
-    {
-        InspectorFrontendHost.recordActionTaken(action);
+        var code = WebInspector.UserMetrics._PanelCodes[panelName] || 0;
+        var size = Object.keys(WebInspector.UserMetrics._PanelCodes).length + 1;
+        InspectorFrontendHost.recordEnumeratedHistogram("DevTools.PanelShown", code, size);
     }
 }
+
+/**
+ * @constructor
+ */
+WebInspector.UserMetrics._Recorder = function(actionCode)
+{
+    this._actionCode = actionCode;
+}
+
+WebInspector.UserMetrics._Recorder.prototype = {
+    record: function()
+    {
+        var size = Object.keys(WebInspector.UserMetrics._ActionCodes).length + 1;
+        InspectorFrontendHost.recordEnumeratedHistogram("DevTools.ActionTaken", this._actionCode, size);
+    }
+}
+
 WebInspector.userMetrics = new WebInspector.UserMetrics();

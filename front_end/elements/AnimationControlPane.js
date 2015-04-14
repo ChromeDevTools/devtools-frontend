@@ -41,14 +41,14 @@ WebInspector.AnimationControlPane.prototype = {
         this._animationsPlaybackRate = WebInspector.AnimationsSidebarPane.GlobalPlaybackRates[event.target.value];
         this._target.animationAgent().setPlaybackRate(this._animationsPaused ? 0 : this._animationsPlaybackRate);
         this._animationsPlaybackLabel.textContent = this._animationsPlaybackRate + "x";
-        WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Actions.AnimationsPlaybackRateChanged);
+        WebInspector.userMetrics.AnimationsPlaybackRateChanged.record();
     },
 
     _pauseButtonHandler: function ()
     {
         this._animationsPaused = !this._animationsPaused;
         this._target.animationAgent().setPlaybackRate(this._animationsPaused ? 0 : this._animationsPlaybackRate);
-        WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Actions.AnimationsPlaybackRateChanged);
+        WebInspector.userMetrics.AnimationsPlaybackRateChanged.record();
         this._animationsPauseButton.element.classList.toggle("pause-status-bar-item");
         this._animationsPauseButton.element.classList.toggle("play-status-bar-item");
     },

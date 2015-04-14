@@ -38,11 +38,11 @@ WebInspector.RenderingOptions = function()
      * @type {!Map.<!WebInspector.Setting, string>}
      */
     this._setterNames = new Map();
-    this._mapSettingToSetter(WebInspector.settings.showPaintRects, "setShowPaintRects");
-    this._mapSettingToSetter(WebInspector.settings.showDebugBorders, "setShowDebugBorders");
-    this._mapSettingToSetter(WebInspector.settings.showFPSCounter, "setShowFPSCounter");
-    this._mapSettingToSetter(WebInspector.settings.continuousPainting, "setContinuousPaintingEnabled");
-    this._mapSettingToSetter(WebInspector.settings.showScrollBottleneckRects, "setShowScrollBottleneckRects");
+    this._mapSettingToSetter(WebInspector.moduleSetting("showPaintRects"), "setShowPaintRects");
+    this._mapSettingToSetter(WebInspector.moduleSetting("showDebugBorders"), "setShowDebugBorders");
+    this._mapSettingToSetter(WebInspector.moduleSetting("showFPSCounter"), "setShowFPSCounter");
+    this._mapSettingToSetter(WebInspector.moduleSetting("continuousPainting"), "setContinuousPaintingEnabled");
+    this._mapSettingToSetter(WebInspector.moduleSetting("showScrollBottleneckRects"), "setShowScrollBottleneckRects");
 
     WebInspector.targetManager.observeTargets(this);
 }
@@ -118,11 +118,11 @@ WebInspector.RenderingOptions.View = function()
     this.element.classList.add("help-indent-labels");
 
     var div = this.element.createChild("div", "settings-tab help-content help-container help-no-columns");
-    div.appendChild(WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Show paint rectangles"), WebInspector.settings.showPaintRects));
-    div.appendChild(WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Show composited layer borders"), WebInspector.settings.showDebugBorders));
-    div.appendChild(WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Show FPS meter"), WebInspector.settings.showFPSCounter));
-    div.appendChild(WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Enable continuous page repainting"), WebInspector.settings.continuousPainting));
-    var child = WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Show potential scroll bottlenecks"), WebInspector.settings.showScrollBottleneckRects);
+    div.appendChild(WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Show paint rectangles"), WebInspector.moduleSetting("showPaintRects")));
+    div.appendChild(WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Show composited layer borders"), WebInspector.moduleSetting("showDebugBorders")));
+    div.appendChild(WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Show FPS meter"), WebInspector.moduleSetting("showFPSCounter")));
+    div.appendChild(WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Enable continuous page repainting"), WebInspector.moduleSetting("continuousPainting")));
+    var child = WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Show potential scroll bottlenecks"), WebInspector.moduleSetting("showScrollBottleneckRects"));
     child.title = WebInspector.UIString("Shows areas of the page that slow down scrolling:\nTouch and mousewheel event listeners can delay scrolling.\nSome areas need to repaint their content when scrolled.");
     div.appendChild(child);
 }

@@ -1,4 +1,13 @@
 {
+    "extensions": [
+        {
+            "type": "settings-view",
+            "name": "devices",
+            "title": "Devices",
+            "order": "30",
+            "className": "WebInspector.DevicesSettingsTab"
+        }
+    ],
     "dependencies": [
         "bindings",
         "platform",
@@ -6,12 +15,14 @@
     ],
     "scripts": [
         "EmulatedDevices.js",
+        "DevicesSettingsTab.js",
         "OverridesUI.js",
         "InspectedPagePlaceholder.js",
         "MediaQueryInspector.js",
         "ResponsiveDesignView.js"
     ],
     "stylesheets": [
+        "devicesSettingsTab.css",
         "responsiveDesignView.css"
     ]
 }

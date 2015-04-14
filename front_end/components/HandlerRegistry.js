@@ -298,14 +298,13 @@ WebInspector.HandlerRegistry.LinkHandler.prototype = {
 
 /**
  * @constructor
- * @extends {WebInspector.UISettingDelegate}
+ * @implements {WebInspector.SettingUI}
  */
-WebInspector.HandlerRegistry.OpenAnchorLocationSettingDelegate = function()
+WebInspector.HandlerRegistry.OpenAnchorLocationSettingUI = function()
 {
-    WebInspector.UISettingDelegate.call(this);
 }
 
-WebInspector.HandlerRegistry.OpenAnchorLocationSettingDelegate.prototype = {
+WebInspector.HandlerRegistry.OpenAnchorLocationSettingUI.prototype = {
     /**
      * @override
      * @return {?Element}
@@ -317,9 +316,7 @@ WebInspector.HandlerRegistry.OpenAnchorLocationSettingDelegate.prototype = {
 
         var handlerSelector = new WebInspector.HandlerSelector(WebInspector.openAnchorLocationRegistry);
         return WebInspector.SettingsUI.createCustomSetting(WebInspector.UIString("Open links in"), handlerSelector.element);
-    },
-
-    __proto__: WebInspector.UISettingDelegate.prototype
+    }
 }
 
 /**

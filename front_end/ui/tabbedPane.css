@@ -99,7 +99,8 @@
     border-top-color: #bbb;
 }
 
-.tabbed-pane-header-tab .tabbed-pane-close-button-gray {
+.tabbed-pane-header-tab .tabbed-pane-close-button {
+    display: inline-block;
     position: relative;
     top: 2px;
     left: 1px;
@@ -108,8 +109,8 @@
     visibility: hidden;
 }
 
-.tabbed-pane-header-tab:hover .tabbed-pane-close-button-gray,
-.tabbed-pane-header-tab.selected .tabbed-pane-close-button-gray {
+.tabbed-pane-header-tab:hover .tabbed-pane-close-button,
+.tabbed-pane-header-tab.selected .tabbed-pane-close-button {
     visibility: visible;
 }
 
@@ -136,29 +137,6 @@
 
 .tabbed-pane-header-tabs-drop-down-container:active {
     opacity: 0.8;
-}
-
-.tabbed-pane-close-button-gray {
-    background-image: url(Images/statusbarButtonGlyphs.png);
-    background-size: 320px 144px;
-    display: inline-block;
-    width: 13px;
-    height: 13px;
-    background-position: -175px -96px;
-}
-
-@media (-webkit-min-device-pixel-ratio: 1.5) {
-.tabbed-pane-close-button-gray {
-    background-image: url(Images/statusbarButtonGlyphs_2x.png);
-}
-} /* media */
-
-.tabbed-pane-close-button-gray:hover {
-    background-position: -143px -96px;
-}
-
-.tabbed-pane-close-button-gray:active {
-    background-position: -160px -96px;
 }
 
 /* Web page style */

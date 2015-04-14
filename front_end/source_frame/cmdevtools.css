@@ -69,7 +69,7 @@
 }
 
 .cm-line-without-source-mapping {
-  background-color: #eee;
+  background-color: #fafafa;
 }
 
 .cm-breakpoint.cm-breakpoint-conditional .CodeMirror-linenumber {

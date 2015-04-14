@@ -31,15 +31,31 @@ WebInspector.CustomPreviewSection = function(object, prefixML)
     this._sectionElement.appendChild(header);
 }
 
+/**
+ * @constructor
+ * @param {!WebInspector.RemoteObject} object
+ * @return {!Element}
+ */
+WebInspector.CustomPreviewSection.createInShadow = function(object)
+{
+    var customPreviewSection = new WebInspector.CustomPreviewSection(object);
+    var element = createElement("span");
+    var shadowRoot = element.createShadowRoot();
+    shadowRoot.appendChild(WebInspector.View.createStyleElement("components/customPreviewSection.css"));
+    shadowRoot.appendChild(customPreviewSection.element());
+    return element;
+}
+
 WebInspector.CustomPreviewSection._tagsWhiteList = new Set(["span", "div", "ol", "li","table", "tr", "td"]);
 
 WebInspector.CustomPreviewSection._attributes = [
     "background-color",
     "color",
-    "font-style",
+    "font-style", "font-weight",
     "list-style-type",
     "margin", "margin-top", "margin-right", "margin-bottom", "margin-left",
-    "padding", "padding-top", "padding-right", "padding-bottom", "padding-left"];
+    "padding", "padding-top", "padding-right", "padding-bottom", "padding-left",
+    "text-align"];
 
 WebInspector.CustomPreviewSection._attributesWhiteList = new Set(WebInspector.CustomPreviewSection._attributes);
 
@@ -173,7 +189,7 @@ WebInspector.CustomPreviewSection.prototype = {
     {
         this._expanded = !this._expanded;
         this._sectionElement.classList.toggle("expanded", this._expanded);
-        var parent = this._sectionElement.parentElement;
+        var parent = this._sectionElement.parentNode;
         if (this._expanded)
             parent.insertBefore(this._cachedContent, this._sectionElement.nextSibling);
         else
@@ -186,9 +202,10 @@ WebInspector.CustomPreviewSection.prototype = {
          * @suppressReceiverCheck
          * @suppressGlobalPropertiesCheck
          * @suppress {undefinedVars}
-         * @this {?}
+         * @this {Object}
+         * @param {*=} formatter
          */
-        function load()
+        function load(formatter)
         {
             /**
              * @param {*} jsonMLObject
@@ -213,16 +230,11 @@ WebInspector.CustomPreviewSection.prototype = {
                     jsonMLObject[1] = bindRemoteObject(originObject, false, false, null, false);
                     startIndex = 2;
                 }
-
                 for (var i = startIndex; i < jsonMLObject.length; ++i)
                     substituteObjectTagsInCustomPreview(jsonMLObject[i]);
             }
 
             try {
-                var formatter = window["devtoolsFormatter"];
-                if (!formatter)
-                    return null;
-
                 var body = formatter.body(this);
                 substituteObjectTagsInCustomPreview(body);
                 return body;
@@ -232,7 +244,8 @@ WebInspector.CustomPreviewSection.prototype = {
             }
         }
 
-        this._object.callFunctionJSON(load, [], onBodyLoaded.bind(this));
+        var customPreview = this._object.customPreview();
+        this._object.callFunctionJSON(load, [{objectId: customPreview.formatterObjectId}], onBodyLoaded.bind(this));
 
         /**
          * @param {*} bodyJsonML

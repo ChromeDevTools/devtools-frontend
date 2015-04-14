@@ -301,8 +301,8 @@ WebInspector.TargetManager = function()
     this._observers = [];
     /** @type {!Object.<string, !Array.<{modelClass: !Function, thisObject: (!Object|undefined), listener: function(!WebInspector.Event)}>>} */
     this._modelListeners = {};
-    /** @type {boolean} */
-    this._allTargetsSuspended = false;
+    /** @type {number} */
+    this._suspendCount = 0;
 }
 
 WebInspector.TargetManager.Events = {
@@ -316,27 +316,20 @@ WebInspector.TargetManager.Events = {
 WebInspector.TargetManager.prototype = {
     suspendAllTargets: function()
     {
-        console.assert(!this._allTargetsSuspended);
-        if (this._allTargetsSuspended)
+        if (this._suspendCount++)
             return;
-        this._allTargetsSuspended = true;
-        this._targets.forEach(function(target)
-        {
+        for (var target of this._targets)
             target.suspend();
-        });
         this.dispatchEventToListeners(WebInspector.TargetManager.Events.SuspendStateChanged);
     },
 
     resumeAllTargets: function()
     {
-        console.assert(this._allTargetsSuspended);
-        if (!this._allTargetsSuspended)
+        console.assert(this._suspendCount > 0);
+        if (--this._suspendCount)
             return;
-        this._allTargetsSuspended = false;
-        this._targets.forEach(function(target)
-        {
+        for (var target of this._targets)
             target.resume();
-        });
         this.dispatchEventToListeners(WebInspector.TargetManager.Events.SuspendStateChanged);
     },
 
@@ -345,7 +338,7 @@ WebInspector.TargetManager.prototype = {
      */
     allTargetsSuspended: function()
     {
-        return this._allTargetsSuspended;
+        return !!this._suspendCount;
     },
 
     /**

@@ -40,7 +40,7 @@ WebInspector.CPUProfilerModel = function(target)
     target.profilerAgent().enable();
 
     this._configureCpuProfilerSamplingInterval();
-    WebInspector.settings.highResolutionCpuProfiling.addChangeListener(this._configureCpuProfilerSamplingInterval, this);
+    WebInspector.moduleSetting("highResolutionCpuProfiling").addChangeListener(this._configureCpuProfilerSamplingInterval, this);
 }
 
 WebInspector.CPUProfilerModel.EventTypes = {
@@ -54,7 +54,7 @@ WebInspector.CPUProfilerModel.prototype = {
 
     _configureCpuProfilerSamplingInterval: function()
     {
-        var intervalUs = WebInspector.settings.highResolutionCpuProfiling.get() ? 100 : 1000;
+        var intervalUs = WebInspector.moduleSetting("highResolutionCpuProfiling").get() ? 100 : 1000;
         this.target().profilerAgent().setSamplingInterval(intervalUs);
     },
 
@@ -112,7 +112,7 @@ WebInspector.CPUProfilerModel.prototype = {
         this._isRecording = true;
         this.target().profilerAgent().start();
         this.dispatchEventToListeners(WebInspector.CPUProfilerModel.EventTypes.ProfileStarted);
-        WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Actions.ProfilesCPUProfileTaken);
+        WebInspector.userMetrics.ProfilesCPUProfileTaken.record();
     },
 
     /**
@@ -135,7 +135,7 @@ WebInspector.CPUProfilerModel.prototype = {
 
     dispose: function()
     {
-        WebInspector.settings.highResolutionCpuProfiling.removeChangeListener(this._configureCpuProfilerSamplingInterval, this);
+        WebInspector.moduleSetting("highResolutionCpuProfiling").removeChangeListener(this._configureCpuProfilerSamplingInterval, this);
     },
 
 

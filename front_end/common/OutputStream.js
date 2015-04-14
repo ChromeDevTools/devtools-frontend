@@ -2,40 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-WebInspector.Streams = {};
-
-WebInspector.Streams._lastStreamId = 0;
-/** @type {!Object.<number, !WebInspector.OutputStream>} */
-WebInspector.Streams._boundStreams = {};
-
-/**
- * @param {!WebInspector.OutputStream} stream
- * @return {number}
- */
-WebInspector.Streams.bindOutputStream = function(stream)
-{
-    WebInspector.Streams._boundStreams[++WebInspector.Streams._lastStreamId] = stream;
-    return WebInspector.Streams._lastStreamId;
-}
-
-/**
- * @param {number} id
- */
-WebInspector.Streams.discardOutputStream = function(id)
-{
-    WebInspector.Streams._boundStreams[id].close();
-    delete WebInspector.Streams._boundStreams[id];
-}
-
-/**
- * @param {number} id
- * @param {string} chunk
- */
-WebInspector.Streams.streamWrite = function(id, chunk)
-{
-    WebInspector.Streams._boundStreams[id].write(chunk);
-}
-
 /**
  * @interface
  */

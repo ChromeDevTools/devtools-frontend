@@ -123,8 +123,8 @@ WebInspector.Main.prototype = {
 
     _createSettings: function()
     {
-        WebInspector.settings = new WebInspector.Settings();
         this._initializeExperiments();
+        WebInspector.settings = new WebInspector.Settings();
 
         // This setting is needed for backwards compatibility with Devtools CodeSchool extension. DO NOT REMOVE
         WebInspector.settings.pauseOnExceptionStateString = new WebInspector.PauseOnExceptionStateSetting();
@@ -137,7 +137,6 @@ WebInspector.Main.prototype = {
         Runtime.experiments.register("animationInspection", "Animation Inspection");
         Runtime.experiments.register("applyCustomStylesheet", "Allow custom UI themes");
         Runtime.experiments.register("blackboxJSFramesOnTimeline", "Blackbox JavaScript frames on Timeline");
-        Runtime.experiments.register("canvasInspection", "Canvas inspection");
         Runtime.experiments.register("timelineDetailsChart", "Costly functions view in Timeline details", true);
         Runtime.experiments.register("customObjectFormatters", "Custom object formatters", true);
         Runtime.experiments.register("externalDeviceList", "External device list", true);
@@ -163,7 +162,7 @@ WebInspector.Main.prototype = {
 
         if (InspectorFrontendHost.isUnderTest()) {
             // Enable experiments for testing.
-            var testPath = WebInspector.settings.testPath.get();
+            var testPath = self.localStorage ? self.localStorage["testPath"] || "" : "";
             if (testPath.indexOf("debugger/promise") !== -1)
                 Runtime.experiments.enableForTest("promiseTracker");
             if (testPath.indexOf("elements/") !== -1)
@@ -222,6 +221,7 @@ WebInspector.Main.prototype = {
         WebInspector.shortcutsScreen.section(WebInspector.UIString("Console"));
         WebInspector.shortcutsScreen.section(WebInspector.UIString("Elements Panel"));
 
+        WebInspector.fileManager = new WebInspector.FileManager();
         WebInspector.isolatedFileSystemManager = new WebInspector.IsolatedFileSystemManager();
         WebInspector.workspace = new WebInspector.Workspace(WebInspector.isolatedFileSystemManager.mapping());
         WebInspector.networkMapping = new WebInspector.NetworkMapping(WebInspector.workspace, WebInspector.isolatedFileSystemManager.mapping());
@@ -230,7 +230,7 @@ WebInspector.Main.prototype = {
         WebInspector.cssWorkspaceBinding = new WebInspector.CSSWorkspaceBinding(WebInspector.targetManager, WebInspector.workspace, WebInspector.networkMapping);
         WebInspector.debuggerWorkspaceBinding = new WebInspector.DebuggerWorkspaceBinding(WebInspector.targetManager, WebInspector.workspace, WebInspector.networkMapping);
         WebInspector.fileSystemWorkspaceBinding = new WebInspector.FileSystemWorkspaceBinding(WebInspector.isolatedFileSystemManager, WebInspector.workspace, WebInspector.networkMapping);
-        WebInspector.breakpointManager = new WebInspector.BreakpointManager(WebInspector.settings.breakpoints, WebInspector.workspace, WebInspector.networkMapping, WebInspector.targetManager, WebInspector.debuggerWorkspaceBinding);
+        WebInspector.breakpointManager = new WebInspector.BreakpointManager(null, WebInspector.workspace, WebInspector.networkMapping, WebInspector.targetManager, WebInspector.debuggerWorkspaceBinding);
         WebInspector.extensionServer = new WebInspector.ExtensionServer();
 
         new WebInspector.OverlayController();
@@ -636,6 +636,13 @@ WebInspector.Main.prototype = {
     }
 }
 
+WebInspector.reload = function()
+{
+    if (WebInspector.dockController.canDock() && WebInspector.dockController.dockSide() === WebInspector.DockController.State.Undocked)
+        InspectorFrontendHost.setIsDocked(true, function() {});
+    window.top.location.reload();
+}
+
 /**
  * @constructor
  * @implements {WebInspector.ActionDelegate}
@@ -647,11 +654,22 @@ WebInspector.Main.ReloadActionDelegate = function()
 WebInspector.Main.ReloadActionDelegate.prototype = {
     /**
      * @override
-     * @return {boolean}
+     * @param {!WebInspector.Context} context
+     * @param {string} actionId
      */
-    handleAction: function()
+    handleAction: function(context, actionId)
     {
-        return WebInspector.Main._reloadPage(false);
+        switch (actionId) {
+        case "main.reload":
+            WebInspector.Main._reloadPage(false);
+            break;
+        case "main.hard-reload":
+            WebInspector.Main._reloadPage(true);
+            break;
+        case "main.debug-reload":
+            WebInspector.reload();
+            break;
+        }
     }
 }
 
@@ -659,145 +677,45 @@ WebInspector.Main.ReloadActionDelegate.prototype = {
  * @constructor
  * @implements {WebInspector.ActionDelegate}
  */
-WebInspector.Main.HardReloadActionDelegate = function()
+WebInspector.Main.ZoomActionDelegate = function()
 {
 }
 
-WebInspector.Main.HardReloadActionDelegate.prototype = {
+WebInspector.Main.ZoomActionDelegate.prototype = {
     /**
      * @override
-     * @return {boolean}
+     * @param {!WebInspector.Context} context
+     * @param {string} actionId
      */
-    handleAction: function()
-    {
-        return WebInspector.Main._reloadPage(true);
-    }
-}
-
-/**
- * @constructor
- * @implements {WebInspector.ActionDelegate}
- */
-WebInspector.Main.DebugReloadActionDelegate = function()
-{
-}
-
-WebInspector.Main.DebugReloadActionDelegate.prototype = {
-    /**
-     * @override
-     * @return {boolean}
-     */
-    handleAction: function()
-    {
-        WebInspector.AppUtils.reload();
-        return true;
-    }
-}
-
-/**
- * @constructor
- * @implements {WebInspector.ActionDelegate}
- */
-WebInspector.Main.ZoomInActionDelegate = function()
-{
-}
-
-WebInspector.Main.ZoomInActionDelegate.prototype = {
-    /**
-     * @override
-     * @return {boolean}
-     */
-    handleAction: function()
+    handleAction: function(context, actionId)
     {
         if (InspectorFrontendHost.isHostedMode())
-            return false;
+            return;
 
-        InspectorFrontendHost.zoomIn();
-        return true;
+        switch (actionId) {
+        case "main.zoom-in":
+            InspectorFrontendHost.zoomIn();
+            break;
+        case "main.zoom-out":
+            InspectorFrontendHost.zoomOut();
+            break;
+        case "main.zoom-reset":
+            InspectorFrontendHost.resetZoom();
+            break;
+        }
     }
-}
-
-/**
- * @constructor
- * @implements {WebInspector.ActionDelegate}
- */
-WebInspector.Main.ZoomOutActionDelegate = function()
-{
-}
-
-WebInspector.Main.ZoomOutActionDelegate.prototype = {
-    /**
-     * @override
-     * @return {boolean}
-     */
-    handleAction: function()
-    {
-        if (InspectorFrontendHost.isHostedMode())
-            return false;
-
-        InspectorFrontendHost.zoomOut();
-        return true;
-    }
-}
-
-/**
- * @constructor
- * @implements {WebInspector.ActionDelegate}
- */
-WebInspector.Main.ZoomResetActionDelegate = function()
-{
-}
-
-WebInspector.Main.ZoomResetActionDelegate.prototype = {
-    /**
-     * @override
-     * @return {boolean}
-     */
-    handleAction: function()
-    {
-        if (InspectorFrontendHost.isHostedMode())
-            return false;
-
-        InspectorFrontendHost.resetZoom();
-        return true;
-    }
-}
-
-/**
- * @constructor
- * @extends {WebInspector.UISettingDelegate}
- */
-WebInspector.Main.ShortcutPanelSwitchSettingDelegate = function()
-{
-    WebInspector.UISettingDelegate.call(this);
-}
-
-WebInspector.Main.ShortcutPanelSwitchSettingDelegate.prototype = {
-    /**
-     * @override
-     * @return {!Element}
-     */
-    settingElement: function()
-    {
-        var modifier = WebInspector.platform() === "mac" ? "Cmd" : "Ctrl";
-        return WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Enable %s + 1-9 shortcut to switch panels", modifier), WebInspector.settings.shortcutPanelSwitch);
-    },
-
-    __proto__: WebInspector.UISettingDelegate.prototype
 }
 
 /**
  * @param {boolean} hard
- * @return {boolean}
  */
 WebInspector.Main._reloadPage = function(hard)
 {
     if (!WebInspector.targetManager.hasTargets())
-        return false;
+        return;
     if (WebInspector.targetManager.mainTarget().isServiceWorker())
-        return false;
+        return;
     WebInspector.targetManager.reloadPage(hard);
-    return true;
 }
 
 /**
@@ -949,7 +867,7 @@ WebInspector.WorkerTerminatedScreen.prototype = {
  */
 WebInspector.DisableJavaScriptObserver = function()
 {
-    this._setting = WebInspector.settings.javaScriptDisabled;
+    this._setting = WebInspector.moduleSetting("javaScriptDisabled");
     this._setting.addChangeListener(this._settingChanged, this);
     WebInspector.targetManager.observeTargets(this);
 }

@@ -51,11 +51,11 @@ WebInspector.DebuggerModel = function(target)
     this._breakpointResolvedEventTarget = new WebInspector.Object();
 
     this._isPausing = false;
-    WebInspector.settings.pauseOnExceptionEnabled.addChangeListener(this._pauseOnExceptionStateChanged, this);
-    WebInspector.settings.pauseOnCaughtException.addChangeListener(this._pauseOnExceptionStateChanged, this);
-    WebInspector.settings.enableAsyncStackTraces.addChangeListener(this.asyncStackTracesStateChanged, this);
-    WebInspector.settings.skipStackFramesPattern.addChangeListener(this._applySkipStackFrameSettings, this);
-    WebInspector.settings.skipContentScripts.addChangeListener(this._applySkipStackFrameSettings, this);
+    WebInspector.moduleSetting("pauseOnExceptionEnabled").addChangeListener(this._pauseOnExceptionStateChanged, this);
+    WebInspector.moduleSetting("pauseOnCaughtException").addChangeListener(this._pauseOnExceptionStateChanged, this);
+    WebInspector.moduleSetting("enableAsyncStackTraces").addChangeListener(this.asyncStackTracesStateChanged, this);
+    WebInspector.moduleSetting("skipStackFramesPattern").addChangeListener(this._applySkipStackFrameSettings, this);
+    WebInspector.moduleSetting("skipContentScripts").addChangeListener(this._applySkipStackFrameSettings, this);
 
     this.enableDebugger();
 
@@ -173,9 +173,9 @@ WebInspector.DebuggerModel.prototype = {
     _pauseOnExceptionStateChanged: function()
     {
         var state;
-        if (!WebInspector.settings.pauseOnExceptionEnabled.get()) {
+        if (!WebInspector.moduleSetting("pauseOnExceptionEnabled").get()) {
             state = WebInspector.DebuggerModel.PauseOnExceptionsState.DontPauseOnExceptions;
-        } else if (WebInspector.settings.pauseOnCaughtException.get()) {
+        } else if (WebInspector.moduleSetting("pauseOnCaughtException").get()) {
             state = WebInspector.DebuggerModel.PauseOnExceptionsState.PauseOnAllExceptions;
         } else {
             state = WebInspector.DebuggerModel.PauseOnExceptionsState.PauseOnUncaughtExceptions;
@@ -196,7 +196,7 @@ WebInspector.DebuggerModel.prototype = {
     asyncStackTracesStateChanged: function()
     {
         const maxAsyncStackChainDepth = 4;
-        var enabled = WebInspector.settings.enableAsyncStackTraces.get() && !WebInspector.targetManager.allTargetsSuspended();
+        var enabled = WebInspector.moduleSetting("enableAsyncStackTraces").get() && !WebInspector.targetManager.allTargetsSuspended();
         this._agent.setAsyncCallStackDepth(enabled ? maxAsyncStackChainDepth : 0);
     },
 
@@ -650,7 +650,7 @@ WebInspector.DebuggerModel.prototype = {
 
     _applySkipStackFrameSettings: function()
     {
-        this._agent.skipStackFrames(WebInspector.settings.skipStackFramesPattern.get(), WebInspector.settings.skipContentScripts.get());
+        this._agent.skipStackFrames(WebInspector.moduleSetting("skipStackFramesPattern").get(), WebInspector.moduleSetting("skipContentScripts").get());
     },
 
     /**
@@ -669,7 +669,6 @@ WebInspector.DebuggerModel.prototype = {
         function didGetDetails(error, response)
         {
             if (error) {
-                console.error(error);
                 callback(null);
                 return;
             }
@@ -731,11 +730,11 @@ WebInspector.DebuggerModel.prototype = {
 
     dispose: function()
     {
-        WebInspector.settings.pauseOnExceptionEnabled.removeChangeListener(this._pauseOnExceptionStateChanged, this);
-        WebInspector.settings.pauseOnCaughtException.removeChangeListener(this._pauseOnExceptionStateChanged, this);
-        WebInspector.settings.skipStackFramesPattern.removeChangeListener(this._applySkipStackFrameSettings, this);
-        WebInspector.settings.skipContentScripts.removeChangeListener(this._applySkipStackFrameSettings, this);
-        WebInspector.settings.enableAsyncStackTraces.removeChangeListener(this.asyncStackTracesStateChanged, this);
+        WebInspector.moduleSetting("pauseOnExceptionEnabled").removeChangeListener(this._pauseOnExceptionStateChanged, this);
+        WebInspector.moduleSetting("pauseOnCaughtException").removeChangeListener(this._pauseOnExceptionStateChanged, this);
+        WebInspector.moduleSetting("skipStackFramesPattern").removeChangeListener(this._applySkipStackFrameSettings, this);
+        WebInspector.moduleSetting("skipContentScripts").removeChangeListener(this._applySkipStackFrameSettings, this);
+        WebInspector.moduleSetting("enableAsyncStackTraces").removeChangeListener(this.asyncStackTracesStateChanged, this);
     },
 
     __proto__: WebInspector.SDKModel.prototype

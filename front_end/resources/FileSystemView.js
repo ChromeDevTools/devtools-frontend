@@ -165,6 +165,7 @@ WebInspector.FileSystemView.EntryTreeElement.prototype = {
      */
     _directoryContentReceived: function(errorCode, entries)
     {
+        WebInspector.userMetrics.FileSystemDirectoryContentReceived.record();
         if (errorCode === FileError.NOT_FOUND_ERR) {
             if (this.parent)
                 this.parent.refresh();

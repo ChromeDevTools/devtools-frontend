@@ -91,7 +91,7 @@ WebInspector.SourceMap = function(sourceMappingURL, payload)
  */
 WebInspector.SourceMap.load = function(sourceMapURL, compiledURL, callback)
 {
-    WebInspector.NetworkManager.loadResourceForFrontend(sourceMapURL, null, contentLoaded);
+    WebInspector.ResourceLoader.load(sourceMapURL, null, contentLoaded);
 
     /**
      * @param {number} statusCode

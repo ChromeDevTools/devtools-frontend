@@ -56,7 +56,7 @@ WebInspector.InspectElementModeController.prototype = {
         // When DevTools are opening in the inspect element mode, the first target comes in
         // much later than the InspectorFrontendAPI.enterInspectElementMode event.
         if (this.enabled())
-            target.domModel.setInspectModeEnabled(true, WebInspector.settings.showUAShadowDOM.get());
+            target.domModel.setInspectModeEnabled(true, WebInspector.moduleSetting("showUAShadowDOM").get());
     },
 
     /**
@@ -88,7 +88,7 @@ WebInspector.InspectElementModeController.prototype = {
 
         var targets = WebInspector.targetManager.targets();
         for (var i = 0; i < targets.length; ++i)
-            targets[i].domModel.setInspectModeEnabled(enabled, WebInspector.settings.showUAShadowDOM.get());
+            targets[i].domModel.setInspectModeEnabled(enabled, WebInspector.moduleSetting("showUAShadowDOM").get());
     },
 
     _onModelSuspended: function()
@@ -108,14 +108,14 @@ WebInspector.InspectElementModeController.ToggleSearchActionDelegate = function(
 WebInspector.InspectElementModeController.ToggleSearchActionDelegate.prototype = {
     /**
      * @override
-     * @return {boolean}
+     * @param {!WebInspector.Context} context
+     * @param {string} actionId
      */
-    handleAction: function()
+    handleAction: function(context, actionId)
     {
         if (!WebInspector.inspectElementModeController)
-            return false;
+            return;
         WebInspector.inspectElementModeController._toggleSearch();
-        return true;
     }
 }
 

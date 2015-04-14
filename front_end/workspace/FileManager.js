@@ -34,6 +34,8 @@
  */
 WebInspector.FileManager = function()
 {
+    this._savedURLsSetting = WebInspector.settings.createSetting("savedURLs", {});
+
     /** @type {!Object.<string, ?function(boolean)>} */
     this._saveCallbacks = {};
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.SavedURL, this._savedURL, this);
@@ -56,9 +58,9 @@ WebInspector.FileManager.prototype = {
     save: function(url, content, forceSaveAs, callback)
     {
         // Remove this url from the saved URLs while it is being saved.
-        var savedURLs = WebInspector.settings.savedURLs.get();
+        var savedURLs = this._savedURLsSetting.get();
         delete savedURLs[url];
-        WebInspector.settings.savedURLs.set(savedURLs);
+        this._savedURLsSetting.set(savedURLs);
         this._saveCallbacks[url] = callback || null;
         InspectorFrontendHost.save(url, content, forceSaveAs);
     },
@@ -69,9 +71,9 @@ WebInspector.FileManager.prototype = {
     _savedURL: function(event)
     {
         var url = /** @type {string} */ (event.data);
-        var savedURLs = WebInspector.settings.savedURLs.get();
+        var savedURLs = this._savedURLsSetting.get();
         savedURLs[url] = true;
-        WebInspector.settings.savedURLs.set(savedURLs);
+        this._savedURLsSetting.set(savedURLs);
         this.dispatchEventToListeners(WebInspector.FileManager.EventTypes.SavedURL, url);
         this._invokeSaveCallback(url, true);
     },
@@ -103,7 +105,7 @@ WebInspector.FileManager.prototype = {
      */
     isURLSaved: function(url)
     {
-        var savedURLs = WebInspector.settings.savedURLs.get();
+        var savedURLs = this._savedURLsSetting.get();
         return savedURLs[url];
     },
 
@@ -136,4 +138,7 @@ WebInspector.FileManager.prototype = {
     __proto__: WebInspector.Object.prototype
 }
 
-WebInspector.fileManager = new WebInspector.FileManager();
+/**
+ * @type {?WebInspector.FileManager}
+ */
+WebInspector.fileManager = null;

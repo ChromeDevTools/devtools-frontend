@@ -78,4 +78,5 @@
     background-color: hsla(220, 95%, 50%, 0.7);
     z-index: 500;
     pointer-events: none;
+    visibility: hidden;
 }

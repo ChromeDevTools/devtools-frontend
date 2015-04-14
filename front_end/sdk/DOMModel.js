@@ -1056,6 +1056,9 @@ WebInspector.DOMModel = function(target) {
     this._attributeLoadNodeIds = {};
     target.registerDOMDispatcher(new WebInspector.DOMDispatcher(this));
 
+    this._showRulers = false;
+    this._showExtensionLines = false;
+
     this._defaultHighlighter = new WebInspector.DefaultDOMNodeHighlighter(this._agent);
     this._highlighter = this._defaultHighlighter;
 
@@ -1075,7 +1078,8 @@ WebInspector.DOMModel.Events = {
     UndoRedoRequested: "UndoRedoRequested",
     UndoRedoCompleted: "UndoRedoCompleted",
     DistributedNodesChanged: "DistributedNodesChanged",
-    ModelSuspended: "ModelSuspended"
+    ModelSuspended: "ModelSuspended",
+    InspectModeWillBeToggled: "InspectModeWillBeToggled"
 }
 
 WebInspector.DOMModel.prototype = {
@@ -1693,9 +1697,20 @@ WebInspector.DOMModel.prototype = {
          */
         function onDocumentAvailable()
         {
+            this.dispatchEventToListeners(WebInspector.DOMModel.Events.InspectModeWillBeToggled, enabled);
             this._highlighter.setInspectModeEnabled(enabled, inspectUAShadowDOM, this._buildHighlightConfig(), callback);
         }
         this.requestDocument(onDocumentAvailable.bind(this));
+    },
+
+    /**
+     * @param {boolean} showRulers
+     * @param {boolean} showExtensionLines
+     */
+    setHighlightSettings: function(showRulers, showExtensionLines)
+    {
+        this._showRulers = showRulers;
+        this._showExtensionLines = showExtensionLines;
     },
 
     /**
@@ -1705,7 +1720,7 @@ WebInspector.DOMModel.prototype = {
     _buildHighlightConfig: function(mode)
     {
         mode = mode || "all";
-        var highlightConfig = { showInfo: mode === "all", showRulers: WebInspector.overridesSupport.showMetricsRulers(), showExtensionLines: WebInspector.overridesSupport.showExtensionLines()};
+        var highlightConfig = { showInfo: mode === "all", showRulers: this._showRulers, showExtensionLines: this._showExtensionLines };
         if (mode === "all" || mode === "content")
             highlightConfig.contentColor = WebInspector.Color.PageHighlight.Content.toProtocolRGBA();
 
@@ -1747,52 +1762,6 @@ WebInspector.DOMModel.prototype = {
                 callback.apply(this, arguments);
         }
         return wrapperFunction.bind(this);
-    },
-
-    /**
-     * @param {boolean} emulationEnabled
-     * @param {string} configuration
-     */
-    emulateTouchEventObjects: function(emulationEnabled, configuration)
-    {
-        /**
-         * @suppressGlobalPropertiesCheck
-         */
-        const injectedFunction = function() {
-            const touchEvents = ["ontouchstart", "ontouchend", "ontouchmove", "ontouchcancel"];
-            var recepients = [window.__proto__, document.__proto__];
-            for (var i = 0; i < touchEvents.length; ++i) {
-                for (var j = 0; j < recepients.length; ++j) {
-                    if (!(touchEvents[i] in recepients[j]))
-                        Object.defineProperty(recepients[j], touchEvents[i], { value: null, writable: true, configurable: true, enumerable: true });
-                }
-            }
-        }
-
-        if (emulationEnabled && !this._addTouchEventsScriptInjecting) {
-            this._addTouchEventsScriptInjecting = true;
-            this.target().pageAgent().addScriptToEvaluateOnLoad("(" + injectedFunction.toString() + ")()", scriptAddedCallback.bind(this));
-        } else {
-            if (typeof this._addTouchEventsScriptId !== "undefined") {
-                this.target().pageAgent().removeScriptToEvaluateOnLoad(this._addTouchEventsScriptId);
-                delete this._addTouchEventsScriptId;
-            }
-        }
-
-        /**
-         * @param {?Protocol.Error} error
-         * @param {string} scriptId
-         * @this {WebInspector.DOMModel}
-         */
-        function scriptAddedCallback(error, scriptId)
-        {
-            delete this._addTouchEventsScriptInjecting;
-            if (error)
-                return;
-            this._addTouchEventsScriptId = scriptId;
-        }
-
-        this.target().emulationAgent().setTouchEmulationEnabled(emulationEnabled, configuration);
     },
 
     markUndoableState: function()
@@ -2176,7 +2145,6 @@ WebInspector.DefaultDOMNodeHighlighter.prototype = {
      */
     setInspectModeEnabled: function(enabled, inspectUAShadowDOM, config, callback)
     {
-        WebInspector.overridesSupport.setTouchEmulationSuspended(enabled);
         this._agent.setInspectModeEnabled(enabled, inspectUAShadowDOM, config, callback);
     },
 

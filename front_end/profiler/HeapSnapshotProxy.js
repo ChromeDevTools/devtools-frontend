@@ -299,7 +299,7 @@ WebInspector.HeapSnapshotLoaderProxy.prototype = {
         {
             if (callback)
                 callback();
-            var showHiddenData = WebInspector.settings.showAdvancedHeapSnapshotProperties.get();
+            var showHiddenData = WebInspector.moduleSetting("showAdvancedHeapSnapshotProperties").get();
             this.callFactoryMethod(updateStaticData.bind(this), "buildSnapshot", WebInspector.HeapSnapshotProxy, showHiddenData);
         }
 

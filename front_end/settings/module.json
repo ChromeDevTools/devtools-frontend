@@ -3,7 +3,7 @@
         {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "settings.show",
-            "className": "WebInspector.SettingsController.SettingsScreenActionDelegate",
+            "className": "WebInspector.SettingsController.ActionDelegate",
             "bindings": [
                 {
                     "shortcut": "F1 Shift+?"
@@ -19,15 +19,13 @@
             "elementClass": "settings-status-bar-item"
         },
         {
-            "type": "ui-setting",
-            "section": "Sources",
-            "settingType": "custom",
-            "className": "WebInspector.SettingsScreen.SkipStackFramePatternSettingDelegate"
+            "type": "@WebInspector.SettingUI",
+            "category": "Sources",
+            "className": "WebInspector.SettingsScreen.SkipStackFramePatternSettingUI"
         }
     ],
     "dependencies": [
-        "components",
-        "toolbox"
+        "components"
     ],
     "scripts": [
         "EditFileSystemDialog.js",

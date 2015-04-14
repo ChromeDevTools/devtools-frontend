@@ -34,78 +34,51 @@
 WebInspector.Settings = function()
 {
     this._eventSupport = new WebInspector.Object();
-    this._registry = /** @type {!Object.<string, !WebInspector.Setting>} */ ({});
-
-    this.colorFormat = this.createSetting("colorFormat", "original");
-    this.consoleHistory = this.createSetting("consoleHistory", []);
-    this.domWordWrap = this.createSetting("domWordWrap", true);
-    this.eventListenersFilter = this.createSetting("eventListenersFilter", "all");
-    this.lastViewedScriptFile = this.createSetting("lastViewedScriptFile", "application");
-    this.monitoringXHREnabled = this.createSetting("monitoringXHREnabled", false);
-    this.hideNetworkMessages = this.createSetting("hideNetworkMessages", false);
-    this.preserveConsoleLog = this.createSetting("preserveConsoleLog", false);
-    this.consoleTimestampsEnabled = this.createSetting("consoleTimestampsEnabled", false);
-    this.resourceViewTab = this.createSetting("resourceViewTab", "preview");
-    this.showInheritedComputedStyleProperties = this.createSetting("showInheritedComputedStyleProperties", false);
-    this.watchExpressions = this.createSetting("watchExpressions", []);
-    this.breakpoints = this.createSetting("breakpoints", []);
-    this.eventListenerBreakpoints = this.createSetting("eventListenerBreakpoints", []);
-    this.domBreakpoints = this.createSetting("domBreakpoints", []);
-    this.xhrBreakpoints = this.createSetting("xhrBreakpoints", []);
-    this.jsSourceMapsEnabled = this.createSetting("sourceMapsEnabled", true);
-    this.cssSourceMapsEnabled = this.createSetting("cssSourceMapsEnabled", true);
-    this.cacheDisabled = this.createSetting("cacheDisabled", false);
-    this.showUAShadowDOM = this.createSetting("showUAShadowDOM", false);
-    this.savedURLs = this.createSetting("savedURLs", {});
-    this.javaScriptDisabled = this.createSetting("javaScriptDisabled", false);
-    this.showAdvancedHeapSnapshotProperties = this.createSetting("showAdvancedHeapSnapshotProperties", false);
-    this.recordAllocationStacks = this.createSetting("recordAllocationStacks", false);
-    this.highResolutionCpuProfiling = this.createSetting("highResolutionCpuProfiling", false);
-    this.searchInContentScripts = this.createSetting("searchInContentScripts", false);
-    this.textEditorIndent = this.createSetting("textEditorIndent", "    ");
-    this.textEditorAutoDetectIndent = this.createSetting("textEditorAutoIndentIndent", true);
-    this.textEditorAutocompletion = this.createSetting("textEditorAutocompletion", true);
-    this.textEditorBracketMatching = this.createSetting("textEditorBracketMatching", true);
-    this.cssReloadEnabled = this.createSetting("cssReloadEnabled", false);
-    this.timelineLiveUpdate = this.createSetting("timelineLiveUpdate", true);
-    this.showMetricsRulers = this.createSetting("showMetricsRulers", false);
-    this.workerInspectorWidth = this.createSetting("workerInspectorWidth", 600);
-    this.workerInspectorHeight = this.createSetting("workerInspectorHeight", 600);
-    this.messageURLFilters = this.createSetting("messageURLFilters", {});
-    this.networkLogLargeRows = this.createSetting("networkLogLargeRows", false);
-    this.networkLogShowOverview = this.createSetting("networkLogShowOverview", true);
-    this.networkHideDataURL = this.createSetting("networkHideDataURL", false);
-    this.networkResourceTypeFilters = this.createSetting("networkResourceTypeFilters", {});
-    this.networkShowPrimaryLoadWaterfall = this.createSetting("networkShowPrimaryLoadWaterfall", false);
-    this.networkColorCodeResourceTypes = this.createSetting("networkColorCodeResourceTypes", false);
-    this.messageLevelFilters = this.createSetting("messageLevelFilters", {});
-    this.splitVerticallyWhenDockedToRight = this.createSetting("splitVerticallyWhenDockedToRight", true);
-    this.visiblePanels = this.createSetting("visiblePanels", {});
-    this.shortcutPanelSwitch = this.createSetting("shortcutPanelSwitch", false);
-    this.showWhitespacesInEditor = this.createSetting("showWhitespacesInEditor", false);
-    this.skipStackFramesPattern = this.createRegExpSetting("skipStackFramesPattern", "");
-    this.skipContentScripts = this.createSetting("skipContentScripts", false);
-    this.pauseOnExceptionEnabled = this.createSetting("pauseOnExceptionEnabled", false);
-    this.pauseOnCaughtException = this.createSetting("pauseOnCaughtException", false);
-    this.enableAsyncStackTraces = this.createSetting("enableAsyncStackTraces", false);
-    this.showMediaQueryInspector = this.createSetting("showMediaQueryInspector", false);
-    this.disableOverridesWarning = this.createSetting("disableOverridesWarning", false);
-    this.disablePausedStateOverlay = this.createSetting("disablePausedStateOverlay", false);
-    this.testPath = this.createSetting("testPath", "");
-    this.frameViewerHideChromeWindow = this.createSetting("frameViewerHideChromeWindow", false);
-    this.highlightDOMUpdates = this.createSetting("highlightDOMUpdates", true);
-    this.enableCustomFormatters = this.createSetting("customFormatters", false);
-    this.inlineVariableValues = this.createSetting("inlineVariableValues", true);
-
-    // Rendering options
-    this.showPaintRects = this.createSetting("showPaintRects", false);
-    this.showDebugBorders = this.createSetting("showDebugBorders", false);
-    this.showFPSCounter = this.createSetting("showFPSCounter", false);
-    this.continuousPainting = this.createSetting("continuousPainting", false);
-    this.showScrollBottleneckRects = this.createSetting("showScrollBottleneckRects", false);
+    /** @type {!Map<string, !WebInspector.Setting>} */
+    this._registry = new Map();
+    /** @type {!Map<string, !WebInspector.Setting>} */
+    this._moduleSettings = new Map();
+    self.runtime.extensions("setting").forEach(this._registerModuleSetting.bind(this));
 }
 
 WebInspector.Settings.prototype = {
+    /**
+     * @param {!Runtime.Extension} extension
+     */
+    _registerModuleSetting: function(extension)
+    {
+        var descriptor = extension.descriptor();
+        var settingName = descriptor["settingName"];
+        var settingType = descriptor["settingType"];
+        var defaultValue = descriptor["defaultValue"];
+        var setting = settingType === "regex" ? this.createRegExpSetting(settingName, defaultValue) : this.createSetting(settingName, defaultValue);
+        this._moduleSettings.set(settingName, setting);
+    },
+
+    /**
+     * @param {string} settingName
+     * @return {!WebInspector.Setting}
+     */
+    moduleSetting: function(settingName)
+    {
+        var setting = this._moduleSettings.get(settingName);
+        if (!setting)
+            throw new Error("No setting registered: " + settingName);
+        return setting;
+    },
+
+    /**
+     * @param {string} settingName
+     * @return {!WebInspector.Setting}
+     */
+    settingForTest: function(settingName)
+    {
+        var setting = this._registry.get(settingName);
+        if (!setting)
+            throw new Error("No setting registered: " + settingName);
+        return setting;
+    },
+
     /**
      * @param {string} key
      * @param {*} defaultValue
@@ -113,22 +86,22 @@ WebInspector.Settings.prototype = {
      */
     createSetting: function(key, defaultValue)
     {
-        if (!this._registry[key])
-            this._registry[key] = new WebInspector.Setting(key, defaultValue, this._eventSupport, window.localStorage);
-        return this._registry[key];
+        if (!this._registry.get(key))
+            this._registry.set(key, new WebInspector.Setting(key, defaultValue, this._eventSupport, window.localStorage));
+        return /** @type {!WebInspector.Setting} */ (this._registry.get(key));
     },
 
     /**
      * @param {string} key
      * @param {string} defaultValue
      * @param {string=} regexFlags
-     * @return {!WebInspector.Setting}
+     * @return {!WebInspector.RegExpSetting}
      */
     createRegExpSetting: function(key, defaultValue, regexFlags)
     {
-        if (!this._registry[key])
-            this._registry[key] = new WebInspector.RegExpSetting(key, defaultValue, this._eventSupport, window.localStorage, regexFlags);
-        return this._registry[key];
+        if (!this._registry.get(key))
+            this._registry.set(key, new WebInspector.RegExpSetting(key, defaultValue, this._eventSupport, window.localStorage, regexFlags));
+        return /** @type {!WebInspector.RegExpSetting} */ (this._registry.get(key));
     }
 }
 
@@ -354,7 +327,7 @@ WebInspector.VersionController.prototype = {
 
     _updateVersionFrom0To1: function()
     {
-        this._clearBreakpointsWhenTooMany(WebInspector.settings.breakpoints, 500000);
+        this._clearBreakpointsWhenTooMany(WebInspector.settings.createSetting("breakpoints", []), 500000);
     },
 
     _updateVersionFrom1To2: function()
@@ -374,7 +347,7 @@ WebInspector.VersionController.prototype = {
     _updateVersionFrom3To4: function()
     {
         var advancedMode = WebInspector.settings.createSetting("showHeaSnapshotObjectsHiddenProperties", false).get();
-        WebInspector.settings.showAdvancedHeapSnapshotProperties.set(advancedMode);
+        WebInspector.moduleSetting("showAdvancedHeapSnapshotProperties").set(advancedMode);
     },
 
     _updateVersionFrom4To5: function()
@@ -383,8 +356,6 @@ WebInspector.VersionController.prototype = {
             return;
         var settingNames = {
             "FileSystemViewSidebarWidth": "fileSystemViewSplitViewState",
-            "canvasProfileViewReplaySplitLocation": "canvasProfileViewReplaySplitViewState",
-            "canvasProfileViewSplitLocation": "canvasProfileViewSplitViewState",
             "elementsSidebarWidth": "elementsPanelSplitViewState",
             "StylesPaneSplitRatio": "stylesPaneSplitViewState",
             "heapSnapshotRetainersViewSize": "heapSnapshotSplitViewState",
@@ -467,7 +438,6 @@ WebInspector.VersionController.prototype = {
         var settingNames = {
             "sourcesPanelNavigatorSplitViewState": "sourcesPanelNavigatorSplitViewState",
             "elementsPanelSplitViewState": "elementsPanelSplitViewState",
-            "canvasProfileViewReplaySplitViewState": "canvasProfileViewReplaySplitViewState",
             "stylesPaneSplitViewState": "stylesPaneSplitViewState",
             "sourcesPanelDebuggerSidebarSplitViewState": "sourcesPanelDebuggerSidebarSplitViewState"
         };
@@ -618,8 +588,8 @@ WebInspector.settings;
  */
 WebInspector.PauseOnExceptionStateSetting = function()
 {
-    WebInspector.settings.pauseOnExceptionEnabled.addChangeListener(this._enabledChanged, this);
-    WebInspector.settings.pauseOnCaughtException.addChangeListener(this._pauseOnCaughtChanged, this);
+    WebInspector.moduleSetting("pauseOnExceptionEnabled").addChangeListener(this._enabledChanged, this);
+    WebInspector.moduleSetting("pauseOnCaughtException").addChangeListener(this._pauseOnCaughtChanged, this);
     this._name = "pauseOnExceptionStateString";
     this._eventSupport = new WebInspector.Object();
     this._value = this._calculateValue();
@@ -657,10 +627,10 @@ WebInspector.PauseOnExceptionStateSetting.prototype = {
      */
     _calculateValue: function()
     {
-        if (!WebInspector.settings.pauseOnExceptionEnabled.get())
+        if (!WebInspector.moduleSetting("pauseOnExceptionEnabled").get())
             return "none";
         // The correct code here would be
-        //     return WebInspector.settings.pauseOnCaughtException.get() ? "all" : "uncaught";
+        //     return WebInspector.moduleSetting("pauseOnCaughtException").get() ? "all" : "uncaught";
         // But the CodeSchool DevTools relies on the fact that we used to enable pausing on ALL extensions by default, so we trick it here.
         return "all";
     },
@@ -683,4 +653,22 @@ WebInspector.PauseOnExceptionStateSetting.prototype = {
         this._value = newValue;
         this._eventSupport.dispatchEventToListeners(this._name, this._value);
     }
+}
+
+/**
+ * @param {string} settingName
+ * @return {!WebInspector.Setting}
+ */
+WebInspector.moduleSetting = function(settingName)
+{
+    return WebInspector.settings.moduleSetting(settingName);
+}
+
+/**
+ * @param {string} settingName
+ * @return {!WebInspector.Setting}
+ */
+WebInspector.settingForTest = function(settingName)
+{
+    return WebInspector.settings.settingForTest(settingName);
 }

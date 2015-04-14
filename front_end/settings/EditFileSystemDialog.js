@@ -44,7 +44,8 @@ WebInspector.EditFileSystemDialog = function(fileSystemPath)
     var headerText = header.createChild("span");
     headerText.textContent = WebInspector.UIString("Edit file system");
 
-    var closeButton = header.createChild("div", "close-button-gray done-button");
+    var closeButton = header.createChild("div", "done-button", "dt-close-button");
+    closeButton.gray = true;
     closeButton.addEventListener("click", this._onDoneClick.bind(this), false);
 
     var contents = this.element.createChild("div", "contents");
@@ -144,7 +145,7 @@ WebInspector.EditFileSystemDialog.prototype = {
         if (!this._hasMappingChanges)
             return;
         if (window.confirm(WebInspector.UIString("It is recommended to restart DevTools after making these changes. Would you like to restart it?")))
-            WebInspector.AppUtils.reload();
+            WebInspector.reload();
     },
 
     _fileMappingAdded: function(event)

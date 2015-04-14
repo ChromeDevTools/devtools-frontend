@@ -39,6 +39,7 @@ WebInspector.evaluateForTestInFrontend = function(callId, script)
             script = script + "//# sourceURL=evaluateInWebInspector" + callId + ".js";
             window.eval(script);
         } catch (e) {
+            console.error(e.stack);
         }
     }
     InspectorBackend.connection().runAfterPendingDispatches(invokeMethod);

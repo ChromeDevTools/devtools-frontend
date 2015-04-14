@@ -162,6 +162,14 @@ body /deep/ input[type="text"]:focus {
     outline: auto 5px -webkit-focus-ring-color;
 }
 
+
+html /deep/ .highlighted-search-result.current-search-result {
+    border-radius: 1px;
+    padding: 1px;
+    margin: -1px;
+    background-color: rgba(255, 127, 0, 0.8);
+}
+
 .overflow-auto {
     overflow: auto;
 }

@@ -45,7 +45,7 @@ WebInspector.ExcludedFolderManager = function()
     else
         defaultExcludedFolders = defaultExcludedFolders.concat(defaultLinuxExcludedFolders);
     var defaultExcludedFoldersPattern = defaultExcludedFolders.join("|");
-    WebInspector.settings.workspaceFolderExcludePattern = WebInspector.settings.createRegExpSetting("workspaceFolderExcludePattern", defaultExcludedFoldersPattern, WebInspector.isWin() ? "i" : "");
+    this._workspaceFolderExcludePatternSetting = WebInspector.settings.createRegExpSetting("workspaceFolderExcludePattern", defaultExcludedFoldersPattern, WebInspector.isWin() ? "i" : "");
     /** @type {!Object.<string, !Array.<!WebInspector.ExcludedFolderManager.Entry>>} */
     this._excludedFolders = {};
     this._loadFromSettings();
@@ -57,6 +57,14 @@ WebInspector.ExcludedFolderManager.Events = {
 }
 
 WebInspector.ExcludedFolderManager.prototype = {
+    /**
+     * @return {!WebInspector.Setting}
+     */
+    workspaceFolderExcludePatternSetting: function()
+    {
+        return this._workspaceFolderExcludePatternSetting;
+    },
+
     _loadFromSettings: function()
     {
         var savedExcludedFolders = this._excludedFoldersSetting.get();
@@ -149,8 +157,8 @@ WebInspector.ExcludedFolderManager.prototype = {
             if (entry.path === folderPath)
                 return true;
         }
-        var regex = WebInspector.settings.workspaceFolderExcludePattern.asRegExp();
-        return regex && regex.test(folderPath);
+        var regex = this._workspaceFolderExcludePatternSetting.asRegExp();
+        return !!(regex && regex.test(folderPath));
     },
 
     /**

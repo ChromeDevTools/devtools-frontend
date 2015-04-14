@@ -77,9 +77,7 @@ devtools_frontend_path = path.join(devtools_path, 'front_end')
 patched_es6_externs_file = to_platform_path(path.join(devtools_frontend_path, 'es6.js'))
 global_externs_file = to_platform_path(path.join(devtools_frontend_path, 'externs.js'))
 protocol_externs_file = path.join(devtools_frontend_path, 'protocol_externs.js')
-webgl_rendering_context_idl_path = path.join(path.dirname(devtools_path), 'core', 'html', 'canvas', 'WebGLRenderingContextBase.idl')
 injected_script_source_name = path.join(inspector_path, 'InjectedScriptSource.js')
-canvas_injected_script_source_name = path.join(inspector_path, 'InjectedScriptCanvasModuleSource.js')
 injected_script_externs_idl_names = [
     path.join(inspector_path, 'InjectedScriptHost.idl'),
     path.join(inspector_path, 'JavaScriptCallFrame.idl'),
@@ -246,7 +244,7 @@ closure_runner_jar = to_platform_path(path.join(scripts_path, 'compiler-runner',
 jsdoc_validator_jar = to_platform_path(path.join(scripts_path, 'jsdoc-validator', 'jsdoc-validator.jar'))
 
 modules_dir = tempfile.mkdtemp()
-common_closure_args = ' --summary_detail_level 3 --jscomp_error visibility --jscomp_error strictModuleDepCheck --compilation_level SIMPLE_OPTIMIZATIONS --warning_level VERBOSE --language_in=ES6_STRICT --language_out=ES5_STRICT --accept_const_keyword --extra_annotation_name suppressReceiverCheck --extra_annotation_name suppressGlobalPropertiesCheck --module_output_path_prefix %s' % to_platform_path_exact(modules_dir + path.sep)
+common_closure_args = ' --summary_detail_level 3 --jscomp_error visibility --compilation_level SIMPLE_OPTIMIZATIONS --warning_level VERBOSE --language_in=ES6_STRICT --language_out=ES5_STRICT --accept_const_keyword --extra_annotation_name suppressReceiverCheck --extra_annotation_name suppressGlobalPropertiesCheck --module_output_path_prefix %s' % to_platform_path_exact(modules_dir + path.sep)
 
 worker_modules_by_name = {}
 dependents_by_module_name = {}
@@ -316,7 +314,7 @@ def modules_to_check():
     return [module for module in descriptors.sorted_modules() if module in set(sys.argv[1:])]
 
 
-def dump_module(name, processed_modules):
+def dump_module(name, recursively, processed_modules):
     if name in processed_modules:
         return ''
     processed_modules[name] = True
@@ -325,8 +323,9 @@ def dump_module(name, processed_modules):
 
     command = ''
     dependencies = module.get('dependencies', [])
-    for dependency in dependencies:
-        command += dump_module(dependency, processed_modules)
+    if recursively:
+        for dependency in dependencies:
+            command += dump_module(dependency, recursively, processed_modules)
     command += module_arg(name) + ':'
     filtered_scripts = descriptors.module_compiled_files(name)
     command += str(len(filtered_scripts))
@@ -344,31 +343,19 @@ def dump_module(name, processed_modules):
 
 print 'Compiling frontend...'
 
-
-def write_args_in_file(file, module_name, module_args):
-    closure_args = common_closure_args
-    closure_args += ' --externs ' + to_platform_path(patched_es6_externs_file)
-    closure_args += ' --externs ' + to_platform_path(global_externs_file)
-    closure_args += ' --externs ' + platform_protocol_externs_file
-    closure_args += module_arg(runtime_module_name) + ':1 --js ' + runtime_js_path
-    closure_args += module_args
-    file.write('%s %s%s' % (module_name, closure_args, os.linesep))
-
 compiler_args_file = tempfile.NamedTemporaryFile(mode='wt', delete=False)
 try:
     platform_protocol_externs_file = to_platform_path(protocol_externs_file)
     runtime_js_path = to_platform_path(path.join(devtools_frontend_path, 'Runtime.js'))
     checked_modules = modules_to_check()
-    processed_modules = {}
-    non_worker_modules_args = ""
     for name in checked_modules:
-        if name in worker_modules_by_name:
-            write_args_in_file(compiler_args_file, name, dump_module(name, {}))
-            continue
-        if name not in processed_modules:
-            non_worker_modules_args += dump_module(name, processed_modules)
-
-    write_args_in_file(compiler_args_file, "all_non_worker_modules", non_worker_modules_args)
+        closure_args = common_closure_args
+        closure_args += ' --externs ' + to_platform_path(patched_es6_externs_file)
+        closure_args += ' --externs ' + to_platform_path(global_externs_file)
+        closure_args += ' --externs ' + platform_protocol_externs_file
+        runtime_module = module_arg(runtime_module_name) + ':1 --js ' + runtime_js_path
+        closure_args += runtime_module + dump_module(name, True, {})
+        compiler_args_file.write('%s %s%s' % (name, closure_args, os.linesep))
 finally:
     compiler_args_file.close()
 
@@ -395,12 +382,10 @@ def unclosure_injected_script(sourceFileName, outFileName):
     write_file(outFileName, source)
 
 injectedScriptSourceTmpFile = to_platform_path(path.join(inspector_path, 'InjectedScriptSourceTmp.js'))
-injectedScriptCanvasModuleSourceTmpFile = path.join(inspector_path, 'InjectedScriptCanvasModuleSourceTmp.js')
 
 unclosure_injected_script(injected_script_source_name, injectedScriptSourceTmpFile)
-unclosure_injected_script(canvas_injected_script_source_name, injectedScriptCanvasModuleSourceTmpFile)
 
-print 'Compiling InjectedScriptSource.js and InjectedScriptCanvasModuleSource.js...'
+print 'Compiling InjectedScriptSource.js...'
 injected_script_externs_file = tempfile.NamedTemporaryFile(mode='wt', delete=False)
 try:
     generate_injected_script_externs.generate_injected_script_externs(injected_script_externs_idl_names, injected_script_externs_file)
@@ -414,20 +399,13 @@ command += '    --externs ' + to_platform_path_exact(injected_script_externs_fil
 command += '    --externs ' + to_platform_path(protocol_externs_file)
 command += '    --module ' + jsmodule_name_prefix + 'injected_script' + ':1'
 command += '        --js ' + to_platform_path(injectedScriptSourceTmpFile)
-command += '    --module ' + jsmodule_name_prefix + 'injected_canvas_script' + ':1:' + jsmodule_name_prefix + 'injected_script'
-command += '        --js ' + to_platform_path(injectedScriptCanvasModuleSourceTmpFile)
 
 injectedScriptCompileProc = run_in_shell(command)
 
 print 'Verifying JSDoc comments...'
-additional_jsdoc_check_files = [injectedScriptSourceTmpFile, injectedScriptCanvasModuleSourceTmpFile]
+additional_jsdoc_check_files = [injectedScriptSourceTmpFile]
 errors_found |= verify_jsdoc(additional_jsdoc_check_files)
 jsdocValidatorProc, jsdocValidatorFileList = verify_jsdoc_extra(additional_jsdoc_check_files)
-
-print 'Checking generated code in InjectedScriptCanvasModuleSource.js...'
-webgl_check_script_path = path.join(scripts_path, "check_injected_webgl_calls_info.py")
-check_injected_webgl_calls_command = '%s %s %s' % (webgl_check_script_path, webgl_rendering_context_idl_path, canvas_injected_script_source_name)
-canvasModuleCompileProc = run_in_shell(check_injected_webgl_calls_command)
 
 print 'Validating InjectedScriptSource.js...'
 injectedscript_check_script_path = path.join(scripts_path, "check_injected_script_source.py")
@@ -501,12 +479,8 @@ if error_count:
     errors_found = True
 
 (injectedScriptCompileOut, _) = injectedScriptCompileProc.communicate()
-print 'InjectedScriptSource.js and InjectedScriptCanvasModuleSource.js compilation output:%s' % os.linesep, injectedScriptCompileOut
+print 'InjectedScriptSource.js compilation output:%s' % os.linesep, injectedScriptCompileOut
 errors_found |= hasErrors(injectedScriptCompileOut)
-
-(canvasModuleCompileOut, _) = canvasModuleCompileProc.communicate()
-print 'InjectedScriptCanvasModuleSource.js generated code check output:%s' % os.linesep, canvasModuleCompileOut
-errors_found |= hasErrors(canvasModuleCompileOut)
 
 (validateInjectedScriptOut, _) = validateInjectedScriptProc.communicate()
 print 'Validate InjectedScriptSource.js output:%s' % os.linesep, (validateInjectedScriptOut if validateInjectedScriptOut else '<empty>')
@@ -516,7 +490,6 @@ if errors_found:
     print 'ERRORS DETECTED'
 
 os.remove(injectedScriptSourceTmpFile)
-os.remove(injectedScriptCanvasModuleSourceTmpFile)
 os.remove(compiler_args_file.name)
 os.remove(injected_script_externs_file.name)
 os.remove(protocol_externs_file)

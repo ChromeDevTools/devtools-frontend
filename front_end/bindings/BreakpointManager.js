@@ -32,15 +32,15 @@
  * @constructor
  * @extends {WebInspector.Object}
  * @implements {WebInspector.TargetManager.Observer}
- * @param {!WebInspector.Setting} breakpointStorage
+ * @param {?WebInspector.Setting} breakpointsSetting
  * @param {!WebInspector.Workspace} workspace
  * @param {!WebInspector.NetworkMapping} networkMapping
  * @param {!WebInspector.TargetManager} targetManager
  * @param {!WebInspector.DebuggerWorkspaceBinding} debuggerWorkspaceBinding
  */
-WebInspector.BreakpointManager = function(breakpointStorage, workspace, networkMapping, targetManager, debuggerWorkspaceBinding)
+WebInspector.BreakpointManager = function(breakpointsSetting, workspace, networkMapping, targetManager, debuggerWorkspaceBinding)
 {
-    this._storage = new WebInspector.BreakpointManager.Storage(this, breakpointStorage);
+    this._storage = new WebInspector.BreakpointManager.Storage(this, breakpointsSetting);
     this._workspace = workspace;
     this._networkMapping = networkMapping;
     this._targetManager = targetManager;
@@ -1002,12 +1002,12 @@ WebInspector.BreakpointManager.Breakpoint.State.equals = function(stateA, stateB
 /**
  * @constructor
  * @param {!WebInspector.BreakpointManager} breakpointManager
- * @param {!WebInspector.Setting} setting
+ * @param {?WebInspector.Setting} setting
  */
 WebInspector.BreakpointManager.Storage = function(breakpointManager, setting)
 {
     this._breakpointManager = breakpointManager;
-    this._setting = setting;
+    this._setting = setting || WebInspector.settings.createSetting("breakpoints", []);
     var breakpoints = this._setting.get();
     /** @type {!Object.<string, !WebInspector.BreakpointManager.Storage.Item>} */
     this._breakpoints = {};

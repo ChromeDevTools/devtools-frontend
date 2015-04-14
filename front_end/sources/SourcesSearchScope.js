@@ -104,7 +104,7 @@ WebInspector.SourcesSearchScope.prototype = {
          */
         function filterOutContentScriptsIfNeeded(project)
         {
-            return WebInspector.settings.searchInContentScripts.get() || project.type() !== WebInspector.projectTypes.ContentScripts;
+            return WebInspector.moduleSetting("searchInContentScripts").get() || project.type() !== WebInspector.projectTypes.ContentScripts;
         }
 
         return WebInspector.workspace.projects().filter(filterOutServiceProjects).filter(filterOutContentScriptsIfNeeded);

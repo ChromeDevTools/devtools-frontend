@@ -428,33 +428,12 @@ div.responsive-design-icon:disabled {
 /* Warning message */
 
 .responsive-design-warning {
-    background-color: rgb(252, 234, 156);
-    color: rgb(34, 34, 34);
     position: absolute;
     left: 0;
     right: 0;
     top: 0;
-    padding: 2px 4px;
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid rgb(171, 171, 171);
-}
-
-.responsive-design-warning > span {
-    flex: auto;
-    padding-left: 3px;
     overflow: hidden;
-}
-
-.responsive-design-warning > div {
-    flex: none;
-}
-
-.responsive-design-warning .disable-warning {
-    margin-right: 5px;
-    text-decoration: underline;
-    cursor: pointer;
+    border-bottom: 1px solid rgb(187, 187, 187);
 }
 
 /* Media query inspector */

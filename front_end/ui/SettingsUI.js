@@ -273,18 +273,15 @@ WebInspector.SettingsUI.createInput = function(parentElement, id, defaultText, e
 }
 
 /**
- * @constructor
+ * @interface
  */
-WebInspector.UISettingDelegate = function()
+WebInspector.SettingUI = function()
 {
 }
 
-WebInspector.UISettingDelegate.prototype = {
+WebInspector.SettingUI.prototype = {
     /**
      * @return {?Element}
      */
-    settingElement: function()
-    {
-        return null;
-    }
+    settingElement: function() { }
 }

@@ -55,24 +55,8 @@
 }
 
 .source-frame-infobar {
-    border-bottom: 1px solid rgb(187, 187, 187);
-    display: flex;
-    flex-direction: column;
     flex: 0 1 auto;
     -webkit-user-select: text;
-}
-
-.source-frame-infobar-info {
-    background-color: rgb(255, 255, 255);
-}
-
-.source-frame-infobar-warning,
-.source-frame-infobar-error {
-    background-color: rgb(255, 255, 194);
-}
-
-.source-frame-infobar {
-    margin-top: 0;
 }
 
 .source-frame-infobar-animation {
@@ -83,55 +67,26 @@
     to { margin-top: 0; }
 }
 
-.source-frame-infobar-icon {
-    background-image: url(Images/statusbarButtonGlyphs.png);
-    background-size: 320px 144px;
-    width: 11px;
-    height: 10px;
-    margin-right: 4px;
-    display: inline-block;
-    margin-top: 1px;
-    flex: none;
-}
-
-.source-frame-infobar-info .source-frame-infobar-icon {
-    background-position: -212px -107px;
-}
-
-.source-frame-infobar-warning .source-frame-infobar-icon {
-    background-position: -202px -107px;
-}
-
-.source-frame-infobar-error .source-frame-infobar-icon {
-    background-position: -202px -96px;
-}
-
 .source-frame-infobar-main-row {
     display: flex;
-    min-height: 17px;
+    flex-direction: row;
+    flex: auto;
     overflow: hidden;
-    margin: 5px 10px 0;
 }
 
 .source-frame-infobar-details-container {
     display: flex;
     flex-direction: column;
-    padding: 5px 0;
 }
 
 .source-frame-infobar-details-row {
     display: flex;
     flex: none;
-    margin: 0 10px;
+    margin-top: 2px;
 }
 
 .source-frame-infobar-row-message {
-    flex: 0 1 auto;
-    margin-bottom: 4px;
-}
-
-.source-frame-infobar-main-row .close-button {
-    flex: none;
+    overflow: hidden;
 }
 
 .source-frame-infobar-toggle {

@@ -170,7 +170,7 @@ WebInspector.MultiProfileLauncherView = function(profilesPanel)
 {
     WebInspector.ProfileLauncherView.call(this, profilesPanel);
 
-    WebInspector.settings.selectedProfileType = WebInspector.settings.createSetting("selectedProfileType", "CPU");
+    this._selectedProfileTypeSetting = WebInspector.settings.createSetting("selectedProfileType", "CPU");
 
     var header = this._innerContentElement.createChild("h1");
     header.textContent = WebInspector.UIString("Select profiling type");
@@ -209,7 +209,7 @@ WebInspector.MultiProfileLauncherView.prototype = {
 
     restoreSelectedProfileType: function()
     {
-        var typeId = WebInspector.settings.selectedProfileType.get();
+        var typeId = this._selectedProfileTypeSetting.get();
         if (!(typeId in this._typeIdToOptionElement))
             typeId = Object.keys(this._typeIdToOptionElement)[0];
         this._typeIdToOptionElement[typeId].checked = true;
@@ -241,7 +241,7 @@ WebInspector.MultiProfileLauncherView.prototype = {
         this._isInstantProfile = profileType.isInstantProfile();
         this._isEnabled = profileType.isEnabled();
         this._updateControls();
-        WebInspector.settings.selectedProfileType.set(profileType.id);
+        this._selectedProfileTypeSetting.set(profileType.id);
     },
 
     profileStarted: function()

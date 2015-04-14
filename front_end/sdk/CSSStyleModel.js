@@ -313,6 +313,7 @@ WebInspector.CSSStyleModel.prototype = {
 
         if (!rule.styleSheetId)
             throw "No rule stylesheet id";
+        WebInspector.userMetrics.StyleRuleEdited.record();
         this._pendingCommandsMajorState.push(true);
         this._agent.setRuleSelector(rule.styleSheetId, rule.selectorRange, newSelector, callback.bind(this, nodeId, successCallback, failureCallback, newSelector));
     },
@@ -344,6 +345,7 @@ WebInspector.CSSStyleModel.prototype = {
         }
 
         console.assert(!!media.parentStyleSheetId);
+        WebInspector.userMetrics.StyleRuleEdited.record();
         this._pendingCommandsMajorState.push(true);
         this._agent.setMediaText(media.parentStyleSheetId, media.range, newMediaText, callback.bind(this, successCallback, failureCallback));
     },
@@ -1274,6 +1276,9 @@ WebInspector.CSSProperty.prototype = {
 
         if (!this.ownerStyle.styleSheetId)
             throw "No owner style id";
+
+        if (majorChange)
+            WebInspector.userMetrics.StyleRuleEdited.record();
 
         if (overwrite && propertyText === this.propertyText) {
             if (majorChange)

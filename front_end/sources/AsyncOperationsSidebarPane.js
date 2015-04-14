@@ -35,8 +35,8 @@ WebInspector.AsyncOperationsSidebarPane = function()
     WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this);
     WebInspector.context.addFlavorChangeListener(WebInspector.Target, this._targetChanged, this);
 
-    WebInspector.settings.skipStackFramesPattern.addChangeListener(this._refresh, this);
-    WebInspector.settings.enableAsyncStackTraces.addChangeListener(this._asyncStackTracesStateChanged, this);
+    WebInspector.moduleSetting("skipStackFramesPattern").addChangeListener(this._refresh, this);
+    WebInspector.moduleSetting("enableAsyncStackTraces").addChangeListener(this._asyncStackTracesStateChanged, this);
 
     WebInspector.targetManager.observeTargets(this);
 }
@@ -95,7 +95,7 @@ WebInspector.AsyncOperationsSidebarPane.prototype = {
 
     _asyncStackTracesStateChanged: function()
     {
-        var enabled = WebInspector.settings.enableAsyncStackTraces.get();
+        var enabled = WebInspector.moduleSetting("enableAsyncStackTraces").get();
         if (enabled) {
             this._target = WebInspector.context.flavor(WebInspector.Target);
         } else if (this._target) {
@@ -108,7 +108,7 @@ WebInspector.AsyncOperationsSidebarPane.prototype = {
 
     _updateEmptyElement: function()
     {
-        var enabled = WebInspector.settings.enableAsyncStackTraces.get();
+        var enabled = WebInspector.moduleSetting("enableAsyncStackTraces").get();
         if (enabled) {
             this.emptyElement.textContent = WebInspector.UIString("No Async Operations");
         } else {
@@ -121,14 +121,14 @@ WebInspector.AsyncOperationsSidebarPane.prototype = {
 
         function enableAsyncStackTraces()
         {
-            WebInspector.settings.enableAsyncStackTraces.set(true);
+            WebInspector.moduleSetting("enableAsyncStackTraces").set(true);
         }
     },
 
     /** @override */
     wasShown: function()
     {
-        if (!this._target && WebInspector.settings.enableAsyncStackTraces.get()) {
+        if (!this._target && WebInspector.moduleSetting("enableAsyncStackTraces").get()) {
             this._target = WebInspector.context.flavor(WebInspector.Target);
             this._refresh();
         }

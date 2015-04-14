@@ -699,7 +699,7 @@ WebInspector.TimelineUIUtils._generateCauses = function(event, target, contentHe
         contentHelper.appendStackTrace(stackLabel || WebInspector.UIString("Stack trace"), event.stackTrace);
 
     // Indirect causes.
-    if (event.invalidationTrackingEvents) { // Full invalidation tracking (experimental).
+    if (event.invalidationTrackingEvents && target) { // Full invalidation tracking (experimental).
         WebInspector.TimelineUIUtils._generateInvalidations(event, target, contentHelper);
     } else if (initiator && initiator.stackTrace) { // Partial invalidation tracking.
         contentHelper.appendStackTrace(callSiteStackLabel || WebInspector.UIString("First invalidated"), initiator.stackTrace);
@@ -708,7 +708,7 @@ WebInspector.TimelineUIUtils._generateCauses = function(event, target, contentHe
 
 /**
  * @param {!WebInspector.TracingModel.Event} event
- * @param {?WebInspector.Target} target
+ * @param {!WebInspector.Target} target
  * @param {!WebInspector.TimelineDetailsContentHelper} contentHelper
  */
 WebInspector.TimelineUIUtils._generateInvalidations = function(event, target, contentHelper)
@@ -732,7 +732,7 @@ WebInspector.TimelineUIUtils._generateInvalidations = function(event, target, co
 
 /**
  * @param {string} type
- * @param {?WebInspector.Target} target
+ * @param {!WebInspector.Target} target
  * @param {!Array.<!WebInspector.InvalidationTrackingEvent>} invalidations
  * @param {!WebInspector.TimelineDetailsContentHelper} contentHelper
  */
@@ -754,10 +754,16 @@ WebInspector.TimelineUIUtils._generateInvalidationsForType = function(type, targ
     var detailsNode = createElementWithClass("div", "timeline-details-view-row");
     var titleElement = detailsNode.createChild("span", "timeline-details-view-row-title");
     titleElement.textContent = WebInspector.UIString("%s: ", title);
-    var eventsList = detailsNode.createChild("div", "timeline-details-view-row-value");
+
+    var invalidationsTreeOutline = new TreeOutlineInShadow();
+    invalidationsTreeOutline.registerRequiredCSS("timeline/invalidationsTree.css");
+    invalidationsTreeOutline.element.classList.add("timeline-details-view-row-value", "invalidations-tree");
+    detailsNode.appendChild(invalidationsTreeOutline.element);
+
     var invalidationGroups = groupInvalidationsByCause(invalidations);
     invalidationGroups.forEach(function(group) {
-        appendInvalidationGroup(eventsList, group);
+        var groupElement = new WebInspector.TimelineUIUtils.InvalidationsGroupElement(target, contentHelper, group);
+        invalidationsTreeOutline.appendChild(groupElement);
     });
     contentHelper.element.appendChild(detailsNode);
 
@@ -789,74 +795,129 @@ WebInspector.TimelineUIUtils._generateInvalidationsForType = function(type, targ
         }
         return Object.values(causeToInvalidationMap);
     }
+}
+
+/**
+ * @param {!Set<number>} nodeIds
+ * @param {!WebInspector.InvalidationTrackingEvent} invalidations
+ */
+WebInspector.TimelineUIUtils._collectInvalidationNodeIds = function(nodeIds, invalidations)
+{
+    for (var i = 0; i < invalidations.length; ++i) {
+        if (invalidations[i].nodeId)
+            nodeIds.add(invalidations[i].nodeId);
+    }
+}
+
+/**
+  * @constructor
+  * @param {!WebInspector.Target} target
+  * @param {!WebInspector.TimelineDetailsContentHelper} contentHelper
+  * @param {!Array.<!WebInspector.InvalidationTrackingEvent>} invalidations
+  * @extends {TreeElement}
+  */
+WebInspector.TimelineUIUtils.InvalidationsGroupElement = function(target, contentHelper, invalidations)
+{
+    TreeElement.call(this, "", true);
+
+    this.listItemElement.classList.add("header");
+    this.selectable = false;
+    this.toggleOnClick = true;
+
+    this._contentHelper = contentHelper;
+    this._invalidations = invalidations;
+    this.title = this._createTitle(target);
+}
+
+WebInspector.TimelineUIUtils.InvalidationsGroupElement.prototype = {
 
     /**
-     * @param {!Element} parentElement
-     * @param {!Array.<!WebInspector.InvalidationTrackingEvent>} invalidations
+     * @param {!WebInspector.Target} target
+     * @return {!Element}
      */
-    function appendInvalidationGroup(parentElement, invalidations)
+    _createTitle: function(target)
     {
-        if (!target)
-            return;
-
-        var row = parentElement.createChild("div", "invalidations-group section");
-        var header = row.createChild("div", "header");
-        header.addEventListener("click", function() {
-            toggleDetails(header, invalidations);
-        });
-
-        var first = invalidations[0];
+        var first = this._invalidations[0];
         var reason = first.cause.reason;
         var topFrame = first.cause.stackTrace && first.cause.stackTrace[0];
 
+        var title = createElement("span");
         if (reason)
-            header.createTextChild(WebInspector.UIString("%s for ", reason));
+            title.createTextChild(WebInspector.UIString("%s for ", reason));
         else
-            header.createTextChild(WebInspector.UIString("Unknown cause for "));
+            title.createTextChild(WebInspector.UIString("Unknown cause for "));
 
-        appendTruncatedNodeList(header, invalidations);
+        this._appendTruncatedNodeList(title, this._invalidations);
 
-        if (topFrame && contentHelper.linkifier()) {
-            header.createTextChild(WebInspector.UIString(". "));
-            var stack = header.createChild("span", "monospace");
-
+        if (topFrame && this._contentHelper.linkifier()) {
+            title.createTextChild(WebInspector.UIString(". "));
+            var stack = title.createChild("span", "monospace");
             stack.createChild("span").textContent = WebInspector.beautifyFunctionName(topFrame.functionName);
             stack.createChild("span").textContent = " @ ";
-            stack.createChild("span").appendChild(contentHelper.linkifier().linkifyConsoleCallFrame(target, topFrame));
+            stack.createChild("span").appendChild(this._contentHelper.linkifier().linkifyConsoleCallFrame(target, topFrame));
         }
-    }
+
+        return title;
+    },
 
     /**
-     * @param {!WebInspector.InvalidationTrackingEvent} invalidation
-     * @param {boolean} showUnknownNodes
+     * @override
      */
-    function createInvalidationNode(invalidation, showUnknownNodes)
+    onpopulate: function()
     {
-        var node = contentHelper.nodeForBackendId(invalidation.nodeId);
-        if (node)
-            return WebInspector.DOMPresentationUtils.linkifyNodeReference(node);
-        if (invalidation.nodeName) {
-            var nodeSpan = createElement("span");
-            nodeSpan.textContent = WebInspector.UIString("[ %s ]", invalidation.nodeName);
-            return nodeSpan;
+        var content = createElementWithClass("div", "content");
+
+        var first = this._invalidations[0];
+        if (first.cause.stackTrace) {
+            var stack = content.createChild("div");
+            stack.createTextChild(WebInspector.UIString("Stack trace:"));
+            this._contentHelper.createChildStackTraceElement(stack, first.cause.stackTrace);
         }
-        if (showUnknownNodes) {
-            var nodeSpan = createElement("span");
-            return nodeSpan.createTextChild(WebInspector.UIString("[ unknown node ]"));
+
+        content.createTextChild(this._invalidations.length > 1 ? WebInspector.UIString("Nodes:") : WebInspector.UIString("Node:"));
+        var nodeList = content.createChild("div", "node-list");
+        var firstNode = true;
+        for (var i = 0; i < this._invalidations.length; i++) {
+            var invalidation = this._invalidations[i];
+            var invalidationNode = this._createInvalidationNode(invalidation, true);
+            if (invalidationNode) {
+                if (!firstNode)
+                    nodeList.createTextChild(WebInspector.UIString(", "));
+                firstNode = false;
+
+                nodeList.appendChild(invalidationNode);
+
+                var extraData = invalidation.extraData ? ", " + invalidation.extraData : "";
+                if (invalidation.changedId)
+                    nodeList.createTextChild(WebInspector.UIString("(changed id to \"%s\"%s)", invalidation.changedId, extraData));
+                else if (invalidation.changedClass)
+                    nodeList.createTextChild(WebInspector.UIString("(changed class to \"%s\"%s)", invalidation.changedClass, extraData));
+                else if (invalidation.changedAttribute)
+                    nodeList.createTextChild(WebInspector.UIString("(changed attribute to \"%s\"%s)", invalidation.changedAttribute, extraData));
+                else if (invalidation.changedPseudo)
+                    nodeList.createTextChild(WebInspector.UIString("(changed pesudo to \"%s\"%s)", invalidation.changedPseudo, extraData));
+                else if (invalidation.selectorPart)
+                    nodeList.createTextChild(WebInspector.UIString("(changed \"%s\"%s)", invalidation.selectorPart, extraData));
+            }
         }
-    }
+
+        var contentTreeElement = new TreeElement(content, false);
+        contentTreeElement.selectable = false;
+        this.appendChild(contentTreeElement);
+    },
 
     /**
      * @param {!Element} parentElement
      * @param {!Array.<!WebInspector.InvalidationTrackingEvent>} invalidations
      */
-    function appendTruncatedNodeList(parentElement, invalidations)
+    _appendTruncatedNodeList: function(parentElement, invalidations)
     {
         var invalidationNodes = [];
         var invalidationNodeIdMap = {};
         for (var i = 0; i < invalidations.length; i++) {
             var invalidation = invalidations[i];
-            var invalidationNode = createInvalidationNode(invalidation, false);
+            var invalidationNode = this._createInvalidationNode(invalidation, false);
+            invalidationNode.addEventListener("click", consumeEvent, false);
             if (invalidationNode && !invalidationNodeIdMap[invalidation.nodeId]) {
                 invalidationNodes.push(invalidationNode);
                 invalidationNodeIdMap[invalidation.nodeId] = true;
@@ -875,91 +936,29 @@ WebInspector.TimelineUIUtils._generateInvalidationsForType = function(type, targ
             parentElement.appendChild(invalidationNodes[1]);
             parentElement.createTextChild(WebInspector.UIString(", and %s others", invalidationNodes.length - 2));
         }
-    }
+    },
 
     /**
-     * @param {!Element} header
-     * @param {!Array.<!WebInspector.InvalidationTrackingEvent>} invalidations
+     * @param {!WebInspector.InvalidationTrackingEvent} invalidation
+     * @param {boolean} showUnknownNodes
      */
-    function toggleDetails(header, invalidations)
+    _createInvalidationNode: function(invalidation, showUnknownNodes)
     {
-        var wasExpanded = header.classList.contains("expanded");
-        header.classList.toggle("expanded", !wasExpanded);
-        header.parentElement.classList.toggle("expanded", !wasExpanded);
-
-        if (wasExpanded) {
-            var content = header.nextElementSibling;
-            if (content)
-                content.remove();
-        } else {
-            createInvalidationGroupDetails(header.parentElement, invalidations);
+        var node = this._contentHelper.nodeForBackendId(invalidation.nodeId);
+        if (node)
+            return WebInspector.DOMPresentationUtils.linkifyNodeReference(node);
+        if (invalidation.nodeName) {
+            var nodeSpan = createElement("span");
+            nodeSpan.textContent = WebInspector.UIString("[ %s ]", invalidation.nodeName);
+            return nodeSpan;
         }
-    }
-
-    /**
-     * @param {!Element} parentElement
-     * @param {!Array.<!WebInspector.InvalidationTrackingEvent>} invalidations
-     */
-    function createInvalidationGroupDetails(parentElement, invalidations)
-    {
-        var content = parentElement.createChild("div", "content");
-
-        var first = invalidations[0];
-        if (first.cause.stackTrace) {
-            var stack = content.createChild("div");
-            stack.createTextChild(WebInspector.UIString("Stack trace:"));
-            contentHelper.createChildStackTraceElement(stack, first.cause.stackTrace);
+        if (showUnknownNodes) {
+            var nodeSpan = createElement("span");
+            return nodeSpan.createTextChild(WebInspector.UIString("[ unknown node ]"));
         }
+    },
 
-        content.createTextChild(invalidations.length > 1 ? WebInspector.UIString("Nodes:") : WebInspector.UIString("Node:"));
-        var nodeList = content.createChild("div", "node-list timeline-details-view-row-stack-trace");
-        appendDetailedNodeList(nodeList, invalidations);
-    }
-
-    /**
-     * @param {!Element} parentElement
-     * @param {!Array.<!WebInspector.InvalidationTrackingEvent>} invalidations
-     */
-    function appendDetailedNodeList(parentElement, invalidations)
-    {
-        var firstNode = true;
-        for (var i = 0; i < invalidations.length; i++) {
-            var invalidation = invalidations[i];
-            var invalidationNode = createInvalidationNode(invalidation, true);
-            if (invalidationNode) {
-                if (!firstNode)
-                    parentElement.createTextChild(WebInspector.UIString(", "));
-                firstNode = false;
-
-                parentElement.appendChild(invalidationNode);
-
-                var extraData = invalidation.extraData ? ", " + invalidation.extraData : "";
-                if (invalidation.changedId) {
-                    parentElement.createTextChild(WebInspector.UIString("(changed id to \"%s\"%s)", invalidation.changedId, extraData));
-                } else if (invalidation.changedClass) {
-                    parentElement.createTextChild(WebInspector.UIString("(changed class to \"%s\"%s)", invalidation.changedClass, extraData));
-                } else if (invalidation.changedAttribute) {
-                    parentElement.createTextChild(WebInspector.UIString("(changed attribute to \"%s\"%s)", invalidation.changedAttribute, extraData));
-                } else if (invalidation.changedPseudo) {
-                    parentElement.createTextChild(WebInspector.UIString("(changed pesudo to \"%s\"%s)", invalidation.changedPseudo, extraData));
-                } else if (invalidation.selectorPart) {
-                    parentElement.createTextChild(WebInspector.UIString("(changed \"%s\"%s)", invalidation.selectorPart, extraData));
-                }
-            }
-        }
-    }
-}
-
-/**
- * @param {!Set<number>} nodeIds
- * @param {!WebInspector.InvalidationTrackingEvent} invalidations
- */
-WebInspector.TimelineUIUtils._collectInvalidationNodeIds = function(nodeIds, invalidations)
-{
-    for (var i = 0; i < invalidations.length; ++i) {
-        if (invalidations[i].nodeId)
-            nodeIds.add(invalidations[i].nodeId);
-    }
+    __proto__: TreeElement.prototype
 }
 
 /**

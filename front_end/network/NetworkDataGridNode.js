@@ -75,7 +75,7 @@ WebInspector.NetworkDataGridNode.prototype = {
      */
     createCells: function()
     {
-        this._showTiming = !WebInspector.settings.networkColorCodeResourceTypes.get() && !this._parentView.calculator().startAtZero;
+        this._showTiming = !WebInspector.moduleSetting("networkColorCodeResourceTypes").get() && !this._parentView.calculator().startAtZero;
         this._nameCell = null;
         this._timelineCell = null;
         this._initiatorCell = null;

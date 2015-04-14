@@ -49,7 +49,7 @@ WebInspector.BlackboxSupport.canBlackboxURL = function(url)
  */
 WebInspector.BlackboxSupport.blackboxURL = function(url)
 {
-    var regexPatterns = WebInspector.settings.skipStackFramesPattern.getAsArray();
+    var regexPatterns = WebInspector.moduleSetting("skipStackFramesPattern").getAsArray();
     var regexValue = WebInspector.BlackboxSupport._urlToRegExpString(url);
     if (!regexValue)
         return;
@@ -64,7 +64,7 @@ WebInspector.BlackboxSupport.blackboxURL = function(url)
     }
     if (!found)
         regexPatterns.push({ pattern: regexValue });
-    WebInspector.settings.skipStackFramesPattern.setAsArray(regexPatterns);
+    WebInspector.moduleSetting("skipStackFramesPattern").setAsArray(regexPatterns);
 }
 
 /**
@@ -74,9 +74,9 @@ WebInspector.BlackboxSupport.blackboxURL = function(url)
 WebInspector.BlackboxSupport.unblackbox = function(url, isContentScript)
 {
     if (isContentScript)
-        WebInspector.settings.skipContentScripts.set(false);
+        WebInspector.moduleSetting("skipContentScripts").set(false);
 
-    var regexPatterns = WebInspector.settings.skipStackFramesPattern.getAsArray();
+    var regexPatterns = WebInspector.moduleSetting("skipStackFramesPattern").getAsArray();
     var regexValue = WebInspector.BlackboxSupport._urlToRegExpString(url);
     if (!regexValue)
         return;
@@ -94,7 +94,7 @@ WebInspector.BlackboxSupport.unblackbox = function(url, isContentScript)
         } catch (e) {
         }
     }
-    WebInspector.settings.skipStackFramesPattern.setAsArray(regexPatterns);
+    WebInspector.moduleSetting("skipStackFramesPattern").setAsArray(regexPatterns);
 }
 
 /**
@@ -103,7 +103,7 @@ WebInspector.BlackboxSupport.unblackbox = function(url, isContentScript)
  */
 WebInspector.BlackboxSupport.isBlackboxedURL = function(url)
 {
-    var regex = WebInspector.settings.skipStackFramesPattern.asRegExp();
+    var regex = WebInspector.moduleSetting("skipStackFramesPattern").asRegExp();
     return (url && regex) ? regex.test(url) : false;
 }
 
@@ -114,7 +114,7 @@ WebInspector.BlackboxSupport.isBlackboxedURL = function(url)
  */
 WebInspector.BlackboxSupport.isBlackboxed = function(url, isContentScript)
 {
-    if (isContentScript && WebInspector.settings.skipContentScripts.get())
+    if (isContentScript && WebInspector.moduleSetting("skipContentScripts").get())
         return true;
     return WebInspector.BlackboxSupport.isBlackboxedURL(url);
 }
@@ -125,7 +125,7 @@ WebInspector.BlackboxSupport.isBlackboxed = function(url, isContentScript)
  */
 WebInspector.BlackboxSupport.addChangeListener = function(listener, thisObject)
 {
-    WebInspector.settings.skipStackFramesPattern.addChangeListener(listener, thisObject);
+    WebInspector.moduleSetting("skipStackFramesPattern").addChangeListener(listener, thisObject);
 }
 
 /**
@@ -134,5 +134,5 @@ WebInspector.BlackboxSupport.addChangeListener = function(listener, thisObject)
  */
 WebInspector.BlackboxSupport.removeChangeListener = function(listener, thisObject)
 {
-    WebInspector.settings.skipStackFramesPattern.removeChangeListener(listener, thisObject);
+    WebInspector.moduleSetting("skipStackFramesPattern").removeChangeListener(listener, thisObject);
 }

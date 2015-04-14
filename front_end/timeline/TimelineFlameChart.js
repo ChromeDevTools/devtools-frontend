@@ -1517,7 +1517,6 @@ WebInspector.TimelineFlameChartView.prototype = {
     {
         this._mainView.setWindowTimes(startTime, endTime);
         this._networkView.setWindowTimes(startTime, endTime);
-        this._delegate.select(null);
     },
 
     /**

@@ -40,13 +40,13 @@ WebInspector.NetworkManager = function(target)
     this._target = target;
     this._networkAgent = target.networkAgent();
     target.registerNetworkDispatcher(this._dispatcher);
-    if (WebInspector.settings.cacheDisabled.get())
+    if (WebInspector.moduleSetting("cacheDisabled").get())
         this._networkAgent.setCacheDisabled(true);
-    if (WebInspector.settings.monitoringXHREnabled.get())
+    if (WebInspector.moduleSetting("monitoringXHREnabled").get())
         this._networkAgent.setMonitoringXHREnabled(true);
     this._networkAgent.enable();
 
-    WebInspector.settings.cacheDisabled.addChangeListener(this._cacheDisabledSettingChanged, this);
+    WebInspector.moduleSetting("cacheDisabled").addChangeListener(this._cacheDisabledSettingChanged, this);
 }
 
 WebInspector.NetworkManager.EventTypes = {
@@ -65,54 +65,6 @@ WebInspector.NetworkManager._MIMETypes = {
     "text/css":                    {"stylesheet": true},
     "text/xsl":                    {"stylesheet": true},
     "text/vtt":                    {"texttrack": true},
-}
-
-/**
- * @param {string} url
- * @param {?Object.<string, string>} headers
- * @param {function(number, !Object.<string, string>, string)} callback
- */
-WebInspector.NetworkManager.loadResourceForFrontend = function(url, headers, callback)
-{
-    var stream = new WebInspector.StringOutputStream();
-    WebInspector.NetworkManager.loadResourceAsStream(url, headers, stream, mycallback);
-
-    /**
-     * @param {number} statusCode
-     * @param {!Object.<string, string>} headers
-     */
-    function mycallback(statusCode, headers)
-    {
-        callback(statusCode, headers, stream.data());
-    }
-}
-
-/**
- * @param {string} url
- * @param {?Object.<string, string>} headers
- * @param {!WebInspector.OutputStream} stream
- * @param {function(number, !Object.<string, string>)=} callback
- */
-WebInspector.NetworkManager.loadResourceAsStream = function(url, headers, stream, callback)
-{
-    var rawHeaders = [];
-    if (headers) {
-        for (var key in headers)
-            rawHeaders.push(key + ": " + headers[key]);
-    }
-    var streamId = WebInspector.Streams.bindOutputStream(stream);
-
-    InspectorFrontendHost.loadNetworkResource(url, rawHeaders.join("\r\n"), streamId, mycallback);
-
-    /**
-     * @param {!InspectorFrontendHostAPI.LoadNetworkResourceResult} response
-     */
-    function mycallback(response)
-    {
-        if (callback)
-            callback(response.statusCode, response.headers || {});
-        WebInspector.Streams.discardOutputStream(streamId);
-    }
 }
 
 WebInspector.NetworkManager.prototype = {
@@ -136,7 +88,7 @@ WebInspector.NetworkManager.prototype = {
 
     dispose: function()
     {
-        WebInspector.settings.cacheDisabled.removeChangeListener(this._cacheDisabledSettingChanged, this);
+        WebInspector.moduleSetting("cacheDisabled").removeChangeListener(this._cacheDisabledSettingChanged, this);
     },
 
     clearBrowserCache: function()

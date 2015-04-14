@@ -163,6 +163,8 @@ WebInspector.ObjectPopoverHelper.prototype = {
 
                 if (result.type === "string")
                     valueElement.createTextChildren("\"", description, "\"");
+                else if (result.type === "function")
+                    WebInspector.ObjectPropertiesSection.formatObjectAsFunction(result, valueElement, true);
                 else
                     valueElement.textContent = description;
 
@@ -181,11 +183,9 @@ WebInspector.ObjectPopoverHelper.prototype = {
                 this._titleElement = popoverContentElement.createChild("div", "monospace");
                 this._titleElement.createChild("span", "source-frame-popover-title").textContent = description;
 
-                var section = new WebInspector.ObjectPropertiesSection(result);
-
-                section.expand();
+                var section = new WebInspector.ObjectPropertiesSection(result, "");
                 section.element.classList.add("source-frame-popover-tree");
-                section.headerElement.classList.add("hidden");
+                section.titleLessMode();
                 popoverContentElement.appendChild(section.element);
 
                 if (result.subtype === "generator")

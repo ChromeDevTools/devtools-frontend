@@ -39,6 +39,8 @@ WebInspector.NetworkItemView = function(request, calculator)
     WebInspector.TabbedPane.call(this);
     this.element.classList.add("network-item-view");
 
+    this._resourceViewTabSetting = WebInspector.settings.createSetting("resourceViewTab", "preview");
+
     var headersView = new WebInspector.RequestHeadersView(request);
     this.appendTab("headers", WebInspector.UIString("Headers"), headersView);
 
@@ -90,7 +92,7 @@ WebInspector.NetworkItemView.prototype = {
     _selectTab: function(tabId)
     {
         if (!tabId)
-            tabId = WebInspector.settings.resourceViewTab.get();
+            tabId = this._resourceViewTabSetting.get();
 
         if (!this.selectTab(tabId))
             this.selectTab("headers");
@@ -101,7 +103,7 @@ WebInspector.NetworkItemView.prototype = {
         if (!event.data.isUserGesture)
             return;
 
-        WebInspector.settings.resourceViewTab.set(event.data.tabId);
+        this._resourceViewTabSetting.set(event.data.tabId);
 
         WebInspector.notifications.dispatchEventToListeners(WebInspector.UserMetrics.UserAction, {
             action: WebInspector.UserMetrics.UserActionNames.NetworkRequestTabSelected,

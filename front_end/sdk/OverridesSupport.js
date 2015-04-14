@@ -289,6 +289,8 @@ WebInspector.OverridesSupport.targetsSupportingEmulation = function()
     return WebInspector.targetManager.targets().filter(WebInspector.OverridesSupport.targetSupportsEmulation);
 }
 
+WebInspector.OverridesSupport._touchEventsScriptIdSymbol = Symbol("OverridesSupport.touchEventsScriptIdSymbol");
+
 WebInspector.OverridesSupport.prototype = {
     /**
      * @return {boolean}
@@ -414,11 +416,12 @@ WebInspector.OverridesSupport.prototype = {
     },
 
     /**
-     * @param {boolean} suspended
+     * @param {!WebInspector.Event} event
      */
-    setTouchEmulationSuspended: function(suspended)
+    _inspectModeWillBeToggled: function(event)
     {
-        this._touchEmulationSuspended = suspended;
+        var inspectModeEnabled = /** @type {boolean} */ (event.data);
+        this._touchEmulationSuspended = inspectModeEnabled;
         if (this._initialized)
             this._emulateTouchEventsChanged();
     },
@@ -468,7 +471,7 @@ WebInspector.OverridesSupport.prototype = {
         this.settings.networkConditions.addChangeListener(this._networkConditionsChanged, this);
 
         this.settings._emulationEnabled.addChangeListener(this._showRulersChanged, this);
-        WebInspector.settings.showMetricsRulers.addChangeListener(this._showRulersChanged, this);
+        WebInspector.moduleSetting("showMetricsRulers").addChangeListener(this._showRulersChanged, this);
         this._showRulersChanged();
 
         if (this.emulationEnabled()) {
@@ -678,7 +681,55 @@ WebInspector.OverridesSupport.prototype = {
     {
         var emulateTouch = this.emulationEnabled() && this.settings.emulateTouch.get() && !this._touchEmulationSuspended;
         for (var target of WebInspector.OverridesSupport.targetsSupportingEmulation())
-            target.domModel.emulateTouchEventObjects(emulateTouch, this.settings.emulateMobile.get() ? "mobile" : "desktop");
+            this._emulateTouchEventsInTarget(target, emulateTouch, this.settings.emulateMobile.get() ? "mobile" : "desktop");
+    },
+
+    /**
+     * @param {!WebInspector.Target} target
+     * @param {boolean} emulationEnabled
+     * @param {string} configuration
+     */
+    _emulateTouchEventsInTarget: function(target, emulationEnabled, configuration)
+    {
+        /**
+         * @suppressGlobalPropertiesCheck
+         */
+        const injectedFunction = function() {
+            const touchEvents = ["ontouchstart", "ontouchend", "ontouchmove", "ontouchcancel"];
+            var recepients = [window.__proto__, document.__proto__];
+            for (var i = 0; i < touchEvents.length; ++i) {
+                for (var j = 0; j < recepients.length; ++j) {
+                    if (!(touchEvents[i] in recepients[j]))
+                        Object.defineProperty(recepients[j], touchEvents[i], { value: null, writable: true, configurable: true, enumerable: true });
+                }
+            }
+        }
+
+        var symbol = WebInspector.OverridesSupport._touchEventsScriptIdSymbol;
+
+        if (emulationEnabled && target[symbol] !== -1) {
+            target[symbol] = -1;
+            target.pageAgent().addScriptToEvaluateOnLoad("(" + injectedFunction.toString() + ")()", scriptAddedCallback);
+        } else {
+            if (typeof target[symbol] !== "undefined") {
+                target.pageAgent().removeScriptToEvaluateOnLoad(target[symbol]);
+                delete target[symbol];
+            }
+        }
+
+        /**
+         * @param {?Protocol.Error} error
+         * @param {string} scriptId
+         */
+        function scriptAddedCallback(error, scriptId)
+        {
+            if (error)
+                delete target[symbol];
+            else
+                target[symbol] = scriptId;
+        }
+
+        target.emulationAgent().setTouchEmulationEnabled(emulationEnabled, configuration);
     },
 
     _cssMediaChanged: function()
@@ -709,26 +760,13 @@ WebInspector.OverridesSupport.prototype = {
         return this._pageResizer && this.emulationEnabled();
     },
 
-    /**
-     * @return {boolean}
-     */
-    showMetricsRulers: function()
-    {
-        return WebInspector.settings.showMetricsRulers.get() && !this._pageResizerActive();
-    },
-
-    /**
-     * @return {boolean}
-     */
-    showExtensionLines: function()
-    {
-        return WebInspector.settings.showMetricsRulers.get();
-    },
-
     _showRulersChanged: function()
     {
-        for (var target of WebInspector.targetManager.targets())
-            target.pageAgent().setShowViewportSizeOnResize(!this._pageResizerActive(), WebInspector.settings.showMetricsRulers.get());
+        var showRulersValue = WebInspector.moduleSetting("showMetricsRulers").get();
+        for (var target of WebInspector.targetManager.targets()) {
+            target.pageAgent().setShowViewportSizeOnResize(!this._pageResizerActive(), showRulersValue);
+            target.domModel.setHighlightSettings(showRulersValue && !this._pageResizerActive(), showRulersValue);
+        }
     },
 
     _onMainFrameNavigated: function()
@@ -804,6 +842,7 @@ WebInspector.OverridesSupport.prototype = {
             this._target = target;
             this._targetCanEmulate = canEmulate;
             target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._onMainFrameNavigated, this);
+            target.domModel.addEventListener(WebInspector.DOMModel.Events.InspectModeWillBeToggled, this._inspectModeWillBeToggled, this);
 
             if (this._applyInitialOverridesOnTargetAdded) {
                 delete this._applyInitialOverridesOnTargetAdded;

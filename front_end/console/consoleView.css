@@ -78,20 +78,15 @@
 .console-user-command {
     clear: right;
     position: relative;
-    padding: 1px 22px 1px 0;
+    padding: 3px 22px 1px 0;
     margin-left: 24px;
     min-height: 18px;  /* Sync with ConsoleViewMessage.js */
     flex: auto;
     display: flex;
-    align-items: center;
 }
 
 .console-message > * {
     flex: auto;
-}
-
-.console-adjacent-user-command-result .console-user-command {
-    border-bottom: none;
 }
 
 .console-adjacent-user-command-result + .console-user-command-result.console-log-level::before {
@@ -111,10 +106,10 @@
     display: block;
     content: "";
     left: -17px;
-    top: 0.8em;
+    top: 9px;
     width: 10px;
     height: 10px;
-    margin-top: -5px;
+    margin-top: -4px;
     -webkit-user-select: none;
     background-image: url(Images/statusbarButtonGlyphs.png);
     background-size: 320px 144px;
@@ -226,6 +221,10 @@
     border-bottom: 1px solid rgb(240, 240, 240);
 }
 
+.console-message-wrapper.console-adjacent-user-command-result {
+    border-bottom: none;
+}
+
 .console-message-wrapper.console-error-level {
     border-top: 1px solid rgb(255, 216, 216);
     border-bottom: 1px solid rgb(255, 216, 216);
@@ -243,11 +242,7 @@
     flex: 0 0 auto;
     border-right: 1px solid #A3A3A3;
     position: relative;
-}
-
-.console-message-wrapper:last-child .nesting-level-marker,
-.console-message-wrapper .nesting-level-marker.group-closed {
-    margin-bottom: 4px;
+    margin-bottom: -1px;
 }
 
 .console-message-wrapper:last-child .nesting-level-marker::before,
@@ -280,7 +275,7 @@
 }
 
 .console-error-level .console-message-text,
-.console-error-level .section > .header .title {
+.console-error-level .console-view-object-properties-section {
     color: red !important;
 }
 
@@ -377,6 +372,8 @@
 
 .console-object-preview {
     font-style: italic;
+    white-space: normal;
+    word-wrap: break-word;
 }
 
 .console-object-preview .name {
@@ -410,9 +407,44 @@
     max-width: 200px;
 }
 
-.highlighted-search-result.current-search-result {
-    border-radius: 1px;
-    padding: 1px;
-    margin: -1px;
-    background-color: rgba(255, 127, 0, 0.8);
+.object-info-state-note {
+    display: inline-block;
+    width: 11px;
+    height: 11px;
+    background-color: rgb(179, 203, 247);
+    color: white;
+    text-align: center;
+    border-radius: 3px;
+    line-height: 13px;
+    margin: 0 6px;
+    font-size: 9px;
+}
+
+.object-info-state-note::before {
+    content: "i";
+}
+
+.console-view-object-properties-section:not(.expanded) .object-info-state-note {
+    display: none;
+}
+
+.object-info-state-note {
+    display: inline-block;
+    width: 11px;
+    height: 11px;
+    background-color: rgb(179, 203, 247);
+    color: white;
+    text-align: center;
+    border-radius: 3px;
+    line-height: 13px;
+    margin: 0 6px;
+    font-size: 9px;
+}
+
+.object-info-state-note::before {
+    content: "i";
+}
+
+.console-view-object-properties-section:not(.expanded) .object-info-state-note {
+    display: none;
 }

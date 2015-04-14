@@ -70,7 +70,7 @@ WebInspector.Color.parse = function(text)
 {
     // Simple - #hex, rgb(), nickname, hsl()
     var value = text.toLowerCase().replace(/\s+/g, "");
-    var simple = /^(?:#([0-9a-f]{3,6})|rgb\(([^)]+)\)|(\w+)|hsl\(([^)]+)\))$/i;
+    var simple = /^(?:#([0-9a-f]{3}|[0-9a-f]{6})|rgb\(((?:-?\d+%?,){2}-?\d+%?)\)|(\w+)|hsl\((-?\d+\.?\d*(?:,-?\d+\.?\d*%){2})\))$/i;
     var match = value.match(simple);
     if (match) {
         if (match[1]) { // hex
@@ -120,7 +120,7 @@ WebInspector.Color.parse = function(text)
     }
 
     // Advanced - rgba(), hsla()
-    var advanced = /^(?:rgba\(([^)]+)\)|hsla\(([^)]+)\))$/;
+    var advanced = /^(?:rgba\(((?:-?\d+%?,){3}-?\d+(?:\.\d+)?)\)|hsla\((-?\d+\.?\d*(?:,-?\d+\.?\d*%){2},-?\d+(?:\.\d+)?)\))$/;
     match = value.match(advanced);
     if (match) {
         if (match[1]) { // rgba
@@ -221,6 +221,15 @@ WebInspector.Color.prototype = {
 
         this._hsla = [h, s, l, this._rgba[3]];
         return this._hsla;
+    },
+
+    /**
+     * @return {!Array.<number>}
+     */
+    canonicalHSLA: function()
+    {
+        var hsla = this.hsla();
+        return [Math.round(hsla[0] * 360), Math.round(hsla[1] * 100), Math.round(hsla[2] * 100), hsla[3]];
     },
 
     /**
@@ -331,13 +340,12 @@ WebInspector.Color.prototype = {
     /**
      * @return {!Array.<number>}
      */
-    _canonicalRGBA: function()
+    canonicalRGBA: function()
     {
-        var rgba = new Array(3);
+        var rgba = new Array(4);
         for (var i = 0; i < 3; ++i)
             rgba[i] = Math.round(this._rgba[i] * 255);
-        if (this._rgba[3] !== 1)
-            rgba.push(this._rgba[3]);
+        rgba[3] = this._rgba[3];
         return rgba;
     },
 
@@ -350,11 +358,13 @@ WebInspector.Color.prototype = {
             WebInspector.Color._rgbaToNickname = {};
             for (var nickname in WebInspector.Color.Nicknames) {
                 var rgba = WebInspector.Color.Nicknames[nickname];
+                if (rgba.length !== 4)
+                    rgba = rgba.concat(1);
                 WebInspector.Color._rgbaToNickname[rgba] = nickname;
             }
         }
 
-        return WebInspector.Color._rgbaToNickname[this._canonicalRGBA()] || null;
+        return WebInspector.Color._rgbaToNickname[this.canonicalRGBA()] || null;
     },
 
     /**
@@ -362,7 +372,7 @@ WebInspector.Color.prototype = {
      */
     toProtocolRGBA: function()
     {
-        var rgba = this._canonicalRGBA();
+        var rgba = this.canonicalRGBA();
         var result = { r: rgba[0], g: rgba[1], b: rgba[2] };
         if (rgba[3] !== 1)
             result.a = rgba[3];
@@ -423,7 +433,7 @@ WebInspector.Color._parseHueNumeric = function(value)
  */
 WebInspector.Color._parseSatLightNumeric = function(value)
 {
-    return parseFloat(value) / 100;
+    return Math.min(1, parseFloat(value) / 100);
 }
 
 /**

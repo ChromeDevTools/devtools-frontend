@@ -1,11 +1,12 @@
 {
     "extensions": [
         {
-            "type": "ui-setting",
-            "section": "Console",
+            "type": "setting",
+            "category": "Console",
             "title": "Enable custom formatters",
-            "settingName": "enableCustomFormatters",
-            "settingType": "checkbox",
+            "settingName": "customFormatters",
+            "settingType": "boolean",
+            "defaultValue": false,
             "experiment": "customObjectFormatters"
         }
     ],
@@ -15,8 +16,8 @@
         "ui"
     ],
     "scripts": [
-        "AppUtils.js",
         "BreakpointsSidebarPaneBase.js",
+        "CustomPreviewSection.js",
         "DebuggerPresentationUtils.js",
         "DOMBreakpointsSidebarPane.js",
         "DOMPresentationUtils.js",
@@ -33,7 +34,9 @@
     ],
     "stylesheets": [
         "breakpointsList.css",
+        "customPreviewSection.css",
         "nodeLink.css",
+        "objectPropertiesSection.css",
         "objectValue.css"
     ]
 }

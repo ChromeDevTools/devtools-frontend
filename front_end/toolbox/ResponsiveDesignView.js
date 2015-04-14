@@ -16,6 +16,8 @@ WebInspector.ResponsiveDesignView = function(inspectedPagePlaceholder)
     this.element.classList.add("responsive-design-view");
     this.registerRequiredCSS("toolbox/responsiveDesignView.css");
 
+    this._showMediaQueryInspectorSetting = WebInspector.settings.createSetting("showMediaQueryInspector", false);
+
     this._responsiveDesignContainer = new WebInspector.VBox();
     this._uiInitialized = false;
 
@@ -60,16 +62,12 @@ WebInspector.ResponsiveDesignView.prototype = {
         this._mediaInspector = new WebInspector.MediaQueryInspector();
         this._updateMediaQueryInspector();
 
-        this._warningMessage = this._canvasContainer.element.createChild("div", "responsive-design-warning hidden");
-        this._warningMessage.createChild("label", "", "dt-icon-label").type = "warning-icon";
-        this._warningMessage.createChild("span");
-        var warningDisableButton = this._warningMessage.createChild("div", "disable-warning");
-        warningDisableButton.textContent = WebInspector.UIString("Never show");
-        warningDisableButton.addEventListener("click", this._disableOverridesWarnings.bind(this), false);
-        var warningCloseButton = this._warningMessage.createChild("div", "close-button");
-        warningCloseButton.addEventListener("click", WebInspector.overridesSupport.clearWarningMessage.bind(WebInspector.overridesSupport), false);
+        this._warningInfobar = new WebInspector.Infobar(WebInspector.Infobar.Type.Warning, WebInspector.moduleSetting("disableOverridesWarning"));
+        this._warningInfobar.element.classList.add("responsive-design-warning");
+        this._warningInfobar.setCloseCallback(WebInspector.overridesSupport.clearWarningMessage.bind(WebInspector.overridesSupport));
+        this._canvasContainer.element.appendChild(this._warningInfobar.element);
+        this._warningMessage = this._warningInfobar.element.createChild("span");
         WebInspector.overridesSupport.addEventListener(WebInspector.OverridesSupport.Events.OverridesWarningUpdated, this._overridesWarningUpdated, this);
-        WebInspector.settings.disableOverridesWarning.addChangeListener(this._overridesWarningUpdated, this);
 
         this._slidersContainer = this._canvasContainer.element.createChild("div", "vbox responsive-design-sliders-container");
         var genericDeviceOutline = this._slidersContainer.createChild("div", "responsive-design-generic-outline-container");
@@ -145,7 +143,7 @@ WebInspector.ResponsiveDesignView.prototype = {
     {
         var enabled = WebInspector.overridesSupport.emulationEnabled();
         if (enabled && !this._enabled) {
-            WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Actions.DeviceModeEnabled);
+            WebInspector.userMetrics.DeviceModeEnabled.record();
             this._invalidateCache();
             this._ignoreResize = true;
             this._enabled = true;
@@ -493,7 +491,7 @@ WebInspector.ResponsiveDesignView.prototype = {
             var cssCanvasOffset = rulerTotalHeight / zoomFactor + "px";
             this._slidersContainer.style.left = cssRulerWidth;
             this._slidersContainer.style.top = cssCanvasOffset;
-            this._warningMessage.style.height = cssCanvasOffset;
+            this._warningInfobar.element.style.height = cssCanvasOffset;
             this._pageScaleContainer.style.top = cssCanvasOffset;
             this._mediaInspectorContainer.style.left = cssRulerWidth;
             this._mediaInspectorContainer.style.marginTop = cssRulerHeight;
@@ -595,10 +593,10 @@ WebInspector.ResponsiveDesignView.prototype = {
 
         // Media Query Inspector.
         this._toggleMediaInspectorButton = new WebInspector.StatusBarButton(WebInspector.UIString("Media queries not found"), "waterfall-status-bar-item");
-        this._toggleMediaInspectorButton.setToggled(WebInspector.settings.showMediaQueryInspector.get());
+        this._toggleMediaInspectorButton.setToggled(this._showMediaQueryInspectorSetting.get());
         this._toggleMediaInspectorButton.setEnabled(false);
         this._toggleMediaInspectorButton.addEventListener("click", this._onToggleMediaInspectorButtonClick, this);
-        WebInspector.settings.showMediaQueryInspector.addChangeListener(this._updateMediaQueryInspector, this);
+        this._showMediaQueryInspectorSetting.addChangeListener(this._updateMediaQueryInspector, this);
         buttonsStatusBar.appendStatusBarItem(this._toggleMediaInspectorButton);
     },
 
@@ -677,13 +675,13 @@ WebInspector.ResponsiveDesignView.prototype = {
 
     _onToggleMediaInspectorButtonClick: function()
     {
-        WebInspector.settings.showMediaQueryInspector.set(!this._toggleMediaInspectorButton.toggled());
+        this._showMediaQueryInspectorSetting.set(!this._toggleMediaInspectorButton.toggled());
     },
 
     _updateMediaQueryInspector: function()
     {
-        this._toggleMediaInspectorButton.setToggled(WebInspector.settings.showMediaQueryInspector.get());
-        if (this._mediaInspector.isShowing() === WebInspector.settings.showMediaQueryInspector.get())
+        this._toggleMediaInspectorButton.setToggled(this._showMediaQueryInspectorSetting.get());
+        if (this._mediaInspector.isShowing() === this._showMediaQueryInspectorSetting.get())
             return;
         if (this._mediaInspector.isShowing())
             this._mediaInspector.detach();
@@ -705,19 +703,9 @@ WebInspector.ResponsiveDesignView.prototype = {
 
     _overridesWarningUpdated: function()
     {
-        var message = WebInspector.settings.disableOverridesWarning.get() ? "" : WebInspector.overridesSupport.warningMessage();
-        if (this._warning === message)
-            return;
-        this._warning = message;
-        this._warningMessage.classList.toggle("hidden", !message);
-        this._warningMessage.querySelector("span").textContent = message;
-        this._invalidateCache();
-        this.onResize();
-    },
-
-    _disableOverridesWarnings: function()
-    {
-        WebInspector.settings.disableOverridesWarning.set(true);
+        var message = WebInspector.overridesSupport.warningMessage();
+        this._warningMessage.textContent = message;
+        this._warningInfobar.setVisible(!!message);
     },
 
     _showEmulationInDrawer: function()

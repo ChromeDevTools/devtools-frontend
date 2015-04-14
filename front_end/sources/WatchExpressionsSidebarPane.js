@@ -39,6 +39,7 @@ WebInspector.WatchExpressionsSidebarPane = function()
     this._requiresUpdate = true;
     /** @type {!Array.<!WebInspector.WatchExpression>} */
     this._watchExpressions = [];
+    this._watchExpressionsSetting = WebInspector.settings.createSetting("watchExpressions", []);
 
     this.registerRequiredCSS("components/objectValue.css");
     this.bodyElement.classList.add("vbox", "watch-expressions");
@@ -80,6 +81,12 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
         this._saveExpressions();
     },
 
+    expandIfNecessary: function()
+    {
+        if (this._watchExpressionsSetting.get().length)
+            this.expand();
+    },
+
     _saveExpressions: function()
     {
         var toSave = [];
@@ -87,7 +94,7 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
             if (this._watchExpressions[i].expression())
                 toSave.push(this._watchExpressions[i].expression());
 
-        WebInspector.settings.watchExpressions.set(toSave);
+        this._watchExpressionsSetting.set(toSave);
     },
 
     _refreshExpressionsIfNeeded: function()
@@ -125,7 +132,7 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
         this._watchExpressions = [];
         this._emptyElement = this.bodyElement.createChild("div", "info");
         this._emptyElement.textContent = WebInspector.UIString("No Watch Expressions");
-        var watchExpressionStrings = WebInspector.settings.watchExpressions.get();
+        var watchExpressionStrings = this._watchExpressionsSetting.get();
         for (var i = 0; i < watchExpressionStrings.length; ++i) {
             var expression = watchExpressionStrings[i];
             if (!expression)
@@ -259,7 +266,7 @@ WebInspector.WatchExpression.prototype = {
         newDiv.textContent = this._nameElement.textContent;
         this._textPrompt = new WebInspector.ObjectPropertyPrompt();
         this._textPrompt.renderAsBlock();
-        var proxyElement = this._textPrompt.attachAndStartEditing(newDiv, this._finishEditing.bind(this, this._expression));
+        var proxyElement = this._textPrompt.attachAndStartEditing(newDiv, this._finishEditing.bind(this));
         proxyElement.classList.add("watch-expression-text-prompt-proxy");
         proxyElement.addEventListener("keydown", this._promptKeyDown.bind(this), false);
         this._element.getComponentSelection().setBaseAndExtent(newDiv, 0, newDiv, 1);
@@ -274,20 +281,22 @@ WebInspector.WatchExpression.prototype = {
     },
 
     /**
-     * @param {?string} newExpression
      * @param {!Event} event
+     * @param {boolean=} canceled
      */
-    _finishEditing: function(newExpression, event)
+    _finishEditing: function(event, canceled)
     {
         if (event)
             event.consume(true);
 
         this._editing = false;
         this._textPrompt.detach();
+        var newExpression = this._textPrompt.text();
         delete this._textPrompt;
         this._element.removeChildren();
         this._element.appendChild(this._objectPresentationElement);
-        this._updateExpression(newExpression);
+        if (!canceled && newExpression !== this._expression)
+            this._updateExpression(newExpression);
     },
 
     /**
@@ -327,7 +336,12 @@ WebInspector.WatchExpression.prototype = {
     {
         this._result = result;
 
-        var titleElement = createElementWithClass("div", "watch-expression-title");
+        var headerElement= createElementWithClass("div", "watch-expression-header");
+        var deleteButton = headerElement.createChild("button", "watch-expression-delete-button");
+        deleteButton.title = WebInspector.UIString("Delete watch expression");
+        deleteButton.addEventListener("click", this._deleteWatchExpression.bind(this), false);
+
+        var titleElement = headerElement.createChild("div", "watch-expression-title");
         this._nameElement = WebInspector.ObjectPropertiesSection.createNameElement(this._expression);
         if (wasThrown || !result) {
             this._valueElement = createElementWithClass("span", "error-message value");
@@ -336,58 +350,53 @@ WebInspector.WatchExpression.prototype = {
         } else {
             this._valueElement = WebInspector.ObjectPropertiesSection.createValueElement(result, wasThrown, titleElement);
         }
-        var separatorElement = createElementWithClass("span", "separator");
+        var separatorElement = createElementWithClass("span", "watch-expressions-separator");
         separatorElement.textContent = ": ";
         titleElement.appendChildren(this._nameElement, separatorElement, this._valueElement);
 
+        this._element.removeChildren();
+        this._objectPropertiesSection = null;
         if (!wasThrown && result && result.hasChildren) {
-            var objectPropertiesSection = new WebInspector.ObjectPropertiesSection(result, titleElement);
-            this._objectPresentationElement = objectPropertiesSection.element;
-            objectPropertiesSection.headerElement.addEventListener("click", this._onSectionClick.bind(this, objectPropertiesSection), false);
-            objectPropertiesSection.doNotExpandOnTitleClick();
-            this._installHover(objectPropertiesSection.headerElement);
+            this._objectPropertiesSection = new WebInspector.ObjectPropertiesSection(result, headerElement);
+            this._objectPresentationElement = this._objectPropertiesSection.element;
+            var objectTreeElement = this._objectPropertiesSection.objectTreeElement();
+            objectTreeElement.toggleOnClick = false;
+            objectTreeElement.listItemElement.addEventListener("click", this._onSectionClick.bind(this), false);
+            objectTreeElement.listItemElement.addEventListener("dblclick", this._dblClickOnWatchExpression.bind(this));
         } else {
-            this._objectPresentationElement = this._element.createChild("div", "primitive-value");
-            this._objectPresentationElement.appendChild(titleElement);
-            this._installHover(this._objectPresentationElement);
+            this._objectPresentationElement = headerElement;
+            this._objectPresentationElement.addEventListener("dblclick", this._dblClickOnWatchExpression.bind(this));
         }
 
-        this._element.removeChildren();
         this._element.appendChild(this._objectPresentationElement);
-        this._element.addEventListener("dblclick", this._dblClickOnWatchExpression.bind(this));
     },
 
     /**
-     * @param {!Element} hoverableElement
-     */
-    _installHover: function(hoverableElement)
-    {
-        var deleteButton = createElementWithClass("button", "delete-button");
-        deleteButton.title = WebInspector.UIString("Delete watch expression");
-        deleteButton.addEventListener("click", this._deleteWatchExpression.bind(this), false);
-        hoverableElement.insertBefore(deleteButton, hoverableElement.firstChild);
-    },
-
-    /**
-     * @param {!WebInspector.ObjectPropertiesSection} objectPropertiesSection
      * @param {!Event} event
      */
-    _onSectionClick: function(objectPropertiesSection, event)
+    _onSectionClick: function(event)
     {
         event.consume(true);
         if (event.detail == 1) {
-            this._preventClickTimeout = setTimeout(handleClick, 333);
+            this._preventClickTimeout = setTimeout(handleClick.bind(this), 333);
         } else {
             clearTimeout(this._preventClickTimeout);
             delete this._preventClickTimeout;
         }
 
+        /**
+         * @this {WebInspector.WatchExpression}
+         */
         function handleClick()
         {
-            if (objectPropertiesSection.expanded)
-                objectPropertiesSection.collapse();
+            if (!this._objectPropertiesSection)
+                return;
+
+            var objectTreeElement = this._objectPropertiesSection.objectTreeElement();
+            if (objectTreeElement.expanded)
+                objectTreeElement.collapse();
             else
-                objectPropertiesSection.expand();
+                objectTreeElement.expand();
         }
     },
 
@@ -396,14 +405,8 @@ WebInspector.WatchExpression.prototype = {
      */
     _promptKeyDown: function(event)
     {
-        if (isEnterKey(event)) {
-            this._finishEditing(this._textPrompt.text(), event);
-            return;
-        }
-        if (event.keyIdentifier === "U+001B") { // Esc
-            this._finishEditing(this._expression, event);
-            return;
-        }
+        if (isEnterKey(event) || isEscKey(event))
+            this._finishEditing(event, isEscKey(event));
     },
 
     /**

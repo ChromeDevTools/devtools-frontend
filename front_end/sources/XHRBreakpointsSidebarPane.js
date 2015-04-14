@@ -10,6 +10,7 @@
 WebInspector.XHRBreakpointsSidebarPane = function()
 {
     WebInspector.BreakpointsSidebarPaneBase.call(this, WebInspector.UIString("XHR Breakpoints"));
+    this._xhrBreakpointsSetting = WebInspector.settings.createSetting("xhrBreakpoints", []);
 
     /** @type {!Map.<string, !Element>} */
     this._breakpointElements = new Map();
@@ -238,7 +239,7 @@ WebInspector.XHRBreakpointsSidebarPane.prototype = {
         var breakpoints = [];
         for (var url of this._breakpointElements.keys())
             breakpoints.push({ url: url, enabled: this._breakpointElements.get(url)._checkboxElement.checked });
-        WebInspector.settings.xhrBreakpoints.set(breakpoints);
+        this._xhrBreakpointsSetting.set(breakpoints);
     },
 
     /**
@@ -246,7 +247,7 @@ WebInspector.XHRBreakpointsSidebarPane.prototype = {
      */
     _restoreBreakpoints: function(target)
     {
-        var breakpoints = WebInspector.settings.xhrBreakpoints.get();
+        var breakpoints = this._xhrBreakpointsSetting.get();
         for (var i = 0; i < breakpoints.length; ++i) {
             var breakpoint = breakpoints[i];
             if (breakpoint && typeof breakpoint.url === "string")

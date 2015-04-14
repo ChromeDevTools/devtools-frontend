@@ -479,10 +479,13 @@ WebInspector.FlameChart.prototype = {
         var timelineData = this._timelineData();
         if (!timelineData)
             return;
+        // Think in terms of not where we are, but where we'll be after animation (if present)
+        var timeLeft = this._cancelWindowTimesAnimation ? this._pendingAnimationTimeLeft : this._timeWindowLeft;
+        var timeRight = this._cancelWindowTimesAnimation ? this._pendingAnimationTimeRight : this._timeWindowRight;
         var entryStartTime = timelineData.entryStartTimes[entryIndex];
         var entryTotalTime = timelineData.entryTotalTimes[entryIndex];
         var entryEndTime = entryStartTime + entryTotalTime;
-        var minEntryTimeWindow = Math.min(entryTotalTime, this._timeWindowRight - this._timeWindowLeft);
+        var minEntryTimeWindow = Math.min(entryTotalTime, timeRight - timeLeft);
 
         var y = this._levelToHeight(timelineData.entryLevels[entryIndex]);
         if (y < this._vScrollElement.scrollTop)
@@ -490,12 +493,12 @@ WebInspector.FlameChart.prototype = {
         else if (y > this._vScrollElement.scrollTop + this._offsetHeight + this._barHeightDelta)
             this._vScrollElement.scrollTop = y - this._offsetHeight - this._barHeightDelta;
 
-        if (this._timeWindowLeft > entryEndTime) {
-            var delta = this._timeWindowLeft - entryEndTime + minEntryTimeWindow;
-            this._flameChartDelegate.requestWindowTimes(this._timeWindowLeft - delta, this._timeWindowRight - delta);
-        } else if (this._timeWindowRight < entryStartTime) {
-            var delta = entryStartTime - this._timeWindowRight + minEntryTimeWindow;
-            this._flameChartDelegate.requestWindowTimes(this._timeWindowLeft + delta, this._timeWindowRight + delta);
+        if (timeLeft > entryEndTime) {
+            var delta = timeLeft - entryEndTime + minEntryTimeWindow;
+            this._flameChartDelegate.requestWindowTimes(timeLeft - delta, timeRight - delta);
+        } else if (timeRight < entryStartTime) {
+            var delta = entryStartTime - timeRight + minEntryTimeWindow;
+            this._flameChartDelegate.requestWindowTimes(timeRight + delta, timeRight + delta);
         }
     },
 

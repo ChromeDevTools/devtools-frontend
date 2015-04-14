@@ -38,7 +38,7 @@ WebInspector.ResourcesPanel = function()
     WebInspector.PanelWithSidebar.call(this, "resources");
     this.registerRequiredCSS("resources/resourcesPanel.css");
 
-    WebInspector.settings.resourcesLastSelectedItem = WebInspector.settings.createSetting("resourcesLastSelectedItem", {});
+    this._resourcesLastSelectedItemSetting = WebInspector.settings.createSetting("resourcesLastSelectedItem", {});
 
     this._sidebarTree = new TreeOutline();
     this._sidebarTree.element.classList.add("filter-all", "children", "small", "outline-disclosure");
@@ -191,7 +191,7 @@ WebInspector.ResourcesPanel.prototype = {
         if (!this._initialized)
             return;
 
-        var itemURL = WebInspector.settings.resourcesLastSelectedItem.get();
+        var itemURL = this._resourcesLastSelectedItemSetting.get();
         if (itemURL) {
             var rootElement = this._sidebarTree.rootElement();
             for (var treeElement = rootElement.firstChild(); treeElement; treeElement = treeElement.traverseNextTreeElement(false, rootElement, true)) {
@@ -924,7 +924,7 @@ WebInspector.BaseStorageTreeElement.prototype = {
             return false;
         var itemURL = this.itemURL;
         if (itemURL)
-            WebInspector.settings.resourcesLastSelectedItem.set(itemURL);
+            this._storagePanel._resourcesLastSelectedItemSetting.set(itemURL);
         return false;
     },
 
@@ -974,8 +974,7 @@ WebInspector.BaseStorageTreeElement.prototype = {
 WebInspector.StorageCategoryTreeElement = function(storagePanel, categoryName, settingsKey, iconClasses, noIcon)
 {
     WebInspector.BaseStorageTreeElement.call(this, storagePanel, categoryName, iconClasses, false, noIcon);
-    this._expandedSettingKey = "resources" + settingsKey + "Expanded";
-    WebInspector.settings[this._expandedSettingKey] = WebInspector.settings.createSetting(this._expandedSettingKey, settingsKey === "Frames");
+    this._expandedSetting = WebInspector.settings.createSetting("resources" + settingsKey + "Expanded", settingsKey === "Frames");
     this._categoryName = categoryName;
 }
 
@@ -1010,7 +1009,7 @@ WebInspector.StorageCategoryTreeElement.prototype = {
     onattach: function()
     {
         WebInspector.BaseStorageTreeElement.prototype.onattach.call(this);
-        if (WebInspector.settings[this._expandedSettingKey].get())
+        if (this._expandedSetting.get())
             this.expand();
     },
 
@@ -1019,7 +1018,7 @@ WebInspector.StorageCategoryTreeElement.prototype = {
      */
     onexpand: function()
     {
-        WebInspector.settings[this._expandedSettingKey].set(true);
+        this._expandedSetting.set(true);
     },
 
     /**
@@ -1027,7 +1026,7 @@ WebInspector.StorageCategoryTreeElement.prototype = {
      */
     oncollapse: function()
     {
-        WebInspector.settings[this._expandedSettingKey].set(false);
+        this._expandedSetting.set(false);
     },
 
     __proto__: WebInspector.BaseStorageTreeElement.prototype

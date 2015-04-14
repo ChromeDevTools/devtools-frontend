@@ -752,7 +752,8 @@
                 "hidden": true,
                 "properties": [
                     { "name": "header", "type": "string"},
-                    { "name": "hasBody", "type": "boolean"}
+                    { "name": "hasBody", "type": "boolean"},
+                    {"name": "formatterObjectId", "$ref": "RemoteObjectId"}
                 ]
             },
             {
@@ -1198,6 +1199,23 @@
                     { "name": "lineNumber", "type": "number", "optional": true, "description": "Initiator line number, set for Parser type only." },
                     { "name": "asyncStackTrace", "$ref": "Console.AsyncStackTrace", "optional": true, "description": "Initiator asynchronous JavaScript stack trace, if available.", "hidden": true }
                 ]
+            },
+            {
+                "id": "Cookie",
+                "type": "object",
+                "description": "Cookie object",
+                "properties": [
+                    { "name": "name", "type": "string", "description": "Cookie name." },
+                    { "name": "value", "type": "string", "description": "Cookie value." },
+                    { "name": "domain", "type": "string", "description": "Cookie domain." },
+                    { "name": "path", "type": "string", "description": "Cookie path." },
+                    { "name": "expires", "type": "number", "description": "Cookie expires." },
+                    { "name": "size", "type": "integer", "description": "Cookie size." },
+                    { "name": "httpOnly", "type": "boolean", "description": "True if cookie is http-only." },
+                    { "name": "secure", "type": "boolean", "description": "True if cookie is secure." },
+                    { "name": "session", "type": "boolean", "description": "True in case of session cookie." }
+                ],
+                "hidden": true
             }
         ],
         "commands": [
@@ -1274,6 +1292,27 @@
                 "name": "clearBrowserCookies",
                 "description": "Clears browser cookies.",
                 "handlers": ["browser"]
+            },
+            {
+                "name": "getCookies",
+                "returns": [
+                    { "name": "cookies", "type": "array", "items": { "$ref": "Cookie" }, "description": "Array of cookie objects." }
+                ],
+                "description": "Returns all browser cookies. Depending on the backend support, will return detailed cookie information in the <code>cookies</code> field.",
+                "handlers": ["browser"],
+                "async": true,
+                "hidden": true
+            },
+            {
+                "name": "deleteCookie",
+                "parameters": [
+                    { "name": "cookieName", "type": "string", "description": "Name of the cookie to remove." },
+                    { "name": "url", "type": "string", "description": "URL to match cooke domain and path." }
+                ],
+                "description": "Deletes browser cookie with given name, domain and path.",
+                "handlers": ["browser"],
+                "async": true,
+                "hidden": true
             },
             {
                 "name": "canEmulateNetworkConditions",
@@ -4151,6 +4190,15 @@
                     { "name": "debugOnStart", "type": "boolean" }
                 ],
                 "handlers": ["browser"]
+            },
+            {
+                "name": "deliverPushMessage",
+                "parameters": [
+                    { "name": "origin", "type": "string" },
+                    { "name": "registrationId", "type": "string" },
+                    { "name": "data", "type": "string" }
+                ],
+                "handlers": ["browser"]
             }
         ],
         "events": [
@@ -4441,7 +4489,8 @@
                     { "name": "isKeypad", "type": "boolean", "optional": true, "description": "Whether the event was generated from the keypad (default: false)." },
                     { "name": "isSystemKey", "type": "boolean", "optional": true, "description": "Whether the event was a system key event (default: false)." }
                 ],
-                "description": "Dispatches a key event to the page."
+                "description": "Dispatches a key event to the page.",
+                "handlers": ["browser"]
             },
             {
                 "name": "dispatchMouseEvent",
@@ -4455,7 +4504,7 @@
                     { "name": "clickCount", "type": "integer", "optional": true, "description": "Number of times the mouse button was clicked (default: 0)." }
                 ],
                 "description": "Dispatches a mouse event to the page.",
-                "handlers": ["renderer"]
+                "handlers": ["browser"]
             },
             {
                 "name": "dispatchTouchEvent",
@@ -4965,7 +5014,7 @@
             {
                 "id": "AXValueType",
                 "type": "string",
-                "enum": [ "boolean", "tristate", "booleanOrUndefined", "idref", "idrefList", "integer", "number", "string", "token", "tokenList", "domRelation", "role" ],
+                "enum": [ "boolean", "tristate", "booleanOrUndefined", "idref", "idrefList", "integer", "number", "string", "token", "tokenList", "domRelation", "role", "internalRole" ],
                 "description": "Enum of possible property types."
             },
             {

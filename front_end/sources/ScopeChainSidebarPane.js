@@ -38,6 +38,8 @@ WebInspector.ScopeChainSidebarPane = function()
     this._expandedProperties = new Set();
 }
 
+WebInspector.ScopeChainSidebarPane._pathSymbol = Symbol("path");
+
 WebInspector.ScopeChainSidebarPane.prototype = {
     /**
      * @param {?WebInspector.DebuggerModel.CallFrame} callFrame
@@ -119,18 +121,22 @@ WebInspector.ScopeChainSidebarPane.prototype = {
             if (!title || title === subtitle)
                 subtitle = undefined;
 
-            var section = new WebInspector.ObjectPropertiesSection(scope.object(), title, subtitle, emptyPlaceholder, true, extraProperties);
-            section.propertiesTreeOutline.addEventListener(TreeOutline.Events.ElementAttached, this._elementAttached, this);
-            section.propertiesTreeOutline.addEventListener(TreeOutline.Events.ElementExpanded, this._elementExpanded, this);
-            section.propertiesTreeOutline.addEventListener(TreeOutline.Events.ElementCollapsed, this._elementCollapsed, this);
-            section.editInSelectedCallFrameWhenPaused = true;
-            section.pane = this;
+            var titleElement = createElementWithClass("div");
+            titleElement.createChild("div", "scope-chain-sidebar-pane-section-subtitle").textContent = subtitle;
+            titleElement.createChild("div", "scope-chain-sidebar-pane-section-title").textContent = title;
+
+            var section = new WebInspector.ObjectPropertiesSection(scope.object(), titleElement, emptyPlaceholder, true, extraProperties);
+            section[WebInspector.ScopeChainSidebarPane._pathSymbol] = title + ":" + (subtitle ? subtitle + ":" : "");
+            section.addEventListener(TreeOutline.Events.ElementAttached, this._elementAttached, this);
+            section.addEventListener(TreeOutline.Events.ElementExpanded, this._elementExpanded, this);
+            section.addEventListener(TreeOutline.Events.ElementCollapsed, this._elementCollapsed, this);
 
             if (scope.type() === DebuggerAgent.ScopeType.Global)
-                section.collapse();
+                section.objectTreeElement().collapse();
             else if (!foundLocalScope || scope.type() === DebuggerAgent.ScopeType.Local || this._expandedSections.has(title))
-                section.expand();
+                section.objectTreeElement().expand();
 
+            section.element.classList.add("scope-chain-sidebar-pane-section");
             this._sections.push(section);
             this.bodyElement.appendChild(section.element);
         }
@@ -170,9 +176,12 @@ WebInspector.ScopeChainSidebarPane.prototype = {
      */
     _propertyPath: function(treeElement)
     {
-        var section = treeElement.treeOutline.section;
-        return section.title + ":" + (section.subtitle ? section.subtitle + ":" : "") + WebInspector.ObjectPropertyTreeElement.prototype.propertyPath.call(treeElement);
+        return treeElement.treeOutline[WebInspector.ScopeChainSidebarPane._pathSymbol] + WebInspector.ObjectPropertyTreeElement.prototype.propertyPath.call(treeElement);
     },
 
     __proto__: WebInspector.SidebarPane.prototype
 }
+
+
+
+

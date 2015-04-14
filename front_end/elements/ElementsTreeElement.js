@@ -78,7 +78,7 @@ WebInspector.ElementsTreeElement.animateOnDOMUpdate = function(treeElement)
 WebInspector.ElementsTreeElement.visibleShadowRoots = function(node)
 {
     var roots = node.shadowRoots();
-    if (roots.length && !WebInspector.settings.showUAShadowDOM.get())
+    if (roots.length && !WebInspector.moduleSetting("showUAShadowDOM").get())
         roots = roots.filter(filter);
 
     /**
@@ -849,7 +849,7 @@ WebInspector.ElementsTreeElement.prototype = {
         }
 
         var config = new WebInspector.InplaceEditor.Config(commit.bind(this), dispose.bind(this));
-        config.setMultilineOptions(initialValue, { name: "xml", htmlMode: true }, "web-inspector-html", WebInspector.settings.domWordWrap.get(), true);
+        config.setMultilineOptions(initialValue, { name: "xml", htmlMode: true }, "web-inspector-html", WebInspector.moduleSetting("domWordWrap").get(), true);
         WebInspector.InplaceEditor.startMultilineEditing(this._htmlEditElement, config).then(markAsBeingEdited.bind(this));
 
         /**

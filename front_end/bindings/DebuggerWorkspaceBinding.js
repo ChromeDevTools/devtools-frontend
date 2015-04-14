@@ -342,7 +342,7 @@ WebInspector.DebuggerWorkspaceBinding.TargetData.prototype = {
         this._defaultMapping.addScript(script);
         this._resourceMapping.addScript(script);
 
-        if (WebInspector.settings.jsSourceMapsEnabled.get())
+        if (WebInspector.moduleSetting("jsSourceMapsEnabled").get())
             this._compilerMapping.addScript(script);
     },
 

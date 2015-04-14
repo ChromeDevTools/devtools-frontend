@@ -13,25 +13,28 @@
             "className": "WebInspector.ProfilesPanel.ContextMenuProvider"
         },
         {
-            "type": "ui-setting",
-            "section": "Profiler",
+            "type": "setting",
+            "category": "Profiler",
             "title": "Show advanced heap snapshot properties",
             "settingName": "showAdvancedHeapSnapshotProperties",
-            "settingType": "checkbox"
+            "settingType": "boolean",
+            "defaultValue": false
         },
         {
-            "type": "ui-setting",
-            "section": "Profiler",
+            "type": "setting",
+            "category": "Profiler",
             "title": "Record heap allocation stack traces",
             "settingName": "recordAllocationStacks",
-            "settingType": "checkbox"
+            "settingType": "boolean",
+            "defaultValue": false
         },
         {
-            "type": "ui-setting",
-            "section": "Profiler",
+            "type": "setting",
+            "category": "Profiler",
             "title": "High resolution CPU profiling",
             "settingName": "highResolutionCpuProfiling",
-            "settingType": "checkbox"
+            "settingType": "boolean",
+            "defaultValue": false
         }
     ],
     "dependencies": [
@@ -51,13 +54,10 @@
         "HeapSnapshotGridNodes.js",
         "HeapSnapshotView.js",
         "ProfileLauncherView.js",
-        "CanvasProfileView.js",
-        "CanvasReplayStateView.js",
         "ProfileTypeRegistry.js",
         "TargetsComboBoxController.js"
     ],
     "stylesheets": [
-        "canvasProfiler.css",
         "heapProfiler.css",
         "profilesPanel.css"
     ]

@@ -546,6 +546,7 @@
     display: flex;
     border-top: 1px solid rgb(191, 191, 191);
     flex-basis: 19px;
+    flex-shrink: 0;
 }
 
 .sidebar-pane-filter-box > input {

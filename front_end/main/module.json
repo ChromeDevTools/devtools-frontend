@@ -34,7 +34,7 @@
         {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "main.hard-reload",
-            "className": "WebInspector.Main.HardReloadActionDelegate",
+            "className": "WebInspector.Main.ReloadActionDelegate",
             "bindings": [
                 {
                     "platform": "windows,linux",
@@ -59,7 +59,7 @@
         {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "main.debug-reload",
-            "className": "WebInspector.Main.DebugReloadActionDelegate",
+            "className": "WebInspector.Main.ReloadActionDelegate",
             "bindings": [
                 {
                     "shortcut": "Alt+R"
@@ -69,6 +69,7 @@
         {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "main.toggle-element-search",
+            "contextTypes": ["WebInspector.InspectElementModeController"],
             "className": "WebInspector.InspectElementModeController.ToggleSearchActionDelegate",
             "bindings": [
                 {
@@ -99,7 +100,7 @@
         {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "main.zoom-in",
-            "className": "WebInspector.Main.ZoomInActionDelegate",
+            "className": "WebInspector.Main.ZoomActionDelegate",
             "bindings": [
                 {
                     "platform": "windows,linux",
@@ -114,7 +115,7 @@
         {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "main.zoom-out",
-            "className": "WebInspector.Main.ZoomOutActionDelegate",
+            "className": "WebInspector.Main.ZoomActionDelegate",
             "bindings": [
                 {
                     "platform": "windows,linux",
@@ -129,7 +130,7 @@
         {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "main.zoom-reset",
-            "className": "WebInspector.Main.ZoomResetActionDelegate",
+            "className": "WebInspector.Main.ZoomActionDelegate",
             "bindings": [
                 {
                     "platform": "windows,linux",
@@ -209,49 +210,86 @@
             "location": "toolbar-right"
         },
         {
-            "type": "ui-setting",
+            "type": "setting",
             "title": "Disable cache (while DevTools is open)",
             "settingName": "cacheDisabled",
-            "settingType": "checkbox"
+            "settingType": "boolean",
+            "defaultValue": false
         },
         {
-            "type": "ui-setting",
+            "type": "setting",
             "title": "Disable JavaScript",
             "settingName": "javaScriptDisabled",
-            "settingType": "checkbox"
+            "settingType": "boolean",
+            "defaultValue": false
         },
         {
-            "type": "ui-setting",
-            "section": "Appearance",
+            "type": "setting",
+            "category": "Appearance",
             "title": "Split panels vertically when docked to right",
             "settingName": "splitVerticallyWhenDockedToRight",
-            "settingType": "checkbox"
+            "settingType": "boolean",
+            "defaultValue": true
         },
         {
-            "type": "ui-setting",
-            "section": "Appearance",
-            "settingType": "custom",
-            "className": "WebInspector.Main.ShortcutPanelSwitchSettingDelegate"
+            "type": "setting",
+            "category": "Appearance",
+            "title": "Enable Ctrl + 1-9 shortcut to switch panels",
+            "title-mac": "Enable Cmd + 1-9 shortcut to switch panels",
+            "settingName": "shortcutPanelSwitch",
+            "settingType": "boolean",
+            "defaultValue": false
         },
         {
-            "type": "ui-setting",
-            "section": "Appearance",
+            "type": "setting",
+            "category": "Appearance",
             "title": "Don't show emulation warnings",
             "settingName": "disableOverridesWarning",
-            "settingType": "checkbox"
+            "settingType": "boolean",
+            "defaultValue": false
         },
         {
-            "type": "ui-setting",
-            "section": "Appearance",
+            "type": "setting",
+            "category": "Appearance",
             "title": "Disable paused state overlay",
             "settingName": "disablePausedStateOverlay",
-            "settingType": "checkbox"
+            "settingType": "boolean",
+            "defaultValue": false
         },
         {
-            "type": "ui-setting",
-            "section": "Extensions",
-            "settingType": "custom",
-            "className": "WebInspector.HandlerRegistry.OpenAnchorLocationSettingDelegate"
+            "type": "@WebInspector.SettingUI",
+            "category": "Extensions",
+            "className": "WebInspector.HandlerRegistry.OpenAnchorLocationSettingUI"
+        },
+        {
+            "type": "setting",
+            "settingName": "showPaintRects",
+            "settingType": "boolean",
+            "defaultValue": false
+        },
+        {
+            "type": "setting",
+            "settingName": "showDebugBorders",
+            "settingType": "boolean",
+            "defaultValue": false
+        },
+        {
+            "type": "setting",
+            "settingName": "showFPSCounter",
+            "settingType": "boolean",
+            "defaultValue": false
+        },
+        {
+            "type": "setting",
+            "settingName": "continuousPainting",
+            "settingType": "boolean",
+            "defaultValue": false
+        },
+        {
+            "type": "setting",
+            "settingName": "showScrollBottleneckRects",
+            "settingType": "boolean",
+            "defaultValue": false
         }
     ],
     "dependencies": [

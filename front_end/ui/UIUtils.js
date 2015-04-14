@@ -1347,6 +1347,29 @@ function createCheckboxLabel(title, checked)
 
         __proto__: HTMLLabelElement.prototype
     });
+
+    registerCustomElement("div", "dt-close-button", {
+        /**
+         * @this {Element}
+         */
+        createdCallback: function()
+        {
+            var root = this.createShadowRoot();
+            root.appendChild(WebInspector.View.createStyleElement("ui/closeButton.css"));
+            this._buttonElement = root.createChild("div", "close-button");
+        },
+
+        /**
+         * @param {boolean} gray
+         * @this {Element}
+         */
+        set gray(gray)
+        {
+            this._buttonElement.className = gray ? "close-button-gray" : "close-button";
+        },
+
+        __proto__: HTMLDivElement.prototype
+    });
 })();
 
 /**

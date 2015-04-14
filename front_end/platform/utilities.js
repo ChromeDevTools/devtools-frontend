@@ -324,81 +324,35 @@ String.isDigitAt = function(string, index)
  */
 String.prototype.toBase64 = function()
 {
-  /**
-   * @param {number} b
-   * @return {number}
-   */
-  function encodeBits(b)
-  {
-    return b < 26 ? b + 65 : b < 52 ? b + 71 : b < 62 ? b - 4 : b === 62 ? 43 : b === 63 ? 47 : 65;
-  }
-  var data = this.toUint8Array();
-  var n = data.length;
-  var encoded = "";
-  if (n === 0)
+    /**
+     * @param {number} b
+     * @return {number}
+     */
+    function encodeBits(b)
+    {
+        return b < 26 ? b + 65 : b < 52 ? b + 71 : b < 62 ? b - 4 : b === 62 ? 43 : b === 63 ? 47 : 65;
+    }
+    var encoder = new TextEncoder();
+    var data = encoder.encode(this.toString());
+    var n = data.length;
+    var encoded = "";
+    if (n === 0)
+        return encoded;
+    var shift;
+    var v = 0;
+    for (var i = 0; i < n; i++) {
+        shift = i % 3;
+        v |= data[i] << (16 >>> shift & 24);
+        if (shift === 2) {
+            encoded += String.fromCharCode(encodeBits(v >>> 18 & 63), encodeBits(v >>> 12 & 63), encodeBits(v >>> 6 & 63), encodeBits(v & 63));
+            v = 0;
+        }
+    }
+    if (shift === 0)
+        encoded += String.fromCharCode(encodeBits(v >>> 18 & 63), encodeBits(v >>> 12 & 63), 61, 61);
+    else if (shift === 1)
+        encoded += String.fromCharCode(encodeBits(v >>> 18 & 63), encodeBits(v >>> 12 & 63), encodeBits(v >>> 6 & 63), 61);
     return encoded;
-  var shift;
-  var v = 0;
-  for (var i = 0; i < n; i++) {
-    shift = i % 3;
-    v |= data[i] << (16 >>> shift & 24);
-    if (shift === 2) {
-      encoded += String.fromCharCode(encodeBits(v >>> 18 & 63), encodeBits(v >>> 12 & 63), encodeBits(v >>> 6 & 63), encodeBits(v & 63));
-      v = 0;
-    }
-  }
-  if (shift === 0)
-    encoded += String.fromCharCode(encodeBits(v >>> 18 & 63), encodeBits(v >>> 12 & 63), 61, 61);
-  else if (shift === 1)
-    encoded += String.fromCharCode(encodeBits(v >>> 18 & 63), encodeBits(v >>> 12 & 63), encodeBits(v >>> 6 & 63), 61);
-  return encoded;
-}
-
-/**
- * @return {!Uint8Array}
- */
-String.prototype.toUint8Array = function()
-{
-  var n = this.length;
-  var dataLen = 0;
-  for (var i = 0; i < n; ++i) {
-    var c = this.charCodeAt(i);
-    dataLen += c < 0x80 ? 1 : c < 0x800 ? 2 : c < 0x10000 ? 3 : c < 0x200000 ? 4 : c < 0x4000000 ? 5 : 6;
-  }
-  var data = new Uint8Array(dataLen);
-  var j = 0;
-  for (var i = 0; i < n; ++i) {
-    var c = this.charCodeAt(i);
-    if (c < 0x80) {
-      data[j++] = c;
-    } else if (c < 0x800) {
-      data[j++] = 192 + (c >>> 6);
-      data[j++] = 128 + (c & 63);
-    } else if (c < 0x10000) {
-      data[j++] = 224 + (c >>> 12);
-      data[j++] = 128 + (c >>> 6 & 63);
-      data[j++] = 128 + (c & 63);
-    } else if (c < 0x200000) {
-      data[j++] = 240 + (c >>> 18);
-      data[j++] = 128 + (c >>> 12 & 63);
-      data[j++] = 128 + (c >>> 6 & 63);
-      data[j++] = 128 + (c & 63);
-    } else if (c < 0x4000000) {
-      data[j++] = 248 + (c >>> 24);
-      data[j++] = 128 + (c >>> 18 & 63);
-      data[j++] = 128 + (c >>> 12 & 63);
-      data[j++] = 128 + (c >>> 6 & 63);
-      data[j++] = 128 + (c & 63);
-    } else {
-      data[j++] = 252 + (c >>> 30);
-      data[j++] = 128 + (c >>> 24 & 63);
-      data[j++] = 128 + (c >>> 18 & 63);
-      data[j++] = 128 + (c >>> 12 & 63);
-      data[j++] = 128 + (c >>> 6 & 63);
-      data[j++] = 128 + (c & 63);
-    }
-  }
-  return data;
 }
 
 /**

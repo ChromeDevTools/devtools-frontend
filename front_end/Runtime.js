@@ -363,7 +363,7 @@ Runtime._assert = function(value, message)
 {
     if (value)
         return;
-    Runtime._originalAssert.call(Runtime._console, value, message);
+    Runtime._originalAssert.call(Runtime._console, value, message + " " + new Error().stack);
 }
 
 Runtime.prototype = {
@@ -861,6 +861,15 @@ Runtime.Extension.prototype = {
                 return Promise.reject("Could not instantiate: " + className);
             return result;
         }
+    },
+
+    /**
+     * @param {string} platform
+     * @return {string}
+     */
+    title: function(platform)
+    {
+        return this._descriptor["title-" + platform] || this._descriptor["title"];
     }
 }
 

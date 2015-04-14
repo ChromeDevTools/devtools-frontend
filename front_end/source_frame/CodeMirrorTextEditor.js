@@ -122,11 +122,11 @@ WebInspector.CodeMirrorTextEditor = function(url, delegate)
         fallthrough: "devtools-common"
     };
 
-    WebInspector.settings.textEditorIndent.addChangeListener(this._onUpdateEditorIndentation, this);
-    WebInspector.settings.textEditorAutoDetectIndent.addChangeListener(this._onUpdateEditorIndentation, this);
+    WebInspector.moduleSetting("textEditorIndent").addChangeListener(this._onUpdateEditorIndentation, this);
+    WebInspector.moduleSetting("textEditorAutoDetectIndent").addChangeListener(this._onUpdateEditorIndentation, this);
     this._onUpdateEditorIndentation();
-    WebInspector.settings.showWhitespacesInEditor.addChangeListener(this._updateCodeMirrorMode, this);
-    WebInspector.settings.textEditorBracketMatching.addChangeListener(this._enableBracketMatchingIfNeeded, this);
+    WebInspector.moduleSetting("showWhitespacesInEditor").addChangeListener(this._updateCodeMirrorMode, this);
+    WebInspector.moduleSetting("textEditorBracketMatching").addChangeListener(this._enableBracketMatchingIfNeeded, this);
     this._enableBracketMatchingIfNeeded();
 
     this._codeMirror.setOption("keyMap", WebInspector.isMac() ? "devtools-mac" : "devtools-pc");
@@ -153,7 +153,7 @@ WebInspector.CodeMirrorTextEditor = function(url, delegate)
     this._fixWordMovement = new WebInspector.CodeMirrorTextEditor.FixWordMovement(this._codeMirror);
     this._selectNextOccurrenceController = new WebInspector.CodeMirrorTextEditor.SelectNextOccurrenceController(this, this._codeMirror);
 
-    WebInspector.settings.textEditorAutocompletion.addChangeListener(this._enableAutocompletionIfNeeded, this);
+    WebInspector.moduleSetting("textEditorAutocompletion").addChangeListener(this._enableAutocompletionIfNeeded, this);
     this._enableAutocompletionIfNeeded();
 
     this._codeMirror.on("changes", this._changes.bind(this));
@@ -375,7 +375,7 @@ WebInspector.CodeMirrorTextEditor._guessIndentationLevel = function(lines)
             minimumIndent = indent;
     }
     if (minimumIndent === Infinity)
-        return WebInspector.settings.textEditorIndent.get();
+        return WebInspector.moduleSetting("textEditorIndent").get();
     return " ".repeat(minimumIndent);
 }
 
@@ -392,7 +392,7 @@ WebInspector.CodeMirrorTextEditor.prototype = {
 
     _enableAutocompletionIfNeeded: function()
     {
-        this._autocompleteController.setEnabled(WebInspector.settings.textEditorAutocompletion.get());
+        this._autocompleteController.setEnabled(WebInspector.moduleSetting("textEditorAutocompletion").get());
     },
 
     /**
@@ -401,7 +401,7 @@ WebInspector.CodeMirrorTextEditor.prototype = {
      */
     _maybeAvoidSmartQuotes: function(quoteCharacter)
     {
-        if (!WebInspector.settings.textEditorBracketMatching.get())
+        if (!WebInspector.moduleSetting("textEditorBracketMatching").get())
             return CodeMirror.Pass;
         var selections = this.selections();
         if (selections.length !== 1 || !selections[0].isEmpty())
@@ -592,16 +592,16 @@ WebInspector.CodeMirrorTextEditor.prototype = {
 
     dispose: function()
     {
-        WebInspector.settings.textEditorIndent.removeChangeListener(this._onUpdateEditorIndentation, this);
-        WebInspector.settings.textEditorAutoDetectIndent.removeChangeListener(this._onUpdateEditorIndentation, this);
-        WebInspector.settings.showWhitespacesInEditor.removeChangeListener(this._updateCodeMirrorMode, this);
-        WebInspector.settings.textEditorBracketMatching.removeChangeListener(this._enableBracketMatchingIfNeeded, this);
-        WebInspector.settings.textEditorAutocompletion.removeChangeListener(this._enableAutocompletionIfNeeded, this);
+        WebInspector.moduleSetting("textEditorIndent").removeChangeListener(this._onUpdateEditorIndentation, this);
+        WebInspector.moduleSetting("textEditorAutoDetectIndent").removeChangeListener(this._onUpdateEditorIndentation, this);
+        WebInspector.moduleSetting("showWhitespacesInEditor").removeChangeListener(this._updateCodeMirrorMode, this);
+        WebInspector.moduleSetting("textEditorBracketMatching").removeChangeListener(this._enableBracketMatchingIfNeeded, this);
+        WebInspector.moduleSetting("textEditorAutocompletion").removeChangeListener(this._enableAutocompletionIfNeeded, this);
     },
 
     _enableBracketMatchingIfNeeded: function()
     {
-        this._codeMirror.setOption("autoCloseBrackets", WebInspector.settings.textEditorBracketMatching.get() ? { explode: false } : false);
+        this._codeMirror.setOption("autoCloseBrackets", WebInspector.moduleSetting("textEditorBracketMatching").get() ? { explode: false } : false);
     },
 
     /**
@@ -634,8 +634,8 @@ WebInspector.CodeMirrorTextEditor.prototype = {
     _setEditorIndentation: function(lines)
     {
         var extraKeys = {};
-        var indent = WebInspector.settings.textEditorIndent.get();
-        if (WebInspector.settings.textEditorAutoDetectIndent.get())
+        var indent = WebInspector.moduleSetting("textEditorIndent").get();
+        if (WebInspector.moduleSetting("textEditorAutoDetectIndent").get())
             indent = WebInspector.CodeMirrorTextEditor._guessIndentationLevel(lines);
         if (indent === WebInspector.TextUtils.Indent.TabCharacter) {
             this._codeMirror.setOption("indentWithTabs", true);
@@ -718,7 +718,7 @@ WebInspector.CodeMirrorTextEditor.prototype = {
     _setupWhitespaceHighlight: function()
     {
         var doc = this.element.ownerDocument;
-        if (doc._codeMirrorWhitespaceStyleInjected || !WebInspector.settings.showWhitespacesInEditor.get())
+        if (doc._codeMirrorWhitespaceStyleInjected || !WebInspector.moduleSetting("showWhitespacesInEditor").get())
             return;
         doc._codeMirrorWhitespaceStyleInjected = true;
         const classBase = ".show-whitespaces .CodeMirror .cm-whitespace-";
@@ -896,7 +896,7 @@ WebInspector.CodeMirrorTextEditor.prototype = {
     _updateCodeMirrorMode: function()
     {
         this._setupWhitespaceHighlight();
-        var showWhitespaces = WebInspector.settings.showWhitespacesInEditor.get();
+        var showWhitespaces = WebInspector.moduleSetting("showWhitespacesInEditor").get();
         this.element.classList.toggle("show-whitespaces", showWhitespaces);
         this._codeMirror.setOption("mode", showWhitespaces ? this._whitespaceOverlayMode(this._mimeType) : this._mimeType);
     },
@@ -1241,7 +1241,7 @@ WebInspector.CodeMirrorTextEditor.prototype = {
         this._codeMirror.replaceRange(text, pos.start, pos.end);
         var newRange = WebInspector.CodeMirrorUtils.toRange(pos.start, this._codeMirror.posFromIndex(this._codeMirror.indexFromPos(pos.start) + text.length));
         this._delegate.onTextChanged(range, newRange);
-        if (WebInspector.settings.textEditorAutoDetectIndent.get())
+        if (WebInspector.moduleSetting("textEditorAutoDetectIndent").get())
             this._onUpdateEditorIndentation();
         return newRange;
     },

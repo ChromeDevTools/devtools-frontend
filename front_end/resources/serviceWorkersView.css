@@ -162,21 +162,6 @@
     text-overflow: ellipsis;
 }
 
-.service-workers-start-button {
-    -webkit-mask-position: -64px -48px;
-}
-
-.service-workers-stop-button {
-    -webkit-mask-position: -96px -48px;
-}
-
-.service-workers-delete-button {
-    -webkit-mask-position: -128px -24px;
-    position: absolute;
-    top: 50%;
-    transform: translate(0, -50%);
-}
-
 .service-workers-button {
     -webkit-mask-image: url(Images/statusbarButtonGlyphs.png);
     -webkit-mask-size: 320px 144px;
@@ -200,6 +185,29 @@
 
 .service-workers-button:active {
     opacity: 0.8;
+}
+
+.service-workers-button:disabled {
+    opacity: 0.5;
+}
+
+.service-workers-start-button {
+    -webkit-mask-position: -64px -48px;
+}
+
+.service-workers-stop-button {
+    -webkit-mask-position: -96px -48px;
+}
+
+.service-workers-delete-button {
+    -webkit-mask-position: -128px -24px;
+}
+
+.service-workers-push-button {
+    -webkit-mask-image: url(Images/notifications.svg);
+    -webkit-mask-position: 7px 3px;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: 18px 18px;
 }
 
 .service-workers-error {

@@ -55,7 +55,8 @@ WebInspector.EventListenersSidebarPane = function()
     option.value = "selected";
     option.label = WebInspector.UIString("Selected Node Only");
 
-    var filter = WebInspector.settings.eventListenersFilter.get();
+    this._eventListenersFilterSetting = WebInspector.settings.createSetting("eventListenersFilter", "all");
+    var filter = this._eventListenersFilterSetting.get();
     if (filter === "all")
         this.settingsSelectElement[0].selected = true;
     else if (filter === "selected")
@@ -110,7 +111,7 @@ WebInspector.EventListenersSidebarPane.prototype = {
 
         var body = this.bodyElement;
         var node = this.node();
-        var selectedNodeOnly = "selected" === WebInspector.settings.eventListenersFilter.get();
+        var selectedNodeOnly = "selected" === this._eventListenersFilterSetting.get();
         var treeItemMap = new Map();
         eventListeners.stableSort(compareListeners);
 
@@ -153,7 +154,7 @@ WebInspector.EventListenersSidebarPane.prototype = {
     _changeSetting: function()
     {
         var selectedOption = this.settingsSelectElement[this.settingsSelectElement.selectedIndex];
-        WebInspector.settings.eventListenersFilter.set(selectedOption.value);
+        this._eventListenersFilterSetting.set(selectedOption.value);
         this.update();
     },
 

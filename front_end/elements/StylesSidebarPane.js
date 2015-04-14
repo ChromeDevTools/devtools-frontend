@@ -66,7 +66,7 @@ WebInspector.StylesSidebarPane = function(computedStylePane, requestShowCallback
     this._computedStylePane = computedStylePane;
     computedStylePane.setHostingPane(this);
     this.element.addEventListener("contextmenu", this._contextMenuEventFired.bind(this), true);
-    WebInspector.settings.colorFormat.addChangeListener(this._colorFormatSettingChanged.bind(this));
+    WebInspector.moduleSetting("colorFormat").addChangeListener(this._colorFormatSettingChanged.bind(this));
 
     this._requestShowCallback = requestShowCallback;
 
@@ -358,6 +358,7 @@ WebInspector.StylesSidebarPane.prototype = {
             }
         }
 
+        this._stylesPopoverHelper.hide();
         if (node && node.nodeType() === Node.TEXT_NODE && node.parentNode)
             node = node.parentNode;
 
@@ -433,7 +434,8 @@ WebInspector.StylesSidebarPane.prototype = {
 
         this._fetchMatchedCascade()
             .then(this._innerRebuildUpdate.bind(this))
-            .then(finishedCallback);
+            .then(finishedCallback)
+            .catch(/** @type {function()} */(finishedCallback));
     },
 
     _resetCache: function()

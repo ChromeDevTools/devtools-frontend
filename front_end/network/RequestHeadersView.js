@@ -44,6 +44,8 @@ WebInspector.RequestHeadersView = function(request)
     this._showRequestHeadersText = false;
     this._showResponseHeadersText = false;
 
+    this._requestHeaderFilterSetting = WebInspector.settings.createSetting("requestHeaderFilterSetting", "");
+
     /** @type {?RegExp} */
     this._filterRegex = null;
     if (Runtime.experiments.isEnabled("networkRequestHeadersFilterInDetailsView")) {
@@ -52,7 +54,7 @@ WebInspector.RequestHeadersView = function(request)
         this._filterInput.placeholder = WebInspector.UIString("Filter headers");
         this._filterInput.addEventListener("input", this._updateFilter.bind(this), false);
         this._filterInput.addEventListener("keydown", this._onFilterKeyDown.bind(this), false);
-        this._filterInput.value = WebInspector.RequestHeadersView._requestHeaderFilterSetting.get() || "";
+        this._filterInput.value = this._requestHeaderFilterSetting.get() || "";
     }
 
     var root = new TreeOutline(true);
@@ -80,13 +82,11 @@ WebInspector.RequestHeadersView = function(request)
     }
 }
 
-WebInspector.RequestHeadersView._requestHeaderFilterSetting = new WebInspector.Setting("requestHeaderFilterSetting", "", new WebInspector.Object(), null);
-
 WebInspector.RequestHeadersView.prototype = {
     _updateFilter: function()
     {
         var text = this._filterInput.value;
-        WebInspector.RequestHeadersView._requestHeaderFilterSetting.set(text);
+        this._requestHeaderFilterSetting.set(text);
         this._filterRegex = text ? new RegExp(text.escapeForRegExp(), "i") : null;
         this._updateHeaders();
     },

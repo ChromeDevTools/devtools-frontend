@@ -976,7 +976,7 @@ WebInspector.TabbedPaneTab.prototype = {
             this._titleElement = titleElement;
 
         if (this._closeable)
-            tabElement.createChild("div", "tabbed-pane-close-button-gray");
+            tabElement.createChild("div", "tabbed-pane-close-button", "dt-close-button").gray = true;
 
         if (measuring) {
             tabElement.classList.add("measuring");
@@ -1000,7 +1000,7 @@ WebInspector.TabbedPaneTab.prototype = {
     _tabClicked: function(event)
     {
         var middleButton = event.button === 1;
-        var shouldClose = this._closeable && (middleButton || event.target.classList.contains("tabbed-pane-close-button-gray"));
+        var shouldClose = this._closeable && (middleButton || event.target.classList.contains("tabbed-pane-close-button"));
         if (!shouldClose) {
             this._tabbedPane.focus();
             return;
@@ -1014,7 +1014,7 @@ WebInspector.TabbedPaneTab.prototype = {
      */
     _tabMouseDown: function(event)
     {
-        if (event.target.classList.contains("tabbed-pane-close-button-gray") || event.button === 1)
+        if (event.target.classList.contains("tabbed-pane-close-button") || event.button === 1)
             return;
         this._tabbedPane.selectTab(this.id, true);
     },
@@ -1089,7 +1089,7 @@ WebInspector.TabbedPaneTab.prototype = {
      */
     _startTabDragging: function(event)
     {
-        if (event.target.classList.contains("tabbed-pane-close-button-gray"))
+        if (event.target.classList.contains("tabbed-pane-close-button"))
             return false;
         this._dragStartX = event.pageX;
         return true;
@@ -1198,31 +1198,23 @@ WebInspector.ExtensibleTabbedPaneController.prototype = {
             var id = descriptor["name"];
             this._tabOrders[id] = i;
             var title = WebInspector.UIString(descriptor["title"]);
-            var settingName = descriptor["setting"];
-            var setting = settingName ? /** @type {!WebInspector.Setting|undefined} */ (WebInspector.settings[settingName]) : null;
 
             this._extensions.set(id, extensions[i]);
-
-            if (setting) {
-                setting.addChangeListener(this._toggleSettingBasedView.bind(this, id, title, setting));
-                if (setting.get())
-                    this._tabbedPane.appendTab(id, title, new WebInspector.View());
-            } else {
-                this._tabbedPane.appendTab(id, title, new WebInspector.View());
-            }
+            this._tabbedPane.appendTab(id, title, new WebInspector.View());
         }
     },
 
     /**
      * @param {string} id
      * @param {string} title
-     * @param {!WebInspector.Setting} setting
+     * @param {number} order
+     * @param {!WebInspector.View} view
      */
-    _toggleSettingBasedView: function(id, title, setting)
+    appendView: function(id, title, order, view)
     {
-        this._tabbedPane.closeTab(id);
-        if (setting.get())
-            this._tabbedPane.appendTab(id, title, new WebInspector.View());
+        this._tabOrders[id] = order;
+        this._views.set(id, view);
+        this._tabbedPane.appendTab(id, title, new WebInspector.View());
     },
 
     /**

@@ -51,9 +51,9 @@ WebInspector.ElementsPanel = function()
     this._contentElement = stackElement.createChild("div");
     this._contentElement.id = "elements-content";
     // FIXME: crbug.com/425984
-    if (WebInspector.settings.domWordWrap.get())
+    if (WebInspector.moduleSetting("domWordWrap").get())
         this._contentElement.classList.add("elements-wrap");
-    WebInspector.settings.domWordWrap.addChangeListener(this._domWordWrapSettingChanged.bind(this));
+    WebInspector.moduleSetting("domWordWrap").addChangeListener(this._domWordWrapSettingChanged.bind(this));
 
     var crumbsContainer = stackElement.createChild("div");
     crumbsContainer.id = "elements-crumbs";
@@ -86,7 +86,7 @@ WebInspector.ElementsPanel = function()
         this.sidebarPanes.animations = new WebInspector.AnimationsSidebarPane();
 
     WebInspector.dockController.addEventListener(WebInspector.DockController.Events.DockSideChanged, this._dockSideChanged.bind(this));
-    WebInspector.settings.splitVerticallyWhenDockedToRight.addChangeListener(this._dockSideChanged.bind(this));
+    WebInspector.moduleSetting("splitVerticallyWhenDockedToRight").addChangeListener(this._dockSideChanged.bind(this));
     this._dockSideChanged();
     this._loadSidebarViews();
 
@@ -95,7 +95,7 @@ WebInspector.ElementsPanel = function()
     /** @type {!Map.<!WebInspector.Target, !WebInspector.ElementsTreeOutline>} */
     this._targetToTreeOutline = new Map();
     WebInspector.targetManager.observeTargets(this);
-    WebInspector.settings.showUAShadowDOM.addChangeListener(this._showUAShadowDOMChanged.bind(this));
+    WebInspector.moduleSetting("showUAShadowDOM").addChangeListener(this._showUAShadowDOMChanged.bind(this));
     WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.DocumentUpdated, this._documentUpdatedEvent, this);
     WebInspector.targetManager.addModelListener(WebInspector.CSSStyleModel, WebInspector.CSSStyleModel.Events.ModelWasEnabled, this._updateSidebars, this);
     WebInspector.targetManager.addModelListener(WebInspector.CSSStyleModel, WebInspector.CSSStyleModel.Events.PseudoStateForced, this._pseudoStateForced, this);
@@ -154,7 +154,7 @@ WebInspector.ElementsPanel.prototype = {
         if (!target.isPage())
             return;
         var treeOutline = new WebInspector.ElementsTreeOutline(target, true, true);
-        treeOutline.setWordWrap(WebInspector.settings.domWordWrap.get());
+        treeOutline.setWordWrap(WebInspector.moduleSetting("domWordWrap").get());
         treeOutline.wireToDOMModel();
         treeOutline.addEventListener(WebInspector.ElementsTreeOutline.Events.SelectedNodeChanged, this._selectedNodeChanged, this);
         treeOutline.addEventListener(WebInspector.ElementsTreeOutline.Events.NodePicked, this._onNodePicked, this);
@@ -439,7 +439,7 @@ WebInspector.ElementsPanel.prototype = {
         var targets = WebInspector.targetManager.targets();
         var promises = [];
         for (var i = 0; i < targets.length; ++i)
-            promises.push(targets[i].domModel.performSearchPromise(whitespaceTrimmedQuery, WebInspector.settings.showUAShadowDOM.get()));
+            promises.push(targets[i].domModel.performSearchPromise(whitespaceTrimmedQuery, WebInspector.moduleSetting("showUAShadowDOM").get()));
         Promise.all(promises).then(resultCountCallback.bind(this));
 
         /**
@@ -806,7 +806,7 @@ WebInspector.ElementsPanel.prototype = {
 
         this._omitDefaultSelection = true;
         WebInspector.inspectorView.setCurrentPanel(this);
-        node = WebInspector.settings.showUAShadowDOM.get() ? node : this._leaveUserAgentShadowDOM(node);
+        node = WebInspector.moduleSetting("showUAShadowDOM").get() ? node : this._leaveUserAgentShadowDOM(node);
         node.highlightForTwoSeconds();
         this.selectDOMNode(node, true);
         delete this._omitDefaultSelection;
@@ -851,7 +851,7 @@ WebInspector.ElementsPanel.prototype = {
 
     _dockSideChanged: function()
     {
-        var vertically = WebInspector.dockController.isVertical() && WebInspector.settings.splitVerticallyWhenDockedToRight.get();
+        var vertically = WebInspector.dockController.isVertical() && WebInspector.moduleSetting("splitVerticallyWhenDockedToRight").get();
         this._splitVertically(vertically);
     },
 

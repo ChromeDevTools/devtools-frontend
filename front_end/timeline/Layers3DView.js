@@ -63,7 +63,7 @@ WebInspector.Layers3DView = function(layerViewHost)
     /** @type Array.<!WebGLTexture|undefined> */
     this._chromeTextures = [];
 
-    WebInspector.settings.showPaintRects.addChangeListener(this._update, this);
+    WebInspector.moduleSetting("showPaintRects").addChangeListener(this._update, this);
     this._layerViewHost.showInternalLayersSetting().addChangeListener(this._update, this);
 }
 
@@ -596,7 +596,7 @@ WebInspector.Layers3DView.prototype = {
         if (!viewport)
             return;
 
-        var drawChrome = !WebInspector.settings.frameViewerHideChromeWindow.get() && this._chromeTextures.length >= 3 && this._chromeTextures.indexOf(undefined) < 0;
+        var drawChrome = !WebInspector.moduleSetting("frameViewerHideChromeWindow").get() && this._chromeTextures.length >= 3 && this._chromeTextures.indexOf(undefined) < 0;
         var z = (this._maxDepth + 1) * WebInspector.Layers3DView.LayerSpacing;
         var borderWidth = Math.ceil(WebInspector.Layers3DView.ViewportBorderWidth * this._scale);
         var vertices = [viewport.width, 0, z, viewport.width, viewport.height, z, 0, viewport.height, z, 0, 0, z];
@@ -718,7 +718,7 @@ WebInspector.Layers3DView.prototype = {
         this.element.appendChild(this._panelStatusBar.element);
         this._showSlowScrollRectsSetting = this._createVisibilitySetting("Slow scroll rects", "frameViewerShowSlowScrollRects", true, this._panelStatusBar);
         this._showPaintsSetting = this._createVisibilitySetting("Paints", "frameViewerShowPaints", true, this._panelStatusBar);
-        WebInspector.settings.frameViewerHideChromeWindow.addChangeListener(this._update, this);
+        WebInspector.moduleSetting("frameViewerHideChromeWindow").addChangeListener(this._update, this);
     },
 
     /**

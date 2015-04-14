@@ -48,7 +48,7 @@ WebInspector.AnimationTimeline.prototype = {
             if (target)
                 target.animationAgent().setPlaybackRate(this._animationsPlaybackRate);
             this._playbackLabel.textContent = this._animationsPlaybackRate + "x";
-            WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Actions.AnimationsPlaybackRateChanged);
+            WebInspector.userMetrics.AnimationsPlaybackRateChanged.record();
             if (this._scrubberPlayer)
                 this._scrubberPlayer.playbackRate = this._animationsPlaybackRate;
         }

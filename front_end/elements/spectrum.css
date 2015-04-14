@@ -1,18 +1,16 @@
 /* https://github.com/bgrins/spectrum */
 :host {
-    width: 217px;
-    height: 232px;
+    width: 226px;
+    height: 240px;
     -webkit-user-select: none;
-    padding: 6px;
 }
 
 .spectrum-color {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    width: 158px;
-    height: 158px;
-    outline: 1px solid #bbb;
+    position: relative;
+    width: 226px;
+    height: 124px;
+    border-radius: 2px 2px 0 0;
+    overflow: hidden;
 }
 
 .spectrum-display-value {
@@ -22,38 +20,26 @@
 }
 
 .spectrum-hue {
+    top: 140px;
+}
+
+.spectrum-alpha {
+    top: 159px;
+    background-image: url(Images/checker.png);
+    background-size: 12px 11px;
+}
+
+.spectrum-alpha-background {
+    height: 100%;
+    border-radius: 2px;
+}
+
+.spectrum-hue, .spectrum-alpha {
     position: absolute;
-    top: 5px;
-    right: 5px;
-    width: 28px;
-    height: 158px;
-    -webkit-box-reflect: right -28px;
-}
-
-.spectrum-range-container {
-    position: absolute;
-    bottom: 28px;
-    left: 5px;
-    display: flex;
-    align-items: center;
-}
-
-.spectrum-text {
-    position: absolute;
-    bottom: 5px;
-    left: 5px;
-    display: flex;
-    align-items: center;
-}
-
-.spectrum-range-container * {
-    font-size: 11px;
-    vertical-align: middle;
-}
-
-.spectrum-range-container label {
-    display: inline-block;
-    padding-right: 4px;
+    right: 16px;
+    width: 162px;
+    height: 11px;
+    border-radius: 2px;
 }
 
 .spectrum-dragger,
@@ -70,45 +56,117 @@
 }
 
 .spectrum-hue {
-    background: linear-gradient(to top, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
+    background: linear-gradient(to left, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
 }
 
 .spectrum-dragger {
-    border-radius: 5px;
-    height: 5px;
-    width: 5px;
+    border-radius: 12px;
+    height: 12px;
+    width: 12px;
     border: 1px solid white;
     cursor: pointer;
     position: absolute;
     top: 0;
     left: 0;
     background: black;
+    box-shadow: 0 0 2px 0px rgba(0, 0, 0, 0.24);
 }
 
 .spectrum-slider {
     position: absolute;
-    top: 0;
+    top: -1px;
     cursor: pointer;
-    border: 1px solid black;
-    height: 4px;
-    left: -1px;
-    right: -1px;
+    width: 13px;
+    height: 13px;
+    border-radius: 13px;
+    background-color: rgb(248, 248, 248);
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.37);
 }
 
 .swatch {
-    width: 20px;
-    height:20px;
+    width: 16px;
+    height: 16px;
     margin: 0;
+    position: absolute;
+    top: 148px;
+    left: 16px;
     background-image: url(Images/checker.png);
+    border-radius: 16px;
 }
 
 .swatch-inner {
     width: 100%;
     height: 100%;
     display: inline-block;
-    border: 1px solid rgba(128, 128, 128, 0.6);
+    border-radius: 16px;
 }
 
-.swatch-inner:hover {
-    border: 1px solid rgba(64, 64, 64, 0.8);
+.swatch-inner-white {
+    border: 1px solid #ddd;
+}
+
+.spectrum-text {
+    position: absolute;
+    top: 184px;
+    left: 16px;
+}
+
+.spectrum-text-value {
+    display: inline-block;
+    width: 36px;
+    text-align: center;
+    border: 1px solid #dadada;
+    border-radius: 2px;
+    -webkit-appearance: none;
+    margin-right: 6px;
+    line-height: 20px;
+    font-size: 11px;
+    padding: 0;
+    color: #333;
+}
+
+.spectrum-text-label {
+    letter-spacing: 35.5px;
+    margin-top: 8px;
+    display: block;
+    color: #969696;
+    margin-left: 15px;
+    width: 162px;
+}
+
+.spectrum-text-hex > .spectrum-text-value {
+    width: 162px;
+}
+
+.spectrum-text-hex > .spectrum-text-label {
+    letter-spacing: normal;
+    margin-left: 0px;
+    text-align: center;
+}
+
+.spectrum-palette-value {
+    background-color: rgb(65, 75, 217);
+    border-radius: 2px;
+    margin-top: 12px;
+    margin-left: 12px;
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+}
+
+.spectrum-palette-container {
+    position: absolute;
+    top: 244px;
+}
+
+.spectrum-display-switcher {
+    top: 196px;
+    position: absolute;
+    right: 16px;
+    padding: 2px;
+    border-radius: 2px;
+}
+
+.spectrum-display-switcher:hover {
+    background-color: #EEEEEE;
 }

@@ -1169,7 +1169,7 @@ WebInspector.ElementsTreeOutline.prototype = {
      */
     _updateRecordForHighlight: function(node)
     {
-        if (!WebInspector.settings.highlightDOMUpdates.get() || !this._visible)
+        if (!WebInspector.moduleSetting("highlightDOMUpdates").get() || !this._visible)
             return null;
         return this._updateRecords.get(node) || null;
     },

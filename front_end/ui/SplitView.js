@@ -58,7 +58,7 @@ WebInspector.SplitView = function(isVertical, secondIsSidebar, settingName, defa
     this._defaultSidebarWidth = defaultSidebarWidth || 200;
     this._defaultSidebarHeight = defaultSidebarHeight || this._defaultSidebarWidth;
     this._constraintsInDip = !!constraintsInDip;
-    this._settingName = settingName;
+    this._setting = settingName ? WebInspector.settings.createSetting(settingName, {}) : null;
 
     this.setSecondIsSidebar(secondIsSidebar);
 
@@ -311,14 +311,13 @@ WebInspector.SplitView.prototype = {
             shadowToHide.classList.add("hidden");
             shadowToHide.classList.remove("maximized");
             this._removeAllLayoutProperties();
-        }
-
-        if (animate) {
-            this._animate(true, callback.bind(this));
-        } else {
-            callback.call(this);
             this.doResize();
         }
+
+        if (animate)
+            this._animate(true, callback.bind(this));
+        else
+            callback.call(this);
 
         this._sidebarSizeDIP = -1;
         this.setResizable(false);
@@ -766,25 +765,11 @@ WebInspector.SplitView.prototype = {
     },
 
     /**
-     * @return {?WebInspector.Setting}
-     */
-    _setting: function()
-    {
-        if (!this._settingName)
-            return null;
-
-        if (!WebInspector.settings[this._settingName])
-            WebInspector.settings[this._settingName] = WebInspector.settings.createSetting(this._settingName, {});
-
-        return WebInspector.settings[this._settingName];
-    },
-
-    /**
      * @return {?WebInspector.SplitView.SettingForOrientation}
      */
     _settingForOrientation: function()
     {
-        var state = this._setting() ? this._setting().get() : {};
+        var state = this._setting ? this._setting.get() : {};
         return this._isVertical ? state.vertical : state.horizontal;
     },
 
@@ -836,10 +821,9 @@ WebInspector.SplitView.prototype = {
 
     _saveSetting: function()
     {
-        var setting = this._setting();
-        if (!setting)
+        if (!this._setting)
             return;
-        var state = setting.get();
+        var state = this._setting.get();
         var orientationState = (this._isVertical ? state.vertical : state.horizontal) || {};
 
         orientationState.size = this._savedSidebarSizeDIP;
@@ -850,7 +834,7 @@ WebInspector.SplitView.prototype = {
             state.vertical = orientationState;
         else
             state.horizontal = orientationState;
-        setting.set(state);
+        this._setting.set(state);
     },
 
     _forceUpdateLayout: function()

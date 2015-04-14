@@ -307,7 +307,7 @@ WebInspector.ExtensionSidebarPane.prototype = {
         this._objectPropertiesView.element.removeChildren();
         var section = new WebInspector.ObjectPropertiesSection(object, title);
         if (!title)
-            section.headerElement.classList.add("hidden");
+            section.titleLessMode();
         section.expand();
         section.editable = false;
         this._objectPropertiesView.element.appendChild(section.element);

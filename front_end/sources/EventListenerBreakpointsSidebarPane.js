@@ -12,6 +12,8 @@ WebInspector.EventListenerBreakpointsSidebarPane = function()
     WebInspector.SidebarPane.call(this, WebInspector.UIString("Event Listener Breakpoints"));
     this.registerRequiredCSS("components/breakpointsList.css");
 
+    this._eventListenerBreakpointsSetting = WebInspector.settings.createSetting("eventListenerBreakpoints", []);
+
     this._categoriesTreeOutline = new TreeOutline();
     this._categoriesTreeOutline.element.tabIndex = 0;
     this._categoriesTreeOutline.element.classList.add("event-listener-breakpoints");
@@ -326,7 +328,7 @@ WebInspector.EventListenerBreakpointsSidebarPane.prototype = {
                     breakpoints.push({ eventName: eventName, targetNames: categoryItem.targetNames });
             }
         }
-        WebInspector.settings.eventListenerBreakpoints.set(breakpoints);
+        this._eventListenerBreakpointsSetting.set(breakpoints);
     },
 
     /**
@@ -334,7 +336,7 @@ WebInspector.EventListenerBreakpointsSidebarPane.prototype = {
      */
     _restoreBreakpoints: function(target)
     {
-        var breakpoints = WebInspector.settings.eventListenerBreakpoints.get();
+        var breakpoints = this._eventListenerBreakpointsSetting.get();
         for (var i = 0; i < breakpoints.length; ++i) {
             var breakpoint = breakpoints[i];
             if (breakpoint && typeof breakpoint.eventName === "string")

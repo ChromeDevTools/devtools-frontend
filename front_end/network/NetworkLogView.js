@@ -36,17 +36,23 @@
  * @param {!WebInspector.NetworkOverview} overview
  * @param {!WebInspector.FilterBar} filterBar
  * @param {!Element} progressBarContainer
+ * @param {!WebInspector.Setting} networkLogLargeRowsSetting
  */
-WebInspector.NetworkLogView = function(overview, filterBar, progressBarContainer)
+WebInspector.NetworkLogView = function(overview, filterBar, progressBarContainer, networkLogLargeRowsSetting)
 {
     WebInspector.VBox.call(this);
     this.registerRequiredCSS("network/networkLogView.css");
     this.registerRequiredCSS("ui/filter.css");
 
+    this._networkHideDataURLSetting = WebInspector.settings.createSetting("networkHideDataURL", false);
+    this._networkResourceTypeFiltersSetting = WebInspector.settings.createSetting("networkResourceTypeFilters", {});
+    this._networkShowPrimaryLoadWaterfallSetting = WebInspector.settings.createSetting("networkShowPrimaryLoadWaterfall", false);
+
     this._filterBar = filterBar;
     /** @type {!WebInspector.NetworkOverview} */
     this._overview = overview;
     this._progressBarContainer = progressBarContainer;
+    this._networkLogLargeRowsSetting = networkLogLargeRowsSetting;
 
     var defaultColumnsVisibility = WebInspector.NetworkLogView._defaultColumnsVisibility;
     this._columnsVisibilitySetting = WebInspector.settings.createSetting("networkLogColumnsVisibility", defaultColumnsVisibility);
@@ -97,8 +103,8 @@ WebInspector.NetworkLogView = function(overview, filterBar, progressBarContainer
 
     this._overview.addEventListener(WebInspector.NetworkOverview.Events.WindowChanged, this._onWindowChanged, this);
 
-    WebInspector.settings.networkColorCodeResourceTypes.addChangeListener(this._invalidateAllItems, this);
-    WebInspector.settings.networkLogLargeRows.addChangeListener(this._updateRowsSize, this);
+    WebInspector.moduleSetting("networkColorCodeResourceTypes").addChangeListener(this._invalidateAllItems, this);
+    this._networkLogLargeRowsSetting.addChangeListener(this._updateRowsSize, this);
 
     WebInspector.targetManager.observeTargets(this);
     WebInspector.targetManager.addModelListener(WebInspector.NetworkManager, WebInspector.NetworkManager.EventTypes.RequestStarted, this._onRequestStarted, this);
@@ -266,11 +272,11 @@ WebInspector.NetworkLogView.prototype = {
                 continue;
             types.push({name: resourceType.name(), label: resourceType.categoryTitle()});
         }
-        this._resourceTypeFilterUI = new WebInspector.NamedBitSetFilterUI(types, WebInspector.settings.networkResourceTypeFilters);
+        this._resourceTypeFilterUI = new WebInspector.NamedBitSetFilterUI(types, this._networkResourceTypeFiltersSetting);
         this._resourceTypeFilterUI.addEventListener(WebInspector.FilterUI.Events.FilterChanged, this._filterChanged.bind(this), this);
         this._filterBar.addFilter(this._resourceTypeFilterUI);
 
-        var dataURLSetting = WebInspector.settings.networkHideDataURL;
+        var dataURLSetting = this._networkHideDataURLSetting;
         this._dataURLFilterUI = new WebInspector.CheckboxFilterUI("hide-data-url", WebInspector.UIString("Hide data URLs"), true, dataURLSetting);
         this._dataURLFilterUI.addEventListener(WebInspector.FilterUI.Events.FilterChanged, this._filterChanged.bind(this), this);
         this._filterBar.addFilter(this._dataURLFilterUI);
@@ -948,7 +954,7 @@ WebInspector.NetworkLogView.prototype = {
         this.dispatchEventToListeners(WebInspector.NetworkLogView.EventTypes.RequestSelected, null);
 
         /** @type {boolean} */
-        this._shouldSetWaterfallWindow = Runtime.experiments.isEnabled("showPrimaryLoadWaterfallInNetworkTimeline") && WebInspector.settings.networkShowPrimaryLoadWaterfall.get();
+        this._shouldSetWaterfallWindow = Runtime.experiments.isEnabled("showPrimaryLoadWaterfallInNetworkTimeline") && this._networkShowPrimaryLoadWaterfallSetting.get();
 
         this._clearSearchMatchedList();
         if (this._popoverHelper)
@@ -1126,7 +1132,7 @@ WebInspector.NetworkLogView.prototype = {
 
     _updateRowsSize: function()
     {
-        var largeRows = !!WebInspector.settings.networkLogLargeRows.get();
+        var largeRows = !!this._networkLogLargeRowsSetting.get();
         this._rowHeight = largeRows ? 41 : 21;
         this._dataGrid.element.classList.toggle("small", !largeRows);
         this._timelineGrid.element.classList.toggle("small", !largeRows);
@@ -1387,7 +1393,7 @@ WebInspector.NetworkLogView.prototype = {
         var re = this._searchRegExp;
         if (!re)
             return false;
-        return re.test(request.name()) || (WebInspector.settings.networkLogLargeRows.get() && re.test(request.path()));
+        return re.test(request.name()) || (this._networkLogLargeRowsSetting.get() && re.test(request.path()));
     },
 
     _clearSearchMatchedList: function()

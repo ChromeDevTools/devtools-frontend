@@ -440,9 +440,9 @@ WebInspector.EmulatedDevicesList = function()
     }
 
     // FIXME: shrink default list once external list is good enough.
-    var defaultValue = convert(WebInspector.OverridesUI.phones, "phone")
-        .concat(convert(WebInspector.OverridesUI.tablets, "tablet"))
-        .concat(convert(WebInspector.OverridesUI.notebooks, "notebook"));
+    var defaultValue = convert(WebInspector.OverridesUI._phones, "phone")
+        .concat(convert(WebInspector.OverridesUI._tablets, "tablet"))
+        .concat(convert(WebInspector.OverridesUI._notebooks, "notebook"));
 
     /** @type {!WebInspector.Setting} */
     this._standardSetting = WebInspector.settings.createSetting("standardEmulatedDeviceList", defaultValue);

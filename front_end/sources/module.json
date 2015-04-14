@@ -22,7 +22,7 @@
         {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "debugger.toggle-pause",
-            "className": "WebInspector.SourcesPanel.TogglePauseActionDelegate",
+            "className": "WebInspector.SourcesPanel.RevealingActionDelegate",
             "contextTypes": ["WebInspector.SourcesPanel", "WebInspector.ShortcutRegistry.ForwardedShortcut"],
             "bindings": [
                 {
@@ -38,7 +38,7 @@
         {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "debugger.step-over",
-            "className": "WebInspector.SourcesPanel.StepOverActionDelegate",
+            "className": "WebInspector.SourcesPanel.DebuggingActionDelegate",
             "contextTypes": ["WebInspector.SourcesPanel"],
             "bindings": [
                 {
@@ -54,7 +54,7 @@
         {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "debugger.step-into",
-            "className": "WebInspector.SourcesPanel.StepIntoActionDelegate",
+            "className": "WebInspector.SourcesPanel.DebuggingActionDelegate",
             "contextTypes": ["WebInspector.SourcesPanel"],
             "bindings": [
                 {
@@ -71,7 +71,7 @@
             "type": "@WebInspector.ActionDelegate",
             "actionId": "debugger.step-into-async",
             "experiment": "stepIntoAsync",
-            "className": "WebInspector.SourcesPanel.StepIntoAsyncActionDelegate",
+            "className": "WebInspector.SourcesPanel.DebuggingActionDelegate",
             "contextTypes": ["WebInspector.SourcesPanel"],
             "bindings": [
                 {
@@ -87,7 +87,7 @@
         {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "debugger.step-out",
-            "className": "WebInspector.SourcesPanel.StepOutActionDelegate",
+            "className": "WebInspector.SourcesPanel.DebuggingActionDelegate",
             "contextTypes": ["WebInspector.SourcesPanel"],
             "bindings": [
                 {
@@ -103,7 +103,7 @@
         {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "debugger.run-snippet",
-            "className": "WebInspector.SourcesPanel.RunSnippetActionDelegate",
+            "className": "WebInspector.SourcesPanel.DebuggingActionDelegate",
             "contextTypes": ["WebInspector.SourcesPanel"],
             "bindings": [
                 {
@@ -119,7 +119,7 @@
         {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "sources.search.toggle",
-            "className": "WebInspector.AdvancedSearchView.ToggleDrawerViewActionDelegate",
+            "className": "WebInspector.AdvancedSearchView.ActionDelegate",
             "bindings": [
                 {
                     "platform": "mac",
@@ -183,7 +183,7 @@
         {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "sources.go-to-source",
-            "className": "WebInspector.SourcesPanel.ShowGoToSourceDialogActionDelegate",
+            "className": "WebInspector.SourcesPanel.RevealingActionDelegate",
             "bindings": [
                 {
                     "platform": "mac",
@@ -207,67 +207,76 @@
             ]
         },
         {
-            "type": "ui-setting",
-            "section": "Sources",
+            "type": "setting",
+            "category": "Sources",
             "title": "Search in content scripts",
             "settingName": "searchInContentScripts",
-            "settingType": "checkbox"
+            "settingType": "boolean",
+            "defaultValue": false
         },
         {
-            "type": "ui-setting",
-            "section": "Sources",
+            "type": "setting",
+            "category": "Sources",
             "title": "Enable JavaScript source maps",
             "settingName": "jsSourceMapsEnabled",
-            "settingType": "checkbox"
+            "settingType": "boolean",
+            "defaultValue": true
         },
         {
-            "type": "ui-setting",
-            "section": "Sources",
+            "type": "setting",
+            "category": "Sources",
             "title": "Detect indentation",
             "settingName": "textEditorAutoDetectIndent",
-            "settingType": "checkbox"
+            "settingType": "boolean",
+            "defaultValue": true
         },
         {
-            "type": "ui-setting",
-            "section": "Sources",
+            "type": "setting",
+            "category": "Sources",
             "title": "Autocompletion",
             "settingName": "textEditorAutocompletion",
-            "settingType": "checkbox"
+            "settingType": "boolean",
+            "defaultValue": true
         },
         {
-            "type": "ui-setting",
-            "section": "Sources",
+            "type": "setting",
+            "category": "Sources",
             "title": "Bracket matching",
             "settingName": "textEditorBracketMatching",
-            "settingType": "checkbox"
+            "settingType": "boolean",
+            "defaultValue": true
         },
         {
-            "type": "ui-setting",
-            "section": "Sources",
+            "type": "setting",
+            "category": "Sources",
             "title": "Show whitespace characters",
             "settingName": "showWhitespacesInEditor",
-            "settingType": "checkbox"
+            "settingType": "boolean",
+            "defaultValue": false
         },
         {
-            "type": "ui-setting",
-            "section": "Sources",
+            "type": "setting",
+            "category": "Sources",
             "title": "Display variable values inline while debugging",
             "settingName": "inlineVariableValues",
-            "settingType": "checkbox"
+            "settingType": "boolean",
+            "defaultValue": true
         },
         {
-            "type": "ui-setting",
-            "section": "Sources",
+            "type": "setting",
+            "category": "Sources",
             "title": "Enable CSS source maps",
             "settingName": "cssSourceMapsEnabled",
-            "settingType": "checkbox"
+            "settingType": "boolean",
+            "defaultValue": true
         },
         {
-            "type": "ui-setting",
+            "type": "setting",
             "title": "Auto-reload generated CSS",
             "parentSettingName": "cssSourceMapsEnabled",
             "settingName": "cssReloadEnabled",
-            "settingType": "checkbox"
+            "settingType": "boolean",
+            "defaultValue": false
         }
     ],
     "dependencies": [

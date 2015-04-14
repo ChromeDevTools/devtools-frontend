@@ -88,32 +88,22 @@ WebInspector.ShortcutRegistry.prototype = {
         if (!isPossiblyInputKey()) {
             if (event)
                 event.consume(true);
-            processActionIdsSequentially.call(this);
+            processNextAction.call(this);
         } else {
-            this._pendingActionTimer = setTimeout(processActionIdsSequentially.bind(this), 0);
+            this._pendingActionTimer = setTimeout(processNextAction.bind(this), 0);
         }
 
         /**
          * @this {WebInspector.ShortcutRegistry}
          */
-        function processActionIdsSequentially()
+        function processNextAction()
         {
             delete this._pendingActionTimer;
             var actionId = actionIds.shift();
             if (!actionId)
                 return;
 
-            this._actionRegistry.execute(actionId).then(continueIfNecessary.bind(this));
-
-            /**
-             * @this {WebInspector.ShortcutRegistry}
-             */
-            function continueIfNecessary(result)
-            {
-                if (result)
-                    return;
-                processActionIdsSequentially.call(this);
-            }
+            this._actionRegistry.execute(actionId).then(processNextAction.bind(this));
         }
 
         /**

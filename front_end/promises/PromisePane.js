@@ -30,7 +30,7 @@ WebInspector.PromisePane = function()
     garbageCollectButton.addEventListener("click", this._garbageCollectButtonClicked, this);
     statusBar.appendStatusBarItem(garbageCollectButton);
 
-    var asyncCheckbox = new WebInspector.StatusBarCheckbox(WebInspector.UIString("Async"), WebInspector.UIString("Capture async stack traces"), WebInspector.settings.enableAsyncStackTraces);
+    var asyncCheckbox = new WebInspector.StatusBarCheckbox(WebInspector.UIString("Async"), WebInspector.UIString("Capture async stack traces"), WebInspector.moduleSetting("enableAsyncStackTraces"));
     statusBar.appendStatusBarItem(asyncCheckbox);
 
     this.element.appendChild(this._filter.filtersContainer());

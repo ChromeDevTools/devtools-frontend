@@ -9,7 +9,7 @@
     margin: 0;
     display: inline-flex;
     flex-shrink: 0;
-    align-items: flex-start !important;
+    align-items: center !important;
 }
 
 ::content > .dt-checkbox-button {

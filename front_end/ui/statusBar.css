@@ -466,3 +466,8 @@ button.playback-rate-button {
     width: auto;
     margin-right: 10px;
 }
+
+@keyframes pulse-effect {
+    from {transform: scale(0.8);}
+    to {transform: scale(1.1);}
+}

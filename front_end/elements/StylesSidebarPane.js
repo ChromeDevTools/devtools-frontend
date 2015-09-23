@@ -45,12 +45,6 @@ WebInspector.StylesSidebarPane = function()
     filterContainerElement.appendChild(this._filterInput);
 
     var toolbar = new WebInspector.ExtensibleToolbar("styles-sidebarpane-toolbar", hbox);
-    if (Runtime.experiments.isEnabled("layoutEditor") && !Runtime.queryParam("remoteFrontend")) {
-        this._layoutEditorButton = new WebInspector.ToolbarButton(WebInspector.UIString("Toggle Layout Editor"), "layout-editor-toolbar-item");
-        toolbar.appendToolbarItem(this._layoutEditorButton);
-        this._layoutEditorButton.addEventListener("click", this._toggleLayoutEditor, this);
-        toolbar.appendSeparator();
-    }
 
     toolbar.element.classList.add("styles-pane-toolbar", "toolbar-gray-toggled");
     this._currentToolbarPane = null;
@@ -143,21 +137,6 @@ WebInspector.StylesSidebarPane.ignoreErrorsForProperty = function(property) {
 }
 
 WebInspector.StylesSidebarPane.prototype = {
-    _toggleLayoutEditor: function()
-    {
-        this._showLayoutEditor = !this._showLayoutEditor;
-        this._layoutEditorButton.setToggled(this._showLayoutEditor);
-        var targets = WebInspector.targetManager.targets();
-
-        if (this._showLayoutEditor)
-            WebInspector.inspectElementModeController.disable();
-        else
-            WebInspector.inspectElementModeController.enable();
-
-        var mode = this._showLayoutEditor ? DOMAgent.InspectMode.ShowLayoutEditor : DOMAgent.InspectMode.None;
-        for (var domModel of WebInspector.DOMModel.instances())
-            domModel.setInspectMode(mode);
-    },
 
     onUndoOrRedoHappened: function()
     {

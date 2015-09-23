@@ -310,6 +310,13 @@
             "settingName": "showScrollBottleneckRects",
             "settingType": "boolean",
             "defaultValue": false
+        },
+        {
+            "type": "@WebInspector.ToolbarItem.Provider",
+            "className": "WebInspector.InspectElementModeController.LayoutEditorButtonProvider",
+            "order": 4,
+            "location": "styles-sidebarpane-toolbar",
+            "experiment": "layoutEditor"
         }
     ],
     "dependencies": [

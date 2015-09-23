@@ -62,6 +62,22 @@ WebInspector.SecurityPanel.OriginState;
 WebInspector.SecurityPanel.prototype = {
 
     /**
+     * @param {!SecurityAgent.SecurityState} securityState
+     */
+    setRanInsecureContentStyle: function(securityState)
+    {
+        this._ranInsecureContentStyle = securityState;
+    },
+
+    /**
+     * @param {!SecurityAgent.SecurityState} securityState
+     */
+    setDisplayedInsecureContentStyle: function(securityState)
+    {
+        this._displayedInsecureContentStyle = securityState;
+    },
+
+    /**
      * @param {!SecurityAgent.SecurityState} newSecurityState
      * @param {!Array<!SecurityAgent.SecurityStateExplanation>} explanations
      * @param {?SecurityAgent.MixedContentStatus} mixedContentStatus
@@ -140,16 +156,20 @@ WebInspector.SecurityPanel.prototype = {
         }
         if (request.resourceType() == WebInspector.resourceTypes.Document)
             this._lastResponseReceivedForLoaderId.set(request.loaderId, request);
-        this._processResponse(request);
     },
 
     /**
      * @param {!WebInspector.NetworkRequest} request
      */
-    _processResponse: function(request)
+    _processRequest: function(request)
     {
         var origin = WebInspector.ParsedURL.splitURLIntoPathComponents(request.url)[0];
         var securityState = /** @type {!SecurityAgent.SecurityState} */ (request.securityState());
+
+        if (request.mixedContentType === NetworkAgent.RequestMixedContentType.Blockable && this._ranInsecureContentStyle)
+            securityState = this._ranInsecureContentStyle;
+        else if (request.mixedContentType === NetworkAgent.RequestMixedContentType.OptionallyBlockable && this._displayedInsecureContentStyle)
+            securityState = this._displayedInsecureContentStyle;
 
         if (this._origins.has(origin)) {
             var originState = this._origins.get(origin);
@@ -188,6 +208,7 @@ WebInspector.SecurityPanel.prototype = {
     {
         var request = /** @type {!WebInspector.NetworkRequest} */ (event.data);
         this._updateFilterRequestCounts(request);
+        this._processRequest(request);
     },
 
     /**
@@ -195,16 +216,16 @@ WebInspector.SecurityPanel.prototype = {
      */
     _updateFilterRequestCounts: function(request)
     {
-        if (!request.mixedContentType || request.mixedContentType === "none")
+        if (request.mixedContentType === NetworkAgent.RequestMixedContentType.None)
             return;
 
         /** @type {!WebInspector.NetworkLogView.MixedContentFilterValues} */
         var filterKey = WebInspector.NetworkLogView.MixedContentFilterValues.All;
         if (request.wasBlocked())
             filterKey = WebInspector.NetworkLogView.MixedContentFilterValues.Blocked;
-        else if (request.mixedContentType === "blockable")
+        else if (request.mixedContentType === NetworkAgent.RequestMixedContentType.Blockable)
             filterKey = WebInspector.NetworkLogView.MixedContentFilterValues.BlockOverridden;
-        else if (request.mixedContentType === "optionally-blockable")
+        else if (request.mixedContentType === NetworkAgent.RequestMixedContentType.OptionallyBlockable)
             filterKey = WebInspector.NetworkLogView.MixedContentFilterValues.Displayed;
 
         if (!this._filterRequestCounts.has(filterKey))
@@ -278,7 +299,7 @@ WebInspector.SecurityPanel.prototype = {
         var request = this._lastResponseReceivedForLoaderId.get(frame.loaderId);
         this._clearOrigins();
         if (request)
-            this._processResponse(request);
+            this._processRequest(request);
     },
 
     __proto__: WebInspector.PanelWithSidebar.prototype
@@ -489,6 +510,9 @@ WebInspector.SecurityMainView.prototype = {
         this._mixedContentStatus = mixedContentStatus;
         this._schemeIsCryptographic = schemeIsCryptographic;
 
+        this._panel.setRanInsecureContentStyle(mixedContentStatus.ranInsecureContentStyle);
+        this._panel.setDisplayedInsecureContentStyle(mixedContentStatus.displayedInsecureContentStyle);
+
         this.refreshExplanations();
     },
 
@@ -642,7 +666,7 @@ WebInspector.SecurityOriginView = function(panel, origin, originState)
 
         var noteSection = this.element.createChild("div", "origin-view-section");
         noteSection.createChild("div", "origin-view-section-title").textContent = WebInspector.UIString("Development Note");
-        // TODO(lgarron): Fix the issue and then remove this section. See comment in SecurityPanel. _processResponse().
+        // TODO(lgarron): Fix the issue and then remove this section. See comment in SecurityPanel._processRequest().
         noteSection.createChild("div").textContent = WebInspector.UIString("At the moment, this view only shows security details from the first connection made to %s", origin);
     } else {
         var notSecureSection = this.element.createChild("div", "origin-view-section");

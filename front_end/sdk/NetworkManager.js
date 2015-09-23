@@ -244,7 +244,7 @@ WebInspector.NetworkDispatcher.prototype = {
         networkRequest.setRequestHeaders(this._headersMapToHeadersArray(request.headers));
         networkRequest.requestFormData = request.postData;
         networkRequest.setInitialPriority(request.initialPriority);
-        networkRequest.mixedContentType = request.mixedContentType;
+        networkRequest.mixedContentType = request.mixedContentType || NetworkAgent.RequestMixedContentType.None;
     },
 
     /**

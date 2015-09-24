@@ -51,7 +51,8 @@ function TreeOutline(nonFocusable)
 TreeOutline.Events = {
     ElementAttached: "ElementAttached",
     ElementExpanded: "ElementExpanded",
-    ElementCollapsed: "ElementCollapsed"
+    ElementCollapsed: "ElementCollapsed",
+    ElementSelected: "ElementSelected"
 }
 
 TreeOutline.prototype = {
@@ -914,6 +915,7 @@ TreeElement.prototype = {
         this._listItemNode.classList.add("selected");
         if (this._selectionElement)
             this._selectionElement.style.height = this._listItemNode.offsetHeight + "px";
+        this.treeOutline.dispatchEventToListeners(TreeOutline.Events.ElementSelected, this);
         return this.onselect(selectedByUser);
     },
 

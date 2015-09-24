@@ -11,23 +11,31 @@ WebInspector.DevicesView = function()
     WebInspector.VBox.call(this, true);
     this.registerRequiredCSS("devices/devicesView.css");
 
-    this._tabbedPane = new WebInspector.TabbedPane();
-    var titleElement = createElementWithClass("div", "devices-view-title");
-    titleElement.createTextChild(WebInspector.UIString("Devices"));
+    var hbox = this.contentElement.createChild("div", "hbox flex-auto");
+    var sidebar = hbox.createChild("div", "devices-sidebar");
+    sidebar.createChild("div", "devices-view-title").createTextChild(WebInspector.UIString("Devices"));
 
-    this._tabbedPane.insertBeforeTabStrip(titleElement);
-    this._tabbedPane.setShrinkableTabs(false);
-    this._tabbedPane.setVerticalTabLayout(true);
+    this._sidebarTree = new TreeOutlineInShadow();
+    this._sidebarTree.registerRequiredCSS("devices/sidebar.css");
+    this._sidebarTree.addEventListener(TreeOutline.Events.ElementSelected, this._sidebarTreeElementSelected, this);
+    sidebar.appendChild(this._sidebarTree.element);
 
     this._discoveryView = new WebInspector.DevicesView.DiscoveryView();
-    this._tabbedPane.appendTab("discovery", WebInspector.UIString("Settings"), this._discoveryView);
+    var discoveryTreeTitle = createElementWithClass("div", "devices-sidebar-element");
+    discoveryTreeTitle.textContent = WebInspector.UIString("Settings");
+    this._discoveryTreeElement = new TreeElement(discoveryTreeTitle, false);
+    this._sidebarTree.appendChild(this._discoveryTreeElement);
 
     /** @type {!Map<string, !WebInspector.DevicesView.DeviceView>} */
     this._viewById = new Map();
     /** @type {!Array<!Adb.Device>} */
     this._devices = [];
+    /** @type {!Map<!TreeElement, string>} */
+    this._idByTreeElement = new Map();
+    /** @type {!Map<string, !TreeElement>} */
+    this._treeElementById = new Map();
 
-    this._tabbedPane.show(this.contentElement);
+    this._viewContainer = hbox.createChild("div", "flex-auto");
 
     var discoveryFooter = this.contentElement.createChild("div", "devices-footer");
     this._deviceCountSpan = discoveryFooter.createChild("span");
@@ -44,6 +52,27 @@ WebInspector.DevicesView.prototype = {
     /**
      * @param {!WebInspector.Event} event
      */
+    _sidebarTreeElementSelected: function(event)
+    {
+        var treeElement = /** @type {!TreeElement} */ (event.data);
+        var view = null;
+        if (treeElement === this._discoveryTreeElement)
+            view = this._discoveryView;
+        else
+            view = this._viewById.get(/** @type {string} */ (this._idByTreeElement.get(treeElement)));
+
+        if (this._visibleView === view)
+            return;
+        if (this._visibleView)
+            this._visibleView.detach();
+        this._visibleView = view;
+        if (this._visibleView)
+            this._visibleView.show(this._viewContainer);
+    },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
     _devicesUpdated: function(event)
     {
         this._devices = /** @type {!Array.<!Adb.Device>} */ (event.data).slice();
@@ -54,19 +83,31 @@ WebInspector.DevicesView.prototype = {
 
         for (var deviceId of this._viewById.keys()) {
             if (!ids.has(deviceId)) {
-                this._tabbedPane.closeTab(deviceId);
+                var treeElement = /** @type {!TreeElement} */ (this._treeElementById.get(deviceId));
+                this._treeElementById.remove(deviceId);
+                this._idByTreeElement.remove(treeElement);
                 this._viewById.remove(deviceId);
+                this._sidebarTree.removeChild(treeElement);
             }
         }
 
         for (var device of this._devices) {
             var view = this._viewById.get(device.id);
+            var treeElement = this._treeElementById.get(device.id);
+
             if (!view) {
                 view = new WebInspector.DevicesView.DeviceView();
                 this._viewById.set(device.id, view);
-                this._tabbedPane.appendTab(device.id, device.adbModel, view);
+
+                var title = createElementWithClass("div", "devices-sidebar-element");
+                title.textContent = device.adbModel;
+                treeElement = new TreeElement(title);
+                this._treeElementById.set(device.id, treeElement);
+                this._idByTreeElement.set(treeElement, device.id);
+                this._sidebarTree.appendChild(treeElement);
             }
-            this._tabbedPane.changeTabTitle(device.id, device.adbModel);
+
+            treeElement.title.textContent = device.adbModel;
             view.update(device);
         }
 
@@ -98,6 +139,8 @@ WebInspector.DevicesView.prototype = {
     {
         WebInspector.PanelWithSidebar.prototype.wasShown.call(this);
         InspectorFrontendHost.setDevicesUpdatesEnabled(true);
+        if (!this._sidebarTree.selectedTreeElement)
+            this._discoveryTreeElement.select();
     },
 
     /**

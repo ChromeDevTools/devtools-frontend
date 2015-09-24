@@ -19,6 +19,7 @@
         "DevicesDialog.js"
     ],
     "resources": [
-        "devicesView.css"
+        "devicesView.css",
+        "sidebar.css"
     ]
 }

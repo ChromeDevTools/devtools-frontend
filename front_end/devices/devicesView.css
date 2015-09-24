@@ -4,6 +4,10 @@
  * found in the LICENSE file.
  */
 
+.devices-sidebar {
+    flex: 0 0 120px;
+}
+
 .devices-view-title {
     font-size: 16px;
     margin: 0 0 15px 15px;

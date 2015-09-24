@@ -62,6 +62,10 @@
     white-space: normal;
 }
 
+.security-origin-view .details-table .empty-san {
+    color: rgb(140, 140, 140);
+}
+
 .security-origin-view .details-table .san-entry {
     display: block;
 }

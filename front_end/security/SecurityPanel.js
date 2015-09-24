@@ -689,6 +689,7 @@ WebInspector.SecurityOriginView.prototype = {
         var sanList = certificateSubject.sanDnsNames.concat(certificateSubject.sanIpAddresses);
         if (sanList.length === 0) {
             sanDiv.textContent = WebInspector.UIString("(N/A)");
+            sanDiv.classList.add("empty-san");
         } else {
             var truncatedNumToShow = 2;
             var listIsTruncated = sanList.length > truncatedNumToShow;

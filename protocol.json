@@ -56,6 +56,14 @@
                     { "name": "nodes", "type": "integer" },
                     { "name": "jsEventListeners", "type": "integer" }
                 ]
+            },
+            {
+                "name": "setPressureNotificationsSuppressed",
+                "description": "Enable/disable suppressing memory pressure notifications in all processes.",
+                "parameters": [
+                    { "name": "suppressed", "type": "boolean", "description": "If true, memory pressure notifications will be suppressed."}
+                ],
+                "handlers": ["browser"]
             }
         ]
     },

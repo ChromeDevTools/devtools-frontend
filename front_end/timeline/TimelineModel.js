@@ -1060,6 +1060,11 @@ WebInspector.TimelineModel.prototype = {
         if (event.initiator && event.initiator.url)
             event.url = event.initiator.url;
         switch (event.name) {
+        case recordTypes.ResourceSendRequest:
+        case recordTypes.WebSocketCreate:
+            event.url = event.args["data"]["url"];
+            break;
+
         case recordTypes.ScheduleStyleRecalculation:
             this._lastScheduleStyleRecalculation[event.args["data"]["frame"]] = event;
             break;

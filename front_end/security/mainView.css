@@ -142,29 +142,30 @@
     margin-bottom: 2px;
 }
 
-.security-explanation.security-state-secure {
-    color: rgb(42, 194, 57);
-}
-
-.security-explanation.security-state-neutral {
-    color: rgb(253, 177, 48);
-}
-
-.security-explanation.security-state-insecure {
-    color: rgb(216, 71, 60);
-}
-
-.security-explanation.security-section .lock-icon {
+.security-explanation.security-section .security-property {
     flex: none;
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     margin-left: 10px;
     margin-right: 18px;
 }
 
 .security-section-title {
     color: rgb(90, 90, 90);
+    margin-top: 1px;
     margin-bottom: 8px;
+}
+
+.security-explanation.security-state-neutral .security-section-title,
+.security-explanation.security-state-warning .security-section-title
+{
+    color: rgb(253, 177, 48);
+    font-weight: bold;
+}
+.security-explanation.security-state-insecure .security-section-title
+{
+    color: rgb(216, 71, 60);
+    font-weight: bold;
 }
 
 .security-mixed-content {

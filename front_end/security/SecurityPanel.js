@@ -461,8 +461,9 @@ WebInspector.SecurityMainView.prototype = {
     {
         var explanationSection = this._securityExplanations.createChild("div", "security-section");
         explanationSection.classList.add("security-explanation");
+        explanationSection.classList.add("security-state-" + explanation.securityState);
 
-        explanationSection.createChild("div", "lock-icon").classList.add("lock-icon-" + explanation.securityState);
+        explanationSection.createChild("div", "security-property").classList.add("security-property-" + explanation.securityState);
         var text = explanationSection.createChild("div", "security-section-text");
         text.createChild("div", "security-section-title").textContent = explanation.summary;
         text.createChild("div", "security-explanation").textContent = explanation.description;

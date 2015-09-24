@@ -459,14 +459,13 @@ WebInspector.SecurityMainView.prototype = {
      */
     _addExplanation: function(explanation)
     {
-        var explanationSection = this._securityExplanations.createChild("div", "security-section");
-        explanationSection.classList.add("security-explanation");
-        explanationSection.classList.add("security-state-" + explanation.securityState);
+        var explanationSection = this._securityExplanations.createChild("div", "security-explanation");
+        explanationSection.classList.add("security-explanation-" + explanation.securityState);
 
         explanationSection.createChild("div", "security-property").classList.add("security-property-" + explanation.securityState);
-        var text = explanationSection.createChild("div", "security-section-text");
-        text.createChild("div", "security-section-title").textContent = explanation.summary;
-        text.createChild("div", "security-explanation").textContent = explanation.description;
+        var text = explanationSection.createChild("div", "security-explanation-text");
+        text.createChild("div", "security-explanation-title").textContent = explanation.summary;
+        text.createChild("div").textContent = explanation.description;
         if ("certificateId" in explanation) {
             var certificateAnchor = text.createChild("div", "security-certificate-id link");
             certificateAnchor.textContent = WebInspector.UIString("View certificate");

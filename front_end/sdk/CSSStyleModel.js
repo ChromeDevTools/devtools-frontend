@@ -582,6 +582,16 @@ WebInspector.CSSStyleModel.prototype = {
         this.dispatchEventToListeners(WebInspector.CSSStyleModel.Events.LayoutEditorChange, {id: id, range: range});
     },
 
+    /**
+     * @param {number} nodeId
+     * @param {string} name
+     * @param {string} value
+     */
+    setEffectivePropertyValueForNode: function(nodeId, name, value)
+    {
+        this._agent.setEffectivePropertyValueForNode(nodeId, name, value);
+    },
+
     __proto__: WebInspector.SDKModel.prototype
 }
 

@@ -138,6 +138,13 @@ WebInspector.AnimationModel.Animation.parsePayload = function(target, payload)
     return new WebInspector.AnimationModel.Animation(target, payload);
 }
 
+/** @enum {string} */
+WebInspector.AnimationModel.Animation.Type = {
+    CSSTransition: "CSSTransition",
+    CSSAnimation: "CSSAnimation",
+    WebAnimation: "WebAnimation"
+}
+
 WebInspector.AnimationModel.Animation.prototype = {
     /**
      * @return {!AnimationAgent.Animation}
@@ -230,11 +237,11 @@ WebInspector.AnimationModel.Animation.prototype = {
     },
 
     /**
-     * @return {string}
+     * @return {!WebInspector.AnimationModel.Animation.Type}
      */
     type: function()
     {
-        return this._payload.type;
+        return /** @type {!WebInspector.AnimationModel.Animation.Type} */(this._payload.type);
     },
 
     /**
@@ -250,6 +257,41 @@ WebInspector.AnimationModel.Animation.prototype = {
         var firstAnimation = this.startTime() < animation.startTime() ? this : animation;
         var secondAnimation = firstAnimation === this ? animation : this;
         return firstAnimation.endTime() >= secondAnimation.startTime();
+    },
+
+    /**
+     * @param {number} duration
+     * @param {number} delay
+     */
+    setTiming: function(duration, delay)
+    {
+        this._source.node().then(this._updateNodeStyle.bind(this, duration, delay));
+        this._source._duration = duration;
+        this._source._delay = delay;
+        if (this.type() !== WebInspector.AnimationModel.Animation.Type.CSSAnimation)
+            this.target().animationAgent().setTiming(this.id(), duration, delay);
+    },
+
+    /**
+     * @param {number} duration
+     * @param {number} delay
+     * @param {!WebInspector.DOMNode} node
+     */
+    _updateNodeStyle: function(duration, delay, node)
+    {
+        var animationPrefix;
+        if (this.type() == WebInspector.AnimationModel.Animation.Type.CSSTransition)
+            animationPrefix = "transition-";
+        else if (this.type() == WebInspector.AnimationModel.Animation.Type.CSSAnimation)
+            animationPrefix = "animation-";
+        else
+            return;
+
+        var cssModel = WebInspector.CSSStyleModel.fromTarget(node.target());
+        if (!cssModel)
+            return;
+        cssModel.setEffectivePropertyValueForNode(node.id, animationPrefix + "duration", duration + "ms");
+        cssModel.setEffectivePropertyValueForNode(node.id, animationPrefix + "delay", delay + "ms");
     },
 
     __proto__: WebInspector.SDKObject.prototype
@@ -278,14 +320,6 @@ WebInspector.AnimationModel.AnimationEffect.prototype = {
     delay: function()
     {
         return this._delay;
-    },
-
-    /**
-     * @param {number} delay
-     */
-    setDelay: function(delay)
-    {
-        this._delay = delay;
     },
 
     /**
@@ -328,11 +362,6 @@ WebInspector.AnimationModel.AnimationEffect.prototype = {
         return this._duration;
     },
 
-    setDuration: function(duration)
-    {
-        this._duration = duration;
-    },
-
     /**
      * @return {string}
      */
@@ -355,6 +384,16 @@ WebInspector.AnimationModel.AnimationEffect.prototype = {
     name: function()
     {
         return this._payload.name;
+    },
+
+    /**
+     * @return {!Promise.<!WebInspector.DOMNode>}
+     */
+    node: function()
+    {
+        if (!this._deferredNode)
+            this._deferredNode = new WebInspector.DeferredDOMNode(this.target(), this.backendNodeId());
+        return this._deferredNode.resolvePromise();
     },
 
     /**

@@ -995,6 +995,30 @@ WebInspector.DeferredDOMNode.prototype = {
     },
 
     /**
+     * @return {!Promise.<!WebInspector.DOMNode>}
+     */
+    resolvePromise: function()
+    {
+        /**
+         * @param {function(?)} fulfill
+         * @param {function(*)} reject
+         * @this {WebInspector.DeferredDOMNode}
+         */
+        function resolveNode(fulfill, reject)
+        {
+            /**
+             * @param {?WebInspector.DOMNode} node
+             */
+            function mycallback(node)
+            {
+                fulfill(node)
+            }
+            this.resolve(mycallback);
+        }
+        return new Promise(resolveNode.bind(this));
+    },
+
+    /**
      * @return {number}
      */
     backendNodeId: function()

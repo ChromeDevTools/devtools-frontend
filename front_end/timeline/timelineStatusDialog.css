@@ -7,23 +7,22 @@
 .timeline-status-dialog {
     display: flex;
     flex-direction: column;
-    padding: 16px;
-    font-size: 14px;
-}
-
-.timeline-status-dialog div,button {
-    margin: 5px;
-}
-
-.timeline-status-dialog .title {
+    padding: 12px 16px;
     align-self: center;
-    font-size: 20px;
-    margin-bottom: 12px;
+    background-color: white;
+    border: 1px solid lightgrey;
+    box-shadow: grey 0 0 14px;
+    margin-top: -1px;
+}
+
+.timeline-status-dialog div {
+    margin: 2px;
+    height: 14px;
 }
 
 .timeline-status-dialog ::before {
     display: inline-block;
-    width: 90px;
+    width: 80px;
     text-align: right;
     color: #aaa;
     margin-right: 10px;
@@ -44,11 +43,10 @@
 .timeline-status-dialog .buffer-usage .indicator-container {
     display: inline-block;
     width: 200px;
-    height: 12px;
+    height: 8px;
     background-color: #f4f4f4;
     display: inline-block;
-    margin: 0;
-    vertical-align: middle;
+    margin: 0 10px 0 0;
 }
 
 .timeline-status-dialog .buffer-usage .indicator {
@@ -60,10 +58,6 @@
 
 .timeline-status-dialog .stop-button {
     text-align: center;
-    margin-top: 16px;
+    margin-top: 8px;
+    height: 100%;
 }
-
-.timeline-status-dialog button:disabled {
-    opacity: 0.5;
-}
-

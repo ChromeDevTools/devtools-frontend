@@ -239,6 +239,18 @@
     background-color: white;
 }
 
+.timeline.panel .status-pane-container {
+    z-index: 1000;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+}
+
+.timeline.panel .status-pane-container.tinted {
+    background-color: hsla(0, 0%, 90%, 0.8);
+    pointer-events: auto;
+}
+
 #timeline-overview-panel .overview-strip {
     margin-top: 2px;
     justify-content: center;

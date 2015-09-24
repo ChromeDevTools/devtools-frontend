@@ -55,10 +55,10 @@ WebInspector.ElementsPanel = function()
     stackElement.appendChild(this._contentElement);
     stackElement.appendChild(crumbsContainer);
 
-    this._elementsPanelTreeOutilneSplit = new WebInspector.SplitWidget(false, true, "treeOutlineAnimationTimelineWidget", 300, 300);
-    this._elementsPanelTreeOutilneSplit.hideSidebar();
-    this._elementsPanelTreeOutilneSplit.setMainWidget(this._searchableView);
-    this._splitWidget.setMainWidget(this._elementsPanelTreeOutilneSplit);
+    this._treeOutlineSplit = new WebInspector.SplitWidget(false, true, "treeOutlineAnimationTimelineWidget", 300, 300);
+    this._treeOutlineSplit.hideSidebar();
+    this._treeOutlineSplit.setMainWidget(this._searchableView);
+    this._splitWidget.setMainWidget(this._treeOutlineSplit);
 
     this._contentElement.id = "elements-content";
     // FIXME: crbug.com/425984
@@ -1138,10 +1138,10 @@ WebInspector.ElementsPanel.prototype = {
     setWidgetBelowDOM: function(widget)
     {
         if (widget) {
-            this._elementsPanelTreeOutilneSplit.setSidebarWidget(widget);
-            this._elementsPanelTreeOutilneSplit.showBoth(true);
+            this._treeOutlineSplit.setSidebarWidget(widget);
+            this._treeOutlineSplit.showBoth(true);
         } else {
-            this._elementsPanelTreeOutilneSplit.hideSidebar(true);
+            this._treeOutlineSplit.hideSidebar(true);
         }
     },
 

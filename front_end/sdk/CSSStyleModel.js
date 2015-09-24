@@ -1336,7 +1336,7 @@ WebInspector.CSSProperty.prototype = {
         var range = this.range.relativeTo(this.ownerStyle.range.startLine, this.ownerStyle.range.startColumn);
         var indentation = this.ownerStyle.cssText ? this._detectIndentation(this.ownerStyle.cssText) : WebInspector.moduleSetting("textEditorIndent").get();
         var endIndentation = this.ownerStyle.cssText ? indentation.substring(0, this.ownerStyle.range.endColumn) : "";
-        var newStyleText = range.replaceInText(this.ownerStyle.cssText || "", ";" + propertyText);
+        var newStyleText = range.replaceInText(this.ownerStyle.cssText || "", String.sprintf(";%s;", propertyText));
 
         return self.runtime.instancePromise(WebInspector.TokenizerFactory)
             .then(this._formatStyle.bind(this, newStyleText, indentation, endIndentation))
@@ -1400,7 +1400,7 @@ WebInspector.CSSProperty.prototype = {
             // Format line breaks.
             if (!insideProperty && !token.trim())
                 return;
-            if (tokenType && tokenType.includes("css-comment") && token.includes(":") && token.includes(";")) {
+            if (tokenType && tokenType.includes("css-comment") && token.includes(":")) {
                 result += "\n" + indentation + token;
                 insideProperty = false;
                 return;
@@ -1453,7 +1453,8 @@ WebInspector.CSSProperty.prototype = {
             return Promise.resolve(false);
         if (disabled === this.disabled)
             return Promise.resolve(true);
-        var text = disabled ? "/* " + this.text + " */" : this.text.substring(2, this.text.length - 2).trim();
+        var propertyText = this.text.trim();
+        var text = disabled ? "/* " + propertyText + " */" : this.text.substring(2, propertyText.length - 2).trim();
         return this.setText(text, true, true);
     }
 }

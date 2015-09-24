@@ -260,64 +260,6 @@ WebInspector.CSSStyleModel.prototype = {
     },
 
     /**
-     * @param {!CSSAgent.CSSRule} rule
-     * @param {!DOMAgent.NodeId} nodeId
-     * @param {string} newSelector
-     * @param {function(boolean)} userCallback
-     */
-    setRuleSelector: function(rule, nodeId, newSelector, userCallback)
-    {
-        /**
-         * @param {?Protocol.Error} error
-         * @param {?CSSAgent.SelectorList} selectorPayload
-         * @return {?Array.<!WebInspector.CSSRuleSelector>}
-         * @this {WebInspector.CSSStyleModel}
-         */
-        function callback(error, selectorPayload)
-        {
-            if (error || !selectorPayload)
-                return null;
-            this._domModel.markUndoableState();
-            return WebInspector.CSSRuleSelector.parseSelectorListPayload(selectorPayload);
-        }
-
-        if (!rule.styleSheetId)
-            throw "No rule stylesheet id";
-        WebInspector.userMetrics.StyleRuleEdited.record();
-        this._agent.setRuleSelector(rule.styleSheetId, rule.selectorRange(), newSelector, callback.bind(this))
-            .then(onNewSelectors.bind(this))
-            .catchException(false)
-            .then(userCallback);
-
-        /**
-         * @param {?Array<!WebInspector.CSSRuleSelector>} selectors
-         * @return {!Promise<boolean>}
-         * @this {WebInspector.CSSStyleModel}
-         */
-        function onNewSelectors(selectors)
-        {
-            if (!selectors)
-                return Promise.resolve(false);
-            return this._computeMatchingSelectors(nodeId, selectors)
-                .then(onMatchingSelectors.bind(null, selectors));
-        }
-
-        /**
-         * @param {!Array<!WebInspector.CSSRuleSelector>} selectors
-         * @param {?Array<number>} matchingSelectors
-         * @return {boolean}
-         */
-        function onMatchingSelectors(selectors, matchingSelectors)
-        {
-            if (!matchingSelectors)
-                return false;
-            rule.selectors = selectors;
-            rule.matchingSelectors = matchingSelectors;
-            return true;
-        }
-    },
-
-    /**
      * @param {!WebInspector.CSSMedia} media
      * @param {string} newMediaText
      * @param {function(?WebInspector.CSSMedia)} userCallback
@@ -1073,6 +1015,67 @@ WebInspector.CSSRule = function(cssModel, payload, matchingSelectors)
 }
 
 WebInspector.CSSRule.prototype = {
+    /**
+     * @param {!DOMAgent.NodeId} nodeId
+     * @param {string} newSelector
+     * @param {function(boolean)} userCallback
+     */
+    setSelectorText: function(nodeId, newSelector, userCallback)
+    {
+        /**
+         * @param {?Protocol.Error} error
+         * @param {?CSSAgent.SelectorList} selectorPayload
+         * @return {?Array.<!WebInspector.CSSRuleSelector>}
+         * @this {WebInspector.CSSRule}
+         */
+        function callback(error, selectorPayload)
+        {
+            if (error || !selectorPayload)
+                return null;
+            this._cssModel._domModel.markUndoableState();
+            return WebInspector.CSSRuleSelector.parseSelectorListPayload(selectorPayload);
+        }
+
+        if (!this.styleSheetId)
+            throw "No rule stylesheet id";
+        var range = this.selectorRange();
+        if (!range)
+            throw "Rule selector is not editable";
+        WebInspector.userMetrics.StyleRuleEdited.record();
+        this._cssModel._agent.setRuleSelector(this.styleSheetId, range, newSelector, callback.bind(this))
+            .then(onNewSelectors.bind(this))
+            .catchException(false)
+            .then(userCallback);
+
+        /**
+         * @param {?Array<!WebInspector.CSSRuleSelector>} selectors
+         * @return {!Promise<boolean>}
+         * @this {WebInspector.CSSRule}
+         */
+        function onNewSelectors(selectors)
+        {
+            if (!selectors)
+                return Promise.resolve(false);
+            return this._cssModel._computeMatchingSelectors(nodeId, selectors)
+                .then(onMatchingSelectors.bind(this, selectors));
+        }
+
+        /**
+         * @param {!Array<!WebInspector.CSSRuleSelector>} selectors
+         * @param {?Array<number>} matchingSelectors
+         * @return {boolean}
+         * @this {WebInspector.CSSRule}
+         */
+        function onMatchingSelectors(selectors, matchingSelectors)
+        {
+            if (!matchingSelectors)
+                return false;
+            this.selectors = selectors;
+            this.matchingSelectors = matchingSelectors;
+            return true;
+        }
+    },
+
     /**
      * @return {string}
      */

@@ -106,6 +106,9 @@ WebInspector.TimelineUIUtils._initEventStyles = function()
     eventStyles[recordTypes.RequestAnimationFrame] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("Request Animation Frame"), categories["scripting"]);
     eventStyles[recordTypes.CancelAnimationFrame] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("Cancel Animation Frame"), categories["scripting"]);
     eventStyles[recordTypes.FireAnimationFrame] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("Animation Frame Fired"), categories["scripting"]);
+    eventStyles[recordTypes.RequestIdleCallback] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("Request Idle Callback"), categories["scripting"]);
+    eventStyles[recordTypes.CancelIdleCallback] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("Cancel Idle Callback"), categories["scripting"]);
+    eventStyles[recordTypes.FireIdleCallback] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("Fire Idle Callback"), categories["scripting"]);
     eventStyles[recordTypes.WebSocketCreate] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("Create WebSocket"), categories["scripting"]);
     eventStyles[recordTypes.WebSocketSendHandshakeRequest] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("Send WebSocket Handshake"), categories["scripting"]);
     eventStyles[recordTypes.WebSocketReceiveHandshakeResponse] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("Receive WebSocket Handshake"), categories["scripting"]);
@@ -706,6 +709,17 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
         if (url)
             contentHelper.appendLocationRow(WebInspector.UIString("Range"), url, startLine, endLine);
         break;
+
+    case recordTypes.FireIdleCallback:
+        contentHelper.appendTextRow(WebInspector.UIString("Allotted time"), Number.millisToString(eventData["allottedMilliseconds"]));
+        contentHelper.appendTextRow(WebInspector.UIString("Invoked by timeout"), eventData["timedOut"]);
+        // Fall-through intended.
+
+    case recordTypes.RequestIdleCallback:
+    case recordTypes.CancelIdleCallback:
+        contentHelper.appendTextRow(WebInspector.UIString("Callback ID"), eventData["id"]);
+        break;
+
     default:
         var detailsNode = WebInspector.TimelineUIUtils.buildDetailsNodeForTraceEvent(event, model.target(), linkifier);
         if (detailsNode)
@@ -826,6 +840,9 @@ WebInspector.TimelineUIUtils._generateCauses = function(event, target, contentHe
         break;
     case recordTypes.FireAnimationFrame:
         callSiteStackLabel = WebInspector.UIString("Animation frame requested");
+        break;
+    case recordTypes.FireIdleCallback:
+        callSiteStackLabel = WebInspector.UIString("Idle callback requested");
         break;
     case recordTypes.UpdateLayoutTree:
     case recordTypes.RecalculateStyles:

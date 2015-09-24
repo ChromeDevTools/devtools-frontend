@@ -131,6 +131,10 @@ WebInspector.TimelineModel.RecordType = {
     CancelAnimationFrame: "CancelAnimationFrame",
     FireAnimationFrame: "FireAnimationFrame",
 
+    RequestIdleCallback: "RequestIdleCallback",
+    CancelIdleCallback: "CancelIdleCallback",
+    FireIdleCallback: "FireIdleCallback",
+
     WebSocketCreate : "WebSocketCreate",
     WebSocketSendHandshakeRequest : "WebSocketSendHandshakeRequest",
     WebSocketReceiveHandshakeResponse : "WebSocketReceiveHandshakeResponse",
@@ -1195,6 +1199,13 @@ WebInspector.TimelineModel.prototype = {
         case recordTypes.CompositeLayers:
             if (!this._firstCompositeLayers && this._hadCommitLoad)
                 this._firstCompositeLayers = event;
+            break;
+
+        case recordTypes.FireIdleCallback:
+            if (event.duration > eventData["allottedMilliseconds"]) {
+                event.warning = WebInspector.UIString("Idle callback execution extended beyond deadline by " +
+                    Number.millisToString(event.duration - eventData["allottedMilliseconds"], true));
+            }
             break;
 
         case recordTypes.Animation:
@@ -2334,10 +2345,13 @@ WebInspector.TimelineAsyncEventTracker._initialize = function()
         return;
     var events = new Map();
     var type = WebInspector.TimelineModel.RecordType;
+
     events.set(type.TimerInstall, {causes: [type.TimerFire], joinBy: "timerId"});
     events.set(type.ResourceSendRequest, {causes: [type.ResourceReceiveResponse, type.ResourceReceivedData, type.ResourceFinish], joinBy: "requestId"});
     events.set(type.RequestAnimationFrame, {causes: [type.FireAnimationFrame], joinBy: "id"});
+    events.set(type.RequestIdleCallback, {causes: [type.FireIdleCallback], joinBy: "id"});
     events.set(type.WebSocketCreate, {causes: [type.WebSocketSendHandshakeRequest, type.WebSocketReceiveHandshakeResponse, type.WebSocketDestroy], joinBy: "identifier"});
+
     WebInspector.TimelineAsyncEventTracker._asyncEvents = events;
     /** @type {!Map<!WebInspector.TimelineModel.RecordType, !WebInspector.TimelineModel.RecordType>} */
     WebInspector.TimelineAsyncEventTracker._typeToInitiator = new Map();

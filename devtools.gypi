@@ -147,6 +147,7 @@
             'front_end/sdk/HAREntry.js',
             'front_end/sdk/HeapProfilerModel.js',
             'front_end/sdk/InspectorBackend.js',
+            'front_end/sdk/InspectorBackendHostedMode.js',
             'front_end/sdk/LayerTreeModel.js',
             'front_end/sdk/NetworkLog.js',
             'front_end/sdk/NetworkManager.js',

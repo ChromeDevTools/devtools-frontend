@@ -279,7 +279,6 @@ WebInspector.Main.prototype = {
     _createConnection: function()
     {
         console.timeStamp("Main._createConnection");
-        InspectorBackend.loadFromJSONIfNeeded("../protocol.json");
 
         if (Runtime.queryParam("ws")) {
             var ws = "ws://" + Runtime.queryParam("ws");

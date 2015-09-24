@@ -3182,7 +3182,7 @@
                     { "name": "selector", "type": "string" }
                 ],
                 "returns": [
-                    { "name": "rule", "$ref": "CSSRule", "description": "The resulting rule after the selector modification." }
+                    { "name": "selectorList", "$ref": "SelectorList", "description": "The resulting selector list after modification." }
                 ],
                 "description": "Modifies the rule selector."
             },

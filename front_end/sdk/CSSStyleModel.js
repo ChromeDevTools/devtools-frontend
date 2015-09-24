@@ -269,16 +269,16 @@ WebInspector.CSSStyleModel.prototype = {
     {
         /**
          * @param {?Protocol.Error} error
-         * @param {?CSSAgent.CSSRule} rulePayload
+         * @param {?CSSAgent.SelectorList} selectorPayload
          * @return {?Array.<!WebInspector.CSSRuleSelector>}
          * @this {WebInspector.CSSStyleModel}
          */
-        function callback(error, rulePayload)
+        function callback(error, selectorPayload)
         {
-            if (error || !rulePayload)
+            if (error || !selectorPayload)
                 return null;
             this._domModel.markUndoableState();
-            return WebInspector.CSSRuleSelector.parseSelectorListPayload(rulePayload.selectorList);
+            return WebInspector.CSSRuleSelector.parseSelectorListPayload(selectorPayload);
         }
 
         if (!rule.styleSheetId)

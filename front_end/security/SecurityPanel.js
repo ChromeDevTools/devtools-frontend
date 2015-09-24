@@ -10,8 +10,6 @@
 WebInspector.SecurityPanel = function()
 {
     WebInspector.PanelWithSidebar.call(this, "security");
-    this.registerRequiredCSS("security/mainView.css");
-    this.registerRequiredCSS("security/lockIcon.css");
 
     var sidebarTree = new TreeOutlineInShadow();
     sidebarTree.element.classList.add("sidebar-tree");
@@ -427,25 +425,31 @@ WebInspector.SecurityPanelFactory.prototype = {
  */
 WebInspector.SecurityMainView = function(panel)
 {
-    WebInspector.VBox.call(this);
+    WebInspector.VBox.call(this, true);
+    this.registerRequiredCSS("security/mainView.css");
+    this.registerRequiredCSS("security/lockIcon.css");
     this.setMinimumSize(100, 100);
 
-    this.element.classList.add("security-main-view");
+    this.contentElement.classList.add("security-main-view");
 
     this._panel = panel;
 
-    // Create security state section.
-    var summarySection = this.element.createChild("div", "security-section");
-    summarySection.classList.add("security-summary");
+    this._summarySection = this.contentElement.createChild("div", "security-summary");
+    this._securityExplanations = this.contentElement.createChild("div", "security-explanation-list");
 
-    this._summarylockIcon = summarySection.createChild("div", "lock-icon");
+    // Fill the security summary section.
+    this._summarySection.createChild("div", "security-summary-section-title").textContent = WebInspector.UIString("Security Overview");
 
-    var text = summarySection.createChild("div", "security-section-text");
-    text.createChild("div", "security-summary-section-title").textContent = WebInspector.UIString("Security Overview");
-    this._summaryExplanation = text.createChild("div", "security-explanation");
+    var lockSpectrum = this._summarySection.createChild("div", "lock-spectrum");
+    lockSpectrum.createChild("div", "lock-icon lock-icon-secure").title = WebInspector.UIString("Secure");
+    lockSpectrum.createChild("div", "security-summary-lock-spacer");
+    lockSpectrum.createChild("div", "lock-icon lock-icon-neutral").title = WebInspector.UIString("Not Secure");
+    lockSpectrum.createChild("div", "security-summary-lock-spacer");
+    lockSpectrum.createChild("div", "lock-icon lock-icon-insecure").title = WebInspector.UIString("Insecure (Broken)");
 
-    this._securityExplanations = this.element.createChild("div", "security-explanation-list");
+    this._summarySection.createChild("div", "triangle-pointer-container").createChild("div", "triangle-pointer-wrapper").createChild("div", "triangle-pointer");
 
+    this._summaryText = this._summarySection.createChild("div", "security-summary-text");
 }
 
 WebInspector.SecurityMainView.prototype = {
@@ -491,20 +495,18 @@ WebInspector.SecurityMainView.prototype = {
     {
         // Remove old state.
         // It's safe to call this even when this._securityState is undefined.
-        this._summarylockIcon.classList.remove("lock-icon-" + this._securityState);
-        this._summaryExplanation.classList.remove("security-state-" + this._securityState);
+        this._summarySection.classList.remove("security-summary-" + this._securityState);
 
         // Add new state.
         this._securityState = newSecurityState;
-        this._summarylockIcon.classList.add("lock-icon-" + this._securityState);
-        this._summaryExplanation.classList.add("security-state-" + this._securityState);
+        this._summarySection.classList.add("security-summary-" + this._securityState);
         var summaryExplanationStrings = {
             "unknown":  WebInspector.UIString("This security of this page is unknown."),
             "insecure": WebInspector.UIString("This page is insecure (broken HTTPS)."),
             "neutral":  WebInspector.UIString("This page is not secure."),
             "secure":   WebInspector.UIString("This page is secure (valid HTTPS).")
         }
-        this._summaryExplanation.textContent = summaryExplanationStrings[this._securityState];
+        this._summaryText.textContent = summaryExplanationStrings[this._securityState];
 
         this._explanations = explanations,
         this._mixedContentStatus = mixedContentStatus;

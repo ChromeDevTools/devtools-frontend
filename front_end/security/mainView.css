@@ -7,22 +7,128 @@
     -webkit-user-select: text;
 }
 
-.security-main-view .security-section {
-    padding: 1em;
+.security-summary-section-title {
+    margin: 12px 24px;
+}
+
+.lock-spectrum {
+    min-width: 180px;
+    max-width: 240px;
+    margin: 6px 12px;
+    display: flex;
+    align-items: center;
+}
+
+.security-summary .lock-icon {
+    flex: none;
+    width: 32px;
+    height: 32px;
+    margin: 0 12px;
+    background-position: center center;
+
+    /* Defaults for dynamic properties. */
+    opacity: 0.5;
+}
+
+/* Shrink the margin for the page lock icon. */
+.security-summary .lock-icon-neutral {
+    margin: 0 6px;
+}
+
+.security-summary-secure .lock-icon-secure,
+.security-summary-neutral .lock-icon-neutral,
+.security-summary-insecure .lock-icon-insecure {
+    opacity: 1;
+}
+
+.security-summary-lock-spacer {
+    flex: 1 1 auto;
+    height: 1px;
+    background: rgb(217, 217, 217);
+}
+
+.triangle-pointer-container {
+    /* Let (lock width) = (horizonal width of 1 lock icon, including both margins) */
+    /* Horizontal margin is (lock width)/2 + (lock-spectrum horizontal margin) */
+    margin: 8px 40px 0px;
+    /* Width is (lock spectrum width) - (lock width) */
+    min-width: 124px;
+    max-width: 184px;
+}
+
+.triangle-pointer-wrapper {
+    /* Defaults for dynamic properties. */
+    transform: translateX(50%);
+    transition: transform 0.3s;
+}
+
+.triangle-pointer {
+    width:  12px;
+    height:  12px;
+    margin-bottom: -6px;
+    margin-left: -6px;
+    transform: rotate(-45deg);
+    border-style: solid;
+    border-width: 1px 1px 0 0;
+
+    /* Defaults for dynamic properties. */
+    background: rgb(243, 243, 243);
+    border-color: rgb(217, 217, 217);
+}
+
+.security-summary-secure .triangle-pointer-wrapper {
+    transform: translateX(0%);
+}
+
+.security-summary-neutral .triangle-pointer-wrapper {
+    transform: translateX(50%);
+}
+
+.security-summary-insecure .triangle-pointer-wrapper {
+    transform: translateX(100%);
+}
+
+.security-summary-text {
+    padding: 12px 24px;
+    border-style: solid;
+    border-width: 1px 0;
+
+    /* Defaults for dynamic properties. */
+    background: rgb(243, 243, 243);
+    border-color: rgb(217, 217, 217);
+    color: rgb(127, 127, 127);
+}
+
+.security-summary-secure .triangle-pointer,
+.security-summary-secure .security-summary-text {
+    background: rgb(243, 252, 244);
+    border-color: rgb(137, 222, 144);
+    color: rgb(42, 194, 57);
+}
+
+.security-summary-neutral .triangle-pointer,
+.security-summary-neutral .security-summary-text {
+    background: rgb(255, 251, 243);
+    border-color: rgb(253, 214, 129);
+    color: rgb(253, 177, 48);
+}
+
+.security-summary-insecure .triangle-pointer,
+.security-summary-insecure .security-summary-text {
+    background: rgb(253, 245, 245);
+    border-color: rgb(243, 157, 151);
+    color: rgb(216, 70, 60);
+}
+
+.security-section {
+    padding: 12px;
     border-bottom: 1px solid rgb(230, 230, 230);
 
     display: flex;
     white-space: nowrap;
 }
 
-.security-main-view .security-summary .lock-icon {
-    flex: none;
-    width: 32px;
-    height: 32px;
-    margin-right: 1em;
-}
-
-.security-main-view .security-section-text {
+.security-section-text {
     flex: auto;
     white-space: normal;
 }
@@ -31,24 +137,24 @@
     margin-top: 8px;
 }
 
-.security-main-view .security-summary-section-title {
+.security-summary-section-title {
     font-size: 14px;
     margin-bottom: 2px;
 }
 
-.security-main-view .security-explanation.security-state-secure {
+.security-explanation.security-state-secure {
     color: rgb(42, 194, 57);
 }
 
-.security-main-view .security-explanation.security-state-neutral {
+.security-explanation.security-state-neutral {
     color: rgb(253, 177, 48);
 }
 
-.security-main-view .security-explanation.security-state-insecure {
+.security-explanation.security-state-insecure {
     color: rgb(216, 71, 60);
 }
 
-.security-main-view .security-explanation.security-section .lock-icon {
+.security-explanation.security-section .lock-icon {
     flex: none;
     width: 16px;
     height: 16px;
@@ -56,11 +162,11 @@
     margin-right: 18px;
 }
 
-.security-main-view .security-section-title {
+.security-section-title {
     color: rgb(90, 90, 90);
     margin-bottom: 8px;
 }
 
-.security-main-view .security-mixed-content {
+.security-mixed-content {
     margin-top: 8px;
 }

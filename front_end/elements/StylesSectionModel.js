@@ -116,16 +116,6 @@ WebInspector.StylesSectionModel.prototype = {
         return this.rule() ? this.rule().media : null;
     },
 
-    /**
-     * @param {!WebInspector.CSSRule} rule
-     */
-    updateRule: function(rule)
-    {
-        this._rule = rule;
-        this._style = rule.style;
-        this._cascade._resetUsedProperties();
-    },
-
     resetCachedData: function()
     {
         this._cascade._resetUsedProperties();

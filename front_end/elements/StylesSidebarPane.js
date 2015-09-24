@@ -1586,23 +1586,28 @@ WebInspector.StylePropertiesSection.prototype = {
             this._moveEditorFromSelector(moveDirection);
             return;
         }
+        var rule = this.rule();
+        var oldSelectorRange = rule.selectorRange();
+        if (!rule || !oldSelectorRange)
+            return;
 
         /**
-         * @param {?WebInspector.CSSRule} newRule
+         * @param {!WebInspector.CSSRule} rule
+         * @param {!WebInspector.TextRange} oldSelectorRange
+         * @param {boolean} success
          * @this {WebInspector.StylePropertiesSection}
          */
-        function finishCallback(newRule)
+        function finishCallback(rule, oldSelectorRange, success)
         {
-            if (newRule) {
-                var doesAffectSelectedNode = newRule.matchingSelectors.length > 0;
+            if (success) {
+                var doesAffectSelectedNode = rule.matchingSelectors.length > 0;
                 this.element.classList.toggle("no-affect", !doesAffectSelectedNode);
 
-                var oldSelectorRange = /** @type {!WebInspector.TextRange} */(this.rule().selectorRange());
-                var newSelectorRange = /** @type {!WebInspector.TextRange} */(newRule.selectorRange());
-                this.styleRule.updateRule(newRule);
-
+                this.styleRule.resetCachedData();
+                var newSelectorRange = /** @type {!WebInspector.TextRange} */(rule.selectorRange());
+                rule.style.sourceStyleSheetEdited(/** @type {string} */(rule.styleSheetId), oldSelectorRange, newSelectorRange);
+                this._parentPane._styleSheetRuleEdited(rule, oldSelectorRange, newSelectorRange);
                 this._parentPane._refreshUpdate(this);
-                this._parentPane._styleSheetRuleEdited(newRule, oldSelectorRange, newSelectorRange);
             }
 
             delete this._parentPane._userOperation;
@@ -1613,7 +1618,7 @@ WebInspector.StylePropertiesSection.prototype = {
         // This gets deleted in finishOperationAndMoveEditor(), which is called both on success and failure.
         this._parentPane._userOperation = true;
         var selectedNode = this._parentPane.node();
-        this._parentPane._cssModel.setRuleSelector(this.rule(), selectedNode ? selectedNode.id : 0, newContent, finishCallback.bind(this));
+        this._parentPane._cssModel.setRuleSelector(rule, selectedNode ? selectedNode.id : 0, newContent, finishCallback.bind(this, rule, oldSelectorRange));
     },
 
     _editingSelectorCommittedForTest: function() { },

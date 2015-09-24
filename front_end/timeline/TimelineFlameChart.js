@@ -966,18 +966,31 @@ WebInspector.TimelineFlameChartNetworkDataProvider.prototype = {
         this._maximumBoundary = this._model.maximumRecordTime();
         this._timeSpan = this._model.isEmpty() ? 1000 : this._maximumBoundary - this._minimumBoundary;
         this._model.networkRequests().forEach(this._appendEntry.bind(this));
-        this._currentLevel = this._requests.length;
+        this._updateTimelineData();
     },
 
     _updateTimelineData: function()
     {
         if (!this._timelineData)
             return;
-        var index = 0;
+        var index = -1;
+        var lastTime = Infinity;
         for (var i = 0; i < this._requests.length; ++i) {
             var r = this._requests[i];
             var visible = r.startTime < this._endTime && r.endTime > this._startTime;
-            this._timelineData.entryLevels[i] = visible ? index++ : 0;
+            if (!visible) {
+                this._timelineData.entryLevels[i] = -1;
+                continue;
+            }
+            if (lastTime > r.startTime)
+                ++index;
+            lastTime = r.endTime;
+            this._timelineData.entryLevels[i] = index;
+        }
+        ++index;
+        for (var i = 0; i < this._requests.length; ++i) {
+            if (this._timelineData.entryLevels[i] === -1)
+                this._timelineData.entryLevels[i] = index;
         }
         this._timelineData = new WebInspector.FlameChart.TimelineData(
              this._timelineData.entryLevels,

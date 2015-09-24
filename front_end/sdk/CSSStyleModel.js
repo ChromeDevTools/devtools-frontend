@@ -130,7 +130,7 @@ WebInspector.CSSStyleModel.prototype = {
          * @param {?CSSAgent.CSSStyle=} inlinePayload
          * @param {?CSSAgent.CSSStyle=} attributesPayload
          * @param {!Array.<!CSSAgent.RuleMatch>=} matchedPayload
-         * @param {!Array.<!CSSAgent.PseudoIdMatches>=} pseudoPayload
+         * @param {!Array.<!CSSAgent.PseudoElementMatches>=} pseudoPayload
          * @param {!Array.<!CSSAgent.InheritedStyleEntry>=} inheritedPayload
          * @return {?WebInspector.CSSStyleModel.MatchedStyleResult}
          * @this {WebInspector.CSSStyleModel}
@@ -2025,7 +2025,7 @@ WebInspector.CSSStyleModel.fromNode = function(node)
  * @param {?CSSAgent.CSSStyle=} inlinePayload
  * @param {?CSSAgent.CSSStyle=} attributesPayload
  * @param {!Array.<!CSSAgent.RuleMatch>=} matchedPayload
- * @param {!Array.<!CSSAgent.PseudoIdMatches>=} pseudoPayload
+ * @param {!Array.<!CSSAgent.PseudoElementMatches>=} pseudoPayload
  * @param {!Array.<!CSSAgent.InheritedStyleEntry>=} inheritedPayload
  */
 WebInspector.CSSStyleModel.MatchedStyleResult = function(cssModel, inlinePayload, attributesPayload, matchedPayload, pseudoPayload, inheritedPayload)
@@ -2040,7 +2040,7 @@ WebInspector.CSSStyleModel.MatchedStyleResult = function(cssModel, inlinePayload
     if (pseudoPayload) {
         for (var i = 0; i < pseudoPayload.length; ++i) {
             var entryPayload = pseudoPayload[i];
-            this.pseudoElements.push(new WebInspector.CSSStyleModel.PseudoElementMatches(entryPayload.pseudoId, WebInspector.CSSStyleModel.parseRuleMatchArrayPayload(cssModel, entryPayload.matches)));
+            this.pseudoElements.push(new WebInspector.CSSStyleModel.PseudoElementMatches(entryPayload.pseudoType, WebInspector.CSSStyleModel.parseRuleMatchArrayPayload(cssModel, entryPayload.matches)));
         }
     }
 
@@ -2057,12 +2057,12 @@ WebInspector.CSSStyleModel.MatchedStyleResult = function(cssModel, inlinePayload
 
 /**
  * @constructor
- * @param {number} pseudoId
+ * @param {!DOMAgent.PseudoType} pseudoType
  * @param {?Array.<!WebInspector.CSSRule>} rules
  */
-WebInspector.CSSStyleModel.PseudoElementMatches = function(pseudoId, rules)
+WebInspector.CSSStyleModel.PseudoElementMatches = function(pseudoType, rules)
 {
-    this.pseudoId = pseudoId;
+    this.pseudoType = pseudoType;
     this.rules = rules;
 }
 

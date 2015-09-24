@@ -64,16 +64,6 @@ WebInspector.StylesSidebarPane = function()
     new WebInspector.PropertyChangeHighlighter(this);
 }
 
-// Keep in sync with ComputedStyleConstants.h PseudoId enum. Array below contains pseudo id names for corresponding enum indexes.
-// First item is empty due to its artificial NOPSEUDO nature in the enum.
-// FIXME: find a way of generating this mapping or getting it from combination of ComputedStyleConstants and CSSSelector.cpp at
-// runtime.
-WebInspector.StylesSidebarPane.PseudoIdNames = [
-    "", "first-line", "first-letter", "before", "after", "backdrop", "selection", "", "-webkit-scrollbar",
-    "-webkit-scrollbar-thumb", "-webkit-scrollbar-button", "-webkit-scrollbar-track", "-webkit-scrollbar-track-piece",
-    "-webkit-scrollbar-corner", "-webkit-resizer"
-];
-
 /**
  * @enum {string}
  */
@@ -422,10 +412,14 @@ WebInspector.StylesSidebarPane.prototype = {
             return;
 
         this._sectionBlocks = this._rebuildSectionsForMatchedStyleRules(cascades.matched);
-        var pseudoIds = cascades.pseudo.keysArray().sort();
-        for (var pseudoId of pseudoIds) {
-            var block = WebInspector.SectionBlock.createPseudoIdBlock(pseudoId);
-            var cascade = cascades.pseudo.get(pseudoId);
+        var pseudoTypes = [];
+        var keys = new Set(cascades.pseudo.keys());
+        if (keys.delete(DOMAgent.PseudoType.Before))
+            pseudoTypes.push(DOMAgent.PseudoType.Before);
+        pseudoTypes = pseudoTypes.concat(keys.valuesArray().sort());
+        for (var pseudoType of pseudoTypes) {
+            var block = WebInspector.SectionBlock.createPseudoTypeBlock(pseudoType);
+            var cascade = cascades.pseudo.get(pseudoType);
             for (var sectionModel of cascade.sectionModels()) {
                 var section = new WebInspector.StylePropertiesSection(this, sectionModel);
                 block.sections.push(section);
@@ -457,7 +451,7 @@ WebInspector.StylesSidebarPane.prototype = {
         var pseudoCascades = new Map();
         for (var i = 0; i < styles.pseudoElements.length; ++i) {
             var pseudoElementCSSRules = styles.pseudoElements[i];
-            var pseudoId = pseudoElementCSSRules.pseudoId;
+            var pseudoType = pseudoElementCSSRules.pseudoType;
 
             // Add rules in reverse order to match the cascade order.
             var pseudoElementCascade = new WebInspector.SectionCascade();
@@ -465,7 +459,7 @@ WebInspector.StylesSidebarPane.prototype = {
                 var rule = pseudoElementCSSRules.rules[j];
                 pseudoElementCascade.appendModelFromRule(rule);
             }
-            pseudoCascades.set(pseudoId, pseudoElementCascade);
+            pseudoCascades.set(pseudoType, pseudoElementCascade);
         }
         return pseudoCascades;
     },
@@ -858,18 +852,14 @@ WebInspector.SectionBlock = function(titleElement)
 }
 
 /**
- * @param {number} pseudoId
+ * @param {!DOMAgent.PseudoType} pseudoType
  * @return {!WebInspector.SectionBlock}
  */
-WebInspector.SectionBlock.createPseudoIdBlock = function(pseudoId)
+WebInspector.SectionBlock.createPseudoTypeBlock = function(pseudoType)
 {
     var separatorElement = createElement("div");
     separatorElement.className = "sidebar-separator";
-    var pseudoName = WebInspector.StylesSidebarPane.PseudoIdNames[pseudoId];
-    if (pseudoName)
-        separatorElement.textContent = WebInspector.UIString("Pseudo ::%s element", pseudoName);
-    else
-        separatorElement.textContent = WebInspector.UIString("Pseudo element");
+    separatorElement.textContent = WebInspector.UIString("Pseudo ::%s element", pseudoType);
     return new WebInspector.SectionBlock(separatorElement);
 }
 

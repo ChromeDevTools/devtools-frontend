@@ -817,15 +817,6 @@ WebInspector.TimelineFlameChartNetworkDataProvider = function(model)
 WebInspector.TimelineFlameChartNetworkDataProvider.prototype = {
     /**
      * @override
-     * @return {number}
-     */
-    barHeight: function()
-    {
-        return 5;
-    },
-
-    /**
-     * @override
      * @return {!WebInspector.FlameChart.TimelineData}
      */
     timelineData: function()
@@ -905,6 +896,17 @@ WebInspector.TimelineFlameChartNetworkDataProvider.prototype = {
         var request = /** @type {!WebInspector.TimelineModel.NetworkRequest} */ (this._requests[index]);
         var category = WebInspector.TimelineUIUtils.networkRequestCategory(request);
         return WebInspector.TimelineUIUtils.networkCategoryColor(category);
+    },
+
+    /**
+     * @override
+     * @param {number} index
+     * @return {?string}
+     */
+    entryTitle: function(index)
+    {
+        var request = /** @type {!WebInspector.TimelineModel.NetworkRequest} */ (this._requests[index]);
+        return request.url || null;
     },
 
     /**

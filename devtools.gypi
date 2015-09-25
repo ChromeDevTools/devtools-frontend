@@ -361,6 +361,7 @@
             'front_end/animation/AnimationGroupPreviewUI.js',
             'front_end/animation/AnimationModel.js',
             'front_end/animation/AnimationTimeline.js',
+            'front_end/animation/AnimationUI.js',
         ],
         'devtools_audits_js_files': [
             'front_end/audits/auditResultTree.css',

@@ -400,17 +400,7 @@ WebInspector.Project.prototype = {
      */
     setFileContent: function(uiSourceCode, newContent, callback)
     {
-        this._projectDelegate.setFileContent(uiSourceCode.path(), newContent, onSetContent.bind(this));
-
-        /**
-         * @param {?string} content
-         * @this {WebInspector.Project}
-         */
-        function onSetContent(content)
-        {
-            this._workspace.dispatchEventToListeners(WebInspector.Workspace.Events.UISourceCodeContentCommitted, { uiSourceCode: uiSourceCode, content: newContent });
-            callback(content);
-        }
+        this._projectDelegate.setFileContent(uiSourceCode.path(), newContent, callback);
     },
 
     /**

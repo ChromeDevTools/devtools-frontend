@@ -53,6 +53,7 @@ WebInspector.UISourceCode = function(project, parentPath, name, originURL, url, 
 
     /** @type {!Array.<!WebInspector.Revision>} */
     this.history = [];
+    this._hasUnsavedCommittedChanges = false;
 }
 
 /**
@@ -62,7 +63,6 @@ WebInspector.UISourceCode.Events = {
     WorkingCopyChanged: "WorkingCopyChanged",
     WorkingCopyCommitted: "WorkingCopyCommitted",
     TitleChanged: "TitleChanged",
-    SavedStateUpdated: "SavedStateUpdated",
     SourceMappingChanged: "SourceMappingChanged",
 }
 
@@ -288,7 +288,7 @@ WebInspector.UISourceCode.prototype = {
         {
             if (updatedContent === null) {
                 var workingCopy = this.workingCopy();
-                this._commitContent("", false);
+                this._contentCommitted("", true);
                 this.setWorkingCopy(workingCopy);
                 this._terminateContentCheck();
                 return;
@@ -305,14 +305,14 @@ WebInspector.UISourceCode.prototype = {
             }
 
             if (!this.isDirty() || this._workingCopy === updatedContent) {
-                this._commitContent(updatedContent, false);
+                this._contentCommitted(updatedContent, true);
                 this._terminateContentCheck();
                 return;
             }
 
             var shouldUpdate = window.confirm(WebInspector.UIString("This file was changed externally. Would you like to reload it?"));
             if (shouldUpdate)
-                this._commitContent(updatedContent, false);
+                this._contentCommitted(updatedContent, true);
             else
                 this._lastAcceptedContent = updatedContent;
             this._terminateContentCheck();
@@ -329,9 +329,32 @@ WebInspector.UISourceCode.prototype = {
 
     /**
      * @param {string} content
-     * @param {boolean} shouldSetContentInProject
      */
-    _commitContent: function(content, shouldSetContentInProject)
+    _commitContent: function(content)
+    {
+        if (this._project.canSetFileContent()) {
+            this._project.setFileContent(this, content, this._contentCommitted.bind(this, content, true));
+            return;
+        }
+        if (this._project.workspace().hasResourceContentTrackingExtensions()) {
+            this._contentCommitted(content, true);
+            return;
+        }
+
+        if (this._originURL && WebInspector.fileManager.isURLSaved(this._originURL)) {
+            WebInspector.fileManager.save(this._originURL, content, false, this._contentCommitted.bind(this, content));
+            WebInspector.fileManager.close(this._originURL);
+            return;
+        }
+
+        this._contentCommitted(content, false);
+    },
+
+    /**
+     * @param {string} content
+     * @param {boolean} wasPersisted
+     */
+    _contentCommitted: function(content, wasPersisted)
     {
         delete this._lastAcceptedContent;
         this._content = content;
@@ -344,22 +367,15 @@ WebInspector.UISourceCode.prototype = {
         }
 
         this._innerResetWorkingCopy();
-        this._hasCommittedChanges = true;
+        this._hasUnsavedCommittedChanges = !wasPersisted;
         this.dispatchEventToListeners(WebInspector.UISourceCode.Events.WorkingCopyCommitted);
-        if (this._url && WebInspector.fileManager.isURLSaved(this._url))
-            this._saveURLWithFileManager(false, this._content);
-        if (shouldSetContentInProject)
-            this._project.setFileContent(this, this._content, function() { });
+        this._project.workspace().dispatchEventToListeners(WebInspector.Workspace.Events.UISourceCodeContentCommitted, { uiSourceCode: this, content: content });
     },
 
-    /**
-     * @param {boolean} forceSaveAs
-     * @param {?string} content
-     */
-    _saveURLWithFileManager: function(forceSaveAs, content)
+    saveAs: function()
     {
-        WebInspector.fileManager.save(this._url, /** @type {string} */ (content), forceSaveAs, callback.bind(this));
-        WebInspector.fileManager.close(this._url);
+        WebInspector.fileManager.save(this._originURL, this.workingCopy(), true, callback.bind(this));
+        WebInspector.fileManager.close(this._originURL);
 
         /**
          * @param {boolean} accepted
@@ -367,28 +383,9 @@ WebInspector.UISourceCode.prototype = {
          */
         function callback(accepted)
         {
-            this._savedWithFileManager = accepted;
             if (accepted)
-                this._hasCommittedChanges = false;
-            this.dispatchEventToListeners(WebInspector.UISourceCode.Events.SavedStateUpdated);
+                this._contentCommitted(this.workingCopy(), true);
         }
-    },
-
-    /**
-     * @param {boolean} forceSaveAs
-     */
-    save: function(forceSaveAs)
-    {
-        if (this.project().type() === WebInspector.projectTypes.FileSystem || this.project().type() === WebInspector.projectTypes.Snippets) {
-            this.commitWorkingCopy();
-            return;
-        }
-        if (this.isDirty()) {
-            this._saveURLWithFileManager(forceSaveAs, this.workingCopy());
-            this.commitWorkingCopy();
-            return;
-        }
-        this.requestContent(this._saveURLWithFileManager.bind(this, forceSaveAs));
     },
 
     /**
@@ -396,11 +393,7 @@ WebInspector.UISourceCode.prototype = {
      */
     hasUnsavedCommittedChanges: function()
     {
-        if (this._savedWithFileManager || this.project().canSetFileContent() || this._project.isServiceProject())
-            return false;
-        if (this._project.workspace().hasResourceContentTrackingExtensions())
-            return false;
-        return !!this._hasCommittedChanges;
+        return this._hasUnsavedCommittedChanges;
     },
 
     /**
@@ -408,7 +401,7 @@ WebInspector.UISourceCode.prototype = {
      */
     addRevision: function(content)
     {
-        this._commitContent(content, true);
+        this._commitContent(content);
     },
 
     revertToOriginal: function()
@@ -507,7 +500,7 @@ WebInspector.UISourceCode.prototype = {
     commitWorkingCopy: function()
     {
         if (this.isDirty())
-            this._commitContent(this.workingCopy(), true);
+            this._commitContent(this.workingCopy());
     },
 
     /**

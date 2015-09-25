@@ -39,7 +39,6 @@ WebInspector.UISourceCodeFrame = function(uiSourceCode)
 
     this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.WorkingCopyChanged, this._onWorkingCopyChanged, this);
     this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.WorkingCopyCommitted, this._onWorkingCopyCommitted, this);
-    this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.SavedStateUpdated, this._onSavedStateUpdated, this);
     this._updateStyle();
 }
 
@@ -138,14 +137,6 @@ WebInspector.UISourceCodeFrame.prototype = {
             this.onUISourceCodeContentChanged();
         }
         this._textEditor.markClean();
-        this._updateStyle();
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _onSavedStateUpdated: function(event)
-    {
         this._updateStyle();
     },
 

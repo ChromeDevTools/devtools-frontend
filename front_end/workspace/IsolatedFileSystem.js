@@ -422,14 +422,9 @@ WebInspector.IsolatedFileSystem.prototype = {
 
             function fileWritten()
             {
-                fileWriter.onwriteend = writerEnd;
+                fileWriter.onwriteend = callback;
                 fileWriter.truncate(blob.size);
             }
-        }
-
-        function writerEnd()
-        {
-            callback();
         }
 
         /**

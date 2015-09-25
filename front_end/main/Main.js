@@ -300,6 +300,7 @@ WebInspector.Main.prototype = {
     _connectionEstablished: function(connection)
     {
         console.timeStamp("Main._connectionEstablished");
+        this._mainConnection = connection;
         connection.addEventListener(InspectorBackendClass.Connection.Events.Disconnected, onDisconnected);
 
         /**
@@ -636,15 +637,24 @@ WebInspector.Main.prototype = {
      */
     evaluateForTestInFrontend: function(callId, script)
     {
-        WebInspector.evaluateForTestInFrontend(callId, script);
-    }
-}
+        if (!InspectorFrontendHost.isUnderTest())
+            return;
 
-WebInspector.reload = function()
-{
-    if (WebInspector.dockController.canDock() && WebInspector.dockController.dockSide() === WebInspector.DockController.State.Undocked)
-        InspectorFrontendHost.setIsDocked(true, function() {});
-    window.location.reload();
+        /**
+         * @suppressGlobalPropertiesCheck
+         */
+        function invokeMethod()
+        {
+            try {
+                script = script + "//# sourceURL=evaluateInWebInspector" + callId + ".js";
+                window.eval(script);
+            } catch (e) {
+                console.error(e.stack);
+            }
+        }
+
+        this._mainConnection.runAfterPendingDispatches(invokeMethod);
+    }
 }
 
 /**

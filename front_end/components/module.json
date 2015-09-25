@@ -56,7 +56,8 @@
         "RemoteObjectPreviewFormatter.js",
         "ShortcutsScreen.js",
         "EventListenersUtils.js",
-        "EventListenersView.js"
+        "EventListenersView.js",
+        "Reload.js"
     ],
     "resources": [
         "breakpointsList.css",

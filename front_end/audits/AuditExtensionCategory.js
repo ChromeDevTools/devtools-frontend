@@ -183,7 +183,9 @@ WebInspector.AuditExtensionCategoryResults.prototype = {
             var object = this._target.runtimeModel.createRemoteObject(result);
             callback(object);
         }
-        WebInspector.extensionServer.evaluate(expression, false, false, evaluateOptions, this._category._extensionOrigin, onEvaluate.bind(this));
+
+        var evaluateCallback = /** @type {function(?string, ?WebInspector.RemoteObject, boolean=)} */ (onEvaluate.bind(this));
+        WebInspector.extensionServer.evaluate(expression, false, false, evaluateOptions, this._category._extensionOrigin, evaluateCallback);
     }
 }
 

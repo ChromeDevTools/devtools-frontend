@@ -119,6 +119,7 @@
             'front_end/components/ShortcutsScreen.js',
             'front_end/components/EventListenersUtils.js',
             'front_end/components/EventListenersView.js',
+            'front_end/components/Reload.js',
         ],
         'devtools_host_js_files': [
             'front_end/host/InspectorFrontendHostAPI.js',
@@ -297,7 +298,6 @@
             'front_end/main/RenderingOptions.js',
             'front_end/main/SimpleApp.js',
             'front_end/main/Tests.js',
-            'front_end/main/TestController.js',
         ],
         'devtools_module_json_files': [
             'front_end/accessibility/module.json',

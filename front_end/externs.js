@@ -187,7 +187,7 @@ DOMFileSystem.prototype.root = null;
  */
 window.domAutomationController;
 
-var DevToolsHost = {};
+var DevToolsHost = function() {};
 
 /** @typedef {{type:string, id:(number|undefined),
               label:(string|undefined), enabled:(boolean|undefined), checked:(boolean|undefined),
@@ -253,13 +253,19 @@ DevToolsHost.isUnderTest = function() { }
  */
 DevToolsHost.isHostedMode = function() { }
 
-// FIXME: remove everything below.
-var FormatterWorker = {}
-var WebInspector = {}
+/**
+ * @param {string} fileSystemId
+ * @param {string} registeredName
+ * @return {?DOMFileSystem}
+ */
+DevToolsHost.isolatedFileSystem = function(fileSystemId, registeredName) { }
 
-WebInspector.panels = {};
+/**
+ * @param {!FileSystem} fileSystem
+ */
+DevToolsHost.upgradeDraggedFileSystemPermissions = function(fileSystem) { }
 
-WebInspector.reload = function() { }
+var WebInspector = function() {}
 
 /** Extensions API */
 

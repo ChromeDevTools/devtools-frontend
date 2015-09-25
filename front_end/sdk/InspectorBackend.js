@@ -489,7 +489,7 @@ InspectorBackendClass.Connection.prototype = {
     },
 
     /**
-     * @param {string=} script
+     * @param {function()=} script
      */
     runAfterPendingDispatches: function(script)
     {

@@ -675,7 +675,7 @@ WebInspector.TimelinePanel.prototype = {
             this._overviewControls[i].timelineStarted();
 
         if (userInitiated)
-            WebInspector.userMetrics.TimelineStarted.record();
+            WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.TimelineStarted);
         this._setUIControlsEnabled(false);
         this._hideRecordingHelpMessage();
     },

@@ -1087,3 +1087,6 @@ WebInspector.ExtensionStatus.Record;
 
 WebInspector.extensionAPI = {};
 defineCommonExtensionSymbols(WebInspector.extensionAPI);
+
+/** @type {!WebInspector.ExtensionServer} */
+WebInspector.extensionServer;

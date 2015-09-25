@@ -192,7 +192,7 @@ WebInspector.AnimationTimeline.prototype = {
 
         for (var target of WebInspector.targetManager.targets(WebInspector.Target.Type.Page))
             WebInspector.AnimationModel.fromTarget(target).setPlaybackRate(this._playbackRate());
-        WebInspector.userMetrics.AnimationsPlaybackRateChanged.record();
+        WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.AnimationsPlaybackRateChanged);
         if (this._scrubberPlayer)
             this._scrubberPlayer.playbackRate = this._playbackRate();
     },
@@ -266,7 +266,7 @@ WebInspector.AnimationTimeline.prototype = {
         this._paused = pause;
         for (var target of WebInspector.targetManager.targets(WebInspector.Target.Type.Page))
             WebInspector.AnimationModel.fromTarget(target).setPlaybackRate(this._playbackRate());
-        WebInspector.userMetrics.AnimationsPlaybackRateChanged.record();
+        WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.AnimationsPlaybackRateChanged);
         if (this._scrubberPlayer)
             this._scrubberPlayer.playbackRate = this._playbackRate();
     },

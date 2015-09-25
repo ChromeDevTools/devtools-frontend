@@ -281,7 +281,7 @@ WebInspector.CSSStyleModel.prototype = {
         }
 
         console.assert(!!media.parentStyleSheetId);
-        WebInspector.userMetrics.StyleRuleEdited.record();
+        WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.StyleRuleEdited);
         this._agent.setMediaText(media.parentStyleSheetId, media.range, newMediaText, parsePayload.bind(this))
             .catchException(null)
             .then(userCallback);
@@ -1051,7 +1051,7 @@ WebInspector.CSSRule.prototype = {
         var range = this.selectorRange();
         if (!range)
             throw "Rule selector is not editable";
-        WebInspector.userMetrics.StyleRuleEdited.record();
+        WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.StyleRuleEdited);
         this._cssModel._agent.setRuleSelector(this.styleSheetId, range, newSelector, callback.bind(this))
             .then(onNewSelectors.bind(this))
             .catchException(false)
@@ -1325,7 +1325,7 @@ WebInspector.CSSProperty.prototype = {
             return Promise.reject(new Error("Style not editable"));
 
         if (majorChange)
-            WebInspector.userMetrics.StyleRuleEdited.record();
+            WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.StyleRuleEdited);
 
         if (overwrite && propertyText === this.propertyText) {
             if (majorChange)

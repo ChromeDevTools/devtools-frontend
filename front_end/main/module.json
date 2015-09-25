@@ -332,14 +332,12 @@
         "FrontendWebSocketAPI.js",
         "RenderingOptions.js",
         "SimpleApp.js",
-        "TestController.js",
         "Tests.js",
         "OverlayController.js",
         "Main.js"
     ],
     "skip_compilation": [
-        "Tests.js",
-        "TestController.js"
+        "Tests.js"
     ],
     "resources": [
     ]

@@ -173,7 +173,7 @@ WebInspector.ConsoleView.prototype = {
     _onMainFrameNavigated: function(event)
     {
         var frame = /** @type {!WebInspector.ResourceTreeFrame} */(event.data);
-        WebInspector.console.addMessage(WebInspector.UIString("Navigated to %s", frame.url));
+        WebInspector.console.log(WebInspector.UIString("Navigated to %s", frame.url));
     },
 
     _initConsoleMessages: function()
@@ -805,7 +805,7 @@ WebInspector.ConsoleView.prototype = {
         if (currentExecutionContext) {
             WebInspector.ConsoleModel.evaluateCommandInConsole(currentExecutionContext, text, useCommandLineAPI);
             if (WebInspector.inspectorView.currentPanel() && WebInspector.inspectorView.currentPanel().name === "console")
-                WebInspector.userMetrics.CommandEvaluatedInConsolePanel.record();
+                WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.CommandEvaluatedInConsolePanel);
         }
     },
 

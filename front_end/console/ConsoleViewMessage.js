@@ -448,8 +448,23 @@ WebInspector.ConsoleViewMessage.prototype = {
      */
     _formatParameterAsFunction: function(func, element, includePreview)
     {
-        WebInspector.ObjectPropertiesSection.formatObjectAsFunction(func, element, true, includePreview);
-        element.addEventListener("contextmenu", this._contextMenuEventFired.bind(this, func), false);
+        WebInspector.RemoteFunction.objectAsFunction(func).targetFunction().then(formatTargetFunction.bind(this));
+
+        /**
+         * @param {!WebInspector.RemoteObject} targetFunction
+         * @this {WebInspector.ConsoleViewMessage}
+         */
+        function formatTargetFunction(targetFunction)
+        {
+            var functionElement = createElement("span")
+            WebInspector.ObjectPropertiesSection.formatObjectAsFunction(targetFunction, functionElement, true, includePreview);
+            element.appendChild(functionElement);
+            if (targetFunction !== func) {
+                var note = element.createChild("span", "object-info-state-note");
+                note.title = WebInspector.UIString("Function was resolved from bound function.");
+            }
+            element.addEventListener("contextmenu", this._contextMenuEventFired.bind(this, targetFunction), false);
+        }
     },
 
     /**

@@ -43,10 +43,6 @@ WebInspector.EditFileSystemDialog = function(fileSystemPath)
     var headerText = header.createChild("span");
     headerText.textContent = WebInspector.UIString("Edit file system");
 
-    var closeButton = header.createChild("div", "done-button", "dt-close-button");
-    closeButton.gray = true;
-    closeButton.addEventListener("click", this._onDoneClick.bind(this), false);
-
     var contents = this.element.createChild("div", "contents");
 
     WebInspector.isolatedFileSystemManager.mapping().addEventListener(WebInspector.FileSystemMapping.Events.FileMappingAdded, this._fileMappingAdded, this);
@@ -94,7 +90,7 @@ WebInspector.EditFileSystemDialog = function(fileSystemPath)
 WebInspector.EditFileSystemDialog.show = function(fileSystemPath)
 {
     var dialog = new WebInspector.EditFileSystemDialog(fileSystemPath);
-    WebInspector.Dialog.show(dialog);
+    WebInspector.Dialog.show(dialog, false, true);
     var glassPane = dialog.element.ownerDocument.getElementById("glass-pane");
     glassPane.classList.add("settings-glass-pane");
 }
@@ -399,11 +395,6 @@ WebInspector.EditFileSystemDialog.prototype = {
     focus: function()
     {
         WebInspector.setCurrentFocusElement(this.element);
-    },
-
-    _onDoneClick: function()
-    {
-        WebInspector.Dialog.hide();
     },
 
     onEnter: function()

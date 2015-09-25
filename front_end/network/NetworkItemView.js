@@ -77,17 +77,6 @@ WebInspector.NetworkItemView.prototype = {
     },
 
     /**
-     * @return {?WebInspector.SourceFrame}
-     */
-    currentSourceFrame: function()
-    {
-        var view = this.visibleView;
-        if (view && view instanceof WebInspector.SourceFrame)
-            return /** @type {!WebInspector.SourceFrame} */ (view);
-        return null;
-    },
-
-    /**
      * @param {string=} tabId
      */
     _selectTab: function(tabId)

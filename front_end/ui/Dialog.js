@@ -32,8 +32,9 @@
  * @constructor
  * @param {!WebInspector.DialogDelegate} delegate
  * @param {boolean=} modal
+ * @param {boolean=} showCloseButton
  */
-WebInspector.Dialog = function(delegate, modal)
+WebInspector.Dialog = function(delegate, modal, showCloseButton)
 {
     this._delegate = delegate;
     this._modal = modal;
@@ -58,6 +59,12 @@ WebInspector.Dialog = function(delegate, modal)
 
     delegate.show(this._element);
 
+    if (showCloseButton) {
+        var closeButton = this._element.createChild("div", "dialog-close-button", "dt-close-button");
+        closeButton.gray = true;
+        closeButton.addEventListener("click", this._hide.bind(this), false);
+    }
+
     this._position();
     this._delegate.focus();
 }
@@ -73,12 +80,13 @@ WebInspector.Dialog.currentInstance = function()
 /**
  * @param {!WebInspector.DialogDelegate} delegate
  * @param {boolean=} modal
+ * @param {boolean=} showCloseButton
  */
-WebInspector.Dialog.show = function(delegate, modal)
+WebInspector.Dialog.show = function(delegate, modal, showCloseButton)
 {
     if (WebInspector.Dialog._instance)
         return;
-    WebInspector.Dialog._instance = new WebInspector.Dialog(delegate, modal);
+    WebInspector.Dialog._instance = new WebInspector.Dialog(delegate, modal, showCloseButton);
     WebInspector.Dialog._instance.focus();
 }
 

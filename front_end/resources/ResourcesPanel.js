@@ -98,19 +98,6 @@ WebInspector.ResourcesPanel = function()
     this.panelSidebarElement().addEventListener("mousemove", this._onmousemove.bind(this), false);
     this.panelSidebarElement().addEventListener("mouseleave", this._onmouseleave.bind(this), false);
 
-    /**
-     * @this {WebInspector.ResourcesPanel}
-     * @return {?WebInspector.SourceFrame}
-     */
-    function sourceFrameGetter()
-    {
-        var view = this.visibleView;
-        if (view && view instanceof WebInspector.SourceFrame)
-            return /** @type {!WebInspector.SourceFrame} */ (view);
-        return null;
-    }
-    WebInspector.GoToLineDialog.install(this, sourceFrameGetter.bind(this));
-
     WebInspector.targetManager.observeTargets(this);
 }
 

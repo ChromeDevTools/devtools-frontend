@@ -586,7 +586,6 @@
             'front_end/source_frame/CodeMirrorTextEditor.js',
             'front_end/source_frame/CodeMirrorUtils.js',
             'front_end/source_frame/FontView.js',
-            'front_end/source_frame/GoToLineDialog.js',
             'front_end/source_frame/ImageView.js',
             'front_end/source_frame/ResourceSourceFrame.js',
             'front_end/source_frame/SourceFrame.js',

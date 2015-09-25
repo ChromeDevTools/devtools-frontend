@@ -48,7 +48,6 @@
         "FontView.js",
         "ImageView.js",
         "SourceFrame.js",
-        "GoToLineDialog.js",
         "ResourceSourceFrame.js"
     ],
     "skip_compilation": [

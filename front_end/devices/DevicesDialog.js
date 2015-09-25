@@ -12,11 +12,6 @@ WebInspector.DevicesDialog = function()
     this.element.classList.add("devices-dialog");
     this._view = new WebInspector.DevicesView();
     this._view.markAsRoot();
-
-    this._closeButton = createElementWithClass("div", "dialog-close-button", "dt-close-button");
-    this._closeButton.gray = true;
-    this._closeButton.addEventListener("click", WebInspector.Dialog.hide.bind(WebInspector.Dialog), false);
-    this.element.appendChild(this._closeButton);
 }
 
 /** @type {?WebInspector.DevicesDialog} */
@@ -26,7 +21,7 @@ WebInspector.DevicesDialog.show = function()
 {
     if (!WebInspector.DevicesDialog._instance)
         WebInspector.DevicesDialog._instance = new WebInspector.DevicesDialog();
-    WebInspector.Dialog.show(WebInspector.DevicesDialog._instance);
+    WebInspector.Dialog.show(WebInspector.DevicesDialog._instance, false, true);
 }
 
 WebInspector.DevicesDialog.prototype = {
@@ -37,7 +32,7 @@ WebInspector.DevicesDialog.prototype = {
     show: function(element)
     {
         WebInspector.DialogDelegate.prototype.show.call(this, element);
-        this._view.show(this.element, this._closeButton);
+        this._view.show(this.element);
     },
 
     /**

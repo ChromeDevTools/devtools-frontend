@@ -100,15 +100,6 @@ WebInspector.NetworkPanel = function()
     this._networkLogView.addEventListener(WebInspector.NetworkLogView.EventTypes.SearchIndexUpdated, this._onSearchIndexUpdated, this);
     this._networkLogView.addEventListener(WebInspector.NetworkLogView.EventTypes.UpdateRequest, this._onUpdateRequest, this);
 
-    /**
-     * @this {WebInspector.NetworkPanel}
-     * @return {?WebInspector.SourceFrame}
-     */
-    function sourceFrameGetter()
-    {
-        return this._networkItemView.currentSourceFrame();
-    }
-    WebInspector.GoToLineDialog.install(this, sourceFrameGetter.bind(this));
     WebInspector.DataSaverInfobar.maybeShowInPanel(this);
 }
 

@@ -239,10 +239,6 @@
     display: flex;
 }
 
-.service-workers-skip-waiting-checkbox-label {
-    margin-left: 0px;
-}
-
 .service-workers-error {
     display: flex;
 }

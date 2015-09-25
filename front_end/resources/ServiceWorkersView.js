@@ -292,13 +292,6 @@ WebInspector.SWRegistrationElement = function(manager, originElement, registrati
     this._deleteButton.title = WebInspector.UIString("Delete");
     this._childrenListNode = this._element.createChild("div", "service-workers-registration-content");
 
-    this._skipWaitingCheckboxLabel = createCheckboxLabel(WebInspector.UIString("Skip waiting"));
-    this._skipWaitingCheckboxLabel.title = WebInspector.UIString("Simulate skipWaiting()");
-    this._skipWaitingCheckboxLabel.classList.add("service-workers-skip-waiting-checkbox-label");
-    this._skipWaitingCheckbox = this._skipWaitingCheckboxLabel.checkboxElement;
-    this._skipWaitingCheckbox.classList.add("service-workers-skip-waiting-checkbox");
-    this._skipWaitingCheckbox.addEventListener("change", this._skipWaitingCheckboxChanged.bind(this), false);
-
     /**
      * @type {!Object.<string, !Array.<!WebInspector.ServiceWorkerVersion>>}
      */
@@ -326,7 +319,6 @@ WebInspector.SWRegistrationElement.prototype = {
         this._titleNode.textContent = WebInspector.UIString(registration.isDeleted ? "Scope: %s - deleted" : "Scope: %s", registration.scopeURL.asParsedURL().path);
         this._updateButton.disabled = !!registration.isDeleted;
         this._deleteButton.disabled = !!registration.isDeleted;
-        this._skipWaitingCheckboxLabel.remove();
 
         var lastFocusedVersionId = undefined;
         if (this._categorizedVersions[this._selectedMode].length)
@@ -341,7 +333,7 @@ WebInspector.SWRegistrationElement.prototype = {
             if (version.id === lastFocusedVersionId)
                 this._selectedMode = mode;
         }
-        if (!this._categorizedVersions[this._selectedMode].length && this._selectedMode != WebInspector.ServiceWorkerVersion.Modes.Waiting) {
+        if (!this._categorizedVersions[this._selectedMode].length) {
             for (var mode of [WebInspector.ServiceWorkerVersion.Modes.Active,
                               WebInspector.ServiceWorkerVersion.Modes.Waiting,
                               WebInspector.ServiceWorkerVersion.Modes.Installing,
@@ -355,20 +347,6 @@ WebInspector.SWRegistrationElement.prototype = {
         this._pushButton.disabled = !this._categorizedVersions[WebInspector.ServiceWorkerVersion.Modes.Active].length || !!this._registration.isDeleted;
 
         this._updateVersionList();
-
-        if (this._visible() && this._skipWaitingCheckbox.checked) {
-            this._registration.versions.valuesArray().map(callSkipWaitingForInstalledVersions.bind(this));
-        }
-
-        /**
-         * @this {WebInspector.SWRegistrationElement}
-         * @param {!WebInspector.ServiceWorkerVersion} version
-         */
-        function callSkipWaitingForInstalledVersions(version)
-        {
-            if (version.isInstalled())
-                this._manager.skipWaiting(version.id);
-        }
     },
 
     _updateVersionList: function()
@@ -405,7 +383,7 @@ WebInspector.SWRegistrationElement.prototype = {
             modeTab.classList.add("service-workers-versions-mode-tab-selected");
             modeTabText.classList.add("service-workers-versions-mode-tab-text-selected");
         }
-        if (versions.length || mode == WebInspector.ServiceWorkerVersion.Modes.Waiting) {
+        if (versions.length) {
             modeTab.addEventListener("click", this._modeTabClicked.bind(this, mode), false);
         } else {
             modeTab.classList.add("service-workers-versions-mode-tab-disabled");
@@ -422,11 +400,6 @@ WebInspector.SWRegistrationElement.prototype = {
     {
         var versions = this._categorizedVersions[mode];
         var panelContainer = createElementWithClass("div", "service-workers-versions-panel-container");
-        if (mode == WebInspector.ServiceWorkerVersion.Modes.Waiting) {
-            var panel = createElementWithClass("div", "service-workers-versions-option-panel");
-            panel.appendChild(this._skipWaitingCheckboxLabel);
-            panelContainer.appendChild(panel);
-        }
         var index = 0;
         var versionElement;
         for (var i = 0; i < versions.length; ++i) {
@@ -477,23 +450,6 @@ WebInspector.SWRegistrationElement.prototype = {
     {
         var data = "Test push message from DevTools."
         this._manager.deliverPushMessage(this._registration.id, data);
-    },
-
-    _skipWaitingCheckboxChanged: function()
-    {
-        if (!this._skipWaitingCheckbox.checked)
-            return;
-        this._registration.versions.valuesArray().map(callSkipWaitingForInstalledVersions.bind(this));
-
-        /**
-         * @this {WebInspector.SWRegistrationElement}
-         * @param {!WebInspector.ServiceWorkerVersion} version
-         */
-        function callSkipWaitingForInstalledVersions(version)
-        {
-            if (version.isInstalled())
-                this._manager.skipWaiting(version.id);
-        }
     },
 
     /**

@@ -225,14 +225,6 @@ WebInspector.ServiceWorkerManager.prototype = {
     },
 
     /**
-     * @param {string} versionId
-     */
-    skipWaiting: function(versionId)
-    {
-        this._agent.skipWaiting(versionId);
-    },
-
-    /**
      * @param {!ServiceWorkerAgent.TargetID} targetId
      * @param {function(?WebInspector.TargetInfo)=} callback
      */

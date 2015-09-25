@@ -4452,13 +4452,6 @@
                 "handlers": ["browser"]
             },
             {
-                "name": "skipWaiting",
-                "parameters": [
-                    { "name": "versionId", "type": "string" }
-                ],
-                "handlers": ["browser"]
-            },
-            {
                 "name": "setDebugOnStart",
                 "parameters": [
                     { "name": "debugOnStart", "type": "boolean" }

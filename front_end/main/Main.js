@@ -177,6 +177,10 @@ WebInspector.Main.prototype = {
     {
         console.timeStamp("Main._createApp");
 
+        // Request filesystems early, we won't create connections until callback is fired. Things will happen in parallel.
+        WebInspector.isolatedFileSystemManager = new WebInspector.IsolatedFileSystemManager();
+        WebInspector.isolatedFileSystemManager.initialize(this._didInitializeFileSystemManager.bind(this));
+
         WebInspector.initializeUIUtils(window);
         WebInspector.installComponentRootStyles(/** @type {!Element} */ (document.body));
 
@@ -202,10 +206,11 @@ WebInspector.Main.prototype = {
         WebInspector.shortcutsScreen.section(WebInspector.UIString("Console"));
 
         WebInspector.fileManager = new WebInspector.FileManager();
-        WebInspector.isolatedFileSystemManager = new WebInspector.IsolatedFileSystemManager();
-        WebInspector.workspace = new WebInspector.Workspace(WebInspector.isolatedFileSystemManager.mapping());
+        WebInspector.workspace = new WebInspector.Workspace();
+        WebInspector.fileSystemMapping = new WebInspector.FileSystemMapping();
+
         WebInspector.fileSystemWorkspaceBinding = new WebInspector.FileSystemWorkspaceBinding(WebInspector.isolatedFileSystemManager, WebInspector.workspace);
-        WebInspector.networkMapping = new WebInspector.NetworkMapping(WebInspector.workspace, WebInspector.fileSystemWorkspaceBinding, WebInspector.isolatedFileSystemManager.mapping());
+        WebInspector.networkMapping = new WebInspector.NetworkMapping(WebInspector.workspace, WebInspector.fileSystemWorkspaceBinding, WebInspector.fileSystemMapping);
         WebInspector.networkProjectManager = new WebInspector.NetworkProjectManager(WebInspector.targetManager, WebInspector.workspace, WebInspector.networkMapping);
         WebInspector.presentationConsoleMessageHelper = new WebInspector.PresentationConsoleMessageHelper(WebInspector.workspace);
         WebInspector.cssWorkspaceBinding = new WebInspector.CSSWorkspaceBinding(WebInspector.targetManager, WebInspector.workspace, WebInspector.networkMapping);
@@ -263,8 +268,6 @@ WebInspector.Main.prototype = {
             if (value !== null)
                 extension.instancePromise().then(handleQueryParam.bind(null, value));
         }
-        // Give UI cycles to repaint, then proceed with creating connection.
-        setTimeout(this._createConnection.bind(this), 0);
 
         /**
          * @param {string} value
@@ -274,6 +277,19 @@ WebInspector.Main.prototype = {
         {
             handler.handleQueryParam(value);
         }
+        this._appUIShown = true;
+
+        if (this._fileSystemManagerInitialized) {
+            // Allow UI cycles to repaint prior to creating connection.
+            setTimeout(this._createConnection.bind(this), 0);
+        }
+    },
+
+    _didInitializeFileSystemManager: function()
+    {
+        this._fileSystemManagerInitialized = true;
+        if (this._appUIShown)
+            this._createConnection();
     },
 
     _createConnection: function()

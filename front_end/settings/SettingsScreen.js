@@ -372,7 +372,7 @@ WebInspector.WorkspaceSettingsTab.prototype = {
     _resetFileSystems: function()
     {
         this._fileSystemsListContainer.removeChildren();
-        var fileSystemPaths = WebInspector.isolatedFileSystemManager.mapping().fileSystemPaths();
+        var fileSystemPaths = WebInspector.isolatedFileSystemManager.fileSystemPaths();
         delete this._fileSystemsList;
 
         if (!fileSystemPaths.length) {

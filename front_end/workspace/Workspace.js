@@ -547,11 +547,9 @@ WebInspector.projectTypes = {
 /**
  * @constructor
  * @extends {WebInspector.Object}
- * @param {!WebInspector.FileSystemMapping} fileSystemMapping
  */
-WebInspector.Workspace = function(fileSystemMapping)
+WebInspector.Workspace = function()
 {
-    this._fileSystemMapping = fileSystemMapping;
     /** @type {!Object.<string, !WebInspector.Project>} */
     this._projects = {};
     this._hasResourceContentTrackingExtensions = false;

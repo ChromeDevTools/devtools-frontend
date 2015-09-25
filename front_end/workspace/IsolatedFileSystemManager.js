@@ -38,9 +38,7 @@ WebInspector.IsolatedFileSystemManager = function()
     this._fileSystems = {};
     /** @type {!Object.<string, !Array.<function(?DOMFileSystem)>>} */
     this._pendingFileSystemRequests = {};
-    this._fileSystemMapping = new WebInspector.FileSystemMapping();
     this._excludedFolderManager = new WebInspector.ExcludedFolderManager();
-    this._requestFileSystems();
 
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.FileSystemsLoaded, this._onFileSystemsLoaded, this);
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.FileSystemRemoved, this._onFileSystemRemoved, this);
@@ -57,14 +55,6 @@ WebInspector.IsolatedFileSystemManager.Events = {
 
 WebInspector.IsolatedFileSystemManager.prototype = {
     /**
-     * @return {!WebInspector.FileSystemMapping}
-     */
-    mapping: function()
-    {
-        return this._fileSystemMapping;
-    },
-
-    /**
      * @return {!WebInspector.ExcludedFolderManager}
      */
     excludedFolderManager: function()
@@ -72,9 +62,13 @@ WebInspector.IsolatedFileSystemManager.prototype = {
         return this._excludedFolderManager;
     },
 
-    _requestFileSystems: function()
+    /**
+     * @param {function()} callback
+     */
+    initialize: function(callback)
     {
         console.assert(!this._loaded);
+        this._initializeCallback = callback;
         InspectorFrontendHost.requestFileSystems();
     },
 
@@ -102,14 +96,11 @@ WebInspector.IsolatedFileSystemManager.prototype = {
             this._innerAddFileSystem(fileSystems[i]);
             addedFileSystemPaths[fileSystems[i].fileSystemPath] = true;
         }
-        var fileSystemPaths = this._fileSystemMapping.fileSystemPaths();
-        for (var i = 0; i < fileSystemPaths.length; ++i) {
-            var fileSystemPath = fileSystemPaths[i];
-            if (!addedFileSystemPaths[fileSystemPath])
-                this._fileSystemRemoved(fileSystemPath);
-        }
 
         this._loaded = true;
+
+        this._initializeCallback();
+        delete this._initializeCallback;
         this._processPendingFileSystemRequests();
     },
 
@@ -119,7 +110,6 @@ WebInspector.IsolatedFileSystemManager.prototype = {
     _innerAddFileSystem: function(fileSystem)
     {
         var fileSystemPath = fileSystem.fileSystemPath;
-        this._fileSystemMapping.addFileSystem(fileSystemPath);
         var isolatedFileSystem = new WebInspector.IsolatedFileSystem(this, fileSystemPath, fileSystem.fileSystemName, fileSystem.rootURL);
         this._fileSystems[fileSystemPath] = isolatedFileSystem;
         this.dispatchEventToListeners(WebInspector.IsolatedFileSystemManager.Events.FileSystemAdded, isolatedFileSystem);
@@ -161,7 +151,6 @@ WebInspector.IsolatedFileSystemManager.prototype = {
      */
     _fileSystemRemoved: function(fileSystemPath)
     {
-        this._fileSystemMapping.removeFileSystem(fileSystemPath);
         this._excludedFolderManager.removeFileSystem(fileSystemPath);
         var isolatedFileSystem = this._fileSystems[fileSystemPath];
         delete this._fileSystems[fileSystemPath];
@@ -196,6 +185,14 @@ WebInspector.IsolatedFileSystemManager.prototype = {
             return;
         }
         callback(this._isolatedFileSystem(fileSystemPath));
+    },
+
+    /**
+     * @return {!Array<string>}
+     */
+    fileSystemPaths: function()
+    {
+        return Object.keys(this._fileSystems);
     },
 
     __proto__: WebInspector.Object.prototype

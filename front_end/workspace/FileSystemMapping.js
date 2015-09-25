@@ -46,7 +46,6 @@ WebInspector.FileSystemMapping.Events = {
     FileMappingRemoved: "FileMappingRemoved"
 }
 
-
 WebInspector.FileSystemMapping.prototype = {
     _loadFromSettings: function()
     {
@@ -141,14 +140,6 @@ WebInspector.FileSystemMapping.prototype = {
         this._fileSystemMappings[fileSystemPath].remove(entry);
         this._saveToSettings();
         this.dispatchEventToListeners(WebInspector.FileSystemMapping.Events.FileMappingRemoved, entry);
-    },
-
-    /**
-     * @return {!Array.<string>}
-     */
-    fileSystemPaths: function()
-    {
-        return Object.keys(this._fileSystemMappings);
     },
 
     /**
@@ -298,3 +289,8 @@ WebInspector.FileSystemMapping.Entry = function(fileSystemPath, urlPrefix, pathP
     this.urlPrefix = urlPrefix;
     this.pathPrefix = pathPrefix;
 }
+
+/**
+ * @type {!WebInspector.FileSystemMapping}
+ */
+WebInspector.fileSystemMapping;

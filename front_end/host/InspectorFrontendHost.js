@@ -213,6 +213,7 @@ WebInspector.InspectorFrontendHostStub.prototype = {
      */
     requestFileSystems: function()
     {
+        this.events.dispatchEventToListeners(InspectorFrontendHostAPI.Events.FileSystemsLoaded, []);
     },
 
     /**

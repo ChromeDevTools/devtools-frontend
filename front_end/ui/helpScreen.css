@@ -310,6 +310,11 @@ body.dock-to-bottom .help-content {
     opacity: 1.0 !important;
 }
 
+#workspace-tab-content .help-block {
+    width: auto;
+    margin-right: 20px;
+}
+
 .settings-tab .settings-list-container {
     background-color: white;
     margin-bottom: 10px;
@@ -326,7 +331,7 @@ body.dock-to-bottom .help-content {
     -webkit-box-align: center;
     -webkit-transition: 150ms background-color;
     display: -webkit-box;
-    padding-right: 3px;
+    padding-right: 8px;
 }
 
 .settings-tab .settings-list .settings-list-item .settings-list-item-contents > :first-child {

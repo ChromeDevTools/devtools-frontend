@@ -45,8 +45,8 @@ WebInspector.EditFileSystemDialog = function(fileSystemPath)
 
     var contents = this.element.createChild("div", "contents");
 
-    WebInspector.isolatedFileSystemManager.mapping().addEventListener(WebInspector.FileSystemMapping.Events.FileMappingAdded, this._fileMappingAdded, this);
-    WebInspector.isolatedFileSystemManager.mapping().addEventListener(WebInspector.FileSystemMapping.Events.FileMappingRemoved, this._fileMappingRemoved, this);
+    WebInspector.fileSystemMapping.addEventListener(WebInspector.FileSystemMapping.Events.FileMappingAdded, this._fileMappingAdded, this);
+    WebInspector.fileSystemMapping.addEventListener(WebInspector.FileSystemMapping.Events.FileMappingRemoved, this._fileMappingRemoved, this);
     WebInspector.isolatedFileSystemManager.excludedFolderManager().addEventListener(WebInspector.ExcludedFolderManager.Events.ExcludedFolderAdded, this._excludedFolderAdded, this);
     WebInspector.isolatedFileSystemManager.excludedFolderManager().addEventListener(WebInspector.ExcludedFolderManager.Events.ExcludedFolderRemoved, this._excludedFolderRemoved, this);
 
@@ -54,7 +54,7 @@ WebInspector.EditFileSystemDialog = function(fileSystemPath)
     blockHeader.textContent = WebInspector.UIString("Mappings");
     this._fileMappingsSection = contents.createChild("div", "section");
     this._fileMappingsListContainer = this._fileMappingsSection.createChild("div", "settings-list-container");
-    var entries = WebInspector.isolatedFileSystemManager.mapping().mappingEntries(this._fileSystemPath);
+    var entries = WebInspector.fileSystemMapping.mappingEntries(this._fileSystemPath);
 
     var urlColumn = { id: "url", placeholder: WebInspector.UIString("URL prefix") };
     var pathColumn = { id: "path", placeholder: WebInspector.UIString("Folder path") };
@@ -201,7 +201,7 @@ WebInspector.EditFileSystemDialog.prototype = {
             var urlPrefix = itemId;
             var pathPrefix = this._entries[itemId].pathPrefix;
             var fileSystemPath = this._entries[itemId].fileSystemPath;
-            WebInspector.isolatedFileSystemManager.mapping().removeFileMapping(fileSystemPath, urlPrefix, pathPrefix);
+            WebInspector.fileSystemMapping.removeFileMapping(fileSystemPath, urlPrefix, pathPrefix);
         }
         this._addFileMapping(data["url"], data["path"]);
     },
@@ -232,7 +232,7 @@ WebInspector.EditFileSystemDialog.prototype = {
             return;
 
         var entry = this._entries[urlPrefix];
-        WebInspector.isolatedFileSystemManager.mapping().removeFileMapping(entry.fileSystemPath, entry.urlPrefix, entry.pathPrefix);
+        WebInspector.fileSystemMapping.removeFileMapping(entry.fileSystemPath, entry.urlPrefix, entry.pathPrefix);
         this._hasMappingChanges = true;
     },
 
@@ -245,7 +245,7 @@ WebInspector.EditFileSystemDialog.prototype = {
     {
         var normalizedURLPrefix = this._normalizePrefix(urlPrefix);
         var normalizedPathPrefix = this._normalizePrefix(pathPrefix);
-        WebInspector.isolatedFileSystemManager.mapping().addFileMapping(this._fileSystemPath, normalizedURLPrefix, normalizedPathPrefix);
+        WebInspector.fileSystemMapping.addFileMapping(this._fileSystemPath, normalizedURLPrefix, normalizedPathPrefix);
         this._hasMappingChanges = true;
         this._fileMappingsList.selectItem(normalizedURLPrefix);
         return true;

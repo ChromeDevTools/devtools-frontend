@@ -11,12 +11,32 @@
 WebInspector.NetworkMapping = function(workspace, fileSystemWorkspaceBinding, fileSystemMapping)
 {
     this._workspace = workspace;
-    this._fileSystemMapping = fileSystemMapping;
     this._fileSystemWorkspaceBinding = fileSystemWorkspaceBinding;
+    this._fileSystemMapping = fileSystemMapping;
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.RevealSourceLine, this._revealSourceLine, this);
+    fileSystemWorkspaceBinding.fileSystemManager().addEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemAdded, this._fileSystemAdded, this);
+    fileSystemWorkspaceBinding.fileSystemManager().addEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemRemoved, this._fileSystemRemoved, this);
 }
 
 WebInspector.NetworkMapping.prototype = {
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _fileSystemAdded: function(event)
+    {
+        var fileSystem = /** @type {!WebInspector.IsolatedFileSystem} */ (event.data);
+        this._fileSystemMapping.addFileSystem(fileSystem.path());
+    },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _fileSystemRemoved: function(event)
+    {
+        var fileSystem = /** @type {!WebInspector.IsolatedFileSystem} */ (event.data);
+        this._fileSystemMapping.removeFileSystem(fileSystem.path());
+    },
+
     /**
      * @param {!WebInspector.UISourceCode} uiSourceCode
      * @return {string}

@@ -69,6 +69,14 @@ WebInspector.FileSystemWorkspaceBinding.projectId = function(fileSystemPath)
 
 WebInspector.FileSystemWorkspaceBinding.prototype = {
     /**
+     * @return {!WebInspector.IsolatedFileSystemManager}
+     */
+    fileSystemManager: function()
+    {
+        return this._isolatedFileSystemManager;
+    },
+
+    /**
      * @param {!WebInspector.Event} event
      */
     _fileSystemAdded: function(event)

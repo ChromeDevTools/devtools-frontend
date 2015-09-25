@@ -850,7 +850,7 @@ WebInspector.SourcesPanel.prototype = {
         {
             if (!networkUISourceCode)
                 return;
-            this._networkMapping.addMapping(networkUISourceCode, uiSourceCode, WebInspector.fileSystemWorkspaceBinding);
+            this._networkMapping.addMapping(networkUISourceCode, uiSourceCode);
             this._suggestReload();
         }
     },
@@ -870,7 +870,7 @@ WebInspector.SourcesPanel.prototype = {
         {
             if (!uiSourceCode)
                 return;
-            this._networkMapping.addMapping(networkUISourceCode, uiSourceCode, WebInspector.fileSystemWorkspaceBinding);
+            this._networkMapping.addMapping(networkUISourceCode, uiSourceCode);
             this._suggestReload();
         }
     },

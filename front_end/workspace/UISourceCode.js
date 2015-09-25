@@ -37,16 +37,14 @@
  * @param {string} parentPath
  * @param {string} name
  * @param {string} originURL
- * @param {string} url
  * @param {!WebInspector.ResourceType} contentType
  */
-WebInspector.UISourceCode = function(project, parentPath, name, originURL, url, contentType)
+WebInspector.UISourceCode = function(project, parentPath, name, originURL, contentType)
 {
     this._project = project;
     this._parentPath = parentPath;
     this._name = name;
     this._originURL = originURL;
-    this._url = url;
     this._contentType = contentType;
     /** @type {!Array.<function(?string)>} */
     this._requestContentCallbacks = [];
@@ -67,14 +65,6 @@ WebInspector.UISourceCode.Events = {
 }
 
 WebInspector.UISourceCode.prototype = {
-    /**
-     * @return {string}
-     */
-    networkURL: function()
-    {
-        return this._url;
-    },
-
     /**
      * @return {string}
      */
@@ -157,15 +147,14 @@ WebInspector.UISourceCode.prototype = {
         /**
          * @param {boolean} success
          * @param {string=} newName
-         * @param {string=} newURL
          * @param {string=} newOriginURL
          * @param {!WebInspector.ResourceType=} newContentType
          * @this {WebInspector.UISourceCode}
          */
-        function innerCallback(success, newName, newURL, newOriginURL, newContentType)
+        function innerCallback(success, newName, newOriginURL, newContentType)
         {
             if (success)
-                this._updateName(/** @type {string} */ (newName), /** @type {string} */ (newURL), /** @type {string} */ (newOriginURL), /** @type {!WebInspector.ResourceType} */ (newContentType));
+                this._updateName(/** @type {string} */ (newName), /** @type {string} */ (newOriginURL), /** @type {!WebInspector.ResourceType} */ (newContentType));
             callback(success);
         }
     },
@@ -177,16 +166,13 @@ WebInspector.UISourceCode.prototype = {
 
     /**
      * @param {string} name
-     * @param {string} url
      * @param {string} originURL
      * @param {!WebInspector.ResourceType=} contentType
      */
-    _updateName: function(name, url, originURL, contentType)
+    _updateName: function(name, originURL, contentType)
     {
         var oldURI = this.uri();
         this._name = name;
-        if (url)
-            this._url = url;
         if (originURL)
             this._originURL = originURL;
         if (contentType)

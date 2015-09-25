@@ -100,7 +100,7 @@ WebInspector.NetworkProjectDelegate.prototype = {
      */
     addFile: function(parentPath, name, url, contentProvider)
     {
-        return this.addContentProvider(parentPath, name, url, url, contentProvider);
+        return this.addContentProvider(parentPath, name, url, contentProvider);
     },
 
     __proto__: WebInspector.ContentProviderBasedProjectDelegate.prototype

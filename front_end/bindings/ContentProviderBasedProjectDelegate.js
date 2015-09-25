@@ -141,7 +141,7 @@ WebInspector.ContentProviderBasedProjectDelegate.prototype = {
      * @override
      * @param {string} path
      * @param {string} newName
-     * @param {function(boolean, string=, string=, string=, !WebInspector.ResourceType=)} callback
+     * @param {function(boolean, string=, string=, !WebInspector.ResourceType=)} callback
      */
     rename: function(path, newName, callback)
     {
@@ -335,16 +335,15 @@ WebInspector.ContentProviderBasedProjectDelegate.prototype = {
      * @param {string} parentPath
      * @param {string} name
      * @param {string} originURL
-     * @param {string} url
      * @param {!WebInspector.ContentProvider} contentProvider
      * @return {string}
      */
-    addContentProvider: function(parentPath, name, originURL, url, contentProvider)
+    addContentProvider: function(parentPath, name, originURL, contentProvider)
     {
         var path = parentPath ? parentPath + "/" + name : name;
         if (this._contentProviders[path])
             return path;
-        var fileDescriptor = new WebInspector.FileDescriptor(parentPath, name, originURL, url, contentProvider.contentType());
+        var fileDescriptor = new WebInspector.FileDescriptor(parentPath, name, originURL, contentProvider.contentType());
         this._contentProviders[path] = contentProvider;
         this.dispatchEventToListeners(WebInspector.ProjectDelegate.Events.FileAdded, fileDescriptor);
         return path;

@@ -166,7 +166,7 @@ WebInspector.CompilerScriptMapping.prototype = {
         var splitURL = WebInspector.ParsedURL.splitURLIntoPathComponents(url);
         var parentPath = splitURL.slice(1, -1).join("/");
         var name = splitURL.peekLast() || "";
-        var uiSourceCodePath = this._stubProjectDelegate.addContentProvider(parentPath, name, url, url, new WebInspector.StaticContentProvider(WebInspector.resourceTypes.Script, "\n\n\n\n\n// Please wait a bit.\n// Compiled script is not shown while source map is being loaded!", url));
+        var uiSourceCodePath = this._stubProjectDelegate.addContentProvider(parentPath, name, url, new WebInspector.StaticContentProvider(WebInspector.resourceTypes.Script, "\n\n\n\n\n// Please wait a bit.\n// Compiled script is not shown while source map is being loaded!", url));
         var stubUISourceCode = /** @type {!WebInspector.UISourceCode} */ (this._workspace.uiSourceCode(this._stubProjectID, uiSourceCodePath));
         this._stubUISourceCodes.set(script.scriptId, stubUISourceCode);
 

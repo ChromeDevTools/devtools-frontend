@@ -5,12 +5,14 @@
 /**
  * @constructor
  * @param {!WebInspector.Workspace} workspace
+ * @param {!WebInspector.FileSystemWorkspaceBinding} fileSystemWorkspaceBinding
  * @param {!WebInspector.FileSystemMapping} fileSystemMapping
  */
-WebInspector.NetworkMapping = function(workspace, fileSystemMapping)
+WebInspector.NetworkMapping = function(workspace, fileSystemWorkspaceBinding, fileSystemMapping)
 {
     this._workspace = workspace;
     this._fileSystemMapping = fileSystemMapping;
+    this._fileSystemWorkspaceBinding = fileSystemWorkspaceBinding;
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.RevealSourceLine, this._revealSourceLine, this);
 }
 
@@ -21,8 +23,11 @@ WebInspector.NetworkMapping.prototype = {
      */
     networkURL: function(uiSourceCode)
     {
-        // FIXME: This should use fileSystemMapping to determine url.
-        return uiSourceCode.networkURL();
+        if (uiSourceCode.project().type() === WebInspector.projectTypes.FileSystem) {
+            var fileSystemPath = this._fileSystemWorkspaceBinding.fileSystemPath(uiSourceCode.project().id());
+            return this.urlForPath(fileSystemPath, uiSourceCode.path());
+        }
+        return uiSourceCode.originURL();
     },
 
     /**
@@ -104,13 +109,12 @@ WebInspector.NetworkMapping.prototype = {
     /**
      * @param {!WebInspector.UISourceCode} networkUISourceCode
      * @param {!WebInspector.UISourceCode} uiSourceCode
-     * @param {!WebInspector.FileSystemWorkspaceBinding} fileSystemWorkspaceBinding
      */
-    addMapping: function(networkUISourceCode, uiSourceCode, fileSystemWorkspaceBinding)
+    addMapping: function(networkUISourceCode, uiSourceCode)
     {
         var url = this.networkURL(networkUISourceCode);
         var path = uiSourceCode.path();
-        var fileSystemPath = fileSystemWorkspaceBinding.fileSystemPath(uiSourceCode.project().id());
+        var fileSystemPath = this._fileSystemWorkspaceBinding.fileSystemPath(uiSourceCode.project().id());
         this._fileSystemMapping.addMappingForResource(url, fileSystemPath, path);
     },
 

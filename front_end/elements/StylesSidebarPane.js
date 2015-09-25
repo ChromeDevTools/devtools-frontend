@@ -332,12 +332,10 @@ WebInspector.StylesSidebarPane.prototype = {
         {
             if (!matchedStyles || node !== this.node())
                 return null;
-            if (!matchedStyles.matchedCSSRules || !matchedStyles.pseudoElements || !matchedStyles.inherited)
-                return null;
 
             return {
-                matched: this._buildMatchedRulesSectionCascade(node, matchedStyles),
-                pseudo: this._buildPseudoCascades(node, matchedStyles)
+                matched: this._buildMatchedRulesSectionCascade(matchedStyles),
+                pseudo: this._buildPseudoCascades(matchedStyles)
             };
         }
     },
@@ -442,23 +440,19 @@ WebInspector.StylesSidebarPane.prototype = {
     },
 
     /**
-     * @param {!WebInspector.DOMNode} node
-     * @param {!WebInspector.CSSStyleModel.MatchedStyleResult} styles
+     * @param {!WebInspector.CSSStyleModel.MatchedStyleResult} matchedResult
      * @return {!Map<number, !WebInspector.SectionCascade>}
      */
-    _buildPseudoCascades: function(node, styles)
+    _buildPseudoCascades: function(matchedResult)
     {
         var pseudoCascades = new Map();
-        for (var i = 0; i < styles.pseudoElements.length; ++i) {
-            var pseudoElementCSSRules = styles.pseudoElements[i];
-            var pseudoType = pseudoElementCSSRules.pseudoType;
-
+        var pseudoStyles = matchedResult.pseudoStyles();
+        for (var pseudoType of pseudoStyles.keys()) {
+            var styles = pseudoStyles.get(pseudoType);
             // Add rules in reverse order to match the cascade order.
             var pseudoElementCascade = new WebInspector.SectionCascade();
-            for (var j = pseudoElementCSSRules.rules.length - 1; j >= 0; --j) {
-                var rule = pseudoElementCSSRules.rules[j];
-                pseudoElementCascade.appendModelFromRule(rule);
-            }
+            for (var i = 0; i < styles.length; ++i)
+                pseudoElementCascade.appendModelFromStyle(styles[i], "");
             pseudoCascades.set(pseudoType, pseudoElementCascade);
         }
         return pseudoCascades;
@@ -474,56 +468,24 @@ WebInspector.StylesSidebarPane.prototype = {
     },
 
     /**
-     * @param {!WebInspector.DOMNode} node
-     * @param {!WebInspector.CSSStyleModel.MatchedStyleResult} styles
+     * @param {!WebInspector.CSSStyleModel.MatchedStyleResult} matchedResult
      * @return {!WebInspector.SectionCascade}
      */
-    _buildMatchedRulesSectionCascade: function(node, styles)
+    _buildMatchedRulesSectionCascade: function(matchedResult)
     {
         var cascade = new WebInspector.SectionCascade();
 
-        function addAttributesStyle()
-        {
-            if (!styles.attributesStyle)
-                return;
-            var selectorText = node.nodeNameInCorrectCase() + "[" + WebInspector.UIString("Attributes Style") + "]";
-            cascade.appendModelFromStyle(styles.attributesStyle, selectorText);
-        }
-
-        // Inline style has the greatest specificity.
-        if (styles.inlineStyle && node.nodeType() === Node.ELEMENT_NODE)
-            cascade.appendModelFromStyle(styles.inlineStyle, "element.style");
-
-        // Add rules in reverse order to match the cascade order.
-        var addedAttributesStyle;
-        for (var i = styles.matchedCSSRules.length - 1; i >= 0; --i) {
-            var rule = styles.matchedCSSRules[i];
-            if ((rule.isInjected() || rule.isUserAgent()) && !addedAttributesStyle) {
-                // Show element's Style Attributes after all author rules.
-                addedAttributesStyle = true;
-                addAttributesStyle();
-            }
-            cascade.appendModelFromRule(rule);
-        }
-
-        if (!addedAttributesStyle)
-            addAttributesStyle();
-
-        // Walk the node structure and identify styles with inherited properties.
-        var parentNode = node.parentNode;
-
-        for (var parentOrdinal = 0; parentOrdinal < styles.inherited.length; ++parentOrdinal) {
-            var parentStyles = styles.inherited[parentOrdinal];
-            if (parentStyles.inlineStyle && this._containsInherited(parentStyles.inlineStyle))
-                cascade.appendModelFromStyle(parentStyles.inlineStyle, WebInspector.UIString("Style Attribute"), parentNode);
-
-            for (var i = parentStyles.matchedCSSRules.length - 1; i >= 0; --i) {
-                var rulePayload = parentStyles.matchedCSSRules[i];
-                if (!this._containsInherited(rulePayload.style))
-                    continue;
-                cascade.appendModelFromRule(rulePayload, parentNode);
-            }
-            parentNode = parentNode.parentNode;
+        var nodeStyles = matchedResult.nodeStyles();
+        for (var i = 0; i < nodeStyles.length; ++i) {
+            var style = nodeStyles[i];
+            var node = matchedResult.nodeForStyle(style);
+            var inherited = matchedResult.isInherited(style);
+            var customSelectorText = "";
+            if (style.type === WebInspector.CSSStyleDeclaration.Type.Inline)
+                customSelectorText = inherited ? WebInspector.UIString("Style Attribute") : "element.style";
+            else if (style.type === WebInspector.CSSStyleDeclaration.Type.Attributes)
+                customSelectorText = node.nodeNameInCorrectCase() + "[" + WebInspector.UIString("Attributes Style") + "]";
+            cascade.appendModelFromStyle(style, customSelectorText, inherited ? node : null);
         }
         return cascade;
     },
@@ -548,22 +510,6 @@ WebInspector.StylesSidebarPane.prototype = {
             blocks.peekLast().sections.push(section);
         }
         return blocks;
-    },
-
-    /**
-     * @param {!WebInspector.CSSStyleDeclaration} style
-     * @return {boolean}
-     */
-    _containsInherited: function(style)
-    {
-        var properties = style.allProperties;
-        for (var i = 0; i < properties.length; ++i) {
-            var property = properties[i];
-            // Does this style contain non-overridden inherited property?
-            if (property.activeInStyle() && WebInspector.CSSMetadata.isPropertyInherited(property.name))
-                return true;
-        }
-        return false;
     },
 
     _createNewRuleInViaInspectorStyleSheet: function()

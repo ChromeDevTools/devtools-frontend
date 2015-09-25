@@ -140,7 +140,7 @@ WebInspector.CSSStyleModel.prototype = {
             if (error)
                 return null;
 
-            return new WebInspector.CSSStyleModel.MatchedStyleResult(this, inlinePayload, attributesPayload, matchedPayload, pseudoPayload, inheritedPayload);
+            return new WebInspector.CSSStyleModel.MatchedStyleResult(this, nodeId, inlinePayload, attributesPayload, matchedPayload, pseudoPayload, inheritedPayload);
         }
 
         return this._agent.getMatchedStylesForNode(nodeId, callback.bind(this));
@@ -215,8 +215,8 @@ WebInspector.CSSStyleModel.prototype = {
         {
             if (error || !inlinePayload)
                 return null;
-            var inlineStyle = inlinePayload ? new WebInspector.CSSStyleDeclaration(this, null, inlinePayload) : null;
-            var attributesStyle = attributesStylePayload ? new WebInspector.CSSStyleDeclaration(this, null, attributesStylePayload) : null;
+            var inlineStyle = inlinePayload ? new WebInspector.CSSStyleDeclaration(this, null, inlinePayload, WebInspector.CSSStyleDeclaration.Type.Inline) : null;
+            var attributesStyle = attributesStylePayload ? new WebInspector.CSSStyleDeclaration(this, null, attributesStylePayload, WebInspector.CSSStyleDeclaration.Type.Attributes) : null;
             return new WebInspector.CSSStyleModel.InlineStyleResult(inlineStyle, attributesStyle);
         }
 
@@ -631,12 +631,21 @@ WebInspector.CSSLocation.prototype = {
  * @param {!WebInspector.CSSStyleModel} cssModel
  * @param {?WebInspector.CSSRule} parentRule
  * @param {!CSSAgent.CSSStyle} payload
+ * @param {!WebInspector.CSSStyleDeclaration.Type} type
  */
-WebInspector.CSSStyleDeclaration = function(cssModel, parentRule, payload)
+WebInspector.CSSStyleDeclaration = function(cssModel, parentRule, payload, type)
 {
     this._cssModel = cssModel;
     this.parentRule = parentRule;
     this._reinitialize(payload);
+    this.type = type;
+}
+
+/** @enum {string} */
+WebInspector.CSSStyleDeclaration.Type = {
+    Regular: "Regular",
+    Inline: "Inline",
+    Attributes: "Attributes"
 }
 
 /**
@@ -649,7 +658,7 @@ WebInspector.CSSStyleDeclaration.createDummyStyle = function(cssModel)
         shorthandEntries: [],
         cssProperties: []
     };
-    return new WebInspector.CSSStyleDeclaration(cssModel, null, dummyPayload);
+    return new WebInspector.CSSStyleDeclaration(cssModel, null, dummyPayload, WebInspector.CSSStyleDeclaration.Type.Regular);
 }
 
 WebInspector.CSSStyleDeclaration.prototype = {
@@ -1019,7 +1028,7 @@ WebInspector.CSSRule = function(cssModel, payload, matchingSelectors)
         this.sourceURL = styleSheetHeader.sourceURL;
     }
     this.origin = payload.origin;
-    this.style = new WebInspector.CSSStyleDeclaration(this._cssModel, this, payload.style);
+    this.style = new WebInspector.CSSStyleDeclaration(this._cssModel, this, payload.style, WebInspector.CSSStyleDeclaration.Type.Regular);
     if (payload.media)
         this.media = WebInspector.CSSMedia.parseMediaArrayPayload(cssModel, payload.media);
 }
@@ -2023,59 +2032,146 @@ WebInspector.CSSStyleModel.fromNode = function(node)
 /**
  * @constructor
  * @param {!WebInspector.CSSStyleModel} cssModel
+ * @param {!DOMAgent.NodeId} nodeId
  * @param {?CSSAgent.CSSStyle=} inlinePayload
  * @param {?CSSAgent.CSSStyle=} attributesPayload
  * @param {!Array.<!CSSAgent.RuleMatch>=} matchedPayload
  * @param {!Array.<!CSSAgent.PseudoElementMatches>=} pseudoPayload
  * @param {!Array.<!CSSAgent.InheritedStyleEntry>=} inheritedPayload
  */
-WebInspector.CSSStyleModel.MatchedStyleResult = function(cssModel, inlinePayload, attributesPayload, matchedPayload, pseudoPayload, inheritedPayload)
+WebInspector.CSSStyleModel.MatchedStyleResult = function(cssModel, nodeId, inlinePayload, attributesPayload, matchedPayload, pseudoPayload, inheritedPayload)
 {
     this._cssModel = cssModel;
-    this.inlineStyle = inlinePayload ? new WebInspector.CSSStyleDeclaration(cssModel, null, inlinePayload) : null;
-    this.attributesStyle = attributesPayload ? new WebInspector.CSSStyleDeclaration(cssModel, null, attributesPayload) : null;
+    this._node = this._cssModel._domModel.nodeForId(nodeId);
 
-    this.matchedCSSRules = WebInspector.CSSStyleModel.parseRuleMatchArrayPayload(cssModel, matchedPayload);
+    this._nodeStyles = [];
+    this._nodeForStyle = new Map();
 
-    this.pseudoElements = [];
+    /**
+     * @this {WebInspector.CSSStyleModel.MatchedStyleResult}
+     */
+    function addAttributesStyle()
+    {
+        if (!attributesPayload)
+            return;
+        var style = new WebInspector.CSSStyleDeclaration(cssModel, null, attributesPayload, WebInspector.CSSStyleDeclaration.Type.Attributes);
+        this._nodeForStyle.set(style, this._node);
+        this._nodeStyles.push(style);
+    }
+
+    // Inline style has the greatest specificity.
+    if (inlinePayload && this._node.nodeType() === Node.ELEMENT_NODE) {
+        var style = new WebInspector.CSSStyleDeclaration(cssModel, null, inlinePayload, WebInspector.CSSStyleDeclaration.Type.Inline);
+        this._nodeForStyle.set(style, this._node);
+        this._nodeStyles.push(style);
+    }
+
+    // Add rules in reverse order to match the cascade order.
+    var addedAttributesStyle;
+    var matchedRules = WebInspector.CSSStyleModel.parseRuleMatchArrayPayload(cssModel, matchedPayload);
+    for (var i = matchedRules.length - 1; i >= 0; --i) {
+        var rule = matchedRules[i];
+        if ((rule.isInjected() || rule.isUserAgent()) && !addedAttributesStyle) {
+            // Show element's Style Attributes after all author rules.
+            addedAttributesStyle = true;
+            addAttributesStyle.call(this);
+        }
+        this._nodeForStyle.set(rule.style, this._node);
+        this._nodeStyles.push(rule.style);
+    }
+
+    if (!addedAttributesStyle)
+        addAttributesStyle.call(this);
+
+    // Walk the node structure and identify styles with inherited properties.
+    var parentNode = this._node.parentNode;
+    for (var i = 0; inheritedPayload && i < inheritedPayload.length; ++i) {
+        var entryPayload = inheritedPayload[i];
+        var inheritedInlineStyle = entryPayload.inlineStyle ? new WebInspector.CSSStyleDeclaration(cssModel, null, entryPayload.inlineStyle, WebInspector.CSSStyleDeclaration.Type.Inline) : null;
+        var inheritedMatchedCSSRules = entryPayload.matchedCSSRules ? WebInspector.CSSStyleModel.parseRuleMatchArrayPayload(cssModel, entryPayload.matchedCSSRules) : null;
+        if (inheritedInlineStyle && this._containsInherited(inheritedInlineStyle)) {
+            this._nodeForStyle.set(inheritedInlineStyle, parentNode);
+            this._nodeStyles.push(inheritedInlineStyle);
+        }
+
+        for (var j = inheritedMatchedCSSRules.length - 1; j >= 0; --j) {
+            var inheritedRule = inheritedMatchedCSSRules[j];
+            if (!this._containsInherited(inheritedRule.style))
+                continue;
+            this._nodeForStyle.set(inheritedRule.style, parentNode);
+            this._nodeStyles.push(inheritedRule.style);
+        }
+        parentNode = parentNode.parentNode;
+    }
+
+    // Set up pseudo styles map.
+    this._pseudoStyles = new Map();
     if (pseudoPayload) {
         for (var i = 0; i < pseudoPayload.length; ++i) {
             var entryPayload = pseudoPayload[i];
-            this.pseudoElements.push(new WebInspector.CSSStyleModel.PseudoElementMatches(entryPayload.pseudoType, WebInspector.CSSStyleModel.parseRuleMatchArrayPayload(cssModel, entryPayload.matches)));
-        }
-    }
-
-    this.inherited = [];
-    if (inheritedPayload) {
-        for (var i = 0; i < inheritedPayload.length; ++i) {
-            var entryPayload = inheritedPayload[i];
-            var inheritedInlineStyle = entryPayload.inlineStyle ? new WebInspector.CSSStyleDeclaration(cssModel, null, entryPayload.inlineStyle) : null;
-            var inheritedMatchedCSSRules = entryPayload.matchedCSSRules ? WebInspector.CSSStyleModel.parseRuleMatchArrayPayload(cssModel, entryPayload.matchedCSSRules) : null;
-            this.inherited.push(new WebInspector.CSSStyleModel.InheritedMatches(inheritedInlineStyle, inheritedMatchedCSSRules));
+            var pseudoElement = this._node.pseudoElements().get(entryPayload.pseudoType);
+            var pseudoStyles = [];
+            var rules = WebInspector.CSSStyleModel.parseRuleMatchArrayPayload(cssModel, entryPayload.matches);
+            for (var j = rules.length - 1; j >= 0; --j) {
+                var pseudoRule = rules[j];
+                pseudoStyles.push(pseudoRule.style);
+                this._nodeForStyle.set(pseudoRule.style, pseudoElement);
+            }
+            this._pseudoStyles.set(entryPayload.pseudoType, pseudoStyles);
         }
     }
 }
 
-/**
- * @constructor
- * @param {!DOMAgent.PseudoType} pseudoType
- * @param {?Array.<!WebInspector.CSSRule>} rules
- */
-WebInspector.CSSStyleModel.PseudoElementMatches = function(pseudoType, rules)
-{
-    this.pseudoType = pseudoType;
-    this.rules = rules;
-}
+WebInspector.CSSStyleModel.MatchedStyleResult.prototype = {
+    /**
+     * @return {!Array<!WebInspector.CSSStyleDeclaration>}
+     */
+    nodeStyles: function()
+    {
+        return this._nodeStyles;
+    },
 
-/**
- * @constructor
- * @param {?WebInspector.CSSStyleDeclaration} inlineStyle
- * @param {?Array.<!WebInspector.CSSRule>} matchedRules
- */
-WebInspector.CSSStyleModel.InheritedMatches = function(inlineStyle, matchedRules)
-{
-    this.inlineStyle = inlineStyle;
-    this.matchedCSSRules = matchedRules;
+    /**
+     * @return {!Map.<!DOMAgent.PseudoType, !Array<!WebInspector.CSSStyleDeclaration>>}
+     */
+    pseudoStyles: function()
+    {
+        return this._pseudoStyles;
+    },
+
+    /**
+     * @param {!WebInspector.CSSStyleDeclaration} style
+     * @return {boolean}
+     */
+    _containsInherited: function(style)
+    {
+        var properties = style.allProperties;
+        for (var i = 0; i < properties.length; ++i) {
+            var property = properties[i];
+            // Does this style contain non-overridden inherited property?
+            if (property.activeInStyle() && WebInspector.CSSMetadata.isPropertyInherited(property.name))
+                return true;
+        }
+        return false;
+    },
+
+    /**
+     * @param {!WebInspector.CSSStyleDeclaration} style
+     * @return {?WebInspector.DOMNode}
+     */
+    nodeForStyle: function(style)
+    {
+        return this._nodeForStyle.get(style) || null;
+    },
+
+    /**
+     * @param {!WebInspector.CSSStyleDeclaration} style
+     * @return {boolean}
+     */
+    isInherited: function(style)
+    {
+        return this.nodeForStyle(style) !== this._node;
+    }
 }
 
 /**

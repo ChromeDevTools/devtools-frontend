@@ -168,16 +168,6 @@ WebInspector.SectionCascade.prototype = {
 
     /**
      * @param {!WebInspector.CSSRule} rule
-     * @param {?WebInspector.DOMNode=} inheritedFromNode
-     * @return {!WebInspector.StylesSectionModel}
-     */
-    appendModelFromRule: function(rule, inheritedFromNode)
-    {
-        return this._insertModel(new WebInspector.StylesSectionModel(this, rule, rule.style, "", inheritedFromNode));
-    },
-
-    /**
-     * @param {!WebInspector.CSSRule} rule
      * @param {!WebInspector.StylesSectionModel} insertAfterStyleRule
      * @return {!WebInspector.StylesSectionModel}
      */
@@ -194,7 +184,7 @@ WebInspector.SectionCascade.prototype = {
      */
     appendModelFromStyle: function(style, selectorText, inheritedFromNode)
     {
-        return this._insertModel(new WebInspector.StylesSectionModel(this, null, style, selectorText, inheritedFromNode));
+        return this._insertModel(new WebInspector.StylesSectionModel(this, style.parentRule, style, selectorText, inheritedFromNode));
     },
 
     /**

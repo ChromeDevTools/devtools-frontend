@@ -900,21 +900,10 @@ WebInspector.AuditRules.ImageDimensionsRule.prototype = {
             if (styles.computedStyle.get("position") === "absolute")
                 return;
 
-            if (styles.attributesStyle) {
-                var widthFound = !!styles.attributesStyle.getPropertyValue("width");
-                var heightFound = !!styles.attributesStyle.getPropertyValue("height");
-            }
-
-            var inlineStyle = styles.inlineStyle;
-            if (inlineStyle) {
-                if (inlineStyle.getPropertyValue("width") !== "")
-                    widthFound = true;
-                if (inlineStyle.getPropertyValue("height") !== "")
-                    heightFound = true;
-            }
-
-            for (var i = styles.matchedCSSRules.length - 1; i >= 0 && !(widthFound && heightFound); --i) {
-                var style = styles.matchedCSSRules[i].style;
+            var widthFound = false;
+            var heightFound = false;
+            for (var i = 0; !(widthFound && heightFound) && i < styles.nodeStyles.length; ++i) {
+                var style = styles.nodeStyles[i];
                 if (style.getPropertyValue("width") !== "")
                     widthFound = true;
                 if (style.getPropertyValue("height") !== "")
@@ -947,9 +936,7 @@ WebInspector.AuditRules.ImageDimensionsRule.prototype = {
             {
                 if (!matchedStyleResult)
                     return;
-                targetResult.matchedCSSRules = matchedStyleResult.matchedCSSRules;
-                targetResult.inlineStyle = matchedStyleResult.inlineStyle;
-                targetResult.attributesStyle = matchedStyleResult.attributesStyle;
+                targetResult.nodeStyles = matchedStyleResult.nodeStyles();
             }
 
             /**

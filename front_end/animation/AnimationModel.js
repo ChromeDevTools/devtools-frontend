@@ -75,14 +75,6 @@ WebInspector.AnimationModel.prototype = {
     },
 
     /**
-     * @param {string} id
-     */
-    animationCanceled: function(id)
-    {
-        this.dispatchEventToListeners(WebInspector.AnimationModel.Events.AnimationCanceled, { "id": id });
-    },
-
-    /**
      * @param {number} playbackRate
      */
     setPlaybackRate: function(playbackRate)
@@ -564,6 +556,23 @@ WebInspector.AnimationModel.AnimationGroup.prototype = {
         return this._animations[0].startTime();
     },
 
+    /**
+     * @param {number} currentTime
+     */
+    seekTo: function(currentTime)
+    {
+        /**
+         * @param {!WebInspector.AnimationModel.Animation} animation
+         * @return {string}
+         */
+        function extractId(animation)
+        {
+            return animation.id();
+        }
+
+        this.target().animationAgent().seekAnimations(this._animations.map(extractId), currentTime);
+    },
+
     __proto__: WebInspector.SDKObject.prototype
 }
 
@@ -594,14 +603,5 @@ WebInspector.AnimationDispatcher.prototype = {
     animationStarted: function(payload)
     {
         this._animationModel.animationStarted(payload);
-    },
-
-    /**
-     * @override
-     * @param {string} id
-     */
-    animationCanceled: function(id)
-    {
-        this._animationModel.animationCanceled(id);
     }
 }

@@ -86,7 +86,6 @@ WebInspector.AnimationTimeline.prototype = {
         var animationModel = WebInspector.AnimationModel.fromTarget(target);
         animationModel.ensureEnabled();
         animationModel.addEventListener(WebInspector.AnimationModel.Events.AnimationGroupStarted, this._animationGroupStarted, this);
-        animationModel.addEventListener(WebInspector.AnimationModel.Events.AnimationCanceled, this._animationCanceled, this);
     },
 
     /**
@@ -96,7 +95,6 @@ WebInspector.AnimationTimeline.prototype = {
     {
         var animationModel = WebInspector.AnimationModel.fromTarget(target);
         animationModel.removeEventListener(WebInspector.AnimationModel.Events.AnimationGroupStarted, this._animationGroupStarted, this);
-        animationModel.removeEventListener(WebInspector.AnimationModel.Events.AnimationCanceled, this._animationCanceled, this);
     },
 
     /**
@@ -273,11 +271,9 @@ WebInspector.AnimationTimeline.prototype = {
 
     _replay: function()
     {
-        if (this.startTime() === undefined)
+        if (!this._selectedGroup)
             return;
-        for (var target of WebInspector.targetManager.targets(WebInspector.Target.Type.Page))
-            target.animationAgent().setCurrentTime(/** @type {number} */(this.startTime()));
-
+        this._selectedGroup.seekTo(0);
         this._animateTime(0);
     },
 
@@ -454,26 +450,6 @@ WebInspector.AnimationTimeline.prototype = {
     /**
      * @param {!WebInspector.Event} event
      */
-    _animationCanceled: function(event)
-    {
-        this._cancelAnimation(/** @type {string} */ (event.data.id));
-    },
-
-    /**
-     * @param {string} playerId
-     */
-    _cancelAnimation: function(playerId)
-    {
-        var animation = this._animationsMap.get(playerId);
-        if (!animation)
-            return;
-        animation.setPlayState("idle");
-        this.scheduleRedraw();
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
     _nodeRemoved: function(event)
     {
         var node = event.data.node;
@@ -644,8 +620,7 @@ WebInspector.AnimationTimeline.prototype = {
         this._scrubberPlayer.currentTime = Math.min(this._originalScrubberTime + delta / this.pixelMsRatio(), this.duration() - this._scrubberRadius / this.pixelMsRatio());
         var currentTime = Math.max(0, Math.round(this._scrubberPlayer.currentTime));
         this._timelineScrubberHead.textContent = WebInspector.UIString(Number.millisToString(currentTime));
-        for (var target of WebInspector.targetManager.targets(WebInspector.Target.Type.Page))
-            target.animationAgent().setCurrentTime(/** @type {number} */(this.startTime() + currentTime));
+        // TODO(samli): hook up to new replay mechanism.
     },
 
     /**

@@ -5111,13 +5111,6 @@
                 "description": "Sets the playback rate of the document timeline."
             },
             {
-                "name": "setCurrentTime",
-                "parameters": [
-                    { "name": "currentTime", "type": "number", "description": "Current time for the page animation timeline" }
-                ],
-                "description": "Sets the current time of the document timeline."
-            },
-            {
                 "name": "setTiming",
                 "parameters": [
                     { "name": "playerId", "type": "string", "description": "AnimationPlayer id." },
@@ -5125,6 +5118,14 @@
                     { "name": "delay", "type": "number", "description": "Delay of the animation." }
                 ],
                 "description": "Sets the timing of an animation node."
+            },
+            {
+                "name": "seekAnimations",
+                "parameters": [
+                    { "name": "animations", "type": "array", "items": { "type": "string" }, "description": "List of animation ids to seek." },
+                    { "name": "currentTime", "type": "number", "description": "Set the current time of each animation." }
+                ],
+                "description": "Seek a set of animations to a particular time within each animation."
             }
         ],
         "events": [
@@ -5141,13 +5142,6 @@
                     { "name": "animation", "$ref": "Animation", "description": "Animation that was started." }
                 ],
                 "description": "Event for animation that has been started."
-            },
-            {
-                "name": "animationCanceled",
-                "parameters": [
-                    { "name": "id", "type": "string", "description": "Id of the Animation that was cancelled." }
-                ],
-                "description": "Event for Animations in the frontend that have been cancelled."
             }
         ]
     },

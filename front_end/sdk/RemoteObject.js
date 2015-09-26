@@ -1548,6 +1548,37 @@ WebInspector.RemoteFunction.prototype = {
     },
 
     /**
+     * @return {!Promise<?WebInspector.DebuggerModel.FunctionDetails>}
+     */
+    targetFunctionDetails: function()
+    {
+        return this.targetFunction().then(functionDetails.bind(this));
+
+        /**
+         * @param {!WebInspector.RemoteObject} targetFunction
+         * @return {!Promise<?WebInspector.DebuggerModel.FunctionDetails>}
+         * @this {WebInspector.RemoteFunction}
+         */
+        function functionDetails(targetFunction)
+        {
+            var boundReleaseFunctionDetails = releaseTargetFunction.bind(null, this._object !== targetFunction ? targetFunction : null);
+            return targetFunction.functionDetailsPromise().then(boundReleaseFunctionDetails);
+        }
+
+        /**
+         * @param {?WebInspector.RemoteObject} targetFunction
+         * @param {?WebInspector.DebuggerModel.FunctionDetails} functionDetails
+         * @return {?WebInspector.DebuggerModel.FunctionDetails}
+         */
+        function releaseTargetFunction(targetFunction, functionDetails)
+        {
+            if (targetFunction)
+                targetFunction.release();
+            return functionDetails;
+        }
+    },
+
+    /**
      * @return {!WebInspector.RemoteObject}
      */
     object: function()

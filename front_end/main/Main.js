@@ -600,7 +600,7 @@ WebInspector.Main.prototype = {
         }
 
         if (object.type === "function") {
-            object.functionDetails(didGetDetails);
+            WebInspector.RemoteFunction.objectAsFunction(object).targetFunctionDetails().then(didGetDetails);
             return;
         }
 

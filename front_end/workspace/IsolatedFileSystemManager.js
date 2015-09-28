@@ -36,8 +36,6 @@ WebInspector.IsolatedFileSystemManager = function()
 {
     /** @type {!Object.<string, !WebInspector.IsolatedFileSystem>} */
     this._fileSystems = {};
-    /** @type {!Object.<string, !Array.<function(?DOMFileSystem)>>} */
-    this._pendingFileSystemRequests = {};
     this._excludedFolderManager = new WebInspector.ExcludedFolderManager();
 
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.FileSystemsLoaded, this._onFileSystemsLoaded, this);
@@ -101,7 +99,6 @@ WebInspector.IsolatedFileSystemManager.prototype = {
 
         this._initializeCallback();
         delete this._initializeCallback;
-        this._processPendingFileSystemRequests();
     },
 
     /**
@@ -113,16 +110,6 @@ WebInspector.IsolatedFileSystemManager.prototype = {
         var isolatedFileSystem = new WebInspector.IsolatedFileSystem(this, fileSystemPath, fileSystem.fileSystemName, fileSystem.rootURL);
         this._fileSystems[fileSystemPath] = isolatedFileSystem;
         this.dispatchEventToListeners(WebInspector.IsolatedFileSystemManager.Events.FileSystemAdded, isolatedFileSystem);
-    },
-
-    _processPendingFileSystemRequests: function()
-    {
-        for (var fileSystemPath in this._pendingFileSystemRequests) {
-            var callbacks = this._pendingFileSystemRequests[fileSystemPath];
-            for (var i = 0; i < callbacks.length; ++i)
-                callbacks[i](this._isolatedFileSystem(fileSystemPath));
-        }
-        delete this._pendingFileSystemRequests;
     },
 
     /**
@@ -156,35 +143,6 @@ WebInspector.IsolatedFileSystemManager.prototype = {
         delete this._fileSystems[fileSystemPath];
         if (isolatedFileSystem)
             this.dispatchEventToListeners(WebInspector.IsolatedFileSystemManager.Events.FileSystemRemoved, isolatedFileSystem);
-    },
-
-    /**
-     * @param {string} fileSystemPath
-     * @return {?DOMFileSystem}
-     */
-    _isolatedFileSystem: function(fileSystemPath)
-    {
-        var fileSystem = this._fileSystems[fileSystemPath];
-        if (!fileSystem)
-            return null;
-        if (!InspectorFrontendHost.isolatedFileSystem)
-            return null;
-        return InspectorFrontendHost.isolatedFileSystem(fileSystem.name(), fileSystem.rootURL());
-    },
-
-    /**
-     * @param {string} fileSystemPath
-     * @param {function(?DOMFileSystem)} callback
-     */
-    requestDOMFileSystem: function(fileSystemPath, callback)
-    {
-        if (!this._loaded) {
-            if (!this._pendingFileSystemRequests[fileSystemPath])
-                this._pendingFileSystemRequests[fileSystemPath] = this._pendingFileSystemRequests[fileSystemPath] || [];
-            this._pendingFileSystemRequests[fileSystemPath].push(callback);
-            return;
-        }
-        callback(this._isolatedFileSystem(fileSystemPath));
     },
 
     /**

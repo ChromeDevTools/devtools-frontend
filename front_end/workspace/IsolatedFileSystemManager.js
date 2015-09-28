@@ -36,11 +36,12 @@ WebInspector.IsolatedFileSystemManager = function()
 {
     /** @type {!Object.<string, !WebInspector.IsolatedFileSystem>} */
     this._fileSystems = {};
-    this._excludedFolderManager = new WebInspector.ExcludedFolderManager();
 
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.FileSystemsLoaded, this._onFileSystemsLoaded, this);
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.FileSystemRemoved, this._onFileSystemRemoved, this);
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.FileSystemAdded, this._onFileSystemAdded, this);
+
+    this._initExcludePatterSetting();
 }
 
 /** @typedef {!{fileSystemName: string, rootURL: string, fileSystemPath: string}} */
@@ -48,24 +49,17 @@ WebInspector.IsolatedFileSystemManager.FileSystem;
 
 WebInspector.IsolatedFileSystemManager.Events = {
     FileSystemAdded: "FileSystemAdded",
-    FileSystemRemoved: "FileSystemRemoved"
+    FileSystemRemoved: "FileSystemRemoved",
+    ExcludedFolderAdded: "ExcludedFolderAdded",
+    ExcludedFolderRemoved: "ExcludedFolderRemoved"
 }
 
 WebInspector.IsolatedFileSystemManager.prototype = {
-    /**
-     * @return {!WebInspector.ExcludedFolderManager}
-     */
-    excludedFolderManager: function()
-    {
-        return this._excludedFolderManager;
-    },
-
     /**
      * @param {function()} callback
      */
     initialize: function(callback)
     {
-        console.assert(!this._loaded);
         this._initializeCallback = callback;
         InspectorFrontendHost.requestFileSystems();
     },
@@ -94,8 +88,6 @@ WebInspector.IsolatedFileSystemManager.prototype = {
             this._innerAddFileSystem(fileSystems[i]);
             addedFileSystemPaths[fileSystems[i].fileSystemPath] = true;
         }
-
-        this._loaded = true;
 
         this._initializeCallback();
         delete this._initializeCallback;
@@ -138,11 +130,12 @@ WebInspector.IsolatedFileSystemManager.prototype = {
      */
     _fileSystemRemoved: function(fileSystemPath)
     {
-        this._excludedFolderManager.removeFileSystem(fileSystemPath);
         var isolatedFileSystem = this._fileSystems[fileSystemPath];
         delete this._fileSystems[fileSystemPath];
-        if (isolatedFileSystem)
+        if (isolatedFileSystem) {
+            isolatedFileSystem.fileSystemRemoved();
             this.dispatchEventToListeners(WebInspector.IsolatedFileSystemManager.Events.FileSystemRemoved, isolatedFileSystem);
+        }
     },
 
     /**
@@ -151,6 +144,63 @@ WebInspector.IsolatedFileSystemManager.prototype = {
     fileSystemPaths: function()
     {
         return Object.keys(this._fileSystems);
+    },
+
+    /**
+     * @param {string} fileSystemPath
+     * @return {?WebInspector.IsolatedFileSystem}
+     */
+    fileSystem: function(fileSystemPath)
+    {
+        return this._fileSystems[fileSystemPath];
+    },
+
+    _initExcludePatterSetting: function()
+    {
+        var defaultCommonExcludedFolders = [
+            "/\\.git/",
+            "/\\.sass-cache/",
+            "/\\.hg/",
+            "/\\.idea/",
+            "/\\.svn/",
+            "/\\.cache/",
+            "/\\.project/"
+        ];
+        var defaultWinExcludedFolders = [
+            "/Thumbs.db$",
+            "/ehthumbs.db$",
+            "/Desktop.ini$",
+            "/\\$RECYCLE.BIN/"
+        ];
+        var defaultMacExcludedFolders = [
+            "/\\.DS_Store$",
+            "/\\.Trashes$",
+            "/\\.Spotlight-V100$",
+            "/\\.AppleDouble$",
+            "/\\.LSOverride$",
+            "/Icon$",
+            "/\\._.*$"
+        ];
+        var defaultLinuxExcludedFolders = [
+            "/.*~$"
+        ];
+        var defaultExcludedFolders = defaultCommonExcludedFolders;
+        if (WebInspector.isWin())
+            defaultExcludedFolders = defaultExcludedFolders.concat(defaultWinExcludedFolders);
+        else if (WebInspector.isMac())
+            defaultExcludedFolders = defaultExcludedFolders.concat(defaultMacExcludedFolders);
+        else
+            defaultExcludedFolders = defaultExcludedFolders.concat(defaultLinuxExcludedFolders);
+        var defaultExcludedFoldersPattern = defaultExcludedFolders.join("|");
+        this._workspaceFolderExcludePatternSetting = WebInspector.settings.createRegExpSetting("workspaceFolderExcludePattern", defaultExcludedFoldersPattern, WebInspector.isWin() ? "i" : "");
+    },
+
+    /**
+     * @return {!WebInspector.Setting}
+     */
+    workspaceFolderExcludePatternSetting: function()
+    {
+        return this._workspaceFolderExcludePatternSetting;
     },
 
     __proto__: WebInspector.Object.prototype

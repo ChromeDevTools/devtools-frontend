@@ -515,7 +515,7 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
      */
     excludeFolder: function(path)
     {
-        this._fileSystemWorkspaceBinding._isolatedFileSystemManager.excludedFolderManager().addExcludedFolder(this._fileSystem.path(), path);
+        this._fileSystem.addExcludedFolder(path);
     },
 
     /**

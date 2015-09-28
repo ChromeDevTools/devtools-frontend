@@ -40,6 +40,8 @@ WebInspector.IsolatedFileSystem = function(manager, path, name, rootURL)
     this._manager = manager;
     this._path = path;
     this._domFileSystem = InspectorFrontendHost.isolatedFileSystem(name, rootURL);
+    this._excludedFoldersSetting = WebInspector.settings.createLocalSetting("workspaceExcludedFolders", {});
+    this._excludedFolders = this._excludedFoldersSetting.get()[path] || [];
 }
 
 /**
@@ -101,12 +103,12 @@ WebInspector.IsolatedFileSystem.prototype = {
             for (var i = 0; i < entries.length; ++i) {
                 var entry = entries[i];
                 if (!entry.isDirectory) {
-                    if (this._manager.excludedFolderManager().isFileExcluded(this._path, entry.fullPath))
+                    if (this._isFileExcluded(entry.fullPath))
                         continue;
                     fileCallback(entry.fullPath.substr(1));
                 }
                 else {
-                    if (this._manager.excludedFolderManager().isFileExcluded(this._path, entry.fullPath + "/"))
+                    if (this._isFileExcluded(entry.fullPath + "/"))
                         continue;
                     ++pendingRequests;
                     this._requestEntries(entry.fullPath, innerCallback.bind(this));
@@ -486,5 +488,61 @@ WebInspector.IsolatedFileSystem.prototype = {
             console.error(errorMessage + " when requesting entry '" + path + "'");
             callback([]);
         }
+    },
+
+    _saveExcludedFolders: function()
+    {
+        var settingValue = this._excludedFoldersSetting.get();
+        settingValue[this._path] = this._excludedFolders;
+        this._excludedFoldersSetting.set(settingValue);
+    },
+
+    /**
+     * @param {string} path
+     */
+    addExcludedFolder: function(path)
+    {
+        this._excludedFolders.push(path);
+        this._saveExcludedFolders();
+        this._manager.dispatchEventToListeners(WebInspector.IsolatedFileSystemManager.Events.ExcludedFolderAdded, path);
+    },
+
+    /**
+     * @param {string} path
+     */
+    removeExcludedFolder: function(path)
+    {
+        this._excludedFolders.remove(path);
+        this._saveExcludedFolders();
+        this._manager.dispatchEventToListeners(WebInspector.IsolatedFileSystemManager.Events.ExcludedFolderRemoved, path);
+    },
+
+    fileSystemRemoved: function()
+    {
+        var settingValue = this._excludedFoldersSetting.get();
+        delete settingValue[this._path];
+        this._excludedFoldersSetting.set(settingValue);
+    },
+
+    /**
+     * @param {string} folderPath
+     * @return {boolean}
+     */
+    _isFileExcluded: function(folderPath)
+    {
+        for (var i = 0; i < this._excludedFolders.length; ++i) {
+            if (this._excludedFolders[i] === folderPath)
+                return true;
+        }
+        var regex = this._manager.workspaceFolderExcludePatternSetting().asRegExp();
+        return !!(regex && regex.test(folderPath));
+    },
+
+    /**
+     * @return {!Array<string>}
+     */
+    excludedFolders: function()
+    {
+        return this._excludedFolders.slice();
     }
 }

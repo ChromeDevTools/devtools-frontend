@@ -318,22 +318,18 @@ WebInspector.UISourceCode.prototype = {
      */
     _commitContent: function(content)
     {
+        var wasPersisted = false;
         if (this._project.canSetFileContent()) {
-            this._project.setFileContent(this, content, this._contentCommitted.bind(this, content, true));
-            return;
-        }
-        if (this._project.workspace().hasResourceContentTrackingExtensions()) {
-            this._contentCommitted(content, true);
-            return;
-        }
-
-        if (this._originURL && WebInspector.fileManager.isURLSaved(this._originURL)) {
-            WebInspector.fileManager.save(this._originURL, content, false, this._contentCommitted.bind(this, content));
+            this._project.setFileContent(this, content, function() { });
+            wasPersisted = true;
+        } else if (this._project.workspace().hasResourceContentTrackingExtensions()) {
+            wasPersisted = true;
+        } else if (this._originURL && WebInspector.fileManager.isURLSaved(this._originURL)) {
+            WebInspector.fileManager.save(this._originURL, content, false, function() { });
             WebInspector.fileManager.close(this._originURL);
-            return;
+            wasPersisted = true;
         }
-
-        this._contentCommitted(content, false);
+        this._contentCommitted(content, wasPersisted);
     },
 
     /**

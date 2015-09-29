@@ -490,26 +490,6 @@ WebInspector.DOMBreakpointsSidebarPane.Proxy.prototype = {
 }
 
 /**
- * @constructor
- * @implements {WebInspector.DOMPresentationUtils.MarkerDecorator}
- */
-WebInspector.DOMBreakpointsSidebarPane.MarkerDecorator = function()
-{
-}
-
-WebInspector.DOMBreakpointsSidebarPane.MarkerDecorator.prototype = {
-    /**
-     * @override
-     * @param {!WebInspector.DOMNode} node
-     * @return {?{title: string, color: string}}
-     */
-    decorate: function(node)
-    {
-        return { title: WebInspector.UIString("DOM Breakpoint"), color: "rgb(105, 140, 254)" };
-    }
-}
-
-/**
  * @type {!WebInspector.DOMBreakpointsSidebarPane}
  */
 WebInspector.domBreakpointsSidebarPane;

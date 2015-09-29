@@ -624,3 +624,26 @@ WebInspector.DOMPresentationUtils.MarkerDecorator.prototype = {
      */
     decorate: function(node) { }
 }
+
+/**
+ * @constructor
+ * @implements {WebInspector.DOMPresentationUtils.MarkerDecorator}
+ * @param {!Runtime.Extension} extension
+ */
+WebInspector.DOMPresentationUtils.GenericDecorator = function(extension)
+{
+    this._title = WebInspector.UIString(extension.title(WebInspector.platform()));
+    this._color = extension.descriptor()['color'];
+}
+
+WebInspector.DOMPresentationUtils.GenericDecorator.prototype = {
+    /**
+     * @override
+     * @param {!WebInspector.DOMNode} node
+     * @return {?{title: string, color: string}}
+     */
+    decorate: function(node)
+    {
+        return { title: this._title, color: this._color };
+    }
+}

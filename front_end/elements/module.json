@@ -99,8 +99,10 @@
         },
         {
             "type": "@WebInspector.DOMPresentationUtils.MarkerDecorator",
-            "className": "WebInspector.ElementsPanel.HiddenMarkerDecorator",
-            "marker": "hidden-marker"
+            "className": "WebInspector.DOMPresentationUtils.GenericDecorator",
+            "marker": "hidden-marker",
+            "title": "Element is hidden",
+            "color": "#555"
         }
     ],
     "dependencies": [

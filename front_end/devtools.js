@@ -894,25 +894,25 @@ else
 if (window.domAutomationController) {
     var uiTests = {};
 
-    uiTests._tryRun = function()
+    uiTests._dispatchIfReady = function()
     {
-        if (uiTests._testSuite && uiTests._pendingTestName) {
-            var name = uiTests._pendingTestName;
-            delete uiTests._pendingTestName;
-            uiTests._testSuite.runTest(name);
+        if (uiTests._testSuite && uiTests._pendingDispatchArgs) {
+            var args = uiTests._pendingDispatchArgs;
+            delete uiTests._pendingDispatchArgs;
+            uiTests._testSuite.dispatch(args);
         }
     }
 
-    uiTests.runTest = function(name)
+    uiTests.dispatchOnTestSuite = function(args)
     {
-        uiTests._pendingTestName = name;
-        uiTests._tryRun();
+        uiTests._pendingDispatchArgs = args;
+        uiTests._dispatchIfReady();
     };
 
-    uiTests.testSuiteReady = function(testSuiteConstructor, testBase)
+    uiTests.testSuiteReady = function(testSuiteConstructor)
     {
         uiTests._testSuite = testSuiteConstructor(window.domAutomationController);
-        uiTests._tryRun();
+        uiTests._dispatchIfReady();
     };
 
     window.uiTests = uiTests;

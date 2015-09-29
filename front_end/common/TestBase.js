@@ -109,10 +109,11 @@ WebInspector.TestBase.prototype.reportFailure_ = function(error)
  * Run specified test on a fresh instance of the test suite.
  * @param {string} name Name of a test method from implementation class.
  */
-WebInspector.TestBase.prototype.runTest = function(testName)
+WebInspector.TestBase.prototype.dispatch = function(args)
 {
+    var methodName = args.shift();
     try {
-        this[testName]();
+        this[methodName].apply(this, args);
         if (!this.controlTaken_)
             this.reportOk_();
     } catch (e) {

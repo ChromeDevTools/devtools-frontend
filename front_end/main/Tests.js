@@ -371,15 +371,6 @@ TestSuite.prototype.testConsoleOnNavigateBack = function()
     this.takeControl();
 };
 
-TestSuite.prototype.testReattachAfterCrash = function()
-{
-    var target = WebInspector.targetManager.mainTarget();
-    target.pageAgent().navigate("about:crash");
-    target.pageAgent().navigate("about:blank");
-    target.runtimeModel.addEventListener(WebInspector.RuntimeModel.Events.ExecutionContextCreated, this.releaseControl, this);
-};
-
-
 TestSuite.prototype.testSharedWorker = function()
 {
     function didEvaluateInConsole(resultText) {
@@ -428,6 +419,11 @@ TestSuite.prototype.enableTouchEmulation = function()
     WebInspector.overridesSupport._emulateTouchEventsInTarget(WebInspector.targetManager.mainTarget(), true, "mobile");
 };
 
+TestSuite.prototype.switchToPanel = function(panelName)
+{
+    this.showPanel(panelName).then(this.releaseControl.bind(this));
+    this.takeControl();
+}
 
 // Regression test for crbug.com/370035.
 TestSuite.prototype.testDeviceMetricsOverrides = function()
@@ -814,34 +810,11 @@ TestSuite.createKeyEvent = function(keyIdentifier)
     return evt;
 };
 
-/**
- * Run specified test.
- * @param {string} name Name of a test method from TestSuite class.
- * @override
- */
-TestSuite.prototype.runTest = function(name)
-{
-    var test = WebInspector.TestBase.prototype.runTest.bind(this, name);
-    if (TestSuite._populatedInterface)
-        test();
-    else
-        TestSuite._pendingTest = test;
-};
-
-function runTests()
-{
-    TestSuite._populatedInterface = true;
-    var test = TestSuite._pendingTest;
-    delete TestSuite._pendingTest;
-    if (test)
-        test();
-}
-
-WebInspector.notifications.addEventListener(WebInspector.NotificationService.Events.InspectorAgentEnabledForTests, runTests);
-
 return new TestSuite();
 
 }
 
-if (window.uiTests)
-    window.uiTests.testSuiteReady(createTestSuite, WebInspector.TestBase);
+if (window.uiTests) {
+    WebInspector.notifications.addEventListener(WebInspector.NotificationService.Events.InspectorAgentEnabledForTests,
+        window.uiTests.testSuiteReady.bind(null, createTestSuite));
+}

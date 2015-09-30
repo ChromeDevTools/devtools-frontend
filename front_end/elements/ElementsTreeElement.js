@@ -41,8 +41,8 @@ WebInspector.ElementsTreeElement = function(node, elementCloseTag)
     this._node = node;
 
     this._gutterContainer = this.listItemElement.createChild("div", "gutter-container");
+    this._gutterContainer.addEventListener("click", this._showContextMenu.bind(this));
     this._decorationsElement = this._gutterContainer.createChild("div", "hidden");
-    this._decorationsElement.addEventListener("mousedown", this._decorationsClicked.bind(this));
 
     this._elementCloseTag = elementCloseTag;
 
@@ -160,19 +160,6 @@ WebInspector.ElementsTreeElement.prototype = {
     isEditing: function()
     {
         return !!this._editing;
-    },
-
-    /**
-     * @return {!Element}
-     */
-    gutterElement: function()
-    {
-        return this._gutterContainer;
-    },
-
-    _decorationsClicked: function()
-    {
-        this.treeOutline.dispatchEventToListeners(WebInspector.ElementsTreeOutline.Events.DecorationsClicked, this._node);
     },
 
     /**
@@ -521,6 +508,14 @@ WebInspector.ElementsTreeElement.prototype = {
             return this._addNewAttribute();
 
         return false;
+    },
+
+    /**
+     * @param {!Event} event
+     */
+    _showContextMenu: function(event)
+    {
+        this.treeOutline.showContextMenu(this, event);
     },
 
     /**

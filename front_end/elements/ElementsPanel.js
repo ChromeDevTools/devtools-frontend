@@ -50,8 +50,6 @@ WebInspector.ElementsPanel = function()
 
     this._contentElement = createElement("div");
     var crumbsContainer = createElement("div");
-    if (Runtime.experiments.isEnabled("materialDesign"))
-        this._initializeActionsToolbar();
     stackElement.appendChild(this._contentElement);
     stackElement.appendChild(crumbsContainer);
 
@@ -105,29 +103,6 @@ WebInspector.ElementsPanel = function()
 WebInspector.ElementsPanel._elementsSidebarViewTitleSymbol = Symbol("title");
 
 WebInspector.ElementsPanel.prototype = {
-    _initializeActionsToolbar: function()
-    {
-        this._nodeActionsElement = createElementWithClass("div", "node-actions-container");
-        var button = this._nodeActionsElement.createChild("div", "node-actions-toggle");
-        button.addEventListener("click", this._toggleActionsToolbar.bind(this, undefined));
-        this._nodeActionsToolbar = new WebInspector.Toolbar();
-        this._nodeActionsElement.appendChild(this._nodeActionsToolbar.element);
-        this._nodeActionsToolbar.element.addEventListener("mousedown", consumeEvent);
-        WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.MarkersChanged, this._markersChanged, this);
-
-        this._editAsHTMLButton = new WebInspector.ToolbarButton(WebInspector.UIString("Edit as HTML"), "edit-toolbar-item");
-        this._editAsHTMLButton.setAction("elements.edit-as-html");
-        this._nodeActionsToolbar.appendToolbarItem(this._editAsHTMLButton);
-        this._nodeActionsToolbar.element.classList.add("node-actions-toolbar");
-        this._hideElementButton = new WebInspector.ToolbarButton(WebInspector.UIString("Hide element"), "visibility-off-toolbar-item");
-        this._hideElementButton.setAction("elements.hide-element");
-        this._nodeActionsToolbar.appendToolbarItem(this._hideElementButton);
-        this._forceElementStateButton = new WebInspector.ToolbarMenuButton(WebInspector.UIString("Force element state"), "pin-toolbar-item", this._showForceElementStateMenu.bind(this));
-        this._nodeActionsToolbar.appendToolbarItem(this._forceElementStateButton);
-        this._breakpointsButton = new WebInspector.ToolbarMenuButton(WebInspector.UIString("Toggle breakpoints"), "add-breakpoint-toolbar-item", this._showBreakpointsMenu.bind(this));
-        this._nodeActionsToolbar.appendToolbarItem(this._breakpointsButton);
-    },
-
     _toggleHideElement: function()
     {
         var node = this.selectedDOMNode();
@@ -137,128 +112,13 @@ WebInspector.ElementsPanel.prototype = {
         treeOutline.toggleHideElement(node);
     },
 
-    /**
-     * @param {!WebInspector.DOMNode} node
-     */
-    _updateActionsToolbar: function(node)
-    {
-        if (!Runtime.experiments.isEnabled("materialDesign"))
-            return;
-        var classText = node.getAttribute("class");
-        var treeOutline = this._treeOutlineForNode(node);
-        this._hideElementButton.setToggled(treeOutline && treeOutline.isToggledToHidden(node));
-        this._editAsHTMLButton.setToggled(false);
-        this._breakpointsButton.setEnabled(!node.pseudoType());
-        this._breakpointsButton.setToggled(WebInspector.domBreakpointsSidebarPane.hasBreakpoints(node));
-        this._forceElementStateButton.setEnabled(node.nodeType() === Node.ELEMENT_NODE && !node.pseudoType());
-        this._forceElementStateButton.setToggled(!!WebInspector.CSSStyleModel.fromNode(node).pseudoState(node).length);
-
-        var treeElement = this._treeOutlineForNode(node).selectedTreeElement;
-        if (!treeElement)
-            return;
-        if (node.nodeType() !== Node.ELEMENT_NODE) {
-            this._nodeActionsElement.remove();
-            return;
-        }
-
-        var actionsToolbar = this._nodeActionsElement;
-        if (actionsToolbar.__node !== node) {
-            treeElement.gutterElement().appendChild(actionsToolbar);
-            this._positionActionsToolbar();
-            actionsToolbar.__node = node;
-            this._toggleActionsToolbar(false);
-        }
-    },
-
     _toggleEditAsHTML: function()
     {
         var node = this.selectedDOMNode();
         var treeOutline = this._treeOutlineForNode(node);
         if (!node || !treeOutline)
             return;
-
-        var startEditing = true;
-        if (Runtime.experiments.isEnabled("materialDesign")) {
-            startEditing = !this._editAsHTMLButton.toggled();
-            this._editAsHTMLButton.setToggled(startEditing);
-        }
-        treeOutline.toggleEditAsHTML(node, startEditing, this._updateActionsToolbar.bind(this, node));
-    },
-
-    /**
-     * @param {!WebInspector.ContextMenu} contextMenu
-     */
-    _showBreakpointsMenu: function(contextMenu)
-    {
-        var node = this.selectedDOMNode();
-        if (!node)
-            return;
-        WebInspector.domBreakpointsSidebarPane.populateNodeContextMenu(node, contextMenu, false);
-    },
-
-    /**
-     * @param {!WebInspector.ContextMenu} contextMenu
-     */
-    _showForceElementStateMenu: function(contextMenu)
-    {
-        var node = this.selectedDOMNode();
-        if (!node)
-            return;
-        WebInspector.ElementsTreeElement.populateForcedPseudoStateItems(contextMenu, node);
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _decorationsClicked: function(event)
-    {
-        var node = /** @type {!WebInspector.DOMNode} */(event.data);
-        this.selectDOMNode(node, true);
-        this._toggleActionsToolbar(true);
-    },
-
-    /**
-     * @param {boolean=} toggled
-     */
-    _toggleActionsToolbar: function(toggled)
-    {
-        if (toggled === undefined)
-            toggled = !this._actionsToolbarShown();
-        this._nodeActionsElement.classList.toggle("expanded", toggled);
-        this._positionActionsToolbar();
-    },
-
-    _positionActionsToolbar: function()
-    {
-        if (!this._actionsToolbarShown())
-            return;
-        var toolbarElement = this._nodeActionsToolbar.element;
-        if (toolbarElement.totalOffsetTop() < this.element.totalOffsetTop()) {
-            toolbarElement.style.top = this._nodeActionsElement.parentElement.offsetHeight + "px";
-            toolbarElement.classList.add("node-actions-toolbar-below");
-        } else {
-            toolbarElement.style.top = "";
-            toolbarElement.classList.remove("node-actions-toolbar-below");
-        }
-    },
-
-    /**
-     * @return {boolean}
-     */
-    _actionsToolbarShown: function()
-    {
-        return this._nodeActionsElement.classList.contains("expanded");
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _markersChanged: function(event)
-    {
-        var node = /** @type {!WebInspector.DOMNode} */ (event.data);
-        if (node !== this.selectedDOMNode())
-            return;
-        this._updateActionsToolbar(node);
+        treeOutline.toggleEditAsHTML(node);
     },
 
     _loadSidebarViews: function()
@@ -317,7 +177,6 @@ WebInspector.ElementsPanel.prototype = {
         treeOutline.addEventListener(WebInspector.ElementsTreeOutline.Events.SelectedNodeChanged, this._selectedNodeChanged, this);
         treeOutline.addEventListener(WebInspector.ElementsTreeOutline.Events.NodePicked, this._onNodePicked, this);
         treeOutline.addEventListener(WebInspector.ElementsTreeOutline.Events.ElementsTreeUpdated, this._updateBreadcrumbIfNeeded, this);
-        treeOutline.addEventListener(WebInspector.ElementsTreeOutline.Events.DecorationsClicked, this._decorationsClicked, this);
         this._treeOutlines.push(treeOutline);
         this._modelToTreeOutline.set(domModel, treeOutline);
 
@@ -452,7 +311,6 @@ WebInspector.ElementsPanel.prototype = {
         if (selectedNode) {
             selectedNode.setAsInspectedNode();
             this._lastValidSelectedNode = selectedNode;
-            this._updateActionsToolbar(selectedNode);
         }
         WebInspector.notifications.dispatchEventToListeners(WebInspector.NotificationService.Events.SelectedNodeChanged);
         this._selectedNodeChangedForTest();

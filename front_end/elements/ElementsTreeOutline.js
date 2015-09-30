@@ -93,8 +93,7 @@ WebInspector.ElementsTreeOutline.ClipboardData;
 WebInspector.ElementsTreeOutline.Events = {
     NodePicked: "NodePicked",
     SelectedNodeChanged: "SelectedNodeChanged",
-    ElementsTreeUpdated: "ElementsTreeUpdated",
-    DecorationsClicked: "DecorationsClicked"
+    ElementsTreeUpdated: "ElementsTreeUpdated"
 }
 
 /**
@@ -886,7 +885,17 @@ WebInspector.ElementsTreeOutline.prototype = {
     _contextMenuEventFired: function(event)
     {
         var treeElement = this._treeElementFromEvent(event);
-        if (!(treeElement instanceof WebInspector.ElementsTreeElement) || WebInspector.isEditing())
+        if (treeElement instanceof WebInspector.ElementsTreeElement)
+            this.showContextMenu(treeElement, event);
+    },
+
+    /**
+     * @param {!WebInspector.ElementsTreeElement} treeElement
+     * @param {!Event} event
+     */
+    showContextMenu: function(treeElement, event)
+    {
+        if (WebInspector.isEditing())
             return;
 
         var contextMenu = new WebInspector.ContextMenu(event);

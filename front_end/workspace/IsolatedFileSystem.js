@@ -32,16 +32,59 @@
  * @constructor
  * @param {!WebInspector.IsolatedFileSystemManager} manager
  * @param {string} path
- * @param {string} name
- * @param {string} rootURL
+ * @param {!DOMFileSystem} domFileSystem
  */
-WebInspector.IsolatedFileSystem = function(manager, path, name, rootURL)
+WebInspector.IsolatedFileSystem = function(manager, path, domFileSystem)
 {
     this._manager = manager;
     this._path = path;
-    this._domFileSystem = InspectorFrontendHost.isolatedFileSystem(name, rootURL);
+    this._domFileSystem = domFileSystem;
     this._excludedFoldersSetting = WebInspector.settings.createLocalSetting("workspaceExcludedFolders", {});
     this._excludedFolders = this._excludedFoldersSetting.get()[path] || [];
+}
+
+/**
+ * @constructor
+ * @param {!WebInspector.IsolatedFileSystemManager} manager
+ * @param {string} path
+ * @param {string} name
+ * @param {string} rootURL
+ * @return {!Promise<?WebInspector.IsolatedFileSystem>}
+ */
+WebInspector.IsolatedFileSystem.create = function(manager, path, name, rootURL)
+{
+    return new Promise(promiseBody);
+
+    /**
+     * @param {function(?WebInspector.IsolatedFileSystem)} resolve
+     * @param {function(!Error)} reject
+     */
+    function promiseBody(resolve, reject)
+    {
+        var domFileSystem = InspectorFrontendHost.isolatedFileSystem(name, rootURL);
+        if (!domFileSystem) {
+            resolve(null);
+            return;
+        }
+        var fileSystem = new WebInspector.IsolatedFileSystem(manager, path, domFileSystem);
+        fileSystem.requestFileContent(".devtools", onConfigAvailable);
+
+        /**
+         * @param {?string} projectText
+         */
+        function onConfigAvailable(projectText)
+        {
+            if (projectText) {
+                try {
+                    var projectObject = JSON.parse(projectText);
+                    fileSystem._initializeProject(typeof projectObject === "object" ? /** @type {!Object} */ (projectObject) : null);
+                } catch (e) {
+                    WebInspector.console.error("Invalid project file: " + projectText);
+                }
+            }
+            resolve(fileSystem);
+        }
+    }
 }
 
 /**
@@ -85,6 +128,23 @@ WebInspector.IsolatedFileSystem.prototype = {
     },
 
     /**
+     * @param {?Object} projectObject
+     */
+    _initializeProject: function(projectObject)
+    {
+        this._projectObject = projectObject;
+    },
+
+    /**
+     * @param {string} key
+     * @return {*}
+     */
+    projectProperty: function(key)
+    {
+        return this._projectObject ? this._projectObject[key] : null;
+    },
+
+    /**
      * @param {string} path
      * @param {function(string)} fileCallback
      * @param {function()=} finishedCallback
@@ -106,8 +166,7 @@ WebInspector.IsolatedFileSystem.prototype = {
                     if (this._isFileExcluded(entry.fullPath))
                         continue;
                     fileCallback(entry.fullPath.substr(1));
-                }
-                else {
+                } else {
                     if (this._isFileExcluded(entry.fullPath + "/"))
                         continue;
                     ++pendingRequests;
@@ -534,6 +593,12 @@ WebInspector.IsolatedFileSystem.prototype = {
             if (this._excludedFolders[i] === folderPath)
                 return true;
         }
+        var projectExcludes = this.projectProperty("excludes");
+        for (var i = 0; projectExcludes && projectExcludes instanceof Array && i < projectExcludes.length; ++i) {
+            if (projectExcludes[i] === folderPath)
+                return true;
+        }
+
         var regex = this._manager.workspaceFolderExcludePatternSetting().asRegExp();
         return !!(regex && regex.test(folderPath));
     },

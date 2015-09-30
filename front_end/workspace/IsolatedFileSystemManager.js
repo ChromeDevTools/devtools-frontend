@@ -83,25 +83,33 @@ WebInspector.IsolatedFileSystemManager.prototype = {
     _onFileSystemsLoaded: function(event)
     {
         var fileSystems = /** @type {!Array.<!WebInspector.IsolatedFileSystemManager.FileSystem>} */ (event.data);
-        var addedFileSystemPaths = {};
-        for (var i = 0; i < fileSystems.length; ++i) {
-            this._innerAddFileSystem(fileSystems[i]);
-            addedFileSystemPaths[fileSystems[i].fileSystemPath] = true;
-        }
-
-        this._initializeCallback();
-        delete this._initializeCallback;
+        var promises = [];
+        for (var i = 0; i < fileSystems.length; ++i)
+            promises.push(this._innerAddFileSystem(fileSystems[i]));
+        Promise.all(promises).then(this._initializeCallback);
     },
 
     /**
      * @param {!WebInspector.IsolatedFileSystemManager.FileSystem} fileSystem
+     * @return {!Promise}
      */
     _innerAddFileSystem: function(fileSystem)
     {
         var fileSystemPath = fileSystem.fileSystemPath;
-        var isolatedFileSystem = new WebInspector.IsolatedFileSystem(this, fileSystemPath, fileSystem.fileSystemName, fileSystem.rootURL);
-        this._fileSystems[fileSystemPath] = isolatedFileSystem;
-        this.dispatchEventToListeners(WebInspector.IsolatedFileSystemManager.Events.FileSystemAdded, isolatedFileSystem);
+        var promise = WebInspector.IsolatedFileSystem.create(this, fileSystemPath, fileSystem.fileSystemName, fileSystem.rootURL);
+        return promise.then(storeFileSystem.bind(this));
+
+        /**
+         * @param {?WebInspector.IsolatedFileSystem} fileSystem
+         * @this {WebInspector.IsolatedFileSystemManager}
+         */
+        function storeFileSystem(fileSystem)
+        {
+            if (!fileSystem)
+                return;
+            this._fileSystems[fileSystemPath] = fileSystem;
+            this.dispatchEventToListeners(WebInspector.IsolatedFileSystemManager.Events.FileSystemAdded, fileSystem);
+        }
     },
 
     /**
@@ -158,6 +166,7 @@ WebInspector.IsolatedFileSystemManager.prototype = {
     _initExcludePatterSetting: function()
     {
         var defaultCommonExcludedFolders = [
+            "/\\.devtools",
             "/\\.git/",
             "/\\.sass-cache/",
             "/\\.hg/",

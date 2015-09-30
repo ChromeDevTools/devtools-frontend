@@ -274,6 +274,11 @@ WebInspector.FileSystemMapping.prototype = {
         this.addFileMapping(fileSystemPath, urlPrefix, pathPrefix);
     },
 
+    resetForTesting: function()
+    {
+        this._fileSystemMappings = {};
+    },
+
     __proto__: WebInspector.Object.prototype
 }
 

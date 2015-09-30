@@ -198,6 +198,20 @@ WebInspector.FileSystemWorkspaceBinding.prototype = {
         callback.call(null, files);
         delete this._callbacks[requestId];
     },
+
+    dispose: function()
+    {
+        this._isolatedFileSystemManager.removeEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemAdded, this._fileSystemAdded, this);
+        this._isolatedFileSystemManager.removeEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemRemoved, this._fileSystemRemoved, this);
+        InspectorFrontendHost.events.removeEventListener(InspectorFrontendHostAPI.Events.IndexingTotalWorkCalculated, this._onIndexingTotalWorkCalculated, this);
+        InspectorFrontendHost.events.removeEventListener(InspectorFrontendHostAPI.Events.IndexingWorked, this._onIndexingWorked, this);
+        InspectorFrontendHost.events.removeEventListener(InspectorFrontendHostAPI.Events.IndexingDone, this._onIndexingDone, this);
+        InspectorFrontendHost.events.removeEventListener(InspectorFrontendHostAPI.Events.SearchCompleted, this._onSearchCompleted, this);
+        for (var fileSystem of this._boundFileSystems.values()) {
+            fileSystem.dispose();
+            this._boundFileSystems.remove(fileSystem._fileSystem.normalizedPath());
+        }
+    }
 }
 
 /**
@@ -610,8 +624,3 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
 
     __proto__: WebInspector.Object.prototype
 }
-
-/**
- * @type {!WebInspector.FileSystemWorkspaceBinding}
- */
-WebInspector.fileSystemWorkspaceBinding;

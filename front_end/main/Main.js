@@ -209,8 +209,8 @@ WebInspector.Main.prototype = {
         WebInspector.workspace = new WebInspector.Workspace();
         WebInspector.fileSystemMapping = new WebInspector.FileSystemMapping();
 
-        WebInspector.fileSystemWorkspaceBinding = new WebInspector.FileSystemWorkspaceBinding(WebInspector.isolatedFileSystemManager, WebInspector.workspace);
-        WebInspector.networkMapping = new WebInspector.NetworkMapping(WebInspector.workspace, WebInspector.fileSystemWorkspaceBinding, WebInspector.fileSystemMapping);
+        var fileSystemWorkspaceBinding = new WebInspector.FileSystemWorkspaceBinding(WebInspector.isolatedFileSystemManager, WebInspector.workspace);
+        WebInspector.networkMapping = new WebInspector.NetworkMapping(WebInspector.workspace, fileSystemWorkspaceBinding, WebInspector.fileSystemMapping);
         WebInspector.networkProjectManager = new WebInspector.NetworkProjectManager(WebInspector.targetManager, WebInspector.workspace, WebInspector.networkMapping);
         WebInspector.presentationConsoleMessageHelper = new WebInspector.PresentationConsoleMessageHelper(WebInspector.workspace);
         WebInspector.cssWorkspaceBinding = new WebInspector.CSSWorkspaceBinding(WebInspector.targetManager, WebInspector.workspace, WebInspector.networkMapping);

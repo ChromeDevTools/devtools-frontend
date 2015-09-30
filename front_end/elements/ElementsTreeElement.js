@@ -50,8 +50,6 @@ WebInspector.ElementsTreeElement = function(node, elementCloseTag)
         this._canAddAttributes = true;
     this._searchQuery = null;
     this._expandedChildrenLimit = WebInspector.ElementsTreeElement.InitialChildrenLimit;
-    if (this._node.nodeType() === Node.ELEMENT_NODE && this._node.parentNode && this._node.parentNode.nodeType() === Node.DOCUMENT_NODE && !this._node.parentNode.parentNode)
-        this.setCollapsible(false);
 }
 
 WebInspector.ElementsTreeElement.InitialChildrenLimit = 500;

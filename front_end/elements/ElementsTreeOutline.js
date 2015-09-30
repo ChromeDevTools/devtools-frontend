@@ -1333,6 +1333,8 @@ WebInspector.ElementsTreeOutline.prototype = {
     {
         var treeElement = new WebInspector.ElementsTreeElement(node, closingTag);
         treeElement.setExpandable(!closingTag && this._hasVisibleChildren(node));
+        if (node.nodeType() === Node.ELEMENT_NODE && node.parentNode && node.parentNode.nodeType() === Node.DOCUMENT_NODE && !node.parentNode.parentNode)
+            treeElement.setCollapsible(false);
         treeElement.selectable = this._selectEnabled;
         return treeElement;
     },

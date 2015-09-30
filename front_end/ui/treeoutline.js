@@ -823,9 +823,10 @@ TreeElement.prototype = {
         this._listItemNode.classList.add("expanded");
         this._childrenListNode.classList.add("expanded");
 
-        this.onexpand();
-        if (this.treeOutline)
+        if (this.treeOutline) {
+            this.onexpand();
             this.treeOutline.dispatchEventToListeners(TreeOutline.Events.ElementExpanded, this);
+        }
     },
 
     /**
@@ -943,7 +944,7 @@ TreeElement.prototype = {
 
     _populateIfNeeded: function()
     {
-        if (this._expandable && !this._children) {
+        if (this.treeOutline && this._expandable && !this._children) {
             this._children = [];
             this.onpopulate();
         }

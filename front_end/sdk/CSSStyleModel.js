@@ -277,6 +277,7 @@ WebInspector.CSSStyleModel.prototype = {
             if (!mediaPayload)
                 return null;
             this._domModel.markUndoableState();
+            this._fireStyleSheetChanged(media.parentStyleSheetId);
             return WebInspector.CSSMedia.parsePayload(this, mediaPayload);
         }
 
@@ -355,6 +356,7 @@ WebInspector.CSSStyleModel.prototype = {
             if (error || !rulePayload)
                 return null;
             this._domModel.markUndoableState();
+            this._fireStyleSheetChanged(styleSheetId);
             return new WebInspector.CSSRule(this, rulePayload);
         }
 
@@ -541,10 +543,13 @@ WebInspector.CSSStyleModel.prototype = {
          */
         function callback(error)
         {
-            if (!error && majorChange)
-                this._domModel.markUndoableState();
+            if (error)
+                return error;
 
-            return error;
+            if (majorChange)
+                this._domModel.markUndoableState();
+            this._fireStyleSheetChanged(styleSheetId);
+            return null;
         }
     },
 
@@ -939,6 +944,7 @@ WebInspector.CSSStyleDeclaration.prototype = {
             if (majorChange)
                 this._cssModel._domModel.markUndoableState();
             this._reinitialize(stylePayload);
+            this._cssModel._fireStyleSheetChanged(this.styleSheetId);
             return true;
         }
 
@@ -1052,6 +1058,7 @@ WebInspector.CSSRule.prototype = {
             if (error || !selectorPayload)
                 return null;
             this._cssModel._domModel.markUndoableState();
+            this._cssModel._fireStyleSheetChanged(/** @type {string} */(this.styleSheetId));
             return WebInspector.CSSRuleSelector.parseSelectorListPayload(selectorPayload);
         }
 

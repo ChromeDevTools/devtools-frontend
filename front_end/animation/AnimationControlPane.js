@@ -61,18 +61,17 @@ WebInspector.AnimationControlPane.prototype = {
     _updateAnimationsPlaybackRate: function(event)
     {
         /**
-         * @param {?Protocol.Error} error
          * @param {number} playbackRate
          * @this {WebInspector.AnimationControlPane}
          */
-        function setPlaybackRate(error, playbackRate)
+        function setPlaybackRate(playbackRate)
         {
             this._animationsPlaybackSlider.value = WebInspector.AnimationTimeline.GlobalPlaybackRates.indexOf(playbackRate);
             this._animationsPlaybackLabel.textContent = playbackRate + "x";
         }
 
         if (this._target)
-            this._target.animationAgent().getPlaybackRate(setPlaybackRate.bind(this));
+            WebInspector.AnimationModel.fromTarget(this._target).playbackRatePromise().then(setPlaybackRate.bind(this));
     },
 
     /**

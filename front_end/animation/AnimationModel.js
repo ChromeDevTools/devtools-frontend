@@ -75,6 +75,26 @@ WebInspector.AnimationModel.prototype = {
     },
 
     /**
+     * @return {!Promise.<number>}
+     */
+    playbackRatePromise: function()
+    {
+        /**
+         * @param {?Protocol.Error} error
+         * @param {number} playbackRate
+         * @return {number}
+         */
+        function callback(error, playbackRate)
+        {
+            if (error)
+                return 1;
+            return playbackRate;
+        }
+
+        return this._agent.getPlaybackRate(callback).catchException(1);
+    },
+
+    /**
      * @param {number} playbackRate
      */
     setPlaybackRate: function(playbackRate)

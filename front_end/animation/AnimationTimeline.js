@@ -228,24 +228,18 @@ WebInspector.AnimationTimeline.prototype = {
     _updateAnimationsPlaybackRate: function()
     {
         /**
-         * @param {?Protocol.Error} error
          * @param {number} playbackRate
          * @this {WebInspector.AnimationTimeline}
          */
-        function setPlaybackRate(error, playbackRate)
+        function syncPlaybackRate(playbackRate)
         {
-            if (playbackRate === 0) {
-                playbackRate = 1;
-                if (target)
-                    WebInspector.AnimationModel.fromTarget(target).setPlaybackRate(1);
-            }
             this._underlyingPlaybackRate = playbackRate;
             this._updatePlaybackControls();
         }
 
         delete this._paused;
         for (var target of WebInspector.targetManager.targets(WebInspector.Target.Type.Page))
-            target.animationAgent().getPlaybackRate(setPlaybackRate.bind(this));
+            WebInspector.AnimationModel.fromTarget(target).playbackRatePromise().then(syncPlaybackRate.bind(this));
     },
 
     /**
@@ -329,6 +323,10 @@ WebInspector.AnimationTimeline.prototype = {
     {
         this._reset();
         this._updateAnimationsPlaybackRate();
+        if (this._underlyingPlaybackRate === 0) {
+            this._underlyingPlaybackRate = 1;
+            this._updatePlaybackControls();
+        }
         if (this._scrubberPlayer)
             this._scrubberPlayer.cancel();
         delete this._scrubberPlayer;

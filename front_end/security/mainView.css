@@ -5,6 +5,12 @@
 
 .security-main-view {
     -webkit-user-select: text;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.security-main-view > div {
+    flex-shrink: 0;
 }
 
 .security-summary-section-title {

@@ -428,7 +428,7 @@ WebInspector.SecurityMainView = function(panel)
     WebInspector.VBox.call(this, true);
     this.registerRequiredCSS("security/mainView.css");
     this.registerRequiredCSS("security/lockIcon.css");
-    this.setMinimumSize(100, 100);
+    this.setMinimumSize(200, 100);
 
     this.contentElement.classList.add("security-main-view");
 

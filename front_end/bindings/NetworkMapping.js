@@ -26,6 +26,18 @@ WebInspector.NetworkMapping.prototype = {
     {
         var fileSystem = /** @type {!WebInspector.IsolatedFileSystem} */ (event.data);
         this._fileSystemMapping.addFileSystem(fileSystem.path());
+
+        var mappings = fileSystem.projectProperty("mappings");
+        for (var i = 0; Array.isArray(mappings) && i < mappings.length; ++i) {
+            var mapping = mappings[i];
+            if (!mapping || typeof mapping !== "object")
+                continue;
+            var folder = mapping["folder"];
+            var url = mapping["url"];
+            if (typeof folder !== "string" || typeof url !== "string")
+                continue;
+            this._fileSystemMapping.addNonConfigurableFileMapping(fileSystem.path(), url, folder);
+        }
     },
 
     /**

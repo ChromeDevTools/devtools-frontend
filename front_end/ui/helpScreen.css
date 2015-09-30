@@ -325,6 +325,17 @@ body.dock-to-bottom .help-content {
     border-radius: 2px;
 }
 
+.settings-tab .settings-list .settings-list-item:not(.editable) {
+    background-color: #eee;
+}
+
+.excluded-folders-list .settings-list-item:not(.editable) .settings-list-column-path:before,
+.settings-list-item:not(.editable) .list-column.settings-list-column-url:before {
+    content: "\1F512";
+    margin-right: 5px;
+}
+
+
 .settings-tab .settings-list .settings-list-item .settings-list-item-contents {
     width: 100%;
     height: 40px;

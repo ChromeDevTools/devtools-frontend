@@ -80,9 +80,10 @@ WebInspector.EditFileSystemDialog = function(fileSystemPath)
     this._excludedFolderListContainer.appendChild(this._excludedFolderList.element);
     /** @type {!Set<string>} */
     this._excludedFolderEntries = new Set();
-    var excludedFolders = WebInspector.isolatedFileSystemManager.fileSystem(fileSystemPath).excludedFolders();
-    for (var i = 0; i < excludedFolders.length; ++i)
-        this._addExcludedFolderRow(excludedFolders[i]);
+    for (var folder of WebInspector.isolatedFileSystemManager.fileSystem(fileSystemPath).excludedFolders().values())
+        this._addExcludedFolderRow(folder, false);
+    for (var folder of WebInspector.isolatedFileSystemManager.fileSystem(fileSystemPath).nonConfigurableExcludedFolders().values())
+        this._addExcludedFolderRow(folder, true);
 
     this.element.tabIndex = 0;
     this._hasMappingChanges = false;
@@ -117,7 +118,7 @@ WebInspector.EditFileSystemDialog.prototype = {
         const minHeight = 150;
         var maxHeight = this._container.offsetHeight - 10;
         maxHeight = Math.max(minHeight, maxHeight);
-        var maxWidth = Math.min(540, this._container.offsetWidth - 10);
+        var maxWidth = Math.min(740, this._container.offsetWidth - 10);
         maxWidth = Math.max(minWidth, maxWidth);
         this._dialogElement.style.maxHeight = maxHeight + "px";
         this._dialogElement.style.width = maxWidth + "px";
@@ -173,7 +174,7 @@ WebInspector.EditFileSystemDialog.prototype = {
         var entry = this._entries[itemId];
         switch (columnId) {
         case "url":
-            return entry.urlPrefix;
+            return entry.configurable ? entry.urlPrefix : WebInspector.UIString("%s (via .devtools)", entry.urlPrefix);
         case "path":
             return entry.pathPrefix;
         default:
@@ -271,7 +272,17 @@ WebInspector.EditFileSystemDialog.prototype = {
             return;
 
         this._entries[urlPrefix] = entry;
-        this._fileMappingsList.addItem(urlPrefix, null);
+        // Insert configurable entries before non-configurable.
+        var insertBefore = null;
+        if (entry.configurable) {
+            for (var prefix in this._entries) {
+                if (!this._entries[prefix].configurable) {
+                    insertBefore = prefix;
+                    break;
+                }
+            }
+        }
+        this._fileMappingsList.addItem(urlPrefix, insertBefore, !entry.configurable);
         this._resize();
     },
 
@@ -281,7 +292,7 @@ WebInspector.EditFileSystemDialog.prototype = {
     _excludedFolderAdded: function(event)
     {
         var path = /** @type {string} */ (event.data);
-        this._addExcludedFolderRow(path);
+        this._addExcludedFolderRow(path, false);
     },
 
     /**
@@ -352,11 +363,19 @@ WebInspector.EditFileSystemDialog.prototype = {
 
     /**
      * @param {string} path
+     * @param {boolean} readOnly
      */
-    _addExcludedFolderRow: function(path)
+    _addExcludedFolderRow: function(path, readOnly)
     {
+        if (this._excludedFolderEntries.has(path))
+            return;
         this._excludedFolderEntries.add(path);
-        this._excludedFolderList.addItem(path, null);
+        if (readOnly && !this._firstNonConfigurableExcludedFolder)
+            this._firstNonConfigurableExcludedFolder = WebInspector.UIString("%s (via .devtools)", path);
+
+        // Insert configurable entries before non-configurable.
+        var insertBefore = readOnly ? null : this._firstNonConfigurableExcludedFolder;
+        this._excludedFolderList.addItem(readOnly ? WebInspector.UIString("%s (via .devtools)", path) : path, insertBefore, readOnly);
         this._resize();
     },
 

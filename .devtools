@@ -1,0 +1,9 @@
+{
+    "mappings": [
+        { "folder": "/front_end/", "url": "chrome-devtools://devtools/bundled/" }
+    ],
+
+    "excludes": [
+        "/front_end/Images/"
+    ]
+}

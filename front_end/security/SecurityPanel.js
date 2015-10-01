@@ -147,11 +147,6 @@ WebInspector.SecurityPanel.prototype = {
     _onResponseReceived: function(event)
     {
         var request = /** @type {!WebInspector.NetworkRequest} */ (event.data);
-        var origin = WebInspector.ParsedURL.splitURLIntoPathComponents(request.url)[0];
-        if (!origin) {
-            // We don't handle resources like data: URIs. Most of them don't affect the lock icon.
-            return;
-        }
         if (request.resourceType() == WebInspector.resourceTypes.Document)
             this._lastResponseReceivedForLoaderId.set(request.loaderId, request);
     },
@@ -162,6 +157,12 @@ WebInspector.SecurityPanel.prototype = {
     _processRequest: function(request)
     {
         var origin = WebInspector.ParsedURL.splitURLIntoPathComponents(request.url)[0];
+
+        if (!origin) {
+            // We don't handle resources like data: URIs. Most of them don't affect the lock icon.
+            return;
+        }
+
         var securityState = /** @type {!SecurityAgent.SecurityState} */ (request.securityState());
 
         if (request.mixedContentType === NetworkAgent.RequestMixedContentType.Blockable && this._ranInsecureContentStyle)

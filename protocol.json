@@ -48,6 +48,14 @@
     {
         "domain": "Memory",
         "hidden": true,
+        "types": [
+            {
+                "id": "PressureLevel",
+                "type": "string",
+                "enum": ["moderate", "critical"],
+                "description": "Memory pressure level."
+            }
+        ],
         "commands": [
             {
                 "name": "getDOMCounters",
@@ -62,6 +70,14 @@
                 "description": "Enable/disable suppressing memory pressure notifications in all processes.",
                 "parameters": [
                     { "name": "suppressed", "type": "boolean", "description": "If true, memory pressure notifications will be suppressed."}
+                ],
+                "handlers": ["browser"]
+            },
+            {
+                "name": "simulatePressureNotification",
+                "description": "Simulate a memory pressure notification in all processes.",
+                "parameters": [
+                    { "name": "level", "$ref": "PressureLevel", "description": "Memory pressure level of the notification." }
                 ],
                 "handlers": ["browser"]
             }

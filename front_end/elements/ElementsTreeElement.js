@@ -532,11 +532,9 @@ WebInspector.ElementsTreeElement.prototype = {
         var newAttribute = event.target.enclosingNodeOrSelfWithClass("add-attribute");
         if (attribute && !newAttribute)
             contextMenu.appendItem(WebInspector.UIString.capitalize("Edit ^attribute"), this._startEditingAttribute.bind(this, attribute, event.target));
-        contextMenu.appendSeparator();
-        var pseudoSubMenu = contextMenu.appendSubMenuItem(WebInspector.UIString.capitalize("Force ^element ^state"));
-        WebInspector.ElementsTreeElement.populateForcedPseudoStateItems(pseudoSubMenu, treeElement.node());
-        contextMenu.appendSeparator();
         this.populateNodeContextMenu(contextMenu);
+        WebInspector.ElementsTreeElement.populateForcedPseudoStateItems(contextMenu, treeElement.node());
+        contextMenu.appendSeparator();
         this.populateScrollIntoView(contextMenu);
     },
 
@@ -545,7 +543,6 @@ WebInspector.ElementsTreeElement.prototype = {
      */
     populateScrollIntoView: function(contextMenu)
     {
-        contextMenu.appendSeparator();
         contextMenu.appendItem(WebInspector.UIString.capitalize("Scroll into ^view"), this._scrollIntoView.bind(this));
     },
 
@@ -562,24 +559,38 @@ WebInspector.ElementsTreeElement.prototype = {
         var openTagElement = this._node[this.treeOutline.treeElementSymbol()] || this;
         var isEditable = this.hasEditableNode();
         if (isEditable && !this._editing)
-            contextMenu.appendItem(WebInspector.UIString("Edit as HTML"), openTagElement.toggleEditAsHTML.bind(openTagElement));
+            contextMenu.appendAction("elements.edit-as-html", WebInspector.UIString("Edit as HTML"));
         var isShadowRoot = this._node.isShadowRoot();
 
         // Place it here so that all "Copy"-ing items stick together.
-        if (this._node.nodeType() === Node.ELEMENT_NODE)
-            contextMenu.appendItem(WebInspector.UIString.capitalize("Copy CSS ^path"), this._copyCSSPath.bind(this));
+        var copyMenu = contextMenu.appendSubMenuItem(WebInspector.UIString("Copy"));
+        var createShortcut = WebInspector.KeyboardShortcut.shortcutToString;
+        var modifier = WebInspector.KeyboardShortcut.Modifiers.CtrlOrMeta;
+        var menuItem;
         if (!isShadowRoot)
-            contextMenu.appendItem(WebInspector.UIString("Copy XPath"), this._copyXPath.bind(this));
+            menuItem = copyMenu.appendItem(WebInspector.UIString("Copy outerHTML"), this.treeOutline.performCopyOrCut.bind(this.treeOutline, false, this._node));
+            menuItem.setShortcut(createShortcut("V", modifier));
+        if (this._node.nodeType() === Node.ELEMENT_NODE)
+            copyMenu.appendItem(WebInspector.UIString.capitalize("Copy selector"), this._copyCSSPath.bind(this));
+        if (!isShadowRoot)
+            copyMenu.appendItem(WebInspector.UIString("Copy XPath"), this._copyXPath.bind(this));
         if (!isShadowRoot) {
             var treeOutline = this.treeOutline;
-            contextMenu.appendSeparator();
-            contextMenu.appendItem(WebInspector.UIString("Cut"), treeOutline.performCopyOrCut.bind(treeOutline, true, this._node), !this.hasEditableNode());
-            contextMenu.appendItem(WebInspector.UIString("Copy"), treeOutline.performCopyOrCut.bind(treeOutline, false, this._node));
-            contextMenu.appendItem(WebInspector.UIString("Paste"), treeOutline.pasteNode.bind(treeOutline, this._node), !treeOutline.canPaste(this._node));
+            menuItem = copyMenu.appendItem(WebInspector.UIString("Cut element"), treeOutline.performCopyOrCut.bind(treeOutline, true, this._node), !this.hasEditableNode());
+            menuItem.setShortcut(createShortcut("X", modifier));
+            menuItem = copyMenu.appendItem(WebInspector.UIString("Copy element"), treeOutline.performCopyOrCut.bind(treeOutline, false, this._node));
+            menuItem.setShortcut(createShortcut("C", modifier));
+            menuItem = copyMenu.appendItem(WebInspector.UIString("Paste element"), treeOutline.pasteNode.bind(treeOutline, this._node), !treeOutline.canPaste(this._node));
+            menuItem.setShortcut(createShortcut("V", modifier));
         }
 
+        contextMenu.appendSeparator();
+        menuItem = contextMenu.appendCheckboxItem(WebInspector.UIString("Hide element"), this.treeOutline.toggleHideElement(this._node), this.treeOutline.isToggledToHidden(this._node));
+        menuItem.setShortcut(WebInspector.shortcutRegistry.shortcutTitleForAction("elements.hide-element"));
+
+
         if (isEditable)
-            contextMenu.appendItem(WebInspector.UIString("Delete"), this.remove.bind(this));
+            contextMenu.appendItem(WebInspector.UIString("Delete element"), this.remove.bind(this));
         contextMenu.appendSeparator();
     },
 

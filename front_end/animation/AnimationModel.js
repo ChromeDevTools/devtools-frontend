@@ -593,6 +593,24 @@ WebInspector.AnimationModel.AnimationGroup.prototype = {
         this.target().animationAgent().seekAnimations(this._animations.map(extractId), currentTime);
     },
 
+    /**
+     * @return {!Promise.<number>}
+     */
+    currentTimePromise: function()
+    {
+        /**
+         * @param {?Protocol.Error} error
+         * @param {number} currentTime
+         * @return {number}
+         */
+        function callback(error, currentTime)
+        {
+            return !error ? currentTime : 0;
+        }
+
+        return this.target().animationAgent().getCurrentTime(this._animations[0].id(), callback).catchException(0);
+    },
+
     __proto__: WebInspector.SDKObject.prototype
 }
 

@@ -5120,6 +5120,16 @@
                 "description": "Sets the playback rate of the document timeline."
             },
             {
+                "name": "getCurrentTime",
+                "parameters": [
+                    { "name": "id", "type": "string", "description": "Id of animation." }
+                ],
+                "returns": [
+                    { "name": "currentTime", "type": "number", "description": "Current time of the page." }
+                ],
+                "description": "Returns the current time of the an animation."
+            },
+            {
                 "name": "setTiming",
                 "parameters": [
                     { "name": "playerId", "type": "string", "description": "AnimationPlayer id." },

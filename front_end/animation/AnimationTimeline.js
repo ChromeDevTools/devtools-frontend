@@ -188,7 +188,8 @@ WebInspector.AnimationTimeline.prototype = {
         }
         this._playbackSlider.value = playbackSliderValue;
 
-        for (var target of WebInspector.targetManager.targets(WebInspector.Target.Type.Page))
+        var target = WebInspector.targetManager.mainTarget();
+        if (target)
             WebInspector.AnimationModel.fromTarget(target).setPlaybackRate(this._playbackRate());
         WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.AnimationsPlaybackRateChanged);
         if (this._scrubberPlayer)
@@ -216,12 +217,15 @@ WebInspector.AnimationTimeline.prototype = {
         if (this._paused) {
             this._controlButton.element.classList.add("play-outline-toolbar-item");
             this._controlButton.setTitle(WebInspector.UIString("Play timeline"));
+            this._controlButton.setToggled(true);
         } else if (!this._scrubberPlayer || this._scrubberPlayer.currentTime >= this.duration() - this._scrubberRadius / this.pixelMsRatio()) {
             this._controlButton.element.classList.add("replay-outline-toolbar-item");
             this._controlButton.setTitle(WebInspector.UIString("Replay timeline"));
+            this._controlButton.setToggled(true);
         } else {
             this._controlButton.element.classList.add("pause-outline-toolbar-item");
             this._controlButton.setTitle(WebInspector.UIString("Pause timeline"));
+            this._controlButton.setToggled(false);
         }
     },
 
@@ -402,6 +406,8 @@ WebInspector.AnimationTimeline.prototype = {
         for (var anim of group.animations())
             this._addAnimation(anim);
         this.scheduleRedraw();
+        this._timelineScrubber.classList.remove("hidden");
+        this._syncScrubber();
     },
 
     /**
@@ -505,7 +511,7 @@ WebInspector.AnimationTimeline.prototype = {
         this._cachedTimelineWidth = Math.max(0, this._animationsContainer.offsetWidth - this._timelineControlsWidth) || 0;
         this.scheduleRedraw();
         if (this._scrubberPlayer)
-            this._animateTime();
+            this._syncScrubber();
     },
 
     /**
@@ -532,36 +538,33 @@ WebInspector.AnimationTimeline.prototype = {
         if (requiredDuration > this._duration * 0.8) {
             resized = true;
             this._duration = requiredDuration * 1.5;
-            this._timelineScrubber.classList.remove("hidden");
-            this._animateTime(animation.startTime() - this.startTime());
         }
         return resized;
     },
 
-    /**
-      * @param {number=} time
-      */
-    _animateTime: function(time)
+    _syncScrubber: function()
     {
-        var oldPlayer = this._scrubberPlayer;
+        this._selectedGroup.currentTimePromise()
+            .then(this._animateTime.bind(this))
+            .then(this._updateControlButton.bind(this));
+    },
 
+    /**
+      * @param {number} currentTime
+      */
+    _animateTime: function(currentTime)
+    {
+        if (this._scrubberPlayer)
+            this._scrubberPlayer.cancel();
+
+        var scrubberDuration = this.duration() - this._scrubberRadius / this.pixelMsRatio();
         this._scrubberPlayer = this._timelineScrubber.animate([
             { transform: "translateX(0px)" },
             { transform: "translateX(" +  (this.width() - this._scrubberRadius) + "px)" }
-        ], { duration: this.duration() - this._scrubberRadius / this.pixelMsRatio(), fill: "forwards" });
+        ], { duration: scrubberDuration , fill: "forwards" });
         this._scrubberPlayer.playbackRate = this._playbackRate();
         this._scrubberPlayer.onfinish = this._updateControlButton.bind(this);
-        this._updateControlButton();
-
-        if (time !== undefined)
-            this._scrubberPlayer.currentTime = time;
-        else if (oldPlayer.playState === "finished")
-            this._scrubberPlayer.finish();
-        else
-            this._scrubberPlayer.startTime = oldPlayer.startTime;
-
-        if (oldPlayer)
-            oldPlayer.cancel();
+        this._scrubberPlayer.currentTime = currentTime;
         this._timelineScrubber.classList.remove("animation-timeline-end");
         this._timelineScrubberHead.window().requestAnimationFrame(this._updateScrubber.bind(this));
     },
@@ -596,7 +599,7 @@ WebInspector.AnimationTimeline.prototype = {
      */
     _scrubberDragStart: function(event)
     {
-        if (!this._scrubberPlayer)
+        if (!this._scrubberPlayer || !this._selectedGroup)
             return false;
 
         this._originalScrubberTime = this._scrubberPlayer.currentTime;
@@ -618,7 +621,7 @@ WebInspector.AnimationTimeline.prototype = {
         this._scrubberPlayer.currentTime = Math.min(this._originalScrubberTime + delta / this.pixelMsRatio(), this.duration() - this._scrubberRadius / this.pixelMsRatio());
         var currentTime = Math.max(0, Math.round(this._scrubberPlayer.currentTime));
         this._timelineScrubberHead.textContent = WebInspector.UIString(Number.millisToString(currentTime));
-        // TODO(samli): hook up to new replay mechanism.
+        this._selectedGroup.seekTo(currentTime);
     },
 
     /**

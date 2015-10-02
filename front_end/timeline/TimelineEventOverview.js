@@ -400,10 +400,10 @@ WebInspector.TimelineEventOverview.CPUActivity.prototype = {
         {
             var step = 4 * window.devicePixelRatio;
             ctx.save();
-            ctx.lineWidth = step / 2;
-            for (var i = 0; i < width + height; i += step) {
-                ctx.moveTo(i, 0);
-                ctx.lineTo(i - height, height);
+            ctx.lineWidth = step / Math.sqrt(8);
+            for (var x = 0.5; x < width + height; x += step) {
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x - height, height);
             }
             ctx.globalCompositeOperation = "destination-out";
             ctx.stroke();

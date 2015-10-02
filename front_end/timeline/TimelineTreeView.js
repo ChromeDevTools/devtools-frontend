@@ -213,14 +213,14 @@ WebInspector.TimelineTreeView.prototype = {
         {
             var url = WebInspector.TimelineTreeView.eventURL(node.event) || "";
             if (url.startsWith("extensions::"))
-                return groupSubdomains ? WebInspector.UIString("Chrome Extensions Overhead") : url;
+                return WebInspector.UIString("[Chrome extensions overhead]");
             var parsedURL = url.asParsedURL();
             if (!parsedURL)
                 return "";
             if (parsedURL.scheme === "chrome-extension") {
                 url = parsedURL.scheme + "://" + parsedURL.host;
                 var displayName = executionContextNamesByOrigin.get(url);
-                return displayName ? WebInspector.UIString("Chrome Extension: %s", displayName) : url;
+                return displayName ? WebInspector.UIString("[Chrome extension] %s", displayName) : url;
             }
             if (!groupSubdomains)
                 return parsedURL.host;

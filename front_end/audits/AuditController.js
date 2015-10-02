@@ -107,7 +107,7 @@ WebInspector.AuditController.prototype = {
      */
     initiateAudit: function(categoryIds, progress, runImmediately, startedCallback)
     {
-        var target = /** @type {!WebInspector.Target} */ (WebInspector.targetManager.mainTarget());
+        var target = WebInspector.targetManager.mainTarget();
         if (!categoryIds || !categoryIds.length || !target)
             return;
 

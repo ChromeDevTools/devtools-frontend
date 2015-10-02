@@ -629,7 +629,6 @@ WebInspector.TimelinePanel.prototype = {
         if (this._captureMemorySetting.get() && viewMode !== WebInspector.TimelinePanel.ViewMode.TreeView)
             this._addModeView(new WebInspector.MemoryCountersGraph(this, this._model));
 
-        var mainTarget = WebInspector.targetManager.mainTarget();
         this.doResize();
         this.select(null);
     },

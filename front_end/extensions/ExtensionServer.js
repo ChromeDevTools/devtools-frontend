@@ -429,9 +429,7 @@ WebInspector.ExtensionServer.prototype = {
         var injectedScript;
         if (options.injectedScript)
             injectedScript = "(function(){" + options.injectedScript + "})()";
-        // Reload main frame.
-        var target = WebInspector.targetManager.mainTarget();
-        target.resourceTreeModel.reloadPage(!!options.ignoreCache, injectedScript);
+        WebInspector.targetManager.reloadPage(!!options.ignoreCache, injectedScript);
         return this._status.OK();
     },
 

@@ -830,15 +830,14 @@ WebInspector.Spectrum.GeneratedPaletteTitle = "Page colors";
 WebInspector.Spectrum.PaletteGenerator = function(callback)
 {
     this._callback = callback;
-    var target = WebInspector.targetManager.mainTarget();
-    if (!target)
-        return;
-    var cssModel = WebInspector.CSSStyleModel.fromTarget(target);
     /** @type {!Map.<string, number>} */
     this._frequencyMap = new Map();
     var stylesheetPromises = [];
-    for (var stylesheet of cssModel.allStyleSheets())
-        stylesheetPromises.push(new Promise(this._processStylesheet.bind(this, stylesheet)));
+    for (var target of WebInspector.targetManager.targets(WebInspector.Target.Type.Page)) {
+        var cssModel = WebInspector.CSSStyleModel.fromTarget(target);
+        for (var stylesheet of cssModel.allStyleSheets())
+            stylesheetPromises.push(new Promise(this._processStylesheet.bind(this, stylesheet)));
+    }
     Promise.all(stylesheetPromises)
         .catchException(null)
         .then(this._finish.bind(this));

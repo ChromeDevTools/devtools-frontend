@@ -482,7 +482,7 @@ WebInspector.SecurityMainView.prototype = {
         function showCertificateViewer(e)
         {
             e.consume();
-            WebInspector.targetManager.mainTarget().networkManager.showCertificateViewer(/** @type {number} */ (explanation.certificateId));
+            WebInspector.multitargetNetworkManager.showCertificateViewer(/** @type {number} */ (explanation.certificateId));
         }
     },
 

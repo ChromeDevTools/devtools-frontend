@@ -108,16 +108,6 @@ WebInspector.NetworkManager.prototype = {
         WebInspector.moduleSetting("cacheDisabled").removeChangeListener(this._cacheDisabledSettingChanged, this);
     },
 
-    clearBrowserCache: function()
-    {
-        this._networkAgent.clearBrowserCache();
-    },
-
-    clearBrowserCookies: function()
-    {
-        this._networkAgent.clearBrowserCookies();
-    },
-
     _initNetworkConditions: function()
     {
         this._networkAgent.canEmulateNetworkConditions(callback.bind(this));
@@ -156,14 +146,6 @@ WebInspector.NetworkManager.prototype = {
     _networkConditionsSettingChanged: function(event)
     {
         this._updateNetworkConditions(/** @type {!WebInspector.NetworkManager.Conditions} */ (event.data));
-    },
-
-    /**
-     * @param {!NetworkAgent.CertificateId} certificateId
-     */
-    showCertificateViewer: function(certificateId)
-    {
-        this._networkAgent.showCertificateViewer(certificateId);
     },
 
     /**
@@ -795,6 +777,28 @@ WebInspector.MultitargetNetworkManager.prototype = {
         this._blockedURLs.delete(url);
         for (var target of WebInspector.targetManager.targets())
             target.networkAgent().removeBlockedURL(url);
+    },
+
+    clearBrowserCache: function()
+    {
+        for (var target of WebInspector.targetManager.targets())
+            target.networkAgent().clearBrowserCache();
+    },
+
+    clearBrowserCookies: function()
+    {
+        for (var target of WebInspector.targetManager.targets())
+            target.networkAgent().clearBrowserCookies();
+    },
+
+    /**
+     * @param {!NetworkAgent.CertificateId} certificateId
+     */
+    showCertificateViewer: function(certificateId)
+    {
+        var target = WebInspector.targetManager.mainTarget();
+        if (target)
+            target.networkAgent().showCertificateViewer(certificateId);
     },
 
     __proto__: WebInspector.Object.prototype

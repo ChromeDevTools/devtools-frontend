@@ -231,9 +231,8 @@ WebInspector.TimelineTreeView.prototype = {
         }
 
         var executionContextNamesByOrigin = new Map();
-        var mainTarget = WebInspector.targetManager.mainTarget();
-        if (mainTarget) {
-            for (var context of mainTarget.runtimeModel.executionContexts())
+        for (var target of WebInspector.targetManager.targets()) {
+            for (var context of target.runtimeModel.executionContexts())
                 executionContextNamesByOrigin.set(context.origin, context.name);
         }
         var groupByMap = /** @type {!Map<!WebInspector.TimelineTreeView.GroupBy,?function(!WebInspector.TimelineModel.ProfileTreeNode):string>} */ (new Map([

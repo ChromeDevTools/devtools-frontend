@@ -585,7 +585,7 @@ WebInspector.ElementsTreeElement.prototype = {
         }
 
         contextMenu.appendSeparator();
-        menuItem = contextMenu.appendCheckboxItem(WebInspector.UIString("Hide element"), this.treeOutline.toggleHideElement(this._node), this.treeOutline.isToggledToHidden(this._node));
+        menuItem = contextMenu.appendCheckboxItem(WebInspector.UIString("Hide element"), this.treeOutline.toggleHideElement.bind(this.treeOutline, this._node), this.treeOutline.isToggledToHidden(this._node));
         menuItem.setShortcut(WebInspector.shortcutRegistry.shortcutTitleForAction("elements.hide-element"));
 
 
@@ -1149,6 +1149,8 @@ WebInspector.ElementsTreeElement.prototype = {
         {
             this._decorationsElement.removeChildren();
             this._decorationsElement.classList.add("hidden");
+            this._gutterContainer.classList.toggle("has-decorations", decorations.length || descendantDecorations.length);
+
             if (!decorations.length && !descendantDecorations.length)
                 return;
 
@@ -1180,8 +1182,6 @@ WebInspector.ElementsTreeElement.prototype = {
             if (!this.expanded)
                 processColors.call(this, descendantColors, "elements-gutter-decoration elements-has-decorated-children");
             WebInspector.Tooltip.install(this._decorationsElement, titles);
-
-            this._gutterContainer.classList.toggle("has-decorations", this._decorationsElement.hasChildNodes());
 
             /**
              * @param {!Set<string>} colors

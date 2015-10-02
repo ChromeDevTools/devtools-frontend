@@ -322,7 +322,7 @@ ol:focus li.selected .webkit-html-attribute-name {
     color: #ccc;
 }
 
-.elements-disclosure li.selected .gutter-container:not(.has-decoration) {
+.elements-disclosure li.selected .gutter-container:not(.has-decorations) {
     position: absolute;
     left: 0px;
     width: 16.25px;

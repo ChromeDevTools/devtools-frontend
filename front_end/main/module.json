@@ -153,8 +153,7 @@
             "name": "rendering",
             "title": "Rendering",
             "order": "11",
-            "className": "WebInspector.RenderingOptions.View",
-            "experiment": "!materialDesign"
+            "className": "WebInspector.RenderingOptions.View"
         },
         {
             "type": "@WebInspector.ToolbarItem.Provider",

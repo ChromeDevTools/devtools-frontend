@@ -117,25 +117,27 @@ WebInspector.AuditController.prototype = {
         for (var i = 0; i < categoryIds.length; ++i)
             categories.push(this._auditsPanel.categoriesById[categoryIds[i]]);
 
-        /**
-         * @this {WebInspector.AuditController}
-         */
-        function startAuditWhenResourcesReady()
-        {
-            if (this._progress.isCanceled()) {
-                this._progress.done();
-                return;
-            }
-            startedCallback();
-            this._executeAudit(target, categories, this._auditFinishedCallback.bind(this));
-        }
-
         if (runImmediately)
-            startAuditWhenResourcesReady.call(this);
+            this._startAuditWhenResourcesReady(target, categories, startedCallback);
         else
-            this._reloadResources(startAuditWhenResourcesReady.bind(this));
+            this._reloadResources(this._startAuditWhenResourcesReady.bind(this, target, categories, startedCallback));
 
         WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.AuditsStarted);
+    },
+
+    /**
+     * @param {!WebInspector.Target} target
+     * @param {!Array<!WebInspector.AuditCategory>} categories
+     * @param {function()} startedCallback
+     */
+    _startAuditWhenResourcesReady: function(target, categories, startedCallback)
+    {
+        if (this._progress.isCanceled()) {
+            this._progress.done();
+            return;
+        }
+        startedCallback();
+        this._executeAudit(target, categories, this._auditFinishedCallback.bind(this));
     },
 
     /**

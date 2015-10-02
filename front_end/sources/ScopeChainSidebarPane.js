@@ -97,11 +97,7 @@ WebInspector.ScopeChainSidebarPane.prototype = {
                 }
                 break;
             case DebuggerAgent.ScopeType.Closure:
-                var scopeName = scope.name();
-                if (scopeName)
-                    title = WebInspector.UIString("Closure (%s)", WebInspector.beautifyFunctionName(scopeName));
-                else
-                    title = WebInspector.UIString("Closure");
+                title = WebInspector.UIString("Closure");
                 emptyPlaceholder = WebInspector.UIString("No Variables");
                 break;
             case DebuggerAgent.ScopeType.Catch:

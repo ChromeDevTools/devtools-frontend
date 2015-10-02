@@ -1316,7 +1316,6 @@ WebInspector.DebuggerModel.Scope = function(callFrame, ordinal)
     this._callFrame = callFrame;
     this._payload = callFrame._payload.scopeChain[ordinal];
     this._type = this._payload.type;
-    this._name = this._payload.name;
     this._ordinal = ordinal;
 }
 
@@ -1327,14 +1326,6 @@ WebInspector.DebuggerModel.Scope.prototype = {
     type: function()
     {
         return this._type;
-    },
-
-    /**
-     * @return {string|undefined}
-     */
-    name: function()
-    {
-        return this._name;
     },
 
     /**

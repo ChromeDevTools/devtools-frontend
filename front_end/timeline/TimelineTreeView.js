@@ -402,9 +402,12 @@ WebInspector.TimelineTreeView.GridNode.prototype = {
         var container = cell.createChild("div", "name-container");
         var icon = container.createChild("div", "activity-icon");
         var name = container.createChild("div", "activity-name");
-        var link = container.createChild("div", "activity-link");
         var event = this._profileNode.event;
         if (event) {
+            var data = event.args["data"];
+            var deoptReason = data && data["deoptReason"];
+            if (deoptReason && deoptReason !== "no reason")
+                container.createChild("div", "activity-warning").title = WebInspector.UIString("Not optimized: %s", deoptReason);
             name.textContent = event.name === WebInspector.TimelineModel.RecordType.JSFrame
                 ? WebInspector.beautifyFunctionName(event.args["data"]["functionName"])
                 : WebInspector.TimelineUIUtils.eventTitle(event);
@@ -414,7 +417,7 @@ WebInspector.TimelineTreeView.GridNode.prototype = {
             var lineNumber = frame && frame["lineNumber"] || 1;
             var columnNumber = frame && frame["columnNumber"];
             if (url)
-                link.appendChild(this._treeView.linkifyLocation(scriptId, url, lineNumber, columnNumber));
+                container.createChild("div", "activity-link").appendChild(this._treeView.linkifyLocation(scriptId, url, lineNumber, columnNumber));
             var category = WebInspector.TimelineUIUtils.eventStyle(event).category;
             icon.style.backgroundColor = category.fillColorStop1;
         } else {

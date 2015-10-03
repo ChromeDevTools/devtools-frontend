@@ -1022,6 +1022,18 @@
     border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
+.timeline-tree-view .data-grid .name-container .activity-warning::after {
+    content: "[deopt]";
+    margin: 0 4px;
+    line-height: 12px;
+    font-size: 10px;
+    color: #777;
+}
+
+.timeline-tree-view .data-grid tr.selected .name-container .activity-warning::after {
+    color: white;
+}
+
 .timeline-tree-view .data-grid .name-container .activity-link {
     flex: auto;
     text-align: right;

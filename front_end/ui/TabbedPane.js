@@ -191,7 +191,7 @@ WebInspector.TabbedPane.prototype = {
     appendTab: function(id, tabTitle, view, tabTooltip, userGesture, isCloseable, index)
     {
         isCloseable = typeof isCloseable === "boolean" ? isCloseable : this._closeableTabs;
-        var tab = new WebInspector.TabbedPaneTab(this, id, tabTitle, isCloseable, view, tabTooltip);
+        var tab = new WebInspector.TabbedPaneTab(this, id, tabTitle, isCloseable, view, tabTooltip, this._dragDelay);
         tab.setDelegate(this._delegate);
         this._tabsById[id] = tab;
         if (index !== undefined)
@@ -817,11 +817,13 @@ WebInspector.TabbedPane.prototype = {
     /**
      * @param {boolean} allow
      * @param {boolean=} automatic
+     * @param {number=} dragDelay
      */
-    setAllowTabReorder: function(allow, automatic)
+    setAllowTabReorder: function(allow, automatic, dragDelay)
     {
         this._allowTabReorder = allow;
         this._automaticReorder = automatic;
+        this._dragDelay = dragDelay;
     },
 
     __proto__: WebInspector.VBox.prototype
@@ -835,8 +837,9 @@ WebInspector.TabbedPane.prototype = {
  * @param {boolean} closeable
  * @param {!WebInspector.Widget} view
  * @param {string=} tooltip
+ * @param {number=} dragDelay
  */
-WebInspector.TabbedPaneTab = function(tabbedPane, id, title, closeable, view, tooltip)
+WebInspector.TabbedPaneTab = function(tabbedPane, id, title, closeable, view, tooltip, dragDelay)
 {
     this._closeable = closeable;
     this._tabbedPane = tabbedPane;
@@ -844,6 +847,7 @@ WebInspector.TabbedPaneTab = function(tabbedPane, id, title, closeable, view, to
     this._title = title;
     this._tooltip = tooltip;
     this._view = view;
+    this._dragDelay = dragDelay;
     this._shown = false;
     /** @type {number} */ this._measuredWidth;
     /** @type {!Element|undefined} */ this._tabElement;
@@ -1030,7 +1034,7 @@ WebInspector.TabbedPaneTab.prototype = {
 
             tabElement.addEventListener("contextmenu", this._tabContextMenu.bind(this), false);
             if (this._tabbedPane._allowTabReorder)
-                WebInspector.installDragHandle(tabElement, this._startTabDragging.bind(this), this._tabDragging.bind(this), this._endTabDragging.bind(this), "-webkit-grabbing", "pointer");
+                WebInspector.installDragHandle(tabElement, this._startTabDragging.bind(this), this._tabDragging.bind(this), this._endTabDragging.bind(this), "-webkit-grabbing", "pointer", this._dragDelay);
         }
 
         return tabElement;
@@ -1138,6 +1142,8 @@ WebInspector.TabbedPaneTab.prototype = {
         if (event.target.classList.contains("tabbed-pane-close-button"))
             return false;
         this._dragStartX = event.pageX;
+        this._tabElement.classList.add("dragging");
+        this._tabbedPane._tabSlider.remove();
         return true;
     },
 
@@ -1180,9 +1186,7 @@ WebInspector.TabbedPaneTab.prototype = {
             return;
         }
 
-        this._tabElement.classList.add("dragging");
         this._tabElement.style.setProperty("left", (event.pageX - this._dragStartX) + "px");
-        this._tabbedPane._tabSlider.remove();
     },
 
     /**

@@ -115,7 +115,7 @@ WebInspector.ResizerWidget.prototype = {
         // Only handle drags of the nodes specified.
         if (this._elements.indexOf(event.target) === -1)
             return false;
-        WebInspector.elementDragStart(this._dragStart.bind(this), this._drag.bind(this), this._dragEnd.bind(this), this.cursor(), event);
+        WebInspector.elementDragStart(/** @type {!Element} */(event.target), this._dragStart.bind(this), this._drag.bind(this), this._dragEnd.bind(this), this.cursor(), event);
     },
 
     /**

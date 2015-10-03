@@ -49,7 +49,7 @@ WebInspector.InspectorView = function()
     this._tabbedPane.registerRequiredCSS("components/inspectorViewTabbedPane.css");
     this._tabbedPane.element.classList.add("inspector-view-tabbed-pane");
     this._tabbedPane.setTabSlider(true);
-    this._tabbedPane.setAllowTabReorder(true);
+    this._tabbedPane.setAllowTabReorder(true, false, 200);
     this._tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabOrderChanged, this._persistPanelOrder, this);
     this._tabOrderSetting = WebInspector.settings.createSetting("InspectorView.panelOrder", {});
     this._drawerSplitWidget.setMainWidget(this._tabbedPane);

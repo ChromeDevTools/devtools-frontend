@@ -38,22 +38,45 @@ WebInspector.highlightedSearchResultClassName = "highlighted-search-result";
  * @param {?function(!MouseEvent)} elementDragEnd
  * @param {string} cursor
  * @param {?string=} hoverCursor
+ * @param {number=} startDelay
  */
-WebInspector.installDragHandle = function(element, elementDragStart, elementDrag, elementDragEnd, cursor, hoverCursor)
+WebInspector.installDragHandle = function(element, elementDragStart, elementDrag, elementDragEnd, cursor, hoverCursor, startDelay)
 {
-    element.addEventListener("mousedown", WebInspector.elementDragStart.bind(WebInspector, elementDragStart, elementDrag, elementDragEnd, cursor), false);
+    /**
+     * @param {!Event} event
+     */
+    function onMouseDown(event)
+    {
+        var dragStart = WebInspector.elementDragStart.bind(WebInspector, element, elementDragStart, elementDrag, elementDragEnd, cursor, event);
+        if (!startDelay)
+            dragStart();
+        startTimer = setTimeout(dragStart, startDelay || 0);
+    }
+
+    function onMouseUp()
+    {
+        if (startTimer)
+            clearInterval(startTimer);
+        startTimer = null;
+    }
+
+    var startTimer;
+    element.addEventListener("mousedown", onMouseDown, false);
+    if (startDelay)
+        element.addEventListener("mouseup", onMouseUp, false);
     if (hoverCursor !== null)
         element.style.cursor = hoverCursor || cursor;
 }
 
 /**
+ * @param {!Element} targetElement
  * @param {?function(!MouseEvent):boolean} elementDragStart
  * @param {function(!MouseEvent)} elementDrag
  * @param {?function(!MouseEvent)} elementDragEnd
  * @param {string} cursor
  * @param {!Event} event
  */
-WebInspector.elementDragStart = function(elementDragStart, elementDrag, elementDragEnd, cursor, event)
+WebInspector.elementDragStart = function(targetElement, elementDragStart, elementDrag, elementDragEnd, cursor, event)
 {
     // Only drag upon left button. Right will likely cause a context menu. So will ctrl-click on mac.
     if (event.button || (WebInspector.isMac() && event.ctrlKey))
@@ -84,7 +107,6 @@ WebInspector.elementDragStart = function(elementDragStart, elementDrag, elementD
     if (targetDocument !== WebInspector._dragEventsTargetDocumentTop)
         WebInspector._dragEventsTargetDocumentTop.addEventListener("mouseup", WebInspector._elementDragEnd, true);
 
-    var targetElement = /** @type {!Element} */ (event.target);
     if (typeof cursor === "string") {
         WebInspector._restoreCursorAfterDrag = restoreCursor.bind(null, targetElement.style.cursor);
         targetElement.style.cursor = cursor;

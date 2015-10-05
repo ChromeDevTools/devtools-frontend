@@ -97,6 +97,7 @@ WebInspector.TimelineModel.RecordType = {
 
     XHRReadyStateChange: "XHRReadyStateChange",
     XHRLoad: "XHRLoad",
+    CompileScript: "v8.compile",
     EvaluateScript: "EvaluateScript",
 
     CommitLoad: "CommitLoad",

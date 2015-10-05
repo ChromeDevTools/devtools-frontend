@@ -88,6 +88,7 @@ WebInspector.TimelineUIUtils._initEventStyles = function()
     eventStyles[recordTypes.TimerFire] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("Timer Fired"), categories["scripting"]);
     eventStyles[recordTypes.XHRReadyStateChange] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("XHR Ready State Change"), categories["scripting"]);
     eventStyles[recordTypes.XHRLoad] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("XHR Load"), categories["scripting"]);
+    eventStyles[recordTypes.CompileScript] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("Compile Script"), categories["scripting"]);
     eventStyles[recordTypes.EvaluateScript] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("Evaluate Script"), categories["scripting"]);
     eventStyles[recordTypes.MarkLoad] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("Load event"), categories["scripting"], true);
     eventStyles[recordTypes.MarkDOMContent] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("DOMContentLoaded event"), categories["scripting"], true);
@@ -317,6 +318,7 @@ WebInspector.TimelineUIUtils.buildDetailsTextForTraceEvent = function(event, tar
         detailsText = endLine ? WebInspector.UIString("%s [%d\u2009\u2013\u2009%d]", url, event.args["beginData"]["startLine"] + 1, endLine + 1) : url;
         break;
 
+    case recordType.CompileScript:
     case recordType.EvaluateScript:
         var url = eventData["url"];
         if (url)
@@ -450,6 +452,7 @@ WebInspector.TimelineUIUtils.buildDetailsNodeForTraceEvent = function(event, tar
            details.appendChild(location);
         }
         break;
+    case recordType.CompileScript:
     case recordType.EvaluateScript:
         var url = eventData["url"];
         if (url)
@@ -635,10 +638,11 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
         if (eventData["encodedDataLength"])
             contentHelper.appendTextRow(WebInspector.UIString("Encoded Data Length"), WebInspector.UIString("%d Bytes", eventData["encodedDataLength"]));
         break;
+    case recordTypes.CompileScript:
     case recordTypes.EvaluateScript:
         var url = eventData["url"];
         if (url)
-            contentHelper.appendLocationRow(WebInspector.UIString("Script"), url, eventData["lineNumber"]);
+            contentHelper.appendLocationRow(WebInspector.UIString("Script"), url, eventData["lineNumber"], eventData["columnNumber"]);
         break;
     case recordTypes.Paint:
         var clip = eventData["clip"];
@@ -707,7 +711,7 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
         var startLine = beginData["startLine"] + 1;
         var endLine = event.args["endData"] ? event.args["endData"]["endLine"] + 1 : 0;
         if (url)
-            contentHelper.appendLocationRow(WebInspector.UIString("Range"), url, startLine, endLine);
+            contentHelper.appendLocationRange(WebInspector.UIString("Range"), url, startLine, endLine);
         break;
 
     case recordTypes.FireIdleCallback:
@@ -1883,9 +1887,22 @@ WebInspector.TimelineDetailsContentHelper.prototype = {
      * @param {string} title
      * @param {string} url
      * @param {number} startLine
+     * @param {number=} startColumn
+     */
+    appendLocationRow: function(title, url, startLine, startColumn)
+    {
+        if (!this._linkifier || !this._target)
+            return;
+        this.appendElementRow(title, this._linkifier.linkifyScriptLocation(this._target, null, url, startLine - 1, (startColumn || 1) - 1));
+    },
+
+    /**
+     * @param {string} title
+     * @param {string} url
+     * @param {number} startLine
      * @param {number=} endLine
      */
-    appendLocationRow: function(title, url, startLine, endLine)
+    appendLocationRange: function(title, url, startLine, endLine)
     {
         if (!this._linkifier || !this._target)
             return;

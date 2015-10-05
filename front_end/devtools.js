@@ -541,10 +541,11 @@ InspectorFrontendHostImpl.prototype = {
 
     /**
      * @override
+     * @param {string=} fileSystemPath
      */
-    addFileSystem: function()
+    addFileSystem: function(fileSystemPath)
     {
-        DevToolsAPI.sendMessageToEmbedder("addFileSystem", [], null);
+        DevToolsAPI.sendMessageToEmbedder("addFileSystem", [fileSystemPath || ""], null);
     },
 
     /**

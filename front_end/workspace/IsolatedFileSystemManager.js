@@ -66,7 +66,7 @@ WebInspector.IsolatedFileSystemManager.prototype = {
 
     addFileSystem: function()
     {
-        InspectorFrontendHost.addFileSystem();
+        InspectorFrontendHost.addFileSystem("");
     },
 
     /**

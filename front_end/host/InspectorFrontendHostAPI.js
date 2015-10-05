@@ -89,7 +89,10 @@ InspectorFrontendHostAPI.EventDescriptors = [
 ];
 
 InspectorFrontendHostAPI.prototype = {
-    addFileSystem: function() { },
+    /**
+     * @param {string=} fileSystemPath
+     */
+    addFileSystem: function(fileSystemPath) { },
 
     /**
      * @param {string} url

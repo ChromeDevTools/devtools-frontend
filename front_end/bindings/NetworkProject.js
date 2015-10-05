@@ -169,6 +169,7 @@ WebInspector.NetworkProject = function(target, workspace, networkMapping)
         cssModel.addEventListener(WebInspector.CSSStyleModel.Events.StyleSheetAdded, this._styleSheetAdded, this);
         cssModel.addEventListener(WebInspector.CSSStyleModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this);
     }
+    WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
 }
 
 WebInspector.NetworkProject._networkProjectSymbol = Symbol("networkProject");
@@ -361,6 +362,14 @@ WebInspector.NetworkProject.prototype = {
     {
         this._reset();
         this._populate();
+    },
+
+    _suspendStateChanged: function()
+    {
+        if (WebInspector.targetManager.allTargetsSuspended())
+            this._reset();
+        else
+            this._populate();
     },
 
     /**

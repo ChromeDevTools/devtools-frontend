@@ -127,10 +127,6 @@ WebInspector.DebuggerModel.prototype = {
             return;
         this._agent.enable();
         this._debuggerEnabled = true;
-        if (this._hasStaleState) {
-            this._globalObjectCleared();
-            this._hasStaleState = false;
-        }
         this._pauseOnExceptionStateChanged();
         this.asyncStackTracesStateChanged();
         this.dispatchEventToListeners(WebInspector.DebuggerModel.Events.DebuggerWasEnabled);
@@ -141,11 +137,11 @@ WebInspector.DebuggerModel.prototype = {
         if (!this._debuggerEnabled)
             return;
 
-        this._hasStaleState = true;
         this._agent.disable();
         this._debuggerEnabled = false;
         this._isPausing = false;
         this.asyncStackTracesStateChanged();
+        this._globalObjectCleared();
         this.dispatchEventToListeners(WebInspector.DebuggerModel.Events.DebuggerWasDisabled);
     },
 

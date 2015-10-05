@@ -110,10 +110,11 @@ WebInspector.OverviewGrid.prototype = {
      * @param {string} eventType
      * @param {function(!WebInspector.Event)} listener
      * @param {!Object=} thisObject
+     * @return {!WebInspector.EventTarget.EventDescriptor}
      */
     addEventListener: function(eventType, listener, thisObject)
     {
-        this._window.addEventListener(eventType, listener, thisObject);
+        return this._window.addEventListener(eventType, listener, thisObject);
     },
 
     /**

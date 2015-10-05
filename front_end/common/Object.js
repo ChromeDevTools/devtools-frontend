@@ -36,6 +36,7 @@ WebInspector.Object.prototype = {
      * @param {string} eventType
      * @param {function(!WebInspector.Event)} listener
      * @param {!Object=} thisObject
+     * @return {!WebInspector.EventTarget.EventDescriptor}
      */
     addEventListener: function(eventType, listener, thisObject)
     {
@@ -47,6 +48,7 @@ WebInspector.Object.prototype = {
         if (!this._listeners.has(eventType))
             this._listeners.set(eventType, []);
         this._listeners.get(eventType).push({ thisObject: thisObject, listener: listener });
+        return new WebInspector.EventTarget.EventDescriptor(this, eventType, thisObject, listener);
     },
 
     /**
@@ -158,11 +160,23 @@ WebInspector.EventTarget = function()
 {
 }
 
+/**
+ * @param {!Array<!WebInspector.EventTarget.EventDescriptor>} eventList
+ */
+WebInspector.EventTarget.removeEventListeners = function(eventList)
+{
+    for (var i = 0; i < eventList.length; ++i) {
+        var eventInfo = eventList[i];
+        eventInfo.eventTarget.removeEventListener(eventInfo.eventType, eventInfo.method, eventInfo.receiver);
+    }
+}
+
 WebInspector.EventTarget.prototype = {
     /**
      * @param {string} eventType
      * @param {function(!WebInspector.Event)} listener
      * @param {!Object=} thisObject
+     * @return {!WebInspector.EventTarget.EventDescriptor}
      */
     addEventListener: function(eventType, listener, thisObject) { },
 
@@ -187,4 +201,19 @@ WebInspector.EventTarget.prototype = {
      * @return {boolean}
      */
     dispatchEventToListeners: function(eventType, eventData) { },
+}
+
+/**
+ * @constructor
+ * @param {!WebInspector.EventTarget} eventTarget
+ * @param {string} eventType
+ * @param {(!Object|undefined)} receiver
+ * @param {function(?):?} method
+ */
+WebInspector.EventTarget.EventDescriptor = function(eventTarget, eventType, receiver, method)
+{
+    this.eventTarget = eventTarget;
+    this.eventType = eventType;
+    this.receiver = receiver;
+    this.method = method;
 }

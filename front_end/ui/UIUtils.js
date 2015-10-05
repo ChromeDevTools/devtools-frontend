@@ -202,8 +202,7 @@ WebInspector._elementDragEnd = function(event)
 WebInspector.GlassPane = function(document)
 {
     this.element = createElement("div");
-    this.element.style.cssText = "position:absolute;top:0;bottom:0;left:0;right:0;background-color:transparent;z-index:1000;overflow:hidden;";
-    this.element.id = "glass-pane";
+    this.element.style.cssText = "position:absolute;top:0;bottom:0;left:0;right:0;background-color:transparent;z-index:3000;overflow:hidden;";
     document.body.appendChild(this.element);
     WebInspector._glassPane = this;
 }

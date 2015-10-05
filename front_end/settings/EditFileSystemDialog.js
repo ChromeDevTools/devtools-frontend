@@ -30,13 +30,13 @@
 
 /**
  * @constructor
- * @extends {WebInspector.DialogDelegate}
+ * @extends {WebInspector.VBox}
  * @param {string} fileSystemPath
  */
 WebInspector.EditFileSystemDialog = function(fileSystemPath)
 {
-    WebInspector.DialogDelegate.call(this);
-    this.element.classList.add("dialog-contents");
+    WebInspector.VBox.call(this);
+    this.element.classList.add("dialog-contents", "settings-dialog", "settings-tab");
     this._fileSystemPath = fileSystemPath;
 
     var header = this.element.createChild("div", "header");
@@ -87,57 +87,22 @@ WebInspector.EditFileSystemDialog = function(fileSystemPath)
 
     this.element.tabIndex = 0;
     this._hasMappingChanges = false;
+
+    this._dialog = new WebInspector.Dialog();
+    this._dialog.setWrapsContent(true);
+    this._dialog.setMaxSize(new Size(600, 600));
+    this._dialog.addCloseButton();
+    this.show(this._dialog.element);
+    this._dialog.show();
 }
 
 WebInspector.EditFileSystemDialog.show = function(fileSystemPath)
 {
-    var dialog = new WebInspector.EditFileSystemDialog(fileSystemPath);
-    WebInspector.Dialog.show(dialog, false, true);
-    var glassPane = dialog.element.ownerDocument.getElementById("glass-pane");
-    glassPane.classList.add("settings-glass-pane");
+    new WebInspector.EditFileSystemDialog(fileSystemPath);
 }
 
 WebInspector.EditFileSystemDialog.prototype = {
-    /**
-     * @override
-     * @param {!Element} element
-     */
-    show: function(element)
-    {
-        this._dialogElement = element;
-        element.appendChild(this.element);
-        element.classList.add("settings-dialog", "settings-tab");
-    },
-
-    _resize: function()
-    {
-        if (!this._dialogElement || !this._container)
-            return;
-
-        const minWidth = 200;
-        const minHeight = 150;
-        var maxHeight = this._container.offsetHeight - 10;
-        maxHeight = Math.max(minHeight, maxHeight);
-        var maxWidth = Math.min(740, this._container.offsetWidth - 10);
-        maxWidth = Math.max(minWidth, maxWidth);
-        this._dialogElement.style.maxHeight = maxHeight + "px";
-        this._dialogElement.style.width = maxWidth + "px";
-
-        WebInspector.DialogDelegate.prototype.position(this._dialogElement, this._container);
-    },
-
-    /**
-     * @override
-     * @param {!Element} element
-     * @param {!Element} container
-     */
-    position: function(element, container)
-    {
-        this._container = container;
-        this._resize();
-    },
-
-    willHide: function(event)
+    willHide: function()
     {
         if (!this._hasMappingChanges)
             return;
@@ -159,7 +124,8 @@ WebInspector.EditFileSystemDialog.prototype = {
         delete this._entries[entry.urlPrefix];
         if (this._fileMappingsList.itemForId(entry.urlPrefix))
             this._fileMappingsList.removeItem(entry.urlPrefix);
-        this._resize();
+        if (this._dialog)
+            this._dialog.contentResized();
     },
 
     /**
@@ -283,7 +249,8 @@ WebInspector.EditFileSystemDialog.prototype = {
             }
         }
         this._fileMappingsList.addItem(urlPrefix, insertBefore, !entry.configurable);
-        this._resize();
+        if (this._dialog)
+            this._dialog.contentResized();
     },
 
     /**
@@ -376,7 +343,8 @@ WebInspector.EditFileSystemDialog.prototype = {
         // Insert configurable entries before non-configurable.
         var insertBefore = readOnly ? null : this._firstNonConfigurableExcludedFolder;
         this._excludedFolderList.addItem(readOnly ? WebInspector.UIString("%s (via .devtools)", path) : path, insertBefore, readOnly);
-        this._resize();
+        if (this._dialog)
+            this._dialog.contentResized();
     },
 
     /**
@@ -410,14 +378,5 @@ WebInspector.EditFileSystemDialog.prototype = {
         return true;
     },
 
-    focus: function()
-    {
-        WebInspector.setCurrentFocusElement(this.element);
-    },
-
-    onEnter: function()
-    {
-    },
-
-    __proto__: WebInspector.DialogDelegate.prototype
+    __proto__: WebInspector.VBox.prototype
 }

@@ -431,7 +431,7 @@ WebInspector.InspectorView.prototype = {
             if (panelIndex !== -1) {
                 var panelName = this._tabbedPane.allTabs()[panelIndex];
                 if (panelName) {
-                    if (!WebInspector.Dialog.currentInstance() && !this._currentPanelLocked)
+                    if (!WebInspector.Dialog.hasInstance() && !this._currentPanelLocked)
                         this.showPanel(panelName);
                     event.consume(true);
                 }
@@ -467,7 +467,7 @@ WebInspector.InspectorView.prototype = {
             return;
 
         if (!event.shiftKey && !event.altKey) {
-            if (!WebInspector.Dialog.currentInstance())
+            if (!WebInspector.Dialog.hasInstance())
                 this._changePanelInDirection(direction);
             event.consume(true);
             return;
@@ -499,7 +499,7 @@ WebInspector.InspectorView.prototype = {
 
         this._inHistory = true;
         this._historyIterator = newIndex;
-        if (!WebInspector.Dialog.currentInstance())
+        if (!WebInspector.Dialog.hasInstance())
             this.setCurrentPanel(this._panels[this._history[this._historyIterator]]);
         delete this._inHistory;
 

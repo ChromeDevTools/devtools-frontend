@@ -344,6 +344,7 @@
         "ObjectEventListenersSidebarPane.js"
     ],
     "resources": [
+        "addSourceMapURLDialog.css",
         "filteredItemSelectionDialog.css",
         "uiList.css",
         "navigatorView.css",

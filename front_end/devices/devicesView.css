@@ -4,6 +4,10 @@
  * found in the LICENSE file.
  */
 
+:host {
+    padding-top: 15px;
+}
+
 .devices-sidebar {
     flex: 0 0 120px;
 }
@@ -64,6 +68,10 @@
 .device-browser-list {
     flex: auto;
     overflow: auto;
+}
+
+.device-browser-list > div {
+    margin-bottom: 15px;
 }
 
 .device-browser-title {

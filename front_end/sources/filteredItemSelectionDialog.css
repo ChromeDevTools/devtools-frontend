@@ -1,15 +1,27 @@
+/*
+ * Copyright (c) 2015 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
 .filtered-item-list-dialog {
     display: flex;
     flex-direction: column;
+    flex: auto;
 }
 
 .filtered-item-list-dialog > input[type=text] {
     flex: 0 0 36px;
     border: 0;
     box-shadow: rgba(140, 140, 140, 0.5) 0 4px 16px;
-    margin: 0 !important;
-    padding-left: 6px !important;
+    margin: 0;
+    padding-left: 6px;
     z-index: 1;
+    font-size: inherit;
+}
+
+.filtered-item-list-dialog > input[type=text]:focus {
+    outline: none;
 }
 
 .filtered-item-list-dialog > div.container {

@@ -4,6 +4,10 @@
  * found in the LICENSE file.
  */
 
+:host {
+    flex: none !important;
+}
+
 .filmstrip-dialog {
     margin: 12px;
 }

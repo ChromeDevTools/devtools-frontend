@@ -4,47 +4,9 @@
 
 /**
  * @constructor
- * @extends {WebInspector.DialogDelegate}
  */
 WebInspector.DevicesDialog = function()
 {
-    WebInspector.DialogDelegate.call(this);
-    this.element.classList.add("devices-dialog");
-    this._view = new WebInspector.DevicesView();
-    this._view.markAsRoot();
-}
-
-/** @type {?WebInspector.DevicesDialog} */
-WebInspector.DevicesDialog._instance = null;
-
-WebInspector.DevicesDialog.show = function()
-{
-    if (!WebInspector.DevicesDialog._instance)
-        WebInspector.DevicesDialog._instance = new WebInspector.DevicesDialog();
-    WebInspector.Dialog.show(WebInspector.DevicesDialog._instance, false, true);
-}
-
-WebInspector.DevicesDialog.prototype = {
-    /**
-     * @param {!Element} element
-     * @override
-     */
-    show: function(element)
-    {
-        WebInspector.DialogDelegate.prototype.show.call(this, element);
-        this._view.show(this.element);
-    },
-
-    /**
-     * @override
-     */
-    willHide: function()
-    {
-        WebInspector.DialogDelegate.prototype.willHide.call(this);
-        this._view.detach();
-    },
-
-    __proto__: WebInspector.DialogDelegate.prototype
 }
 
 /**
@@ -53,6 +15,8 @@ WebInspector.DevicesDialog.prototype = {
  */
 WebInspector.DevicesDialog.ActionDelegate = function()
 {
+    /** @type {?WebInspector.DevicesView} */
+    this._view = null;
 }
 
 WebInspector.DevicesDialog.ActionDelegate.prototype = {
@@ -63,7 +27,15 @@ WebInspector.DevicesDialog.ActionDelegate.prototype = {
      */
     handleAction: function(context, actionId)
     {
-        if (actionId === "devices.dialog.show")
-            WebInspector.DevicesDialog.show();
+        if (actionId === "devices.dialog.show") {
+            if (!this._view)
+                this._view = new WebInspector.DevicesView();
+
+            var dialog = new WebInspector.Dialog();
+            dialog.addCloseButton();
+            this._view.show(dialog.element);
+            dialog.setMaxSize(new Size(800, 600));
+            dialog.show();
+        }
     }
 }

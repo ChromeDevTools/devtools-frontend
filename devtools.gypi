@@ -62,7 +62,6 @@
             'front_end/Runtime.js',
         ],
         'devtools_core_css_files': [
-            'front_end/dialog.css',
             'front_end/inspectorStyle.css',
             'front_end/popover.css',
             'front_end/sidebarPane.css',
@@ -223,6 +222,7 @@
             'front_end/ui/checkboxTextLabel.css',
             'front_end/ui/closeButton.css',
             'front_end/ui/colorSwatch.css',
+            'front_end/ui/dialog.css',
             'front_end/ui/dropTarget.css',
             'front_end/ui/emptyWidget.css',
             'front_end/ui/filter.css',
@@ -591,6 +591,7 @@
             'front_end/source_frame/TextEditorAutocompleteController.js',
         ],
         'devtools_sources_js_files': [
+            'front_end/sources/addSourceMapURLDialog.css',
             'front_end/sources/filteredItemSelectionDialog.css',
             'front_end/sources/navigatorView.css',
             'front_end/sources/revisionHistory.css',

@@ -6,12 +6,13 @@
 
 /**
  * @constructor
- * @extends {WebInspector.DialogDelegate}
+ * @extends {WebInspector.VBox}
  */
 WebInspector.FrameworkBlackboxDialog = function()
 {
-    WebInspector.DialogDelegate.call(this);
-    this.element.classList.add("blackbox-dialog", "dialog-contents");
+    WebInspector.VBox.call(this);
+    this.element.classList.add("blackbox-dialog", "dialog-contents", "settings-dialog", "settings-tab");
+    this.element.addEventListener("keydown", this._onKeyDown.bind(this), false);
 
     var header = this.element.createChild("div", "header");
     header.createChild("span").textContent = WebInspector.UIString("Framework blackbox patterns");
@@ -46,60 +47,21 @@ WebInspector.FrameworkBlackboxDialog = function()
         this._addPattern(patterns[i].pattern, patterns[i].disabled);
 
     this.element.tabIndex = 0;
+
+    this._dialog = new WebInspector.Dialog();
+    this._dialog.setWrapsContent(true);
+    this._dialog.setMaxSize(new Size(600, 600));
+    this._dialog.addCloseButton();
+    this.show(this._dialog.element);
+    this._dialog.show();
 }
 
 WebInspector.FrameworkBlackboxDialog.show = function()
 {
-    var dialog = new WebInspector.FrameworkBlackboxDialog();
-    WebInspector.Dialog.show(dialog, false, true);
-    var glassPane = dialog.element.ownerDocument.getElementById("glass-pane");
-    glassPane.classList.add("settings-glass-pane");
+    new WebInspector.FrameworkBlackboxDialog();
 }
 
 WebInspector.FrameworkBlackboxDialog.prototype = {
-    /**
-     * @override
-     * @param {!Element} element
-     */
-    show: function(element)
-    {
-        this._dialogElement = element;
-        element.appendChild(this.element);
-        element.classList.add("settings-dialog", "settings-tab");
-    },
-
-    _resize: function()
-    {
-        if (!this._dialogElement || !this._container)
-            return;
-
-        const minWidth = 200;
-        const minHeight = 150;
-        var maxHeight = this._container.offsetHeight - 10;
-        maxHeight = Math.max(minHeight, maxHeight);
-        var maxWidth = Math.min(540, this._container.offsetWidth - 10);
-        maxWidth = Math.max(minWidth, maxWidth);
-        this._dialogElement.style.maxHeight = maxHeight + "px";
-        this._dialogElement.style.width = maxWidth + "px";
-
-        WebInspector.DialogDelegate.prototype.position(this._dialogElement, this._container);
-    },
-
-    /**
-     * @override
-     * @param {!Element} element
-     * @param {!Element} container
-     */
-    position: function(element, container)
-    {
-        this._container = container;
-        this._resize();
-    },
-
-    willHide: function(event)
-    {
-    },
-
     /**
      * @param {string} itemId
      * @param {string} columnId
@@ -195,6 +157,8 @@ WebInspector.FrameworkBlackboxDialog.prototype = {
             }
         }
         WebInspector.moduleSetting("skipStackFramesPattern").setAsArray(patterns);
+        if (this._dialog)
+            this._dialog.contentResized();
     },
 
     /**
@@ -208,24 +172,20 @@ WebInspector.FrameworkBlackboxDialog.prototype = {
         this._entries.set(pattern, disabled ? this._disabledLabel : this._blackboxLabel);
         var listItem = this._patternsList.addItem(pattern, null);
         listItem.classList.toggle("disabled", disabled);
-        this._resize();
+        if (this._dialog)
+            this._dialog.contentResized();
     },
 
-    focus: function()
+    /**
+     * @param {!Event} event
+     */
+    _onKeyDown: function(event)
     {
-        WebInspector.setCurrentFocusElement(this.element);
-    },
-
-    onEnter: function(event)
-    {
-        var focusElement = WebInspector.currentFocusElement();
-        var nodeName = focusElement && focusElement.nodeName.toLowerCase();
-        if (nodeName === "input" || nodeName === "select") {
-            this.focus();
+        if (event.keyCode === WebInspector.KeyboardShortcut.Keys.Enter.code) {
             event.consume(true);
-            return;
+            this.element.focus();
         }
     },
 
-    __proto__: WebInspector.DialogDelegate.prototype
+    __proto__: WebInspector.VBox.prototype
 }

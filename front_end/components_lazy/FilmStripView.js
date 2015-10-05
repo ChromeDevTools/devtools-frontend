@@ -184,7 +184,7 @@ WebInspector.FilmStripView.prototype = {
      */
     _onDoubleClick: function(filmStripFrame)
     {
-        new WebInspector.FilmStripView.DialogDelegate(filmStripFrame, this._zeroTime);
+        new WebInspector.FilmStripView.Dialog(filmStripFrame, this._zeroTime);
     },
 
     reset: function()
@@ -217,24 +217,23 @@ WebInspector.FilmStripView._setImageData = function(imageElement, data)
 
 /**
  * @constructor
- * @extends {WebInspector.DialogDelegate}
+ * @extends {WebInspector.VBox}
  * @param {!WebInspector.FilmStripModel.Frame} filmStripFrame
  * @param {number=} zeroTime
  */
-WebInspector.FilmStripView.DialogDelegate = function(filmStripFrame, zeroTime)
+WebInspector.FilmStripView.Dialog = function(filmStripFrame, zeroTime)
 {
-    WebInspector.DialogDelegate.call(this);
-    var shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element);
-    shadowRoot.appendChild(WebInspector.Widget.createStyleElement("components_lazy/filmStripDialog.css"));
-    this._contentElement = shadowRoot.createChild("div", "filmstrip-dialog");
-    this._contentElement.tabIndex = 0;
+    WebInspector.VBox.call(this, true);
+    this.registerRequiredCSS("components_lazy/filmStripDialog.css");
+    this.contentElement.classList.add("filmstrip-dialog");
+    this.contentElement.tabIndex = 0;
 
     this._frames = filmStripFrame.model().frames();
     this._index = filmStripFrame.index;
     this._zeroTime = zeroTime || filmStripFrame.model().zeroTime();
 
-    this._imageElement = this._contentElement.createChild("img");
-    var footerElement = this._contentElement.createChild("div", "filmstrip-dialog-footer");
+    this._imageElement = this.contentElement.createChild("img");
+    var footerElement = this.contentElement.createChild("div", "filmstrip-dialog-footer");
     footerElement.createChild("div", "flex-auto");
     var prevButton = createTextButton("\u25C0", this._onPrevFrame.bind(this), undefined, WebInspector.UIString("Previous frame"));
     footerElement.appendChild(prevButton);
@@ -243,17 +242,21 @@ WebInspector.FilmStripView.DialogDelegate = function(filmStripFrame, zeroTime)
     footerElement.appendChild(nextButton);
     footerElement.createChild("div", "flex-auto");
 
-    this._contentElement.addEventListener("keydown", this._keyDown.bind(this), false);
-    this._render().then(WebInspector.Dialog.show.bind(null, this));
+    this.contentElement.addEventListener("keydown", this._keyDown.bind(this), false);
+    this.setDefaultFocusedElement(this.contentElement);
+    this._render();
 }
 
-WebInspector.FilmStripView.DialogDelegate.prototype = {
-    /**
-     * @override
-     */
-    focus: function()
+WebInspector.FilmStripView.Dialog.prototype = {
+    _resize: function()
     {
-        this._contentElement.focus();
+        if (!this._dialog) {
+            this._dialog = new WebInspector.Dialog();
+            this.show(this._dialog.element);
+            this._dialog.setWrapsContent(true);
+            this._dialog.show();
+        }
+        this._dialog.contentResized();
     },
 
     /**
@@ -319,8 +322,8 @@ WebInspector.FilmStripView.DialogDelegate.prototype = {
     {
         var frame = this._frames[this._index];
         this._timeLabel.textContent = Number.millisToString(frame.timestamp - this._zeroTime);
-        return frame.imageDataPromise().then(WebInspector.FilmStripView._setImageData.bind(null, this._imageElement));
+        return frame.imageDataPromise().then(WebInspector.FilmStripView._setImageData.bind(null, this._imageElement)).then(this._resize.bind(this));
     },
 
-    __proto__: WebInspector.DialogDelegate.prototype
+    __proto__: WebInspector.VBox.prototype
 }

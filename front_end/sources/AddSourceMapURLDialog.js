@@ -4,22 +4,24 @@
 
 /**
  * @constructor
- * @extends {WebInspector.DialogDelegate}
+ * @extends {WebInspector.HBox}
  * @param {function(string)} callback
  */
 WebInspector.AddSourceMapURLDialog = function(callback)
 {
-    WebInspector.DialogDelegate.call(this);
-    this.element.classList.add("go-to-line-dialog");
-    this.element.createChild("label").textContent = WebInspector.UIString("Source map URL: ");
+    WebInspector.HBox.call(this, true);
+    this.registerRequiredCSS("sources/addSourceMapURLDialog.css");
+    this.contentElement.createChild("label").textContent = WebInspector.UIString("Source map URL: ");
 
-    this._input = this.element.createChild("input");
+    this._input = this.contentElement.createChild("input");
     this._input.setAttribute("type", "text");
+    this._input.addEventListener("keydown", this._onKeyDown.bind(this), false);
 
-    this._goButton = this.element.createChild("button");
-    this._goButton.textContent = WebInspector.UIString("Add");
-    this._goButton.addEventListener("click", this._onGoClick.bind(this), false);
+    var addButton = this.contentElement.createChild("button");
+    addButton.textContent = WebInspector.UIString("Add");
+    addButton.addEventListener("click", this._apply.bind(this), false);
 
+    this.setDefaultFocusedElement(this._input);
     this._callback = callback;
 }
 
@@ -28,32 +30,38 @@ WebInspector.AddSourceMapURLDialog = function(callback)
  */
 WebInspector.AddSourceMapURLDialog.show = function(callback)
 {
-    WebInspector.Dialog.show(new WebInspector.AddSourceMapURLDialog(callback));
+    var dialog = new WebInspector.Dialog();
+    var addSourceMapURLDialog = new WebInspector.AddSourceMapURLDialog(done);
+    addSourceMapURLDialog.show(dialog.element);
+    dialog.setWrapsContent(true);
+    dialog.show();
+
+    /**
+     * @param {string} value
+     */
+    function done(value)
+    {
+        dialog.detach();
+        callback(value);
+    }
 }
 
 WebInspector.AddSourceMapURLDialog.prototype = {
-    focus: function()
-    {
-        WebInspector.setCurrentFocusElement(this._input);
-        this._input.select();
-    },
-
-    _onGoClick: function()
-    {
-        this._apply();
-        WebInspector.Dialog.hide();
-    },
-
     _apply: function()
     {
-        var value = this._input.value;
-        this._callback(value);
+        this._callback(this._input.value);
     },
 
-    onEnter: function()
+    /**
+     * @param {!Event} event
+     */
+    _onKeyDown: function(event)
     {
-        this._apply();
+        if (event.keyCode === WebInspector.KeyboardShortcut.Keys.Enter.code) {
+            event.preventDefault();
+            this._apply();
+        }
     },
 
-    __proto__: WebInspector.DialogDelegate.prototype
+    __proto__: WebInspector.HBox.prototype
 }

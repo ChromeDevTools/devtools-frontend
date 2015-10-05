@@ -1471,7 +1471,7 @@ WebInspector.TimelineUIUtils.generateDetailsContentForFrame = function(frameMode
      */
     function frameClicked(filmStripFrame)
     {
-        new WebInspector.FilmStripView.DialogDelegate(filmStripFrame, 0);
+        new WebInspector.FilmStripView.Dialog(filmStripFrame, 0);
     }
 
     return contentHelper.element;

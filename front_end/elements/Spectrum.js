@@ -129,6 +129,7 @@ WebInspector.Spectrum = function()
     addColorButton.addEventListener("click", this._addColorToCustomPalette.bind(this));
     this._addColorToolbar.appendToolbarItem(addColorButton);
 
+    this._loadPalettes();
     new WebInspector.Spectrum.PaletteGenerator(this._generatedPaletteLoaded.bind(this));
 
     /**
@@ -266,7 +267,6 @@ WebInspector.Spectrum.prototype = {
         var numItems = palette.colors.length;
         if (palette.mutable)
             numItems++;
-        var rowsNeeded = Math.max(1, Math.ceil(numItems / WebInspector.Spectrum._itemsPerPaletteRow));
         if (palette.mutable) {
             this._paletteContainer.appendChild(this._addColorToolbar.element);
             this._paletteContainer.appendChild(this._deleteIconToolbar.element);
@@ -276,10 +276,6 @@ WebInspector.Spectrum.prototype = {
         }
 
         this._togglePalettePanel(false);
-        var paletteColorHeight = 12;
-        var paletteMargin = 12;
-        this.element.style.height = (this._paletteContainer.offsetTop + paletteMargin + (paletteColorHeight + paletteMargin) * rowsNeeded) + "px";
-        this.dispatchEventToListeners(WebInspector.Spectrum.Events.SizeChanged);
     },
 
     /**
@@ -385,13 +381,8 @@ WebInspector.Spectrum.prototype = {
         this._deleteButton.setToggled(false);
     },
 
-    /**
-     * @param {!WebInspector.Spectrum.Palette} generatedPalette
-     */
-    _generatedPaletteLoaded: function(generatedPalette)
+    _loadPalettes: function()
     {
-        if (generatedPalette.colors.length)
-            this._palettes.set(generatedPalette.title, generatedPalette);
         this._palettes.set(WebInspector.Spectrum.MaterialPalette.title, WebInspector.Spectrum.MaterialPalette);
         /** @type {!WebInspector.Spectrum.Palette} */
         var defaultCustomPalette = { title: "Custom", colors: [], mutable: true };
@@ -399,10 +390,28 @@ WebInspector.Spectrum.prototype = {
         this._palettes.set(this._customPaletteSetting.get().title, this._customPaletteSetting.get());
 
         this._selectedColorPalette = WebInspector.settings.createSetting("selectedColorPalette", WebInspector.Spectrum.GeneratedPaletteTitle);
-        var paletteToShow = this._palettes.get(this._selectedColorPalette.get() || WebInspector.Spectrum.GeneratedPaletteTitle)
-            || this._palettes.get("Material");
-        if (paletteToShow)
-            this._showPalette(paletteToShow, true);
+        var palette = this._palettes.get(this._selectedColorPalette.get());
+        if (palette) {
+            this._resizeForSelectedPalette();
+            this._showPalette(palette, true);
+        }
+    },
+
+    /**
+     * @param {!WebInspector.Spectrum.Palette} generatedPalette
+     */
+    _generatedPaletteLoaded: function(generatedPalette)
+    {
+        if (generatedPalette.colors.length)
+            this._palettes.set(generatedPalette.title, generatedPalette);
+        if (this._selectedColorPalette.get() !== generatedPalette.title) {
+            return;
+        } else if (!generatedPalette.colors.length) {
+            this._paletteSelected(WebInspector.Spectrum.MaterialPalette);
+            return;
+        }
+        this._resizeForSelectedPalette();
+        this._showPalette(generatedPalette, true);
     },
 
     /**
@@ -429,7 +438,24 @@ WebInspector.Spectrum.prototype = {
     _paletteSelected: function(palette)
     {
         this._selectedColorPalette.set(palette.title);
+        this._resizeForSelectedPalette();
         this._showPalette(palette, true);
+    },
+
+    _resizeForSelectedPalette: function()
+    {
+        var palette = this._palettes.get(this._selectedColorPalette.get());
+        if (!palette)
+            return;
+        var rowsNeeded = Math.max(1, Math.ceil(palette.colors.length / WebInspector.Spectrum._itemsPerPaletteRow));
+        if (this._numPaletteRowsShown === rowsNeeded)
+            return;
+        this._numPaletteRowsShown = rowsNeeded;
+        var paletteColorHeight = 12;
+        var paletteMargin = 12;
+        var paletteTop = 235;
+        this.element.style.height = (paletteTop + paletteMargin + (paletteColorHeight + paletteMargin) * rowsNeeded) + "px";
+        this.dispatchEventToListeners(WebInspector.Spectrum.Events.SizeChanged);
     },
 
     /**

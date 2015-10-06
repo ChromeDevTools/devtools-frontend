@@ -62,12 +62,6 @@
         },
         {
             "type": "@WebInspector.ToolbarItem.Provider",
-            "className": "WebInspector.StylesSidebarPane.AddNewRuleButtonProvider",
-            "order": 0,
-            "location": "styles-sidebarpane-toolbar"
-        },
-        {
-            "type": "@WebInspector.ToolbarItem.Provider",
             "className": "WebInspector.ElementStatePaneWidget.ButtonProvider",
             "order": 1,
             "location": "styles-sidebarpane-toolbar"
@@ -128,8 +122,8 @@
         "StylesSectionModel.js",
         "StylesSidebarPane.js",
         "ComputedStyleWidget.js",
-        "ElementStatePaneWidget.js",
-        "ElementsPanel.js"
+        "ElementsPanel.js",
+        "ElementStatePaneWidget.js"
     ],
     "resources": [
         "bezierEditor.css",

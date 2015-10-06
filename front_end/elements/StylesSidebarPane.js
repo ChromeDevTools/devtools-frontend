@@ -30,8 +30,9 @@
 /**
  * @constructor
  * @extends {WebInspector.ElementsSidebarPane}
+ * @param {!Element} toolbarPaneElement
  */
-WebInspector.StylesSidebarPane = function()
+WebInspector.StylesSidebarPane = function(toolbarPaneElement)
 {
     WebInspector.ElementsSidebarPane.call(this, WebInspector.UIString("Styles"));
     this.setMinimumSize(96, 26);
@@ -45,12 +46,13 @@ WebInspector.StylesSidebarPane = function()
     filterContainerElement.appendChild(this._filterInput);
 
     var toolbar = new WebInspector.ExtensibleToolbar("styles-sidebarpane-toolbar", hbox);
+    toolbar.appendToolbarItem(WebInspector.StylesSidebarPane.createAddNewRuleButton(this));
 
     toolbar.element.classList.add("styles-pane-toolbar", "toolbar-gray-toggled");
-    this._currentToolbarPane = null;
 
     var toolbarPaneContainer = this.element.createChild("div", "styles-sidebar-toolbar-pane-container");
-    this._toolbarPaneElement = toolbarPaneContainer.createChild("div", "styles-sidebar-toolbar-pane");
+    this._toolbarPaneElement = toolbarPaneElement;
+    toolbarPaneContainer.appendChild(toolbarPaneElement);
     this._sectionsContainer = this.element.createChild("div");
 
     this._stylesPopoverHelper = new WebInspector.StylesPopoverHelper();
@@ -127,7 +129,6 @@ WebInspector.StylesSidebarPane.ignoreErrorsForProperty = function(property) {
 }
 
 WebInspector.StylesSidebarPane.prototype = {
-
     onUndoOrRedoHappened: function()
     {
         this.setNode(this.node());
@@ -665,66 +666,6 @@ WebInspector.StylesSidebarPane.prototype = {
         if ((!WebInspector.isMac() && event.keyCode === WebInspector.KeyboardShortcut.Keys.Ctrl.code) ||
             (WebInspector.isMac() && event.keyCode === WebInspector.KeyboardShortcut.Keys.Meta.code)) {
             this._discardElementUnderMouse();
-        }
-    },
-
-    /**
-     * @param {?WebInspector.Widget} widget
-     */
-    showToolbarPane: function(widget)
-    {
-        if (this._animatedToolbarPane !== undefined)
-            this._pendingWidget = widget;
-        else
-            this._startToolbarPaneAnimation(widget);
-    },
-
-    /**
-     * @param {?WebInspector.Widget} widget
-     */
-    _startToolbarPaneAnimation: function(widget)
-    {
-        if (widget === this._currentToolbarPane)
-            return;
-
-        if (widget && this._currentToolbarPane) {
-            this._currentToolbarPane.detach();
-            widget.show(this._toolbarPaneElement);
-            this._currentToolbarPane = widget;
-            return;
-        }
-
-        this._animatedToolbarPane = widget;
-
-        if (this._currentToolbarPane)
-            this._toolbarPaneElement.style.animationName = 'styles-element-state-pane-slideout';
-        else if (widget)
-            this._toolbarPaneElement.style.animationName = 'styles-element-state-pane-slidein';
-
-        if (widget)
-            widget.show(this._toolbarPaneElement);
-
-        var listener = onAnimationEnd.bind(this);
-        this._toolbarPaneElement.addEventListener("animationend", listener, false);
-
-        /**
-         * @this {WebInspector.StylesSidebarPane}
-         */
-        function onAnimationEnd()
-        {
-            this._toolbarPaneElement.style.removeProperty('animation-name');
-            this._toolbarPaneElement.removeEventListener("animationend", listener, false);
-
-            if (this._currentToolbarPane)
-                this._currentToolbarPane.detach();
-
-            this._currentToolbarPane = this._animatedToolbarPane;
-            delete this._animatedToolbarPane;
-
-            if (this._pendingWidget !== undefined) {
-                this._startToolbarPaneAnimation(this._pendingWidget);
-                delete this._pendingWidget;
-            }
         }
     },
 
@@ -2977,84 +2918,23 @@ WebInspector.StylesSidebarPropertyRenderer.prototype = {
     }
 }
 
-/**
- * @constructor
- * @extends {WebInspector.Widget}
- * @param {!WebInspector.ToolbarItem} toolbarItem
- */
-WebInspector.StylesSidebarPane.BaseToolbarPaneWidget = function(toolbarItem)
-{
-    WebInspector.Widget.call(this);
-    this._toolbarItem = toolbarItem;
-    WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this._nodeChanged, this);
-}
-
-WebInspector.StylesSidebarPane.BaseToolbarPaneWidget.prototype = {
-    _nodeChanged: function()
-    {
-        if (!this.isShowing())
-            return;
-
-        var elementNode = WebInspector.SharedSidebarModel.elementNode(WebInspector.context.flavor(WebInspector.DOMNode));
-        this.onNodeChanged(elementNode);
-    },
-
-    /**
-     * @param {?WebInspector.DOMNode} newNode
-     * @protected
-     */
-    onNodeChanged: function(newNode)
-    {
-    },
-
-    /**
-     * @override
-     */
-    willHide: function()
-    {
-        this._toolbarItem.setToggled(false);
-    },
-
-    /**
-     * @override
-     */
-    wasShown: function()
-    {
-        this._toolbarItem.setToggled(true);
-        this._nodeChanged();
-    },
-
-    __proto__: WebInspector.Widget.prototype
-}
 
 /**
- * @constructor
- * @implements {WebInspector.ToolbarItem.Provider}
+ * @return {!WebInspector.ToolbarItem}
  */
-WebInspector.StylesSidebarPane.AddNewRuleButtonProvider = function()
+WebInspector.StylesSidebarPane.createAddNewRuleButton = function(stylesSidebarPane)
 {
-    this._button = new WebInspector.ToolbarButton(WebInspector.UIString("New Style Rule"), "add-toolbar-item");
-    this._button.makeLongClickEnabled();
-    var stylesSidebarPane = WebInspector.ElementsPanel.instance().sidebarPanes.styles;
-    this._button.addEventListener("click", stylesSidebarPane._createNewRuleInViaInspectorStyleSheet, stylesSidebarPane);
-    this._button.addEventListener("longClickDown", stylesSidebarPane._onAddButtonLongClick, stylesSidebarPane);
-    WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this._onNodeChanged, this);
-    this._onNodeChanged()
-}
+    var button = new WebInspector.ToolbarButton(WebInspector.UIString("New Style Rule"), "add-toolbar-item");
+    button.makeLongClickEnabled();
+    button.addEventListener("click", stylesSidebarPane._createNewRuleInViaInspectorStyleSheet, stylesSidebarPane);
+    button.addEventListener("longClickDown", stylesSidebarPane._onAddButtonLongClick, stylesSidebarPane);
+    WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, onNodeChanged);
+    onNodeChanged();
+    return button;
 
-WebInspector.StylesSidebarPane.AddNewRuleButtonProvider.prototype = {
-    _onNodeChanged: function()
+    function onNodeChanged()
     {
         var node = WebInspector.context.flavor(WebInspector.DOMNode);
-        this.item().setEnabled(!!node);
-    },
-
-    /**
-     * @override
-     * @return {?WebInspector.ToolbarItem}
-     */
-    item: function()
-    {
-        return this._button;
+        button.setEnabled(!!node);
     }
 }

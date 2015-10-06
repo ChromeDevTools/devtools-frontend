@@ -4,11 +4,11 @@
 
 /**
  * @constructor
- * @extends {WebInspector.StylesSidebarPane.BaseToolbarPaneWidget}
+ * @extends {WebInspector.ElementsPanel.BaseToolbarPaneWidget}
  */
 WebInspector.AnimationControlPane = function(toolbarItem)
 {
-    WebInspector.StylesSidebarPane.BaseToolbarPaneWidget.call(this, toolbarItem);
+    WebInspector.ElementsPanel.BaseToolbarPaneWidget.call(this, toolbarItem);
     this._animationsPaused = false;
     this._animationsPlaybackRate = 1;
 
@@ -91,7 +91,7 @@ WebInspector.AnimationControlPane.prototype = {
         this._updateAnimationsPlaybackRate();
     },
 
-    __proto__: WebInspector.StylesSidebarPane.BaseToolbarPaneWidget.prototype
+    __proto__: WebInspector.ElementsPanel.BaseToolbarPaneWidget.prototype
 }
 
 /**
@@ -126,8 +126,7 @@ WebInspector.AnimationControlPane.ButtonProvider.prototype = {
     {
         if (!this._animationsControlPane)
             this._animationsControlPane = new WebInspector.AnimationControlPane(this.item());
-        var stylesSidebarPane = WebInspector.ElementsPanel.instance().sidebarPanes.styles;
-        stylesSidebarPane.showToolbarPane(toggleOn ? this._animationsControlPane : null);
+        WebInspector.ElementsPanel.instance().showToolbarPane(toggleOn ? this._animationsControlPane : null);
     },
 
     _clicked: function()

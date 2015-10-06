@@ -4,18 +4,34 @@
 
 /**
  * @constructor
+ * @param {!WebInspector.TargetManager} targetManager
  * @param {!WebInspector.Workspace} workspace
  * @param {!WebInspector.FileSystemWorkspaceBinding} fileSystemWorkspaceBinding
  * @param {!WebInspector.FileSystemMapping} fileSystemMapping
  */
-WebInspector.NetworkMapping = function(workspace, fileSystemWorkspaceBinding, fileSystemMapping)
+WebInspector.NetworkMapping = function(targetManager, workspace, fileSystemWorkspaceBinding, fileSystemMapping)
 {
+    this._targetManager = targetManager;
     this._workspace = workspace;
     this._fileSystemWorkspaceBinding = fileSystemWorkspaceBinding;
     this._fileSystemMapping = fileSystemMapping;
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.RevealSourceLine, this._revealSourceLine, this);
-    fileSystemWorkspaceBinding.fileSystemManager().addEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemAdded, this._fileSystemAdded, this);
-    fileSystemWorkspaceBinding.fileSystemManager().addEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemRemoved, this._fileSystemRemoved, this);
+
+    // For now, following block is here primarily for testing since in the real life, network manager is created early enough to capture those events.
+    var fileSystemManager = fileSystemWorkspaceBinding.fileSystemManager();
+    for (var path of fileSystemManager.fileSystemPaths()) {
+        var fileSystem = fileSystemManager.fileSystem(path);
+        this._fileSystemAdded(new WebInspector.Event(fileSystemManager, WebInspector.IsolatedFileSystemManager.Events.FileSystemAdded, fileSystem));
+    }
+    if (fileSystemManager.fileSystemsLoaded())
+        this._fileSystemsLoaded();
+
+    fileSystemManager.addEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemAdded, this._fileSystemAdded, this);
+    fileSystemManager.addEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemRemoved, this._fileSystemRemoved, this);
+    fileSystemManager.addEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemsLoaded, this._fileSystemsLoaded, this);
+
+    this._fileSystemMapping.addEventListener(WebInspector.FileSystemMapping.Events.FileMappingAdded, this._fileSystemMappingChanged, this);
+    this._fileSystemMapping.addEventListener(WebInspector.FileSystemMapping.Events.FileMappingRemoved, this._fileSystemMappingChanged, this);
 }
 
 WebInspector.NetworkMapping.prototype = {
@@ -24,6 +40,7 @@ WebInspector.NetworkMapping.prototype = {
      */
     _fileSystemAdded: function(event)
     {
+        this._addingFileSystem = true;
         var fileSystem = /** @type {!WebInspector.IsolatedFileSystem} */ (event.data);
         this._fileSystemMapping.addFileSystem(fileSystem.path());
 
@@ -38,6 +55,8 @@ WebInspector.NetworkMapping.prototype = {
                 continue;
             this._fileSystemMapping.addNonConfigurableFileMapping(fileSystem.path(), url, folder);
         }
+        this._addingFileSystem = false;
+        this._fileSystemMappingChanged();
     },
 
     /**
@@ -47,6 +66,7 @@ WebInspector.NetworkMapping.prototype = {
     {
         var fileSystem = /** @type {!WebInspector.IsolatedFileSystem} */ (event.data);
         this._fileSystemMapping.removeFileSystem(fileSystem.path());
+        this._fileSystemMappingChanged();
     },
 
     /**
@@ -189,6 +209,26 @@ WebInspector.NetworkMapping.prototype = {
 
         this._workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeAdded, listener, this);
     },
+
+    _fileSystemsLoaded: function()
+    {
+        this._fileSystemsReady = true;
+    },
+
+    _fileSystemMappingChanged: function()
+    {
+        if (!this._fileSystemsReady || this._addingFileSystem)
+            return;
+        this._targetManager.suspendAndResumeAllTargets();
+    },
+
+    dispose: function()
+    {
+        this._fileSystemWorkspaceBinding.fileSystemManager().removeEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemAdded, this._fileSystemAdded, this);
+        this._fileSystemWorkspaceBinding.fileSystemManager().removeEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemRemoved, this._fileSystemRemoved, this);
+        this._fileSystemMapping.removeEventListener(WebInspector.FileSystemMapping.Events.FileMappingAdded, this._fileSystemMappingChanged, this);
+        this._fileSystemMapping.removeEventListener(WebInspector.FileSystemMapping.Events.FileMappingRemoved, this._fileSystemMappingChanged, this);
+    }
 }
 
 /**

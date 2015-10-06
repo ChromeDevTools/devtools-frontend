@@ -512,9 +512,9 @@ WebInspector.IsolatedFileSystem.prototype = {
 
         function innerCallback(results)
         {
-            if (!results.length)
+            if (!results.length) {
                 callback(entries.sort());
-            else {
+            } else {
                 entries = entries.concat(toArray(results));
                 dirReader.readEntries(innerCallback, errorHandler);
             }

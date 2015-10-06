@@ -1938,10 +1938,9 @@ WebInspector.DOMModel.prototype = {
     _suspendStateChanged: function()
     {
         if (WebInspector.targetManager.allTargetsSuspended()) {
-            this._agent.disable();
+            this._agent.disable(this._setDocument.bind(this, null));
         } else {
             this._agent.enable();
-            this._setDocument(null);
         }
     },
 

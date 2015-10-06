@@ -570,8 +570,7 @@ WebInspector.CSSStyleModel.prototype = {
     _suspendStateChanged: function()
     {
         if (WebInspector.targetManager.allTargetsSuspended()) {
-            this._resetStyleSheets();
-            this._agent.disable();
+            this._agent.disable(this._resetStyleSheets.bind(this));
             this._isEnabled = false;
         } else {
             this._agent.enable().then(this._wasEnabled.bind(this));

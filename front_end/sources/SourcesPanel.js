@@ -828,12 +828,6 @@ WebInspector.SourcesPanel.prototype = {
         this._appendNetworkRequestItems(contextMenu, target);
     },
 
-    _suggestReload: function()
-    {
-        if (window.confirm(WebInspector.UIString("It is recommended to restart inspector after making these changes. Would you like to restart it?")))
-            WebInspector.reload();
-    },
-
     /**
      * @param {!WebInspector.UISourceCode} uiSourceCode
      */
@@ -850,7 +844,6 @@ WebInspector.SourcesPanel.prototype = {
             if (!networkUISourceCode)
                 return;
             this._networkMapping.addMapping(networkUISourceCode, uiSourceCode);
-            this._suggestReload();
         }
     },
 
@@ -870,7 +863,6 @@ WebInspector.SourcesPanel.prototype = {
             if (!uiSourceCode)
                 return;
             this._networkMapping.addMapping(networkUISourceCode, uiSourceCode);
-            this._suggestReload();
         }
     },
 
@@ -879,10 +871,7 @@ WebInspector.SourcesPanel.prototype = {
      */
     _removeNetworkMapping: function(uiSourceCode)
     {
-        if (confirm(WebInspector.UIString("Are you sure you want to remove network mapping?"))) {
-            this._networkMapping.removeMapping(uiSourceCode);
-            this._suggestReload();
-        }
+        this._networkMapping.removeMapping(uiSourceCode);
     },
 
     /**

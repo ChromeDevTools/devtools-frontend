@@ -40,6 +40,7 @@ function InspectorBackendClass()
 }
 
 InspectorBackendClass._DevToolsErrorCode = -32000;
+InspectorBackendClass._DevToolsStubErrorCode = -32015;
 
 /**
  * @param {string} error
@@ -461,7 +462,8 @@ InspectorBackendClass.Connection.prototype = {
             return;
         } else {
             if (messageObject.error) {
-                InspectorBackendClass.reportProtocolError("Generic message format error", messageObject);
+                if (messageObject.error.code !== InspectorBackendClass._DevToolsStubErrorCode)
+                    InspectorBackendClass.reportProtocolError("Generic message format error", messageObject);
                 return;
             }
             var method = messageObject.method.split(".");
@@ -702,15 +704,16 @@ InspectorBackendClass.StubConnection.prototype = {
      */
     sendMessage: function(messageObject)
     {
-        setTimeout(this._echoResponse.bind(this, messageObject), 0);
+        setTimeout(this._respondWithError.bind(this, messageObject), 0);
     },
 
     /**
      * @param {!Object} messageObject
      */
-    _echoResponse: function(messageObject)
+    _respondWithError: function(messageObject)
     {
-        this.dispatch(messageObject);
+        var error = { message: "This is a stub connection, can't dispatch message.", code:  InspectorBackendClass._DevToolsStubErrorCode, data: messageObject };
+        this.dispatch({error: error});
     },
 
     __proto__: InspectorBackendClass.Connection.prototype

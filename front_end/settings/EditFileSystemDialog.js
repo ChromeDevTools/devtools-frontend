@@ -110,14 +110,6 @@ WebInspector.EditFileSystemDialog.show = function(fileSystemPath)
 }
 
 WebInspector.EditFileSystemDialog.prototype = {
-    willHide: function()
-    {
-        if (!this._hasMappingChanges)
-            return;
-        if (window.confirm(WebInspector.UIString("It is recommended to restart DevTools after making these changes. Would you like to restart it?")))
-            WebInspector.reload();
-    },
-
     _fileMappingAdded: function(event)
     {
         var entry = /** @type {!WebInspector.FileSystemMapping.Entry} */ (event.data);

@@ -50,6 +50,7 @@ WebInspector.IsolatedFileSystemManager.FileSystem;
 WebInspector.IsolatedFileSystemManager.Events = {
     FileSystemAdded: "FileSystemAdded",
     FileSystemRemoved: "FileSystemRemoved",
+    FileSystemsLoaded: "FileSystemsLoaded",
     ExcludedFolderAdded: "ExcludedFolderAdded",
     ExcludedFolderRemoved: "ExcludedFolderRemoved"
 }
@@ -86,7 +87,25 @@ WebInspector.IsolatedFileSystemManager.prototype = {
         var promises = [];
         for (var i = 0; i < fileSystems.length; ++i)
             promises.push(this._innerAddFileSystem(fileSystems[i]));
-        Promise.all(promises).then(this._initializeCallback);
+        Promise.all(promises).then(fireFileSystemsLoaded.bind(this));
+
+        /**
+         * @this {WebInspector.IsolatedFileSystemManager}
+         */
+        function fireFileSystemsLoaded()
+        {
+            this._initializeCallback();
+            delete this._initializeCallback;
+            this.dispatchEventToListeners(WebInspector.IsolatedFileSystemManager.Events.FileSystemsLoaded);
+        }
+    },
+
+    /**
+     * @return {boolean}
+     */
+    fileSystemsLoaded: function()
+    {
+        return !this._initializeCallback;
     },
 
     /**

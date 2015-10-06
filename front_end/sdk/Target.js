@@ -7,15 +7,17 @@
 /**
  * @constructor
  * @extends {Protocol.Agents}
+ * @param {!WebInspector.TargetManager} targetManager
  * @param {string} name
  * @param {number} type
  * @param {!InspectorBackendClass.Connection} connection
  * @param {?WebInspector.Target} parentTarget
  * @param {function(?WebInspector.Target)=} callback
  */
-WebInspector.Target = function(name, type, connection, parentTarget, callback)
+WebInspector.Target = function(targetManager, name, type, connection, parentTarget, callback)
 {
     Protocol.Agents.call(this, connection.agentsMap());
+    this._targetManager = targetManager;
     this._name = name;
     this._type = type;
     this._connection = connection;
@@ -65,6 +67,15 @@ WebInspector.Target.prototype = {
     name: function()
     {
         return this._name;
+    },
+
+    /**
+     *
+     * @return {!WebInspector.TargetManager}
+     */
+    targetManager: function()
+    {
+        return this._targetManager;
     },
 
     /**
@@ -206,13 +217,13 @@ WebInspector.Target.prototype = {
 
     _onDisconnect: function()
     {
-        WebInspector.targetManager.removeTarget(this);
+        this._targetManager.removeTarget(this);
         this._dispose();
     },
 
     _dispose: function()
     {
-        WebInspector.targetManager.dispatchEventToListeners(WebInspector.TargetManager.Events.TargetDisposed, this);
+        this._targetManager.dispatchEventToListeners(WebInspector.TargetManager.Events.TargetDisposed, this);
         this.networkManager.dispose();
         this.cpuProfilerModel.dispose();
         WebInspector.ServiceWorkerCacheModel.fromTarget(this).dispose();
@@ -321,6 +332,12 @@ WebInspector.TargetManager.prototype = {
         if (--this._suspendCount)
             return;
         this.dispatchEventToListeners(WebInspector.TargetManager.Events.SuspendStateChanged);
+    },
+
+    suspendAndResumeAllTargets: function()
+    {
+        this.suspendAllTargets();
+        this.resumeAllTargets();
     },
 
     /**
@@ -446,7 +463,7 @@ WebInspector.TargetManager.prototype = {
      */
     createTarget: function(name, type, connection, parentTarget, callback)
     {
-        new WebInspector.Target(name, type, connection, parentTarget, callbackWrapper.bind(this));
+        new WebInspector.Target(this, name, type, connection, parentTarget, callbackWrapper.bind(this));
 
         /**
          * @this {WebInspector.TargetManager}

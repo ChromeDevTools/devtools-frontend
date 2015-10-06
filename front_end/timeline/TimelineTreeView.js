@@ -311,9 +311,8 @@ WebInspector.TimelineTreeView.eventId = function(event)
  */
 WebInspector.TimelineTreeView.eventStackFrame = function(event)
 {
-    var data = event.args["data"] || event.args["beginData"];
-    if (data)
-        return data;
+    if (event.name == WebInspector.TimelineModel.RecordType.JSFrame)
+        return event.args["data"];
     var topFrame = event.stackTrace && event.stackTrace[0];
     if (topFrame)
         return topFrame;

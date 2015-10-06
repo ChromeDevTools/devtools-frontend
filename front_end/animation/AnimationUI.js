@@ -23,6 +23,7 @@ WebInspector.AnimationUI = function(animation, timeline, parentElement) {
     this._svg.setAttribute("height", WebInspector.AnimationUI.Options.AnimationSVGHeight);
     this._svg.style.marginLeft = "-" + WebInspector.AnimationUI.Options.AnimationMargin + "px";
     this._svg.addEventListener("mousedown", this._mouseDown.bind(this, WebInspector.AnimationUI.MouseEvents.AnimationDrag, null));
+    this._svg.addEventListener("contextmenu", this._onContextMenu.bind(this));
     this._activeIntervalGroup = this._svg.createSVGChild("g");
 
     /** @type {!Array.<{group: ?Element, animationLine: ?Element, keyframePoints: !Object.<number, !Element>, keyframeRender: !Object.<number, !Element>}>} */
@@ -296,6 +297,8 @@ WebInspector.AnimationUI.prototype = {
      */
     _mouseDown: function(mouseEventType, keyframeIndex, event)
     {
+        if (event.buttons == 2)
+            return;
         if (this._animation.playState() === "idle")
             return;
         this._mouseEventType = mouseEventType;
@@ -346,6 +349,27 @@ WebInspector.AnimationUI.prototype = {
         delete this._mouseEventType;
         delete this._downMouseX;
         delete this._keyframeMoved;
+    },
+
+    /**
+     * @param {!Event} event
+     */
+    _onContextMenu: function(event)
+    {
+        /**
+         * @param {?WebInspector.RemoteObject} remoteObject
+         */
+        function showContextMenu(remoteObject)
+        {
+            if (!remoteObject)
+                return;
+            var contextMenu = new WebInspector.ContextMenu(event);
+            contextMenu.appendApplicableItems(remoteObject);
+            contextMenu.show();
+        }
+
+        this._animation.remoteObjectPromise().then(showContextMenu);
+        event.consume(true);
     }
 }
 

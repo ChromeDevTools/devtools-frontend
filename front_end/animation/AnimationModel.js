@@ -306,6 +306,25 @@ WebInspector.AnimationModel.Animation.prototype = {
         cssModel.setEffectivePropertyValueForNode(node.id, animationPrefix + "delay", delay + "ms");
     },
 
+    /**
+     * @return {!Promise.<?WebInspector.RemoteObject>}
+     */
+    remoteObjectPromise: function()
+    {
+        /**
+         * @param {?Protocol.Error} error
+         * @param {!RuntimeAgent.RemoteObject} payload
+         * @return {?WebInspector.RemoteObject}
+         * @this {!WebInspector.AnimationModel.Animation}
+         */
+        function callback(error, payload)
+        {
+            return !error ? this.target().runtimeModel.createRemoteObject(payload) : null;
+        }
+
+        return this.target().animationAgent().resolveAnimation(this.id(), callback.bind(this));
+    },
+
     __proto__: WebInspector.SDKObject.prototype
 }
 

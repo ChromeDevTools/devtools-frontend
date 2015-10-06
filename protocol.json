@@ -5132,7 +5132,7 @@
             {
                 "name": "setTiming",
                 "parameters": [
-                    { "name": "playerId", "type": "string", "description": "AnimationPlayer id." },
+                    { "name": "animationId", "type": "string", "description": "Animation id." },
                     { "name": "duration", "type": "number", "description": "Duration of the animation." },
                     { "name": "delay", "type": "number", "description": "Delay of the animation." }
                 ],
@@ -5145,6 +5145,16 @@
                     { "name": "currentTime", "type": "number", "description": "Set the current time of each animation." }
                 ],
                 "description": "Seek a set of animations to a particular time within each animation."
+            },
+            {
+                "name": "resolveAnimation",
+                "parameters": [
+                    { "name": "animationId", "type": "string", "description": "Animation id." }
+                ],
+                "returns": [
+                    { "name": "remoteObject", "$ref": "Runtime.RemoteObject", "description": "Corresponding remote object." }
+                ],
+                "description": "Gets the remote object of the Animation."
             }
         ],
         "events": [

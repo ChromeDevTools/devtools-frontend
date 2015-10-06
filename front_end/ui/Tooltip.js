@@ -15,7 +15,7 @@ WebInspector.Tooltip = function(doc)
     this._tooltipElement = this._shadowRoot.createChild("div", "tooltip");
     doc.addEventListener("mousemove", this._mouseMove.bind(this), true);
     doc.addEventListener("mousedown", this._hide.bind(this, true), true);
-    doc.addEventListener("mouseout", this._hide.bind(this, true), true);
+    doc.addEventListener("mouseleave", this._hide.bind(this, true), true);
     doc.addEventListener("keydown", this._hide.bind(this, true), true);
 }
 

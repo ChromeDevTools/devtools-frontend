@@ -79,7 +79,6 @@ WebInspector.FileSystemMapping.prototype = {
             }
         }
         this._fileSystemMappingSetting.set(setting);
-        this._rebuildIndexes();
     },
 
     _rebuildIndexes: function()
@@ -91,6 +90,9 @@ WebInspector.FileSystemMapping.prototype = {
             var fileSystemMapping = this._fileSystemMappings[fileSystemPath];
             for (var i = 0; i < fileSystemMapping.length; ++i) {
                 var entry = fileSystemMapping[i];
+                // Resolve conflict in favor of configurable mapping.
+                if (this._mappingForURLPrefix[entry.urlPrefix] && !entry.configurable)
+                    continue;
                 this._mappingForURLPrefix[entry.urlPrefix] = entry;
                 this._urlPrefixes.push(entry.urlPrefix);
             }
@@ -118,6 +120,7 @@ WebInspector.FileSystemMapping.prototype = {
         if (!this._fileSystemMappings[fileSystemPath])
             return;
         delete this._fileSystemMappings[fileSystemPath];
+        this._rebuildIndexes();
         this._saveToSettings();
     },
 
@@ -129,6 +132,7 @@ WebInspector.FileSystemMapping.prototype = {
     addFileMapping: function(fileSystemPath, urlPrefix, pathPrefix)
     {
         this._innerAddFileMapping(fileSystemPath, urlPrefix, pathPrefix, true);
+        this._saveToSettings();
     },
 
     /**
@@ -150,8 +154,9 @@ WebInspector.FileSystemMapping.prototype = {
     _innerAddFileMapping: function(fileSystemPath, urlPrefix, pathPrefix, configurable)
     {
         var entry = new WebInspector.FileSystemMapping.Entry(fileSystemPath, urlPrefix, pathPrefix, configurable);
+        var existingEntry = this._mappingForURLPrefix[entry.urlPrefix];
         this._fileSystemMappings[fileSystemPath].push(entry);
-        this._saveToSettings();
+        this._rebuildIndexes();
         this.dispatchEventToListeners(WebInspector.FileSystemMapping.Events.FileMappingAdded, entry);
     },
 
@@ -166,6 +171,7 @@ WebInspector.FileSystemMapping.prototype = {
         if (!entry)
             return;
         this._fileSystemMappings[fileSystemPath].remove(entry);
+        this._rebuildIndexes();
         this._saveToSettings();
         this.dispatchEventToListeners(WebInspector.FileSystemMapping.Events.FileMappingRemoved, entry);
     },
@@ -216,7 +222,7 @@ WebInspector.FileSystemMapping.prototype = {
     {
         var entries = this._fileSystemMappings[fileSystemPath];
         for (var i = 0; i < entries.length; ++i) {
-            if (pathPrefix === entries[i].pathPrefix)
+            if (entries[i].configurable && pathPrefix === entries[i].pathPrefix)
                 return entries[i];
         }
         return null;
@@ -274,7 +280,7 @@ WebInspector.FileSystemMapping.prototype = {
     removeMappingForURL: function(url)
     {
         var entry = this._mappingEntryForURL(url);
-        if (!entry)
+        if (!entry || !entry.configurable)
             return;
         this._fileSystemMappings[entry.fileSystemPath].remove(entry);
         this._saveToSettings();

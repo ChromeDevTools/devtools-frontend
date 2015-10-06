@@ -54,7 +54,6 @@ WebInspector.EditFileSystemDialog = function(fileSystemPath)
     blockHeader.textContent = WebInspector.UIString("Mappings");
     this._fileMappingsSection = contents.createChild("div", "section");
     this._fileMappingsListContainer = this._fileMappingsSection.createChild("div", "settings-list-container");
-    var entries = WebInspector.fileSystemMapping.mappingEntries(this._fileSystemPath);
 
     var urlColumn = { id: "url", placeholder: WebInspector.UIString("URL prefix") };
     var pathColumn = { id: "path", placeholder: WebInspector.UIString("Folder path") };
@@ -66,8 +65,17 @@ WebInspector.EditFileSystemDialog = function(fileSystemPath)
     this._fileMappingsListContainer.appendChild(this._fileMappingsList.element);
 
     this._entries = {};
-    for (var i = 0; i < entries.length; ++i)
-        this._addMappingRow(entries[i]);
+
+    // Treat non configurable items with priority.
+    var entries = WebInspector.fileSystemMapping.mappingEntries(this._fileSystemPath);
+    for (var entry of entries) {
+        if (!entry.configurable)
+            this._addMappingRow(entry);
+    }
+    for (var entry of entries) {
+        if (entry.configurable)
+            this._addMappingRow(entry);
+    }
 
     blockHeader = contents.createChild("div", "block-header");
     blockHeader.textContent = WebInspector.UIString("Excluded folders");
@@ -80,10 +88,10 @@ WebInspector.EditFileSystemDialog = function(fileSystemPath)
     this._excludedFolderListContainer.appendChild(this._excludedFolderList.element);
     /** @type {!Set<string>} */
     this._excludedFolderEntries = new Set();
-    for (var folder of WebInspector.isolatedFileSystemManager.fileSystem(fileSystemPath).excludedFolders().values())
-        this._addExcludedFolderRow(folder, false);
     for (var folder of WebInspector.isolatedFileSystemManager.fileSystem(fileSystemPath).nonConfigurableExcludedFolders().values())
         this._addExcludedFolderRow(folder, true);
+    for (var folder of WebInspector.isolatedFileSystemManager.fileSystem(fileSystemPath).excludedFolders().values())
+        this._addExcludedFolderRow(folder, false);
 
     this.element.tabIndex = 0;
     this._hasMappingChanges = false;
@@ -121,11 +129,21 @@ WebInspector.EditFileSystemDialog.prototype = {
         var entry = /** @type {!WebInspector.FileSystemMapping.Entry} */ (event.data);
         if (this._fileSystemPath !== entry.fileSystemPath)
             return;
-        delete this._entries[entry.urlPrefix];
-        if (this._fileMappingsList.itemForId(entry.urlPrefix))
-            this._fileMappingsList.removeItem(entry.urlPrefix);
+        var key = this._entryKey(entry);
+        delete this._entries[key];
+        if (this._fileMappingsList.itemForId(key))
+            this._fileMappingsList.removeItem(key);
         if (this._dialog)
             this._dialog.contentResized();
+    },
+
+    /**
+     * @param {!WebInspector.FileSystemMapping.Entry} entry
+     * @return {string}
+     */
+    _entryKey: function(entry)
+    {
+        return (entry.configurable ? "configurable:" : "nonconfigurable:") + entry.urlPrefix;
     },
 
     /**
@@ -156,7 +174,8 @@ WebInspector.EditFileSystemDialog.prototype = {
     _fileMappingValidate: function(itemId, data)
     {
         var oldPathPrefix = itemId ? this._entries[itemId].pathPrefix : null;
-        return this._validateMapping(data["url"], itemId, data["path"], oldPathPrefix);
+        var oldURLPrefix = itemId ? this._entries[itemId].urlPrefix : null;
+        return this._validateMapping(data["url"], oldURLPrefix, data["path"], oldPathPrefix);
     },
 
     /**
@@ -215,7 +234,7 @@ WebInspector.EditFileSystemDialog.prototype = {
         var normalizedPathPrefix = this._normalizePrefix(pathPrefix);
         WebInspector.fileSystemMapping.addFileMapping(this._fileSystemPath, normalizedURLPrefix, normalizedPathPrefix);
         this._hasMappingChanges = true;
-        this._fileMappingsList.selectItem(normalizedURLPrefix);
+        this._fileMappingsList.selectItem("configurable:" + normalizedURLPrefix);
         return true;
     },
 
@@ -232,23 +251,16 @@ WebInspector.EditFileSystemDialog.prototype = {
 
     _addMappingRow: function(entry)
     {
+        var key = this._entryKey(entry);
+        if (this._fileMappingsList.itemForId(key))
+            return;
         var fileSystemPath = entry.fileSystemPath;
-        var urlPrefix = entry.urlPrefix;
         if (!this._fileSystemPath || this._fileSystemPath !== fileSystemPath)
             return;
 
-        this._entries[urlPrefix] = entry;
-        // Insert configurable entries before non-configurable.
-        var insertBefore = null;
-        if (entry.configurable) {
-            for (var prefix in this._entries) {
-                if (!this._entries[prefix].configurable) {
-                    insertBefore = prefix;
-                    break;
-                }
-            }
-        }
-        this._fileMappingsList.addItem(urlPrefix, insertBefore, !entry.configurable);
+        this._entries[key] = entry;
+        var keys = Object.keys(this._entries).sort();
+        this._fileMappingsList.addItem(key, keys[keys.indexOf(key) + 1], !entry.configurable);
         if (this._dialog)
             this._dialog.contentResized();
     },
@@ -355,7 +367,7 @@ WebInspector.EditFileSystemDialog.prototype = {
     _checkURLPrefix: function(value, allowedPrefix)
     {
         var prefix = this._normalizePrefix(value);
-        return !!prefix && (prefix === allowedPrefix || !this._entries[prefix]);
+        return !!prefix && (prefix === allowedPrefix || !this._entries["configurable:" + prefix]);
     },
 
     /**
@@ -370,9 +382,9 @@ WebInspector.EditFileSystemDialog.prototype = {
             return false;
         if (prefix === allowedPrefix)
             return true;
-        for (var urlPrefix in this._entries) {
-            var entry = this._entries[urlPrefix];
-            if (urlPrefix && entry.pathPrefix === prefix)
+        for (var key in this._entries) {
+            var entry = this._entries[key];
+            if (entry.configurable && entry.pathPrefix === prefix)
                 return false;
         }
         return true;

@@ -11,6 +11,8 @@ WebInspector.FrontendWebSocketAPI = function()
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.DispatchFrontendAPIMessage, this._onFrontendAPIMessage, this);
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.FrontendAPIAttached, this._onAttach, this);
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.FrontendAPIDetached, this._onDetach, this);
+    /** @type {!Set<string>} */
+    this._suggestedFolders = new Set();
 }
 
 WebInspector.FrontendWebSocketAPI.prototype = {
@@ -76,11 +78,22 @@ WebInspector.FrontendWebSocketAPI.prototype = {
                 if (saved)
                     uiSourceCode.checkContentUpdated();
             }
-            this._issueResponse(id);
+            break;
+        case "Frontend.addFileSystem":
+            for (var path of params["paths"]) {
+                var fileSystem = WebInspector.isolatedFileSystemManager.fileSystem(path);
+                if (fileSystem)
+                    continue;
+                if (this._suggestedFolders.has(path))
+                    continue;
+                this._suggestedFolders.add(path);
+                WebInspector.isolatedFileSystemManager.addFileSystem(path);
+            }
             break;
         default:
             WebInspector.console.log("Unhandled API message: " + method);
         }
+        this._issueResponse(id);
         this._dispatchingFrontendMessage = false;
     },
 

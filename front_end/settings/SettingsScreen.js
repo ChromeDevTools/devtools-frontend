@@ -470,7 +470,7 @@ WebInspector.WorkspaceSettingsTab.prototype = {
 
     _addFileSystemClicked: function()
     {
-        WebInspector.isolatedFileSystemManager.addFileSystem();
+        WebInspector.isolatedFileSystemManager.addFileSystem("");
     },
 
     _fileSystemAdded: function(event)

@@ -241,6 +241,9 @@ WebInspector.EditFileSystemDialog.prototype = {
         return prefix + (prefix[prefix.length - 1] === "/" ? "" : "/");
     },
 
+    /**
+     * @param {!WebInspector.FileSystemMapping.Entry} entry
+     */
     _addMappingRow: function(entry)
     {
         var key = this._entryKey(entry);

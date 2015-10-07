@@ -167,6 +167,7 @@ WebInspector.Main.prototype = {
         }
 
         Runtime.experiments.setDefaultExperiments([
+            "securityPanel"
         ]);
     },
 

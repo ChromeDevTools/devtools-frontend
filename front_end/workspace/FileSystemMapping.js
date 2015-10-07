@@ -204,6 +204,8 @@ WebInspector.FileSystemMapping.prototype = {
         var entry = null;
         for (var i = 0; i < entries.length; ++i) {
             var pathPrefix = entries[i].pathPrefix;
+            if (entry && entry.configurable && !entries[i].configurable)
+                continue;
             // We are looking for the longest pathPrefix match.
             if (entry && entry.pathPrefix.length > pathPrefix.length)
                 continue;

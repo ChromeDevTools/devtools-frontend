@@ -5186,23 +5186,29 @@
             {
                 "id": "AXValueType",
                 "type": "string",
-                "enum": [ "boolean", "tristate", "booleanOrUndefined", "idref", "idrefList", "integer", "number", "string", "token", "tokenList", "domRelation", "role", "internalRole" ],
+                "enum": [ "boolean", "tristate", "booleanOrUndefined", "idref", "idrefList", "integer", "node", "nodeList", "number", "string", "computedString", "token", "tokenList", "domRelation", "role", "internalRole", "valueUndefined" ],
                 "description": "Enum of possible property types."
             },
             {
-                "id": "AXPropertySourceType",
+                "id": "AXValueSourceType",
                 "type": "string",
-                "enum": [ "attribute", "implicit", "style" ],
+                "enum": [ "attribute", "implicit", "style", "contents", "placeholder", "relatedElement" ],
                 "description": "Enum of possible property sources."
             },
+            { "id": "AXValueNativeSourceType",
+              "type": "string",
+              "enum": [ "figcaption", "label", "labelfor", "labelwrapped", "tablecaption", "other" ],
+              "description": "Enum of possible native property sources (as a subtype of a particular AXValueSourceType)."
+            },
             {
-                "id": "AXPropertySource",
+                "id": "AXValueSource",
                 "type": "object",
                 "properties": [
-                    { "name": "name", "type": "string", "description": "The name/label of this source." },
-                    { "name": "sourceType", "$ref": "AXPropertySourceType", "description": "What type of source this is." },
-                    { "name": "value", "type": "any", "description": "The value of this property source." },
-                    { "name": "type", "$ref": "AXValueType", "description": "What type the value should be interpreted as." },
+                    { "name": "type", "$ref": "AXValueSourceType", "description": "What type of source this is." },
+                    { "name": "value", "$ref": "AXValue", "description": "The value of this property source.", "optional": true },
+                    { "name": "attribute", "type": "string", "description": "The attribute, if any.", "optional": true },
+                    { "name": "superseded", "type": "boolean", "description": "Whether this source is superseded by a higher priority source.", "optional": true },
+                    { "name": "nativeSource", "$ref": "AXValueNativeSourceType", "description": "The native markup source for this value, e.g. a <label> element.", "optional": true },
                     { "name": "invalid", "type": "boolean", "description": "Whether the value for this property is invalid.", "optional": true },
                     { "name": "invalidReason", "type": "string", "description": "Reason for the value being invalid, if it is.", "optional": true }
                 ],
@@ -5212,8 +5218,9 @@
                 "id": "AXRelatedNode",
                 "type": "object",
                 "properties": [
+                    { "name": "backendNodeId", "$ref": "DOM.BackendNodeId", "description": "The BackendNodeId of the related node." },
                     { "name": "idref", "type": "string", "description": "The IDRef value provided, if any.", "optional": true },
-                    { "name": "backendNodeId", "$ref": "DOM.BackendNodeId", "description": "The BackendNodeId of the related node." }
+                    { "name": "text", "type": "string", "description": "The text alternative of this node in the current context.", "optional": true }
                 ]
             },
             {
@@ -5233,7 +5240,7 @@
                     { "name": "value", "type": "any", "description": "The computed value of this property.", "optional": true },
                     { "name": "relatedNodeValue", "$ref": "AXRelatedNode", "description": "The related node value, if any.", "optional": true },
                     { "name": "relatedNodeArrayValue", "type": "array", "items": { "$ref": "AXRelatedNode" }, "description": "Multiple relted nodes, if applicable.", "optional": true },
-                    { "name": "sources", "type": "array", "items": { "$ref": "AXPropertySource" }, "description": "The sources which contributed to the computation of this property.", "optional": true }
+                    { "name": "sources", "type": "array", "items": { "$ref": "AXValueSource" }, "description": "The sources which contributed to the computation of this property.", "optional": true }
                 ],
                 "description": "A single computed AX property."
             },

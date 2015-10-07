@@ -203,6 +203,48 @@
     border-radius: 2px;
     margin: 6px;
     cursor: pointer;
+    position: relative;
+}
+
+.spectrum-palette-color:hover:not(.spectrum-shades-shown) > .spectrum-palette-color-shadow {
+    opacity: 0.2;
+}
+
+.spectrum-palette-color:hover:not(.spectrum-shades-shown) > .spectrum-palette-color-shadow:first-child {
+    opacity: 0.6;
+    top: -3px;
+    left: 1px;
+}
+
+.spectrum-palette-color-shadow {
+    position: absolute;
+    opacity: 0;
+    margin: 0;
+    top: -5px;
+    left: 3px;
+}
+
+.palette-color-shades {
+    position: absolute;
+    background-color: white;
+    height: 237px;
+    width: 28px;
+    box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
+    z-index: 14;
+    border-radius: 2px;
+    transform-origin: 0px 237px;
+    margin-top: 18px;
+    margin-left: -8px;
+}
+
+.spectrum-palette > .spectrum-palette-color.spectrum-shades-shown {
+    z-index: 15;
+}
+
+.palette-color-shades > .spectrum-palette-color {
+    margin: 8px 0 0 0;
+    margin-left: 8px;
+    width: 12px;
 }
 
 .spectrum-palette > .spectrum-palette-color {
@@ -216,7 +258,8 @@
     border-color: transparent;
 }
 
-.spectrum-palette > .spectrum-palette-color:not(.empty-color):hover {
+.spectrum-palette > .spectrum-palette-color:not(.empty-color):not(.has-material-shades):hover,
+.palette-color-shades > .spectrum-palette-color:not(.empty-color):hover {
     transform: scale(1.15);
 }
 

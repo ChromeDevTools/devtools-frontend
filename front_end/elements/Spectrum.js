@@ -110,6 +110,7 @@ WebInspector.Spectrum = function()
     this._palettePanelShowing = false;
     this._paletteContainer = this.contentElement.createChild("div", "spectrum-palette");
     this._paletteContainer.addEventListener("contextmenu", this._showPaletteColorContextMenu.bind(this, -1));
+    this._shadesContainer = this.contentElement.createChild("div", "palette-color-shades hidden");
     WebInspector.installDragHandle(this._paletteContainer, this._paletteDragStart.bind(this), this._paletteDrag.bind(this), this._paletteDragEnd.bind(this), "default");
     var paletteSwitcher = this.contentElement.createChild("div", "spectrum-palette-switcher spectrum-switcher");
     appendSwitcherIcon(paletteSwitcher);
@@ -259,6 +260,15 @@ WebInspector.Spectrum.prototype = {
                 colorElement.__mutable = true;
                 colorElement.__color = palette.colors[i];
                 colorElement.addEventListener("contextmenu", this._showPaletteColorContextMenu.bind(this, i));
+            } else if (palette === WebInspector.Spectrum.MaterialPalette) {
+                colorElement.classList.add("has-material-shades");
+                var shadow = colorElement.createChild("div", "spectrum-palette-color spectrum-palette-color-shadow");
+                shadow.style.background = palette.colors[i];
+                shadow = colorElement.createChild("div", "spectrum-palette-color spectrum-palette-color-shadow");
+                shadow.style.background = palette.colors[i];
+                var controller = new WebInspector.LongClickController(colorElement);
+                controller.enable();
+                controller.addEventListener(WebInspector.LongClickController.Events.LongClick, this._showLightnessShades.bind(this, colorElement, palette.colors[i]));
             }
             this._paletteContainer.appendChild(colorElement);
         }
@@ -276,6 +286,48 @@ WebInspector.Spectrum.prototype = {
         }
 
         this._togglePalettePanel(false);
+    },
+
+    /**
+     * @param {!Element} colorElement
+     * @param {string} colorText
+     * @param {!WebInspector.Event} event
+     */
+    _showLightnessShades: function(colorElement, colorText, event)
+    {
+        /**
+         * @param {!Element} element
+         * @this {!WebInspector.Spectrum}
+         */
+        function closeLightnessShades(element)
+        {
+            this._shadesContainer.classList.add("hidden");
+            element.classList.remove("spectrum-shades-shown");
+            this._shadesContainer.ownerDocument.removeEventListener("mousedown", this._shadesCloseHandler, true);
+            delete this._shadesCloseHandler;
+        }
+
+        if (this._shadesCloseHandler)
+            this._shadesCloseHandler();
+
+        this._shadesContainer.classList.remove("hidden");
+        this._shadesContainer.removeChildren();
+        this._shadesContainer.animate([{ transform: "scaleY(0)", opacity: "0" }, { transform: "scaleY(1)", opacity: "1" }], { duration: 200, easing: "cubic-bezier(0.4, 0, 0.2, 1)" });
+        var anchorBox = colorElement.boxInWindow();
+        this._shadesContainer.style.top = colorElement.offsetTop + "px";
+        this._shadesContainer.style.left = colorElement.offsetLeft + "px";
+        colorElement.classList.add("spectrum-shades-shown");
+
+        var shades = WebInspector.Spectrum.MaterialPaletteShades[colorText];
+        for (var i = shades.length - 1; i >= 0; i--) {
+            var shadeElement = this._createPaletteColor(shades[i], i * 200 / shades.length + 100);
+            shadeElement.addEventListener("mousedown", this._paletteColorSelected.bind(this, shades[i], false));
+            this._shadesContainer.appendChild(shadeElement);
+        }
+
+        WebInspector.setCurrentFocusElement(this._shadesContainer);
+        this._shadesCloseHandler = closeLightnessShades.bind(this, colorElement);
+        this._shadesContainer.ownerDocument.addEventListener("mousedown", this._shadesCloseHandler, true);
     },
 
     /**
@@ -949,24 +1001,26 @@ WebInspector.Spectrum.PaletteGenerator.prototype = {
     }
 }
 
-WebInspector.Spectrum.MaterialPalette = { title: "Material", mutable: false, matchUserFormat: true, colors: [
-    "#F44336",
-    "#E91E63",
-    "#9C27B0",
-    "#673AB7",
-    "#3F51B5",
-    "#2196F3",
-    "#03A9F4",
-    "#00BCD4",
-    "#009688",
-    "#4CAF50",
-    "#8BC34A",
-    "#CDDC39",
-    "#FFEB3B",
-    "#FFC107",
-    "#FF9800",
-    "#FF5722",
-    "#795548",
-    "#9E9E9E",
-    "#607D8B"
-]};
+WebInspector.Spectrum.MaterialPaletteShades = {
+    "#F44336": ["#FFEBEE", "#FFCDD2", "#EF9A9A", "#E57373", "#EF5350", "#F44336", "#E53935", "#D32F2F", "#C62828", "#B71C1C"],
+    "#E91E63": ["#FCE4EC", "#F8BBD0", "#F48FB1", "#F06292", "#EC407A", "#E91E63", "#D81B60", "#C2185B", "#AD1457", "#880E4F"],
+    "#9C27B0": ["#F3E5F5", "#E1BEE7", "#CE93D8", "#BA68C8", "#AB47BC", "#9C27B0", "#8E24AA", "#7B1FA2", "#6A1B9A", "#4A148C"],
+    "#673AB7": ["#EDE7F6", "#D1C4E9", "#B39DDB", "#9575CD", "#7E57C2", "#673AB7", "#5E35B1", "#512DA8", "#4527A0", "#311B92"],
+    "#3F51B5": ["#E8EAF6", "#C5CAE9", "#9FA8DA", "#7986CB", "#5C6BC0", "#3F51B5", "#3949AB", "#303F9F", "#283593", "#1A237E"],
+    "#2196F3": ["#E3F2FD", "#BBDEFB", "#90CAF9", "#64B5F6", "#42A5F5", "#2196F3", "#1E88E5", "#1976D2", "#1565C0", "#0D47A1"],
+    "#03A9F4": ["#E1F5FE", "#B3E5FC", "#81D4FA", "#4FC3F7", "#29B6F6", "#03A9F4", "#039BE5", "#0288D1", "#0277BD", "#01579B"],
+    "#00BCD4": ["#E0F7FA", "#B2EBF2", "#80DEEA", "#4DD0E1", "#26C6DA", "#00BCD4", "#00ACC1", "#0097A7", "#00838F", "#006064"],
+    "#009688": ["#E0F2F1", "#B2DFDB", "#80CBC4", "#4DB6AC", "#26A69A", "#009688", "#00897B", "#00796B", "#00695C", "#004D40"],
+    "#4CAF50": ["#E8F5E9", "#C8E6C9", "#A5D6A7", "#81C784", "#66BB6A", "#4CAF50", "#43A047", "#388E3C", "#2E7D32", "#1B5E20"],
+    "#8BC34A": ["#F1F8E9", "#DCEDC8", "#C5E1A5", "#AED581", "#9CCC65", "#8BC34A", "#7CB342", "#689F38", "#558B2F", "#33691E"],
+    "#CDDC39": ["#F9FBE7", "#F0F4C3", "#E6EE9C", "#DCE775", "#D4E157", "#CDDC39", "#C0CA33", "#AFB42B", "#9E9D24", "#827717"],
+    "#FFEB3B": ["#FFFDE7", "#FFF9C4", "#FFF59D", "#FFF176", "#FFEE58", "#FFEB3B", "#FDD835", "#FBC02D", "#F9A825", "#F57F17"],
+    "#FFC107": ["#FFF8E1", "#FFECB3", "#FFE082", "#FFD54F", "#FFCA28", "#FFC107", "#FFB300", "#FFA000", "#FF8F00", "#FF6F00"],
+    "#FF9800": ["#FFF3E0", "#FFE0B2", "#FFCC80", "#FFB74D", "#FFA726", "#FF9800", "#FB8C00", "#F57C00", "#EF6C00", "#E65100"],
+    "#FF5722": ["#FBE9E7", "#FFCCBC", "#FFAB91", "#FF8A65", "#FF7043", "#FF5722", "#F4511E", "#E64A19", "#D84315", "#BF360C"],
+    "#795548": ["#EFEBE9", "#D7CCC8", "#BCAAA4", "#A1887F", "#8D6E63", "#795548", "#6D4C41", "#5D4037", "#4E342E", "#3E2723"],
+    "#9E9E9E": ["#FAFAFA", "#F5F5F5", "#EEEEEE", "#E0E0E0", "#BDBDBD", "#9E9E9E", "#757575", "#616161", "#424242", "#212121"],
+    "#607D8B": ["#ECEFF1", "#CFD8DC", "#B0BEC5", "#90A4AE", "#78909C", "#607D8B", "#546E7A", "#455A64", "#37474F", "#263238"]
+};
+
+WebInspector.Spectrum.MaterialPalette = { title: "Material", mutable: false, matchUserFormat: true, colors: Object.keys(WebInspector.Spectrum.MaterialPaletteShades) };

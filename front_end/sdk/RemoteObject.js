@@ -1096,9 +1096,10 @@ WebInspector.ScopeRef = function(number, callFrameId, functionId)
  * @param {boolean=} writable
  * @param {boolean=} isOwn
  * @param {boolean=} wasThrown
+ * @param {boolean=} synthetic
  * @param {?WebInspector.RemoteObject=} symbol
  */
-WebInspector.RemoteObjectProperty = function(name, value, enumerable, writable, isOwn, wasThrown, symbol)
+WebInspector.RemoteObjectProperty = function(name, value, enumerable, writable, isOwn, wasThrown, symbol, synthetic)
 {
     this.name = name;
     if (value !== null)
@@ -1109,6 +1110,7 @@ WebInspector.RemoteObjectProperty = function(name, value, enumerable, writable, 
     this.wasThrown = !!wasThrown;
     if (symbol)
         this.symbol = symbol;
+    this.synthetic = !!synthetic;
 }
 
 WebInspector.RemoteObjectProperty.prototype = {

@@ -244,6 +244,8 @@ WebInspector.ObjectPropertyTreeElement.prototype = {
             this.nameElement.classList.add("object-properties-section-dimmed");
         if (this.property.isAccessorProperty())
             this.nameElement.classList.add("properties-accessor-property-name");
+        if (this.property.synthetic)
+            this.nameElement.classList.add("synthetic-property");
         if (this.property.symbol)
             this.nameElement.addEventListener("contextmenu", this._contextMenuFired.bind(this, this.property.symbol), false);
 

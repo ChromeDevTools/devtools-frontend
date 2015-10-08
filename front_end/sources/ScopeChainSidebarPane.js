@@ -89,11 +89,11 @@ WebInspector.ScopeChainSidebarPane.prototype = {
                     if (!callFrame.isAsync()) {
                         var exception = details.exception();
                         if (exception)
-                            extraProperties.push(new WebInspector.RemoteObjectProperty("<exception>", exception));
+                            extraProperties.push(new WebInspector.RemoteObjectProperty(WebInspector.UIString.capitalize("Exception"), exception, undefined, undefined, undefined, undefined, undefined, true));
                     }
                     var returnValue = callFrame.returnValue();
                     if (returnValue)
-                        extraProperties.push(new WebInspector.RemoteObjectProperty("<return>", returnValue));
+                        extraProperties.push(new WebInspector.RemoteObjectProperty(WebInspector.UIString.capitalize("Return ^value"), returnValue, undefined, undefined, undefined, undefined, undefined, true));
                 }
                 break;
             case DebuggerAgent.ScopeType.Closure:

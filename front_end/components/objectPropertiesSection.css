@@ -47,3 +47,6 @@
     padding-left: 0px;
 }
 
+.object-properties-section .synthetic-property {
+    font-style: italic;
+}

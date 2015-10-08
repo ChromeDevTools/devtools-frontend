@@ -49,10 +49,13 @@ WebInspector.JavaScriptCompiler.prototype = {
         var debuggerModel = WebInspector.DebuggerModel.fromTarget(target);
         if (!debuggerModel)
             return;
+        var currentExecutionContext = WebInspector.context.flavor(WebInspector.ExecutionContext);
+        if (!currentExecutionContext)
+            return;
 
         this._compiling = true;
         var code = this._sourceFrame.textEditor.text();
-        debuggerModel.compileScript(code, "", false, undefined, compileCallback.bind(this, target));
+        debuggerModel.compileScript(code, "", false, currentExecutionContext.id, compileCallback.bind(this, target));
 
         /**
          * @param {!WebInspector.Target} target

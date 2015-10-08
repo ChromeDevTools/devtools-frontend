@@ -197,7 +197,7 @@ WebInspector.RuntimeDispatcher.prototype = {
  * @constructor
  * @extends {WebInspector.SDKObject}
  * @param {!WebInspector.Target} target
- * @param {number|undefined} id
+ * @param {number} id
  * @param {string} name
  * @param {string} origin
  * @param {boolean} isPageContext

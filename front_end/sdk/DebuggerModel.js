@@ -761,7 +761,7 @@ WebInspector.DebuggerModel.prototype = {
      * @param {string} expression
      * @param {string} sourceURL
      * @param {boolean} persistScript
-     * @param {number=} executionContextId
+     * @param {number} executionContextId
      * @param {function(!DebuggerAgent.ScriptId=, ?DebuggerAgent.ExceptionDetails=)=} callback
      */
     compileScript: function(expression, sourceURL, persistScript, executionContextId, callback)
@@ -786,7 +786,7 @@ WebInspector.DebuggerModel.prototype = {
 
     /**
      * @param {!DebuggerAgent.ScriptId} scriptId
-     * @param {number=} executionContextId
+     * @param {number} executionContextId
      * @param {string=} objectGroup
      * @param {boolean=} doNotPauseOnExceptionsAndMuteConsole
      * @param {function(?RuntimeAgent.RemoteObject, ?DebuggerAgent.ExceptionDetails=)=} callback

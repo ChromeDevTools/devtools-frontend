@@ -69,6 +69,7 @@
         {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "elements.hide-element",
+            "contextTypes": ["WebInspector.ElementsPanel"],
             "className": "WebInspector.ElementsActionDelegate",
             "bindings": [
                 {
@@ -79,6 +80,7 @@
         {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "elements.edit-as-html",
+            "contextTypes": ["WebInspector.ElementsPanel"],
             "className": "WebInspector.ElementsActionDelegate",
             "bindings": [
                 {

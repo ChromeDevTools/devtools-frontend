@@ -298,6 +298,8 @@ WebInspector.ElementsPanel.prototype = {
 
     wasShown: function()
     {
+        WebInspector.context.setFlavor(WebInspector.ElementsPanel, this);
+
         for (var i = 0; i < this._treeOutlines.length; ++i) {
             var treeOutline = this._treeOutlines[i];
             // Attach heavy component lazily
@@ -323,6 +325,8 @@ WebInspector.ElementsPanel.prototype = {
 
     willHide: function()
     {
+        WebInspector.context.setFlavor(WebInspector.ElementsPanel, null);
+
         WebInspector.DOMModel.hideDOMNodeHighlight();
         for (var i = 0; i < this._treeOutlines.length; ++i) {
             var treeOutline = this._treeOutlines[i];

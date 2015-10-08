@@ -175,7 +175,8 @@ WebInspector.SecurityPanel.prototype = {
             var oldSecurityState = originState.securityState;
             originState.securityState = this._securityStateMin(oldSecurityState, securityState);
             if (oldSecurityState != originState.securityState) {
-                originState.sidebarElement.setSecurityState(securityState);
+                this._sidebarOriginSection.removeChild(originState.sidebarElement);
+                this._insertOriginViewSidebarTreeElementSorted(originState.sidebarElement, securityState);
                 if (originState.originView)
                     originState.originView.setSecurityState(securityState);
             }
@@ -193,11 +194,21 @@ WebInspector.SecurityPanel.prototype = {
             this._origins.set(origin, originState);
 
             originState.sidebarElement = new WebInspector.SecurityOriginViewSidebarTreeElement(this, origin);
-            this._sidebarOriginSection.appendChild(originState.sidebarElement);
-            originState.sidebarElement.setSecurityState(securityState);
+            this._insertOriginViewSidebarTreeElementSorted(originState.sidebarElement, securityState);
 
             // Don't construct the origin view yet (let it happen lazily).
         }
+    },
+
+    /**
+     * @param {!WebInspector.SecurityOriginViewSidebarTreeElement} sidebarElement
+     * @param {!SecurityAgent.SecurityState} securityState
+     */
+    _insertOriginViewSidebarTreeElementSorted: function(sidebarElement, securityState)
+    {
+        sidebarElement.setSecurityState(securityState);
+        var originSectionChildList = /** @type {!Array.<!WebInspector.SecurityOriginViewSidebarTreeElement>} */ (this._sidebarOriginSection.children());
+        this._sidebarOriginSection.insertChild(sidebarElement, originSectionChildList.upperBound(sidebarElement, WebInspector.SecurityOriginViewSidebarTreeElement.SecurityStateComparator));
     },
 
     /**
@@ -368,6 +379,7 @@ WebInspector.SecurityOriginViewSidebarTreeElement = function(panel, origin)
 {
     this._panel = panel;
     this._origin = origin;
+    this._securityState = SecurityAgent.SecurityState.Unknown;
     this.small = true;
     WebInspector.SidebarTreeElement.call(this, "security-sidebar-tree-item", origin);
     this.iconElement.classList.add("security-property");
@@ -389,15 +401,53 @@ WebInspector.SecurityOriginViewSidebarTreeElement.prototype = {
      */
     setSecurityState: function(newSecurityState)
     {
-        for (var className of Array.prototype.slice.call(this.iconElement.classList)) {
-            if (className.startsWith("security-property-"))
-                this.iconElement.classList.remove(className);
-        }
+        if (this._securityState)
+            this.iconElement.classList.remove("security-property-" + this._securityState)
 
+        this._securityState = newSecurityState;
         this.iconElement.classList.add("security-property-" + newSecurityState);
     },
 
+    /**
+     * @return {!SecurityAgent.SecurityState}
+     */
+    securityState: function()
+    {
+        return this._securityState;
+    },
+
     __proto__: WebInspector.SidebarTreeElement.prototype
+}
+
+/**
+ * @param {!WebInspector.SecurityOriginViewSidebarTreeElement} a
+ * @param {!WebInspector.SecurityOriginViewSidebarTreeElement} b
+ * @return {number}
+ */
+WebInspector.SecurityOriginViewSidebarTreeElement.SecurityStateComparator = function(a, b)
+{
+    var securityStateMap;
+    if (WebInspector.SecurityOriginViewSidebarTreeElement._symbolicToNumericSecurityState) {
+        securityStateMap = WebInspector.SecurityOriginViewSidebarTreeElement._symbolicToNumericSecurityState;
+    } else {
+        securityStateMap = new Map();
+        var ordering = [
+            SecurityAgent.SecurityState.Unknown,
+            SecurityAgent.SecurityState.Info,
+            SecurityAgent.SecurityState.Insecure,
+            SecurityAgent.SecurityState.Neutral,
+            SecurityAgent.SecurityState.Warning,
+            SecurityAgent.SecurityState.Secure
+        ];
+        for (var i = 0; i < ordering.length; i++) {
+            securityStateMap.set(ordering[i], i + 1);
+        }
+        WebInspector.SecurityOriginViewSidebarTreeElement._symbolicToNumericSecurityState = securityStateMap;
+    }
+    var aScore = securityStateMap.get(a.securityState()) || 0;
+    var bScore = securityStateMap.get(b.securityState()) || 0;
+
+    return aScore - bScore;
 }
 
 /**

@@ -41,3 +41,7 @@
 .security-property-secure {
     background-image: url(Images/securityPropertySecure.svg);
 }
+
+.security-property-info {
+    background-image: url(Images/securityPropertyInfo.svg);
+}

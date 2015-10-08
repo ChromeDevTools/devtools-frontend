@@ -787,6 +787,7 @@
             'front_end/Images/responsiveDesign_2x.png',
             'front_end/Images/searchNext.png',
             'front_end/Images/searchPrev.png',
+            'front_end/Images/securityPropertyInfo.svg',
             'front_end/Images/securityPropertyInsecure.svg',
             'front_end/Images/securityPropertySecure.svg',
             'front_end/Images/securityPropertyWarning.svg',

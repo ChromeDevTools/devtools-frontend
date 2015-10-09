@@ -21,7 +21,7 @@ WebInspector.XHRBreakpointsSidebarPane = function()
 
     this.emptyElement.addEventListener("contextmenu", this._emptyElementContextMenu.bind(this), true);
 
-    WebInspector.targetManager.observeTargets(this);
+    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Type.Page);
 }
 
 WebInspector.XHRBreakpointsSidebarPane.prototype = {
@@ -139,7 +139,7 @@ WebInspector.XHRBreakpointsSidebarPane.prototype = {
      */
     _updateBreakpointOnTarget: function(url, enable, target)
     {
-        var targets = target ? [target] : WebInspector.targetManager.targets();
+        var targets = target ? [target] : WebInspector.targetManager.targets(WebInspector.Target.Type.Page);
         for (var i = 0; i < targets.length; ++i) {
             if (enable)
                 targets[i].domdebuggerAgent().setXHRBreakpoint(url);

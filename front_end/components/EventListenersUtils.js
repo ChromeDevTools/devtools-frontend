@@ -14,6 +14,11 @@ WebInspector.EventListenerObjectInInspectedPage;
  */
 WebInspector.EventListener.frameworkEventListeners = function(object)
 {
+    if (!object.target().isPage()) {
+        // TODO(kozyatinskiy): figure out how this should work for |window|.
+        return Promise.resolve(/** @type {!WebInspector.FrameworkEventListenersObject} */ ({eventListeners: [], internalHandlers: null}));
+    }
+
     var listenersResult = /** @type {!WebInspector.FrameworkEventListenersObject} */({eventListeners: []});
     return object.callFunctionPromise(frameworkEventListeners, undefined)
                  .then(assertCallFunctionResult)

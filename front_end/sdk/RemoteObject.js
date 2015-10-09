@@ -537,6 +537,12 @@ WebInspector.RemoteObjectImpl.prototype = {
          */
         function eventListeners(fulfill, reject)
         {
+            if (!this.target().isPage()) {
+                // TODO(kozyatinskiy): figure out how this should work for |window| when there is no DOMDebugger.
+                fulfill([]);
+                return;
+            }
+
             if (!this._objectId) {
                 reject(null);
                 return;
@@ -551,7 +557,8 @@ WebInspector.RemoteObjectImpl.prototype = {
              * @param {!WebInspector.CallFunctionResult} result
              * @this {WebInspector.RemoteObject}
              */
-            function storeRemoveFunction(result) {
+            function storeRemoveFunction(result)
+            {
                 if (!result.wasThrown && result.object)
                     removeFunction = result.object;
                 this.target().domdebuggerAgent().getEventListeners(this._objectId, mycallback.bind(this));

@@ -42,7 +42,7 @@ WebInspector.EventListenerBreakpointsSidebarPane = function()
     this._createCategory(WebInspector.UIString("Window"), ["close"], true);
     this._createCategory(WebInspector.UIString("XHR"), ["readystatechange", "load", "loadstart", "loadend", "abort", "error", "progress", "timeout"], false, ["XMLHttpRequest", "XMLHttpRequestUpload"]);
 
-    WebInspector.targetManager.observeTargets(this);
+    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Type.Page);
 }
 
 WebInspector.EventListenerBreakpointsSidebarPane.categoryListener = "listener:";
@@ -231,7 +231,7 @@ WebInspector.EventListenerBreakpointsSidebarPane.prototype = {
      */
     _updateBreakpointOnTarget: function(eventName, eventTargetName, enable, target)
     {
-        var targets = target ? [target] : WebInspector.targetManager.targets();
+        var targets = target ? [target] : WebInspector.targetManager.targets(WebInspector.Target.Type.Page);
         for (var i = 0; i < targets.length; ++i) {
             if (eventName.startsWith(WebInspector.EventListenerBreakpointsSidebarPane.categoryListener)) {
                 var protocolEventName = eventName.substring(WebInspector.EventListenerBreakpointsSidebarPane.categoryListener.length);

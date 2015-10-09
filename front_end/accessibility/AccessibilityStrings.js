@@ -162,7 +162,67 @@ WebInspector.AccessibilityStrings.AXAttributes = {
     },
     "help": {
         name: "Help",
-        descrption: "The computed help text for this element.",
+        description: "The computed help text for this element.",
+        group: "Default"
+    },
+    "description": {
+        name: "Description",
+        description: "The accessible description for this element.",
         group: "Default"
     }
 };
+
+WebInspector.AccessibilityStrings.AXSourceTypes = {
+    "attribute": {
+        name: "From attribute",
+        description: "Value from attribute."
+    },
+    "implicit": {
+        name: "Implicit",
+        description: "Implicit value.",
+    },
+    "style": {
+        name: "From style",
+        description: "Value from style."
+    },
+    "contents": {
+        name: "Contents",
+        description: "Value from element contents."
+    },
+    "placeholder": {
+        name: "From placeholder attribute",
+        description: "Value from placeholder attribute."
+    },
+    "relatedElement": {
+        name: "Related element",
+        description: "Value from related element."
+    }
+}
+
+WebInspector.AccessibilityStrings.AXNativeSourceTypes = {
+    "figcaption": {
+        name: "From caption",
+        description: "Value from figcaption element."
+    },
+    "label": {
+        name: "From label",
+        description: "Value from label element."
+    },
+    "labelfor": {
+        name: "From label (for)",
+        description: "Value from label element with for= attribute."
+    },
+    "labelwrapped": {
+        name: "From label (wrapped)",
+        description: "Value from label element wrapped."
+    },
+    "tablecaption": {
+        name: "From caption",
+        description: "Value from table caption."
+    },
+    "other": {
+        name: "From native HTML",
+        description: "Value from native HTML (unknown source)."
+    },
+
+}

@@ -132,6 +132,18 @@ WebInspector.AccessibilitySidebarView.prototype = {
 };
 
 /**
+ * @param {string} tooltip
+ * @return {!Element}
+ */
+WebInspector.AccessibilitySidebarView.createExclamationMark = function(tooltip)
+{
+    var exclamationElement = createElement("label", "dt-icon-label");
+    exclamationElement.type = "warning-icon";
+    exclamationElement.title = tooltip;
+    return exclamationElement;
+};
+
+/**
  * @constructor
  * @extends {WebInspector.SidebarPane}
  * @param {string} name
@@ -177,9 +189,8 @@ WebInspector.AccessibilitySubPane.prototype = {
     createInfo: function(textContent, className)
     {
         var classNameOrDefault = className || "info";
-        var info = createElementWithClass("div", classNameOrDefault);
+        var info = this.element.createChild("div", classNameOrDefault);
         info.textContent = textContent;
-        this.element.appendChild(info);
         return info;
     },
 
@@ -192,6 +203,7 @@ WebInspector.AccessibilitySubPane.prototype = {
         var treeOutline = new TreeOutlineInShadow(className);
         treeOutline.registerRequiredCSS("accessibility/accessibilityNode.css");
         treeOutline.registerRequiredCSS("components/objectValue.css");
+
         treeOutline.element.classList.add("hidden");
         this.element.appendChild(treeOutline.element);
         return treeOutline;
@@ -251,10 +263,10 @@ WebInspector.AXComputedTextSubPane.prototype = {
         function addProperty(property)
         {
             foundProperty = true;
-            treeOutline.appendChild(new WebInspector.AXNodePropertyTreeElement(property, target));
+            treeOutline.appendChild(new WebInspector.AXNodePropertyTreePropertyElement(property, target));
         }
 
-        if ("value" in axNode && axNode.value.type === "string")
+        if (axNode.value && axNode.value.type === AccessibilityAgent.AXValueType.String)
             addProperty(/** @type {!AccessibilityAgent.AXProperty} */ ({name: "value", value: axNode.value}));
 
         var propertiesArray = /** @type {!Array.<!AccessibilityAgent.AXProperty> } */ (axNode.properties);
@@ -348,7 +360,7 @@ WebInspector.AXNodeSubPane.prototype = {
          */
         function addProperty(property)
         {
-            treeOutline.appendChild(new WebInspector.AXNodePropertyTreeElement(property, target));
+            treeOutline.appendChild(new WebInspector.AXNodePropertyTreePropertyElement(property, target));
         }
 
         for (var propertyName of ["name", "description", "help", "value"]) {
@@ -379,142 +391,32 @@ WebInspector.AXNodeSubPane.prototype = {
 };
 
 /**
- * @constructor
- * @extends {TreeElement}
- * @param {!AccessibilityAgent.AXProperty} property
- * @param {!WebInspector.Target} target
- */
-WebInspector.AXNodePropertyTreeElement = function(property, target)
-{
-    this._property = property;
-    this._target = target;
-
-    // Pass an empty title, the title gets made later in onattach.
-    TreeElement.call(this, "");
-    this.toggleOnClick = true;
-    this.selectable = false;
-}
-
-WebInspector.AXNodePropertyTreeElement.prototype = {
-    /**
-     * @override
-     */
-    onattach: function()
-    {
-        this._update();
-    },
-
-
-    _update: function()
-    {
-        this._nameElement = WebInspector.AXNodePropertyTreeElement.createNameElement(this._property.name);
-
-        var value = this._property.value;
-        if (value.type === "idref") {
-            this._valueElement = WebInspector.AXNodePropertyTreeElement.createRelationshipValueElement(value, this._target);
-        } else if (value.type === "idrefList") {
-            var relatedNodes = value.relatedNodeArrayValue;
-            var numNodes = relatedNodes.length;
-            var description = "(" + numNodes + (numNodes == 1 ? " node" : " nodes") + ")";
-            value.value = description;
-            for (var i = 0; i < relatedNodes.length; i++) {
-                var backendId = relatedNodes[i].backendNodeId;
-                var deferredNode = new WebInspector.DeferredDOMNode(this._target, relatedNodes[i].backendNodeId);
-                var child = new WebInspector.AXRelatedNodeTreeElement(deferredNode);
-                this.appendChild(child);
-            }
-            this._valueElement = WebInspector.AXNodePropertyTreeElement.createValueElement(value, this.listItemElement);
-            if (relatedNodes.length <= 3)
-                this.expand();
-            else
-                this.collapse();
-        } else {
-            this._valueElement = WebInspector.AXNodePropertyTreeElement.createValueElement(value, this.listItemElement);
-        }
-
-        var separatorElement = createElementWithClass("span", "separator");
-        separatorElement.textContent = ": ";
-
-        this.listItemElement.removeChildren();
-        this.listItemElement.appendChildren(this._nameElement, separatorElement, this._valueElement);
-    },
-
-    __proto__: TreeElement.prototype
-}
-
-/**
- * @param {!TreeElement} treeNode
- * @param {?AccessibilityAgent.AXNode} axNode
- * @param {!WebInspector.Target} target
- */
-WebInspector.AXNodePropertyTreeElement.populateWithNode = function(treeNode, axNode, target)
-{
-}
-
-/**
- * @param {?string} name
+ * @param {?AccessibilityAgent.AXValueType} type
+ * @param {string} value
  * @return {!Element}
  */
-WebInspector.AXNodePropertyTreeElement.createNameElement = function(name)
+WebInspector.AccessibilitySidebarView.createSimpleValueElement = function(type, value)
 {
-    var nameElement = createElement("span");
-    var AXAttributes = WebInspector.AccessibilityStrings.AXAttributes;
-    if (name in AXAttributes) {
-        nameElement.textContent = WebInspector.UIString(AXAttributes[name].name);
-        nameElement.title = AXAttributes[name].description;
-        nameElement.classList.add("ax-readable-name");
-    } else {
-        nameElement.textContent = name;
-        nameElement.classList.add("ax-name");
-    }
-    return nameElement;
-}
-
-/**
- * @param {!AccessibilityAgent.AXValue} value
- * @param {!WebInspector.Target} target
- * @return {?Element}
- */
-WebInspector.AXNodePropertyTreeElement.createRelationshipValueElement = function(value, target)
-{
-    var deferredNode = new WebInspector.DeferredDOMNode(target, value.relatedNodeValue.backendNodeId);
-    var valueElement = createElement("span");
-
-    /**
-     * @param {?WebInspector.DOMNode} node
-     */
-    function onNodeResolved(node)
-    {
-        valueElement.appendChild(WebInspector.DOMPresentationUtils.linkifyNodeReference(node));
-    }
-    deferredNode.resolve(onNodeResolved);
-
-    return valueElement;
-}
-
-/**
- * @param {!AccessibilityAgent.AXValue} value
- * @param {!Element} parentElement
- * @return {!Element}
- */
-WebInspector.AXNodePropertyTreeElement.createValueElement = function(value, parentElement)
-{
-    var valueElement = createElementWithClass("span", "monospace");
-    var type = value.type;
+    var valueElement;
+    var AXValueType = AccessibilityAgent.AXValueType;
+    if (!type || type === AXValueType.ValueUndefined || type === AXValueType.ComputedString)
+        valueElement = createElement("span");
+    else
+        valueElement = createElementWithClass("span", "monospace");
     var prefix;
     var valueText;
     var suffix;
-    if (type === "string") {
-        // Render \n as a nice unicode cr symbol.
+    if (type === AXValueType.String || type === AXValueType.ComputedString || type === AXValueType.IdrefList || type === AXValueType.Idref) {
         prefix = "\"";
-        valueText = value.value.replace(/\n/g, "\u21B5");
+        // Render \n as a nice unicode cr symbol.
+        valueText = value.replace(/\n/g, "\u21B5");
         suffix = "\"";
-        valueElement._originalTextContent = "\"" + value.value + "\"";
+        valueElement._originalTextContent = "\"" + value + "\"";
     } else {
-        valueText = String(value.value);
+        valueText = String(value);
     }
 
-    if (type in WebInspector.AXNodePropertyTreeElement.TypeStyles)
+    if (type && type in WebInspector.AXNodePropertyTreeElement.TypeStyles)
         valueElement.classList.add(WebInspector.AXNodePropertyTreeElement.TypeStyles[type]);
 
     valueElement.setTextContentTruncatedIfNeeded(valueText || "");
@@ -523,7 +425,7 @@ WebInspector.AXNodePropertyTreeElement.createValueElement = function(value, pare
     if (suffix)
         valueElement.createTextChild(suffix);
 
-    valueElement.title = String(value.value) || "";
+    valueElement.title = String(value) || "";
 
     return valueElement;
 }
@@ -531,11 +433,279 @@ WebInspector.AXNodePropertyTreeElement.createValueElement = function(value, pare
 /**
  * @constructor
  * @extends {TreeElement}
- * @param {!WebInspector.DeferredDOMNode} deferredNode
+ * @param {!WebInspector.Target} target
  */
-WebInspector.AXRelatedNodeTreeElement = function(deferredNode)
+WebInspector.AXNodePropertyTreeElement = function(target)
 {
-    this._deferredNode = deferredNode;
+    this._target = target;
+
+    // Pass an empty title, the title gets made later in onattach.
+    TreeElement.call(this, "");
+}
+
+WebInspector.AXNodePropertyTreeElement.prototype = {
+    /**
+     * @param {string} name
+     */
+    appendNameElement: function(name)
+    {
+        var nameElement = createElement("span");
+        var AXAttributes = WebInspector.AccessibilityStrings.AXAttributes;
+        if (name in AXAttributes) {
+            nameElement.textContent = WebInspector.UIString(AXAttributes[name].name);
+            nameElement.title = AXAttributes[name].description;
+            nameElement.classList.add("ax-readable-name");
+        } else {
+            nameElement.textContent = name;
+            nameElement.classList.add("ax-name");
+            nameElement.classList.add("monospace");
+        }
+        this.listItemElement.appendChild(nameElement);
+    },
+
+    /**
+     * @param {!AccessibilityAgent.AXValue} value
+     */
+    appendValueElement: function(value)
+    {
+        var AXValueType = AccessibilityAgent.AXValueType;
+        if (value.type === AXValueType.Idref || value.type === AXValueType.Node) {
+            this.appendRelationshipValueElement(value);
+            return;
+        }
+        if (value.type === AXValueType.IdrefList || value.type === AXValueType.NodeList) {
+            this.appendRelatedNodeListValueElement(value);
+            return;
+        }
+        if (value.sources) {
+            var sources = value.sources;
+            for (var i = 0; i < sources.length; i++) {
+                var source = sources[i];
+                var child = new WebInspector.AXValueSourceTreeElement(source, this._target);
+                this.appendChild(child);
+            }
+        }
+        var valueElement = WebInspector.AccessibilitySidebarView.createSimpleValueElement(value.type, String(value.value));
+        this.listItemElement.appendChild(valueElement);
+    },
+
+    /**
+     * @param {!AccessibilityAgent.AXValue} value
+     */
+    appendRelationshipValueElement: function(value)
+    {
+        var deferredNode = new WebInspector.DeferredDOMNode(this._target, value.relatedNodeValue.backendNodeId);
+        var valueElement = createElement("span");
+
+        /**
+         * @param {?WebInspector.DOMNode} node
+         */
+        function onNodeResolved(node)
+        {
+            valueElement.appendChild(WebInspector.DOMPresentationUtils.linkifyNodeReference(node));
+            if (value.relatedNodeValue.text) {
+                var textElement = WebInspector.AccessibilitySidebarView.createSimpleValueElement(AccessibilityAgent.AXValueType.ComputedString, value.relatedNodeValue.text);
+                valueElement.appendChild(textElement);
+            }
+        }
+        deferredNode.resolve(onNodeResolved);
+
+        this.listItemElement.appendChild(valueElement);
+    },
+
+    /**
+     * @param {!AccessibilityAgent.AXValue} value
+     */
+    appendRelatedNodeListValueElement: function(value)
+    {
+        var relatedNodes = value.relatedNodeArrayValue;
+        var numNodes = relatedNodes.length;
+        var valueElement;
+        if (value.type === AccessibilityAgent.AXValueType.IdrefList) {
+            var idrefs = value.value.split(/\s/);
+            for (var idref of idrefs) {
+                var matchingNode = null;
+                /**
+                 * @param {!AccessibilityAgent.AXRelatedNode} relatedNode
+                 * @return {boolean}
+                 */
+                function matchesIDRef(relatedNode)
+                {
+                    if (relatedNode.idref !== idref)
+                        return false;
+                    matchingNode = relatedNode;
+                    return true;
+                }
+                relatedNodes.some(matchesIDRef);
+                if (matchingNode) {
+                    var relatedNode = /** @type {!AccessibilityAgent.AXRelatedNode} */ (matchingNode);
+                    var backendNodeId = matchingNode.backendNodeId;
+                    var deferredNode = new WebInspector.DeferredDOMNode(this._target, backendNodeId);
+                    var child = new WebInspector.AXRelatedNodeTreeElement({ deferredNode: deferredNode, idref: idref }, relatedNode);
+                    this.appendChild(child);
+                } else {
+                    this.appendChild(new WebInspector.AXRelatedNodeTreeElement({ idref: idref }));
+                }
+            }
+            valueElement = WebInspector.AccessibilitySidebarView.createSimpleValueElement(value.type, String(value.value));
+        } else {
+            for (var i = 0; i < numNodes; i++) {
+                var relatedNode = relatedNodes[i];
+                var deferredNode = new WebInspector.DeferredDOMNode(this._target, relatedNode.backendNodeId);
+                var child = new WebInspector.AXRelatedNodeTreeElement({ deferredNode: deferredNode }, relatedNode);
+                this.appendChild(child);
+            }
+            var numNodesString = "(" + numNodes + (numNodes === 1 ? " node" : " nodes") + ")";
+            valueElement = WebInspector.AccessibilitySidebarView.createSimpleValueElement(null, numNodesString);
+        }
+        if (relatedNodes.length <= 3)
+            this.expand();
+        else
+            this.collapse();
+        this.listItemElement.appendChild(valueElement);
+    },
+
+    __proto__: TreeElement.prototype
+}
+
+/**
+ * @constructor
+ * @extends {WebInspector.AXNodePropertyTreeElement}
+ * @param {!AccessibilityAgent.AXProperty} property
+ * @param {!WebInspector.Target} target
+ */
+WebInspector.AXNodePropertyTreePropertyElement = function(property, target)
+{
+    this._property = property;
+    this.toggleOnClick = true;
+    this.selectable = false;
+
+    WebInspector.AXNodePropertyTreeElement.call(this, target);
+}
+
+WebInspector.AXNodePropertyTreePropertyElement.prototype = {
+    /**
+     * @override
+     */
+    onattach: function()
+    {
+        this._update();
+    },
+
+    _update: function()
+    {
+        this.listItemElement.removeChildren();
+
+        this.appendNameElement(this._property.name);
+
+        this.listItemElement.createChild("span", "separator").textContent = ": ";
+
+        this.appendValueElement(this._property.value);
+    },
+
+    __proto__: WebInspector.AXNodePropertyTreeElement.prototype
+}
+
+/**
+ * @constructor
+ * @extends {WebInspector.AXNodePropertyTreeElement}
+ * @param {!AccessibilityAgent.AXValueSource} source
+ * @param {!WebInspector.Target} target
+ */
+WebInspector.AXValueSourceTreeElement = function(source, target)
+{
+    this._source = source;
+    WebInspector.AXNodePropertyTreeElement.call(this, target);
+}
+
+WebInspector.AXValueSourceTreeElement.prototype = {
+    /**
+     * @override
+     */
+    onattach: function()
+    {
+        this._update();
+    },
+
+    /**
+     * @param {!AccessibilityAgent.AXValueSource} source
+     */
+    appendSourceNameElement: function(source)
+    {
+        var nameElement = createElement("span");
+        var AXValueSourceType = AccessibilityAgent.AXValueSourceType;
+        var type = source.type;
+        var name;
+        switch (type) {
+        case AXValueSourceType.Attribute:
+        case AXValueSourceType.Placeholder:
+        case AXValueSourceType.RelatedElement:
+            if (source.nativeSource) {
+                var AXNativeSourceTypes = WebInspector.AccessibilityStrings.AXNativeSourceTypes;
+                var nativeSource = source.nativeSource;
+                nameElement.textContent = WebInspector.UIString(AXNativeSourceTypes[nativeSource].name);
+                nameElement.title = WebInspector.UIString(AXNativeSourceTypes[nativeSource].description);
+                nameElement.classList.add("ax-readable-name");
+                break;
+            }
+            nameElement.textContent = source.attribute;
+            nameElement.classList.add("ax-name");
+            nameElement.classList.add("monospace");
+            break;
+        default:
+            var AXSourceTypes = WebInspector.AccessibilityStrings.AXSourceTypes;
+            if (type in AXSourceTypes) {
+                nameElement.textContent = WebInspector.UIString(AXSourceTypes[type].name);
+                nameElement.title = WebInspector.UIString(AXSourceTypes[type].description);
+                nameElement.classList.add("ax-readable-name");
+            } else {
+                console.warn(type, "not in AXSourceTypes");
+                nameElement.textContent = WebInspector.UIString(type);
+            }
+        }
+        this.listItemElement.appendChild(nameElement);
+    },
+
+    _update: function() {
+        this.listItemElement.removeChildren();
+
+        if (this._source.invalid) {
+            var exclamationMark = WebInspector.AccessibilitySidebarView.createExclamationMark(WebInspector.UIString("Invalid source."));
+            this.listItemElement.appendChild(exclamationMark);
+            this.listItemElement.classList.add("ax-value-source-invalid");
+        } else if (this._source.superseded) {
+            this.listItemElement.classList.add("ax-value-source-unused");
+        }
+
+        this.appendSourceNameElement(this._source);
+
+        this.listItemElement.createChild("span", "separator").textContent = ": ";
+
+        if (this._source.value) {
+            this.appendValueElement(this._source.value);
+            if (this._source.superseded)
+                this.listItemElement.classList.add("ax-value-source-superseded");
+        } else {
+            var valueElement = WebInspector.AccessibilitySidebarView.createSimpleValueElement(AccessibilityAgent.AXValueType.ValueUndefined, WebInspector.UIString("Not specified"));
+            this.listItemElement.appendChild(valueElement);
+            this.listItemElement.classList.add("ax-value-source-unused");
+        }
+    },
+
+    __proto__: WebInspector.AXNodePropertyTreeElement.prototype
+}
+
+/**
+ * @constructor
+ * @extends {TreeElement}
+ * @param {{deferredNode: (!WebInspector.DeferredDOMNode|undefined), idref: (string|undefined)}} node
+ * @param {!AccessibilityAgent.AXRelatedNode=} value
+ */
+WebInspector.AXRelatedNodeTreeElement = function(node, value)
+{
+    this._deferredNode = node.deferredNode;
+    this._idref = node.idref;
+    this._value = value;
 
     TreeElement.call(this, "");
 };
@@ -548,8 +718,7 @@ WebInspector.AXRelatedNodeTreeElement.prototype = {
 
     _update: function()
     {
-        var valueElement = createElement("div");
-        this.listItemElement.appendChild(valueElement);
+        var valueElement;
 
         /**
          * @param {?WebInspector.DOMNode} node
@@ -558,7 +727,21 @@ WebInspector.AXRelatedNodeTreeElement.prototype = {
         {
             valueElement.appendChild(WebInspector.DOMPresentationUtils.linkifyNodeReference(node));
         }
-        this._deferredNode.resolve(onNodeResolved);
+        if (this._deferredNode) {
+            valueElement = createElement("span");
+            this.listItemElement.appendChild(valueElement);
+            this._deferredNode.resolve(onNodeResolved);
+        } else if (this._idref) {
+            this.listItemElement.classList.add("invalid");
+            valueElement = WebInspector.AccessibilitySidebarView.createExclamationMark(WebInspector.UIString("No node with this ID."));
+            valueElement.createTextChild(this._idref);
+        }
+        this.listItemElement.appendChild(valueElement);
+        if (this._value && this._value.text) {
+            var textElement = WebInspector.AccessibilitySidebarView.createSimpleValueElement(AccessibilityAgent.AXValueType.ComputedString, this._value.text);
+            this.listItemElement.createTextChild(" ");
+            this.listItemElement.appendChild(textElement);
+        }
     },
 
     __proto__: TreeElement.prototype
@@ -566,19 +749,24 @@ WebInspector.AXRelatedNodeTreeElement.prototype = {
 
 /** @type {!Object<string, string>} */
 WebInspector.AXNodePropertyTreeElement.TypeStyles = {
+    attribute: "object-value-string",
     boolean: "object-value-boolean",
     booleanOrUndefined: "object-value-boolean",
-    tristate: "object-value-boolean",
-    number: "object-value-number",
+    computedString: "ax-readable-string",
+    idref: "object-value-string",
+    idrefList: "object-value-string",
     integer: "object-value-number",
-    string: "object-value-string",
+    internalRole: "ax-internal-role",
+    number: "object-value-number",
     role: "ax-role",
-    internalRole: "ax-internal-role"
+    string: "object-value-string",
+    tristate: "object-value-boolean",
+    valueUndefined: "ax-value-undefined"
 };
 
 /**
  * @constructor
- * @extends {TreeElement}
+ * @extends {WebInspector.AXNodePropertyTreeElement}
  * @param {!AccessibilityAgent.AXProperty} property
  * @param {?AccessibilityAgent.AXNode} axNode
  * @param {!WebInspector.Target} target
@@ -587,10 +775,8 @@ WebInspector.AXNodeIgnoredReasonTreeElement = function(property, axNode, target)
 {
     this._property = property;
     this._axNode = axNode;
-    this._target = target;
 
-    // Pass an empty title, the title gets made later in onattach.
-    TreeElement.call(this, "");
+    WebInspector.AXNodePropertyTreeElement.call(this, target);
     this.toggleOnClick = true;
     this.selectable = false;
 }
@@ -607,13 +793,11 @@ WebInspector.AXNodeIgnoredReasonTreeElement.prototype = {
         this.listItemElement.appendChild(this._reasonElement);
 
         var value = this._property.value;
-        if (value.type === "idref") {
-            this._valueElement = WebInspector.AXNodePropertyTreeElement.createRelationshipValueElement(value, this._target);
-            this.listItemElement.appendChild(this._valueElement);
-        }
+        if (value.type === AccessibilityAgent.AXValueType.Idref)
+            this.appendRelationshipValueElement(value);
     },
 
-    __proto__: TreeElement.prototype
+    __proto__: WebInspector.AXNodePropertyTreeElement.prototype
 };
 
 /**

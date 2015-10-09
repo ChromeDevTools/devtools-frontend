@@ -204,6 +204,8 @@
     margin: 6px;
     cursor: pointer;
     position: relative;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background-position: -1px !important;
 }
 
 .spectrum-palette-color:hover:not(.spectrum-shades-shown) > .spectrum-palette-color-shadow {
@@ -249,7 +251,6 @@
 
 .spectrum-palette > .spectrum-palette-color {
     transition: transform 100ms cubic-bezier(0, 0, 0.2, 1);
-    border: 1px solid rgba(0, 0, 0, 0.1);
     will-change: transform;
     z-index: 13;
 }

@@ -499,7 +499,10 @@ WebInspector.Spectrum.prototype = {
         var palette = this._palettes.get(this._selectedColorPalette.get());
         if (!palette)
             return;
-        var rowsNeeded = Math.max(1, Math.ceil(palette.colors.length / WebInspector.Spectrum._itemsPerPaletteRow));
+        var numColors = palette.colors.length;
+        if (palette === this._customPaletteSetting.get())
+            numColors++;
+        var rowsNeeded = Math.max(1, Math.ceil(numColors / WebInspector.Spectrum._itemsPerPaletteRow));
         if (this._numPaletteRowsShown === rowsNeeded)
             return;
         this._numPaletteRowsShown = rowsNeeded;
@@ -528,6 +531,7 @@ WebInspector.Spectrum.prototype = {
         palette.colors.push(this.colorString());
         this._customPaletteSetting.set(palette);
         this._showPalette(this._customPaletteSetting.get(), false);
+        this._resizeForSelectedPalette();
     },
 
     /**
@@ -560,6 +564,7 @@ WebInspector.Spectrum.prototype = {
             palette.colors.splice(colorIndex, 1);
         this._customPaletteSetting.set(palette);
         this._showPalette(this._customPaletteSetting.get(), false);
+        this._resizeForSelectedPalette();
     },
 
     /**

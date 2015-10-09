@@ -256,7 +256,7 @@ WebInspector.Main.prototype = {
         // It is important to kick controller lifetime after apps are instantiated.
         WebInspector.dockController.initialize();
         console.timeStamp("Main._presentUI");
-        app.presentUI(document);
+        app.presentUI(document, this._didPresentAppUI.bind(this));
 
         if (!Runtime.queryParam("isSharedWorker"))
             WebInspector.inspectElementModeController = new WebInspector.InspectElementModeController();
@@ -350,15 +350,28 @@ WebInspector.Main.prototype = {
         if (this._mainTarget.isServiceWorker())
             this._mainTarget.runtimeAgent().run();
 
-        WebInspector.overridesSupport.init(this._mainTarget, overridesReady);
+        if (this._appUIPresented)
+            this._initOverrides();
+    },
 
-        function overridesReady()
-        {
-            if (!WebInspector.dockController.canDock() && WebInspector.overridesSupport.emulationEnabled())
-                WebInspector.inspectorView.showViewInDrawer("emulation", true);
+    _didPresentAppUI: function()
+    {
+        this._appUIPresented = true;
+        if (this._mainTarget)
+            this._initOverrides();
+    },
 
-            target.inspectorAgent().enable(inspectorAgentEnableCallback);
-        }
+    _initOverrides: function()
+    {
+        WebInspector.overridesSupport.init(this._mainTarget, this._overridesReady.bind(this));
+    },
+
+    _overridesReady: function()
+    {
+        if (!WebInspector.dockController.canDock() && WebInspector.overridesSupport.emulationEnabled())
+            WebInspector.inspectorView.showViewInDrawer("emulation", true);
+
+        this._mainTarget.inspectorAgent().enable(inspectorAgentEnableCallback);
 
         function inspectorAgentEnableCallback()
         {

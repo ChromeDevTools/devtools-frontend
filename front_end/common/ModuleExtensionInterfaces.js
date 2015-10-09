@@ -96,8 +96,9 @@ WebInspector.App = function()
 WebInspector.App.prototype = {
     /**
      * @param {!Document} document
+     * @param {function()} callback
      */
-    presentUI: function(document) { }
+    presentUI: function(document, callback) { }
 }
 
 /**

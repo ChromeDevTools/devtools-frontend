@@ -698,6 +698,7 @@ WebInspector.MultitargetNetworkManager = function()
     this._blockedURLs = new Set();
     this._blockedSetting = WebInspector.moduleSetting("blockedURLs");
     this._blockedSetting.addChangeListener(this._updateBlockedURLs, this);
+    this._blockedSetting.set([]);
     this._updateBlockedURLs();
 }
 

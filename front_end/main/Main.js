@@ -139,6 +139,7 @@ WebInspector.Main.prototype = {
         Runtime.experiments.register("networkRequestsOnTimeline", "Network requests on Timeline", true);
         Runtime.experiments.register("privateScriptInspection", "Private script inspection");
         Runtime.experiments.register("promiseTracker", "Promise inspector");
+        Runtime.experiments.register("requestBlocking", "Request blocking", true);
         Runtime.experiments.register("securityPanel", "Security panel");
         Runtime.experiments.register("serviceWorkersInResources", "Service workers in Resources panel", true);
         Runtime.experiments.register("showPrimaryLoadWaterfallInNetworkTimeline", "Show primary load waterfall in Network timeline", true);
@@ -920,6 +921,7 @@ WebInspector.Main.MainMenuItem.prototype = {
 WebInspector.NetworkPanelIndicator = function()
 {
     var networkConditionsSetting = WebInspector.moduleSetting("networkConditions");
+    networkConditionsSetting.set({ "throughput": -1, "latency": 0 });
     networkConditionsSetting.addChangeListener(updateVisibility);
     var blockedURLsSetting = WebInspector.moduleSetting("blockedURLs");
     blockedURLsSetting.addChangeListener(updateVisibility);

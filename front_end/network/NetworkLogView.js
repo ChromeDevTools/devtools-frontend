@@ -1360,7 +1360,7 @@ WebInspector.NetworkLogView.prototype = {
         contextMenu.appendItem(WebInspector.UIString.capitalize("Clear ^browser ^cookies"), this._clearBrowserCookies.bind(this));
 
         var blockedSetting = WebInspector.moduleSetting("blockedURLs");
-        if (request) {
+        if (request && Runtime.experiments.isEnabled("requestBlocking")) {  // Disabled until ready.
             contextMenu.appendSeparator();
 
             var urlWithoutScheme = request.parsedURL.urlWithoutScheme();

@@ -169,12 +169,11 @@ DevToolsAPIImpl.prototype = {
     },
 
     /**
-     * @param {string} errorMessage
      * @param {!{fileSystemName: string, rootURL: string, fileSystemPath: string}} fileSystem
      */
-    fileSystemAdded: function(errorMessage, fileSystem)
+    fileSystemAdded: function(fileSystem)
     {
-        this._dispatchOnInspectorFrontendAPI("fileSystemAdded", [errorMessage, fileSystem]);
+        this._dispatchOnInspectorFrontendAPI("fileSystemAdded", ["", fileSystem]);
     },
 
     /**

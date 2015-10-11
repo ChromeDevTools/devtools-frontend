@@ -215,6 +215,9 @@ WebInspector.CSSMetadata._propertyDataMap = {
     "box-shadow": { values: [
         "inset", "none"
     ] },
+    "writing-mode": { values: [
+        "horizontal-tb", "vertical-rl", "vertical-lr"
+    ] },
     "-webkit-writing-mode": { values: [
         "lr", "rl", "tb", "lr-tb", "rl-tb", "tb-rl", "horizontal-tb", "vertical-rl", "vertical-lr", "horizontal-bt"
     ] },
@@ -336,8 +339,14 @@ WebInspector.CSSMetadata._propertyDataMap = {
         "lower-armenian", "upper-armenian", "georgian", "cjk-ideographic", "hiragana", "katakana", "hiragana-iroha",
         "katakana-iroha"
     ] },
+    "text-combine-upright": { values: [
+        "none", "all"
+    ] },
     "-webkit-text-combine": { values: [
         "none", "horizontal"
+    ] },
+    "text-orientation": { values: [
+        "mixed", "upright", "sideways"
     ] },
     "outline": { values: [
         "none", "hidden", "inset", "groove", "ridge", "outset", "dotted", "dashed", "solid", "double"

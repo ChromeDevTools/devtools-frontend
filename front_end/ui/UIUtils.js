@@ -198,11 +198,13 @@ WebInspector._elementDragEnd = function(event)
 /**
  * @constructor
  * @param {!Document} document
+ * @param {boolean=} dimmed
  */
-WebInspector.GlassPane = function(document)
+WebInspector.GlassPane = function(document, dimmed)
 {
     this.element = createElement("div");
-    this.element.style.cssText = "position:absolute;top:0;bottom:0;left:0;right:0;background-color:transparent;z-index:3000;overflow:hidden;";
+    var background = dimmed ? "rgba(255, 255, 255, 0.5)" : "transparent";
+    this.element.style.cssText = "position:absolute;top:0;bottom:0;left:0;right:0;background-color:" + background + ";z-index:3000;overflow:hidden;";
     document.body.appendChild(this.element);
     WebInspector._glassPane = this;
 }

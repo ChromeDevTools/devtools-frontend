@@ -328,7 +328,7 @@ WebInspector.Main.prototype = {
         {
             if (WebInspector._disconnectedScreenWithReasonWasShown)
                 return;
-            new WebInspector.RemoteDebuggingTerminatedScreen(event.data.reason).showModal();
+            WebInspector.RemoteDebuggingTerminatedScreen.show(event.data.reason);
         }
 
         var targetType = Runtime.queryParam("isSharedWorker") ? WebInspector.Target.Type.ServiceWorker : WebInspector.Target.Type.Page;
@@ -644,7 +644,7 @@ WebInspector.Main.prototype = {
     detached: function(reason)
     {
         WebInspector._disconnectedScreenWithReasonWasShown = true;
-        new WebInspector.RemoteDebuggingTerminatedScreen(reason).showModal();
+        WebInspector.RemoteDebuggingTerminatedScreen.show(reason);
     },
 
     /**
@@ -653,12 +653,8 @@ WebInspector.Main.prototype = {
     targetCrashed: function()
     {
         var debuggerModel = WebInspector.DebuggerModel.fromTarget(this._mainTarget);
-        if (!debuggerModel)
-            return;
-        (new WebInspector.HelpScreenUntilReload(
-            debuggerModel,
-            WebInspector.UIString("Inspected target disconnected"),
-            WebInspector.UIString("Inspected target disconnected. Once it reloads we will attach to it automatically."))).showModal();
+        if (debuggerModel)
+            WebInspector.TargetCrashedScreen.show(debuggerModel);
     },
 
     /**
@@ -982,38 +978,81 @@ WebInspector.Main.InspectedNodeRevealer.prototype = {
 
 /**
  * @constructor
- * @extends {WebInspector.HelpScreen}
+ * @extends {WebInspector.VBox}
+ * @param {string} reason
  */
 WebInspector.RemoteDebuggingTerminatedScreen = function(reason)
 {
-    WebInspector.HelpScreen.call(this, WebInspector.UIString("Detached from the target"));
-    var p = this.helpContentElement.createChild("p");
-    p.classList.add("help-section");
-    p.createChild("span").textContent = WebInspector.UIString("Remote debugging has been terminated with reason: ");
-    p.createChild("span", "error-message").textContent = reason;
-    p.createChild("br");
-    p.createChild("span").textContent = WebInspector.UIString("Please re-attach to the new target.");
+    WebInspector.VBox.call(this, true);
+    this.registerRequiredCSS("main/remoteDebuggingTerminatedScreen.css");
+    var message = this.contentElement.createChild("div", "message");
+    message.createChild("span").textContent = WebInspector.UIString("Debugging connection was closed. Reason: ");
+    message.createChild("span", "reason").textContent = reason;
+    this.contentElement.createChild("div", "message").textContent = WebInspector.UIString("Reconnect when ready by reopening DevTools.");
+}
+
+/**
+ * @param {string} reason
+ */
+WebInspector.RemoteDebuggingTerminatedScreen.show = function(reason)
+{
+    var dialog = new WebInspector.Dialog();
+    dialog.setWrapsContent(true);
+    dialog.addCloseButton();
+    dialog.setDimmed(true);
+    new WebInspector.RemoteDebuggingTerminatedScreen(reason).show(dialog.element);
+    dialog.show();
 }
 
 WebInspector.RemoteDebuggingTerminatedScreen.prototype = {
-    __proto__: WebInspector.HelpScreen.prototype
+    __proto__: WebInspector.VBox.prototype
 }
 
 /**
  * @constructor
- * @extends {WebInspector.HelpScreen}
+ * @param {function()} hideCallback
+ * @extends {WebInspector.VBox}
  */
-WebInspector.WorkerTerminatedScreen = function()
+WebInspector.TargetCrashedScreen = function(hideCallback)
 {
-    WebInspector.HelpScreen.call(this, WebInspector.UIString("Inspected worker terminated"));
-    var p = this.helpContentElement.createChild("p");
-    p.classList.add("help-section");
-    p.textContent = WebInspector.UIString("Inspected worker has terminated. Once it restarts we will attach to it automatically.");
+    WebInspector.VBox.call(this, true);
+    this.registerRequiredCSS("main/targetCrashedScreen.css");
+    this.contentElement.createChild("div", "message").textContent = WebInspector.UIString("DevTools was disconnected from the page.");
+    this.contentElement.createChild("div", "message").textContent = WebInspector.UIString("Once page is reloaded, DevTools will automatically reconnect.");
+    this._hideCallback = hideCallback;
 }
 
-WebInspector.WorkerTerminatedScreen.prototype = {
+/**
+ * @param {!WebInspector.DebuggerModel} debuggerModel
+ */
+WebInspector.TargetCrashedScreen.show = function(debuggerModel)
+{
+    var dialog = new WebInspector.Dialog();
+    dialog.setWrapsContent(true);
+    dialog.addCloseButton();
+    dialog.setDimmed(true);
+    var hideBound = dialog.detach.bind(dialog, false);
+    debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.GlobalObjectCleared, hideBound);
 
-    __proto__: WebInspector.HelpScreen.prototype
+    new WebInspector.TargetCrashedScreen(onHide).show(dialog.element);
+    dialog.show();
+
+    function onHide()
+    {
+        debuggerModel.removeEventListener(WebInspector.DebuggerModel.Events.GlobalObjectCleared, hideBound);
+    }
+}
+
+WebInspector.TargetCrashedScreen.prototype = {
+    /**
+     * @override
+     */
+    willHide: function()
+    {
+        this._hideCallback.call(null);
+    },
+
+    __proto__: WebInspector.VBox.prototype
 }
 
 new WebInspector.Main();

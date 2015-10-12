@@ -44,6 +44,7 @@ WebInspector.Dialog = function()
     this.contentElement.addEventListener("keydown", this._onKeyDown.bind(this), false);
 
     this._wrapsContent = false;
+    this._dimmed = false;
 }
 
 /**
@@ -65,7 +66,7 @@ WebInspector.Dialog.prototype = {
             WebInspector.Dialog._instance.detach();
         WebInspector.Dialog._instance = this;
 
-        this._glassPane = new WebInspector.GlassPane(/** @type {!Document} */ (WebInspector.Dialog._modalHostView.element.ownerDocument));
+        this._glassPane = new WebInspector.GlassPane(/** @type {!Document} */ (WebInspector.Dialog._modalHostView.element.ownerDocument), this._dimmed);
         this._glassPane.element.addEventListener("click", this._onGlassPaneClick.bind(this), false);
         WebInspector.GlassPane.DefaultFocusedViewStack.push(this);
 
@@ -111,6 +112,14 @@ WebInspector.Dialog.prototype = {
     {
         this.element.classList.toggle("wraps-content", wraps);
         this._wrapsContent = wraps;
+    },
+
+    /**
+     * @param {boolean} dimmed
+     */
+    setDimmed: function(dimmed)
+    {
+        this._dimmed = dimmed;
     },
 
     contentResized: function()

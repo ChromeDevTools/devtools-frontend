@@ -590,6 +590,14 @@ WebInspector.SecurityMainView.prototype = {
                 this._addMixedContentExplanation(this._mixedContentStatus.displayedInsecureContentStyle, WebInspector.UIString("Mixed Content"), WebInspector.UIString("The site includes HTTP resources."), WebInspector.NetworkLogView.MixedContentFilterValues.Displayed, showDisplayedMixedContentInNetworkPanel);
         }
 
+        if (this._mixedContentStatus && (!this._mixedContentStatus.displayedInsecureContent && !this._mixedContentStatus.ranInsecureContent)) {
+                this._addExplanation(/** @type {!SecurityAgent.SecurityStateExplanation} */ ({
+                    "securityState": SecurityAgent.SecurityState.Secure,
+                    "summary": WebInspector.UIString("Secure Resources"),
+                    "description": WebInspector.UIString("All resources on this page are served securely.")
+                }));
+        }
+
         if (this._panel.filterRequestCount(WebInspector.NetworkLogView.MixedContentFilterValues.Blocked) > 0)
             this._addMixedContentExplanation(SecurityAgent.SecurityState.Info, WebInspector.UIString("Blocked mixed content"), WebInspector.UIString("Your page requested insecure resources that were blocked."), WebInspector.NetworkLogView.MixedContentFilterValues.Blocked, showBlockedMixedContentInNetworkPanel);
 

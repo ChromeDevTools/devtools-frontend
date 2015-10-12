@@ -4982,62 +4982,6 @@
         ]
     },
     {
-        "domain": "Power",
-        "hidden": true,
-        "types": [
-            {
-                "id": "PowerEvent",
-                "type": "object",
-                "properties": [
-                    { "name": "type", "type": "string", "description": "Power Event Type." },
-                    { "name": "timestamp", "type": "number", "description": "Power Event Time, in milliseconds." },
-                    { "name": "value", "type": "number", "description": "Power Event Value." }
-                ],
-            "description": "PowerEvent item"
-            }
-        ],
-        "commands": [
-            {
-                "name": "start",
-                "description": "Start power events collection.",
-                "parameters": [],
-                "handlers": ["browser", "frontend"]
-            },
-            {
-                "name": "end",
-                "description": "Stop power events collection.",
-                "parameters": [],
-                "handlers": ["browser", "frontend"]
-            },
-            {
-                "name": "canProfilePower",
-                "description": "Tells whether power profiling is supported.",
-                "returns": [
-                  { "name": "result", "type": "boolean", "description": "True if power profiling is supported." }
-                ],
-                "hidden": true,
-                "handlers": ["browser", "frontend"]
-            },
-            {
-                "name": "getAccuracyLevel",
-                "description": "Describes the accuracy level of the data provider.",
-                "returns": [
-                    { "name": "result", "type": "string", "enum": ["high", "moderate", "low"] }
-                ],
-                "handlers": ["browser", "frontend"]
-            }
-        ],
-        "events": [
-            {
-                "name": "dataAvailable",
-                "parameters": [
-                    {"name": "value", "type": "array", "items": { "$ref": "PowerEvent" }, "description": "List of power events." }
-                ],
-                "handlers": ["browser", "frontend"]
-            }
-        ]
-    },
-    {
         "domain": "Animation",
         "hidden": true,
         "types": [

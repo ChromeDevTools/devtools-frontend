@@ -289,6 +289,7 @@
             'front_end/ui/ThrottledWidget.js'
         ],
         'devtools_main_js_files': [
+            'front_end/main/renderingOptions.css',
             'front_end/main/AdvancedApp.js',
             'front_end/main/FrontendWebSocketAPI.js',
             'front_end/main/HelpScreenUntilReload.js',

@@ -95,60 +95,16 @@ WebInspector.RenderingOptions.prototype = {
  */
 WebInspector.RenderingOptions.View = function()
 {
-    WebInspector.VBox.call(this);
-    this.registerRequiredCSS("ui/helpScreen.css");
-    this.element.classList.add("help-indent-labels");
-
-    var div = this.element.createChild("div", "settings-tab help-content help-container help-no-columns");
-    div.appendChild(WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Enable paint flashing"), WebInspector.moduleSetting("showPaintRects")));
-    div.appendChild(WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Show layer borders"), WebInspector.moduleSetting("showDebugBorders")));
-    div.appendChild(WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Show FPS meter"), WebInspector.moduleSetting("showFPSCounter")));
+    WebInspector.VBox.call(this, true);
+    this.registerRequiredCSS("main/renderingOptions.css");
+    this.contentElement.appendChild(WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Enable paint flashing"), WebInspector.moduleSetting("showPaintRects")));
+    this.contentElement.appendChild(WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Show layer borders"), WebInspector.moduleSetting("showDebugBorders")));
+    this.contentElement.appendChild(WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Show FPS meter"), WebInspector.moduleSetting("showFPSCounter")));
     var child = WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Show scrolling perf issues"), WebInspector.moduleSetting("showScrollBottleneckRects"));
     child.title = WebInspector.UIString("Shows areas of the page that slow down scrolling:\nTouch and mousewheel event listeners can delay scrolling.\nSome areas need to repaint their content when scrolled.");
-    div.appendChild(child);
+    this.contentElement.appendChild(child);
 }
 
 WebInspector.RenderingOptions.View.prototype = {
     __proto__: WebInspector.VBox.prototype
-}
-
-/**
- * @constructor
- * @implements {WebInspector.ToolbarItem.Provider}
- */
-WebInspector.RenderingOptions.ButtonProvider = function()
-{
-    this._button = new WebInspector.ToolbarMenuButton(WebInspector.UIString("Rendering performance options"), "timer-toolbar-item", this._appendItems.bind(this));
-    this._renderingOptions = [{ label: WebInspector.UIString("Enable paint flashing"), setting: WebInspector.moduleSetting("showPaintRects") },
-        { label: WebInspector.UIString("Show layer borders"), setting: WebInspector.moduleSetting("showDebugBorders") },
-        { label: WebInspector.UIString("Show scrolling perf issues"), setting: WebInspector.moduleSetting("showScrollBottleneckRects") },
-        { label: WebInspector.UIString("Show FPS meter"), setting: WebInspector.moduleSetting("showFPSCounter") }];
-}
-
-WebInspector.RenderingOptions.ButtonProvider.prototype = {
-    /**
-     * @override
-     * @return {?WebInspector.ToolbarItem}
-     */
-    item: function()
-    {
-        return this._button;
-    },
-
-    /**
-     * @param {!WebInspector.ContextMenu} contextMenu
-     */
-    _appendItems: function(contextMenu)
-    {
-        for (var option of this._renderingOptions)
-            contextMenu.appendCheckboxItem(option.label, this._toggleSetting.bind(this, option.setting), option.setting.get());
-    },
-
-    /**
-     * @param {!WebInspector.Setting} setting
-     */
-    _toggleSetting: function(setting)
-    {
-        setting.set(!setting.get());
-    }
 }

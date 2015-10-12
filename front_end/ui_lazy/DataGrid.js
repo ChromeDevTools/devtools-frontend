@@ -1382,8 +1382,15 @@ WebInspector.DataGridNode.prototype = {
     {
         if (!child)
             throw("insertChild: Node can't be undefined or null.");
-        if (child.parent === this)
-            throw("insertChild: Node is already a child of this node.");
+        if (child.parent === this) {
+            var currentIndex = this.children.indexOf(child);
+            if (currentIndex < 0)
+                console.assert(false, "Inconsistent DataGrid state");
+            if (currentIndex === index)
+                return;
+            if (currentIndex < index)
+                --index;
+        }
 
         child.remove();
 

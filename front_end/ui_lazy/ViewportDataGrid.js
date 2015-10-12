@@ -316,6 +316,15 @@ WebInspector.ViewportDataGridNode.prototype = {
      */
     insertChild: function(child, index)
     {
+        if (child.parent === this) {
+            var currentIndex = this.children.indexOf(child);
+            if (currentIndex < 0)
+                console.assert(false, "Inconsistent DataGrid state");
+            if (currentIndex === index)
+                return;
+            if (currentIndex < index)
+                --index;
+        }
         child.remove();
         child.parent = this;
         child.dataGrid = this.dataGrid;
@@ -333,14 +342,15 @@ WebInspector.ViewportDataGridNode.prototype = {
      */
     removeChild: function(child)
     {
-        child.deselect();
-        this.children.remove(child, true);
-
         if (child.previousSibling)
             child.previousSibling.nextSibling = child.nextSibling;
         if (child.nextSibling)
             child.nextSibling.previousSibling = child.previousSibling;
+        if (child.parent !== this)
+            throw("removeChild: Node is not a child of this node.");
 
+        this._unlinkChild(child);
+        this.children.remove(child, true);
         if (!this.children.length)
             this.hasChildren = false;
         if (this._expanded)
@@ -353,7 +363,7 @@ WebInspector.ViewportDataGridNode.prototype = {
     removeChildren: function()
     {
         for (var i = 0; i < this.children.length; ++i)
-            this.children[i].deselect();
+            this._unlinkChild(this.children[i]);
         this.children = [];
 
         if (this._expanded)
@@ -361,6 +371,18 @@ WebInspector.ViewportDataGridNode.prototype = {
     },
 
     /**
+     * @param {!WebInspector.DataGridNode} child
+     */
+    _unlinkChild: function(child)
+    {
+        child.deselect();
+        child.dataGrid = null;
+        child.parent = null;
+        child.nextSibling = null;
+        child.previousSibling = null;
+    },
+
+   /**
      * @override
      */
     collapse: function()

@@ -974,8 +974,8 @@ WebInspector.NetworkLogView.prototype = {
         for (var i = 0; i < nodesToInsert.length; ++i) {
             var node = nodesToInsert[i];
             var request = node.request();
-            node.refresh();
             dataGrid.insertChild(node);
+            node.refresh();
             node[WebInspector.NetworkLogView._isMatchingSearchQuerySymbol] = this._matchRequest(request);
         }
 

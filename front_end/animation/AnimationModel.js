@@ -19,6 +19,7 @@ WebInspector.AnimationModel = function(target)
     this._animationGroups = new Map();
     /** @type {!Array.<string>} */
     this._pendingAnimations = [];
+    target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._mainFrameNavigated, this);
 }
 
 WebInspector.AnimationModel.Events = {
@@ -27,6 +28,13 @@ WebInspector.AnimationModel.Events = {
 }
 
 WebInspector.AnimationModel.prototype = {
+    _mainFrameNavigated: function()
+    {
+        this._animationsById.clear();
+        this._animationGroups.clear();
+        this._pendingAnimations = [];
+    },
+
     /**
      * @param {string} id
      */
@@ -50,9 +58,26 @@ WebInspector.AnimationModel.prototype = {
 
         while (this._pendingAnimations.length) {
             var group = this._createGroupFromPendingAnimations();
-            this._animationGroups.set(group.id(), group);
-            this.dispatchEventToListeners(WebInspector.AnimationModel.Events.AnimationGroupStarted, group);
+            var matchedGroup = this._matchExistingGroups(group);
+            if (!matchedGroup)
+                this._animationGroups.set(group.id(), group);
+            this.dispatchEventToListeners(WebInspector.AnimationModel.Events.AnimationGroupStarted, matchedGroup || group);
         }
+    },
+
+    /**
+     * @param {!WebInspector.AnimationModel.AnimationGroup} incomingGroup
+     * @return {?WebInspector.AnimationModel.AnimationGroup}
+     */
+    _matchExistingGroups: function(incomingGroup)
+    {
+        for (var group of this._animationGroups.values()) {
+            if (incomingGroup._matches(group)) {
+                group._update(incomingGroup);
+                return group;
+            }
+        }
+        return null;
     },
 
     /**
@@ -628,6 +653,40 @@ WebInspector.AnimationModel.AnimationGroup.prototype = {
         }
 
         return this.target().animationAgent().getCurrentTime(this._animations[0].id(), callback).catchException(0);
+    },
+
+    /**
+     * @param {!WebInspector.AnimationModel.AnimationGroup} group
+     * @return {boolean}
+     */
+    _matches: function(group)
+    {
+        /**
+         * @param {!WebInspector.AnimationModel.Animation} anim
+         * @return {string}
+         */
+        function extractId(anim)
+        {
+            return anim.type() + ":" + (anim.name() || anim.id());
+        }
+
+        if (this._animations.length !== group._animations.length)
+            return false;
+        var left = this._animations.map(extractId).sort();
+        var right = group._animations.map(extractId).sort();
+        for (var i = 0; i < left.length; i++) {
+            if (left[i] !== right[i])
+                return false;
+        }
+        return true;
+    },
+
+    /**
+     * @param {!WebInspector.AnimationModel.AnimationGroup} group
+     */
+    _update: function(group)
+    {
+        this._animations = group._animations;
     },
 
     __proto__: WebInspector.SDKObject.prototype

@@ -363,6 +363,12 @@ WebInspector.AnimationTimeline.prototype = {
             return left.startTime() > right.startTime();
         }
 
+        if (this._previewMap.get(group)) {
+            if (this._selectedGroup === group)
+                this._syncScrubber();
+            this._previewMap.get(group).element.animate([{ opacity: "0.3", transform: "scale(0.7)" }, { opacity: "1", transform: "scale(1)" }], { duration : 150, easing: "cubic-bezier(0, 0, 0.2, 1)" });
+            return;
+        }
         this._groupBuffer.push(group);
         this._groupBuffer.sort(startTimeComparator);
         // Discard oldest groups from buffer if necessary
@@ -544,6 +550,8 @@ WebInspector.AnimationTimeline.prototype = {
 
     _syncScrubber: function()
     {
+        if (!this._selectedGroup)
+            return;
         this._selectedGroup.currentTimePromise()
             .then(this._animateTime.bind(this))
             .then(this._updateControlButton.bind(this));

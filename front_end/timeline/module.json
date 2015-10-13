@@ -44,6 +44,7 @@
         "ui_lazy"
     ],
     "scripts": [
+        "LayerTreeModel.js",
         "CountersGraph.js",
         "LayerDetailsView.js",
         "LayerTreeOutline.js",

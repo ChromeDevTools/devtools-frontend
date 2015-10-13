@@ -59,7 +59,6 @@
         "DOMModel.js",
         "DebuggerModel.js",
         "HAREntry.js",
-        "LayerTreeModel.js",
         "NetworkLog.js",
         "ServiceWorkerManager.js",
         "TracingManager.js",

@@ -145,8 +145,6 @@ WebInspector.Target.prototype = {
         this.cpuProfilerModel = new WebInspector.CPUProfilerModel(this);
         /** @type {!WebInspector.HeapProfilerModel} */
         this.heapProfilerModel = new WebInspector.HeapProfilerModel(this);
-        /** @type {!WebInspector.LayerTreeModel} */
-        this.layerTreeModel = new WebInspector.LayerTreeModel(this);
 
         this.tracingManager = new WebInspector.TracingManager(this);
 

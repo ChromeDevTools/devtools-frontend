@@ -1265,3 +1265,18 @@ WebInspector.LayerTreeDispatcher.prototype = {
         this._layerTreeModel._layerPainted(layerId, clipRect);
     }
 }
+
+/**
+ * @param {!WebInspector.Target} target
+ * @return {?WebInspector.LayerTreeModel}
+ */
+WebInspector.LayerTreeModel.fromTarget = function(target)
+{
+    if (!target.isPage())
+        return null;
+
+    var model = /** @type {?WebInspector.LayerTreeModel} */ (target.model(WebInspector.LayerTreeModel));
+    if (!model)
+        model = new WebInspector.LayerTreeModel(target);
+    return model;
+}

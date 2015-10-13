@@ -1101,6 +1101,7 @@ WebInspector.DOMModel.Events = {
     DOMMutated: "DOMMutated",
     NodeInserted: "NodeInserted",
     NodeInspected: "NodeInspected",
+    NodeHighlightedInOverlay: "NodeHighlightedInOverlay",
     NodeRemoved: "NodeRemoved",
     DocumentUpdated: "DocumentUpdated",
     ChildNodeCountUpdated: "ChildNodeCountUpdated",
@@ -1944,6 +1945,18 @@ WebInspector.DOMModel.prototype = {
         }
     },
 
+    /**
+     * @param {!DOMAgent.NodeId} nodeId
+     */
+    nodeHighlightRequested: function(nodeId)
+    {
+        var node = this.nodeForId(nodeId);
+        if (!node)
+            return;
+
+        this.dispatchEventToListeners(WebInspector.DOMModel.Events.NodeHighlightedInOverlay, node);
+    },
+
     __proto__: WebInspector.SDKModel.prototype
 }
 
@@ -2104,6 +2117,15 @@ WebInspector.DOMDispatcher.prototype = {
     distributedNodesUpdated: function(insertionPointId, distributedNodes)
     {
         this._domModel._distributedNodesUpdated(insertionPointId, distributedNodes);
+    },
+
+    /**
+     * @override
+     * @param {!DOMAgent.NodeId} nodeId
+     */
+    nodeHighlightRequested: function(nodeId)
+    {
+        this._domModel.nodeHighlightRequested(nodeId);
     }
 }
 

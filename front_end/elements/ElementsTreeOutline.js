@@ -614,6 +614,19 @@ WebInspector.ElementsTreeOutline.prototype = {
     },
 
     /**
+     * @param {?WebInspector.DOMNode} node
+     */
+    highlightNode: function(node)
+    {
+        var treeElement = null;
+        if (node) {
+            treeElement = this.createTreeElementFor(node);
+            treeElement.reveal();
+        }
+        this._setHoverEffect(treeElement);
+    },
+
+    /**
      * @return {?TreeElement}
      */
     _treeElementFromEvent: function(event)
@@ -723,10 +736,12 @@ WebInspector.ElementsTreeOutline.prototype = {
         element.select();
     },
 
-    _onmousemove: function(event)
+    /**
+     * @param {?TreeElement} treeElement
+     */
+    _setHoverEffect: function (treeElement)
     {
-        var element = this._treeElementFromEvent(event);
-        if (element && this._previousHoveredElement === element)
+        if (this._previousHoveredElement === treeElement)
             return;
 
         if (this._previousHoveredElement) {
@@ -734,10 +749,19 @@ WebInspector.ElementsTreeOutline.prototype = {
             delete this._previousHoveredElement;
         }
 
-        if (element) {
-            element.hovered = true;
-            this._previousHoveredElement = element;
+        if (treeElement) {
+            treeElement.hovered = true;
+            this._previousHoveredElement = treeElement;
         }
+    },
+
+    _onmousemove: function(event)
+    {
+        var element = this._treeElementFromEvent(event);
+        if (element && this._previousHoveredElement === element)
+            return;
+
+        this._setHoverEffect(element);
 
         if (element instanceof WebInspector.ElementsTreeElement) {
             this._domModel.highlightDOMNodeWithConfig(element.node().id, { mode: "all", showInfo: !WebInspector.KeyboardShortcut.eventHasCtrlOrMeta(event) });
@@ -750,11 +774,7 @@ WebInspector.ElementsTreeOutline.prototype = {
 
     _onmouseleave: function(event)
     {
-        if (this._previousHoveredElement) {
-            this._previousHoveredElement.hovered = false;
-            delete this._previousHoveredElement;
-        }
-
+        this._setHoverEffect(null);
         WebInspector.DOMModel.hideDOMNodeHighlight();
     },
 

@@ -166,6 +166,13 @@ WebInspector.InspectElementModeController.ToggleSearchActionDelegate.prototype =
         if (!WebInspector.inspectElementModeController)
             return;
         WebInspector.inspectElementModeController._toggleInspectMode();
+
+        if (WebInspector.inspectElementModeController.isInInspectElementMode())
+            return;
+
+        var node = WebInspector.context.flavor(WebInspector.DOMNode);
+        if (node)
+            WebInspector.Revealer.reveal(node);
     }
 }
 

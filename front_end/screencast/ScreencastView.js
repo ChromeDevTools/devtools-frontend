@@ -245,10 +245,12 @@ WebInspector.ScreencastView.prototype = {
         {
             if (!node)
                 return;
-            if (event.type === "mousemove")
+            if (event.type === "mousemove") {
                 this.highlightDOMNode(node, this._inspectModeConfig);
-            else if (event.type === "click")
+                this._domModel.nodeHighlightRequested(node.id);
+            } else if (event.type === "click") {
                 WebInspector.Revealer.reveal(node);
+            }
         }
     },
 
@@ -511,21 +513,6 @@ WebInspector.ScreencastView.prototype = {
         this._context.drawImage(this._imageElement, 0, this._screenOffsetTop * this._screenZoom, this._imageElement.naturalWidth * this._imageZoom, this._imageElement.naturalHeight * this._imageZoom);
         this._context.restore();
 
-    },
-
-
-    /**
-     * @param {!DOMAgent.Quad} quad1
-     * @param {!DOMAgent.Quad} quad2
-     * @return {boolean}
-     */
-    _quadsAreEqual: function(quad1, quad2)
-    {
-        for (var i = 0; i < quad1.length; ++i) {
-            if (quad1[i] !== quad2[i])
-                return false;
-        }
-        return true;
     },
 
     /**

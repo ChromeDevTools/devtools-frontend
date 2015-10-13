@@ -2920,6 +2920,13 @@
                 ],
                 "description": "Called when distrubution is changed.",
                 "hidden": true
+            },
+            {
+                "name": "nodeHighlightRequested",
+                "parameters": [
+                    {"name": "nodeId", "$ref": "NodeId"}
+                ],
+                "hidden": true
             }
         ]
     },

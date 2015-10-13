@@ -83,10 +83,6 @@ fieldset[disabled] label:hover input {
     background-clip: padding-box;
 }
 
-.inspector-view-toolbar-left {
-    margin-right: -5px; /* Should compensate for .tabbed-pane-header-contents margin-left. */
-}
-
 .bubble-repeat-count {
     display: inline-block;
     height: 14px;

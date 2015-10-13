@@ -113,9 +113,10 @@ WebInspector.Toolbar.prototype = {
         if (!this._items.length)
             return;
         // Don't hide first and last separators if they were added explicitly.
-        var previousIsSeparator = this._items[0] instanceof WebInspector.ToolbarSeparator;
+        var previousIsSeparator = false;
         var lastSeparator;
-        for (var i = 1; i < this._items.length; ++i) {
+        var nonSeparatorVisible = false;
+        for (var i = 0; i < this._items.length; ++i) {
             if (this._items[i] instanceof WebInspector.ToolbarSeparator) {
                 this._items[i].setVisible(!previousIsSeparator);
                 previousIsSeparator = true;
@@ -125,10 +126,13 @@ WebInspector.Toolbar.prototype = {
             if (this._items[i].visible()) {
                 previousIsSeparator = false;
                 lastSeparator = null;
+                nonSeparatorVisible = true;
             }
         }
         if (lastSeparator && lastSeparator !== this._items.peekLast())
             lastSeparator.setVisible(false);
+
+        this.element.classList.toggle("hidden", lastSeparator && lastSeparator.visible() && !nonSeparatorVisible);
     }
 }
 

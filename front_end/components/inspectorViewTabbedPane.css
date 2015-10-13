@@ -38,3 +38,7 @@
     color: #333;
     border-width: 0 2px 0 2px;
 }
+
+.tabbed-pane-header-contents {
+    margin-left: 0;
+}

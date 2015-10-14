@@ -22,7 +22,8 @@
 
 :host-context(.wraps-content) {
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
+    overflow: hidden;
 }
 
 :host-context(.wraps-content) .widget {

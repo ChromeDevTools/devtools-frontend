@@ -52,6 +52,7 @@ WebInspector.SettingsScreen = function(onHide)
     this._tabbedPane.setVerticalTabLayout(true);
     this._tabbedPane.appendTab("general", WebInspector.UIString("General"), new WebInspector.GenericSettingsTab());
     this._tabbedPane.appendTab("workspace", WebInspector.UIString("Workspace"), new WebInspector.WorkspaceSettingsTab());
+    this._tabbedPane.appendTab("blackbox", WebInspector.manageBlackboxingSettingsTabLabel(), new WebInspector.FrameworkBlackboxSettingsTab());
     if (Runtime.experiments.supportEnabled())
         this._tabbedPane.appendTab("experiments", WebInspector.UIString("Experiments"), new WebInspector.ExperimentsSettingsTab());
     this._tabbedPaneController = new WebInspector.ExtensibleTabbedPaneController(this._tabbedPane, "settings-view");
@@ -303,30 +304,6 @@ WebInspector.GenericSettingsTab.prototype = {
     },
 
     __proto__: WebInspector.SettingsTab.prototype
-}
-
-/**
- * @constructor
- * @implements {WebInspector.SettingUI}
- */
-WebInspector.SettingsScreen.SkipStackFramePatternSettingUI = function()
-{
-}
-
-WebInspector.SettingsScreen.SkipStackFramePatternSettingUI.prototype = {
-    /**
-     * @override
-     * @return {!Element}
-     */
-    settingElement: function()
-    {
-        return createTextButton(WebInspector.manageBlackboxingButtonLabel(), this._onManageButtonClick.bind(this), "", WebInspector.UIString("Skip stepping through sources with particular names"));
-    },
-
-    _onManageButtonClick: function()
-    {
-        WebInspector.FrameworkBlackboxDialog.show();
-    }
 }
 
 /**

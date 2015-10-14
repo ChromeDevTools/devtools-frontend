@@ -574,7 +574,7 @@
         ],
         'devtools_settings_js_files': [
             'front_end/settings/EditFileSystemDialog.js',
-            'front_end/settings/FrameworkBlackboxDialog.js',
+            'front_end/settings/FrameworkBlackboxSettingsTab.js',
             'front_end/settings/SettingsScreen.js',
         ],
         'devtools_source_frame_js_files': [

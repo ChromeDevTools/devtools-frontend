@@ -6,18 +6,14 @@
 
 /**
  * @constructor
- * @extends {WebInspector.VBox}
+ * @extends {WebInspector.SettingsTab}
  */
-WebInspector.FrameworkBlackboxDialog = function()
+WebInspector.FrameworkBlackboxSettingsTab = function()
 {
-    WebInspector.VBox.call(this);
-    this.element.classList.add("blackbox-dialog", "dialog-contents", "settings-dialog", "settings-tab");
-    this.element.addEventListener("keydown", this._onKeyDown.bind(this), false);
+    WebInspector.SettingsTab.call(this, WebInspector.UIString("Framework Blackbox Patterns"));
+    this.containerElement.classList.add("blackbox-dialog", "dialog-contents", "settings-dialog", "settings-tab");
 
-    var header = this.element.createChild("div", "header");
-    header.createChild("span").textContent = WebInspector.UIString("Framework blackbox patterns");
-
-    var contents = this.element.createChild("div", "contents");
+    var contents = this.containerElement.createChild("div", "contents");
 
     var contentScriptsSection = contents.createChild("div", "blackbox-content-scripts");
     contentScriptsSection.appendChild(WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Blackbox content scripts"), WebInspector.moduleSetting("skipContentScripts"), true));
@@ -46,22 +42,10 @@ WebInspector.FrameworkBlackboxDialog = function()
     for (var i = 0; i < patterns.length; ++i)
         this._addPattern(patterns[i].pattern, patterns[i].disabled);
 
-    this.element.tabIndex = 0;
-
-    this._dialog = new WebInspector.Dialog();
-    this._dialog.setWrapsContent(true);
-    this._dialog.setMaxSize(new Size(600, 600));
-    this._dialog.addCloseButton();
-    this.show(this._dialog.element);
-    this._dialog.show();
+    this.containerElement.tabIndex = 0;
 }
 
-WebInspector.FrameworkBlackboxDialog.show = function()
-{
-    new WebInspector.FrameworkBlackboxDialog();
-}
-
-WebInspector.FrameworkBlackboxDialog.prototype = {
+WebInspector.FrameworkBlackboxSettingsTab.prototype = {
     /**
      * @param {string} itemId
      * @param {string} columnId
@@ -157,8 +141,6 @@ WebInspector.FrameworkBlackboxDialog.prototype = {
             }
         }
         WebInspector.moduleSetting("skipStackFramesPattern").setAsArray(patterns);
-        if (this._dialog)
-            this._dialog.contentResized();
     },
 
     /**
@@ -172,20 +154,7 @@ WebInspector.FrameworkBlackboxDialog.prototype = {
         this._entries.set(pattern, disabled ? this._disabledLabel : this._blackboxLabel);
         var listItem = this._patternsList.addItem(pattern, null);
         listItem.classList.toggle("disabled", disabled);
-        if (this._dialog)
-            this._dialog.contentResized();
     },
 
-    /**
-     * @param {!Event} event
-     */
-    _onKeyDown: function(event)
-    {
-        if (event.keyCode === WebInspector.KeyboardShortcut.Keys.Enter.code) {
-            event.consume(true);
-            this.element.focus();
-        }
-    },
-
-    __proto__: WebInspector.VBox.prototype
+    __proto__: WebInspector.SettingsTab.prototype
 }

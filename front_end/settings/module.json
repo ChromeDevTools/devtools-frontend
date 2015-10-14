@@ -24,15 +24,6 @@
             "className": "WebInspector.SettingsController.ActionDelegate"
         },
         {
-            "type": "@WebInspector.SettingUI",
-            "category": "Sources",
-            "className": "WebInspector.SettingsScreen.SkipStackFramePatternSettingUI",
-            "settings": [
-                "skipContentScripts",
-                "skipStackFramesPattern"
-            ]
-        },
-        {
             "type": "@WebInspector.Revealer",
             "contextTypes": ["WebInspector.Setting"],
             "className": "WebInspector.SettingsController.Revealer"
@@ -61,7 +52,7 @@
     ],
     "scripts": [
         "EditFileSystemDialog.js",
-        "FrameworkBlackboxDialog.js",
-        "SettingsScreen.js"
+        "SettingsScreen.js",
+        "FrameworkBlackboxSettingsTab.js"
     ]
 }

@@ -660,9 +660,9 @@ WebInspector.asyncStackTraceLabel = function(description)
 /**
  * @return {string}
  */
-WebInspector.manageBlackboxingButtonLabel = function()
+WebInspector.manageBlackboxingSettingsTabLabel = function()
 {
-    return WebInspector.UIString("Manage framework blackboxing...");
+    return WebInspector.UIString("Blackboxing");
 }
 
 /**

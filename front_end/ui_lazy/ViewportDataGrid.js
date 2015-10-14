@@ -21,8 +21,6 @@ WebInspector.ViewportDataGrid = function(columnsArray, editCallback, deleteCallb
     /** @type {?Array.<!WebInspector.ViewportDataGridNode>} */
     this._flatNodes = null;
     /** @type {boolean} */
-    this._updateScheduled = false;
-    /** @type {boolean} */
     this._inline = false;
 
     // Wheel target shouldn't be removed from DOM to preserve native kinetic scrolling.
@@ -95,10 +93,17 @@ WebInspector.ViewportDataGrid.prototype = {
      */
     scheduleUpdate: function()
     {
-        if (this._updateScheduled)
+        if (this._updateAnimationFrameId)
             return;
-        this._updateScheduled = true;
-        this.element.window().requestAnimationFrame(this._update.bind(this));
+        this._updateAnimationFrameId = this.element.window().requestAnimationFrame(this._update.bind(this));
+    },
+
+    updateInstantlyForTests: function()
+    {
+        if (!this._updateAnimationFrameId)
+            return;
+        this.element.window().cancelAnimationFrame(this._updateAnimationFrameId);
+        this._update();
     },
 
     /**
@@ -185,7 +190,7 @@ WebInspector.ViewportDataGrid.prototype = {
 
     _update: function()
     {
-        this._updateScheduled = false;
+        delete this._updateAnimationFrameId;
 
         var clientHeight = this._scrollContainer.clientHeight;
         var scrollTop = this._scrollContainer.scrollTop;
@@ -207,8 +212,8 @@ WebInspector.ViewportDataGrid.prototype = {
 
         for (var i = 0; i < this._visibleNodes.length; ++i) {
             var oldNode = this._visibleNodes[i];
-            if (!visibleNodesSet.has(oldNode)) {
-                var element = oldNode.element();
+            if (!visibleNodesSet.has(oldNode) && oldNode.dataGrid === this) {
+                var element = oldNode._element;
                 if (element === this._wheelTarget)
                     this._hiddenWheelTarget = oldNode.abandonElement();
                 else
@@ -349,7 +354,7 @@ WebInspector.ViewportDataGridNode.prototype = {
         if (child.parent !== this)
             throw("removeChild: Node is not a child of this node.");
 
-        this._unlinkChild(child);
+        child._unlink();
         this.children.remove(child, true);
         if (!this.children.length)
             this.hasChildren = false;
@@ -363,23 +368,24 @@ WebInspector.ViewportDataGridNode.prototype = {
     removeChildren: function()
     {
         for (var i = 0; i < this.children.length; ++i)
-            this._unlinkChild(this.children[i]);
+            this.children[i]._unlink();
         this.children = [];
 
         if (this._expanded)
             this.dataGrid.scheduleUpdateStructure();
     },
 
-    /**
-     * @param {!WebInspector.DataGridNode} child
-     */
-    _unlinkChild: function(child)
+    _unlink: function()
     {
-        child.deselect();
-        child.dataGrid = null;
-        child.parent = null;
-        child.nextSibling = null;
-        child.previousSibling = null;
+        if (this.attached()) {
+            this._element.remove();
+            this.wasDetached();
+        }
+        this.deselect();
+        this.dataGrid = null;
+        this.parent = null;
+        this.nextSibling = null;
+        this.previousSibling = null;
     },
 
    /**
@@ -417,7 +423,7 @@ WebInspector.ViewportDataGridNode.prototype = {
      */
     attached: function()
     {
-        return !!(this._element && this._element.parentElement);
+        return !!(this.dataGrid && this._element && this._element.parentElement);
     },
 
     /**

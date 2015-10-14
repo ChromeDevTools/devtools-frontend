@@ -231,7 +231,6 @@ WebInspector.Main.prototype = {
         WebInspector.Linkifier.setLinkHandler(new WebInspector.HandlerRegistry.LinkHandler());
 
         new WebInspector.WorkspaceController(WebInspector.workspace);
-        new WebInspector.RenderingOptions();
         new WebInspector.Main.PauseListener();
         new WebInspector.Main.InspectedNodeRevealer();
         new WebInspector.NetworkPanelIndicator();

@@ -149,11 +149,10 @@
             "experiment": "!inspectDevicesDialog"
         },
         {
-            "type": "drawer-view",
-            "name": "rendering",
-            "title": "Rendering",
-            "order": "11",
-            "className": "WebInspector.RenderingOptions.View"
+            "type": "@WebInspector.ActionDelegate",
+            "actionId": "main.show-rendering-options",
+            "title": "Rendering settings",
+            "className": "WebInspector.RenderingOptionsView.ShowActionDelegate"
         },
         {
             "type": "@WebInspector.ToolbarItem.Provider",
@@ -267,34 +266,10 @@
         },
         {
             "type": "context-menu-item",
-            "location": "mainMenu/navigate",
-            "order": 100,
+            "location": "mainMenu/tools/open",
+            "order": 50,
             "actionId": "main.inspect-devices",
             "experiment": "!inspectDevicesDialog"
-        },
-        {
-            "type": "setting",
-            "settingName": "showPaintRects",
-            "settingType": "boolean",
-            "defaultValue": false
-        },
-        {
-            "type": "setting",
-            "settingName": "showDebugBorders",
-            "settingType": "boolean",
-            "defaultValue": false
-        },
-        {
-            "type": "setting",
-            "settingName": "showFPSCounter",
-            "settingType": "boolean",
-            "defaultValue": false
-        },
-        {
-            "type": "setting",
-            "settingName": "showScrollBottleneckRects",
-            "settingType": "boolean",
-            "defaultValue": false
         },
         {
             "type": "@WebInspector.ToolbarItem.Provider",
@@ -302,6 +277,19 @@
             "order": 4,
             "location": "styles-sidebarpane-toolbar",
             "experiment": "layoutEditor"
+        },
+        {
+            "type": "context-menu-item",
+            "location": "mainMenu/navigate",
+            "title": "More tools",
+            "subMenuId": "mainMenu/tools",
+            "order": 80
+        },
+        {
+            "type": "context-menu-item",
+            "location": "mainMenu/tools/open",
+            "order": 80,
+            "actionId": "main.show-rendering-options"
         }
     ],
     "dependencies": [

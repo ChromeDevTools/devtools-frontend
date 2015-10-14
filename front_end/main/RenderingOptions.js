@@ -30,36 +30,62 @@
 
 /**
  * @constructor
+ * @extends {WebInspector.VBox}
  * @implements {WebInspector.TargetManager.Observer}
  */
-WebInspector.RenderingOptions = function()
+WebInspector.RenderingOptionsView = function()
 {
-    /**
-     * @type {!Map.<!WebInspector.Setting, string>}
-     */
-    this._setterNames = new Map();
-    this._mapSettingToSetter(WebInspector.moduleSetting("showPaintRects"), "setShowPaintRects");
-    this._mapSettingToSetter(WebInspector.moduleSetting("showDebugBorders"), "setShowDebugBorders");
-    this._mapSettingToSetter(WebInspector.moduleSetting("showFPSCounter"), "setShowFPSCounter");
-    this._mapSettingToSetter(WebInspector.moduleSetting("showScrollBottleneckRects"), "setShowScrollBottleneckRects");
+    WebInspector.VBox.call(this, true);
+    this.registerRequiredCSS("main/renderingOptions.css");
+
+    /** @type {!Map.<string, !Element>} */
+    this._settings = new Map();
+
+    this._appendCheckbox(WebInspector.UIString("Enable paint flashing"), "setShowPaintRects");
+    this._appendCheckbox(WebInspector.UIString("Show layer borders"), "setShowDebugBorders");
+    this._appendCheckbox(WebInspector.UIString("Show FPS meter"), "setShowFPSCounter");
+    var scrollingTitle = WebInspector.UIString("Shows areas of the page that slow down scrolling:\nTouch and mousewheel event listeners can delay scrolling.\nSome areas need to repaint their content when scrolled.");
+    this._appendCheckbox(WebInspector.UIString("Show scrolling perf issues"), "setShowScrollBottleneckRects", scrollingTitle);
 
     WebInspector.targetManager.observeTargets(this, WebInspector.Target.Type.Page);
 }
 
-WebInspector.RenderingOptions.prototype = {
+WebInspector.RenderingOptionsView.prototype = {
+    /**
+     * @param {string} label
+     * @param {string} setterName
+     * @param {string=} title
+     */
+    _appendCheckbox: function(label, setterName, title)
+    {
+        var checkboxLabel = createCheckboxLabel(label, false);
+        this._settings.set(setterName, checkboxLabel.checkboxElement);
+        checkboxLabel.checkboxElement.addEventListener("click", this._settingToggled.bind(this, setterName));
+        if (title)
+            checkboxLabel.title = title;
+        this.contentElement.appendChild(checkboxLabel);
+    },
+
+    /**
+     * @param {string} setterName
+     */
+    _settingToggled: function(setterName)
+    {
+        var enabled = this._settings.get(setterName).checked;
+        var targets = WebInspector.targetManager.targets(WebInspector.Target.Type.Page);
+        for (var i = 0; i < targets.length; ++i)
+            targets[i].renderingAgent()[setterName](enabled);
+    },
+
     /**
      * @override
      * @param {!WebInspector.Target} target
      */
     targetAdded: function(target)
     {
-        var settings = this._setterNames.keysArray();
-        for (var i = 0; i < settings.length; ++i) {
-            var setting = settings[i];
-            if (setting.get()) {
-                var setterName = this._setterNames.get(setting);
+        for (var setterName of this._settings.keysArray()) {
+            if (this._settings.get(setterName).checked)
                 target.renderingAgent()[setterName](true);
-            }
         }
     },
 
@@ -71,40 +97,35 @@ WebInspector.RenderingOptions.prototype = {
     {
     },
 
-    /**
-     * @param {!WebInspector.Setting} setting
-     * @param {string} setterName
-     */
-    _mapSettingToSetter: function(setting, setterName)
-    {
-        this._setterNames.set(setting, setterName);
-        setting.addChangeListener(changeListener);
+    __proto__: WebInspector.VBox.prototype
+}
 
-        function changeListener()
-        {
-            var targets = WebInspector.targetManager.targets(WebInspector.Target.Type.Page);
-            for (var i = 0; i < targets.length; ++i)
-                targets[i].renderingAgent()[setterName](setting.get());
-        }
-    }
+/**
+ * @return {!WebInspector.RenderingOptionsView}
+ */
+WebInspector.RenderingOptionsView.instance = function()
+{
+    if (!WebInspector.RenderingOptionsView._instanceObject)
+        WebInspector.RenderingOptionsView._instanceObject = new WebInspector.RenderingOptionsView();
+    return WebInspector.RenderingOptionsView._instanceObject;
 }
 
 /**
  * @constructor
- * @extends {WebInspector.VBox}
+ * @implements {WebInspector.ActionDelegate}
  */
-WebInspector.RenderingOptions.View = function()
+WebInspector.RenderingOptionsView.ShowActionDelegate = function()
 {
-    WebInspector.VBox.call(this, true);
-    this.registerRequiredCSS("main/renderingOptions.css");
-    this.contentElement.appendChild(WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Enable paint flashing"), WebInspector.moduleSetting("showPaintRects")));
-    this.contentElement.appendChild(WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Show layer borders"), WebInspector.moduleSetting("showDebugBorders")));
-    this.contentElement.appendChild(WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Show FPS meter"), WebInspector.moduleSetting("showFPSCounter")));
-    var child = WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Show scrolling perf issues"), WebInspector.moduleSetting("showScrollBottleneckRects"));
-    child.title = WebInspector.UIString("Shows areas of the page that slow down scrolling:\nTouch and mousewheel event listeners can delay scrolling.\nSome areas need to repaint their content when scrolled.");
-    this.contentElement.appendChild(child);
 }
 
-WebInspector.RenderingOptions.View.prototype = {
-    __proto__: WebInspector.VBox.prototype
+WebInspector.RenderingOptionsView.ShowActionDelegate.prototype = {
+    /**
+     * @override
+     * @param {!WebInspector.Context} context
+     * @param {string} actionId
+     */
+    handleAction: function(context, actionId)
+    {
+        WebInspector.inspectorView.showCloseableViewInDrawer("rendering", WebInspector.UIString("Rendering"), WebInspector.RenderingOptionsView.instance());
+    }
 }

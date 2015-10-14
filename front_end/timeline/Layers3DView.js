@@ -66,7 +66,6 @@ WebInspector.Layers3DView = function(layerViewHost)
     this._chromeTextures = [];
     this._rects = [];
 
-    WebInspector.moduleSetting("showPaintRects").addChangeListener(this._update, this);
     this._layerViewHost.showInternalLayersSetting().addChangeListener(this._update, this);
 }
 

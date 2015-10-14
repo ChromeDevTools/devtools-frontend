@@ -232,6 +232,58 @@ WebInspector.ContextSubMenuItem.prototype = {
         return result;
     },
 
+    /**
+     * @param {string} location
+     */
+    appendItemsAtLocation: function(location)
+    {
+        /**
+         * @param {!WebInspector.ContextSubMenuItem} menu
+         * @param {!Runtime.Extension} extension
+         */
+        function appendExtension(menu, extension)
+        {
+            var subMenuId = extension.descriptor()["subMenuId"];
+            if (subMenuId) {
+                var subMenuItem = menu.appendSubMenuItem(extension.title(WebInspector.platform()));
+                subMenuItem.appendItemsAtLocation(subMenuId);
+            } else {
+                menu.appendAction(extension.descriptor()["actionId"]);
+            }
+        }
+
+        // Hard-coded named groups for elements to maintain generic order.
+        var groupWeights = ["new", "open", "clipboard", "navigate", "footer"];
+
+        /** @type {!Map.<string, !Array.<!Runtime.Extension>>} */
+        var groups = new Map();
+        var extensions = self.runtime.extensions("context-menu-item");
+        for (var extension of extensions) {
+            var itemLocation = extension.descriptor()["location"] || "";
+            if (!itemLocation.startsWith(location + "/"))
+                continue;
+
+            var itemGroup = itemLocation.substr(location.length + 1);
+            if (!itemGroup || itemGroup.includes("/"))
+                continue;
+            var group = groups.get(itemGroup);
+            if (!group) {
+                group = [];
+                groups.set(itemGroup, group);
+                if (groupWeights.indexOf(itemGroup) === -1)
+                    groupWeights.splice(4, 0, itemGroup);
+            }
+            group.push(extension);
+        }
+        for (var groupName of groupWeights) {
+            var group = groups.get(groupName);
+            if (!group)
+                continue;
+            group.forEach(appendExtension.bind(null, this));
+            this.appendSeparator();
+        }
+    },
+
     __proto__: WebInspector.ContextMenuItem.prototype
 }
 
@@ -405,41 +457,6 @@ WebInspector.ContextMenu.prototype = {
     {
         this._pendingPromises.push(self.runtime.instancesPromise(WebInspector.ContextMenu.Provider, target));
         this._pendingTargets.push(target);
-    },
-
-    /**
-     * @param {string} location
-     */
-    appendItemsAtLocation: function(location)
-    {
-        // Hard-coded named groups for elements to maintain generic order.
-        var groupWeights = ["new", "open", "clipboard", "navigate", "footer"];
-
-        var groups = new Map();
-        var extensions = self.runtime.extensions("context-menu-item");
-        for (var extension of extensions) {
-            var itemLocation = extension.descriptor()["location"] || "";
-            if (itemLocation !== location && !itemLocation.startsWith(location + "/"))
-                continue;
-
-            var itemGroup = itemLocation.includes("/") ? itemLocation.substr(location.length + 1) : "misc";
-            var group = groups.get(itemGroup);
-            if (!group) {
-                group = [];
-                groups.set(itemGroup, group);
-                if (groupWeights.indexOf(itemGroup) === -1)
-                    groupWeights.splice(4, 0, itemGroup);
-            }
-            group.push(extension);
-        }
-        for (var groupName of groupWeights) {
-            var group = groups.get(groupName);
-            if (!group)
-                continue;
-            for (var extension of group)
-                this.appendAction(extension.descriptor()["actionId"]);
-            this.appendSeparator();
-        }
     },
 
     __proto__: WebInspector.ContextSubMenuItem.prototype

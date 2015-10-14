@@ -4,11 +4,7 @@
  * found in the LICENSE file.
  */
 
-p {
-    margin: 12px 0 0 0;
-    flex: none;
-}
-
 label {
+    margin: 12px 0 0 0;
     padding: 0 4px 0 10px;
 }

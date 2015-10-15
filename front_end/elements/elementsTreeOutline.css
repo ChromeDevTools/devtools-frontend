@@ -11,13 +11,16 @@
 }
 
 .elements-disclosure li {
+    /** Keep margin-left & padding-left in sync with ElementsTreeElements.updateDecorators **/
     padding: 0 0 0 14px;
     margin-top: 1px;
     margin-left: -2px;
     word-wrap: break-word;
+    position: relative;
 }
 
 .elements-disclosure li.parent {
+    /** Keep it in sync with ElementsTreeElements.updateDecorators **/
     margin-left: -13px;
 }
 
@@ -54,11 +57,8 @@
 
 .elements-disclosure li .selection {
     display: none;
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 15px;
     z-index: -1;
+    margin-left: -10000px;
 }
 
 .elements-disclosure li.hovered:not(.selected) .selection {
@@ -80,6 +80,7 @@
 
 .elements-disclosure ol {
     list-style-type: none;
+    /** Keep it in sync with ElementsTreeElements.updateDecorators **/
     -webkit-padding-start: 12px;
     margin: 0;
 }

@@ -69,10 +69,6 @@
     color: white;
 }
 
-.navigator li.selected .selection {
-    height: 18px;
-}
-
 .navigator > ol.being-edited li.selected .selection {
     background-color: rgb(56, 121, 217);
 }

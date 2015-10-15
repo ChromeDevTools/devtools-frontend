@@ -135,6 +135,10 @@ iframe.panel.extension {
     margin: 0;
 }
 
+.outline-disclosure li {
+    position: relative;
+}
+
 .outline-disclosure li.hovered:not(.selected) .selection {
     display: block;
     left: 3px;
@@ -145,11 +149,8 @@ iframe.panel.extension {
 
 .outline-disclosure li .selection {
     display: none;
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 15px;
     z-index: -1;
+    margin-left: -10000px;
 }
 
 .outline-disclosure li.selected .selection {
@@ -192,7 +193,6 @@ ol.outline-disclosure,
     margin-top: 1px;
     text-overflow: ellipsis;
     white-space: nowrap;
-    overflow: hidden;
 }
 
 ol.outline-disclosure:focus li.selected {

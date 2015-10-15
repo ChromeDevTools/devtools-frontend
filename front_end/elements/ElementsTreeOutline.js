@@ -1790,7 +1790,7 @@ WebInspector.ElementsTreeOutline.Renderer.prototype = {
 WebInspector.ElementsTreeOutline.ShortcutTreeElement = function(nodeShortcut)
 {
     TreeElement.call(this, "");
-    this.listItemElement.createChild("div", "selection");
+    this.listItemElement.createChild("div", "selection fill");
     var title = this.listItemElement.createChild("span", "elements-tree-shortcut-title");
     var text = nodeShortcut.nodeName.toLowerCase();
     if (nodeShortcut.nodeType === Node.ELEMENT_NODE)

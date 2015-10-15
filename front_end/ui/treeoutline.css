@@ -21,12 +21,9 @@
 
 .tree-outline li .selection {
     display: none;
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 17px;
     z-index: -1;
     margin-top: -1px;
+    margin-left: -10000px;
 }
 
 .tree-outline li.selected .selection {
@@ -71,6 +68,7 @@ ol.tree-outline,
     overflow: hidden;
     min-height: 17px;
     padding-top: 2px;
+    position: relative;
 }
 
 ol.tree-outline:focus li.selected {

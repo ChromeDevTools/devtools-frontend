@@ -128,7 +128,7 @@ WebInspector.FileSystemView.EntryTreeElement.prototype = {
      */
     onattach: function()
     {
-        var selection = this.listItemElement.createChild("div", "selection");
+        var selection = this.listItemElement.createChild("div", "selection fill");
         this.listItemElement.insertBefore(selection, this.listItemElement.firstChild);
     },
 

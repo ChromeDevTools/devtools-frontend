@@ -261,11 +261,9 @@ WebInspector.ElementsTreeElement.prototype = {
 
         if (!this.selectionElement) {
             this.selectionElement = createElement("div");
-            this.selectionElement.className = "selection selected";
+            this.selectionElement.className = "selection fill";
             listItemElement.insertBefore(this.selectionElement, listItemElement.firstChild);
         }
-
-        this.selectionElement.style.height = listItemElement.offsetHeight + "px";
     },
 
     /**
@@ -1100,8 +1098,19 @@ WebInspector.ElementsTreeElement.prototype = {
 
     updateDecorations: function()
     {
+        var treeElement = this.parent;
+        var depth = 0;
+        while (treeElement != null) {
+            depth++;
+            treeElement = treeElement.parent;
+        }
+
+        /** Keep it in sync with elementsTreeOutline.css **/
+        this._gutterContainer.style.left = (-12 * (depth - 2) - (this.isExpandable() ? 1 : 12)) + "px";
+
         if (this.isClosingTag())
             return;
+
         var node = this._node;
         if (node.nodeType() !== Node.ELEMENT_NODE)
             return;

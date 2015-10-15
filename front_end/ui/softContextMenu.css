@@ -59,9 +59,10 @@
 
 .soft-context-menu-item-submenu-arrow {
     color: #222;
-    float: right;
     pointer-events: none;
     font-size: 11px;
+    flex: 1 1 auto;
+    text-align: right;
 }
 
 .soft-context-menu-item-mouse-over .soft-context-menu-item-checkmark {

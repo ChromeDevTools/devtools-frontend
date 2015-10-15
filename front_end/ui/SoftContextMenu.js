@@ -146,7 +146,7 @@ WebInspector.SoftContextMenu.prototype = {
         menuItemElement._subItems = item.subItems;
 
         // Occupy the same space on the left in all items.
-        var checkMarkElement = menuItemElement.createChild("span", "soft-context-menu-item-checkmark");
+        var checkMarkElement = menuItemElement.createChild("span", "soft-context-menu-item-checkmark checkmark");
         checkMarkElement.textContent = "\u2713 "; // Checkmark Unicode symbol
         checkMarkElement.style.opacity = "0";
 
@@ -357,11 +357,10 @@ WebInspector.SoftContextMenu.prototype = {
 
             if (event)
                 event.consume(true);
-        } else if (this._parentMenu && this._contextMenuElement.parentElement) {
+        } else if (this._parentMenu && this._contextMenuElement.parentElementOrShadowHost()) {
             this._discardSubMenus();
             if (closeParentMenus)
                 this._parentMenu._discardMenu(closeParentMenus, event);
-
             if (event)
                 event.consume(true);
         }
@@ -375,7 +374,7 @@ WebInspector.SoftContextMenu.prototype = {
     {
         if (this._subMenu)
             this._subMenu._discardSubMenus();
-        this._contextMenuElement.remove();
+        this.element.remove();
         if (this._parentMenu)
             delete this._parentMenu._subMenu;
     }

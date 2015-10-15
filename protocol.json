@@ -5189,8 +5189,7 @@
                     { "name": "type", "$ref": "AXValueType", "description": "The type of this value." },
 
                     { "name": "value", "type": "any", "description": "The computed value of this property.", "optional": true },
-                    { "name": "relatedNodeValue", "$ref": "AXRelatedNode", "description": "The related node value, if any.", "optional": true },
-                    { "name": "relatedNodeArrayValue", "type": "array", "items": { "$ref": "AXRelatedNode" }, "description": "Multiple relted nodes, if applicable.", "optional": true },
+                    { "name": "relatedNodes", "type": "array", "items": { "$ref": "AXRelatedNode" }, "description": "One or more related nodes, if applicable.", "optional": true },
                     { "name": "sources", "type": "array", "items": { "$ref": "AXValueSource" }, "description": "The sources which contributed to the computation of this property.", "optional": true }
                 ],
                 "description": "A single computed AX property."

@@ -494,7 +494,8 @@ WebInspector.AXNodePropertyTreeElement.prototype = {
      */
     appendRelationshipValueElement: function(value)
     {
-        var deferredNode = new WebInspector.DeferredDOMNode(this._target, value.relatedNodeValue.backendNodeId);
+        var relatedNode = value.relatedNodes[0];
+        var deferredNode = new WebInspector.DeferredDOMNode(this._target, relatedNode.backendNodeId);
         var valueElement = createElement("span");
 
         /**
@@ -503,8 +504,8 @@ WebInspector.AXNodePropertyTreeElement.prototype = {
         function onNodeResolved(node)
         {
             valueElement.appendChild(WebInspector.DOMPresentationUtils.linkifyNodeReference(node));
-            if (value.relatedNodeValue.text) {
-                var textElement = WebInspector.AccessibilitySidebarView.createSimpleValueElement(AccessibilityAgent.AXValueType.ComputedString, value.relatedNodeValue.text);
+            if (relatedNode.text) {
+                var textElement = WebInspector.AccessibilitySidebarView.createSimpleValueElement(AccessibilityAgent.AXValueType.ComputedString, relatedNode.text);
                 valueElement.appendChild(textElement);
             }
         }
@@ -518,7 +519,7 @@ WebInspector.AXNodePropertyTreeElement.prototype = {
      */
     appendRelatedNodeListValueElement: function(value)
     {
-        var relatedNodes = value.relatedNodeArrayValue;
+        var relatedNodes = value.relatedNodes;
         var numNodes = relatedNodes.length;
         var valueElement;
         if (value.type === AccessibilityAgent.AXValueType.IdrefList) {

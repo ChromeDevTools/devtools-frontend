@@ -203,9 +203,9 @@
             'front_end/toolbox_bootstrap/Toolbox.js',
         ],
         'devtools_emulation_js_files': [
-            'front_end/emulation/accelerometer.css',
             'front_end/emulation/devicesSettingsTab.css',
             'front_end/emulation/overrides.css',
+            'front_end/emulation/sensors.css',
             'front_end/emulation/responsiveDesignView.css',
             'front_end/emulation/DeviceModeButton.js',
             'front_end/emulation/DevicesSettingsTab.js',
@@ -216,6 +216,7 @@
             'front_end/emulation/OverridesView.js',
             'front_end/emulation/OverridesUI.js',
             'front_end/emulation/ResponsiveDesignView.js',
+            'front_end/emulation/SensorsView.js',
         ],
         'devtools_ui_js_files': [
             'front_end/ui/checkboxTextLabel.css',

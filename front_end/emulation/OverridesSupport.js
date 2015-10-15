@@ -57,10 +57,7 @@ WebInspector.OverridesSupport = function()
 
     this.settings.emulateTouch = WebInspector.settings.createSetting("emulateTouch", false);
 
-    this.settings.overrideGeolocation = WebInspector.settings.createSetting("overrideGeolocation", false);
     this.settings.geolocationOverride = WebInspector.settings.createSetting("geolocationOverride", "");
-
-    this.settings.overrideDeviceOrientation = WebInspector.settings.createSetting("overrideDeviceOrientation", false);
     this.settings.deviceOrientationOverride = WebInspector.settings.createSetting("deviceOrientationOverride", "");
 
     this.settings.screenOrientationOverride = WebInspector.settings.createSetting("screenOrientationOverride", "");
@@ -387,9 +384,7 @@ WebInspector.OverridesSupport.prototype = {
         this.settings.deviceScaleFactor.set(0);
         this.settings.emulateTouch.set(false);
         this.settings.emulateMobile.set(false);
-        this.settings.overrideDeviceOrientation.set(false);
         this.settings.screenOrientationOverride.set("");
-        this.settings.overrideGeolocation.set(false);
         this.settings.overrideCSSMedia.set(false);
         delete this._deviceMetricsChangedListenerMuted;
         delete this._userAgentChangedListenerMuted;
@@ -438,12 +433,7 @@ WebInspector.OverridesSupport.prototype = {
         this.settings.emulateMobile.addChangeListener(this._deviceMetricsChanged.bind(this, false));
         this.settings.deviceFitWindow.addChangeListener(this._deviceMetricsChanged.bind(this, false));
 
-        this.settings._emulationEnabled.addChangeListener(this._geolocationPositionChanged, this);
-        this.settings.overrideGeolocation.addChangeListener(this._geolocationPositionChanged, this);
         this.settings.geolocationOverride.addChangeListener(this._geolocationPositionChanged, this);
-
-        this.settings._emulationEnabled.addChangeListener(this._deviceOrientationChanged, this);
-        this.settings.overrideDeviceOrientation.addChangeListener(this._deviceOrientationChanged, this);
         this.settings.deviceOrientationOverride.addChangeListener(this._deviceOrientationChanged, this);
 
         this.settings._emulationEnabled.addChangeListener(this._screenOrientationChanged, this);
@@ -464,14 +454,8 @@ WebInspector.OverridesSupport.prototype = {
         this._showRulersChanged();
 
         if (this.emulationEnabled()) {
-            if (this.settings.overrideDeviceOrientation.get())
-                this._deviceOrientationChanged();
-
             if (this.settings.screenOrientationOverride.get())
                 this._screenOrientationChanged();
-
-            if (this.settings.overrideGeolocation.get())
-                this._geolocationPositionChanged();
 
             if (this.settings.emulateTouch.get())
                 this._emulateTouchEventsChanged();
@@ -652,9 +636,18 @@ WebInspector.OverridesSupport.prototype = {
         // Used for sniffing in tests.
     },
 
+    /**
+     * @param {boolean} enabled
+     */
+    setGeolocationOverrideEnabled: function(enabled)
+    {
+        this._overrideGeolocation = enabled;
+        this._geolocationPositionChanged();
+    },
+
     _geolocationPositionChanged: function()
     {
-        if (!this.emulationEnabled() || !this.settings.overrideGeolocation.get()) {
+        if (!this._overrideGeolocation) {
             this._target.emulationAgent().clearGeolocationOverride();
             return;
         }
@@ -665,9 +658,18 @@ WebInspector.OverridesSupport.prototype = {
             this._target.emulationAgent().setGeolocationOverride(geolocation.latitude, geolocation.longitude, 150);
     },
 
+    /**
+     * @param {boolean} enabled
+     */
+    setDeviceOrientationOverrideEnabled: function(enabled)
+    {
+        this._overrideDeviceOrientation = enabled;
+        this._deviceOrientationChanged();
+    },
+
     _deviceOrientationChanged: function()
     {
-        if (!this.emulationEnabled() || !this.settings.overrideDeviceOrientation.get()) {
+        if (!this._overrideDeviceOrientation) {
             this._target.deviceOrientationAgent().clearDeviceOrientationOverride();
             return;
         }

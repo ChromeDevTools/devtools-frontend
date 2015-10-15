@@ -165,19 +165,6 @@
     margin-bottom: 4px;
 }
 
-/* Sensors tab */
-
-.overrides-sensors > label {
-    margin-bottom: 10px;
-}
-
-.overrides-device, .overrides-media, .overrides-network, .overrides-sensors {
-    flex: none !important;
-}
-
-.overrides-sensors input {
-    text-align: right;
-}
 
 .tabbed-pane-header-tab.overrides-activate {
     opacity: 0.8;

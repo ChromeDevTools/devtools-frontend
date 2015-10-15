@@ -45,6 +45,18 @@
                 "standardEmulatedDeviceList",
                 "customEmulatedDeviceList"
             ]
+        },
+        {
+            "type": "@WebInspector.ActionDelegate",
+            "actionId": "emulation.show-sensors",
+            "title": "Sensors",
+            "className": "WebInspector.SensorsView.ShowActionDelegate"
+        },
+        {
+            "type": "context-menu-item",
+            "location": "mainMenu/tools/open",
+            "order": 100,
+            "actionId": "emulation.show-sensors"
         }
     ],
     "dependencies": [
@@ -62,12 +74,13 @@
         "InspectedPagePlaceholder.js",
         "MediaQueryInspector.js",
         "ResponsiveDesignView.js",
-        "OverridesView.js"
+        "OverridesView.js",
+        "SensorsView.js"
     ],
     "resources": [
-        "accelerometer.css",
         "devicesSettingsTab.css",
         "responsiveDesignView.css",
-        "overrides.css"
+        "overrides.css",
+        "sensors.css"
     ]
 }

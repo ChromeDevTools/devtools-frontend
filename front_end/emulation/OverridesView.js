@@ -46,7 +46,6 @@ WebInspector.OverridesView = function()
     new WebInspector.OverridesView.DeviceTab().appendAsTab(this._tabbedPane);
     new WebInspector.OverridesView.MediaTab().appendAsTab(this._tabbedPane);
     new WebInspector.OverridesView.NetworkTab().appendAsTab(this._tabbedPane);
-    new WebInspector.OverridesView.SensorsTab().appendAsTab(this._tabbedPane);
 
     this._lastSelectedTabSetting = WebInspector.settings.createSetting("lastSelectedEmulateTab", "device");
     this._tabbedPane.selectTab(this._lastSelectedTabSetting.get());
@@ -180,7 +179,8 @@ WebInspector.OverridesView.DeviceTab = function()
     WebInspector.OverridesView.Tab.call(this, "device", WebInspector.UIString("Device"),  [
         WebInspector.overridesSupport.settings.emulateResolution,
         WebInspector.overridesSupport.settings.deviceScaleFactor,
-        WebInspector.overridesSupport.settings.emulateMobile
+        WebInspector.overridesSupport.settings.emulateMobile,
+        WebInspector.overridesSupport.settings.emulateTouch
     ]);
     this.element.classList.add("overrides-device");
 
@@ -235,6 +235,7 @@ WebInspector.OverridesView.DeviceTab.prototype = {
 
         fieldsetElement.appendChild(this._createSettingCheckbox(WebInspector.UIString("Shrink to fit"), WebInspector.overridesSupport.settings.deviceFitWindow));
 
+        fieldsetElement.appendChild(this._createSettingCheckbox(WebInspector.UIString("Emulate touch screen"), WebInspector.overridesSupport.settings.emulateTouch));
         return fieldsetElement;
     },
 
@@ -328,279 +329,6 @@ WebInspector.OverridesView.NetworkTab.prototype = {
     __proto__: WebInspector.OverridesView.Tab.prototype
 }
 
-
-/**
- * @constructor
- * @extends {WebInspector.OverridesView.Tab}
- */
-WebInspector.OverridesView.SensorsTab = function()
-{
-    WebInspector.OverridesView.Tab.call(this, "sensors", WebInspector.UIString("Sensors"), [
-        WebInspector.overridesSupport.settings.overrideGeolocation,
-        WebInspector.overridesSupport.settings.overrideDeviceOrientation,
-        WebInspector.overridesSupport.settings.emulateTouch
-    ]);
-
-    this.element.classList.add("overrides-sensors");
-    this.registerRequiredCSS("emulation/accelerometer.css");
-    this.element.appendChild(this._createSettingCheckbox(WebInspector.UIString("Emulate touch screen"), WebInspector.overridesSupport.settings.emulateTouch, undefined));
-    this._appendGeolocationOverrideControl();
-    this._apendDeviceOrientationOverrideControl();
-}
-
-WebInspector.OverridesView.SensorsTab.prototype = {
-    _appendGeolocationOverrideControl: function()
-    {
-        const geolocationSetting = WebInspector.overridesSupport.settings.geolocationOverride.get();
-        var geolocation = WebInspector.OverridesSupport.GeolocationPosition.parseSetting(geolocationSetting);
-        this.element.appendChild(this._createSettingCheckbox(WebInspector.UIString("Emulate geolocation coordinates"), WebInspector.overridesSupport.settings.overrideGeolocation, this._geolocationOverrideCheckboxClicked.bind(this)));
-        this.element.appendChild(this._createGeolocationOverrideElement(geolocation));
-        this._geolocationOverrideCheckboxClicked(WebInspector.overridesSupport.settings.overrideGeolocation.get());
-    },
-
-    /**
-     * @param {boolean} enabled
-     */
-    _geolocationOverrideCheckboxClicked: function(enabled)
-    {
-        if (enabled && !this._latitudeElement.value)
-            this._latitudeElement.focus();
-    },
-
-    _applyGeolocationUserInput: function()
-    {
-        this._setGeolocationPosition(WebInspector.OverridesSupport.GeolocationPosition.parseUserInput(this._latitudeElement.value.trim(), this._longitudeElement.value.trim(), this._geolocationErrorElement.checked), true);
-    },
-
-    /**
-     * @param {?WebInspector.OverridesSupport.GeolocationPosition} geolocation
-     * @param {boolean} userInputModified
-     */
-    _setGeolocationPosition: function(geolocation, userInputModified)
-    {
-        if (!geolocation)
-            return;
-
-        if (!userInputModified) {
-            this._latitudeElement.value = geolocation.latitude;
-            this._longitudeElement.value = geolocation.longitude;
-        }
-
-        var value = geolocation.toSetting();
-        WebInspector.overridesSupport.settings.geolocationOverride.set(value);
-    },
-
-    /**
-     * @param {!WebInspector.OverridesSupport.GeolocationPosition} geolocation
-     * @return {!Element}
-     */
-    _createGeolocationOverrideElement: function(geolocation)
-    {
-        var fieldsetElement = WebInspector.SettingsUI.createSettingFieldset(WebInspector.overridesSupport.settings.overrideGeolocation);
-        fieldsetElement.id = "geolocation-override-section";
-
-        var tableElement = fieldsetElement.createChild("table");
-        var rowElement = tableElement.createChild("tr");
-        var cellElement = rowElement.createChild("td");
-        cellElement = rowElement.createChild("td");
-        cellElement.createTextChild(WebInspector.UIString("Lat = "));
-        this._latitudeElement = WebInspector.SettingsUI.createInput(cellElement, "geolocation-override-latitude", String(geolocation.latitude), this._applyGeolocationUserInput.bind(this), true);
-        cellElement.createTextChild(" , ");
-        cellElement.createTextChild(WebInspector.UIString("Lon = "));
-        this._longitudeElement = WebInspector.SettingsUI.createInput(cellElement, "geolocation-override-longitude", String(geolocation.longitude), this._applyGeolocationUserInput.bind(this), true);
-        rowElement = tableElement.createChild("tr");
-        cellElement = rowElement.createChild("td");
-        cellElement.colSpan = 2;
-        var geolocationErrorLabelElement = createCheckboxLabel(WebInspector.UIString("Emulate position unavailable"), !geolocation || !!geolocation.error);
-        var geolocationErrorCheckboxElement = geolocationErrorLabelElement.checkboxElement;
-        geolocationErrorCheckboxElement.id = "geolocation-error";
-        geolocationErrorCheckboxElement.addEventListener("click", this._applyGeolocationUserInput.bind(this), false);
-        this._geolocationErrorElement = geolocationErrorCheckboxElement;
-        cellElement.appendChild(geolocationErrorLabelElement);
-
-        return fieldsetElement;
-    },
-
-    _apendDeviceOrientationOverrideControl: function()
-    {
-        const deviceOrientationSetting = WebInspector.overridesSupport.settings.deviceOrientationOverride.get();
-        var deviceOrientation = WebInspector.OverridesSupport.DeviceOrientation.parseSetting(deviceOrientationSetting);
-        this.element.appendChild(this._createSettingCheckbox(WebInspector.UIString("Accelerometer"), WebInspector.overridesSupport.settings.overrideDeviceOrientation, this._deviceOrientationOverrideCheckboxClicked.bind(this)));
-        this.element.appendChild(this._createDeviceOrientationOverrideElement(deviceOrientation));
-        this._deviceOrientationOverrideCheckboxClicked(WebInspector.overridesSupport.settings.overrideDeviceOrientation.get());
-    },
-
-    /**
-     * @param {boolean} enabled
-     */
-    _deviceOrientationOverrideCheckboxClicked: function(enabled)
-    {
-        if (enabled && !this._alphaElement.value)
-            this._alphaElement.focus();
-    },
-
-    _applyDeviceOrientationUserInput: function()
-    {
-        this._setDeviceOrientation(WebInspector.OverridesSupport.DeviceOrientation.parseUserInput(this._alphaElement.value.trim(), this._betaElement.value.trim(), this._gammaElement.value.trim()), WebInspector.OverridesView.SensorsTab.DeviceOrientationModificationSource.UserInput);
-    },
-
-    _resetDeviceOrientation: function()
-    {
-        this._setDeviceOrientation(new WebInspector.OverridesSupport.DeviceOrientation(0, 0, 0), WebInspector.OverridesView.SensorsTab.DeviceOrientationModificationSource.ResetButton);
-    },
-
-    /**
-     * @param {?WebInspector.OverridesSupport.DeviceOrientation} deviceOrientation
-     * @param {!WebInspector.OverridesView.SensorsTab.DeviceOrientationModificationSource} modificationSource
-     */
-    _setDeviceOrientation: function(deviceOrientation, modificationSource)
-    {
-        if (!deviceOrientation)
-            return;
-
-        if (modificationSource != WebInspector.OverridesView.SensorsTab.DeviceOrientationModificationSource.UserInput) {
-            this._alphaElement.value = deviceOrientation.alpha;
-            this._betaElement.value = deviceOrientation.beta;
-            this._gammaElement.value = deviceOrientation.gamma;
-        }
-
-        if (modificationSource != WebInspector.OverridesView.SensorsTab.DeviceOrientationModificationSource.UserDrag)
-            this._setBoxOrientation(deviceOrientation);
-
-        var value = deviceOrientation.toSetting();
-        WebInspector.overridesSupport.settings.deviceOrientationOverride.set(value);
-    },
-
-    /**
-     * @param {!Element} parentElement
-     * @param {string} id
-     * @param {string} label
-     * @param {string} defaultText
-     * @return {!Element}
-     */
-    _createAxisInput: function(parentElement, id, label, defaultText)
-    {
-        var div = parentElement.createChild("div", "accelerometer-axis-input-container");
-        div.createTextChild(label);
-        return WebInspector.SettingsUI.createInput(div, id, defaultText, this._applyDeviceOrientationUserInput.bind(this), true);
-    },
-
-    /**
-     * @param {!WebInspector.OverridesSupport.DeviceOrientation} deviceOrientation
-     */
-    _createDeviceOrientationOverrideElement: function(deviceOrientation)
-    {
-        var fieldsetElement = WebInspector.SettingsUI.createSettingFieldset(WebInspector.overridesSupport.settings.overrideDeviceOrientation);
-        fieldsetElement.id = "device-orientation-override-section";
-        var tableElement = fieldsetElement.createChild("table");
-        var rowElement = tableElement.createChild("tr");
-        var cellElement = rowElement.createChild("td", "accelerometer-inputs-cell");
-
-        this._alphaElement = this._createAxisInput(cellElement, "device-orientation-override-alpha", "\u03B1: ", String(deviceOrientation.alpha));
-        this._betaElement = this._createAxisInput(cellElement, "device-orientation-override-beta", "\u03B2: ", String(deviceOrientation.beta));
-        this._gammaElement = this._createAxisInput(cellElement, "device-orientation-override-gamma", "\u03B3: ", String(deviceOrientation.gamma));
-
-        cellElement.appendChild(createTextButton(WebInspector.UIString("Reset"), this._resetDeviceOrientation.bind(this), "accelerometer-reset-button"));
-
-        this._stageElement = rowElement.createChild("td","accelerometer-stage");
-        this._boxElement = this._stageElement.createChild("section", "accelerometer-box");
-
-        this._boxElement.createChild("section", "front");
-        this._boxElement.createChild("section", "top");
-        this._boxElement.createChild("section", "back");
-        this._boxElement.createChild("section", "left");
-        this._boxElement.createChild("section", "right");
-        this._boxElement.createChild("section", "bottom");
-
-        WebInspector.installDragHandle(this._stageElement, this._onBoxDragStart.bind(this), this._onBoxDrag.bind(this), this._onBoxDragEnd.bind(this), "move");
-        this._setBoxOrientation(deviceOrientation);
-        return fieldsetElement;
-    },
-
-    /**
-     * @param {!WebInspector.OverridesSupport.DeviceOrientation} deviceOrientation
-     */
-    _setBoxOrientation: function(deviceOrientation)
-    {
-        var matrix = new WebKitCSSMatrix();
-        this._boxMatrix = matrix.rotate(-deviceOrientation.beta, deviceOrientation.gamma, -deviceOrientation.alpha);
-        this._boxElement.style.webkitTransform = this._boxMatrix.toString();
-    },
-
-    /**
-     * @param {!MouseEvent} event
-     * @return {boolean}
-     */
-    _onBoxDrag: function(event)
-    {
-        var mouseMoveVector = this._calculateRadiusVector(event.x, event.y);
-        if (!mouseMoveVector)
-            return true;
-
-        event.consume(true);
-        var axis = WebInspector.Geometry.crossProduct(this._mouseDownVector, mouseMoveVector);
-        axis.normalize();
-        var angle = WebInspector.Geometry.calculateAngle(this._mouseDownVector, mouseMoveVector);
-        var matrix = new WebKitCSSMatrix();
-        var rotationMatrix = matrix.rotateAxisAngle(axis.x, axis.y, axis.z, angle);
-        this._currentMatrix = rotationMatrix.multiply(this._boxMatrix);
-        this._boxElement.style.webkitTransform = this._currentMatrix;
-        var eulerAngles = WebInspector.Geometry.EulerAngles.fromRotationMatrix(this._currentMatrix);
-        var newOrientation = new WebInspector.OverridesSupport.DeviceOrientation(-eulerAngles.alpha, -eulerAngles.beta, eulerAngles.gamma);
-        this._setDeviceOrientation(newOrientation, WebInspector.OverridesView.SensorsTab.DeviceOrientationModificationSource.UserDrag);
-        return false;
-    },
-
-    /**
-     * @param {!MouseEvent} event
-     * @return {boolean}
-     */
-    _onBoxDragStart: function(event)
-    {
-        if (!WebInspector.overridesSupport.settings.overrideDeviceOrientation.get())
-            return false;
-
-        this._mouseDownVector = this._calculateRadiusVector(event.x, event.y);
-
-        if (!this._mouseDownVector)
-            return false;
-
-        event.consume(true);
-        return true;
-    },
-
-    _onBoxDragEnd: function()
-    {
-        this._boxMatrix = this._currentMatrix;
-    },
-
-    /**
-     * @param {number} x
-     * @param {number} y
-     * @return {?WebInspector.Geometry.Vector}
-     */
-    _calculateRadiusVector: function(x, y)
-    {
-        var rect = this._stageElement.getBoundingClientRect();
-        var radius = Math.max(rect.width, rect.height) / 2;
-        var sphereX = (x - rect.left - rect.width / 2) / radius;
-        var sphereY = (y - rect.top - rect.height / 2) / radius;
-        var sqrSum = sphereX * sphereX + sphereY * sphereY;
-        if (sqrSum > 0.5)
-            return new WebInspector.Geometry.Vector(sphereX, sphereY, 0.5 / Math.sqrt(sqrSum));
-
-        return new WebInspector.Geometry.Vector(sphereX, sphereY, Math.sqrt(1 - sqrSum));
-    },
-
-    __proto__ : WebInspector.OverridesView.Tab.prototype
-}
-
-/** @enum {string} */
-WebInspector.OverridesView.SensorsTab.DeviceOrientationModificationSource = {
-    UserInput: "userInput",
-    UserDrag: "userDrag",
-    ResetButton: "resetButton"
-}
 
 /**
  * @constructor

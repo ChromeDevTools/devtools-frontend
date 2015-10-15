@@ -337,7 +337,7 @@ ol:focus li.selected .webkit-html-attribute-name {
 }
 
 @media (-webkit-min-device-pixel-ratio: 1.5) {
-.elements-disclosure li.selected .gutter-container {
+.elements-disclosure li.selected .gutter-container:not(.has-decorations) {
     -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
 }
 } /* media */

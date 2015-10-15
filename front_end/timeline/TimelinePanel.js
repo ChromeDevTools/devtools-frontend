@@ -1440,9 +1440,8 @@ WebInspector.TimelineDetailsView.prototype = {
     {
         var allTabs = this.allTabs();
         for (var i = 0; i < allTabs.length; ++i) {
-            var tabId = allTabs[i].id;
-            if (this._staticTabs.has(tabId))
-                this.closeTab(tabId);
+            if (!this._staticTabs.has(allTabs[i]))
+                this.closeTab(allTabs[i]);
         }
         this._defaultDetailsContentElement.removeChildren();
         this._defaultDetailsContentElement.appendChild(node);

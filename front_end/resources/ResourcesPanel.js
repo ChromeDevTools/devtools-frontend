@@ -112,7 +112,7 @@ WebInspector.ResourcesPanel.prototype = {
             return;
         this._target = target;
 
-        if (target.serviceWorkerManager && Runtime.experiments.isEnabled("serviceWorkersInResources")) {
+        if (target.serviceWorkerManager) {
             this.serviceWorkersTreeElement = new WebInspector.ServiceWorkersTreeElement(this);
             this._sidebarTree.appendChild(this.serviceWorkersTreeElement);
         }

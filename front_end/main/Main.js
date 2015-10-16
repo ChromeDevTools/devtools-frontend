@@ -141,7 +141,6 @@ WebInspector.Main.prototype = {
         Runtime.experiments.register("promiseTracker", "Promise inspector");
         Runtime.experiments.register("requestBlocking", "Request blocking", true);
         Runtime.experiments.register("securityPanel", "Security panel");
-        Runtime.experiments.register("serviceWorkersInResources", "Service workers in Resources panel", true);
         Runtime.experiments.register("showPrimaryLoadWaterfallInNetworkTimeline", "Show primary load waterfall in Network timeline", true);
         Runtime.experiments.register("stepIntoAsync", "Step into async");
         Runtime.experiments.register("timelineInvalidationTracking", "Timeline invalidation tracking", true);
@@ -159,8 +158,6 @@ WebInspector.Main.prototype = {
                 Runtime.experiments.enableForTest("animationInspection");
             if (testPath.indexOf("layers/") !== -1)
                 Runtime.experiments.enableForTest("layersPanel");
-            if (testPath.indexOf("service-workers/") !== -1)
-                Runtime.experiments.enableForTest("serviceWorkersInResources");
             if (testPath.indexOf("timeline/") !== -1 || testPath.indexOf("layers/") !== -1)
                 Runtime.experiments.enableForTest("layersPanel");
             if (testPath.indexOf("security/") !== -1)

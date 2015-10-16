@@ -315,11 +315,6 @@ body.dock-to-bottom .help-content {
     margin-right: 20px;
 }
 
-.settings-tab .settings-list-container {
-    background-color: white;
-    margin-bottom: 10px;
-}
-
 .settings-tab .settings-list {
     border: 1px solid hsl(0, 0%, 85%);
     border-radius: 2px;
@@ -443,16 +438,30 @@ select.list-column-editor {
     margin-left: 0;
 }
 
-.settings-tab .settings-list .settings-list-item .file-system-path {
+.settings-tab .file-system-container {
+    margin-bottom: 20px;
+}
+
+.settings-tab .file-system-header {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+}
+
+.settings-tab .file-system-path {
     white-space: nowrap;
-    font-size: 12px;
-    padding-left: 6px;
+    font-size: 1.4em;
     padding-right: 5px;
     -webkit-box-flex: 1;
     color: hsl(210, 16%, 22%);
+    margin-bottom: 8px;
+    overflow: hidden;
+    flex: 0 1 auto;
+    margin-right: 5px;
+    text-overflow: ellipsis;
 }
 
-.settings-tab .settings-list .settings-list-item .file-system-path-name {
+.settings-tab .file-system-path-name {
     padding-right: 6px;
     font-weight: bold;
 }
@@ -481,6 +490,10 @@ select.list-column-editor {
     width: 20%;
 }
 
+.excluded-folders-header {
+    margin-top: 10px;
+}
+
 .excluded-folders-list .settings-list-item .list-column.settings-list-column-path {
     width: 100%;
 }
@@ -493,7 +506,6 @@ select.list-column-editor {
 .settings-dialog {
     display: -webkit-flex;
     -webkit-flex-direction: column;
-    background: white;
 }
 
 .settings-dialog .dialog-contents {

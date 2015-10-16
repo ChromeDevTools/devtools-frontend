@@ -51,7 +51,7 @@
         "components"
     ],
     "scripts": [
-        "EditFileSystemDialog.js",
+        "EditFileSystemView.js",
         "SettingsScreen.js",
         "FrameworkBlackboxSettingsTab.js"
     ]

@@ -262,16 +262,7 @@ WebInspector.SecurityPanel.prototype = {
      */
     _securityStateMin: function(stateA, stateB)
     {
-        /** @type {!Array<!SecurityAgent.SecurityState>} */
-        var ordering = [
-            SecurityAgent.SecurityState.Unknown,
-            SecurityAgent.SecurityState.Info,
-            SecurityAgent.SecurityState.Insecure,
-            SecurityAgent.SecurityState.Neutral,
-            SecurityAgent.SecurityState.Warning,
-            SecurityAgent.SecurityState.Secure
-        ];
-        return (ordering.indexOf(stateA) < ordering.indexOf(stateB)) ? stateA : stateB;
+        return WebInspector.SecurityModel.SecurityStateComparator(stateA, stateB) < 0 ? stateA : stateB;
     },
 
     /**
@@ -426,28 +417,7 @@ WebInspector.SecurityOriginViewSidebarTreeElement.prototype = {
  */
 WebInspector.SecurityOriginViewSidebarTreeElement.SecurityStateComparator = function(a, b)
 {
-    var securityStateMap;
-    if (WebInspector.SecurityOriginViewSidebarTreeElement._symbolicToNumericSecurityState) {
-        securityStateMap = WebInspector.SecurityOriginViewSidebarTreeElement._symbolicToNumericSecurityState;
-    } else {
-        securityStateMap = new Map();
-        var ordering = [
-            SecurityAgent.SecurityState.Unknown,
-            SecurityAgent.SecurityState.Info,
-            SecurityAgent.SecurityState.Insecure,
-            SecurityAgent.SecurityState.Neutral,
-            SecurityAgent.SecurityState.Warning,
-            SecurityAgent.SecurityState.Secure
-        ];
-        for (var i = 0; i < ordering.length; i++) {
-            securityStateMap.set(ordering[i], i + 1);
-        }
-        WebInspector.SecurityOriginViewSidebarTreeElement._symbolicToNumericSecurityState = securityStateMap;
-    }
-    var aScore = securityStateMap.get(a.securityState()) || 0;
-    var bScore = securityStateMap.get(b.securityState()) || 0;
-
-    return aScore - bScore;
+    return WebInspector.SecurityModel.SecurityStateComparator(a.securityState(), b.securityState());
 }
 
 /**

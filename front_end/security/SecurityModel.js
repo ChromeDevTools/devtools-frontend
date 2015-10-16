@@ -37,6 +37,36 @@ WebInspector.SecurityModel.fromTarget = function(target)
 }
 
 /**
+ * @param {!SecurityAgent.SecurityState} a
+ * @param {!SecurityAgent.SecurityState} b
+ * @return {number}
+ */
+WebInspector.SecurityModel.SecurityStateComparator = function(a, b)
+{
+    var securityStateMap;
+    if (WebInspector.SecurityModel._symbolicToNumericSecurityState) {
+        securityStateMap = WebInspector.SecurityModel._symbolicToNumericSecurityState;
+    } else {
+        securityStateMap = new Map();
+        var ordering = [
+            SecurityAgent.SecurityState.Unknown,
+            SecurityAgent.SecurityState.Info,
+            SecurityAgent.SecurityState.Insecure,
+            SecurityAgent.SecurityState.Neutral,
+            SecurityAgent.SecurityState.Warning,
+            SecurityAgent.SecurityState.Secure
+        ];
+        for (var i = 0; i < ordering.length; i++)
+            securityStateMap.set(ordering[i], i + 1);
+        WebInspector.SecurityModel._symbolicToNumericSecurityState = securityStateMap;
+    }
+    var aScore = securityStateMap.get(a) || 0;
+    var bScore = securityStateMap.get(b) || 0;
+
+    return aScore - bScore;
+}
+
+/**
  * @constructor
  * @param {!SecurityAgent.SecurityState} securityState
  * @param {!Array<!SecurityAgent.SecurityStateExplanation>} explanations

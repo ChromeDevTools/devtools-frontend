@@ -333,7 +333,7 @@ WebInspector.VersionController = function()
 }
 
 WebInspector.VersionController._currentVersionName = "inspectorVersion";
-WebInspector.VersionController.currentVersion = 15;
+WebInspector.VersionController.currentVersion = 16;
 
 WebInspector.VersionController.prototype = {
     updateVersion: function()
@@ -591,6 +591,15 @@ WebInspector.VersionController.prototype = {
                 newValue[fileSystemPath].push(entry.path);
         }
         setting.set(newValue);
+    },
+
+    _updateVersionFrom15To16: function()
+    {
+        var setting = WebInspector.settings.createSetting("InspectorView.panelOrder", {});
+        var tabOrders = setting.get();
+        for (var key of Object.keys(tabOrders))
+            tabOrders[key] = (tabOrders[key] + 1) * 10;
+        setting.set(tabOrders);
     },
 
     _migrateSettingsFromLocalStorage: function()

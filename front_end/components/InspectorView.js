@@ -114,19 +114,25 @@ WebInspector.InspectorView.prototype = {
                 weight = extension.descriptor()["order"];
             if (weight === undefined)
                 weight = 10000;
-            panelsByWeight.set(weight, descriptor);
+            panelWeights.set(descriptor, weight);
+        }
+
+        /**
+         * @param {!WebInspector.PanelDescriptor} left
+         * @param {!WebInspector.PanelDescriptor} right
+         */
+        function orderComparator(left, right)
+        {
+            return panelWeights.get(left) > panelWeights.get(right);
         }
 
         WebInspector.startBatchUpdate();
-        /** @type {!Map.<number, !WebInspector.PanelDescriptor>} */
-        var panelsByWeight = new Map();
+        /** @type {!Map.<!WebInspector.PanelDescriptor, number>} */
+        var panelWeights = new Map();
         self.runtime.extensions(WebInspector.PanelFactory).forEach(processPanelExtensions.bind(this));
-        var sortedPanelOrders = panelsByWeight.keysArray().sort();
-        for (var order of sortedPanelOrders) {
-            var panelDescriptor = panelsByWeight.get(order);
-            if (panelDescriptor)
-                this._innerAddPanel(panelDescriptor);
-        }
+        var sortedPanels = panelWeights.keysArray().sort(orderComparator);
+        for (var panelDescriptor of sortedPanels)
+            this._innerAddPanel(panelDescriptor);
         WebInspector.endBatchUpdate();
     },
 
@@ -543,7 +549,7 @@ WebInspector.InspectorView.prototype = {
         var tabs = /** @type {!Array.<!WebInspector.TabbedPaneTab>} */(event.data);
         var tabOrders = this._tabOrderSetting.get();
         for (var i = 0; i < tabs.length; i++)
-            tabOrders[tabs[i].id] = i;
+            tabOrders[tabs[i].id] = (i + 1)* 10;
         this._tabOrderSetting.set(tabOrders);
     },
 

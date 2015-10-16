@@ -1211,14 +1211,19 @@ WebInspector.ElementsActionDelegate.prototype = {
      * @override
      * @param {!WebInspector.Context} context
      * @param {string} actionId
+     * @return {boolean}
      */
     handleAction: function(context, actionId)
     {
-        var elementsPanel = WebInspector.ElementsPanel.instance();
-        if (actionId === "elements.hide-element")
-            elementsPanel._toggleHideElement();
-        else if (actionId === "elements.edit-as-html")
-            elementsPanel._toggleEditAsHTML();
+        switch (actionId) {
+        case "elements.hide-element":
+            WebInspector.ElementsPanel.instance()._toggleHideElement();
+            return true;
+        case "elements.edit-as-html":
+            WebInspector.ElementsPanel.instance()._toggleEditAsHTML();
+            return true;
+        }
+        return false;
     }
 }
 

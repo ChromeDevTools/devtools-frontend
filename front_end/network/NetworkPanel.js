@@ -787,11 +787,13 @@ WebInspector.NetworkPanel.RecordActionDelegate.prototype = {
      * @override
      * @param {!WebInspector.Context} context
      * @param {string} actionId
+     * @return {boolean}
      */
     handleAction: function(context, actionId)
     {
         var panel = WebInspector.context.flavor(WebInspector.NetworkPanel);
         console.assert(panel && panel instanceof WebInspector.NetworkPanel);
         panel._toggleRecording();
+        return true;
     }
 }

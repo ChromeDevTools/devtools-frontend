@@ -531,15 +531,22 @@ WebInspector.SettingsController.ActionDelegate.prototype = {
      * @override
      * @param {!WebInspector.Context} context
      * @param {string} actionId
+     * @return {boolean}
      */
     handleAction: function(context, actionId)
     {
-        if (actionId === "settings.show")
+        switch (actionId) {
+        case "settings.show":
             WebInspector._settingsController.showSettingsScreen();
-        else if (actionId === "settings.help")
+            return true;
+        case "settings.help":
             InspectorFrontendHost.openInNewTab("https://developers.google.com/web/tools/chrome-devtools/");
-        else if (actionId === "settings.shortcuts")
+            return true;
+        case "settings.shortcuts":
             WebInspector._settingsController.showSettingsScreen("shortcuts");
+            return true;
+        }
+        return false;
     }
 }
 

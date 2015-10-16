@@ -694,20 +694,22 @@ WebInspector.Main.ReloadActionDelegate.prototype = {
      * @override
      * @param {!WebInspector.Context} context
      * @param {string} actionId
+     * @return {boolean}
      */
     handleAction: function(context, actionId)
     {
         switch (actionId) {
         case "main.reload":
             WebInspector.Main._reloadPage(false);
-            break;
+            return true;
         case "main.hard-reload":
             WebInspector.Main._reloadPage(true);
-            break;
+            return true;
         case "main.debug-reload":
             WebInspector.reload();
-            break;
+            return true;
         }
+        return false;
     }
 }
 
@@ -724,23 +726,25 @@ WebInspector.Main.ZoomActionDelegate.prototype = {
      * @override
      * @param {!WebInspector.Context} context
      * @param {string} actionId
+     * @return {boolean}
      */
     handleAction: function(context, actionId)
     {
         if (InspectorFrontendHost.isHostedMode())
-            return;
+            return false;
 
         switch (actionId) {
         case "main.zoom-in":
             InspectorFrontendHost.zoomIn();
-            break;
+            return true;
         case "main.zoom-out":
             InspectorFrontendHost.zoomOut();
-            break;
+            return true;
         case "main.zoom-reset":
             InspectorFrontendHost.resetZoom();
-            break;
+            return true;
         }
+        return false;
     }
 }
 
@@ -757,10 +761,12 @@ WebInspector.Main.InspectDevicesActionDelegate.prototype = {
      * @override
      * @param {!WebInspector.Context} context
      * @param {string} actionId
+     * @return {boolean}
      */
     handleAction: function(context, actionId)
     {
         InspectorFrontendHost.openInNewTab("chrome://inspect#devices");
+        return true;
     }
 }
 

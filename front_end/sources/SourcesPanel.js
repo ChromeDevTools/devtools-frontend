@@ -1355,6 +1355,7 @@ WebInspector.SourcesPanel.RevealingActionDelegate.prototype = {
      * @override
      * @param {!WebInspector.Context} context
      * @param {string} actionId
+     * @return {boolean}
      */
     handleAction: function(context, actionId)
     {
@@ -1363,11 +1364,12 @@ WebInspector.SourcesPanel.RevealingActionDelegate.prototype = {
         switch (actionId) {
         case "debugger.toggle-pause":
             panel.togglePause();
-            break;
+            return true;
         case "sources.go-to-source":
             panel.showGoToSourceDialog();
-            break;
+            return true;
         }
+        return false;
     }
 }
 
@@ -1384,6 +1386,7 @@ WebInspector.SourcesPanel.DebuggingActionDelegate.prototype = {
      * @override
      * @param {!WebInspector.Context} context
      * @param {string} actionId
+     * @return {boolean}
      */
     handleAction: function(context, actionId)
     {
@@ -1391,23 +1394,24 @@ WebInspector.SourcesPanel.DebuggingActionDelegate.prototype = {
         switch (actionId) {
         case "debugger.step-over":
             panel._stepOverClicked();
-            break;
+            return true;
         case "debugger.step-into":
             panel._stepIntoClicked();
-            break;
+            return true;
         case "debugger.step-into-async":
             panel._stepIntoAsyncClicked();
-            break;
+            return true;
         case "debugger.step-out":
             panel._stepOutClicked();
-            break;
+            return true;
         case "debugger.run-snippet":
             panel._runSnippet();
-            break;
+            return true;
         case "debugger.toggle-breakpoints-active":
             panel._toggleBreakpointsActive();
-            break;
+            return true;
         }
+        return false;
     }
 }
 

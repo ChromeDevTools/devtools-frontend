@@ -305,10 +305,12 @@ WebInspector.BlockedURLsPane.ActionDelegate.prototype = {
      * @override
      * @param {!WebInspector.Context} context
      * @param {string} actionId
+     * @return {boolean}
      */
     handleAction: function(context, actionId)
     {
         WebInspector.BlockedURLsPane.reveal();
+        return true;
     }
 }
 

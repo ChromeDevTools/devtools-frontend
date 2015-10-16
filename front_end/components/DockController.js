@@ -186,10 +186,12 @@ WebInspector.DockController.ToggleDockActionDelegate.prototype = {
      * @override
      * @param {!WebInspector.Context} context
      * @param {string} actionId
+     * @return {boolean}
      */
     handleAction: function(context, actionId)
     {
         WebInspector.dockController._toggleDockSide();
+        return true;
     }
 }
 

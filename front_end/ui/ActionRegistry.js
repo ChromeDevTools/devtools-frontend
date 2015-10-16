@@ -50,7 +50,7 @@ WebInspector.ActionRegistry.prototype = {
 
     /**
      * @param {string} actionId
-     * @return {!Promise.<undefined>}
+     * @return {!Promise.<boolean>}
      */
     execute: function(actionId)
     {
@@ -60,10 +60,12 @@ WebInspector.ActionRegistry.prototype = {
 
         /**
          * @param {!Object} actionDelegate
+         * @return {boolean}
          */
         function handleAction(actionDelegate)
         {
-            /** @type {!WebInspector.ActionDelegate} */(actionDelegate).handleAction(WebInspector.context, actionId);
+            var delegate = /** @type {!WebInspector.ActionDelegate} */(actionDelegate);
+            return delegate.handleAction(WebInspector.context, actionId);
         }
     },
 
@@ -101,6 +103,7 @@ WebInspector.ActionDelegate.prototype = {
     /**
      * @param {!WebInspector.Context} context
      * @param {string} actionId
+     * @return {boolean}
      */
     handleAction: function(context, actionId) {}
 }

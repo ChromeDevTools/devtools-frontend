@@ -160,19 +160,21 @@ WebInspector.InspectElementModeController.ToggleSearchActionDelegate.prototype =
      * @override
      * @param {!WebInspector.Context} context
      * @param {string} actionId
+     * @return {boolean}
      */
     handleAction: function(context, actionId)
     {
         if (!WebInspector.inspectElementModeController)
-            return;
+            return false;
         WebInspector.inspectElementModeController._toggleInspectMode();
 
         if (WebInspector.inspectElementModeController.isInInspectElementMode())
-            return;
+            return true;
 
         var node = WebInspector.context.flavor(WebInspector.DOMNode);
         if (node)
             WebInspector.Revealer.reveal(node);
+        return true;
     }
 }
 

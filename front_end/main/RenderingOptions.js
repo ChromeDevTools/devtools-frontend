@@ -123,9 +123,11 @@ WebInspector.RenderingOptionsView.ShowActionDelegate.prototype = {
      * @override
      * @param {!WebInspector.Context} context
      * @param {string} actionId
+     * @return {boolean}
      */
     handleAction: function(context, actionId)
     {
         WebInspector.inspectorView.showCloseableViewInDrawer("rendering", WebInspector.UIString("Rendering"), WebInspector.RenderingOptionsView.instance());
+        return true;
     }
 }

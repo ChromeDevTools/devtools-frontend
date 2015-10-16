@@ -1288,13 +1288,19 @@ WebInspector.ConsoleView.ActionDelegate.prototype = {
      * @override
      * @param {!WebInspector.Context} context
      * @param {string} actionId
+     * @return {boolean}
      */
     handleAction: function(context, actionId)
     {
-        if (actionId === "console.show")
+        switch (actionId) {
+        case "console.show":
             WebInspector.console.show();
-        else if (actionId === "console.clear")
+            return true;
+        case "console.clear":
             WebInspector.ConsoleModel.clearConsole();
+            return true;
+        }
+        return false;
     }
 }
 

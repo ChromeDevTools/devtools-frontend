@@ -99,19 +99,20 @@ WebInspector.ShortcutRegistry.prototype = {
         if (!isPossiblyInputKey()) {
             if (event)
                 event.consume(true);
-            processNextAction.call(this);
+            processNextAction.call(this, false);
         } else {
-            this._pendingActionTimer = setTimeout(processNextAction.bind(this), 0);
+            this._pendingActionTimer = setTimeout(processNextAction.bind(this, false), 0);
         }
 
         /**
+         * @param {boolean} handled
          * @this {WebInspector.ShortcutRegistry}
          */
-        function processNextAction()
+        function processNextAction(handled)
         {
             delete this._pendingActionTimer;
             var actionId = actionIds.shift();
-            if (!actionId)
+            if (!actionId || handled)
                 return;
 
             this._actionRegistry.execute(actionId).then(processNextAction.bind(this));

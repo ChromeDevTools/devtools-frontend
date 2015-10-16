@@ -810,16 +810,18 @@ WebInspector.SourcesView.SwitchFileActionDelegate.prototype = {
      * @override
      * @param {!WebInspector.Context} context
      * @param {string} actionId
+     * @return {boolean}
      */
     handleAction: function(context, actionId)
     {
         var sourcesView = WebInspector.context.flavor(WebInspector.SourcesView);
         var currentUISourceCode = sourcesView.currentUISourceCode();
         if (!currentUISourceCode)
-            return;
+            return false;
         var nextUISourceCode = WebInspector.SourcesView.SwitchFileActionDelegate._nextFile(currentUISourceCode);
         if (!nextUISourceCode)
-            return;
+            return false;
         sourcesView.showSourceLocation(nextUISourceCode);
+        return true;
     }
 }

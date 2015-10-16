@@ -24,6 +24,7 @@ WebInspector.DevicesDialog.ActionDelegate.prototype = {
      * @override
      * @param {!WebInspector.Context} context
      * @param {string} actionId
+     * @return {boolean}
      */
     handleAction: function(context, actionId)
     {
@@ -36,6 +37,8 @@ WebInspector.DevicesDialog.ActionDelegate.prototype = {
             this._view.show(dialog.element);
             dialog.setMaxSize(new Size(800, 600));
             dialog.show();
+            return true;
         }
+        return false;
     }
 }

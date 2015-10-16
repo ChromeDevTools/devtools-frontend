@@ -574,6 +574,7 @@ WebInspector.InspectorView.DrawerToggleActionDelegate.prototype = {
      * @override
      * @param {!WebInspector.Context} context
      * @param {string} actionId
+     * @return {boolean}
      */
     handleAction: function(context, actionId)
     {
@@ -581,5 +582,6 @@ WebInspector.InspectorView.DrawerToggleActionDelegate.prototype = {
             WebInspector.inspectorView.closeDrawer();
         else
             WebInspector.inspectorView.showDrawer();
+        return true;
     }
 }

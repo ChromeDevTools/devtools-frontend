@@ -349,6 +349,7 @@ WebInspector.AdvancedSearchView.ActionDelegate.prototype = {
      * @override
      * @param {!WebInspector.Context} context
      * @param {string} actionId
+     * @return {boolean}
      */
     handleAction: function(context, actionId)
     {
@@ -362,7 +363,9 @@ WebInspector.AdvancedSearchView.ActionDelegate.prototype = {
             this._searchView._toggle(queryCandidate);
             WebInspector.inspectorView.showCloseableViewInDrawer("sources.search", WebInspector.UIString("Search"), this._searchView);
             this._searchView.focus();
+            return true;
         }
+        return false;
     }
 }
 

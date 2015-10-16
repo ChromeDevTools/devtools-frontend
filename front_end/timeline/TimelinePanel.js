@@ -1978,11 +1978,13 @@ WebInspector.TimelinePanel.RecordActionDelegate.prototype = {
      * @override
      * @param {!WebInspector.Context} context
      * @param {string} actionId
+     * @return {boolean}
      */
     handleAction: function(context, actionId)
     {
         var panel = WebInspector.context.flavor(WebInspector.TimelinePanel);
         console.assert(panel && panel instanceof WebInspector.TimelinePanel);
         panel._toggleTimelineButtonClicked();
+        return true;
     }
 }

@@ -1302,11 +1302,13 @@ WebInspector.ProfilesPanel.RecordActionDelegate.prototype = {
      * @override
      * @param {!WebInspector.Context} context
      * @param {string} actionId
+     * @return {boolean}
      */
     handleAction: function(context, actionId)
     {
         var panel = WebInspector.context.flavor(WebInspector.ProfilesPanel);
         console.assert(panel && panel instanceof WebInspector.ProfilesPanel);
         panel.toggleRecordButton();
+        return true;
     }
 }

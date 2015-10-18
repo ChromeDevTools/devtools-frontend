@@ -233,8 +233,7 @@ WebInspector.ObjectPropertyTreeElement.prototype = {
     onattach: function()
     {
         this.update();
-        if (this.property.value)
-            this.setExpandable(!this.property.value.customPreview() && this.property.value.hasChildren && !this.property.wasThrown);
+        this._updateExpandable();
     },
 
     update: function()
@@ -306,7 +305,7 @@ WebInspector.ObjectPropertyTreeElement.prototype = {
        this._prompt.detach();
        delete this._prompt;
        this._editableDiv.remove();
-       this.setExpandable(this.property.value.hasChildren && !this.property.wasThrown);
+       this._updateExpandable();
        this.listItemElement.scrollLeft = 0;
        this.listItemElement.classList.remove("editing-sub-part");
     },
@@ -423,6 +422,15 @@ WebInspector.ObjectPropertyTreeElement.prototype = {
 
         this.update();
         this.invalidateChildren();
+        this._updateExpandable();
+    },
+
+    _updateExpandable: function()
+    {
+        if (this.property.value)
+            this.setExpandable(!this.property.value.customPreview() && this.property.value.hasChildren && !this.property.wasThrown);
+        else
+            this.setExpandable(false);
     },
 
     __proto__: TreeElement.prototype

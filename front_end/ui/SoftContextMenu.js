@@ -58,11 +58,8 @@ WebInspector.SoftContextMenu.prototype = {
         root.appendChild(WebInspector.Widget.createStyleElement("ui/softContextMenu.css"));
         this._contextMenuElement = root.createChild("div");
         this.element.style.top = y + "px";
-        this.element.style.left = x + "px";
-
-        var maxHeight = WebInspector.Dialog.modalHostView().element.offsetHeight;
-        maxHeight -= y - WebInspector.Dialog.modalHostView().element.totalOffsetTop();
-        this.element.style.maxHeight = maxHeight + "px";
+        var subMenuOverlap = 3;
+        this.element.style.left = (this._parentMenu ? x - subMenuOverlap : x) + "px";
 
         this._contextMenuElement.tabIndex = 0;
         this._contextMenuElement.addEventListener("mouseup", consumeEvent, false);
@@ -80,16 +77,29 @@ WebInspector.SoftContextMenu.prototype = {
             document.body.appendChild(this._glassPaneElement);
             this._discardMenuOnResizeListener = this._discardMenu.bind(this, true);
             document.defaultView.addEventListener("resize", this._discardMenuOnResizeListener, false);
-            this._focus();
         } else {
             this._parentMenu._parentGlassPaneElement().appendChild(this.element);
         }
 
         // Re-position menu in case it does not fit.
-        if (document.body.offsetWidth <  this.element.offsetLeft + this.element.offsetWidth)
-            this.element.style.left = Math.max(0, document.body.offsetWidth - this.element.offsetWidth) + "px";
-        if (document.body.offsetHeight < this.element.offsetTop + this.element.offsetHeight)
-            this.element.style.top = Math.max(0, document.body.offsetHeight - this.element.offsetHeight) + "px";
+        if (document.body.offsetWidth < this.element.offsetLeft + this.element.offsetWidth) {
+            this.element.style.left = Math.max(0, this._parentMenu
+                ? this._parentMenu.element.offsetLeft - this.element.offsetWidth + subMenuOverlap
+                : document.body.offsetWidth - this.element.offsetWidth) + "px";
+        }
+
+        // Move submenus upwards if it does not fit.
+        if (this._parentMenu && document.body.offsetHeight < this.element.offsetTop + this.element.offsetHeight) {
+            y = Math.max(WebInspector.Dialog.modalHostView().element.totalOffsetTop(), document.body.offsetHeight - this.element.offsetHeight);
+            this.element.style.top = y + "px";
+        }
+
+        var maxHeight = WebInspector.Dialog.modalHostView().element.offsetHeight;
+        maxHeight -= y - WebInspector.Dialog.modalHostView().element.totalOffsetTop();
+        this.element.style.maxHeight = maxHeight + "px";
+
+        if (!this._parentMenu)
+            this._focus();
     },
 
     discard: function()
@@ -216,12 +226,8 @@ WebInspector.SoftContextMenu.prototype = {
             return;
 
         this._subMenu = new WebInspector.SoftContextMenu(menuItemElement._subItems, this._itemSelectedCallback, this);
-        var menuLeft = menuItemElement.totalOffsetLeft();
-        var menuRight = menuLeft + menuItemElement.offsetWidth;
-        var menuX = menuRight - 3;
-        if (menuRight + menuItemElement.offsetWidth > this._document.body.offsetWidth)
-            menuX = Math.max(0, menuLeft - menuItemElement.offsetWidth);
-        this._subMenu.show(this._document, menuX, menuItemElement.totalOffsetTop() - 1);
+        var topPadding = 4;
+        this._subMenu.show(this._document, menuItemElement.totalOffsetLeft() + menuItemElement.offsetWidth, menuItemElement.totalOffsetTop() - 1 - topPadding);
     },
 
     _hideSubMenu: function()

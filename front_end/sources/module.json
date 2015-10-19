@@ -200,6 +200,7 @@
             "type": "@WebInspector.ActionDelegate",
             "actionId": "sources.go-to-source",
             "className": "WebInspector.SourcesPanel.RevealingActionDelegate",
+            "order": 100,
             "bindings": [
                 {
                     "platform": "mac",

@@ -279,16 +279,16 @@ WebInspector.ShortcutsScreen.registerShortcuts = function()
 
     // Timeline panel
     section = WebInspector.shortcutsScreen.section(WebInspector.UIString("Timeline Panel"));
-    section.addAlternateKeys(WebInspector.ShortcutsScreen.TimelinePanelShortcuts.StartStopRecording, WebInspector.UIString("Start/stop recording"));
-    section.addAlternateKeys(WebInspector.ShortcutsScreen.TimelinePanelShortcuts.RecordPageReload, WebInspector.UIString("Record page reload"));
-    section.addAlternateKeys(WebInspector.ShortcutsScreen.TimelinePanelShortcuts.SaveToFile, WebInspector.UIString("Save timeline data"));
-    section.addAlternateKeys(WebInspector.ShortcutsScreen.TimelinePanelShortcuts.LoadFromFile, WebInspector.UIString("Load timeline data"));
-    section.addRelatedKeys(WebInspector.ShortcutsScreen.TimelinePanelShortcuts.JumpToPreviousFrame.concat(WebInspector.ShortcutsScreen.TimelinePanelShortcuts.JumpToNextFrame), WebInspector.UIString("Jump to previous/next frame"));
+    section.addAlternateKeys(WebInspector.shortcutRegistry.shortcutDescriptorsForAction("timeline.toggle-recording"), WebInspector.UIString("Start/stop recording"));
+    section.addAlternateKeys(WebInspector.shortcutRegistry.shortcutDescriptorsForAction("main.reload"), WebInspector.UIString("Record page reload"));
+    section.addAlternateKeys(WebInspector.shortcutRegistry.shortcutDescriptorsForAction("timeline.save-to-file"), WebInspector.UIString("Save timeline data"));
+    section.addAlternateKeys(WebInspector.shortcutRegistry.shortcutDescriptorsForAction("timeline.load-from-file"), WebInspector.UIString("Load timeline data"));
+    section.addRelatedKeys(WebInspector.shortcutRegistry.shortcutDescriptorsForAction("timeline.jump-to-previous-frame").concat(WebInspector.shortcutRegistry.shortcutDescriptorsForAction("timeline.jump-to-next-frame")), WebInspector.UIString("Jump to previous/next frame"));
 
 
     // Profiles panel
     section = WebInspector.shortcutsScreen.section(WebInspector.UIString("Profiles Panel"));
-    section.addAlternateKeys(WebInspector.ShortcutsScreen.ProfilesPanelShortcuts.StartStopRecording, WebInspector.UIString("Start/stop recording"));
+    section.addAlternateKeys(WebInspector.shortcutRegistry.shortcutDescriptorsForAction("profiler.toggle-recording"), WebInspector.UIString("Start/stop recording"));
 
     // Layers panel
     if (Runtime.experiments.isEnabled("layersPanel")) {
@@ -459,38 +459,6 @@ WebInspector.ShortcutsScreen.SourcesPanelShortcuts = {
     SaveAll: [
         WebInspector.KeyboardShortcut.makeDescriptor("s", WebInspector.KeyboardShortcut.Modifiers.CtrlOrMeta | WebInspector.KeyboardShortcut.Modifiers.ShiftOrOption)
     ],
-};
-
-WebInspector.ShortcutsScreen.TimelinePanelShortcuts = {
-    StartStopRecording: [
-        WebInspector.KeyboardShortcut.makeDescriptor("e", WebInspector.KeyboardShortcut.Modifiers.CtrlOrMeta)
-    ],
-
-    RecordPageReload: [
-        WebInspector.KeyboardShortcut.makeDescriptor("r", WebInspector.KeyboardShortcut.Modifiers.CtrlOrMeta)
-    ],
-
-    SaveToFile: [
-        WebInspector.KeyboardShortcut.makeDescriptor("s", WebInspector.KeyboardShortcut.Modifiers.CtrlOrMeta)
-    ],
-
-    LoadFromFile: [
-        WebInspector.KeyboardShortcut.makeDescriptor("o", WebInspector.KeyboardShortcut.Modifiers.CtrlOrMeta)
-    ],
-
-    JumpToPreviousFrame: [
-        WebInspector.KeyboardShortcut.makeDescriptor(WebInspector.KeyboardShortcut.Keys.LeftSquareBracket)
-    ],
-
-    JumpToNextFrame: [
-        WebInspector.KeyboardShortcut.makeDescriptor(WebInspector.KeyboardShortcut.Keys.RightSquareBracket)
-    ]
-};
-
-WebInspector.ShortcutsScreen.ProfilesPanelShortcuts = {
-    StartStopRecording: [
-        WebInspector.KeyboardShortcut.makeDescriptor("e", WebInspector.KeyboardShortcut.Modifiers.CtrlOrMeta)
-    ]
 };
 
 WebInspector.ShortcutsScreen.LayersPanelShortcuts = {

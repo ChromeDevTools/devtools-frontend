@@ -87,7 +87,6 @@ WebInspector.TimelinePanel = function()
     this._statusPaneContainer = timelinePane.element.createChild("div", "status-pane-container fill");
 
     this._createFileSelector();
-    this._registerShortcuts();
 
     WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.PageReloadRequested, this._pageReloadRequested, this);
     WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.Load, this._loadEventFired, this);
@@ -490,14 +489,6 @@ WebInspector.TimelinePanel.prototype = {
             this._progressToolbarItem.element.appendChild(indicator.element);
     },
 
-    _registerShortcuts: function()
-    {
-        this.registerShortcuts(WebInspector.ShortcutsScreen.TimelinePanelShortcuts.SaveToFile, this._saveToFile.bind(this));
-        this.registerShortcuts(WebInspector.ShortcutsScreen.TimelinePanelShortcuts.LoadFromFile, this._selectFileToLoad.bind(this));
-        this.registerShortcuts(WebInspector.ShortcutsScreen.TimelinePanelShortcuts.JumpToPreviousFrame, this._jumpToFrame.bind(this, -1));
-        this.registerShortcuts(WebInspector.ShortcutsScreen.TimelinePanelShortcuts.JumpToNextFrame, this._jumpToFrame.bind(this, 1));
-    },
-
     _createFileSelector: function()
     {
         if (this._fileSelectorElement)
@@ -818,8 +809,8 @@ WebInspector.TimelinePanel.prototype = {
             return e;
         }
 
-        var recordNode = encloseWithTag("b", WebInspector.ShortcutsScreen.TimelinePanelShortcuts.StartStopRecording[0].name);
-        var reloadNode = encloseWithTag("b", WebInspector.ShortcutsScreen.TimelinePanelShortcuts.RecordPageReload[0].name);
+        var recordNode = encloseWithTag("b", WebInspector.shortcutRegistry.shortcutDescriptorsForAction("timeline.toggle-recording")[0].name);
+        var reloadNode = encloseWithTag("b", WebInspector.shortcutRegistry.shortcutDescriptorsForAction("main.reload")[0].name);
         var navigateNode = encloseWithTag("b", WebInspector.UIString("WASD"));
         var hintText = createElementWithClass("div", "recording-hint");
         hintText.appendChild(WebInspector.formatLocalized(WebInspector.UIString("To capture a new timeline, click the record toolbar button or hit %s."), [recordNode], null));
@@ -1969,11 +1960,11 @@ WebInspector.LoadTimelineHandler.prototype = {
  * @constructor
  * @implements {WebInspector.ActionDelegate}
  */
-WebInspector.TimelinePanel.RecordActionDelegate = function()
+WebInspector.TimelinePanel.ActionDelegate = function()
 {
 }
 
-WebInspector.TimelinePanel.RecordActionDelegate.prototype = {
+WebInspector.TimelinePanel.ActionDelegate.prototype = {
     /**
      * @override
      * @param {!WebInspector.Context} context
@@ -1984,7 +1975,23 @@ WebInspector.TimelinePanel.RecordActionDelegate.prototype = {
     {
         var panel = WebInspector.context.flavor(WebInspector.TimelinePanel);
         console.assert(panel && panel instanceof WebInspector.TimelinePanel);
-        panel._toggleTimelineButtonClicked();
-        return true;
+        switch (actionId) {
+        case "timeline.toggle-recording":
+            panel._toggleTimelineButtonClicked();
+            return true;
+        case "timeline.save-to-file":
+            panel._saveToFile();
+            return true;
+        case "timeline.load-from-file":
+            panel._selectFileToLoad();
+            return true;
+        case "timeline.jump-to-previous-frame":
+            panel._jumpToFrame(-1);
+            return true;
+        case "timeline.jump-to-next-frame":
+            panel._jumpToFrame(1);
+            return true;
+        }
+        return false;
     }
 }

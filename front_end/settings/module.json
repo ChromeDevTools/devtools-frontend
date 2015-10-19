@@ -54,5 +54,8 @@
         "EditFileSystemView.js",
         "SettingsScreen.js",
         "FrameworkBlackboxSettingsTab.js"
+    ],
+    "resources": [
+        "settingsScreen.css"
     ]
 }

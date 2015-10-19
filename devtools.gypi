@@ -226,7 +226,6 @@
             'front_end/ui/dropTarget.css',
             'front_end/ui/emptyWidget.css',
             'front_end/ui/filter.css',
-            'front_end/ui/helpScreen.css',
             'front_end/ui/infobar.css',
             'front_end/ui/inspectorCommon.css',
             'front_end/ui/inspectorSyntaxHighlight.css',
@@ -257,7 +256,6 @@
             'front_end/ui/EmptyWidget.js',
             'front_end/ui/FilterBar.js',
             'front_end/ui/ForwardedInputEventHandler.js',
-            'front_end/ui/HelpScreen.js',
             'front_end/ui/HistoryInput.js',
             'front_end/ui/Infobar.js',
             'front_end/ui/InplaceEditor.js',
@@ -574,6 +572,7 @@
             'front_end/script_formatter_worker/ScriptFormatterWorker.js',
         ],
         'devtools_settings_js_files': [
+            'front_end/settings/settingsScreen.css',
             'front_end/settings/EditFileSystemView.js',
             'front_end/settings/FrameworkBlackboxSettingsTab.js',
             'front_end/settings/SettingsScreen.js',

@@ -36,6 +36,7 @@
 WebInspector.EditFileSystemView = function(fileSystemPath)
 {
     WebInspector.VBox.call(this);
+    this.registerRequiredCSS("settings/settingsScreen.css");
     this.element.classList.add("dialog-contents", "settings-dialog", "settings-tab");
     this._fileSystemPath = fileSystemPath;
 

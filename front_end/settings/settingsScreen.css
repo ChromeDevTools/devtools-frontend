@@ -1,19 +1,13 @@
-.help-window-outer {
-    position: absolute !important;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 2000;
-}
+/*
+ * Copyright (c) 2015 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
 
 .help-window-main {
-    color: white;
-    background-color: rgba(17, 17, 17, 0.85);
-    display: -webkit-flex;
-    -webkit-flex-direction: column;
-    border-top-width: 0;
-    border-radius: 10px;
+    color: rgb(48, 57, 66);
+    background-color: white;
+    padding: 11px 0 0 0;
 }
 
 .help-window-caption {
@@ -21,13 +15,6 @@
     margin: 0 8px;
     padding: 0 2px;
     line-height: 28px;
-}
-
-.help-window-title {
-    font-size: 16px;
-    margin: 0;
-    padding-top: 1px;
-    margin-bottom: -1px;
 }
 
 .help-content {
@@ -67,17 +54,6 @@
 .help-window-main .help-container-wrapper::-webkit-scrollbar-track:vertical {
     background: linear-gradient(to right, rgb(10, 10, 10), rgb(32, 32, 32) 25%, rgb(32, 32, 32));
     border-radius: 5px;
-}
-
-.help-close-button {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    z-index: 10;
-}
-
-body.dock-to-bottom .help-content {
-    margin-bottom: 8px;
 }
 
 .help-container {
@@ -165,7 +141,7 @@ body.dock-to-bottom .help-content {
     display: none;
 }
 
-.help-window-outer fieldset {
+fieldset {
     margin: 0;
     padding: 0;
     border: none;
@@ -205,24 +181,7 @@ body.dock-to-bottom .help-content {
     color: #222;
 }
 
-#settings-screen .help-window-main{
-    color: rgb(48, 57, 66);
-    background-color: white;
-    border-radius: 0;
-}
-
-#settings-screen .help-window-main {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    bottom: 10px;
-    left: 10px;
-    height: initial;
-    padding: 11px 0 0 0;
-    box-shadow: 1px 1px 5px 2px rgba(128, 128, 128, 0.7);
-}
-
-#settings-screen .help-window-label {
+.help-window-label {
     font-size: 18px;
     color: inherit;
     padding: 1px 0 15px 17px;

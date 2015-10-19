@@ -12,6 +12,7 @@ WebInspector.FrameworkBlackboxSettingsTab = function()
 {
     WebInspector.SettingsTab.call(this, WebInspector.UIString("Framework Blackbox Patterns"));
     this.containerElement.classList.add("blackbox-dialog", "dialog-contents", "settings-dialog", "settings-tab");
+    this.registerRequiredCSS("settings/settingsScreen.css");
 
     var contents = this.containerElement.createChild("div", "contents");
 

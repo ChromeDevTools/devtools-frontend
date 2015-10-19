@@ -30,21 +30,19 @@
 
 /**
  * @constructor
- * @param {function()} onHide
- * @extends {WebInspector.HelpScreen}
+ * @extends {WebInspector.VBox}
  */
-WebInspector.SettingsScreen = function(onHide)
+WebInspector.SettingsScreen = function()
 {
-    WebInspector.HelpScreen.call(this);
+    WebInspector.VBox.call(this, true);
+    this.registerRequiredCSS("settings/settingsScreen.css");
     this.element.id = "settings-screen";
 
-    /** @type {function()} */
-    this._onHide = onHide;
-
-    this._contentElement = this.element.createChild("div", "help-window-main");
+    this.contentElement.tabIndex = 0;
+    this.contentElement.classList.add("help-window-main");
+    this.contentElement.classList.add("vbox");
     var settingsLabelElement = createElementWithClass("div", "help-window-label");
     settingsLabelElement.createTextChild(WebInspector.UIString("Settings"));
-    this._contentElement.appendChild(this.createCloseButton());
 
     this._tabbedPane = new WebInspector.TabbedPane();
     this._tabbedPane.insertBeforeTabStrip(settingsLabelElement);
@@ -60,6 +58,7 @@ WebInspector.SettingsScreen = function(onHide)
 
     this.element.addEventListener("keydown", this._keyDown.bind(this), false);
     this._developerModeCounter = 0;
+    this.setDefaultFocusedElement(this.contentElement);
 }
 
 WebInspector.SettingsScreen.prototype = {
@@ -69,8 +68,8 @@ WebInspector.SettingsScreen.prototype = {
     wasShown: function()
     {
         this._tabbedPane.selectTab("general");
-        this._tabbedPane.show(this._contentElement);
-        WebInspector.HelpScreen.prototype.wasShown.call(this);
+        this._tabbedPane.show(this.contentElement);
+        WebInspector.VBox.prototype.wasShown.call(this);
     },
 
     /**
@@ -79,27 +78,6 @@ WebInspector.SettingsScreen.prototype = {
     selectTab: function(name)
     {
         this._tabbedPane.selectTab(name);
-    },
-
-    /**
-     * @override
-     * @return {boolean}
-     */
-    isClosingKey: function(keyCode)
-    {
-        return [
-            WebInspector.KeyboardShortcut.Keys.Enter.code,
-            WebInspector.KeyboardShortcut.Keys.Esc.code,
-        ].indexOf(keyCode) >= 0;
-    },
-
-    /**
-     * @override
-     */
-    willHide: function()
-    {
-        this._onHide();
-        WebInspector.HelpScreen.prototype.willHide.call(this);
     },
 
     /**
@@ -112,7 +90,7 @@ WebInspector.SettingsScreen.prototype = {
             this.element.classList.add("settings-developer-mode");
     },
 
-    __proto__: WebInspector.HelpScreen.prototype
+    __proto__: WebInspector.VBox.prototype
 }
 
 /**
@@ -487,36 +465,24 @@ WebInspector.SettingsController = function()
 {
     /** @type {?WebInspector.SettingsScreen} */
     this._settingsScreen;
-    this._resizeBound = this._resize.bind(this);
 }
 
 WebInspector.SettingsController.prototype = {
-    _onHideSettingsScreen: function()
-    {
-        var window = this._settingsScreen.element.ownerDocument.defaultView;
-        window.removeEventListener("resize", this._resizeBound, false);
-        delete this._settingsScreenVisible;
-    },
-
     /**
      * @param {string=} name
      */
     showSettingsScreen: function(name)
     {
         if (!this._settingsScreen)
-            this._settingsScreen = new WebInspector.SettingsScreen(this._onHideSettingsScreen.bind(this));
-        this._settingsScreen.showModal();
+            this._settingsScreen = new WebInspector.SettingsScreen();
+
+        var dialog = new WebInspector.Dialog();
+        dialog.addCloseButton();
+        this._settingsScreen.show(dialog.element);
+        dialog.show();
+
         if (name)
             this._settingsScreen.selectTab(name);
-        this._settingsScreenVisible = true;
-        var window = this._settingsScreen.element.ownerDocument.defaultView;
-        window.addEventListener("resize", this._resizeBound, false);
-    },
-
-    _resize: function()
-    {
-        if (this._settingsScreen && this._settingsScreen.isShowing())
-            this._settingsScreen.doResize();
     }
 }
 

@@ -45,6 +45,7 @@
 .sensors-view fieldset {
     border: none;
     padding: 0 0 5px 15px;
+    flex: 0 0 auto;
 }
 
 .sensors-view .field-error-message {

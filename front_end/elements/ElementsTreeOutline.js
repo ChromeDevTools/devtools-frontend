@@ -495,19 +495,6 @@ WebInspector.ElementsTreeOutline.prototype = {
         element.updateSelection();
     },
 
-    /**
-     * @param {!WebInspector.DOMNode} node
-     */
-    updateOpenCloseTags: function(node)
-    {
-        var treeElement = this.findTreeElement(node);
-        if (treeElement)
-            treeElement.updateTitle(this._updateRecordForHighlight(node));
-        var closingTagElement = treeElement.lastChild();
-        if (closingTagElement && closingTagElement.isClosingTag())
-            closingTagElement.updateTitle(this._updateRecordForHighlight(node));
-    },
-
     _selectedNodeChanged: function()
     {
         this.dispatchEventToListeners(WebInspector.ElementsTreeOutline.Events.SelectedNodeChanged, this._selectedDOMNode);
@@ -599,6 +586,9 @@ WebInspector.ElementsTreeOutline.prototype = {
      */
     _revealAndSelectNode: function(node, omitFocus)
     {
+        delete this._highlightNode;
+        this._preventElementsCollapse();
+
         if (this._suppressRevealAndSelect)
             return;
 
@@ -618,12 +608,67 @@ WebInspector.ElementsTreeOutline.prototype = {
      */
     highlightNode: function(node)
     {
-        var treeElement = null;
-        if (node) {
-            treeElement = this.createTreeElementFor(node);
-            treeElement.reveal();
+        var shouldRequestAnimationFrame = !this._highlightNode;
+        this._highlightNode = node;
+        if (shouldRequestAnimationFrame)
+            this.element.window().requestAnimationFrame(callback.bind(this));
+
+        /**
+         * @this {WebInspector.ElementsTreeOutline}
+         */
+        function callback()
+        {
+            this._highlightNodeInternal(this._highlightNode);
+            delete this._highlightNode;
         }
+    },
+
+    /**
+     * @param {?WebInspector.DOMNode} node
+     */
+    _highlightNodeInternal: function(node)
+    {
+        this.removeEventListener(TreeOutline.Events.ElementExpanded, this._preventElementsCollapse, this);
+        this.removeEventListener(TreeOutline.Events.ElementCollapsed, this._preventElementsCollapse, this);
+
+        var treeElement = null;
+
+        if (this._currentHighlightedElement) {
+            var currentTreeElement = this._currentHighlightedElement;
+            while (currentTreeElement !== this._alreadyExpandedParentElement) {
+                if (currentTreeElement.expanded)
+                    currentTreeElement.collapse();
+
+                currentTreeElement = currentTreeElement.parent;
+            }
+        }
+
+        delete this._currentHighlightedElement;
+        delete this._alreadyExpandedParentElement;
+        if (node) {
+            var deepestExpandedParent = node;
+            while (deepestExpandedParent && (!deepestExpandedParent[this._treeElementSymbol] || !deepestExpandedParent[this._treeElementSymbol].expanded))
+                deepestExpandedParent = deepestExpandedParent.parentNode;
+
+            this._alreadyExpandedParentElement = deepestExpandedParent ? deepestExpandedParent[this._treeElementSymbol] : this.rootElement();
+            treeElement = this.createTreeElementFor(node);
+        }
+
+        this._currentHighlightedElement = treeElement;
         this._setHoverEffect(treeElement);
+        if (treeElement) {
+            treeElement.reveal();
+            this.addEventListener(TreeOutline.Events.ElementExpanded, this._preventElementsCollapse, this);
+            this.addEventListener(TreeOutline.Events.ElementCollapsed, this._preventElementsCollapse, this);
+        }
+    },
+
+    _preventElementsCollapse: function()
+    {
+        delete this._currentHighlightedElement;
+        delete this._alreadyExpandedParentElement;
+        this.removeEventListener(TreeOutline.Events.ElementExpanded, this._preventElementsCollapse, this);
+        this.removeEventListener(TreeOutline.Events.ElementCollapsed, this._preventElementsCollapse, this);
     },
 
     /**

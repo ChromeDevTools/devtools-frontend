@@ -1115,10 +1115,13 @@ WebInspector.ElementsTreeElement.prototype = {
         if (node.nodeType() !== Node.ELEMENT_NODE)
             return;
 
-        var extensions = runtime.extensions(WebInspector.DOMPresentationUtils.MarkerDecorator);
+        if (!this.treeOutline._decoratorExtensions)
+            /** @type {!Array.<!Runtime.Extension>} */
+            this.treeOutline._decoratorExtensions = runtime.extensions(WebInspector.DOMPresentationUtils.MarkerDecorator);
+
         var markerToExtension = new Map();
-        for (var extension of extensions)
-            markerToExtension.set(extension.descriptor()["marker"], extension);
+        for (var i = 0; i < this.treeOutline._decoratorExtensions.length; ++i)
+            markerToExtension.set(this.treeOutline._decoratorExtensions[i].descriptor()["marker"], this.treeOutline._decoratorExtensions[i]);
 
         var promises = [];
         var decorations = [];

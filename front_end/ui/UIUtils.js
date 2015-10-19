@@ -854,9 +854,9 @@ WebInspector.highlightRangesWithStyleClass = function(element, resultRanges, sty
 {
     changes = changes || [];
     var highlightNodes = [];
-    var lineText = element.deepTextContent();
-    var ownerDocument = element.ownerDocument;
     var textNodes = element.childTextNodes();
+    var lineText = textNodes.map(function (node) { return node.textContent; }).join("");
+    var ownerDocument = element.ownerDocument;
 
     if (textNodes.length === 0)
         return highlightNodes;

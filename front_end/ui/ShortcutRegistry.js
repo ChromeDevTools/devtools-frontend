@@ -20,9 +20,9 @@ WebInspector.ShortcutRegistry = function(actionRegistry, document)
 WebInspector.ShortcutRegistry.prototype = {
     /**
      * @param {number} key
-     * @return {!Array.<string>}
+     * @return {!Array.<!WebInspector.Action>}
      */
-    applicableActions: function(key)
+    _applicableActions: function(key)
     {
         return this._actionRegistry.applicableActions(this._defaultActionsForKey(key).valuesArray(), WebInspector.context);
     },
@@ -87,8 +87,8 @@ WebInspector.ShortcutRegistry.prototype = {
     handleKey: function(key, keyIdentifier, event)
     {
         var keyModifiers = key >> 8;
-        var actionIds = this.applicableActions(key);
-        if (!actionIds.length)
+        var actions = this._applicableActions(key);
+        if (!actions.length)
             return;
         if (WebInspector.GlassPane.DefaultFocusedViewStack.length > 1) {
             if (event && !isPossiblyInputKey())
@@ -111,11 +111,11 @@ WebInspector.ShortcutRegistry.prototype = {
         function processNextAction(handled)
         {
             delete this._pendingActionTimer;
-            var actionId = actionIds.shift();
-            if (!actionId || handled)
+            var action = actions.shift();
+            if (!action || handled)
                 return;
 
-            this._actionRegistry.execute(actionId).then(processNextAction.bind(this));
+            action.execute().then(processNextAction.bind(this));
         }
 
         /**

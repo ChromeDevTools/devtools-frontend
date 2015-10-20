@@ -272,7 +272,7 @@ WebInspector.ToolbarCounter.prototype = {
     _clicked: function(event)
     {
         if (this._actionId)
-            WebInspector.actionRegistry.execute(this._actionId);
+            WebInspector.actionRegistry.getAction(this._actionId).execute();
         else
             this.dispatchEventToListeners("click", event);
     },
@@ -408,7 +408,7 @@ WebInspector.ToolbarButtonBase.prototype = {
     {
         this._longClickController.reset();
         if (this._actionId)
-            WebInspector.actionRegistry.execute(this._actionId);
+            WebInspector.actionRegistry.getAction(this._actionId).execute();
         else
             this.dispatchEventToListeners("click", event);
     },
@@ -676,7 +676,8 @@ WebInspector.ToolbarButton.prototype = {
 WebInspector.ToolbarButton.createActionButton = function(actionId)
 {
     var registry = WebInspector.actionRegistry;
-    var button = new WebInspector.ToolbarButton(registry.actionTitle(actionId), registry.actionIcon(actionId));
+    var action = registry.getAction(actionId);
+    var button = new WebInspector.ToolbarButton(action.actionTitle(), action.actionIcon());
     button.setAction(actionId);
     return button;
 }

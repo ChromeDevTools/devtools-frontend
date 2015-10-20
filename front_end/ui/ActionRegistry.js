@@ -7,7 +7,7 @@
  */
 WebInspector.ActionRegistry = function()
 {
-    /** @type {!Map.<string, !Runtime.Extension>} */
+    /** @type {!Map.<string, !WebInspector.Action>} */
     this._actionsById = new Map();
     this._registerActions();
 }
@@ -26,69 +26,91 @@ WebInspector.ActionRegistry.prototype = {
             var actionId = extension.descriptor()["actionId"];
             console.assert(actionId);
             console.assert(!this._actionsById.get(actionId));
-            this._actionsById.set(actionId, extension);
+            this._actionsById.set(actionId, new WebInspector.Action(extension));
         }
     },
 
     /**
      * @param {!Array.<string>} actionIds
      * @param {!WebInspector.Context} context
-     * @return {!Array.<string>}
+     * @return {!Array.<!WebInspector.Action>}
      */
     applicableActions: function(actionIds, context)
     {
         var extensions = [];
         actionIds.forEach(function(actionId) {
-           var extension = this._actionsById.get(actionId);
-           if (extension)
-               extensions.push(extension);
+           var action = this._actionsById.get(actionId);
+           if (action)
+               extensions.push(action._extension);
         }, this);
-        return context.applicableExtensions(extensions).valuesArray().map(function(extension) {
-            return extension.descriptor()["actionId"];
-        });
+        return context.applicableExtensions(extensions).valuesArray().map(extensionToAction.bind(this));
+
+        /**
+         * @param {!Runtime.Extension} extension
+         * @return {!WebInspector.Action}
+         * @this {WebInspector.ActionRegistry}
+         */
+        function extensionToAction(extension)
+        {
+            return this.getAction(extension.descriptor()["actionId"]);
+        }
     },
 
     /**
      * @param {string} actionId
+     * @return {!WebInspector.Action}
+     */
+    getAction: function(actionId)
+    {
+        var action = this._actionsById.get(actionId);
+        console.assert(action, "No action found for actionId '" + actionId + "'");
+        return /** @type {!WebInspector.Action} */ (action);
+    }
+}
+
+/**
+ * @constructor
+ */
+WebInspector.Action = function(extension)
+{
+    this._extension = extension
+}
+
+WebInspector.Action.prototype = {
+    /**
      * @return {!Promise.<boolean>}
      */
-    execute: function(actionId)
+    execute: function()
     {
-        var extension = this._actionsById.get(actionId);
-        console.assert(extension, "No action found for actionId '" + actionId + "'");
-        return extension.instancePromise().then(handleAction);
+        return this._extension.instancePromise().then(handleAction.bind(this));
 
         /**
          * @param {!Object} actionDelegate
          * @return {boolean}
+         * @this {WebInspector.Action}
          */
         function handleAction(actionDelegate)
         {
+            var actionId = this._extension.descriptor()["actionId"];
             var delegate = /** @type {!WebInspector.ActionDelegate} */(actionDelegate);
             return delegate.handleAction(WebInspector.context, actionId);
         }
     },
 
     /**
-     * @param {string} actionId
      * @return {string}
      */
-    actionTitle: function(actionId)
+    actionTitle: function()
     {
-        var extension = this._actionsById.get(actionId);
-        console.assert(extension, "No action found for actionId '" + actionId + "'");
-        return extension.descriptor()["title"] || "";
+        return this._extension.descriptor()["title"] || "";
     },
 
     /**
-     * @param {string} actionId
      * @return {string}
      */
-    actionIcon: function(actionId)
+    actionIcon: function()
     {
-        var extension = this._actionsById.get(actionId);
-        console.assert(extension, "No action found for actionId '" + actionId + "'");
-        return extension.descriptor()["iconClass"] || "";
+        return this._extension.descriptor()["iconClass"] || "";
     }
 }
 

@@ -1003,11 +1003,11 @@ WebInspector.TimelineModel.prototype = {
             }
         }
 
-        if (jsSamples) {
+        if (jsSamples && jsSamples.length)
             events = events.mergeOrdered(jsSamples, WebInspector.TracingModel.Event.orderedCompareStartTime);
-            var jsFrameEvents = WebInspector.TimelineJSProfileProcessor.generateJSFrameEvents(events);
+        var jsFrameEvents = WebInspector.TimelineJSProfileProcessor.generateJSFrameEvents(events);
+        if (jsFrameEvents && jsFrameEvents.length)
             events = jsFrameEvents.mergeOrdered(events, WebInspector.TracingModel.Event.orderedCompareStartTime);
-        }
 
         var threadEvents;
         var threadAsyncEventsByGroup;

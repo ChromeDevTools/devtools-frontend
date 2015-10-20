@@ -8,7 +8,8 @@
         },
         {
             "type": "context-menu-item",
-            "location": "mainMenu/navigate",
+            "location": "mainMenu/tools/open",
+            "order": 50,
             "actionId": "devices.dialog.show"
         }
     ],

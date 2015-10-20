@@ -212,7 +212,8 @@ WebInspector.ObjectPropertyTreeElement.prototype = {
         var propertyValue = /** @type {!WebInspector.RemoteObject} */ (this.property.value);
         console.assert(propertyValue);
         var skipProto = this.treeOutline ? this.treeOutline._skipProto : true;
-        WebInspector.ObjectPropertyTreeElement._populate(this, propertyValue, skipProto);
+        var targetValue = this.property.name !== '__proto__' ? propertyValue : this.property.parentObject;
+        WebInspector.ObjectPropertyTreeElement._populate(this, propertyValue, skipProto, undefined, undefined, undefined, targetValue);
     },
 
     /**
@@ -443,8 +444,9 @@ WebInspector.ObjectPropertyTreeElement.prototype = {
  * @param {?string=} emptyPlaceholder
  * @param {boolean=} flattenProtoChain
  * @param {!Array.<!WebInspector.RemoteObjectProperty>=} extraProperties
+ * @param {!WebInspector.RemoteObject=} targetValue
  */
-WebInspector.ObjectPropertyTreeElement._populate = function(treeElement, value, skipProto, emptyPlaceholder, flattenProtoChain, extraProperties)
+WebInspector.ObjectPropertyTreeElement._populate = function(treeElement, value, skipProto, emptyPlaceholder, flattenProtoChain, extraProperties, targetValue)
 {
     if (value.arrayLength() > WebInspector.ObjectPropertiesSection._arrayLoadThreshold) {
         treeElement.removeChildren();
@@ -467,7 +469,7 @@ WebInspector.ObjectPropertyTreeElement._populate = function(treeElement, value, 
             properties.push(extraProperties[i]);
 
         WebInspector.ObjectPropertyTreeElement.populateWithProperties(treeElement, properties, internalProperties,
-            skipProto, value, emptyPlaceholder);
+            skipProto, targetValue || value, emptyPlaceholder);
     }
 
     if (flattenProtoChain)

@@ -147,8 +147,6 @@ WebInspector.TimelinePanel.DetailsTab = {
 WebInspector.TimelinePanel.rowHeight = 18;
 WebInspector.TimelinePanel.headerHeight = 20;
 
-WebInspector.TimelinePanel._aggregatedStatsKey = Symbol("aggregatedStats");
-
 WebInspector.TimelinePanel.durationFilterPresetsMs = [0, 1, 15];
 
 WebInspector.TimelinePanel.prototype = {
@@ -1134,88 +1132,12 @@ WebInspector.TimelinePanel.prototype = {
     },
 
     /**
-     * @param {!WebInspector.TimelineModel.Record} record
-     * @param {number} startTime
-     * @param {number} endTime
-     * @param {!Object} aggregatedStats
-     */
-    _collectAggregatedStatsForRecord: function(record, startTime, endTime, aggregatedStats)
-    {
-        var records = [];
-
-        if (!record.endTime() || record.endTime() < startTime || record.startTime() > endTime)
-            return;
-
-        var childrenTime = 0;
-        var children = record.children() || [];
-        for (var i = 0; i < children.length; ++i) {
-            var child = children[i];
-            if (!child.endTime() || child.endTime() < startTime || child.startTime() > endTime)
-                continue;
-            childrenTime += Math.min(endTime, child.endTime()) - Math.max(startTime, child.startTime());
-            this._collectAggregatedStatsForRecord(child, startTime, endTime, aggregatedStats);
-        }
-        var categoryName = WebInspector.TimelineUIUtils.categoryForRecord(record).name;
-        var ownTime = Math.min(endTime, record.endTime()) - Math.max(startTime, record.startTime()) - childrenTime;
-        aggregatedStats[categoryName] = (aggregatedStats[categoryName] || 0) + ownTime;
-    },
-
-    /**
      * @param {number} startTime
      * @param {number} endTime
      */
     _updateSelectedRangeStats: function(startTime, endTime)
     {
-        // Return early in case 0 selection window.
-        if (startTime < 0)
-            return;
-
-        var aggregatedStats = {};
-
-        /**
-         * @param {number} value
-         * @param {!WebInspector.TimelineModel.Record} task
-         * @return {number}
-         */
-        function compareEndTime(value, task)
-        {
-            return value < task.endTime() ? -1 : 1;
-        }
-        var mainThreadTasks = this._model.mainThreadTasks();
-        var taskIndex = insertionIndexForObjectInListSortedByFunction(startTime, mainThreadTasks, compareEndTime);
-        for (; taskIndex < mainThreadTasks.length; ++taskIndex) {
-            var task = mainThreadTasks[taskIndex];
-            if (task.startTime() > endTime)
-                break;
-            if (task.startTime() > startTime && task.endTime() < endTime) {
-                // cache stats for top-level entries that fit the range entirely.
-                var taskStats = task[WebInspector.TimelinePanel._aggregatedStatsKey];
-                if (!taskStats) {
-                    taskStats = {};
-                    this._collectAggregatedStatsForRecord(task, startTime, endTime, taskStats);
-                    task[WebInspector.TimelinePanel._aggregatedStatsKey] = taskStats;
-                }
-                for (var key in taskStats)
-                    aggregatedStats[key] = (aggregatedStats[key] || 0) + taskStats[key];
-                continue;
-            }
-            this._collectAggregatedStatsForRecord(task, startTime, endTime, aggregatedStats);
-        }
-
-        var aggregatedTotal = 0;
-        for (var categoryName in aggregatedStats)
-            aggregatedTotal += aggregatedStats[categoryName];
-        aggregatedStats["idle"] = Math.max(0, endTime - startTime - aggregatedTotal);
-
-        var contentHelper = new WebInspector.TimelineDetailsContentHelper(null, null, null, true);
-        var pieChart = WebInspector.TimelineUIUtils.generatePieChart(aggregatedStats);
-
-        var startOffset = startTime - this._model.minimumRecordTime();
-        var endOffset = endTime - this._model.minimumRecordTime();
-        contentHelper.appendTextRow(WebInspector.UIString("Range"), WebInspector.UIString("%s \u2013 %s", Number.millisToString(startOffset), Number.millisToString(endOffset)));
-        contentHelper.appendElementRow(WebInspector.UIString("Aggregated Time"), pieChart);
-
-        this.showInDetails(contentHelper.element);
+        this.showInDetails(WebInspector.TimelineUIUtils.buildRangeStats(this._model, startTime, endTime));
     },
 
     /**

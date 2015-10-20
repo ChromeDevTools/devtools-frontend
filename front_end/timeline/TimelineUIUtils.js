@@ -748,6 +748,91 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
     return fragment;
 }
 
+WebInspector.TimelineUIUtils._aggregatedStatsKey = Symbol("aggregatedStats");
+
+/**
+ * @param {!WebInspector.TimelineModel} model
+ * @param {number} startTime
+ * @param {number} endTime
+ * @return {!Element}
+ */
+WebInspector.TimelineUIUtils.buildRangeStats = function(model, startTime, endTime)
+{
+    var aggregatedStats = {};
+
+    /**
+     * @param {number} value
+     * @param {!WebInspector.TimelineModel.Record} task
+     * @return {number}
+     */
+    function compareEndTime(value, task)
+    {
+        return value < task.endTime() ? -1 : 1;
+    }
+    var mainThreadTasks = model.mainThreadTasks();
+    var taskIndex = insertionIndexForObjectInListSortedByFunction(startTime, mainThreadTasks, compareEndTime);
+    for (; taskIndex < mainThreadTasks.length; ++taskIndex) {
+        var task = mainThreadTasks[taskIndex];
+        if (task.startTime() > endTime)
+            break;
+        if (task.startTime() > startTime && task.endTime() < endTime) {
+            // cache stats for top-level entries that fit the range entirely.
+            var taskStats = task[WebInspector.TimelineUIUtils._aggregatedStatsKey];
+            if (!taskStats) {
+                taskStats = {};
+                WebInspector.TimelineUIUtils._collectAggregatedStatsForRecord(task, startTime, endTime, taskStats);
+                task[WebInspector.TimelineUIUtils._aggregatedStatsKey] = taskStats;
+            }
+            for (var key in taskStats)
+                aggregatedStats[key] = (aggregatedStats[key] || 0) + taskStats[key];
+            continue;
+        }
+        WebInspector.TimelineUIUtils._collectAggregatedStatsForRecord(task, startTime, endTime, aggregatedStats);
+    }
+
+    var aggregatedTotal = 0;
+    for (var categoryName in aggregatedStats)
+        aggregatedTotal += aggregatedStats[categoryName];
+    aggregatedStats["idle"] = Math.max(0, endTime - startTime - aggregatedTotal);
+
+    var contentHelper = new WebInspector.TimelineDetailsContentHelper(null, null, null, true);
+    var pieChart = WebInspector.TimelineUIUtils.generatePieChart(aggregatedStats);
+
+    var startOffset = startTime - model.minimumRecordTime();
+    var endOffset = endTime - model.minimumRecordTime();
+    contentHelper.appendTextRow(WebInspector.UIString("Range"), WebInspector.UIString("%s \u2013 %s", Number.millisToString(startOffset), Number.millisToString(endOffset)));
+    contentHelper.appendElementRow(WebInspector.UIString("Aggregated Time"), pieChart);
+
+    return contentHelper.element;
+}
+
+/**
+ * @param {!WebInspector.TimelineModel.Record} record
+ * @param {number} startTime
+ * @param {number} endTime
+ * @param {!Object} aggregatedStats
+ */
+WebInspector.TimelineUIUtils._collectAggregatedStatsForRecord = function(record, startTime, endTime, aggregatedStats)
+{
+    var records = [];
+
+    if (!record.endTime() || record.endTime() < startTime || record.startTime() > endTime)
+        return;
+
+    var childrenTime = 0;
+    var children = record.children() || [];
+    for (var i = 0; i < children.length; ++i) {
+        var child = children[i];
+        if (!child.endTime() || child.endTime() < startTime || child.startTime() > endTime)
+            continue;
+        childrenTime += Math.min(endTime, child.endTime()) - Math.max(startTime, child.startTime());
+        WebInspector.TimelineUIUtils._collectAggregatedStatsForRecord(child, startTime, endTime, aggregatedStats);
+    }
+    var categoryName = WebInspector.TimelineUIUtils.categoryForRecord(record).name;
+    var ownTime = Math.min(endTime, record.endTime()) - Math.max(startTime, record.startTime()) - childrenTime;
+    aggregatedStats[categoryName] = (aggregatedStats[categoryName] || 0) + ownTime;
+}
+
 /**
  * @param {!WebInspector.TimelineModel.NetworkRequest} request
  * @return {!Array<!{title: string, value: (string|!Element)}>}

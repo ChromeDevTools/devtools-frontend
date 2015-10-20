@@ -251,6 +251,7 @@ WebInspector.Spectrum.prototype = {
      */
     _showPalette: function(palette, animate, event)
     {
+        this._resizeForSelectedPalette();
         this._paletteContainer.removeChildren();
         for (var i = 0; i < palette.colors.length; i++) {
             var animationDelay = animate ? i * 100 / palette.colors.length : 0;
@@ -443,10 +444,8 @@ WebInspector.Spectrum.prototype = {
 
         this._selectedColorPalette = WebInspector.settings.createSetting("selectedColorPalette", WebInspector.Spectrum.GeneratedPaletteTitle);
         var palette = this._palettes.get(this._selectedColorPalette.get());
-        if (palette) {
-            this._resizeForSelectedPalette();
+        if (palette)
             this._showPalette(palette, true);
-        }
     },
 
     /**
@@ -462,7 +461,6 @@ WebInspector.Spectrum.prototype = {
             this._paletteSelected(WebInspector.Spectrum.MaterialPalette);
             return;
         }
-        this._resizeForSelectedPalette();
         this._showPalette(generatedPalette, true);
     },
 
@@ -490,7 +488,6 @@ WebInspector.Spectrum.prototype = {
     _paletteSelected: function(palette)
     {
         this._selectedColorPalette.set(palette.title);
-        this._resizeForSelectedPalette();
         this._showPalette(palette, true);
     },
 
@@ -531,7 +528,6 @@ WebInspector.Spectrum.prototype = {
         palette.colors.push(this.colorString());
         this._customPaletteSetting.set(palette);
         this._showPalette(this._customPaletteSetting.get(), false);
-        this._resizeForSelectedPalette();
     },
 
     /**
@@ -564,7 +560,6 @@ WebInspector.Spectrum.prototype = {
             palette.colors.splice(colorIndex, 1);
         this._customPaletteSetting.set(palette);
         this._showPalette(this._customPaletteSetting.get(), false);
-        this._resizeForSelectedPalette();
     },
 
     /**

@@ -78,28 +78,7 @@ WebInspector.Panel.prototype = {
     {
         var shortcutKey = WebInspector.KeyboardShortcut.makeKeyFromEvent(event);
         var handler = this._shortcuts[shortcutKey];
-        if (handler && handler(event)) {
-            event.handled = true;
-            return;
-        }
-
-        var searchableView = this.searchableView();
-        if (!searchableView)
-            return;
-
-        function handleSearchShortcuts(shortcuts, handler)
-        {
-            for (var i = 0; i < shortcuts.length; ++i) {
-                if (shortcuts[i].key !== shortcutKey)
-                    continue;
-                return handler.call(searchableView);
-            }
-            return false;
-        }
-
-        if (handleSearchShortcuts(WebInspector.SearchableView.findShortcuts(), searchableView.handleFindShortcut))
-            event.handled = true;
-        else if (handleSearchShortcuts(WebInspector.SearchableView.cancelSearchShortcuts(), searchableView.handleCancelSearchShortcut))
+        if (handler && handler(event))
             event.handled = true;
     },
 

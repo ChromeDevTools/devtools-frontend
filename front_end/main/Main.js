@@ -749,6 +749,40 @@ WebInspector.Main.ZoomActionDelegate.prototype = {
  * @constructor
  * @implements {WebInspector.ActionDelegate}
  */
+WebInspector.Main.SearchActionDelegate = function()
+{
+}
+
+WebInspector.Main.SearchActionDelegate.prototype = {
+    /**
+     * @override
+     * @param {!WebInspector.Context} context
+     * @param {string} actionId
+     * @return {boolean}
+     */
+    handleAction: function(context, actionId)
+    {
+        var searchableView = WebInspector.SearchableView.fromElement(WebInspector.currentFocusElement()) || WebInspector.inspectorView.currentPanel().searchableView();
+        if (!searchableView)
+            return false;
+        switch (actionId) {
+        case "main.search-in-panel.find":
+            return searchableView.handleFindShortcut();
+        case "main.search-in-panel.cancel":
+            return searchableView.handleCancelSearchShortcut();
+        case "main.search-in-panel.find-next":
+            return searchableView.handleFindNextShortcut();
+        case "main.search-in-panel.find-previous":
+            return searchableView.handleFindPreviousShortcut();
+        }
+        return false;
+    }
+}
+
+/**
+ * @constructor
+ * @implements {WebInspector.ActionDelegate}
+ */
 WebInspector.Main.InspectDevicesActionDelegate = function()
 {
 }

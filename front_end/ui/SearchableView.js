@@ -39,11 +39,10 @@ WebInspector.SearchableView = function(searchable, settingName)
 {
     WebInspector.VBox.call(this, true);
     this.registerRequiredCSS("ui/searchableView.css");
+    this.element[WebInspector.SearchableView._symbol] = this;
 
     this._searchProvider = searchable;
     this._setting = settingName ? WebInspector.settings.createSetting(settingName, {}) : null;
-
-    this.element.addEventListener("keydown", this._onKeyDown.bind(this), false);
 
     this.contentElement.createChild("content");
     this._footerElementContainer = this.contentElement.createChild("div", "search-bar hidden");
@@ -142,60 +141,25 @@ WebInspector.SearchableView = function(searchable, settingName)
     cancelButtonElement.addEventListener("click", this.closeSearch.bind(this), false);
     this._minimalSearchQuerySize = 3;
 
-    this._registerShortcuts();
     this._loadSetting();
 }
 
 WebInspector.SearchableView._lastUniqueId = 0;
 
-/**
- * @return {!Array.<!WebInspector.KeyboardShortcut.Descriptor>}
- */
-WebInspector.SearchableView.findShortcuts = function()
-{
-    if (WebInspector.SearchableView._findShortcuts)
-        return WebInspector.SearchableView._findShortcuts;
-    WebInspector.SearchableView._findShortcuts = [WebInspector.KeyboardShortcut.makeDescriptor("f", WebInspector.KeyboardShortcut.Modifiers.CtrlOrMeta)];
-    if (!WebInspector.isMac())
-        WebInspector.SearchableView._findShortcuts.push(WebInspector.KeyboardShortcut.makeDescriptor(WebInspector.KeyboardShortcut.Keys.F3));
-    return WebInspector.SearchableView._findShortcuts;
-}
+WebInspector.SearchableView._symbol = Symbol("searchableView");
 
 /**
- * @return {!Array.<!WebInspector.KeyboardShortcut.Descriptor>}
+ * @param {?Element} element
+ * @return {?WebInspector.SearchableView}
  */
-WebInspector.SearchableView.cancelSearchShortcuts = function()
+WebInspector.SearchableView.fromElement = function(element)
 {
-    if (WebInspector.SearchableView._cancelSearchShortcuts)
-        return WebInspector.SearchableView._cancelSearchShortcuts;
-    WebInspector.SearchableView._cancelSearchShortcuts = [WebInspector.KeyboardShortcut.makeDescriptor(WebInspector.KeyboardShortcut.Keys.Esc)];
-    return WebInspector.SearchableView._cancelSearchShortcuts;
-}
-
-/**
- * @return {!Array.<!WebInspector.KeyboardShortcut.Descriptor>}
- */
-WebInspector.SearchableView.findNextShortcut = function()
-{
-    if (WebInspector.SearchableView._findNextShortcut)
-        return WebInspector.SearchableView._findNextShortcut;
-    WebInspector.SearchableView._findNextShortcut = [];
-    if (WebInspector.isMac())
-        WebInspector.SearchableView._findNextShortcut.push(WebInspector.KeyboardShortcut.makeDescriptor("g", WebInspector.KeyboardShortcut.Modifiers.Meta));
-    return WebInspector.SearchableView._findNextShortcut;
-}
-
-/**
- * @return {!Array.<!WebInspector.KeyboardShortcut.Descriptor>}
- */
-WebInspector.SearchableView.findPreviousShortcuts = function()
-{
-    if (WebInspector.SearchableView._findPreviousShortcuts)
-        return WebInspector.SearchableView._findPreviousShortcuts;
-    WebInspector.SearchableView._findPreviousShortcuts = [];
-    if (WebInspector.isMac())
-        WebInspector.SearchableView._findPreviousShortcuts.push(WebInspector.KeyboardShortcut.makeDescriptor("g", WebInspector.KeyboardShortcut.Modifiers.Meta | WebInspector.KeyboardShortcut.Modifiers.Shift));
-    return WebInspector.SearchableView._findPreviousShortcuts;
+    var view = null;
+    while (element && !view) {
+        view = element[WebInspector.SearchableView._symbol];
+        element = element.parentElementOrShadowHost();
+    }
+    return view;
 }
 
 WebInspector.SearchableView.prototype = {
@@ -245,38 +209,6 @@ WebInspector.SearchableView.prototype = {
                 return element;
         }
         return WebInspector.Widget.prototype.defaultFocusedElement.call(this);
-    },
-
-    /**
-     * @param {!Event} event
-     */
-    _onKeyDown: function(event)
-    {
-        var shortcutKey = WebInspector.KeyboardShortcut.makeKeyFromEvent(/**@type {!KeyboardEvent}*/(event));
-        var handler = this._shortcuts[shortcutKey];
-        if (handler && handler(event))
-            event.consume(true);
-    },
-
-    _registerShortcuts: function()
-    {
-        this._shortcuts = {};
-
-        /**
-         * @param {!Array.<!WebInspector.KeyboardShortcut.Descriptor>} shortcuts
-         * @param {function()} handler
-         * @this {WebInspector.SearchableView}
-         */
-        function register(shortcuts, handler)
-        {
-            for (var i = 0; i < shortcuts.length; ++i)
-                this._shortcuts[shortcuts[i].key] = handler;
-        }
-
-        register.call(this, WebInspector.SearchableView.findShortcuts(), this.handleFindShortcut.bind(this));
-        register.call(this, WebInspector.SearchableView.cancelSearchShortcuts(), this.handleCancelSearchShortcut.bind(this));
-        register.call(this, WebInspector.SearchableView.findNextShortcut(), this.handleFindNextShortcut.bind(this));
-        register.call(this, WebInspector.SearchableView.findPreviousShortcuts(), this.handleFindPreviousShortcut.bind(this));
     },
 
     /**

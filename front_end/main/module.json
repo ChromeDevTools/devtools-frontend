@@ -50,6 +50,7 @@
             "type": "@WebInspector.ActionDelegate",
             "actionId": "main.toggle-drawer",
             "className": "WebInspector.InspectorView.DrawerToggleActionDelegate",
+            "order": 100,
             "bindings": [
                 {
                     "shortcut": "Esc"
@@ -138,6 +139,54 @@
                 {
                     "platform": "mac",
                     "shortcut": "Meta+0 Meta+Numpad0"
+                }
+            ]
+        },
+        {
+            "type": "@WebInspector.ActionDelegate",
+            "actionId": "main.search-in-panel.find",
+            "className": "WebInspector.Main.SearchActionDelegate",
+            "bindings": [
+                {
+                    "platform": "windows,linux",
+                    "shortcut": "Ctrl+F"
+                },
+                {
+                    "platform": "mac",
+                    "shortcut": "Meta+F F3"
+                }
+            ]
+        },
+        {
+            "type": "@WebInspector.ActionDelegate",
+            "actionId": "main.search-in-panel.cancel",
+            "className": "WebInspector.Main.SearchActionDelegate",
+            "order": 10,
+            "bindings": [
+                {
+                    "shortcut": "Esc"
+                }
+            ]
+        },
+        {
+            "type": "@WebInspector.ActionDelegate",
+            "actionId": "main.search-in-panel.find-next",
+            "className": "WebInspector.Main.SearchActionDelegate",
+            "bindings": [
+                {
+                    "platform": "mac",
+                    "shortcut": "Meta+G"
+                }
+            ]
+        },
+        {
+            "type": "@WebInspector.ActionDelegate",
+            "actionId": "main.search-in-panel.find-previous",
+            "className": "WebInspector.Main.SearchActionDelegate",
+            "bindings": [
+                {
+                    "platform": "mac",
+                    "shortcut": "Meta+Shift+G"
                 }
             ]
         },

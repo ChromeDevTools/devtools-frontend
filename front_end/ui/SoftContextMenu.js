@@ -240,22 +240,26 @@ WebInspector.SoftContextMenu.prototype = {
 
     _menuItemMouseOver: function(event)
     {
-        this._highlightMenuItem(event.target);
+        this._highlightMenuItem(event.target, true);
     },
 
     _menuItemMouseLeave: function(event)
     {
         if (!this._subMenu || !event.relatedTarget) {
-            this._highlightMenuItem(null);
+            this._highlightMenuItem(null, true);
             return;
         }
 
         var relatedTarget = event.relatedTarget;
         if (relatedTarget.classList.contains("soft-context-menu-glass-pane"))
-            this._highlightMenuItem(null);
+            this._highlightMenuItem(null, true);
     },
 
-    _highlightMenuItem: function(menuItemElement)
+    /**
+     * @param {?Element} menuItemElement
+     * @param {boolean} scheduleSubMenu
+     */
+    _highlightMenuItem: function(menuItemElement, scheduleSubMenu)
     {
         if (this._highlightedMenuItemElement ===  menuItemElement)
             return;
@@ -272,7 +276,7 @@ WebInspector.SoftContextMenu.prototype = {
         if (this._highlightedMenuItemElement) {
             this._highlightedMenuItemElement.classList.add("soft-context-menu-item-mouse-over");
             this._contextMenuElement.focus();
-            if (this._highlightedMenuItemElement._subItems && !this._highlightedMenuItemElement._subMenuTimer)
+            if (scheduleSubMenu && this._highlightedMenuItemElement._subItems && !this._highlightedMenuItemElement._subMenuTimer)
                 this._highlightedMenuItemElement._subMenuTimer = setTimeout(this._showSubMenu.bind(this, this._highlightedMenuItemElement), 150);
         }
     },
@@ -283,7 +287,7 @@ WebInspector.SoftContextMenu.prototype = {
         while (menuItemElement && (menuItemElement._isSeparator || menuItemElement._isCustom))
             menuItemElement = menuItemElement.previousSibling;
         if (menuItemElement)
-            this._highlightMenuItem(menuItemElement);
+            this._highlightMenuItem(menuItemElement, false);
     },
 
     _highlightNext: function()
@@ -292,7 +296,7 @@ WebInspector.SoftContextMenu.prototype = {
         while (menuItemElement && (menuItemElement._isSeparator || menuItemElement._isCustom))
             menuItemElement = menuItemElement.nextSibling;
         if (menuItemElement)
-            this._highlightMenuItem(menuItemElement);
+            this._highlightMenuItem(menuItemElement, false);
     },
 
     _menuKeyDown: function(event)
@@ -304,8 +308,8 @@ WebInspector.SoftContextMenu.prototype = {
             this._highlightNext(); break;
         case "Left":
             if (this._parentMenu) {
-                this._highlightMenuItem(null);
-                this._parentMenu._focus();
+                this._highlightMenuItem(null, false);
+                this._parentMenu._hideSubMenu();
             }
             break;
         case "Right":

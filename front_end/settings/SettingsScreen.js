@@ -87,7 +87,7 @@ WebInspector.SettingsScreen.prototype = {
     {
         var shiftKeyCode = 16;
         if (event.keyCode === shiftKeyCode && ++this._developerModeCounter > 5)
-            this.element.classList.add("settings-developer-mode");
+            this.contentElement.classList.add("settings-developer-mode");
     },
 
     __proto__: WebInspector.VBox.prototype

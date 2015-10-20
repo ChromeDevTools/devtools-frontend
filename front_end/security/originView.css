@@ -73,3 +73,7 @@
 .security-origin-view .truncated-san .truncated-entry {
     display: none;
 }
+
+.security-certificate-button {
+    margin-top: 4px;
+}

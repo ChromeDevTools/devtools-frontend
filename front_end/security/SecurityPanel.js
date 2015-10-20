@@ -317,6 +317,25 @@ WebInspector.SecurityPanel._instance = function()
 }
 
 /**
+ * @param {string} text
+ * @param {!NetworkAgent.CertificateId} certificateId
+ * @return {!Element}
+ */
+WebInspector.SecurityPanel.createCertificateViewerButton = function(text, certificateId)
+{
+    /**
+     * @param {!Event} e
+     */
+    function showCertificateViewer(e)
+    {
+        e.consume();
+        WebInspector.multitargetNetworkManager.showCertificateViewer(/** @type {number} */ (certificateId));
+    }
+
+    return createTextButton(text, showCertificateViewer, "security-certificate-button");
+}
+
+/**
  * @constructor
  * @extends {WebInspector.SidebarTreeElement}
  * @param {!WebInspector.SecurityPanel} panel
@@ -487,23 +506,12 @@ WebInspector.SecurityMainView.prototype = {
         var text = explanationSection.createChild("div", "security-explanation-text");
         text.createChild("div", "security-explanation-title").textContent = explanation.summary;
         text.createChild("div").textContent = explanation.description;
-        if ("certificateId" in explanation) {
-            var certificateAnchor = text.createChild("div", "security-certificate-id link");
-            certificateAnchor.textContent = WebInspector.UIString("View certificate");
-            certificateAnchor.href = "";
-            certificateAnchor.addEventListener("click", showCertificateViewer, false);
+
+        if (explanation.certificateId) {
+            text.appendChild(WebInspector.SecurityPanel.createCertificateViewerButton(WebInspector.UIString("View certificate"), explanation.certificateId));
         }
 
         return text;
-
-        /**
-         * @param {!Event} e
-         */
-        function showCertificateViewer(e)
-        {
-            e.consume();
-            WebInspector.multitargetNetworkManager.showCertificateViewer(/** @type {number} */ (explanation.certificateId));
-        }
     },
 
     /**
@@ -685,6 +693,7 @@ WebInspector.SecurityOriginView = function(panel, origin, originState)
             table.addRow("Valid From", validFromString);
             table.addRow("Valid Until", validUntilString);
             table.addRow("Issuer", certificateDetails.issuer);
+            table.addRow("", WebInspector.SecurityPanel.createCertificateViewerButton(WebInspector.UIString("Open full certificate details"), originState.securityDetails.certificateId));
             // TODO(lgarron): Make SCT status available in certificate details and show it here.
         }
 
@@ -786,18 +795,18 @@ WebInspector.SecurityDetailsTable.prototype = {
 
     /**
      * @param {string} key
-     * @param {string|!HTMLDivElement} value
+     * @param {string|!Node} value
      */
     addRow: function(key, value)
     {
         var row = this._element.createChild("div", "details-table-row");
-        row.createChild("div").textContent = WebInspector.UIString(key);
+        row.createChild("div").textContent = key;
 
         var valueDiv = row.createChild("div");
-        if (value instanceof HTMLDivElement) {
-            valueDiv.appendChild(value);
-        } else {
+        if (typeof value === "string") {
             valueDiv.textContent = value;
+        } else {
+            valueDiv.appendChild(value);
         }
     }
 }

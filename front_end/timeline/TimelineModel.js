@@ -171,6 +171,16 @@ WebInspector.TimelineModel.Events = {
     RetrieveEventsProgress: "RetrieveEventsProgress"
 }
 
+/**
+ * @enum {string}
+ */
+WebInspector.TimelineModel.WarningType = {
+    ForcedStyle: "ForcedStyle",
+    ForcedLayout: "ForcedLayout",
+    IdleDeadlineExceeded: "IdleDeadlineExceeded",
+    V8Deopt: "V8Deopt"
+}
+
 WebInspector.TimelineModel.MainThreadName = "main";
 WebInspector.TimelineModel.WorkerThreadName = "DedicatedWorker Thread";
 WebInspector.TimelineModel.RendererMainThreadName = "CrRendererMain";
@@ -1080,6 +1090,8 @@ WebInspector.TimelineModel.prototype = {
             if (event.args["beginData"])
                 event.initiator = this._lastScheduleStyleRecalculation[event.args["beginData"]["frame"]];
             this._lastRecalculateStylesEvent = event;
+            if (this._currentScriptEvent)
+                event.warning = WebInspector.TimelineModel.WarningType.ForcedStyle;
             break;
 
         case recordTypes.ScheduleStyleInvalidationTracking:
@@ -1113,7 +1125,7 @@ WebInspector.TimelineModel.prototype = {
             }
             this._layoutInvalidate[frameId] = null;
             if (this._currentScriptEvent)
-                event.warning = WebInspector.UIString("Forced synchronous layout is a possible performance bottleneck.");
+                event.warning = WebInspector.TimelineModel.WarningType.ForcedLayout;
             break;
 
         case recordTypes.EvaluateScript:
@@ -1204,8 +1216,7 @@ WebInspector.TimelineModel.prototype = {
 
         case recordTypes.FireIdleCallback:
             if (event.duration > eventData["allottedMilliseconds"]) {
-                event.warning = WebInspector.UIString("Idle callback execution extended beyond deadline by " +
-                    Number.millisToString(event.duration - eventData["allottedMilliseconds"], true));
+                event.warning = WebInspector.TimelineModel.WarningType.IdleDeadlineExceeded;
             }
             break;
 

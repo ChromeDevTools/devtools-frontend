@@ -575,12 +575,8 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
 
     var contentHelper = new WebInspector.TimelineDetailsContentHelper(model.target(), linkifier, relatedNodesMap, true);
 
-    var warning = event.warning;
-    if (event.warning) {
-        var div = createElement("div");
-        div.textContent = event.warning;
-        contentHelper.appendElementRow(WebInspector.UIString("Warning"), div, true);
-    }
+    if (event.warning)
+        contentHelper.appendWarningRow(event.warning, event);
 
     contentHelper.appendTextRow(WebInspector.UIString("Type"), WebInspector.TimelineUIUtils.eventTitle(event));
     contentHelper.appendTextRow(WebInspector.UIString("Total Time"), Number.millisToString(event.duration || 0, true));
@@ -604,7 +600,7 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
             contentHelper.appendElementRow(WebInspector.UIString("Function"), detailsNode);
         var deoptReason = eventData["deoptReason"];
         if (deoptReason && deoptReason != "no reason")
-            contentHelper.appendTextRow(WebInspector.UIString("Warning"), WebInspector.UIString("Not optimized: %s", deoptReason), true);
+            contentHelper.appendWarningRow(WebInspector.TimelineModel.WarningType.V8Deopt, event);
         break;
     case recordTypes.TimerFire:
     case recordTypes.TimerInstall:
@@ -1853,13 +1849,10 @@ WebInspector.TimelineDetailsContentHelper.prototype = {
     /**
      * @param {string} title
      * @param {string|number|boolean} value
-     * @param {boolean=} isWarning
      */
-    appendTextRow: function(title, value, isWarning)
+    appendTextRow: function(title, value)
     {
         var rowElement = this.element.createChild("div", "timeline-details-view-row");
-        if (isWarning)
-            rowElement.classList.add("timeline-details-warning");
         rowElement.createChild("div", "timeline-details-view-row-title").textContent = title;
         rowElement.createChild("div", "timeline-details-view-row-value" + (this._monospaceValues ? " monospace" : "")).textContent = value;
     },
@@ -1940,5 +1933,39 @@ WebInspector.TimelineDetailsContentHelper.prototype = {
         var callFrameElem = WebInspector.DOMPresentationUtils.buildStackTracePreviewContents(this._target, this._linkifier, stackTrace);
 
         stackTraceElement.appendChild(callFrameElem);
+    },
+
+    /**
+     * @param {?string} warningType
+     * @param {!WebInspector.TracingModel.Event} event
+     */
+    appendWarningRow: function(warningType, event)
+    {
+
+        var warnings = WebInspector.TimelineModel.WarningType;
+        var span = createElement("span");
+        var eventData = event.args["data"];
+
+        switch (warningType) {
+        case warnings.ForcedStyle:
+        case warnings.ForcedLayout:
+            span.appendChild(WebInspector.linkifyDocumentationURLAsNode("fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts",
+                WebInspector.UIString("Forced reflow")));
+            span.createTextChild(WebInspector.UIString(" is a likely performance bottleneck."));
+            break;
+        case warnings.IdleDeadlineExceeded:
+            span.textContent = WebInspector.UIString("Idle callback execution extended beyond deadline by " +
+                Number.millisToString(event.duration - eventData["allottedMilliseconds"], true));
+            break;
+        case warnings.V8Deopt:
+            span.appendChild(WebInspector.linkifyURLAsNode("https://github.com/GoogleChrome/devtools-docs/issues/53",
+                WebInspector.UIString("Not optimized"), undefined, true));
+            span.createTextChild(WebInspector.UIString(": %s", eventData["deoptReason"]));
+            break;
+        default:
+            console.assert(false, "Unhandled TimelineModel.WarningType");
+        }
+
+        this.appendElementRow(WebInspector.UIString("Warning"), span, true);
     }
 }

@@ -75,7 +75,7 @@ WebInspector.ShortcutsScreen.prototype = {
             orderedSections[i].renderSection(container);
 
         var note = scrollPane.createChild("p", "help-footnote");
-        note.appendChild(WebInspector.linkifyDocumentationURLAsNode("iterate/inspect-styles/shortcuts", WebInspector.UIString("Full list of DevTools keyboard shortcuts and gestures")));
+        note.appendChild(WebInspector.linkifyDocumentationURLAsNode("tools/iterate/inspect-styles/shortcuts", WebInspector.UIString("Full list of DevTools keyboard shortcuts and gestures")));
 
         return widget;
     }

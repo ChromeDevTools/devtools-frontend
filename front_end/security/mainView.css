@@ -7,10 +7,15 @@
     -webkit-user-select: text;
     overflow-x: hidden;
     overflow-y: auto;
+    background-color: #f9f9f9;
 }
 
 .security-main-view > div {
     flex-shrink: 0;
+}
+
+.security-summary {
+    background-color: #fff;
 }
 
 .security-summary-section-title {
@@ -130,6 +135,7 @@
 .security-explanation {
     padding: 12px;
     border-bottom: 1px solid rgb(230, 230, 230);
+    background-color: #fff;
 
     display: flex;
     white-space: nowrap;
@@ -138,6 +144,11 @@
 .security-explanation-text {
     flex: auto;
     white-space: normal;
+}
+
+.security-explanation-info {
+    border-bottom: none;
+    background-color: transparent;
 }
 
 .security-certificate-button {

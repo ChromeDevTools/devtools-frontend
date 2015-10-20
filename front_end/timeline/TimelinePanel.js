@@ -48,10 +48,11 @@ WebInspector.TimelinePanel = function()
     this._windowEndTime = Infinity;
     this._millisecondsToRecordAfterLoadEvent = 3000;
 
-    // Create model.
+    // Create models.
     this._tracingModelBackingStorage = new WebInspector.TempFileBackingStorage("tracing");
     this._tracingModel = new WebInspector.TracingModel(this._tracingModelBackingStorage);
     this._model = new WebInspector.TimelineModel(this._tracingModel, WebInspector.TimelineUIUtils.visibleEventsFilter());
+    this._frameModel = new WebInspector.TracingTimelineFrameModel();
 
     this._model.addEventListener(WebInspector.TimelineModel.Events.RecordingStarted, this._onRecordingStarted, this);
     this._model.addEventListener(WebInspector.TimelineModel.Events.RecordingStopped, this._onRecordingStopped, this);
@@ -248,19 +249,6 @@ WebInspector.TimelinePanel.prototype = {
     },
 
     /**
-     * @return {!WebInspector.TimelineFrameModelBase}
-     */
-    _frameModel: function()
-    {
-        if (!this._lazyFrameModel) {
-            var tracingFrameModel = new WebInspector.TracingTimelineFrameModel();
-            tracingFrameModel.addTraceEvents(this._model.target(), this._model.inspectedTargetEvents(), this._model.sessionId() || "");
-            this._lazyFrameModel = tracingFrameModel;
-        }
-        return this._lazyFrameModel;
-    },
-
-    /**
      * @return {!WebInspector.Widget}
      */
     _layersView: function()
@@ -276,7 +264,7 @@ WebInspector.TimelinePanel.prototype = {
     {
         if (this._lazyPaintProfilerView)
             return this._lazyPaintProfilerView;
-        this._lazyPaintProfilerView = new WebInspector.TimelinePaintProfilerView(/** @type {!WebInspector.TracingTimelineFrameModel} */(this._frameModel()));
+        this._lazyPaintProfilerView = new WebInspector.TimelinePaintProfilerView(this._frameModel);
         return this._lazyPaintProfilerView;
     },
 
@@ -577,8 +565,8 @@ WebInspector.TimelinePanel.prototype = {
         this._overviewControls = [];
         if (Runtime.experiments.isEnabled("inputEventsOnTimelineOverview"))
             this._overviewControls.push(new WebInspector.TimelineEventOverview.Input(this._model));
-        this._overviewControls.push(new WebInspector.TimelineEventOverview.Responsiveness(this._model, this._frameModel()));
-        this._overviewControls.push(new WebInspector.TimelineEventOverview.Frames(this._model, this._frameModel()));
+        this._overviewControls.push(new WebInspector.TimelineEventOverview.Responsiveness(this._model, this._frameModel));
+        this._overviewControls.push(new WebInspector.TimelineEventOverview.Frames(this._model, this._frameModel));
         this._overviewControls.push(new WebInspector.TimelineEventOverview.CPUActivity(this._model));
         this._overviewControls.push(new WebInspector.TimelineEventOverview.Network(this._model));
         if (this._captureFilmStripSetting.get())
@@ -601,7 +589,7 @@ WebInspector.TimelinePanel.prototype = {
         if (viewMode === WebInspector.TimelinePanel.ViewMode.FlameChart) {
             this._filterBar.filterButton().setEnabled(false);
             this._filterBar.filtersElement().classList.toggle("hidden", true);
-            this._flameChart = new WebInspector.TimelineFlameChartView(this, this._model, this._frameModel());
+            this._flameChart = new WebInspector.TimelineFlameChartView(this, this._model, this._frameModel);
             this._flameChart.enableNetworkPane(this._captureNetworkSetting.get());
             this._addModeView(this._flameChart);
         } else if (viewMode === WebInspector.TimelinePanel.ViewMode.Waterfall) {
@@ -609,7 +597,7 @@ WebInspector.TimelinePanel.prototype = {
             this._filterBar.filtersElement().classList.toggle("hidden", !this._filterBar.filtersToggled());
             var timelineView = new WebInspector.TimelineView(this, this._model);
             this._addModeView(timelineView);
-            timelineView.setFrameModel(this._frameModel());
+            timelineView.setFrameModel(this._frameModel);
         } else if (viewMode === WebInspector.TimelinePanel.ViewMode.TreeView) {
             this._filterBar.filterButton().setEnabled(false);
             this._filterBar.filtersElement().classList.toggle("hidden", true);
@@ -658,8 +646,6 @@ WebInspector.TimelinePanel.prototype = {
 
         this._autoRecordGeneration = userInitiated ? null : {};
         this._model.startRecording(true, this._enableJSSamplingSettingSetting.get(), this._captureMemorySetting.get(), this._captureLayersAndPicturesSetting.get(), this._captureFilmStripSetting && this._captureFilmStripSetting.get());
-        if (this._lazyFrameModel)
-            this._lazyFrameModel.setMergeRecords(false);
 
         for (var i = 0; i < this._overviewControls.length; ++i)
             this._overviewControls[i].timelineStarted();
@@ -742,8 +728,7 @@ WebInspector.TimelinePanel.prototype = {
     {
         this.requestWindowTimes(0, Infinity);
         delete this._selection;
-        if (this._lazyFrameModel)
-            this._lazyFrameModel.reset();
+        this._frameModel.reset();
         this._overviewPane.reset();
         for (var i = 0; i < this._currentViews.length; ++i)
             this._currentViews[i].reset();
@@ -836,10 +821,8 @@ WebInspector.TimelinePanel.prototype = {
     {
         this._stopPending = false;
         this._updateToggleTimelineButton(false);
-        if (this._lazyFrameModel) {
-            this._lazyFrameModel.reset();
-            this._lazyFrameModel.addTraceEvents(this._model.target(), this._model.inspectedTargetEvents(), this._model.sessionId());
-        }
+        this._frameModel.reset();
+        this._frameModel.addTraceEvents(this._model.target(), this._model.inspectedTargetEvents(), this._model.sessionId() || "");
         this._overviewPane.reset();
         this._overviewPane.setBounds(this._model.minimumRecordTime(), this._model.maximumRecordTime());
         this.requestWindowTimes(this._model.minimumRecordTime(), this._model.maximumRecordTime());
@@ -1063,7 +1046,7 @@ WebInspector.TimelinePanel.prototype = {
             var filmStripFrame = this._filmStripModel && this._filmStripModel.frameByTimestamp(screenshotTime);
             if (filmStripFrame && filmStripFrame.timestamp - frame.endTime > 10)
                 filmStripFrame = null;
-            this.showInDetails(WebInspector.TimelineUIUtils.generateDetailsContentForFrame(this._lazyFrameModel, frame, filmStripFrame));
+            this.showInDetails(WebInspector.TimelineUIUtils.generateDetailsContentForFrame(this._frameModel, frame, filmStripFrame));
             if (frame.layerTree) {
                 var layersView = this._layersView();
                 layersView.showLayerTree(frame.layerTree, frame.paints);
@@ -1097,7 +1080,7 @@ WebInspector.TimelinePanel.prototype = {
             return null;
         case WebInspector.TimelineSelection.Type.Record:
         case WebInspector.TimelineSelection.Type.TraceEvent:
-            return this._frameModel().filteredFrames(selection._endTime, selection._endTime)[0];
+            return this._frameModel.filteredFrames(selection._endTime, selection._endTime)[0];
         default:
             console.assert(false, "Should never be reached");
             return null;
@@ -1112,7 +1095,7 @@ WebInspector.TimelinePanel.prototype = {
         var currentFrame = this._frameForSelection(this._selection);
         if (!currentFrame)
             return;
-        var frames = this._frameModel().frames();
+        var frames = this._frameModel.frames();
         var index = frames.indexOf(currentFrame);
         console.assert(index >= 0, "Can't find current frame in the frame list");
         index = Number.constrain(index + offset, 0, frames.length - 1);

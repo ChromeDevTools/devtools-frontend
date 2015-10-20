@@ -161,7 +161,7 @@ WebInspector.Linkifier.prototype = {
      */
     linkifyScriptLocation: function(target, scriptId, sourceURL, lineNumber, columnNumber, classes)
     {
-        var fallbackAnchor = WebInspector.linkifyResourceAsNode(sourceURL, lineNumber, classes);
+        var fallbackAnchor = WebInspector.linkifyResourceAsNode(sourceURL, lineNumber, columnNumber, classes);
         if (!target || target.isDetached())
             return fallbackAnchor;
         var debuggerModel = WebInspector.DebuggerModel.fromTarget(target);
@@ -238,7 +238,7 @@ WebInspector.Linkifier.prototype = {
             return this.linkifyCSSLocation(location);
 
         // The "linkedStylesheet" case.
-        return WebInspector.linkifyResourceAsNode(media.sourceURL, undefined, "subtitle", media.sourceURL);
+        return WebInspector.linkifyResourceAsNode(media.sourceURL, undefined, undefined, "subtitle", media.sourceURL);
     },
 
     /**
@@ -534,18 +534,20 @@ WebInspector.linkifyDocumentationURLAsNode = function(article, title)
 /**
  * @param {string} url
  * @param {number=} lineNumber
+ * @param {number=} columnNumber
  * @param {string=} classes
  * @param {string=} tooltipText
  * @param {string=} urlDisplayName
  * @return {!Element}
  */
-WebInspector.linkifyResourceAsNode = function(url, lineNumber, classes, tooltipText, urlDisplayName)
+WebInspector.linkifyResourceAsNode = function(url, lineNumber, columnNumber, classes, tooltipText, urlDisplayName)
 {
     var linkText = urlDisplayName ? urlDisplayName : url ? WebInspector.displayNameForURL(url) : WebInspector.UIString("(program)");
     if (typeof lineNumber === "number")
         linkText += ":" + (lineNumber + 1);
     var anchor = WebInspector.linkifyURLAsNode(url, linkText, classes, false, tooltipText);
     anchor.lineNumber = lineNumber;
+    anchor.columnNumber = columnNumber;
     return anchor;
 }
 

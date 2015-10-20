@@ -335,7 +335,7 @@ WebInspector.NetworkDataGridNode.prototype = {
         case WebInspector.NetworkRequest.InitiatorType.Parser:
             cell.title = initiator.url + ":" + initiator.lineNumber;
             var uiSourceCode = WebInspector.networkMapping.uiSourceCodeForURLForAnyTarget(initiator.url);
-            cell.appendChild(WebInspector.linkifyResourceAsNode(initiator.url, initiator.lineNumber - 1, undefined, undefined, uiSourceCode ? uiSourceCode.displayName() : undefined));
+            cell.appendChild(WebInspector.linkifyResourceAsNode(initiator.url, initiator.lineNumber - 1, initiator.columnNumber - 1, undefined, undefined, uiSourceCode ? uiSourceCode.displayName() : undefined));
             this._appendSubtitle(cell, WebInspector.UIString("Parser"));
             break;
 

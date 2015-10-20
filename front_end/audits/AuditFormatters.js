@@ -87,7 +87,7 @@ WebInspector.AuditFormatters.Registry = {
     resourceLink: function(url, line)
     {
         // FIXME: use WebInspector.Linkifier
-        return WebInspector.linkifyResourceAsNode(url, line, "resource-url webkit-html-resource-link");
+        return WebInspector.linkifyResourceAsNode(url, line, undefined, "resource-url webkit-html-resource-link");
     }
 };
 

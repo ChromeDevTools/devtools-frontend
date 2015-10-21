@@ -37,7 +37,9 @@
         {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "network.blocked-urls.show",
-            "className": "WebInspector.BlockedURLsPane.ActionDelegate"
+            "className": "WebInspector.BlockedURLsPane.ActionDelegate",
+            "iconClass": "block-toolbar-item",
+            "title": "Block network requests"
         },
         {
             "type": "@WebInspector.ActionDelegate",

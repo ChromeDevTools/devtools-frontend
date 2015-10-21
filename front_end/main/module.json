@@ -71,6 +71,8 @@
             "type": "@WebInspector.ActionDelegate",
             "actionId": "main.toggle-element-search",
             "className": "WebInspector.InspectElementModeController.ToggleSearchActionDelegate",
+            "title": "Select an element in the page to inspect it",
+            "iconClass": "node-search-toolbar-item",
             "bindings": [
                 {
                     "platform": "windows,linux",
@@ -207,8 +209,7 @@
             "type": "@WebInspector.ToolbarItem.Provider",
             "className": "WebInspector.InspectElementModeController.ToggleButtonProvider",
             "location": "main-toolbar-left",
-            "order": 0,
-            "actionId": "main.toggle-element-search"
+            "order": 0
         },
         {
             "type": "@WebInspector.ToolbarItem.Provider",

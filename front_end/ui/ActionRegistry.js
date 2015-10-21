@@ -52,7 +52,7 @@ WebInspector.ActionRegistry.prototype = {
          */
         function extensionToAction(extension)
         {
-            return this.getAction(extension.descriptor()["actionId"]);
+            return this.action(extension.descriptor()["actionId"]);
         }
     },
 
@@ -60,7 +60,7 @@ WebInspector.ActionRegistry.prototype = {
      * @param {string} actionId
      * @return {!WebInspector.Action}
      */
-    getAction: function(actionId)
+    action: function(actionId)
     {
         var action = this._actionsById.get(actionId);
         console.assert(action, "No action found for actionId '" + actionId + "'");
@@ -70,13 +70,53 @@ WebInspector.ActionRegistry.prototype = {
 
 /**
  * @constructor
+ * @extends {WebInspector.Object}
+ * @param {!Runtime.Extension} extension
  */
 WebInspector.Action = function(extension)
 {
-    this._extension = extension
+    WebInspector.Object.call(this);
+    this._extension = extension;
+    this._enabled = true;
+    this._toggled = false;
+    this._title = this._extension.descriptor()["title"] || "";
+
+    this._statesCount = this._extension.descriptor()["states"] || 2;
+    if (this._statesCount == 2)
+        this._state = WebInspector.Action._ToggleState.Off;
+    else
+        this._state = "0";
+}
+
+WebInspector.Action._ToggleState = {
+    On: "on",
+    Off: "off"
+}
+
+WebInspector.Action.Events = {
+    Enabled: "Enabled",
+    StateChanged: "StateChanged",
+    TitleChanged: "TitleChanged",
 }
 
 WebInspector.Action.prototype = {
+
+    /**
+     * @return {number}
+     */
+    statesCount: function()
+    {
+        return this._statesCount;
+    },
+
+    /**
+     * @return {string}
+     */
+    id: function()
+    {
+        return this._extension.descriptor()["actionId"];
+    },
+
     /**
      * @return {!Promise.<boolean>}
      */
@@ -100,18 +140,93 @@ WebInspector.Action.prototype = {
     /**
      * @return {string}
      */
-    actionTitle: function()
+    icon: function()
     {
-        return this._extension.descriptor()["title"] || "";
+        return this._extension.descriptor()["iconClass"] || "";
+    },
+
+    /**
+     * @param {boolean} enabled
+     */
+    setEnabled: function(enabled)
+    {
+        if (this._enabled === enabled)
+            return;
+
+        this._enabled = enabled;
+        this.dispatchEventToListeners(WebInspector.Action.Events.Enabled, enabled);
+    },
+
+    /**
+     * @return {boolean}
+     */
+    enabled: function()
+    {
+        return this._enabled;
+    },
+
+    /**
+     * @param {string} title
+     */
+    setTitle: function(title)
+    {
+        if (this._title === title)
+            return;
+
+        this._title = title;
+        this.dispatchEventToListeners(WebInspector.Action.Events.TitleChanged, this._title);
     },
 
     /**
      * @return {string}
      */
-    actionIcon: function()
+    title: function()
     {
-        return this._extension.descriptor()["iconClass"] || "";
-    }
+        return this._title;
+    },
+
+    /**
+     * @return {string}
+     */
+    state: function()
+    {
+        return this._state;
+    },
+
+    /**
+     * @param {string} newState
+     */
+    setState: function(newState)
+    {
+        if (this._state === newState)
+            return;
+
+        var oldState = this._state;
+        this._state = newState;
+        this.dispatchEventToListeners(WebInspector.Action.Events.StateChanged, {oldState: oldState, newState: newState})
+    },
+
+    /**
+     * @return {boolean}
+     */
+    toggled: function()
+    {
+        if (this._statesCount !== 2)
+            throw("Only used toggled when there are 2 states, otherwise, use state");
+        return this.state() === WebInspector.Action._ToggleState.On;
+    },
+
+    /**
+     * @param {boolean} toggled
+     */
+    setToggled: function(toggled)
+    {
+        if (this._statesCount !== 2)
+            throw("Only used toggled when there are 2 states, otherwise, use state");
+        this.setState(toggled ? WebInspector.Action._ToggleState.On : WebInspector.Action._ToggleState.Off);
+    },
+
+    __proto__: WebInspector.Object.prototype
 }
 
 /**

@@ -58,8 +58,6 @@ WebInspector.ConsoleView = function()
      */
     this._regexMatchRanges = [];
 
-    this._clearConsoleButton = WebInspector.ToolbarButton.createActionButton("console.clear");
-
     this._executionContextComboBox = new WebInspector.ToolbarComboBox(null, "console-context");
     this._executionContextComboBox.setMaxWidth(200);
     this._executionContextModel = new WebInspector.ExecutionContextModel(this._executionContextComboBox.selectElement());
@@ -73,7 +71,7 @@ WebInspector.ConsoleView = function()
     this._progressToolbarItem = new WebInspector.ToolbarItem(createElement("div"));
 
     var toolbar = new WebInspector.Toolbar(this._contentsElement);
-    toolbar.appendToolbarItem(this._clearConsoleButton);
+    toolbar.appendToolbarItem(WebInspector.ToolbarButton.createActionButton("console.clear"));
     toolbar.appendToolbarItem(this._filterBar.filterButton());
     toolbar.appendToolbarItem(this._executionContextComboBox);
     toolbar.appendToolbarItem(this._preserveLogCheckbox);

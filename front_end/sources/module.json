@@ -15,6 +15,7 @@
         {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "debugger.toggle-pause",
+            "iconClass": "pause-toolbar-item",
             "className": "WebInspector.SourcesPanel.RevealingActionDelegate",
             "contextTypes": ["WebInspector.SourcesPanel", "WebInspector.ShortcutRegistry.ForwardedShortcut"],
             "bindings": [
@@ -32,6 +33,8 @@
             "type": "@WebInspector.ActionDelegate",
             "actionId": "debugger.step-over",
             "className": "WebInspector.SourcesPanel.DebuggingActionDelegate",
+            "title": "Step over next function call",
+            "iconClass": "step-over-toolbar-item",
             "contextTypes": ["WebInspector.SourcesPanel"],
             "bindings": [
                 {
@@ -48,6 +51,8 @@
             "type": "@WebInspector.ActionDelegate",
             "actionId": "debugger.step-into",
             "className": "WebInspector.SourcesPanel.DebuggingActionDelegate",
+            "title": "Step into next function call",
+            "iconClass": "step-in-toolbar-item",
             "contextTypes": ["WebInspector.SourcesPanel"],
             "bindings": [
                 {
@@ -81,6 +86,8 @@
             "type": "@WebInspector.ActionDelegate",
             "actionId": "debugger.step-out",
             "className": "WebInspector.SourcesPanel.DebuggingActionDelegate",
+            "title": "Step out of current function",
+            "iconClass": "step-out-toolbar-item",
             "contextTypes": ["WebInspector.SourcesPanel"],
             "bindings": [
                 {
@@ -97,6 +104,8 @@
             "type": "@WebInspector.ActionDelegate",
             "actionId": "debugger.run-snippet",
             "className": "WebInspector.SourcesPanel.DebuggingActionDelegate",
+            "title": "Run snippet",
+            "iconClass": "play-toolbar-item",
             "contextTypes": ["WebInspector.SourcesPanel"],
             "bindings": [
                 {

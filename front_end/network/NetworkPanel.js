@@ -159,8 +159,7 @@ WebInspector.NetworkPanel.prototype = {
     {
         var setting = WebInspector.moduleSetting("blockedURLs");
         setting.addChangeListener(updateButton);
-        var button = new WebInspector.ToolbarButton(WebInspector.UIString("Block network requests"), "block-toolbar-item", 2);
-        button.setAction("network.blocked-urls.show");
+        var button = WebInspector.ToolbarButton.createActionButton("network.blocked-urls.show");
         updateButton();
         button.setVisible(Runtime.experiments.isEnabled("requestBlocking"));
         return button;

@@ -158,9 +158,9 @@ WebInspector.ContextSubMenuItem.prototype = {
      */
     appendAction: function(actionId, label)
     {
-        var action = WebInspector.actionRegistry.getAction(actionId);
+        var action = WebInspector.actionRegistry.action(actionId);
         if (!label)
-            label = action.actionTitle();
+            label = action.title();
         var result = this.appendItem(label, action.execute.bind(action));
         var shortcut = WebInspector.shortcutRegistry.shortcutTitleForAction(actionId);
         if (shortcut)

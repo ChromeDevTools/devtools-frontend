@@ -32,7 +32,7 @@
  */
 WebInspector.InspectElementModeController = function()
 {
-    this._toggleSearchButton = new WebInspector.ToolbarButton(WebInspector.UIString("Select an element in the page to inspect it"), "node-search-toolbar-item");
+    this._toggleSearchButton = WebInspector.ToolbarButton.createActionButton("main.toggle-element-search");
     if (Runtime.experiments.isEnabled("layoutEditor")) {
         this._layoutEditorButton = new WebInspector.ToolbarButton(WebInspector.UIString("Toggle Layout Editor"), "layout-editor-toolbar-item");
         this._layoutEditorButton.addEventListener("click", this._toggleLayoutEditor, this);

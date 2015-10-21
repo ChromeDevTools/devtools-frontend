@@ -18,6 +18,8 @@
             "type": "@WebInspector.ActionDelegate",
             "actionId": "emulation.toggle-device-mode",
             "className": "WebInspector.ToggleDeviceModeActionDelegate",
+            "iconClass": "emulation-toolbar-item",
+            "title": "Toggle device mode",
             "condition": "can_dock",
             "bindings": [
                 {

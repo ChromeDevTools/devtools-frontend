@@ -1160,6 +1160,8 @@ WebInspector.ExtensibleToolbar.prototype = {
             var descriptor = extension.descriptor();
             if (descriptor["separator"])
                 return Promise.resolve(/** @type {?WebInspector.ToolbarItem} */(new WebInspector.ToolbarSeparator()));
+            if (descriptor["actionId"])
+                return Promise.resolve(/** @type {?WebInspector.ToolbarItem} */(WebInspector.ToolbarButton.createActionButton(descriptor["actionId"])));
             if (!descriptor["className"])
                 return Promise.resolve(/** @type {?WebInspector.ToolbarItem} */(new WebInspector.ToolbarButton(WebInspector.UIString(descriptor["title"]), descriptor["elementClass"])));
             return extension.instancePromise().then(fetchItemFromProvider);

@@ -49,7 +49,6 @@
         "ExecutionContextSelector.js",
         "ExecutionContextModel.js",
         "HandlerRegistry.js",
-        "InspectElementModeController.js",
         "InspectorView.js",
         "Linkifier.js",
         "NetworkConditionsSelector.js",

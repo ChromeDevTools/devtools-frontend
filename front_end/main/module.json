@@ -69,23 +69,6 @@
         },
         {
             "type": "@WebInspector.ActionDelegate",
-            "actionId": "main.toggle-element-search",
-            "className": "WebInspector.InspectElementModeController.ToggleSearchActionDelegate",
-            "title": "Select an element in the page to inspect it",
-            "iconClass": "node-search-toolbar-item",
-            "bindings": [
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Ctrl+Shift+C"
-                },
-                {
-                    "platform": "mac",
-                    "shortcut": "Meta+Shift+C"
-                }
-            ]
-        },
-        {
-            "type": "@WebInspector.ActionDelegate",
             "actionId": "main.toggle-dock",
             "className": "WebInspector.DockController.ToggleDockActionDelegate",
             "bindings": [
@@ -207,12 +190,6 @@
         },
         {
             "type": "@WebInspector.ToolbarItem.Provider",
-            "className": "WebInspector.InspectElementModeController.ToggleButtonProvider",
-            "location": "main-toolbar-left",
-            "order": 0
-        },
-        {
-            "type": "@WebInspector.ToolbarItem.Provider",
             "separator": true,
             "location": "main-toolbar-left",
             "order": 100
@@ -320,13 +297,6 @@
             "order": 50,
             "actionId": "main.inspect-devices",
             "experiment": "!inspectDevicesDialog"
-        },
-        {
-            "type": "@WebInspector.ToolbarItem.Provider",
-            "className": "WebInspector.InspectElementModeController.LayoutEditorButtonProvider",
-            "order": 4,
-            "location": "styles-sidebarpane-toolbar",
-            "experiment": "layoutEditor"
         },
         {
             "type": "context-menu-item",

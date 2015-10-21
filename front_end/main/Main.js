@@ -255,8 +255,8 @@ WebInspector.Main.prototype = {
         console.timeStamp("Main._presentUI");
         app.presentUI(document, this._didPresentAppUI.bind(this));
 
-        if (!Runtime.queryParam("isSharedWorker"))
-            WebInspector.inspectElementModeController = new WebInspector.InspectElementModeController();
+        var toggleSearchNodeAction = WebInspector.actionRegistry.action("elements.toggle-element-search");
+        InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.EnterInspectElementMode, toggleSearchNodeAction.execute.bind(toggleSearchNodeAction), this);
         WebInspector.inspectorView.createToolbars();
         InspectorFrontendHost.loadCompleted();
 
@@ -500,8 +500,8 @@ WebInspector.Main.prototype = {
         var advancedSearchShortcut = shortcut.makeDescriptor("f", advancedSearchShortcutModifier);
         section.addKey(advancedSearchShortcut, WebInspector.UIString("Search across all sources"));
 
-        var inspectElementModeShortcut = WebInspector.InspectElementModeController.createShortcut();
-        section.addKey(inspectElementModeShortcut, WebInspector.UIString("Select node to inspect"));
+        var inspectElementModeShortcuts = WebInspector.shortcutRegistry.shortcutDescriptorsForAction("elements.toggle-element-search");
+        section.addKey(inspectElementModeShortcuts[0], WebInspector.UIString("Select node to inspect"));
 
         var openResourceShortcut = WebInspector.KeyboardShortcut.makeDescriptor("p", WebInspector.KeyboardShortcut.Modifiers.CtrlOrMeta);
         section.addKey(openResourceShortcut, WebInspector.UIString("Go to source"));

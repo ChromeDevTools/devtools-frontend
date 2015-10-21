@@ -32,24 +32,15 @@
  */
 WebInspector.InspectElementModeController = function()
 {
-    this._toggleSearchButton = WebInspector.ToolbarButton.createActionButton("main.toggle-element-search");
+    this._toggleSearchAction = WebInspector.actionRegistry.action("elements.toggle-element-search");
     if (Runtime.experiments.isEnabled("layoutEditor")) {
         this._layoutEditorButton = new WebInspector.ToolbarButton(WebInspector.UIString("Toggle Layout Editor"), "layout-editor-toolbar-item");
         this._layoutEditorButton.addEventListener("click", this._toggleLayoutEditor, this);
     }
 
     this._mode = DOMAgent.InspectMode.None;
-    InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.EnterInspectElementMode, this._toggleInspectMode, this);
     WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
     WebInspector.targetManager.observeTargets(this, WebInspector.Target.Type.Page);
-}
-
-/**
- * @return {!WebInspector.KeyboardShortcut.Descriptor}
- */
-WebInspector.InspectElementModeController.createShortcut = function()
-{
-    return WebInspector.KeyboardShortcut.makeDescriptor("c", WebInspector.KeyboardShortcut.Modifiers.CtrlOrMeta | WebInspector.KeyboardShortcut.Modifiers.Shift);
 }
 
 WebInspector.InspectElementModeController.prototype = {
@@ -131,8 +122,8 @@ WebInspector.InspectElementModeController.prototype = {
             this._layoutEditorButton.setToggled(this.isInLayoutEditorMode());
         }
 
-        this._toggleSearchButton.setEnabled(!this.isInLayoutEditorMode());
-        this._toggleSearchButton.setToggled(this.isInInspectElementMode());
+        this._toggleSearchAction.setEnabled(!this.isInLayoutEditorMode());
+        this._toggleSearchAction.setToggled(this.isInInspectElementMode());
     },
 
     _suspendStateChanged: function()
@@ -141,7 +132,7 @@ WebInspector.InspectElementModeController.prototype = {
             return;
 
         this._mode = DOMAgent.InspectMode.None;
-        this._toggleSearchButton.setToggled(false);
+        this._toggleSearchAction.setToggled(false);
         if (this._layoutEditorButton)
             this._layoutEditorButton.setToggled(false);
     }
@@ -182,28 +173,6 @@ WebInspector.InspectElementModeController.ToggleSearchActionDelegate.prototype =
  * @constructor
  * @implements {WebInspector.ToolbarItem.Provider}
  */
-WebInspector.InspectElementModeController.ToggleButtonProvider = function()
-{
-}
-
-WebInspector.InspectElementModeController.ToggleButtonProvider.prototype = {
-    /**
-     * @override
-     * @return {?WebInspector.ToolbarItem}
-     */
-    item: function()
-    {
-        if (!WebInspector.inspectElementModeController)
-            return null;
-
-        return WebInspector.inspectElementModeController._toggleSearchButton;
-    }
-}
-
-/**
- * @constructor
- * @implements {WebInspector.ToolbarItem.Provider}
- */
 WebInspector.InspectElementModeController.LayoutEditorButtonProvider = function()
 {
 }
@@ -223,4 +192,4 @@ WebInspector.InspectElementModeController.LayoutEditorButtonProvider.prototype =
 }
 
 /** @type {?WebInspector.InspectElementModeController} */
-WebInspector.inspectElementModeController = null;
+WebInspector.inspectElementModeController = Runtime.queryParam("isSharedWorker") ? null : new WebInspector.InspectElementModeController();

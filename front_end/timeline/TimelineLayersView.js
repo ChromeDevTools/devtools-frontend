@@ -7,10 +7,15 @@
 /**
  * @constructor
  * @extends {WebInspector.SplitWidget}
+ * @param {!WebInspector.TimelineModel} model
+ * @param {function(!WebInspector.TracingModel.Event)} showEventDetailsCallback
  */
-WebInspector.TimelineLayersView = function()
+WebInspector.TimelineLayersView = function(model, showEventDetailsCallback)
 {
     WebInspector.SplitWidget.call(this, true, false, "timelineLayersView");
+    this._model = model;
+    this._showEventDetailsCallback = showEventDetailsCallback;
+
     this.element.classList.add("timeline-layers-view");
     this._rightSplitWidget = new WebInspector.SplitWidget(true, true, "timelineLayersViewDetails");
     this._rightSplitWidget.element.classList.add("timeline-layers-view-properties");
@@ -33,7 +38,6 @@ WebInspector.TimelineLayersView = function()
     var layerDetailsView = new WebInspector.LayerDetailsView(this._layerViewHost);
     this._rightSplitWidget.setSidebarWidget(layerDetailsView);
     layerDetailsView.addEventListener(WebInspector.LayerDetailsView.Events.PaintProfilerRequested, this._jumpToPaintEvent, this);
-
 }
 
 WebInspector.TimelineLayersView.prototype = {
@@ -61,39 +65,12 @@ WebInspector.TimelineLayersView.prototype = {
     },
 
     /**
-     * @param {!WebInspector.TimelineModel} model
-     * @param {!WebInspector.TimelineModeViewDelegate} delegate
-     */
-    setTimelineModelAndDelegate: function(model, delegate)
-    {
-        this._model = model;
-        this._delegate = delegate;
-    },
-
-    /**
      * @param {!WebInspector.Event} event
      */
     _jumpToPaintEvent: function(event)
     {
-        var traceEvent = event.data;
-        var eventRecord;
-
-        /**
-         * @param {!WebInspector.TimelineModel.Record} record
-         * @return {boolean}
-         */
-        function findRecordWithEvent(record)
-        {
-            if (record.traceEvent() === traceEvent) {
-                eventRecord = record;
-                return true;
-            }
-            return false;
-        }
-
-        this._model.forAllRecords(findRecordWithEvent);
-        if (eventRecord)
-            this._delegate.showNestedRecordDetails(eventRecord);
+        var traceEvent = /** @type {!WebInspector.TracingModel.Event} */ (event.data);
+        this._showEventDetailsCallback(traceEvent);
     },
 
     _update: function()

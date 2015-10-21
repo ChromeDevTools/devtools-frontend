@@ -253,9 +253,18 @@ WebInspector.TimelinePanel.prototype = {
     {
         if (this._lazyLayersView)
             return this._lazyLayersView;
-        this._lazyLayersView = new WebInspector.TimelineLayersView();
-        this._lazyLayersView.setTimelineModelAndDelegate(this._model, this);
+        this._lazyLayersView = new WebInspector.TimelineLayersView(this._model, showPaintEventDetails.bind(this));
         return this._lazyLayersView;
+
+        /**
+         * @param {!WebInspector.TracingModel.Event} event
+         * @this {WebInspector.TimelinePanel}
+         */
+        function showPaintEventDetails(event)
+        {
+            this._showEventInPaintProfiler(event, true);
+            this._detailsView.selectTab(WebInspector.TimelinePanel.DetailsTab.PaintProfiler, true);
+        }
     },
 
     _paintProfilerView: function()
@@ -1178,17 +1187,6 @@ WebInspector.TimelinePanel.prototype = {
 
     /**
      * @override
-     * @param {!WebInspector.TimelineModel.Record} record
-     */
-    showNestedRecordDetails: function(record)
-    {
-        var event = record.traceEvent();
-        this._showEventInPaintProfiler(event, true);
-        this._detailsView.selectTab(WebInspector.TimelinePanel.DetailsTab.PaintProfiler, true);
-    },
-
-    /**
-     * @override
      * @param {!Node} node
      */
     showInDetails: function(node)
@@ -1575,11 +1573,6 @@ WebInspector.TimelineModeViewDelegate.prototype = {
      * @param {!WebInspector.TimelinePanel.DetailsTab=} preferredTab
      */
     select: function(selection, preferredTab) {},
-
-    /**
-     * @param {!WebInspector.TimelineModel.Record} record
-     */
-    showNestedRecordDetails: function(record) {},
 
     /**
      * @param {!Node} node

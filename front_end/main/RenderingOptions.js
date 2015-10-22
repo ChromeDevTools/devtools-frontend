@@ -47,6 +47,12 @@ WebInspector.RenderingOptionsView = function()
     var scrollingTitle = WebInspector.UIString("Shows areas of the page that slow down scrolling:\nTouch and mousewheel event listeners can delay scrolling.\nSome areas need to repaint their content when scrolled.");
     this._appendCheckbox(WebInspector.UIString("Show scrolling perf issues"), "setShowScrollBottleneckRects", scrollingTitle);
 
+    // Print media.
+    var checkboxLabel = createCheckboxLabel(WebInspector.UIString("Emulate print media"), false);
+    this._printCheckbox = checkboxLabel.checkboxElement;
+    this._printCheckbox.addEventListener("click", this._printToggled.bind(this));
+    this.contentElement.appendChild(checkboxLabel);
+
     WebInspector.targetManager.observeTargets(this, WebInspector.Target.Type.Page);
 }
 
@@ -87,6 +93,27 @@ WebInspector.RenderingOptionsView.prototype = {
             if (this._settings.get(setterName).checked)
                 target.renderingAgent()[setterName](true);
         }
+        if (this._printCheckbox.checked)
+            this._applyPrintMediaOverride(target);
+    },
+
+    _printToggled: function()
+    {
+        var targets = WebInspector.targetManager.targets(WebInspector.Target.Type.Page);
+        for (var target of targets)
+            this._applyPrintMediaOverride(target);
+    },
+
+    /**
+     * @param {!WebInspector.Target} target
+     */
+    _applyPrintMediaOverride: function(target)
+    {
+        var enabled = this._printCheckbox.checked;
+        target.emulationAgent().setEmulatedMedia(enabled ? "print" : "");
+        var cssModel = WebInspector.CSSStyleModel.fromTarget(target);
+        if (cssModel)
+            cssModel.mediaQueryResultChanged();
     },
 
     /**

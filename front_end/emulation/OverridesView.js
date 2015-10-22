@@ -44,7 +44,6 @@ WebInspector.OverridesView = function()
     this._tabbedPane.setVerticalTabLayout(true);
 
     new WebInspector.OverridesView.DeviceTab().appendAsTab(this._tabbedPane);
-    new WebInspector.OverridesView.MediaTab().appendAsTab(this._tabbedPane);
     new WebInspector.OverridesView.NetworkTab().appendAsTab(this._tabbedPane);
 
     this._lastSelectedTabSetting = WebInspector.settings.createSetting("lastSelectedEmulateTab", "device");
@@ -241,59 +240,6 @@ WebInspector.OverridesView.DeviceTab.prototype = {
 
     __proto__: WebInspector.OverridesView.Tab.prototype
 }
-
-
-/**
- * @constructor
- * @extends {WebInspector.OverridesView.Tab}
- */
-WebInspector.OverridesView.MediaTab = function()
-{
-    var settings = [WebInspector.overridesSupport.settings.overrideCSSMedia];
-    WebInspector.OverridesView.Tab.call(this, "media", WebInspector.UIString("Media"), settings);
-    this.element.classList.add("overrides-media");
-
-    this._createMediaEmulationFragment();
-}
-
-WebInspector.OverridesView.MediaTab.prototype = {
-    _createMediaEmulationFragment: function()
-    {
-        var checkbox = WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("CSS media"), WebInspector.overridesSupport.settings.overrideCSSMedia, true);
-        var fieldsetElement = WebInspector.SettingsUI.createSettingFieldset(WebInspector.overridesSupport.settings.overrideCSSMedia);
-        var mediaSelectElement = fieldsetElement.createChild("select");
-        var mediaTypes = WebInspector.CSSStyleModel.MediaTypes;
-        var defaultMedia = WebInspector.overridesSupport.settings.emulatedCSSMedia.get();
-        for (var i = 0; i < mediaTypes.length; ++i) {
-            var mediaType = mediaTypes[i];
-            if (mediaType === "all") {
-                // "all" is not a device-specific media type.
-                continue;
-            }
-            var option = createElement("option");
-            option.text = mediaType;
-            option.value = mediaType;
-            mediaSelectElement.add(option);
-            if (mediaType === defaultMedia)
-                mediaSelectElement.selectedIndex = mediaSelectElement.options.length - 1;
-        }
-
-        mediaSelectElement.addEventListener("change", this._emulateMediaChanged.bind(this, mediaSelectElement), false);
-        var fragment = createDocumentFragment();
-        fragment.appendChild(checkbox);
-        fragment.appendChild(fieldsetElement);
-        this.element.appendChild(fragment);
-    },
-
-    _emulateMediaChanged: function(select)
-    {
-        var media = select.options[select.selectedIndex].value;
-        WebInspector.overridesSupport.settings.emulatedCSSMedia.set(media);
-    },
-
-    __proto__: WebInspector.OverridesView.Tab.prototype
-}
-
 
 /**
  * @constructor

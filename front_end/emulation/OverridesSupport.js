@@ -62,9 +62,6 @@ WebInspector.OverridesSupport = function()
 
     this.settings.screenOrientationOverride = WebInspector.settings.createSetting("screenOrientationOverride", "");
 
-    this.settings.overrideCSSMedia = WebInspector.settings.createSetting("overrideCSSMedia", false);
-    this.settings.emulatedCSSMedia = WebInspector.settings.createSetting("emulatedCSSMedia", "print");
-
     this.settings.javaScriptDisabled = WebInspector.moduleSetting("javaScriptDisabled");
 }
 
@@ -385,7 +382,6 @@ WebInspector.OverridesSupport.prototype = {
         this.settings.emulateTouch.set(false);
         this.settings.emulateMobile.set(false);
         this.settings.screenOrientationOverride.set("");
-        this.settings.overrideCSSMedia.set(false);
         delete this._deviceMetricsChangedListenerMuted;
         delete this._userAgentChangedListenerMuted;
 
@@ -442,10 +438,6 @@ WebInspector.OverridesSupport.prototype = {
         this.settings._emulationEnabled.addChangeListener(this._emulateTouchEventsChanged, this);
         this.settings.emulateTouch.addChangeListener(this._emulateTouchEventsChanged, this);
 
-        this.settings._emulationEnabled.addChangeListener(this._cssMediaChanged, this);
-        this.settings.overrideCSSMedia.addChangeListener(this._cssMediaChanged, this);
-        this.settings.emulatedCSSMedia.addChangeListener(this._cssMediaChanged, this);
-
         this.settings.javaScriptDisabled.addChangeListener(this._javaScriptDisabledChanged, this);
         this._javaScriptDisabledChanged();
 
@@ -459,9 +451,6 @@ WebInspector.OverridesSupport.prototype = {
 
             if (this.settings.emulateTouch.get())
                 this._emulateTouchEventsChanged();
-
-            if (this.settings.overrideCSSMedia.get())
-                this._cssMediaChanged();
 
             this._deviceMetricsChanged(true);
 
@@ -732,15 +721,6 @@ WebInspector.OverridesSupport.prototype = {
         }
 
         target.emulationAgent().setTouchEmulationEnabled(emulationEnabled, configuration);
-    },
-
-    _cssMediaChanged: function()
-    {
-        var enabled = this.emulationEnabled() && this.settings.overrideCSSMedia.get();
-        this._target.emulationAgent().setEmulatedMedia(enabled ? this.settings.emulatedCSSMedia.get() : "");
-        var cssModel = WebInspector.CSSStyleModel.fromTarget(this._target);
-        if (cssModel)
-            cssModel.mediaQueryResultChanged();
     },
 
     _javaScriptDisabledChanged: function()

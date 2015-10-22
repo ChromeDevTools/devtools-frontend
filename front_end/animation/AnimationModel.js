@@ -56,28 +56,29 @@ WebInspector.AnimationModel.prototype = {
                 return;
         }
 
-        while (this._pendingAnimations.length) {
-            var group = this._createGroupFromPendingAnimations();
-            var matchedGroup = this._matchExistingGroups(group);
-            if (!matchedGroup)
-                this._animationGroups.set(group.id(), group);
-            this.dispatchEventToListeners(WebInspector.AnimationModel.Events.AnimationGroupStarted, matchedGroup || group);
-        }
+        while (this._pendingAnimations.length)
+            this._matchExistingGroups(this._createGroupFromPendingAnimations());
     },
 
     /**
      * @param {!WebInspector.AnimationModel.AnimationGroup} incomingGroup
-     * @return {?WebInspector.AnimationModel.AnimationGroup}
+     * @return {boolean}
      */
     _matchExistingGroups: function(incomingGroup)
     {
+        var matchedGroup = null;
         for (var group of this._animationGroups.values()) {
-            if (incomingGroup._matches(group)) {
+            if (group._matches(incomingGroup)) {
+                matchedGroup = group;
                 group._update(incomingGroup);
-                return group;
+                break;
             }
         }
-        return null;
+
+        if (!matchedGroup)
+            this._animationGroups.set(incomingGroup.id(), incomingGroup);
+        this.dispatchEventToListeners(WebInspector.AnimationModel.Events.AnimationGroupStarted, matchedGroup || incomingGroup);
+        return !!matchedGroup;
     },
 
     /**
@@ -348,6 +349,14 @@ WebInspector.AnimationModel.Animation.prototype = {
         }
 
         return this.target().animationAgent().resolveAnimation(this.id(), callback.bind(this));
+    },
+
+    /**
+     * @return {string}
+     */
+    _cssId: function()
+    {
+        return this._payload.cssId || "";
     },
 
     __proto__: WebInspector.SDKObject.prototype
@@ -667,7 +676,10 @@ WebInspector.AnimationModel.AnimationGroup.prototype = {
          */
         function extractId(anim)
         {
-            return anim.type() + ":" + (anim.name() || anim.id());
+            if (anim.type() === WebInspector.AnimationModel.Animation.Type.WebAnimation)
+                return anim.type() + anim.id();
+            else
+                return anim._cssId();
         }
 
         if (this._animations.length !== group._animations.length)

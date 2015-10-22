@@ -5005,7 +5005,8 @@
                     { "name": "startTime", "type": "number", "description": "<code>Animation</code>'s start time." },
                     { "name": "currentTime", "type": "number", "description": "<code>Animation</code>'s current time." },
                     { "name": "source", "$ref": "AnimationEffect", "description": "<code>Animation</code>'s source animation node." },
-                    { "name": "type", "type": "string", "enum": ["CSSTransition", "CSSAnimation", "WebAnimation"], "description": "Animation type of <code>Animation</code>." }
+                    { "name": "type", "type": "string", "enum": ["CSSTransition", "CSSAnimation", "WebAnimation"], "description": "Animation type of <code>Animation</code>." },
+                    { "name": "cssId", "type": "string", "optional": true, "description": "A unique ID for <code>Animation</code> representing the sources that triggered this CSS animation/transition."}
                 ],
                 "description": "Animation instance."
             },

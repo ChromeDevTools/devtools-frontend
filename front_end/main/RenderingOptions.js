@@ -154,7 +154,7 @@ WebInspector.RenderingOptionsView.ShowActionDelegate.prototype = {
      */
     handleAction: function(context, actionId)
     {
-        WebInspector.inspectorView.showCloseableViewInDrawer("rendering", WebInspector.UIString("Rendering"), WebInspector.RenderingOptionsView.instance());
+        WebInspector.inspectorView.showViewInDrawer("rendering");
         return true;
     }
 }

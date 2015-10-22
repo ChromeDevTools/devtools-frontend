@@ -11,7 +11,8 @@
             "type": "drawer-view",
             "name": "console",
             "title": "Console",
-            "order": "0",
+            "persistence": "permanent",
+            "order": 0,
             "className": "WebInspector.ConsolePanel.WrapperView"
         },
         {

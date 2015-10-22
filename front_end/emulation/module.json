@@ -4,7 +4,8 @@
             "type": "drawer-view",
             "name": "emulation",
             "title": "Emulation",
-            "order": "10",
+            "order": 10,
+            "persistence": "permanent",
             "className": "WebInspector.OverridesView"
         },
         {
@@ -59,6 +60,14 @@
             "location": "mainMenu/tools/open",
             "order": 100,
             "actionId": "emulation.show-sensors"
+        },
+        {
+            "type": "drawer-view",
+            "name": "sensors",
+            "title": "Sensors",
+            "persistence": "closeable",
+            "order": 100,
+            "className": "WebInspector.SensorsView"
         }
     ],
     "dependencies": [

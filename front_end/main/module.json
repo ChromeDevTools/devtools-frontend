@@ -310,6 +310,14 @@
             "location": "mainMenu/tools/open",
             "order": 80,
             "actionId": "main.show-rendering-options"
+        },
+        {
+            "type": "drawer-view",
+            "name": "rendering",
+            "title": "Rendering",
+            "persistence": "closeable",
+            "order": 50,
+            "className": "WebInspector.RenderingOptionsView"
         }
     ],
     "dependencies": [

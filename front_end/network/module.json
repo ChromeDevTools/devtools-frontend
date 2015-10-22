@@ -57,6 +57,14 @@
                     "shortcut": "Meta+E"
                 }
             ]
+        },
+        {
+            "type": "drawer-view",
+            "name": "network.blocked-urls",
+            "title": "Request blocking",
+            "persistence": "closeable",
+            "order": 60,
+            "className": "WebInspector.BlockedURLsPane"
         }
     ],
     "dependencies": [

@@ -189,6 +189,7 @@
             "name": "sources",
             "title": "Sources",
             "order": 1,
+            "persistence": "permanent",
             "className": "WebInspector.SourcesNavigatorView"
         },
         {
@@ -196,6 +197,7 @@
             "name": "contentScripts",
             "title": "Content scripts",
             "order": 2,
+            "persistence": "permanent",
             "className": "WebInspector.ContentScriptsNavigatorView"
         },
         {
@@ -203,6 +205,7 @@
             "name": "snippets",
             "title": "Snippets",
             "order": 3,
+            "persistence": "permanent",
             "className": "WebInspector.SnippetsNavigatorView"
         },
         {
@@ -308,6 +311,21 @@
             "settingName": "cssReloadEnabled",
             "settingType": "boolean",
             "defaultValue": false
+        },
+        {
+            "type": "drawer-view",
+            "name": "sources.search",
+            "title": "Search",
+            "persistence": "closeable",
+            "order": 100,
+            "className": "WebInspector.AdvancedSearchView"
+        },
+        {
+            "type": "drawer-view",
+            "name": "sources.history",
+            "title": "History",
+            "persistence": "temporary",
+            "className": "WebInspector.RevisionHistoryView"
         }
     ],
     "dependencies": [

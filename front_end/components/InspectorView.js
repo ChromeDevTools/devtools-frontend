@@ -348,24 +348,6 @@ WebInspector.InspectorView.prototype = {
         return panel;
     },
 
-    /**
-     * @param {string} id
-     */
-    closeViewInDrawer: function(id)
-    {
-        this._drawer.closeView(id);
-    },
-
-    /**
-     * @param {string} id
-     * @param {string} title
-     * @param {!WebInspector.Widget} view
-     */
-    showCloseableViewInDrawer: function(id, title, view)
-    {
-        this._drawer.showCloseableView(id, title, view);
-    },
-
     showDrawer: function()
     {
         this._drawer.showDrawer();
@@ -382,10 +364,11 @@ WebInspector.InspectorView.prototype = {
     /**
      * @param {string} id
      * @param {boolean=} immediate
+     * @return {!Promise.<?WebInspector.Widget>}
      */
     showViewInDrawer: function(id, immediate)
     {
-        this._drawer.showView(id, immediate);
+        return this._drawer.showView(id, immediate);
     },
 
     /**

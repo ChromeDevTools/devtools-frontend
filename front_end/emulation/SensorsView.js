@@ -304,7 +304,7 @@ WebInspector.SensorsView.ShowActionDelegate.prototype = {
      */
     handleAction: function(context, actionId)
     {
-        WebInspector.inspectorView.showCloseableViewInDrawer("sensors", WebInspector.UIString("Sensors"), WebInspector.SensorsView.instance());
+        WebInspector.inspectorView.showViewInDrawer("sensors");
         return true;
     }
 }

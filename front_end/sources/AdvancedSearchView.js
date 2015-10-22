@@ -341,7 +341,6 @@ WebInspector.SearchResultsPane.prototype = {
  */
 WebInspector.AdvancedSearchView.ActionDelegate = function()
 {
-    this._searchView = new WebInspector.AdvancedSearchView();
 }
 
 WebInspector.AdvancedSearchView.ActionDelegate.prototype = {
@@ -353,19 +352,36 @@ WebInspector.AdvancedSearchView.ActionDelegate.prototype = {
      */
     handleAction: function(context, actionId)
     {
-        if (!this._searchView.isShowing() || this._searchView._search !== this._searchView.element.window().document.activeElement) {
-            var selection = WebInspector.inspectorView.element.getDeepSelection();
-            var queryCandidate = "";
-            if (selection.rangeCount)
-                queryCandidate = selection.toString().replace(/\r?\n.*/, "");
+        this._showSearch();
+        return true;
+    },
 
-            WebInspector.inspectorView.setCurrentPanel(WebInspector.SourcesPanel.instance());
-            this._searchView._toggle(queryCandidate);
-            WebInspector.inspectorView.showCloseableViewInDrawer("sources.search", WebInspector.UIString("Search"), this._searchView);
-            this._searchView.focus();
-            return true;
+    /**
+     * @return {!Promise.<!WebInspector.AdvancedSearchView>}
+     */
+    _showSearch: function()
+    {
+        /**
+         * @param {?WebInspector.Widget} view
+         * @return {!WebInspector.AdvancedSearchView}
+         */
+        function updateSearchBox(view)
+        {
+            console.assert(view && view instanceof WebInspector.AdvancedSearchView);
+            var searchView = /** @type {!WebInspector.AdvancedSearchView} */(view);
+            if (searchView._search !== searchView.element.window().document.activeElement) {
+                WebInspector.inspectorView.setCurrentPanel(WebInspector.SourcesPanel.instance());
+                searchView._toggle(queryCandidate);
+                searchView.focus();
+            }
+            return searchView;
         }
-        return false;
+
+        var selection = WebInspector.inspectorView.element.getDeepSelection();
+        var queryCandidate = "";
+        if (selection.rangeCount)
+            queryCandidate = selection.toString().replace(/\r?\n.*/, "");
+        return WebInspector.inspectorView.showViewInDrawer("sources.search").then(updateSearchBox);
     }
 }
 

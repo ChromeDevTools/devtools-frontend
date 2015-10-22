@@ -4,7 +4,8 @@
             "type": "drawer-view",
             "name": "promises",
             "title": "Promises",
-            "order": "30",
+            "order": 30,
+            "persistence": "permanent",
             "className": "WebInspector.PromisePane"
         }
     ],

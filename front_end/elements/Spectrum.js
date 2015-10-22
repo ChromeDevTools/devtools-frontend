@@ -223,8 +223,6 @@ WebInspector.Spectrum.prototype = {
             return;
         if (show)
             this._updatePalettePanel();
-        else
-            WebInspector.restoreFocusFromElement(this.element);
         this._palettePanelShowing = show;
         this.contentElement.classList.toggle("palette-panel-showing", show);
     },

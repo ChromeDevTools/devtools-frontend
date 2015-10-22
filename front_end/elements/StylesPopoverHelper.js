@@ -62,7 +62,7 @@ WebInspector.StylesPopoverHelper.prototype = {
         var document = this._popover.element.ownerDocument;
         document.addEventListener("mousedown", this._hideProxy, false);
         document.defaultView.addEventListener("resize", this._hideProxy, false);
-        this._view.contentElement.addEventListener("keydown", this._boundOnKeyDown, false);
+        document.addEventListener("keydown", this._boundOnKeyDown, true);
 
         this._scrollerElement = anchorElement.enclosingNodeOrSelfWithClass("style-panes-wrapper");
         if (this._scrollerElement)

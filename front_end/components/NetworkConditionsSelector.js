@@ -32,28 +32,6 @@ WebInspector.NetworkConditionsSelector.throughputText = function(conditions)
     return (throughputInKbps < 1024) ? WebInspector.UIString("%d kb/s", throughputInKbps) : WebInspector.UIString("%d Mb/s", (throughputInKbps / 1024) | 0);
 }
 
-/**
- * @param {string} value
- * @return {string}
- */
-WebInspector.NetworkConditionsSelector.throughputValidator = function(value)
-{
-    if (!value || (/^[\d]+(\.\d+)?|\.\d+$/.test(value) && value >= 0 && value <= 10000000))
-        return "";
-    return WebInspector.UIString("Value must be non-negative float");
-}
-
-/**
- * @param {string} value
- * @return {string}
- */
-WebInspector.NetworkConditionsSelector.latencyValidator = function(value)
-{
-    if (!value || (/^[\d]+$/.test(value) && value >= 0 && value <= 1000000))
-        return "";
-    return WebInspector.UIString("Value must be non-negative integer");
-}
-
 /** @type {!Array.<!WebInspector.NetworkConditionsProfile>} */
 WebInspector.NetworkConditionsSelector._networkConditionsPresets = [
     {title: "Offline", value: {throughput: 0 * 1024 / 8, latency: 0}},
@@ -142,6 +120,7 @@ WebInspector.NetworkConditionsSelector.prototype = {
 /**
  * @constructor
  * @extends {WebInspector.VBox}
+ * @implements {WebInspector.ListWidget.Delegate}
  */
 WebInspector.NetworkConditionsSettingsTab = function()
 {
@@ -155,18 +134,15 @@ WebInspector.NetworkConditionsSettingsTab = function()
     this.containerElement = this.element.createChild("div", "help-container-wrapper").createChild("div", "settings-tab help-content help-container");
 
     var buttonsRow = this.containerElement.createChild("div", "button-row");
-    this._addCustomButton = createTextButton(WebInspector.UIString("Add custom profile..."), this._addCustomConditions.bind(this));
-    buttonsRow.appendChild(this._addCustomButton);
+    var addButton = createTextButton(WebInspector.UIString("Add custom profile..."), this._addButtonClicked.bind(this));
+    buttonsRow.appendChild(addButton);
 
-    this._conditionsList = this.containerElement.createChild("div", "conditions-list");
-    this._customListSearator = createElementWithClass("div", "custom-separator");
+    this._list = new WebInspector.ListWidget(this);
+    this._list.registerRequiredCSS("components/networkConditionsSettingsTab.css");
+    this._list.show(this.containerElement);
 
-    this._editConditions = null;
-    this._editConditionsListItem = null;
     this._customSetting = WebInspector.moduleSetting("networkConditionsCustomProfiles");
     this._customSetting.addChangeListener(this._conditionsUpdated, this);
-
-    this._createEditConditionsElement();
 }
 
 WebInspector.NetworkConditionsSettingsTab.prototype = {
@@ -174,234 +150,172 @@ WebInspector.NetworkConditionsSettingsTab.prototype = {
     {
         WebInspector.VBox.prototype.wasShown.call(this);
         this._conditionsUpdated();
-        this._stopEditing();
     },
 
     _conditionsUpdated: function()
     {
-        this._conditionsList.removeChildren();
+        if (this._muteUpdate)
+            return;
+
+        this._list.clear();
 
         var conditions = this._customSetting.get();
         for (var i = 0; i < conditions.length; ++i)
-            this._conditionsList.appendChild(this._createConditionsListItem(conditions[i], true));
+            this._list.appendItem(conditions[i], true);
 
-        this._conditionsList.appendChild(this._customListSearator);
-        this._updateSeparatorVisibility();
+        this._list.appendSeparator();
 
         conditions = WebInspector.NetworkConditionsSelector._networkConditionsPresets;
         for (var i = 0; i < conditions.length; ++i)
-            this._conditionsList.appendChild(this._createConditionsListItem(conditions[i], false));
+            this._list.appendItem(conditions[i], false);
     },
 
-    _updateSeparatorVisibility: function()
+    _addButtonClicked: function()
     {
-        this._customListSearator.classList.toggle("hidden", this._conditionsList.firstChild === this._customListSearator);
+        this._list.addNewItem(this._customSetting.get().length);
     },
 
     /**
-     * @param {!WebInspector.NetworkConditionsProfile} conditions
-     * @param {boolean} custom
+     * @override
+     * @param {*} item
      * @return {!Element}
      */
-    _createConditionsListItem: function(conditions, custom)
+    renderItem: function(item)
     {
-        var item = createElementWithClass("div", "conditions-list-item");
-        var title = item.createChild("div", "conditions-list-text conditions-list-title");
+        var conditions = /** @type {!WebInspector.NetworkConditionsProfile} */ (item);
+        var element = createElementWithClass("div", "conditions-list-item");
+        var title = element.createChild("div", "conditions-list-text conditions-list-title");
         var titleText = title.createChild("div", "conditions-list-title-text");
         titleText.textContent = conditions.title;
         titleText.title = conditions.title;
-        item.createChild("div", "conditions-list-separator");
-        item.createChild("div", "conditions-list-text").textContent = WebInspector.NetworkConditionsSelector.throughputText(conditions.value);
-        item.createChild("div", "conditions-list-separator");
-        item.createChild("div", "conditions-list-text").textContent = WebInspector.UIString("%dms", conditions.value.latency);
-
-        if (custom) {
-            var editButton = title.createChild("div", "conditions-list-edit");
-            editButton.title = WebInspector.UIString("Edit");
-            editButton.addEventListener("click", onEditClicked.bind(this), false);
-
-            var removeButton = title.createChild("div", "conditions-list-remove");
-            removeButton.title = WebInspector.UIString("Remove");
-            removeButton.addEventListener("click", onRemoveClicked.bind(this), false);
-        }
-
-        /**
-         * @param {!Event} event
-         * @this {WebInspector.NetworkConditionsSettingsTab}
-         */
-        function onEditClicked(event)
-        {
-            event.consume();
-            this._startEditing(conditions, item);
-        }
-
-        /**
-         * @param {!Event} event
-         * @this {WebInspector.NetworkConditionsSettingsTab}
-         */
-        function onRemoveClicked(event)
-        {
-            var list = this._customSetting.get();
-            list.remove(conditions);
-            this._customSetting.set(list);
-            event.consume();
-        }
-
-        return item;
+        element.createChild("div", "conditions-list-separator");
+        element.createChild("div", "conditions-list-text").textContent = WebInspector.NetworkConditionsSelector.throughputText(conditions.value);
+        element.createChild("div", "conditions-list-separator");
+        element.createChild("div", "conditions-list-text").textContent = WebInspector.UIString("%dms", conditions.value.latency);
+        return element;
     },
 
-    _addCustomConditions: function()
+    /**
+     * @override
+     * @param {number} index
+     */
+    removeItemRequested: function(index)
     {
-        var conditions = {title: "", value: {throughput: 0, latency: 0}};
-        this._startEditing(conditions, null);
+        var list = this._customSetting.get();
+        list.splice(index, 1);
+        this._muteUpdate = true;
+        this._customSetting.set(list);
+        this._muteUpdate = false;
+        this._list.removeItem(index);
     },
 
-    _createEditConditionsElement: function()
+    /**
+     * @override
+     * @param {*|null} item
+     * @param {!WebInspector.ListWidget.Editor} editor
+     */
+    commitEdit: function(item, editor)
     {
-        this._editConditionsElement = createElementWithClass("div", "conditions-edit-container");
-        this._editConditionsElement.addEventListener("keydown", onKeyDown.bind(null, isEscKey, this._stopEditing.bind(this)), false);
-        this._editConditionsElement.addEventListener("keydown", onKeyDown.bind(null, isEnterKey, this._editConditionsCommitClicked.bind(this)), false);
+        var conditions = /** @type {?WebInspector.NetworkConditionsProfile} */ (item);
+        if (!conditions)
+            conditions = {title: "", value: {throughput: 0, latency: 0}};
 
-        var titles = this._editConditionsElement.createChild("div", "conditions-edit-row");
+        conditions.title = editor.input("title").value.trim();
+        var throughput = editor.input("throughput").value.trim();
+        conditions.value.throughput = throughput ? parseInt(throughput, 10) * (1024 / 8) : -1;
+        var latency = editor.input("latency").value.trim();
+        conditions.value.latency = latency ? parseInt(latency, 10) : 0;
+
+        var list = this._customSetting.get();
+        if (!item)
+            list.push(conditions);
+        this._customSetting.set(list);
+    },
+
+    /**
+     * @override
+     * @param {*|null} item
+     * @return {!WebInspector.ListWidget.Editor}
+     */
+    beginEdit: function(item)
+    {
+        var conditions = /** @type {?WebInspector.NetworkConditionsProfile} */ (item);
+        var editor = this._createEditor();
+        if (conditions) {
+            editor.input("title").value = conditions.title;
+            editor.input("throughput").value = conditions.value.throughput < 0 ? "" : String(conditions.value.throughput / (1024 / 8));
+            editor.input("latency").value = String(conditions.value.latency);
+        } else {
+            editor.input("title").value = "";
+            editor.input("throughput").value = "";
+            editor.input("latency").value = "";
+        }
+        return editor;
+    },
+
+    /**
+     * @return {!WebInspector.ListWidget.Editor}
+     */
+    _createEditor: function()
+    {
+        if (this._editor)
+            return this._editor;
+
+        var editor = new WebInspector.ListWidget.Editor();
+        this._editor = editor;
+        var content = editor.contentElement();
+
+        var titles = content.createChild("div", "conditions-edit-row");
         titles.createChild("div", "conditions-list-text conditions-list-title").textContent = WebInspector.UIString("Profile Name");
         titles.createChild("div", "conditions-list-separator conditions-list-separator-invisible");
         titles.createChild("div", "conditions-list-text").textContent = WebInspector.UIString("Throughput");
         titles.createChild("div", "conditions-list-separator conditions-list-separator-invisible");
         titles.createChild("div", "conditions-list-text").textContent = WebInspector.UIString("Latency");
 
-        var fields = this._editConditionsElement.createChild("div", "conditions-edit-row");
-        this._editConditionsTitle = this._createInput("");
-        fields.createChild("div", "conditions-list-text conditions-list-title").appendChild(this._editConditionsTitle);
+        var fields = content.createChild("div", "conditions-edit-row");
+        fields.createChild("div", "conditions-list-text conditions-list-title").appendChild(editor.createInput("title", "text", "", titleValidator));
         fields.createChild("div", "conditions-list-separator conditions-list-separator-invisible");
 
-        this._editConditionsThroughput = this._createInput(WebInspector.UIString("kb/s"));
         var cell = fields.createChild("div", "conditions-list-text");
-        cell.appendChild(this._editConditionsThroughput);
+        cell.appendChild(editor.createInput("throughput", "text", WebInspector.UIString("kb/s"), throughputValidator));
         cell.createChild("div", "conditions-edit-optional").textContent = WebInspector.UIString("optional");
         fields.createChild("div", "conditions-list-separator conditions-list-separator-invisible");
 
-        this._editConditionsLatency = this._createInput(WebInspector.UIString("ms"));
         cell = fields.createChild("div", "conditions-list-text");
-        cell.appendChild(this._editConditionsLatency);
+        cell.appendChild(editor.createInput("latency", "text", WebInspector.UIString("ms"), latencyValidator));
         cell.createChild("div", "conditions-edit-optional").textContent = WebInspector.UIString("optional");
 
-        var buttons = this._editConditionsElement.createChild("div", "conditions-edit-row");
-        this._editConditionsCommitButton = createTextButton("", this._editConditionsCommitClicked.bind(this));
-        buttons.appendChild(this._editConditionsCommitButton);
-        this._editConditionsCancelButton = createTextButton(WebInspector.UIString("Cancel"), this._stopEditing.bind(this));
-        this._editConditionsCancelButton.addEventListener("keydown", onKeyDown.bind(null, isEnterKey, this._stopEditing.bind(this)), false);
-        buttons.appendChild(this._editConditionsCancelButton);
+        return editor;
 
         /**
-         * @param {function(!Event):boolean} predicate
-         * @param {function()} callback
-         * @param {!Event} event
+         * @param {!HTMLInputElement} input
+         * @return {boolean}
          */
-        function onKeyDown(predicate, callback, event)
+        function titleValidator(input)
         {
-            if (predicate(event)) {
-                event.consume(true);
-                callback();
-            }
+            var value = input.value.trim();
+            return value.length > 0 && value.length < 50;
         }
-    },
 
-    /**
-     * @param {string} placeholder
-     * @return {!Element}
-     */
-    _createInput: function(placeholder)
-    {
-        var input = createElement("input");
-        input.type = "text";
-        input.placeholder = placeholder;
-        input.addEventListener("input", this._validateInputs.bind(this, false), false);
-        input.addEventListener("blur", this._validateInputs.bind(this, false), false);
-        return input;
-    },
-
-    /**
-     * @param {boolean} forceValid
-     */
-    _validateInputs: function(forceValid)
-    {
-        var trimmedTitle = this._editConditionsTitle.value.trim();
-        var titleValid = trimmedTitle.length > 0 && trimmedTitle.length < 50;
-        this._editConditionsTitle.classList.toggle("error-input", !titleValid && !forceValid);
-
-        var throughputValid = !WebInspector.NetworkConditionsSelector.throughputValidator(this._editConditionsThroughput.value);
-        this._editConditionsThroughput.classList.toggle("error-input", !throughputValid && !forceValid);
-
-        var latencyValid = !WebInspector.NetworkConditionsSelector.latencyValidator(this._editConditionsLatency.value);
-        this._editConditionsLatency.classList.toggle("error-input", !latencyValid && !forceValid);
-
-        var allValid = titleValid && throughputValid && latencyValid;
-        this._editConditionsCommitButton.disabled = !allValid;
-    },
-
-    /**
-     * @param {!WebInspector.NetworkConditionsProfile} conditions
-     * @param {?Element} listItem
-     */
-    _startEditing: function(conditions, listItem)
-    {
-        this._stopEditing();
-
-        this._addCustomButton.disabled = true;
-        this._conditionsList.classList.add("conditions-list-editing");
-        this._editConditions = conditions;
-        this._editConditionsListItem = listItem;
-        if (listItem)
-            listItem.classList.add("hidden");
-
-        this._editConditionsCommitButton.textContent = listItem ? WebInspector.UIString("Save") : WebInspector.UIString("Add profile");
-        this._editConditionsTitle.value = conditions.title;
-        if (listItem) {
-            this._editConditionsThroughput.value = conditions.value.throughput < 0 ? "" : String(conditions.value.throughput / (1024 / 8));
-            this._editConditionsLatency.value = String(conditions.value.latency);
-        } else {
-            this._editConditionsThroughput.value = "";
-            this._editConditionsLatency.value = "";
+        /**
+         * @param {!HTMLInputElement} input
+         * @return {boolean}
+         */
+        function throughputValidator(input)
+        {
+            var value = input.value.trim();
+            return !value || (/^[\d]+(\.\d+)?|\.\d+$/.test(value) && value >= 0 && value <= 10000000);
         }
-        this._validateInputs(true);
 
-        if (listItem && listItem.nextElementSibling)
-            this._conditionsList.insertBefore(this._editConditionsElement, listItem.nextElementSibling);
-        else
-            this._conditionsList.insertBefore(this._editConditionsElement, this._customListSearator);
-        this._editConditionsCommitButton.scrollIntoView();
-        this._editConditionsTitle.focus();
-    },
-
-    _editConditionsCommitClicked: function()
-    {
-        if (this._editConditionsCommitButton.disabled)
-            return;
-
-        this._editConditions.title = this._editConditionsTitle.value;
-        this._editConditions.value.throughput = this._editConditionsThroughput.value ? parseInt(this._editConditionsThroughput.value, 10) * (1024 / 8) : -1;
-        this._editConditions.value.latency = this._editConditionsLatency.value ? parseInt(this._editConditionsLatency.value, 10) : 0;
-
-        this._stopEditing();
-
-        var list = this._customSetting.get();
-        if (!this._editConditionsListItem)
-            list.push(this._editConditions);
-        this._customSetting.set(list);
-
-        this._editConditions = null;
-        this._editConditionsListItem = null;
-    },
-
-    _stopEditing: function()
-    {
-        this._conditionsList.classList.remove("conditions-list-editing");
-        if (this._editConditionsListItem)
-            this._editConditionsListItem.classList.remove("hidden");
-        if (this._editConditionsElement.parentElement)
-            this._conditionsList.removeChild(this._editConditionsElement);
-        this._addCustomButton.disabled = false;
-        this._addCustomButton.focus();
+        /**
+         * @param {!HTMLInputElement} input
+         * @return {boolean}
+         */
+        function latencyValidator(input)
+        {
+            var value = input.value.trim();
+            return !value || (/^[\d]+$/.test(value) && value >= 0 && value <= 1000000);
+        }
     },
 
     __proto__: WebInspector.VBox.prototype

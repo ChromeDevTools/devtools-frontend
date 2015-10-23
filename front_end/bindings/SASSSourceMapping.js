@@ -142,9 +142,11 @@ WebInspector.SASSSourceMapping.prototype = {
         if (!sourceURL || !header.sourceMapURL || !this._completeSourceMapURLForCSSURL[sourceURL])
             return;
         var sourceMap = this._sourceMapByStyleSheetURL[sourceURL];
-        var sources = sourceMap.sources();
-        for (var i = 0; i < sources.length; ++i)
-            this._sassURLToCSSURLs.remove(sources[i], sourceURL);
+        if (sourceMap) {
+            var sources = sourceMap.sources();
+            for (var i = 0; i < sources.length; ++i)
+                this._sassURLToCSSURLs.remove(sources[i], sourceURL);
+        }
         delete this._sourceMapByStyleSheetURL[sourceURL];
         delete this._completeSourceMapURLForCSSURL[sourceURL];
 

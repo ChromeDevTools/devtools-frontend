@@ -1238,7 +1238,7 @@ WebInspector.ExtensibleTabbedPaneController = function(tabbedPane, extensionPoin
 
     this._tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, this._tabSelected, this);
     this._tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabClosed, this._tabClosed, this);
-    /** @type {!Map.<string, ?WebInspector.Widget>} */
+    /** @type {!Map.<string, !WebInspector.Widget>} */
     this._views = new Map();
     this._closeableTabSetting = WebInspector.settings.createSetting(extensionPoint + "-closeableTabs", {});
     this._initialize();
@@ -1274,7 +1274,7 @@ WebInspector.ExtensibleTabbedPaneController.prototype = {
         var id = descriptor["name"];
         var title = WebInspector.UIString(extension.title(WebInspector.platform()));
         var closeable = descriptor["persistence"] === "closeable" || descriptor["persistence"] === "temporary";
-        this._tabbedPane.appendTab(id, title, new WebInspector.Widget(), undefined, false, closeable);
+        this._tabbedPane.appendTab(id, title, this._views.get(id) || new WebInspector.Widget(), undefined, false, closeable);
     },
 
     /**

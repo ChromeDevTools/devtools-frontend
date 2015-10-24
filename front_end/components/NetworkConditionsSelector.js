@@ -220,10 +220,10 @@ WebInspector.NetworkConditionsSettingsTab.prototype = {
         if (!conditions)
             conditions = {title: "", value: {throughput: 0, latency: 0}};
 
-        conditions.title = editor.input("title").value.trim();
-        var throughput = editor.input("throughput").value.trim();
+        conditions.title = editor.control("title").value.trim();
+        var throughput = editor.control("throughput").value.trim();
         conditions.value.throughput = throughput ? parseInt(throughput, 10) * (1024 / 8) : -1;
-        var latency = editor.input("latency").value.trim();
+        var latency = editor.control("latency").value.trim();
         conditions.value.latency = latency ? parseInt(latency, 10) : 0;
 
         var list = this._customSetting.get();
@@ -242,13 +242,13 @@ WebInspector.NetworkConditionsSettingsTab.prototype = {
         var conditions = /** @type {?WebInspector.NetworkConditionsProfile} */ (item);
         var editor = this._createEditor();
         if (conditions) {
-            editor.input("title").value = conditions.title;
-            editor.input("throughput").value = conditions.value.throughput < 0 ? "" : String(conditions.value.throughput / (1024 / 8));
-            editor.input("latency").value = String(conditions.value.latency);
+            editor.control("title").value = conditions.title;
+            editor.control("throughput").value = conditions.value.throughput < 0 ? "" : String(conditions.value.throughput / (1024 / 8));
+            editor.control("latency").value = String(conditions.value.latency);
         } else {
-            editor.input("title").value = "";
-            editor.input("throughput").value = "";
-            editor.input("latency").value = "";
+            editor.control("title").value = "";
+            editor.control("throughput").value = "";
+            editor.control("latency").value = "";
         }
         return editor;
     },
@@ -288,7 +288,7 @@ WebInspector.NetworkConditionsSettingsTab.prototype = {
         return editor;
 
         /**
-         * @param {!HTMLInputElement} input
+         * @param {!HTMLInputElement|!HTMLSelectElement} input
          * @return {boolean}
          */
         function titleValidator(input)
@@ -298,7 +298,7 @@ WebInspector.NetworkConditionsSettingsTab.prototype = {
         }
 
         /**
-         * @param {!HTMLInputElement} input
+         * @param {!HTMLInputElement|!HTMLSelectElement} input
          * @return {boolean}
          */
         function throughputValidator(input)
@@ -308,7 +308,7 @@ WebInspector.NetworkConditionsSettingsTab.prototype = {
         }
 
         /**
-         * @param {!HTMLInputElement} input
+         * @param {!HTMLInputElement|!HTMLSelectElement} input
          * @return {boolean}
          */
         function latencyValidator(input)

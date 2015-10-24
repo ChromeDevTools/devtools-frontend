@@ -437,18 +437,6 @@ select.list-column-editor {
     width: 50%;
 }
 
-.blackbox-patterns-list {
-    max-width: 700px;
-}
-
-.blackbox-patterns-list .settings-list-item .list-column.settings-list-column-pattern {
-    width: 80%;
-}
-
-.blackbox-patterns-list .settings-list-item .list-column.settings-list-column-value {
-    width: 20%;
-}
-
 .excluded-folders-header {
     margin-top: 10px;
 }
@@ -490,30 +478,6 @@ select.list-column-editor {
     color: black;
     font-size: 1.2em;
     margin-bottom: 0.8em;
-}
-
-.blackbox-dialog .columns-header {
-    color: black;
-    font-weight: bold;
-    margin-bottom: 0.4em;
-    display: -webkit-box;
-    padding: 0;
-    max-width: 700px;
-}
-
-.blackbox-dialog .columns-header span {
-    width: 80%;
-    display: -webkit-box;
-}
-
-.blackbox-dialog .columns-header span + span {
-    margin-left: -17px;
-    width: 20%;
-}
-
-.blackbox-content-scripts {
-    padding: 0 0 14px 0;
-    margin-left: -4px;
 }
 
 .settings-dialog .done-button {

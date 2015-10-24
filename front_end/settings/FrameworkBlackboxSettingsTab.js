@@ -6,156 +6,175 @@
 
 /**
  * @constructor
- * @extends {WebInspector.SettingsTab}
+ * @extends {WebInspector.VBox}
+ * @implements {WebInspector.ListWidget.Delegate}
  */
 WebInspector.FrameworkBlackboxSettingsTab = function()
 {
-    WebInspector.SettingsTab.call(this, WebInspector.UIString("Framework Blackbox Patterns"));
-    this.containerElement.classList.add("blackbox-dialog", "dialog-contents", "settings-dialog", "settings-tab");
-    this.registerRequiredCSS("settings/settingsScreen.css");
+    WebInspector.VBox.call(this, true);
+    this.registerRequiredCSS("settings/frameworkBlackboxSettingsTab.css");
 
-    var contents = this.containerElement.createChild("div", "contents");
-
-    var contentScriptsSection = contents.createChild("div", "blackbox-content-scripts");
-    contentScriptsSection.appendChild(WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Blackbox content scripts"), WebInspector.moduleSetting("skipContentScripts"), true));
-
-    var blockHeader = contents.createChild("div", "columns-header");
-    blockHeader.createChild("span").textContent = WebInspector.UIString("URI pattern");
-    blockHeader.createChild("span").textContent = WebInspector.UIString("Behavior");
-
-    var section = contents.createChild("div", "section");
-    var container = section.createChild("div", "settings-list-container");
+    this.contentElement.createChild("div", "header").textContent = WebInspector.UIString("Framework Blackbox Patterns");
+    this.contentElement.createChild("div", "blackbox-content-scripts").appendChild(WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Blackbox content scripts"), WebInspector.moduleSetting("skipContentScripts"), true));
 
     this._blackboxLabel = WebInspector.UIString("Blackbox");
     this._disabledLabel = WebInspector.UIString("Disabled");
 
-    var column1 = { id: "pattern", placeholder: "/framework\\.js$" };
-    var column2 = { id: "value", options: [this._blackboxLabel, this._disabledLabel] };
+    this._list = new WebInspector.ListWidget(this);
+    this._list.element.classList.add("blackbox-list");
+    this._list.registerRequiredCSS("settings/frameworkBlackboxSettingsTab.css");
 
-    this._patternsList = new WebInspector.EditableSettingsList([column1, column2], this._patternValuesProvider.bind(this), this._patternValidate.bind(this), this._patternEdit.bind(this));
-    this._patternsList.element.classList.add("blackbox-patterns-list");
-    this._patternsList.addEventListener(WebInspector.SettingsList.Events.Removed, this._patternRemovedFromList.bind(this));
-    container.appendChild(this._patternsList.element);
+    var placeholder = createElementWithClass("div", "blackbox-list-empty");
+    placeholder.textContent = WebInspector.UIString("No blackboxed patterns");
+    this._list.setEmptyPlaceholder(placeholder);
+    this._list.show(this.contentElement);
+    this.contentElement.appendChild(createTextButton(WebInspector.UIString("Add pattern..."), this._addButtonClicked.bind(this), "add-button"));
 
-    /** @type {!Map.<string, string>} */
-    this._entries = new Map();
-    var patterns = WebInspector.moduleSetting("skipStackFramesPattern").getAsArray();
-    for (var i = 0; i < patterns.length; ++i)
-        this._addPattern(patterns[i].pattern, patterns[i].disabled);
+    this._setting = WebInspector.moduleSetting("skipStackFramesPattern");
+    this._setting.addChangeListener(this._settingUpdated, this);
 
-    this.containerElement.tabIndex = 0;
+    this.contentElement.tabIndex = 0;
 }
 
 WebInspector.FrameworkBlackboxSettingsTab.prototype = {
-    /**
-     * @param {string} itemId
-     * @param {string} columnId
-     * @return {string}
-     */
-    _patternValuesProvider: function(itemId, columnId)
+    wasShown: function()
     {
-        if (!itemId)
-            return "";
-        switch (columnId) {
-        case "pattern":
-            return itemId;
-        case "value":
-            return /** @type {string} */ (this._entries.get(itemId));
-        default:
-            console.assert("Should not be reached.");
-        }
-        return "";
+        WebInspector.SettingsTab.prototype.wasShown.call(this);
+        this._settingUpdated();
     },
 
-    /**
-     * @param {?string} itemId
-     * @param {!Object} data
-     * @return {!Array.<string>}
-     */
-    _patternValidate: function(itemId, data)
+    _settingUpdated: function()
     {
-        var regex;
-        var oldPattern = itemId;
-        var newPattern = data["pattern"];
-        try {
-            if (newPattern && (oldPattern === newPattern || !this._entries.has(newPattern)))
-                regex = new RegExp(newPattern);
-        } catch (e) {
-        }
-        return regex ? [] : ["pattern"];
-    },
-
-    /**
-     * @param {?string} itemId
-     * @param {!Object} data
-     */
-    _patternEdit: function(itemId, data)
-    {
-        var oldPattern = itemId;
-        var newPattern = data["pattern"];
-        if (!newPattern)
+        if (this._muteUpdate)
             return;
-        var disabled = (data["value"] === this._disabledLabel);
 
-        var patterns = WebInspector.moduleSetting("skipStackFramesPattern").getAsArray();
-        for (var i = 0; i <= patterns.length; ++i) {
-            if (i === patterns.length) {
-                patterns.push({ pattern: newPattern, disabled: disabled });
-                break;
-            }
-            if (patterns[i].pattern === oldPattern) {
-                patterns[i] = { pattern: newPattern, disabled: disabled };
-                break;
-            }
-        }
-        WebInspector.moduleSetting("skipStackFramesPattern").setAsArray(patterns);
+        this._list.clear();
+        var patterns = this._setting.getAsArray();
+        for (var i = 0; i < patterns.length; ++i)
+            this._list.appendItem(patterns[i], true);
+    },
 
-        if (oldPattern && oldPattern === newPattern) {
-            this._entries.set(newPattern, disabled ? this._disabledLabel : this._blackboxLabel);
-            this._patternsList.itemForId(oldPattern).classList.toggle("disabled", disabled);
-            this._patternsList.refreshItem(newPattern);
-            return;
-        }
-
-        if (oldPattern) {
-            this._patternsList.removeItem(oldPattern);
-            this._entries.remove(oldPattern);
-        }
-        this._addPattern(newPattern, disabled);
+    _addButtonClicked: function()
+    {
+        this._list.addNewItem(this._setting.getAsArray().length);
     },
 
     /**
-     * @param {!WebInspector.Event} event
+     * @override
+     * @param {*} item
+     * @return {!Element}
      */
-    _patternRemovedFromList: function(event)
+    renderItem: function(item)
     {
-        var pattern = /** @type{?string} */ (event.data);
+        var element = createElementWithClass("div", "blackbox-list-item");
+        element.createChild("div", "blackbox-pattern").textContent = item.pattern;
+        element.createChild("div", "blackbox-separator");
+        element.createChild("div", "blackbox-behavior").textContent = item.disabled ? this._disabledLabel : this._blackboxLabel;
+        if (item.disabled)
+            element.classList.add("blackbox-disabled");
+        return element;
+    },
+
+    /**
+     * @override
+     * @param {number} index
+     */
+    removeItemRequested: function(index)
+    {
+        var patterns = this._setting.getAsArray();
+        patterns.splice(index, 1);
+        this._muteUpdate = true;
+        this._setting.setAsArray(patterns);
+        this._muteUpdate = false;
+        this._list.removeItem(index);
+    },
+
+    /**
+     * @override
+     * @param {*|null} item
+     * @param {!WebInspector.ListWidget.Editor} editor
+     */
+    commitEdit: function(item, editor)
+    {
+        var pattern = item;
         if (!pattern)
-            return;
-        this._entries.remove(pattern);
+            pattern = {pattern: "", disabled: false};
 
-        var patterns = WebInspector.moduleSetting("skipStackFramesPattern").getAsArray();
-        for (var i = 0; i < patterns.length; ++i) {
-            if (patterns[i].pattern === pattern) {
-                patterns.splice(i, 1);
-                break;
-            }
-        }
-        WebInspector.moduleSetting("skipStackFramesPattern").setAsArray(patterns);
+        pattern.pattern = editor.control("pattern").value.trim();
+        pattern.disabled = editor.control("behavior").value === this._disabledLabel;
+
+        var list = this._setting.getAsArray();
+        if (!item)
+            list.push(pattern);
+        this._setting.setAsArray(list);
     },
 
     /**
-     * @param {string} pattern
-     * @param {boolean=} disabled
+     * @override
+     * @param {*|null} item
+     * @return {!WebInspector.ListWidget.Editor}
      */
-    _addPattern: function(pattern, disabled)
+    beginEdit: function(item)
     {
-        if (!pattern || this._entries.has(pattern))
-            return;
-        this._entries.set(pattern, disabled ? this._disabledLabel : this._blackboxLabel);
-        var listItem = this._patternsList.addItem(pattern, null);
-        listItem.classList.toggle("disabled", disabled);
+        var editor = this._createEditor();
+        if (item) {
+            editor.control("pattern").value = item.pattern;
+            editor.control("behavior").value = item.disabled ? this._disabledLabel : this._blackboxLabel;
+        } else {
+            editor.control("pattern").value = "";
+            editor.control("behavior").value = this._blackboxLabel;
+        }
+        return editor;
     },
 
-    __proto__: WebInspector.SettingsTab.prototype
+    /**
+     * @return {!WebInspector.ListWidget.Editor}
+     */
+    _createEditor: function()
+    {
+        if (this._editor)
+            return this._editor;
+
+        var editor = new WebInspector.ListWidget.Editor();
+        this._editor = editor;
+        var content = editor.contentElement();
+
+        var titles = content.createChild("div", "blackbox-edit-row");
+        titles.createChild("div", "blackbox-pattern").textContent = WebInspector.UIString("Pattern");
+        titles.createChild("div", "blackbox-separator blackbox-separator-invisible");
+        titles.createChild("div", "blackbox-behavior").textContent = WebInspector.UIString("Behavior");
+
+        var fields = content.createChild("div", "blackbox-edit-row");
+        fields.createChild("div", "blackbox-pattern").appendChild(editor.createInput("pattern", "text", "/framework\\.js$", patternValidator));
+        fields.createChild("div", "blackbox-separator blackbox-separator-invisible");
+        fields.createChild("div", "blackbox-behavior").appendChild(editor.createSelect("behavior", [this._blackboxLabel, this._disabledLabel], behaviorValidator));
+
+        return editor;
+
+        /**
+         * @param {!HTMLInputElement|!HTMLSelectElement} input
+         * @return {boolean}
+         */
+        function patternValidator(input)
+        {
+            var pattern = input.value.trim();
+            var regex;
+            try {
+                regex = new RegExp(pattern);
+            } catch (e) {
+            }
+            return !!(pattern && regex);
+        }
+
+        /**
+         * @param {!HTMLInputElement|!HTMLSelectElement} input
+         * @return {boolean}
+         */
+        function behaviorValidator(input)
+        {
+            return true;
+        }
+    },
+
+    __proto__: WebInspector.VBox.prototype
 }

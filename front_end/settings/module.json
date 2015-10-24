@@ -56,6 +56,7 @@
         "FrameworkBlackboxSettingsTab.js"
     ],
     "resources": [
+        "frameworkBlackboxSettingsTab.css",
         "settingsScreen.css"
     ]
 }

@@ -22,6 +22,9 @@ WebInspector.ListWidget = function(delegate)
     /** @type {?Element} */
     this._editElement = null;
 
+    /** @type {?Element} */
+    this._emptyPlaceholder = null;
+
     this.clear();
 }
 
@@ -65,6 +68,7 @@ WebInspector.ListWidget.prototype = {
         this._elements = [];
         this._lastSeparator = false;
         this._list.removeChildren();
+        this._updatePlaceholder();
         this._stopEditing();
     },
 
@@ -85,9 +89,10 @@ WebInspector.ListWidget.prototype = {
         element.appendChild(this._delegate.renderItem(item));
         if (editable) {
             element.classList.add("editable");
-            element.appendChild(this._createControls(item, element, this._items.length - 1));
+            element.appendChild(this._createControls(item, element));
         }
         this._elements.push(element);
+        this._updatePlaceholder();
     },
 
     appendSeparator: function()
@@ -120,6 +125,7 @@ WebInspector.ListWidget.prototype = {
         this._elements.splice(index, 1);
         this._items.splice(index, 1);
         this._editable.splice(index, 1);
+        this._updatePlaceholder();
     },
 
     /**
@@ -131,12 +137,19 @@ WebInspector.ListWidget.prototype = {
     },
 
     /**
+     * @param {?Element} element
+     */
+    setEmptyPlaceholder: function(element)
+    {
+        this._emptyPlaceholder = element;
+    },
+
+    /**
      * @param {*} item
      * @param {!Element} element
-     * @param {number} index
      * @return {!Element}
      */
-    _createControls: function(item, element, index)
+    _createControls: function(item, element)
     {
         var controls = createElementWithClass("div", "controls-container fill");
         var gradient = controls.createChild("div", "controls-gradient");
@@ -170,7 +183,7 @@ WebInspector.ListWidget.prototype = {
         function onRemoveClicked(event)
         {
             event.consume();
-            this._delegate.removeItemRequested(index);
+            this._delegate.removeItemRequested(this._elements.indexOf(element));
         }
     },
 
@@ -178,6 +191,17 @@ WebInspector.ListWidget.prototype = {
     {
         WebInspector.VBox.prototype.wasShown.call(this);
         this._stopEditing();
+    },
+
+    _updatePlaceholder: function()
+    {
+        if (!this._emptyPlaceholder)
+            return;
+
+        if (!this._elements.length && !this._editor)
+            this._list.appendChild(this._emptyPlaceholder);
+        else
+            this._emptyPlaceholder.remove();
     },
 
     /**
@@ -199,6 +223,7 @@ WebInspector.ListWidget.prototype = {
             element.classList.add("hidden");
 
         this._editor = this._delegate.beginEdit(item);
+        this._updatePlaceholder();
         this._list.insertBefore(this._editor.element, insertionPoint);
         this._editor.beginEdit(element ? WebInspector.UIString("Save") : WebInspector.UIString("Add"), this._commitEditing.bind(this), this._stopEditing.bind(this));
     },
@@ -222,6 +247,7 @@ WebInspector.ListWidget.prototype = {
         this._editor = null;
         this._editItem = null;
         this._editElement = null;
+        this._updatePlaceholder();
     },
 
     __proto__: WebInspector.VBox.prototype
@@ -258,11 +284,11 @@ WebInspector.ListWidget.Editor = function()
         }
     }
 
-    /** @type {!Array<!HTMLInputElement>} */
-    this._inputs = [];
-    /** @type {!Map<string, !HTMLInputElement>} */
-    this._inputByName = new Map();
-    /** @type {!Array<function(!HTMLInputElement):boolean>} */
+    /** @type {!Array<!HTMLInputElement|!HTMLSelectElement>} */
+    this._controls = [];
+    /** @type {!Map<string, !HTMLInputElement|!HTMLSelectElement>} */
+    this._controlByName = new Map();
+    /** @type {!Array<function((!HTMLInputElement|!HTMLSelectElement)):boolean>} */
     this._validators = [];
 
     /** @type {?function()} */
@@ -284,7 +310,7 @@ WebInspector.ListWidget.Editor.prototype = {
      * @param {string} name
      * @param {string} type
      * @param {string} title
-     * @param {function(!HTMLInputElement):boolean} validator
+     * @param {function((!HTMLInputElement|!HTMLSelectElement)):boolean} validator
      * @return {!HTMLInputElement}
      */
     createInput: function(name, type, title, validator)
@@ -292,31 +318,53 @@ WebInspector.ListWidget.Editor.prototype = {
         var input = /** @type {!HTMLInputElement} */ (createElement("input"));
         input.type = type;
         input.placeholder = title;
-        input.addEventListener("input", this._validateInputs.bind(this, false), false);
-        input.addEventListener("blur", this._validateInputs.bind(this, false), false);
-        this._inputByName.set(name, input);
-        this._inputs.push(input);
+        input.addEventListener("input", this._validateControls.bind(this, false), false);
+        input.addEventListener("blur", this._validateControls.bind(this, false), false);
+        this._controlByName.set(name, input);
+        this._controls.push(input);
         this._validators.push(validator);
         return input;
     },
 
     /**
      * @param {string} name
-     * @return {!HTMLInputElement}
+     * @param {!Array<string>} options
+     * @param {function((!HTMLInputElement|!HTMLSelectElement)):boolean} validator
+     * @return {!HTMLSelectElement}
      */
-    input: function(name)
+    createSelect: function(name, options, validator)
     {
-        return /** @type {!HTMLInputElement} */ (this._inputByName.get(name));
+        var select = /** @type {!HTMLSelectElement} */ (createElementWithClass("select", "chrome-select"));
+        for (var index = 0; index < options.length; ++index) {
+            var option = select.createChild("option");
+            option.value = options[index];
+            option.textContent = options[index];
+        }
+        select.addEventListener("input", this._validateControls.bind(this, false), false);
+        select.addEventListener("blur", this._validateControls.bind(this, false), false);
+        this._controlByName.set(name, select);
+        this._controls.push(select);
+        this._validators.push(validator);
+        return select;
+    },
+
+    /**
+     * @param {string} name
+     * @return {!HTMLInputElement|!HTMLSelectElement}
+     */
+    control: function(name)
+    {
+        return /** @type {!HTMLInputElement|!HTMLSelectElement} */ (this._controlByName.get(name));
     },
 
     /**
      * @param {boolean} forceValid
      */
-    _validateInputs: function(forceValid)
+    _validateControls: function(forceValid)
     {
         var allValid = true;
-        for (var index = 0; index < this._inputs.length; ++index) {
-            var input = this._inputs[index];
+        for (var index = 0; index < this._controls.length; ++index) {
+            var input = this._controls[index];
             var valid = this._validators[index].call(null, input);
             input.classList.toggle("error-input", !valid && !forceValid);
             allValid &= valid;
@@ -336,9 +384,9 @@ WebInspector.ListWidget.Editor.prototype = {
 
         this._commitButton.textContent = commitButtonTitle;
         this._commitButton.scrollIntoView();
-        if (this._inputs.length)
-            this._inputs[0].focus();
-        this._validateInputs(true);
+        if (this._controls.length)
+            this._controls[0].focus();
+        this._validateControls(true);
     },
 
     _commitClicked: function()

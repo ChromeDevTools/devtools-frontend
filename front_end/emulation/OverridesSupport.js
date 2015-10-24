@@ -94,8 +94,10 @@ WebInspector.OverridesSupport.PageResizer.prototype = {
      * @param {number} dipWidth
      * @param {number} dipHeight
      * @param {number} scale
+     * @param {number} pageWidth
+     * @param {number} pageHeight
      */
-    update: function(dipWidth, dipHeight, scale) { }
+    update: function(dipWidth, dipHeight, scale, pageWidth, pageHeight) { }
 };
 
 /** @typedef {{width: number, height: number, deviceScaleFactor: number, userAgent: string, touch: boolean, mobile: boolean}} */
@@ -529,7 +531,7 @@ WebInspector.OverridesSupport.prototype = {
         if (!this.emulationEnabled()) {
             this._deviceMetricsThrottler.schedule(clearDeviceMetricsOverride.bind(this));
             if (this._pageResizer)
-                this._pageResizer.update(0, 0, 1);
+                this._pageResizer.update(0, 0, 1, 0, 0);
             return;
         }
 
@@ -556,7 +558,10 @@ WebInspector.OverridesSupport.prototype = {
                 }
             }
 
-            this._pageResizer.update(Math.min(dipWidth * scale, available.width - insets.left * scale), Math.min(dipHeight * scale, available.height - insets.top * scale), scale);
+            this._pageResizer.update(
+                Math.min(dipWidth * scale, available.width - insets.left * scale), Math.min(dipHeight * scale, available.height - insets.top * scale),
+                scale,
+                (dipWidth + insets.left + insets.right) * scale, (dipHeight + insets.top + insets.bottom) * scale);
             if (scale === 1 && available.width >= dipWidth && available.height >= dipHeight) {
                 // When we have enough space, no page size override is required. This will speed things up and remove lag.
                 overrideWidth = 0;

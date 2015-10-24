@@ -136,6 +136,8 @@ WebInspector.ResponsiveDesignView.prototype = {
         delete this._cachedCssCanvasHeight;
         delete this._cachedCssHeight;
         delete this._cachedCssWidth;
+        delete this._cachedCssPageWidth;
+        delete this._cachedCssPageHeight;
         delete this._cachedDeviceInsets;
         delete this._cachedZoomFactor;
         delete this._cachedViewport;
@@ -179,12 +181,16 @@ WebInspector.ResponsiveDesignView.prototype = {
      * @param {number} dipWidth
      * @param {number} dipHeight
      * @param {number} scale
+     * @param {number} pageWidth
+     * @param {number} pageHeight
      */
-    update: function(dipWidth, dipHeight, scale)
+    update: function(dipWidth, dipHeight, scale, pageWidth, pageHeight)
     {
         this._scale = scale;
         this._dipWidth = dipWidth ? Math.max(dipWidth, 1) : 0;
         this._dipHeight = dipHeight ? Math.max(dipHeight, 1) : 0;
+        this._pageWidth = pageWidth ? Math.max(pageWidth, 1) : 0;
+        this._pageHeight = pageHeight ? Math.max(pageHeight, 1) : 0;
         this._updateUI();
     },
 
@@ -510,6 +516,8 @@ WebInspector.ResponsiveDesignView.prototype = {
 
         var cssWidth = (this._dipWidth ? this._dipWidth : availableDip.width) / zoomFactor;
         var cssHeight = (this._dipHeight ? this._dipHeight : availableDip.height) / zoomFactor;
+        var cssPageWidth = (this._pageWidth ? this._pageWidth : availableDip.width) / zoomFactor;
+        var cssPageHeight = (this._pageHeight ? this._pageHeight : availableDip.height) / zoomFactor;
         var deviceInsets = new Insets(this._deviceInsets.left * this._scale / zoomFactor, this._deviceInsets.top * this._scale / zoomFactor, this._deviceInsets.right * this._scale / zoomFactor, this._deviceInsets.bottom * this._scale / zoomFactor);
         cssWidth += deviceInsets.left + deviceInsets.right;
         cssHeight += deviceInsets.top + deviceInsets.bottom;
@@ -522,6 +530,11 @@ WebInspector.ResponsiveDesignView.prototype = {
             this._pageContainer.style.paddingRight = deviceInsets.right + "px";
             this._pageContainer.style.paddingBottom = deviceInsets.bottom + "px";
             this._inspectedPagePlaceholder.onResize();
+        }
+
+        if (this._cachedCssPageWidth !== cssPageHeight || this._cachedCssPageHeight !== cssPageHeight) {
+            this._pageContainerImage.style.width = cssPageWidth + "px";
+            this._pageContainerImage.style.height = cssPageHeight + "px";
         }
 
         this._loadPageContainerImage();
@@ -556,6 +569,8 @@ WebInspector.ResponsiveDesignView.prototype = {
         this._cachedCssCanvasHeight = cssCanvasHeight;
         this._cachedCssHeight = cssHeight;
         this._cachedCssWidth = cssWidth;
+        this._cachedCssPageWidth = cssPageWidth;
+        this._cachedCssPageHeight = cssPageHeight;
         this._cachedDeviceInsets = deviceInsets;
         this._cachedZoomFactor = zoomFactor;
         this._cachedViewport = this._viewport;

@@ -636,6 +636,15 @@ WebInspector.ActionToolbarButton.prototype = {
 
     /**
      * @override
+     * @return {string}
+     */
+    title: function()
+    {
+        return this._action.title();
+    },
+
+    /**
+     * @override
      * @param {string} title
      */
     setTitle: function(title)

@@ -178,7 +178,7 @@
 }
 
 .data-grid th:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: hsla(0, 0%, 90%, 1);
 }
 
 .data-grid button {

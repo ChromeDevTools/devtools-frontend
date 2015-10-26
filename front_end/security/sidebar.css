@@ -7,13 +7,6 @@
     padding: 0;
 }
 
-.tree-outline li.selected .lock-icon-neutral {
-    background-image: none;
-    background-color: #5a5a5a;
-    -webkit-mask-image: url(Images/securityStateNeutral.svg);
-    -webkit-mask-size: cover;
-}
-
 .tree-outline:focus li.selected .lock-icon-neutral {
     background-color: #fff;
 }
@@ -35,6 +28,7 @@
     margin-bottom: 0.5em;
     color: rgb(90, 90, 90);
 }
+
 .tree-outline ol {
     padding-left: 0;
 }
@@ -53,4 +47,29 @@
 .tree-outline .sidebar-tree-item .security-property {
     float: left;
     margin-right: 2px;
+}
+
+.tree-outline .security-sidebar-tree-item.selected .icon {
+    background-image: none;
+    background-color: #fff;
+}
+
+.tree-outline li.selected .lock-icon-neutral {
+    background-image: none;
+    background-color: #5a5a5a;
+    -webkit-mask-image: url(Images/securityStateNeutral.svg);
+    -webkit-mask-size: cover;
+}
+
+.tree-outline .security-sidebar-tree-item.selected .security-property-insecure {
+    -webkit-mask-image: url(Images/securityPropertyInsecure.svg);
+}
+
+.security-sidebar-tree-item.selected .security-property-neutral,
+.security-sidebar-tree-item.selected .security-property-warning {
+    -webkit-mask-image: url(Images/securityPropertyWarning.svg);
+}
+
+.security-sidebar-tree-item.selected .security-property-secure {
+    -webkit-mask-image: url(Images/securityPropertySecure.svg);
 }

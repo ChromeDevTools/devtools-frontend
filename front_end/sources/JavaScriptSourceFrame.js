@@ -261,26 +261,42 @@ WebInspector.JavaScriptSourceFrame.prototype = {
             this._compiler.scheduleCompile();
     },
 
+    /**
+     * @override
+     * @return {!Promise}
+     */
     populateLineGutterContextMenu: function(contextMenu, lineNumber)
     {
-        var uiLocation = new WebInspector.UILocation(this._uiSourceCode, lineNumber, 0);
-        this._scriptsPanel.appendUILocationItems(contextMenu, uiLocation);
-        var breakpoint = this._breakpointManager.findBreakpointOnLine(this._uiSourceCode, lineNumber);
-        if (!breakpoint) {
-            // This row doesn't have a breakpoint: We want to show Add Breakpoint and Add and Edit Breakpoint.
-            contextMenu.appendItem(WebInspector.UIString.capitalize("Add ^breakpoint"), this._createNewBreakpoint.bind(this, lineNumber, 0, "", true));
-            contextMenu.appendItem(WebInspector.UIString.capitalize("Add ^conditional ^breakpoint…"), this._editBreakpointCondition.bind(this, lineNumber));
-        } else {
-            // This row has a breakpoint, we want to show edit and remove breakpoint, and either disable or enable.
-            contextMenu.appendItem(WebInspector.UIString.capitalize("Remove ^breakpoint"), breakpoint.remove.bind(breakpoint));
-            contextMenu.appendItem(WebInspector.UIString.capitalize("Edit ^breakpoint…"), this._editBreakpointCondition.bind(this, lineNumber, breakpoint));
-            if (breakpoint.enabled())
-                contextMenu.appendItem(WebInspector.UIString.capitalize("Disable ^breakpoint"), breakpoint.setEnabled.bind(breakpoint, false));
-            else
-                contextMenu.appendItem(WebInspector.UIString.capitalize("Enable ^breakpoint"), breakpoint.setEnabled.bind(breakpoint, true));
+        /**
+         * @this {WebInspector.JavaScriptSourceFrame}
+         */
+        function populate(resolve, reject)
+        {
+            var uiLocation = new WebInspector.UILocation(this._uiSourceCode, lineNumber, 0);
+            this._scriptsPanel.appendUILocationItems(contextMenu, uiLocation);
+            var breakpoint = this._breakpointManager.findBreakpointOnLine(this._uiSourceCode, lineNumber);
+            if (!breakpoint) {
+                // This row doesn't have a breakpoint: We want to show Add Breakpoint and Add and Edit Breakpoint.
+                contextMenu.appendItem(WebInspector.UIString.capitalize("Add ^breakpoint"), this._createNewBreakpoint.bind(this, lineNumber, 0, "", true));
+                contextMenu.appendItem(WebInspector.UIString.capitalize("Add ^conditional ^breakpoint…"), this._editBreakpointCondition.bind(this, lineNumber));
+            } else {
+                // This row has a breakpoint, we want to show edit and remove breakpoint, and either disable or enable.
+                contextMenu.appendItem(WebInspector.UIString.capitalize("Remove ^breakpoint"), breakpoint.remove.bind(breakpoint));
+                contextMenu.appendItem(WebInspector.UIString.capitalize("Edit ^breakpoint…"), this._editBreakpointCondition.bind(this, lineNumber, breakpoint));
+                if (breakpoint.enabled())
+                    contextMenu.appendItem(WebInspector.UIString.capitalize("Disable ^breakpoint"), breakpoint.setEnabled.bind(breakpoint, false));
+                else
+                    contextMenu.appendItem(WebInspector.UIString.capitalize("Enable ^breakpoint"), breakpoint.setEnabled.bind(breakpoint, true));
+            }
+            resolve();
         }
+        return new Promise(populate.bind(this));
     },
 
+    /**
+     * @override
+     * @return {!Promise}
+     */
     populateTextAreaContextMenu: function(contextMenu, lineNumber, columnNumber)
     {
         var textSelection = this.textEditor.selection();
@@ -312,16 +328,22 @@ WebInspector.JavaScriptSourceFrame.prototype = {
             scriptFile.addSourceMapURL(url);
         }
 
-        WebInspector.UISourceCodeFrame.prototype.populateTextAreaContextMenu.call(this, contextMenu, lineNumber, columnNumber);
-
-        if (this._uiSourceCode.project().type() === WebInspector.projectTypes.Network && WebInspector.moduleSetting("jsSourceMapsEnabled").get()) {
-            if (this._scriptFileForTarget.size) {
-                var scriptFile = this._scriptFileForTarget.valuesArray()[0];
-                var addSourceMapURLLabel = WebInspector.UIString.capitalize("Add ^source ^map\u2026");
-                contextMenu.appendItem(addSourceMapURLLabel, addSourceMapURL.bind(null, scriptFile));
-                contextMenu.appendSeparator();
+        /**
+         * @this {WebInspector.JavaScriptSourceFrame}
+         */
+        function populateSourceMapMembers()
+        {
+            if (this._uiSourceCode.project().type() === WebInspector.projectTypes.Network && WebInspector.moduleSetting("jsSourceMapsEnabled").get()) {
+                if (this._scriptFileForTarget.size) {
+                    var scriptFile = this._scriptFileForTarget.valuesArray()[0];
+                    var addSourceMapURLLabel = WebInspector.UIString.capitalize("Add ^source ^map\u2026");
+                    contextMenu.appendItem(addSourceMapURLLabel, addSourceMapURL.bind(null, scriptFile));
+                    contextMenu.appendSeparator();
+                }
             }
         }
+
+        return WebInspector.UISourceCodeFrame.prototype.populateTextAreaContextMenu.call(this, contextMenu, lineNumber, columnNumber).then(populateSourceMapMembers.bind(this));
     },
 
     _workingCopyChanged: function(event)

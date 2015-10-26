@@ -64,9 +64,17 @@ WebInspector.ResourceSourceFrame.prototype = {
         return this._resource;
     },
 
+    /**
+     * @override
+     * @param {!WebInspector.ContextMenu} contextMenu
+     * @param {number} lineNumber
+     * @param {number} columnNumber
+     * @return {!Promise}
+     */
     populateTextAreaContextMenu: function(contextMenu, lineNumber, columnNumber)
     {
         contextMenu.appendApplicableItems(this._resource);
+        return Promise.resolve();
     },
 
     __proto__: WebInspector.SourceFrame.prototype

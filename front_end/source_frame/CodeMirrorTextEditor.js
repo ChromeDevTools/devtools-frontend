@@ -1064,15 +1064,26 @@ WebInspector.CodeMirrorTextEditor.prototype = {
     _contextMenu: function(event)
     {
         var contextMenu = new WebInspector.ContextMenu(event);
+        event.consume(true); //Consume event now to prevent document from handling the async menu
         var target = event.target.enclosingNodeOrSelfWithClass("CodeMirror-gutter-elt");
+        var promise;
         if (target)
-            this._delegate.populateLineGutterContextMenu(contextMenu, parseInt(target.textContent, 10) - 1);
+            promise = this._delegate.populateLineGutterContextMenu(contextMenu, parseInt(target.textContent, 10) - 1);
         else {
             var textSelection = this.selection();
-            this._delegate.populateTextAreaContextMenu(contextMenu, textSelection.startLine, textSelection.startColumn);
+            promise = this._delegate.populateTextAreaContextMenu(contextMenu, textSelection.startLine, textSelection.startColumn);
         }
-        contextMenu.appendApplicableItems(this);
-        contextMenu.show();
+
+        promise.then(showAsync.bind(this));
+
+        /**
+         * @this {WebInspector.CodeMirrorTextEditor}
+         */
+        function showAsync()
+        {
+            contextMenu.appendApplicableItems(this);
+            contextMenu.show();
+        }
     },
 
     /**
@@ -2170,6 +2181,7 @@ WebInspector.TextEditorDelegate.prototype = {
     /**
      * @param {!WebInspector.ContextMenu} contextMenu
      * @param {number} lineNumber
+     * @return {!Promise}
      */
     populateLineGutterContextMenu: function(contextMenu, lineNumber) { },
 
@@ -2177,6 +2189,7 @@ WebInspector.TextEditorDelegate.prototype = {
      * @param {!WebInspector.ContextMenu} contextMenu
      * @param {number} lineNumber
      * @param {number} columnNumber
+     * @return {!Promise}
      */
     populateTextAreaContextMenu: function(contextMenu, lineNumber, columnNumber) { },
 

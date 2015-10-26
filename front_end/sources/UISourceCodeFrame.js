@@ -159,12 +159,24 @@ WebInspector.UISourceCodeFrame.prototype = {
         delete this._isSettingContent;
     },
 
+    /**
+     * @override
+     * @return {!Promise}
+     */
     populateTextAreaContextMenu: function(contextMenu, lineNumber, columnNumber)
     {
-        WebInspector.SourceFrame.prototype.populateTextAreaContextMenu.call(this, contextMenu, lineNumber, columnNumber);
-        contextMenu.appendApplicableItems(this._uiSourceCode);
-        contextMenu.appendApplicableItems(new WebInspector.UILocation(this._uiSourceCode, lineNumber, columnNumber));
-        contextMenu.appendSeparator();
+        /**
+         * @this {WebInspector.UISourceCodeFrame}
+         */
+        function appendItems()
+        {
+            contextMenu.appendApplicableItems(this._uiSourceCode);
+            contextMenu.appendApplicableItems(new WebInspector.UILocation(this._uiSourceCode, lineNumber, columnNumber));
+            contextMenu.appendSeparator();
+        }
+
+        return WebInspector.SourceFrame.prototype.populateTextAreaContextMenu.call(this, contextMenu, lineNumber, columnNumber)
+            .then(appendItems.bind(this));
     },
 
     /**

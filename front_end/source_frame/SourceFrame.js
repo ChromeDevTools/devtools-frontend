@@ -606,12 +606,20 @@ WebInspector.SourceFrame.prototype = {
         }
     },
 
+    /**
+     * @return {!Promise}
+     */
     populateLineGutterContextMenu: function(contextMenu, lineNumber)
     {
+        return Promise.resolve();
     },
 
+    /**
+     * @return {!Promise}
+     */
     populateTextAreaContextMenu: function(contextMenu, lineNumber, columnNumber)
     {
+        return Promise.resolve();
     },
 
     /**
@@ -1018,18 +1026,25 @@ WebInspector.TextEditorDelegateForSourceFrame.prototype = {
 
     /**
      * @override
+     * @param {!WebInspector.ContextMenu} contextMenu
+     * @param {number} lineNumber
+     * @return {!Promise}
      */
     populateLineGutterContextMenu: function(contextMenu, lineNumber)
     {
-        this._sourceFrame.populateLineGutterContextMenu(contextMenu, lineNumber);
+        return this._sourceFrame.populateLineGutterContextMenu(contextMenu, lineNumber);
     },
 
     /**
      * @override
+     * @param {!WebInspector.ContextMenu} contextMenu
+     * @param {number} lineNumber
+     * @param {number} columnNumber
+     * @return {!Promise}
      */
     populateTextAreaContextMenu: function(contextMenu, lineNumber, columnNumber)
     {
-        this._sourceFrame.populateTextAreaContextMenu(contextMenu, lineNumber, columnNumber);
+        return this._sourceFrame.populateTextAreaContextMenu(contextMenu, lineNumber, columnNumber);
     },
 
     /**

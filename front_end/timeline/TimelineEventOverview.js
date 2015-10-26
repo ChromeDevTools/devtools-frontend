@@ -543,14 +543,14 @@ WebInspector.TimelineFilmStripOverview.prototype = {
 
         /**
          * @param {?string} data
-         * @return {!HTMLImageElement}
+         * @return {!Promise<!HTMLImageElement>}
          */
         function createImage(data)
         {
             var image = /** @type {!HTMLImageElement} */ (createElement("img"));
             if (data)
                 image.src = "data:image/jpg;base64," + data;
-            return image;
+            return image.completePromise();
         }
     },
 
@@ -565,13 +565,15 @@ WebInspector.TimelineFilmStripOverview.prototype = {
         var spanTime = this._tracingModel.maximumRecordTime() - zeroTime;
         var scale = spanTime / width;
         var context = this._canvas.getContext("2d");
+        var currentDrawGeneration = Symbol("drawGeneration");
+        this._lastDrawGeneration = currentDrawGeneration;
 
         context.beginPath();
         for (var x = 0; x < width; x += this._imageWidth + 5) {
-            var time = zeroTime + (x + this._imageWidth / 2)* scale;
+            var time = zeroTime + (x + this._imageWidth / 2) * scale;
             var frame = this._frameByTime(time);
             context.rect(x + 0.5, 3.5, this._imageWidth + 1, this._imageHeight + 1);
-            this._imageByFrame(frame).then(drawFrameImage.bind(null, x, this._imageWidth, this._imageHeight));
+            this._imageByFrame(frame).then(drawFrameImage.bind(this, x, this._imageWidth, this._imageHeight));
         }
         context.strokeStyle = "#ddd";
         context.stroke();
@@ -581,9 +583,13 @@ WebInspector.TimelineFilmStripOverview.prototype = {
          * @param {number} width
          * @param {number} height
          * @param {!HTMLImageElement} image
+         * @this {WebInspector.TimelineFilmStripOverview}
          */
         function drawFrameImage(x, width, height, image)
         {
+            // Ignore draws deferred from a previous update call.
+            if (this._lastDrawGeneration !== currentDrawGeneration)
+                return;
             context.drawImage(image, x + 1, 4, width, height);
         }
     },

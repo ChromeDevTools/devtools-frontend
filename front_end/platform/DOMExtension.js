@@ -705,6 +705,32 @@ Element.prototype.selectionLeftOffset = function()
 }
 
 /**
+ * @this {!HTMLImageElement} element
+ * @return {!Promise<!HTMLImageElement>}
+ */
+HTMLImageElement.prototype.completePromise = function()
+{
+    var element = this;
+    if (element.complete)
+        return Promise.resolve(element);
+    return new Promise(promiseBody);
+
+    /**
+     * @param {function(!HTMLImageElement)} resolve
+     */
+    function promiseBody(resolve)
+    {
+        element.addEventListener("load", oncomplete);
+        element.addEventListener("error", oncomplete);
+
+        function oncomplete()
+        {
+            resolve(element);
+        }
+    }
+}
+
+/**
  * @param {...!Node} var_args
  */
 Node.prototype.appendChildren = function(var_args)

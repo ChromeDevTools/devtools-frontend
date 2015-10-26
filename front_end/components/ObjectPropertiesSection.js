@@ -1247,7 +1247,7 @@ WebInspector.ObjectPropertiesSection.formatObjectAsFunction = function(func, ele
          */
         function processToken(token, tokenType, column, newColumn)
         {
-            if (!params && tokenType === "js-variable" && !functionName)
+            if (!params && tokenType === "js-def" && !functionName)
                 functionName = token;
             doneProcessing = doneProcessing || token === ")";
             if (doneProcessing)

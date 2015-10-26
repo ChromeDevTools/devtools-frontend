@@ -274,6 +274,11 @@ fieldset {
     margin-right: 20px;
 }
 
+.file-system-mapping-view {
+    margin-left: 30px;
+    margin-right: 10px;
+}
+
 .settings-tab .settings-list {
     border: 1px solid hsl(0, 0%, 85%);
     border-radius: 2px;
@@ -398,50 +403,38 @@ select.list-column-editor {
 }
 
 .settings-tab .file-system-container {
-    margin-bottom: 20px;
+    padding-bottom: 20px;
+    margin-bottom: 18px;
+    padding: 0 8px;
+    border-left: 1px solid hsl(0, 0%, 90%);
 }
 
 .settings-tab .file-system-header {
     display: flex;
     flex-direction: row;
-    align-items: baseline;
+    align-items: center;
+}
+
+.settings-tab .file-system-name {
+    font-weight: bold;
+    flex: none;
+    margin-right: 10px;
+    font-size: 15px;
 }
 
 .settings-tab .file-system-path {
     white-space: nowrap;
-    font-size: 1.4em;
-    padding-right: 5px;
-    -webkit-box-flex: 1;
-    color: hsl(210, 16%, 22%);
-    margin-bottom: 8px;
     overflow: hidden;
-    flex: 0 1 auto;
-    margin-right: 5px;
     text-overflow: ellipsis;
+    flex: auto;
 }
 
-.settings-tab .file-system-path-name {
-    padding-right: 6px;
-    font-weight: bold;
+.settings-tab .file-system-remove {
+    flex: none;
+    margin-left: 10px;
 }
 
 .file-systems-list .settings-list-item .list-column.settings-list-column-path {
-    width: 100%;
-}
-
-.file-mappings-list .settings-list-item .list-column.settings-list-column-url {
-    width: 50%;
-}
-
-.file-mappings-list .settings-list-item .list-column.settings-list-column-path {
-    width: 50%;
-}
-
-.excluded-folders-header {
-    margin-top: 10px;
-}
-
-.excluded-folders-list .settings-list-item .list-column.settings-list-column-path {
     width: 100%;
 }
 

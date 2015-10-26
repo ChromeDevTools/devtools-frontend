@@ -574,6 +574,7 @@
             'front_end/script_formatter_worker/ScriptFormatterWorker.js',
         ],
         'devtools_settings_js_files': [
+            'front_end/settings/editFileSystemView.css',
             'front_end/settings/frameworkBlackboxSettingsTab.css',
             'front_end/settings/settingsScreen.css',
             'front_end/settings/EditFileSystemView.js',

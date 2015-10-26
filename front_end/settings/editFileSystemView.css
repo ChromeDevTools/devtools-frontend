@@ -4,29 +4,30 @@
  * found in the LICENSE file.
  */
 
-.header {
-    padding: 0 0 6px;
-    border-bottom: 1px solid #EEEEEE;
-    font-size: 18px;
-    font-weight: normal;
+.file-system-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex: auto;
+    margin: 10px 0;
 }
 
-.blackbox-content-scripts {
-    margin-top: 10px;
+.file-system-header-text {
+    font-size: 14px;
+    flex: auto;
 }
 
 .add-button {
-    margin: 10px 0;
+    margin-left: 10px;
     align-self: flex-start;
 }
 
-.blackbox-list {
-    margin-top: 10px;
-    max-width: 500px;
-    flex: 0 1 auto;
+.file-system-list {
+    max-width: 600px;
+    flex: auto;
 }
 
-.blackbox-list-empty {
+.file-system-list-empty {
     flex: auto;
     height: 30px;
     display: flex;
@@ -34,50 +35,36 @@
     justify-content: center;
 }
 
-.blackbox-list-item {
+.file-system-list-item {
     padding: 3px 5px 3px 5px;
     height: 30px;
     display: flex;
     align-items: center;
-    position: relative;
     flex: auto 1 1;
 }
 
-.blackbox-pattern {
+.file-system-value {
     white-space: nowrap;
     text-overflow: ellipsis;
     -webkit-user-select: none;
     color: #222;
-    flex: auto;
+    flex: 1 1 0px;
     overflow: hidden;
 }
 
-.blackbox-list-item.blackbox-disabled .blackbox-pattern {
-    text-decoration: line-through;
-}
-
-.blackbox-behavior {
-    flex: 0 0 100px;
-    padding-left: 10px;
-}
-
-.blackbox-behavior > select {
-    margin-left: -10px;
-}
-
-.blackbox-separator {
+.file-system-separator {
     flex: 0 0 1px;
     background-color: rgb(231, 231, 231);
     height: 30px;
     margin: 0 4px;
 }
 
-.blackbox-separator-invisible {
+.file-system-separator-invisible {
     visibility: hidden;
     height: 100% !important;
 }
 
-.blackbox-edit-row {
+.file-system-edit-row {
     flex: none;
     display: flex;
     flex-direction: row;
@@ -85,8 +72,20 @@
     align-items: center;
 }
 
-.blackbox-edit-row input,
-.blackbox-edit-row select {
+.file-system-edit-row input {
     width: 100%;
     text-align: inherit;
+}
+
+.file-system-locked {
+    flex: none;
+    visibility: hidden;
+}
+
+.file-system-locked:after {
+    content: "\1F512";
+}
+
+.file-system-list-item.locked .file-system-locked {
+    visibility: visible;
 }

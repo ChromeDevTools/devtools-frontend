@@ -294,16 +294,13 @@ WebInspector.WorkspaceSettingsTab = function()
     WebInspector.isolatedFileSystemManager.addEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemAdded, this._fileSystemAdded, this);
     WebInspector.isolatedFileSystemManager.addEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemRemoved, this._fileSystemRemoved, this);
 
-    this._commonSection = this._appendSection(WebInspector.UIString("Common"));
     var folderExcludeSetting = WebInspector.isolatedFileSystemManager.workspaceFolderExcludePatternSetting();
     var folderExcludePatternInput = WebInspector.SettingsUI.createSettingInputField(WebInspector.UIString("Folder exclude pattern"), folderExcludeSetting, false, 0, "270px", WebInspector.SettingsUI.regexValidator);
-    this._commonSection.appendChild(folderExcludePatternInput);
+    this.containerElement.appendChild(folderExcludePatternInput);
 
-    this._fileSystemsSection = this._appendSection(WebInspector.UIString("Folders"));
-    this._fileSystemsListContainer = this._fileSystemsSection.createChild("p", "settings-list-container");
+    this._fileSystemsListContainer = this.containerElement.createChild("div", "settings-list-container");
 
-    this._addFileSystemRowElement = this._fileSystemsSection.createChild("div");
-    this._addFileSystemRowElement.appendChild(createTextButton(WebInspector.UIString("Add folder\u2026"), this._addFileSystemClicked.bind(this)));
+    this.containerElement.appendChild(createTextButton(WebInspector.UIString("Add folder\u2026"), this._addFileSystemClicked.bind(this)));
 
     /** @type {!Map<string, !Element>} */
     this._elementByPath = new Map();
@@ -329,6 +326,7 @@ WebInspector.WorkspaceSettingsTab.prototype = {
 
         var mappingView = new WebInspector.EditFileSystemView(fileSystem.path());
         this._mappingViewByPath.set(fileSystem.path(), mappingView);
+        mappingView.element.classList.add("file-system-mapping-view");
         mappingView.show(element);
     },
 
@@ -338,30 +336,24 @@ WebInspector.WorkspaceSettingsTab.prototype = {
      */
     _renderFileSystem: function(fileSystem)
     {
-        var element = createElementWithClass("div", "file-system-container");
         var fileSystemPath = fileSystem.path();
-        var textElement = element.createChild("div", "file-system-header");
-        var pathElement = textElement.createChild("div", "file-system-path");
-        pathElement.title = fileSystemPath;
-
-        const maxTotalPathLength = 75;
-        const maxFolderNameLength = 40;
-
         var lastIndexOfSlash = fileSystemPath.lastIndexOf(WebInspector.isWin() ? "\\" : "/");
         var folderName = fileSystemPath.substr(lastIndexOfSlash + 1);
-        var folderPath = fileSystemPath.substr(0, lastIndexOfSlash + 1);
-        folderPath = folderPath.trimMiddle(maxTotalPathLength - Math.min(maxFolderNameLength, folderName.length));
-        folderName = folderName.trimMiddle(maxFolderNameLength);
 
-        pathElement.createChild("span").textContent = WebInspector.UIString("Folder: ");
+        var element = createElementWithClass("div", "file-system-container");
+        var header = element.createChild("div", "file-system-header");
 
-        var folderPathElement = pathElement.createChild("span");
-        folderPathElement.textContent = folderPath;
+        header.createChild("div", "file-system-name").textContent = folderName;
+        var path = header.createChild("div", "file-system-path");
+        path.textContent = fileSystemPath;
+        path.title = fileSystemPath;
 
-        var nameElement = pathElement.createChild("span", "file-system-path-name");
-        nameElement.textContent = folderName;
-
-        textElement.appendChild(createTextButton(WebInspector.UIString("Remove"), this._removeFileSystemClicked.bind(this, fileSystem)));
+        var toolbar = new WebInspector.Toolbar();
+        var button = new WebInspector.ToolbarButton(WebInspector.UIString("Remove"), "delete-toolbar-item");
+        button.addEventListener("click", this._removeFileSystemClicked.bind(this, fileSystem));
+        toolbar.appendToolbarItem(button);
+        header.appendChild(toolbar.element);
+        //createTextButton(WebInspector.UIString("Remove"), this._removeFileSystemClicked.bind(this, fileSystem), "file-system-remove"));
 
         return element;
     },

@@ -172,15 +172,16 @@ WebInspector.NetworkConditionsSettingsTab.prototype = {
 
     _addButtonClicked: function()
     {
-        this._list.addNewItem(this._customSetting.get().length);
+        this._list.addNewItem(this._customSetting.get().length, {title: "", value: {throughput: 0, latency: 0}});
     },
 
     /**
      * @override
      * @param {*} item
+     * @param {boolean} editable
      * @return {!Element}
      */
-    renderItem: function(item)
+    renderItem: function(item, editable)
     {
         var conditions = /** @type {!WebInspector.NetworkConditionsProfile} */ (item);
         var element = createElementWithClass("div", "conditions-list-item");
@@ -197,9 +198,10 @@ WebInspector.NetworkConditionsSettingsTab.prototype = {
 
     /**
      * @override
+     * @param {*} item
      * @param {number} index
      */
-    removeItemRequested: function(index)
+    removeItemRequested: function(item, index)
     {
         var list = this._customSetting.get();
         list.splice(index, 1);
@@ -211,15 +213,13 @@ WebInspector.NetworkConditionsSettingsTab.prototype = {
 
     /**
      * @override
-     * @param {*|null} item
+     * @param {*} item
      * @param {!WebInspector.ListWidget.Editor} editor
+     * @param {boolean} isNew
      */
-    commitEdit: function(item, editor)
+    commitEdit: function(item, editor, isNew)
     {
         var conditions = /** @type {?WebInspector.NetworkConditionsProfile} */ (item);
-        if (!conditions)
-            conditions = {title: "", value: {throughput: 0, latency: 0}};
-
         conditions.title = editor.control("title").value.trim();
         var throughput = editor.control("throughput").value.trim();
         conditions.value.throughput = throughput ? parseInt(throughput, 10) * (1024 / 8) : -1;
@@ -227,29 +227,23 @@ WebInspector.NetworkConditionsSettingsTab.prototype = {
         conditions.value.latency = latency ? parseInt(latency, 10) : 0;
 
         var list = this._customSetting.get();
-        if (!item)
+        if (isNew)
             list.push(conditions);
         this._customSetting.set(list);
     },
 
     /**
      * @override
-     * @param {*|null} item
+     * @param {*} item
      * @return {!WebInspector.ListWidget.Editor}
      */
     beginEdit: function(item)
     {
         var conditions = /** @type {?WebInspector.NetworkConditionsProfile} */ (item);
         var editor = this._createEditor();
-        if (conditions) {
-            editor.control("title").value = conditions.title;
-            editor.control("throughput").value = conditions.value.throughput < 0 ? "" : String(conditions.value.throughput / (1024 / 8));
-            editor.control("latency").value = String(conditions.value.latency);
-        } else {
-            editor.control("title").value = "";
-            editor.control("throughput").value = "";
-            editor.control("latency").value = "";
-        }
+        editor.control("title").value = conditions.title;
+        editor.control("throughput").value = conditions.value.throughput < 0 ? "" : String(conditions.value.throughput / (1024 / 8));
+        editor.control("latency").value = String(conditions.value.latency);
         return editor;
     },
 

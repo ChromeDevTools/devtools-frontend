@@ -56,18 +56,21 @@ WebInspector.FrameworkBlackboxSettingsTab.prototype = {
 
     _addButtonClicked: function()
     {
-        this._list.addNewItem(this._setting.getAsArray().length);
+        this._list.addNewItem(this._setting.getAsArray().length, {pattern: "", disabled: false});
     },
 
     /**
      * @override
      * @param {*} item
+     * @param {boolean} editable
      * @return {!Element}
      */
-    renderItem: function(item)
+    renderItem: function(item, editable)
     {
         var element = createElementWithClass("div", "blackbox-list-item");
-        element.createChild("div", "blackbox-pattern").textContent = item.pattern;
+        var pattern = element.createChild("div", "blackbox-pattern");
+        pattern.textContent = item.pattern;
+        pattern.title = item.pattern;
         element.createChild("div", "blackbox-separator");
         element.createChild("div", "blackbox-behavior").textContent = item.disabled ? this._disabledLabel : this._blackboxLabel;
         if (item.disabled)
@@ -77,9 +80,10 @@ WebInspector.FrameworkBlackboxSettingsTab.prototype = {
 
     /**
      * @override
+     * @param {*} item
      * @param {number} index
      */
-    removeItemRequested: function(index)
+    removeItemRequested: function(item, index)
     {
         var patterns = this._setting.getAsArray();
         patterns.splice(index, 1);
@@ -91,39 +95,31 @@ WebInspector.FrameworkBlackboxSettingsTab.prototype = {
 
     /**
      * @override
-     * @param {*|null} item
+     * @param {*} item
      * @param {!WebInspector.ListWidget.Editor} editor
+     * @param {boolean} isNew
      */
-    commitEdit: function(item, editor)
+    commitEdit: function(item, editor, isNew)
     {
-        var pattern = item;
-        if (!pattern)
-            pattern = {pattern: "", disabled: false};
-
-        pattern.pattern = editor.control("pattern").value.trim();
-        pattern.disabled = editor.control("behavior").value === this._disabledLabel;
+        item.pattern = editor.control("pattern").value.trim();
+        item.disabled = editor.control("behavior").value === this._disabledLabel;
 
         var list = this._setting.getAsArray();
-        if (!item)
-            list.push(pattern);
+        if (isNew)
+            list.push(item);
         this._setting.setAsArray(list);
     },
 
     /**
      * @override
-     * @param {*|null} item
+     * @param {*} item
      * @return {!WebInspector.ListWidget.Editor}
      */
     beginEdit: function(item)
     {
         var editor = this._createEditor();
-        if (item) {
-            editor.control("pattern").value = item.pattern;
-            editor.control("behavior").value = item.disabled ? this._disabledLabel : this._blackboxLabel;
-        } else {
-            editor.control("pattern").value = "";
-            editor.control("behavior").value = this._blackboxLabel;
-        }
+        editor.control("pattern").value = item.pattern;
+        editor.control("behavior").value = item.disabled ? this._disabledLabel : this._blackboxLabel;
         return editor;
     },
 

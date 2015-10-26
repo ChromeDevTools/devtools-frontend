@@ -31,194 +31,263 @@
 /**
  * @constructor
  * @extends {WebInspector.VBox}
+ * @implements {WebInspector.ListWidget.Delegate}
  * @param {string} fileSystemPath
  */
 WebInspector.EditFileSystemView = function(fileSystemPath)
 {
-    WebInspector.VBox.call(this);
-    this.registerRequiredCSS("settings/settingsScreen.css");
-    this.element.classList.add("dialog-contents", "settings-dialog", "settings-tab");
+    WebInspector.VBox.call(this, true);
+    this.registerRequiredCSS("settings/editFileSystemView.css");
     this._fileSystemPath = fileSystemPath;
 
-    var contents = this.element.createChild("div", "contents");
+    this._eventListeners = [
+        WebInspector.fileSystemMapping.addEventListener(WebInspector.FileSystemMapping.Events.FileMappingAdded, this._update, this),
+        WebInspector.fileSystemMapping.addEventListener(WebInspector.FileSystemMapping.Events.FileMappingRemoved, this._update, this),
+        WebInspector.isolatedFileSystemManager.addEventListener(WebInspector.IsolatedFileSystemManager.Events.ExcludedFolderAdded, this._update, this),
+        WebInspector.isolatedFileSystemManager.addEventListener(WebInspector.IsolatedFileSystemManager.Events.ExcludedFolderRemoved, this._update, this)
+    ];
 
-    WebInspector.fileSystemMapping.addEventListener(WebInspector.FileSystemMapping.Events.FileMappingAdded, this._fileMappingAdded, this);
-    WebInspector.fileSystemMapping.addEventListener(WebInspector.FileSystemMapping.Events.FileMappingRemoved, this._fileMappingRemoved, this);
-    WebInspector.isolatedFileSystemManager.addEventListener(WebInspector.IsolatedFileSystemManager.Events.ExcludedFolderAdded, this._excludedFolderAdded, this);
-    WebInspector.isolatedFileSystemManager.addEventListener(WebInspector.IsolatedFileSystemManager.Events.ExcludedFolderRemoved, this._excludedFolderRemoved, this);
+    var mappingsHeader = this.contentElement.createChild("div", "file-system-header");
+    mappingsHeader.createChild("div", "file-system-header-text").textContent = WebInspector.UIString("Mappings");
+    mappingsHeader.appendChild(createTextButton(WebInspector.UIString("Add"), this._addMappingButtonClicked.bind(this), "add-button"));
+    this._mappingsList = new WebInspector.ListWidget(this);
+    this._mappingsList.element.classList.add("file-system-list");
+    this._mappingsList.registerRequiredCSS("settings/editFileSystemView.css");
+    var mappingsPlaceholder = createElementWithClass("div", "file-system-list-empty");
+    mappingsPlaceholder.textContent = WebInspector.UIString("No mappings");
+    this._mappingsList.setEmptyPlaceholder(mappingsPlaceholder);
+    this._mappingsList.show(this.contentElement);
 
-    var blockHeader = contents.createChild("div", "block-header");
-    blockHeader.textContent = WebInspector.UIString("Mappings");
-    this._fileMappingsSection = contents.createChild("div", "section");
-    this._fileMappingsListContainer = this._fileMappingsSection.createChild("div", "settings-list-container");
+    var excludedFoldersHeader = this.contentElement.createChild("div", "file-system-header");
+    excludedFoldersHeader.createChild("div", "file-system-header-text").textContent = WebInspector.UIString("Excluded folders");
+    excludedFoldersHeader.appendChild(createTextButton(WebInspector.UIString("Add"), this._addExcludedFolderButtonClicked.bind(this), "add-button"));
+    this._excludedFoldersList = new WebInspector.ListWidget(this);
+    this._excludedFoldersList.element.classList.add("file-system-list");
+    this._excludedFoldersList.registerRequiredCSS("settings/editFileSystemView.css");
+    var excludedFoldersPlaceholder = createElementWithClass("div", "file-system-list-empty");
+    excludedFoldersPlaceholder.textContent = WebInspector.UIString("No excluded folders");
+    this._excludedFoldersList.setEmptyPlaceholder(excludedFoldersPlaceholder);
+    this._excludedFoldersList.show(this.contentElement);
 
-    var urlColumn = { id: "url", placeholder: WebInspector.UIString("URL prefix") };
-    var pathColumn = { id: "path", placeholder: WebInspector.UIString("Folder path") };
-
-    this._fileMappingsList = new WebInspector.EditableSettingsList([urlColumn, pathColumn], this._fileMappingValuesProvider.bind(this), this._fileMappingValidate.bind(this), this._fileMappingEdit.bind(this));
-    this._fileMappingsList.addEventListener(WebInspector.SettingsList.Events.Removed, this._fileMappingRemovedfromList.bind(this));
-
-    this._fileMappingsList.element.classList.add("file-mappings-list");
-    this._fileMappingsListContainer.appendChild(this._fileMappingsList.element);
-
-    this._entries = {};
-
-    // Treat non configurable items with priority.
-    var entries = WebInspector.fileSystemMapping.mappingEntries(this._fileSystemPath);
-    for (var entry of entries) {
-        if (!entry.configurable)
-            this._addMappingRow(entry);
-    }
-    for (var entry of entries) {
-        if (entry.configurable)
-            this._addMappingRow(entry);
-    }
-
-    blockHeader = contents.createChild("div", "block-header excluded-folders-header");
-    blockHeader.textContent = WebInspector.UIString("Excluded folders");
-    this._excludedFolderListSection = contents.createChild("div", "section excluded-folders-section");
-    this._excludedFolderListContainer = this._excludedFolderListSection.createChild("div", "settings-list-container");
-
-    this._excludedFolderList = new WebInspector.EditableSettingsList([pathColumn], this._excludedFolderValueProvider.bind(this), this._excludedFolderValidate.bind(this), this._excludedFolderEdit.bind(this));
-    this._excludedFolderList.addEventListener(WebInspector.SettingsList.Events.Removed, this._excludedFolderRemovedfromList.bind(this));
-    this._excludedFolderList.element.classList.add("excluded-folders-list");
-    this._excludedFolderListContainer.appendChild(this._excludedFolderList.element);
-    /** @type {!Set<string>} */
-    this._excludedFolderEntries = new Set();
-    for (var folder of WebInspector.isolatedFileSystemManager.fileSystem(fileSystemPath).nonConfigurableExcludedFolders().values())
-        this._addExcludedFolderRow(folder, true);
-    for (var folder of WebInspector.isolatedFileSystemManager.fileSystem(fileSystemPath).excludedFolders().values())
-        this._addExcludedFolderRow(folder, false);
-
-    this.element.tabIndex = 0;
-    this._hasMappingChanges = false;
+    this.contentElement.tabIndex = 0;
+    this._update();
 }
 
 WebInspector.EditFileSystemView.prototype = {
     dispose: function()
     {
-        WebInspector.fileSystemMapping.removeEventListener(WebInspector.FileSystemMapping.Events.FileMappingAdded, this._fileMappingAdded, this);
-        WebInspector.fileSystemMapping.removeEventListener(WebInspector.FileSystemMapping.Events.FileMappingRemoved, this._fileMappingRemoved, this);
-        WebInspector.isolatedFileSystemManager.removeEventListener(WebInspector.IsolatedFileSystemManager.Events.ExcludedFolderAdded, this._excludedFolderAdded, this);
-        WebInspector.isolatedFileSystemManager.removeEventListener(WebInspector.IsolatedFileSystemManager.Events.ExcludedFolderRemoved, this._excludedFolderRemoved, this);
+        WebInspector.EventTarget.removeEventListeners(this._eventListeners);
     },
 
-    _fileMappingAdded: function(event)
+    _update: function()
     {
-        var entry = /** @type {!WebInspector.FileSystemMapping.Entry} */ (event.data);
-        this._addMappingRow(entry);
-    },
-
-    _fileMappingRemoved: function(event)
-    {
-        var entry = /** @type {!WebInspector.FileSystemMapping.Entry} */ (event.data);
-        if (this._fileSystemPath !== entry.fileSystemPath)
-            return;
-        var key = this._entryKey(entry);
-        delete this._entries[key];
-        if (this._fileMappingsList.itemForId(key))
-            this._fileMappingsList.removeItem(key);
-    },
-
-    /**
-     * @param {!WebInspector.FileSystemMapping.Entry} entry
-     * @return {string}
-     */
-    _entryKey: function(entry)
-    {
-        return (entry.configurable ? "configurable:" : "nonconfigurable:") + entry.urlPrefix;
-    },
-
-    /**
-     * @param {string} itemId
-     * @param {string} columnId
-     * @return {string}
-     */
-    _fileMappingValuesProvider: function(itemId, columnId)
-    {
-        if (!itemId)
-            return "";
-        var entry = this._entries[itemId];
-        switch (columnId) {
-        case "url":
-            return entry.configurable ? entry.urlPrefix : WebInspector.UIString("%s (via .devtools)", entry.urlPrefix);
-        case "path":
-            return entry.pathPrefix;
-        default:
-            console.assert("Should not be reached.");
-        }
-        return "";
-    },
-
-    /**
-     * @param {?string} itemId
-     * @param {!Object} data
-     */
-    _fileMappingValidate: function(itemId, data)
-    {
-        var oldPathPrefix = itemId ? this._entries[itemId].pathPrefix : null;
-        var oldURLPrefix = itemId ? this._entries[itemId].urlPrefix : null;
-        return this._validateMapping(data["url"], oldURLPrefix, data["path"], oldPathPrefix);
-    },
-
-    /**
-     * @param {?string} itemId
-     * @param {!Object} data
-     */
-    _fileMappingEdit: function(itemId, data)
-    {
-        if (itemId) {
-            var urlPrefix = itemId;
-            var pathPrefix = this._entries[itemId].pathPrefix;
-            var fileSystemPath = this._entries[itemId].fileSystemPath;
-            WebInspector.fileSystemMapping.removeFileMapping(fileSystemPath, urlPrefix, pathPrefix);
-        }
-        this._addFileMapping(data["url"], data["path"]);
-    },
-
-    /**
-     * @param {string} urlPrefix
-     * @param {?string} allowedURLPrefix
-     * @param {string} path
-     * @param {?string} allowedPathPrefix
-     */
-    _validateMapping: function(urlPrefix, allowedURLPrefix, path, allowedPathPrefix)
-    {
-        var columns = [];
-        if (!this._checkURLPrefix(urlPrefix, allowedURLPrefix))
-            columns.push("url");
-        if (!this._checkPathPrefix(path, allowedPathPrefix))
-            columns.push("path");
-        return columns;
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _fileMappingRemovedfromList: function(event)
-    {
-        var urlPrefix = /** @type{?string} */ (event.data);
-        if (!urlPrefix)
+        if (this._muteUpdate)
             return;
 
-        var entry = this._entries[urlPrefix];
-        WebInspector.fileSystemMapping.removeFileMapping(entry.fileSystemPath, entry.urlPrefix, entry.pathPrefix);
-        this._hasMappingChanges = true;
+        this._mappingsList.clear();
+        this._mappings = WebInspector.fileSystemMapping.mappingEntries(this._fileSystemPath);
+        for (var entry of this._mappings) {
+            if (entry.configurable)
+                this._mappingsList.appendItem(entry, true);
+        }
+        for (var entry of this._mappings) {
+            if (!entry.configurable)
+                this._mappingsList.appendItem(entry, false);
+        }
+
+        this._excludedFoldersList.clear();
+        this._excludedFolders = [];
+        for (var folder of WebInspector.isolatedFileSystemManager.fileSystem(this._fileSystemPath).excludedFolders().values()) {
+            this._excludedFolders.push(folder);
+            this._excludedFoldersList.appendItem(folder, true);
+        }
+        for (var folder of WebInspector.isolatedFileSystemManager.fileSystem(this._fileSystemPath).nonConfigurableExcludedFolders().values()) {
+            this._excludedFolders.push(folder);
+            this._excludedFoldersList.appendItem(folder, false);
+        }
+    },
+
+    _addMappingButtonClicked: function()
+    {
+        var entry = new WebInspector.FileSystemMapping.Entry(this._fileSystemPath, "", "", true);
+        this._mappingsList.addNewItem(0, entry);
+    },
+
+    _addExcludedFolderButtonClicked: function()
+    {
+        this._excludedFoldersList.addNewItem(0, "");
     },
 
     /**
-     * @param {string} urlPrefix
-     * @param {string} pathPrefix
-     * @return {boolean}
+     * @override
+     * @param {*} item
+     * @param {boolean} editable
+     * @return {!Element}
      */
-    _addFileMapping: function(urlPrefix, pathPrefix)
+    renderItem: function(item, editable)
     {
-        var normalizedURLPrefix = this._normalizePrefix(urlPrefix);
-        var normalizedPathPrefix = this._normalizePrefix(pathPrefix);
-        WebInspector.fileSystemMapping.addFileMapping(this._fileSystemPath, normalizedURLPrefix, normalizedPathPrefix);
-        this._hasMappingChanges = true;
-        this._fileMappingsList.selectItem("configurable:" + normalizedURLPrefix);
-        return true;
+        var element = createElementWithClass("div", "file-system-list-item");
+        if (!editable)
+            element.classList.add("locked");
+        if (item instanceof WebInspector.FileSystemMapping.Entry) {
+            var entry = /** @type {!WebInspector.FileSystemMapping.Entry} */ (item);
+            var urlPrefix = entry.configurable ? entry.urlPrefix : WebInspector.UIString("%s (via .devtools)", entry.urlPrefix);
+            var urlPrefixElement = element.createChild("div", "file-system-value");
+            urlPrefixElement.textContent = urlPrefix;
+            urlPrefixElement.title = urlPrefix;
+            element.createChild("div", "file-system-separator");
+            var pathPrefixElement = element.createChild("div", "file-system-value");
+            pathPrefixElement.textContent = entry.pathPrefix;
+            pathPrefixElement.title = entry.pathPrefix;
+        } else {
+            var pathPrefix = /** @type {string} */ (editable ? item : WebInspector.UIString("%s (via .devtools)", item));
+            var pathPrefixElement = element.createChild("div", "file-system-value");
+            pathPrefixElement.textContent = pathPrefix;
+            pathPrefixElement.title = pathPrefix;
+        }
+        element.createChild("div", "file-system-locked").title = WebInspector.UIString("From .devtools file");
+        return element;
+    },
+
+    /**
+     * @override
+     * @param {*} item
+     * @param {number} index
+     */
+    removeItemRequested: function(item, index)
+    {
+        this._muteUpdate = true;
+        if (item instanceof WebInspector.FileSystemMapping.Entry) {
+            var entry = this._mappings[index];
+            WebInspector.fileSystemMapping.removeFileMapping(entry.fileSystemPath, entry.urlPrefix, entry.pathPrefix);
+            this._mappingsList.removeItem(index);
+        } else {
+            WebInspector.isolatedFileSystemManager.fileSystem(this._fileSystemPath).removeExcludedFolder(this._excludedFolders[index]);
+            this._excludedFoldersList.removeItem(index);
+        }
+        this._muteUpdate = false;
+    },
+
+    /**
+     * @override
+     * @param {*} item
+     * @param {!WebInspector.ListWidget.Editor} editor
+     * @param {boolean} isNew
+     */
+    commitEdit: function(item, editor, isNew)
+    {
+        this._muteUpdate = true;
+        if (item instanceof WebInspector.FileSystemMapping.Entry) {
+            var entry = /** @type {!WebInspector.FileSystemMapping.Entry} */ (item);
+            if (!isNew)
+                WebInspector.fileSystemMapping.removeFileMapping(this._fileSystemPath, entry.urlPrefix, entry.pathPrefix);
+            WebInspector.fileSystemMapping.addFileMapping(this._fileSystemPath, this._normalizePrefix(editor.control("urlPrefix").value), this._normalizePrefix(editor.control("pathPrefix").value));
+        } else {
+            if (!isNew)
+                WebInspector.isolatedFileSystemManager.fileSystem(this._fileSystemPath).removeExcludedFolder(/** @type {string} */ (item));
+            WebInspector.isolatedFileSystemManager.fileSystem(this._fileSystemPath).addExcludedFolder(this._normalizePrefix(editor.control("pathPrefix").value));
+        }
+        this._muteUpdate = false;
+        this._update();
+    },
+
+    /**
+     * @override
+     * @param {*} item
+     * @return {!WebInspector.ListWidget.Editor}
+     */
+    beginEdit: function(item)
+    {
+        if (item instanceof WebInspector.FileSystemMapping.Entry) {
+            var entry = /** @type {!WebInspector.FileSystemMapping.Entry} */ (item);
+            var editor = this._createMappingEditor();
+            editor.control("urlPrefix").value = entry.urlPrefix;
+            editor.control("pathPrefix").value = entry.pathPrefix;
+            return editor;
+        } else {
+            var editor = this._createExcludedFolderEditor();
+            editor.control("pathPrefix").value = item;
+            return editor;
+        }
+    },
+
+    /**
+     * @return {!WebInspector.ListWidget.Editor}
+     */
+    _createMappingEditor: function()
+    {
+        if (this._mappingEditor)
+            return this._mappingEditor;
+
+        var editor = new WebInspector.ListWidget.Editor();
+        this._mappingEditor = editor;
+        var content = editor.contentElement();
+
+        var titles = content.createChild("div", "file-system-edit-row");
+        titles.createChild("div", "file-system-value").textContent = WebInspector.UIString("URL prefix");
+        titles.createChild("div", "file-system-separator file-system-separator-invisible");
+        titles.createChild("div", "file-system-value").textContent = WebInspector.UIString("Folder path");
+
+        var fields = content.createChild("div", "file-system-edit-row");
+        fields.createChild("div", "file-system-value").appendChild(editor.createInput("urlPrefix", "text", "localhost:8000/url", urlPrefixValidator.bind(this)));
+        fields.createChild("div", "file-system-separator file-system-separator-invisible");
+        fields.createChild("div", "file-system-value").appendChild(editor.createInput("pathPrefix", "text", "/path/to/folder/", pathPrefixValidator.bind(this)));
+
+        return editor;
+
+        /**
+         * @param {!HTMLInputElement|!HTMLSelectElement} input
+         * @return {boolean}
+         * @this {WebInspector.EditFileSystemView}
+         */
+        function urlPrefixValidator(input)
+        {
+            var prefix = this._normalizePrefix(input.value);
+            return !!prefix;
+        }
+
+        /**
+         * @param {!HTMLInputElement|!HTMLSelectElement} input
+         * @return {boolean}
+         * @this {WebInspector.EditFileSystemView}
+         */
+        function pathPrefixValidator(input)
+        {
+            var prefix = this._normalizePrefix(input.value);
+            return !!prefix;
+        }
+    },
+
+    /**
+     * @return {!WebInspector.ListWidget.Editor}
+     */
+    _createExcludedFolderEditor: function()
+    {
+        if (this._excludedFolderEditor)
+            return this._excludedFolderEditor;
+
+        var editor = new WebInspector.ListWidget.Editor();
+        this._excludedFolderEditor = editor;
+        var content = editor.contentElement();
+
+        var titles = content.createChild("div", "file-system-edit-row");
+        titles.createChild("div", "file-system-value").textContent = WebInspector.UIString("Folder path");
+
+        var fields = content.createChild("div", "file-system-edit-row");
+        fields.createChild("div", "file-system-value").appendChild(editor.createInput("pathPrefix", "text", "/path/to/folder/", pathPrefixValidator.bind(this)));
+
+        return editor;
+
+        /**
+         * @param {!HTMLInputElement|!HTMLSelectElement} input
+         * @return {boolean}
+         * @this {WebInspector.EditFileSystemView}
+         */
+        function pathPrefixValidator(input)
+        {
+            var prefix = this._normalizePrefix(input.value);
+            return !!prefix;
+        }
     },
 
     /**
@@ -230,146 +299,6 @@ WebInspector.EditFileSystemView.prototype = {
         if (!prefix)
             return "";
         return prefix + (prefix[prefix.length - 1] === "/" ? "" : "/");
-    },
-
-    /**
-     * @param {!WebInspector.FileSystemMapping.Entry} entry
-     */
-    _addMappingRow: function(entry)
-    {
-        var key = this._entryKey(entry);
-        if (this._fileMappingsList.itemForId(key))
-            return;
-        var fileSystemPath = entry.fileSystemPath;
-        if (!this._fileSystemPath || this._fileSystemPath !== fileSystemPath)
-            return;
-
-        this._entries[key] = entry;
-        var keys = Object.keys(this._entries).sort();
-        this._fileMappingsList.addItem(key, keys[keys.indexOf(key) + 1], !entry.configurable);
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _excludedFolderAdded: function(event)
-    {
-        var path = /** @type {string} */ (event.data);
-        this._addExcludedFolderRow(path, false);
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _excludedFolderRemoved: function(event)
-    {
-        var path = /** @type {string} */ (event.data);
-        delete this._excludedFolderEntries[path];
-        if (this._excludedFolderList.itemForId(path))
-            this._excludedFolderList.removeItem(path);
-    },
-
-    /**
-     * @param {string} itemId
-     * @param {string} columnId
-     * @return {string}
-     */
-    _excludedFolderValueProvider: function(itemId, columnId)
-    {
-        return itemId;
-    },
-
-    /**
-     * @param {?string} itemId
-     * @param {!Object} data
-     */
-    _excludedFolderValidate: function(itemId, data)
-    {
-        var columns = [];
-        if (!this._validateExcludedFolder(data["path"], itemId))
-            columns.push("path");
-        return columns;
-    },
-
-    /**
-     * @param {string} path
-     * @param {?string} allowedPath
-     * @return {boolean}
-     */
-    _validateExcludedFolder: function(path, allowedPath)
-    {
-        return !!path && (path === allowedPath || !this._excludedFolderEntries.has(path));
-    },
-
-    /**
-     * @param {?string} itemId
-     * @param {!Object} data
-     */
-    _excludedFolderEdit: function(itemId, data)
-    {
-        if (itemId)
-            WebInspector.isolatedFileSystemManager.fileSystem(this._fileSystemPath).removeExcludedFolder(itemId);
-        var excludedFolderPath = data["path"];
-        WebInspector.isolatedFileSystemManager.fileSystem(this._fileSystemPath).addExcludedFolder(excludedFolderPath);
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _excludedFolderRemovedfromList: function(event)
-    {
-        var itemId = /** @type{?string} */ (event.data);
-        if (!itemId)
-            return;
-        WebInspector.isolatedFileSystemManager.fileSystem(this._fileSystemPath).removeExcludedFolder(itemId);
-    },
-
-    /**
-     * @param {string} path
-     * @param {boolean} readOnly
-     */
-    _addExcludedFolderRow: function(path, readOnly)
-    {
-        if (this._excludedFolderEntries.has(path))
-            return;
-        this._excludedFolderEntries.add(path);
-        if (readOnly && !this._firstNonConfigurableExcludedFolder)
-            this._firstNonConfigurableExcludedFolder = WebInspector.UIString("%s (via .devtools)", path);
-
-        // Insert configurable entries before non-configurable.
-        var insertBefore = readOnly ? null : this._firstNonConfigurableExcludedFolder;
-        this._excludedFolderList.addItem(readOnly ? WebInspector.UIString("%s (via .devtools)", path) : path, insertBefore, readOnly);
-    },
-
-    /**
-     * @param {string} value
-     * @param {?string} allowedPrefix
-     * @return {boolean}
-     */
-    _checkURLPrefix: function(value, allowedPrefix)
-    {
-        var prefix = this._normalizePrefix(value);
-        return !!prefix && (prefix === allowedPrefix || !this._entries["configurable:" + prefix]);
-    },
-
-    /**
-     * @param {string} value
-     * @param {?string} allowedPrefix
-     * @return {boolean}
-     */
-    _checkPathPrefix: function(value, allowedPrefix)
-    {
-        var prefix = this._normalizePrefix(value);
-        if (!prefix)
-            return false;
-        if (prefix === allowedPrefix)
-            return true;
-        for (var key in this._entries) {
-            var entry = this._entries[key];
-            if (entry.configurable && entry.pathPrefix === prefix)
-                return false;
-        }
-        return true;
     },
 
     __proto__: WebInspector.VBox.prototype

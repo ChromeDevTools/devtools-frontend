@@ -38,26 +38,29 @@ WebInspector.ListWidget.Delegate = function()
 WebInspector.ListWidget.Delegate.prototype = {
     /**
      * @param {*} item
+     * @param {boolean} editable
      * @return {!Element}
      */
-    renderItem: function(item) { },
+    renderItem: function(item, editable) { },
 
     /**
+     * @param {*} item
      * @param {number} index
      */
-    removeItemRequested: function(index) { },
+    removeItemRequested: function(item, index) { },
 
     /**
-     * @param {*|null} item
+     * @param {*} item
      * @return {!WebInspector.ListWidget.Editor}
      */
     beginEdit: function(item) { },
 
     /**
-     * @param {*|null} item
+     * @param {*} item
      * @param {!WebInspector.ListWidget.Editor} editor
+     * @param {boolean} isNew
      */
-    commitEdit: function(item, editor) { }
+    commitEdit: function(item, editor, isNew) { }
 }
 
 WebInspector.ListWidget.prototype = {
@@ -86,7 +89,7 @@ WebInspector.ListWidget.prototype = {
         this._editable.push(editable);
 
         var element = this._list.createChild("div", "list-item");
-        element.appendChild(this._delegate.renderItem(item));
+        element.appendChild(this._delegate.renderItem(item, editable));
         if (editable) {
             element.classList.add("editable");
             element.appendChild(this._createControls(item, element));
@@ -130,10 +133,11 @@ WebInspector.ListWidget.prototype = {
 
     /**
      * @param {number} index
+     * @param {*} item
      */
-    addNewItem: function(index)
+    addNewItem: function(index, item)
     {
-        this._startEditing(null, null, this._elements[index] || null);
+        this._startEditing(item, null, this._elements[index] || null);
     },
 
     /**
@@ -183,7 +187,8 @@ WebInspector.ListWidget.prototype = {
         function onRemoveClicked(event)
         {
             event.consume();
-            this._delegate.removeItemRequested(this._elements.indexOf(element));
+            var index = this._elements.indexOf(element);
+            this._delegate.removeItemRequested(this._items[index], index);
         }
     },
 
@@ -231,9 +236,10 @@ WebInspector.ListWidget.prototype = {
     _commitEditing: function()
     {
         var editItem = this._editItem;
+        var isNew = !this._editElement;
         var editor = /** @type {!WebInspector.ListWidget.Editor} */ (this._editor);
         this._stopEditing();
-        this._delegate.commitEdit(editItem, editor);
+        this._delegate.commitEdit(editItem, editor, isNew);
     },
 
     _stopEditing: function()

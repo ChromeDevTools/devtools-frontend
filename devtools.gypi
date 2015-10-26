@@ -705,6 +705,7 @@
             'front_end/cm/markselection.js',
             'front_end/cm/matchbrackets.js',
             'front_end/cm/overlay.js',
+            'front_end/cm/simple.js',
             'front_end/cm/xml.js',
         ],
         'devtools_acorn_files': [

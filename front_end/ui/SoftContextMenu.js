@@ -322,7 +322,7 @@ WebInspector.SoftContextMenu.prototype = {
             }
             break;
         case "U+001B": // Escape
-            this._discardMenu(true, event); break;
+            this._discardMenu(false, event); break;
         case "Enter":
             if (!isEnterKey(event))
                 break;
@@ -363,6 +363,8 @@ WebInspector.SoftContextMenu.prototype = {
                 delete this._parentMenu._subMenu;
                 if (closeParentMenus)
                     this._parentMenu._discardMenu(closeParentMenus, event);
+                else
+                    this._parentMenu._focus();
             }
 
             if (event)
@@ -371,6 +373,8 @@ WebInspector.SoftContextMenu.prototype = {
             this._discardSubMenus();
             if (closeParentMenus)
                 this._parentMenu._discardMenu(closeParentMenus, event);
+            else
+                this._parentMenu._focus();
             if (event)
                 event.consume(true);
         }

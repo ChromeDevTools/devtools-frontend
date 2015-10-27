@@ -330,6 +330,10 @@ WebInspector.SoftContextMenu.prototype = {
         case "U+0020": // Space
             if (this._highlightedMenuItemElement)
                 this._triggerAction(this._highlightedMenuItemElement, event);
+            if (this._highlightedMenuItemElement._subItems) {
+                this._subMenu._focus();
+                this._subMenu._highlightNext();
+            }
             break;
         }
         event.consume(true);

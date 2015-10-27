@@ -874,7 +874,7 @@ WebInspector.ToolbarMenuButton.prototype = {
     _clicked: function(event)
     {
         var contextMenu = new WebInspector.ContextMenu(event,
-            true,
+            false,
             this.element.totalOffsetLeft(),
             this.element.totalOffsetTop() + this.element.offsetHeight);
         this._contextMenuHandler(contextMenu);

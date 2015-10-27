@@ -487,9 +487,7 @@ WebInspector.TabbedPane.prototype = {
             }
         }
 
-        if (!this._measuredDropDownButtonWidth)
-            this._measureDropDownButton();
-
+        this._measureDropDownButton();
         this._updateWidths();
         this._updateTabsDropDown();
         this._updateTabSlider();
@@ -555,9 +553,14 @@ WebInspector.TabbedPane.prototype = {
         return numTabsShown;
     },
 
+    disableOverflowMenu: function()
+    {
+        this._overflowDisabled = true;
+    },
+
     _updateTabsDropDown: function()
     {
-        var tabsToShowIndexes = this._tabsToShowIndexes(this._tabs, this._tabsHistory, this._totalWidth(), this._measuredDropDownButtonWidth);
+        var tabsToShowIndexes = this._tabsToShowIndexes(this._tabs, this._tabsHistory, this._totalWidth(), this._measuredDropDownButtonWidth || 0);
         if (this._lastSelectedOverflowTab && this._numberOfTabsShown() !== tabsToShowIndexes.length) {
             delete this._lastSelectedOverflowTab;
             this._updateTabsDropDown();
@@ -574,7 +577,8 @@ WebInspector.TabbedPane.prototype = {
                 this._showTabElement(i, tab);
         }
 
-        this._populateDropDownFromIndex();
+        if (!this._overflowDisabled)
+            this._populateDropDownFromIndex();
     },
 
     _populateDropDownFromIndex: function()
@@ -588,7 +592,6 @@ WebInspector.TabbedPane.prototype = {
         for (var i = 0; i < this._tabs.length; ++i) {
             if (!this._tabs[i]._shown)
                 tabsToShow.push(this._tabs[i]);
-                continue;
         }
 
         var selectedId = null;
@@ -606,6 +609,8 @@ WebInspector.TabbedPane.prototype = {
 
     _measureDropDownButton: function()
     {
+        if (this._overflowDisabled || this._measuredDropDownButtonWidth)
+            return;
         this._dropDownButton.classList.add("measuring");
         this._headerContentsElement.appendChild(this._dropDownButton);
         this._measuredDropDownButtonWidth = this._dropDownButton.getBoundingClientRect().width;
@@ -1254,14 +1259,57 @@ WebInspector.ExtensibleTabbedPaneController.prototype = {
         for (var i = 0; i < extensions.length; ++i) {
             var id = extensions[i].descriptor()["name"];
             this._extensions.set(id, extensions[i]);
-            if (extensions[i].descriptor()["persistence"] === "permanent" || !extensions[i].descriptor()["persistence"])
+            if (this._isPermanentTab(id))
                 this._appendTab(extensions[i]);
         }
 
         for (var i = 0; i < extensions.length; i++) {
             var id = extensions[i].descriptor()["name"];
-            if (extensions[i].descriptor()["persistence"] === "closeable" && this._closeableTabSetting.get()[id])
+            if (this._isCloseableTab(id) && this._closeableTabSetting.get()[id])
                 this._appendTab(extensions[i]);
+        }
+    },
+
+    /**
+     * @param {string} id
+     * @return {boolean}
+     */
+    _isPermanentTab: function(id)
+    {
+        return this._extensions.get(id).descriptor()["persistence"] === "permanent" || !this._extensions.get(id).descriptor()["persistence"];
+    },
+
+    /**
+     * @param {string} id
+     * @return {boolean}
+     */
+    _isCloseableTab: function(id)
+    {
+        return this._extensions.get(id).descriptor()["persistence"] === "closeable";
+    },
+
+    enableMoreTabsButton: function()
+    {
+        var toolbar = new WebInspector.Toolbar();
+        toolbar.element.classList.add("drawer-toolbar");
+        this._moreTabsButton = new WebInspector.ToolbarMenuButton(WebInspector.UIString("Open tab"), "menu-toolbar-item", this._appendTabsToMenu.bind(this));
+        toolbar.appendToolbarItem(this._moreTabsButton);
+        this._tabbedPane.insertBeforeTabStrip(toolbar.element);
+        this._tabbedPane.disableOverflowMenu();
+    },
+
+    /**
+     * @param {!WebInspector.ContextMenu} contextMenu
+     */
+    _appendTabsToMenu: function(contextMenu)
+    {
+        for (var id of this._extensions.keysArray().filter(this._isPermanentTab.bind(this))) {
+            var title = WebInspector.UIString(this._extensions.get(id).title(WebInspector.platform()));
+            contextMenu.appendItem(title, this.showTab.bind(this, id));
+        }
+        for (var id of this._extensions.keysArray().filter(this._isCloseableTab.bind(this))) {
+            var title = WebInspector.UIString(this._extensions.get(id).title(WebInspector.platform()));
+            contextMenu.appendItem(title, this.showTab.bind(this, id));
         }
     },
 

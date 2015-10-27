@@ -46,6 +46,7 @@ WebInspector.Drawer = function(splitWidget)
     this._tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, this._tabSelected, this);
 
     this._extensibleTabbedPaneController = new WebInspector.ExtensibleTabbedPaneController(this._tabbedPane, "drawer-view");
+    this._extensibleTabbedPaneController.enableMoreTabsButton();
 
     splitWidget.installResizer(this._tabbedPane.headerElement());
     this._lastSelectedViewSetting = WebInspector.settings.createSetting("WebInspector.Drawer.lastSelectedView", "console");

@@ -557,3 +557,7 @@ body.inactive .sidebar-tree-item.selected {
 .viewport-control-gap-element {
     color: transparent;
 }
+
+.drawer-toolbar {
+    margin-right: -6px;
+}

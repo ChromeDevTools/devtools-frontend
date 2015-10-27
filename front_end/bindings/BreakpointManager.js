@@ -799,7 +799,6 @@ WebInspector.BreakpointManager.TargetBreakpoint.prototype = {
             return false;
         var scriptFile = this._debuggerWorkspaceBinding.scriptFile(uiSourceCode, this.target());
         return !!scriptFile && scriptFile.hasDivergedFromVM();
-
     },
 
     /**

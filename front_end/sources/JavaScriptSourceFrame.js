@@ -394,31 +394,22 @@ WebInspector.JavaScriptSourceFrame.prototype = {
             if (succeededEdits + failedEdits !== scriptFiles.length)
                 return;
 
-            if (failedEdits)
-                logLiveEditError.call(this, liveEditError, liveEditErrorData, contextScript);
-        }
+            if (!failedEdits)
+                return;
 
-        /**
-         * @param {?string} error
-         * @param {!DebuggerAgent.SetScriptSourceError=} errorData
-         * @param {!WebInspector.Script=} contextScript
-         * @this {WebInspector.JavaScriptSourceFrame}
-         */
-        function logLiveEditError(error, errorData, contextScript)
-        {
             var warningLevel = WebInspector.Console.MessageLevel.Warning;
-            if (!errorData) {
-                if (error)
-                    WebInspector.console.addMessage(WebInspector.UIString("LiveEdit failed: %s", error), warningLevel);
+            if (!liveEditErrorData) {
+                if (liveEditError)
+                    WebInspector.console.addMessage(WebInspector.UIString("LiveEdit failed: %s", liveEditError), warningLevel);
                 return;
             }
-            var compileError = errorData.compileError;
+            var compileError = liveEditErrorData.compileError;
             if (compileError) {
                 var messageText = WebInspector.UIString("LiveEdit compile failed: %s", compileError.message);
                 var message = new WebInspector.UISourceCode.Message(WebInspector.UISourceCode.Message.Level.Error, messageText, compileError.lineNumber - 1, compileError.columnNumber + 1);
                 this.addMessageToSource(message);
             } else {
-                WebInspector.console.addMessage(WebInspector.UIString("Unknown LiveEdit error: %s; %s", JSON.stringify(errorData), error), warningLevel);
+                WebInspector.console.addMessage(WebInspector.UIString("Unknown LiveEdit error: %s; %s", JSON.stringify(liveEditErrorData), liveEditError), warningLevel);
             }
         }
 

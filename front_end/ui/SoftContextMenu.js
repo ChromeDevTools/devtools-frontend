@@ -83,7 +83,7 @@ WebInspector.SoftContextMenu.prototype = {
 
         // Re-position menu in case it does not fit.
         if (document.body.offsetWidth < this.element.offsetLeft + this.element.offsetWidth) {
-            this.element.style.left = Math.max(0, this._parentMenu
+            this.element.style.left = Math.max(WebInspector.Dialog.modalHostView().element.totalOffsetLeft(), this._parentMenu
                 ? this._parentMenu.element.offsetLeft - this.element.offsetWidth + subMenuOverlap
                 : document.body.offsetWidth - this.element.offsetWidth) + "px";
         }

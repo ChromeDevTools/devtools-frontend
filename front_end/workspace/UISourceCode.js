@@ -704,3 +704,69 @@ WebInspector.Revision.prototype = {
         callback([]);
     }
 }
+
+/**
+ * @constructor
+ * @param {!WebInspector.UISourceCode.Message.Level} level
+ * @param {string} text
+ * @param {number} lineNumber
+ * @param {number=} columnNumber
+ */
+WebInspector.UISourceCode.Message = function(level, text, lineNumber, columnNumber)
+{
+    this._text = text;
+    this._level = level;
+    this._lineNumber = lineNumber;
+    this._columnNumber = columnNumber;
+}
+
+/**
+ * @enum {string}
+ */
+WebInspector.UISourceCode.Message.Level = {
+    Error: "Error",
+    Warning: "Warning"
+}
+
+WebInspector.UISourceCode.Message.prototype = {
+    /**
+     * @return {string}
+     */
+    text: function()
+    {
+        return this._text;
+    },
+
+    /**
+     * @return {!WebInspector.UISourceCode.Message.Level}
+     */
+    level: function()
+    {
+        return this._level;
+    },
+
+    /**
+     * @return {number}
+     */
+    lineNumber: function()
+    {
+        return this._lineNumber;
+    },
+
+    /**
+     * @return {(number|undefined)}
+     */
+    columnNumber: function()
+    {
+        return this._columnNumber;
+    },
+
+    /**
+     * @param {!WebInspector.UISourceCode.Message} another
+     * @return {boolean}
+     */
+    isEqual: function(another)
+    {
+        return this.text() === another.text() && this.level() === another.level() && this.lineNumber() === another.lineNumber() && this.columnNumber() === another.columnNumber();
+    }
+}

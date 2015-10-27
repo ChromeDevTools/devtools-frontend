@@ -415,7 +415,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
             var compileError = errorData.compileError;
             if (compileError) {
                 var messageText = WebInspector.UIString("LiveEdit compile failed: %s", compileError.message);
-                var message = new WebInspector.SourceFrameMessage(messageText, WebInspector.SourceFrameMessage.Level.Error, compileError.lineNumber - 1, compileError.columnNumber + 1);
+                var message = new WebInspector.UISourceCode.Message(WebInspector.UISourceCode.Message.Level.Error, messageText, compileError.lineNumber - 1, compileError.columnNumber + 1);
                 this.addMessageToSource(message);
             } else {
                 WebInspector.console.addMessage(WebInspector.UIString("Unknown LiveEdit error: %s; %s", JSON.stringify(errorData), error), warningLevel);
@@ -985,11 +985,11 @@ WebInspector.JavaScriptSourceFrame.prototype = {
 
     /**
      * @param {!WebInspector.PresentationConsoleMessage} message
-     * @return {!WebInspector.SourceFrameMessage}
+     * @return {!WebInspector.UISourceCode.Message}
      */
     _sourceFrameMessage: function(message)
     {
-        return WebInspector.SourceFrameMessage.fromConsoleMessage(message.originalMessage, message.lineNumber(), message.columnNumber());
+        return WebInspector.UISourceCodeFrame.uiMessageFromConsoleMessage(message.originalMessage, message.lineNumber(), message.columnNumber());
     },
 
     _consoleMessagesCleared: function(event)
@@ -1049,6 +1049,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
 
     onTextEditorContentLoaded: function()
     {
+        WebInspector.UISourceCodeFrame.prototype.onTextEditorContentLoaded.call(this);
         if (this._executionLocation)
             this.setExecutionLocation(this._executionLocation);
 

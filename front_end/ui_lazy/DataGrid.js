@@ -86,6 +86,9 @@ WebInspector.DataGrid = function(columnsArray, editCallback, deleteCallback, ref
     this._bottomFillerRow = createElementWithClass("tr", "data-grid-filler-row revealed");
     this.setVerticalPadding(0, 0);
 
+    /** @type {boolean} */
+    this._inline = false;
+
     /** @type {!Array.<!WebInspector.DataGrid.ColumnDescriptor>} */
     this._columnsArray = columnsArray;
     /** @type {!Array.<!WebInspector.DataGrid.ColumnDescriptor>} */
@@ -314,6 +317,7 @@ WebInspector.DataGrid.prototype = {
     {
         this.element.classList.add("inline");
         this._cornerWidth = 0;
+        this._inline = true;
         this.updateWidths();
     },
 
@@ -692,6 +696,15 @@ WebInspector.DataGrid.prototype = {
     get scrollContainer()
     {
         return this._scrollContainer;
+    },
+
+    /**
+     * @override
+     * @return {!Array.<!Element>}
+     */
+    elementsToRestoreScrollPositionsFor: function()
+    {
+        return this._inline ? [] : [this._scrollContainer];
     },
 
     _positionResizers: function()

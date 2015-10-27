@@ -190,10 +190,10 @@ WebInspector.AnimationTimeline.prototype = {
 
         var target = WebInspector.targetManager.mainTarget();
         if (target)
-            WebInspector.AnimationModel.fromTarget(target).setPlaybackRate(this._playbackRate());
+            WebInspector.AnimationModel.fromTarget(target).setPlaybackRate(this._underlyingPlaybackRate);
         WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.AnimationsPlaybackRateChanged);
         if (this._scrubberPlayer)
-            this._scrubberPlayer.playbackRate = this._playbackRate();
+            this._scrubberPlayer.playbackRate = this._effectivePlaybackRate();
     },
 
     _controlButtonToggle: function()
@@ -211,10 +211,11 @@ WebInspector.AnimationTimeline.prototype = {
 
     _updateControlButton: function()
     {
+        this._controlButton.setEnabled(!!this._selectedGroup);
         this._controlButton.element.classList.remove("play-outline-toolbar-item");
         this._controlButton.element.classList.remove("replay-outline-toolbar-item");
         this._controlButton.element.classList.remove("pause-outline-toolbar-item");
-        if (this._paused) {
+        if (this._selectedGroup && this._selectedGroup.paused()) {
             this._controlButton.element.classList.add("play-outline-toolbar-item");
             this._controlButton.setTitle(WebInspector.UIString("Play timeline"));
             this._controlButton.setToggled(true);
@@ -241,7 +242,6 @@ WebInspector.AnimationTimeline.prototype = {
             this._updatePlaybackControls();
         }
 
-        delete this._paused;
         for (var target of WebInspector.targetManager.targets(WebInspector.Target.Type.Page))
             WebInspector.AnimationModel.fromTarget(target).playbackRatePromise().then(syncPlaybackRate.bind(this));
     },
@@ -249,9 +249,9 @@ WebInspector.AnimationTimeline.prototype = {
     /**
      * @return {number}
      */
-    _playbackRate: function()
+    _effectivePlaybackRate: function()
     {
-        return this._paused ? 0 : this._underlyingPlaybackRate;
+        return this._selectedGroup && this._selectedGroup.paused() ? 0 : this._underlyingPlaybackRate;
     },
 
     /**
@@ -259,12 +259,9 @@ WebInspector.AnimationTimeline.prototype = {
      */
     _togglePause: function(pause)
     {
-        this._paused = pause;
-        for (var target of WebInspector.targetManager.targets(WebInspector.Target.Type.Page))
-            WebInspector.AnimationModel.fromTarget(target).setPlaybackRate(this._playbackRate());
-        WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.AnimationsPlaybackRateChanged);
+        this._selectedGroup.togglePause(pause);
         if (this._scrubberPlayer)
-            this._scrubberPlayer.playbackRate = this._playbackRate();
+            this._scrubberPlayer.playbackRate = this._effectivePlaybackRate();
     },
 
     _replay: function()
@@ -570,7 +567,7 @@ WebInspector.AnimationTimeline.prototype = {
             { transform: "translateX(0px)" },
             { transform: "translateX(" +  (this.width() - this._scrubberRadius) + "px)" }
         ], { duration: scrubberDuration , fill: "forwards" });
-        this._scrubberPlayer.playbackRate = this._playbackRate();
+        this._scrubberPlayer.playbackRate = this._effectivePlaybackRate();
         this._scrubberPlayer.onfinish = this._updateControlButton.bind(this);
         this._scrubberPlayer.currentTime = currentTime;
         this._timelineScrubber.classList.remove("animation-timeline-end");

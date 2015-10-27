@@ -5083,6 +5083,14 @@
                 "description": "Returns the current time of the an animation."
             },
             {
+                "name": "setPaused",
+                "parameters": [
+                    { "name": "animations", "type": "array", "items": { "type": "string" }, "description": "Animations to set the pause state of." },
+                    { "name": "paused", "type": "boolean", "description": "Paused state to set to." }
+                ],
+                "description": "Sets the paused state of a set of animations."
+            },
+            {
                 "name": "setTiming",
                 "parameters": [
                     { "name": "animationId", "type": "string", "description": "Animation id." },

@@ -602,6 +602,7 @@ WebInspector.AnimationModel.AnimationGroup = function(target, id, animations)
     WebInspector.SDKObject.call(this, target);
     this._id = id;
     this._animations = animations;
+    this._paused = false;
 }
 
 WebInspector.AnimationModel.AnimationGroup.prototype = {
@@ -622,6 +623,23 @@ WebInspector.AnimationModel.AnimationGroup.prototype = {
     },
 
     /**
+     * @return {!Array.<string>}
+     */
+    _animationIds: function()
+    {
+        /**
+         * @param {!WebInspector.AnimationModel.Animation} animation
+         * @return {string}
+         */
+        function extractId(animation)
+        {
+            return animation.id();
+        }
+
+        return this._animations.map(extractId);
+    },
+
+    /**
      * @return {number}
      */
     startTime: function()
@@ -634,16 +652,24 @@ WebInspector.AnimationModel.AnimationGroup.prototype = {
      */
     seekTo: function(currentTime)
     {
-        /**
-         * @param {!WebInspector.AnimationModel.Animation} animation
-         * @return {string}
-         */
-        function extractId(animation)
-        {
-            return animation.id();
-        }
+        this.target().animationAgent().seekAnimations(this._animationIds(), currentTime);
+    },
 
-        this.target().animationAgent().seekAnimations(this._animations.map(extractId), currentTime);
+    /**
+     * @return {boolean}
+     */
+    paused: function()
+    {
+        return this._paused;
+    },
+
+    /**
+     * @param {boolean} paused
+     */
+    togglePause: function(paused)
+    {
+        this._paused = paused;
+        this.target().animationAgent().setPaused(this._animationIds(), paused);
     },
 
     /**

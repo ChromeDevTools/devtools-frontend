@@ -17,6 +17,7 @@ WebInspector.Tooltip = function(doc)
     doc.addEventListener("mousedown", this._hide.bind(this, true), true);
     doc.addEventListener("mouseleave", this._hide.bind(this, true), true);
     doc.addEventListener("keydown", this._hide.bind(this, true), true);
+    WebInspector.zoomManager.addEventListener(WebInspector.ZoomManager.Events.ZoomChanged, this._zoomChanged, this);
 }
 
 WebInspector.Tooltip.Timing = {
@@ -105,6 +106,7 @@ WebInspector.Tooltip.prototype = {
         const pageMargin = 2;
         var cursorOffset = 10;
         this._tooltipElement.style.maxWidth = (containerOffsetWidth - pageMargin * 2) + "px";
+        this._tooltipElement.style.maxHeight = "";
         var tooltipWidth = this._tooltipElement.offsetWidth;
         var tooltipHeight = this._tooltipElement.offsetHeight;
         var anchorTooltipAtElement = this._anchorElement.nodeName === "BUTTON" || this._anchorElement.nodeName === "LABEL";
@@ -133,6 +135,14 @@ WebInspector.Tooltip.prototype = {
             this._tooltipLastClosed = Date.now();
         if (removeInstant)
             delete this._tooltipLastClosed;
+    },
+
+    _zoomChanged: function()
+    {
+        this._hide(true);
+        this._tooltipElement.positionAt(0, 0);
+        this._tooltipElement.style.maxWidth = "0";
+        this._tooltipElement.style.maxHeight = "0";
     }
 }
 

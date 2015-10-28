@@ -52,6 +52,9 @@ WebInspector.UISourceCode = function(project, parentPath, name, originURL, conte
     /** @type {!Array.<!WebInspector.Revision>} */
     this.history = [];
     this._hasUnsavedCommittedChanges = false;
+
+    /** @type {!Array<!WebInspector.UISourceCode.Message>} */
+    this._messages = [];
 }
 
 /**
@@ -62,6 +65,8 @@ WebInspector.UISourceCode.Events = {
     WorkingCopyCommitted: "WorkingCopyCommitted",
     TitleChanged: "TitleChanged",
     SourceMappingChanged: "SourceMappingChanged",
+    MessageAdded: "MessageAdded",
+    MessageRemoved: "MessageRemoved",
 }
 
 WebInspector.UISourceCode.prototype = {
@@ -566,6 +571,46 @@ WebInspector.UISourceCode.prototype = {
         return new WebInspector.UILocation(this, lineNumber, columnNumber);
     },
 
+    /**
+     * @return {!Array<!WebInspector.UISourceCode.Message>}
+     */
+    messages: function()
+    {
+        return this._messages.slice();
+    },
+
+    /**
+     * @param {!WebInspector.UISourceCode.Message.Level} level
+     * @param {string} text
+     * @param {number} lineNumber
+     * @param {number=} columnNumber
+     * @return {!WebInspector.UISourceCode.Message} message
+     */
+    addMessage: function(level, text, lineNumber, columnNumber)
+    {
+        var message = new WebInspector.UISourceCode.Message(this, level, text, lineNumber, columnNumber);
+        this._messages.push(message);
+        this.dispatchEventToListeners(WebInspector.UISourceCode.Events.MessageAdded, message);
+        return message;
+    },
+
+    /**
+     * @param {!WebInspector.UISourceCode.Message} message
+     */
+    removeMessage: function(message)
+    {
+        if (this._messages.remove(message))
+            this.dispatchEventToListeners(WebInspector.UISourceCode.Events.MessageRemoved, message);
+    },
+
+    removeAllMessages: function()
+    {
+        var messages = this._messages;
+        this._messages = [];
+        for (var message of messages)
+            this.dispatchEventToListeners(WebInspector.UISourceCode.Events.MessageRemoved, message);
+    },
+
     __proto__: WebInspector.Object.prototype
 }
 
@@ -707,15 +752,17 @@ WebInspector.Revision.prototype = {
 
 /**
  * @constructor
+ * @param {!WebInspector.UISourceCode} uiSourceCode
  * @param {!WebInspector.UISourceCode.Message.Level} level
  * @param {string} text
  * @param {number} lineNumber
  * @param {number=} columnNumber
  */
-WebInspector.UISourceCode.Message = function(level, text, lineNumber, columnNumber)
+WebInspector.UISourceCode.Message = function(uiSourceCode, level, text, lineNumber, columnNumber)
 {
-    this._text = text;
+    this._uiSourceCode = uiSourceCode;
     this._level = level;
+    this._text = text;
     this._lineNumber = lineNumber;
     this._columnNumber = columnNumber;
 }
@@ -730,11 +777,11 @@ WebInspector.UISourceCode.Message.Level = {
 
 WebInspector.UISourceCode.Message.prototype = {
     /**
-     * @return {string}
+     * @return {!WebInspector.UISourceCode}
      */
-    text: function()
+    uiSourceCode: function()
     {
-        return this._text;
+        return this._uiSourceCode;
     },
 
     /**
@@ -743,6 +790,14 @@ WebInspector.UISourceCode.Message.prototype = {
     level: function()
     {
         return this._level;
+    },
+
+    /**
+     * @return {string}
+     */
+    text: function()
+    {
+        return this._text;
     },
 
     /**
@@ -767,6 +822,11 @@ WebInspector.UISourceCode.Message.prototype = {
      */
     isEqual: function(another)
     {
-        return this.text() === another.text() && this.level() === another.level() && this.lineNumber() === another.lineNumber() && this.columnNumber() === another.columnNumber();
+        return this._uiSourceCode === another._uiSourceCode && this.text() === another.text() && this.level() === another.level() && this.lineNumber() === another.lineNumber() && this.columnNumber() === another.columnNumber();
+    },
+
+    remove: function()
+    {
+        this._uiSourceCode.removeMessage(this);
     }
 }

@@ -223,6 +223,10 @@ WebInspector.SourceFrame.prototype = {
         this._innerScrollToLineIfNeeded();
     },
 
+    /**
+     * @param {!WebInspector.TextRange} oldRange
+     * @param {!WebInspector.TextRange} newRange
+     */
     onTextChanged: function(oldRange, newRange)
     {
         if (this._searchResultsChangedCallback)
@@ -613,6 +617,8 @@ WebInspector.TextEditorDelegateForSourceFrame = function(sourceFrame)
 WebInspector.TextEditorDelegateForSourceFrame.prototype = {
     /**
      * @override
+     * @param {!WebInspector.TextRange} oldRange
+     * @param {!WebInspector.TextRange} newRange
      */
     onTextChanged: function(oldRange, newRange)
     {

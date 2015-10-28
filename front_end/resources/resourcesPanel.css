@@ -96,12 +96,6 @@ li.selected .base-storage-tree-element-subtitle {
     line-height: 1em;
 }
 
-.resources.panel li .status .bubble-repeat-count {
-    height: 13px;
-    margin-top: 1px;
-    padding-top: 0;
-}
-
 .storage-view {
     display: flex;
     overflow: hidden;

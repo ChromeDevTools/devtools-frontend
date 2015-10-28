@@ -35,7 +35,6 @@
 WebInspector.ResourceSourceFrame = function(resource)
 {
     this._resource = resource;
-    this._messages = [];
     WebInspector.SourceFrame.call(this, resource);
 }
 

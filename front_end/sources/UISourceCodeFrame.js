@@ -39,6 +39,8 @@ WebInspector.UISourceCodeFrame = function(uiSourceCode)
     this._rowMessageBuckets = {};
     this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.WorkingCopyChanged, this._onWorkingCopyChanged, this);
     this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.WorkingCopyCommitted, this._onWorkingCopyCommitted, this);
+    this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.MessageAdded, this._onMessageAdded, this);
+    this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.MessageRemoved, this._onMessageRemoved, this);
     this._updateStyle();
 
     this._errorPopoverHelper = new WebInspector.PopoverHelper(this.element, this._getErrorAnchor.bind(this), this._showErrorPopover.bind(this));
@@ -108,10 +110,25 @@ WebInspector.UISourceCodeFrame.prototype = {
         delete this._muteSourceCodeEvents;
     },
 
+    /**
+     * @override
+     */
+    onTextEditorContentLoaded: function()
+    {
+        WebInspector.SourceFrame.prototype.onTextEditorContentLoaded.call(this);
+        for (var message of this._uiSourceCode.messages())
+            this._addMessageToSource(message);
+    },
+
+    /**
+     * @override
+     * @param {!WebInspector.TextRange} oldRange
+     * @param {!WebInspector.TextRange} newRange
+     */
     onTextChanged: function(oldRange, newRange)
     {
         WebInspector.SourceFrame.prototype.onTextChanged.call(this, oldRange, newRange);
-        this.clearMessages();
+        this._clearMessages();
         if (this._isSettingContent)
             return;
         this._muteSourceCodeEvents = true;
@@ -120,12 +137,6 @@ WebInspector.UISourceCodeFrame.prototype = {
         else
             this._uiSourceCode.setWorkingCopyGetter(this._textEditor.text.bind(this._textEditor));
         delete this._muteSourceCodeEvents;
-    },
-
-    onTextEditorContentLoaded: function()
-    {
-        WebInspector.SourceFrame.prototype.onTextEditorContentLoaded.call(this);
-        this.clearMessages();
     },
 
     /**
@@ -213,9 +224,20 @@ WebInspector.UISourceCodeFrame.prototype = {
     },
 
     /**
+     * @param {!WebInspector.Event} event
+     */
+    _onMessageAdded: function(event)
+    {
+        if (!this.loaded)
+            return;
+        var message = /** @type {!WebInspector.UISourceCode.Message} */ (event.data);
+        this._addMessageToSource(message);
+    },
+
+    /**
      * @param {!WebInspector.UISourceCode.Message} message
      */
-    addMessageToSource: function(message)
+    _addMessageToSource: function(message)
     {
         var lineNumber = message.lineNumber();
         if (lineNumber >= this._textEditor.linesCount)
@@ -230,9 +252,20 @@ WebInspector.UISourceCodeFrame.prototype = {
     },
 
     /**
+     * @param {!WebInspector.Event} event
+     */
+    _onMessageRemoved: function(event)
+    {
+        if (!this.loaded)
+            return;
+        var message = /** @type {!WebInspector.UISourceCode.Message} */ (event.data);
+        this._removeMessageFromSource(message);
+    },
+
+    /**
      * @param {!WebInspector.UISourceCode.Message} message
      */
-    removeMessageFromSource: function(message)
+    _removeMessageFromSource: function(message)
     {
         var lineNumber = message.lineNumber();
         if (lineNumber >= this._textEditor.linesCount)
@@ -250,7 +283,7 @@ WebInspector.UISourceCodeFrame.prototype = {
         }
     },
 
-    clearMessages: function()
+    _clearMessages: function()
     {
         for (var line in this._rowMessageBuckets) {
             var bubble = this._rowMessageBuckets[line];
@@ -259,6 +292,7 @@ WebInspector.UISourceCodeFrame.prototype = {
 
         this._rowMessageBuckets = {};
         this._errorPopoverHelper.hidePopover();
+        this._uiSourceCode.removeAllMessages();
     },
 
     /**
@@ -371,19 +405,6 @@ WebInspector.UISourceCodeFrame.Infobar.prototype = {
     },
 
     __proto__: WebInspector.Infobar.prototype
-}
-
-/**
- * @param {!WebInspector.ConsoleMessage} consoleMessage
- * @param {number} lineNumber
- * @param {number} columnNumber
- * @return {!WebInspector.UISourceCode.Message}
- */
-WebInspector.UISourceCodeFrame.uiMessageFromConsoleMessage = function(consoleMessage, lineNumber, columnNumber)
-{
-    console.assert(consoleMessage.level === WebInspector.ConsoleMessage.MessageLevel.Error || consoleMessage.level === WebInspector.ConsoleMessage.MessageLevel.Warning);
-    var level = consoleMessage.level === WebInspector.ConsoleMessage.MessageLevel.Error ? WebInspector.UISourceCode.Message.Level.Error : WebInspector.UISourceCode.Message.Level.Warning;
-    return new WebInspector.UISourceCode.Message(level, consoleMessage.messageText, lineNumber, columnNumber);
 }
 
 WebInspector.UISourceCodeFrame._iconClassPerLevel = {};

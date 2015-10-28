@@ -54,9 +54,6 @@ WebInspector.JavaScriptSourceFrame = function(scriptsPanel, uiSourceCode)
     this._breakpointManager.addEventListener(WebInspector.BreakpointManager.Events.BreakpointAdded, this._breakpointAdded, this);
     this._breakpointManager.addEventListener(WebInspector.BreakpointManager.Events.BreakpointRemoved, this._breakpointRemoved, this);
 
-    WebInspector.presentationConsoleMessageHelper.addConsoleMessageEventListener(WebInspector.PresentationConsoleMessageHelper.Events.ConsoleMessageAdded, this._uiSourceCode, this._consoleMessageAdded, this);
-    WebInspector.presentationConsoleMessageHelper.addConsoleMessageEventListener(WebInspector.PresentationConsoleMessageHelper.Events.ConsoleMessageRemoved, this._uiSourceCode, this._consoleMessageRemoved, this);
-    WebInspector.presentationConsoleMessageHelper.addConsoleMessageEventListener(WebInspector.PresentationConsoleMessageHelper.Events.ConsoleMessagesCleared, this._uiSourceCode, this._consoleMessagesCleared, this);
     this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.SourceMappingChanged, this._onSourceMappingChanged, this);
     this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.WorkingCopyChanged, this._workingCopyChanged, this);
     this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.WorkingCopyCommitted, this._workingCopyCommitted, this);
@@ -406,8 +403,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
             var compileError = liveEditErrorData.compileError;
             if (compileError) {
                 var messageText = WebInspector.UIString("LiveEdit compile failed: %s", compileError.message);
-                var message = new WebInspector.UISourceCode.Message(WebInspector.UISourceCode.Message.Level.Error, messageText, compileError.lineNumber - 1, compileError.columnNumber + 1);
-                this.addMessageToSource(message);
+                this.uiSourceCode().addMessage(WebInspector.UISourceCode.Message.Level.Error, messageText, compileError.lineNumber - 1, compileError.columnNumber + 1);
             } else {
                 WebInspector.console.addMessage(WebInspector.UIString("Unknown LiveEdit error: %s; %s", JSON.stringify(liveEditErrorData), liveEditError), warningLevel);
             }
@@ -960,34 +956,6 @@ WebInspector.JavaScriptSourceFrame.prototype = {
             this._removeBreakpointDecoration(uiLocation.lineNumber);
     },
 
-    _consoleMessageAdded: function(event)
-    {
-        var message = /** @type {!WebInspector.PresentationConsoleMessage} */ (event.data);
-        if (this.loaded)
-            this.addMessageToSource(this._sourceFrameMessage(message));
-    },
-
-    _consoleMessageRemoved: function(event)
-    {
-        var message = /** @type {!WebInspector.PresentationConsoleMessage} */ (event.data);
-        if (this.loaded)
-            this.removeMessageFromSource(this._sourceFrameMessage(message));
-    },
-
-    /**
-     * @param {!WebInspector.PresentationConsoleMessage} message
-     * @return {!WebInspector.UISourceCode.Message}
-     */
-    _sourceFrameMessage: function(message)
-    {
-        return WebInspector.UISourceCodeFrame.uiMessageFromConsoleMessage(message.originalMessage, message.lineNumber(), message.columnNumber());
-    },
-
-    _consoleMessagesCleared: function(event)
-    {
-        this.clearMessages();
-    },
-
     /**
      * @param {!WebInspector.Event} event
      */
@@ -1038,6 +1006,9 @@ WebInspector.JavaScriptSourceFrame.prototype = {
         }
     },
 
+    /**
+     * @override
+     */
     onTextEditorContentLoaded: function()
     {
         WebInspector.UISourceCodeFrame.prototype.onTextEditorContentLoaded.call(this);
@@ -1047,10 +1018,6 @@ WebInspector.JavaScriptSourceFrame.prototype = {
         var breakpointLocations = this._breakpointManager.breakpointLocationsForUISourceCode(this._uiSourceCode);
         for (var i = 0; i < breakpointLocations.length; ++i)
             this._breakpointAdded({data:breakpointLocations[i]});
-
-        var messages = WebInspector.presentationConsoleMessageHelper.consoleMessages(this._uiSourceCode);
-        for (var message of messages)
-            this.addMessageToSource(this._sourceFrameMessage(message));
 
         var scriptFiles = this._scriptFileForTarget.valuesArray();
         for (var i = 0; i < scriptFiles.length; ++i)
@@ -1132,9 +1099,6 @@ WebInspector.JavaScriptSourceFrame.prototype = {
     {
         this._breakpointManager.removeEventListener(WebInspector.BreakpointManager.Events.BreakpointAdded, this._breakpointAdded, this);
         this._breakpointManager.removeEventListener(WebInspector.BreakpointManager.Events.BreakpointRemoved, this._breakpointRemoved, this);
-        WebInspector.presentationConsoleMessageHelper.removeConsoleMessageEventListener(WebInspector.PresentationConsoleMessageHelper.Events.ConsoleMessageAdded, this._uiSourceCode, this._consoleMessageAdded, this);
-        WebInspector.presentationConsoleMessageHelper.removeConsoleMessageEventListener(WebInspector.PresentationConsoleMessageHelper.Events.ConsoleMessageRemoved, this._uiSourceCode, this._consoleMessageRemoved, this);
-        WebInspector.presentationConsoleMessageHelper.removeConsoleMessageEventListener(WebInspector.PresentationConsoleMessageHelper.Events.ConsoleMessagesCleared, this._uiSourceCode, this._consoleMessagesCleared, this);
         this._uiSourceCode.removeEventListener(WebInspector.UISourceCode.Events.SourceMappingChanged, this._onSourceMappingChanged, this);
         this._uiSourceCode.removeEventListener(WebInspector.UISourceCode.Events.WorkingCopyChanged, this._workingCopyChanged, this);
         this._uiSourceCode.removeEventListener(WebInspector.UISourceCode.Events.WorkingCopyCommitted, this._workingCopyCommitted, this);

@@ -481,6 +481,7 @@ Object.defineProperty(Array.prototype, "remove",
     /**
      * @param {!T} value
      * @param {boolean=} firstOnly
+     * @return {boolean}
      * @this {Array.<!T>}
      * @template T
      */
@@ -488,16 +489,17 @@ Object.defineProperty(Array.prototype, "remove",
     {
         var index = this.indexOf(value);
         if (index === -1)
-            return;
+            return false;
         if (firstOnly) {
             this.splice(index, 1);
-            return;
+            return true;
         }
         for (var i = index + 1, n = this.length; i < n; ++i) {
             if (this[i] !== value)
                 this[index++] = this[i];
         }
         this.length = index;
+        return true;
     }
 });
 

@@ -702,6 +702,10 @@ WebInspector.MultitargetNetworkManager = function()
     this._updateBlockedURLs();
 }
 
+WebInspector.MultitargetNetworkManager.Events = {
+    UserAgentChanged: "UserAgentChanged"
+}
+
 WebInspector.MultitargetNetworkManager.prototype = {
     /**
      * @override
@@ -712,8 +716,8 @@ WebInspector.MultitargetNetworkManager.prototype = {
         var networkAgent = target.networkAgent();
         if (this._extraHeaders)
             networkAgent.setExtraHTTPHeaders(this._extraHeaders);
-        if (typeof this._userAgent !== "undefined")
-            networkAgent.setUserAgentOverride(this._userAgent);
+        if (this._currentUserAgent())
+            networkAgent.setUserAgentOverride(this._currentUserAgent());
         for (var url of this._blockedURLs)
             networkAgent.addBlockedURL(url);
     },
@@ -737,14 +741,39 @@ WebInspector.MultitargetNetworkManager.prototype = {
     },
 
     /**
+     * @return {string}
+     */
+    _currentUserAgent: function()
+    {
+        return this._customUserAgent ? this._customUserAgent : this._userAgentOverride;
+    },
+
+    _updateUserAgentOverride: function()
+    {
+        var userAgent = this._currentUserAgent();
+        WebInspector.ResourceLoader.targetUserAgent = userAgent;
+        for (var target of WebInspector.targetManager.targets())
+            target.networkAgent().setUserAgentOverride(userAgent);
+    },
+
+    /**
      * @param {string} userAgent
      */
     setUserAgentOverride: function(userAgent)
     {
-        WebInspector.ResourceLoader.targetUserAgent = userAgent;
-        this._userAgent = userAgent;
-        for (var target of WebInspector.targetManager.targets())
-            target.networkAgent().setUserAgentOverride(this._userAgent);
+        this._userAgentOverride = userAgent;
+        if (!this._customUserAgent)
+            this._updateUserAgentOverride();
+        this.dispatchEventToListeners(WebInspector.MultitargetNetworkManager.Events.UserAgentChanged, this._userAgentOverride);
+    },
+
+    /**
+     * @param {string} userAgent
+     */
+    setCustomUserAgentOverride: function(userAgent)
+    {
+        this._customUserAgent = userAgent;
+        this._updateUserAgentOverride();
     },
 
     _updateBlockedURLs: function()

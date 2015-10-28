@@ -44,7 +44,6 @@ WebInspector.OverridesView = function()
     this._tabbedPane.setVerticalTabLayout(true);
 
     new WebInspector.OverridesView.DeviceTab().appendAsTab(this._tabbedPane);
-    new WebInspector.OverridesView.NetworkTab().appendAsTab(this._tabbedPane);
 
     this._lastSelectedTabSetting = WebInspector.settings.createSetting("lastSelectedEmulateTab", "device");
     this._tabbedPane.selectTab(this._lastSelectedTabSetting.get());
@@ -240,41 +239,6 @@ WebInspector.OverridesView.DeviceTab.prototype = {
 
     __proto__: WebInspector.OverridesView.Tab.prototype
 }
-
-/**
- * @constructor
- * @extends {WebInspector.OverridesView.Tab}
- */
-WebInspector.OverridesView.NetworkTab = function()
-{
-    WebInspector.OverridesView.Tab.call(this, "network", WebInspector.UIString("Network"), [], [this._userAgentOverrideEnabled.bind(this)]);
-    this.element.classList.add("overrides-network");
-    this._createUserAgentSection();
-}
-
-WebInspector.OverridesView.NetworkTab.prototype = {
-    /**
-     * @return {boolean}
-     */
-    _userAgentOverrideEnabled: function()
-    {
-        return !!WebInspector.overridesSupport.settings.userAgent.get();
-    },
-
-    _createUserAgentSection: function()
-    {
-        var fieldsetElement = this.element.createChild("fieldset");
-        fieldsetElement.createChild("label").textContent = WebInspector.UIString("Spoof user agent:");
-        var selectAndInput = WebInspector.OverridesUI.createUserAgentSelectAndInput();
-        fieldsetElement.appendChild(selectAndInput.select);
-        fieldsetElement.appendChild(selectAndInput.input);
-
-        WebInspector.overridesSupport.settings.userAgent.addChangeListener(this.updateActiveState, this);
-    },
-
-    __proto__: WebInspector.OverridesView.Tab.prototype
-}
-
 
 /**
  * @constructor

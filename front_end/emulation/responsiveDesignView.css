@@ -399,24 +399,19 @@ div.responsive-design-icon:disabled {
 
 /* Network section */
 
-.responsive-design-section-network select {
-    width: 145px;
-}
-
-.responsive-design-section-network input[type='text'] {
-    width: 182px;
-    margin-left: 5px;
-    text-overflow: ellipsis;
-}
-
-.responsive-design-section-network input[type='text'],
-.responsive-design-section-network input[type='text']::-webkit-input-placeholder,
-.responsive-design-section-network select {
-    color: rgb(65, 175, 255);
-}
-
 .responsive-design-section-network .responsive-design-section-decorator {
     background: linear-gradient(to bottom, rgb(77, 170, 243), rgb(0, 130, 255));
+}
+
+.responsive-design-section-network .responsive-design-suite a {
+    height: 20px;
+    background-color: transparent;
+    border: 0;
+    line-height: 16px;
+    color: rgb(66, 175, 255);
+    cursor: pointer;
+    border-radius: 2px;
+    text-decoration: underline;
 }
 
 /* Warning message */

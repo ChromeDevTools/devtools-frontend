@@ -65,6 +65,26 @@
             "persistence": "closeable",
             "order": 60,
             "className": "WebInspector.BlockedURLsPane"
+        },
+        {
+            "type": "@WebInspector.ActionDelegate",
+            "actionId": "network.show-config",
+            "title": "Network configuration",
+            "className": "WebInspector.NetworkConfigView.ShowActionDelegate"
+        },
+        {
+            "type": "context-menu-item",
+            "location": "mainMenu/tools/open",
+            "order": 60,
+            "actionId": "network.show-config"
+        },
+        {
+            "type": "drawer-view",
+            "name": "network.config",
+            "title": "Networking",
+            "persistence": "closeable",
+            "order": 40,
+            "className": "WebInspector.NetworkConfigView"
         }
     ],
     "dependencies": [
@@ -79,6 +99,7 @@
         "FilterSuggestionBuilder.js",
         "HARWriter.js",
         "RequestView.js",
+        "NetworkConfigView.js",
         "NetworkDataGridNode.js",
         "NetworkItemView.js",
         "NetworkTimeCalculator.js",
@@ -98,6 +119,7 @@
     "resources": [
         "blockedURLsPane.css",
         "eventSourceMessagesView.css",
+        "networkConfigView.css",
         "networkLogView.css",
         "networkPanel.css",
         "requestCookiesView.css",

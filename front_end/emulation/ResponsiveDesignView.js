@@ -720,17 +720,13 @@ WebInspector.ResponsiveDesignView.prototype = {
         var networkSection = this._toolbarElement.createChild("div", "responsive-design-section responsive-design-section-network");
         networkSection.createChild("div", "responsive-design-section-decorator");
 
-        // Bandwidth.
-        var bandwidthElement = networkSection.createChild("div", "responsive-design-suite responsive-design-suite-top").createChild("div");
-        var fieldsetElement = bandwidthElement.createChild("fieldset");
-        var networkCheckbox = fieldsetElement.createChild("label");
-        networkCheckbox.textContent = WebInspector.UIString("Network");
-        new WebInspector.NetworkConditionsSelector(fieldsetElement.createChild("select"));
+        var networkLabel = networkSection.createChild("div", "responsive-design-suite responsive-design-suite-top").createChild("div").createChild("label");
+        networkLabel.textContent = WebInspector.UIString("Network");
 
-        // User agent.
-        var userAgentElement = networkSection.createChild("div", "responsive-design-suite").createChild("div");
-        fieldsetElement = userAgentElement.createChild("fieldset");
-        fieldsetElement.appendChild(WebInspector.SettingsUI.createSettingInputField("UA", WebInspector.overridesSupport.settings.userAgent, false, 0, "", undefined, false, false, WebInspector.UIString("No override")));
+        var showDrawerButton = networkSection.createChild("div", "responsive-design-suite").createChild("a");
+        showDrawerButton.textContent = WebInspector.UIString("Configure throttling");
+        var action = WebInspector.actionRegistry.action("network.show-config");
+        showDrawerButton.addEventListener("click", action.execute.bind(action));
     },
 
     _onToggleMediaInspectorButtonClick: function()

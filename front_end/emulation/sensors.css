@@ -5,7 +5,7 @@
  */
 
 .sensors-view {
-    padding: 16px;
+    padding: 12px;
 }
 
 .sensors-view label {
@@ -48,6 +48,10 @@
     flex: 0 0 auto;
 }
 
+.sensors-view fieldset[disabled] {
+    opacity: 0.5;
+}
+
 .sensors-view .field-error-message {
     display: none;
 }
@@ -63,6 +67,10 @@
     -webkit-perspective-origin: 50% 50%;
     width: 200px;
     height: 130px;
+}
+
+fieldset.device-orientation-override-section[disabled] .accelerometer-stage {
+    cursor: default !important;
 }
 
 .accelerometer-box {

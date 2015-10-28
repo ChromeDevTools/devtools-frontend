@@ -58,6 +58,7 @@ WebInspector.Main.prototype = {
         if (InspectorFrontendHost.isUnderTest())
             self.runtime.useTestBase();
         InspectorFrontendHost.getPreferences(this._gotPreferences.bind(this));
+        new WebInspector.FrontendWebSocketAPI();
     },
 
     /**
@@ -381,7 +382,6 @@ WebInspector.Main.prototype = {
         function lateInitialization()
         {
             WebInspector.extensionServer.initializeExtensions();
-            new WebInspector.FrontendWebSocketAPI();
         }
     },
 

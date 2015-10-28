@@ -11,8 +11,6 @@ WebInspector.FrontendWebSocketAPI = function()
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.DispatchFrontendAPIMessage, this._onFrontendAPIMessage, this);
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.FrontendAPIAttached, this._onAttach, this);
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.FrontendAPIDetached, this._onDetach, this);
-    /** @type {!Set<string>} */
-    this._suggestedFolders = new Set();
 }
 
 WebInspector.FrontendWebSocketAPI.prototype = {
@@ -77,17 +75,6 @@ WebInspector.FrontendWebSocketAPI.prototype = {
                     uiSourceCode.setWorkingCopy(buffer);
                 if (saved)
                     uiSourceCode.checkContentUpdated();
-            }
-            break;
-        case "Frontend.addFileSystem":
-            for (var path of params["paths"]) {
-                var fileSystem = WebInspector.isolatedFileSystemManager.fileSystem(path);
-                if (fileSystem)
-                    continue;
-                if (this._suggestedFolders.has(path))
-                    continue;
-                this._suggestedFolders.add(path);
-                WebInspector.isolatedFileSystemManager.addFileSystem(path);
             }
             break;
         default:

@@ -602,6 +602,35 @@ WebInspector.Color.calculateContrastRatio = function(fgRGBA, bgRGBA)
 
 WebInspector.Color.calculateContrastRatio._flattenedFg = [0, 0, 0, 0];
 
+/**
+ * Compute a desired luminance given a given luminance and a desired contrast
+ * ratio.
+ * @param {number} luminance The given luminance.
+ * @param {number} contrast The desired contrast ratio.
+ * @param {boolean} lighter Whether the desired luminance is lighter or darker
+ * than the given luminance. If no luminance can be found which meets this
+ * requirement, a luminance which meets the inverse requirement will be
+ * returned.
+ * @return {number} The desired luminance.
+ */
+WebInspector.Color.desiredLuminance = function(luminance, contrast, lighter)
+{
+    function computeLuminance()
+    {
+        if (lighter)
+            return (luminance + 0.05) * contrast - 0.05;
+        else
+            return (luminance + 0.05) / contrast - 0.05;
+    }
+    var desiredLuminance = computeLuminance();
+    if (desiredLuminance < 0 || desiredLuminance > 1) {
+        lighter = !lighter;
+        desiredLuminance = computeLuminance();
+    }
+    return desiredLuminance;
+};
+
+
 WebInspector.Color.Nicknames = {
     "aliceblue":          [240,248,255],
     "antiquewhite":       [250,235,215],

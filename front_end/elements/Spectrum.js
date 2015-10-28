@@ -704,18 +704,23 @@ WebInspector.Spectrum.prototype = {
         /** const */ var width = this.dragWidth;
         /** const */ var height = this.dragHeight;
         /** const */ var dS = 0.02;
-        /** const */ var epsilon = 0.01;
+        /** const */ var epsilon = 0.002;
+        /** const */ var H = 0;
+        /** const */ var S = 1;
+        /** const */ var V = 2;
+        /** const */ var A = 3;
 
         var fgRGBA = [];
         WebInspector.Color.hsva2rgba(this._hsv, fgRGBA);
         var fgLuminance = WebInspector.Color.luminance(fgRGBA);
         var bgRGBA = this._contrastColor.rgba();
         var bgLuminance = WebInspector.Color.luminance(bgRGBA);
-        var delta = fgLuminance < bgLuminance ? 1 : -1;
+        var fgIsLighter = fgLuminance > bgLuminance;
+        var desiredLuminance = WebInspector.Color.desiredLuminance(bgLuminance, requiredContrast, fgIsLighter);
 
-        var lastV = this._hsv[2];
+        var lastV = this._hsv[V];
         var currentSlope = 0;
-        var candidateHSVA = [this._hsv[0], 0, 0, this._hsv[3]];
+        var candidateHSVA = [this._hsv[H], 0, 0, this._hsv[A]];
         var pathBuilder = [];
         var candidateRGBA = [];
         WebInspector.Color.hsva2rgba(candidateHSVA, candidateRGBA);
@@ -727,34 +732,34 @@ WebInspector.Spectrum.prototype = {
          * from the given starting value.
          * @param {number} index
          * @param {number} x
+         * @param {boolean} onAxis
          * @return {?number}
          */
-        function approach(index, x)
+        function approach(index, x, onAxis)
         {
             while (0 <= x && x <= 1) {
                 candidateHSVA[index] = x;
                 WebInspector.Color.hsva2rgba(candidateHSVA, candidateRGBA);
                 WebInspector.Color.flattenColors(candidateRGBA, bgRGBA, flattenedRGBA);
-                var contrast = WebInspector.Color.calculateContrastRatio(flattenedRGBA, bgRGBA);
-                var dContrast = contrast - requiredContrast;
-                if (Math.abs(dContrast) < epsilon) {
+                var fgLuminance = WebInspector.Color.luminance(flattenedRGBA);
+                var dLuminance = fgLuminance - desiredLuminance;
+
+                if (Math.abs(dLuminance) < (onAxis ? epsilon / 10 : epsilon))
                     return x;
-                } else {
-                    // 21 is the maximum possible value for contrast ratio:
-                    // http://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html#contrast-ratiodef
-                    x += delta * (dContrast / 21);
-                }
+                else
+                    x += (index === V ? -dLuminance : dLuminance);
             }
             return null;
         }
 
         for (var s = 0; s < 1 + dS; s += dS) {
             s = Math.min(1, s);
-            candidateHSVA[1] = s;
+            candidateHSVA[S] = s;
+
             var v = lastV;
             v = lastV + currentSlope * dS;
 
-            v = approach(2, v);
+            v = approach(V, v, s == 0);
             if (v === null)
                 break;
 
@@ -767,11 +772,10 @@ WebInspector.Spectrum.prototype = {
 
         if (s < 1 + dS) {
             s -= dS;
-            delta = -delta;
-            candidateHSVA[2] = 1;
-            s = approach(1, s);
+            candidateHSVA[V] = 1;
+            s = approach(S, s, true);
             if (s !== null)
-                pathBuilder = pathBuilder.concat(["L", s * width, 0])
+                pathBuilder = pathBuilder.concat(["L", s * width, -1])
         }
 
         this._contrastRatioLine.setAttribute("d", pathBuilder.join(" "));

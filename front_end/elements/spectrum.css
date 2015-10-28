@@ -117,7 +117,7 @@
 
 .spectrum-text-value {
     display: inline-block;
-    width: 39px;
+    width: 40px;
     overflow: hidden;
     text-align: center;
     border: 1px solid #dadada;
@@ -131,7 +131,7 @@
 }
 
 .spectrum-text-label {
-    letter-spacing: 38.5px;
+    letter-spacing: 39.5px;
     margin-top: 8px;
     display: block;
     color: #969696;
@@ -140,7 +140,7 @@
 }
 
 .spectrum-text-hex > .spectrum-text-value {
-    width: 174px;
+    width: 178px;
 }
 
 .spectrum-text-hex > .spectrum-text-label {

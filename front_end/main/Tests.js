@@ -646,7 +646,7 @@ TestSuite.prototype.invokeAsyncWithTimeline_ = function(functionName, callback)
     var test = this;
     test.showPanel("timeline").then(function() {
         WebInspector.panels.timeline._model.addEventListener(WebInspector.TimelineModel.Events.RecordingStarted, onRecordingStarted);
-        WebInspector.panels.timeline.toggleTimelineButton.element.click();
+        WebInspector.panels.timeline._toggleTimelineButton.element.click();
     });
 
     function onRecordingStarted()
@@ -668,7 +668,7 @@ TestSuite.prototype.invokeAsyncWithTimeline_ = function(functionName, callback)
     function pageActionsDone()
     {
         WebInspector.panels.timeline._model.addEventListener(WebInspector.TimelineModel.Events.RecordingStopped, onRecordingStopped);
-        WebInspector.panels.timeline.toggleTimelineButton.element.click();
+        WebInspector.panels.timeline._toggleTimelineButton.element.click();
     }
 
     function onRecordingStopped()

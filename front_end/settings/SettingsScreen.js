@@ -296,9 +296,10 @@ WebInspector.WorkspaceSettingsTab = function()
 
     var folderExcludeSetting = WebInspector.isolatedFileSystemManager.workspaceFolderExcludePatternSetting();
     var folderExcludePatternInput = WebInspector.SettingsUI.createSettingInputField(WebInspector.UIString("Folder exclude pattern"), folderExcludeSetting, false, 0, "270px", WebInspector.SettingsUI.regexValidator);
+    folderExcludePatternInput.classList.add("folder-exclude-pattern");
     this.containerElement.appendChild(folderExcludePatternInput);
 
-    this._fileSystemsListContainer = this.containerElement.createChild("div", "settings-list-container");
+    this._fileSystemsListContainer = this.containerElement.createChild("div", "");
 
     this.containerElement.appendChild(createTextButton(WebInspector.UIString("Add folder\u2026"), this._addFileSystemClicked.bind(this)));
 

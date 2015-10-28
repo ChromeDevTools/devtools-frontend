@@ -262,6 +262,7 @@ fieldset {
 
 #workspace-tab-content .settings-tab.help-content.help-container {
     -webkit-column-width: initial;
+    overflow: hidden;
 }
 
 
@@ -272,6 +273,14 @@ fieldset {
 #workspace-tab-content .help-block {
     width: auto;
     margin-right: 20px;
+}
+
+p.folder-exclude-pattern {
+    margin-top: 0 !important;
+}
+
+.folder-exclude-pattern input {
+    margin-top: 10px;
 }
 
 .file-system-mapping-view {
@@ -296,6 +305,9 @@ fieldset {
     flex: none;
     margin-right: 10px;
     font-size: 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 70%;
 }
 
 .settings-tab .file-system-path {

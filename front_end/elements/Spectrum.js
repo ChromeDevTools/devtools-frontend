@@ -223,10 +223,15 @@ WebInspector.Spectrum.prototype = {
             return;
         if (show)
             this._updatePalettePanel();
-        else
-            WebInspector.restoreFocusFromElement(this.element);
+        this._focus();
         this._palettePanelShowing = show;
         this.contentElement.classList.toggle("palette-panel-showing", show);
+    },
+
+    _focus: function()
+    {
+        if (WebInspector.currentFocusElement() !== this.contentElement)
+            WebInspector.setCurrentFocusElement(this.contentElement);
     },
 
     /**
@@ -287,6 +292,7 @@ WebInspector.Spectrum.prototype = {
         }
 
         this._togglePalettePanel(false);
+        this._focus();
     },
 
     /**

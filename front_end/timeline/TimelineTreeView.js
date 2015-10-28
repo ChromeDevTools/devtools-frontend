@@ -30,7 +30,7 @@ WebInspector.TimelineTreeView = function(model)
         new WebInspector.ExcludeTopLevelFilter()
     ];
 
-    this._groupBySetting = WebInspector.settings.createSetting("timelineTreeGroupBy", WebInspector.TimelineTreeView.GroupBy.Domain);
+    this._groupBySetting = WebInspector.settings.createSetting("timelineTreeGroupBy", WebInspector.TimelineTreeView.GroupBy.Category);
 
     this.dataGrid = new WebInspector.SortableDataGrid(columns);
     this.dataGrid.addEventListener(WebInspector.DataGrid.Events.SortingChanged, this._sortingChanged, this);
@@ -53,6 +53,7 @@ WebInspector.TimelineTreeView.Mode = {
  */
 WebInspector.TimelineTreeView.GroupBy = {
     None: "None",
+    Category: "Category",
     Domain: "Domain",
     Subdomain: "Subdomain",
     URL: "URL"
@@ -102,6 +103,7 @@ WebInspector.TimelineTreeView.prototype = {
                 this._groupByCombobox.select(option);
         }
         addGroupingOption.call(this, WebInspector.UIString("No Grouping"), WebInspector.TimelineTreeView.GroupBy.None);
+        addGroupingOption.call(this, WebInspector.UIString("Group by Category"), WebInspector.TimelineTreeView.GroupBy.Category);
         addGroupingOption.call(this, WebInspector.UIString("Group by Domain"), WebInspector.TimelineTreeView.GroupBy.Domain);
         addGroupingOption.call(this, WebInspector.UIString("Group by Subdomain"), WebInspector.TimelineTreeView.GroupBy.Subdomain);
         addGroupingOption.call(this, WebInspector.UIString("Group by URL"), WebInspector.TimelineTreeView.GroupBy.URL);
@@ -199,6 +201,15 @@ WebInspector.TimelineTreeView.prototype = {
          * @param {!WebInspector.TimelineModel.ProfileTreeNode} node
          * @return {string}
          */
+        function groupByCategory(node)
+        {
+            return node.event ? WebInspector.TimelineUIUtils.eventStyle(node.event).category.name : "";
+        }
+
+        /**
+         * @param {!WebInspector.TimelineModel.ProfileTreeNode} node
+         * @return {string}
+         */
         function groupByURL(node)
         {
             return WebInspector.TimelineTreeView.eventURL(node.event) || "";
@@ -237,6 +248,7 @@ WebInspector.TimelineTreeView.prototype = {
         }
         var groupByMap = /** @type {!Map<!WebInspector.TimelineTreeView.GroupBy,?function(!WebInspector.TimelineModel.ProfileTreeNode):string>} */ (new Map([
             [WebInspector.TimelineTreeView.GroupBy.None, null],
+            [WebInspector.TimelineTreeView.GroupBy.Category, groupByCategory],
             [WebInspector.TimelineTreeView.GroupBy.Subdomain, groupByDomain.bind(null, false)],
             [WebInspector.TimelineTreeView.GroupBy.Domain, groupByDomain.bind(null, true)],
             [WebInspector.TimelineTreeView.GroupBy.URL, groupByURL]
@@ -252,14 +264,34 @@ WebInspector.TimelineTreeView.prototype = {
     _nodeToGroupNode: function(nodeToGroupId, node)
     {
         var id = nodeToGroupId(node);
-        var groupNode = this._groupNodes.get(id);
-        if (!groupNode) {
-            groupNode = new WebInspector.TimelineModel.ProfileTreeNode();
-            groupNode.name = id || WebInspector.UIString("(unattributed)");
-            groupNode.selfTime = 0;
-            groupNode.totalTime = 0;
-            groupNode.children = new Map();
-            this._groupNodes.set(id, groupNode);
+        return this._groupNodes.get(id) || this._buildGroupNode(id, node.event);
+    },
+
+    /**
+     * @param {string} id
+     * @param {!WebInspector.TracingModel.Event} event
+     * @return {!WebInspector.TimelineModel.ProfileTreeNode}
+     */
+    _buildGroupNode: function(id, event)
+    {
+        var groupNode = new WebInspector.TimelineModel.ProfileTreeNode();
+        groupNode.selfTime = 0;
+        groupNode.totalTime = 0;
+        groupNode.children = new Map();
+        this._groupNodes.set(id, groupNode);
+        var categories = WebInspector.TimelineUIUtils.categories();
+        switch (this._groupBySetting.get()) {
+        case WebInspector.TimelineTreeView.GroupBy.Category:
+            var category = categories[id] || categories["other"];
+            groupNode.name = category.title;
+            groupNode.color = category.fillColorStop1;
+            break;
+        case WebInspector.TimelineTreeView.GroupBy.Domain:
+        case WebInspector.TimelineTreeView.GroupBy.Subdomain:
+        case WebInspector.TimelineTreeView.GroupBy.URL:
+            groupNode.name = id || WebInspector.UIString("unattributed");
+            groupNode.color = id ? WebInspector.TimelineUIUtils.eventColor(event) : categories["other"].fillColorStop1;
+            break;
         }
         return groupNode;
     },
@@ -417,11 +449,10 @@ WebInspector.TimelineTreeView.GridNode.prototype = {
             var columnNumber = frame && frame["columnNumber"];
             if (url)
                 container.createChild("div", "activity-link").appendChild(this._treeView.linkifyLocation(scriptId, url, lineNumber, columnNumber));
-            var category = WebInspector.TimelineUIUtils.eventStyle(event).category;
-            icon.style.backgroundColor = category.fillColorStop1;
+            icon.style.backgroundColor = WebInspector.TimelineUIUtils.eventColor(event);
         } else {
             name.textContent = this._profileNode.name;
-            icon.style.backgroundColor = WebInspector.TimelineUIUtils.colorForURL(this._profileNode.name);
+            icon.style.backgroundColor = this._profileNode.color;
         }
         return cell;
     },

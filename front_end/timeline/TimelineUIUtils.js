@@ -188,6 +188,17 @@ WebInspector.TimelineUIUtils.eventStyle = function(event)
  * @param {!WebInspector.TracingModel.Event} event
  * @return {string}
  */
+WebInspector.TimelineUIUtils.eventColor = function(event)
+{
+    if (event.name === WebInspector.TimelineModel.RecordType.JSFrame)
+        return WebInspector.TimelineUIUtils.colorForURL(event.args["data"]["url"]);
+    return WebInspector.TimelineUIUtils.eventStyle(event).category.fillColorStop1;
+}
+
+/**
+ * @param {!WebInspector.TracingModel.Event} event
+ * @return {string}
+ */
 WebInspector.TimelineUIUtils.eventTitle = function(event)
 {
     var title = WebInspector.TimelineUIUtils.eventStyle(event).title;

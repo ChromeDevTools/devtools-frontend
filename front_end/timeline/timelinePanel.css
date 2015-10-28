@@ -975,6 +975,14 @@
     flex: auto;
 }
 
+.timeline-tree-view .data-grid .data-container {
+    overflow-y: scroll;
+}
+
+.timeline-tree-view .data-grid.data-grid-fits-viewport .corner {
+    display: table-cell;
+}
+
 .timeline-tree-view .data-grid table.data {
     background: white;
 }
@@ -1016,10 +1024,10 @@
 }
 
 .timeline-tree-view .data-grid .name-container .activity-icon {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
     margin: 0 4px 0 2px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .timeline-tree-view .data-grid .name-container .activity-warning::after {

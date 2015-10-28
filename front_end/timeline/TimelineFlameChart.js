@@ -535,12 +535,10 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
         var event = this._entryEvents[entryIndex];
         if (!event)
             return this._entryIndexToFrame[entryIndex] ? "white" : "#aaa";
-        if (event.name === WebInspector.TimelineModel.RecordType.JSFrame)
-            return WebInspector.TimelineUIUtils.colorForURL(event.args["data"]["url"]);
-        var category = WebInspector.TimelineUIUtils.eventStyle(event).category;
         if (WebInspector.TracingModel.isAsyncPhase(event.phase)) {
             if (event.hasCategory(WebInspector.TracingModel.ConsoleEventCategory))
                 return this._consoleColorGenerator.colorForID(event.name);
+            var category = WebInspector.TimelineUIUtils.eventStyle(event).category;
             var color = this._asyncColorByCategory[category.name];
             if (color)
                 return color;
@@ -549,7 +547,7 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
             this._asyncColorByCategory[category.name] = color;
             return color;
         }
-        return category.fillColorStop1;
+        return WebInspector.TimelineUIUtils.eventColor(event);
     },
 
     /**

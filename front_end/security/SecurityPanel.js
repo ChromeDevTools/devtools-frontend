@@ -11,22 +11,12 @@ WebInspector.SecurityPanel = function()
 {
     WebInspector.PanelWithSidebar.call(this, "security");
 
-    var sidebarTree = new TreeOutlineInShadow();
-    sidebarTree.element.classList.add("sidebar-tree");
-    this.panelSidebarElement().appendChild(sidebarTree.element);
-    sidebarTree.registerRequiredCSS("security/sidebar.css");
-    sidebarTree.registerRequiredCSS("security/lockIcon.css");
-    this.setDefaultFocusedElement(sidebarTree.element);
-
-    this._sidebarMainViewElement = new WebInspector.SecurityMainViewSidebarTreeElement(this);
-    sidebarTree.appendChild(this._sidebarMainViewElement);
-
-    // TODO(lgarron): Add a section for the main origin. (https://crbug.com/523586)
-    this._sidebarOriginSection = new WebInspector.SidebarSectionTreeElement(WebInspector.UIString("Origins"));
-    this._sidebarOriginSection.listItemElement.classList.add("security-sidebar-origins");
-    sidebarTree.appendChild(this._sidebarOriginSection);
-
     this._mainView = new WebInspector.SecurityMainView(this);
+
+    this._sidebarMainViewElement = new WebInspector.SecurityPanelSidebarTreeElement(WebInspector.UIString("Overview"), this._setVisibleView.bind(this, this._mainView), "security-main-view-sidebar-tree-item", "lock-icon");
+    this._sidebarTree = new WebInspector.SecurityPanelSidebarTree(this._sidebarMainViewElement, this.showOrigin.bind(this));
+    this.panelSidebarElement().appendChild(this._sidebarTree.element);
+    this.setDefaultFocusedElement(this._sidebarTree.element);
 
     /** @type {!Map<!NetworkAgent.LoaderId, !WebInspector.NetworkRequest>} */
     this._lastResponseReceivedForLoaderId = new Map();
@@ -100,11 +90,11 @@ WebInspector.SecurityPanel.prototype = {
         this._updateSecurityState(securityState, explanations, mixedContentStatus, schemeIsCryptographic);
     },
 
-    showMainView: function()
+    selectAndSwitchToMainView: function()
     {
-        this._setVisibleView(this._mainView);
+        // The sidebar element will trigger displaying the main view. Rather than making a redundant call to display the main view, we rely on this.
+        this._sidebarMainViewElement.select();
     },
-
     /**
      * @param {!WebInspector.SecurityPanel.Origin} origin
      */
@@ -121,7 +111,7 @@ WebInspector.SecurityPanel.prototype = {
     {
         WebInspector.Panel.prototype.wasShown.call(this);
         if (!this._visibleView)
-            this._sidebarMainViewElement.select();
+            this.selectAndSwitchToMainView();
     },
 
     /**
@@ -175,8 +165,7 @@ WebInspector.SecurityPanel.prototype = {
             var oldSecurityState = originState.securityState;
             originState.securityState = this._securityStateMin(oldSecurityState, securityState);
             if (oldSecurityState != originState.securityState) {
-                this._sidebarOriginSection.removeChild(originState.sidebarElement);
-                this._insertOriginViewSidebarTreeElementSorted(originState.sidebarElement, securityState);
+                this._sidebarTree.updateOrigin(origin, securityState);
                 if (originState.originView)
                     originState.originView.setSecurityState(securityState);
             }
@@ -193,22 +182,10 @@ WebInspector.SecurityPanel.prototype = {
 
             this._origins.set(origin, originState);
 
-            originState.sidebarElement = new WebInspector.SecurityOriginViewSidebarTreeElement(this, origin);
-            this._insertOriginViewSidebarTreeElementSorted(originState.sidebarElement, securityState);
+            this._sidebarTree.addOrigin(origin, securityState);
 
             // Don't construct the origin view yet (let it happen lazily).
         }
-    },
-
-    /**
-     * @param {!WebInspector.SecurityOriginViewSidebarTreeElement} sidebarElement
-     * @param {!SecurityAgent.SecurityState} securityState
-     */
-    _insertOriginViewSidebarTreeElementSorted: function(sidebarElement, securityState)
-    {
-        sidebarElement.setSecurityState(securityState);
-        var originSectionChildList = /** @type {!Array.<!WebInspector.SecurityOriginViewSidebarTreeElement>} */ (this._sidebarOriginSection.children());
-        this._sidebarOriginSection.insertChild(sidebarElement, originSectionChildList.upperBound(sidebarElement, WebInspector.SecurityOriginViewSidebarTreeElement.SecurityStateComparator));
     },
 
     /**
@@ -284,8 +261,8 @@ WebInspector.SecurityPanel.prototype = {
 
     _clearOrigins: function()
     {
-        this._sidebarMainViewElement.select();
-        this._sidebarOriginSection.removeChildren();
+        this.selectAndSwitchToMainView();
+        this._sidebarTree.clearOrigins();
         this._origins.clear();
         this._lastResponseReceivedForLoaderId.clear();
         this._filterRequestCounts.clear();
@@ -337,85 +314,105 @@ WebInspector.SecurityPanel.createCertificateViewerButton = function(text, certif
 
 /**
  * @constructor
- * @extends {WebInspector.SidebarTreeElement}
- * @param {!WebInspector.SecurityPanel} panel
+ * @extends {TreeOutlineInShadow}
+ * @param {!WebInspector.SecurityPanelSidebarTreeElement} mainViewElement
+ * @param {function(!WebInspector.SecurityPanel.Origin)} showOriginInPanel
  */
-WebInspector.SecurityMainViewSidebarTreeElement = function(panel)
+WebInspector.SecurityPanelSidebarTree = function(mainViewElement, showOriginInPanel)
 {
-    this._panel = panel;
-    WebInspector.SidebarTreeElement.call(this, "security-main-view-sidebar-tree-item", WebInspector.UIString("Overview"));
-    this.iconElement.classList.add("lock-icon");
+    this._showOriginInPanel = showOriginInPanel;
+
+    TreeOutlineInShadow.call(this);
+    this.element.classList.add("sidebar-tree");
+    this.registerRequiredCSS("security/sidebar.css");
+    this.registerRequiredCSS("security/lockIcon.css");
+
+    this.appendChild(mainViewElement);
+
+    // TODO(lgarron): Add a section for the main origin. (https://crbug.com/523586)
+    this._originSection = new WebInspector.SidebarSectionTreeElement(WebInspector.UIString("Origins"));
+    this._originSection.listItemElement.classList.add("security-sidebar-origins");
+    this.appendChild(this._originSection);
+
+    /** @type {!Map<!WebInspector.SecurityPanel.Origin, !WebInspector.SecurityPanelSidebarTreeElement>} */
+    this._elementsByOrigin = new Map();
 }
 
-WebInspector.SecurityMainViewSidebarTreeElement.prototype = {
-    onattach: function()
+WebInspector.SecurityPanelSidebarTree.prototype = {
+    /**
+     * @param {!WebInspector.SecurityPanel.Origin} origin
+     * @param {!SecurityAgent.SecurityState} securityState
+     */
+    addOrigin: function(origin, securityState)
     {
-        WebInspector.SidebarTreeElement.prototype.onattach.call(this);
+        var originElement = new WebInspector.SecurityPanelSidebarTreeElement(origin, this._showOriginInPanel.bind(this, origin), "security-sidebar-tree-item", "security-property");
+
+        this._elementsByOrigin.set(origin, originElement);
+        this._insertOriginElementSorted(originElement, securityState);
     },
 
     /**
-     * @param {!SecurityAgent.SecurityState} newSecurityState
+     * @param {!WebInspector.SecurityPanel.Origin} origin
+     * @param {!SecurityAgent.SecurityState} securityState
      */
-    setSecurityState: function(newSecurityState)
+    updateOrigin: function(origin, securityState)
     {
-        for (var className of Array.prototype.slice.call(this.iconElement.classList)) {
-            if (className.startsWith("lock-icon-"))
-                this.iconElement.classList.remove(className);
-        }
-
-        this.iconElement.classList.add("lock-icon-" + newSecurityState);
+        var originElement = /** @type {!WebInspector.SecurityPanelSidebarTreeElement} */ (this._elementsByOrigin.get(origin));
+        this._originSection.removeChild(originElement);
+        this._insertOriginElementSorted(originElement, securityState);
     },
 
     /**
-     * @override
-     * @return {boolean}
+     * @param {!WebInspector.SecurityPanelSidebarTreeElement} originElement
+     * @param {!SecurityAgent.SecurityState} securityState
      */
-    onselect: function()
+    _insertOriginElementSorted: function(originElement, securityState)
     {
-        this._panel.showMainView();
-        return true;
+        originElement.setSecurityState(securityState);
+        var originSectionChildList = /** @type {!Array.<!WebInspector.SecurityPanelSidebarTreeElement>} */ (this._originSection.children());
+        this._originSection.insertChild(originElement, originSectionChildList.upperBound(originElement, WebInspector.SecurityPanelSidebarTreeElement.SecurityStateComparator));
     },
 
-    __proto__: WebInspector.SidebarTreeElement.prototype
+    clearOrigins: function()
+    {
+        this._originSection.removeChildren();
+        this._elementsByOrigin.clear();
+    },
+
+    __proto__: TreeOutlineInShadow.prototype
 }
+
 
 /**
  * @constructor
  * @extends {WebInspector.SidebarTreeElement}
- * @param {!WebInspector.SecurityPanel} panel
- * @param {!WebInspector.SecurityPanel.Origin} origin
+ * @param {string} text
+ * @param {function()} selectCallback
+ * @param {string} className
+ * @param {string} cssPrefix
  */
-WebInspector.SecurityOriginViewSidebarTreeElement = function(panel, origin)
+WebInspector.SecurityPanelSidebarTreeElement = function(text, selectCallback, className, cssPrefix)
 {
-    this._panel = panel;
-    this._origin = origin;
-    this._securityState = SecurityAgent.SecurityState.Unknown;
-    this.small = true;
-    WebInspector.SidebarTreeElement.call(this, "security-sidebar-tree-item", origin);
-    this.iconElement.classList.add("security-property");
+    this._selectCallback = selectCallback;
+    this._cssPrefix = cssPrefix;
+
+    WebInspector.SidebarTreeElement.call(this, className, text);
+    this.iconElement.classList.add(this._cssPrefix);
+
+    this.setSecurityState(SecurityAgent.SecurityState.Unknown);
 }
 
-WebInspector.SecurityOriginViewSidebarTreeElement.prototype = {
-    /**
-     * @override
-     * @return {boolean}
-     */
-    onselect: function()
-    {
-        this._panel.showOrigin(this._origin);
-        return true;
-    },
-
+WebInspector.SecurityPanelSidebarTreeElement.prototype = {
     /**
      * @param {!SecurityAgent.SecurityState} newSecurityState
      */
     setSecurityState: function(newSecurityState)
     {
         if (this._securityState)
-            this.iconElement.classList.remove("security-property-" + this._securityState)
+            this.iconElement.classList.remove(this._cssPrefix + "-" + this._securityState)
 
         this._securityState = newSecurityState;
-        this.iconElement.classList.add("security-property-" + newSecurityState);
+        this.iconElement.classList.add(this._cssPrefix + "-" + newSecurityState);
     },
 
     /**
@@ -426,15 +423,25 @@ WebInspector.SecurityOriginViewSidebarTreeElement.prototype = {
         return this._securityState;
     },
 
+    /**
+     * @override
+     * @return {boolean}
+     */
+    onselect: function()
+    {
+        this._selectCallback();
+        return true;
+    },
+
     __proto__: WebInspector.SidebarTreeElement.prototype
 }
 
 /**
- * @param {!WebInspector.SecurityOriginViewSidebarTreeElement} a
- * @param {!WebInspector.SecurityOriginViewSidebarTreeElement} b
+ * @param {!WebInspector.SecurityPanelSidebarTreeElement} a
+ * @param {!WebInspector.SecurityPanelSidebarTreeElement} b
  * @return {number}
  */
-WebInspector.SecurityOriginViewSidebarTreeElement.SecurityStateComparator = function(a, b)
+WebInspector.SecurityPanelSidebarTreeElement.SecurityStateComparator = function(a, b)
 {
     return WebInspector.SecurityModel.SecurityStateComparator(a.securityState(), b.securityState());
 }

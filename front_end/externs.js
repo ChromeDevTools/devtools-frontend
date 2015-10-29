@@ -314,6 +314,8 @@ Adb.Browser;
 Adb.Device;
 /** @typedef {!Object.<string, string>} */
 Adb.PortForwardingConfig;
+/** @typedef {!{port: string, address: string}} */
+Adb.PortForwardingRule;
 
 /**
  * @constructor

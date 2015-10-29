@@ -4,7 +4,7 @@
  * found in the LICENSE file.
  */
 
-:host {
+.devices-view {
     padding-top: 15px;
 }
 
@@ -37,13 +37,87 @@
     padding-bottom: 8px;
 }
 
-.port-forwarding-checkbox {
-    padding-top: 8px;
+.port-forwarding-header {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    margin-top: 5px;
+}
+
+.add-rule-button {
+    margin: 10px 25px;
+    align-self: flex-start;
+}
+
+.port-forwarding-list {
+    margin: 10px 0 0 25px;
+    max-width: 500px;
+    flex: 0 1 auto;
+}
+
+.port-forwarding-list-empty {
+    flex: auto;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.port-forwarding-list-item {
+    padding: 3px 5px 3px 5px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    flex: auto 1 1;
+}
+
+.port-forwarding-value {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    -webkit-user-select: none;
+    color: #222;
+    flex: 3 1 0;
+    overflow: hidden;
+}
+
+.port-forwarding-value.port-forwarding-port {
+    flex: 1 1 0;
+}
+
+.port-localhost {
+    color: #aaa;
+}
+
+.port-forwarding-separator {
+    flex: 0 0 1px;
+    background-color: rgb(231, 231, 231);
+    height: 30px;
+    margin: 0 4px;
+}
+
+.port-forwarding-separator-invisible {
+    visibility: hidden;
+    height: 100% !important;
+}
+
+.port-forwarding-edit-row {
+    flex: none;
+    display: flex;
+    flex-direction: row;
+    margin: 6px 5px;
+    align-items: center;
+}
+
+.port-forwarding-edit-row input {
+    width: 100%;
+    text-align: inherit;
 }
 
 .port-forwarding-footer {
     overflow: hidden;
     margin: 15px 0 0 25px;
+    max-width: 500px;
 }
 
 .port-forwarding-footer > * {

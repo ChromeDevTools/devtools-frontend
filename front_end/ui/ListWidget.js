@@ -146,6 +146,7 @@ WebInspector.ListWidget.prototype = {
     setEmptyPlaceholder: function(element)
     {
         this._emptyPlaceholder = element;
+        this._updatePlaceholder();
     },
 
     /**

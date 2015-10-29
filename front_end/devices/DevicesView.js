@@ -10,6 +10,7 @@ WebInspector.DevicesView = function()
 {
     WebInspector.VBox.call(this, true);
     this.registerRequiredCSS("devices/devicesView.css");
+    this.contentElement.classList.add("devices-view");
 
     var hbox = this.contentElement.createChild("div", "hbox flex-auto");
     var sidebar = hbox.createChild("div", "devices-sidebar");
@@ -169,6 +170,7 @@ WebInspector.DevicesView._instance = function()
 /**
  * @constructor
  * @extends {WebInspector.VBox}
+ * @implements {WebInspector.ListWidget.Delegate}
  */
 WebInspector.DevicesView.DiscoveryView = function()
 {
@@ -184,20 +186,37 @@ WebInspector.DevicesView.DiscoveryView = function()
     this._discoverUsbDevicesCheckbox = discoverUsbDevicesCheckbox.checkboxElement;
     this._discoverUsbDevicesCheckbox.addEventListener("click", this._updateDiscoveryConfig.bind(this), false);
 
+    var portForwardingHeader = this.element.createChild("div", "port-forwarding-header");
     var portForwardingEnabledCheckbox = createCheckboxLabel(WebInspector.UIString("Port forwarding"));
     portForwardingEnabledCheckbox.classList.add("port-forwarding-checkbox");
-    this.element.appendChild(portForwardingEnabledCheckbox);
+    portForwardingHeader.appendChild(portForwardingEnabledCheckbox);
     this._portForwardingEnabledCheckbox = portForwardingEnabledCheckbox.checkboxElement;
     this._portForwardingEnabledCheckbox.addEventListener("click", this._updateDiscoveryConfig.bind(this), false);
 
-    this._portForwardingList = this.element.createChild("div", "port-forwarding-list");
-
     var portForwardingFooter = this.element.createChild("div", "port-forwarding-footer");
     portForwardingFooter.createChild("span").textContent = WebInspector.UIString("Define the listening port on your device that maps to a port accessible from your development machine. ");
-    portForwardingFooter.appendChild(WebInspector.linkifyURLAsNode("https://developer.chrome.com/devtools/docs/remote-debugging#reverse-port-forwarding", WebInspector.UIString("Learn more"), undefined, true));
+    portForwardingFooter.appendChild(WebInspector.linkifyURLAsNode("https://developer.chrome.com/devtools/docs/remote-debugging#port-forwarding", WebInspector.UIString("Learn more"), undefined, true));
+
+    this._list = new WebInspector.ListWidget(this);
+    this._list.registerRequiredCSS("devices/devicesView.css");
+    this._list.element.classList.add("port-forwarding-list");
+    var placeholder = createElementWithClass("div", "port-forwarding-list-empty");
+    placeholder.textContent = WebInspector.UIString("No rules");
+    this._list.setEmptyPlaceholder(placeholder);
+    this._list.show(this.element);
+
+    this.element.appendChild(createTextButton(WebInspector.UIString("Add rule"), this._addRuleButtonClicked.bind(this), "add-rule-button"));
+
+    /** @type {!Array<!Adb.PortForwardingRule>} */
+    this._portForwardingConfig = [];
 }
 
 WebInspector.DevicesView.DiscoveryView.prototype = {
+    _addRuleButtonClicked: function()
+    {
+        this._list.addNewItem(this._portForwardingConfig.length, {port: "", address: ""});
+    },
+
     /**
      * @param {boolean} discoverUsbDevices
      * @param {boolean} portForwardingEnabled
@@ -207,11 +226,126 @@ WebInspector.DevicesView.DiscoveryView.prototype = {
     {
         this._discoverUsbDevicesCheckbox.checked = discoverUsbDevices;
         this._portForwardingEnabledCheckbox.checked = portForwardingEnabled;
+
+        this._portForwardingConfig = [];
+        this._list.clear();
+        for (var key of Object.keys(portForwardingConfig)) {
+            var rule = /** @type {!Adb.PortForwardingRule} */ ({port: key, address: portForwardingConfig[key]});
+            this._portForwardingConfig.push(rule);
+            this._list.appendItem(rule, true);
+        }
+    },
+
+    /**
+     * @override
+     * @param {*} item
+     * @param {boolean} editable
+     * @return {!Element}
+     */
+    renderItem: function(item, editable)
+    {
+        var rule = /** @type {!Adb.PortForwardingRule} */ (item);
+        var element = createElementWithClass("div", "port-forwarding-list-item");
+        var port = element.createChild("div", "port-forwarding-value port-forwarding-port");
+        port.createChild("span", "port-localhost").textContent = WebInspector.UIString("localhost:");
+        port.createTextChild(rule.port);
+        element.createChild("div", "port-forwarding-separator");
+        element.createChild("div", "port-forwarding-value").textContent = rule.address;
+        return element;
+    },
+
+    /**
+     * @override
+     * @param {*} item
+     * @param {number} index
+     */
+    removeItemRequested: function(item, index)
+    {
+        this._portForwardingConfig.splice(index, 1);
+        this._list.removeItem(index);
+        this._updateDiscoveryConfig();
+    },
+
+    /**
+     * @override
+     * @param {*} item
+     * @param {!WebInspector.ListWidget.Editor} editor
+     * @param {boolean} isNew
+     */
+    commitEdit: function(item, editor, isNew)
+    {
+        var rule = /** @type {!Adb.PortForwardingRule} */ (item);
+        rule.port = editor.control("port").value.trim();
+        rule.address = editor.control("address").value.trim();
+        if (isNew)
+            this._portForwardingConfig.push(rule);
+        this._updateDiscoveryConfig();
+    },
+
+    /**
+     * @override
+     * @param {*} item
+     * @return {!WebInspector.ListWidget.Editor}
+     */
+    beginEdit: function(item)
+    {
+        var rule = /** @type {!Adb.PortForwardingRule} */ (item);
+        var editor = this._createEditor();
+        editor.control("port").value = rule.port;
+        editor.control("address").value = rule.address;
+        return editor;
+    },
+
+    /**
+     * @return {!WebInspector.ListWidget.Editor}
+     */
+    _createEditor: function()
+    {
+        if (this._editor)
+            return this._editor;
+
+        var editor = new WebInspector.ListWidget.Editor();
+        this._editor = editor;
+        var content = editor.contentElement();
+        var fields = content.createChild("div", "port-forwarding-edit-row");
+        fields.createChild("div", "port-forwarding-value port-forwarding-port").appendChild(editor.createInput("port", "text", "Device port (3333)", portValidator));
+        fields.createChild("div", "port-forwarding-separator port-forwarding-separator-invisible");
+        fields.createChild("div", "port-forwarding-value").appendChild(editor.createInput("address", "text", "Local address (dev.example.corp:3333)", addressValidator));
+        return editor;
+
+        /**
+         * @param {!HTMLInputElement|!HTMLSelectElement} input
+         * @return {boolean}
+         */
+        function portValidator(input)
+        {
+            var match = input.value.trim().match(/^(\d+)$/);
+            if (!match)
+                return false;
+            var port = parseInt(match[1], 10);
+            return port >= 1024 && port <= 65535;
+        }
+
+        /**
+         * @param {!HTMLInputElement|!HTMLSelectElement} input
+         * @return {boolean}
+         */
+        function addressValidator(input)
+        {
+            var match = input.value.trim().match(/^([a-zA-Z0-9\.\-_]+):(\d+)$/);
+            if (!match)
+                return false;
+            var port = parseInt(match[2], 10);
+            return port <= 65535;
+        }
     },
 
     _updateDiscoveryConfig: function()
     {
-        InspectorFrontendHost.setDevicesDiscoveryConfig(this._discoverUsbDevicesCheckbox.checked, this._portForwardingEnabledCheckbox.checked, {"8080": "localhost:8080"});
+        var configMap = /** @type {!Adb.PortForwardingConfig} */ ({});
+        for (var rule of this._portForwardingConfig)
+            configMap[rule.port] = rule.address;
+        InspectorFrontendHost.setDevicesDiscoveryConfig(this._discoverUsbDevicesCheckbox.checked, this._portForwardingEnabledCheckbox.checked, configMap);
     },
 
     __proto__: WebInspector.VBox.prototype

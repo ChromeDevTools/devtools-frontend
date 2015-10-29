@@ -99,7 +99,6 @@ WebInspector.ElementsPanel = function()
     WebInspector.targetManager.observeTargets(this);
     WebInspector.moduleSetting("showUAShadowDOM").addChangeListener(this._showUAShadowDOMChanged.bind(this));
     WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.DocumentUpdated, this._documentUpdatedEvent, this);
-    WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.NodeHighlightedInOverlay, this._highlightNode, this);
     WebInspector.extensionServer.addEventListener(WebInspector.ExtensionServer.Events.SidebarPaneAdded, this._extensionSidebarPaneAdded, this);
 }
 
@@ -240,6 +239,7 @@ WebInspector.ElementsPanel.prototype = {
         treeOutline.addEventListener(WebInspector.ElementsTreeOutline.Events.SelectedNodeChanged, this._selectedNodeChanged, this);
         treeOutline.addEventListener(WebInspector.ElementsTreeOutline.Events.NodePicked, this._onNodePicked, this);
         treeOutline.addEventListener(WebInspector.ElementsTreeOutline.Events.ElementsTreeUpdated, this._updateBreadcrumbIfNeeded, this);
+        new WebInspector.ElementsTreeElementHighlighter(treeOutline);
         this._treeOutlines.push(treeOutline);
         this._modelToTreeOutline.set(domModel, treeOutline);
 
@@ -694,18 +694,6 @@ WebInspector.ElementsPanel.prototype = {
                 return treeOutline.selectedDOMNode();
         }
         return null;
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _highlightNode: function(event)
-    {
-        var domNode = /** @type {!WebInspector.DOMNode} */ (event.data);
-        for (var i = 0; i < this._treeOutlines.length; ++i) {
-            var treeOutline = this._treeOutlines[i];
-            treeOutline.highlightNode(treeOutline.domModel() === domNode.domModel() ? domNode : null);
-        }
     },
 
     /**

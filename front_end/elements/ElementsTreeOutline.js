@@ -586,9 +586,6 @@ WebInspector.ElementsTreeOutline.prototype = {
      */
     _revealAndSelectNode: function(node, omitFocus)
     {
-        delete this._highlightNode;
-        this._preventElementsCollapse();
-
         if (this._suppressRevealAndSelect)
             return;
 
@@ -601,74 +598,6 @@ WebInspector.ElementsTreeOutline.prototype = {
             return;
 
         treeElement.revealAndSelect(omitFocus);
-    },
-
-    /**
-     * @param {?WebInspector.DOMNode} node
-     */
-    highlightNode: function(node)
-    {
-        var shouldRequestAnimationFrame = !this._highlightNode;
-        this._highlightNode = node;
-        if (shouldRequestAnimationFrame)
-            this.element.window().requestAnimationFrame(callback.bind(this));
-
-        /**
-         * @this {WebInspector.ElementsTreeOutline}
-         */
-        function callback()
-        {
-            this._highlightNodeInternal(this._highlightNode);
-            delete this._highlightNode;
-        }
-    },
-
-    /**
-     * @param {?WebInspector.DOMNode} node
-     */
-    _highlightNodeInternal: function(node)
-    {
-        this.removeEventListener(TreeOutline.Events.ElementExpanded, this._preventElementsCollapse, this);
-        this.removeEventListener(TreeOutline.Events.ElementCollapsed, this._preventElementsCollapse, this);
-
-        var treeElement = null;
-
-        if (this._currentHighlightedElement) {
-            var currentTreeElement = this._currentHighlightedElement;
-            while (currentTreeElement !== this._alreadyExpandedParentElement) {
-                if (currentTreeElement.expanded)
-                    currentTreeElement.collapse();
-
-                currentTreeElement = currentTreeElement.parent;
-            }
-        }
-
-        delete this._currentHighlightedElement;
-        delete this._alreadyExpandedParentElement;
-        if (node) {
-            var deepestExpandedParent = node;
-            while (deepestExpandedParent && (!deepestExpandedParent[this._treeElementSymbol] || !deepestExpandedParent[this._treeElementSymbol].expanded))
-                deepestExpandedParent = deepestExpandedParent.parentNode;
-
-            this._alreadyExpandedParentElement = deepestExpandedParent ? deepestExpandedParent[this._treeElementSymbol] : this.rootElement();
-            treeElement = this.createTreeElementFor(node);
-        }
-
-        this._currentHighlightedElement = treeElement;
-        this._setHoverEffect(treeElement);
-        if (treeElement) {
-            treeElement.reveal();
-            this.addEventListener(TreeOutline.Events.ElementExpanded, this._preventElementsCollapse, this);
-            this.addEventListener(TreeOutline.Events.ElementCollapsed, this._preventElementsCollapse, this);
-        }
-    },
-
-    _preventElementsCollapse: function()
-    {
-        delete this._currentHighlightedElement;
-        delete this._alreadyExpandedParentElement;
-        this.removeEventListener(TreeOutline.Events.ElementExpanded, this._preventElementsCollapse, this);
-        this.removeEventListener(TreeOutline.Events.ElementCollapsed, this._preventElementsCollapse, this);
     },
 
     /**
@@ -784,7 +713,7 @@ WebInspector.ElementsTreeOutline.prototype = {
     /**
      * @param {?TreeElement} treeElement
      */
-    _setHoverEffect: function (treeElement)
+    setHoverEffect: function (treeElement)
     {
         if (this._previousHoveredElement === treeElement)
             return;
@@ -806,7 +735,7 @@ WebInspector.ElementsTreeOutline.prototype = {
         if (element && this._previousHoveredElement === element)
             return;
 
-        this._setHoverEffect(element);
+        this.setHoverEffect(element);
 
         if (element instanceof WebInspector.ElementsTreeElement) {
             this._domModel.highlightDOMNodeWithConfig(element.node().id, { mode: "all", showInfo: !WebInspector.KeyboardShortcut.eventHasCtrlOrMeta(event) });
@@ -819,7 +748,7 @@ WebInspector.ElementsTreeOutline.prototype = {
 
     _onmouseleave: function(event)
     {
-        this._setHoverEffect(null);
+        this.setHoverEffect(null);
         WebInspector.DOMModel.hideDOMNodeHighlight();
     },
 

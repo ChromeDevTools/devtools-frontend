@@ -156,7 +156,8 @@
         "StylesSidebarPane.js",
         "ComputedStyleWidget.js",
         "ElementsPanel.js",
-        "ElementStatePaneWidget.js"
+        "ElementStatePaneWidget.js",
+        "ElementsTreeElementHighlighter.js"
     ],
     "resources": [
         "bezierEditor.css",

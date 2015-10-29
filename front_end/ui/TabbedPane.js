@@ -1368,20 +1368,7 @@ WebInspector.ExtensibleTabbedPaneController.prototype = {
     _tabSelected: function(event)
     {
         var tabId = /** @type {string} */ (event.data.tabId);
-        this.viewForId(tabId).then(viewLoaded.bind(this));
-
-        /**
-         * @this {WebInspector.ExtensibleTabbedPaneController}
-         * @param {?WebInspector.Widget} view
-         */
-        function viewLoaded(view)
-        {
-            if (!view)
-                return;
-            var shouldFocus = this._tabbedPane.visibleView.element.isSelfOrAncestor(WebInspector.currentFocusElement());
-            if (shouldFocus)
-                view.focus();
-        }
+        this.viewForId(tabId);
     },
 
     /**
@@ -1432,7 +1419,10 @@ WebInspector.ExtensibleTabbedPaneController.prototype = {
             this._views.set(id, view);
             if (this._viewCallback && view)
                 this._viewCallback(id, view);
+            var shouldFocus = this._tabbedPane.visibleView.element.isSelfOrAncestor(WebInspector.currentFocusElement());
             this._tabbedPane.changeTabView(id, view);
+            if (shouldFocus)
+                view.focus();
             return view;
         }
     }

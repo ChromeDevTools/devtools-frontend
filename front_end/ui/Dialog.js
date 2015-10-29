@@ -45,6 +45,8 @@ WebInspector.Dialog = function()
 
     this._wrapsContent = false;
     this._dimmed = false;
+    /** @type {!Map<!HTMLElement, number>} */
+    this._tabIndexMap = new Map();
 }
 
 /**
@@ -66,7 +68,10 @@ WebInspector.Dialog.prototype = {
             WebInspector.Dialog._instance.detach();
         WebInspector.Dialog._instance = this;
 
-        this._glassPane = new WebInspector.GlassPane(/** @type {!Document} */ (WebInspector.Dialog._modalHostView.element.ownerDocument), this._dimmed);
+        var document = /** @type {!Document} */ (WebInspector.Dialog._modalHostView.element.ownerDocument);
+        this._disableTabIndexOnElements(document);
+
+        this._glassPane = new WebInspector.GlassPane(document, this._dimmed);
         this._glassPane.element.addEventListener("click", this._onGlassPaneClick.bind(this), false);
         WebInspector.GlassPane.DefaultFocusedViewStack.push(this);
 
@@ -86,6 +91,8 @@ WebInspector.Dialog.prototype = {
         WebInspector.GlassPane.DefaultFocusedViewStack.pop();
         this._glassPane.dispose();
         delete this._glassPane;
+
+        this._restoreTabIndexOnElements();
 
         delete WebInspector.Dialog._instance;
     },
@@ -126,6 +133,31 @@ WebInspector.Dialog.prototype = {
     {
         if (this._wrapsContent)
             this._position();
+    },
+
+    /**
+     * @param {!Document} document
+     */
+    _disableTabIndexOnElements: function(document)
+    {
+        this._tabIndexMap.clear();
+        for (var node = document; node; node = node.traverseNextNode(document)) {
+            if (node instanceof HTMLElement) {
+                var element = /** @type {!HTMLElement} */  (node);
+                var tabIndex = element.tabIndex;
+                if (tabIndex >= 0) {
+                    this._tabIndexMap.set(element, tabIndex);
+                    element.tabIndex = -1;
+                }
+            }
+        }
+    },
+
+    _restoreTabIndexOnElements: function()
+    {
+        for (var element of this._tabIndexMap.keys())
+            element.tabIndex = this._tabIndexMap.get(element);
+        this._tabIndexMap.clear();
     },
 
     /**
@@ -178,9 +210,7 @@ WebInspector.Dialog.prototype = {
      */
     _onKeyDown: function(event)
     {
-        if (event.keyCode === WebInspector.KeyboardShortcut.Keys.Tab.code) {
-            event.preventDefault();
-        } else if (event.keyCode === WebInspector.KeyboardShortcut.Keys.Esc.code) {
+        if (event.keyCode === WebInspector.KeyboardShortcut.Keys.Esc.code) {
             event.consume(true);
             this.detach();
         }

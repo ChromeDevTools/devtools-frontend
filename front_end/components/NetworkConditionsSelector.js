@@ -143,6 +143,8 @@ WebInspector.NetworkConditionsSettingsTab = function()
 
     this._customSetting = WebInspector.moduleSetting("networkConditionsCustomProfiles");
     this._customSetting.addChangeListener(this._conditionsUpdated, this);
+
+    this.setDefaultFocusedElement(addButton);
 }
 
 WebInspector.NetworkConditionsSettingsTab.prototype = {

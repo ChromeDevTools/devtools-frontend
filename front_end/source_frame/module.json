@@ -71,7 +71,6 @@
         "../cm/codemirror.css",
         "cmdevtools.css",
         "fontView.css",
-        "imageView.css",
-        "resourceSourceFrame.css"
+        "imageView.css"
     ]
 }

@@ -59,36 +59,3 @@ WebInspector.ResourceSourceFrame.prototype = {
 
     __proto__: WebInspector.SourceFrame.prototype
 }
-
-/**
- * @constructor
- * @extends {WebInspector.VBox}
- * @param {!WebInspector.ContentProvider} resource
- */
-WebInspector.ResourceSourceFrameFallback = function(resource)
-{
-    WebInspector.VBox.call(this);
-    this.registerRequiredCSS("source_frame/resourceSourceFrame.css");
-    this._resource = resource;
-    this._content = this.element.createChild("div", "resource-source-frame-fallback monospace");
-}
-
-WebInspector.ResourceSourceFrameFallback.prototype = {
-    wasShown: function()
-    {
-        if (!this._contentRequested) {
-            this._contentRequested = true;
-            this._resource.requestContent(this._contentLoaded.bind(this));
-        }
-    },
-
-    /**
-     * @param {?string} content
-     */
-    _contentLoaded: function(content)
-    {
-        this._content.textContent = content;
-    },
-
-    __proto__: WebInspector.VBox.prototype
-}

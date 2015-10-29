@@ -38,8 +38,6 @@ WebInspector.RequestResponseView = function(request)
     WebInspector.RequestContentView.call(this, request);
 }
 
-WebInspector.RequestResponseView._maxFormattedResourceSize = 100000;
-
 WebInspector.RequestResponseView.prototype = {
     get sourceView()
     {
@@ -47,11 +45,6 @@ WebInspector.RequestResponseView.prototype = {
             return this._sourceView;
 
         var contentProvider = new WebInspector.RequestResponseView.ContentProvider(this.request);
-        if (this.request.resourceSize >= WebInspector.RequestResponseView._maxFormattedResourceSize) {
-            this._sourceView = new WebInspector.ResourceSourceFrameFallback(contentProvider);
-            return this._sourceView;
-        }
-
         var sourceFrame = new WebInspector.ResourceSourceFrame(contentProvider);
         sourceFrame.setHighlighterType(this.request.resourceType().canonicalMimeType() || this.request.mimeType);
         this._sourceView = sourceFrame;

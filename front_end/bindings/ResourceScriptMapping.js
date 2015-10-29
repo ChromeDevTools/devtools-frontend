@@ -306,6 +306,7 @@ WebInspector.ResourceScriptFile = function(resourceScriptMapping, uiSourceCode, 
         this._script = scripts[0];
 
     this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.WorkingCopyChanged, this._workingCopyChanged, this);
+    this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.WorkingCopyCommitted, this._workingCopyCommitted, this);
 }
 
 WebInspector.ResourceScriptFile.Events = {
@@ -321,31 +322,6 @@ WebInspector.ResourceScriptFile.prototype = {
     _hasScripts: function(scripts)
     {
         return this._script && this._script === scripts[0];
-    },
-
-    /**
-     * @param {function(?string,!DebuggerAgent.SetScriptSourceError=,!WebInspector.Script=)=} callback
-     */
-    commitLiveEdit: function(callback)
-    {
-        /**
-         * @param {?string} error
-         * @param {!DebuggerAgent.SetScriptSourceError=} errorData
-         * @this {WebInspector.ResourceScriptFile}
-         */
-        function innerCallback(error, errorData)
-        {
-            if (!error)
-                this._scriptSource = source;
-            this._update();
-            if (callback)
-                callback(error, errorData, this._script);
-        }
-        if (!this._script)
-            return;
-        var debuggerModel = this._resourceScriptMapping._debuggerModel;
-        var source = this._uiSourceCode.workingCopy();
-        debuggerModel.setScriptSource(this._script.scriptId, source, innerCallback.bind(this));
     },
 
     /**
@@ -371,6 +347,44 @@ WebInspector.ResourceScriptFile.prototype = {
     _workingCopyChanged: function(event)
     {
         this._update();
+    },
+
+    _workingCopyCommitted: function(event)
+    {
+        if (this._uiSourceCode.project().type() === WebInspector.projectTypes.Snippets)
+            return;
+        if (!this._script)
+            return;
+        var debuggerModel = this._resourceScriptMapping._debuggerModel;
+        var source = this._uiSourceCode.workingCopy();
+        debuggerModel.setScriptSource(this._script.scriptId, source, scriptSourceWasSet.bind(this));
+
+        /**
+         * @param {?string} error
+         * @param {!DebuggerAgent.SetScriptSourceError=} errorData
+         * @this {WebInspector.ResourceScriptFile}
+         */
+        function scriptSourceWasSet(error, errorData)
+        {
+            if (!error)
+                this._scriptSource = source;
+            this._update();
+
+            if (!error)
+                return;
+            var warningLevel = WebInspector.Console.MessageLevel.Warning;
+            if (!errorData) {
+                WebInspector.console.addMessage(WebInspector.UIString("LiveEdit failed: %s", error), warningLevel);
+                return;
+            }
+            var compileError = errorData.compileError;
+            if (compileError) {
+                var messageText = WebInspector.UIString("LiveEdit compile failed: %s", compileError.message);
+                this._uiSourceCode.addMessage(WebInspector.UISourceCode.Message.Level.Error, messageText, compileError.lineNumber - 1, compileError.columnNumber + 1);
+            } else {
+                WebInspector.console.addMessage(WebInspector.UIString("Unknown LiveEdit error: %s; %s", JSON.stringify(errorData), error), warningLevel);
+            }
+        }
     },
 
     _update: function()
@@ -455,6 +469,7 @@ WebInspector.ResourceScriptFile.prototype = {
     dispose: function()
     {
         this._uiSourceCode.removeEventListener(WebInspector.UISourceCode.Events.WorkingCopyChanged, this._workingCopyChanged, this);
+        this._uiSourceCode.removeEventListener(WebInspector.UISourceCode.Events.WorkingCopyCommitted, this._workingCopyCommitted, this);
     },
 
     /**

@@ -364,60 +364,12 @@ WebInspector.JavaScriptSourceFrame.prototype = {
             return;
         }
 
-        var liveEditError;
-        var liveEditErrorData;
-        var contextScript;
-        var succeededEdits = 0;
-        var failedEdits = 0;
-
-        /**
-         * @this {WebInspector.JavaScriptSourceFrame}
-         * @param {?string} error
-         * @param {!DebuggerAgent.SetScriptSourceError=} errorData
-         * @param {!WebInspector.Script=} script
-         */
-        function liveEditCallback(error, errorData, script)
-        {
-            this._scriptsPanel.setIgnoreExecutionLineEvents(false);
-            if (error) {
-                liveEditError = error;
-                liveEditErrorData = errorData;
-                contextScript = script;
-                ++failedEdits;
-            } else {
-                ++succeededEdits;
-            }
-
-            if (succeededEdits + failedEdits !== scriptFiles.length)
-                return;
-
-            if (!failedEdits)
-                return;
-
-            var warningLevel = WebInspector.Console.MessageLevel.Warning;
-            if (!liveEditErrorData) {
-                if (liveEditError)
-                    WebInspector.console.addMessage(WebInspector.UIString("LiveEdit failed: %s", liveEditError), warningLevel);
-                return;
-            }
-            var compileError = liveEditErrorData.compileError;
-            if (compileError) {
-                var messageText = WebInspector.UIString("LiveEdit compile failed: %s", compileError.message);
-                this.uiSourceCode().addMessage(WebInspector.UISourceCode.Message.Level.Error, messageText, compileError.lineNumber - 1, compileError.columnNumber + 1);
-            } else {
-                WebInspector.console.addMessage(WebInspector.UIString("Unknown LiveEdit error: %s; %s", JSON.stringify(liveEditErrorData), liveEditError), warningLevel);
-            }
-        }
-
         this._scriptsPanel.setIgnoreExecutionLineEvents(true);
-        this._hasCommittedLiveEdit = true;
-        var scriptFiles = this._scriptFileForTarget.valuesArray();
-        for (var i = 0; i < scriptFiles.length; ++i)
-            scriptFiles[i].commitLiveEdit(liveEditCallback.bind(this));
     },
 
     _didMergeToVM: function()
     {
+        this._scriptsPanel.setIgnoreExecutionLineEvents(false);
         if (this._supportsEnabledBreakpointsWhileEditing())
             return;
         this._updateDivergedInfobar();
@@ -426,6 +378,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
 
     _didDivergeFromVM: function()
     {
+        this._scriptsPanel.setIgnoreExecutionLineEvents(false);
         if (this._supportsEnabledBreakpointsWhileEditing())
             return;
         this._updateDivergedInfobar();
@@ -459,10 +412,10 @@ WebInspector.JavaScriptSourceFrame.prototype = {
             hasDivergedScript = hasDivergedScript || scriptFiles[i].hasDivergedFromVM();
 
         if (this._divergedInfobar) {
-            if (!hasDivergedScript || this._hasCommittedLiveEdit)
+            if (!hasDivergedScript)
                 this._hideDivergedInfobar();
         } else {
-            if (hasDivergedScript && !this._uiSourceCode.isDirty() && !this._hasCommittedLiveEdit)
+            if (hasDivergedScript && !this._uiSourceCode.isDirty())
                 this._showDivergedInfobar();
         }
     },
@@ -995,7 +948,6 @@ WebInspector.JavaScriptSourceFrame.prototype = {
         if (newScriptFile)
             this._scriptFileForTarget.set(target, newScriptFile);
 
-        delete this._hasCommittedLiveEdit;
         this._updateDivergedInfobar();
 
         if (newScriptFile) {

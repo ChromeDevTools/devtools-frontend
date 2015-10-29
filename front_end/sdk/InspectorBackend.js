@@ -461,11 +461,6 @@ InspectorBackendClass.Connection.prototype = {
                 this.runAfterPendingDispatches();
             return;
         } else {
-            if (messageObject.error) {
-                if (messageObject.error.code !== InspectorBackendClass._DevToolsStubErrorCode)
-                    InspectorBackendClass.reportProtocolError("Generic message format error", messageObject);
-                return;
-            }
             var method = messageObject.method.split(".");
             var domainName = method[0];
             if (!(domainName in this._dispatchers)) {
@@ -713,7 +708,7 @@ InspectorBackendClass.StubConnection.prototype = {
     _respondWithError: function(messageObject)
     {
         var error = { message: "This is a stub connection, can't dispatch message.", code:  InspectorBackendClass._DevToolsStubErrorCode, data: messageObject };
-        this.dispatch({error: error});
+        this.dispatch({ id: messageObject.id, error: error });
     },
 
     __proto__: InspectorBackendClass.Connection.prototype
@@ -932,7 +927,7 @@ InspectorBackendClass.AgentPrototype.prototype = {
      */
     dispatchResponse: function(messageObject, methodName, callback)
     {
-        if (messageObject.error && messageObject.error.code !== InspectorBackendClass._DevToolsErrorCode && !InspectorBackendClass.Options.suppressRequestErrors && !this._suppressErrorLogging) {
+        if (messageObject.error && messageObject.error.code !== InspectorBackendClass._DevToolsErrorCode && messageObject.error.code !== InspectorBackendClass._DevToolsStubErrorCode && !InspectorBackendClass.Options.suppressRequestErrors && !this._suppressErrorLogging) {
             var id = InspectorFrontendHost.isUnderTest() ? "##" : messageObject.id;
             console.error("Request with id = " + id + " failed. " + JSON.stringify(messageObject.error));
         }

@@ -113,9 +113,6 @@ WebInspector.ResourceTreeModel.prototype = {
     _processCachedResources: function(error, mainFramePayload)
     {
         if (error) {
-            // FIXME: support targets that don't have resourceTreeModel.
-            if (this.target().isPage() || this.target().isServiceWorker())
-                console.error(JSON.stringify(error));
             this._cachedResourcesProcessed = true;
             return;
         }

@@ -69,7 +69,7 @@
         {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "network.show-config",
-            "title": "Network configuration",
+            "title": "Network conditions",
             "className": "WebInspector.NetworkConfigView.ShowActionDelegate"
         },
         {
@@ -81,7 +81,7 @@
         {
             "type": "drawer-view",
             "name": "network.config",
-            "title": "Networking",
+            "title": "Network conditions",
             "persistence": "closeable",
             "order": 40,
             "className": "WebInspector.NetworkConfigView"

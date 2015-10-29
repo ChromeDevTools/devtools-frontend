@@ -700,6 +700,8 @@ WebInspector.MultitargetNetworkManager = function()
     this._blockedSetting.addChangeListener(this._updateBlockedURLs, this);
     this._blockedSetting.set([]);
     this._updateBlockedURLs();
+
+    this._userAgentOverride = "";
 }
 
 WebInspector.MultitargetNetworkManager.Events = {

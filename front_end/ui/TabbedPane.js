@@ -1292,7 +1292,7 @@ WebInspector.ExtensibleTabbedPaneController.prototype = {
     {
         var toolbar = new WebInspector.Toolbar();
         toolbar.element.classList.add("drawer-toolbar");
-        this._moreTabsButton = new WebInspector.ToolbarMenuButton(WebInspector.UIString("Open tab"), "menu-toolbar-item", this._appendTabsToMenu.bind(this));
+        this._moreTabsButton = new WebInspector.ToolbarMenuButton("", "menu-toolbar-item", this._appendTabsToMenu.bind(this));
         toolbar.appendToolbarItem(this._moreTabsButton);
         this._tabbedPane.insertBeforeTabStrip(toolbar.element);
         this._tabbedPane.disableOverflowMenu();

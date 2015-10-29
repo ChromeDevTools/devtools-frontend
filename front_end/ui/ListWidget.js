@@ -390,7 +390,7 @@ WebInspector.ListWidget.Editor.prototype = {
         this._cancel = cancel;
 
         this._commitButton.textContent = commitButtonTitle;
-        this._commitButton.scrollIntoView();
+        this.element.scrollIntoView();
         if (this._controls.length)
             this._controls[0].focus();
         this._validateControls(true);

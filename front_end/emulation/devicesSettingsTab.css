@@ -31,30 +31,19 @@
 
 .devices-settings-tab .devices-list {
     width: 350px;
-    overflow-y: auto;
-    margin: 10px 0;
-    border: 1px solid rgb(231, 231, 231);
-    flex: auto 0 1;
+    margin-top: 10px;
 }
 
-.devices-settings-tab .devices-custom-separator {
-    background: rgb(231, 231, 231);
-    height: 1px;
-}
-
-.devices-settings-tab .devices-list-item {
-    padding: 3px 0 3px 10px;
+.devices-list-item {
+    padding: 3px 5px 3px 5px;
     height: 30px;
     display: flex;
     align-items: center;
+    flex: auto 1 1;
     cursor: pointer;
 }
 
-.devices-settings-tab .devices-list-item:hover {
-    background: hsl(0, 0%, 85%);
-}
-
-.devices-settings-tab .devices-list-checkbox {
+.devices-list-checkbox {
     height: 12px;
     width: 12px;
     margin: 3px 5px 2px 2px;
@@ -62,7 +51,7 @@
     pointer-events: none;
 }
 
-.devices-settings-tab .devices-list-title {
+.devices-list-title {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -71,86 +60,28 @@
     color: #aaa;
 }
 
-.devices-settings-tab .device-list-item-show .devices-list-title {
+.device-list-item-show .devices-list-title {
     color: #222;
 }
 
-.devices-settings-tab .devices-list-remove,
-.devices-settings-tab .devices-list-edit {
-    background-image: url(Images/toolbarButtonGlyphs.png);
-    background-size: 352px 168px;
-    width: 32px;
-    height: 24px;
-    opacity: 0.5;
-    cursor: pointer;
-    flex: none;
-    visibility: hidden;
-}
-
-.devices-settings-tab .devices-list:not(.devices-list-editing) .devices-list-item:hover .devices-list-remove,
-.devices-settings-tab .devices-list-item:hover .devices-list-edit {
-    visibility: visible;
-}
-
-.devices-settings-tab .devices-list-remove:hover,
-.devices-settings-tab .devices-list-edit:hover {
-    opacity: 0.7;
-}
-
-@media (-webkit-min-device-pixel-ratio: 1.5) {
-.devices-settings-tab .devices-list-remove,
-.devices-settings-tab .devices-list-edit {
-    background-image: url(Images/toolbarButtonGlyphs_2x.png);
-}
-} /* media */
-
-.devices-settings-tab .devices-list-remove {
-    background-position: -128px -24px;
-}
-
-.devices-settings-tab .devices-list-edit {
-    background-position: -224px -72px;
-}
-
-.devices-settings-tab .devices-edit-container {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    flex: none;
-    padding: 10px 20px 0 10px;
-    background: hsl(0, 0%, 95%);
-}
-
-.devices-settings-tab .devices-edit-checkbox {
-    height: 12px;
-    width: 12px;
-    margin: 3px 5px 2px 2px;
-    flex: none;
-    cursor: pointer;
-}
-
-.devices-settings-tab .devices-edit-fields {
+.devices-edit-fields {
     flex: auto;
     display: flex;
     flex-direction: column;
     align-items: stretch;
+    margin-bottom: 5px;
 }
 
-.devices-settings-tab .devices-edit-fields input {
-    margin-right: 10px;
+.devices-edit-fields input {
+    flex: auto;
+    margin: 8px 5px 0 5px;
+    height: 22px;
+    border: 1px solid rgb(213, 213, 213);
+    border-radius: 2px;
+    color: #444444;
+    padding: 3px;
 }
 
-.devices-settings-tab .devices-edit-fields input.error-input {
-    outline: auto 2px red;
-    background-color: white;
+.devices-edit-fields input.device-edit-small {
+    flex: 0 0 80px;
 }
-
-.devices-settings-tab .devices-edit-fields > * {
-    flex: none;
-    margin-bottom: 10px;
-}
-
-.devices-settings-tab .devices-edit-buttons > button {
-    margin-right: 10px;
-}
-

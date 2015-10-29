@@ -865,7 +865,7 @@ WebInspector.ExtensionServer.prototype = {
          */
         function addFirstEventListener()
         {
-            WebInspector.workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeContentCommitted, handler, this);
+            WebInspector.workspace.addEventListener(WebInspector.Workspace.Events.WorkingCopyCommittedByUser, handler, this);
             WebInspector.workspace.setHasResourceContentTrackingExtensions(true);
         }
 
@@ -875,7 +875,7 @@ WebInspector.ExtensionServer.prototype = {
         function removeLastEventListener()
         {
             WebInspector.workspace.setHasResourceContentTrackingExtensions(false);
-            WebInspector.workspace.removeEventListener(WebInspector.Workspace.Events.UISourceCodeContentCommitted, handler, this);
+            WebInspector.workspace.removeEventListener(WebInspector.Workspace.Events.WorkingCopyCommittedByUser, handler, this);
         }
 
         this._registerSubscriptionHandler(WebInspector.extensionAPI.Events.ResourceContentCommitted,

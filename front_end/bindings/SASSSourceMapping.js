@@ -48,7 +48,7 @@ WebInspector.SASSSourceMapping = function(cssModel, workspace, networkMapping, n
     WebInspector.moduleSetting("cssSourceMapsEnabled").addChangeListener(this._toggleSourceMapSupport, this);
     this._cssModel.addEventListener(WebInspector.CSSStyleModel.Events.StyleSheetChanged, this._styleSheetChanged, this);
     this._workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
-    this._workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeContentCommitted, this._uiSourceCodeContentCommitted, this);
+    this._workspace.addEventListener(WebInspector.Workspace.Events.WorkingCopyCommitted, this._uiSourceCodeContentCommitted, this);
     this._workspace.addEventListener(WebInspector.Workspace.Events.ProjectRemoved, this._reset, this);
     this._networkMapping = networkMapping;
 }

@@ -558,8 +558,9 @@ WebInspector.Workspace = function()
 WebInspector.Workspace.Events = {
     UISourceCodeAdded: "UISourceCodeAdded",
     UISourceCodeRemoved: "UISourceCodeRemoved",
-    UISourceCodeContentCommitted: "UISourceCodeContentCommitted",
-    UISourceCodeWorkingCopyChanged: "UISourceCodeWorkingCopyChanged",
+    WorkingCopyChanged: "WorkingCopyChanged",
+    WorkingCopyCommitted: "WorkingCopyCommitted",
+    WorkingCopyCommittedByUser: "WorkingCopyCommittedByUser",
     ProjectAdded: "ProjectAdded",
     ProjectRemoved: "ProjectRemoved"
 }

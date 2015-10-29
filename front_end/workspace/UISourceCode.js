@@ -279,7 +279,7 @@ WebInspector.UISourceCode.prototype = {
         {
             if (updatedContent === null) {
                 var workingCopy = this.workingCopy();
-                this._contentCommitted("", true);
+                this._contentCommitted("", true, false);
                 this.setWorkingCopy(workingCopy);
                 this._terminateContentCheck();
                 return;
@@ -296,14 +296,14 @@ WebInspector.UISourceCode.prototype = {
             }
 
             if (!this.isDirty() || this._workingCopy === updatedContent) {
-                this._contentCommitted(updatedContent, true);
+                this._contentCommitted(updatedContent, true, false);
                 this._terminateContentCheck();
                 return;
             }
 
             var shouldUpdate = window.confirm(WebInspector.UIString("This file was changed externally. Would you like to reload it?"));
             if (shouldUpdate)
-                this._contentCommitted(updatedContent, true);
+                this._contentCommitted(updatedContent, true, false);
             else
                 this._lastAcceptedContent = updatedContent;
             this._terminateContentCheck();
@@ -334,14 +334,15 @@ WebInspector.UISourceCode.prototype = {
             WebInspector.fileManager.close(this._originURL);
             wasPersisted = true;
         }
-        this._contentCommitted(content, wasPersisted);
+        this._contentCommitted(content, wasPersisted, true);
     },
 
     /**
      * @param {string} content
      * @param {boolean} wasPersisted
+     * @param {boolean} committedByUser
      */
-    _contentCommitted: function(content, wasPersisted)
+    _contentCommitted: function(content, wasPersisted, committedByUser)
     {
         delete this._lastAcceptedContent;
         this._content = content;
@@ -356,7 +357,9 @@ WebInspector.UISourceCode.prototype = {
         this._innerResetWorkingCopy();
         this._hasUnsavedCommittedChanges = !wasPersisted;
         this.dispatchEventToListeners(WebInspector.UISourceCode.Events.WorkingCopyCommitted);
-        this._project.workspace().dispatchEventToListeners(WebInspector.Workspace.Events.UISourceCodeContentCommitted, { uiSourceCode: this, content: content });
+        this._project.workspace().dispatchEventToListeners(WebInspector.Workspace.Events.WorkingCopyCommitted, { uiSourceCode: this, content: content });
+        if (committedByUser)
+            this._project.workspace().dispatchEventToListeners(WebInspector.Workspace.Events.WorkingCopyCommittedByUser, { uiSourceCode: this, content: content });
     },
 
     saveAs: function()
@@ -371,7 +374,7 @@ WebInspector.UISourceCode.prototype = {
         function callback(accepted)
         {
             if (accepted)
-                this._contentCommitted(this.workingCopy(), true);
+                this._contentCommitted(this.workingCopy(), true, true);
         }
     },
 
@@ -466,14 +469,14 @@ WebInspector.UISourceCode.prototype = {
         this._workingCopy = newWorkingCopy;
         delete this._workingCopyGetter;
         this.dispatchEventToListeners(WebInspector.UISourceCode.Events.WorkingCopyChanged);
-        this._project.workspace().dispatchEventToListeners(WebInspector.Workspace.Events.UISourceCodeWorkingCopyChanged, { uiSourceCode: this });
+        this._project.workspace().dispatchEventToListeners(WebInspector.Workspace.Events.WorkingCopyChanged, { uiSourceCode: this });
     },
 
     setWorkingCopyGetter: function(workingCopyGetter)
     {
         this._workingCopyGetter = workingCopyGetter;
         this.dispatchEventToListeners(WebInspector.UISourceCode.Events.WorkingCopyChanged);
-        this._project.workspace().dispatchEventToListeners(WebInspector.Workspace.Events.UISourceCodeWorkingCopyChanged, { uiSourceCode: this  });
+        this._project.workspace().dispatchEventToListeners(WebInspector.Workspace.Events.WorkingCopyChanged, { uiSourceCode: this  });
     },
 
     removeWorkingCopyGetter: function()

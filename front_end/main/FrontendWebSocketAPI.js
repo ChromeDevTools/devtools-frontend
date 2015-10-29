@@ -16,15 +16,15 @@ WebInspector.FrontendWebSocketAPI = function()
 WebInspector.FrontendWebSocketAPI.prototype = {
     _onAttach: function()
     {
-        WebInspector.workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeContentCommitted, this._workingCopyCommitted, this);
-        WebInspector.workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeWorkingCopyChanged, this._workingCopyChanged, this);
+        WebInspector.workspace.addEventListener(WebInspector.Workspace.Events.WorkingCopyCommittedByUser, this._workingCopyCommitted, this);
+        WebInspector.workspace.addEventListener(WebInspector.Workspace.Events.WorkingCopyChanged, this._workingCopyChanged, this);
         WebInspector.Linkifier.setLinkHandler(this);
     },
 
     _onDetach: function()
     {
-        WebInspector.workspace.removeEventListener(WebInspector.Workspace.Events.UISourceCodeContentCommitted, this._workingCopyCommitted, this);
-        WebInspector.workspace.removeEventListener(WebInspector.Workspace.Events.UISourceCodeWorkingCopyChanged, this._workingCopyChanged, this);
+        WebInspector.workspace.removeEventListener(WebInspector.Workspace.Events.WorkingCopyCommittedByUser, this._workingCopyCommitted, this);
+        WebInspector.workspace.removeEventListener(WebInspector.Workspace.Events.WorkingCopyChanged, this._workingCopyChanged, this);
         WebInspector.Linkifier.setLinkHandler(null);
     },
 

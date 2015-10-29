@@ -54,7 +54,7 @@ WebInspector.RevisionHistoryView = function()
     }
 
     WebInspector.workspace.uiSourceCodes().forEach(populateRevisions.bind(this));
-    WebInspector.workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeContentCommitted, this._revisionAdded, this);
+    WebInspector.workspace.addEventListener(WebInspector.Workspace.Events.WorkingCopyCommittedByUser, this._revisionAdded, this);
     WebInspector.workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
     WebInspector.workspace.addEventListener(WebInspector.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
 }

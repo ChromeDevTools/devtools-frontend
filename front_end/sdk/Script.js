@@ -202,8 +202,6 @@ WebInspector.Script.prototype = {
                 this._source = newSource;
             var needsStepIn = !!stackChanged;
             callback(error, errorData, callFrames, asyncStackTrace, needsStepIn);
-            if (!error)
-                this.dispatchEventToListeners(WebInspector.Script.Events.ScriptEdited, newSource);
         }
 
         newSource = WebInspector.Script._trimSourceURLComment(newSource);

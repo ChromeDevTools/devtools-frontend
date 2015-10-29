@@ -385,16 +385,29 @@ WebInspector.StylesSidebarPane.prototype = {
 
     /**
      * @override
+     * @param {!WebInspector.DOMNode} node
      */
-    onDOMModelChanged: function()
+    onDOMModelChanged: function(node)
     {
         // Any attribute removal or modification can affect the styles of "related" nodes.
         // Do not touch the styles if they are being edited.
         if (this._isEditingStyle || this._userOperation)
             return;
 
+        if (!this._canAffectCurrentStyles(node))
+            return;
+
         this._resetCache();
         this.update();
+    },
+
+    /**
+     * @param {?WebInspector.DOMNode} node
+     */
+    _canAffectCurrentStyles: function(node)
+    {
+        var currentNode = this.node();
+        return currentNode && (currentNode === node || node.parentNode === currentNode.parentNode || node.isAncestor(currentNode));
     },
 
     /**

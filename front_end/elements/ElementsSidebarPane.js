@@ -99,7 +99,7 @@ WebInspector.ElementsSidebarPane.prototype = {
                 this._cssModel.addEventListener(WebInspector.CSSStyleModel.Events.MediaQueryResultChanged, this.onCSSModelChanged, this),
                 this._cssModel.addEventListener(WebInspector.CSSStyleModel.Events.PseudoStateForced, this.onCSSModelChanged, this),
                 this._cssModel.addEventListener(WebInspector.CSSStyleModel.Events.ModelWasEnabled, this.onCSSModelChanged, this),
-                domModel.addEventListener(WebInspector.DOMModel.Events.DOMMutated, this.onDOMModelChanged, this),
+                domModel.addEventListener(WebInspector.DOMModel.Events.DOMMutated, this._domModelChanged, this),
                 resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.FrameResized, this._onFrameResized, this),
             ];
         }
@@ -125,7 +125,19 @@ WebInspector.ElementsSidebarPane.prototype = {
         this._frameResizedTimer = setTimeout(refreshContents.bind(this), 100);
     },
 
-    onDOMModelChanged: function() { },
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _domModelChanged: function(event)
+    {
+        var node = /** @type {!WebInspector.DOMNode} */ (event.data);
+        this.onDOMModelChanged(node)
+    },
+
+    /**
+     * @param {!WebInspector.DOMNode} node
+     */
+    onDOMModelChanged: function(node) { },
 
     onCSSModelChanged: function() { },
 

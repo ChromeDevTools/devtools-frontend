@@ -1151,24 +1151,28 @@ WebInspector.DOMModel.cancelSearch = function()
 }
 
 WebInspector.DOMModel.prototype = {
-    _scheduleMutationEvent: function()
+    /**
+     * @param {!WebInspector.DOMNode} node
+     */
+    _scheduleMutationEvent: function(node)
     {
         if (!this.hasEventListeners(WebInspector.DOMModel.Events.DOMMutated))
             return;
 
         this._lastMutationId = (this._lastMutationId || 0) + 1;
-        Promise.resolve().then(callObserve.bind(this, this._lastMutationId));
+        Promise.resolve().then(callObserve.bind(this, node, this._lastMutationId));
 
         /**
          * @this {WebInspector.DOMModel}
+         * @param {!WebInspector.DOMNode} node
          * @param {number} mutationId
          */
-        function callObserve(mutationId)
+        function callObserve(node, mutationId)
         {
             if (!this.hasEventListeners(WebInspector.DOMModel.Events.DOMMutated) || this._lastMutationId !== mutationId)
                 return;
 
-            this.dispatchEventToListeners(WebInspector.DOMModel.Events.DOMMutated);
+            this.dispatchEventToListeners(WebInspector.DOMModel.Events.DOMMutated, node);
         }
     },
 
@@ -1332,7 +1336,7 @@ WebInspector.DOMModel.prototype = {
 
         node._setAttribute(name, value);
         this.dispatchEventToListeners(WebInspector.DOMModel.Events.AttrModified, { node: node, name: name });
-        this._scheduleMutationEvent();
+        this._scheduleMutationEvent(node);
     },
 
     /**
@@ -1346,7 +1350,7 @@ WebInspector.DOMModel.prototype = {
             return;
         node._removeAttribute(name);
         this.dispatchEventToListeners(WebInspector.DOMModel.Events.AttrRemoved, { node: node, name: name });
-        this._scheduleMutationEvent();
+        this._scheduleMutationEvent(node);
     },
 
     /**
@@ -1379,7 +1383,7 @@ WebInspector.DOMModel.prototype = {
             if (node) {
                 if (node._setAttributesPayload(attributes)) {
                     this.dispatchEventToListeners(WebInspector.DOMModel.Events.AttrModified, { node: node, name: "style" });
-                    this._scheduleMutationEvent();
+                    this._scheduleMutationEvent(node);
                 }
             }
         }
@@ -1402,7 +1406,7 @@ WebInspector.DOMModel.prototype = {
         var node = this._idToDOMNode[nodeId];
         node._nodeValue = newValue;
         this.dispatchEventToListeners(WebInspector.DOMModel.Events.CharacterDataModified, node);
-        this._scheduleMutationEvent();
+        this._scheduleMutationEvent(node);
     },
 
     /**
@@ -1467,7 +1471,7 @@ WebInspector.DOMModel.prototype = {
         var node = this._idToDOMNode[nodeId];
         node._childNodeCount = newValue;
         this.dispatchEventToListeners(WebInspector.DOMModel.Events.ChildNodeCountUpdated, node);
-        this._scheduleMutationEvent();
+        this._scheduleMutationEvent(node);
     },
 
     /**
@@ -1482,7 +1486,7 @@ WebInspector.DOMModel.prototype = {
         var node = parent._insertChild(prev, payload);
         this._idToDOMNode[node.id] = node;
         this.dispatchEventToListeners(WebInspector.DOMModel.Events.NodeInserted, node);
-        this._scheduleMutationEvent();
+        this._scheduleMutationEvent(node);
     },
 
     /**
@@ -1496,7 +1500,7 @@ WebInspector.DOMModel.prototype = {
         parent._removeChild(node);
         this._unbind(node);
         this.dispatchEventToListeners(WebInspector.DOMModel.Events.NodeRemoved, {node: node, parent: parent});
-        this._scheduleMutationEvent();
+        this._scheduleMutationEvent(node);
     },
 
     /**
@@ -1513,7 +1517,7 @@ WebInspector.DOMModel.prototype = {
         this._idToDOMNode[node.id] = node;
         host._shadowRoots.unshift(node);
         this.dispatchEventToListeners(WebInspector.DOMModel.Events.NodeInserted, node);
-        this._scheduleMutationEvent();
+        this._scheduleMutationEvent(node);
     },
 
     /**
@@ -1531,7 +1535,7 @@ WebInspector.DOMModel.prototype = {
         host._removeChild(root);
         this._unbind(root);
         this.dispatchEventToListeners(WebInspector.DOMModel.Events.NodeRemoved, {node: root, parent: host});
-        this._scheduleMutationEvent();
+        this._scheduleMutationEvent(root);
     },
 
     /**
@@ -1549,7 +1553,7 @@ WebInspector.DOMModel.prototype = {
         console.assert(!parent._pseudoElements.get(node.pseudoType()));
         parent._pseudoElements.set(node.pseudoType(), node);
         this.dispatchEventToListeners(WebInspector.DOMModel.Events.NodeInserted, node);
-        this._scheduleMutationEvent();
+        this._scheduleMutationEvent(node);
     },
 
     /**
@@ -1567,7 +1571,7 @@ WebInspector.DOMModel.prototype = {
         parent._removeChild(pseudoElement);
         this._unbind(pseudoElement);
         this.dispatchEventToListeners(WebInspector.DOMModel.Events.NodeRemoved, {node: pseudoElement, parent: parent});
-        this._scheduleMutationEvent();
+        this._scheduleMutationEvent(pseudoElement);
     },
 
     /**
@@ -1581,7 +1585,7 @@ WebInspector.DOMModel.prototype = {
             return;
         insertionPoint._setDistributedNodePayloads(distributedNodes);
         this.dispatchEventToListeners(WebInspector.DOMModel.Events.DistributedNodesChanged, insertionPoint);
-        this._scheduleMutationEvent();
+        this._scheduleMutationEvent(insertionPoint);
     },
 
     /**

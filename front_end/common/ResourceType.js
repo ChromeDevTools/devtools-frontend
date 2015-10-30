@@ -208,5 +208,8 @@ WebInspector.ResourceType.mimeTypesForExtensions = {
     // ClojureScript
     "cljs": "text/x-clojure",
     "cljc": "text/x-clojure",
-    "cljx": "text/x-clojure"
+    "cljx": "text/x-clojure",
+
+    // Stylus
+    "styl": "text/x-styl"
 }

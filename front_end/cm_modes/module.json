@@ -70,6 +70,14 @@
             "mimeTypes": [
                 "text/x-clojure"
             ]
+        },
+        {
+            "type": "@WebInspector.CodeMirrorMimeMode",
+            "className": "WebInspector.DefaultCodeMirrorMimeMode",
+            "fileName": "stylus.js",
+            "mimeTypes": [
+                "text/x-styl"
+            ]
         }
     ],
     "dependencies": [
@@ -85,6 +93,7 @@
         "python.js",
         "shell.js",
         "livescript.js",
-        "clojure.js"
+        "clojure.js",
+        "stylus.js"
     ]
 }

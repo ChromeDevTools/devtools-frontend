@@ -3121,6 +3121,24 @@
                 ],
                 "description": "Information about amount of glyphs that were rendered with given font.",
                 "hidden": true
+            },
+            {
+                "id": "CSSKeyframesRule",
+                "type": "object",
+                "properties": [
+                    { "name": "animationName", "type": "string", "description": "Animation name." },
+                    { "name": "keyframes", "type": "array", "items": { "$ref": "CSSKeyframeRule" }, "description": "List of keyframes." }
+                ],
+                "description": "CSS keyframes rule representation."
+            },
+            {
+                "id": "CSSKeyframeRule",
+                "type": "object",
+                "properties": [
+                    { "name": "keyText", "type": "string", "description": "Associated key text." },
+                    { "name": "style", "$ref": "CSSStyle", "description": "Associated style declaration." }
+                ],
+                "description": "CSS keyframe rule representation."
             }
         ],
         "commands": [
@@ -3178,6 +3196,16 @@
                 ],
                 "description": "Requests information about platform fonts which we used to render child TextNodes in the given node.",
                 "hidden": true
+            },
+            {
+                "name": "getCSSAnimationsForNode",
+                "parameters": [
+                    { "name": "nodeId", "$ref": "DOM.NodeId" }
+                ],
+                "returns": [
+                    { "name": "cssKeyframesRules", "type": "array", "items": { "$ref": "CSSKeyframesRule" }, "optional": true, "description": "A list of CSS keyframed animations matching this node." }
+                ],
+                "description": "Returns all CSS keyframed animations mtaching this node."
             },
             {
                 "name": "getStyleSheetText",

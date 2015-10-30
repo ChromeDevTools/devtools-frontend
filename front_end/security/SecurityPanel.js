@@ -712,9 +712,8 @@ WebInspector.SecurityOriginView = function(panel, origin, originState)
         originState.certificateDetailsPromise.then(displayCertificateDetails.bind(this), displayCertificateDetailsUnavailable);
 
         var noteSection = this.element.createChild("div", "origin-view-section");
-        noteSection.createChild("div", "origin-view-section-title").textContent = WebInspector.UIString("Development Note");
         // TODO(lgarron): Fix the issue and then remove this section. See comment in SecurityPanel._processRequest().
-        noteSection.createChild("div").textContent = WebInspector.UIString("At the moment, this view only shows security details from the first connection made to %s", origin);
+        noteSection.createChild("div").textContent = WebInspector.UIString("The security details above are from the first inspected response.");
     } else {
         var notSecureSection = this.element.createChild("div", "origin-view-section");
         notSecureSection.createChild("div", "origin-view-section-title").textContent = WebInspector.UIString("Not Secure");

@@ -11,7 +11,7 @@
 }
 
 .security-origin-view .origin-view-section {
-    padding: 0.5em 1.5em 1.5em;
+    padding: 1.5em 1.5em 1.5em;
     border-bottom: 1px solid rgb(230, 230, 230);
 }
 
@@ -34,7 +34,6 @@
 .security-origin-view .origin-view-section-title {
     font-weight: bold;
     font-size: 1em;
-    margin-top: 0.5em;
     margin-bottom: 0.25em;
 }
 

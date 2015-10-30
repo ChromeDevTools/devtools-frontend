@@ -226,11 +226,6 @@ DevToolsHost.showContextMenuAtPoint = function(x, y, items, document) { }
 /**
  * @param {string} message
  */
-DevToolsHost.sendMessageToBackend = function(message) { }
-
-/**
- * @param {string} message
- */
 DevToolsHost.sendMessageToEmbedder = function(message) { }
 
 /**

@@ -507,7 +507,7 @@ InspectorFrontendHostImpl.prototype = {
      */
     sendMessageToBackend: function(message)
     {
-        DevToolsHost.sendMessageToBackend(message);
+        DevToolsAPI.sendMessageToEmbedder("dispatchProtocolMessage", [message], null);
     },
 
     /**

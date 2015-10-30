@@ -43,14 +43,6 @@ WebInspector.TimelineTreeView = function(model)
 /**
  * @enum {string}
  */
-WebInspector.TimelineTreeView.Mode = {
-    TopDown: "TopDown",
-    BottomUp: "BottomUp"
-}
-
-/**
- * @enum {string}
- */
 WebInspector.TimelineTreeView.GroupBy = {
     None: "None",
     Category: "Category",
@@ -82,13 +74,6 @@ WebInspector.TimelineTreeView.prototype = {
     _createToolbar: function()
     {
         var panelToolbar = new WebInspector.Toolbar(this.element);
-        panelToolbar.appendToolbarItem(new WebInspector.ToolbarText(WebInspector.UIString("View")));
-
-        this._modeCombobox = new WebInspector.ToolbarComboBox(this._onTreeModeChanged.bind(this));
-        this._modeCombobox.addOption(this._modeCombobox.createOption(WebInspector.UIString("Costly Functions"), "", WebInspector.TimelineTreeView.Mode.BottomUp));
-        this._modeCombobox.addOption(this._modeCombobox.createOption(WebInspector.UIString("Call Tree"), "", WebInspector.TimelineTreeView.Mode.TopDown));
-        panelToolbar.appendToolbarItem(this._modeCombobox);
-
         this._groupByCombobox = new WebInspector.ToolbarComboBox(this._onGroupByChanged.bind(this));
         /**
          * @param {string} name
@@ -122,11 +107,6 @@ WebInspector.TimelineTreeView.prototype = {
         return this._linkifier.linkifyScriptLocation(this._model.target(), scriptId, url, lineNumber, columnNumber);
     },
 
-    _onTreeModeChanged: function()
-    {
-        this._refreshTree();
-    },
-
     _onGroupByChanged: function()
     {
         this._groupBySetting.set(this._groupByCombobox.selectedOption().value);
@@ -137,11 +117,7 @@ WebInspector.TimelineTreeView.prototype = {
     {
         this._linkifier.reset();
         this.dataGrid.rootNode().removeChildren();
-        var topDown = WebInspector.TimelineModel.buildTopDownTree(
-            this._model.mainThreadEvents(), this._startTime, this._endTime, this._filters, WebInspector.TimelineTreeView.eventId);
-        var isTopDown = this._modeCombobox.selectedOption().value === WebInspector.TimelineTreeView.Mode.TopDown;
-        var tree = isTopDown ? this._preformTopDownTreeGrouping(topDown) : this._buildBottomUpTree(topDown);
-        this.dataGrid.markColumnAsSortedBy(isTopDown ? "total" : "self", WebInspector.DataGrid.Order.Descending);
+        var tree = this._buildTree();
         var maxSelfTime = 0;
         var maxTotalTime = 0;
         for (var child of tree.children.values()) {
@@ -150,46 +126,18 @@ WebInspector.TimelineTreeView.prototype = {
         }
         for (var child of tree.children.values()) {
             // Exclude the idle time off the total calculation.
-            var gridNode = new WebInspector.TimelineTreeView.GridNode(child, topDown.totalTime, maxSelfTime, maxTotalTime, this);
+            var gridNode = new WebInspector.TimelineTreeView.GridNode(child, tree.totalTime, maxSelfTime, maxTotalTime, this);
             this.dataGrid.insertChild(gridNode);
         }
         this._sortingChanged();
     },
 
     /**
-     * @param {!WebInspector.TimelineModel.ProfileTreeNode} topDownTree
      * @return {!WebInspector.TimelineModel.ProfileTreeNode}
      */
-    _preformTopDownTreeGrouping: function(topDownTree)
+    _buildTree: function()
     {
-        var nodeToGroupId = this._nodeToGroupIdFunction();
-        if (nodeToGroupId) {
-            this._groupNodes = new Map();
-            for (var node of topDownTree.children.values()) {
-                var groupNode = this._nodeToGroupNode(nodeToGroupId, node);
-                groupNode.selfTime += node.selfTime;
-                groupNode.totalTime += node.totalTime;
-                groupNode.children.set(node.id, node);
-            }
-            topDownTree.children = this._groupNodes;
-            this._groupNodes = null;
-        }
-        return topDownTree;
-    },
-
-    /**
-     * @param {!WebInspector.TimelineModel.ProfileTreeNode} topDownTree
-     * @return {!WebInspector.TimelineModel.ProfileTreeNode}
-     */
-    _buildBottomUpTree: function(topDownTree)
-    {
-        this._groupNodes = new Map();
-        var nodeToGroupId = this._nodeToGroupIdFunction();
-        var nodeToGroupNode = nodeToGroupId ? this._nodeToGroupNode.bind(this, nodeToGroupId) : null;
-        var bottomUpRoot = WebInspector.TimelineModel.buildBottomUpTree(topDownTree, nodeToGroupNode);
-        for (var group of this._groupNodes)
-            bottomUpRoot.children.set(group[0], group[1]);
-        return bottomUpRoot;
+        throw new Error("Not Implemented");
     },
 
     /**
@@ -497,3 +445,89 @@ WebInspector.TimelineTreeView.GridNode.prototype = {
 
     __proto__: WebInspector.SortableDataGridNode.prototype
 }
+
+/**
+ * @constructor
+ * @extends {WebInspector.TimelineTreeView}
+ * @param {!WebInspector.TimelineModel} model
+ */
+WebInspector.CallTreeTimelineTreeView = function(model)
+{
+    WebInspector.TimelineTreeView.call(this, model);
+    this.dataGrid.markColumnAsSortedBy("total", WebInspector.DataGrid.Order.Descending);
+}
+
+WebInspector.CallTreeTimelineTreeView.prototype = {
+    /**
+     * @override
+     * @return {!WebInspector.TimelineModel.ProfileTreeNode}
+     */
+    _buildTree: function()
+    {
+        var topDown = WebInspector.TimelineModel.buildTopDownTree(this._model.mainThreadEvents(), this._startTime, this._endTime, this._filters, WebInspector.TimelineTreeView.eventId);
+        return this._performTopDownTreeGrouping(topDown);
+    },
+
+    /**
+     * @param {!WebInspector.TimelineModel.ProfileTreeNode} topDownTree
+     * @return {!WebInspector.TimelineModel.ProfileTreeNode}
+     */
+    _performTopDownTreeGrouping: function(topDownTree)
+    {
+        var nodeToGroupId = this._nodeToGroupIdFunction();
+        if (nodeToGroupId) {
+            this._groupNodes = new Map();
+            for (var node of topDownTree.children.values()) {
+                var groupNode = this._nodeToGroupNode(nodeToGroupId, node);
+                groupNode.selfTime += node.selfTime;
+                groupNode.totalTime += node.totalTime;
+                groupNode.children.set(node.id, node);
+            }
+            topDownTree.children = this._groupNodes;
+            this._groupNodes = null;
+        }
+        return topDownTree;
+    },
+
+    __proto__: WebInspector.TimelineTreeView.prototype
+};
+
+/**
+ * @constructor
+ * @extends {WebInspector.TimelineTreeView}
+ * @param {!WebInspector.TimelineModel} model
+ */
+WebInspector.BottomUpTimelineTreeView = function(model)
+{
+    WebInspector.TimelineTreeView.call(this, model);
+    this.dataGrid.markColumnAsSortedBy("self", WebInspector.DataGrid.Order.Descending);
+}
+
+WebInspector.BottomUpTimelineTreeView.prototype = {
+    /**
+     * @override
+     * @return {!WebInspector.TimelineModel.ProfileTreeNode}
+     */
+    _buildTree: function()
+    {
+        var topDown = WebInspector.TimelineModel.buildTopDownTree(this._model.mainThreadEvents(), this._startTime, this._endTime, this._filters, WebInspector.TimelineTreeView.eventId);
+        return this._buildBottomUpTree(topDown);
+    },
+
+    /**
+     * @param {!WebInspector.TimelineModel.ProfileTreeNode} topDownTree
+     * @return {!WebInspector.TimelineModel.ProfileTreeNode}
+     */
+    _buildBottomUpTree: function(topDownTree)
+    {
+        this._groupNodes = new Map();
+        var nodeToGroupId = this._nodeToGroupIdFunction();
+        var nodeToGroupNode = nodeToGroupId ? this._nodeToGroupNode.bind(this, nodeToGroupId) : null;
+        var bottomUpRoot = WebInspector.TimelineModel.buildBottomUpTree(topDownTree, nodeToGroupNode);
+        for (var group of this._groupNodes)
+            bottomUpRoot.children.set(group[0], group[1]);
+        return bottomUpRoot;
+    },
+
+    __proto__: WebInspector.TimelineTreeView.prototype
+};

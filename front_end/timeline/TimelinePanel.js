@@ -111,7 +111,8 @@ WebInspector.TimelinePanel = function()
         this._tabbedPane = new WebInspector.TabbedPane();
         this._tabbedPane.appendTab(WebInspector.TimelinePanel.ViewMode.FlameChart, WebInspector.UIString("Flame Chart"), new WebInspector.VBox());
         this._tabbedPane.appendTab(WebInspector.TimelinePanel.ViewMode.Waterfall, WebInspector.UIString("Waterfall"), new WebInspector.VBox());
-        this._tabbedPane.appendTab(WebInspector.TimelinePanel.ViewMode.TreeView, WebInspector.UIString("Tree View"), new WebInspector.VBox());
+        this._tabbedPane.appendTab(WebInspector.TimelinePanel.ViewMode.CallTree, WebInspector.UIString("Call Tree"), new WebInspector.VBox());
+        this._tabbedPane.appendTab(WebInspector.TimelinePanel.ViewMode.BottomUp, WebInspector.UIString("Bottom-Up"), new WebInspector.VBox());
         this._tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, this._onMainViewChanged.bind(this));
         this._tabbedPane.show(this._searchableView.element);
     } else {
@@ -131,7 +132,8 @@ WebInspector.TimelinePanel = function()
 WebInspector.TimelinePanel.ViewMode = {
     Waterfall: "Waterfall",
     FlameChart: "FlameChart",
-    TreeView: "TreeView"
+    CallTree: "CallTree",
+    BottomUp: "BottomUp",
 }
 
 /**
@@ -139,7 +141,8 @@ WebInspector.TimelinePanel.ViewMode = {
  */
 WebInspector.TimelinePanel.DetailsTab = {
     Details: "Details",
-    BottomUpTree: "BottomUpTree",
+    CallTree: "CallTree",
+    BottomUp: "BottomUp",
     PaintProfiler: "PaintProfiler",
     LayerViewer: "LayerViewer"
 }
@@ -617,14 +620,15 @@ WebInspector.TimelinePanel.prototype = {
             var timelineView = new WebInspector.TimelineView(this, this._model);
             this._addModeView(timelineView);
             timelineView.setFrameModel(this._frameModel);
-        } else if (viewMode === WebInspector.TimelinePanel.ViewMode.TreeView) {
+        } else if (viewMode === WebInspector.TimelinePanel.ViewMode.CallTree || viewMode === WebInspector.TimelinePanel.ViewMode.BottomUp) {
             this._filterBar.filterButton().setEnabled(false);
             this._filterBar.filtersElement().classList.toggle("hidden", true);
-            var treeView = new WebInspector.TimelineTreeModeView(this, this._model);
+            var innerView = viewMode === WebInspector.TimelinePanel.ViewMode.BottomUp ? new WebInspector.BottomUpTimelineTreeView(this._model) : new WebInspector.CallTreeTimelineTreeView(this._model);
+            var treeView = new WebInspector.TimelineTreeModeView(this, innerView);
             this._addModeView(treeView);
         }
 
-        if (this._captureMemorySetting.get() && viewMode !== WebInspector.TimelinePanel.ViewMode.TreeView)
+        if (this._captureMemorySetting.get() && viewMode !== WebInspector.TimelinePanel.ViewMode.CallTree && viewMode !== WebInspector.TimelinePanel.ViewMode.BottomUp)
             this._addModeView(new WebInspector.MemoryCountersGraph(this, this._model));
 
         this.doResize();
@@ -1219,12 +1223,12 @@ WebInspector.TimelinePanel.prototype = {
  * @extends {WebInspector.VBox}
  * @implements {WebInspector.TimelineModeView}
  * @param {!WebInspector.TimelineModeViewDelegate} delegate
- * @param {!WebInspector.TimelineModel} model
+ * @param {!WebInspector.TimelineTreeView} innerTreeView
  */
-WebInspector.TimelineTreeModeView = function(delegate, model)
+WebInspector.TimelineTreeModeView = function(delegate, innerTreeView)
 {
     WebInspector.VBox.call(this);
-    this._treeView = new WebInspector.TimelineTreeView(model);
+    this._treeView = innerTreeView;
     this._treeView.show(this.element);
 }
 
@@ -1310,13 +1314,16 @@ WebInspector.TimelineDetailsView = function(timelineModel)
     this.setPreferredTab(WebInspector.TimelinePanel.DetailsTab.Details);
 
     if (!Runtime.experiments.isEnabled("multipleTimelineViews")) {
-        this._heavyTreeView = new WebInspector.TimelineTreeView(timelineModel);
-        this.appendTab(WebInspector.TimelinePanel.DetailsTab.BottomUpTree, WebInspector.UIString("Aggregated Details"), this._heavyTreeView);
+        this._callTreeView = new WebInspector.CallTreeTimelineTreeView(timelineModel);
+        this.appendTab(WebInspector.TimelinePanel.DetailsTab.CallTree, WebInspector.UIString("Call Tree"), this._callTreeView);
+        this._bottomUpView = new WebInspector.BottomUpTimelineTreeView(timelineModel);
+        this.appendTab(WebInspector.TimelinePanel.DetailsTab.BottomUp, WebInspector.UIString("Bottom-Up"), this._bottomUpView);
     }
 
     this._staticTabs = new Set([
         WebInspector.TimelinePanel.DetailsTab.Details,
-        WebInspector.TimelinePanel.DetailsTab.BottomUpTree
+        WebInspector.TimelinePanel.DetailsTab.CallTree,
+        WebInspector.TimelinePanel.DetailsTab.BottomUp,
     ]);
 
     this.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, this._tabSelected, this);
@@ -1343,8 +1350,10 @@ WebInspector.TimelineDetailsView.prototype = {
     updateContents: function(selection)
     {
         this._selection = selection;
-        if (this.selectedTabId === WebInspector.TimelinePanel.DetailsTab.BottomUpTree && this._heavyTreeView)
-            this._heavyTreeView.updateContents(selection);
+        if (this.selectedTabId === WebInspector.TimelinePanel.DetailsTab.CallTree && this._callTreeView)
+            this._callTreeView.updateContents(selection);
+        if (this.selectedTabId === WebInspector.TimelinePanel.DetailsTab.BottomUp && this._bottomUpView)
+            this._bottomUpView.updateContents(selection);
     },
 
     /**

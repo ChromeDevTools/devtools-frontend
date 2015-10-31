@@ -247,26 +247,49 @@ WebInspector.TimelineTreeView.prototype = {
     _sortingChanged: function()
     {
         var columnIdentifier = this.dataGrid.sortColumnIdentifier();
+        var sortFunction;
+        switch (columnIdentifier) {
+        case "self":
+            sortFunction = compareNumericField.bind(null, "selfTime");
+            break;
+        case "total":
+            sortFunction = compareNumericField.bind(null, "totalTime");
+            break;
+        case "activity":
+            sortFunction = compareName;
+            break;
+        default:
+            console.assert(false, "Unknown sort field");
+            return;
+        }
+        this.dataGrid.sortNodes(sortFunction, !this.dataGrid.isSortOrderAscending());
+
         /**
          * @param {string} field
          * @param {!WebInspector.DataGridNode} a
          * @param {!WebInspector.DataGridNode} b
          * @return {number}
          */
-        function compareField(field, a, b)
+        function compareNumericField(field, a, b)
         {
             var nodeA = /** @type {!WebInspector.TimelineTreeView.GridNode} */ (a);
             var nodeB = /** @type {!WebInspector.TimelineTreeView.GridNode} */ (b);
-            var valueA = nodeA._profileNode[field];
-            var valueB = nodeB._profileNode[field];
-            return valueA === valueB ? 0 : valueA > valueB ? 1 : -1;
+            return nodeA._profileNode[field] - nodeB._profileNode[field];
         }
-        var field = {
-            "self": "selfTime",
-            "total": "totalTime",
-            "activity": "name"
-        }[columnIdentifier];
-        this.dataGrid.sortNodes(compareField.bind(null, field), !this.dataGrid.isSortOrderAscending());
+
+        /**
+         * @param {!WebInspector.DataGridNode} a
+         * @param {!WebInspector.DataGridNode} b
+         * @return {number}
+         */
+        function compareName(a, b)
+        {
+            var nodeA = /** @type {!WebInspector.TimelineTreeView.GridNode} */ (a);
+            var nodeB = /** @type {!WebInspector.TimelineTreeView.GridNode} */ (b);
+            var nameA = WebInspector.TimelineTreeView.eventNameForSorting(nodeA._profileNode.event);
+            var nameB = WebInspector.TimelineTreeView.eventNameForSorting(nodeB._profileNode.event);
+            return nameA.localeCompare(nameB);
+        }
     },
 
     __proto__: WebInspector.DataGridContainerWidget.prototype
@@ -278,9 +301,19 @@ WebInspector.TimelineTreeView.prototype = {
  */
 WebInspector.TimelineTreeView.eventId = function(event)
 {
+    var prefix = event.name === WebInspector.TimelineModel.RecordType.JSFrame ? "f:" : "";
+    return prefix + WebInspector.TimelineTreeView.eventNameForSorting(event);
+}
+
+/**
+ * @param {!WebInspector.TracingModel.Event} event
+ * @return {string}
+ */
+WebInspector.TimelineTreeView.eventNameForSorting = function(event)
+{
     if (event.name === WebInspector.TimelineModel.RecordType.JSFrame) {
         var data = event.args["data"];
-        return "f:" + data["functionName"] + "@" + (data["scriptId"] || data["url"] || "");
+        return  data["functionName"] + "@" + (data["scriptId"] || data["url"] || "");
     }
     return event.name + ":@" + WebInspector.TimelineTreeView.eventURL(event);
 }

@@ -9,7 +9,53 @@
 }
 
 .devices-sidebar {
-    flex: 0 0 120px;
+    flex: 0 0 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.devices-sidebar-list {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.devices-sidebar-item {
+    color: #222 !important;
+    padding: 6px 6px 6px 16px;
+    flex: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.devices-sidebar-item.selected {
+    border-left: 6px solid #666 !important;
+    padding-left: 10px;
+}
+
+.devices-sidebar-item-status {
+    font-size: 11px;
+}
+
+.devices-sidebar-item-status:before {
+    content: "\25cf";
+    font-size: 16px;
+    color: red;
+    position: relative;
+    top: 1px;
+    margin-right: 2px;
+}
+
+.devices-sidebar-item.device-connected .devices-sidebar-item-status:before {
+    color: green;
+}
+
+.devices-sidebar-spacer {
+    flex: none;
 }
 
 .devices-view-title {
@@ -47,6 +93,14 @@
 .add-rule-button {
     margin: 10px 25px;
     align-self: flex-start;
+}
+
+.discovery-help {
+    margin: 5px 0 25px 25px;
+}
+
+.discovery-help > span {
+    white-space: pre;
 }
 
 .port-forwarding-list {

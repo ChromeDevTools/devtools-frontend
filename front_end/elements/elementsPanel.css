@@ -209,6 +209,10 @@
     z-index: 1;
 }
 
+.styles-section .sidebar-pane-closing-brace {
+    clear: both;
+}
+
 .styles-section-title {
     background-origin: padding;
     background-clip: padding;
@@ -299,6 +303,7 @@
 
 .styles-section .style-properties > li {
     padding-left: 38px;
+    clear: both;
 }
 
 .styles-section .style-properties > li .webkit-css-property {

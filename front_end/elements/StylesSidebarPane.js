@@ -829,9 +829,8 @@ WebInspector.StylePropertiesSection = function(parentPane, styleRule)
     selectorContainer.addEventListener("mousedown", this._handleEmptySpaceMouseDown.bind(this), false);
     selectorContainer.addEventListener("click", this._handleSelectorContainerClick.bind(this), false);
 
-    var closeBrace = createElement("div");
+    var closeBrace = this.element.createChild("div", "sidebar-pane-closing-brace");
     closeBrace.textContent = "}";
-    this.element.appendChild(closeBrace);
 
     if (this.editable && rule) {
         var newRuleButton = closeBrace.createChild("div", "sidebar-pane-button-new-rule");

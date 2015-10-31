@@ -1099,7 +1099,8 @@ WebInspector.StylePropertiesSection.prototype = {
         } else {
             var child = this.propertiesTreeOutline.firstChild();
             while (child) {
-                child.setOverloaded(this.styleRule.isPropertyOverloaded(child.name));
+                var overloaded = this.styleRule.cascade().propertyState(child.property) === WebInspector.SectionCascade.PropertyState.Overloaded;
+                child.setOverloaded(overloaded);
                 child = child.traverseNextTreeElement(false, null, true);
             }
         }
@@ -1125,7 +1126,7 @@ WebInspector.StylePropertiesSection.prototype = {
         for (var property of style.leadingProperties()) {
             var isShorthand = !!WebInspector.CSSMetadata.cssPropertiesMetainfo.longhands(property.name);
             var inherited = this.isPropertyInherited(property.name);
-            var overloaded = this.styleRule.isPropertyOverloaded(property.name);
+            var overloaded = this.styleRule.cascade().propertyState(property) === WebInspector.SectionCascade.PropertyState.Overloaded;
             var item = new WebInspector.StylePropertyTreeElement(this._parentPane, this.styleRule, property, isShorthand, inherited, overloaded);
             this.propertiesTreeOutline.appendChild(item);
         }
@@ -2013,7 +2014,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
             var section = this.section();
             if (section) {
                 inherited = section.isPropertyInherited(name);
-                overloaded = section.styleRule.isPropertyOverloaded(name);
+                overloaded = section.styleRule.cascade().propertyState(longhandProperties[i]) === WebInspector.SectionCascade.PropertyState.Overloaded;
             }
 
             var item = new WebInspector.StylePropertyTreeElement(this._parentPane, this._styleRule, longhandProperties[i], false, inherited, overloaded);

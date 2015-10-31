@@ -138,14 +138,15 @@ WebInspector.ComputedStyleWidget.prototype = {
         uniqueProperties.sort(propertySorter);
 
         var propertyTraces = this._computePropertyTraces(cascades.matched);
+        var inhertiedProperties = this._computeInheritedProperties(cascades.matched);
         var showInherited = this._showInheritedComputedStylePropertiesSetting.get();
         for (var i = 0; i < uniqueProperties.length; ++i) {
             var propertyName = uniqueProperties[i];
             var propertyValue = nodeStyle.computedStyle.get(propertyName);
-            var inherited = this._isPropertyInherited(cascades.matched, propertyName);
+            var canonicalName = WebInspector.CSSMetadata.canonicalPropertyName(propertyName);
+            var inherited = !inhertiedProperties.has(canonicalName);
             if (!showInherited && inherited && !(propertyName in this._alwaysShowComputedProperties))
                 continue;
-            var canonicalName = WebInspector.CSSMetadata.canonicalPropertyName(propertyName);
             if (propertyName !== canonicalName && propertyValue === nodeStyle.computedStyle.get(canonicalName))
                 continue;
 
@@ -174,7 +175,7 @@ WebInspector.ComputedStyleWidget.prototype = {
 
             var trace = propertyTraces.get(propertyName);
             if (trace) {
-                this._renderPropertyTrace(cssModel, nodeStyle.node, treeElement, trace);
+                this._renderPropertyTrace(cssModel, cascades.matched, nodeStyle.node, treeElement, trace);
                 treeElement.listItemElement.addEventListener("mousedown", consumeEvent, false);
                 treeElement.listItemElement.addEventListener("dblclick", consumeEvent, false);
                 treeElement.listItemElement.addEventListener("click", handleClick.bind(null, treeElement), false);
@@ -212,25 +213,26 @@ WebInspector.ComputedStyleWidget.prototype = {
 
     /**
      * @param {!WebInspector.CSSStyleModel} cssModel
+     * @param {!WebInspector.SectionCascade} matchedCascade
      * @param {!WebInspector.DOMNode} node
      * @param {!TreeElement} rootTreeElement
-     * @param {!Array.<!{property: !WebInspector.CSSProperty, overloaded: boolean}>} tracedProperties
+     * @param {!Array<!WebInspector.CSSProperty>} tracedProperties
      */
-    _renderPropertyTrace: function(cssModel, node, rootTreeElement, tracedProperties)
+    _renderPropertyTrace: function(cssModel, matchedCascade, node, rootTreeElement, tracedProperties)
     {
-        for (var propertyInfo of tracedProperties) {
+        for (var property of tracedProperties) {
             var trace = createElement("div");
             trace.classList.add("property-trace");
-            if (propertyInfo.overloaded)
+            if (matchedCascade.propertyState(property) === WebInspector.SectionCascade.PropertyState.Overloaded)
                 trace.classList.add("property-trace-inactive");
 
-            var renderer = new WebInspector.StylesSidebarPropertyRenderer(null, node, propertyInfo.property.name, /** @type {string} */(propertyInfo.property.value));
+            var renderer = new WebInspector.StylesSidebarPropertyRenderer(null, node, property.name, /** @type {string} */(property.value));
             renderer.setColorHandler(this._processColor.bind(this));
             var valueElement = renderer.renderValue();
             valueElement.classList.add("property-trace-value");
             trace.appendChild(valueElement);
 
-            var rule = propertyInfo.property.ownerStyle.parentRule;
+            var rule = property.ownerStyle.parentRule;
             if (rule) {
                 var linkSpan = trace.createChild("span", "trace-link");
                 linkSpan.appendChild(WebInspector.StylePropertiesSection.createRuleOriginNode(cssModel, this._linkifier, rule));
@@ -249,7 +251,7 @@ WebInspector.ComputedStyleWidget.prototype = {
 
     /**
      * @param {!WebInspector.SectionCascade} matchedCascade
-     * @return {!Map.<string, !Array.<!{property: !WebInspector.CSSProperty, overloaded: boolean}>>}
+     * @return {!Map<string, !Array<!WebInspector.CSSProperty>>}
      */
     _computePropertyTraces: function(matchedCascade)
     {
@@ -258,14 +260,11 @@ WebInspector.ComputedStyleWidget.prototype = {
         for (var model of models) {
             var allProperties = model.style().allProperties;
             for (var property of allProperties) {
-                if (!property.activeInStyle() || !model.isPropertyInCascade(property.name))
+                if (!property.activeInStyle() || !matchedCascade.propertyState(property))
                     continue;
                 if (!result.has(property.name))
                     result.set(property.name, []);
-                result.get(property.name).push({
-                    property: property,
-                    overloaded: model.isPropertyOverloaded(property.name)
-                });
+                result.get(property.name).push(property);
             }
         }
         return result;
@@ -273,12 +272,19 @@ WebInspector.ComputedStyleWidget.prototype = {
 
     /**
      * @param {!WebInspector.SectionCascade} matchedCascade
-     * @param {string} propertyName
+     * @return {!Set<string>}
      */
-    _isPropertyInherited: function(matchedCascade, propertyName)
+    _computeInheritedProperties: function(matchedCascade)
     {
-        var canonicalName = WebInspector.CSSMetadata.canonicalPropertyName(propertyName);
-        return !matchedCascade.allUsedProperties().has(canonicalName);
+        var result = new Set();
+        for (var model of matchedCascade.sectionModels()) {
+            for (var property of model.style().allProperties) {
+                if (!matchedCascade.propertyState(property))
+                    continue;
+                result.add(WebInspector.CSSMetadata.canonicalPropertyName(property.name));
+            }
+        }
+        return result;
     },
 
     /**

@@ -30,14 +30,14 @@
 
 /**
  * @constructor
- * @extends {WebInspector.VBox}
+ * @extends {WebInspector.DataGridContainerWidget}
  * @param {boolean} expandable
  * @param {function()=} refreshCallback
  * @param {function()=} selectedCallback
  */
 WebInspector.CookiesTable = function(expandable, refreshCallback, selectedCallback)
 {
-    WebInspector.VBox.call(this);
+    WebInspector.DataGridContainerWidget.call(this);
 
     var readOnly = expandable;
     this._refreshCallback = refreshCallback;
@@ -67,7 +67,7 @@ WebInspector.CookiesTable = function(expandable, refreshCallback, selectedCallba
 
     this._nextSelectedCookie = /** @type {?WebInspector.Cookie} */ (null);
 
-    this._dataGrid.show(this.element);
+    this.appendDataGrid(this._dataGrid);
     this._data = [];
 }
 
@@ -285,5 +285,5 @@ WebInspector.CookiesTable.prototype = {
             this._refreshCallback();
     },
 
-    __proto__: WebInspector.VBox.prototype
+    __proto__: WebInspector.DataGridContainerWidget.prototype
 }

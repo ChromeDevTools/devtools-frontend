@@ -4,12 +4,12 @@
 
 /**
  * @constructor
- * @extends {WebInspector.VBox}
+ * @extends {WebInspector.DataGridContainerWidget}
  * @param {!WebInspector.TimelineModel} model
  */
 WebInspector.TimelineTreeView = function(model)
 {
-    WebInspector.VBox.call(this);
+    WebInspector.DataGridContainerWidget.call(this);
     this.element.classList.add("timeline-tree-view");
 
     this._model = model;
@@ -37,7 +37,7 @@ WebInspector.TimelineTreeView = function(model)
 
     this._createToolbar();
 
-    this.dataGrid.show(this.element);
+    this.appendDataGrid(this.dataGrid);
 }
 
 /**
@@ -269,7 +269,7 @@ WebInspector.TimelineTreeView.prototype = {
         this.dataGrid.sortNodes(compareField.bind(null, field), !this.dataGrid.isSortOrderAscending());
     },
 
-    __proto__: WebInspector.VBox.prototype
+    __proto__: WebInspector.DataGridContainerWidget.prototype
 }
 
 /**

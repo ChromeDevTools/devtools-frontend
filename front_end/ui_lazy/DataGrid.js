@@ -25,7 +25,7 @@
 
 /**
  * @constructor
- * @extends {WebInspector.Widget}
+ * @extends {WebInspector.Object}
  * @param {!Array.<!WebInspector.DataGrid.ColumnDescriptor>} columnsArray
  * @param {function(!WebInspector.DataGridNode, string, string, string)=} editCallback
  * @param {function(!WebInspector.DataGridNode)=} deleteCallback
@@ -34,10 +34,8 @@
  */
 WebInspector.DataGrid = function(columnsArray, editCallback, deleteCallback, refreshCallback, contextMenuCallback)
 {
-    WebInspector.Widget.call(this);
-    this.registerRequiredCSS("ui_lazy/dataGrid.css");
-
-    this.element.className = "data-grid"; // Override
+    this.element = createElementWithClass("div", "data-grid");
+    this.element.appendChild(WebInspector.Widget.createStyleElement("ui_lazy/dataGrid.css"));
     this.element.tabIndex = 0;
     this.element.addEventListener("keydown", this._keyDown.bind(this), false);
 
@@ -646,7 +644,11 @@ WebInspector.DataGrid.prototype = {
 
     wasShown: function()
     {
-       this._loadColumnWeights();
+        this._loadColumnWeights();
+    },
+
+    willHide: function()
+    {
     },
 
     _applyColumnWeights: function()
@@ -696,15 +698,6 @@ WebInspector.DataGrid.prototype = {
     get scrollContainer()
     {
         return this._scrollContainer;
-    },
-
-    /**
-     * @override
-     * @return {!Array.<!Element>}
-     */
-    elementsToRestoreScrollPositionsFor: function()
-    {
-        return this._inline ? [] : [this._scrollContainer];
     },
 
     _positionResizers: function()
@@ -1083,7 +1076,7 @@ WebInspector.DataGrid.prototype = {
 
     CenterResizerOverBorderAdjustment: 3,
 
-    __proto__: WebInspector.Widget.prototype
+    __proto__: WebInspector.Object.prototype
 }
 
 /** @enum {string} */
@@ -1800,4 +1793,77 @@ WebInspector.CreationDataGridNode.prototype = {
     },
 
     __proto__: WebInspector.DataGridNode.prototype
+}
+
+/**
+ * @constructor
+ * @extends {WebInspector.VBox}
+ */
+WebInspector.DataGridContainerWidget = function()
+{
+    WebInspector.VBox.call(this);
+    this._dataGrids = [];
+}
+
+WebInspector.DataGridContainerWidget.prototype = {
+    /**
+     * @param {!WebInspector.DataGrid} dataGrid
+     */
+    appendDataGrid: function(dataGrid)
+    {
+        this._dataGrids.push(dataGrid);
+        this.element.appendChild(dataGrid.element);
+    },
+
+    /**
+     * @param {!WebInspector.DataGrid} dataGrid
+     */
+    removeDataGrid: function(dataGrid)
+    {
+        this._dataGrids.remove(dataGrid);
+        this.element.removeChild(dataGrid.element);
+    },
+
+    /**
+     * @override
+     */
+    wasShown: function()
+    {
+        for (var dataGrid of this._dataGrids)
+            dataGrid.wasShown();
+    },
+
+    /**
+     * @override
+     */
+    willHide: function()
+    {
+        for (var dataGrid of this._dataGrids)
+            dataGrid.willHide();
+    },
+
+    /**
+     * @override
+     */
+    onResize: function()
+    {
+        for (var dataGrid of this._dataGrids)
+            dataGrid.onResize();
+    },
+
+    /**
+     * @override
+     * @return {!Array.<!Element>}
+     */
+    elementsToRestoreScrollPositionsFor: function()
+    {
+        var result = [];
+        for (var dataGrid of this._dataGrids) {
+            if (!dataGrid._inline)
+                result.push(dataGrid._scrollContainer);
+        }
+        return result;
+    },
+
+    __proto__: WebInspector.VBox.prototype
 }

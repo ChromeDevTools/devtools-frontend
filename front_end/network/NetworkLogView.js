@@ -30,16 +30,16 @@
 
 /**
  * @constructor
+ * @extends {WebInspector.DataGridContainerWidget}
  * @implements {WebInspector.Searchable}
  * @implements {WebInspector.TargetManager.Observer}
- * @extends {WebInspector.VBox}
  * @param {!WebInspector.FilterBar} filterBar
  * @param {!Element} progressBarContainer
  * @param {!WebInspector.Setting} networkLogLargeRowsSetting
  */
 WebInspector.NetworkLogView = function(filterBar, progressBarContainer, networkLogLargeRowsSetting)
 {
-    WebInspector.VBox.call(this);
+    WebInspector.DataGridContainerWidget.call(this);
     this.setMinimumSize(50, 64);
     this.registerRequiredCSS("network/networkLogView.css");
     this.registerRequiredCSS("ui/filter.css");
@@ -485,7 +485,7 @@ WebInspector.NetworkLogView.prototype = {
         this._dataGrid.element.addEventListener("mousedown", this._dataGridMouseDown.bind(this), true);
         this._dataGrid.element.addEventListener("mousemove", this._dataGridMouseMove.bind(this), true);
         this._dataGrid.element.addEventListener("mouseleave", this._highlightInitiatorChain.bind(this, null), true);
-        this._dataGrid.show(this.element);
+        this.appendDataGrid(this._dataGrid);
 
         // Event listeners need to be added _after_ we attach to the document, so that owner document is properly update.
         this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SortingChanged, this._sortItems, this);
@@ -1927,7 +1927,7 @@ WebInspector.NetworkLogView.prototype = {
         return command.join(" ");
     },
 
-    __proto__: WebInspector.VBox.prototype
+    __proto__: WebInspector.DataGridContainerWidget.prototype
 }
 
 /** @typedef {function(!WebInspector.NetworkRequest): boolean} */

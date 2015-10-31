@@ -91,7 +91,7 @@ WebInspector.ConsoleViewMessage.prototype = {
         for (var i = 0; this._dataGrids && i < this._dataGrids.length; ++i) {
             var dataGrid = this._dataGrids[i];
             var parentElement = this._dataGridParents.get(dataGrid) || null;
-            dataGrid.show(parentElement);
+            parentElement.appendChild(dataGrid.element);
             dataGrid.updateWidths();
         }
     },
@@ -112,7 +112,7 @@ WebInspector.ConsoleViewMessage.prototype = {
         for (var i = 0; this._dataGrids && i < this._dataGrids.length; ++i) {
             var dataGrid = this._dataGrids[i];
             this._dataGridParents.set(dataGrid, dataGrid.element.parentElement);
-            dataGrid.detach();
+            dataGrid.element.remove();
         }
     },
 

@@ -48,7 +48,7 @@ WebInspector.PromisePane = function()
     resetFiltersLink.textContent = WebInspector.UIString("Show all promises.");
     resetFiltersLink.addEventListener("click", this._resetFilters.bind(this), true);
 
-    this._dataGridContainer = new WebInspector.VBox();
+    this._dataGridContainer = new WebInspector.DataGridContainerWidget();
     this._dataGridContainer.show(this.element);
     // FIXME: Make "status" column width fixed to ~16px.
     var columns = [
@@ -60,7 +60,7 @@ WebInspector.PromisePane = function()
     ];
     this._dataGrid = new WebInspector.ViewportDataGrid(columns, undefined, undefined, undefined, this._onContextMenu.bind(this));
     this._dataGrid.setStickToBottom(true);
-    this._dataGrid.show(this._dataGridContainer.element);
+    this._dataGridContainer.appendDataGrid(this._dataGrid);
 
     this._linkifier = new WebInspector.Linkifier();
 

@@ -826,7 +826,7 @@ WebInspector.TimelinePanel.prototype = {
         this._frameModel.addTraceEvents(this._model.target(), this._model.inspectedTargetEvents(), this._model.sessionId() || "");
         this._overviewPane.reset();
         this._overviewPane.setBounds(this._model.minimumRecordTime(), this._model.maximumRecordTime());
-        this.requestWindowTimes(this._model.minimumRecordTime(), this._model.maximumRecordTime());
+        this._setAutoWindowTimes();
         this._refreshViews();
         for (var i = 0; i < this._overviewControls.length; ++i)
             this._overviewControls[i].timelineStopped();
@@ -1213,6 +1213,48 @@ WebInspector.TimelinePanel.prototype = {
                 return;
             entry.file(this._loadFromFile.bind(this));
         }
+    },
+
+    _setAutoWindowTimes: function()
+    {
+        var tasks = this._model.mainThreadTasks();
+        if (!tasks.length) {
+            this.requestWindowTimes(this._tracingModel.minimumRecordTime(), this._tracingModel.maximumRecordTime());
+            return;
+        }
+        /**
+         * @param {number} startIndex
+         * @param {number} stopIndex
+         * @return {number}
+         */
+        function findLowUtilizationRegion(startIndex, stopIndex)
+        {
+            var /** @const */ threshold = 0.1;
+            var cutIndex = startIndex;
+            var cutTime = (tasks[cutIndex].startTime() + tasks[cutIndex].endTime()) / 2;
+            var usedTime = 0;
+            var step = Math.sign(stopIndex - startIndex);
+            for (var i = startIndex; i !== stopIndex; i += step) {
+                var task = tasks[i];
+                var taskTime = (task.startTime() + task.endTime()) / 2;
+                var interval = Math.abs(cutTime - taskTime);
+                if (usedTime < threshold * interval) {
+                    cutIndex = i;
+                    cutTime = taskTime;
+                    usedTime = 0;
+                }
+                usedTime += task.endTime() - task.startTime();
+            }
+            return cutIndex;
+        }
+        var rightIndex = findLowUtilizationRegion(tasks.length - 1, 0);
+        var leftIndex = findLowUtilizationRegion(0, rightIndex);
+        var leftTime = tasks[leftIndex].startTime();
+        var rightTime = tasks[rightIndex].endTime();
+        var span = rightTime - leftTime;
+        leftTime = Math.max(leftTime - 0.05 * span, this._tracingModel.minimumRecordTime());
+        rightTime = Math.min(rightTime + 0.05 * span, this._tracingModel.maximumRecordTime());
+        this.requestWindowTimes(leftTime, rightTime);
     },
 
     __proto__: WebInspector.Panel.prototype

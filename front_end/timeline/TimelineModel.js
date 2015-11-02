@@ -1468,7 +1468,7 @@ WebInspector.TimelineModel.ProfileTreeNode = function()
     this.id;
     /** @type {!WebInspector.TracingModel.Event} */
     this.event;
-    /** @type {?Map<string,!WebInspector.TimelineModel.ProfileTreeNode>} */
+    /** @type {?Map<string|symbol,!WebInspector.TimelineModel.ProfileTreeNode>} */
     this.children;
     /** @type {?WebInspector.TimelineModel.ProfileTreeNode} */
     this.parent;
@@ -1479,7 +1479,7 @@ WebInspector.TimelineModel.ProfileTreeNode = function()
  * @param {number} startTime
  * @param {number} endTime
  * @param {!Array<!WebInspector.TimelineModel.Filter>} filters
- * @param {function(!WebInspector.TracingModel.Event):string} eventIdCallback
+ * @param {function(!WebInspector.TracingModel.Event):(string|symbol)} eventIdCallback
  * @return {!WebInspector.TimelineModel.ProfileTreeNode}
  */
 WebInspector.TimelineModel.buildTopDownTree = function(events, startTime, endTime, filters, eventIdCallback)

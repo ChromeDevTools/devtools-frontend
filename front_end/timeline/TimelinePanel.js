@@ -141,6 +141,7 @@ WebInspector.TimelinePanel.ViewMode = {
  */
 WebInspector.TimelinePanel.DetailsTab = {
     Details: "Details",
+    Events: "Events",
     CallTree: "CallTree",
     BottomUp: "BottomUp",
     PaintProfiler: "PaintProfiler",
@@ -1349,24 +1350,30 @@ WebInspector.TimelineDetailsView = function(timelineModel)
     WebInspector.TabbedPane.call(this);
     this.element.classList.add("timeline-details");
 
+    var tabIds = WebInspector.TimelinePanel.DetailsTab;
     this._defaultDetailsWidget = new WebInspector.VBox();
     this._defaultDetailsWidget.element.classList.add("timeline-details-view");
     this._defaultDetailsContentElement = this._defaultDetailsWidget.element.createChild("div", "timeline-details-view-body vbox");
-    this.appendTab(WebInspector.TimelinePanel.DetailsTab.Details, WebInspector.UIString("Summary"), this._defaultDetailsWidget);
-    this.setPreferredTab(WebInspector.TimelinePanel.DetailsTab.Details);
+    this.appendTab(tabIds.Details, WebInspector.UIString("Summary"), this._defaultDetailsWidget);
+    this.setPreferredTab(tabIds.Details);
 
+    /** @type Map<string, WebInspector.TimelineTreeView> */
+    this._rangeDetailViews = new Map();
     if (!Runtime.experiments.isEnabled("multipleTimelineViews")) {
-        this._callTreeView = new WebInspector.CallTreeTimelineTreeView(timelineModel);
-        this.appendTab(WebInspector.TimelinePanel.DetailsTab.CallTree, WebInspector.UIString("Call Tree"), this._callTreeView);
-        this._bottomUpView = new WebInspector.BottomUpTimelineTreeView(timelineModel);
-        this.appendTab(WebInspector.TimelinePanel.DetailsTab.BottomUp, WebInspector.UIString("Bottom-Up"), this._bottomUpView);
-    }
+        if (Runtime.experiments.isEnabled("timelineEventsTreeView")) {
+            var eventsView = new WebInspector.EventsTimelineTreeView(timelineModel);
+            this.appendTab(tabIds.Events, WebInspector.UIString("Events"), eventsView);
+            this._rangeDetailViews.set(tabIds.Events, eventsView);
+        }
 
-    this._staticTabs = new Set([
-        WebInspector.TimelinePanel.DetailsTab.Details,
-        WebInspector.TimelinePanel.DetailsTab.CallTree,
-        WebInspector.TimelinePanel.DetailsTab.BottomUp,
-    ]);
+        var callTreeView = new WebInspector.CallTreeTimelineTreeView(timelineModel);
+        this.appendTab(tabIds.CallTree, WebInspector.UIString("Call Tree"), callTreeView);
+        this._rangeDetailViews.set(tabIds.CallTree, callTreeView);
+
+        var bottomUpView = new WebInspector.BottomUpTimelineTreeView(timelineModel);
+        this.appendTab(tabIds.BottomUp, WebInspector.UIString("Bottom-Up"), bottomUpView);
+        this._rangeDetailViews.set(tabIds.BottomUp, bottomUpView);
+    }
 
     this.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, this._tabSelected, this);
 }
@@ -1377,9 +1384,9 @@ WebInspector.TimelineDetailsView.prototype = {
      */
     setContent: function(node)
     {
-        var allTabs = this.allTabs();
+        var allTabs = this.otherTabs(WebInspector.TimelinePanel.DetailsTab.Details);
         for (var i = 0; i < allTabs.length; ++i) {
-            if (!this._staticTabs.has(allTabs[i]))
+            if (!this._rangeDetailViews.has(allTabs[i]))
                 this.closeTab(allTabs[i]);
         }
         this._defaultDetailsContentElement.removeChildren();
@@ -1392,10 +1399,9 @@ WebInspector.TimelineDetailsView.prototype = {
     updateContents: function(selection)
     {
         this._selection = selection;
-        if (this.selectedTabId === WebInspector.TimelinePanel.DetailsTab.CallTree && this._callTreeView)
-            this._callTreeView.updateContents(selection);
-        if (this.selectedTabId === WebInspector.TimelinePanel.DetailsTab.BottomUp && this._bottomUpView)
-            this._bottomUpView.updateContents(selection);
+        var view = this.selectedTabId ? this._rangeDetailViews.get(this.selectedTabId) : null;
+        if (view)
+            view.updateContents(selection);
     },
 
     /**

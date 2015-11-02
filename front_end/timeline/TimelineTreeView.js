@@ -118,6 +118,8 @@ WebInspector.TimelineTreeView.prototype = {
         this._linkifier.reset();
         this.dataGrid.rootNode().removeChildren();
         var tree = this._buildTree();
+        if (!tree.children)
+            return;
         var maxSelfTime = 0;
         var maxTotalTime = 0;
         for (var child of tree.children.values()) {

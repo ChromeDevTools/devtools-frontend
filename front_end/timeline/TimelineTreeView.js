@@ -263,13 +263,15 @@ WebInspector.TimelineTreeView.GridNode = function(profileNode, grandTotalTime, m
     var totalTime = profileNode.totalTime;
     var totalPercent = totalTime / grandTotalTime * 100;
     var data = {
-        "startTime": formatMilliseconds(profileNode.event.startTime - treeView._model.minimumRecordTime()),
         "activity": profileNode.name,
         "self-percent": formatPercent(selfPercent),
         "self": formatMilliseconds(selfTime),
         "total-percent": formatPercent(totalPercent),
         "total": formatMilliseconds(totalTime),
     };
+    if (profileNode.event)
+        data["startTime"] = formatMilliseconds(profileNode.event.startTime - treeView._model.minimumRecordTime());
+
     var hasChildren = this._profileNode.children ? this._profileNode.children.size > 0 : false;
     WebInspector.SortableDataGridNode.call(this, data, hasChildren);
 }

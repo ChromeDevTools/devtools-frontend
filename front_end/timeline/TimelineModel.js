@@ -1575,6 +1575,7 @@ WebInspector.TimelineModel.buildBottomUpTree = function(topDownTree, groupingCal
     var nodesOnStack = /** @type {!Set<string>} */ (new Set());
     if (topDownTree.children)
         topDownTree.children.forEach(processNode);
+    buRoot.totalTime = topDownTree.totalTime;
 
     /**
      * @param {!WebInspector.TimelineModel.ProfileTreeNode} tdNode
@@ -1582,6 +1583,8 @@ WebInspector.TimelineModel.buildBottomUpTree = function(topDownTree, groupingCal
     function processNode(tdNode)
     {
         var buParent = groupingCallback && groupingCallback(tdNode) || buRoot;
+        if (buParent !== buRoot)
+            buRoot.children.set(buParent.id, buParent);
         appendNode(tdNode, buParent);
         var hadNode = nodesOnStack.has(tdNode.id);
         if (!hadNode)

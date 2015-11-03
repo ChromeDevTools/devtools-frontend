@@ -452,6 +452,7 @@ WebInspector.AggregatedTimelineTreeView.prototype = {
     _buildGroupNode: function(id, event)
     {
         var groupNode = new WebInspector.TimelineModel.ProfileTreeNode();
+        groupNode.id = id;
         groupNode.selfTime = 0;
         groupNode.totalTime = 0;
         groupNode.children = new Map();
@@ -617,10 +618,7 @@ WebInspector.BottomUpTimelineTreeView.prototype = {
         this._groupNodes = new Map();
         var nodeToGroupId = this._nodeToGroupIdFunction();
         var nodeToGroupNode = nodeToGroupId ? this._nodeToGroupNode.bind(this, nodeToGroupId) : null;
-        var bottomUpRoot = WebInspector.TimelineModel.buildBottomUpTree(topDownTree, nodeToGroupNode);
-        for (var group of this._groupNodes)
-            bottomUpRoot.children.set(group[0], group[1]);
-        return bottomUpRoot;
+        return WebInspector.TimelineModel.buildBottomUpTree(topDownTree, nodeToGroupNode);
     },
 
     __proto__: WebInspector.AggregatedTimelineTreeView.prototype

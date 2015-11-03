@@ -308,7 +308,7 @@ WebInspector.TimelineUIUtils.buildDetailsTextForTraceEvent = function(event, tar
         break;
     case recordType.FunctionCall:
         // Omit internally generated script names.
-        if (eventData["scriptName"])
+        if (eventData && eventData["scriptName"])
             detailsText = linkifyLocationAsText(eventData["scriptId"], eventData["scriptLine"], 0);
         break;
     case recordType.JSFrame:

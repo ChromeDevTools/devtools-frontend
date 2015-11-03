@@ -714,10 +714,14 @@ WebInspector.SecurityOriginView = function(panel, origin, originState)
         var noteSection = this.element.createChild("div", "origin-view-section");
         // TODO(lgarron): Fix the issue and then remove this section. See comment in SecurityPanel._processRequest().
         noteSection.createChild("div").textContent = WebInspector.UIString("The security details above are from the first inspected response.");
-    } else {
+    } else if (originState.securityState !== SecurityAgent.SecurityState.Unknown) {
         var notSecureSection = this.element.createChild("div", "origin-view-section");
         notSecureSection.createChild("div", "origin-view-section-title").textContent = WebInspector.UIString("Not Secure");
         notSecureSection.createChild("div").textContent = WebInspector.UIString("Your connection to this origin is not secure.");
+    } else {
+        var noInfoSection = this.element.createChild("div", "origin-view-section");
+        noInfoSection.createChild("div", "origin-view-section-title").textContent = WebInspector.UIString("No Security Information");
+        noInfoSection.createChild("div").textContent = WebInspector.UIString("No security details are available for this origin.");
     }
 }
 

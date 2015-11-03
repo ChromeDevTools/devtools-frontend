@@ -49,12 +49,14 @@ WebInspector.SecurityModel.SecurityStateComparator = function(a, b)
     } else {
         securityStateMap = new Map();
         var ordering = [
-            SecurityAgent.SecurityState.Unknown,
             SecurityAgent.SecurityState.Info,
             SecurityAgent.SecurityState.Insecure,
             SecurityAgent.SecurityState.Neutral,
             SecurityAgent.SecurityState.Warning,
-            SecurityAgent.SecurityState.Secure
+            SecurityAgent.SecurityState.Secure,
+            // Unknown is max so that failed/cancelled requests don't overwrite the origin security state for successful requests,
+            // and so that failed/cancelled requests appear at the bottom of the origins list.
+            SecurityAgent.SecurityState.Unknown
         ];
         for (var i = 0; i < ordering.length; i++)
             securityStateMap.set(ordering[i], i + 1);

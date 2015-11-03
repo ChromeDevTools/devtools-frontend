@@ -278,7 +278,6 @@ WebInspector.NetworkDispatcher.prototype = {
                 networkRequest.requestId));
         }
 
-        networkRequest.setSecurityState(response.securityState);
         if (response.securityDetails)
             networkRequest.setSecurityDetails(response.securityDetails);
     },

@@ -5,7 +5,7 @@
             "name": "emulation",
             "title": "Emulation",
             "order": 10,
-            "persistence": "permanent",
+            "persistence": "closeable",
             "className": "WebInspector.OverridesView"
         },
         {

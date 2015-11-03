@@ -28,10 +28,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+.overrides-view {
+    padding: 12px;
+}
+
 .overrides-view fieldset {
     border: none;
-    padding: 0 0 5px 15px;
     flex: 0 0 auto;
+    padding: 0;
 }
 
 .overrides-view fieldset p {
@@ -41,7 +45,7 @@
     border: 0;
 }
 
-.overrides-view fieldset p label {
+.overrides-device-model-settings p label {
     display: inline-block;
 }
 
@@ -55,34 +59,6 @@
 
 .overrides-view > .tabbed-pane {
     overflow: hidden;
-}
-
-/* Network tab */
-
-.overrides-network fieldset {
-    padding-top: 5px;
-}
-
-.overrides-network fieldset p {
-    width: 100%;
-    margin-left: 2px;
-}
-
-.overrides-network fieldset select {
-    margin: 5px 0;
-}
-
-.overrides-network fieldset p label {
-    cursor: default;
-    margin-right: 5px;
-}
-
-.overrides-network fieldset input[type='text'] {
-    display: block;
-    width: 100%;
-    max-width: 400px;
-    min-width: 176px;
-    margin: 5px 0;
 }
 
 /* Device tab */
@@ -138,7 +114,6 @@
 }
 
 .overrides-device .overrides-device-model-section {
-    margin-bottom: 15px;
     white-space: nowrap;
 }
 
@@ -160,25 +135,17 @@
     width: 140px;
 }
 
-/* Media tab */
-
-.overrides-media > label {
-    margin-bottom: 4px;
+.overrides-device .overrides-device-model-section .mode-container label {
+    margin: 0;
+    display: inline-block;
 }
 
-
-.tabbed-pane-header-tab.overrides-activate {
-    opacity: 0.8;
+fieldset.overrides-device-model-settings {
+    padding: 16px;
 }
 
-.tabbed-pane-header-tab.overrides-activate .tabbed-pane-header-tab-title::after {
-    padding-left: 3px;
-    content: "\2713";
-    color: rgb(25, 100, 228);
-}
-
-.tabbed-pane-header-tab.overrides-activate.selected {
-    opacity: 1;
+.overrides-device-model-settings > fieldset {
+    margin-left: 16px;
 }
 
 .overrides-view input[type=text]:enabled:focus,
@@ -210,9 +177,13 @@
 
 .overrides-view .overrides-footer {
     flex: none;
-    padding: 0 0 1px 3px;
+    padding: 5px 8px;
     border-top: 1px solid rgb(203,203,203);
     background-color: #eee;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
 }
 
 .overrides-view .overrides-footer::before {
@@ -239,7 +210,6 @@
 }
 
 .overrides-splash-screen {
-    padding: 10px 10px;
     flex: auto;
 }
 
@@ -250,11 +220,8 @@
     top: 8px;
 }
 
-#overrides-reset-button,
 #overrides-disable-button {
-    margin: 9px 0 0 17px;
-    display: block;
-    width: 60px;
+    margin-bottom: 12px;
 }
 
 .overrides-enable-button {

@@ -39,24 +39,7 @@ WebInspector.OverridesView = function()
     this.registerRequiredCSS("emulation/overrides.css");
     this.element.classList.add("overrides-view");
 
-    this._tabbedPane = new WebInspector.TabbedPane();
-    this._tabbedPane.setShrinkableTabs(false);
-    this._tabbedPane.setVerticalTabLayout(true);
-
-    new WebInspector.OverridesView.DeviceTab().appendAsTab(this._tabbedPane);
-
-    this._lastSelectedTabSetting = WebInspector.settings.createSetting("lastSelectedEmulateTab", "device");
-    this._tabbedPane.selectTab(this._lastSelectedTabSetting.get());
-    this._tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, this._tabSelected, this);
-    this._tabbedPane.show(this.element);
-
-    var resetButtonElement = createTextButton(WebInspector.UIString("Reset"), WebInspector.overridesSupport.reset.bind(WebInspector.overridesSupport));
-    resetButtonElement.id = "overrides-reset-button";
-    this._tabbedPane.appendAfterTabStrip(resetButtonElement);
-
-    var disableButtonElement = createTextButton(WebInspector.UIString("Disable"), this._toggleEmulationEnabled.bind(this), "overrides-disable-button");
-    disableButtonElement.id = "overrides-disable-button";
-    this._tabbedPane.appendAfterTabStrip(disableButtonElement);
+    this._deviceElement = this._createDeviceElement();
 
     this._splashScreenElement = this.element.createChild("div", "overrides-splash-screen");
     this._splashScreenElement.appendChild(createTextButton(WebInspector.UIString("Enable emulation"), this._toggleEmulationEnabled.bind(this), "overrides-enable-button"));
@@ -64,148 +47,36 @@ WebInspector.OverridesView = function()
     this._unavailableSplashScreenElement = this.element.createChild("div", "overrides-splash-screen");
     this._unavailableSplashScreenElement.createTextChild(WebInspector.UIString("Emulation is not available."));
 
-    this._warningFooter = this.element.createChild("div", "overrides-footer");
-    this._overridesWarningUpdated();
-
     WebInspector.overridesSupport.addEventListener(WebInspector.OverridesSupport.Events.OverridesWarningUpdated, this._overridesWarningUpdated, this);
     WebInspector.overridesSupport.addEventListener(WebInspector.OverridesSupport.Events.EmulationStateChanged, this._emulationStateChanged, this);
     this._emulationStateChanged();
 }
 
 WebInspector.OverridesView.prototype = {
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _tabSelected: function(event)
-    {
-        this._lastSelectedTabSetting.set(this._tabbedPane.selectedTabId);
-    },
-
-    _overridesWarningUpdated: function()
-    {
-        var message = WebInspector.overridesSupport.warningMessage();
-        this._warningFooter.classList.toggle("hidden", !message);
-        this._warningFooter.textContent = message;
-    },
-
-    _toggleEmulationEnabled: function()
-    {
-        WebInspector.overridesSupport.setEmulationEnabled(!WebInspector.overridesSupport.emulationEnabled());
-    },
-
-    _emulationStateChanged: function()
-    {
-        this._unavailableSplashScreenElement.classList.toggle("hidden", WebInspector.overridesSupport.canEmulate());
-        this._tabbedPane.element.classList.toggle("hidden", !WebInspector.overridesSupport.emulationEnabled());
-        this._splashScreenElement.classList.toggle("hidden", WebInspector.overridesSupport.emulationEnabled() || !WebInspector.overridesSupport.canEmulate());
-    },
-
-    __proto__: WebInspector.VBox.prototype
-}
-
-/**
- * @constructor
- * @extends {WebInspector.VBox}
- * @param {string} id
- * @param {string} name
- * @param {!Array.<!WebInspector.Setting>} settings
- * @param {!Array.<function():boolean>=} predicates
- */
-WebInspector.OverridesView.Tab = function(id, name, settings, predicates)
-{
-    WebInspector.VBox.call(this);
-    this._id = id;
-    this._name = name;
-    this._settings = settings;
-    this._predicates = predicates || [];
-    for (var i = 0; i < settings.length; ++i)
-        settings[i].addChangeListener(this.updateActiveState, this);
-}
-
-WebInspector.OverridesView.Tab.prototype = {
-    /**
-     * @param {!WebInspector.TabbedPane} tabbedPane
-     */
-    appendAsTab: function(tabbedPane)
-    {
-        this._tabbedPane = tabbedPane;
-        tabbedPane.appendTab(this._id, this._name, this);
-        this.updateActiveState();
-    },
-
-    updateActiveState: function()
-    {
-        if (!this._tabbedPane)
-            return;
-        var active = false;
-        for (var i = 0; !active && i < this._settings.length; ++i)
-            active = this._settings[i].get();
-        for (var i = 0; !active && i < this._predicates.length; ++i)
-            active = this._predicates[i]();
-        this._tabbedPane.toggleTabClass(this._id, "overrides-activate", active);
-    },
-
-    /**
-     * @param {string} name
-     * @param {!WebInspector.Setting} setting
-     * @param {function(boolean)=} callback
-     */
-    _createSettingCheckbox: function(name, setting, callback)
-    {
-        var checkbox = WebInspector.SettingsUI.createSettingCheckbox(name, setting, true);
-
-        function changeListener(value)
-        {
-            callback(setting.get());
-        }
-
-        if (callback)
-            setting.addChangeListener(changeListener);
-
-        return checkbox;
-    },
-
-    __proto__: WebInspector.VBox.prototype
-}
-
-/**
- * @constructor
- * @extends {WebInspector.OverridesView.Tab}
- */
-WebInspector.OverridesView.DeviceTab = function()
-{
-    WebInspector.OverridesView.Tab.call(this, "device", WebInspector.UIString("Device"),  [
-        WebInspector.overridesSupport.settings.emulateResolution,
-        WebInspector.overridesSupport.settings.deviceScaleFactor,
-        WebInspector.overridesSupport.settings.emulateMobile,
-        WebInspector.overridesSupport.settings.emulateTouch
-    ]);
-    this.element.classList.add("overrides-device");
-
-    this.element.appendChild(this._createDeviceElement());
-
-    var footnote = this.element.createChild("p", "help-footnote");
-    footnote.appendChild(WebInspector.linkifyDocumentationURLAsNode("setup/remote-debugging/remote-debugging", WebInspector.UIString("More information about screen emulation")));
-}
-
-WebInspector.OverridesView.DeviceTab.prototype = {
     _createDeviceElement: function()
     {
-        var fieldsetElement = createElement("fieldset");
+        var container = this.element.createChild("div", "overrides-device");
+
+        var disableButtonElement = createTextButton(WebInspector.UIString("Disable emulation"), this._toggleEmulationEnabled.bind(this), "overrides-disable-button");
+        disableButtonElement.id = "overrides-disable-button";
+        container.appendChild(disableButtonElement);
+
+        var fieldsetElement = container.createChild("fieldset");
         fieldsetElement.id = "metrics-override-section";
 
         var deviceModelElement = fieldsetElement.createChild("p", "overrides-device-model-section");
-        deviceModelElement.createChild("span").textContent = WebInspector.UIString("Model:");
+        deviceModelElement.createChild("span").textContent = WebInspector.UIString("Device:");
 
         var rotateButton = createElement("button");
         rotateButton.textContent = " \u21C4 ";
         var deviceSelect = new WebInspector.DeviceSelect(rotateButton, null);
         deviceModelElement.appendChild(deviceSelect.element);
 
+        var deviceModelFieldset = fieldsetElement.createChild("fieldset", "overrides-device-model-settings");
         var emulateResolutionCheckbox = WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Emulate screen resolution"), WebInspector.overridesSupport.settings.emulateResolution, true);
-        fieldsetElement.appendChild(emulateResolutionCheckbox);
+        deviceModelFieldset.appendChild(emulateResolutionCheckbox);
         var resolutionFieldset = WebInspector.SettingsUI.createSettingFieldset(WebInspector.overridesSupport.settings.emulateResolution);
-        fieldsetElement.appendChild(resolutionFieldset);
+        deviceModelFieldset.appendChild(resolutionFieldset);
 
         var tableElement = resolutionFieldset.createChild("table");
         var rowElement = tableElement.createChild("tr");
@@ -227,17 +98,47 @@ WebInspector.OverridesView.DeviceTab.prototype = {
         rowElement.createChild("td").createTextChild(WebInspector.UIString("Device pixel ratio:"));
         rowElement.createChild("td").appendChild(WebInspector.SettingsUI.createSettingInputField("", WebInspector.overridesSupport.settings.deviceScaleFactor, true, 4, "80px", WebInspector.OverridesSupport.deviceScaleFactorValidator, true, true, WebInspector.UIString("\u2013")));
 
-        var mobileCheckbox = this._createSettingCheckbox(WebInspector.UIString("Emulate mobile"), WebInspector.overridesSupport.settings.emulateMobile);
+        var mobileCheckbox = WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Emulate mobile"), WebInspector.overridesSupport.settings.emulateMobile, true);
         mobileCheckbox.title = WebInspector.UIString("Enable meta viewport, overlay scrollbars, text autosizing and default 980px body width");
-        fieldsetElement.appendChild(mobileCheckbox);
+        deviceModelFieldset.appendChild(mobileCheckbox);
 
-        fieldsetElement.appendChild(this._createSettingCheckbox(WebInspector.UIString("Shrink to fit"), WebInspector.overridesSupport.settings.deviceFitWindow));
+        deviceModelFieldset.appendChild(WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Emulate touch screen"), WebInspector.overridesSupport.settings.emulateTouch, true));
 
-        fieldsetElement.appendChild(this._createSettingCheckbox(WebInspector.UIString("Emulate touch screen"), WebInspector.overridesSupport.settings.emulateTouch));
-        return fieldsetElement;
+        var resetButtonElement = createTextButton(WebInspector.UIString("Reset"), WebInspector.overridesSupport.reset.bind(WebInspector.overridesSupport));
+        resetButtonElement.id = "overrides-reset-button";
+        deviceModelFieldset.appendChild(resetButtonElement);
+
+        fieldsetElement.appendChild(WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Shrink to fit"), WebInspector.overridesSupport.settings.deviceFitWindow, true));
+
+        var footnote = container.createChild("p", "help-footnote");
+        footnote.appendChild(WebInspector.linkifyDocumentationURLAsNode("setup/remote-debugging/remote-debugging", WebInspector.UIString("More information about screen emulation")));
+
+        this._warningFooter = container.createChild("div", "overrides-footer");
+        this._overridesWarningUpdated();
+
+        return container;
     },
 
-    __proto__: WebInspector.OverridesView.Tab.prototype
+    _overridesWarningUpdated: function()
+    {
+        var message = WebInspector.overridesSupport.warningMessage();
+        this._warningFooter.classList.toggle("hidden", !message);
+        this._warningFooter.textContent = message;
+    },
+
+    _toggleEmulationEnabled: function()
+    {
+        WebInspector.overridesSupport.setEmulationEnabled(!WebInspector.overridesSupport.emulationEnabled());
+    },
+
+    _emulationStateChanged: function()
+    {
+        this._unavailableSplashScreenElement.classList.toggle("hidden", WebInspector.overridesSupport.canEmulate());
+        this._deviceElement.classList.toggle("hidden", !WebInspector.overridesSupport.emulationEnabled());
+        this._splashScreenElement.classList.toggle("hidden", WebInspector.overridesSupport.emulationEnabled() || !WebInspector.overridesSupport.canEmulate());
+    },
+
+    __proto__: WebInspector.VBox.prototype
 }
 
 /**

@@ -94,6 +94,15 @@ WebInspector.ConsoleViewMessage.prototype = {
             parentElement.appendChild(dataGrid.element);
             dataGrid.updateWidths();
         }
+        this._isVisible = true;
+    },
+
+    onResize: function()
+    {
+        if (!this._isVisible)
+            return;
+        for (var i = 0; this._dataGrids && i < this._dataGrids.length; ++i)
+            this._dataGrids[i].onResize();
     },
 
     /**
@@ -109,6 +118,7 @@ WebInspector.ConsoleViewMessage.prototype = {
      */
     willHide: function()
     {
+        this._isVisible = false;
         for (var i = 0; this._dataGrids && i < this._dataGrids.length; ++i) {
             var dataGrid = this._dataGrids[i];
             this._dataGridParents.set(dataGrid, dataGrid.element.parentElement);

@@ -359,6 +359,8 @@ WebInspector.ConsoleView.prototype = {
         this._hidePromptSuggestBox();
         if (this._viewport.scrolledToBottom())
             this._immediatelyScrollToBottom();
+        for (var i = 0; i < this._visibleViewMessages.length; ++i)
+            this._visibleViewMessages[i].onResize();
     },
 
     _hidePromptSuggestBox: function()

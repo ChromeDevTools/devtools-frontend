@@ -4,69 +4,61 @@
 
 import("//build/config/features.gni")
 
-gypi_values = exec_script(
-    "//build/gypi_to_gn.py",
-    [ rebase_path("devtools.gypi") ],
-    "scope",
-    [ "devtools.gypi" ])
+gypi_values = exec_script("//build/gypi_to_gn.py",
+                          [ rebase_path("devtools.gypi") ],
+                          "scope",
+                          [ "devtools.gypi" ])
 
 # Some of the files in the .gypi use GYP variable expansions, go through and
 # fix them.
 devtools_core_files =
-  gypi_values.devtools_core_base_files +
-  gypi_values.devtools_bindings_js_files +
-  gypi_values.devtools_common_js_files +
-  gypi_values.devtools_components_js_files +
-  gypi_values.devtools_emulation_js_files +
-  gypi_values.devtools_host_js_files +
-  gypi_values.devtools_main_js_files +
-  gypi_values.devtools_platform_js_files +
-  gypi_values.devtools_sdk_js_files +
-  gypi_values.devtools_toolbox_bootstrap_js_files +
-  gypi_values.devtools_ui_js_files +
-  gypi_values.devtools_workspace_js_files +
-  gypi_values.devtools_core_css_files
+    gypi_values.devtools_core_base_files +
+    gypi_values.devtools_bindings_js_files +
+    gypi_values.devtools_common_js_files +
+    gypi_values.devtools_components_js_files +
+    gypi_values.devtools_emulation_js_files +
+    gypi_values.devtools_host_js_files + gypi_values.devtools_main_js_files +
+    gypi_values.devtools_platform_js_files + gypi_values.devtools_sdk_js_files +
+    gypi_values.devtools_toolbox_bootstrap_js_files +
+    gypi_values.devtools_ui_js_files + gypi_values.devtools_workspace_js_files +
+    gypi_values.devtools_core_css_files
 
 devtools_extensions_js_files = gypi_values.devtools_extensions_js_files -
-  [ "<@(devtools_extension_api_files)" ] +
-  gypi_values.devtools_extension_api_files
+                               [ "<@(devtools_extension_api_files)" ] +
+                               gypi_values.devtools_extension_api_files
 
 devtools_modules_js_files =
-  gypi_values.devtools_accessibility_js_files +
-  gypi_values.devtools_audits_js_files +
-  gypi_values.devtools_animation_js_files +
-  gypi_values.devtools_cm_modes_js_files +
-  gypi_values.devtools_components_lazy_js_files +
-  gypi_values.devtools_console_js_files +
-  gypi_values.devtools_devices_js_files +
-  gypi_values.devtools_diff_js_files +
-  gypi_values.devtools_elements_js_files +
-  gypi_values.devtools_emulated_devices_js_files +
-  devtools_extensions_js_files +
-  gypi_values.devtools_heap_snapshot_worker_js_files +
-  gypi_values.devtools_layers_js_files +
-  gypi_values.devtools_network_js_files +
-  gypi_values.devtools_profiler_js_files +
-  gypi_values.devtools_promises_js_files +
-  gypi_values.devtools_resources_js_files +
-  gypi_values.devtools_security_js_files +
-  gypi_values.devtools_screencast_js_files +
-  gypi_values.devtools_script_formatter_worker_js_files +
-  gypi_values.devtools_settings_js_files +
-  gypi_values.devtools_snippets_js_files +
-  gypi_values.devtools_source_frame_js_files +
-  gypi_values.devtools_sources_js_files +
-  gypi_values.devtools_temp_storage_shared_worker_js_files +
-  gypi_values.devtools_timeline_js_files +
-  gypi_values.devtools_ui_lazy_js_files
+    gypi_values.devtools_accessibility_js_files +
+    gypi_values.devtools_audits_js_files +
+    gypi_values.devtools_animation_js_files +
+    gypi_values.devtools_cm_modes_js_files +
+    gypi_values.devtools_components_lazy_js_files +
+    gypi_values.devtools_console_js_files +
+    gypi_values.devtools_devices_js_files + gypi_values.devtools_diff_js_files +
+    gypi_values.devtools_elements_js_files +
+    gypi_values.devtools_emulated_devices_js_files +
+    devtools_extensions_js_files +
+    gypi_values.devtools_heap_snapshot_worker_js_files +
+    gypi_values.devtools_layers_js_files +
+    gypi_values.devtools_network_js_files +
+    gypi_values.devtools_profiler_js_files +
+    gypi_values.devtools_promises_js_files +
+    gypi_values.devtools_resources_js_files +
+    gypi_values.devtools_security_js_files +
+    gypi_values.devtools_screencast_js_files +
+    gypi_values.devtools_script_formatter_worker_js_files +
+    gypi_values.devtools_settings_js_files +
+    gypi_values.devtools_snippets_js_files +
+    gypi_values.devtools_source_frame_js_files +
+    gypi_values.devtools_sources_js_files +
+    gypi_values.devtools_temp_storage_shared_worker_js_files +
+    gypi_values.devtools_timeline_js_files +
+    gypi_values.devtools_ui_lazy_js_files
 
 all_devtools_files =
-  gypi_values.devtools_cm_css_files +
-  gypi_values.devtools_cm_js_files +
-  devtools_core_files +
-  gypi_values.devtools_module_json_files +
-  devtools_modules_js_files +
-  gypi_values.devtools_acorn_files
+    gypi_values.devtools_cm_css_files + gypi_values.devtools_cm_js_files +
+    devtools_core_files + gypi_values.devtools_module_json_files +
+    devtools_modules_js_files + gypi_values.devtools_acorn_files
 
 # FIXME: Fix the generate_devtools_grd.py script to accept trailing slashes.
 resources_out_dir_no_slash = "$root_out_dir/resources/inspector"
@@ -104,23 +96,31 @@ group("devtools_frontend_resources") {
 
 copy("copy_compatibility_scripts") {
   sources = gypi_values.devtools_compatibility_scripts
-  outputs = [ resources_out_dir + "{{source_file_part}}" ]
+  outputs = [
+    resources_out_dir + "{{source_file_part}}",
+  ]
 }
 
 copy("copy_inspector_images") {
   sources = gypi_values.devtools_image_files
-  outputs = [ resources_out_dir + "Images/{{source_file_part}}" ]
+  outputs = [
+    resources_out_dir + "Images/{{source_file_part}}",
+  ]
 }
 
 copy("copy_emulated_devices_images") {
   sources = gypi_values.devtools_emulated_devices_images
-  outputs = [ resources_out_dir + "emulated_devices/{{source_file_part}}" ]
+  outputs = [
+    resources_out_dir + "emulated_devices/{{source_file_part}}",
+  ]
 }
 
 action("generate_devtools_grd") {
   script = "scripts/generate_devtools_grd.py"
 
-  deps = [ ":devtools_frontend_resources" ]
+  deps = [
+    ":devtools_frontend_resources",
+  ]
   static_files_list = "$target_gen_dir/devtools_static_grd_files.tmp"
   inputs = gypi_values.devtools_image_files + all_devtools_files
   inputs += gypi_values.devtools_compatibility_scripts
@@ -131,9 +131,9 @@ action("generate_devtools_grd") {
   if (debug_devtools) {
     # Debug: all files are picked as-is.
     generated_files = generated_scripts + [
-      resources_out_dir + "inspector.html",
-      resources_out_dir + "toolbox.html",
-    ]
+                        resources_out_dir + "inspector.html",
+                        resources_out_dir + "toolbox.html",
+                      ]
     static_files += all_devtools_files + [ "front_end/Runtime.js" ]
   } else {
     # Release: pick compiled non-remote files and lazy-loaded CSS.
@@ -177,55 +177,73 @@ action("generate_devtools_grd") {
   inputs += generated_files
 
   outfile = "$root_gen_dir/devtools/devtools_resources.grd"
-  outputs = [ outfile ]
+  outputs = [
+    outfile,
+  ]
 
   relative_path_dirs = [
     resources_out_dir_no_slash,
     "front_end",
   ]
 
-  args = rebase_path(generated_files, root_build_dir) +
-    rebase_path(generated_files, root_build_dir) +
-    rebase_path(gypi_values.devtools_compatibility_scripts, root_build_dir) + [
-    "--static_files_list", rebase_path(static_files_list, root_build_dir),
-    "--relative_path_dirs" ] +
-    rebase_path(relative_path_dirs, root_build_dir) + [
-    "--images", rebase_path(images_path, root_build_dir),
-    "--output", rebase_path(outfile, root_build_dir),
-  ]
+  args =
+      rebase_path(generated_files, root_build_dir) +
+      rebase_path(generated_files, root_build_dir) +
+      rebase_path(gypi_values.devtools_compatibility_scripts, root_build_dir) +
+      [
+        "--static_files_list",
+        rebase_path(static_files_list, root_build_dir),
+        "--relative_path_dirs",
+      ] + rebase_path(relative_path_dirs, root_build_dir) +
+      [
+        "--images",
+        rebase_path(images_path, root_build_dir),
+        "--output",
+        rebase_path(outfile, root_build_dir),
+      ]
 }
 
 action("devtools_extension_api") {
   script = "scripts/generate_devtools_extension_api.py"
 
   inputs = gypi_values.devtools_extension_api_files
-  outputs = [ resources_out_dir + "devtools_extension_api.js" ]
+  outputs = [
+    resources_out_dir + "devtools_extension_api.js",
+  ]
 
   args = rebase_path(outputs, root_build_dir) +
-    rebase_path(gypi_values.devtools_extension_api_files, root_build_dir)
+         rebase_path(gypi_values.devtools_extension_api_files, root_build_dir)
 }
 
 action("supported_css_properties") {
   script = "scripts/generate_supported_css.py"
 
-  inputs = [ "../core/css/CSSProperties.in" ]
+  inputs = [
+    "../core/css/CSSProperties.in",
+  ]
 
-  outputs = [ resources_out_dir + "SupportedCSSProperties.js" ]
+  outputs = [
+    resources_out_dir + "SupportedCSSProperties.js",
+  ]
 
-  args = rebase_path(inputs, root_build_dir) +
-    rebase_path(outputs, root_build_dir)
+  args =
+      rebase_path(inputs, root_build_dir) + rebase_path(outputs, root_build_dir)
 }
 
 action("frontend_protocol_sources") {
   script = "scripts/CodeGeneratorFrontend.py"
 
-  inputs = [ "protocol.json" ]
-  outputs = [ resources_out_dir + "InspectorBackendCommands.js" ]
+  inputs = [
+    "protocol.json",
+  ]
+  outputs = [
+    resources_out_dir + "InspectorBackendCommands.js",
+  ]
 
   args = rebase_path(inputs, root_build_dir) + [
-    "--output_js_dir",
-    rebase_path(resources_out_dir, root_build_dir),
-  ]
+           "--output_js_dir",
+           rebase_path(resources_out_dir, root_build_dir),
+         ]
 }
 
 action("build_applications") {
@@ -236,9 +254,9 @@ action("build_applications") {
   ]
 
   inputs = helper_scripts + all_devtools_files + generated_scripts + [
-    "front_end/inspector.html",
-    "front_end/toolbox.html",
-  ]
+             "front_end/inspector.html",
+             "front_end/toolbox.html",
+           ]
 
   outputs = [
     resources_out_dir + "inspector.html",
@@ -290,10 +308,14 @@ action("build_applications") {
   }
 
   args = [
-    "inspector", "toolbox",
-    "--input_path", rebase_path("front_end", root_build_dir),
-    "--output_path", rebase_path(resources_out_dir, root_build_dir),
-    "--debug", debug_mode
+    "inspector",
+    "toolbox",
+    "--input_path",
+    rebase_path("front_end", root_build_dir),
+    "--output_path",
+    rebase_path(resources_out_dir, root_build_dir),
+    "--debug",
+    debug_mode,
   ]
 }
 
@@ -309,19 +331,25 @@ if (debug_devtools) {
 
   copy("copy_runtime_core") {
     sources = gypi_values.devtools_core_base_files +
-      gypi_values.devtools_core_css_files
-    outputs = [ resources_out_dir + "/{{source_file_part}}" ]
+              gypi_values.devtools_core_css_files
+    outputs = [
+      resources_out_dir + "/{{source_file_part}}",
+    ]
   }
 
   copy("copy_acorn_js_files") {
     sources = gypi_values.devtools_acorn_files
-    outputs = [ resources_out_dir + "acorn/{{source_file_part}}" ]
+    outputs = [
+      resources_out_dir + "acorn/{{source_file_part}}",
+    ]
   }
 
   copy("copy_codemirror_files") {
-    sources = gypi_values.devtools_cm_js_files +
-      gypi_values.devtools_cm_css_files
-    outputs = [ resources_out_dir + "cm/{{source_file_part}}" ]
+    sources =
+        gypi_values.devtools_cm_js_files + gypi_values.devtools_cm_css_files
+    outputs = [
+      resources_out_dir + "cm/{{source_file_part}}",
+    ]
   }
 }
 
@@ -337,10 +365,12 @@ if (!debug_devtools) {
       input_stylesheet = "front_end/" + app_name + ".css"
       inputs = [ input_stylesheet ] + gypi_values.devtools_core_css_files
 
-      outputs = [ resources_out_dir + app_name + ".css" ]
+      outputs = [
+        resources_out_dir + app_name + ".css",
+      ]
 
       args = [ rebase_path(input_stylesheet, root_build_dir) ] +
-        rebase_path(outputs, root_build_dir)
+             rebase_path(outputs, root_build_dir)
     }
   }
 

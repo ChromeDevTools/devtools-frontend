@@ -1740,13 +1740,13 @@ WebInspector.DOMModel.prototype = {
 
     /**
      * @param {!DOMAgent.NodeId=} nodeId
-     * @param {!{mode: (string|undefined), showInfo: (boolean|undefined)}=} config
+     * @param {!{mode: (string|undefined), showInfo: (boolean|undefined), selectors: (string|undefined)}=} config
      * @param {!DOMAgent.BackendNodeId=} backendNodeId
      * @param {!RuntimeAgent.RemoteObjectId=} objectId
      */
     highlightDOMNodeWithConfig: function(nodeId, config, backendNodeId, objectId)
     {
-        config = config || { mode: "all", showInfo: undefined };
+        config = config || { mode: "all", showInfo: undefined, selectors: undefined };
         if (this._hideDOMNodeHighlightTimeout) {
             clearTimeout(this._hideDOMNodeHighlightTimeout);
             delete this._hideDOMNodeHighlightTimeout;
@@ -1754,6 +1754,8 @@ WebInspector.DOMModel.prototype = {
         var highlightConfig = this._buildHighlightConfig(config.mode);
         if (typeof config.showInfo !== "undefined")
             highlightConfig.showInfo = config.showInfo;
+        if (typeof config.selectors !== "undefined")
+            highlightConfig.selectorList = config.selectors;
         this._highlighter.highlightDOMNode(this.nodeForId(nodeId || 0), highlightConfig, backendNodeId, objectId);
     },
 

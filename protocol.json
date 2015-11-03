@@ -2411,7 +2411,8 @@
                     { "name": "marginColor", "$ref": "RGBA", "optional": true, "description": "The margin highlight fill color (default: transparent)." },
                     { "name": "eventTargetColor", "$ref": "RGBA", "optional": true, "hidden": true, "description": "The event target element highlight fill color (default: transparent)." },
                     { "name": "shapeColor", "$ref": "RGBA", "optional": true, "hidden": true, "description": "The shape outside fill color (default: transparent)." },
-                    { "name": "shapeMarginColor", "$ref": "RGBA", "optional": true, "hidden": true, "description": "The shape margin fill color (default: transparent)." }
+                    { "name": "shapeMarginColor", "$ref": "RGBA", "optional": true, "hidden": true, "description": "The shape margin fill color (default: transparent)." },
+                    { "name": "selectorList", "type": "string", "optional": true, "description": "Selectors to highlight relevant nodes."}
                 ],
                 "description": "Configuration data for the highlighting of page elements."
             },

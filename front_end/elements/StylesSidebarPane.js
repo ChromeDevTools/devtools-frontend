@@ -822,6 +822,8 @@ WebInspector.StylePropertiesSection = function(parentPane, styleRule)
     this._selectorElement = createElementWithClass("span", "selector");
     this._selectorElement.textContent = styleRule.selectorText();
     selectorContainer.appendChild(this._selectorElement);
+    selectorContainer.addEventListener("mouseenter", this._onMouseEnterSelector.bind(this), false);
+    selectorContainer.addEventListener("mouseleave", this._onMouseOutSelector.bind(this), false);
 
     var openBrace = createElement("span");
     openBrace.textContent = " {";
@@ -872,6 +874,29 @@ WebInspector.StylePropertiesSection = function(parentPane, styleRule)
 }
 
 WebInspector.StylePropertiesSection.prototype = {
+    _onMouseOutSelector: function()
+    {
+        if (this._hoverTimer)
+            clearTimeout(this._hoverTimer);
+        WebInspector.DOMModel.hideDOMNodeHighlight()
+    },
+
+    _onMouseEnterSelector: function()
+    {
+        if (this._hoverTimer)
+            clearTimeout(this._hoverTimer);
+        this._hoverTimer = setTimeout(this._highlight.bind(this), 300);
+    },
+
+    _highlight: function()
+    {
+        WebInspector.DOMModel.hideDOMNodeHighlight()
+        var node = this._parentPane.node();
+        var domModel = node.domModel();
+        domModel.highlightDOMNodeWithConfig(node.id, { mode: "all", showInfo: undefined, selectors: this.styleRule.rule().selectorText() });
+        this._activeHighlightDOMModel = domModel;
+    },
+
     /**
      * @return {?WebInspector.StylePropertiesSection}
      */

@@ -69,11 +69,13 @@ WebInspector.DatabaseQueryView.prototype = {
 
     /**
      * @param {!Element} proxyElement
+     * @param {string} text
+     * @param {number} cursorOffset
      * @param {!Range} wordRange
      * @param {boolean} force
      * @param {function(!Array.<string>, number=)} completionsReadyCallback
      */
-    completions: function(proxyElement, wordRange, force, completionsReadyCallback)
+    completions: function(proxyElement, text, cursorOffset, wordRange, force, completionsReadyCallback)
     {
         var prefix = wordRange.toString().toLowerCase();
         if (!prefix)

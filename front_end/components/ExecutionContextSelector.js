@@ -148,11 +148,13 @@ WebInspector.ExecutionContextSelector.prototype = {
 
 /**
  * @param {!Element} proxyElement
+ * @param {string} text
+ * @param {number} cursorOffset
  * @param {!Range} wordRange
  * @param {boolean} force
  * @param {function(!Array.<string>, number=)} completionsReadyCallback
  */
-WebInspector.ExecutionContextSelector.completionsForTextPromptInCurrentContext = function(proxyElement, wordRange, force, completionsReadyCallback)
+WebInspector.ExecutionContextSelector.completionsForTextPromptInCurrentContext = function(proxyElement, text, cursorOffset, wordRange, force, completionsReadyCallback)
 {
     var executionContext = WebInspector.context.flavor(WebInspector.ExecutionContext);
     if (!executionContext) {
@@ -170,5 +172,5 @@ WebInspector.ExecutionContextSelector.completionsForTextPromptInCurrentContext =
         expressionString = expressionString.substr(pos + 1);
 
     var prefix = wordRange.toString();
-    executionContext.completionsForExpression(expressionString, prefix, force, completionsReadyCallback);
+    executionContext.completionsForExpression(expressionString, text, cursorOffset, prefix, force, completionsReadyCallback);
 }

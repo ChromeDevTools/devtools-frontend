@@ -2796,11 +2796,13 @@ WebInspector.StylesSidebarPane.CSSPropertyPrompt.prototype = {
 
     /**
      * @param {!Element} proxyElement
+     * @param {string} text
+     * @param {number} cursorOffset
      * @param {!Range} wordRange
      * @param {boolean} force
      * @param {function(!Array.<string>, number=)} completionsReadyCallback
      */
-    _buildPropertyCompletions: function(proxyElement, wordRange, force, completionsReadyCallback)
+    _buildPropertyCompletions: function(proxyElement, text, cursorOffset, wordRange, force, completionsReadyCallback)
     {
         var prefix = wordRange.toString().toLowerCase();
         if (!prefix && !force && (this._isEditingName || proxyElement.textContent.length)) {

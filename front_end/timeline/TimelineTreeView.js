@@ -4,12 +4,12 @@
 
 /**
  * @constructor
- * @extends {WebInspector.DataGridContainerWidget}
+ * @extends {WebInspector.VBox}
  * @param {!WebInspector.TimelineModel} model
  */
 WebInspector.TimelineTreeView = function(model)
 {
-    WebInspector.DataGridContainerWidget.call(this);
+    WebInspector.VBox.call(this);
     this.element.classList.add("timeline-tree-view");
 
     this._model = model;
@@ -30,10 +30,11 @@ WebInspector.TimelineTreeView = function(model)
 
     var columns = [];
     this._populateColumns(columns);
-    this.dataGrid = new WebInspector.SortableDataGrid(columns);
-    this.dataGrid.addEventListener(WebInspector.DataGrid.Events.SortingChanged, this._sortingChanged, this);
-
-    this.appendDataGrid(this.dataGrid);
+    this._dataGrid = new WebInspector.SortableDataGrid(columns);
+    this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SortingChanged, this._sortingChanged, this);
+    var dataGridContainerWidget = new WebInspector.DataGridContainerWidget();
+    dataGridContainerWidget.appendDataGrid(this._dataGrid);
+    dataGridContainerWidget.show(this.element);
 }
 
 WebInspector.TimelineTreeView.prototype = {
@@ -73,7 +74,7 @@ WebInspector.TimelineTreeView.prototype = {
     _refreshTree: function()
     {
         this._linkifier.reset();
-        this.dataGrid.rootNode().removeChildren();
+        this._dataGrid.rootNode().removeChildren();
         var tree = this._buildTree();
         if (!tree.children)
             return;
@@ -86,7 +87,7 @@ WebInspector.TimelineTreeView.prototype = {
         for (var child of tree.children.values()) {
             // Exclude the idle time off the total calculation.
             var gridNode = new WebInspector.TimelineTreeView.GridNode(child, tree.totalTime, maxSelfTime, maxTotalTime, this);
-            this.dataGrid.insertChild(gridNode);
+            this._dataGrid.insertChild(gridNode);
         }
         this._sortingChanged();
     },
@@ -111,7 +112,7 @@ WebInspector.TimelineTreeView.prototype = {
 
     _sortingChanged: function()
     {
-        var columnIdentifier = this.dataGrid.sortColumnIdentifier();
+        var columnIdentifier = this._dataGrid.sortColumnIdentifier();
         if (!columnIdentifier)
             return;
         var sortFunction;
@@ -132,7 +133,7 @@ WebInspector.TimelineTreeView.prototype = {
             console.assert(false, "Unknown sort field: " + columnIdentifier);
             return;
         }
-        this.dataGrid.sortNodes(sortFunction, !this.dataGrid.isSortOrderAscending());
+        this._dataGrid.sortNodes(sortFunction, !this._dataGrid.isSortOrderAscending());
 
         /**
          * @param {string} field
@@ -174,7 +175,7 @@ WebInspector.TimelineTreeView.prototype = {
         }
     },
 
-    __proto__: WebInspector.DataGridContainerWidget.prototype
+    __proto__: WebInspector.VBox.prototype
 }
 
 /**
@@ -549,7 +550,7 @@ WebInspector.AggregatedTimelineTreeView.prototype = {
 WebInspector.CallTreeTimelineTreeView = function(model)
 {
     WebInspector.AggregatedTimelineTreeView.call(this, model);
-    this.dataGrid.markColumnAsSortedBy("total", WebInspector.DataGrid.Order.Descending);
+    this._dataGrid.markColumnAsSortedBy("total", WebInspector.DataGrid.Order.Descending);
 }
 
 WebInspector.CallTreeTimelineTreeView.prototype = {
@@ -595,7 +596,7 @@ WebInspector.CallTreeTimelineTreeView.prototype = {
 WebInspector.BottomUpTimelineTreeView = function(model)
 {
     WebInspector.AggregatedTimelineTreeView.call(this, model);
-    this.dataGrid.markColumnAsSortedBy("self", WebInspector.DataGrid.Order.Descending);
+    this._dataGrid.markColumnAsSortedBy("self", WebInspector.DataGrid.Order.Descending);
 }
 
 WebInspector.BottomUpTimelineTreeView.prototype = {
@@ -632,7 +633,7 @@ WebInspector.BottomUpTimelineTreeView.prototype = {
 WebInspector.EventsTimelineTreeView = function(model)
 {
     WebInspector.TimelineTreeView.call(this, model);
-    this.dataGrid.markColumnAsSortedBy("startTime", WebInspector.DataGrid.Order.Ascending);
+    this._dataGrid.markColumnAsSortedBy("startTime", WebInspector.DataGrid.Order.Ascending);
 }
 
 WebInspector.EventsTimelineTreeView.prototype = {

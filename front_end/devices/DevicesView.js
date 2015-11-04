@@ -42,6 +42,9 @@ WebInspector.DevicesView = function()
 
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.DevicesUpdated, this._devicesUpdated, this);
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this._devicesDiscoveryConfigChanged, this);
+
+    this.contentElement.tabIndex = 0;
+    this.setDefaultFocusedElement(this.contentElement);
 }
 
 WebInspector.DevicesView.prototype = {
@@ -324,29 +327,41 @@ WebInspector.DevicesView.DiscoveryView.prototype = {
         this._editor = editor;
         var content = editor.contentElement();
         var fields = content.createChild("div", "port-forwarding-edit-row");
-        fields.createChild("div", "port-forwarding-value port-forwarding-port").appendChild(editor.createInput("port", "text", "Device port (3333)", portValidator));
+        fields.createChild("div", "port-forwarding-value port-forwarding-port").appendChild(editor.createInput("port", "text", "Device port (3333)", portValidator.bind(this)));
         fields.createChild("div", "port-forwarding-separator port-forwarding-separator-invisible");
         fields.createChild("div", "port-forwarding-value").appendChild(editor.createInput("address", "text", "Local address (dev.example.corp:3333)", addressValidator));
         return editor;
 
         /**
+         * @param {*} item
+         * @param {number} index
          * @param {!HTMLInputElement|!HTMLSelectElement} input
+         * @this {WebInspector.DevicesView.DiscoveryView}
          * @return {boolean}
          */
-        function portValidator(input)
+        function portValidator(item, index, input)
         {
-            var match = input.value.trim().match(/^(\d+)$/);
+            var value = input.value.trim();
+            var match = value.match(/^(\d+)$/);
             if (!match)
                 return false;
             var port = parseInt(match[1], 10);
-            return port >= 1024 && port <= 65535;
+            if (port < 1024 || port > 65535)
+                return false;
+            for (var i = 0; i < this._portForwardingConfig.length; ++i) {
+                if (i !== index && this._portForwardingConfig[i].port === value)
+                    return false;
+            }
+            return true;
         }
 
         /**
+         * @param {*} item
+         * @param {number} index
          * @param {!HTMLInputElement|!HTMLSelectElement} input
          * @return {boolean}
          */
-        function addressValidator(input)
+        function addressValidator(item, index, input)
         {
             var match = input.value.trim().match(/^([a-zA-Z0-9\.\-_]+):(\d+)$/);
             if (!match)

@@ -85,14 +85,19 @@ WebInspector.EditFileSystemView.prototype = {
             return;
 
         this._mappingsList.clear();
-        this._mappings = WebInspector.fileSystemMapping.mappingEntries(this._fileSystemPath);
-        for (var entry of this._mappings) {
-            if (entry.configurable)
+        this._mappings = [];
+        var mappings = WebInspector.fileSystemMapping.mappingEntries(this._fileSystemPath);
+        for (var entry of mappings) {
+            if (entry.configurable) {
                 this._mappingsList.appendItem(entry, true);
+                this._mappings.push(entry);
+            }
         }
-        for (var entry of this._mappings) {
-            if (!entry.configurable)
+        for (var entry of mappings) {
+            if (!entry.configurable) {
                 this._mappingsList.appendItem(entry, false);
+                this._mappings.push(entry);
+            }
         }
 
         this._excludedFoldersList.clear();
@@ -156,16 +161,12 @@ WebInspector.EditFileSystemView.prototype = {
      */
     removeItemRequested: function(item, index)
     {
-        this._muteUpdate = true;
         if (item instanceof WebInspector.FileSystemMapping.Entry) {
             var entry = this._mappings[index];
             WebInspector.fileSystemMapping.removeFileMapping(entry.fileSystemPath, entry.urlPrefix, entry.pathPrefix);
-            this._mappingsList.removeItem(index);
         } else {
             WebInspector.isolatedFileSystemManager.fileSystem(this._fileSystemPath).removeExcludedFolder(this._excludedFolders[index]);
-            this._excludedFoldersList.removeItem(index);
         }
-        this._muteUpdate = false;
     },
 
     /**
@@ -236,24 +237,36 @@ WebInspector.EditFileSystemView.prototype = {
         return editor;
 
         /**
+         * @param {*} item
+         * @param {number} index
          * @param {!HTMLInputElement|!HTMLSelectElement} input
          * @return {boolean}
          * @this {WebInspector.EditFileSystemView}
          */
-        function urlPrefixValidator(input)
+        function urlPrefixValidator(item, index, input)
         {
             var prefix = this._normalizePrefix(input.value);
+            for (var i = 0; i < this._mappings.length; ++i) {
+                if (i !== index && this._mappings[i].configurable && this._mappings[i].urlPrefix === prefix)
+                    return false;
+            }
             return !!prefix;
         }
 
         /**
+         * @param {*} item
+         * @param {number} index
          * @param {!HTMLInputElement|!HTMLSelectElement} input
          * @return {boolean}
          * @this {WebInspector.EditFileSystemView}
          */
-        function pathPrefixValidator(input)
+        function pathPrefixValidator(item, index, input)
         {
             var prefix = this._normalizePrefix(input.value);
+            for (var i = 0; i < this._mappings.length; ++i) {
+                if (i !== index && this._mappings[i].configurable && this._mappings[i].pathPrefix === prefix)
+                    return false;
+            }
             return !!prefix;
         }
     },
@@ -279,13 +292,20 @@ WebInspector.EditFileSystemView.prototype = {
         return editor;
 
         /**
+         * @param {*} item
+         * @param {number} index
          * @param {!HTMLInputElement|!HTMLSelectElement} input
          * @return {boolean}
          * @this {WebInspector.EditFileSystemView}
          */
-        function pathPrefixValidator(input)
+        function pathPrefixValidator(item, index, input)
         {
             var prefix = this._normalizePrefix(input.value);
+            var configurableCount = WebInspector.isolatedFileSystemManager.fileSystem(this._fileSystemPath).excludedFolders().size;
+            for (var i = 0; i < configurableCount; ++i) {
+                if (i !== index && this._excludedFolders[i] === prefix)
+                    return false;
+            }
             return !!prefix;
         }
     },

@@ -156,9 +156,6 @@ WebInspector.NetworkConditionsSettingsTab.prototype = {
 
     _conditionsUpdated: function()
     {
-        if (this._muteUpdate)
-            return;
-
         this._list.clear();
 
         var conditions = this._customSetting.get();
@@ -207,10 +204,7 @@ WebInspector.NetworkConditionsSettingsTab.prototype = {
     {
         var list = this._customSetting.get();
         list.splice(index, 1);
-        this._muteUpdate = true;
         this._customSetting.set(list);
-        this._muteUpdate = false;
-        this._list.removeItem(index);
     },
 
     /**
@@ -284,30 +278,36 @@ WebInspector.NetworkConditionsSettingsTab.prototype = {
         return editor;
 
         /**
+         * @param {*} item
+         * @param {number} index
          * @param {!HTMLInputElement|!HTMLSelectElement} input
          * @return {boolean}
          */
-        function titleValidator(input)
+        function titleValidator(item, index, input)
         {
             var value = input.value.trim();
             return value.length > 0 && value.length < 50;
         }
 
         /**
+         * @param {*} item
+         * @param {number} index
          * @param {!HTMLInputElement|!HTMLSelectElement} input
          * @return {boolean}
          */
-        function throughputValidator(input)
+        function throughputValidator(item, index, input)
         {
             var value = input.value.trim();
             return !value || (/^[\d]+(\.\d+)?|\.\d+$/.test(value) && value >= 0 && value <= 10000000);
         }
 
         /**
+         * @param {*} item
+         * @param {number} index
          * @param {!HTMLInputElement|!HTMLSelectElement} input
          * @return {boolean}
          */
-        function latencyValidator(input)
+        function latencyValidator(item, index, input)
         {
             var value = input.value.trim();
             return !value || (/^[\d]+$/.test(value) && value >= 0 && value <= 1000000);

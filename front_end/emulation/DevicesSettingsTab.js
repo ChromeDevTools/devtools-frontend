@@ -19,8 +19,8 @@ WebInspector.DevicesSettingsTab = function()
     this.containerElement = this.element.createChild("div", "help-container-wrapper").createChild("div", "settings-tab help-content help-container");
 
     var buttonsRow = this.containerElement.createChild("div", "devices-button-row");
-    var addCustomButton = createTextButton(WebInspector.UIString("Add custom device..."), this._addCustomDevice.bind(this));
-    buttonsRow.appendChild(addCustomButton);
+    this._addCustomButton = createTextButton(WebInspector.UIString("Add custom device..."), this._addCustomDevice.bind(this));
+    buttonsRow.appendChild(this._addCustomButton);
 
     this._list = new WebInspector.ListWidget(this);
     this._list.registerRequiredCSS("emulation/devicesSettingsTab.css");
@@ -31,7 +31,7 @@ WebInspector.DevicesSettingsTab = function()
     WebInspector.emulatedDevicesList.addEventListener(WebInspector.EmulatedDevicesList.Events.CustomDevicesUpdated, this._devicesUpdated, this);
     WebInspector.emulatedDevicesList.addEventListener(WebInspector.EmulatedDevicesList.Events.StandardDevicesUpdated, this._devicesUpdated, this);
 
-    this.setDefaultFocusedElement(addCustomButton);
+    this.setDefaultFocusedElement(this._addCustomButton);
 }
 
 WebInspector.DevicesSettingsTab.prototype = {
@@ -156,6 +156,8 @@ WebInspector.DevicesSettingsTab.prototype = {
             WebInspector.emulatedDevicesList.addCustomDevice(device);
         else
             WebInspector.emulatedDevicesList.saveCustomDevices();
+        this._addCustomButton.scrollIntoView();
+        this._addCustomButton.focus();
     },
 
     /**
@@ -202,38 +204,46 @@ WebInspector.DevicesSettingsTab.prototype = {
         return editor;
 
         /**
+         * @param {*} item
+         * @param {number} index
          * @param {!HTMLInputElement|!HTMLSelectElement} input
          * @return {boolean}
          */
-        function titleValidator(input)
+        function titleValidator(item, index, input)
         {
             var value = input.value.trim();
             return value.length > 0 && value.length < 50;
         }
 
         /**
+         * @param {*} item
+         * @param {number} index
          * @param {!HTMLInputElement|!HTMLSelectElement} input
          * @return {boolean}
          */
-        function sizeValidator(input)
+        function sizeValidator(item, index, input)
         {
             return !WebInspector.OverridesSupport.deviceSizeValidator(input.value);
         }
 
         /**
+         * @param {*} item
+         * @param {number} index
          * @param {!HTMLInputElement|!HTMLSelectElement} input
          * @return {boolean}
          */
-        function scaleValidator(input)
+        function scaleValidator(item, index, input)
         {
             return !WebInspector.OverridesSupport.deviceScaleFactorValidator(input.value);
         }
 
         /**
+         * @param {*} item
+         * @param {number} index
          * @param {!HTMLInputElement|!HTMLSelectElement} input
          * @return {boolean}
          */
-        function userAgentValidator(input)
+        function userAgentValidator(item, index, input)
         {
             return true;
         }

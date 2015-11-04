@@ -45,9 +45,6 @@ WebInspector.FrameworkBlackboxSettingsTab.prototype = {
 
     _settingUpdated: function()
     {
-        if (this._muteUpdate)
-            return;
-
         this._list.clear();
         var patterns = this._setting.getAsArray();
         for (var i = 0; i < patterns.length; ++i)
@@ -87,10 +84,7 @@ WebInspector.FrameworkBlackboxSettingsTab.prototype = {
     {
         var patterns = this._setting.getAsArray();
         patterns.splice(index, 1);
-        this._muteUpdate = true;
         this._setting.setAsArray(patterns);
-        this._muteUpdate = false;
-        this._list.removeItem(index);
     },
 
     /**
@@ -141,19 +135,28 @@ WebInspector.FrameworkBlackboxSettingsTab.prototype = {
         titles.createChild("div", "blackbox-behavior").textContent = WebInspector.UIString("Behavior");
 
         var fields = content.createChild("div", "blackbox-edit-row");
-        fields.createChild("div", "blackbox-pattern").appendChild(editor.createInput("pattern", "text", "/framework\\.js$", patternValidator));
+        fields.createChild("div", "blackbox-pattern").appendChild(editor.createInput("pattern", "text", "/framework\\.js$", patternValidator.bind(this)));
         fields.createChild("div", "blackbox-separator blackbox-separator-invisible");
         fields.createChild("div", "blackbox-behavior").appendChild(editor.createSelect("behavior", [this._blackboxLabel, this._disabledLabel], behaviorValidator));
 
         return editor;
 
         /**
+         * @param {*} item
+         * @param {number} index
          * @param {!HTMLInputElement|!HTMLSelectElement} input
+         * @this {WebInspector.FrameworkBlackboxSettingsTab}
          * @return {boolean}
          */
-        function patternValidator(input)
+        function patternValidator(item, index, input)
         {
             var pattern = input.value.trim();
+            var patterns = this._setting.getAsArray();
+            for (var i = 0; i < patterns.length; ++i) {
+                if (i !== index && patterns[i].pattern === pattern)
+                    return false;
+            }
+
             var regex;
             try {
                 regex = new RegExp(pattern);
@@ -163,10 +166,12 @@ WebInspector.FrameworkBlackboxSettingsTab.prototype = {
         }
 
         /**
+         * @param {*} item
+         * @param {number} index
          * @param {!HTMLInputElement|!HTMLSelectElement} input
          * @return {boolean}
          */
-        function behaviorValidator(input)
+        function behaviorValidator(item, index, input)
         {
             return true;
         }

@@ -228,10 +228,11 @@ WebInspector.ListWidget.prototype = {
         if (element)
             element.classList.add("hidden");
 
+        var index = element ? this._elements.indexOf(element) : -1;
         this._editor = this._delegate.beginEdit(item);
         this._updatePlaceholder();
         this._list.insertBefore(this._editor.element, insertionPoint);
-        this._editor.beginEdit(element ? WebInspector.UIString("Save") : WebInspector.UIString("Add"), this._commitEditing.bind(this), this._stopEditing.bind(this));
+        this._editor.beginEdit(item, index, element ? WebInspector.UIString("Save") : WebInspector.UIString("Add"), this._commitEditing.bind(this), this._stopEditing.bind(this));
     },
 
     _commitEditing: function()
@@ -295,13 +296,17 @@ WebInspector.ListWidget.Editor = function()
     this._controls = [];
     /** @type {!Map<string, !HTMLInputElement|!HTMLSelectElement>} */
     this._controlByName = new Map();
-    /** @type {!Array<function((!HTMLInputElement|!HTMLSelectElement)):boolean>} */
+    /** @type {!Array<function(*, number, (!HTMLInputElement|!HTMLSelectElement)):boolean>} */
     this._validators = [];
 
     /** @type {?function()} */
     this._commit = null;
     /** @type {?function()} */
     this._cancel = null;
+    /** @type {*|null} */
+    this._item = null;
+    /** @type {number} */
+    this._index = -1;
 }
 
 WebInspector.ListWidget.Editor.prototype = {
@@ -317,7 +322,7 @@ WebInspector.ListWidget.Editor.prototype = {
      * @param {string} name
      * @param {string} type
      * @param {string} title
-     * @param {function((!HTMLInputElement|!HTMLSelectElement)):boolean} validator
+     * @param {function(*, number, (!HTMLInputElement|!HTMLSelectElement)):boolean} validator
      * @return {!HTMLInputElement}
      */
     createInput: function(name, type, title, validator)
@@ -336,7 +341,7 @@ WebInspector.ListWidget.Editor.prototype = {
     /**
      * @param {string} name
      * @param {!Array<string>} options
-     * @param {function((!HTMLInputElement|!HTMLSelectElement)):boolean} validator
+     * @param {function(*, number, (!HTMLInputElement|!HTMLSelectElement)):boolean} validator
      * @return {!HTMLSelectElement}
      */
     createSelect: function(name, options, validator)
@@ -372,7 +377,7 @@ WebInspector.ListWidget.Editor.prototype = {
         var allValid = true;
         for (var index = 0; index < this._controls.length; ++index) {
             var input = this._controls[index];
-            var valid = this._validators[index].call(null, input);
+            var valid = this._validators[index].call(null, this._item, this._index, input);
             input.classList.toggle("error-input", !valid && !forceValid);
             allValid &= valid;
         }
@@ -380,17 +385,21 @@ WebInspector.ListWidget.Editor.prototype = {
     },
 
     /**
+     * @param {*} item
+     * @param {number} index
      * @param {string} commitButtonTitle
      * @param {function()} commit
      * @param {function()} cancel
      */
-    beginEdit: function(commitButtonTitle, commit, cancel)
+    beginEdit: function(item, index, commitButtonTitle, commit, cancel)
     {
         this._commit = commit;
         this._cancel = cancel;
+        this._item = item;
+        this._index = index;
 
         this._commitButton.textContent = commitButtonTitle;
-        this.element.scrollIntoView();
+        this.element.scrollIntoView(false);
         if (this._controls.length)
             this._controls[0].focus();
         this._validateControls(true);
@@ -404,6 +413,8 @@ WebInspector.ListWidget.Editor.prototype = {
         var commit = this._commit;
         this._commit = null;
         this._cancel = null;
+        this._item = null;
+        this._index = -1;
         commit();
     },
 
@@ -412,6 +423,8 @@ WebInspector.ListWidget.Editor.prototype = {
         var cancel = this._cancel;
         this._commit = null;
         this._cancel = null;
+        this._item = null;
+        this._index = -1;
         cancel();
     }
 }

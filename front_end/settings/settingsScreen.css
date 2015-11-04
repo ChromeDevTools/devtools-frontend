@@ -292,6 +292,7 @@ p.folder-exclude-pattern {
     margin-bottom: 18px;
     padding: 0 8px;
     border-left: 1px solid hsl(0, 0%, 90%);
+    max-width: 800px;
 }
 
 .settings-tab .file-system-header {

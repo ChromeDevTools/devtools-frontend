@@ -401,8 +401,19 @@ WebInspector.ContextMenu.prototype = {
             this._softMenu.show(this._event.target.ownerDocument, this._x, this._y);
         } else {
             InspectorFrontendHost.showContextMenuAtPoint(this._x, this._y, menuObject, this._event.target.ownerDocument);
-            InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.ContextMenuCleared, this._menuCleared, this);
-            InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this._onItemSelected, this);
+
+            /**
+             * @this {WebInspector.ContextMenu}
+             */
+            function listenToEvents()
+            {
+                InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.ContextMenuCleared, this._menuCleared, this);
+                InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this._onItemSelected, this);
+            }
+
+            // showContextMenuAtPoint call above synchronously issues a clear event for previous context menu (if any),
+            // so we skip it before subscribing to the clear event.
+            setImmediate(listenToEvents.bind(this));
         }
     },
 

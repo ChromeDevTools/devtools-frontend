@@ -733,8 +733,10 @@ WebInspector.TimelineView.prototype = {
 
         var taskBarElement = e.target.enclosingNodeOrSelfWithClass("timeline-graph-bar");
         if (taskBarElement && taskBarElement._tasksInfo) {
-            var offset = taskBarElement.offsetLeft;
-            this._timelineGrid.showCurtains(offset >= 0 ? offset : 0, taskBarElement.offsetWidth);
+            var parentWidth = taskBarElement.parentElement.offsetWidth;
+            var offset = Math.max(0, taskBarElement.offsetLeft);
+            var width = taskBarElement.offsetWidth;
+            this._timelineGrid.showCurtains(offset / parentWidth, (offset + width) / parentWidth);
         } else
             this._timelineGrid.hideCurtains();
     },

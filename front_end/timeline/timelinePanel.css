@@ -585,22 +585,6 @@
     background-color: #aaa;
 }
 
-.timeline-cpu-curtain-left, .timeline-cpu-curtain-right {
-    background-color: rgba(210, 210, 210, 0.5);
-    position: absolute;
-    top: 0;
-    height: 100%;
-    z-index: 300;
-}
-
-.timeline-cpu-curtain-left {
-    left: 0;
-}
-
-.timeline-cpu-curtain-right {
-    right: 0;
-}
-
 .image-preview-container {
     background: transparent;
     text-align: left;

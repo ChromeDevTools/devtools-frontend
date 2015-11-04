@@ -945,17 +945,6 @@ WebInspector.TimelineFlameChartNetworkDataProvider.prototype = {
     },
 
     /**
-     * @override
-     * @param {number} index
-     * @return {?Array.<!{title: string, value: (string|!Element)}>}
-     */
-    prepareHighlightedEntryInfo: function(index)
-    {
-        var request = /** @type {!WebInspector.TimelineModel.NetworkRequest} */ (this._requests[index]);
-        return WebInspector.TimelineUIUtils.buildNetworkRequestInfo(request);
-    },
-
-    /**
      * @param {!Array.<!WebInspector.TracingModel.Event>} events
      */
     _appendTimelineData: function(events)

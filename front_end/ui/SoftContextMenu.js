@@ -98,8 +98,7 @@ WebInspector.SoftContextMenu.prototype = {
         maxHeight -= y - WebInspector.Dialog.modalHostView().element.totalOffsetTop();
         this.element.style.maxHeight = maxHeight + "px";
 
-        if (!this._parentMenu)
-            this._focus();
+        this._focus();
     },
 
     discard: function()

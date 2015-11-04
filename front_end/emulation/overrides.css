@@ -28,14 +28,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-.overrides-view {
-    padding: 12px;
-}
-
 .overrides-view fieldset {
     border: none;
     flex: 0 0 auto;
     padding: 0;
+    margin: 0;
 }
 
 .overrides-view fieldset p {
@@ -64,7 +61,9 @@
 /* Device tab */
 
 .overrides-device {
-    width: 100%;
+    flex: 1 1 auto;
+    overflow: auto;
+    padding: 12px;
 }
 
 .overrides-device input.numeric {
@@ -79,10 +78,6 @@
     display: block;
     margin-bottom: 7px;
     white-space: nowrap;
-}
-
-.overrides-device button {
-    margin: 0 3px;
 }
 
 .overrides-device label {
@@ -118,7 +113,7 @@
 }
 
 .overrides-device .overrides-device-model-section > span {
-    padding: 0 10px 0 3px;
+    padding-right: 10px;
 }
 
 .overrides-device .overrides-device-model-section select {
@@ -176,14 +171,10 @@ fieldset.overrides-device-model-settings {
 }
 
 .overrides-view .overrides-footer {
-    flex: none;
+    flex: 0 0 auto;
     padding: 5px 8px;
     border-top: 1px solid rgb(203,203,203);
     background-color: #eee;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    left: 0;
 }
 
 .overrides-view .overrides-footer::before {
@@ -211,6 +202,7 @@ fieldset.overrides-device-model-settings {
 
 .overrides-splash-screen {
     flex: auto;
+    padding: 12px;
 }
 
 .overrides-splash-screen .toolbar {
@@ -222,8 +214,4 @@ fieldset.overrides-device-model-settings {
 
 #overrides-disable-button {
     margin-bottom: 12px;
-}
-
-.overrides-enable-button {
-    margin: 4px !important;
 }

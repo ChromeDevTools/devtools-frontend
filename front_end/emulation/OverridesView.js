@@ -47,6 +47,9 @@ WebInspector.OverridesView = function()
     this._unavailableSplashScreenElement = this.element.createChild("div", "overrides-splash-screen");
     this._unavailableSplashScreenElement.createTextChild(WebInspector.UIString("Emulation is not available."));
 
+    this._warningFooter = this.element.createChild("div", "overrides-footer");
+    this._overridesWarningUpdated();
+
     WebInspector.overridesSupport.addEventListener(WebInspector.OverridesSupport.Events.OverridesWarningUpdated, this._overridesWarningUpdated, this);
     WebInspector.overridesSupport.addEventListener(WebInspector.OverridesSupport.Events.EmulationStateChanged, this._emulationStateChanged, this);
     this._emulationStateChanged();
@@ -112,9 +115,6 @@ WebInspector.OverridesView.prototype = {
 
         var footnote = container.createChild("p", "help-footnote");
         footnote.appendChild(WebInspector.linkifyDocumentationURLAsNode("setup/remote-debugging/remote-debugging", WebInspector.UIString("More information about screen emulation")));
-
-        this._warningFooter = container.createChild("div", "overrides-footer");
-        this._overridesWarningUpdated();
 
         return container;
     },

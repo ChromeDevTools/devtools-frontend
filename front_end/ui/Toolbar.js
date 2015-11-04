@@ -468,7 +468,7 @@ WebInspector.AbstractToolbarButton.prototype = {
     makeLongClickEnabled: function()
     {
         this._longClickController.enable();
-        this._longClickGlyph = this.element.createChild("div", "fill long-click-glyph toolbar-button-theme");
+        this._longClickGlyph = this.element.createChild("div", "long-click-glyph toolbar-button-theme");
     },
 
     unmakeLongClickEnabled: function()

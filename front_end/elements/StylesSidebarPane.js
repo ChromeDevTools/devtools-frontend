@@ -893,7 +893,8 @@ WebInspector.StylePropertiesSection.prototype = {
         WebInspector.DOMModel.hideDOMNodeHighlight()
         var node = this._parentPane.node();
         var domModel = node.domModel();
-        domModel.highlightDOMNodeWithConfig(node.id, { mode: "all", showInfo: undefined, selectors: this.styleRule.rule().selectorText() });
+        var selectors = this.styleRule.rule()? this.styleRule.rule().selectorText() : undefined;
+        domModel.highlightDOMNodeWithConfig(node.id, { mode: "all", showInfo: undefined, selectors: selectors });
         this._activeHighlightDOMModel = domModel;
     },
 

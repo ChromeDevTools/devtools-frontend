@@ -346,7 +346,7 @@ WebInspector.SecurityPanelSidebarTree.prototype = {
     addOrigin: function(origin, securityState)
     {
         var originElement = new WebInspector.SecurityPanelSidebarTreeElement(origin, this._showOriginInPanel.bind(this, origin), "security-sidebar-tree-item", "security-property");
-
+        originElement.listItemElement.title = origin;
         this._elementsByOrigin.set(origin, originElement);
         this._insertOriginElementSorted(originElement, securityState);
     },

@@ -189,13 +189,21 @@ WebInspector.TimelineModel.RendererMainThreadName = "CrRendererMain";
  * @param {!Array.<!WebInspector.TracingModel.Event>} events
  * @param {function(!WebInspector.TracingModel.Event)} onStartEvent
  * @param {function(!WebInspector.TracingModel.Event)} onEndEvent
- * @param {function(!WebInspector.TracingModel.Event,?WebInspector.TracingModel.Event)=} onInstantEvent
+ * @param {function(!WebInspector.TracingModel.Event,?WebInspector.TracingModel.Event)|undefined=} onInstantEvent
+ * @param {number=} startTime
+ * @param {number=} endTime
  */
-WebInspector.TimelineModel.forEachEvent = function(events, onStartEvent, onEndEvent, onInstantEvent)
+WebInspector.TimelineModel.forEachEvent = function(events, onStartEvent, onEndEvent, onInstantEvent, startTime, endTime)
 {
+    startTime = startTime || 0;
+    endTime = endTime || Infinity;
     var stack = [];
     for (var i = 0; i < events.length; ++i) {
         var e = events[i];
+        if ((e.endTime || e.startTime) < startTime)
+            continue;
+        if (e.startTime >= endTime)
+            break;
         if (WebInspector.TracingModel.isAsyncPhase(e.phase) || WebInspector.TracingModel.isFlowPhase(e.phase))
             continue;
         while (stack.length && stack.peekLast().endTime <= e.startTime)
@@ -1498,12 +1506,6 @@ WebInspector.TimelineModel.buildTopDownTree = function(events, startTime, endTim
      */
     function filter(e)
     {
-        if (!e.endTime && e.phase !== WebInspector.TracingModel.Phase.Instant)
-            return false;
-        if (e.endTime <= startTime || e.startTime >= endTime)
-            return false;
-        if (WebInspector.TracingModel.isAsyncPhase(e.phase))
-            return false;
         for (var i = 0, l = filters.length; i < l; ++i) {
             if (!filters[i].accept(e))
                 return false;
@@ -1553,7 +1555,7 @@ WebInspector.TimelineModel.buildTopDownTree = function(events, startTime, endTim
         parent = parent.parent;
     }
 
-    WebInspector.TimelineModel.forEachEvent(events, onStartEvent, onEndEvent);
+    WebInspector.TimelineModel.forEachEvent(events, onStartEvent, onEndEvent, undefined, startTime, endTime);
     root.totalTime -= root.selfTime;
     root.selfTime = 0;
     return root;

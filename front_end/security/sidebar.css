@@ -49,7 +49,7 @@
     margin-right: 2px;
 }
 
-.tree-outline .security-sidebar-tree-item.selected .icon:not(.security-property-unknown) {
+.tree-outline:focus .security-sidebar-tree-item.selected .icon:not(.security-property-unknown) {
     background-image: none;
     background-color: #fff;
 }

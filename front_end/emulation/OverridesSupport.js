@@ -486,7 +486,11 @@ WebInspector.OverridesSupport.prototype = {
      */
     _onPageResizerInsetsChanged: function(event)
     {
-        this._pageResizerInsets = /** @type {!Insets} */ (event.data);
+        var insets = /** @type {!Insets} */ (event.data);
+        if (!insets.isEqual(this._pageResizerInsets)) {
+            this._pageResizerInsets = insets;
+            this._deviceMetricsChanged(false);
+        }
     },
 
     /**

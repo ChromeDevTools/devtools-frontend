@@ -532,7 +532,7 @@ WebInspector.ResponsiveDesignView.prototype = {
             this._inspectedPagePlaceholder.onResize();
         }
 
-        if (this._cachedCssPageWidth !== cssPageHeight || this._cachedCssPageHeight !== cssPageHeight) {
+        if (this._cachedCssPageWidth !== cssPageWidth || this._cachedCssPageHeight !== cssPageHeight) {
             this._pageContainerImage.style.width = cssPageWidth + "px";
             this._pageContainerImage.style.height = cssPageHeight + "px";
         }

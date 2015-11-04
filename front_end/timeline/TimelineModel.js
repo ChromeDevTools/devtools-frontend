@@ -1150,13 +1150,11 @@ WebInspector.TimelineModel.prototype = {
             this._invalidationTracker.didPaint(event);
             event.highlightQuad = event.args["data"]["clip"];
             event.backendNodeId = event.args["data"]["nodeId"];
-            var layerUpdateEvent = this._findAncestorEvent(recordTypes.UpdateLayer);
-            if (!layerUpdateEvent || layerUpdateEvent.args["layerTreeId"] !== this._inspectedTargetLayerTreeId)
-                break;
             // Only keep layer paint events, skip paints for subframes that get painted to the same layer as parent.
             if (!event.args["data"]["layerId"])
                 break;
-            this._lastPaintForLayer[layerUpdateEvent.args["layerId"]] = event;
+            var layerId = event.args["data"]["layerId"];
+            this._lastPaintForLayer[layerId] = event;
             break;
 
         case recordTypes.DisplayItemListSnapshot:

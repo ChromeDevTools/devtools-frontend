@@ -463,6 +463,8 @@ WebInspector.TracingTimelineFrameModel.prototype = {
 
             var categoryName = WebInspector.TimelineUIUtils.eventStyle(event).category.name;
             this._lastFrame._addTimeForCategory(categoryName, selfTime);
+            if (event.name === eventNames.Paint && event.args["data"]["layerId"] && event.picture && this._target)
+                this._lastFrame.paints.push(new WebInspector.LayerPaintEvent(event, this._target));
             return;
         }
 
@@ -559,6 +561,8 @@ WebInspector.TimelineFrame = function(startTime, startTimeOffset)
     this.idle = false;
     /** @type {?WebInspector.DeferredLayerTree} */
     this.layerTree = null;
+    /** @type {!Array.<!WebInspector.LayerPaintEvent>} */
+    this.paints = [];
     /** @type {number|undefined} */
     this._mainFrameId = undefined;
 }

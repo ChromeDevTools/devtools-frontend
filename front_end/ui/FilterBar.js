@@ -40,7 +40,7 @@ WebInspector.FilterBar = function(name, visibleByDefault)
     this._element = createElementWithClass("div", "filter-bar hidden");
 
     this._filterButton = new WebInspector.ToolbarButton(WebInspector.UIString("Filter"), "filter-toolbar-item", 3);
-    this._filterButton.element.addEventListener("click", this._handleFilterButtonClick.bind(this), false);
+    this._filterButton.addEventListener("click", this._handleFilterButtonClick, this);
 
     this._filters = [];
 
@@ -123,7 +123,7 @@ WebInspector.FilterBar.prototype = {
     },
 
     /**
-     * @param {!Event} event
+     * @param {!WebInspector.Event} event
      */
     _handleFilterButtonClick: function(event)
     {

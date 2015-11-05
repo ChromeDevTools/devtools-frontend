@@ -238,8 +238,8 @@ WebInspector.NetworkConditionsSettingsTab.prototype = {
         var conditions = /** @type {?WebInspector.NetworkConditionsProfile} */ (item);
         var editor = this._createEditor();
         editor.control("title").value = conditions.title;
-        editor.control("throughput").value = conditions.value.throughput < 0 ? "" : String(conditions.value.throughput / (1024 / 8));
-        editor.control("latency").value = String(conditions.value.latency);
+        editor.control("throughput").value = conditions.value.throughput <= 0 ? "" : String(conditions.value.throughput / (1024 / 8));
+        editor.control("latency").value = conditions.value.latency ? String(conditions.value.latency) : "";
         return editor;
     },
 

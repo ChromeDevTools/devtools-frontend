@@ -45,8 +45,6 @@ WebInspector.ConsoleViewMessage = function(consoleMessage, linkifier, nestingLev
 
     /** @type {!Array.<!WebInspector.DataGrid>} */
     this._dataGrids = [];
-    /** @type {!Map.<!WebInspector.DataGrid, ?Element>} */
-    this._dataGridParents = new Map();
 
     /** @type {!Object.<string, function(!WebInspector.RemoteObject, !Element, boolean=)>} */
     this._customFormatters = {
@@ -88,12 +86,8 @@ WebInspector.ConsoleViewMessage.prototype = {
      */
     wasShown: function()
     {
-        for (var i = 0; this._dataGrids && i < this._dataGrids.length; ++i) {
-            var dataGrid = this._dataGrids[i];
-            var parentElement = this._dataGridParents.get(dataGrid) || null;
-            parentElement.appendChild(dataGrid.element);
-            dataGrid.updateWidths();
-        }
+        for (var i = 0; this._dataGrids && i < this._dataGrids.length; ++i)
+            this._dataGrids[i].updateWidths();
         this._isVisible = true;
     },
 
@@ -108,22 +102,10 @@ WebInspector.ConsoleViewMessage.prototype = {
     /**
      * @override
      */
-    cacheFastHeight: function()
-    {
-        this._cachedHeight = this.contentElement().offsetHeight;
-    },
-
-    /**
-     * @override
-     */
     willHide: function()
     {
         this._isVisible = false;
-        for (var i = 0; this._dataGrids && i < this._dataGrids.length; ++i) {
-            var dataGrid = this._dataGrids[i];
-            this._dataGridParents.set(dataGrid, dataGrid.element.parentElement);
-            dataGrid.element.remove();
-        }
+        this._cachedHeight = this.contentElement().offsetHeight;
     },
 
     /**
@@ -607,8 +589,8 @@ WebInspector.ConsoleViewMessage.prototype = {
         columnNames.unshift(WebInspector.UIString("(index)"));
         var dataGrid = WebInspector.SortableDataGrid.create(columnNames, flatValues);
         dataGrid.renderInline();
+        dataGridContainer.appendChild(dataGrid.element);
         this._dataGrids.push(dataGrid);
-        this._dataGridParents.set(dataGrid, dataGridContainer);
         return element;
     },
 

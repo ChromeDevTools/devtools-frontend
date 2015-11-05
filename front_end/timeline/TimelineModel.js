@@ -1013,9 +1013,11 @@ WebInspector.TimelineModel.prototype = {
 
         if (jsSamples && jsSamples.length)
             events = events.mergeOrdered(jsSamples, WebInspector.TracingModel.Event.orderedCompareStartTime);
-        var jsFrameEvents = WebInspector.TimelineJSProfileProcessor.generateJSFrameEvents(events);
-        if (jsFrameEvents && jsFrameEvents.length)
-            events = jsFrameEvents.mergeOrdered(events, WebInspector.TracingModel.Event.orderedCompareStartTime);
+        if (jsSamples || events.some(function(e) { return e.name === WebInspector.TimelineModel.RecordType.JSSample; })) {
+            var jsFrameEvents = WebInspector.TimelineJSProfileProcessor.generateJSFrameEvents(events);
+            if (jsFrameEvents && jsFrameEvents.length)
+                events = jsFrameEvents.mergeOrdered(events, WebInspector.TracingModel.Event.orderedCompareStartTime);
+        }
 
         var threadEvents;
         var threadAsyncEventsByGroup;

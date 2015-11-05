@@ -377,9 +377,9 @@ WebInspector.TimelinePanel.prototype = {
                                                                              this._captureNetworkSetting,
                                                                              WebInspector.UIString("Capture network requests information")));
         }
-        this._enableJSSamplingSettingSetting = WebInspector.settings.createSetting("timelineEnableJSSampling", true);
+        this._enableJSSamplingSetting = WebInspector.settings.createSetting("timelineEnableJSSampling", true);
         this._panelToolbar.appendToolbarItem(this._createSettingCheckbox(WebInspector.UIString("JS Profile"),
-                                                                         this._enableJSSamplingSettingSetting,
+                                                                         this._enableJSSamplingSetting,
                                                                          WebInspector.UIString("Capture JavaScript stacks with sampling profiler. (Has performance overhead)")));
 
         this._captureMemorySetting = WebInspector.settings.createSetting("timelineCaptureMemory", false);
@@ -670,7 +670,7 @@ WebInspector.TimelinePanel.prototype = {
         this._updateStatus(WebInspector.UIString("Initializing recording\u2026"));
 
         this._autoRecordGeneration = userInitiated ? null : Symbol("Generation");
-        this._model.startRecording(true, this._enableJSSamplingSettingSetting.get(), this._captureMemorySetting.get(), this._captureLayersAndPicturesSetting.get(), this._captureFilmStripSetting && this._captureFilmStripSetting.get());
+        this._model.startRecording(true, this._enableJSSamplingSetting.get(), this._captureMemorySetting.get(), this._captureLayersAndPicturesSetting.get(), this._captureFilmStripSetting && this._captureFilmStripSetting.get());
 
         for (var i = 0; i < this._overviewControls.length; ++i)
             this._overviewControls[i].timelineStarted();

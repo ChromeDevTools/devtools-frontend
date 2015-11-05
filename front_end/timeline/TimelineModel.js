@@ -1487,7 +1487,7 @@ WebInspector.TimelineModel.ProfileTreeNode = function()
  * @param {number} startTime
  * @param {number} endTime
  * @param {!Array<!WebInspector.TimelineModel.Filter>} filters
- * @param {function(!WebInspector.TracingModel.Event):(string|symbol)} eventIdCallback
+ * @param {function(!WebInspector.TracingModel.Event):(string|symbol)=} eventIdCallback
  * @return {!WebInspector.TimelineModel.ProfileTreeNode}
  */
 WebInspector.TimelineModel.buildTopDownTree = function(events, startTime, endTime, filters, eventIdCallback)
@@ -1520,8 +1520,8 @@ WebInspector.TimelineModel.buildTopDownTree = function(events, startTime, endTim
     {
         if (!filter(e))
             return;
-        var time = Math.min(endTime, e.endTime) - Math.max(startTime, e.startTime);
-        var id = eventIdCallback(e);
+        var time = e.endTime ? Math.min(endTime, e.endTime) - Math.max(startTime, e.startTime) : 0;
+        var id = eventIdCallback ? eventIdCallback(e) : Symbol("uniqueEventId");
         if (!parent.children)
             parent.children = /** @type {!Map<string,!WebInspector.TimelineModel.ProfileTreeNode>} */ (new Map());
         var node = parent.children.get(id);
@@ -1542,7 +1542,8 @@ WebInspector.TimelineModel.buildTopDownTree = function(events, startTime, endTim
             console.log("Error: Negative self of " + parent.selfTime, e);
             parent.selfTime = 0;
         }
-        parent = node;
+        if (e.endTime)
+            parent = node;
     }
 
     /**
@@ -1555,7 +1556,8 @@ WebInspector.TimelineModel.buildTopDownTree = function(events, startTime, endTim
         parent = parent.parent;
     }
 
-    WebInspector.TimelineModel.forEachEvent(events, onStartEvent, onEndEvent, undefined, startTime, endTime);
+    var instantEventCallback = eventIdCallback ? undefined : onStartEvent; // Ignore instant events when aggregating.
+    WebInspector.TimelineModel.forEachEvent(events, onStartEvent, onEndEvent, instantEventCallback, startTime, endTime);
     root.totalTime -= root.selfTime;
     root.selfTime = 0;
     return root;

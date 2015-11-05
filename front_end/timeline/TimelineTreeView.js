@@ -643,15 +643,7 @@ WebInspector.EventsTimelineTreeView.prototype = {
      */
     _buildTree: function()
     {
-        return WebInspector.TimelineModel.buildTopDownTree(this._model.mainThreadEvents(), this._startTime, this._endTime, this._filters, uniqueSymbol);
-
-        /**
-         * @return {symbol}
-         */
-        function uniqueSymbol()
-        {
-            return Symbol("eventId");
-        }
+        return WebInspector.TimelineModel.buildTopDownTree(this._model.mainThreadEvents(), this._startTime, this._endTime, this._filters);
     },
 
     /**

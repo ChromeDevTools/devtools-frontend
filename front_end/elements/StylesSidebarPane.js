@@ -360,6 +360,7 @@ WebInspector.StylesSidebarPane.prototype = {
     {
         if (this._isEditingStyle === editing)
             return;
+        this.element.classList.toggle("is-editing-style", editing);
         this._isEditingStyle = editing;
     },
 
@@ -834,10 +835,47 @@ WebInspector.StylePropertiesSection = function(parentPane, styleRule)
     var closeBrace = this.element.createChild("div", "sidebar-pane-closing-brace");
     closeBrace.textContent = "}";
 
-    if (this.editable && rule) {
-        var newRuleButton = closeBrace.createChild("div", "sidebar-pane-button-new-rule");
-        newRuleButton.title = WebInspector.UIString("Insert Style Rule");
-        newRuleButton.addEventListener("click", this._onNewRuleClick.bind(this), false);
+    if (this.editable) {
+        var items = [];
+        if (Runtime.experiments.isEnabled("stylesSidebarRuleToolbar")) {
+            var colorButton = new WebInspector.ToolbarButton(WebInspector.UIString("Add color"), "foreground-color-toolbar-item");
+            colorButton.addEventListener("click", this._onInsertColorPropertyClick.bind(this));
+            items.push(colorButton);
+
+            var backgroundButton = new WebInspector.ToolbarButton(WebInspector.UIString("Add background-color"), "background-color-toolbar-item");
+            backgroundButton.addEventListener("click", this._onInsertBackgroundColorPropertyClick.bind(this));
+            items.push(backgroundButton);
+        }
+
+        if (rule) {
+            var newRuleButton = new WebInspector.ToolbarButton(WebInspector.UIString("Insert Style Rule"), "add-toolbar-item");
+            newRuleButton.addEventListener("click", this._onNewRuleClick.bind(this));
+            items.push(newRuleButton);
+        }
+
+        if (items.length) {
+            var sectionToolbar = new WebInspector.Toolbar();
+            sectionToolbar.element.classList.add("sidebar-pane-section-toolbar");
+            closeBrace.appendChild(sectionToolbar.element);
+
+            for (var i = 0; i < items.length; ++i)
+                sectionToolbar.appendToolbarItem(items[i]);
+
+            items.pop();
+
+            /**
+             * @param {!Array<!WebInspector.ToolbarButton>} items
+             * @param {boolean} value
+             */
+            function setItemsVisibility(items, value)
+            {
+                for (var i = 0; i < items.length; ++i)
+                    items[i].setVisible(value);
+            }
+            setItemsVisibility(items, false);
+            sectionToolbar.element.addEventListener("mouseenter", setItemsVisibility.bind(null, items, true));
+            sectionToolbar.element.addEventListener("mouseleave", setItemsVisibility.bind(null, items, false));
+        }
     }
 
     this._selectorElement.addEventListener("click", this._handleSelectorClick.bind(this), false);
@@ -971,7 +1009,7 @@ WebInspector.StylePropertiesSection.prototype = {
     },
 
     /**
-     * @param {?Event} event
+     * @param {!WebInspector.Event} event
      */
     _onNewRuleClick: function(event)
     {
@@ -979,6 +1017,36 @@ WebInspector.StylePropertiesSection.prototype = {
         var rule = this.rule();
         var range = WebInspector.TextRange.createFromLocation(rule.style.range.endLine, rule.style.range.endColumn + 1);
         this._parentPane._addBlankSection(this, /** @type {string} */(rule.styleSheetId), range);
+    },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _onInsertColorPropertyClick: function(event)
+    {
+        event.consume(true);
+        var treeElement = this.addNewBlankProperty();
+        treeElement.property.name = "color";
+        treeElement.property.value = "black";
+        treeElement.updateTitle();
+        var colorSwatch = WebInspector.ColorSwatchPopoverIcon.forTreeElement(treeElement);
+        if (colorSwatch)
+            colorSwatch.showPopover();
+    },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _onInsertBackgroundColorPropertyClick: function(event)
+    {
+        event.consume(true);
+        var treeElement = this.addNewBlankProperty();
+        treeElement.property.name = "background-color";
+        treeElement.property.value = "white";
+        treeElement.updateTitle();
+        var colorSwatch = WebInspector.ColorSwatchPopoverIcon.forTreeElement(treeElement);
+        if (colorSwatch)
+            colorSwatch.showPopover();
     },
 
     /**

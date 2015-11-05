@@ -500,6 +500,14 @@ button.record-toolbar-item.toggled-on .glyph {
     -webkit-mask-position: -320px -96px;
 }
 
+.background-color-toolbar-item .glyph {
+    -webkit-mask-position: -96px -144px;
+}
+
+.foreground-color-toolbar-item .glyph {
+    -webkit-mask-position: -128px -144px;
+}
+
 .case-sensitive-search-toolbar-item.toggled-on .toolbar-button-text {
     color: rgb(94, 146, 233);
 }

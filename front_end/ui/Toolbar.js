@@ -381,7 +381,8 @@ WebInspector.AbstractToolbarButton.prototype = {
     _clicked: function(event)
     {
         this._longClickController.reset();
-        this.dispatchEventToListeners("click", event);
+        var defaultPrevented = this.dispatchEventToListeners("click", event);
+        event.consume(defaultPrevented);
     },
 
     /**

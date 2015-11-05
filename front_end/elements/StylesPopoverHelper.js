@@ -231,6 +231,7 @@ WebInspector.BezierPopoverIcon.prototype = {
 WebInspector.ColorSwatchPopoverIcon = function(treeElement, stylesPopoverHelper, colorText)
 {
     this._treeElement = treeElement;
+    this._treeElement[WebInspector.ColorSwatchPopoverIcon._treeElementSymbol] = this;
     this._stylesPopoverHelper = stylesPopoverHelper;
 
     this._swatch = WebInspector.ColorSwatch.create();
@@ -242,6 +243,17 @@ WebInspector.ColorSwatchPopoverIcon = function(treeElement, stylesPopoverHelper,
     this._contrastColor = null;
 
     this._boundSpectrumChanged = this._spectrumChanged.bind(this);
+}
+
+WebInspector.ColorSwatchPopoverIcon._treeElementSymbol = Symbol("WebInspector.ColorSwatchPopoverIcon._treeElementSymbol");
+
+/**
+ * @param {!WebInspector.StylePropertyTreeElement} treeElement
+ * @return {?WebInspector.ColorSwatchPopoverIcon}
+ */
+WebInspector.ColorSwatchPopoverIcon.forTreeElement = function(treeElement)
+{
+    return treeElement[WebInspector.ColorSwatchPopoverIcon._treeElementSymbol] || null;
 }
 
 /**
@@ -292,6 +304,11 @@ WebInspector.ColorSwatchPopoverIcon.prototype = {
     _iconClick: function(event)
     {
         event.consume(true);
+        this.showPopover();
+    },
+
+    showPopover: function()
+    {
         if (this._stylesPopoverHelper.isShowing()) {
             this._stylesPopoverHelper.hide(true);
             return;

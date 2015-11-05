@@ -161,6 +161,7 @@
     -webkit-user-select: text;
     border-bottom: 1px solid #eee;
     position: relative;
+    overflow: hidden;
 }
 
 .styles-section:last-child {
@@ -736,4 +737,17 @@ li.editing .enabled-button {
 
 .properties-widget-section {
     padding: 2px 0px 2px 5px;
+}
+
+.sidebar-pane-section-toolbar {
+    position: absolute;
+    right: 2px;
+    bottom: 2px;
+    visibility: hidden;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid #e5e5e5;
+}
+
+.styles-pane:not(.is-editing-style) .styles-section.matched-styles:not(.read-only):hover .sidebar-pane-section-toolbar {
+    visibility: visible;
 }

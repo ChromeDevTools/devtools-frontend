@@ -128,21 +128,3 @@
     background-color: #FFFFC2;
 }
 
-.sidebar-pane-button-new-rule {
-    background-image: url(Images/paneAddButtons.png);
-    background-position: 0 0;
-    position: absolute;
-    height: 16px;
-    width: 23px;
-    right: 5px;
-    bottom: 3px;
-    visibility: hidden;
-}
-
-.styles-section.matched-styles:not(.read-only):hover .sidebar-pane-button-new-rule {
-    visibility: visible;
-}
-
-.sidebar-pane-button-new-rule:hover {
-    background-position: -23px 0;
-}

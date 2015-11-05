@@ -15,9 +15,11 @@
     margin-top: -1px;
 }
 
-.timeline-status-dialog div {
+.timeline-status-dialog > div {
     margin: 2px;
     height: 14px;
+    display: flex;
+    align-items: baseline;
 }
 
 .timeline-status-dialog ::before {
@@ -57,7 +59,7 @@
 }
 
 .timeline-status-dialog .stop-button {
-    text-align: center;
     margin-top: 8px;
     height: 100%;
+    align-self: center;
 }

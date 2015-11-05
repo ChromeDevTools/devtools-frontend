@@ -637,13 +637,15 @@ WebInspector.NetworkPanel.show = function()
 }
 
 /**
-  * @param {!WebInspector.NetworkLogView.FilterType} filterType
-  * @param {string} filterValue
+  * @param {!Array<{filterType: !WebInspector.NetworkLogView.FilterType, filterValue: string}>} filters
   */
-WebInspector.NetworkPanel.revealAndFilter = function(filterType, filterValue)
+WebInspector.NetworkPanel.revealAndFilter = function(filters)
 {
     var panel = WebInspector.NetworkPanel._instance();
-    panel._networkLogView.setTextFilterValue(filterType, filterValue);
+    var filterString = '';
+    for (var filter of filters)
+        filterString += filter.filterType + ':' + filter.filterValue + ' ';
+    panel._networkLogView.setTextFilterValue(filterString);
     WebInspector.inspectorView.setCurrentPanel(panel);
 }
 

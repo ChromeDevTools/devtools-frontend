@@ -592,7 +592,12 @@ WebInspector.SecurityMainView.prototype = {
         function showDisplayedMixedContentInNetworkPanel(e)
         {
             e.consume();
-            WebInspector.NetworkPanel.revealAndFilter(WebInspector.NetworkLogView.FilterType.MixedContent, WebInspector.NetworkLogView.MixedContentFilterValues.Displayed);
+            WebInspector.NetworkPanel.revealAndFilter([
+                {
+                    filterType: WebInspector.NetworkLogView.FilterType.MixedContent,
+                    filterValue: WebInspector.NetworkLogView.MixedContentFilterValues.Displayed
+                }
+            ]);
         }
 
         /**
@@ -601,7 +606,12 @@ WebInspector.SecurityMainView.prototype = {
         function showBlockOverriddenMixedContentInNetworkPanel(e)
         {
             e.consume();
-            WebInspector.NetworkPanel.revealAndFilter(WebInspector.NetworkLogView.FilterType.MixedContent, WebInspector.NetworkLogView.MixedContentFilterValues.BlockOverridden);
+            WebInspector.NetworkPanel.revealAndFilter([
+                {
+                    filterType: WebInspector.NetworkLogView.FilterType.MixedContent,
+                    filterValue: WebInspector.NetworkLogView.MixedContentFilterValues.BlockOverridden
+                }
+            ]);
         }
 
          /**
@@ -610,7 +620,12 @@ WebInspector.SecurityMainView.prototype = {
         function showBlockedMixedContentInNetworkPanel(e)
         {
             e.consume();
-            WebInspector.NetworkPanel.revealAndFilter(WebInspector.NetworkLogView.FilterType.MixedContent, WebInspector.NetworkLogView.MixedContentFilterValues.Blocked);
+            WebInspector.NetworkPanel.revealAndFilter([
+                {
+                    filterType: WebInspector.NetworkLogView.FilterType.MixedContent,
+                    filterValue: WebInspector.NetworkLogView.MixedContentFilterValues.Blocked
+                }
+            ]);
         }
     },
 
@@ -668,6 +683,24 @@ WebInspector.SecurityOriginView = function(panel, origin, originState)
     this._originLockIcon.classList.add("security-property-" + originState.securityState);
     // TODO(lgarron): Highlight the origin scheme. https://crbug.com/523589
     originDisplay.createChild("span", "origin").textContent = origin;
+    var originNetworkLink = originDisplay.createChild("div", "link");
+    originNetworkLink.textContent = WebInspector.UIString("View requests in Network Panel");
+    function showOriginRequestsInNetworkPanel()
+    {
+        var parsedURL = new WebInspector.ParsedURL(origin);
+        WebInspector.NetworkPanel.revealAndFilter([
+            {
+                filterType: WebInspector.NetworkLogView.FilterType.Domain,
+                filterValue: parsedURL.host
+            },
+            {
+                filterType: WebInspector.NetworkLogView.FilterType.Scheme,
+                filterValue: parsedURL.scheme
+            }
+        ]);
+    }
+    originNetworkLink.addEventListener("click", showOriginRequestsInNetworkPanel, false);
+
 
     if (originState.securityDetails) {
         var connectionSection = this.element.createChild("div", "origin-view-section");

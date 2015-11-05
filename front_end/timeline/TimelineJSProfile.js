@@ -212,7 +212,22 @@ WebInspector.TimelineJSProfileProcessor.generateJSFrameEvents = function(events)
         }
     }
 
-    WebInspector.TimelineModel.forEachEvent(events, onStartEvent, onEndEvent, onInstantEvent);
+    /**
+     * @param {!Array<!WebInspector.TracingModel.Event>} events
+     * @return {?WebInspector.TracingModel.Event}
+     */
+    function findFirstTopLevelEvent(events)
+    {
+        for (var i = 0; i < events.length; ++i) {
+            if (WebInspector.TracingModel.isTopLevelEvent(events[i]))
+                return events[i];
+        }
+        return null;
+    }
+
+    var firstTopLevelEvent = findFirstTopLevelEvent(events);
+    if (firstTopLevelEvent)
+        WebInspector.TimelineModel.forEachEvent(events, onStartEvent, onEndEvent, onInstantEvent, firstTopLevelEvent.startTime);
     return jsFrameEvents;
 }
 

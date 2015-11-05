@@ -512,6 +512,7 @@ WebInspector.ResponsiveDesignView.prototype = {
             this._pageScaleContainer.style.top = cssCanvasOffset;
             this._mediaInspectorContainer.style.left = cssRulerWidth;
             this._mediaInspectorContainer.style.marginTop = cssRulerHeight;
+            this._warningInfobar.element.style.left = cssRulerWidth;
         }
 
         var cssWidth = (this._dipWidth ? this._dipWidth : availableDip.width) / zoomFactor;

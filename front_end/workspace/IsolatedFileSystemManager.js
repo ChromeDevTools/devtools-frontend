@@ -40,6 +40,7 @@ WebInspector.IsolatedFileSystemManager = function()
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.FileSystemsLoaded, this._onFileSystemsLoaded, this);
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.FileSystemRemoved, this._onFileSystemRemoved, this);
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.FileSystemAdded, this._onFileSystemAdded, this);
+    InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.FileSystemFilesChanged, this._onFileSystemFilesChanged, this);
 
     this._initExcludePatterSetting();
 }
@@ -51,6 +52,7 @@ WebInspector.IsolatedFileSystemManager.Events = {
     FileSystemAdded: "FileSystemAdded",
     FileSystemRemoved: "FileSystemRemoved",
     FileSystemsLoaded: "FileSystemsLoaded",
+    FileSystemFilesChanged: "FileSystemFilesChanged",
     ExcludedFolderAdded: "ExcludedFolderAdded",
     ExcludedFolderRemoved: "ExcludedFolderRemoved"
 }
@@ -153,6 +155,14 @@ WebInspector.IsolatedFileSystemManager.prototype = {
     _onFileSystemRemoved: function(event)
     {
         this._fileSystemRemoved(/** @type {string} */ (event.data));
+    },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _onFileSystemFilesChanged: function(event)
+    {
+        this.dispatchEventToListeners(WebInspector.IsolatedFileSystemManager.Events.FileSystemFilesChanged, event.data);
     },
 
     /**

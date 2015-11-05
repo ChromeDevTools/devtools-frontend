@@ -85,6 +85,7 @@ WebInspector.ProjectDelegate = function() { }
 WebInspector.ProjectDelegate.Events = {
     FileAdded: "FileAdded",
     FileRemoved: "FileRemoved",
+    FileChanged: "FileChanged"
 }
 
 WebInspector.ProjectDelegate.prototype = {
@@ -208,6 +209,7 @@ WebInspector.Project = function(workspace, projectId, projectDelegate)
     this._displayName = this._projectDelegate.displayName();
     projectDelegate.addEventListener(WebInspector.ProjectDelegate.Events.FileAdded, this._fileAdded, this);
     projectDelegate.addEventListener(WebInspector.ProjectDelegate.Events.FileRemoved, this._fileRemoved, this);
+    projectDelegate.addEventListener(WebInspector.ProjectDelegate.Events.FileChanged, this._fileChanged, this);
 }
 
 /**
@@ -295,6 +297,17 @@ WebInspector.Project.prototype = {
     {
         var path = /** @type {string} */ (event.data);
         this._removeFile(path);
+    },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _fileChanged: function(event)
+    {
+        var path = /** @type {string} */ (event.data);
+        var uiSourceCode = this.uiSourceCode(path);
+        if (uiSourceCode && uiSourceCode.contentLoaded())
+            uiSourceCode.checkContentUpdated();
     },
 
     /**

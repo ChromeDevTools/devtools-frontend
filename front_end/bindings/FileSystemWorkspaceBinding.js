@@ -39,6 +39,7 @@ WebInspector.FileSystemWorkspaceBinding = function(isolatedFileSystemManager, wo
     this._workspace = workspace;
     this._isolatedFileSystemManager.addEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemAdded, this._fileSystemAdded, this);
     this._isolatedFileSystemManager.addEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemRemoved, this._fileSystemRemoved, this);
+    this._isolatedFileSystemManager.addEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemFilesChanged, this._fileSystemFilesChanged, this);
     /** @type {!Map.<string, !WebInspector.FileSystemWorkspaceBinding.FileSystem>} */
     this._boundFileSystems = new Map();
 
@@ -95,6 +96,22 @@ WebInspector.FileSystemWorkspaceBinding.prototype = {
         var boundFileSystem = this._boundFileSystems.get(fileSystem.normalizedPath());
         boundFileSystem.dispose();
         this._boundFileSystems.remove(fileSystem.normalizedPath());
+    },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _fileSystemFilesChanged: function(event)
+    {
+        var paths = /** @type {!Array<string>} */ (event.data);
+        for (var path of paths) {
+            var normalizedPath = WebInspector.IsolatedFileSystem.normalizePath(path);
+            for (var key of this._boundFileSystems.keys()) {
+                if (!normalizedPath.startsWith(key))
+                    continue;
+                this._boundFileSystems.get(key)._fileChanged(normalizedPath.substr(key.length + 1));
+            }
+        }
     },
 
     /**
@@ -233,7 +250,7 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem = function(fileSystemWorkspac
 
     this._projectId = WebInspector.FileSystemWorkspaceBinding.projectId(this._fileSystem.path());
     console.assert(!this._workspace.project(this._projectId));
-    this._workspace.addProject(this._projectId, this);
+    this._project = this._workspace.addProject(this._projectId, this);
     this.populate();
 }
 
@@ -615,6 +632,19 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
     _removeFile: function(path)
     {
         this.dispatchEventToListeners(WebInspector.ProjectDelegate.Events.FileRemoved, path);
+    },
+
+    /**
+     * @param {string} path
+     */
+    _fileChanged: function(path)
+    {
+        var uiSourceCode = this._project.uiSourceCode(path);
+        if (!uiSourceCode) {
+            this._addFile(path);
+            return;
+        }
+        this.dispatchEventToListeners(WebInspector.ProjectDelegate.Events.FileChanged, path);
     },
 
     dispose: function()

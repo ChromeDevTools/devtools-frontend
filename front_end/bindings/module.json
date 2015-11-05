@@ -19,7 +19,6 @@
         "PresentationConsoleMessageHelper.js",
         "ResourceUtils.js",
         "TempFile.js",
-        "WorkspaceController.js",
         "ContentScriptProjectDecorator.js"
     ]
 }

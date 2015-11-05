@@ -176,6 +176,11 @@ DevToolsAPIImpl.prototype = {
         this._dispatchOnInspectorFrontendAPI("fileSystemAdded", ["", fileSystem]);
     },
 
+    fileSystemFilesChanged: function(path)
+    {
+        this._dispatchOnInspectorFrontendAPI("fileSystemFilesChanged", [path]);
+    },
+
     /**
      * @param {number} requestId
      * @param {string} fileSystemPath

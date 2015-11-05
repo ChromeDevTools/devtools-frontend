@@ -192,7 +192,6 @@
             'front_end/bindings/SASSSourceMapping.js',
             'front_end/bindings/StylesSourceMapping.js',
             'front_end/bindings/TempFile.js',
-            'front_end/bindings/WorkspaceController.js',
         ],
         'devtools_platform_js_files': [
             'front_end/platform/DOMExtension.js',

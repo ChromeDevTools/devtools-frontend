@@ -67,7 +67,7 @@
 }
 
 .timeline-curtain-left, .timeline-curtain-right {
-    background-color: hsla(0, 0%, 80%, 0.3);
+    background-color: hsla(0, 0%, 80%, 0.5);
     position: absolute;
     top: 0;
     height: 100%;

@@ -226,6 +226,8 @@ WebInspector.TimelineTreeView.eventURL = function(event)
     return frame && frame["url"] || null;
 }
 
+WebInspector.TimelineTreeView._gridNodeSymbol = Symbol("gridNode");
+
 /**
  * @constructor
  * @extends {WebInspector.SortableDataGridNode}
@@ -259,6 +261,8 @@ WebInspector.TimelineTreeView.GridNode = function(profileNode, grandTotalTime, m
     this._treeView = treeView;
     this._totalTime = grandTotalTime;
     this._maxTimes = { self: maxSelfTime, total: maxTotalTime };
+    profileNode[WebInspector.TimelineTreeView._gridNodeSymbol] = this;
+
     var selfTime = profileNode.selfTime;
     var selfPercent = selfTime / grandTotalTime * 100;
     var totalTime = profileNode.totalTime;
@@ -639,11 +643,58 @@ WebInspector.EventsTimelineTreeView = function(model)
 WebInspector.EventsTimelineTreeView.prototype = {
     /**
      * @override
+     * @param {!WebInspector.TimelineSelection} selection
+     */
+    updateContents: function(selection)
+    {
+        WebInspector.TimelineTreeView.prototype.updateContents.call(this, selection);
+        if (selection.type() !== WebInspector.TimelineSelection.Type.TraceEvent)
+            return;
+        var pathToSelectedEvent = this._findPathToNodeWithEvent(/** @type {!WebInspector.TracingModel.Event} */ (selection.object()));
+        if (!pathToSelectedEvent)
+            return;
+        for (var i = 1; i < pathToSelectedEvent.length - 1; ++i)
+            pathToSelectedEvent[i][WebInspector.TimelineTreeView._gridNodeSymbol].expand();
+        pathToSelectedEvent.peekLast()[WebInspector.TimelineTreeView._gridNodeSymbol].revealAndSelect();
+    },
+
+    /**
+     * @override
      * @return {!WebInspector.TimelineModel.ProfileTreeNode}
      */
     _buildTree: function()
     {
-        return WebInspector.TimelineModel.buildTopDownTree(this._model.mainThreadEvents(), this._startTime, this._endTime, this._filters);
+        this._currentTree = WebInspector.TimelineModel.buildTopDownTree(this._model.mainThreadEvents(), this._startTime, this._endTime, this._filters);
+        return this._currentTree;
+    },
+
+    /**
+     * @param {!WebInspector.TracingModel.Event} event
+     * @return {?Array<!WebInspector.TimelineModel.ProfileTreeNode>}
+     */
+    _findPathToNodeWithEvent: function(event)
+    {
+        var stack = [this._currentTree];
+        var iterators = [this._currentTree.children.values()];
+
+        while (stack.length) {
+            var iterator = iterators.peekLast().next();
+            if (iterator.done) {
+                stack.pop();
+                iterators.pop();
+                continue;
+            }
+            var child = /** @type {!WebInspector.TimelineModel.ProfileTreeNode} */ (iterator.value);
+            if (child.event === event) {
+                stack.push(child);
+                return stack;
+            }
+            if (child.children) {
+                stack.push(child);
+                iterators.push(child.children.values());
+            }
+        }
+        return null;
     },
 
     /**

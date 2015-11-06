@@ -26,15 +26,43 @@ WebInspector.TimelineTreeView = function(model)
         new WebInspector.ExcludeTopLevelFilter()
     ];
 
-    this._populateToolbar();
-
     var columns = [];
     this._populateColumns(columns);
     this._dataGrid = new WebInspector.SortableDataGrid(columns);
     this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SortingChanged, this._sortingChanged, this);
     var dataGridContainerWidget = new WebInspector.DataGridContainerWidget();
+    this._populateToolbar(dataGridContainerWidget.element);
     dataGridContainerWidget.appendDataGrid(this._dataGrid);
-    dataGridContainerWidget.show(this.element);
+
+    this._splitWidget = new WebInspector.SplitWidget(true, true, "timelineTreeViewDetailsSplitWidget");
+    this._splitWidget.show(this.element);
+    this._splitWidget.setMainWidget(dataGridContainerWidget);
+    /** @type {?WebInspector.TimelineModel.ProfileTreeNode} */
+    this._lastSelectedNode = null;
+
+    if (Runtime.experiments.isEnabled("timelineEventsTreeView")) {
+        this._detailsView = new WebInspector.VBox();
+        this._detailsView.element.classList.add("timeline-tree-view-details");
+        this._splitWidget.setSidebarWidget(this._detailsView);
+        this._showBannerInDetails();
+        this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SelectedNode, onSelectionChanged, this);
+    } else {
+        this._splitWidget.hideSidebar(false);
+    }
+
+    /**
+     * @this {WebInspector.TimelineTreeView}
+     */
+    function onSelectionChanged()
+    {
+        var selectedNode = this._dataGrid.selectedNode ? /** @type {!WebInspector.TimelineTreeView.GridNode} */ (this._dataGrid.selectedNode)._profileNode : null;
+        if (selectedNode === this._lastSelectedNode)
+            return;
+        this._lastSelectedNode = selectedNode;
+        this._detailsView.element.removeChildren();
+        if (!selectedNode || !this._showDetailsForNode(selectedNode))
+            this._showBannerInDetails();
+    }
 }
 
 WebInspector.TimelineTreeView.prototype = {
@@ -57,7 +85,10 @@ WebInspector.TimelineTreeView.prototype = {
         this._refreshTree();
     },
 
-    _populateToolbar: function() { },
+    /**
+     * @param {!Element} parent
+     */
+    _populateToolbar: function(parent) { },
 
     /**
      * @param {?string} scriptId
@@ -173,6 +204,21 @@ WebInspector.TimelineTreeView.prototype = {
             var nameB = WebInspector.TimelineTreeView.eventNameForSorting(nodeB._profileNode.event);
             return nameA.localeCompare(nameB);
         }
+    },
+
+    _showBannerInDetails: function()
+    {
+        var banner = this._detailsView.element.createChild("div", "banner");
+        banner.createTextChild("No details are available for current selection.");
+    },
+
+    /**
+     * @param {!WebInspector.TimelineModel.ProfileTreeNode} node
+     * @return {boolean}
+     */
+    _showDetailsForNode: function(node)
+    {
+        return false;
     },
 
     __proto__: WebInspector.VBox.prototype
@@ -407,10 +453,11 @@ WebInspector.AggregatedTimelineTreeView.eventId = function(event)
 WebInspector.AggregatedTimelineTreeView.prototype = {
     /**
      * @override
+     * @param {!Element} parent
      */
-    _populateToolbar: function()
+    _populateToolbar: function(parent)
     {
-        var panelToolbar = new WebInspector.Toolbar(this.element);
+        var panelToolbar = new WebInspector.Toolbar(parent);
         this._groupByCombobox = new WebInspector.ToolbarComboBox(this._onGroupByChanged.bind(this));
         /**
          * @param {string} name
@@ -699,17 +746,35 @@ WebInspector.EventsTimelineTreeView.prototype = {
 
     /**
      * @override
-     */
-    _populateToolbar: function() { },
-
-    /**
-     * @override
      * @param {!Array<!WebInspector.DataGrid.ColumnDescriptor>} columns
      */
     _populateColumns: function(columns)
     {
         columns.push({id: "startTime", title: WebInspector.UIString("Start Time"), width: "60px", sortable: true});
         WebInspector.TimelineTreeView.prototype._populateColumns.call(this, columns);
+    },
+
+    /**
+     * @override
+     * @param {!WebInspector.TimelineModel.ProfileTreeNode} node
+     * @return {boolean}
+     */
+    _showDetailsForNode: function(node)
+    {
+        var traceEvent = node.event;
+        if (!traceEvent)
+            return false;
+        WebInspector.TimelineUIUtils.buildTraceEventDetails(traceEvent, this._model, this._linkifier, showDetails.bind(this));
+        return true;
+
+        /**
+         * @param {!DocumentFragment} fragment
+         * @this {WebInspector.EventsTimelineTreeView}
+         */
+        function showDetails(fragment)
+        {
+            this._detailsView.element.appendChild(fragment);
+        }
     },
 
     __proto__: WebInspector.TimelineTreeView.prototype

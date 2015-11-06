@@ -37,6 +37,28 @@
     border-bottom: 1px solid rgb(140, 140, 140);
 }
 
+.panel.timeline .banner,
+.panel.layers .banner {
+    color: #777;
+    background-color: white;
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.panel.timeline .banner a,
+.panel.layers .banner a {
+    color: inherit;
+}
+
 #timeline-overview-panel .timeline-graph-bar {
     pointer-events: none;
 }
@@ -760,22 +782,8 @@
     overflow: hidden;
 }
 
-.timeline-status-pane {
-    color: #777;
-    background-color: white;
-    font-size: 30px;
-    z-index: 500;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 0 20px;
-    overflow: auto;
-}
-
-.timeline-status-pane .recording-hint {
-    font-size: 14px;
-    text-align: left;
+.timeline-status-pane.banner {
+    text-align: left !important;
 }
 
 .layer-tree,
@@ -792,28 +800,9 @@
     flex: 1 1;
 }
 
-.layers-3d-view .fail-banner {
-    position: absolute;
-    font-size: 24px;
-    color: rgb(75%, 75%, 75%);
-    font-weight: bold;
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.layers-3d-view .fail-banner a {
-    color: inherit;
-}
-
 .transform-control-panel {
     white-space: nowrap;
     flex: none;
-}
-
-.layer-details-view .empty-view {
-    font-size: 16px;
 }
 
 .layer-details-view table td {
@@ -828,14 +817,8 @@
     background-color: rgba(100, 100, 100, 0.2);
 }
 
-.paint-profiler-overview .progress-banner {
-    color: #777;
-    background-color: rgba(255, 255, 255, 0.8);
-    font-size: 20px;
+.paint-profiler-overview .banner {
     z-index: 500;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .paint-profiler-canvas-container {

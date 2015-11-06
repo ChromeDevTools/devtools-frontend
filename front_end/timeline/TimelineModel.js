@@ -1498,6 +1498,7 @@ WebInspector.TimelineModel.buildTopDownTree = function(events, startTime, endTim
     root.totalTime = initialTime;
     root.selfTime = initialTime;
     root.name = WebInspector.UIString("Top-Down Chart");
+    root.children = /** @type {!Map<string, !WebInspector.TimelineModel.ProfileTreeNode>} */ (new Map());
     var parent = root;
 
     /**

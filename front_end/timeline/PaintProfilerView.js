@@ -38,7 +38,7 @@ WebInspector.PaintProfilerView = function(showImageCallback)
     WebInspector.HBox.call(this);
     this.element.classList.add("paint-profiler-overview", "hbox");
     this._canvasContainer = this.element.createChild("div", "paint-profiler-canvas-container");
-    this._progressBanner = this.element.createChild("div", "fill progress-banner hidden");
+    this._progressBanner = this.element.createChild("div", "banner hidden");
     this._progressBanner.textContent = WebInspector.UIString("Profiling\u2026");
     this._pieChart = new WebInspector.PieChart(55, this._formatPieChartTime.bind(this), true);
     this._pieChart.element.classList.add("paint-profiler-pie-chart");

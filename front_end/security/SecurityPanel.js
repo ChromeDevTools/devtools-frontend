@@ -276,6 +276,10 @@ WebInspector.SecurityPanel.prototype = {
         var frame = /** type {!PageAgent.Frame}*/ (event.data);
         var request = this._lastResponseReceivedForLoaderId.get(frame.loaderId);
         this._clearOrigins();
+
+        var origin = WebInspector.ParsedURL.splitURLIntoPathComponents(request.url)[0];
+        this._sidebarTree.setMainOrigin(origin);
+
         if (request)
             this._processRequest(request);
     },
@@ -322,6 +326,8 @@ WebInspector.SecurityPanelSidebarTree = function(mainViewElement, showOriginInPa
 {
     this._showOriginInPanel = showOriginInPanel;
 
+    this._mainOrigin = null;
+
     TreeOutlineInShadow.call(this);
     this.element.classList.add("sidebar-tree");
     this.registerRequiredCSS("security/sidebar.css");
@@ -329,10 +335,17 @@ WebInspector.SecurityPanelSidebarTree = function(mainViewElement, showOriginInPa
 
     this.appendChild(mainViewElement);
 
-    // TODO(lgarron): Add a section for the main origin. (https://crbug.com/523586)
-    this._originSection = new WebInspector.SidebarSectionTreeElement(WebInspector.UIString("Origins"));
-    this._originSection.listItemElement.classList.add("security-sidebar-origins");
-    this.appendChild(this._originSection);
+    /** @type {!Map<!WebInspector.SecurityPanelSidebarTree.OriginGroupName, !WebInspector.SidebarSectionTreeElement>} */
+    this._originGroups = new Map();
+
+    for (var key in WebInspector.SecurityPanelSidebarTree.OriginGroupName) {
+        var originGroupName = WebInspector.SecurityPanelSidebarTree.OriginGroupName[key];
+        var originGroup = new WebInspector.SidebarSectionTreeElement(WebInspector.UIString(originGroupName));
+        originGroup.listItemElement.classList.add("security-sidebar-origins");
+        this._originGroups.set(originGroupName, originGroup);
+        this.appendChild(originGroup);
+    }
+    this._clearOriginGroups();
 
     /** @type {!Map<!WebInspector.SecurityPanel.Origin, !WebInspector.SecurityPanelSidebarTreeElement>} */
     this._elementsByOrigin = new Map();
@@ -348,7 +361,15 @@ WebInspector.SecurityPanelSidebarTree.prototype = {
         var originElement = new WebInspector.SecurityPanelSidebarTreeElement(origin, this._showOriginInPanel.bind(this, origin), "security-sidebar-tree-item", "security-property");
         originElement.listItemElement.title = origin;
         this._elementsByOrigin.set(origin, originElement);
-        this._insertOriginElementSorted(originElement, securityState);
+        this.updateOrigin(origin, securityState);
+    },
+
+    /**
+     * @param {!WebInspector.SecurityPanel.Origin} origin
+     */
+    setMainOrigin: function(origin)
+    {
+        this._mainOrigin = origin;
     },
 
     /**
@@ -358,28 +379,67 @@ WebInspector.SecurityPanelSidebarTree.prototype = {
     updateOrigin: function(origin, securityState)
     {
         var originElement = /** @type {!WebInspector.SecurityPanelSidebarTreeElement} */ (this._elementsByOrigin.get(origin));
-        this._originSection.removeChild(originElement);
-        this._insertOriginElementSorted(originElement, securityState);
+        originElement.setSecurityState(securityState);
+
+        var newParent;
+        if (origin === this._mainOrigin) {
+            newParent = this._originGroups.get(WebInspector.SecurityPanelSidebarTree.OriginGroupName.MainOrigin);
+        } else {
+            switch (securityState) {
+            case SecurityAgent.SecurityState.Secure:
+                newParent = this._originGroups.get(WebInspector.SecurityPanelSidebarTree.OriginGroupName.Secure);
+                break;
+            case SecurityAgent.SecurityState.Unknown:
+                newParent = this._originGroups.get(WebInspector.SecurityPanelSidebarTree.OriginGroupName.Unknown);
+                break;
+            default:
+                newParent = this._originGroups.get(WebInspector.SecurityPanelSidebarTree.OriginGroupName.NonSecure);
+                break;
+            }
+        }
+
+        var oldParent = originElement.parent;
+        if (oldParent !== newParent) {
+            if (oldParent) {
+                oldParent.removeChild(originElement);
+                if (oldParent.childCount() === 0)
+                    oldParent.hidden = true;
+            }
+            newParent.appendChild(originElement);
+            newParent.hidden = false;
+        }
+
     },
 
-    /**
-     * @param {!WebInspector.SecurityPanelSidebarTreeElement} originElement
-     * @param {!SecurityAgent.SecurityState} securityState
-     */
-    _insertOriginElementSorted: function(originElement, securityState)
+    _clearOriginGroups: function()
     {
-        originElement.setSecurityState(securityState);
-        var originSectionChildList = /** @type {!Array.<!WebInspector.SecurityPanelSidebarTreeElement>} */ (this._originSection.children());
-        this._originSection.insertChild(originElement, originSectionChildList.upperBound(originElement, WebInspector.SecurityPanelSidebarTreeElement.SecurityStateComparator));
+        for (var originGroup of this._originGroups.values()) {
+            originGroup.removeChildren();
+            originGroup.hidden = true;
+        }
+        this._originGroups.get(WebInspector.SecurityPanelSidebarTree.OriginGroupName.MainOrigin).hidden = false;
     },
 
     clearOrigins: function()
     {
-        this._originSection.removeChildren();
+        this._clearOriginGroups();
         this._elementsByOrigin.clear();
     },
 
     __proto__: TreeOutlineInShadow.prototype
+}
+
+
+/**
+ * A mapping from Javascript key IDs to names (sidebar section titles).
+ * Note: The names are used as keys into a map, so they must be distinct from each other.
+ * @enum {string}
+ */
+WebInspector.SecurityPanelSidebarTree.OriginGroupName = {
+    MainOrigin: "Main Origin",
+    NonSecure: "Non-Secure Origins",
+    Secure: "Secure Origins",
+    Unknown: "Unknown / Canceled"
 }
 
 

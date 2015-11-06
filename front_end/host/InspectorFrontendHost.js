@@ -410,6 +410,15 @@ WebInspector.InspectorFrontendHostStub.prototype = {
 
     /**
      * @override
+     * @param {string} browserId
+     * @param {string} url
+     */
+    openRemotePage: function(browserId, url)
+    {
+    },
+
+    /**
+     * @override
      * @param {number} x
      * @param {number} y
      * @param {!Array.<!InspectorFrontendHostAPI.ContextMenuDescriptor>} items

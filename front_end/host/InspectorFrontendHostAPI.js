@@ -249,6 +249,12 @@ InspectorFrontendHostAPI.prototype = {
     performActionOnRemotePage: function(pageId, action) { },
 
     /**
+     * @param {string} browserId
+     * @param {string} url
+     */
+    openRemotePage: function(browserId, url) { },
+
+    /**
      * @param {string} origin
      * @param {string} script
      */

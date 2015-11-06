@@ -30,7 +30,7 @@ WebInspector.DevicesView = function()
     /** @type {!Map<string, !Element>} */
     this._listItemById = new Map();
 
-    this._viewContainer = hbox.createChild("div", "flex-auto");
+    this._viewContainer = hbox.createChild("div", "flex-auto vbox");
 
     var discoveryFooter = this.contentElement.createChild("div", "devices-footer");
     this._deviceCountSpan = discoveryFooter.createChild("span");
@@ -411,7 +411,7 @@ WebInspector.DevicesView.DeviceView = function()
     this._device = null;
 }
 
-/** @typedef {!{browser: ?Adb.Browser, element: !Element, title: !Element, pages: !Element, pageSections: !Map<string, !WebInspector.DevicesView.PageSection>}} */
+/** @typedef {!{browser: ?Adb.Browser, element: !Element, title: !Element, pages: !Element, viewMore: !Element, newTab: !Element, pageSections: !Map<string, !WebInspector.DevicesView.PageSection>}} */
 WebInspector.DevicesView.BrowserSection;
 
 /** @typedef {!{page: ?Adb.Page, element: !Element, title: !Element, url: !Element, inspect: !Element}} */
@@ -465,8 +465,54 @@ WebInspector.DevicesView.DeviceView.prototype = {
         var element = createElementWithClass("div", "vbox flex-none");
         var topRow = element.createChild("div", "");
         var title = topRow.createChild("div", "device-browser-title");
+
+        var newTabRow = element.createChild("div", "device-browser-new-tab");
+        newTabRow.createChild("div", "").textContent = WebInspector.UIString("New tab:");
+        var newTabInput = newTabRow.createChild("input", "");
+        newTabInput.type = "text";
+        newTabInput.placeholder = WebInspector.UIString("Enter URL");
+        newTabInput.addEventListener("keydown", newTabKeyDown, false);
+        var newTabButton = createTextButton(WebInspector.UIString("Open"), openNewTab);
+        newTabRow.appendChild(newTabButton);
+
         var pages = element.createChild("div", "device-page-list vbox");
-        return {browser: null, element: element, title: title, pages: pages, pageSections: new Map()};
+
+        var viewMore = element.createChild("div", "device-view-more");
+        viewMore.addEventListener("click", viewMoreClick, false);
+        updateViewMoreTitle();
+
+        var section = {browser: null, element: element, title: title, pages: pages, viewMore: viewMore, newTab: newTabRow, pageSections: new Map()};
+        return section;
+
+        function viewMoreClick()
+        {
+            pages.classList.toggle("device-view-more-toggled");
+            updateViewMoreTitle();
+        }
+
+        function updateViewMoreTitle()
+        {
+            viewMore.textContent = pages.classList.contains("device-view-more-toggled") ? WebInspector.UIString("View less tabs\u2026") : WebInspector.UIString("View more tabs\u2026");
+        }
+
+        /**
+         * @param {!Event} event
+         */
+        function newTabKeyDown(event)
+        {
+            if (event.keyIdentifier === "Enter") {
+                event.consume(true);
+                openNewTab();
+            }
+        }
+
+        function openNewTab()
+        {
+            if (section.browser) {
+                InspectorFrontendHost.openRemotePage(section.browser.id, newTabInput.value.trim() || "about:blank");
+                newTabInput.value = "";
+            }
+        }
     },
 
     /**
@@ -493,7 +539,8 @@ WebInspector.DevicesView.DeviceView.prototype = {
             }
         }
 
-        for (var page of browser.pages) {
+        for (var index = 0; index < browser.pages.length; ++index) {
+            var page = browser.pages[index];
             var pageSection = section.pageSections.get(page.id);
             if (!pageSection) {
                 pageSection = this._createPageSection();
@@ -501,8 +548,15 @@ WebInspector.DevicesView.DeviceView.prototype = {
                 section.pages.appendChild(pageSection.element);
             }
             this._updatePageSection(pageSection, page);
+            if (!index && section.pages.firstChild !== pageSection.element)
+                section.pages.insertBefore(pageSection.element, section.pages.firstChild);
         }
 
+        var kViewMoreCount = 3;
+        for (var index = 0, element = section.pages.firstChild; element; element = element.nextSibling, ++index)
+            element.classList.toggle("device-view-more-page", index >= kViewMoreCount);
+        section.viewMore.classList.toggle("device-needs-view-more", browser.pages.length > kViewMoreCount);
+        section.newTab.classList.toggle("hidden", !browser.adbBrowserChromeVersion);
         section.browser = browser;
     },
 
@@ -512,32 +566,34 @@ WebInspector.DevicesView.DeviceView.prototype = {
     _createPageSection: function()
     {
         var element = createElementWithClass("div", "vbox");
-        var title = element.createChild("div", "device-page-title");
+
+        var titleRow = element.createChild("div", "device-page-title-row");
+        var title = titleRow.createChild("div", "device-page-title");
+        var inspect = createTextButton(WebInspector.UIString("Inspect"), doAction.bind(null, "inspect"), "device-inspect-button");
+        titleRow.appendChild(inspect);
+
+        var toolbar = new WebInspector.Toolbar();
+        toolbar.appendToolbarItem(new WebInspector.ToolbarMenuButton("", "menu-toolbar-item", appendActions));
+        titleRow.appendChild(toolbar.element);
+
         var url = element.createChild("div", "device-page-url");
-        var actions = element.createChild("div", "device-page-actions hbox");
-        var section = /** @type {!WebInspector.DevicesView.PageSection} */ ({page: null, element: element, title: title, url: url});
-        section.inspect = this._createAction(actions, WebInspector.UIString("inspect"), "inspect", section);
-        this._createAction(actions, WebInspector.UIString("reload"), "reload", section);
-        this._createAction(actions, WebInspector.UIString("activate"), "activate", section);
-        this._createAction(actions, WebInspector.UIString("close"), "close", section);
+        var section = {page: null, element: element, title: title, url: url, inspect: inspect};
         return section;
-    },
 
-    /**
-     * @param {!Element} container
-     * @param {string} title
-     * @param {string} action
-     * @param {!WebInspector.DevicesView.PageSection} section
-     * @return {!Element}
-     */
-    _createAction: function(container, title, action, section)
-    {
-        var element = container.createChild("div", "link");
-        element.textContent = title;
-        element.addEventListener("click", onClick, false);
-        return element;
+        /**
+         * @param {!WebInspector.ContextMenu} contextMenu
+         */
+        function appendActions(contextMenu)
+        {
+            contextMenu.appendItem(WebInspector.UIString("Reload"), doAction.bind(null, "reload"));
+            contextMenu.appendItem(WebInspector.UIString("Focus"), doAction.bind(null, "activate"));
+            contextMenu.appendItem(WebInspector.UIString("Close"), doAction.bind(null, "close"));
+        }
 
-        function onClick()
+        /**
+         * @param {string} action
+         */
+        function doAction(action)
         {
             if (section.page)
                 InspectorFrontendHost.performActionOnRemotePage(section.page.id, action);
@@ -550,8 +606,10 @@ WebInspector.DevicesView.DeviceView.prototype = {
      */
     _updatePageSection: function(section, page)
     {
-        if (!section.page || section.page.name !== page.name)
+        if (!section.page || section.page.name !== page.name) {
             section.title.textContent = page.name;
+            section.title.title = page.name;
+        }
         if (!section.page || section.page.url !== page.url) {
             section.url.textContent = "";
             section.url.appendChild(WebInspector.linkifyURLAsNode(page.url, undefined, undefined, true));

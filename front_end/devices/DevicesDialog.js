@@ -35,7 +35,7 @@ WebInspector.DevicesDialog.ActionDelegate.prototype = {
             var dialog = new WebInspector.Dialog();
             dialog.addCloseButton();
             this._view.show(dialog.element);
-            dialog.setMaxSize(new Size(800, 600));
+            dialog.setMaxSize(new Size(700, 500));
             dialog.show();
             return true;
         }

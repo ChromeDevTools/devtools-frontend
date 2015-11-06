@@ -694,6 +694,16 @@ InspectorFrontendHostImpl.prototype = {
 
     /**
      * @override
+     * @param {string} browserId
+     * @param {string} url
+     */
+    openRemotePage: function(browserId, url)
+    {
+        DevToolsAPI.sendMessageToEmbedder("openRemotePage", [browserId, url], null);
+    },
+
+    /**
+     * @override
      * @param {number} x
      * @param {number} y
      * @param {!Array.<!InspectorFrontendHostAPI.ContextMenuDescriptor>} items

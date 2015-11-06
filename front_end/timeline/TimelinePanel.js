@@ -1040,11 +1040,11 @@ WebInspector.TimelinePanel.prototype = {
         case WebInspector.TimelineSelection.Type.Record:
             var record = /** @type {!WebInspector.TimelineModel.Record} */ (this._selection.object());
             var event = record.traceEvent();
-            WebInspector.TimelineUIUtils.buildTraceEventDetails(event, this._model, this._detailsLinkifier, this._appendDetailsTabsForTraceEventAndShowDetails.bind(this, event));
+            WebInspector.TimelineUIUtils.buildTraceEventDetails(event, this._model, this._detailsLinkifier, true, this._appendDetailsTabsForTraceEventAndShowDetails.bind(this, event));
             break;
         case WebInspector.TimelineSelection.Type.TraceEvent:
             var event = /** @type {!WebInspector.TracingModel.Event} */ (this._selection.object());
-            WebInspector.TimelineUIUtils.buildTraceEventDetails(event, this._model, this._detailsLinkifier, this._appendDetailsTabsForTraceEventAndShowDetails.bind(this, event));
+            WebInspector.TimelineUIUtils.buildTraceEventDetails(event, this._model, this._detailsLinkifier, true, this._appendDetailsTabsForTraceEventAndShowDetails.bind(this, event));
             break;
         case WebInspector.TimelineSelection.Type.Frame:
             var frame = /** @type {!WebInspector.TimelineFrame} */ (this._selection.object());

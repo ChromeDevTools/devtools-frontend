@@ -26,3 +26,7 @@
 .stack-preview-container > tr {
     height: 17px;
 }
+
+.stack-preview-container td {
+    white-space: nowrap;
+}

@@ -42,7 +42,7 @@ WebInspector.TimelineTreeView = function(model)
 
     if (Runtime.experiments.isEnabled("timelineEventsTreeView")) {
         this._detailsView = new WebInspector.VBox();
-        this._detailsView.element.classList.add("timeline-tree-view-details");
+        this._detailsView.element.classList.add("timeline-tree-view-details", "timeline-details-view-body");
         this._splitWidget.setSidebarWidget(this._detailsView);
         this._showBannerInDetails();
         this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SelectedNode, onSelectionChanged, this);
@@ -764,7 +764,7 @@ WebInspector.EventsTimelineTreeView.prototype = {
         var traceEvent = node.event;
         if (!traceEvent)
             return false;
-        WebInspector.TimelineUIUtils.buildTraceEventDetails(traceEvent, this._model, this._linkifier, showDetails.bind(this));
+        WebInspector.TimelineUIUtils.buildTraceEventDetails(traceEvent, this._model, this._linkifier, false, showDetails.bind(this));
         return true;
 
         /**

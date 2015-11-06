@@ -1033,3 +1033,7 @@
     background-color: rgba(255, 255, 255, 0.25);
     border-bottom-color: transparent;
 }
+
+.timeline-tree-view .timeline-details-view-body .banner {
+    background-color: inherit;
+}

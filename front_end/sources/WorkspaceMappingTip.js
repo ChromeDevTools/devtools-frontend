@@ -163,7 +163,7 @@ WebInspector.WorkspaceMappingTip.prototype = {
         var uiSourceCodeFrame = this._sourcesView.viewForFile(uiSourceCode);
 
         var rowElement = infobar.createDetailsRowMessage(WebInspector.UIString("For more information on workspaces, refer to the "));
-        rowElement.appendChild(WebInspector.linkifyDocumentationURLAsNode("tools/setup/workspace/setup-workflow", WebInspector.UIString("workspaces documentation")));
+        rowElement.appendChild(WebInspector.linkifyDocumentationURLAsNode("../setup/setup-workflow", WebInspector.UIString("workspaces documentation")));
         rowElement.createTextChild(".");
         uiSourceCode[WebInspector.WorkspaceMappingTip._infobarSymbol] = infobar;
         uiSourceCodeFrame.attachInfobars([infobar]);

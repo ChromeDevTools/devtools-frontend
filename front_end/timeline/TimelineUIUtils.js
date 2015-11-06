@@ -2045,7 +2045,7 @@ WebInspector.TimelineDetailsContentHelper.prototype = {
         switch (warningType) {
         case warnings.ForcedStyle:
         case warnings.ForcedLayout:
-            span.appendChild(WebInspector.linkifyDocumentationURLAsNode("fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts",
+            span.appendChild(WebInspector.linkifyDocumentationURLAsNode("../../fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts",
                 WebInspector.UIString("Forced reflow")));
             span.createTextChild(WebInspector.UIString(" is a likely performance bottleneck."));
             break;

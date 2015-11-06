@@ -114,7 +114,7 @@ WebInspector.OverridesView.prototype = {
         fieldsetElement.appendChild(WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Shrink to fit"), WebInspector.overridesSupport.settings.deviceFitWindow, true));
 
         var footnote = container.createChild("p", "help-footnote");
-        footnote.appendChild(WebInspector.linkifyDocumentationURLAsNode("setup/remote-debugging/remote-debugging", WebInspector.UIString("More information about screen emulation")));
+        footnote.appendChild(WebInspector.linkifyDocumentationURLAsNode("iterate/device-mode/", WebInspector.UIString("More information about screen emulation")));
 
         return container;
     },

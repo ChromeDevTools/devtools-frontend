@@ -528,7 +528,7 @@ WebInspector.linkifyURLAsNode = function(url, linkText, classes, isExternal, too
  */
 WebInspector.linkifyDocumentationURLAsNode = function(article, title)
 {
-    return WebInspector.linkifyURLAsNode("https://developers.google.com/web/" + article, title, undefined, true);
+    return WebInspector.linkifyURLAsNode("https://developers.google.com/web/tools/chrome-devtools/" + article, title, undefined, true);
 }
 
 /**

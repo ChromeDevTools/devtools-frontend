@@ -657,19 +657,6 @@ WebInspector.CSSStyleDeclaration.Type = {
     Attributes: "Attributes"
 }
 
-/**
- * @param {!WebInspector.CSSStyleModel} cssModel
- * @return {!WebInspector.CSSStyleDeclaration}
- */
-WebInspector.CSSStyleDeclaration.createDummyStyle = function(cssModel)
-{
-    var dummyPayload = {
-        shorthandEntries: [],
-        cssProperties: []
-    };
-    return new WebInspector.CSSStyleDeclaration(cssModel, null, dummyPayload, WebInspector.CSSStyleDeclaration.Type.Regular);
-}
-
 WebInspector.CSSStyleDeclaration.prototype = {
     /**
      * @param {!CSSAgent.CSSStyle} payload
@@ -1043,6 +1030,27 @@ WebInspector.CSSRule = function(cssModel, payload, matchingSelectors)
         this.media = WebInspector.CSSMedia.parseMediaArrayPayload(cssModel, payload.media);
 }
 
+/**
+ * @param {!WebInspector.CSSStyleModel} cssModel
+ * @param {string} selectorText
+ * @return {!WebInspector.CSSRule}
+ */
+WebInspector.CSSRule.createDummyRule = function(cssModel, selectorText)
+{
+    var dummyPayload = {
+        selectorList: {
+            selectors: [{ value: selectorText}],
+        },
+        style: {
+            styleSheetId: "0",
+            range: new WebInspector.TextRange(0, 0, 0, 0),
+            shorthandEntries: [],
+            cssProperties: []
+        }
+    };
+    return new WebInspector.CSSRule(cssModel, /** @type {!CSSAgent.CSSRule} */(dummyPayload));
+}
+
 WebInspector.CSSRule.prototype = {
     /**
      * @param {!DOMAgent.NodeId} nodeId
@@ -1243,7 +1251,7 @@ WebInspector.CSSRule.prototype = {
 
 /**
  * @constructor
- * @param {?WebInspector.CSSStyleDeclaration} ownerStyle
+ * @param {!WebInspector.CSSStyleDeclaration} ownerStyle
  * @param {number} index
  * @param {string} name
  * @param {string} value
@@ -1270,7 +1278,7 @@ WebInspector.CSSProperty = function(ownerStyle, index, name, value, important, d
 }
 
 /**
- * @param {?WebInspector.CSSStyleDeclaration} ownerStyle
+ * @param {!WebInspector.CSSStyleDeclaration} ownerStyle
  * @param {number} index
  * @param {!CSSAgent.CSSProperty} payload
  * @return {!WebInspector.CSSProperty}
@@ -2060,6 +2068,7 @@ WebInspector.CSSStyleModel.MatchedStyleResult = function(cssModel, nodeId, inlin
 
     this._nodeStyles = [];
     this._nodeForStyle = new Map();
+    this._inheritedStyles = new Set();
 
     /**
      * @this {WebInspector.CSSStyleModel.MatchedStyleResult}
@@ -2106,6 +2115,7 @@ WebInspector.CSSStyleModel.MatchedStyleResult = function(cssModel, nodeId, inlin
         if (inheritedInlineStyle && this._containsInherited(inheritedInlineStyle)) {
             this._nodeForStyle.set(inheritedInlineStyle, parentNode);
             this._nodeStyles.push(inheritedInlineStyle);
+            this._inheritedStyles.add(inheritedInlineStyle);
         }
 
         for (var j = inheritedMatchedCSSRules.length - 1; j >= 0; --j) {
@@ -2114,6 +2124,7 @@ WebInspector.CSSStyleModel.MatchedStyleResult = function(cssModel, nodeId, inlin
                 continue;
             this._nodeForStyle.set(inheritedRule.style, parentNode);
             this._nodeStyles.push(inheritedRule.style);
+            this._inheritedStyles.add(inheritedRule.style);
         }
         parentNode = parentNode.parentNode;
     }
@@ -2184,7 +2195,7 @@ WebInspector.CSSStyleModel.MatchedStyleResult.prototype = {
      */
     isInherited: function(style)
     {
-        return this.nodeForStyle(style) !== this._node;
+        return this._inheritedStyles.has(style);
     }
 }
 

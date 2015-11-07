@@ -46,7 +46,7 @@ WebInspector.PropertyChangeHighlighter.prototype = {
         var foundSection = null;
         for (var block of sectionBlocks) {
             for (var section of block.sections) {
-                var declaration = section.styleRule.style();
+                var declaration = section.style();
                 if (declaration.styleSheetId !== this._styleSheetId)
                     continue;
 

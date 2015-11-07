@@ -256,9 +256,9 @@ WebInspector.ComputedStyleWidget.prototype = {
     _computePropertyTraces: function(matchedCascade)
     {
         var result = new Map();
-        var models = matchedCascade.sectionModels();
-        for (var model of models) {
-            var allProperties = model.style().allProperties;
+        var styles = matchedCascade.styles();
+        for (var style of styles) {
+            var allProperties = style.allProperties;
             for (var property of allProperties) {
                 if (!property.activeInStyle() || !matchedCascade.propertyState(property))
                     continue;
@@ -277,8 +277,8 @@ WebInspector.ComputedStyleWidget.prototype = {
     _computeInheritedProperties: function(matchedCascade)
     {
         var result = new Set();
-        for (var model of matchedCascade.sectionModels()) {
-            for (var property of model.style().allProperties) {
+        for (var style of matchedCascade.styles()) {
+            for (var property of style.allProperties) {
                 if (!matchedCascade.propertyState(property))
                     continue;
                 result.add(WebInspector.CSSMetadata.canonicalPropertyName(property.name));

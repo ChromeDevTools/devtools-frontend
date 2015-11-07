@@ -88,22 +88,6 @@ WebInspector.SectionCascade.prototype = {
     },
 
     /**
-     * @param {!WebInspector.CSSStyleDeclaration} style
-     * @param {!WebInspector.CSSStyleDeclaration=} insertAfter
-     */
-    insertStyle: function(style, insertAfter)
-    {
-        if (insertAfter) {
-            var index = this._styles.indexOf(insertAfter);
-            console.assert(index !== -1, "The insertAfter anchor could not be found in cascade");
-            this._styles.splice(index + 1, 0, style);
-        } else {
-            this._styles.push(style);
-        }
-        this.resetActiveProperties();
-    },
-
-    /**
      * @param {!WebInspector.CSSProperty} property
      * @return {?WebInspector.SectionCascade.PropertyState}
      */

@@ -1670,7 +1670,6 @@ WebInspector.BlankStylePropertiesSection = function(stylesPane, cascade, default
     this._selectorRefElement.appendChild(WebInspector.StylePropertiesSection._linkifyRuleLocation(this._parentPane._cssModel, this._parentPane._linkifier, styleSheetId, this._actualRuleLocation()));
     if (insertAfterStyle && insertAfterStyle.parentRule)
         this._createMediaList(insertAfterStyle.parentRule.media);
-    this._insertAfterStyle = insertAfterStyle;
     this.element.classList.add("blank-section");
 }
 
@@ -1778,9 +1777,7 @@ WebInspector.BlankStylePropertiesSection.prototype = {
     _makeNormal: function(newRule)
     {
         this.element.classList.remove("blank-section");
-        this._cascade.insertStyle(newRule.style, this._insertAfterStyle);
         this._style = newRule.style;
-
         // FIXME: replace this instance by a normal WebInspector.StylePropertiesSection.
         this._normal = true;
     },

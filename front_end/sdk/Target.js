@@ -285,6 +285,22 @@ WebInspector.SDKModel = function(modelClass, target)
 }
 
 WebInspector.SDKModel.prototype = {
+    /**
+     * @return {!Promise}
+     */
+    suspendModel: function()
+    {
+        return Promise.resolve();
+    },
+
+    /**
+     * @return {!Promise}
+     */
+    resumeModel: function()
+    {
+        return Promise.resolve();
+    },
+
     __proto__: WebInspector.SDKObject.prototype
 }
 
@@ -302,8 +318,7 @@ WebInspector.TargetManager = function()
     this._observerTypeSymbol = Symbol("observerType");
     /** @type {!Object.<string, !Array.<{modelClass: !Function, thisObject: (!Object|undefined), listener: function(!WebInspector.Event)}>>} */
     this._modelListeners = {};
-    /** @type {number} */
-    this._suspendCount = 0;
+    this._isSuspended = false;
 }
 
 WebInspector.TargetManager.Events = {
@@ -312,24 +327,40 @@ WebInspector.TargetManager.Events = {
     Load: "Load",
     PageReloadRequested: "PageReloadRequested",
     WillReloadPage: "WillReloadPage",
-    SuspendStateChanged: "SuspendStateChanged",
-    TargetDisposed: "TargetDisposed"
+    TargetDisposed: "TargetDisposed",
+    SuspendStateChanged: "SuspendStateChanged"
 }
 
 WebInspector.TargetManager.prototype = {
     suspendAllTargets: function()
     {
-        if (this._suspendCount++)
+        if (this._isSuspended)
             return;
+        this._isSuspended = true;
         this.dispatchEventToListeners(WebInspector.TargetManager.Events.SuspendStateChanged);
+
+        for (var i = 0; i < this._targets.length; ++i) {
+            for (var model of this._targets[i]._modelByConstructor.values())
+                model.suspendModel();
+        }
     },
 
+    /**
+     * @return {!Promise}
+     */
     resumeAllTargets: function()
     {
-        console.assert(this._suspendCount > 0);
-        if (--this._suspendCount)
-            return;
+        if (!this._isSuspended)
+            throw new Error("Not suspended");
+        this._isSuspended = false;
         this.dispatchEventToListeners(WebInspector.TargetManager.Events.SuspendStateChanged);
+
+        var promises = [];
+        for (var i = 0; i < this._targets.length; ++i) {
+            for (var model of this._targets[i]._modelByConstructor.values())
+                promises.push(model.resumeModel());
+        }
+        return Promise.all(promises);
     },
 
     suspendAndResumeAllTargets: function()
@@ -343,7 +374,7 @@ WebInspector.TargetManager.prototype = {
      */
     allTargetsSuspended: function()
     {
-        return !!this._suspendCount;
+        return this._isSuspended;
     },
 
     /**

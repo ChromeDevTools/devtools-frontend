@@ -242,10 +242,6 @@ WebInspector.ProfileType.prototype = {
      */
     setProfileBeingRecorded: function(profile)
     {
-        if (this._profileBeingRecorded && this._profileBeingRecorded.target())
-            WebInspector.targetManager.resumeAllTargets();
-        if (profile && profile.target())
-            WebInspector.targetManager.suspendAllTargets();
         this._profileBeingRecorded = profile;
     },
 

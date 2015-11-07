@@ -1075,7 +1075,6 @@ WebInspector.DOMModel = function(target) {
     WebInspector.SDKModel.call(this, WebInspector.DOMModel, target);
 
     this._agent = target.domAgent();
-    WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
 
     /** @type {!Object.<number, !WebInspector.DOMNode>} */
     this._idToDOMNode = {};
@@ -1942,12 +1941,48 @@ WebInspector.DOMModel.prototype = {
             callback(null);
     },
 
-    _suspendStateChanged: function()
+    /**
+     * @override
+     * @return {!Promise}
+     */
+    suspendModel: function()
     {
-        if (WebInspector.targetManager.allTargetsSuspended()) {
-            this._agent.disable(this._setDocument.bind(this, null));
-        } else {
-            this._agent.enable();
+        return new Promise(promiseBody.bind(this));
+
+        /**
+         * @param {function()} fulfill
+         * @this {WebInspector.DOMModel}
+         */
+        function promiseBody(fulfill)
+        {
+            this._agent.disable(callback.bind(this));
+
+            /**
+             * @this {WebInspector.DOMModel}
+             */
+            function callback()
+            {
+                this._setDocument(null);
+                fulfill();
+            }
+        }
+    },
+
+    /**
+     * @override
+     * @return {!Promise}
+     */
+    resumeModel: function()
+    {
+        return new Promise(promiseBody.bind(this));
+
+        /**
+         * @param {function()} fulfill
+         * @this {WebInspector.DOMModel}
+         */
+        function promiseBody(fulfill)
+        {
+            this._agent.enable(fulfill);
         }
     },
 

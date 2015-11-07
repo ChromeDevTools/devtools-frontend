@@ -38,7 +38,6 @@ WebInspector.CSSStyleModel = function(target)
     WebInspector.SDKModel.call(this, WebInspector.CSSStyleModel, target);
     this._domModel = WebInspector.DOMModel.fromTarget(target);
     this._agent = target.cssAgent();
-    WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
     this._styleLoader = new WebInspector.CSSStyleModel.ComputedStyleLoader(this);
     target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._mainFrameNavigated, this);
     target.registerCSSDispatcher(new WebInspector.CSSDispatcher(this));
@@ -564,14 +563,23 @@ WebInspector.CSSStyleModel.prototype = {
             this.dispatchEventToListeners(WebInspector.CSSStyleModel.Events.StyleSheetRemoved, headers[i]);
     },
 
-    _suspendStateChanged: function()
+    /**
+     * @override
+     * @return {!Promise}
+     */
+    suspendModel: function()
     {
-        if (WebInspector.targetManager.allTargetsSuspended()) {
-            this._agent.disable(this._resetStyleSheets.bind(this));
-            this._isEnabled = false;
-        } else {
-            this._agent.enable().then(this._wasEnabled.bind(this));
-        }
+        this._isEnabled = false;
+        return this._agent.disable().then(this._resetStyleSheets.bind(this));
+    },
+
+    /**
+     * @override
+     * @return {!Promise}
+     */
+    resumeModel: function()
+    {
+        return this._agent.enable().then(this._wasEnabled.bind(this));
     },
 
     /**

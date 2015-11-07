@@ -269,10 +269,7 @@ WebInspector.NetworkProject.prototype = {
      */
     removeFileForURL: function(url)
     {
-        if (!this._processedURLs[url])
-            return;
         delete this._processedURLs[url];
-
         var splitURL = WebInspector.ParsedURL.splitURLIntoPathComponents(url);
         var projectURL = splitURL[0];
         var path = splitURL.slice(1).join("/");

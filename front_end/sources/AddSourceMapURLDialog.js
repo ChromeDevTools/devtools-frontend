@@ -23,6 +23,7 @@ WebInspector.AddSourceMapURLDialog = function(callback)
 
     this.setDefaultFocusedElement(this._input);
     this._callback = callback;
+    this.contentElement.tabIndex = 0;
 }
 
 /**

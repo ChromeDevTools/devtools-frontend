@@ -97,7 +97,7 @@ WebInspector.UISourceCodeFrame.prototype = {
     {
         if (!this.loaded || !this.isShowing())
             return;
-        this._uiSourceCode.checkContentUpdated();
+        this._uiSourceCode.checkContentUpdated(true);
     },
 
     commitEditing: function()

@@ -301,6 +301,7 @@ WebInspector.ResourceScriptFile = function(resourceScriptMapping, uiSourceCode, 
 
     this._resourceScriptMapping = resourceScriptMapping;
     this._uiSourceCode = uiSourceCode;
+    this._uiSourceCode.forceLoadOnCheckContent();
 
     if (this._uiSourceCode.contentType() === WebInspector.resourceTypes.Script)
         this._script = scripts[0];

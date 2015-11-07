@@ -3224,6 +3224,9 @@
                     { "name": "styleSheetId", "$ref": "StyleSheetId" },
                     { "name": "text", "type": "string" }
                 ],
+                "returns": [
+                    { "name": "sourceMapURL", "type": "string", "optional": true, "description": "URL of source map associated with script (if any)." }
+                ],
                 "description": "Sets the new stylesheet text."
             },
             {

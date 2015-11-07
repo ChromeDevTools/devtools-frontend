@@ -221,7 +221,7 @@ WebInspector.SourcesSearchScope.prototype = {
             if (uiSourceCode.isDirty())
                 contentLoaded.call(this, uiSourceCode, uiSourceCode.workingCopy());
             else
-                uiSourceCode.checkContentUpdated(contentUpdated.bind(this, uiSourceCode));
+                uiSourceCode.checkContentUpdated(true, contentUpdated.bind(this, uiSourceCode));
         }
 
         /**

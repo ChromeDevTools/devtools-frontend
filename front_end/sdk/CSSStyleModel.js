@@ -459,9 +459,6 @@ WebInspector.CSSStyleModel.prototype = {
      */
     _fireStyleSheetChanged: function(styleSheetId)
     {
-        if (!styleSheetId || !this.hasEventListeners(WebInspector.CSSStyleModel.Events.StyleSheetChanged))
-            return;
-
         this.dispatchEventToListeners(WebInspector.CSSStyleModel.Events.StyleSheetChanged, { styleSheetId: styleSheetId });
     },
 
@@ -1875,14 +1872,17 @@ WebInspector.CSSStyleSheetHeader.prototype = {
         newText = this._trimSourceURL(newText);
         if (this.hasSourceURL)
             newText += "\n/*# sourceURL=" + this.sourceURL + " */";
-        return this._cssModel._agent.setStyleSheetText(this.id, newText, extractProtocolError);
+        return this._cssModel._agent.setStyleSheetText(this.id, newText, callback.bind(this));
 
         /**
          * @param {?Protocol.Error} error
+         * @param {string=} sourceMapURL
          * @return {?Protocol.Error}
+         * @this {WebInspector.CSSStyleSheetHeader}
          */
-        function extractProtocolError(error)
+        function callback(error, sourceMapURL)
         {
+            this.sourceMapURL = sourceMapURL;
             return error || null;
         }
     },

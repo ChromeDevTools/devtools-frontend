@@ -254,20 +254,27 @@ WebInspector.UISourceCode.prototype = {
     },
 
     /**
+     * @param {boolean=} forceLoad
      * @param {function()=} callback
      */
-    checkContentUpdated: function(callback)
+    checkContentUpdated: function(forceLoad, callback)
     {
         callback = callback || function() {};
+        forceLoad = forceLoad || this._forceLoadOnCheckContent;
+        if (!this.contentLoaded() && !forceLoad) {
+            callback();
+            return;
+        }
+
         if (!this._project.canSetFileContent()) {
             callback();
             return;
         }
         this._pushCheckContentUpdatedCallback(callback);
 
-        if (this._checkingContent) {
+        if (this._checkingContent)
             return;
-        }
+
         this._checkingContent = true;
         this._project.requestFileContent(this, contentLoaded.bind(this));
 
@@ -308,6 +315,11 @@ WebInspector.UISourceCode.prototype = {
                 this._lastAcceptedContent = updatedContent;
             this._terminateContentCheck();
         }
+    },
+
+    forceLoadOnCheckContent: function()
+    {
+        this._forceLoadOnCheckContent = true;
     },
 
     /**

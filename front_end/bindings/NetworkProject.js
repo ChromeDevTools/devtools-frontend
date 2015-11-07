@@ -267,8 +267,12 @@ WebInspector.NetworkProject.prototype = {
     /**
      * @param {string} url
      */
-    _removeFileForURL: function(url)
+    removeFileForURL: function(url)
     {
+        if (!this._processedURLs[url])
+            return;
+        delete this._processedURLs[url];
+
         var splitURL = WebInspector.ParsedURL.splitURLIntoPathComponents(url);
         var projectURL = splitURL[0];
         var path = splitURL.slice(1).join("/");
@@ -335,7 +339,7 @@ WebInspector.NetworkProject.prototype = {
         if (header.isInline && !header.hasSourceURL && header.origin !== "inspector")
             return;
 
-        this._removeFile(header.resourceURL());
+        this.removeFileForURL(header.resourceURL());
     },
 
     /**
@@ -391,17 +395,6 @@ WebInspector.NetworkProject.prototype = {
         this._processedURLs[url] = true;
         var uiSourceCode = this.addFileForURL(url, contentProvider, isContentScript);
         uiSourceCode[WebInspector.NetworkProject._contentTypeSymbol] = type;
-    },
-
-    /**
-     * @param {string} url
-     */
-    _removeFile: function(url)
-    {
-        if (!this._processedURLs[url])
-            return;
-        delete this._processedURLs[url];
-        this._removeFileForURL(url);
     },
 
     _dispose: function()

@@ -306,7 +306,7 @@ WebInspector.Project.prototype = {
     {
         var path = /** @type {string} */ (event.data);
         var uiSourceCode = this.uiSourceCode(path);
-        if (uiSourceCode && uiSourceCode.contentLoaded())
+        if (uiSourceCode)
             uiSourceCode.checkContentUpdated();
     },
 

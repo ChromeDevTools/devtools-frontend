@@ -344,6 +344,7 @@ WebInspector.StyleFile = function(uiSourceCode, mapping)
     this._mapping = mapping;
     this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.WorkingCopyChanged, this._workingCopyChanged, this);
     this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.WorkingCopyCommitted, this._workingCopyCommitted, this);
+    this._uiSourceCode.forceLoadOnCheckContent();
     this._commitThrottler = new WebInspector.Throttler(WebInspector.StyleFile.updateTimeout);
 }
 

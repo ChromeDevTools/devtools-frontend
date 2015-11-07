@@ -74,7 +74,7 @@ WebInspector.FrontendWebSocketAPI.prototype = {
                 if (buffer !== uiSourceCode.workingCopy())
                     uiSourceCode.setWorkingCopy(buffer);
                 if (saved)
-                    uiSourceCode.checkContentUpdated();
+                    uiSourceCode.checkContentUpdated(true);
             }
             break;
         default:

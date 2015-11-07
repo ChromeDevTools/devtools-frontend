@@ -301,6 +301,8 @@ WebInspector.CSSWorkspaceBinding.HeaderInfo.prototype = {
      */
     _pushSourceMapping: function(sourceMapping)
     {
+        if (this._sourceMappings.indexOf(sourceMapping) !== -1)
+            return;
         this._sourceMappings.push(sourceMapping);
         this._updateLocations();
     }

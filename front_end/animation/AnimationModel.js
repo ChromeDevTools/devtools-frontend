@@ -49,7 +49,11 @@ WebInspector.AnimationModel.prototype = {
     animationStarted: function(payload)
     {
         var animation = WebInspector.AnimationModel.Animation.parsePayload(this.target(), payload);
-        this._animationsById.set(animation.id(), animation);
+        // Ignore Web Animations custom effects & groups.
+        if (animation.type() === "WebAnimation" && animation.source().keyframesRule().keyframes().length === 0)
+            this._pendingAnimations.remove(animation.id());
+        else
+           this._animationsById.set(animation.id(), animation);
 
         for (var id of this._pendingAnimations) {
             if (!this._animationsById.get(id))

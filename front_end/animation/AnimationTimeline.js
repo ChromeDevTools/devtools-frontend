@@ -435,10 +435,6 @@ WebInspector.AnimationTimeline.prototype = {
             delete this._emptyTimelineMessage;
         }
 
-        // Ignore Web Animations custom effects & groups
-        if (animation.type() === "WebAnimation" && animation.source().keyframesRule().keyframes().length === 0)
-            return;
-
         this._resizeWindow(animation);
 
         var nodeUI = this._nodesMap.get(animation.source().backendNodeId());

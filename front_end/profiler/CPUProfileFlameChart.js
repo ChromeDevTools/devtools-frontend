@@ -229,7 +229,8 @@ WebInspector.CPUFlameChartDataProvider.prototype = {
         var totalTime = this._millisecondsToString(timelineData.entryTotalTimes[entryIndex]);
         pushEntryInfoRow(WebInspector.UIString("Self time"), selfTime);
         pushEntryInfoRow(WebInspector.UIString("Total time"), totalTime);
-        var text = (new WebInspector.Linkifier()).linkifyScriptLocation(this._target, node.scriptId, node.url, node.lineNumber, node.columnNumber).textContent;
+        var callFrame = /** @type {!ConsoleAgent.CallFrame} */ (node);
+        var text = (new WebInspector.Linkifier()).linkifyConsoleCallFrame(this._target, callFrame).textContent;
         pushEntryInfoRow(WebInspector.UIString("URL"), text);
         pushEntryInfoRow(WebInspector.UIString("Aggregated self time"), Number.secondsToString(node.selfTime / 1000, true));
         pushEntryInfoRow(WebInspector.UIString("Aggregated total time"), Number.secondsToString(node.totalTime / 1000, true));

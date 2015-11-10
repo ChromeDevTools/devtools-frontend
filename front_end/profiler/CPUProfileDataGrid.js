@@ -74,10 +74,9 @@ WebInspector.ProfileDataGridNode.prototype = {
             cell.classList.add("highlight");
 
         if (this.profileNode.scriptId !== "0") {
-            var lineNumber = this.profileNode.lineNumber ? this.profileNode.lineNumber - 1 : 0;
-            var columnNumber = this.profileNode.columnNumber ? this.profileNode.columnNumber - 1 : 0;
             var target = this.tree.profileView.target();
-            var urlElement = this.tree.profileView._linkifier.linkifyScriptLocation(target, this.profileNode.scriptId, this.profileNode.url, lineNumber, columnNumber, "profile-node-file");
+            var callFrame = /** @type {!ConsoleAgent.CallFrame} */ (this.profileNode);
+            var urlElement = this.tree.profileView._linkifier.linkifyConsoleCallFrame(target, callFrame, "profile-node-file");
             urlElement.style.maxWidth = "75%";
             cell.insertBefore(urlElement, cell.firstChild);
         }

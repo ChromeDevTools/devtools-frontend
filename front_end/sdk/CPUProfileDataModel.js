@@ -19,7 +19,6 @@ WebInspector.CPUProfileDataModel = function(profile)
         this._normalizeTimestamps();
         this._buildIdToNodeMap();
         this._fixMissingSamples();
-        this._fixLineAndColumnNumbers();
     }
     if (!WebInspector.moduleSetting("showNativeFunctionsInJSProfile").get())
         this._filterNativeFrames();
@@ -113,21 +112,6 @@ WebInspector.CPUProfileDataModel.prototype = {
                     child.parent = node;
                     processSubtree(child);
                 }
-            }
-        }
-    },
-
-    _fixLineAndColumnNumbers: function()
-    {
-        var nodeListsToTraverse = [ this.profileHead.children ];
-        while (nodeListsToTraverse.length) {
-            var nodeList = nodeListsToTraverse.pop();
-            for (var i = 0; i < nodeList.length; ++i) {
-                var node = nodeList[i];
-                --node.lineNumber;
-                --node.columnNumber;
-                if (node.children)
-                    nodeListsToTraverse.push(node.children);
             }
         }
     },

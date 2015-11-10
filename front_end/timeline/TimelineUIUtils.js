@@ -326,7 +326,7 @@ WebInspector.TimelineUIUtils.buildDetailsTextForTraceEvent = function(event, tar
     case recordType.ParseHTML:
         var endLine = event.args["endData"] && event.args["endData"]["endLine"];
         var url = WebInspector.displayNameForURL(event.args["beginData"]["url"]);
-        detailsText = endLine ? WebInspector.UIString("%s [%d\u2009\u2013\u2009%d]", url, event.args["beginData"]["startLine"] + 1, endLine + 1) : url;
+        detailsText = WebInspector.UIString("%s [%s\u2026%s]", url, event.args["beginData"]["startLine"] + 1, endLine >= 0 ? endLine + 1 : "");
         break;
 
     case recordType.CompileScript:
@@ -491,9 +491,10 @@ WebInspector.TimelineUIUtils.buildDetailsNodeForTraceEvent = function(event, tar
     {
         if (!url)
             return null;
-
         // FIXME(62725): stack trace line/column numbers are one-based.
-        return linkifier.linkifyScriptLocation(target, scriptId, url, lineNumber - 1, (columnNumber || 1) - 1, "timeline-details");
+        if (columnNumber)
+            --columnNumber;
+        return linkifier.linkifyScriptLocation(target, scriptId, url, lineNumber - 1, columnNumber, "timeline-details");
     }
 
     /**
@@ -1986,7 +1987,9 @@ WebInspector.TimelineDetailsContentHelper.prototype = {
     {
         if (!this._linkifier || !this._target)
             return;
-        this.appendElementRow(title, this._linkifier.linkifyScriptLocation(this._target, null, url, startLine - 1, (startColumn || 1) - 1));
+        if (startColumn)
+            --startColumn;
+        this.appendElementRow(title, this._linkifier.linkifyScriptLocation(this._target, null, url, startLine - 1, startColumn));
     },
 
     /**
@@ -2001,7 +2004,7 @@ WebInspector.TimelineDetailsContentHelper.prototype = {
             return;
         var locationContent = createElement("span");
         locationContent.appendChild(this._linkifier.linkifyScriptLocation(this._target, null, url, startLine - 1));
-        locationContent.createTextChild(endLine ? String.sprintf(" [%d\u2009\u2013\u2009%d]", startLine , endLine) : "")
+        locationContent.createTextChild(String.sprintf(" [%s\u2026%s]", startLine, endLine || ""));
         this.appendElementRow(title, locationContent);
     },
 

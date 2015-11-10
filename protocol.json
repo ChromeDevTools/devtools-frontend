@@ -5164,6 +5164,13 @@
                     { "name": "animation", "$ref": "Animation", "description": "Animation that was started." }
                 ],
                 "description": "Event for animation that has been started."
+            },
+            {
+                "name": "animationCanceled",
+                "parameters": [
+                    { "name": "id", "type": "string", "description": "Id of the animation that was cancelled."}
+                ],
+                "description": "Event for when an animation has been cancelled."
             }
         ]
     },

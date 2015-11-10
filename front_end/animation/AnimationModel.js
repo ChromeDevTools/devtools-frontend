@@ -23,8 +23,7 @@ WebInspector.AnimationModel = function(target)
 }
 
 WebInspector.AnimationModel.Events = {
-    AnimationGroupStarted: "AnimationGroupStarted",
-    AnimationCanceled: "AnimationCanceled"
+    AnimationGroupStarted: "AnimationGroupStarted"
 }
 
 WebInspector.AnimationModel.prototype = {
@@ -43,6 +42,12 @@ WebInspector.AnimationModel.prototype = {
         this._pendingAnimations.push(id);
     },
 
+    _animationCanceled: function(id)
+    {
+        this._pendingAnimations.remove(id);
+        this._flushPendingAnimationsIfNeeded();
+    },
+
     /**
      * @param {!AnimationAgent.Animation} payload
      */
@@ -54,7 +59,11 @@ WebInspector.AnimationModel.prototype = {
             this._pendingAnimations.remove(animation.id());
         else
            this._animationsById.set(animation.id(), animation);
+        this._flushPendingAnimationsIfNeeded();
+    },
 
+    _flushPendingAnimationsIfNeeded: function()
+    {
         for (var id of this._pendingAnimations) {
             if (!this._animationsById.get(id))
                 return;
@@ -752,6 +761,15 @@ WebInspector.AnimationDispatcher.prototype = {
     animationCreated: function(id)
     {
         this._animationModel.animationCreated(id);
+    },
+
+    /**
+     * @override
+     * @param {string} id
+     */
+    animationCanceled: function(id)
+    {
+        this._animationModel._animationCanceled(id);
     },
 
     /**

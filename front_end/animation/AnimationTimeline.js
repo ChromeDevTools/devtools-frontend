@@ -19,16 +19,12 @@ WebInspector.AnimationTimeline = function()
     this._timelineScrubberHead.textContent = WebInspector.UIString(Number.millisToString(0));
 
     this._underlyingPlaybackRate = 1;
-    this.contentElement.appendChild(this._createHeader());
+    this._createHeader();
     this._animationsContainer = this.contentElement.createChild("div", "animation-timeline-rows");
 
-    this._emptyTimelineMessage = this._animationsContainer.createChild("div", "animation-timeline-empty-message");
-    var message = this._emptyTimelineMessage.createChild("div");
-    message.textContent = WebInspector.UIString("Trigger animations on the page to view and tweak them on the animation timeline.");
-
     this._duration = this._defaultDuration();
-    this._scrubberRadius = 30;
-    this._timelineControlsWidth = 230;
+    this._scrubberRadius = 25;
+    this._timelineControlsWidth = 175;
     /** @type {!Map.<!DOMAgent.BackendNodeId, !WebInspector.AnimationTimeline.NodeUI>} */
     this._nodesMap = new Map();
     this._groupBuffer = [];
@@ -121,9 +117,6 @@ WebInspector.AnimationTimeline.prototype = {
         return this._timelineScrubber;
     },
 
-    /**
-     * @return {!Element}
-     */
     _createHeader: function()
     {
         /**
@@ -136,9 +129,9 @@ WebInspector.AnimationTimeline.prototype = {
             this._updatePlaybackControls();
         }
 
-        var container = createElementWithClass("div", "animation-timeline-header");
+        this._previewContainer = this.contentElement.createChild("div", "animation-timeline-buffer");
+        var container = this.contentElement.createChild("div", "animation-timeline-header");
         var controls = container.createChild("div", "animation-controls");
-        this._previewContainer = container.createChild("div", "animation-timeline-buffer");
 
         var toolbar = new WebInspector.Toolbar(controls);
         toolbar.element.classList.add("animation-controls-toolbar");
@@ -198,8 +191,6 @@ WebInspector.AnimationTimeline.prototype = {
 
     _controlButtonToggle: function()
     {
-        if (this._emptyTimelineMessage)
-            return;
         if (this._controlButton.element.classList.contains("play-outline-toolbar-item"))
             this._togglePause(false);
         else if (this._controlButton.element.classList.contains("replay-outline-toolbar-item"))
@@ -363,7 +354,8 @@ WebInspector.AnimationTimeline.prototype = {
         if (this._previewMap.get(group)) {
             if (this._selectedGroup === group)
                 this._syncScrubber();
-            this._previewMap.get(group).element.animate([{ opacity: "0.3", transform: "scale(0.7)" }, { opacity: "1", transform: "scale(1)" }], { duration : 150, easing: "cubic-bezier(0, 0, 0.2, 1)" });
+            else
+                this._previewMap.get(group).replay();
             return;
         }
         this._groupBuffer.push(group);
@@ -430,11 +422,6 @@ WebInspector.AnimationTimeline.prototype = {
             node[this._symbol] = nodeUI;
         }
 
-        if (this._emptyTimelineMessage) {
-            this._emptyTimelineMessage.remove();
-            delete this._emptyTimelineMessage;
-        }
-
         this._resizeWindow(animation);
 
         var nodeUI = this._nodesMap.get(animation.source().backendNodeId());
@@ -464,14 +451,14 @@ WebInspector.AnimationTimeline.prototype = {
     {
         const gridSize = 250;
         this._grid.setAttribute("width", this.width());
-        this._grid.setAttribute("height", this._animationsContainer.offsetHeight + 43);
+        this._grid.setAttribute("height", this._animationsContainer.offsetHeight + 30);
         this._grid.setAttribute("shape-rendering", "crispEdges");
         this._grid.removeChildren();
         var lastDraw = undefined;
         for (var time = 0; time < this.duration(); time += gridSize) {
             var line = this._grid.createSVGChild("rect", "animation-timeline-grid-line");
             line.setAttribute("x", time * this.pixelMsRatio());
-            line.setAttribute("y", 0);
+            line.setAttribute("y", 23);
             line.setAttribute("height", "100%");
             line.setAttribute("width", 1);
         }
@@ -481,7 +468,7 @@ WebInspector.AnimationTimeline.prototype = {
                 lastDraw = gridWidth;
                 var label = this._grid.createSVGChild("text", "animation-timeline-grid-label");
                 label.setAttribute("x", gridWidth + 5);
-                label.setAttribute("y", 15);
+                label.setAttribute("y", 16);
                 label.textContent = WebInspector.UIString(Number.millisToString(time));
             }
         }

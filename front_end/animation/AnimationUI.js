@@ -374,8 +374,8 @@ WebInspector.AnimationUI.prototype = {
 }
 
 WebInspector.AnimationUI.Options = {
-    AnimationHeight: 32,
-    AnimationSVGHeight: 80,
+    AnimationHeight: 26,
+    AnimationSVGHeight: 50,
     AnimationMargin: 7,
     EndpointsClickRegionSize: 10,
     GridCanvasHeight: 40

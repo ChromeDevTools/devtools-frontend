@@ -100,7 +100,7 @@ WebInspector.BezierUI.prototype = {
     }
 }
 
-WebInspector.BezierUI.Height = 32;
+WebInspector.BezierUI.Height = 26;
 
 /**
  * @param {!WebInspector.Geometry.CubicBezier} bezier

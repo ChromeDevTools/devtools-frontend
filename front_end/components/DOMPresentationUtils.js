@@ -31,25 +31,31 @@
 
 WebInspector.DOMPresentationUtils = {}
 
+/**
+ * @param {!WebInspector.DOMNode} node
+ * @param {!Element} parentElement
+ */
 WebInspector.DOMPresentationUtils.decorateNodeLabel = function(node, parentElement)
 {
+    var originalNode = node;
+    var isPseudo = node.nodeType() === Node.ELEMENT_NODE && node.pseudoType();
+    if (isPseudo && node.parentNode)
+        node = node.parentNode;
+
     var title = node.nodeNameInCorrectCase();
 
-    var nameElement = createElement("span");
+    var nameElement = parentElement.createChild("span", "node-label-name");
     nameElement.textContent = title;
-    parentElement.appendChild(nameElement);
 
     var idAttribute = node.getAttribute("id");
     if (idAttribute) {
-        var idElement = createElement("span");
-        parentElement.appendChild(idElement);
-
+        var idElement = parentElement.createChild("span", "node-label-id");
         var part = "#" + idAttribute;
         title += part;
         idElement.createTextChild(part);
 
         // Mark the name as extra, since the ID is more important.
-        nameElement.className = "extra";
+        nameElement.classList.add("extra");
     }
 
     var classAttribute = node.getAttribute("class");
@@ -58,10 +64,7 @@ WebInspector.DOMPresentationUtils.decorateNodeLabel = function(node, parentEleme
         var foundClasses = {};
 
         if (classes.length) {
-            var classesElement = createElement("span");
-            classesElement.className = "extra";
-            parentElement.appendChild(classesElement);
-
+            var classesElement = parentElement.createChild("span", "extra node-label-class");
             for (var i = 0; i < classes.length; ++i) {
                 var className = classes[i];
                 if (className && !(className in foundClasses)) {
@@ -72,6 +75,13 @@ WebInspector.DOMPresentationUtils.decorateNodeLabel = function(node, parentEleme
                 }
             }
         }
+    }
+
+    if (isPseudo) {
+        var pseudoElement = parentElement.createChild("span", "extra node-label-pseudo");
+        var pseudoText = "::" + originalNode.pseudoType();
+        pseudoElement.createTextChild(pseudoText);
+        title += pseudoText;
     }
     parentElement.title = title;
 }
@@ -99,7 +109,7 @@ WebInspector.DOMPresentationUtils.linkifyNodeReference = function(node)
     if (!node)
         return createTextNode(WebInspector.UIString("<node>"));
 
-    var root = createElement("span");
+    var root = createElementWithClass("span", "monospace");
     var shadowRoot = WebInspector.createShadowRootWithCoreStyles(root);
     shadowRoot.appendChild(WebInspector.Widget.createStyleElement("components/domUtils.css"));
     var link = shadowRoot.createChild("div", "node-link");

@@ -9,7 +9,6 @@
 }
 
 .node-link {
-    text-decoration: underline;
     cursor: pointer;
     display: inline;
 }
@@ -29,4 +28,16 @@
 
 .stack-preview-container td {
     white-space: nowrap;
+}
+
+.node-label-name {
+    color: rgb(136, 18, 128);
+}
+
+.node-label-id {
+    color: rgb(26, 26, 166);
+}
+
+.node-label-class, .node-label-pseudo {
+    color: rgb(153, 69, 0);
 }

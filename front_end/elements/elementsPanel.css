@@ -680,6 +680,13 @@ li.editing .enabled-button {
     line-height: 16px;
 }
 
+.sidebar-separator > span.monospace {
+    background: rgb(255, 255, 255);
+    padding: 0px 3px;
+    border-radius: 2px;
+    border: 1px solid #C1C1C1;
+}
+
 .swatch-inner {
     width: 100%;
     height: 100%;

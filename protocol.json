@@ -5197,7 +5197,7 @@
             },
             { "id": "AXValueNativeSourceType",
               "type": "string",
-              "enum": [ "figcaption", "label", "labelfor", "labelwrapped", "tablecaption", "other" ],
+              "enum": [ "figcaption", "label", "labelfor", "labelwrapped", "legend", "tablecaption", "other" ],
               "description": "Enum of possible native property sources (as a subtype of a particular AXValueSourceType)."
             },
             {

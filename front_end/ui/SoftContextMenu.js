@@ -178,7 +178,6 @@ WebInspector.SoftContextMenu.prototype = {
     {
         var separatorElement = createElementWithClass("div", "soft-context-menu-separator");
         separatorElement._isSeparator = true;
-        separatorElement.addEventListener("mouseover", this._hideSubMenu.bind(this), false);
         separatorElement.createChild("div", "separator-line");
         return separatorElement;
     },

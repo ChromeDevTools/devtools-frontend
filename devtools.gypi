@@ -433,7 +433,6 @@
             'front_end/elements/PropertyChangeHighlighter.js',
             'front_end/elements/Spectrum.js',
             'front_end/elements/StylesPopoverHelper.js',
-            'front_end/elements/StylesSectionModel.js',
             'front_end/elements/StylesSidebarPane.js',
             'front_end/elements/ComputedStyleWidget.js',
         ],

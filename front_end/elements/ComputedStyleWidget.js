@@ -124,21 +124,21 @@ WebInspector.ComputedStyleWidget.prototype = {
 
     /**
      * @param {?WebInspector.SharedSidebarModel.ComputedStyle} nodeStyle
-     * @param {?{matched: !WebInspector.SectionCascade, pseudo: !Map.<number, !WebInspector.SectionCascade>}} cascades
+     * @param {?WebInspector.CSSStyleModel.MatchedStyleResult} matchedStyles
      */
-    _innerRebuildUpdate: function(nodeStyle, cascades)
+    _innerRebuildUpdate: function(nodeStyle, matchedStyles)
     {
         this._propertiesOutline.removeChildren();
         this._linkifier.reset();
         var cssModel = this._sharedModel.cssModel();
-        if (!nodeStyle || !cascades || !cssModel)
+        if (!nodeStyle || !matchedStyles || !cssModel)
             return;
 
         var uniqueProperties = nodeStyle.computedStyle.keysArray();
         uniqueProperties.sort(propertySorter);
 
-        var propertyTraces = this._computePropertyTraces(cascades.matched);
-        var inhertiedProperties = this._computeInheritedProperties(cascades.matched);
+        var propertyTraces = this._computePropertyTraces(matchedStyles);
+        var inhertiedProperties = this._computeInheritedProperties(matchedStyles);
         var showInherited = this._showInheritedComputedStylePropertiesSetting.get();
         for (var i = 0; i < uniqueProperties.length; ++i) {
             var propertyName = uniqueProperties[i];
@@ -175,7 +175,7 @@ WebInspector.ComputedStyleWidget.prototype = {
 
             var trace = propertyTraces.get(propertyName);
             if (trace) {
-                this._renderPropertyTrace(cssModel, cascades.matched, nodeStyle.node, treeElement, trace);
+                this._renderPropertyTrace(cssModel, matchedStyles, nodeStyle.node, treeElement, trace);
                 treeElement.listItemElement.addEventListener("mousedown", consumeEvent, false);
                 treeElement.listItemElement.addEventListener("dblclick", consumeEvent, false);
                 treeElement.listItemElement.addEventListener("click", handleClick.bind(null, treeElement), false);
@@ -213,17 +213,17 @@ WebInspector.ComputedStyleWidget.prototype = {
 
     /**
      * @param {!WebInspector.CSSStyleModel} cssModel
-     * @param {!WebInspector.SectionCascade} matchedCascade
+     * @param {!WebInspector.CSSStyleModel.MatchedStyleResult} matchedStyles
      * @param {!WebInspector.DOMNode} node
      * @param {!TreeElement} rootTreeElement
      * @param {!Array<!WebInspector.CSSProperty>} tracedProperties
      */
-    _renderPropertyTrace: function(cssModel, matchedCascade, node, rootTreeElement, tracedProperties)
+    _renderPropertyTrace: function(cssModel, matchedStyles, node, rootTreeElement, tracedProperties)
     {
         for (var property of tracedProperties) {
             var trace = createElement("div");
             trace.classList.add("property-trace");
-            if (matchedCascade.propertyState(property) === WebInspector.SectionCascade.PropertyState.Overloaded)
+            if (matchedStyles.propertyState(property) === WebInspector.CSSStyleModel.MatchedStyleResult.PropertyState.Overloaded)
                 trace.classList.add("property-trace-inactive");
 
             var renderer = new WebInspector.StylesSidebarPropertyRenderer(null, node, property.name, /** @type {string} */(property.value));
@@ -250,17 +250,16 @@ WebInspector.ComputedStyleWidget.prototype = {
     },
 
     /**
-     * @param {!WebInspector.SectionCascade} matchedCascade
+     * @param {!WebInspector.CSSStyleModel.MatchedStyleResult} matchedStyles
      * @return {!Map<string, !Array<!WebInspector.CSSProperty>>}
      */
-    _computePropertyTraces: function(matchedCascade)
+    _computePropertyTraces: function(matchedStyles)
     {
         var result = new Map();
-        var styles = matchedCascade.styles();
-        for (var style of styles) {
+        for (var style of matchedStyles.nodeStyles()) {
             var allProperties = style.allProperties;
             for (var property of allProperties) {
-                if (!property.activeInStyle() || !matchedCascade.propertyState(property))
+                if (!property.activeInStyle() || !matchedStyles.propertyState(property))
                     continue;
                 if (!result.has(property.name))
                     result.set(property.name, []);
@@ -271,15 +270,15 @@ WebInspector.ComputedStyleWidget.prototype = {
     },
 
     /**
-     * @param {!WebInspector.SectionCascade} matchedCascade
+     * @param {!WebInspector.CSSStyleModel.MatchedStyleResult} matchedStyles
      * @return {!Set<string>}
      */
-    _computeInheritedProperties: function(matchedCascade)
+    _computeInheritedProperties: function(matchedStyles)
     {
         var result = new Set();
-        for (var style of matchedCascade.styles()) {
+        for (var style of matchedStyles.nodeStyles()) {
             for (var property of style.allProperties) {
-                if (!matchedCascade.propertyState(property))
+                if (!matchedStyles.propertyState(property))
                     continue;
                 result.add(WebInspector.CSSMetadata.canonicalPropertyName(property.name));
             }

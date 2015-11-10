@@ -312,29 +312,25 @@ WebInspector.StylesSidebarPane.prototype = {
     },
 
     /**
-     * @return {!Promise.<?{matched: !WebInspector.SectionCascade, pseudo: !Map.<number, !WebInspector.SectionCascade>}>}
+     * @return {!Promise.<?WebInspector.CSSStyleModel.MatchedStyleResult>}
      */
     fetchMatchedCascade: function()
     {
         var node = this.node();
         if (!node)
-            return Promise.resolve(/** @type {?{matched: !WebInspector.SectionCascade, pseudo: !Map.<number, !WebInspector.SectionCascade>}} */(null));
+            return Promise.resolve(/** @type {?WebInspector.CSSStyleModel.MatchedStyleResult} */(null));
         if (!this._matchedCascadePromise)
-            this._matchedCascadePromise = this._matchedStylesForNode(node).then(buildMatchedCascades.bind(this, node));
+            this._matchedCascadePromise = this._matchedStylesForNode(node).then(validateStyles.bind(this));
         return this._matchedCascadePromise;
 
         /**
-         * @param {!WebInspector.DOMNode} node
          * @param {?WebInspector.CSSStyleModel.MatchedStyleResult} matchedStyles
-         * @return {?{matched: !WebInspector.SectionCascade, pseudo: !Map.<number, !WebInspector.SectionCascade>}}
+         * @return {?WebInspector.CSSStyleModel.MatchedStyleResult}
          * @this {WebInspector.StylesSidebarPane}
          */
-        function buildMatchedCascades(node, matchedStyles)
+        function validateStyles(matchedStyles)
         {
-            if (!matchedStyles || node !== this.node())
-                return null;
-
-            return WebInspector.SectionCascade.fromMatchedStyles(matchedStyles);
+            return matchedStyles && matchedStyles.node() === this.node() ? matchedStyles : null;
         }
     },
 
@@ -409,29 +405,29 @@ WebInspector.StylesSidebarPane.prototype = {
     },
 
     /**
-     * @param {?{matched: !WebInspector.SectionCascade, pseudo: !Map.<number, !WebInspector.SectionCascade>}} cascades
+     * @param {?WebInspector.CSSStyleModel.MatchedStyleResult} matchedStyles
      */
-    _innerRebuildUpdate: function(cascades)
+    _innerRebuildUpdate: function(matchedStyles)
     {
         this._linkifier.reset();
         this._sectionsContainer.removeChildren();
         this._sectionBlocks = [];
 
         var node = this.node();
-        if (!cascades || !node)
+        if (!matchedStyles || !node)
             return;
 
-        this._sectionBlocks = this._rebuildSectionsForMatchedStyleRules(cascades.matched);
+        this._sectionBlocks = this._rebuildSectionsForMatchedStyleRules(matchedStyles);
         var pseudoTypes = [];
-        var keys = new Set(cascades.pseudo.keys());
+        var keys = new Set(matchedStyles.pseudoStyles().keys());
         if (keys.delete(DOMAgent.PseudoType.Before))
             pseudoTypes.push(DOMAgent.PseudoType.Before);
         pseudoTypes = pseudoTypes.concat(keys.valuesArray().sort());
         for (var pseudoType of pseudoTypes) {
             var block = WebInspector.SectionBlock.createPseudoTypeBlock(pseudoType);
-            var cascade = cascades.pseudo.get(pseudoType);
-            for (var style of cascade.styles()) {
-                var section = new WebInspector.StylePropertiesSection(this, cascade, style);
+            var styles = /** @type {!Array<!WebInspector.CSSStyleDeclaration>} */(matchedStyles.pseudoStyles().get(pseudoType));
+            for (var style of styles) {
+                var section = new WebInspector.StylePropertiesSection(this, matchedStyles, style);
                 block.sections.push(section);
             }
             this._sectionBlocks.push(block);
@@ -461,22 +457,22 @@ WebInspector.StylesSidebarPane.prototype = {
     },
 
     /**
-     * @param {!WebInspector.SectionCascade} matchedCascade
+     * @param {!WebInspector.CSSStyleModel.MatchedStyleResult} matchedStyles
      * @return {!Array.<!WebInspector.SectionBlock>}
      */
-    _rebuildSectionsForMatchedStyleRules: function(matchedCascade)
+    _rebuildSectionsForMatchedStyleRules: function(matchedStyles)
     {
         var blocks = [new WebInspector.SectionBlock(null)];
         var lastParentNode = null;
-        for (var style of matchedCascade.styles()) {
-            var parentNode = matchedCascade.isInherited(style) ? matchedCascade.nodeForStyle(style) : null;
+        for (var style of matchedStyles.nodeStyles()) {
+            var parentNode = matchedStyles.isInherited(style) ? matchedStyles.nodeForStyle(style) : null;
             if (parentNode && parentNode !== lastParentNode) {
                 lastParentNode = parentNode;
                 var block = WebInspector.SectionBlock.createInheritedNodeBlock(lastParentNode);
                 blocks.push(block);
             }
 
-            var section = new WebInspector.StylePropertiesSection(this, matchedCascade, style);
+            var section = new WebInspector.StylePropertiesSection(this, matchedStyles, style);
             blocks.peekLast().sections.push(section);
         }
         return blocks;
@@ -533,7 +529,7 @@ WebInspector.StylesSidebarPane.prototype = {
     {
         this.expand();
         var node = this.node();
-        var blankSection = new WebInspector.BlankStylePropertiesSection(this, insertAfterSection._cascade, node ? WebInspector.DOMPresentationUtils.simpleSelector(node) : "", styleSheetId, ruleLocation, insertAfterSection._style);
+        var blankSection = new WebInspector.BlankStylePropertiesSection(this, insertAfterSection._matchedStyles, node ? WebInspector.DOMPresentationUtils.simpleSelector(node) : "", styleSheetId, ruleLocation, insertAfterSection._style);
 
         this._sectionsContainer.insertBefore(blankSection.element, insertAfterSection.element.nextSibling);
 
@@ -755,14 +751,14 @@ WebInspector.SectionBlock.prototype = {
 /**
  * @constructor
  * @param {!WebInspector.StylesSidebarPane} parentPane
- * @param {!WebInspector.SectionCascade} cascade
+ * @param {!WebInspector.CSSStyleModel.MatchedStyleResult} matchedStyles
  * @param {!WebInspector.CSSStyleDeclaration} style
  */
-WebInspector.StylePropertiesSection = function(parentPane, cascade, style)
+WebInspector.StylePropertiesSection = function(parentPane, matchedStyles, style)
 {
     this._parentPane = parentPane;
     this._style = style;
-    this._cascade = cascade;
+    this._matchedStyles = matchedStyles;
     this.editable = !!(style.styleSheetId && style.range);
 
     var rule = style.parentRule;
@@ -882,9 +878,9 @@ WebInspector.StylePropertiesSection.prototype = {
      */
     _selectorText: function()
     {
-        var node = this._cascade.nodeForStyle(this._style);
+        var node = this._matchedStyles.nodeForStyle(this._style);
         if (this._style.type === WebInspector.CSSStyleDeclaration.Type.Inline)
-            return this._cascade.isInherited(this._style) ? WebInspector.UIString("Style Attribute") : "element.style";
+            return this._matchedStyles.isInherited(this._style) ? WebInspector.UIString("Style Attribute") : "element.style";
         if (this._style.type === WebInspector.CSSStyleDeclaration.Type.Attributes)
             return node.nodeNameInCorrectCase() + "[" + WebInspector.UIString("Attributes Style") + "]";
         return this._style.parentRule.selectorText();
@@ -1102,7 +1098,7 @@ WebInspector.StylePropertiesSection.prototype = {
      */
     isPropertyInherited: function(propertyName)
     {
-        if (this._cascade.isInherited(this._style)) {
+        if (this._matchedStyles.isInherited(this._style)) {
             // While rendering inherited stylesheet, reverse meaning of this property.
             // Render truly inherited properties with black, i.e. return them as non-inherited.
             return !WebInspector.CSSMetadata.isPropertyInherited(propertyName);
@@ -1161,7 +1157,7 @@ WebInspector.StylePropertiesSection.prototype = {
         } else {
             var child = this.propertiesTreeOutline.firstChild();
             while (child) {
-                var overloaded = this._cascade.propertyState(child.property) === WebInspector.SectionCascade.PropertyState.Overloaded;
+                var overloaded = this._matchedStyles.propertyState(child.property) === WebInspector.CSSStyleModel.MatchedStyleResult.PropertyState.Overloaded;
                 child.setOverloaded(overloaded);
                 child = child.traverseNextTreeElement(false, null, true);
             }
@@ -1188,8 +1184,8 @@ WebInspector.StylePropertiesSection.prototype = {
         for (var property of style.leadingProperties()) {
             var isShorthand = !!WebInspector.CSSMetadata.cssPropertiesMetainfo.longhands(property.name);
             var inherited = this.isPropertyInherited(property.name);
-            var overloaded = this._cascade.propertyState(property) === WebInspector.SectionCascade.PropertyState.Overloaded;
-            var item = new WebInspector.StylePropertyTreeElement(this._parentPane, this._cascade, property, isShorthand, inherited, overloaded);
+            var overloaded = this._matchedStyles.propertyState(property) === WebInspector.CSSStyleModel.MatchedStyleResult.PropertyState.Overloaded;
+            var item = new WebInspector.StylePropertyTreeElement(this._parentPane, this._matchedStyles, property, isShorthand, inherited, overloaded);
             this.propertiesTreeOutline.appendChild(item);
         }
     },
@@ -1217,9 +1213,9 @@ WebInspector.StylePropertiesSection.prototype = {
         if (!rule)
             return;
 
-        this._mediaListElement.classList.toggle("media-matches", this._cascade.mediaMatches(this._style));
+        this._mediaListElement.classList.toggle("media-matches", this._matchedStyles.mediaMatches(this._style));
 
-        if (!this._cascade.hasMatchingSelectors(this._style))
+        if (!this._matchedStyles.hasMatchingSelectors(this._style))
             return;
 
         var selectors = rule.selectors;
@@ -1287,7 +1283,7 @@ WebInspector.StylePropertiesSection.prototype = {
     addNewBlankProperty: function(index)
     {
         var property = this._style.newBlankProperty(index);
-        var item = new WebInspector.StylePropertyTreeElement(this._parentPane, this._cascade, property, false, false, false);
+        var item = new WebInspector.StylePropertyTreeElement(this._parentPane, this._matchedStyles, property, false, false, false);
         index = property.index;
         this.propertiesTreeOutline.insertChild(item, index);
         item.listItemElement.textContent = "";
@@ -1557,7 +1553,7 @@ WebInspector.StylePropertiesSection.prototype = {
                 var doesAffectSelectedNode = rule.matchingSelectors.length > 0;
                 this.element.classList.toggle("no-affect", !doesAffectSelectedNode);
 
-                this._cascade.resetActiveProperties();
+                this._matchedStyles.resetActiveProperties();
                 var newSelectorRange = /** @type {!WebInspector.TextRange} */(rule.selectorRange());
                 rule.style.sourceStyleSheetEdited(/** @type {string} */(rule.styleSheetId), oldSelectorRange, newSelectorRange);
                 this._parentPane._styleSheetRuleEdited(rule, oldSelectorRange, newSelectorRange);
@@ -1654,16 +1650,16 @@ WebInspector.StylePropertiesSection._linkifyRuleLocation = function(cssModel, li
  * @constructor
  * @extends {WebInspector.StylePropertiesSection}
  * @param {!WebInspector.StylesSidebarPane} stylesPane
- * @param {!WebInspector.SectionCascade} cascade
+ * @param {!WebInspector.CSSStyleModel.MatchedStyleResult} matchedStyles
  * @param {string} defaultSelectorText
  * @param {string} styleSheetId
  * @param {!WebInspector.TextRange} ruleLocation
  * @param {!WebInspector.CSSStyleDeclaration} insertAfterStyle
  */
-WebInspector.BlankStylePropertiesSection = function(stylesPane, cascade, defaultSelectorText, styleSheetId, ruleLocation, insertAfterStyle)
+WebInspector.BlankStylePropertiesSection = function(stylesPane, matchedStyles, defaultSelectorText, styleSheetId, ruleLocation, insertAfterStyle)
 {
     var rule = WebInspector.CSSRule.createDummyRule(stylesPane._cssModel, defaultSelectorText);
-    WebInspector.StylePropertiesSection.call(this, stylesPane, cascade, rule.style);
+    WebInspector.StylePropertiesSection.call(this, stylesPane, matchedStyles, rule.style);
     this._ruleLocation = ruleLocation;
     this._styleSheetId = styleSheetId;
     this._selectorRefElement.removeChildren();
@@ -1789,18 +1785,18 @@ WebInspector.BlankStylePropertiesSection.prototype = {
  * @constructor
  * @extends {TreeElement}
  * @param {!WebInspector.StylesSidebarPane} stylesPane
- * @param {!WebInspector.SectionCascade} cascade
+ * @param {!WebInspector.CSSStyleModel.MatchedStyleResult} matchedStyles
  * @param {!WebInspector.CSSProperty} property
  * @param {boolean} isShorthand
  * @param {boolean} inherited
  * @param {boolean} overloaded
  */
-WebInspector.StylePropertyTreeElement = function(stylesPane, cascade, property, isShorthand, inherited, overloaded)
+WebInspector.StylePropertyTreeElement = function(stylesPane, matchedStyles, property, isShorthand, inherited, overloaded)
 {
     // Pass an empty title, the title gets made later in onattach.
     TreeElement.call(this, "", isShorthand);
     this._style = property.ownerStyle;
-    this._cascade = cascade;
+    this._matchedStyles = matchedStyles;
     this.property = property;
     this._inherited = inherited;
     this._overloaded = overloaded;
@@ -2020,7 +2016,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
     _styleTextEdited: function(oldStyleRange)
     {
         var newStyleRange = /** @type {!WebInspector.TextRange} */ (this._style.range);
-        this._cascade.resetActiveProperties();
+        this._matchedStyles.resetActiveProperties();
         if (this._style.parentRule)
             this._parentPane._styleSheetRuleEdited(this._style.parentRule, oldStyleRange, newStyleRange);
     },
@@ -2074,10 +2070,10 @@ WebInspector.StylePropertyTreeElement.prototype = {
             var section = this.section();
             if (section) {
                 inherited = section.isPropertyInherited(name);
-                overloaded = this._cascade.propertyState(longhandProperties[i]) === WebInspector.SectionCascade.PropertyState.Overloaded;
+                overloaded = this._matchedStyles.propertyState(longhandProperties[i]) === WebInspector.CSSStyleModel.MatchedStyleResult.PropertyState.Overloaded;
             }
 
-            var item = new WebInspector.StylePropertyTreeElement(this._parentPane, this._cascade, longhandProperties[i], false, inherited, overloaded);
+            var item = new WebInspector.StylePropertyTreeElement(this._parentPane, this._matchedStyles, longhandProperties[i], false, inherited, overloaded);
             this.appendChild(item);
         }
     },

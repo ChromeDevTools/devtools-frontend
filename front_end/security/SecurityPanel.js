@@ -347,6 +347,11 @@ WebInspector.SecurityPanelSidebarTree = function(mainViewElement, showOriginInPa
     }
     this._clearOriginGroups();
 
+    // This message will be removed by clearOrigins() during the first new page load after the panel was opened.
+    var mainViewReloadMessage = new WebInspector.SidebarTreeElement("security-main-view-reload-message", WebInspector.UIString("Reload to view details"));
+    mainViewReloadMessage.selectable = false;
+    this._originGroups.get(WebInspector.SecurityPanelSidebarTree.OriginGroupName.MainOrigin).appendChild(mainViewReloadMessage);
+
     /** @type {!Map<!WebInspector.SecurityPanel.Origin, !WebInspector.SecurityPanelSidebarTreeElement>} */
     this._elementsByOrigin = new Map();
 }

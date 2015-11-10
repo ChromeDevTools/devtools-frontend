@@ -159,8 +159,6 @@ WebInspector.SASSSourceMapping.prototype = {
                 var sassURL = sources[i];
                 if (!this._networkMapping.hasMappingForURL(sassURL)) {
                     var contentProvider = sourceMap.sourceContentProvider(sassURL, WebInspector.resourceTypes.Stylesheet);
-                    // Override source map content providers.
-                    this._networkProject.removeFileForURL(sassURL);
                     this._networkProject.addFileForURL(sassURL, contentProvider);
                 }
             }

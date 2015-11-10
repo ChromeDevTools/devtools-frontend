@@ -154,7 +154,6 @@ WebInspector.NetworkProject = function(target, workspace, networkMapping)
     this._workspace = workspace;
     this._networkMapping = networkMapping;
     this._projectDelegates = {};
-    this._processedURLs = {};
     target[WebInspector.NetworkProject._networkProjectSymbol] = this;
 
     target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.ResourceAdded, this._resourceAdded, this);
@@ -267,13 +266,14 @@ WebInspector.NetworkProject.prototype = {
     /**
      * @param {string} url
      */
-    removeFileForURL: function(url)
+    _removeFileForURL: function(url)
     {
-        delete this._processedURLs[url];
         var splitURL = WebInspector.ParsedURL.splitURLIntoPathComponents(url);
         var projectURL = splitURL[0];
         var path = splitURL.slice(1).join("/");
         var projectDelegate = this._projectDelegates[WebInspector.NetworkProject.projectId(this.target(), projectURL, false)];
+        if (!projectDelegate)
+            return;
         projectDelegate.removeFile(path);
     },
 
@@ -304,7 +304,7 @@ WebInspector.NetworkProject.prototype = {
     _parsedScriptSource: function(event)
     {
         var script = /** @type {!WebInspector.Script} */ (event.data);
-        if (!script.sourceURL || (script.isInlineScript() && !script.hasSourceURL))
+        if (!script.sourceURL || script.isLiveEdit() || (script.isInlineScript() && !script.hasSourceURL))
             return;
         // Filter out embedder injected content scripts.
         if (script.isContentScript() && !script.hasSourceURL) {
@@ -336,7 +336,7 @@ WebInspector.NetworkProject.prototype = {
         if (header.isInline && !header.hasSourceURL && header.origin !== "inspector")
             return;
 
-        this.removeFileForURL(header.resourceURL());
+        this._removeFileForURL(header.resourceURL());
     },
 
     /**
@@ -353,8 +353,14 @@ WebInspector.NetworkProject.prototype = {
      */
     _addResource: function(resource)
     {
-        if (resource.resourceType() === WebInspector.resourceTypes.Document)
-            this._addFile(resource.url, resource);
+        // Only load documents from resources.
+        if (resource.resourceType() !== WebInspector.resourceTypes.Document)
+            return;
+
+        // Never load document twice.
+        if (this._workspace.uiSourceCodeForOriginURL(resource.url))
+            return;
+        this._addFile(resource.url, resource);
     },
 
     /**
@@ -387,9 +393,6 @@ WebInspector.NetworkProject.prototype = {
         var type = contentProvider.contentType();
         if (type !== WebInspector.resourceTypes.Stylesheet && type !== WebInspector.resourceTypes.Document && type !== WebInspector.resourceTypes.Script)
             return;
-        if (this._processedURLs[url])
-            return;
-        this._processedURLs[url] = true;
         var uiSourceCode = this.addFileForURL(url, contentProvider, isContentScript);
         uiSourceCode[WebInspector.NetworkProject._contentTypeSymbol] = type;
     },
@@ -415,7 +418,6 @@ WebInspector.NetworkProject.prototype = {
 
     _reset: function()
     {
-        this._processedURLs = {};
         for (var projectId in this._projectDelegates)
             this._projectDelegates[projectId].reset();
         this._projectDelegates = {};

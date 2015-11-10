@@ -350,7 +350,7 @@ WebInspector.ContentProviderBasedProjectDelegate.prototype = {
     {
         var path = parentPath ? parentPath + "/" + name : name;
         if (this._contentProviders[path])
-            return path;
+            this.dispatchEventToListeners(WebInspector.ProjectDelegate.Events.FileRemoved, path);
         var fileDescriptor = new WebInspector.FileDescriptor(parentPath, name, originURL, contentProvider.contentType());
         this._contentProviders[path] = contentProvider;
         this.dispatchEventToListeners(WebInspector.ProjectDelegate.Events.FileAdded, fileDescriptor);

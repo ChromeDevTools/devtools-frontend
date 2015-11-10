@@ -61,8 +61,13 @@ WebInspector.SuggestBox = function(suggestBoxDelegate, maxItemsHeight)
     this._selectedElement = null;
     this._maxItemsHeight = maxItemsHeight;
     this._maybeHideBound = this._maybeHide.bind(this);
-    this._element = createElementWithClass("div", "suggest-box");
+    this._container = createElementWithClass("div", "suggest-box-container");
+    this._element = this._container.createChild("div", "suggest-box");
     this._element.addEventListener("mousedown", this._onBoxMouseDown.bind(this), true);
+    this._detailsPopup = this._container.createChild("div", "suggest-box details-popup monospace");
+    this._detailsPopup.classList.add("hidden");
+    this._asyncDetailsCallback = null;
+    this._asyncDetailsPromises = /** @type {!Map<number, !Promise>} */ ({});
 }
 
 WebInspector.SuggestBox.prototype = {
@@ -71,7 +76,7 @@ WebInspector.SuggestBox.prototype = {
      */
     visible: function()
     {
-        return !!this._element.parentElement;
+        return !!this._container.parentElement;
     },
 
     /**
@@ -142,7 +147,7 @@ WebInspector.SuggestBox.prototype = {
         this._bodyElement = document.body;
         this._bodyElement.addEventListener("mousedown", this._maybeHideBound, true);
         this._overlay = new WebInspector.SuggestBox.Overlay();
-        this._overlay.setContentElement(this._element);
+        this._overlay.setContentElement(this._container);
     },
 
     hide: function()
@@ -152,7 +157,7 @@ WebInspector.SuggestBox.prototype = {
 
         this._bodyElement.removeEventListener("mousedown", this._maybeHideBound, true);
         delete this._bodyElement;
-        this._element.remove();
+        this._container.remove();
         this._overlay.dispose();
         delete this._overlay;
         delete this._selectedElement;
@@ -234,8 +239,9 @@ WebInspector.SuggestBox.prototype = {
     /**
      * @param {string} prefix
      * @param {string} text
+     * @param {number} index
      */
-    _createItemElement: function(prefix, text)
+    _createItemElement: function(prefix, text, index)
     {
         var element = createElementWithClass("div", "suggest-box-content-item source-code");
         element.tabIndex = -1;
@@ -253,18 +259,47 @@ WebInspector.SuggestBox.prototype = {
     /**
      * @param {!Array.<string>} items
      * @param {string} userEnteredText
+     * @param {function(number): !Promise<{detail:string, description:string}>=} asyncDetails
      */
-    _updateItems: function(items, userEnteredText)
+    _updateItems: function(items, userEnteredText, asyncDetails)
     {
         this._length = items.length;
+        this._asyncDetailsPromises = {};
+        this._asyncDetailsCallback = asyncDetails;
         this._element.removeChildren();
         delete this._selectedElement;
 
         for (var i = 0; i < items.length; ++i) {
             var item = items[i];
-            var currentItemElement = this._createItemElement(userEnteredText, item);
+            var currentItemElement = this._createItemElement(userEnteredText, item, i);
             this._element.appendChild(currentItemElement);
         }
+    },
+
+    /**
+     * @param {number} index
+     * @return {!Promise<({detail: string, description: string}|undefined)>}
+     */
+    _asyncDetails: function(index)
+    {
+        if (!this._asyncDetailsCallback)
+            return Promise.resolve();
+        if (!this._asyncDetailsPromises[index])
+            this._asyncDetailsPromises[index] = this._asyncDetailsCallback(index);
+        return this._asyncDetailsPromises[index];
+    },
+
+    /**
+     * @param {{detail: string, description: string}=} details
+     */
+    _showDetailsPopup: function(details)
+    {
+        this._detailsPopup.removeChildren();
+        if (!details)
+            return;
+        this._detailsPopup.createChild("section", "detail").createTextChild(details.detail);
+        this._detailsPopup.createChild("section", "description").createTextChild(details.description);
+        this._detailsPopup.classList.remove("hidden");
     },
 
     /**
@@ -282,9 +317,22 @@ WebInspector.SuggestBox.prototype = {
 
         this._selectedElement = this._element.children[index];
         this._selectedElement.classList.add("selected");
+        this._detailsPopup.classList.add("hidden");
+        var elem = this._selectedElement;
+        this._asyncDetails(index).then(showDetails.bind(this), function(){});
 
         if (scrollIntoView)
             this._selectedElement.scrollIntoViewIfNeeded(false);
+
+        /**
+         * @param {{detail: string, description: string}=} details
+         * @this {WebInspector.SuggestBox}
+         */
+        function showDetails(details)
+        {
+            if (elem === this._selectedElement)
+                this._showDetailsPopup(details);
+        }
     },
 
     /**
@@ -320,11 +368,12 @@ WebInspector.SuggestBox.prototype = {
      * @param {number} selectedIndex
      * @param {boolean} canShowForSingleItem
      * @param {string} userEnteredText
+     * @param {function(number): !Promise<{detail:string, description:string}>=} asyncDetails
      */
-    updateSuggestions: function(anchorBox, completions, selectedIndex, canShowForSingleItem, userEnteredText)
+    updateSuggestions: function(anchorBox, completions, selectedIndex, canShowForSingleItem, userEnteredText, asyncDetails)
     {
         if (this._canShowBox(completions, canShowForSingleItem, userEnteredText)) {
-            this._updateItems(completions, userEnteredText);
+            this._updateItems(completions, userEnteredText, asyncDetails);
             this._show();
             this._updateBoxPosition(anchorBox);
             this._selectItem(selectedIndex, selectedIndex > 0);

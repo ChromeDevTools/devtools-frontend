@@ -261,6 +261,7 @@ WebInspector.AnimationTimeline.prototype = {
             return;
         this._selectedGroup.seekTo(0);
         this._animateTime(0);
+        this._updateControlButton();
     },
 
     /**
@@ -393,8 +394,10 @@ WebInspector.AnimationTimeline.prototype = {
             ui.element.classList.toggle("selected", this._selectedGroup === group);
         }
 
-        if (this._selectedGroup === group)
+        if (this._selectedGroup === group) {
+            this._replay();
             return;
+        }
         this._selectedGroup = group;
         this._previewMap.forEach(applySelectionClass, this);
         this._reset();
@@ -402,7 +405,7 @@ WebInspector.AnimationTimeline.prototype = {
             this._addAnimation(anim);
         this.scheduleRedraw();
         this._timelineScrubber.classList.remove("hidden");
-        this._syncScrubber();
+        this._replay();
     },
 
     /**

@@ -54,6 +54,10 @@
     background-color: #fff;
 }
 
+.security-sidebar-tree-item {
+    padding: 2px 0;
+}
+
 .tree-outline li.selected .lock-icon-neutral {
     background-image: none;
     background-color: #5a5a5a;
@@ -70,10 +74,13 @@
     -webkit-mask-image: url(Images/securityPropertyWarning.svg);
 }
 
+.tree-outline .security-sidebar-tree-item.selected .security-property-unknown {
+    -webkit-mask-image: url(Images/securityPropertyUnknown.svg);
+}
+
 .security-sidebar-tree-item.selected .security-property-secure {
     -webkit-mask-image: url(Images/securityPropertySecure.svg);
 }
-
 .sidebar-tree-item.security-main-view-reload-message .title {
     color: rgba(0, 0, 0, 0.5);
     padding-left: 8px;

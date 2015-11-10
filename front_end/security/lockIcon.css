@@ -38,6 +38,10 @@
     background-image: url(Images/securityPropertyWarning.svg);
 }
 
+.security-property-unknown {
+    background-image: url(Images/securityPropertyUnknown.svg);
+}
+
 .security-property-secure {
     background-image: url(Images/securityPropertySecure.svg);
 }

@@ -1906,23 +1906,35 @@ WebInspector.StylePropertyTreeElement.prototype = {
         var swatchIcon = new WebInspector.ColorSwatchPopoverIcon(this, stylesPopoverHelper, text);
 
         /**
-         * @param {?Map.<string, string>} styles
+         * @param {?Array<string>} backgroundColors
          */
-        function computedCallback(styles)
+        function computedCallback(backgroundColors)
         {
-            if (!styles)
+            // TODO(aboxhall): distinguish between !backgroundColors (no text) and
+            // !backgroundColors.length (no computed bg color)
+            if (!backgroundColors || !backgroundColors.length)
                 return;
-            var bgColorText = styles.get("background-color") || "";
+            // TODO(samli): figure out what to do in the case of multiple background colors (i.e. gradients)
+            var bgColorText = backgroundColors[0];
             var bgColor = WebInspector.Color.parse(bgColorText);
-            // TODO(aboxhall): for background color with alpha, compute the actual
-            // visible background color (blended with content underneath).
-            if (bgColor && !bgColor.hasAlpha())
-                swatchIcon.setContrastColor(bgColor);
+            if (!bgColor)
+                return;
+
+            // If we have a semi-transparent background color over an unknown
+            // background, draw the line for the "worst case" scenario: where
+            // the unknown background is the same color as the text.
+            if (bgColor.hasAlpha) {
+                var blendedRGBA = [];
+                WebInspector.Color.blendColors(bgColor.rgba(), color.rgba(), blendedRGBA);
+                bgColor = new WebInspector.Color(blendedRGBA, WebInspector.Color.Format.RGBA);
+            }
+
+            swatchIcon.setContrastColor(bgColor);
         }
 
         if (this.property.name === "color" && this._parentPane.cssModel() && this.node()) {
             var cssModel = this._parentPane.cssModel();
-            cssModel.computedStylePromise(this.node().id).then(computedCallback);
+            cssModel.backgroundColorsPromise(this.node().id).then(computedCallback);
         }
 
         return swatchIcon.element();

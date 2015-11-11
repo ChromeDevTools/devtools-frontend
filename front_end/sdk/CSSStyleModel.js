@@ -160,6 +160,23 @@ WebInspector.CSSStyleModel.prototype = {
 
     /**
      * @param {number} nodeId
+     * @return {!Promise<?Array<string>>}
+     */
+    backgroundColorsPromise: function(nodeId)
+    {
+        /**
+         * @param {?string} error
+         * @param {!Array<string>=} backgroundColors
+         * @return {?Array<string>}
+         */
+        function backgroundColorsCallback(error, backgroundColors) {
+            return !error && backgroundColors ? backgroundColors : null;
+        }
+        return this._agent.getBackgroundColors(nodeId, backgroundColorsCallback);
+    },
+
+    /**
+     * @param {number} nodeId
      * @return {!Promise.<?Array.<!CSSAgent.PlatformFontUsage>>}
      */
     platformFontsPromise: function(nodeId)

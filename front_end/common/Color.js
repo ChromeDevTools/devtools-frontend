@@ -565,16 +565,16 @@ WebInspector.Color.luminance = function(rgba)
  * Combine the two given color according to alpha blending.
  * @param {!Array<number>} fgRGBA
  * @param {!Array<number>} bgRGBA
- * @param {!Array<number>} out_flattened
+ * @param {!Array<number>} out_blended
  */
-WebInspector.Color.flattenColors = function(fgRGBA, bgRGBA, out_flattened)
+WebInspector.Color.blendColors = function(fgRGBA, bgRGBA, out_blended)
 {
     var alpha = fgRGBA[3];
 
-    out_flattened[0] = ((1 - alpha) * bgRGBA[0]) + (alpha * fgRGBA[0]);
-    out_flattened[1] = ((1 - alpha) * bgRGBA[1]) + (alpha * fgRGBA[1]);
-    out_flattened[2] = ((1 - alpha) * bgRGBA[2]) + (alpha * fgRGBA[2]);
-    out_flattened[3] = alpha + (bgRGBA[3] * (1 - alpha));
+    out_blended[0] = ((1 - alpha) * bgRGBA[0]) + (alpha * fgRGBA[0]);
+    out_blended[1] = ((1 - alpha) * bgRGBA[1]) + (alpha * fgRGBA[1]);
+    out_blended[2] = ((1 - alpha) * bgRGBA[2]) + (alpha * fgRGBA[2]);
+    out_blended[3] = alpha + (bgRGBA[3] * (1 - alpha));
 }
 
 /**
@@ -587,20 +587,20 @@ WebInspector.Color.flattenColors = function(fgRGBA, bgRGBA, out_flattened)
  */
 WebInspector.Color.calculateContrastRatio = function(fgRGBA, bgRGBA)
 {
-    WebInspector.Color.flattenColors(fgRGBA, bgRGBA, WebInspector.Color.calculateContrastRatio._flattenedFg);
+    WebInspector.Color.blendColors(fgRGBA, bgRGBA, WebInspector.Color.calculateContrastRatio._blendedFg);
 
-    var fgLuminance = WebInspector.Color.luminance(WebInspector.Color.calculateContrastRatio._flattenedFg);
+    var fgLuminance = WebInspector.Color.luminance(WebInspector.Color.calculateContrastRatio._blendedFg);
     var bgLuminance = WebInspector.Color.luminance(bgRGBA);
     var contrastRatio = (Math.max(fgLuminance, bgLuminance) + 0.05) /
         (Math.min(fgLuminance, bgLuminance) + 0.05);
 
-    for (var i = 0; i < WebInspector.Color.calculateContrastRatio._flattenedFg.length; i++)
-        WebInspector.Color.calculateContrastRatio._flattenedFg[i] = 0;
+    for (var i = 0; i < WebInspector.Color.calculateContrastRatio._blendedFg.length; i++)
+        WebInspector.Color.calculateContrastRatio._blendedFg[i] = 0;
 
     return contrastRatio;
 }
 
-WebInspector.Color.calculateContrastRatio._flattenedFg = [0, 0, 0, 0];
+WebInspector.Color.calculateContrastRatio._blendedFg = [0, 0, 0, 0];
 
 /**
  * Compute a desired luminance given a given luminance and a desired contrast

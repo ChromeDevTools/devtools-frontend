@@ -730,8 +730,8 @@ WebInspector.Spectrum.prototype = {
         var pathBuilder = [];
         var candidateRGBA = [];
         WebInspector.Color.hsva2rgba(candidateHSVA, candidateRGBA);
-        var flattenedRGBA = [];
-        WebInspector.Color.flattenColors(candidateRGBA, bgRGBA, flattenedRGBA);
+        var blendedRGBA = [];
+        WebInspector.Color.blendColors(candidateRGBA, bgRGBA, blendedRGBA);
 
         /**
          * Approach the desired contrast ratio by modifying the given component
@@ -746,8 +746,8 @@ WebInspector.Spectrum.prototype = {
             while (0 <= x && x <= 1) {
                 candidateHSVA[index] = x;
                 WebInspector.Color.hsva2rgba(candidateHSVA, candidateRGBA);
-                WebInspector.Color.flattenColors(candidateRGBA, bgRGBA, flattenedRGBA);
-                var fgLuminance = WebInspector.Color.luminance(flattenedRGBA);
+                WebInspector.Color.blendColors(candidateRGBA, bgRGBA, blendedRGBA);
+                var fgLuminance = WebInspector.Color.luminance(blendedRGBA);
                 var dLuminance = fgLuminance - desiredLuminance;
 
                 if (Math.abs(dLuminance) < (onAxis ? epsilon / 10 : epsilon))

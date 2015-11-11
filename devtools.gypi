@@ -797,6 +797,7 @@
             'front_end/Images/securityPropertyInsecure.svg',
             'front_end/Images/securityPropertySecure.svg',
             'front_end/Images/securityPropertyWarning.svg',
+            'front_end/Images/securityPropertyUnknown.svg',
             'front_end/Images/securityStateInsecure.svg',
             'front_end/Images/securityStateNeutral.svg',
             'front_end/Images/securityStateSecure.svg',

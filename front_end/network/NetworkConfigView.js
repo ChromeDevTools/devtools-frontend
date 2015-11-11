@@ -56,6 +56,7 @@ WebInspector.NetworkConfigView.prototype = {
         this._autoUserAgent.type = "text";
         this._autoUserAgent.disabled = true;
         WebInspector.multitargetNetworkManager.addEventListener(WebInspector.MultitargetNetworkManager.Events.UserAgentChanged, this._userAgentChanged, this);
+        this._userAgentChanged();
 
         radio = createRadioLabel("custom-user-agent", WebInspector.UIString("Custom user agent"), false);
         this._customUserAgentSetting = WebInspector.settings.createSetting("customUserAgent", "");
@@ -73,12 +74,9 @@ WebInspector.NetworkConfigView.prototype = {
         this._userAgentTypeChanged(this._autoUserAgentRadio);
     },
 
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _userAgentChanged: function(event)
+    _userAgentChanged: function()
     {
-        this._autoUserAgent.value = /** @type {string} */(event.data) || WebInspector.UIString("Default");
+        this._autoUserAgent.value = WebInspector.multitargetNetworkManager.userAgentOverride() || WebInspector.UIString("Default");
     },
 
     _customUserAgentChanged: function()

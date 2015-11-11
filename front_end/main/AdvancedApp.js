@@ -28,7 +28,10 @@ WebInspector.AdvancedApp.prototype = {
 
         this._inspectedPagePlaceholder = new WebInspector.InspectedPagePlaceholder();
         this._inspectedPagePlaceholder.addEventListener(WebInspector.InspectedPagePlaceholder.Events.Update, this._onSetInspectedPageBounds.bind(this), this);
-        this._responsiveDesignView = new WebInspector.ResponsiveDesignView(this._inspectedPagePlaceholder);
+        if (Runtime.experiments.isEnabled("deviceMode"))
+            this._responsiveDesignView = new WebInspector.DeviceModeView(this._inspectedPagePlaceholder);
+        else
+            this._responsiveDesignView = new WebInspector.ResponsiveDesignView(this._inspectedPagePlaceholder);
 
         WebInspector.dockController.addEventListener(WebInspector.DockController.Events.BeforeDockSideChanged, this._onBeforeDockSideChange, this);
         WebInspector.dockController.addEventListener(WebInspector.DockController.Events.DockSideChanged, this._onDockSideChange, this);
@@ -85,13 +88,12 @@ WebInspector.AdvancedApp.prototype = {
 
     _updateResponsiveDesignView: function()
     {
-        if (this._isDocked()) {
+        if (this._isDocked())
             this._rootSplitWidget.setMainWidget(this._responsiveDesignView);
-            this._responsiveDesignView.updatePageResizer();
-        } else if (this._toolboxRootView) {
+        else if (this._toolboxRootView)
             this._responsiveDesignView.show(this._toolboxRootView.element);
+        if (!Runtime.experiments.isEnabled("deviceMode") && (this._isDocked() || this._toolboxRootView))
             this._responsiveDesignView.updatePageResizer();
-        }
     },
 
     /**

@@ -385,6 +385,42 @@ Insets.prototype = {
 
 /**
  * @constructor
+ * @param {number} left
+ * @param {number} top
+ * @param {number} width
+ * @param {number} height
+ */
+WebInspector.Rect = function(left, top, width, height)
+{
+    this.left = left;
+    this.top = top;
+    this.width = width;
+    this.height = height;
+}
+
+WebInspector.Rect.prototype = {
+    /**
+     * @param {?WebInspector.Rect} rect
+     * @return {boolean}
+     */
+    isEqual: function(rect)
+    {
+        return !!rect && this.left === rect.left && this.top === rect.top && this.width == rect.width && this.height == rect.height;
+    },
+
+    /**
+     * @param {number} scale
+     * @return {!WebInspector.Rect}
+     */
+    scale: function(scale)
+    {
+        return new WebInspector.Rect(this.left * scale, this.top * scale, this.width * scale, this.height * scale);
+    }
+}
+
+
+/**
+ * @constructor
  * @param {!Size=} minimum
  * @param {?Size=} preferred
  */

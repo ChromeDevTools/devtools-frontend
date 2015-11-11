@@ -1,0 +1,77 @@
+/*
+ * Copyright 2015 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+    overflow: hidden;
+    align-items: stretch;
+    flex: auto;
+}
+
+.device-mode-toolbar {
+    flex: none;
+    background-color: #f3f3f3;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: center;
+}
+
+.device-mode-content-area {
+    flex: auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.device-mode-screen-area {
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    outline: 1px solid hsl(0, 0%, 95%);
+    background-color: #171717;
+}
+
+.device-mode-screen-image {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.device-mode-resizer {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -14px;
+    width: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: hsla(0, 0%, 0%, 0.02);
+    transition: background-color 0.2s ease;
+}
+
+.device-mode-resizer:hover {
+    background-color: hsla(0, 0%, 0%, 0.1);
+}
+
+.device-mode-resizer > div {
+    content: url(Images/toolbarResizerHorizontal.png);
+    pointer-events: none;
+}
+
+.device-mode-page-area {
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    display: flex;
+    background-color: rgb(255, 255, 255);
+}

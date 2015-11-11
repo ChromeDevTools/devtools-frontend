@@ -4,6 +4,7 @@
             "type": "drawer-view",
             "name": "emulation",
             "title": "Emulation",
+            "experiment": "!deviceMode",
             "order": 10,
             "persistence": "closeable",
             "className": "WebInspector.OverridesView"
@@ -12,6 +13,7 @@
             "type": "@WebInspector.ToolbarItem.Provider",
             "className": "WebInspector.DeviceModeButtonProvider",
             "condition": "can_dock",
+            "experiment": "!deviceMode",
             "order": 1,
             "location": "main-toolbar-left"
         },
@@ -86,10 +88,14 @@
         "MediaQueryInspector.js",
         "ResponsiveDesignView.js",
         "OverridesView.js",
-        "SensorsView.js"
+        "SensorsView.js",
+        "DeviceModeModel.js",
+        "DeviceModeView.js"
     ],
     "resources": [
         "devicesSettingsTab.css",
+        "deviceModeToolbar.css",
+        "deviceModeView.css",
         "responsiveDesignView.css",
         "overrides.css",
         "sensors.css"

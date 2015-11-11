@@ -104,15 +104,29 @@ WebInspector.SettingsUI.createSettingInputField = function(label, setting, numer
         inputElement.style.width = width;
     inputElement.placeholder = placeholder || "";
 
+    var errorMessageLabel;
+    if (validatorCallback)
+        errorMessageLabel = p.createChild("div", "field-error-message");
+    WebInspector.SettingsUI.bindSettingInputField(inputElement, setting, numeric, validatorCallback, instant, clearForZero, errorMessageLabel);
+    return p;
+}
+
+/**
+ * @param {!Element} inputElement
+ * @param {!WebInspector.Setting} setting
+ * @param {boolean} numeric
+ * @param {function(string):?string=} validatorCallback
+ * @param {boolean=} instant
+ * @param {boolean=} clearForZero
+ * @param {!Element=} errorMessageLabel
+ */
+WebInspector.SettingsUI.bindSettingInputField = function(inputElement, setting, numeric, validatorCallback, instant, clearForZero, errorMessageLabel)
+{
     if (validatorCallback || instant) {
         inputElement.addEventListener("change", onInput, false);
         inputElement.addEventListener("input", onInput, false);
     }
     inputElement.addEventListener("keydown", onKeyDown, false);
-
-    var errorMessageLabel;
-    if (validatorCallback)
-        errorMessageLabel = p.createChild("div", "field-error-message");
 
     function onInput()
     {
@@ -164,7 +178,8 @@ WebInspector.SettingsUI.createSettingInputField = function(label, setting, numer
         if (!error)
             error = "";
         inputElement.classList.toggle("error-input", !!error);
-        errorMessageLabel.textContent = error;
+        if (errorMessageLabel)
+            errorMessageLabel.textContent = error;
     }
 
     if (!instant)
@@ -192,8 +207,6 @@ WebInspector.SettingsUI.createSettingInputField = function(label, setting, numer
 
     if (validatorCallback)
       validate();
-
-    return p;
 }
 
 /**

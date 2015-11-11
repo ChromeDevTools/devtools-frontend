@@ -762,10 +762,20 @@ WebInspector.MultitargetNetworkManager.prototype = {
      */
     setUserAgentOverride: function(userAgent)
     {
+        if (this._userAgentOverride === userAgent)
+            return;
         this._userAgentOverride = userAgent;
         if (!this._customUserAgent)
             this._updateUserAgentOverride();
-        this.dispatchEventToListeners(WebInspector.MultitargetNetworkManager.Events.UserAgentChanged, this._userAgentOverride);
+        this.dispatchEventToListeners(WebInspector.MultitargetNetworkManager.Events.UserAgentChanged);
+    },
+
+    /**
+     * @return {string}
+     */
+    userAgentOverride: function()
+    {
+        return this._userAgentOverride;
     },
 
     /**

@@ -45,6 +45,8 @@ WebInspector.OverridesSupport = function()
 
     this.settings = {};
     this.settings._emulationEnabled = WebInspector.settings.createSetting("emulationEnabled", false);
+    if (Runtime.experiments.isEnabled("deviceMode"))
+        this.settings._emulationEnabled.set(false);
 
     this.settings.userAgent = WebInspector.settings.createSetting("userAgent", "");
 

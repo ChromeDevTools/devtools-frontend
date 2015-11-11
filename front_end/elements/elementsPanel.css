@@ -748,11 +748,10 @@ li.editing .enabled-button {
 
 .sidebar-pane-section-toolbar {
     position: absolute;
-    right: 2px;
-    bottom: 2px;
+    right: 0;
+    bottom: 0;
     visibility: hidden;
-    background-color: rgba(255, 255, 255, 0.8);
-    border: 1px solid #e5e5e5;
+    background-color: rgba(255, 255, 255, 0.9);
 }
 
 .styles-pane:not(.is-editing-style) .styles-section.matched-styles:not(.read-only):hover .sidebar-pane-section-toolbar {

@@ -790,21 +790,22 @@ WebInspector.StylePropertiesSection = function(parentPane, matchedStyles, style)
 
     if (this.editable) {
         var items = [];
-        if (Runtime.experiments.isEnabled("stylesSidebarRuleToolbar")) {
-            var colorButton = new WebInspector.ToolbarButton(WebInspector.UIString("Add color"), "foreground-color-toolbar-item");
-            colorButton.addEventListener("click", this._onInsertColorPropertyClick.bind(this));
-            items.push(colorButton);
+        var colorButton = new WebInspector.ToolbarButton(WebInspector.UIString("Add color"), "foreground-color-toolbar-item");
+        colorButton.addEventListener("click", this._onInsertColorPropertyClick.bind(this));
+        items.push(colorButton);
 
-            var backgroundButton = new WebInspector.ToolbarButton(WebInspector.UIString("Add background-color"), "background-color-toolbar-item");
-            backgroundButton.addEventListener("click", this._onInsertBackgroundColorPropertyClick.bind(this));
-            items.push(backgroundButton);
-        }
+        var backgroundButton = new WebInspector.ToolbarButton(WebInspector.UIString("Add background-color"), "background-color-toolbar-item");
+        backgroundButton.addEventListener("click", this._onInsertBackgroundColorPropertyClick.bind(this));
+        items.push(backgroundButton);
 
         if (rule) {
             var newRuleButton = new WebInspector.ToolbarButton(WebInspector.UIString("Insert Style Rule"), "add-toolbar-item");
             newRuleButton.addEventListener("click", this._onNewRuleClick.bind(this));
             items.push(newRuleButton);
         }
+
+        var menuButton = new WebInspector.ToolbarButton(WebInspector.UIString("More tools\u2026"), "menu-toolbar-item");
+        items.push(menuButton);
 
         if (items.length) {
             var sectionToolbar = new WebInspector.Toolbar();
@@ -824,6 +825,7 @@ WebInspector.StylePropertiesSection = function(parentPane, matchedStyles, style)
             {
                 for (var i = 0; i < items.length; ++i)
                     items[i].setVisible(value);
+                menuButton.setVisible(!value);
             }
             setItemsVisibility(items, false);
             sectionToolbar.element.addEventListener("mouseenter", setItemsVisibility.bind(null, items, true));

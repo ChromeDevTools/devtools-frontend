@@ -629,10 +629,9 @@ WebInspector.ComboBoxFilterUI.prototype = {
     },
 
     /**
-     * @param {string} typeName
      * @return {*}
      */
-    value: function(typeName)
+    value: function()
     {
         var option = this._options[this._filterComboBox.selectedIndex()];
         return option.value;

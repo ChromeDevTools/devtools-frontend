@@ -291,8 +291,6 @@ WebInspector.SourcesView.prototype = {
         var project = event.data;
         var uiSourceCodes = project.uiSourceCodes();
         this._removeUISourceCodes(uiSourceCodes);
-        if (project.type() === WebInspector.projectTypes.Network)
-            this._editorContainer.reset();
     },
 
     _updateScriptViewToolbarItems: function()

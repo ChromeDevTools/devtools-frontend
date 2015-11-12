@@ -288,9 +288,6 @@ WebInspector.TabbedEditorContainer.prototype = {
     addUISourceCode: function(uiSourceCode)
     {
         var uri = uiSourceCode.uri();
-        if (this._userSelectedFiles)
-            return;
-
         var index = this._history.index(uri);
         if (index === -1)
             return;
@@ -341,14 +338,12 @@ WebInspector.TabbedEditorContainer.prototype = {
      */
     _editorClosedByUserAction: function(uiSourceCode)
     {
-        this._userSelectedFiles = true;
         this._history.remove(uiSourceCode.uri());
         this._updateHistory();
     },
 
     _editorSelectedByUserAction: function()
     {
-        this._userSelectedFiles = true;
         this._updateHistory();
     },
 
@@ -497,11 +492,6 @@ WebInspector.TabbedEditorContainer.prototype = {
     {
         var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.target);
         this._updateFileTitle(uiSourceCode);
-    },
-
-    reset: function()
-    {
-        delete this._userSelectedFiles;
     },
 
     /**

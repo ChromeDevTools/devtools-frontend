@@ -42,6 +42,9 @@ WebInspector.AnimationModel.prototype = {
         this._pendingAnimations.push(id);
     },
 
+    /**
+     * @param {string} id
+     */
     _animationCanceled: function(id)
     {
         this._pendingAnimations.remove(id);
@@ -54,11 +57,16 @@ WebInspector.AnimationModel.prototype = {
     animationStarted: function(payload)
     {
         var animation = WebInspector.AnimationModel.Animation.parsePayload(this.target(), payload);
+
         // Ignore Web Animations custom effects & groups.
-        if (animation.type() === "WebAnimation" && animation.source().keyframesRule().keyframes().length === 0)
+        if (animation.type() === "WebAnimation" && animation.source().keyframesRule().keyframes().length === 0) {
             this._pendingAnimations.remove(animation.id());
-        else
+        } else {
            this._animationsById.set(animation.id(), animation);
+           if (this._pendingAnimations.indexOf(animation.id()) === -1)
+                this._pendingAnimations.push(animation.id());
+        }
+
         this._flushPendingAnimationsIfNeeded();
     },
 
@@ -429,6 +437,9 @@ WebInspector.AnimationModel.AnimationEffect.prototype = {
      */
     iterations: function()
     {
+        // Animations with zero duration, zero delays and infinite iterations can't be shown.
+        if (!this.delay() && !this.endDelay() && !this.duration())
+            return 0;
         return this._payload.iterations || Infinity;
     },
 

@@ -107,6 +107,10 @@ circle.animation-keyframe-point {
     position: relative;
 }
 
+.animation-grid-header {
+    flex: 1 0 auto;
+}
+
 .animation-timeline-buffer {
     height: 48px;
     flex: 0 0 auto;
@@ -186,7 +190,6 @@ input[type=range].animation-playback-slider::-webkit-slider-thumb {
     width: calc(100% - 175px);
     top: 78px;
     border-left: 1px solid rgba(0,0,0,0.5);
-    z-index: 10;
 }
 
 .animation-scrubber.animation-timeline-end {
@@ -248,6 +251,7 @@ svg.animation-timeline-grid {
     position: absolute;
     left: 175px;
     top: 48px;
+    z-index: -1;
 }
 
 rect.animation-timeline-grid-line {

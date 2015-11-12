@@ -14,9 +14,6 @@ WebInspector.AnimationTimeline = function()
     this.element.classList.add("animations-timeline");
 
     this._grid = this.contentElement.createSVGChild("svg", "animation-timeline-grid");
-    this.contentElement.appendChild(this._createScrubber());
-    WebInspector.installDragHandle(this._timelineScrubberHead, this._scrubberDragStart.bind(this), this._scrubberDragMove.bind(this), this._scrubberDragEnd.bind(this), "move");
-    this._timelineScrubberHead.textContent = WebInspector.UIString(Number.millisToString(0));
 
     this._underlyingPlaybackRate = 1;
     this._createHeader();
@@ -151,6 +148,12 @@ WebInspector.AnimationTimeline.prototype = {
         this._playbackSlider.value = this._playbackSlider.max;
         this._playbackSlider.addEventListener("input", playbackSliderInputHandler.bind(this));
         this._updateAnimationsPlaybackRate();
+
+        var gridHeader = container.createChild("div", "animation-grid-header");
+        WebInspector.installDragHandle(gridHeader, this._repositionScrubber.bind(this), this._scrubberDragMove.bind(this), this._scrubberDragEnd.bind(this), "pointer");
+        container.appendChild(this._createScrubber());
+        WebInspector.installDragHandle(this._timelineScrubberHead, this._scrubberDragStart.bind(this), this._scrubberDragMove.bind(this), this._scrubberDragEnd.bind(this), "move");
+        this._timelineScrubberHead.textContent = WebInspector.UIString(Number.millisToString(0));
 
         return container;
     },
@@ -588,6 +591,30 @@ WebInspector.AnimationTimeline.prototype = {
      * @param {!Event} event
      * @return {boolean}
      */
+    _repositionScrubber: function(event)
+    {
+        if (!this._selectedGroup)
+            return false;
+
+        // Seek to current mouse position.
+        if (!this._gridOffsetLeft)
+            this._gridOffsetLeft = this._grid.totalOffsetLeft();
+        var seekTime = Math.max(0, event.x - this._gridOffsetLeft) / this.pixelMsRatio();
+        this._selectedGroup.seekTo(seekTime);
+        this._togglePause(true);
+        this._animateTime(seekTime);
+        this._updateControlButton();
+
+        // Interface with scrubber drag.
+        this._originalScrubberTime = seekTime;
+        this._originalMousePosition = event.x;
+        return true;
+    },
+
+    /**
+     * @param {!Event} event
+     * @return {boolean}
+     */
     _scrubberDragStart: function(event)
     {
         if (!this._scrubberPlayer || !this._selectedGroup)
@@ -596,7 +623,7 @@ WebInspector.AnimationTimeline.prototype = {
         this._originalScrubberTime = this._scrubberPlayer.currentTime;
         this._timelineScrubber.classList.remove("animation-timeline-end");
         this._scrubberPlayer.pause();
-        this._originalMousePosition = new WebInspector.Geometry.Point(event.x, event.y);
+        this._originalMousePosition = event.x;
 
         this._togglePause(true);
         this._updateControlButton();
@@ -608,10 +635,10 @@ WebInspector.AnimationTimeline.prototype = {
      */
     _scrubberDragMove: function(event)
     {
-        var delta = event.x - this._originalMousePosition.x;
-        this._scrubberPlayer.currentTime = Math.min(this._originalScrubberTime + delta / this.pixelMsRatio(), this.duration() - this._scrubberRadius / this.pixelMsRatio());
-        var currentTime = Math.max(0, Math.round(this._scrubberPlayer.currentTime));
-        this._timelineScrubberHead.textContent = WebInspector.UIString(Number.millisToString(currentTime));
+        var delta = event.x - this._originalMousePosition;
+        var currentTime = Math.max(0, Math.min(this._originalScrubberTime + delta / this.pixelMsRatio(), this.duration() - this._scrubberRadius / this.pixelMsRatio()));
+        this._scrubberPlayer.currentTime = currentTime;
+        this._timelineScrubberHead.textContent = WebInspector.UIString(Number.millisToString(Math.round(currentTime)));
         this._selectedGroup.seekTo(currentTime);
     },
 

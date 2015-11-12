@@ -6,15 +6,18 @@
  * @constructor
  * @extends {WebInspector.Widget}
  * @implements {WebInspector.TargetManager.Observer}
+ * @param {!WebInspector.Setting} widthSetting
  */
-WebInspector.MediaQueryInspector = function()
+WebInspector.MediaQueryInspector = function(widthSetting)
 {
-    WebInspector.Widget.call(this);
-    this.element.classList.add("media-inspector-view", "media-inspector-view-empty");
-    this.element.addEventListener("click", this._onMediaQueryClicked.bind(this), false);
-    this.element.addEventListener("contextmenu", this._onContextMenu.bind(this), false);
+    WebInspector.Widget.call(this, true);
+    this.registerRequiredCSS("emulation/mediaQueryInspector.css");
+    this.contentElement.classList.add("media-inspector-view", "media-inspector-view-empty");
+    this.contentElement.addEventListener("click", this._onMediaQueryClicked.bind(this), false);
+    this.contentElement.addEventListener("contextmenu", this._onContextMenu.bind(this), false);
     this._mediaThrottler = new WebInspector.Throttler(0);
 
+    this._widthSetting = widthSetting;
     this._offset = 0;
     this._scale = 1;
     this._lastReportedCount = 0;
@@ -103,29 +106,20 @@ WebInspector.MediaQueryInspector.prototype = {
         if (!mediaQueryMarker)
             return;
 
-        /**
-         * @param {number} width
-         */
-        function setWidth(width)
-        {
-            WebInspector.overridesSupport.settings.deviceWidth.set(width);
-            WebInspector.overridesSupport.settings.emulateResolution.set(true);
-        }
-
         var model = mediaQueryMarker._model;
         if (model.section() === WebInspector.MediaQueryInspector.Section.Max) {
-            setWidth(model.maxWidthExpression().computedLength());
+            this._widthSetting.set(model.maxWidthExpression().computedLength());
             return;
         }
         if (model.section() === WebInspector.MediaQueryInspector.Section.Min) {
-            setWidth(model.minWidthExpression().computedLength());
+            this._widthSetting.set(model.minWidthExpression().computedLength());
             return;
         }
-        var currentWidth = WebInspector.overridesSupport.settings.deviceWidth.get();
+        var currentWidth = this._widthSetting.get();
         if (currentWidth !== model.minWidthExpression().computedLength())
-            setWidth(model.minWidthExpression().computedLength());
+            this._widthSetting.set(model.minWidthExpression().computedLength());
         else
-            setWidth(model.maxWidthExpression().computedLength());
+            this._widthSetting.set(model.maxWidthExpression().computedLength());
     },
 
     /**
@@ -268,14 +262,14 @@ WebInspector.MediaQueryInspector.prototype = {
         if (!this.isShowing())
             return;
 
-        var oldChildrenCount = this.element.children.length;
-        var scrollTop = this.element.scrollTop;
-        this.element.removeChildren();
+        var oldChildrenCount = this.contentElement.children.length;
+        var scrollTop = this.contentElement.scrollTop;
+        this.contentElement.removeChildren();
 
         var container = null;
         for (var i = 0; i < markers.length; ++i) {
             if (!i || markers[i].model.section() !== markers[i - 1].model.section())
-                container = this.element.createChild("div", "media-inspector-marker-container");
+                container = this.contentElement.createChild("div", "media-inspector-marker-container");
             var marker = markers[i];
             var bar = this._createElementFromMediaQueryModel(marker.model);
             bar._model = marker.model;
@@ -283,9 +277,9 @@ WebInspector.MediaQueryInspector.prototype = {
             bar.classList.toggle("media-inspector-marker-inactive", !marker.active);
             container.appendChild(bar);
         }
-        this.element.scrollTop = scrollTop;
-        this.element.classList.toggle("media-inspector-view-empty", !this.element.children.length);
-        if (this.element.children.length !== oldChildrenCount)
+        this.contentElement.scrollTop = scrollTop;
+        this.contentElement.classList.toggle("media-inspector-view-empty", !this.contentElement.children.length);
+        if (this.contentElement.children.length !== oldChildrenCount)
             this.dispatchEventToListeners(WebInspector.MediaQueryInspector.Events.HeightUpdated);
     },
 

@@ -62,7 +62,7 @@ WebInspector.ResponsiveDesignView.prototype = {
 
         this._mediaInspectorContainer = this._canvasContainer.element.createChild("div", "responsive-design-media-container");
         WebInspector.Tooltip.addNativeOverrideContainer(this._mediaInspectorContainer);
-        this._mediaInspector = new WebInspector.MediaQueryInspector();
+        this._mediaInspector = new WebInspector.MediaQueryInspector(WebInspector.overridesSupport.settings.deviceWidth);
         this._updateMediaQueryInspector();
 
         this._warningInfobar = new WebInspector.Infobar(WebInspector.Infobar.Type.Warning, WebInspector.moduleSetting("disableOverridesWarning"));

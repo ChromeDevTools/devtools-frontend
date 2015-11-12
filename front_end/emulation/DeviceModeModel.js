@@ -36,6 +36,10 @@ WebInspector.DeviceModeModel = function(updateCallback)
     this._screenOrientation = "";
     /** @type {number} */
     this._fixedFitScale = 0;
+    /** @type {string} */
+    this._warning = "";
+    /** @type {boolean} */
+    this._emulatingMobile = false;
 
     /** @type {?WebInspector.Target} */
     this._target = null;
@@ -185,13 +189,29 @@ WebInspector.DeviceModeModel.prototype = {
     },
 
     /**
+     * @return {string}
+     */
+    warning: function()
+    {
+        return this._warning;
+    },
+
+    clearWarning: function()
+    {
+        this._warning = "";
+        this._updateCallback.call(this);
+    },
+
+    /**
      * @override
      * @param {!WebInspector.Target} target
      */
     targetAdded: function(target)
     {
-        if (!this._target)
+        if (!this._target) {
             this._target = target;
+            this._target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this.clearWarning, this);
+        }
     },
 
     /**
@@ -200,8 +220,10 @@ WebInspector.DeviceModeModel.prototype = {
      */
     targetRemoved: function(target)
     {
-        if (this._target === target)
+        if (this._target === target) {
+            this._target.resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this.clearWarning, this);
             this._target = null;
+        }
     },
 
     _fitSettingChanged: function()
@@ -230,7 +252,7 @@ WebInspector.DeviceModeModel.prototype = {
                     scale *= 0.8;
             }
             this._applyDeviceMetrics(new Size(screenWidth, screenHeight), this._mode.insets, scale, this._device.deviceScaleFactor, this._device.mobile(), resetScrollAndPageScale);
-            WebInspector.multitargetNetworkManager.setUserAgentOverride(this._device.userAgent);
+            this._applyUserAgent(this._device.userAgent);
             this._applyTouch(this._device.touch(), this._device.mobile());
             this._applyScreenOrientation(this._mode.orientation == WebInspector.EmulatedDevice.Horizontal ? "landscapePrimary" : "portraitPrimary");
         } else {
@@ -250,7 +272,7 @@ WebInspector.DeviceModeModel.prototype = {
             }
             var screenHeight = Math.floor(this._availableSize.height / scale);
             this._applyDeviceMetrics(new Size(screenWidth, screenHeight), new Insets(0, 0, 0, 0), scale, deviceScaleFactor, mobile, resetScrollAndPageScale);
-            WebInspector.multitargetNetworkManager.setUserAgentOverride(
+            this._applyUserAgent(
                 this._type === WebInspector.DeviceModeModel.Type.Mobile ? WebInspector.DeviceModeModel._genericMobileUserAgent :
                 (this._type === WebInspector.DeviceModeModel.Type.Tablet ? WebInspector.DeviceModeModel._genericTabletUserAgent : ""));
             this._applyTouch(this._type !== WebInspector.DeviceModeModel.Type.Desktop, mobile);
@@ -259,7 +281,21 @@ WebInspector.DeviceModeModel.prototype = {
             else
                 this._applyScreenOrientation(screenHeight >= screenWidth ? "portraitPrimary" : "landscapePrimary");
         }
-        this._updateCallback();
+        this._updateCallback.call(null);
+    },
+
+    /**
+     * @param {string} userAgent
+     */
+    _applyUserAgent: function(userAgent)
+    {
+        var current = WebInspector.multitargetNetworkManager.userAgentOverride();
+        if (current !== userAgent) {
+            WebInspector.multitargetNetworkManager.setUserAgentOverride(userAgent);
+            if (!this._warning)
+                this._warning = WebInspector.UIString("You might need to reload the page for proper user agent spoofing and viewport rendering.");
+        }
+
     },
 
     /**
@@ -323,12 +359,17 @@ WebInspector.DeviceModeModel.prototype = {
         function apiCallback(error)
         {
             if (error) {
-                // TODO(dgozman): warning: "Screen emulation is not available on this page."
+                this._warning = WebInspector.UIString("Screen emulation is not available on this page.");
+                this._updateCallback.call(null);
                 this._deviceMetricsOverrideAppliedForTest();
                 return;
             }
 
-            // TODO(dgozman): warning when mobile changed: "You might need to reload the page for proper user agent spoofing and viewport rendering."
+            if (mobile !== this._emulatingMobile && !this._warning) {
+                this._warning = WebInspector.UIString("You might need to reload the page for proper user agent spoofing and viewport rendering.");
+                this._updateCallback.call(null);
+            }
+            this._emulatingMobile = mobile;
             this._deviceMetricsOverrideAppliedForTest();
         }
 

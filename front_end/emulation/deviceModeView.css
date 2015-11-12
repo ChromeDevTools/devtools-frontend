@@ -8,6 +8,7 @@
     overflow: hidden;
     align-items: stretch;
     flex: auto;
+    background-color: #fcfcfc;
 }
 
 .device-mode-toolbar {
@@ -20,10 +21,23 @@
     justify-content: center;
 }
 
+.device-mode-media-container {
+    flex: none;
+    overflow: hidden;
+}
+
 .device-mode-content-area {
     flex: auto;
     position: relative;
-    overflow: hidden;
+    margin: 25px 0 23px 0;
+}
+
+.device-mode-warning {
+    position: absolute;
+    bottom: -24px;
+    left: 0;
+    right: 0;
+    border-top: 1px solid #ccc;
 }
 
 .device-mode-screen-area {
@@ -32,8 +46,8 @@
     right: 0;
     width: 0;
     height: 0;
-    outline: 1px solid hsl(0, 0%, 95%);
     background-color: #171717;
+    box-shadow: hsl(0, 0%, 88%) 0 0 0 1px, hsla(0, 0%, 80%, 0.6) 0 0 16px;
 }
 
 .device-mode-screen-image {
@@ -73,5 +87,5 @@
     width: 0;
     height: 0;
     display: flex;
-    background-color: rgb(255, 255, 255);
+    background-color: #fcfcfc;
 }

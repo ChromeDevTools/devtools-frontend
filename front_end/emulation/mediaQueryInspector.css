@@ -1,0 +1,90 @@
+/*
+ * Copyright 2015 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+/* Media query bars */
+
+.media-inspector-marker-container {
+    position: relative;
+    height: 14px;
+    margin: 2px 0;
+}
+
+.media-inspector-marker {
+    position: absolute;
+    top: 1px;
+    bottom: 1px;
+    white-space: nowrap;
+    border-radius: 2px;
+}
+
+.media-inspector-marker-inactive {
+    -webkit-filter: brightness(80%);
+}
+
+.media-inspector-marker:hover {
+    top: -1px;
+    bottom: -1px;
+    -webkit-filter: brightness(115%) !important;
+}
+
+.media-inspector-marker-max-width {
+    background: linear-gradient(to left, rgba(255, 255, 255, 0.27), rgba(0,0,0,0) 30px), linear-gradient(to bottom, rgb(72, 139, 249), rgb(26, 113, 233));
+    border-radius: 0 2px 2px 0;
+    border-right: 2px solid rgb(171, 207, 255);
+}
+
+.media-inspector-marker-min-max-width {
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.27), rgba(0,0,0,0) 30px), linear-gradient(to left, rgba(255, 255, 255, 0.27), rgba(0,0,0,0) 30px), linear-gradient(to bottom, rgb(112, 174, 7), rgb(3, 131, 0));
+    border-radius: 2px;
+    border-left: 2px solid rgb(80, 226, 40);
+    border-right: 2px solid rgb(80, 226, 40);
+}
+
+.media-inspector-marker-min-max-width:hover {
+    z-index: 1;
+}
+
+.media-inspector-marker-min-width {
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.27), rgba(0,0,0,0) 30px), linear-gradient(to bottom, rgb(222, 129, 30), rgb(204, 104, 31));
+    border-radius: 2px 0 0 2px;
+    border-left: 2px solid rgb(255, 181, 142);
+}
+
+/* Media query labels */
+
+.media-inspector-marker:not(:hover) .media-inspector-marker-label-container {
+    display: none;
+}
+
+.media-inspector-marker-label-container {
+    position: absolute;
+}
+
+.media-inspector-marker-label-container-left {
+    left: -2px;
+}
+
+.media-inspector-marker-label-container-right {
+    right: -2px;
+}
+
+.media-inspector-marker-label {
+    color: #eee;
+    position: absolute;
+    top: 1px;
+    bottom: 0;
+    font-size: 10px;
+    text-shadow: rgba(0, 0, 0, 0.6) 1px 1px;
+    pointer-events: none;
+}
+
+.media-inspector-label-right {
+    right: 4px;
+}
+
+.media-inspector-label-left {
+    left: 4px;
+}

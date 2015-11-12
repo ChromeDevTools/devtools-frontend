@@ -204,6 +204,7 @@
             'front_end/emulation/devicesSettingsTab.css',
             'front_end/emulation/deviceModeToolbar.css',
             'front_end/emulation/deviceModeView.css',
+            'front_end/emulation/mediaQueryInspector.css',
             'front_end/emulation/overrides.css',
             'front_end/emulation/sensors.css',
             'front_end/emulation/responsiveDesignView.css',

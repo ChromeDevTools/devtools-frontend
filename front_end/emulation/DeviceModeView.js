@@ -13,9 +13,11 @@ WebInspector.DeviceModeView = function(inspectedPagePlaceholder)
     this.setMinimumSize(150, 150);
     this.element.classList.add("device-mode-view");
     this.registerRequiredCSS("emulation/deviceModeView.css");
+    WebInspector.Tooltip.addNativeOverrideContainer(this.contentElement);
 
     this._model = new WebInspector.DeviceModeModel(this._updateUI.bind(this));
-    // TODO(dgozman): media query inspector, warning, better full control, controlling mode, persist type/device, more fit options.
+    this._mediaInspector = new WebInspector.MediaQueryInspector(this._model.genericWidthSetting());
+    // TODO(dgozman): better full control, controlling mode, persist type/device, more fit options.
 
     this._inspectedPagePlaceholder = inspectedPagePlaceholder;
     this._createUI();
@@ -25,8 +27,8 @@ WebInspector.DeviceModeView = function(inspectedPagePlaceholder)
 WebInspector.DeviceModeView.prototype = {
     _createUI: function()
     {
-        this._createToolbar();
-
+        var toolbarContainer = this.contentElement.createChild("div", "device-mode-toolbar");
+        var mediaInspectorContainer = this.contentElement.createChild("div", "device-mode-media-container");
         this._contentArea = this.contentElement.createChild("div", "device-mode-content-area");
 
         this._screenArea = this._contentArea.createChild("div", "device-mode-screen-area");
@@ -41,11 +43,22 @@ WebInspector.DeviceModeView.prototype = {
         this._pageArea = this._screenArea.createChild("div", "device-mode-page-area");
         this._inspectedPagePlaceholder.clearMinimumSizeAndMargins();
         this._inspectedPagePlaceholder.show(this._pageArea);
+
+        this._warningInfobar = new WebInspector.Infobar(WebInspector.Infobar.Type.Warning, WebInspector.moduleSetting("disableOverridesWarning"));
+        this._warningInfobar.element.classList.add("device-mode-warning");
+        this._warningInfobar.setCloseCallback(this._model.clearWarning.bind(this._model));
+        this._contentArea.appendChild(this._warningInfobar.element);
+        this._warningMessage = this._warningInfobar.element.createChild("span");
+
+        this._createToolbar(toolbarContainer, mediaInspectorContainer);
     },
 
-    _createToolbar: function()
+    /**
+     * @param {!Element} toolbarContainer
+     * @param {!Element} mediaInspectorContainer
+     */
+    _createToolbar: function(toolbarContainer, mediaInspectorContainer)
     {
-        var toolbarContainer = this.contentElement.createChild("div", "device-mode-toolbar");
         var toolbar = new WebInspector.Toolbar(toolbarContainer);
 
         var deviceSelect = this._createDeviceSelect();
@@ -70,6 +83,10 @@ WebInspector.DeviceModeView.prototype = {
         var fitCheckbox = WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Fit"), this._model.fitSetting(), true, WebInspector.UIString("Zoom to fit available space"));
         var fitItem = new WebInspector.ToolbarItem(fitCheckbox);
         toolbar.appendToolbarItem(fitItem);
+        toolbar.appendSeparator();
+
+        var mediaInspectorButton = new WebInspector.DeviceModeView.MediaInspectorButton(this._mediaInspector, mediaInspectorContainer, this.onResize.bind(this));
+        toolbar.appendToolbarItem(mediaInspectorButton.button());
     },
 
     /**
@@ -242,6 +259,12 @@ WebInspector.DeviceModeView.prototype = {
             this._deviceSizeItem.setVisible(isDevice);
         }
 
+        var warning = this._model.warning();
+        if (warning !== this._cachedWarning) {
+            this._warningMessage.textContent = warning;
+            this._warningInfobar.setVisible(!!warning);
+        }
+
         if (this._model.type() === WebInspector.DeviceModeModel.Type.Device) {
             var deviceSize = this._model.appliedDeviceSize();
             this._deviceSizeInput.value = deviceSize.width + "x" + deviceSize.height;
@@ -249,10 +272,12 @@ WebInspector.DeviceModeView.prototype = {
         this._loadScreenImage(this._model.screenImage());
         if (resizePagePlaceholder)
             this._inspectedPagePlaceholder.onResize();
+        this._mediaInspector.setAxisTransform(-cssScreenRect.left, this._model.fitScale());
 
         this._cachedCssScreenRect = cssScreenRect;
         this._cachedCssVisiblePageRect = cssVisiblePageRect;
         this._cachedModelType = this._model.type();
+        this._cachedWarning = warning;
     },
 
     /**
@@ -275,6 +300,9 @@ WebInspector.DeviceModeView.prototype = {
         this._screenImage.classList.toggle("hidden", !success);
     },
 
+    /**
+     * @override
+     */
     onResize: function()
     {
         var zoomFactor = WebInspector.zoomManager.zoomFactor();
@@ -282,5 +310,92 @@ WebInspector.DeviceModeView.prototype = {
         this._model.availableSizeChanged(new Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1)));
     },
 
+    /**
+     * @override
+     */
+    wasShown: function()
+    {
+        this._mediaInspector.setEnabled(true);
+    },
+
+    /**
+     * @override
+     */
+    willHide: function()
+    {
+        this._mediaInspector.setEnabled(false);
+    },
+
     __proto__: WebInspector.VBox.prototype
+}
+
+
+/**
+ * @param {!WebInspector.MediaQueryInspector} mediaInspector
+ * @param {!Element} container
+ * @param {function()} resizeCallback
+ * @constructor
+ */
+WebInspector.DeviceModeView.MediaInspectorButton = function(mediaInspector, container, resizeCallback)
+{
+    this._mediaInspector = mediaInspector;
+    this._mediaInspector.addEventListener(WebInspector.MediaQueryInspector.Events.CountUpdated, this._updateButton, this);
+    this._mediaInspector.addEventListener(WebInspector.MediaQueryInspector.Events.HeightUpdated, resizeCallback);
+
+    this._resizeCallback = resizeCallback;
+    this._container = container;
+
+    this._setting = WebInspector.settings.createSetting("showMediaQueryInspector", false);
+    this._setting.addChangeListener(this._settingChanged, this);
+
+    this._button = new WebInspector.ToolbarButton(WebInspector.UIString("Media queries not found"), "waterfall-toolbar-item");
+    this._button.setToggled(this._setting.get());
+    this._button.setEnabled(false);
+    this._button.addEventListener("click", this._buttonClick, this);
+
+    this._updateMediaInspector();
+}
+
+WebInspector.DeviceModeView.MediaInspectorButton.prototype = {
+    /**
+     * @return {!WebInspector.ToolbarButton}
+     */
+    button: function()
+    {
+        return this._button;
+    },
+
+    _settingChanged: function()
+    {
+        this._updateMediaInspector();
+        this._resizeCallback.call(null);
+    },
+
+    _buttonClick: function()
+    {
+        this._setting.set(!this._button.toggled());
+    },
+
+    _updateMediaInspector: function()
+    {
+        var show = this._setting.get();
+        this._button.setToggled(show);
+        if (this._mediaInspector.isShowing() && !show)
+            this._mediaInspector.detach();
+        if (!this._mediaInspector.isShowing() && show)
+            this._mediaInspector.show(this._container);
+    },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _updateButton: function(event)
+    {
+        var count = /** @type {number} */ (event.data);
+        this._button.setEnabled(!!count);
+        if (!count)
+            this._button.setTitle(WebInspector.UIString("Media queries not found"));
+        else
+            this._button.setTitle(WebInspector.UIString((count === 1 ? "%d media query found" : "%d media queries found"), count));
+    }
 }

@@ -274,9 +274,12 @@ DevToolsAPIImpl.prototype = {
         this._dispatchOnInspectorFrontendAPI("setUseSoftMenu", [useSoftMenu]);
     },
 
-    showConsole: function()
+    /**
+     * @param {string} panelName
+     */
+    showPanel: function(panelName)
     {
-        this._dispatchOnInspectorFrontendAPI("showConsole", []);
+        this._dispatchOnInspectorFrontendAPI("showPanel", [panelName]);
     },
 
     /**

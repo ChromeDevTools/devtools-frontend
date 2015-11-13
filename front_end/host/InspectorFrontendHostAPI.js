@@ -55,7 +55,7 @@ InspectorFrontendHostAPI.Events = {
     SearchCompleted: "searchCompleted",
     SetInspectedTabId: "setInspectedTabId",
     SetUseSoftMenu: "setUseSoftMenu",
-    ShowConsole: "showConsole"
+    ShowPanel: "showPanel"
 }
 
 InspectorFrontendHostAPI.EventDescriptors = [
@@ -87,7 +87,7 @@ InspectorFrontendHostAPI.EventDescriptors = [
     [InspectorFrontendHostAPI.Events.SearchCompleted, ["requestId", "fileSystemPath", "files"]],
     [InspectorFrontendHostAPI.Events.SetInspectedTabId, ["tabId"]],
     [InspectorFrontendHostAPI.Events.SetUseSoftMenu, ["useSoftMenu"]],
-    [InspectorFrontendHostAPI.Events.ShowConsole, []]
+    [InspectorFrontendHostAPI.Events.ShowPanel, ["panelName"]]
 ];
 
 InspectorFrontendHostAPI.prototype = {

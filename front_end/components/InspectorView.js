@@ -73,15 +73,17 @@ WebInspector.InspectorView = function()
     this._closeBracketIdentifiers = ["U+005D", "U+00DD"].keySet();
     this._lastActivePanelSetting = WebInspector.settings.createSetting("lastActivePanel", "elements");
 
-    InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.ShowConsole, showConsole.bind(this));
+    InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.ShowPanel, showPanel.bind(this));
     this._loadPanelDesciptors();
 
     /**
      * @this {WebInspector.InspectorView}
+     * @param {!WebInspector.Event} event
      */
-    function showConsole()
+    function showPanel(event)
     {
-        this.showPanel("console");
+        var panelName = /** @type {string} */ (event.data);
+        this.showPanel(panelName);
     }
 
     WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged.bind(this));

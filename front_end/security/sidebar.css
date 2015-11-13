@@ -86,6 +86,7 @@
 .security-sidebar-tree-item.selected .security-property-secure {
     -webkit-mask-image: url(Images/securityPropertySecure.svg);
 }
+
 .sidebar-tree-item.security-main-view-reload-message .title {
     color: rgba(0, 0, 0, 0.5);
     padding-left: 8px;

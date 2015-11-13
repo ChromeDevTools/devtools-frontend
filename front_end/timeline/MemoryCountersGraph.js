@@ -34,10 +34,11 @@
  * @implements {WebInspector.TimelineModeView}
  * @param {!WebInspector.TimelineModeViewDelegate} delegate
  * @param {!WebInspector.TimelineModel} model
+ * @param {!Array<!WebInspector.TimelineModel.Filter>} filters
  */
-WebInspector.MemoryCountersGraph = function(delegate, model)
+WebInspector.MemoryCountersGraph = function(delegate, model, filters)
 {
-    WebInspector.CountersGraph.call(this, WebInspector.UIString("MEMORY"), delegate, model);
+    WebInspector.CountersGraph.call(this, WebInspector.UIString("MEMORY"), delegate, model, filters);
     this._countersByName = {};
     this._countersByName["jsHeapSizeUsed"] = this.createCounter(WebInspector.UIString("JS Heap"), WebInspector.UIString("JS Heap: %s"), "hsl(220, 90%, 43%)", Number.bytesToString);
     this._countersByName["documents"] = this.createCounter(WebInspector.UIString("Documents"), WebInspector.UIString("Documents: %s"), "hsl(0, 90%, 43%)");

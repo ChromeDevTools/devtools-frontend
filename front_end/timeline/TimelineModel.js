@@ -39,7 +39,6 @@
 WebInspector.TimelineModel = function(tracingModel, eventFilter)
 {
     WebInspector.Object.call(this);
-    this._filters = [];
     this._tracingModel = tracingModel;
     this._eventFilter = eventFilter;
     this._targets = [];
@@ -166,7 +165,6 @@ WebInspector.TimelineModel.Events = {
     RecordsCleared: "RecordsCleared",
     RecordingStarted: "RecordingStarted",
     RecordingStopped: "RecordingStopped",
-    RecordFilterChanged: "RecordFilterChanged",
     BufferUsage: "BufferUsage",
     RetrieveEventsProgress: "RetrieveEventsProgress"
 }
@@ -470,18 +468,10 @@ WebInspector.TimelineModel.prototype = {
     },
 
     /**
-     * @param {!WebInspector.TimelineModel.Filter} filter
-     */
-    addFilter: function(filter)
-    {
-        this._filters.push(filter);
-        filter.addEventListener(WebInspector.TimelineModel.Filter.Events.Changed, this._filterChanged, this);
-    },
-
-    /**
+     * @param {!Array<!WebInspector.TimelineModel.Filter>} filters
      * @param {function(!WebInspector.TimelineModel.Record)|function(!WebInspector.TimelineModel.Record,number)} callback
      */
-    forAllFilteredRecords: function(callback)
+    forAllFilteredRecords: function(filters, callback)
     {
         /**
          * @param {!WebInspector.TimelineModel.Record} record
@@ -491,11 +481,9 @@ WebInspector.TimelineModel.prototype = {
          */
         function processRecord(record, depth)
         {
-            var visible = this.isVisible(record.traceEvent());
-            if (visible) {
-                if (callback(record, depth))
-                    return true;
-            }
+            var visible = WebInspector.TimelineModel.isVisible(filters, record.traceEvent());
+            if (visible && callback(record, depth))
+                return true;
 
             for (var i = 0; i < record.children().length; ++i) {
                 if (processRecord.call(this, record.children()[i], visible ? depth + 1 : depth))
@@ -508,23 +496,6 @@ WebInspector.TimelineModel.prototype = {
             processRecord.call(this, this._records[i], 0);
     },
 
-    /**
-     * @param {!WebInspector.TracingModel.Event} event
-     * @return {boolean}
-     */
-    isVisible: function(event)
-    {
-        for (var i = 0; i < this._filters.length; ++i) {
-            if (!this._filters[i].accept(event))
-                return false;
-        }
-        return true;
-    },
-
-    _filterChanged: function()
-    {
-        this.dispatchEventToListeners(WebInspector.TimelineModel.Events.RecordFilterChanged);
-    },
 
     /**
      * @return {!Array.<!WebInspector.TimelineModel.Record>}
@@ -1460,6 +1431,20 @@ WebInspector.TimelineModel.prototype = {
 }
 
 /**
+ * @param {!Array<!WebInspector.TimelineModel.Filter>} filters
+ * @param {!WebInspector.TracingModel.Event} event
+ * @return {boolean}
+ */
+WebInspector.TimelineModel.isVisible = function(filters, event)
+{
+    for (var i = 0; i < filters.length; ++i) {
+        if (!filters[i].accept(event))
+            return false;
+    }
+    return true;
+}
+
+/**
  * @constructor
  */
 WebInspector.TimelineModel.ProfileTreeNode = function()
@@ -1503,23 +1488,10 @@ WebInspector.TimelineModel.buildTopDownTree = function(events, startTime, endTim
 
     /**
      * @param {!WebInspector.TracingModel.Event} e
-     * @return {boolean}
-     */
-    function filter(e)
-    {
-        for (var i = 0, l = filters.length; i < l; ++i) {
-            if (!filters[i].accept(e))
-                return false;
-        }
-        return true;
-    }
-
-    /**
-     * @param {!WebInspector.TracingModel.Event} e
      */
     function onStartEvent(e)
     {
-        if (!filter(e))
+        if (!WebInspector.TimelineModel.isVisible(filters, e))
             return;
         var time = e.endTime ? Math.min(endTime, e.endTime) - Math.max(startTime, e.startTime) : 0;
         var id = eventIdCallback ? eventIdCallback(e) : Symbol("uniqueEventId");
@@ -1552,7 +1524,7 @@ WebInspector.TimelineModel.buildTopDownTree = function(events, startTime, endTim
      */
     function onEndEvent(e)
     {
-        if (!filter(e))
+        if (!WebInspector.TimelineModel.isVisible(filters, e))
             return;
         parent = parent.parent;
     }
@@ -1678,15 +1650,9 @@ WebInspector.TimelineModel.NetworkRequest.prototype = {
 
 /**
  * @constructor
- * @extends {WebInspector.Object}
  */
 WebInspector.TimelineModel.Filter = function()
 {
-    WebInspector.Object.call(this);
-}
-
-WebInspector.TimelineModel.Filter.Events = {
-    Changed: "Changed"
 }
 
 WebInspector.TimelineModel.Filter.prototype = {
@@ -1697,14 +1663,7 @@ WebInspector.TimelineModel.Filter.prototype = {
     accept: function(event)
     {
         return true;
-    },
-
-    notifyFilterChanged: function()
-    {
-        this.dispatchEventToListeners(WebInspector.TimelineModel.Filter.Events.Changed, this);
-    },
-
-    __proto__: WebInspector.Object.prototype
+    }
 }
 
 /**

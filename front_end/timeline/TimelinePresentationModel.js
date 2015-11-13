@@ -33,11 +33,12 @@
  * @constructor
  * @extends {WebInspector.Object}
  * @param {!WebInspector.TimelineModel} model
+ * @param {!Array<!WebInspector.TimelineModel.Filter>} filters
  */
-WebInspector.TimelinePresentationModel = function(model)
+WebInspector.TimelinePresentationModel = function(model, filters)
 {
     this._model = model;
-    this._filters = [];
+    this._filters = filters;
     /**
      * @type {!Map.<!WebInspector.TimelineModel.Record, !WebInspector.TimelinePresentationModel.Record>}
      */
@@ -246,7 +247,7 @@ WebInspector.TimelinePresentationModel.prototype = {
                 var record = records[entry.index];
                 ++entry.index;
                 if (record.startTime() < this._windowEndTime && record.endTime() > this._windowStartTime) {
-                    if (this._model.isVisible(record.record().traceEvent())) {
+                    if (WebInspector.TimelineModel.isVisible(this._filters, record.record().traceEvent())) {
                         record._presentationParent._expandable = true;
                         if (this._textFilter)
                             revealRecordsInStack();

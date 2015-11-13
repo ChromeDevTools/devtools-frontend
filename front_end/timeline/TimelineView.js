@@ -35,15 +35,16 @@
  * @implements {WebInspector.TimelineModeView}
  * @param {!WebInspector.TimelineModeViewDelegate} delegate
  * @param {!WebInspector.TimelineModel} model
+ * @param {!Array<!WebInspector.TimelineModel.Filter>} filters
  */
-WebInspector.TimelineView = function(delegate, model)
+WebInspector.TimelineView = function(delegate, model, filters)
 {
     WebInspector.VBox.call(this);
     this.element.classList.add("timeline-view");
 
     this._delegate = delegate;
     this._model = model;
-    this._presentationModel = new WebInspector.TimelinePresentationModel(model);
+    this._presentationModel = new WebInspector.TimelinePresentationModel(model, filters);
     this._calculator = new WebInspector.TimelineCalculator(model);
     this._linkifier = new WebInspector.Linkifier();
     this._frameStripByFrame = new Map();

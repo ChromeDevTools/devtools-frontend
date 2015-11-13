@@ -35,8 +35,9 @@
  * @param {string} title
  * @param {!WebInspector.TimelineModeViewDelegate} delegate
  * @param {!WebInspector.TimelineModel} model
+ * @param {!Array<!WebInspector.TimelineModel.Filter>} filters
  */
-WebInspector.CountersGraph = function(title, delegate, model)
+WebInspector.CountersGraph = function(title, delegate, model, filters)
 {
     WebInspector.SplitWidget.call(this, true, false, "memoryCountersSidebar");
 
@@ -44,6 +45,7 @@ WebInspector.CountersGraph = function(title, delegate, model)
 
     this._delegate = delegate;
     this._model = model;
+    this._filters = filters;
     this._calculator = new WebInspector.TimelineCalculator(this._model);
 
     this._graphsContainer = new WebInspector.VBox();
@@ -205,7 +207,7 @@ WebInspector.CountersGraph.prototype = {
          */
         function findRecordToReveal(record)
         {
-            if (!this._model.isVisible(record.traceEvent()))
+            if (!WebInspector.TimelineModel.isVisible(this._filters, record.traceEvent()))
                 return false;
             if (record.startTime() <= time && time <= record.endTime()) {
                 recordToReveal = record;

@@ -58,6 +58,11 @@
     padding: 2px 0;
 }
 
+.security-sidebar-tree-item .titles {
+    overflow: hidden;
+    margin-right: 5px;
+}
+
 .tree-outline li.selected .lock-icon-neutral {
     background-image: none;
     background-color: #5a5a5a;

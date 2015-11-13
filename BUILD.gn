@@ -121,12 +121,8 @@ action("generate_devtools_grd") {
   deps = [
     ":devtools_frontend_resources",
   ]
-  static_files_list = "$target_gen_dir/devtools_static_grd_files.tmp"
   inputs = gypi_values.devtools_image_files + all_devtools_files
   inputs += gypi_values.devtools_compatibility_scripts
-  inputs += [ static_files_list ]
-
-  static_files = []
 
   if (debug_devtools) {
     # Debug: all files are picked as-is.
@@ -134,7 +130,15 @@ action("generate_devtools_grd") {
                         resources_out_dir + "inspector.html",
                         resources_out_dir + "toolbox.html",
                       ]
-    static_files += all_devtools_files + [ "front_end/Runtime.js" ]
+
+    # Use a response file since the static files can be too long for the
+    # command line. The args here will be added to the command line.
+    static_files = all_devtools_files + [ "front_end/Runtime.js" ]
+    response_file_contents = rebase_path(static_files, root_build_dir)
+    static_files_args = [
+      "--static_files_args",
+      "{{response_file_name}}",
+    ]
   } else {
     # Release: pick compiled non-remote files and lazy-loaded CSS.
     generated_files = [
@@ -169,9 +173,9 @@ action("generate_devtools_grd") {
       resources_out_dir + "ui_lazy_module.js",
       resources_out_dir + "devtools_extension_api.js",
     ]
+    static_files_args = []  # Nothing needed for this
   }
 
-  write_file(static_files_list, rebase_path(static_files, root_build_dir))
   images_path = "front_end/Images"
 
   inputs += generated_files
@@ -190,11 +194,8 @@ action("generate_devtools_grd") {
       rebase_path(generated_files, root_build_dir) +
       rebase_path(generated_files, root_build_dir) +
       rebase_path(gypi_values.devtools_compatibility_scripts, root_build_dir) +
-      [
-        "--static_files_list",
-        rebase_path(static_files_list, root_build_dir),
-        "--relative_path_dirs",
-      ] + rebase_path(relative_path_dirs, root_build_dir) +
+      static_files_args + [ "--relative_path_dirs" ] +
+      rebase_path(relative_path_dirs, root_build_dir) +
       [
         "--images",
         rebase_path(images_path, root_build_dir),

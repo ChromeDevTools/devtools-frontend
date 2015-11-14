@@ -3353,8 +3353,8 @@
             {
                 "name": "layoutEditorChange",
                 "parameters": [
-                    { "name": "styleSheetId", "$ref": "StyleSheetId", "description": "Identifier of the stylesheet where the modification occurred."},
-                    { "name": "changeRange", "$ref": "SourceRange", "description": "Range where the modification occurred."}
+                    { "name": "styleSheetId", "$ref": "StyleSheetId", "description": "Identifier of the stylesheet where the modification occurred." },
+                    { "name": "changeRange", "$ref": "SourceRange", "description": "Range where the modification occurred." }
                 ]
             }
         ]

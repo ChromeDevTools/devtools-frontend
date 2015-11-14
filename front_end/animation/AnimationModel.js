@@ -692,6 +692,8 @@ WebInspector.AnimationModel.AnimationGroup.prototype = {
      */
     togglePause: function(paused)
     {
+        if (paused === this._paused)
+            return;
         this._paused = paused;
         this.target().animationAgent().setPaused(this._animationIds(), paused);
     },

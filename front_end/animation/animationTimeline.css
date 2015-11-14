@@ -359,6 +359,28 @@ text.animation-timeline-grid-label {
     background-color: hsl(217, 89%, 61%);
 }
 
+.animation-paused {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: hsla(0,0%,70%,0.5);
+    display: none;
+}
+
+.animation-paused:before, .animation-paused:after {
+    content: "";
+    background: hsl(0, 100%, 100%);
+    width: 7px;
+    height: 20px;
+    border-radius: 2px;
+    margin: 2px;
+    border: 1px solid #ccc;
+}
+
+.animation-buffer-preview:not(.selected).paused .animation-paused {
+    display: flex;
+}
+
 .animation-buffer-preview.selected > svg > line {
     stroke: white !important;
 }

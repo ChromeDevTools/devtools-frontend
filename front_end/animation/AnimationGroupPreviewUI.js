@@ -10,6 +10,7 @@ WebInspector.AnimationGroupPreviewUI = function(model)
 {
     this._model = model;
     this.element = createElementWithClass("div", "animation-buffer-preview");
+    this.element.createChild("div", "animation-paused fill");
     this._replayOverlayElement = this.element.createChild("div", "animation-buffer-preview-animation");
     this._svg = this.element.createSVGChild("svg");
     this._svg.setAttribute("width", "100%");

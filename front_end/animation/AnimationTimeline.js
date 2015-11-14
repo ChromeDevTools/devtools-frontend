@@ -200,7 +200,6 @@ WebInspector.AnimationTimeline.prototype = {
             this._replay();
         else
             this._togglePause(true);
-        this._updateControlButton();
     },
 
     _updateControlButton: function()
@@ -256,6 +255,8 @@ WebInspector.AnimationTimeline.prototype = {
         this._selectedGroup.togglePause(pause);
         if (this._scrubberPlayer)
             this._scrubberPlayer.playbackRate = this._effectivePlaybackRate();
+        this._previewMap.get(this._selectedGroup).element.classList.toggle("paused", pause);
+        this._updateControlButton();
     },
 
     _replay: function()
@@ -408,6 +409,7 @@ WebInspector.AnimationTimeline.prototype = {
             this._addAnimation(anim);
         this.scheduleRedraw();
         this._timelineScrubber.classList.remove("hidden");
+        this._togglePause(false);
         this._replay();
     },
 
@@ -603,7 +605,6 @@ WebInspector.AnimationTimeline.prototype = {
         this._selectedGroup.seekTo(seekTime);
         this._togglePause(true);
         this._animateTime(seekTime);
-        this._updateControlButton();
 
         // Interface with scrubber drag.
         this._originalScrubberTime = seekTime;
@@ -626,7 +627,6 @@ WebInspector.AnimationTimeline.prototype = {
         this._originalMousePosition = event.x;
 
         this._togglePause(true);
-        this._updateControlButton();
         return true;
     },
 
@@ -671,8 +671,7 @@ WebInspector.AnimationTimeline.NodeUI = function(animationEffect)
         if (!node)
             return;
         this._node = node;
-        WebInspector.DOMPresentationUtils.decorateNodeLabel(node, this._description);
-        this.element.addEventListener("click", WebInspector.Revealer.reveal.bind(WebInspector.Revealer, node, undefined), false);
+        this._description.appendChild(WebInspector.DOMPresentationUtils.linkifyNodeReference(node));
     }
 
     this._rows = [];

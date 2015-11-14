@@ -55,6 +55,15 @@
     margin-left: 6px;
 }
 
+.toolbar-text-glyphed {
+    margin-left: 0;
+}
+
+.toolbar-text .glyph {
+    width: 24px !important;
+    margin: 0 3px 0 -3px;
+}
+
 .toolbar-item:active {
     position: relative;
     z-index: 200;
@@ -541,3 +550,14 @@ button.playback-rate-button {
     background-color: rgb(216, 0, 0) !important;
 }
 
+.desktop-toolbar-item .glyph {
+    -webkit-mask-position: -160px -144px;
+}
+
+.rotate-screen-toolbar-item .glyph {
+    -webkit-mask-position: -192px -144px;
+}
+
+.fullscreen-toolbar-item .glyph {
+    -webkit-mask-position: -224px -144px;
+}

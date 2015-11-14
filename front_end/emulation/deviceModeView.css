@@ -18,7 +18,19 @@
     display: flex;
     flex-direction: row;
     align-items: stretch;
-    justify-content: center;
+}
+
+.device-mode-toolbar .toolbar {
+    padding: 0;
+}
+
+.device-mode-buttons-toolbar {
+    flex: 3 0 0;
+    display: flex;
+}
+
+.device-mode-options-toolbar {
+    flex: 5 0 0;
 }
 
 .device-mode-media-container {
@@ -29,15 +41,7 @@
 .device-mode-content-area {
     flex: auto;
     position: relative;
-    margin: 25px 0 23px 0;
-}
-
-.device-mode-warning {
-    position: absolute;
-    bottom: -24px;
-    left: 0;
-    right: 0;
-    border-top: 1px solid #ccc;
+    margin: 0;
 }
 
 .device-mode-screen-area {
@@ -47,7 +51,7 @@
     width: 0;
     height: 0;
     background-color: #171717;
-    box-shadow: hsl(0, 0%, 88%) 0 0 0 1px, hsla(0, 0%, 80%, 0.6) 0 0 16px;
+    box-shadow: hsl(0, 0%, 88%) 1px 1px 0 1px, hsla(0, 0%, 80%, 0.6) 0 0 16px;
 }
 
 .device-mode-screen-image {
@@ -56,6 +60,19 @@
     top: 0;
     width: 100%;
     height: 100%;
+}
+
+.device-mode-screen-options {
+    position: absolute;
+    right: -35px;
+    top: 0;
+    border-radius: 3px;
+    padding: 0;
+    margin: 0;
+}
+
+.device-mode-screen-options:hover {
+    background-color: hsl(0, 0%, 90%);
 }
 
 .device-mode-resizer {

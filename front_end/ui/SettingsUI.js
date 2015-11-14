@@ -202,6 +202,7 @@ WebInspector.SettingsUI.bindSettingInputField = function(inputElement, setting, 
         if (clearForZero && !value)
             value = "";
         inputElement.value = value;
+        validate();
     }
     onSettingChange();
 

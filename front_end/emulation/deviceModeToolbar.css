@@ -5,15 +5,26 @@
  */
 
 .device-mode-size-input {
-    width: 80px !important;
+    background: hsl(0, 0%, 100%);
+    border: none;
+    padding: 2px 4px;
+    width: 45px !important;
+    margin: 0;
     text-align: center;
-    background: hsl(0, 0%, 97%);
-    border: 1px solid rgb(216, 216, 216);
 }
 
-.device-mode-size-input:hover,
-.device-mode-size-input:focus {
-    border: 1px solid rgb(202, 202, 202);
+.device-mode-size-input.error-input {
+    outline: auto 2px red;
+}
+
+.device-mode-size-input:disabled {
+    background: transparent;
+    -webkit-user-select: none;
+}
+
+.device-mode-x {
+    margin: 0 1px;
+    font-size: 16px;
 }
 
 .device-mode-device-select {

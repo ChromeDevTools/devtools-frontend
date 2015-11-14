@@ -288,7 +288,7 @@ WebInspector.ToolbarText = function(text, className)
     WebInspector.ToolbarItem.call(this, createElementWithClass("span", "toolbar-text"));
     if (className)
         this.element.classList.add(className);
-    this.element.textContent = text;
+    this._textElement = this.element.createTextChild(text);
 }
 
 WebInspector.ToolbarText.prototype = {
@@ -297,7 +297,16 @@ WebInspector.ToolbarText.prototype = {
      */
     setText: function(text)
     {
-        this.element.textContent = text;
+        this._textElement.textContent = text;
+    },
+
+    showGlyph: function()
+    {
+        if (!this._glyphElement) {
+            this.element.classList.add("toolbar-text-glyphed");
+            this._glyphElement = createElementWithClass("div", "glyph toolbar-button-theme");
+            this.element.insertBefore(this._glyphElement, this._textElement);
+        }
     },
 
     __proto__: WebInspector.ToolbarItem.prototype

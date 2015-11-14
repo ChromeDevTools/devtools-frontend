@@ -25,6 +25,7 @@
         {
             "type": "setting",
             "category": "Elements",
+            "order": 0,
             "title": "Color format:",
             "settingName": "colorFormat",
             "settingType": "enum",
@@ -39,6 +40,7 @@
         {
             "type": "setting",
             "category": "Elements",
+            "order":1,
             "title": "Show user agent shadow DOM",
             "settingName": "showUAShadowDOM",
             "settingType": "boolean",
@@ -47,6 +49,7 @@
         {
             "type": "setting",
             "category": "Elements",
+            "order": 2,
             "title": "Word wrap",
             "settingName": "domWordWrap",
             "settingType": "boolean",
@@ -55,10 +58,20 @@
         {
             "type": "setting",
             "category": "Elements",
+            "order": 3,
             "title": "Show rulers",
             "settingName": "showMetricsRulers",
             "settingType": "boolean",
             "defaultValue": false
+        },
+        {
+            "type": "setting",
+            "category": "Elements",
+            "order": 4,
+            "title": "Reveal DOM node on hover.",
+            "settingName": "highlightNodeOnHoverInOverlay",
+            "settingType": "boolean",
+            "defaultValue": true
         },
         {
             "type": "@WebInspector.ToolbarItem.Provider",

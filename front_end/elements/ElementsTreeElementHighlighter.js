@@ -23,6 +23,9 @@ WebInspector.ElementsTreeElementHighlighter.prototype = {
      */
     _highlightNode: function(event)
     {
+        if (!WebInspector.moduleSetting("highlightNodeOnHoverInOverlay").get())
+            return;
+
         var domNode = /** @type {!WebInspector.DOMNode} */ (event.data);
 
         this._throttler.schedule(callback.bind(this));

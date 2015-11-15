@@ -122,6 +122,7 @@ WebInspector.SourceMap.load = function(sourceMapURL, compiledURL, callback)
             callback(new WebInspector.SourceMap(baseURL, payload));
         } catch(e) {
             console.error(e.message);
+            WebInspector.console.error("Failed to parse SourceMap: " + sourceMapURL);
             callback(null);
         }
     }

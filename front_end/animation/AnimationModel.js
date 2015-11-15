@@ -327,8 +327,7 @@ WebInspector.AnimationModel.Animation.prototype = {
         this._source.node().then(this._updateNodeStyle.bind(this, duration, delay));
         this._source._duration = duration;
         this._source._delay = delay;
-        if (this.type() !== WebInspector.AnimationModel.Animation.Type.CSSAnimation)
-            this.target().animationAgent().setTiming(this.id(), duration, delay);
+        this.target().animationAgent().setTiming(this.id(), duration, delay);
     },
 
     /**

@@ -537,7 +537,7 @@
 }
 
 .sidebar-pane.composite .metrics {
-    height: 190px;
+    min-height: 190px;
     display: flex;
     flex-direction: column;
     -webkit-align-items: center;

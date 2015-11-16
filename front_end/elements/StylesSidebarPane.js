@@ -306,6 +306,14 @@ WebInspector.StylesSidebarPane.prototype = {
             .then(this._innerRebuildUpdate.bind(this));
     },
 
+    /**
+     * @param {function()} callback
+     */
+    runDecoratorAfterUpdate: function(callback)
+    {
+        this._decoratorCallback = callback;
+    },
+
     _resetCache: function()
     {
         delete this._matchedCascadePromise;
@@ -445,6 +453,10 @@ WebInspector.StylesSidebarPane.prototype = {
             this._updateFilter();
 
         this._nodeStylesUpdatedForTest(node, true);
+        if (this._decoratorCallback) {
+            this._decoratorCallback();
+            delete this._decoratorCallback;
+        }
     },
 
     /**

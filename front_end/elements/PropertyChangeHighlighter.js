@@ -10,8 +10,6 @@ WebInspector.PropertyChangeHighlighter = function(ssp)
 {
     this._styleSidebarPane = ssp;
     WebInspector.targetManager.addModelListener(WebInspector.CSSStyleModel, WebInspector.CSSStyleModel.Events.LayoutEditorChange, this._onLayoutEditorChange, this);
-    this._animationDuration = 1400;
-    this._requestAnimationFrame = ssp.element.window().requestAnimationFrame;
 }
 
 WebInspector.PropertyChangeHighlighter.prototype = {
@@ -20,37 +18,46 @@ WebInspector.PropertyChangeHighlighter.prototype = {
      */
     _onLayoutEditorChange: function(event)
     {
-        this._target = event.target.target();
-        this._styleSheetId = event.data.id;
-        this._changeRange = event.data.range;
-        delete this._animationStart;
-        if (!this._nextAnimation)
-            this._nextAnimation = this._requestAnimationFrame.call(null, this.update.bind(this));
+        this._styleSidebarPane.runDecoratorAfterUpdate(this._updateHighlight.bind(this, event));
+        this._styleSidebarPane.update();
     },
 
     /**
-     * @param {number} now
+     * @param {!WebInspector.Event} event
      */
-    update: function(now)
+    _updateHighlight: function(event)
     {
-        delete this._nextAnimation;
-        if (!this._styleSheetId)
-            return;
+        var cssModel = /** @type {!WebInspector.CSSStyleModel} */(event.target);
+        var styleSheetId = event.data["id"];
+        var changeRange = /** @type {!CSSAgent.SourceRange} */(event.data["range"]);
+        var changeRangeObject = WebInspector.TextRange.fromObject(changeRange);
+
         var node = this._styleSidebarPane.node();
-        if (!node || this._target !== node.target()) {
-            this._clear();
+        if (!node || cssModel.target() !== node.target())
             return;
-        }
 
         var sectionBlocks = this._styleSidebarPane.sectionBlocks();
         var foundSection = null;
         for (var block of sectionBlocks) {
             for (var section of block.sections) {
                 var declaration = section.style();
-                if (declaration.styleSheetId !== this._styleSheetId)
+                if (declaration.styleSheetId !== styleSheetId)
                     continue;
 
-                if (this._checkRanges(declaration.range, this._changeRange)) {
+                var parentRule = declaration.parentRule;
+                var isInlineSelector = changeRangeObject.isEmpty();
+                var isMatchingRule = parentRule && parentRule.selectorRange() && changeRangeObject.compareTo(parentRule.selectorRange()) === 0;
+                if (isInlineSelector || isMatchingRule) {
+                    section.element.animate([
+                        { offset: 0, backgroundColor: "rgba(255, 227, 199, 1)" },
+                        { offset: 0.5, backgroundColor: "rgba(255, 227, 199, 1)" },
+                        { offset: 0.9, backgroundColor: "rgba(255, 227, 199, 0)" },
+                        { offset: 1, backgroundColor: "white" }
+                    ], { duration : 400, easing: "cubic-bezier(0, 0, 0.2, 1)" });
+                    return;
+                }
+
+                if (this._checkRanges(declaration.range, changeRange)) {
                     foundSection = section;
                     break;
                 }
@@ -59,50 +66,28 @@ WebInspector.PropertyChangeHighlighter.prototype = {
                 break;
         }
 
-        if (!foundSection) {
-            this._clear();
+        if (!foundSection)
             return;
-        }
 
+        var highlightElement;
         var treeElement = foundSection.propertiesTreeOutline.firstChild();
         var foundTreeElement = null;
-        while (treeElement) {
-            if (treeElement.property.range  && this._checkRanges(treeElement.property.range, this._changeRange)) {
-                foundTreeElement = treeElement;
+        while (!highlightElement && treeElement) {
+            if (treeElement.property.range  && this._checkRanges(treeElement.property.range, changeRange)) {
+                highlightElement = treeElement.valueElement;
                 break;
             }
             treeElement = treeElement.traverseNextTreeElement(false, null, true);
         }
 
-        if (!foundTreeElement) {
-            this._clear();
-            return;
+        if (highlightElement) {
+            highlightElement.animate([
+                    { offset: 0, backgroundColor: "rgba(158, 54, 153, 1)", color: "white" },
+                    { offset: 0.5, backgroundColor: "rgba(158, 54, 153, 1)", color: "white" },
+                    { offset: 0.9, backgroundColor: "rgba(158, 54, 153, 0)", color: "initial" },
+                    { offset: 1, backgroundColor: "white", color: "initial" }
+                ], { duration : 400, easing: "cubic-bezier(0, 0, 0.2, 1)" });
         }
-
-        if (!this._animationStart)
-            this._animationStart = now;
-
-        var animationProgress = (now - this._animationStart) / this._animationDuration;
-        var valueElement = foundTreeElement.valueElement;
-        valueElement.classList.toggle("css-update-highlight", animationProgress < 1);
-        valueElement.classList.toggle("first-part", animationProgress < 0.2);
-
-        if (animationProgress > 1) {
-            this._clear();
-            delete valueElement.style.backgroundColor;
-            return;
-        }
-
-        valueElement.style.backgroundColor = "rgba(158, 54, 153, " + (1 - animationProgress) + ")";
-        this._nextAnimation = this._requestAnimationFrame.call(null, this.update.bind(this));
-    },
-
-    _clear: function()
-    {
-        delete this._styleSheetId;
-        delete this._changeRange;
-        delete this._target;
-        delete this._animationStart;
     },
 
     /**

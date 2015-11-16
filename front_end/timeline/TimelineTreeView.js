@@ -113,8 +113,8 @@ WebInspector.TimelineTreeView.prototype = {
      */
     _populateColumns: function(columns)
     {
-        columns.push({id: "self", title: WebInspector.UIString("Self Time"), width: "120px", sortable: true});
-        columns.push({id: "total", title: WebInspector.UIString("Total Time"), width: "120px", sortable: true});
+        columns.push({id: "self", title: WebInspector.UIString("Self Time"), width: "110px", sortable: true});
+        columns.push({id: "total", title: WebInspector.UIString("Total Time"), width: "110px", sortable: true});
         columns.push({id: "activity", title: WebInspector.UIString("Activity"), disclosure: true, sortable: true});
     },
 
@@ -269,46 +269,15 @@ WebInspector.TimelineTreeView._gridNodeSymbol = Symbol("gridNode");
  */
 WebInspector.TimelineTreeView.GridNode = function(profileNode, grandTotalTime, maxSelfTime, maxTotalTime, treeView)
 {
-    /**
-     * @param {number} time
-     * @return {string}
-     */
-    function formatMilliseconds(time)
-    {
-        return WebInspector.UIString("%.1f\u2009ms", time);
-    }
-    /**
-     * @param {number} value
-     * @return {string}
-     */
-    function formatPercent(value)
-    {
-        return WebInspector.UIString("%.2f\u2009%%", value);
-    }
-
     this._populated = false;
     this._profileNode = profileNode;
     this._treeView = treeView;
-    this._totalTime = grandTotalTime;
-    this._maxTimes = { self: maxSelfTime, total: maxTotalTime };
+    this._grandTotalTime = grandTotalTime;
+    this._maxSelfTime = maxSelfTime;
+    this._maxTotalTime = maxTotalTime;
     profileNode[WebInspector.TimelineTreeView._gridNodeSymbol] = this;
-
-    var selfTime = profileNode.selfTime;
-    var selfPercent = selfTime / grandTotalTime * 100;
-    var totalTime = profileNode.totalTime;
-    var totalPercent = totalTime / grandTotalTime * 100;
-    var data = {
-        "activity": profileNode.name,
-        "self-percent": formatPercent(selfPercent),
-        "self": formatMilliseconds(selfTime),
-        "total-percent": formatPercent(totalPercent),
-        "total": formatMilliseconds(totalTime),
-    };
-    if (profileNode.event)
-        data["startTime"] = formatMilliseconds(profileNode.event.startTime - treeView._model.minimumRecordTime());
-
     var hasChildren = this._profileNode.children ? this._profileNode.children.size > 0 : false;
-    WebInspector.SortableDataGridNode.call(this, data, hasChildren);
+    WebInspector.SortableDataGridNode.call(this, null, hasChildren);
 }
 
 WebInspector.TimelineTreeView.GridNode.prototype = {
@@ -364,17 +333,53 @@ WebInspector.TimelineTreeView.GridNode.prototype = {
     {
         if (columnIdentifier !== "self" && columnIdentifier !== "total" && columnIdentifier !== "startTime")
             return null;
+        /**
+         * @param {number} time
+         * @return {string}
+         */
+        function formatMilliseconds(time)
+        {
+            return WebInspector.UIString("%.1f\u2009ms", time);
+        }
+        /**
+         * @param {number} value
+         * @return {string}
+         */
+        function formatPercent(value)
+        {
+            return WebInspector.UIString("%.1f\u2009%%", value);
+        }
+
+        var value;
+        var percentText;
+        var maxTime;
+        switch (columnIdentifier) {
+        case "startTime":
+            value = this._profileNode.event.startTime - this._treeView._model.minimumRecordTime();
+            break;
+        case "self":
+            value = this._profileNode.selfTime;
+            percentText = formatPercent(this._profileNode.selfTime / this._grandTotalTime * 100);
+            maxTime = this._maxSelfTime;
+            break;
+        case "total":
+            value = this._profileNode.totalTime;
+            percentText = formatPercent(this._profileNode.totalTime / this._grandTotalTime * 100);
+            maxTime = this._maxTotalTime;
+            break;
+        default:
+            return null;
+        }
         var cell = this.createTD(columnIdentifier);
         cell.className = "numeric-column";
         var textDiv = cell.createChild("div");
-        textDiv.createChild("span").textContent = this.data[columnIdentifier];
-        var percentColumn = columnIdentifier + "-percent";
-        if (percentColumn in this.data) {
-            textDiv.createChild("span", "percent-column").textContent = this.data[percentColumn];
+        textDiv.createChild("span").textContent = formatMilliseconds(value);
+        if (percentText) {
+            textDiv.createChild("span", "percent-column").textContent = percentText;
             textDiv.classList.add("profile-multiple-values");
         }
-        var bar = cell.createChild("div", "background-bar-container").createChild("div", "background-bar");
-        bar.style.width = (this._profileNode[columnIdentifier + "Time"] * 100 / this._maxTimes[columnIdentifier]).toFixed(1) + "%";
+        if (maxTime)
+            cell.createChild("div", "background-bar-container").createChild("div", "background-bar").style.width = (value * 100 / maxTime).toFixed(1) + "%";
         return cell;
     },
 
@@ -389,7 +394,7 @@ WebInspector.TimelineTreeView.GridNode.prototype = {
         if (!this._profileNode.children)
             return;
         for (var node of this._profileNode.children.values()) {
-            var gridNode = new WebInspector.TimelineTreeView.GridNode(node, this._totalTime, this._maxTimes.self, this._maxTimes.total, this._treeView);
+            var gridNode = new WebInspector.TimelineTreeView.GridNode(node, this._grandTotalTime, this._maxSelfTime, this._maxTotalTime, this._treeView);
             this.insertChildOrdered(gridNode);
         }
     },
@@ -756,7 +761,7 @@ WebInspector.EventsTimelineTreeView.prototype = {
      */
     _populateColumns: function(columns)
     {
-        columns.push({id: "startTime", title: WebInspector.UIString("Start Time"), width: "60px", sortable: true});
+        columns.push({id: "startTime", title: WebInspector.UIString("Start Time"), width: "80px", sortable: true});
         WebInspector.TimelineTreeView.prototype._populateColumns.call(this, columns);
     },
 

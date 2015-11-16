@@ -37,7 +37,7 @@ WebInspector.AnimationTimeline = function()
     WebInspector.targetManager.observeTargets(this, WebInspector.Target.Type.Page);
 }
 
-WebInspector.AnimationTimeline.GlobalPlaybackRates = [0.1, 0.25, 0.5, 1.0];
+WebInspector.AnimationTimeline.GlobalPlaybackRates = [1, 0.25, 0.1];
 
 WebInspector.AnimationTimeline.prototype = {
     wasShown: function()
@@ -116,16 +116,6 @@ WebInspector.AnimationTimeline.prototype = {
 
     _createHeader: function()
     {
-        /**
-         * @param {!Event} event
-         * @this {WebInspector.AnimationTimeline}
-         */
-        function playbackSliderInputHandler(event)
-        {
-            this._underlyingPlaybackRate = WebInspector.AnimationTimeline.GlobalPlaybackRates[event.target.value];
-            this._updatePlaybackControls();
-        }
-
         this._previewContainer = this.contentElement.createChild("div", "animation-timeline-buffer");
         var container = this.contentElement.createChild("div", "animation-timeline-header");
         var controls = container.createChild("div", "animation-controls");
@@ -136,18 +126,16 @@ WebInspector.AnimationTimeline.prototype = {
         this._controlButton.addEventListener("click", this._controlButtonToggle.bind(this));
         toolbar.appendToolbarItem(this._controlButton);
 
-        this._playbackLabel = controls.createChild("span", "animation-playback-label");
-        this._playbackLabel.createTextChild("1x");
-        this._playbackLabel.addEventListener("keydown", this._playbackLabelInput.bind(this));
-        this._playbackLabel.addEventListener("focusout", this._playbackLabelInput.bind(this));
-
-        this._playbackSlider = controls.createChild("input", "animation-playback-slider");
-        this._playbackSlider.type = "range";
-        this._playbackSlider.min = 0;
-        this._playbackSlider.max = WebInspector.AnimationTimeline.GlobalPlaybackRates.length - 1;
-        this._playbackSlider.value = this._playbackSlider.max;
-        this._playbackSlider.addEventListener("input", playbackSliderInputHandler.bind(this));
-        this._updateAnimationsPlaybackRate();
+        var playbackRateControl = controls.createChild("div", "animation-playback-rate-control");
+        this._playbackRateButtons = [];
+        for (var playbackRate of WebInspector.AnimationTimeline.GlobalPlaybackRates) {
+            var button = playbackRateControl.createChild("div", "animation-playback-rate-button");
+            button.textContent = WebInspector.UIString(playbackRate * 100 + "%");
+            button.playbackRate = playbackRate;
+            button.addEventListener("click", this._setPlaybackRate.bind(this, playbackRate));
+            this._playbackRateButtons.push(button);
+        }
+        this._updatePlaybackControls();
 
         var gridHeader = container.createChild("div", "animation-grid-header");
         WebInspector.installDragHandle(gridHeader, this._repositionScrubber.bind(this), this._scrubberDragMove.bind(this), this._scrubberDragEnd.bind(this), "pointer");
@@ -159,37 +147,27 @@ WebInspector.AnimationTimeline.prototype = {
     },
 
     /**
-     * @param {!Event} event
+     * @param {number} playbackRate
      */
-    _playbackLabelInput: function(event)
+    _setPlaybackRate: function(playbackRate)
     {
-        var element = /** @type {!Element} */(event.currentTarget);
-        if (event.type !== "focusout" && !WebInspector.handleElementValueModifications(event, element) && !isEnterKey(event))
-            return;
-
-        var value = parseFloat(this._playbackLabel.textContent);
-        if (!isNaN(value))
-            this._underlyingPlaybackRate = Math.max(0, value);
-        this._updatePlaybackControls();
-        event.consume(true);
-    },
-
-    _updatePlaybackControls: function()
-    {
-        this._playbackLabel.textContent = this._underlyingPlaybackRate + "x";
-        var playbackSliderValue = 0;
-        for (var rate of WebInspector.AnimationTimeline.GlobalPlaybackRates) {
-            if (this._underlyingPlaybackRate > rate)
-                playbackSliderValue++;
-        }
-        this._playbackSlider.value = playbackSliderValue;
-
+        this._underlyingPlaybackRate = playbackRate;
         var target = WebInspector.targetManager.mainTarget();
         if (target)
             WebInspector.AnimationModel.fromTarget(target).setPlaybackRate(this._underlyingPlaybackRate);
         WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.AnimationsPlaybackRateChanged);
         if (this._scrubberPlayer)
             this._scrubberPlayer.playbackRate = this._effectivePlaybackRate();
+
+        this._updatePlaybackControls();
+    },
+
+    _updatePlaybackControls: function()
+    {
+        for (var button of this._playbackRateButtons) {
+            var selected = this._underlyingPlaybackRate === button.playbackRate;
+            button.classList.toggle("selected", selected);
+        }
     },
 
     _controlButtonToggle: function()
@@ -231,7 +209,7 @@ WebInspector.AnimationTimeline.prototype = {
          */
         function syncPlaybackRate(playbackRate)
         {
-            this._underlyingPlaybackRate = playbackRate;
+            this._underlyingPlaybackRate = playbackRate || 1;
             this._updatePlaybackControls();
         }
 
@@ -320,10 +298,6 @@ WebInspector.AnimationTimeline.prototype = {
     {
         this._reset();
         this._updateAnimationsPlaybackRate();
-        if (this._underlyingPlaybackRate === 0) {
-            this._underlyingPlaybackRate = 1;
-            this._updatePlaybackControls();
-        }
         if (this._scrubberPlayer)
             this._scrubberPlayer.cancel();
         delete this._scrubberPlayer;

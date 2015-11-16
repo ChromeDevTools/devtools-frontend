@@ -131,57 +131,6 @@ circle.animation-keyframe-point {
     visibility: hidden;
 }
 
-input.animation-playback-slider {
-    width: 65px;
-    margin-left: 7px;
-    -webkit-appearance: none;
-    position: absolute;
-    top: 1px;
-    background: none;
-}
-
-input[type=range].animation-playback-slider::-webkit-slider-runnable-track {
-    height: 4px;
-    margin: 10px 0;
-    border-radius: 2px;
-    cursor: pointer;
-    background: #c8c8c8;
-}
-
-input[type=range].animation-playback-slider:focus::-webkit-slider-runnable-track {
-    background: #b8b8b8;
-}
-
-input[type=range].animation-playback-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    cursor: pointer;
-    margin-top: -4px;
-    cursor: pointer;
-    width: 12px;
-    height: 12px;
-    border-radius: 12px;
-    background-color: rgb(248, 248, 248);
-    border: 1px solid #999;
-    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.24);
-}
-
-.animation-playback-label {
-    display: inline-block;
-    width: 40px;
-    height: 22px;
-    text-align: center;
-    border: 1px solid #dadada;
-    border-radius: 2px;
-    line-height: 20px;
-    font-size: 11px;
-    padding: 0;
-    color: #333;
-    white-space: nowrap;
-    overflow: hidden;
-    -webkit-user-modify: read-write-plaintext-only;
-    margin: 2px;
-}
-
 .animation-scrubber {
     opacity: 1;
     position: absolute;
@@ -396,4 +345,44 @@ text.animation-timeline-grid-label {
     to {
         -webkit-clip-path: polygon(0% 0%, 0% 100%, 100% 100%, 100% 0%);
     }
+}
+
+.animation-playback-rate-control {
+    margin: 2px 0 2px 2px;
+    display: flex;
+    width: 114px;
+}
+
+.animation-playback-rate-button:first-child {
+    border-radius: 4px 0 0 4px;
+}
+
+.animation-playback-rate-button:last-child {
+    border-radius: 0 4px 4px 0;
+}
+
+.animation-playback-rate-button {
+    border: 1px solid #ccc;
+    display: inline-block;
+    margin-right: -1px;
+    padding: 4px;
+    background: white;
+    flex: 1 0 auto;
+    text-align: center;
+}
+
+.animation-playback-rate-button:not(.selected):hover {
+    background: hsl(211, 100%, 95%);
+}
+
+.animation-playback-rate-button.selected {
+    color: hsl(0, 100%, 100%);
+    background-color: hsl(217, 89%, 61%);
+    border-color: hsl(217, 89%, 61%);
+    z-index: 1;
+}
+
+.animation-playback-rate-button.selected:first-child {
+    color: hsl(217, 89%, 61%);
+    background-color: hsl(217, 89%, 100%);
 }

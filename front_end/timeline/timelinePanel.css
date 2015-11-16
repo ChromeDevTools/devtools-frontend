@@ -1037,3 +1037,7 @@
 .timeline-tree-view .timeline-details-view-body .banner {
     background-color: inherit;
 }
+
+.timeline-details #filter-input-field {
+    width: 120px;
+}

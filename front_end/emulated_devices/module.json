@@ -331,6 +331,68 @@
         {
             "type": "emulated-device",
             "device": {
+                "title": "Google Nexus 5X",
+                "type": "phone",
+                "user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.76 Mobile Safari/537.36",
+                "capabilities": [
+                    "touch",
+                    "mobile"
+                ],
+                "show-by-default": true,
+                "screen": {
+                    "device-pixel-ratio": 2.6,
+                    "vertical": {
+                        "width": 411,
+                        "height": 731
+                    },
+                    "horizontal": {
+                        "width": 731,
+                        "height": 411
+                    }
+                },
+                "modes": [
+                    {
+                        "title": "default",
+                        "orientation": "vertical",
+                        "insets": { "left": 0, "top": 25, "right": 0, "bottom": 48 },
+                        "image": "@url(google-nexus-5-vertical-default-1x.png) 1x, @url(google-nexus-5-vertical-default-2x.png) 2x"
+                    },
+                    {
+                        "title": "navigation bar",
+                        "orientation": "vertical",
+                        "insets": { "left": 0, "top": 80, "right": 0, "bottom": 48 },
+                        "image": "@url(google-nexus-5-vertical-navigation-1x.png) 1x, @url(google-nexus-5-vertical-navigation-2x.png) 2x"
+                    },
+                    {
+                        "title": "keyboard",
+                        "orientation": "vertical",
+                        "insets": { "left": 0, "top": 80, "right": 0, "bottom": 312 },
+                        "image": "@url(google-nexus-5-vertical-keyboard-1x.png) 1x, @url(google-nexus-5-vertical-keyboard-2x.png) 2x"
+                    },
+                    {
+                        "title": "default",
+                        "orientation": "horizontal",
+                        "insets": { "left": 0, "top": 25, "right": 42, "bottom": 0 },
+                        "image": "@url(google-nexus-5-horizontal-default-1x.png) 1x, @url(google-nexus-5-horizontal-default-2x.png) 2x"
+                    },
+                    {
+                        "title": "navigation bar",
+                        "orientation": "horizontal",
+                        "insets": { "left": 0, "top": 80, "right": 42, "bottom": 0 },
+                        "image": "@url(google-nexus-5-horizontal-navigation-1x.png) 1x, @url(google-nexus-5-horizontal-navigation-2x.png) 2x"
+                    },
+                    {
+                        "title": "keyboard",
+                        "orientation": "horizontal",
+                        "insets": { "left": 0, "top": 80, "right": 42, "bottom": 202 },
+                        "image": "@url(google-nexus-5-horizontal-keyboard-1x.png) 1x, @url(google-nexus-5-horizontal-keyboard-2x.png) 2x"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "emulated-device",
+            "device": {
                 "show-by-default": true,
                 "title": "Google Nexus 6",
                 "screen": {
@@ -342,6 +404,62 @@
                     "vertical": {
                         "width": 412,
                         "height": 732
+                    }
+                },
+                "capabilities": [
+                    "touch",
+                    "mobile"
+                ],
+                "user-agent": "Mozilla/5.0 (Linux; Android 5.1.1; Nexus 6 Build/LYZ28E) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.76 Mobile Safari/537.36",
+                "type": "phone",
+                "modes": [
+                    {
+                        "title": "default",
+                        "orientation": "vertical",
+                        "insets": { "left": 0, "top": 25, "right": 0, "bottom": 48 }
+                    },
+                    {
+                        "title": "navigation bar",
+                        "orientation": "vertical",
+                        "insets": { "left": 0, "top": 80, "right": 0, "bottom": 48 }
+                    },
+                    {
+                        "title": "keyboard",
+                        "orientation": "vertical",
+                        "insets": { "left": 0, "top": 80, "right": 0, "bottom": 343 }
+                    },
+                    {
+                        "title": "default",
+                        "orientation": "horizontal",
+                        "insets": { "left": 0, "top": 25, "right": 42, "bottom": 0 }
+                    },
+                    {
+                        "title": "navigation bar",
+                        "orientation": "horizontal",
+                        "insets": { "left": 0, "top": 80, "right": 42, "bottom": 0 }
+                    },
+                    {
+                        "title": "keyboard",
+                        "orientation": "horizontal",
+                        "insets": { "left": 0, "top": 80, "right": 42, "bottom": 222 }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "emulated-device",
+            "device": {
+                "show-by-default": true,
+                "title": "Google Nexus 6P",
+                "screen": {
+                    "horizontal": {
+                        "width": 773,
+                        "height": 435
+                    },
+                    "device-pixel-ratio": 3.3,
+                    "vertical": {
+                        "width": 435,
+                        "height": 773
                     }
                 },
                 "capabilities": [

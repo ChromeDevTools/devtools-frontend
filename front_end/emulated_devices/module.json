@@ -226,7 +226,7 @@
                     "touch",
                     "mobile"
                 ],
-                "show-by-default": true,
+                "show-by-default": false,
                 "screen": {
                     "device-pixel-ratio": 3,
                     "vertical": {
@@ -288,9 +288,9 @@
                     "touch",
                     "mobile"
                 ],
-                "show-by-default": false,
+                "show-by-default": true,
                 "screen": {
-                    "device-pixel-ratio": 2.6,
+                    "device-pixel-ratio": 2.625,
                     "vertical": {
                         "width": 411,
                         "height": 731
@@ -304,12 +304,38 @@
                     {
                         "title": "default",
                         "orientation": "vertical",
-                        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+                        "insets": { "left": 0, "top": 25, "right": 0, "bottom": 48 },
+                        "image": "@url(google-nexus-5x-vertical-default-1x.png) 1x, @url(google-nexus-5x-vertical-default-2x.png) 2x"
+                    },
+                    {
+                        "title": "navigation bar",
+                        "orientation": "vertical",
+                        "insets": { "left": 0, "top": 80, "right": 0, "bottom": 48 },
+                        "image": "@url(google-nexus-5x-vertical-navigation-1x.png) 1x, @url(google-nexus-5x-vertical-navigation-2x.png) 2x"
+                    },
+                    {
+                        "title": "keyboard",
+                        "orientation": "vertical",
+                        "insets": { "left": 0, "top": 80, "right": 0, "bottom": 342 },
+                        "image": "@url(google-nexus-5x-vertical-keyboard-1x.png) 1x, @url(google-nexus-5x-vertical-keyboard-2x.png) 2x"
                     },
                     {
                         "title": "default",
                         "orientation": "horizontal",
-                        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+                        "insets": { "left": 0, "top": 25, "right": 48, "bottom": 0 },
+                        "image": "@url(google-nexus-5x-horizontal-default-1x.png) 1x, @url(google-nexus-5x-horizontal-default-2x.png) 2x"
+                    },
+                    {
+                        "title": "navigation bar",
+                        "orientation": "horizontal",
+                        "insets": { "left": 0, "top": 80, "right": 48, "bottom": 0 },
+                        "image": "@url(google-nexus-5x-horizontal-navigation-1x.png) 1x, @url(google-nexus-5x-horizontal-navigation-2x.png) 2x"
+                    },
+                    {
+                        "title": "keyboard",
+                        "orientation": "horizontal",
+                        "insets": { "left": 0, "top": 80, "right": 48, "bottom": 222 },
+                        "image": "@url(google-nexus-5x-horizontal-keyboard-1x.png) 1x, @url(google-nexus-5x-horizontal-keyboard-2x.png) 2x"
                     }
                 ]
             }

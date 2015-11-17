@@ -147,6 +147,7 @@ WebInspector.Main.prototype = {
         }
 
         Runtime.experiments.setDefaultExperiments([
+            "animationInspection",
             "deviceMode",
             "securityPanel"
         ]);

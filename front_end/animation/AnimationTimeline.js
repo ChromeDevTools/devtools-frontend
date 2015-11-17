@@ -91,13 +91,10 @@ WebInspector.AnimationTimeline.prototype = {
         animationModel.removeEventListener(WebInspector.AnimationModel.Events.AnimationGroupStarted, this._animationGroupStarted, this);
     },
 
-    /**
-     * @param {?WebInspector.DOMNode} node
-     */
-    setNode: function(node)
+    _nodeChanged: function()
     {
         for (var nodeUI of this._nodesMap.values())
-            nodeUI.setNode(node);
+            nodeUI._nodeChanged();
     },
 
     /**
@@ -646,6 +643,7 @@ WebInspector.AnimationTimeline.NodeUI = function(animationEffect)
         if (!node)
             return;
         this._node = node;
+        this._nodeChanged();
         this._description.appendChild(WebInspector.DOMPresentationUtils.linkifyNodeReference(node));
     }
 
@@ -709,12 +707,9 @@ WebInspector.AnimationTimeline.NodeUI.prototype = {
         this.element.classList.add("animation-node-removed");
     },
 
-    /**
-     * @param {?WebInspector.DOMNode} node
-     */
-    setNode: function(node)
+    _nodeChanged: function()
     {
-        this.element.classList.toggle("animation-node-selected", node === this._node);
+        this.element.classList.toggle("animation-node-selected", this._node && this._node === WebInspector.context.flavor(WebInspector.DOMNode));
     }
 }
 

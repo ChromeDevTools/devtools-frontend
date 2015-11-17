@@ -5,6 +5,14 @@
             "className": "WebInspector.AnimationControlPane.ButtonProvider",
             "order": 2,
             "location": "styles-sidebarpane-toolbar"
+        },
+        {
+            "type": "drawer-view",
+            "name": "animations",
+            "title": "Animations",
+            "persistence": "closeable",
+            "order": 0,
+            "className": "WebInspector.AnimationTimeline"
         }
     ],
     "dependencies": [

@@ -110,18 +110,6 @@ WebInspector.AnimationControlPane.ButtonProvider.prototype = {
     /**
      * @param {boolean} toggleOn
      */
-    _toggleAnimationTimelineMode: function(toggleOn)
-    {
-        if (!this._animationTimeline)
-            this._animationTimeline = new WebInspector.AnimationTimeline();
-        this._button.setToggled(toggleOn);
-        var elementsPanel = WebInspector.ElementsPanel.instance();
-        elementsPanel.setWidgetBelowDOM(toggleOn ? this._animationTimeline : null);
-    },
-
-    /**
-     * @param {boolean} toggleOn
-     */
     _toggleAnimationControlPaneMode: function(toggleOn)
     {
         if (!this._animationsControlPane)
@@ -132,7 +120,7 @@ WebInspector.AnimationControlPane.ButtonProvider.prototype = {
     _clicked: function()
     {
         if (Runtime.experiments.isEnabled("animationInspection"))
-            this._toggleAnimationTimelineMode(!this._button.toggled());
+            WebInspector.inspectorView.showViewInDrawer("animations");
         else
             this._toggleAnimationControlPaneMode(!this._button.toggled());
     },
@@ -140,10 +128,7 @@ WebInspector.AnimationControlPane.ButtonProvider.prototype = {
     _nodeChanged: function()
     {
         var node = WebInspector.context.flavor(WebInspector.DOMNode);
-        if (Runtime.experiments.isEnabled("animationInspection")) {
-            if (this._animationTimeline)
-                this._animationTimeline.setNode(node);
-        } else {
+        if (!Runtime.experiments.isEnabled("animationInspection")) {
             this._button.setEnabled(!!node);
             if (!node)
                 this._toggleAnimationControlPaneMode(false);

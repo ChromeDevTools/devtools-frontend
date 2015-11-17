@@ -53,10 +53,7 @@ WebInspector.ElementsPanel = function()
     stackElement.appendChild(this._contentElement);
     stackElement.appendChild(crumbsContainer);
 
-    this._treeOutlineSplit = new WebInspector.SplitWidget(false, true, "treeOutlineAnimationTimelineWidget", 300, 300);
-    this._treeOutlineSplit.hideSidebar();
-    this._treeOutlineSplit.setMainWidget(this._searchableView);
-    this._splitWidget.setMainWidget(this._treeOutlineSplit);
+    this._splitWidget.setMainWidget(this._searchableView);
 
     this._contentElement.id = "elements-content";
     // FIXME: crbug.com/425984
@@ -1055,19 +1052,6 @@ WebInspector.ElementsPanel.prototype = {
     {
         if (pane.panelName() === this.name)
             this._extensionSidebarPanesContainer.addPane(pane);
-    },
-
-    /**
-     * @param {?WebInspector.Widget} widget
-     */
-    setWidgetBelowDOM: function(widget)
-    {
-        if (widget) {
-            this._treeOutlineSplit.setSidebarWidget(widget);
-            this._treeOutlineSplit.showBoth(true);
-        } else {
-            this._treeOutlineSplit.hideSidebar(true);
-        }
     },
 
     __proto__: WebInspector.Panel.prototype

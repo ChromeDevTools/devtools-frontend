@@ -90,28 +90,8 @@ WebInspector.Main.prototype = {
         }
 
         this._initializeExperiments(prefs);
-
-        /**
-         * @param {!Array<{name: string}>} changes
-         */
-        function trackPrefsObject(changes)
-        {
-            if (!Object.keys(prefs).length) {
-                InspectorFrontendHost.clearPreferences();
-                return;
-            }
-
-            for (var change of changes) {
-                var name = change.name;
-                if (name in prefs)
-                    InspectorFrontendHost.setPreference(name, prefs[name]);
-                else
-                    InspectorFrontendHost.removePreference(name);
-            }
-        }
-
-        Object.observe(prefs, trackPrefsObject);
-        WebInspector.settings = new WebInspector.Settings(prefs);
+        WebInspector.settings = new WebInspector.Settings(new WebInspector.SettingsStorage(prefs,
+            InspectorFrontendHost.setPreference, InspectorFrontendHost.removePreference, InspectorFrontendHost.clearPreferences));
 
         if (!InspectorFrontendHost.isUnderTest())
             new WebInspector.VersionController().updateVersion();

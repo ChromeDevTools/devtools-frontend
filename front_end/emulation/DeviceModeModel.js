@@ -261,8 +261,30 @@ WebInspector.DeviceModeModel.prototype = {
      */
     targetAdded: function(target)
     {
-        if (!this._target)
+        if (!this._target) {
             this._target = target;
+            var domModel = WebInspector.DOMModel.fromTarget(this._target);
+            domModel.addEventListener(WebInspector.DOMModel.Events.InspectModeWillBeToggled, this._inspectModeWillBeToggled, this);
+        }
+    },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _inspectModeWillBeToggled: function(event)
+    {
+        var inspectModeEnabled = /** @type {boolean} */ (event.data);
+        if (inspectModeEnabled) {
+            this._applyTouch(false, false);
+            return;
+        }
+
+        if (this._type === WebInspector.DeviceModeModel.Type.Device)
+            this._applyTouch(this._device.touch(), this._device.mobile());
+        else if (this._type === WebInspector.DeviceModeModel.Type.Desktop)
+            this._applyTouch(false, false);
+        else if (this._type === WebInspector.DeviceModeModel.Type.Mobile)
+            this._applyTouch(true, true);
     },
 
     /**

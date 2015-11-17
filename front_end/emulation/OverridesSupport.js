@@ -313,9 +313,11 @@ WebInspector.OverridesSupport.prototype = {
 
             if (this.canEmulate()) {
                 target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._onMainFrameNavigated, this);
-                var domModel = WebInspector.DOMModel.fromTarget(this._target);
-                if (domModel)
-                    domModel.addEventListener(WebInspector.DOMModel.Events.InspectModeWillBeToggled, this._inspectModeWillBeToggled, this);
+                if (!Runtime.experiments.isEnabled("deviceMode")) {
+                    var domModel = WebInspector.DOMModel.fromTarget(this._target);
+                    if (domModel)
+                        domModel.addEventListener(WebInspector.DOMModel.Events.InspectModeWillBeToggled, this._inspectModeWillBeToggled, this);
+                }
                 this._applyInitialOverrides();
             }
 

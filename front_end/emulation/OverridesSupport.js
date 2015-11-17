@@ -758,7 +758,8 @@ WebInspector.OverridesSupport.prototype = {
 
     _onMainFrameNavigated: function()
     {
-        this._deviceMetricsChanged(false);
+        if (!Runtime.experiments.isEnabled("deviceMode"))
+            this._deviceMetricsChanged(false);
         this._updateUserAgentWarningMessage("");
         this._updateDeviceMetricsWarningMessage("");
     },

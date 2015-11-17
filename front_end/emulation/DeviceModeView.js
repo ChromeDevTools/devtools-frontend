@@ -204,6 +204,7 @@ WebInspector.DeviceModeView.prototype = {
     wasShown: function()
     {
         this._mediaInspector.setEnabled(true);
+        this._toolbar.restore();
     },
 
     /**
@@ -289,6 +290,9 @@ WebInspector.DeviceModeView.Toolbar = function(model, showMediaInspectorSetting)
     this._optionsToolbar.appendSeparator();
 
     this._optionsToolbar.appendToolbarItem(new WebInspector.ToolbarMenuButton(WebInspector.UIString("More options"), "menu-toolbar-item", this._appendMenuItems.bind(this)));
+
+    this._persistenceSetting = WebInspector.settings.createSetting("emulation.deviceModeViewPersistence", {type: WebInspector.DeviceModeModel.Type.Desktop, device: "", orientation: "", mode: ""});
+    this._restored = false;
 }
 
 WebInspector.DeviceModeView.Toolbar.prototype = {
@@ -556,12 +560,15 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
 
     update: function()
     {
+        var updatePersistence = false;
+
         if (this._model.type() !== this._cachedModelType) {
             var isDesktop = this._model.type() === WebInspector.DeviceModeModel.Type.Desktop;
             this._desktopItem.setToggled(isDesktop);
             this._mobileItem.setToggled(!isDesktop);
             this._deviceSelectItem.setVisible(!isDesktop);
             this._cachedModelType = this._model.type();
+            updatePersistence = true;
         }
 
         var resizable = this._model.isResizable();
@@ -621,6 +628,7 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
             this._updateDeviceSelectedIndex();
 
             this._cachedModelDevice = device;
+            updatePersistence = true;
         }
 
         if (this._model.device() && this._model.mode())
@@ -628,5 +636,49 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
 
         if (this._model.type() !== WebInspector.DeviceModeModel.Type.Desktop)
             this._lastDevice = this._model.device();
+
+        if (this._model.mode() !== this._cachedModelMode) {
+            this._cachedModelMode = this._model.mode();
+            updatePersistence = true;
+        }
+
+        if (updatePersistence) {
+            this._persistenceSetting.set({
+                type: this._cachedModelType,
+                device: this._cachedModelDevice ? this._cachedModelDevice.title : "",
+                orientation: this._cachedModelMode ? this._cachedModelMode.orientation : "",
+                mode: this._cachedModelMode ? this._cachedModelMode.title : ""
+            });
+        }
+    },
+
+    restore: function()
+    {
+        if (this._restored)
+            return;
+
+        this._restored = true;
+        var type = this._persistenceSetting.get().type;
+        if (type === WebInspector.DeviceModeModel.Type.Mobile) {
+            this._model.emulate(WebInspector.DeviceModeModel.Type.Mobile, null, null);
+        } else if (type === WebInspector.DeviceModeModel.Type.Device) {
+            var device = null;
+            for (var i = 0; i < this._deviceSelect.options.length; ++i) {
+                if (this._deviceSelect.options[i].device && this._deviceSelect.options[i].device.title === this._persistenceSetting.get().device)
+                    device = this._deviceSelect.options[i].device;
+            }
+            if (device) {
+                var mode = null;
+                for (var i = 0; i < device.modes.length; ++i) {
+                    if (device.modes[i].orientation === this._persistenceSetting.get().orientation && device.modes[i].title === this._persistenceSetting.get().mode)
+                        mode = device.modes[i];
+                }
+                this._model.emulate(WebInspector.DeviceModeModel.Type.Device, device, mode || device.modes[0]);
+            } else {
+                this._model.emulate(WebInspector.DeviceModeModel.Type.Mobile, null, null);
+            }
+        } else {
+            this._model.emulate(WebInspector.DeviceModeModel.Type.Desktop, null, null);
+        }
     }
 }

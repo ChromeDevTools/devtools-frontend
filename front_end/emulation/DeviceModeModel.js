@@ -29,8 +29,6 @@ WebInspector.DeviceModeModel = function(updateCallback)
 
     /** @type {!WebInspector.DeviceModeModel.Type} */
     this._type = WebInspector.DeviceModeModel.Type.Desktop;
-    this._fitSetting.set(0);
-    this._deviceScaleFactorSetting.set(0);
     /** @type {?WebInspector.EmulatedDevice} */
     this._device = null;
     /** @type {?WebInspector.EmulatedDevice.Mode} */

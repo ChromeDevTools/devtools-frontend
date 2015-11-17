@@ -337,7 +337,7 @@ WebInspector.DeviceModeModel.prototype = {
                 scale = this._fitScale;
             } else {
                 scale = 1;
-                while (this._availableSize.width < screenWidth * scale || (!screenHeight && this._availableSize.height < screenHeight * scale))
+                while (this._availableSize.width < screenWidth * scale || (screenHeight && this._availableSize.height < screenHeight * scale))
                     scale *= 0.8;
             }
         }

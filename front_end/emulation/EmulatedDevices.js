@@ -475,6 +475,11 @@ WebInspector.EmulatedDevicesList.prototype = {
         return this._custom;
     },
 
+    revealCustomSetting: function()
+    {
+        WebInspector.Revealer.reveal(this._customSetting);
+    },
+
     /**
      * @param {!WebInspector.EmulatedDevice} device
      */

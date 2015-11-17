@@ -284,7 +284,13 @@ select.toolbar-item {
 }
 
 .emulation-toolbar-item .glyph {
+    -webkit-mask-position: -288px -144px;
+}
+
+@media (-webkit-min-device-pixel-ratio: 1.5) {
+.emulation-toolbar-item .glyph {
     -webkit-mask-position: -160px 0;
+}
 }
 
 .emulation-toolbar-item.warning::after {
@@ -551,7 +557,13 @@ button.playback-rate-button {
 }
 
 .desktop-toolbar-item .glyph {
+    -webkit-mask-position: -256px -144px;
+}
+
+@media (-webkit-min-device-pixel-ratio: 1.5) {
+.desktop-toolbar-item .glyph {
     -webkit-mask-position: -160px -144px;
+}
 }
 
 .rotate-screen-toolbar-item .glyph {

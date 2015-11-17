@@ -165,7 +165,7 @@ WebInspector.DeviceModeView.prototype = {
         this._loadScreenImage(this._model.screenImage());
         if (resizePagePlaceholder)
             this._inspectedPagePlaceholder.onResize();
-        this._mediaInspector.setAxisTransform(-cssScreenRect.left, this._model.fitScale());
+        this._mediaInspector.setAxisTransform(-cssScreenRect.left / this._model.fitScale(), this._model.fitScale());
     },
 
     /**
@@ -404,12 +404,20 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
         {
             select.removeChildren();
 
-            addOption.call(this, select, WebInspector.DeviceModeModel.Type.Mobile, null, WebInspector.UIString("Responsive"));
+            var defaultGroup = select.createChild("optgroup");
+            defaultGroup.label = WebInspector.UIString("Default");
+            addOption.call(this, defaultGroup, WebInspector.DeviceModeModel.Type.Mobile, null, WebInspector.UIString("Responsive"));
 
-            var group = select.createChild("optgroup");
-            group.label = WebInspector.UIString("Devices");
-            addGroup.call(this, group, WebInspector.emulatedDevicesList.custom());
-            addGroup.call(this, group, WebInspector.emulatedDevicesList.standard());
+            var devicesGroup = select.createChild("optgroup");
+            devicesGroup.label = WebInspector.UIString("Devices");
+            addGroup.call(this, devicesGroup, WebInspector.emulatedDevicesList.standard());
+
+            var customGroup = select.createChild("optgroup");
+            customGroup.label = WebInspector.UIString("Custom");
+            addGroup.call(this, customGroup, WebInspector.emulatedDevicesList.custom());
+            var editCustomOption = new Option(WebInspector.UIString("Edit\u2026"), WebInspector.UIString("Edit\u2026"));
+            editCustomOption.edit = true;
+            customGroup.appendChild(editCustomOption);
         }
 
         /**
@@ -448,7 +456,21 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
          */
         function optionSelected()
         {
-            this._emulateDeviceSelectOption(select.options[select.selectedIndex]);
+            var option = select.options[select.selectedIndex];
+            if (option.edit) {
+                WebInspector.emulatedDevicesList.revealCustomSetting();
+                this._updateDeviceSelectedIndex();
+            } else {
+                this._emulateDeviceSelectOption(option);
+            }
+        }
+    },
+
+    _updateDeviceSelectedIndex: function()
+    {
+        for (var i = 0; i < this._deviceSelect.options.length; ++i) {
+            if (this._deviceSelect.options[i].device === this._model.device())
+                this._deviceSelect.selectedIndex = i;
         }
     },
 
@@ -596,11 +618,7 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
 
             var modeCount = device ? device.modes.length : 0;
             this._modeToolbar.element.classList.toggle("hidden", modeCount < 2);
-
-            for (var i = 0; i < this._deviceSelect.options.length; ++i) {
-                if (this._deviceSelect.options[i].device === this._model.device())
-                    this._deviceSelect.selectedIndex = i;
-            }
+            this._updateDeviceSelectedIndex();
 
             this._cachedModelDevice = device;
         }

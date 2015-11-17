@@ -3,8 +3,8 @@
         {
             "type": "emulated-device",
             "device": {
-                "show-by-default": true,
-                "title": "Apple iPhone 4" ,
+                "show-by-default": false,
+                "title": "iPhone 4" ,
                 "screen": {
                     "horizontal": {
                         "width": 480,
@@ -40,7 +40,7 @@
             "type": "emulated-device",
             "device": {
                 "show-by-default": true,
-                "title": "Apple iPhone 5",
+                "title": "iPhone 5",
                 "screen": {
                     "horizontal": {
                         "width": 568,
@@ -76,7 +76,7 @@
             "type": "emulated-device",
             "device": {
                 "show-by-default": true,
-                "title": "Apple iPhone 6",
+                "title": "iPhone 6",
                 "screen": {
                     "horizontal": {
                         "width": 667,
@@ -98,42 +98,12 @@
                     {
                         "title": "default",
                         "orientation": "vertical",
-                        "insets": { "left": 0, "top": 40, "right": 0, "bottom": 0 }
-                    },
-                    {
-                        "title": "navigation bar",
-                        "orientation": "vertical",
-                        "insets": { "left": 0, "top": 64, "right": 0, "bottom": 45 }
-                    },
-                    {
-                        "title": "keyboard",
-                        "orientation": "vertical",
-                        "insets": { "left": 0, "top": 40, "right": 0, "bottom": 260 }
-                    },
-                    {
-                        "title": "navigation bar and keyboard",
-                        "orientation": "vertical",
-                        "insets": { "left": 0, "top": 64, "right": 0, "bottom": 260 }
+                        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
                     },
                     {
                         "title": "default",
                         "orientation": "horizontal",
                         "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
-                    },
-                    {
-                        "title": "navigation bar",
-                        "orientation": "horizontal",
-                        "insets": { "left": 0, "top": 44, "right": 0, "bottom": 0 }
-                    },
-                    {
-                        "title": "keyboard",
-                        "orientation": "horizontal",
-                        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 206 }
-                    },
-                    {
-                        "title": "navigation bar and keyboard",
-                        "orientation": "horizontal",
-                        "insets": { "left": 0, "top": 44, "right": 0, "bottom": 206 }
                     }
                 ]
             }
@@ -142,7 +112,7 @@
             "type": "emulated-device",
             "device": {
                 "show-by-default": true,
-                "title": "Apple iPhone 6 Plus",
+                "title": "iPhone 6 Plus",
                 "screen": {
                     "horizontal": {
                         "width": 736,
@@ -177,7 +147,7 @@
         {
             "type": "emulated-device",
             "device": {
-                "show-by-default": true,
+                "show-by-default": false,
                 "title": "BlackBerry Z30",
                 "screen": {
                     "horizontal": {
@@ -213,8 +183,8 @@
         {
             "type": "emulated-device",
             "device": {
-                "show-by-default": true,
-                "title": "Google Nexus 4",
+                "show-by-default": false,
+                "title": "Nexus 4",
                 "screen": {
                     "horizontal": {
                         "width": 640,
@@ -236,32 +206,12 @@
                     {
                         "title": "default",
                         "orientation": "vertical",
-                        "insets": { "left": 0, "top": 25, "right": 0, "bottom": 48 }
-                    },
-                    {
-                        "title": "navigation bar",
-                        "orientation": "vertical",
-                        "insets": { "left": 0, "top": 80, "right": 0, "bottom": 48 }
-                    },
-                    {
-                        "title": "keyboard",
-                        "orientation": "vertical",
-                        "insets": { "left": 0, "top": 80, "right": 0, "bottom": 326 }
+                        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
                     },
                     {
                         "title": "default",
                         "orientation": "horizontal",
-                        "insets": { "left": 0, "top": 25, "right": 42, "bottom": 0 }
-                    },
-                    {
-                        "title": "navigation bar",
-                        "orientation": "horizontal",
-                        "insets": { "left": 0, "top": 80, "right": 42, "bottom": 0 }
-                    },
-                    {
-                        "title": "keyboard",
-                        "orientation": "horizontal",
-                        "insets": { "left": 0, "top": 80, "right": 42, "bottom": 214 }
+                        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
                     }
                 ]
             }
@@ -269,7 +219,7 @@
         {
             "type": "emulated-device",
             "device": {
-                "title": "Google Nexus 5",
+                "title": "Nexus 5",
                 "type": "phone",
                 "user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.76 Mobile Safari/537.36",
                 "capabilities": [
@@ -331,14 +281,14 @@
         {
             "type": "emulated-device",
             "device": {
-                "title": "Google Nexus 5X",
+                "title": "Nexus 5X",
                 "type": "phone",
                 "user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.76 Mobile Safari/537.36",
                 "capabilities": [
                     "touch",
                     "mobile"
                 ],
-                "show-by-default": true,
+                "show-by-default": false,
                 "screen": {
                     "device-pixel-ratio": 2.6,
                     "vertical": {
@@ -354,38 +304,12 @@
                     {
                         "title": "default",
                         "orientation": "vertical",
-                        "insets": { "left": 0, "top": 25, "right": 0, "bottom": 48 },
-                        "image": "@url(google-nexus-5-vertical-default-1x.png) 1x, @url(google-nexus-5-vertical-default-2x.png) 2x"
-                    },
-                    {
-                        "title": "navigation bar",
-                        "orientation": "vertical",
-                        "insets": { "left": 0, "top": 80, "right": 0, "bottom": 48 },
-                        "image": "@url(google-nexus-5-vertical-navigation-1x.png) 1x, @url(google-nexus-5-vertical-navigation-2x.png) 2x"
-                    },
-                    {
-                        "title": "keyboard",
-                        "orientation": "vertical",
-                        "insets": { "left": 0, "top": 80, "right": 0, "bottom": 312 },
-                        "image": "@url(google-nexus-5-vertical-keyboard-1x.png) 1x, @url(google-nexus-5-vertical-keyboard-2x.png) 2x"
+                        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
                     },
                     {
                         "title": "default",
                         "orientation": "horizontal",
-                        "insets": { "left": 0, "top": 25, "right": 42, "bottom": 0 },
-                        "image": "@url(google-nexus-5-horizontal-default-1x.png) 1x, @url(google-nexus-5-horizontal-default-2x.png) 2x"
-                    },
-                    {
-                        "title": "navigation bar",
-                        "orientation": "horizontal",
-                        "insets": { "left": 0, "top": 80, "right": 42, "bottom": 0 },
-                        "image": "@url(google-nexus-5-horizontal-navigation-1x.png) 1x, @url(google-nexus-5-horizontal-navigation-2x.png) 2x"
-                    },
-                    {
-                        "title": "keyboard",
-                        "orientation": "horizontal",
-                        "insets": { "left": 0, "top": 80, "right": 42, "bottom": 202 },
-                        "image": "@url(google-nexus-5-horizontal-keyboard-1x.png) 1x, @url(google-nexus-5-horizontal-keyboard-2x.png) 2x"
+                        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
                     }
                 ]
             }
@@ -393,8 +317,8 @@
         {
             "type": "emulated-device",
             "device": {
-                "show-by-default": true,
-                "title": "Google Nexus 6",
+                "show-by-default": false,
+                "title": "Nexus 6",
                 "screen": {
                     "horizontal": {
                         "width": 732,
@@ -416,32 +340,12 @@
                     {
                         "title": "default",
                         "orientation": "vertical",
-                        "insets": { "left": 0, "top": 25, "right": 0, "bottom": 48 }
-                    },
-                    {
-                        "title": "navigation bar",
-                        "orientation": "vertical",
-                        "insets": { "left": 0, "top": 80, "right": 0, "bottom": 48 }
-                    },
-                    {
-                        "title": "keyboard",
-                        "orientation": "vertical",
-                        "insets": { "left": 0, "top": 80, "right": 0, "bottom": 343 }
+                        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
                     },
                     {
                         "title": "default",
                         "orientation": "horizontal",
-                        "insets": { "left": 0, "top": 25, "right": 42, "bottom": 0 }
-                    },
-                    {
-                        "title": "navigation bar",
-                        "orientation": "horizontal",
-                        "insets": { "left": 0, "top": 80, "right": 42, "bottom": 0 }
-                    },
-                    {
-                        "title": "keyboard",
-                        "orientation": "horizontal",
-                        "insets": { "left": 0, "top": 80, "right": 42, "bottom": 222 }
+                        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
                     }
                 ]
             }
@@ -449,8 +353,8 @@
         {
             "type": "emulated-device",
             "device": {
-                "show-by-default": true,
-                "title": "Google Nexus 6P",
+                "show-by-default": false,
+                "title": "Nexus 6P",
                 "screen": {
                     "horizontal": {
                         "width": 773,
@@ -472,32 +376,12 @@
                     {
                         "title": "default",
                         "orientation": "vertical",
-                        "insets": { "left": 0, "top": 25, "right": 0, "bottom": 48 }
-                    },
-                    {
-                        "title": "navigation bar",
-                        "orientation": "vertical",
-                        "insets": { "left": 0, "top": 80, "right": 0, "bottom": 48 }
-                    },
-                    {
-                        "title": "keyboard",
-                        "orientation": "vertical",
-                        "insets": { "left": 0, "top": 80, "right": 0, "bottom": 343 }
+                        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
                     },
                     {
                         "title": "default",
                         "orientation": "horizontal",
-                        "insets": { "left": 0, "top": 25, "right": 42, "bottom": 0 }
-                    },
-                    {
-                        "title": "navigation bar",
-                        "orientation": "horizontal",
-                        "insets": { "left": 0, "top": 80, "right": 42, "bottom": 0 }
-                    },
-                    {
-                        "title": "keyboard",
-                        "orientation": "horizontal",
-                        "insets": { "left": 0, "top": 80, "right": 42, "bottom": 222 }
+                        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
                     }
                 ]
             }
@@ -505,7 +389,7 @@
         {
             "type": "emulated-device",
             "device": {
-                "show-by-default": true,
+                "show-by-default": false,
                 "title": "LG Optimus L70",
                 "screen": {
                     "horizontal": {
@@ -541,7 +425,7 @@
         {
             "type": "emulated-device",
             "device": {
-                "show-by-default": true,
+                "show-by-default": false,
                 "title": "Nokia N9",
                 "screen": {
                     "horizontal": {
@@ -577,7 +461,7 @@
         {
             "type": "emulated-device",
             "device": {
-                "show-by-default": true,
+                "show-by-default": false,
                 "title": "Nokia Lumia 520",
                 "screen": {
                     "horizontal": {
@@ -613,8 +497,8 @@
         {
             "type": "emulated-device",
             "device": {
-                "show-by-default": true,
-                "title": "Samsung Galaxy S III",
+                "show-by-default": false,
+                "title": "Galaxy S III",
                 "screen": {
                     "horizontal": {
                         "width": 640,
@@ -650,7 +534,7 @@
             "type": "emulated-device",
             "device": {
                 "show-by-default": true,
-                "title": "Samsung Galaxy S4",
+                "title": "Galaxy S5",
                 "screen": {
                     "horizontal": {
                         "width": 640,
@@ -666,7 +550,7 @@
                     "touch",
                     "mobile"
                 ],
-                "user-agent": "Mozilla/5.0 (Linux; Android 4.2.2; GT-I9505 Build/JDQ39) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.76 Mobile Safari/537.36",
+                "user-agent": "Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.76 Mobile Safari/537.36",
                 "type": "phone",
                 "modes": [
                     {
@@ -685,8 +569,8 @@
         {
             "type": "emulated-device",
             "device": {
-                "show-by-default": true,
-                "title": "Amazon Kindle Fire HDX",
+                "show-by-default": false,
+                "title": "Kindle Fire HDX",
                 "screen": {
                     "horizontal": {
                         "width": 2560,
@@ -721,8 +605,8 @@
         {
             "type": "emulated-device",
             "device": {
-                "show-by-default": true,
-                "title": "Apple iPad Mini",
+                "show-by-default": false,
+                "title": "iPad Mini",
                 "screen": {
                     "horizontal": {
                         "width": 1024,
@@ -757,8 +641,8 @@
         {
             "type": "emulated-device",
             "device": {
-                "show-by-default": true,
-                "title": "Apple iPad",
+                "show-by-default": false,
+                "title": "iPad",
                 "screen": {
                     "horizontal": {
                         "width": 1024,
@@ -793,8 +677,8 @@
         {
             "type": "emulated-device",
             "device": {
-                "show-by-default": true,
-                "title": "BlackBerry PlayBook",
+                "show-by-default": false,
+                "title": "PlayBook",
                 "screen": {
                     "horizontal": {
                         "width": 1024,
@@ -829,8 +713,8 @@
         {
             "type": "emulated-device",
             "device": {
-                "show-by-default": true,
-                "title": "Google Nexus 10",
+                "show-by-default": false,
+                "title": "Nexus 10",
                 "screen": {
                     "horizontal": {
                         "width": 1280,
@@ -865,8 +749,8 @@
         {
             "type": "emulated-device",
             "device": {
-                "show-by-default": true,
-                "title": "Google Nexus 7",
+                "show-by-default": false,
+                "title": "Nexus 7",
                 "screen": {
                     "horizontal": {
                         "width": 960,
@@ -902,7 +786,7 @@
             "type": "emulated-device",
             "device": {
                 "show-by-default": true,
-                "title": "Samsung Galaxy Note 3",
+                "title": "Galaxy Note 3",
                 "screen": {
                     "horizontal": {
                         "width": 640,
@@ -937,8 +821,8 @@
         {
             "type": "emulated-device",
             "device": {
-                "show-by-default": true,
-                "title": "Samsung Galaxy Note II",
+                "show-by-default": false,
+                "title": "Galaxy Note II",
                 "screen": {
                     "horizontal": {
                         "width": 640,
@@ -973,7 +857,7 @@
         {
             "type": "emulated-device",
             "device": {
-                "show-by-default": true,
+                "show-by-default": false,
                 "title": "Laptop with touch",
                 "screen": {
                     "horizontal": {
@@ -1003,7 +887,7 @@
         {
             "type": "emulated-device",
             "device": {
-                "show-by-default": true,
+                "show-by-default": false,
                 "title": "Laptop with HiDPI screen",
                 "screen": {
                     "horizontal": {
@@ -1031,7 +915,7 @@
         {
             "type": "emulated-device",
             "device": {
-                "show-by-default": true,
+                "show-by-default": false,
                 "title": "Laptop with MDPI screen",
                 "screen": {
                     "horizontal": {

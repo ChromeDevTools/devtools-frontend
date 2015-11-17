@@ -42,6 +42,7 @@
     flex: auto;
     position: relative;
     margin: 0;
+    overflow: hidden;
 }
 
 .device-mode-screen-area {

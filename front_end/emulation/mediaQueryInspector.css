@@ -18,16 +18,17 @@
     bottom: 1px;
     white-space: nowrap;
     border-radius: 2px;
+    -webkit-filter: brightness(130%);
 }
 
-.media-inspector-marker-inactive {
-    -webkit-filter: brightness(80%);
+.media-inspector-marker.media-inspector-marker-inactive {
+    -webkit-filter: brightness(100%);
 }
 
 .media-inspector-marker:hover {
     top: -1px;
     bottom: -1px;
-    -webkit-filter: brightness(115%) !important;
+    -webkit-filter: brightness(130%) !important;
 }
 
 .media-inspector-marker-max-width {
@@ -48,9 +49,9 @@
 }
 
 .media-inspector-marker-min-width {
-    background: linear-gradient(to right, rgba(255, 255, 255, 0.27), rgba(0,0,0,0) 30px), linear-gradient(to bottom, rgb(222, 129, 30), rgb(204, 104, 31));
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.27), rgba(0,0,0,0) 30px), linear-gradient(to bottom, hsl(31, 100%, 50%), hsl(25, 100%, 50%));
     border-radius: 2px 0 0 2px;
-    border-left: 2px solid rgb(255, 181, 142);
+    border-left: 2px solid hsl(21, 100%, 79%);
 }
 
 /* Media query labels */
@@ -72,12 +73,11 @@
 }
 
 .media-inspector-marker-label {
-    color: #eee;
+    color: #222;
     position: absolute;
     top: 1px;
     bottom: 0;
-    font-size: 10px;
-    text-shadow: rgba(0, 0, 0, 0.6) 1px 1px;
+    font-size: 12px;
     pointer-events: none;
 }
 

@@ -168,6 +168,7 @@ WebInspector.Main.prototype = {
         }
 
         Runtime.experiments.setDefaultExperiments([
+            "deviceMode",
             "securityPanel"
         ]);
     },

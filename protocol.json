@@ -443,15 +443,6 @@
                 "handlers": ["browser"]
             },
             {
-                "name": "setShowViewportSizeOnResize",
-                "description": "Paints viewport size upon main frame resize.",
-                "parameters": [
-                    { "name": "show", "type": "boolean", "description": "Whether to paint size or not." },
-                    { "name": "showGrid", "type": "boolean", "optional": true, "description": "Whether to paint grid as well." }
-                ],
-                "hidden": true
-            },
-            {
                 "name": "setColorPickerEnabled",
                 "parameters": [
                     { "name": "enabled", "type": "boolean", "description": "Shows / hides color picker" }

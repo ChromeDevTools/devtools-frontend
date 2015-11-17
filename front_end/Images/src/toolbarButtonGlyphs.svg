@@ -21,9 +21,9 @@
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><sodipodi:namedview
      showgrid="true"
      id="namedview3397"
-     inkscape:zoom="32"
-     inkscape:cx="221.62302"
-     inkscape:cy="18.923966"
+     inkscape:zoom="5.6568543"
+     inkscape:cx="252.34011"
+     inkscape:cy="35.78127"
      inkscape:window-width="1920"
      inkscape:window-height="1122"
      inkscape:window-x="0"
@@ -1072,4 +1072,13 @@
      id="path3055" /><path
      inkscape:connector-curvature="0"
      d="m 237,153 0,3 1,0 0,-1.27999 3.28,3.27999 -1.28,0 0,1 3,0 0,-3 -1,0 0,1.31 -3.30999,-3.31 1.30999,0 0,-1 z"
-     id="path3057" /></svg>
+     id="path3057" /><path
+     inkscape:connector-curvature="0"
+     d="m 278.72728,148 -13.45456,0 c -0.7,0 -1.27272,0.63 -1.27272,1.4 l 0,10.4 c 0,0.77 0.57272,1.2 1.27272,1.2 l 4.72739,0 0,2 -1.99977,0 -4.6e-4,2 8.00012,0 0,-2 -2,0 0,-2 4.72728,0 c 0.7,0 1.27272,-0.43 1.27272,-1.2 l 0,-10.4 c 0,-0.77 -0.57272,-1.4 -1.27272,-1.4 z M 278,159 l -12,0 0,-9 12,0 z"
+     id="path6-2-6"
+     sodipodi:nodetypes="sssssccccccccssssccccc" /><path
+     inkscape:connector-curvature="0"
+     d="M 307.42857,148.007 299.57143,148 C 298.70715,148 298,148.65455 298,149.45455 l 0,13.09091 c 0,0.8 0.70715,1.45454 1.57143,1.45454 l 7.85714,0 C 308.29285,164 309,163.34546 309,162.54546 l 0,-13.09091 c 0,-0.8 -0.70715,-1.44728 -1.57143,-1.44728 l 0,0 z M 307,160.99968 l -7,0 0,-10 7,0 z"
+     id="device-mode-4"
+     sketch:type="MSShapeGroup"
+     sodipodi:nodetypes="ccsssssscccccccc" /></svg>

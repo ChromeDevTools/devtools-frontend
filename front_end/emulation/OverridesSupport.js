@@ -748,7 +748,6 @@ WebInspector.OverridesSupport.prototype = {
     {
         var showRulersValue = WebInspector.moduleSetting("showMetricsRulers").get();
         for (var target of WebInspector.targetManager.targets(WebInspector.Target.Type.Page)) {
-            target.pageAgent().setShowViewportSizeOnResize(!this._pageResizerActive(), showRulersValue);
             var domModel = WebInspector.DOMModel.fromTarget(target);
             if (domModel)
                 domModel.setHighlightSettings(showRulersValue && !this._pageResizerActive(), showRulersValue);

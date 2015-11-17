@@ -5199,7 +5199,7 @@
             },
             { "id": "AXValueNativeSourceType",
               "type": "string",
-              "enum": [ "figcaption", "label", "labelfor", "labelwrapped", "legend", "tablecaption", "other" ],
+              "enum": [ "figcaption", "label", "labelfor", "labelwrapped", "legend", "tablecaption", "title", "other" ],
               "description": "Enum of possible native property sources (as a subtype of a particular AXValueSourceType)."
             },
             {
@@ -5286,7 +5286,6 @@
                     { "name": "name", "$ref": "AXValue", "description": "The accessible name for this <code>Node</code>.", "optional": true },
                     { "name": "description", "$ref": "AXValue", "description": "The accessible description for this <code>Node</code>.", "optional": true },
                     { "name": "value", "$ref": "AXValue", "description": "The value for this <code>Node</code>.", "optional": true },
-                    { "name": "help", "$ref": "AXValue", "description": "Help.", "optional": true },
                     { "name": "properties", "type": "array", "items": { "$ref": "AXProperty" }, "description": "All other properties", "optional": true }
                 ],
                 "description": "A node in the accessibility tree."

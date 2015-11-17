@@ -111,7 +111,6 @@ WebInspector.Main.prototype = {
         Runtime.experiments.register("emptySourceMapAutoStepping", "Empty sourcemap auto-stepping");
         Runtime.experiments.register("fileSystemInspection", "FileSystem inspection");
         Runtime.experiments.register("gpuTimeline", "GPU data on timeline", true);
-        Runtime.experiments.register("inspectDevicesDialog", "Inspect devices dialog", true);
         Runtime.experiments.register("inputEventsOnTimelineOverview", "Input events on Timeline overview", true);
         Runtime.experiments.register("layersPanel", "Layers panel");
         Runtime.experiments.register("layoutEditor", "Layout editor", true);
@@ -758,28 +757,6 @@ WebInspector.Main.SearchActionDelegate.prototype = {
             return searchableView.handleFindPreviousShortcut();
         }
         return false;
-    }
-}
-
-/**
- * @constructor
- * @implements {WebInspector.ActionDelegate}
- */
-WebInspector.Main.InspectDevicesActionDelegate = function()
-{
-}
-
-WebInspector.Main.InspectDevicesActionDelegate.prototype = {
-    /**
-     * @override
-     * @param {!WebInspector.Context} context
-     * @param {string} actionId
-     * @return {boolean}
-     */
-    handleAction: function(context, actionId)
-    {
-        InspectorFrontendHost.openInNewTab("chrome://inspect#devices");
-        return true;
     }
 }
 

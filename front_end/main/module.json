@@ -177,13 +177,6 @@
         },
         {
             "type": "@WebInspector.ActionDelegate",
-            "actionId": "main.inspect-devices",
-            "title": "Inspect devices\u2026",
-            "className": "WebInspector.Main.InspectDevicesActionDelegate",
-            "experiment": "!inspectDevicesDialog"
-        },
-        {
-            "type": "@WebInspector.ActionDelegate",
             "actionId": "main.show-rendering-options",
             "title": "Rendering settings",
             "className": "WebInspector.RenderingOptionsView.ShowActionDelegate"
@@ -290,13 +283,6 @@
             "type": "@WebInspector.SettingUI",
             "category": "Extensions",
             "className": "WebInspector.HandlerRegistry.OpenAnchorLocationSettingUI"
-        },
-        {
-            "type": "context-menu-item",
-            "location": "mainMenu/tools/open",
-            "order": 50,
-            "actionId": "main.inspect-devices",
-            "experiment": "!inspectDevicesDialog"
         },
         {
             "type": "context-menu-item",

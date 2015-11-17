@@ -14,7 +14,6 @@
         }
     ],
     "dependencies": ["platform", "ui", "host", "components"],
-    "experiment": "inspectDevicesDialog",
     "scripts": [
         "DevicesView.js",
         "DevicesDialog.js"

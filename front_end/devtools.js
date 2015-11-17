@@ -123,6 +123,14 @@ DevToolsAPIImpl.prototype = {
     },
 
     /**
+     * @param {!Adb.PortForwardingStatus} status
+     */
+    devicesPortForwardingStatusChanged: function(status)
+    {
+        this._dispatchOnInspectorFrontendAPI("devicesPortForwardingStatusChanged", [status]);
+    },
+
+    /**
      * @param {!Array.<!Adb.Device>} devices
      */
     devicesUpdated: function(devices)

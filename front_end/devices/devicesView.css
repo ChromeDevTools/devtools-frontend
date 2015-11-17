@@ -66,6 +66,7 @@
 
 .view-title {
     font-size: 16px;
+    flex: none;
 }
 
 .devices-footer {
@@ -81,6 +82,7 @@
 
 .usb-checkbox {
     padding-bottom: 8px;
+    margin-top: 20px;
 }
 
 .port-forwarding-header {
@@ -186,18 +188,20 @@
 
 .device-text-row {
     align-items: baseline;
-    margin-bottom: 20px;
+    margin-right: 25px;
 }
 
 .device-serial {
     color: #777;
     margin-left: 5px;
+    flex: none;
 }
 
 .device-browser-list {
     flex: auto;
     overflow: auto;
     padding-right: 10px;
+    margin-top: 20px;
 }
 
 .device-browser-list > div {
@@ -282,4 +286,41 @@
 
 .device-view-more.device-needs-view-more  {
     display: block;
+}
+
+.device-port-status {
+    overflow: hidden;
+    flex: none;
+    display: flex;
+    align-items: baseline;
+    margin: 10px 0 0 10px;
+}
+
+.device-port-status-text {
+    margin-right: 10px;
+}
+
+.device-view-port-icon {
+    background-color: green;
+    border: 0 solid transparent;
+    border-radius: 6px;
+    height: 12px;
+    width: 12px;
+    position: relative;
+    top: 2px;
+    flex: none;
+}
+
+.device-view-port-number {
+    margin: 0 10px 0 2px;
+    flex: none;
+}
+
+.device-view-port-icon.device-view-port-icon-error {
+    background-color: red;
+}
+
+.device-view-port-icon.device-view-port-icon-transient {
+    transform: scale(1.2);
+    background-color: orange;
 }

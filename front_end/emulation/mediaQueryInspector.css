@@ -17,31 +17,31 @@
     top: 1px;
     bottom: 1px;
     white-space: nowrap;
-    border-radius: 2px;
-    -webkit-filter: brightness(130%);
-}
-
-.media-inspector-marker.media-inspector-marker-inactive {
-    -webkit-filter: brightness(100%);
 }
 
 .media-inspector-marker:hover {
     top: -1px;
     bottom: -1px;
-    -webkit-filter: brightness(130%) !important;
+    opacity: 1;
 }
 
 .media-inspector-marker-max-width {
-    background: linear-gradient(to left, rgba(255, 255, 255, 0.27), rgba(0,0,0,0) 30px), linear-gradient(to bottom, rgb(72, 139, 249), rgb(26, 113, 233));
-    border-radius: 0 2px 2px 0;
-    border-right: 2px solid rgb(171, 207, 255);
+    background-color: hsl(207, 90%, 77%);
+    border-right: 2px solid hsl(207, 90%, 61%);
+}
+
+.media-inspector-marker-max-width.media-inspector-marker-inactive:not(:hover) {
+    background-color: hsl(199, 94%, 94%);
 }
 
 .media-inspector-marker-min-max-width {
-    background: linear-gradient(to right, rgba(255, 255, 255, 0.27), rgba(0,0,0,0) 30px), linear-gradient(to left, rgba(255, 255, 255, 0.27), rgba(0,0,0,0) 30px), linear-gradient(to bottom, rgb(112, 174, 7), rgb(3, 131, 0));
-    border-radius: 2px;
-    border-left: 2px solid rgb(80, 226, 40);
-    border-right: 2px solid rgb(80, 226, 40);
+    background-color: hsl(88, 50%, 76%);
+    border-left: 2px solid #689F38;
+    border-right: 2px solid hsl(92, 48%, 42%);
+}
+
+.media-inspector-marker-min-max-width.media-inspector-marker-inactive:not(:hover) {
+    background-color: hsl(125, 39%, 94%);
 }
 
 .media-inspector-marker-min-max-width:hover {
@@ -49,9 +49,12 @@
 }
 
 .media-inspector-marker-min-width {
-    background: linear-gradient(to right, rgba(255, 255, 255, 0.27), rgba(0,0,0,0) 30px), linear-gradient(to bottom, hsl(31, 100%, 50%), hsl(25, 100%, 50%));
-    border-radius: 2px 0 0 2px;
-    border-left: 2px solid hsl(21, 100%, 79%);
+    background-color: hsl(36, 100%, 75%);
+    border-left: 2px solid hsl(30, 100%, 48%);
+}
+
+.media-inspector-marker-min-width.media-inspector-marker-inactive:not(:hover) {
+    background-color: hsl(37, 100%, 94%);
 }
 
 /* Media query labels */

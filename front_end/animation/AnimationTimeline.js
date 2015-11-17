@@ -31,7 +31,6 @@ WebInspector.AnimationTimeline = function()
     this._symbol = Symbol("animationTimeline");
     /** @type {!Map.<string, !WebInspector.AnimationModel.Animation>} */
     this._animationsMap = new Map();
-    WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._mainFrameNavigated, this);
     WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
 
     WebInspector.targetManager.observeTargets(this, WebInspector.Target.Type.Page);
@@ -60,6 +59,8 @@ WebInspector.AnimationTimeline.prototype = {
     {
         if (this.isShowing())
             this._addEventListeners(target);
+        if (target === WebInspector.targetManager.mainTarget())
+            target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._mainFrameNavigated, this);
     },
 
     /**

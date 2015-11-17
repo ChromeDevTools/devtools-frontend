@@ -58,12 +58,13 @@ WebInspector.ObjectPopoverHelper.prototype = {
         /**
          * @param {!WebInspector.RemoteObject} funcObject
          * @param {!Element} popoverContentElement
+         * @param {!Element} popoverValueElement
          * @param {!Element} anchorElement
          * @param {?Array.<!WebInspector.RemoteObjectProperty>} properties
          * @param {?Array.<!WebInspector.RemoteObjectProperty>} internalProperties
          * @this {WebInspector.ObjectPopoverHelper}
          */
-        function didGetFunctionProperties(funcObject, popoverContentElement, anchorElement, properties, internalProperties)
+        function didGetFunctionProperties(funcObject, popoverContentElement, popoverValueElement, anchorElement, properties, internalProperties)
         {
             if (internalProperties) {
                 for (var i = 0; i < internalProperties.length; i++) {
@@ -73,6 +74,7 @@ WebInspector.ObjectPopoverHelper.prototype = {
                     }
                 }
             }
+            WebInspector.ObjectPropertiesSection.formatObjectAsFunction(funcObject, popoverValueElement, true);
             funcObject.functionDetails(didGetFunctionDetails.bind(this, popoverContentElement, anchorElement));
         }
 
@@ -146,13 +148,11 @@ WebInspector.ObjectPopoverHelper.prototype = {
 
                 if (result.type === "string")
                     valueElement.createTextChildren("\"", description, "\"");
-                else if (result.type === "function")
-                    WebInspector.ObjectPropertiesSection.formatObjectAsFunction(result, valueElement, true);
-                else
+                else if (result.type !== "function")
                     valueElement.textContent = description;
 
                 if (result.type === "function") {
-                    result.getOwnProperties(didGetFunctionProperties.bind(this, result, popoverContentElement, anchorElement));
+                    result.getOwnProperties(didGetFunctionProperties.bind(this, result, popoverContentElement, valueElement, anchorElement));
                     return;
                 }
                 popover.showForAnchor(popoverContentElement, anchorElement);

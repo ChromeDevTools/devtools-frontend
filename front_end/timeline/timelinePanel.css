@@ -81,8 +81,17 @@
     background-color: rgb(255, 255, 255);
 }
 
+#timeline-overview-grid .timeline-grid-header {
+    height: 12px;
+}
+
 #timeline-overview-grid .resources-dividers-label-bar {
     pointer-events: auto;
+    height: 12px;
+}
+
+#timeline-overview-grid .resources-divider-label {
+    top: 1px;
 }
 
 #timeline-container {
@@ -279,22 +288,25 @@
 }
 
 #timeline-overview-panel .overview-strip .timeline-overview-strip-placeholder {
-    color: #ccc;
-    font-size: 11px;
+    color: #666;
+    font-size: 10px;
     font-weight: bold;
-    text-transform: uppercase;
-    z-index: -100;
-    margin-left: 10px;
+    z-index: 100;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 1px 4px;
+    position: absolute;
+    top: 0px;
+    right: 0;
 }
 
-#timeline-overview-network {
+#timeline-overview-cpu-activity {
     flex-basis: 25px;
 }
 
-#timeline-overview-cpu-activity,
+#timeline-overview-network,
 #timeline-overview-framerate,
 #timeline-overview-memory {
-    flex-basis: 21px;
+    flex-basis: 20px;
 }
 
 #timeline-overview-filmstrip {
@@ -320,16 +332,8 @@
     display: none;
 }
 
-#timeline-overview-cpu-activity::before {
-    content: "100%";
-}
-
 #timeline-overview-cpu-activity .background {
     z-index: -10;
-}
-
-#timeline-overview-framerate::before {
-    content: "60 fps";
 }
 
 #timeline-overview-responsiveness {
@@ -499,7 +503,7 @@
 }
 
 .timeline .resources-event-divider {
-    height: 19px;
+    height: 20px;
     width: 6px;
     pointer-events: auto;
     margin-left: -2px;

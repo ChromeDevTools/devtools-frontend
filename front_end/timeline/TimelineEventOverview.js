@@ -48,17 +48,6 @@ WebInspector.TimelineEventOverview = function(id, title, model)
 }
 
 WebInspector.TimelineEventOverview.prototype = {
-
-    /**
-     * @override
-     */
-    update: function()
-    {
-        WebInspector.TimelineOverviewBase.prototype.update.call(this);
-        if (this._placeholder)
-            this._placeholder.classList.toggle("hidden", !this._model.isEmpty());
-    },
-
     /**
      * @param {number} begin
      * @param {number} end
@@ -171,7 +160,7 @@ WebInspector.TimelineEventOverview.Input.prototype = {
  */
 WebInspector.TimelineEventOverview.Network = function(model)
 {
-    WebInspector.TimelineEventOverview.call(this, "network", WebInspector.UIString("Network"), model);
+    WebInspector.TimelineEventOverview.call(this, "network", WebInspector.UIString("NET"), model);
 }
 
 WebInspector.TimelineEventOverview.Network.prototype = {
@@ -639,7 +628,7 @@ WebInspector.TimelineFilmStripOverview.prototype = {
  */
 WebInspector.TimelineEventOverview.Frames = function(model, frameModel)
 {
-    WebInspector.TimelineEventOverview.call(this, "framerate", "Framerate", model);
+    WebInspector.TimelineEventOverview.call(this, "framerate", WebInspector.UIString("FPS"), model);
     this._frameModel = frameModel;
 }
 

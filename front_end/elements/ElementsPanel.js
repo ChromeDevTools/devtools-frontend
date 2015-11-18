@@ -1221,12 +1221,12 @@ WebInspector.ElementsPanel.PseudoStateMarkerDecorator.prototype = {
 
 /**
  * @constructor
- * @extends {WebInspector.Widget}
+ * @extends {WebInspector.ThrottledWidget}
  * @param {!WebInspector.ToolbarItem} toolbarItem
  */
 WebInspector.ElementsPanel.BaseToolbarPaneWidget = function(toolbarItem)
 {
-    WebInspector.Widget.call(this);
+    WebInspector.ThrottledWidget.call(this);
     this._toolbarItem = toolbarItem;
     WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this._nodeChanged, this);
 }
@@ -1255,6 +1255,7 @@ WebInspector.ElementsPanel.BaseToolbarPaneWidget.prototype = {
     willHide: function()
     {
         this._toolbarItem.setToggled(false);
+        WebInspector.ThrottledWidget.prototype.willHide.call(this);
     },
 
     /**
@@ -1264,7 +1265,8 @@ WebInspector.ElementsPanel.BaseToolbarPaneWidget.prototype = {
     {
         this._toolbarItem.setToggled(true);
         this._nodeChanged();
+        WebInspector.ThrottledWidget.prototype.wasShown.call(this);
     },
 
-    __proto__: WebInspector.Widget.prototype
+    __proto__: WebInspector.ThrottledWidget.prototype
 }

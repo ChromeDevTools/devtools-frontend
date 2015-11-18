@@ -479,6 +479,7 @@ button.record-toolbar-item.toggled-on .glyph {
 }
 
 :host(.toolbar-gray-toggled) .pin-toolbar-item.toggled-on,
+:host(.toolbar-gray-toggled) .class-toolbar-item.toggled-on,
 :host(.toolbar-gray-toggled) .animation-toolbar-item.toggled-on {
     background-color: #f3f3f3;
 }
@@ -533,6 +534,10 @@ button.record-toolbar-item.toggled-on .glyph {
 
 .regex-search-toolbar-item.toggled-on .toolbar-button-text {
     color: rgb(94, 146, 233);
+}
+
+.class-toolbar-item.toggled-on .toolbar-button-text {
+    color: rgb(66, 129, 235);
 }
 
 .playback-rate-button.toggled-on > .toolbar-button-text {

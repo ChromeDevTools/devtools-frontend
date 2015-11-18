@@ -34,7 +34,6 @@ WebInspector.AnimationControlPane = function(toolbarItem)
 }
 
 WebInspector.AnimationControlPane.prototype = {
-
     /**
      * @param {!Event} event
      */
@@ -56,10 +55,14 @@ WebInspector.AnimationControlPane.prototype = {
     },
 
     /**
-     * @param {!WebInspector.Event=} event
+     * @override
+     * @return {!Promise<?>}
      */
-    _updateAnimationsPlaybackRate: function(event)
+    doUpdate: function()
     {
+        if (!this._target)
+            return Promise.resolve();
+
         /**
          * @param {number} playbackRate
          * @this {WebInspector.AnimationControlPane}
@@ -70,8 +73,7 @@ WebInspector.AnimationControlPane.prototype = {
             this._animationsPlaybackLabel.textContent = playbackRate + "x";
         }
 
-        if (this._target)
-            WebInspector.AnimationModel.fromTarget(this._target).playbackRatePromise().then(setPlaybackRate.bind(this));
+        return WebInspector.AnimationModel.fromTarget(this._target).playbackRatePromise().then(setPlaybackRate.bind(this));
     },
 
     /**
@@ -84,11 +86,11 @@ WebInspector.AnimationControlPane.prototype = {
             return;
 
         if (this._target)
-            this._target.resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._updateAnimationsPlaybackRate, this);
+            this._target.resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this.update, this);
 
         this._target = node.target();
-        this._target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._updateAnimationsPlaybackRate, this);
-        this._updateAnimationsPlaybackRate();
+        this._target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this.update, this);
+        this.update();
     },
 
     __proto__: WebInspector.ElementsPanel.BaseToolbarPaneWidget.prototype

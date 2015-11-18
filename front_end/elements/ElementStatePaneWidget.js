@@ -80,9 +80,7 @@ WebInspector.ElementStatePaneWidget.prototype = {
      */
     _pseudoStateForced: function(event)
     {
-        var node = /** @type{!WebInspector.DOMNode} */(event.data.node);
-        if (node === WebInspector.context.flavor(WebInspector.DOMNode))
-            this._updateInputs(node);
+        this.update();
     },
 
     /**
@@ -92,21 +90,29 @@ WebInspector.ElementStatePaneWidget.prototype = {
     onNodeChanged: function(newNode)
     {
         this._updateTarget(newNode? newNode.target() : null);
-        if (newNode)
-            this._updateInputs(newNode);
+        this.update();
     },
 
     /**
-     * @param {!WebInspector.DOMNode} node
+     * @override
+     * @return {!Promise.<?>}
      */
-    _updateInputs: function(node)
+    doUpdate: function()
     {
-        var nodePseudoState = WebInspector.CSSStyleModel.fromNode(node).pseudoState(node);
-        var inputs = this._inputs;
-        for (var i = 0; i < inputs.length; ++i) {
-            inputs[i].disabled = !!node.pseudoType();
-            inputs[i].checked = nodePseudoState.indexOf(inputs[i].state) >= 0;
+        var node = WebInspector.context.flavor(WebInspector.DOMNode);
+        if (node) {
+            var nodePseudoState = WebInspector.CSSStyleModel.fromNode(node).pseudoState(node);
+            for (var input of this._inputs) {
+                input.disabled = !!node.pseudoType();
+                input.checked = nodePseudoState.indexOf(input.state) >= 0;
+            }
+        } else {
+            for (var input of this._inputs) {
+                input.disabled = true;
+                input.checked = false;
+            }
         }
+        return Promise.resolve();
     },
 
     __proto__: WebInspector.ElementsPanel.BaseToolbarPaneWidget.prototype

@@ -75,6 +75,12 @@
         },
         {
             "type": "@WebInspector.ToolbarItem.Provider",
+            "className": "WebInspector.ClassesPaneWidget.ButtonProvider",
+            "order": 1,
+            "location": "styles-sidebarpane-toolbar"
+        },
+        {
+            "type": "@WebInspector.ToolbarItem.Provider",
             "className": "WebInspector.ElementStatePaneWidget.ButtonProvider",
             "order": 1,
             "location": "styles-sidebarpane-toolbar"
@@ -168,6 +174,7 @@
         "StylesSidebarPane.js",
         "ComputedStyleWidget.js",
         "ElementsPanel.js",
+        "ClassesPaneWidget.js",
         "ElementStatePaneWidget.js",
         "ElementsTreeElementHighlighter.js"
     ],

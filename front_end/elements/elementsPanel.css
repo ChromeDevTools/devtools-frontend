@@ -442,7 +442,6 @@
 
 .styles-sidebar-toolbar-pane-container {
     position: relative;
-    max-height: 60px;
     overflow: hidden;
 }
 
@@ -452,6 +451,31 @@
     margin-top: 0;
 }
 
+.styles-element-classes-pane {
+    background-color: #f3f3f3;
+    border-bottom: 1px solid rgb(189, 189, 189);
+    padding: 2px 4px;
+}
+
+.styles-element-classes-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.styles-element-classes-pane label {
+    margin-right: 15px;
+}
+
+.styles-element-classes-pane .title-container {
+    padding-bottom: 2px;
+}
+
+.styles-element-classes-pane .new-class-input {
+    padding-left: 3px;
+    width: 100%;
+    border: 1px solid #ddd;
+}
 
 .styles-element-state-pane > div {
     margin: 6px 4px 2px;

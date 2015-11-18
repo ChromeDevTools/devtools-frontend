@@ -421,6 +421,7 @@
             'front_end/elements/spectrum.css',
             'front_end/elements/BezierEditor.js',
             'front_end/elements/BezierUI.js',
+            'front_end/elements/ClassesPaneWidget.js',
             'front_end/elements/ElementsBreadcrumbs.js',
             'front_end/elements/ElementsPanel.js',
             'front_end/elements/ElementsSidebarPane.js',

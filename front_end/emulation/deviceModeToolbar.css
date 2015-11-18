@@ -7,9 +7,9 @@
 .device-mode-size-input {
     background: hsl(0, 0%, 100%);
     border: none;
-    padding: 2px 4px;
-    width: 45px !important;
-    margin: 0;
+    padding: 2px 0;
+    width: 39px !important;
+    margin: 0 3px;
     text-align: center;
 }
 
@@ -36,4 +36,11 @@
     -webkit-appearance: menulist;
     margin: 0;
     width: 120px;
+}
+
+.device-mode-checkbox {
+    width: 120px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 }

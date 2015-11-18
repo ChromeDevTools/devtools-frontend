@@ -415,6 +415,14 @@ WebInspector.Rect.prototype = {
     scale: function(scale)
     {
         return new WebInspector.Rect(this.left * scale, this.top * scale, this.width * scale, this.height * scale);
+    },
+
+    /**
+     * @return {!Size}
+     */
+    size: function()
+    {
+        return new Size(this.width, this.height);
     }
 }
 

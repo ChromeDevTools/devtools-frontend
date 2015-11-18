@@ -31,6 +31,21 @@
 
 .device-mode-options-toolbar {
     flex: 5 0 0;
+    display: flex;
+    padding-right: 10px;
+}
+
+.device-mode-options-toolbar .toolbar {
+    flex: none;
+}
+
+.device-mode-toolbar-spacer {
+    flex: auto;
+}
+
+.device-mode-content-clip {
+    overflow: hidden;
+    flex: auto;
 }
 
 .device-mode-media-container {
@@ -42,7 +57,6 @@
     flex: auto;
     position: relative;
     margin: 0;
-    overflow: hidden;
 }
 
 .device-mode-screen-area {
@@ -78,15 +92,10 @@
 
 .device-mode-resizer {
     position: absolute;
-    top: 0;
-    bottom: 0;
-    right: -14px;
-    width: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: hsla(0, 0%, 0%, 0.02);
-    transition: background-color 0.2s ease;
+    transition: background-color 0.1s ease;
 }
 
 .device-mode-resizer:hover {
@@ -96,6 +105,41 @@
 .device-mode-resizer > div {
     content: url(Images/toolbarResizerHorizontal.png);
     pointer-events: none;
+    margin: 0 0 0 1px;
+}
+
+.device-mode-width-resizer {
+    top: 0;
+    bottom: 0;
+    right: -14px;
+    width: 14px;
+}
+
+.device-mode-height-resizer {
+    left: 0;
+    right: 0;
+    bottom: -14px;
+    height: 14px;
+}
+
+.device-mode-height-resizer > div {
+    transform: rotate(90deg);
+    margin: 1px 0 0 0;
+}
+
+.device-mode-corner-resizer {
+    left: 0;
+    top: 0;
+    right: -14px;
+    bottom: -14px;
+    background-color: hsla(0, 0%, 0%, 0.02);
+}
+
+.device-mode-corner-resizer > div {
+    position: absolute;
+    right: 2px;
+    bottom: 2px;
+    transform: rotate(45deg);
 }
 
 .device-mode-page-area {

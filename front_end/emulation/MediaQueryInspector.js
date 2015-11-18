@@ -37,7 +37,6 @@ WebInspector.MediaQueryInspector.Section = {
 }
 
 WebInspector.MediaQueryInspector.Events = {
-    HeightUpdated: "HeightUpdated",
     CountUpdated: "CountUpdated"
 }
 
@@ -278,9 +277,6 @@ WebInspector.MediaQueryInspector.prototype = {
             container.appendChild(bar);
         }
         this.contentElement.scrollTop = scrollTop;
-        this.contentElement.classList.toggle("media-inspector-view-empty", !this.contentElement.children.length);
-        if (this.contentElement.children.length !== oldChildrenCount)
-            this.dispatchEventToListeners(WebInspector.MediaQueryInspector.Events.HeightUpdated);
     },
 
     /**

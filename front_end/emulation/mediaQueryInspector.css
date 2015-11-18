@@ -6,6 +6,10 @@
 
 /* Media query bars */
 
+.media-inspector-view {
+    height: 50px;
+}
+
 .media-inspector-marker-container {
     position: relative;
     height: 14px;

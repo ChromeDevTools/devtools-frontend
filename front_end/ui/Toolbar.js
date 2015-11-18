@@ -312,6 +312,11 @@ WebInspector.ToolbarText.prototype = {
         }
     },
 
+    makeDimmed: function()
+    {
+        this.element.classList.add("toolbar-text-dimmed");
+    },
+
     __proto__: WebInspector.ToolbarItem.prototype
 }
 

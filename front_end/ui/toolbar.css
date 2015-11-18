@@ -64,6 +64,10 @@
     margin: 0 3px 0 -3px;
 }
 
+.toolbar-text-dimmed {
+    color: #777;
+}
+
 .toolbar-item:active {
     position: relative;
     z-index: 200;
@@ -575,6 +579,14 @@ button.playback-rate-button {
     -webkit-mask-position: -192px -144px;
 }
 
-.fullscreen-toolbar-item .glyph {
+.resize-toolbar-item .glyph {
     -webkit-mask-position: -224px -144px;
+}
+
+.enter-fullscreen-toolbar-item .glyph {
+    -webkit-mask-position: -256px -96px;
+}
+
+.exit-fullscreen-toolbar-item .glyph {
+    -webkit-mask-position: -288px -96px;
 }

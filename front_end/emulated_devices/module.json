@@ -667,7 +667,7 @@
         {
             "type": "emulated-device",
             "device": {
-                "show-by-default": false,
+                "show-by-default": true,
                 "title": "iPad",
                 "screen": {
                     "horizontal": {
@@ -812,7 +812,7 @@
             "type": "emulated-device",
             "device": {
                 "show-by-default": true,
-                "title": "Galaxy Note 3",
+                "title": "Galaxy Note",
                 "screen": {
                     "horizontal": {
                         "width": 640,

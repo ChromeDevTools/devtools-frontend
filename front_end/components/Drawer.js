@@ -45,6 +45,12 @@ WebInspector.Drawer = function(splitWidget)
     this._tabbedPane.element.id = "drawer-tabbed-pane";
     this._tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, this._tabSelected, this);
 
+    var toolbar = new WebInspector.Toolbar("drawer-close-toolbar");
+    var closeButton = new WebInspector.ToolbarButton(WebInspector.UIString("Close drawer"), "delete-toolbar-item");
+    closeButton.addEventListener("click", this.closeDrawer.bind(this));
+    toolbar.appendToolbarItem(closeButton);
+    this._tabbedPane.appendAfterTabStrip(toolbar.element);
+
     this._extensibleTabbedPaneController = new WebInspector.ExtensibleTabbedPaneController(this._tabbedPane, "drawer-view");
     this._extensibleTabbedPaneController.enableMoreTabsButton();
 

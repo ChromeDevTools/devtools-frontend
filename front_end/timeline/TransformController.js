@@ -24,8 +24,7 @@ WebInspector.TransformController = function(element, disableRotate)
     this._minScale = 0;
     this._maxScale = Infinity;
 
-    this._controlPanelToolbar = new WebInspector.Toolbar();
-    this._controlPanelToolbar.element.classList.add("transform-control-panel");
+    this._controlPanelToolbar = new WebInspector.Toolbar("transform-control-panel");
 
     this._modeButtons = {};
     if (!disableRotate) {

@@ -872,7 +872,7 @@ WebInspector.Main.MainMenuItem.prototype = {
             var toggleDockSideShorcuts = WebInspector.shortcutRegistry.shortcutDescriptorsForAction("main.toggle-dock");
             titleElement.title = WebInspector.UIString("Placement of DevTools relative to the page. (%s to restore last position)", toggleDockSideShorcuts[0].name);
             dockItemElement.appendChild(titleElement);
-            var dockItemToolbar = new WebInspector.Toolbar(dockItemElement);
+            var dockItemToolbar = new WebInspector.Toolbar("", dockItemElement);
             dockItemToolbar.makeBlueOnHover();
             var undock = new WebInspector.ToolbarButton(WebInspector.UIString("Undock into separate window"), "dock-toolbar-item-undock");
             var bottom = new WebInspector.ToolbarButton(WebInspector.UIString("Dock to bottom"), "dock-toolbar-item-bottom");

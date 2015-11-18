@@ -49,7 +49,7 @@ WebInspector.SidebarPane.prototype = {
     toolbar: function()
     {
         if (!this._toolbar) {
-            this._toolbar = new WebInspector.Toolbar();
+            this._toolbar = new WebInspector.Toolbar("");
             this._toolbar.element.addEventListener("click", consumeEvent);
             this.element.insertBefore(this._toolbar.element, this.element.firstChild);
         }

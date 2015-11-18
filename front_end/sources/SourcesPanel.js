@@ -713,8 +713,7 @@ WebInspector.SourcesPanel.prototype = {
      */
     _createDebugToolbar: function()
     {
-        var debugToolbar = new WebInspector.Toolbar();
-        debugToolbar.element.classList.add("scripts-debug-toolbar");
+        var debugToolbar = new WebInspector.Toolbar("scripts-debug-toolbar");
 
         var title, handler;
 

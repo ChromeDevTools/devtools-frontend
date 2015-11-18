@@ -232,8 +232,7 @@ WebInspector.DeviceModeView.Toolbar = function(model, showMediaInspectorSetting)
     /** @type {?WebInspector.EmulatedDevice} */
     this._lastDevice = null;
 
-    this._modeToolbar = new WebInspector.Toolbar();
-    this._modeToolbar.element.classList.add("device-mode-screen-options");
+    this._modeToolbar = new WebInspector.Toolbar("device-mode-screen-options");
     var modeButton = new WebInspector.ToolbarButton(WebInspector.UIString("Screen options"), "rotate-screen-toolbar-item");
     modeButton.addEventListener("click", this._modeMenuClicked, this);
     this._modeToolbar.appendToolbarItem(modeButton);
@@ -242,7 +241,7 @@ WebInspector.DeviceModeView.Toolbar = function(model, showMediaInspectorSetting)
 
     var buttonsToolbarContainer = this._element.createChild("div", "device-mode-buttons-toolbar");
     buttonsToolbarContainer.createChild("div", "flex-auto");
-    var buttonsToolbar = new WebInspector.Toolbar(buttonsToolbarContainer);
+    var buttonsToolbar = new WebInspector.Toolbar("", buttonsToolbarContainer);
     this._desktopItem = new WebInspector.ToolbarButton(WebInspector.UIString("Desktop"), "desktop-toolbar-item");
     buttonsToolbar.appendToolbarItem(this._desktopItem);
     this._desktopItem.addEventListener("click", this._desktopButtonClick, this);
@@ -250,8 +249,7 @@ WebInspector.DeviceModeView.Toolbar = function(model, showMediaInspectorSetting)
     buttonsToolbar.appendToolbarItem(this._mobileItem);
     this._mobileItem.addEventListener("click", this._mobileButtonClick, this);
 
-    this._optionsToolbar = new WebInspector.Toolbar(this._element);
-    this._optionsToolbar.element.classList.add("device-mode-options-toolbar");
+    this._optionsToolbar = new WebInspector.Toolbar("device-mode-options-toolbar", this._element);
     this._optionsToolbar.appendSeparator();
 
     this._deviceSelect = this._createDeviceSelect();

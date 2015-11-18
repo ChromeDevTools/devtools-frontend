@@ -43,8 +43,7 @@ WebInspector.ExtensionPanel = function(server, panelName, id, pageURL)
     this._server = server;
     this._id = id;
     this.setHideOnDetach();
-    this._panelToolbar = new WebInspector.Toolbar(this.element);
-    this._panelToolbar.element.classList.add("hidden");
+    this._panelToolbar = new WebInspector.Toolbar("hidden", this.element);
 
     this._searchableView = new WebInspector.SearchableView(this);
     this._searchableView.show(this.element);

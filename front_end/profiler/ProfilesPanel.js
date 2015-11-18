@@ -458,7 +458,7 @@ WebInspector.ProfilesPanel = function()
     this.panelSidebarElement().classList.add("profiles-sidebar-tree-box");
     var toolbarContainerLeft = createElementWithClass("div", "profiles-toolbar");
     this.panelSidebarElement().insertBefore(toolbarContainerLeft, this.panelSidebarElement().firstChild);
-    var toolbar = new WebInspector.Toolbar(toolbarContainerLeft);
+    var toolbar = new WebInspector.Toolbar("", toolbarContainerLeft);
 
     this.recordButton = WebInspector.ToolbarButton.createActionButton("profiler.toggle-recording");
     toolbar.appendToolbarItem(this.recordButton);
@@ -467,8 +467,8 @@ WebInspector.ProfilesPanel = function()
     this.clearResultsButton.addEventListener("click", this._reset, this);
     toolbar.appendToolbarItem(this.clearResultsButton);
 
-    this._profileTypeToolbar = new WebInspector.Toolbar(this._toolbarElement);
-    this._profileViewToolbar = new WebInspector.Toolbar(this._toolbarElement);
+    this._profileTypeToolbar = new WebInspector.Toolbar("", this._toolbarElement);
+    this._profileViewToolbar = new WebInspector.Toolbar("", this._toolbarElement);
 
     this._profileGroups = {};
     this._launcherView = new WebInspector.MultiProfileLauncherView(this);

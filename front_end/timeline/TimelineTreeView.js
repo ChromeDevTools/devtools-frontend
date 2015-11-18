@@ -450,7 +450,7 @@ WebInspector.AggregatedTimelineTreeView.prototype = {
      */
     _populateToolbar: function(parent)
     {
-        var panelToolbar = new WebInspector.Toolbar(parent);
+        var panelToolbar = new WebInspector.Toolbar("", parent);
         this._groupByCombobox = new WebInspector.ToolbarComboBox(this._onGroupByChanged.bind(this));
         /**
          * @param {string} name

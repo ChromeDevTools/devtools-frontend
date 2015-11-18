@@ -38,7 +38,7 @@ WebInspector.SourcesView = function(workspace, sourcesPanel)
     this._historyManager = new WebInspector.EditingLocationHistoryManager(this, this.currentSourceFrame.bind(this));
 
     this._toolbarContainerElement = this.element.createChild("div", "sources-toolbar");
-    this._toolbarEditorActions = new WebInspector.Toolbar(this._toolbarContainerElement);
+    this._toolbarEditorActions = new WebInspector.Toolbar("", this._toolbarContainerElement);
 
     self.runtime.instancesPromise(WebInspector.SourcesView.EditorAction).then(appendButtonsForExtensions.bind(this));
     /**
@@ -50,7 +50,7 @@ WebInspector.SourcesView = function(workspace, sourcesPanel)
         for (var i = 0; i < actions.length; ++i)
             this._toolbarEditorActions.appendToolbarItem(actions[i].button(this));
     }
-    this._scriptViewToolbarText = new WebInspector.Toolbar(this._toolbarContainerElement);
+    this._scriptViewToolbarText = new WebInspector.Toolbar("", this._toolbarContainerElement);
 
     WebInspector.startBatchUpdate();
     this._workspace.uiSourceCodes().forEach(this._addUISourceCode.bind(this));

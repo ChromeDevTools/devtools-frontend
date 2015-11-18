@@ -16,7 +16,7 @@ WebInspector.AnimationControlPane = function(toolbarItem)
     this.element.createChild("div").createTextChild("Animations");
     var container = this.element.createChild("div", "animations-controls");
 
-    var toolbar = new WebInspector.Toolbar();
+    var toolbar = new WebInspector.Toolbar("");
     this._animationsPauseButton = new WebInspector.ToolbarButton("", "pause-toolbar-item");
     toolbar.appendToolbarItem(this._animationsPauseButton);
     this._animationsPauseButton.addEventListener("click", this._pauseButtonHandler.bind(this));

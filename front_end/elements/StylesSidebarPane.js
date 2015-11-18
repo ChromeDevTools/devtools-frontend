@@ -820,9 +820,7 @@ WebInspector.StylePropertiesSection = function(parentPane, matchedStyles, style)
         items.push(menuButton);
 
         if (items.length) {
-            var sectionToolbar = new WebInspector.Toolbar();
-            sectionToolbar.element.classList.add("sidebar-pane-section-toolbar");
-            closeBrace.appendChild(sectionToolbar.element);
+            var sectionToolbar = new WebInspector.Toolbar("sidebar-pane-section-toolbar", closeBrace);
 
             for (var i = 0; i < items.length; ++i)
                 sectionToolbar.appendToolbarItem(items[i]);

@@ -48,7 +48,7 @@ WebInspector.NetworkPanel = function()
     /** @type {?WebInspector.NetworkPanel.FilmStripRecorder} */
     this._filmStripRecorder = null;
 
-    this._panelToolbar = new WebInspector.Toolbar(this.element);
+    this._panelToolbar = new WebInspector.Toolbar("", this.element);
     this._filterBar = new WebInspector.FilterBar("networkPanel", true);
     this.element.appendChild(this._filterBar.filtersElement());
 

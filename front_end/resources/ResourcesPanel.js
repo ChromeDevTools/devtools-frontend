@@ -76,8 +76,7 @@ WebInspector.ResourcesPanel = function()
 
     var mainContainer = new WebInspector.VBox();
     this.storageViews = mainContainer.element.createChild("div", "vbox flex-auto");
-    this._storageViewToolbar = new WebInspector.Toolbar(mainContainer.element);
-    this._storageViewToolbar.element.classList.add("resources-toolbar");
+    this._storageViewToolbar = new WebInspector.Toolbar("resources-toolbar", mainContainer.element);
     this.splitWidget().setMainWidget(mainContainer);
 
     /** @type {!Map.<!WebInspector.Database, !Object.<string, !WebInspector.DatabaseTableView>>} */

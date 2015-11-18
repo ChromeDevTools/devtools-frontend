@@ -335,7 +335,7 @@ WebInspector.TimelinePanel.prototype = {
 
     _createToolbarItems: function()
     {
-        this._panelToolbar = new WebInspector.Toolbar(this.element);
+        this._panelToolbar = new WebInspector.Toolbar("", this.element);
 
         this._toggleTimelineButton = WebInspector.ToolbarButton.createActionButton("timeline.toggle-recording");
         this._panelToolbar.appendToolbarItem(this._toggleTimelineButton);

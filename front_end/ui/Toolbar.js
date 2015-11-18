@@ -30,13 +30,16 @@
 
 /**
  * @constructor
+ * @param {string} className
  * @param {!Element=} parentElement
  */
-WebInspector.Toolbar = function(parentElement)
+WebInspector.Toolbar = function(className, parentElement)
 {
     /** @type {!Array.<!WebInspector.ToolbarItem>} */
     this._items = [];
-    this.element = parentElement ? parentElement.createChild("div", "toolbar") : createElementWithClass("div", "toolbar");
+    this.element = parentElement ? parentElement.createChild("div") : createElement("div");
+    this.element.className = className;
+    this.element.classList.add("toolbar");
     this._shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element);
     this._shadowRoot.appendChild(WebInspector.Widget.createStyleElement("ui/toolbar.css"));
     this._contentElement = this._shadowRoot.createChild("div", "toolbar-shadow");
@@ -763,9 +766,7 @@ WebInspector.ActionToolbarButton.prototype = {
         document.documentElement.addEventListener("mouseup", mouseUp, false);
 
         var optionsGlassPane = new WebInspector.GlassPane(document);
-        var optionsBar = new WebInspector.Toolbar(optionsGlassPane.element);
-
-        optionsBar.element.classList.add("fill");
+        var optionsBar = new WebInspector.Toolbar("fill", optionsGlassPane.element);
         optionsBar._contentElement.classList.add("floating");
         const buttonHeight = 26;
 
@@ -1152,7 +1153,7 @@ WebInspector.ToolbarCheckbox.prototype = {
  */
 WebInspector.ExtensibleToolbar = function(location, parentElement)
 {
-    WebInspector.Toolbar.call(this, parentElement);
+    WebInspector.Toolbar.call(this, "", parentElement);
     this._loadItems(location);
 }
 

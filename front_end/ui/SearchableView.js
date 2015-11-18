@@ -48,7 +48,7 @@ WebInspector.SearchableView = function(searchable, settingName)
     this._footerElementContainer = this.contentElement.createChild("div", "search-bar hidden");
     this._footerElementContainer.style.order = 100;
 
-    var toolbar = new WebInspector.Toolbar(this._footerElementContainer);
+    var toolbar = new WebInspector.Toolbar("", this._footerElementContainer);
 
     if (this._searchProvider.supportsCaseSensitiveSearch()) {
         this._caseSensitiveButton = new WebInspector.ToolbarTextButton(WebInspector.UIString("Case sensitive"), "case-sensitive-search-toolbar-item", "Aa", 2);

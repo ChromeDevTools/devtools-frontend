@@ -349,7 +349,7 @@ WebInspector.WorkspaceSettingsTab.prototype = {
         path.textContent = fileSystemPath;
         path.title = fileSystemPath;
 
-        var toolbar = new WebInspector.Toolbar();
+        var toolbar = new WebInspector.Toolbar("");
         var button = new WebInspector.ToolbarButton(WebInspector.UIString("Remove"), "delete-toolbar-item");
         button.addEventListener("click", this._removeFileSystemClicked.bind(this, fileSystem));
         toolbar.appendToolbarItem(button);

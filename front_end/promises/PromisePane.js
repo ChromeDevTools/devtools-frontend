@@ -14,7 +14,7 @@ WebInspector.PromisePane = function()
     this.registerRequiredCSS("promises/promisePane.css");
     this.element.classList.add("promises");
 
-    var toolbar = new WebInspector.Toolbar(this.element);
+    var toolbar = new WebInspector.Toolbar("", this.element);
     this._recordButton = new WebInspector.ToolbarButton("", "record-toolbar-item");
     this._recordButton.addEventListener("click", this._recordButtonClicked.bind(this));
     toolbar.appendToolbarItem(this._recordButton);

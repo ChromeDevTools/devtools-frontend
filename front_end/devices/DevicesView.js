@@ -592,7 +592,7 @@ WebInspector.DevicesView.DeviceView.prototype = {
         var inspect = createTextButton(WebInspector.UIString("Inspect"), doAction.bind(null, "inspect"), "device-inspect-button");
         titleRow.appendChild(inspect);
 
-        var toolbar = new WebInspector.Toolbar();
+        var toolbar = new WebInspector.Toolbar("");
         toolbar.appendToolbarItem(new WebInspector.ToolbarMenuButton("", "menu-toolbar-item", appendActions));
         titleRow.appendChild(toolbar.element);
 

@@ -1290,8 +1290,7 @@ WebInspector.ExtensibleTabbedPaneController.prototype = {
 
     enableMoreTabsButton: function()
     {
-        var toolbar = new WebInspector.Toolbar();
-        toolbar.element.classList.add("drawer-toolbar");
+        var toolbar = new WebInspector.Toolbar("drawer-toolbar");
         this._moreTabsButton = new WebInspector.ToolbarMenuButton("", "menu-toolbar-item", this._appendTabsToMenu.bind(this));
         toolbar.appendToolbarItem(this._moreTabsButton);
         this._tabbedPane.insertBeforeTabStrip(toolbar.element);

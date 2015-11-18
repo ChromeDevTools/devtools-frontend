@@ -206,8 +206,7 @@ WebInspector.IDBDataView.prototype = {
 
     _createEditorToolbar: function()
     {
-        var editorToolbar = new WebInspector.Toolbar(this.element);
-        editorToolbar.element.classList.add("data-view-toolbar");
+        var editorToolbar = new WebInspector.Toolbar("data-view-toolbar", this.element);
 
         this._pageBackButton = new WebInspector.ToolbarButton(WebInspector.UIString("Show previous page"), "play-backwards-toolbar-item");
         this._pageBackButton.addEventListener("click", this._pageBackButtonClicked, this);

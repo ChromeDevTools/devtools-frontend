@@ -54,8 +54,7 @@ WebInspector.Spectrum = function()
     var contrastRatioSVG = this._colorElement.createSVGChild("svg", "spectrum-contrast-container fill");
     this._contrastRatioLine = contrastRatioSVG.createSVGChild("path", "spectrum-contrast-line");
 
-    var toolbar = new WebInspector.Toolbar(this.contentElement);
-    toolbar.element.classList.add("spectrum-eye-dropper");
+    var toolbar = new WebInspector.Toolbar("spectrum-eye-dropper", this.contentElement);
     this._colorPickerButton = new WebInspector.ToolbarButton(WebInspector.UIString("Toggle color picker"), "eyedropper-toolbar-item");
     this._colorPickerButton.setToggled(true);
     this._colorPickerButton.addEventListener("click", this._toggleColorPicker.bind(this, undefined));
@@ -116,16 +115,14 @@ WebInspector.Spectrum = function()
     appendSwitcherIcon(paletteSwitcher);
     paletteSwitcher.addEventListener("click", this._togglePalettePanel.bind(this, true));
 
-    this._deleteIconToolbar = new WebInspector.Toolbar();
-    this._deleteIconToolbar.element.classList.add("delete-color-toolbar");
+    this._deleteIconToolbar = new WebInspector.Toolbar("delete-color-toolbar");
     this._deleteButton = new WebInspector.ToolbarButton("", "garbage-collect-toolbar-item");
     this._deleteIconToolbar.appendToolbarItem(this._deleteButton);
 
     var overlay = this.contentElement.createChild("div", "spectrum-overlay fill");
     overlay.addEventListener("click", this._togglePalettePanel.bind(this, false));
 
-    this._addColorToolbar = new WebInspector.Toolbar();
-    this._addColorToolbar.element.classList.add("add-color-toolbar");
+    this._addColorToolbar = new WebInspector.Toolbar("add-color-toolbar");
     var addColorButton = new WebInspector.ToolbarButton(WebInspector.UIString("Add to palette"), "add-toolbar-item");
     addColorButton.addEventListener("click", this._addColorToCustomPalette.bind(this));
     this._addColorToolbar.appendToolbarItem(addColorButton);
@@ -206,7 +203,7 @@ WebInspector.Spectrum.prototype = {
         this._palettePanel.removeChildren();
         var title = this._palettePanel.createChild("div", "palette-title");
         title.textContent = WebInspector.UIString("Color Palettes");
-        var toolbar = new WebInspector.Toolbar(this._palettePanel);
+        var toolbar = new WebInspector.Toolbar("", this._palettePanel);
         var closeButton = new WebInspector.ToolbarButton("Return to color picker", "delete-toolbar-item");
         closeButton.addEventListener("click", this._togglePalettePanel.bind(this, false));
         toolbar.appendToolbarItem(closeButton);

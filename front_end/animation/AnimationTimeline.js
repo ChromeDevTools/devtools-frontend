@@ -118,8 +118,7 @@ WebInspector.AnimationTimeline.prototype = {
         var container = this.contentElement.createChild("div", "animation-timeline-header");
         var controls = container.createChild("div", "animation-controls");
 
-        var toolbar = new WebInspector.Toolbar(controls);
-        toolbar.element.classList.add("animation-controls-toolbar");
+        var toolbar = new WebInspector.Toolbar("animation-controls-toolbar", controls);
         this._controlButton = new WebInspector.ToolbarButton(WebInspector.UIString("Replay timeline"), "replay-outline-toolbar-item");
         this._controlButton.addEventListener("click", this._controlButtonToggle.bind(this));
         toolbar.appendToolbarItem(this._controlButton);

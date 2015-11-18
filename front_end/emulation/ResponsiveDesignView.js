@@ -636,7 +636,7 @@ WebInspector.ResponsiveDesignView.prototype = {
 
     _createButtonsSection: function()
     {
-        var buttonsToolbar = new WebInspector.Toolbar(this._toolbarElement);
+        var buttonsToolbar = new WebInspector.Toolbar("", this._toolbarElement);
         buttonsToolbar.makeVertical();
         buttonsToolbar.setColor("white");
         buttonsToolbar.setToggledColor("rgb(105, 194, 236)");

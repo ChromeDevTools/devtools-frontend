@@ -290,6 +290,7 @@
             },
             {
                 "name": "searchInResource",
+                "async": true,
                 "description": "Searches for given string in resource content.",
                 "parameters": [
                     { "name": "frameId", "$ref": "FrameId", "description": "Frame id for resource to search in." },

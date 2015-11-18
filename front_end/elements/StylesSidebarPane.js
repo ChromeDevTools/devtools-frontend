@@ -860,11 +860,10 @@ WebInspector.StylePropertiesSection = function(parentPane, matchedStyles, style)
         }
     }
 
-    this._selectorRefElement = createElementWithClass("div", "styles-section-subtitle");
     this._mediaListElement = this._titleElement.createChild("div", "media-list media-matches");
+    this._selectorRefElement = this._titleElement.createChild("div", "styles-section-subtitle");
     this._updateMediaList();
     this._updateRuleOrigin();
-    selectorContainer.insertBefore(this._selectorRefElement, selectorContainer.firstChild);
     this._titleElement.appendChild(selectorContainer);
     this._selectorContainer = selectorContainer;
 
@@ -1066,16 +1065,12 @@ WebInspector.StylePropertiesSection.prototype = {
             return;
         for (var i = mediaRules.length - 1; i >= 0; --i) {
             var media = mediaRules[i];
+            // Don't display trivial non-print media types.
+            if (!media.text.includes("(") && media.text !== "print")
+                continue;
             var mediaDataElement = this._mediaListElement.createChild("div", "media");
-            if (media.sourceURL) {
-                var anchor = this._parentPane._linkifier.linkifyMedia(media);
-                anchor.classList.add("subtitle");
-                mediaDataElement.appendChild(anchor);
-            }
-
             var mediaContainerElement = mediaDataElement.createChild("span");
             var mediaTextElement = mediaContainerElement.createChild("span", "media-text");
-            mediaTextElement.title = media.text;
             switch (media.source) {
             case WebInspector.CSSMedia.Source.LINKED_SHEET:
             case WebInspector.CSSMedia.Source.INLINE_SHEET:
@@ -1085,7 +1080,6 @@ WebInspector.StylePropertiesSection.prototype = {
                 var decoration = mediaContainerElement.createChild("span");
                 mediaContainerElement.insertBefore(decoration, mediaTextElement);
                 decoration.textContent = "@media ";
-                decoration.title = media.text;
                 mediaTextElement.textContent = media.text;
                 if (media.parentStyleSheetId) {
                     mediaDataElement.classList.add("editable-media");
@@ -1344,6 +1338,16 @@ WebInspector.StylePropertiesSection.prototype = {
     {
         if (WebInspector.isBeingEdited(element))
             return;
+
+        if (WebInspector.KeyboardShortcut.eventHasCtrlOrMeta(/** @type {!MouseEvent} */(event)) && this.navigable) {
+            var cssModel = this._parentPane._cssModel;
+            var rawLocation = new WebInspector.CSSLocation(cssModel, /** @type {string} */(media.parentStyleSheetId), media.sourceURL, /** @type {number} */(media.lineNumberInSource()), media.columnNumberInSource());
+            var uiLocation = WebInspector.cssWorkspaceBinding.rawLocationToUILocation(rawLocation);
+            if (uiLocation)
+                WebInspector.Revealer.reveal(uiLocation);
+            event.consume(true);
+            return;
+        }
 
         var config = new WebInspector.InplaceEditor.Config(this._editingMediaCommitted.bind(this, media), this._editingMediaCancelled.bind(this, element), undefined, this._editingMediaBlurHandler.bind(this));
         WebInspector.InplaceEditor.startEditing(element, config);

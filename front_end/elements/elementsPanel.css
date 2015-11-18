@@ -610,7 +610,8 @@
 .styles-section:not(.read-only) .style-properties .webkit-css-property.styles-panel-hovered,
 .styles-section:not(.read-only) .style-properties .value .styles-panel-hovered,
 .styles-section:not(.read-only) .style-properties .value.styles-panel-hovered,
-.styles-section:not(.read-only) span.simple-selector.styles-panel-hovered {
+.styles-section:not(.read-only) span.simple-selector.styles-panel-hovered,
+.styles-section:not(.read-only) .media-text.styles-panel-hovered {
     text-decoration: underline;
     cursor: default;
 }

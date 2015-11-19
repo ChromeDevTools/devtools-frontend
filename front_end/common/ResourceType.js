@@ -141,7 +141,26 @@ WebInspector.resourceTypes = {
     Other: new WebInspector.ResourceType("other", "Other", WebInspector.resourceCategories.Other, false)
 }
 
-WebInspector.ResourceType.mimeTypesForExtensions = {
+/**
+ * @param {string} url
+ * @return {string}
+ */
+WebInspector.ResourceType.mimeFromURL = function(url)
+{
+    var name = WebInspector.TextUtils.fileName(url);
+    if (WebInspector.ResourceType.mimeTypeByName[name]) {
+        return WebInspector.ResourceType.mimeTypeByName[name];
+    }
+    var ext = WebInspector.TextUtils.extension(url).toLowerCase();
+    return WebInspector.ResourceType.mimeTypeByExtension[ext];
+}
+
+WebInspector.ResourceType.mimeTypeByName = {
+    // CoffeeScript
+    "Cakefile": "text/x-coffeescript"
+}
+
+WebInspector.ResourceType.mimeTypeByExtension = {
     // Web extensions
     "js": "text/javascript",
     "css": "text/css",

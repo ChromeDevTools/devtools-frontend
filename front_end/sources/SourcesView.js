@@ -95,7 +95,7 @@ WebInspector.SourcesView.uiSourceCodeHighlighterType = function(uiSourceCode)
     if (networkContentType)
         return networkContentType.canonicalMimeType();
 
-    var mimeType = WebInspector.ResourceType.mimeTypesForExtensions[uiSourceCode.extension().toLowerCase()];
+    var mimeType = WebInspector.ResourceType.mimeFromURL(uiSourceCode.uri());
     return mimeType || uiSourceCode.contentType().canonicalMimeType();
 }
 

@@ -518,12 +518,7 @@ WebInspector.UISourceCode.prototype = {
      */
     extension: function()
     {
-        var lastIndexOfDot = this._name.lastIndexOf(".");
-        var extension = lastIndexOfDot !== -1 ? this._name.substr(lastIndexOfDot + 1) : "";
-        var indexOfQuestionMark = extension.indexOf("?");
-        if (indexOfQuestionMark !== -1)
-            extension = extension.substr(0, indexOfQuestionMark);
-        return extension;
+        return WebInspector.TextUtils.extension(this._name);
     },
 
     /**

@@ -156,9 +156,7 @@
     padding: 2px 2px 4px 4px;
     min-height: 18px;
     white-space: nowrap;
-    background-origin: padding;
-    background-clip: padding;
-    -webkit-user-select: text;
+    -webkit-user-select: none;
     border-bottom: 1px solid #eee;
     position: relative;
     overflow: hidden;
@@ -204,13 +202,13 @@
 
 .styles-section .sidebar-pane-closing-brace {
     clear: both;
+    -webkit-user-select: text;
 }
 
 .styles-section-title {
-    background-origin: padding;
-    background-clip: padding;
     word-wrap: break-word;
     white-space: normal;
+    -webkit-user-select: text;
 }
 
 .styles-section-title .media-list {
@@ -313,6 +311,10 @@
 
 .styles-section.matched-styles .style-properties li {
     margin-left: 0 !important;
+}
+
+.styles-section.matched-styles .style-properties li * {
+    -webkit-user-select: text;
 }
 
 .styles-section .style-properties li.child-editing {

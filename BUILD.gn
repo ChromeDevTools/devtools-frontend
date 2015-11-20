@@ -75,13 +75,13 @@ visibility = [ "//third_party/WebKit/*" ]
 
 group("devtools_frontend_resources") {
   public_deps = [
+    ":build_applications",
     ":copy_compatibility_scripts",
-    ":copy_inspector_images",
     ":copy_emulated_devices_images",
+    ":copy_inspector_images",
     ":devtools_extension_api",
     ":frontend_protocol_sources",
     ":supported_css_properties",
-    ":build_applications",
   ]
 
   if (!debug_devtools) {
@@ -265,8 +265,8 @@ action("build_applications") {
   ]
 
   deps = [
-    ":supported_css_properties",
     ":frontend_protocol_sources",
+    ":supported_css_properties",
   ]
 
   if (debug_devtools) {
@@ -324,9 +324,9 @@ if (debug_devtools) {
   # Debug: copy non-module directories and core into resources_out_dir as-is.
   group("copy_debug_non_modules") {
     public_deps = [
-      ":copy_runtime_core",
       ":copy_acorn_js_files",
       ":copy_codemirror_files",
+      ":copy_runtime_core",
     ]
   }
 

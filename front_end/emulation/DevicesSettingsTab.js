@@ -104,7 +104,6 @@ WebInspector.DevicesSettingsTab.prototype = {
         checkbox.checked = device.show();
         element.createChild("div", "devices-list-title").textContent = device.title;
         element.addEventListener("click", onItemClicked.bind(this), false);
-        element.classList.toggle("device-list-item-show", device.show());
         return element;
 
         /**
@@ -117,7 +116,6 @@ WebInspector.DevicesSettingsTab.prototype = {
             device.setShow(show);
             this._muteAndSaveDeviceList(editable);
             checkbox.checked = show;
-            element.classList.toggle("device-list-item-show", show);
             event.consume();
         }
     },

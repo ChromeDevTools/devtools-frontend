@@ -348,7 +348,7 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
      */
     _appendMenuItems: function(contextMenu)
     {
-        var disabled = this._model.type() === WebInspector.DeviceModeModel.Type.None;
+        var zoomDisabled = this._model.type() === WebInspector.DeviceModeModel.Type.None;
         var zoomSubmenu = contextMenu.appendSubMenuItem(WebInspector.UIString("Zoom"), false);
         var scaleSetting = this._model.scaleSetting();
         appendScaleItem(WebInspector.UIString("Fit"), 0);
@@ -365,31 +365,41 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
          */
         function appendScaleItem(title, value)
         {
-            zoomSubmenu.appendCheckboxItem(title, scaleSetting.set.bind(scaleSetting, value), scaleSetting.get() === value, disabled);
+            zoomSubmenu.appendCheckboxItem(title, scaleSetting.set.bind(scaleSetting, value), scaleSetting.get() === value, zoomDisabled);
         }
 
-        disabled = this._model.type() !== WebInspector.DeviceModeModel.Type.Responsive;
-        var mobileSetting = this._model.mobileSetting();
-        var mobileSubmenu = contextMenu.appendSubMenuItem(WebInspector.UIString("User agent type"), false);
-        mobileSubmenu.appendCheckboxItem(WebInspector.UIString("Mobile"), mobileSetting.set.bind(mobileSetting, true), mobileSetting.get(), disabled);
-        mobileSubmenu.appendCheckboxItem(WebInspector.UIString("Desktop"), mobileSetting.set.bind(mobileSetting, false), !mobileSetting.get(), disabled);
+        var uaDisabled = this._model.type() !== WebInspector.DeviceModeModel.Type.Responsive;
+        var uaSetting = this._model.uaSetting();
+        var uaSubmenu = contextMenu.appendSubMenuItem(WebInspector.UIString("User agent type"), false);
+        appendUAItem(WebInspector.UIString("Mobile"), WebInspector.DeviceModeModel.UA.Mobile);
+        appendUAItem(WebInspector.UIString("Desktop"), WebInspector.DeviceModeModel.UA.Desktop);
+        appendUAItem(WebInspector.UIString("Desktop with touch"), WebInspector.DeviceModeModel.UA.DesktopTouch);
 
-        disabled = this._model.type() !== WebInspector.DeviceModeModel.Type.Responsive;
-        var dprSubmenu = contextMenu.appendSubMenuItem(WebInspector.UIString("Device pixel ratio"), false);
+        /**
+         * @param {string} title
+         * @param {!WebInspector.DeviceModeModel.UA} value
+         */
+        function appendUAItem(title, value)
+        {
+            uaSubmenu.appendCheckboxItem(title, uaSetting.set.bind(uaSetting, value), uaSetting.get() === value, uaDisabled);
+        }
+
+        var deviceScaleFactorDisabled = this._model.type() !== WebInspector.DeviceModeModel.Type.Responsive;
+        var deviceScaleFactorSubmenu = contextMenu.appendSubMenuItem(WebInspector.UIString("Device pixel ratio"), false);
         var deviceScaleFactorSetting = this._model.deviceScaleFactorSetting();
-        appendScaleFactorItem(WebInspector.UIString("Default: %f", this._model.defaultDeviceScaleFactor()), 0);
-        dprSubmenu.appendSeparator();
-        appendScaleFactorItem(WebInspector.UIString("1"), 1);
-        appendScaleFactorItem(WebInspector.UIString("2"), 2);
-        appendScaleFactorItem(WebInspector.UIString("3"), 3);
+        appendDeviceScaleFactorItem(WebInspector.UIString("Default: %f", this._model.defaultDeviceScaleFactor()), 0);
+        deviceScaleFactorSubmenu.appendSeparator();
+        appendDeviceScaleFactorItem(WebInspector.UIString("1"), 1);
+        appendDeviceScaleFactorItem(WebInspector.UIString("2"), 2);
+        appendDeviceScaleFactorItem(WebInspector.UIString("3"), 3);
 
         /**
          * @param {string} title
          * @param {number} value
          */
-        function appendScaleFactorItem(title, value)
+        function appendDeviceScaleFactorItem(title, value)
         {
-            dprSubmenu.appendCheckboxItem(title, deviceScaleFactorSetting.set.bind(deviceScaleFactorSetting, value), deviceScaleFactorSetting.get() === value, disabled);
+            deviceScaleFactorSubmenu.appendCheckboxItem(title, deviceScaleFactorSetting.set.bind(deviceScaleFactorSetting, value), deviceScaleFactorSetting.get() === value, deviceScaleFactorDisabled);
         }
 
         contextMenu.appendItem(WebInspector.UIString("Reset to defaults"), this._model.reset.bind(this._model), this._model.type() !== WebInspector.DeviceModeModel.Type.Responsive);
@@ -637,7 +647,8 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
             }
         }
 
-        var showDeviceScale = !!this._model.deviceScaleFactorSetting().get() || this._model.type() === WebInspector.DeviceModeModel.Type.Device;
+        var showDeviceScale = this._model.type() !== WebInspector.DeviceModeModel.Type.None &&
+            (!!this._model.deviceScaleFactorSetting().get() || this._model.type() === WebInspector.DeviceModeModel.Type.Device);
         if (showDeviceScale !== this._cachedShowDeviceScale) {
             this._deviceScaleFactorItem.setVisible(showDeviceScale);
             this._cachedShowDeviceScale = showDeviceScale;
@@ -687,12 +698,14 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
         }
 
         if (updatePersistence) {
-            this._persistenceSetting.set({
-                type: this._cachedModelType,
-                device: this._cachedModelDevice ? this._cachedModelDevice.title : "",
-                orientation: this._cachedModelMode ? this._cachedModelMode.orientation : "",
-                mode: this._cachedModelMode ? this._cachedModelMode.title : ""
-            });
+            var value = this._persistenceSetting.get();
+            value.type = this._cachedModelType;
+            if (this._cachedModelDevice) {
+                value.device = this._cachedModelDevice.title;
+                value.orientation = this._cachedModelMode ? this._cachedModelMode.orientation : "";
+                value.mode = this._cachedModelMode ? this._cachedModelMode.title : "";
+            }
+            this._persistenceSetting.set(value);
         }
     },
 
@@ -702,38 +715,38 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
             return;
 
         this._restored = true;
-        var type = this._persistenceSetting.get().type;
-        if (type === WebInspector.DeviceModeModel.Type.Responsive) {
-            this._model.emulate(WebInspector.DeviceModeModel.Type.Responsive, null, null);
-        } else if (type === WebInspector.DeviceModeModel.Type.Device) {
-            var device = null;
-            for (var i = 0; i < this._deviceSelect.options.length; ++i) {
-                if (this._deviceSelect.options[i].device && this._deviceSelect.options[i].device.title === this._persistenceSetting.get().device)
-                    device = this._deviceSelect.options[i].device;
-            }
-            if (device) {
-                var mode = null;
-                for (var i = 0; i < device.modes.length; ++i) {
-                    if (device.modes[i].orientation === this._persistenceSetting.get().orientation && device.modes[i].title === this._persistenceSetting.get().mode)
-                        mode = device.modes[i];
-                }
-                this._model.emulate(WebInspector.DeviceModeModel.Type.Device, device, mode || device.modes[0]);
-            } else {
-                this._model.emulate(WebInspector.DeviceModeModel.Type.None, null, null);
+
+        for (var i = 0; i < this._deviceSelect.options.length; ++i) {
+            if (this._deviceSelect.options[i].device && this._deviceSelect.options[i].device.title === this._persistenceSetting.get().device)
+                this._lastDevice = this._deviceSelect.options[i].device;
+        }
+        if (this._lastDevice) {
+            for (var i = 0; i < this._lastDevice.modes.length; ++i) {
+                if (this._lastDevice.modes[i].orientation === this._persistenceSetting.get().orientation && this._lastDevice.modes[i].title === this._persistenceSetting.get().mode)
+                    this._lastMode.set(this._lastDevice, this._lastDevice.modes[i]);
             }
         } else {
             this._model.emulate(WebInspector.DeviceModeModel.Type.None, null, null);
         }
+
+        this._applyType(/** @type {!WebInspector.DeviceModeModel.Type} */ (this._persistenceSetting.get().type));
     },
 
     _toggleType: function()
     {
-        var previousType = this._model.type() === WebInspector.DeviceModeModel.Type.None ? (this._previousModelType || WebInspector.DeviceModeModel.Type.Responsive) : WebInspector.DeviceModeModel.Type.None;
-        if (previousType === WebInspector.DeviceModeModel.Type.Responsive)
+        this._applyType(this._model.type() === WebInspector.DeviceModeModel.Type.None ? (this._previousModelType || WebInspector.DeviceModeModel.Type.Responsive) : WebInspector.DeviceModeModel.Type.None);
+    },
+
+    /**
+     * @param {!WebInspector.DeviceModeModel.Type} type
+     */
+    _applyType: function(type)
+    {
+        if (type === WebInspector.DeviceModeModel.Type.Responsive)
             this._responsiveButtonClick();
-        else if (previousType === WebInspector.DeviceModeModel.Type.Device)
+        else if (type === WebInspector.DeviceModeModel.Type.Device)
             this._deviceButtonClick();
-        else if (previousType === WebInspector.DeviceModeModel.Type.None)
+        else
             this._noneButtonClick();
     }
 }

@@ -57,10 +57,6 @@
     text-overflow: ellipsis;
     flex: auto;
     -webkit-user-select: none;
-    color: #aaa;
-}
-
-.device-list-item-show .devices-list-title {
     color: #222;
 }
 

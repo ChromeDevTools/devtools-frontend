@@ -381,7 +381,7 @@ WebInspector.SoftContextMenu.prototype = {
                 event.consume(true);
         }
         if (this._discardMenuOnResizeListener) {
-            this._document.defaultView.removeEventListener(this._discardMenuOnResizeListener);
+            this._document.defaultView.removeEventListener("resize", this._discardMenuOnResizeListener, false);
             delete this._discardMenuOnResizeListener;
         }
     },

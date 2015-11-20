@@ -546,9 +546,6 @@ TestSuite.prototype.testScreenshotRecording = function()
 
     function validateImagesAndCompleteTest(images)
     {
-        var redString = [255, 0, 0, 255].join(",");
-        var greenString = [0, 255, 0, 255].join(",");
-        var blueString = [0, 0, 255, 255].join(",");
         var redCount = 0;
         var greenCount = 0;
         var blueCount = 0;
@@ -563,11 +560,11 @@ TestSuite.prototype.testScreenshotRecording = function()
             ctx.drawImage(image, 0, 0);
             var data = ctx.getImageData(0, 0, 1, 1);
             var color = Array.prototype.join.call(data.data, ",");
-            if (color === redString)
+            if (data.data[0] > 200)
                 redCount++;
-            else if (color === greenString)
+            else if (data.data[1] > 200)
                 greenCount++;
-            else if (color === blueString)
+            else if (data.data[2] > 200)
                 blueCount++;
             else
                 test.fail("Unexpected color: " + color);

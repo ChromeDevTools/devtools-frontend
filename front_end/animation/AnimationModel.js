@@ -19,19 +19,21 @@ WebInspector.AnimationModel = function(target)
     this._animationGroups = new Map();
     /** @type {!Array.<string>} */
     this._pendingAnimations = [];
-    target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._mainFrameNavigated, this);
+    target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._reset, this);
 }
 
 WebInspector.AnimationModel.Events = {
-    AnimationGroupStarted: "AnimationGroupStarted"
+    AnimationGroupStarted: "AnimationGroupStarted",
+    ModelReset: "ModelReset"
 }
 
 WebInspector.AnimationModel.prototype = {
-    _mainFrameNavigated: function()
+    _reset: function()
     {
         this._animationsById.clear();
         this._animationGroups.clear();
         this._pendingAnimations = [];
+        this.dispatchEventToListeners(WebInspector.AnimationModel.Events.ModelReset);
     },
 
     /**
@@ -147,6 +149,27 @@ WebInspector.AnimationModel.prototype = {
     setPlaybackRate: function(playbackRate)
     {
         this._agent.setPlaybackRate(playbackRate);
+    },
+
+    /**
+     * @override
+     * @return {!Promise}
+     */
+    suspendModel: function()
+    {
+        this._reset();
+        return this._agent.disable();
+    },
+
+    /**
+     * @override
+     * @return {!Promise}
+     */
+    resumeModel: function()
+    {
+        if (!this._enabled)
+            return Promise.resolve();
+        return this._agent.enable();
     },
 
     ensureEnabled: function()

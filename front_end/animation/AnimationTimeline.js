@@ -32,7 +32,6 @@ WebInspector.AnimationTimeline = function()
     /** @type {!Map.<string, !WebInspector.AnimationModel.Animation>} */
     this._animationsMap = new Map();
     WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
-
     WebInspector.targetManager.observeTargets(this, WebInspector.Target.Type.Page);
 }
 
@@ -59,8 +58,6 @@ WebInspector.AnimationTimeline.prototype = {
     {
         if (this.isShowing())
             this._addEventListeners(target);
-        if (target === WebInspector.targetManager.mainTarget())
-            target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._mainFrameNavigated, this);
     },
 
     /**
@@ -80,6 +77,7 @@ WebInspector.AnimationTimeline.prototype = {
         var animationModel = WebInspector.AnimationModel.fromTarget(target);
         animationModel.ensureEnabled();
         animationModel.addEventListener(WebInspector.AnimationModel.Events.AnimationGroupStarted, this._animationGroupStarted, this);
+        animationModel.addEventListener(WebInspector.AnimationModel.Events.ModelReset, this._reset, this);
     },
 
     /**
@@ -89,6 +87,7 @@ WebInspector.AnimationTimeline.prototype = {
     {
         var animationModel = WebInspector.AnimationModel.fromTarget(target);
         animationModel.removeEventListener(WebInspector.AnimationModel.Events.AnimationGroupStarted, this._animationGroupStarted, this);
+        animationModel.removeEventListener(WebInspector.AnimationModel.Events.ModelReset, this._reset, this);
     },
 
     _nodeChanged: function()
@@ -276,11 +275,8 @@ WebInspector.AnimationTimeline.prototype = {
         return this._startTime;
     },
 
-    _reset: function()
+    _clearTimeline: function()
     {
-        if (!this._nodesMap.size)
-            return;
-
         this._nodesMap.clear();
         this._animationsMap.clear();
         this._animationsContainer.removeChildren();
@@ -288,12 +284,9 @@ WebInspector.AnimationTimeline.prototype = {
         delete this._startTime;
     },
 
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _mainFrameNavigated: function(event)
+    _reset: function()
     {
-        this._reset();
+        this._clearTimeline();
         this._updateAnimationsPlaybackRate();
         if (this._scrubberPlayer)
             this._scrubberPlayer.cancel();
@@ -375,7 +368,7 @@ WebInspector.AnimationTimeline.prototype = {
         }
         this._selectedGroup = group;
         this._previewMap.forEach(applySelectionClass, this);
-        this._reset();
+        this._clearTimeline();
         for (var anim of group.animations())
             this._addAnimation(anim);
         this.scheduleRedraw();

@@ -25,11 +25,11 @@
 
 /**
  * @constructor
- * @extends {WebInspector.DataGridContainerWidget}
+ * @extends {WebInspector.VBox}
  */
 WebInspector.ApplicationCacheItemsView = function(model, frameId)
 {
-    WebInspector.DataGridContainerWidget.call(this);
+    WebInspector.VBox.call(this);
 
     this._model = model;
 
@@ -191,7 +191,7 @@ WebInspector.ApplicationCacheItemsView.prototype = {
             {title: WebInspector.UIString("Size"), align: WebInspector.DataGrid.Align.Right, sortable: true}
         ];
         this._dataGrid = new WebInspector.DataGrid(columns);
-        this.appendDataGrid(this._dataGrid);
+        this._dataGrid.asWidget().show(this.element);
         this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SortingChanged, this._populateDataGrid, this);
     },
 
@@ -257,6 +257,6 @@ WebInspector.ApplicationCacheItemsView.prototype = {
         // this._update();
     },
 
-    __proto__: WebInspector.DataGridContainerWidget.prototype
+    __proto__: WebInspector.VBox.prototype
 }
 

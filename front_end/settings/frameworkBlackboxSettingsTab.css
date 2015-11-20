@@ -4,26 +4,34 @@
  * found in the LICENSE file.
  */
 
+:host {
+    overflow:hidden;
+}
+
 .header {
     padding: 0 0 6px;
     border-bottom: 1px solid #EEEEEE;
     font-size: 18px;
     font-weight: normal;
+    flex: none;
 }
 
 .blackbox-content-scripts {
     margin-top: 10px;
+    flex: none;
 }
 
 .add-button {
     margin: 10px 0;
     align-self: flex-start;
+    flex: none;
 }
 
 .blackbox-list {
     margin-top: 10px;
     max-width: 500px;
     flex: 0 1 auto;
+    min-height: 30px;
 }
 
 .blackbox-list-empty {

@@ -185,6 +185,7 @@ fieldset {
     font-size: 18px;
     color: inherit;
     padding: 1px 0 15px 17px;
+    flex: none;
 }
 
 .help-container-wrapper {

@@ -57,32 +57,6 @@ WebInspector.ResourceLoader.load = function(url, headers, callback)
 }
 
 /**
- * @type {string}
- */
-WebInspector.ResourceLoader.targetUserAgent = "";
-
-/**
- * @param {string} url
- * @param {?Object.<string, string>} headers
- * @param {function(number, !Object.<string, string>, string)} callback
- */
-WebInspector.ResourceLoader.loadUsingTargetUA = function(url, headers, callback)
-{
-    if (!WebInspector.ResourceLoader.targetUserAgent) {
-        WebInspector.ResourceLoader.load(url, headers, callback);
-        return;
-    }
-
-    var headersWithUA = {};
-    if (headers) {
-        for (var header in headers)
-            headersWithUA[header] = headers[header];
-    }
-    headersWithUA["User-Agent"] = WebInspector.ResourceLoader.targetUserAgent;
-    WebInspector.ResourceLoader.load(url, headersWithUA, callback);
-}
-
-/**
  * @param {string} url
  * @param {?Object.<string, string>} headers
  * @param {!WebInspector.OutputStream} stream

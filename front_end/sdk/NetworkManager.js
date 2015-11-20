@@ -842,6 +842,24 @@ WebInspector.MultitargetNetworkManager.prototype = {
             target.networkAgent().showCertificateViewer(certificateId);
     },
 
+    /**
+     * @param {string} url
+     * @param {function(number, !Object.<string, string>, string)} callback
+     */
+    loadResource: function(url, callback)
+    {
+        var headers = {};
+
+        var currentUserAgent = this._currentUserAgent();
+        if (currentUserAgent)
+            headers["User-Agent"] = currentUserAgent;
+
+        if (WebInspector.moduleSetting("cacheDisabled").get())
+            headers["Cache-Control"] = "no-cache";
+
+        WebInspector.ResourceLoader.load(url, headers, callback);
+    },
+
     __proto__: WebInspector.Object.prototype
 }
 

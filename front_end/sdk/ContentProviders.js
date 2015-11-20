@@ -65,7 +65,7 @@ WebInspector.CompilerSourceMappingContentProvider.prototype = {
      */
     requestContent: function(callback)
     {
-        WebInspector.ResourceLoader.loadUsingTargetUA(this._sourceURL, {}, contentLoaded.bind(this));
+        WebInspector.multitargetNetworkManager.loadResource(this._sourceURL, contentLoaded.bind(this));
 
         /**
          * @param {number} statusCode

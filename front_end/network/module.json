@@ -64,7 +64,8 @@
             "title": "Request blocking",
             "persistence": "closeable",
             "order": 60,
-            "className": "WebInspector.BlockedURLsPane"
+            "className": "WebInspector.BlockedURLsPane",
+            "experiment": "requestBlocking"
         },
         {
             "type": "@WebInspector.ActionDelegate",

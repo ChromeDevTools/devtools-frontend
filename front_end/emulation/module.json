@@ -24,6 +24,23 @@
             "iconClass": "emulation-toolbar-item",
             "title": "Toggle device mode",
             "condition": "can_dock",
+            "experiment": "!deviceMode",
+            "bindings": [
+                {
+                    "platform": "windows,linux",
+                    "shortcut": "Shift+Ctrl+M"
+                },
+                {
+                    "platform": "mac",
+                    "shortcut": "Shift+Meta+M"
+                }
+            ]
+        },
+        {
+            "type": "@WebInspector.ActionDelegate",
+            "actionId": "emulation.toggle-device-mode",
+            "className": "WebInspector.DeviceModeView.ActionDelegate",
+            "experiment": "deviceMode",
             "bindings": [
                 {
                     "platform": "windows,linux",

@@ -253,6 +253,8 @@ WebInspector.DeviceModeView.prototype = {
  */
 WebInspector.DeviceModeView.Toolbar = function(model, showMediaInspectorSetting)
 {
+    WebInspector.DeviceModeView.Toolbar._instance = this;
+
     this._model = model;
     this._showMediaInspectorSetting = showMediaInspectorSetting;
     /** @type {!Map<!WebInspector.EmulatedDevice, !WebInspector.EmulatedDevice.Mode>} */
@@ -336,6 +338,9 @@ WebInspector.DeviceModeView.Toolbar = function(model, showMediaInspectorSetting)
     this._persistenceSetting = WebInspector.settings.createSetting("emulation.deviceModeViewPersistence", {type: WebInspector.DeviceModeModel.Type.None, device: "", orientation: "", mode: ""});
     this._restored = false;
 }
+
+/** @type {!WebInspector.DeviceModeView.Toolbar} */
+WebInspector.DeviceModeView.Toolbar._instance;
 
 WebInspector.DeviceModeView.Toolbar.prototype = {
     /**
@@ -605,6 +610,7 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
             this._responsiveItem.setToggled(this._model.type() === WebInspector.DeviceModeModel.Type.Responsive);
             this._deviceItem.setToggled(this._model.type() === WebInspector.DeviceModeModel.Type.Device);
             this._deviceSelectItem.setVisible(this._model.type() === WebInspector.DeviceModeModel.Type.Device);
+            this._previousModelType = this._cachedModelType;
             this._cachedModelType = this._model.type();
             updatePersistence = true;
         }
@@ -718,5 +724,41 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
         } else {
             this._model.emulate(WebInspector.DeviceModeModel.Type.None, null, null);
         }
+    },
+
+    _toggleType: function()
+    {
+        var previousType = this._model.type() === WebInspector.DeviceModeModel.Type.None ? (this._previousModelType || WebInspector.DeviceModeModel.Type.Responsive) : WebInspector.DeviceModeModel.Type.None;
+        if (previousType === WebInspector.DeviceModeModel.Type.Responsive)
+            this._responsiveButtonClick();
+        else if (previousType === WebInspector.DeviceModeModel.Type.Device)
+            this._deviceButtonClick();
+        else if (previousType === WebInspector.DeviceModeModel.Type.None)
+            this._noneButtonClick();
+    }
+}
+
+/**
+ * @constructor
+ * @implements {WebInspector.ActionDelegate}
+ */
+WebInspector.DeviceModeView.ActionDelegate = function()
+{
+}
+
+WebInspector.DeviceModeView.ActionDelegate.prototype = {
+    /**
+     * @override
+     * @param {!WebInspector.Context} context
+     * @param {string} actionId
+     * @return {boolean}
+     */
+    handleAction: function(context, actionId)
+    {
+        if (actionId === "emulation.toggle-device-mode" && WebInspector.DeviceModeView.Toolbar._instance) {
+            WebInspector.DeviceModeView.Toolbar._instance._toggleType();
+            return true;
+        }
+        return false;
     }
 }

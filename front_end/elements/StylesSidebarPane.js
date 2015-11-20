@@ -788,8 +788,8 @@ WebInspector.StylePropertiesSection = function(parentPane, matchedStyles, style)
     this._selectorElement = createElementWithClass("span", "selector");
     this._selectorElement.textContent = this._selectorText();
     selectorContainer.appendChild(this._selectorElement);
-    selectorContainer.addEventListener("mouseenter", this._onMouseEnterSelector.bind(this), false);
-    selectorContainer.addEventListener("mouseleave", this._onMouseOutSelector.bind(this), false);
+    this._selectorElement.addEventListener("mouseenter", this._onMouseEnterSelector.bind(this), false);
+    this._selectorElement.addEventListener("mouseleave", this._onMouseOutSelector.bind(this), false);
 
     var openBrace = createElement("span");
     openBrace.textContent = " {";

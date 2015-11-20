@@ -131,6 +131,7 @@ WebInspector.ScreencastView.prototype = {
         dimensions.width *= window.devicePixelRatio;
         dimensions.height *= window.devicePixelRatio;
         this._target.pageAgent().startScreencast("jpeg", 80, Math.min(maxImageDimension, dimensions.width), Math.min(maxImageDimension, dimensions.height));
+        this._target.emulationAgent().setTouchEmulationEnabled(true);
         this._domModel.setHighlighter(this);
     },
 
@@ -140,6 +141,7 @@ WebInspector.ScreencastView.prototype = {
             return;
         this._isCasting = false;
         this._target.pageAgent().stopScreencast();
+        this._target.emulationAgent().setTouchEmulationEnabled(false);
         this._domModel.setHighlighter(null);
     },
 

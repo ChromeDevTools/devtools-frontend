@@ -41,9 +41,10 @@ WebInspector.TimelineFlameChartDataProviderBase = function(model)
     /** @type {?WebInspector.FlameChart.TimelineData} */
     this._timelineData;
     this._font = "11px " + WebInspector.fontFamily();
-    this._filters = [];
-    this.addFilter(WebInspector.TimelineUIUtils.visibleEventsFilter());
-    this.addFilter(new WebInspector.ExcludeTopLevelFilter());
+    this._filters = [
+        WebInspector.TimelineUIUtils.visibleEventsFilter(),
+        new WebInspector.ExcludeTopLevelFilter()
+    ];
 }
 
 WebInspector.TimelineFlameChartDataProviderBase.prototype = {
@@ -97,14 +98,6 @@ WebInspector.TimelineFlameChartDataProviderBase.prototype = {
     reset: function()
     {
         this._timelineData = null;
-    },
-
-    /**
-     * @param {!WebInspector.TimelineModel.Filter} filter
-     */
-    addFilter: function(filter)
-    {
-        this._filters.push(filter);
     },
 
     /**
@@ -536,7 +529,7 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
         if (!event)
             return this._entryIndexToFrame[entryIndex] ? "white" : "#aaa";
         if (WebInspector.TracingModel.isAsyncPhase(event.phase)) {
-            if (event.hasCategory(WebInspector.TracingModel.ConsoleEventCategory))
+            if (event.hasCategory(WebInspector.TimelineModel.Category.Console))
                 return this._consoleColorGenerator.colorForID(event.name);
             var category = WebInspector.TimelineUIUtils.eventStyle(event).category;
             var color = this._asyncColorByCategory[category.name];

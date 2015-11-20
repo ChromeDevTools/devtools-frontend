@@ -118,6 +118,7 @@ WebInspector.TimelineUIUtils._initEventStyles = function()
     eventStyles[recordTypes.DecodeImage] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("Image Decode"), categories["painting"]);
     eventStyles[recordTypes.ResizeImage] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("Image Resize"), categories["painting"]);
     eventStyles[recordTypes.GPUTask] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("GPU"), categories["gpu"]);
+    eventStyles[recordTypes.LatencyInfo] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("Input Latency"), categories["scripting"]);
     WebInspector.TimelineUIUtils._eventStylesMap = eventStyles;
     return eventStyles;
 }
@@ -173,7 +174,7 @@ WebInspector.TimelineUIUtils.categoryForRecord = function(record)
 WebInspector.TimelineUIUtils.eventStyle = function(event)
 {
     var eventStyles = WebInspector.TimelineUIUtils._initEventStyles();
-    if (event.hasCategory(WebInspector.TracingModel.ConsoleEventCategory))
+    if (event.hasCategory(WebInspector.TimelineModel.Category.Console) || event.hasCategory(WebInspector.TimelineModel.Category.LatencyInfo))
         return { title: event.name, category: WebInspector.TimelineUIUtils.categories()["scripting"] };
 
     var result = eventStyles[event.name];
@@ -202,7 +203,7 @@ WebInspector.TimelineUIUtils.eventColor = function(event)
 WebInspector.TimelineUIUtils.eventTitle = function(event)
 {
     var title = WebInspector.TimelineUIUtils.eventStyle(event).title;
-    if (event.hasCategory(WebInspector.TracingModel.ConsoleEventCategory))
+    if (event.hasCategory(WebInspector.TimelineModel.Category.Console))
         return title;
     if (event.name === WebInspector.TimelineModel.RecordType.TimeStamp)
         return WebInspector.UIString("%s: %s", title, event.args["data"]["message"]);
@@ -367,7 +368,7 @@ WebInspector.TimelineUIUtils.buildDetailsTextForTraceEvent = function(event, tar
         break;
 
     default:
-        if (event.hasCategory(WebInspector.TracingModel.ConsoleEventCategory))
+        if (event.hasCategory(WebInspector.TimelineModel.Category.Console))
             detailsText = null;
         else
             detailsText = linkifyTopCallFrameAsText();
@@ -470,7 +471,7 @@ WebInspector.TimelineUIUtils.buildDetailsNodeForTraceEvent = function(event, tar
             details = linkifyLocation("", url, eventData["lineNumber"], 0);
         break;
     default:
-        if (event.hasCategory(WebInspector.TracingModel.ConsoleEventCategory))
+        if (event.hasCategory(WebInspector.TimelineModel.Category.Console))
             detailsText = null;
         else
             details = linkifyTopCallFrame();
@@ -1431,7 +1432,8 @@ WebInspector.TimelineUIUtils.asyncEventGroups = function()
     if (WebInspector.TimelineUIUtils._asyncEventGroups)
         return WebInspector.TimelineUIUtils._asyncEventGroups;
     WebInspector.TimelineUIUtils._asyncEventGroups = {
-        console: new WebInspector.AsyncEventGroup(WebInspector.UIString("Console"))
+        console: new WebInspector.AsyncEventGroup(WebInspector.UIString("Console")),
+        input: new WebInspector.AsyncEventGroup(WebInspector.UIString("Input Events"))
     };
     return WebInspector.TimelineUIUtils._asyncEventGroups;
 }
@@ -1769,7 +1771,7 @@ WebInspector.TimelineUIUtils.markerStyleForEvent = function(event)
 
     var title = WebInspector.TimelineUIUtils.eventTitle(event)
 
-    if (event.hasCategory(WebInspector.TracingModel.ConsoleEventCategory)) {
+    if (event.hasCategory(WebInspector.TimelineModel.Category.Console)) {
         return {
             title: title,
             dashStyle: tallMarkerDashStyle,

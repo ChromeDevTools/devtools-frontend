@@ -155,6 +155,8 @@ WebInspector.TimelineModel.RecordType = {
     LayerTreeHostImplSnapshot: "cc::LayerTreeHostImpl",
     PictureSnapshot: "cc::Picture",
     DisplayItemListSnapshot: "cc::DisplayItemList",
+    LatencyInfo: "LatencyInfo",
+    InputLatencyMouseMove: "InputLatency::MouseMove",
 
     // CpuProfile is a virtual event created on frontend to support
     // serialization of CPU Profiles within tracing timeline data.
@@ -168,6 +170,11 @@ WebInspector.TimelineModel.Events = {
     BufferUsage: "BufferUsage",
     RetrieveEventsProgress: "RetrieveEventsProgress"
 }
+
+WebInspector.TimelineModel.Category = {
+    Console: "blink.console",
+    LatencyInfo: "latencyInfo"
+};
 
 /**
  * @enum {string}
@@ -398,8 +405,10 @@ WebInspector.TimelineModel.MetadataEvents;
  */
 WebInspector.TimelineModel._eventType = function(event)
 {
-    if (event.hasCategory(WebInspector.TracingModel.ConsoleEventCategory))
+    if (event.hasCategory(WebInspector.TimelineModel.Category.Console))
         return WebInspector.TimelineModel.RecordType.ConsoleTime;
+    if (event.hasCategory(WebInspector.TimelineModel.Category.LatencyInfo))
+        return WebInspector.TimelineModel.RecordType.LatencyInfo;
     return /** @type !WebInspector.TimelineModel.RecordType */ (event.name);
 }
 
@@ -423,8 +432,11 @@ WebInspector.TimelineModel.prototype = {
             disabledByDefault("devtools.timeline"),
             disabledByDefault("devtools.timeline.frame"),
             WebInspector.TracingModel.TopLevelEventCategory,
-            WebInspector.TracingModel.ConsoleEventCategory
+            WebInspector.TimelineModel.Category.Console
         ];
+        if (Runtime.experiments.isEnabled("timelineLatencyInfo"))
+            categoriesArray.push(WebInspector.TimelineModel.Category.LatencyInfo)
+
         if (Runtime.experiments.isEnabled("timelineFlowEvents")) {
             categoriesArray.push(disabledByDefault("toplevel.flow"),
                                  disabledByDefault("ipc.flow"));
@@ -725,6 +737,7 @@ WebInspector.TimelineModel.prototype = {
         this._inspectedTargetEvents.sort(WebInspector.TracingModel.Event.compareStartTime);
 
         this._cpuProfiles = null;
+        this._processBrowserEvents();
         this._buildTimelineRecords();
         this._buildGPUTasks();
         this._insertFirstPaintEvent();
@@ -870,6 +883,14 @@ WebInspector.TimelineModel.prototype = {
         this._eventDividerRecords.splice(insertionIndexForObjectInListSortedByFunction(firstPaintRecord, this._eventDividerRecords, WebInspector.TimelineModel.Record._compareStartTime), 0, firstPaintRecord);
     },
 
+    _processBrowserEvents: function()
+    {
+        var browserMain = this._tracingModel.threadByName("Browser", "CrBrowserMain");
+        if (!browserMain)
+            return;
+        this._processAsyncEvents(this._mainThreadAsyncEventsByGroup, browserMain.asyncEvents());
+    },
+
     _buildTimelineRecords: function()
     {
         var topLevelRecords = this._buildTimelineRecordsForThread(this.mainThreadEvents());
@@ -894,10 +915,7 @@ WebInspector.TimelineModel.prototype = {
 
     _buildGPUTasks: function()
     {
-        var gpuProcess = this._tracingModel.processByName("GPU Process");
-        if (!gpuProcess)
-            return;
-        var mainThread = gpuProcess.threadByName("CrGpuMain");
+        var mainThread = this._tracingModel.threadByName("GPU Process", "CrGpuMain");
         if (!mainThread)
             return;
         var events = mainThread.events();
@@ -961,7 +979,7 @@ WebInspector.TimelineModel.prototype = {
 
     /**
      * @param {number} startTime
-     * @param {?number} endTime
+     * @param {number} endTime
      * @param {!WebInspector.TracingModel.Thread} mainThread
      * @param {!WebInspector.TracingModel.Thread} thread
      */
@@ -1014,7 +1032,18 @@ WebInspector.TimelineModel.prototype = {
             threadEvents.push(event);
             this._inspectedTargetEvents.push(event);
         }
-        i = asyncEvents.lowerBound(startTime, function (time, asyncEvent) { return time - asyncEvent.startTime });
+        this._processAsyncEvents(threadAsyncEventsByGroup, asyncEvents, startTime, endTime);
+    },
+
+    /**
+     * @param {!Map<!WebInspector.AsyncEventGroup, !Array<!WebInspector.TracingModel.AsyncEvent>>} asyncEventsByGroup
+     * @param {!Array<!WebInspector.TracingModel.AsyncEvent>} asyncEvents
+     * @param {number=} startTime
+     * @param {number=} endTime
+     */
+    _processAsyncEvents: function(asyncEventsByGroup, asyncEvents, startTime, endTime)
+    {
+        var i = startTime ? asyncEvents.lowerBound(startTime, function (time, asyncEvent) { return time - asyncEvent.startTime }) : 0;
         for (; i < asyncEvents.length; ++i) {
             var asyncEvent = asyncEvents[i];
             if (endTime && asyncEvent.startTime >= endTime)
@@ -1022,10 +1051,10 @@ WebInspector.TimelineModel.prototype = {
             var asyncGroup = this._processAsyncEvent(asyncEvent);
             if (!asyncGroup)
                 continue;
-            var groupAsyncEvents = threadAsyncEventsByGroup.get(asyncGroup);
+            var groupAsyncEvents = asyncEventsByGroup.get(asyncGroup);
             if (!groupAsyncEvents) {
                 groupAsyncEvents = [];
-                threadAsyncEventsByGroup.set(asyncGroup, groupAsyncEvents);
+                asyncEventsByGroup.set(asyncGroup, groupAsyncEvents);
             }
             groupAsyncEvents.push(asyncEvent);
         }
@@ -1230,9 +1259,18 @@ WebInspector.TimelineModel.prototype = {
     _processAsyncEvent: function(asyncEvent)
     {
         var groups = WebInspector.TimelineUIUtils.asyncEventGroups();
-        if (asyncEvent.hasCategory(WebInspector.TracingModel.ConsoleEventCategory))
+        if (asyncEvent.hasCategory(WebInspector.TimelineModel.Category.Console))
             return groups.console;
-
+        if (asyncEvent.hasCategory(WebInspector.TimelineModel.Category.LatencyInfo)) {
+            if (!Runtime.experiments.isEnabled("timelineLatencyInfo"))
+                return null;
+            // FIXME: fix event termination on the back-end instead.
+            if (asyncEvent.steps.peekLast().phase !== WebInspector.TracingModel.Phase.AsyncEnd)
+                return null;
+            if (asyncEvent.name === WebInspector.TimelineModel.RecordType.InputLatencyMouseMove)
+                return null;
+            return groups.input;
+        }
         return null;
     },
 
@@ -1547,7 +1585,7 @@ WebInspector.TimelineModel.buildBottomUpTree = function(topDownTree, groupingCal
     buRoot.selfTime = 0;
     buRoot.totalTime = 0;
     buRoot.name = WebInspector.UIString("Bottom-Up Chart");
-    /** @type {!Map<string,!WebInspector.TimelineModel.ProfileTreeNode>} */
+    /** @type {!Map<string, !WebInspector.TimelineModel.ProfileTreeNode>} */
     buRoot.children = new Map();
     var nodesOnStack = /** @type {!Set<string>} */ (new Set());
     if (topDownTree.children)

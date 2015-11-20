@@ -53,8 +53,6 @@ WebInspector.TracingModel.TopLevelEventCategory = "toplevel";
 WebInspector.TracingModel.DevToolsMetadataEventCategory = "disabled-by-default-devtools.timeline";
 WebInspector.TracingModel.DevToolsTimelineEventCategory = "disabled-by-default-devtools.timeline";
 
-WebInspector.TracingModel.ConsoleEventCategory = "blink.console";
-
 WebInspector.TracingModel.FrameLifecycleEventCategory = "cc,devtools";
 
 WebInspector.TracingModel._nestableAsyncEventsString =
@@ -299,6 +297,17 @@ WebInspector.TracingModel.prototype = {
     processByName: function(name)
     {
         return this._processByName.get(name);
+    },
+
+    /**
+     * @param {string} processName
+     * @param {string} threadName
+     * @return {?WebInspector.TracingModel.Thread}
+     */
+    threadByName: function(processName, threadName)
+    {
+        var process = this.processByName(processName);
+        return process && process.threadByName(threadName);
     },
 
     _processPendingAsyncEvents: function()

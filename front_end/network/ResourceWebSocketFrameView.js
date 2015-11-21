@@ -51,8 +51,8 @@ WebInspector.ResourceWebSocketFrameView = function(request)
     dataGridWidget.appendDataGrid(this._dataGrid);
     this._splitWidget.setMainWidget(dataGridWidget);
 
-    this._messageView = new WebInspector.EmptyWidget("Select frame to browse its content.");
-    this._splitWidget.setSidebarWidget(this._messageView);
+    var view = new WebInspector.EmptyWidget("Select frame to browse its content.");
+    this._splitWidget.setSidebarWidget(view);
 }
 
 /** @enum {number} */
@@ -118,12 +118,12 @@ WebInspector.ResourceWebSocketFrameView.prototype = {
     _onFrameSelected: function(event)
     {
         var selectedNode = /** @type {!WebInspector.ResourceWebSocketFrameNode} */ (event.target.selectedNode);
-        if (this._messageView)
-            this._messageView.detach();
-        if (this._dataView)
-            this._dataView.detach();
-        this._dataView = new WebInspector.ResourceSourceFrame(selectedNode.contentProvider());
-        this._splitWidget.setSidebarWidget(this._dataView);
+        var contentProvider = selectedNode.contentProvider();
+        contentProvider.requestContent(content => {
+            var parsedJSON = content ? WebInspector.JSONView.parseJSON(content) : null;
+            var view = parsedJSON ? new WebInspector.JSONView(parsedJSON) : new WebInspector.ResourceSourceFrame(contentProvider);
+            this._splitWidget.setSidebarWidget(view);
+        });
     },
 
     refresh: function()

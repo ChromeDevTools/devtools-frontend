@@ -30,25 +30,24 @@
 
 /**
  * @constructor
- * @extends {WebInspector.RequestView}
- * @param {!WebInspector.NetworkRequest} request
+ * @extends {WebInspector.VBox}
  * @param {!WebInspector.ParsedJSON} parsedJSON
  */
-WebInspector.RequestJSONView = function(request, parsedJSON)
+WebInspector.JSONView = function(parsedJSON)
 {
-    WebInspector.RequestView.call(this, request);
+    WebInspector.VBox.call(this);
     this._parsedJSON = parsedJSON;
-    this.element.classList.add("json");
+    this.element.classList.add("json-view");
 }
 
 // "false", "true", "null", ",", "{", "}", "[", "]", number, double-quoted string.
-WebInspector.RequestJSONView._jsonToken = new RegExp('(?:false|true|null|[/*&\\|;=\\(\\),\\{\\}\\[\\]]|(?:-?\\b(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?\\b)|(?:\"(?:[^\\0-\\x08\\x0a-\\x1f\"\\\\]|\\\\(?:[\"/\\\\bfnrt]|u[0-9A-Fa-f]{4}))*\"))', 'g');
+WebInspector.JSONView._jsonToken = new RegExp('(?:false|true|null|[/*&\\|;=\\(\\),\\{\\}\\[\\]]|(?:-?\\b(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?\\b)|(?:\"(?:[^\\0-\\x08\\x0a-\\x1f\"\\\\]|\\\\(?:[\"/\\\\bfnrt]|u[0-9A-Fa-f]{4}))*\"))', 'g');
 
 // Escaped unicode char.
-WebInspector.RequestJSONView._escapedUnicode = new RegExp('\\\\(?:([^u])|u(.{4}))', 'g');
+WebInspector.JSONView._escapedUnicode = new RegExp('\\\\(?:([^u])|u(.{4}))', 'g');
 
 // Map from escaped char to its literal value.
-WebInspector.RequestJSONView._standardEscapes = {'"': '"', '/': '/', '\\': '\\', 'b': '\b', 'f': '\f', 'n': '\n', 'r': '\r', 't': '\t'};
+WebInspector.JSONView._standardEscapes = {'"': '"', '/': '/', '\\': '\\', 'b': '\b', 'f': '\f', 'n': '\n', 'r': '\r', 't': '\t'};
 
 /**
  * @param {string} full
@@ -56,26 +55,26 @@ WebInspector.RequestJSONView._standardEscapes = {'"': '"', '/': '/', '\\': '\\',
  * @param {string} unicode
  * @return {string}
  */
-WebInspector.RequestJSONView._unescape = function(full, standard, unicode)
+WebInspector.JSONView._unescape = function(full, standard, unicode)
 {
-    return standard ? WebInspector.RequestJSONView._standardEscapes[standard] : String.fromCharCode(parseInt(unicode, 16));
+    return standard ? WebInspector.JSONView._standardEscapes[standard] : String.fromCharCode(parseInt(unicode, 16));
 }
 
 /**
  * @param {string} text
  * @return {string}
  */
-WebInspector.RequestJSONView._unescapeString = function(text)
+WebInspector.JSONView._unescapeString = function(text)
 {
-    return text.indexOf("\\") === -1 ? text : text.replace(WebInspector.RequestJSONView._escapedUnicode, WebInspector.RequestJSONView._unescape);
+    return text.indexOf("\\") === -1 ? text : text.replace(WebInspector.JSONView._escapedUnicode, WebInspector.JSONView._unescape);
 }
 
 /**
  * @return {*}
  */
-WebInspector.RequestJSONView._buildObjectFromJSON = function(text)
+WebInspector.JSONView._buildObjectFromJSON = function(text)
 {
-    var regExp = WebInspector.RequestJSONView._jsonToken;
+    var regExp = WebInspector.JSONView._jsonToken;
     regExp.lastIndex = 0;
     var result = [];
     var tip = result;
@@ -103,7 +102,7 @@ WebInspector.RequestJSONView._buildObjectFromJSON = function(text)
             if (Array.isArray(tip) && (lastToken === undefined || lastToken === "[" || lastToken === ","))
                 tip[tip.length] = undefined;
         } else if (code === 0x22) { // "
-            token = WebInspector.RequestJSONView._unescapeString(token.substring(1, token.length - 1));
+            token = WebInspector.JSONView._unescapeString(token.substring(1, token.length - 1));
             if (!key) {
                 if (Array.isArray(tip)) {
                   key = tip.length;
@@ -134,13 +133,13 @@ WebInspector.RequestJSONView._buildObjectFromJSON = function(text)
  * @param {string} text
  * @return {?WebInspector.ParsedJSON}
  */
-WebInspector.RequestJSONView.parseJSON = function(text)
+WebInspector.JSONView.parseJSON = function(text)
 {
     // Do not treat HTML as JSON.
     if (text.startsWith("<"))
         return null;
-    var inner = WebInspector.RequestJSONView._findBrackets(text, "{", "}");
-    var inner2 = WebInspector.RequestJSONView._findBrackets(text, "[", "]");
+    var inner = WebInspector.JSONView._findBrackets(text, "{", "}");
+    var inner2 = WebInspector.JSONView._findBrackets(text, "[", "]");
     inner = inner2.length > inner.length ? inner2 : inner;
 
     // Return on blank payloads or on payloads significantly smaller than original text.
@@ -156,7 +155,7 @@ WebInspector.RequestJSONView.parseJSON = function(text)
         return null;
 
     try {
-        return new WebInspector.ParsedJSON(WebInspector.RequestJSONView._buildObjectFromJSON(text), prefix, suffix);
+        return new WebInspector.ParsedJSON(WebInspector.JSONView._buildObjectFromJSON(text), prefix, suffix);
     } catch (e) {
         return null;
     }
@@ -168,7 +167,7 @@ WebInspector.RequestJSONView.parseJSON = function(text)
  * @param {string} close
  * @return {{start: number, end: number, length: number}}
  */
-WebInspector.RequestJSONView._findBrackets = function(text, open, close)
+WebInspector.JSONView._findBrackets = function(text, open, close)
 {
     var start = text.indexOf(open);
     var end = text.lastIndexOf(close);
@@ -178,7 +177,7 @@ WebInspector.RequestJSONView._findBrackets = function(text, open, close)
     return {start: start, end: end, length: length};
 }
 
-WebInspector.RequestJSONView.prototype = {
+WebInspector.JSONView.prototype = {
     wasShown: function()
     {
         this._initialize();
@@ -198,11 +197,14 @@ WebInspector.RequestJSONView.prototype = {
         this.element.appendChild(section.element);
     },
 
-    __proto__: WebInspector.RequestView.prototype
+    __proto__: WebInspector.VBox.prototype
 }
 
 /**
  * @constructor
+ * @param {*} data
+ * @param {string} prefix
+ * @param {string} suffix
  */
 WebInspector.ParsedJSON = function(data, prefix, suffix)
 {

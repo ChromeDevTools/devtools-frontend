@@ -215,8 +215,8 @@
     z-index: 250;
 }
 
-.request-view.json {
-    padding: 5px;
+.json-view {
+    padding: 2px 6px;
 }
 
 .request-view.html iframe {

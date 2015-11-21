@@ -86,13 +86,12 @@ WebInspector.RequestPreviewView.prototype = {
     },
 
     /**
-     * @return {?WebInspector.RequestJSONView}
+     * @return {?WebInspector.JSONView}
      */
     _jsonView: function()
     {
-        var content = this._requestContent();
-        var parsedJSON = WebInspector.RequestJSONView.parseJSON(content);
-        return parsedJSON ? new WebInspector.RequestJSONView(this.request, parsedJSON) : null;
+        var parsedJSON = WebInspector.JSONView.parseJSON(this._requestContent());
+        return parsedJSON && new WebInspector.JSONView(parsedJSON);
     },
 
     /**

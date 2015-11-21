@@ -1865,5 +1865,16 @@ WebInspector.DataGridContainerWidget.prototype = {
         return result;
     },
 
+    /**
+     * @override
+     */
+    detachChildWidgets: function()
+    {
+        WebInspector.Widget.prototype.detachChildWidgets.call(this);
+        for (var dataGrid of this._dataGrids)
+            this.element.removeChild(dataGrid.element);
+        this._dataGrids = [];
+    },
+
     __proto__: WebInspector.VBox.prototype
 }

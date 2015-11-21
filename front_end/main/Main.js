@@ -107,6 +107,7 @@ WebInspector.Main.prototype = {
         Runtime.experiments.register("applyCustomStylesheet", "Allow custom UI themes");
         Runtime.experiments.register("blackboxJSFramesOnTimeline", "Blackbox JavaScript frames on Timeline", true);
         Runtime.experiments.register("colorContrastRatio", "Contrast ratio line in color picker", true);
+        Runtime.experiments.register("darkTheme", "Dark theme", true);
         Runtime.experiments.register("deviceMode", "Device mode", true);
         Runtime.experiments.register("emptySourceMapAutoStepping", "Empty sourcemap auto-stepping");
         Runtime.experiments.register("fileSystemInspection", "FileSystem inspection");
@@ -167,6 +168,9 @@ WebInspector.Main.prototype = {
 
         WebInspector.initializeUIUtils(window);
         WebInspector.installComponentRootStyles(/** @type {!Element} */ (document.body));
+        if (Runtime.experiments.isEnabled("darkTheme")) {
+            document.body.classList.add("dark-theme");
+        }
 
         this._addMainEventListeners(document);
 

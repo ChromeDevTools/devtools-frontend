@@ -49,6 +49,16 @@ WebInspector.LayerView.Selection.Type = {
     Tile: "Tile",
 }
 
+/**
+ * @param {?WebInspector.LayerView.Selection} a
+ * @param {?WebInspector.LayerView.Selection} b
+ * @return {boolean}
+ */
+WebInspector.LayerView.Selection.isEqual = function(a, b)
+{
+    return a && b ? a._isEqual(b) : a === b;
+}
+
 WebInspector.LayerView.Selection.prototype = {
     /**
      * @return {!WebInspector.LayerView.Selection.Type}
@@ -70,7 +80,7 @@ WebInspector.LayerView.Selection.prototype = {
      * @param {!WebInspector.LayerView.Selection} other
      * @return {boolean}
      */
-    isEqual: function(other)
+    _isEqual: function(other)
     {
         return false;
     }
@@ -93,7 +103,7 @@ WebInspector.LayerView.LayerSelection.prototype = {
      * @param {!WebInspector.LayerView.Selection} other
      * @return {boolean}
      */
-    isEqual: function(other)
+    _isEqual: function(other)
     {
         return other._type === WebInspector.LayerView.Selection.Type.Layer && other.layer().id() === this.layer().id();
     },
@@ -119,7 +129,7 @@ WebInspector.LayerView.ScrollRectSelection.prototype = {
      * @param {!WebInspector.LayerView.Selection} other
      * @return {boolean}
      */
-    isEqual: function(other)
+    _isEqual: function(other)
     {
         return other._type === WebInspector.LayerView.Selection.Type.ScrollRect &&
             this.layer().id() === other.layer().id() && this.scrollRectIndex === other.scrollRectIndex;
@@ -146,7 +156,7 @@ WebInspector.LayerView.TileSelection.prototype = {
      * @param {!WebInspector.LayerView.Selection} other
      * @return {boolean}
      */
-    isEqual: function(other)
+    _isEqual: function(other)
     {
         return other._type === WebInspector.LayerView.Selection.Type.Tile
             && this.layer().id() === other.layer().id() && this.traceEvent === other.traceEvent;
@@ -205,7 +215,7 @@ WebInspector.LayerViewHost.prototype = {
      */
     hoverObject: function(selection)
     {
-        if (this._hoveredObject === selection)
+        if (WebInspector.LayerView.Selection.isEqual(this._hoveredObject, selection))
             return;
         this._hoveredObject = selection;
         var layer = selection && selection.layer();
@@ -219,7 +229,7 @@ WebInspector.LayerViewHost.prototype = {
      */
     selectObject: function(selection)
     {
-        if (this._selectedObject === selection)
+        if (WebInspector.LayerView.Selection.isEqual(this._selectedObject, selection))
             return;
         this._selectedObject = selection;
         for (var view of this._views)

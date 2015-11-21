@@ -190,13 +190,16 @@ WebInspector.Layers3DView.prototype = {
 
     onResize: function()
     {
+        this._resizeCanvas();
         this._update();
     },
 
     wasShown: function()
     {
-        if (this._needsUpdate)
-            this._update();
+        if (!this._needsUpdate)
+            return;
+        this._resizeCanvas();
+        this._update();
     },
 
     /**
@@ -279,8 +282,6 @@ WebInspector.Layers3DView.prototype = {
     {
         this._canvasElement.width = this._canvasElement.offsetWidth * window.devicePixelRatio;
         this._canvasElement.height = this._canvasElement.offsetHeight * window.devicePixelRatio;
-        this._gl.viewportWidth = this._canvasElement.width;
-        this._gl.viewportHeight = this._canvasElement.height;
     },
 
     _updateTransformAndConstraints: function()
@@ -394,15 +395,6 @@ WebInspector.Layers3DView.prototype = {
     },
 
     /**
-     * @param {!WebInspector.Layers3DView.OutlineType} type
-     * @param {!WebInspector.LayerView.Selection} selection
-     */
-    _isSelectionActive: function(type, selection)
-    {
-        return this._lastSelection[type] && this._lastSelection[type].isEqual(selection);
-    },
-
-    /**
      * @param {!WebInspector.Layer} layer
      * @return {number}
      */
@@ -454,8 +446,8 @@ WebInspector.Layers3DView.prototype = {
     _appendRect: function(rect)
     {
         var selection = rect.relatedObject;
-        var isSelected = this._isSelectionActive(WebInspector.Layers3DView.OutlineType.Selected, selection);
-        var isHovered = this._isSelectionActive(WebInspector.Layers3DView.OutlineType.Hovered, selection);
+        var isSelected = WebInspector.LayerView.Selection.isEqual(this._lastSelection[WebInspector.Layers3DView.OutlineType.Selected], selection);
+        var isHovered = WebInspector.LayerView.Selection.isEqual(this._lastSelection[WebInspector.Layers3DView.OutlineType.Hovered], selection);
         if (isSelected) {
             rect.borderColor = WebInspector.Layers3DView.SelectedBorderColor;
         } else if (isHovered) {
@@ -664,8 +656,9 @@ WebInspector.Layers3DView.prototype = {
             return;
         }
         this._failBanner.detach();
+        this._gl.viewportWidth = this._canvasElement.width;
+        this._gl.viewportHeight = this._canvasElement.height;
 
-        this._resizeCanvas();
         this._calculateDepthsAndVisibility();
         this._calculateRects();
         this._updateTransformAndConstraints();

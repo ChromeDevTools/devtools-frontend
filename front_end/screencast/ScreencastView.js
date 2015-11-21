@@ -158,9 +158,6 @@ WebInspector.ScreencastView.prototype = {
         this._scrollOffsetX = metadata.scrollOffsetX;
         this._scrollOffsetY = metadata.scrollOffsetY;
 
-        if (event.data.frameNumber)
-            this._target.pageAgent().screencastFrameAck(event.data.frameNumber);
-
         var deviceSizeRatio = metadata.deviceHeight / metadata.deviceWidth;
         var dimensionsCSS = this._viewportDimensions();
 

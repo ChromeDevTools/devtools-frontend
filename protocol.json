@@ -413,7 +413,8 @@
                     { "name": "format", "type": "string", "optional": true, "enum": ["jpeg", "png"], "description": "Image compression format." },
                     { "name": "quality", "type": "integer", "optional": true, "description": "Compression quality from range [0..100]." },
                     { "name": "maxWidth", "type": "integer", "optional": true, "description": "Maximum screenshot width." },
-                    { "name": "maxHeight", "type": "integer", "optional": true, "description": "Maximum screenshot height." }
+                    { "name": "maxHeight", "type": "integer", "optional": true, "description": "Maximum screenshot height." },
+                    { "name": "everyNthFrame", "type": "integer", "optional": true, "description": "Send every n-th frame." }
                 ],
                 "hidden": true,
                 "handlers": ["browser", "renderer"]
@@ -428,7 +429,7 @@
                 "name": "screencastFrameAck",
                 "description": "Acknowledges that a screencast frame has been received by the frontend.",
                 "parameters": [
-                    { "name": "frameNumber", "type": "integer", "description": "Frame number." }
+                    { "name": "sessionId", "type": "integer", "description": "Frame number." }
                 ],
                 "hidden": true,
                 "handlers": ["browser"]
@@ -556,7 +557,7 @@
                 "parameters": [
                     { "name": "data", "type": "string", "description": "Base64-encoded compressed image." },
                     { "name": "metadata", "$ref": "ScreencastFrameMetadata", "description": "Screencast frame metadata."},
-                    { "name": "frameNumber", "type": "integer", "optional": true, "description": "Frame number."}
+                    { "name": "sessionId", "type": "integer", "description": "Frame number."}
                 ],
                 "hidden": true,
                 "handlers": ["browser"]

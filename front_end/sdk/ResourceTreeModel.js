@@ -830,11 +830,12 @@ WebInspector.PageDispatcher.prototype = {
      * @override
      * @param {string} data
      * @param {!PageAgent.ScreencastFrameMetadata=} metadata
-     * @param {number=} frameNumber
+     * @param {number=} sessionId
      */
-    screencastFrame: function(data, metadata, frameNumber)
+    screencastFrame: function(data, metadata, sessionId)
     {
-        this._resourceTreeModel.dispatchEventToListeners(WebInspector.ResourceTreeModel.EventTypes.ScreencastFrame, {data:data, metadata:metadata, frameNumber:frameNumber});
+        this._resourceTreeModel._agent.screencastFrameAck(sessionId);
+        this._resourceTreeModel.dispatchEventToListeners(WebInspector.ResourceTreeModel.EventTypes.ScreencastFrame, { data: data, metadata: metadata });
     },
 
     /**
@@ -843,7 +844,7 @@ WebInspector.PageDispatcher.prototype = {
      */
     screencastVisibilityChanged: function(visible)
     {
-        this._resourceTreeModel.dispatchEventToListeners(WebInspector.ResourceTreeModel.EventTypes.ScreencastVisibilityChanged, {visible:visible});
+        this._resourceTreeModel.dispatchEventToListeners(WebInspector.ResourceTreeModel.EventTypes.ScreencastVisibilityChanged, { visible: visible });
     },
 
     /**

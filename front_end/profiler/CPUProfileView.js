@@ -48,6 +48,8 @@ WebInspector.CPUProfileView = function(profileHeader)
 
     this.dataGrid = new WebInspector.DataGrid(columns);
     this.dataGrid.addEventListener(WebInspector.DataGrid.Events.SortingChanged, this._sortProfile, this);
+    this._dataGridContainer = new WebInspector.DataGridContainerWidget();
+    this._dataGridContainer.appendDataGrid(this.dataGrid);
 
     this.viewSelectComboBox = new WebInspector.ToolbarComboBox(this._changeView.bind(this));
 
@@ -307,13 +309,13 @@ WebInspector.CPUProfileView.prototype = {
         case WebInspector.CPUProfileView._TypeTree:
             this.profileDataGridTree = this._getTopDownProfileDataGridTree();
             this._sortProfile();
-            this._visibleView = this.dataGrid.asWidget();
+            this._visibleView = this._dataGridContainer;
             this._searchableElement = this.profileDataGridTree;
             break;
         case WebInspector.CPUProfileView._TypeHeavy:
             this.profileDataGridTree = this._getBottomUpProfileDataGridTree();
             this._sortProfile();
-            this._visibleView = this.dataGrid.asWidget();
+            this._visibleView = this._dataGridContainer;
             this._searchableElement = this.profileDataGridTree;
             break;
         }

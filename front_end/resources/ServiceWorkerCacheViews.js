@@ -4,13 +4,13 @@
 
 /**
  * @constructor
- * @extends {WebInspector.VBox}
+ * @extends {WebInspector.DataGridContainerWidget}
  * @param {!WebInspector.ServiceWorkerCacheModel} model
  * @param {!WebInspector.ServiceWorkerCacheModel.Cache} cache
  */
 WebInspector.ServiceWorkerCacheView = function(model, cache)
 {
-    WebInspector.VBox.call(this);
+    WebInspector.DataGridContainerWidget.call(this);
     this.registerRequiredCSS("resources/serviceWorkerCacheViews.css");
 
     this._model = model;
@@ -87,9 +87,10 @@ WebInspector.ServiceWorkerCacheView.prototype = {
         this._cache = cache;
 
         if (this._dataGrid)
-            this._dataGrid.asWidget().detach();
+            this.removeDataGrid(this._dataGrid);
         this._dataGrid = this._createDataGrid();
-        this._dataGrid.asWidget().show(this.element);
+        this.appendDataGrid(this._dataGrid);
+
         this._skipCount = 0;
         this._updateData(true);
     },
@@ -158,5 +159,5 @@ WebInspector.ServiceWorkerCacheView.prototype = {
         this._entries = [];
     },
 
-    __proto__: WebInspector.VBox.prototype
+    __proto__: WebInspector.DataGridContainerWidget.prototype
 }

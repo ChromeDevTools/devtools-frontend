@@ -156,7 +156,9 @@ WebInspector.DatabaseQueryView.prototype = {
 
         if (dataGrid) {
             dataGrid.renderInline();
-            this._appendViewQueryResult(trimmedQuery, dataGrid.asWidget());
+            var dataGridContainer = new WebInspector.DataGridContainerWidget();
+            dataGridContainer.appendDataGrid(dataGrid);
+            this._appendViewQueryResult(trimmedQuery, dataGridContainer);
             dataGrid.autoSizeColumns(5);
         }
 

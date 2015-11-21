@@ -24,9 +24,9 @@ WebInspector.TimelineTreeView = function(model)
     this._populateColumns(columns);
     this._dataGrid = new WebInspector.SortableDataGrid(columns);
     this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SortingChanged, this._sortingChanged, this);
-    var dataGridContainerWidget = this._dataGrid.asWidget();
+    var dataGridContainerWidget = new WebInspector.DataGridContainerWidget();
     this._populateToolbar(dataGridContainerWidget.element);
-    dataGridContainerWidget.show(this.element);
+    dataGridContainerWidget.appendDataGrid(this._dataGrid);
 
     this._splitWidget = new WebInspector.SplitWidget(true, true, "timelineTreeViewDetailsSplitWidget");
     this._splitWidget.show(this.element);

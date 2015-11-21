@@ -47,7 +47,9 @@ WebInspector.ResourceWebSocketFrameView = function(request)
 
     this._dataGrid.setName("ResourceWebSocketFrameView");
     this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SelectedNode, this._onFrameSelected, this);
-    this._splitWidget.setMainWidget(this._dataGrid.asWidget());
+    var dataGridWidget = new WebInspector.DataGridContainerWidget();
+    dataGridWidget.appendDataGrid(this._dataGrid);
+    this._splitWidget.setMainWidget(dataGridWidget);
 
     this._messageView = new WebInspector.EmptyWidget("Select frame to browse its content.");
     this._splitWidget.setSidebarWidget(this._messageView);

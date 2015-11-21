@@ -110,7 +110,7 @@ WebInspector.IDBDatabaseView.prototype = {
 
 /**
  * @constructor
- * @extends {WebInspector.VBox}
+ * @extends {WebInspector.DataGridContainerWidget}
  * @param {!WebInspector.IndexedDBModel} model
  * @param {!WebInspector.IndexedDBModel.DatabaseId} databaseId
  * @param {!WebInspector.IndexedDBModel.ObjectStore} objectStore
@@ -118,7 +118,7 @@ WebInspector.IDBDatabaseView.prototype = {
  */
 WebInspector.IDBDataView = function(model, databaseId, objectStore, index)
 {
-    WebInspector.VBox.call(this);
+    WebInspector.DataGridContainerWidget.call(this);
     this.registerRequiredCSS("resources/indexedDBViews.css");
 
     this._model = model;
@@ -252,9 +252,9 @@ WebInspector.IDBDataView.prototype = {
         this._index = index;
 
         if (this._dataGrid)
-            this._dataGrid.asWidget().detach();
+            this.removeDataGrid(this._dataGrid);
         this._dataGrid = this._createDataGrid();
-        this._dataGrid.asWidget().show(this.element);
+        this.appendDataGrid(this._dataGrid);
 
         this._skipCount = 0;
         this._updateData(true);
@@ -360,7 +360,7 @@ WebInspector.IDBDataView.prototype = {
         this._entries = [];
     },
 
-    __proto__: WebInspector.VBox.prototype
+    __proto__: WebInspector.DataGridContainerWidget.prototype
 }
 
 /**

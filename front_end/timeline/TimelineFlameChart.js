@@ -938,6 +938,26 @@ WebInspector.TimelineFlameChartNetworkDataProvider.prototype = {
     },
 
     /**
+     * @override
+     * @param {number} index
+     * @return {?Array<!{title: string, value: (string|!Element)}>}
+     */
+    prepareHighlightedEntryInfo: function(index)
+    {
+        var /** @const */ maxURLChars = 80;
+        var request = /** @type {!WebInspector.TimelineModel.NetworkRequest} */ (this._requests[index]);
+        if (!request.url)
+            return null;
+        var value = createElement("div");
+        var duration = request.endTime - request.startTime;
+        if (request.startTime && isFinite(duration))
+            value.createChild("span", "timeline-network-info-duration").textContent = Number.millisToString(duration);
+        value.createChild("span", "timeline-network-info-method").textContent = request.requestMethod;
+        value.createChild("span", "timeline-network-info-url").textContent = request.url.trimMiddle(maxURLChars);
+        return [{ title: "", value: value }];
+    },
+
+    /**
      * @param {!Array.<!WebInspector.TracingModel.Event>} events
      */
     _appendTimelineData: function(events)

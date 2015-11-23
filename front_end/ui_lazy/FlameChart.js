@@ -691,6 +691,8 @@ WebInspector.FlameChart.prototype = {
         var inDividersBar = event.offsetY < WebInspector.FlameChart.DividersBarHeight;
         this._highlightedMarkerIndex = inDividersBar ? this._markerIndexAtPosition(event.offsetX) : -1;
         this._updateMarkerHighlight();
+        this._entryInfo.style.left = event.offsetX + "px";
+        this._entryInfo.style.top = event.offsetY + "px";
 
         this._highlightEntry(this._coordinatesToEntryIndex(event.offsetX, event.offsetY));
     },
@@ -1395,7 +1397,10 @@ WebInspector.FlameChart.prototype = {
         for (var entry of entryInfo) {
             var row = infoTable.createChild("tr");
             row.createChild("td", "title").textContent = entry.title;
-            row.createChild("td").textContent = typeof entry.value === "string" ? entry.value : entry.value.textContent;
+            if (typeof entry.value === "string")
+                row.createChild("td").textContent = entry.value;
+            else
+                row.createChild("td").appendChild(entry.value);
         }
         return infoTable;
     },

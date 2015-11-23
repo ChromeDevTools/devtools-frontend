@@ -59,15 +59,37 @@
     bottom: 0;
 }
 
-.flame-chart-entry-info {
+.flame-chart-entry-info:not(:empty) {
+    z-index: 100;
+    margin: 6px 10px;
     position: absolute;
-    bottom: 6px;
-    left: 12px;
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: white;
     pointer-events: none;
+    padding: 2px;
+    box-shadow: hsla(0, 0%, 0%, 0.4) 1px 1px 8px;
+}
+
+.flame-chart-entry-info table tr td:empty {
+    padding: 0;
+}
+
+.flame-chart-entry-info table tr td:not(:empty) {
+    padding: 0 5px;
+    white-space: nowrap;
 }
 
 .flame-chart-entry-info table tr td:first-child {
     font-weight: bold;
-    padding-right: 8px;
+}
+
+.flame-chart-entry-info table tr td span {
+    margin-right: 5px;
+}
+
+.flame-chart-entry-info table tr td span.timeline-network-info-duration {
+    color: darkgreen;
+}
+
+.flame-chart-entry-info table tr td span.timeline-network-info-method {
+    color: darkblue;
 }

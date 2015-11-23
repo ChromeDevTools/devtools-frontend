@@ -663,7 +663,7 @@ WebInspector.ElementsPanel.prototype = {
             treeElement.reveal();
             var matches = treeElement.listItemElement.getElementsByClassName(WebInspector.highlightedSearchResultClassName);
             if (matches.length)
-                matches[0].scrollIntoViewIfNeeded();
+                matches[0].scrollIntoViewIfNeeded(false);
         }
     },
 

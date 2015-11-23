@@ -690,12 +690,6 @@ WebInspector.BaseNavigatorTreeElement.prototype = {
             this.listItemElement.classList.add(this._iconClasses[i]);
     },
 
-    onreveal: function()
-    {
-        if (this.listItemElement)
-            this.listItemElement.scrollIntoViewIfNeeded(true);
-    },
-
     /**
      * @return {string}
      */

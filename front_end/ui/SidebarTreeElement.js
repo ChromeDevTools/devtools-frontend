@@ -62,12 +62,6 @@ WebInspector.SidebarSectionTreeElement.prototype = {
         this.listItemElement.classList.add("sidebar-tree-section");
     },
 
-    onreveal: function()
-    {
-        if (this.listItemElement)
-            this.listItemElement.scrollIntoViewIfNeeded(false);
-    },
-
     __proto__: TreeElement.prototype
 }
 
@@ -180,12 +174,6 @@ WebInspector.SidebarTreeElement.prototype = {
             this.listItemElement.appendChild(this.disclosureButton);
 
         this.listItemElement.appendChildren(this.iconElement, this.statusElement, this.titlesElement);
-    },
-
-    onreveal: function()
-    {
-        if (this.listItemElement)
-            this.listItemElement.scrollIntoViewIfNeeded(false);
     },
 
     __proto__: TreeElement.prototype

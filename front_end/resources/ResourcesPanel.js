@@ -916,15 +916,6 @@ WebInspector.BaseStorageTreeElement.prototype = {
         return false;
     },
 
-    /**
-     * @override
-     */
-    onreveal: function()
-    {
-        if (this.listItemElement)
-            this.listItemElement.scrollIntoViewIfNeeded(false);
-    },
-
     get titleText()
     {
         return this._titleText;

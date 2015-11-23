@@ -351,20 +351,6 @@ WebInspector.ElementsTreeElement.prototype = {
 
     /**
      * @override
-     */
-    onreveal: function()
-    {
-        if (this.listItemElement) {
-            var tagSpans = this.listItemElement.getElementsByClassName("webkit-html-tag-name");
-            if (tagSpans.length)
-                tagSpans[0].scrollIntoViewIfNeeded(true);
-            else
-                this.listItemElement.scrollIntoViewIfNeeded(true);
-        }
-    },
-
-    /**
-     * @override
      * @param {boolean=} omitFocus
      * @param {boolean=} selectedByUser
      * @return {boolean}

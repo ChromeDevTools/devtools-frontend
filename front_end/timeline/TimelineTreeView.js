@@ -65,6 +65,14 @@ WebInspector.TimelineTreeView.prototype = {
     },
 
     /**
+     * @return {boolean}
+     */
+    _exposePercentages: function()
+    {
+        return false;
+    },
+
+    /**
      * @param {!Element} parent
      */
     _populateToolbar: function(parent) { },
@@ -336,25 +344,9 @@ WebInspector.TimelineTreeView.GridNode.prototype = {
     {
         if (columnIdentifier !== "self" && columnIdentifier !== "total" && columnIdentifier !== "startTime")
             return null;
-        /**
-         * @param {number} time
-         * @return {string}
-         */
-        function formatMilliseconds(time)
-        {
-            return WebInspector.UIString("%.1f\u2009ms", time);
-        }
-        /**
-         * @param {number} value
-         * @return {string}
-         */
-        function formatPercent(value)
-        {
-            return WebInspector.UIString("%.1f\u2009%%", value);
-        }
 
+        var showPercents = false;
         var value;
-        var percentText;
         var maxTime;
         switch (columnIdentifier) {
         case "startTime":
@@ -362,13 +354,13 @@ WebInspector.TimelineTreeView.GridNode.prototype = {
             break;
         case "self":
             value = this._profileNode.selfTime;
-            percentText = formatPercent(this._profileNode.selfTime / this._grandTotalTime * 100);
             maxTime = this._maxSelfTime;
+            showPercents = true;
             break;
         case "total":
             value = this._profileNode.totalTime;
-            percentText = formatPercent(this._profileNode.totalTime / this._grandTotalTime * 100);
             maxTime = this._maxTotalTime;
+            showPercents = true;
             break;
         default:
             return null;
@@ -376,13 +368,14 @@ WebInspector.TimelineTreeView.GridNode.prototype = {
         var cell = this.createTD(columnIdentifier);
         cell.className = "numeric-column";
         var textDiv = cell.createChild("div");
-        textDiv.createChild("span").textContent = formatMilliseconds(value);
-        if (percentText) {
-            textDiv.createChild("span", "percent-column").textContent = percentText;
-            textDiv.classList.add("profile-multiple-values");
-        }
-        if (maxTime)
+        textDiv.createChild("span").textContent = WebInspector.UIString("%.1f\u2009ms", value);
+
+        if (showPercents && this._treeView._exposePercentages())
+            textDiv.createChild("span", "percent-column").textContent = WebInspector.UIString("%.1f\u2009%%", value / this._grandTotalTime * 100);
+        if (maxTime) {
+            textDiv.classList.add("background-percent-bar");
             cell.createChild("div", "background-bar-container").createChild("div", "background-bar").style.width = (value * 100 / maxTime).toFixed(1) + "%";
+        }
         return cell;
     },
 
@@ -473,6 +466,15 @@ WebInspector.AggregatedTimelineTreeView.prototype = {
         addGroupingOption.call(this, WebInspector.UIString("Group by Subdomain"), WebInspector.AggregatedTimelineTreeView.GroupBy.Subdomain);
         addGroupingOption.call(this, WebInspector.UIString("Group by URL"), WebInspector.AggregatedTimelineTreeView.GroupBy.URL);
         panelToolbar.appendToolbarItem(this._groupByCombobox);
+    },
+
+    /**
+     * @override
+     * @return {boolean}
+     */
+    _exposePercentages: function()
+    {
+        return true;
     },
 
     _onGroupByChanged: function()

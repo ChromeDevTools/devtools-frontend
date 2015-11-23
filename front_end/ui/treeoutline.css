@@ -65,7 +65,6 @@ ol.tree-outline,
 .tree-outline li {
     text-overflow: ellipsis;
     white-space: nowrap;
-    overflow: hidden;
     min-height: 17px;
     padding-top: 2px;
     position: relative;
@@ -80,18 +79,14 @@ ol.tree-outline:focus li.selected * {
 }
 
 .tree-outline li::before {
-    float: left;
     -webkit-user-select: none;
     -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
     -webkit-mask-size: 352px 168px;
-    content: "a";
+    content: "aa";
     color: transparent;
     text-shadow: none;
-    position: relative;
-    margin-right: 1px;
-    top: 1px;
-    width: 10px;
-    height: 10px;
+    margin-right: -2px;
+    height: 12px;
 }
 
 .tree-outline li:not(.parent)::before {

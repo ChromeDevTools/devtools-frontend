@@ -125,7 +125,7 @@ WebInspector.ScopeChainSidebarPane.prototype = {
             if (!title || title === subtitle)
                 subtitle = undefined;
 
-            var titleElement = createElementWithClass("div");
+            var titleElement = createElementWithClass("div", "scope-chain-sidebar-pane-section-header");
             titleElement.createChild("div", "scope-chain-sidebar-pane-section-subtitle").textContent = subtitle;
             titleElement.createChild("div", "scope-chain-sidebar-pane-section-title").textContent = title;
 

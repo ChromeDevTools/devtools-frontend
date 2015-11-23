@@ -36,6 +36,7 @@
 .resources.panel .sidebar li {
     height: 18px;
     white-space: nowrap;
+    padding-top: 1px;
 }
 
 .resources.panel .sidebar li.selected {
@@ -62,15 +63,16 @@ body.inactive .resources.panel .sidebar li.selected .selection {
 .resources.panel .sidebar .icon {
     width: 16px;
     height: 16px;
-    float: left;
+    position: relative;
+    top: 3px;
+    margin-top: -3px;
 }
 
 .resources.panel .base-storage-tree-element-title {
     overflow: hidden;
-    position: relative;
     text-overflow: ellipsis;
     padding-left: 2px;
-    top: 1px;
+    display: inline;
 }
 
 .resources-toolbar {

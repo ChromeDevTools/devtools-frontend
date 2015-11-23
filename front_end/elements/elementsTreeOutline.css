@@ -25,8 +25,6 @@
 }
 
 .elements-disclosure li.parent::before {
-    float: left;
-    width: 10px;
     box-sizing: border-box;
 }
 
@@ -34,10 +32,10 @@
     -webkit-user-select: none;
     -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
     -webkit-mask-size: 352px 168px;
-    content: "a";
+    content: "aa";
     color: transparent;
     text-shadow: none;
-    margin-right: 1px;
+    margin-right: -3px;
 }
 
 .elements-disclosure li.always-parent::before {
@@ -325,6 +323,7 @@ ol:focus li.selected .webkit-html-attribute-name {
 
 .elements-disclosure .gutter-container {
     position: absolute;
+    top: 0;
 }
 
 .elements-disclosure li.selected .gutter-container:not(.has-decorations) {

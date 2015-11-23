@@ -6,6 +6,7 @@
 
 .event-listener-tree li {
     padding: 2px 0 0 5px;
+    overflow: hidden;
 }
 
 .event-listener-tree > li {

@@ -36,6 +36,7 @@ div.ax-text-alternatives {
 
 .ax-readable-name {
     flex-shrink: 0;
+    padding-left: 2px;
 }
 
 .ax-readable-string {
@@ -59,7 +60,7 @@ span.ax-internal-role {
 }
 
 .tree-outline li {
-    padding-top: 5px;
+    padding-left: 1px;
 }
 
 .tree-outline li.invalid {

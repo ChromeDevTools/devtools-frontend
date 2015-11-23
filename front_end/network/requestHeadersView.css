@@ -32,7 +32,7 @@
 
 .request-headers-view .outline-disclosure li.parent::before {
     position: static;
-    width: 9px;
+    width: 13px;
     height: 9px;
     -webkit-mask-position: -4px -98px;
     background-image: none;

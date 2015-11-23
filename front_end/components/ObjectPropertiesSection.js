@@ -49,7 +49,7 @@ WebInspector.ObjectPropertiesSection = function(object, title, emptyPlaceholder,
     this.element._section = this;
     this.registerRequiredCSS("components/objectValue.css");
     this.registerRequiredCSS("components/objectPropertiesSection.css");
-    this.rootElement().childrenListElement.classList.add("source-code", "object-properties-section")
+    this.rootElement().childrenListElement.classList.add("source-code", "object-properties-section");
 }
 
 /** @const */
@@ -157,6 +157,7 @@ WebInspector.ObjectPropertiesSection.RootElement = function(object, emptyPlaceho
     this.setExpandable(true);
     this.selectable = false;
     this.toggleOnClick = true;
+    this.listItemElement.classList.add("object-properties-section-root-element");
 }
 
 WebInspector.ObjectPropertiesSection.RootElement.prototype = {

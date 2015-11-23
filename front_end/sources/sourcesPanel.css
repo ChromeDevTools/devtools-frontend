@@ -174,9 +174,14 @@
     margin-left: 11px;
 }
 
+.watch-expression-object-header .watch-expression-title {
+    margin-left: 1px;
+}
+
 .watch-expression {
     position: relative;
     padding: 1px 0px 1px 6px;
+    flex: none;
 }
 
 .watch-expressions .name {
@@ -208,6 +213,15 @@
     margin-left: 12px;
 }
 
+.watch-expression-header {
+    flex: auto;
+}
+
+.watch-expression-object-header {
+    margin-left: -12px;
+    padding-left: 12px;
+}
+
 .watch-expression-header:hover {
     background-color: #F0F0F0;
     padding-right: 14px;
@@ -215,6 +229,10 @@
 
 .sidebar-pane-stack .watch-expressions {
     margin-top: 0px;
+}
+
+.scope-chain-sidebar-pane-section-header {
+    flex: auto;
 }
 
 .scope-chain-sidebar-pane-section-subtitle {

@@ -356,6 +356,7 @@ WebInspector.WatchExpression.prototype = {
         this._element.removeChildren();
         this._objectPropertiesSection = null;
         if (!wasThrown && result && result.hasChildren && !result.customPreview()) {
+            headerElement.classList.add("watch-expression-object-header");
             this._objectPropertiesSection = new WebInspector.ObjectPropertiesSection(result, headerElement);
             this._objectPresentationElement = this._objectPropertiesSection.element;
             var objectTreeElement = this._objectPropertiesSection.objectTreeElement();

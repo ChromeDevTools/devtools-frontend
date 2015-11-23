@@ -7,19 +7,19 @@
     padding: 0;
 }
 
+.tree-outline li {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
 .tree-outline:focus li.selected .lock-icon-neutral {
     background-color: #fff;
 }
 
 .tree-outline .security-main-view-sidebar-tree-item {
     border-bottom: 1px solid rgb(230, 230, 230);
-    padding-top: 0;
-}
-
-.tree-outline .security-main-view-sidebar-tree-item .icon,
-.tree-outline .security-main-view-sidebar-tree-item .titles {
-    margin-top: 1.5em;
-    margin-bottom: 1.5em;
+    padding: 16px 0;
 }
 
 .tree-outline .security-sidebar-origins {
@@ -45,8 +45,8 @@
 
 .tree-outline .sidebar-tree-item .lock-icon,
 .tree-outline .sidebar-tree-item .security-property {
-    float: left;
     margin-right: 2px;
+    flex: none;
 }
 
 .tree-outline:focus .security-sidebar-tree-item.selected .icon:not(.security-property-unknown) {

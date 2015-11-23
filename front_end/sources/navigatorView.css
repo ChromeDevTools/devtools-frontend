@@ -56,13 +56,14 @@
     min-width: 100%;
     min-height: 100%;
     display: inline-block;
-    position: relative
+    position: relative;
 }
 
 .navigator li {
     height: 18px;
     line-height: 17px;
     white-space: nowrap;
+    padding-right: 3px;
 }
 
 .navigator :focus li.selected {
@@ -80,7 +81,9 @@
 .navigator .icon {
     width: 16px;
     height: 16px;
-    float: left;
+    margin-top: -2px;
+    position: relative;
+    top: 3px;
 }
 
 .navigator .base-navigator-tree-element-title {

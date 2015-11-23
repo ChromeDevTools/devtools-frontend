@@ -20,6 +20,8 @@
 .object-properties-section {
     padding: 0 0 0px 0px;
     color: rgb(33,33,33) !important;
+    display: flex;
+    flex-direction: column;
 }
 
 .object-properties-section li {
@@ -49,4 +51,17 @@
 
 .object-properties-section .synthetic-property {
     font-style: italic;
+}
+
+.object-properties-section-root-element {
+    display: flex;
+    flex-direction: row;
+}
+
+.object-properties-section-root-element::before {
+    -webkit-mask-position: -4px -97px !important;
+}
+
+.object-properties-section-root-element.expanded::before {
+    -webkit-mask-position: -20px -97px !important;
 }

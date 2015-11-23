@@ -204,18 +204,13 @@ ol.outline-disclosure:focus li.selected * {
 }
 
 .outline-disclosure li::before {
-    float: left;
     -webkit-user-select: none;
     -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
     -webkit-mask-size: 352px 168px;
-    content: "a";
+    content: "aa";
     color: transparent;
     text-shadow: none;
-    position: relative;
-    top: 2px;
-    margin-right: 1px;
-    width: 10px;
-    height: 10px;
+    margin-right: -2px;
 }
 
 .outline-disclosure li:not(.parent)::before {

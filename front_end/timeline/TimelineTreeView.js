@@ -185,6 +185,9 @@ WebInspector.TimelineTreeView.prototype = {
 
     _updateDetailsForSelection: function()
     {
+        // FIXME: remove this as we implement details for all modes.
+        if (!this._detailsView)
+            return;
         var selectedNode = this._dataGrid.selectedNode ? /** @type {!WebInspector.TimelineTreeView.GridNode} */ (this._dataGrid.selectedNode)._profileNode : null;
         if (selectedNode === this._lastSelectedNode)
             return;

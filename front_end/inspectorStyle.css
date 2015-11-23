@@ -46,10 +46,6 @@ body {
     color: #222;
 }
 
-body.dark-theme {
-    -webkit-filter: invert(100%) hue-rotate(180deg) saturate(80%);
-}
-
 .platform-linux {
     color: rgb(48, 57, 66);
     font-family: Ubuntu, Arial, sans-serif;
@@ -556,10 +552,6 @@ body.inactive .sidebar-tree-item.selected {
     top: 0;
     right: 0;
     bottom: 0;
-}
-
-body.dark-theme .root-view {
-    background: white;
 }
 
 .viewport-control-gap-element {

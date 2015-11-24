@@ -596,9 +596,20 @@ WebInspector.UISourceCode.prototype = {
      * @param {number=} columnNumber
      * @return {!WebInspector.UISourceCode.Message} message
      */
-    addMessage: function(level, text, lineNumber, columnNumber)
+    addLineMessage: function(level, text, lineNumber, columnNumber)
     {
-        var message = new WebInspector.UISourceCode.Message(this, level, text, lineNumber, columnNumber);
+        return this.addMessage(level, text, new WebInspector.TextRange(lineNumber, columnNumber || 0, lineNumber, columnNumber || 0));
+    },
+
+    /**
+     * @param {!WebInspector.UISourceCode.Message.Level} level
+     * @param {string} text
+     * @param {!WebInspector.TextRange} range
+     * @return {!WebInspector.UISourceCode.Message} message
+     */
+    addMessage: function(level, text, range)
+    {
+        var message = new WebInspector.UISourceCode.Message(this, level, text, range);
         this._messages.push(message);
         this.dispatchEventToListeners(WebInspector.UISourceCode.Events.MessageAdded, message);
         return message;
@@ -765,16 +776,14 @@ WebInspector.Revision.prototype = {
  * @param {!WebInspector.UISourceCode} uiSourceCode
  * @param {!WebInspector.UISourceCode.Message.Level} level
  * @param {string} text
- * @param {number} lineNumber
- * @param {number=} columnNumber
+ * @param {!WebInspector.TextRange} range
  */
-WebInspector.UISourceCode.Message = function(uiSourceCode, level, text, lineNumber, columnNumber)
+WebInspector.UISourceCode.Message = function(uiSourceCode, level, text, range)
 {
     this._uiSourceCode = uiSourceCode;
     this._level = level;
     this._text = text;
-    this._lineNumber = lineNumber;
-    this._columnNumber = columnNumber;
+    this._range = range;
 }
 
 /**
@@ -811,11 +820,18 @@ WebInspector.UISourceCode.Message.prototype = {
     },
 
     /**
+     * @return {!WebInspector.TextRange}
+     */
+    range: function() {
+        return this._range;
+    },
+
+    /**
      * @return {number}
      */
     lineNumber: function()
     {
-        return this._lineNumber;
+        return this._range.startLine;
     },
 
     /**
@@ -823,7 +839,7 @@ WebInspector.UISourceCode.Message.prototype = {
      */
     columnNumber: function()
     {
-        return this._columnNumber;
+        return this._range.startColumn;
     },
 
     /**
@@ -832,7 +848,7 @@ WebInspector.UISourceCode.Message.prototype = {
      */
     isEqual: function(another)
     {
-        return this._uiSourceCode === another._uiSourceCode && this.text() === another.text() && this.level() === another.level() && this.lineNumber() === another.lineNumber() && this.columnNumber() === another.columnNumber();
+        return this._uiSourceCode === another._uiSourceCode && this.text() === another.text() && this.level() === another.level() && this.range().equal(another.range());
     },
 
     remove: function()

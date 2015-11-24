@@ -178,7 +178,7 @@ WebInspector.PresentationConsoleMessage.prototype = {
     {
         if (this._uiMessage)
             this._uiMessage.remove();
-        this._uiMessage = uiLocation.uiSourceCode.addMessage(this._level, this._text, uiLocation.lineNumber, uiLocation.columnNumber);
+        this._uiMessage = uiLocation.uiSourceCode.addLineMessage(this._level, this._text, uiLocation.lineNumber, uiLocation.columnNumber);
     },
 
     dispose: function()

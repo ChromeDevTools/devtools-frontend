@@ -60,8 +60,7 @@
 }
 
 .flame-chart-entry-info:not(:empty) {
-    z-index: 100;
-    margin: 6px 10px;
+    z-index: 200;
     position: absolute;
     background-color: white;
     pointer-events: none;

@@ -681,6 +681,7 @@ WebInspector.FlameChart.prototype = {
     _onMouseMove: function(event)
     {
         this._lastMouseOffsetX = event.offsetX;
+        this._lastMouseOffsetY = event.offsetY;
 
         if (!this._enabled())
             return;
@@ -691,43 +692,60 @@ WebInspector.FlameChart.prototype = {
         var inDividersBar = event.offsetY < WebInspector.FlameChart.DividersBarHeight;
         this._highlightedMarkerIndex = inDividersBar ? this._markerIndexAtPosition(event.offsetX) : -1;
         this._updateMarkerHighlight();
-        this._entryInfo.style.left = event.offsetX + "px";
-        this._entryInfo.style.top = event.offsetY + "px";
-
-        this._highlightEntry(this._coordinatesToEntryIndex(event.offsetX, event.offsetY));
+        this._showHighlight();
     },
 
     _onMouseOut: function()
     {
-        this._highlightEntry(-1);
+        this._hideHighlight();
     },
 
-    /**
-     * @param {number} entryIndex
-     */
-    _highlightEntry: function(entryIndex)
+    _showHighlight: function()
     {
-        if (this._highlightedEntryIndex === entryIndex)
+        var entryIndex = this._coordinatesToEntryIndex(this._lastMouseOffsetX, this._lastMouseOffsetY);
+        if (entryIndex === -1) {
+            this._hideHighlight();
             return;
-
-        if (entryIndex === -1 || !this._dataProvider.canJumpToEntry(entryIndex))
-            this._canvas.style.cursor = "default";
-        else
-            this._canvas.style.cursor = "pointer";
-
-        this._highlightedEntryIndex = entryIndex;
-
-        this._updateElementPosition(this._highlightElement, this._highlightedEntryIndex);
-        this._entryInfo.removeChildren();
-
-        if (this._highlightedEntryIndex === -1)
-            return;
-
-        if (!this._isDragging) {
-            var entryInfo = this._dataProvider.prepareHighlightedEntryInfo(this._highlightedEntryIndex);
+        }
+        if (entryIndex !== this._highlightedEntryIndex) {
+            this._entryInfo.removeChildren();
+            var entryInfo = this._dataProvider.prepareHighlightedEntryInfo(entryIndex);
             if (entryInfo)
                 this._entryInfo.appendChild(this._buildEntryInfo(entryInfo));
         }
+        var mouseX = this._lastMouseOffsetX;
+        var mouseY = this._lastMouseOffsetY;
+        var parentWidth = this._entryInfo.parentElement.clientWidth;
+        var parentHeight = this._entryInfo.parentElement.clientHeight;
+        var infoWidth = this._entryInfo.clientWidth;
+        var infoHeight = this._entryInfo.clientHeight;
+        var /** @const */ offsetX = 10;
+        var /** @const */ offsetY = 6;
+        var x;
+        var y;
+        for (var quadrant = 0; quadrant < 4; ++quadrant) {
+            var dx = quadrant & 2 ? -offsetX - infoWidth  : offsetX;
+            var dy = quadrant & 1 ? -offsetY - infoHeight : offsetY;
+            x = Number.constrain(mouseX + dx, 0, parentWidth - infoWidth);
+            y = Number.constrain(mouseY + dy, 0, parentHeight - infoHeight);
+            if (x >= mouseX || mouseX >= x + infoWidth || y >= mouseY || mouseY >= y + infoHeight)
+                break;
+        }
+        this._entryInfo.style.left = x + "px";
+        this._entryInfo.style.top = y + "px";
+        if (this._highlightedEntryIndex === entryIndex)
+            return;
+        this._highlightedEntryIndex = entryIndex;
+        this._canvas.style.cursor = this._dataProvider.canJumpToEntry(entryIndex) ? "pointer" : "default";
+        this._updateElementPosition(this._highlightElement, this._highlightedEntryIndex);
+    },
+
+    _hideHighlight: function()
+    {
+        this._entryInfo.removeChildren();
+        this._canvas.style.cursor = "default";
+        this._highlightedEntryIndex = -1;
+        this._updateElementPosition(this._highlightElement, this._highlightedEntryIndex);
     },
 
     _onClick: function()

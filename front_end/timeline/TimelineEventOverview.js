@@ -597,7 +597,7 @@ WebInspector.TimelineFilmStripOverview.prototype = {
         {
             var element = createElementWithClass("div", "frame");
             element.createChild("div", "thumbnail").appendChild(image);
-            element.appendChild(WebInspector.Widget.createStyleElement("timeline/timelinePanel.css"));
+            element.appendChild(WebInspector.createStyleElement("timeline/timelinePanel.css"));
             this._lastFrame = frame;
             this._lastElement = element;
             return element;

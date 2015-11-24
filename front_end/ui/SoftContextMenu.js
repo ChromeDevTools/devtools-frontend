@@ -55,7 +55,7 @@ WebInspector.SoftContextMenu.prototype = {
         // Create context menu.
         this.element = createElementWithClass("div", "soft-context-menu");
         var root = WebInspector.createShadowRootWithCoreStyles(this.element);
-        root.appendChild(WebInspector.Widget.createStyleElement("ui/softContextMenu.css"));
+        root.appendChild(WebInspector.createStyleElement("ui/softContextMenu.css"));
         this._contextMenuElement = root.createChild("div");
         this.element.style.top = y + "px";
         var subMenuOverlap = 3;

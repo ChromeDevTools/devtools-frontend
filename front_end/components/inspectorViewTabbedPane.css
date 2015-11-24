@@ -4,12 +4,6 @@
  * found in the LICENSE file.
  */
 
-.tabbed-pane-header {
-    background-color: #f3f3f3;
-    flex: 0 0 27px;
-    overflow: visible;
-}
-
 .tabbed-pane-header-tab,
 .tabbed-pane-header-tab.selected {
     height: 26px;
@@ -21,21 +15,7 @@
     padding: 0 6px;
 }
 
-.tabbed-pane-header-tab.dragging {
-    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.37);
-    background: rgb(229, 229, 229);
-}
-
-.tabbed-pane-header-tab:hover {
-    background: rgb(229, 229, 229);
-}
-
-.tabbed-pane-header-tab {
-    color: #5a5a5a;
-}
-
 .tabbed-pane-header-tab.selected {
-    color: #333;
     border-width: 0 2px 0 2px;
 }
 

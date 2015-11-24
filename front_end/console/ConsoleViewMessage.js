@@ -135,7 +135,7 @@ WebInspector.ConsoleViewMessage.prototype = {
     _formatMessage: function()
     {
         this._formattedMessage = createElement("span");
-        this._formattedMessage.appendChild(WebInspector.Widget.createStyleElement("components/objectValue.css"));
+        this._formattedMessage.appendChild(WebInspector.createStyleElement("components/objectValue.css"));
         this._formattedMessage.className = "console-message-text source-code";
 
         /**

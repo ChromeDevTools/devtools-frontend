@@ -83,7 +83,7 @@
 }
 
 .long-click-glyph {
-    background-color: #595959;
+    background-color: #5a5a5a;
     -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
     -webkit-mask-position: -288px -48px;
     -webkit-mask-size: 352px 168px;
@@ -146,12 +146,12 @@ button.toolbar-item.extension {
 }
 
 .toolbar-select-arrow {
-    background-image: url(Images/toolbarButtonGlyphs.png);
-    background-size: 352px 168px;
-    opacity: 0.7;
+    -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
+    -webkit-mask-size: 352px 168px;
+    -webkit-mask-position: -18px -96px;
+    background-color: #444;
     width: 12px;
     height: 12px;
-    background-position: -18px -96px;
     display: inline-block;
     pointer-events: none;
     margin: auto 0;
@@ -159,7 +159,7 @@ button.toolbar-item.extension {
 
 @media (-webkit-min-device-pixel-ratio: 1.5) {
 .toolbar-select-arrow {
-    background-image: url(Images/toolbarButtonGlyphs_2x.png);
+    -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
 }
 } /* media */
 
@@ -169,7 +169,7 @@ input.toolbar-item {
     padding: 3px;
     margin: 1px 3px;
     background-color: white;
-    border: solid 1px rgb(216, 216, 216);
+    border: solid 1px #d8d8d8;
 }
 
 input.toolbar-item:focus,
@@ -179,8 +179,6 @@ input.toolbar-item.hover {
 
 select.toolbar-item {
     min-width: 48px;
-    color: rgb(48, 48, 48);
-    text-shadow: rgba(255, 255, 255, 0.75) 0 1px 0;
     -webkit-appearance: none;
     border: 0;
     border-radius: 0;

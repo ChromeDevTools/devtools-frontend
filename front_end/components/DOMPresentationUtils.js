@@ -111,7 +111,7 @@ WebInspector.DOMPresentationUtils.linkifyNodeReference = function(node)
 
     var root = createElementWithClass("span", "monospace");
     var shadowRoot = WebInspector.createShadowRootWithCoreStyles(root);
-    shadowRoot.appendChild(WebInspector.Widget.createStyleElement("components/domUtils.css"));
+    shadowRoot.appendChild(WebInspector.createStyleElement("components/domUtils.css"));
     var link = shadowRoot.createChild("div", "node-link");
 
     WebInspector.DOMPresentationUtils.decorateNodeLabel(node, link);
@@ -131,7 +131,7 @@ WebInspector.DOMPresentationUtils.linkifyDeferredNodeReference = function(deferr
 {
     var root = createElement("div");
     var shadowRoot = WebInspector.createShadowRootWithCoreStyles(root);
-    shadowRoot.appendChild(WebInspector.Widget.createStyleElement("components/domUtils.css"));
+    shadowRoot.appendChild(WebInspector.createStyleElement("components/domUtils.css"));
     var link = shadowRoot.createChild("div", "node-link");
     link.createChild("content");
     link.addEventListener("click", deferredNode.resolve.bind(deferredNode, onDeferredNodeResolved), false);
@@ -226,7 +226,7 @@ WebInspector.DOMPresentationUtils.buildStackTracePreviewContents = function(targ
     element.style.display = "inline-block";
     var shadowRoot = WebInspector.createShadowRootWithCoreStyles(element);
 
-    shadowRoot.appendChild(WebInspector.Widget.createStyleElement("components/domUtils.css"));
+    shadowRoot.appendChild(WebInspector.createStyleElement("components/domUtils.css"));
     var contentElement = shadowRoot.createChild("table", "stack-preview-container");
 
     /**

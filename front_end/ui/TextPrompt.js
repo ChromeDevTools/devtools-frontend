@@ -121,7 +121,7 @@ WebInspector.TextPrompt.prototype = {
         this._boundRemoveSuggestionAids = this._removeSuggestionAids.bind(this);
         this._proxyElement = element.ownerDocument.createElement("span");
         var shadowRoot = WebInspector.createShadowRootWithCoreStyles(this._proxyElement);
-        shadowRoot.appendChild(WebInspector.Widget.createStyleElement("ui/textPrompt.css"));
+        shadowRoot.appendChild(WebInspector.createStyleElement("ui/textPrompt.css"));
         this._contentElement = shadowRoot.createChild("div");
         this._contentElement.createChild("content");
         this._proxyElement.style.display = this._proxyElementDisplay;

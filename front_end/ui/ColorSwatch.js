@@ -79,7 +79,7 @@ WebInspector.ColorSwatch.prototype = {
     createdCallback: function()
     {
         var root = WebInspector.createShadowRootWithCoreStyles(this);
-        root.appendChild(WebInspector.Widget.createStyleElement("ui/colorSwatch.css"));
+        root.appendChild(WebInspector.createStyleElement("ui/colorSwatch.css"));
 
         this._iconElement = root.createChild("span", "color-swatch");
         this._iconElement.title = WebInspector.UIString("Shift-click to change color format");

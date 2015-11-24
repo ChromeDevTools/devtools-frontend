@@ -56,7 +56,7 @@
     display: flex;
     flex: 0 0 27px;
     border-bottom: 1px solid #ccc;
-    overflow: hidden;
+    overflow: visible;
     width: 100%;
     background-color: #f3f3f3;
 }
@@ -93,6 +93,7 @@
 
 .tabbed-pane-header-tab:hover {
     color: #333;
+    background-color: #e5e5e5;
 }
 
 .tabbed-pane-header-tab-title {
@@ -111,12 +112,14 @@
 }
 
 .tabbed-pane-header-tab.selected {
-    background: white;
+    background-color: white;
     border-top-color: #ccc;
 }
 
 .tabbed-pane-header-tab.dragging {
     position: relative;
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.37);
+    background-color: #e5e5e5;
 }
 
 .tabbed-pane-header-tab .tabbed-pane-close-button {

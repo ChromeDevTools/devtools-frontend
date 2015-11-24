@@ -226,8 +226,8 @@
 }
 
 .console-message-wrapper.console-error-level {
-    border-top: 1px solid rgb(255, 216, 216);
-    border-bottom: 1px solid rgb(255, 216, 216);
+    border-top: 1px solid hsl(0, 100%, 92%);
+    border-bottom: 1px solid hsl(0, 100%, 92%);
     margin-top: -1px;
 }
 
@@ -240,7 +240,7 @@
 .console-message-wrapper .nesting-level-marker {
     width: 14px;
     flex: 0 0 auto;
-    border-right: 1px solid #A3A3A3;
+    border-right: 1px solid #a5a5a5;
     position: relative;
     margin-bottom: -1px;
 }
@@ -251,7 +251,7 @@
 }
 
 .console-message-wrapper .nesting-level-marker::before {
-    border-bottom: 1px solid #A3A3A3;
+    border-bottom: 1px solid #a5a5a5;
     position: absolute;
     top: 0;
     left: 0;
@@ -262,7 +262,7 @@
 }
 
 .console-error-level {
-    background-color: rgb(255, 239, 239);
+    background-color: hsl(0, 100%, 97%);
 }
 
 .console-warning-level {
@@ -406,27 +406,6 @@
 .console-message-nowrap-below div,
 .console-message-nowrap-below span {
     white-space: nowrap !important;
-}
-
-.object-info-state-note {
-    display: inline-block;
-    width: 11px;
-    height: 11px;
-    background-color: rgb(179, 203, 247);
-    color: white;
-    text-align: center;
-    border-radius: 3px;
-    line-height: 13px;
-    margin: 0 6px;
-    font-size: 9px;
-}
-
-.object-info-state-note::before {
-    content: "i";
-}
-
-.console-view-object-properties-section:not(.expanded) .object-info-state-note {
-    display: none;
 }
 
 .object-info-state-note {

@@ -429,7 +429,7 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
     {
         var container = createElement("div");
         var shadowRoot = WebInspector.createShadowRootWithCoreStyles(container);
-        shadowRoot.appendChild(WebInspector.Widget.createStyleElement("emulation/deviceModeToolbar.css"));
+        shadowRoot.appendChild(WebInspector.createStyleElement("emulation/deviceModeToolbar.css"));
         shadowRoot.appendChild(element);
         return new WebInspector.ToolbarItem(container);
     },

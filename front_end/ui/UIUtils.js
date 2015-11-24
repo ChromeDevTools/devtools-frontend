@@ -674,8 +674,8 @@ WebInspector.manageBlackboxingSettingsTabLabel = function()
  */
 WebInspector.installComponentRootStyles = function(element)
 {
-    element.appendChild(WebInspector.Widget.createStyleElement("ui/inspectorCommon.css"));
-    element.appendChild(WebInspector.Widget.createStyleElement("ui/inspectorSyntaxHighlight.css"));
+    element.appendChild(WebInspector.createStyleElement("ui/inspectorCommon.css"));
+    element.appendChild(WebInspector.createStyleElement("ui/inspectorSyntaxHighlight.css"));
     element.classList.add("platform-" + WebInspector.platform());
     if (Runtime.experiments.isEnabled("materialDesign"))
         element.classList.add("material");
@@ -688,8 +688,8 @@ WebInspector.installComponentRootStyles = function(element)
 WebInspector.createShadowRootWithCoreStyles = function(element)
 {
     var shadowRoot = element.createShadowRoot();
-    shadowRoot.appendChild(WebInspector.Widget.createStyleElement("ui/inspectorCommon.css"));
-    shadowRoot.appendChild(WebInspector.Widget.createStyleElement("ui/inspectorSyntaxHighlight.css"));
+    shadowRoot.appendChild(WebInspector.createStyleElement("ui/inspectorCommon.css"));
+    shadowRoot.appendChild(WebInspector.createStyleElement("ui/inspectorSyntaxHighlight.css"));
     shadowRoot.addEventListener("focus", WebInspector._focusChanged.bind(WebInspector), true);
     return shadowRoot;
 }
@@ -1273,6 +1273,21 @@ function createCheckboxLabel(title, checked)
     return element;
 }
 
+/**
+ * @param {string} cssFile
+ * @return {!Element}
+ */
+WebInspector.createStyleElement = function(cssFile)
+{
+    var content = Runtime.cachedResources[cssFile] || "";
+    if (!content)
+        console.error(cssFile + " not preloaded. Check module.json");
+    var styleElement = createElement("style");
+    styleElement.type = "text/css";
+    styleElement.textContent = content;
+    return styleElement;
+}
+
 ;(function() {
     registerCustomElement("button", "text-button", {
         /**
@@ -1282,7 +1297,7 @@ function createCheckboxLabel(title, checked)
         {
             this.type = "button";
             var root = WebInspector.createShadowRootWithCoreStyles(this);
-            root.appendChild(WebInspector.Widget.createStyleElement("ui/textButton.css"));
+            root.appendChild(WebInspector.createStyleElement("ui/textButton.css"));
             root.createChild("content");
         },
 
@@ -1298,7 +1313,7 @@ function createCheckboxLabel(title, checked)
             this.radioElement = this.createChild("input", "dt-radio-button");
             this.radioElement.type = "radio";
             var root = WebInspector.createShadowRootWithCoreStyles(this);
-            root.appendChild(WebInspector.Widget.createStyleElement("ui/radioButton.css"));
+            root.appendChild(WebInspector.createStyleElement("ui/radioButton.css"));
             root.createChild("content").select = ".dt-radio-button";
             root.createChild("content");
             this.addEventListener("click", radioClickHandler, false);
@@ -1327,7 +1342,7 @@ function createCheckboxLabel(title, checked)
         createdCallback: function()
         {
             this._root = WebInspector.createShadowRootWithCoreStyles(this);
-            this._root.appendChild(WebInspector.Widget.createStyleElement("ui/checkboxTextLabel.css"));
+            this._root.appendChild(WebInspector.createStyleElement("ui/checkboxTextLabel.css"));
             var checkboxElement = createElementWithClass("input", "dt-checkbox-button");
             checkboxElement.type = "checkbox";
             this._root.appendChild(checkboxElement);
@@ -1390,7 +1405,7 @@ function createCheckboxLabel(title, checked)
         createdCallback: function()
         {
             var root = WebInspector.createShadowRootWithCoreStyles(this);
-            root.appendChild(WebInspector.Widget.createStyleElement("ui/smallIcon.css"));
+            root.appendChild(WebInspector.createStyleElement("ui/smallIcon.css"));
             this._iconElement = root.createChild("div");
             root.createChild("content");
         },
@@ -1414,7 +1429,7 @@ function createCheckboxLabel(title, checked)
         createdCallback: function()
         {
             var root = WebInspector.createShadowRootWithCoreStyles(this);
-            root.appendChild(WebInspector.Widget.createStyleElement("ui/closeButton.css"));
+            root.appendChild(WebInspector.createStyleElement("ui/closeButton.css"));
             this._buttonElement = root.createChild("div", "close-button");
         },
 

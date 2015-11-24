@@ -49,21 +49,6 @@ WebInspector.Widget = function(isWebComponent)
     this._notificationDepth = 0;
 }
 
-/**
- * @param {string} cssFile
- * @return {!Element}
- */
-WebInspector.Widget.createStyleElement = function(cssFile)
-{
-    var content = Runtime.cachedResources[cssFile] || "";
-    if (!content)
-        console.error(cssFile + " not preloaded. Check module.json");
-    var styleElement = createElement("style");
-    styleElement.type = "text/css";
-    styleElement.textContent = content;
-    return styleElement;
-}
-
 WebInspector.Widget.prototype = {
     markAsRoot: function()
     {
@@ -374,7 +359,7 @@ WebInspector.Widget.prototype = {
      */
     registerRequiredCSS: function(cssFile)
     {
-        (this._isWebComponent ? this._shadowRoot : this.element).appendChild(WebInspector.Widget.createStyleElement(cssFile));
+        (this._isWebComponent ? this._shadowRoot : this.element).appendChild(WebInspector.createStyleElement(cssFile));
     },
 
     printWidgetHierarchy: function()

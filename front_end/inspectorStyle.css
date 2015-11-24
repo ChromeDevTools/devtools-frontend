@@ -541,6 +541,7 @@ body.inactive .sidebar-tree-item.selected {
 }
 
 .root-view {
+    background-color: white;
     overflow: hidden;
     position: absolute !important;
     left: 0;

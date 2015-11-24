@@ -543,6 +543,7 @@ WebInspector.FlameChart.prototype = {
     _animationCompleted: function()
     {
         delete this._cancelWindowTimesAnimation;
+        this._hideHighlight();
     },
 
     /**
@@ -592,6 +593,7 @@ WebInspector.FlameChart.prototype = {
         this._dragStartWindowLeft = this._timeWindowLeft;
         this._dragStartWindowRight = this._timeWindowRight;
         this._canvas.style.cursor = "";
+        this._hideHighlight();
         return true;
     },
 
@@ -634,6 +636,7 @@ WebInspector.FlameChart.prototype = {
         style.width = "1px";
         this._selectedTimeSpanLabel.textContent = "";
         this._selectionOverlay.classList.remove("hidden");
+        this._hideHighlight();
         return true;
     },
 
@@ -1531,6 +1534,7 @@ WebInspector.FlameChart.prototype = {
     _onScroll: function()
     {
         this._scrollTop = this._vScrollElement.scrollTop;
+        this._hideHighlight();
         this.scheduleUpdate();
     },
 

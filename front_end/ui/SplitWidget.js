@@ -743,13 +743,6 @@ WebInspector.SplitWidget.prototype = {
         this._resizerWidget.removeElement(resizerElement);
     },
 
-    uninstallResizers: function()
-    {
-        var elements = this._resizerWidget.elements();
-        for (var i = 0; i < elements.length; ++i)
-            this._resizerWidget.removeElement(elements[i]);
-    },
-
     /**
      * @return {boolean}
      */

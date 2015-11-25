@@ -152,6 +152,7 @@ WebInspector.ToolbarItem = function(element)
     this._visible = true;
     this.element.addEventListener("mouseenter", this._mouseEnter.bind(this), false);
     this.element.addEventListener("mouseleave", this._mouseLeave.bind(this), false);
+    this.element.addEventListener("mousedown", consumeEvent, false);
 }
 
 WebInspector.ToolbarItem.prototype = {

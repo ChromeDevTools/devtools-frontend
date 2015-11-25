@@ -1107,11 +1107,6 @@ WebInspector.SourcesPanel.prototype = {
         this._splitWidget.setVertical(!vertically);
         this._splitWidget.element.classList.toggle("sources-split-view-vertical", vertically);
 
-        if (!vertically)
-            this._splitWidget.uninstallResizer(this._sourcesView.toolbarContainerElement());
-        else
-            this._splitWidget.installResizer(this._sourcesView.toolbarContainerElement());
-
         // Create vertical box with stack.
         var vbox = new WebInspector.VBox();
         vbox.element.appendChild(this._debugToolbarDrawer);
@@ -1122,6 +1117,8 @@ WebInspector.SourcesPanel.prototype = {
         vbox.element.appendChild(this._debugToolbar.element);
 
         if (!vertically) {
+            this._splitWidget.uninstallResizers();
+
             // Populate the only stack.
             for (var pane in this.sidebarPanes)
                 sidebarPaneStack.addPane(this.sidebarPanes[pane]);
@@ -1155,6 +1152,10 @@ WebInspector.SourcesPanel.prototype = {
             tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, this._tabSelected, this);
             this._extensionSidebarPanesContainer = tabbedPane;
             this.sidebarPaneView = splitWidget;
+
+            this._splitWidget.installResizer(this._sourcesView.toolbarContainerElement());
+            this._splitWidget.installResizer(tabbedPane.headerElement());
+            this._splitWidget.installResizer(this._debugToolbar.element);
         }
 
         var extensionSidebarPanes = WebInspector.extensionServer.sidebarPanes();

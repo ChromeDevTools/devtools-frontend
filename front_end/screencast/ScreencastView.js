@@ -48,7 +48,7 @@ WebInspector.ScreencastView._bordersSize = 44;
 
 WebInspector.ScreencastView._navBarHeight = 29;
 
-WebInspector.ScreencastView._HttpRegex = /^https?:\/\/(.+)/;
+WebInspector.ScreencastView._HttpRegex = /^http:\/\/(.+)/;
 
 WebInspector.ScreencastView._SchemeRegex = /^(https?|about|chrome):/;
 

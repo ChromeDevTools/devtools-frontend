@@ -1072,6 +1072,16 @@ WebInspector.DataGrid.prototype = {
         this.dispatchEventToListeners(WebInspector.DataGrid.Events.ColumnsResized);
     },
 
+    /**
+     * @return {!WebInspector.DataGridWidget}
+     */
+    asWidget: function()
+    {
+        if (!this._dataGridWidget)
+            this._dataGridWidget = new WebInspector.DataGridWidget(this);
+        return this._dataGridWidget;
+    },
+
     ColumnResizePadding: 24,
 
     CenterResizerOverBorderAdjustment: 3,
@@ -1798,39 +1808,22 @@ WebInspector.CreationDataGridNode.prototype = {
 /**
  * @constructor
  * @extends {WebInspector.VBox}
+ * @param {!WebInspector.DataGrid} dataGrid
  */
-WebInspector.DataGridContainerWidget = function()
+WebInspector.DataGridWidget = function(dataGrid)
 {
     WebInspector.VBox.call(this);
-    this._dataGrids = [];
+    this._dataGrid = dataGrid;
+    this.element.appendChild(dataGrid.element);
 }
 
-WebInspector.DataGridContainerWidget.prototype = {
-    /**
-     * @param {!WebInspector.DataGrid} dataGrid
-     */
-    appendDataGrid: function(dataGrid)
-    {
-        this._dataGrids.push(dataGrid);
-        this.element.appendChild(dataGrid.element);
-    },
-
-    /**
-     * @param {!WebInspector.DataGrid} dataGrid
-     */
-    removeDataGrid: function(dataGrid)
-    {
-        this._dataGrids.remove(dataGrid);
-        this.element.removeChild(dataGrid.element);
-    },
-
+WebInspector.DataGridWidget.prototype = {
     /**
      * @override
      */
     wasShown: function()
     {
-        for (var dataGrid of this._dataGrids)
-            dataGrid.wasShown();
+        this._dataGrid.wasShown();
     },
 
     /**
@@ -1838,8 +1831,7 @@ WebInspector.DataGridContainerWidget.prototype = {
      */
     willHide: function()
     {
-        for (var dataGrid of this._dataGrids)
-            dataGrid.willHide();
+        this._dataGrid.willHide();
     },
 
     /**
@@ -1847,8 +1839,7 @@ WebInspector.DataGridContainerWidget.prototype = {
      */
     onResize: function()
     {
-        for (var dataGrid of this._dataGrids)
-            dataGrid.onResize();
+        this._dataGrid.onResize();
     },
 
     /**
@@ -1857,12 +1848,7 @@ WebInspector.DataGridContainerWidget.prototype = {
      */
     elementsToRestoreScrollPositionsFor: function()
     {
-        var result = [];
-        for (var dataGrid of this._dataGrids) {
-            if (!dataGrid._inline)
-                result.push(dataGrid._scrollContainer);
-        }
-        return result;
+        return [ this._dataGrid._scrollContainer ];
     },
 
     /**

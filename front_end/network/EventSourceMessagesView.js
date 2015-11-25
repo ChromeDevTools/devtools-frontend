@@ -4,12 +4,12 @@
 
 /**
  * @constructor
- * @extends {WebInspector.DataGridContainerWidget}
+ * @extends {WebInspector.VBox}
  * @param {!WebInspector.NetworkRequest} request
  */
 WebInspector.EventSourceMessagesView = function(request)
 {
-    WebInspector.DataGridContainerWidget.call(this);
+    WebInspector.VBox.call(this);
     this.registerRequiredCSS("network/eventSourceMessagesView.css");
     this.element.classList.add("event-source-messages-view");
     this._request = request;
@@ -28,7 +28,7 @@ WebInspector.EventSourceMessagesView = function(request)
     this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SortingChanged, this._sortItems, this);
 
     this._dataGrid.setName("EventSourceMessagesView");
-    this.appendDataGrid(this._dataGrid);
+    this._dataGrid.asWidget().show(this.element);
 }
 
 WebInspector.EventSourceMessagesView.prototype = {
@@ -67,7 +67,7 @@ WebInspector.EventSourceMessagesView.prototype = {
         this._dataGrid.sortNodes(comparator, !this._dataGrid.isSortOrderAscending());
     },
 
-    __proto__: WebInspector.DataGridContainerWidget.prototype
+    __proto__: WebInspector.VBox.prototype
 }
 
 /**

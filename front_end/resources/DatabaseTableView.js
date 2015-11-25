@@ -25,11 +25,11 @@
 
 /**
  * @constructor
- * @extends {WebInspector.DataGridContainerWidget}
+ * @extends {WebInspector.VBox}
  */
 WebInspector.DatabaseTableView = function(database, tableName)
 {
-    WebInspector.DataGridContainerWidget.call(this);
+    WebInspector.VBox.call(this);
 
     this.database = database;
     this.tableName = tableName;
@@ -84,7 +84,7 @@ WebInspector.DatabaseTableView.prototype = {
             this._emptyWidget.show(this.element);
             return;
         }
-        this.appendDataGrid(this._dataGrid);
+        this._dataGrid.asWidget().show(this.element);
         this._dataGrid.autoSizeColumns(5);
 
         this._columnsMap = new Map();
@@ -142,5 +142,5 @@ WebInspector.DatabaseTableView.prototype = {
         this.update();
     },
 
-    __proto__: WebInspector.DataGridContainerWidget.prototype
+    __proto__: WebInspector.VBox.prototype
 }

@@ -95,19 +95,12 @@ WebInspector.AnimationUI.prototype = {
             this._delayLine = this._createLine(parentElement, "animation-delay-line");
             this._endDelayLine = this._createLine(parentElement, "animation-delay-line");
         }
-        var fill = this._animation.source().fill();
-        this._delayLine.classList.toggle("animation-fill", fill === "backwards" || fill === "both");
-        var margin = WebInspector.AnimationUI.Options.AnimationMargin;
-        this._delayLine.setAttribute("x1", margin);
-        this._delayLine.setAttribute("x2", (this._delay() * this._timeline.pixelMsRatio() + margin).toFixed(2));
-        var forwardsFill = fill === "forwards" || fill === "both";
-        this._endDelayLine.classList.toggle("animation-fill", forwardsFill);
-        var leftMargin = Math.min(this._timeline.width(), (this._delay() + this._duration() * this._animation.source().iterations()) * this._timeline.pixelMsRatio());
-        this._endDelayLine.style.transform = "translateX(" + leftMargin.toFixed(2) + "px)";
-        this._endDelayLine.setAttribute("x1", margin);
-        this._endDelayLine.setAttribute("x2", forwardsFill
-            ? (this._timeline.width() - leftMargin + margin).toFixed(2)
-            : (this._animation.source().endDelay() * this._timeline.pixelMsRatio() + margin).toFixed(2));
+        this._delayLine.setAttribute("x1", WebInspector.AnimationUI.Options.AnimationMargin);
+        this._delayLine.setAttribute("x2", (this._delay() * this._timeline.pixelMsRatio() + WebInspector.AnimationUI.Options.AnimationMargin).toFixed(2));
+        var leftMargin = (this._delay() + this._duration() * this._animation.source().iterations()) * this._timeline.pixelMsRatio();
+        this._endDelayLine.style.transform = "translateX(" + Math.min(leftMargin, this._timeline.width()).toFixed(2) + "px)";
+        this._endDelayLine.setAttribute("x1", WebInspector.AnimationUI.Options.AnimationMargin);
+        this._endDelayLine.setAttribute("x2", (this._animation.source().endDelay() * this._timeline.pixelMsRatio() + WebInspector.AnimationUI.Options.AnimationMargin).toFixed(2));
     },
 
     /**
@@ -197,14 +190,15 @@ WebInspector.AnimationUI.prototype = {
         var durationWithDelay = this._delay() + this._duration() * this._animation.source().iterations() + this._animation.source().endDelay();
         var leftMargin = ((this._animation.startTime() - this._timeline.startTime()) * this._timeline.pixelMsRatio());
         var maxWidth = this._timeline.width() - WebInspector.AnimationUI.Options.AnimationMargin - leftMargin;
+        var svgWidth = Math.min(maxWidth, durationWithDelay * this._timeline.pixelMsRatio());
 
         this._svg.classList.toggle("animation-ui-canceled", this._animation.playState() === "idle");
-        this._svg.setAttribute("width", (maxWidth + 2 * WebInspector.AnimationUI.Options.AnimationMargin).toFixed(2));
+        this._svg.setAttribute("width", (svgWidth + 2 * WebInspector.AnimationUI.Options.AnimationMargin).toFixed(2));
         this._svg.style.transform = "translateX(" + leftMargin.toFixed(2)  + "px)";
         this._activeIntervalGroup.style.transform = "translateX(" + (this._delay() * this._timeline.pixelMsRatio()).toFixed(2) + "px)";
 
         this._nameElement.style.transform = "translateX(" + (leftMargin + this._delay() * this._timeline.pixelMsRatio() + WebInspector.AnimationUI.Options.AnimationMargin).toFixed(2) + "px)";
-        this._nameElement.style.width = (this._duration() * this._timeline.pixelMsRatio()).toFixed(2) + "px";
+        this._nameElement.style.width = (this._duration() * this._timeline.pixelMsRatio().toFixed(2)) + "px";
         this._drawDelayLine(this._svg);
 
         if (this._animation.type() === "CSSTransition") {

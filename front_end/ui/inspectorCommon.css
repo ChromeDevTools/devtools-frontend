@@ -144,6 +144,11 @@ input,
 select {
     font-family: inherit;
     font-size: inherit;
+    color: inherit;
+}
+
+input {
+    background-color: white;
 }
 
 input[type="search"]:focus,
@@ -188,7 +193,7 @@ input[type="text"]:focus {
 .chrome-select {
     -webkit-appearance: none;
     -webkit-user-select: none;
-    border: 1px solid rgba(0, 0, 0, 0.25);
+    border: 1px solid rgb(160, 160, 160);
     border-radius: 2px;
     box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08),
     inset 0 1px 2px rgba(255, 255, 255, 0.75);

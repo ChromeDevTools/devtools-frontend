@@ -69,7 +69,7 @@ WebInspector.AdvancedApp.prototype = {
      */
     toolboxLoaded: function(toolboxDocument)
     {
-        WebInspector.initializeUIUtils(toolboxDocument.defaultView);
+        WebInspector.initializeUIUtils(toolboxDocument, WebInspector.settings.createSetting("uiTheme", "default"));
         WebInspector.installComponentRootStyles(/** @type {!Element} */ (toolboxDocument.body));
         WebInspector.ContextMenu.installHandler(toolboxDocument);
         WebInspector.Tooltip.installHandler(toolboxDocument);

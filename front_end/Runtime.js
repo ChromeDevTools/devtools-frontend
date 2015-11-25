@@ -728,11 +728,7 @@ Runtime.Module.prototype = {
                 console.error("Failed to load resource: " + path);
                 return;
             }
-            var sourceURL = window.location.href;
-            if (window.location.search)
-                sourceURL = sourceURL.replace(window.location.search, "");
-            sourceURL = sourceURL.substring(0, sourceURL.lastIndexOf("/") + 1) + path;
-            Runtime.cachedResources[path] = content + "\n/*# sourceURL=" + sourceURL + " */";
+            Runtime.cachedResources[path] = content + Runtime.resolveSourceURL(path);
         }
     },
 
@@ -1097,6 +1093,19 @@ Runtime.experiments = new Runtime.ExperimentsSupport();
  * @type {?string}
  */
 Runtime._remoteBase = Runtime.queryParam("remoteBase");
+
+/**
+ * @param {string} path
+ * @return {string}
+ */
+Runtime.resolveSourceURL = function(path)
+{
+    var sourceURL = window.location.href;
+    if (window.location.search)
+        sourceURL = sourceURL.replace(window.location.search, "");
+    sourceURL = sourceURL.substring(0, sourceURL.lastIndexOf("/") + 1) + path;
+    return "\n/*# sourceURL=" + sourceURL + " */";
+}
 
 /** @type {!Runtime} */
 var runtime;

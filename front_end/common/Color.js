@@ -119,7 +119,7 @@ WebInspector.Color.parse = function(text)
                          WebInspector.Color._parseSatLightNumeric(hslString[1]),
                          WebInspector.Color._parseSatLightNumeric(hslString[2]), 1 ];
             var rgba = [];
-            WebInspector.Color._hsl2rgb(hsla, rgba);
+            WebInspector.Color.hsl2rgb(hsla, rgba);
             return new WebInspector.Color(rgba, WebInspector.Color.Format.HSL, text);
         }
 
@@ -146,7 +146,7 @@ WebInspector.Color.parse = function(text)
                          WebInspector.Color._parseSatLightNumeric(hslaString[2]),
                          WebInspector.Color._parseAlphaNumeric(hslaString[3]) ];
             var rgba = [];
-            WebInspector.Color._hsl2rgb(hsla, rgba);
+            WebInspector.Color.hsl2rgb(hsla, rgba);
             return new WebInspector.Color(rgba, WebInspector.Color.Format.HSLA, text);
         }
     }
@@ -212,7 +212,7 @@ WebInspector.Color.prototype = {
         if (l === 0)
             var s = 0;
         else if (l === 1)
-            var s = 1;
+            var s = 0;
         else if (l <= 0.5)
             var s = diff / add;
         else
@@ -482,7 +482,7 @@ WebInspector.Color._hsva2hsla = function(hsva, out_hsla)
  * @param {!Array.<number>} hsl
  * @param {!Array.<number>} out_rgb
  */
-WebInspector.Color._hsl2rgb = function(hsl, out_rgb)
+WebInspector.Color.hsl2rgb = function(hsl, out_rgb)
 {
     var h = hsl[0];
     var s = hsl[1];
@@ -532,7 +532,7 @@ WebInspector.Color._hsl2rgb = function(hsl, out_rgb)
 WebInspector.Color.hsva2rgba = function(hsva, out_rgba)
 {
     WebInspector.Color._hsva2hsla(hsva, WebInspector.Color.hsva2rgba._tmpHSLA);
-    WebInspector.Color._hsl2rgb(WebInspector.Color.hsva2rgba._tmpHSLA, out_rgba);
+    WebInspector.Color.hsl2rgb(WebInspector.Color.hsva2rgba._tmpHSLA, out_rgba);
 
     for (var i = 0; i < WebInspector.Color.hsva2rgba._tmpHSLA.length; i++)
         WebInspector.Color.hsva2rgba._tmpHSLA[i] = 0;

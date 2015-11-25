@@ -129,6 +129,7 @@ WebInspector.Main.prototype = {
         Runtime.experiments.register("timelineTracingJSProfile", "Timeline tracing based JS profiler", true);
         Runtime.experiments.register("timelineEventsTreeView", "Timeline events tree view", true);
         Runtime.experiments.register("timelineFlowEvents", "Timeline flow events", true);
+        Runtime.experiments.register("uiThemes", "UI themes");
 
         Runtime.experiments.cleanUpStaleExperiments();
 
@@ -165,7 +166,10 @@ WebInspector.Main.prototype = {
         WebInspector.isolatedFileSystemManager = new WebInspector.IsolatedFileSystemManager();
         WebInspector.isolatedFileSystemManager.initialize(this._didInitializeFileSystemManager.bind(this));
 
-        WebInspector.initializeUIUtils(window);
+        var themeSetting = WebInspector.settings.createSetting("uiTheme", "default");
+        WebInspector.initializeUIUtils(document, themeSetting);
+        themeSetting.addChangeListener(WebInspector.reload.bind(WebInspector));
+
         WebInspector.installComponentRootStyles(/** @type {!Element} */ (document.body));
 
         this._addMainEventListeners(document);

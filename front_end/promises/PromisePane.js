@@ -10,7 +10,6 @@
 WebInspector.PromisePane = function()
 {
     WebInspector.VBox.call(this);
-    this.registerRequiredCSS("ui/filter.css");
     this.registerRequiredCSS("promises/promisePane.css");
     this.element.classList.add("promises");
 
@@ -38,7 +37,7 @@ WebInspector.PromisePane = function()
     var asyncCheckbox = new WebInspector.ToolbarCheckbox(WebInspector.UIString("Async"), WebInspector.UIString("Capture async stack traces"), WebInspector.moduleSetting("enableAsyncStackTraces"));
     toolbar.appendToolbarItem(asyncCheckbox);
 
-    this.element.appendChild(this._filterBar.filtersElement());
+    this._filterBar.show(this.element);
 
     this._hiddenByFilterCount = 0;
     this._filterStatusMessageElement = this.element.createChild("div", "promises-filter-status hidden");

@@ -30,14 +30,17 @@
 
 /**
  * @constructor
- * @extends {WebInspector.Object}
+ * @extends {WebInspector.HBox}
  * @param {string} name
  * @param {boolean=} visibleByDefault
  */
 WebInspector.FilterBar = function(name, visibleByDefault)
 {
+    WebInspector.HBox.call(this);
+    this.registerRequiredCSS("ui/filter.css");
     this._filtersShown = false;
-    this._element = createElementWithClass("div", "filter-bar hidden");
+    this._enabled = true;
+    this.element.classList.add("filter-bar");
 
     this._filterButton = new WebInspector.ToolbarButton(WebInspector.UIString("Filter"), "filter-toolbar-item", 3);
     this._filterButton.addEventListener("click", this._handleFilterButtonClick, this);
@@ -68,30 +71,34 @@ WebInspector.FilterBar.prototype = {
     },
 
     /**
-     * @return {!Element}
-     */
-    filtersElement: function()
-    {
-        return this._element;
-    },
-
-    /**
-     * @return {boolean}
-     */
-    filtersToggled: function()
-    {
-        return this._filtersShown;
-    },
-
-    /**
      * @param {!WebInspector.FilterUI} filter
      */
     addFilter: function(filter)
     {
         this._filters.push(filter);
-        this._element.appendChild(filter.element());
+        this.element.appendChild(filter.element());
         filter.addEventListener(WebInspector.FilterUI.Events.FilterChanged, this._filterChanged, this);
         this._updateFilterButton();
+    },
+
+    setEnabled: function(enabled)
+    {
+        this._enabled = enabled;
+        this._filterButton.setEnabled(enabled);
+        this._updateFilterBar();
+    },
+
+    forceShowFilterBar: function()
+    {
+        this._updateFilterBar(true);
+    },
+
+    /**
+     * @override
+     */
+    wasShown: function()
+    {
+        this._updateFilterBar();
     },
 
     /**
@@ -115,6 +122,24 @@ WebInspector.FilterBar.prototype = {
                 return WebInspector.FilterBar.FilterBarState.Active;
         }
         return WebInspector.FilterBar.FilterBarState.Inactive;
+    },
+
+    /**
+     * @param {boolean=} forceShow
+     */
+    _updateFilterBar: function(forceShow)
+    {
+        var visible = forceShow || (this._filtersShown && this._enabled);
+        this.element.classList.toggle("hidden", !visible);
+        if (visible) {
+            for (var i = 0; i < this._filters.length; ++i) {
+                if (this._filters[i] instanceof WebInspector.TextFilterUI) {
+                    var textFilterUI = /** @type {!WebInspector.TextFilterUI} */ (this._filters[i]);
+                    textFilterUI.focus();
+                }
+            }
+        }
+        this.invalidateSize();
     },
 
     _updateFilterButton: function()
@@ -143,26 +168,18 @@ WebInspector.FilterBar.prototype = {
             this._stateSetting.set(filtersShown);
 
         this._updateFilterButton();
-        this._element.classList.toggle("hidden", !this._filtersShown);
-        if (this._filtersShown) {
-            for (var i = 0; i < this._filters.length; ++i) {
-                if (this._filters[i] instanceof WebInspector.TextFilterUI) {
-                    var textFilterUI = /** @type {!WebInspector.TextFilterUI} */ (this._filters[i]);
-                    textFilterUI.focus();
-                }
-            }
-        }
+        this._updateFilterBar();
         this.dispatchEventToListeners(WebInspector.FilterBar.Events.Toggled);
     },
 
     clear: function()
     {
-        this._element.removeChildren();
+        this.element.removeChildren();
         this._filters = [];
         this._updateFilterButton();
     },
 
-    __proto__: WebInspector.Object.prototype
+    __proto__: WebInspector.HBox.prototype
 }
 
 /**

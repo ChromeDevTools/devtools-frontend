@@ -50,7 +50,7 @@ WebInspector.NetworkPanel = function()
 
     this._panelToolbar = new WebInspector.Toolbar("", this.element);
     this._filterBar = new WebInspector.FilterBar("networkPanel", true);
-    this.element.appendChild(this._filterBar.filtersElement());
+    this._filterBar.show(this.element);
 
     this._searchableView = new WebInspector.SearchableView(this);
     this._searchableView.setPlaceholder(WebInspector.UIString("Find by filename or path"));

@@ -775,9 +775,9 @@ WebInspector.EventsTimelineTreeView.prototype = {
      */
     _populateToolbar: function(parent)
     {
-        var filtersElement = this._filtersControl.filtersElement();
-        filtersElement.classList.remove("hidden");
-        parent.appendChild(filtersElement);
+        var filtersWidget = this._filtersControl.filtersWidget();
+        filtersWidget.forceShowFilterBar();
+        filtersWidget.show(parent);
     },
 
     /**

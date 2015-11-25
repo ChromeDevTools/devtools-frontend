@@ -490,6 +490,12 @@ WebInspector.Widget.prototype = {
             this.doLayout();
     },
 
+    invalidateSize: function()
+    {
+        if (this._parentWidget)
+            this._parentWidget.doLayout();
+    },
+
     __proto__: WebInspector.Object.prototype
 }
 

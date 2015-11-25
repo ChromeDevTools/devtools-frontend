@@ -38,7 +38,6 @@ WebInspector.ConsoleView = function()
 {
     WebInspector.VBox.call(this);
     this.setMinimumSize(0, 35);
-    this.registerRequiredCSS("ui/filter.css");
     this.registerRequiredCSS("console/consoleView.css");
 
     this._searchableView = new WebInspector.SearchableView(this);
@@ -77,7 +76,7 @@ WebInspector.ConsoleView = function()
     toolbar.appendToolbarItem(this._preserveLogCheckbox);
     toolbar.appendToolbarItem(this._progressToolbarItem);
 
-    this._contentsElement.appendChild(this._filterBar.filtersElement());
+    this._filterBar.show(this._contentsElement);
     this._filter.addFilters(this._filterBar);
 
     this._viewport = new WebInspector.ViewportControl(this);

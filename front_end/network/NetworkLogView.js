@@ -42,7 +42,6 @@ WebInspector.NetworkLogView = function(filterBar, progressBarContainer, networkL
     WebInspector.VBox.call(this);
     this.setMinimumSize(50, 64);
     this.registerRequiredCSS("network/networkLogView.css");
-    this.registerRequiredCSS("ui/filter.css");
 
     this._networkHideDataURLSetting = WebInspector.settings.createSetting("networkHideDataURL", false);
     this._networkResourceTypeFiltersSetting = WebInspector.settings.createSetting("networkResourceTypeFilters", {});

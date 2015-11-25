@@ -30,8 +30,9 @@
 
 .filter-bar {
     background-color: #f3f3f3;
-    padding: 4px 0 2px 0;
+    padding: 4px 0 4px 0;
     flex: none;
+    align-items: center;
     border-bottom: 1px solid #dadada;
 }
 
@@ -55,7 +56,6 @@
     overflow: hidden;
     height: 24px;
     position: relative;
-    top: -1px;
 }
 
 .filter-bitset-filter li {
@@ -113,7 +113,6 @@
     vertical-align: middle;
     height: 24px;
     position: relative;
-    top: -2px;
 }
 
 .filter-checkbox-filter > label {

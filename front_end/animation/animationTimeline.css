@@ -119,12 +119,24 @@ circle.animation-keyframe-point {
     flex: 1 0 auto;
 }
 
-.animation-timeline-buffer {
+.animation-timeline-buffer, .animation-timeline-buffer-hint {
     height: 48px;
     flex: 0 0 auto;
     border-bottom: 1px solid #ccc;
     display: flex;
     padding: 0 2px;
+}
+
+.animation-timeline-buffer:empty, .animation-timeline-buffer-hint {
+    display: none;
+}
+
+.animation-timeline-buffer:empty ~ .animation-timeline-buffer-hint {
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    z-index: 101;
+    display: flex;
 }
 
 .animation-time-overlay {
@@ -252,11 +264,28 @@ text.animation-timeline-grid-label {
     fill: #5a5a5a;
 }
 
-.animation-timeline-rows {
+.animation-timeline-rows, .animation-timeline-rows-hint {
     flex-grow: 1;
     overflow-y: auto;
     z-index: 1;
     overflow-x: hidden;
+}
+
+.animation-timeline-rows-hint {
+    display: none;
+}
+
+.animation-timeline-buffer:not(:empty) ~ .animation-timeline-rows:empty {
+    flex-grow: 0;
+}
+
+.animation-timeline-buffer:not(:empty) ~ .animation-timeline-rows:empty ~ .animation-timeline-rows-hint {
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 150px;
+    padding: 10px;
 }
 
 .toolbar.animation-controls-toolbar {

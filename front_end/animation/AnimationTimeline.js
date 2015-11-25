@@ -18,6 +18,8 @@ WebInspector.AnimationTimeline = function()
     this._underlyingPlaybackRate = 1;
     this._createHeader();
     this._animationsContainer = this.contentElement.createChild("div", "animation-timeline-rows");
+    var timelineHint = this.contentElement.createChild("div", "animation-timeline-rows-hint");
+    timelineHint.textContent = WebInspector.UIString("Select an effect above to inspect and modify.");
 
     this._duration = this._defaultDuration();
     this._scrubberRadius = 25;
@@ -114,6 +116,8 @@ WebInspector.AnimationTimeline.prototype = {
     _createHeader: function()
     {
         this._previewContainer = this.contentElement.createChild("div", "animation-timeline-buffer");
+        var emptyBufferHint = this.contentElement.createChild("div", "animation-timeline-buffer-hint");
+        emptyBufferHint.textContent = WebInspector.UIString("Listening for animations...");
         var container = this.contentElement.createChild("div", "animation-timeline-header");
         var controls = container.createChild("div", "animation-controls");
 

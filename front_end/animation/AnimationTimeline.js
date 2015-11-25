@@ -22,8 +22,7 @@ WebInspector.AnimationTimeline = function()
     timelineHint.textContent = WebInspector.UIString("Select an effect above to inspect and modify.");
 
     this._duration = this._defaultDuration();
-    this._scrubberRadius = 25;
-    this._timelineControlsWidth = 175;
+    this._timelineControlsWidth = 150;
     /** @type {!Map.<!DOMAgent.BackendNodeId, !WebInspector.AnimationTimeline.NodeUI>} */
     this._nodesMap = new Map();
     this._groupBuffer = [];
@@ -103,45 +102,50 @@ WebInspector.AnimationTimeline.prototype = {
      */
     _createScrubber: function() {
         this._timelineScrubber = createElementWithClass("div", "animation-scrubber hidden");
+        this._timelineScrubberLine = this._timelineScrubber.createChild("div", "animation-scrubber-line");
+        this._timelineScrubberLine.createChild("div", "animation-scrubber-head");
         this._timelineScrubber.createChild("div", "animation-time-overlay");
-        this._timelineScrubber.createChild("div", "animation-scrubber-arrow");
-        this._timelineScrubberHead = this._timelineScrubber.createChild("div", "animation-scrubber-head");
-        var timerContainer = this._timelineScrubber.createChild("div", "animation-timeline-timer");
-        this._timerSpinner = timerContainer.createChild("div", "timer-spinner timer-hemisphere");
-        this._timerFiller = timerContainer.createChild("div", "timer-filler timer-hemisphere");
-        this._timerMask = timerContainer.createChild("div", "timer-mask");
         return this._timelineScrubber;
     },
 
     _createHeader: function()
     {
-        this._previewContainer = this.contentElement.createChild("div", "animation-timeline-buffer");
-        var emptyBufferHint = this.contentElement.createChild("div", "animation-timeline-buffer-hint");
-        emptyBufferHint.textContent = WebInspector.UIString("Listening for animations...");
-        var container = this.contentElement.createChild("div", "animation-timeline-header");
-        var controls = container.createChild("div", "animation-controls");
+        var toolbarContainer = this.contentElement.createChild("div", "animation-timeline-toolbar-container");
+        var topToolbar = new WebInspector.Toolbar("animation-timeline-toolbar", toolbarContainer);
+        var clearButton = new WebInspector.ToolbarButton(WebInspector.UIString("Clear all"), "clear-toolbar-item");
+        clearButton.addEventListener("click", this._reset.bind(this));
+        topToolbar.appendToolbarItem(clearButton);
+        topToolbar.appendSeparator();
 
-        var toolbar = new WebInspector.Toolbar("animation-controls-toolbar", controls);
-        this._controlButton = new WebInspector.ToolbarButton(WebInspector.UIString("Replay timeline"), "replay-outline-toolbar-item");
-        this._controlButton.addEventListener("click", this._controlButtonToggle.bind(this));
-        toolbar.appendToolbarItem(this._controlButton);
-
-        var playbackRateControl = controls.createChild("div", "animation-playback-rate-control");
+        var playbackRateControl = toolbarContainer.createChild("div", "animation-playback-rate-control");
         this._playbackRateButtons = [];
         for (var playbackRate of WebInspector.AnimationTimeline.GlobalPlaybackRates) {
             var button = playbackRateControl.createChild("div", "animation-playback-rate-button");
             button.textContent = WebInspector.UIString(playbackRate * 100 + "%");
             button.playbackRate = playbackRate;
             button.addEventListener("click", this._setPlaybackRate.bind(this, playbackRate));
+            button.title = WebInspector.UIString("Set speed to ") + button.textContent;
             this._playbackRateButtons.push(button);
         }
         this._updatePlaybackControls();
 
+        this._previewContainer = this.contentElement.createChild("div", "animation-timeline-buffer");
+        var emptyBufferHint = this.contentElement.createChild("div", "animation-timeline-buffer-hint");
+        emptyBufferHint.textContent = WebInspector.UIString("Listening for animations...");
+        var container = this.contentElement.createChild("div", "animation-timeline-header");
+        var controls = container.createChild("div", "animation-controls");
+        this._currentTime = controls.createChild("div", "animation-timeline-current-time monospace");
+
+        var toolbar = new WebInspector.Toolbar("animation-controls-toolbar", controls);
+        this._controlButton = new WebInspector.ToolbarButton(WebInspector.UIString("Replay timeline"), "replay-outline-toolbar-item");
+        this._controlButton.addEventListener("click", this._controlButtonToggle.bind(this));
+        toolbar.appendToolbarItem(this._controlButton);
+
         var gridHeader = container.createChild("div", "animation-grid-header");
-        WebInspector.installDragHandle(gridHeader, this._repositionScrubber.bind(this), this._scrubberDragMove.bind(this), this._scrubberDragEnd.bind(this), "pointer");
+        WebInspector.installDragHandle(gridHeader, this._repositionScrubber.bind(this), this._scrubberDragMove.bind(this), this._scrubberDragEnd.bind(this), "text");
         container.appendChild(this._createScrubber());
-        WebInspector.installDragHandle(this._timelineScrubberHead, this._scrubberDragStart.bind(this), this._scrubberDragMove.bind(this), this._scrubberDragEnd.bind(this), "move");
-        this._timelineScrubberHead.textContent = WebInspector.UIString(Number.millisToString(0));
+        WebInspector.installDragHandle(this._timelineScrubberLine, this._scrubberDragStart.bind(this), this._scrubberDragMove.bind(this), this._scrubberDragEnd.bind(this), "col-resize");
+        this._currentTime.textContent = "";
 
         return container;
     },
@@ -190,7 +194,7 @@ WebInspector.AnimationTimeline.prototype = {
             this._controlButton.element.classList.add("play-outline-toolbar-item");
             this._controlButton.setTitle(WebInspector.UIString("Play timeline"));
             this._controlButton.setToggled(true);
-        } else if (!this._scrubberPlayer || this._scrubberPlayer.currentTime >= this.duration() - this._scrubberRadius / this.pixelMsRatio()) {
+        } else if (!this._scrubberPlayer || this._scrubberPlayer.currentTime >= this.duration()) {
             this._controlButton.element.classList.add("replay-outline-toolbar-item");
             this._controlButton.setTitle(WebInspector.UIString("Replay timeline"));
             this._controlButton.setToggled(true);
@@ -286,6 +290,8 @@ WebInspector.AnimationTimeline.prototype = {
         this._animationsContainer.removeChildren();
         this._duration = this._defaultDuration();
         delete this._startTime;
+        this._timelineScrubber.classList.add("hidden");
+
     },
 
     _reset: function()
@@ -295,7 +301,7 @@ WebInspector.AnimationTimeline.prototype = {
         if (this._scrubberPlayer)
             this._scrubberPlayer.cancel();
         delete this._scrubberPlayer;
-        this._timelineScrubberHead.textContent = WebInspector.UIString(Number.millisToString(0));
+        this._currentTime.textContent = "";
         this._updateControlButton();
         this._groupBuffer = [];
         this._previewMap.clear();
@@ -348,7 +354,24 @@ WebInspector.AnimationTimeline.prototype = {
         var preview = new WebInspector.AnimationGroupPreviewUI(group);
         this._previewMap.set(group, preview);
         this._previewContainer.appendChild(preview.element);
+        preview.removeButton().addEventListener("click", this._removeAnimationGroup.bind(this, group));
         preview.element.addEventListener("click", this._selectAnimationGroup.bind(this, group));
+    },
+
+    /**
+     * @param {!WebInspector.AnimationModel.AnimationGroup} group
+     * @param {!Event} event
+     */
+    _removeAnimationGroup: function(group, event)
+    {
+        this._previewMap.get(group).element.remove();
+        this._previewMap.delete(group);
+        event.consume(true);
+
+        if (this._selectedGroup === group) {
+            this._clearTimeline();
+            delete this._selectedGroup;
+        }
     },
 
     /**
@@ -367,6 +390,7 @@ WebInspector.AnimationTimeline.prototype = {
         }
 
         if (this._selectedGroup === group) {
+            this._togglePause(false);
             this._replay();
             return;
         }
@@ -426,26 +450,26 @@ WebInspector.AnimationTimeline.prototype = {
     _renderGrid: function()
     {
         const gridSize = 250;
-        this._grid.setAttribute("width", this.width());
+        this._grid.setAttribute("width", this.width() + 10);
         this._grid.setAttribute("height", this._animationsContainer.offsetHeight + 30);
         this._grid.setAttribute("shape-rendering", "crispEdges");
         this._grid.removeChildren();
         var lastDraw = undefined;
         for (var time = 0; time < this.duration(); time += gridSize) {
             var line = this._grid.createSVGChild("rect", "animation-timeline-grid-line");
-            line.setAttribute("x", time * this.pixelMsRatio());
+            line.setAttribute("x", time * this.pixelMsRatio() + 10);
             line.setAttribute("y", 23);
             line.setAttribute("height", "100%");
             line.setAttribute("width", 1);
         }
         for (var time = 0; time < this.duration(); time += gridSize) {
             var gridWidth = time * this.pixelMsRatio();
-            if (!lastDraw || gridWidth - lastDraw > 50) {
+            if (lastDraw === undefined || gridWidth - lastDraw > 50) {
                 lastDraw = gridWidth;
                 var label = this._grid.createSVGChild("text", "animation-timeline-grid-label");
-                label.setAttribute("x", gridWidth + 5);
-                label.setAttribute("y", 16);
                 label.textContent = WebInspector.UIString(Number.millisToString(time));
+                label.setAttribute("x", gridWidth + 10 + 1 - label.offsetWidth / 2);
+                label.setAttribute("y", 16);
             }
         }
     },
@@ -521,16 +545,14 @@ WebInspector.AnimationTimeline.prototype = {
         if (this._scrubberPlayer)
             this._scrubberPlayer.cancel();
 
-        var scrubberDuration = this.duration() - this._scrubberRadius / this.pixelMsRatio();
         this._scrubberPlayer = this._timelineScrubber.animate([
             { transform: "translateX(0px)" },
-            { transform: "translateX(" +  (this.width() - this._scrubberRadius) + "px)" }
-        ], { duration: scrubberDuration , fill: "forwards" });
+            { transform: "translateX(" +  this.width() + "px)" }
+        ], { duration: this.duration(), fill: "forwards" });
         this._scrubberPlayer.playbackRate = this._effectivePlaybackRate();
         this._scrubberPlayer.onfinish = this._updateControlButton.bind(this);
         this._scrubberPlayer.currentTime = currentTime;
-        this._timelineScrubber.classList.remove("animation-timeline-end");
-        this._timelineScrubberHead.window().requestAnimationFrame(this._updateScrubber.bind(this));
+        this.element.window().requestAnimationFrame(this._updateScrubber.bind(this));
     },
 
     /**
@@ -548,12 +570,11 @@ WebInspector.AnimationTimeline.prototype = {
     {
         if (!this._scrubberPlayer)
             return;
-        this._timelineScrubberHead.textContent = WebInspector.UIString(Number.millisToString(this._scrubberPlayer.currentTime));
+        this._currentTime.textContent = WebInspector.UIString(Number.millisToString(this._scrubberPlayer.currentTime));
         if (this._scrubberPlayer.playState === "pending" || this._scrubberPlayer.playState === "running") {
-            this._timelineScrubberHead.window().requestAnimationFrame(this._updateScrubber.bind(this));
+            this.element.window().requestAnimationFrame(this._updateScrubber.bind(this));
         } else if (this._scrubberPlayer.playState === "finished") {
-            this._timelineScrubberHead.textContent = WebInspector.UIString(". . .");
-            this._timelineScrubber.classList.add("animation-timeline-end");
+            this._currentTime.textContent = "";
         }
     },
 
@@ -568,7 +589,7 @@ WebInspector.AnimationTimeline.prototype = {
 
         // Seek to current mouse position.
         if (!this._gridOffsetLeft)
-            this._gridOffsetLeft = this._grid.totalOffsetLeft();
+            this._gridOffsetLeft = this._grid.totalOffsetLeft() + 10;
         var seekTime = Math.max(0, event.x - this._gridOffsetLeft) / this.pixelMsRatio();
         this._selectedGroup.seekTo(seekTime);
         this._togglePause(true);
@@ -604,9 +625,9 @@ WebInspector.AnimationTimeline.prototype = {
     _scrubberDragMove: function(event)
     {
         var delta = event.x - this._originalMousePosition;
-        var currentTime = Math.max(0, Math.min(this._originalScrubberTime + delta / this.pixelMsRatio(), this.duration() - this._scrubberRadius / this.pixelMsRatio()));
+        var currentTime = Math.max(0, Math.min(this._originalScrubberTime + delta / this.pixelMsRatio(), this.duration()));
         this._scrubberPlayer.currentTime = currentTime;
-        this._timelineScrubberHead.textContent = WebInspector.UIString(Number.millisToString(Math.round(currentTime)));
+        this._currentTime.textContent = WebInspector.UIString(Number.millisToString(Math.round(currentTime)));
         this._selectedGroup.seekTo(currentTime);
     },
 
@@ -618,7 +639,7 @@ WebInspector.AnimationTimeline.prototype = {
         var currentTime = Math.max(0, this._scrubberPlayer.currentTime);
         this._scrubberPlayer.play();
         this._scrubberPlayer.currentTime = currentTime;
-        this._timelineScrubberHead.window().requestAnimationFrame(this._updateScrubber.bind(this));
+        this._currentTime.window().requestAnimationFrame(this._updateScrubber.bind(this));
     },
 
     __proto__: WebInspector.VBox.prototype

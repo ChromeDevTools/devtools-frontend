@@ -22,7 +22,6 @@
     transform-style: preserve-3d;
     border-bottom: 1px solid hsl(0, 0%, 90%);
     margin-bottom: -1px;
-    margin-right: 26px;
     background-color: hsl(0, 0%, 98%);
     display: flex;
     align-items: center;
@@ -90,8 +89,18 @@ circle.animation-keyframe-point {
     min-width: 50px;
 }
 
+.animation-timeline-toolbar-container {
+    display: flex;
+    border-bottom: 1px solid #ccc;
+    flex: 0 0;
+}
+
+.animation-timeline-toolbar {
+    display: inline-block;
+}
+
 .animation-timeline-header {
-    height: 30px;
+    height: 28px;
     border-bottom: 1px solid #ccc;
     flex-shrink: 0;
     display: flex;
@@ -99,24 +108,29 @@ circle.animation-keyframe-point {
 
 .animation-timeline-header:after {
     content: "";
-    height: calc(100% - 48px);
+    height: calc(100% - 48px - 28px);
     position: absolute;
     width: 150px;
     left: 0;
+    margin-top: 28px;
     background-color: hsl(0, 0%, 98%);
-    z-index: -1;
+    z-index: 0;
     border-right: 1px solid hsl(0, 0%, 90%);
 }
 
 .animation-controls {
     flex: 0 0 150px;
-    padding: 1px;
-    height: 100%;
     position: relative;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 8px;
 }
 
+.animation-timeline-current-time {flex: 0 0 auto;line-height: 28px;margin-right: 5px;}
 .animation-grid-header {
     flex: 1 0 auto;
+    z-index: 1;
+    cursor: text;
 }
 
 .animation-timeline-buffer, .animation-timeline-buffer-hint {
@@ -145,6 +159,7 @@ circle.animation-keyframe-point {
     position: absolute;
     height: 100%;
     width: 100%;
+    z-index: -1;
 }
 
 .animation-timeline-end > .animation-time-overlay {
@@ -154,73 +169,40 @@ circle.animation-keyframe-point {
 .animation-scrubber {
     opacity: 1;
     position: absolute;
-    left: 175px;
-    height: calc(100% - 78px);
-    width: calc(100% - 175px);
-    top: 78px;
-    border-left: 1px solid rgba(0,0,0,0.5);
+    left: 150px;
+    height: calc(100% - 103px);
+    width: calc(100% - 150px);
+    top: 103px;
+    border-left: 1px solid hsla(4,90%,58%,1);
+    z-index: 1;
 }
 
-.animation-scrubber.animation-timeline-end {
-    border: none;
+.animation-scrubber-line {
+    width: 11px;
+    background: linear-gradient(to right, transparent 5px, hsla(4,90%,58%,1) 5px, hsla(4,90%,58%,1) 6px, transparent 6px);
+    position: absolute;
+    top: -28px;
+    height: 28px;
+    left: -6px;
+    padding: 0 5px;
+    z-index: 2;
 }
 
 .animation-scrubber-head {
-    background-color: rgba(0, 0, 0, 0.7);
-    width: 50px;
-    height: 23px;
-    color: white;
-    line-height: 23px;
-    text-align: center;
-    border-radius: 5px;
-    position: relative;
-    top: -29px;
-    left: -25px;
-    font-size: 10px;
-    visibility: visible;
-}
-
-.animation-scrubber-head:before, .animation-scrubber-head:after {
+    width: 7px;
+    height: 7px;
+    transform: rotate(45deg);
+    background: red;
     position: absolute;
-    color: #999;
-    font-size: 8px;
-}
-
-.animation-scrubber-head:before {
-    left: 3px;
-}
-
-.animation-scrubber-head:after {
-    right: 3px;
-}
-
-.animation-timeline-end > .animation-scrubber-head {
-    visibility: visible;
-}
-
-.animation-timeline-end > .animation-scrubber-arrow {
-    visibility: hidden;
-}
-
-.animation-scrubber-arrow {
-    width: 21px;
-    height: 25px;
-    position: absolute;
-    top: -6px;
-    left: -7px;
-    -webkit-clip-path: polygon(0 0, 6px 6px, 12px 0px, 0px 0px);
-    background-color: rgba(0, 0, 0, 0.7);
-}
-
-.animation-timeline-end > .animation-timeline-timer {
-    visibility: hidden;
+    left: 2px;
+    top: 1px;
 }
 
 svg.animation-timeline-grid {
     position: absolute;
-    left: 175px;
-    top: 48px;
-    z-index: -1;
+    left: 140px;
+    top: 76px;
+    z-index: 0;
 }
 
 rect.animation-timeline-grid-line {
@@ -289,7 +271,7 @@ text.animation-timeline-grid-label {
 }
 
 .toolbar.animation-controls-toolbar {
-    float: right;
+    flex: 0 0 auto;
 }
 
 .animation-node-row.animation-node-selected {
@@ -335,6 +317,7 @@ text.animation-timeline-grid-label {
     background: hsla(219, 100%, 66%, 0.27);
     opacity: 0;
     border-right: 1px solid #A7A7A7;
+    cursor: pointer;
 }
 
 .animation-buffer-preview:not(.selected):hover {
@@ -363,7 +346,7 @@ text.animation-timeline-grid-label {
     border: 1px solid #ccc;
 }
 
-.animation-buffer-preview:not(.selected).paused .animation-paused {
+.animation-buffer-preview.paused .animation-paused {
     display: flex;
 }
 
@@ -385,9 +368,9 @@ text.animation-timeline-grid-label {
 }
 
 .animation-playback-rate-control {
-    margin: 2px 0 2px 2px;
+    margin: 4px 0 4px 2px;
     display: flex;
-    width: 114px;
+    width: 120px;
 }
 
 .animation-playback-rate-button:first-child {
@@ -402,10 +385,11 @@ text.animation-timeline-grid-label {
     border: 1px solid #ccc;
     display: inline-block;
     margin-right: -1px;
-    padding: 4px;
+    padding: 1px 4px;
     background: white;
     flex: 1 0 auto;
     text-align: center;
+    cursor: pointer;
 }
 
 .animation-playback-rate-button:not(.selected):hover {
@@ -422,4 +406,31 @@ text.animation-timeline-grid-label {
 .animation-playback-rate-button.selected:first-child {
     color: hsl(217, 89%, 61%);
     background-color: hsl(217, 89%, 100%);
+}
+
+.animation-remove-button {
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    background: #7B7B7B;
+    border-radius: 12px;
+    height: 16px;
+    width: 16px;
+    align-items: center;
+    font-size: 10px;
+    justify-content: center;
+    box-shadow: 0 1px 4px 0 rgb(185, 185, 185);
+    z-index: 100;
+    display: none;
+    cursor: pointer;
+    font-weight: 700;
+    color: white;
+}
+
+.animation-remove-button:hover {
+    background: #585858;
+}
+
+.animation-buffer-preview:hover .animation-remove-button {
+    display: flex;
 }

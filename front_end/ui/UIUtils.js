@@ -39,33 +39,67 @@ WebInspector.highlightedSearchResultClassName = "highlighted-search-result";
  * @param {string} cursor
  * @param {?string=} hoverCursor
  * @param {number=} startDelay
+ * @param {number=} startDistance
  */
-WebInspector.installDragHandle = function(element, elementDragStart, elementDrag, elementDragEnd, cursor, hoverCursor, startDelay)
+WebInspector.installDragHandle = function(element, elementDragStart, elementDrag, elementDragEnd, cursor, hoverCursor, startDelay, startDistance)
 {
+    startDistance = startDistance || 0;
+    var dragStart = WebInspector.elementDragStart.bind(null, element, elementDragStart, elementDrag, elementDragEnd, cursor);
+    var startX;
+    var startY;
+    var startTimer;
+    var delayPassed = false;
+    var distancePassed = false;
+    element.addEventListener("mousedown", onMouseDown, false);
+    element.addEventListener("mousemove", onMouseMove, false);
+    element.addEventListener("mouseup", onMouseUp, false);
+    if (hoverCursor !== null)
+        element.style.cursor = hoverCursor || cursor;
+
+    /**
+     * @param {!Event} event
+     */
+    function maybeStartDrag(event)
+    {
+        if (!distancePassed)
+            distancePassed = Math.pow(event.offsetX - startX, 2) + Math.pow(event.offsetY - startY, 2) >= startDistance * startDistance;
+        if (!delayPassed || !distancePassed)
+            return;
+        dragStart(event);
+        delayPassed = false;
+    }
+
     /**
      * @param {!Event} event
      */
     function onMouseDown(event)
     {
-        var dragStart = WebInspector.elementDragStart.bind(WebInspector, element, elementDragStart, elementDrag, elementDragEnd, cursor, event);
-        if (!startDelay)
-            dragStart();
-        startTimer = setTimeout(dragStart, startDelay || 0);
+        event.preventDefault();
+        distancePassed = false;
+        delayPassed = !startDelay;
+        startX = event.offsetX;
+        startY = event.offsetY;
+        if (startDelay)
+            startTimer = setTimeout(_ => { delayPassed = true; maybeStartDrag(event); }, startDelay);
+        else
+            maybeStartDrag(event);
+    }
+
+    /**
+     * @param {!Event} event
+     */
+    function onMouseMove(event)
+    {
+        maybeStartDrag(event);
     }
 
     function onMouseUp()
     {
         if (startTimer)
-            clearInterval(startTimer);
+            clearTimeout(startTimer);
         startTimer = null;
+        delayPassed = false;
     }
-
-    var startTimer;
-    element.addEventListener("mousedown", onMouseDown, false);
-    if (startDelay)
-        element.addEventListener("mouseup", onMouseUp, false);
-    if (hoverCursor !== null)
-        element.style.cursor = hoverCursor || cursor;
 }
 
 /**
@@ -118,7 +152,6 @@ WebInspector.elementDragStart = function(targetElement, elementDragStart, elemen
         targetElement.style.cursor = oldCursor;
         WebInspector._restoreCursorAfterDrag = null;
     }
-    event.preventDefault();
 }
 
 WebInspector._mouseOutWhileDragging = function()
@@ -192,7 +225,7 @@ WebInspector._elementDragEnd = function(event)
 
     event.preventDefault();
     if (elementDragEnd)
-        elementDragEnd(/** @type {!MouseEvent} */ (event));
+        setTimeout(elementDragEnd.bind(null, /** @type {!MouseEvent} */ (event)), 0);
 }
 
 /**

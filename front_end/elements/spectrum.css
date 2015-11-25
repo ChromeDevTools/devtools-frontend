@@ -51,11 +51,13 @@
     -webkit-user-select: none;
 }
 
-.spectrum-sat {
+.spectrum-sat,
+.-theme-preserve {
     background-image: linear-gradient(to right, white, rgba(204, 154, 129, 0));
 }
 
-.spectrum-val {
+.spectrum-val,
+.-theme-preserve {
     background-image: linear-gradient(to top, black, rgba(204, 154, 129, 0));
 }
 

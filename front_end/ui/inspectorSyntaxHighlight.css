@@ -108,6 +108,13 @@
     color: #00e;
 }
 
+.-theme-with-dark-background .webkit-html-external-link,
+.-theme-with-dark-background .webkit-html-resource-link,
+:host-context(.-theme-with-dark-background) .webkit-html-external-link,
+:host-context(.-theme-with-dark-background) .webkit-html-resource-link {
+    color: hsl(0, 0%, 67%);
+}
+
 .webkit-html-resource-link {
     /* Required for consistency with view-source.css, since anchors may not have href attributes */
     text-decoration: underline;

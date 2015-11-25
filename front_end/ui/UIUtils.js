@@ -1539,6 +1539,9 @@ WebInspector.ThemeSupport.prototype = {
         if (!this._hasTheme())
             return;
 
+        if (this._themeName === "dark" || this._themeName === "bw" || this._themeName === "nostalgie")
+            document.body.classList.add("-theme-with-dark-background");
+
         var styleSheets = document.styleSheets;
         var result = [];
         for (var i = 0; i < styleSheets.length; ++i)
@@ -1630,8 +1633,10 @@ WebInspector.ThemeSupport.prototype = {
         if (name === "background-image" && value.indexOf("gradient") === -1)
             return;
 
+        if (selectorText.indexOf("-theme-") !== -1)
+            return;
+
         var isSelection = selectorText.indexOf("select") !== -1 || selectorText.indexOf("execution") !== -1;
-        var isSyntax = selectorText.indexOf("cm-") === -1 && selectorText.indexOf("webkit-") === -1;
         var isBackground = name.indexOf("background") === 0 || name.indexOf("border") === 0;
         var isForeground = name.indexOf("background") === -1;
 
@@ -1640,7 +1645,7 @@ WebInspector.ThemeSupport.prototype = {
         output.push(":");
         var items = value.replace(colorRegex, "\0$1\0").split("\0");
         for (var i = 0; i < items.length; ++i)
-            output.push(this._patchColor(items[i], isSelection, isSyntax, isBackground, isForeground));
+            output.push(this._patchColor(items[i], isSelection, isBackground, isForeground));
         if (style.getPropertyPriority(name))
             output.push(" !important");
         output.push(";");
@@ -1649,12 +1654,11 @@ WebInspector.ThemeSupport.prototype = {
     /**
      * @param {string} text
      * @param {boolean} isSelection
-     * @param {boolean} isSyntax
      * @param {boolean} isBackground
      * @param {boolean} isForeground
      * @return {string}
      */
-    _patchColor: function(text, isSelection, isSyntax, isBackground, isForeground)
+    _patchColor: function(text, isSelection, isBackground, isForeground)
     {
         var color = WebInspector.Color.parse(text);
         if (!color)
@@ -1662,7 +1666,7 @@ WebInspector.ThemeSupport.prototype = {
 
         var hsla = color.hsla();
 
-        this._patchHSLA(hsla, isSelection, isSyntax, isBackground, isForeground);
+        this._patchHSLA(hsla, isSelection, isBackground, isForeground);
 
         var rgba = [];
         WebInspector.Color.hsl2rgb(hsla, rgba);
@@ -1676,11 +1680,10 @@ WebInspector.ThemeSupport.prototype = {
     /**
      * @param {!Array<number>} hsla
      * @param {boolean} isSelection
-     * @param {boolean} isSyntax
      * @param {boolean} isBackground
      * @param {boolean} isForeground
      */
-    _patchHSLA: function(hsla, isSelection, isSyntax, isBackground, isForeground)
+    _patchHSLA: function(hsla, isSelection, isBackground, isForeground)
     {
         var hue = hsla[0];
         var sat = hsla[1];
@@ -1722,20 +1725,16 @@ WebInspector.ThemeSupport.prototype = {
             }
             break;
         case "bw":
-            if (isSelectionBlue)
-                hue = 27 / 360;
-
             lit = 1 - lit;
             if (lit > 0.98 && isForeground)
                 lit = 0.98;
 
-            if (!isSyntax) {
-                if (lit > 0.8)
-                    lit = 1;
-                if (lit < 0.2)
-                    lit = 0;
-                sat = 0;
-            }
+            if (lit > 0.8)
+                lit = 1;
+            if (lit < 0.2)
+                lit = 0;
+            sat = 0;
+
             break;
         case "nostalgie":
             lit = 1 - lit;

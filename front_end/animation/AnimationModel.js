@@ -106,7 +106,7 @@ WebInspector.AnimationModel.prototype = {
 
         if (!matchedGroup) {
             this._animationGroups.set(incomingGroup.id(), incomingGroup);
-            this._screenshotCapture.captureScreenshots(incomingGroup._finiteDuration(), incomingGroup._screenshots);
+            this._screenshotCapture.captureScreenshots(incomingGroup.finiteDuration(), incomingGroup._screenshots);
         }
         this.dispatchEventToListeners(WebInspector.AnimationModel.Events.AnimationGroupStarted, matchedGroup || incomingGroup);
         return !!matchedGroup;
@@ -318,7 +318,7 @@ WebInspector.AnimationModel.Animation.prototype = {
      */
     _finiteDuration: function()
     {
-        var iterations = this.source().iterations() ? this.source().iterations() : 3;
+        var iterations = Math.min(this.source().iterations(), 3);
         return this.source().delay() + this.source().duration() * iterations;
     },
 
@@ -718,7 +718,7 @@ WebInspector.AnimationModel.AnimationGroup.prototype = {
     /**
      * @return {number}
      */
-    _finiteDuration: function()
+    finiteDuration: function()
     {
         var maxDuration = 0;
         for (var i = 0; i < this._animations.length; ++i)

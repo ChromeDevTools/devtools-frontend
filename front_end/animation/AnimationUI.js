@@ -195,15 +195,13 @@ WebInspector.AnimationUI.prototype = {
     redraw: function()
     {
         var durationWithDelay = this._delay() + this._duration() * this._animation.source().iterations() + this._animation.source().endDelay();
-        var leftMargin = ((this._animation.startTime() - this._timeline.startTime()) * this._timeline.pixelMsRatio());
-        var maxWidth = this._timeline.width() - WebInspector.AnimationUI.Options.AnimationMargin - leftMargin;
+        var maxWidth = this._timeline.width() - WebInspector.AnimationUI.Options.AnimationMargin;
 
         this._svg.classList.toggle("animation-ui-canceled", this._animation.playState() === "idle");
         this._svg.setAttribute("width", (maxWidth + 2 * WebInspector.AnimationUI.Options.AnimationMargin).toFixed(2));
-        this._svg.style.transform = "translateX(" + leftMargin.toFixed(2)  + "px)";
         this._activeIntervalGroup.style.transform = "translateX(" + (this._delay() * this._timeline.pixelMsRatio()).toFixed(2) + "px)";
 
-        this._nameElement.style.transform = "translateX(" + (leftMargin + this._delay() * this._timeline.pixelMsRatio() + WebInspector.AnimationUI.Options.AnimationMargin).toFixed(2) + "px)";
+        this._nameElement.style.transform = "translateX(" + (this._delay() * this._timeline.pixelMsRatio() + WebInspector.AnimationUI.Options.AnimationMargin).toFixed(2) + "px)";
         this._nameElement.style.width = (this._duration() * this._timeline.pixelMsRatio()).toFixed(2) + "px";
         this._drawDelayLine(this._svg);
 
@@ -327,7 +325,7 @@ WebInspector.AnimationUI.prototype = {
     _mouseMove: function (event)
     {
         this._movementInMs = (event.clientX - this._downMouseX) / this._timeline.pixelMsRatio();
-        if (this._animation.startTime() + this._delay() + this._duration() - this._timeline.startTime() > this._timeline.duration() * 0.8)
+        if (this._delay() + this._duration() > this._timeline.duration() * 0.8)
             this._timeline.setDuration(this._timeline.duration() * 1.2);
         this.redraw();
     },

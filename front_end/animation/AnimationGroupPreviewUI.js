@@ -61,7 +61,7 @@ WebInspector.AnimationGroupPreviewUI.prototype = {
         this._svg.removeChildren();
         var maxToShow = 10;
         var numberOfAnimations = Math.min(this._model.animations().length, maxToShow);
-        var timeToPixelRatio = 100 / Math.max(this._groupDuration(), 300);
+        var timeToPixelRatio = 100 / Math.max(this._groupDuration(), 750);
         for (var i = 0; i < numberOfAnimations; i++) {
             var effect = this._model.animations()[i].source();
             var line = this._svg.createSVGChild("line");

@@ -130,6 +130,8 @@ WebInspector.AnimationTimeline.prototype = {
         this._updatePlaybackControls();
 
         this._previewContainer = this.contentElement.createChild("div", "animation-timeline-buffer");
+        this._popoverHelper = new WebInspector.PopoverHelper(this._previewContainer, this._getPopoverAnchor.bind(this), this._showPopover.bind(this), this._onHidePopover.bind(this), true);
+        this._popoverHelper.setTimeout(0);
         var emptyBufferHint = this.contentElement.createChild("div", "animation-timeline-buffer-hint");
         emptyBufferHint.textContent = WebInspector.UIString("Listening for animations...");
         var container = this.contentElement.createChild("div", "animation-timeline-header");
@@ -148,6 +150,41 @@ WebInspector.AnimationTimeline.prototype = {
         this._currentTime.textContent = "";
 
         return container;
+    },
+
+    /**
+     * @param {!Element} element
+     * @param {!Event} event
+     * @return {!Element|!AnchorBox|undefined}
+     */
+    _getPopoverAnchor: function(element, event)
+    {
+        if (element.isDescendant(this._previewContainer))
+            return element;
+    },
+
+    /**
+     * @param {!Element} anchor
+     * @param {!WebInspector.Popover} popover
+     */
+    _showPopover: function(anchor, popover)
+    {
+        var animGroup;
+        for (var group of this._previewMap.keysArray()) {
+            if (this._previewMap.get(group).element === anchor.parentElement)
+                animGroup = group;
+        }
+        console.assert(animGroup);
+        var screenshots = animGroup.screenshots();
+        if (!screenshots.length)
+            return;
+        var content = new WebInspector.AnimationScreenshotPopover(screenshots);
+        popover.setNoMargins(true);
+        popover.showView(content, anchor);
+    },
+
+    _onHidePopover: function()
+    {
     },
 
     /**

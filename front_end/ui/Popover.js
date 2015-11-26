@@ -398,7 +398,7 @@ WebInspector.PopoverHelper.prototype = {
     _mouseHover: function(element)
     {
         delete this._hoverTimer;
-
+        this._hoverElement = element;
         this._hidePopover();
         this._popover = new WebInspector.Popover(this);
         this._showPopover(element, this._popover);

@@ -21,11 +21,13 @@
     "scripts": [
         "AnimationModel.js",
         "AnimationGroupPreviewUI.js",
+        "AnimationScreenshotPopover.js",
         "AnimationTimeline.js",
         "AnimationUI.js",
         "AnimationControlPane.js"
     ],
     "resources": [
+        "animationScreenshotPopover.css",
         "animationTimeline.css"
     ]
 }

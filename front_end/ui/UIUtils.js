@@ -618,8 +618,6 @@ WebInspector.formatLocalized = function(format, substitutions, initialValue)
     {
         if (typeof b === "string")
             b = createTextNode(b);
-        else if (b.shadowRoot)
-            b = createTextNode(b.shadowRoot.lastChild.textContent);
         element.appendChild(b);
     }
     String.format(WebInspector.UIString(format), substitutions, formatters, initialValue, append);

@@ -11,6 +11,7 @@
 .node-link {
     cursor: pointer;
     display: inline;
+    pointer-events: auto;
 }
 
 .stack-preview-async-description {

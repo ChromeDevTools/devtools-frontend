@@ -333,6 +333,7 @@ WebInspector.AnimationTimeline.prototype = {
 
     _reset: function()
     {
+        delete this._selectedGroup;
         this._clearTimeline();
         this._updateAnimationsPlaybackRate();
         if (this._scrubberPlayer)

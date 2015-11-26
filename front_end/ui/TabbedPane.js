@@ -39,7 +39,7 @@ WebInspector.TabbedPane = function()
     this.element.classList.add("tabbed-pane");
     this.contentElement.classList.add("tabbed-pane-shadow");
     this.contentElement.tabIndex = -1;
-    this._headerElement = this.contentElement.createChild("div", "tabbed-pane-header toolbar-colors");
+    this._headerElement = this.contentElement.createChild("div", "tabbed-pane-header");
     this._headerElement.createChild("content").select = ".tabbed-pane-header-before";
     this._headerContentsElement = this._headerElement.createChild("div", "tabbed-pane-header-contents");
     this._tabSlider = createElementWithClass("div", "tabbed-pane-tab-slider");

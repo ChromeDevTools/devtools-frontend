@@ -292,6 +292,7 @@
             'front_end/ui/ThrottledWidget.js'
         ],
         'devtools_main_js_files': [
+            'front_end/main/errorWarningCounter.css',
             'front_end/main/remoteDebuggingTerminatedScreen.css',
             'front_end/main/renderingOptions.css',
             'front_end/main/targetCrashedScreen.css',

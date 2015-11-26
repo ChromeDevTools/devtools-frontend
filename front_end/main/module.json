@@ -343,6 +343,7 @@
         "Tests.js"
     ],
     "resources": [
+        "errorWarningCounter.css",
         "remoteDebuggingTerminatedScreen.css",
         "renderingOptions.css",
         "targetCrashedScreen.css"

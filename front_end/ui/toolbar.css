@@ -118,7 +118,6 @@ button.toolbar-item:enabled.hover .glyph {
     background-color: white;
 }
 
-.toolbar-counter.hover,
 .toolbar-item.checkbox.hover {
     color: #333;
 }
@@ -215,28 +214,6 @@ select.toolbar-item {
 
 .toolbar-item.emulate-active {
     background-color: rgb(163, 163, 163);
-}
-
-.toolbar-counter {
-    cursor: pointer;
-    padding: 0 2px;
-    min-width: 26px;
-}
-
-.toolbar-counter-item {
-    margin-left: 6px;
-}
-
-.toolbar-counter-item label {
-    cursor: inherit;
-}
-
-.toolbar-counter-item.toolbar-counter-item-first {
-    margin-left: 0;
-}
-
-.toolbar-counter-item > div {
-    margin-right: 2px;
 }
 
 .toolbar-divider {

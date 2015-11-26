@@ -35,6 +35,10 @@ WebInspector.AnimationModel.prototype = {
         this._animationsById.clear();
         this._animationGroups.clear();
         this._pendingAnimations = [];
+        if (this._playbackRate !== 1 && this._playbackRate !== 0)
+            this.setPlaybackRate(this._playbackRate);
+        else
+            this._playbackRate = 1;
         this.dispatchEventToListeners(WebInspector.AnimationModel.Events.ModelReset);
     },
 

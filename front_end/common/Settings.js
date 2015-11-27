@@ -35,7 +35,8 @@
 WebInspector.Settings = function(storage)
 {
     this._settingsStorage = storage;
-    this._localStorage = new WebInspector.SettingsStorage(window.localStorage || {});
+    var clearLocalStorage = window.localStorage ? window.localStorage.clear.bind(window.localStorage) : undefined;
+    this._localStorage = new WebInspector.SettingsStorage(window.localStorage || {}, undefined, undefined, clearLocalStorage);
 
     this._eventSupport = new WebInspector.Object();
     /** @type {!Map<string, !WebInspector.Setting>} */

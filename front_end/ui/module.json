@@ -58,6 +58,7 @@
         "infobar.css",
         "inspectorCommon.css",
         "inspectorSyntaxHighlight.css",
+        "inspectorSyntaxHighlightDark.css",
         "listWidget.css",
         "panelEnablerView.css",
         "progressIndicator.css",

@@ -104,6 +104,10 @@ fieldset[disabled] label:hover input {
     color: red;
 }
 
+.-theme-with-dark-background .error-message {
+    color: hsl(0, 100%, 65%);
+}
+
 .error-input {
     background-color: rgb(220, 130, 130);
 }
@@ -458,7 +462,8 @@ body.inactive li.selected .status .bubble-repeat-count {
     margin-top: 1px;
 }
 
-.sidebar-tree-item.selected {
+.sidebar-tree-item.selected.
+.-theme-selection-color {
     color: white;
     text-shadow: rgba(0, 0, 0, 0.33) 1px 1px 0;
     background-origin: padding-box;

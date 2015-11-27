@@ -47,7 +47,7 @@ WebInspector.Popover = function(popoverHelper)
     this._hideBound = this.hide.bind(this);
 }
 
-WebInspector.Popover._classNamePrefix = "popover custom-popup-vertical-scroll custom-popup-horizontal-scroll";
+WebInspector.Popover._classNamePrefix = "popover";
 
 WebInspector.Popover.prototype = {
     /**

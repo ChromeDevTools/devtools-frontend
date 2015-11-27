@@ -334,11 +334,11 @@
 
 .styles-section.matched-styles .style-properties li.parent .expand-element {
     -webkit-user-select: none;
-    background-image: url(Images/toolbarButtonGlyphs.png);
-    background-size: 352px 168px;
+    -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
+    -webkit-mask-size: 352px 168px;
     margin-right: 2px;
     margin-left: -6px;
-    opacity: 0.55;
+    background-color: #777;
     width: 8px;
     height: 10px;
     display: inline-block;
@@ -346,16 +346,16 @@
 
 @media (-webkit-min-device-pixel-ratio: 1.5) {
 .styles-section.matched-styles .style-properties li.parent .expand-element {
-    background-image: url(Images/toolbarButtonGlyphs_2x.png);
+    -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
 }
 } /* media */
 
 .styles-section.matched-styles .style-properties li.parent .expand-element {
-    background-position: -4px -96px;
+    -webkit-mask-position: -4px -96px;
 }
 
 .styles-section.matched-styles .style-properties li.parent.expanded .expand-element {
-    background-position: -20px -96px;
+    -webkit-mask-position: -20px -96px;
 }
 
 .styles-section .style-properties li .info {
@@ -545,6 +545,14 @@
 
 .metrics {
     border-bottom: 1px solid #ccc;
+}
+
+.-theme-with-dark-background .metrics {
+    color: #222;
+}
+
+.-theme-with-dark-background .metrics > div:hover {
+    color: #ccc;
 }
 
 .metrics-and-styles .metrics {

@@ -673,7 +673,7 @@ WebInspector.manageBlackboxingSettingsTabLabel = function()
 WebInspector.installComponentRootStyles = function(element)
 {
     element.appendChild(WebInspector.createStyleElement("ui/inspectorCommon.css"));
-    element.appendChild(WebInspector.createStyleElement("ui/inspectorSyntaxHighlight.css"));
+    WebInspector.themeSupport.injectHighlightStyleSheets(element);
     element.classList.add("platform-" + WebInspector.platform());
     if (Runtime.experiments.isEnabled("materialDesign"))
         element.classList.add("material");
@@ -687,7 +687,7 @@ WebInspector.createShadowRootWithCoreStyles = function(element)
 {
     var shadowRoot = element.createShadowRoot();
     shadowRoot.appendChild(WebInspector.createStyleElement("ui/inspectorCommon.css"));
-    shadowRoot.appendChild(WebInspector.createStyleElement("ui/inspectorSyntaxHighlight.css"));
+    WebInspector.themeSupport.injectHighlightStyleSheets(shadowRoot);
     shadowRoot.addEventListener("focus", WebInspector._focusChanged.bind(WebInspector), true);
     return shadowRoot;
 }
@@ -1510,11 +1510,12 @@ WebInspector.StringFormatter.prototype = {
  */
 WebInspector.ThemeSupport = function(setting)
 {
-    this._themeName = Runtime.experiments.isEnabled("uiThemes") ? setting.get() : "default";
+    this._themeName = setting.get() || "default";
     this._themableProperties = new Set([
         "color", "box-shadow", "text-shadow", "outline-color",
         "background-image", "background-color",
-        "border-left-color", "border-right-color", "border-top-color", "border-bottom-color"]);
+        "border-left-color", "border-right-color", "border-top-color", "border-bottom-color",
+        "-webkit-border-image"]);
     /** @type {!Map<string, string>} */
     this._cachedThemePatches = new Map();
     this._setting = setting;
@@ -1530,6 +1531,18 @@ WebInspector.ThemeSupport.prototype = {
     },
 
     /**
+     * @param {!Element} element
+     */
+    injectHighlightStyleSheets: function(element)
+    {
+        this._injectingStyleSheet = true;
+        element.appendChild(WebInspector.createStyleElement("ui/inspectorSyntaxHighlight.css"));
+        if (this._themeName === "dark")
+            element.appendChild(WebInspector.createStyleElement("ui/inspectorSyntaxHighlightDark.css"));
+        this._injectingStyleSheet = false;
+    },
+
+    /**
      * @param {!Document} document
      */
     applyTheme: function(document)
@@ -1537,7 +1550,7 @@ WebInspector.ThemeSupport.prototype = {
         if (!this._hasTheme())
             return;
 
-        if (this._themeName === "dark" || this._themeName === "bw" || this._themeName === "nostalgie")
+        if (this._themeName === "dark")
             document.body.classList.add("-theme-with-dark-background");
 
         var styleSheets = document.styleSheets;
@@ -1560,7 +1573,7 @@ WebInspector.ThemeSupport.prototype = {
      */
     patchTextForTheme: function(id, text)
     {
-        if (!this._hasTheme())
+        if (!this._hasTheme() || this._injectingStyleSheet)
             return text;
 
         var patch = this._cachedThemePatches.get(id);
@@ -1619,6 +1632,12 @@ WebInspector.ThemeSupport.prototype = {
      * @param {!CSSStyleDeclaration} style
      * @param {string} name
      * @param {!Array<string>} output
+     *
+     * Theming API is primarily targeted at making dark theme look good.
+     * - If rule has ".-theme-preserve" in selector, it won't be affected.
+     * - If rule has ".selection" or "selected" or "-theme-selection-color" in selector, its hue is rotated 180deg in dark themes.
+     * - If rule has "highlight" its lightness is dimmmed 50%.
+     * - One can create specializations for dark themes via body.-theme-with-dark-background selector in host context.
      */
     _patchProperty: function(selectorText, style, name, output)
     {
@@ -1631,10 +1650,17 @@ WebInspector.ThemeSupport.prototype = {
         if (name === "background-image" && value.indexOf("gradient") === -1)
             return;
 
-        if (selectorText.indexOf("-theme-") !== -1)
+        var isSelection = selectorText.indexOf(".-theme-selection-color") !== -1;
+        if (selectorText.indexOf("-theme-") !== -1 && !isSelection)
             return;
 
-        var isSelection = selectorText.indexOf("select") !== -1 || selectorText.indexOf("execution") !== -1;
+        if (name === "-webkit-border-image") {
+            output.push("-webkit-filter: invert(100%)");
+            return;
+        }
+
+        isSelection = isSelection || selectorText.indexOf("selected") !== -1 || selectorText.indexOf(".selection") !== -1;
+        var isHighlight = selectorText.indexOf("highlight") !== -1;
         var isBackground = name.indexOf("background") === 0 || name.indexOf("border") === 0;
         var isForeground = name.indexOf("background") === -1;
 
@@ -1643,7 +1669,7 @@ WebInspector.ThemeSupport.prototype = {
         output.push(":");
         var items = value.replace(colorRegex, "\0$1\0").split("\0");
         for (var i = 0; i < items.length; ++i)
-            output.push(this._patchColor(items[i], isSelection, isBackground, isForeground));
+            output.push(this._patchColor(items[i], isSelection, isHighlight, isBackground, isForeground));
         if (style.getPropertyPriority(name))
             output.push(" !important");
         output.push(";");
@@ -1652,20 +1678,19 @@ WebInspector.ThemeSupport.prototype = {
     /**
      * @param {string} text
      * @param {boolean} isSelection
+     * @param {boolean} isHighlight
      * @param {boolean} isBackground
      * @param {boolean} isForeground
      * @return {string}
      */
-    _patchColor: function(text, isSelection, isBackground, isForeground)
+    _patchColor: function(text, isSelection, isHighlight, isBackground, isForeground)
     {
         var color = WebInspector.Color.parse(text);
         if (!color)
             return text;
 
         var hsla = color.hsla();
-
-        this._patchHSLA(hsla, isSelection, isBackground, isForeground);
-
+        this._patchHSLA(hsla, isSelection, isHighlight, isBackground, isForeground);
         var rgba = [];
         WebInspector.Color.hsl2rgb(hsla, rgba);
         var outColor = new WebInspector.Color(rgba, color.format());
@@ -1678,22 +1703,21 @@ WebInspector.ThemeSupport.prototype = {
     /**
      * @param {!Array<number>} hsla
      * @param {boolean} isSelection
+     * @param {boolean} isHighlight
      * @param {boolean} isBackground
      * @param {boolean} isForeground
      */
-    _patchHSLA: function(hsla, isSelection, isBackground, isForeground)
+    _patchHSLA: function(hsla, isSelection, isHighlight, isBackground, isForeground)
     {
         var hue = hsla[0];
         var sat = hsla[1];
         var lit = hsla[2];
         var alpha = hsla[3]
-        var isSelectionBlue = isSelection && hue > 0.57 && hue < 0.68;
 
         switch (this._themeName) {
         case "dark":
-            if (isSelectionBlue)
-                hue = 27 / 360;
-
+            if (isSelection)
+                hue = (hue + 0.5) % 1;
             var minCap = isBackground ? 0.14 : 0;
             var maxCap = isForeground ? 0.9 : 1;
             lit = 1 - lit;
@@ -1701,64 +1725,9 @@ WebInspector.ThemeSupport.prototype = {
                 lit = minCap + lit / 2;
             else if (lit > 2 * maxCap - 1)
                 lit = maxCap - 1 / 2 + lit / 2;
-            break;
-        case "sepia":
-            if (sat < 0.17 || lit > 0.99) {
-                hue = 1 / 12;
-                sat = 0.82;
-                if (lit > 0.99)
-                    lit = 0.99;
-            }
-            break;
-        case "pink":
-            if (sat < 0.17) {
-                hue = 0;
-                sat = 0.82;
-            }
-            break;
-        case "blue":
-            if (sat < 0.17) {
-                hue = 0.66;
-                sat = 0.82;
-            }
-            break;
-        case "bw":
-            lit = 1 - lit;
-            if (lit > 0.98 && isForeground)
-                lit = 0.98;
 
-            if (lit > 0.8)
-                lit = 1;
-            if (lit < 0.2)
-                lit = 0;
-            sat = 0;
-
-            break;
-        case "nostalgie":
-            lit = 1 - lit;
-
-            if (isSelectionBlue) {
-                hue = 0.5;
-                lit -= 0.1;
-                break;
-            }
-
-            // Blue background.
-            if (sat < 0.17) {
-                hue = 0.66;
-                lit += 0.32;
-                sat = 0.82;
-            }
-
-            // Yellow text
-            if (lit > 0.6) {
-                hue = 0.147;
-                lit -= 0.2;
-            }
-
-            // Visible borders
-            if (isForeground && isBackground)
-                lit += 0.2;
+            if (isHighlight)
+                lit /= 2;
 
             break;
         }

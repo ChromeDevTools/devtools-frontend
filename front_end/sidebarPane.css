@@ -72,9 +72,9 @@
 }
 
 .sidebar-pane-title::before {
-    background-image: url(Images/toolbarButtonGlyphs.png);
-    background-size: 352px 168px;
-    opacity: 0.5;
+    -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
+    -webkit-mask-size: 352px 168px;
+    background-color: #888;
     float: left;
     width: 11px;
     height: 11px;
@@ -85,16 +85,16 @@
 
 @media (-webkit-min-device-pixel-ratio: 1.5) {
 .sidebar-pane-title::before {
-    background-image: url(Images/toolbarButtonGlyphs_2x.png);
+    -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
 }
 } /* media */
 
 .sidebar-pane-title::before {
-    background-position: -4px -96px;
+    -webkit-mask-position: -4px -96px;
 }
 
 .sidebar-pane-title.expanded::before {
-    background-position: -20px -96px;
+    -webkit-mask-position: -20px -96px;
 }
 
 .sidebar-pane > .toolbar {

@@ -67,7 +67,7 @@
     right: 0;
     bottom: 0;
     border-top: 0 none transparent;
-    background-image: linear-gradient(to bottom, white, white 50%, rgb(234, 243, 255) 50%, rgb(234, 243, 255));
+    background-image: linear-gradient(to bottom, transparent, transparent 50%, hsla(214, 100%, 40%, 0.1) 50%, hsla(214, 100%, 40%, 0.1));
     background-size: 128px 32px;
     table-layout: fixed;
 }

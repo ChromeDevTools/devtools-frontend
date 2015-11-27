@@ -45,9 +45,16 @@
 .cm-highlight {
   -webkit-animation: fadeout 2s 0s;
 }
+.-theme-with-dark-background .cm-highlight {
+  -webkit-animation: fadeout-dark 2s 0s;
+}
 @-webkit-keyframes fadeout {
     from {background-color: rgb(255, 255, 120); }
     to { background-color: white; }
+}
+@-webkit-keyframes fadeout-dark {
+    from {background-color: rgba(255, 255, 60, 0.5); }
+    to { background-color: transparent; }
 }
 
 .cm-highlight.cm-execution-line {
@@ -132,16 +139,19 @@
     display: block !important;
 }
 
-.cm-execution-line {
+.cm-execution-line,
+.-theme-selection-color {
     background-color: rgb(230, 236, 255);
     outline: 1px solid rgb(64, 115, 244);
 }
 
-.cm-execution-line-tail {
+.cm-execution-line-tail,
+.-theme-selection-color {
     background-color: rgb(171, 191, 254);
 }
 
-.cm-execution-line .CodeMirror-linenumber {
+.cm-execution-line .CodeMirror-linenumber,
+.-theme-selection-color {
     border-right: 1px solid rgb(64, 115, 244);
 }
 

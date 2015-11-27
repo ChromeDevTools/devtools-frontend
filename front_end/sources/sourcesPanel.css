@@ -140,6 +140,11 @@
     background-color: rgb(255, 255, 194);
 }
 
+.-theme-with-dark-background .callstack-info.status {
+    background-color: hsl(37, 58%, 37%);
+    color: #ccc;
+}
+
 .watch-expression-delete-button {
     width: 10px;
     height: 10px;

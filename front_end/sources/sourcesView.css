@@ -49,6 +49,10 @@
     background-color: rgba(255, 255, 194, 0.5);
 }
 
+.-theme-with-dark-background .source-frame-debugger-script {
+    background-color: #444;
+}
+
 .source-frame-unsaved-committed-changes {
     background-color: rgba(255, 225, 205, 0.40);
 }

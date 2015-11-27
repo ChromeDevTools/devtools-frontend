@@ -102,7 +102,8 @@ button.toolbar-item {
     width: 28px;
 }
 
-button.toolbar-item.toggled-on .glyph {
+button.toolbar-item.toggled-on .glyph,
+.-theme-selection-color {
     background-color: rgb(66, 129, 235) !important;
 }
 
@@ -110,7 +111,8 @@ button.toolbar-item:enabled.hover .glyph {
     background-color: #333;
 }
 
-.blue-on-hover .toolbar-item:not(.toggled-on):enabled.hover {
+.blue-on-hover .toolbar-item:not(.toggled-on):enabled.hover,
+.-theme-selection-color {
     background-color: rgb(66, 129, 235);
 }
 
@@ -425,7 +427,8 @@ button.record-toolbar-item.toggled-on .glyph {
     -webkit-mask-position: -32px -48px;
 }
 
-.filter-toolbar-item.toggled-shown .glyph {
+.filter-toolbar-item.toggled-shown .glyph,
+.-theme-selection-color {
     background-color: rgb(66, 129, 235) !important;
 }
 
@@ -435,6 +438,11 @@ button.record-toolbar-item.toggled-on .glyph {
 
 .filter-toolbar-item.toggled-active .glyph {
     background-color: rgb(216, 0, 0) !important;
+}
+
+:host-context(.-theme-with-dark-background) .filter-toolbar-item.toggled-active .glyph,
+:host-context(.-theme-with-dark-background) button.record-toolbar-item.toggled-on .glyph {
+    background-color: hsl(0, 100%, 65%) !important;
 }
 
 .waterfall-toolbar-item .glyph {

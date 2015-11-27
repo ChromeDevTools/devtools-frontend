@@ -129,7 +129,6 @@ WebInspector.Main.prototype = {
         Runtime.experiments.register("timelineTracingJSProfile", "Timeline tracing based JS profiler", true);
         Runtime.experiments.register("timelineEventsTreeView", "Timeline events tree view", true);
         Runtime.experiments.register("timelineFlowEvents", "Timeline flow events", true);
-        Runtime.experiments.register("uiThemes", "UI themes");
 
         Runtime.experiments.cleanUpStaleExperiments();
 

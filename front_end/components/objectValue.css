@@ -115,3 +115,10 @@
     display: inline-flex;
     flex-direction: column;
 }
+
+.-theme-with-dark-background .object-value-number,
+:host-context(.-theme-with-dark-background) .object-value-number,
+.-theme-with-dark-background .object-value-boolean,
+:host-context(.-theme-with-dark-background) .object-value-boolean {
+    color: hsl(252, 100%, 75%);
+}

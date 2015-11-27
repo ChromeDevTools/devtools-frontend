@@ -176,7 +176,8 @@ svg.bezier-preset-modify.bezier-preset-plus {
     margin-top: 16px;
 }
 
-svg.bezier-preset-modify:active {
+svg.bezier-preset-modify:active,
+.-theme-selection-color {
     transform: scale(1.1);
     background-color: rgb(56, 121, 217);
 }

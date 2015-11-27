@@ -242,12 +242,7 @@
             "defaultValue": "Default",
             "options": [
                 ["Default", "default"],
-                ["Dark", "dark"],
-                ["Sepia", "sepia"],
-                ["Pink", "pink"],
-                ["Blue", "blue"],
-                ["Black & White", "bw"],
-                ["Nostalgie", "nostalgie"]
+                ["Dark", "dark"]
             ]
         },
         {

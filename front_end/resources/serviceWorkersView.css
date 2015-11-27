@@ -171,7 +171,7 @@
 }
 
 .service-workers-versions-table-running-status-inspect {
-    color: #00e;
+    color: hsl(240, 85%, 37%);
     cursor: pointer;
     text-decoration: underline;
 }
@@ -252,7 +252,7 @@
 }
 
 .service-worker-client-focus {
-   color: #00e;
+   color: hsl(240, 85%, 37%);
    cursor: pointer;
    padding-left: 4px;
    text-decoration: underline;

@@ -41,14 +41,16 @@
     pointer-events: none;
 }
 
-.soft-context-menu-item-mouse-over {
+.soft-context-menu-item-mouse-over,
+.-theme-selection-color {
     border-top: 1px solid rgb(56, 121, 217);
     border-bottom: 1px solid rgb(56, 121, 217);
     background-color: rgb(56, 121, 217);
     color: white;
 }
 
-:host-context(.platform-mac) .soft-context-menu-item-mouse-over {
+:host-context(.platform-mac) .soft-context-menu-item-mouse-over,
+.-theme-selection-color {
     border-top: 1px solid transparent;
     border-bottom: 1px solid transparent;
     background-image: linear-gradient(to right, hsl(214, 81%, 60%), hsl(214, 100%, 56%));

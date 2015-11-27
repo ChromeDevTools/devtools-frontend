@@ -234,7 +234,8 @@
     border-left: 6px solid #666;
 }
 
-.tabbed-pane-tab-slider {
+.tabbed-pane-tab-slider,
+.-theme-selection-color {
     height: 2px;
     position: absolute;
     bottom: -1px;

@@ -45,19 +45,14 @@
 }
 
 .resources.panel .sidebar li.selected .selection {
-    background-image: linear-gradient(to bottom, rgb(162, 177, 207), rgb(120, 138, 177));
+    background-color: rgb(160, 160, 160);
     border-top: 1px solid #979797;
     height: 18px;
 }
 
 .resources.panel .sidebar :focus li.selected .selection {
-    background-image: linear-gradient(to bottom, rgb(92, 147, 213), rgb(21, 83, 170));
+    background-color: rgb(56, 121, 217);
     border-top: 1px solid rgb(68, 128, 200);
-}
-
-body.inactive .resources.panel .sidebar li.selected .selection {
-    background-image: linear-gradient(to bottom, rgb(180, 180, 180), rgb(138, 138, 138));
-    border-top: 1px solid rgb(151, 151, 151);
 }
 
 .resources.panel .sidebar .icon {

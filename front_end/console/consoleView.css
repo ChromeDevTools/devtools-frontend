@@ -273,6 +273,10 @@
     background-color: hsl(50, 100%, 95%);
 }
 
+.-theme-with-dark-background .console-warning-level {
+    background-color: hsl(50, 100%, 10%);
+}
+
 .console-warning-level .console-message-text {
     color: hsl(39, 100%, 18%);
 }
@@ -282,8 +286,17 @@
     color: red !important;
 }
 
+.-theme-with-dark-background .console-error-level .console-message-text,
+.-theme-with-dark-background .console-error-level .console-view-object-properties-section {
+    color: hsl(0, 100%, 75%) !important;
+}
+
 .console-debug-level .console-message-text {
     color: blue;
+}
+
+.-theme-with-dark-background .console-debug-level .console-message-text {
+    color: hsl(220, 100%, 65%) !important;
 }
 
 .console-message.console-warning-level {
@@ -423,6 +436,10 @@
     line-height: 13px;
     margin: 0 6px;
     font-size: 9px;
+}
+
+.-theme-with-dark-background .object-info-state-note {
+    background-color: hsl(230, 100%, 80%);
 }
 
 .object-info-state-note::before {

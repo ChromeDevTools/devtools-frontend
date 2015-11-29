@@ -103,17 +103,18 @@ button.toolbar-item {
 }
 
 button.toolbar-item.toggled-on .glyph,
+.blue-on-hover .toolbar-item:not(.toggled-on):enabled.hover,
 .-theme-selection-color {
     background-color: rgb(66, 129, 235) !important;
 }
 
-button.toolbar-item:enabled.hover .glyph {
-    background-color: #333;
+button.toolbar-item.toggled-on .toolbar-button-text,
+.-theme-selection-color {
+    color: rgb(66, 129, 235) !important;
 }
 
-.blue-on-hover .toolbar-item:not(.toggled-on):enabled.hover,
-.-theme-selection-color {
-    background-color: rgb(66, 129, 235);
+button.toolbar-item:enabled.hover .glyph {
+    background-color: #333;
 }
 
 .blue-on-hover .toolbar-item:not(.toggled-on):enabled.hover .glyph {
@@ -379,10 +380,6 @@ button.record-toolbar-item.toggled-on .glyph {
     -webkit-mask-position: -256px 0;
 }
 
-.pause-on-exceptions-toolbar-item.toggled-on .glyph {
-    background-color: rgb(66, 129, 235);
-}
-
 .pause-toolbar-item .glyph {
     -webkit-mask-position: -32px -72px;
 }
@@ -407,10 +404,6 @@ button.record-toolbar-item.toggled-on .glyph {
     -webkit-mask-position: -256px -24px;
 }
 
-.format-toolbar-item.toggled .glyph {
-    background-color: rgb(66, 129, 235);
-}
-
 .garbage-collect-toolbar-item .glyph {
     -webkit-mask-position: -128px -24px;
 }
@@ -425,11 +418,6 @@ button.record-toolbar-item.toggled-on .glyph {
 
 .filter-toolbar-item > .glyph {
     -webkit-mask-position: -32px -48px;
-}
-
-.filter-toolbar-item.toggled-shown .glyph,
-.-theme-selection-color {
-    background-color: rgb(66, 129, 235) !important;
 }
 
 .filter-toolbar-item.toggled-shown {
@@ -509,26 +497,6 @@ button.record-toolbar-item.toggled-on .glyph {
 
 .foreground-color-toolbar-item .glyph {
     -webkit-mask-position: -128px -144px;
-}
-
-.case-sensitive-search-toolbar-item.toggled-on .toolbar-button-text {
-    color: rgb(94, 146, 233);
-}
-
-.regex-search-toolbar-item.toggled-on {
-    color: rgb(66, 129, 235);
-}
-
-.regex-search-toolbar-item.toggled-on .toolbar-button-text {
-    color: rgb(94, 146, 233);
-}
-
-.class-toolbar-item.toggled-on .toolbar-button-text {
-    color: rgb(66, 129, 235);
-}
-
-.playback-rate-button.toggled-on > .toolbar-button-text {
-    color: rgb(66, 129, 235);
 }
 
 button.playback-rate-button {

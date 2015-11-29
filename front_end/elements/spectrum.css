@@ -168,6 +168,10 @@
     padding: 2px;
 }
 
+:host-context(.-theme-with-dark-background) .spectrum-switcher {
+    -webkit-filter: invert(60%);
+}
+
 .spectrum-display-switcher {
     top: 196px;
     position: absolute;

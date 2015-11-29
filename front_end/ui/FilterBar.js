@@ -54,7 +54,7 @@ WebInspector.FilterBar = function(name, visibleByDefault)
 WebInspector.FilterBar.FilterBarState = {
     Inactive : "inactive",
     Active : "active",
-    Shown : "shown"
+    Shown : "on"
 };
 
 WebInspector.FilterBar.Events = {

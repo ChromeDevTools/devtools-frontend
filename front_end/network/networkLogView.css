@@ -385,35 +385,35 @@
 }
 
 .network-graph-bar.request-timing.queueing,
-.network-graph-bar.request-timing.total {
+.network-graph-bar.request-timing.total, -theme-preserve {
     border: solid 1px #AAAAAA;
 }
 
-.network-graph-bar.request-timing.receiving {
+.network-graph-bar.request-timing.receiving, -theme-preserve {
     background-color: #03A9F4;
 }
 
-.network-graph-bar.request-timing.waiting {
+.network-graph-bar.request-timing.waiting, -theme-preserve {
     background-color: #00C853;
 }
 
-.network-graph-bar.request-timing.connecting {
+.network-graph-bar.request-timing.connecting, -theme-preserve {
     background-color: #FF9800;
 }
 
-.network-graph-bar.request-timing.ssl {
+.network-graph-bar.request-timing.ssl, -theme-preserve {
     background-color: #9C27B0;
 }
 
-.network-graph-bar.request-timing.dns {
+.network-graph-bar.request-timing.dns, -theme-preserve {
     background-color: #009688;
 }
 
-.network-graph-bar.request-timing.proxy {
+.network-graph-bar.request-timing.proxy, -theme-preserve {
     background-color: #A1887F;
 }
 
-.network-graph-bar.request-timing.blocking {
+.network-graph-bar.request-timing.blocking, -theme-preserve {
     background-color: #AAAAAA;
 }
 
@@ -538,12 +538,16 @@
     background-color: rgba(255, 0, 0, 0.5);
 }
 
+.-theme-with-dark-background .network-red-divider {
+    background-color: hsla(0, 100%, 80%, 0.7);
+}
+
 .network-summary-bar .summary-red {
     color: red;
 }
 
-.network-blue-divider {
-    background-color: rgba(0, 0, 255, 0.5);
+.-theme-with-dark-background .network-blue-divider {
+    background-color: hsla(240, 100%, 80%, 0.7);
 }
 
 .network-frame-divider {

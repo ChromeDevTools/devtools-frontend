@@ -40,8 +40,7 @@
 }
 
 .resources.panel .sidebar li.selected {
-    color: white;
-    text-shadow: rgba(0, 0, 0, 0.33) 1px 1px 0;
+    color: #ccc;
 }
 
 .resources.panel .sidebar li.selected .selection {
@@ -324,6 +323,10 @@ li.selected .base-storage-tree-element-subtitle {
 
 .service-workers-tree-item .icon {
     content: url(Images/serviceWorker.svg);
+}
+
+.-theme-with-dark-background .service-workers-tree-item .icon {
+    -webkit-filter: invert(70%);
 }
 
 .domstorage-storage-tree-item.local-storage .icon {

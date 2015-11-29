@@ -124,37 +124,37 @@
     border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.network-timing-bar.blocking {
+.network-timing-bar.blocking, -theme-preserve {
     background-color: #AAAAAA;
 }
 
-.network-timing-bar.proxy {
+.network-timing-bar.proxy, -theme-preserve {
     background-color: #A1887F;
 }
 
-.network-timing-bar.dns {
+.network-timing-bar.dns, -theme-preserve {
     background-color: #009688;
 }
 
 .network-timing-bar.connecting,
 .network-timing-bar.serviceworker,
-.network-timing-bar.serviceworker-preparation {
+.network-timing-bar.serviceworker-preparation, -theme-preserve {
     background-color: #FF9800;
 }
 
-.network-timing-bar.ssl {
+.network-timing-bar.ssl, -theme-preserve {
     background-color: #9C27B0;
 }
 
-.network-timing-bar.sending {
+.network-timing-bar.sending, -theme-preserve {
     background-color: #B0BEC5;
 }
 
-.network-timing-bar.waiting {
+.network-timing-bar.waiting, -theme-preserve {
     background-color: #00C853;
 }
 
-.network-timing-bar.receiving {
+.network-timing-bar.receiving, -theme-preserve {
     background-color: #03A9F4;
 }
 

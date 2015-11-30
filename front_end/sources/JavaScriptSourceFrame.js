@@ -46,6 +46,7 @@ WebInspector.JavaScriptSourceFrame = function(scriptsPanel, uiSourceCode)
 
     this._popoverHelper = new WebInspector.ObjectPopoverHelper(scriptsPanel.element,
         this._getPopoverAnchor.bind(this), this._resolveObjectForPopover.bind(this), this._onHidePopover.bind(this), true);
+    this._popoverHelper.setTimeout(250, 250);
 
     this.textEditor.element.addEventListener("keydown", this._onKeyDown.bind(this), true);
 

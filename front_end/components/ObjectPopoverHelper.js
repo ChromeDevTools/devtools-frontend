@@ -142,7 +142,7 @@ WebInspector.ObjectPopoverHelper.prototype = {
             var popoverContentElement = null;
             if (result.type !== "object") {
                 popoverContentElement =  createElement("span");
-                popoverContentElement.appendChild(WebInspector.createStyleElement("components/objectValue.css"));
+                WebInspector.appendStyle(popoverContentElement, "components/objectValue.css");
                 var valueElement = popoverContentElement.createChild("span", "monospace object-value-" + result.type);
                 valueElement.style.whiteSpace = "pre";
 

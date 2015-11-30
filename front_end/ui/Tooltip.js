@@ -9,8 +9,7 @@
 WebInspector.Tooltip = function(doc)
 {
     this.element = doc.body.createChild("div");
-    this._shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element);
-    this._shadowRoot.appendChild(WebInspector.createStyleElement("ui/tooltip.css"));
+    this._shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element, "ui/tooltip.css");
 
     this._tooltipElement = this._shadowRoot.createChild("div", "tooltip");
     doc.addEventListener("mousemove", this._mouseMove.bind(this), true);

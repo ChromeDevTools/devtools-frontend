@@ -167,7 +167,7 @@ WebInspector.OverviewGrid.Window = function(parentElement, dividersLabelBarEleme
 
     this._parentElement.addEventListener("mousewheel", this._onMouseWheel.bind(this), true);
     this._parentElement.addEventListener("dblclick", this._resizeWindowMaximum.bind(this), true);
-    this._parentElement.appendChild(WebInspector.createStyleElement("ui_lazy/overviewGrid.css"));
+    WebInspector.appendStyle(this._parentElement, "ui_lazy/overviewGrid.css");
 
     this._leftResizeElement = parentElement.createChild("div", "overview-grid-window-resizer");
     this._leftResizeElement.style.left = 0;

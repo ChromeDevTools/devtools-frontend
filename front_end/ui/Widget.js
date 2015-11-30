@@ -359,7 +359,7 @@ WebInspector.Widget.prototype = {
      */
     registerRequiredCSS: function(cssFile)
     {
-        (this._isWebComponent ? this._shadowRoot : this.element).appendChild(WebInspector.createStyleElement(cssFile));
+        WebInspector.appendStyle(this._isWebComponent ? this._shadowRoot : this.element, cssFile);
     },
 
     printWidgetHierarchy: function()

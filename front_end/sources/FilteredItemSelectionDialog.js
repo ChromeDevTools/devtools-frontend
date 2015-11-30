@@ -43,7 +43,7 @@ WebInspector.FilteredItemSelectionDialog = function(delegate, renderAsTwoRows)
 
     this.element.classList.add("filtered-item-list-dialog");
     this.element.addEventListener("keydown", this._onKeyDown.bind(this), false);
-    this.element.appendChild(WebInspector.createStyleElement("sources/filteredItemSelectionDialog.css"));
+    this.registerRequiredCSS("sources/filteredItemSelectionDialog.css");
 
     this._promptElement = this.element.createChild("input", "monospace");
     this._promptElement.addEventListener("input", this._onInput.bind(this), false);

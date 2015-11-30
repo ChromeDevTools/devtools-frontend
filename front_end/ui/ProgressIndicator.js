@@ -35,8 +35,7 @@
 WebInspector.ProgressIndicator = function()
 {
     this.element = createElementWithClass("div", "progress-indicator");
-    this._shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element);
-    this._shadowRoot.appendChild(WebInspector.createStyleElement("ui/progressIndicator.css"));
+    this._shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element, "ui/progressIndicator.css");
     this._contentElement = this._shadowRoot.createChild("div", "progress-indicator-shadow-container");
 
     this._labelElement = this._contentElement.createChild("div", "title");

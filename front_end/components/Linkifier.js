@@ -113,7 +113,7 @@ WebInspector.Linkifier.linkifyUsingRevealer = function(revealable, text, fallbac
 }
 
 WebInspector.Linkifier._uiLocationSymbol = Symbol("uiLocation");
-WebInspector.Linkifier._fallbackAnchorSymbol = Symbol("fallbackAnchor");;
+WebInspector.Linkifier._fallbackAnchorSymbol = Symbol("fallbackAnchor");
 
 WebInspector.Linkifier.prototype = {
     /**

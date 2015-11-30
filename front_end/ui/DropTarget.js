@@ -68,8 +68,7 @@ WebInspector.DropTarget.prototype = {
         if (this._dragMaskElement)
             return;
         this._dragMaskElement = this._element.createChild("div", "");
-        var shadowRoot = WebInspector.createShadowRootWithCoreStyles(this._dragMaskElement);
-        shadowRoot.appendChild(WebInspector.createStyleElement("ui/dropTarget.css"));
+        var shadowRoot = WebInspector.createShadowRootWithCoreStyles(this._dragMaskElement, "ui/dropTarget.css");
         shadowRoot.createChild("div", "drop-target-message").textContent = this._messageText;
         this._dragMaskElement.addEventListener("drop", this._onDrop.bind(this), true);
         this._dragMaskElement.addEventListener("dragleave", this._onDragLeave.bind(this), true);

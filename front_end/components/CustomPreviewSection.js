@@ -43,9 +43,8 @@ WebInspector.CustomPreviewComponent = function(object)
     this._object = object;
     this._customPreviewSection = new WebInspector.CustomPreviewSection(object);
     this.element  = createElementWithClass("span", "source-code");
-    var shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element);
+    var shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element, "components/customPreviewSection.css");
     this.element.addEventListener("contextmenu", this._contextMenuEventFired.bind(this), false);
-    shadowRoot.appendChild(WebInspector.createStyleElement("components/customPreviewSection.css"));
     shadowRoot.appendChild(this._customPreviewSection.element());
 }
 

@@ -34,7 +34,7 @@
 WebInspector.TimelineGrid = function()
 {
     this.element = createElement("div");
-    this.element.appendChild(WebInspector.createStyleElement("ui_lazy/timelineGrid.css"));
+    WebInspector.appendStyle(this.element, "ui_lazy/timelineGrid.css");
 
     this._dividersElement = this.element.createChild("div", "resources-dividers");
 

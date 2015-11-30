@@ -35,7 +35,7 @@
 WebInspector.DataGrid = function(columnsArray, editCallback, deleteCallback, refreshCallback, contextMenuCallback)
 {
     this.element = createElementWithClass("div", "data-grid");
-    this.element.appendChild(WebInspector.createStyleElement("ui_lazy/dataGrid.css"));
+    WebInspector.appendStyle(this.element, "ui_lazy/dataGrid.css");
     this.element.tabIndex = 0;
     this.element.addEventListener("keydown", this._keyDown.bind(this), false);
 

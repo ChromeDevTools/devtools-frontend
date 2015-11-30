@@ -40,8 +40,7 @@ WebInspector.Toolbar = function(className, parentElement)
     this.element = parentElement ? parentElement.createChild("div") : createElement("div");
     this.element.className = className;
     this.element.classList.add("toolbar");
-    this._shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element);
-    this._shadowRoot.appendChild(WebInspector.createStyleElement("ui/toolbar.css"));
+    this._shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element, "ui/toolbar.css");
     this._contentElement = this._shadowRoot.createChild("div", "toolbar-shadow");
     this._contentElement.createChild("content");
 }

@@ -1683,8 +1683,7 @@ WebInspector.TimelineStaticFilter.prototype = {
 WebInspector.TimelinePanel.StatusPane = function()
 {
     WebInspector.VBox.call(this, true);
-    var shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element);
-    shadowRoot.appendChild(WebInspector.createStyleElement("timeline/timelineStatusDialog.css"));
+    var shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element, "timeline/timelineStatusDialog.css");
     this._contentElement = shadowRoot.createChild("div", "timeline-status-dialog");
     this._status = this._contentElement.createChild("div", "status");
     this._time = this._contentElement.createChild("div", "time");

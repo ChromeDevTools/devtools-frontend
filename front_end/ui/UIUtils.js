@@ -672,7 +672,7 @@ WebInspector.manageBlackboxingSettingsTabLabel = function()
  */
 WebInspector.installComponentRootStyles = function(element)
 {
-    element.appendChild(WebInspector.createStyleElement("ui/inspectorCommon.css"));
+    WebInspector.appendStyle(element, "ui/inspectorCommon.css");
     WebInspector.themeSupport.injectHighlightStyleSheets(element);
     element.classList.add("platform-" + WebInspector.platform());
     if (Runtime.experiments.isEnabled("materialDesign"))
@@ -681,13 +681,16 @@ WebInspector.installComponentRootStyles = function(element)
 
 /**
  * @param {!Element} element
+ * @param {string=} cssFile
  * @return {!DocumentFragment}
  */
-WebInspector.createShadowRootWithCoreStyles = function(element)
+WebInspector.createShadowRootWithCoreStyles = function(element, cssFile)
 {
     var shadowRoot = element.createShadowRoot();
-    shadowRoot.appendChild(WebInspector.createStyleElement("ui/inspectorCommon.css"));
+    WebInspector.appendStyle(shadowRoot, "ui/inspectorCommon.css");
     WebInspector.themeSupport.injectHighlightStyleSheets(shadowRoot);
+    if (cssFile)
+        WebInspector.appendStyle(shadowRoot, cssFile);
     shadowRoot.addEventListener("focus", WebInspector._focusChanged.bind(WebInspector), true);
     return shadowRoot;
 }
@@ -1277,19 +1280,27 @@ function createCheckboxLabel(title, checked)
 }
 
 /**
+ * @param {!Node} node
  * @param {string} cssFile
- * @return {!Element}
  * @suppressGlobalPropertiesCheck
  */
-WebInspector.createStyleElement = function(cssFile)
+WebInspector.appendStyle = function(node, cssFile)
 {
     var content = Runtime.cachedResources[cssFile] || "";
     if (!content)
         console.error(cssFile + " not preloaded. Check module.json");
     var styleElement = createElement("style");
     styleElement.type = "text/css";
-    styleElement.textContent = WebInspector.themeSupport.patchTextForTheme(cssFile, content);
-    return styleElement;
+    styleElement.textContent = content;
+    node.appendChild(styleElement);
+
+    var themeStyleSheet = WebInspector.themeSupport.themeStyleSheet(cssFile, content);
+    if (themeStyleSheet) {
+        styleElement = createElement("style");
+        styleElement.type = "text/css";
+        styleElement.textContent = themeStyleSheet + "\n" + Runtime.resolveSourceURL(cssFile + ".theme");
+        node.appendChild(styleElement);
+    }
 }
 
 ;(function() {
@@ -1300,8 +1311,7 @@ WebInspector.createStyleElement = function(cssFile)
         createdCallback: function()
         {
             this.type = "button";
-            var root = WebInspector.createShadowRootWithCoreStyles(this);
-            root.appendChild(WebInspector.createStyleElement("ui/textButton.css"));
+            var root = WebInspector.createShadowRootWithCoreStyles(this, "ui/textButton.css");
             root.createChild("content");
         },
 
@@ -1316,8 +1326,7 @@ WebInspector.createStyleElement = function(cssFile)
         {
             this.radioElement = this.createChild("input", "dt-radio-button");
             this.radioElement.type = "radio";
-            var root = WebInspector.createShadowRootWithCoreStyles(this);
-            root.appendChild(WebInspector.createStyleElement("ui/radioButton.css"));
+            var root = WebInspector.createShadowRootWithCoreStyles(this, "ui/radioButton.css");
             root.createChild("content").select = ".dt-radio-button";
             root.createChild("content");
             this.addEventListener("click", radioClickHandler, false);
@@ -1345,8 +1354,7 @@ WebInspector.createStyleElement = function(cssFile)
          */
         createdCallback: function()
         {
-            this._root = WebInspector.createShadowRootWithCoreStyles(this);
-            this._root.appendChild(WebInspector.createStyleElement("ui/checkboxTextLabel.css"));
+            this._root = WebInspector.createShadowRootWithCoreStyles(this, "ui/checkboxTextLabel.css");
             var checkboxElement = createElementWithClass("input", "dt-checkbox-button");
             checkboxElement.type = "checkbox";
             this._root.appendChild(checkboxElement);
@@ -1408,8 +1416,7 @@ WebInspector.createStyleElement = function(cssFile)
          */
         createdCallback: function()
         {
-            var root = WebInspector.createShadowRootWithCoreStyles(this);
-            root.appendChild(WebInspector.createStyleElement("ui/smallIcon.css"));
+            var root = WebInspector.createShadowRootWithCoreStyles(this, "ui/smallIcon.css");
             this._iconElement = root.createChild("div");
             root.createChild("content");
         },
@@ -1432,8 +1439,7 @@ WebInspector.createStyleElement = function(cssFile)
          */
         createdCallback: function()
         {
-            var root = WebInspector.createShadowRootWithCoreStyles(this);
-            root.appendChild(WebInspector.createStyleElement("ui/closeButton.css"));
+            var root = WebInspector.createShadowRootWithCoreStyles(this, "ui/closeButton.css");
             this._buttonElement = root.createChild("div", "close-button");
         },
 
@@ -1536,9 +1542,9 @@ WebInspector.ThemeSupport.prototype = {
     injectHighlightStyleSheets: function(element)
     {
         this._injectingStyleSheet = true;
-        element.appendChild(WebInspector.createStyleElement("ui/inspectorSyntaxHighlight.css"));
+        WebInspector.appendStyle(element, "ui/inspectorSyntaxHighlight.css");
         if (this._themeName === "dark")
-            element.appendChild(WebInspector.createStyleElement("ui/inspectorSyntaxHighlightDark.css"));
+            WebInspector.appendStyle(element, "ui/inspectorSyntaxHighlightDark.css");
         this._injectingStyleSheet = false;
     },
 
@@ -1557,7 +1563,7 @@ WebInspector.ThemeSupport.prototype = {
         var result = [];
         for (var i = 0; i < styleSheets.length; ++i)
             result.push(this._patchForTheme(styleSheets[i].href, styleSheets[i]));
-        result.push("/*# sourceURL=inspector_theme.css */");
+        result.push("/*# sourceURL=inspector.css.theme */");
 
         var styleElement = createElement("style");
         styleElement.type = "text/css";
@@ -1571,10 +1577,10 @@ WebInspector.ThemeSupport.prototype = {
      * @return {string}
      * @suppressGlobalPropertiesCheck
      */
-    patchTextForTheme: function(id, text)
+    themeStyleSheet: function(id, text)
     {
         if (!this.hasTheme() || this._injectingStyleSheet)
-            return text;
+            return "";
 
         var patch = this._cachedThemePatches.get(id);
         if (!patch) {
@@ -1585,9 +1591,7 @@ WebInspector.ThemeSupport.prototype = {
             patch = this._patchForTheme(id, styleElement.sheet);
             document.body.removeChild(styleElement);
         }
-        if (patch)
-            text += patch + Runtime.resolveSourceURL(id);
-        return text;
+        return patch;
     },
 
     /**

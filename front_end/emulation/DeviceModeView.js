@@ -428,8 +428,7 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
     _wrapToolbarItem: function(element)
     {
         var container = createElement("div");
-        var shadowRoot = WebInspector.createShadowRootWithCoreStyles(container);
-        shadowRoot.appendChild(WebInspector.createStyleElement("emulation/deviceModeToolbar.css"));
+        var shadowRoot = WebInspector.createShadowRootWithCoreStyles(container, "emulation/deviceModeToolbar.css");
         shadowRoot.appendChild(element);
         return new WebInspector.ToolbarItem(container);
     },

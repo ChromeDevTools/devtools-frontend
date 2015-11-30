@@ -803,8 +803,7 @@ WebInspector.Main.WarningErrorCounter = function()
     this._counter = createElement("div");
     this._counter.addEventListener("click", WebInspector.console.show.bind(WebInspector.console), false);
     this._toolbarItem = new WebInspector.ToolbarItem(this._counter);
-    var shadowRoot = WebInspector.createShadowRootWithCoreStyles(this._counter);
-    shadowRoot.appendChild(WebInspector.createStyleElement("main/errorWarningCounter.css"));
+    var shadowRoot = WebInspector.createShadowRootWithCoreStyles(this._counter, "main/errorWarningCounter.css");
 
     this._errors = this._createItem(shadowRoot, "error-icon");
     this._revokedErrors = this._createItem(shadowRoot, "revokedError-icon");

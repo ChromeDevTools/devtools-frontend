@@ -1525,7 +1525,7 @@ WebInspector.ThemeSupport.prototype = {
     /**
      * @return {boolean}
      */
-    _hasTheme: function()
+    hasTheme: function()
     {
         return this._themeName !== "default";
     },
@@ -1547,7 +1547,7 @@ WebInspector.ThemeSupport.prototype = {
      */
     applyTheme: function(document)
     {
-        if (!this._hasTheme())
+        if (!this.hasTheme())
             return;
 
         if (this._themeName === "dark")
@@ -1573,7 +1573,7 @@ WebInspector.ThemeSupport.prototype = {
      */
     patchTextForTheme: function(id, text)
     {
-        if (!this._hasTheme() || this._injectingStyleSheet)
+        if (!this.hasTheme() || this._injectingStyleSheet)
             return text;
 
         var patch = this._cachedThemePatches.get(id);
@@ -1660,7 +1660,6 @@ WebInspector.ThemeSupport.prototype = {
         }
 
         isSelection = isSelection || selectorText.indexOf("selected") !== -1 || selectorText.indexOf(".selection") !== -1;
-        var isHighlight = selectorText.indexOf("highlight") !== -1;
         var isBackground = name.indexOf("background") === 0 || name.indexOf("border") === 0;
         var isForeground = name.indexOf("background") === -1;
 
@@ -1669,7 +1668,7 @@ WebInspector.ThemeSupport.prototype = {
         output.push(":");
         var items = value.replace(colorRegex, "\0$1\0").split("\0");
         for (var i = 0; i < items.length; ++i)
-            output.push(this._patchColor(items[i], isSelection, isHighlight, isBackground, isForeground));
+            output.push(this._patchColor(items[i], isSelection, isBackground, isForeground));
         if (style.getPropertyPriority(name))
             output.push(" !important");
         output.push(";");
@@ -1678,19 +1677,18 @@ WebInspector.ThemeSupport.prototype = {
     /**
      * @param {string} text
      * @param {boolean} isSelection
-     * @param {boolean} isHighlight
      * @param {boolean} isBackground
      * @param {boolean} isForeground
      * @return {string}
      */
-    _patchColor: function(text, isSelection, isHighlight, isBackground, isForeground)
+    _patchColor: function(text, isSelection, isBackground, isForeground)
     {
         var color = WebInspector.Color.parse(text);
         if (!color)
             return text;
 
         var hsla = color.hsla();
-        this._patchHSLA(hsla, isSelection, isHighlight, isBackground, isForeground);
+        this._patchHSLA(hsla, isSelection, isBackground, isForeground);
         var rgba = [];
         WebInspector.Color.hsl2rgb(hsla, rgba);
         var outColor = new WebInspector.Color(rgba, color.format());
@@ -1703,11 +1701,10 @@ WebInspector.ThemeSupport.prototype = {
     /**
      * @param {!Array<number>} hsla
      * @param {boolean} isSelection
-     * @param {boolean} isHighlight
      * @param {boolean} isBackground
      * @param {boolean} isForeground
      */
-    _patchHSLA: function(hsla, isSelection, isHighlight, isBackground, isForeground)
+    _patchHSLA: function(hsla, isSelection, isBackground, isForeground)
     {
         var hue = hsla[0];
         var sat = hsla[1];
@@ -1725,9 +1722,6 @@ WebInspector.ThemeSupport.prototype = {
                 lit = minCap + lit / 2;
             else if (lit > 2 * maxCap - 1)
                 lit = maxCap - 1 / 2 + lit / 2;
-
-            if (isHighlight)
-                lit /= 2;
 
             break;
         }

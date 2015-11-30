@@ -214,7 +214,7 @@ WebInspector.CodeMirrorCSSLoadView = function()
     this.element.classList.add("hidden");
     this.registerRequiredCSS("cm/codemirror.css");
     this.registerRequiredCSS("source_frame/cmdevtools.css");
-    this.element.appendChild(WebInspector.CodeMirrorUtils.createThemeStyle());
+    WebInspector.CodeMirrorUtils.appendThemeStyle(this.element);
 }
 
 WebInspector.CodeMirrorCSSLoadView.prototype = {
@@ -223,10 +223,12 @@ WebInspector.CodeMirrorCSSLoadView.prototype = {
 
 
 /**
- * @return {!Element}
+ * @param {!Element} element
  */
-WebInspector.CodeMirrorUtils.createThemeStyle = function()
+WebInspector.CodeMirrorUtils.appendThemeStyle = function(element)
 {
+    if (WebInspector.themeSupport.hasTheme())
+        return;
     var backgroundColor = InspectorFrontendHost.getSelectionBackgroundColor();
     var backgroundColorRule = backgroundColor ? ".CodeMirror .CodeMirror-selected { background-color: " + backgroundColor + ";}" : "";
     var foregroundColor = InspectorFrontendHost.getSelectionForegroundColor();
@@ -234,5 +236,5 @@ WebInspector.CodeMirrorUtils.createThemeStyle = function()
     var style = createElement("style");
     if (foregroundColorRule || backgroundColorRule)
         style.textContent = backgroundColorRule + foregroundColorRule;
-    return style;
+    element.appendChild(style);
 }

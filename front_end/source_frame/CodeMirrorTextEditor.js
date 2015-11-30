@@ -43,7 +43,7 @@ WebInspector.CodeMirrorTextEditor = function(url, delegate)
     this.registerRequiredCSS("cm/codemirror.css");
     this.registerRequiredCSS("source_frame/cmdevtools.css");
 
-    this.element.appendChild(WebInspector.CodeMirrorUtils.createThemeStyle());
+    WebInspector.CodeMirrorUtils.appendThemeStyle(this.element);
 
     this._codeMirror = new window.CodeMirror(this.element, {
         lineNumbers: true,

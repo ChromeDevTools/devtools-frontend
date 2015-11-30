@@ -133,6 +133,12 @@ iframe.widget {
     background-color: rgba(255, 255, 0, 0.8);
 }
 
+.-theme-with-dark-background .highlighted-search-result,
+:host-context(.-theme-with-dark-background) .highlighted-search-result {
+    background-color: hsl(133, 100%, 30%);
+    color: #333;
+}
+
 .link {
     cursor: pointer;
     text-decoration: underline;

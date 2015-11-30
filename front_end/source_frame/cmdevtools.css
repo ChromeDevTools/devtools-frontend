@@ -53,7 +53,7 @@
     to { background-color: white; }
 }
 @-webkit-keyframes fadeout-dark {
-    from {background-color: rgba(255, 255, 60, 0.5); }
+    from {background-color: hsla(133, 100%, 30%, 0.5); }
     to { background-color: transparent; }
 }
 
@@ -327,4 +327,8 @@
 
 .CodeMirror-activeline .cm-trailing-whitespace {
     background-color: transparent;
+}
+
+.-theme-with-dark-background .CodeMirror .CodeMirror-selected {
+    background-color: #454545;
 }

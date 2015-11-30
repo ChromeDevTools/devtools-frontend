@@ -462,10 +462,9 @@ body.inactive li.selected .status .bubble-repeat-count {
     margin-top: 1px;
 }
 
-.sidebar-tree-item.selected.
+.sidebar-tree-item.selected,
 .-theme-selection-color {
     color: white;
-    text-shadow: rgba(0, 0, 0, 0.33) 1px 1px 0;
     background-origin: padding-box;
     background-clip: padding-box;
     background-color: rgb(56, 121, 217);

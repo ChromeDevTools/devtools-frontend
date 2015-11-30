@@ -125,6 +125,7 @@ WebInspector.ElementsPanel.prototype = {
             this._currentToolbarPane.detach();
             widget.show(this._toolbarPaneElement);
             this._currentToolbarPane = widget;
+            this._currentToolbarPane.focus();
             return;
         }
 
@@ -153,6 +154,8 @@ WebInspector.ElementsPanel.prototype = {
                 this._currentToolbarPane.detach();
 
             this._currentToolbarPane = this._animatedToolbarPane;
+            if (this._currentToolbarPane)
+                this._currentToolbarPane.focus();
             delete this._animatedToolbarPane;
 
             if (this._pendingWidget !== undefined) {

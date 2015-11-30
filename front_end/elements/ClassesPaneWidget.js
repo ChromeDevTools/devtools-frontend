@@ -15,6 +15,7 @@ WebInspector.ClassesPaneWidget = function(toolbarItem)
     var input = container.createChild("input", "new-class-input monospace");
     input.placeholder = WebInspector.UIString("Add new class");
     input.addEventListener("keydown", this._onKeyDown.bind(this), false);
+    this.setDefaultFocusedElement(input);
     this._classesContainer = this.element.createChild("div", "source-code");
     this._classesContainer.classList.add("styles-element-classes-container");
 

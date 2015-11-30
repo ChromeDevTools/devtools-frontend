@@ -183,6 +183,14 @@ WebInspector.TimelineOverviewPane.prototype = {
     /**
      * @override
      */
+    willHide: function()
+    {
+        this._popoverHelper.hidePopover();
+    },
+
+    /**
+     * @override
+     */
     onResize: function()
     {
         var width = this.element.offsetWidth;

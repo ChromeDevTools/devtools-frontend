@@ -47,7 +47,8 @@ WebInspector.ScreencastApp.prototype = {
         if (this._target)
             return;
         this._target = target;
-        if (target.hasCapability(WebInspector.Target.Capabilities.CanScreencast)) {
+
+        if (target.isPage()) {
             this._screencastView = new WebInspector.ScreencastView(target);
             this._rootSplitWidget.setMainWidget(this._screencastView);
             this._screencastView.initialize();

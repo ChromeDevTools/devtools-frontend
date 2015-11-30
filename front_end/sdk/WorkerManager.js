@@ -108,17 +108,7 @@ WebInspector.WorkerManager.prototype = {
             var parsedURL = url.asParsedURL();
             var workerName = parsedURL ? parsedURL.lastPathComponentWithFragment() : "#" + (++this._lastAnonymousTargetId);
             var title = WebInspector.UIString("\u2699 %s", workerName);
-            WebInspector.targetManager.createTarget(title, WebInspector.Target.Type.DedicatedWorker, connection, this.target(), targetCreated.bind(this));
-        }
-
-        /**
-         * @param {?WebInspector.Target} target
-         * @this {WebInspector.WorkerManager}
-         */
-        function targetCreated(target)
-        {
-            if (!target)
-                return;
+            var target = WebInspector.targetManager.createTarget(title, WebInspector.Target.Type.DedicatedWorker, connection, this.target());
             this._targetsByWorkerId.set(workerId, target);
 
             if (inspectorConnected)

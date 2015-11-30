@@ -398,15 +398,6 @@
                 "handlers": ["browser"]
             },
             {
-                "name": "canScreencast",
-                "description": "Tells whether screencast is supported.",
-                "returns": [
-                  { "name": "result", "type": "boolean", "description": "True if screencast is supported." }
-                ],
-                "hidden": true,
-                "handlers": ["browser"]
-            },
-            {
                 "name": "startScreencast",
                 "description": "Starts sending each frame using the <code>screencastFrame</code> event.",
                 "parameters": [

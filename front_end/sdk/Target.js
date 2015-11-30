@@ -12,9 +12,8 @@
  * @param {number} type
  * @param {!InspectorBackendClass.Connection} connection
  * @param {?WebInspector.Target} parentTarget
- * @param {function(?WebInspector.Target)=} callback
  */
-WebInspector.Target = function(targetManager, name, type, connection, parentTarget, callback)
+WebInspector.Target = function(targetManager, name, type, connection, parentTarget)
 {
     Protocol.Agents.call(this, connection.agentsMap());
     this._targetManager = targetManager;
@@ -28,16 +27,37 @@ WebInspector.Target = function(targetManager, name, type, connection, parentTarg
     /** @type {!Map.<!Function, !WebInspector.SDKModel>} */
     this._modelByConstructor = new Map();
 
-    /** @type {!Object.<string, boolean>} */
-    this._capabilities = {};
-    this.pageAgent().canScreencast(this._initializeCapability.bind(this, WebInspector.Target.Capabilities.CanScreencast, this._loadedWithCapabilities.bind(this, callback)));
-}
+    /** @type {!WebInspector.ConsoleModel} */
+    this.consoleModel = new WebInspector.ConsoleModel(this);
+    /** @type {!WebInspector.NetworkManager} */
+    this.networkManager = new WebInspector.NetworkManager(this);
+    /** @type {!WebInspector.ResourceTreeModel} */
+    this.resourceTreeModel = new WebInspector.ResourceTreeModel(this);
+    /** @type {!WebInspector.NetworkLog} */
+    this.networkLog = new WebInspector.NetworkLog(this);
 
-/**
- * @enum {string}
- */
-WebInspector.Target.Capabilities = {
-    CanScreencast: "CanScreencast"
+    if (this.hasJSContext())
+        new WebInspector.DebuggerModel(this);
+
+    /** @type {!WebInspector.RuntimeModel} */
+    this.runtimeModel = new WebInspector.RuntimeModel(this);
+
+    if (this._type === WebInspector.Target.Type.Page) {
+        new WebInspector.DOMModel(this);
+        new WebInspector.CSSStyleModel(this);
+    }
+
+    /** @type {?WebInspector.WorkerManager} */
+    this.workerManager = !this.isDedicatedWorker() ? new WebInspector.WorkerManager(this) : null;
+    /** @type {!WebInspector.CPUProfilerModel} */
+    this.cpuProfilerModel = new WebInspector.CPUProfilerModel(this);
+    /** @type {!WebInspector.HeapProfilerModel} */
+    this.heapProfilerModel = new WebInspector.HeapProfilerModel(this);
+
+    this.tracingManager = new WebInspector.TracingManager(this);
+
+    if (this.isPage())
+        this.serviceWorkerManager = new WebInspector.ServiceWorkerManager(this);
 }
 
 /**
@@ -85,74 +105,6 @@ WebInspector.Target.prototype = {
     decorateLabel: function(label)
     {
         return this.isWorker() ? "\u2699 " + label : label;
-    },
-
-    /**
-     * @param {string} name
-     * @param {function()|null} callback
-     * @param {?Protocol.Error} error
-     * @param {boolean} result
-     */
-    _initializeCapability: function(name, callback, error, result)
-    {
-        this._capabilities[name] = result;
-        if (callback)
-            callback();
-    },
-
-    /**
-     * @param {string} capability
-     * @return {boolean}
-     */
-    hasCapability: function(capability)
-    {
-        return !!this._capabilities[capability];
-    },
-
-    /**
-     * @param {function(?WebInspector.Target)=} callback
-     */
-    _loadedWithCapabilities: function(callback)
-    {
-        if (this._connection.isClosed()) {
-            callback(null);
-            return;
-        }
-
-        /** @type {!WebInspector.ConsoleModel} */
-        this.consoleModel = new WebInspector.ConsoleModel(this);
-        /** @type {!WebInspector.NetworkManager} */
-        this.networkManager = new WebInspector.NetworkManager(this);
-        /** @type {!WebInspector.ResourceTreeModel} */
-        this.resourceTreeModel = new WebInspector.ResourceTreeModel(this);
-        /** @type {!WebInspector.NetworkLog} */
-        this.networkLog = new WebInspector.NetworkLog(this);
-
-        if (this.hasJSContext())
-            new WebInspector.DebuggerModel(this);
-
-        /** @type {!WebInspector.RuntimeModel} */
-        this.runtimeModel = new WebInspector.RuntimeModel(this);
-
-        if (this._type === WebInspector.Target.Type.Page) {
-            new WebInspector.DOMModel(this);
-            new WebInspector.CSSStyleModel(this);
-        }
-
-        /** @type {?WebInspector.WorkerManager} */
-        this.workerManager = !this.isDedicatedWorker() ? new WebInspector.WorkerManager(this) : null;
-        /** @type {!WebInspector.CPUProfilerModel} */
-        this.cpuProfilerModel = new WebInspector.CPUProfilerModel(this);
-        /** @type {!WebInspector.HeapProfilerModel} */
-        this.heapProfilerModel = new WebInspector.HeapProfilerModel(this);
-
-        this.tracingManager = new WebInspector.TracingManager(this);
-
-        if (this.isPage())
-            this.serviceWorkerManager = new WebInspector.ServiceWorkerManager(this);
-
-        if (callback)
-            callback(this);
     },
 
     /**
@@ -488,23 +440,13 @@ WebInspector.TargetManager.prototype = {
      * @param {number} type
      * @param {!InspectorBackendClass.Connection} connection
      * @param {?WebInspector.Target} parentTarget
-     * @param {function(?WebInspector.Target)=} callback
+     * @return {!WebInspector.Target}
      */
-    createTarget: function(name, type, connection, parentTarget, callback)
+    createTarget: function(name, type, connection, parentTarget)
     {
-        new WebInspector.Target(this, name, type, connection, parentTarget, callbackWrapper.bind(this));
-
-        /**
-         * @this {WebInspector.TargetManager}
-         * @param {?WebInspector.Target} newTarget
-         */
-        function callbackWrapper(newTarget)
-        {
-            if (newTarget)
-                this.addTarget(newTarget);
-            if (callback)
-                callback(newTarget);
-        }
+        var target = new WebInspector.Target(this, name, type, connection, parentTarget);
+        this.addTarget(target);
+        return target;
     },
 
     /**

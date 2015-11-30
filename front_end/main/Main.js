@@ -315,16 +315,9 @@ WebInspector.Main.prototype = {
         }
 
         var targetType = Runtime.queryParam("isSharedWorker") ? WebInspector.Target.Type.ServiceWorker : WebInspector.Target.Type.Page;
-        WebInspector.targetManager.createTarget(WebInspector.UIString("Main"), targetType, connection, null, this._mainTargetCreated.bind(this));
-    },
 
-    /**
-     * @param {?WebInspector.Target} target
-     */
-    _mainTargetCreated: function(target)
-    {
+        this._mainTarget = WebInspector.targetManager.createTarget(WebInspector.UIString("Main"), targetType, connection, null);
         console.timeStamp("Main._mainTargetCreated");
-        this._mainTarget = /** @type {!WebInspector.Target} */(target);
         this._registerShortcuts();
         var main = this;
 

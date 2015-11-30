@@ -239,7 +239,7 @@
             "title": "Theme:",
             "settingName": "uiTheme",
             "settingType": "enum",
-            "defaultValue": "Default",
+            "defaultValue": "default",
             "options": [
                 ["Default", "default"],
                 ["Dark", "dark"]

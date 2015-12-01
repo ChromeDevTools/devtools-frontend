@@ -269,6 +269,7 @@ WebInspector.Spectrum.prototype = {
                 shadow.style.background = palette.colors[i];
                 shadow = colorElement.createChild("div", "spectrum-palette-color spectrum-palette-color-shadow");
                 shadow.style.background = palette.colors[i];
+                colorElement.title = WebInspector.UIString(palette.colors[i] + ". Long-click to show alternate shades.");
                 var controller = new WebInspector.LongClickController(colorElement);
                 controller.enable();
                 controller.addEventListener(WebInspector.LongClickController.Events.LongClick, this._showLightnessShades.bind(this, colorElement, palette.colors[i]));
@@ -317,8 +318,7 @@ WebInspector.Spectrum.prototype = {
         this._shadesContainer.classList.remove("hidden");
         this._shadesContainer.removeChildren();
         this._shadesContainer.animate([{ transform: "scaleY(0)", opacity: "0" }, { transform: "scaleY(1)", opacity: "1" }], { duration: 200, easing: "cubic-bezier(0.4, 0, 0.2, 1)" });
-        var anchorBox = colorElement.boxInWindow();
-        this._shadesContainer.style.top = colorElement.offsetTop + "px";
+        this._shadesContainer.style.top = colorElement.offsetTop + colorElement.parentElement.offsetTop + "px";
         this._shadesContainer.style.left = colorElement.offsetLeft + "px";
         colorElement.classList.add("spectrum-shades-shown");
 

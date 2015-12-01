@@ -157,7 +157,7 @@ WebInspector.HeapSnapshotView = function(dataDisplayDelegate, profile)
     this._currentPerspective.activate(this);
     this._dataGrid = this._currentPerspective.masterGrid(this);
 
-    this._refreshView();
+    this._populate();
     this._searchThrottler = new WebInspector.Throttler(0);
 }
 
@@ -479,47 +479,20 @@ WebInspector.HeapSnapshotView.prototype = {
             this._parentDataDisplayDelegate.showObject(snapshotObjectId, perspectiveName);
     },
 
-    _refreshView: function()
+    _populate: function()
     {
-        this._profile._loadPromise.then(profileCallback.bind(this));
-
-
-        /**
-         * @param {!WebInspector.HeapSnapshotProxy} heapSnapshotProxy
-         * @this {WebInspector.HeapSnapshotView}
-         */
-        function profileCallback(heapSnapshotProxy)
-        {
+        this._profile._loadPromise.then(heapSnapshotProxy => {
             heapSnapshotProxy.getStatistics().then(this._gotStatistics.bind(this));
+            this._dataGrid.setDataSource(heapSnapshotProxy);
             if (this._profile.profileType().id === WebInspector.TrackingHeapSnapshotProfileType.TypeId && this._profile.fromFile())
-                heapSnapshotProxy.getSamples().then(didGetSamples.bind(this, heapSnapshotProxy));
-            else
-                setSnapshotProxy.call(this, heapSnapshotProxy);
-        }
-
-        /**
-         * @param {!WebInspector.HeapSnapshotProxy} heapSnapshotProxy
-         * @param {?WebInspector.HeapSnapshotCommon.Samples} samples
-         * @this {WebInspector.HeapSnapshotView}
-         */
-        function didGetSamples(heapSnapshotProxy, samples)
-        {
-            setSnapshotProxy.call(this, heapSnapshotProxy);
-            this._trackingOverviewGrid._setSamples(samples);
-        }
-
-        /**
-         * @param {!WebInspector.HeapSnapshotProxy} heapSnapshotProxy
-         * @this {WebInspector.HeapSnapshotView}
-         */
-        function setSnapshotProxy(heapSnapshotProxy)
-        {
+                return heapSnapshotProxy.getSamples().then(samples => this._trackingOverviewGrid._setSamples(samples));
+        }).then(_ => {
             var list = this._profiles();
             var profileIndex = list.indexOf(this._profile);
             this._baseSelect.setSelectedIndex(Math.max(0, profileIndex - 1));
-            this._dataGrid.setDataSource(heapSnapshotProxy);
-        }
-
+            if (this._trackingOverviewGrid)
+                this._trackingOverviewGrid._updateGrid();
+        });
     },
 
     /**
@@ -536,6 +509,9 @@ WebInspector.HeapSnapshotView.prototype = {
         this._statisticsView.addRecord(statistics.total, WebInspector.UIString("Total"));
     },
 
+    /**
+     * @param {!WebInspector.Event} event
+     */
     _onIdsRangeChanged: function(event)
     {
         var minId = event.data.minId;
@@ -557,11 +533,17 @@ WebInspector.HeapSnapshotView.prototype = {
         return result;
     },
 
+    /**
+     * @override
+     */
     wasShown: function()
     {
         this._profile._loadPromise.then(this._profile._wasShown.bind(this._profile));
     },
 
+    /**
+     * @override
+     */
     willHide: function()
     {
         this._currentSearchResultIndex = -1;

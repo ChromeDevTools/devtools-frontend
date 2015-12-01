@@ -43,17 +43,31 @@ WebInspector.CPUProfilerModel = function(target)
     WebInspector.moduleSetting("highResolutionCpuProfiling").addChangeListener(this._configureCpuProfilerSamplingInterval, this);
 }
 
+/** @enum {symbol} */
 WebInspector.CPUProfilerModel.EventTypes = {
-    ConsoleProfileStarted: "ConsoleProfileStarted",
-    ConsoleProfileFinished: "ConsoleProfileFinished"
+    ConsoleProfileStarted: Symbol("ConsoleProfileStarted"),
+    ConsoleProfileFinished: Symbol("ConsoleProfileFinished")
 };
 
-WebInspector.CPUProfilerModel.prototype = {
+/** @typedef {!{id: string, scriptLocation: !WebInspector.DebuggerModel.Location, title: (string|undefined), cpuProfile: (!ProfilerAgent.CPUProfile|undefined)}} */
+WebInspector.CPUProfilerModel.EventData;
 
+WebInspector.CPUProfilerModel.prototype = {
     _configureCpuProfilerSamplingInterval: function()
     {
         var intervalUs = WebInspector.moduleSetting("highResolutionCpuProfiling").get() ? 100 : 1000;
         this.target().profilerAgent().setSamplingInterval(intervalUs);
+    },
+
+    /**
+     * @override
+     * @param {string} id
+     * @param {!DebuggerAgent.Location} scriptLocation
+     * @param {string=} title
+     */
+    consoleProfileStarted: function(id, scriptLocation, title)
+    {
+        this._dispatchProfileEvent(WebInspector.CPUProfilerModel.EventTypes.ConsoleProfileStarted, id, scriptLocation, title);
     },
 
     /**
@@ -65,38 +79,26 @@ WebInspector.CPUProfilerModel.prototype = {
      */
     consoleProfileFinished: function(id, scriptLocation, cpuProfile, title)
     {
-        // Make sure ProfilesPanel is initialized and CPUProfileType is created.
-        self.runtime.loadModulePromise("profiler").then(dispatchEvent.bind(this));
-        /**
-         * @this {WebInspector.CPUProfilerModel}
-         */
-        function dispatchEvent()
-        {
-            var debuggerModel = /** @type {!WebInspector.DebuggerModel} */ (WebInspector.DebuggerModel.fromTarget(this.target()));
-            var debuggerLocation = WebInspector.DebuggerModel.Location.fromPayload(debuggerModel, scriptLocation);
-            this.dispatchEventToListeners(WebInspector.CPUProfilerModel.EventTypes.ConsoleProfileFinished, {protocolId: id, scriptLocation: debuggerLocation, cpuProfile: cpuProfile, title: title});
-        }
+        this._dispatchProfileEvent(WebInspector.CPUProfilerModel.EventTypes.ConsoleProfileFinished, id, scriptLocation, title, cpuProfile);
     },
 
     /**
-     * @override
+     * @param {symbol} eventName
      * @param {string} id
      * @param {!DebuggerAgent.Location} scriptLocation
      * @param {string=} title
+     * @param {!ProfilerAgent.CPUProfile=} cpuProfile
      */
-    consoleProfileStarted: function(id, scriptLocation, title)
+    _dispatchProfileEvent: function(eventName, id, scriptLocation, title, cpuProfile)
     {
         // Make sure ProfilesPanel is initialized and CPUProfileType is created.
-        self.runtime.loadModulePromise("profiler").then(dispatchEvent.bind(this));
-        /**
-         * @this {WebInspector.CPUProfilerModel}
-         */
-        function dispatchEvent()
-        {
+        self.runtime.loadModulePromise("profiler").then(_ => {
             var debuggerModel = /** @type {!WebInspector.DebuggerModel} */ (WebInspector.DebuggerModel.fromTarget(this.target()));
             var debuggerLocation = WebInspector.DebuggerModel.Location.fromPayload(debuggerModel, scriptLocation);
-            this.dispatchEventToListeners(WebInspector.CPUProfilerModel.EventTypes.ConsoleProfileStarted, {protocolId: id, scriptLocation: debuggerLocation, title: title});
-        }
+            var globalId = this.target().id() + "." + id;
+            var data = /** @type {!WebInspector.CPUProfilerModel.EventData} */ ({id: globalId, scriptLocation: debuggerLocation, cpuProfile: cpuProfile, title: title});
+            this.dispatchEventToListeners(eventName, data);
+        });
     },
 
     /**
@@ -136,7 +138,6 @@ WebInspector.CPUProfilerModel.prototype = {
     {
         WebInspector.moduleSetting("highResolutionCpuProfiling").removeChangeListener(this._configureCpuProfilerSamplingInterval, this);
     },
-
 
     __proto__: WebInspector.SDKModel.prototype
 }

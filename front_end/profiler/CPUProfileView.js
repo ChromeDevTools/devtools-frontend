@@ -455,14 +455,13 @@ WebInspector.CPUProfileType.prototype = {
      */
     _consoleProfileStarted: function(event)
     {
-        var protocolId = /** @type {string} */ (event.data.protocolId);
-        var scriptLocation = /** @type {!WebInspector.DebuggerModel.Location} */ (event.data.scriptLocation);
-        var resolvedTitle = /** @type {string|undefined} */ (event.data.title);
+        var data = /** @type {!WebInspector.CPUProfilerModel.EventData} */ (event.data);
+        var resolvedTitle = data.title;
         if (!resolvedTitle) {
             resolvedTitle = WebInspector.UIString("Profile %s", this._nextAnonymousConsoleProfileNumber++);
-            this._anonymousConsoleProfileIdToTitle[protocolId] = resolvedTitle;
+            this._anonymousConsoleProfileIdToTitle[data.id] = resolvedTitle;
         }
-        this._addMessageToConsole(WebInspector.ConsoleMessage.MessageType.Profile, scriptLocation, WebInspector.UIString("Profile '%s' started.", resolvedTitle));
+        this._addMessageToConsole(WebInspector.ConsoleMessage.MessageType.Profile, data.scriptLocation, WebInspector.UIString("Profile '%s' started.", resolvedTitle));
     },
 
     /**
@@ -470,19 +469,17 @@ WebInspector.CPUProfileType.prototype = {
      */
     _consoleProfileFinished: function(event)
     {
-        var protocolId = /** @type {string} */ (event.data.protocolId);
-        var scriptLocation = /** @type {!WebInspector.DebuggerModel.Location} */ (event.data.scriptLocation);
-        var cpuProfile = /** @type {!ProfilerAgent.CPUProfile} */ (event.data.cpuProfile);
-        var resolvedTitle = /** @type {string|undefined} */ (event.data.title);
+        var data = /** @type {!WebInspector.CPUProfilerModel.EventData} */ (event.data);
+        var cpuProfile = /** @type {!ProfilerAgent.CPUProfile} */ (data.cpuProfile);
+        var resolvedTitle = data.title;
         if (typeof resolvedTitle === "undefined") {
-            resolvedTitle = this._anonymousConsoleProfileIdToTitle[protocolId];
-            delete this._anonymousConsoleProfileIdToTitle[protocolId];
+            resolvedTitle = this._anonymousConsoleProfileIdToTitle[data.id];
+            delete this._anonymousConsoleProfileIdToTitle[data.id];
         }
-
-        var profile = new WebInspector.CPUProfileHeader(scriptLocation.target(), this, resolvedTitle);
+        var profile = new WebInspector.CPUProfileHeader(data.scriptLocation.target(), this, resolvedTitle);
         profile.setProtocolProfile(cpuProfile);
         this.addProfile(profile);
-        this._addMessageToConsole(WebInspector.ConsoleMessage.MessageType.ProfileEnd, scriptLocation, WebInspector.UIString("Profile '%s' finished.", resolvedTitle));
+        this._addMessageToConsole(WebInspector.ConsoleMessage.MessageType.ProfileEnd, data.scriptLocation, WebInspector.UIString("Profile '%s' finished.", resolvedTitle));
     },
 
     /**

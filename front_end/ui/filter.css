@@ -32,6 +32,7 @@
     background-color: #f3f3f3;
     padding: 4px 0 4px 0;
     flex: none;
+    flex-wrap: wrap;
     align-items: center;
     border-bottom: 1px solid #dadada;
 }

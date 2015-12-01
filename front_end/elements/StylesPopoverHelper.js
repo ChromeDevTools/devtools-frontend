@@ -165,11 +165,12 @@ WebInspector.BezierPopoverIcon.prototype = {
         this._element = createElement("nobr");
         this._element.title = WebInspector.UIString("Open cubic bezier editor");
 
-        this._iconElement = this._element.createSVGChild("svg", "popover-icon bezier-icon");
-        this._iconElement.setAttribute("height", 10);
-        this._iconElement.setAttribute("width", 10);
+        this._iconElement = this._element.createChild("div", "popover-icon bezier-icon");
+        var svg = this._iconElement.createSVGChild("svg");
+        svg.setAttribute("height", 10);
+        svg.setAttribute("width", 10);
         this._iconElement.addEventListener("click", this._iconClick.bind(this), false);
-        var g = this._iconElement.createSVGChild("g");
+        var g = svg.createSVGChild("g");
         var path = g.createSVGChild("path");
         path.setAttribute("d", "M2,8 C2,3 8,7 8,2");
 

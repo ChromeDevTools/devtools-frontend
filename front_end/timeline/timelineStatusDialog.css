@@ -15,14 +15,14 @@
     margin-top: -1px;
 }
 
-.timeline-status-dialog > div {
+.status-dialog-line {
     margin: 2px;
     height: 14px;
     display: flex;
     align-items: baseline;
 }
 
-.timeline-status-dialog ::before {
+.status-dialog-line .label {
     display: inline-block;
     width: 80px;
     text-align: right;
@@ -30,19 +30,7 @@
     margin-right: 10px;
 }
 
-.timeline-status-dialog .status::before {
-    content: "Status";
-}
-
-.timeline-status-dialog .time::before {
-    content: "Time";
-}
-
-.timeline-status-dialog .buffer-usage::before {
-    content: "Buffer Usage";
-}
-
-.timeline-status-dialog .buffer-usage .indicator-container {
+.timeline-status-dialog .progress .indicator-container {
     display: inline-block;
     width: 200px;
     height: 8px;
@@ -51,7 +39,7 @@
     margin: 0 10px 0 0;
 }
 
-.timeline-status-dialog .buffer-usage .indicator {
+.timeline-status-dialog .progress .indicator {
     background-color: rgb(112, 166, 255);
     height: 100%;
     width: 0;

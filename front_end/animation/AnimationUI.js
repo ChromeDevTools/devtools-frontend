@@ -179,14 +179,18 @@ WebInspector.AnimationUI.prototype = {
         var group = cache[keyframeIndex];
         group.style.transform = "translateX(" + leftDistance.toFixed(2) + "px)";
 
-        if (bezier) {
+        if (easing === "linear") {
+            group.style.fill = this._color;
+            var height = WebInspector.BezierUI.Height;
+            group.setAttribute("d", ["M", 0, height, "L", 0, 5, "L", width.toFixed(2), 5, "L", width.toFixed(2), height, "Z"].join(" "));
+        } else if (bezier) {
             group.style.fill = this._color;
             WebInspector.BezierUI.drawVelocityChart(bezier, group, width);
         } else {
             var stepFunction = WebInspector.AnimationTimeline.StepTimingFunction.parse(easing);
             group.removeChildren();
-            const offsetMap = {"start": 0, "middle": 0.5, "end": 1};
-            const offsetWeight = offsetMap[stepFunction.stepAtPosition];
+            /** @const */ var offsetMap = {"start": 0, "middle": 0.5, "end": 1};
+            /** @const */ var offsetWeight = offsetMap[stepFunction.stepAtPosition];
             for (var i = 0; i < stepFunction.steps; i++)
                 createStepLine(group, (i + offsetWeight) * width / stepFunction.steps, this._color);
         }

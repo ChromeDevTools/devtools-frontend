@@ -316,6 +316,7 @@ WebInspector.AnimationTimeline.prototype = {
 
     _clearTimeline: function()
     {
+        this._uiAnimations = [];
         this._nodesMap.clear();
         this._animationsMap.clear();
         this._animationsContainer.removeChildren();
@@ -478,9 +479,9 @@ WebInspector.AnimationTimeline.prototype = {
 
     _renderGrid: function()
     {
-        const gridSize = 250;
+        /** @const */ var gridSize = 250;
         this._grid.setAttribute("width", this.width() + 10);
-        this._grid.setAttribute("height", this._animationsContainer.offsetHeight + 30);
+        this._grid.setAttribute("height", this._cachedTimelineHeight + 30);
         this._grid.setAttribute("shape-rendering", "crispEdges");
         this._grid.removeChildren();
         var lastDraw = undefined;
@@ -497,33 +498,41 @@ WebInspector.AnimationTimeline.prototype = {
                 lastDraw = gridWidth;
                 var label = this._grid.createSVGChild("text", "animation-timeline-grid-label");
                 label.textContent = WebInspector.UIString(Number.millisToString(time));
-                label.setAttribute("x", gridWidth + 10 + 1 - label.offsetWidth / 2);
+                label.setAttribute("x", gridWidth + 10);
                 label.setAttribute("y", 16);
             }
         }
     },
 
-    scheduleRedraw: function() {
+    scheduleRedraw: function()
+    {
+        this._renderQueue = [];
+        for (var ui of this._uiAnimations)
+            this._renderQueue.push(ui);
         if (this._redrawing)
             return;
         this._redrawing = true;
-        this._animationsContainer.window().requestAnimationFrame(this._redraw.bind(this));
+        this._renderGrid();
+        this._animationsContainer.window().requestAnimationFrame(this._render.bind(this));
     },
 
     /**
      * @param {number=} timestamp
      */
-    _redraw: function(timestamp)
+    _render: function(timestamp)
     {
-        delete this._redrawing;
-        for (var ui of this._uiAnimations)
-            ui.redraw();
-        this._renderGrid();
+        while (this._renderQueue.length && (!timestamp || window.performance.now() - timestamp < 50))
+            this._renderQueue.shift().redraw();
+        if (this._renderQueue.length)
+            this._animationsContainer.window().requestAnimationFrame(this._render.bind(this));
+        else
+            delete this._redrawing;
     },
 
     onResize: function()
     {
         this._cachedTimelineWidth = Math.max(0, this._animationsContainer.offsetWidth - this._timelineControlsWidth) || 0;
+        this._cachedTimelineHeight = this._animationsContainer.offsetHeight;
         this.scheduleRedraw();
         if (this._scrubberPlayer)
             this._syncScrubber();

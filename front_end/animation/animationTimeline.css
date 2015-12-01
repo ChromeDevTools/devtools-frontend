@@ -243,6 +243,7 @@ svg.animation-ui g:first-child {
 text.animation-timeline-grid-label {
     font-size: 10px;
     fill: #5a5a5a;
+    text-anchor: middle;
 }
 
 .animation-timeline-rows, .animation-timeline-rows-hint {

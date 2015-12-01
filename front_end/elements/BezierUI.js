@@ -111,7 +111,7 @@ WebInspector.BezierUI.drawVelocityChart = function(bezier, path, width)
 {
     var height = WebInspector.BezierUI.Height;
     var pathBuilder = ["M", 0, height];
-    const sampleSize = 1 / 40;
+    /** @const */ var sampleSize = 1 / 40;
 
     var prev = bezier.evaluateAt(0);
     for (var t = sampleSize; t < 1 + sampleSize; t += sampleSize) {

@@ -334,6 +334,8 @@ WebInspector.AnimationTimeline.prototype = {
         delete this._scrubberPlayer;
         this._currentTime.textContent = "";
         this._updateControlButton();
+        for (var group of this._groupBuffer)
+            group.release();
         this._groupBuffer = [];
         this._previewMap.clear();
         this._previewContainer.removeChildren();
@@ -379,7 +381,7 @@ WebInspector.AnimationTimeline.prototype = {
         for (var g of groupsToDiscard) {
             this._previewMap.get(g).element.remove();
             this._previewMap.delete(g);
-            // TODO(samli): needs to discard model too
+            g.release();
         }
         // Generate preview
         var preview = new WebInspector.AnimationGroupPreviewUI(group);
@@ -395,8 +397,10 @@ WebInspector.AnimationTimeline.prototype = {
      */
     _removeAnimationGroup: function(group, event)
     {
+        this._groupBuffer.remove(group);
         this._previewMap.get(group).element.remove();
         this._previewMap.delete(group);
+        group.release();
         event.consume(true);
 
         if (this._selectedGroup === group) {

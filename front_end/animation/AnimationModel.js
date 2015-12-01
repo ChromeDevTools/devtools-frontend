@@ -124,7 +124,7 @@ WebInspector.AnimationModel.prototype = {
                 remainingAnimations.push(id);
         }
         this._pendingAnimations = remainingAnimations;
-        return new WebInspector.AnimationModel.AnimationGroup(this.target(), groupedAnimations[0].id(), groupedAnimations);
+        return new WebInspector.AnimationModel.AnimationGroup(this, groupedAnimations[0].id(), groupedAnimations);
     },
 
     /**
@@ -156,6 +156,14 @@ WebInspector.AnimationModel.prototype = {
     {
         this._playbackRate = playbackRate;
         this._agent.setPlaybackRate(playbackRate);
+    },
+
+    /**
+     * @param {!Array.<string>} animations
+     */
+    _releaseAnimations: function(animations)
+    {
+        this.target().animationAgent().releaseAnimations(animations);
     },
 
     /**
@@ -655,13 +663,14 @@ WebInspector.AnimationModel.KeyframeStyle.prototype = {
 /**
  * @constructor
  * @extends {WebInspector.SDKObject}
- * @param {!WebInspector.Target} target
+ * @param {!WebInspector.AnimationModel} model
  * @param {string} id
  * @param {!Array.<!WebInspector.AnimationModel.Animation>} animations
  */
-WebInspector.AnimationModel.AnimationGroup = function(target, id, animations)
+WebInspector.AnimationModel.AnimationGroup = function(model, id, animations)
 {
-    WebInspector.SDKObject.call(this, target);
+    WebInspector.SDKObject.call(this, model.target());
+    this._model = model;
     this._id = id;
     this._animations = animations;
     this._paused = false;
@@ -684,6 +693,12 @@ WebInspector.AnimationModel.AnimationGroup.prototype = {
     animations: function()
     {
         return this._animations;
+    },
+
+    release: function()
+    {
+        this._model._animationGroups.remove(this.id());
+        this._model._releaseAnimations(this._animationIds());
     },
 
     /**
@@ -801,6 +816,7 @@ WebInspector.AnimationModel.AnimationGroup.prototype = {
      */
     _update: function(group)
     {
+        this._model._releaseAnimations(this._animationIds());
         this._animations = group._animations;
     },
 

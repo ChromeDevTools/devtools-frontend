@@ -5135,6 +5135,13 @@
                 "description": "Seek a set of animations to a particular time within each animation."
             },
             {
+                "name": "releaseAnimations",
+                "parameters": [
+                    { "name": "animations", "type": "array", "items": { "type": "string" }, "description": "List of animation ids to seek." }
+                ],
+                "description": "Releases a set of animations to no longer be manipulated."
+            },
+            {
                 "name": "resolveAnimation",
                 "parameters": [
                     { "name": "animationId", "type": "string", "description": "Animation id." }

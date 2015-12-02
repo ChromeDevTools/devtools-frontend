@@ -26,6 +26,7 @@ WebInspector.TimelineTreeView = function(model)
     this._populateColumns(columns);
     this._dataGrid = new WebInspector.SortableDataGrid(columns);
     this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SortingChanged, this._sortingChanged, this);
+    this._dataGrid.element.addEventListener("mousemove", this._onMouseMove.bind(this), true)
 
     this._splitWidget = new WebInspector.SplitWidget(true, true, "timelineTreeViewDetailsSplitWidget");
     this._splitWidget.show(this.element);
@@ -75,6 +76,11 @@ WebInspector.TimelineTreeView.prototype = {
      * @param {!Element} parent
      */
     _populateToolbar: function(parent) { },
+
+    /**
+     * @param {?WebInspector.TimelineModel.ProfileTreeNode} node
+     */
+    _onHover: function(node) { },
 
     /**
      * @param {!ConsoleAgent.CallFrame} frame
@@ -213,6 +219,21 @@ WebInspector.TimelineTreeView.prototype = {
     _showDetailsForNode: function(node)
     {
         return false;
+    },
+
+    /**
+     * @param {!Event} event
+     */
+    _onMouseMove: function(event)
+    {
+        var gridNode = event.target && (event.target instanceof Node)
+            ? /** @type {?WebInspector.TimelineTreeView.GridNode} */ (this._dataGrid.dataGridNodeFromNode(/** @type {!Node} */ (event.target)))
+            : null;
+        var profileNode = gridNode && gridNode._profileNode;
+        if (profileNode === this._lastHoveredProfileNode)
+            return;
+        this._lastHoveredProfileNode = profileNode;
+        this._onHover(profileNode);
     },
 
     __proto__: WebInspector.VBox.prototype
@@ -677,12 +698,14 @@ WebInspector.BottomUpTimelineTreeView.prototype = {
  * @constructor
  * @extends {WebInspector.TimelineTreeView}
  * @param {!WebInspector.TimelineModel} model
+ * @param {!WebInspector.TimelineModeViewDelegate} delegate
  */
-WebInspector.EventsTimelineTreeView = function(model)
+WebInspector.EventsTimelineTreeView = function(model, delegate)
 {
     this._filtersControl = new WebInspector.TimelineFilters();
     this._filtersControl.addEventListener(WebInspector.TimelineFilters.Events.FilterChanged, this._onFilterChanged, this);
     WebInspector.TimelineTreeView.call(this, model);
+    this._delegate = delegate;
     this._filters.push.apply(this._filters, this._filtersControl.filters());
     this._dataGrid.markColumnAsSortedBy("startTime", WebInspector.DataGrid.Order.Ascending);
 }
@@ -801,6 +824,15 @@ WebInspector.EventsTimelineTreeView.prototype = {
         {
             this._detailsView.element.appendChild(fragment);
         }
+    },
+
+    /**
+     * @override
+     * @param {?WebInspector.TimelineModel.ProfileTreeNode} node
+     */
+    _onHover: function(node)
+    {
+        this._delegate.highlightEvent(node && node.event);
     },
 
     __proto__: WebInspector.TimelineTreeView.prototype

@@ -1186,6 +1186,19 @@ WebInspector.TimelineFlameChartView.prototype = {
 
     /**
      * @override
+     * @param {?WebInspector.TracingModel.Event} event
+     */
+    highlightEvent: function(event)
+    {
+        var entryIndex = event ? this._dataProvider.entryIndexForSelection(WebInspector.TimelineSelection.fromTraceEvent(event)) : -1;
+        if (entryIndex >= 0)
+            this._mainView.highlightEntry(entryIndex);
+        else
+            this._mainView.hideHighlight();
+    },
+
+    /**
+     * @override
      */
     wasShown: function()
     {

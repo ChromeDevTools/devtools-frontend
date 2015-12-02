@@ -898,6 +898,12 @@ WebInspector.TimelineView.prototype = {
         }
     },
 
+    /**
+     * @override
+     * @param {?WebInspector.TracingModel.Event} event
+     */
+    highlightEvent: function(event) { },
+
     __proto__: WebInspector.VBox.prototype
 }
 

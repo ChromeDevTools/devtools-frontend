@@ -446,6 +446,23 @@ WebInspector.FlameChart.Calculator.prototype = {
 }
 
 WebInspector.FlameChart.prototype = {
+    /**
+     * @param {number} entryIndex
+     */
+    highlightEntry: function(entryIndex)
+    {
+        this._entryInfo.removeChildren();
+        this._innerHighlightEntry(entryIndex);
+    },
+
+    hideHighlight: function()
+    {
+        this._entryInfo.removeChildren();
+        this._canvas.style.cursor = "default";
+        this._highlightedEntryIndex = -1;
+        this._updateElementPosition(this._highlightElement, this._highlightedEntryIndex);
+    },
+
     _resetCanvas: function()
     {
         var ratio = window.devicePixelRatio;
@@ -692,21 +709,28 @@ WebInspector.FlameChart.prototype = {
         var inDividersBar = event.offsetY < WebInspector.FlameChart.DividersBarHeight;
         this._highlightedMarkerIndex = inDividersBar ? this._markerIndexAtPosition(event.offsetX) : -1;
         this._updateMarkerHighlight();
-        this._showHighlight();
+
+        var entryIndex = this._coordinatesToEntryIndex(this._lastMouseOffsetX, this._lastMouseOffsetY);
+        if (entryIndex === -1) {
+            this.hideHighlight();
+            return;
+        }
+        this._updateEntryInfo(entryIndex);
+
+        this._canvas.style.cursor = this._dataProvider.canJumpToEntry(entryIndex) ? "pointer" : "default";
+        this._innerHighlightEntry(entryIndex);
     },
 
     _onMouseOut: function()
     {
-        this._hideHighlight();
+        this.hideHighlight();
     },
 
-    _showHighlight: function()
+    /**
+     * @param {number} entryIndex
+     */
+    _updateEntryInfo: function(entryIndex)
     {
-        var entryIndex = this._coordinatesToEntryIndex(this._lastMouseOffsetX, this._lastMouseOffsetY);
-        if (entryIndex === -1) {
-            this._hideHighlight();
-            return;
-        }
         if (entryIndex !== this._highlightedEntryIndex) {
             this._entryInfo.removeChildren();
             var entryInfo = this._dataProvider.prepareHighlightedEntryInfo(entryIndex);
@@ -733,18 +757,16 @@ WebInspector.FlameChart.prototype = {
         }
         this._entryInfo.style.left = x + "px";
         this._entryInfo.style.top = y + "px";
+    },
+
+    /**
+     * @param {number} entryIndex
+     */
+    _innerHighlightEntry: function(entryIndex)
+    {
         if (this._highlightedEntryIndex === entryIndex)
             return;
         this._highlightedEntryIndex = entryIndex;
-        this._canvas.style.cursor = this._dataProvider.canJumpToEntry(entryIndex) ? "pointer" : "default";
-        this._updateElementPosition(this._highlightElement, this._highlightedEntryIndex);
-    },
-
-    _hideHighlight: function()
-    {
-        this._entryInfo.removeChildren();
-        this._canvas.style.cursor = "default";
-        this._highlightedEntryIndex = -1;
         this._updateElementPosition(this._highlightElement, this._highlightedEntryIndex);
     },
 

@@ -93,7 +93,7 @@ WebInspector.TimelinePanel = function()
     // Create top level properties splitter.
     this._detailsSplitWidget = new WebInspector.SplitWidget(false, true, "timelinePanelDetailsSplitViewState");
     this._detailsSplitWidget.element.classList.add("timeline-details-split");
-    this._detailsView = new WebInspector.TimelineDetailsView(this._model);
+    this._detailsView = new WebInspector.TimelineDetailsView(this._model, this);
     this._detailsSplitWidget.installResizer(this._detailsView.headerElement());
     this._detailsSplitWidget.setSidebarWidget(this._detailsView);
 
@@ -1089,11 +1089,19 @@ WebInspector.TimelinePanel.prototype = {
         if (preferredTab)
             this._detailsView.setPreferredTab(preferredTab);
 
-        for (var i = 0; i < this._currentViews.length; ++i) {
-            var view = this._currentViews[i];
+        for (var view of this._currentViews)
             view.setSelection(selection);
-        }
         this._updateSelectionDetails();
+    },
+
+    /**
+     * @override
+     * @param {?WebInspector.TracingModel.Event} event
+     */
+    highlightEvent: function(event)
+    {
+        for (var view of this._currentViews)
+            view.highlightEvent(event);
     },
 
     /**
@@ -1217,6 +1225,14 @@ WebInspector.TimelineTreeModeView.prototype = {
 
     /**
      * @override
+     * @param {?WebInspector.TracingModel.Event} event
+     */
+    highlightEvent: function(event)
+    {
+    },
+
+    /**
+     * @override
      */
     refreshRecords: function()
     {
@@ -1269,8 +1285,9 @@ WebInspector.TimelineTreeModeView.prototype = {
  * @constructor
  * @extends {WebInspector.TabbedPane}
  * @param {!WebInspector.TimelineModel} timelineModel
+ * @param {!WebInspector.TimelineModeViewDelegate} delegate
  */
-WebInspector.TimelineDetailsView = function(timelineModel)
+WebInspector.TimelineDetailsView = function(timelineModel, delegate)
 {
     WebInspector.TabbedPane.call(this);
     this.element.classList.add("timeline-details");
@@ -1286,7 +1303,7 @@ WebInspector.TimelineDetailsView = function(timelineModel)
     this._rangeDetailViews = new Map();
     if (!Runtime.experiments.isEnabled("multipleTimelineViews")) {
         if (Runtime.experiments.isEnabled("timelineEventsTreeView")) {
-            var eventsView = new WebInspector.EventsTimelineTreeView(timelineModel);
+            var eventsView = new WebInspector.EventsTimelineTreeView(timelineModel, delegate);
             this.appendTab(tabIds.Events, WebInspector.UIString("Events"), eventsView);
             this._rangeDetailViews.set(tabIds.Events, eventsView);
         }
@@ -1532,6 +1549,11 @@ WebInspector.TimelineModeView.prototype = {
      * @param {?WebInspector.TimelineSelection} selection
      */
     setSelection: function(selection) {},
+
+    /**
+     * @param {?WebInspector.TracingModel.Event} event
+     */
+    highlightEvent: function(event) { }
 }
 
 /**
@@ -1556,6 +1578,11 @@ WebInspector.TimelineModeViewDelegate.prototype = {
      * @param {!Node} node
      */
     showInDetails: function(node) {},
+
+    /**
+     * @param {?WebInspector.TracingModel.Event} event
+     */
+    highlightEvent: function(event) {}
 }
 
 /**

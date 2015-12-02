@@ -288,6 +288,14 @@ WebInspector.CountersGraph.prototype = {
 
     /**
      * @override
+     * @param {?WebInspector.TracingModel.Event} event
+     */
+    highlightEvent: function(event)
+    {
+    },
+
+    /**
+     * @override
      * @param {?WebInspector.TimelineSelection} selection
      */
     setSelection: function(selection)

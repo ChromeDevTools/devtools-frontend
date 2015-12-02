@@ -77,9 +77,6 @@ WebInspector.ElementsPanel = function()
     this.sidebarPanes.styles = new WebInspector.StylesSidebarPane(this._toolbarPaneElement);
     this.sidebarPanes.computedStyle = WebInspector.ComputedStyleWidget.createSidebarWrapper(this.sidebarPanes.styles, sharedSidebarModel);
 
-    this.sidebarPanes.styles.addEventListener(WebInspector.StylesSidebarPane.Events.SelectorEditingStarted, this._onEditingSelectorStarted.bind(this));
-    this.sidebarPanes.styles.addEventListener(WebInspector.StylesSidebarPane.Events.SelectorEditingEnded, this._onEditingSelectorEnded.bind(this));
-
     this.sidebarPanes.metrics = new WebInspector.MetricsSidebarPane();
     this.sidebarPanes.properties = WebInspector.PropertiesWidget.createSidebarWrapper();
     this.sidebarPanes.domBreakpoints = WebInspector.domBreakpointsSidebarPane.createProxy(this);
@@ -212,18 +209,6 @@ WebInspector.ElementsPanel.prototype = {
         }
     },
 
-    _onEditingSelectorStarted: function()
-    {
-        for (var i = 0; i < this._treeOutlines.length; ++i)
-            this._treeOutlines[i].setPickNodeMode(true);
-    },
-
-    _onEditingSelectorEnded: function()
-    {
-        for (var i = 0; i < this._treeOutlines.length; ++i)
-            this._treeOutlines[i].setPickNodeMode(false);
-    },
-
     /**
      * @override
      * @param {!WebInspector.Target} target
@@ -237,7 +222,6 @@ WebInspector.ElementsPanel.prototype = {
         treeOutline.setWordWrap(WebInspector.moduleSetting("domWordWrap").get());
         treeOutline.wireToDOMModel();
         treeOutline.addEventListener(WebInspector.ElementsTreeOutline.Events.SelectedNodeChanged, this._selectedNodeChanged, this);
-        treeOutline.addEventListener(WebInspector.ElementsTreeOutline.Events.NodePicked, this._onNodePicked, this);
         treeOutline.addEventListener(WebInspector.ElementsTreeOutline.Events.ElementsTreeUpdated, this._updateBreadcrumbIfNeeded, this);
         new WebInspector.ElementsTreeElementHighlighter(treeOutline);
         this._treeOutlines.push(treeOutline);
@@ -345,16 +329,6 @@ WebInspector.ElementsPanel.prototype = {
         if (WebInspector.moduleSetting("sidebarPosition").get() === "auto")
             this.element.window().requestAnimationFrame(this._updateSidebarPosition.bind(this));  // Do not force layout.
         this._updateTreeOutlineVisibleWidth();
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _onNodePicked: function(event)
-    {
-        if (!this.sidebarPanes.styles.isEditingSelector())
-            return;
-        this.sidebarPanes.styles.updateEditingSelectorForNode(/** @type {!WebInspector.DOMNode} */(event.data));
     },
 
     /**

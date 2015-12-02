@@ -56,7 +56,6 @@ WebInspector.ElementsTreeOutline = function(domModel, omitRootDOMNode, selectEna
     this._element.addEventListener("dragleave", this._ondragleave.bind(this), false);
     this._element.addEventListener("drop", this._ondrop.bind(this), false);
     this._element.addEventListener("dragend", this._ondragend.bind(this), false);
-    this._element.addEventListener("webkitAnimationEnd", this._onAnimationEnd.bind(this), false);
     this._element.addEventListener("contextmenu", this._contextMenuEventFired.bind(this), false);
 
     outlineDisclosureElement.appendChild(this._element);
@@ -70,7 +69,6 @@ WebInspector.ElementsTreeOutline = function(domModel, omitRootDOMNode, selectEna
     this._selectedDOMNode = null;
 
     this._visible = false;
-    this._pickNodeMode = false;
 
     this._popoverHelper = new WebInspector.PopoverHelper(this._element, this._getPopoverAnchor.bind(this), this._showPopover.bind(this));
     this._popoverHelper.setTimeout(0);
@@ -90,7 +88,6 @@ WebInspector.ElementsTreeOutline.ClipboardData;
  * @enum {string}
  */
 WebInspector.ElementsTreeOutline.Events = {
-    NodePicked: "NodePicked",
     SelectedNodeChanged: "SelectedNodeChanged",
     ElementsTreeUpdated: "ElementsTreeUpdated"
 }
@@ -148,50 +145,6 @@ WebInspector.ElementsTreeOutline.prototype = {
     setWordWrap: function(wrap)
     {
         this._element.classList.toggle("elements-tree-nowrap", !wrap);
-    },
-
-    /**
-     * @param {!Event} event
-     */
-    _onAnimationEnd: function(event)
-    {
-        event.target.classList.remove("elements-tree-element-pick-node-1");
-        event.target.classList.remove("elements-tree-element-pick-node-2");
-    },
-
-    /**
-     * @return {boolean}
-     */
-    pickNodeMode: function()
-    {
-        return this._pickNodeMode;
-    },
-
-    /**
-     * @param {boolean} value
-     */
-    setPickNodeMode: function(value)
-    {
-        this._pickNodeMode = value;
-        this._element.classList.toggle("pick-node-mode", value);
-    },
-
-    /**
-     * @param {!Element} element
-     * @param {?WebInspector.DOMNode} node
-     * @return {boolean}
-     */
-    handlePickNode: function(element, node)
-    {
-        if (!this._pickNodeMode)
-            return false;
-
-        this.dispatchEventToListeners(WebInspector.ElementsTreeOutline.Events.NodePicked, node);
-        var hasRunningAnimation = element.classList.contains("elements-tree-element-pick-node-1") || element.classList.contains("elements-tree-element-pick-node-2");
-        element.classList.toggle("elements-tree-element-pick-node-1");
-        if (hasRunningAnimation)
-            element.classList.toggle("elements-tree-element-pick-node-2");
-        return true;
     },
 
     /**

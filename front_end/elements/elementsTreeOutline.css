@@ -230,32 +230,6 @@ button, input, select {
     white-space: nowrap;
 }
 
-.elements-tree-element-pick-node-1 {
-    border-radius: 3px;
-    padding: 1px 0 1px 0;
-    -webkit-animation: elements-tree-element-pick-node-animation-1 0.5s 1;
-}
-
-.elements-tree-element-pick-node-2 {
-    border-radius: 3px;
-    padding: 1px 0 1px 0;
-    -webkit-animation: elements-tree-element-pick-node-animation-2 0.5s 1;
-}
-
-@-webkit-keyframes elements-tree-element-pick-node-animation-1 {
-    from { background-color: rgb(255, 210, 126); }
-    to { background-color: inherit; }
-}
-
-@-webkit-keyframes elements-tree-element-pick-node-animation-2 {
-    from { background-color: rgb(255, 210, 126); }
-    to { background-color: inherit; }
-}
-
-.pick-node-mode {
-    cursor: pointer;
-}
-
 .webkit-html-attribute-value a {
     cursor: default !important;
 }

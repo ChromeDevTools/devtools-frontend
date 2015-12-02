@@ -359,8 +359,6 @@ WebInspector.ElementsTreeElement.prototype = {
     {
         if (this._editing)
             return false;
-        if (selectedByUser && this.treeOutline.handlePickNode(this.title, this._node))
-            return true;
         return TreeElement.prototype.select.call(this, omitFocus, selectedByUser);
     },
 
@@ -470,9 +468,6 @@ WebInspector.ElementsTreeElement.prototype = {
             return false;
 
         if (this._node.nodeType() != Node.ELEMENT_NODE && this._node.nodeType() != Node.TEXT_NODE)
-            return false;
-
-        if (this.treeOutline.pickNodeMode())
             return false;
 
         var textNode = eventTarget.enclosingNodeOrSelfWithClass("webkit-html-text-node");

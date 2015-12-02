@@ -188,40 +188,6 @@ WebInspector.StylesSidebarPane.prototype = {
     },
 
     /**
-     * @param {!WebInspector.DOMNode} node
-     */
-    updateEditingSelectorForNode: function(node)
-    {
-        var selectorText = WebInspector.DOMPresentationUtils.simpleSelector(node);
-        if (!selectorText)
-            return;
-        this._editingSelectorSection.setSelectorText(selectorText);
-    },
-
-    /**
-     * @return {boolean}
-     */
-    isEditingSelector: function()
-    {
-        return !!this._editingSelectorSection;
-    },
-
-    /**
-     * @param {!WebInspector.StylePropertiesSection} section
-     */
-    _startEditingSelector: function(section)
-    {
-        this._editingSelectorSection = section;
-        this.dispatchEventToListeners(WebInspector.StylesSidebarPane.Events.SelectorEditingStarted);
-    },
-
-    _finishEditingSelector: function()
-    {
-        delete this._editingSelectorSection;
-        this.dispatchEventToListeners(WebInspector.StylesSidebarPane.Events.SelectorEditingEnded);
-    },
-
-    /**
      * @param {!WebInspector.CSSRule} editedRule
      * @param {!WebInspector.TextRange} oldRange
      * @param {!WebInspector.TextRange} newRange
@@ -1473,37 +1439,11 @@ WebInspector.StylePropertiesSection.prototype = {
         element.scrollIntoViewIfNeeded(false);
         element.textContent = element.textContent; // Reset selector marks in group.
 
-        var config = new WebInspector.InplaceEditor.Config(this.editingSelectorCommitted.bind(this), this.editingSelectorCancelled.bind(this), undefined, this._editingSelectorBlurHandler.bind(this));
+        var config = new WebInspector.InplaceEditor.Config(this.editingSelectorCommitted.bind(this), this.editingSelectorCancelled.bind(this));
         WebInspector.InplaceEditor.startEditing(this._selectorElement, config);
 
         element.getComponentSelection().setBaseAndExtent(element, 0, element, 1);
         this._parentPane.setEditingStyle(true);
-        this._parentPane._startEditingSelector(this);
-    },
-
-    /**
-     * @param {string} text
-     */
-    setSelectorText: function(text)
-    {
-        this._selectorElement.textContent = text;
-        this._selectorElement.getComponentSelection().setBaseAndExtent(this._selectorElement, 0, this._selectorElement, 1);
-    },
-
-    /**
-     * @param {!Element} editor
-     * @param {!Event} blurEvent
-     * @return {boolean}
-     */
-    _editingSelectorBlurHandler: function(editor, blurEvent)
-    {
-        if (!blurEvent.relatedTarget)
-            return true;
-        var elementTreeOutline = blurEvent.relatedTarget.enclosingNodeOrSelfWithClass("elements-tree-outline");
-        if (!elementTreeOutline)
-            return true;
-        editor.focus();
-        return false;
     },
 
     /**
@@ -1597,7 +1537,6 @@ WebInspector.StylePropertiesSection.prototype = {
     _editingSelectorEnded: function()
     {
         this._parentPane.setEditingStyle(false);
-        this._parentPane._finishEditingSelector();
     },
 
     editingSelectorCancelled: function()

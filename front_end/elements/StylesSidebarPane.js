@@ -1219,7 +1219,7 @@ WebInspector.StylePropertiesSection.prototype = {
         var selectors = this._selectorElement.getElementsByClassName("simple-selector");
         var regex = this._parentPane.filterRegex();
         for (var i = 0; i < selectors.length; ++i) {
-            var selectorMatchesFilter = regex && regex.test(selectors[i].textContent);
+            var selectorMatchesFilter = !!regex && regex.test(selectors[i].textContent);
             selectors[i].classList.toggle("filter-match", selectorMatchesFilter);
         }
     },

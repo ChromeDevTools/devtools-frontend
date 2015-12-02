@@ -76,6 +76,9 @@ WebInspector.ConsoleModel.prototype = {
      */
     addMessage: function(msg)
     {
+        if (this._isBlacklisted(msg))
+            return;
+
         if (msg.level === WebInspector.ConsoleMessage.MessageLevel.RevokedError && msg._relatedMessageId) {
             var relatedMessage = this._messageById.get(msg._relatedMessageId);
             if (!relatedMessage)
@@ -110,6 +113,22 @@ WebInspector.ConsoleModel.prototype = {
                 this._revokedErrors++;
                 break;
         }
+    },
+
+    /**
+     * @param {!WebInspector.ConsoleMessage} msg
+     * @return {boolean}
+     */
+    _isBlacklisted: function(msg)
+    {
+        if (msg.source != WebInspector.ConsoleMessage.MessageSource.Network || msg.level != WebInspector.ConsoleMessage.MessageLevel.Error || !msg.url.startsWith("chrome-extension"))
+            return false;
+
+        // ignore Chromecast's cast_sender spam
+        if (msg.url.includes("://boadgeojelhgndaghljhdicfkmllpafd") ||  msg.url.includes("://dliochdbjfkdbacpmhlcpmleaejidimm") ||  msg.url.includes("://fjhoaacokmgbjemoflkofnenfaiekifl") || msg.url.includes("://ekpaaapppgpmolpcldedioblbkmijaca"))
+            return true;
+
+        return false;
     },
 
     /**

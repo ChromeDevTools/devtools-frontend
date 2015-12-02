@@ -327,6 +327,7 @@ WebInspector.Linkifier.DefaultFormatter.prototype = {
     formatLiveAnchor: function(anchor, uiLocation)
     {
         var text = uiLocation.linkText();
+        text = text.replace(/([a-f0-9]{7})[a-f0-9]{13}[a-f0-9]*/g, "$1\u2026");
         if (this._maxLength)
             text = text.trimMiddle(this._maxLength);
         anchor.textContent = text;

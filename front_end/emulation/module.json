@@ -18,6 +18,14 @@
             "location": "main-toolbar-left"
         },
         {
+            "type": "@WebInspector.ToolbarItem.Provider",
+            "className": "WebInspector.DeviceModeView.ButtonProvider",
+            "condition": "can_dock",
+            "experiment": "deviceMode",
+            "order": 1,
+            "location": "main-toolbar-left"
+        },
+        {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "emulation.toggle-device-mode",
             "className": "WebInspector.ToggleDeviceModeActionDelegate",

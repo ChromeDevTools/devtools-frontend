@@ -31,11 +31,7 @@
 WebInspector.ScopeChainSidebarPane = function()
 {
     WebInspector.SidebarPane.call(this, WebInspector.UIString("Scope"));
-    this._sections = [];
-    /** @type {!Set.<?string>} */
-    this._expandedSections = new Set();
-    /** @type {!Set.<string>} */
-    this._expandedProperties = new Set();
+    this._expandController = new WebInspector.ObjectPropertiesSectionExpandController();
 }
 
 WebInspector.ScopeChainSidebarPane._pathSymbol = Symbol("path");
@@ -55,18 +51,6 @@ WebInspector.ScopeChainSidebarPane.prototype = {
             this.element.appendChild(infoElement);
             return;
         }
-
-        for (var i = 0; i < this._sections.length; ++i) {
-            var section = this._sections[i];
-            if (!section.title)
-                continue;
-            if (section.expanded)
-                this._expandedSections.add(section.title);
-            else
-                this._expandedSections.delete(section.title);
-        }
-
-        this._sections = [];
 
         var foundLocalScope = false;
         var scopeChain = callFrame.scopeChain();
@@ -130,20 +114,47 @@ WebInspector.ScopeChainSidebarPane.prototype = {
             titleElement.createChild("div", "scope-chain-sidebar-pane-section-title").textContent = title;
 
             var section = new WebInspector.ObjectPropertiesSection(scope.object(), titleElement, emptyPlaceholder, true, extraProperties);
-            section[WebInspector.ScopeChainSidebarPane._pathSymbol] = title + ":" + (subtitle ? subtitle + ":" : "");
-            section.addEventListener(TreeOutline.Events.ElementAttached, this._elementAttached, this);
-            section.addEventListener(TreeOutline.Events.ElementExpanded, this._elementExpanded, this);
-            section.addEventListener(TreeOutline.Events.ElementCollapsed, this._elementCollapsed, this);
+            this._expandController.watchSection(title + (subtitle ? ":" + subtitle : ""), section);
 
             if (scope.type() === DebuggerAgent.ScopeType.Global)
                 section.objectTreeElement().collapse();
-            else if (!foundLocalScope || scope.type() === DebuggerAgent.ScopeType.Local || this._expandedSections.has(title))
+            else if (!foundLocalScope || scope.type() === DebuggerAgent.ScopeType.Local)
                 section.objectTreeElement().expand();
 
             section.element.classList.add("scope-chain-sidebar-pane-section");
-            this._sections.push(section);
             this.element.appendChild(section.element);
         }
+    },
+
+    __proto__: WebInspector.SidebarPane.prototype
+}
+
+/**
+ * @constructor
+ */
+WebInspector.ObjectPropertiesSectionExpandController = function()
+{
+    /** @type {!Set.<string>} */
+    this._expandedProperties = new Set();
+}
+
+WebInspector.ObjectPropertiesSectionExpandController._cachedPathSymbol = Symbol("cachedPath");
+WebInspector.ObjectPropertiesSectionExpandController._treeOutlineId = Symbol("treeOutlineId");
+
+WebInspector.ObjectPropertiesSectionExpandController.prototype = {
+    /**
+     * @param {string} id
+     * @param {!WebInspector.ObjectPropertiesSection} section
+     */
+    watchSection: function(id, section)
+    {
+        section.addEventListener(TreeOutline.Events.ElementAttached, this._elementAttached, this);
+        section.addEventListener(TreeOutline.Events.ElementExpanded, this._elementExpanded, this);
+        section.addEventListener(TreeOutline.Events.ElementCollapsed, this._elementCollapsed, this);
+        section[WebInspector.ObjectPropertiesSectionExpandController._treeOutlineId] = id;
+
+        if (this._expandedProperties.has(id))
+            section.expand();
     },
 
     /**
@@ -151,7 +162,7 @@ WebInspector.ScopeChainSidebarPane.prototype = {
      */
     _elementAttached: function(event)
     {
-        var element = /** @type {!WebInspector.ObjectPropertyTreeElement} */ (event.data);
+        var element = /** @type {!WebInspector.ObjectPropertyTreeElement|!WebInspector.ObjectPropertiesSection.RootElement} */ (event.data);
         if (element.isExpandable() && this._expandedProperties.has(this._propertyPath(element)))
             element.expand();
     },
@@ -161,7 +172,7 @@ WebInspector.ScopeChainSidebarPane.prototype = {
      */
     _elementExpanded: function(event)
     {
-        var element = /** @type {!WebInspector.ObjectPropertyTreeElement} */ (event.data);
+        var element = /** @type {!WebInspector.ObjectPropertyTreeElement|!WebInspector.ObjectPropertiesSection.RootElement} */ (event.data);
         this._expandedProperties.add(this._propertyPath(element));
     },
 
@@ -170,18 +181,32 @@ WebInspector.ScopeChainSidebarPane.prototype = {
      */
     _elementCollapsed: function(event)
     {
-        var element = /** @type {!WebInspector.ObjectPropertyTreeElement} */ (event.data);
+        var element = /** @type {!WebInspector.ObjectPropertyTreeElement|!WebInspector.ObjectPropertiesSection.RootElement} */ (event.data);
         this._expandedProperties.delete(this._propertyPath(element));
     },
 
     /**
-     * @param {!WebInspector.ObjectPropertyTreeElement} treeElement
+     * @param {!WebInspector.ObjectPropertyTreeElement|!WebInspector.ObjectPropertiesSection.RootElement} treeElement
      * @return {string}
      */
     _propertyPath: function(treeElement)
     {
-        return treeElement.treeOutline[WebInspector.ScopeChainSidebarPane._pathSymbol] + WebInspector.ObjectPropertyTreeElement.prototype.propertyPath.call(treeElement);
-    },
+        var cachedPropertyPath = treeElement[WebInspector.ObjectPropertiesSectionExpandController._cachedPathSymbol];
+        if (cachedPropertyPath)
+            return cachedPropertyPath;
 
-    __proto__: WebInspector.SidebarPane.prototype
+        var current = treeElement;
+        var rootElement = treeElement.treeOutline.objectTreeElement();
+
+        var result;
+
+        while (current !== rootElement) {
+            result = current.property.name + (result ? "." + result : "");
+            current = current.parent;
+        }
+        var treeOutlineId = treeElement.treeOutline[WebInspector.ObjectPropertiesSectionExpandController._treeOutlineId];
+        result = treeOutlineId + (result ? ":" + result : "");
+        treeElement[WebInspector.ObjectPropertiesSectionExpandController._cachedPathSymbol] = result;
+        return result;
+    }
 }

@@ -386,31 +386,6 @@ WebInspector.ObjectPropertyTreeElement.prototype = {
     },
 
     /**
-     * @return {string|undefined}
-     */
-    propertyPath: function()
-    {
-        if (this._cachedPropertyPath)
-            return this._cachedPropertyPath;
-
-        var current = this;
-        var result;
-
-        do {
-            if (current.property) {
-                if (result)
-                    result = current.property.name + "." + result;
-                else
-                    result = current.property.name;
-            }
-            current = current.parent;
-        } while (current && !current.root);
-
-        this._cachedPropertyPath = result;
-        return result;
-    },
-
-    /**
      * @param {?WebInspector.RemoteObject} result
      * @param {boolean=} wasThrown
      */

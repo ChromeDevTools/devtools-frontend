@@ -924,6 +924,15 @@ WebInspector.TimelineFlameChartNetworkDataProvider.prototype = {
         waitingWidth = Math.min(waitingWidth, barWidth - minTransferWidthPx);
         context.fillStyle = "hsla(0, 0%, 100%, 0.5)";
         context.fillRect(barX, barY, waitingWidth, barHeight);
+        if (typeof request.priority === "string") {
+            var color = this._colorForPriority(request.priority);
+            if (color) {
+                context.fillStyle = "hsl(0, 0%, 100%)";
+                context.fillRect(barX, barY, 4, 4);
+                context.fillStyle = color;
+                context.fillRect(barX, barY, 3, 3);
+            }
+        }
         return false;
     },
 
@@ -952,9 +961,29 @@ WebInspector.TimelineFlameChartNetworkDataProvider.prototype = {
         var duration = request.endTime - request.startTime;
         if (request.startTime && isFinite(duration))
             value.createChild("span", "timeline-network-info-duration").textContent = Number.millisToString(duration);
-        value.createChild("span", "timeline-network-info-method").textContent = request.requestMethod;
+        if (typeof request.priority === "string") {
+            var div = value.createChild("span", "timeline-network-info-priority");
+            div.textContent = WebInspector.uiLabelForPriority(/** @type {!NetworkAgent.ResourcePriority} */ (request.priority));
+            div.style.color = this._colorForPriority(request.priority) || "black";
+        }
         value.createChild("span", "timeline-network-info-url").textContent = request.url.trimMiddle(maxURLChars);
         return [{ title: "", value: value }];
+    },
+
+    /**
+     * @param {string} priority
+     * @return {?string}
+     */
+    _colorForPriority: function(priority)
+    {
+        switch (/** @type {!NetworkAgent.ResourcePriority} */ (priority)) {
+        case NetworkAgent.ResourcePriority.VeryLow: return "#080";
+        case NetworkAgent.ResourcePriority.Low: return "#6c0";
+        case NetworkAgent.ResourcePriority.Medium: return "#fa0";
+        case NetworkAgent.ResourcePriority.High: return "#f60";
+        case NetworkAgent.ResourcePriority.VeryHigh: return "#f00";
+        }
+        return null;
     },
 
     /**

@@ -106,7 +106,7 @@ WebInspector.NetworkDataGridNode.prototype = {
         case "remoteAddress": cell.setTextAndTitle(this._request.remoteAddress()); break;
         case "cookies": cell.setTextAndTitle(this._arrayLength(this._request.requestCookies)); break;
         case "setCookies": cell.setTextAndTitle(this._arrayLength(this._request.responseCookies)); break;
-        case "priority": cell.setTextAndTitle(this._uiLabelForPriority(this._request.initialPriority())); break;
+        case "priority": cell.setTextAndTitle(WebInspector.uiLabelForPriority(this._request.initialPriority())); break;
         case "connectionId": cell.setTextAndTitle(this._request.connectionId); break;
         case "type": this._renderTypeCell(cell); break;
         case "initiator": this._renderInitiatorCell(cell); break;
@@ -548,24 +548,6 @@ WebInspector.NetworkDataGridNode.prototype = {
             this._labelRightElement.style.setProperty("left", this._percentages.middle + "%");
             this._labelRightElement.style.setProperty("right", (100 - this._percentages.end) + "%");
         }
-    },
-
-    /**
-     * @param {?NetworkAgent.ResourcePriority} priority
-     */
-    _uiLabelForPriority: function(priority)
-    {
-        var labelMap = WebInspector.NetworkDataGridNode._priorityToUILabel;
-        if (!labelMap) {
-            WebInspector.NetworkDataGridNode._priorityToUILabel = new Map();
-            labelMap = WebInspector.NetworkDataGridNode._priorityToUILabel;
-            labelMap.set(NetworkAgent.ResourcePriority.VeryLow, WebInspector.UIString("Lowest"));
-            labelMap.set(NetworkAgent.ResourcePriority.Low, WebInspector.UIString("Low"));
-            labelMap.set(NetworkAgent.ResourcePriority.Medium, WebInspector.UIString("Medium"));
-            labelMap.set(NetworkAgent.ResourcePriority.High, WebInspector.UIString("High"));
-            labelMap.set(NetworkAgent.ResourcePriority.VeryHigh, WebInspector.UIString("Highest"));
-        }
-        return priority ? labelMap.get(priority) : WebInspector.UIString("Unknown");
     },
 
     __proto__: WebInspector.SortableDataGridNode.prototype

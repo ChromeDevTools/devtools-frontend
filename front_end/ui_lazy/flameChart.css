@@ -86,9 +86,5 @@
 }
 
 .flame-chart-entry-info table tr td span.timeline-network-info-duration {
-    color: darkgreen;
-}
-
-.flame-chart-entry-info table tr td span.timeline-network-info-method {
     color: darkblue;
 }

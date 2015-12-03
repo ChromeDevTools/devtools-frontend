@@ -648,6 +648,10 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
             contentHelper.appendTextRow(WebInspector.UIString("Status Code"), eventData["statusCode"]);
         if (eventData["mimeType"])
             contentHelper.appendTextRow(WebInspector.UIString("MIME Type"), eventData["mimeType"]);
+        if ("priority" in eventData) {
+            var priority = WebInspector.uiLabelForPriority(eventData["priority"]);
+            contentHelper.appendTextRow(WebInspector.UIString("Priority"), priority);
+        }
         if (eventData["encodedDataLength"])
             contentHelper.appendTextRow(WebInspector.UIString("Encoded Data Length"), WebInspector.UIString("%d Bytes", eventData["encodedDataLength"]));
         break;
@@ -864,6 +868,10 @@ WebInspector.TimelineUIUtils.buildNetworkRequestInfo = function(request)
         items.push({ title: WebInspector.UIString("Duration"), value: Number.millisToString(duration, true) });
     if (request.requestMethod)
         items.push({ title: WebInspector.UIString("Request Method"), value: request.requestMethod });
+    if (typeof request.priority === "string") {
+        var priority = WebInspector.uiLabelForPriority(/** @type {!NetworkAgent.ResourcePriority} */ (request.priority));
+        items.push({ title: WebInspector.UIString("Priority"), value: priority });
+    }
     if (request.mimeType)
         items.push({ title: WebInspector.UIString("Mime Type"), value: request.mimeType });
     return items;

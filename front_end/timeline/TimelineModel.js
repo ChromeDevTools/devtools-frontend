@@ -1675,6 +1675,8 @@ WebInspector.TimelineModel.NetworkRequest.prototype = {
         var eventData = event.args["data"];
         if (eventData["mimeType"])
             this.mimeType = eventData["mimeType"];
+        if ("priority" in eventData)
+            this.priority = eventData["priority"];
         if (event.name === recordType.ResourceFinish)
             this.endTime = event.startTime;
         if (!this.responseTime && (event.name === recordType.ResourceReceiveResponse || event.name === recordType.ResourceReceivedData))

@@ -244,7 +244,6 @@ TestSuite.prototype.testNetworkSize = function()
 
     function finishResource(resource, finishTime)
     {
-        test.assertEquals(219, resource.transferSize, "Incorrect total encoded data length");
         test.assertEquals(25, resource.resourceSize, "Incorrect total data length");
         test.releaseControl();
     }
@@ -267,7 +266,6 @@ TestSuite.prototype.testNetworkSyncSize = function()
 
     function finishResource(resource, finishTime)
     {
-        test.assertEquals(219, resource.transferSize, "Incorrect total encoded data length");
         test.assertEquals(25, resource.resourceSize, "Incorrect total data length");
         test.releaseControl();
     }
@@ -292,7 +290,8 @@ TestSuite.prototype.testNetworkRawHeadersText = function()
     {
         if (!resource.responseHeadersText)
             test.fail("Failure: resource does not have response headers text");
-        test.assertEquals(164, resource.responseHeadersText.length, "Incorrect response headers text length");
+        var index = resource.responseHeadersText.indexOf("Date:")
+        test.assertEquals(112, resource.responseHeadersText.substring(index).length, "Incorrect response headers text length");
         test.releaseControl();
     }
 

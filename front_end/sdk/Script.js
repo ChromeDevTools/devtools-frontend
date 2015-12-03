@@ -62,7 +62,7 @@ WebInspector.Script.Events = {
     SourceMapURLAdded: "SourceMapURLAdded",
 }
 
-WebInspector.Script.sourceURLRegex = /\n[\040\t]*\/\/[@#]\ssourceURL=\s*(\S*?)\s*$/mg;
+WebInspector.Script.sourceURLRegex = /\n[\040\t]*\/\/#\ssourceURL=\s*(\S*?)\s*$/mg;
 
 /**
  * @param {string} source

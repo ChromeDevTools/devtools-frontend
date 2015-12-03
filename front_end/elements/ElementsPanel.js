@@ -70,17 +70,18 @@ WebInspector.ElementsPanel = function()
     /** @type !Array<!WebInspector.ElementsSidebarViewWrapperPane> */
     this._elementsSidebarViewWrappers = [];
     this._currentToolbarPane = null;
-    this._toolbarPaneElement = createElementWithClass("div", "styles-sidebar-toolbar-pane");
 
     var sharedSidebarModel = new WebInspector.SharedSidebarModel();
     this.sidebarPanes.platformFonts = WebInspector.PlatformFontsWidget.createSidebarWrapper(sharedSidebarModel);
-    this.sidebarPanes.styles = new WebInspector.StylesSidebarPane(this._toolbarPaneElement);
+    this.sidebarPanes.styles = new WebInspector.StylesSidebarPane();
     this.sidebarPanes.computedStyle = WebInspector.ComputedStyleWidget.createSidebarWrapper(this.sidebarPanes.styles, sharedSidebarModel);
 
     this.sidebarPanes.metrics = new WebInspector.MetricsSidebarPane();
     this.sidebarPanes.properties = WebInspector.PropertiesWidget.createSidebarWrapper();
     this.sidebarPanes.domBreakpoints = WebInspector.domBreakpointsSidebarPane.createProxy(this);
     this.sidebarPanes.eventListeners = WebInspector.EventListenersWidget.createSidebarWrapper();
+
+    this._stylesSidebarToolbar = this._createStylesSidebarToolbar(this.sidebarPanes.styles);
 
     WebInspector.moduleSetting("sidebarPosition").addChangeListener(this._updateSidebarPosition.bind(this));
     this._updateSidebarPosition();
@@ -99,6 +100,26 @@ WebInspector.ElementsPanel = function()
 WebInspector.ElementsPanel._elementsSidebarViewTitleSymbol = Symbol("title");
 
 WebInspector.ElementsPanel.prototype = {
+    /**
+     * @param {!WebInspector.StylesSidebarPane} ssp
+     * @return {!Element}
+     */
+    _createStylesSidebarToolbar: function(ssp)
+    {
+        var container = createElementWithClass("div", "styles-sidebar-pane-toolbar-container");
+        var hbox = container.createChild("div", "hbox styles-sidebar-pane-toolbar");
+        var filterContainerElement = hbox.createChild("div", "styles-sidebar-pane-filter-box");
+        var filterInput = WebInspector.StylesSidebarPane.createPropertyFilterElement(WebInspector.UIString("Filter"), hbox, ssp.onFilterChanged.bind(ssp));
+        filterContainerElement.appendChild(filterInput);
+        var toolbar = new WebInspector.ExtensibleToolbar("styles-sidebarpane-toolbar", hbox);
+        toolbar.appendToolbarItem(WebInspector.StylesSidebarPane.createAddNewRuleButton(ssp));
+        toolbar.element.classList.add("styles-pane-toolbar", "toolbar-gray-toggled");
+        var toolbarPaneContainer = container.createChild("div", "styles-sidebar-toolbar-pane-container");
+        this._toolbarPaneElement = createElementWithClass("div", "styles-sidebar-toolbar-pane");
+        toolbarPaneContainer.appendChild(this._toolbarPaneElement);
+        return container;
+    },
+
     /**
      * @param {?WebInspector.Widget} widget
      */
@@ -893,16 +914,16 @@ WebInspector.ElementsPanel.prototype = {
 
     _updateSidebarPosition: function()
     {
-        var vertically;
+        var horizontally;
         var position = WebInspector.moduleSetting("sidebarPosition").get();
         if (position === "right")
-            vertically = false;
+            horizontally = false;
         else if (position === "bottom")
-            vertically = true;
+            horizontally = true;
         else
-            vertically = WebInspector.inspectorView.element.offsetWidth < 680;
+            horizontally = WebInspector.inspectorView.element.offsetWidth < 680;
 
-        if (this.sidebarPaneView && vertically === !this._splitWidget.isVertical())
+        if (this.sidebarPaneView && horizontally === !this._splitWidget.isVertical())
             return;
 
         if (this.sidebarPaneView && this.sidebarPaneView.shouldHideOnDetach())
@@ -916,16 +937,18 @@ WebInspector.ElementsPanel.prototype = {
             this._splitWidget.uninstallResizer(this.sidebarPaneView.headerElement());
         }
 
-        this._splitWidget.setVertical(!vertically);
+        this._splitWidget.setVertical(!horizontally);
 
         var computedPane = new WebInspector.SidebarPane(WebInspector.UIString("Computed"));
         computedPane.element.classList.add("composite");
         computedPane.element.classList.add("fill");
-
         computedPane.element.classList.add("metrics-and-computed");
 
+        var matchedStylesContainer = new WebInspector.VBox();
+        matchedStylesContainer.element.appendChild(this._stylesSidebarToolbar);
         var matchedStylePanesWrapper = new WebInspector.VBox();
         matchedStylePanesWrapper.element.classList.add("style-panes-wrapper");
+        matchedStylePanesWrapper.show(matchedStylesContainer.element);
         var computedStylePanesWrapper = new WebInspector.VBox();
         computedStylePanesWrapper.element.classList.add("style-panes-wrapper");
 
@@ -961,7 +984,7 @@ WebInspector.ElementsPanel.prototype = {
         this._popoverHelper = new WebInspector.PopoverHelper(this.sidebarPaneView.element, this._getPopoverAnchor.bind(this), this._showPopover.bind(this));
         this._popoverHelper.setTimeout(0);
 
-        if (vertically) {
+        if (horizontally) {
             this._splitWidget.installResizer(this.sidebarPaneView.headerElement());
 
             var compositePane = new WebInspector.SidebarPane(this.sidebarPanes.styles.title());
@@ -971,7 +994,7 @@ WebInspector.ElementsPanel.prototype = {
             var splitWidget = new WebInspector.SplitWidget(true, true, "stylesPaneSplitViewState", 215);
             splitWidget.show(compositePane.element);
 
-            splitWidget.setMainWidget(matchedStylePanesWrapper);
+            splitWidget.setMainWidget(matchedStylesContainer);
             splitWidget.setSidebarWidget(computedStylePanesWrapper);
 
             computedPane.show(computedStylePanesWrapper.element);
@@ -980,18 +1003,17 @@ WebInspector.ElementsPanel.prototype = {
             var stylesPane = new WebInspector.SidebarPane(this.sidebarPanes.styles.title());
             stylesPane.element.classList.add("composite", "fill", "metrics-and-styles");
 
-            matchedStylePanesWrapper.show(stylesPane.element);
+            matchedStylesContainer.show(stylesPane.element);
             computedStylePanesWrapper.show(computedPane.element);
 
             this.sidebarPaneView.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, tabSelected, this);
-
             this.sidebarPaneView.addPane(stylesPane);
             this.sidebarPaneView.addPane(computedPane);
         }
 
         this.sidebarPanes.styles.show(matchedStylePanesWrapper.element);
         this.sidebarPanes.computedStyle.show(computedStylePanesWrapper.element);
-        showMetrics.call(this, vertically);
+        showMetrics.call(this, horizontally);
         this.sidebarPanes.platformFonts.show(computedStylePanesWrapper.element);
 
         this.sidebarPaneView.addPane(this.sidebarPanes.eventListeners);

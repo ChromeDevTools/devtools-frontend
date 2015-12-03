@@ -30,9 +30,8 @@
 /**
  * @constructor
  * @extends {WebInspector.ElementsSidebarPane}
- * @param {!Element} toolbarPaneElement
  */
-WebInspector.StylesSidebarPane = function(toolbarPaneElement)
+WebInspector.StylesSidebarPane = function()
 {
     WebInspector.ElementsSidebarPane.call(this, WebInspector.UIString("Styles"));
     this.setMinimumSize(96, 26);
@@ -40,23 +39,8 @@ WebInspector.StylesSidebarPane = function(toolbarPaneElement)
     WebInspector.moduleSetting("colorFormat").addChangeListener(this.update.bind(this));
     WebInspector.moduleSetting("textEditorIndent").addChangeListener(this.update.bind(this));
 
-    var hbox = this.element.createChild("div", "hbox styles-sidebar-pane-toolbar");
-    var filterContainerElement = hbox.createChild("div", "styles-sidebar-pane-filter-box");
-    this._filterInput = WebInspector.StylesSidebarPane.createPropertyFilterElement(WebInspector.UIString("Filter"), hbox, this._onFilterChanged.bind(this));
-    filterContainerElement.appendChild(this._filterInput);
-
-    var toolbar = new WebInspector.ExtensibleToolbar("styles-sidebarpane-toolbar", hbox);
-    toolbar.appendToolbarItem(WebInspector.StylesSidebarPane.createAddNewRuleButton(this));
-
-    toolbar.element.classList.add("styles-pane-toolbar", "toolbar-gray-toggled");
-
-    var toolbarPaneContainer = this.element.createChild("div", "styles-sidebar-toolbar-pane-container");
-    this._toolbarPaneElement = toolbarPaneElement;
-    toolbarPaneContainer.appendChild(toolbarPaneElement);
     this._sectionsContainer = this.element.createChild("div");
-
     this._stylesPopoverHelper = new WebInspector.StylesPopoverHelper();
-
     this._linkifier = new WebInspector.Linkifier(new WebInspector.Linkifier.DefaultCSSFormatter());
 
     this.element.classList.add("styles-pane");
@@ -219,7 +203,7 @@ WebInspector.StylesSidebarPane.prototype = {
     /**
      * @param {?RegExp} regex
      */
-    _onFilterChanged: function(regex)
+    onFilterChanged: function(regex)
     {
         this._filterRegex = regex;
         this._updateFilter();

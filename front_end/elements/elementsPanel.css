@@ -455,6 +455,7 @@
 .styles-sidebar-toolbar-pane-container {
     position: relative;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 .styles-element-state-pane {
@@ -594,8 +595,15 @@
     position: relative;
 }
 
+.styles-sidebar-pane-toolbar-container {
+    flex-shrink: 0;
+    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.14);
+    border-bottom: 1px solid #DDD;
+}
+
 .styles-sidebar-pane-toolbar {
     border-bottom: 1px solid #eee;
+    flex-shrink: 0;
 }
 
 .styles-sidebar-pane-filter-box {

@@ -447,12 +447,22 @@ WebInspector.FlameChart.Calculator.prototype = {
 
 WebInspector.FlameChart.prototype = {
     /**
+     * @override
+     */
+    willHide: function()
+    {
+        this.hideHighlight();
+    },
+
+    /**
      * @param {number} entryIndex
      */
     highlightEntry: function(entryIndex)
     {
-        this._entryInfo.removeChildren();
-        this._innerHighlightEntry(entryIndex);
+        if (this._highlightedEntryIndex === entryIndex)
+            return;
+        this._highlightedEntryIndex = entryIndex;
+        this._updateElementPosition(this._highlightElement, this._highlightedEntryIndex);
     },
 
     hideHighlight: function()
@@ -539,6 +549,7 @@ WebInspector.FlameChart.prototype = {
         }
 
         this._cancelAnimation();
+        this._updateHighlight();
         this._cancelWindowTimesAnimation = WebInspector.animateFunction(this.element.window(), this._animateWindowTimes.bind(this),
             [{from: this._timeWindowLeft, to: startTime}, {from: this._timeWindowRight, to: endTime}], 5,
             this._animationCompleted.bind(this));
@@ -554,12 +565,14 @@ WebInspector.FlameChart.prototype = {
     {
         this._timeWindowLeft = startTime;
         this._timeWindowRight = endTime;
+        this._updateHighlight();
         this.update();
     },
 
     _animationCompleted: function()
     {
         delete this._cancelWindowTimesAnimation;
+        this._updateHighlight();
     },
 
     /**
@@ -609,6 +622,7 @@ WebInspector.FlameChart.prototype = {
         this._dragStartWindowLeft = this._timeWindowLeft;
         this._dragStartWindowRight = this._timeWindowRight;
         this._canvas.style.cursor = "";
+        this.hideHighlight();
         return true;
     },
 
@@ -631,6 +645,7 @@ WebInspector.FlameChart.prototype = {
     _endCanvasDragging: function()
     {
         this._isDragging = false;
+        this._updateHighlight();
     },
 
     /**
@@ -651,6 +666,7 @@ WebInspector.FlameChart.prototype = {
         style.width = "1px";
         this._selectedTimeSpanLabel.textContent = "";
         this._selectionOverlay.classList.remove("hidden");
+        this.hideHighlight();
         return true;
     },
 
@@ -658,6 +674,7 @@ WebInspector.FlameChart.prototype = {
     {
         this._isDragging = false;
         this._flameChartDelegate.endRangeSelection();
+        this._updateHighlight();
     },
 
     _hideRangeSelection: function()
@@ -699,15 +716,17 @@ WebInspector.FlameChart.prototype = {
     {
         this._lastMouseOffsetX = event.offsetX;
         this._lastMouseOffsetY = event.offsetY;
-
         if (!this._enabled())
             return;
-
         if (this._isDragging)
             return;
+        this._updateHighlight();
+    },
 
-        var inDividersBar = event.offsetY < WebInspector.FlameChart.DividersBarHeight;
-        this._highlightedMarkerIndex = inDividersBar ? this._markerIndexAtPosition(event.offsetX) : -1;
+    _updateHighlight: function()
+    {
+        var inDividersBar = this._lastMouseOffsetY < WebInspector.FlameChart.DividersBarHeight;
+        this._highlightedMarkerIndex = inDividersBar ? this._markerIndexAtPosition(this._lastMouseOffsetX) : -1;
         this._updateMarkerHighlight();
 
         var entryIndex = this._coordinatesToEntryIndex(this._lastMouseOffsetX, this._lastMouseOffsetY);
@@ -715,21 +734,22 @@ WebInspector.FlameChart.prototype = {
             this.hideHighlight();
             return;
         }
-        this._updateEntryInfo(entryIndex);
-
+        this._updatePopover(entryIndex);
         this._canvas.style.cursor = this._dataProvider.canJumpToEntry(entryIndex) ? "pointer" : "default";
-        this._innerHighlightEntry(entryIndex);
+        this.highlightEntry(entryIndex);
     },
 
     _onMouseOut: function()
     {
+        this._lastMouseOffsetX = -1;
+        this._lastMouseOffsetY = -1;
         this.hideHighlight();
     },
 
     /**
      * @param {number} entryIndex
      */
-    _updateEntryInfo: function(entryIndex)
+    _updatePopover: function(entryIndex)
     {
         if (entryIndex !== this._highlightedEntryIndex) {
             this._entryInfo.removeChildren();
@@ -757,17 +777,6 @@ WebInspector.FlameChart.prototype = {
         }
         this._entryInfo.style.left = x + "px";
         this._entryInfo.style.top = y + "px";
-    },
-
-    /**
-     * @param {number} entryIndex
-     */
-    _innerHighlightEntry: function(entryIndex)
-    {
-        if (this._highlightedEntryIndex === entryIndex)
-            return;
-        this._highlightedEntryIndex = entryIndex;
-        this._updateElementPosition(this._highlightElement, this._highlightedEntryIndex);
     },
 
     _onClick: function()
@@ -975,6 +984,8 @@ WebInspector.FlameChart.prototype = {
      */
     _coordinatesToEntryIndex: function(x, y)
     {
+        if (x < 0 || y < 0)
+            return -1;
         y += this._scrollTop;
         var timelineData = this._timelineData();
         if (!timelineData)
@@ -1583,6 +1594,8 @@ WebInspector.FlameChart.prototype = {
         this._updateBoundaries();
         this._calculator._updateBoundaries(this);
         this._draw(this._offsetWidth, this._offsetHeight);
+        if (!this._isDragging)
+            this._updateHighlight();
     },
 
     reset: function()

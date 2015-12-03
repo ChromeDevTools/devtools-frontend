@@ -1212,7 +1212,6 @@ WebInspector.FlameChart.prototype = {
                 context.font = this._dataProvider.entryFont(entryIndex);
                 text = this._prepareText(context, text, barWidth - 2 * textPadding);
             }
-
             if (this._dataProvider.decorateEntry(entryIndex, context, text, barX, barY, barWidth, barHeight))
                 continue;
             if (!text || !text.length)
@@ -1447,27 +1446,38 @@ WebInspector.FlameChart.prototype = {
 
     /**
      * @param {!CanvasRenderingContext2D} context
-     * @param {string} title
-     * @param {number} maxSize
+     * @param {string} text
+     * @param {number} maxWidth
      * @return {string}
      */
-    _prepareText: function(context, title, maxSize)
+    _prepareText: function(context, text, maxWidth)
     {
-        var titleWidth = this._measureWidth(context, title);
-        if (maxSize >= titleWidth)
-            return title;
+        var /** @const */ maxLength = 200;
+        if (maxWidth <= 10)
+            return "";
+        if (text.length > maxLength)
+            text = text.trimMiddle(maxLength);
+        var textWidth = this._measureWidth(context, text);
+        if (textWidth <= maxWidth)
+            return text;
 
-        var l = 2;
-        var r = title.length;
-        while (l < r) {
-            var m = (l + r) >> 1;
-            if (this._measureWidth(context, title.trimMiddle(m)) <= maxSize)
-                l = m + 1;
-            else
-                r = m;
+        var l = 0;
+        var r = text.length;
+        var lv = 0;
+        var rv = textWidth;
+        while (l < r && lv !== rv && lv !== maxWidth) {
+            var m = Math.ceil(l + (r - l) * (maxWidth - lv) / (rv - lv));
+            var mv = this._measureWidth(context, text.trimMiddle(m));
+            if (mv <= maxWidth) {
+                l = m;
+                lv = mv;
+            } else {
+                r = m - 1;
+                rv = mv;
+            }
         }
-        title = title.trimMiddle(r - 1);
-        return title !== "\u2026" ? title : "";
+        text = text.trimMiddle(l);
+        return text !== "\u2026" ? text : "";
     },
 
     /**
@@ -1477,7 +1487,8 @@ WebInspector.FlameChart.prototype = {
      */
     _measureWidth: function(context, text)
     {
-        if (text.length > 20)
+        var /** @const */ maxCacheableLength = 200;
+        if (text.length > maxCacheableLength)
             return context.measureText(text).width;
 
         var font = context.font;

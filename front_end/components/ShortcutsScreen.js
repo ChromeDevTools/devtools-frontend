@@ -258,6 +258,7 @@ WebInspector.ShortcutsScreen.registerShortcuts = function()
     section.addAlternateKeys(WebInspector.ShortcutsScreen.SourcesPanelShortcuts.EvaluateSelectionInConsole, WebInspector.UIString("Evaluate selection in console"));
     section.addAlternateKeys(WebInspector.ShortcutsScreen.SourcesPanelShortcuts.AddSelectionToWatch, WebInspector.UIString("Add selection to watch"));
     section.addAlternateKeys(WebInspector.ShortcutsScreen.SourcesPanelShortcuts.ToggleBreakpoint, WebInspector.UIString("Toggle breakpoint"));
+    section.addAlternateKeys(WebInspector.shortcutRegistry.shortcutDescriptorsForAction("debugger.toggle-breakpoints-active"), WebInspector.UIString("Toggle all breakpoints"));
 
     // Editing
     section = WebInspector.shortcutsScreen.section(WebInspector.UIString("Text Editor"));

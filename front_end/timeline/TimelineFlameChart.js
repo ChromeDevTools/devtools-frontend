@@ -41,10 +41,11 @@ WebInspector.TimelineFlameChartDataProviderBase = function(model)
     /** @type {?WebInspector.FlameChart.TimelineData} */
     this._timelineData;
     this._font = "11px " + WebInspector.fontFamily();
-    this._filters = [
-        WebInspector.TimelineUIUtils.visibleEventsFilter(),
-        new WebInspector.ExcludeTopLevelFilter()
-    ];
+    this._filters = [];
+    if (!Runtime.experiments.isEnabled("timelineShowAllEvents")) {
+        this._filters.push(WebInspector.TimelineUIUtils.visibleEventsFilter());
+        this._filters.push(new WebInspector.ExcludeTopLevelFilter());
+    }
 }
 
 WebInspector.TimelineFlameChartDataProviderBase.prototype = {

@@ -179,7 +179,7 @@ WebInspector.TimelineUIUtils.eventStyle = function(event)
 
     var result = eventStyles[event.name];
     if (!result) {
-        result = new WebInspector.TimelineRecordStyle(WebInspector.UIString("Unknown: %s", event.name),  WebInspector.TimelineUIUtils.categories()["other"], true);
+        result = new WebInspector.TimelineRecordStyle(event.name,  WebInspector.TimelineUIUtils.categories()["other"], true);
         eventStyles[event.name] = result;
     }
     return result;

@@ -38,10 +38,11 @@ WebInspector.TimelineTreeView = function(model)
     this._model = model;
     this._linkifier = new WebInspector.Linkifier();
 
-    this._filters = [
-        WebInspector.TimelineUIUtils.visibleEventsFilter(),
-        new WebInspector.ExcludeTopLevelFilter()
-    ];
+    this._filters = [];
+    if (!Runtime.experiments.isEnabled("timelineShowAllEvents")) {
+        this._filters.push(WebInspector.TimelineUIUtils.visibleEventsFilter());
+        this._filters.push(new WebInspector.ExcludeTopLevelFilter());
+    }
 
     this._populateToolbar(this.element);
 

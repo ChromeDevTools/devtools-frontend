@@ -43,7 +43,7 @@ WebInspector.Formatter = function()
  */
 WebInspector.Formatter.format = function(contentType, mimeType, content, callback)
 {
-    if (contentType === WebInspector.resourceTypes.Script || contentType === WebInspector.resourceTypes.Document || contentType === WebInspector.resourceTypes.Stylesheet)
+    if (contentType.isDocumentOrScriptOrStyleSheet())
         new WebInspector.ScriptFormatter(mimeType, content, callback);
     else
         new WebInspector.IdentityFormatter(mimeType, content, callback);

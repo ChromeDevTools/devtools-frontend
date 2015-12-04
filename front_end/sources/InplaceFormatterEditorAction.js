@@ -71,7 +71,7 @@ WebInspector.InplaceFormatterEditorAction.prototype = {
             return false;
         if (uiSourceCode.project().type() === WebInspector.projectTypes.FileSystem)
             return true;
-        return uiSourceCode.contentType() === WebInspector.resourceTypes.Stylesheet
+        return uiSourceCode.contentType().isStyleSheet()
             || uiSourceCode.project().type() === WebInspector.projectTypes.Snippets;
     },
 

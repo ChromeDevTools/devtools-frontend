@@ -65,7 +65,8 @@ WebInspector.NavigatorView.Types = {
     Domain: "Domain",
     Folder: "Folder",
     UISourceCode: "UISourceCode",
-    FileSystem: "FileSystem"
+    FileSystem: "FileSystem",
+    SourceMapFolder: "SourceMapFolder"
 }
 
 /**
@@ -78,6 +79,8 @@ WebInspector.NavigatorView.iconClassForType = function(type)
         return "navigator-domain-tree-item";
     if (type === WebInspector.NavigatorView.Types.FileSystem)
         return "navigator-folder-tree-item";
+    if (type === WebInspector.NavigatorView.Types.SourceMapFolder)
+        return "navigator-sm-folder-tree-item";
     return "navigator-folder-tree-item";
 }
 
@@ -128,8 +131,9 @@ WebInspector.NavigatorView.prototype = {
     {
         if (!this.accept(uiSourceCode))
             return;
-        var projectNode = this._projectNode(uiSourceCode.project());
-        var folderNode = this._folderNode(projectNode, uiSourceCode.parentPath());
+        var isFromSourceMap = uiSourceCode.contentType().isFromSourceMap();
+        var projectNode = this._projectNode(uiSourceCode.project(), isFromSourceMap);
+        var folderNode = this._folderNode(projectNode, uiSourceCode.parentPath(), isFromSourceMap);
         var uiSourceCodeNode = new WebInspector.NavigatorUISourceCodeTreeNode(this, uiSourceCode);
         this._uiSourceCodeNodes.set(uiSourceCode, uiSourceCodeNode);
         folderNode.appendChild(uiSourceCodeNode);
@@ -167,16 +171,17 @@ WebInspector.NavigatorView.prototype = {
 
     /**
      * @param {!WebInspector.Project} project
+     * @param {boolean} isFromSourceMap
      * @return {!WebInspector.NavigatorTreeNode}
      */
-    _projectNode: function(project)
+    _projectNode: function(project, isFromSourceMap)
     {
         if (!project.displayName())
             return this._rootNode;
 
         var projectNode = this._rootNode.child(project.id());
         if (!projectNode) {
-            projectNode = this._createProjectNode(project);
+            projectNode = this._createProjectNode(project, isFromSourceMap);
             this._rootNode.appendChild(projectNode);
         }
         return projectNode;
@@ -184,11 +189,16 @@ WebInspector.NavigatorView.prototype = {
 
     /**
      * @param {!WebInspector.Project} project
+     * @param {boolean} isFromSourceMap
      * @return {!WebInspector.NavigatorTreeNode}
      */
-    _createProjectNode: function(project)
+    _createProjectNode: function(project, isFromSourceMap)
     {
-        var type = project.type() === WebInspector.projectTypes.FileSystem ? WebInspector.NavigatorView.Types.FileSystem : WebInspector.NavigatorView.Types.Domain;
+        var type;
+        if (isFromSourceMap)
+            type = WebInspector.NavigatorView.Types.SourceMapFolder;
+        else
+            type = project.type() === WebInspector.projectTypes.FileSystem ? WebInspector.NavigatorView.Types.FileSystem : WebInspector.NavigatorView.Types.Domain;
         var projectNode = new WebInspector.NavigatorFolderTreeNode(this, project, project.id(), type, "", project.displayName());
         project.addEventListener(WebInspector.Project.Events.DisplayNameUpdated, this._updateProjectNodeTitle, this);
         return projectNode;
@@ -203,15 +213,16 @@ WebInspector.NavigatorView.prototype = {
         var projectNode = this._rootNode.child(project.id());
         if (!projectNode)
             return;
-        projectNode.treeNode().titleText = project.displayName();
+        projectNode.treeNode().setNodeTitle(project.displayName());
     },
 
     /**
      * @param {!WebInspector.NavigatorTreeNode} projectNode
      * @param {string} folderPath
+     * @param {boolean} fromSourceMap
      * @return {!WebInspector.NavigatorTreeNode}
      */
-    _folderNode: function(projectNode, folderPath)
+    _folderNode: function(projectNode, folderPath, fromSourceMap)
     {
         if (!folderPath)
             return projectNode;
@@ -229,10 +240,10 @@ WebInspector.NavigatorView.prototype = {
         var parentNode = projectNode;
         var index = folderPath.lastIndexOf("/");
         if (index !== -1)
-            parentNode = this._folderNode(projectNode, folderPath.substring(0, index));
+            parentNode = this._folderNode(projectNode, folderPath.substring(0, index), fromSourceMap);
 
         var name = folderPath.substring(index + 1);
-        folderNode = new WebInspector.NavigatorFolderTreeNode(this, null, name, WebInspector.NavigatorView.Types.Folder, folderPath, name);
+        folderNode = new WebInspector.NavigatorFolderTreeNode(this, null, name, fromSourceMap ? WebInspector.NavigatorView.Types.SourceMapFolder : WebInspector.NavigatorView.Types.Folder, folderPath, name);
         subfolderNodes.set(folderPath, folderNode);
         parentNode.appendChild(folderNode);
         return folderNode;
@@ -280,7 +291,7 @@ WebInspector.NavigatorView.prototype = {
         if (!node)
             return;
 
-        var projectNode = this._projectNode(uiSourceCode.project());
+        var projectNode = this._projectNode(uiSourceCode.project(), false);
         var subfolderNodes = this._subfolderNodes.get(projectNode);
         var parentNode = node.parent;
         this._uiSourceCodeNodes.remove(uiSourceCode);
@@ -615,13 +626,13 @@ WebInspector.NavigatorView._treeElementsCompare = function compare(treeElement1,
     {
         var type = treeElement.type();
         if (type === WebInspector.NavigatorView.Types.Domain) {
-            if (treeElement.titleText === WebInspector.targetManager.inspectedPageDomain())
+            if (treeElement.nodeTitle() === WebInspector.targetManager.inspectedPageDomain())
                 return 1;
             return 2;
         }
         if (type === WebInspector.NavigatorView.Types.FileSystem)
             return 3;
-        if (type === WebInspector.NavigatorView.Types.Folder)
+        if (type === WebInspector.NavigatorView.Types.Folder || type === WebInspector.NavigatorView.Types.SourceMapFolder)
             return 4;
         return 5;
     }
@@ -635,8 +646,8 @@ WebInspector.NavigatorView._treeElementsCompare = function compare(treeElement1,
     else if (typeWeight1 < typeWeight2)
         result = -1;
     else {
-        var title1 = treeElement1.titleText;
-        var title2 = treeElement2.titleText;
+        var title1 = treeElement1.nodeTitle();
+        var title2 = treeElement2.nodeTitle();
         result = title1.compareTo(title2);
     }
     return result;
@@ -676,6 +687,7 @@ WebInspector.BaseNavigatorTreeElement.prototype = {
 
         this.titleElement = this.listItemElement.createChild("div", "base-navigator-tree-element-title");
         this.titleElement.textContent = this._titleText;
+        this.tooltip = this._tooltip || this._titleText;
     },
 
     /**
@@ -693,19 +705,24 @@ WebInspector.BaseNavigatorTreeElement.prototype = {
     /**
      * @return {string}
      */
-    get titleText()
+    nodeTitle: function()
     {
         return this._titleText;
     },
 
-    set titleText(titleText)
+    /**
+     * @param {string} titleText
+     * @param {string=} tooltip
+     */
+    setNodeTitle: function(titleText, tooltip)
     {
-        if (this._titleText === titleText)
+        if (this._titleText === titleText && this._tooltip === tooltip)
             return;
         this._titleText = titleText || "";
+        this._tooltip = tooltip;
         if (this.titleElement) {
             this.titleElement.textContent = this._titleText;
-            this.titleElement.title = this._titleText;
+            this.tooltip = this._tooltip || this._titleText;
         }
     },
 
@@ -1155,7 +1172,10 @@ WebInspector.NavigatorUISourceCodeTreeNode.prototype = {
         var titleText = this._uiSourceCode.displayName();
         if (!ignoreIsDirty && (this._uiSourceCode.isDirty() || this._uiSourceCode.hasUnsavedCommittedChanges()))
             titleText = "*" + titleText;
-        this._treeElement.titleText = titleText;
+        var tooltip = titleText;
+        if (this._uiSourceCode.contentType().isFromSourceMap())
+            tooltip = WebInspector.UIString("%s (from source map)", this._uiSourceCode.displayName());
+        this._treeElement.setNodeTitle(titleText, tooltip);
     },
 
     /**
@@ -1224,7 +1244,7 @@ WebInspector.NavigatorUISourceCodeTreeNode.prototype = {
         function commitHandler(element, newTitle, oldTitle)
         {
             if (newTitle !== oldTitle) {
-                this._treeElement.titleText = newTitle;
+                this._treeElement.setNodeTitle(newTitle);
                 this._uiSourceCode.rename(newTitle, renameCallback.bind(this));
                 return;
             }
@@ -1356,7 +1376,7 @@ WebInspector.NavigatorFolderTreeNode.prototype = {
 
         if (children.length === 1 && this._shouldMerge(node)) {
             node._isMerged = true;
-            this._treeElement.titleText = this._treeElement.titleText + "/" + node._title;
+            this._treeElement.setNodeTitle(this._treeElement.nodeTitle() + "/" + node._title);
             node._treeElement = this._treeElement;
             this._treeElement.setNode(node);
             return;
@@ -1386,7 +1406,7 @@ WebInspector.NavigatorFolderTreeNode.prototype = {
             } while (treeNode && treeNode._isMerged);
 
             if (!this.isPopulated()) {
-                this._treeElement.titleText = titleText;
+                this._treeElement.setNodeTitle(titleText);
                 this._treeElement.setNode(this);
                 for (var i = 0; i < nodes.length; ++i) {
                     delete nodes[i]._treeElement;
@@ -1401,7 +1421,7 @@ WebInspector.NavigatorFolderTreeNode.prototype = {
             oldTreeElement.parent.appendChild(treeElement);
 
             oldTreeElement.setNode(nodes[nodes.length - 1]);
-            oldTreeElement.titleText = nodes.map(titleForNode).join("/");
+            oldTreeElement.setNodeTitle(nodes.map(titleForNode).join("/"));
             oldTreeElement.parent.removeChild(oldTreeElement);
             this._treeElement.appendChild(oldTreeElement);
             if (oldTreeElement.expanded)

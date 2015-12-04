@@ -76,6 +76,54 @@ WebInspector.ResourceType.prototype = {
     },
 
     /**
+     * @return {boolean}
+     */
+    isScript: function()
+    {
+        return this._name === "script" || this._name === "sm-script";
+    },
+
+    /**
+     * @return {boolean}
+     */
+    hasScripts: function()
+    {
+        return this.isScript() || this.isDocument();
+    },
+
+    /**
+     * @return {boolean}
+     */
+    isStyleSheet: function()
+    {
+        return this._name === "stylesheet" || this._name === "sm-stylesheet";
+    },
+
+    /**
+     * @return {boolean}
+     */
+    isDocument: function()
+    {
+        return this._name === "document";
+    },
+
+    /**
+     * @return {boolean}
+     */
+    isDocumentOrScriptOrStyleSheet: function()
+    {
+        return this.isDocument() || this.isScript() || this.isStyleSheet();
+    },
+
+    /**
+     * @return {boolean}
+     */
+    isFromSourceMap: function()
+    {
+        return this._name.startsWith("sm-");
+    },
+
+    /**
      * @override
      * @return {string}
      */
@@ -89,11 +137,11 @@ WebInspector.ResourceType.prototype = {
      */
     canonicalMimeType: function()
     {
-        if (this === WebInspector.resourceTypes.Document)
+        if (this.isDocument())
             return "text/html";
-        if (this === WebInspector.resourceTypes.Script)
+        if (this.isScript())
             return "text/javascript";
-        if (this === WebInspector.resourceTypes.Stylesheet)
+        if (this.isStyleSheet())
             return "text/css";
         return "";
     }
@@ -138,7 +186,9 @@ WebInspector.resourceTypes = {
     Document: new WebInspector.ResourceType("document", "Document", WebInspector.resourceCategories.Document, true),
     TextTrack: new WebInspector.ResourceType("texttrack", "TextTrack", WebInspector.resourceCategories.Other, true),
     WebSocket: new WebInspector.ResourceType("websocket", "WebSocket", WebInspector.resourceCategories.WebSocket, false),
-    Other: new WebInspector.ResourceType("other", "Other", WebInspector.resourceCategories.Other, false)
+    Other: new WebInspector.ResourceType("other", "Other", WebInspector.resourceCategories.Other, false),
+    SourceMapScript: new WebInspector.ResourceType("sm-script", "Script", WebInspector.resourceCategories.Script, false),
+    SourceMapStyleSheet: new WebInspector.ResourceType("sm-stylesheet", "Stylesheet", WebInspector.resourceCategories.Stylesheet, false),
 }
 
 /**

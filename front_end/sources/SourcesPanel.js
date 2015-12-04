@@ -926,14 +926,14 @@ WebInspector.SourcesPanel.prototype = {
         var projectType = uiSourceCode.project().type();
 
         var contentType = uiSourceCode.contentType();
-        if (contentType === WebInspector.resourceTypes.Script || contentType === WebInspector.resourceTypes.Document) {
+        if (contentType.hasScripts()) {
             var target = WebInspector.context.flavor(WebInspector.Target);
             var debuggerModel = WebInspector.DebuggerModel.fromTarget(target);
             if (debuggerModel && debuggerModel.isPaused())
                 contextMenu.appendItem(WebInspector.UIString.capitalize("Continue to ^here"), this._continueToLocation.bind(this, uiLocation));
         }
 
-        if ((contentType === WebInspector.resourceTypes.Script || contentType === WebInspector.resourceTypes.Document) && projectType !== WebInspector.projectTypes.Snippets) {
+        if (contentType.hasScripts() && projectType !== WebInspector.projectTypes.Snippets) {
             var networkURL = this._networkMapping.networkURL(uiSourceCode);
             var url = projectType === WebInspector.projectTypes.Formatter ? uiSourceCode.originURL() : networkURL;
             this.sidebarPanes.callstack.appendBlackboxURLContextMenuItems(contextMenu, url, projectType === WebInspector.projectTypes.ContentScripts);

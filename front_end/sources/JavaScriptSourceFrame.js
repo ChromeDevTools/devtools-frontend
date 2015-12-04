@@ -88,7 +88,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
 
     _showDivergedInfobar: function()
     {
-        if (this._uiSourceCode.contentType() !== WebInspector.resourceTypes.Script)
+        if (!this._uiSourceCode.contentType().isScript())
             return;
 
         if (this._divergedInfobar)
@@ -127,8 +127,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
 
     _showBlackboxInfobarIfNeeded: function()
     {
-        var contentType = this._uiSourceCode.contentType();
-        if (contentType !== WebInspector.resourceTypes.Script && contentType !== WebInspector.resourceTypes.Document)
+        if (!this._uiSourceCode.contentType().hasScripts())
             return;
         var projectType = this._uiSourceCode.project().type();
         if (projectType === WebInspector.projectTypes.Snippets)

@@ -262,8 +262,7 @@ WebInspector.ScriptFormatterEditorAction.prototype = {
         var supportedProjectTypes = [WebInspector.projectTypes.Network, WebInspector.projectTypes.Debugger, WebInspector.projectTypes.ContentScripts];
         if (supportedProjectTypes.indexOf(uiSourceCode.project().type()) === -1)
             return false;
-        var contentType = uiSourceCode.contentType();
-        return contentType === WebInspector.resourceTypes.Script || contentType === WebInspector.resourceTypes.Document;
+        return uiSourceCode.contentType().hasScripts();
     },
 
     _toggleFormatScriptSource: function()
@@ -374,7 +373,7 @@ WebInspector.ScriptFormatterEditorAction.prototype = {
             }
             return scripts.filter(isInlineScript);
         }
-        if (uiSourceCode.contentType() === WebInspector.resourceTypes.Script) {
+        if (uiSourceCode.contentType().isScript()) {
             var rawLocations = WebInspector.debuggerWorkspaceBinding.uiLocationToRawLocations(uiSourceCode, 0, 0);
             return rawLocations.map(function(rawLocation) { return rawLocation.script(); });
         }

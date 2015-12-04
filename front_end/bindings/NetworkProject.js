@@ -391,7 +391,7 @@ WebInspector.NetworkProject.prototype = {
             return;
 
         var type = contentProvider.contentType();
-        if (type !== WebInspector.resourceTypes.Stylesheet && type !== WebInspector.resourceTypes.Document && type !== WebInspector.resourceTypes.Script)
+        if (!type.isDocumentOrScriptOrStyleSheet())
             return;
         var uiSourceCode = this.addFileForURL(url, contentProvider, isContentScript);
         uiSourceCode[WebInspector.NetworkProject._contentTypeSymbol] = type;

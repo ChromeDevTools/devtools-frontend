@@ -31,17 +31,32 @@
     content: url(Images/domain.png);
 }
 
-.navigator-folder-tree-item .icon {
+.navigator-folder-tree-item .icon,
+.navigator-sm-folder-tree-item .icon {
     opacity: 0.7;
     content: url(Images/frame.png);
 }
 
-.navigator-script-tree-item .icon {
+.navigator-script-tree-item .icon,
+.navigator-sm-script-tree-item .icon {
     content: url(Images/resourceJSIcon.png);
 }
 
-.navigator-stylesheet-tree-item .icon {
+.navigator-stylesheet-tree-item .icon,
+.navigator-sm-stylesheet-tree-item .icon {
     content: url(Images/resourceCSSIcon.png);
+}
+
+.navigator-sm-folder-tree-item .icon,
+.navigator-sm-script-tree-item .icon,
+.navigator-sm-stylesheet-tree-item .icon {
+    -webkit-filter: saturate(0);
+}
+
+.navigator-sm-folder-tree-item .base-navigator-tree-element-title,
+.navigator-sm-script-tree-item .base-navigator-tree-element-title,
+.navigator-sm-stylesheet-tree-item .base-navigator-tree-element-title {
+    font-style: italic;
 }
 
 .navigator-document-tree-item .icon {

@@ -61,7 +61,7 @@ WebInspector.CompilerScriptMapping = function(debuggerModel, workspace, networkM
     this._stubUISourceCodes = new Map();
 
     this._stubProjectID = "compiler-script-project";
-    this._stubProjectDelegate = new WebInspector.ContentProviderBasedProjectDelegate(this._workspace, this._stubProjectID, WebInspector.projectTypes.Service);
+    this._stubProject = new WebInspector.ContentProviderBasedProject(this._workspace, this._stubProjectID, WebInspector.projectTypes.Service, "", "");
     debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this);
 }
 
@@ -166,12 +166,11 @@ WebInspector.CompilerScriptMapping.prototype = {
         var splitURL = WebInspector.ParsedURL.splitURLIntoPathComponents(url);
         var parentPath = splitURL.slice(1, -1).join("/");
         var name = splitURL.peekLast() || "";
-        var uiSourceCodePath = this._stubProjectDelegate.addContentProvider(parentPath, name, url, new WebInspector.StaticContentProvider(WebInspector.resourceTypes.Script, "\n\n\n\n\n// Please wait a bit.\n// Compiled script is not shown while source map is being loaded!", url));
-        var stubUISourceCode = /** @type {!WebInspector.UISourceCode} */ (this._workspace.uiSourceCode(this._stubProjectID, uiSourceCodePath));
+        var stubUISourceCode = this._stubProject.addContentProvider(parentPath, name, url, new WebInspector.StaticContentProvider(WebInspector.resourceTypes.Script, "\n\n\n\n\n// Please wait a bit.\n// Compiled script is not shown while source map is being loaded!", url));
         this._stubUISourceCodes.set(script.scriptId, stubUISourceCode);
 
         this._debuggerWorkspaceBinding.pushSourceMapping(script, this);
-        this._loadSourceMapForScript(script, this._sourceMapLoaded.bind(this, script, uiSourceCodePath));
+        this._loadSourceMapForScript(script, this._sourceMapLoaded.bind(this, script, stubUISourceCode.path()));
     },
 
     /**
@@ -182,7 +181,7 @@ WebInspector.CompilerScriptMapping.prototype = {
     _sourceMapLoaded: function(script, uiSourceCodePath, sourceMap)
     {
         this._stubUISourceCodes.delete(script.scriptId);
-        this._stubProjectDelegate.removeFile(uiSourceCodePath);
+        this._stubProject.removeFile(uiSourceCodePath);
 
         if (!sourceMap) {
             this._debuggerWorkspaceBinding.updateLocations(script);

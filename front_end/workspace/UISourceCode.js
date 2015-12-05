@@ -136,6 +136,14 @@ WebInspector.UISourceCode.prototype = {
     /**
      * @return {boolean}
      */
+    isFromServiceProject: function()
+    {
+        return WebInspector.Project.isServiceProject(this._project);
+    },
+
+    /**
+     * @return {boolean}
+     */
     canRename: function()
     {
         return this._project.canRename();
@@ -209,14 +217,6 @@ WebInspector.UISourceCode.prototype = {
     project: function()
     {
         return this._project;
-    },
-
-    /**
-     * @param {function(?Date, ?number)} callback
-     */
-    requestMetadata: function(callback)
-    {
-        this._project.requestMetadata(this, callback);
     },
 
     /**

@@ -846,7 +846,7 @@ WebInspector.OpenResourceDialog.prototype = {
      */
     filterProject: function(project)
     {
-        return !project.isServiceProject();
+        return !WebInspector.Project.isServiceProject(project);
     },
 
     __proto__: WebInspector.SelectUISourceCodeDialog.prototype

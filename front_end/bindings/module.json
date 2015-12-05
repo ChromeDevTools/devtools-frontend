@@ -9,7 +9,7 @@
         "CSSWorkspaceBinding.js",
         "DebuggerWorkspaceBinding.js",
         "BreakpointManager.js",
-        "ContentProviderBasedProjectDelegate.js",
+        "ContentProviderBasedProject.js",
         "DefaultScriptMapping.js",
         "FileSystemWorkspaceBinding.js",
         "FileUtils.js",
@@ -18,7 +18,6 @@
         "NetworkProject.js",
         "PresentationConsoleMessageHelper.js",
         "ResourceUtils.js",
-        "TempFile.js",
-        "ContentScriptProjectDecorator.js"
+        "TempFile.js"
     ]
 }

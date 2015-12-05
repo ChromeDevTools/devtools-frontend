@@ -86,7 +86,7 @@ WebInspector.SourcesSearchScope.prototype = {
          */
         function filterOutServiceProjects(project)
         {
-            return !project.isServiceProject() || project.type() === WebInspector.projectTypes.Formatter;
+            return !WebInspector.Project.isServiceProject(project) || project.type() === WebInspector.projectTypes.Formatter;
         }
 
         /**

@@ -207,7 +207,6 @@ WebInspector.Main.prototype = {
         WebInspector.extensionServer = new WebInspector.ExtensionServer();
 
         new WebInspector.OverlayController();
-        new WebInspector.ContentScriptProjectDecorator();
         new WebInspector.ExecutionContextSelector(WebInspector.targetManager, WebInspector.context);
 
         var autoselectPanel = WebInspector.UIString("auto");

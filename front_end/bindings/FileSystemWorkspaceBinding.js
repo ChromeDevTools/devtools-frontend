@@ -233,37 +233,32 @@ WebInspector.FileSystemWorkspaceBinding.prototype = {
 
 /**
  * @constructor
- * @extends {WebInspector.Object}
- * @implements {WebInspector.ProjectDelegate}
+ * @extends {WebInspector.ProjectStore}
+ * @implements {WebInspector.Project}
  * @param {!WebInspector.FileSystemWorkspaceBinding} fileSystemWorkspaceBinding
  * @param {!WebInspector.IsolatedFileSystem} isolatedFileSystem
  * @param {!WebInspector.Workspace} workspace
  */
 WebInspector.FileSystemWorkspaceBinding.FileSystem = function(fileSystemWorkspaceBinding, isolatedFileSystem, workspace)
 {
-    WebInspector.Object.call(this);
     this._fileSystemWorkspaceBinding = fileSystemWorkspaceBinding;
     this._fileSystem = isolatedFileSystem;
     this._fileSystemBaseURL = "file://" + this._fileSystem.normalizedPath() + "/";
-    this._fileSystemProjectURL = "filesystem:" + this._fileSystem.normalizedPath();
-    this._workspace = workspace;
 
-    this._projectId = WebInspector.FileSystemWorkspaceBinding.projectId(this._fileSystem.path());
-    console.assert(!this._workspace.project(this._projectId));
-    this._project = this._workspace.addProject(this._projectId, this);
+    var id = WebInspector.FileSystemWorkspaceBinding.projectId(this._fileSystem.path());
+    console.assert(!workspace.project(id));
+
+    var url = "filesystem:" + this._fileSystem.normalizedPath();
+    var normalizedPath = isolatedFileSystem.normalizedPath();
+    var displayName = normalizedPath.substr(normalizedPath.lastIndexOf("/") + 1);
+
+    WebInspector.ProjectStore.call(this, workspace, id, WebInspector.projectTypes.FileSystem, url, displayName);
+
+    workspace.addProject(this);
     this.populate();
 }
 
 WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
-    /**
-     * @override
-     * @return {string}
-     */
-    type: function()
-    {
-        return WebInspector.projectTypes.FileSystem;
-    },
-
     /**
      * @return {string}
      */
@@ -273,53 +268,23 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
     },
 
     /**
-     * @override
+     * @param {!WebInspector.UISourceCode} uiSourceCode
      * @return {string}
      */
-    displayName: function()
+    _filePathForUISourceCode: function(uiSourceCode)
     {
-        var normalizedPath = this._fileSystem.normalizedPath();
-        return normalizedPath.substr(normalizedPath.lastIndexOf("/") + 1);
+        return "/" + uiSourceCode.path();
     },
 
     /**
      * @override
-     * @return {string}
-     */
-    url: function()
-    {
-        return this._fileSystemProjectURL;
-    },
-
-    /**
-     * @param {string} path
-     * @return {string}
-     */
-    _filePathForPath: function(path)
-    {
-        return "/" + path;
-    },
-
-    /**
-     * @override
-     * @param {string} path
+     * @param {!WebInspector.UISourceCode} uiSourceCode
      * @param {function(?string)} callback
      */
-    requestFileContent: function(path, callback)
+    requestFileContent: function(uiSourceCode, callback)
     {
-        var filePath = this._filePathForPath(path);
+        var filePath = this._filePathForUISourceCode(uiSourceCode);
         this._fileSystem.requestFileContent(filePath, callback);
-    },
-
-    /**
-     * @override
-     * @param {string} path
-     * @param {function(?Date, ?number)} callback
-     */
-    requestMetadata: function(path, callback)
-    {
-        var filePath = this._filePathForPath(path);
-        this._fileSystem.requestMetadata(filePath, callback);
     },
 
     /**
@@ -333,13 +298,13 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
 
     /**
      * @override
-     * @param {string} path
+     * @param {!WebInspector.UISourceCode} uiSourceCode
      * @param {string} newContent
      * @param {function(?string)} callback
      */
-    setFileContent: function(path, newContent, callback)
+    setFileContent: function(uiSourceCode, newContent, callback)
     {
-        var filePath = this._filePathForPath(path);
+        var filePath = this._filePathForUISourceCode(uiSourceCode);
         this._fileSystem.setFileContent(filePath, newContent, callback.bind(this, ""));
     },
 
@@ -354,13 +319,18 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
 
     /**
      * @override
-     * @param {string} path
+     * @param {!WebInspector.UISourceCode} uiSourceCode
      * @param {string} newName
      * @param {function(boolean, string=, string=, !WebInspector.ResourceType=)} callback
      */
-    rename: function(path, newName, callback)
+    rename: function(uiSourceCode, newName, callback)
     {
-        var filePath = this._filePathForPath(path);
+        if (newName === uiSourceCode.name()) {
+            callback(true, uiSourceCode.name(), uiSourceCode.originURL(), uiSourceCode.contentType());
+            return;
+        }
+
+        var filePath = this._filePathForUISourceCode(uiSourceCode);
         this._fileSystem.renameFile(filePath, newName, innerCallback.bind(this));
 
         /**
@@ -370,34 +340,34 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
          */
         function innerCallback(success, newName)
         {
-            if (!success) {
+            if (!success || !newName) {
                 callback(false, newName);
                 return;
             }
-            var validNewName = /** @type {string} */ (newName);
-            console.assert(validNewName);
+            console.assert(newName);
             var slash = filePath.lastIndexOf("/");
             var parentPath = filePath.substring(0, slash);
-            filePath = parentPath + "/" + validNewName;
+            filePath = parentPath + "/" + newName;
             filePath = filePath.substr(1);
-            var extension = this._extensionForPath(validNewName);
+            var extension = this._extensionForPath(newName);
             var newOriginURL = this._fileSystemBaseURL + filePath;
             var newContentType = this._contentTypeForExtension(extension);
-            callback(true, validNewName, newOriginURL, newContentType);
+            this.renameUISourceCode(uiSourceCode, newName);
+            callback(true, newName, newOriginURL, newContentType);
         }
     },
 
     /**
      * @override
-     * @param {string} path
+     * @param {!WebInspector.UISourceCode} uiSourceCode
      * @param {string} query
      * @param {boolean} caseSensitive
      * @param {boolean} isRegex
      * @param {function(!Array.<!WebInspector.ContentProvider.SearchMatch>)} callback
      */
-    searchInFileContent: function(path, query, caseSensitive, isRegex, callback)
+    searchInFileContent: function(uiSourceCode, query, caseSensitive, isRegex, callback)
     {
-        var filePath = this._filePathForPath(path);
+        var filePath = this._filePathForUISourceCode(uiSourceCode);
         this._fileSystem.requestFileContent(filePath, contentCallback);
 
         /**
@@ -547,6 +517,12 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
     excludeFolder: function(path)
     {
         this._fileSystem.addExcludedFolder(path);
+        var uiSourceCodes = this.uiSourceCodes().slice();
+        for (var i = 0; i < uiSourceCodes.length; ++i) {
+            var uiSourceCode = uiSourceCodes[i];
+            if (uiSourceCode.path().startsWith(path.substr(1)))
+                this.removeUISourceCode(uiSourceCode.path());
+        }
     },
 
     /**
@@ -554,7 +530,7 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
      * @param {string} path
      * @param {?string} name
      * @param {string} content
-     * @param {function(?string)} callback
+     * @param {function(?WebInspector.UISourceCode)} callback
      */
     createFile: function(path, name, content, callback)
     {
@@ -584,8 +560,7 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
          */
         function contentSet()
         {
-            this._addFile(createFilePath);
-            callback(createFilePath);
+            callback(this._addFile(createFilePath));
         }
     },
 
@@ -596,7 +571,7 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
     deleteFile: function(path)
     {
         this._fileSystem.deleteFile(path);
-        this._removeFile(path);
+        this.removeUISourceCode(path);
     },
 
     /**
@@ -609,6 +584,7 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
 
     /**
      * @param {string} filePath
+     * @return {!WebInspector.UISourceCode}
      */
     _addFile: function(filePath)
     {
@@ -622,16 +598,7 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
         var extension = this._extensionForPath(name);
         var contentType = this._contentTypeForExtension(extension);
 
-        var fileDescriptor = new WebInspector.FileDescriptor(parentPath, name, this._fileSystemBaseURL + filePath, contentType);
-        this.dispatchEventToListeners(WebInspector.ProjectDelegate.Events.FileAdded, fileDescriptor);
-    },
-
-    /**
-     * @param {string} path
-     */
-    _removeFile: function(path)
-    {
-        this.dispatchEventToListeners(WebInspector.ProjectDelegate.Events.FileRemoved, path);
+        return this.addUISourceCode(parentPath, name, this._fileSystemBaseURL + filePath, contentType);
     },
 
     /**
@@ -639,18 +606,18 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
      */
     _fileChanged: function(path)
     {
-        var uiSourceCode = this._project.uiSourceCode(path);
+        var uiSourceCode = this.uiSourceCode(path);
         if (!uiSourceCode) {
             this._addFile(path);
             return;
         }
-        this.dispatchEventToListeners(WebInspector.ProjectDelegate.Events.FileChanged, path);
+        uiSourceCode.checkContentUpdated();
     },
 
     dispose: function()
     {
-        this._workspace.removeProject(this._projectId);
+        this.removeProject();
     },
 
-    __proto__: WebInspector.Object.prototype
+    __proto__: WebInspector.ProjectStore.prototype
 }

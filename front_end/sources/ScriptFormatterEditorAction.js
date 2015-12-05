@@ -97,58 +97,13 @@ WebInspector.FormatterScriptMapping.FormatData = function(projectId, path, mappi
 
 /**
  * @constructor
- * @param {!WebInspector.Workspace} workspace
- * @param {string} id
- * @extends {WebInspector.ContentProviderBasedProjectDelegate}
- */
-WebInspector.FormatterProjectDelegate = function(workspace, id)
-{
-    WebInspector.ContentProviderBasedProjectDelegate.call(this, workspace, id, WebInspector.projectTypes.Formatter);
-}
-
-WebInspector.FormatterProjectDelegate.prototype = {
-    /**
-     * @override
-     * @return {string}
-     */
-    displayName: function()
-    {
-        return "formatter";
-    },
-
-    /**
-     * @param {string} name
-     * @param {string} sourceURL
-     * @param {!WebInspector.ResourceType} contentType
-     * @param {string} content
-     * @return {string}
-     */
-    _addFormatted: function(name, sourceURL, contentType, content)
-    {
-        var contentProvider = new WebInspector.StaticContentProvider(contentType, content);
-        return this.addContentProvider(sourceURL, name + ":formatted", sourceURL, contentProvider);
-    },
-
-    /**
-     * @param {string} path
-     */
-    _removeFormatted: function(path)
-    {
-        this.removeFile(path);
-    },
-
-    __proto__: WebInspector.ContentProviderBasedProjectDelegate.prototype
-}
-
-/**
- * @constructor
  * @implements {WebInspector.SourcesView.EditorAction}
  * @implements {WebInspector.TargetManager.Observer}
  */
 WebInspector.ScriptFormatterEditorAction = function()
 {
     this._projectId = "formatter:";
-    this._projectDelegate = new WebInspector.FormatterProjectDelegate(WebInspector.workspace, this._projectId);
+    this._project = new WebInspector.ContentProviderBasedProject(WebInspector.workspace, this._projectId, WebInspector.projectTypes.Formatter, "", "formatter");
 
     /** @type {!Map.<!WebInspector.Script, !WebInspector.UISourceCode>} */
     this._uiSourceCodes = new Map();
@@ -310,7 +265,7 @@ WebInspector.ScriptFormatterEditorAction.prototype = {
             this._uiSourceCodes.remove(formatData.scripts[i]);
             WebInspector.debuggerWorkspaceBinding.popSourceMapping(formatData.scripts[i]);
         }
-        this._projectDelegate._removeFormatted(formattedUISourceCode.path());
+        this._project.removeFile(formattedUISourceCode.path());
     },
 
     /**
@@ -335,7 +290,7 @@ WebInspector.ScriptFormatterEditorAction.prototype = {
             else {
                 this._formattedPaths.remove(formatData.projectId + ":" + formatData.path);
                 this._formatData.remove(uiSourceCodes[i]);
-                this._projectDelegate._removeFormatted(uiSourceCodes[i].path());
+                this._project.removeFile(uiSourceCodes[i].path());
             }
         }
     },
@@ -422,8 +377,10 @@ WebInspector.ScriptFormatterEditorAction.prototype = {
                 name = uiSourceCode.name() || (scripts.length ? scripts[0].scriptId : "");
 
             var networkURL = WebInspector.networkMapping.networkURL(uiSourceCode);
-            formattedPath = this._projectDelegate._addFormatted(name, networkURL, uiSourceCode.contentType(), formattedContent);
-            var formattedUISourceCode = /** @type {!WebInspector.UISourceCode} */ (this._workspace.uiSourceCode(this._projectId, formattedPath));
+
+            var contentProvider = new WebInspector.StaticContentProvider(uiSourceCode.contentType(), formattedContent);
+            var formattedUISourceCode = this._project.addContentProvider(networkURL, name + ":formatted", networkURL, contentProvider);
+            var formattedPath = formattedUISourceCode.path();
             var formatData = new WebInspector.FormatterScriptMapping.FormatData(uiSourceCode.project().id(), uiSourceCode.path(), formatterMapping, scripts);
             this._formatData.set(formattedUISourceCode, formatData);
             var path = uiSourceCode.project().id() + ":" + uiSourceCode.path();

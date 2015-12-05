@@ -121,7 +121,7 @@ WebInspector.NavigatorView.prototype = {
      */
     accept: function(uiSourceCode)
     {
-        return !uiSourceCode.project().isServiceProject();
+        return !uiSourceCode.isFromServiceProject();
     },
 
     /**
@@ -163,7 +163,6 @@ WebInspector.NavigatorView.prototype = {
     _projectRemoved: function(event)
     {
         var project = /** @type {!WebInspector.Project} */ (event.data);
-        project.removeEventListener(WebInspector.Project.Events.DisplayNameUpdated, this._updateProjectNodeTitle, this);
         var uiSourceCodes = project.uiSourceCodes();
         for (var i = 0; i < uiSourceCodes.length; ++i)
             this._removeUISourceCode(uiSourceCodes[i]);
@@ -200,24 +199,11 @@ WebInspector.NavigatorView.prototype = {
         else
             type = project.type() === WebInspector.projectTypes.FileSystem ? WebInspector.NavigatorView.Types.FileSystem : WebInspector.NavigatorView.Types.Domain;
         var projectNode = new WebInspector.NavigatorFolderTreeNode(this, project, project.id(), type, "", project.displayName());
-        project.addEventListener(WebInspector.Project.Events.DisplayNameUpdated, this._updateProjectNodeTitle, this);
         return projectNode;
     },
 
     /**
-     * @param {!WebInspector.Event} event
-     */
-    _updateProjectNodeTitle: function(event)
-    {
-        var project = /** @type {!WebInspector.Project} */(event.target);
-        var projectNode = this._rootNode.child(project.id());
-        if (!projectNode)
-            return;
-        projectNode.treeNode().setNodeTitle(project.displayName());
-    },
-
-    /**
-     * @param {!WebInspector.NavigatorTreeNode} projectNode
+    * @param {!WebInspector.NavigatorTreeNode} projectNode
      * @param {string} folderPath
      * @param {boolean} fromSourceMap
      * @return {!WebInspector.NavigatorTreeNode}
@@ -515,18 +501,12 @@ WebInspector.NavigatorView.prototype = {
 
         /**
          * @this {WebInspector.NavigatorView}
-         * @param {?string} path
+         * @param {?WebInspector.UISourceCode} uiSourceCode
          */
-        function fileCreated(path)
+        function fileCreated(uiSourceCode)
         {
-            if (!path)
+            if (!uiSourceCode)
                 return;
-            filePath = path;
-            uiSourceCode = project.uiSourceCode(filePath);
-            if (!uiSourceCode) {
-                console.assert(uiSourceCode);
-                return;
-            }
             this._sourceSelected(uiSourceCode, false);
             this.revealUISourceCode(uiSourceCode, true);
             this.rename(uiSourceCode, true);

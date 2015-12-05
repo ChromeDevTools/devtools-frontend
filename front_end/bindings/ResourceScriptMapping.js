@@ -159,7 +159,7 @@ WebInspector.ResourceScriptMapping.prototype = {
         var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data);
         if (!this._networkMapping.networkURL(uiSourceCode))
             return;
-        if (uiSourceCode.project().isServiceProject())
+        if (uiSourceCode.isFromServiceProject())
             return;
 
         var scripts = this._scriptsForUISourceCode(uiSourceCode);
@@ -177,7 +177,7 @@ WebInspector.ResourceScriptMapping.prototype = {
         var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data);
         if (!this._networkMapping.networkURL(uiSourceCode))
             return;
-        if (uiSourceCode.project().isServiceProject())
+        if (uiSourceCode.isFromServiceProject())
             return;
 
         this._unbindUISourceCode(uiSourceCode);

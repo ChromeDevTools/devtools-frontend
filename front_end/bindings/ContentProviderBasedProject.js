@@ -30,79 +30,31 @@
 
  /**
  * @constructor
- * @extends {WebInspector.Object}
- * @implements {WebInspector.ProjectDelegate}
+ * @extends {WebInspector.ProjectStore}
+ * @implements {WebInspector.Project}
  * @param {!WebInspector.Workspace} workspace
  * @param {string} id
  * @param {!WebInspector.projectTypes} type
+ * @param {string} url
+ * @param {string} displayName
  */
-WebInspector.ContentProviderBasedProjectDelegate = function(workspace, id, type)
+WebInspector.ContentProviderBasedProject = function(workspace, id, type, url, displayName)
 {
-    WebInspector.Object.call(this);
-    this._type = type;
+    WebInspector.ProjectStore.call(this, workspace, id, type, url, displayName);
     /** @type {!Object.<string, !WebInspector.ContentProvider>} */
     this._contentProviders = {};
-    this._workspace = workspace;
-    this._id = id;
-    this._project = workspace.addProject(id, this);
+    workspace.addProject(this);
 }
 
-WebInspector.ContentProviderBasedProjectDelegate.prototype = {
-    /**
-     * @return {!WebInspector.Project}
-     */
-    project: function()
-    {
-        return this._project;
-    },
-
+WebInspector.ContentProviderBasedProject.prototype = {
     /**
      * @override
-     * @return {string}
-     */
-    type: function()
-    {
-        return this._type;
-    },
-
-    /**
-     * @override
-     * @return {string}
-     */
-    displayName: function()
-    {
-        // Overridden by subclasses
-        return "";
-    },
-
-    /**
-     * @override
-     * @return {string}
-     */
-    url: function()
-    {
-        // Overridden by subclasses
-        return "";
-    },
-
-    /**
-     * @override
-     * @param {string} path
-     * @param {function(?Date, ?number)} callback
-     */
-    requestMetadata: function(path, callback)
-    {
-        callback(null, null);
-    },
-
-    /**
-     * @override
-     * @param {string} path
+     * @param {!WebInspector.UISourceCode} uiSourceCode
      * @param {function(?string)} callback
      */
-    requestFileContent: function(path, callback)
+    requestFileContent: function(uiSourceCode, callback)
     {
-        var contentProvider = this._contentProviders[path];
+        var contentProvider = this._contentProviders[uiSourceCode.path()];
         contentProvider.requestContent(callback);
 
         /**
@@ -127,11 +79,11 @@ WebInspector.ContentProviderBasedProjectDelegate.prototype = {
 
     /**
      * @override
-     * @param {string} path
+     * @param {!WebInspector.UISourceCode} uiSourceCode
      * @param {string} newContent
      * @param {function(?string)} callback
      */
-    setFileContent: function(path, newContent, callback)
+    setFileContent: function(uiSourceCode, newContent, callback)
     {
         callback(null);
     },
@@ -147,23 +99,30 @@ WebInspector.ContentProviderBasedProjectDelegate.prototype = {
 
     /**
      * @override
-     * @param {string} path
+     * @param {!WebInspector.UISourceCode} uiSourceCode
      * @param {string} newName
      * @param {function(boolean, string=, string=, !WebInspector.ResourceType=)} callback
      */
-    rename: function(path, newName, callback)
+    rename: function(uiSourceCode, newName, callback)
     {
+        var path = uiSourceCode.path();
         this.performRename(path, newName, innerCallback.bind(this));
 
         /**
          * @param {boolean} success
          * @param {string=} newName
-         * @this {WebInspector.ContentProviderBasedProjectDelegate}
+         * @this {WebInspector.ContentProviderBasedProject}
          */
         function innerCallback(success, newName)
         {
-            if (success)
-                this._updateName(path, /** @type {string} */ (newName));
+            if (success && newName) {
+                var copyOfPath = path.split("/");
+                copyOfPath[copyOfPath.length - 1] = newName;
+                var newPath = copyOfPath.join("/");
+                this._contentProviders[newPath] = this._contentProviders[path];
+                delete this._contentProviders[path];
+                this.renameUISourceCode(uiSourceCode, newName);
+            }
             callback(success, newName);
         }
     },
@@ -192,7 +151,7 @@ WebInspector.ContentProviderBasedProjectDelegate.prototype = {
      * @param {string} path
      * @param {?string} name
      * @param {string} content
-     * @param {function(?string)} callback
+     * @param {function(?WebInspector.UISourceCode)} callback
      */
     createFile: function(path, name, content, callback)
     {
@@ -224,30 +183,16 @@ WebInspector.ContentProviderBasedProjectDelegate.prototype = {
     },
 
     /**
-     * @param {string} path
-     * @param {string} newName
-     */
-    _updateName: function(path, newName)
-    {
-        var oldPath = path;
-        var copyOfPath = path.split("/");
-        copyOfPath[copyOfPath.length - 1] = newName;
-        var newPath = copyOfPath.join("/");
-        this._contentProviders[newPath] = this._contentProviders[oldPath];
-        delete this._contentProviders[oldPath];
-    },
-
-    /**
      * @override
-     * @param {string} path
+     * @param {!WebInspector.UISourceCode} uiSourceCode
      * @param {string} query
      * @param {boolean} caseSensitive
      * @param {boolean} isRegex
      * @param {function(!Array.<!WebInspector.ContentProvider.SearchMatch>)} callback
      */
-    searchInFileContent: function(path, query, caseSensitive, isRegex, callback)
+    searchInFileContent: function(uiSourceCode, query, caseSensitive, isRegex, callback)
     {
-        var contentProvider = this._contentProviders[path];
+        var contentProvider = this._contentProviders[uiSourceCode.path()];
         contentProvider.searchInContent(query, caseSensitive, isRegex, callback);
     },
 
@@ -278,7 +223,7 @@ WebInspector.ContentProviderBasedProjectDelegate.prototype = {
         /**
          * @param {string} path
          * @param {function(boolean)} callback
-         * @this {WebInspector.ContentProviderBasedProjectDelegate}
+         * @this {WebInspector.ContentProviderBasedProject}
          */
         function searchInContent(path, callback)
         {
@@ -286,7 +231,7 @@ WebInspector.ContentProviderBasedProjectDelegate.prototype = {
             searchNextQuery.call(this);
 
             /**
-             * @this {WebInspector.ContentProviderBasedProjectDelegate}
+             * @this {WebInspector.ContentProviderBasedProject}
              */
             function searchNextQuery()
             {
@@ -300,7 +245,7 @@ WebInspector.ContentProviderBasedProjectDelegate.prototype = {
 
             /**
              * @param {!Array.<!WebInspector.ContentProvider.SearchMatch>} searchMatches
-             * @this {WebInspector.ContentProviderBasedProjectDelegate}
+             * @this {WebInspector.ContentProviderBasedProject}
              */
             function contentCallback(searchMatches)
             {
@@ -336,7 +281,7 @@ WebInspector.ContentProviderBasedProjectDelegate.prototype = {
      */
     indexContent: function(progress)
     {
-        setTimeout(progress.done.bind(progress), 0);
+        setImmediate(progress.done.bind(progress));
     },
 
     /**
@@ -344,17 +289,15 @@ WebInspector.ContentProviderBasedProjectDelegate.prototype = {
      * @param {string} name
      * @param {string} originURL
      * @param {!WebInspector.ContentProvider} contentProvider
-     * @return {string}
+     * @return {!WebInspector.UISourceCode}
      */
     addContentProvider: function(parentPath, name, originURL, contentProvider)
     {
         var path = parentPath ? parentPath + "/" + name : name;
         if (this._contentProviders[path])
-            this.dispatchEventToListeners(WebInspector.ProjectDelegate.Events.FileRemoved, path);
-        var fileDescriptor = new WebInspector.FileDescriptor(parentPath, name, originURL, contentProvider.contentType());
+            this.removeUISourceCode(path);
         this._contentProviders[path] = contentProvider;
-        this.dispatchEventToListeners(WebInspector.ProjectDelegate.Events.FileAdded, fileDescriptor);
-        return path;
+        return this.addUISourceCode(parentPath, name, originURL, contentProvider.contentType());
     },
 
     /**
@@ -363,23 +306,21 @@ WebInspector.ContentProviderBasedProjectDelegate.prototype = {
     removeFile: function(path)
     {
         delete this._contentProviders[path];
-        this.dispatchEventToListeners(WebInspector.ProjectDelegate.Events.FileRemoved, path);
-    },
-
-    /**
-     * @return {!Object.<string, !WebInspector.ContentProvider>}
-     */
-    contentProviders: function()
-    {
-        return this._contentProviders;
+        this.removeUISourceCode(path);
     },
 
     reset: function()
     {
         this._contentProviders = {};
-        this._workspace.removeProject(this._id);
-        this._workspace.addProject(this._id, this);
+        this.removeProject();
+        this.workspace().addProject(this);
     },
 
-    __proto__: WebInspector.Object.prototype
+    dispose: function()
+    {
+        this._contentProviders = {};
+        this.removeProject();
+    },
+
+    __proto__: WebInspector.ProjectStore.prototype
 }

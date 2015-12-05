@@ -701,7 +701,7 @@ TestSuite.prototype.nonAnonymousUISourceCodes_ = function()
 
     function filterOutService(uiSourceCode)
     {
-        return !uiSourceCode.project().isServiceProject();
+        return !uiSourceCode.isFromServiceProject();
     }
 
     var uiSourceCodes = WebInspector.workspace.uiSourceCodes();

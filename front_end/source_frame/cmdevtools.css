@@ -234,6 +234,14 @@
     z-index: -1;
 }
 
+.-theme-with-dark-background .cm-line-with-selection .cm-column-with-selection.cm-search-highlight:before {
+    background-color: hsl(133, 100%, 30%);
+}
+
+.-theme-with-dark-background.cm-line-with-selection .cm-search-highlight {
+    color: #333;
+}
+
 .CodeMirror .text-editor-line-decoration {
     position: absolute;
 }

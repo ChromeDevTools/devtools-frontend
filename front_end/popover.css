@@ -37,6 +37,10 @@
     left: 0;
 }
 
+.-theme-with-dark-background .popover .arrow {
+    -webkit-filter: invert(80%);
+}
+
 .popover.top-left-arrow .arrow {
     /* The default is top-left, no styles needed. */
 }

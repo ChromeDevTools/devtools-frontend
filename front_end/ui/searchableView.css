@@ -103,6 +103,10 @@
     border-left: 1px solid rgb(163, 163, 163);
 }
 
+:host-context(.-theme-with-dark-background) .toolbar-search-navigation {
+    -webkit-filter: invert(90%);
+}
+
 .toolbar-search-navigation.toolbar-search-navigation-prev.enabled:active {
     background-image: url(Images/searchPrev.png), linear-gradient(rgb(168, 168, 168), rgb(116, 116, 116));
 }

@@ -157,6 +157,10 @@ input {
     background-color: white;
 }
 
+:host-context(.-theme-with-dark-background) input[type="checkbox"] {
+    -webkit-filter: invert(80%);
+}
+
 input[type="search"]:focus,
 input[type="text"]:focus {
     outline: auto 5px -webkit-focus-ring-color;

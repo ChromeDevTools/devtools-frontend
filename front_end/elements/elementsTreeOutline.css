@@ -257,9 +257,27 @@ button, input, select {
     }
 }
 
+@-webkit-keyframes dom-update-highlight-animation-dark {
+    from {
+        background-color: rgb(158, 54, 153);
+        color: white;
+    }
+    80% {
+        background-color: #333;
+        color: inherit;
+    }
+    to {
+        background-color: inherit;
+    }
+}
+
 .dom-update-highlight {
     -webkit-animation: dom-update-highlight-animation 1.4s 1 cubic-bezier(0, 0, 0.2, 1);
     border-radius: 2px;
+}
+
+:host-context(.-theme-with-dark-background) .dom-update-highlight {
+    -webkit-animation: dom-update-highlight-animation-dark 1.4s 1 cubic-bezier(0, 0, 0.2, 1);
 }
 
 .elements-disclosure.single-node li {

@@ -1640,7 +1640,6 @@ WebInspector.ThemeSupport.prototype = {
      * Theming API is primarily targeted at making dark theme look good.
      * - If rule has ".-theme-preserve" in selector, it won't be affected.
      * - If rule has ".selection" or "selected" or "-theme-selection-color" in selector, its hue is rotated 180deg in dark themes.
-     * - If rule has "highlight" its lightness is dimmmed 50%.
      * - One can create specializations for dark themes via body.-theme-with-dark-background selector in host context.
      */
     _patchProperty: function(selectorText, style, name, output)

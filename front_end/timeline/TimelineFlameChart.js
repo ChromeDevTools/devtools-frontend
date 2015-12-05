@@ -522,6 +522,49 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
     /**
      * @override
      * @param {number} entryIndex
+     * @return {?Array.<!{title: string, value: (string|!Element)}>}
+     */
+    prepareHighlightedEntryInfo: function(entryIndex)
+    {
+        var event = this._entryEvents[entryIndex];
+        var time;
+        var title;
+        var warning;
+        if (event) {
+            var totalTime = event.duration;
+            var selfTime = event.selfTime;
+            var /** @const */ eps = 1e-6;
+            time = typeof totalTime === "number" && Math.abs(totalTime - selfTime) > eps && selfTime > eps ?
+                WebInspector.UIString("%s (self %s)", Number.millisToString(totalTime, true), Number.millisToString(selfTime, true)) :
+                Number.millisToString(totalTime, true);
+            title = this.entryTitle(entryIndex);
+            warning = WebInspector.TimelineUIUtils.eventWarning(event);
+        } else {
+            var frame = this._entryIndexToFrame[entryIndex];
+            if (!frame)
+                return null;
+            time = WebInspector.UIString("%s ~ %.0f\u2009fps", Number.preciseMillisToString(frame.duration, 1), (1000 / frame.duration));
+            title = frame.idle ? WebInspector.UIString("Idle Frame") : WebInspector.UIString("Frame");
+            if (frame.hasWarnings()) {
+                warning = createElement("span");
+                warning.textContent = WebInspector.UIString("Long frame");
+            }
+        }
+        var value = createElement("div");
+        var root = WebInspector.createShadowRootWithCoreStyles(value, "timeline/timelineFlamechartPopover.css");
+        var contents = root.createChild("div", "timeline-flamechart-popover");
+        contents.createChild("span", "timeline-info-time").textContent = time;
+        contents.createChild("span", "timeline-info-title").textContent = title;
+        if (warning) {
+            warning.classList.add("timeline-info-warning");
+            contents.appendChild(warning);
+        }
+        return [{ title: "", value: value }];
+    },
+
+    /**
+     * @override
+     * @param {number} entryIndex
      * @return {string}
      */
     entryColor: function(entryIndex)
@@ -959,15 +1002,17 @@ WebInspector.TimelineFlameChartNetworkDataProvider.prototype = {
         if (!request.url)
             return null;
         var value = createElement("div");
+        var root = WebInspector.createShadowRootWithCoreStyles(value, "timeline/timelineFlamechartPopover.css");
+        var contents = root.createChild("div", "timeline-flamechart-popover");
         var duration = request.endTime - request.startTime;
         if (request.startTime && isFinite(duration))
-            value.createChild("span", "timeline-network-info-duration").textContent = Number.millisToString(duration);
+            contents.createChild("span", "timeline-info-network-time").textContent = Number.millisToString(duration);
         if (typeof request.priority === "string") {
-            var div = value.createChild("span", "timeline-network-info-priority");
+            var div = contents.createChild("span");
             div.textContent = WebInspector.uiLabelForPriority(/** @type {!NetworkAgent.ResourcePriority} */ (request.priority));
             div.style.color = this._colorForPriority(request.priority) || "black";
         }
-        value.createChild("span", "timeline-network-info-url").textContent = request.url.trimMiddle(maxURLChars);
+        contents.createChild("span").textContent = request.url.trimMiddle(maxURLChars);
         return [{ title: "", value: value }];
     },
 

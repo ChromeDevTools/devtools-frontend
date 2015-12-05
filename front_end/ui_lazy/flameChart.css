@@ -84,7 +84,3 @@
 .flame-chart-entry-info table tr td span {
     margin-right: 5px;
 }
-
-.flame-chart-entry-info table tr td span.timeline-network-info-duration {
-    color: darkblue;
-}

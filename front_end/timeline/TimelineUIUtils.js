@@ -591,7 +591,7 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
     var contentHelper = new WebInspector.TimelineDetailsContentHelper(model.target(), linkifier, relatedNodesMap, true);
 
     if (event.warning)
-        contentHelper.appendWarningRow(event.warning, event);
+        contentHelper.appendWarningRow(event);
 
     if (detailed) {
         contentHelper.appendTextRow(WebInspector.UIString("Type"), WebInspector.TimelineUIUtils.eventTitle(event));
@@ -617,7 +617,7 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
             contentHelper.appendElementRow(WebInspector.UIString("Function"), detailsNode);
         var deoptReason = eventData["deoptReason"];
         if (deoptReason && deoptReason != "no reason")
-            contentHelper.appendWarningRow(WebInspector.TimelineModel.WarningType.V8Deopt, event);
+            contentHelper.appendWarningRow(event, WebInspector.TimelineModel.WarningType.V8Deopt);
         break;
     case recordTypes.TimerFire:
     case recordTypes.TimerInstall:
@@ -2049,36 +2049,49 @@ WebInspector.TimelineDetailsContentHelper.prototype = {
     },
 
     /**
-     * @param {?string} warningType
      * @param {!WebInspector.TracingModel.Event} event
+     * @param {string=} warningType
      */
-    appendWarningRow: function(warningType, event)
+    appendWarningRow: function(event, warningType)
     {
-
-        var warnings = WebInspector.TimelineModel.WarningType;
-        var span = createElement("span");
-        var eventData = event.args["data"];
-
-        switch (warningType) {
-        case warnings.ForcedStyle:
-        case warnings.ForcedLayout:
-            span.appendChild(WebInspector.linkifyDocumentationURLAsNode("../../fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts",
-                WebInspector.UIString("Forced reflow")));
-            span.createTextChild(WebInspector.UIString(" is a likely performance bottleneck."));
-            break;
-        case warnings.IdleDeadlineExceeded:
-            span.textContent = WebInspector.UIString("Idle callback execution extended beyond deadline by " +
-                Number.millisToString(event.duration - eventData["allottedMilliseconds"], true));
-            break;
-        case warnings.V8Deopt:
-            span.appendChild(WebInspector.linkifyURLAsNode("https://github.com/GoogleChrome/devtools-docs/issues/53",
-                WebInspector.UIString("Not optimized"), undefined, true));
-            span.createTextChild(WebInspector.UIString(": %s", eventData["deoptReason"]));
-            break;
-        default:
-            console.assert(false, "Unhandled TimelineModel.WarningType");
-        }
-
-        this.appendElementRow(WebInspector.UIString("Warning"), span, true);
+        var warning = WebInspector.TimelineUIUtils.eventWarning(event, warningType);
+        if (warning)
+            this.appendElementRow(WebInspector.UIString("Warning"), warning, true);
     }
+}
+
+/**
+ * @param {!WebInspector.TracingModel.Event} event
+ * @param {string=} warningType
+ * @return {?Element}
+ */
+WebInspector.TimelineUIUtils.eventWarning = function(event, warningType)
+{
+    var warning = warningType || event.warning;
+    if (!warning)
+        return null;
+    var warnings = WebInspector.TimelineModel.WarningType;
+    var span = createElement("span");
+    var eventData = event.args["data"];
+
+    switch (warning) {
+    case warnings.ForcedStyle:
+    case warnings.ForcedLayout:
+        span.appendChild(WebInspector.linkifyDocumentationURLAsNode("../../fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts",
+            WebInspector.UIString("Forced reflow")));
+        span.createTextChild(WebInspector.UIString(" is a likely performance bottleneck."));
+        break;
+    case warnings.IdleDeadlineExceeded:
+        span.textContent = WebInspector.UIString("Idle callback execution extended beyond deadline by " +
+            Number.millisToString(event.duration - eventData["allottedMilliseconds"], true));
+        break;
+    case warnings.V8Deopt:
+        span.appendChild(WebInspector.linkifyURLAsNode("https://github.com/GoogleChrome/devtools-docs/issues/53",
+            WebInspector.UIString("Not optimized"), undefined, true));
+        span.createTextChild(WebInspector.UIString(": %s", eventData["deoptReason"]));
+        break;
+    default:
+        console.assert(false, "Unhandled TimelineModel.WarningType");
+    }
+    return span;
 }

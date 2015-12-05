@@ -670,7 +670,9 @@
         ],
         'devtools_timeline_js_files': [
             'front_end/timeline/invalidationsTree.css',
+            'front_end/timeline/timelineFlamechartPopover.css',
             'front_end/timeline/timelinePanel.css',
+            'front_end/timeline/timelineStatusDialog.css',
             'front_end/timeline/CountersGraph.js',
             'front_end/timeline/LayerDetailsView.js',
             'front_end/timeline/LayerTreeModel.js',

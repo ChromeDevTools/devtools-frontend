@@ -123,6 +123,7 @@
     ],
     "resources": [
         "invalidationsTree.css",
+        "timelineFlamechartPopover.css",
         "timelinePanel.css",
         "timelineStatusDialog.css"
     ]

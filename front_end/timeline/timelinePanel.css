@@ -1018,7 +1018,6 @@
     text-align: right;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-left: 6px;
 }
 
 .timeline-tree-view .data-grid .background-bar-container {

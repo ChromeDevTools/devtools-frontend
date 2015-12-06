@@ -286,15 +286,15 @@
     justify-content: center;
 }
 
-#timeline-overview-panel .overview-strip .timeline-overview-strip-placeholder {
+#timeline-overview-panel .overview-strip .timeline-overview-strip-title {
     color: #666;
     font-size: 10px;
     font-weight: bold;
     z-index: 100;
     background-color: rgba(255, 255, 255, 0.7);
-    padding: 1px 4px;
+    padding: 0 4px;
     position: absolute;
-    top: 0px;
+    top: 0;
     right: 0;
 }
 
@@ -303,36 +303,30 @@
 }
 
 #timeline-overview-network,
-#timeline-overview-framerate,
-#timeline-overview-memory {
+#timeline-overview-framerate {
     flex-basis: 20px;
 }
 
 #timeline-overview-filmstrip {
-    flex-basis: 81px;
+    flex-basis: 40px;
+}
+
+#timeline-overview-memory {
+    flex-basis: 22px;
 }
 
 .overview-strip::before {
     content: "";
     position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
     left: 0;
-    color: #888;
-    text-align: right;
-    padding: 1px 4px;
-    font-size: 9px;
+    right: 0;
+    bottom: 0;
     border-bottom: 1px solid hsla(0, 0%, 0%, 0.06);
     z-index: -200;
 }
 
 #timeline-overview-responsiveness::before {
     display: none;
-}
-
-#timeline-overview-cpu-activity .background {
-    z-index: -10;
 }
 
 #timeline-overview-responsiveness {
@@ -440,7 +434,7 @@
 .memory-graph-label {
     position: absolute;
     right: 0;
-    top: 0;
+    bottom: 0;
     font-size: 9px;
     color: #888;
     white-space: nowrap;

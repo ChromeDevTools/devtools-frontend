@@ -740,6 +740,9 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
     case recordTypes.CancelIdleCallback:
         contentHelper.appendTextRow(WebInspector.UIString("Callback ID"), eventData["id"]);
         break;
+    case recordTypes.EventDispatch:
+        contentHelper.appendTextRow(WebInspector.UIString("Type"), eventData["type"]);
+        break;
 
     default:
         var detailsNode = WebInspector.TimelineUIUtils.buildDetailsNodeForTraceEvent(event, model.target(), linkifier);

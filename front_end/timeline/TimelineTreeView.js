@@ -300,7 +300,7 @@ WebInspector.TimelineTreeView.prototype = {
         this._detailsView.element.removeChildren();
         if (!selectedNode || !this._showDetailsForNode(selectedNode)) {
             var banner = this._detailsView.element.createChild("div", "banner");
-            banner.createTextChild(WebInspector.UIString("No details are available for current selection."));
+            banner.createTextChild(WebInspector.UIString("Select item for details."));
         }
     },
 

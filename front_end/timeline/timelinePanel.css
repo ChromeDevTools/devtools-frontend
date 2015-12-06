@@ -41,7 +41,6 @@
 .panel.layers .banner {
     color: #777;
     background-color: white;
-    font-size: 14px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -676,14 +675,15 @@
 
 .timeline-details-view-row {
     display: flex;
-    border-bottom: 1px solid #e1e1e1;
+    box-shadow: #ccc 1px 1px 3px;
+    flex-direction: column;
+    background-color: white;
+    margin: 4px 4px 5px 4px;
 }
 
 .timeline-details-view-row-title {
-    font-weight: bold;
-    color: rgb(48, 57, 66);
-    width: 170px;
-    line-height: 24px;
+    color: rgb(152, 152, 152);
+    line-height: 21px;
     padding-left: 10px;
     flex: none;
     position: relative;
@@ -708,11 +708,14 @@
 }
 
 .timeline-details-view-row-value {
-    padding-left: 10px;
-    border-left: 1px solid #e1e1e1;
+    padding-left: 30px;
     min-height: 24px;
     line-height: 24px;
     -webkit-user-select: text;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    margin-right: 5px;
 }
 
 .timeline-details-view-row-value .stack-preview-container {
@@ -731,7 +734,6 @@
 
 .timeline-details-view-pie-chart-wrapper {
     margin: 8px 10px 8px 0;
-    min-height: 144px;
 }
 
 .timeline-details-view-pie-chart {
@@ -1018,6 +1020,7 @@
     text-align: right;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin-left: 5px;
 }
 
 .timeline-tree-view .data-grid .background-bar-container {
@@ -1044,4 +1047,17 @@
 
 .timeline-details #filter-input-field {
     width: 120px;
+}
+
+.timeline-tree-view .data-grid .header-container {
+    height: 21px;
+}
+
+.timeline-tree-view .data-grid .data-container {
+    top: 21px;
+}
+
+.timeline-tree-view .data-grid th {
+    border-bottom: 1px solid #ddd;
+    background-color: #f3f3f3
 }

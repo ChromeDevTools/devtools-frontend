@@ -1368,8 +1368,10 @@ WebInspector.appendStyle = function(node, cssFile)
              */
             function toggleCheckbox(event)
             {
-                if (event.target !== checkboxElement && event.target !== this)
+                if (event.target !== checkboxElement && event.target !== this) {
+                    event.consume();
                     checkboxElement.click();
+                }
             }
 
             this._root.createChild("content");

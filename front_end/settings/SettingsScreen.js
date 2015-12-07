@@ -36,7 +36,6 @@ WebInspector.SettingsScreen = function()
 {
     WebInspector.VBox.call(this, true);
     this.registerRequiredCSS("settings/settingsScreen.css");
-    this.element.id = "settings-screen";
 
     this.contentElement.tabIndex = 0;
     this.contentElement.classList.add("help-window-main");

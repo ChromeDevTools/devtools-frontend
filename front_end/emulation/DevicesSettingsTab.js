@@ -154,7 +154,7 @@ WebInspector.DevicesSettingsTab.prototype = {
             WebInspector.emulatedDevicesList.addCustomDevice(device);
         else
             WebInspector.emulatedDevicesList.saveCustomDevices();
-        this._addCustomButton.scrollIntoView();
+        this._addCustomButton.scrollIntoViewIfNeeded();
         this._addCustomButton.focus();
     },
 

@@ -27,6 +27,7 @@
 .device-mode-buttons-toolbar {
     flex: 3 0 0;
     display: flex;
+    justify-content: flex-end;
 }
 
 .device-mode-options-toolbar {

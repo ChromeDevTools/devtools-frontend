@@ -61,7 +61,7 @@ WebInspector.BlockedURLsPane.prototype = {
         this._emptyElement.classList.add("hidden");
         var element = this._createElement("", this._blockedURLsSetting.get().length);
         this._listElement.appendChild(element);
-        element.scrollIntoView();
+        element.scrollIntoViewIfNeeded();
         this._edit("", element, this._addBlockedURL.bind(this));
     },
 

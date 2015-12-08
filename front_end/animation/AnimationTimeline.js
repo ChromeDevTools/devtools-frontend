@@ -339,6 +339,7 @@ WebInspector.AnimationTimeline.prototype = {
         this._groupBuffer = [];
         this._previewMap.clear();
         this._previewContainer.removeChildren();
+        this._popoverHelper.hidePopover();
     },
 
     /**

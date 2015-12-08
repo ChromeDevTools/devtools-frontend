@@ -319,11 +319,11 @@ WebInspector.NetworkLogView.prototype = {
             var recordingText = hintText.createChild("span");
             recordingText.textContent = WebInspector.UIString("Recording network activity\u2026");
             hintText.createChild("br");
-            hintText.appendChild(WebInspector.formatLocalized(WebInspector.UIString("Perform a request or hit %s to record the reload."), [reloadShortcutNode], null));
+            hintText.appendChild(WebInspector.formatLocalized("Perform a request or hit %s to record the reload.", [reloadShortcutNode]));
         } else {
             var recordNode = hintText.createChild("b");
             recordNode.textContent = WebInspector.shortcutRegistry.shortcutTitleForAction("network.toggle-recording");
-            hintText.appendChild(WebInspector.formatLocalized(WebInspector.UIString("Record (%s) or reload (%s) to display network activity."), [recordNode, reloadShortcutNode], null));
+            hintText.appendChild(WebInspector.formatLocalized("Record (%s) or reload (%s) to display network activity.", [recordNode, reloadShortcutNode]));
         }
     },
 

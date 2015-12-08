@@ -726,13 +726,13 @@ WebInspector.TimelinePanel.prototype = {
         var reloadNode = encloseWithTag("b", WebInspector.shortcutRegistry.shortcutDescriptorsForAction("main.reload")[0].name);
         var navigateNode = encloseWithTag("b", WebInspector.UIString("WASD"));
         var hintText = createElementWithClass("div");
-        hintText.appendChild(WebInspector.formatLocalized(WebInspector.UIString("To capture a new timeline, click the record toolbar button or hit %s."), [recordNode], null));
+        hintText.appendChild(WebInspector.formatLocalized("To capture a new timeline, click the record toolbar button or hit %s.", [recordNode]));
         hintText.createChild("br");
-        hintText.appendChild(WebInspector.formatLocalized(WebInspector.UIString("To evaluate page load performance, hit %s to record the reload."), [reloadNode], null));
+        hintText.appendChild(WebInspector.formatLocalized("To evaluate page load performance, hit %s to record the reload.", [reloadNode]));
         hintText.createChild("p");
-        hintText.appendChild(WebInspector.formatLocalized(WebInspector.UIString("After recording, select an area of interest in the overview by dragging."), [], null));
+        hintText.appendChild(WebInspector.formatLocalized("After recording, select an area of interest in the overview by dragging.", []));
         hintText.createChild("br");
-        hintText.appendChild(WebInspector.formatLocalized(WebInspector.UIString("Then, zoom and pan the timeline with the mousewheel and %s keys."), [navigateNode], null));
+        hintText.appendChild(WebInspector.formatLocalized("Then, zoom and pan the timeline with the mousewheel and %s keys.", [navigateNode]));
         this._hideRecordingHelpMessage();
         this._helpMessageElement = this._searchableView.element.createChild("div", "banner timeline-status-pane");
         this._helpMessageElement.appendChild(hintText);

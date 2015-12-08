@@ -679,7 +679,7 @@ WebInspector.Layers3DView.prototype = {
         var fragment = this.element.ownerDocument.createDocumentFragment();
         fragment.createChild("div").textContent = WebInspector.UIString("Can't display layers,");
         fragment.createChild("div").textContent = WebInspector.UIString("WebGL support is disabled in your browser.");
-        fragment.appendChild(WebInspector.formatLocalized("Check %s for possible reasons.", [WebInspector.linkifyURLAsNode("about:gpu", undefined, undefined, true)], ""));
+        fragment.appendChild(WebInspector.formatLocalized("Check %s for possible reasons.", [WebInspector.linkifyURLAsNode("about:gpu", undefined, undefined, true)]));
         return fragment;
     },
 

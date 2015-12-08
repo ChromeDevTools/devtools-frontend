@@ -602,26 +602,24 @@ Number.withThousandsSeparator = function(num)
 /**
  * @param {string} format
  * @param {?ArrayLike} substitutions
- * @param {?string} initialValue
  * @return {!Element}
  */
-WebInspector.formatLocalized = function(format, substitutions, initialValue)
+WebInspector.formatLocalized = function(format, substitutions)
 {
-    var element = createElement("span");
     var formatters = {
-        s: function(substitution)
-        {
-            return substitution;
-        }
+        s: substitution => substitution
     };
+    /**
+     * @param {!Element} a
+     * @param {string|!Element} b
+     * @return {!Element}
+     */
     function append(a, b)
     {
-        if (typeof b === "string")
-            b = createTextNode(b);
-        element.appendChild(b);
+        a.appendChild(typeof b === "string" ? createTextNode(b) : b);
+        return a;
     }
-    String.format(WebInspector.UIString(format), substitutions, formatters, initialValue, append);
-    return element;
+    return String.format(WebInspector.UIString(format), substitutions, formatters, createElement("span"), append).formattedResult;
 }
 
 /**

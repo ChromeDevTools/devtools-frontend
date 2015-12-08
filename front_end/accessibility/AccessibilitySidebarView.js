@@ -811,60 +811,60 @@ WebInspector.AXNodeIgnoredReasonTreeElement.createReasonElement = function(reaso
     var reasonElement = null;
     switch(reason) {
     case "activeModalDialog":
-        reasonElement = WebInspector.formatLocalized("Element is hidden by active modal dialog: ", [], "");
+        reasonElement = WebInspector.formatLocalized("Element is hidden by active modal dialog: ", []);
         break;
     case "ancestorDisallowsChild":
-        reasonElement = WebInspector.formatLocalized("Element is not permitted as child of ", [], "");
+        reasonElement = WebInspector.formatLocalized("Element is not permitted as child of ", []);
         break;
     // http://www.w3.org/TR/wai-aria/roles#childrenArePresentational
     case "ancestorIsLeafNode":
-        reasonElement = WebInspector.formatLocalized("Ancestor's children are all presentational: ", [], "");
+        reasonElement = WebInspector.formatLocalized("Ancestor's children are all presentational: ", []);
         break;
     case "ariaHidden":
         var ariaHiddenSpan = createElement("span", "source-code").textContent = "aria-hidden";
-        reasonElement = WebInspector.formatLocalized("Element is %s.", [ ariaHiddenSpan ], "");
+        reasonElement = WebInspector.formatLocalized("Element is %s.", [ ariaHiddenSpan ]);
         break;
     case "ariaHiddenRoot":
         var ariaHiddenSpan = createElement("span", "source-code").textContent = "aria-hidden";
         var trueSpan = createElement("span", "source-code").textContent = "true";
-        reasonElement = WebInspector.formatLocalized("%s is %s on ancestor: ", [ ariaHiddenSpan, trueSpan ], "");
+        reasonElement = WebInspector.formatLocalized("%s is %s on ancestor: ", [ ariaHiddenSpan, trueSpan ]);
         break;
     case "emptyAlt":
-        reasonElement = WebInspector.formatLocalized("Element has empty alt text.", [], "");
+        reasonElement = WebInspector.formatLocalized("Element has empty alt text.", []);
         break;
     case "emptyText":
-        reasonElement = WebInspector.formatLocalized("No text content.", [], "");
+        reasonElement = WebInspector.formatLocalized("No text content.", []);
         break;
     case "inert":
-        reasonElement = WebInspector.formatLocalized("Element is inert.", [], "");
+        reasonElement = WebInspector.formatLocalized("Element is inert.", []);
         break;
     case "inheritsPresentation":
-        reasonElement = WebInspector.formatLocalized("Element inherits presentational role from ", [], "");
+        reasonElement = WebInspector.formatLocalized("Element inherits presentational role from ", []);
         break;
     case "labelContainer":
-        reasonElement = WebInspector.formatLocalized("Part of label element: ", [], "");
+        reasonElement = WebInspector.formatLocalized("Part of label element: ", []);
         break;
     case "labelFor":
-        reasonElement = WebInspector.formatLocalized("Label for ", [], "");
+        reasonElement = WebInspector.formatLocalized("Label for ", []);
         break;
     case "notRendered":
-        reasonElement = WebInspector.formatLocalized("Element is not rendered.", [], "");
+        reasonElement = WebInspector.formatLocalized("Element is not rendered.", []);
         break;
     case "notVisible":
-        reasonElement = WebInspector.formatLocalized("Element is not visible.", [], "");
+        reasonElement = WebInspector.formatLocalized("Element is not visible.", []);
         break;
     case "presentationalRole":
         var rolePresentationSpan = createElement("span", "source-code").textContent = "role=" + axNode.role.value;
-        reasonElement = WebInspector.formatLocalized("Element has %s.", [ rolePresentationSpan ], "");
+        reasonElement = WebInspector.formatLocalized("Element has %s.", [ rolePresentationSpan ]);
         break;
     case "probablyPresentational":
-        reasonElement = WebInspector.formatLocalized("Element is presentational.", [], "");
+        reasonElement = WebInspector.formatLocalized("Element is presentational.", []);
         break;
     case "staticTextUsedAsNameFor":
-        reasonElement = WebInspector.formatLocalized("Static text node is used as name for ", [], "");
+        reasonElement = WebInspector.formatLocalized("Static text node is used as name for ", []);
         break;
     case "uninteresting":
-        reasonElement = WebInspector.formatLocalized("Element not interesting for accessibility.", [], "")
+        reasonElement = WebInspector.formatLocalized("Element not interesting for accessibility.", [])
         break;
     }
     if (reasonElement)

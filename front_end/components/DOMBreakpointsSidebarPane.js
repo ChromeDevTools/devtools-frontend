@@ -191,7 +191,7 @@ WebInspector.DOMBreakpointsSidebarPane.prototype = {
         } else
             message = "Paused on a \"%s\" breakpoint set on %s.";
 
-        var element = WebInspector.formatLocalized(message, substitutions, "");
+        var element = WebInspector.formatLocalized(message, substitutions);
 
         callback(element);
     },

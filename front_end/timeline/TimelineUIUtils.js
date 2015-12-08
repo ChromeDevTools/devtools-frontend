@@ -588,7 +588,7 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
     // This message may vary per event.name;
     var relatedNodeLabel;
 
-    var contentHelper = new WebInspector.TimelineDetailsContentHelper(model.target(), linkifier, relatedNodesMap, true);
+    var contentHelper = new WebInspector.TimelineDetailsContentHelper(model.target(), linkifier, relatedNodesMap, false);
 
     if (event.warning)
         contentHelper.appendWarningRow(event);
@@ -819,7 +819,7 @@ WebInspector.TimelineUIUtils.buildRangeStats = function(model, startTime, endTim
         aggregatedTotal += aggregatedStats[categoryName];
     aggregatedStats["idle"] = Math.max(0, endTime - startTime - aggregatedTotal);
 
-    var contentHelper = new WebInspector.TimelineDetailsContentHelper(null, null, null, true);
+    var contentHelper = new WebInspector.TimelineDetailsContentHelper(null, null, null, false);
     var pieChart = WebInspector.TimelineUIUtils.generatePieChart(aggregatedStats);
 
     var startOffset = startTime - model.minimumRecordTime();
@@ -1487,58 +1487,53 @@ WebInspector.TimelineUIUtils.generateMainThreadBarPopupContent = function(model,
  */
 WebInspector.TimelineUIUtils.generatePieChart = function(aggregatedStats, selfCategory, selfTime)
 {
-    var element = createElementWithClass("div", "timeline-details-view-pie-chart-wrapper hbox");
-
     var total = 0;
     for (var categoryName in aggregatedStats)
         total += aggregatedStats[categoryName];
-    /**
-     * @param {number} value
-     * @return {string}
-     */
-    function formatter(value)
-    {
-        return Number.millisToString(value, true);
-    }
-    var pieChart = new WebInspector.PieChart(100, formatter);
+
+    var element = createElementWithClass("div", "timeline-details-view-pie-chart-wrapper hbox");
+    var pieChart = new WebInspector.PieChart(100);
     pieChart.element.classList.add("timeline-details-view-pie-chart");
     pieChart.setTotal(total);
-    element.appendChild(pieChart.element);
-    var footerElement = element.createChild("div", "timeline-aggregated-info timeline-aggregated-info-legend");
-    var rowElement = footerElement.createChild("div");
-    rowElement.createTextChild(formatter(total));
+    var pieChartContainer = element.createChild("div", "vbox");
+    pieChartContainer.appendChild(pieChart.element);
+    pieChartContainer.createChild("div", "timeline-details-view-pie-chart-total").textContent = WebInspector.UIString("Total: %s", Number.millisToString(total, true));
+    var footerElement = element.createChild("div", "timeline-aggregated-info-legend");
+
+    /**
+     * @param {string} name
+     * @param {string} title
+     * @param {number} value
+     * @param {string} color
+     */
+    function appendLegendRow(name, title, value, color)
+    {
+         if (!value)
+             return;
+         pieChart.addSlice(value, color);
+         var rowElement = footerElement.createChild("div");
+         rowElement.createChild("span", "timeline-aggregated-legend-value").textContent = Number.preciseMillisToString(value, 1);
+         rowElement.createChild("span", "timeline-aggregated-legend-swatch timeline-" + name);
+         rowElement.createChild("span", "timeline-aggregated-legend-title").textContent = title;
+    }
 
     // In case of self time, first add self, then children of the same category.
     if (selfCategory) {
-        if (selfTime) {
-            pieChart.addSlice(selfTime, selfCategory.fillColorStop1);
-            rowElement = footerElement.createChild("div");
-            rowElement.createChild("div", "timeline-aggregated-category timeline-" + selfCategory.name);
-            rowElement.createTextChild(WebInspector.UIString("%s %s (Self)", formatter(selfTime), selfCategory.title));
-        }
+        if (selfTime)
+            appendLegendRow(selfCategory.name, WebInspector.UIString("%s (self)", selfCategory.title), selfTime, selfCategory.fillColorStop1);
         // Children of the same category.
         var categoryTime = aggregatedStats[selfCategory.name];
         var value = categoryTime - selfTime;
-        if (value > 0) {
-            pieChart.addSlice(value, selfCategory.fillColorStop0);
-            rowElement = footerElement.createChild("div");
-            rowElement.createChild("div", "timeline-aggregated-category timeline-" + selfCategory.name);
-            rowElement.createTextChild(WebInspector.UIString("%s %s (Children)", formatter(value), selfCategory.title));
-        }
+        if (value > 0)
+            appendLegendRow(selfCategory.name, WebInspector.UIString("%s (children)", selfCategory.title), value, selfCategory.fillColorStop0);
     }
 
     // Add other categories.
     for (var categoryName in WebInspector.TimelineUIUtils.categories()) {
         var category = WebInspector.TimelineUIUtils.categories()[categoryName];
-         if (category === selfCategory)
-             continue;
-         var value = aggregatedStats[category.name];
-         if (!value)
-             continue;
-         pieChart.addSlice(value, category.fillColorStop0);
-         rowElement = footerElement.createChild("div");
-         rowElement.createChild("div", "timeline-aggregated-category timeline-" + category.name);
-         rowElement.createTextChild(WebInspector.UIString("%s %s", formatter(value), category.title));
+        if (category === selfCategory)
+            continue;
+        appendLegendRow(category.name, category.title, aggregatedStats[category.name], category.fillColorStop0);
     }
     return element;
 }

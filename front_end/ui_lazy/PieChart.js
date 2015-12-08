@@ -36,21 +36,14 @@
  */
 WebInspector.PieChart = function(size, formatter, showTotal)
 {
-    var shadowSize = WebInspector.PieChart._ShadowSizePercent;
     this.element = createElement("div");
     this._shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element, "ui_lazy/pieChart.css");
     var root = this._shadowRoot.createChild("div", "root");
     var svg = this._createSVGChild(root, "svg");
-    svg.setAttribute("width", (100 * (1 + 2 * shadowSize)) + "%");
-    svg.setAttribute("height", (100 * (1 + 2 * shadowSize)) + "%");
     this._group = this._createSVGChild(svg, "g");
-    var shadow = this._createSVGChild(this._group, "circle");
-    shadow.setAttribute("r", 1 + shadowSize);
-    shadow.setAttribute("cy", shadowSize);
-    shadow.setAttribute("fill", "hsl(0,0%,70%)");
     var background = this._createSVGChild(this._group, "circle");
-    background.setAttribute("r", 1);
-    background.setAttribute("fill", "hsl(0,0%,92%)");
+    background.setAttribute("r", 1.01);
+    background.setAttribute("fill", "hsl(0, 0%, 90%)");
     this._foregroundElement = root.createChild("div", "pie-chart-foreground");
     if (showTotal)
         this._totalElement = this._foregroundElement.createChild("div", "pie-chart-total");
@@ -59,8 +52,6 @@ WebInspector.PieChart = function(size, formatter, showTotal)
     this._lastAngle = -Math.PI/2;
     this._setSize(size);
 }
-
-WebInspector.PieChart._ShadowSizePercent = 0.02;
 
 WebInspector.PieChart.prototype = {
     /**
@@ -86,7 +77,7 @@ WebInspector.PieChart.prototype = {
      */
     _setSize: function(value)
     {
-        this._group.setAttribute("transform", "scale(" + (value / 2) + ") translate(" + (1 + WebInspector.PieChart._ShadowSizePercent) + ",1)");
+        this._group.setAttribute("transform", "scale(" + (value / 2) + ") translate(1, 1) scale(0.99, 0.99)");
         var size = value + "px";
         this.element.style.width = size;
         this.element.style.height = size;

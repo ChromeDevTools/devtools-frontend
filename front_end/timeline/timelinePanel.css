@@ -51,6 +51,7 @@
     right: 0;
     bottom: 0;
     left: 0;
+    font-size: 13px;
 }
 
 .panel.timeline .banner a,
@@ -410,14 +411,24 @@
     border-width: 2px;
 }
 
-.timeline-aggregated-category {
+.timeline-aggregated-legend-title {
     display: inline-block;
+}
+
+.timeline-aggregated-legend-value {
+    display: inline-block;
+    width: 70px;
+    text-align: right;
+}
+
+.timeline-aggregated-legend-swatch {
+    display: inline-block;
+    width: 11px;
     height: 11px;
-    margin-right: 5px;
+    margin: 0 6px;
     position: relative;
-    top: 2px;
-    width: 10px;
-    border: solid 1px;
+    top: 1px;
+    border: 1px solid;
 }
 
 .popover ul {
@@ -723,11 +734,17 @@
 }
 
 .timeline-details-view-pie-chart-wrapper {
-    margin: 8px 10px 8px 0;
+    margin: 4px 0;
 }
 
 .timeline-details-view-pie-chart {
-    margin-right: 8px;
+    margin-top: 5px;
+}
+
+.timeline-details-view-pie-chart-total {
+    width: 100px;
+    margin-top: 10px;
+    text-align: center;
 }
 
 .timeline-details-view-row-stack-trace {
@@ -738,12 +755,6 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     line-height: 12px;
-}
-
-.timeline-aggregated-info {
-    flex: none;
-    position: relative;
-    margin-left:  5px;
 }
 
 .timeline-aggregated-info-legend > div {

@@ -46,6 +46,8 @@ WebInspector.IsolatedFileSystem = function(manager, path, domFileSystem)
     this._nonConfigurableExcludedFolders = new Set();
 }
 
+WebInspector.IsolatedFileSystem.ImageExtensions = new Set(["jpeg", "jpg", "svg", "gif", "webp", "png", "ico", "tiff", "tif", "bmp"]);
+
 /**
  * @constructor
  * @param {!WebInspector.IsolatedFileSystemManager} manager
@@ -305,7 +307,10 @@ WebInspector.IsolatedFileSystem.prototype = {
         {
             var reader = new FileReader();
             reader.onloadend = readerLoadEnd;
-            reader.readAsText(file);
+            if (WebInspector.IsolatedFileSystem.ImageExtensions.has(WebInspector.TextUtils.extension(path)))
+                reader.readAsDataURL(file);
+            else
+                reader.readAsText(file);
         }
 
         /**

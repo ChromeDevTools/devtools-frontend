@@ -29,16 +29,15 @@
 /**
  * @constructor
  * @extends {WebInspector.VBox}
- * @param {string} url
  * @param {string} mimeType
  * @param {!WebInspector.ContentProvider} contentProvider
  */
-WebInspector.FontView = function(url, mimeType, contentProvider)
+WebInspector.FontView = function(mimeType, contentProvider)
 {
     WebInspector.VBox.call(this);
     this.registerRequiredCSS("source_frame/fontView.css");
     this.element.classList.add("font-view");
-    this._url = url;
+    this._url = contentProvider.contentURL();
     this._mimeType = mimeType;
     this._contentProvider = contentProvider;
 }

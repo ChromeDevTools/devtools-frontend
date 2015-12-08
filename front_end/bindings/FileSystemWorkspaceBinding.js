@@ -54,8 +54,9 @@ WebInspector.FileSystemWorkspaceBinding = function(isolatedFileSystemManager, wo
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.SearchCompleted, this._onSearchCompleted, this);
 }
 
-WebInspector.FileSystemWorkspaceBinding._styleSheetExtensions = ["css", "scss", "sass", "less"].keySet();
-WebInspector.FileSystemWorkspaceBinding._documentExtensions = ["htm", "html", "asp", "aspx", "phtml", "jsp"].keySet();
+WebInspector.FileSystemWorkspaceBinding._styleSheetExtensions = new Set(["css", "scss", "sass", "less"]);
+WebInspector.FileSystemWorkspaceBinding._documentExtensions = new Set(["htm", "html", "asp", "aspx", "phtml", "jsp"]);
+WebInspector.FileSystemWorkspaceBinding._imageExtensions = WebInspector.IsolatedFileSystem.ImageExtensions;
 
 WebInspector.FileSystemWorkspaceBinding._lastRequestId = 0;
 
@@ -66,6 +67,21 @@ WebInspector.FileSystemWorkspaceBinding._lastRequestId = 0;
 WebInspector.FileSystemWorkspaceBinding.projectId = function(fileSystemPath)
 {
     return "filesystem:" + fileSystemPath;
+}
+
+/**
+ * @param {string} extension
+ * @return {!WebInspector.ResourceType}
+ */
+WebInspector.FileSystemWorkspaceBinding._contentTypeForExtension = function(extension)
+{
+    if (WebInspector.FileSystemWorkspaceBinding._styleSheetExtensions.has(extension))
+        return WebInspector.resourceTypes.Stylesheet;
+    if (WebInspector.FileSystemWorkspaceBinding._documentExtensions.has(extension))
+        return WebInspector.resourceTypes.Document;
+    if (WebInspector.FileSystemWorkspaceBinding._imageExtensions.has(extension))
+        return WebInspector.resourceTypes.Image;
+    return WebInspector.resourceTypes.Script;
 }
 
 WebInspector.FileSystemWorkspaceBinding.prototype = {
@@ -284,7 +300,22 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
     requestFileContent: function(uiSourceCode, callback)
     {
         var filePath = this._filePathForUISourceCode(uiSourceCode);
-        this._fileSystem.requestFileContent(filePath, callback);
+        var isImage = WebInspector.FileSystemWorkspaceBinding._imageExtensions.has(WebInspector.TextUtils.extension(filePath));
+
+        this._fileSystem.requestFileContent(filePath, isImage ? base64CallbackWrapper : callback);
+
+        /**
+         * @param {?string} result
+         */
+        function base64CallbackWrapper(result)
+        {
+            if (!result) {
+                callback(result);
+                return;
+            }
+            var index = result.indexOf(",");
+            callback(result.substring(index + 1));
+        }
     },
 
     /**
@@ -351,7 +382,7 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
             filePath = filePath.substr(1);
             var extension = this._extensionForPath(newName);
             var newOriginURL = this._fileSystemBaseURL + filePath;
-            var newContentType = this._contentTypeForExtension(extension);
+            var newContentType = WebInspector.FileSystemWorkspaceBinding._contentTypeForExtension(extension);
             this.renameUISourceCode(uiSourceCode, newName);
             callback(true, newName, newOriginURL, newContentType);
         }
@@ -482,19 +513,6 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
         return path.substring(extensionIndex + 1).toLowerCase();
     },
 
-    /**
-     * @param {string} extension
-     * @return {!WebInspector.ResourceType}
-     */
-    _contentTypeForExtension: function(extension)
-    {
-        if (WebInspector.FileSystemWorkspaceBinding._styleSheetExtensions[extension])
-            return WebInspector.resourceTypes.Stylesheet;
-        if (WebInspector.FileSystemWorkspaceBinding._documentExtensions[extension])
-            return WebInspector.resourceTypes.Document;
-        return WebInspector.resourceTypes.Script;
-    },
-
     populate: function()
     {
         this._fileSystem.requestFilesRecursive("", this._addFile.bind(this));
@@ -596,7 +614,7 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
         var name = filePath.substring(slash + 1);
 
         var extension = this._extensionForPath(name);
-        var contentType = this._contentTypeForExtension(extension);
+        var contentType = WebInspector.FileSystemWorkspaceBinding._contentTypeForExtension(extension);
 
         return this.addUISourceCode(parentPath, name, this._fileSystemBaseURL + filePath, contentType);
     },

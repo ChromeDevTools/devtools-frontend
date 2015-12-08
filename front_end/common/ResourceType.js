@@ -280,5 +280,23 @@ WebInspector.ResourceType.mimeTypeByExtension = {
     "cljx": "text/x-clojure",
 
     // Stylus
-    "styl": "text/x-styl"
+    "styl": "text/x-styl",
+
+    // Image
+    "jpeg": "image/jpeg",
+    "jpg": "image/jpeg",
+    "svg": "image/svg",
+    "gif": "image/gif",
+    "webp": "image/webp",
+    "png": "image/png",
+    "ico": "image/ico",
+    "tiff": "image/tiff",
+    "tif": "image/tif",
+    "bmp": "image/bmp",
+
+    // Font
+    "ttf": "font/opentype",
+    "otf": "font/opentype",
+    "ttc": "font/opentype",
+    "woff": "application/font-woff"
 }

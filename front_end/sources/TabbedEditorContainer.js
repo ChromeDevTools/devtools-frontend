@@ -34,7 +34,7 @@ WebInspector.TabbedEditorContainerDelegate = function() { }
 WebInspector.TabbedEditorContainerDelegate.prototype = {
     /**
      * @param {!WebInspector.UISourceCode} uiSourceCode
-     * @return {!WebInspector.SourceFrame}
+     * @return {!WebInspector.Widget}
      */
     viewForFile: function(uiSourceCode) { },
 }
@@ -89,7 +89,7 @@ WebInspector.TabbedEditorContainer.prototype = {
     },
 
     /**
-     * @type {!WebInspector.SourceFrame}
+     * @type {!WebInspector.Widget}
      */
     get visibleView()
     {
@@ -97,11 +97,11 @@ WebInspector.TabbedEditorContainer.prototype = {
     },
 
     /**
-     * @return {!Array.<!WebInspector.SourceFrame>}
+     * @return {!Array.<!WebInspector.Widget>}
      */
     fileViews: function()
     {
-        return /** @type {!Array.<!WebInspector.SourceFrame>} */ (this._tabbedPane.tabViews());
+        return /** @type {!Array.<!WebInspector.Widget>} */ (this._tabbedPane.tabViews());
     },
 
     /**
@@ -381,6 +381,7 @@ WebInspector.TabbedEditorContainer.prototype = {
     _appendFileTab: function(uiSourceCode, userGesture)
     {
         var view = this._delegate.viewForFile(uiSourceCode);
+        var sourceFrame = view instanceof WebInspector.SourceFrame ? /** @type {!WebInspector.SourceFrame} */ (view) : null;
         var title = this._titleForFile(uiSourceCode);
         var tooltip = this._tooltipForFile(uiSourceCode);
 
@@ -389,11 +390,11 @@ WebInspector.TabbedEditorContainer.prototype = {
         this._files[tabId] = uiSourceCode;
 
         var savedSelectionRange = this._history.selectionRange(uiSourceCode.uri());
-        if (savedSelectionRange)
-            view.setSelection(savedSelectionRange);
+        if (sourceFrame && savedSelectionRange)
+            sourceFrame.setSelection(savedSelectionRange);
         var savedScrollLineNumber = this._history.scrollLineNumber(uiSourceCode.uri());
-        if (savedScrollLineNumber)
-            view.scrollToLine(savedScrollLineNumber);
+        if (sourceFrame && savedScrollLineNumber)
+            sourceFrame.scrollToLine(savedScrollLineNumber);
 
         this._tabbedPane.appendTab(tabId, title, view, tooltip, userGesture);
 

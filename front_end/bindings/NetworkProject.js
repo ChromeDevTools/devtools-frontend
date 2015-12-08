@@ -153,6 +153,7 @@ WebInspector.NetworkProject = function(target, workspace, networkMapping)
 
 WebInspector.NetworkProject._networkProjectSymbol = Symbol("networkProject");
 WebInspector.NetworkProject._contentTypeSymbol = Symbol("networkContentType");
+WebInspector.NetworkProject._resourceSymbol = Symbol("resource");
 
 /**
  * @param {!WebInspector.Target} target
@@ -193,6 +194,15 @@ WebInspector.NetworkProject.targetForUISourceCode = function(uiSourceCode)
 WebInspector.NetworkProject.uiSourceCodeContentType = function(uiSourceCode)
 {
     return uiSourceCode[WebInspector.NetworkProject._contentTypeSymbol];
+}
+
+/**
+ * @param {!WebInspector.UISourceCode} uiSourceCode
+ * @return {?WebInspector.Resource}
+ */
+WebInspector.NetworkProject.uiSourceCodeResource = function(uiSourceCode)
+{
+    return uiSourceCode[WebInspector.NetworkProject._resourceSymbol] || WebInspector.NetworkProject._resourceBeingAdded;
 }
 
 WebInspector.NetworkProject.prototype = {
@@ -320,14 +330,31 @@ WebInspector.NetworkProject.prototype = {
      */
     _addResource: function(resource)
     {
-        // Only load documents from resources.
-        if (resource.resourceType() !== WebInspector.resourceTypes.Document)
+        var resourceType = resource.resourceType();
+        // Only load selected resource types from resources.
+        if (resourceType !== WebInspector.resourceTypes.Image &&
+            resourceType !== WebInspector.resourceTypes.Font &&
+            resourceType !== WebInspector.resourceTypes.Document) {
+            return;
+        }
+
+        // Ignore non-images and non-fonts.
+        if (resourceType === WebInspector.resourceTypes.Image && resource.mimeType && !resource.mimeType.startsWith("image"))
+            return;
+        if (resourceType === WebInspector.resourceTypes.Font && resource.mimeType && !resource.mimeType.includes("font"))
+            return;
+        if ((resourceType === WebInspector.resourceTypes.Image || resourceType === WebInspector.resourceTypes.Font) && resource.contentURL().startsWith("data:"))
             return;
 
         // Never load document twice.
         if (this._workspace.uiSourceCodeForOriginURL(resource.url))
             return;
-        this._addFile(resource.url, resource);
+
+        WebInspector.NetworkProject._resourceBeingAdded = resource;
+        var uiSourceCode = this._addFile(resource.url, resource);
+        WebInspector.NetworkProject._resourceBeingAdded = null;
+        if (uiSourceCode)
+            uiSourceCode[WebInspector.NetworkProject._resourceSymbol] = resource;
     },
 
     /**
@@ -351,17 +378,17 @@ WebInspector.NetworkProject.prototype = {
      * @param {string} url
      * @param {!WebInspector.ContentProvider} contentProvider
      * @param {boolean=} isContentScript
+     * @return {?WebInspector.UISourceCode}
      */
     _addFile: function(url, contentProvider, isContentScript)
     {
         if (this._networkMapping.hasMappingForURL(url))
-            return;
+            return null;
 
         var type = contentProvider.contentType();
-        if (!type.isDocumentOrScriptOrStyleSheet())
-            return;
         var uiSourceCode = this.addFileForURL(url, contentProvider, isContentScript);
         uiSourceCode[WebInspector.NetworkProject._contentTypeSymbol] = type;
+        return uiSourceCode;
     },
 
     _dispose: function()

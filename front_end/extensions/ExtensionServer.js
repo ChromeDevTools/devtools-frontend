@@ -558,7 +558,7 @@ WebInspector.ExtensionServer.prototype = {
 
         var url = /** @type {string} */ (message.url);
         var uiSourceCode = WebInspector.workspace.uiSourceCodeForOriginURL(url);
-        if (!uiSourceCode) {
+        if (!uiSourceCode || !uiSourceCode.contentType().isDocumentOrScriptOrStyleSheet()) {
             var resource = WebInspector.ResourceTreeModel.resourceForURL(url);
             if (!resource)
                 return this._status.E_NOTFOUND(url);

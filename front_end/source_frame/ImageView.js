@@ -29,17 +29,16 @@
 /**
  * @extends {WebInspector.VBox}
  * @constructor
- * @param {string} url
  * @param {string} mimeType
  * @param {!WebInspector.ContentProvider} contentProvider
  */
-WebInspector.ImageView = function(url, mimeType, contentProvider)
+WebInspector.ImageView = function(mimeType, contentProvider)
 {
     WebInspector.VBox.call(this);
     this.registerRequiredCSS("source_frame/imageView.css");
     this.element.classList.add("image-view");
-    this._url = url;
-    this._parsedURL = new WebInspector.ParsedURL(url);
+    this._url = contentProvider.contentURL();
+    this._parsedURL = new WebInspector.ParsedURL(this._url);
     this._mimeType = mimeType;
     this._contentProvider = contentProvider;
 }

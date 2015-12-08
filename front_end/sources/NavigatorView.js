@@ -663,7 +663,7 @@ WebInspector.BaseNavigatorTreeElement.prototype = {
         this.listItemElement.createChild("div", "selection fill");
 
         if (!this._noIcon)
-            this.imageElement = this.listItemElement.createChild("img", "icon");
+            this._imageElement = this.listItemElement.createChild("img", "icon");
 
         this.titleElement = this.listItemElement.createChild("div", "base-navigator-tree-element-title");
         this.titleElement.textContent = this._titleText;

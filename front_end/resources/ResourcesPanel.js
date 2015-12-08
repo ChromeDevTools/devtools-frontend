@@ -472,9 +472,9 @@ WebInspector.ResourcesPanel.prototype = {
 
         switch (resource.resourceType()) {
         case WebInspector.resourceTypes.Image:
-            return new WebInspector.ImageView(resource.url, resource.mimeType, resource);
+            return new WebInspector.ImageView(resource.mimeType, resource);
         case WebInspector.resourceTypes.Font:
-            return new WebInspector.FontView(resource.url, resource.mimeType, resource);
+            return new WebInspector.FontView(resource.mimeType, resource);
         default:
             return new WebInspector.EmptyWidget(resource.url);
         }

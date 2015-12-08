@@ -16,7 +16,8 @@ WebInspector.Tooltip = function(doc)
     doc.addEventListener("mousedown", this._hide.bind(this, true), true);
     doc.addEventListener("mouseleave", this._hide.bind(this, false), true);
     doc.addEventListener("keydown", this._hide.bind(this, true), true);
-    WebInspector.zoomManager.addEventListener(WebInspector.ZoomManager.Events.ZoomChanged, this._zoomChanged, this);
+    WebInspector.zoomManager.addEventListener(WebInspector.ZoomManager.Events.ZoomChanged, this._reset, this);
+    doc.defaultView.addEventListener("resize", this._reset.bind(this), false);
 }
 
 WebInspector.Tooltip.Timing = {
@@ -136,7 +137,7 @@ WebInspector.Tooltip.prototype = {
             delete this._tooltipLastClosed;
     },
 
-    _zoomChanged: function()
+    _reset: function()
     {
         this._hide(true);
         this._tooltipElement.positionAt(0, 0);

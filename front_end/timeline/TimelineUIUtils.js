@@ -672,14 +672,14 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
     case recordTypes.PaintSetup:
     case recordTypes.Rasterize:
     case recordTypes.ScrollLayer:
-        relatedNodeLabel = WebInspector.UIString("Layer root");
+        relatedNodeLabel = WebInspector.UIString("Layer Root");
         break;
     case recordTypes.PaintImage:
     case recordTypes.DecodeLazyPixelRef:
     case recordTypes.DecodeImage:
     case recordTypes.ResizeImage:
     case recordTypes.DrawLazyPixelRef:
-        relatedNodeLabel = WebInspector.UIString("Owner element");
+        relatedNodeLabel = WebInspector.UIString("Owner Element");
         if (event.url)
             contentHelper.appendElementRow(WebInspector.UIString("Image URL"), WebInspector.linkifyResourceAsNode(event.url));
         break;
@@ -690,13 +690,13 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
         break;
     case recordTypes.UpdateLayoutTree: // We don't want to see default details.
     case recordTypes.RecalculateStyles:
-        contentHelper.appendTextRow(WebInspector.UIString("Elements affected"), event.args["elementCount"]);
+        contentHelper.appendTextRow(WebInspector.UIString("Elements Affected"), event.args["elementCount"]);
         break;
     case recordTypes.Layout:
         var beginData = event.args["beginData"];
-        contentHelper.appendTextRow(WebInspector.UIString("Nodes that need layout"), beginData["dirtyObjects"]);
-        contentHelper.appendTextRow(WebInspector.UIString("Layout tree size"), beginData["totalObjects"]);
-        contentHelper.appendTextRow(WebInspector.UIString("Layout scope"),
+        contentHelper.appendTextRow(WebInspector.UIString("Nodes That Need Layout"), beginData["dirtyObjects"]);
+        contentHelper.appendTextRow(WebInspector.UIString("Layout Tree Size"), beginData["totalObjects"]);
+        contentHelper.appendTextRow(WebInspector.UIString("Layout Scope"),
                                     beginData["partialLayout"] ? WebInspector.UIString("Partial") : WebInspector.UIString("Whole document"));
         relatedNodeLabel = WebInspector.UIString("Layout root");
         break;
@@ -732,8 +732,8 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
         break;
 
     case recordTypes.FireIdleCallback:
-        contentHelper.appendTextRow(WebInspector.UIString("Allotted time"), Number.millisToString(eventData["allottedMilliseconds"]));
-        contentHelper.appendTextRow(WebInspector.UIString("Invoked by timeout"), eventData["timedOut"]);
+        contentHelper.appendTextRow(WebInspector.UIString("Allotted Time"), Number.millisToString(eventData["allottedMilliseconds"]));
+        contentHelper.appendTextRow(WebInspector.UIString("Invoked by Timeout"), eventData["timedOut"]);
         // Fall-through intended.
 
     case recordTypes.RequestIdleCallback:
@@ -753,7 +753,7 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
 
     var relatedNode = contentHelper.nodeForBackendId(event.backendNodeId);
     if (relatedNode)
-        contentHelper.appendElementRow(relatedNodeLabel || WebInspector.UIString("Related node"), WebInspector.DOMPresentationUtils.linkifyNodeReference(relatedNode));
+        contentHelper.appendElementRow(relatedNodeLabel || WebInspector.UIString("Related Node"), WebInspector.DOMPresentationUtils.linkifyNodeReference(relatedNode));
 
     if (eventData && eventData["scriptName"] && event.name !== recordTypes.FunctionCall)
         contentHelper.appendLocationRow(WebInspector.UIString("Function Call"), eventData["scriptName"], eventData["scriptLine"]);
@@ -949,33 +949,33 @@ WebInspector.TimelineUIUtils._generateCauses = function(event, target, contentHe
 
     switch (event.name) {
     case recordTypes.TimerFire:
-        callSiteStackLabel = WebInspector.UIString("Timer installed");
+        callSiteStackLabel = WebInspector.UIString("Timer Installed");
         break;
     case recordTypes.FireAnimationFrame:
-        callSiteStackLabel = WebInspector.UIString("Animation frame requested");
+        callSiteStackLabel = WebInspector.UIString("Animation Frame Requested");
         break;
     case recordTypes.FireIdleCallback:
-        callSiteStackLabel = WebInspector.UIString("Idle callback requested");
+        callSiteStackLabel = WebInspector.UIString("Idle Callback Requested");
         break;
     case recordTypes.UpdateLayoutTree:
     case recordTypes.RecalculateStyles:
-        stackLabel = WebInspector.UIString("Recalculation was forced");
+        stackLabel = WebInspector.UIString("Recalculation Forced");
         break;
     case recordTypes.Layout:
-        callSiteStackLabel = WebInspector.UIString("First layout invalidation");
-        stackLabel = WebInspector.UIString("Layout forced");
+        callSiteStackLabel = WebInspector.UIString("First Layout Invalidation");
+        stackLabel = WebInspector.UIString("Layout Forced");
         break;
     }
 
     // Direct cause.
     if (event.stackTrace)
-        contentHelper.appendStackTrace(stackLabel || WebInspector.UIString("Stack trace"), event.stackTrace);
+        contentHelper.appendStackTrace(stackLabel || WebInspector.UIString("Stack Trace"), event.stackTrace);
 
     // Indirect causes.
     if (event.invalidationTrackingEvents && target) { // Full invalidation tracking (experimental).
         WebInspector.TimelineUIUtils._generateInvalidations(event, target, contentHelper);
     } else if (initiator && initiator.stackTrace) { // Partial invalidation tracking.
-        contentHelper.appendStackTrace(callSiteStackLabel || WebInspector.UIString("First invalidated"), initiator.stackTrace);
+        contentHelper.appendStackTrace(callSiteStackLabel || WebInspector.UIString("First Invalidated"), initiator.stackTrace);
     }
 }
 
@@ -1014,13 +1014,13 @@ WebInspector.TimelineUIUtils._generateInvalidationsForType = function(type, targ
     var title;
     switch (type) {
     case WebInspector.TimelineModel.RecordType.StyleRecalcInvalidationTracking:
-        title = WebInspector.UIString("Style invalidations");
+        title = WebInspector.UIString("Style Invalidations");
         break;
     case WebInspector.TimelineModel.RecordType.LayoutInvalidationTracking:
-        title = WebInspector.UIString("Layout invalidations");
+        title = WebInspector.UIString("Layout Invalidations");
         break;
     default:
-        title = WebInspector.UIString("Other invalidations");
+        title = WebInspector.UIString("Other Invalidations");
         break;
     }
 
@@ -1983,7 +1983,7 @@ WebInspector.TimelineDetailsContentHelper.prototype = {
             rowElement.classList.add("timeline-details-warning");
         var titleElement = rowElement.createChild("div", "timeline-details-view-row-title");
         titleElement.textContent = title;
-        var valueElement = rowElement.createChild("div", "timeline-details-view-row-value timeline-details-view-row-details" + (this._monospaceValues ? " monospace" : ""));
+        var valueElement = rowElement.createChild("div", "timeline-details-view-row-value" + (this._monospaceValues ? " monospace" : ""));
         if (content instanceof Node)
             valueElement.appendChild(content);
         else

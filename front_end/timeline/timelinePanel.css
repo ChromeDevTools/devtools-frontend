@@ -672,13 +672,13 @@
     box-shadow: #ccc 1px 1px 3px;
     flex-direction: column;
     background-color: white;
-    margin: 4px 4px 5px 4px;
+    margin: 2px 3px;
+    padding: 3px 10px;
 }
 
 .timeline-details-view-row-title {
     color: rgb(152, 152, 152);
     line-height: 21px;
-    padding-left: 10px;
     flex: none;
     position: relative;
     overflow: hidden;
@@ -702,9 +702,9 @@
 }
 
 .timeline-details-view-row-value {
-    padding-left: 30px;
-    min-height: 24px;
-    line-height: 24px;
+    padding-left: 20px;
+    min-height: 20px;
+    line-height: 20px;
     -webkit-user-select: text;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -716,11 +716,7 @@
     line-height: 11px;
 }
 
-.timeline-details-view-row-details {
-    padding-left: 10px;
-}
-
-.timeline-details-view-row-details .timeline-details-warning-marker {
+.timeline-details-view-row-value .timeline-details-warning-marker {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -734,29 +730,7 @@
     margin-right: 8px;
 }
 
-.timeline-details-view-row-details .image-preview-container {
-    padding: 10px;
-}
-
-.timeline-details-view-row-details table {
-    padding-left: 10px;
-}
-
-.timeline-details-view-row-details table td {
-    text-align: left;
-    vertical-align: top;
-}
-
-.timeline-details-view-row-details table td .section {
-    margin-top: -1px;
-}
-
-.timeline-details-view-row-details table td .section  > .header .title {
-    white-space: nowrap;
-}
-
 .timeline-details-view-row-stack-trace {
-    padding: 4px 0 4px 20px;
     line-height: inherit;
 }
 

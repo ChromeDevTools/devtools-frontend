@@ -587,7 +587,7 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
     // This message may vary per event.name;
     var relatedNodeLabel;
 
-    var contentHelper = new WebInspector.TimelineDetailsContentHelper(model.target(), linkifier, relatedNodesMap);
+    var contentHelper = new WebInspector.TimelineDetailsContentHelper(model.target(), linkifier);
     contentHelper.addSection(WebInspector.TimelineUIUtils.eventTitle(event), WebInspector.TimelineUIUtils.eventStyle(event).category);
 
     var eventData = event.args["data"];
@@ -747,7 +747,7 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
         break;
     }
 
-    var relatedNode = contentHelper.nodeForBackendId(event.backendNodeId);
+    var relatedNode = relatedNodesMap && relatedNodesMap.get(event.backendNodeId);
     if (relatedNode)
         contentHelper.appendElementRow(relatedNodeLabel || WebInspector.UIString("Related Node"), WebInspector.DOMPresentationUtils.linkifyNodeReference(relatedNode));
 
@@ -757,7 +757,7 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
     }
 
     if (event.stackTrace || (event.initiator && event.initiator.stackTrace) || event.invalidationTrackingEvents)
-        WebInspector.TimelineUIUtils._generateCauses(event, model.target(), contentHelper);
+        WebInspector.TimelineUIUtils._generateCauses(event, model.target(), relatedNodesMap, contentHelper);
 
     var showPieChart = detailed && WebInspector.TimelineUIUtils._aggregatedStatsForTraceEvent(stats, model, event);
     if (showPieChart) {
@@ -819,7 +819,7 @@ WebInspector.TimelineUIUtils.buildRangeStats = function(model, startTime, endTim
     var startOffset = startTime - model.minimumRecordTime();
     var endOffset = endTime - model.minimumRecordTime();
 
-    var contentHelper = new WebInspector.TimelineDetailsContentHelper(null, null, null);
+    var contentHelper = new WebInspector.TimelineDetailsContentHelper(null, null);
     contentHelper.addSection(WebInspector.UIString("Range:  %s \u2013 %s", Number.millisToString(startOffset), Number.millisToString(endOffset)));
     var pieChart = WebInspector.TimelineUIUtils.generatePieChart(aggregatedStats);
     contentHelper.appendElementRow("", pieChart);
@@ -885,7 +885,7 @@ WebInspector.TimelineUIUtils.buildNetworkRequestInfo = function(request)
 WebInspector.TimelineUIUtils.buildNetworkRequestDetails = function(request, model, linkifier)
 {
     var target = model.target();
-    var contentHelper = new WebInspector.TimelineDetailsContentHelper(target, linkifier, null);
+    var contentHelper = new WebInspector.TimelineDetailsContentHelper(target, linkifier);
 
     var info = WebInspector.TimelineUIUtils.buildNetworkRequestInfo(request);
     for (var item of info) {
@@ -931,9 +931,10 @@ WebInspector.TimelineUIUtils.buildNetworkRequestDetails = function(request, mode
 /**
  * @param {!WebInspector.TracingModel.Event} event
  * @param {?WebInspector.Target} target
+ * @param {?Map<number, ?WebInspector.DOMNode>} relatedNodesMap
  * @param {!WebInspector.TimelineDetailsContentHelper} contentHelper
  */
-WebInspector.TimelineUIUtils._generateCauses = function(event, target, contentHelper)
+WebInspector.TimelineUIUtils._generateCauses = function(event, target, relatedNodesMap, contentHelper)
 {
     var recordTypes = WebInspector.TimelineModel.RecordType;
 
@@ -969,7 +970,7 @@ WebInspector.TimelineUIUtils._generateCauses = function(event, target, contentHe
 
     // Indirect causes.
     if (event.invalidationTrackingEvents && target) { // Full invalidation tracking (experimental).
-        WebInspector.TimelineUIUtils._generateInvalidations(event, target, contentHelper);
+        WebInspector.TimelineUIUtils._generateInvalidations(event, target, relatedNodesMap, contentHelper);
     } else if (initiator && initiator.stackTrace) { // Partial invalidation tracking.
         contentHelper.appendStackTrace(callSiteStackLabel || WebInspector.UIString("First Invalidated"), initiator.stackTrace);
     }
@@ -978,9 +979,10 @@ WebInspector.TimelineUIUtils._generateCauses = function(event, target, contentHe
 /**
  * @param {!WebInspector.TracingModel.Event} event
  * @param {!WebInspector.Target} target
+ * @param {?Map<number, ?WebInspector.DOMNode>} relatedNodesMap
  * @param {!WebInspector.TimelineDetailsContentHelper} contentHelper
  */
-WebInspector.TimelineUIUtils._generateInvalidations = function(event, target, contentHelper)
+WebInspector.TimelineUIUtils._generateInvalidations = function(event, target, relatedNodesMap, contentHelper)
 {
     if (!event.invalidationTrackingEvents)
         return;
@@ -995,7 +997,7 @@ WebInspector.TimelineUIUtils._generateInvalidations = function(event, target, co
 
     Object.keys(invalidations).forEach(function(type) {
         WebInspector.TimelineUIUtils._generateInvalidationsForType(
-            type, target, invalidations[type], contentHelper);
+            type, target, invalidations[type], relatedNodesMap, contentHelper);
     });
 }
 
@@ -1003,9 +1005,10 @@ WebInspector.TimelineUIUtils._generateInvalidations = function(event, target, co
  * @param {string} type
  * @param {!WebInspector.Target} target
  * @param {!Array.<!WebInspector.InvalidationTrackingEvent>} invalidations
+ * @param {?Map<number, ?WebInspector.DOMNode>} relatedNodesMap
  * @param {!WebInspector.TimelineDetailsContentHelper} contentHelper
  */
-WebInspector.TimelineUIUtils._generateInvalidationsForType = function(type, target, invalidations, contentHelper)
+WebInspector.TimelineUIUtils._generateInvalidationsForType = function(type, target, invalidations, relatedNodesMap, contentHelper)
 {
     var title;
     switch (type) {
@@ -1031,7 +1034,7 @@ WebInspector.TimelineUIUtils._generateInvalidationsForType = function(type, targ
 
     var invalidationGroups = groupInvalidationsByCause(invalidations);
     invalidationGroups.forEach(function(group) {
-        var groupElement = new WebInspector.TimelineUIUtils.InvalidationsGroupElement(target, contentHelper, group);
+        var groupElement = new WebInspector.TimelineUIUtils.InvalidationsGroupElement(target, relatedNodesMap, contentHelper, group);
         invalidationsTreeOutline.appendChild(groupElement);
     });
     contentHelper.element.appendChild(detailsNode);
@@ -1081,11 +1084,12 @@ WebInspector.TimelineUIUtils._collectInvalidationNodeIds = function(nodeIds, inv
 /**
   * @constructor
   * @param {!WebInspector.Target} target
+  * @param {?Map<number, ?WebInspector.DOMNode>} relatedNodesMap
   * @param {!WebInspector.TimelineDetailsContentHelper} contentHelper
   * @param {!Array.<!WebInspector.InvalidationTrackingEvent>} invalidations
   * @extends {TreeElement}
   */
-WebInspector.TimelineUIUtils.InvalidationsGroupElement = function(target, contentHelper, invalidations)
+WebInspector.TimelineUIUtils.InvalidationsGroupElement = function(target, relatedNodesMap, contentHelper, invalidations)
 {
     TreeElement.call(this, "", true);
 
@@ -1093,6 +1097,7 @@ WebInspector.TimelineUIUtils.InvalidationsGroupElement = function(target, conten
     this.selectable = false;
     this.toggleOnClick = true;
 
+    this._relatedNodesMap = relatedNodesMap;
     this._contentHelper = contentHelper;
     this._invalidations = invalidations;
     this.title = this._createTitle(target);
@@ -1213,7 +1218,7 @@ WebInspector.TimelineUIUtils.InvalidationsGroupElement.prototype = {
      */
     _createInvalidationNode: function(invalidation, showUnknownNodes)
     {
-        var node = this._contentHelper.nodeForBackendId(invalidation.nodeId);
+        var node = (invalidation.nodeId && this._relatedNodesMap) ? this._relatedNodesMap.get(invalidation.nodeId) : null;
         if (node)
             return WebInspector.DOMPresentationUtils.linkifyNodeReference(node);
         if (invalidation.nodeName) {
@@ -1543,7 +1548,7 @@ WebInspector.TimelineUIUtils.generatePieChart = function(aggregatedStats, selfCa
 WebInspector.TimelineUIUtils.generateDetailsContentForFrame = function(frameModel, frame, filmStripFrame)
 {
     var pieChart = WebInspector.TimelineUIUtils.generatePieChart(frame.timeByCategory);
-    var contentHelper = new WebInspector.TimelineDetailsContentHelper(null, null, null);
+    var contentHelper = new WebInspector.TimelineDetailsContentHelper(null, null);
     contentHelper.addSection(WebInspector.UIString("Frame"));
 
     var duration = WebInspector.TimelineUIUtils.frameDuration(frame);
@@ -1920,15 +1925,13 @@ WebInspector.TimelinePopupContentHelper.prototype = {
  * @constructor
  * @param {?WebInspector.Target} target
  * @param {?WebInspector.Linkifier} linkifier
- * @param {?Map<number, ?WebInspector.DOMNode>} relatedNodesMap
  */
-WebInspector.TimelineDetailsContentHelper = function(target, linkifier, relatedNodesMap)
+WebInspector.TimelineDetailsContentHelper = function(target, linkifier)
 {
     this.fragment = createDocumentFragment();
 
     this._linkifier = linkifier;
     this._target = target;
-    this._relatedNodesMap = relatedNodesMap;
 
     this.element = createElementWithClass("div", "timeline-details-view-block");
     this._tableElement = this.element.createChild("div", "vbox timeline-details-chip-body");
@@ -1966,17 +1969,6 @@ WebInspector.TimelineDetailsContentHelper.prototype = {
     linkifier: function()
     {
         return this._linkifier;
-    },
-
-    /**
-     * @param {?number} backendNodeId
-     * @return {?WebInspector.DOMNode}
-     */
-    nodeForBackendId: function(backendNodeId)
-    {
-        if (!backendNodeId || !this._relatedNodesMap)
-            return null;
-        return this._relatedNodesMap.get(backendNodeId) || null;
     },
 
     /**

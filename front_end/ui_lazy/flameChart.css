@@ -38,6 +38,27 @@
     z-index: 200;
 }
 
+:host-context(.platform-mac) .flame-chart-v-scroll {
+    right: 2px;
+    top: 3px;
+    bottom: 3px;
+    width: 15px;
+}
+
+/* force non-overlay scrollbars */
+:host-context(.platform-mac) ::-webkit-scrollbar {
+    width: 8px;
+}
+
+:host-context(.platform-mac) ::-webkit-scrollbar-thumb {
+    background-color: hsla(0, 0%, 56%, 0.6);
+    border-radius: 50px;
+}
+
+:host-context(.platform-mac) .flame-chart-v-scroll:hover::-webkit-scrollbar-thumb {
+    background-color: hsla(0, 0%, 25%, 0.6);
+}
+
 .flame-chart-selection-overlay {
     position: absolute;
     z-index: 100;

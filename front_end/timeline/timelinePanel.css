@@ -675,35 +675,50 @@
 .timeline-details-view-block {
     flex: none;
     display: flex;
+    box-shadow: #ccc 1px 1px 3px;
+    background-color: white;
     flex-direction: column;
+    margin: 3px 4px;
+    padding-bottom: 5px;
 }
 
 .timeline-details-view-row {
+    padding-left: 10px;
+    flex-direction: row;
     display: flex;
-    box-shadow: #ccc 1px 1px 3px;
-    flex-direction: column;
-    background-color: white;
-    margin: 2px 3px;
-    padding: 3px 10px;
+    line-height: 21px;
+}
+
+.timeline-details-view-block .timeline-details-stack-values {
+    flex-direction: column !important;
+}
+
+.timeline-details-chip-title {
+    font-size: 13px;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.timeline-details-chip-title > div {
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    margin-right: 4px;
+    content: " ";
 }
 
 .timeline-details-view-row-title {
     color: rgb(152, 152, 152);
-    line-height: 21px;
-    flex: none;
-    position: relative;
     overflow: hidden;
 }
 
-.timeline-details-warning .timeline-details-view-row-title::after {
-    width: 16px;
-    height: 16px;
-    background-color: red;
-    position: absolute;
-    right: -8px;
-    top: -8px;
-    transform: rotate(45deg);
-    content: "";
+.timeline-details-warning {
+    background-color: rgba(250, 209, 209, 0.48);
+}
+
+.timeline-details-warning .timeline-details-view-row-title {
+    color: red;
 }
 
 .timeline-details-warning .timeline-details-view-row-value {
@@ -713,14 +728,11 @@
 }
 
 .timeline-details-view-row-value {
-    padding-left: 20px;
-    min-height: 20px;
-    line-height: 20px;
     -webkit-user-select: text;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    margin-right: 5px;
+    padding-left: 10px;
 }
 
 .timeline-details-view-row-value .stack-preview-container {
@@ -748,6 +760,7 @@
 }
 
 .timeline-details-view-row-stack-trace {
+    padding: 4px 0;
     line-height: inherit;
 }
 
@@ -903,6 +916,7 @@
     max-width: 200px;
     max-height: 200px;
     cursor: pointer;
+    border: 1px solid #ddd;
 }
 
 .timeline-overview-popover .frame .time {

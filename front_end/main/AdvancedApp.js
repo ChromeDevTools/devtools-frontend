@@ -29,7 +29,7 @@ WebInspector.AdvancedApp.prototype = {
         this._inspectedPagePlaceholder = new WebInspector.InspectedPagePlaceholder();
         this._inspectedPagePlaceholder.addEventListener(WebInspector.InspectedPagePlaceholder.Events.Update, this._onSetInspectedPageBounds.bind(this), this);
         if (Runtime.experiments.isEnabled("deviceMode"))
-            this._responsiveDesignView = new WebInspector.DeviceModeView(this._inspectedPagePlaceholder);
+            this._responsiveDesignView = new WebInspector.DeviceModeView.Wrapper(this._inspectedPagePlaceholder);
         else
             this._responsiveDesignView = new WebInspector.ResponsiveDesignView(this._inspectedPagePlaceholder);
 

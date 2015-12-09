@@ -5,12 +5,11 @@
 /**
  * @constructor
  * @extends {WebInspector.VBox}
- * @param {!WebInspector.InspectedPagePlaceholder} inspectedPagePlaceholder
+ * @param {function()} pageResizeCallback
  */
-WebInspector.DeviceModeView = function(inspectedPagePlaceholder)
+WebInspector.DeviceModeView = function(pageResizeCallback)
 {
     WebInspector.VBox.call(this, true);
-    WebInspector.DeviceModeView._instance = this;
     this.setMinimumSize(150, 150);
     this.element.classList.add("device-mode-view");
     this.registerRequiredCSS("emulation/deviceModeView.css");
@@ -21,27 +20,17 @@ WebInspector.DeviceModeView = function(inspectedPagePlaceholder)
     // TODO(dgozman): remove CountUpdated event.
     this._showMediaInspectorSetting = WebInspector.settings.createSetting("showMediaQueryInspector", false);
     this._showMediaInspectorSetting.addChangeListener(this._updateUI, this);
-    this._showDeviceModeSetting = WebInspector.settings.createSetting("showDeviceMode", true);
-    this._showDeviceModeSetting.addChangeListener(this._showDeviceModeSettingChanged, this);
 
-    this._inspectedPagePlaceholder = inspectedPagePlaceholder;
+    this._pageResizeCallback = pageResizeCallback;
     this._createUI();
     WebInspector.zoomManager.addEventListener(WebInspector.ZoomManager.Events.ZoomChanged, this._updateUI, this);
-
-    this._openButton = new WebInspector.ToolbarButton(WebInspector.UIString("Show device toolbar"), "emulation-toolbar-item");
-    this._openButton.setVisible(!this._showDeviceModeSetting.get());
-    this._openButton.addEventListener("click", this._showDeviceModeSetting.set.bind(this._showDeviceModeSetting, true));
 };
-
-/** @type {!WebInspector.DeviceModeView} */
-WebInspector.DeviceModeView._instance;
 
 WebInspector.DeviceModeView.prototype = {
     _createUI: function()
     {
-        this._toolbar = new WebInspector.DeviceModeView.Toolbar(this._model, this._showMediaInspectorSetting, this._showDeviceModeSetting);
+        this._toolbar = new WebInspector.DeviceModeView.Toolbar(this._model, this._showMediaInspectorSetting);
         this.contentElement.appendChild(this._toolbar.element());
-        this._toolbar.element().classList.toggle("hidden", !this._showDeviceModeSetting.get());
 
         var contentClip = this.contentElement.createChild("div", "device-mode-content-clip vbox");
         this._mediaInspectorContainer = contentClip.createChild("div", "device-mode-media-container");
@@ -67,8 +56,12 @@ WebInspector.DeviceModeView.prototype = {
         this._createResizer(this._heightResizerElement, false, true);
 
         this._pageArea = this._screenArea.createChild("div", "device-mode-page-area");
-        this._inspectedPagePlaceholder.clearMinimumSizeAndMargins();
-        this._inspectedPagePlaceholder.show(this._pageArea);
+        this._pageArea.createChild("content");
+    },
+
+    toggleDeviceMode: function()
+    {
+        this._toolbar.toggleDeviceMode();
     },
 
     /**
@@ -142,11 +135,6 @@ WebInspector.DeviceModeView.prototype = {
         this._model.resumeScaleChanges();
     },
 
-    updatePageResizer: function()
-    {
-        // TODO(dgozman): remove once we switch over.
-    },
-
     _updateUI: function()
     {
         if (!this.isShowing())
@@ -198,7 +186,7 @@ WebInspector.DeviceModeView.prototype = {
         this._toolbar.update();
         this._loadScreenImage(this._model.screenImage());
         if (resizePagePlaceholder)
-            this._inspectedPagePlaceholder.onResize();
+            this._pageResizeCallback.call(null);
         this._mediaInspector.setAxisTransform(-cssScreenRect.left / this._model.scale(), this._model.scale());
         if (resizeSelf)
             this.onResize();
@@ -224,18 +212,6 @@ WebInspector.DeviceModeView.prototype = {
         this._screenImage.classList.toggle("hidden", !success);
     },
 
-    _showDeviceModeSettingChanged: function()
-    {
-        var show = this._showDeviceModeSetting.get();
-        this._openButton.setVisible(!show);
-        this._toolbar.element().classList.toggle("hidden", !show);
-        if (show)
-            this._toolbar.restore();
-        else
-            this._model.emulate(WebInspector.DeviceModeModel.Type.None, null, null);
-        this.onResize();
-    },
-
     /**
      * @override
      */
@@ -255,8 +231,7 @@ WebInspector.DeviceModeView.prototype = {
     wasShown: function()
     {
         this._mediaInspector.setEnabled(true);
-        if (this._showDeviceModeSetting.get())
-            this._toolbar.restore();
+        this._toolbar.restore();
     },
 
     /**
@@ -273,16 +248,12 @@ WebInspector.DeviceModeView.prototype = {
 /**
  * @param {!WebInspector.DeviceModeModel} model
  * @param {!WebInspector.Setting} showMediaInspectorSetting
- * @param {!WebInspector.Setting} showDeviceModeSetting
  * @constructor
  */
-WebInspector.DeviceModeView.Toolbar = function(model, showMediaInspectorSetting, showDeviceModeSetting)
+WebInspector.DeviceModeView.Toolbar = function(model, showMediaInspectorSetting)
 {
-    WebInspector.DeviceModeView.Toolbar._instance = this;
-
     this._model = model;
     this._showMediaInspectorSetting = showMediaInspectorSetting;
-    this._showDeviceModeSetting = showDeviceModeSetting;
     /** @type {!Map<!WebInspector.EmulatedDevice, !WebInspector.EmulatedDevice.Mode>} */
     this._lastMode = new Map();
     /** @type {?WebInspector.EmulatedDevice} */
@@ -365,9 +336,6 @@ WebInspector.DeviceModeView.Toolbar = function(model, showMediaInspectorSetting,
     this._restored = false;
 }
 
-/** @type {!WebInspector.DeviceModeView.Toolbar} */
-WebInspector.DeviceModeView.Toolbar._instance;
-
 WebInspector.DeviceModeView.Toolbar.prototype = {
     /**
      * @param {!WebInspector.ContextMenu} contextMenu
@@ -433,9 +401,6 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
 
         contextMenu.appendCheckboxItem(WebInspector.UIString("Show media queries"), this._toggleMediaInspector.bind(this), this._showMediaInspectorSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
         contextMenu.appendItem(WebInspector.UIString("Configure network\u2026"), this._openNetworkConfig.bind(this), false);
-
-        contextMenu.appendSeparator();
-        contextMenu.appendItem(WebInspector.UIString("Hide device toolbar"), this._showDeviceModeSetting.set.bind(this._showDeviceModeSetting, false), false);
     },
 
     _toggleMediaInspector: function()
@@ -760,12 +725,9 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
         this._applyType(/** @type {!WebInspector.DeviceModeModel.Type} */ (this._persistenceSetting.get().type));
     },
 
-    _toggleDeviceMode: function()
+    toggleDeviceMode: function()
     {
-        if (!this._showDeviceModeSetting.get())
-            this._showDeviceModeSetting.set(true);
-        else
-            this._applyType(this._model.type() === WebInspector.DeviceModeModel.Type.None ? (this._previousModelType || WebInspector.DeviceModeModel.Type.Responsive) : WebInspector.DeviceModeModel.Type.None);
+        this._applyType(this._model.type() === WebInspector.DeviceModeModel.Type.None ? (this._previousModelType || WebInspector.DeviceModeModel.Type.Responsive) : WebInspector.DeviceModeModel.Type.None);
     },
 
     /**
@@ -799,29 +761,69 @@ WebInspector.DeviceModeView.ActionDelegate.prototype = {
      */
     handleAction: function(context, actionId)
     {
-        if (actionId === "emulation.toggle-device-mode" && WebInspector.DeviceModeView.Toolbar._instance) {
-            WebInspector.DeviceModeView.Toolbar._instance._toggleDeviceMode();
+        if (actionId === "emulation.toggle-device-mode" && WebInspector.DeviceModeView._wrapperInstance) {
+            WebInspector.DeviceModeView._wrapperInstance._toggleDeviceMode();
+            return true;
+        }
+        if (actionId === "emulation.toggle-device-toolbar" && WebInspector.DeviceModeView._wrapperInstance) {
+            WebInspector.DeviceModeView._wrapperInstance._toggleDeviceToolbar();
             return true;
         }
         return false;
     }
 }
 
+
 /**
+ * @extends {WebInspector.VBox}
+ * @param {!WebInspector.InspectedPagePlaceholder} inspectedPagePlaceholder
  * @constructor
- * @implements {WebInspector.ToolbarItem.Provider}
  */
-WebInspector.DeviceModeView.ButtonProvider = function()
+WebInspector.DeviceModeView.Wrapper = function(inspectedPagePlaceholder)
 {
+    WebInspector.VBox.call(this);
+    WebInspector.DeviceModeView._wrapperInstance = this;
+    this._inspectedPagePlaceholder = inspectedPagePlaceholder;
+    this._deviceModeView = new WebInspector.DeviceModeView(this._resizePlaceholder.bind(this));
+    this._showDeviceToolbarSetting = WebInspector.settings.createSetting("emulation.showDeviceToolbar", true);
+    this._showDeviceToolbarSetting.addChangeListener(this._update, this);
+    this._update();
 }
 
-WebInspector.DeviceModeView.ButtonProvider.prototype = {
-    /**
-     * @override
-     * @return {?WebInspector.ToolbarItem}
-     */
-    item: function()
+/** @type {!WebInspector.DeviceModeView.Wrapper} */
+WebInspector.DeviceModeView._wrapperInstance;
+
+WebInspector.DeviceModeView.Wrapper.prototype = {
+    _toggleDeviceMode: function()
     {
-        return WebInspector.DeviceModeView._instance ? WebInspector.DeviceModeView._instance._openButton : null;
-    }
+        if (this._showDeviceToolbarSetting.get())
+            this._deviceModeView.toggleDeviceMode();
+    },
+
+    _toggleDeviceToolbar: function()
+    {
+        this._showDeviceToolbarSetting.set(!this._showDeviceToolbarSetting.get());
+    },
+
+    _update: function()
+    {
+        if (this._showDeviceToolbarSetting.get()) {
+            this._deviceModeView.show(this.element);
+            this._inspectedPagePlaceholder.clearMinimumSizeAndMargins();
+            this._inspectedPagePlaceholder.show(this._deviceModeView.element);
+        } else {
+            this._deviceModeView.detach();
+            this._inspectedPagePlaceholder.restoreMinimumSizeAndMargins();
+            this._inspectedPagePlaceholder.show(this.element);
+            this._deviceModeView._model.emulate(WebInspector.DeviceModeModel.Type.None, null, null);
+        }
+    },
+
+    _resizePlaceholder: function()
+    {
+        if (this._showDeviceToolbarSetting.get())
+            this._inspectedPagePlaceholder.onResize();
+    },
+
+    __proto__: WebInspector.VBox.prototype
 }

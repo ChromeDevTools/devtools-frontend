@@ -29,6 +29,7 @@
     { "name": "promises" },
     { "name": "snippets" },
     { "name": "diff" },
+    { "name": "sass" },
     { "name": "accessibility" },
     { "name": "animation" },
     { "name": "screencast", "condition": "remoteFrontend", "type": "remote" },

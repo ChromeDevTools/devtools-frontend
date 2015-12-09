@@ -1,0 +1,6 @@
+{
+    "dependencies": ["platform", "common", "diff"],
+    "scripts": [
+        "SASSSupport.js"
+    ]
+}

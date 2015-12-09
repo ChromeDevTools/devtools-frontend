@@ -43,6 +43,7 @@
             '<@(devtools_host_js_files)',
             '<@(devtools_main_js_files)',
             '<@(devtools_platform_js_files)',
+            '<@(devtools_sass_js_files)',
             '<@(devtools_sdk_js_files)',
             '<@(devtools_toolbox_bootstrap_js_files)',
             '<@(devtools_ui_js_files)',
@@ -125,6 +126,9 @@
             'front_end/host/Platform.js',
             'front_end/host/ResourceLoader.js',
             'front_end/host/UserMetrics.js',
+        ],
+        'devtools_sass_js_files': [
+            'front_end/sass/SASSSupport.js',
         ],
         'devtools_screencast_js_files': [
             'front_end/screencast/screencastView.css',
@@ -329,6 +333,7 @@
             'front_end/profiler/module.json',
             'front_end/promises/module.json',
             'front_end/resources/module.json',
+            'front_end/sass/module.json',
             'front_end/security/module.json',
             'front_end/screencast/module.json',
             'front_end/script_formatter_worker/module.json',

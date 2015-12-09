@@ -36,6 +36,9 @@ WebInspector.DeviceModeView.prototype = {
         this._mediaInspectorContainer = contentClip.createChild("div", "device-mode-media-container");
         this._contentArea = contentClip.createChild("div", "device-mode-content-area");
 
+        this._deviceBlueprints = this._contentArea.createChild("div", "fill");
+        WebInspector.emulatedDevicesList.addEventListener(WebInspector.EmulatedDevicesList.Events.StandardDevicesUpdated, this._updateBlueprints, this);
+
         this._screenArea = this._contentArea.createChild("div", "device-mode-screen-area");
         this._screenImage = this._screenArea.createChild("img", "device-mode-screen-image hidden");
         this._screenImage.addEventListener("load", this._onScreenImageLoaded.bind(this, true), false);
@@ -144,6 +147,11 @@ WebInspector.DeviceModeView.prototype = {
         var resizePagePlaceholder = false;
         var resizeSelf = false;
 
+        if (this._cachedModelType !== this._model.type()) {
+            this._updateBlueprints();
+            this._cachedModelType = this._model.type();
+        }
+
         var cssScreenRect = this._model.screenRect().scale(1 / zoomFactor);
         if (!cssScreenRect.isEqual(this._cachedCssScreenRect)) {
             this._screenArea.style.left = cssScreenRect.left + "px";
@@ -190,6 +198,24 @@ WebInspector.DeviceModeView.prototype = {
         this._mediaInspector.setAxisTransform(-cssScreenRect.left / this._model.scale(), this._model.scale());
         if (resizeSelf)
             this.onResize();
+    },
+
+    _updateBlueprints: function()
+    {
+        this._deviceBlueprints.removeChildren();
+        if (this._model.type() !== WebInspector.DeviceModeModel.Type.Responsive)
+            return;
+        var devices = WebInspector.emulatedDevicesList.standard();
+        devices.sort((device1, device2) => device2.vertical.width * device2.vertical.height - device1.vertical.width * device1.vertical.height);
+        for (var device of devices) {
+            if (!device.show())
+                continue;
+            var blueprintContainer = this._deviceBlueprints.createChild("div", "device-mode-blueprint-container fill");
+            var blueprint = blueprintContainer.createChild("div", "device-mode-blueprint");
+            blueprint.style.width = device.vertical.width + "px";
+            blueprint.style.height = device.vertical.height + "px";
+            blueprint.createChild("span").textContent = device.title;
+        }
     },
 
     /**

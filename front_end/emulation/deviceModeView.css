@@ -152,3 +152,36 @@
     display: flex;
     background-color: #fcfcfc;
 }
+
+.device-mode-blueprint-container {
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.device-mode-blueprint {
+    display: flex;
+    border-left: 1px dashed #dcdcdc;
+    border-right: 1px dashed #dcdcdc;
+    border-bottom: 1px dashed #dcdcdc;
+    flex-direction: column;
+    justify-content: flex-end;
+    text-align: end;
+    color: #aaa;
+    pointer-events: initial;
+}
+
+.device-mode-blueprint:hover {
+    border-color: #aaa;
+}
+
+.device-mode-blueprint > span {
+    transition: opacity 150ms;
+    opacity: 0;
+    padding: 3px;
+}
+
+.device-mode-blueprint:hover > span {
+    opacity: 1;
+    display: initial;
+}

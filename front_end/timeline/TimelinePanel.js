@@ -573,11 +573,11 @@ WebInspector.TimelinePanel.prototype = {
     _setUIControlsEnabled: function(enabled)
     {
         /**
-         * @param {!WebInspector.ToolbarButton} toolbarItem
+         * @param {!WebInspector.ToolbarButton} toolbarButton
          */
-        function handler(toolbarItem)
+        function handler(toolbarButton)
         {
-            toolbarItem.setEnabled(enabled);
+            toolbarButton.setEnabled(enabled);
         }
         this._recordingOptionUIControls.forEach(handler);
     },

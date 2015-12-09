@@ -119,7 +119,7 @@ WebInspector.StylesSidebarPane.prototype = {
     },
 
     /**
-     * @param {!WebInspector.Event} event
+     * @param {!Event} event
      */
     _onAddButtonLongClick: function(event)
     {
@@ -141,7 +141,7 @@ WebInspector.StylesSidebarPane.prototype = {
 
         contextMenuDescriptors.sort(compareDescriptors);
 
-        var contextMenu = new WebInspector.ContextMenu(/** @type {!Event} */(event.data));
+        var contextMenu = new WebInspector.ContextMenu(event);
         for (var i = 0; i < contextMenuDescriptors.length; ++i) {
             var descriptor = contextMenuDescriptors[i];
             contextMenu.appendItem(descriptor.text, descriptor.handler);
@@ -2947,9 +2947,9 @@ WebInspector.StylesSidebarPropertyRenderer.prototype = {
 WebInspector.StylesSidebarPane.createAddNewRuleButton = function(stylesSidebarPane)
 {
     var button = new WebInspector.ToolbarButton(WebInspector.UIString("New Style Rule"), "add-toolbar-item");
-    button.makeLongClickEnabled();
     button.addEventListener("click", stylesSidebarPane._createNewRuleInViaInspectorStyleSheet, stylesSidebarPane);
-    button.addEventListener("longClickDown", stylesSidebarPane._onAddButtonLongClick, stylesSidebarPane);
+    button.element.createChild("div", "long-click-glyph toolbar-button-theme");
+    new WebInspector.LongClickController(button.element, stylesSidebarPane._onAddButtonLongClick.bind(stylesSidebarPane));
     WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, onNodeChanged);
     onNodeChanged();
     return button;

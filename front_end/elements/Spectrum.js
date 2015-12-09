@@ -270,9 +270,7 @@ WebInspector.Spectrum.prototype = {
                 shadow = colorElement.createChild("div", "spectrum-palette-color spectrum-palette-color-shadow");
                 shadow.style.background = palette.colors[i];
                 colorElement.title = WebInspector.UIString(palette.colors[i] + ". Long-click to show alternate shades.");
-                var controller = new WebInspector.LongClickController(colorElement);
-                controller.enable();
-                controller.addEventListener(WebInspector.LongClickController.Events.LongClick, this._showLightnessShades.bind(this, colorElement, palette.colors[i]));
+                new WebInspector.LongClickController(colorElement, this._showLightnessShades.bind(this, colorElement, palette.colors[i]));
             }
             this._paletteContainer.appendChild(colorElement);
         }
@@ -296,7 +294,7 @@ WebInspector.Spectrum.prototype = {
     /**
      * @param {!Element} colorElement
      * @param {string} colorText
-     * @param {!WebInspector.Event} event
+     * @param {!Event} event
      */
     _showLightnessShades: function(colorElement, colorText, event)
     {

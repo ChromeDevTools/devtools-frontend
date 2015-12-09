@@ -1104,18 +1104,14 @@ WebInspector.animateFunction = function(window, func, params, frames, animationC
  * @constructor
  * @extends {WebInspector.Object}
  * @param {!Element} element
+ * @param {function(!Event)} callback
  */
-WebInspector.LongClickController = function(element)
+WebInspector.LongClickController = function(element, callback)
 {
     this._element = element;
+    this._callback = callback;
+    this._enable();
 }
-
-/**
- * @enum {string}
- */
-WebInspector.LongClickController.Events = {
-    LongClick: "LongClick"
-};
 
 WebInspector.LongClickController.prototype = {
     reset: function()
@@ -1126,7 +1122,7 @@ WebInspector.LongClickController.prototype = {
         }
     },
 
-    enable: function()
+    _enable: function()
     {
         if (this._longClickData)
             return;
@@ -1149,7 +1145,8 @@ WebInspector.LongClickController.prototype = {
         {
             if (e.which !== 1)
                 return;
-            this._longClickInterval = setTimeout(longClicked.bind(this, e), 200);
+            var callback = this._callback;
+            this._longClickInterval = setTimeout(callback.bind(null, e), 200);
         }
 
         /**
@@ -1162,18 +1159,9 @@ WebInspector.LongClickController.prototype = {
                 return;
             this.reset();
         }
-
-        /**
-         * @param {!Event} e
-         * @this {WebInspector.LongClickController}
-         */
-        function longClicked(e)
-        {
-            this.dispatchEventToListeners(WebInspector.LongClickController.Events.LongClick, e);
-        }
     },
 
-    disable: function()
+    dispose: function()
     {
         if (!this._longClickData)
             return;

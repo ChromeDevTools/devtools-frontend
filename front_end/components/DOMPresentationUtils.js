@@ -232,7 +232,7 @@ WebInspector.DOMPresentationUtils.buildStackTracePreviewContents = function(targ
     {
         for (var stackFrame of stackTrace) {
             var row = createElement("tr");
-            row.createChild("td").textContent = WebInspector.beautifyFunctionName(stackFrame.functionName);
+            row.createChild("td", "function-name").textContent = WebInspector.beautifyFunctionName(stackFrame.functionName);
             row.createChild("td").textContent = " @ ";
             row.createChild("td").appendChild(linkifier.linkifyConsoleCallFrame(target, stackFrame));
             contentElement.appendChild(row);

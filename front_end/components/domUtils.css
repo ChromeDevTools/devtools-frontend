@@ -29,6 +29,12 @@
 
 .stack-preview-container td {
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.stack-preview-container .function-name {
+    max-width: 80em;
 }
 
 .node-label-name {

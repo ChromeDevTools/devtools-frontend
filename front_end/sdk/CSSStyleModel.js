@@ -1855,8 +1855,17 @@ WebInspector.CSSStyleSheetHeader.prototype = {
      */
     _trimSourceURL: function(text)
     {
-        var sourceURLRegex = /\n[\040\t]*\/\*#[\040\t]sourceURL=[\040\t]*([^\s]*)[\040\t]*\*\/[\040\t]*$/mg;
-        return text.replace(sourceURLRegex, "");
+        var sourceURLIndex = text.lastIndexOf("/*# sourceURL=");
+        if (sourceURLIndex === -1)
+            return text;
+        var sourceURLLineIndex = text.lastIndexOf("\n", sourceURLIndex);
+        if (sourceURLLineIndex === -1)
+            return text;
+        var sourceURLLine = text.substr(sourceURLLineIndex + 1).split("\n", 1)[0];
+        var sourceURLRegex = /[\040\t]*\/\*# sourceURL=[\040\t]*([^\s]*)[\040\t]*\*\/[\040\t]*$/;
+        if (sourceURLLine.search(sourceURLRegex) === -1)
+            return text;
+        return text.substr(0, sourceURLLineIndex) + text.substr(sourceURLLineIndex + sourceURLLine.length + 1);
     },
 
     /**

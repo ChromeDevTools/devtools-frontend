@@ -336,7 +336,7 @@ WebInspector.ResourceScriptFile.prototype = {
             return false;
         if (typeof this._scriptSource === "undefined")
             return false;
-        if (!this._uiSourceCode.workingCopy().startsWith(this._scriptSource))
+        if (!this._uiSourceCode.workingCopy().startsWith(this._scriptSource.trimRight()))
             return true;
         var suffix = this._uiSourceCode.workingCopy().substr(this._scriptSource.length);
         return !!suffix.length && !suffix.match(WebInspector.Script.sourceURLRegex);

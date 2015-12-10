@@ -27,7 +27,6 @@ WebInspector.AnimationTimeline = function()
     this._nodesMap = new Map();
     this._uiAnimations = [];
     this._groupBuffer = [];
-    this._groupBufferSize = 8;
     /** @type {!Map.<!WebInspector.AnimationModel.AnimationGroup, !WebInspector.AnimationGroupPreviewUI>} */
     this._previewMap = new Map();
     this._symbol = Symbol("animationTimeline");
@@ -371,11 +370,11 @@ WebInspector.AnimationTimeline.prototype = {
                 this._previewMap.get(group).replay();
             return;
         }
-        this._groupBuffer.push(group);
         this._groupBuffer.sort(startTimeComparator);
         // Discard oldest groups from buffer if necessary
         var groupsToDiscard = [];
-        while (this._groupBuffer.length > this._groupBufferSize) {
+        var bufferSize = this.width() / 50;
+        while (this._groupBuffer.length > bufferSize) {
             var toDiscard = this._groupBuffer.splice(this._groupBuffer[0] === this._selectedGroup ? 1 : 0, 1);
             groupsToDiscard.push(toDiscard[0]);
         }
@@ -386,6 +385,7 @@ WebInspector.AnimationTimeline.prototype = {
         }
         // Generate preview
         var preview = new WebInspector.AnimationGroupPreviewUI(group);
+        this._groupBuffer.push(group);
         this._previewMap.set(group, preview);
         this._previewContainer.appendChild(preview.element);
         preview.removeButton().addEventListener("click", this._removeAnimationGroup.bind(this, group));

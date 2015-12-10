@@ -945,3 +945,13 @@ if (window.domAutomationController) {
 }
 
 })(window);
+
+if (!DOMTokenList.prototype.__originalDOMTokenListToggle) {
+    DOMTokenList.prototype.__originalDOMTokenListToggle = DOMTokenList.prototype.toggle;
+    DOMTokenList.prototype.toggle = function(token, force)
+    {
+        if (arguments.length === 1)
+            force = !this.contains(token);
+        return this.__originalDOMTokenListToggle(token, !!force);
+    }
+}

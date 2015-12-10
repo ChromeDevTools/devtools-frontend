@@ -103,7 +103,6 @@ WebInspector.Main.prototype = {
     _initializeExperiments: function(prefs)
     {
         Runtime.experiments.register("accessibilityInspection", "Accessibility Inspection");
-        Runtime.experiments.register("animationInspection", "Animation Inspection");
         Runtime.experiments.register("applyCustomStylesheet", "Allow custom UI themes");
         Runtime.experiments.register("blackboxJSFramesOnTimeline", "Blackbox JavaScript frames on Timeline", true);
         Runtime.experiments.register("colorContrastRatio", "Contrast ratio line in color picker", true);
@@ -149,7 +148,6 @@ WebInspector.Main.prototype = {
         }
 
         Runtime.experiments.setDefaultExperiments([
-            "animationInspection",
             "deviceMode",
             "securityPanel"
         ]);

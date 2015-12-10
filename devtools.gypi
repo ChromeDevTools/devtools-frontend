@@ -368,7 +368,6 @@
         'devtools_animation_js_files': [
             'front_end/animation/animationScreenshotPopover.css',
             'front_end/animation/animationTimeline.css',
-            'front_end/animation/AnimationControlPane.js',
             'front_end/animation/AnimationGroupPreviewUI.js',
             'front_end/animation/AnimationModel.js',
             'front_end/animation/AnimationScreenshotPopover.js',

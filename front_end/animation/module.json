@@ -2,7 +2,7 @@
     "extensions": [
         {
             "type": "@WebInspector.ToolbarItem.Provider",
-            "className": "WebInspector.AnimationControlPane.ButtonProvider",
+            "className": "WebInspector.AnimationTimeline.ButtonProvider",
             "order": 2,
             "location": "styles-sidebarpane-toolbar"
         },
@@ -23,8 +23,7 @@
         "AnimationGroupPreviewUI.js",
         "AnimationScreenshotPopover.js",
         "AnimationTimeline.js",
-        "AnimationUI.js",
-        "AnimationControlPane.js"
+        "AnimationUI.js"
     ],
     "resources": [
         "animationScreenshotPopover.css",

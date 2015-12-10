@@ -54,6 +54,7 @@ WebInspector.DOMNode = function(domModel, doc, isInShadowTree, payload)
     this._pseudoType = payload.pseudoType;
     this._shadowRootType = payload.shadowRootType;
     this._frameId = payload.frameId || null;
+    this._xmlVersion = payload.xmlVersion;
 
     this._shadowRoots = [];
 
@@ -784,7 +785,7 @@ WebInspector.DOMNode.prototype = {
      */
     isXMLNode: function()
     {
-        return !!this.ownerDocument && !!this.ownerDocument.xmlVersion;
+        return !!this._xmlVersion;
     },
 
     /**
@@ -1058,7 +1059,6 @@ WebInspector.DOMDocument = function(domModel, payload)
     WebInspector.DOMNode.call(this, domModel, this, false, payload);
     this.documentURL = payload.documentURL || "";
     this.baseURL = payload.baseURL || "";
-    this.xmlVersion = payload.xmlVersion;
     this._listeners = {};
 }
 

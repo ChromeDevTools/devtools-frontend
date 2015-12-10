@@ -44,7 +44,6 @@ WebInspector.NetworkManager = function(target)
         this._networkAgent.setCacheDisabled(true);
     if (WebInspector.moduleSetting("monitoringXHREnabled").get())
         this._networkAgent.setMonitoringXHREnabled(true);
-    this._initNetworkConditions();
     this._networkAgent.enable();
 
     /** @type {!Map<!NetworkAgent.CertificateId, !Promise<!NetworkAgent.CertificateDetails>>} */
@@ -72,17 +71,8 @@ WebInspector.NetworkManager._MIMETypes = {
     "text/vtt":                    {"texttrack": true},
 }
 
-/** @typedef {{throughput: number, latency: number}} */
+/** @typedef {{download: number, upload: number, latency: number}} */
 WebInspector.NetworkManager.Conditions;
-
-/**
- * @param {!WebInspector.NetworkManager.Conditions} conditions
- * @return {boolean}
- */
-WebInspector.NetworkManager.IsThrottlingEnabled = function(conditions)
-{
-    return conditions.throughput >= 0;
-}
 
 WebInspector.NetworkManager.prototype = {
     /**
@@ -106,46 +96,6 @@ WebInspector.NetworkManager.prototype = {
     dispose: function()
     {
         WebInspector.moduleSetting("cacheDisabled").removeChangeListener(this._cacheDisabledSettingChanged, this);
-    },
-
-    _initNetworkConditions: function()
-    {
-        this._networkAgent.canEmulateNetworkConditions(callback.bind(this));
-
-        /**
-         * @this {WebInspector.NetworkManager}
-         */
-        function callback(error, canEmulate)
-        {
-            if (error || !canEmulate)
-                return;
-            WebInspector.moduleSetting("networkConditions").addChangeListener(this._networkConditionsSettingChanged, this);
-            var conditions = WebInspector.moduleSetting("networkConditions").get();
-            if (conditions.throughput < 0)
-                return;
-            this._updateNetworkConditions(conditions);
-        }
-    },
-
-    /**
-     * @param {!WebInspector.NetworkManager.Conditions} conditions
-     */
-    _updateNetworkConditions: function(conditions)
-    {
-        if (conditions.throughput < 0) {
-            this._networkAgent.emulateNetworkConditions(false, 0, 0, 0);
-        } else {
-            var offline = !conditions.throughput && !conditions.latency;
-            this._networkAgent.emulateNetworkConditions(!!offline, conditions.latency, conditions.throughput, conditions.throughput);
-        }
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _networkConditionsSettingChanged: function(event)
-    {
-        this._updateNetworkConditions(/** @type {!WebInspector.NetworkManager.Conditions} */ (event.data));
     },
 
     /**
@@ -701,9 +651,14 @@ WebInspector.MultitargetNetworkManager = function()
     this._updateBlockedURLs();
 
     this._userAgentOverride = "";
+    /** @type {!Set<!Protocol.NetworkAgent>} */
+    this._agentsCapableOfEmulation = new Set();
+    /** @type {!WebInspector.NetworkManager.Conditions} */
+    this._networkConditions = { download: -1, upload: -1, latency: 0 };
 }
 
 WebInspector.MultitargetNetworkManager.Events = {
+    ConditionsChanged: "ConditionsChanged",
     UserAgentChanged: "UserAgentChanged"
 }
 
@@ -721,6 +676,20 @@ WebInspector.MultitargetNetworkManager.prototype = {
             networkAgent.setUserAgentOverride(this._currentUserAgent());
         for (var url of this._blockedURLs)
             networkAgent.addBlockedURL(url);
+
+        networkAgent.canEmulateNetworkConditions(callback.bind(this));
+
+        /**
+         * @this {WebInspector.MultitargetNetworkManager}
+         */
+        function callback(error, canEmulate)
+        {
+            if (error || !canEmulate)
+                return;
+            this._agentsCapableOfEmulation.add(networkAgent);
+            if (this.isThrottling())
+                this._updateNetworkConditions(networkAgent);
+        }
     },
 
     /**
@@ -729,6 +698,55 @@ WebInspector.MultitargetNetworkManager.prototype = {
      */
     targetRemoved: function(target)
     {
+        this._agentsCapableOfEmulation.delete(target.networkAgent());
+    },
+
+    /**
+     * @return {boolean}
+     */
+    isThrottling: function()
+    {
+        return this._networkConditions.download >= 0 || this._networkConditions.upload >= 0 || this._networkConditions.latency > 0;
+    },
+
+    /**
+     * @return {boolean}
+     */
+    isOffline: function()
+    {
+        return !this._networkConditions.download && !this._networkConditions.upload;
+    },
+
+    /**
+     * @param {!WebInspector.NetworkManager.Conditions} conditions
+     */
+    setNetworkConditions: function(conditions)
+    {
+        this._networkConditions = conditions;
+        for (var agent of this._agentsCapableOfEmulation)
+            this._updateNetworkConditions(agent);
+        this.dispatchEventToListeners(WebInspector.MultitargetNetworkManager.Events.ConditionsChanged);
+    },
+
+    /**
+     * @return {!WebInspector.NetworkManager.Conditions}
+     */
+    networkConditions: function()
+    {
+        return this._networkConditions;
+    },
+
+    /**
+     * @param {!Protocol.NetworkAgent} networkAgent
+     */
+    _updateNetworkConditions: function(networkAgent)
+    {
+        var conditions = this._networkConditions;
+        if (!this.isThrottling()) {
+            networkAgent.emulateNetworkConditions(false, 0, 0, 0);
+        } else {
+            networkAgent.emulateNetworkConditions(this.isOffline(), conditions.latency, conditions.download < 0 ? 0 : conditions.download, conditions.upload < 0 ? 0 : conditions.upload);
+        }
     },
 
     /**

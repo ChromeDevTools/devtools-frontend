@@ -55,7 +55,8 @@ WebInspector.UserMetrics.Action = {
     RevisionApplied: 12,
     FileSystemDirectoryContentReceived: 13,
     StyleRuleEdited: 14,
-    CommandEvaluatedInConsolePanel: 15
+    CommandEvaluatedInConsolePanel: 15,
+    DOMPropertiesExpanded: 16
 }
 
 WebInspector.UserMetrics._PanelCodes = {

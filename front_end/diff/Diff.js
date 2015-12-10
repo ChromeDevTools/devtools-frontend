@@ -47,10 +47,53 @@ WebInspector.Diff = {
             return text;
         }
     },
+
+    /**
+     * @param {!Array.<!{0: number, 1: string}>} diff
+     * @return {!Array<!Array<number>>}
+     */
+    convertToEditDiff: function(diff)
+    {
+        var normalized = [];
+        var added = 0;
+        var removed = 0;
+        for (var i = 0; i < diff.length; ++i) {
+            var token = diff[i];
+            if (token[0] === WebInspector.Diff.Operation.Equal) {
+                flush();
+                normalized.push([WebInspector.Diff.Operation.Equal, token[1].length]);
+            } else if (token[0] === WebInspector.Diff.Operation.Delete) {
+                removed += token[1].length;
+            } else {
+                added += token[1].length;
+            }
+        }
+        flush();
+        return normalized;
+
+        function flush()
+        {
+            if (added && removed) {
+                var min = Math.min(added, removed);
+                normalized.push([WebInspector.Diff.Operation.Edit, min]);
+                added -= min;
+                removed -= min;
+            }
+            if (added || removed) {
+                var balance = added - removed;
+                var type = balance < 0 ? WebInspector.Diff.Operation.Delete : WebInspector.Diff.Operation.Insert;
+                normalized.push([type, Math.abs(balance)]);
+                added = 0;
+                removed = 0;
+            }
+        }
+    }
+
 }
 
 WebInspector.Diff.Operation = {
     Equal: 0,
     Insert: 1,
-    Delete: -1
+    Delete: -1,
+    Edit: 2
 }

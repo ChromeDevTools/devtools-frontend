@@ -370,3 +370,125 @@ WebInspector.SASSSupport.AST.prototype = {
     __proto__: WebInspector.SASSSupport.Node.prototype
 }
 
+
+/** @enum {string} */
+WebInspector.SASSSupport.PropertyChangeType = {
+    PropertyAdded: "PropertyAdded",
+    PropertyRemoved: "PropertyRemoved",
+    PropertyToggled: "PropertyToggled",
+    ValueChanged: "ValueChanged",
+    NameChanged: "NameChanged"
+}
+
+/**
+ * @constructor
+ * @param {!WebInspector.SASSSupport.PropertyChangeType} type
+ * @param {!WebInspector.SASSSupport.Rule} oldRule
+ * @param {!WebInspector.SASSSupport.Rule} newRule
+ * @param {number} oldPropertyIndex
+ * @param {number} newPropertyIndex
+ */
+WebInspector.SASSSupport.PropertyChange = function(type, oldRule, newRule, oldPropertyIndex, newPropertyIndex)
+{
+    this.type = type;
+    this.oldRule = oldRule;
+    this.newRule = newRule;
+    this.oldPropertyIndex = oldPropertyIndex;
+    this.newPropertyIndex = newPropertyIndex;
+}
+
+/**
+ * @constructor
+ * @param {!Map<!WebInspector.SASSSupport.TextNode, !WebInspector.SASSSupport.TextNode>} mapping
+ * @param {!Array<!WebInspector.SASSSupport.PropertyChange>} changes
+ */
+WebInspector.SASSSupport.ASTDiff = function(mapping, changes)
+{
+    this.mapping = mapping;
+    this.changes = changes;
+}
+
+/**
+ * @param {!WebInspector.SASSSupport.AST} oldAST
+ * @param {!WebInspector.SASSSupport.AST} newAST
+ * @return {!WebInspector.SASSSupport.ASTDiff}
+ */
+WebInspector.SASSSupport.diffModels = function(oldAST, newAST)
+{
+    console.assert(oldAST.rules.length === newAST.rules.length, "Not implemented for rule diff.");
+    var T = WebInspector.SASSSupport.PropertyChangeType;
+    var changes = [];
+    /** @type {!Map<!WebInspector.SASSSupport.TextNode, !WebInspector.SASSSupport.TextNode>} */
+    var mapping = new Map();
+    for (var i = 0; i < oldAST.rules.length; ++i) {
+        var oldRule = oldAST.rules[i];
+        var newRule = newAST.rules[i];
+        computeRuleDiff(mapping, oldRule, newRule);
+    }
+    return new WebInspector.SASSSupport.ASTDiff(mapping, changes);
+
+    /**
+     * @param {!WebInspector.SASSSupport.PropertyChangeType} type
+     * @param {!WebInspector.SASSSupport.Rule} oldRule
+     * @param {!WebInspector.SASSSupport.Rule} newRule
+     * @param {number} oldPropertyIndex
+     * @param {number} newPropertyIndex
+     */
+    function addChange(type, oldRule, newRule, oldPropertyIndex, newPropertyIndex)
+    {
+        changes.push(new WebInspector.SASSSupport.PropertyChange(type, oldRule, newRule, oldPropertyIndex, newPropertyIndex));
+    }
+
+    /**
+     * @param {!Map<!WebInspector.SASSSupport.TextNode, !WebInspector.SASSSupport.TextNode>} mapping
+     * @param {!WebInspector.SASSSupport.Rule} oldRule
+     * @param {!WebInspector.SASSSupport.Rule} newRule
+     */
+    function computeRuleDiff(mapping, oldRule, newRule)
+    {
+        var oldLines = [];
+        for (var i = 0; i < oldRule.properties.length; ++i)
+            oldLines.push(oldRule.properties[i].name.text.trim() + ":" + oldRule.properties[i].value.text.trim());
+        var newLines = [];
+        for (var i = 0; i < newRule.properties.length; ++i)
+            newLines.push(newRule.properties[i].name.text.trim() + ":" + newRule.properties[i].value.text.trim());
+        var diff = WebInspector.Diff.lineDiff(oldLines, newLines);
+        diff = WebInspector.Diff.convertToEditDiff(diff);
+
+        var p1 = 0, p2 = 0;
+        for (var i = 0; i < diff.length; ++i) {
+            var token = diff[i];
+            if (token[0] === WebInspector.Diff.Operation.Delete) {
+                for (var j = 0; j < token[1]; ++j)
+                    addChange(T.PropertyRemoved, oldRule, newRule, p1++, p2);
+            } else if (token[0] === WebInspector.Diff.Operation.Insert) {
+                for (var j = 0; j < token[1]; ++j)
+                    addChange(T.PropertyAdded, oldRule, newRule, p1, p2++);
+            } else {
+                for (var j = 0; j < token[1]; ++j)
+                    computePropertyDiff(mapping, oldRule, newRule, p1++, p2++);
+            }
+        }
+    }
+
+    /**
+     * @param {!Map<!WebInspector.SASSSupport.TextNode, !WebInspector.SASSSupport.TextNode>} mapping
+     * @param {!WebInspector.SASSSupport.Rule} oldRule
+     * @param {!WebInspector.SASSSupport.Rule} newRule
+     * @param {number} oldPropertyIndex
+     * @param {number} newPropertyIndex
+     */
+    function computePropertyDiff(mapping, oldRule, newRule, oldPropertyIndex, newPropertyIndex)
+    {
+        var oldProperty = oldRule.properties[oldPropertyIndex];
+        var newProperty = newRule.properties[newPropertyIndex];
+        mapping.set(oldProperty.name, newProperty.name);
+        mapping.set(oldProperty.value, newProperty.value);
+        if (oldProperty.name.text.trim() !== newProperty.name.text.trim())
+            addChange(T.NameChanged, oldRule, newRule, oldPropertyIndex, newPropertyIndex);
+        if (oldProperty.value.text.trim() !== newProperty.value.text.trim())
+            addChange(T.ValueChanged, oldRule, newRule, oldPropertyIndex, newPropertyIndex);
+        if (oldProperty.disabled !== newProperty.disabled)
+            addChange(T.PropertyToggled, oldRule, newRule, oldPropertyIndex, newPropertyIndex);
+    }
+}

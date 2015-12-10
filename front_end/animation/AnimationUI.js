@@ -22,9 +22,9 @@ WebInspector.AnimationUI = function(animation, timeline, parentElement) {
     this._svg = parentElement.createSVGChild("svg", "animation-ui");
     this._svg.setAttribute("height", WebInspector.AnimationUI.Options.AnimationSVGHeight);
     this._svg.style.marginLeft = "-" + WebInspector.AnimationUI.Options.AnimationMargin + "px";
-    this._svg.addEventListener("mousedown", this._mouseDown.bind(this, WebInspector.AnimationUI.MouseEvents.AnimationDrag, null));
     this._svg.addEventListener("contextmenu", this._onContextMenu.bind(this));
     this._activeIntervalGroup = this._svg.createSVGChild("g");
+    WebInspector.installDragHandle(this._activeIntervalGroup, this._mouseDown.bind(this, WebInspector.AnimationUI.MouseEvents.AnimationDrag, null),  this._mouseMove.bind(this), this._mouseUp.bind(this), "-webkit-grabbing", "-webkit-grab");
 
     /** @type {!Array.<{group: ?Element, animationLine: ?Element, keyframePoints: !Object.<number, !Element>, keyframeRender: !Object.<number, !Element>}>} */
     this._cachedElements = [];
@@ -138,13 +138,14 @@ WebInspector.AnimationUI.prototype = {
         if (!attachEvents)
             return;
 
-        if (keyframeIndex === 0) {
-            circle.addEventListener("mousedown", this._mouseDown.bind(this, WebInspector.AnimationUI.MouseEvents.StartEndpointMove, keyframeIndex));
-        } else if (keyframeIndex === -1) {
-            circle.addEventListener("mousedown", this._mouseDown.bind(this, WebInspector.AnimationUI.MouseEvents.FinishEndpointMove, keyframeIndex));
-        } else {
-            circle.addEventListener("mousedown", this._mouseDown.bind(this, WebInspector.AnimationUI.MouseEvents.KeyframeMove, keyframeIndex));
-        }
+        var eventType;
+        if (keyframeIndex === 0)
+            eventType = WebInspector.AnimationUI.MouseEvents.StartEndpointMove;
+        else if (keyframeIndex === -1)
+            eventType = WebInspector.AnimationUI.MouseEvents.FinishEndpointMove;
+        else
+            eventType = WebInspector.AnimationUI.MouseEvents.KeyframeMove;
+        WebInspector.installDragHandle(circle, this._mouseDown.bind(this, eventType, keyframeIndex), this._mouseMove.bind(this), this._mouseUp.bind(this), "ew-resize");
     },
 
     /**
@@ -201,7 +202,6 @@ WebInspector.AnimationUI.prototype = {
         var durationWithDelay = this._delay() + this._duration() * this._animation.source().iterations() + this._animation.source().endDelay();
         var maxWidth = this._timeline.width() - WebInspector.AnimationUI.Options.AnimationMargin;
 
-        this._svg.classList.toggle("animation-ui-canceled", this._animation.playState() === "idle");
         this._svg.setAttribute("width", (maxWidth + 2 * WebInspector.AnimationUI.Options.AnimationMargin).toFixed(2));
         this._activeIntervalGroup.style.transform = "translateX(" + (this._delay() * this._timeline.pixelMsRatio()).toFixed(2) + "px)";
 
@@ -306,21 +306,16 @@ WebInspector.AnimationUI.prototype = {
     _mouseDown: function(mouseEventType, keyframeIndex, event)
     {
         if (event.buttons == 2)
-            return;
-        if (this._animation.playState() === "idle")
-            return;
+            return false;
+        if (this._svg.enclosingNodeOrSelfWithClass("animation-node-removed"))
+            return false;
         this._mouseEventType = mouseEventType;
         this._keyframeMoved = keyframeIndex;
         this._downMouseX = event.clientX;
-        this._mouseMoveHandler = this._mouseMove.bind(this);
-        this._mouseUpHandler = this._mouseUp.bind(this);
-        this._parentElement.ownerDocument.addEventListener("mousemove", this._mouseMoveHandler);
-        this._parentElement.ownerDocument.addEventListener("mouseup", this._mouseUpHandler);
-        event.preventDefault();
-        event.stopPropagation();
-
+        event.consume(true);
         if (this._node)
             WebInspector.Revealer.reveal(this._node);
+        return true;
     },
 
     /**
@@ -350,10 +345,6 @@ WebInspector.AnimationUI.prototype = {
         this._movementInMs = 0;
         this.redraw();
 
-        this._parentElement.ownerDocument.removeEventListener("mousemove", this._mouseMoveHandler);
-        this._parentElement.ownerDocument.removeEventListener("mouseup", this._mouseUpHandler);
-        delete this._mouseMoveHandler;
-        delete this._mouseUpHandler;
         delete this._mouseEventType;
         delete this._downMouseX;
         delete this._keyframeMoved;

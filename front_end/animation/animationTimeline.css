@@ -38,7 +38,11 @@
 }
 
 path.animation-keyframe {
-    fill-opacity: 0.3;
+    fill-opacity: 0.2;
+}
+
+svg.animation-ui g:first-child:hover path.animation-keyframe {
+    fill-opacity: 0.4;
 }
 
 .animation-node-selected path.animation-keyframe {
@@ -223,8 +227,9 @@ rect.animation-timeline-grid-line {
     max-height: 100%;
 }
 
-.animation-node-row.animation-node-removed {
-    background-color: hsla(0, 100%, 50%, 0.1);
+.animation-node-removed {
+    -webkit-filter: saturate(0);
+    cursor: not-allowed;
 }
 
 svg.animation-ui g:first-child {

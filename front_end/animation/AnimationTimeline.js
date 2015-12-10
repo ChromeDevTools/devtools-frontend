@@ -710,6 +710,8 @@ WebInspector.AnimationTimeline.NodeUI.prototype = {
         this._node = node;
         this._nodeChanged();
         this._description.appendChild(WebInspector.DOMPresentationUtils.linkifyNodeReference(node));
+        if (!node.ownerDocument)
+            this.nodeRemoved();
     },
 
     /**
@@ -723,6 +725,7 @@ WebInspector.AnimationTimeline.NodeUI.prototype = {
     nodeRemoved: function()
     {
         this.element.classList.add("animation-node-removed");
+        this._node = null;
     },
 
     _nodeChanged: function()

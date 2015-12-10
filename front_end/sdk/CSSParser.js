@@ -42,6 +42,25 @@ WebInspector.CSSParser.prototype = {
         this._innerParse(text);
     },
 
+    /**
+     * @param {string} text
+     * @return {!Promise<!Array.<!WebInspector.CSSParser.Rule>>}
+     */
+    parsePromise: function(text)
+    {
+        return new Promise(promiseConstructor.bind(this));
+
+        /**
+         * @param {function()} succ
+         * @param {function()} fail
+         * @this {WebInspector.CSSParser}
+         */
+        function promiseConstructor(succ, fail)
+        {
+            this.parse(text, succ);
+        }
+    },
+
     dispose: function()
     {
         if (this._worker) {

@@ -556,7 +556,6 @@ body.inactive .sidebar-tree-item.selected {
 
 .viewport-control-gap-element {
     color: transparent;
-    -webkit-user-select: none;
 }
 
 .drawer-toolbar {

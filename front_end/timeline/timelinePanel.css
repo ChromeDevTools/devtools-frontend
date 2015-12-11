@@ -1054,3 +1054,10 @@
     border-bottom: 1px solid #ddd;
     background-color: #f3f3f3
 }
+
+.timeline-stack-view-header {
+    height: 26px;
+    background-color: white;
+    padding: 6px 10px;
+    color: #5a5a5a;
+}

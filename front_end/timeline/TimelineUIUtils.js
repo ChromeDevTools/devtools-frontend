@@ -1303,7 +1303,6 @@ WebInspector.TimelineUIUtils._aggregatedStatsForTraceEvent = function(total, mod
  */
 WebInspector.TimelineUIUtils.buildPicturePreviewContent = function(event, target, callback)
 {
-
     new WebInspector.LayerPaintEvent(event, target).loadSnapshot(onSnapshotLoaded);
     /**
      * @param {?Array.<number>} rect

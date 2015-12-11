@@ -50,6 +50,7 @@ WebInspector.AnimationTimeline.prototype = {
     {
         for (var target of WebInspector.targetManager.targets(WebInspector.Target.Type.Page))
             this._removeEventListeners(target);
+        this._popoverHelper.hidePopover();
     },
 
     /**

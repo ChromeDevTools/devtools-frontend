@@ -109,10 +109,11 @@ WebInspector.HeapSnapshotView = function(dataDisplayDelegate, profile)
         var retainingPathsTitleDiv = retainmentViewHeader.createChild("div", "title");
         var retainingPathsTitle = retainingPathsTitleDiv.createChild("span");
         retainingPathsTitle.textContent = WebInspector.UIString("Retainers");
-        this._retainmentWidget.element.appendChild(retainmentViewHeader);
 
         splitWidgetResizer = retainmentViewHeader;
-        this._objectDetailsView = this._retainmentWidget;
+        this._objectDetailsView = new WebInspector.VBox();
+        this._objectDetailsView.element.appendChild(retainmentViewHeader);
+        this._retainmentWidget.show(this._objectDetailsView.element);
     }
     this._splitWidget.hideDefaultResizer();
     this._splitWidget.installResizer(splitWidgetResizer);

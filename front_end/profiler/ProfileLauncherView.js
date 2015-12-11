@@ -106,7 +106,7 @@ WebInspector.ProfileLauncherView.prototype = {
 
     _controlButtonClicked: function()
     {
-        this._panel.toggleRecordButton();
+        this._panel.toggleRecord();
     },
 
     _loadButtonClicked: function()
@@ -219,7 +219,7 @@ WebInspector.MultiProfileLauncherView.prototype = {
 
     _controlButtonClicked: function()
     {
-        this._panel.toggleRecordButton();
+        this._panel.toggleRecord();
     },
 
     _updateControls: function()

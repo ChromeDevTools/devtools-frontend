@@ -460,8 +460,8 @@ WebInspector.ProfilesPanel = function()
     this.panelSidebarElement().insertBefore(toolbarContainerLeft, this.panelSidebarElement().firstChild);
     var toolbar = new WebInspector.Toolbar("", toolbarContainerLeft);
 
-    this.recordButton = WebInspector.ToolbarButton.createActionButton("profiler.toggle-recording");
-    toolbar.appendToolbarItem(this.recordButton);
+    this._toggleRecordAction = WebInspector.actionRegistry.action("profiler.toggle-recording");
+    toolbar.appendToolbarItem(WebInspector.Toolbar.createActionButton(this._toggleRecordAction));
 
     this.clearResultsButton = new WebInspector.ToolbarButton(WebInspector.UIString("Clear all profiles"), "clear-toolbar-item");
     this.clearResultsButton.addEventListener("click", this._reset, this);
@@ -569,13 +569,13 @@ WebInspector.ProfilesPanel.prototype = {
     /**
      * @return {boolean}
      */
-    toggleRecordButton: function()
+    toggleRecord: function()
     {
-        if (!this.recordButton.enabled())
+        if (!this._toggleRecordAction.enabled())
             return true;
         var type = this._selectedProfileType;
         var isProfiling = type.buttonClicked();
-        this._updateRecordButton(isProfiling);
+        this._updateToggleRecordAction(isProfiling);
         if (isProfiling) {
             this._launcherView.profileStarted();
             if (type.hasTemporaryView())
@@ -588,28 +588,28 @@ WebInspector.ProfilesPanel.prototype = {
 
     _onSuspendStateChanged: function()
     {
-        this._updateRecordButton(this.recordButton.toggled());
+        this._updateToggleRecordAction(this._toggleRecordAction.toggled());
     },
 
     /**
      * @param {boolean} toggled
      */
-    _updateRecordButton: function(toggled)
+    _updateToggleRecordAction: function(toggled)
     {
         var enable = toggled || !WebInspector.targetManager.allTargetsSuspended();
-        this.recordButton.setEnabled(enable);
-        this.recordButton.setToggled(toggled);
+        this._toggleRecordAction.setEnabled(enable);
+        this._toggleRecordAction.setToggled(toggled);
         if (enable)
-            this.recordButton.setTitle(this._selectedProfileType ? this._selectedProfileType.buttonTooltip : "");
+            this._toggleRecordAction.setTitle(this._selectedProfileType ? this._selectedProfileType.buttonTooltip : "");
         else
-            this.recordButton.setTitle(WebInspector.anotherProfilerActiveLabel());
+            this._toggleRecordAction.setTitle(WebInspector.anotherProfilerActiveLabel());
         if (this._selectedProfileType)
             this._launcherView.updateProfileType(this._selectedProfileType, enable);
     },
 
     _profileBeingRecordedRemoved: function()
     {
-        this._updateRecordButton(false);
+        this._updateToggleRecordAction(false);
         this._launcherView.profileFinished();
     },
 
@@ -624,7 +624,7 @@ WebInspector.ProfilesPanel.prototype = {
 
     _updateProfileTypeSpecificUI: function()
     {
-        this._updateRecordButton(this.recordButton.toggled());
+        this._updateToggleRecordAction(this._toggleRecordAction.toggled());
         this._profileTypeToolbar.removeToolbarItems();
         var toolbarItems = this._selectedProfileType.toolbarItems();
         for (var i = 0; i < toolbarItems.length; ++i)
@@ -642,7 +642,7 @@ WebInspector.ProfilesPanel.prototype = {
         delete this.visibleView;
 
         this._profileGroups = {};
-        this._updateRecordButton(false);
+        this._updateToggleRecordAction(false);
         this._launcherView.profileFinished();
 
         this._sidebarTree.element.classList.remove("some-expandable");
@@ -653,7 +653,6 @@ WebInspector.ProfilesPanel.prototype = {
 
         this.removeAllListeners();
 
-        this.recordButton.setVisible(true);
         this._profileViewToolbar.element.classList.remove("hidden");
         this.clearResultsButton.element.classList.remove("hidden");
         this.profilesItemTreeElement.select();
@@ -1304,7 +1303,7 @@ WebInspector.ProfilesPanel.RecordActionDelegate.prototype = {
     {
         var panel = WebInspector.context.flavor(WebInspector.ProfilesPanel);
         console.assert(panel && panel instanceof WebInspector.ProfilesPanel);
-        panel.toggleRecordButton();
+        panel.toggleRecord();
         return true;
     }
 }

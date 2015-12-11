@@ -70,7 +70,7 @@ WebInspector.ConsoleView = function()
     this._progressToolbarItem = new WebInspector.ToolbarItem(createElement("div"));
 
     var toolbar = new WebInspector.Toolbar("", this._contentsElement);
-    toolbar.appendToolbarItem(WebInspector.ToolbarButton.createActionButton("console.clear"));
+    toolbar.appendToolbarItem(WebInspector.Toolbar.createActionButton(WebInspector.actionRegistry.action("console.clear")));
     toolbar.appendToolbarItem(this._filterBar.filterButton());
     toolbar.appendToolbarItem(this._executionContextComboBox);
     toolbar.appendToolbarItem(this._preserveLogCheckbox);

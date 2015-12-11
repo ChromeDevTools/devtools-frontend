@@ -226,7 +226,7 @@ TestSuite.prototype.testPauseWhenScriptIsRunning = function()
     function testScriptPause() {
         // The script should be in infinite loop. Click "Pause" button to
         // pause it and wait for the result.
-        WebInspector.panels.sources._pauseButton.element.click();
+        WebInspector.panels.sources._togglePause();
 
         this._waitForScriptPause(this.releaseControl.bind(this));
     }
@@ -642,7 +642,7 @@ TestSuite.prototype.invokeAsyncWithTimeline_ = function(functionName, callback)
     var test = this;
     test.showPanel("timeline").then(function() {
         WebInspector.panels.timeline._model.addEventListener(WebInspector.TimelineModel.Events.RecordingStarted, onRecordingStarted);
-        WebInspector.panels.timeline._toggleTimelineButton.element.click();
+        WebInspector.panels.timeline._toggleRecording();
     });
 
     function onRecordingStarted()
@@ -664,7 +664,7 @@ TestSuite.prototype.invokeAsyncWithTimeline_ = function(functionName, callback)
     function pageActionsDone()
     {
         WebInspector.panels.timeline._model.addEventListener(WebInspector.TimelineModel.Events.RecordingStopped, onRecordingStopped);
-        WebInspector.panels.timeline._toggleTimelineButton.element.click();
+        WebInspector.panels.timeline._toggleRecording();
     }
 
     function onRecordingStopped()

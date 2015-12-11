@@ -47,6 +47,7 @@ WebInspector.TimelinePanel = function()
     this._windowStartTime = 0;
     this._windowEndTime = Infinity;
     this._millisecondsToRecordAfterLoadEvent = 3000;
+    this._toggleRecordAction = WebInspector.actionRegistry.action("timeline.toggle-recording");
 
     // Create models.
     this._tracingModelBackingStorage = new WebInspector.TempFileBackingStorage("tracing");
@@ -336,8 +337,7 @@ WebInspector.TimelinePanel.prototype = {
     {
         this._panelToolbar = new WebInspector.Toolbar("", this.element);
 
-        this._toggleTimelineButton = WebInspector.ToolbarButton.createActionButton("timeline.toggle-recording");
-        this._panelToolbar.appendToolbarItem(this._toggleTimelineButton);
+        this._panelToolbar.appendToolbarItem(WebInspector.Toolbar.createActionButton(this._toggleRecordAction));
         this._updateTimelineControls();
 
         var clearButton = new WebInspector.ToolbarButton(WebInspector.UIString("Clear recording"), "clear-toolbar-item");
@@ -628,14 +628,14 @@ WebInspector.TimelinePanel.prototype = {
         var title =
             this._state === state.Idle ? WebInspector.UIString("Record") :
             this._state === state.Recording ? WebInspector.UIString("Stop") : "";
-        this._toggleTimelineButton.setTitle(title);
-        this._toggleTimelineButton.setToggled(this._state === state.Recording);
-        this._toggleTimelineButton.setEnabled(this._state === state.Recording || this._state === state.Idle);
+        this._toggleRecordAction.setTitle(title);
+        this._toggleRecordAction.setToggled(this._state === state.Recording);
+        this._toggleRecordAction.setEnabled(this._state === state.Recording || this._state === state.Idle);
         this._panelToolbar.setEnabled(this._state !== state.Loading);
         this._dropTarget.setEnabled(this._state === state.Idle);
     },
 
-    _toggleTimelineButtonClicked: function()
+    _toggleRecording: function()
     {
         if (this._state === WebInspector.TimelinePanel.State.Idle)
             this._startRecording(true);
@@ -1884,7 +1884,7 @@ WebInspector.TimelinePanel.ActionDelegate.prototype = {
         console.assert(panel && panel instanceof WebInspector.TimelinePanel);
         switch (actionId) {
         case "timeline.toggle-recording":
-            panel._toggleTimelineButtonClicked();
+            panel._toggleRecording();
             return true;
         case "timeline.save-to-file":
             panel._saveToFile();

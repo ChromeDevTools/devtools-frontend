@@ -39,6 +39,15 @@ WebInspector.SourcesPanel = function(workspaceForTest)
     this._workspace = workspaceForTest || WebInspector.workspace;
     this._networkMapping = WebInspector.networkMapping;
 
+    this._runSnippetAction = WebInspector.actionRegistry.action("debugger.run-snippet");
+    this._togglePauseAction = WebInspector.actionRegistry.action("debugger.toggle-pause");
+    this._stepOverAction = WebInspector.actionRegistry.action("debugger.step-over");
+    this._stepIntoAction = WebInspector.actionRegistry.action("debugger.step-into");
+    this._stepOutAction = WebInspector.actionRegistry.action("debugger.step-out");
+    this._toggleBreakpointsActiveAction = WebInspector.actionRegistry.action("debugger.toggle-breakpoints-active");
+    this._toggleBreakpointsActiveAction.setToggled(false);
+    this._toggleBreakpointsActiveAction.setTitle(WebInspector.UIString("Deactivate breakpoints"));
+
     this._debugToolbar = this._createDebugToolbar();
     this._debugToolbarDrawer = this._createDebugToolbarDrawer();
 
@@ -438,28 +447,24 @@ WebInspector.SourcesPanel.prototype = {
         var currentTarget = WebInspector.context.flavor(WebInspector.Target);
         var currentDebuggerModel = WebInspector.DebuggerModel.fromTarget(currentTarget);
         if (!currentDebuggerModel) {
-            this._pauseButton.setEnabled(false);
-            this._stepOverButton.setEnabled(false);
-            this._stepIntoButton.setEnabled(false);
-            this._stepOutButton.setEnabled(false);
+            this._togglePauseAction.setEnabled(false);
+            this._stepOverAction.setEnabled(false);
+            this._stepIntoAction.setEnabled(false);
+            this._stepOutAction.setEnabled(false);
         } else if (this._paused) {
-            this._pauseButton.setTitle(WebInspector.UIString("Resume script execution"));
-            this._pauseButton.setToggled(true);
-            this._pauseButton.setLongClickOptionsEnabled((function() { return [ this._longResumeButton ]; }).bind(this));
-
-            this._pauseButton.setEnabled(true);
-            this._stepOverButton.setEnabled(true);
-            this._stepIntoButton.setEnabled(true);
-            this._stepOutButton.setEnabled(true);
+            this._togglePauseAction.setTitle(WebInspector.UIString("Resume script execution"));
+            this._togglePauseAction.setToggled(true);
+            this._togglePauseAction.setEnabled(true);
+            this._stepOverAction.setEnabled(true);
+            this._stepIntoAction.setEnabled(true);
+            this._stepOutAction.setEnabled(true);
         } else {
-            this._pauseButton.setTitle(WebInspector.UIString("Pause script execution"));
-            this._pauseButton.setToggled(false);
-            this._pauseButton.setLongClickOptionsEnabled(null);
-
-            this._pauseButton.setEnabled(!currentDebuggerModel.isPausing());
-            this._stepOverButton.setEnabled(false);
-            this._stepIntoButton.setEnabled(false);
-            this._stepOutButton.setEnabled(false);
+            this._togglePauseAction.setTitle(WebInspector.UIString("Pause script execution"));
+            this._togglePauseAction.setToggled(false);
+            this._togglePauseAction.setEnabled(!currentDebuggerModel.isPausing());
+            this._stepOverAction.setEnabled(false);
+            this._stepIntoAction.setEnabled(false);
+            this._stepOutAction.setEnabled(false);
         }
     },
 
@@ -548,13 +553,13 @@ WebInspector.SourcesPanel.prototype = {
     _editorChanged: function(uiSourceCode)
     {
         var isSnippet = uiSourceCode && uiSourceCode.project().type() === WebInspector.projectTypes.Snippets;
-        this._runSnippetButton.element.classList.toggle("hidden", !isSnippet);
+        this._runSnippetButton.setVisible(isSnippet);
     },
 
     /**
      * @return {boolean}
      */
-    togglePause: function()
+    _togglePause: function()
     {
         var target = WebInspector.context.flavor(WebInspector.Target);
         if (!target)
@@ -607,7 +612,7 @@ WebInspector.SourcesPanel.prototype = {
     /**
      * @return {boolean}
      */
-    _stepOverClicked: function()
+    _stepOver: function()
     {
         var debuggerModel = this._prepareToResume();
         if (!debuggerModel)
@@ -620,7 +625,7 @@ WebInspector.SourcesPanel.prototype = {
     /**
      * @return {boolean}
      */
-    _stepIntoClicked: function()
+    _stepInto: function()
     {
         var debuggerModel = this._prepareToResume();
         if (!debuggerModel)
@@ -633,7 +638,7 @@ WebInspector.SourcesPanel.prototype = {
     /**
      * @return {boolean}
      */
-    _stepIntoAsyncClicked: function()
+    _stepIntoAsync: function()
     {
         var debuggerModel = this._prepareToResume();
         if (!debuggerModel)
@@ -646,7 +651,7 @@ WebInspector.SourcesPanel.prototype = {
     /**
      * @return {boolean}
      */
-    _stepOutClicked: function()
+    _stepOut: function()
     {
         var debuggerModel = this._prepareToResume();
         if (!debuggerModel)
@@ -699,13 +704,13 @@ WebInspector.SourcesPanel.prototype = {
     _breakpointsActiveStateChanged: function(event)
     {
         var active = event.data;
-        this._toggleBreakpointsButton.setToggled(!active);
+        this._toggleBreakpointsActiveAction.setToggled(!active);
         this.sidebarPanes.jsBreakpoints.listElement.classList.toggle("breakpoints-list-deactivated", !active);
         this._sourcesView.toggleBreakpointsActiveState(active);
         if (active)
-            this._toggleBreakpointsButton.setTitle(WebInspector.UIString("Deactivate breakpoints"));
+            this._toggleBreakpointsActiveAction.setTitle(WebInspector.UIString("Deactivate breakpoints"));
         else
-            this._toggleBreakpointsButton.setTitle(WebInspector.UIString("Activate breakpoints"));
+            this._toggleBreakpointsActiveAction.setTitle(WebInspector.UIString("Activate breakpoints"));
     },
 
     /**
@@ -715,55 +720,25 @@ WebInspector.SourcesPanel.prototype = {
     {
         var debugToolbar = new WebInspector.Toolbar("scripts-debug-toolbar");
 
-        var title, handler;
-
-        // Run snippet.
-        title = WebInspector.UIString("Run snippet");
-        handler = this._runSnippet.bind(this);
-        this._runSnippetButton = WebInspector.ToolbarButton.createActionButton("debugger.run-snippet");
+        this._runSnippetButton = WebInspector.Toolbar.createActionButton(this._runSnippetAction);
         debugToolbar.appendToolbarItem(this._runSnippetButton);
-        this._runSnippetButton.element.classList.add("hidden");
+        this._runSnippetButton.setVisible(false);
 
-        // Continue.
-        this._pauseButton = WebInspector.ToolbarButton.createActionButton("debugger.toggle-pause");
-        debugToolbar.appendToolbarItem(this._pauseButton);
+        var longResumeButton = new WebInspector.ToolbarButton(WebInspector.UIString("Resume with all pauses blocked for 500 ms"), "play-toolbar-item");
+        longResumeButton.addEventListener("click", this._longResume.bind(this), this);
+        debugToolbar.appendToolbarItem(WebInspector.Toolbar.createActionButton(this._togglePauseAction, [longResumeButton], []));
 
-        // Long resume.
-        title = WebInspector.UIString("Resume with all pauses blocked for 500 ms");
-        this._longResumeButton = new WebInspector.ToolbarButton(title, "play-toolbar-item");
-        this._longResumeButton.addEventListener("click", this._longResume.bind(this), this);
-
-        // Step over.
-        title = WebInspector.UIString("Step over next function call");
-        this._stepOverButton = WebInspector.ToolbarButton.createActionButton("debugger.step-over");
-        debugToolbar.appendToolbarItem(this._stepOverButton);
-
-        // Step into.
-        title = WebInspector.UIString("Step into next function call");
-        this._stepIntoButton = WebInspector.ToolbarButton.createActionButton("debugger.step-into");
-        debugToolbar.appendToolbarItem(this._stepIntoButton);
-
-        // Step out.
-        title = WebInspector.UIString("Step out of current function");
-        this._stepOutButton = WebInspector.ToolbarButton.createActionButton("debugger.step-out");
-        debugToolbar.appendToolbarItem(this._stepOutButton);
-
+        debugToolbar.appendToolbarItem(WebInspector.Toolbar.createActionButton(this._stepOverAction));
+        debugToolbar.appendToolbarItem(WebInspector.Toolbar.createActionButton(this._stepIntoAction));
+        debugToolbar.appendToolbarItem(WebInspector.Toolbar.createActionButton(this._stepOutAction));
         debugToolbar.appendSeparator();
+        debugToolbar.appendToolbarItem(WebInspector.Toolbar.createActionButton(this._toggleBreakpointsActiveAction));
 
-        // Toggle Breakpoints
-        this._toggleBreakpointsButton = WebInspector.ToolbarButton.createActionButton("debugger.toggle-breakpoints-active");
-        this._toggleBreakpointsButton.setToggled(false);
-        this._toggleBreakpointsButton.setTitle(WebInspector.UIString("Deactivate breakpoints"));
-        debugToolbar.appendToolbarItem(this._toggleBreakpointsButton);
-
-        // Pause on Exception
         this._pauseOnExceptionButton = new WebInspector.ToolbarButton("", "pause-on-exceptions-toolbar-item");
         this._pauseOnExceptionButton.addEventListener("click", this._togglePauseOnExceptions, this);
         debugToolbar.appendToolbarItem(this._pauseOnExceptionButton);
 
         debugToolbar.appendSeparator();
-
-        // Async operations
         debugToolbar.appendToolbarItem(new WebInspector.ToolbarCheckbox(WebInspector.UIString("Async"), WebInspector.UIString("Capture async stack traces"), WebInspector.moduleSetting("enableAsyncStackTraces")));
 
         return debugToolbar;
@@ -1348,7 +1323,7 @@ WebInspector.SourcesPanel.RevealingActionDelegate.prototype = {
         WebInspector.inspectorView.setCurrentPanel(panel);
         switch (actionId) {
         case "debugger.toggle-pause":
-            panel.togglePause();
+            panel._togglePause();
             return true;
         case "sources.go-to-source":
             panel.showGoToSourceDialog();
@@ -1378,16 +1353,16 @@ WebInspector.SourcesPanel.DebuggingActionDelegate.prototype = {
         var panel = WebInspector.SourcesPanel.instance();
         switch (actionId) {
         case "debugger.step-over":
-            panel._stepOverClicked();
+            panel._stepOver();
             return true;
         case "debugger.step-into":
-            panel._stepIntoClicked();
+            panel._stepInto();
             return true;
         case "debugger.step-into-async":
-            panel._stepIntoAsyncClicked();
+            panel._stepIntoAsync();
             return true;
         case "debugger.step-out":
-            panel._stepOutClicked();
+            panel._stepOut();
             return true;
         case "debugger.run-snippet":
             panel._runSnippet();

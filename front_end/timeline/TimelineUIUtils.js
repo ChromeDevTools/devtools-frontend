@@ -970,6 +970,7 @@ WebInspector.TimelineUIUtils._generateCauses = function(event, target, relatedNo
 
     // Indirect causes.
     if (event.invalidationTrackingEvents && target) { // Full invalidation tracking (experimental).
+        contentHelper.addSection(WebInspector.UIString("Invalidations"));
         WebInspector.TimelineUIUtils._generateInvalidations(event, target, relatedNodesMap, contentHelper);
     } else if (initiator && initiator.stackTrace) { // Partial invalidation tracking.
         contentHelper.appendStackTrace(callSiteStackLabel || WebInspector.UIString("First Invalidated"), initiator.stackTrace);
@@ -1023,21 +1024,16 @@ WebInspector.TimelineUIUtils._generateInvalidationsForType = function(type, targ
         break;
     }
 
-    var detailsNode = createElementWithClass("div", "timeline-details-view-row");
-    var titleElement = detailsNode.createChild("span", "timeline-details-view-row-title");
-    titleElement.textContent = WebInspector.UIString("%s: ", title);
-
     var invalidationsTreeOutline = new TreeOutlineInShadow();
     invalidationsTreeOutline.registerRequiredCSS("timeline/invalidationsTree.css");
-    invalidationsTreeOutline.element.classList.add("timeline-details-view-row-value", "invalidations-tree");
-    detailsNode.appendChild(invalidationsTreeOutline.element);
+    invalidationsTreeOutline.element.classList.add("invalidations-tree");
 
     var invalidationGroups = groupInvalidationsByCause(invalidations);
     invalidationGroups.forEach(function(group) {
         var groupElement = new WebInspector.TimelineUIUtils.InvalidationsGroupElement(target, relatedNodesMap, contentHelper, group);
         invalidationsTreeOutline.appendChild(groupElement);
     });
-    contentHelper.element.appendChild(detailsNode);
+    contentHelper.appendElementRow(title, invalidationsTreeOutline.element, false, true);
 
     /**
      * @param {!Array.<!WebInspector.InvalidationTrackingEvent>} invalidations

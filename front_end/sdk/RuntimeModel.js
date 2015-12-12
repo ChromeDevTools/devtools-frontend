@@ -70,6 +70,15 @@ WebInspector.RuntimeModel.prototype = {
     },
 
     /**
+     * @param {!RuntimeAgent.ExecutionContextId} id
+     * @return {?WebInspector.ExecutionContext}
+     */
+    executionContext: function(id)
+    {
+        return this._executionContextById[id] || null;
+    },
+
+    /**
      * @param {!RuntimeAgent.ExecutionContextDescription} context
      */
     _executionContextCreated: function(context)

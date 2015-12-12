@@ -583,6 +583,7 @@ WebInspector.DebuggerModel.prototype = {
      * @param {number} startColumn
      * @param {number} endLine
      * @param {number} endColumn
+     * @param {!RuntimeAgent.ExecutionContextId} executionContextId
      * @param {boolean} isContentScript
      * @param {boolean} isInternalScript
      * @param {boolean} isLiveEdit
@@ -591,9 +592,9 @@ WebInspector.DebuggerModel.prototype = {
      * @param {boolean=} hasSyntaxError
      * @return {!WebInspector.Script}
      */
-    _parsedScriptSource: function(scriptId, sourceURL, startLine, startColumn, endLine, endColumn, isContentScript, isInternalScript, isLiveEdit, sourceMapURL, hasSourceURL, hasSyntaxError)
+    _parsedScriptSource: function(scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, isContentScript, isInternalScript, isLiveEdit, sourceMapURL, hasSourceURL, hasSyntaxError)
     {
-        var script = new WebInspector.Script(this, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, isContentScript, isInternalScript, isLiveEdit, sourceMapURL, hasSourceURL);
+        var script = new WebInspector.Script(this, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, isContentScript, isInternalScript, isLiveEdit, sourceMapURL, hasSourceURL);
         this._registerScript(script);
         if (!hasSyntaxError)
             this.dispatchEventToListeners(WebInspector.DebuggerModel.Events.ParsedScriptSource, script);
@@ -1008,15 +1009,16 @@ WebInspector.DebuggerDispatcher.prototype = {
      * @param {number} startColumn
      * @param {number} endLine
      * @param {number} endColumn
+     * @param {!RuntimeAgent.ExecutionContextId} executionContextId
      * @param {boolean=} isContentScript
      * @param {boolean=} isInternalScript
      * @param {boolean=} isLiveEdit
      * @param {string=} sourceMapURL
      * @param {boolean=} hasSourceURL
      */
-    scriptParsed: function(scriptId, sourceURL, startLine, startColumn, endLine, endColumn, isContentScript, isInternalScript, isLiveEdit, sourceMapURL, hasSourceURL)
+    scriptParsed: function(scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, isContentScript, isInternalScript, isLiveEdit, sourceMapURL, hasSourceURL)
     {
-        this._debuggerModel._parsedScriptSource(scriptId, sourceURL, startLine, startColumn, endLine, endColumn, !!isContentScript, !!isInternalScript, !!isLiveEdit, sourceMapURL, hasSourceURL, false);
+        this._debuggerModel._parsedScriptSource(scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, !!isContentScript, !!isInternalScript, !!isLiveEdit, sourceMapURL, hasSourceURL, false);
     },
 
     /**
@@ -1027,14 +1029,15 @@ WebInspector.DebuggerDispatcher.prototype = {
      * @param {number} startColumn
      * @param {number} endLine
      * @param {number} endColumn
+     * @param {!RuntimeAgent.ExecutionContextId} executionContextId
      * @param {boolean=} isContentScript
      * @param {boolean=} isInternalScript
      * @param {string=} sourceMapURL
      * @param {boolean=} hasSourceURL
      */
-    scriptFailedToParse: function(scriptId, sourceURL, startLine, startColumn, endLine, endColumn, isContentScript, isInternalScript, sourceMapURL, hasSourceURL)
+    scriptFailedToParse: function(scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, isContentScript, isInternalScript, sourceMapURL, hasSourceURL)
     {
-        this._debuggerModel._parsedScriptSource(scriptId, sourceURL, startLine, startColumn, endLine, endColumn, !!isContentScript, !!isInternalScript, false, sourceMapURL, hasSourceURL, true);
+        this._debuggerModel._parsedScriptSource(scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, !!isContentScript, !!isInternalScript, false, sourceMapURL, hasSourceURL, true);
     },
 
     /**

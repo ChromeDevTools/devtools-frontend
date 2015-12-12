@@ -36,11 +36,10 @@ WebInspector.Target = function(targetManager, name, type, connection, parentTarg
     /** @type {!WebInspector.NetworkLog} */
     this.networkLog = new WebInspector.NetworkLog(this);
 
-    if (this.hasJSContext())
-        new WebInspector.DebuggerModel(this);
-
     /** @type {!WebInspector.RuntimeModel} */
     this.runtimeModel = new WebInspector.RuntimeModel(this);
+    if (this.hasJSContext())
+        new WebInspector.DebuggerModel(this);
 
     if (this._type === WebInspector.Target.Type.Page) {
         new WebInspector.DOMModel(this);

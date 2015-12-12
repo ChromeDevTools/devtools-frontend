@@ -59,7 +59,7 @@ WebInspector.NetworkProjectDelegate.prototype = {
     _computeDisplayName: function(url)
     {
         for (var context of this._target.runtimeModel.executionContexts()) {
-            if (context.origin && url.startsWith(context.origin))
+            if (context.name && context.origin && url.startsWith(context.origin))
                 return context.name;
         }
 

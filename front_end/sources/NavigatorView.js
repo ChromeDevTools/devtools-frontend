@@ -33,15 +33,12 @@
 WebInspector.NavigatorView = function()
 {
     WebInspector.VBox.call(this);
-    this.registerRequiredCSS("sources/navigatorView.css");
 
-    this.element.classList.add("navigator-container");
     var scriptsOutlineElement = this.element.createChild("div", "navigator");
-    this._scriptsTree = new TreeOutline();
+    this._scriptsTree = new TreeOutlineInShadow();
+    this._scriptsTree.registerRequiredCSS("sources/navigatorView.css");
     this._scriptsTree.setComparator(WebInspector.NavigatorView._treeElementsCompare);
-    this._scriptsTree.element.classList.add("outline-disclosure");
-    scriptsOutlineElement.appendChild(this._scriptsTree.element);
-
+    this.element.appendChild(this._scriptsTree.element);
     this.setDefaultFocusedElement(this._scriptsTree.element);
 
     /** @type {!Map.<!WebInspector.UISourceCode, !WebInspector.NavigatorUISourceCodeTreeNode>} */
@@ -61,27 +58,13 @@ WebInspector.NavigatorView.Events = {
 }
 
 WebInspector.NavigatorView.Types = {
-    Root: "Root",
-    Domain: "Domain",
-    Folder: "Folder",
-    UISourceCode: "UISourceCode",
-    FileSystem: "FileSystem",
-    SourceMapFolder: "SourceMapFolder"
-}
-
-/**
- * @param {string} type
- * @return {string}
- */
-WebInspector.NavigatorView.iconClassForType = function(type)
-{
-    if (type === WebInspector.NavigatorView.Types.Domain)
-        return "navigator-domain-tree-item";
-    if (type === WebInspector.NavigatorView.Types.FileSystem)
-        return "navigator-folder-tree-item";
-    if (type === WebInspector.NavigatorView.Types.SourceMapFolder)
-        return "navigator-sm-folder-tree-item";
-    return "navigator-folder-tree-item";
+    Category: "category",
+    Domain: "domain",
+    File: "file",
+    FileSystem: "filesystem",
+    Folder: "folder",
+    Root: "root",
+    SourceMapFolder: "sm-folder"
 }
 
 /**
@@ -295,15 +278,6 @@ WebInspector.NavigatorView.prototype = {
         }
     },
 
-    /**
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     */
-    _updateIcon: function(uiSourceCode)
-    {
-        var node = this._uiSourceCodeNodes.get(uiSourceCode);
-        node.updateIcon();
-    },
-
     reset: function()
     {
         var nodes = this._uiSourceCodeNodes.valuesArray();
@@ -461,7 +435,6 @@ WebInspector.NavigatorView.prototype = {
             }
 
             this.dispatchEventToListeners(WebInspector.NavigatorView.Events.ItemRenamed, uiSourceCode);
-            this._updateIcon(uiSourceCode);
             this._sourceSelected(uiSourceCode, true);
         }
     },
@@ -604,9 +577,9 @@ WebInspector.NavigatorView._treeElementsCompare = function compare(treeElement1,
     // Insert in the alphabetical order, first domains, then folders, then scripts.
     function typeWeight(treeElement)
     {
-        var type = treeElement.type();
+        var type = treeElement._nodeType;
         if (type === WebInspector.NavigatorView.Types.Domain) {
-            if (treeElement.nodeTitle() === WebInspector.targetManager.inspectedPageDomain())
+            if (treeElement.title === WebInspector.targetManager.inspectedPageDomain())
                 return 1;
             return 2;
         }
@@ -626,8 +599,8 @@ WebInspector.NavigatorView._treeElementsCompare = function compare(treeElement1,
     else if (typeWeight1 < typeWeight2)
         result = -1;
     else {
-        var title1 = treeElement1.nodeTitle();
-        var title2 = treeElement2.nodeTitle();
+        var title1 = /** @type {string} */(treeElement1.title);
+        var title2 = /** @type {string} */(treeElement2.title);
         result = title1.compareTo(title2);
     }
     return result;
@@ -636,98 +609,18 @@ WebInspector.NavigatorView._treeElementsCompare = function compare(treeElement1,
 /**
  * @constructor
  * @extends {TreeElement}
- * @param {string} type
- * @param {string} title
- * @param {!Array.<string>} iconClasses
- * @param {boolean} expandable
- * @param {boolean=} noIcon
- */
-WebInspector.BaseNavigatorTreeElement = function(type, title, iconClasses, expandable, noIcon)
-{
-    this._type = type;
-    TreeElement.call(this, "", expandable);
-    this._titleText = title;
-    this._iconClasses = iconClasses;
-    this._noIcon = noIcon;
-}
-
-WebInspector.BaseNavigatorTreeElement.prototype = {
-    onattach: function()
-    {
-        this.listItemElement.removeChildren();
-        if (this._iconClasses) {
-            for (var i = 0; i < this._iconClasses.length; ++i)
-                this.listItemElement.classList.add(this._iconClasses[i]);
-        }
-
-        this.listItemElement.createChild("div", "selection fill");
-
-        if (!this._noIcon)
-            this._imageElement = this.listItemElement.createChild("img", "icon");
-
-        this.titleElement = this.listItemElement.createChild("div", "base-navigator-tree-element-title");
-        this.titleElement.textContent = this._titleText;
-        this.tooltip = this._tooltip || this._titleText;
-    },
-
-    /**
-     * @param {!Array.<string>} iconClasses
-     */
-    updateIconClasses: function(iconClasses)
-    {
-        for (var i = 0; i < this._iconClasses.length; ++i)
-            this.listItemElement.classList.remove(this._iconClasses[i]);
-        this._iconClasses = iconClasses;
-        for (var i = 0; i < this._iconClasses.length; ++i)
-            this.listItemElement.classList.add(this._iconClasses[i]);
-    },
-
-    /**
-     * @return {string}
-     */
-    nodeTitle: function()
-    {
-        return this._titleText;
-    },
-
-    /**
-     * @param {string} titleText
-     * @param {string=} tooltip
-     */
-    setNodeTitle: function(titleText, tooltip)
-    {
-        if (this._titleText === titleText && this._tooltip === tooltip)
-            return;
-        this._titleText = titleText || "";
-        this._tooltip = tooltip;
-        if (this.titleElement) {
-            this.titleElement.textContent = this._titleText;
-            this.tooltip = this._tooltip || this._titleText;
-        }
-    },
-
-    /**
-     * @return {string}
-     */
-    type: function()
-    {
-        return this._type;
-    },
-
-    __proto__: TreeElement.prototype
-}
-
-/**
- * @constructor
- * @extends {WebInspector.BaseNavigatorTreeElement}
  * @param {!WebInspector.NavigatorView} navigatorView
  * @param {string} type
  * @param {string} title
  */
 WebInspector.NavigatorFolderTreeElement = function(navigatorView, type, title)
 {
-    var iconClass = WebInspector.NavigatorView.iconClassForType(type);
-    WebInspector.BaseNavigatorTreeElement.call(this, type, title, [iconClass], true);
+    TreeElement.call(this, "", true);
+    this.listItemElement.classList.add("navigator-" + type + "-tree-item");
+    this._nodeType = type;
+    this.title = title;
+    this.tooltip = title;
+    this.createIcon();
     this._navigatorView = navigatorView;
 }
 
@@ -739,13 +632,12 @@ WebInspector.NavigatorFolderTreeElement.prototype = {
 
     onattach: function()
     {
-        WebInspector.BaseNavigatorTreeElement.prototype.onattach.call(this);
         this.collapse();
         this.listItemElement.addEventListener("contextmenu", this._handleContextMenuEvent.bind(this), false);
     },
 
     /**
-     * @param {!WebInspector.NavigatorFolderTreeNode} node
+     * @param {!WebInspector.NavigatorTreeNode} node
      */
     setNode: function(node)
     {
@@ -770,22 +662,28 @@ WebInspector.NavigatorFolderTreeElement.prototype = {
         this._navigatorView.handleFolderContextMenu(event, this._node);
     },
 
-    __proto__: WebInspector.BaseNavigatorTreeElement.prototype
+    __proto__: TreeElement.prototype
 }
 
 /**
  * @constructor
- * @extends {WebInspector.BaseNavigatorTreeElement}
+ * @extends {TreeElement}
  * @param {!WebInspector.NavigatorView} navigatorView
  * @param {!WebInspector.UISourceCode} uiSourceCode
  * @param {string} title
  */
 WebInspector.NavigatorSourceTreeElement = function(navigatorView, uiSourceCode, title)
 {
+    TreeElement.call(this, "", false);
+    this._nodeType = WebInspector.NavigatorView.Types.File;
+    this.title = title;
+    this.listItemElement.classList.add("navigator-" + uiSourceCode.contentType().name() + "-tree-item");
+    this.tooltip = uiSourceCode.originURL();
+    this.createIcon();
+
+
     this._navigatorView = navigatorView;
     this._uiSourceCode = uiSourceCode;
-    WebInspector.BaseNavigatorTreeElement.call(this, WebInspector.NavigatorView.Types.UISourceCode, title, this._calculateIconClasses(), false);
-    this.tooltip = uiSourceCode.originURL();
 }
 
 WebInspector.NavigatorSourceTreeElement.prototype = {
@@ -797,22 +695,8 @@ WebInspector.NavigatorSourceTreeElement.prototype = {
         return this._uiSourceCode;
     },
 
-    /**
-     * @return {!Array.<string>}
-     */
-    _calculateIconClasses: function()
-    {
-        return ["navigator-" + this._uiSourceCode.contentType().name() + "-tree-item"];
-    },
-
-    updateIcon: function()
-    {
-        this.updateIconClasses(this._calculateIconClasses());
-    },
-
     onattach: function()
     {
-        WebInspector.BaseNavigatorTreeElement.prototype.onattach.call(this);
         this.listItemElement.draggable = true;
         this.listItemElement.addEventListener("click", this._onclick.bind(this), false);
         this.listItemElement.addEventListener("contextmenu", this._handleContextMenuEvent.bind(this), false);
@@ -927,7 +811,7 @@ WebInspector.NavigatorSourceTreeElement.prototype = {
         this._navigatorView.handleFileContextMenu(event, this._uiSourceCode);
     },
 
-    __proto__: WebInspector.BaseNavigatorTreeElement.prototype
+    __proto__: TreeElement.prototype
 }
 
 /**
@@ -1116,12 +1000,6 @@ WebInspector.NavigatorUISourceCodeTreeNode.prototype = {
         return this._uiSourceCode;
     },
 
-    updateIcon: function()
-    {
-        if (this._treeElement)
-            this._treeElement.updateIcon();
-    },
-
     /**
      * @override
      * @return {!TreeElement}
@@ -1155,7 +1033,8 @@ WebInspector.NavigatorUISourceCodeTreeNode.prototype = {
         var tooltip = titleText;
         if (this._uiSourceCode.contentType().isFromSourceMap())
             tooltip = WebInspector.UIString("%s (from source map)", this._uiSourceCode.displayName());
-        this._treeElement.setNodeTitle(titleText, tooltip);
+        this._treeElement.title = titleText;
+        this._treeElement.tooltip = tooltip;
     },
 
     /**
@@ -1224,7 +1103,7 @@ WebInspector.NavigatorUISourceCodeTreeNode.prototype = {
         function commitHandler(element, newTitle, oldTitle)
         {
             if (newTitle !== oldTitle) {
-                this._treeElement.setNodeTitle(newTitle);
+                this._treeElement.title = newTitle;
                 this._uiSourceCode.rename(newTitle, renameCallback.bind(this));
                 return;
             }
@@ -1247,14 +1126,6 @@ WebInspector.NavigatorUISourceCodeTreeNode.prototype = {
         }
 
         /**
-         * @this {WebInspector.NavigatorUISourceCodeTreeNode}
-         */
-        function cancelHandler()
-        {
-            afterEditing.call(this, false);
-        }
-
-        /**
          * @param {boolean} committed
          * @this {WebInspector.NavigatorUISourceCodeTreeNode}
          */
@@ -1267,10 +1138,8 @@ WebInspector.NavigatorUISourceCodeTreeNode.prototype = {
                 callback(committed);
         }
 
-        var editingConfig = new WebInspector.InplaceEditor.Config(commitHandler.bind(this), cancelHandler.bind(this));
         this.updateTitle(true);
-        WebInspector.InplaceEditor.startEditing(this._treeElement.titleElement, editingConfig);
-        treeOutlineElement.getComponentSelection().setBaseAndExtent(this._treeElement.titleElement, 0, this._treeElement.titleElement, 1);
+        this._treeElement.startEditingTitle(new WebInspector.InplaceEditor.Config(commitHandler.bind(this), afterEditing.bind(this, false)));
     },
 
     __proto__: WebInspector.NavigatorTreeNode.prototype
@@ -1356,7 +1225,7 @@ WebInspector.NavigatorFolderTreeNode.prototype = {
 
         if (children.length === 1 && this._shouldMerge(node)) {
             node._isMerged = true;
-            this._treeElement.setNodeTitle(this._treeElement.nodeTitle() + "/" + node._title);
+            this._treeElement.title = this._treeElement.title + "/" + node._title;
             node._treeElement = this._treeElement;
             this._treeElement.setNode(node);
             return;
@@ -1386,7 +1255,7 @@ WebInspector.NavigatorFolderTreeNode.prototype = {
             } while (treeNode && treeNode._isMerged);
 
             if (!this.isPopulated()) {
-                this._treeElement.setNodeTitle(titleText);
+                this._treeElement.title = titleText;
                 this._treeElement.setNode(this);
                 for (var i = 0; i < nodes.length; ++i) {
                     delete nodes[i]._treeElement;
@@ -1401,7 +1270,7 @@ WebInspector.NavigatorFolderTreeNode.prototype = {
             oldTreeElement.parent.appendChild(treeElement);
 
             oldTreeElement.setNode(nodes[nodes.length - 1]);
-            oldTreeElement.setNodeTitle(nodes.map(titleForNode).join("/"));
+            oldTreeElement.title = nodes.map(titleForNode).join("/");
             oldTreeElement.parent.removeChild(oldTreeElement);
             this._treeElement.appendChild(oldTreeElement);
             if (oldTreeElement.expanded)

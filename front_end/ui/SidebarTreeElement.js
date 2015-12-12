@@ -82,12 +82,12 @@ WebInspector.SidebarTreeElement = function(className, title, subtitle, expandabl
 
     this.iconElement = createElementWithClass("div", "icon");
     this.statusElement = createElementWithClass("div", "status");
-    this.titlesElement = createElementWithClass("div", "titles");
+    this._titlesElement = createElementWithClass("div", "titles");
 
-    this.titleContainer = this.titlesElement.createChild("span", "title-container");
+    this.titleContainer = this._titlesElement.createChild("span", "title-container");
     this.titleElement = this.titleContainer.createChild("span", "title");
 
-    this.subtitleElement = this.titlesElement.createChild("span", "subtitle");
+    this.subtitleElement = this._titlesElement.createChild("span", "subtitle");
 
     this.className = className;
     this.mainTitle = title;
@@ -144,10 +144,10 @@ WebInspector.SidebarTreeElement.prototype = {
         if (subtitle) {
             if (this.subtitleElement.textContent !== subtitle)
                 this.subtitleElement.textContent = subtitle;
-            this.titlesElement.classList.remove("no-subtitle");
+            this._titlesElement.classList.remove("no-subtitle");
         } else {
             this.subtitleElement.textContent = "";
-            this.titlesElement.classList.add("no-subtitle");
+            this._titlesElement.classList.add("no-subtitle");
         }
     },
 
@@ -173,7 +173,7 @@ WebInspector.SidebarTreeElement.prototype = {
         if (this.isExpandable() && this.disclosureButton)
             this.listItemElement.appendChild(this.disclosureButton);
 
-        this.listItemElement.appendChildren(this.iconElement, this.statusElement, this.titlesElement);
+        this.listItemElement.appendChildren(this.iconElement, this.statusElement, this._titlesElement);
     },
 
     __proto__: TreeElement.prototype

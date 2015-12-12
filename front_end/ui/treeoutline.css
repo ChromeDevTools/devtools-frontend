@@ -4,6 +4,16 @@
  * found in the LICENSE file.
  */
 
+:host {
+    flex: 1 1;
+    padding: 2px 0 0 0;
+}
+
+.tree-outline-disclosure {
+    min-width: 100%;
+    display: inline-block;
+}
+
 .tree-outline {
     padding: 0 0 4px 4px;
     margin: 0;
@@ -22,7 +32,6 @@
 .tree-outline li .selection {
     display: none;
     z-index: -1;
-    margin-top: -1px;
     margin-left: -10000px;
 }
 
@@ -65,9 +74,10 @@ ol.tree-outline,
 .tree-outline li {
     text-overflow: ellipsis;
     white-space: nowrap;
-    min-height: 17px;
-    padding-top: 2px;
+    min-height: 18px;
     position: relative;
+    display: flex;
+    align-items: center;
 }
 
 ol.tree-outline:focus li.selected {

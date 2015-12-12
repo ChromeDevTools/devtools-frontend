@@ -326,7 +326,8 @@ function TreeOutlineInShadow(className)
     // Redefine element to the external one.
     this.element = createElement("div");
     this._shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element, "ui/treeoutline.css");
-    this._shadowRoot.appendChild(innerElement);
+    var contentElement = this._shadowRoot.createChild("div", "tree-outline-disclosure");
+    contentElement.appendChild(innerElement);
     this._renderSelection = true;
 }
 
@@ -625,17 +626,53 @@ TreeElement.prototype = {
         return this._title;
     },
 
+    /**
+     * @param {string|!Node} x
+     */
     set title(x)
     {
+        if (this._title === x)
+            return;
         this._title = x;
-        if (typeof this._title === "string")
-            this._listItemNode.textContent = this._title;
-        else {
-            this._listItemNode.removeChildren();
-            if (this._title)
-                this._listItemNode.appendChild(this._title);
+
+        if (typeof x === "string") {
+            this._titleElement = createElementWithClass("span", "tree-element-title");
+            this._titleElement.textContent = x;
+            this.tooltip = x;
+        } else {
+            this._titleElement = x;
+            this.tooltip = "";
+        }
+
+        this._listItemNode.removeChildren();
+        if (this._iconElement)
+            this._listItemNode.appendChild(this._iconElement);
+
+        this._listItemNode.appendChild(this._titleElement);
+        this._ensureSelection();
+    },
+
+    /**
+     * @param {!WebInspector.InplaceEditor.Config} editingConfig
+     */
+    startEditingTitle: function(editingConfig)
+    {
+        WebInspector.InplaceEditor.startEditing(this._titleElement, editingConfig);
+        this.treeOutline._shadowRoot.getSelection().setBaseAndExtent(this._titleElement, 0, this._titleElement, 1);
+    },
+
+    createIcon()
+    {
+        if (!this._iconElement) {
+            this._iconElement = createElementWithClass("img", "icon");
+            this._listItemNode.insertBefore(this._iconElement, this._listItemNode.firstChild);
             this._ensureSelection();
         }
+    },
+
+    get tooltip()
+    {
+        return this._tooltip || "";
     },
 
     /**
@@ -643,6 +680,9 @@ TreeElement.prototype = {
      */
     set tooltip(x)
     {
+        if (this._tooltip === x)
+            return;
+        this._tooltip = x;
         this._listItemNode.title = x;
     },
 

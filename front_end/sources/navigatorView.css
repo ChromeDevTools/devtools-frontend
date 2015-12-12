@@ -32,8 +32,8 @@
 }
 
 .navigator-folder-tree-item .icon,
+.navigator-filesystem-tree-item .icon,
 .navigator-sm-folder-tree-item .icon {
-    opacity: 0.7;
     content: url(Images/frame.png);
 }
 
@@ -53,9 +53,9 @@
     -webkit-filter: saturate(0);
 }
 
-.navigator-sm-folder-tree-item .base-navigator-tree-element-title,
-.navigator-sm-script-tree-item .base-navigator-tree-element-title,
-.navigator-sm-stylesheet-tree-item .base-navigator-tree-element-title {
+.navigator-sm-folder-tree-item .tree-element-title,
+.navigator-sm-script-tree-item .tree-element-title,
+.navigator-sm-stylesheet-tree-item .tree-element-title {
     font-style: italic;
 }
 
@@ -64,59 +64,13 @@
 }
 
 .navigator-other-tree-item .icon,
+.navigator-font-tree-item .icon,
 .navigator-image-tree-item .icon {
     content: url(Images/resourcePlainIcon.png);
 }
 
-.navigator > ol {
-    min-width: 100%;
-    min-height: 100%;
-    display: inline-block;
-    position: relative;
-}
-
-.navigator li {
-    height: 18px;
-    line-height: 17px;
-    white-space: nowrap;
-    padding-right: 3px;
-}
-
-.navigator :focus li.selected {
-    color: white;
-}
-
-.navigator > ol.being-edited li.selected .selection {
-    background-color: rgb(56, 121, 217);
-}
-
-.navigator > ol.being-edited li.selected {
-    overflow: visible;
-}
-
-.navigator .icon {
+.icon {
     width: 16px;
     height: 16px;
-    margin-top: -2px;
-    position: relative;
-    top: 3px;
-}
-
-.navigator .base-navigator-tree-element-title {
-    display: inline-block;
-    position: relative;
-    padding-left: 2px;
-}
-
-.navigator .base-navigator-tree-element-title.editing {
-    margin: auto;
-}
-
-.navigator-tabbed-pane {
-    flex: auto;
-}
-
-.navigator-tabbed-pane .navigator {
-    padding-left: 0;
-    transform: translateZ(0);
+    margin-right: 2px;
 }

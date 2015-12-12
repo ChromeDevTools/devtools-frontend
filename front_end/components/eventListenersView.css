@@ -7,6 +7,7 @@
 .event-listener-tree li {
     padding: 2px 0 0 5px;
     overflow: hidden;
+    display: list-item;
 }
 
 .event-listener-tree > li {
@@ -32,6 +33,7 @@
 
 .event-listener-tree-subtitle {
     float: right;
+    margin-left: 5px;
 }
 
 .event-listener-delete-button {

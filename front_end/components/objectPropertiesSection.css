@@ -11,6 +11,7 @@
 
 .object-properties-section-separator {
     flex-shrink: 0;
+    padding-right: 5px;
 }
 
 .object-properties-section-dimmed {
@@ -26,7 +27,7 @@
 
 .object-properties-section li {
     min-height: inherit;
-    line-height: 12px;
+    line-height: 15px;
     -webkit-user-select: text;
 }
 

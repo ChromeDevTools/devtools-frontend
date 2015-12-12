@@ -79,10 +79,10 @@
 .source-frame-popover-tree {
     border-top: 1px solid rgb(184, 184, 184);
     overflow: auto;
-    position: relative;
-    top: 5px;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    position: absolute;
+    top: 21px;
+    bottom: 5px;
+    left: 5px;
+    right: 5px;
     margin-top: 1px;
 }

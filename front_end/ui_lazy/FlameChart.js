@@ -699,7 +699,7 @@ WebInspector.FlameChart.prototype = {
 
     _updateRangeSelectionOverlay: function()
     {
-        var margin = 100;
+        var /** @const */ margin = 100;
         var left = Number.constrain(this._timeToPosition(this._rangeSelectionStart), -margin, this._offsetWidth + margin);
         var right = Number.constrain(this._timeToPosition(this._rangeSelectionEnd), -margin, this._offsetWidth + margin);
         var style = this._selectionOverlay.style;
@@ -1604,6 +1604,8 @@ WebInspector.FlameChart.prototype = {
         this._highlightedMarkerIndex = -1;
         this._highlightedEntryIndex = -1;
         this._selectedEntryIndex = -1;
+        this._rangeSelectionStart = 0;
+        this._rangeSelectionEnd = 0;
         this._textWidth = {};
         this.update();
     },

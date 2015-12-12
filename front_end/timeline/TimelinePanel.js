@@ -61,6 +61,9 @@ WebInspector.TimelinePanel = function()
     this._model.addEventListener(WebInspector.TimelineModel.Events.BufferUsage, this._onTracingBufferUsage, this);
     this._model.addEventListener(WebInspector.TimelineModel.Events.RetrieveEventsProgress, this._onRetrieveEventsProgress, this);
 
+    if (Runtime.experiments.isEnabled("cpuThrottling"))
+        this._cpuThrottlingManager = new WebInspector.CPUThrottlingManager();
+
     this._waterfallFilters = [new WebInspector.TimelineStaticFilter()];
     if (!Runtime.experiments.isEnabled("timelineEventsTreeView")) {
         this._filtersControl = new WebInspector.TimelineFilters();
@@ -393,6 +396,27 @@ WebInspector.TimelinePanel.prototype = {
                                                                          this._captureFilmStripSetting,
                                                                          WebInspector.UIString("Capture screenshots while recording. (Has performance overhead)")));
 
+        if (Runtime.experiments.isEnabled("cpuThrottling")) {
+            this._panelToolbar.appendSeparator();
+            this._cpuThrottlingCombobox = new WebInspector.ToolbarComboBox(this._onCPUThrottlingChanged.bind(this));
+            /**
+             * @param {string} name
+             * @param {number} value
+             * @this {WebInspector.TimelinePanel}
+             */
+            function addGroupingOption(name, value)
+            {
+                var option = this._cpuThrottlingCombobox.createOption(name, "", String(value));
+                this._cpuThrottlingCombobox.addOption(option);
+                if (value === this._cpuThrottlingManager.rate())
+                    this._cpuThrottlingCombobox.select(option);
+            }
+            addGroupingOption.call(this, WebInspector.UIString("No CPU throttling"), 1);
+            for (var rate of [1.2, 1.5, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20, 30, 50])
+                addGroupingOption.call(this, WebInspector.UIString("%fx slowdown", rate), rate);
+            this._panelToolbar.appendToolbarItem(this._cpuThrottlingCombobox);
+        }
+
         this._progressToolbarItem = new WebInspector.ToolbarItem(createElement("div"));
         this._progressToolbarItem.setVisible(false);
         this._panelToolbar.appendToolbarItem(this._progressToolbarItem);
@@ -565,6 +589,14 @@ WebInspector.TimelinePanel.prototype = {
     {
         if (this._flameChart)
             this._flameChart.enableNetworkPane(this._captureNetworkSetting.get(), true);
+    },
+
+    _onCPUThrottlingChanged: function()
+    {
+        if (!this._cpuThrottlingManager)
+            return;
+        var value = Number.parseFloat(this._cpuThrottlingCombobox.selectedOption().value);
+        this._cpuThrottlingManager.setRate(value);
     },
 
     /**
@@ -2037,3 +2069,55 @@ WebInspector.TimelineFilters.prototype = {
 
     __proto__: WebInspector.Object.prototype
 };
+
+/**
+ * @constructor
+ * @extends {WebInspector.Object}
+ * @implements {WebInspector.TargetManager.Observer}
+ */
+WebInspector.CPUThrottlingManager = function()
+{
+    this._targets = [];
+    this._throttlingRate = 1.; // No throttling
+    WebInspector.targetManager.observeTargets(this);
+}
+
+WebInspector.CPUThrottlingManager.prototype = {
+    /**
+     * @param {number} value
+     */
+    setRate: function(value)
+    {
+        this._throttlingRate = value;
+        this._targets.forEach(target => target.emulationAgent().setCPUThrottlingRate(value));
+    },
+
+    /**
+     * @return {number}
+     */
+    rate: function()
+    {
+        return this._throttlingRate;
+    },
+
+    /**
+     * @override
+     * @param {!WebInspector.Target} target
+     */
+    targetAdded: function(target)
+    {
+        this._targets.push(target);
+        target.emulationAgent().setCPUThrottlingRate(this._throttlingRate);
+    },
+
+    /**
+     * @override
+     * @param {!WebInspector.Target} target
+     */
+    targetRemoved: function(target)
+    {
+        this._targets.remove(target, true);
+    },
+
+    __proto__: WebInspector.Object.prototype
+}

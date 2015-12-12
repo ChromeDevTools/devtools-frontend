@@ -715,6 +715,13 @@
                 "description": "Emulates the given media for CSS media queries."
             },
             {
+                "name": "setCPUThrottlingRate",
+                "parameters": [
+                    { "name": "rate", "type": "number", "description": "Throttling rate as a slowdown factor (1 is no throttle, 2 is 2x slowdown, etc)." }
+                ],
+                "description": "Enables CPU throttling to emulate slow CPUs."
+            },
+            {
                 "name": "canEmulate",
                 "description": "Tells whether emulation is supported.",
                 "returns": [

@@ -71,7 +71,7 @@ WebInspector.SearchConfig.prototype = {
         var quotedPattern = "\"(([^\\\\\"]|\\\\.)+)\""; // Inside double quotes: any symbol except double quote and backslash or any symbol escaped with a backslash.
 
         // A word is a sequence of any symbols except space and backslash or any symbols escaped with a backslash, that does not start with file:.
-        var unquotedWordPattern = "((?!-?f(ile)?:)[^\\\\ ]|\\\\.)+";
+        var unquotedWordPattern = "(\\s*(?!-?f(ile)?:)[^\\\\ ]|\\\\.)+";
         var unquotedPattern = unquotedWordPattern + "( +" + unquotedWordPattern + ")*"; // A word or several words separated by space(s).
 
         var pattern = "(" + filePattern + ")|(" + quotedPattern + ")|(" + unquotedPattern + ")";
@@ -98,6 +98,10 @@ WebInspector.SearchConfig.prototype = {
                 /** @type {!Array.<!WebInspector.SearchConfig.RegexQuery>} */
                 this._fileRegexQueries = this._fileRegexQueries || [];
                 this._fileRegexQueries.push({ regex: new RegExp(fileQuery.text, this.ignoreCase ? "i" : ""), isNegative: fileQuery.isNegative });
+                continue;
+            }
+            if (this._isRegex) {
+                this._queries.push(queryPart);
                 continue;
             }
             if (queryPart.startsWith("\"")) {

@@ -628,18 +628,16 @@ WebInspector.CSSStyleModel.prototype = {
 /**
  * @constructor
  * @extends {WebInspector.SDKObject}
- * @param {!WebInspector.CSSStyleModel} cssModel
- * @param {!CSSAgent.StyleSheetId} styleSheetId
- * @param {string} url
+ * @param {!WebInspector.CSSStyleSheetHeader} header
  * @param {number} lineNumber
  * @param {number=} columnNumber
  */
-WebInspector.CSSLocation = function(cssModel, styleSheetId, url, lineNumber, columnNumber)
+WebInspector.CSSLocation = function(header, lineNumber, columnNumber)
 {
-    WebInspector.SDKObject.call(this, cssModel.target());
-    this._cssModel = cssModel;
-    this.styleSheetId = styleSheetId;
-    this.url = url;
+    WebInspector.SDKObject.call(this, header.target());
+    this._header = header;
+    this.styleSheetId = header.id;
+    this.url = header.resourceURL();
     this.lineNumber = lineNumber;
     this.columnNumber = columnNumber || 0;
 }
@@ -650,7 +648,7 @@ WebInspector.CSSLocation.prototype = {
      */
     cssModel: function()
     {
-        return this._cssModel;
+        return this._header.cssModel();
     },
 
     __proto__: WebInspector.SDKObject.prototype
@@ -1741,10 +1739,11 @@ WebInspector.CSSMedia.prototype = {
      */
     rawLocation: function()
     {
-        if (!this.header() || this.lineNumberInSource() === undefined)
+        var header = this.header();
+        if (!header || this.lineNumberInSource() === undefined)
             return null;
         var lineNumber = Number(this.lineNumberInSource());
-        return new WebInspector.CSSLocation(this._cssModel, this.header().id, this.sourceURL, lineNumber, this.columnNumberInSource());
+        return new WebInspector.CSSLocation(header, lineNumber, this.columnNumberInSource());
     }
 }
 

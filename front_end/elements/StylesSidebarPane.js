@@ -1288,9 +1288,12 @@ WebInspector.StylePropertiesSection.prototype = {
             return;
 
         if (WebInspector.KeyboardShortcut.eventHasCtrlOrMeta(/** @type {!MouseEvent} */(event)) && this.navigable) {
-            var cssModel = this._parentPane._cssModel;
-            var rawLocation = new WebInspector.CSSLocation(cssModel, /** @type {string} */(media.parentStyleSheetId), media.sourceURL, /** @type {number} */(media.lineNumberInSource()), media.columnNumberInSource());
-            var uiLocation = WebInspector.cssWorkspaceBinding.rawLocationToUILocation(rawLocation);
+            var location = media.rawLocation();
+            if (!location) {
+                event.consume(true);
+                return;
+            }
+            var uiLocation = WebInspector.cssWorkspaceBinding.rawLocationToUILocation(location);
             if (uiLocation)
                 WebInspector.Revealer.reveal(uiLocation);
             event.consume(true);
@@ -1386,7 +1389,12 @@ WebInspector.StylePropertiesSection.prototype = {
             var index = event.target._selectorIndex;
             var cssModel = this._parentPane._cssModel;
             var rule = this._style.parentRule;
-            var rawLocation = new WebInspector.CSSLocation(cssModel, /** @type {string} */(rule.styleSheetId), rule.sourceURL, rule.lineNumberInSource(index), rule.columnNumberInSource(index));
+            var header = cssModel.styleSheetHeaderForId(/** @type {string} */(rule.styleSheetId));
+            if (!header) {
+                event.consume(true);
+                return;
+            }
+            var rawLocation = new WebInspector.CSSLocation(header, rule.lineNumberInSource(index), rule.columnNumberInSource(index));
             var uiLocation = WebInspector.cssWorkspaceBinding.rawLocationToUILocation(rawLocation);
             if (uiLocation)
                 WebInspector.Revealer.reveal(uiLocation);
@@ -1577,10 +1585,9 @@ WebInspector.StylePropertiesSection.createRuleOriginNode = function(cssModel, li
 WebInspector.StylePropertiesSection._linkifyRuleLocation = function(cssModel, linkifier, styleSheetId, ruleLocation)
 {
     var styleSheetHeader = cssModel.styleSheetHeaderForId(styleSheetId);
-    var sourceURL = styleSheetHeader.resourceURL();
     var lineNumber = styleSheetHeader.lineNumberInSource(ruleLocation.startLine);
     var columnNumber = styleSheetHeader.columnNumberInSource(ruleLocation.startLine, ruleLocation.startColumn);
-    var matchingSelectorLocation = new WebInspector.CSSLocation(cssModel, styleSheetId, sourceURL, lineNumber, columnNumber);
+    var matchingSelectorLocation = new WebInspector.CSSLocation(styleSheetHeader, lineNumber, columnNumber);
     return linkifier.linkifyCSSLocation(matchingSelectorLocation);
 }
 

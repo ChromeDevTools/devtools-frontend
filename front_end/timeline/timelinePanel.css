@@ -326,6 +326,10 @@
     z-index: -200;
 }
 
+.overview-strip .background {
+    z-index: -10;
+}
+
 #timeline-overview-responsiveness::before {
     display: none;
 }

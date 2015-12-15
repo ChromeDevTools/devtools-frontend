@@ -90,7 +90,8 @@ WebInspector.FilterBar.prototype = {
 
     forceShowFilterBar: function()
     {
-        this._updateFilterBar(true);
+        this._alwaysShowFilters = true;
+        this._updateFilterBar();
     },
 
     /**
@@ -124,12 +125,9 @@ WebInspector.FilterBar.prototype = {
         return WebInspector.FilterBar.FilterBarState.Inactive;
     },
 
-    /**
-     * @param {boolean=} forceShow
-     */
-    _updateFilterBar: function(forceShow)
+    _updateFilterBar: function()
     {
-        var visible = forceShow || (this._filtersShown && this._enabled);
+        var visible = this._alwaysShowFilters || (this._filtersShown && this._enabled);
         this.element.classList.toggle("hidden", !visible);
         if (visible) {
             for (var i = 0; i < this._filters.length; ++i) {

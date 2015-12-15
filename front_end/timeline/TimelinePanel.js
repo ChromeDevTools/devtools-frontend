@@ -1334,19 +1334,19 @@ WebInspector.TimelineDetailsView = function(timelineModel, delegate)
     /** @type Map<string, WebInspector.TimelineTreeView> */
     this._rangeDetailViews = new Map();
     if (!Runtime.experiments.isEnabled("multipleTimelineViews")) {
-        if (Runtime.experiments.isEnabled("timelineEventsTreeView")) {
-            var eventsView = new WebInspector.EventsTimelineTreeView(timelineModel, delegate);
-            this.appendTab(tabIds.Events, WebInspector.UIString("Events"), eventsView);
-            this._rangeDetailViews.set(tabIds.Events, eventsView);
-        }
+        var bottomUpView = new WebInspector.BottomUpTimelineTreeView(timelineModel);
+        this.appendTab(tabIds.BottomUp, WebInspector.UIString("Bottom-Up"), bottomUpView);
+        this._rangeDetailViews.set(tabIds.BottomUp, bottomUpView);
 
         var callTreeView = new WebInspector.CallTreeTimelineTreeView(timelineModel);
         this.appendTab(tabIds.CallTree, WebInspector.UIString("Call Tree"), callTreeView);
         this._rangeDetailViews.set(tabIds.CallTree, callTreeView);
 
-        var bottomUpView = new WebInspector.BottomUpTimelineTreeView(timelineModel);
-        this.appendTab(tabIds.BottomUp, WebInspector.UIString("Bottom-Up"), bottomUpView);
-        this._rangeDetailViews.set(tabIds.BottomUp, bottomUpView);
+        if (Runtime.experiments.isEnabled("timelineEventsTreeView")) {
+            var eventsView = new WebInspector.EventsTimelineTreeView(timelineModel, delegate);
+            this.appendTab(tabIds.Events, WebInspector.UIString("Event Log"), eventsView);
+            this._rangeDetailViews.set(tabIds.Events, eventsView);
+        }
     }
 
     this.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, this._tabSelected, this);

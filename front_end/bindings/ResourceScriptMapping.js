@@ -45,8 +45,8 @@ WebInspector.ResourceScriptMapping = function(debuggerModel, workspace, networkM
     this._workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
     this._networkMapping = networkMapping;
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
-    /** @type {!Set.<string>} */
-    this._boundURLs = new Set();
+    /** @type {!Array.<!WebInspector.UISourceCode>} */
+    this._boundUISourceCodes = [];
 
     /** @type {!Map.<!WebInspector.UISourceCode, !WebInspector.ResourceScriptFile>} */
     this._uiSourceCodeToScriptFile = new Map();
@@ -215,7 +215,7 @@ WebInspector.ResourceScriptMapping.prototype = {
     {
         if (script.isAnonymousScript())
             return null;
-        return this._networkMapping.uiSourceCodeForURL(script.sourceURL, this._target);
+        return this._networkMapping.uiSourceCodeForScriptURL(script.sourceURL, script);
     },
 
     /**
@@ -250,7 +250,7 @@ WebInspector.ResourceScriptMapping.prototype = {
         for (var i = 0; i < scripts.length; ++i)
             this._debuggerWorkspaceBinding.updateLocations(scripts[i]);
         this._debuggerWorkspaceBinding.setSourceMapping(this._target, uiSourceCode, this);
-        this._boundURLs.add(this._networkMapping.networkURL(uiSourceCode));
+        this._boundUISourceCodes.push(uiSourceCode);
     },
 
     /**
@@ -264,19 +264,13 @@ WebInspector.ResourceScriptMapping.prototype = {
             this._setScriptFile(uiSourceCode, null);
         }
         this._debuggerWorkspaceBinding.setSourceMapping(this._target, uiSourceCode, null);
+        this._boundUISourceCodes.remove(uiSourceCode);
     },
 
     _debuggerReset: function()
     {
-        var boundURLs = this._boundURLs.valuesArray();
-        for (var i = 0; i < boundURLs.length; ++i)
-        {
-            var uiSourceCode = this._networkMapping.uiSourceCodeForURL(boundURLs[i], this._target);
-            if (!uiSourceCode)
-                continue;
-            this._unbindUISourceCode(uiSourceCode);
-        }
-        this._boundURLs.clear();
+        this._boundUISourceCodes.forEach(this._unbindUISourceCode.bind(this));
+        this._boundUISourceCodes = [];
     },
 
     dispose: function()

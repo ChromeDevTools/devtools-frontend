@@ -179,7 +179,7 @@ WebInspector.SASSSourceMapping.prototype = {
         var entry = sourceMap.findEntry(rawLocation.lineNumber, rawLocation.columnNumber);
         if (!entry || !entry.sourceURL)
             return null;
-        var uiSourceCode = this._networkMapping.uiSourceCodeForURL(entry.sourceURL, rawLocation.target());
+        var uiSourceCode = this._networkMapping.uiSourceCodeForStyleURL(entry.sourceURL, rawLocation.header());
         if (!uiSourceCode)
             return null;
         return uiSourceCode.uiLocation(entry.sourceLineNumber, entry.sourceColumnNumber);

@@ -382,7 +382,7 @@ WebInspector.CSSWorkspaceBinding.LiveLocation.prototype = {
             var headerInfo = this._binding._headerInfo(this._header);
             return headerInfo._rawLocationToUILocation(cssLocation.lineNumber, cssLocation.columnNumber);
         }
-        var uiSourceCode = this._binding._networkMapping.uiSourceCodeForURL(cssLocation.url, cssLocation.target());
+        var uiSourceCode = this._binding._networkMapping.uiSourceCodeForStyleURL(cssLocation.url, cssLocation.header());
         if (!uiSourceCode)
             return null;
         return uiSourceCode.uiLocation(cssLocation.lineNumber, cssLocation.columnNumber);

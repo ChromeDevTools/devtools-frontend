@@ -101,7 +101,7 @@ WebInspector.CompilerScriptMapping.prototype = {
         var entry = sourceMap.findEntry(lineNumber, columnNumber);
         if (!entry || !entry.sourceURL)
             return null;
-        var uiSourceCode = this._networkMapping.uiSourceCodeForURL(/** @type {string} */ (entry.sourceURL), this._target);
+        var uiSourceCode = this._networkMapping.uiSourceCodeForScriptURL(/** @type {string} */ (entry.sourceURL), rawLocation.script());
         if (!uiSourceCode)
             return null;
         return uiSourceCode.uiLocation(/** @type {number} */ (entry.sourceLineNumber), /** @type {number} */ (entry.sourceColumnNumber));
@@ -204,11 +204,11 @@ WebInspector.CompilerScriptMapping.prototype = {
             if (this._sourceMapForURL.get(sourceURL))
                 continue;
             this._sourceMapForURL.set(sourceURL, sourceMap);
-            if (!this._networkMapping.hasMappingForURL(sourceURL) && !this._networkMapping.uiSourceCodeForURL(sourceURL, script.target())) {
+            if (!this._networkMapping.hasMappingForURL(sourceURL) && !this._networkMapping.uiSourceCodeForScriptURL(sourceURL, script)) {
                 var contentProvider = sourceMap.sourceContentProvider(sourceURL, WebInspector.resourceTypes.SourceMapScript);
                 this._networkProject.addFileForURL(sourceURL, contentProvider, script.isContentScript());
             }
-            var uiSourceCode = this._networkMapping.uiSourceCodeForURL(sourceURL, this._target);
+            var uiSourceCode = this._networkMapping.uiSourceCodeForScriptURL(sourceURL, script);
             if (uiSourceCode) {
                 this._bindUISourceCode(uiSourceCode);
             } else {
@@ -342,18 +342,23 @@ WebInspector.CompilerScriptMapping.prototype = {
     _debuggerReset: function()
     {
         /**
-         * @param {string} sourceURL
+         * @param {!WebInspector.SourceMap} sourceMap
          * @this {WebInspector.CompilerScriptMapping}
          */
-        function unbindUISourceCodeForURL(sourceURL)
+        function unbindSourceMapSources(sourceMap)
         {
-            var uiSourceCode = this._networkMapping.uiSourceCodeForURL(sourceURL, this._target);
-            if (!uiSourceCode)
+            var script = this._scriptForSourceMap.get(sourceMap);
+            if (!script)
                 return;
-            this._unbindUISourceCode(uiSourceCode);
+            var sourceURLs = sourceMap.sources();
+            for (var i = 0; i < sourceURLs.length; ++i) {
+                var uiSourceCode = this._networkMapping.uiSourceCodeForScriptURL(sourceURLs[i], script);
+                if (uiSourceCode)
+                    this._unbindUISourceCode(uiSourceCode);
+            }
         }
 
-        this._sourceMapForURL.keysArray().forEach(unbindUISourceCodeForURL.bind(this));
+        this._sourceMapForURL.valuesArray().forEach(unbindSourceMapSources.bind(this));
 
         this._sourceMapForSourceMapURL = {};
         this._pendingSourceMapLoadingCallbacks = {};

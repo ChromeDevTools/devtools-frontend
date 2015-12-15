@@ -651,6 +651,14 @@ WebInspector.CSSLocation.prototype = {
         return this._header.cssModel();
     },
 
+    /**
+     * @return {!WebInspector.CSSStyleSheetHeader}
+     */
+    header: function()
+    {
+        return this._header;
+    },
+
     __proto__: WebInspector.SDKObject.prototype
 }
 

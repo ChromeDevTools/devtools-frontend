@@ -122,7 +122,7 @@ WebInspector.NetworkMapping.prototype = {
      * @param {!WebInspector.Target} target
      * @return {?WebInspector.UISourceCode}
      */
-    uiSourceCodeForURL: function(url, target)
+    _uiSourceCodeForURL: function(url, target)
     {
         var file = this._fileSystemMapping.fileForURL(url);
         if (file) {
@@ -136,12 +136,32 @@ WebInspector.NetworkMapping.prototype = {
 
     /**
      * @param {string} url
+     * @param {!WebInspector.Script} script
+     * @return {?WebInspector.UISourceCode}
+     */
+    uiSourceCodeForScriptURL: function(url, script)
+    {
+        return this._uiSourceCodeForURL(url, script.target());
+    },
+
+    /**
+     * @param {string} url
+     * @param {!WebInspector.CSSStyleSheetHeader} header
+     * @return {?WebInspector.UISourceCode}
+     */
+    uiSourceCodeForStyleURL: function(url, header)
+    {
+        return this._uiSourceCodeForURL(url, header.target());
+    },
+
+    /**
+     * @param {string} url
      * @return {?WebInspector.UISourceCode}
      */
     uiSourceCodeForURLForAnyTarget: function(url)
     {
         for (var target of WebInspector.targetManager.targets()) {
-            var result = this.uiSourceCodeForURL(url, target);
+            var result = this._uiSourceCodeForURL(url, target);
             if (result)
                 return result;
         }

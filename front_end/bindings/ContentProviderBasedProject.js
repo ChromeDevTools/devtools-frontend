@@ -285,6 +285,16 @@ WebInspector.ContentProviderBasedProject.prototype = {
     },
 
     /**
+     * @param {!WebInspector.UISourceCode} uiSourceCode
+     * @param {!WebInspector.ContentProvider} contentProvider
+     */
+    addUISourceCodeWithProvider: function(uiSourceCode, contentProvider)
+    {
+        this._contentProviders[uiSourceCode.path()] = contentProvider;
+        this.addUISourceCode(uiSourceCode, true);
+    },
+
+    /**
      * @param {string} parentPath
      * @param {string} name
      * @param {string} originURL
@@ -293,11 +303,9 @@ WebInspector.ContentProviderBasedProject.prototype = {
      */
     addContentProvider: function(parentPath, name, originURL, contentProvider)
     {
-        var path = parentPath ? parentPath + "/" + name : name;
-        if (this._contentProviders[path])
-            this.removeUISourceCode(path);
-        this._contentProviders[path] = contentProvider;
-        return this.addUISourceCode(parentPath, name, originURL, contentProvider.contentType());
+        var uiSourceCode = this.createUISourceCode(parentPath, name, originURL, contentProvider.contentType());
+        this.addUISourceCodeWithProvider(uiSourceCode, contentProvider);
+        return uiSourceCode;
     },
 
     /**

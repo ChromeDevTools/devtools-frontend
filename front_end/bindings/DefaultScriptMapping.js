@@ -90,12 +90,11 @@ WebInspector.DefaultScriptMapping.prototype = {
         var name = splitURL[splitURL.length - 1];
         name = "VM" + script.scriptId + (name ? " " + name : "");
 
-        var uiSourceCode = this._project.addContentProvider("", name, script.sourceURL, script);
-        console.assert(uiSourceCode);
-        uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (uiSourceCode);
-
+        var uiSourceCode = this._project.createUISourceCode("", name, script.sourceURL, WebInspector.resourceTypes.Script);
         this._uiSourceCodeForScriptId.set(script.scriptId, uiSourceCode);
         this._scriptIdForUISourceCode.set(uiSourceCode, script.scriptId);
+        this._project.addUISourceCodeWithProvider(uiSourceCode, script);
+
         this._debuggerWorkspaceBinding.setSourceMapping(this._debuggerModel.target(), uiSourceCode, this);
         this._debuggerWorkspaceBinding.pushSourceMapping(script, this);
     },

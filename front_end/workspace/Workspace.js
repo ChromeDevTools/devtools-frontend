@@ -282,17 +282,29 @@ WebInspector.ProjectStore.prototype = {
      * @param {!WebInspector.ResourceType} contentType
      * @return {!WebInspector.UISourceCode}
      */
-    addUISourceCode: function(parentPath, name, originURL, contentType)
+    createUISourceCode: function(parentPath, name, originURL, contentType)
     {
-        var path = parentPath ? parentPath + "/" + name : name;
-        var uiSourceCode = this.uiSourceCode(path);
-        if (uiSourceCode)
-            return uiSourceCode;
-        uiSourceCode = new WebInspector.UISourceCode(this._project, parentPath, name, originURL, contentType);
+        return new WebInspector.UISourceCode(this._project, parentPath, name, originURL, contentType);
+    },
+
+    /**
+     * @param {!WebInspector.UISourceCode} uiSourceCode
+     * @param {boolean=} replace
+     * @return {boolean}
+     */
+    addUISourceCode: function(uiSourceCode, replace)
+    {
+        var path = uiSourceCode.path();
+        if (this.uiSourceCode(path)) {
+            if (replace)
+                this.removeUISourceCode(path);
+            else
+                return false;
+        }
         this._uiSourceCodesMap.set(path, {uiSourceCode: uiSourceCode, index: this._uiSourceCodesList.length});
         this._uiSourceCodesList.push(uiSourceCode);
         this._workspace.dispatchEventToListeners(WebInspector.Workspace.Events.UISourceCodeAdded, uiSourceCode);
-        return uiSourceCode;
+        return true;
     },
 
     /**

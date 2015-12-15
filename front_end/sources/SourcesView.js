@@ -85,20 +85,6 @@ WebInspector.SourcesView.Events = {
     EditorSelected: "EditorSelected",
 }
 
-/**
- * @param {!WebInspector.UISourceCode} uiSourceCode
- * @return {string}
- */
-WebInspector.SourcesView.uiSourceCodeHighlighterType = function(uiSourceCode)
-{
-    var networkContentType = WebInspector.NetworkProject.uiSourceCodeContentType(uiSourceCode);
-    if (networkContentType)
-        return networkContentType.canonicalMimeType();
-
-    var mimeType = WebInspector.ResourceType.mimeFromURL(uiSourceCode.uri());
-    return mimeType || uiSourceCode.contentType().canonicalMimeType();
-}
-
 WebInspector.SourcesView.prototype = {
     /**
      * @param {function(!Array.<!WebInspector.KeyboardShortcut.Descriptor>, function(!Event=):boolean)} registerShortcutDelegate
@@ -349,24 +335,19 @@ WebInspector.SourcesView.prototype = {
         var contentType = uiSourceCode.contentType();
 
 
-        if (contentType.hasScripts()) {
+        if (contentType.hasScripts())
             sourceFrame = new WebInspector.JavaScriptSourceFrame(this._sourcesPanel, uiSourceCode);
-        } else if (contentType.isStyleSheet()) {
+        else if (contentType.isStyleSheet())
             sourceFrame = new WebInspector.CSSSourceFrame(uiSourceCode);
-        } else if (contentType === WebInspector.resourceTypes.Image) {
-            var resource = WebInspector.NetworkProject.uiSourceCodeResource(uiSourceCode);
-            var mimeType = resource ? resource.mimeType : WebInspector.ResourceType.mimeTypeByExtension[uiSourceCode.extension()];
-            sourceView = new WebInspector.ImageView(mimeType, uiSourceCode);
-        } else if (contentType === WebInspector.resourceTypes.Font) {
-            var resource = WebInspector.NetworkProject.uiSourceCodeResource(uiSourceCode);
-            var mimeType = resource ? resource.mimeType : WebInspector.ResourceType.mimeTypeByExtension[uiSourceCode.extension()];
-            sourceView = new WebInspector.FontView(mimeType, uiSourceCode);
-        } else {
+        else if (contentType === WebInspector.resourceTypes.Image)
+            sourceView = new WebInspector.ImageView(WebInspector.NetworkProject.uiSourceCodeMimeType(uiSourceCode), uiSourceCode);
+        else if (contentType === WebInspector.resourceTypes.Font)
+            sourceView = new WebInspector.FontView(WebInspector.NetworkProject.uiSourceCodeMimeType(uiSourceCode), uiSourceCode);
+        else
             sourceFrame = new WebInspector.UISourceCodeFrame(uiSourceCode);
-        }
 
         if (sourceFrame) {
-            sourceFrame.setHighlighterType(WebInspector.SourcesView.uiSourceCodeHighlighterType(uiSourceCode));
+            sourceFrame.setHighlighterType(WebInspector.NetworkProject.uiSourceCodeMimeType(uiSourceCode));
             this._historyManager.trackSourceFrameCursorJumps(sourceFrame);
         }
         this._sourceViewByUISourceCode.set(uiSourceCode, /** @type {!WebInspector.Widget} */(sourceFrame || sourceView));
@@ -406,7 +387,7 @@ WebInspector.SourcesView.prototype = {
             return;
         var oldSourceFrame = /** @type {!WebInspector.UISourceCodeFrame} */(oldSourceView);
         if (this._sourceFrameMatchesUISourceCode(oldSourceFrame, uiSourceCode)) {
-            oldSourceFrame.setHighlighterType(WebInspector.SourcesView.uiSourceCodeHighlighterType(uiSourceCode));
+            oldSourceFrame.setHighlighterType(WebInspector.NetworkProject.uiSourceCodeMimeType(uiSourceCode));
         } else {
             this._editorContainer.removeUISourceCode(uiSourceCode);
             this._removeSourceFrame(uiSourceCode);

@@ -92,7 +92,7 @@ WebInspector.InplaceFormatterEditorAction.prototype = {
          */
         function contentLoaded(content)
         {
-            var highlighterType = WebInspector.SourcesView.uiSourceCodeHighlighterType(uiSourceCode);
+            var highlighterType = WebInspector.NetworkProject.uiSourceCodeMimeType(uiSourceCode);
             WebInspector.Formatter.format(uiSourceCode.contentType(), highlighterType, content || "", innerCallback.bind(this));
         }
 

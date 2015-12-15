@@ -616,7 +616,9 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
         var extension = this._extensionForPath(name);
         var contentType = WebInspector.FileSystemWorkspaceBinding._contentTypeForExtension(extension);
 
-        return this.addUISourceCode(parentPath, name, this._fileSystemBaseURL + filePath, contentType);
+        var uiSourceCode = this.createUISourceCode(parentPath, name, this._fileSystemBaseURL + filePath, contentType);
+        this.addUISourceCode(uiSourceCode);
+        return uiSourceCode;
     },
 
     /**

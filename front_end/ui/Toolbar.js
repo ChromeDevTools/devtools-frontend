@@ -46,6 +46,11 @@ WebInspector.Toolbar = function(className, parentElement)
 }
 
 WebInspector.Toolbar.prototype = {
+    makeWrappable: function()
+    {
+        this._contentElement.classList.add("wrappable");
+    },
+
     makeVertical: function()
     {
         this._contentElement.classList.add("vertical");

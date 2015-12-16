@@ -18,26 +18,27 @@
     display: flex;
     flex-direction: row;
     align-items: stretch;
+    padding: 0 4px;
 }
 
-.device-mode-toolbar .toolbar {
+.device-mode-toolbar > .toolbar {
     padding: 0;
+    overflow: hidden;
 }
 
-.device-mode-buttons-toolbar {
-    flex: 3 0 0;
+.device-mode-toolbar-middle-container {
+    flex: auto;
+    position: relative;
+}
+
+.device-mode-toolbar-middle {
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
+    overflow: hidden;
 }
 
-.device-mode-options-toolbar {
-    flex: 5 0 0;
-    display: flex;
-    padding-right: 10px;
-}
-
-.device-mode-options-toolbar .toolbar {
-    flex: none;
+.device-mode-toolbar-middle .toolbar {
+    flex-shrink: 1;
 }
 
 .device-mode-toolbar-spacer {
@@ -76,19 +77,6 @@
     top: 0;
     width: 100%;
     height: 100%;
-}
-
-.device-mode-screen-options {
-    position: absolute;
-    right: -35px;
-    top: 0;
-    border-radius: 3px;
-    padding: 0;
-    margin: 0;
-}
-
-.device-mode-screen-options:hover {
-    background-color: hsl(0, 0%, 90%);
 }
 
 .device-mode-resizer {
@@ -169,6 +157,7 @@
     text-align: end;
     color: #aaa;
     pointer-events: initial;
+    flex: none;
 }
 
 .device-mode-blueprint:hover {

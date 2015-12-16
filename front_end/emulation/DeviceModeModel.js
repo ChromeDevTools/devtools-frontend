@@ -405,7 +405,7 @@ WebInspector.DeviceModeModel.prototype = {
         this._appliedDeviceSize = screenSize;
         this._screenRect = new WebInspector.Rect(
             Math.max(0, (this._availableSize.width - screenSize.width * scale) / 2),
-            this._type === WebInspector.DeviceModeModel.Type.Device ? Math.max(0, (this._availableSize.height - screenSize.height * scale) / 2) : 0,
+            0,
             screenSize.width * scale,
             screenSize.height * scale);
         this._visiblePageRect = new WebInspector.Rect(

@@ -20,6 +20,10 @@
     align-items: center;
 }
 
+.toolbar-shadow.wrappable {
+    flex-wrap: wrap;
+}
+
 .toolbar-shadow.vertical {
     flex-direction: column;
     height: auto;

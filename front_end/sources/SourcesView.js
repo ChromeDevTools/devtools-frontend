@@ -658,7 +658,9 @@ WebInspector.SourcesView.prototype = {
         var defaultScores = new Map();
         for (var i = 1; i < uiSourceCodes.length; ++i) // Skip current element
             defaultScores.set(uiSourceCodes[i], uiSourceCodes.length - i);
-        WebInspector.OpenResourceDialog.show(this, query, defaultScores);
+        if (!this._openResourceDialogHistory)
+            this._openResourceDialogHistory = [];
+        WebInspector.OpenResourceDialog.show(this, query || "", defaultScores, this._openResourceDialogHistory);
     },
 
     /**

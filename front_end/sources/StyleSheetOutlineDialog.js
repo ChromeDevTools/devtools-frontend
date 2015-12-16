@@ -34,7 +34,7 @@
  */
 WebInspector.StyleSheetOutlineDialog = function(uiSourceCode, selectItemCallback)
 {
-    WebInspector.SelectionDialogContentProvider.call(this);
+    WebInspector.SelectionDialogContentProvider.call(this, []);
     this._selectItemCallback = selectItemCallback;
     this._cssParser = new WebInspector.CSSParser();
     this._cssParser.addEventListener(WebInspector.CSSParser.Events.RulesParsed, this.refresh.bind(this));

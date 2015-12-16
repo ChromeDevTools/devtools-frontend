@@ -159,6 +159,19 @@ WebInspector.TextPrompt.prototype = {
     },
 
     /**
+     * @return {string}
+     */
+    userEnteredText: function()
+    {
+        var text = this.text();
+        if (this.autoCompleteElement) {
+            var addition = this.autoCompleteElement.textContent;
+            text = text.substring(0, text.length - addition.length);
+        }
+        return text;
+    },
+
+    /**
      * @param {string} x
      */
     setText: function(x)

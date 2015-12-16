@@ -45,10 +45,14 @@ WebInspector.FilteredItemSelectionDialog = function(delegate, renderAsTwoRows)
     this.element.addEventListener("keydown", this._onKeyDown.bind(this), false);
     this.registerRequiredCSS("sources/filteredItemSelectionDialog.css");
 
-    this._promptElement = this.element.createChild("input", "monospace");
-    this._promptElement.addEventListener("input", this._onInput.bind(this), false);
-    this._promptElement.type = "text";
+    this._promptElement = this.element.createChild("div", "monospace filtered-dialog-input");
     this._promptElement.setAttribute("spellcheck", "false");
+    this._prompt = new WebInspector.TextPrompt(this._autocomplete.bind(this));
+    this._prompt.renderAsBlock();
+    this._prompt.addEventListener(WebInspector.TextPrompt.Events.ItemAccepted, this._onAutocompleted, this);
+    var promptProxy = this._prompt.attach(this._promptElement);
+    promptProxy.addEventListener("input", this._onInput.bind(this), false);
+    promptProxy.classList.add("filtered-dialog-prompt-element");
 
     this._filteredItems = [];
     this._viewportControl = new WebInspector.ViewportControl(this);
@@ -65,6 +69,7 @@ WebInspector.FilteredItemSelectionDialog = function(delegate, renderAsTwoRows)
     this._itemsLoaded();
     this._updateShowMatchingItems();
     this._viewportControl.refresh();
+    this._prompt.autoCompleteSoon(true);
 
     this._dialog = new WebInspector.Dialog();
     this._dialog.setMaxSize(new Size(504, 600));
@@ -73,6 +78,14 @@ WebInspector.FilteredItemSelectionDialog = function(delegate, renderAsTwoRows)
 }
 
 WebInspector.FilteredItemSelectionDialog.prototype = {
+    /**
+     * @return {string}
+     */
+    _value: function()
+    {
+        return this._prompt.userEnteredText().trim();
+    },
+
     willHide: function()
     {
         this._delegate.dispose();
@@ -89,7 +102,7 @@ WebInspector.FilteredItemSelectionDialog.prototype = {
             return;
         event.preventDefault();
         var selectedIndex = this._shouldShowMatchingItems() && this._selectedIndexInFiltered < this._filteredItems.length ? this._filteredItems[this._selectedIndexInFiltered] : null;
-        this._delegate.selectItem(selectedIndex, this._promptElement.value.trim());
+        this._delegate.selectItemWithQuery(selectedIndex, this._value());
         this._dialog.detach();
     },
 
@@ -119,7 +132,7 @@ WebInspector.FilteredItemSelectionDialog.prototype = {
         itemElement._subtitleElement = itemElement.createChild("div", "filtered-item-list-dialog-subtitle");
         itemElement._subtitleElement.textContent = "\u200B";
         itemElement._index = index;
-        this._delegate.renderItem(index, this._promptElement.value.trim(), itemElement._titleElement, itemElement._subtitleElement);
+        this._delegate.renderItem(index, this._value(), itemElement._titleElement, itemElement._subtitleElement);
         return itemElement;
     },
 
@@ -128,8 +141,29 @@ WebInspector.FilteredItemSelectionDialog.prototype = {
      */
     setQuery: function(query)
     {
-        this._promptElement.value = query;
+        this._prompt.setText(query);
+        this._prompt.autoCompleteSoon(true);
         this._scheduleFilter();
+    },
+
+    /**
+     * @param {!Element} proxyElement
+     * @param {string} query
+     * @param {number} cursorOffset
+     * @param {!Range} wordRange
+     * @param {boolean} force
+     * @param {function(!Array.<string>, number=)} completionsReadyCallback
+     */
+    _autocomplete: function(proxyElement, query, cursorOffset, wordRange, force, completionsReadyCallback)
+    {
+        var completions = wordRange.startOffset === 0 ? [this._delegate.autocomplete(query)] : [];
+        completionsReadyCallback.call(null, completions);
+        this._autocompletedForTests();
+    },
+
+    _autocompletedForTests: function()
+    {
+        // Sniffed in tests.
     },
 
     _filterItems: function()
@@ -140,7 +174,7 @@ WebInspector.FilteredItemSelectionDialog.prototype = {
             delete this._scoringTimer;
         }
 
-        var query = this._delegate.rewriteQuery(this._promptElement.value.trim());
+        var query = this._delegate.rewriteQuery(this._value());
         this._query = query;
         var filterRegex = query ? WebInspector.FilePathScoreFunction.filterRegex(query) : null;
 
@@ -226,10 +260,16 @@ WebInspector.FilteredItemSelectionDialog.prototype = {
      */
     _shouldShowMatchingItems: function()
     {
-        return this._delegate.shouldShowMatchingItems(this._promptElement.value);
+        return this._delegate.shouldShowMatchingItems(this._value());
     },
 
-    _onInput: function(event)
+    _onAutocompleted: function()
+    {
+        this._prompt.autoCompleteSoon(true);
+        this._onInput();
+    },
+
+    _onInput: function()
     {
         this._updateShowMatchingItems();
         this._scheduleFilter();
@@ -312,7 +352,7 @@ WebInspector.FilteredItemSelectionDialog.prototype = {
         var itemElement = event.target.enclosingNodeOrSelfWithClass("filtered-item-list-dialog-item");
         if (!itemElement)
             return;
-        this._delegate.selectItem(itemElement._index, this._promptElement.value.trim());
+        this._delegate.selectItemWithQuery(itemElement._index, this._value());
         this._dialog.detach();
     },
 
@@ -366,9 +406,11 @@ WebInspector.FilteredItemSelectionDialog.prototype = {
 
 /**
  * @constructor
+ * @param {!Array<string>} promptHistory
  */
-WebInspector.SelectionDialogContentProvider = function()
+WebInspector.SelectionDialogContentProvider = function(promptHistory)
 {
+    this._promptHistory = promptHistory;
 }
 
 WebInspector.SelectionDialogContentProvider.prototype = {
@@ -472,6 +514,18 @@ WebInspector.SelectionDialogContentProvider.prototype = {
      * @param {number} itemIndex
      * @param {string} promptValue
      */
+    selectItemWithQuery: function(itemIndex, promptValue)
+    {
+        this._promptHistory.push(promptValue);
+        if (this._promptHistory.length > 100)
+            this._promptHistory.shift();
+        this.selectItem(itemIndex, promptValue);
+    },
+
+    /**
+     * @param {number} itemIndex
+     * @param {string} promptValue
+     */
     selectItem: function(itemIndex, promptValue)
     {
     },
@@ -490,6 +544,19 @@ WebInspector.SelectionDialogContentProvider.prototype = {
         return query;
     },
 
+    /**
+     * @param {string} query
+     * @return {string}
+     */
+    autocomplete: function(query)
+    {
+        for (var i = this._promptHistory.length - 1; i >= 0; i--) {
+            if (this._promptHistory[i] !== query && this._promptHistory[i].startsWith(query))
+                return this._promptHistory[i];
+        }
+        return query;
+    },
+
     dispose: function()
     {
     }
@@ -503,7 +570,7 @@ WebInspector.SelectionDialogContentProvider.prototype = {
  */
 WebInspector.JavaScriptOutlineDialog = function(uiSourceCode, selectItemCallback)
 {
-    WebInspector.SelectionDialogContentProvider.call(this);
+    WebInspector.SelectionDialogContentProvider.call(this, []);
 
     this._functionItems = [];
     this._selectItemCallback = selectItemCallback;
@@ -614,10 +681,11 @@ WebInspector.JavaScriptOutlineDialog.prototype = {
  * @constructor
  * @extends {WebInspector.SelectionDialogContentProvider}
  * @param {!Map.<!WebInspector.UISourceCode, number>=} defaultScores
+ * @param {!Array<string>=} history
  */
-WebInspector.SelectUISourceCodeDialog = function(defaultScores)
+WebInspector.SelectUISourceCodeDialog = function(defaultScores, history)
 {
-    WebInspector.SelectionDialogContentProvider.call(this);
+    WebInspector.SelectionDialogContentProvider.call(this, history || []);
 
     this._populate();
     this._defaultScores = defaultScores;
@@ -803,11 +871,12 @@ WebInspector.SelectUISourceCodeDialog.prototype = {
  * @constructor
  * @extends {WebInspector.SelectUISourceCodeDialog}
  * @param {!WebInspector.SourcesView} sourcesView
- * @param {!Map.<!WebInspector.UISourceCode, number>=} defaultScores
+ * @param {!Map.<!WebInspector.UISourceCode, number>} defaultScores
+ * @param {!Array<string>} history
  */
-WebInspector.OpenResourceDialog = function(sourcesView, defaultScores)
+WebInspector.OpenResourceDialog = function(sourcesView, defaultScores, history)
 {
-    WebInspector.SelectUISourceCodeDialog.call(this, defaultScores);
+    WebInspector.SelectUISourceCodeDialog.call(this, defaultScores, history);
     this._sourcesView = sourcesView;
 }
 
@@ -853,14 +922,14 @@ WebInspector.OpenResourceDialog.prototype = {
 
 /**
  * @param {!WebInspector.SourcesView} sourcesView
- * @param {string=} query
- * @param {!Map.<!WebInspector.UISourceCode, number>=} defaultScores
+ * @param {string} query
+ * @param {!Map.<!WebInspector.UISourceCode, number>} defaultScores
+ * @param {!Array<string>} history
  */
-WebInspector.OpenResourceDialog.show = function(sourcesView, query, defaultScores)
+WebInspector.OpenResourceDialog.show = function(sourcesView, query, defaultScores, history)
 {
-    var filteredItemSelectionDialog = new WebInspector.FilteredItemSelectionDialog(new WebInspector.OpenResourceDialog(sourcesView, defaultScores), true);
-    if (query)
-        filteredItemSelectionDialog.setQuery(query);
+    var filteredItemSelectionDialog = new WebInspector.FilteredItemSelectionDialog(new WebInspector.OpenResourceDialog(sourcesView, defaultScores, history), true);
+    filteredItemSelectionDialog.setQuery(query);
 }
 
 /**

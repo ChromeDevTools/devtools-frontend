@@ -58,12 +58,10 @@ WebInspector.WorkspaceMappingTip.prototype = {
             var networkProjects = this._workspace.projectsForType(WebInspector.projectTypes.Network);
             networkProjects = networkProjects.concat(this._workspace.projectsForType(WebInspector.projectTypes.ContentScripts));
             for (var i = 0; i < networkProjects.length; ++i) {
-                if (!this._isLocalHost(networkProjects[i].url()))
-                    continue;
                 var name = uiSourceCode.name();
                 var networkUiSourceCodes = networkProjects[i].uiSourceCodes();
                 for (var j = 0; j < networkUiSourceCodes.length; ++j) {
-                    if (networkUiSourceCodes[j].name() === name) {
+                    if (networkUiSourceCodes[j].name() === name && this._isLocalHost(networkUiSourceCodes[j].originURL())) {
                         this._showMappingInfobar(uiSourceCode, false);
                         return;
                     }

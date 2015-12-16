@@ -102,13 +102,12 @@ WebInspector.NetworkProject._targetSymbol = Symbol("target");
 
 /**
  * @param {!WebInspector.Target} target
- * @param {string} projectURL
  * @param {boolean} isContentScripts
  * @return {string}
  */
-WebInspector.NetworkProject.projectId = function(target, projectURL, isContentScripts)
+WebInspector.NetworkProject.projectId = function(target, isContentScripts)
 {
-    return target.id() + ":" + (isContentScripts ? "contentscripts:" : "") + projectURL;
+    return target.id() + ":" + (isContentScripts ? "contentscripts:" : "");
 }
 
 /**
@@ -118,6 +117,15 @@ WebInspector.NetworkProject.projectId = function(target, projectURL, isContentSc
 WebInspector.NetworkProject.forTarget = function(target)
 {
     return target[WebInspector.NetworkProject._networkProjectSymbol];
+}
+
+/**
+ * @param {!WebInspector.Project} project
+ * @return {?WebInspector.Target} target
+ */
+WebInspector.NetworkProject.targetForProject = function(project)
+{
+    return project[WebInspector.NetworkProject._targetSymbol] || null;
 }
 
 /**
@@ -182,41 +190,22 @@ WebInspector.NetworkProject.uiSourceCodeFrame = function(uiSourceCode)
 
 WebInspector.NetworkProject.prototype = {
     /**
-     * @param {string} projectURL
      * @param {boolean} isContentScripts
      * @return {!WebInspector.ContentProviderBasedProject}
      */
-    _workspaceProject: function(projectURL, isContentScripts)
+    _workspaceProject: function(isContentScripts)
     {
-        var projectId = WebInspector.NetworkProject.projectId(this.target(), projectURL, isContentScripts);
+        var projectId = WebInspector.NetworkProject.projectId(this.target(), isContentScripts);
         var projectType = isContentScripts ? WebInspector.projectTypes.ContentScripts : WebInspector.projectTypes.Network;
 
         var project = this._workspaceProjects.get(projectId);
         if (project)
             return project;
 
-        project = new WebInspector.ContentProviderBasedProject(this._workspace, projectId, projectType, projectURL, this._computeDisplayName(projectURL));
+        project = new WebInspector.ContentProviderBasedProject(this._workspace, projectId, projectType, "");
+        project[WebInspector.NetworkProject._targetSymbol] = this.target();
         this._workspaceProjects.set(projectId, project);
         return project;
-    },
-
-    /**
-     * @param {string} url
-     * @return {string}
-     */
-    _computeDisplayName: function(url)
-    {
-        for (var context of this.target().runtimeModel.executionContexts()) {
-            if (context.name && context.origin && url.startsWith(context.origin))
-                return context.name;
-        }
-
-        var targetSuffix = this.target().isPage() ? "" : " \u2014 " + this.target().name();
-        if (!url)
-            return WebInspector.UIString("(no domain)") + targetSuffix;
-        var parsedURL = new WebInspector.ParsedURL(url);
-        var prettyURL = parsedURL.isValid ? parsedURL.host + (parsedURL.port ? (":" + parsedURL.port) : "") : "";
-        return (prettyURL || url) + targetSuffix;
     },
 
     /**
@@ -235,13 +224,10 @@ WebInspector.NetworkProject.prototype = {
      */
     _removeFileForURL: function(url)
     {
-        var splitURL = WebInspector.ParsedURL.splitURLIntoPathComponents(url);
-        var projectURL = splitURL[0];
-        var path = splitURL.slice(1).join("/");
-        var project = this._workspaceProjects.get(WebInspector.NetworkProject.projectId(this.target(), projectURL, false));
+        var project = this._workspaceProjects.get(WebInspector.NetworkProject.projectId(this.target(), false));
         if (!project)
             return;
-        project.removeFile(path);
+        project.removeFile(url);
     },
 
     _populate: function()
@@ -393,12 +379,8 @@ WebInspector.NetworkProject.prototype = {
         if (this._networkMapping.hasMappingForURL(url))
             return null;
 
-        var splitURL = WebInspector.ParsedURL.splitURLIntoPathComponents(url);
-        var projectURL = splitURL[0];
-        var parentPath = splitURL.slice(1, -1).join("/");
-        var name = splitURL.peekLast() || "";
-        var project = this._workspaceProject(projectURL, isContentScript);
-        var uiSourceCode = project.createUISourceCode(parentPath, name, url, contentProvider.contentType());
+        var project = this._workspaceProject(isContentScript);
+        var uiSourceCode = project.createUISourceCode(url, contentProvider.contentType());
         uiSourceCode[WebInspector.NetworkProject._targetSymbol] = this.target();
         if (addIntoProject)
             project.addUISourceCodeWithProvider(uiSourceCode, contentProvider);

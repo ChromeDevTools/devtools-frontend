@@ -66,7 +66,28 @@ WebInspector.FileSystemWorkspaceBinding._lastRequestId = 0;
  */
 WebInspector.FileSystemWorkspaceBinding.projectId = function(fileSystemPath)
 {
-    return "filesystem:" + fileSystemPath;
+    return "file://" + fileSystemPath;
+}
+
+/**
+ * @param {!WebInspector.UISourceCode} uiSourceCode
+ * @return {!Array<string>}
+ */
+WebInspector.FileSystemWorkspaceBinding.relativePath = function(uiSourceCode)
+{
+    var baseURL = /** @type {!WebInspector.FileSystemWorkspaceBinding.FileSystem}*/(uiSourceCode.project())._fileSystemBaseURL;
+    return uiSourceCode.path().substring(baseURL.length).split("/");
+}
+
+/**
+ * @param {!WebInspector.Project} project
+ * @param {string} relativePath
+ * @return {string}
+ */
+WebInspector.FileSystemWorkspaceBinding.completeURL = function(project, relativePath)
+{
+    var fsProject = /** @type {!WebInspector.FileSystemWorkspaceBinding.FileSystem}*/(project);
+    return fsProject._fileSystemBaseURL + relativePath;
 }
 
 /**
@@ -136,9 +157,7 @@ WebInspector.FileSystemWorkspaceBinding.prototype = {
      */
     fileSystemPath: function(projectId)
     {
-        var fileSystemPath = projectId.substr("filesystem:".length);
-        var normalizedPath = WebInspector.IsolatedFileSystem.normalizePath(fileSystemPath);
-        return projectId.substr("filesystem:".length);
+        return projectId.substr("file://".length);
     },
 
     /**
@@ -260,15 +279,15 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem = function(fileSystemWorkspac
     this._fileSystemWorkspaceBinding = fileSystemWorkspaceBinding;
     this._fileSystem = isolatedFileSystem;
     this._fileSystemBaseURL = "file://" + this._fileSystem.normalizedPath() + "/";
+    this._fileSystemPath = this._fileSystem.path();
 
-    var id = WebInspector.FileSystemWorkspaceBinding.projectId(this._fileSystem.path());
+    var id = WebInspector.FileSystemWorkspaceBinding.projectId(this._fileSystemPath);
     console.assert(!workspace.project(id));
 
-    var url = "filesystem:" + this._fileSystem.normalizedPath();
     var normalizedPath = isolatedFileSystem.normalizedPath();
     var displayName = normalizedPath.substr(normalizedPath.lastIndexOf("/") + 1);
 
-    WebInspector.ProjectStore.call(this, workspace, id, WebInspector.projectTypes.FileSystem, url, displayName);
+    WebInspector.ProjectStore.call(this, workspace, id, WebInspector.projectTypes.FileSystem, displayName);
 
     workspace.addProject(this);
     this.populate();
@@ -280,7 +299,7 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
      */
     fileSystemPath: function()
     {
-        return this._fileSystem.path();
+        return this._fileSystemPath;
     },
 
     /**
@@ -289,7 +308,7 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
      */
     _filePathForUISourceCode: function(uiSourceCode)
     {
-        return "/" + uiSourceCode.path();
+        return uiSourceCode.path().substring(("file:// " + this._fileSystemPath).length);
     },
 
     /**
@@ -463,28 +482,27 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
      */
     _searchInPath: function(query, progress, callback)
     {
-        var requestId = this._fileSystemWorkspaceBinding.registerCallback(innerCallback.bind(this));
+        var requestId = this._fileSystemWorkspaceBinding.registerCallback(innerCallback);
         InspectorFrontendHost.searchInPath(requestId, this._fileSystem.path(), query);
 
         /**
          * @param {!Array.<string>} files
-         * @this {WebInspector.FileSystemWorkspaceBinding.FileSystem}
          */
         function innerCallback(files)
         {
             /**
              * @param {string} fullPath
-             * @this {WebInspector.FileSystemWorkspaceBinding.FileSystem}
+             * @return {string}
              */
             function trimAndNormalizeFileSystemPath(fullPath)
             {
-                var trimmedPath = fullPath.substr(this._fileSystem.path().length + 1);
+                fullPath = "file://" + fullPath;
                 if (WebInspector.isWin())
-                    trimmedPath = trimmedPath.replace(/\\/g, "/");
-                return trimmedPath;
+                    fullPath = fullPath.replace(/\\/g, "/");
+                return fullPath;
             }
 
-            files = files.map(trimAndNormalizeFileSystemPath.bind(this));
+            files = files.map(trimAndNormalizeFileSystemPath);
             progress.worked(1);
             callback(files);
         }
@@ -534,11 +552,17 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
      */
     excludeFolder: function(path)
     {
-        this._fileSystem.addExcludedFolder(path);
+        var relativeFolder = path.substring(this._fileSystemBaseURL.length);
+        if (!relativeFolder.startsWith("/"))
+            relativeFolder = "/" + relativeFolder;
+        if (!relativeFolder.endsWith("/"))
+            relativeFolder += "/";
+        this._fileSystem.addExcludedFolder(relativeFolder);
+
         var uiSourceCodes = this.uiSourceCodes().slice();
         for (var i = 0; i < uiSourceCodes.length; ++i) {
             var uiSourceCode = uiSourceCodes[i];
-            if (uiSourceCode.path().startsWith(path.substr(1)))
+            if (uiSourceCode.path().startsWith(path))
                 this.removeUISourceCode(uiSourceCode.path());
         }
     },
@@ -609,14 +633,10 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
         if (!filePath)
             console.assert(false);
 
-        var slash = filePath.lastIndexOf("/");
-        var parentPath = filePath.substring(0, slash);
-        var name = filePath.substring(slash + 1);
-
-        var extension = this._extensionForPath(name);
+        var extension = this._extensionForPath(filePath);
         var contentType = WebInspector.FileSystemWorkspaceBinding._contentTypeForExtension(extension);
 
-        var uiSourceCode = this.createUISourceCode(parentPath, name, this._fileSystemBaseURL + filePath, contentType);
+        var uiSourceCode = this.createUISourceCode(this._fileSystemBaseURL + filePath, contentType);
         this.addUISourceCode(uiSourceCode);
         return uiSourceCode;
     },

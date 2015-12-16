@@ -590,7 +590,7 @@ WebInspector.SnippetContentProvider.prototype = {
  */
 WebInspector.SnippetsProject = function(workspace, model)
 {
-    WebInspector.ContentProviderBasedProject.call(this, workspace, "snippets:", WebInspector.projectTypes.Snippets, "", "");
+    WebInspector.ContentProviderBasedProject.call(this, workspace, "snippets:", WebInspector.projectTypes.Snippets, "");
     this._model = model;
 }
 
@@ -602,7 +602,7 @@ WebInspector.SnippetsProject.prototype = {
      */
     addSnippet: function(name, contentProvider)
     {
-        return this.addContentProvider("", name, name, contentProvider);
+        return this.addContentProvider(name, contentProvider);
     },
 
     /**

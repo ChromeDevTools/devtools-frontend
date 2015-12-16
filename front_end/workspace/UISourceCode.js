@@ -34,17 +34,20 @@
  * @extends {WebInspector.Object}
  * @implements {WebInspector.ContentProvider}
  * @param {!WebInspector.Project} project
- * @param {string} parentPath
- * @param {string} name
- * @param {string} originURL
+ * @param {string} url
  * @param {!WebInspector.ResourceType} contentType
  */
-WebInspector.UISourceCode = function(project, parentPath, name, originURL, contentType)
+WebInspector.UISourceCode = function(project, url, contentType)
 {
     this._project = project;
-    this._parentPath = parentPath;
-    this._name = name;
-    this._originURL = originURL;
+    this._path = url;
+    this._originURL = url;
+
+    var pathComponents = WebInspector.ParsedURL.splitURLIntoPathComponents(url);
+    this._host = pathComponents[0];
+    this._parentPath = pathComponents.slice(0, -1).join("/");
+    this._name = pathComponents[pathComponents.length - 1];
+
     this._contentType = contentType;
     /** @type {!Array.<function(?string)>} */
     this._requestContentCallbacks = [];
@@ -73,6 +76,14 @@ WebInspector.UISourceCode.prototype = {
     /**
      * @return {string}
      */
+    path: function()
+    {
+        return this._path;
+    },
+
+    /**
+     * @return {string}
+     */
     name: function()
     {
         return this._name;
@@ -89,9 +100,9 @@ WebInspector.UISourceCode.prototype = {
     /**
      * @return {string}
      */
-    path: function()
+    host: function()
     {
-        return this._parentPath ? this._parentPath + "/" + this._name : this._name;
+        return this._host;
     },
 
     /**
@@ -99,7 +110,7 @@ WebInspector.UISourceCode.prototype = {
      */
     fullDisplayName: function()
     {
-        return this._project.displayName() + "/" + (this._parentPath ? this._parentPath + "/" : "") + this.displayName(true);
+        return this._parentPath.replace(/^(?:https?|file)\:\/\//, "") + "/" + this.displayName(true);
     },
 
     /**
@@ -117,12 +128,7 @@ WebInspector.UISourceCode.prototype = {
      */
     uri: function()
     {
-        var path = this.path();
-        if (!this._project.url())
-            return path;
-        if (!path)
-            return this._project.url();
-        return this._project.url() + "/" + path;
+        return this._path;
     },
 
     /**
@@ -185,6 +191,7 @@ WebInspector.UISourceCode.prototype = {
     _updateName: function(name, originURL, contentType)
     {
         var oldURI = this.uri();
+        this._path = this._path.substring(0, this._path.length - this._name.length) + name;
         this._name = name;
         if (originURL)
             this._originURL = originURL;

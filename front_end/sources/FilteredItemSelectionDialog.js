@@ -721,7 +721,6 @@ WebInspector.SelectUISourceCodeDialog.prototype = {
     {
         query = this.rewriteQuery(query);
         var uiSourceCode = this._uiSourceCodes[itemIndex];
-
         var fullDisplayName = uiSourceCode.fullDisplayName();
         var indexes = [];
         var score = new WebInspector.FilePathScoreFunction(query).score(fullDisplayName, indexes);

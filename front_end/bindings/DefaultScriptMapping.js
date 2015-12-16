@@ -41,7 +41,7 @@ WebInspector.DefaultScriptMapping = function(debuggerModel, workspace, debuggerW
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
     this._workspace = workspace;
     this._projectId = WebInspector.DefaultScriptMapping.projectIdForTarget(debuggerModel.target());
-    this._project = new WebInspector.ContentProviderBasedProject(this._workspace, this._projectId, WebInspector.projectTypes.Debugger, "debugger:", "");
+    this._project = new WebInspector.ContentProviderBasedProject(this._workspace, this._projectId, WebInspector.projectTypes.Debugger, "");
     debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this);
     this._debuggerReset();
 }
@@ -87,10 +87,10 @@ WebInspector.DefaultScriptMapping.prototype = {
     {
 
         var splitURL = WebInspector.ParsedURL.splitURLIntoPathComponents(script.sourceURL);
-        var name = splitURL[splitURL.length - 1];
-        name = "VM" + script.scriptId + (name ? " " + name : "");
+        var url = splitURL[splitURL.length - 1];
+        url = "debugger:///VM" + script.scriptId + (url ? " " + url: "");
 
-        var uiSourceCode = this._project.createUISourceCode("", name, script.sourceURL, WebInspector.resourceTypes.Script);
+        var uiSourceCode = this._project.createUISourceCode(url, WebInspector.resourceTypes.Script);
         this._uiSourceCodeForScriptId.set(script.scriptId, uiSourceCode);
         this._scriptIdForUISourceCode.set(uiSourceCode, script.scriptId);
         this._project.addUISourceCodeWithProvider(uiSourceCode, script);

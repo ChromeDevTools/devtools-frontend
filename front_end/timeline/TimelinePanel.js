@@ -100,6 +100,7 @@ WebInspector.TimelinePanel = function()
 
     this._stackView = new WebInspector.StackView(false);
     this._stackView.element.classList.add("timeline-view-stack");
+
     if (Runtime.experiments.isEnabled("multipleTimelineViews")) {
         this._tabbedPane = new WebInspector.TabbedPane();
         this._tabbedPane.appendTab(WebInspector.TimelinePanel.ViewMode.FlameChart, WebInspector.UIString("Flame Chart"), new WebInspector.VBox());
@@ -525,16 +526,14 @@ WebInspector.TimelinePanel.prototype = {
         this._overviewPane.setOverviewControls(this._overviewControls);
 
         // Set up the main view.
-        this._stackView.detach();
         this._removeAllModeViews();
         var viewMode = WebInspector.TimelinePanel.ViewMode.FlameChart;
-        if (Runtime.experiments.isEnabled("multipleTimelineViews") && this._tabbedPane) {
-            viewMode = this._tabbedPane.selectedTabId;
-            this._stackView.show(this._tabbedPane.visibleView.element);
-        } else {
-            this._stackView.show(this._searchableView.element);
-        }
         this._flameChart = null;
+        if (Runtime.experiments.isEnabled("multipleTimelineViews")) {
+            viewMode = this._tabbedPane.selectedTabId;
+            this._stackView.detach();
+            this._stackView.show(this._tabbedPane.visibleView.element);
+        }
         if (viewMode === WebInspector.TimelinePanel.ViewMode.FlameChart) {
             this._flameChart = new WebInspector.TimelineFlameChartView(this, this._model, this._frameModel);
             this._flameChart.enableNetworkPane(this._captureNetworkSetting.get());

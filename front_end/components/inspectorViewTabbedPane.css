@@ -8,7 +8,7 @@
 .tabbed-pane-header-tab.selected {
     height: 26px;
     margin: 0;
-    background: none;
+    background: #f3f3f3;
     border: none;
     border-left: 2px solid transparent;
     border-right: 2px solid transparent;

@@ -235,6 +235,14 @@ WebInspector.UISourceCode.prototype = {
     },
 
     /**
+     * @return {!Promise.<?string>}
+     */
+    requestContentPromise: function()
+    {
+        return new Promise(succ => this.requestContent(succ));
+    },
+
+    /**
      * @param {function()} callback
      */
     _pushCheckContentUpdatedCallback: function(callback)

@@ -358,6 +358,16 @@ WebInspector.SASSSupport.Property.prototype = {
     },
 
     /**
+     * @param {function(!WebInspector.SASSSupport.Node)} callback
+     */
+    visit: function(callback)
+    {
+        callback(this);
+        callback(this.name);
+        callback(this.value);
+    },
+
+    /**
      * @param {boolean} disabled
      */
     setDisabled: function(disabled)
@@ -430,6 +440,16 @@ WebInspector.SASSSupport.Rule.prototype = {
         for (var i = 0; i < this.properties.length; ++i)
             properties.push(this.properties[i].clone(document));
         return new WebInspector.SASSSupport.Rule(document, this.selector, properties);
+    },
+
+    /**
+     * @param {function(!WebInspector.SASSSupport.Node)} callback
+     */
+    visit: function(callback)
+    {
+        callback(this);
+        for (var i = 0; i < this.properties.length; ++i)
+            this.properties[i].visit(callback);
     },
 
     _addTrailingSemicolon: function()
@@ -509,9 +529,41 @@ WebInspector.SASSSupport.AST.prototype = {
         return new WebInspector.SASSSupport.AST(document, rules);
     },
 
+    /**
+     * @param {function(!WebInspector.SASSSupport.Node)} callback
+     */
+    visit: function(callback)
+    {
+        callback(this);
+        for (var i = 0; i < this.rules.length; ++i)
+            this.rules[i].visit(callback);
+    },
+
+    /**
+     * @param {number} lineNumber
+     * @param {number} columnNumber
+     * @return {?WebInspector.SASSSupport.TextNode}
+     */
+    findNodeForPosition: function(lineNumber, columnNumber)
+    {
+        var result = null;
+        this.visit(onNode);
+        return result;
+
+        /**
+         * @param {!WebInspector.SASSSupport.Node} node
+         */
+        function onNode(node)
+        {
+            if (!(node instanceof WebInspector.SASSSupport.TextNode))
+                return;
+            if (node.range.containsLocation(lineNumber, columnNumber))
+                result = node;
+        }
+    },
+
     __proto__: WebInspector.SASSSupport.Node.prototype
 }
-
 
 /** @enum {string} */
 WebInspector.SASSSupport.PropertyChangeType = {
@@ -541,11 +593,13 @@ WebInspector.SASSSupport.PropertyChange = function(type, oldRule, newRule, oldPr
 
 /**
  * @constructor
+ * @param {string} url
  * @param {!Map<!WebInspector.SASSSupport.TextNode, !WebInspector.SASSSupport.TextNode>} mapping
  * @param {!Array<!WebInspector.SASSSupport.PropertyChange>} changes
  */
-WebInspector.SASSSupport.ASTDiff = function(mapping, changes)
+WebInspector.SASSSupport.ASTDiff = function(url, mapping, changes)
 {
+    this.url = url;
     this.mapping = mapping;
     this.changes = changes;
 }
@@ -558,6 +612,7 @@ WebInspector.SASSSupport.ASTDiff = function(mapping, changes)
 WebInspector.SASSSupport.diffModels = function(oldAST, newAST)
 {
     console.assert(oldAST.rules.length === newAST.rules.length, "Not implemented for rule diff.");
+    console.assert(oldAST.document.url === newAST.document.url, "Diff makes sense for models with the same url.");
     var T = WebInspector.SASSSupport.PropertyChangeType;
     var changes = [];
     /** @type {!Map<!WebInspector.SASSSupport.TextNode, !WebInspector.SASSSupport.TextNode>} */
@@ -567,7 +622,7 @@ WebInspector.SASSSupport.diffModels = function(oldAST, newAST)
         var newRule = newAST.rules[i];
         computeRuleDiff(mapping, oldRule, newRule);
     }
-    return new WebInspector.SASSSupport.ASTDiff(mapping, changes);
+    return new WebInspector.SASSSupport.ASTDiff(oldAST.document.url, mapping, changes);
 
     /**
      * @param {!WebInspector.SASSSupport.PropertyChangeType} type

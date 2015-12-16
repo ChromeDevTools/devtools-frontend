@@ -1334,6 +1334,23 @@ Multimap.prototype = {
 
     /**
      * @param {K} key
+     * @return {boolean}
+     */
+    has: function(key)
+    {
+        return this._map.has(key);
+    },
+
+    /**
+     * @return {number}
+     */
+    get size()
+    {
+        return this._map.size;
+    },
+
+    /**
+     * @param {K} key
      * @param {V} value
      */
     remove: function(key, value)

@@ -1,6 +1,7 @@
 {
     "dependencies": ["platform", "common", "diff", "sdk"],
     "scripts": [
-        "SASSSupport.js"
+        "SASSSupport.js",
+        "SASSLiveSourceMap.js"
     ]
 }

@@ -269,8 +269,10 @@ WebInspector.ResourceScriptMapping.prototype = {
 
     _debuggerReset: function()
     {
-        this._boundUISourceCodes.forEach(this._unbindUISourceCode.bind(this));
+        var sourceCodes = this._boundUISourceCodes;
         this._boundUISourceCodes = [];
+        sourceCodes.forEach(this._unbindUISourceCode.bind(this));
+        console.assert(!this._uiSourceCodeToScriptFile.size);
     },
 
     dispose: function()

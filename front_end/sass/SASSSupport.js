@@ -241,6 +241,43 @@ WebInspector.SASSSupport.ASTDocument = function(url, text)
 {
     this.url = url;
     this.text = text;
+    this.edits = [];
+}
+
+WebInspector.SASSSupport.ASTDocument.prototype = {
+    /**
+     * @return {!WebInspector.SASSSupport.ASTDocument}
+     */
+    clone: function()
+    {
+        return new WebInspector.SASSSupport.ASTDocument(this.url, this.text);
+    },
+
+    /**
+     * @return {string}
+     */
+    newText: function()
+    {
+        this.edits.stableSort(sequentialOrder);
+        var text = this.text;
+        for (var i = this.edits.length - 1; i >= 0; --i)
+            text = this.edits[i].applyToText(text);
+        return text;
+
+        /**
+         * @param {!WebInspector.SourceEdit} edit1
+         * @param {!WebInspector.SourceEdit} edit2
+         * @return {number}
+         */
+        function sequentialOrder(edit1, edit2)
+        {
+            var range1 = edit1.oldRange.collapseToStart();
+            var range2 = edit2.oldRange.collapseToStart();
+            if (range1.equal(range2))
+                return 0;
+            return range1.follows(range2) ? 1 : -1;
+        }
+    },
 }
 
 /**
@@ -268,11 +305,23 @@ WebInspector.SASSSupport.TextNode = function(document, text, range)
 
 WebInspector.SASSSupport.TextNode.prototype = {
     /**
+     * @param {string} newText
+     */
+    setText: function(newText)
+    {
+        if (this.text === newText)
+            return;
+        this.text = newText;
+        this.document.edits.push(new WebInspector.SourceEdit(this.document.url, this.range, this.text, newText));
+    },
+
+    /**
+     * @param {!WebInspector.SASSSupport.ASTDocument} document
      * @return {!WebInspector.SASSSupport.TextNode}
      */
-    clone: function()
+    clone: function(document)
     {
-        return new WebInspector.SASSSupport.TextNode(this.document, this.text, this.range.clone());
+        return new WebInspector.SASSSupport.TextNode(document, this.text, this.range.clone());
     },
 
     __proto__: WebInspector.SASSSupport.Node.prototype
@@ -300,11 +349,53 @@ WebInspector.SASSSupport.Property = function(document, name, value, range, disab
 
 WebInspector.SASSSupport.Property.prototype = {
     /**
+     * @param {!WebInspector.SASSSupport.ASTDocument} document
      * @return {!WebInspector.SASSSupport.Property}
      */
-    clone: function()
+    clone: function(document)
     {
-        return new WebInspector.SASSSupport.Property(this.document, this.name.clone(), this.value.clone(), this.range.clone(), this.disabled);
+        return new WebInspector.SASSSupport.Property(document, this.name.clone(document), this.value.clone(document), this.range.clone(), this.disabled);
+    },
+
+    /**
+     * @param {boolean} disabled
+     */
+    setDisabled: function(disabled)
+    {
+        if (this.disabled === disabled)
+            return;
+        this.disabled = disabled;
+        if (disabled) {
+            var oldRange1 = WebInspector.TextRange.createFromLocation(this.range.startLine, this.range.startColumn);
+            var edit1 = new WebInspector.SourceEdit(this.document.url, oldRange1, "", "/* ");
+            var oldRange2 = WebInspector.TextRange.createFromLocation(this.range.endLine, this.range.endColumn);
+            var edit2 = new WebInspector.SourceEdit(this.document.url, oldRange2, "", " */");
+            this.document.edits.push(edit1, edit2);
+            return;
+        }
+        var oldRange1 = new WebInspector.TextRange(this.range.startLine, this.range.startColumn, this.range.startLine, this.name.range.startColumn);
+        var text = this.document.text;
+        var edit1 = new WebInspector.SourceEdit(this.document.url, oldRange1, oldRange1.extract(text), "");
+        var oldRange2 = new WebInspector.TextRange(this.range.endLine, this.range.endColumn - 2, this.range.endLine, this.range.endColumn);
+        var edit2 = new WebInspector.SourceEdit(this.document.url, oldRange2, "*/", "");
+        this.document.edits.push(edit1, edit2);
+    },
+
+    remove: function()
+    {
+        console.assert(this.parent);
+        var rule = this.parent;
+        var index = rule.properties.indexOf(this);
+        rule.properties.splice(index, 1);
+        this.parent = null;
+
+        var lineRange = new WebInspector.TextRange(this.range.startLine, 0, this.range.endLine + 1, 0);
+        var oldRange;
+        if (lineRange.extract(this.document.text).trim() === this.range.extract(this.document.text).trim())
+            oldRange = lineRange;
+        else
+            oldRange = this.range;
+        this.document.edits.push(new WebInspector.SourceEdit(this.document.url, oldRange, oldRange.extract(this.document.text), ""));
     },
 
     __proto__: WebInspector.SASSSupport.Node.prototype
@@ -324,18 +415,68 @@ WebInspector.SASSSupport.Rule = function(document, selector, properties)
     this.properties = properties;
     for (var i = 0; i < this.properties.length; ++i)
         this.properties[i].parent = this;
+
+    this._hasTrailingSemicolon = !this.properties.length || this.properties.peekLast().range.extract(this.document.text).endsWith(";");
 }
 
 WebInspector.SASSSupport.Rule.prototype = {
     /**
+     * @param {!WebInspector.SASSSupport.ASTDocument} document
      * @return {!WebInspector.SASSSupport.Rule}
      */
-    clone: function()
+    clone: function(document)
     {
         var properties = [];
         for (var i = 0; i < this.properties.length; ++i)
-            properties.push(this.properties[i].clone());
-        return new WebInspector.SASSSupport.Rule(this.document, this.selector, properties);
+            properties.push(this.properties[i].clone(document));
+        return new WebInspector.SASSSupport.Rule(document, this.selector, properties);
+    },
+
+    _addTrailingSemicolon: function()
+    {
+        if (this._hasTrailingSemicolon || !this.properties)
+            return;
+        this._hasTrailingSemicolon = true;
+        this.document.edits.push(new WebInspector.SourceEdit(this.document.url, this.properties.peekLast().range.collapseToEnd(), "", ";"))
+    },
+
+    /**
+     * @param {string} nameText
+     * @param {string} valueText
+     * @param {boolean} disabled
+     * @param {!WebInspector.SASSSupport.Property} anchorProperty
+     * @param {boolean} insertBefore
+     * @return {!WebInspector.SASSSupport.Property}
+     */
+    insertProperty: function(nameText, valueText, disabled, anchorProperty, insertBefore)
+    {
+        console.assert(this.properties.length, "Cannot insert in empty rule.");
+
+        this._addTrailingSemicolon();
+
+        var name = new WebInspector.SASSSupport.TextNode(this.document, nameText, WebInspector.TextRange.createFromLocation(10, 0));
+        var value = new WebInspector.SASSSupport.TextNode(this.document, valueText, WebInspector.TextRange.createFromLocation(10, 0));
+        var newProperty = new WebInspector.SASSSupport.Property(this.document, name, value, WebInspector.TextRange.createFromLocation(10, 0), disabled);
+
+        var index = this.properties.indexOf(anchorProperty);
+        this.properties.splice(insertBefore ? index : index + 1, 0, newProperty);
+        newProperty.parent = this;
+
+        var oldRange = insertBefore ? anchorProperty.range.collapseToStart() : anchorProperty.range.collapseToEnd();
+        var indent = (new WebInspector.TextRange(anchorProperty.range.startLine, 0, anchorProperty.range.startLine, anchorProperty.range.startColumn)).extract(this.document.text);
+        if (!/^\s+$/.test(indent)) indent = "";
+
+        var newText = "";
+        var leftComment = disabled ? "/* " : "";
+        var rightComment = disabled ? " */" : "";
+
+        if (insertBefore) {
+            newText = String.sprintf("%s%s: %s;%s\n%s", leftComment, newProperty.name.text, newProperty.value.text, rightComment, indent);
+        } else {
+            newText = String.sprintf("\n%s%s%s: %s;%s", indent, leftComment, newProperty.name.text, newProperty.value.text, rightComment);
+        }
+        this.document.edits.push(new WebInspector.SourceEdit(this.document.url, oldRange, "", newText));
+        return newProperty;
     },
 
     __proto__: WebInspector.SASSSupport.Node.prototype
@@ -361,10 +502,11 @@ WebInspector.SASSSupport.AST.prototype = {
      */
     clone: function()
     {
+        var document = this.document.clone();
         var rules = [];
         for (var i = 0; i < this.rules.length; ++i)
-            rules.push(this.rules[i].clone());
-        return new WebInspector.SASSSupport.AST(this.document, rules);
+            rules.push(this.rules[i].clone(document));
+        return new WebInspector.SASSSupport.AST(document, rules);
     },
 
     __proto__: WebInspector.SASSSupport.Node.prototype

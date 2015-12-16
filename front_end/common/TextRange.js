@@ -315,3 +315,49 @@ WebInspector.SourceRange = function(offset, length)
     this.offset = offset;
     this.length = length;
 }
+
+/**
+ * @constructor
+ * @param {string} sourceURL
+ * @param {!WebInspector.TextRange} oldRange
+ * @param {string} oldText
+ * @param {string} newText
+ */
+WebInspector.SourceEdit = function(sourceURL, oldRange, oldText, newText)
+{
+    this.sourceURL = sourceURL;
+    this.oldRange = oldRange;
+    this.oldText = oldText;
+    this.newText = newText;
+}
+
+WebInspector.SourceEdit.prototype = {
+    /**
+     * @return {!WebInspector.TextRange}
+     */
+    newRange: function()
+    {
+        var endLine = this.oldRange.startLine;
+        var endColumn = this.oldRange.startColumn + this.newText.length;
+        var lineEndings = this.newText.lineEndings();
+        if (lineEndings.length > 1) {
+            endLine = this.oldRange.startLine + lineEndings.length - 1;
+            var len = lineEndings.length;
+            endColumn = lineEndings[len - 1] - lineEndings[len - 2] - 1;
+        }
+        return new WebInspector.TextRange(
+            this.oldRange.startLine,
+            this.oldRange.startColumn,
+            endLine,
+            endColumn);
+    },
+
+    /**
+     * @param {string} text
+     * @return {string}
+     */
+    applyToText: function(text)
+    {
+        return this.oldRange.replaceInText(text, this.newText);
+    },
+}

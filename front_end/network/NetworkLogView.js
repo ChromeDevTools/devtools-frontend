@@ -1635,6 +1635,8 @@ WebInspector.NetworkLogView.prototype = {
             return false;
         if (this._dataURLFilterUI.checked() && request.parsedURL.isDataURL())
             return false;
+        if (request.statusText === "Service Worker Fallback Required")
+            return false;
         for (var i = 0; i < this._filters.length; ++i) {
             if (!this._filters[i](request))
                 return false;

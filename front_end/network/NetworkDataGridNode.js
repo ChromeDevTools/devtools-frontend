@@ -269,8 +269,6 @@ WebInspector.NetworkDataGridNode.prototype = {
                 cell.title = failText + " " + this._request.localizedFailDescription;
             } else
                 cell.setTextAndTitle(failText);
-        } else if (this._request.statusText == "Service Worker Fallback Required") {
-            cell.setTextAndTitle(WebInspector.UIString("(Service Worker Fallback)"));
         } else if (this._request.statusCode) {
             cell.createTextChild("" + this._request.statusCode);
             this._appendSubtitle(cell, this._request.statusText);

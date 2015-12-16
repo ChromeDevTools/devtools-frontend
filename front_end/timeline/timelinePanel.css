@@ -63,20 +63,6 @@
     pointer-events: none;
 }
 
-.timeline-records-title, .timeline-records-list {
-    background-color: #f3f3f3;
-}
-
-.timeline-records-title {
-    padding: 3px 3px 3px 5px;
-    flex: 0 0 19px;
-    color: rgb(92, 110, 129); text-shadow: rgba(255, 255, 255, 0.75) 0 1px 0;
-}
-
-.timeline-records-list {
-    flex: auto;
-}
-
 #timeline-overview-grid {
     background-color: rgb(255, 255, 255);
 }
@@ -94,19 +80,8 @@
     top: 1px;
 }
 
-#timeline-container {
-    border-right: 0 none transparent;
-    overflow-y: scroll;
-    overflow-x: hidden;
-}
-
 .timeline-details-split {
     flex: auto;
-}
-
-.timeline-view {
-    flex: auto;
-    overflow: auto;
 }
 
 .timeline-view-stack {
@@ -119,155 +94,8 @@
     color: inherit;
 }
 
-.timeline-tree-item {
-    height: 18px;
-    line-height: 15px;
-    padding-right: 5px;
-    padding-left: 5px;
-    padding-top: 2px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-.timeline-tree-item.selected {
-    background-color: rgb(56, 121, 217) !important;
-    color: white;
-}
-
-.timeline-tree-item.hovered:not(.selected),
 .timeline-graph-side.hovered {
     background-color: rgba(0, 0, 0, 0.05) !important;
-}
-
-.timeline-expandable {
-    position: absolute;
-    border-left: 1px solid rgb(163, 163, 163);
-    pointer-events: none;
-}
-
-.timeline-expandable-left {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 3px;
-    border-top: 1px solid rgb(163, 163, 163);
-    border-bottom: 1px solid rgb(163, 163, 163);
-}
-
-.timeline-tree-item-expand-arrow {
-    display: inline-block;
-    -webkit-user-select: none;
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
-    -webkit-mask-size: 352px 168px;
-    width: 10px;
-    height: 10px;
-    content: "";
-    background-color: rgb(110, 110, 110);
-    position: relative;
-    top: -1px;
-    left: -1px;
-}
-
-@media (-webkit-min-device-pixel-ratio: 1.5) {
-.timeline-tree-item-expand-arrow {
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
-}
-} /* media */
-
-.timeline-tree-item-expand-arrow.parent {
-    -webkit-mask-position: -4px -96px;
-}
-
-.timeline-tree-item-expand-arrow.parent.expanded {
-    -webkit-mask-position: -20px -96px;
-}
-
-.timeline-expandable-arrow {
-    background-image: url(Images/toolbarButtonGlyphs.png);
-    background-size: 352px 168px;
-    opacity: 0.5;
-    width: 10px;
-    height: 10px;
-    position: relative;
-    top: 3px;
-    left: 2px;
-}
-
-@media (-webkit-min-device-pixel-ratio: 1.5) {
-.timeline-expandable-arrow {
-    background-image: url(Images/toolbarButtonGlyphs_2x.png);
-}
-} /* media */
-
-.timeline-expandable-collapsed .timeline-expandable-arrow {
-    background-position: -4px -96px;
-}
-
-.timeline-expandable-expanded .timeline-expandable-arrow {
-    background-position: -20px -96px;
-}
-
-.timeline-tree-item .type {
-    padding-left: 5px;
-}
-
-.timeline-tree-item .count {
-    font-weight: bold;
-}
-
-.timeline-tree-item .timeline-tree-icon {
-    position: relative;
-    top: -1px;
-    left: 1px;
-    width: 7px;
-    height: 7px;
-    border-radius: 1px;
-    border-style: solid;
-    border-width: 1px;
-    display: inline-block;
-}
-
-.timeline-tree-item.background .timeline-tree-icon {
-    background: none !important;
-}
-
-.timeline-tree-item-warning {
-    display: block;
-    background-image: url(Images/toolbarButtonGlyphs.png);
-    background-size: 352px 168px;
-    width: 10px;
-    height: 10px;
-    float: right;
-    background-position: -202px -107px;
-    position: relative;
-    top: 2px;
-}
-
-.timeline-tree-item-child-warning {
-    opacity: 0.6;
-}
-
-@media (-webkit-min-device-pixel-ratio: 1.5) {
-.timeline-tree-item-warning {
-    background-image: url(Images/toolbarButtonGlyphs_2x.png);
-}
-} /* media */
-
-.timeline-tree-item .data.dimmed {
-    color: rgba(0, 0, 0, 0.7);
-    pointer-events: none;
-    padding-left: 4px;
-}
-
-.timeline-tree-item.selected .data.dimmed {
-    color: rgba(255, 255, 255, 0.8);
-    pointer-events: auto;
-}
-
-.timeline-tree-item.selected .timeline-tree-item-expand-arrow {
-    background-color: white;
 }
 
 .timeline.panel .status-pane-container {
@@ -370,51 +198,6 @@
     top: 20px;
 }
 
-.timeline-graph-side {
-    position: relative;
-    height: 18px;
-    padding: 0 5px;
-    white-space: nowrap;
-    margin-top: 0;
-    border-top: 1px solid transparent;
-    overflow: hidden;
-}
-
-.timeline-graph-side.selected {
-    background-color: rgba(56, 121, 217, 0.1) !important;
-}
-
-.timeline-graph-bar-area {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 3px;
-    pointer-events: none;
-}
-
-.timeline-graph-bar {
-    position: absolute;
-    top: -1px;
-    bottom: 0;
-    margin: auto -2px;
-    height: 10px;
-    min-width: 5px;
-    z-index: 180;
-    pointer-events: visibleFill;
-    border-radius: 1px;
-    border: 1px solid;
-}
-
-.timeline-graph-bar.cpu {
-    opacity: 0.7;
-}
-
-.timeline-graph-side.background .timeline-graph-bar {
-    background: transparent !important;
-    border-width: 2px;
-}
-
 .timeline-aggregated-legend-title {
     display: inline-block;
 }
@@ -508,115 +291,6 @@
     width: 100%;
     overflow: hidden;
     line-height: 18px;
-}
-
-.timeline .resources-event-divider {
-    height: 20px;
-    width: 6px;
-    pointer-events: auto;
-    margin-left: -2px;
-}
-
-.timeline .resources-event-divider::before {
-    height: 19px;
-    width: 2px;
-    margin: 0 2px;
-    background-color: rgb(163, 109, 0);
-    bottom: auto;
-    content: "";
-    display: block;
-}
-
-.timeline .resources-event-divider:hover::before {
-    width: 4px;
-    margin: 0 1px;
-}
-
-.timeline .resources-event-divider.timeline-frame-divider::before {
-    display: none;
-}
-
-.timeline .resources-event-divider.resources-red-divider::before {
-    background-color: rgb(255, 0, 0);
-}
-
-.timeline .resources-event-divider.resources-blue-divider::before {
-    background-color: rgb(0, 0, 255);
-}
-
-.timeline .resources-event-divider.resources-orange-divider::before {
-    background-color: rgb(255, 178, 23);
-}
-
-.timeline .resources-event-divider.resources-green-divider::before {
-    background-color: rgb(0, 130, 0);
-}
-
-.resources-divider:last-child {
-    border-color: transparent;
-}
-
-.timeline .resources-event-divider.timeline-frame-divider {
-    background-color: rgba(180, 180, 180, 0.8);
-    border-style: none;
-    width: 1px;
-    height: 100%;
-    pointer-events: none;
-}
-
-.timeline-frame-container {
-    height: 19px;
-    overflow: hidden;
-    background-color: rgb(220, 220, 220);
-    opacity: 0.8;
-    color: black;
-    text-align: center;
-    z-index: 220;
-    pointer-events: auto;
-}
-
-.timeline-frame-strip {
-    position: absolute;
-    height: 19px;
-    padding-top: 3px;
-}
-
-.timeline-frame-strip.selected {
-    background-color: rgb(56, 121, 217);
-    color: white;
-}
-
-#timeline-graph-records-header {
-    pointer-events: none;
-    height: 19px;
-    padding: 1px 0;
-    justify-content: center;
-}
-
-.timeline-utilization-strip {
-    z-index: 250;
-    overflow: hidden;
-    flex: 0 1 12px;
-    position: relative;
-    height: 9px;
-}
-
-.timeline-utilization-strip .timeline-graph-bar {
-    border-color: rgb(192, 192, 192);
-    background-color: rgba(0, 0, 0, 0.1);
-    margin: 1.5px auto;
-    height: auto;
-}
-
-.timeline-utilization-strip.gpu .timeline-graph-bar {
-    background-color: #00a;
-    border: none;
-    opacity: 0.3;
-    min-width: 0;
-}
-
-.timeline-utilization-strip.gpu .timeline-graph-bar.gpu-task-foreign {
-    background-color: #aaa;
 }
 
 .image-preview-container {

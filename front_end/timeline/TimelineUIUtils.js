@@ -122,23 +122,6 @@ WebInspector.TimelineUIUtils._initEventStyles = function()
     WebInspector.TimelineUIUtils._eventStylesMap = eventStyles;
     return eventStyles;
 }
-
-WebInspector.TimelineUIUtils._coalescableRecordTypes = {};
-WebInspector.TimelineUIUtils._coalescableRecordTypes[WebInspector.TimelineModel.RecordType.Layout] = 1;
-WebInspector.TimelineUIUtils._coalescableRecordTypes[WebInspector.TimelineModel.RecordType.Paint] = 1;
-WebInspector.TimelineUIUtils._coalescableRecordTypes[WebInspector.TimelineModel.RecordType.RasterTask] = 1;
-WebInspector.TimelineUIUtils._coalescableRecordTypes[WebInspector.TimelineModel.RecordType.DecodeImage] = 1;
-WebInspector.TimelineUIUtils._coalescableRecordTypes[WebInspector.TimelineModel.RecordType.ResizeImage] = 1;
-
-/**
- * @param {string} recordType
- * @return {boolean}
- */
-WebInspector.TimelineUIUtils.isCoalescable = function(recordType)
-{
-    return !!WebInspector.TimelineUIUtils._coalescableRecordTypes[recordType];
-}
-
 /**
  * @param {!WebInspector.TracingModel.Event} traceEvent
  * @param {!RegExp} regExp
@@ -1234,16 +1217,6 @@ WebInspector.TimelineUIUtils.InvalidationsGroupElement.prototype = {
 /**
  * @param {!Object} total
  * @param {!WebInspector.TimelineModel} model
- * @param {!WebInspector.TimelineModel.Record} record
- */
-WebInspector.TimelineUIUtils.aggregateTimeForRecord = function(total, model, record)
-{
-    WebInspector.TimelineUIUtils._aggregatedStatsForTraceEvent(total, model, record.traceEvent());
-}
-
-/**
- * @param {!Object} total
- * @param {!WebInspector.TimelineModel} model
  * @param {!WebInspector.TracingModel.Event} event
  * @return {boolean}
  */
@@ -1443,36 +1416,6 @@ WebInspector.TimelineUIUtils.asyncEventGroups = function()
         input: new WebInspector.AsyncEventGroup(WebInspector.UIString("Input Events"))
     };
     return WebInspector.TimelineUIUtils._asyncEventGroups;
-}
-
-/**
- * @param {!WebInspector.TimelineModel} model
- * @param {!{name: string, tasks: !Array.<!WebInspector.TimelineModel.Record>, firstTaskIndex: number, lastTaskIndex: number}} info
- * @return {!Element}
- */
-WebInspector.TimelineUIUtils.generateMainThreadBarPopupContent = function(model, info)
-{
-    var firstTaskIndex = info.firstTaskIndex;
-    var lastTaskIndex = info.lastTaskIndex;
-    var tasks = info.tasks;
-    var messageCount = lastTaskIndex - firstTaskIndex + 1;
-    var cpuTime = 0;
-
-    for (var i = firstTaskIndex; i <= lastTaskIndex; ++i) {
-        var task = tasks[i];
-        cpuTime += task.endTime() - task.startTime();
-    }
-    var startTime = tasks[firstTaskIndex].startTime();
-    var endTime = tasks[lastTaskIndex].endTime();
-    var duration = endTime - startTime;
-
-    var contentHelper = new WebInspector.TimelinePopupContentHelper(info.name);
-    var durationText = WebInspector.UIString("%s (at %s)", Number.millisToString(duration, true),
-        Number.millisToString(startTime - model.minimumRecordTime(), true));
-    contentHelper.appendTextRow(WebInspector.UIString("Duration"), durationText);
-    contentHelper.appendTextRow(WebInspector.UIString("CPU time"), Number.millisToString(cpuTime, true));
-    contentHelper.appendTextRow(WebInspector.UIString("Message Count"), messageCount);
-    return contentHelper.contentTable();
 }
 
 /**

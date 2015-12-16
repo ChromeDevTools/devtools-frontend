@@ -53,9 +53,8 @@ WebInspector.MemoryCountersGraph = function(delegate, model, filters)
 WebInspector.MemoryCountersGraph.prototype = {
     /**
      * @override
-     * @param {?RegExp} textFilter
      */
-    refreshRecords: function(textFilter)
+    refreshRecords: function()
     {
         this.reset();
         var events = this._model.mainThreadEvents();

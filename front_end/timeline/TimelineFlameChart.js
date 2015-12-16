@@ -1206,7 +1206,7 @@ WebInspector.TimelineFlameChartView = function(delegate, timelineModel, frameMod
     this._model.addEventListener(WebInspector.TimelineModel.Events.RecordingStarted, this._onRecordingStarted, this);
     this._mainView.addEventListener(WebInspector.FlameChart.Events.EntrySelected, this._onMainEntrySelected, this);
     this._networkView.addEventListener(WebInspector.FlameChart.Events.EntrySelected, this._onNetworkEntrySelected, this);
-    WebInspector.BlackboxSupport.addChangeListener(this._refresh, this);
+    WebInspector.BlackboxSupport.addChangeListener(this.refreshRecords, this);
 }
 
 WebInspector.TimelineFlameChartView.prototype = {
@@ -1218,7 +1218,7 @@ WebInspector.TimelineFlameChartView.prototype = {
         this._model.removeEventListener(WebInspector.TimelineModel.Events.RecordingStarted, this._onRecordingStarted, this);
         this._mainView.removeEventListener(WebInspector.FlameChart.Events.EntrySelected, this._onMainEntrySelected, this);
         this._networkView.removeEventListener(WebInspector.FlameChart.Events.EntrySelected, this._onNetworkEntrySelected, this);
-        WebInspector.BlackboxSupport.removeChangeListener(this._refresh, this);
+        WebInspector.BlackboxSupport.removeChangeListener(this.refreshRecords, this);
     },
 
     /**
@@ -1252,11 +1252,13 @@ WebInspector.TimelineFlameChartView.prototype = {
 
     /**
      * @override
-     * @param {?RegExp} textFilter
      */
-    refreshRecords: function(textFilter)
+    refreshRecords: function()
     {
-        this._refresh();
+        this._dataProvider.reset();
+        this._mainView.scheduleUpdate();
+        this._networkDataProvider.reset();
+        this._networkView.scheduleUpdate();
     },
 
     /**
@@ -1382,14 +1384,6 @@ WebInspector.TimelineFlameChartView.prototype = {
             this._splitWidget.showBoth(animate);
         else
             this._splitWidget.hideSidebar(animate);
-    },
-
-    _refresh: function()
-    {
-        this._dataProvider.reset();
-        this._mainView.scheduleUpdate();
-        this._networkDataProvider.reset();
-        this._networkView.scheduleUpdate();
     },
 
     __proto__: WebInspector.VBox.prototype

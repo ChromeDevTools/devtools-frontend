@@ -46,7 +46,7 @@ WebInspector.CountersGraph = function(title, delegate, model, filters)
     this._delegate = delegate;
     this._model = model;
     this._filters = filters;
-    this._calculator = new WebInspector.TimelineCalculator(this._model);
+    this._calculator = new WebInspector.CounterGraphCalculator(this._model);
 
     this._graphsContainer = new WebInspector.VBox();
     this.setMainWidget(this._graphsContainer);
@@ -219,7 +219,7 @@ WebInspector.CountersGraph.prototype = {
             return false;
         }
         this._model.forAllRecords(null, findRecordToReveal.bind(this));
-        this._delegate.select(recordToReveal ? WebInspector.TimelineSelection.fromRecord(recordToReveal) : null);
+        this._delegate.select(recordToReveal ? WebInspector.TimelineSelection.fromTraceEvent(recordToReveal.traceEvent()) : null);
     },
 
     /**
@@ -264,11 +264,8 @@ WebInspector.CountersGraph.prototype = {
 
     /**
      * @override
-     * @param {?RegExp} textFilter
      */
-    refreshRecords: function(textFilter)
-    {
-    },
+    refreshRecords: function() { },
 
     _clear: function()
     {
@@ -366,7 +363,7 @@ WebInspector.CountersGraph.Counter.prototype = {
     },
 
     /**
-     * @param {!WebInspector.TimelineCalculator} calculator
+     * @param {!WebInspector.CounterGraphCalculator} calculator
      */
     _calculateVisibleIndexes: function(calculator)
     {
@@ -564,5 +561,101 @@ WebInspector.CountersGraph.CounterUI.prototype = {
     visible: function()
     {
         return this._filter.checked();
+    }
+}
+
+/**
+ * @constructor
+ * @param {!WebInspector.TimelineModel} model
+ * @implements {WebInspector.TimelineGrid.Calculator}
+ */
+WebInspector.CounterGraphCalculator = function(model)
+{
+    this._model = model;
+}
+
+WebInspector.CounterGraphCalculator._minWidth = 5;
+
+WebInspector.CounterGraphCalculator.prototype = {
+    /**
+     * @override
+     * @return {number}
+     */
+    paddingLeft: function()
+    {
+        return this._paddingLeft;
+    },
+
+    /**
+     * @override
+     * @param {number} time
+     * @return {number}
+     */
+    computePosition: function(time)
+    {
+        return (time - this._minimumBoundary) / this.boundarySpan() * this._workingArea + this._paddingLeft;
+    },
+
+    setWindow: function(minimumBoundary, maximumBoundary)
+    {
+        this._minimumBoundary = minimumBoundary;
+        this._maximumBoundary = maximumBoundary;
+    },
+
+    /**
+     * @param {number} clientWidth
+     * @param {number=} paddingLeft
+     */
+    setDisplayWindow: function(clientWidth, paddingLeft)
+    {
+        this._paddingLeft = paddingLeft || 0;
+        this._workingArea = clientWidth - WebInspector.CounterGraphCalculator._minWidth - this._paddingLeft;
+    },
+
+    /**
+     * @override
+     * @param {number} value
+     * @param {number=} precision
+     * @return {string}
+     */
+    formatTime: function(value, precision)
+    {
+        return Number.preciseMillisToString(value - this.zeroTime(), precision);
+    },
+
+    /**
+     * @override
+     * @return {number}
+     */
+    maximumBoundary: function()
+    {
+        return this._maximumBoundary;
+    },
+
+    /**
+     * @override
+     * @return {number}
+     */
+    minimumBoundary: function()
+    {
+        return this._minimumBoundary;
+    },
+
+    /**
+     * @override
+     * @return {number}
+     */
+    zeroTime: function()
+    {
+        return this._model.minimumRecordTime();
+    },
+
+    /**
+     * @override
+     * @return {number}
+     */
+    boundarySpan: function()
+    {
+        return this._maximumBoundary - this._minimumBoundary;
     }
 }

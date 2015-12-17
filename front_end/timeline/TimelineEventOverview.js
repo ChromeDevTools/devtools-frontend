@@ -104,7 +104,7 @@ WebInspector.TimelineEventOverview.prototype = {
  */
 WebInspector.TimelineEventOverview.Input = function(model)
 {
-    WebInspector.TimelineEventOverview.call(this, "input", WebInspector.UIString("Input"), model);
+    WebInspector.TimelineEventOverview.call(this, "input", null, model);
 }
 
 WebInspector.TimelineEventOverview.Input.prototype = {

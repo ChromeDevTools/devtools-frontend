@@ -144,7 +144,9 @@
     flex-basis: 22px;
 }
 
-.overview-strip::before {
+#timeline-overview-framerate::before,
+#timeline-overview-network::before,
+#timeline-overview-cpu-activity::before {
     content: "";
     position: absolute;
     left: 0;
@@ -156,10 +158,6 @@
 
 .overview-strip .background {
     z-index: -10;
-}
-
-#timeline-overview-responsiveness::before {
-    display: none;
 }
 
 #timeline-overview-responsiveness {

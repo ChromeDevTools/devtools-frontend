@@ -53,7 +53,7 @@ WebInspector.SourceFrame = function(contentProvider)
     this._shortcuts = {};
     this.element.addEventListener("keydown", this._handleKeyDown.bind(this), false);
 
-    this._sourcePosition = new WebInspector.ToolbarText("", "source-frame-cursor-position");
+    this._sourcePosition = new WebInspector.ToolbarTextGlyphItem();
 }
 
 WebInspector.SourceFrame.Events = {
@@ -96,7 +96,7 @@ WebInspector.SourceFrame.prototype = {
     },
 
     /**
-     * @return {!WebInspector.ToolbarText}
+     * @return {!WebInspector.ToolbarItem}
      */
     toolbarText: function()
     {

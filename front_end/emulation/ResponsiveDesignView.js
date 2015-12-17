@@ -646,7 +646,7 @@ WebInspector.ResponsiveDesignView.prototype = {
         resetButton.addEventListener("click", WebInspector.overridesSupport.reset, WebInspector.overridesSupport);
 
         // Media Query Inspector.
-        this._toggleMediaInspectorButton = new WebInspector.ToolbarButton(WebInspector.UIString("Media queries not found"), "waterfall-toolbar-item");
+        this._toggleMediaInspectorButton = new WebInspector.ToolbarToggle(WebInspector.UIString("Media queries not found"), "waterfall-toolbar-item");
         this._toggleMediaInspectorButton.setToggled(this._showMediaQueryInspectorSetting.get());
         this._toggleMediaInspectorButton.setEnabled(false);
         this._toggleMediaInspectorButton.addEventListener("click", this._onToggleMediaInspectorButtonClick, this);

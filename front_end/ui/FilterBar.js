@@ -42,7 +42,7 @@ WebInspector.FilterBar = function(name, visibleByDefault)
     this._enabled = true;
     this.element.classList.add("filter-bar");
 
-    this._filterButton = new WebInspector.ToolbarButton(WebInspector.UIString("Filter"), "filter-toolbar-item", 3);
+    this._filterButton = new WebInspector.ToolbarButton(WebInspector.UIString("Filter"), "filter-toolbar-item");
     this._filterButton.addEventListener("click", this._handleFilterButtonClick, this);
 
     this._filters = [];

@@ -39,6 +39,13 @@ WebInspector.AnimationTimeline = function()
 
 WebInspector.AnimationTimeline.GlobalPlaybackRates = [1, 0.25, 0.1];
 
+/** @enum {string} */
+WebInspector.AnimationTimeline._ControlState = {
+    Play: "play-outline",
+    Replay: "replay-outline",
+    Pause: "pause-outline"
+}
+
 WebInspector.AnimationTimeline.prototype = {
     wasShown: function()
     {
@@ -141,7 +148,8 @@ WebInspector.AnimationTimeline.prototype = {
         this._currentTime = controls.createChild("div", "animation-timeline-current-time monospace");
 
         var toolbar = new WebInspector.Toolbar("animation-controls-toolbar", controls);
-        this._controlButton = new WebInspector.ToolbarButton(WebInspector.UIString("Replay timeline"), "replay-outline-toolbar-item");
+        this._controlButton = new WebInspector.ToolbarButton(WebInspector.UIString("Replay timeline"), "animation-control-toolbar-item");
+        this._controlButton.setState(WebInspector.AnimationTimeline._ControlState.Replay);
         this._controlButton.addEventListener("click", this._controlButtonToggle.bind(this));
         toolbar.appendToolbarItem(this._controlButton);
 
@@ -215,9 +223,9 @@ WebInspector.AnimationTimeline.prototype = {
 
     _controlButtonToggle: function()
     {
-        if (this._controlButton.element.classList.contains("play-outline-toolbar-item"))
+        if (this._controlButton.state() === WebInspector.AnimationTimeline._ControlState.Play)
             this._togglePause(false);
-        else if (this._controlButton.element.classList.contains("replay-outline-toolbar-item"))
+        else if (this._controlButton.state() === WebInspector.AnimationTimeline._ControlState.Replay)
             this._replay();
         else
             this._togglePause(true);
@@ -226,21 +234,15 @@ WebInspector.AnimationTimeline.prototype = {
     _updateControlButton: function()
     {
         this._controlButton.setEnabled(!!this._selectedGroup);
-        this._controlButton.element.classList.remove("play-outline-toolbar-item");
-        this._controlButton.element.classList.remove("replay-outline-toolbar-item");
-        this._controlButton.element.classList.remove("pause-outline-toolbar-item");
         if (this._selectedGroup && this._selectedGroup.paused()) {
-            this._controlButton.element.classList.add("play-outline-toolbar-item");
+            this._controlButton.setState(WebInspector.AnimationTimeline._ControlState.Play);
             this._controlButton.setTitle(WebInspector.UIString("Play timeline"));
-            this._controlButton.setToggled(true);
         } else if (!this._scrubberPlayer || this._scrubberPlayer.currentTime >= this.duration()) {
-            this._controlButton.element.classList.add("replay-outline-toolbar-item");
+            this._controlButton.setState(WebInspector.AnimationTimeline._ControlState.Replay);
             this._controlButton.setTitle(WebInspector.UIString("Replay timeline"));
-            this._controlButton.setToggled(true);
         } else {
-            this._controlButton.element.classList.add("pause-outline-toolbar-item");
+            this._controlButton.setState(WebInspector.AnimationTimeline._ControlState.Pause);
             this._controlButton.setTitle(WebInspector.UIString("Pause timeline"));
-            this._controlButton.setToggled(false);
         }
     },
 
@@ -766,7 +768,7 @@ WebInspector.AnimationTimeline.StepTimingFunction.parse = function(text) {
  */
 WebInspector.AnimationTimeline.ButtonProvider = function()
 {
-    this._button = new WebInspector.ToolbarButton(WebInspector.UIString("Toggle animation controls"), "animation-toolbar-item");
+    this._button = new WebInspector.ToolbarButton(WebInspector.UIString("Animations"), "animation-toolbar-item");
     this._button.addEventListener("click", this._clicked, this);
 }
 

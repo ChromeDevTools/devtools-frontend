@@ -16,6 +16,10 @@
     flex: 0 0 44px;
 }
 
+.search-toolbar {
+    margin-top: -2px;
+}
+
 .search-replace {
     -webkit-appearance: none;
     border: 0;

@@ -295,13 +295,13 @@ WebInspector.DeviceModeView.Toolbar = function(model, showMediaInspectorSetting)
     this._element = createElementWithClass("div", "device-mode-toolbar");
 
     var leftToolbar = new WebInspector.Toolbar("", this._element);
-    this._noneItem = new WebInspector.ToolbarButton(WebInspector.UIString("Full"), "desktop-toolbar-item");
+    this._noneItem = new WebInspector.ToolbarToggle(WebInspector.UIString("Full"), "desktop-toolbar-item");
     leftToolbar.appendToolbarItem(this._noneItem);
     this._noneItem.addEventListener("click", this._noneButtonClick, this);
-    this._responsiveItem = new WebInspector.ToolbarButton(WebInspector.UIString("Responsive"), "enter-fullscreen-toolbar-item");
+    this._responsiveItem = new WebInspector.ToolbarToggle(WebInspector.UIString("Responsive"), "enter-fullscreen-toolbar-item");
     leftToolbar.appendToolbarItem(this._responsiveItem);
     this._responsiveItem.addEventListener("click", this._responsiveButtonClick, this);
-    this._deviceItem = new WebInspector.ToolbarButton(WebInspector.UIString("Device"), "emulation-toolbar-item");
+    this._deviceItem = new WebInspector.ToolbarToggle(WebInspector.UIString("Device"), "emulation-toolbar-item");
     leftToolbar.appendToolbarItem(this._deviceItem);
     this._deviceItem.addEventListener("click", this._deviceButtonClick, this);
     leftToolbar.appendSeparator();
@@ -313,10 +313,11 @@ WebInspector.DeviceModeView.Toolbar = function(model, showMediaInspectorSetting)
 
     var rightToolbar = new WebInspector.Toolbar("", this._element);
     rightToolbar.appendSeparator();
-    this._scaleItem = new WebInspector.ToolbarText(WebInspector.UIString("Zoom"), "");
-    this._scaleItem.makeDimmed();
+    this._scaleItem = new WebInspector.ToolbarTextGlyphItem();
     rightToolbar.appendToolbarItem(this._scaleItem);
-    rightToolbar.appendToolbarItem(new WebInspector.ToolbarMenuButton(WebInspector.UIString("More options"), "menu-toolbar-item", this._appendMenuItems.bind(this)));
+    var moreOptionsButton = new WebInspector.ToolbarMenuButton(this._appendMenuItems.bind(this));
+    moreOptionsButton.setTitle(WebInspector.UIString("More options"));
+    rightToolbar.appendToolbarItem(moreOptionsButton);
 
     this._persistenceSetting = WebInspector.settings.createSetting("emulation.deviceModeViewPersistence", {type: WebInspector.DeviceModeModel.Type.None, device: "", orientation: "", mode: ""});
     this._restored = false;

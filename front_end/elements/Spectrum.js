@@ -55,7 +55,7 @@ WebInspector.Spectrum = function()
     this._contrastRatioLine = contrastRatioSVG.createSVGChild("path", "spectrum-contrast-line");
 
     var toolbar = new WebInspector.Toolbar("spectrum-eye-dropper", this.contentElement);
-    this._colorPickerButton = new WebInspector.ToolbarButton(WebInspector.UIString("Toggle color picker"), "eyedropper-toolbar-item");
+    this._colorPickerButton = new WebInspector.ToolbarToggle(WebInspector.UIString("Toggle color picker"), "eyedropper-toolbar-item");
     this._colorPickerButton.setToggled(true);
     this._colorPickerButton.addEventListener("click", this._toggleColorPicker.bind(this, undefined));
     toolbar.appendToolbarItem(this._colorPickerButton);

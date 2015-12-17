@@ -26,13 +26,14 @@ WebInspector.TransformController = function(element, disableRotate)
 
     this._controlPanelToolbar = new WebInspector.Toolbar("transform-control-panel");
 
+    /** @type {!Object<string, !WebInspector.ToolbarToggle>} */
     this._modeButtons = {};
     if (!disableRotate) {
-        var panModeButton = new WebInspector.ToolbarButton(WebInspector.UIString("Pan mode (X)"), "pan-toolbar-item");
+        var panModeButton = new WebInspector.ToolbarToggle(WebInspector.UIString("Pan mode (X)"), "pan-toolbar-item");
         panModeButton.addEventListener("click", this._setMode.bind(this, WebInspector.TransformController.Modes.Pan));
         this._modeButtons[WebInspector.TransformController.Modes.Pan] = panModeButton;
         this._controlPanelToolbar.appendToolbarItem(panModeButton);
-        var rotateModeButton = new WebInspector.ToolbarButton(WebInspector.UIString("Rotate mode (V)"), "rotate-toolbar-item");
+        var rotateModeButton = new WebInspector.ToolbarToggle(WebInspector.UIString("Rotate mode (V)"), "rotate-toolbar-item");
         rotateModeButton.addEventListener("click", this._setMode.bind(this, WebInspector.TransformController.Modes.Rotate));
         this._modeButtons[WebInspector.TransformController.Modes.Rotate] = rotateModeButton;
         this._controlPanelToolbar.appendToolbarItem(rotateModeButton);

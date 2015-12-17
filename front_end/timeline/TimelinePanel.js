@@ -343,8 +343,7 @@ WebInspector.TimelinePanel.prototype = {
         this._panelToolbar.appendToolbarItem(garbageCollectButton);
         this._panelToolbar.appendSeparator();
 
-        var captureSettingsLabel = new WebInspector.ToolbarText(WebInspector.UIString("Capture:"), "toolbar-group-label");
-        this._panelToolbar.appendToolbarItem(captureSettingsLabel);
+        this._panelToolbar.appendText(WebInspector.UIString("Capture:"));
 
         this._captureNetworkSetting = WebInspector.settings.createSetting("timelineCaptureNetwork", false);
         this._captureNetworkSetting.addChangeListener(this._onNetworkChanged, this);

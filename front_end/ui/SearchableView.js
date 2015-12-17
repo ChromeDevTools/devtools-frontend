@@ -48,16 +48,18 @@ WebInspector.SearchableView = function(searchable, settingName)
     this._footerElementContainer = this.contentElement.createChild("div", "search-bar hidden");
     this._footerElementContainer.style.order = 100;
 
-    var toolbar = new WebInspector.Toolbar("", this._footerElementContainer);
+    var toolbar = new WebInspector.Toolbar("search-toolbar", this._footerElementContainer);
 
     if (this._searchProvider.supportsCaseSensitiveSearch()) {
-        this._caseSensitiveButton = new WebInspector.ToolbarTextButton(WebInspector.UIString("Case sensitive"), "case-sensitive-search-toolbar-item", "Aa", 2);
+        this._caseSensitiveButton = new WebInspector.ToolbarToggle(WebInspector.UIString("Case sensitive"), "");
+        this._caseSensitiveButton.setText("Aa");
         this._caseSensitiveButton.addEventListener("click", this._toggleCaseSensitiveSearch, this);
         toolbar.appendToolbarItem(this._caseSensitiveButton);
     }
 
     if (this._searchProvider.supportsRegexSearch()) {
-        this._regexButton = new WebInspector.ToolbarTextButton(WebInspector.UIString("Regex"), "regex-search-toolbar-item", ".*", 2);
+        this._regexButton = new WebInspector.ToolbarToggle(WebInspector.UIString("Regex"), "");
+        this._regexButton.setText(".*");
         this._regexButton.addEventListener("click", this._toggleRegexSearch, this);
         toolbar.appendToolbarItem(this._regexButton);
     }

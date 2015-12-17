@@ -593,7 +593,7 @@ WebInspector.DevicesView.DeviceView.prototype = {
         titleRow.appendChild(inspect);
 
         var toolbar = new WebInspector.Toolbar("");
-        toolbar.appendToolbarItem(new WebInspector.ToolbarMenuButton("", "menu-toolbar-item", appendActions));
+        toolbar.appendToolbarItem(new WebInspector.ToolbarMenuButton(appendActions));
         titleRow.appendChild(toolbar.element);
 
         var url = element.createChild("div", "device-page-url");

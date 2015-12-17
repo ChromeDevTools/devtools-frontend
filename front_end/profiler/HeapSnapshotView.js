@@ -149,7 +149,7 @@ WebInspector.HeapSnapshotView = function(dataDisplayDelegate, profile)
     this._constructorsDataGrid.setNameFilter(this._classNameFilter);
     this._diffDataGrid.setNameFilter(this._classNameFilter);
 
-    this._selectedSizeText = new WebInspector.ToolbarText("");
+    this._selectedSizeText = new WebInspector.ToolbarTextGlyphItem();
 
     this._popoverHelper = new WebInspector.ObjectPopoverHelper(this.element, this._getHoverAnchor.bind(this), this._resolveObjectForPopover.bind(this), undefined, true);
 

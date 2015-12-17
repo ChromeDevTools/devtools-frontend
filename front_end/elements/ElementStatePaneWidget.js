@@ -124,7 +124,7 @@ WebInspector.ElementStatePaneWidget.prototype = {
  */
 WebInspector.ElementStatePaneWidget.ButtonProvider = function()
 {
-    this._button = new WebInspector.ToolbarButton(WebInspector.UIString("Toggle Element State"), "pin-toolbar-item");
+    this._button = new WebInspector.ToolbarToggle(WebInspector.UIString("Toggle Element State"), "pin-toolbar-item");
     this._button.addEventListener("click", this._clicked, this);
     this._view = new WebInspector.ElementStatePaneWidget(this.item());
     WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this._nodeChanged, this);

@@ -58,7 +58,12 @@ WebInspector.Toolbar.prototype = {
 
     makeBlueOnHover: function()
     {
-        this._contentElement.classList.add("blue-on-hover");
+        this._contentElement.classList.add("toolbar-blue-on-hover");
+    },
+
+    makeToggledGray: function()
+    {
+        this._contentElement.classList.add("toolbar-toggled-gray");
     },
 
     /**
@@ -86,6 +91,16 @@ WebInspector.Toolbar.prototype = {
         this.appendToolbarItem(new WebInspector.ToolbarSeparator());
     },
 
+    /**
+     * @param {string} text
+     */
+    appendText: function(text)
+    {
+        var item = new WebInspector.ToolbarTextGlyphItem();
+        item.setText(text);
+        this.appendToolbarItem(item);
+    },
+
     removeToolbarItems: function()
     {
         for (var item of this._items)
@@ -101,7 +116,7 @@ WebInspector.Toolbar.prototype = {
     setColor: function(color)
     {
         var style = createElement("style");
-        style.textContent = "button.toolbar-item .glyph { background-color: " + color + " !important }";
+        style.textContent = ".toolbar-glyph { background-color: " + color + " !important }";
         this._shadowRoot.appendChild(style);
     },
 
@@ -111,7 +126,7 @@ WebInspector.Toolbar.prototype = {
     setToggledColor: function(color)
     {
         var style = createElement("style");
-        style.textContent = "button.toolbar-item.toggled-on .glyph { background-color: " + color + " !important }";
+        style.textContent = ".toolbar-button.toolbar-state-on .toolbar-glyph { background-color: " + color + " !important }";
         this._shadowRoot.appendChild(style);
     },
 
@@ -212,41 +227,142 @@ WebInspector.ToolbarItem.prototype = {
 /**
  * @constructor
  * @extends {WebInspector.ToolbarItem}
- * @param {string} text
- * @param {string=} className
  */
-WebInspector.ToolbarText = function(text, className)
+WebInspector.ToolbarTextGlyphItem = function()
 {
-    WebInspector.ToolbarItem.call(this, createElementWithClass("span", "toolbar-text"));
-    if (className)
-        this.element.classList.add(className);
-    this._textElement = this.element.createTextChild(text);
+    WebInspector.ToolbarItem.call(this, createElementWithClass("button", "toolbar-text-glyph"));
+    this._glyphElement = this.element.createChild("div", "toolbar-glyph hidden");
+    this._textElement = this.element.createChild("div", "toolbar-text hidden");
+    this._text = "";
+    this._glyph = "";
+    this._state = "";
+    this._title = "";
 }
 
-WebInspector.ToolbarText.prototype = {
+WebInspector.ToolbarTextGlyphItem.prototype = {
     /**
      * @param {string} text
      */
     setText: function(text)
     {
+        if (this._text === text)
+            return;
         this._textElement.textContent = text;
+        this._textElement.classList.toggle("hidden", !text);
+        this._text = text;
     },
 
-    showGlyph: function()
+    /**
+     * @param {string} glyph
+     */
+    setGlyph: function(glyph)
     {
-        if (!this._glyphElement) {
-            this.element.classList.add("toolbar-text-glyphed");
-            this._glyphElement = createElementWithClass("div", "glyph toolbar-button-theme");
-            this.element.insertBefore(this._glyphElement, this._textElement);
-        }
+        if (this._glyph === glyph)
+            return;
+        if (this._glyph)
+            this._glyphElement.classList.remove(this._glyph);
+        if (glyph)
+            this._glyphElement.classList.add(glyph);
+        this._glyphElement.classList.toggle("hidden", !glyph);
+        this.element.classList.toggle("toolbar-has-glyph", !!glyph);
+        this._glyph = glyph;
     },
 
-    makeDimmed: function()
+    /**
+     * @param {string} iconURL
+     */
+    setBackgroundImage: function(iconURL)
     {
-        this.element.classList.add("toolbar-text-dimmed");
+        this.element.style.backgroundImage = "url(" + iconURL + ")";
+    },
+
+    /**
+     * @return {string}
+     */
+    state: function()
+    {
+        return this._state;
+    },
+
+    /**
+     * @param {string} state
+     */
+    setState: function(state)
+    {
+        if (this._state === state)
+            return;
+        this.element.classList.remove("toolbar-state-" + this._state);
+        this.element.classList.add("toolbar-state-" + state);
+        this._state = state;
+    },
+
+    /**
+     * @param {string} title
+     */
+    setTitle: function(title)
+    {
+        if (this._title === title)
+            return;
+        this._title = title;
+        WebInspector.Tooltip.install(this.element, title);
+    },
+
+    /**
+     * @param {boolean} bold
+     */
+    setBold: function(bold)
+    {
+        this.element.classList.toggle("toolbar-bold", bold);
     },
 
     __proto__: WebInspector.ToolbarItem.prototype
+}
+
+/**
+ * @constructor
+ * @extends {WebInspector.ToolbarTextGlyphItem}
+ * @param {string} title
+ * @param {string} glyph
+ */
+WebInspector.ToolbarButton = function(title, glyph)
+{
+    WebInspector.ToolbarTextGlyphItem.call(this);
+    this.element.classList.add("toolbar-button");
+    this.element.addEventListener("click", this._clicked.bind(this), false);
+    this.element.addEventListener("mousedown", this._mouseDown.bind(this), false);
+    this.element.addEventListener("mouseup", this._mouseUp.bind(this), false);
+    this.setBold(true);
+    this.setTitle(title);
+    this.setGlyph(glyph);
+}
+
+WebInspector.ToolbarButton.prototype = {
+    /**
+     * @param {!Event} event
+     */
+    _clicked: function(event)
+    {
+        var defaultPrevented = this.dispatchEventToListeners("click", event);
+        event.consume(defaultPrevented);
+    },
+
+    /**
+     * @param {!Event} event
+     */
+    _mouseDown: function(event)
+    {
+        this.dispatchEventToListeners("mousedown", event);
+    },
+
+    /**
+     * @param {!Event} event
+     */
+    _mouseUp: function(event)
+    {
+        this.dispatchEventToListeners("mouseup", event);
+    },
+
+    __proto__: WebInspector.ToolbarTextGlyphItem.prototype
 }
 
 /**
@@ -298,163 +414,122 @@ WebInspector.ToolbarInput.prototype = {
 
 /**
  * @constructor
- * @extends {WebInspector.ToolbarItem}
- * @param {string} title
- * @param {string} className
- * @param {number=} states
+ * @extends {WebInspector.ToolbarButton}
  */
-WebInspector.ToolbarButtonBase = function(title, className, states)
+WebInspector.ToolbarToggle = function(title, glyph)
 {
-    WebInspector.ToolbarItem.call(this, createElementWithClass("button", className + " toolbar-item"));
-    this.element.addEventListener("click", this._clicked.bind(this), false);
-    this.element.addEventListener("mousedown", this._mouseDown.bind(this), false);
-    this.element.addEventListener("mouseup", this._mouseUp.bind(this), false);
-
-    this._states = states || 2;
-    if (states == 2)
-        this._state = "off";
-    else
-        this._state = "0";
-
-    this.setTitle(title);
+    WebInspector.ToolbarButton.call(this, title, glyph);
+    this._toggled = false;
+    this.setState("off");
 }
 
-WebInspector.ToolbarButtonBase.prototype = {
-    /**
-     * @param {!Event} event
-     */
-    _clicked: function(event)
-    {
-        var defaultPrevented = this.dispatchEventToListeners("click", event);
-        event.consume(defaultPrevented);
-    },
-
-    /**
-     * @override
-     */
-    _applyEnabledState: function()
-    {
-        this.element.disabled = !this._enabled;
-        if (this._longClickController)
-            this._longClickController.reset();
-    },
-
-    /**
-     * @param {!Event} event
-     */
-    _mouseDown: function(event)
-    {
-        this.dispatchEventToListeners("mousedown", event);
-    },
-
-    /**
-     * @param {!Event} event
-     */
-    _mouseUp: function(event)
-    {
-        this.dispatchEventToListeners("mouseup", event);
-    },
-
-    /**
-     * @return {string}
-     */
-    title: function()
-    {
-        return this._title;
-    },
-
-    /**
-     * @param {string} title
-     */
-    setTitle: function(title)
-    {
-        if (this._title === title)
-            return;
-        this._title = title;
-        WebInspector.Tooltip.install(this.element, title);
-    },
-
-    /**
-     * @return {string}
-     */
-    state: function()
-    {
-        return this._state;
-    },
-
-    /**
-     * @param {string} x
-     */
-    setState: function(x)
-    {
-        if (this._state === x)
-            return;
-
-        this.element.classList.remove("toggled-" + this._state);
-        this.element.classList.add("toggled-" + x);
-        this._state = x;
-    },
-
+WebInspector.ToolbarToggle.prototype = {
     /**
      * @return {boolean}
      */
     toggled: function()
     {
-        if (this._states !== 2)
-            throw("Only used toggled when there are 2 states, otherwise, use state");
-        return this.state() === "on";
+        return this._toggled;
     },
 
     /**
-     * @param {boolean} x
+     * @param {boolean} toggled
      */
-    setToggled: function(x)
+    setToggled: function(toggled)
     {
-        if (this._states !== 2)
-            throw("Only used toggled when there are 2 states, otherwise, use state");
-        this.setState(x ? "on" : "off");
+        if (this._toggled === toggled)
+            return;
+        this._toggled = toggled;
+        this.setState(toggled ? "on" : "off");
     },
 
-    /**
-     * @param {?Array.<!WebInspector.ToolbarButton>} buttons
-     */
-    setLongClickOptionsEnabled: function(buttons)
+    __proto__: WebInspector.ToolbarButton.prototype
+}
+
+/**
+ * @param {!WebInspector.Action} action
+ * @param {!Array<!WebInspector.ToolbarButton>=} toggledOptions
+ * @param {!Array<!WebInspector.ToolbarButton>=} untoggledOptions
+ * @return {!WebInspector.ToolbarItem}
+ */
+WebInspector.Toolbar.createActionButton = function(action, toggledOptions, untoggledOptions)
+{
+    var button = new WebInspector.ToolbarButton(action.title(), action.icon());
+    button.addEventListener("click", action.execute, action);
+    action.addEventListener(WebInspector.Action.Events.Enabled, enabledChanged);
+    action.addEventListener(WebInspector.Action.Events.StateChanged, stateChanged);
+    action.addEventListener(WebInspector.Action.Events.TitleChanged, titleChanged);
+    /** @type {?WebInspector.LongClickController} */
+    var longClickController = null;
+    /** @type {?Array<!WebInspector.ToolbarButton>} */
+    var longClickButtons = null;
+    /** @type {?Element} */
+    var longClickGlyph = null;
+    titleChanged();
+    stateChanged();
+    return button;
+
+    function titleChanged()
     {
+        WebInspector.Tooltip.install(button.element, action.title(), action.id());
+    }
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    function enabledChanged(event)
+    {
+        button.setEnabled(/** @type {boolean} */ (event.data));
+    }
+
+    function stateChanged()
+    {
+        button.setState(action.state());
+        updateOptions();
+    }
+
+    function updateOptions()
+    {
+        if (action.statesCount() !== 2)
+            return;
+
+        var buttons = action.toggled() ? (toggledOptions || null) : (untoggledOptions || null);
+
         if (buttons && buttons.length) {
-            if (!this._longClickController) {
-                this._longClickController = new WebInspector.LongClickController(this.element, this._showOptions.bind(this));
-                this._longClickGlyph = this.element.createChild("div", "long-click-glyph toolbar-button-theme");
-                this._longClickButtons = buttons;
+            if (!longClickController) {
+                longClickController = new WebInspector.LongClickController(button.element, showOptions);
+                longClickGlyph = button.element.createChild("div", "long-click-glyph toolbar-button-theme");
+                longClickButtons = buttons;
             }
         } else {
-            if (this._longClickController) {
-                this._longClickController.dispose();
-                delete this._longClickController;
-                this.element.removeChild(this._longClickGlyph);
-                delete this._longClickButtons;
+            if (longClickController) {
+                longClickController.dispose();
+                longClickController = null;
+                longClickGlyph.remove();
+                longClickGlyph = null;
+                longClickButtons = null;
             }
         }
-    },
+    }
 
-    _showOptions: function()
+    function showOptions()
     {
-        var buttons = this._longClickButtons.slice();
-        var mainButtonClone = new WebInspector.ToolbarButton(this._title, this.element.className, this._states);
-        mainButtonClone.addEventListener("click", clicked.bind(this));
+        var buttons = longClickButtons.slice();
+        var mainButtonClone = new WebInspector.ToolbarButton(action.title(), action.icon());
+        mainButtonClone.addEventListener("click", clicked);
 
         /**
          * @param {!WebInspector.Event} event
-         * @this {WebInspector.ToolbarButtonBase}
          */
         function clicked(event)
         {
-            this._clicked(/** @type {!Event} */ (event.data));
+            button._clicked(/** @type {!Event} */ (event.data));
         }
 
-        mainButtonClone.setState(this.state());
+        mainButtonClone.setState(action.state());
         buttons.push(mainButtonClone);
 
-        var document = this.element.ownerDocument;
+        var document = button.element.ownerDocument;
         document.documentElement.addEventListener("mouseup", mouseUp, false);
 
         var optionsGlassPane = new WebInspector.GlassPane(document);
@@ -462,7 +537,7 @@ WebInspector.ToolbarButtonBase.prototype = {
         optionsBar._contentElement.classList.add("floating");
         const buttonHeight = 26;
 
-        var hostButtonPosition = this.element.totalOffset();
+        var hostButtonPosition = button.element.totalOffset();
 
         var topNotBottom = hostButtonPosition.top + buttonHeight * buttons.length < document.documentElement.offsetHeight;
 
@@ -515,96 +590,17 @@ WebInspector.ToolbarButtonBase.prototype = {
                 }
             }
         }
-    },
-
-    __proto__: WebInspector.ToolbarItem.prototype
-}
-
-/**
- * @constructor
- * @extends {WebInspector.ToolbarButtonBase}
- * @param {string} title
- * @param {string} className
- * @param {number=} states
- */
-WebInspector.ToolbarButton = function(title, className, states)
-{
-    WebInspector.ToolbarButtonBase.call(this, title, className, states);
-
-    this._glyphElement = this.element.createChild("div", "glyph toolbar-button-theme");
-}
-
-WebInspector.ToolbarButton.prototype = {
-    /**
-     * @param {string} iconURL
-     */
-    setBackgroundImage: function(iconURL)
-    {
-        this.element.style.backgroundImage = "url(" + iconURL + ")";
-        this._glyphElement.classList.add("hidden");
-    },
-
-    __proto__: WebInspector.ToolbarButtonBase.prototype
-}
-
-/**
- * @param {!WebInspector.Action} action
- * @param {!Array<!WebInspector.ToolbarButton>=} toggledOptions
- * @param {!Array<!WebInspector.ToolbarButton>=} untoggledOptions
- * @return {!WebInspector.ToolbarItem}
- */
-WebInspector.Toolbar.createActionButton = function(action, toggledOptions, untoggledOptions)
-{
-    var button = new WebInspector.ToolbarButton(action.title(), action.icon(), action.statesCount());
-    button.addEventListener("click", action.execute, action);
-    action.addEventListener(WebInspector.Action.Events.Enabled, enabledChanged);
-    action.addEventListener(WebInspector.Action.Events.StateChanged, stateChanged);
-    action.addEventListener(WebInspector.Action.Events.TitleChanged, titleChanged);
-    titleChanged();
-    updateOptions();
-
-    function titleChanged()
-    {
-        WebInspector.Tooltip.install(button.element, action.title(), action.id());
     }
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    function enabledChanged(event)
-    {
-        button.setEnabled(/** @type {boolean} */ (event.data));
-    }
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    function stateChanged(event)
-    {
-        var data = /** @type {!{oldState: string, newState: string}} */ (event.data);
-        button.setState(data.newState);
-        updateOptions();
-    }
-
-    function updateOptions()
-    {
-        if (action.statesCount() === 2)
-            button.setLongClickOptionsEnabled(action.toggled() ? (toggledOptions || null) : (untoggledOptions || null));
-    }
-
-    return button;
 }
 
 /**
  * @constructor
  * @extends {WebInspector.ToolbarButton}
- * @param {string} title
- * @param {string} className
  * @param {function(!WebInspector.ContextMenu)} contextMenuHandler
  */
-WebInspector.ToolbarMenuButton = function(title, className, contextMenuHandler)
+WebInspector.ToolbarMenuButton = function(contextMenuHandler)
 {
-    WebInspector.ToolbarButton.call(this, title, className);
+    WebInspector.ToolbarButton.call(this, "", "menu-toolbar-item");
     this._contextMenuHandler = contextMenuHandler;
 }
 
@@ -628,15 +624,15 @@ WebInspector.ToolbarMenuButton.prototype = {
 
 /**
  * @constructor
- * @extends {WebInspector.ToolbarButton}
+ * @extends {WebInspector.ToolbarToggle}
  * @param {!WebInspector.Setting} setting
- * @param {string} className
+ * @param {string} glyph
  * @param {string} title
  * @param {string=} toggledTitle
  */
-WebInspector.ToolbarSettingToggle = function(setting, className, title, toggledTitle)
+WebInspector.ToolbarSettingToggle = function(setting, glyph, title, toggledTitle)
 {
-    WebInspector.ToolbarButton.call(this, "", className, 2);
+    WebInspector.ToolbarToggle.call(this, title, glyph);
     this._defaultTitle = title;
     this._toggledTitle = toggledTitle || title;
     this._setting = setting;
@@ -659,10 +655,10 @@ WebInspector.ToolbarSettingToggle.prototype = {
     _clicked: function(event)
     {
         this._setting.set(!this.toggled());
-        WebInspector.ToolbarButton.prototype._clicked.call(this, event);
+        WebInspector.ToolbarToggle.prototype._clicked.call(this, event);
     },
 
-    __proto__: WebInspector.ToolbarButton.prototype
+    __proto__: WebInspector.ToolbarToggle.prototype
 }
 
 /**
@@ -676,26 +672,6 @@ WebInspector.ToolbarSeparator = function()
 
 WebInspector.ToolbarSeparator.prototype = {
     __proto__: WebInspector.ToolbarItem.prototype
-}
-
-/**
- * @constructor
- * @extends {WebInspector.ToolbarButtonBase}
- * @param {string} title
- * @param {string} className
- * @param {string} text
- * @param {number=} states
- */
-WebInspector.ToolbarTextButton = function(title, className, text, states)
-{
-    WebInspector.ToolbarButtonBase.call(this, title, className, states);
-
-    this._textElement = this.element.createChild("div", "toolbar-button-text");
-    this._textElement.textContent = text;
-}
-
-WebInspector.ToolbarTextButton.prototype = {
-    __proto__: WebInspector.ToolbarButtonBase.prototype
 }
 
 /**
@@ -913,8 +889,6 @@ WebInspector.ExtensibleToolbar.prototype = {
                 return Promise.resolve(/** @type {?WebInspector.ToolbarItem} */(new WebInspector.ToolbarSeparator()));
             if (descriptor["actionId"])
                 return Promise.resolve(/** @type {?WebInspector.ToolbarItem} */(WebInspector.Toolbar.createActionButton(WebInspector.actionRegistry.action(descriptor["actionId"]))));
-            if (!descriptor["className"])
-                return Promise.resolve(/** @type {?WebInspector.ToolbarItem} */(new WebInspector.ToolbarButton(WebInspector.UIString(descriptor["title"]), descriptor["elementClass"])));
             return extension.instancePromise().then(fetchItemFromProvider);
 
             /**

@@ -109,6 +109,8 @@ WebInspector.DeviceModeModel.prototype = {
             this._mode = null;
         }
 
+        if (type !== WebInspector.DeviceModeModel.Type.None)
+            WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.DeviceModeEnabled);
         this._calculateAndEmulate(true);
     },
 

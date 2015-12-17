@@ -134,6 +134,7 @@ WebInspector.DeviceModeView.prototype = {
     {
         delete this._resizeStart;
         this._model.resumeScaleChanges();
+        WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.ResizedViewInResponsiveMode);
     },
 
     _updateUI: function()

@@ -21,13 +21,25 @@
     padding: 0 4px;
 }
 
-.device-mode-toolbar > .toolbar {
+.device-mode-toolbar .toolbar {
     padding: 0;
     overflow: hidden;
+    flex: auto;
+}
+
+.device-mode-toolbar-left {
+    flex: 0 1000 115px;
+    min-width: 93px;
+}
+
+.device-mode-toolbar-right {
+    flex: 0 1000 115px;
+    min-width: 40px;
+    display: flex;
 }
 
 .device-mode-toolbar-middle-container {
-    flex: auto;
+    flex: 1 1 120px;
     position: relative;
 }
 
@@ -38,7 +50,7 @@
 }
 
 .device-mode-toolbar-middle .toolbar {
-    flex-shrink: 1;
+    flex: 0 1 auto;
 }
 
 .device-mode-toolbar-spacer {
@@ -53,6 +65,7 @@
 .device-mode-media-container {
     flex: none;
     overflow: hidden;
+    box-shadow: inset 0 -1px #ccc;
 }
 
 .device-mode-content-area {

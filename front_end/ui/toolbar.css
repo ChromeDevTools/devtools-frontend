@@ -24,6 +24,10 @@
     flex-wrap: wrap;
 }
 
+.toolbar-shadow.wrappable-reverse {
+    flex-direction: row-reverse;
+}
+
 .toolbar-shadow.vertical {
     flex-direction: column;
     height: auto;
@@ -64,6 +68,10 @@
 
 .toolbar-bold .toolbar-text {
     font-weight: bold;
+}
+
+.toolbar-dimmed .toolbar-text {
+    color: #999;
 }
 
 .toolbar-glyph {
@@ -261,35 +269,6 @@ input.toolbar-item.hover {
     -webkit-mask-position: -320px -120px;
 }
 
-.emulation-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -288px -144px;
-}
-
-@media (-webkit-min-device-pixel-ratio: 1.5) {
-.emulation-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -160px 0;
-}
-}
-
-.emulation-toolbar-item.warning::after {
-    background-image: url(Images/toolbarButtonGlyphs.png);
-    background-size: 352px 168px;
-    width: 10px;
-    height: 12px;
-    content: "";
-    position: absolute;
-    right: 3px;
-    bottom: 2px;
-    background-position: -202px -107px;
-    z-index: 1;
-}
-
-@media (-webkit-min-device-pixel-ratio: 1.5) {
-.emulation-toolbar-item.warning::before {
-    background-image: url(Images/toolbarButtonGlyphs_2x.png);
-}
-} /* media */
-
 .delete-toolbar-item.toolbar-glyph {
     -webkit-mask-position: -128px 0;
 }
@@ -316,10 +295,6 @@ input.toolbar-item.hover {
 
 .edit-toolbar-item.toolbar-glyph {
     -webkit-mask-position: -224px -72px;
-}
-
-.screencast-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -160px 0;
 }
 
 .record-toolbar-item.toolbar-glyph {
@@ -485,29 +460,19 @@ input.toolbar-item.hover {
     -webkit-mask-position: -32px -144px;
 }
 
-.desktop-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -256px -144px;
-}
-
-@media (-webkit-min-device-pixel-ratio: 1.5) {
-.desktop-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -160px -144px;
-}
+.phone-toolbar-item.toolbar-glyph {
+    -webkit-mask-position: -288px -144px;
 }
 
 .rotate-screen-toolbar-item.toolbar-glyph {
     -webkit-mask-position: -192px -144px;
 }
 
-.resize-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -224px -144px;
-}
-
 .enter-fullscreen-toolbar-item.toolbar-glyph {
     -webkit-mask-position: -256px -96px;
 }
 
-.exit-fullscreen-toolbar-item.toolbar-glyph {
+.responsive-toolbar-item.toolbar-glyph {
     -webkit-mask-position: -288px -96px;
 }
 

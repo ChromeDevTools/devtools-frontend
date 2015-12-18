@@ -37,18 +37,25 @@ WebInspector.Toolbar = function(className, parentElement)
 {
     /** @type {!Array.<!WebInspector.ToolbarItem>} */
     this._items = [];
+    this._reverse = false;
     this.element = parentElement ? parentElement.createChild("div") : createElement("div");
     this.element.className = className;
     this.element.classList.add("toolbar");
     this._shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element, "ui/toolbar.css");
     this._contentElement = this._shadowRoot.createChild("div", "toolbar-shadow");
-    this._contentElement.createChild("content");
+    this._insertionPoint = this._contentElement.createChild("content");
 }
 
 WebInspector.Toolbar.prototype = {
-    makeWrappable: function()
+    /**
+     * @param {boolean=} reverse
+     */
+    makeWrappable: function(reverse)
     {
         this._contentElement.classList.add("wrappable");
+        this._reverse = !!reverse;
+        if (reverse)
+            this._contentElement.classList.add("wrappable-reverse");
     },
 
     makeVertical: function()
@@ -82,7 +89,10 @@ WebInspector.Toolbar.prototype = {
     {
         this._items.push(item);
         item._toolbar = this;
-        this._contentElement.insertBefore(item.element, this._contentElement.lastChild);
+        if (this._reverse)
+            this._contentElement.insertBefore(item.element, this._insertionPoint.nextSibling);
+        else
+            this._contentElement.insertBefore(item.element, this._insertionPoint);
         this._hideSeparatorDupes();
     },
 
@@ -107,7 +117,7 @@ WebInspector.Toolbar.prototype = {
             delete item._toolbar;
         this._items = [];
         this._contentElement.removeChildren();
-        this._contentElement.createChild("content");
+        this._insertionPoint = this._contentElement.createChild("content");
     },
 
     /**
@@ -313,6 +323,14 @@ WebInspector.ToolbarTextGlyphItem.prototype = {
     setBold: function(bold)
     {
         this.element.classList.toggle("toolbar-bold", bold);
+    },
+
+    /**
+     * @param {boolean} dimmed
+     */
+    setDimmed: function(dimmed)
+    {
+        this.element.classList.toggle("toolbar-dimmed", dimmed);
     },
 
     __proto__: WebInspector.ToolbarItem.prototype

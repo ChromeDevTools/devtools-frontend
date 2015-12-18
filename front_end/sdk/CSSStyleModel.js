@@ -1417,14 +1417,17 @@ WebInspector.CSSProperty.prototype = {
      */
     _formatStyle: function(styleText, indentation, endIndentation, tokenizerFactory)
     {
+        if (indentation)
+            indentation = "\n" + indentation;
         var result = "";
-        var lastWasSemicolon = true;
-        var lastWasMeta = false;
+        var propertyText;
         var insideProperty = false;
         var tokenize = tokenizerFactory.createTokenizer("text/css");
 
         tokenize("*{" + styleText + "}", processToken);
-
+        if (insideProperty)
+            result += propertyText;
+        result = result.substring(2, result.length - 1).trimRight();
         return result + (indentation ? "\n" + endIndentation : "");
 
         /**
@@ -1435,42 +1438,28 @@ WebInspector.CSSProperty.prototype = {
          */
         function processToken(token, tokenType, column, newColumn)
         {
-            if (token === "}" || token === ";")
-                result = result.trimRight();  // collect trailing space before } and ;
-            if (token === "}")
-                return;
-            if (newColumn <= 2)
-                return;
-            var isSemicolon = token === ";";
-            if (isSemicolon && lastWasSemicolon)
-                return;
-            lastWasSemicolon = isSemicolon || (lastWasSemicolon && tokenType && tokenType.includes("css-comment")) || (lastWasSemicolon && !token.trim());
-
-            // No formatting, only remove dupe ;
-            if (!indentation) {
-                result += token;
+            if (!insideProperty) {
+                var isDisabledProperty = tokenType && tokenType.includes("css-comment") && token.includes(":");
+                var isPropertyStart = tokenType && (tokenType.includes("css-meta") || tokenType.includes("css-property"));
+                if (isDisabledProperty) {
+                    result = result.trimRight() + indentation + token;
+                } else if (isPropertyStart) {
+                    insideProperty = true;
+                    propertyText = token;
+                } else if (token !== ";") {
+                    result += token;
+                }
                 return;
             }
 
-            // Format line breaks.
-            if (!insideProperty && !token.trim())
-                return;
-            if (tokenType && tokenType.includes("css-comment") && token.includes(":")) {
-                result += "\n" + indentation + token;
+            if (token === "}" || token === ";") {
+                result = result.trimRight() + indentation + propertyText.trim() + ";";
                 insideProperty = false;
-                return;
+                if (token === "}")
+                    result += "}";
+            } else {
+                propertyText += token;
             }
-
-            if (isSemicolon)
-                insideProperty = false;
-
-            if (!insideProperty && tokenType && (tokenType.includes("css-meta") || (tokenType.includes("css-property") && !lastWasMeta))) {
-                result += "\n" + indentation;
-                insideProperty = true;
-            }
-            result += token;
-
-            lastWasMeta = tokenType && tokenType.includes("css-meta");
         }
     },
 

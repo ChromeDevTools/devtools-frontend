@@ -393,7 +393,7 @@ WebInspector.TimelinePanel.prototype = {
             }
         }
         if (Runtime.experiments.isEnabled("timelineRecordingPerspectives") && perspectiveSetting.get() === WebInspector.TimelinePanel.Perspectives.Load) {
-            this._reloadButton = new WebInspector.ToolbarButton(WebInspector.UIString("Record & Reload"), "refresh-toolbar-item", 1);
+            this._reloadButton = new WebInspector.ToolbarButton(WebInspector.UIString("Record & Reload"), "refresh-toolbar-item");
             this._reloadButton.addEventListener("click", () => WebInspector.targetManager.reloadPage());
             this._panelToolbar.appendToolbarItem(this._reloadButton);
         } else {

@@ -51,6 +51,7 @@ WebInspector.WatchExpressionsSidebarPane = function()
 
     this._bodyElement = this.element.createChild("div", "vbox watch-expressions");
     this._bodyElement.addEventListener("contextmenu", this._contextMenu.bind(this), false);
+    this._expandController = new WebInspector.ObjectPropertiesSectionExpandController();
 
     WebInspector.context.addFlavorChangeListener(WebInspector.ExecutionContext, this.refreshExpressions, this);
 }
@@ -149,7 +150,7 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
     _createWatchExpression: function(expression)
     {
         this._emptyElement.classList.add("hidden");
-        var watchExpression = new WebInspector.WatchExpression(expression);
+        var watchExpression = new WebInspector.WatchExpression(expression, this._expandController);
         watchExpression.addEventListener(WebInspector.WatchExpression.Events.ExpressionUpdated, this._watchExpressionUpdated.bind(this));
         this._bodyElement.appendChild(watchExpression.element());
         this._watchExpressions.push(watchExpression);
@@ -216,10 +217,12 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
  * @constructor
  * @extends {WebInspector.Object}
  * @param {?string} expression
+ * @param {!WebInspector.ObjectPropertiesSectionExpandController} expandController
  */
-WebInspector.WatchExpression = function(expression)
+WebInspector.WatchExpression = function(expression, expandController)
 {
     this._expression = expression;
+    this._expandController = expandController;
     this._element = createElementWithClass("div", "watch-expression monospace");
     this._editing = false;
 
@@ -313,6 +316,8 @@ WebInspector.WatchExpression.prototype = {
      */
     _updateExpression: function(newExpression)
     {
+        if (this._expression)
+            this._expandController.stopWatchSectionsWithId(this._expression);
         this._expression = newExpression;
         this.update();
         this.dispatchEventToListeners(WebInspector.WatchExpression.Events.ExpressionUpdated);
@@ -359,6 +364,7 @@ WebInspector.WatchExpression.prototype = {
             headerElement.classList.add("watch-expression-object-header");
             this._objectPropertiesSection = new WebInspector.ObjectPropertiesSection(result, headerElement);
             this._objectPresentationElement = this._objectPropertiesSection.element;
+            this._expandController.watchSection(/** @type {string} */ (this._expression), this._objectPropertiesSection);
             var objectTreeElement = this._objectPropertiesSection.objectTreeElement();
             objectTreeElement.toggleOnClick = false;
             objectTreeElement.listItemElement.addEventListener("click", this._onSectionClick.bind(this), false);

@@ -2047,7 +2047,7 @@ WebInspector.CSSStyleModel.ComputedStyleLoader.prototype = {
          */
         function parsePayload(error, computedPayload)
         {
-            if (error || !computedPayload)
+            if (error || !computedPayload || !computedPayload.length)
                 return null;
             var result = new Map();
             for (var property of computedPayload)

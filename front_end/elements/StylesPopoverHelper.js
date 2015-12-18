@@ -237,7 +237,7 @@ WebInspector.ColorSwatchPopoverIcon = function(treeElement, stylesPopoverHelper,
 
     this._swatch = WebInspector.ColorSwatch.create();
     this._swatch.setColorText(colorText);
-    this._swatch.setFormat(WebInspector.ColorSwatchPopoverIcon._colorFormat(this._swatch.color()));
+    this._swatch.setFormat(WebInspector.Color.detectColorFormat(this._swatch.color()));
     var shiftClickMessage = WebInspector.UIString("Shift + Click to change color format.");
     this._swatch.iconElement().title = WebInspector.UIString("Open color picker. %s", shiftClickMessage);
     this._swatch.iconElement().addEventListener("click", this._iconClick.bind(this));
@@ -255,29 +255,6 @@ WebInspector.ColorSwatchPopoverIcon._treeElementSymbol = Symbol("WebInspector.Co
 WebInspector.ColorSwatchPopoverIcon.forTreeElement = function(treeElement)
 {
     return treeElement[WebInspector.ColorSwatchPopoverIcon._treeElementSymbol] || null;
-}
-
-/**
- * @param {!WebInspector.Color} color
- * @return {!WebInspector.Color.Format}
- */
-WebInspector.ColorSwatchPopoverIcon._colorFormat = function(color)
-{
-    const cf = WebInspector.Color.Format;
-    var format;
-    var formatSetting = WebInspector.moduleSetting("colorFormat").get();
-    if (formatSetting === cf.Original)
-        format = cf.Original;
-    else if (formatSetting === cf.RGB)
-        format = (color.hasAlpha() ? cf.RGBA : cf.RGB);
-    else if (formatSetting === cf.HSL)
-        format = (color.hasAlpha() ? cf.HSLA : cf.HSL);
-    else if (!color.hasAlpha())
-        format = (color.canBeShortHex() ? cf.ShortHEX : cf.HEX);
-    else
-        format = cf.RGBA;
-
-    return format;
 }
 
 WebInspector.ColorSwatchPopoverIcon.prototype = {

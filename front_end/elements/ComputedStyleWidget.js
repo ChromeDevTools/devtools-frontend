@@ -118,6 +118,7 @@ WebInspector.ComputedStyleWidget.prototype = {
             return createTextNode(text);
         var swatch = WebInspector.ColorSwatch.create();
         swatch.setColorText(text);
+        swatch.setFormat(WebInspector.Color.detectColorFormat(color));
         return swatch;
     },
 

@@ -797,3 +797,26 @@ WebInspector.Color.PageHighlight = {
     Shape: WebInspector.Color.fromRGBA([96, 82, 177, 0.8]),
     ShapeMargin: WebInspector.Color.fromRGBA([96, 82, 127, .6])
 }
+
+/**
+ * @param {!WebInspector.Color} color
+ * @return {!WebInspector.Color.Format}
+ */
+WebInspector.Color.detectColorFormat = function(color)
+{
+    const cf = WebInspector.Color.Format;
+    var format;
+    var formatSetting = WebInspector.moduleSetting("colorFormat").get();
+    if (formatSetting === cf.Original)
+        format = cf.Original;
+    else if (formatSetting === cf.RGB)
+        format = (color.hasAlpha() ? cf.RGBA : cf.RGB);
+    else if (formatSetting === cf.HSL)
+        format = (color.hasAlpha() ? cf.HSLA : cf.HSL);
+    else if (!color.hasAlpha())
+        format = (color.canBeShortHex() ? cf.ShortHEX : cf.HEX);
+    else
+        format = cf.RGBA;
+
+    return format;
+}

@@ -68,6 +68,13 @@ WebInspector.TimelinePanel = function()
     this._currentViews = [];
 
     this._viewModeSetting = WebInspector.settings.createSetting("timelineViewMode", WebInspector.TimelinePanel.ViewMode.FlameChart);
+    this._captureNetworkSetting = WebInspector.settings.createSetting("timelineCaptureNetwork", false);
+    this._captureJSProfileSetting = WebInspector.settings.createSetting("timelineEnableJSSampling", true);
+    this._captureMemorySetting = WebInspector.settings.createSetting("timelineCaptureMemory", false);
+    this._captureLayersAndPicturesSetting = WebInspector.settings.createSetting("timelineCaptureLayersAndPictures", false);
+    this._captureFilmStripSetting = WebInspector.settings.createSetting("timelineCaptureFilmStrip", false);
+
+    this._panelToolbar = new WebInspector.Toolbar("", this.element);
     this._createToolbarItems();
 
     var timelinePane = new WebInspector.VBox();
@@ -116,6 +123,15 @@ WebInspector.TimelinePanel = function()
     this._detailsSplitWidget.hideSidebar();
     WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
     this._showRecordingHelpMessage();
+}
+
+/**
+ * @enum {string}
+ */
+WebInspector.TimelinePanel.Perspectives = {
+    Load: "Load",
+    Responsiveness: "Responsiveness",
+    Custom: "Custom"
 }
 
 /**
@@ -328,50 +344,99 @@ WebInspector.TimelinePanel.prototype = {
 
     _createToolbarItems: function()
     {
-        this._panelToolbar = new WebInspector.Toolbar("", this.element);
+        this._panelToolbar.removeToolbarItems();
 
-        this._panelToolbar.appendToolbarItem(WebInspector.Toolbar.createActionButton(this._toggleRecordAction));
+        var perspectiveSetting = WebInspector.settings.createSetting("timelinePerspective", WebInspector.TimelinePanel.Perspectives.Load);
+        if (Runtime.experiments.isEnabled("timelineRecordingPerspectives")) {
+            /**
+             * @this {!WebInspector.TimelinePanel}
+             */
+            function onPerspectiveChanged()
+            {
+                perspectiveSetting.set(perspectiveCombobox.selectElement().value);
+                this._createToolbarItems();
+            }
+
+            /**
+             * @param {string} id
+             * @param {string} title
+             */
+            function addPerspectiveOption(id, title)
+            {
+                var option = perspectiveCombobox.createOption(title, "", id);
+                perspectiveCombobox.addOption(option);
+                if (id === perspectiveSetting.get())
+                    perspectiveCombobox.select(option);
+            }
+
+            var perspectiveCombobox = new WebInspector.ToolbarComboBox(onPerspectiveChanged.bind(this));
+            addPerspectiveOption(WebInspector.TimelinePanel.Perspectives.Load, WebInspector.UIString("Page Load"));
+            addPerspectiveOption(WebInspector.TimelinePanel.Perspectives.Responsiveness, WebInspector.UIString("Responsiveness"));
+            addPerspectiveOption(WebInspector.TimelinePanel.Perspectives.Custom, WebInspector.UIString("Custom"));
+            this._panelToolbar.appendToolbarItem(perspectiveCombobox);
+
+            switch (perspectiveSetting.get()) {
+            case WebInspector.TimelinePanel.Perspectives.Load:
+                this._captureNetworkSetting.set(true);
+                this._captureJSProfileSetting.set(true);
+                this._captureMemorySetting.set(false);
+                this._captureLayersAndPicturesSetting.set(false);
+                this._captureFilmStripSetting.set(true);
+                break;
+            case WebInspector.TimelinePanel.Perspectives.Responsiveness:
+                this._captureNetworkSetting.set(true);
+                this._captureJSProfileSetting.set(true);
+                this._captureMemorySetting.set(false);
+                this._captureLayersAndPicturesSetting.set(false);
+                this._captureFilmStripSetting.set(false);
+                break;
+            }
+        }
+        if (Runtime.experiments.isEnabled("timelineRecordingPerspectives") && perspectiveSetting.get() === WebInspector.TimelinePanel.Perspectives.Load) {
+            this._reloadButton = new WebInspector.ToolbarButton(WebInspector.UIString("Record & Reload"), "refresh-toolbar-item", 1);
+            this._reloadButton.addEventListener("click", () => WebInspector.targetManager.reloadPage());
+            this._panelToolbar.appendToolbarItem(this._reloadButton);
+        } else {
+            this._panelToolbar.appendToolbarItem(WebInspector.Toolbar.createActionButton(this._toggleRecordAction));
+        }
+
         this._updateTimelineControls();
-
         var clearButton = new WebInspector.ToolbarButton(WebInspector.UIString("Clear recording"), "clear-toolbar-item");
         clearButton.addEventListener("click", this._onClearButtonClick, this);
         this._panelToolbar.appendToolbarItem(clearButton);
-        this._panelToolbar.appendSeparator();
 
-        var garbageCollectButton = new WebInspector.ToolbarButton(WebInspector.UIString("Collect garbage"), "garbage-collect-toolbar-item");
-        garbageCollectButton.addEventListener("click", this._garbageCollectButtonClicked, this);
-        this._panelToolbar.appendToolbarItem(garbageCollectButton);
         this._panelToolbar.appendSeparator();
 
         this._panelToolbar.appendText(WebInspector.UIString("Capture:"));
 
-        this._captureNetworkSetting = WebInspector.settings.createSetting("timelineCaptureNetwork", false);
         this._captureNetworkSetting.addChangeListener(this._onNetworkChanged, this);
-        if (Runtime.experiments.isEnabled("networkRequestsOnTimeline")) {
-            this._panelToolbar.appendToolbarItem(this._createSettingCheckbox(WebInspector.UIString("Network"),
-                                                                             this._captureNetworkSetting,
-                                                                             WebInspector.UIString("Capture network requests information")));
+        if (!Runtime.experiments.isEnabled("timelineRecordingPerspectives") || perspectiveSetting.get() === WebInspector.TimelinePanel.Perspectives.Custom) {
+            if (Runtime.experiments.isEnabled("networkRequestsOnTimeline")) {
+                this._panelToolbar.appendToolbarItem(this._createSettingCheckbox(WebInspector.UIString("Network"),
+                                                                                 this._captureNetworkSetting,
+                                                                                 WebInspector.UIString("Capture network requests information")));
+            }
+            this._panelToolbar.appendToolbarItem(this._createSettingCheckbox(WebInspector.UIString("JS Profile"),
+                                                                             this._captureJSProfileSetting,
+                                                                             WebInspector.UIString("Capture JavaScript stacks with sampling profiler. (Has performance overhead)")));
+            this._captureMemorySetting.addChangeListener(this._onModeChanged, this);
+            this._panelToolbar.appendToolbarItem(this._createSettingCheckbox(WebInspector.UIString("Memory"),
+                                                                             this._captureMemorySetting,
+                                                                             WebInspector.UIString("Capture memory information on every timeline event.")));
+            this._panelToolbar.appendToolbarItem(this._createSettingCheckbox(WebInspector.UIString("Paint"),
+                                                                             this._captureLayersAndPicturesSetting,
+                                                                             WebInspector.UIString("Capture graphics layer positions and painted pictures. (Has performance overhead)")));
         }
-        this._enableJSSamplingSetting = WebInspector.settings.createSetting("timelineEnableJSSampling", true);
-        this._panelToolbar.appendToolbarItem(this._createSettingCheckbox(WebInspector.UIString("JS Profile"),
-                                                                         this._enableJSSamplingSetting,
-                                                                         WebInspector.UIString("Capture JavaScript stacks with sampling profiler. (Has performance overhead)")));
 
-        this._captureMemorySetting = WebInspector.settings.createSetting("timelineCaptureMemory", false);
-        this._panelToolbar.appendToolbarItem(this._createSettingCheckbox(WebInspector.UIString("Memory"),
-                                                                         this._captureMemorySetting,
-                                                                         WebInspector.UIString("Capture memory information on every timeline event.")));
-        this._captureMemorySetting.addChangeListener(this._onModeChanged, this);
-        this._captureLayersAndPicturesSetting = WebInspector.settings.createSetting("timelineCaptureLayersAndPictures", false);
-        this._panelToolbar.appendToolbarItem(this._createSettingCheckbox(WebInspector.UIString("Paint"),
-                                                                         this._captureLayersAndPicturesSetting,
-                                                                         WebInspector.UIString("Capture graphics layer positions and painted pictures. (Has performance overhead)")));
-
-        this._captureFilmStripSetting = WebInspector.settings.createSetting("timelineCaptureFilmStrip", false);
         this._captureFilmStripSetting.addChangeListener(this._onModeChanged, this);
         this._panelToolbar.appendToolbarItem(this._createSettingCheckbox(WebInspector.UIString("Screenshots"),
                                                                          this._captureFilmStripSetting,
                                                                          WebInspector.UIString("Capture screenshots while recording. (Has performance overhead)")));
+
+        this._panelToolbar.appendSeparator();
+        var garbageCollectButton = new WebInspector.ToolbarButton(WebInspector.UIString("Collect garbage"), "garbage-collect-toolbar-item");
+        garbageCollectButton.addEventListener("click", this._garbageCollectButtonClicked, this);
+        this._panelToolbar.appendToolbarItem(garbageCollectButton);
 
         if (Runtime.experiments.isEnabled("cpuThrottling")) {
             this._panelToolbar.appendSeparator();
@@ -592,7 +657,7 @@ WebInspector.TimelinePanel.prototype = {
         this._statusPane.updateStatus(WebInspector.UIString("Initializing recording\u2026"));
 
         this._autoRecordGeneration = userInitiated ? null : Symbol("Generation");
-        this._model.startRecording(true, this._enableJSSamplingSetting.get(), this._captureMemorySetting.get(), this._captureLayersAndPicturesSetting.get(), this._captureFilmStripSetting && this._captureFilmStripSetting.get());
+        this._model.startRecording(true, this._captureJSProfileSetting.get(), this._captureMemorySetting.get(), this._captureLayersAndPicturesSetting.get(), this._captureFilmStripSetting && this._captureFilmStripSetting.get());
 
         for (var i = 0; i < this._overviewControls.length; ++i)
             this._overviewControls[i].timelineStarted();

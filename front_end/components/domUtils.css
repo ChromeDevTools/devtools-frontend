@@ -24,7 +24,8 @@
 }
 
 .stack-preview-container > tr {
-    height: 17px;
+    height: 16px;
+    line-height: 16px;
 }
 
 .stack-preview-container td {

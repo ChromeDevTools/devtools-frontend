@@ -362,7 +362,7 @@
     padding-left: 10px;
     flex-direction: row;
     display: flex;
-    line-height: 21px;
+    line-height: 20px;
 }
 
 .timeline-details-view-block .timeline-details-stack-values {

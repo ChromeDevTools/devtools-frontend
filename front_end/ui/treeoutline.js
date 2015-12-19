@@ -664,7 +664,7 @@ TreeElement.prototype = {
     createIcon()
     {
         if (!this._iconElement) {
-            this._iconElement = createElementWithClass("img", "icon");
+            this._iconElement = createElementWithClass("div", "icon");
             this._listItemNode.insertBefore(this._iconElement, this._listItemNode.firstChild);
             this._ensureSelection();
         }

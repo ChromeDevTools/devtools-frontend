@@ -495,6 +495,36 @@ WebInspector.ResourceTreeFrame = function(model, parentFrame, frameId, payload)
         this._parentFrame._childFrames.push(this);
 }
 
+/**
+ * @param {!WebInspector.Script} script
+ * @return {?WebInspector.ResourceTreeFrame}
+ */
+WebInspector.ResourceTreeFrame.fromScript = function(script)
+{
+    var executionContext = script.executionContext();
+    if (!executionContext || !executionContext.frameId)
+        return null;
+    return script.target().resourceTreeModel.frameForId(executionContext.frameId);
+}
+
+/**
+ * @param {!WebInspector.CSSStyleSheetHeader} header
+ * @return {?WebInspector.ResourceTreeFrame}
+ */
+WebInspector.ResourceTreeFrame.fromStyleSheet = function(header)
+{
+    return header.target().resourceTreeModel.frameForId(header.frameId);
+}
+
+/**
+ * @param {!WebInspector.Resource} resource
+ * @return {?WebInspector.ResourceTreeFrame}
+ */
+WebInspector.ResourceTreeFrame.fromResource = function(resource)
+{
+    return resource.target().resourceTreeModel.frameForId(resource.frameId);
+}
+
 WebInspector.ResourceTreeFrame.prototype = {
     /**
      * @return {!WebInspector.Target}
@@ -701,7 +731,7 @@ WebInspector.ResourceTreeFrame.prototype = {
     displayName: function()
     {
         if (!this._parentFrame)
-            return WebInspector.UIString("<top frame>");
+            return WebInspector.UIString("top");
         var subtitle = new WebInspector.ParsedURL(this._url).displayName;
         if (subtitle) {
             if (!this._name)

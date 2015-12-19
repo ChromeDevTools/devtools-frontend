@@ -27,30 +27,65 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-.navigator-domain-tree-item .icon {
-    content: url(Images/domain.png);
+.navigator-file-tree-item .icon {
+    -webkit-mask-image: url(Images/ic_drive_file_black_18dp.svg);
+    -webkit-mask-size: 18px 18px;
+    background: linear-gradient(45deg, hsl(0, 0%, 50%), hsl(0, 0%, 70%));
 }
 
-.navigator-folder-tree-item .icon,
-.navigator-filesystem-tree-item .icon,
-.navigator-sm-folder-tree-item .icon {
-    content: url(Images/frame.png);
+:focus .navigator-file-tree-item.selected .icon {
+    background: white !important;
 }
 
-.navigator-script-tree-item .icon,
-.navigator-sm-script-tree-item .icon {
-    content: url(Images/resourceJSIcon.png);
+:focus .navigator-folder-tree-item.selected .icon {
+    background: white !important;
 }
 
-.navigator-stylesheet-tree-item .icon,
-.navigator-sm-stylesheet-tree-item .icon {
-    content: url(Images/resourceCSSIcon.png);
+.tree-outline li {
+    min-height: 20px;
+}
+
+.navigator-folder-tree-item .icon {
+    -webkit-mask-image: url(Images/ic_folder_black_18dp.svg);
+    -webkit-mask-size: 18px 18px;
+    background-color: #555;
+}
+
+.navigator-domain-tree-item .icon  {
+    -webkit-mask-image: url(Images/ic_cloud_queue_black_18dp.svg);
+}
+
+.navigator-frame-tree-item .icon {
+    -webkit-mask-image: url(Images/ic_web_asset_black_18dp.svg);
 }
 
 .navigator-sm-folder-tree-item .icon,
+.navigator-fs-tree-item .icon,
+.navigator-fs-folder-tree-item .icon {
+    background: linear-gradient(45deg, hsl(28, 75%, 50%), hsl(28, 75%, 70%));
+}
+
+.navigator-nw-folder-tree-item .icon {
+    background: linear-gradient(45deg, hsl(210, 82%, 65%), hsl(210, 82%, 80%));
+}
+
+.navigator-worker-tree-item .icon {
+    -webkit-mask-image: url(Images/serviceWorker.svg);
+}
+
 .navigator-sm-script-tree-item .icon,
-.navigator-sm-stylesheet-tree-item .icon {
-    -webkit-filter: saturate(0);
+.navigator-script-tree-item .icon {
+    background: linear-gradient(45deg, hsl(48, 70%, 50%), hsl(48, 70%, 70%));
+}
+
+.navigator-sm-stylesheet-tree-item .icon,
+.navigator-stylesheet-tree-item .icon {
+    background: linear-gradient(45deg, hsl(256, 50%, 50%), hsl(256, 50%, 70%));
+}
+
+.navigator-image-tree-item .icon,
+.navigator-font-tree-item .icon {
+    background: linear-gradient(45deg, hsl(109, 33%, 50%), hsl(109, 33%, 70%));
 }
 
 .navigator-sm-folder-tree-item .tree-element-title,
@@ -59,18 +94,9 @@
     font-style: italic;
 }
 
-.navigator-document-tree-item .icon {
-    content: url(Images/resourceDocumentIcon.png);
-}
-
-.navigator-other-tree-item .icon,
-.navigator-font-tree-item .icon,
-.navigator-image-tree-item .icon {
-    content: url(Images/resourcePlainIcon.png);
-}
-
 .icon {
-    width: 16px;
-    height: 16px;
-    margin-right: 2px;
+    width: 18px;
+    height: 18px;
+    margin-right: 4px;
+    margin-top: -1px;
 }

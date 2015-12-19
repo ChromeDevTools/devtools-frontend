@@ -85,7 +85,7 @@ WebInspector.SASSSourceMapping.prototype = {
         var completeSourceMapURL = WebInspector.ParsedURL.completeURL(header.sourceURL, header.sourceMapURL);
         if (!completeSourceMapURL)
             return;
-        this._loadSourceMap(completeSourceMapURL, header.sourceURL, sourceMapLoaded.bind(this));
+        this._loadSourceMap(completeSourceMapURL, header, sourceMapLoaded.bind(this));
 
         /**
          * @param {?WebInspector.SourceMap} sourceMap
@@ -115,10 +115,10 @@ WebInspector.SASSSourceMapping.prototype = {
 
     /**
      * @param {string} completeSourceMapURL
-     * @param {string} sourceURL
+     * @param {!WebInspector.CSSStyleSheetHeader} header
      * @param {function(?WebInspector.SourceMap)} callback
      */
-    _loadSourceMap: function(completeSourceMapURL, sourceURL, callback)
+    _loadSourceMap: function(completeSourceMapURL, header, callback)
     {
         var sourceMap = this._sourceMapByURL[completeSourceMapURL];
         if (sourceMap) {
@@ -135,7 +135,7 @@ WebInspector.SASSSourceMapping.prototype = {
         pendingCallbacks = [callback];
         this._pendingSourceMapLoadingCallbacks[completeSourceMapURL] = pendingCallbacks;
 
-        WebInspector.SourceMap.load(completeSourceMapURL, sourceURL, sourceMapLoaded.bind(this));
+        WebInspector.SourceMap.load(completeSourceMapURL, header.sourceURL, sourceMapLoaded.bind(this));
 
         /**
          * @param {?WebInspector.SourceMap} sourceMap
@@ -157,7 +157,7 @@ WebInspector.SASSSourceMapping.prototype = {
                 var sassURL = sources[i];
                 if (!this._networkMapping.hasMappingForURL(sassURL)) {
                     var contentProvider = sourceMap.sourceContentProvider(sassURL, WebInspector.resourceTypes.SourceMapStyleSheet);
-                    this._networkProject.addFileForURL(sassURL, contentProvider);
+                    this._networkProject.addFileForURL(sassURL, contentProvider, WebInspector.ResourceTreeFrame.fromStyleSheet(header));
                 }
             }
 

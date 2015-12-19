@@ -238,6 +238,21 @@
         {
             "type": "setting",
             "category": "Sources",
+            "title": "Group items by",
+            "settingName": "navigatorGrouping",
+            "settingType": "enum",
+            "defaultValue": "frame/domain/folder",
+            "options": [
+                ["Frames", "frame"],
+                ["Frames and Domains", "frame/domain"],
+                ["Frames, Domains and Folders", "frame/domain/folder"],
+                ["Domains", "domain"],
+                ["Domains and Folders", "domain/folder"]
+            ]
+        },
+        {
+            "type": "setting",
+            "category": "Sources",
             "title": "Search in content scripts",
             "settingName": "searchInContentScripts",
             "settingType": "boolean",

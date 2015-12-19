@@ -56,6 +56,8 @@ WebInspector.FileSystemWorkspaceBinding = function(isolatedFileSystemManager, wo
 
 WebInspector.FileSystemWorkspaceBinding._styleSheetExtensions = new Set(["css", "scss", "sass", "less"]);
 WebInspector.FileSystemWorkspaceBinding._documentExtensions = new Set(["htm", "html", "asp", "aspx", "phtml", "jsp"]);
+WebInspector.FileSystemWorkspaceBinding._scriptExtensions = new Set(["asp", "aspx", "c", "cc", "cljs", "coffee", "cpp", "cs", "dart", "java", "js", "jsp", "h", "m", "mm", "py", "sh", "ts"]);
+
 WebInspector.FileSystemWorkspaceBinding._imageExtensions = WebInspector.IsolatedFileSystem.ImageExtensions;
 
 WebInspector.FileSystemWorkspaceBinding._lastRequestId = 0;
@@ -102,7 +104,9 @@ WebInspector.FileSystemWorkspaceBinding._contentTypeForExtension = function(exte
         return WebInspector.resourceTypes.Document;
     if (WebInspector.FileSystemWorkspaceBinding._imageExtensions.has(extension))
         return WebInspector.resourceTypes.Image;
-    return WebInspector.resourceTypes.Script;
+    if (WebInspector.FileSystemWorkspaceBinding._scriptExtensions.has(extension))
+        return WebInspector.resourceTypes.Script;
+    return WebInspector.resourceTypes.Other;
 }
 
 WebInspector.FileSystemWorkspaceBinding.prototype = {

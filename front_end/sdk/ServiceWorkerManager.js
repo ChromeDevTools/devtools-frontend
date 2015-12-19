@@ -383,10 +383,9 @@ WebInspector.ServiceWorker = function(manager, workerId, url, versionId)
     var parsedURL = url.asParsedURL();
     this._name = parsedURL ? parsedURL.lastPathComponentWithFragment()  : "#" + (++WebInspector.ServiceWorker._lastAnonymousTargetId);
     this._scope = parsedURL.host + parsedURL.folderPathComponents;
-    var title = WebInspector.UIString("\u2699 %s", this._name);
 
     this._manager._workers.set(workerId, this);
-    this._target = WebInspector.targetManager.createTarget(title, WebInspector.Target.Type.ServiceWorker, this._connection, manager.target());
+    this._target = WebInspector.targetManager.createTarget(this._name, WebInspector.Target.Type.ServiceWorker, this._connection, manager.target());
     this._manager.dispatchEventToListeners(WebInspector.ServiceWorkerManager.Events.WorkersUpdated);
     this._target.runtimeAgent().run();
 }

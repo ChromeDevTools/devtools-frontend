@@ -238,8 +238,8 @@
     background-color: hsl(133, 100%, 30%);
 }
 
-.-theme-with-dark-background.cm-line-with-selection .cm-search-highlight {
-    color: #333;
+.-theme-with-dark-background .cm-line-with-selection .cm-search-highlight {
+    color: #eee;
 }
 
 .CodeMirror .text-editor-line-decoration {

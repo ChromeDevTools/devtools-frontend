@@ -160,6 +160,10 @@
     background-color: #F1EA00;
 }
 
+:host-context(.-theme-with-dark-background) #search-results-pane-file-based .search-match .highlighted-match {
+    background-color: hsl(133, 100%, 30%) !important;
+}
+
 #search-results-pane-file-based a {
     text-decoration: none;
     display: block;

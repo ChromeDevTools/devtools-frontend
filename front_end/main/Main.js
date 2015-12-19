@@ -215,6 +215,7 @@ WebInspector.Main.prototype = {
         new WebInspector.Main.PauseListener();
         new WebInspector.Main.InspectedNodeRevealer();
         new WebInspector.NetworkPanelIndicator();
+        new WebInspector.SourcesPanelIndicator();
         WebInspector.domBreakpointsSidebarPane = new WebInspector.DOMBreakpointsSidebarPane();
 
         WebInspector.actionRegistry = new WebInspector.ActionRegistry();
@@ -957,6 +958,25 @@ WebInspector.NetworkPanelIndicator = function()
             WebInspector.inspectorView.setPanelIcon("network", "warning-icon", WebInspector.UIString("Requests may be blocked"));
         } else {
             WebInspector.inspectorView.setPanelIcon("network", "", "");
+        }
+    }
+}
+
+/**
+ * @constructor
+ */
+WebInspector.SourcesPanelIndicator = function()
+{
+    WebInspector.moduleSetting("javaScriptDisabled").addChangeListener(javaScriptDisabledChanged);
+    javaScriptDisabledChanged();
+
+    function javaScriptDisabledChanged()
+    {
+        var javaScriptDisabled = WebInspector.moduleSetting("javaScriptDisabled").get();
+        if (javaScriptDisabled) {
+            WebInspector.inspectorView.setPanelIcon("sources", "warning-icon", WebInspector.UIString("JavaScript is disabled"));
+        } else {
+            WebInspector.inspectorView.setPanelIcon("sources", "", "");
         }
     }
 }

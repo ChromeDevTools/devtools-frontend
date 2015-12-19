@@ -604,7 +604,15 @@ WebInspector.CSSMetadata._propertyDataMap = {
     ] },
     "-webkit-text-decoration-skip": { values: [
         "none", "objects", "spaces", "ink", "edges", "box-decoration"
-    ] }
+    ] },
+    "mix-blend-mode": { values: [
+        "normal", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "hard-light", "soft-light",
+        "difference", "exclusion", "hue", "saturation", "color", "luminosity", "unset"
+    ] },
+    "background-blend-mode": { values: [
+        "normal", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "hard-light", "soft-light",
+        "difference", "exclusion", "hue", "saturation", "color", "luminosity", "unset"
+    ] },
 }
 
 /**

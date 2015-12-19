@@ -302,16 +302,15 @@ WebInspector.FileSystemMapping.prototype = {
     addMappingForResource: function(url, fileSystemPath, filePath)
     {
         var commonPathSuffixLength = 0;
-        var normalizedFilePath = "/" + filePath;
-        for (var i = 0; i < normalizedFilePath.length; ++i) {
-            var filePathCharacter = normalizedFilePath[normalizedFilePath.length - 1 - i];
+        for (var i = 0; i < filePath.length; ++i) {
+            var filePathCharacter = filePath[filePath.length - 1 - i];
             var urlCharacter = url[url.length - 1 - i];
             if (filePathCharacter !== urlCharacter)
                 break;
             if (filePathCharacter === "/")
                 commonPathSuffixLength = i;
         }
-        var pathPrefix = normalizedFilePath.substr(0, normalizedFilePath.length - commonPathSuffixLength);
+        var pathPrefix = filePath.substring("file://".length + fileSystemPath.length, filePath.length - commonPathSuffixLength);
         var urlPrefix = url.substr(0, url.length - commonPathSuffixLength);
         this.addFileMapping(fileSystemPath, urlPrefix, pathPrefix);
     },

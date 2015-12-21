@@ -84,7 +84,6 @@ WebInspector.TimelineTreeView.prototype = {
     {
         this._startTime = startTime;
         this._endTime = endTime;
-        this._lastSelectedNode = null;
         this._refreshTree();
     },
 
@@ -126,12 +125,14 @@ WebInspector.TimelineTreeView.prototype = {
             pathToRoot.push(node);
         for (var i = pathToRoot.length - 1; i > 0; --i) {
             var gridNode = this._dataGridNodeForTreeNode(pathToRoot[i]);
-            if (gridNode)
+            if (gridNode && gridNode.dataGrid)
                 gridNode.expand();
         }
         var gridNode = this._dataGridNodeForTreeNode(treeNode);
-        gridNode.reveal();
-        gridNode.select(suppressSelectedEvent);
+        if (gridNode.dataGrid) {
+            gridNode.reveal();
+            gridNode.select(suppressSelectedEvent);
+        }
     },
 
     _refreshTree: function()
@@ -1040,7 +1041,7 @@ WebInspector.EventsTimelineTreeView.prototype = {
         var node = this._findNodeWithEvent(event);
         if (!node)
             return;
-        this.selectProfileNode(node, true);
+        this.selectProfileNode(node, false);
         if (expand)
             this._dataGridNodeForTreeNode(node).expand();
     },

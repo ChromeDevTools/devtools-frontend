@@ -250,6 +250,7 @@ WebInspector.DataGrid.prototype = {
         rootNode.hasChildren = false;
         rootNode._expanded = true;
         rootNode._revealed = true;
+        rootNode.selectable = false;
         rootNode.dataGrid = this;
     },
 
@@ -802,7 +803,6 @@ WebInspector.DataGrid.prototype = {
             if (this._deleteCallback) {
                 handled = true;
                 this._deleteCallback(this.selectedNode);
-                this.changeNodeAfterDeletion();
             }
         } else if (isEnterKey(event)) {
             if (this._editCallback) {
@@ -820,9 +820,19 @@ WebInspector.DataGrid.prototype = {
             event.consume(true);
     },
 
-    changeNodeAfterDeletion: function()
+    /**
+     * @param {?WebInspector.DataGridNode} root
+     * @param {boolean} onlyAffectsSubtree
+     */
+    updateSelectionBeforeRemoval: function(root, onlyAffectsSubtree)
     {
-        var nextSelectedNode = this.selectedNode.traverseNextNode(true);
+        var ancestor = this.selectedNode;
+        while (ancestor && ancestor !== root)
+            ancestor = ancestor.parent;
+        // Selection is not in the subtree being deleted.
+        if (!ancestor)
+            return;
+        var nextSelectedNode = onlyAffectsSubtree ? ancestor : this.selectedNode.traverseNextNode(true);
         while (nextSelectedNode && !nextSelectedNode.selectable)
             nextSelectedNode = nextSelectedNode.traverseNextNode(true);
 
@@ -831,7 +841,6 @@ WebInspector.DataGrid.prototype = {
             while (nextSelectedNode && !nextSelectedNode.selectable)
                 nextSelectedNode = nextSelectedNode.traversePreviousNode(true);
         }
-
         if (nextSelectedNode) {
             nextSelectedNode.reveal();
             nextSelectedNode.select();
@@ -1454,7 +1463,8 @@ WebInspector.DataGridNode.prototype = {
         if (child.parent !== this)
             throw("removeChild: Node is not a child of this node.");
 
-        child.deselect();
+        if (this.dataGrid)
+            this.dataGrid.updateSelectionBeforeRemoval(child, false);
         child._detach();
 
         this.children.remove(child, true);
@@ -1475,11 +1485,11 @@ WebInspector.DataGridNode.prototype = {
 
     removeChildren: function()
     {
+        if (this.dataGrid)
+            this.dataGrid.updateSelectionBeforeRemoval(this, true);
         for (var i = 0; i < this.children.length; ++i) {
             var child = this.children[i];
-            child.deselect();
             child._detach();
-
             child.dataGrid = null;
             child.parent = null;
             child.nextSibling = null;

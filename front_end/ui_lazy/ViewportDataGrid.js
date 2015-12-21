@@ -347,6 +347,8 @@ WebInspector.ViewportDataGridNode.prototype = {
      */
     removeChild: function(child)
     {
+        if (this.dataGrid)
+            this.dataGrid.updateSelectionBeforeRemoval(child, false);
         if (child.previousSibling)
             child.previousSibling.nextSibling = child.nextSibling;
         if (child.nextSibling)
@@ -367,6 +369,8 @@ WebInspector.ViewportDataGridNode.prototype = {
      */
     removeChildren: function()
     {
+        if (this.dataGrid)
+            this.dataGrid.updateSelectionBeforeRemoval(this, true);
         for (var i = 0; i < this.children.length; ++i)
             this.children[i]._unlink();
         this.children = [];
@@ -381,7 +385,6 @@ WebInspector.ViewportDataGridNode.prototype = {
             this._element.remove();
             this.wasDetached();
         }
-        this.deselect();
         this.dataGrid = null;
         this.parent = null;
         this.nextSibling = null;

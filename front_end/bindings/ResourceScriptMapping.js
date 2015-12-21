@@ -186,7 +186,19 @@ WebInspector.ResourceScriptMapping.prototype = {
     /**
      * @param {!WebInspector.UISourceCode} uiSourceCode
      */
-    _updateLocations: function(uiSourceCode)
+    _hasMergedToVM: function(uiSourceCode)
+    {
+        var scripts = this._scriptsForUISourceCode(uiSourceCode);
+        if (!scripts.length)
+            return;
+        for (var i = 0; i < scripts.length; ++i)
+            this._debuggerWorkspaceBinding.updateLocations(scripts[i]);
+    },
+
+    /**
+     * @param {!WebInspector.UISourceCode} uiSourceCode
+     */
+    _hasDivergedFromVM: function(uiSourceCode)
     {
         var scripts = this._scriptsForUISourceCode(uiSourceCode);
         if (!scripts.length)
@@ -383,7 +395,7 @@ WebInspector.ResourceScriptFile.prototype = {
     _divergeFromVM: function()
     {
         this._isDivergingFromVM = true;
-        this._resourceScriptMapping._updateLocations(this._uiSourceCode);
+        this._resourceScriptMapping._hasDivergedFromVM(this._uiSourceCode);
         delete this._isDivergingFromVM;
         this._hasDivergedFromVM = true;
         this.dispatchEventToListeners(WebInspector.ResourceScriptFile.Events.DidDivergeFromVM, this._uiSourceCode);
@@ -393,7 +405,7 @@ WebInspector.ResourceScriptFile.prototype = {
     {
         delete this._hasDivergedFromVM;
         this._isMergingToVM = true;
-        this._resourceScriptMapping._updateLocations(this._uiSourceCode);
+        this._resourceScriptMapping._hasMergedToVM(this._uiSourceCode);
         delete this._isMergingToVM;
         this.dispatchEventToListeners(WebInspector.ResourceScriptFile.Events.DidMergeToVM, this._uiSourceCode);
     },

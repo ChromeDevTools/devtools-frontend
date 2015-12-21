@@ -172,6 +172,9 @@ WebInspector.InspectorView.prototype = {
     addPanel: function(panelDescriptor)
     {
         var weight = this._tabOrderSetting.get()[panelDescriptor.name()];
+        // Keep in sync with _persistPanelOrder().
+        if (weight)
+            weight = Math.max(0, Math.round(weight / 10) - 1);
         this._innerAddPanel(panelDescriptor, weight);
     },
 

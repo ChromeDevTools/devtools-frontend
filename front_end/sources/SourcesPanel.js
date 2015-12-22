@@ -1320,7 +1320,8 @@ WebInspector.SourcesPanel.RevealingActionDelegate.prototype = {
     handleAction: function(context, actionId)
     {
         var panel = WebInspector.SourcesPanel.instance();
-        WebInspector.inspectorView.setCurrentPanel(panel);
+        if (panel !== WebInspector.inspectorView.setCurrentPanel(panel))
+            return false;
         switch (actionId) {
         case "debugger.toggle-pause":
             panel._togglePause();

@@ -327,10 +327,8 @@ WebInspector.InspectorView.prototype = {
     {
         delete this._panelForShowPromise;
 
-        if (this._currentPanelLocked) {
-            console.error("Current panel is locked");
+        if (this._currentPanelLocked)
             return this._currentPanel;
-        }
 
         if (!suppressBringToFront)
             InspectorFrontendHost.bringToFront();

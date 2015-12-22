@@ -117,6 +117,8 @@ WebInspector.SourcesPanel = function(workspaceForTest)
     WebInspector.DataSaverInfobar.maybeShowInPanel(this);
 }
 
+WebInspector.SourcesPanel._lastModificationTimeout = 200;
+
 WebInspector.SourcesPanel.minToolbarWidth = 215;
 
 WebInspector.SourcesPanel.prototype = {
@@ -380,6 +382,11 @@ WebInspector.SourcesPanel.prototype = {
         this._ignoreExecutionLineEvents = ignoreExecutionLineEvents;
     },
 
+    updateLastModificationTime: function()
+    {
+        this._lastModificationTime = window.performance.now();
+    },
+
     /**
      * @param {!WebInspector.UILocation} uiLocation
      */
@@ -387,9 +394,19 @@ WebInspector.SourcesPanel.prototype = {
     {
         this._sourcesView.clearCurrentExecutionLine();
         this._sourcesView.setExecutionLocation(uiLocation);
-        if (this._ignoreExecutionLineEvents)
+        if (window.performance.now() - this._lastModificationTime < WebInspector.SourcesPanel._lastModificationTimeout)
             return;
         this._sourcesView.showSourceLocation(uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber, undefined, true);
+    },
+
+    _lastModificationTimeoutPassedForTest: function()
+    {
+        this._lastModificationTime = 0;
+    },
+
+    _updateLastModificationTimeForTest: function()
+    {
+        this._lastModificationTime = Number.MAX_VALUE;
     },
 
     /**

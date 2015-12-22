@@ -137,6 +137,16 @@ WebInspector.DeviceModeView.prototype = {
         WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.ResizedViewInResponsiveMode);
     },
 
+    /**
+     * @param {number} width
+     * @param {number} height
+     */
+    _resizeTo: function(width, height)
+    {
+        this._model.widthSetting().set(width);
+        this._model.heightSetting().set(height);
+    },
+
     _updateUI: function()
     {
         if (!this.isShowing())
@@ -195,7 +205,7 @@ WebInspector.DeviceModeView.prototype = {
         this._loadScreenImage(this._model.screenImage());
         if (resizePagePlaceholder)
             this._pageResizeCallback.call(null);
-        this._mediaInspector.setAxisTransform(-cssScreenRect.left / this._model.scale(), this._model.scale());
+        this._mediaInspector.setAxisTransform(-cssScreenRect.left * zoomFactor / this._model.scale(), this._model.scale());
         if (resizeSelf)
             this.onResize();
     },
@@ -216,6 +226,7 @@ WebInspector.DeviceModeView.prototype = {
             blueprint.style.width = device.vertical.width * scale + "px";
             blueprint.style.height = device.vertical.height * scale + "px";
             blueprint.createChild("span").textContent = device.title;
+            blueprint.addEventListener("dblclick", this._resizeTo.bind(this, device.vertical.width, device.vertical.height), false);
         }
     },
 
@@ -536,14 +547,14 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
         var select = createElementWithClass("select", "device-mode-device-select");
         WebInspector.emulatedDevicesList.addEventListener(WebInspector.EmulatedDevicesList.Events.CustomDevicesUpdated, deviceListChanged, this);
         WebInspector.emulatedDevicesList.addEventListener(WebInspector.EmulatedDevicesList.Events.StandardDevicesUpdated, deviceListChanged, this);
-        deviceListChanged.call(this);
+        populateDeviceList.call(this);
         select.addEventListener("change", optionSelected.bind(this), false);
         return select;
 
         /**
          * @this {WebInspector.DeviceModeView.Toolbar}
          */
-        function deviceListChanged()
+        function populateDeviceList()
         {
             select.removeChildren();
 
@@ -557,6 +568,19 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
             var editCustomOption = new Option(WebInspector.UIString("Edit\u2026"), WebInspector.UIString("Edit\u2026"));
             editCustomOption.edit = true;
             customGroup.appendChild(editCustomOption);
+        }
+
+        /**
+         * @this {WebInspector.DeviceModeView.Toolbar}
+         */
+        function deviceListChanged()
+        {
+            populateDeviceList.call(this);
+            if (!this._updateDeviceSelectedIndex() && this._model.type() === WebInspector.DeviceModeModel.Type.Device) {
+                select.selectedIndex = 0;
+                if (!select.options[0].edit)
+                    this._emulateDevice(select.options[0].device);
+            }
         }
 
         /**
@@ -602,12 +626,18 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
         }
     },
 
+    /**
+     * @return {boolean}
+     */
     _updateDeviceSelectedIndex: function()
     {
         for (var i = 0; i < this._deviceSelect.options.length; ++i) {
-            if (this._deviceSelect.options[i].device === this._model.device())
+            if (this._deviceSelect.options[i].device === this._model.device()) {
                 this._deviceSelect.selectedIndex = i;
+                return true;
+            }
         }
+        return false;
     },
 
     /**

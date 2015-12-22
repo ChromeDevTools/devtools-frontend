@@ -8,6 +8,11 @@
     padding-top: 15px;
 }
 
+.devices-container {
+    overflow: hidden;
+    flex: auto;
+}
+
 .devices-sidebar {
     flex: 0 0 150px;
     display: flex;

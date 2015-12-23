@@ -141,7 +141,8 @@ WebInspector.LayerTreeOutline.prototype = {
             } else {
                 if (node.parent !== parent) {
                     var oldSelection = this._treeOutline.selectedTreeElement;
-                    node.parent.removeChild(node);
+                    if (node.parent)
+                        node.parent.removeChild(node);
                     parent.appendChild(node);
                     if (oldSelection !== this._treeOutline.selectedTreeElement)
                         oldSelection.select();
@@ -166,7 +167,8 @@ WebInspector.LayerTreeOutline.prototype = {
         }
         if (!this._treeOutline.selectedTreeElement) {
             var elementToSelect = this._layerTree.contentRoot() || this._layerTree.root();
-            elementToSelect[WebInspector.LayerTreeElement._symbol].revealAndSelect(true);
+            if (elementToSelect)
+                elementToSelect[WebInspector.LayerTreeElement._symbol].revealAndSelect(true);
         }
     },
 

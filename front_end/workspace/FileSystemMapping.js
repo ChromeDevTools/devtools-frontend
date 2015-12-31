@@ -53,12 +53,13 @@ WebInspector.FileSystemMapping.prototype = {
         this._fileSystemMappings = {};
         for (var fileSystemPath in savedMapping) {
             var savedFileSystemMappings = savedMapping[fileSystemPath];
+            fileSystemPath = WebInspector.IsolatedFileSystem.normalizePath(fileSystemPath);
             this._fileSystemMappings[fileSystemPath] = [];
             var fileSystemMappings = this._fileSystemMappings[fileSystemPath];
 
             for (var i = 0; i < savedFileSystemMappings.length; ++i) {
                 var savedEntry = savedFileSystemMappings[i];
-                var entry = new WebInspector.FileSystemMapping.Entry(savedEntry.fileSystemPath, savedEntry.urlPrefix, savedEntry.pathPrefix, true);
+                var entry = new WebInspector.FileSystemMapping.Entry(fileSystemPath, savedEntry.urlPrefix, savedEntry.pathPrefix, true);
                 fileSystemMappings.push(entry);
             }
         }
@@ -264,7 +265,7 @@ WebInspector.FileSystemMapping.prototype = {
             return null;
         var file = {};
         file.fileSystemPath = entry.fileSystemPath;
-        file.fileURL = "file://" + entry.fileSystemPath + entry.pathPrefix + url.substr(entry.urlPrefix.length);
+        file.fileURL = entry.fileSystemPath + entry.pathPrefix + url.substr(entry.urlPrefix.length);
         return file;
     },
 
@@ -275,7 +276,7 @@ WebInspector.FileSystemMapping.prototype = {
      */
     urlForPath: function(fileSystemPath, filePath)
     {
-        var relativePath = filePath.substring("file://".length + fileSystemPath.length);
+        var relativePath = filePath.substring(fileSystemPath.length);
         var entry = this._mappingEntryForPath(fileSystemPath, relativePath);
         if (!entry)
             return "";
@@ -310,7 +311,7 @@ WebInspector.FileSystemMapping.prototype = {
             if (filePathCharacter === "/")
                 commonPathSuffixLength = i;
         }
-        var pathPrefix = filePath.substring("file://".length + fileSystemPath.length, filePath.length - commonPathSuffixLength);
+        var pathPrefix = filePath.substring(fileSystemPath.length, filePath.length - commonPathSuffixLength);
         var urlPrefix = url.substr(0, url.length - commonPathSuffixLength);
         this.addFileMapping(fileSystemPath, urlPrefix, pathPrefix);
     },

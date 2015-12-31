@@ -68,7 +68,7 @@ WebInspector.FileSystemWorkspaceBinding._lastRequestId = 0;
  */
 WebInspector.FileSystemWorkspaceBinding.projectId = function(fileSystemPath)
 {
-    return "file://" + fileSystemPath;
+    return fileSystemPath;
 }
 
 /**
@@ -125,7 +125,7 @@ WebInspector.FileSystemWorkspaceBinding.prototype = {
     {
         var fileSystem = /** @type {!WebInspector.IsolatedFileSystem} */ (event.data);
         var boundFileSystem = new WebInspector.FileSystemWorkspaceBinding.FileSystem(this, fileSystem, this._workspace);
-        this._boundFileSystems.set(fileSystem.normalizedPath(), boundFileSystem);
+        this._boundFileSystems.set(fileSystem.path(), boundFileSystem);
     },
 
     /**
@@ -134,9 +134,9 @@ WebInspector.FileSystemWorkspaceBinding.prototype = {
     _fileSystemRemoved: function(event)
     {
         var fileSystem = /** @type {!WebInspector.IsolatedFileSystem} */ (event.data);
-        var boundFileSystem = this._boundFileSystems.get(fileSystem.normalizedPath());
+        var boundFileSystem = this._boundFileSystems.get(fileSystem.path());
         boundFileSystem.dispose();
-        this._boundFileSystems.remove(fileSystem.normalizedPath());
+        this._boundFileSystems.remove(fileSystem.path());
     },
 
     /**
@@ -161,7 +161,7 @@ WebInspector.FileSystemWorkspaceBinding.prototype = {
      */
     fileSystemPath: function(projectId)
     {
-        return projectId.substr("file://".length);
+        return projectId;
     },
 
     /**
@@ -265,7 +265,7 @@ WebInspector.FileSystemWorkspaceBinding.prototype = {
         InspectorFrontendHost.events.removeEventListener(InspectorFrontendHostAPI.Events.SearchCompleted, this._onSearchCompleted, this);
         for (var fileSystem of this._boundFileSystems.values()) {
             fileSystem.dispose();
-            this._boundFileSystems.remove(fileSystem._fileSystem.normalizedPath());
+            this._boundFileSystems.remove(fileSystem._fileSystem.path());
         }
     }
 }
@@ -282,15 +282,13 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem = function(fileSystemWorkspac
 {
     this._fileSystemWorkspaceBinding = fileSystemWorkspaceBinding;
     this._fileSystem = isolatedFileSystem;
-    this._fileSystemBaseURL = "file://" + this._fileSystem.normalizedPath() + "/";
+    this._fileSystemBaseURL = this._fileSystem.path() + "/";
     this._fileSystemPath = this._fileSystem.path();
 
     var id = WebInspector.FileSystemWorkspaceBinding.projectId(this._fileSystemPath);
     console.assert(!workspace.project(id));
 
-    var normalizedPath = isolatedFileSystem.normalizedPath();
-    var displayName = normalizedPath.substr(normalizedPath.lastIndexOf("/") + 1);
-
+    var displayName = this._fileSystemPath.substr(this._fileSystemPath.lastIndexOf("/") + 1);
     WebInspector.ProjectStore.call(this, workspace, id, WebInspector.projectTypes.FileSystem, displayName);
 
     workspace.addProject(this);
@@ -312,7 +310,7 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
      */
     _filePathForUISourceCode: function(uiSourceCode)
     {
-        return uiSourceCode.path().substring(("file:// " + this._fileSystemPath).length);
+        return uiSourceCode.path().substring(this._fileSystemPath.length);
     },
 
     /**

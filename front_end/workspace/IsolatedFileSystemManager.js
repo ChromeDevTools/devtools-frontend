@@ -119,7 +119,7 @@ WebInspector.IsolatedFileSystemManager.prototype = {
      */
     _innerAddFileSystem: function(fileSystem)
     {
-        var fileSystemPath = fileSystem.fileSystemPath;
+        var fileSystemPath = WebInspector.IsolatedFileSystem.normalizePath(fileSystem.fileSystemPath);
         var promise = WebInspector.IsolatedFileSystem.create(this, fileSystemPath, fileSystem.fileSystemName, fileSystem.rootURL);
         return promise.then(storeFileSystem.bind(this));
 

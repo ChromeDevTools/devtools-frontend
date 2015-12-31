@@ -230,7 +230,7 @@ WebInspector.EditFileSystemView.prototype = {
         titles.createChild("div", "file-system-value").textContent = WebInspector.UIString("Folder path");
 
         var fields = content.createChild("div", "file-system-edit-row");
-        fields.createChild("div", "file-system-value").appendChild(editor.createInput("urlPrefix", "text", "localhost:8000/url", urlPrefixValidator.bind(this)));
+        fields.createChild("div", "file-system-value").appendChild(editor.createInput("urlPrefix", "text", "http://localhost:8000/url", urlPrefixValidator.bind(this)));
         fields.createChild("div", "file-system-separator file-system-separator-invisible");
         fields.createChild("div", "file-system-value").appendChild(editor.createInput("pathPrefix", "text", "/path/to/folder/", pathPrefixValidator.bind(this)));
 

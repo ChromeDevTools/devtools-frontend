@@ -107,8 +107,13 @@ WebInspector.IsolatedFileSystem.errorMessage = function(error)
  */
 WebInspector.IsolatedFileSystem.normalizePath = function(fileSystemPath)
 {
-    if (WebInspector.isWin())
-        return fileSystemPath.replace(/\\/g, "/");
+    fileSystemPath = fileSystemPath.replace(/\\/g, "/");
+    if (!fileSystemPath.startsWith("file://")) {
+        if (fileSystemPath.startsWith("/"))
+            fileSystemPath = "file://" + fileSystemPath;
+        else
+            fileSystemPath = "file:///" + fileSystemPath;
+    }
     return fileSystemPath;
 }
 
@@ -119,17 +124,6 @@ WebInspector.IsolatedFileSystem.prototype = {
     path: function()
     {
         return this._path;
-    },
-
-    /**
-     * @return {string}
-     */
-    normalizedPath: function()
-    {
-        if (this._normalizedPath)
-            return this._normalizedPath;
-        this._normalizedPath = WebInspector.IsolatedFileSystem.normalizePath(this._path);
-        return this._normalizedPath;
     },
 
     /**

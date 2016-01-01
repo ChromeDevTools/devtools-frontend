@@ -117,6 +117,20 @@ WebInspector.IsolatedFileSystem.normalizePath = function(fileSystemPath)
     return fileSystemPath;
 }
 
+/**
+ * @param {string} fileSystemPath
+ * @return {string}
+ */
+WebInspector.IsolatedFileSystem.denormalizePath = function(fileSystemPath)
+{
+    fileSystemPath = fileSystemPath.substring("file://".length);
+    if (WebInspector.isWin()) {
+        fileSystemPath = fileSystemPath.replace(/\//g, "\\");
+        fileSystemPath = fileSystemPath.substring(1);
+    }
+    return fileSystemPath;
+}
+
 WebInspector.IsolatedFileSystem.prototype = {
     /**
      * @return {string}

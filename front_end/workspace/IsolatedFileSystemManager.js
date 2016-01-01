@@ -72,7 +72,7 @@ WebInspector.IsolatedFileSystemManager.prototype = {
      */
     addFileSystem: function(fileSystemPath)
     {
-        InspectorFrontendHost.addFileSystem(fileSystemPath);
+        InspectorFrontendHost.addFileSystem(WebInspector.IsolatedFileSystem.denormalizePath(fileSystemPath));
     },
 
     /**
@@ -80,7 +80,8 @@ WebInspector.IsolatedFileSystemManager.prototype = {
      */
     removeFileSystem: function(fileSystemPath)
     {
-        InspectorFrontendHost.removeFileSystem(fileSystemPath);
+
+        InspectorFrontendHost.removeFileSystem(WebInspector.IsolatedFileSystem.denormalizePath(fileSystemPath));
     },
 
     /**
@@ -170,6 +171,7 @@ WebInspector.IsolatedFileSystemManager.prototype = {
      */
     _fileSystemRemoved: function(fileSystemPath)
     {
+        fileSystemPath = WebInspector.IsolatedFileSystem.normalizePath(fileSystemPath);
         var isolatedFileSystem = this._fileSystems[fileSystemPath];
         delete this._fileSystems[fileSystemPath];
         if (isolatedFileSystem) {

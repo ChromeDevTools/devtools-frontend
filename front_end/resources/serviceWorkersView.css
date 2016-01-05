@@ -134,10 +134,12 @@
     flex: 1 1 0;
     overflow: hidden;
     padding: 8px;
+    text-overflow: ellipsis;
 }
 
 .service-workers-versions-table-row-content {
     flex: 2 2 0;
+    overflow: hidden;
     padding: 8px;
     text-overflow: ellipsis;
 }

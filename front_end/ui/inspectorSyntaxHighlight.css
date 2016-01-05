@@ -72,7 +72,7 @@
 
 .webkit-html-js-node,
 .webkit-html-css-node {
-    white-space: pre;
+    white-space: pre-wrap;
 }
 
 .webkit-html-text-node {

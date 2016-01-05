@@ -21,8 +21,9 @@ WebInspector.AnimationTimeline = function()
     var timelineHint = this.contentElement.createChild("div", "animation-timeline-rows-hint");
     timelineHint.textContent = WebInspector.UIString("Select an effect above to inspect and modify.");
 
-    this._duration = this._defaultDuration();
-    this._timelineControlsWidth = 150;
+    /** @const */ this._defaultDuration = 100;
+    this._duration = this._defaultDuration;
+    /** @const */ this._timelineControlsWidth = 150;
     /** @type {!Map.<!DOMAgent.BackendNodeId, !WebInspector.AnimationTimeline.NodeUI>} */
     this._nodesMap = new Map();
     this._uiAnimations = [];
@@ -294,14 +295,6 @@ WebInspector.AnimationTimeline.prototype = {
     /**
      * @return {number}
      */
-    _defaultDuration: function ()
-    {
-        return 100;
-    },
-
-    /**
-     * @return {number}
-     */
     duration: function()
     {
         return this._duration;
@@ -322,26 +315,27 @@ WebInspector.AnimationTimeline.prototype = {
         this._nodesMap.clear();
         this._animationsMap.clear();
         this._animationsContainer.removeChildren();
-        this._duration = this._defaultDuration();
+        this._duration = this._defaultDuration;
         this._timelineScrubber.classList.add("hidden");
-    },
-
-    _reset: function()
-    {
         delete this._selectedGroup;
-        this._clearTimeline();
-        this._updateAnimationsPlaybackRate();
         if (this._scrubberPlayer)
             this._scrubberPlayer.cancel();
         delete this._scrubberPlayer;
         this._currentTime.textContent = "";
         this._updateControlButton();
+    },
+
+    _reset: function()
+    {
+        this._clearTimeline();
+        this._updateAnimationsPlaybackRate();
         for (var group of this._groupBuffer)
             group.release();
         this._groupBuffer = [];
         this._previewMap.clear();
         this._previewContainer.removeChildren();
         this._popoverHelper.hidePopover();
+        this._renderGrid();
     },
 
     /**
@@ -409,7 +403,7 @@ WebInspector.AnimationTimeline.prototype = {
 
         if (this._selectedGroup === group) {
             this._clearTimeline();
-            delete this._selectedGroup;
+            this._renderGrid();
         }
     },
 
@@ -433,9 +427,9 @@ WebInspector.AnimationTimeline.prototype = {
             this._replay();
             return;
         }
+        this._clearTimeline();
         this._selectedGroup = group;
         this._previewMap.forEach(applySelectionClass, this);
-        this._clearTimeline();
         this.setDuration(Math.max(500, group.finiteDuration() + 100));
         for (var anim of group.animations())
             this._addAnimation(anim);

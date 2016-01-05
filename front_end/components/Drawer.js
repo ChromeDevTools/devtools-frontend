@@ -68,6 +68,7 @@ WebInspector.Drawer.prototype = {
     showView: function(id, immediate)
     {
         this._innerShow(immediate);
+        WebInspector.userMetrics.drawerShown(id);
         return this._extensibleTabbedPaneController.showTab(id);
     },
 

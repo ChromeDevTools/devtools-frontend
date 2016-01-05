@@ -227,7 +227,7 @@ WebInspector.Spectrum.prototype = {
 
     _focus: function()
     {
-        if (WebInspector.currentFocusElement() !== this.contentElement)
+        if (this.isShowing() && WebInspector.currentFocusElement() !== this.contentElement)
             WebInspector.setCurrentFocusElement(this.contentElement);
     },
 
@@ -368,8 +368,6 @@ WebInspector.Spectrum.prototype = {
         this._dragElement = element;
         this._dragHotSpotX = e.pageX - (index % WebInspector.Spectrum._itemsPerPaletteRow) * WebInspector.Spectrum._colorChipSize;
         this._dragHotSpotY = e.pageY - (index / WebInspector.Spectrum._itemsPerPaletteRow | 0) * WebInspector.Spectrum._colorChipSize;
-
-        this._deleteIconToolbar.element.classList.add("dragging");
         return true;
     },
 
@@ -385,6 +383,7 @@ WebInspector.Spectrum.prototype = {
         var offsetY = e.pageY - (newIndex / WebInspector.Spectrum._itemsPerPaletteRow | 0) * WebInspector.Spectrum._colorChipSize;
 
         var isDeleting = this._isDraggingToBin(e);
+        this._deleteIconToolbar.element.classList.add("dragging");
         this._deleteIconToolbar.element.classList.toggle("delete-color-toolbar-active", isDeleting);
         var dragElementTransform = "translateX(" + (offsetX - this._dragHotSpotX) + "px) translateY(" + (offsetY - this._dragHotSpotY) + "px)";
         this._dragElement.style.transform = isDeleting ? dragElementTransform + " scale(0.8)" : dragElementTransform;
@@ -432,7 +431,6 @@ WebInspector.Spectrum.prototype = {
 
         this._deleteIconToolbar.element.classList.remove("dragging");
         this._deleteIconToolbar.element.classList.remove("delete-color-toolbar-active");
-        this._deleteButton.setToggled(false);
     },
 
     _loadPalettes: function()

@@ -369,14 +369,15 @@ div.palette-preview {
     position: absolute;
     right: 0;
     top: 0;
-    height: 100%;
     background-color: #EFEFEF;
     visibility: hidden;
     z-index: 3;
     width: 36px;
     display: flex;
     align-items: center;
-    padding-left: 5px;
+    padding-left: 4px;
+    bottom: 2px;
+    border-bottom-right-radius: 2px;
 }
 
 @keyframes showDeleteToolbar {

@@ -58,6 +58,7 @@ WebInspector.ResourceTreeModel.EventTypes = {
     FrameNavigated: "FrameNavigated",
     FrameDetached: "FrameDetached",
     FrameResized: "FrameResized",
+    FrameWillNavigate: "FrameWillNavigate",
     MainFrameNavigated: "MainFrameNavigated",
     ResourceAdded: "ResourceAdded",
     WillLoadCachedResources: "WillLoadCachedResources",
@@ -270,6 +271,9 @@ WebInspector.ResourceTreeModel.prototype = {
             frame = this._frameAttached(framePayload.id, framePayload.parentId || "");
             console.assert(frame);
         }
+
+        this.dispatchEventToListeners(WebInspector.ResourceTreeModel.EventTypes.FrameWillNavigate, frame);
+
         this._removeSecurityOrigin(frame.securityOrigin);
         frame._navigate(framePayload);
         var addedOrigin = frame.securityOrigin;
@@ -736,7 +740,7 @@ WebInspector.ResourceTreeFrame.prototype = {
         if (subtitle) {
             if (!this._name)
                 return subtitle;
-            return this._name + "( " + subtitle + " )";
+            return this._name + " (" + subtitle + ")";
         }
         return WebInspector.UIString("<iframe>");
     }

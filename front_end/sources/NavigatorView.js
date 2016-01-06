@@ -29,6 +29,7 @@
 /**
  * @constructor
  * @extends {WebInspector.VBox}
+ * @implements {WebInspector.TargetManager.Observer}
  */
 WebInspector.NavigatorView = function()
 {
@@ -59,6 +60,7 @@ WebInspector.NavigatorView = function()
     this._initGrouping();
     WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.EventTypes.FrameNavigated, this._frameNavigated, this);
     WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.EventTypes.FrameDetached, this._frameDetached, this);
+    WebInspector.targetManager.observeTargets(this);
 }
 
 WebInspector.NavigatorView.Events = {
@@ -161,18 +163,36 @@ WebInspector.NavigatorView.prototype = {
 
     /**
      * @param {!WebInspector.UISourceCode} uiSourceCode
+     * @return {?WebInspector.ResourceTreeFrame}
+     */
+    _uiSourceCodeFrame: function(uiSourceCode)
+    {
+        var target = WebInspector.NetworkProject.targetForProject(uiSourceCode.project());
+        if (!target)
+            return null;
+        return WebInspector.NetworkProject.frameForProject(uiSourceCode.project()) || target.resourceTreeModel.mainFrame;
+    },
+
+    /**
+     * @param {!WebInspector.UISourceCode} uiSourceCode
      */
     _addUISourceCode: function(uiSourceCode)
     {
         if (!this.accept(uiSourceCode))
             return;
+
         var isFromSourceMap = uiSourceCode.contentType().isFromSourceMap();
         var path;
         if (uiSourceCode.project().type() === WebInspector.projectTypes.FileSystem)
             path = WebInspector.FileSystemWorkspaceBinding.relativePath(uiSourceCode).slice(0, -1);
         else
             path = WebInspector.ParsedURL.splitURLIntoPathComponents(uiSourceCode.path()).slice(1, -1);
-        var folderNode = this._folderNode(uiSourceCode.project(), uiSourceCode.host(), path, isFromSourceMap);
+
+        var project = uiSourceCode.project();
+        var target = WebInspector.NetworkProject.targetForUISourceCode(uiSourceCode);
+        var frame = this._uiSourceCodeFrame(uiSourceCode);
+
+        var folderNode = this._folderNode(uiSourceCode, project, target, frame, uiSourceCode.host(), path, isFromSourceMap);
         var uiSourceCodeNode = new WebInspector.NavigatorUISourceCodeTreeNode(this, uiSourceCode);
         this._uiSourceCodeNodes.set(uiSourceCode, uiSourceCodeNode);
         folderNode.appendChild(uiSourceCodeNode);
@@ -214,29 +234,47 @@ WebInspector.NavigatorView.prototype = {
 
     /**
      * @param {!WebInspector.Project} project
+     * @param {?WebInspector.Target} target
+     * @param {?WebInspector.ResourceTreeFrame} frame
+     * @param {string} projectHost
+     * @param {string} path
+     * @return {string}
+     */
+    _folderNodeId: function(project, target, frame, projectHost, path)
+    {
+        var targetId = target ? target.id() : "";
+        var projectId = project.type() === WebInspector.projectTypes.FileSystem ? project.id() : "";
+        var frameId = this._groupByFrame && frame ? frame.id : "";
+        return targetId + ":" + projectId + ":" + frameId + ":" + projectHost + ":" + path;
+    },
+
+    /**
+     * @param {!WebInspector.UISourceCode} uiSourceCode
+     * @param {!WebInspector.Project} project
+     * @param {?WebInspector.Target} target
+     * @param {?WebInspector.ResourceTreeFrame} frame
      * @param {string} projectHost
      * @param {!Array<string>} path
      * @param {boolean} fromSourceMap
      * @return {!WebInspector.NavigatorTreeNode}
      */
-    _folderNode: function(project, projectHost, path, fromSourceMap)
+    _folderNode: function(uiSourceCode, project, target, frame, projectHost, path, fromSourceMap)
     {
         if (project.type() === WebInspector.projectTypes.Snippets)
             return this._rootNode;
 
-        var target = WebInspector.NetworkProject.targetForProject(project);
         if (target && !this._groupByFolder && !fromSourceMap)
-            return this._domainNode(target, project, projectHost);
+            return this._domainNode(uiSourceCode, project, target, frame, projectHost);
 
         var folderPath = path.join("/");
-        var folderId = project.id() + ":" + projectHost + ":" + folderPath;
+        var folderId = this._folderNodeId(project, target, frame, projectHost, folderPath);
         var folderNode = this._subfolderNodes.get(folderId);
         if (folderNode)
             return folderNode;
 
         if (!path.length) {
             if (target)
-                return this._domainNode(target, project, projectHost);
+                return this._domainNode(uiSourceCode, project, target, frame, projectHost);
             var fileSystemNode = this._rootNode.child(project.id());
             if (!fileSystemNode) {
                 fileSystemNode = new WebInspector.NavigatorGroupTreeNode(this, project, project.id(),  WebInspector.NavigatorView.Types.FileSystem, project.displayName());
@@ -245,7 +283,7 @@ WebInspector.NavigatorView.prototype = {
             return fileSystemNode;
         }
 
-        var parentNode = this._folderNode(project, projectHost, path.slice(0, -1), fromSourceMap);
+        var parentNode = this._folderNode(uiSourceCode, project, target, frame, projectHost, path.slice(0, -1), fromSourceMap);
         var type = fromSourceMap ? WebInspector.NavigatorView.Types.SourceMapFolder : WebInspector.NavigatorView.Types.NetworkFolder;
         if (project.type() === WebInspector.projectTypes.FileSystem)
             type = WebInspector.NavigatorView.Types.FileSystemFolder;
@@ -257,16 +295,17 @@ WebInspector.NavigatorView.prototype = {
         return folderNode;
     },
 
-     /**
-     * @param {!WebInspector.Target} target
+    /**
+     * @param {!WebInspector.UISourceCode} uiSourceCode
      * @param {!WebInspector.Project} project
+     * @param {!WebInspector.Target} target
+     * @param {?WebInspector.ResourceTreeFrame} frame
      * @param {string} projectHost
      * @return {!WebInspector.NavigatorTreeNode}
      */
-    _domainNode: function(target, project, projectHost)
+    _domainNode: function(uiSourceCode, project, target, frame, projectHost)
     {
-        var frame = WebInspector.NetworkProject.frameForProject(project);
-        var frameNode = this._frameNode(target, frame, project);
+        var frameNode = this._frameNode(project, target, frame);
         if (!this._groupByDomain)
             return frameNode;
         var domainNode = frameNode.child(projectHost);
@@ -280,35 +319,35 @@ WebInspector.NavigatorView.prototype = {
         return domainNode;
     },
 
-     /**
+    /**
+     * @param {!WebInspector.Project} project
      * @param {!WebInspector.Target} target
      * @param {?WebInspector.ResourceTreeFrame} frame
-     * @param {!WebInspector.Project} project
      * @return {!WebInspector.NavigatorTreeNode}
      */
-    _frameNode: function(target, frame, project)
+    _frameNode: function(project, target, frame)
     {
         if (!this._groupByFrame || !frame)
-            return this._targetNode(target, project);
+            return this._targetNode(project, target);
 
         var frameNode = this._frameNodes.get(frame);
         if (frameNode)
             return frameNode;
 
-        frameNode = new WebInspector.NavigatorGroupTreeNode(this, project, project.id() + ":" + frame.id,  WebInspector.NavigatorView.Types.Frame, frame.displayName());
+        frameNode = new WebInspector.NavigatorGroupTreeNode(this, project, target.id() + ":" + frame.id, WebInspector.NavigatorView.Types.Frame, frame.displayName());
         this._frameNodes.set(frame, frameNode);
-        this._frameNode(target, frame.parentFrame, project).appendChild(frameNode);
+        this._frameNode(project, target, frame.parentFrame).appendChild(frameNode);
         if (!frame.parentFrame)
             frameNode.treeNode()._boostOrder = true;
         return frameNode;
     },
 
-     /**
-     * @param {!WebInspector.Target} target
+    /**
      * @param {!WebInspector.Project} project
+     * @param {!WebInspector.Target} target
      * @return {!WebInspector.NavigatorTreeNode}
      */
-    _targetNode: function(target, project)
+    _targetNode: function(project, target)
     {
         if (target === WebInspector.targetManager.mainTarget())
             return this._rootNode;
@@ -384,16 +423,22 @@ WebInspector.NavigatorView.prototype = {
         if (!node)
             return;
 
+        var project = uiSourceCode.project();
+        var target = WebInspector.NetworkProject.targetForUISourceCode(uiSourceCode);
+        var frame = this._uiSourceCodeFrame(uiSourceCode);
+
         var parentNode = node.parent;
-        this._uiSourceCodeNodes.remove(uiSourceCode);
+        this._uiSourceCodeNodes.delete(uiSourceCode);
         parentNode.removeChild(node);
         node = parentNode;
 
         while (node) {
             parentNode = node.parent;
-            if (!parentNode || !node.isEmpty())
+            if (!parentNode || !node.isEmpty() || !(node instanceof WebInspector.NavigatorFolderTreeNode))
                 break;
-            this._subfolderNodes.remove(uiSourceCode.project().id() + ":" + uiSourceCode.host() + ":" + node._folderPath);
+
+            var folderId = this._folderNodeId(project, target, frame, uiSourceCode.host(), node._folderPath);
+            this._subfolderNodes.delete(folderId);
             parentNode.removeChild(node);
             node = parentNode;
         }
@@ -629,6 +674,7 @@ WebInspector.NavigatorView.prototype = {
         var node = this._frameNodes.get(frame);
         if (!node)
             return;
+
         node.treeNode().title = frame.displayName();
         for (var child of frame.childFrames)
             this._discardFrame(child);
@@ -651,11 +697,31 @@ WebInspector.NavigatorView.prototype = {
         var node = this._frameNodes.get(frame);
         if (!node)
             return;
+
         if (node.parent)
-            node.parent.treeNode().removeChild(node.treeNode());
+            node.parent.removeChild(node);
         this._frameNodes.delete(frame);
         for (var child of frame.childFrames)
             this._discardFrame(child);
+    },
+
+    /**
+     * @override
+     * @param {!WebInspector.Target} target
+     */
+    targetAdded: function(target)
+    {
+    },
+
+    /**
+     * @override
+     * @param {!WebInspector.Target} target
+     */
+    targetRemoved: function(target)
+    {
+        var targetNode = this._rootNode.child("target:" + target.id());
+        if (targetNode)
+            this._rootNode.removeChild(targetNode);
     },
 
     __proto__: WebInspector.VBox.prototype

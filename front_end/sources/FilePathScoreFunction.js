@@ -42,25 +42,6 @@ WebInspector.FilePathScoreFunction = function(query)
     this._fileNameIndex = 0;
 }
 
-/**
- * @param {string} query
- * @return {!RegExp}
- */
-WebInspector.FilePathScoreFunction.filterRegex = function(query)
-{
-    const toEscape = String.regexSpecialCharacters();
-    var regexString = "";
-    for (var i = 0; i < query.length; ++i) {
-        var c = query.charAt(i);
-        if (toEscape.indexOf(c) !== -1)
-            c = "\\" + c;
-        if (i)
-            regexString += "[^" + c + "]*";
-        regexString += c;
-    }
-    return new RegExp(regexString, "i");
-}
-
 WebInspector.FilePathScoreFunction.prototype = {
     /**
      * @param {string} data

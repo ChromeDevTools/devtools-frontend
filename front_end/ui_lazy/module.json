@@ -3,13 +3,15 @@
         "platform",
         "common",
         "host",
-        "ui"
+        "ui",
+        "diff"
     ],
     "scripts": [
         "DataGrid.js",
         "ViewportDataGrid.js",
         "SortableDataGrid.js",
         "ShowMoreDataGridNode.js",
+        "FilteredListWidget.js",
         "FlameChart.js",
         "OverviewGrid.js",
         "PieChart.js",
@@ -18,6 +20,7 @@
     ],
     "resources": [
         "dataGrid.css",
+        "filteredListWidget.css",
         "flameChart.css",
         "overviewGrid.css",
         "pieChart.css",

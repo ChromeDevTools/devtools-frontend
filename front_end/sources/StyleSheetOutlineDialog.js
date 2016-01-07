@@ -28,13 +28,13 @@
 
 /**
  * @constructor
- * @extends {WebInspector.SelectionDialogContentProvider}
+ * @extends {WebInspector.FilteredListWidget.Delegate}
  * @param {!WebInspector.UISourceCode} uiSourceCode
  * @param {function(number, number)} selectItemCallback
  */
 WebInspector.StyleSheetOutlineDialog = function(uiSourceCode, selectItemCallback)
 {
-    WebInspector.SelectionDialogContentProvider.call(this, []);
+    WebInspector.FilteredListWidget.Delegate.call(this, []);
     this._selectItemCallback = selectItemCallback;
     this._cssParser = new WebInspector.CSSParser();
     this._cssParser.addEventListener(WebInspector.CSSParser.Events.RulesParsed, this.refresh.bind(this));
@@ -48,7 +48,7 @@ WebInspector.StyleSheetOutlineDialog = function(uiSourceCode, selectItemCallback
 WebInspector.StyleSheetOutlineDialog.show = function(uiSourceCode, selectItemCallback)
 {
     WebInspector.StyleSheetOutlineDialog._instanceForTests = new WebInspector.StyleSheetOutlineDialog(uiSourceCode, selectItemCallback);
-    new WebInspector.FilteredItemSelectionDialog(WebInspector.StyleSheetOutlineDialog._instanceForTests, false);
+    new WebInspector.FilteredListWidget(WebInspector.StyleSheetOutlineDialog._instanceForTests, false).showAsDialog();
 }
 
 WebInspector.StyleSheetOutlineDialog.prototype = {
@@ -117,5 +117,5 @@ WebInspector.StyleSheetOutlineDialog.prototype = {
         this._cssParser.dispose();
     },
 
-    __proto__: WebInspector.SelectionDialogContentProvider.prototype
+    __proto__: WebInspector.FilteredListWidget.Delegate.prototype
 }

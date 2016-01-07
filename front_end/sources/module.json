@@ -345,9 +345,9 @@
     ],
     "dependencies": [
         "components",
-        "diff",
         "source_frame",
         "snippets",
+        "ui_lazy",
         "extensions"
     ],
     "scripts": [
@@ -359,9 +359,10 @@
         "EditingLocationHistoryManager.js",
         "EventListenerBreakpointsSidebarPane.js",
         "FilePathScoreFunction.js",
-        "FilteredItemSelectionDialog.js",
+        "FilteredUISourceCodeListDelegate.js",
         "UISourceCodeFrame.js",
         "JavaScriptBreakpointsSidebarPane.js",
+        "JavaScriptOutlineDialog.js",
         "JavaScriptSourceFrame.js",
         "CSSSourceFrame.js",
         "NavigatorView.js",
@@ -376,6 +377,7 @@
         "ScriptFormatterEditorAction.js",
         "InplaceFormatterEditorAction.js",
         "ScriptFormatter.js",
+        "OpenResourceDialog.js",
         "SourcesView.js",
         "AdvancedSearchView.js",
         "FileBasedSearchResultsPane.js",
@@ -388,7 +390,6 @@
     ],
     "resources": [
         "addSourceMapURLDialog.css",
-        "filteredItemSelectionDialog.css",
         "uiList.css",
         "navigatorView.css",
         "revisionHistory.css",

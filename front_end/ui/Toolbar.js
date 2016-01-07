@@ -615,11 +615,13 @@ WebInspector.Toolbar.createActionButton = function(action, toggledOptions, untog
  * @constructor
  * @extends {WebInspector.ToolbarButton}
  * @param {function(!WebInspector.ContextMenu)} contextMenuHandler
+ * @param {boolean=} useSoftMenu
  */
-WebInspector.ToolbarMenuButton = function(contextMenuHandler)
+WebInspector.ToolbarMenuButton = function(contextMenuHandler, useSoftMenu)
 {
     WebInspector.ToolbarButton.call(this, "", "menu-toolbar-item");
     this._contextMenuHandler = contextMenuHandler;
+    this._useSoftMenu = !!useSoftMenu;
 }
 
 WebInspector.ToolbarMenuButton.prototype = {
@@ -630,7 +632,7 @@ WebInspector.ToolbarMenuButton.prototype = {
     _clicked: function(event)
     {
         var contextMenu = new WebInspector.ContextMenu(event,
-            false,
+            this._useSoftMenu,
             this.element.totalOffsetLeft(),
             this.element.totalOffsetTop() + this.element.offsetHeight);
         this._contextMenuHandler(contextMenu);

@@ -29,6 +29,11 @@
     white-space: nowrap;
 }
 
+.soft-context-menu-disabled {
+    color: #999;
+    pointer-events: none;
+}
+
 .soft-context-menu-separator {
     height: 10px;
     margin: 0 1px;

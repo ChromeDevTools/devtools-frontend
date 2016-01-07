@@ -134,6 +134,8 @@ WebInspector.SoftContextMenu.prototype = {
             return menuItemElement;
         }
 
+        if (!item.enabled)
+            menuItemElement.classList.add("soft-context-menu-disabled");
         menuItemElement.createTextChild(item.label);
         menuItemElement.createChild("span", "soft-context-menu-shortcut").textContent = item.shortcut;
 

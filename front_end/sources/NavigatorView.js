@@ -35,7 +35,6 @@ WebInspector.NavigatorView = function()
 {
     WebInspector.VBox.call(this);
 
-    var scriptsOutlineElement = this.element.createChild("div", "navigator");
     this._scriptsTree = new TreeOutlineInShadow();
     this._scriptsTree.registerRequiredCSS("sources/navigatorView.css");
     this._scriptsTree.setComparator(WebInspector.NavigatorView._treeElementsCompare);
@@ -55,8 +54,13 @@ WebInspector.NavigatorView = function()
 
     this.element.addEventListener("contextmenu", this.handleContextMenu.bind(this), false);
 
-    this._navigatorGroupingSetting = WebInspector.moduleSetting("navigatorGrouping");
-    this._navigatorGroupingSetting.addChangeListener(this._groupingChanged.bind(this));
+    this._navigatorGroupingByFrameSetting = WebInspector.moduleSetting("navigatorGroupByFrame");
+    this._navigatorGroupingByFrameSetting.addChangeListener(this._groupingChanged.bind(this));
+    this._navigatorGroupingByDomainSetting = WebInspector.moduleSetting("navigatorGroupByDomain");
+    this._navigatorGroupingByDomainSetting.addChangeListener(this._groupingChanged.bind(this));
+    this._navigatorGroupingByFolderSetting = WebInspector.moduleSetting("navigatorGroupByFolder");
+    this._navigatorGroupingByFolderSetting.addChangeListener(this._groupingChanged.bind(this));
+
     this._initGrouping();
     WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.EventTypes.FrameNavigated, this._frameNavigated, this);
     WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.EventTypes.FrameDetached, this._frameDetached, this);
@@ -136,6 +140,9 @@ WebInspector.NavigatorView.appendAddFolderItem = function(contextMenu)
 }
 
 WebInspector.NavigatorView.prototype = {
+    /**
+     * @param {!WebInspector.Workspace} workspace
+     */
     setWorkspace: function(workspace)
     {
         this._workspace = workspace;
@@ -196,6 +203,14 @@ WebInspector.NavigatorView.prototype = {
         var uiSourceCodeNode = new WebInspector.NavigatorUISourceCodeTreeNode(this, uiSourceCode);
         this._uiSourceCodeNodes.set(uiSourceCode, uiSourceCodeNode);
         folderNode.appendChild(uiSourceCodeNode);
+        this.uiSourceCodeAdded(uiSourceCode);
+    },
+
+    /**
+     * @param {!WebInspector.UISourceCode} uiSourceCode
+     */
+    uiSourceCodeAdded: function(uiSourceCode)
+    {
     },
 
     /**
@@ -659,10 +674,9 @@ WebInspector.NavigatorView.prototype = {
 
     _initGrouping: function()
     {
-        var value = this._navigatorGroupingSetting.get();
-        this._groupByFrame = value.includes("frame");
-        this._groupByDomain = value.includes("domain");
-        this._groupByFolder = value.includes("folder");
+        this._groupByFrame = this._navigatorGroupingByFrameSetting.get();
+        this._groupByDomain = this._navigatorGroupingByDomainSetting.get();
+        this._groupByFolder = this._groupByDomain && this._navigatorGroupingByFolderSetting.get();
     },
 
     /**
@@ -725,84 +739,6 @@ WebInspector.NavigatorView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
-
-/**
- * @constructor
- * @extends {WebInspector.NavigatorView}
- */
-WebInspector.SourcesNavigatorView = function()
-{
-    WebInspector.NavigatorView.call(this);
-    WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
-}
-
-WebInspector.SourcesNavigatorView.prototype = {
-    /**
-     * @override
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     * @return {boolean}
-     */
-    accept: function(uiSourceCode)
-    {
-        if (!WebInspector.NavigatorView.prototype.accept(uiSourceCode))
-            return false;
-        return uiSourceCode.project().type() !== WebInspector.projectTypes.ContentScripts && uiSourceCode.project().type() !== WebInspector.projectTypes.Snippets;
-
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _inspectedURLChanged: function(event)
-    {
-       var nodes = this._uiSourceCodeNodes.valuesArray();
-       for (var i = 0; i < nodes.length; ++i) {
-           var uiSourceCode = nodes[i].uiSourceCode();
-           var inspectedPageURL = WebInspector.targetManager.inspectedPageURL();
-           if (inspectedPageURL && WebInspector.networkMapping.networkURL(uiSourceCode) === inspectedPageURL)
-              this.revealUISourceCode(uiSourceCode, true);
-       }
-    },
-
-    /**
-     * @override
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     */
-    _addUISourceCode: function(uiSourceCode)
-    {
-        WebInspector.NavigatorView.prototype._addUISourceCode.call(this, uiSourceCode);
-        var inspectedPageURL = WebInspector.targetManager.inspectedPageURL();
-        if (inspectedPageURL && WebInspector.networkMapping.networkURL(uiSourceCode) === inspectedPageURL)
-            this.revealUISourceCode(uiSourceCode, true);
-    },
-
-    __proto__: WebInspector.NavigatorView.prototype
-}
-
-/**
- * @constructor
- * @extends {WebInspector.NavigatorView}
- */
-WebInspector.ContentScriptsNavigatorView = function()
-{
-    WebInspector.NavigatorView.call(this);
-}
-
-WebInspector.ContentScriptsNavigatorView.prototype = {
-    /**
-     * @override
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     * @return {boolean}
-     */
-    accept: function(uiSourceCode)
-    {
-        if (!WebInspector.NavigatorView.prototype.accept(uiSourceCode))
-            return false;
-        return uiSourceCode.project().type() === WebInspector.projectTypes.ContentScripts;
-    },
-
-    __proto__: WebInspector.NavigatorView.prototype
 }
 
 /**

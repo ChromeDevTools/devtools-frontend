@@ -27,9 +27,22 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+.icon {
+    -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
+    -webkit-mask-size: 352px 168px;
+    width: 32px;
+    height: 24px;
+    margin: -3px -3px -3px -7px;
+}
+
+@media (-webkit-min-device-pixel-ratio: 1.5) {
+.icon {
+    -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
+}
+} /* media */
+
 .navigator-file-tree-item .icon {
-    -webkit-mask-image: url(Images/ic_drive_file_black_18dp.svg);
-    -webkit-mask-size: 18px 18px;
+    -webkit-mask-position: -224px -72px;
     background: linear-gradient(45deg, hsl(0, 0%, 50%), hsl(0, 0%, 70%));
 }
 
@@ -46,17 +59,16 @@
 }
 
 .navigator-folder-tree-item .icon {
-    -webkit-mask-image: url(Images/ic_folder_black_18dp.svg);
-    -webkit-mask-size: 18px 18px;
+    -webkit-mask-position: -64px -120px;
     background-color: #555;
 }
 
 .navigator-domain-tree-item .icon  {
-    -webkit-mask-image: url(Images/ic_cloud_queue_black_18dp.svg);
+    -webkit-mask-position: -160px -144px;
 }
 
 .navigator-frame-tree-item .icon {
-    -webkit-mask-image: url(Images/ic_web_asset_black_18dp.svg);
+    -webkit-mask-position: -256px -144px;
 }
 
 .navigator-sm-folder-tree-item .icon,
@@ -70,7 +82,7 @@
 }
 
 .navigator-worker-tree-item .icon {
-    -webkit-mask-image: url(Images/serviceWorker.svg);
+    -webkit-mask-position: -320px -144px;
 }
 
 .navigator-sm-script-tree-item .icon,
@@ -92,11 +104,4 @@
 .navigator-sm-script-tree-item .tree-element-title,
 .navigator-sm-stylesheet-tree-item .tree-element-title {
     font-style: italic;
-}
-
-.icon {
-    width: 18px;
-    height: 18px;
-    margin-right: 4px;
-    margin-top: -1px;
 }

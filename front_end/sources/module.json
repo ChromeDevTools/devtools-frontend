@@ -157,6 +157,11 @@
             "actionId": "sources.search.toggle"
         },
         {
+            "type": "context-menu-item",
+            "location": "navigatorMenu/navigate",
+            "actionId": "sources.go-to-source"
+        },
+        {
             "type": "@WebInspector.Revealer",
             "contextTypes": ["WebInspector.UILocation"],
             "className": "WebInspector.SourcesPanel.UILocationRevealer"
@@ -211,6 +216,7 @@
         {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "sources.go-to-source",
+            "title": "Go to file...",
             "className": "WebInspector.SourcesPanel.RevealingActionDelegate",
             "order": 100,
             "bindings": [
@@ -237,18 +243,21 @@
         },
         {
             "type": "setting",
-            "category": "Sources",
-            "title": "Group items by",
-            "settingName": "navigatorGrouping",
-            "settingType": "enum",
-            "defaultValue": "frame/domain/folder",
-            "options": [
-                ["Frames", "frame"],
-                ["Frames and Domains", "frame/domain"],
-                ["Frames, Domains and Folders", "frame/domain/folder"],
-                ["Domains", "domain"],
-                ["Domains and Folders", "domain/folder"]
-            ]
+            "settingName": "navigatorGroupByFrame",
+            "settingType": "boolean",
+            "defaultValue": "true"
+        },
+        {
+            "type": "setting",
+            "settingName": "navigatorGroupByDomain",
+            "settingType": "boolean",
+            "defaultValue": "true"
+        },
+        {
+            "type": "setting",
+            "settingName": "navigatorGroupByFolder",
+            "settingType": "boolean",
+            "defaultValue": "true"
         },
         {
             "type": "setting",

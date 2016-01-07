@@ -42,6 +42,13 @@ WebInspector.SourcesNavigator = function(workspace)
     this._tabbedPaneController = new WebInspector.ExtensibleTabbedPaneController(this._tabbedPane, "navigator-view", this._navigatorViewCreated.bind(this));
     /** @type {!Map.<string, ?WebInspector.NavigatorView>} */
     this._navigatorViews = new Map();
+
+    var toolbar = new WebInspector.Toolbar("");
+    var menuButton = new WebInspector.ToolbarMenuButton(this._populateMenu.bind(this), true);
+    menuButton.setTitle(WebInspector.UIString("More options"));
+    toolbar.appendToolbarItem(menuButton);
+
+    this._tabbedPane.appendAfterTabStrip(toolbar.element);
 }
 
 WebInspector.SourcesNavigator.Events = {
@@ -114,7 +121,98 @@ WebInspector.SourcesNavigator.prototype = {
         this.dispatchEventToListeners(WebInspector.SourcesNavigator.Events.SourceRenamed, event.data);
     },
 
+    /**
+     * @param {!WebInspector.ContextMenu} contextMenu
+     */
+    _populateMenu: function(contextMenu)
+    {
+        var groupByFrameSetting = WebInspector.moduleSetting("navigatorGroupByFrame");
+        var groupByDomainSetting = WebInspector.moduleSetting("navigatorGroupByDomain");
+        var groupByFolderSetting = WebInspector.moduleSetting("navigatorGroupByFolder");
+        contextMenu.appendItemsAtLocation("navigatorMenu");
+        contextMenu.appendSeparator();
+        contextMenu.appendCheckboxItem(WebInspector.UIString("Group by frame"), () => groupByFrameSetting.set(!groupByFrameSetting.get()), groupByFrameSetting.get());
+        contextMenu.appendCheckboxItem(WebInspector.UIString("Group by domain"), () => groupByDomainSetting.set(!groupByDomainSetting.get()), groupByDomainSetting.get());
+        contextMenu.appendCheckboxItem(WebInspector.UIString("Group by folder"), () => groupByFolderSetting.set(!groupByFolderSetting.get()), groupByFolderSetting.get(), !groupByDomainSetting.get());
+    },
+
     __proto__: WebInspector.Object.prototype
+}
+
+/**
+ * @constructor
+ * @extends {WebInspector.NavigatorView}
+ */
+WebInspector.SourcesNavigatorView = function()
+{
+    WebInspector.NavigatorView.call(this);
+    WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
+}
+
+WebInspector.SourcesNavigatorView.prototype = {
+    /**
+     * @override
+     * @param {!WebInspector.UISourceCode} uiSourceCode
+     * @return {boolean}
+     */
+    accept: function(uiSourceCode)
+    {
+        if (!WebInspector.NavigatorView.prototype.accept(uiSourceCode))
+            return false;
+        return uiSourceCode.project().type() !== WebInspector.projectTypes.ContentScripts && uiSourceCode.project().type() !== WebInspector.projectTypes.Snippets;
+    },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _inspectedURLChanged: function(event)
+    {
+       var nodes = this._uiSourceCodeNodes.valuesArray();
+       for (var i = 0; i < nodes.length; ++i) {
+           var uiSourceCode = nodes[i].uiSourceCode();
+           var inspectedPageURL = WebInspector.targetManager.inspectedPageURL();
+           if (inspectedPageURL && WebInspector.networkMapping.networkURL(uiSourceCode) === inspectedPageURL)
+              this.revealUISourceCode(uiSourceCode, true);
+       }
+    },
+
+    /**
+     * @override
+     * @param {!WebInspector.UISourceCode} uiSourceCode
+     */
+    uiSourceCodeAdded: function(uiSourceCode)
+    {
+        var inspectedPageURL = WebInspector.targetManager.inspectedPageURL();
+        if (inspectedPageURL && WebInspector.networkMapping.networkURL(uiSourceCode) === inspectedPageURL)
+            this.revealUISourceCode(uiSourceCode, true);
+    },
+
+    __proto__: WebInspector.NavigatorView.prototype
+}
+
+/**
+ * @constructor
+ * @extends {WebInspector.NavigatorView}
+ */
+WebInspector.ContentScriptsNavigatorView = function()
+{
+    WebInspector.NavigatorView.call(this);
+}
+
+WebInspector.ContentScriptsNavigatorView.prototype = {
+    /**
+     * @override
+     * @param {!WebInspector.UISourceCode} uiSourceCode
+     * @return {boolean}
+     */
+    accept: function(uiSourceCode)
+    {
+        if (!WebInspector.NavigatorView.prototype.accept(uiSourceCode))
+            return false;
+        return uiSourceCode.project().type() === WebInspector.projectTypes.ContentScripts;
+    },
+
+    __proto__: WebInspector.NavigatorView.prototype
 }
 
 /**

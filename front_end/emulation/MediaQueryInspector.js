@@ -262,7 +262,6 @@ WebInspector.MediaQueryInspector.prototype = {
             return;
 
         var oldChildrenCount = this.contentElement.children.length;
-        var scrollTop = this.contentElement.scrollTop;
         this.contentElement.removeChildren();
 
         var container = null;
@@ -276,7 +275,6 @@ WebInspector.MediaQueryInspector.prototype = {
             bar.classList.toggle("media-inspector-marker-inactive", !marker.active);
             container.appendChild(bar);
         }
-        this.contentElement.scrollTop = scrollTop;
     },
 
     /**

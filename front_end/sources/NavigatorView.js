@@ -128,7 +128,7 @@ WebInspector.NavigatorView.appendAddFolderItem = function(contextMenu)
 {
     function addFolder()
     {
-        WebInspector.isolatedFileSystemManager.addFileSystem("");
+        WebInspector.isolatedFileSystemManager.addFileSystem();
     }
 
     var addFolderLabel = WebInspector.UIString.capitalize("Add ^folder to ^workspace");

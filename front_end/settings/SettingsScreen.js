@@ -362,12 +362,12 @@ WebInspector.WorkspaceSettingsTab.prototype = {
      */
     _removeFileSystemClicked: function(fileSystem)
     {
-        WebInspector.isolatedFileSystemManager.removeFileSystem(fileSystem.path());
+        WebInspector.isolatedFileSystemManager.removeFileSystem(fileSystem);
     },
 
     _addFileSystemClicked: function()
     {
-        WebInspector.isolatedFileSystemManager.addFileSystem("");
+        WebInspector.isolatedFileSystemManager.addFileSystem();
     },
 
     _fileSystemAdded: function(event)

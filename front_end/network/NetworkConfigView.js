@@ -81,7 +81,7 @@ WebInspector.NetworkConfigView.prototype = {
 
     _customUserAgentChanged: function()
     {
-        if (!this._customUserAgent.checked)
+        if (!this._customUserAgentRadio.checked)
             return;
         WebInspector.multitargetNetworkManager.setCustomUserAgentOverride(this._customUserAgentSetting.get());
     },

@@ -26,7 +26,7 @@ WebInspector.SourcesView = function(workspace, sourcesPanel)
     this._searchableView.setMinimalSearchQuerySize(0);
     this._searchableView.show(this.element);
 
-    /** @type {!Map.<!WebInspector.UISourceCode, !WebInspector.Widget>} */
+    /** @type {!Map.<!WebInspector.UISourceCode, !WebInspector.VBoxWithToolbarItems>} */
     this._sourceViewByUISourceCode = new Map();
 
     var tabbedEditorPlaceholderText = WebInspector.isMac() ? WebInspector.UIString("Hit Cmd+P to open a file") : WebInspector.UIString("Hit Ctrl+P to open a file");
@@ -50,7 +50,7 @@ WebInspector.SourcesView = function(workspace, sourcesPanel)
         for (var i = 0; i < actions.length; ++i)
             this._toolbarEditorActions.appendToolbarItem(actions[i].button(this));
     }
-    this._scriptViewToolbarText = new WebInspector.Toolbar("", this._toolbarContainerElement);
+    this._scriptViewToolbar = new WebInspector.Toolbar("", this._toolbarContainerElement);
 
     WebInspector.startBatchUpdate();
     this._workspace.uiSourceCodes().forEach(this._addUISourceCode.bind(this));
@@ -281,13 +281,12 @@ WebInspector.SourcesView.prototype = {
 
     _updateScriptViewToolbarItems: function()
     {
-        this._scriptViewToolbarText.removeToolbarItems();
-        var sourceFrame = this.currentSourceFrame();
-        if (!sourceFrame)
-            return;
-
-        var toolbarText = sourceFrame.toolbarText();
-        this._scriptViewToolbarText.appendToolbarItem(toolbarText);
+        this._scriptViewToolbar.removeToolbarItems();
+        var view = /** @type {?WebInspector.VBoxWithToolbarItems} */(this.visibleView());
+        if (view) {
+            for (var item of view.toolbarItems())
+                this._scriptViewToolbar.appendToolbarItem(item);
+        }
     },
 
     /**
@@ -334,7 +333,6 @@ WebInspector.SourcesView.prototype = {
         var sourceView;
         var contentType = uiSourceCode.contentType();
 
-
         if (contentType.hasScripts())
             sourceFrame = new WebInspector.JavaScriptSourceFrame(this._sourcesPanel, uiSourceCode);
         else if (contentType.isStyleSheet())
@@ -350,7 +348,7 @@ WebInspector.SourcesView.prototype = {
             sourceFrame.setHighlighterType(WebInspector.NetworkProject.uiSourceCodeMimeType(uiSourceCode));
             this._historyManager.trackSourceFrameCursorJumps(sourceFrame);
         }
-        this._sourceViewByUISourceCode.set(uiSourceCode, /** @type {!WebInspector.Widget} */(sourceFrame || sourceView));
+        this._sourceViewByUISourceCode.set(uiSourceCode, /** @type {!WebInspector.VBoxWithToolbarItems} */(sourceFrame || sourceView));
         return /** @type {!WebInspector.Widget} */(sourceFrame || sourceView);
     },
 

@@ -332,7 +332,7 @@ WebInspector.DeviceModeView.Toolbar = function(model, showMediaInspectorSetting,
     this._lastMode = new Map();
     /** @type {?WebInspector.EmulatedDevice} */
     this._lastDevice = null;
-    /** @type {!Array<!WebInspector.ToolbarTextGlyphItem>} */
+    /** @type {!Array<!WebInspector.ToolbarLabel>} */
     this._appliedSizeItems = [];
     /** @type {?Element} */
     this._visibleToolbar = null;
@@ -453,7 +453,7 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
      */
     _appendAppliedSizeItems: function(toolbar)
     {
-        var item = new WebInspector.ToolbarTextGlyphItem();
+        var item = new WebInspector.ToolbarLabel();
         this._appliedSizeItems.push(item);
         toolbar.appendToolbarItem(item);
     },

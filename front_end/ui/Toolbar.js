@@ -106,9 +106,7 @@ WebInspector.Toolbar.prototype = {
      */
     appendText: function(text)
     {
-        var item = new WebInspector.ToolbarTextGlyphItem();
-        item.setText(text);
-        this.appendToolbarItem(item);
+        this.appendToolbarItem(new WebInspector.ToolbarLabel(text));
     },
 
     removeToolbarItems: function()
@@ -237,19 +235,22 @@ WebInspector.ToolbarItem.prototype = {
 /**
  * @constructor
  * @extends {WebInspector.ToolbarItem}
+ * @param {string=} text
+ * @param {string=} glyph
  */
-WebInspector.ToolbarTextGlyphItem = function()
+WebInspector.ToolbarLabel = function(text, glyph)
 {
     WebInspector.ToolbarItem.call(this, createElementWithClass("button", "toolbar-text-glyph"));
     this._glyphElement = this.element.createChild("div", "toolbar-glyph hidden");
     this._textElement = this.element.createChild("div", "toolbar-text hidden");
-    this._text = "";
-    this._glyph = "";
+    this.setText(text || "");
+    if (glyph)
+        this.setGlyph(glyph);
     this._state = "";
     this._title = "";
 }
 
-WebInspector.ToolbarTextGlyphItem.prototype = {
+WebInspector.ToolbarLabel.prototype = {
     /**
      * @param {string} text
      */
@@ -338,13 +339,13 @@ WebInspector.ToolbarTextGlyphItem.prototype = {
 
 /**
  * @constructor
- * @extends {WebInspector.ToolbarTextGlyphItem}
+ * @extends {WebInspector.ToolbarLabel}
  * @param {string} title
  * @param {string} glyph
  */
 WebInspector.ToolbarButton = function(title, glyph)
 {
-    WebInspector.ToolbarTextGlyphItem.call(this);
+    WebInspector.ToolbarLabel.call(this);
     this.element.classList.add("toolbar-button");
     this.element.addEventListener("click", this._clicked.bind(this), false);
     this.element.addEventListener("mousedown", this._mouseDown.bind(this), false);
@@ -380,7 +381,7 @@ WebInspector.ToolbarButton.prototype = {
         this.dispatchEventToListeners("mouseup", event);
     },
 
-    __proto__: WebInspector.ToolbarTextGlyphItem.prototype
+    __proto__: WebInspector.ToolbarLabel.prototype
 }
 
 /**

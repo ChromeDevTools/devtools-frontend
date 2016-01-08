@@ -49,6 +49,11 @@
     background: white;
 }
 
+.network-item-preview-toolbar {
+    border-top: 1px solid #ccc;
+    background-color: #eee;
+}
+
 .resource-timing-view {
     display: block;
     margin: 6px;

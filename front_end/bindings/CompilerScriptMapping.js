@@ -67,6 +67,17 @@ WebInspector.CompilerScriptMapping = function(debuggerModel, workspace, networkM
 
 WebInspector.CompilerScriptMapping.StubProjectID = "compiler-script-project";
 
+WebInspector.CompilerScriptMapping._originSymbol = Symbol("origin");
+
+/**
+ * @param {!WebInspector.UISourceCode} uiSourceCode
+ * @return {?string}
+ */
+WebInspector.CompilerScriptMapping.uiSourceCodeOrigin = function(uiSourceCode)
+{
+    return uiSourceCode[WebInspector.CompilerScriptMapping._originSymbol] || null;
+}
+
 WebInspector.CompilerScriptMapping.prototype = {
     /**
      * @param {!WebInspector.DebuggerModel.Location} rawLocation
@@ -200,11 +211,12 @@ WebInspector.CompilerScriptMapping.prototype = {
             if (this._sourceMapForURL.get(sourceURL))
                 continue;
             this._sourceMapForURL.set(sourceURL, sourceMap);
-            if (!this._networkMapping.hasMappingForURL(sourceURL) && !this._networkMapping.uiSourceCodeForScriptURL(sourceURL, script)) {
-                var contentProvider = sourceMap.sourceContentProvider(sourceURL, WebInspector.resourceTypes.SourceMapScript);
-                this._networkProject.addFileForURL(sourceURL, contentProvider, WebInspector.ResourceTreeFrame.fromScript(script), script.isContentScript());
-            }
             var uiSourceCode = this._networkMapping.uiSourceCodeForScriptURL(sourceURL, script);
+            if (!uiSourceCode && !this._networkMapping.hasMappingForURL(sourceURL)) {
+                var contentProvider = sourceMap.sourceContentProvider(sourceURL, WebInspector.resourceTypes.SourceMapScript);
+                uiSourceCode = this._networkProject.addFileForURL(sourceURL, contentProvider, WebInspector.ResourceTreeFrame.fromScript(script), script.isContentScript());
+                uiSourceCode[WebInspector.CompilerScriptMapping._originSymbol] = script.sourceURL;
+            }
             if (uiSourceCode) {
                 this._bindUISourceCode(uiSourceCode);
             } else {

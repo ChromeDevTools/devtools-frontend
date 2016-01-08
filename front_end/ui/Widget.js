@@ -633,6 +633,27 @@ WebInspector.VBoxWithResizeCallback.prototype = {
 }
 
 /**
+ * @constructor
+ * @extends {WebInspector.VBox}
+ */
+WebInspector.VBoxWithToolbarItems = function()
+{
+    WebInspector.VBox.call(this);
+}
+
+WebInspector.VBoxWithToolbarItems.prototype = {
+    /**
+     * @return {!Array<!WebInspector.ToolbarItem>}
+     */
+    toolbarItems: function()
+    {
+        return [];
+    },
+
+    __proto__: WebInspector.VBox.prototype
+}
+
+/**
  * @override
  * @param {?Node} child
  * @return {?Node}

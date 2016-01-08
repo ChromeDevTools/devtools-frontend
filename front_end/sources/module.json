@@ -222,11 +222,11 @@
             "bindings": [
                 {
                     "platform": "mac",
-                    "shortcut": "Meta+O Meta+P"
+                    "shortcut": "Meta+P Meta+O"
                 },
                 {
                     "platform": "windows,linux",
-                    "shortcut": "Ctrl+O Ctrl+P"
+                    "shortcut": "Ctrl+P Ctrl+O"
                 }
             ]
         },

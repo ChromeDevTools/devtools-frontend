@@ -29,14 +29,14 @@
  */
 
 /**
- * @extends {WebInspector.VBox}
+ * @extends {WebInspector.VBoxWithToolbarItems}
  * @constructor
  * @implements {WebInspector.Replaceable}
  * @param {!WebInspector.ContentProvider} contentProvider
  */
 WebInspector.SourceFrame = function(contentProvider)
 {
-    WebInspector.VBox.call(this);
+    WebInspector.VBoxWithToolbarItems.call(this);
 
     this._url = contentProvider.contentURL();
     this._contentProvider = contentProvider;
@@ -53,7 +53,7 @@ WebInspector.SourceFrame = function(contentProvider)
     this._shortcuts = {};
     this.element.addEventListener("keydown", this._handleKeyDown.bind(this), false);
 
-    this._sourcePosition = new WebInspector.ToolbarTextGlyphItem();
+    this._sourcePosition = new WebInspector.ToolbarLabel();
 }
 
 WebInspector.SourceFrame.Events = {
@@ -96,11 +96,12 @@ WebInspector.SourceFrame.prototype = {
     },
 
     /**
-     * @return {!WebInspector.ToolbarItem}
+     * @override
+     * @return {!Array<!WebInspector.ToolbarItem>}
      */
-    toolbarText: function()
+    toolbarItems: function()
     {
-        return this._sourcePosition;
+        return [this._sourcePosition];
     },
 
     /**
@@ -602,7 +603,7 @@ WebInspector.SourceFrame.prototype = {
             e.consume(true);
     },
 
-    __proto__: WebInspector.VBox.prototype
+    __proto__: WebInspector.VBoxWithToolbarItems.prototype
 }
 
 /**

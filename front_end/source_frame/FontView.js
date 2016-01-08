@@ -28,18 +28,19 @@
 
 /**
  * @constructor
- * @extends {WebInspector.VBox}
+ * @extends {WebInspector.VBoxWithToolbarItems}
  * @param {string} mimeType
  * @param {!WebInspector.ContentProvider} contentProvider
  */
 WebInspector.FontView = function(mimeType, contentProvider)
 {
-    WebInspector.VBox.call(this);
+    WebInspector.VBoxWithToolbarItems.call(this);
     this.registerRequiredCSS("source_frame/fontView.css");
     this.element.classList.add("font-view");
     this._url = contentProvider.contentURL();
     this._mimeType = mimeType;
     this._contentProvider = contentProvider;
+    this._mimeTypeLabel = new WebInspector.ToolbarLabel(mimeType);
 }
 
 WebInspector.FontView._fontPreviewLines = [ "ABCDEFGHIJKLM", "NOPQRSTUVWXYZ", "abcdefghijklm", "nopqrstuvwxyz", "1234567890" ];
@@ -49,6 +50,15 @@ WebInspector.FontView._fontId = 0;
 WebInspector.FontView._measureFontSize = 50;
 
 WebInspector.FontView.prototype = {
+    /**
+     * @override
+     * @return {!Array<!WebInspector.ToolbarItem>}
+     */
+    toolbarItems: function()
+    {
+        return [this._mimeTypeLabel];
+    },
+
     /**
      * @param {string} uniqueFontName
      * @param {?string} content
@@ -147,5 +157,5 @@ WebInspector.FontView.prototype = {
         this.fontPreviewElement.style.setProperty("font-size", finalFontSize + "px", null);
     },
 
-    __proto__: WebInspector.VBox.prototype
+    __proto__: WebInspector.VBoxWithToolbarItems.prototype
 }

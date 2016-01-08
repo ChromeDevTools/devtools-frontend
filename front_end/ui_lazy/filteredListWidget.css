@@ -15,16 +15,16 @@
     border: 0;
     box-shadow: rgba(140, 140, 140, 0.5) 0 4px 16px;
     margin: 0;
-    padding-left: 6px;
+    padding: 0 6px;
     z-index: 1;
     font-size: inherit;
 }
 
 .filtered-list-widget-input {
     white-space: pre;
-    -webkit-user-modify: read-write-plaintext-only;
     height: 18px;
     margin-top: 10px;
+    overflow: hidden;
 }
 
 .filtered-list-widget > div.container {

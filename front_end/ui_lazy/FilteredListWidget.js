@@ -23,6 +23,7 @@ WebInspector.FilteredListWidget = function(delegate, renderAsTwoRows)
 
     this._promptElement = this.contentElement.createChild("div", "monospace filtered-list-widget-input");
     this._promptElement.setAttribute("spellcheck", "false");
+    this._promptElement.setAttribute("contenteditable", "true");
     this._prompt = new WebInspector.TextPrompt(this._autocomplete.bind(this));
     this._prompt.renderAsBlock();
     this._prompt.addEventListener(WebInspector.TextPrompt.Events.ItemAccepted, this._onAutocompleted, this);

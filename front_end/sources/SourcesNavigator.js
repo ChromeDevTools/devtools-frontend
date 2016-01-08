@@ -126,14 +126,10 @@ WebInspector.SourcesNavigator.prototype = {
      */
     _populateMenu: function(contextMenu)
     {
-        var groupByFrameSetting = WebInspector.moduleSetting("navigatorGroupByFrame");
-        var groupByDomainSetting = WebInspector.moduleSetting("navigatorGroupByDomain");
         var groupByFolderSetting = WebInspector.moduleSetting("navigatorGroupByFolder");
         contextMenu.appendItemsAtLocation("navigatorMenu");
         contextMenu.appendSeparator();
-        contextMenu.appendCheckboxItem(WebInspector.UIString("Group by frame"), () => groupByFrameSetting.set(!groupByFrameSetting.get()), groupByFrameSetting.get());
-        contextMenu.appendCheckboxItem(WebInspector.UIString("Group by domain"), () => groupByDomainSetting.set(!groupByDomainSetting.get()), groupByDomainSetting.get());
-        contextMenu.appendCheckboxItem(WebInspector.UIString("Group by folder"), () => groupByFolderSetting.set(!groupByFolderSetting.get()), groupByFolderSetting.get(), !groupByDomainSetting.get());
+        contextMenu.appendCheckboxItem(WebInspector.UIString("Group by folder"), () => groupByFolderSetting.set(!groupByFolderSetting.get()), groupByFolderSetting.get());
     },
 
     __proto__: WebInspector.Object.prototype

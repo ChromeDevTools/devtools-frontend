@@ -54,12 +54,8 @@ WebInspector.NavigatorView = function()
 
     this.element.addEventListener("contextmenu", this.handleContextMenu.bind(this), false);
 
-    this._navigatorGroupingByFrameSetting = WebInspector.moduleSetting("navigatorGroupByFrame");
-    this._navigatorGroupingByFrameSetting.addChangeListener(this._groupingChanged.bind(this));
-    this._navigatorGroupingByDomainSetting = WebInspector.moduleSetting("navigatorGroupByDomain");
-    this._navigatorGroupingByDomainSetting.addChangeListener(this._groupingChanged.bind(this));
-    this._navigatorGroupingByFolderSetting = WebInspector.moduleSetting("navigatorGroupByFolder");
-    this._navigatorGroupingByFolderSetting.addChangeListener(this._groupingChanged.bind(this));
+    this._navigatorGroupByFolderSetting = WebInspector.moduleSetting("navigatorGroupByFolder");
+    this._navigatorGroupByFolderSetting.addChangeListener(this._groupingChanged.bind(this));
 
     this._initGrouping();
     WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.EventTypes.FrameNavigated, this._frameNavigated, this);
@@ -674,9 +670,15 @@ WebInspector.NavigatorView.prototype = {
 
     _initGrouping: function()
     {
-        this._groupByFrame = this._navigatorGroupingByFrameSetting.get();
-        this._groupByDomain = this._navigatorGroupingByDomainSetting.get();
-        this._groupByFolder = this._groupByDomain && this._navigatorGroupingByFolderSetting.get();
+        this._groupByFrame = true;
+        this._groupByDomain = this._navigatorGroupByFolderSetting.get();
+        this._groupByFolder = this._groupByDomain;
+    },
+
+    _resetForTest: function()
+    {
+        this.reset();
+        this._workspace.uiSourceCodes().forEach(this._addUISourceCode.bind(this));
     },
 
     /**

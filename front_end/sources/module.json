@@ -243,18 +243,6 @@
         },
         {
             "type": "setting",
-            "settingName": "navigatorGroupByFrame",
-            "settingType": "boolean",
-            "defaultValue": "true"
-        },
-        {
-            "type": "setting",
-            "settingName": "navigatorGroupByDomain",
-            "settingType": "boolean",
-            "defaultValue": "true"
-        },
-        {
-            "type": "setting",
             "settingName": "navigatorGroupByFolder",
             "settingType": "boolean",
             "defaultValue": "true"

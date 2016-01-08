@@ -90,7 +90,7 @@
             {
                 "id": "ResourceType",
                 "type": "string",
-                "enum": ["Document", "Stylesheet", "Image", "Media", "Font", "Script", "TextTrack", "XHR", "Fetch", "EventSource", "WebSocket", "Other"],
+                "enum": ["Document", "Stylesheet", "Image", "Media", "Font", "Script", "TextTrack", "XHR", "Fetch", "EventSource", "WebSocket", "Manifest", "Other"],
                 "description": "Resource type as it was perceived by the rendering engine."
             },
             {

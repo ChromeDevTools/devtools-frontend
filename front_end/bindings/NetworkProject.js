@@ -343,7 +343,8 @@ WebInspector.NetworkProject.prototype = {
         // Only load selected resource types from resources.
         if (resourceType !== WebInspector.resourceTypes.Image &&
             resourceType !== WebInspector.resourceTypes.Font &&
-            resourceType !== WebInspector.resourceTypes.Document) {
+            resourceType !== WebInspector.resourceTypes.Document &&
+            resourceType !== WebInspector.resourceTypes.Manifest) {
             return;
         }
 

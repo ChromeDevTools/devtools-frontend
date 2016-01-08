@@ -1188,7 +1188,7 @@ WebInspector.StylePropertiesSection.prototype = {
             selectorElement.className = "simple-selector" + matchingSelectorClass;
             if (rule.styleSheetId)
                 selectorElement._selectorIndex = i;
-            selectorElement.textContent = selectors[i].value;
+            selectorElement.textContent = selectors[i].text;
 
             fragment.appendChild(selectorElement);
         }

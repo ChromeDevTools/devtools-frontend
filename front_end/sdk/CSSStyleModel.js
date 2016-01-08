@@ -322,7 +322,7 @@ WebInspector.CSSStyleModel.prototype = {
         var allSelectorsBarrier = new CallbackBarrier();
         for (var i = 0; i < selectors.length; ++i) {
             var boundCallback = allSelectorsBarrier.createCallback(selectorQueried.bind(null, i, nodeId, matchingSelectors));
-            this._domModel.querySelectorAll(ownerDocumentId, selectors[i].value, boundCallback);
+            this._domModel.querySelectorAll(ownerDocumentId, selectors[i].text, boundCallback);
         }
         return new Promise(promiseConstructor);
 
@@ -995,11 +995,11 @@ WebInspector.CSSStyleDeclaration.prototype = {
 
 /**
  * @constructor
- * @param {!CSSAgent.Selector} payload
+ * @param {!CSSAgent.Value} payload
  */
 WebInspector.CSSRuleSelector = function(payload)
 {
-    this.value = payload.value;
+    this.text = payload.text;
     if (payload.range)
         this.range = WebInspector.TextRange.fromObject(payload.range);
 }
@@ -1066,7 +1066,7 @@ WebInspector.CSSRule.createDummyRule = function(cssModel, selectorText)
 {
     var dummyPayload = {
         selectorList: {
-            selectors: [{ value: selectorText}],
+            selectors: [{ text: selectorText}],
         },
         style: {
             styleSheetId: "0",
@@ -1146,7 +1146,7 @@ WebInspector.CSSRule.prototype = {
      */
     selectorText: function()
     {
-        return this.selectors.select("value").join(", ");
+        return this.selectors.select("text").join(", ");
     },
 
     /**

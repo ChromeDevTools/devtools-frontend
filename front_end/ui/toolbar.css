@@ -182,6 +182,7 @@ select.toolbar-item {
     padding: 0 15px 0 5px;
     margin-right: -10px;
     position: relative;
+    background-color: white;
 }
 
 /* Input */

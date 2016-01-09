@@ -815,7 +815,6 @@ WebInspector.DataGrid.prototype = {
             nextSelectedNode.reveal();
             nextSelectedNode.select();
         }
-
         if (handled)
             event.consume(true);
     },
@@ -832,18 +831,25 @@ WebInspector.DataGrid.prototype = {
         // Selection is not in the subtree being deleted.
         if (!ancestor)
             return;
-        var nextSelectedNode = onlyAffectsSubtree ? ancestor : this.selectedNode.traverseNextNode(true);
+
+        var nextSelectedNode;
+        // Skip subtree being deleted when looking for the next selectable node.
+        for (ancestor = root; ancestor && !ancestor.nextSibling; ancestor = ancestor.parent) { }
+        if (ancestor)
+            nextSelectedNode = ancestor.nextSibling;
         while (nextSelectedNode && !nextSelectedNode.selectable)
             nextSelectedNode = nextSelectedNode.traverseNextNode(true);
 
         if (!nextSelectedNode || nextSelectedNode.isCreationNode) {
-            nextSelectedNode = this.selectedNode.traversePreviousNode(true);
+            nextSelectedNode = root.traversePreviousNode(true);
             while (nextSelectedNode && !nextSelectedNode.selectable)
                 nextSelectedNode = nextSelectedNode.traversePreviousNode(true);
         }
         if (nextSelectedNode) {
             nextSelectedNode.reveal();
             nextSelectedNode.select();
+        } else {
+            this.selectedNode.deselect();
         }
     },
 

@@ -52,6 +52,7 @@
     bottom: 0;
     left: 0;
     font-size: 13px;
+    overflow: auto;
 }
 
 .panel.timeline .banner a,

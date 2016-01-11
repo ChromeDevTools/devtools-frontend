@@ -53,7 +53,7 @@ WebInspector.ContentProviderBasedProject.prototype = {
      */
     requestFileContent: function(uiSourceCode, callback)
     {
-        var contentProvider = this._contentProviders[uiSourceCode.path()];
+        var contentProvider = this._contentProviders[uiSourceCode.url()];
         contentProvider.requestContent(callback);
 
         /**
@@ -104,7 +104,7 @@ WebInspector.ContentProviderBasedProject.prototype = {
      */
     rename: function(uiSourceCode, newName, callback)
     {
-        var path = uiSourceCode.path();
+        var path = uiSourceCode.url();
         this.performRename(path, newName, innerCallback.bind(this));
 
         /**
@@ -191,7 +191,7 @@ WebInspector.ContentProviderBasedProject.prototype = {
      */
     searchInFileContent: function(uiSourceCode, query, caseSensitive, isRegex, callback)
     {
-        var contentProvider = this._contentProviders[uiSourceCode.path()];
+        var contentProvider = this._contentProviders[uiSourceCode.url()];
         contentProvider.searchInContent(query, caseSensitive, isRegex, callback);
     },
 
@@ -289,7 +289,7 @@ WebInspector.ContentProviderBasedProject.prototype = {
      */
     addUISourceCodeWithProvider: function(uiSourceCode, contentProvider)
     {
-        this._contentProviders[uiSourceCode.path()] = contentProvider;
+        this._contentProviders[uiSourceCode.url()] = contentProvider;
         this.addUISourceCode(uiSourceCode, true);
     },
 

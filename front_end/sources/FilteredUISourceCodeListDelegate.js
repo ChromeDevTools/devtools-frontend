@@ -80,7 +80,7 @@ WebInspector.FilteredUISourceCodeListDelegate.prototype = {
      */
     itemKeyAt: function(itemIndex)
     {
-        return this._uiSourceCodes[itemIndex].fullDisplayName();
+        return this._uiSourceCodes[itemIndex].url();
     },
 
     /**
@@ -101,8 +101,8 @@ WebInspector.FilteredUISourceCodeListDelegate.prototype = {
             this._scorer = new WebInspector.FilePathScoreFunction(query);
         }
 
-        var path = uiSourceCode.fullDisplayName();
-        return score + 10 * this._scorer.score(path, null);
+        var url = uiSourceCode.url();
+        return score + 10 * this._scorer.score(url, null);
     },
 
     /**

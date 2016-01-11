@@ -86,7 +86,7 @@ WebInspector.BreakpointManager.prototype = {
         var networkURL = this._networkMapping.networkURL(uiSourceCode)
         if (!networkURL)
             return "";
-        return uiSourceCode.uri();
+        return uiSourceCode.url();
     },
 
     /**
@@ -243,7 +243,7 @@ WebInspector.BreakpointManager.prototype = {
             return breakpoint;
         }
         var projectId = uiSourceCode.project().id();
-        var path = uiSourceCode.path();
+        var path = uiSourceCode.url();
         var sourceFileId = this._sourceFileId(uiSourceCode);
         breakpoint = new WebInspector.BreakpointManager.Breakpoint(this, projectId, path, sourceFileId, lineNumber, columnNumber, condition, enabled);
         if (!this._breakpointsForPrimaryUISourceCode.get(uiSourceCode))

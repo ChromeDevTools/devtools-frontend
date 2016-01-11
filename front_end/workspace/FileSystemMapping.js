@@ -249,7 +249,7 @@ WebInspector.FileSystemMapping.prototype = {
      * @param {string} url
      * @return {boolean}
      */
-    hasMappingForURL: function(url)
+    hasMappingForNetworkURL: function(url)
     {
         return !!this._mappingEntryForURL(url);
     },
@@ -274,7 +274,7 @@ WebInspector.FileSystemMapping.prototype = {
      * @param {string} filePath
      * @return {string}
      */
-    urlForPath: function(fileSystemPath, filePath)
+    networkURLForFileSystemURL: function(fileSystemPath, filePath)
     {
         var relativePath = filePath.substring(fileSystemPath.length);
         var entry = this._mappingEntryForPath(fileSystemPath, relativePath);

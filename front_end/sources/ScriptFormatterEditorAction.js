@@ -157,7 +157,7 @@ WebInspector.ScriptFormatterEditorAction.prototype = {
         var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data);
         this._updateButton(uiSourceCode);
 
-        var path = uiSourceCode.project().id() + ":" + uiSourceCode.path();
+        var path = uiSourceCode.project().id() + ":" + uiSourceCode.url();
         var networkURL = WebInspector.networkMapping.networkURL(uiSourceCode);
         if (this._isFormatableScript(uiSourceCode) && networkURL && this._pathsToFormatOnLoad.has(path) && !this._formattedPaths.get(path))
             this._formatUISourceCodeScript(uiSourceCode);
@@ -264,7 +264,7 @@ WebInspector.ScriptFormatterEditorAction.prototype = {
             this._uiSourceCodes.remove(formatData.scripts[i]);
             WebInspector.debuggerWorkspaceBinding.popSourceMapping(formatData.scripts[i]);
         }
-        this._project.removeFile(formattedUISourceCode.path());
+        this._project.removeFile(formattedUISourceCode.url());
     },
 
     /**
@@ -289,7 +289,7 @@ WebInspector.ScriptFormatterEditorAction.prototype = {
             else {
                 this._formattedPaths.remove(formatData.projectId + ":" + formatData.path);
                 this._formatData.remove(uiSourceCodes[i]);
-                this._project.removeFile(uiSourceCodes[i].path());
+                this._project.removeFile(uiSourceCodes[i].url());
             }
         }
     },
@@ -339,7 +339,7 @@ WebInspector.ScriptFormatterEditorAction.prototype = {
      */
     _formatUISourceCodeScript: function(uiSourceCode)
     {
-        var formattedPath = this._formattedPaths.get(uiSourceCode.project().id() + ":" + uiSourceCode.path());
+        var formattedPath = this._formattedPaths.get(uiSourceCode.project().id() + ":" + uiSourceCode.url());
         if (formattedPath) {
             var uiSourceCodePath = formattedPath;
             var formattedUISourceCode = this._workspace.uiSourceCode(this._projectId, uiSourceCodePath);
@@ -370,11 +370,11 @@ WebInspector.ScriptFormatterEditorAction.prototype = {
         {
             var scripts = this._scriptsForUISourceCode(uiSourceCode);
             var contentProvider = new WebInspector.StaticContentProvider(uiSourceCode.contentType(), formattedContent);
-            var formattedUISourceCode = this._project.addContentProvider(uiSourceCode.path() + ":formatted", contentProvider);
-            var formattedPath = formattedUISourceCode.path();
-            var formatData = new WebInspector.FormatterScriptMapping.FormatData(uiSourceCode.project().id(), uiSourceCode.path(), formatterMapping, scripts);
+            var formattedUISourceCode = this._project.addContentProvider(uiSourceCode.url() + ":formatted", contentProvider);
+            var formattedPath = formattedUISourceCode.url();
+            var formatData = new WebInspector.FormatterScriptMapping.FormatData(uiSourceCode.project().id(), uiSourceCode.url(), formatterMapping, scripts);
             this._formatData.set(formattedUISourceCode, formatData);
-            var path = uiSourceCode.project().id() + ":" + uiSourceCode.path();
+            var path = uiSourceCode.project().id() + ":" + uiSourceCode.url();
             this._formattedPaths.set(path, formattedPath);
             this._pathsToFormatOnLoad.add(path);
             for (var i = 0; i < scripts.length; ++i) {

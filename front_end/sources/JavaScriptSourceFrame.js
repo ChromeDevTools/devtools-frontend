@@ -112,7 +112,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
         var infobar = new WebInspector.UISourceCodeFrame.Infobar(WebInspector.Infobar.Type.Warning, WebInspector.UIString("Workspace mapping mismatch"));
         this._divergedInfobar = infobar;
 
-        var fileURL = this.uiSourceCode().originURL();
+        var fileURL = this.uiSourceCode().url();
         infobar.createDetailsRowMessage(WebInspector.UIString("The content of this file on the file system:\u00a0")).appendChild(
             WebInspector.linkifyURLAsNode(fileURL, fileURL, "source-frame-infobar-details-url", true));
 
@@ -148,7 +148,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
         if (projectType === WebInspector.projectTypes.Snippets)
             return;
         var networkURL = WebInspector.networkMapping.networkURL(this.uiSourceCode());
-        var url = projectType === WebInspector.projectTypes.Formatter ? this.uiSourceCode().originURL() : networkURL;
+        var url = projectType === WebInspector.projectTypes.Formatter ? this.uiSourceCode().url() : networkURL;
         var isContentScript = projectType === WebInspector.projectTypes.ContentScripts;
         if (!WebInspector.BlackboxSupport.isBlackboxed(url, isContentScript)) {
             this._hideBlackboxInfobar();

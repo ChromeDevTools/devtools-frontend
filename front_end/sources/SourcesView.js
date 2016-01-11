@@ -772,20 +772,20 @@ WebInspector.SourcesView.SwitchFileActionDelegate._nextFile = function(currentUI
 
     var uiSourceCodes = currentUISourceCode.project().uiSourceCodes();
     var candidates = [];
-    var path = currentUISourceCode.parentPath();
+    var url = currentUISourceCode.parentURL();
     var name = currentUISourceCode.name();
     var namePrefix = fileNamePrefix(name);
     for (var i = 0; i < uiSourceCodes.length; ++i) {
         var uiSourceCode = uiSourceCodes[i];
-        if (path !== uiSourceCode.parentPath())
+        if (url !== uiSourceCode.parentURL())
             continue;
         if (fileNamePrefix(uiSourceCode.name()) === namePrefix)
             candidates.push(uiSourceCode.name());
     }
     candidates.sort(String.naturalOrderComparator);
     var index = mod(candidates.indexOf(name) + 1, candidates.length);
-    var fullPath = (path ? path + "/" : "") + candidates[index];
-    var nextUISourceCode = currentUISourceCode.project().uiSourceCode(fullPath);
+    var fullURL = (url ? url + "/" : "") + candidates[index];
+    var nextUISourceCode = currentUISourceCode.project().uiSourceCodeForURL(fullURL);
     return nextUISourceCode !== currentUISourceCode ? nextUISourceCode : null;
 }
 

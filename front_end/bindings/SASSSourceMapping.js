@@ -155,7 +155,7 @@ WebInspector.SASSSourceMapping.prototype = {
             var sources = sourceMap ? sourceMap.sources() : [];
             for (var i = 0; i < sources.length; ++i) {
                 var sassURL = sources[i];
-                if (!this._networkMapping.hasMappingForURL(sassURL)) {
+                if (!this._networkMapping.hasMappingForNetworkURL(sassURL)) {
                     var contentProvider = sourceMap.sourceContentProvider(sassURL, WebInspector.resourceTypes.SourceMapStyleSheet);
                     this._networkProject.addFileForURL(sassURL, contentProvider, WebInspector.ResourceTreeFrame.fromStyleSheet(header));
                 }

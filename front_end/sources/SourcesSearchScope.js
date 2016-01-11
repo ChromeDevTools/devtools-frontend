@@ -148,7 +148,7 @@ WebInspector.SourcesSearchScope.prototype = {
             if (dirtyOnly && !uiSourceCode.isDirty())
                 continue;
             if (this._searchConfig.filePathMatchesFileQuery(uiSourceCode.fullDisplayName()))
-                result.push(uiSourceCode.path());
+                result.push(uiSourceCode.url());
         }
         result.sort(String.naturalOrderComparator);
         return result;
@@ -175,7 +175,7 @@ WebInspector.SourcesSearchScope.prototype = {
 
         var uiSourceCodes = [];
         for (var i = 0; i < files.length; ++i) {
-            var uiSourceCode = project.uiSourceCode(files[i]);
+            var uiSourceCode = project.uiSourceCodeForURL(files[i]);
             if (uiSourceCode)
                 uiSourceCodes.push(uiSourceCode);
         }

@@ -175,16 +175,10 @@ WebInspector.Project.prototype = {
     indexContent: function(progress) { },
 
     /**
-     * @param {string} path
+     * @param {string} url
      * @return {?WebInspector.UISourceCode}
      */
-    uiSourceCode: function(path) { },
-
-    /**
-     * @param {string} originURL
-     * @return {?WebInspector.UISourceCode}
-     */
-    uiSourceCodeForOriginURL: function(originURL) { },
+    uiSourceCodeForURL: function(url) { },
 
     /**
      * @return {!Array.<!WebInspector.UISourceCode>}
@@ -277,35 +271,35 @@ WebInspector.ProjectStore.prototype = {
      */
     addUISourceCode: function(uiSourceCode, replace)
     {
-        var path = uiSourceCode.path();
-        if (this.uiSourceCode(path)) {
+        var url = uiSourceCode.url();
+        if (this.uiSourceCodeForURL(url)) {
             if (replace)
-                this.removeUISourceCode(path);
+                this.removeUISourceCode(url);
             else
                 return false;
         }
-        this._uiSourceCodesMap.set(path, {uiSourceCode: uiSourceCode, index: this._uiSourceCodesList.length});
+        this._uiSourceCodesMap.set(url, {uiSourceCode: uiSourceCode, index: this._uiSourceCodesList.length});
         this._uiSourceCodesList.push(uiSourceCode);
         this._workspace.dispatchEventToListeners(WebInspector.Workspace.Events.UISourceCodeAdded, uiSourceCode);
         return true;
     },
 
     /**
-     * @param {string} path
+     * @param {string} url
      */
-    removeUISourceCode: function(path)
+    removeUISourceCode: function(url)
     {
-        var uiSourceCode = this.uiSourceCode(path);
+        var uiSourceCode = this.uiSourceCodeForURL(url);
         if (!uiSourceCode)
             return;
 
-        var entry = this._uiSourceCodesMap.get(path);
+        var entry = this._uiSourceCodesMap.get(url);
         var movedUISourceCode = this._uiSourceCodesList[this._uiSourceCodesList.length - 1];
         this._uiSourceCodesList[entry.index] = movedUISourceCode;
-        var movedEntry = this._uiSourceCodesMap.get(movedUISourceCode.path());
+        var movedEntry = this._uiSourceCodesMap.get(movedUISourceCode.url());
         movedEntry.index = entry.index;
         this._uiSourceCodesList.splice(this._uiSourceCodesList.length - 1, 1);
-        this._uiSourceCodesMap.delete(path);
+        this._uiSourceCodesMap.delete(url);
         this._workspace.dispatchEventToListeners(WebInspector.Workspace.Events.UISourceCodeRemoved, entry.uiSourceCode);
     },
 
@@ -317,27 +311,13 @@ WebInspector.ProjectStore.prototype = {
     },
 
     /**
-     * @param {string} path
+     * @param {string} url
      * @return {?WebInspector.UISourceCode}
      */
-    uiSourceCode: function(path)
+    uiSourceCodeForURL: function(url)
     {
-        var entry = this._uiSourceCodesMap.get(path);
+        var entry = this._uiSourceCodesMap.get(url);
         return entry ? entry.uiSourceCode : null;
-    },
-
-    /**
-     * @param {string} originURL
-     * @return {?WebInspector.UISourceCode}
-     */
-    uiSourceCodeForOriginURL: function(originURL)
-    {
-        for (var i = 0; i < this._uiSourceCodesList.length; ++i) {
-            var uiSourceCode = this._uiSourceCodesList[i];
-            if (uiSourceCode.originURL() === originURL)
-                return uiSourceCode;
-        }
-        return null;
     },
 
     /**
@@ -354,8 +334,8 @@ WebInspector.ProjectStore.prototype = {
      */
     renameUISourceCode: function(uiSourceCode, newName)
     {
-        var oldPath = uiSourceCode.path();
-        var newPath = uiSourceCode.parentPath() ? uiSourceCode.parentPath() + "/" + newName : newName;
+        var oldPath = uiSourceCode.url();
+        var newPath = uiSourceCode.parentURL() ? uiSourceCode.parentURL() + "/" + newName : newName;
         var value = /** @type {!{uiSourceCode: !WebInspector.UISourceCode, index: number}} */ (this._uiSourceCodesMap.get(oldPath));
         this._uiSourceCodesMap.set(newPath, value);
         this._uiSourceCodesMap.delete(oldPath);
@@ -408,39 +388,23 @@ WebInspector.Workspace.prototype = {
 
     /**
      * @param {string} projectId
-     * @param {string} path
+     * @param {string} url
      * @return {?WebInspector.UISourceCode}
      */
-    uiSourceCode: function(projectId, path)
+    uiSourceCode: function(projectId, url)
     {
         var project = this._projects.get(projectId);
-        return project ? project.uiSourceCode(path) : null;
+        return project ? project.uiSourceCodeForURL(url) : null;
     },
 
     /**
-     * @param {string} originURL
+     * @param {string} url
      * @return {?WebInspector.UISourceCode}
      */
-    uiSourceCodeForOriginURL: function(originURL)
+    uiSourceCodeForURL: function(url)
     {
-        var projects = this.projectsForType(WebInspector.projectTypes.Network);
-        projects = projects.concat(this.projectsForType(WebInspector.projectTypes.ContentScripts));
-        for (var project of projects) {
-            var uiSourceCode = project.uiSourceCodeForOriginURL(originURL);
-            if (uiSourceCode)
-                return uiSourceCode;
-        }
-        return null;
-    },
-
-    /**
-     * @param {string} originURL
-     * @return {?WebInspector.UISourceCode}
-     */
-    filesystemUISourceCode: function(originURL)
-    {
-        for (var project of this.projectsForType(WebInspector.projectTypes.FileSystem)) {
-            var uiSourceCode = project.uiSourceCodeForOriginURL(originURL);
+        for (var project of this._projects.values()) {
+            var uiSourceCode = project.uiSourceCodeForURL(url);
             if (uiSourceCode)
                 return uiSourceCode;
         }

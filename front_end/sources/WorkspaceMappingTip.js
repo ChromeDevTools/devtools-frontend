@@ -61,7 +61,7 @@ WebInspector.WorkspaceMappingTip.prototype = {
                 var name = uiSourceCode.name();
                 var networkUiSourceCodes = networkProjects[i].uiSourceCodes();
                 for (var j = 0; j < networkUiSourceCodes.length; ++j) {
-                    if (networkUiSourceCodes[j].name() === name && this._isLocalHost(networkUiSourceCodes[j].originURL())) {
+                    if (networkUiSourceCodes[j].name() === name && this._isLocalHost(networkUiSourceCodes[j].url())) {
                         this._showMappingInfobar(uiSourceCode, false);
                         return;
                     }
@@ -72,7 +72,7 @@ WebInspector.WorkspaceMappingTip.prototype = {
         // Then map network -> filesystem.
         if (uiSourceCode.project().type() === WebInspector.projectTypes.Network || uiSourceCode.project().type() === WebInspector.projectTypes.ContentScripts) {
             // Suggest for localhost only.
-            if (!this._isLocalHost(uiSourceCode.originURL()))
+            if (!this._isLocalHost(uiSourceCode.url()))
                 return;
             var networkURL = WebInspector.networkMapping.networkURL(uiSourceCode);
             if (WebInspector.networkMapping.uiSourceCodeForURLForAnyTarget(networkURL) !== uiSourceCode)
@@ -125,9 +125,9 @@ WebInspector.WorkspaceMappingTip.prototype = {
     {
         var title;
         if (isNetwork)
-            title = WebInspector.UIString("Map network resource '%s' to workspace?", uiSourceCode.originURL());
+            title = WebInspector.UIString("Map network resource '%s' to workspace?", uiSourceCode.url());
         else
-            title = WebInspector.UIString("Map workspace resource '%s' to network?", uiSourceCode.path());
+            title = WebInspector.UIString("Map workspace resource '%s' to network?", uiSourceCode.url());
 
         var infobar = new WebInspector.UISourceCodeFrame.Infobar(WebInspector.Infobar.Type.Info, title, this._workspaceMappingInfobarDisabledSetting);
         infobar.createDetailsRowMessage(WebInspector.UIString("You can map files in your workspace to the ones loaded over the network. As a result, changes made in DevTools will be persisted to disk."));

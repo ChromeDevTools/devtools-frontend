@@ -40,12 +40,11 @@
 WebInspector.UISourceCode = function(project, url, contentType)
 {
     this._project = project;
-    this._path = url;
-    this._originURL = url;
+    this._url = url;
 
     var pathComponents = WebInspector.ParsedURL.splitURLIntoPathComponents(url);
-    this._host = pathComponents[0];
-    this._parentPath = pathComponents.slice(0, -1).join("/");
+    this._origin = pathComponents[0];
+    this._parentURL = pathComponents.slice(0, -1).join("/");
     this._name = pathComponents[pathComponents.length - 1];
 
     this._contentType = contentType;
@@ -76,14 +75,6 @@ WebInspector.UISourceCode.prototype = {
     /**
      * @return {string}
      */
-    path: function()
-    {
-        return this._path;
-    },
-
-    /**
-     * @return {string}
-     */
     name: function()
     {
         return this._name;
@@ -92,17 +83,25 @@ WebInspector.UISourceCode.prototype = {
     /**
      * @return {string}
      */
-    parentPath: function()
+    url: function()
     {
-        return this._parentPath;
+        return this._url;
     },
 
     /**
      * @return {string}
      */
-    host: function()
+    parentURL: function()
     {
-        return this._host;
+        return this._parentURL;
+    },
+
+    /**
+     * @return {string}
+     */
+    origin: function()
+    {
+        return this._origin;
     },
 
     /**
@@ -110,7 +109,7 @@ WebInspector.UISourceCode.prototype = {
      */
     fullDisplayName: function()
     {
-        return this._parentPath.replace(/^(?:https?|file)\:\/\//, "") + "/" + this.displayName(true);
+        return this._parentURL.replace(/^(?:https?|file)\:\/\//, "") + "/" + this.displayName(true);
     },
 
     /**
@@ -121,22 +120,6 @@ WebInspector.UISourceCode.prototype = {
     {
         var displayName = this.name() || WebInspector.UIString("(index)");
         return skipTrim ? displayName : displayName.trimEnd(100);
-    },
-
-    /**
-     * @return {string}
-     */
-    uri: function()
-    {
-        return this._path;
-    },
-
-    /**
-     * @return {string}
-     */
-    originURL: function()
-    {
-        return this._originURL;
     },
 
     /**
@@ -166,38 +149,38 @@ WebInspector.UISourceCode.prototype = {
         /**
          * @param {boolean} success
          * @param {string=} newName
-         * @param {string=} newOriginURL
+         * @param {string=} newURL
          * @param {!WebInspector.ResourceType=} newContentType
          * @this {WebInspector.UISourceCode}
          */
-        function innerCallback(success, newName, newOriginURL, newContentType)
+        function innerCallback(success, newName, newURL, newContentType)
         {
             if (success)
-                this._updateName(/** @type {string} */ (newName), /** @type {string} */ (newOriginURL), /** @type {!WebInspector.ResourceType} */ (newContentType));
+                this._updateName(/** @type {string} */ (newName), /** @type {string} */ (newURL), /** @type {!WebInspector.ResourceType} */ (newContentType));
             callback(success);
         }
     },
 
     remove: function()
     {
-        this._project.deleteFile(this.path());
+        this._project.deleteFile(this.url());
     },
 
     /**
      * @param {string} name
-     * @param {string} originURL
+     * @param {string} url
      * @param {!WebInspector.ResourceType=} contentType
      */
-    _updateName: function(name, originURL, contentType)
+    _updateName: function(name, url, contentType)
     {
-        var oldURI = this.uri();
-        this._path = this._path.substring(0, this._path.length - this._name.length) + name;
+        var oldURД = this.url();
+        this._url = this._url.substring(0, this._url.length - this._name.length) + name;
         this._name = name;
-        if (originURL)
-            this._originURL = originURL;
+        if (url)
+            this._url = url;
         if (contentType)
             this._contentType = contentType;
-        this.dispatchEventToListeners(WebInspector.UISourceCode.Events.TitleChanged, oldURI);
+        this.dispatchEventToListeners(WebInspector.UISourceCode.Events.TitleChanged, oldURД);
     },
 
     /**
@@ -206,7 +189,7 @@ WebInspector.UISourceCode.prototype = {
      */
     contentURL: function()
     {
-        return this.originURL();
+        return this.url();
     },
 
     /**
@@ -356,9 +339,9 @@ WebInspector.UISourceCode.prototype = {
             wasPersisted = true;
         } else if (this._project.workspace().hasResourceContentTrackingExtensions()) {
             wasPersisted = true;
-        } else if (this._originURL && WebInspector.fileManager.isURLSaved(this._originURL)) {
-            WebInspector.fileManager.save(this._originURL, content, false, function() { });
-            WebInspector.fileManager.close(this._originURL);
+        } else if (this._url && WebInspector.fileManager.isURLSaved(this._url)) {
+            WebInspector.fileManager.save(this._url, content, false, function() { });
+            WebInspector.fileManager.close(this._url);
             wasPersisted = true;
         }
         this._contentCommitted(content, wasPersisted, true);
@@ -391,8 +374,8 @@ WebInspector.UISourceCode.prototype = {
 
     saveAs: function()
     {
-        WebInspector.fileManager.save(this._originURL, this.workingCopy(), true, callback.bind(this));
-        WebInspector.fileManager.close(this._originURL);
+        WebInspector.fileManager.save(this._url, this.workingCopy(), true, callback.bind(this));
+        WebInspector.fileManager.close(this._url);
 
         /**
          * @param {boolean} accepted
@@ -680,7 +663,7 @@ WebInspector.UILocation.prototype = {
      */
     id: function()
     {
-        return this.uiSourceCode.project().id() + ":" + this.uiSourceCode.uri() + ":" + this.lineNumber + ":" + this.columnNumber;
+        return this.uiSourceCode.project().id() + ":" + this.uiSourceCode.url() + ":" + this.lineNumber + ":" + this.columnNumber;
     },
 
     /**
@@ -688,7 +671,7 @@ WebInspector.UILocation.prototype = {
      */
     toUIString: function()
     {
-        return this.uiSourceCode.uri() + ":" + (this.lineNumber + 1);
+        return this.uiSourceCode.url() + ":" + (this.lineNumber + 1);
     }
 }
 
@@ -752,7 +735,7 @@ WebInspector.Revision.prototype = {
      */
     contentURL: function()
     {
-        return this._uiSourceCode.originURL();
+        return this._uiSourceCode.url();
     },
 
     /**

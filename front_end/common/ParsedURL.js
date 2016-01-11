@@ -135,6 +135,23 @@ WebInspector.ParsedURL.splitURLIntoPathComponents = function(url)
 }
 
 /**
+ * @param {string} url
+ * @return {string}
+ */
+WebInspector.ParsedURL.extractOrigin = function(url)
+{
+    var decodedURL = WebInspector.ParsedURL._decodeIfPossible(url);
+    var parsedURL = new WebInspector.ParsedURL(decodedURL);
+    if (!parsedURL.isValid)
+        return "";
+
+    var origin = parsedURL.scheme + "://" + parsedURL.host;
+    if (parsedURL.port)
+        origin += ":" + parsedURL.port;
+    return origin;
+}
+
+/**
  * @param {string} baseURL
  * @param {string} href
  * @return {?string}

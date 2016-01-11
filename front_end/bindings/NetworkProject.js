@@ -162,7 +162,7 @@ WebInspector.NetworkProject.uiSourceCodeMimeType = function(uiSourceCode)
     var resource = uiSourceCode[WebInspector.NetworkProject._resourceSymbol];
     if (resource)
         return resource.mimeType;
-    var mimeType = WebInspector.ResourceType.mimeFromURL(uiSourceCode.originURL());
+    var mimeType = WebInspector.ResourceType.mimeFromURL(uiSourceCode.url());
     return mimeType || uiSourceCode.contentType().canonicalMimeType();
 }
 
@@ -357,7 +357,7 @@ WebInspector.NetworkProject.prototype = {
             return;
 
         // Never load document twice.
-        if (this._workspace.uiSourceCodeForOriginURL(resource.url))
+        if (this._workspace.uiSourceCodeForURL(resource.url))
             return;
 
         var uiSourceCode = this._createFile(resource.url, resource, WebInspector.ResourceTreeFrame.fromResource(resource), false, false);
@@ -408,7 +408,7 @@ WebInspector.NetworkProject.prototype = {
      */
     _createFile: function(url, contentProvider, frame, isContentScript, addIntoProject)
     {
-        if (this._networkMapping.hasMappingForURL(url))
+        if (this._networkMapping.hasMappingForNetworkURL(url))
             return null;
 
         var project = this._workspaceProject(frame, isContentScript);

@@ -406,7 +406,7 @@ WebInspector.ExtensionServer.prototype = {
     _handleOpenURL: function(port, details)
     {
         var url = /** @type {string} */ (details.url);
-        var contentProvider = WebInspector.workspace.uiSourceCodeForOriginURL(url) || WebInspector.resourceForURL(url);
+        var contentProvider = WebInspector.workspace.uiSourceCodeForURL(url) || WebInspector.resourceForURL(url);
         if (!contentProvider)
             return false;
 
@@ -538,7 +538,7 @@ WebInspector.ExtensionServer.prototype = {
     _onGetResourceContent: function(message, port)
     {
         var url = /** @type {string} */ (message.url);
-        var contentProvider = WebInspector.workspace.uiSourceCodeForOriginURL(url) || WebInspector.resourceForURL(url);
+        var contentProvider = WebInspector.workspace.uiSourceCodeForURL(url) || WebInspector.resourceForURL(url);
         if (!contentProvider)
             return this._status.E_NOTFOUND(url);
         this._getResourceContent(contentProvider, message, port);
@@ -557,7 +557,7 @@ WebInspector.ExtensionServer.prototype = {
         }
 
         var url = /** @type {string} */ (message.url);
-        var uiSourceCode = WebInspector.workspace.uiSourceCodeForOriginURL(url);
+        var uiSourceCode = WebInspector.workspace.uiSourceCodeForURL(url);
         if (!uiSourceCode || !uiSourceCode.contentType().isDocumentOrScriptOrStyleSheet()) {
             var resource = WebInspector.ResourceTreeModel.resourceForURL(url);
             if (!resource)

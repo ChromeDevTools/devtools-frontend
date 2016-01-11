@@ -137,11 +137,11 @@ WebInspector.ScriptSnippetModel.prototype = {
     },
 
     /**
-     * @param {string} path
+     * @param {string} url
      */
-    deleteScriptSnippet: function(path)
+    deleteScriptSnippet: function(url)
     {
-        var uiSourceCode = this._project.uiSourceCode(path);
+        var uiSourceCode = this._project.uiSourceCodeForURL(url);
         if (!uiSourceCode)
             return;
         var snippetId = this._snippetIdForUISourceCode.get(uiSourceCode) || "";
@@ -622,7 +622,7 @@ WebInspector.SnippetsProject.prototype = {
      */
     setFileContent: function(uiSourceCode, newContent, callback)
     {
-        this._model._setScriptSnippetContent(uiSourceCode.path(), newContent);
+        this._model._setScriptSnippetContent(uiSourceCode.url(), newContent);
         callback("");
     },
 
@@ -637,34 +637,34 @@ WebInspector.SnippetsProject.prototype = {
 
     /**
      * @override
-     * @param {string} path
+     * @param {string} url
      * @param {string} newName
      * @param {function(boolean, string=)} callback
      */
-    performRename: function(path, newName, callback)
+    performRename: function(url, newName, callback)
     {
-        this._model.renameScriptSnippet(path, newName, callback);
+        this._model.renameScriptSnippet(url, newName, callback);
     },
 
     /**
      * @override
-     * @param {string} path
+     * @param {string} url
      * @param {?string} name
      * @param {string} content
      * @param {function(?WebInspector.UISourceCode)} callback
      */
-    createFile: function(path, name, content, callback)
+    createFile: function(url, name, content, callback)
     {
         callback(this._model.createScriptSnippet(content));
     },
 
     /**
      * @override
-     * @param {string} path
+     * @param {string} url
      */
-    deleteFile: function(path)
+    deleteFile: function(url)
     {
-        this._model.deleteScriptSnippet(path);
+        this._model.deleteScriptSnippet(url);
     },
 
     __proto__: WebInspector.ContentProviderBasedProject.prototype

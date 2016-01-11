@@ -139,7 +139,7 @@ WebInspector.MediaQueryInspector.prototype = {
             var uiLocation = WebInspector.cssWorkspaceBinding.rawLocationToUILocation(locations[i]);
             if (!uiLocation)
                 continue;
-            var descriptor = String.sprintf("%s:%d:%d", uiLocation.uiSourceCode.uri(), uiLocation.lineNumber + 1, uiLocation.columnNumber + 1);
+            var descriptor = String.sprintf("%s:%d:%d", uiLocation.uiSourceCode.url(), uiLocation.lineNumber + 1, uiLocation.columnNumber + 1);
             uiLocations.set(descriptor, uiLocation);
         }
 

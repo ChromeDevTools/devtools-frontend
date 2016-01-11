@@ -177,7 +177,7 @@ WebInspector.CompilerScriptMapping.prototype = {
         this._stubUISourceCodes.set(script.scriptId, stubUISourceCode);
 
         this._debuggerWorkspaceBinding.pushSourceMapping(script, this);
-        this._loadSourceMapForScript(script, this._sourceMapLoaded.bind(this, script, stubUISourceCode.path()));
+        this._loadSourceMapForScript(script, this._sourceMapLoaded.bind(this, script, stubUISourceCode.url()));
     },
 
     /**
@@ -212,7 +212,7 @@ WebInspector.CompilerScriptMapping.prototype = {
                 continue;
             this._sourceMapForURL.set(sourceURL, sourceMap);
             var uiSourceCode = this._networkMapping.uiSourceCodeForScriptURL(sourceURL, script);
-            if (!uiSourceCode && !this._networkMapping.hasMappingForURL(sourceURL)) {
+            if (!uiSourceCode && !this._networkMapping.hasMappingForNetworkURL(sourceURL)) {
                 var contentProvider = sourceMap.sourceContentProvider(sourceURL, WebInspector.resourceTypes.SourceMapScript);
                 uiSourceCode = this._networkProject.addFileForURL(sourceURL, contentProvider, WebInspector.ResourceTreeFrame.fromScript(script), script.isContentScript());
                 uiSourceCode[WebInspector.CompilerScriptMapping._originSymbol] = script.sourceURL;

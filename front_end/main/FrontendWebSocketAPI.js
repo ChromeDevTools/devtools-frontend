@@ -38,7 +38,7 @@ WebInspector.FrontendWebSocketAPI.prototype = {
     {
         var uiSourceCode = WebInspector.networkMapping.uiSourceCodeForURLForAnyTarget(url);
         if (uiSourceCode)
-            url = uiSourceCode.originURL();
+            url = uiSourceCode.url();
         if (url.startsWith("file://")) {
             var file = url.substring(7);
             this._issueFrontendAPINotification("Frontend.revealLocation", { file: file, line: lineNumber });
@@ -69,7 +69,7 @@ WebInspector.FrontendWebSocketAPI.prototype = {
             var file = params["file"];
             var buffer = params["buffer"];
             var saved = params["saved"];
-            var uiSourceCode = WebInspector.workspace.filesystemUISourceCode("file://" + file);
+            var uiSourceCode = WebInspector.workspace.uiSourceCodeForURL("file://" + file);
             if (uiSourceCode) {
                 if (buffer !== uiSourceCode.workingCopy())
                     uiSourceCode.setWorkingCopy(buffer);
@@ -93,7 +93,7 @@ WebInspector.FrontendWebSocketAPI.prototype = {
         if (this._dispatchingFrontendMessage)
             return;
         var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data["uiSourceCode"]);
-        var url = uiSourceCode.originURL();
+        var url = uiSourceCode.url();
         if (url.startsWith("file://"))
             url = url.substring(7);
         var params = { file: url, buffer: uiSourceCode.workingCopy() };

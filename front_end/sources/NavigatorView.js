@@ -189,13 +189,13 @@ WebInspector.NavigatorView.prototype = {
         if (uiSourceCode.project().type() === WebInspector.projectTypes.FileSystem)
             path = WebInspector.FileSystemWorkspaceBinding.relativePath(uiSourceCode).slice(0, -1);
         else
-            path = WebInspector.ParsedURL.splitURLIntoPathComponents(uiSourceCode.path()).slice(1, -1);
+            path = WebInspector.ParsedURL.splitURLIntoPathComponents(uiSourceCode.url()).slice(1, -1);
 
         var project = uiSourceCode.project();
         var target = WebInspector.NetworkProject.targetForUISourceCode(uiSourceCode);
         var frame = this._uiSourceCodeFrame(uiSourceCode);
 
-        var folderNode = this._folderNode(uiSourceCode, project, target, frame, uiSourceCode.host(), path, isFromSourceMap);
+        var folderNode = this._folderNode(uiSourceCode, project, target, frame, uiSourceCode.origin(), path, isFromSourceMap);
         var uiSourceCodeNode = new WebInspector.NavigatorUISourceCodeTreeNode(this, uiSourceCode);
         this._uiSourceCodeNodes.set(uiSourceCode, uiSourceCodeNode);
         folderNode.appendChild(uiSourceCodeNode);
@@ -247,16 +247,16 @@ WebInspector.NavigatorView.prototype = {
      * @param {!WebInspector.Project} project
      * @param {?WebInspector.Target} target
      * @param {?WebInspector.ResourceTreeFrame} frame
-     * @param {string} projectHost
+     * @param {string} projectOrigin
      * @param {string} path
      * @return {string}
      */
-    _folderNodeId: function(project, target, frame, projectHost, path)
+    _folderNodeId: function(project, target, frame, projectOrigin, path)
     {
         var targetId = target ? target.id() : "";
         var projectId = project.type() === WebInspector.projectTypes.FileSystem ? project.id() : "";
         var frameId = this._groupByFrame && frame ? frame.id : "";
-        return targetId + ":" + projectId + ":" + frameId + ":" + projectHost + ":" + path;
+        return targetId + ":" + projectId + ":" + frameId + ":" + projectOrigin + ":" + path;
     },
 
     /**
@@ -264,28 +264,28 @@ WebInspector.NavigatorView.prototype = {
      * @param {!WebInspector.Project} project
      * @param {?WebInspector.Target} target
      * @param {?WebInspector.ResourceTreeFrame} frame
-     * @param {string} projectHost
+     * @param {string} projectOrigin
      * @param {!Array<string>} path
      * @param {boolean} fromSourceMap
      * @return {!WebInspector.NavigatorTreeNode}
      */
-    _folderNode: function(uiSourceCode, project, target, frame, projectHost, path, fromSourceMap)
+    _folderNode: function(uiSourceCode, project, target, frame, projectOrigin, path, fromSourceMap)
     {
         if (project.type() === WebInspector.projectTypes.Snippets)
             return this._rootNode;
 
         if (target && !this._groupByFolder && !fromSourceMap)
-            return this._domainNode(uiSourceCode, project, target, frame, projectHost);
+            return this._domainNode(uiSourceCode, project, target, frame, projectOrigin);
 
         var folderPath = path.join("/");
-        var folderId = this._folderNodeId(project, target, frame, projectHost, folderPath);
+        var folderId = this._folderNodeId(project, target, frame, projectOrigin, folderPath);
         var folderNode = this._subfolderNodes.get(folderId);
         if (folderNode)
             return folderNode;
 
         if (!path.length) {
             if (target)
-                return this._domainNode(uiSourceCode, project, target, frame, projectHost);
+                return this._domainNode(uiSourceCode, project, target, frame, projectOrigin);
             var fileSystemNode = this._rootNode.child(project.id());
             if (!fileSystemNode) {
                 fileSystemNode = new WebInspector.NavigatorGroupTreeNode(this, project, project.id(),  WebInspector.NavigatorView.Types.FileSystem, project.displayName());
@@ -294,7 +294,7 @@ WebInspector.NavigatorView.prototype = {
             return fileSystemNode;
         }
 
-        var parentNode = this._folderNode(uiSourceCode, project, target, frame, projectHost, path.slice(0, -1), fromSourceMap);
+        var parentNode = this._folderNode(uiSourceCode, project, target, frame, projectOrigin, path.slice(0, -1), fromSourceMap);
         var type = fromSourceMap ? WebInspector.NavigatorView.Types.SourceMapFolder : WebInspector.NavigatorView.Types.NetworkFolder;
         if (project.type() === WebInspector.projectTypes.FileSystem)
             type = WebInspector.NavigatorView.Types.FileSystemFolder;
@@ -311,20 +311,20 @@ WebInspector.NavigatorView.prototype = {
      * @param {!WebInspector.Project} project
      * @param {!WebInspector.Target} target
      * @param {?WebInspector.ResourceTreeFrame} frame
-     * @param {string} projectHost
+     * @param {string} projectOrigin
      * @return {!WebInspector.NavigatorTreeNode}
      */
-    _domainNode: function(uiSourceCode, project, target, frame, projectHost)
+    _domainNode: function(uiSourceCode, project, target, frame, projectOrigin)
     {
         var frameNode = this._frameNode(project, target, frame);
         if (!this._groupByDomain)
             return frameNode;
-        var domainNode = frameNode.child(projectHost);
+        var domainNode = frameNode.child(projectOrigin);
         if (domainNode)
             return domainNode;
 
-        domainNode = new WebInspector.NavigatorGroupTreeNode(this, project, projectHost,  WebInspector.NavigatorView.Types.Domain, this._computeProjectDisplayName(target, projectHost));
-        if (frame && projectHost === WebInspector.ParsedURL.splitURLIntoPathComponents(frame.url)[0])
+        domainNode = new WebInspector.NavigatorGroupTreeNode(this, project, projectOrigin,  WebInspector.NavigatorView.Types.Domain, this._computeProjectDisplayName(target, projectOrigin));
+        if (frame && projectOrigin === WebInspector.ParsedURL.extractOrigin(frame.url))
             domainNode.treeNode()._boostOrder = true;
         frameNode.appendChild(domainNode);
         return domainNode;
@@ -373,23 +373,23 @@ WebInspector.NavigatorView.prototype = {
 
     /**
      * @param {!WebInspector.Target} target
-     * @param {string} projectHost
+     * @param {string} projectOrigin
      * @return {string}
      */
-    _computeProjectDisplayName: function(target, projectHost)
+    _computeProjectDisplayName: function(target, projectOrigin)
     {
         for (var context of target.runtimeModel.executionContexts()) {
-            if (context.name && context.origin && projectHost.startsWith(context.origin))
+            if (context.name && context.origin && projectOrigin.startsWith(context.origin))
                 return context.name;
         }
 
-        if (!projectHost)
+        if (!projectOrigin)
             return WebInspector.UIString("(no domain)");
 
-        var parsedURL = new WebInspector.ParsedURL(projectHost);
+        var parsedURL = new WebInspector.ParsedURL(projectOrigin);
         var prettyURL = parsedURL.isValid ? parsedURL.host + (parsedURL.port ? (":" + parsedURL.port) : "") : "";
 
-        return (prettyURL || projectHost);
+        return (prettyURL || projectOrigin);
     },
 
     /**
@@ -448,7 +448,7 @@ WebInspector.NavigatorView.prototype = {
             if (!parentNode || !node.isEmpty() || !(node instanceof WebInspector.NavigatorFolderTreeNode))
                 break;
 
-            var folderId = this._folderNodeId(project, target, frame, uiSourceCode.host(), node._folderPath);
+            var folderId = this._folderNodeId(project, target, frame, uiSourceCode.origin(), node._folderPath);
             this._subfolderNodes.delete(folderId);
             parentNode.removeChild(node);
             node = parentNode;
@@ -526,7 +526,7 @@ WebInspector.NavigatorView.prototype = {
     {
         var shouldDelete = window.confirm(WebInspector.UIString("Are you sure you want to delete this file?"));
         if (shouldDelete)
-            uiSourceCode.project().deleteFile(uiSourceCode.path());
+            uiSourceCode.project().deleteFile(uiSourceCode.url());
     },
 
     /**
@@ -541,9 +541,9 @@ WebInspector.NavigatorView.prototype = {
 
         var project = uiSourceCode.project();
         if (project.type() === WebInspector.projectTypes.FileSystem) {
-            var path = uiSourceCode.parentPath();
+            var parentURL = uiSourceCode.parentURL();
             contextMenu.appendItem(WebInspector.UIString.capitalize("Rename\u2026"), this._handleContextMenuRename.bind(this, uiSourceCode));
-            contextMenu.appendItem(WebInspector.UIString.capitalize("Make a ^copy\u2026"), this._handleContextMenuCreate.bind(this, project, path, uiSourceCode));
+            contextMenu.appendItem(WebInspector.UIString.capitalize("Make a ^copy\u2026"), this._handleContextMenuCreate.bind(this, project, parentURL, uiSourceCode));
             contextMenu.appendItem(WebInspector.UIString.capitalize("Delete"), this._handleContextMenuDelete.bind(this, uiSourceCode));
             contextMenu.appendSeparator();
         }
@@ -836,7 +836,7 @@ WebInspector.NavigatorSourceTreeElement = function(navigatorView, uiSourceCode, 
     this._nodeType = WebInspector.NavigatorView.Types.File;
     this.title = title;
     this.listItemElement.classList.add("navigator-" + uiSourceCode.contentType().name() + "-tree-item", "navigator-file-tree-item");
-    this.tooltip = uiSourceCode.originURL();
+    this.tooltip = uiSourceCode.url();
     this.createIcon();
 
 
@@ -1149,7 +1149,7 @@ WebInspector.NavigatorRootTreeNode.prototype = {
  */
 WebInspector.NavigatorUISourceCodeTreeNode = function(navigatorView, uiSourceCode)
 {
-    WebInspector.NavigatorTreeNode.call(this, uiSourceCode.project().id() + ":" + uiSourceCode.path(), WebInspector.NavigatorView.Types.File);
+    WebInspector.NavigatorTreeNode.call(this, uiSourceCode.project().id() + ":" + uiSourceCode.url(), WebInspector.NavigatorView.Types.File);
     this._navigatorView = navigatorView;
     this._uiSourceCode = uiSourceCode;
     this._treeElement = null;
@@ -1196,7 +1196,7 @@ WebInspector.NavigatorUISourceCodeTreeNode.prototype = {
             titleText = "*" + titleText;
         this._treeElement.title = titleText;
 
-        var tooltip = this._uiSourceCode.originURL();
+        var tooltip = this._uiSourceCode.url();
         if (this._uiSourceCode.contentType().isFromSourceMap())
             tooltip = WebInspector.UIString("%s (from source map)", this._uiSourceCode.displayName());
         this._treeElement.tooltip = tooltip;

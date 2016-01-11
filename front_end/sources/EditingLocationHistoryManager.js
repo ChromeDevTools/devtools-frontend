@@ -122,7 +122,7 @@ WebInspector.EditingLocationHistoryManager.prototype = {
     {
         function filterOut(entry)
         {
-            return entry._projectId === uiSourceCode.project().id() && entry._path === uiSourceCode.path();
+            return entry._projectId === uiSourceCode.project().id() && entry._url === uiSourceCode.url();
         }
 
         this._historyManager.filterOut(filterOut);
@@ -144,7 +144,7 @@ WebInspector.EditingLocationHistoryEntry = function(sourcesView, editingLocation
     this._editingLocationManager = editingLocationManager;
     var uiSourceCode = sourceFrame.uiSourceCode();
     this._projectId = uiSourceCode.project().id();
-    this._path = uiSourceCode.path();
+    this._url = uiSourceCode.url();
 
     var position = this._positionFromSelection(selection);
     this._positionHandle = sourceFrame.textEditor.textEditorPositionHandle(position.lineNumber, position.columnNumber);
@@ -156,7 +156,7 @@ WebInspector.EditingLocationHistoryEntry.prototype = {
      */
     merge: function(entry)
     {
-        if (this._projectId !== entry._projectId || this._path !== entry._path)
+        if (this._projectId !== entry._projectId || this._url !== entry._url)
             return;
         this._positionHandle = entry._positionHandle;
     },
@@ -180,7 +180,7 @@ WebInspector.EditingLocationHistoryEntry.prototype = {
     valid: function()
     {
         var position = this._positionHandle.resolve();
-        var uiSourceCode = WebInspector.workspace.project(this._projectId).uiSourceCode(this._path);
+        var uiSourceCode = WebInspector.workspace.uiSourceCode(this._projectId, this._url);
         return !!(position && uiSourceCode);
     },
 
@@ -190,7 +190,7 @@ WebInspector.EditingLocationHistoryEntry.prototype = {
     reveal: function()
     {
         var position = this._positionHandle.resolve();
-        var uiSourceCode = WebInspector.workspace.project(this._projectId).uiSourceCode(this._path);
+        var uiSourceCode = WebInspector.workspace.uiSourceCode(this._projectId, this._url);
         if (!position || !uiSourceCode)
             return;
 

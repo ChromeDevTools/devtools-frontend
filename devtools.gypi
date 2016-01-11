@@ -302,6 +302,7 @@
             'front_end/main/renderingOptions.css',
             'front_end/main/targetCrashedScreen.css',
             'front_end/main/AdvancedApp.js',
+            'front_end/main/Connections.js',
             'front_end/main/FrontendWebSocketAPI.js',
             'front_end/main/Main.js',
             'front_end/main/OverlayController.js',

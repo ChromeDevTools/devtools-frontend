@@ -281,16 +281,16 @@ WebInspector.Main.prototype = {
 
         if (Runtime.queryParam("ws")) {
             var ws = "ws://" + Runtime.queryParam("ws");
-            InspectorBackendClass.WebSocketConnection.Create(ws, this._connectionEstablished.bind(this));
+            WebInspector.WebSocketConnection.Create(ws, this._connectionEstablished.bind(this));
             return;
         }
 
         if (!InspectorFrontendHost.isHostedMode()) {
-            this._connectionEstablished(new InspectorBackendClass.MainConnection());
+            this._connectionEstablished(new WebInspector.MainConnection());
             return;
         }
 
-        this._connectionEstablished(new InspectorBackendClass.StubConnection());
+        this._connectionEstablished(new WebInspector.StubConnection());
     },
 
     /**
@@ -780,7 +780,7 @@ WebInspector.Main._addWebSocketTarget = function(ws)
     {
         WebInspector.targetManager.createTarget(ws, WebInspector.Target.Type.Page, connection, null);
     }
-    new InspectorBackendClass.WebSocketConnection(ws, callback);
+    new WebInspector.WebSocketConnection(ws, callback);
 }
 
 /**

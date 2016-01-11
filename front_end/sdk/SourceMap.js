@@ -228,12 +228,7 @@ WebInspector.SourceMap.prototype = {
         var index = mappings.lowerBound(lineNumber, lineComparator);
         if (index >= mappings.length || mappings[index].sourceLineNumber !== lineNumber)
             return null;
-        var minColumn = mappings[index];
-        for (var i = index + 1; i < mappings.length && mappings[i].sourceLineNumber === lineNumber; ++i) {
-            if (minColumn.sourceColumnNumber > mappings[i].sourceColumnNumber)
-                minColumn = mappings[i];
-        }
-        return minColumn;
+        return mappings[index];
 
         /**
          * @param {number} lineNumber

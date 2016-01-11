@@ -530,7 +530,7 @@ WebInspector.FlameChart.prototype = {
             this._flameChartDelegate.requestWindowTimes(timeLeft - delta, timeRight - delta);
         } else if (timeRight < entryStartTime) {
             var delta = entryStartTime - timeRight + minEntryTimeWindow;
-            this._flameChartDelegate.requestWindowTimes(timeRight + delta, timeRight + delta);
+            this._flameChartDelegate.requestWindowTimes(timeLeft + delta, timeRight + delta);
         }
     },
 

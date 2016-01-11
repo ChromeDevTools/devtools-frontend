@@ -633,7 +633,7 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
         function addGroup(parent, devices)
         {
             devices = devices.filter(function(d) { return d.show(); });
-            devices.sort(WebInspector.EmulatedDevice.compareByTitle);
+            devices.sort(WebInspector.EmulatedDevice.deviceComparator);
             for (var device of devices)
                 addOption.call(this, parent, device);
         }

@@ -179,7 +179,7 @@ WebInspector.EmulatedDevice.fromJSONV1 = function(json)
             result.modes.push(mode);
         }
 
-        result._showByDefault = /** @type {boolean} */ (parseValue(json, "show-by-default", "boolean", true));
+        result._showByDefault = /** @type {boolean} */ (parseValue(json, "show-by-default", "boolean", undefined));
         result._show = /** @type {string} */ (parseValue(json, "show", "string", WebInspector.EmulatedDevice._Show.Default));
 
         return result;
@@ -219,8 +219,14 @@ WebInspector.EmulatedDevice.fromOverridesDevice = function(device, title, type)
  * @param {!WebInspector.EmulatedDevice} device2
  * @return {number}
  */
-WebInspector.EmulatedDevice.compareByTitle = function(device1, device2)
+WebInspector.EmulatedDevice.deviceComparator = function(device1, device2)
 {
+    var order1 = (device1._extension && device1._extension.descriptor()["order"]) || -1;
+    var order2 = (device2._extension && device2._extension.descriptor()["order"]) || -1;
+    if (order1 > order2)
+        return 1;
+    if (order2 > order1)
+        return -1;
     return device1.title < device2.title ? -1 : (device1.title > device2.title ? 1 : 0);
 }
 

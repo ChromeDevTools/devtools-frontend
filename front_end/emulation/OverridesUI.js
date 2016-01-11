@@ -71,7 +71,7 @@ WebInspector.DeviceSelect.prototype = {
         devices = devices.filter(function (d) { return d.show(); });
         if (!devices.length)
             return;
-        devices.sort(WebInspector.EmulatedDevice.compareByTitle);
+        devices.sort(WebInspector.EmulatedDevice.deviceComparator);
         var groupElement = this._deviceSelectElement.createChild("optgroup");
         groupElement.label = name;
         for (var i = 0; i < devices.length; ++i) {

@@ -55,7 +55,7 @@ WebInspector.DevicesSettingsTab.prototype = {
         this._list.appendSeparator();
 
         devices = WebInspector.emulatedDevicesList.standard().slice();
-        devices.sort(WebInspector.EmulatedDevice.compareByTitle);
+        devices.sort(WebInspector.EmulatedDevice.deviceComparator);
         for (var i = 0; i < devices.length; ++i)
             this._list.appendItem(devices[i], false);
     },

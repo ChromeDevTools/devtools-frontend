@@ -38,6 +38,7 @@
         },
         {
             "type": "emulated-device",
+            "order": 40,
             "device": {
                 "show-by-default": true,
                 "title": "iPhone 5",
@@ -74,6 +75,7 @@
         },
         {
             "type": "emulated-device",
+            "order": 50,
             "device": {
                 "show-by-default": true,
                 "title": "iPhone 6",
@@ -110,6 +112,7 @@
         },
         {
             "type": "emulated-device",
+            "order": 60,
             "device": {
                 "show-by-default": true,
                 "title": "iPhone 6 Plus",
@@ -280,6 +283,7 @@
         },
         {
             "type": "emulated-device",
+            "order": 20,
             "device": {
                 "title": "Nexus 5X",
                 "type": "phone",
@@ -378,6 +382,7 @@
         },
         {
             "type": "emulated-device",
+            "order": 30,
             "device": {
                 "show-by-default": true,
                 "title": "Nexus 6P",
@@ -558,6 +563,7 @@
         },
         {
             "type": "emulated-device",
+            "order": 10,
             "device": {
                 "show-by-default": true,
                 "title": "Galaxy S5",
@@ -666,6 +672,7 @@
         },
         {
             "type": "emulated-device",
+            "order": 70,
             "device": {
                 "show-by-default": true,
                 "title": "iPad",
@@ -812,7 +819,7 @@
             "type": "emulated-device",
             "device": {
                 "show-by-default": false,
-                "title": "Galaxy Note III",
+                "title": "Galaxy Note 3",
                 "screen": {
                     "horizontal": {
                         "width": 640,

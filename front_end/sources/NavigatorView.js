@@ -1347,6 +1347,12 @@ WebInspector.NavigatorFolderTreeNode.prototype = {
      */
     _createTreeElement: function(title, node)
     {
+        if (this._project.type() !== WebInspector.projectTypes.FileSystem) {
+            try {
+                title = decodeURI(title);
+            } catch (e) {
+            }
+        }
         var treeElement = new WebInspector.NavigatorFolderTreeElement(this._navigatorView, this._type, title);
         treeElement.setNode(node);
         return treeElement;

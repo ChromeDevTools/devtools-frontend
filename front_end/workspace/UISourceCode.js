@@ -109,7 +109,12 @@ WebInspector.UISourceCode.prototype = {
      */
     fullDisplayName: function()
     {
-        return this._parentURL.replace(/^(?:https?|file)\:\/\//, "") + "/" + this.displayName(true);
+        var parentPath = this._parentURL.replace(/^(?:https?|file)\:\/\//, "");
+        try {
+            parentPath = decodeURI(parentPath);
+        } catch (e) {
+        }
+        return parentPath + "/" + this.displayName(true);
     },
 
     /**
@@ -118,8 +123,14 @@ WebInspector.UISourceCode.prototype = {
      */
     displayName: function(skipTrim)
     {
-        var displayName = this.name() || WebInspector.UIString("(index)");
-        return skipTrim ? displayName : displayName.trimEnd(100);
+        if (!this._name)
+            return WebInspector.UIString("(index)");
+        var name = this._name;
+        try {
+            name = decodeURI(name);
+        } catch (e) {
+        }
+        return skipTrim ? name : name.trimEnd(100);
     },
 
     /**

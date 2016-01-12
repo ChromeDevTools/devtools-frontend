@@ -266,9 +266,8 @@ WebInspector.JavaScriptSourceFrame.prototype = {
 
     onTextChanged: function(oldRange, newRange)
     {
-        this._scriptsPanel.setIgnoreExecutionLineEvents(true);
+        this._scriptsPanel.updateLastModificationTime();
         WebInspector.UISourceCodeFrame.prototype.onTextChanged.call(this, oldRange, newRange);
-        this._scriptsPanel.setIgnoreExecutionLineEvents(false);
         if (this._compiler)
             this._compiler.scheduleCompile();
     },
@@ -371,20 +370,16 @@ WebInspector.JavaScriptSourceFrame.prototype = {
 
     _workingCopyCommitted: function(event)
     {
+        this._scriptsPanel.updateLastModificationTime();
         if (this._supportsEnabledBreakpointsWhileEditing())
             return;
 
-        if (!this._scriptFileForTarget.size) {
+        if (!this._scriptFileForTarget.size)
             this._restoreBreakpointsAfterEditing();
-            return;
-        }
-
-        this._scriptsPanel.setIgnoreExecutionLineEvents(true);
     },
 
     _didMergeToVM: function()
     {
-        this._scriptsPanel.setIgnoreExecutionLineEvents(false);
         if (this._supportsEnabledBreakpointsWhileEditing())
             return;
         this._updateDivergedInfobar();
@@ -393,7 +388,6 @@ WebInspector.JavaScriptSourceFrame.prototype = {
 
     _didDivergeFromVM: function()
     {
-        this._scriptsPanel.setIgnoreExecutionLineEvents(false);
         if (this._supportsEnabledBreakpointsWhileEditing())
             return;
         this._updateDivergedInfobar();

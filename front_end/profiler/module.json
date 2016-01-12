@@ -34,7 +34,7 @@
             "title": "High resolution CPU profiling",
             "settingName": "highResolutionCpuProfiling",
             "settingType": "boolean",
-            "defaultValue": false
+            "defaultValue": true
         },
         {
             "type": "setting",

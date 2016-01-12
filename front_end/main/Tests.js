@@ -384,33 +384,31 @@ TestSuite.prototype.testSharedWorker = function()
 TestSuite.prototype.testPauseInSharedWorkerInitialization1 = function()
 {
     // Make sure the worker is loaded.
-    function isReady()
-    {
-        return WebInspector.targetManager.targets().length == 2;
-    }
-
-    if (isReady())
-        return;
     this.takeControl();
-    this.addSniffer(WebInspector.TargetManager.prototype, "addTarget", targetAdded.bind(this));
+    this._waitForTargets(2, callback.bind(this));
 
-    function targetAdded()
+    function callback()
     {
-        if (isReady()) {
-            this.releaseControl();
-            return;
-        }
-        this.addSniffer(WebInspector.TargetManager.prototype, "addTarget", targetAdded.bind(this));
+        var target = WebInspector.targetManager.targetsWithJSContext()[0];
+        target._connection.runAfterPendingDispatches(this.releaseControl.bind(this));
     }
 };
 
 TestSuite.prototype.testPauseInSharedWorkerInitialization2 = function()
 {
-    var debuggerModel = WebInspector.DebuggerModel.fromTarget(WebInspector.targetManager.mainTarget());
-    if (debuggerModel.isPaused())
-        return;
-    this._waitForScriptPause(this.releaseControl.bind(this));
     this.takeControl();
+    this._waitForTargets(2, callback.bind(this));
+
+    function callback()
+    {
+        var target = WebInspector.targetManager.targetsWithJSContext()[0];
+        var debuggerModel = WebInspector.DebuggerModel.fromTarget(target);
+        if (debuggerModel.isPaused()) {
+            this.releaseControl();
+            return;
+        }
+        this._waitForScriptPause(this.releaseControl.bind(this));
+    }
 };
 
 TestSuite.prototype.enableTouchEmulation = function()
@@ -795,6 +793,18 @@ TestSuite.prototype._waitUntilScriptsAreParsed = function(expectedScripts, callb
     waitForAllScripts();
 };
 
+TestSuite.prototype._waitForTargets = function(n, callback)
+{
+    checkTargets.call(this);
+
+    function checkTargets()
+    {
+        if (WebInspector.targetManager.targets().length >= n)
+            callback.call(null);
+        else
+            this.addSniffer(WebInspector.TargetManager.prototype, "addTarget", checkTargets.bind(this));
+    }
+}
 
 /**
  * Key event with given key identifier.

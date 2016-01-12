@@ -96,10 +96,6 @@
     color: #999;
 }
 
-.toolbar-dimmed .toolbar-dropdown-arrow {
-    background-color: #999;
-}
-
 .toolbar-glyph {
     -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
     -webkit-mask-size: 352px 168px;
@@ -122,8 +118,7 @@
     opacity: 0.5;
 }
 
-.toolbar-button:enabled.hover:not(:active) .toolbar-glyph,
-.toolbar-button:enabled.hover:not(:active) .toolbar-dropdown-arrow {
+.toolbar-button:enabled.hover:not(:active) .toolbar-glyph {
     background-color: #333;
 }
 

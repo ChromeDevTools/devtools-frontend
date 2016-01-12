@@ -28,12 +28,12 @@
 }
 
 .device-mode-toolbar-left {
-    flex: 0 1000 155px;
+    flex: 0 1000 115px;
     min-width: 93px;
 }
 
 .device-mode-toolbar-right {
-    flex: 0 1000 155px;
+    flex: 0 1000 115px;
     min-width: 40px;
     display: flex;
 }

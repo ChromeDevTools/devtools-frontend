@@ -178,7 +178,7 @@ WebInspector.SuggestBox.prototype = {
         if (!this.visible() || !this._selectedElement)
             return false;
 
-        var suggestion = this._selectedElement.textContent;
+        var suggestion = this._selectedElement.__fullValue;
         if (!suggestion)
             return false;
 
@@ -247,10 +247,11 @@ WebInspector.SuggestBox.prototype = {
         element.tabIndex = -1;
         if (prefix && prefix.length && !text.indexOf(prefix)) {
             element.createChild("span", "prefix").textContent = prefix;
-            element.createChild("span", "suffix").textContent = text.substring(prefix.length);
+            element.createChild("span", "suffix").textContent = text.substring(prefix.length).trimEnd(50);
         } else {
-            element.createChild("span", "suffix").textContent = text;
+            element.createChild("span", "suffix").textContent = text.trimEnd(50);
         }
+        element.__fullValue = text;
         element.createChild("span", "spacer");
         element.addEventListener("mousedown", this._onItemMouseDown.bind(this), false);
         return element;

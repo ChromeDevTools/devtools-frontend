@@ -412,7 +412,7 @@ WebInspector.TextPrompt.prototype = {
 
         var wordPrefixRange = selectionRange.startContainer.rangeOfWord(selectionRange.startOffset, this._completionStopCharacters, this._element, "backward");
         this._waitingForCompletions = true;
-        this._loadCompletions(/** @type {!Element} */ (this._proxyElement), this.text(), selectionRange.startOffset, wordPrefixRange, force || false, this._completionsReady.bind(this, selection, wordPrefixRange, !!reverse));
+        this._loadCompletions(/** @type {!Element} */ (this._proxyElement), this.text(), selectionRange.startOffset, wordPrefixRange, force || false, this._completionsReady.bind(this, selection, wordPrefixRange, !!reverse, !!force));
     },
 
     disableDefaultSuggestionForEmptyInput: function()
@@ -467,18 +467,41 @@ WebInspector.TextPrompt.prototype = {
     },
 
     /**
+     * @param {string} prefix
+     * @return {!Array.<string>}
+     */
+    additionalCompletions: function(prefix)
+    {
+        return [];
+    },
+
+    /**
      * @param {!Selection} selection
      * @param {!Range} originalWordPrefixRange
      * @param {boolean} reverse
+     * @param {boolean} force
      * @param {!Array.<string>} completions
      * @param {number=} selectedIndex
      */
-    _completionsReady: function(selection, originalWordPrefixRange, reverse, completions, selectedIndex)
+    _completionsReady: function(selection, originalWordPrefixRange, reverse, force, completions, selectedIndex)
     {
+        var prefix = originalWordPrefixRange.toString();
+        if (prefix || force) {
+            if (prefix)
+                completions = completions.concat(this.additionalCompletions(prefix));
+            else
+                completions = this.additionalCompletions(prefix).concat(completions);
+        }
+
+        // Filter out dupes.
+        var store = new Set();
+        completions = completions.filter(item => !store.has(item) && !!store.add(item));
+
         if (!this._waitingForCompletions || !completions.length) {
             this.hideSuggestBox();
             return;
         }
+
         delete this._waitingForCompletions;
 
         var selectionRange = selection.getRangeAt(0);
@@ -487,7 +510,7 @@ WebInspector.TextPrompt.prototype = {
         fullWordRange.setStart(originalWordPrefixRange.startContainer, originalWordPrefixRange.startOffset);
         fullWordRange.setEnd(selectionRange.endContainer, selectionRange.endOffset);
 
-        if (originalWordPrefixRange.toString() + selectionRange.toString() !== fullWordRange.toString())
+        if (prefix + selectionRange.toString() !== fullWordRange.toString())
             return;
 
         selectedIndex = (this._disableDefaultSuggestionForEmptyInput && !this.text()) ? -1 : (selectedIndex || 0);
@@ -555,15 +578,10 @@ WebInspector.TextPrompt.prototype = {
     /**
      * @param {string} completionText
      * @param {boolean=} isIntermediateSuggestion
-     * @param {!Range=} originalPrefixRange
      */
-    _applySuggestion: function(completionText, isIntermediateSuggestion, originalPrefixRange)
+    _applySuggestion: function(completionText, isIntermediateSuggestion)
     {
-        var wordPrefixLength;
-        if (originalPrefixRange)
-            wordPrefixLength = originalPrefixRange.toString().length;
-        else
-            wordPrefixLength = this._userEnteredText ? this._userEnteredText.length : 0;
+        var wordPrefixLength = this._userEnteredText ? this._userEnteredText.length : 0;
 
         this._userEnteredRange.deleteContents();
         this._element.normalize();
@@ -801,6 +819,26 @@ WebInspector.TextPromptWithHistory.prototype = {
     {
         // FIXME: do we need to copy this?
         return this._data;
+    },
+
+    /**
+     * @override
+     * @param {string} prefix
+     * @return {!Array.<string>}
+     */
+    additionalCompletions: function(prefix)
+    {
+        if (!this.isCaretAtEndOfPrompt())
+            return [];
+        var result = [];
+        var text = this.text();
+        for (var i = this._data.length - 1; i >= 0 && result.length < 50; --i) {
+            var item = this._data[i];
+            if (!item.startsWith(text))
+                continue;
+            result.push(item.substring(text.length - prefix.length));
+        }
+        return result;
     },
 
     /**

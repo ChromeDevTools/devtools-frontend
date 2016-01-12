@@ -27,7 +27,7 @@ WebInspector.DeviceModeView = function()
     this._leftRuler = new WebInspector.DeviceModeView.Ruler(false, this._model.heightSetting().set.bind(this._model.heightSetting()));
     this._leftRuler.element.classList.add("device-mode-ruler-left");
     this._createUI();
-    WebInspector.zoomManager.addEventListener(WebInspector.ZoomManager.Events.ZoomChanged, this._updateUI, this);
+    WebInspector.zoomManager.addEventListener(WebInspector.ZoomManager.Events.ZoomChanged, this._zoomChanged, this);
 };
 
 WebInspector.DeviceModeView.prototype = {
@@ -57,6 +57,7 @@ WebInspector.DeviceModeView.prototype = {
         this._heightResizerElement.createChild("div", "");
         this._createResizer(this._heightResizerElement, false, true);
         this._heightResizerElement.addEventListener("dblclick", this._model.heightSetting().set.bind(this._model.heightSetting(), 0), false);
+        this._heightResizerElement.title = WebInspector.UIString("Double-click for full height");
 
         this._pageArea = this._screenArea.createChild("div", "device-mode-page-area");
         this._pageArea.createChild("content");
@@ -255,11 +256,19 @@ WebInspector.DeviceModeView.prototype = {
     {
         var zoomFactor = WebInspector.zoomManager.zoomFactor();
         var rect = this._contentArea.getBoundingClientRect();
-        var handleWidth = this._widthResizerElement.offsetWidth;
-        var handleHeight = this._heightResizerElement.offsetHeight;
+        this._handleWidth = this._handleWidth || this._widthResizerElement.offsetWidth;
+        this._handleHeight = this._handleHeight || this._heightResizerElement.offsetHeight;
         var availableSize = new Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
-        var preferredSize = new Size(Math.max((rect.width - 2 * handleWidth) * zoomFactor, 1), Math.max((rect.height - handleHeight) * zoomFactor, 1));
+        var preferredSize = new Size(Math.max((rect.width - 2 * this._handleWidth) * zoomFactor, 1), Math.max((rect.height - this._handleHeight) * zoomFactor, 1));
         this._model.setAvailableSize(availableSize, preferredSize);
+    },
+
+    _zoomChanged: function()
+    {
+        delete this._handleWidth;
+        delete this._handleHeight;
+        if (this.isShowing())
+            this._contentAreaResized();
     },
 
     /**
@@ -337,6 +346,14 @@ WebInspector.DeviceModeView.Toolbar = function(model, showMediaInspectorSetting,
     rightContainer.createChild("div", "device-mode-toolbar-spacer");
     var rightToolbar = new WebInspector.Toolbar("", rightContainer);
     rightToolbar.makeWrappable(true);
+    this._uaItem = new WebInspector.ToolbarLabel();
+    this._uaItem.setVisible(false);
+    this._uaItem.setTitle(WebInspector.UIString("User agent type"));
+    rightToolbar.appendToolbarItem(this._uaItem);
+    this._deviceScaleItem = new WebInspector.ToolbarLabel();
+    this._deviceScaleItem.setVisible(false);
+    this._deviceScaleItem.setTitle(WebInspector.UIString("Device pixel ratio"));
+    rightToolbar.appendToolbarItem(this._deviceScaleItem);
     rightToolbar.appendSeparator();
     var moreOptionsButton = new WebInspector.ToolbarMenuButton(this._appendMenuItems.bind(this));
     moreOptionsButton.setTitle(WebInspector.UIString("More options"));
@@ -392,7 +409,7 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
 
         var heightInput = createElementWithClass("input", "device-mode-size-input");
         heightInput.maxLength = 5;
-        heightInput.title = WebInspector.UIString("Height (leave empty to fit)");
+        heightInput.title = WebInspector.UIString("Height (leave empty for full)");
         WebInspector.SettingsUI.bindSettingInputField(heightInput, this._model.heightSetting(), true, validateHeight, true, true);
         toolbar.appendToolbarItem(this._wrapToolbarItem(heightInput));
         this._heightInput = heightInput;
@@ -452,6 +469,7 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
         scaleItem.setTitle(WebInspector.UIString("Click to change zoom"));
         scaleItem.setGlyph("");
         scaleItem.setBold(false);
+        scaleItem.setDimmed(true);
         scaleItem.addDropDownArrow();
         toolbar.appendToolbarItem(scaleItem);
         this._scaleItems.push(scaleItem);
@@ -469,7 +487,7 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
         appendScaleItem(WebInspector.UIString("150%"), 1.5);
         appendScaleItem(WebInspector.UIString("200%"), 2);
         contextMenu.appendSeparator();
-        contextMenu.appendItem(WebInspector.UIString("Fit (%.0f%%)", this._model.fitScale() * 100), scaleSetting.set.bind(scaleSetting, this._model.fitScale()), false);
+        contextMenu.appendItem(WebInspector.UIString("Fit to window (%.0f%%)", this._model.fitScale() * 100), scaleSetting.set.bind(scaleSetting, this._model.fitScale()), false);
 
         /**
          * @param {string} title
@@ -494,7 +512,7 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
             uaValue = WebInspector.DeviceModeModel.UA.Desktop;
         if (this._model.type() === WebInspector.DeviceModeModel.Type.Device)
             uaValue = this._model.device().mobile() ? WebInspector.DeviceModeModel.UA.Mobile : this._model.device().touch() ? WebInspector.DeviceModeModel.UA.DesktopTouch : WebInspector.DeviceModeModel.UA.Desktop;
-        appendUAItem(WebInspector.UIString("Mobile"), WebInspector.DeviceModeModel.UA.Mobile);
+        appendUAItem(WebInspector.UIString("Mobile (default)"), WebInspector.DeviceModeModel.UA.Mobile);
         appendUAItem(WebInspector.UIString("Desktop"), WebInspector.DeviceModeModel.UA.Desktop);
         appendUAItem(WebInspector.UIString("Desktop with touch"), WebInspector.DeviceModeModel.UA.DesktopTouch);
 
@@ -795,6 +813,27 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
             for (var item of this._scaleItems)
                 item.setText(WebInspector.UIString("%.0f%%", this._model.scale() * 100));
             this._cachedScale = this._model.scale();
+        }
+
+        var offscreen = this._model.screenRect().width > this._model.visiblePageRect().width || this._model.screenRect().height > this._model.visiblePageRect().height;
+        if (offscreen !== this._cachedOffscreen) {
+            for (var item of this._scaleItems)
+                item.setDimmed(!offscreen);
+            this._cachedOffscreen = offscreen;
+        }
+
+        var deviceScale = this._model.deviceScaleFactorSetting().get();
+        if (deviceScale !== this._cachedDeviceScale) {
+            this._deviceScaleItem.setVisible(!!deviceScale);
+            this._deviceScaleItem.setText(WebInspector.UIString("DPR: %.1f", deviceScale));
+            this._cachedDeviceScale = deviceScale;
+        }
+
+        var uaType = this._model.type() === WebInspector.DeviceModeModel.Type.Responsive ? this._model.uaSetting().get() : WebInspector.DeviceModeModel.UA.Mobile;
+        if (uaType !== this._cachedUaType) {
+            this._uaItem.setVisible(uaType !== WebInspector.DeviceModeModel.UA.Mobile);
+            this._uaItem.setText(uaType === WebInspector.DeviceModeModel.UA.Desktop ? WebInspector.UIString("Desktop") : WebInspector.UIString("Touch"));
+            this._cachedUaType = uaType;
         }
 
         if (this._model.device() !== this._cachedModelDevice) {

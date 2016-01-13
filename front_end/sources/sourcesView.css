@@ -57,52 +57,6 @@
     background-color: rgba(255, 225, 205, 0.40);
 }
 
-.source-frame-infobar {
-    flex: none;
-    display: flex;
-    -webkit-user-select: text;
-}
-
-.source-frame-infobar-animation {
-    -webkit-animation: source-frame-infobar-reveal 0.1s;
-}
-@-webkit-keyframes source-frame-infobar-reveal {
-    from { margin-top: -24px; }
-    to { margin-top: 0; }
-}
-
-.source-frame-infobar-main-row {
-    display: flex;
-    flex-direction: row;
-    flex: auto;
-    overflow: hidden;
-}
-
-.source-frame-infobar-details-container {
-    display: flex;
-    flex-direction: column;
-}
-
-.source-frame-infobar-details-row {
-    display: flex;
-    flex: none;
-    margin-top: 2px;
-}
-
-.source-frame-infobar-row-message {
-    overflow: hidden;
-}
-
-.source-frame-infobar-toggle {
-    flex: 1 0 auto;
-    padding: 0 4px;
-    -webkit-user-select: none;
-}
-
-.source-frame-infobar-details-url {
-    flex: 0 1000 auto;
-}
-
 @-webkit-keyframes source-frame-value-update-highlight-animation {
     from {
         background-color: inherit;

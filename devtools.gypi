@@ -797,6 +797,8 @@
             'front_end/Images/frame.png',
             'front_end/Images/graphLabelCalloutLeft.png',
             'front_end/Images/graphLabelCalloutRight.png',
+            'front_end/Images/ic_info_black_18dp.svg',
+            'front_end/Images/ic_warning_black_18dp.svg',
             'front_end/Images/indexedDB.png',
             'front_end/Images/indexedDBIndex.png',
             'front_end/Images/indexedDBObjectStore.png',

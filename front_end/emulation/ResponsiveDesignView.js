@@ -65,11 +65,6 @@ WebInspector.ResponsiveDesignView.prototype = {
         this._mediaInspector = new WebInspector.MediaQueryInspector(WebInspector.overridesSupport.settings.deviceWidth);
         this._updateMediaQueryInspector();
 
-        this._warningInfobar = new WebInspector.Infobar(WebInspector.Infobar.Type.Warning, WebInspector.moduleSetting("disableOverridesWarning"));
-        this._warningInfobar.element.classList.add("responsive-design-warning");
-        this._warningInfobar.setCloseCallback(WebInspector.overridesSupport.clearWarningMessage.bind(WebInspector.overridesSupport));
-        this._canvasContainer.element.appendChild(this._warningInfobar.element);
-        this._warningMessage = this._warningInfobar.element.createChild("span");
         WebInspector.overridesSupport.addEventListener(WebInspector.OverridesSupport.Events.OverridesWarningUpdated, this._overridesWarningUpdated, this);
 
         this._slidersContainer = this._canvasContainer.element.createChild("div", "vbox responsive-design-sliders-container");
@@ -760,8 +755,23 @@ WebInspector.ResponsiveDesignView.prototype = {
     _overridesWarningUpdated: function()
     {
         var message = WebInspector.overridesSupport.warningMessage();
-        this._warningMessage.textContent = message;
-        this._warningInfobar.setVisible(!!message);
+        if (!message) {
+            if (this._warningInfobar) {
+                this._warningInfobar.dispose();
+                delete this._warningInfobar;
+            }
+        }
+
+        if (!this._warningInfobar) {
+            this._warningInfobar = WebInspector.Infobar.create(WebInspector.Infobar.Type.Warning, message, WebInspector.moduleSetting("disableOverridesWarning"));
+            if (this._warningInfobar) {
+                this._warningInfobar.element.classList.add("responsive-design-warning");
+                this._warningInfobar.setCloseCallback(WebInspector.overridesSupport.clearWarningMessage.bind(WebInspector.overridesSupport));
+                this._canvasContainer.element.appendChild(this._warningInfobar.element);
+            }
+        } else {
+            this._warningInfobar.setText(message);
+        }
     },
 
     _showEmulationInDrawer: function()

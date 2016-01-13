@@ -8,10 +8,11 @@
  */
 WebInspector.DataSaverInfobar = function()
 {
-    WebInspector.Infobar.call(this, WebInspector.Infobar.Type.Warning, WebInspector.settings.moduleSetting("disableDataSaverInfobar"));
-    this.element.createTextChild(WebInspector.UIString("Consider disabling "));
-    this.element.appendChild(WebInspector.linkifyURLAsNode("https://support.google.com/chrome/answer/2392284?hl=en", "Chrome Data Saver", undefined, true));
-    this.element.createTextChild(WebInspector.UIString(" while debugging."));
+    WebInspector.Infobar.call(this, WebInspector.Infobar.Type.Warning, WebInspector.UIString("Data Saver is enabled"), WebInspector.settings.moduleSetting("disableDataSaverInfobar"));
+    var message = this.createDetailsRowMessage();
+    message.createTextChild("Consider disabling ");
+    message.appendChild(WebInspector.linkifyURLAsNode("https://support.google.com/chrome/answer/2392284?hl=en", "Chrome Data Saver", undefined, true));
+    message.createTextChild(WebInspector.UIString(" while debugging."));
 }
 
 WebInspector.DataSaverInfobar._infobars = [];
@@ -32,10 +33,10 @@ WebInspector.DataSaverInfobar.prototype = {
     /**
      * @override
      */
-    close: function()
+    dispose: function()
     {
         for (var infobar of WebInspector.DataSaverInfobar._infobars)
-            WebInspector.Infobar.prototype.close.call(infobar);
+            WebInspector.Infobar.prototype.dispose.call(infobar);
     },
 
     __proto__: WebInspector.Infobar.prototype

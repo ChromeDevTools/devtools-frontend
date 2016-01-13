@@ -467,5 +467,13 @@ WebInspector.ResourceScriptFile.prototype = {
         this._script.addSourceMapURL(sourceMapURL);
     },
 
+    /**
+     * @return {boolean}
+     */
+    hasSourceMapURL: function()
+    {
+        return this._script && !!this._script.sourceMapURL;
+    },
+
     __proto__: WebInspector.Object.prototype
 }

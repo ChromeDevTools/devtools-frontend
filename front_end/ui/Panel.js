@@ -102,7 +102,7 @@ WebInspector.Panel.prototype = {
             this.element.insertBefore(infobar.element, this.element.firstChild);
         else
             this.element.appendChild(infobar.element);
-        infobar.setVisible(true);
+        infobar.setParentView(this);
         this.doResize();
     },
 

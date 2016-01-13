@@ -47,6 +47,24 @@
     color: #5a5a5a;
 }
 
+.toolbar-dropdown-arrow {
+    -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
+    -webkit-mask-size: 352px 168px;
+    -webkit-mask-position: -18px -96px;
+    background-color: #444;
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    pointer-events: none;
+    margin: auto 0;
+}
+
+@media (-webkit-min-device-pixel-ratio: 1.5) {
+    .toolbar-dropdown-arrow {
+        -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
+    }
+} /* media */
+
 /* Text-glyph item */
 
 .toolbar-text-glyph {
@@ -60,6 +78,10 @@
     margin: 0 5px;
     flex: none;
     color: #5a5a5a;
+}
+
+.toolbar-has-dropdown .toolbar-text {
+    margin-right: 1px;
 }
 
 .toolbar-has-glyph .toolbar-text {
@@ -155,24 +177,6 @@
     flex-shrink: 0;
     margin-right: 6px;
 }
-
-.toolbar-select-arrow {
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
-    -webkit-mask-size: 352px 168px;
-    -webkit-mask-position: -18px -96px;
-    background-color: #444;
-    width: 12px;
-    height: 12px;
-    display: inline-block;
-    pointer-events: none;
-    margin: auto 0;
-}
-
-@media (-webkit-min-device-pixel-ratio: 1.5) {
-.toolbar-select-arrow {
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
-}
-} /* media */
 
 select.toolbar-item {
     min-width: 48px;

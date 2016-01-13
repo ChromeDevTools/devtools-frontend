@@ -39,7 +39,7 @@
 }
 
 .device-mode-toolbar-middle-container {
-    flex: 1 1 120px;
+    flex: 1 1 160px;
     position: relative;
 }
 
@@ -152,56 +152,6 @@
     height: 0;
     display: flex;
     background-color: #fcfcfc;
-}
-
-.device-mode-blueprint-container {
-    display: flex;
-    justify-content: center;
-    pointer-events: none;
-}
-
-.device-mode-blueprint {
-    flex-direction: column;
-    justify-content: flex-end;
-    flex: none;
-    position: relative;
-    pointer-events: auto;
-}
-
-.device-mode-blueprint-border {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    display: flex;
-    align-items: flex-end;
-    justify-content: flex-end;
-    color: #aaa;
-    border: 1px solid #dcdcdc;
-    margin-top: -1px;
-}
-
-.device-mode-blueprint-border:hover {
-    border-color: #aaa;
-}
-
-.device-mode-blueprint-border > span {
-    transition: opacity 150ms;
-    opacity: 0;
-    padding: 3px;
-}
-
-.device-mode-blueprint-border:hover > span {
-    opacity: 1;
-}
-
-.device-mode-blueprint-inside {
-    position: absolute;
-    left: 20px;
-    right: 20px;
-    top: 20px;
-    bottom: 20px;
 }
 
 .device-mode-ruler {

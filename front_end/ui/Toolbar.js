@@ -334,6 +334,12 @@ WebInspector.ToolbarLabel.prototype = {
         this.element.classList.toggle("toolbar-dimmed", dimmed);
     },
 
+    addDropDownArrow: function()
+    {
+        this.element.classList.add("toolbar-has-dropdown");
+        this.element.createChild("div", "toolbar-dropdown-arrow");
+    },
+
     __proto__: WebInspector.ToolbarItem.prototype
 }
 
@@ -720,7 +726,7 @@ WebInspector.ToolbarComboBox = function(changeHandler, className)
     WebInspector.ToolbarItem.call(this, createElementWithClass("span", "toolbar-select-container"));
 
     this._selectElement = this.element.createChild("select", "toolbar-item");
-    this.element.createChild("div", "toolbar-select-arrow");
+    this.element.createChild("div", "toolbar-dropdown-arrow");
     if (changeHandler)
         this._selectElement.addEventListener("change", changeHandler, false);
     if (className)

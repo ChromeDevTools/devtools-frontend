@@ -51,14 +51,6 @@ WebInspector.StylesSidebarPane = function()
 }
 
 /**
- * @enum {string}
- */
-WebInspector.StylesSidebarPane.Events = {
-    SelectorEditingStarted: "SelectorEditingStarted",
-    SelectorEditingEnded: "SelectorEditingEnded"
-};
-
-/**
  * @param {!WebInspector.CSSProperty} property
  * @return {!Element}
  */

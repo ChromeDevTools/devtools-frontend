@@ -138,6 +138,18 @@ WebInspector.CSSMetadata.canonicalPropertyName = function(name)
  * @param {string} propertyName
  * @return {boolean}
  */
+WebInspector.CSSMetadata.isCSSPropertyName = function(propertyName)
+{
+    if (propertyName.startsWith("-moz-") || propertyName.startsWith("-o-") || propertyName.startsWith("-webkit-") || propertyName.startsWith("-ms-"))
+        return true;
+    var hasSupportedProperties = WebInspector.CSSMetadata.cssPropertiesMetainfo._values.length > 0;
+    return !hasSupportedProperties || WebInspector.CSSMetadata.cssPropertiesMetainfoKeySet().hasOwnProperty(propertyName);
+}
+
+/**
+ * @param {string} propertyName
+ * @return {boolean}
+ */
 WebInspector.CSSMetadata.isPropertyInherited = function(propertyName)
 {
     return !!(WebInspector.CSSMetadata.InheritedProperties[WebInspector.CSSMetadata.canonicalPropertyName(propertyName)]

@@ -1439,9 +1439,9 @@ WebInspector.CSSProperty.prototype = {
         function processToken(token, tokenType, column, newColumn)
         {
             if (!insideProperty) {
-                var isDisabledProperty = tokenType && tokenType.includes("css-comment") && token.includes(":");
+                var disabledProperty = tokenType && tokenType.includes("css-comment") && isDisabledProperty(token);
                 var isPropertyStart = tokenType && (tokenType.includes("css-meta") || tokenType.includes("css-property") || tokenType.includes("css-variable-2"));
-                if (isDisabledProperty) {
+                if (disabledProperty) {
                     result = result.trimRight() + indentation + token;
                 } else if (isPropertyStart) {
                     insideProperty = true;
@@ -1460,6 +1460,19 @@ WebInspector.CSSProperty.prototype = {
             } else {
                 propertyText += token;
             }
+        }
+
+        /**
+         * @param {string} text
+         * @return {boolean}
+         */
+        function isDisabledProperty(text)
+        {
+            var colon = text.indexOf(":");
+            if (colon === -1)
+                return false;
+            var propertyName = text.substring(2, colon).trim();
+            return WebInspector.CSSMetadata.isCSSPropertyName(propertyName);
         }
     },
 

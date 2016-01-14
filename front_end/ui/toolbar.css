@@ -261,10 +261,6 @@ input.toolbar-item.hover {
     -webkit-mask-position: -256px -48px;
 }
 
-.settings-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -160px -24px;
-}
-
 .menu-toolbar-item.toolbar-glyph {
     -webkit-mask-position: -192px -24px;
 }
@@ -289,10 +285,6 @@ input.toolbar-item.hover {
     -webkit-mask-position: -96px 0;
 }
 
-.visibility-off-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -192px 0;
-}
-
 .large-list-toolbar-item.toolbar-glyph {
     -webkit-mask-position: -224px 0;
 }
@@ -309,17 +301,6 @@ input.toolbar-item.hover {
     -webkit-mask-position: -96px -24px;
 }
 
-.last-step-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: 0 -72px;
-}
-
-.first-step-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: 0 -72px;
-    transform: rotate(180deg);
-    top: 0;
-    bottom: 0;
-}
-
 .step-in-toolbar-item.toolbar-glyph {
     -webkit-mask-position: -64px -72px;
 }
@@ -330,11 +311,6 @@ input.toolbar-item.hover {
 
 .step-over-toolbar-item.toolbar-glyph {
     -webkit-mask-position: -128px -72px;
-}
-
-.step-backwards-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -128px -72px;
-    transform: scaleX(-1);
 }
 
 .play-toolbar-item.toolbar-glyph {
@@ -362,10 +338,6 @@ input.toolbar-item.hover {
     -webkit-mask-position: -32px 0;
 }
 
-.add-breakpoint-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -64px -24px;
-}
-
 .breakpoint-toolbar-item.toolbar-glyph {
     -webkit-mask-position: 0 -24px;
 }
@@ -376,14 +348,6 @@ input.toolbar-item.hover {
 
 .garbage-collect-toolbar-item.toolbar-glyph {
     -webkit-mask-position: -128px -24px;
-}
-
-.histogram-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -160px -48px;
-}
-
-.flame-chart-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -192px -48px;
 }
 
 .filter-toolbar-item.toolbar-glyph {
@@ -434,14 +398,6 @@ input.toolbar-item.hover {
 .toolbar-state-play-outline .animation-control-toolbar-item.toolbar-glyph {
     -webkit-mask-position: -320px -48px;
     background-color: rgb(66, 129, 235) !important;
-}
-
-.timer-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -320px -72px;
-}
-
-.view-quilt-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -320px -96px;
 }
 
 .background-color-toolbar-item.toolbar-glyph {

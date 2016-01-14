@@ -1093,6 +1093,11 @@ Runtime.experiments = new Runtime.ExperimentsSupport();
  * @type {?string}
  */
 Runtime._remoteBase = Runtime.queryParam("remoteBase");
+{(function validateRemoteBase()
+{
+    if (Runtime._remoteBase && !Runtime._remoteBase.startsWith("https://chrome-devtools-frontend.appspot.com/"))
+        Runtime._remoteBase = null;
+})();}
 
 /**
  * @param {string} path

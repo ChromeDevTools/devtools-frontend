@@ -4,31 +4,29 @@
  * found in the LICENSE file.
  */
 
-.network-conditions-settings-tab .settings-tab.help-content {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    height: 100%;
-    margin: 0;
+:host {
+    overflow:hidden;
+}
+
+.header {
+    padding: 0 0 6px;
+    border-bottom: 1px solid #EEEEEE;
+    font-size: 18px;
+    font-weight: normal;
+    flex: none;
+}
+
+.add-conditions-button {
+    flex: none;
+    margin: 10px 0;
+    min-width: 140px;
+    align-self: flex-start;
+}
+
+.conditions-list {
     max-width: 500px;
-}
-
-.network-conditions-settings-tab .conditions-title {
-    font-size: 120%;
-    color: #222;
-    flex: none;
-}
-
-.network-conditions-settings-tab .button-row {
-    flex: none;
-    display: flex;
-    margin-bottom: 10px;
-}
-
-.network-conditions-settings-tab .button-row button {
-    margin-right: 10px;
-    min-width: 120px;
-    flex: none;
+    min-width: 340px;
+    flex: auto;
 }
 
 .conditions-list-item {

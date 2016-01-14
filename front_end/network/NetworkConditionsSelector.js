@@ -126,27 +126,24 @@ WebInspector.NetworkConditionsSelector.prototype = {
  */
 WebInspector.NetworkConditionsSettingsTab = function()
 {
-    WebInspector.VBox.call(this);
-    this.element.classList.add("settings-tab-container");
-    this.element.classList.add("network-conditions-settings-tab");
-    this.registerRequiredCSS("components/networkConditionsSettingsTab.css");
+    WebInspector.VBox.call(this, true);
+    this.registerRequiredCSS("network/networkConditionsSettingsTab.css");
 
-    var header = this.element.createChild("header");
-    header.createChild("h3").createTextChild(WebInspector.UIString("Network Throttling Profiles"));
-    this.containerElement = this.element.createChild("div", "help-container-wrapper").createChild("div", "settings-tab help-content help-container");
+    this.contentElement.createChild("div", "header").textContent = WebInspector.UIString("Network Throttling Profiles");
 
-    var buttonsRow = this.containerElement.createChild("div", "button-row");
-    var addButton = createTextButton(WebInspector.UIString("Add custom profile..."), this._addButtonClicked.bind(this));
-    buttonsRow.appendChild(addButton);
+    var addButton = createTextButton(WebInspector.UIString("Add custom profile..."), this._addButtonClicked.bind(this), "add-conditions-button");
+    this.contentElement.appendChild(addButton);
 
     this._list = new WebInspector.ListWidget(this);
-    this._list.registerRequiredCSS("components/networkConditionsSettingsTab.css");
-    this._list.show(this.containerElement);
+    this._list.element.classList.add("conditions-list");
+    this._list.registerRequiredCSS("network/networkConditionsSettingsTab.css");
+    this._list.show(this.contentElement);
 
     this._customSetting = WebInspector.moduleSetting("networkConditionsCustomProfiles");
     this._customSetting.addChangeListener(this._conditionsUpdated, this);
 
     this.setDefaultFocusedElement(addButton);
+    this.contentElement.tabIndex = 0;
 }
 
 WebInspector.NetworkConditionsSettingsTab.prototype = {

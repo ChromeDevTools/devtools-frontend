@@ -14,22 +14,6 @@
             "marker": "breakpoint-marker",
             "title": "DOM Breakpoint",
             "color": "rgb(105, 140, 254)"
-        },
-        {
-            "type": "setting",
-            "settingName": "networkConditionsCustomProfiles",
-            "settingType": "array",
-            "defaultValue": []
-        },
-        {
-            "type": "settings-view",
-            "name": "network-conditions",
-            "title": "Throttling",
-            "order": "35",
-            "className": "WebInspector.NetworkConditionsSettingsTab",
-            "settings": [
-                "networkConditionsCustomProfiles"
-            ]
         }
     ],
     "dependencies": [
@@ -51,7 +35,6 @@
         "HandlerRegistry.js",
         "InspectorView.js",
         "Linkifier.js",
-        "NetworkConditionsSelector.js",
         "ObjectPopoverHelper.js",
         "ObjectPropertiesSection.js",
         "RemoteObjectPreviewFormatter.js",
@@ -66,7 +49,6 @@
         "eventListenersView.css",
         "domUtils.css",
         "inspectorViewTabbedPane.css",
-        "networkConditionsSettingsTab.css",
         "objectPropertiesSection.css",
         "objectValue.css"
     ]

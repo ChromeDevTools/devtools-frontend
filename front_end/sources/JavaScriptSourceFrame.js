@@ -288,16 +288,17 @@ WebInspector.JavaScriptSourceFrame.prototype = {
             var breakpoint = this._breakpointManager.findBreakpointOnLine(this.uiSourceCode(), lineNumber);
             if (!breakpoint) {
                 // This row doesn't have a breakpoint: We want to show Add Breakpoint and Add and Edit Breakpoint.
-                contextMenu.appendItem(WebInspector.UIString.capitalize("Add ^breakpoint"), this._createNewBreakpoint.bind(this, lineNumber, 0, "", true));
-                contextMenu.appendItem(WebInspector.UIString.capitalize("Add ^conditional ^breakpoint…"), this._editBreakpointCondition.bind(this, lineNumber));
+                contextMenu.appendItem(WebInspector.UIString("Add breakpoint"), this._createNewBreakpoint.bind(this, lineNumber, 0, "", true));
+                contextMenu.appendItem(WebInspector.UIString("Add conditional breakpoint…"), this._editBreakpointCondition.bind(this, lineNumber));
+                contextMenu.appendItem(WebInspector.UIString("Never pause here"), this._createNewBreakpoint.bind(this, lineNumber, 0, "false", true));
             } else {
                 // This row has a breakpoint, we want to show edit and remove breakpoint, and either disable or enable.
-                contextMenu.appendItem(WebInspector.UIString.capitalize("Remove ^breakpoint"), breakpoint.remove.bind(breakpoint));
-                contextMenu.appendItem(WebInspector.UIString.capitalize("Edit ^breakpoint…"), this._editBreakpointCondition.bind(this, lineNumber, breakpoint));
+                contextMenu.appendItem(WebInspector.UIString("Remove breakpoint"), breakpoint.remove.bind(breakpoint));
+                contextMenu.appendItem(WebInspector.UIString("Edit breakpoint…"), this._editBreakpointCondition.bind(this, lineNumber, breakpoint));
                 if (breakpoint.enabled())
-                    contextMenu.appendItem(WebInspector.UIString.capitalize("Disable ^breakpoint"), breakpoint.setEnabled.bind(breakpoint, false));
+                    contextMenu.appendItem(WebInspector.UIString("Disable breakpoint"), breakpoint.setEnabled.bind(breakpoint, false));
                 else
-                    contextMenu.appendItem(WebInspector.UIString.capitalize("Enable ^breakpoint"), breakpoint.setEnabled.bind(breakpoint, true));
+                    contextMenu.appendItem(WebInspector.UIString("Enable breakpoint"), breakpoint.setEnabled.bind(breakpoint, true));
             }
             resolve();
         }

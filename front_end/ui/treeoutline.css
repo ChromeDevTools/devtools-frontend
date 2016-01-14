@@ -9,7 +9,7 @@
     padding: 2px 0 0 0;
 }
 
-.tree-outline-disclosure {
+.tree-outline-disclosure:not(.tree-outline-disclosure-hide-overflow) {
     min-width: 100%;
     display: inline-block;
 }
@@ -77,6 +77,7 @@ ol.tree-outline,
     position: relative;
     display: flex;
     align-items: center;
+    min-height: 16px;
 }
 
 ol.tree-outline:focus li.selected {

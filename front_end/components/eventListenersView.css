@@ -4,30 +4,31 @@
  * found in the LICENSE file.
  */
 
-.event-listener-tree li {
+.tree-outline-disclosure li {
     padding: 2px 0 0 5px;
     overflow: hidden;
     display: list-item;
+    min-height: 16px;
 }
 
-.event-listener-tree > li {
+.tree-outline-disclosure > li {
     border-top: 1px solid #f0f0f0;
 }
 
-.event-listener-tree > li:first-of-type {
+.tree-outline-disclosure > li:first-of-type {
     border-top: none;
 }
 
-.event-listener-tree {
+.tree-outline-disclosure {
     padding-left: 0 !important;
     padding-right: 3px;
 }
 
-.event-listener-tree li.parent::before {
+.tree-outline-disclosure li.parent::before {
     top: 0 !important;
 }
 
-.event-listener-tree .name {
+.tree-outline-disclosure .name {
     color: rgb(136, 19, 145);
 }
 
@@ -43,12 +44,13 @@
     border: 1px solid #c3c3c3;
     margin-left: 10px;
     display: none;
+    cursor: pointer;
 }
 
 .event-listener-delete-button:hover {
     background-color: #e0e0e0;
 }
 
-.event-listener-tree li:hover .event-listener-delete-button {
+.tree-outline-disclosure li:hover .event-listener-delete-button {
     display: inline;
 }

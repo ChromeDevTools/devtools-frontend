@@ -308,6 +308,7 @@
 .styles-section .style-properties > li {
     padding-left: 38px;
     clear: both;
+    min-height: 14px;
 }
 
 .styles-section .style-properties > li .webkit-css-property {

@@ -26,8 +26,6 @@
 }
 
 .object-properties-section li {
-    min-height: inherit;
-    line-height: 15px;
     -webkit-user-select: text;
 }
 

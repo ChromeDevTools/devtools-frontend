@@ -38,6 +38,7 @@ WebInspector.ObjectPropertiesSection = function(object, title, emptyPlaceholder,
     this._object = object;
     this._editable = true;
     TreeOutlineInShadow.call(this);
+    this.hideOverflow();
     this.setFocusable(false);
     this._objectTreeElement = new WebInspector.ObjectPropertiesSection.RootElement(object, emptyPlaceholder, ignoreHasOwnProperty, extraProperties);
     this.appendChild(this._objectTreeElement);

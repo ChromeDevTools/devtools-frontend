@@ -195,12 +195,11 @@ WebInspector.AccessibilitySubPane.prototype = {
     },
 
     /**
-     * @param {string=} className
      * @return {!TreeOutline}
      */
-    createTreeOutline: function(className)
+    createTreeOutline: function()
     {
-        var treeOutline = new TreeOutlineInShadow(className);
+        var treeOutline = new TreeOutlineInShadow();
         treeOutline.registerRequiredCSS("accessibility/accessibilityNode.css");
         treeOutline.registerRequiredCSS("components/objectValue.css");
 

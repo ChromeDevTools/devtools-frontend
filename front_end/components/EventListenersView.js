@@ -14,7 +14,8 @@ WebInspector.EventListenersResult;
 WebInspector.EventListenersView = function(element)
 {
     this._element = element;
-    this._treeOutline = new TreeOutlineInShadow("event-listener-tree");
+    this._treeOutline = new TreeOutlineInShadow();
+    this._treeOutline.hideOverflow();
     this._treeOutline.registerRequiredCSS("components/objectValue.css");
     this._treeOutline.registerRequiredCSS("components/eventListenersView.css");
     this._treeOutline.setComparator(WebInspector.EventListenersTreeElement.comparator);

@@ -313,21 +313,18 @@ TreeOutline.prototype = {
 /**
  * @constructor
  * @extends {TreeOutline}
- * @param {string=} className
  */
-function TreeOutlineInShadow(className)
+function TreeOutlineInShadow()
 {
     TreeOutline.call(this);
     var innerElement = this.element;
     innerElement.classList.add("tree-outline");
-    if (className)
-        innerElement.classList.add(className);
 
     // Redefine element to the external one.
     this.element = createElement("div");
     this._shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element, "ui/treeoutline.css");
-    var contentElement = this._shadowRoot.createChild("div", "tree-outline-disclosure");
-    contentElement.appendChild(innerElement);
+    this._disclosureElement = this._shadowRoot.createChild("div", "tree-outline-disclosure");
+    this._disclosureElement.appendChild(innerElement);
     this._renderSelection = true;
 }
 
@@ -338,6 +335,11 @@ TreeOutlineInShadow.prototype = {
     registerRequiredCSS: function(cssFile)
     {
         WebInspector.appendStyle(this._shadowRoot, cssFile);
+    },
+
+    hideOverflow: function()
+    {
+        this._disclosureElement.classList.add("tree-outline-disclosure-hide-overflow");
     },
 
     __proto__: TreeOutline.prototype

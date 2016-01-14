@@ -56,6 +56,7 @@ WebInspector.ComputedStyleWidget = function(stylesSidebarPane, sharedModel)
     toolbar.appendToolbarItem(new WebInspector.ToolbarCheckbox(WebInspector.UIString("Show all"), undefined, this._showInheritedComputedStylePropertiesSetting));
 
     this._propertiesOutline = new TreeOutlineInShadow();
+    this._propertiesOutline.hideOverflow();
     this._propertiesOutline.registerRequiredCSS("elements/computedStyleSidebarPane.css");
     this._propertiesOutline.element.classList.add("monospace", "computed-properties");
     this.element.appendChild(this._propertiesOutline.element);

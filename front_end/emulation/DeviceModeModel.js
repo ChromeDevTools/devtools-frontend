@@ -428,6 +428,11 @@ WebInspector.DeviceModeModel.prototype = {
             pageWidth = 0;
             pageHeight = 0;
         }
+        if (this._visiblePageRect.width === pageWidth * scale && this._visiblePageRect.height === pageHeight * scale) {
+            // When we only have to apply scale, do not resize the page. This will speed things up and remove lag.
+            pageWidth = 0;
+            pageHeight = 0;
+        }
 
         this._deviceMetricsThrottler.schedule(setDeviceMetricsOverride.bind(this));
 

@@ -62,7 +62,8 @@ WebInspector.ResponsiveDesignView.prototype = {
 
         this._mediaInspectorContainer = this._canvasContainer.element.createChild("div", "responsive-design-media-container");
         WebInspector.Tooltip.addNativeOverrideContainer(this._mediaInspectorContainer);
-        this._mediaInspector = new WebInspector.MediaQueryInspector(WebInspector.overridesSupport.settings.deviceWidth);
+        var deviceWidthSetting = WebInspector.overridesSupport.settings.deviceWidth;
+        this._mediaInspector = new WebInspector.MediaQueryInspector(deviceWidthSetting.get.bind(deviceWidthSetting), deviceWidthSetting.set.bind(deviceWidthSetting));
         this._updateMediaQueryInspector();
 
         WebInspector.overridesSupport.addEventListener(WebInspector.OverridesSupport.Events.OverridesWarningUpdated, this._overridesWarningUpdated, this);

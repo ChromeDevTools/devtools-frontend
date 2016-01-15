@@ -123,6 +123,36 @@ WebInspector.DeviceModeModel.prototype = {
     },
 
     /**
+     * @param {number} width
+     */
+    setWidth: function(width)
+    {
+        var max = Math.min(WebInspector.DeviceModeModel.MaxDeviceSize, this._preferredScaledWidth());
+        width = Math.max(Math.min(width, max), 1);
+        this._widthSetting.set(width);
+    },
+
+    /**
+     * @param {number} height
+     */
+    setHeight: function(height)
+    {
+        var max = Math.min(WebInspector.DeviceModeModel.MaxDeviceSize, this._preferredScaledHeight());
+        height = Math.max(Math.min(height, max), 0);
+        if (height === this._preferredScaledHeight())
+            height = 0;
+        this._heightSetting.set(height);
+    },
+
+    /**
+     * @param {number} scale
+     */
+    setScale: function(scale)
+    {
+        this._scaleSetting.set(scale);
+    },
+
+    /**
      * @return {?WebInspector.EmulatedDevice}
      */
     device: function()
@@ -195,6 +225,14 @@ WebInspector.DeviceModeModel.prototype = {
     },
 
     /**
+     * @return {boolean}
+     */
+    isFullHeight: function()
+    {
+        return !this._heightSetting.get();
+    },
+
+    /**
      * @return {number}
      */
     appliedDeviceScaleFactor: function()
@@ -208,22 +246,6 @@ WebInspector.DeviceModeModel.prototype = {
     scaleSetting: function()
     {
         return this._scaleSetting;
-    },
-
-    /**
-     * @return {!WebInspector.Setting}
-     */
-    widthSetting: function()
-    {
-        return this._widthSetting;
-    },
-
-    /**
-     * @return {!WebInspector.Setting}
-     */
-    heightSetting: function()
-    {
-        return this._heightSetting;
     },
 
     /**
@@ -259,8 +281,8 @@ WebInspector.DeviceModeModel.prototype = {
     {
         this._deviceScaleFactorSetting.set(0);
         this._scaleSetting.set(1);
-        this._widthSetting.set(400);
-        this._heightSetting.set(0);
+        this.setWidth(400);
+        this.setHeight(0);
         this._uaSetting.set(WebInspector.DeviceModeModel.UA.Mobile);
     },
 
@@ -337,12 +359,30 @@ WebInspector.DeviceModeModel.prototype = {
     },
 
     /**
+     * @return {number}
+     */
+    _preferredScaledWidth: function()
+    {
+        return Math.floor(this._preferredSize.width / (this._scaleSetting.get() || 1));
+    },
+
+    /**
+     * @return {number}
+     */
+    _preferredScaledHeight: function()
+    {
+        return Math.floor(this._preferredSize.height / (this._scaleSetting.get() || 1));
+    },
+
+    /**
      * @param {boolean} resetScrollAndPageScale
      */
     _calculateAndEmulate: function(resetScrollAndPageScale)
     {
         if (!this._target) {
             this._onTargetAvailable = this._calculateAndEmulate.bind(this, resetScrollAndPageScale);
+            this._applyDeviceMetrics(this._availableSize, new Insets(0, 0, 0, 0), 1, 0, false, resetScrollAndPageScale);
+            this._updateCallback.call(null);
             return;
         }
 
@@ -360,8 +400,12 @@ WebInspector.DeviceModeModel.prototype = {
             this._applyTouch(false, false);
             this._applyScreenOrientation("");
         } else if (this._type === WebInspector.DeviceModeModel.Type.Responsive) {
-            var screenWidth = this._widthSetting.get() || this._preferredSize.width / (this._scaleSetting.get() || 1);
-            var screenHeight = this._heightSetting.get() || this._preferredSize.height / (this._scaleSetting.get() || 1);
+            var screenWidth = this._widthSetting.get();
+            if (!screenWidth || screenWidth > this._preferredScaledWidth())
+                screenWidth = this._preferredScaledWidth();
+            var screenHeight = this._heightSetting.get();
+            if (!screenHeight || screenHeight > this._preferredScaledHeight())
+                screenHeight = this._preferredScaledHeight();
             var mobile = this._uaSetting.get() === WebInspector.DeviceModeModel.UA.Mobile;
             var defaultDeviceScaleFactor = mobile ? WebInspector.DeviceModeModel._defaultMobileScaleFactor : 0;
             this._calculateFitScale(this._widthSetting.get(), this._heightSetting.get());

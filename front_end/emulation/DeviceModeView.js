@@ -15,16 +15,16 @@ WebInspector.DeviceModeView = function()
     WebInspector.Tooltip.addNativeOverrideContainer(this.contentElement);
 
     this._model = new WebInspector.DeviceModeModel(this._updateUI.bind(this));
-    this._mediaInspector = new WebInspector.MediaQueryInspector(this._model.widthSetting());
+    this._mediaInspector = new WebInspector.MediaQueryInspector(() => this._model.appliedDeviceSize().width, this._model.setWidth.bind(this._model));
     // TODO(dgozman): remove CountUpdated event.
     this._showMediaInspectorSetting = WebInspector.settings.createSetting("showMediaQueryInspector", false);
     this._showMediaInspectorSetting.addChangeListener(this._updateUI, this);
     this._showRulersSetting = WebInspector.settings.createSetting("emulation.showRulers", false);
     this._showRulersSetting.addChangeListener(this._updateUI, this);
 
-    this._topRuler = new WebInspector.DeviceModeView.Ruler(true, this._model.widthSetting().set.bind(this._model.widthSetting()));
+    this._topRuler = new WebInspector.DeviceModeView.Ruler(true, this._model.setWidth.bind(this._model));
     this._topRuler.element.classList.add("device-mode-ruler-top");
-    this._leftRuler = new WebInspector.DeviceModeView.Ruler(false, this._model.heightSetting().set.bind(this._model.heightSetting()));
+    this._leftRuler = new WebInspector.DeviceModeView.Ruler(false, this._model.setHeight.bind(this._model));
     this._leftRuler.element.classList.add("device-mode-ruler-left");
     this._createUI();
     WebInspector.zoomManager.addEventListener(WebInspector.ZoomManager.Events.ZoomChanged, this._zoomChanged, this);
@@ -56,7 +56,7 @@ WebInspector.DeviceModeView.prototype = {
         this._heightResizerElement = this._screenArea.createChild("div", "device-mode-resizer device-mode-height-resizer");
         this._heightResizerElement.createChild("div", "");
         this._createResizer(this._heightResizerElement, false, true);
-        this._heightResizerElement.addEventListener("dblclick", this._model.heightSetting().set.bind(this._model.heightSetting(), 0), false);
+        this._heightResizerElement.addEventListener("dblclick", this._model.setHeight.bind(this._model, 0), false);
         this._heightResizerElement.title = WebInspector.UIString("Double-click for full height");
 
         this._pageArea = this._screenArea.createChild("div", "device-mode-page-area");
@@ -116,16 +116,14 @@ WebInspector.DeviceModeView.prototype = {
             var dipOffsetX = cssOffsetX * WebInspector.zoomManager.zoomFactor();
             var newWidth = this._resizeStart.width + dipOffsetX * 2;
             newWidth = Math.round(newWidth / this._model.scale());
-            newWidth = Math.max(Math.min(newWidth, WebInspector.DeviceModeModel.MaxDeviceSize), 1);
-            this._model.widthSetting().set(newWidth);
+            this._model.setWidth(newWidth);
         }
 
         if (height) {
             var dipOffsetY = cssOffsetY * WebInspector.zoomManager.zoomFactor();
             var newHeight = this._resizeStart.height + dipOffsetY;
             newHeight = Math.round(newHeight / this._model.scale());
-            newHeight = Math.max(Math.min(newHeight, WebInspector.DeviceModeModel.MaxDeviceSize), 1);
-            this._model.heightSetting().set(newHeight);
+            this._model.setHeight(newHeight);
         }
     },
 
@@ -136,16 +134,6 @@ WebInspector.DeviceModeView.prototype = {
     {
         delete this._resizeStart;
         WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.ResizedViewInResponsiveMode);
-    },
-
-    /**
-     * @param {number} width
-     * @param {number} height
-     */
-    _resizeTo: function(width, height)
-    {
-        this._model.widthSetting().set(width);
-        this._model.heightSetting().set(height);
     },
 
     _updateUI: function()
@@ -400,7 +388,7 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
         var widthInput = createElementWithClass("input", "device-mode-size-input");
         widthInput.maxLength = 5;
         widthInput.title = WebInspector.UIString("Width");
-        WebInspector.SettingsUI.bindSettingInputField(widthInput, this._model.widthSetting(), true, WebInspector.DeviceModeModel.deviceSizeValidator, true);
+        this._updateWidthInput = this._bindInput(widthInput, this._model.setWidth.bind(this._model), WebInspector.DeviceModeModel.deviceSizeValidator);
         toolbar.appendToolbarItem(this._wrapToolbarItem(widthInput));
 
         var xElement = createElementWithClass("div", "device-mode-x");
@@ -410,7 +398,7 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
         var heightInput = createElementWithClass("input", "device-mode-size-input");
         heightInput.maxLength = 5;
         heightInput.title = WebInspector.UIString("Height (leave empty for full)");
-        WebInspector.SettingsUI.bindSettingInputField(heightInput, this._model.heightSetting(), true, validateHeight, true, true);
+        this._updateHeightInput = this._bindInput(heightInput, this._model.setHeight.bind(this._model), validateHeight);
         toolbar.appendToolbarItem(this._wrapToolbarItem(heightInput));
         this._heightInput = heightInput;
 
@@ -426,6 +414,79 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
         {
             return !value ? "" : WebInspector.DeviceModeModel.deviceSizeValidator(value);
         }
+    },
+
+    /**
+     * @param {!Element} input
+     * @param {function(number)} apply
+     * @param {function(string):?string} validate
+     * @return {function(number)}
+     */
+    _bindInput: function(input, apply, validate)
+    {
+        input.addEventListener("change", onChange, false);
+        input.addEventListener("input", onInput, false);
+        input.addEventListener("keydown", onKeyDown, false);
+
+        function onInput()
+        {
+            input.classList.toggle("error-input", !!validate(input.value));
+        }
+
+        function onChange()
+        {
+            var valid = !validate(input.value);
+            input.classList.toggle("error-input", !valid);
+            if (valid)
+                apply(input.value ? Number(input.value) : 0);
+        }
+
+        /**
+         * @param {!Event} event
+         */
+        function onKeyDown(event)
+        {
+            if (isEnterKey(event)) {
+                if (!validate(input.value))
+                    apply(input.value ? Number(input.value) : 0);
+                return;
+            }
+
+            var increment = event.keyIdentifier === "Up" ? 1 : event.keyIdentifier === "Down" ? -1 : 0;
+            if (!increment)
+                return;
+            if (event.shiftKey)
+                increment *= 10;
+
+            var value = input.value;
+            if (validate(value) || !value)
+                return;
+
+            value = (value ? Number(value) : 0) + increment;
+            var stringValue = value ? String(value) : "";
+            if (validate(stringValue) || !value)
+                return;
+
+            input.value = stringValue;
+            apply(input.value ? Number(input.value) : 0);
+            event.preventDefault();
+        }
+
+        /**
+         * @param {number} value
+         */
+        function setValue(value)
+        {
+            var stringValue = value ? String(value) : "";
+            if (stringValue === input.value)
+                return;
+            var valid = !validate(stringValue);
+            input.classList.toggle("error-input", !valid);
+            input.value = stringValue;
+            input.setSelectionRange(stringValue.length, stringValue.length);
+        }
+
+        return setValue;
     },
 
     /**
@@ -481,10 +542,14 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
     _appendScaleMenuItems: function(contextMenu)
     {
         var scaleSetting = this._model.scaleSetting();
-        contextMenu.appendItem(WebInspector.UIString("Fit to window (%.0f%%)", this._model.fitScale() * 100), scaleSetting.set.bind(scaleSetting, this._model.fitScale()), false);
-        contextMenu.appendSeparator();
+        if (this._model.type() === WebInspector.DeviceModeModel.Type.Device) {
+            contextMenu.appendItem(WebInspector.UIString("Fit to window (%.0f%%)", this._model.fitScale() * 100), scaleSetting.set.bind(scaleSetting, this._model.fitScale()), false);
+            contextMenu.appendSeparator();
+        }
         appendScaleItem(WebInspector.UIString("50%"), 0.5);
+        appendScaleItem(WebInspector.UIString("75%"), 0.75);
         appendScaleItem(WebInspector.UIString("100%"), 1);
+        appendScaleItem(WebInspector.UIString("125%"), 1.25);
         appendScaleItem(WebInspector.UIString("150%"), 1.5);
 
         /**
@@ -800,6 +865,8 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
         }
 
         var size = this._model.appliedDeviceSize();
+        this._updateHeightInput(this._model.isFullHeight() ? 0 : size.height);
+        this._updateWidthInput(size.width);
         if (!size.isEqual(this._cachedSize)) {
             for (var item of this._appliedSizeItems)
                 item.setText(WebInspector.UIString("%d \u00D7 %d", size.width, size.height));

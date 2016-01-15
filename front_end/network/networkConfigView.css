@@ -10,16 +10,18 @@
 
 .network-config-group {
     display: flex;
+    padding-top: 12px;
     margin-bottom: 12px;
     flex-wrap: wrap;
     flex: 0 0 auto;
     min-height: 30px;
+    border-top: 1px solid #ccc;
 }
 
 .network-config-title {
     flex: 0 0 130px;
     margin-right: 17px;
-    color: hsla(0,0%,40%,1);
+    text-align: right;
 }
 
 .network-config-fields {
@@ -30,6 +32,8 @@
 
 .network-config-disable-cache {
     line-height: 28px;
+    border-top: none;
+    padding-top: 0;
 }
 
 /* Network throttling */
@@ -72,7 +76,7 @@
 }
 
 .network-config-ua input[type=text], .network-config-ua .chrome-select {
-    margin: 5px 0 5px 20px;
+    margin-top: 8px;
 }
 
 .network-config-ua .chrome-select {

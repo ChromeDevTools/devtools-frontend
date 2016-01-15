@@ -46,61 +46,37 @@ WebInspector.NetworkConfigView.prototype = {
 
     _createUserAgentSection: function()
     {
-        var section = this._createSection(WebInspector.UIString("User agent spoofing"), "network-config-ua");
-        var radio = createRadioLabel("auto-user-agent", WebInspector.UIString("Auto user agent"), true);
-        section.appendChild(radio);
-        this._autoUserAgentRadio = radio.radioElement;
-        this._autoUserAgentRadio.addEventListener("change", this._userAgentTypeChanged.bind(this, this._autoUserAgentRadio));
-        this._autoUserAgent = section.createChild("input", "network-config-ua-auto");
-        this._autoUserAgent.value = WebInspector.UIString("Default");
-        this._autoUserAgent.type = "text";
-        this._autoUserAgent.disabled = true;
-        WebInspector.multitargetNetworkManager.addEventListener(WebInspector.MultitargetNetworkManager.Events.UserAgentChanged, this._userAgentChanged, this);
-        this._userAgentChanged();
+        var section = this._createSection(WebInspector.UIString("User agent"), "network-config-ua");
+        var checkboxLabel = createCheckboxLabel(WebInspector.UIString("Select automatically"), true);
+        section.appendChild(checkboxLabel);
+        this._autoCheckbox = checkboxLabel.checkboxElement;
+        this._autoCheckbox.addEventListener("change", this._userAgentTypeChanged.bind(this));
 
-        radio = createRadioLabel("custom-user-agent", WebInspector.UIString("Custom user agent"), false);
         this._customUserAgentSetting = WebInspector.settings.createSetting("customUserAgent", "");
         this._customUserAgentSetting.addChangeListener(this._customUserAgentChanged, this);
-        this._customUserAgentRadio = radio.radioElement;
-        this._customUserAgentRadio.addEventListener("change", this._userAgentTypeChanged.bind(this, this._customUserAgentRadio));
-        section.appendChild(radio);
 
         this._customUserAgent = section.createChild("div", "network-config-ua-custom");
         this._customSelectAndInput = WebInspector.NetworkConfigView.createUserAgentSelectAndInput();
         this._customSelectAndInput.select.classList.add("chrome-select");
         this._customUserAgent.appendChild(this._customSelectAndInput.select);
         this._customUserAgent.appendChild(this._customSelectAndInput.input);
-
-        this._userAgentTypeChanged(this._autoUserAgentRadio);
-    },
-
-    _userAgentChanged: function()
-    {
-        this._autoUserAgent.value = WebInspector.multitargetNetworkManager.userAgentOverride() || WebInspector.UIString("Default");
     },
 
     _customUserAgentChanged: function()
     {
-        if (!this._customUserAgentRadio.checked)
+        if (this._autoCheckbox.checked)
             return;
         WebInspector.multitargetNetworkManager.setCustomUserAgentOverride(this._customUserAgentSetting.get());
     },
 
-    /**
-     * @param {!Element} radioElement
-     */
-    _userAgentTypeChanged: function(radioElement)
+    _userAgentTypeChanged: function()
     {
-        var useCustomUA = radioElement === this._customUserAgentRadio;
-        var otherRadioButton = useCustomUA ? this._autoUserAgentRadio : this._customUserAgentRadio;
-        otherRadioButton.checked = false;
-        this._autoUserAgent.classList.toggle("checked", !useCustomUA);
+        var useCustomUA = !this._autoCheckbox.checked;
         this._customUserAgent.classList.toggle("checked", useCustomUA);
         this._customSelectAndInput.select.disabled = !useCustomUA;
         this._customSelectAndInput.input.disabled = !useCustomUA;
         var customUA = useCustomUA ? this._customUserAgentSetting.get() : "";
         WebInspector.multitargetNetworkManager.setCustomUserAgentOverride(customUA);
-
     },
 
     __proto__ : WebInspector.VBox.prototype
@@ -144,6 +120,7 @@ WebInspector.NetworkConfigView.createUserAgentSelectAndInput = function()
             otherUserAgentElement.readOnly = true;
         } else {
             otherUserAgentElement.readOnly = false;
+            otherUserAgentElement.value = "";
             otherUserAgentElement.focus();
         }
     }

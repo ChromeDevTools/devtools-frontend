@@ -215,6 +215,7 @@ WebInspector.ResourceType.mimeTypeByName = {
 WebInspector.ResourceType.mimeTypeByExtension = {
     // Web extensions
     "js": "text/javascript",
+    "jsx": "text/javascript",
     "css": "text/css",
     "html": "text/html",
     "htm": "text/html",
@@ -242,6 +243,7 @@ WebInspector.ResourceType.mimeTypeByExtension = {
 
     // TypeScript
     "ts": "text/typescript",
+    "tsx": "text/typescript",
 
     // JSON
     "json": "application/json",

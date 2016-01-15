@@ -1113,7 +1113,7 @@ WebInspector.TimelineStackView = function(treeView)
     header.textContent = WebInspector.UIString("Heaviest stack");
     this._treeView = treeView;
     var columns = [
-        {id: "total", title: WebInspector.UIString("Total Time"), width: "80px"},
+        {id: "total", title: WebInspector.UIString("Total Time"), width: "110px"},
         {id: "activity", title: WebInspector.UIString("Activity")}
     ];
     this._dataGrid = new WebInspector.ViewportDataGrid(columns);

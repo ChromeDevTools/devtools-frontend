@@ -422,7 +422,7 @@ input.toolbar-item.hover {
 }
 
 .phone-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -288px -144px;
+    -webkit-mask-position: -320px -96px;
 }
 
 .rotate-screen-toolbar-item.toolbar-glyph {

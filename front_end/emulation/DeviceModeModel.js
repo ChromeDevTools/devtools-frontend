@@ -428,6 +428,17 @@ WebInspector.DeviceModeModel.prototype = {
     },
 
     /**
+     * @param {number} width
+     * @param {number} height
+     */
+    setSizeAndScaleToFit: function(width, height)
+    {
+        var scale = Math.min(width ? this._preferredSize.width / width: 1, height ? this._preferredSize.height / height : 1);
+        this._scaleSetting.set(scale);
+        this.setWidth(width);
+    },
+
+    /**
      * @param {string} userAgent
      */
     _applyUserAgent: function(userAgent)

@@ -8,12 +8,12 @@
     overflow: hidden;
     align-items: stretch;
     flex: auto;
-    background-color: #fcfcfc;
+    background-color: hsl(0, 0%, 98%);
 }
 
 .device-mode-toolbar {
     flex: none;
-    background-color: #f3f3f3;
+    background-color: hsl(0, 0%, 98%);
     border-bottom: 1px solid #ccc;
     display: flex;
     flex-direction: row;
@@ -68,10 +68,68 @@
     box-shadow: inset 0 -1px #ccc;
 }
 
+.device-mode-presets-container {
+    flex: 0 0 20px;
+    display: flex;
+}
+
+.device-mode-presets-container-inner {
+    flex: auto;
+    background-color: red;
+    justify-content: center;
+    position: relative;
+    background-color: hsl(0, 0%, 90%);
++}
+
+.device-mode-presets-container:hover {
+    transition: opacity 0.1s;
+    transition-delay: 50ms;
+    opacity: 1;
+}
+
+.device-mode-preset-bar-outer {
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+}
+
+.device-mode-preset-bar {
+    border: 2px solid hsl(0, 0%, 98%);
+    pointer-events: auto;
+    text-align: center;
+    flex: none;
+    cursor: pointer;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+.device-mode-preset-bar:hover {
+    transition: background-color 0.1s;
+    transition-delay: 50ms;
+    background-color: #d6d6d6;
+}
+
+.device-mode-preset-bar > span {
+    visibility: hidden;
+}
+
+.device-mode-preset-bar:hover > span {
+    transition: visibility 0.1s;
+    transition-delay: 50ms;
+    visibility: visible;
+}
+
 .device-mode-content-area {
     flex: auto;
     position: relative;
     margin: 0;
+}
+
+.device-mode-content-area:not(.device-mode-type-none):not(.device-mode-rulers-visible) {
+    margin-top: 20px;
 }
 
 .device-mode-screen-area {

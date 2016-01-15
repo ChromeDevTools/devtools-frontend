@@ -37,6 +37,8 @@ WebInspector.DeviceModeView.prototype = {
         this.contentElement.appendChild(this._toolbar.element());
 
         this._contentClip = this.contentElement.createChild("div", "device-mode-content-clip vbox");
+        this._responsivePresetsContainer = this._contentClip.createChild("div", "device-mode-presets-container");
+        this._populatePresetsContainer();
         this._mediaInspectorContainer = this._contentClip.createChild("div", "device-mode-media-container");
         this._contentArea = this._contentClip.createChild("div", "device-mode-content-area");
 
@@ -61,6 +63,40 @@ WebInspector.DeviceModeView.prototype = {
 
         this._pageArea = this._screenArea.createChild("div", "device-mode-page-area");
         this._pageArea.createChild("content");
+    },
+
+    _populatePresetsContainer: function()
+    {
+        var sizes = [320, 375, 425, 768, 1024, 1440, 2560];
+        var titles = [WebInspector.UIString("Mobile S"),
+                      WebInspector.UIString("Mobile M"),
+                      WebInspector.UIString("Mobile L"),
+                      WebInspector.UIString("Tablet"),
+                      WebInspector.UIString("Laptop"),
+                      WebInspector.UIString("Laptop L"),
+                      WebInspector.UIString("4K")]
+        this._presetBlocks = [];
+        var inner = this._responsivePresetsContainer.createChild("div", "device-mode-presets-container-inner")
+        for (var i = sizes.length - 1; i >= 0; --i) {
+            var outer = inner.createChild("div", "fill device-mode-preset-bar-outer");
+            var block = outer.createChild("div", "device-mode-preset-bar");
+            block.createChild("span").textContent = titles[i] + " \u2013 " + sizes[i] + "px";
+            block.addEventListener("click", applySize.bind(this, sizes[i]), false);
+            block.__width = sizes[i];
+            this._presetBlocks.push(block);
+        }
+
+        /**
+         * @param {number} width
+         * @param {!Event} e
+         * @this {WebInspector.DeviceModeView}
+         */
+        function applySize(width, e)
+        {
+            this._model.emulate(WebInspector.DeviceModeModel.Type.Responsive, null, null);
+            this._model.setSizeAndScaleToFit(width, 0);
+            e.consume();
+        }
     },
 
     toggleDeviceMode: function()
@@ -204,6 +240,8 @@ WebInspector.DeviceModeView.prototype = {
 
         if (this._model.scale() !== this._cachedScale) {
             updateRulers = true;
+            for (var block of this._presetBlocks)
+                block.style.width = block.__width * this._model.scale() + "px";
             this._cachedScale = this._model.scale();
         }
 
@@ -218,6 +256,14 @@ WebInspector.DeviceModeView.prototype = {
         }
         if (contentAreaResized)
             this._contentAreaResized();
+
+        if (this._model.type() !== this._cachedModelType) {
+            this._cachedModelType = this._model.type();
+            this._contentArea.classList.toggle("device-mode-type-none", this._cachedModelType === WebInspector.DeviceModeModel.Type.None);
+            this._contentArea.classList.toggle("device-mode-type-responsive", this._cachedModelType === WebInspector.DeviceModeModel.Type.Responsive);
+            this._contentArea.classList.toggle("device-mode-type-device", this._cachedModelType === WebInspector.DeviceModeModel.Type.Device);
+            this._responsivePresetsContainer.classList.toggle("hidden", this._cachedModelType === WebInspector.DeviceModeModel.Type.None);
+        }
     },
 
     /**
@@ -530,7 +576,6 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
         scaleItem.setTitle(WebInspector.UIString("Zoom"));
         scaleItem.setGlyph("");
         scaleItem.setBold(false);
-        scaleItem.setDimmed(true);
         scaleItem.addDropDownArrow();
         toolbar.appendToolbarItem(scaleItem);
         this._scaleItems.push(scaleItem);
@@ -875,28 +920,23 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
         }
 
         if (this._model.scale() !== this._cachedScale) {
-            for (var item of this._scaleItems)
+            for (var item of this._scaleItems) {
                 item.setText(WebInspector.UIString("%.0f%%", this._model.scale() * 100));
+                item.setState(this._model.scale() === 1 ? "off" : "on");
+            }
             this._cachedScale = this._model.scale();
         }
 
-        var offscreen = this._model.screenRect().width > this._model.visiblePageRect().width || this._model.screenRect().height > this._model.visiblePageRect().height;
-        if (offscreen !== this._cachedOffscreen) {
-            for (var item of this._scaleItems)
-                item.setDimmed(!offscreen);
-            this._cachedOffscreen = offscreen;
-        }
-
         var deviceScale = this._model.deviceScaleFactorSetting().get();
+        this._deviceScaleItem.setVisible(this._model.type() === WebInspector.DeviceModeModel.Type.Responsive && !!deviceScale);
         if (deviceScale !== this._cachedDeviceScale) {
-            this._deviceScaleItem.setVisible(!!deviceScale);
             this._deviceScaleItem.setText(WebInspector.UIString("DPR: %.1f", deviceScale));
             this._cachedDeviceScale = deviceScale;
         }
 
         var uaType = this._model.type() === WebInspector.DeviceModeModel.Type.Responsive ? this._model.uaSetting().get() : WebInspector.DeviceModeModel.UA.Mobile;
+        this._uaItem.setVisible(this._model.type() === WebInspector.DeviceModeModel.Type.Responsive && uaType !== WebInspector.DeviceModeModel.UA.Mobile);
         if (uaType !== this._cachedUaType) {
-            this._uaItem.setVisible(uaType !== WebInspector.DeviceModeModel.UA.Mobile);
             this._uaItem.setText(uaType === WebInspector.DeviceModeModel.UA.Desktop ? WebInspector.UIString("Desktop") : WebInspector.UIString("Touch"));
             this._cachedUaType = uaType;
         }

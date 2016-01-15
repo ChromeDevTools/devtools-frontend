@@ -11,6 +11,13 @@
     width: 39px !important;
     margin: 0 3px;
     text-align: center;
+    box-shadow: 0px 0px 1px 0px hsla(0, 0%, 0%, 0.13);
+    border-radius: 1px;
+    height: 18px;
+}
+
+.device-mode-size-input:focus::-webkit-input-placeholder {
+    color: transparent;
 }
 
 .device-mode-size-input.error-input {

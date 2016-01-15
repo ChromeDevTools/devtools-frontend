@@ -994,6 +994,45 @@ WebInspector.JavaScriptSourceFrame.prototype = {
             scriptFiles[i].checkMapping();
 
         this._updateLinesWithoutMappingHighlight();
+        this._detectMinified();
+    },
+
+    _detectMinified: function()
+    {
+        if (this._prettyPrintInfobar)
+            return;
+
+        var minified = false;
+        for (var i = 0; i < 10 && i < this.textEditor.linesCount; ++i) {
+            var line = this.textEditor.line(i);
+            if (line.startsWith("//#")) // mind source map.
+                continue;
+            if (line.length > 500) {
+                minified = true;
+                break;
+            }
+        }
+        if (!minified)
+            return;
+
+        this._prettyPrintInfobar = WebInspector.Infobar.create(
+            WebInspector.Infobar.Type.Info,
+            WebInspector.UIString("Pretty-print this minified file?"),
+            WebInspector.settings.createSetting("prettyPrintInfobarDisabled", false));
+        if (!this._prettyPrintInfobar)
+            return;
+
+        this._prettyPrintInfobar.setCloseCallback(() => delete this._prettyPrintInfobar);
+        var toolbar = new WebInspector.Toolbar("");
+        var button = new WebInspector.ToolbarButton("", "format-toolbar-item")
+        toolbar.appendToolbarItem(button);
+        toolbar.element.style.display = "inline-block";
+        toolbar.element.style.verticalAlign = "middle";
+        toolbar.element.style.marginBottom = "3px";
+        toolbar.element.style.pointerEvents = "none";
+        var element = this._prettyPrintInfobar.createDetailsRowMessage();
+        element.appendChild(WebInspector.formatLocalized("You can click the %s button on the bottom status bar, and continue debugging with the new formatted source.", [toolbar.element]));
+        this.attachInfobars([this._prettyPrintInfobar]);
     },
 
     /**

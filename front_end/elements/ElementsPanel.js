@@ -939,6 +939,7 @@ WebInspector.ElementsPanel.prototype = {
         }
 
         this._splitWidget.setVertical(!horizontally);
+        this.showToolbarPane(null);
 
         var computedPane = new WebInspector.SidebarPane(WebInspector.UIString("Computed"));
         computedPane.element.classList.add("composite");

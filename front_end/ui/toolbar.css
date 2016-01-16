@@ -51,7 +51,7 @@
     -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
     -webkit-mask-size: 352px 168px;
     -webkit-mask-position: -18px -96px;
-    background-color: #444;
+    background-color: #6D6D6D;
     width: 12px;
     height: 12px;
     display: inline-block;
@@ -65,9 +65,9 @@
     }
 } /* media */
 
-/* Text-glyph item */
+/* Toolbar item */
 
-.toolbar-text-glyph {
+.toolbar-button {
     white-space: nowrap;
     overflow: hidden;
     min-width: 28px;
@@ -88,8 +88,12 @@
     margin-left: 0;
 }
 
-.toolbar-bold .toolbar-text {
+.toolbar-button:not(.toolbar-has-glyph):not(.toolbar-has-dropdown):not(.menu-toolbar-item) {
     font-weight: bold;
+}
+
+.toolbar-button:not(.toolbar-has-glyph).hover {
+    background-color: #f3f3f3;
 }
 
 .toolbar-dimmed .toolbar-text {

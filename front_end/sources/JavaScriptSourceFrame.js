@@ -91,7 +91,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
         if (originURL) {
             var parsedURL = originURL.asParsedURL();
             if (parsedURL)
-                result.push(new WebInspector.ToolbarLabel(WebInspector.UIString("(source mapped from %s)", parsedURL.displayName)));
+                result.push(new WebInspector.ToolbarText(WebInspector.UIString("(source mapped from %s)", parsedURL.displayName)));
         }
         return result;
     },

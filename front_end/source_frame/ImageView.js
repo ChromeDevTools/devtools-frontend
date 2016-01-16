@@ -41,9 +41,9 @@ WebInspector.ImageView = function(mimeType, contentProvider)
     this._parsedURL = new WebInspector.ParsedURL(this._url);
     this._mimeType = mimeType;
     this._contentProvider = contentProvider;
-    this._sizeLabel = new WebInspector.ToolbarLabel();
-    this._dimensionsLabel = new WebInspector.ToolbarLabel();
-    this._mimeTypeLabel = new WebInspector.ToolbarLabel(mimeType);
+    this._sizeLabel = new WebInspector.ToolbarText();
+    this._dimensionsLabel = new WebInspector.ToolbarText();
+    this._mimeTypeLabel = new WebInspector.ToolbarText(mimeType);
 }
 
 WebInspector.ImageView.prototype = {

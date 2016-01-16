@@ -187,6 +187,7 @@ WebInspector.ClassesPaneWidget.ButtonProvider = function()
 {
     this._button = new WebInspector.ToolbarToggle(WebInspector.UIString("Element Classes"), "");
     this._button.setText(".cls");
+    this._button.element.classList.add("monospace");
     this._button.addEventListener("click", this._clicked, this);
     this._view = new WebInspector.ClassesPaneWidget(this.item());
     WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this._nodeChanged, this);

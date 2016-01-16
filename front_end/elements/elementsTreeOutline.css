@@ -25,6 +25,16 @@
     margin-left: -13px;
 }
 
+.elements-disclosure li.selected:after {
+    font-style: italic;
+    content: " == $0";
+    color: #555;
+}
+
+.elements-disclosure ol:focus li.selected:after {
+    color: white;
+}
+
 .elements-disclosure li.parent::before {
     box-sizing: border-box;
 }

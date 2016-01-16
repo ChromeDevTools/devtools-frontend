@@ -112,7 +112,7 @@ WebInspector.ElementsPanel.prototype = {
         var filterInput = WebInspector.StylesSidebarPane.createPropertyFilterElement(WebInspector.UIString("Filter"), hbox, ssp.onFilterChanged.bind(ssp));
         filterContainerElement.appendChild(filterInput);
         var toolbar = new WebInspector.ExtensibleToolbar("styles-sidebarpane-toolbar", hbox);
-        toolbar.appendToolbarItem(WebInspector.StylesSidebarPane.createAddNewRuleButton(ssp));
+        toolbar.onLoad().then(() => toolbar.appendToolbarItem(WebInspector.StylesSidebarPane.createAddNewRuleButton(ssp)));
         toolbar.element.classList.add("styles-pane-toolbar");
         toolbar.makeToggledGray();
         var toolbarPaneContainer = container.createChild("div", "styles-sidebar-toolbar-pane-container");

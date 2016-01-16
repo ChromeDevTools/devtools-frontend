@@ -423,7 +423,7 @@
 
 .styles-element-state-pane {
     overflow: hidden;
-    height: 60px;
+    height: 66px;
     padding-left: 2px;
     border-bottom: 1px solid rgb(189, 189, 189);
 }
@@ -467,7 +467,7 @@
 .styles-element-classes-pane {
     background-color: #f3f3f3;
     border-bottom: 1px solid rgb(189, 189, 189);
-    padding: 2px 4px;
+    padding: 6px 2px 2px;
 }
 
 .styles-element-classes-container {
@@ -486,12 +486,14 @@
 
 .styles-element-classes-pane .new-class-input {
     padding-left: 3px;
-    width: 100%;
     border: 1px solid #ddd;
+    line-height: 15px;
+    margin-left: 3px;
+    width: calc(100% - 7px);
 }
 
 .styles-element-state-pane > div {
-    margin: 6px 4px 2px;
+    margin: 8px 4px 6px;
 }
 
 .styles-element-state-pane > table {

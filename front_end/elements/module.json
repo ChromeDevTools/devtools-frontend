@@ -75,14 +75,14 @@
         },
         {
             "type": "@WebInspector.ToolbarItem.Provider",
-            "className": "WebInspector.ClassesPaneWidget.ButtonProvider",
+            "className": "WebInspector.ElementStatePaneWidget.ButtonProvider",
             "order": 1,
             "location": "styles-sidebarpane-toolbar"
         },
         {
             "type": "@WebInspector.ToolbarItem.Provider",
-            "className": "WebInspector.ElementStatePaneWidget.ButtonProvider",
-            "order": 1,
+            "className": "WebInspector.ClassesPaneWidget.ButtonProvider",
+            "order": 2,
             "location": "styles-sidebarpane-toolbar"
         },
         {

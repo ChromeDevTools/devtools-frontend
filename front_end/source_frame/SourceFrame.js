@@ -53,7 +53,7 @@ WebInspector.SourceFrame = function(contentProvider)
     this._shortcuts = {};
     this.element.addEventListener("keydown", this._handleKeyDown.bind(this), false);
 
-    this._sourcePosition = new WebInspector.ToolbarLabel();
+    this._sourcePosition = new WebInspector.ToolbarText();
 }
 
 WebInspector.SourceFrame.Events = {

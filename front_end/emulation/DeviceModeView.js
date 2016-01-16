@@ -349,7 +349,7 @@ WebInspector.DeviceModeView.Toolbar = function(model, showMediaInspectorSetting,
     this._lastMode = new Map();
     /** @type {?WebInspector.EmulatedDevice} */
     this._lastDevice = null;
-    /** @type {!Array<!WebInspector.ToolbarLabel>} */
+    /** @type {!Array<!WebInspector.ToolbarButton>} */
     this._appliedSizeItems = [];
     /** @type {!Array<!WebInspector.ToolbarMenuButton>} */
     this._scaleItems = [];
@@ -380,11 +380,11 @@ WebInspector.DeviceModeView.Toolbar = function(model, showMediaInspectorSetting,
     rightContainer.createChild("div", "device-mode-toolbar-spacer");
     var rightToolbar = new WebInspector.Toolbar("", rightContainer);
     rightToolbar.makeWrappable(true);
-    this._uaItem = new WebInspector.ToolbarLabel();
+    this._uaItem = new WebInspector.ToolbarText();
     this._uaItem.setVisible(false);
     this._uaItem.setTitle(WebInspector.UIString("User agent type"));
     rightToolbar.appendToolbarItem(this._uaItem);
-    this._deviceScaleItem = new WebInspector.ToolbarLabel();
+    this._deviceScaleItem = new WebInspector.ToolbarText();
     this._deviceScaleItem.setVisible(false);
     this._deviceScaleItem.setTitle(WebInspector.UIString("Device pixel ratio"));
     rightToolbar.appendToolbarItem(this._deviceScaleItem);
@@ -562,7 +562,7 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
      */
     _appendAppliedSizeItems: function(toolbar)
     {
-        var item = new WebInspector.ToolbarLabel();
+        var item = new WebInspector.ToolbarText("");
         this._appliedSizeItems.push(item);
         toolbar.appendToolbarItem(item);
     },
@@ -575,7 +575,6 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
         var scaleItem = new WebInspector.ToolbarMenuButton(this._appendScaleMenuItems.bind(this));
         scaleItem.setTitle(WebInspector.UIString("Zoom"));
         scaleItem.setGlyph("");
-        scaleItem.setBold(false);
         scaleItem.addDropDownArrow();
         toolbar.appendToolbarItem(scaleItem);
         this._scaleItems.push(scaleItem);

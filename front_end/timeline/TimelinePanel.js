@@ -1242,8 +1242,14 @@ WebInspector.TimelinePanel.prototype = {
         var leftTime = tasks[leftIndex].startTime();
         var rightTime = tasks[rightIndex].endTime();
         var span = rightTime - leftTime;
-        leftTime = Math.max(leftTime - 0.05 * span, this._tracingModel.minimumRecordTime());
-        rightTime = Math.min(rightTime + 0.05 * span, this._tracingModel.maximumRecordTime());
+        var totalSpan = this._tracingModel.maximumRecordTime() - this._tracingModel.minimumRecordTime();
+        if (span < totalSpan * 0.1) {
+            leftTime = this._tracingModel.minimumRecordTime();
+            rightTime = this._tracingModel.maximumRecordTime();
+        } else {
+            leftTime = Math.max(leftTime - 0.05 * span, this._tracingModel.minimumRecordTime());
+            rightTime = Math.min(rightTime + 0.05 * span, this._tracingModel.maximumRecordTime());
+        }
         this.requestWindowTimes(leftTime, rightTime);
     },
 

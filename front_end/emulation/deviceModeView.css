@@ -18,43 +18,18 @@
     display: flex;
     flex-direction: row;
     align-items: stretch;
-    padding: 0 4px;
 }
 
 .device-mode-toolbar .toolbar {
-    padding: 0;
     overflow: hidden;
-    flex: auto;
-}
-
-.device-mode-toolbar-left {
-    flex: 0 1000 155px;
-    min-width: 93px;
-}
-
-.device-mode-toolbar-right {
-    flex: 0 1000 155px;
-    min-width: 40px;
-    display: flex;
-}
-
-.device-mode-toolbar-middle-container {
-    flex: 1 1 160px;
-    position: relative;
-}
-
-.device-mode-toolbar-middle {
-    display: flex;
-    justify-content: flex-start;
-    overflow: hidden;
-}
-
-.device-mode-toolbar-middle .toolbar {
-    flex: 0 1 auto;
+    flex: none;
+    padding: 0 5px;
 }
 
 .device-mode-toolbar-spacer {
-    flex: auto;
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: row;
 }
 
 .device-mode-content-clip {
@@ -68,6 +43,10 @@
     box-shadow: inset 0 -1px #ccc;
 }
 
+.device-mode-content-clip:not(.device-mode-rulers-visible) .device-mode-media-container {
+    margin-bottom: 20px;
+}
+
 .device-mode-presets-container {
     flex: 0 0 20px;
     display: flex;
@@ -75,11 +54,12 @@
 
 .device-mode-presets-container-inner {
     flex: auto;
-    background-color: red;
     justify-content: center;
     position: relative;
     background-color: hsl(0, 0%, 90%);
-+}
+    border: 2px solid hsl(0, 0%, 98%);
+    border-bottom: 2px solid hsl(0, 0%, 98%);
+ }
 
 .device-mode-presets-container:hover {
     transition: opacity 0.1s;
@@ -94,16 +74,18 @@
 }
 
 .device-mode-preset-bar {
-    border: 2px solid hsl(0, 0%, 98%);
+    border-left: 2px solid hsl(0, 0%, 98%);
+    border-right: 2px solid hsl(0, 0%, 98%);
     pointer-events: auto;
     text-align: center;
     flex: none;
     cursor: pointer;
-    color: #333;
+    color: #5A5A5A;
     display: flex;
     align-items: center;
     justify-content: center;
     white-space: nowrap;
+    margin-bottom: 1px;
 }
 
 .device-mode-preset-bar:hover {
@@ -126,10 +108,6 @@
     flex: auto;
     position: relative;
     margin: 0;
-}
-
-.device-mode-content-area:not(.device-mode-type-none):not(.device-mode-rulers-visible) {
-    margin-top: 20px;
 }
 
 .device-mode-screen-area {
@@ -168,14 +146,14 @@
 
 .device-mode-width-resizer {
     top: 0;
-    bottom: 0;
+    bottom: -2px;
     right: -20px;
     width: 20px;
 }
 
 .device-mode-height-resizer {
     left: 0;
-    right: 0;
+    right: -2px;
     bottom: -20px;
     height: 20px;
 }
@@ -203,8 +181,8 @@
 
 .device-mode-corner-resizer > div {
     position: absolute;
-    bottom: 5px;
-    right: 5px;
+    bottom: 3px;
+    right: 3px;
     width: 13px;
     height: 13px;
     content: url(Images/resizeDiagonal.png);

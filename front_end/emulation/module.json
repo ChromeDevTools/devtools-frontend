@@ -40,7 +40,10 @@
             "type": "@WebInspector.ActionDelegate",
             "actionId": "emulation.toggle-device-mode",
             "className": "WebInspector.DeviceModeView.ActionDelegate",
+            "condition": "can_dock",
             "experiment": "deviceMode",
+            "title": "Toggle device mode",
+            "iconClass": "phone-toolbar-item",
             "bindings": [
                 {
                     "platform": "windows,linux",
@@ -53,11 +56,11 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
-            "actionId": "emulation.toggle-device-toolbar",
-            "className": "WebInspector.DeviceModeView.ActionDelegate",
-            "experiment": "deviceMode",
-            "title": "Toggle device toolbar"
+            "type": "@WebInspector.ToolbarItem.Provider",
+            "actionId": "emulation.toggle-device-mode",
+            "condition": "can_dock",
+            "location": "main-toolbar-left",
+            "order": 1
         },
         {
             "type": "@WebInspector.Revealer",

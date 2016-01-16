@@ -350,17 +350,14 @@ WebInspector.ToolbarButton.prototype = {
     },
 
     /**
-     * @param {boolean} dimmed
+     * @param {number=} width
      */
-    setDimmed: function(dimmed)
-    {
-        this.element.classList.toggle("toolbar-dimmed", dimmed);
-    },
-
-    addDropDownArrow: function()
+    turnIntoSelect: function(width)
     {
         this.element.classList.add("toolbar-has-dropdown");
         this.element.createChild("div", "toolbar-dropdown-arrow");
+        if (width)
+            this.element.style.width = width + "px";
     },
 
     /**

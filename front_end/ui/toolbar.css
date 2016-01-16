@@ -57,6 +57,7 @@
     display: inline-block;
     pointer-events: none;
     margin: auto 0;
+    flex: none;
 }
 
 @media (-webkit-min-device-pixel-ratio: 1.5) {
@@ -80,8 +81,16 @@
     color: #5a5a5a;
 }
 
+.toolbar-has-dropdown {
+    justify-content: space-between;
+}
+
 .toolbar-has-dropdown .toolbar-text {
-    margin-right: 1px;
+    margin: 0 4px 0 0;
+    text-overflow: ellipsis;
+    flex: auto;
+    overflow: hidden;
+    text-align: right;
 }
 
 .toolbar-has-glyph .toolbar-text {
@@ -92,16 +101,8 @@
     font-weight: bold;
 }
 
-.toolbar-button:not(.toolbar-has-glyph).hover {
+.toolbar-button:not(.toolbar-has-glyph):not(.toolbar-has-dropdown):not(.menu-toolbar-item).hover {
     background-color: #f3f3f3;
-}
-
-.toolbar-dimmed .toolbar-text {
-    color: #999;
-}
-
-.toolbar-dimmed .toolbar-dropdown-arrow {
-    background-color: #999;
 }
 
 .toolbar-glyph {

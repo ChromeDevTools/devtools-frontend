@@ -8,8 +8,8 @@
     background: hsl(0, 0%, 100%);
     border: none;
     padding: 2px 0;
-    width: 39px !important;
-    margin: 0 3px;
+    width: 34px !important;
+    margin: 0 2px;
     text-align: center;
     box-shadow: 0px 0px 1px 0px hsla(0, 0%, 0%, 0.13);
     border-radius: 1px;
@@ -26,28 +26,11 @@
 
 .device-mode-size-input:disabled {
     background: transparent;
+    box-shadow: none;
     -webkit-user-select: none;
 }
 
 .device-mode-x {
     margin: 0 1px;
     font-size: 16px;
-}
-
-.device-mode-device-select {
-    background: none;
-    box-shadow: none;
-    border: none;
-    outline: none;
-    padding: 0 2px;
-    -webkit-appearance: menulist;
-    margin: 0;
-    width: 120px;
-}
-
-.device-mode-checkbox {
-    width: 120px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
 }

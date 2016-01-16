@@ -38,7 +38,7 @@
  */
 WebInspector.MemoryCountersGraph = function(delegate, model, filters)
 {
-    WebInspector.CountersGraph.call(this, WebInspector.UIString("MEMORY"), delegate, model, filters);
+    WebInspector.CountersGraph.call(this, delegate, model, filters);
     this._countersByName = {};
     this._countersByName["jsHeapSizeUsed"] = this.createCounter(WebInspector.UIString("JS Heap"), WebInspector.UIString("JS Heap: %s"), "hsl(220, 90%, 43%)", Number.bytesToString);
     this._countersByName["documents"] = this.createCounter(WebInspector.UIString("Documents"), WebInspector.UIString("Documents: %s"), "hsl(0, 90%, 43%)");

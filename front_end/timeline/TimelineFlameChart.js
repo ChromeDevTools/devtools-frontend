@@ -1327,14 +1327,6 @@ WebInspector.TimelineFlameChartView.prototype = {
 
     /**
      * @override
-     * @param {number} width
-     */
-    setSidebarSize: function(width)
-    {
-    },
-
-    /**
-     * @override
      * @param {?WebInspector.TimelineModel.Record} record
      * @param {string=} regex
      * @param {boolean=} selectRecord

@@ -258,35 +258,32 @@
     margin-top: -2px;
 }
 
-#memory-graphs-container > div:last-child {
-    background-color: #eee;
-    overflow-y: hidden;
-}
-
-#memory-graphs-container .sidebar-tree-section {
+#memory-graphs-container .memory-counter-selector-swatches {
     flex: 0 0 24px;
-    padding: 5px 0 0 5px;
+    padding: 5px 0;
+    background-color: #eee;
+    border-bottom: 1px solid #ddd;
 }
 
-.memory-counter-sidebar-info {
-    flex: 0 0 20px;
+.memory-counter-selector-info {
+    flex: 0 0 auto;
     margin-left: 5px;
     white-space: nowrap;
 }
 
-.memory-counter-sidebar-info .range {
+.memory-counter-selector-info .range {
     margin: 0 4px;
     align-items: center;
     display: inline-flex;
 }
 
 .memory-counter-value {
-    margin: 4px;
+    margin: 8px;
 }
 
 #counter-values-bar {
-    flex: 0 0 18px;
-    border-bottom: solid 1px lightgray;
+    flex: 0 0 20px;
+    border-top: solid 1px lightgray;
     width: 100%;
     overflow: hidden;
     line-height: 18px;

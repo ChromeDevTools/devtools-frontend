@@ -220,16 +220,6 @@ WebInspector.TimelinePanel.prototype = {
     /**
      * @param {!WebInspector.Event} event
      */
-    _sidebarResized: function(event)
-    {
-        var width = /** @type {number} */ (event.data);
-        for (var i = 0; i < this._currentViews.length; ++i)
-            this._currentViews[i].setSidebarSize(width);
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
     _onWindowChanged: function(event)
     {
         this._windowStartTime = event.data.startTime;
@@ -304,16 +294,12 @@ WebInspector.TimelinePanel.prototype = {
         modeView.setWindowTimes(this.windowStartTime(), this.windowEndTime());
         modeView.refreshRecords();
         this._stackView.appendView(modeView.view(), "timelinePanelTimelineStackSplitViewState", undefined, 112);
-        modeView.view().addEventListener(WebInspector.SplitWidget.Events.SidebarSizeChanged, this._sidebarResized, this);
         this._currentViews.push(modeView);
     },
 
     _removeAllModeViews: function()
     {
-        for (var i = 0; i < this._currentViews.length; ++i) {
-            this._currentViews[i].removeEventListener(WebInspector.SplitWidget.Events.SidebarSizeChanged, this._sidebarResized, this);
-            this._currentViews[i].dispose();
-        }
+        this._currentViews.forEach(view => view.dispose());
         this._currentViews = [];
         this._stackView.detachChildWidgets();
     },
@@ -1316,13 +1302,6 @@ WebInspector.TimelineTreeModeView.prototype = {
 
     /**
      * @override
-     */
-    setSidebarSize: function()
-    {
-    },
-
-    /**
-     * @override
      * @param {number} startTime
      * @param {number} endTime
      */
@@ -1583,11 +1562,6 @@ WebInspector.TimelineModeView.prototype = {
      * @param {number} endTime
      */
     setWindowTimes: function(startTime, endTime) {},
-
-    /**
-     * @param {number} width
-     */
-    setSidebarSize: function(width) {},
 
     /**
      * @param {?WebInspector.TimelineSelection} selection

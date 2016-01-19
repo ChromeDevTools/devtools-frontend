@@ -1282,7 +1282,7 @@ WebInspector.ObjectPropertiesSectionExpandController.prototype = {
      */
     _elementAttached: function(event)
     {
-        var element = /** @type {!WebInspector.ObjectPropertyTreeElement|!WebInspector.ObjectPropertiesSection.RootElement} */ (event.data);
+        var element = /** @type {!TreeElement} */ (event.data);
         if (element.isExpandable() && this._expandedProperties.has(this._propertyPath(element)))
             element.expand();
     },
@@ -1292,7 +1292,7 @@ WebInspector.ObjectPropertiesSectionExpandController.prototype = {
      */
     _elementExpanded: function(event)
     {
-        var element = /** @type {!WebInspector.ObjectPropertyTreeElement|!WebInspector.ObjectPropertiesSection.RootElement} */ (event.data);
+        var element = /** @type {!TreeElement} */ (event.data);
         this._expandedProperties.add(this._propertyPath(element));
     },
 
@@ -1301,12 +1301,12 @@ WebInspector.ObjectPropertiesSectionExpandController.prototype = {
      */
     _elementCollapsed: function(event)
     {
-        var element = /** @type {!WebInspector.ObjectPropertyTreeElement|!WebInspector.ObjectPropertiesSection.RootElement} */ (event.data);
+        var element = /** @type {!TreeElement} */ (event.data);
         this._expandedProperties.delete(this._propertyPath(element));
     },
 
     /**
-     * @param {!WebInspector.ObjectPropertyTreeElement|!WebInspector.ObjectPropertiesSection.RootElement} treeElement
+     * @param {!TreeElement} treeElement
      * @return {string}
      */
     _propertyPath: function(treeElement)
@@ -1321,7 +1321,13 @@ WebInspector.ObjectPropertiesSectionExpandController.prototype = {
         var result;
 
         while (current !== rootElement) {
-            result = current.property.name + (result ? "." + result : "");
+            var currentName = "";
+            if (current.property)
+                currentName = current.property.name;
+            else
+                currentName = typeof current.title === "string" ? current.title : current.title.textContent;
+
+            result = currentName + (result ? "." + result : "");
             current = current.parent;
         }
         var treeOutlineId = treeElement.treeOutline[WebInspector.ObjectPropertiesSectionExpandController._treeOutlineId];

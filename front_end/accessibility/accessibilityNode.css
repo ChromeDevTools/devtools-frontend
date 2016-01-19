@@ -30,7 +30,7 @@ div.ax-text-alternatives {
 }
 
 .ax-name {
-    color: rgb(136, 19, 145);
+    color: rgb(153, 69, 0);
     flex-shrink: 0;
 }
 
@@ -61,6 +61,11 @@ span.ax-internal-role {
 
 .tree-outline li {
     padding-left: 1px;
+    align-items: baseline;
+}
+
+.tree-outline li.property {
+    color: rgb(33, 33, 33);
 }
 
 .tree-outline li.invalid {
@@ -89,4 +94,12 @@ span.ax-value-undefined {
 
 .tree-outline label[is=dt-icon-label] + .ax-name {
     margin-left: -11px;
+}
+
+.ax-value-string {
+    color: rgb(26, 26, 166);
+}
+
+.sidebar-pane-stack .sidebar-pane {
+    padding-left: 4px;
 }

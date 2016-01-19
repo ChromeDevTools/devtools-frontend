@@ -402,15 +402,11 @@ WebInspector.AccessibilitySidebarView.createSimpleValueElement = function(type, 
         valueElement = createElement("span");
     else
         valueElement = createElementWithClass("span", "monospace");
-    var prefix;
     var valueText;
-    var suffix;
     if (type === AXValueType.String || type === AXValueType.ComputedString || type === AXValueType.IdrefList || type === AXValueType.Idref) {
-        prefix = "\"";
         // Render \n as a nice unicode cr symbol.
         valueText = value.replace(/\n/g, "\u21B5");
-        suffix = "\"";
-        valueElement._originalTextContent = "\"" + value + "\"";
+        valueElement._originalTextContent = value;
     } else {
         valueText = String(value);
     }
@@ -419,10 +415,6 @@ WebInspector.AccessibilitySidebarView.createSimpleValueElement = function(type, 
         valueElement.classList.add(WebInspector.AXNodePropertyTreeElement.TypeStyles[type]);
 
     valueElement.setTextContentTruncatedIfNeeded(valueText || "");
-    if (prefix)
-        valueElement.insertBefore(createTextNode(prefix), valueElement.firstChild);
-    if (suffix)
-        valueElement.createTextChild(suffix);
 
     valueElement.title = String(value) || "";
 
@@ -440,6 +432,7 @@ WebInspector.AXNodePropertyTreeElement = function(target)
 
     // Pass an empty title, the title gets made later in onattach.
     TreeElement.call(this, "");
+    this.selectable = false;
 }
 
 WebInspector.AXNodePropertyTreeElement.prototype = {
@@ -484,8 +477,12 @@ WebInspector.AXNodePropertyTreeElement.prototype = {
                 this.appendChild(child);
             }
         }
-        var valueElement = WebInspector.AccessibilitySidebarView.createSimpleValueElement(value.type, String(value.value));
-        this.listItemElement.appendChild(valueElement);
+        var isStringProperty = WebInspector.AXNodePropertyTreeElement.StringProperties.has(value.type);
+        if (isStringProperty)
+            this.listItemElement.createTextChild("\"");
+        this.listItemElement.appendChild(WebInspector.AccessibilitySidebarView.createSimpleValueElement(value.type, String(value.value)));
+        if (isStringProperty)
+            this.listItemElement.createTextChild("\"");
     },
 
     /**
@@ -504,8 +501,9 @@ WebInspector.AXNodePropertyTreeElement.prototype = {
         {
             valueElement.appendChild(WebInspector.DOMPresentationUtils.linkifyNodeReference(node));
             if (relatedNode.text) {
-                var textElement = WebInspector.AccessibilitySidebarView.createSimpleValueElement(AccessibilityAgent.AXValueType.ComputedString, relatedNode.text);
-                valueElement.appendChild(textElement);
+                valueElement.createTextChild("\"");
+                valueElement.appendChild(WebInspector.AccessibilitySidebarView.createSimpleValueElement(AccessibilityAgent.AXValueType.ComputedString, relatedNode.text));
+                valueElement.createTextChild("\"");
             }
         }
         deferredNode.resolve(onNodeResolved);
@@ -547,7 +545,9 @@ WebInspector.AXNodePropertyTreeElement.prototype = {
                     this.appendChild(new WebInspector.AXRelatedNodeTreeElement({ idref: idref }));
                 }
             }
-            valueElement = WebInspector.AccessibilitySidebarView.createSimpleValueElement(value.type, String(value.value));
+            this.listItemElement.createTextChild("\"");
+            this.listItemElement.appendChild(WebInspector.AccessibilitySidebarView.createSimpleValueElement(value.type, String(value.value)));
+            this.listItemElement.createTextChild("\"");
         } else {
             for (var i = 0; i < numNodes; i++) {
                 var relatedNode = relatedNodes[i];
@@ -556,13 +556,12 @@ WebInspector.AXNodePropertyTreeElement.prototype = {
                 this.appendChild(child);
             }
             var numNodesString = "(" + numNodes + (numNodes === 1 ? " node" : " nodes") + ")";
-            valueElement = WebInspector.AccessibilitySidebarView.createSimpleValueElement(null, numNodesString);
+            this.listItemElement.appendChild(WebInspector.AccessibilitySidebarView.createSimpleValueElement(null, numNodesString));
         }
         if (relatedNodes.length <= 3)
             this.expand();
         else
             this.collapse();
-        this.listItemElement.appendChild(valueElement);
     },
 
     __proto__: TreeElement.prototype
@@ -581,6 +580,7 @@ WebInspector.AXNodePropertyTreePropertyElement = function(property, target)
     this.selectable = false;
 
     WebInspector.AXNodePropertyTreeElement.call(this, target);
+    this.listItemElement.classList.add("property");
 }
 
 WebInspector.AXNodePropertyTreePropertyElement.prototype = {
@@ -598,7 +598,7 @@ WebInspector.AXNodePropertyTreePropertyElement.prototype = {
 
         this.appendNameElement(this._property.name);
 
-        this.listItemElement.createChild("span", "separator").textContent = ": ";
+        this.listItemElement.createChild("span", "separator").textContent = ":\u00A0";
 
         this.appendValueElement(this._property.value);
     },
@@ -616,6 +616,7 @@ WebInspector.AXValueSourceTreeElement = function(source, target)
 {
     this._source = source;
     WebInspector.AXNodePropertyTreeElement.call(this, target);
+    this.selectable = false;
 }
 
 WebInspector.AXValueSourceTreeElement.prototype = {
@@ -679,7 +680,7 @@ WebInspector.AXValueSourceTreeElement.prototype = {
 
         this.appendSourceNameElement(this._source);
 
-        this.listItemElement.createChild("span", "separator").textContent = ": ";
+        this.listItemElement.createChild("span", "separator").innerHTML = ":&nbsp;";
 
         if (this._source.value) {
             this.appendValueElement(this._source.value);
@@ -708,6 +709,7 @@ WebInspector.AXRelatedNodeTreeElement = function(node, value)
     this._value = value;
 
     TreeElement.call(this, "");
+    this.selectable = false;
 };
 
 WebInspector.AXRelatedNodeTreeElement.prototype = {
@@ -739,8 +741,9 @@ WebInspector.AXRelatedNodeTreeElement.prototype = {
         this.listItemElement.appendChild(valueElement);
         if (this._value && this._value.text) {
             var textElement = WebInspector.AccessibilitySidebarView.createSimpleValueElement(AccessibilityAgent.AXValueType.ComputedString, this._value.text);
-            this.listItemElement.createTextChild(" ");
+            this.listItemElement.createTextChild("\u00A0\"");
             this.listItemElement.appendChild(textElement);
+            this.listItemElement.createTextChild("\"");
         }
     },
 
@@ -749,20 +752,28 @@ WebInspector.AXRelatedNodeTreeElement.prototype = {
 
 /** @type {!Object<string, string>} */
 WebInspector.AXNodePropertyTreeElement.TypeStyles = {
-    attribute: "object-value-string",
+    attribute: "ax-value-string",
     boolean: "object-value-boolean",
     booleanOrUndefined: "object-value-boolean",
     computedString: "ax-readable-string",
-    idref: "object-value-string",
-    idrefList: "object-value-string",
+    idref: "ax-value-string",
+    idrefList: "ax-value-string",
     integer: "object-value-number",
     internalRole: "ax-internal-role",
-    number: "object-value-number",
+    number: "ax-value-number",
     role: "ax-role",
-    string: "object-value-string",
+    string: "ax-value-string",
     tristate: "object-value-boolean",
     valueUndefined: "ax-value-undefined"
 };
+
+/** @type {!Set.<!AccessibilityAgent.AXValueType>} */
+WebInspector.AXNodePropertyTreeElement.StringProperties = new Set([
+    AccessibilityAgent.AXValueType.String,
+    AccessibilityAgent.AXValueType.ComputedString,
+    AccessibilityAgent.AXValueType.IdrefList,
+    AccessibilityAgent.AXValueType.Idref
+]);
 
 /**
  * @constructor

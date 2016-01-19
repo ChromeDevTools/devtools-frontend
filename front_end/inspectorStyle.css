@@ -39,7 +39,7 @@ body {
     overflow: hidden;
     margin: 0;
     cursor: default;
-    font-family: Lucida Grande, sans-serif;
+    font-family: '.SFNSDisplay-Regular', 'Helvetica Neue', 'Lucida Grande', sans-serif;
     font-size: 12px;
     tab-size: 4;
     -webkit-user-select: none;
@@ -53,7 +53,7 @@ body {
 
 .platform-mac {
     color: rgb(48, 57, 66);
-    font-family: 'Lucida Grande', sans-serif;
+    font-family: '.SFNSDisplay-Regular', 'Helvetica Neue', 'Lucida Grande', sans-serif;
 }
 
 .platform-windows {

@@ -21,7 +21,7 @@
 }
 
 .device-mode-size-input.error-input {
-    outline: auto 2px red;
+    outline: auto 2px red !important;
 }
 
 .device-mode-size-input:disabled {
@@ -33,4 +33,8 @@
 .device-mode-x {
     margin: 0 1px;
     font-size: 16px;
+}
+
+.device-mode-empty-toolbar-element {
+    width: 0;
 }

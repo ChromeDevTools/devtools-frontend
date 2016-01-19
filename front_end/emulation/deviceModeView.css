@@ -22,14 +22,19 @@
 
 .device-mode-toolbar .toolbar {
     overflow: hidden;
-    flex: none;
+    flex: 0 100000 auto;
     padding: 0 5px;
+}
+
+.device-mode-toolbar .toolbar.device-mode-toolbar-fixed-size {
+    flex: 0 1 auto;
 }
 
 .device-mode-toolbar-spacer {
     flex: 1 1 0;
     display: flex;
     flex-direction: row;
+    overflow: hidden;
 }
 
 .device-mode-content-clip {
@@ -133,6 +138,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
     transition: background-color 0.1s ease;
 }
 

@@ -21,14 +21,25 @@ WebInspector.DeviceModeModel = function(updateCallback)
     this._appliedDeviceScaleFactor = 0;
 
     this._scaleSetting = WebInspector.settings.createSetting("emulation.deviceScale", 1);
-    this._scaleSetting.addChangeListener(this._scaleSettingChanged, this);
     // We've used to allow zero before.
     if (!this._scaleSetting.get())
         this._scaleSetting.set(1);
+    this._scaleSetting.addChangeListener(this._scaleSettingChanged, this);
+
     this._widthSetting = WebInspector.settings.createSetting("emulation.deviceWidth", 400);
+    if (this._widthSetting.get() < WebInspector.DeviceModeModel.MinDeviceSize)
+        this._widthSetting.set(WebInspector.DeviceModeModel.MinDeviceSize);
+    if (this._widthSetting.get() > WebInspector.DeviceModeModel.MaxDeviceSize)
+        this._widthSetting.set(WebInspector.DeviceModeModel.MaxDeviceSize);
     this._widthSetting.addChangeListener(this._widthSettingChanged, this);
+
     this._heightSetting = WebInspector.settings.createSetting("emulation.deviceHeight", 0);
+    if (this._heightSetting.get() && this._heightSetting.get() < WebInspector.DeviceModeModel.MinDeviceSize)
+        this._heightSetting.set(WebInspector.DeviceModeModel.MinDeviceSize);
+    if (this._heightSetting.get() > WebInspector.DeviceModeModel.MaxDeviceSize)
+        this._heightSetting.set(WebInspector.DeviceModeModel.MaxDeviceSize);
     this._heightSetting.addChangeListener(this._heightSettingChanged, this);
+
     this._uaSetting = WebInspector.settings.createSetting("emulation.deviceUA", WebInspector.DeviceModeModel.UA.Mobile);
     this._uaSetting.addChangeListener(this._uaSettingChanged, this);
     this._deviceScaleFactorSetting = WebInspector.settings.createSetting("emulation.deviceScaleFactor", 0);
@@ -70,6 +81,7 @@ WebInspector.DeviceModeModel.UA = {
     DesktopTouch: "DesktopTouch"
 }
 
+WebInspector.DeviceModeModel.MinDeviceSize = 50;
 WebInspector.DeviceModeModel.MaxDeviceSize = 9999;
 
 /**
@@ -78,7 +90,7 @@ WebInspector.DeviceModeModel.MaxDeviceSize = 9999;
  */
 WebInspector.DeviceModeModel.deviceSizeValidator = function(value)
 {
-    if (/^[\d]+$/.test(value) && value > 0 && value <= WebInspector.DeviceModeModel.MaxDeviceSize)
+    if (/^[\d]+$/.test(value) && value >= WebInspector.DeviceModeModel.MinDeviceSize && value <= WebInspector.DeviceModeModel.MaxDeviceSize)
         return "";
     return WebInspector.UIString("Value must be positive integer");
 }

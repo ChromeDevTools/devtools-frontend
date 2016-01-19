@@ -91,12 +91,6 @@
             "actionId": "emulation.show-sensors"
         },
         {
-            "type": "context-menu-item",
-            "location": "mainMenu/navigate",
-            "order": 10,
-            "actionId": "emulation.toggle-device-toolbar"
-        },
-        {
             "type": "drawer-view",
             "name": "sensors",
             "title": "Sensors",

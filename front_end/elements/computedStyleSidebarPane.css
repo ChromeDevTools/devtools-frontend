@@ -82,3 +82,11 @@
 .tree-outline li::before {
     margin-left: 4px;
 }
+
+.delimeter {
+    color: transparent;
+}
+
+.delimeter::selection {
+    color: transparent;
+}

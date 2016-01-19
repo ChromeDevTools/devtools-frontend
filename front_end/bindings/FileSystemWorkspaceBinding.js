@@ -508,7 +508,8 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
     {
         var uiSourceCode = this.uiSourceCodeForURL(path);
         if (!uiSourceCode) {
-            this._addFile(path);
+            var contentType = WebInspector.FileSystemWorkspaceBinding._contentTypeForExtension(this._extensionForPath(path));
+            this.addUISourceCode(this.createUISourceCode(path, contentType));
             return;
         }
         uiSourceCode.checkContentUpdated();

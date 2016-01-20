@@ -60,6 +60,7 @@ WebInspector.NetworkConfigView.prototype = {
         this._customSelectAndInput.select.classList.add("chrome-select");
         this._customUserAgent.appendChild(this._customSelectAndInput.select);
         this._customUserAgent.appendChild(this._customSelectAndInput.input);
+        this._userAgentTypeChanged();
     },
 
     _customUserAgentChanged: function()

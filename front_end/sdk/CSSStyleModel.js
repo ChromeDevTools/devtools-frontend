@@ -51,7 +51,7 @@ WebInspector.CSSStyleModel = function(target)
 /**
  * @param {!WebInspector.CSSStyleModel} cssModel
  * @param {!Array.<!CSSAgent.RuleMatch>|undefined} matchArray
- * @return {!Array.<!WebInspector.CSSRule>}
+ * @return {!Array.<!WebInspector.CSSStyleRule>}
  */
 WebInspector.CSSStyleModel.parseRuleMatchArrayPayload = function(cssModel, matchArray)
 {
@@ -60,7 +60,7 @@ WebInspector.CSSStyleModel.parseRuleMatchArrayPayload = function(cssModel, match
 
     var result = [];
     for (var i = 0; i < matchArray.length; ++i)
-        result.push(new WebInspector.CSSRule(cssModel, matchArray[i].rule, matchArray[i].matchingSelectors));
+        result.push(new WebInspector.CSSStyleRule(cssModel, matchArray[i].rule, matchArray[i].matchingSelectors));
     return result;
 }
 WebInspector.CSSStyleModel.Events = {
@@ -310,7 +310,7 @@ WebInspector.CSSStyleModel.prototype = {
 
     /**
      * @param {!DOMAgent.NodeId} nodeId
-     * @param {!Array.<!WebInspector.CSSRuleSelector>} selectors
+     * @param {!Array.<!WebInspector.CSSValue>} selectors
      * @return {!Promise<?Array<number>>}
      */
     _computeMatchingSelectors: function(nodeId, selectors)
@@ -356,7 +356,7 @@ WebInspector.CSSStyleModel.prototype = {
      * @param {!WebInspector.DOMNode} node
      * @param {string} ruleText
      * @param {!WebInspector.TextRange} ruleLocation
-     * @param {function(?WebInspector.CSSRule)} userCallback
+     * @param {function(?WebInspector.CSSStyleRule)} userCallback
      */
     addRule: function(styleSheetId, node, ruleText, ruleLocation, userCallback)
     {
@@ -368,7 +368,7 @@ WebInspector.CSSStyleModel.prototype = {
         /**
          * @param {?Protocol.Error} error
          * @param {?CSSAgent.CSSRule} rulePayload
-         * @return {?WebInspector.CSSRule}
+         * @return {?WebInspector.CSSStyleRule}
          * @this {WebInspector.CSSStyleModel}
          */
         function parsePayload(error, rulePayload)
@@ -377,27 +377,27 @@ WebInspector.CSSStyleModel.prototype = {
                 return null;
             this._domModel.markUndoableState();
             this._fireStyleSheetChanged(styleSheetId);
-            return new WebInspector.CSSRule(this, rulePayload);
+            return new WebInspector.CSSStyleRule(this, rulePayload);
         }
 
         /**
-         * @param {?WebInspector.CSSRule} rule
-         * @return {!Promise<?WebInspector.CSSRule>}
+         * @param {?WebInspector.CSSStyleRule} rule
+         * @return {!Promise<?WebInspector.CSSStyleRule>}
          * @this {WebInspector.CSSStyleModel}
          */
         function onRuleParsed(rule)
         {
             if (!rule)
-                return Promise.resolve(/** @type {?WebInspector.CSSRule} */(null));
+                return Promise.resolve(/** @type {?WebInspector.CSSStyleRule} */(null));
 
             return this._computeMatchingSelectors(node.id, rule.selectors)
                 .then(updateMatchingSelectors.bind(null, rule));
         }
 
         /**
-         * @param {!WebInspector.CSSRule} rule
+         * @param {!WebInspector.CSSStyleRule} rule
          * @param {?Array<number>} matchingSelectors
-         * @return {?WebInspector.CSSRule}
+         * @return {?WebInspector.CSSStyleRule}
          */
         function updateMatchingSelectors(rule, matchingSelectors)
         {
@@ -997,7 +997,7 @@ WebInspector.CSSStyleDeclaration.prototype = {
  * @constructor
  * @param {!CSSAgent.Value} payload
  */
-WebInspector.CSSRuleSelector = function(payload)
+WebInspector.CSSValue = function(payload)
 {
     this.text = payload.text;
     if (payload.range)
@@ -1006,19 +1006,19 @@ WebInspector.CSSRuleSelector = function(payload)
 
 /**
  * @param {!CSSAgent.SelectorList} selectorList
- * @return {!Array<!WebInspector.CSSRuleSelector>}
+ * @return {!Array<!WebInspector.CSSValue>}
  */
-WebInspector.CSSRuleSelector.parseSelectorListPayload = function(selectorList)
+WebInspector.CSSValue.parseSelectorListPayload = function(selectorList)
 {
     var selectors = [];
     for (var i = 0; i < selectorList.selectors.length; ++i) {
         var selectorPayload = selectorList.selectors[i];
-        selectors.push(new WebInspector.CSSRuleSelector(selectorPayload));
+        selectors.push(new WebInspector.CSSValue(selectorPayload));
     }
     return selectors;
 }
 
-WebInspector.CSSRuleSelector.prototype = {
+WebInspector.CSSValue.prototype = {
     /**
      * @param {!WebInspector.TextRange} oldRange
      * @param {!WebInspector.TextRange} newRange
@@ -1035,17 +1035,11 @@ WebInspector.CSSRuleSelector.prototype = {
  * @constructor
  * @param {!WebInspector.CSSStyleModel} cssModel
  * @param {!CSSAgent.CSSRule} payload
- * @param {!Array.<number>=} matchingSelectors
  */
-WebInspector.CSSRule = function(cssModel, payload, matchingSelectors)
+WebInspector.CSSRule = function(cssModel, payload)
 {
     this._cssModel = cssModel;
     this.styleSheetId = payload.styleSheetId;
-    if (matchingSelectors)
-        this.matchingSelectors = matchingSelectors;
-
-    /** @type {!Array.<!WebInspector.CSSRuleSelector>} */
-    this.selectors = WebInspector.CSSRuleSelector.parseSelectorListPayload(payload.selectorList);
 
     if (this.styleSheetId) {
         var styleSheetHeader = cssModel.styleSheetHeaderForId(this.styleSheetId);
@@ -1053,6 +1047,80 @@ WebInspector.CSSRule = function(cssModel, payload, matchingSelectors)
     }
     this.origin = payload.origin;
     this.style = new WebInspector.CSSStyleDeclaration(this._cssModel, this, payload.style, WebInspector.CSSStyleDeclaration.Type.Regular);
+}
+
+WebInspector.CSSRule.prototype = {
+    /**
+     * @param {string} styleSheetId
+     * @param {!WebInspector.TextRange} oldRange
+     * @param {!WebInspector.TextRange} newRange
+     */
+    sourceStyleSheetEdited: function(styleSheetId, oldRange, newRange)
+    {
+        this.style.sourceStyleSheetEdited(styleSheetId, oldRange, newRange);
+    },
+
+    /**
+     * @return {string}
+     */
+    resourceURL: function()
+    {
+        if (!this.styleSheetId)
+            return "";
+        var styleSheetHeader = this._cssModel.styleSheetHeaderForId(this.styleSheetId);
+        return styleSheetHeader.resourceURL();
+    },
+
+    /**
+     * @return {boolean}
+     */
+    isUserAgent: function()
+    {
+        return this.origin === CSSAgent.StyleSheetOrigin.UserAgent;
+    },
+
+    /**
+     * @return {boolean}
+     */
+    isInjected: function()
+    {
+        return this.origin === CSSAgent.StyleSheetOrigin.Injected;
+    },
+
+    /**
+     * @return {boolean}
+     */
+    isViaInspector: function()
+    {
+        return this.origin === CSSAgent.StyleSheetOrigin.Inspector;
+    },
+
+    /**
+     * @return {boolean}
+     */
+    isRegular: function()
+    {
+        return this.origin === CSSAgent.StyleSheetOrigin.Regular;
+    }
+}
+
+/**
+ * @constructor
+ * @extends {WebInspector.CSSRule}
+ * @param {!WebInspector.CSSStyleModel} cssModel
+ * @param {!CSSAgent.CSSRule} payload
+ * @param {!Array.<number>=} matchingSelectors
+ */
+WebInspector.CSSStyleRule = function(cssModel, payload, matchingSelectors)
+{
+    WebInspector.CSSRule.call(this, cssModel, payload);
+
+    if (matchingSelectors)
+        this.matchingSelectors = matchingSelectors;
+
+    /** @type {!Array.<!WebInspector.CSSValue>} */
+    this.selectors = WebInspector.CSSValue.parseSelectorListPayload(payload.selectorList);
+
     if (payload.media)
         this.media = WebInspector.CSSMedia.parseMediaArrayPayload(cssModel, payload.media);
 }
@@ -1060,9 +1128,9 @@ WebInspector.CSSRule = function(cssModel, payload, matchingSelectors)
 /**
  * @param {!WebInspector.CSSStyleModel} cssModel
  * @param {string} selectorText
- * @return {!WebInspector.CSSRule}
+ * @return {!WebInspector.CSSStyleRule}
  */
-WebInspector.CSSRule.createDummyRule = function(cssModel, selectorText)
+WebInspector.CSSStyleRule.createDummyRule = function(cssModel, selectorText)
 {
     var dummyPayload = {
         selectorList: {
@@ -1075,10 +1143,10 @@ WebInspector.CSSRule.createDummyRule = function(cssModel, selectorText)
             cssProperties: []
         }
     };
-    return new WebInspector.CSSRule(cssModel, /** @type {!CSSAgent.CSSRule} */(dummyPayload));
+    return new WebInspector.CSSStyleRule(cssModel, /** @type {!CSSAgent.CSSRule} */(dummyPayload));
 }
 
-WebInspector.CSSRule.prototype = {
+WebInspector.CSSStyleRule.prototype = {
     /**
      * @param {!DOMAgent.NodeId} nodeId
      * @param {string} newSelector
@@ -1089,7 +1157,7 @@ WebInspector.CSSRule.prototype = {
         /**
          * @param {?Protocol.Error} error
          * @param {?CSSAgent.SelectorList} selectorPayload
-         * @return {?Array.<!WebInspector.CSSRuleSelector>}
+         * @return {?Array.<!WebInspector.CSSValue>}
          * @this {WebInspector.CSSRule}
          */
         function callback(error, selectorPayload)
@@ -1098,7 +1166,7 @@ WebInspector.CSSRule.prototype = {
                 return null;
             this._cssModel._domModel.markUndoableState();
             this._cssModel._fireStyleSheetChanged(/** @type {string} */(this.styleSheetId));
-            return WebInspector.CSSRuleSelector.parseSelectorListPayload(selectorPayload);
+            return WebInspector.CSSValue.parseSelectorListPayload(selectorPayload);
         }
 
         if (!this.styleSheetId)
@@ -1113,7 +1181,7 @@ WebInspector.CSSRule.prototype = {
             .then(userCallback);
 
         /**
-         * @param {?Array<!WebInspector.CSSRuleSelector>} selectors
+         * @param {?Array<!WebInspector.CSSValue>} selectors
          * @return {!Promise<boolean>}
          * @this {WebInspector.CSSRule}
          */
@@ -1126,7 +1194,7 @@ WebInspector.CSSRule.prototype = {
         }
 
         /**
-         * @param {!Array<!WebInspector.CSSRuleSelector>} selectors
+         * @param {!Array<!WebInspector.CSSValue>} selectors
          * @param {?Array<number>} matchingSelectors
          * @return {boolean}
          * @this {WebInspector.CSSRule}
@@ -1162,6 +1230,34 @@ WebInspector.CSSRule.prototype = {
     },
 
     /**
+     * @param {number} selectorIndex
+     * @return {number}
+     */
+    lineNumberInSource: function(selectorIndex)
+    {
+        var selector = this.selectors[selectorIndex];
+        if (!selector || !selector.range || !this.styleSheetId)
+            return 0;
+        var styleSheetHeader = this._cssModel.styleSheetHeaderForId(this.styleSheetId);
+        return styleSheetHeader.lineNumberInSource(selector.range.startLine);
+    },
+
+    /**
+     * @param {number} selectorIndex
+     * @return {number|undefined}
+     */
+    columnNumberInSource: function(selectorIndex)
+    {
+        var selector = this.selectors[selectorIndex];
+        if (!selector || !selector.range || !this.styleSheetId)
+            return undefined;
+        var styleSheetHeader = this._cssModel.styleSheetHeaderForId(this.styleSheetId);
+        console.assert(styleSheetHeader);
+        return styleSheetHeader.columnNumberInSource(selector.range.startLine, selector.range.startColumn);
+    },
+
+    /**
+     * @override
      * @param {string} styleSheetId
      * @param {!WebInspector.TextRange} oldRange
      * @param {!WebInspector.TextRange} newRange
@@ -1193,7 +1289,7 @@ WebInspector.CSSRule.prototype = {
                 }
             }
         }
-        this.style.sourceStyleSheetEdited(styleSheetId, oldRange, newRange);
+        WebInspector.CSSRule.prototype.sourceStyleSheetEdited.call(this, styleSheetId, oldRange, newRange);
     },
 
     /**
@@ -1205,75 +1301,7 @@ WebInspector.CSSRule.prototype = {
         this._sourceStyleSheetEditedWithMedia(/** @type {string} */ (oldMedia.parentStyleSheetId), oldMedia.range, newMedia.range, oldMedia, newMedia);
     },
 
-    /**
-     * @return {string}
-     */
-    resourceURL: function()
-    {
-        if (!this.styleSheetId)
-            return "";
-        var styleSheetHeader = this._cssModel.styleSheetHeaderForId(this.styleSheetId);
-        return styleSheetHeader.resourceURL();
-    },
-
-    /**
-     * @param {number} selectorIndex
-     * @return {number}
-     */
-    lineNumberInSource: function(selectorIndex)
-    {
-        var selector = this.selectors[selectorIndex];
-        if (!selector || !selector.range || !this.styleSheetId)
-            return 0;
-        var styleSheetHeader = this._cssModel.styleSheetHeaderForId(this.styleSheetId);
-        return styleSheetHeader.lineNumberInSource(selector.range.startLine);
-    },
-
-    /**
-     * @param {number} selectorIndex
-     * @return {number|undefined}
-     */
-    columnNumberInSource: function(selectorIndex)
-    {
-        var selector = this.selectors[selectorIndex];
-        if (!selector || !selector.range || !this.styleSheetId)
-            return undefined;
-        var styleSheetHeader = this._cssModel.styleSheetHeaderForId(this.styleSheetId);
-        console.assert(styleSheetHeader);
-        return styleSheetHeader.columnNumberInSource(selector.range.startLine, selector.range.startColumn);
-    },
-
-    /**
-     * @return {boolean}
-     */
-    isUserAgent: function()
-    {
-        return this.origin === CSSAgent.StyleSheetOrigin.UserAgent;
-    },
-
-    /**
-     * @return {boolean}
-     */
-    isInjected: function()
-    {
-        return this.origin === CSSAgent.StyleSheetOrigin.Injected;
-    },
-
-    /**
-     * @return {boolean}
-     */
-    isViaInspector: function()
-    {
-        return this.origin === CSSAgent.StyleSheetOrigin.Inspector;
-    },
-
-    /**
-     * @return {boolean}
-     */
-    isRegular: function()
-    {
-        return this.origin === CSSAgent.StyleSheetOrigin.Regular;
-    }
+    __proto__: WebInspector.CSSRule.prototype
 }
 
 /**

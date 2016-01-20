@@ -1595,7 +1595,7 @@ WebInspector.StylePropertiesSection._linkifyRuleLocation = function(cssModel, li
  */
 WebInspector.BlankStylePropertiesSection = function(stylesPane, matchedStyles, defaultSelectorText, styleSheetId, ruleLocation, insertAfterStyle)
 {
-    var rule = WebInspector.CSSRule.createDummyRule(stylesPane._cssModel, defaultSelectorText);
+    var rule = WebInspector.CSSStyleRule.createDummyRule(stylesPane._cssModel, defaultSelectorText);
     WebInspector.StylePropertiesSection.call(this, stylesPane, matchedStyles, rule.style);
     this._ruleLocation = ruleLocation;
     this._styleSheetId = styleSheetId;

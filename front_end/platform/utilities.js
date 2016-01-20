@@ -92,6 +92,14 @@ String.prototype.findAll = function(string)
 }
 
 /**
+ * @return {boolean}
+ */
+String.prototype.isWhitespace = function()
+{
+    return /^\s*$/.test(this);
+}
+
+/**
  * @return {!Array.<number>}
  */
 String.prototype.lineEndings = function()

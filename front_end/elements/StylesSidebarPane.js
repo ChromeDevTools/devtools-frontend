@@ -2491,13 +2491,13 @@ WebInspector.StylePropertyTreeElement.prototype = {
 
         // Make the Changes and trigger the moveToNextCallback after updating.
         var moveToIndex = moveTo && this.treeOutline ? this.treeOutline.rootElement().indexOfChild(moveTo) : -1;
-        var blankInput = /^\s*$/.test(userInput);
+        var blankInput = userInput.isWhitespace();
         var shouldCommitNewProperty = this._newProperty && (isPropertySplitPaste || moveToOther || (!moveDirection && !isEditingName) || (isEditingName && blankInput));
         var section = /** @type {!WebInspector.StylePropertiesSection} */(this.section());
         if (((userInput !== context.previousContent || isDirtyViaPaste) && !this._newProperty) || shouldCommitNewProperty) {
             section._afterUpdate = moveToNextCallback.bind(this, this._newProperty, !blankInput, section);
             var propertyText;
-            if (blankInput || (this._newProperty && /^\s*$/.test(this.valueElement.textContent)))
+            if (blankInput || (this._newProperty && this.valueElement.textContent.isWhitespace()))
                 propertyText = "";
             else {
                 if (isEditingName)

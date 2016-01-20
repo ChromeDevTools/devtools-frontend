@@ -912,7 +912,7 @@ WebInspector.ElementsTreeElement.prototype = {
                         this._triggerEditAttribute(attributes[attributes.length - 2].name);
                 }
             } else if (moveDirection === "forward") {
-                if (!/^\s*$/.test(newText))
+                if (!newText.isWhitespace())
                     this._addNewAttribute();
                 else
                     this._startEditingTagName();

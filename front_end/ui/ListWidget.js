@@ -177,7 +177,8 @@ WebInspector.ListWidget.prototype = {
         function onEditClicked(event)
         {
             event.consume();
-            var insertionPoint = element && element.nextElementSibling ? element.nextElementSibling : null;
+            var index = this._elements.indexOf(element);
+            var insertionPoint = this._elements[index + 1] || null;
             this._startEditing(item, element, insertionPoint);
         }
 

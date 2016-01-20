@@ -285,6 +285,9 @@ WebInspector.TextPrompt.prototype = {
         delete this._needUpdateAutocomplete;
 
         switch (event.keyIdentifier) {
+        case "U+0009": // Tab
+            handled = this.tabKeyPressed(event);
+            break;
         case "Left":
         case "Home":
             this._removeSuggestionAids();

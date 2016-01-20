@@ -398,8 +398,8 @@ WebInspector.SuggestBox.prototype = {
             return this.pageUpKeyPressed();
         case "PageDown":
             return this.pageDownKeyPressed();
-        case "U+0009": // Tab
-            return this.tabKeyPressed();
+        case "Enter":
+            return this.enterKeyPressed();
         }
         return false;
     },
@@ -441,7 +441,7 @@ WebInspector.SuggestBox.prototype = {
     /**
      * @return {boolean}
      */
-    tabKeyPressed: function()
+    enterKeyPressed: function()
     {
         var hasSelectedItem = !!this._selectedElement;
         this.acceptSuggestion();

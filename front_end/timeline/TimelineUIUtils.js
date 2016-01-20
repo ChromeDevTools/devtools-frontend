@@ -95,6 +95,7 @@ WebInspector.TimelineUIUtils._initEventStyles = function()
     eventStyles[recordTypes.MarkFirstPaint] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("First paint"), categories["painting"], true);
     eventStyles[recordTypes.TimeStamp] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("Timestamp"), categories["scripting"]);
     eventStyles[recordTypes.ConsoleTime] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("Console Time"), categories["scripting"]);
+    eventStyles[recordTypes.UserTiming] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("User Timing"), categories["scripting"]);
     eventStyles[recordTypes.ResourceSendRequest] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("Send Request"), categories["loading"]);
     eventStyles[recordTypes.ResourceReceiveResponse] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("Receive Response"), categories["loading"]);
     eventStyles[recordTypes.ResourceFinish] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("Finish Loading"), categories["loading"]);
@@ -157,7 +158,7 @@ WebInspector.TimelineUIUtils.categoryForRecord = function(record)
 WebInspector.TimelineUIUtils.eventStyle = function(event)
 {
     var eventStyles = WebInspector.TimelineUIUtils._initEventStyles();
-    if (event.hasCategory(WebInspector.TimelineModel.Category.Console) || event.hasCategory(WebInspector.TimelineModel.Category.LatencyInfo))
+    if (event.hasCategory(WebInspector.TimelineModel.Category.Console) || event.hasCategory(WebInspector.TimelineModel.Category.UserTiming) || event.hasCategory(WebInspector.TimelineModel.Category.LatencyInfo))
         return { title: event.name, category: WebInspector.TimelineUIUtils.categories()["scripting"] };
 
     var result = eventStyles[event.name];
@@ -1330,7 +1331,7 @@ WebInspector.TimelineUIUtils.createEventDivider = function(recordType, title, po
         eventDivider.className += " resources-red-divider";
     else if (recordType === recordTypes.MarkFirstPaint)
         eventDivider.className += " resources-green-divider";
-    else if (recordType === recordTypes.TimeStamp || recordType === recordTypes.ConsoleTime)
+    else if (recordType === recordTypes.TimeStamp || recordType === recordTypes.ConsoleTime || recordType === recordTypes.UserTiming)
         eventDivider.className += " resources-orange-divider";
     else if (recordType === recordTypes.BeginFrame)
         eventDivider.className += " timeline-frame-divider";
@@ -1413,6 +1414,7 @@ WebInspector.TimelineUIUtils.asyncEventGroups = function()
         return WebInspector.TimelineUIUtils._asyncEventGroups;
     WebInspector.TimelineUIUtils._asyncEventGroups = {
         console: new WebInspector.AsyncEventGroup(WebInspector.UIString("Console")),
+        userTiming: new WebInspector.AsyncEventGroup(WebInspector.UIString("User Timing")),
         input: new WebInspector.AsyncEventGroup(WebInspector.UIString("Input Events"))
     };
     return WebInspector.TimelineUIUtils._asyncEventGroups;
@@ -1718,7 +1720,7 @@ WebInspector.TimelineUIUtils.markerStyleForEvent = function(event)
 
     var title = WebInspector.TimelineUIUtils.eventTitle(event)
 
-    if (event.hasCategory(WebInspector.TimelineModel.Category.Console)) {
+    if (event.hasCategory(WebInspector.TimelineModel.Category.Console) || event.hasCategory(WebInspector.TimelineModel.Category.UserTiming)) {
         return {
             title: title,
             dashStyle: tallMarkerDashStyle,

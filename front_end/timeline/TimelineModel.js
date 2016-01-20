@@ -106,6 +106,7 @@ WebInspector.TimelineModel.RecordType = {
 
     TimeStamp: "TimeStamp",
     ConsoleTime: "ConsoleTime",
+    UserTiming: "UserTiming",
 
     ResourceSendRequest: "ResourceSendRequest",
     ResourceReceiveResponse: "ResourceReceiveResponse",
@@ -173,6 +174,7 @@ WebInspector.TimelineModel.Events = {
 
 WebInspector.TimelineModel.Category = {
     Console: "blink.console",
+    UserTiming: "blink.user_timing",
     LatencyInfo: "latencyInfo"
 };
 
@@ -407,6 +409,8 @@ WebInspector.TimelineModel._eventType = function(event)
 {
     if (event.hasCategory(WebInspector.TimelineModel.Category.Console))
         return WebInspector.TimelineModel.RecordType.ConsoleTime;
+    if (event.hasCategory(WebInspector.TimelineModel.Category.UserTiming))
+        return WebInspector.TimelineModel.RecordType.UserTiming;
     if (event.hasCategory(WebInspector.TimelineModel.Category.LatencyInfo))
         return WebInspector.TimelineModel.RecordType.LatencyInfo;
     return /** @type !WebInspector.TimelineModel.RecordType */ (event.name);
@@ -432,7 +436,8 @@ WebInspector.TimelineModel.prototype = {
             disabledByDefault("devtools.timeline"),
             disabledByDefault("devtools.timeline.frame"),
             WebInspector.TracingModel.TopLevelEventCategory,
-            WebInspector.TimelineModel.Category.Console
+            WebInspector.TimelineModel.Category.Console,
+            WebInspector.TimelineModel.Category.UserTiming
         ];
         if (Runtime.experiments.isEnabled("timelineLatencyInfo"))
             categoriesArray.push(WebInspector.TimelineModel.Category.LatencyInfo)
@@ -1261,6 +1266,8 @@ WebInspector.TimelineModel.prototype = {
         var groups = WebInspector.TimelineUIUtils.asyncEventGroups();
         if (asyncEvent.hasCategory(WebInspector.TimelineModel.Category.Console))
             return groups.console;
+        if (asyncEvent.hasCategory(WebInspector.TimelineModel.Category.UserTiming))
+            return groups.userTiming;
         if (asyncEvent.hasCategory(WebInspector.TimelineModel.Category.LatencyInfo)) {
             if (!Runtime.experiments.isEnabled("timelineLatencyInfo"))
                 return null;

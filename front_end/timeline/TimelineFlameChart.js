@@ -382,8 +382,8 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
     _appendThreadTimelineData: function(threadTitle, syncEvents, asyncEvents)
     {
         var firstLevel = this._currentLevel;
+        this._appendAsyncEvents(asyncEvents);
         this._appendSyncEvents(threadTitle, syncEvents);
-        this._appendAsyncEvents(this._currentLevel !== firstLevel ? null : threadTitle, asyncEvents);
         if (this._currentLevel !== firstLevel)
             ++this._currentLevel;
     },
@@ -423,6 +423,7 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
                 this._appendHeaderRecord(headerName, this._currentLevel++);
                 headerName = null;
             }
+
             var level = this._currentLevel + openEvents.length;
             this._appendEvent(e, level);
             if (flowEventsEnabled)
@@ -460,10 +461,9 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
     },
 
     /**
-     * @param {?string} header
      * @param {!Map<!WebInspector.AsyncEventGroup, !Array<!WebInspector.TracingModel.AsyncEvent>>} asyncEvents
      */
-    _appendAsyncEvents: function(header, asyncEvents)
+    _appendAsyncEvents: function(asyncEvents)
     {
         var groups = Object.values(WebInspector.TimelineUIUtils.asyncEventGroups());
 
@@ -478,14 +478,11 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
                 var asyncEvent = events[i];
                 if (!this._isVisible(asyncEvent))
                     continue;
-                if (header) {
-                    this._appendHeaderRecord(header, this._currentLevel++);
-                    header = null;
-                }
                 if (!groupHeaderAppended) {
                     this._appendHeaderRecord(group.title, this._currentLevel++);
                     groupHeaderAppended = true;
                 }
+
                 var startTime = asyncEvent.startTime;
                 var level;
                 for (level = 0; level < lastUsedTimeByLevel.length && lastUsedTimeByLevel[level] > startTime; ++level) {}
@@ -573,7 +570,7 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
         if (!event)
             return this._entryIndexToFrame[entryIndex] ? "white" : "#aaa";
         if (WebInspector.TracingModel.isAsyncPhase(event.phase)) {
-            if (event.hasCategory(WebInspector.TimelineModel.Category.Console))
+            if (event.hasCategory(WebInspector.TimelineModel.Category.Console) || event.hasCategory(WebInspector.TimelineModel.Category.UserTiming))
                 return this._consoleColorGenerator.colorForID(event.name);
             var category = WebInspector.TimelineUIUtils.eventStyle(event).category;
             var color = this._asyncColorByCategory[category.name];

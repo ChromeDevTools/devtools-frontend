@@ -23,7 +23,7 @@ WebInspector.FilteredListWidget = function(delegate, renderAsTwoRows)
 
     this._promptElement = this.contentElement.createChild("div", "monospace filtered-list-widget-input");
     this._promptElement.setAttribute("spellcheck", "false");
-    this._promptElement.setAttribute("contenteditable", "true");
+    this._promptElement.setAttribute("contenteditable", "plaintext-only");
     this._prompt = new WebInspector.TextPrompt(this._autocomplete.bind(this));
     this._prompt.renderAsBlock();
     this._prompt.addEventListener(WebInspector.TextPrompt.Events.ItemAccepted, this._onAutocompleted, this);
@@ -97,9 +97,9 @@ WebInspector.FilteredListWidget.prototype = {
      */
     _onEnter: function(event)
     {
+        event.preventDefault();
         if (!this._delegate.itemCount())
             return;
-        event.preventDefault();
         var selectedIndex = this._shouldShowMatchingItems() && this._selectedIndexInFiltered < this._filteredItems.length ? this._filteredItems[this._selectedIndexInFiltered] : null;
         this._delegate.selectItemWithQuery(selectedIndex, this._value());
         if (this._dialog)

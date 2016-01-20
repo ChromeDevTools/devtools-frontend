@@ -29,11 +29,12 @@
 
 /**
  * @constructor
+ * @extends {WebInspector.ThrottledWidget}
  * @param {!WebInspector.StylesSidebarPane} stylesSidebarPane
  * @param {!WebInspector.SharedSidebarModel} sharedModel
- * @extends {WebInspector.ThrottledWidget}
+ * @param {function(!WebInspector.CSSProperty)} revealCallback
  */
-WebInspector.ComputedStyleWidget = function(stylesSidebarPane, sharedModel)
+WebInspector.ComputedStyleWidget = function(stylesSidebarPane, sharedModel, revealCallback)
 {
     WebInspector.ThrottledWidget.call(this);
     this.element.classList.add("computed-style-sidebar-pane");
@@ -63,6 +64,7 @@ WebInspector.ComputedStyleWidget = function(stylesSidebarPane, sharedModel)
 
     this._stylesSidebarPane = stylesSidebarPane;
     this._linkifier = new WebInspector.Linkifier(new WebInspector.Linkifier.DefaultCSSFormatter());
+    this._revealCallback = revealCallback;
 
     /**
      * @param {?RegExp} regex
@@ -78,11 +80,12 @@ WebInspector.ComputedStyleWidget = function(stylesSidebarPane, sharedModel)
 /**
  * @param {!WebInspector.StylesSidebarPane} stylesSidebarPane
  * @param {!WebInspector.SharedSidebarModel} sharedModel
+ * @param {function(!WebInspector.CSSProperty)} revealCallback
  * @return {!WebInspector.ElementsSidebarViewWrapperPane}
  */
-WebInspector.ComputedStyleWidget.createSidebarWrapper = function(stylesSidebarPane, sharedModel)
+WebInspector.ComputedStyleWidget.createSidebarWrapper = function(stylesSidebarPane, sharedModel, revealCallback)
 {
-    var widget = new WebInspector.ComputedStyleWidget(stylesSidebarPane, sharedModel);
+    var widget = new WebInspector.ComputedStyleWidget(stylesSidebarPane, sharedModel, revealCallback);
     return new WebInspector.ElementsSidebarViewWrapperPane(WebInspector.UIString("Computed Style"), widget)
 }
 
@@ -185,10 +188,12 @@ WebInspector.ComputedStyleWidget.prototype = {
 
             var trace = propertyTraces.get(propertyName);
             if (trace) {
-                this._renderPropertyTrace(cssModel, matchedStyles, nodeStyle.node, treeElement, trace);
+                var activeProperty = this._renderPropertyTrace(cssModel, matchedStyles, nodeStyle.node, treeElement, trace);
                 treeElement.listItemElement.addEventListener("mousedown", consumeEvent, false);
                 treeElement.listItemElement.addEventListener("dblclick", consumeEvent, false);
                 treeElement.listItemElement.addEventListener("click", handleClick.bind(null, treeElement), false);
+                var gotoSourceElement = propertyValueElement.createChild("div", "goto-source-icon");
+                gotoSourceElement.addEventListener("click", this._navigateToSource.bind(this, activeProperty));
             }
         }
 
@@ -222,24 +227,45 @@ WebInspector.ComputedStyleWidget.prototype = {
     },
 
     /**
+     * @param {!WebInspector.CSSProperty} cssProperty
+     * @param {!Event} event
+     */
+    _navigateToSource: function(cssProperty, event)
+    {
+        if (this._revealCallback)
+            this._revealCallback.call(null, cssProperty);
+        event.consume(true);
+    },
+
+    /**
      * @param {!WebInspector.CSSStyleModel} cssModel
      * @param {!WebInspector.CSSStyleModel.MatchedStyleResult} matchedStyles
      * @param {!WebInspector.DOMNode} node
      * @param {!TreeElement} rootTreeElement
      * @param {!Array<!WebInspector.CSSProperty>} tracedProperties
+     * @return {!WebInspector.CSSProperty}
      */
     _renderPropertyTrace: function(cssModel, matchedStyles, node, rootTreeElement, tracedProperties)
     {
+        var activeProperty = null;
         for (var property of tracedProperties) {
             var trace = createElement("div");
             trace.classList.add("property-trace");
             if (matchedStyles.propertyState(property) === WebInspector.CSSStyleModel.MatchedStyleResult.PropertyState.Overloaded)
                 trace.classList.add("property-trace-inactive");
+            else
+                activeProperty = property;
 
             var renderer = new WebInspector.StylesSidebarPropertyRenderer(null, node, property.name, /** @type {string} */(property.value));
             renderer.setColorHandler(this._processColor.bind(this));
             var valueElement = renderer.renderValue();
             valueElement.classList.add("property-trace-value");
+            valueElement.addEventListener("click", this._navigateToSource.bind(this, property), false);
+            var gotoSourceElement = createElement("div");
+            gotoSourceElement.classList.add("goto-source-icon");
+            gotoSourceElement.addEventListener("click", this._navigateToSource.bind(this, property));
+            valueElement.insertBefore(gotoSourceElement, valueElement.firstChild);
+
             trace.appendChild(valueElement);
 
             var rule = property.ownerStyle.parentRule;
@@ -257,6 +283,7 @@ WebInspector.ComputedStyleWidget.prototype = {
             traceTreeElement.selectable = false;
             rootTreeElement.appendChild(traceTreeElement);
         }
+        return /** @type {!WebInspector.CSSProperty} */(activeProperty);
     },
 
     /**

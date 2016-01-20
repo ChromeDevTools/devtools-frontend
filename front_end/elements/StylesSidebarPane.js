@@ -47,7 +47,8 @@ WebInspector.StylesSidebarPane = function()
     this.element.addEventListener("mousemove", this._mouseMovedOverElement.bind(this), false);
     this._keyDownBound = this._keyDown.bind(this);
     this._keyUpBound = this._keyUp.bind(this);
-    new WebInspector.PropertyChangeHighlighter(this);
+
+    WebInspector.targetManager.addModelListener(WebInspector.CSSStyleModel, WebInspector.CSSStyleModel.Events.LayoutEditorChange, this._onLayoutEditorChange, this);
 }
 
 /**
@@ -105,6 +106,29 @@ WebInspector.StylesSidebarPane.ignoreErrorsForProperty = function(property) {
 }
 
 WebInspector.StylesSidebarPane.prototype = {
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _onLayoutEditorChange: function(event)
+    {
+        var cssModel = /** @type {!WebInspector.CSSStyleModel} */(event.target);
+        var styleSheetId = event.data["id"];
+        var sourceRange = /** @type {!CSSAgent.SourceRange} */(event.data["range"]);
+        var range = WebInspector.TextRange.fromObject(sourceRange);
+        this._decorator = new WebInspector.PropertyChangeHighlighter(this, cssModel, styleSheetId, range);
+        this.update();
+    },
+
+    /**
+     * @param {!WebInspector.CSSProperty} cssProperty
+     */
+    revealProperty: function(cssProperty)
+    {
+        this._decorator = new WebInspector.PropertyRevealHighlighter(this, cssProperty);
+        this._decorator.perform();
+        this.update();
+    },
+
     onUndoOrRedoHappened: function()
     {
         this.setNode(this.node());
@@ -172,10 +196,8 @@ WebInspector.StylesSidebarPane.prototype = {
     {
         if (!editedRule.styleSheetId)
             return;
-        for (var block of this._sectionBlocks) {
-            for (var section of block.sections)
-                section._styleSheetRuleEdited(editedRule, oldRange, newRange);
-        }
+        for (var section of this.allSections())
+            section._styleSheetRuleEdited(editedRule, oldRange, newRange);
     },
 
     /**
@@ -186,10 +208,8 @@ WebInspector.StylesSidebarPane.prototype = {
     {
         if (!oldMedia.parentStyleSheetId)
             return;
-        for (var block of this._sectionBlocks) {
-            for (var section of block.sections)
-                section._styleSheetMediaEdited(oldMedia, newMedia);
-        }
+        for (var section of this.allSections())
+            section._styleSheetMediaEdited(oldMedia, newMedia);
     },
 
     /**
@@ -223,12 +243,10 @@ WebInspector.StylesSidebarPane.prototype = {
         if (!node)
             return;
 
-        for (var block of this._sectionBlocks) {
-            for (var section of block.sections) {
-                if (section.isBlank)
-                    continue;
-                section.update(section === editedSection);
-            }
+        for (var section of this.allSections()) {
+            if (section.isBlank)
+                continue;
+            section.update(section === editedSection);
         }
 
         if (this._filterRegex)
@@ -246,14 +264,6 @@ WebInspector.StylesSidebarPane.prototype = {
 
         return this.fetchMatchedCascade()
             .then(this._innerRebuildUpdate.bind(this));
-    },
-
-    /**
-     * @param {function()} callback
-     */
-    runDecoratorAfterUpdate: function(callback)
-    {
-        this._decoratorCallback = callback;
     },
 
     _resetCache: function()
@@ -395,9 +405,9 @@ WebInspector.StylesSidebarPane.prototype = {
             this._updateFilter();
 
         this._nodeStylesUpdatedForTest(node, true);
-        if (this._decoratorCallback) {
-            this._decoratorCallback();
-            delete this._decoratorCallback;
+        if (this._decorator) {
+            this._decorator.perform();
+            delete this._decorator;
         }
     },
 
@@ -589,11 +599,14 @@ WebInspector.StylesSidebarPane.prototype = {
     },
 
     /**
-     * @return {!Array<!WebInspector.SectionBlock>}
+     * @return {!Array<!WebInspector.StylePropertiesSection>}
      */
-    sectionBlocks: function()
+    allSections: function()
     {
-        return this._sectionBlocks || [];
+        var sections = [];
+        for (var block of this._sectionBlocks)
+            sections = sections.concat(block.sections);
+        return sections;
     },
 
     __proto__: WebInspector.ElementsSidebarPane.prototype

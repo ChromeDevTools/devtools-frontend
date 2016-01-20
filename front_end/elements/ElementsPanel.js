@@ -74,7 +74,7 @@ WebInspector.ElementsPanel = function()
     var sharedSidebarModel = new WebInspector.SharedSidebarModel();
     this.sidebarPanes.platformFonts = WebInspector.PlatformFontsWidget.createSidebarWrapper(sharedSidebarModel);
     this.sidebarPanes.styles = new WebInspector.StylesSidebarPane();
-    this.sidebarPanes.computedStyle = WebInspector.ComputedStyleWidget.createSidebarWrapper(this.sidebarPanes.styles, sharedSidebarModel);
+    this.sidebarPanes.computedStyle = WebInspector.ComputedStyleWidget.createSidebarWrapper(this.sidebarPanes.styles, sharedSidebarModel, this._revealProperty.bind(this));
 
     this.sidebarPanes.metrics = new WebInspector.MetricsSidebarPane();
     this.sidebarPanes.properties = WebInspector.PropertiesWidget.createSidebarWrapper();
@@ -100,6 +100,17 @@ WebInspector.ElementsPanel = function()
 WebInspector.ElementsPanel._elementsSidebarViewTitleSymbol = Symbol("title");
 
 WebInspector.ElementsPanel.prototype = {
+    /**
+     * @param {!WebInspector.CSSProperty} cssProperty
+     */
+    _revealProperty: function(cssProperty)
+    {
+        var stylesSidebarPane = this.sidebarPanes.styles;
+        this.sidebarPaneView.selectTab(stylesSidebarPane.title());
+        stylesSidebarPane.revealProperty(/** @type {!WebInspector.CSSProperty} */(cssProperty));
+        return Promise.resolve();
+    },
+
     /**
      * @param {!WebInspector.StylesSidebarPane} ssp
      * @return {!Element}

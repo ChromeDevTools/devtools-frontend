@@ -5,65 +5,50 @@
 /**
  * @constructor
  * @param {!WebInspector.StylesSidebarPane} ssp
+ * @param {!WebInspector.CSSStyleModel} cssModel
+ * @param {!CSSAgent.StyleSheetId} styleSheetId
+ * @param {!WebInspector.TextRange} range
  */
-WebInspector.PropertyChangeHighlighter = function(ssp)
+WebInspector.PropertyChangeHighlighter = function(ssp, cssModel, styleSheetId, range)
 {
     this._styleSidebarPane = ssp;
-    WebInspector.targetManager.addModelListener(WebInspector.CSSStyleModel, WebInspector.CSSStyleModel.Events.LayoutEditorChange, this._onLayoutEditorChange, this);
+    this._target = cssModel.target();
+    this._styleSheetId = styleSheetId;
+    this._range = range;
 }
 
 WebInspector.PropertyChangeHighlighter.prototype = {
     /**
-     * @param {!WebInspector.Event} event
      */
-    _onLayoutEditorChange: function(event)
+    perform: function()
     {
-        this._styleSidebarPane.runDecoratorAfterUpdate(this._updateHighlight.bind(this, event));
-        this._styleSidebarPane.update();
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _updateHighlight: function(event)
-    {
-        var cssModel = /** @type {!WebInspector.CSSStyleModel} */(event.target);
-        var styleSheetId = event.data["id"];
-        var changeRange = /** @type {!CSSAgent.SourceRange} */(event.data["range"]);
-        var changeRangeObject = WebInspector.TextRange.fromObject(changeRange);
-
         var node = this._styleSidebarPane.node();
-        if (!node || cssModel.target() !== node.target())
+        if (!node || this._target !== node.target())
             return;
 
-        var sectionBlocks = this._styleSidebarPane.sectionBlocks();
         var foundSection = null;
-        for (var block of sectionBlocks) {
-            for (var section of block.sections) {
-                var declaration = section.style();
-                if (declaration.styleSheetId !== styleSheetId)
-                    continue;
+        for (var section of this._styleSidebarPane.allSections()) {
+            var declaration = section.style();
+            if (declaration.styleSheetId !== this._styleSheetId)
+                continue;
 
-                var parentRule = declaration.parentRule;
-                var isInlineSelector = changeRangeObject.isEmpty();
-                var isMatchingRule = parentRule && parentRule.selectorRange() && changeRangeObject.compareTo(parentRule.selectorRange()) === 0;
-                if (isInlineSelector || isMatchingRule) {
-                    section.element.animate([
-                        { offset: 0, backgroundColor: "rgba(255, 227, 199, 1)" },
-                        { offset: 0.5, backgroundColor: "rgba(255, 227, 199, 1)" },
-                        { offset: 0.9, backgroundColor: "rgba(255, 227, 199, 0)" },
-                        { offset: 1, backgroundColor: "white" }
-                    ], { duration : 400, easing: "cubic-bezier(0, 0, 0.2, 1)" });
-                    return;
-                }
-
-                if (this._checkRanges(declaration.range, changeRange)) {
-                    foundSection = section;
-                    break;
-                }
+            var parentRule = declaration.parentRule;
+            var isInlineSelector = this._range.isEmpty();
+            var isMatchingRule = parentRule && parentRule.selectorRange() && this._range.compareTo(parentRule.selectorRange()) === 0;
+            if (isInlineSelector || isMatchingRule) {
+                section.element.animate([
+                    { offset: 0, backgroundColor: "rgba(255, 227, 199, 1)" },
+                    { offset: 0.5, backgroundColor: "rgba(255, 227, 199, 1)" },
+                    { offset: 0.9, backgroundColor: "rgba(255, 227, 199, 0)" },
+                    { offset: 1, backgroundColor: "white" }
+                ], { duration : 400, easing: "cubic-bezier(0, 0, 0.2, 1)" });
+                return;
             }
-            if (foundSection)
+
+            if (this._checkRanges(declaration.range, this._range)) {
+                foundSection = section;
                 break;
+            }
         }
 
         if (!foundSection)
@@ -73,7 +58,7 @@ WebInspector.PropertyChangeHighlighter.prototype = {
         var treeElement = foundSection.propertiesTreeOutline.firstChild();
         var foundTreeElement = null;
         while (!highlightElement && treeElement) {
-            if (treeElement.property.range  && this._checkRanges(treeElement.property.range, changeRange)) {
+            if (treeElement.property.range  && this._checkRanges(treeElement.property.range, this._range)) {
                 highlightElement = treeElement.valueElement;
                 break;
             }
@@ -92,8 +77,8 @@ WebInspector.PropertyChangeHighlighter.prototype = {
 
     /**
      *
-     * @param {!CSSAgent.SourceRange} outterRange
-     * @param {!CSSAgent.SourceRange} innerRange
+     * @param {!WebInspector.TextRange} outterRange
+     * @param {!WebInspector.TextRange} innerRange
      * @return {boolean}
      */
     _checkRanges: function(outterRange, innerRange)
@@ -104,4 +89,50 @@ WebInspector.PropertyChangeHighlighter.prototype = {
         var endsAfter = outterRange.endLine > innerRange.endLine || (outterRange.endLine === innerRange.endLine && outterRange.endColumn + eps >= innerRange.endColumn);
         return startsBefore && endsAfter;
     }
+}
+
+/**
+ * @constructor
+ * @param {!WebInspector.StylesSidebarPane} ssp
+ * @param {!WebInspector.CSSProperty} cssProperty
+ */
+WebInspector.PropertyRevealHighlighter = function(ssp, cssProperty)
+{
+    this._styleSidebarPane = ssp;
+    this._cssProperty = cssProperty;
+}
+
+WebInspector.PropertyRevealHighlighter.prototype = {
+    perform: function()
+    {
+        // Expand all shorthands.
+        for (var section of this._styleSidebarPane.allSections()) {
+            for (var treeElement = section.propertiesTreeOutline.firstChild(); treeElement; treeElement = treeElement.nextSibling)
+                treeElement.onpopulate();
+        }
+        var highlightTreeElement = null;
+        for (var section of this._styleSidebarPane.allSections()) {
+            var treeElement = section.propertiesTreeOutline.firstChild();
+            while (treeElement && !highlightTreeElement) {
+                if (treeElement.property === this._cssProperty) {
+                    highlightTreeElement = treeElement;
+                    break;
+                }
+                treeElement = treeElement.traverseNextTreeElement(false, null, true);
+            }
+            if (highlightTreeElement)
+                break;
+        }
+
+        if (!highlightTreeElement)
+            return;
+
+        highlightTreeElement.parent.expand();
+        highlightTreeElement.listItemElement.scrollIntoViewIfNeeded();
+        highlightTreeElement.listItemElement.animate([
+                { offset: 0, backgroundColor: "rgba(255, 255, 0, 0.2)"},
+                { offset: 0.1, backgroundColor: "rgba(255, 255, 0, 0.7)"},
+                { offset: 1, backgroundColor: "transparent"}
+            ], { duration : 2000, easing: "cubic-bezier(0, 0, 0.2, 1)" });
+    },
 }

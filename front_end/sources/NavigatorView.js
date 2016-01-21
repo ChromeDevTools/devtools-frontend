@@ -634,7 +634,7 @@ WebInspector.NavigatorView.prototype = {
         }
 
         if (uiSourceCodeToCopy)
-            uiSourceCodeToCopy.requestContent(contentLoaded.bind(this));
+            uiSourceCodeToCopy.requestContent().then(contentLoaded.bind(this));
         else
             createFile.call(this);
 
@@ -865,7 +865,7 @@ WebInspector.NavigatorSourceTreeElement.prototype = {
     _onmousedown: function(event)
     {
         if (event.which === 1) // Warm-up data for drag'n'drop
-            this._uiSourceCode.requestContent(callback.bind(this));
+            this._uiSourceCode.requestContent().then(callback.bind(this));
         /**
          * @param {?string} content
          * @this {WebInspector.NavigatorSourceTreeElement}

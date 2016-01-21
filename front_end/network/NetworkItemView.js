@@ -152,7 +152,7 @@ WebInspector.RequestContentView.prototype = {
             this.contentLoaded();
         }
 
-        this.request.requestContent(callback.bind(this));
+        this.request.requestContent().then(callback.bind(this));
     },
 
     contentLoaded: function()

@@ -1000,7 +1000,7 @@ WebInspector.Spectrum.PaletteGenerator.prototype = {
             resolve(null);
         }
 
-        stylesheet.requestContent(parseContent.bind(this));
+        stylesheet.requestContent().then(parseContent.bind(this));
     }
 }
 

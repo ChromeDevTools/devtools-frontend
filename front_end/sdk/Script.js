@@ -138,14 +138,19 @@ WebInspector.Script.prototype = {
 
     /**
      * @override
-     * @param {function(?string)} callback
+     * @return {!Promise<?string>}
      */
-    requestContent: function(callback)
+    requestContent: function()
     {
-        if (this._source) {
-            callback(this._source);
-            return;
-        }
+        if (this._source)
+            return Promise.resolve(this._source);
+        if (!this.scriptId)
+            return Promise.resolve(/** @type {?string} */(""));
+
+        var callback;
+        var promise = new Promise(fulfill => callback = fulfill);
+        this.target().debuggerAgent().getScriptSource(this.scriptId, didGetScriptSource.bind(this));
+        return promise;
 
         /**
          * @this {WebInspector.Script}
@@ -157,11 +162,6 @@ WebInspector.Script.prototype = {
             this._source = WebInspector.Script._trimSourceURLComment(error ? "" : source);
             callback(this._source);
         }
-        if (this.scriptId) {
-            // Script failed to parse.
-            this.target().debuggerAgent().getScriptSource(this.scriptId, didGetScriptSource.bind(this));
-        } else
-            callback("");
     },
 
     /**

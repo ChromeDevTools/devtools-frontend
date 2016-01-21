@@ -424,11 +424,11 @@ WebInspector.ResourceScriptFile.prototype = {
 
     checkMapping: function()
     {
-        if (!this._script)
+        if (!this._script || typeof this._scriptSource !== "undefined") {
+            this._mappingCheckedForTest();
             return;
-        if (typeof this._scriptSource !== "undefined")
-            return;
-        this._script.requestContent(callback.bind(this));
+        }
+        this._script.requestContent().then(callback.bind(this));
 
         /**
          * @param {?string} source
@@ -438,8 +438,11 @@ WebInspector.ResourceScriptFile.prototype = {
         {
             this._scriptSource = source;
             this._update();
+            this._mappingCheckedForTest();
         }
     },
+
+    _mappingCheckedForTest: function() { },
 
     /**
      * @return {?WebInspector.Target}

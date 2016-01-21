@@ -28,7 +28,7 @@ WebInspector.CSSParser.prototype = {
     {
         this._lock();
         this._finishedCallback = callback;
-        styleSheetHeader.requestContent(this._innerParse.bind(this));
+        styleSheetHeader.requestContent().then(this._innerParse.bind(this));
     },
 
     /**

@@ -149,7 +149,7 @@ WebInspector.HandlerRegistry.prototype = {
                     uiSourceCode.commitWorkingCopy();
                 return;
             }
-            contentProvider.requestContent(doSave.bind(null, forceSaveAs));
+            contentProvider.requestContent().then(doSave.bind(null, forceSaveAs));
         }
 
         contextMenu.appendSeparator();

@@ -48,8 +48,10 @@ WebInspector.UISourceCode = function(project, url, contentType)
     this._name = pathComponents[pathComponents.length - 1];
 
     this._contentType = contentType;
-    /** @type {!Array.<function(?string)>} */
-    this._requestContentCallbacks = [];
+    /** @type {?function(?string)} */
+    this._requestContentCallback = null;
+    /** @type {?Promise<?string>} */
+    this._requestContentPromise = null;
 
     /** @type {!Array.<!WebInspector.Revision>} */
     this.history = [];
@@ -222,25 +224,19 @@ WebInspector.UISourceCode.prototype = {
 
     /**
      * @override
-     * @param {function(?string)} callback
+     * @return {!Promise<?string>}
      */
-    requestContent: function(callback)
+    requestContent: function()
     {
-        if (this._content || this._contentLoaded) {
-            callback(this._content);
-            return;
-        }
-        this._requestContentCallbacks.push(callback);
-        if (this._requestContentCallbacks.length === 1)
+        if (this._content || this._contentLoaded)
+            return Promise.resolve(this._content);
+        var promise = this._requestContentPromise;
+        if (!promise) {
+            promise = new Promise(fulfill => this._requestContentCallback = fulfill);
+            this._requestContentPromise = promise;
             this._project.requestFileContent(this, this._fireContentAvailable.bind(this));
-    },
-
-    /**
-     * @return {!Promise.<?string>}
-     */
-    requestContentPromise: function()
-    {
-        return new Promise(succ => this.requestContent(succ));
+        }
+        return promise;
     },
 
     /**
@@ -332,11 +328,14 @@ WebInspector.UISourceCode.prototype = {
     },
 
     /**
-     * @param {function(?string)} callback
+     * @return {!Promise<?string>}
      */
-    requestOriginalContent: function(callback)
+    requestOriginalContent: function()
     {
+        var callback;
+        var promise = new Promise(fulfill => callback = fulfill);
         this._project.requestFileContent(this, callback);
+        return promise;
     },
 
     /**
@@ -415,6 +414,9 @@ WebInspector.UISourceCode.prototype = {
         this._commitContent(content);
     },
 
+    /**
+     * @return {!Promise}
+     */
     revertToOriginal: function()
     {
         /**
@@ -430,7 +432,7 @@ WebInspector.UISourceCode.prototype = {
         }
 
         WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.RevisionApplied);
-        this.requestOriginalContent(callback.bind(this));
+        return this.requestOriginalContent().then(callback.bind(this));
     },
 
     /**
@@ -453,7 +455,7 @@ WebInspector.UISourceCode.prototype = {
         }
 
         WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.RevisionApplied);
-        this.requestOriginalContent(revert.bind(this));
+        this.requestOriginalContent().then(revert.bind(this));
     },
 
     /**
@@ -564,10 +566,11 @@ WebInspector.UISourceCode.prototype = {
         this._contentLoaded = true;
         this._content = content;
 
-        var callbacks = this._requestContentCallbacks.slice();
-        this._requestContentCallbacks = [];
-        for (var i = 0; i < callbacks.length; ++i)
-            callbacks[i](content);
+        var callback = this._requestContentCallback;
+        this._requestContentCallback = null;
+        this._requestContentPromise = null;
+
+        callback.call(null, content);
     },
 
     /**
@@ -725,19 +728,22 @@ WebInspector.Revision.prototype = {
         return this._content || null;
     },
 
+    /**
+     * @return {!Promise}
+     */
     revertToThis: function()
     {
         /**
-         * @param {string} content
+         * @param {?string} content
          * @this {WebInspector.Revision}
          */
         function revert(content)
         {
-            if (this._uiSourceCode._content !== content)
+            if (content && this._uiSourceCode._content !== content)
                 this._uiSourceCode.addRevision(content);
         }
         WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.RevisionApplied);
-        this.requestContent(revert.bind(this));
+        return this.requestContent().then(revert.bind(this));
     },
 
     /**
@@ -760,11 +766,11 @@ WebInspector.Revision.prototype = {
 
     /**
      * @override
-     * @param {function(string)} callback
+     * @return {!Promise<?string>}
      */
-    requestContent: function(callback)
+    requestContent: function()
     {
-        callback(this._content || "");
+        return Promise.resolve(/** @type {?string} */(this._content || ""));
     },
 
     /**

@@ -933,24 +933,23 @@ WebInspector.NetworkRequest.prototype = {
 
     /**
      * @override
-     * @param {function(?string)} callback
+     * @return {!Promise<?string>}
      */
-    requestContent: function(callback)
+    requestContent: function()
     {
         // We do not support content retrieval for WebSockets at the moment.
         // Since WebSockets are potentially long-living, fail requests immediately
         // to prevent caller blocking until resource is marked as finished.
-        if (this._resourceType === WebInspector.resourceTypes.WebSocket) {
-            callback(null);
-            return;
-        }
-        if (typeof this._content !== "undefined") {
-            callback(this.content || null);
-            return;
-        }
+        if (this._resourceType === WebInspector.resourceTypes.WebSocket)
+            return Promise.resolve(/** @type {?string} */(null));
+        if (typeof this._content !== "undefined")
+            return Promise.resolve(/** @type {?string} */(this.content || null));
+        var callback;
+        var promise = new Promise(fulfill => callback = fulfill);
         this._pendingContentCallbacks.push(callback);
         if (this.finished)
             this._innerRequestContent();
+        return promise;
     },
 
     /**

@@ -83,7 +83,7 @@ WebInspector.InplaceFormatterEditorAction.prototype = {
         if (uiSourceCode.isDirty())
             contentLoaded.call(this, uiSourceCode.workingCopy());
         else
-            uiSourceCode.requestContent(contentLoaded.bind(this));
+            uiSourceCode.requestContent().then(contentLoaded.bind(this));
 
         /**
          * @this {WebInspector.InplaceFormatterEditorAction}

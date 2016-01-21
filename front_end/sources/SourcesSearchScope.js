@@ -230,7 +230,7 @@ WebInspector.SourcesSearchScope.prototype = {
          */
         function contentUpdated(uiSourceCode)
         {
-            uiSourceCode.requestContent(contentLoaded.bind(this, uiSourceCode));
+            uiSourceCode.requestContent().then(contentLoaded.bind(this, uiSourceCode));
         }
 
         /**

@@ -61,11 +61,14 @@ WebInspector.CompilerSourceMappingContentProvider.prototype = {
 
     /**
      * @override
-     * @param {function(?string)} callback
+     * @return {!Promise<?string>}
      */
-    requestContent: function(callback)
+    requestContent: function()
     {
+        var callback;
+        var promise = new Promise(fulfill => callback = fulfill);
         WebInspector.multitargetNetworkManager.loadResource(this._sourceURL, contentLoaded.bind(this));
+        return promise;
 
         /**
          * @param {number} statusCode
@@ -94,7 +97,7 @@ WebInspector.CompilerSourceMappingContentProvider.prototype = {
      */
     searchInContent: function(query, caseSensitive, isRegex, callback)
     {
-        this.requestContent(contentLoaded);
+        this.requestContent().then(contentLoaded);
 
         /**
          * @param {?string} content

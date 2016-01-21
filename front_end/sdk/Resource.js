@@ -94,7 +94,7 @@ WebInspector.Resource.populateImageSource = function(url, mimeType, contentProvi
         image.src = imageSrc;
     }
 
-    contentProvider.requestContent(onResourceContent);
+    contentProvider.requestContent().then(onResourceContent);
 }
 
 WebInspector.Resource.prototype = {
@@ -211,18 +211,19 @@ WebInspector.Resource.prototype = {
 
     /**
      * @override
-     * @param {function(?string)} callback
+     * @return {!Promise<?string>}
      */
-    requestContent: function(callback)
+    requestContent: function()
     {
-        if (typeof this._content !== "undefined") {
-            callback(this._content);
-            return;
-        }
+        if (typeof this._content !== "undefined")
+            return Promise.resolve(this._content);
 
+        var callback;
+        var promise = new Promise(fulfill => callback = fulfill);
         this._pendingContentCallbacks.push(callback);
         if (!this._request || this._request.finished)
             this._innerRequestContent();
+        return promise;
     },
 
     /**
@@ -322,7 +323,7 @@ WebInspector.Resource.prototype = {
         }
 
         if (this.request) {
-            this.request.requestContent(requestContentLoaded.bind(this));
+            this.request.requestContent().then(requestContentLoaded.bind(this));
             return;
         }
 

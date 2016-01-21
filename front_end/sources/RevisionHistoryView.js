@@ -209,7 +209,7 @@ WebInspector.RevisionHistoryTreeElement = function(revision, baseRevision, allow
     this._revertElement = createElement("span");
     this._revertElement.className = "revision-history-link";
     this._revertElement.textContent = WebInspector.UIString("apply revision content");
-    this._revertElement.addEventListener("click", this._revision.revertToThis.bind(this._revision), false);
+    this._revertElement.addEventListener("click", event => {this._revision.revertToThis();}, false);
     if (!allowRevert)
         this._revertElement.classList.add("hidden");
 }
@@ -225,26 +225,17 @@ WebInspector.RevisionHistoryTreeElement.prototype = {
         this.listItemElement.appendChild(this._revertElement);
 
         this.childrenListElement.classList.add("source-code");
-        if (this._baseRevision)
-            this._baseRevision.requestContent(step1.bind(this));
-        else
-            this._revision.uiSourceCode.requestOriginalContent(step1.bind(this));
-
-        /**
-         * @param {?string} baseContent
-         * @this {WebInspector.RevisionHistoryTreeElement}
-         */
-        function step1(baseContent)
-        {
-            this._revision.requestContent(step2.bind(this, baseContent));
-        }
+        Promise.all([
+            this._baseRevision ? this._baseRevision.requestContent() : this._revision.uiSourceCode.requestOriginalContent(),
+            this._revision.requestContent()
+        ]).spread(diff.bind(this));
 
         /**
          * @param {?string} baseContent
          * @param {?string} newContent
          * @this {WebInspector.RevisionHistoryTreeElement}
          */
-        function step2(baseContent, newContent)
+        function diff(baseContent, newContent)
         {
             var baseLines = baseContent.split("\n");
             var newLines = newContent.split("\n");

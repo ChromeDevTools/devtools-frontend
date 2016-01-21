@@ -310,7 +310,7 @@ WebInspector.StylesSourceMapping.prototype = {
         var uiSourceCode = this._networkMapping.uiSourceCodeForStyleURL(styleSheetURL, header);
         if (!uiSourceCode)
             return;
-        header.requestContent(callback.bind(this, uiSourceCode));
+        header.requestContent().then(callback.bind(this, uiSourceCode));
 
         /**
          * @param {!WebInspector.UISourceCode} uiSourceCode

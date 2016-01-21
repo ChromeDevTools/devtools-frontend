@@ -117,7 +117,7 @@ WebInspector.ResourceWebSocketFrameView.prototype = {
     {
         var selectedNode = /** @type {!WebInspector.ResourceWebSocketFrameNode} */ (event.target.selectedNode);
         var contentProvider = selectedNode.contentProvider();
-        contentProvider.requestContent(content => {
+        contentProvider.requestContent().then(content => {
             var parsedJSON = content ? WebInspector.JSONView.parseJSON(content) : null;
             var view = parsedJSON ? new WebInspector.JSONView(parsedJSON) : new WebInspector.ResourceSourceFrame(contentProvider);
             this._splitWidget.setSidebarWidget(view);

@@ -55,11 +55,11 @@ WebInspector.StaticContentProvider.prototype = {
 
     /**
      * @override
-     * @param {function(?string)} callback
+     * @return {!Promise<?string>}
      */
-    requestContent: function(callback)
+    requestContent: function()
     {
-        callback(this._content);
+        return Promise.resolve(/** @type {?string} */(this._content));
     },
 
     /**

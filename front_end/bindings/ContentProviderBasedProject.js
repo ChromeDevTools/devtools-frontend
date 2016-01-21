@@ -54,17 +54,7 @@ WebInspector.ContentProviderBasedProject.prototype = {
     requestFileContent: function(uiSourceCode, callback)
     {
         var contentProvider = this._contentProviders[uiSourceCode.url()];
-        contentProvider.requestContent(callback);
-
-        /**
-         * @param {?string} content
-         * @param {boolean} encoded
-         * @param {string} mimeType
-         */
-        function innerCallback(content, encoded, mimeType)
-        {
-            callback(content);
-        }
+        contentProvider.requestContent().then(callback);
     },
 
     /**

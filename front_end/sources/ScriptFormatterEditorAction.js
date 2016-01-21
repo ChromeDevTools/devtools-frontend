@@ -222,9 +222,8 @@ WebInspector.ScriptFormatterEditorAction.prototype = {
     _toggleFormatScriptSource: function()
     {
         var uiSourceCode = this._sourcesView.currentUISourceCode();
-        if (!this._isFormatableScript(uiSourceCode))
-            return;
-        this._formatUISourceCodeScript(uiSourceCode);
+        if (this._isFormatableScript(uiSourceCode))
+            this._formatUISourceCodeScript(uiSourceCode);
     },
 
     /**
@@ -349,7 +348,7 @@ WebInspector.ScriptFormatterEditorAction.prototype = {
             return;
         }
 
-        uiSourceCode.requestContent(contentLoaded.bind(this));
+        uiSourceCode.requestContent().then(contentLoaded.bind(this));
 
         /**
          * @this {WebInspector.ScriptFormatterEditorAction}

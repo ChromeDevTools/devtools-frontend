@@ -1430,7 +1430,7 @@ WebInspector.NetworkLogView.prototype = {
                 content = request.asDataURL();
             InspectorFrontendHost.copyText(content || "");
         }
-        request.requestContent(callback);
+        request.requestContent().then(callback);
     },
 
     /**

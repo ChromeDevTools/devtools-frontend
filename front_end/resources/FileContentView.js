@@ -69,7 +69,7 @@ WebInspector.FileContentView.prototype = {
             if (!this._content.updateMetadata(metadata))
                 return;
             var sourceFrame = /** @type {!WebInspector.SourceFrame} */ (this._innerView);
-            this._content.requestContent(sourceFrame.setContent.bind(sourceFrame));
+            this._content.requestContent().then(sourceFrame.setContent.bind(sourceFrame));
         } else {
             this._innerView.detach();
             this._content = new WebInspector.FileContentView.FileContentProvider(this._file, metadata);
@@ -125,12 +125,15 @@ WebInspector.FileContentView.FileContentProvider.prototype = {
 
     /**
      * @override
-     * @param {function(?string)} callback
+     * @return {!Promise<?string>}
      */
-    requestContent: function(callback)
+    requestContent: function()
     {
+        var callback;
+        var promise = new Promise(fulfill => callback = fulfill);
         var size = /** @type {number} */ (this._metadata.size);
         this._file.requestFileContent(true, 0, size, this._charset || "", this._fileContentReceived.bind(this, callback));
+        return promise;
     },
 
     /**

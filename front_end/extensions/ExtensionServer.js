@@ -524,7 +524,7 @@ WebInspector.ExtensionServer.prototype = {
             this._dispatchCallback(message.requestId, port, response);
         }
 
-        contentProvider.requestContent(onContentAvailable.bind(this));
+        contentProvider.requestContent().then(onContentAvailable.bind(this));
     },
 
     _onGetRequestContent: function(message, port)

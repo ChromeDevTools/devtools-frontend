@@ -119,9 +119,9 @@ WebInspector.RequestResponseView.ContentProvider.prototype = {
 
     /**
      * @override
-     * @param {function(?string)} callback
+     * @return {!Promise<?string>}
      */
-    requestContent: function(callback)
+    requestContent: function()
     {
         /**
          * @param {?string} content
@@ -129,10 +129,11 @@ WebInspector.RequestResponseView.ContentProvider.prototype = {
          */
         function decodeContent(content)
         {
-            callback(this._request.contentEncoded ? window.atob(content || "") : content);
+            return this._request.contentEncoded ? window.atob(content || "") : content;
         }
 
-        this._request.requestContent(decodeContent.bind(this));
+        return this._request.requestContent()
+            .then(decodeContent.bind(this));
     },
 
     /**

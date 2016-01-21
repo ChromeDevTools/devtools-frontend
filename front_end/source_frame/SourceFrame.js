@@ -127,7 +127,7 @@ WebInspector.SourceFrame.prototype = {
     {
         if (!this._contentRequested) {
             this._contentRequested = true;
-            this._contentProvider.requestContent(this.setContent.bind(this));
+            this._contentProvider.requestContent().then(this.setContent.bind(this));
         }
     },
 

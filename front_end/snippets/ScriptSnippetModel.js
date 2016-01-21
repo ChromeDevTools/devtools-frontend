@@ -553,11 +553,11 @@ WebInspector.SnippetContentProvider.prototype = {
 
     /**
      * @override
-     * @param {function(?string)} callback
+     * @return {!Promise<?string>}
      */
-    requestContent: function(callback)
+    requestContent: function()
     {
-        callback(this._snippet.content);
+        return Promise.resolve(/** @type {?string} */(this._snippet.content));
     },
 
     /**

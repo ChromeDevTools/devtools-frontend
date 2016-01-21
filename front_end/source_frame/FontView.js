@@ -77,7 +77,7 @@ WebInspector.FontView.prototype = {
         var uniqueFontName = "WebInspectorFontPreview" + (++WebInspector.FontView._fontId);
 
         this.fontStyleElement = createElement("style");
-        this._contentProvider.requestContent(this._onFontContentLoaded.bind(this, uniqueFontName));
+        this._contentProvider.requestContent().then(this._onFontContentLoaded.bind(this, uniqueFontName));
         this.element.appendChild(this.fontStyleElement);
 
         var fontPreview = createElement("div");

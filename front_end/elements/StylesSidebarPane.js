@@ -469,15 +469,16 @@ WebInspector.StylesSidebarPane.prototype = {
     {
         if (!styleSheetHeader)
             return;
-        styleSheetHeader.requestContent(onStyleSheetContent.bind(this, styleSheetHeader.id));
+        styleSheetHeader.requestContent().then(onStyleSheetContent.bind(this, styleSheetHeader.id));
 
         /**
          * @param {string} styleSheetId
-         * @param {string} text
+         * @param {?string} text
          * @this {WebInspector.StylesSidebarPane}
          */
         function onStyleSheetContent(styleSheetId, text)
         {
+            text = text || "";
             var lines = text.split("\n");
             var range = WebInspector.TextRange.createFromLocation(lines.length - 1, lines[lines.length - 1].length);
             this._addBlankSection(this._sectionBlocks[0].sections[0], styleSheetId, range);

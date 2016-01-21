@@ -51,7 +51,7 @@ WebInspector.HARWriter.prototype = {
             var content = requests[i].content;
             if (typeof content === "undefined" && requests[i].finished) {
                 ++this._pendingRequests;
-                requests[i].requestContent(this._onContentAvailable.bind(this, entries[i], requests[i]));
+                requests[i].requestContent().then(this._onContentAvailable.bind(this, entries[i], requests[i]));
             } else if (content !== null)
                 this._setEntryContent(entries[i], requests[i]);
         }

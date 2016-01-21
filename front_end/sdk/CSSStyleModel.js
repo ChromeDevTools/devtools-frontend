@@ -1907,13 +1907,12 @@ WebInspector.CSSStyleSheetHeader.prototype = {
 
     /**
      * @override
-     * @param {function(string)} userCallback
+     * @return {!Promise<?string>}
      */
-    requestContent: function(userCallback)
+    requestContent: function()
     {
-        this._cssModel._agent.getStyleSheetText(this.id, textCallback.bind(this))
-            .catchException("")
-            .then(userCallback)
+        return this._cssModel._agent.getStyleSheetText(this.id, textCallback.bind(this))
+            .catchException(/** @type {?string} */(""));
 
         /**
          * @param {?Protocol.Error} error
@@ -1943,7 +1942,7 @@ WebInspector.CSSStyleSheetHeader.prototype = {
         }
 
         // searchInContent should call back later.
-        this.requestContent(performSearch);
+        this.requestContent().then(performSearch);
     },
 
     /**

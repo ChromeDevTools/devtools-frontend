@@ -75,6 +75,7 @@ FormatterWorker.ESTreeWalker.prototype = {
 /** @enum {!Array.<string>} */
 FormatterWorker.ESTreeWalker._walkOrder = {
     "ArrayExpression": ["elements"],
+    "ArrowFunctionExpression": ["params", "body"],
     "AssignmentExpression": ["left", "right"],
     "BinaryExpression": ["left", "right"],
     "BlockStatement": ["body"],

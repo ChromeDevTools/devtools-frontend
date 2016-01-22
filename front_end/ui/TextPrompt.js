@@ -281,6 +281,9 @@ WebInspector.TextPrompt.prototype = {
      */
     onKeyDown: function(event)
     {
+        if (isEnterKey(event))
+            return;
+
         var handled = false;
         delete this._needUpdateAutocomplete;
 
@@ -771,7 +774,7 @@ WebInspector.TextPrompt.prototype = {
      */
     tabKeyPressed: function(event)
     {
-        this._completeCommonPrefix();
+        this.acceptAutoComplete();
 
         // Consume the key.
         return true;

@@ -37,14 +37,17 @@ WebInspector.ViewportControl = function(provider)
     this.element = createElement("div");
     this.element.style.overflow = "auto";
     this._topGapElement = this.element.createChild("div");
-    this._topGapElement.textContent = ".";
     this._topGapElement.style.height = "0px";
     this._topGapElement.style.color = "transparent";
     this._contentElement = this.element.createChild("div");
     this._bottomGapElement = this.element.createChild("div");
-    this._bottomGapElement.textContent = ".";
     this._bottomGapElement.style.height = "0px";
     this._bottomGapElement.style.color = "transparent";
+
+    // Text content needed for range intersection checks in _updateSelectionModel.
+    // Use Unicode ZERO WIDTH NO-BREAK SPACE, which avoids contributing any height to the element's layout overflow.
+    this._topGapElement.textContent = "\uFEFF";
+    this._bottomGapElement.textContent = "\uFEFF";
 
     this._provider = provider;
     this.element.addEventListener("scroll", this._onScroll.bind(this), false);

@@ -198,7 +198,6 @@ WebInspector.TimelineFrameModelBase.prototype = {
         this._frameById = {};
         this._lastFrame = null;
         this._lastLayerTree = null;
-        this._hasThreadedCompositing = false;
         this._mainFrameCommitted = false;
         this._mainFrameRequested = false;
         this._framePendingCommit = null;
@@ -212,7 +211,7 @@ WebInspector.TimelineFrameModelBase.prototype = {
     handleBeginFrame: function(startTime)
     {
         if (!this._lastFrame)
-            this._startBackgroundFrame(startTime);
+            this._startFrame(startTime);
         this._lastBeginFrame = startTime;
     },
 
@@ -222,7 +221,7 @@ WebInspector.TimelineFrameModelBase.prototype = {
     handleDrawFrame: function(startTime)
     {
         if (!this._lastFrame) {
-            this._startBackgroundFrame(startTime);
+            this._startFrame(startTime);
             return;
         }
 
@@ -232,13 +231,13 @@ WebInspector.TimelineFrameModelBase.prototype = {
             if (this._lastNeedsBeginFrame) {
                 this._lastFrame.idle = true;
                 var idleTimeEnd = this._framePendingActivation ? this._framePendingActivation.triggerTime : (this._lastBeginFrame || this._lastNeedsBeginFrame);
-                this._startBackgroundFrame(idleTimeEnd);
+                this._startFrame(idleTimeEnd);
                 if (this._framePendingActivation)
                     this._commitPendingFrame();
                 this._lastNeedsBeginFrame = null;
                 this._lastBeginFrame = null;
             }
-            this._startBackgroundFrame(startTime);
+            this._startFrame(startTime);
         }
         this._mainFrameCommitted = false;
     },
@@ -260,7 +259,7 @@ WebInspector.TimelineFrameModelBase.prototype = {
 
     handleCompositeLayers: function()
     {
-        if (!this._hasThreadedCompositing || !this._framePendingCommit)
+        if (!this._framePendingCommit)
             return;
         this._framePendingActivation = this._framePendingCommit;
         this._framePendingCommit = null;
@@ -289,28 +288,11 @@ WebInspector.TimelineFrameModelBase.prototype = {
     /**
      * @param {number} startTime
      */
-    _startBackgroundFrame: function(startTime)
-    {
-        if (!this._hasThreadedCompositing) {
-            this._lastFrame = null;
-            this._hasThreadedCompositing = true;
-        }
-        if (this._lastFrame)
-            this._flushFrame(this._lastFrame, startTime);
-
-        this._lastFrame = new WebInspector.TimelineFrame(startTime, startTime - this._minimumRecordTime);
-    },
-
-    /**
-     * @param {number} startTime
-     * @param {number=} frameId
-     */
-    _startMainThreadFrame: function(startTime, frameId)
+    _startFrame: function(startTime)
     {
         if (this._lastFrame)
             this._flushFrame(this._lastFrame, startTime);
         this._lastFrame = new WebInspector.TimelineFrame(startTime, startTime - this._minimumRecordTime);
-        this._lastFrame._mainFrameId = frameId;
     },
 
     /**
@@ -412,21 +394,21 @@ WebInspector.TracingTimelineFrameModel.prototype = {
         } else if (event.phase === WebInspector.TracingModel.Phase.SnapshotObject && event.name === eventNames.LayerTreeHostImplSnapshot && parseInt(event.id, 0) === this._layerTreeId) {
             var snapshot = /** @type {!WebInspector.TracingModel.ObjectSnapshot} */ (event);
             this.handleLayerTreeSnapshot(new WebInspector.DeferredTracingLayerTree(snapshot, this._target));
-        } else if (event.thread === this._mainThread) {
-            this._addMainThreadTraceEvent(event);
         } else {
-            this._addBackgroundTraceEvent(event);
+            this._processCompositorEvents(event);
+            if (event.thread === this._mainThread)
+                this._addMainThreadTraceEvent(event);
+            else if (this._lastFrame && event.selfTime && !WebInspector.TracingModel.isTopLevelEvent(event))
+                this._lastFrame._addTimeForCategory(WebInspector.TimelineUIUtils.eventStyle(event).category.name, event.selfTime);
         }
     },
 
     /**
      * @param {!WebInspector.TracingModel.Event} event
      */
-    _addBackgroundTraceEvent: function(event)
+    _processCompositorEvents: function(event)
     {
         var eventNames = WebInspector.TimelineModel.RecordType;
-        if (this._lastFrame && event.selfTime && !WebInspector.TracingModel.isTopLevelEvent(event))
-            this._lastFrame._addTimeForCategory(WebInspector.TimelineUIUtils.eventStyle(event).category.name, event.selfTime);
 
         if (event.args["layerTreeId"] !== this._layerTreeId)
             return;
@@ -452,21 +434,6 @@ WebInspector.TracingTimelineFrameModel.prototype = {
         var eventNames = WebInspector.TimelineModel.RecordType;
         var timestamp = event.startTime;
         var selfTime = event.selfTime || 0;
-
-        if (!this._hasThreadedCompositing) {
-            if (event.name === eventNames.BeginMainThreadFrame)
-                this._startMainThreadFrame(timestamp, event.args["data"] && event.args["data"]["frameId"]);
-            if (!this._lastFrame)
-                return;
-            if (!selfTime)
-                return;
-
-            var categoryName = WebInspector.TimelineUIUtils.eventStyle(event).category.name;
-            this._lastFrame._addTimeForCategory(categoryName, selfTime);
-            if (event.name === eventNames.Paint && event.args["data"]["layerId"] && event.picture && this._target)
-                this._lastFrame.paints.push(new WebInspector.LayerPaintEvent(event, this._target));
-            return;
-        }
 
         if (WebInspector.TracingModel.isTopLevelEvent(event)) {
             this._currentTaskTimeByCategory = {};

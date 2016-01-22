@@ -65,7 +65,7 @@ WebInspector.InspectedPagePlaceholder.prototype = {
     restoreMinimumSizeAndMargins: function()
     {
         this._useMargins = true;
-        this.setMinimumSize(50, 50);
+        this.setMinimumSize(150, 150);
         this._findMargins();
     },
 

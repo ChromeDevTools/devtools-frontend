@@ -20,8 +20,7 @@ devtools_core_files =
     gypi_values.devtools_host_js_files + gypi_values.devtools_main_js_files +
     gypi_values.devtools_platform_js_files + gypi_values.devtools_sdk_js_files +
     gypi_values.devtools_toolbox_bootstrap_js_files +
-    gypi_values.devtools_ui_js_files + gypi_values.devtools_workspace_js_files +
-    gypi_values.devtools_core_css_files
+    gypi_values.devtools_ui_js_files + gypi_values.devtools_workspace_js_files
 
 devtools_extensions_js_files = gypi_values.devtools_extensions_js_files -
                                [ "<@(devtools_extension_api_files)" ] +
@@ -83,15 +82,6 @@ group("devtools_frontend_resources") {
     ":frontend_protocol_sources",
     ":supported_css_properties",
   ]
-
-  if (!debug_devtools) {
-    # This overwrites application-specific core CSS (devtools.css),
-    # and thus should be guarded out in Debug builds.
-    public_deps += [
-      ":concatenated_inspector_css",
-      ":concatenated_toolbox_css",
-    ]
-  }
 }
 
 copy("copy_compatibility_scripts") {
@@ -142,10 +132,8 @@ action("generate_devtools_grd") {
   } else {
     # Release: pick compiled non-remote files and lazy-loaded CSS.
     generated_files = [
-      resources_out_dir + "inspector.css",
       resources_out_dir + "inspector.html",
       resources_out_dir + "inspector.js",
-      resources_out_dir + "toolbox.css",
       resources_out_dir + "toolbox.html",
       resources_out_dir + "toolbox.js",
       resources_out_dir + "accessibility_module.js",
@@ -331,8 +319,7 @@ if (debug_devtools) {
   }
 
   copy("copy_runtime_core") {
-    sources = gypi_values.devtools_core_base_files +
-              gypi_values.devtools_core_css_files
+    sources = gypi_values.devtools_core_base_files
     outputs = [
       resources_out_dir + "/{{source_file_part}}",
     ]
@@ -351,35 +338,5 @@ if (debug_devtools) {
     outputs = [
       resources_out_dir + "cm/{{source_file_part}}",
     ]
-  }
-}
-
-if (!debug_devtools) {
-  # Release: Concatenate application CSS.
-  template("concatenate_css") {
-    assert(defined(invoker.app_name), target_name)
-    app_name = invoker.app_name
-
-    action(target_name) {
-      script = "scripts/concatenate_css_files.py"
-
-      input_stylesheet = "front_end/" + app_name + ".css"
-      inputs = [ input_stylesheet ] + gypi_values.devtools_core_css_files
-
-      outputs = [
-        resources_out_dir + app_name + ".css",
-      ]
-
-      args = [ rebase_path(input_stylesheet, root_build_dir) ] +
-             rebase_path(outputs, root_build_dir)
-    }
-  }
-
-  concatenate_css("concatenated_inspector_css") {
-    app_name = "inspector"
-  }
-
-  concatenate_css("concatenated_toolbox_css") {
-    app_name = "toolbox"
   }
 }

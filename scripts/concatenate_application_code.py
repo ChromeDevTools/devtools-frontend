@@ -123,7 +123,6 @@ class ReleaseBuilder(AppBuilder):
                 if '<script ' in line or '<link ' in line:
                     continue
                 if '</head>' in line:
-                    output.write(self._generate_include_tag(self.app_file('css')))
                     output.write(self._generate_include_tag(self.app_file('js')))
                 output.write(line)
 
@@ -140,8 +139,6 @@ class ReleaseBuilder(AppBuilder):
     def _generate_include_tag(self, resource_path):
         if (resource_path.endswith('.js')):
             return '    <script type="text/javascript" src="%s"></script>\n' % resource_path
-        elif (resource_path.endswith('.css')):
-            return '    <link rel="stylesheet" type="text/css" href="%s">\n' % resource_path
         else:
             assert resource_path
 

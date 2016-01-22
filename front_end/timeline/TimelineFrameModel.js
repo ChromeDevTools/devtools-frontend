@@ -203,6 +203,8 @@ WebInspector.TimelineFrameModelBase.prototype = {
         this._framePendingCommit = null;
         this._lastBeginFrame = null;
         this._lastNeedsBeginFrame = null;
+        this._framePendingActivation = null;
+        this._lastTaskBeginTime = null;
     },
 
     /**
@@ -229,13 +231,15 @@ WebInspector.TimelineFrameModelBase.prototype = {
         // - only show frames that either did not wait for the main thread frame or had one committed.
         if (this._mainFrameCommitted || !this._mainFrameRequested) {
             if (this._lastNeedsBeginFrame) {
-                this._lastFrame.idle = true;
                 var idleTimeEnd = this._framePendingActivation ? this._framePendingActivation.triggerTime : (this._lastBeginFrame || this._lastNeedsBeginFrame);
-                this._startFrame(idleTimeEnd);
-                if (this._framePendingActivation)
-                    this._commitPendingFrame();
+                if (idleTimeEnd > this._lastFrame.startTime) {
+                    this._lastFrame.idle = true;
+                    this._startFrame(idleTimeEnd);
+                    if (this._framePendingActivation)
+                        this._commitPendingFrame();
+                    this._lastBeginFrame = null;
+                }
                 this._lastNeedsBeginFrame = null;
-                this._lastBeginFrame = null;
             }
             this._startFrame(startTime);
         }
@@ -303,6 +307,8 @@ WebInspector.TimelineFrameModelBase.prototype = {
     {
         frame._setLayerTree(this._lastLayerTree);
         frame._setEndTime(endTime);
+        if (this._frames.length && (frame.startTime !== this._frames.peekLast().endTime || frame.startTime > frame.endTime))
+            console.assert(false, `Inconsistent frame time for frame ${this._frames.length} (${frame.startTime} - ${frame.endTime})`);
         this._frames.push(frame);
         if (typeof frame._mainFrameId === "number")
             this._frameById[frame._mainFrameId] = frame;
@@ -440,7 +446,7 @@ WebInspector.TracingTimelineFrameModel.prototype = {
             this._lastTaskBeginTime = event.startTime;
         }
         if (!this._framePendingCommit && WebInspector.TracingTimelineFrameModel._mainFrameMarkers.indexOf(event.name) >= 0)
-            this._framePendingCommit = new WebInspector.PendingFrame(this._lastTaskBeginTime, this._currentTaskTimeByCategory);
+            this._framePendingCommit = new WebInspector.PendingFrame(this._lastTaskBeginTime || event.startTime, this._currentTaskTimeByCategory);
         if (!this._framePendingCommit) {
             this._addTimeForCategory(this._currentTaskTimeByCategory, event);
             return;

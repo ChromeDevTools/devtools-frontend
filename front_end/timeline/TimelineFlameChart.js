@@ -838,7 +838,7 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
      */
     entryIndexForSelection: function(selection)
     {
-        if (!selection)
+        if (!selection || selection.type() === WebInspector.TimelineSelection.Type.Range)
             return -1;
 
         if (this._lastSelection && this._lastSelection.timelineSelection.object() === selection.object())

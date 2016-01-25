@@ -97,6 +97,18 @@
             "persistence": "closeable",
             "order": 100,
             "className": "WebInspector.SensorsView"
+        },
+        {
+            "type": "@WebInspector.ActionDelegate",
+            "actionId": "emulation.request-app-banner",
+            "className": "WebInspector.DeviceModeView.ActionDelegate",
+            "title": "Request app banner"
+        },
+        {
+            "type": "context-menu-item",
+            "location": "deviceModeMenu/tools",
+            "order": 10,
+            "actionId": "emulation.request-app-banner"
         }
     ],
     "dependencies": [

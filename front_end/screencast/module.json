@@ -10,6 +10,19 @@
             "className": "WebInspector.ScreencastApp.ToolbarButtonProvider",
             "order": 1,
             "location": "main-toolbar-left"
+        },
+        {
+            "type": "@WebInspector.ActionDelegate",
+            "actionId": "screencast.request-app-banner",
+            "className": "WebInspector.ScreencastApp.ActionDelegate",
+            "title": "Request app banner"
+        },
+        {
+            "type": "context-menu-item",
+            "condition": "remoteFrontend",
+            "location": "mainMenu/tools",
+            "order": 10,
+            "actionId": "screencast.request-app-banner"
         }
     ],
     "dependencies": [

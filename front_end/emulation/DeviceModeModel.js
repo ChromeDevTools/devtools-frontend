@@ -373,6 +373,11 @@ WebInspector.DeviceModeModel.prototype = {
             this._target = null;
     },
 
+    requestAppBanner: function()
+    {
+        this._target.pageAgent().requestAppBanner();
+    },
+
     _scaleSettingChanged: function()
     {
         this._calculateAndEmulate(true);

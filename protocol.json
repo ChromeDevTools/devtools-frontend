@@ -451,6 +451,14 @@
                 ],
                 "hidden": true,
                 "description": "Sets overlay message."
+            },
+            {
+                "name": "requestAppBanner",
+                "returns": [
+                  { "name": "result", "type": "boolean" }
+                ],
+                "hidden": true,
+                "handlers": ["browser"]
             }
         ],
         "events": [

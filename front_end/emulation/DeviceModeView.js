@@ -635,6 +635,7 @@ WebInspector.DeviceModeView.Toolbar.prototype = {
         contextMenu.appendCheckboxItem(WebInspector.UIString("Show media queries"), this._toggleMediaInspector.bind(this), this._showMediaInspectorSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
         contextMenu.appendCheckboxItem(WebInspector.UIString("Show rulers"), this._toggleRulers.bind(this), this._showRulersSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
         contextMenu.appendItem(WebInspector.UIString("Configure network\u2026"), this._openNetworkConfig.bind(this), false);
+        contextMenu.appendItemsAtLocation("deviceModeMenu");
     },
 
     _toggleMediaInspector: function()
@@ -1030,9 +1031,15 @@ WebInspector.DeviceModeView.ActionDelegate.prototype = {
      */
     handleAction: function(context, actionId)
     {
-        if (actionId === "emulation.toggle-device-mode" && WebInspector.DeviceModeView._wrapperInstance) {
-            WebInspector.DeviceModeView._wrapperInstance._toggleDeviceMode();
-            return true;
+        if (WebInspector.DeviceModeView._wrapperInstance) {
+            if (actionId === "emulation.toggle-device-mode") {
+                WebInspector.DeviceModeView._wrapperInstance._toggleDeviceMode();
+                return true;
+            }
+            if (actionId === "emulation.request-app-banner") {
+                WebInspector.DeviceModeView._wrapperInstance._requestAppBanner();
+                return true;
+            }
         }
         return false;
     }
@@ -1083,6 +1090,11 @@ WebInspector.DeviceModeView.Wrapper.prototype = {
             this._inspectedPagePlaceholder.restoreMinimumSizeAndMargins();
             this._inspectedPagePlaceholder.show(this.element);
         }
+    },
+
+    _requestAppBanner: function()
+    {
+        this._deviceModeView._model.requestAppBanner();
     },
 
     __proto__: WebInspector.VBox.prototype

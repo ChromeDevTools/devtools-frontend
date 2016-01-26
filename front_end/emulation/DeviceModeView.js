@@ -1056,7 +1056,8 @@ WebInspector.DeviceModeView.Wrapper = function(inspectedPagePlaceholder)
     WebInspector.VBox.call(this);
     WebInspector.DeviceModeView._wrapperInstance = this;
     this._inspectedPagePlaceholder = inspectedPagePlaceholder;
-    this._deviceModeView = new WebInspector.DeviceModeView();
+    /** @type {?WebInspector.DeviceModeView} */
+    this._deviceModeView = null;
     this._toggleDeviceModeAction = WebInspector.actionRegistry.action("emulation.toggle-device-mode");
     this._showDeviceModeSetting = WebInspector.settings.createSetting("emulation.showDeviceMode", false);
     this._showDeviceModeSetting.addChangeListener(this._update.bind(this, false));
@@ -1078,15 +1079,21 @@ WebInspector.DeviceModeView.Wrapper.prototype = {
     _update: function(force)
     {
         this._toggleDeviceModeAction.setToggled(this._showDeviceModeSetting.get());
-        if (!force && this._showDeviceModeSetting.get() === this._deviceModeView.isShowing())
-            return;
+        if (!force) {
+            var showing = this._deviceModeView && this._deviceModeView.isShowing();
+            if (this._showDeviceModeSetting.get() === showing)
+                return;
+        }
 
         if (this._showDeviceModeSetting.get()) {
+            if (!this._deviceModeView)
+                this._deviceModeView = new WebInspector.DeviceModeView();
             this._deviceModeView.show(this.element);
             this._inspectedPagePlaceholder.clearMinimumSizeAndMargins();
             this._inspectedPagePlaceholder.show(this._deviceModeView.element);
         } else {
-            this._deviceModeView.detach();
+            if (this._deviceModeView)
+                this._deviceModeView.detach();
             this._inspectedPagePlaceholder.restoreMinimumSizeAndMargins();
             this._inspectedPagePlaceholder.show(this.element);
         }

@@ -285,7 +285,7 @@ WebInspector.OverridesSupport.prototype = {
             this.settings._emulationEnabled.set(enabled);
             this.dispatchEventToListeners(WebInspector.OverridesSupport.Events.EmulationStateChanged);
             if (enabled && this.settings.emulateResolution.get())
-                this._target.emulationAgent().resetScrollAndPageScaleFactor();
+                this._target.emulationAgent().resetPageScaleFactor();
         }
     },
 
@@ -524,9 +524,9 @@ WebInspector.OverridesSupport.prototype = {
     },
 
     /**
-     * @param {boolean} resetScrollAndPageScale
+     * @param {boolean} resetPageScaleFactor
      */
-    _deviceMetricsChanged: function(resetScrollAndPageScale)
+    _deviceMetricsChanged: function(resetPageScaleFactor)
     {
         if (!this._initialized)
             return;
@@ -599,8 +599,8 @@ WebInspector.OverridesSupport.prototype = {
                 this.settings.emulateMobile.get(), this._pageResizer ? false : this.settings.deviceFitWindow.get(), scale, 0, 0,
                 screenWidth, screenHeight, positionX, positionY, apiCallback.bind(this))
             var allPromises = [ setDevicePromise ];
-            if (resetScrollAndPageScale)
-                allPromises.push(this._target.emulationAgent().resetScrollAndPageScaleFactor());
+            if (resetPageScaleFactor)
+                allPromises.push(this._target.emulationAgent().resetPageScaleFactor());
             return Promise.all(allPromises);
         }
 

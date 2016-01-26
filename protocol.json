@@ -674,8 +674,8 @@
                 "handlers": ["browser"]
             },
             {
-                "name": "resetScrollAndPageScaleFactor",
-                "description": "Requests that scroll offsets and page scale factor are reset to initial values."
+                "name": "resetPageScaleFactor",
+                "description": "Requests that page scale factor is reset to initial values."
             },
             {
                 "name": "setPageScaleFactor",

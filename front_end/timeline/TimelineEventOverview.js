@@ -338,7 +338,7 @@ WebInspector.TimelineEventOverview.CPUActivity.prototype = {
             quantizer.appendInterval(timeOffset + timeSpan + quantTime, idleIndex);  // Kick drawing the last bucket.
             for (var i = categoryOrder.length - 1; i > 0; --i) {
                 paths[i].lineTo(width, height);
-                ctx.fillStyle = categories[categoryOrder[i]].fillColorStop1;
+                ctx.fillStyle = categories[categoryOrder[i]].color;
                 ctx.fill(paths[i]);
             }
         }

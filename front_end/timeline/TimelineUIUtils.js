@@ -177,7 +177,7 @@ WebInspector.TimelineUIUtils.eventColor = function(event)
 {
     if (event.name === WebInspector.TimelineModel.RecordType.JSFrame)
         return WebInspector.TimelineUIUtils.colorForURL(event.args["data"]["url"]);
-    return WebInspector.TimelineUIUtils.eventStyle(event).category.fillColorStop1;
+    return WebInspector.TimelineUIUtils.eventStyle(event).category.color;
 }
 
 /**
@@ -1385,13 +1385,13 @@ WebInspector.TimelineUIUtils.categories = function()
     if (WebInspector.TimelineUIUtils._categories)
         return WebInspector.TimelineUIUtils._categories;
     WebInspector.TimelineUIUtils._categories = {
-        loading: new WebInspector.TimelineCategory("loading", WebInspector.UIString("Loading"), true, "hsl(214, 53%, 58%)", "hsl(214, 67%, 90%)", "hsl(214, 67%, 74%)", "hsl(214, 67%, 66%)"),
-        scripting: new WebInspector.TimelineCategory("scripting", WebInspector.UIString("Scripting"), true, "hsl(43, 90%, 45%)", "hsl(43, 83%, 90%)", "hsl(43, 83%, 72%)", "hsl(43, 83%, 64%) "),
-        rendering: new WebInspector.TimelineCategory("rendering", WebInspector.UIString("Rendering"), true, "hsl(256, 50%, 60%)", "hsl(256, 67%, 90%)", "hsl(256, 67%, 76%)", "hsl(256, 67%, 70%)"),
-        painting: new WebInspector.TimelineCategory("painting", WebInspector.UIString("Painting"), true, "hsl(109, 33%, 47%)", "hsl(109, 33%, 90%)", "hsl(109, 33%, 64%)", "hsl(109, 33%, 55%)"),
-        gpu: new WebInspector.TimelineCategory("gpu", WebInspector.UIString("GPU"), false, "hsl(240, 24%, 45%)", "hsl(240, 24%, 90%)", "hsl(240, 24%, 73%)", "hsl(240, 24%, 66%)"),
-        other: new WebInspector.TimelineCategory("other", WebInspector.UIString("Other"), false, "hsl(0, 0%, 73%)", "hsl(0, 0%, 90%)", "hsl(0, 0%, 87%)", "hsl(0, 0%, 79%)"),
-        idle: new WebInspector.TimelineCategory("idle", WebInspector.UIString("Idle"), false, "hsl(0, 0%, 87%)", "hsl(0, 100%, 100%)", "hsl(0, 100%, 100%)", "hsl(0, 100%, 100%)")
+        loading: new WebInspector.TimelineCategory("loading", WebInspector.UIString("Loading"), true, "hsl(214, 67%, 74%)", "hsl(214, 67%, 66%)"),
+        scripting: new WebInspector.TimelineCategory("scripting", WebInspector.UIString("Scripting"), true, "hsl(43, 83%, 72%)", "hsl(43, 83%, 64%) "),
+        rendering: new WebInspector.TimelineCategory("rendering", WebInspector.UIString("Rendering"), true, "hsl(256, 67%, 76%)", "hsl(256, 67%, 70%)"),
+        painting: new WebInspector.TimelineCategory("painting", WebInspector.UIString("Painting"), true, "hsl(109, 33%, 64%)", "hsl(109, 33%, 55%)"),
+        gpu: new WebInspector.TimelineCategory("gpu", WebInspector.UIString("GPU"), false, "hsl(240, 24%, 73%)", "hsl(240, 24%, 66%)"),
+        other: new WebInspector.TimelineCategory("other", WebInspector.UIString("Other"), false, "hsl(0, 0%, 87%)", "hsl(0, 0%, 79%)"),
+        idle: new WebInspector.TimelineCategory("idle", WebInspector.UIString("Idle"), false, "hsl(0, 100%, 100%)", "hsl(0, 100%, 100%)")
     };
     return WebInspector.TimelineUIUtils._categories;
 };
@@ -1454,19 +1454,19 @@ WebInspector.TimelineUIUtils.generatePieChart = function(aggregatedStats, selfCa
          pieChart.addSlice(value, color);
          var rowElement = footerElement.createChild("div");
          rowElement.createChild("span", "timeline-aggregated-legend-value").textContent = Number.preciseMillisToString(value, 1);
-         rowElement.createChild("span", "timeline-aggregated-legend-swatch timeline-" + name);
+         rowElement.createChild("span", "timeline-aggregated-legend-swatch").style.backgroundColor = color;
          rowElement.createChild("span", "timeline-aggregated-legend-title").textContent = title;
     }
 
     // In case of self time, first add self, then children of the same category.
     if (selfCategory) {
         if (selfTime)
-            appendLegendRow(selfCategory.name, WebInspector.UIString("%s (self)", selfCategory.title), selfTime, selfCategory.fillColorStop1);
+            appendLegendRow(selfCategory.name, WebInspector.UIString("%s (self)", selfCategory.title), selfTime, selfCategory.color);
         // Children of the same category.
         var categoryTime = aggregatedStats[selfCategory.name];
         var value = categoryTime - selfTime;
         if (value > 0)
-            appendLegendRow(selfCategory.name, WebInspector.UIString("%s (children)", selfCategory.title), value, selfCategory.fillColorStop0);
+            appendLegendRow(selfCategory.name, WebInspector.UIString("%s (children)", selfCategory.title), value, selfCategory.childColor);
     }
 
     // Add other categories.
@@ -1474,7 +1474,7 @@ WebInspector.TimelineUIUtils.generatePieChart = function(aggregatedStats, selfCa
         var category = WebInspector.TimelineUIUtils.categories()[categoryName];
         if (category === selfCategory)
             continue;
-        appendLegendRow(category.name, category.title, aggregatedStats[category.name], category.fillColorStop0);
+        appendLegendRow(category.name, category.title, aggregatedStats[category.name], category.childColor);
     }
     return element;
 }
@@ -1568,34 +1568,6 @@ WebInspector.TimelineUIUtils.createFillStyle = function(context, width, height, 
 }
 
 /**
- * @param {!CanvasRenderingContext2D} context
- * @param {number} width
- * @param {number} height
- * @param {!WebInspector.TimelineCategory} category
- * @return {!CanvasGradient}
- */
-WebInspector.TimelineUIUtils.createFillStyleForCategory = function(context, width, height, category)
-{
-    return WebInspector.TimelineUIUtils.createFillStyle(context, width, height, category.fillColorStop0, category.fillColorStop1, category.borderColor);
-}
-
-/**
- * @param {!WebInspector.TimelineCategory} category
- * @return {string}
- */
-WebInspector.TimelineUIUtils.createStyleRuleForCategory = function(category)
-{
-    var selector = ".timeline-category-" + category.name + " .timeline-graph-bar, " +
-        ".timeline-details-view .timeline-" + category.name + ", " +
-        ".timeline-category-" + category.name + " .timeline-tree-icon";
-
-    return selector + " { background-image: linear-gradient(" +
-       category.fillColorStop0 + ", " + category.fillColorStop1 + " 25%, " + category.fillColorStop1 + " 25%, " + category.fillColorStop1 + ");" +
-       " border-color: " + category.borderColor +
-       "}";
-}
-
-/**
  * @param {!Array.<number>} quad
  * @return {number}
  */
@@ -1655,20 +1627,16 @@ WebInspector.TimelineUIUtils.eventDispatchDesciptors = function()
  * @param {string} name
  * @param {string} title
  * @param {boolean} visible
- * @param {string} borderColor
- * @param {string} backgroundColor
- * @param {string} fillColorStop0
- * @param {string} fillColorStop1
+ * @param {string} childColor
+ * @param {string} color
  */
-WebInspector.TimelineCategory = function(name, title, visible, borderColor, backgroundColor, fillColorStop0, fillColorStop1)
+WebInspector.TimelineCategory = function(name, title, visible, childColor, color)
 {
     this.name = name;
     this.title = title;
     this.visible = visible;
-    this.borderColor = borderColor;
-    this.backgroundColor = backgroundColor;
-    this.fillColorStop0 = fillColorStop0;
-    this.fillColorStop1 = fillColorStop1;
+    this.childColor = childColor;
+    this.color = color;
     this.hidden = false;
 }
 
@@ -1895,7 +1863,7 @@ WebInspector.TimelineDetailsContentHelper.prototype = {
         if (title) {
             var titleElement = this.element.createChild("div", "timeline-details-chip-title");
             if (category)
-                titleElement.createChild("div", "timeline-" + category.name);
+                titleElement.createChild("div").style.backgroundColor = category.color;
             titleElement.createTextChild(title);
         }
 

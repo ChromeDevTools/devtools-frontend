@@ -607,7 +607,7 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
             var color = this._asyncColorByCategory[category.name];
             if (color)
                 return color;
-            var parsedColor = WebInspector.Color.parse(category.fillColorStop1);
+            var parsedColor = WebInspector.Color.parse(category.color);
             color = parsedColor.setAlpha(0.7).asString(WebInspector.Color.Format.RGBA) || "";
             this._asyncColorByCategory[category.name] = color;
             return color;
@@ -861,8 +861,8 @@ WebInspector.TimelineFlameChartNetworkDataProvider = function(model)
 {
     WebInspector.TimelineFlameChartDataProviderBase.call(this, model);
     var loadingCategory = WebInspector.TimelineUIUtils.categories()["loading"];
-    this._waitingColor = loadingCategory.backgroundColor;
-    this._processingColor = loadingCategory.fillColorStop1;
+    this._waitingColor = loadingCategory.childColor;
+    this._processingColor = loadingCategory.color;
 }
 
 WebInspector.TimelineFlameChartNetworkDataProvider.prototype = {

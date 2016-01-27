@@ -711,13 +711,13 @@ WebInspector.AggregatedTimelineTreeView.prototype = {
         case WebInspector.AggregatedTimelineTreeView.GroupBy.Category:
             var category = categories[id] || categories["other"];
             groupNode.name = category.title;
-            groupNode.color = category.fillColorStop1;
+            groupNode.color = category.color;
             break;
         case WebInspector.AggregatedTimelineTreeView.GroupBy.Domain:
         case WebInspector.AggregatedTimelineTreeView.GroupBy.Subdomain:
         case WebInspector.AggregatedTimelineTreeView.GroupBy.URL:
             groupNode.name = id || WebInspector.UIString("unattributed");
-            groupNode.color = id ? WebInspector.TimelineUIUtils.eventColor(event) : categories["other"].fillColorStop1;
+            groupNode.color = id ? WebInspector.TimelineUIUtils.eventColor(event) : categories["other"].color;
             break;
         }
         return groupNode;

@@ -182,13 +182,6 @@ WebInspector.TimelinePanel.prototype = {
 
     wasShown: function()
     {
-        if (!WebInspector.TimelinePanel._categoryStylesInitialized) {
-            WebInspector.TimelinePanel._categoryStylesInitialized = true;
-            var style = createElement("style");
-            var categories = WebInspector.TimelineUIUtils.categories();
-            style.textContent = Object.values(categories).map(WebInspector.TimelineUIUtils.createStyleRuleForCategory).join("\n");
-            this.element.ownerDocument.head.appendChild(style);
-        }
         WebInspector.context.setFlavor(WebInspector.TimelinePanel, this);
     },
 
@@ -2008,7 +2001,7 @@ WebInspector.TimelineFilters.prototype = {
             if (!category.visible)
                 continue;
             var filter = new WebInspector.CheckboxFilterUI(category.name, category.title);
-            filter.setColor(category.fillColorStop0, category.borderColor);
+            filter.setColor(category.color, "rgba(0, 0, 0, 0.2)");
             categoryFiltersUI[category.name] = filter;
             filter.addEventListener(WebInspector.FilterUI.Events.FilterChanged, categoriesFilterChanged.bind(this, categoryName));
             this._filterBar.addFilter(filter);

@@ -215,7 +215,7 @@
     margin: 0 6px;
     position: relative;
     top: 1px;
-    border: 1px solid;
+    border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .popover ul {
@@ -378,6 +378,7 @@
 .timeline-details-chip-title > div {
     width: 12px;
     height: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
     display: inline-block;
     margin-right: 4px;
     content: " ";

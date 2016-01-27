@@ -119,11 +119,11 @@ WebInspector.EmulatedDevice.fromJSONV1 = function(json)
             var result = {};
 
             result.width = parseIntValue(json, "width");
-            if (result.width < 0 || result.width > WebInspector.OverridesSupport.MaxDeviceSize)
+            if (result.width < 0 || result.width > WebInspector.DeviceModeModel.MaxDeviceSize || result.width < WebInspector.DeviceModeModel.MinDeviceSize)
                 throw new Error("Emulated device has wrong width: " + result.width);
 
             result.height = parseIntValue(json, "height");
-            if (result.height < 0 || result.height > WebInspector.OverridesSupport.MaxDeviceSize)
+            if (result.height < 0 || result.height > WebInspector.DeviceModeModel.MaxDeviceSize || result.height < WebInspector.DeviceModeModel.MinDeviceSize)
                 throw new Error("Emulated device has wrong height: " + result.height);
 
             var outlineInsets = parseValue(json["outline"], "insets", "object", null);

@@ -122,6 +122,8 @@
         "EmulatedDevices.js",
         "DevicesSettingsTab.js",
         "DeviceModeButton.js",
+        "DeviceOrientation.js",
+        "Geolocation.js",
         "OverridesUI.js",
         "InspectedPagePlaceholder.js",
         "MediaQueryInspector.js",

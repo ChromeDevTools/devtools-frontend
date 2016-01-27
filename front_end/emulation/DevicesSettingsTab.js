@@ -221,7 +221,7 @@ WebInspector.DevicesSettingsTab.prototype = {
          */
         function sizeValidator(item, index, input)
         {
-            return !WebInspector.OverridesSupport.deviceSizeValidator(input.value);
+            return !WebInspector.DeviceModeModel.deviceSizeValidator(input.value);
         }
 
         /**
@@ -232,7 +232,7 @@ WebInspector.DevicesSettingsTab.prototype = {
          */
         function scaleValidator(item, index, input)
         {
-            return !WebInspector.OverridesSupport.deviceScaleFactorValidator(input.value);
+            return !WebInspector.DeviceModeModel.deviceScaleFactorValidator(input.value);
         }
 
         /**

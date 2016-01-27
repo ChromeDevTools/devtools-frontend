@@ -95,6 +95,17 @@ WebInspector.DeviceModeModel.deviceSizeValidator = function(value)
     return WebInspector.UIString("Value must be positive integer");
 }
 
+/**
+ * @param {string} value
+ * @return {string}
+ */
+WebInspector.DeviceModeModel.deviceScaleFactorValidator = function(value)
+{
+    if (!value || (/^[\d]+(\.\d+)?|\.\d+$/.test(value) && value >= 0 && value <= 10))
+        return "";
+    return WebInspector.UIString("Value must be non-negative float");
+}
+
 WebInspector.DeviceModeModel._touchEventsScriptIdSymbol = Symbol("DeviceModeModel.touchEventsScriptIdSymbol");
 WebInspector.DeviceModeModel._defaultMobileUserAgent = "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.76 Mobile Safari/537.36";
 WebInspector.DeviceModeModel._defaultMobileScaleFactor = 2;

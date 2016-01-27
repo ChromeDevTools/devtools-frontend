@@ -413,7 +413,9 @@ TestSuite.prototype.testPauseInSharedWorkerInitialization2 = function()
 
 TestSuite.prototype.enableTouchEmulation = function()
 {
-    WebInspector.overridesSupport._emulateTouchEventsInTarget(WebInspector.targetManager.mainTarget(), true, "mobile");
+    var deviceModeModel = new WebInspector.DeviceModeModel(function() {});
+    deviceModeModel._target = WebInspector.targetManager.mainTarget();
+    deviceModeModel._applyTouch(true, true);
 };
 
 TestSuite.prototype.switchToPanel = function(panelName)

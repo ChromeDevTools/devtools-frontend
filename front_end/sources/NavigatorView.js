@@ -445,7 +445,9 @@ WebInspector.NavigatorView.prototype = {
 
         while (node) {
             parentNode = node.parent;
-            if (!parentNode || !node.isEmpty() || !(node instanceof WebInspector.NavigatorFolderTreeNode))
+            if (!parentNode || !node.isEmpty())
+                break;
+            if (!(node instanceof WebInspector.NavigatorGroupTreeNode || node instanceof WebInspector.NavigatorFolderTreeNode))
                 break;
 
             var folderId = this._folderNodeId(project, target, frame, uiSourceCode.origin(), node._folderPath);

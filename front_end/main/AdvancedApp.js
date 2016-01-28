@@ -28,7 +28,7 @@ WebInspector.AdvancedApp.prototype = {
 
         this._inspectedPagePlaceholder = new WebInspector.InspectedPagePlaceholder();
         this._inspectedPagePlaceholder.addEventListener(WebInspector.InspectedPagePlaceholder.Events.Update, this._onSetInspectedPageBounds.bind(this), this);
-        this._deviceModeView = new WebInspector.DeviceModeView.Wrapper(this._inspectedPagePlaceholder);
+        this._deviceModeView = new WebInspector.DeviceModeWrapper(this._inspectedPagePlaceholder);
 
         WebInspector.dockController.addEventListener(WebInspector.DockController.Events.BeforeDockSideChanged, this._onBeforeDockSideChange, this);
         WebInspector.dockController.addEventListener(WebInspector.DockController.Events.DockSideChanged, this._onDockSideChange, this);

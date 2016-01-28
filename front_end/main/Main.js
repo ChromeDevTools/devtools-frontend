@@ -104,6 +104,7 @@ WebInspector.Main.prototype = {
     {
         Runtime.experiments.register("accessibilityInspection", "Accessibility Inspection");
         Runtime.experiments.register("applyCustomStylesheet", "Allow custom UI themes");
+        Runtime.experiments.register("appBanner", "App banner support", true);
         Runtime.experiments.register("blackboxJSFramesOnTimeline", "Blackbox JavaScript frames on Timeline", true);
         Runtime.experiments.register("colorContrastRatio", "Contrast ratio line in color picker", true);
         Runtime.experiments.register("cpuThrottling", "CPU throttling", true);

@@ -15,12 +15,13 @@
             "type": "@WebInspector.ActionDelegate",
             "actionId": "screencast.request-app-banner",
             "className": "WebInspector.ScreencastApp.ActionDelegate",
-            "title": "Request app banner"
+            "title": "Request app banner\u2026"
         },
         {
             "type": "context-menu-item",
             "condition": "remoteFrontend",
             "location": "mainMenu/tools",
+            "experiment": "appBanner",
             "order": 10,
             "actionId": "screencast.request-app-banner"
         }

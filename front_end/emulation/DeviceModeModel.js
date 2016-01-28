@@ -18,7 +18,6 @@ WebInspector.DeviceModeModel = function(updateCallback)
     this._deviceMetricsThrottler = new WebInspector.Throttler(0);
     this._appliedDeviceSize = new Size(1, 1);
     this._currentDeviceScaleFactor = window.devicePixelRatio;
-    this._appliedDeviceScaleFactor = 0;
 
     this._scaleSetting = WebInspector.settings.createSetting("emulation.deviceScale", 1);
     // We've used to allow zero before.
@@ -284,14 +283,6 @@ WebInspector.DeviceModeModel.prototype = {
     },
 
     /**
-     * @return {number}
-     */
-    appliedDeviceScaleFactor: function()
-    {
-        return this._appliedDeviceScaleFactor;
-    },
-
-    /**
      * @return {!WebInspector.Setting}
      */
     scaleSetting: function()
@@ -382,11 +373,6 @@ WebInspector.DeviceModeModel.prototype = {
     {
         if (this._target === target)
             this._target = null;
-    },
-
-    requestAppBanner: function()
-    {
-        this._target.pageAgent().requestAppBanner();
     },
 
     _scaleSettingChanged: function()
@@ -528,7 +514,6 @@ WebInspector.DeviceModeModel.prototype = {
             Math.min(pageWidth * scale, this._availableSize.width - this._screenRect.left - positionX * scale),
             Math.min(pageHeight * scale, this._availableSize.height - this._screenRect.top - positionY * scale));
         this._scale = scale;
-        this._appliedDeviceScaleFactor = deviceScaleFactor;
 
         if (scale === 1 && this._availableSize.width >= screenSize.width && this._availableSize.height >= screenSize.height) {
             // When we have enough space, no page size override is required. This will speed things up and remove lag.

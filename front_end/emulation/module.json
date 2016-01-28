@@ -3,7 +3,7 @@
         {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "emulation.toggle-device-mode",
-            "className": "WebInspector.DeviceModeView.ActionDelegate",
+            "className": "WebInspector.DeviceModeWrapper.ActionDelegate",
             "condition": "can_dock",
             "title": "Toggle device mode",
             "iconClass": "phone-toolbar-item",
@@ -59,12 +59,13 @@
         {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "emulation.request-app-banner",
-            "className": "WebInspector.DeviceModeView.ActionDelegate",
-            "title": "Request app banner"
+            "className": "WebInspector.DeviceModeWrapper.ActionDelegate",
+            "title": "Request app banner\u2026"
         },
         {
             "type": "context-menu-item",
             "location": "deviceModeMenu/tools",
+            "experiment": "appBanner",
             "order": 10,
             "actionId": "emulation.request-app-banner"
         }
@@ -84,7 +85,9 @@
         "MediaQueryInspector.js",
         "SensorsView.js",
         "DeviceModeModel.js",
-        "DeviceModeView.js"
+        "DeviceModeToolbar.js",
+        "DeviceModeView.js",
+        "DeviceModeWrapper.js"
     ],
     "resources": [
         "devicesSettingsTab.css",

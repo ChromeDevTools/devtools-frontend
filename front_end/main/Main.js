@@ -107,7 +107,6 @@ WebInspector.Main.prototype = {
         Runtime.experiments.register("blackboxJSFramesOnTimeline", "Blackbox JavaScript frames on Timeline", true);
         Runtime.experiments.register("colorContrastRatio", "Contrast ratio line in color picker", true);
         Runtime.experiments.register("cpuThrottling", "CPU throttling", true);
-        Runtime.experiments.register("deviceMode", "Device mode", true);
         Runtime.experiments.register("emptySourceMapAutoStepping", "Empty sourcemap auto-stepping");
         Runtime.experiments.register("fileSystemInspection", "FileSystem inspection");
         Runtime.experiments.register("gpuTimeline", "GPU data on timeline", true);
@@ -147,7 +146,6 @@ WebInspector.Main.prototype = {
         }
 
         Runtime.experiments.setDefaultExperiments([
-            "deviceMode",
             "securityPanel"
         ]);
     },
@@ -178,7 +176,6 @@ WebInspector.Main.prototype = {
         WebInspector.ContextMenu.installHandler(document);
         WebInspector.Tooltip.installHandler(document);
         WebInspector.dockController = new WebInspector.DockController(canDock);
-        WebInspector.overridesSupport = new WebInspector.OverridesSupport();
         WebInspector.emulatedDevicesList = new WebInspector.EmulatedDevicesList();
         WebInspector.multitargetConsoleModel = new WebInspector.MultitargetConsoleModel();
         WebInspector.multitargetNetworkManager = new WebInspector.MultitargetNetworkManager();
@@ -313,11 +310,9 @@ WebInspector.Main.prototype = {
         }
 
         var targetType = Runtime.queryParam("isSharedWorker") ? WebInspector.Target.Type.ServiceWorker : WebInspector.Target.Type.Page;
-
         this._mainTarget = WebInspector.targetManager.createTarget(WebInspector.UIString("Main"), targetType, connection, null);
         console.timeStamp("Main._mainTargetCreated");
         this._registerShortcuts();
-        var main = this;
 
         this._mainTarget.registerInspectorDispatcher(this);
         InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.ReloadInspectedPage, this._reloadInspectedPage, this);
@@ -326,26 +321,18 @@ WebInspector.Main.prototype = {
             this._mainTarget.runtimeAgent().run();
 
         if (this._appUIPresented)
-            this._initOverrides();
+            this._loadingDone();
     },
 
     _didPresentAppUI: function()
     {
         this._appUIPresented = true;
         if (this._mainTarget)
-            this._initOverrides();
+            this._loadingDone();
     },
 
-    _initOverrides: function()
+    _loadingDone: function()
     {
-        WebInspector.overridesSupport.init(this._mainTarget, this._overridesReady.bind(this));
-    },
-
-    _overridesReady: function()
-    {
-        if (!WebInspector.dockController.canDock() && WebInspector.overridesSupport.emulationEnabled())
-            WebInspector.inspectorView.showViewInDrawer("emulation", true);
-
         this._mainTarget.inspectorAgent().enable(inspectorAgentEnableCallback);
 
         function inspectorAgentEnableCallback()

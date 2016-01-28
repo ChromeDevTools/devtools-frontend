@@ -28,10 +28,7 @@ WebInspector.AdvancedApp.prototype = {
 
         this._inspectedPagePlaceholder = new WebInspector.InspectedPagePlaceholder();
         this._inspectedPagePlaceholder.addEventListener(WebInspector.InspectedPagePlaceholder.Events.Update, this._onSetInspectedPageBounds.bind(this), this);
-        if (Runtime.experiments.isEnabled("deviceMode"))
-            this._responsiveDesignView = new WebInspector.DeviceModeView.Wrapper(this._inspectedPagePlaceholder);
-        else
-            this._responsiveDesignView = new WebInspector.ResponsiveDesignView(this._inspectedPagePlaceholder);
+        this._deviceModeView = new WebInspector.DeviceModeView.Wrapper(this._inspectedPagePlaceholder);
 
         WebInspector.dockController.addEventListener(WebInspector.DockController.Events.BeforeDockSideChanged, this._onBeforeDockSideChange, this);
         WebInspector.dockController.addEventListener(WebInspector.DockController.Events.DockSideChanged, this._onDockSideChange, this);
@@ -77,7 +74,7 @@ WebInspector.AdvancedApp.prototype = {
         this._toolboxRootView = new WebInspector.RootView();
         this._toolboxRootView.attachToDocument(toolboxDocument);
 
-        this._updateResponsiveDesignView();
+        this._updateDeviceModeView();
 
         if (this._presentUICallback) {
             var callback = this._presentUICallback;
@@ -86,14 +83,12 @@ WebInspector.AdvancedApp.prototype = {
         }
     },
 
-    _updateResponsiveDesignView: function()
+    _updateDeviceModeView: function()
     {
         if (this._isDocked())
-            this._rootSplitWidget.setMainWidget(this._responsiveDesignView);
+            this._rootSplitWidget.setMainWidget(this._deviceModeView);
         else if (this._toolboxRootView)
-            this._responsiveDesignView.show(this._toolboxRootView.element);
-        if (!Runtime.experiments.isEnabled("deviceMode") && (this._isDocked() || this._toolboxRootView))
-            this._responsiveDesignView.updatePageResizer();
+            this._deviceModeView.show(this._toolboxRootView.element);
     },
 
     /**
@@ -115,7 +110,7 @@ WebInspector.AdvancedApp.prototype = {
      */
     _onDockSideChange: function(event)
     {
-        this._updateResponsiveDesignView();
+        this._updateDeviceModeView();
 
         var toDockSide = event ? /** @type {string} */ (event.data.to) : WebInspector.dockController.dockSide();
         if (toDockSide === WebInspector.DockController.State.Undocked) {

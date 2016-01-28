@@ -190,31 +190,6 @@ WebInspector.EmulatedDevice.fromJSONV1 = function(json)
 }
 
 /**
- * @param {!WebInspector.OverridesSupport.Device} device
- * @param {string} title
- * @param {string=} type
- * @return {!WebInspector.EmulatedDevice}
- */
-WebInspector.EmulatedDevice.fromOverridesDevice = function(device, title, type)
-{
-    var result = new WebInspector.EmulatedDevice();
-    result.title = title;
-    result.type = type || WebInspector.EmulatedDevice.Type.Unknown;
-    result.vertical.width = device.width;
-    result.vertical.height = device.height;
-    result.horizontal.width = device.height;
-    result.horizontal.height = device.width;
-    result.deviceScaleFactor = device.deviceScaleFactor;
-    result.userAgent = device.userAgent;
-    result.capabilities = [];
-    if (device.touch)
-        result.capabilities.push(WebInspector.EmulatedDevice.Capability.Touch);
-    if (device.mobile)
-        result.capabilities.push(WebInspector.EmulatedDevice.Capability.Mobile);
-    return result;
-}
-
-/**
  * @param {!WebInspector.EmulatedDevice} device1
  * @param {!WebInspector.EmulatedDevice} device2
  * @return {number}
@@ -317,23 +292,6 @@ WebInspector.EmulatedDevice.prototype = {
             json["outline"]["image"] = orientation.outlineImage;
         }
         return json;
-    },
-
-    /**
-     * @param {!WebInspector.EmulatedDevice.Mode} mode
-     * @return {!WebInspector.OverridesSupport.Device}
-     */
-    modeToOverridesDevice: function(mode)
-    {
-        var result = {};
-        var orientation = this.orientationByName(mode.orientation);
-        result.width = orientation.width - mode.insets.left - mode.insets.right;
-        result.height = orientation.height - mode.insets.top - mode.insets.bottom;
-        result.deviceScaleFactor = this.deviceScaleFactor;
-        result.userAgent = this.userAgent;
-        result.touch = this.touch();
-        result.mobile = this.mobile();
-        return result;
     },
 
     /**

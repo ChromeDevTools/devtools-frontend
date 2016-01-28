@@ -479,9 +479,8 @@ TestSuite.prototype.testDeviceMetricsOverrides = function()
         test.releaseControl();
     }
 
-    WebInspector.overridesSupport._deviceMetricsChangedListenerMuted = true;
     test.takeControl();
-    this.waitForThrottler(WebInspector.overridesSupport._deviceMetricsThrottler, step1);
+    step1();
 };
 
 TestSuite.prototype.testScreenshotRecording = function()

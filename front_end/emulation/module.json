@@ -1,47 +1,10 @@
 {
     "extensions": [
         {
-            "type": "drawer-view",
-            "name": "emulation",
-            "title": "Emulation",
-            "experiment": "!deviceMode",
-            "order": 10,
-            "persistence": "closeable",
-            "className": "WebInspector.OverridesView"
-        },
-        {
-            "type": "@WebInspector.ToolbarItem.Provider",
-            "className": "WebInspector.DeviceModeButtonProvider",
-            "condition": "can_dock",
-            "experiment": "!deviceMode",
-            "order": 1,
-            "location": "main-toolbar-left"
-        },
-        {
-            "type": "@WebInspector.ActionDelegate",
-            "actionId": "emulation.toggle-device-mode",
-            "className": "WebInspector.ToggleDeviceModeActionDelegate",
-            "iconClass": "emulation-toolbar-item",
-            "title": "Toggle device mode",
-            "condition": "can_dock",
-            "experiment": "!deviceMode",
-            "bindings": [
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Shift+Ctrl+M"
-                },
-                {
-                    "platform": "mac",
-                    "shortcut": "Shift+Meta+M"
-                }
-            ]
-        },
-        {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "emulation.toggle-device-mode",
             "className": "WebInspector.DeviceModeView.ActionDelegate",
             "condition": "can_dock",
-            "experiment": "deviceMode",
             "title": "Toggle device mode",
             "iconClass": "phone-toolbar-item",
             "bindings": [
@@ -61,11 +24,6 @@
             "condition": "can_dock",
             "location": "main-toolbar-left",
             "order": 1
-        },
-        {
-            "type": "@WebInspector.Revealer",
-            "contextTypes": ["WebInspector.OverridesSupport"],
-            "className": "WebInspector.OverridesView.Revealer"
         },
         {
             "type": "settings-view",
@@ -118,17 +76,12 @@
         "ui"
     ],
     "scripts": [
-        "OverridesSupport.js",
         "EmulatedDevices.js",
         "DevicesSettingsTab.js",
-        "DeviceModeButton.js",
         "DeviceOrientation.js",
         "Geolocation.js",
-        "OverridesUI.js",
         "InspectedPagePlaceholder.js",
         "MediaQueryInspector.js",
-        "ResponsiveDesignView.js",
-        "OverridesView.js",
         "SensorsView.js",
         "DeviceModeModel.js",
         "DeviceModeView.js"
@@ -138,8 +91,6 @@
         "deviceModeToolbar.css",
         "deviceModeView.css",
         "mediaQueryInspector.css",
-        "responsiveDesignView.css",
-        "overrides.css",
         "sensors.css"
     ]
 }

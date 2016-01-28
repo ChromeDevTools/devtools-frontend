@@ -594,14 +594,18 @@ WebInspector.SASSSupport.PropertyChange = function(type, oldRule, newRule, oldPr
 /**
  * @constructor
  * @param {string} url
+ * @param {!WebInspector.SASSSupport.AST} oldAST
+ * @param {!WebInspector.SASSSupport.AST} newAST
  * @param {!Map<!WebInspector.SASSSupport.TextNode, !WebInspector.SASSSupport.TextNode>} mapping
  * @param {!Array<!WebInspector.SASSSupport.PropertyChange>} changes
  */
-WebInspector.SASSSupport.ASTDiff = function(url, mapping, changes)
+WebInspector.SASSSupport.ASTDiff = function(url, oldAST, newAST, mapping, changes)
 {
     this.url = url;
     this.mapping = mapping;
     this.changes = changes;
+    this.oldAST = oldAST;
+    this.newAST = newAST;
 }
 
 /**
@@ -622,7 +626,7 @@ WebInspector.SASSSupport.diffModels = function(oldAST, newAST)
         var newRule = newAST.rules[i];
         computeRuleDiff(mapping, oldRule, newRule);
     }
-    return new WebInspector.SASSSupport.ASTDiff(oldAST.document.url, mapping, changes);
+    return new WebInspector.SASSSupport.ASTDiff(oldAST.document.url, oldAST, newAST, mapping, changes);
 
     /**
      * @param {!WebInspector.SASSSupport.PropertyChangeType} type

@@ -114,7 +114,7 @@ WebInspector.SourceMap.load = function(sourceMapURL, compiledURL, callback)
             var baseURL = sourceMapURL.startsWith("data:") ? compiledURL : sourceMapURL;
             callback(new WebInspector.SourceMap(compiledURL, baseURL, payload));
         } catch(e) {
-            console.error(e.message);
+            console.error(e);
             WebInspector.console.error("Failed to parse SourceMap: " + sourceMapURL);
             callback(null);
         }
@@ -122,6 +122,14 @@ WebInspector.SourceMap.load = function(sourceMapURL, compiledURL, callback)
 }
 
 WebInspector.SourceMap.prototype = {
+    /**
+     * @return {string}
+     */
+    compiledURL: function()
+    {
+        return this._compiledURL;
+    },
+
     /**
      * @return {string}
      */

@@ -5,10 +5,41 @@
 WebInspector.SASSLiveSourceMap = {}
 
 /**
- * @constructor
+ * @param {!WebInspector.SourceMapTracker} tracker
+ * @param {!WebInspector.CSSParser} cssParser
+ * @param {!WebInspector.TokenizerFactory} tokenizer
+ * @return {!Promise<?WebInspector.SASSLiveSourceMap.CSSToSASSMapping>}
  */
-WebInspector.SASSLiveSourceMap.CSSToSASSMapping = function()
+WebInspector.SASSLiveSourceMap._loadMapping = function(tracker, cssParser, tokenizer)
 {
+    var sassModels = new Map();
+    var cssAST = null;
+    var promises = [];
+    for (var url of tracker.sassURLs()) {
+        var sassPromise = tracker.content(url)
+            .then(text => WebInspector.SASSSupport.parseSCSS(url, text, tokenizer))
+            .then(ast => sassModels.set(url, ast));
+        promises.push(sassPromise);
+    }
+    var cssPromise = tracker.content(tracker.cssURL())
+        .then(text => WebInspector.SASSSupport.parseCSS(cssParser, tracker.cssURL(), text))
+        .then(ast => cssAST = ast);
+    promises.push(cssPromise);
+
+    return Promise.all(promises)
+        .then(() => WebInspector.SASSLiveSourceMap.CSSToSASSMapping.fromSourceMap(tracker.sourceMap(), cssAST, sassModels))
+        .catchException(/** @type {?WebInspector.SASSLiveSourceMap.CSSToSASSMapping} */(null));
+}
+
+/**
+ * @constructor
+ * @param {!WebInspector.SASSSupport.AST} cssAST
+ * @param {!Map<string, !WebInspector.SASSSupport.AST>} sassModels
+ */
+WebInspector.SASSLiveSourceMap.CSSToSASSMapping = function(cssAST, sassModels)
+{
+    this._cssAST = cssAST;
+    this._sassModels = sassModels;
     /** @type {!Map<!WebInspector.SASSSupport.TextNode, !WebInspector.SASSSupport.TextNode>} */
     this._cssToSass = new Map();
     /** @type {!Multimap<!WebInspector.SASSSupport.TextNode, !WebInspector.SASSSupport.TextNode>} */
@@ -23,7 +54,7 @@ WebInspector.SASSLiveSourceMap.CSSToSASSMapping = function()
  */
 WebInspector.SASSLiveSourceMap.CSSToSASSMapping.fromSourceMap = function(sourceMap, cssAST, sassModels)
 {
-    var mapping = new WebInspector.SASSLiveSourceMap.CSSToSASSMapping();
+    var mapping = new WebInspector.SASSLiveSourceMap.CSSToSASSMapping(cssAST, sassModels);
     //FIXME: this works O(N^2).
     cssAST.visit(map);
     return mapping;
@@ -48,6 +79,22 @@ WebInspector.SASSLiveSourceMap.CSSToSASSMapping.fromSourceMap = function(sourceM
 }
 
 WebInspector.SASSLiveSourceMap.CSSToSASSMapping.prototype = {
+    /**
+     * @return {!WebInspector.SASSSupport.AST}
+     */
+    cssAST: function()
+    {
+        return this._cssAST;
+    },
+
+    /**
+     * @return {!Map<string, !WebInspector.SASSSupport.AST>}
+     */
+    sassModels: function()
+    {
+        return this._sassModels;
+    },
+
     /**
      * @param {!WebInspector.SASSSupport.TextNode} css
      * @param {!WebInspector.SASSSupport.TextNode} sass
@@ -112,7 +159,7 @@ WebInspector.SASSLiveSourceMap.CSSToSASSMapping.prototype = {
      */
     rebaseForCSSDiff: function(cssDiff)
     {
-        var newMapping = new WebInspector.SASSLiveSourceMap.CSSToSASSMapping();
+        var newMapping = new WebInspector.SASSLiveSourceMap.CSSToSASSMapping(cssDiff.newAST, this._sassModels);
         var cssNodes = this._cssToSass.keysArray();
         for (var i = 0; i < cssNodes.length; ++i) {
             var cssNode = cssNodes[i];
@@ -130,7 +177,9 @@ WebInspector.SASSLiveSourceMap.CSSToSASSMapping.prototype = {
      */
     rebaseForSASSDiff: function(sassDiff)
     {
-        var newMapping = new WebInspector.SASSLiveSourceMap.CSSToSASSMapping();
+        var sassModels = new Map(this._sassModels);
+        sassModels.set(sassDiff.url, sassDiff.newAST);
+        var newMapping = new WebInspector.SASSLiveSourceMap.CSSToSASSMapping(this._cssAST, sassModels);
         var cssNodes = this._cssToSass.keysArray();
         for (var i = 0; i < cssNodes.length; ++i) {
             var cssNode = cssNodes[i];

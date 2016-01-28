@@ -70,7 +70,8 @@ WebInspector.CSSStyleModel.Events = {
     PseudoStateForced: "PseudoStateForced",
     StyleSheetAdded: "StyleSheetAdded",
     StyleSheetChanged: "StyleSheetChanged",
-    StyleSheetRemoved: "StyleSheetRemoved"
+    StyleSheetRemoved: "StyleSheetRemoved",
+    ExternalRangeEdit: "ExternalRangeEdit"
 }
 
 WebInspector.CSSStyleModel.MediaTypes = ["all", "braille", "embossed", "handheld", "print", "projection", "screen", "speech", "tty", "tv"];
@@ -562,7 +563,6 @@ WebInspector.CSSStyleModel.prototype = {
         {
             if (error)
                 return error;
-
             if (majorChange)
                 this._domModel.markUndoableState();
             this._fireStyleSheetChanged(styleSheetId);
@@ -1967,17 +1967,6 @@ WebInspector.CSSStyleSheetHeader.prototype = {
             this.sourceMapURL = sourceMapURL;
             return error || null;
         }
-    },
-
-    /**
-     * @param {string} newText
-     * @param {function(?Protocol.Error)} callback
-     */
-    setContent: function(newText, callback)
-    {
-        this._setContentPromise(newText)
-            .catchException(null)
-            .then(callback);
     },
 
     /**

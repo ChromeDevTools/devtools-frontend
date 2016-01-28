@@ -76,7 +76,7 @@ devtools_frontend_path = path.join(devtools_path, 'front_end')
 patched_es6_externs_file = to_platform_path(path.join(devtools_frontend_path, 'es6.js'))
 global_externs_file = to_platform_path(path.join(devtools_frontend_path, 'externs.js'))
 protocol_externs_file = path.join(devtools_frontend_path, 'protocol_externs.js')
-injected_script_source_name = path.join(inspector_path, 'InjectedScriptSource.js')
+injected_script_source_name = path.join(inspector_path, 'v8/InjectedScriptSource.js')
 injected_script_externs_file = path.join(inspector_path, 'injected_script_externs.js')
 
 jsmodule_name_prefix = 'jsmodule_'

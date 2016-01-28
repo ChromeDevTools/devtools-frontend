@@ -317,6 +317,7 @@ WebInspector.ExecutionContext.prototype = {
         function evalCallback(error, result, wasThrown, exceptionDetails)
         {
             if (error) {
+                console.error(error);
                 callback(null, false);
                 return;
             }

@@ -154,6 +154,8 @@ WebInspector.TimelineJSProfileProcessor.generateJSFrameEvents = function(events)
             depth = jsFramesStack.length;
         }
         var minFrameDurationMs = currentSamplingIntervalMs / 2;
+        for (var k = 0; k < depth; ++k)
+            jsFramesStack[k].setEndTime(time);
         for (var k = depth; k < jsFramesStack.length; ++k)
             jsFramesStack[k].setEndTime(Math.min(eventEndTime(jsFramesStack[k]) + minFrameDurationMs, time));
         jsFramesStack.length = depth;
@@ -178,14 +180,14 @@ WebInspector.TimelineJSProfileProcessor.generateJSFrameEvents = function(events)
      */
     function extractStackTrace(e)
     {
-        var eventData = e.args["data"] || e.args["beginData"];
-        var stackTrace = eventData && eventData["stackTrace"];
         var recordTypes = WebInspector.TimelineModel.RecordType;
-        // GC events do not hold call stack, so make a copy of the current stack.
-        if (e.name === recordTypes.GCEvent || e.name === recordTypes.MajorGC || e.name === recordTypes.MinorGC)
-            stackTrace = jsFramesStack.map(function(frameEvent) { return frameEvent.args["data"]; }).reverse();
-        if (!stackTrace)
-            return;
+        var stackTrace;
+        if (e.name === recordTypes.JSSample) {
+            var eventData = e.args["data"] || e.args["beginData"];
+            stackTrace = /** @type {!Array<!ConsoleAgent.CallFrame>} */ (eventData && eventData["stackTrace"]);
+        } else {
+            stackTrace = /** @type {!Array<!ConsoleAgent.CallFrame>} */ (jsFramesStack.map(frameEvent => frameEvent.args["data"]).reverse());
+        }
         if (filterNativeFunctions)
             filterStackFrames(stackTrace);
         var endTime = eventEndTime(e);
@@ -202,7 +204,7 @@ WebInspector.TimelineJSProfileProcessor.generateJSFrameEvents = function(events)
         truncateJSStack(i, e.startTime);
         for (; i < numFrames; ++i) {
             var frame = stackTrace[numFrames - 1 - i];
-            var jsFrameEvent = new WebInspector.TracingModel.Event(WebInspector.TracingModel.DevToolsTimelineEventCategory, WebInspector.TimelineModel.RecordType.JSFrame,
+            var jsFrameEvent = new WebInspector.TracingModel.Event(WebInspector.TracingModel.DevToolsTimelineEventCategory, recordTypes.JSFrame,
                 WebInspector.TracingModel.Phase.Complete, e.startTime, e.thread);
             jsFrameEvent.ordinal = e.ordinal;
             jsFrameEvent.addArgs({ data: frame });

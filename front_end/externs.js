@@ -171,15 +171,6 @@ Array.prototype.intersectOrdered = function(array, comparator) {}
  */
 Array.prototype.mergeOrdered = function(array, comparator) {}
 
-/**
- * @param {T} value
- * @param {number} start
- * @param {number=} end
- * @this {!Array.<T>}
- * @template T
- */
-Array.prototype.fill = function(value, start, end) {}
-
 // File System API
 /**
  * @constructor

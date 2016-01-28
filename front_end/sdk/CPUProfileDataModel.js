@@ -16,6 +16,7 @@ WebInspector.CPUProfileDataModel = function(profile)
     this.profileEndTime = profile.endTime * 1000;
     this._assignParentsInProfile();
     if (this.samples) {
+        this._sortSamples();
         this._normalizeTimestamps();
         this._buildIdToNodeMap();
         this._fixMissingSamples();
@@ -153,6 +154,34 @@ WebInspector.CPUProfileDataModel.prototype = {
                 if (child.children.length)
                     nodesToTraverse.push(child);
             }
+        }
+    },
+
+    _sortSamples: function()
+    {
+        var timestamps = this.timestamps;
+        if (!timestamps)
+            return;
+        var samples = this.samples;
+        var indices = timestamps.map((x, index) => index);
+        indices.sort((a, b) => timestamps[a] - timestamps[b]);
+        for (var i = 0; i < timestamps.length; ++i) {
+            var index = indices[i];
+            if (index === i)
+                continue;
+            // Move items in a cycle.
+            var savedTimestamp = timestamps[i];
+            var savedSample = samples[i];
+            var currentIndex = i;
+            while (index !== i) {
+                samples[currentIndex] = samples[index];
+                timestamps[currentIndex] = timestamps[index];
+                currentIndex = index;
+                index = indices[index];
+                indices[currentIndex] = currentIndex;
+            }
+            samples[currentIndex] = savedSample;
+            timestamps[currentIndex] = savedTimestamp;
         }
     },
 

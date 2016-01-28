@@ -216,6 +216,16 @@ WebInspector.TimelineUIUtils.isMarkerEvent = function(event)
 }
 
 /**
+ * @param {!WebInspector.TracingModel.Event} event
+ * @return {?ConsoleAgent.CallFrame}
+ */
+WebInspector.TimelineUIUtils.topStackFrame = function(event)
+{
+    var stackTrace = event.stackTrace || event.initiator && event.initiator.stackTrace;
+    return stackTrace && stackTrace.length ? stackTrace[0] : null;
+}
+
+/**
  * @enum {symbol}
  */
 WebInspector.TimelineUIUtils.NetworkCategory = {
@@ -383,16 +393,8 @@ WebInspector.TimelineUIUtils.buildDetailsTextForTraceEvent = function(event, tar
      */
     function linkifyTopCallFrameAsText()
     {
-        var stackTrace = event.stackTrace;
-        if (!stackTrace) {
-            var initiator = event.initiator;
-            if (initiator)
-                stackTrace = initiator.stackTrace;
-        }
-        if (!stackTrace || !stackTrace.length)
-            return null;
-        var callFrame = stackTrace[0];
-        return linkifyLocationAsText(callFrame.scriptId, callFrame.lineNumber, callFrame.columnNumber);
+        var frame = WebInspector.TimelineUIUtils.topStackFrame(event);
+        return frame ? linkifyLocationAsText(frame.scriptId, frame.lineNumber, frame.columnNumber) : null;
     }
 }
 
@@ -487,15 +489,8 @@ WebInspector.TimelineUIUtils.buildDetailsNodeForTraceEvent = function(event, tar
      */
     function linkifyTopCallFrame()
     {
-        var stackTrace = event.stackTrace;
-        if (!stackTrace) {
-            var initiator = event.initiator;
-            if (initiator)
-                stackTrace = initiator.stackTrace;
-        }
-        if (!stackTrace || !stackTrace.length)
-            return null;
-        return linkifier.linkifyConsoleCallFrame(target, stackTrace[0], "timeline-details");
+        var frame = WebInspector.TimelineUIUtils.topStackFrame(event);
+        return frame ? linkifier.linkifyConsoleCallFrame(target, frame, "timeline-details") : null;
     }
 }
 

@@ -5003,6 +5003,14 @@
                     { "name": "success", "type": "boolean", "description": "True iff the global memory dump succeeded." }
                 ],
                 "handlers": ["browser"]
+            },
+            {
+                "name": "recordClockSyncMarker",
+                "description": "Record a clock sync marker in the trace.",
+                "parameters": [
+                    { "name": "syncId", "type": "string", "description": "The ID of this clock sync marker" }
+                ],
+                "handlers": ["browser"]
             }
         ],
         "events": [

@@ -632,22 +632,6 @@
         "domain": "Emulation",
         "description": "This domain emulates different environments for the page.",
         "hidden": true,
-        "types": [
-            {
-                "id": "Viewport",
-                "type": "object",
-                "description": "Visible page viewport",
-                "properties": [
-                    { "name": "scrollX", "type": "number", "description": "X scroll offset in CSS pixels." },
-                    { "name": "scrollY", "type": "number", "description": "Y scroll offset in CSS pixels." },
-                    { "name": "contentsWidth", "type": "number", "description": "Contents width in CSS pixels." },
-                    { "name": "contentsHeight", "type": "number", "description": "Contents height in CSS pixels." },
-                    { "name": "pageScaleFactor", "type": "number", "description": "Page scale factor." },
-                    { "name": "minimumPageScaleFactor", "type": "number", "description": "Minimum page scale factor." },
-                    { "name": "maximumPageScaleFactor", "type": "number", "description": "Maximum page scale factor." }
-                ]
-            }
-        ],
         "commands": [
             {
                 "name": "setDeviceMetricsOverride",
@@ -736,15 +720,6 @@
                     { "name": "result", "type": "boolean", "description": "True if emulation is supported." }
                 ],
                 "handlers": ["browser"]
-            }
-        ],
-        "events": [
-            {
-                "name": "viewportChanged",
-                "description": "Fired when a visible page viewport has changed. Only fired when device metrics are overridden.",
-                "parameters": [
-                    { "name": "viewport", "$ref": "Viewport", "description": "Viewport description." }
-                ]
             }
         ]
     },

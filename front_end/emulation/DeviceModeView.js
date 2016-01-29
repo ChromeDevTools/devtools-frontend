@@ -326,7 +326,6 @@ WebInspector.DeviceModeView.prototype = {
     wasShown: function()
     {
         this._measureHandles();
-        this._mediaInspector.setEnabled(true);
         this._toolbar.restore();
     },
 
@@ -336,7 +335,6 @@ WebInspector.DeviceModeView.prototype = {
     willHide: function()
     {
         this._model.emulate(WebInspector.DeviceModeModel.Type.None, null, null);
-        this._mediaInspector.setEnabled(false);
     },
 
     __proto__: WebInspector.VBox.prototype

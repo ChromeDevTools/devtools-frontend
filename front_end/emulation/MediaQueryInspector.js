@@ -13,7 +13,7 @@ WebInspector.MediaQueryInspector = function(getWidthCallback, setWidthCallback)
 {
     WebInspector.Widget.call(this, true);
     this.registerRequiredCSS("emulation/mediaQueryInspector.css");
-    this.contentElement.classList.add("media-inspector-view", "media-inspector-view-empty");
+    this.contentElement.classList.add("media-inspector-view");
     this.contentElement.addEventListener("click", this._onMediaQueryClicked.bind(this), false);
     this.contentElement.addEventListener("contextmenu", this._onContextMenu.bind(this), false);
     this._mediaThrottler = new WebInspector.Throttler(0);
@@ -22,10 +22,8 @@ WebInspector.MediaQueryInspector = function(getWidthCallback, setWidthCallback)
     this._setWidthCallback = setWidthCallback;
     this._offset = 0;
     this._scale = 1;
-    this._lastReportedCount = 0;
 
     WebInspector.targetManager.observeTargets(this);
-
     WebInspector.zoomManager.addEventListener(WebInspector.ZoomManager.Events.ZoomChanged, this._renderMediaQueries.bind(this), this);
 }
 
@@ -36,10 +34,6 @@ WebInspector.MediaQueryInspector.Section = {
     Max: 0,
     MinMax: 1,
     Min: 2
-}
-
-WebInspector.MediaQueryInspector.Events = {
-    CountUpdated: "CountUpdated"
 }
 
 WebInspector.MediaQueryInspector.prototype = {
@@ -87,15 +81,6 @@ WebInspector.MediaQueryInspector.prototype = {
         this._offset = offset;
         this._scale = scale;
         this._renderMediaQueries();
-    },
-
-    /**
-     * @param {boolean} enabled
-     */
-    setEnabled: function(enabled)
-    {
-        this._enabled = enabled;
-        this._scheduleMediaQueriesUpdate();
     },
 
     /**
@@ -165,14 +150,14 @@ WebInspector.MediaQueryInspector.prototype = {
 
     _scheduleMediaQueriesUpdate: function()
     {
-        if (!this._enabled)
+        if (!this.isShowing())
             return;
         this._mediaThrottler.schedule(this._refetchMediaQueries.bind(this));
     },
 
     _refetchMediaQueries: function()
     {
-        if (!this._enabled || !this._cssModel)
+        if (!this.isShowing() || !this._cssModel)
             return Promise.resolve();
 
         return this._cssModel.mediaQueriesPromise()
@@ -235,7 +220,7 @@ WebInspector.MediaQueryInspector.prototype = {
 
     _renderMediaQueries: function()
     {
-        if (!this._cachedQueryModels)
+        if (!this._cachedQueryModels || !this.isShowing())
             return;
 
         var markers = [];
@@ -255,15 +240,6 @@ WebInspector.MediaQueryInspector.prototype = {
             }
         }
 
-        if (markers.length !== this._lastReportedCount) {
-            this._lastReportedCount = markers.length;
-            this.dispatchEventToListeners(WebInspector.MediaQueryInspector.Events.CountUpdated, markers.length);
-        }
-
-        if (!this.isShowing())
-            return;
-
-        var oldChildrenCount = this.contentElement.children.length;
         this.contentElement.removeChildren();
 
         var container = null;
@@ -289,7 +265,7 @@ WebInspector.MediaQueryInspector.prototype = {
 
     wasShown: function()
     {
-        this._renderMediaQueries();
+        this._scheduleMediaQueriesUpdate();
     },
 
     /**

@@ -20,10 +20,6 @@
     color: transparent;
 }
 
-.device-mode-size-input.error-input {
-    outline: auto 2px red !important;
-}
-
 .device-mode-size-input:disabled {
     background: transparent;
     box-shadow: none;

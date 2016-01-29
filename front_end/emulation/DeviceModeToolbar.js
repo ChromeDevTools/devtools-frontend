@@ -68,7 +68,7 @@ WebInspector.DeviceModeToolbar.prototype = {
         widthInput.maxLength = 4;
         widthInput.type = "text";
         widthInput.title = WebInspector.UIString("Width");
-        this._updateWidthInput = this._bindInput(widthInput, this._model.setWidthAndScaleToFit.bind(this._model), WebInspector.DeviceModeModel.deviceSizeValidator);
+        this._updateWidthInput = WebInspector.bindInput(widthInput, applyWidth.bind(this), WebInspector.DeviceModeModel.deviceSizeValidator, true);
         this._widthInput = widthInput;
         this._widthItem = this._wrapToolbarItem(widthInput);
         toolbar.appendToolbarItem(this._widthItem);
@@ -82,18 +82,38 @@ WebInspector.DeviceModeToolbar.prototype = {
         heightInput.maxLength = 4;
         heightInput.type = "text";
         heightInput.title = WebInspector.UIString("Height (leave empty for full)");
-        this._updateHeightInput = this._bindInput(heightInput, this._model.setHeightAndScaleToFit.bind(this._model), validateHeight);
+        this._updateHeightInput = WebInspector.bindInput(heightInput, applyHeight.bind(this), validateHeight, true);
         this._heightInput = heightInput;
         this._heightItem = this._wrapToolbarItem(heightInput);
         toolbar.appendToolbarItem(this._heightItem);
 
         /**
          * @param {string} value
-         * @return {string}
+         * @return {boolean}
          */
         function validateHeight(value)
         {
-            return !value ? "" : WebInspector.DeviceModeModel.deviceSizeValidator(value);
+            return !value || WebInspector.DeviceModeModel.deviceSizeValidator(value);
+        }
+
+        /**
+         * @param {string} value
+         * @this {WebInspector.DeviceModeToolbar}
+         */
+        function applyWidth(value)
+        {
+            var width = value ? Number(value) : 0;
+            this._model.setWidthAndScaleToFit(width);
+        }
+
+        /**
+         * @param {string} value
+         * @this {WebInspector.DeviceModeToolbar}
+         */
+        function applyHeight(value)
+        {
+            var height = value ? Number(value) : 0;
+            this._model.setHeightAndScaleToFit(height);
         }
     },
 
@@ -143,80 +163,6 @@ WebInspector.DeviceModeToolbar.prototype = {
         toolbar.appendToolbarItem(this._wrapToolbarItem(createElementWithClass("div", "device-mode-empty-toolbar-element")));
     },
 
-
-    /**
-     * @param {!Element} input
-     * @param {function(number)} apply
-     * @param {function(string):?string} validate
-     * @return {function(number)}
-     */
-    _bindInput: function(input, apply, validate)
-    {
-        input.addEventListener("change", onChange, false);
-        input.addEventListener("input", onInput, false);
-        input.addEventListener("keydown", onKeyDown, false);
-        input.addEventListener("focus", input.select.bind(input), false);
-
-        function onInput()
-        {
-            input.classList.toggle("error-input", !!validate(input.value));
-        }
-
-        function onChange()
-        {
-            var valid = !validate(input.value);
-            input.classList.toggle("error-input", !valid);
-            if (valid)
-                apply(input.value ? Number(input.value) : 0);
-        }
-
-        /**
-         * @param {!Event} event
-         */
-        function onKeyDown(event)
-        {
-            if (isEnterKey(event)) {
-                if (!validate(input.value))
-                    apply(input.value ? Number(input.value) : 0);
-                return;
-            }
-
-            var increment = event.keyIdentifier === "Up" ? 1 : event.keyIdentifier === "Down" ? -1 : 0;
-            if (!increment)
-                return;
-            if (event.shiftKey)
-                increment *= 10;
-
-            var value = input.value;
-            if (validate(value) || !value)
-                return;
-
-            value = (value ? Number(value) : 0) + increment;
-            var stringValue = value ? String(value) : "";
-            if (validate(stringValue) || !value)
-                return;
-
-            input.value = stringValue;
-            apply(input.value ? Number(input.value) : 0);
-            event.preventDefault();
-        }
-
-        /**
-         * @param {number} value
-         */
-        function setValue(value)
-        {
-            var stringValue = value ? String(value) : "";
-            if (stringValue === input.value)
-                return;
-            var valid = !validate(stringValue);
-            input.classList.toggle("error-input", !valid);
-            input.value = stringValue;
-            input.setSelectionRange(stringValue.length, stringValue.length);
-        }
-
-        return setValue;
-    },
 
     /**
      * @param {!WebInspector.ContextMenu} contextMenu
@@ -486,8 +432,8 @@ WebInspector.DeviceModeToolbar.prototype = {
         }
 
         var size = this._model.appliedDeviceSize();
-        this._updateHeightInput(this._model.type() === WebInspector.DeviceModeModel.Type.Responsive && this._model.isFullHeight() ? 0 : size.height);
-        this._updateWidthInput(size.width);
+        this._updateHeightInput(this._model.type() === WebInspector.DeviceModeModel.Type.Responsive && this._model.isFullHeight() ? "" : String(size.height));
+        this._updateWidthInput(String(size.width));
         this._heightInput.placeholder = size.height;
 
         if (this._model.scale() !== this._cachedScale) {

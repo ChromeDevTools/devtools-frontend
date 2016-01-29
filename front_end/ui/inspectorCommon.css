@@ -200,6 +200,10 @@ input[type="text"]:focus {
     text-decoration: none !important;
 }
 
+.error-input {
+    outline: auto 2px red !important;
+}
+
 .chrome-select {
     -webkit-appearance: none;
     -webkit-user-select: none;

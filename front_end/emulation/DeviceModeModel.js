@@ -85,24 +85,24 @@ WebInspector.DeviceModeModel.MaxDeviceSize = 9999;
 
 /**
  * @param {string} value
- * @return {string}
+ * @return {boolean}
  */
 WebInspector.DeviceModeModel.deviceSizeValidator = function(value)
 {
     if (/^[\d]+$/.test(value) && value >= WebInspector.DeviceModeModel.MinDeviceSize && value <= WebInspector.DeviceModeModel.MaxDeviceSize)
-        return "";
-    return WebInspector.UIString("Value must be positive integer");
+        return true;
+    return false;
 }
 
 /**
  * @param {string} value
- * @return {string}
+ * @return {boolean}
  */
 WebInspector.DeviceModeModel.deviceScaleFactorValidator = function(value)
 {
     if (!value || (/^[\d]+(\.\d+)?|\.\d+$/.test(value) && value >= 0 && value <= 10))
-        return "";
-    return WebInspector.UIString("Value must be non-negative float");
+        return true;
+    return false;
 }
 
 WebInspector.DeviceModeModel._touchEventsScriptIdSymbol = Symbol("DeviceModeModel.touchEventsScriptIdSymbol");

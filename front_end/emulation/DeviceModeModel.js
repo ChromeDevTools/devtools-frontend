@@ -538,12 +538,13 @@ WebInspector.DeviceModeModel.prototype = {
                 return Promise.resolve();
 
             var clear = !pageWidth && !pageHeight && !mobile && !deviceScaleFactor && scale === 1;
+            var allPromises = [];
+            if (resetPageScaleFactor)
+                allPromises.push(this._target.emulationAgent().resetPageScaleFactor());
             var setDevicePromise = clear ?
                 this._target.emulationAgent().clearDeviceMetricsOverride(this._deviceMetricsOverrideAppliedForTest.bind(this)) :
                 this._target.emulationAgent().setDeviceMetricsOverride(pageWidth, pageHeight, deviceScaleFactor, mobile, false, scale, 0, 0, screenSize.width, screenSize.height, positionX, positionY, this._deviceMetricsOverrideAppliedForTest.bind(this));
-            var allPromises = [ setDevicePromise ];
-            if (resetPageScaleFactor)
-                allPromises.push(this._target.emulationAgent().resetPageScaleFactor());
+            allPromises.push(setDevicePromise);
             return Promise.all(allPromises);
         }
     },

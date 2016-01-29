@@ -21,21 +21,25 @@ WebInspector.TimelineJSProfileProcessor.generateTracingEventsFromCpuProfile = fu
     var samples = jsProfileModel.samples;
     var timestamps = jsProfileModel.timestamps;
     var jsEvents = [];
+    /** @type {!Map<!Object, !ConsoleAgent.StackTrace>} */
+    var nodeToStackMap = new Map();
+    nodeToStackMap.set(programNode, []);
     for (var i = 0; i < samples.length; ++i) {
         var node = jsProfileModel.nodeByIndex(i);
-        if (node === programNode || node === gcNode || node === idleNode)
+        if (node === gcNode || node === idleNode)
             continue;
-        var stackTrace = node._stackTraceArray;
+        var stackTrace = nodeToStackMap.get(node);
         if (!stackTrace) {
             stackTrace = /** @type {!ConsoleAgent.StackTrace} */ (new Array(node.depth + 1));
-            node._stackTraceArray = stackTrace;
+            nodeToStackMap.set(node, stackTrace);
             for (var j = 0; node.parent; node = node.parent)
                 stackTrace[j++] = /** @type {!ConsoleAgent.CallFrame} */ (node);
         }
-        var jsEvent = new WebInspector.TracingModel.Event(WebInspector.TracingModel.DevToolsTimelineEventCategory, WebInspector.TimelineModel.RecordType.JSSample,
+        var jsSampleEvent = new WebInspector.TracingModel.Event(WebInspector.TracingModel.DevToolsTimelineEventCategory,
+            WebInspector.TimelineModel.RecordType.JSSample,
             WebInspector.TracingModel.Phase.Instant, timestamps[i], thread);
-        jsEvent.args["data"] = { stackTrace: stackTrace };
-        jsEvents.push(jsEvent);
+        jsSampleEvent.args["data"] = { stackTrace: stackTrace };
+        jsEvents.push(jsSampleEvent);
     }
     return jsEvents;
 }

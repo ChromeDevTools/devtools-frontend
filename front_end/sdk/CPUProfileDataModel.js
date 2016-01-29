@@ -269,7 +269,7 @@ WebInspector.CPUProfileDataModel.prototype = {
          */
         function bottomNode(node)
         {
-            while (node.parent)
+            while (node.parent.parent)
                 node = node.parent;
             return node;
         }

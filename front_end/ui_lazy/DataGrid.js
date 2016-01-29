@@ -181,6 +181,8 @@ WebInspector.DataGrid.Align = {
     Right: "right"
 }
 
+WebInspector.DataGrid._preferredWidthSymbol = Symbol("preferredWidth");
+
 WebInspector.DataGrid.prototype = {
     /**
      * @param {string} cellClass
@@ -341,7 +343,8 @@ WebInspector.DataGrid.prototype = {
          * @param {boolean} wasChange
          * @this {WebInspector.DataGrid}
          */
-        function moveToNextIfNeeded(wasChange) {
+        function moveToNextIfNeeded(wasChange)
+        {
             if (!moveDirection)
                 return;
 
@@ -659,19 +662,32 @@ WebInspector.DataGrid.prototype = {
             return;
 
         var sumOfWeights = 0.0;
-        for (var i = 0; i < this._visibleColumnsArray.length; ++i)
-            sumOfWeights += this._visibleColumnsArray[i].weight;
-
+        var fixedColumnWidths = [];
+        for (var i = 0; i < this._visibleColumnsArray.length; ++i) {
+            var column = this._visibleColumnsArray[i];
+            if (column.fixedWidth) {
+                var width = this._headerTableColumnGroup.children[i][WebInspector.DataGrid._preferredWidthSymbol] || this.headerTableBody.rows[0].cells[i].offsetWidth;
+                fixedColumnWidths[i] = width;
+                tableWidth -= width;
+            } else {
+                sumOfWeights += this._visibleColumnsArray[i].weight;
+            }
+        }
         var sum = 0;
         var lastOffset = 0;
 
         for (var i = 0; i < this._visibleColumnsArray.length; ++i) {
-            sum += this._visibleColumnsArray[i].weight;
-            var offset = (sum * tableWidth / sumOfWeights) | 0;
-            var width = (offset - lastOffset) + "px";
-            this._headerTableColumnGroup.children[i].style.width = width;
-            this._dataTableColumnGroup.children[i].style.width = width;
-            lastOffset = offset;
+            var column = this._visibleColumnsArray[i];
+            var width;
+            if (column.fixedWidth) {
+                width = fixedColumnWidths[i];
+            } else {
+                sum += column.weight;
+                var offset = (sum * tableWidth / sumOfWeights) | 0;
+                width = offset - lastOffset;
+                lastOffset = offset;
+            }
+            this._setPreferredWidth(i, width);
         }
 
         this._positionResizers();
@@ -1041,13 +1057,8 @@ WebInspector.DataGrid.prototype = {
         resizer.__position = position;
         resizer.style.left = position + "px";
 
-        var pxLeftColumn = (dragPoint - leftEdgeOfPreviousColumn) + "px";
-        this._headerTableColumnGroup.children[leftCellIndex].style.width = pxLeftColumn;
-        this._dataTableColumnGroup.children[leftCellIndex].style.width = pxLeftColumn;
-
-        var pxRightColumn = (rightEdgeOfNextColumn - dragPoint) + "px";
-        this._headerTableColumnGroup.children[rightCellIndex].style.width = pxRightColumn;
-        this._dataTableColumnGroup.children[rightCellIndex].style.width = pxRightColumn;
+        this._setPreferredWidth(leftCellIndex, dragPoint - leftEdgeOfPreviousColumn);
+        this._setPreferredWidth(rightCellIndex, rightEdgeOfNextColumn - dragPoint);
 
         var leftColumn = this._visibleColumnsArray[leftCellIndex];
         var rightColumn = this._visibleColumnsArray[rightCellIndex];
@@ -1061,6 +1072,18 @@ WebInspector.DataGrid.prototype = {
         this._positionResizers();
         event.preventDefault();
         this.dispatchEventToListeners(WebInspector.DataGrid.Events.ColumnsResized);
+    },
+
+    /**
+     * @param {number} columnIndex
+     * @param {number} width
+     */
+    _setPreferredWidth: function(columnIndex, width)
+    {
+        var pxWidth = width + "px";
+        this._headerTableColumnGroup.children[columnIndex][WebInspector.DataGrid._preferredWidthSymbol] = width;
+        this._headerTableColumnGroup.children[columnIndex].style.width = pxWidth;
+        this._dataTableColumnGroup.children[columnIndex].style.width = pxWidth;
     },
 
     /**

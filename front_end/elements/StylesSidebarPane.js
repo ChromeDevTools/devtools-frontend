@@ -2431,7 +2431,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
                 if (!isEditingName && this._parentPane._mouseDownTreeElementIsName)
                     moveDirection = "backward";
             }
-            this.editingCommitted(event.target.textContent, context, moveDirection);
+            this.editingCommitted((context.isEditingName ? this.name : this.value) || event.target.textContent, context, moveDirection);
         }
 
         this._originalPropertyText = this.property.propertyText;

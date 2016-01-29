@@ -175,8 +175,11 @@ WebInspector.TimelineUIUtils.eventStyle = function(event)
  */
 WebInspector.TimelineUIUtils.eventColor = function(event)
 {
-    if (event.name === WebInspector.TimelineModel.RecordType.JSFrame)
-        return WebInspector.TimelineUIUtils.colorForURL(event.args["data"]["url"]);
+    if (event.name === WebInspector.TimelineModel.RecordType.JSFrame) {
+        var frame = event.args["data"];
+        if (WebInspector.TimelineUIUtils.isUserFrame(frame))
+            return WebInspector.TimelineUIUtils.colorForURL(frame.url);
+    }
     return WebInspector.TimelineUIUtils.eventStyle(event).category.color;
 }
 
@@ -213,6 +216,15 @@ WebInspector.TimelineUIUtils.isMarkerEvent = function(event)
     default:
         return false;
     }
+}
+
+/**
+ * @param {!ConsoleAgent.CallFrame} frame
+ * @return {boolean}
+ */
+WebInspector.TimelineUIUtils.isUserFrame = function(frame)
+{
+    return frame.scriptId !== "0" && !frame.url.startsWith("native ");
 }
 
 /**

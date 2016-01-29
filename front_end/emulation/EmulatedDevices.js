@@ -184,7 +184,6 @@ WebInspector.EmulatedDevice.fromJSONV1 = function(json)
 
         return result;
     } catch (e) {
-        WebInspector.console.error("Failed to update emulated device list. " + String(e));
         return null;
     }
 }
@@ -371,13 +370,16 @@ WebInspector.EmulatedDevicesList = function()
     /** @type {!WebInspector.Setting} */
     this._standardSetting = WebInspector.settings.createSetting("standardEmulatedDeviceList", []);
     /** @type {!Array.<!WebInspector.EmulatedDevice>} */
-    this._standard = this._listFromJSONV1(this._standardSetting.get());
+    this._standard = [];
+    this._listFromJSONV1(this._standardSetting.get(), this._standard);
     this._updateStandardDevices();
 
     /** @type {!WebInspector.Setting} */
     this._customSetting = WebInspector.settings.createSetting("customEmulatedDeviceList", []);
     /** @type {!Array.<!WebInspector.EmulatedDevice>} */
-    this._custom = this._listFromJSONV1(this._customSetting.get());
+    this._custom = [];
+    if (!this._listFromJSONV1(this._customSetting.get(), this._custom))
+        this.saveCustomDevices();
 }
 
 WebInspector.EmulatedDevicesList.Events = {
@@ -402,13 +404,14 @@ WebInspector.EmulatedDevicesList.prototype = {
 
     /**
      * @param {!Array.<*>} jsonArray
-     * @return {!Array.<!WebInspector.EmulatedDevice>}
+     * @param {!Array.<!WebInspector.EmulatedDevice>} result
+     * @return {boolean}
      */
-    _listFromJSONV1: function(jsonArray)
+    _listFromJSONV1: function(jsonArray, result)
     {
-        var result = [];
         if (!Array.isArray(jsonArray))
-            return result;
+            return false;
+        var success = true;
         for (var i = 0; i < jsonArray.length; ++i) {
             var device = WebInspector.EmulatedDevice.fromJSONV1(jsonArray[i]);
             if (device) {
@@ -417,9 +420,11 @@ WebInspector.EmulatedDevicesList.prototype = {
                     device.modes.push({title: "", orientation: WebInspector.EmulatedDevice.Horizontal, insets: new Insets(0, 0, 0, 0), image: null});
                     device.modes.push({title: "", orientation: WebInspector.EmulatedDevice.Vertical, insets: new Insets(0, 0, 0, 0), image: null});
                 }
+            } else {
+                success = false;
             }
         }
-        return result;
+        return success;
     },
 
     /**

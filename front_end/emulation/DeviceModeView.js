@@ -47,19 +47,27 @@ WebInspector.DeviceModeView.prototype = {
         this._screenImage.addEventListener("load", this._onScreenImageLoaded.bind(this, true), false);
         this._screenImage.addEventListener("error", this._onScreenImageLoaded.bind(this, false), false);
 
-        this._cornerResizerElement = this._screenArea.createChild("div", "device-mode-resizer device-mode-corner-resizer");
-        this._cornerResizerElement.createChild("div", "");
-        this._createResizer(this._cornerResizerElement, true, true);
+        this._bottomRightResizerElement = this._screenArea.createChild("div", "device-mode-resizer device-mode-bottom-right-resizer");
+        this._bottomRightResizerElement.createChild("div", "");
+        this._createResizer(this._bottomRightResizerElement, 2, 1);
 
-        this._widthResizerElement = this._screenArea.createChild("div", "device-mode-resizer device-mode-width-resizer");
-        this._widthResizerElement.createChild("div", "");
-        this._createResizer(this._widthResizerElement, true, false);
+        this._bottomLeftResizerElement = this._screenArea.createChild("div", "device-mode-resizer device-mode-bottom-left-resizer");
+        this._bottomLeftResizerElement.createChild("div", "");
+        this._createResizer(this._bottomLeftResizerElement, -2, 1);
 
-        this._heightResizerElement = this._screenArea.createChild("div", "device-mode-resizer device-mode-height-resizer");
-        this._heightResizerElement.createChild("div", "");
-        this._createResizer(this._heightResizerElement, false, true);
-        this._heightResizerElement.addEventListener("dblclick", this._model.setHeight.bind(this._model, 0), false);
-        this._heightResizerElement.title = WebInspector.UIString("Double-click for full height");
+        this._rightResizerElement = this._screenArea.createChild("div", "device-mode-resizer device-mode-right-resizer");
+        this._rightResizerElement.createChild("div", "");
+        this._createResizer(this._rightResizerElement, 2, 0);
+
+        this._leftResizerElement = this._screenArea.createChild("div", "device-mode-resizer device-mode-left-resizer");
+        this._leftResizerElement.createChild("div", "");
+        this._createResizer(this._leftResizerElement, -2, 0);
+
+        this._bottomResizerElement = this._screenArea.createChild("div", "device-mode-resizer device-mode-bottom-resizer");
+        this._bottomResizerElement.createChild("div", "");
+        this._createResizer(this._bottomResizerElement, 0, 1);
+        this._bottomResizerElement.addEventListener("dblclick", this._model.setHeight.bind(this._model, 0), false);
+        this._bottomResizerElement.title = WebInspector.UIString("Double-click for full height");
 
         this._pageArea = this._screenArea.createChild("div", "device-mode-page-area");
         this._pageArea.createChild("content");
@@ -106,17 +114,22 @@ WebInspector.DeviceModeView.prototype = {
 
     /**
      * @param {!Element} element
-     * @param {boolean} width
-     * @param {boolean} height
+     * @param {number} widthFactor
+     * @param {number} heightFactor
      * @return {!WebInspector.ResizerWidget}
      */
-    _createResizer: function(element, width, height)
+    _createResizer: function(element, widthFactor, heightFactor)
     {
         var resizer = new WebInspector.ResizerWidget();
         resizer.addElement(element);
-        resizer.setCursor(width && height ? "nwse-resize" : (width ? "ew-resize" : "ns-resize"));
+        var cursor = widthFactor ? "ew-resize" : "ns-resize";
+        if (widthFactor * heightFactor > 0)
+            cursor = "nwse-resize";
+        if (widthFactor * heightFactor < 0)
+            cursor = "nesw-resize";
+        resizer.setCursor(cursor);
         resizer.addEventListener(WebInspector.ResizerWidget.Events.ResizeStart, this._onResizeStart, this);
-        resizer.addEventListener(WebInspector.ResizerWidget.Events.ResizeUpdate, this._onResizeUpdate.bind(this, width, height));
+        resizer.addEventListener(WebInspector.ResizerWidget.Events.ResizeUpdate, this._onResizeUpdate.bind(this, widthFactor, heightFactor));
         resizer.addEventListener(WebInspector.ResizerWidget.Events.ResizeEnd, this._onResizeEnd, this);
         return resizer;
     },
@@ -132,11 +145,11 @@ WebInspector.DeviceModeView.prototype = {
     },
 
     /**
-     * @param {boolean} width
-     * @param {boolean} height
+     * @param {number} widthFactor
+     * @param {number} heightFactor
      * @param {!WebInspector.Event} event
      */
-    _onResizeUpdate: function(width, height, event)
+    _onResizeUpdate: function(widthFactor, heightFactor, event)
     {
         if (event.data.shiftKey !== !!this._slowPositionStart)
             this._slowPositionStart = event.data.shiftKey ? {x: event.data.currentX, y: event.data.currentY} : null;
@@ -148,17 +161,17 @@ WebInspector.DeviceModeView.prototype = {
             cssOffsetY = (event.data.currentY - this._slowPositionStart.y) / 10 + this._slowPositionStart.y - event.data.startY;
         }
 
-        if (width) {
+        if (widthFactor) {
             var dipOffsetX = cssOffsetX * WebInspector.zoomManager.zoomFactor();
-            var newWidth = this._resizeStart.width + dipOffsetX * 2;
+            var newWidth = this._resizeStart.width + dipOffsetX * widthFactor;
             newWidth = Math.round(newWidth / this._model.scale());
             if (newWidth >= WebInspector.DeviceModeModel.MinDeviceSize && newWidth <= WebInspector.DeviceModeModel.MaxDeviceSize)
                 this._model.setWidth(newWidth);
         }
 
-        if (height) {
+        if (heightFactor) {
             var dipOffsetY = cssOffsetY * WebInspector.zoomManager.zoomFactor();
-            var newHeight = this._resizeStart.height + dipOffsetY;
+            var newHeight = this._resizeStart.height + dipOffsetY * heightFactor;
             newHeight = Math.round(newHeight / this._model.scale());
             if (newHeight >= WebInspector.DeviceModeModel.MinDeviceSize && newHeight <= WebInspector.DeviceModeModel.MaxDeviceSize)
                 this._model.setHeight(newHeight);
@@ -209,9 +222,11 @@ WebInspector.DeviceModeView.prototype = {
 
         var resizable = this._model.type() === WebInspector.DeviceModeModel.Type.Responsive;
         if (resizable !== this._cachedResizable) {
-            this._widthResizerElement.classList.toggle("hidden", !resizable);
-            this._heightResizerElement.classList.toggle("hidden", !resizable);
-            this._cornerResizerElement.classList.toggle("hidden", !resizable);
+            this._rightResizerElement.classList.toggle("hidden", !resizable);
+            this._leftResizerElement.classList.toggle("hidden", !resizable);
+            this._bottomResizerElement.classList.toggle("hidden", !resizable);
+            this._bottomRightResizerElement.classList.toggle("hidden", !resizable);
+            this._bottomLeftResizerElement.classList.toggle("hidden", !resizable);
             this._cachedResizable = resizable;
         }
 
@@ -292,13 +307,13 @@ WebInspector.DeviceModeView.prototype = {
 
     _measureHandles: function()
     {
-        var hidden = this._widthResizerElement.classList.contains("hidden");
-        this._widthResizerElement.classList.toggle("hidden", false);
-        this._heightResizerElement.classList.toggle("hidden", false);
-        this._handleWidth = this._widthResizerElement.offsetWidth;
-        this._handleHeight = this._heightResizerElement.offsetHeight;
-        this._widthResizerElement.classList.toggle("hidden", hidden);
-        this._heightResizerElement.classList.toggle("hidden", hidden);
+        var hidden = this._rightResizerElement.classList.contains("hidden");
+        this._rightResizerElement.classList.toggle("hidden", false);
+        this._bottomResizerElement.classList.toggle("hidden", false);
+        this._handleWidth = this._rightResizerElement.offsetWidth;
+        this._handleHeight = this._bottomResizerElement.offsetHeight;
+        this._rightResizerElement.classList.toggle("hidden", hidden);
+        this._bottomResizerElement.classList.toggle("hidden", hidden);
     },
 
     _zoomChanged: function()

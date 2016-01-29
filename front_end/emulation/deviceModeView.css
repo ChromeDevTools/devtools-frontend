@@ -139,32 +139,41 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    transition: background-color 0.1s ease;
+    transition: background-color 0.1s ease, opacity 0.1s ease;
 }
 
 .device-mode-resizer:hover {
     background-color: hsla(0, 0%, 0%, 0.1);
+    opacity: 1;
 }
 
 .device-mode-resizer > div {
     pointer-events: none;
 }
 
-.device-mode-width-resizer {
+.device-mode-right-resizer {
     top: 0;
     bottom: -2px;
     right: -20px;
     width: 20px;
 }
 
-.device-mode-height-resizer {
+.device-mode-left-resizer {
+    top: 0;
+    bottom: -2px;
+    left: -20px;
+    width: 20px;
+    opacity: 0;
+}
+
+.device-mode-bottom-resizer {
     left: 0;
     right: -2px;
     bottom: -20px;
     height: 20px;
 }
 
-.device-mode-corner-resizer {
+.device-mode-bottom-right-resizer {
     left: 0;
     top: 0;
     right: -20px;
@@ -172,20 +181,34 @@
     background-color: hsla(0, 0%, 0%, 0.02);
 }
 
-.device-mode-width-resizer > div {
+.device-mode-bottom-left-resizer {
+    left: -20px;
+    top: 0;
+    right: 0;
+    bottom: -20px;
+    opacity: 0;
+}
+
+.device-mode-right-resizer > div {
     content: url(Images/resizeHorizontal.png);
     width: 6px;
     height: 26px;
 }
 
-.device-mode-height-resizer > div {
+.device-mode-left-resizer > div {
+    content: url(Images/resizeHorizontal.png);
+    width: 6px;
+    height: 26px;
+}
+
+.device-mode-bottom-resizer > div {
     content: url(Images/resizeVertical.png);
     margin-bottom: -2px;
     width: 26px;
     height: 6px;
 }
 
-.device-mode-corner-resizer > div {
+.device-mode-bottom-right-resizer > div {
     position: absolute;
     bottom: 3px;
     right: 3px;
@@ -194,16 +217,34 @@
     content: url(Images/resizeDiagonal.png);
 }
 
+.device-mode-bottom-left-resizer > div {
+    position: absolute;
+    bottom: 3px;
+    left: 3px;
+    width: 13px;
+    height: 13px;
+    content: url(Images/resizeDiagonal.png);
+    transform: rotate(90deg);
+}
+
 @media (-webkit-min-device-pixel-ratio: 1.5) {
-    .device-mode-width-resizer > div {
+    .device-mode-right-resizer > div {
         content: url(Images/resizeHorizontal_2x.png);
     }
 
-    .device-mode-height-resizer > div {
+    .device-mode-left-resizer > div {
+        content: url(Images/resizeHorizontal_2x.png);
+    }
+
+    .device-mode-bottom-resizer > div {
         content: url(Images/resizeVertical_2x.png);
     }
 
-    .device-mode-corner-resizer > div {
+    .device-mode-bottom-right-resizer > div {
+        content: url(Images/resizeDiagonal_2x.png);
+    }
+
+    .device-mode-bottom-left-resizer > div {
         content: url(Images/resizeDiagonal_2x.png);
     }
 } /* media */

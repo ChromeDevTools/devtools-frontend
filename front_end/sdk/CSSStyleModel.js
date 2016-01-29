@@ -132,10 +132,11 @@ WebInspector.CSSStyleModel.prototype = {
          * @param {!Array.<!CSSAgent.RuleMatch>=} matchedPayload
          * @param {!Array.<!CSSAgent.PseudoElementMatches>=} pseudoPayload
          * @param {!Array.<!CSSAgent.InheritedStyleEntry>=} inheritedPayload
+         * @param {!Array.<!CSSAgent.CSSKeyframesRule>=} animationsPayload
          * @return {?WebInspector.CSSStyleModel.MatchedStyleResult}
          * @this {WebInspector.CSSStyleModel}
          */
-        function callback(error, inlinePayload, attributesPayload, matchedPayload, pseudoPayload, inheritedPayload)
+        function callback(error, inlinePayload, attributesPayload, matchedPayload, pseudoPayload, inheritedPayload, animationsPayload)
         {
             if (error)
                 return null;
@@ -144,7 +145,7 @@ WebInspector.CSSStyleModel.prototype = {
              if (!node)
                 return null;
 
-            return new WebInspector.CSSStyleModel.MatchedStyleResult(this, node, inlinePayload, attributesPayload, matchedPayload, pseudoPayload, inheritedPayload);
+            return new WebInspector.CSSStyleModel.MatchedStyleResult(this, node, inlinePayload, attributesPayload, matchedPayload, pseudoPayload, inheritedPayload, animationsPayload);
         }
 
         return this._agent.getMatchedStylesForNode(nodeId, callback.bind(this));
@@ -1034,7 +1035,7 @@ WebInspector.CSSValue.prototype = {
 /**
  * @constructor
  * @param {!WebInspector.CSSStyleModel} cssModel
- * @param {!CSSAgent.CSSRule} payload
+ * @param {{style: !CSSAgent.CSSStyle, styleSheetId: (string|undefined), origin: !CSSAgent.StyleSheetOrigin}} payload
  */
 WebInspector.CSSRule = function(cssModel, payload)
 {
@@ -1150,9 +1151,9 @@ WebInspector.CSSStyleRule.prototype = {
     /**
      * @param {!DOMAgent.NodeId} nodeId
      * @param {string} newSelector
-     * @param {function(boolean)} userCallback
+     * @return {!Promise.<boolean>}
      */
-    setSelectorText: function(nodeId, newSelector, userCallback)
+    setSelectorText: function(nodeId, newSelector)
     {
         /**
          * @param {?Protocol.Error} error
@@ -1175,10 +1176,9 @@ WebInspector.CSSStyleRule.prototype = {
         if (!range)
             throw "Rule selector is not editable";
         WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.StyleRuleEdited);
-        this._cssModel._agent.setRuleSelector(this.styleSheetId, range, newSelector, callback.bind(this))
+        return this._cssModel._agent.setRuleSelector(this.styleSheetId, range, newSelector, callback.bind(this))
             .then(onNewSelectors.bind(this))
-            .catchException(false)
-            .then(userCallback);
+            .catchException(false);
 
         /**
          * @param {?Array<!WebInspector.CSSValue>} selectors
@@ -1299,6 +1299,105 @@ WebInspector.CSSStyleRule.prototype = {
     mediaEdited: function(oldMedia, newMedia)
     {
         this._sourceStyleSheetEditedWithMedia(/** @type {string} */ (oldMedia.parentStyleSheetId), oldMedia.range, newMedia.range, oldMedia, newMedia);
+    },
+
+    __proto__: WebInspector.CSSRule.prototype
+}
+
+/**
+ * @constructor
+ * @param {!WebInspector.CSSStyleModel} cssModel
+ * @param {!CSSAgent.CSSKeyframesRule} payload
+ */
+WebInspector.CSSKeyframesRule = function(cssModel, payload)
+{
+    this._cssModel = cssModel;
+    this._animationName = new WebInspector.CSSValue(payload.animationName);
+    this._keyframes = payload.keyframes.map(keyframeRule => new WebInspector.CSSKeyframeRule(cssModel, keyframeRule));
+}
+
+WebInspector.CSSKeyframesRule.prototype = {
+    /**
+     * @return {!WebInspector.CSSValue}
+     */
+    name: function()
+    {
+        return this._animationName;
+    },
+
+    /**
+     * @return {!Array.<!WebInspector.CSSKeyframeRule>}
+     */
+    keyframes: function()
+    {
+        return this._keyframes;
+    }
+}
+
+/**
+ * @constructor
+ * @extends {WebInspector.CSSRule}
+ * @param {!WebInspector.CSSStyleModel} cssModel
+ * @param {!CSSAgent.CSSKeyframeRule} payload
+ */
+WebInspector.CSSKeyframeRule = function(cssModel, payload)
+{
+    WebInspector.CSSRule.call(this, cssModel, payload);
+    this._keyText = new WebInspector.CSSValue(payload.keyText);
+}
+
+WebInspector.CSSKeyframeRule.prototype = {
+    /**
+     * @return {!WebInspector.CSSValue}
+        */
+    key: function()
+    {
+        return this._keyText;
+    },
+
+    /**
+     * @override
+     * @param {string} styleSheetId
+     * @param {!WebInspector.TextRange} oldRange
+     * @param {!WebInspector.TextRange} newRange
+     */
+    sourceStyleSheetEdited: function(styleSheetId, oldRange, newRange)
+    {
+        if (this.styleSheetId === styleSheetId)
+            this._keyText.sourceStyleRuleEdited(oldRange, newRange);
+        WebInspector.CSSRule.prototype.sourceStyleSheetEdited.call(this, styleSheetId, oldRange, newRange);
+    },
+
+    /**
+     * @param {string} newKeyText
+     * @return {!Promise.<boolean>}
+     */
+    setKeyText: function(newKeyText)
+    {
+        /**
+         * @param {?Protocol.Error} error
+         * @param {!CSSAgent.Value} payload
+         * @return {boolean}
+         * @this {WebInspector.CSSKeyframeRule}
+         */
+        function callback(error, payload)
+        {
+            if (error || !payload)
+                return false;
+            this._cssModel._domModel.markUndoableState();
+            this._cssModel._fireStyleSheetChanged(/** @type {string} */(this.styleSheetId));
+            this._keyText = new WebInspector.CSSValue(payload);
+            return true;
+        }
+
+        if (!this.styleSheetId)
+            throw "No rule stylesheet id";
+        var range = this._keyText.range;
+        if (!range)
+            throw "Keyframe key is not editable";
+        WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.StyleRuleEdited);
+        return this._cssModel._agent.setKeyframeKey(this.styleSheetId, range, newKeyText, callback.bind(this))
+            .catchException(false);
     },
 
     __proto__: WebInspector.CSSRule.prototype
@@ -2115,14 +2214,16 @@ WebInspector.CSSStyleModel.fromNode = function(node)
  * @param {!Array.<!CSSAgent.RuleMatch>=} matchedPayload
  * @param {!Array.<!CSSAgent.PseudoElementMatches>=} pseudoPayload
  * @param {!Array.<!CSSAgent.InheritedStyleEntry>=} inheritedPayload
+ * @param {!Array.<!CSSAgent.CSSKeyframesRule>=} animationsPayload
  */
-WebInspector.CSSStyleModel.MatchedStyleResult = function(cssModel, node, inlinePayload, attributesPayload, matchedPayload, pseudoPayload, inheritedPayload)
+WebInspector.CSSStyleModel.MatchedStyleResult = function(cssModel, node, inlinePayload, attributesPayload, matchedPayload, pseudoPayload, inheritedPayload, animationsPayload)
 {
     this._cssModel = cssModel;
     this._node = node;
     this._nodeStyles = [];
     this._nodeForStyle = new Map();
     this._inheritedStyles = new Set();
+    this._keyframes = [];
 
     /**
      * @this {WebInspector.CSSStyleModel.MatchedStyleResult}
@@ -2200,6 +2301,9 @@ WebInspector.CSSStyleModel.MatchedStyleResult = function(cssModel, node, inlineP
         }
     }
 
+    if (animationsPayload)
+        this._keyframes = animationsPayload.map(rule => new WebInspector.CSSKeyframesRule(cssModel, rule));
+
     this.resetActiveProperties();
 }
 
@@ -2241,6 +2345,14 @@ WebInspector.CSSStyleModel.MatchedStyleResult.prototype = {
     nodeStyles: function()
     {
         return this._nodeStyles;
+    },
+
+    /**
+     * @return {!Array.<!WebInspector.CSSKeyframesRule>}
+     */
+    keyframes: function()
+    {
+        return this._keyframes;
     },
 
     /**

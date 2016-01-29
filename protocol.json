@@ -3135,6 +3135,8 @@
                 "id": "CSSKeyframeRule",
                 "type": "object",
                 "properties": [
+                    { "name": "styleSheetId", "$ref": "StyleSheetId", "optional": true, "description": "The css style sheet identifier (absent for user agent stylesheet and user-specified stylesheet rules) this rule came from." },
+                    { "name": "origin", "$ref": "StyleSheetOrigin", "description": "Parent stylesheet's origin."},
                     { "name": "keyText", "$ref": "Value", "description": "Associated key text." },
                     { "name": "style", "$ref": "CSSStyle", "description": "Associated style declaration." }
                 ],
@@ -3161,7 +3163,8 @@
                     { "name": "attributesStyle", "$ref": "CSSStyle", "optional": true, "description": "Attribute-defined element style (e.g. resulting from \"width=20 height=100%\")."},
                     { "name": "matchedCSSRules", "type": "array", "items": { "$ref": "RuleMatch" }, "optional": true, "description": "CSS rules matching this node, from all applicable stylesheets." },
                     { "name": "pseudoElements", "type": "array", "items": { "$ref": "PseudoElementMatches" }, "optional": true, "description": "Pseudo style matches for this node." },
-                    { "name": "inherited", "type": "array", "items": { "$ref": "InheritedStyleEntry" }, "optional": true, "description": "A chain of inherited styles (from the immediate node parent up to the DOM tree root)." }
+                    { "name": "inherited", "type": "array", "items": { "$ref": "InheritedStyleEntry" }, "optional": true, "description": "A chain of inherited styles (from the immediate node parent up to the DOM tree root)." },
+                    { "name": "cssKeyframesRules", "type": "array", "items": { "$ref": "CSSKeyframesRule" }, "optional": true, "description": "A list of CSS keyframed animations matching this node." }
                 ],
                 "description": "Returns requested styles for a DOM node identified by <code>nodeId</code>."
             },
@@ -3198,16 +3201,6 @@
                 "hidden": true
             },
             {
-                "name": "getCSSAnimationsForNode",
-                "parameters": [
-                    { "name": "nodeId", "$ref": "DOM.NodeId" }
-                ],
-                "returns": [
-                    { "name": "cssKeyframesRules", "type": "array", "items": { "$ref": "CSSKeyframesRule" }, "optional": true, "description": "A list of CSS keyframed animations matching this node." }
-                ],
-                "description": "Returns all CSS keyframed animations mtaching this node."
-            },
-            {
                 "name": "getStyleSheetText",
                 "parameters": [
                     { "name": "styleSheetId", "$ref": "StyleSheetId" }
@@ -3239,6 +3232,18 @@
                     { "name": "selectorList", "$ref": "SelectorList", "description": "The resulting selector list after modification." }
                 ],
                 "description": "Modifies the rule selector."
+            },
+            {
+                "name": "setKeyframeKey",
+                "parameters": [
+                    { "name": "styleSheetId", "$ref": "StyleSheetId" },
+                    { "name": "range", "$ref": "SourceRange" },
+                    { "name": "keyText", "type": "string" }
+                ],
+                "returns": [
+                    { "name": "keyText", "$ref": "Value", "description": "The resulting key text after modification." }
+                ],
+                "description": "Modifies the keyframe rule key text."
             },
             {
                 "name": "setStyleText",

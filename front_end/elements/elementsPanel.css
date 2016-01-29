@@ -260,7 +260,7 @@
     color: #888;
 }
 
-.styles-section .simple-selector.selector-matches {
+.styles-section .simple-selector.selector-matches, .styles-section.keyframe-key {
     color: #222;
 }
 

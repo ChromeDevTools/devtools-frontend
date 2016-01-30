@@ -28,7 +28,8 @@
 .elements-disclosure li.selected:after {
     font-style: italic;
     content: " == $0";
-    color: #555;
+    color: black;
+    opacity: 0.6;
 }
 
 .elements-disclosure ol:focus li.selected:after {

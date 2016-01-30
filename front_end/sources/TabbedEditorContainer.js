@@ -585,18 +585,16 @@ WebInspector.TabbedEditorContainer.History.prototype = {
      */
     index: function(url)
     {
-        var index = this._itemsIndex[url];
-        if (typeof index === "number")
-            return index;
-        return -1;
+        return this._itemsIndex.has(url) ? /** @type {number} */(this._itemsIndex.get(url)) : -1;
     },
 
     _rebuildItemIndex: function()
     {
-        this._itemsIndex = {};
+        /** @type {!Map<string, number>} */
+        this._itemsIndex = new Map();
         for (var i = 0; i < this._items.length; ++i) {
-            console.assert(!this._itemsIndex.hasOwnProperty(this._items[i].url));
-            this._itemsIndex[this._items[i].url] = i;
+            console.assert(!this._itemsIndex.has(this._items[i].url));
+            this._itemsIndex.set(this._items[i].url, i);
         }
     },
 

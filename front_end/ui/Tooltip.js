@@ -33,7 +33,7 @@ WebInspector.Tooltip.prototype = {
      */
     _mouseMove: function(event)
     {
-        var path = event.deepPath ? event.deepPath : event.path;
+        var path = event.deepPath() ? event.deepPath() : event.path;
         if (!path || event.buttons !== 0)
             return;
 

@@ -260,9 +260,9 @@ WebInspector.Cookie.prototype = {
     /**
      * @return {boolean}
      */
-    firstPartyOnly: function ()
+    sameSite: function ()
     {
-        return "first-party-only" in this._attributes;
+        return "samesite" in this._attributes;
     },
 
     /**
@@ -428,8 +428,8 @@ WebInspector.Cookies._parseProtocolCookie = function(target, protocolCookie)
         cookie.addAttribute("httpOnly");
     if (protocolCookie["secure"])
         cookie.addAttribute("secure");
-    if (protocolCookie["firstPartyOnly"])
-        cookie.addAttribute("first-party-only");
+    if (protocolCookie["sameSite"])
+        cookie.addAttribute("sameSite");
     cookie.setSize(protocolCookie["size"]);
     return cookie;
 }

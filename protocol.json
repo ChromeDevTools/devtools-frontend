@@ -5213,9 +5213,11 @@
                 "properties": [
                     { "name": "type", "$ref": "AXValueSourceType", "description": "What type of source this is." },
                     { "name": "value", "$ref": "AXValue", "description": "The value of this property source.", "optional": true },
-                    { "name": "attribute", "type": "string", "description": "The attribute, if any.", "optional": true },
+                    { "name": "attribute", "type": "string", "description": "The name of the relevant attribute, if any.", "optional": true },
+                    { "name": "attributeValue", "$ref": "AXValue", "description": "The value of the relevant attribute, if any.", "optional": true },
                     { "name": "superseded", "type": "boolean", "description": "Whether this source is superseded by a higher priority source.", "optional": true },
                     { "name": "nativeSource", "$ref": "AXValueNativeSourceType", "description": "The native markup source for this value, e.g. a <label> element.", "optional": true },
+                    { "name": "nativeSourceValue", "$ref": "AXValue", "description": "The value, such as a node or node list, of the native source.", "optional": true },
                     { "name": "invalid", "type": "boolean", "description": "Whether the value for this property is invalid.", "optional": true },
                     { "name": "invalidReason", "type": "string", "description": "Reason for the value being invalid, if it is.", "optional": true }
                 ],

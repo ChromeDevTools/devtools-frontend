@@ -71,6 +71,9 @@ span.ax-internal-role {
 .tree-outline li.invalid {
     position: relative;
     left: -2px;
+}
+
+.invalid {
     text-decoration: line-through;
 }
 

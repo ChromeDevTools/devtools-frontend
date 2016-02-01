@@ -12,6 +12,7 @@
     "scripts": [
         "AccessibilityModel.js",
         "AccessibilitySidebarView.js",
+        "AccessibilityNodeView.js",
         "AccessibilityStrings.js"
     ],
     "resources": [

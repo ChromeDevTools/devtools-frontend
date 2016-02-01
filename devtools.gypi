@@ -356,6 +356,7 @@
             'front_end/accessibility/accessibilityNode.css',
             'front_end/accessibility/AccessibilityModel.js',
             'front_end/accessibility/AccessibilitySidebarView.js',
+            'front_end/accessibility/AccessibilityNodeView.js',
             'front_end/accessibility/AccessibilityStrings.js',
         ],
         'devtools_animation_js_files': [

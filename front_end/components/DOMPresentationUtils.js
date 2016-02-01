@@ -102,9 +102,10 @@ WebInspector.DOMPresentationUtils.createSpansForNodeTitle = function(container, 
 
 /**
  * @param {?WebInspector.DOMNode} node
+ * @param {string=} idref
  * @return {!Node}
  */
-WebInspector.DOMPresentationUtils.linkifyNodeReference = function(node)
+WebInspector.DOMPresentationUtils.linkifyNodeReference = function(node, idref)
 {
     if (!node)
         return createTextNode(WebInspector.UIString("<node>"));
@@ -113,7 +114,10 @@ WebInspector.DOMPresentationUtils.linkifyNodeReference = function(node)
     var shadowRoot = WebInspector.createShadowRootWithCoreStyles(root, "components/domUtils.css");
     var link = shadowRoot.createChild("div", "node-link");
 
-    WebInspector.DOMPresentationUtils.decorateNodeLabel(node, link);
+    if (idref)
+        link.createChild("span", "node-label-id").createTextChild("#" + idref);
+    else
+        WebInspector.DOMPresentationUtils.decorateNodeLabel(node, link);
 
     link.addEventListener("click", WebInspector.Revealer.reveal.bind(WebInspector.Revealer, node, undefined), false);
     link.addEventListener("mouseover", node.highlight.bind(node, undefined, undefined), false);

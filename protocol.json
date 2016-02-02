@@ -3459,6 +3459,16 @@
                 "description": "Location in the source code."
             },
             {
+                "id": "ScriptPosition",
+                "hidden": true,
+                "type": "object",
+                "properties": [
+                    { "name": "line", "type": "integer" },
+                    { "name": "column", "type": "integer" }
+                ],
+                "description": "Location in the source code."
+            },
+            {
                 "id": "FunctionDetails",
                 "hidden": true,
                 "type": "object",
@@ -3928,6 +3938,15 @@
                 ],
                 "hidden": true,
                 "description": "Removes AsyncOperation breakpoint."
+            },
+            {
+                "name": "setBlackboxedRanges",
+                "parameters": [
+                    { "name": "scriptId", "$ref": "ScriptId", "description": "Id of the script." },
+                    { "name": "positions", "type": "array", "items": { "$ref": "ScriptPosition" } }
+                ],
+                "hidden": true,
+                "description": "Set blackboxed ranges for script. Positions array contains positions where blackbox state is changed. First interval isn't blackboxed. Array should be sorted."
             }
         ],
         "events": [

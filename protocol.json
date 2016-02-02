@@ -3877,15 +3877,6 @@
                 "description": "Returns call stack including variables changed since VM was paused. VM must be paused."
             },
             {
-                "name": "skipStackFrames",
-                "parameters": [
-                    { "name": "script", "type": "string", "optional": true, "description": "Regular expression defining the scripts to ignore while stepping." },
-                    { "name": "skipContentScripts", "type": "boolean", "optional": true, "description": "True, if all content scripts should be ignored." }
-                ],
-                "hidden": true,
-                "description": "Makes backend skip steps in the sources with names matching given pattern. VM will try leave blacklisted scripts by performing 'step in' several times, finally resorting to 'step out' if unsuccessful."
-            },
-            {
                 "name": "setAsyncCallStackDepth",
                 "parameters": [
                     { "name": "maxDepth", "type": "integer", "description": "Maximum depth of async call stacks. Setting to <code>0</code> will effectively disable collecting async call stacks (default)." }
@@ -3946,7 +3937,7 @@
                     { "name": "positions", "type": "array", "items": { "$ref": "ScriptPosition" } }
                 ],
                 "hidden": true,
-                "description": "Set blackboxed ranges for script. Positions array contains positions where blackbox state is changed. First interval isn't blackboxed. Array should be sorted."
+                "description": "Makes backend skip steps in the script in blackboxed ranges. VM will try leave blacklisted scripts by performing 'step in' several times, finally resorting to 'step out' if unsuccessful. Positions array contains positions where blackbox state is changed. First interval isn't blackboxed. Array should be sorted."
             }
         ],
         "events": [

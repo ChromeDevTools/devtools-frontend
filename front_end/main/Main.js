@@ -203,6 +203,7 @@ WebInspector.Main.prototype = {
 
         new WebInspector.OverlayController();
         new WebInspector.ExecutionContextSelector(WebInspector.targetManager, WebInspector.context);
+        new WebInspector.BlackboxManager();
 
         var autoselectPanel = WebInspector.UIString("auto");
         var openAnchorLocationSetting = WebInspector.settings.createSetting("openLinkHandler", autoselectPanel);

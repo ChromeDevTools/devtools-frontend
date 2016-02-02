@@ -289,5 +289,13 @@ WebInspector.Script.prototype = {
         return !!this.hasSourceURL && this.isInlineScript();
     },
 
+    /**
+     * @param {!Array<!DebuggerAgent.ScriptPosition>} positions
+     */
+    setBlackboxedRanges: function(positions)
+    {
+        this.target().debuggerAgent().setBlackboxedRanges(this.scriptId, positions);
+    },
+
     __proto__: WebInspector.SDKObject.prototype
 }

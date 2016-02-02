@@ -55,12 +55,8 @@ WebInspector.DebuggerModel = function(target)
     WebInspector.moduleSetting("pauseOnExceptionEnabled").addChangeListener(this._pauseOnExceptionStateChanged, this);
     WebInspector.moduleSetting("pauseOnCaughtException").addChangeListener(this._pauseOnExceptionStateChanged, this);
     WebInspector.moduleSetting("enableAsyncStackTraces").addChangeListener(this.asyncStackTracesStateChanged, this);
-    WebInspector.moduleSetting("skipStackFramesPattern").addChangeListener(this._applySkipStackFrameSettings, this);
-    WebInspector.moduleSetting("skipContentScripts").addChangeListener(this._applySkipStackFrameSettings, this);
 
     this.enableDebugger();
-
-    this._applySkipStackFrameSettings();
 }
 
 /** @typedef {{location: ?WebInspector.DebuggerModel.Location, sourceURL: ?string, functionName: string, scopeChain: (Array.<!DebuggerAgent.Scope>|null)}} */
@@ -738,11 +734,6 @@ WebInspector.DebuggerModel.prototype = {
         this.selectedCallFrame().evaluate(code, objectGroup, includeCommandLineAPI, doNotPauseOnExceptionsAndMuteConsole, returnByValue, generatePreview, didEvaluate.bind(this));
     },
 
-    _applySkipStackFrameSettings: function()
-    {
-        this._agent.skipStackFrames(WebInspector.moduleSetting("skipStackFramesPattern").get(), WebInspector.moduleSetting("skipContentScripts").get());
-    },
-
     /**
      * @param {!WebInspector.RemoteObject} remoteObject
      * @param {function(?WebInspector.DebuggerModel.FunctionDetails)} callback
@@ -911,8 +902,6 @@ WebInspector.DebuggerModel.prototype = {
             return;
         WebInspector.moduleSetting("pauseOnExceptionEnabled").removeChangeListener(this._pauseOnExceptionStateChanged, this);
         WebInspector.moduleSetting("pauseOnCaughtException").removeChangeListener(this._pauseOnExceptionStateChanged, this);
-        WebInspector.moduleSetting("skipStackFramesPattern").removeChangeListener(this._applySkipStackFrameSettings, this);
-        WebInspector.moduleSetting("skipContentScripts").removeChangeListener(this._applySkipStackFrameSettings, this);
         WebInspector.moduleSetting("enableAsyncStackTraces").removeChangeListener(this.asyncStackTracesStateChanged, this);
     },
 

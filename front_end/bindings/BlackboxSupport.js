@@ -2,6 +2,46 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/**
+ * @constructor
+ */
+WebInspector.BlackboxManager = function()
+{
+    WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this);
+    WebInspector.moduleSetting("skipStackFramesPattern").addChangeListener(this._patternChanged.bind(this));
+    WebInspector.moduleSetting("skipContentScripts").addChangeListener(this._patternChanged.bind(this));
+}
+
+WebInspector.BlackboxManager.prototype = {
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _parsedScriptSource: function(event)
+    {
+        var script = /** @type {!WebInspector.Script} */ (event.data);
+        this._blackboxScriptIfNeeded(script);
+    },
+
+    _patternChanged: function()
+    {
+        for (var debuggerModel of WebInspector.DebuggerModel.instances()) {
+            for (var scriptId in debuggerModel.scripts)
+                this._blackboxScriptIfNeeded(debuggerModel.scripts[scriptId]);
+        }
+    },
+
+    /**
+     * @param {!WebInspector.Script} script
+     */
+    _blackboxScriptIfNeeded: function(script)
+    {
+        if (WebInspector.BlackboxSupport.isBlackboxed(script.sourceURL, script.isContentScript()))
+            script.setBlackboxedRanges([ { line: 0, column: 0 } ]);
+        else
+            script.setBlackboxedRanges([]);
+    }
+}
+
 WebInspector.BlackboxSupport = {}
 
 /**

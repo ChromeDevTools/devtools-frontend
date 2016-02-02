@@ -238,32 +238,17 @@ WebInspector.AXNodePropertyTreeElement.prototype = {
     },
 
     /**
-     * @param {number} numNodes
-     */
-    appendNumNodesString: function(numNodes)
-    {
-        var nodesInfo = WebInspector.UIString(numNodes === 1 ? "(%d node)" : "(%d nodes)", numNodes);
-        this.listItemElement.createTextChild(nodesInfo);
-    },
-
-    /**
      * @param {!AccessibilityAgent.AXRelatedNode} relatedNode
+     * @param {number} index
      */
-    appendSingleRelatedNode: function(relatedNode)
+    appendRelatedNode: function(relatedNode, index)
     {
+        if (index > 0)
+            this.listItemElement.createTextChild(",\u00a0");
+
         var deferredNode = new WebInspector.DeferredDOMNode(this._target, relatedNode.backendNodeId);
         var linkedNode = new WebInspector.AXRelatedNodeElement({ deferredNode: deferredNode }, relatedNode);
         this.listItemElement.appendChild(linkedNode.render());
-    },
-
-    /**
-     * @param {!AccessibilityAgent.AXRelatedNode} relatedNode
-     */
-    appendRelatedNode: function(relatedNode)
-    {
-        var deferredNode = new WebInspector.DeferredDOMNode(this._target, relatedNode.backendNodeId);
-        var nodeTreeElement = new WebInspector.AXRelatedNodeTreeElement({ deferredNode: deferredNode }, relatedNode);
-        this.appendChild(nodeTreeElement);
     },
 
     /**
@@ -271,22 +256,7 @@ WebInspector.AXNodePropertyTreeElement.prototype = {
      */
     appendRelatedNodeListValueElement: function(value)
     {
-        var relatedNodes = value.relatedNodes;
-        var numNodes = relatedNodes.length;
-
-        if (numNodes === 1) {
-            var relatedNode = relatedNodes[0];
-            this.appendSingleRelatedNode(relatedNode);
-            return;
-        }
-
-        relatedNodes.forEach(this.appendRelatedNode, this);
-        this.appendNumNodesString(numNodes);
-
-        if (numNodes <= 3)
-            this.expand();
-        else
-            this.collapse();
+        value.relatedNodes.forEach(this.appendRelatedNode, this);
     },
 
     __proto__: TreeElement.prototype
@@ -353,36 +323,28 @@ WebInspector.AXValueSourceTreeElement.prototype = {
         this._update();
     },
 
-
     /**
      * @param {!AccessibilityAgent.AXRelatedNode} relatedNode
-     * @param {string=} idref
+     * @param {number} index
      * @override
      */
-    appendRelatedNode: function(relatedNode, idref)
+    appendRelatedNode: function(relatedNode, index)
     {
         var deferredNode = new WebInspector.DeferredDOMNode(this._target, relatedNode.backendNodeId);
-        var nodeTreeElement = new WebInspector.AXRelatedNodeSourceTreeElement({ deferredNode: deferredNode, idref: idref }, relatedNode);
+        var nodeTreeElement = new WebInspector.AXRelatedNodeSourceTreeElement({ deferredNode: deferredNode }, relatedNode);
         this.appendChild(nodeTreeElement);
     },
 
     /**
      * @param {!AccessibilityAgent.AXRelatedNode} relatedNode
-     * @param {string=} idref
-     * @override
+     * @param {number} index
+     * @param {string} idref
      */
-    appendSingleRelatedNode: function(relatedNode, idref)
+    appendRelatedNodeWithIdref: function(relatedNode, index, idref)
     {
-        this.appendRelatedNode(relatedNode, idref);
-    },
-
-    /**
-     * @param {number} numNodes
-     * @override
-     */
-    appendNumNodesString: function(numNodes)
-    {
-        // Do not append num nodes string
+        var deferredNode = new WebInspector.DeferredDOMNode(this._target, relatedNode.backendNodeId);
+        var nodeTreeElement = new WebInspector.AXRelatedNodeSourceTreeElement({ deferredNode: deferredNode, idref: idref }, relatedNode);
+        this.appendChild(nodeTreeElement);
     },
 
     /**
@@ -399,18 +361,19 @@ WebInspector.AXValueSourceTreeElement.prototype = {
             var idref = idrefs[0];
             var matchingNode = relatedNodes.find(node => node.idref === idref);
             if (matchingNode) {
-                this.appendSingleRelatedNode(matchingNode, idref);
+                this.appendRelatedNodeWithIdref(matchingNode, 0, idref);
             } else {
                 this.listItemElement.appendChild(new WebInspector.AXRelatedNodeElement({ idref: idref }).render());
             }
         } else {
             // TODO(aboxhall): exclamation mark if not idreflist type
-            for (var idref of idrefs) {
+            for (var i = 0; i < idrefs.length; ++i) {
+                var idref = idrefs[i];
                 var matchingNode = relatedNodes.find(node => node.idref === idref);
                 if (matchingNode) {
-                    this.appendRelatedNode(matchingNode, idref);
+                    this.appendRelatedNodeWithIdref(matchingNode, i, idref);
                 } else {
-                    this.appendChild(new WebInspector.AXRelatedNodeTreeElement({ idref: idref }));
+                    this.appendChild(new WebInspector.AXRelatedNodeSourceTreeElement({ idref: idref }));
                 }
             }
         }
@@ -521,37 +484,14 @@ WebInspector.AXValueSourceTreeElement.prototype = {
  * @param {!AccessibilityAgent.AXRelatedNode=} value
  * @extends {TreeElement}
  */
-WebInspector.AXRelatedNodeTreeElement = function(node, value)
-{
-    this._axRelatedNodeElement = new WebInspector.AXRelatedNodeElement(node, value);
-
-    TreeElement.call(this, "");
-    this.selectable = false;
-};
-
-WebInspector.AXRelatedNodeTreeElement.prototype = {
-    /**
-     * @override
-     */
-    onattach: function()
-    {
-        this.listItemElement.appendChild(this._axRelatedNodeElement.render());
-    },
-
-    __proto__: TreeElement.prototype
-};
-
-/**
- * @constructor
- * @param {{deferredNode: (!WebInspector.DeferredDOMNode|undefined), idref: (string|undefined)}} node
- * @param {!AccessibilityAgent.AXRelatedNode=} value
- * @extends {WebInspector.AXRelatedNodeTreeElement}
- */
 WebInspector.AXRelatedNodeSourceTreeElement = function(node, value)
 {
     this._value = value;
+    this._axRelatedNodeElement = new WebInspector.AXRelatedNodeElement(node, value);
 
-    WebInspector.AXRelatedNodeTreeElement.call(this, node, value);
+    TreeElement.call(this, "");
+
+    this.selectable = false;
 };
 
 WebInspector.AXRelatedNodeSourceTreeElement.prototype = {
@@ -560,14 +500,17 @@ WebInspector.AXRelatedNodeSourceTreeElement.prototype = {
      */
     onattach: function()
     {
-        WebInspector.AXRelatedNodeTreeElement.prototype.onattach.call(this);
+        this.listItemElement.appendChild(this._axRelatedNodeElement.render());
+        if (!this._value)
+            return;
+
         this.listItemElement.createTextChild("\u00a0\"");
         if (this._value.text)
             this.listItemElement.appendChild(WebInspector.AXNodePropertyTreeElement.createSimpleValueElement(AccessibilityAgent.AXValueType.ComputedString, this._value.text));
         this.listItemElement.createTextChild("\"");
     },
 
-    __proto__: WebInspector.AXRelatedNodeTreeElement.prototype
+    __proto__: TreeElement.prototype
 };
 
 

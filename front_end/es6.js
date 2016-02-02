@@ -1014,15 +1014,6 @@ Array.prototype.keys;
  */
 Array.prototype.entries;
 
-/**
- * @param {function(this:S,T,number,!Array<T>)} callback
- * @param {?S=} thisArg
- * @this {!Array<T>}
- * @template T,S
- */
-Array.prototype.find = function(callback, thisArg) {}
-
-
 /** @return {!Array<symbol>} */
 Object.getOwnPropertySymbols;
 

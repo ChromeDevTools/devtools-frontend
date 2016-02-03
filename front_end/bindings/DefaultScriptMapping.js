@@ -46,6 +46,17 @@ WebInspector.DefaultScriptMapping = function(debuggerModel, workspace, debuggerW
     this._debuggerReset();
 }
 
+WebInspector.DefaultScriptMapping._scriptSymbol = Symbol("symbol");
+
+/**
+ * @param {!WebInspector.UISourceCode} uiSourceCode
+ * @return {?WebInspector.Script}
+ */
+WebInspector.DefaultScriptMapping.scriptForUISourceCode = function(uiSourceCode)
+{
+    return uiSourceCode[WebInspector.DefaultScriptMapping._scriptSymbol] || null;
+}
+
 WebInspector.DefaultScriptMapping.prototype = {
     /**
      * @override
@@ -91,6 +102,7 @@ WebInspector.DefaultScriptMapping.prototype = {
         url = "debugger:///VM" + script.scriptId + (url ? " " + url: "");
 
         var uiSourceCode = this._project.createUISourceCode(url, WebInspector.resourceTypes.Script);
+        uiSourceCode[WebInspector.DefaultScriptMapping._scriptSymbol] = script;
         this._uiSourceCodeForScriptId.set(script.scriptId, uiSourceCode);
         this._scriptIdForUISourceCode.set(uiSourceCode, script.scriptId);
         this._project.addUISourceCodeWithProvider(uiSourceCode, script);

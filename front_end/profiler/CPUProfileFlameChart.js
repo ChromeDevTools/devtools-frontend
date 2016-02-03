@@ -285,7 +285,9 @@ WebInspector.CPUFlameChartDataProvider.prototype = {
     entryColor: function(entryIndex)
     {
         var node = this._entryNodes[entryIndex];
-        return this._colorGenerator.colorForID(node.functionName + ":" + node.url);
+        // For idle and program, we want different 'shades of gray', so we fallback to functionName as scriptId = 0
+        // For rest of nodes e.g eval scripts, if url is empty then scriptId will be guaranteed to be non-zero
+        return this._colorGenerator.colorForID(node.url || (node.scriptId !== "0" ? node.scriptId : node.functionName));
     },
 
     /**
@@ -359,9 +361,10 @@ WebInspector.CPUFlameChartDataProvider.colorGenerator = function()
             { min: 180, max: 310, count: 7 },
             { min: 50, max: 80, count: 5 },
             { min: 80, max: 90, count: 3 });
-        colorGenerator.setColorForID("(idle):", "hsl(0, 0%, 94%)");
-        colorGenerator.setColorForID("(program):", "hsl(0, 0%, 80%)");
-        colorGenerator.setColorForID("(garbage collector):", "hsl(0, 0%, 80%)");
+
+        colorGenerator.setColorForID("(idle)", "hsl(0, 0%, 94%)");
+        colorGenerator.setColorForID("(program)", "hsl(0, 0%, 80%)");
+        colorGenerator.setColorForID("(garbage collector)", "hsl(0, 0%, 80%)");
         WebInspector.CPUFlameChartDataProvider._colorGenerator = colorGenerator;
     }
     return WebInspector.CPUFlameChartDataProvider._colorGenerator;

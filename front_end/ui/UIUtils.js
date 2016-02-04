@@ -673,8 +673,6 @@ WebInspector.installComponentRootStyles = function(element)
     WebInspector.appendStyle(element, "ui/inspectorCommon.css");
     WebInspector.themeSupport.injectHighlightStyleSheets(element);
     element.classList.add("platform-" + WebInspector.platform());
-    if (Runtime.experiments.isEnabled("materialDesign"))
-        element.classList.add("material");
 }
 
 /**

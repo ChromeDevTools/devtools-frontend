@@ -132,19 +132,9 @@
     left: 5px;
 }
 
-:host-context(.material) .shadow-split-widget button.left-sidebar-show-hide-button,
-:host-context(.material) .shadow-split-widget button.top-sidebar-show-hide-button {
-    top: 5px;
-}
-
 .shadow-split-widget button.right-sidebar-show-hide-button {
     top: 5px;
     right:4px;
-}
-
-:host-context(.material) .shadow-split-widget button.right-sidebar-show-hide-button {
-    top: 5px;
-    right: 5px;
 }
 
 .shadow-split-widget button.bottom-sidebar-show-hide-button {

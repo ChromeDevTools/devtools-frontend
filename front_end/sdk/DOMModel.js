@@ -1826,7 +1826,7 @@ WebInspector.DOMModel.prototype = {
             highlightConfig.eventTargetColor = WebInspector.Color.PageHighlight.EventTarget.toProtocolRGBA();
             highlightConfig.shapeColor = WebInspector.Color.PageHighlight.Shape.toProtocolRGBA();
             highlightConfig.shapeMarginColor = WebInspector.Color.PageHighlight.ShapeMargin.toProtocolRGBA();
-            highlightConfig.displayAsMaterial = Runtime.experiments.isEnabled("materialDesign");
+            highlightConfig.displayAsMaterial = Runtime.experiments.isEnabled("inspectTooltip");
         }
         return highlightConfig;
     },

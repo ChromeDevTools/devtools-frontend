@@ -45,12 +45,6 @@
     overflow: hidden;
 }
 
-.material .scripts-debug-toolbar-drawer {
-    flex: 0 0 54px;
-    margin-top: -28px;
-    padding-top: 26px;
-}
-
 .scripts-debug-toolbar-drawer.expanded {
     margin-top: 0;
 }

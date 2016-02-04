@@ -72,10 +72,6 @@
     border-bottom: 1px solid rgb(202, 202, 202);
 }
 
-.material .profiles-toolbar {
-    flex: 0 0 29px;
-}
-
 .profile-launcher-view-tree-item > .icon {
     width: 4px !important;
     visibility: hidden;

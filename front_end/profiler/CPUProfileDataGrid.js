@@ -75,7 +75,7 @@ WebInspector.ProfileDataGridNode.prototype = {
 
         if (this.profileNode.scriptId !== "0") {
             var target = this.tree.profileView.target();
-            var callFrame = /** @type {!ConsoleAgent.CallFrame} */ (this.profileNode);
+            var callFrame = /** @type {!RuntimeAgent.CallFrame} */ (this.profileNode);
             var urlElement = this.tree.profileView._linkifier.linkifyConsoleCallFrame(target, callFrame, "profile-node-file");
             urlElement.style.maxWidth = "75%";
             cell.insertBefore(urlElement, cell.firstChild);

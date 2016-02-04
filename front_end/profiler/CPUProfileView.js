@@ -501,7 +501,6 @@ WebInspector.CPUProfileType.prototype = {
             undefined,
             undefined,
             undefined,
-            undefined,
             [{
                 functionName: "",
                 scriptId: scriptLocation.scriptId,

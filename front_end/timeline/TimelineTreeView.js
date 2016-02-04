@@ -107,7 +107,7 @@ WebInspector.TimelineTreeView.prototype = {
     _onHover: function(node) { },
 
     /**
-     * @param {!ConsoleAgent.CallFrame} frame
+     * @param {!RuntimeAgent.CallFrame} frame
      * @return {!Element}
      */
     linkifyLocation: function(frame)
@@ -461,7 +461,7 @@ WebInspector.TimelineTreeView.GridNode.prototype = {
                 : WebInspector.TimelineUIUtils.eventTitle(event);
             var frame = WebInspector.TimelineTreeView.eventStackFrame(event);
             if (frame && frame["url"]) {
-                var callFrame = /** @type {!ConsoleAgent.CallFrame} */ (frame);
+                var callFrame = /** @type {!RuntimeAgent.CallFrame} */ (frame);
                 container.createChild("div", "activity-link").appendChild(this._treeView.linkifyLocation(callFrame));
             }
             icon.style.backgroundColor = WebInspector.TimelineUIUtils.eventColor(event);

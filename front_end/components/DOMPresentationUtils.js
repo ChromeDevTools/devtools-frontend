@@ -218,11 +218,10 @@ WebInspector.DOMPresentationUtils.buildImagePreviewContents = function(target, o
 /**
  * @param {!WebInspector.Target} target
  * @param {!WebInspector.Linkifier} linkifier
- * @param {!Array.<!ConsoleAgent.CallFrame>=} stackTrace
- * @param {!ConsoleAgent.AsyncStackTrace=} asyncStackTrace
+ * @param {!RuntimeAgent.StackTrace=} stackTrace
  * @return {!Element}
  */
-WebInspector.DOMPresentationUtils.buildStackTracePreviewContents = function(target, linkifier, stackTrace, asyncStackTrace)
+WebInspector.DOMPresentationUtils.buildStackTracePreviewContents = function(target, linkifier, stackTrace)
 {
     var element = createElement("span");
     element.style.display = "inline-block";
@@ -230,11 +229,11 @@ WebInspector.DOMPresentationUtils.buildStackTracePreviewContents = function(targ
     var contentElement = shadowRoot.createChild("table", "stack-preview-container");
 
     /**
-     * @param {!Array.<!ConsoleAgent.CallFrame>} stackTrace
+     * @param {!RuntimeAgent.StackTrace} stackTrace
      */
     function appendStackTrace(stackTrace)
     {
-        for (var stackFrame of stackTrace) {
+        for (var stackFrame of stackTrace.callFrames) {
             var row = createElement("tr");
             row.createChild("td", "function-name").textContent = WebInspector.beautifyFunctionName(stackFrame.functionName);
             row.createChild("td").textContent = " @ ";
@@ -243,19 +242,23 @@ WebInspector.DOMPresentationUtils.buildStackTracePreviewContents = function(targ
         }
     }
 
-    if (stackTrace)
-        appendStackTrace(stackTrace);
+    if (!stackTrace)
+        return element;
 
+    appendStackTrace(stackTrace);
+
+    var asyncStackTrace = stackTrace.parent;
     while (asyncStackTrace) {
-        var callFrames = asyncStackTrace.callFrames;
-        if (!callFrames || !callFrames.length)
-            break;
+        if (!asyncStackTrace.callFrames.length) {
+            asyncStackTrace = asyncStackTrace.parent;
+            continue;
+        }
         var row = contentElement.createChild("tr");
         row.createChild("td", "stack-preview-async-description").textContent = WebInspector.asyncStackTraceLabel(asyncStackTrace.description);
         row.createChild("td");
         row.createChild("td");
-        appendStackTrace(callFrames);
-        asyncStackTrace = asyncStackTrace.asyncStackTrace;
+        appendStackTrace(asyncStackTrace);
+        asyncStackTrace = asyncStackTrace.parent;
     }
 
     return element;

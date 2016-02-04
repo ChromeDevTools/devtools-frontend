@@ -21,24 +21,24 @@ WebInspector.TimelineJSProfileProcessor.generateTracingEventsFromCpuProfile = fu
     var samples = jsProfileModel.samples;
     var timestamps = jsProfileModel.timestamps;
     var jsEvents = [];
-    /** @type {!Map<!Object, !ConsoleAgent.StackTrace>} */
+    /** @type {!Map<!Object, !Array<!RuntimeAgent.CallFrame>>} */
     var nodeToStackMap = new Map();
     nodeToStackMap.set(programNode, []);
     for (var i = 0; i < samples.length; ++i) {
         var node = jsProfileModel.nodeByIndex(i);
         if (node === gcNode || node === idleNode)
             continue;
-        var stackTrace = nodeToStackMap.get(node);
-        if (!stackTrace) {
-            stackTrace = /** @type {!ConsoleAgent.StackTrace} */ (new Array(node.depth + 1));
-            nodeToStackMap.set(node, stackTrace);
+        var callFrames = nodeToStackMap.get(node);
+        if (!callFrames) {
+            callFrames = /** @type {!Array<!RuntimeAgent.CallFrame>} */ (new Array(node.depth + 1));
+            nodeToStackMap.set(node, callFrames);
             for (var j = 0; node.parent; node = node.parent)
-                stackTrace[j++] = /** @type {!ConsoleAgent.CallFrame} */ (node);
+                callFrames[j++] = /** @type {!RuntimeAgent.CallFrame} */ (node);
         }
         var jsSampleEvent = new WebInspector.TracingModel.Event(WebInspector.TracingModel.DevToolsTimelineEventCategory,
             WebInspector.TimelineModel.RecordType.JSSample,
             WebInspector.TracingModel.Phase.Instant, timestamps[i], thread);
-        jsSampleEvent.args["data"] = { stackTrace: stackTrace };
+        jsSampleEvent.args["data"] = { stackTrace: callFrames };
         jsEvents.push(jsSampleEvent);
     }
     return jsEvents;
@@ -51,8 +51,8 @@ WebInspector.TimelineJSProfileProcessor.generateTracingEventsFromCpuProfile = fu
 WebInspector.TimelineJSProfileProcessor.generateJSFrameEvents = function(events)
 {
     /**
-     * @param {!ConsoleAgent.CallFrame} frame1
-     * @param {!ConsoleAgent.CallFrame} frame2
+     * @param {!RuntimeAgent.CallFrame} frame1
+     * @param {!RuntimeAgent.CallFrame} frame2
      * @return {boolean}
      */
     function equalFrames(frame1, frame2)
@@ -166,7 +166,7 @@ WebInspector.TimelineJSProfileProcessor.generateJSFrameEvents = function(events)
     }
 
     /**
-     * @param {!Array<!ConsoleAgent.CallFrame>} stack
+     * @param {!Array<!RuntimeAgent.CallFrame>} stack
      */
     function filterStackFrames(stack)
     {
@@ -185,21 +185,21 @@ WebInspector.TimelineJSProfileProcessor.generateJSFrameEvents = function(events)
     function extractStackTrace(e)
     {
         var recordTypes = WebInspector.TimelineModel.RecordType;
-        var stackTrace;
+        var callFrames;
         if (e.name === recordTypes.JSSample) {
             var eventData = e.args["data"] || e.args["beginData"];
-            stackTrace = /** @type {!Array<!ConsoleAgent.CallFrame>} */ (eventData && eventData["stackTrace"]);
+            callFrames = /** @type {!Array<!RuntimeAgent.CallFrame>} */ (eventData && eventData["stackTrace"]);
         } else {
-            stackTrace = /** @type {!Array<!ConsoleAgent.CallFrame>} */ (jsFramesStack.map(frameEvent => frameEvent.args["data"]).reverse());
+            callFrames = /** @type {!Array<!RuntimeAgent.CallFrame>} */ (jsFramesStack.map(frameEvent => frameEvent.args["data"]).reverse());
         }
         if (filterNativeFunctions)
-            filterStackFrames(stackTrace);
+            filterStackFrames(callFrames);
         var endTime = eventEndTime(e);
-        var numFrames = stackTrace.length;
+        var numFrames = callFrames.length;
         var minFrames = Math.min(numFrames, jsFramesStack.length);
         var i;
         for (i = lockedJsStackDepth.peekLast() || 0; i < minFrames; ++i) {
-            var newFrame = stackTrace[numFrames - 1 - i];
+            var newFrame = callFrames[numFrames - 1 - i];
             var oldFrame = jsFramesStack[i].args["data"];
             if (!equalFrames(newFrame, oldFrame))
                 break;
@@ -207,7 +207,7 @@ WebInspector.TimelineJSProfileProcessor.generateJSFrameEvents = function(events)
         }
         truncateJSStack(i, e.startTime);
         for (; i < numFrames; ++i) {
-            var frame = stackTrace[numFrames - 1 - i];
+            var frame = callFrames[numFrames - 1 - i];
             var jsFrameEvent = new WebInspector.TracingModel.Event(WebInspector.TracingModel.DevToolsTimelineEventCategory, recordTypes.JSFrame,
                 WebInspector.TracingModel.Phase.Complete, e.startTime, e.thread);
             jsFrameEvent.ordinal = e.ordinal;
@@ -250,7 +250,7 @@ WebInspector.TimelineJSProfileProcessor.CodeMap = function()
  * @constructor
  * @param {number} address
  * @param {number} size
- * @param {!ConsoleAgent.CallFrame} callFrame
+ * @param {!RuntimeAgent.CallFrame} callFrame
  */
 WebInspector.TimelineJSProfileProcessor.CodeMap.Entry = function(address, size, callFrame)
 {
@@ -273,7 +273,7 @@ WebInspector.TimelineJSProfileProcessor.CodeMap.prototype = {
     /**
      * @param {string} addressHex
      * @param {number} size
-     * @param {!ConsoleAgent.CallFrame} callFrame
+     * @param {!RuntimeAgent.CallFrame} callFrame
      */
     addEntry: function(addressHex, size, callFrame)
     {
@@ -300,7 +300,7 @@ WebInspector.TimelineJSProfileProcessor.CodeMap.prototype = {
 
     /**
      * @param {string} addressHex
-     * @return {?ConsoleAgent.CallFrame}
+     * @return {?RuntimeAgent.CallFrame}
      */
     lookupEntry: function(addressHex)
     {
@@ -375,7 +375,7 @@ WebInspector.TimelineJSProfileProcessor.CodeMap.Bank.prototype = {
 
     /**
      * @param {number} address
-     * @return {?ConsoleAgent.CallFrame}
+     * @return {?RuntimeAgent.CallFrame}
      */
     lookupEntry: function(address)
     {
@@ -406,7 +406,7 @@ WebInspector.TimelineJSProfileProcessor.CodeMap.Bank.prototype = {
 /**
  * @param {string} name
  * @param {number} scriptId
- * @return {!ConsoleAgent.CallFrame}
+ * @return {!RuntimeAgent.CallFrame}
  */
 WebInspector.TimelineJSProfileProcessor._buildCallFrame = function(name, scriptId)
 {
@@ -417,11 +417,11 @@ WebInspector.TimelineJSProfileProcessor._buildCallFrame = function(name, scriptI
      * @param {number=} line
      * @param {number=} column
      * @param {boolean=} isNative
-     * @return {!ConsoleAgent.CallFrame}
+     * @return {!RuntimeAgent.CallFrame}
      */
     function createFrame(functionName, url, scriptId, line, column, isNative)
     {
-        return /** @type {!ConsoleAgent.CallFrame} */ ({
+        return /** @type {!RuntimeAgent.CallFrame} */ ({
             "functionName": functionName,
             "url": url || "",
             "scriptId": scriptId || "0",
@@ -469,7 +469,7 @@ WebInspector.TimelineJSProfileProcessor.processRawV8Samples = function(events)
 
     /**
      * @param {string} address
-     * @return {?ConsoleAgent.CallFrame}
+     * @return {?RuntimeAgent.CallFrame}
      */
     function convertRawFrame(address)
     {

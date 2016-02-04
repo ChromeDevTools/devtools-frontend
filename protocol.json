@@ -870,7 +870,29 @@
                     { "name": "scriptId", "type": "string", "optional": true, "description": "Script ID of the message origin." },
                     { "name": "line", "type": "integer", "optional": true, "description": "Line number in the resource that generated this message." },
                     { "name": "column", "type": "integer", "optional": true, "description": "Column number in the resource that generated this message." },
-                    { "name": "stackTrace", "$ref": "Console.StackTrace", "optional": true, "description": "JavaScript stack trace for assertions and error messages." }
+                    { "name": "stack", "$ref": "StackTrace", "optional": true, "description": "JavaScript stack trace for assertions and error messages." }
+                ]
+            },
+            {
+                "id": "CallFrame",
+                "type": "object",
+                "description": "Stack entry for runtime errors and assertions.",
+                "properties": [
+                    { "name": "functionName", "type": "string", "description": "JavaScript function name." },
+                    { "name": "scriptId", "$ref": "ScriptId", "description": "JavaScript script id." },
+                    { "name": "url", "type": "string", "description": "JavaScript script name or url." },
+                    { "name": "lineNumber", "type": "integer", "description": "JavaScript script line number." },
+                    { "name": "columnNumber", "type": "integer", "description": "JavaScript script column number." }
+                ]
+            },
+            {
+                "id": "StackTrace",
+                "type": "object",
+                "description": "Call frames for assertions or error messages.",
+                "properties": [
+                    { "name": "description", "type": "string", "optional": true, "description": "String label of this stack trace. For async traces this may be a name of the function that initiated the async call." },
+                    { "name": "callFrames", "type": "array", "items": { "$ref": "CallFrame" }, "description": "JavaScript function name." },
+                    { "name": "parent", "$ref": "StackTrace", "optional": true, "hidden": true, "hidden": true, "description": "Asynchronous JavaScript stack trace that preceded this stack, if available." }
                 ]
             }
         ],
@@ -1046,43 +1068,13 @@
                     { "name": "column", "type": "integer", "optional": true, "description": "Column number in the resource that generated this message." },
                     { "name": "repeatCount", "type": "integer", "optional": true, "description": "Repeat count for repeated messages." },
                     { "name": "parameters", "type": "array", "items": { "$ref": "Runtime.RemoteObject" }, "optional": true, "description": "Message parameters in case of the formatted message." },
-                    { "name": "stackTrace", "$ref": "StackTrace", "optional": true, "description": "JavaScript stack trace for assertions and error messages." },
-                    { "name": "asyncStackTrace", "$ref": "AsyncStackTrace", "optional": true, "description": "Asynchronous JavaScript stack trace that preceded this message, if available.", "hidden": true },
+                    { "name": "stack", "$ref": "Runtime.StackTrace", "optional": true, "description": "JavaScript stack trace for assertions and error messages." },
                     { "name": "networkRequestId", "$ref": "Network.RequestId", "optional": true, "description": "Identifier of the network request associated with this message." },
                     { "name": "timestamp", "$ref": "Timestamp", "description": "Timestamp, when this message was fired.", "hidden": true },
                     { "name": "executionContextId", "$ref": "Runtime.ExecutionContextId", "optional": true, "description": "Identifier of the context where this message was created", "hidden": true },
                     { "name": "messageId", "type": "integer", "hidden": true, "optional": true, "description": "Message id." },
                     { "name": "relatedMessageId", "type": "integer", "hidden": true, "optional": true, "description": "Related message id." }
                 ]
-            },
-            {
-                "id": "CallFrame",
-                "type": "object",
-                "description": "Stack entry for console errors and assertions.",
-                "properties": [
-                    { "name": "functionName", "type": "string", "description": "JavaScript function name." },
-                    { "name": "scriptId", "type": "string", "description": "JavaScript script id." },
-                    { "name": "url", "type": "string", "description": "JavaScript script name or url." },
-                    { "name": "lineNumber", "type": "integer", "description": "JavaScript script line number." },
-                    { "name": "columnNumber", "type": "integer", "description": "JavaScript script column number." }
-                ]
-            },
-            {
-                "id": "StackTrace",
-                "type": "array",
-                "items": { "$ref": "CallFrame" },
-                "description": "Call frames for assertions or error messages."
-            },
-            {
-                "id": "AsyncStackTrace",
-                "type": "object",
-                "properties": [
-                    { "name": "callFrames", "type": "array", "items": { "$ref": "CallFrame" }, "description": "Call frames of the stack trace." },
-                    { "name": "description", "type": "string", "optional": true, "description": "String label of this stack trace. For async traces this may be a name of the function that initiated the async call." },
-                    { "name": "asyncStackTrace", "$ref": "AsyncStackTrace", "optional": true, "description": "Next asynchronous stack trace, if any." }
-                ],
-                "description": "Asynchronous JavaScript call stack.",
-                "hidden": true
             }
         ],
         "commands": [
@@ -1379,10 +1371,9 @@
                 "description": "Information about the request initiator.",
                 "properties": [
                     { "name": "type", "type": "string", "enum": ["parser", "script", "other"], "description": "Type of this initiator." },
-                    { "name": "stackTrace", "$ref": "Console.StackTrace", "optional": true, "description": "Initiator JavaScript stack trace, set for Script only." },
+                    { "name": "stack", "$ref": "Runtime.StackTrace", "optional": true, "description": "Initiator JavaScript stack trace, set for Script only." },
                     { "name": "url", "type": "string", "optional": true, "description": "Initiator URL, set for Parser type only." },
-                    { "name": "lineNumber", "type": "number", "optional": true, "description": "Initiator line number, set for Parser type only." },
-                    { "name": "asyncStackTrace", "$ref": "Console.AsyncStackTrace", "optional": true, "description": "Initiator asynchronous JavaScript stack trace, if available.", "hidden": true }
+                    { "name": "lineNumber", "type": "number", "optional": true, "description": "Initiator line number, set for Parser type only." }
                 ]
             },
             {
@@ -3567,13 +3558,11 @@
                     { "name": "id", "type": "integer", "description": "Unique id of the promise." },
                     { "name": "status", "type": "string", "optional": true, "enum": ["pending", "resolved", "rejected"], "description": "Status of the promise." },
                     { "name": "parentId", "type": "integer", "optional": true, "description": "Id of the parent promise." },
-                    { "name": "callFrame", "$ref": "Console.CallFrame", "optional": true, "description": "Top call frame on promise creation."},
+                    { "name": "callFrame", "$ref": "Runtime.CallFrame", "optional": true, "description": "Top call frame on promise creation."},
                     { "name": "creationTime", "type": "number", "optional": true, "description": "Creation time of the promise." },
                     { "name": "settlementTime", "type": "number", "optional": true, "description": "Settlement time of the promise." },
-                    { "name": "creationStack", "$ref": "Console.StackTrace", "optional": true, "description": "JavaScript stack trace on promise creation." },
-                    { "name": "asyncCreationStack", "$ref": "Console.AsyncStackTrace", "optional": true, "description": "JavaScript asynchronous stack trace on promise creation, if available." },
-                    { "name": "settlementStack", "$ref": "Console.StackTrace", "optional": true, "description": "JavaScript stack trace on promise settlement." },
-                    { "name": "asyncSettlementStack", "$ref": "Console.AsyncStackTrace", "optional": true, "description": "JavaScript asynchronous stack trace on promise settlement, if available." }
+                    { "name": "creationStack", "$ref": "Runtime.StackTrace", "optional": true, "description": "JavaScript stack trace on promise creation." },
+                    { "name": "settlementStack", "$ref": "Runtime.StackTrace", "optional": true, "description": "JavaScript stack trace on promise settlement." }
                 ],
                 "hidden": true
             },
@@ -3583,9 +3572,7 @@
                 "description": "Information about the async operation.",
                 "properties": [
                     { "name": "id", "type": "integer", "description": "Unique id of the async operation." },
-                    { "name": "description", "type": "string", "description": "String description of the async operation." },
-                    { "name": "stackTrace", "$ref": "Console.StackTrace", "optional": true, "description": "Stack trace where async operation was scheduled." },
-                    { "name": "asyncStackTrace", "$ref": "Console.AsyncStackTrace", "optional": true, "description": "Asynchronous stack trace where async operation was scheduled, if available." }
+                    { "name": "stack", "$ref": "Runtime.StackTrace", "optional": true, "description": "Stack trace where async operation was scheduled." }
                 ],
                 "hidden": true
             },

@@ -239,15 +239,14 @@ WebInspector.ConsoleModel.clearConsole = function()
  * @param {number=} column
  * @param {!NetworkAgent.RequestId=} requestId
  * @param {!Array.<!RuntimeAgent.RemoteObject>=} parameters
- * @param {!Array.<!ConsoleAgent.CallFrame>=} stackTrace
+ * @param {!RuntimeAgent.StackTrace=} stackTrace
  * @param {number=} timestamp
  * @param {!RuntimeAgent.ExecutionContextId=} executionContextId
- * @param {!ConsoleAgent.AsyncStackTrace=} asyncStackTrace
  * @param {?string=} scriptId
  * @param {number=} messageId
  * @param {number=} relatedMessageId
  */
-WebInspector.ConsoleMessage = function(target, source, level, messageText, type, url, line, column, requestId, parameters, stackTrace, timestamp, executionContextId, asyncStackTrace, scriptId, messageId, relatedMessageId)
+WebInspector.ConsoleMessage = function(target, source, level, messageText, type, url, line, column, requestId, parameters, stackTrace, timestamp, executionContextId, scriptId, messageId, relatedMessageId)
 {
     this._target = target;
     this.source = source;
@@ -261,11 +260,10 @@ WebInspector.ConsoleMessage = function(target, source, level, messageText, type,
     /** @type {number} */
     this.column = column || 0;
     this.parameters = parameters;
-    /** @type {!Array.<!ConsoleAgent.CallFrame>|undefined} */
+    /** @type {!RuntimeAgent.StackTrace|undefined} */
     this.stackTrace = stackTrace;
     this.timestamp = timestamp || Date.now();
     this.executionContextId = executionContextId || 0;
-    this.asyncStackTrace = asyncStackTrace;
     this.scriptId = scriptId || null;
     this._messageId = messageId || 0;
     this._relatedMessageId = relatedMessageId || 0;
@@ -275,8 +273,7 @@ WebInspector.ConsoleMessage = function(target, source, level, messageText, type,
     if (this.request) {
         var initiator = this.request.initiator();
         if (initiator) {
-            this.stackTrace = initiator.stackTrace || undefined;
-            this.asyncStackTrace = initiator.asyncStackTrace;
+            this.stackTrace = initiator.stack || undefined;
             if (initiator.url) {
                 this.url = initiator.url;
                 this.line = initiator.lineNumber || 0;
@@ -363,19 +360,6 @@ WebInspector.ConsoleMessage.prototype = {
         if (!this._isEqualStackTraces(this.stackTrace, msg.stackTrace))
             return false;
 
-        var asyncTrace1 = this.asyncStackTrace;
-        var asyncTrace2 = msg.asyncStackTrace;
-        while (asyncTrace1 || asyncTrace2) {
-            if (!asyncTrace1 || !asyncTrace2)
-                return false;
-            if (asyncTrace1.description !== asyncTrace2.description)
-                return false;
-            if (!this._isEqualStackTraces(asyncTrace1.callFrames, asyncTrace2.callFrames))
-                return false;
-            asyncTrace1 = asyncTrace1.asyncStackTrace;
-            asyncTrace2 = asyncTrace2.asyncStackTrace;
-        }
-
         if (this.parameters) {
             if (!msg.parameters || this.parameters.length !== msg.parameters.length)
                 return false;
@@ -400,24 +384,28 @@ WebInspector.ConsoleMessage.prototype = {
     },
 
     /**
-     * @param {!Array.<!ConsoleAgent.CallFrame>|undefined} stackTrace1
-     * @param {!Array.<!ConsoleAgent.CallFrame>|undefined} stackTrace2
+     * @param {!RuntimeAgent.StackTrace|undefined} stackTrace1
+     * @param {!RuntimeAgent.StackTrace|undefined} stackTrace2
      * @return {boolean}
      */
     _isEqualStackTraces: function(stackTrace1, stackTrace2)
     {
-        stackTrace1 = stackTrace1 || [];
-        stackTrace2 = stackTrace2 || [];
-        if (stackTrace1.length !== stackTrace2.length)
+        if (!stackTrace1 !== !stackTrace2)
             return false;
-        for (var i = 0, n = stackTrace1.length; i < n; ++i) {
-            if (stackTrace1[i].url !== stackTrace2[i].url ||
-                stackTrace1[i].functionName !== stackTrace2[i].functionName ||
-                stackTrace1[i].lineNumber !== stackTrace2[i].lineNumber ||
-                stackTrace1[i].columnNumber !== stackTrace2[i].columnNumber)
+        if (!stackTrace1)
+            return true;
+        var callFrames1 = stackTrace1.callFrames;
+        var callFrames2 = stackTrace2.callFrames;
+        if (callFrames1.length !== callFrames2.length)
+            return false;
+        for (var i = 0, n = callFrames1.length; i < n; ++i) {
+            if (callFrames1[i].url !== callFrames2[i].url ||
+                callFrames1[i].functionName !== callFrames2[i].functionName ||
+                callFrames1[i].lineNumber !== callFrames2[i].lineNumber ||
+                callFrames1[i].columnNumber !== callFrames2[i].columnNumber)
                 return false;
         }
-        return true;
+        return this._isEqualStackTraces(stackTrace1.parent, stackTrace2.parent);
     }
 }
 
@@ -509,10 +497,9 @@ WebInspector.ConsoleDispatcher.prototype = {
             payload.column,
             payload.networkRequestId,
             payload.parameters,
-            payload.stackTrace,
+            payload.stack,
             payload.timestamp * 1000, // Convert to ms.
             payload.executionContextId,
-            payload.asyncStackTrace,
             payload.scriptId,
             payload.messageId,
             payload.relatedMessageId);

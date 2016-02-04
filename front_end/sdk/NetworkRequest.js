@@ -1083,7 +1083,7 @@ WebInspector.NetworkRequest.prototype = {
                 url = initiator.url ? initiator.url : url;
                 lineNumber = initiator.lineNumber ? initiator.lineNumber : lineNumber;
             } else if (initiator.type === NetworkAgent.InitiatorType.Script) {
-                var topFrame = initiator.stackTrace ? initiator.stackTrace[0] : null;
+                var topFrame = initiator.stack && initiator.stack.callFrames.length ? initiator.stack.callFrames[0] : null;
                 if (topFrame && topFrame.url) {
                     type = WebInspector.NetworkRequest.InitiatorType.Script;
                     url = topFrame.url;

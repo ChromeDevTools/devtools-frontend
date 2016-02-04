@@ -6,44 +6,39 @@ WebInspector.DebuggerPresentationUtils = {}
 
 /**
  * @param {?WebInspector.DebuggerModel} debuggerModel
- * @param {!Array.<!ConsoleAgent.CallFrame>=} stackTrace
- * @param {!ConsoleAgent.AsyncStackTrace=} asyncStackTrace
+ * @param {!RuntimeAgent.StackTrace=} stackTrace
  * @param {boolean=} showBlackboxed
- * @return {?ConsoleAgent.CallFrame}
+ * @return {?RuntimeAgent.CallFrame}
  */
-WebInspector.DebuggerPresentationUtils.callFrameAnchorFromStackTrace = function(debuggerModel, stackTrace, asyncStackTrace, showBlackboxed)
+WebInspector.DebuggerPresentationUtils.callFrameAnchorFromStackTrace = function(debuggerModel, stackTrace, showBlackboxed)
 {
     /**
-     * @param {?Array.<!ConsoleAgent.CallFrame>=} stackTrace
-     * @return {?ConsoleAgent.CallFrame}
+     * @param {!Array.<!RuntimeAgent.CallFrame>} callFrames
+     * @return {?RuntimeAgent.CallFrame}
      */
-    function innerCallFrameAnchorFromStackTrace(stackTrace)
+    function innerCallFrameAnchorFromStackTrace(callFrames)
     {
-        if (!stackTrace || !stackTrace.length)
+        if (!callFrames.length)
             return null;
         if (showBlackboxed)
-            return stackTrace[0];
-        for (var i = 0; i < stackTrace.length; ++i) {
-            var script = debuggerModel && debuggerModel.scriptForId(stackTrace[i].scriptId);
+            return callFrames[0];
+        for (var i = 0; i < callFrames.length; ++i) {
+            var script = debuggerModel && debuggerModel.scriptForId(callFrames[i].scriptId);
             var blackboxed = script ?
                 WebInspector.BlackboxSupport.isBlackboxed(script.sourceURL, script.isContentScript()) :
-                WebInspector.BlackboxSupport.isBlackboxedURL(stackTrace[i].url);
+                WebInspector.BlackboxSupport.isBlackboxedURL(callFrames[i].url);
             if (!blackboxed)
-                return stackTrace[i];
+                return callFrames[i];
         }
         return null;
     }
 
-    var callFrame = innerCallFrameAnchorFromStackTrace(stackTrace);
-    if (callFrame)
-        return callFrame;
-
+    var asyncStackTrace = stackTrace;
     while (asyncStackTrace) {
-        callFrame = innerCallFrameAnchorFromStackTrace(asyncStackTrace.callFrames);
+        var callFrame = innerCallFrameAnchorFromStackTrace(asyncStackTrace.callFrames);
         if (callFrame)
             return callFrame;
-        asyncStackTrace = asyncStackTrace.asyncStackTrace;
+        asyncStackTrace = asyncStackTrace.parent;
     }
-
-    return stackTrace ? stackTrace[0] : null;
+    return stackTrace && stackTrace.callFrames.length ? stackTrace.callFrames[0] : null;
 }

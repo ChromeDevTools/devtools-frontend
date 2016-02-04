@@ -84,11 +84,12 @@ WebInspector.PresentationConsoleMessageHelper.prototype = {
         var debuggerModel = WebInspector.DebuggerModel.fromTarget(message.target());
         if (!debuggerModel)
             return null;
+        var callFrame = message.stackTrace && message.stackTrace.callFrames ? message.stackTrace.callFrames[0] : null;
         // FIXME(62725): stack trace line/column numbers are one-based.
-        var lineNumber = message.stackTrace ? message.stackTrace[0].lineNumber - 1 : message.line - 1;
+        var lineNumber = callFrame ? callFrame.lineNumber - 1 : message.line - 1;
         var columnNumber = message.column ? message.column - 1 : 0;
-        if (message.stackTrace && message.stackTrace[0].columnNumber)
-            columnNumber = message.stackTrace[0].columnNumber - 1;
+        if (callFrame && callFrame.columnNumber)
+            columnNumber = callFrame.columnNumber - 1;
         if (message.scriptId)
             return debuggerModel.createRawLocationByScriptId(message.scriptId, lineNumber, columnNumber);
         return debuggerModel.createRawLocationByURL(message.url || "", lineNumber, columnNumber);

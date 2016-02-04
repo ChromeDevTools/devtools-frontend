@@ -1965,7 +1965,7 @@ WebInspector.InvalidationTrackingEvent = function(event)
         this.cause.reason = "Layout forced";
 }
 
-/** @typedef {{reason: string, stackTrace: ?Array.<!ConsoleAgent.CallFrame>}} */
+/** @typedef {{reason: string, stackTrace: ?Array.<!RuntimeAgent.CallFrame>}} */
 WebInspector.InvalidationCause;
 
 /**

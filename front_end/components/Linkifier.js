@@ -193,7 +193,7 @@ WebInspector.Linkifier.prototype = {
 
     /**
      * @param {?WebInspector.Target} target
-     * @param {!ConsoleAgent.CallFrame} callFrame
+     * @param {!RuntimeAgent.CallFrame} callFrame
      * @param {string=} classes
      * @return {!Element}
      */

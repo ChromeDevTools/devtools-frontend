@@ -215,7 +215,7 @@ WebInspector.ConsoleViewMessage.prototype = {
             } else {
                 var showBlackboxed = (consoleMessage.source !== WebInspector.ConsoleMessage.MessageSource.ConsoleAPI);
                 var debuggerModel = WebInspector.DebuggerModel.fromTarget(this._target());
-                var callFrame = WebInspector.DebuggerPresentationUtils.callFrameAnchorFromStackTrace(debuggerModel, consoleMessage.stackTrace, consoleMessage.asyncStackTrace, showBlackboxed);
+                var callFrame = WebInspector.DebuggerPresentationUtils.callFrameAnchorFromStackTrace(debuggerModel, consoleMessage.stackTrace, showBlackboxed);
                 if (callFrame && callFrame.scriptId)
                     this._anchorElement = this._linkifyCallFrame(callFrame);
                 else if (consoleMessage.url && consoleMessage.url !== "undefined")
@@ -230,7 +230,7 @@ WebInspector.ConsoleViewMessage.prototype = {
             this._formattedMessage.insertBefore(this._anchorElement, this._formattedMessage.firstChild);
         }
 
-        var dumpStackTrace = (!!consoleMessage.stackTrace || !!consoleMessage.asyncStackTrace) && (consoleMessage.source === WebInspector.ConsoleMessage.MessageSource.Network || consoleMessage.level === WebInspector.ConsoleMessage.MessageLevel.Error || consoleMessage.level === WebInspector.ConsoleMessage.MessageLevel.RevokedError || consoleMessage.type === WebInspector.ConsoleMessage.MessageType.Trace);
+        var dumpStackTrace = !!consoleMessage.stackTrace && (consoleMessage.source === WebInspector.ConsoleMessage.MessageSource.Network || consoleMessage.level === WebInspector.ConsoleMessage.MessageLevel.Error || consoleMessage.level === WebInspector.ConsoleMessage.MessageLevel.RevokedError || consoleMessage.type === WebInspector.ConsoleMessage.MessageType.Trace);
         if (dumpStackTrace) {
             var treeOutline = new TreeOutline();
             treeOutline.element.classList.add("outline-disclosure", "outline-disclosure-no-padding");
@@ -276,7 +276,7 @@ WebInspector.ConsoleViewMessage.prototype = {
     },
 
     /**
-     * @param {!ConsoleAgent.CallFrame} callFrame
+     * @param {!RuntimeAgent.CallFrame} callFrame
      * @return {?Element}
      */
     _linkifyCallFrame: function(callFrame)
@@ -1013,8 +1013,7 @@ WebInspector.ConsoleViewMessage.prototype = {
         var target = this._target();
         if (!target)
             return;
-        var content = WebInspector.DOMPresentationUtils.buildStackTracePreviewContents(target,
-            this._linkifier, this._message.stackTrace, this._message.asyncStackTrace);
+        var content = WebInspector.DOMPresentationUtils.buildStackTracePreviewContents(target, this._linkifier, this._message.stackTrace);
         var treeElement = new TreeElement(content);
         treeElement.selectable = false;
         parentTreeElement.appendChild(treeElement);

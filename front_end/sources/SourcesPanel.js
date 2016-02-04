@@ -282,7 +282,7 @@ WebInspector.SourcesPanel.prototype = {
             if (Runtime.experiments.isEnabled("stepIntoAsync")) {
                 var operationId = details.auxData["operationId"];
                 var operation = this.sidebarPanes.asyncOperationBreakpoints.operationById(details.target(), operationId);
-                var description = (operation && operation.description) || WebInspector.UIString("<unknown>");
+                var description = (operation && operation.stack && operation.stack.description) || WebInspector.UIString("<unknown>");
                 this.sidebarPanes.callstack.setStatus(WebInspector.UIString("Paused on a \"%s\" async operation.", description));
                 this.sidebarPanes.asyncOperationBreakpoints.highlightBreakpoint(operationId);
             }

@@ -266,7 +266,7 @@ WebInspector.Setting.prototype = {
             try {
                 this._value = JSON.parse(this._storage.get(this._name));
             } catch(e) {
-                this.remove();
+                this._storage.remove(this._name);
             }
         }
         return this._value;

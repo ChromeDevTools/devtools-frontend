@@ -867,6 +867,105 @@ window.InspectorFrontendHost = new InspectorFrontendHostImpl();
 
 // DevToolsApp ---------------------------------------------------------------
 
+function installObjectObserve()
+{
+    var properties = [
+        "advancedSearchConfig", "auditsPanelSplitViewState", "auditsSidebarWidth", "blockedURLs", "breakpoints", "cacheDisabled", "colorFormat", "consoleHistory",
+        "consoleTimestampsEnabled", "cpuProfilerView", "cssSourceMapsEnabled", "currentDockState", "customColorPalette", "customDevicePresets", "customEmulatedDeviceList",
+        "customFormatters", "customUserAgent", "databaseTableViewVisibleColumns", "dataGrid-cookiesTable", "dataGrid-DOMStorageItemsView", "debuggerSidebarHidden", "disableDataSaverInfobar",
+        "disablePausedStateOverlay", "domBreakpoints", "domWordWrap", "elementsPanelSplitViewState", "elementsSidebarWidth", "emulation.deviceHeight", "emulation.deviceModeValue",
+        "emulation.deviceOrientationOverride", "emulation.deviceScale", "emulation.deviceScaleFactor", "emulation.deviceUA", "emulation.deviceWidth", "emulation.geolocationOverride",
+        "emulation.showDeviceMode", "emulation.showRulers", "enableAsyncStackTraces", "eventListenerBreakpoints", "fileMappingEntries", "fileSystemMapping", "FileSystemViewSidebarWidth",
+        "fileSystemViewSplitViewState", "filterBar-consoleView", "filterBar-networkPanel", "filterBar-promisePane", "filterBar-timelinePanel", "frameViewerHideChromeWindow",
+        "heapSnapshotRetainersViewSize", "heapSnapshotSplitViewState", "hideCollectedPromises", "hideNetworkMessages", "highlightNodeOnHoverInOverlay", "highResolutionCpuProfiling",
+        "inlineVariableValues", "Inspector.drawerSplitView", "Inspector.drawerSplitViewState", "InspectorView.panelOrder", "InspectorView.screencastSplitView",
+        "InspectorView.screencastSplitViewState", "InspectorView.splitView", "InspectorView.splitViewState", "javaScriptDisabled", "jsSourceMapsEnabled", "lastActivePanel", "lastDockState",
+        "lastSelectedSourcesSidebarPaneTab", "lastSnippetEvaluationIndex", "layerDetailsSplitView", "layerDetailsSplitViewState", "layersPanelSplitViewState", "layersShowInternalLayers",
+        "layersSidebarWidth", "messageLevelFilters", "messageURLFilters", "monitoringXHREnabled", "navigatorGroupByFolder", "navigatorHidden", "networkColorCodeResourceTypes",
+        "networkConditions", "networkConditionsCustomProfiles", "networkHideDataURL", "networkLogColumnsVisibility", "networkLogLargeRows", "networkLogShowOverview",
+        "networkPanelSplitViewState", "networkRecordFilmStripSetting", "networkResourceTypeFilters", "networkShowPrimaryLoadWaterfall", "networkSidebarWidth", "openLinkHandler",
+        "pauseOnCaughtException", "pauseOnExceptionEnabled", "preserveConsoleLog", "prettyPrintInfobarDisabled", "previouslyViewedFiles", "profilesPanelSplitViewState",
+        "profilesSidebarWidth", "promiseStatusFilters", "recordAllocationStacks", "requestHeaderFilterSetting", "request-info-formData-category-expanded",
+        "request-info-general-category-expanded", "request-info-queryString-category-expanded", "request-info-requestHeaders-category-expanded",
+        "request-info-requestPayload-category-expanded", "request-info-responseHeaders-category-expanded", "resources", "resourcesLastSelectedItem", "resourcesPanelSplitViewState",
+        "resourcesSidebarWidth", "resourceViewTab", "savedURLs", "screencastEnabled", "scriptsPanelNavigatorSidebarWidth", "searchInContentScripts", "selectedAuditCategories",
+        "selectedColorPalette", "selectedProfileType", "shortcutPanelSwitch", "showAdvancedHeapSnapshotProperties", "showEventListenersForAncestors", "showFrameowkrListeners",
+        "showHeaSnapshotObjectsHiddenProperties", "showInheritedComputedStyleProperties", "showMediaQueryInspector", "showNativeFunctionsInJSProfile", "showUAShadowDOM",
+        "showWhitespacesInEditor", "sidebarPosition", "skipContentScripts", "skipStackFramesPattern", "sourceMapInfobarDisabled", "sourcesPanelDebuggerSidebarSplitViewState",
+        "sourcesPanelNavigatorSplitViewState", "sourcesPanelSplitSidebarRatio", "sourcesPanelSplitViewState", "sourcesSidebarWidth", "standardEmulatedDeviceList",
+        "StylesPaneSplitRatio", "stylesPaneSplitViewState", "textEditorAutocompletion", "textEditorAutoDetectIndent", "textEditorBracketMatching", "textEditorIndent",
+        "timelineCaptureFilmStrip", "timelineCaptureLayersAndPictures", "timelineCaptureMemory", "timelineCaptureNetwork", "timeline-details", "timelineEnableJSSampling",
+        "timelineOverviewMode", "timelinePanelDetailsSplitViewState", "timelinePanelRecorsSplitViewState", "timelinePanelTimelineStackSplitViewState", "timelinePerspective",
+        "timeline-split", "timelineTreeGroupBy", "timeline-view", "timelineViewMode", "uiTheme", "watchExpressions", "WebInspector.Drawer.lastSelectedView", "WebInspector.Drawer.showOnLoad",
+        "workspaceExcludedFolders", "workspaceFolderExcludePattern", "workspaceInfobarDisabled", "workspaceMappingInfobarDisabled", "xhrBreakpoints"];
+
+    /**
+     * @this {!{_storage: Object, _name: string}}
+     */
+    function settingRemove()
+    {
+        this._storage[this._name] = undefined;
+    }
+
+    function objectObserve(object, observer)
+    {
+        if (window["WebInspector"]) {
+            var settingPrototype = window["WebInspector"]["Setting"]["prototype"];
+            if (typeof settingPrototype["remove"] === "function")
+                settingPrototype["remove"] = settingRemove;
+        }
+
+        var changedProperties = new Set();
+        var scheduled = false;
+
+        function scheduleObserver()
+        {
+            if (!scheduled) {
+                scheduled = true;
+                setImmediate(callObserver);
+            }
+        }
+
+        function callObserver()
+        {
+            scheduled = false;
+            var changes = [];
+            changedProperties.forEach(function(name) { changes.push({name: name}); });
+            changedProperties.clear();
+            observer.call(null, changes);
+        }
+
+        var storage = new Map();
+
+        function defineProperty(property)
+        {
+            if (property in object) {
+                storage.set(property, object[property]);
+                delete object[property];
+            }
+
+            Object.defineProperty(object, property, {
+                get: function()
+                {
+                    return storage.get(property);
+                },
+
+                set: function(value)
+                {
+                    storage.set(property, value);
+                    changedProperties.add(property);
+                    scheduleObserver();
+                }
+            });
+        }
+
+        for (var i = 0; i < properties.length; ++i)
+            defineProperty(properties[i]);
+    }
+
+    window.Object.observe = objectObserve;
+}
+
 /**
  * @suppressGlobalPropertiesCheck
  */
@@ -874,6 +973,9 @@ function installBackwardsCompatibility()
 {
     if (window.location.search.indexOf("remoteFrontend") === -1)
         return;
+
+    // Support for legacy (<M50) frontends.
+    installObjectObserve();
 
     /**
      * @this {CSSStyleDeclaration}

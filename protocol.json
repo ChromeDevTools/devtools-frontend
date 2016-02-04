@@ -3394,61 +3394,6 @@
         ]
     },
     {
-        "domain": "Timeline",
-        "description": "Timeline domain is deprecated. Please use Tracing instead.",
-        "types": [
-            {
-                "id": "TimelineEvent",
-                "type": "object",
-                "properties": [
-                    { "name": "type", "type": "string", "description": "Event type." },
-                    { "name": "data", "type": "object", "description": "Event data." },
-                    { "name": "startTime", "type": "number", "description": "Start time." },
-                    { "name": "endTime", "type": "number", "optional": true, "description": "End time." },
-                    { "name": "children", "type": "array", "optional": true, "items": { "$ref": "TimelineEvent" }, "description": "Nested records." },
-                    { "name": "thread", "type": "string", "optional": true, "hidden": true, "description": "If present, identifies the thread that produced the event." },
-                    { "name": "stackTrace", "$ref": "Console.StackTrace", "optional": true, "hidden": true, "description": "Stack trace." },
-                    { "name": "frameId", "type": "string", "optional": true, "hidden": true, "description": "Unique identifier of the frame within the page that the event relates to." }
-                ],
-                "description": "Timeline record contains information about the recorded activity."
-            }
-        ],
-        "commands": [
-            {
-                "name": "enable",
-                "description": "Deprecated."
-            },
-            {
-                "name": "disable",
-                "description": "Deprecated."
-            },
-            {
-                "name": "start",
-                "parameters": [
-                    { "name": "maxCallStackDepth", "optional": true, "type": "integer", "description": "Samples JavaScript stack traces up to <code>maxCallStackDepth</code>, defaults to 5." },
-                    { "name": "bufferEvents", "optional": true, "type": "boolean", "hidden": true, "description": "Whether instrumentation events should be buffered and returned upon <code>stop</code> call." },
-                    { "name": "liveEvents", "optional": true, "type": "string", "hidden": true, "description": "Coma separated event types to issue although bufferEvents is set."},
-                    { "name": "includeCounters", "optional": true, "type": "boolean", "hidden": true, "description": "Whether counters data should be included into timeline events." },
-                    { "name": "includeGPUEvents", "optional": true, "type": "boolean", "hidden": true, "description": "Whether events from GPU process should be collected." }
-                ],
-                "description": "Deprecated."
-            },
-            {
-                "name": "stop",
-                "description": "Deprecated."
-            }
-        ],
-        "events": [
-            {
-                "name": "eventRecorded",
-                "parameters": [
-                    { "name": "record", "$ref": "TimelineEvent", "description": "Timeline event record data." }
-                ],
-                "description": "Deprecated."
-            }
-        ]
-    },
-    {
         "domain": "Debugger",
         "description": "Debugger domain exposes JavaScript debugging capabilities. It allows setting and removing breakpoints, stepping through execution, exploring stack traces, etc.",
         "types": [

@@ -2788,62 +2788,6 @@
         ]
     },
     {
-        "domain": "Timeline",
-        "description": "Timeline provides its clients with instrumentation records that are generated during the page runtime. Timeline instrumentation can be started and stopped using corresponding commands. While timeline is started, it is generating timeline event records.",
-        "types": [
-            {
-                "id": "DOMCounters",
-                "type": "object",
-                "properties": [
-                    { "name": "documents", "type": "integer" },
-                    { "name": "nodes", "type": "integer" },
-                    { "name": "jsEventListeners", "type": "integer" }
-                ],
-                "description": "Current values of DOM counters.",
-                "hidden": true
-            },
-            {
-                "id": "TimelineEvent",
-                "type": "object",
-                "properties": [
-                    { "name": "type", "type": "string", "description": "Event type." },
-                    { "name": "thread", "type": "string", "optional": true, "description": "If present, identifies the thread that produced the event.", "hidden": true },
-                    { "name": "data", "type": "object", "description": "Event data." },
-                    { "name": "children", "type": "array", "optional": true, "items": { "$ref": "TimelineEvent" }, "description": "Nested records." },
-                    { "name": "counters", "$ref": "DOMCounters", "optional": true, "hidden": true, "description": "Current values of DOM counters." },
-                    { "name": "usedHeapSize", "type": "integer", "optional": true, "hidden": true, "description": "Current size of JS heap." },
-                    { "name": "nativeHeapStatistics", "type": "object", "optional": true, "hidden": true, "description": "Native heap statistics." }
-                ],
-                "description": "Timeline record contains information about the recorded activity."
-            }
-        ],
-        "commands": [
-            {
-                "name": "start",
-                "parameters": [
-                    { "name": "maxCallStackDepth", "optional": true, "type": "integer", "description": "Samples JavaScript stack traces up to <code>maxCallStackDepth</code>, defaults to 5." },
-                    { "name": "includeDomCounters", "optional": true, "type": "boolean", "hidden": true, "description": "Whether DOM counters data should be included into timeline events." },
-                    { "name": "includeNativeMemoryStatistics", "optional": true, "type": "boolean", "hidden": true, "description": "Whether native memory usage statistics should be reported as part of timeline events." }
-
-                ],
-                "description": "Starts capturing instrumentation events."
-            },
-            {
-                "name": "stop",
-                "description": "Stops capturing instrumentation events."
-            }
-        ],
-        "events": [
-            {
-                "name": "eventRecorded",
-                "parameters": [
-                    { "name": "record", "$ref": "TimelineEvent", "description": "Timeline event record data." }
-                ],
-                "description": "Fired for every instrumentation event while timeline is started."
-            }
-        ]
-    },
-    {
         "domain": "Debugger",
         "description": "Debugger domain exposes JavaScript debugging capabilities. It allows setting and removing breakpoints, stepping through execution, exploring stack traces, etc.",
         "types": [

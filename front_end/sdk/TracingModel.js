@@ -491,6 +491,9 @@ WebInspector.TracingModel.Event.fromPayload = function(payload, thread)
         event.setEndTime((payload.ts + payload.dur) / 1000);
     if (payload.id)
         event.id = payload.id;
+    if (payload.bind_id)
+        event.bind_id = payload.bind_id;
+
     return event;
 }
 

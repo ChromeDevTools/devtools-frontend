@@ -199,6 +199,45 @@ WebInspector.TimelineUIUtils.eventTitle = function(event)
     return title;
 }
 
+
+/**
+ * !Map<!WebInspector.TimelineIRModel.Phases, !{color: string, label: string}>
+ */
+WebInspector.TimelineUIUtils._interactionPhaseStyles = function()
+{
+    var map = WebInspector.TimelineUIUtils._interactionPhaseStylesMap;
+    if (!map) {
+         map = new Map([
+            [WebInspector.TimelineIRModel.Phases.Idle, {color: "white", label: "Idle"}],
+            [WebInspector.TimelineIRModel.Phases.Response, {color: "hsl(43, 83%, 64%)", label: WebInspector.UIString("Response")}],
+            [WebInspector.TimelineIRModel.Phases.Scroll, {color: "hsl(256, 67%, 70%)", label: WebInspector.UIString("Scroll")}],
+            [WebInspector.TimelineIRModel.Phases.Fling, {color: "hsl(256, 67%, 70%)", label: WebInspector.UIString("Fling")}],
+            [WebInspector.TimelineIRModel.Phases.Drag, {color: "hsl(256, 67%, 70%)", label: WebInspector.UIString("Drag")}],
+            [WebInspector.TimelineIRModel.Phases.Animation, {color: "hsl(256, 67%, 70%)", label: WebInspector.UIString("Animation")}]
+        ]);
+        WebInspector.TimelineUIUtils._interactionPhaseStylesMap = map;
+    }
+    return map;
+}
+
+/**
+ * @param {!WebInspector.TimelineIRModel.Phases} phase
+ * @return {string}
+ */
+WebInspector.TimelineUIUtils.interactionPhaseColor = function(phase)
+{
+    return WebInspector.TimelineUIUtils._interactionPhaseStyles().get(phase).color;
+}
+
+/**
+ * @param {!WebInspector.TimelineIRModel.Phases} phase
+ * @return {string}
+ */
+WebInspector.TimelineUIUtils.interactionPhaseLabel = function(phase)
+{
+    return WebInspector.TimelineUIUtils._interactionPhaseStyles().get(phase).label;
+}
+
 /**
  * @param {!WebInspector.TracingModel.Event} event
  * @return {boolean}
@@ -1420,6 +1459,7 @@ WebInspector.TimelineUIUtils.asyncEventGroups = function()
     if (WebInspector.TimelineUIUtils._asyncEventGroups)
         return WebInspector.TimelineUIUtils._asyncEventGroups;
     WebInspector.TimelineUIUtils._asyncEventGroups = {
+        animation: new WebInspector.AsyncEventGroup(WebInspector.UIString("Animation")),
         console: new WebInspector.AsyncEventGroup(WebInspector.UIString("Console")),
         userTiming: new WebInspector.AsyncEventGroup(WebInspector.UIString("User Timing")),
         input: new WebInspector.AsyncEventGroup(WebInspector.UIString("Input Events"))

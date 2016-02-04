@@ -52,7 +52,8 @@ WebInspector.TracingManager = function(target)
         name: string,
         args: !Object,
         dur: number,
-        id: number,
+        id: string,
+        bind_id: string,
         s: string
     }}
  */

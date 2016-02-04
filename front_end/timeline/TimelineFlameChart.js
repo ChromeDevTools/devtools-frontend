@@ -263,6 +263,7 @@ WebInspector.TimelineFlameChartEntryType = {
     Header: Symbol("Header"),
     Frame: Symbol("Frame"),
     Event: Symbol("Event"),
+    InteractionRecord: Symbol("InteractionRecord"),
 };
 
 /**
@@ -270,11 +271,13 @@ WebInspector.TimelineFlameChartEntryType = {
  * @extends {WebInspector.TimelineFlameChartDataProviderBase}
  * @param {!WebInspector.TimelineModel} model
  * @param {!WebInspector.TimelineFrameModelBase} frameModel
+ * @param {?WebInspector.TimelineIRModel} irModel
  */
-WebInspector.TimelineFlameChartDataProvider = function(model, frameModel)
+WebInspector.TimelineFlameChartDataProvider = function(model, frameModel, irModel)
 {
     WebInspector.TimelineFlameChartDataProviderBase.call(this, model);
     this._frameModel = frameModel;
+    this._irModel = irModel;
     this._consoleColorGenerator = new WebInspector.FlameChart.ColorGenerator(
         { min: 30, max: 55, count: 5 },
         { min: 70, max: 100, count: 6 },
@@ -333,7 +336,7 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
     reset: function()
     {
         WebInspector.TimelineFlameChartDataProviderBase.prototype.reset.call(this);
-        /** @type {!Array<!WebInspector.TracingModel.Event|!WebInspector.TimelineFrame>} */
+        /** @type {!Array<!WebInspector.TracingModel.Event|!WebInspector.TimelineFrame|!WebInspector.TimelineIRModel.Phases>} */
         this._entryData = [];
         /** @type {!Array<!WebInspector.TimelineFlameChartEntryType>} */
         this._entryTypeByLevel = [];
@@ -362,6 +365,7 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
         this._timeSpan = this._model.isEmpty() ?  1000 : this._model.maximumRecordTime() - this._minimumBoundary;
         this._currentLevel = 0;
         this._appendFrameBars(this._frameModel.frames());
+        this._appendInteractionRecords();
         this._appendThreadTimelineData(WebInspector.UIString("Main Thread"), this._model.mainThreadEvents(), this._model.mainThreadAsyncEvents());
         if (Runtime.experiments.isEnabled("gpuTimeline"))
             this._appendGPUEvents();
@@ -522,6 +526,17 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
             ++this._currentLevel;
     },
 
+    _appendInteractionRecords: function()
+    {
+        if (!this._irModel)
+            return;
+        var segments = this._irModel.interactionRecords();
+        if (!segments || !segments.length)
+            return;
+        segments.forEach(this._appendSegment, this);
+        this._entryTypeByLevel[this._currentLevel++] = WebInspector.TimelineFlameChartEntryType.InteractionRecord;
+    },
+
     /**
      * @param {!Array.<!WebInspector.TimelineFrame>} frames
      */
@@ -616,6 +631,8 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
             return "white";
         if (type === WebInspector.TimelineFlameChartEntryType.Header)
             return "#aaa";
+        if (type === WebInspector.TimelineFlameChartEntryType.InteractionRecord)
+            return WebInspector.TimelineUIUtils.interactionPhaseColor(/** @type {!WebInspector.TimelineIRModel.Phases} */ (this._entryData[entryIndex]));
         return "";
     },
 
@@ -812,6 +829,19 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
         this._timelineData.entryLevels[index] = this._currentLevel;
         this._timelineData.entryTotalTimes[index] = frame.duration;
         this._timelineData.entryStartTimes[index] = frame.startTime;
+    },
+
+    /**
+     * @param {!WebInspector.Segment} segment
+     */
+    _appendSegment: function(segment)
+    {
+        var index = this._entryData.length;
+        this._entryData.push(segment.data);
+        this._entryIndexToTitle[index] = /** @type {string} */ (segment.data);
+        this._timelineData.entryLevels[index] = this._currentLevel;
+        this._timelineData.entryTotalTimes[index] = segment.end - segment.begin;
+        this._timelineData.entryStartTimes[index] = segment.begin;
     },
 
     /**
@@ -1195,8 +1225,9 @@ WebInspector.TimelineFlameChartMarker.prototype = {
  * @param {!WebInspector.TimelineModeViewDelegate} delegate
  * @param {!WebInspector.TimelineModel} timelineModel
  * @param {!WebInspector.TimelineFrameModelBase} frameModel
+ * @param {?WebInspector.TimelineIRModel} irModel
  */
-WebInspector.TimelineFlameChartView = function(delegate, timelineModel, frameModel)
+WebInspector.TimelineFlameChartView = function(delegate, timelineModel, frameModel, irModel)
 {
     WebInspector.VBox.call(this);
     this.element.classList.add("timeline-flamechart");
@@ -1205,7 +1236,7 @@ WebInspector.TimelineFlameChartView = function(delegate, timelineModel, frameMod
 
     this._splitWidget = new WebInspector.SplitWidget(false, false, "timelineFlamechartMainView", 150);
 
-    this._dataProvider = new WebInspector.TimelineFlameChartDataProvider(this._model, frameModel);
+    this._dataProvider = new WebInspector.TimelineFlameChartDataProvider(this._model, frameModel, irModel);
     this._mainView = new WebInspector.FlameChart(this._dataProvider, this, true);
 
     this._networkDataProvider = new WebInspector.TimelineFlameChartNetworkDataProvider(this._model);

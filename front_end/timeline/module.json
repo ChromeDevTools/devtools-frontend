@@ -107,6 +107,7 @@
         "Layers3DView.js",
         "MemoryCountersGraph.js",
         "TimelineModel.js",
+        "TimelineIRModel.js",
         "TimelineJSProfile.js",
         "TimelineFrameModel.js",
         "TimelineEventOverview.js",

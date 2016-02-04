@@ -157,7 +157,10 @@ WebInspector.TimelineModel.RecordType = {
     PictureSnapshot: "cc::Picture",
     DisplayItemListSnapshot: "cc::DisplayItemList",
     LatencyInfo: "LatencyInfo",
+    LatencyInfoFlow: "LatencyInfo.Flow",
     InputLatencyMouseMove: "InputLatency::MouseMove",
+    InputLatencyMouseWheel: "InputLatency::MouseWheel",
+    ImplSideFling: "InputHandlerProxy::HandleGestureFling::started",
 
     // CpuProfile is a virtual event created on frontend to support
     // serialization of CPU Profiles within tracing timeline data.
@@ -893,7 +896,10 @@ WebInspector.TimelineModel.prototype = {
         var browserMain = this._tracingModel.threadByName("Browser", "CrBrowserMain");
         if (!browserMain)
             return;
-        this._processAsyncEvents(this._mainThreadAsyncEventsByGroup, browserMain.asyncEvents());
+        /** @type {!Map<!WebInspector.AsyncEventGroup, !Array<!WebInspector.TracingModel.AsyncEvent>>} */
+        var asyncEventsByGroup = new Map();
+        this._processAsyncEvents(asyncEventsByGroup, browserMain.asyncEvents());
+        this._mergeAsyncEvents(this._mainThreadAsyncEventsByGroup, asyncEventsByGroup);
     },
 
     _buildTimelineRecords: function()
@@ -979,6 +985,8 @@ WebInspector.TimelineModel.prototype = {
         this._eventStack = [];
         this._hadCommitLoad = false;
         this._firstCompositeLayers = null;
+        /** @type {!Set<string>} */
+        this._knownInputEvents = new Set();
         this._currentPage = null;
     },
 
@@ -1038,6 +1046,11 @@ WebInspector.TimelineModel.prototype = {
             this._inspectedTargetEvents.push(event);
         }
         this._processAsyncEvents(threadAsyncEventsByGroup, asyncEvents, startTime, endTime);
+        // Pretend the compositor's async events are on the main thread.
+        if (thread.name() === "Compositor") {
+            this._mergeAsyncEvents(this._mainThreadAsyncEventsByGroup, threadAsyncEventsByGroup);
+            threadAsyncEventsByGroup.clear();
+        }
     },
 
     /**
@@ -1233,9 +1246,14 @@ WebInspector.TimelineModel.prototype = {
             }
             break;
 
+        case recordTypes.LatencyInfoFlow:
+            if (typeof event.args["layerTreeId"] !== "undefined" && event.args["layerTreeId"] !== this._inspectedTargetLayerTreeId)
+                break;
+            this._knownInputEvents.add(event.bind_id);
+            break;
+
         case recordTypes.Animation:
-            // FIXME: bring back Animation events as we figure out a way to show them while not cluttering the UI.
-            return false;
+            break;
         }
         if (WebInspector.TracingModel.isAsyncPhase(event.phase))
             return true;
@@ -1268,14 +1286,26 @@ WebInspector.TimelineModel.prototype = {
             return groups.console;
         if (asyncEvent.hasCategory(WebInspector.TimelineModel.Category.UserTiming))
             return groups.userTiming;
-        if (asyncEvent.hasCategory(WebInspector.TimelineModel.Category.LatencyInfo)) {
-            if (!Runtime.experiments.isEnabled("timelineLatencyInfo"))
-                return null;
+        if (!Runtime.experiments.isEnabled("timelineLatencyInfo"))
+            return null;
+        if (asyncEvent.name === WebInspector.TimelineModel.RecordType.Animation)
+            return groups.animation;
+        if (asyncEvent.hasCategory(WebInspector.TimelineModel.Category.LatencyInfo) || asyncEvent.name === WebInspector.TimelineModel.RecordType.ImplSideFling) {
+            var lastStep = asyncEvent.steps.peekLast();
             // FIXME: fix event termination on the back-end instead.
-            if (asyncEvent.steps.peekLast().phase !== WebInspector.TracingModel.Phase.AsyncEnd)
+            if (lastStep.phase !== WebInspector.TracingModel.Phase.AsyncEnd)
                 return null;
-            if (asyncEvent.name === WebInspector.TimelineModel.RecordType.InputLatencyMouseMove)
-                return null;
+            var data = lastStep.args["data"];
+            asyncEvent.causedFrame = !!(data && data["INPUT_EVENT_LATENCY_RENDERER_SWAP_COMPONENT"]);
+            if (asyncEvent.name === WebInspector.TimelineModel.RecordType.InputLatencyMouseMove) {
+                // Skip events that don't belong to this renderer.
+                // FIXME: this should eventually be applied to all input latencies, but it only works for certain events now.
+                if (!this._knownInputEvents.has(lastStep.id))
+                    return null;
+                if (!asyncEvent.causedFrame)
+                    return null;
+
+            }
             return groups.input;
         }
         return null;
@@ -1293,6 +1323,19 @@ WebInspector.TimelineModel.prototype = {
                 return event;
         }
         return null;
+    },
+
+    /**
+     * @param {!Map<!WebInspector.AsyncEventGroup, !Array<!WebInspector.TracingModel.AsyncEvent>>} target
+     * @param {!Map<!WebInspector.AsyncEventGroup, !Array<!WebInspector.TracingModel.AsyncEvent>>} source
+     */
+    _mergeAsyncEvents: function(target, source)
+    {
+        for (var group of source.keys()) {
+            var events = target.get(group) || [];
+            events = events.mergeOrdered(source.get(group) || [], WebInspector.TracingModel.Event.compareStartAndEndTime);
+            target.set(group, events);
+        }
     },
 
     /**

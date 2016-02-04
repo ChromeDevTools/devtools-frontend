@@ -54,6 +54,8 @@ WebInspector.TimelinePanel = function()
     this._tracingModel = new WebInspector.TracingModel(this._tracingModelBackingStorage);
     this._model = new WebInspector.TimelineModel(this._tracingModel, WebInspector.TimelineUIUtils.visibleEventsFilter());
     this._frameModel = new WebInspector.TracingTimelineFrameModel();
+    if (Runtime.experiments.isEnabled("timelineLatencyInfo"))
+        this._irModel = new WebInspector.TimelineIRModel();
 
     this._model.addEventListener(WebInspector.TimelineModel.Events.RecordingStarted, this._onRecordingStarted, this);
     this._model.addEventListener(WebInspector.TimelineModel.Events.RecordingStopped, this._onRecordingStopped, this);
@@ -578,7 +580,7 @@ WebInspector.TimelinePanel.prototype = {
             this._stackView.show(this._tabbedPane.visibleView.element);
         }
         if (viewMode === WebInspector.TimelinePanel.ViewMode.FlameChart) {
-            this._flameChart = new WebInspector.TimelineFlameChartView(this, this._model, this._frameModel);
+            this._flameChart = new WebInspector.TimelineFlameChartView(this, this._model, this._frameModel, this._irModel);
             this._flameChart.enableNetworkPane(this._captureNetworkSetting.get());
             this._addModeView(this._flameChart);
         } else if (viewMode === WebInspector.TimelinePanel.ViewMode.CallTree || viewMode === WebInspector.TimelinePanel.ViewMode.BottomUp) {
@@ -791,6 +793,8 @@ WebInspector.TimelinePanel.prototype = {
         this._setState(WebInspector.TimelinePanel.State.Idle);
         this._frameModel.reset();
         this._frameModel.addTraceEvents(this._model.target(), this._model.inspectedTargetEvents(), this._model.sessionId() || "");
+        if (this._irModel)
+            this._irModel.populate(this._model);
         this._overviewPane.reset();
         this._overviewPane.setBounds(this._model.minimumRecordTime(), this._model.maximumRecordTime());
         this._setAutoWindowTimes();

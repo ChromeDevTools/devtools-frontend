@@ -204,6 +204,14 @@
                 "hidden": true
             },
             {
+                "name": "setAutoAttachToCreatedPages",
+                "parameters": [
+                    { "name": "autoAttach", "type": "boolean", "description": "If true, browser will open a new inspector window for every page created from this one." }
+                ],
+                "description": "Controls whether browser will open a new inspector window for connected pages.",
+                "hidden": true
+            },
+            {
                 "name": "reload",
                 "parameters": [
                     { "name": "ignoreCache", "type": "boolean", "optional": true, "description": "If true, browser cache is ignored (as if the user pressed Shift+refresh)." },

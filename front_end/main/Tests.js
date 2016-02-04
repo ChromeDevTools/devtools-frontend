@@ -418,6 +418,21 @@ TestSuite.prototype.enableTouchEmulation = function()
     deviceModeModel._applyTouch(true, true);
 };
 
+TestSuite.prototype.enableAutoAttachToCreatedPages = function()
+{
+    WebInspector.settingForTest("autoAttachToCreatedPages").set(true);
+}
+
+TestSuite.prototype.waitForDebuggerPaused = function()
+{
+    var debuggerModel = WebInspector.DebuggerModel.fromTarget(WebInspector.targetManager.mainTarget());
+    if (debuggerModel.debuggerPausedDetails)
+        return;
+
+    this.takeControl();
+    this._waitForScriptPause(this.releaseControl.bind(this));
+}
+
 TestSuite.prototype.switchToPanel = function(panelName)
 {
     this.showPanel(panelName).then(this.releaseControl.bind(this));

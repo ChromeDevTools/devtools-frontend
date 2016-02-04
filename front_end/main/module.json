@@ -217,6 +217,7 @@
             "title": "Disable cache (while DevTools is open)",
             "settingName": "cacheDisabled",
             "settingType": "boolean",
+            "order": 0,
             "defaultValue": false
         },
         {
@@ -225,6 +226,16 @@
             "title": "Disable JavaScript",
             "settingName": "javaScriptDisabled",
             "settingType": "boolean",
+            "order": 1,
+            "defaultValue": false
+        },
+        {
+            "type": "setting",
+            "category": "",
+            "title": "Auto-open DevTools for popups",
+            "settingName": "autoAttachToCreatedPages",
+            "settingType": "boolean",
+            "order": 2,
             "defaultValue": false
         },
         {

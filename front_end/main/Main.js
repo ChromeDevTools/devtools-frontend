@@ -215,6 +215,7 @@ WebInspector.Main.prototype = {
         new WebInspector.Main.InspectedNodeRevealer();
         new WebInspector.NetworkPanelIndicator();
         new WebInspector.SourcesPanelIndicator();
+        new WebInspector.AutoAttachToCreatedPagesSync();
         WebInspector.domBreakpointsSidebarPane = new WebInspector.DOMBreakpointsSidebarPane();
 
         WebInspector.actionRegistry = new WebInspector.ActionRegistry();
@@ -319,7 +320,7 @@ WebInspector.Main.prototype = {
         this._mainTarget.registerInspectorDispatcher(this);
         InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.ReloadInspectedPage, this._reloadInspectedPage, this);
 
-        if (this._mainTarget.isServiceWorker())
+        if (this._mainTarget.isServiceWorker() || this._mainTarget.isPage())
             this._mainTarget.runtimeAgent().run();
 
         if (this._appUIPresented)
@@ -1088,6 +1089,43 @@ WebInspector.TargetCrashedScreen.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
+}
+
+/**
+ * @constructor
+ * @implements {WebInspector.TargetManager.Observer}
+ */
+WebInspector.AutoAttachToCreatedPagesSync = function()
+{
+    this._setting = WebInspector.settings.moduleSetting("autoAttachToCreatedPages");
+    this._setting.addChangeListener(this._update, this);
+    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Type.Page);
+}
+
+WebInspector.AutoAttachToCreatedPagesSync.prototype = {
+    _update: function()
+    {
+        var value = this._setting.get();
+        for (var target of WebInspector.targetManager.targets(WebInspector.Target.Type.Page))
+            target.pageAgent().setAutoAttachToCreatedPages(value);
+    },
+
+    /**
+     * @param {!WebInspector.Target} target
+     * @override
+     */
+    targetAdded: function(target)
+    {
+        target.pageAgent().setAutoAttachToCreatedPages(this._setting.get());
+    },
+
+    /**
+     * @param {!WebInspector.Target} target
+     * @override
+     */
+    targetRemoved: function(target)
+    {
+    }
 }
 
 new WebInspector.Main();

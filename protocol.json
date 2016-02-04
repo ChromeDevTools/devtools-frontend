@@ -1217,6 +1217,16 @@
                 ]
             },
             {
+                "id": "CertificateValidationDetails",
+                "type": "object",
+                "description": "Details about the validation status of a request's certificate.",
+                "properties": [
+                    { "name": "numUnknownScts", "type": "integer", "description": "The number of SCTs from unknown logs." },
+                    { "name": "numInvalidScts", "type": "integer", "description": "The number of invalid SCTs." },
+                    { "name": "numValidScts", "type": "integer", "description": "The number of valid SCTs." }
+                ]
+            },
+            {
                 "id": "SecurityDetails",
                 "type": "object",
                 "description": "Security details about a request.",
@@ -1225,7 +1235,8 @@
                     { "name": "keyExchange", "type": "string", "description": "Key Exchange used by the connection." },
                     { "name": "cipher", "type": "string", "description": "Cipher name." },
                     { "name": "mac", "type": "string", "optional": true, "description": "TLS MAC. Note that AEAD ciphers do not have separate MACs." },
-                    { "name": "certificateId", "$ref": "CertificateId", "description": "Certificate ID value." }
+                    { "name": "certificateId", "$ref": "CertificateId", "description": "Certificate ID value." },
+                    { "name": "certificateValidationDetails", "$ref": "CertificateValidationDetails", "optional": true, "description": "Validation details for the request's certficate." }
                 ]
             },
             {

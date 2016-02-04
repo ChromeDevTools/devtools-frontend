@@ -798,8 +798,8 @@ WebInspector.SecurityOriginView = function(panel, origin, originState)
             table.addRow("Valid From", validFromString);
             table.addRow("Valid Until", validUntilString);
             table.addRow("Issuer", certificateDetails.issuer);
+            table.addRow("SCTs", this.sctSummary(originState.securityDetails.certificateValidationDetails));
             table.addRow("", WebInspector.SecurityPanel.createCertificateViewerButton(WebInspector.UIString("Open full certificate details"), originState.securityDetails.certificateId));
-            // TODO(lgarron): Make SCT status available in certificate details and show it here.
         }
 
         function displayCertificateDetailsUnavailable ()
@@ -877,6 +877,26 @@ WebInspector.SecurityOriginView.prototype = {
         }
 
         this._originLockIcon.classList.add("security-property-" + newSecurityState);
+    },
+
+    /**
+     * @constructor
+     * @param {?NetworkAgent.CertificateValidationDetails} details
+     * @return {string}
+     */
+    sctSummary: function(details)
+    {
+        if (!details)
+            return WebInspector.UIString("N/A");
+
+        var sctTypeList = [];
+        if (details.numValidScts)
+            sctTypeList.push(WebInspector.UIString("%d valid SCT%s", details.numValidScts, (details.numValidScts > 1) ? "s" : ""));
+        if (details.numInvalidScts)
+            sctTypeList.push(WebInspector.UIString("%d invalid SCT%s", details.numInvalidScts, (details.numInvalidScts > 1) ? "s" : ""));
+        if (details.numUnknownScts)
+            sctTypeList.push(WebInspector.UIString("%d SCT%s from unknown logs", details.numUnknownScts, (details.numUnknownScts > 1) ? "s" : ""));
+        return sctTypeList.length ? sctTypeList.join(", ") : WebInspector.UIString("0 SCTs");
     },
 
     __proto__: WebInspector.VBox.prototype

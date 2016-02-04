@@ -736,6 +736,11 @@
         "description": "Runtime domain exposes JavaScript runtime by means of remote evaluation and mirror objects. Evaluation results are returned as mirror object that expose object type, string representation and unique identifier that can be used for further object reference. Original objects are maintained in memory unless they are either explicitly released or are released along with the other objects in their object group.",
         "types": [
             {
+                "id": "ScriptId",
+                "type": "string",
+                "description": "Unique script identifier."
+            },
+            {
                 "id": "RemoteObjectId",
                 "type": "string",
                 "description": "Unique object identifier."
@@ -854,6 +859,19 @@
                     { "name": "name", "type": "string", "description": "Human readable name describing given context.", "hidden": true},
                     { "name": "frameId", "type": "string", "description": "Id of the owning frame. May be an empty string if the context is not associated with a frame." }
                 ]
+            },
+            {
+                "id": "ExceptionDetails",
+                "type": "object",
+                "description": "Detailed information on exception (or error) that was thrown during script compilation or execution.",
+                "properties": [
+                    { "name": "text", "type": "string", "description": "Exception text." },
+                    { "name": "url", "type": "string", "optional": true, "description": "URL of the message origin." },
+                    { "name": "scriptId", "type": "string", "optional": true, "description": "Script ID of the message origin." },
+                    { "name": "line", "type": "integer", "optional": true, "description": "Line number in the resource that generated this message." },
+                    { "name": "column", "type": "integer", "optional": true, "description": "Column number in the resource that generated this message." },
+                    { "name": "stackTrace", "$ref": "Console.StackTrace", "optional": true, "description": "JavaScript stack trace for assertions and error messages." }
+                ]
             }
         ],
         "commands": [
@@ -871,7 +889,7 @@
                 "returns": [
                     { "name": "result", "$ref": "RemoteObject", "description": "Evaluation result." },
                     { "name": "wasThrown", "type": "boolean", "optional": true, "description": "True if the result was thrown during the evaluation." },
-                    { "name": "exceptionDetails", "$ref": "Debugger.ExceptionDetails", "optional": true, "hidden": true, "description": "Exception details."}
+                    { "name": "exceptionDetails", "$ref": "ExceptionDetails", "optional": true, "hidden": true, "description": "Exception details."}
                 ],
                 "description": "Evaluates expression on global object."
             },
@@ -902,7 +920,7 @@
                 "returns": [
                     { "name": "result", "type": "array", "items": { "$ref": "PropertyDescriptor" }, "description": "Object properties." },
                     { "name": "internalProperties", "optional": true, "type": "array", "items": { "$ref": "InternalPropertyDescriptor" }, "description": "Internal object properties (only of the element itself).", "hidden": true },
-                    { "name": "exceptionDetails", "$ref": "Debugger.ExceptionDetails", "optional": true, "hidden": true, "description": "Exception details."}
+                    { "name": "exceptionDetails", "$ref": "ExceptionDetails", "optional": true, "hidden": true, "description": "Exception details."}
                 ],
                 "description": "Returns properties of a given object. Object group of the result is inherited from the target object."
             },
@@ -950,6 +968,36 @@
                     }
                 ],
                 "hidden": true
+            },
+            {
+                "name": "compileScript",
+                "hidden": true,
+                "parameters": [
+                    { "name": "expression", "type": "string", "description": "Expression to compile." },
+                    { "name": "sourceURL", "type": "string", "description": "Source url to be set for the script." },
+                    { "name": "persistScript", "type": "boolean", "description": "Specifies whether the compiled script should be persisted." },
+                    { "name": "executionContextId", "$ref": "ExecutionContextId", "description": "Specifies in which isolated context to perform script run. Each content script lives in an isolated context and this parameter is used to specify one of those contexts." }
+                ],
+                "returns": [
+                    { "name": "scriptId", "$ref": "ScriptId", "optional": true, "description": "Id of the script." },
+                    { "name": "exceptionDetails", "$ref": "ExceptionDetails", "optional": true, "description": "Exception details."}
+                ],
+                "description": "Compiles expression."
+            },
+            {
+                "name": "runScript",
+                "hidden": true,
+                "parameters": [
+                    { "name": "scriptId", "$ref": "ScriptId", "description": "Id of the script to run." },
+                    { "name": "executionContextId", "$ref": "ExecutionContextId", "description": "Specifies in which isolated context to perform script run. Each content script lives in an isolated context and this parameter is used to specify one of those contexts." },
+                    { "name": "objectGroup", "type": "string", "optional": true, "description": "Symbolic group name that can be used to release multiple objects." },
+                    { "name": "doNotPauseOnExceptionsAndMuteConsole", "type": "boolean", "optional": true, "description": "Specifies whether script run should stop on exceptions and mute console. Overrides setPauseOnException state." }
+                ],
+                "returns": [
+                    { "name": "result", "$ref": "RemoteObject", "description": "Run result." },
+                    { "name": "exceptionDetails", "$ref": "ExceptionDetails", "optional": true, "description": "Exception details."}
+                ],
+                "description": "Runs script with given id in a given context."
             }
         ],
         "events": [
@@ -3403,11 +3451,6 @@
                 "description": "Breakpoint identifier."
             },
             {
-                "id": "ScriptId",
-                "type": "string",
-                "description": "Unique script identifier."
-            },
-            {
                 "id": "CallFrameId",
                 "type": "string",
                 "description": "Call frame identifier."
@@ -3416,7 +3459,7 @@
                 "id": "Location",
                 "type": "object",
                 "properties": [
-                    { "name": "scriptId", "$ref": "ScriptId", "description": "Script identifier as reported in the <code>Debugger.scriptParsed</code>." },
+                    { "name": "scriptId", "$ref": "Runtime.ScriptId", "description": "Script identifier as reported in the <code>Debugger.scriptParsed</code>." },
                     { "name": "lineNumber", "type": "integer", "description": "Line number in the script (0-based)." },
                     { "name": "columnNumber", "type": "integer", "optional": true, "description": "Column number in the script (0-based)." }
                 ],
@@ -3500,19 +3543,6 @@
                     { "name": "name", "type": "string", "optional": true, "hidden": true }
                 ],
                 "description": "Scope description."
-            },
-            {
-                "id": "ExceptionDetails",
-                "type": "object",
-                "description": "Detailed information on exception (or error) that was thrown during script compilation or execution.",
-                "properties": [
-                    { "name": "text", "type": "string", "description": "Exception text." },
-                    { "name": "url", "type": "string", "optional": true, "description": "URL of the message origin." },
-                    { "name": "scriptId", "type": "string", "optional": true, "description": "Script ID of the message origin." },
-                    { "name": "line", "type": "integer", "optional": true, "description": "Line number in the resource that generated this message." },
-                    { "name": "column", "type": "integer", "optional": true, "description": "Column number in the resource that generated this message." },
-                    { "name": "stackTrace", "$ref": "Console.StackTrace", "optional": true, "description": "JavaScript stack trace for assertions and error messages." }
-                ]
             },
             {
                 "id": "SetScriptSourceError",
@@ -3664,7 +3694,7 @@
             {
                 "name": "searchInContent",
                 "parameters": [
-                    { "name": "scriptId", "$ref": "ScriptId", "description": "Id of the script to search in." },
+                    { "name": "scriptId", "$ref": "Runtime.ScriptId", "description": "Id of the script to search in." },
                     { "name": "query", "type": "string", "description": "String to search for."  },
                     { "name": "caseSensitive", "type": "boolean", "optional": true, "description": "If true, search is case sensitive." },
                     { "name": "isRegex", "type": "boolean", "optional": true, "description": "If true, treats string parameter as regex." }
@@ -3684,7 +3714,7 @@
             {
                 "name": "setScriptSource",
                 "parameters": [
-                    { "name": "scriptId", "$ref": "ScriptId", "description": "Id of the script to edit." },
+                    { "name": "scriptId", "$ref": "Runtime.ScriptId", "description": "Id of the script to edit." },
                     { "name": "scriptSource", "type": "string", "description": "New content of the script." },
                     { "name": "preview", "type": "boolean", "optional": true, "description": " If true the change will not actually be applied. Preview mode may be used to get result description without actually modifying the code.", "hidden": true }
                 ],
@@ -3713,7 +3743,7 @@
             {
                 "name": "getScriptSource",
                 "parameters": [
-                    { "name": "scriptId", "$ref": "ScriptId", "description": "Id of the script to get source for." }
+                    { "name": "scriptId", "$ref": "Runtime.ScriptId", "description": "Id of the script to get source for." }
                 ],
                 "returns": [
                     { "name": "scriptSource", "type": "string", "description": "Script source." }
@@ -3774,39 +3804,9 @@
                 "returns": [
                     { "name": "result", "$ref": "Runtime.RemoteObject", "description": "Object wrapper for the evaluation result." },
                     { "name": "wasThrown", "type": "boolean", "optional": true, "description": "True if the result was thrown during the evaluation." },
-                    { "name": "exceptionDetails", "$ref": "ExceptionDetails", "optional": true, "hidden": true, "description": "Exception details."}
+                    { "name": "exceptionDetails", "$ref": "Runtime.ExceptionDetails", "optional": true, "hidden": true, "description": "Exception details."}
                 ],
                 "description": "Evaluates expression on a given call frame."
-            },
-            {
-                "name": "compileScript",
-                "hidden": true,
-                "parameters": [
-                    { "name": "expression", "type": "string", "description": "Expression to compile." },
-                    { "name": "sourceURL", "type": "string", "description": "Source url to be set for the script." },
-                    { "name": "persistScript", "type": "boolean", "description": "Specifies whether the compiled script should be persisted." },
-                    { "name": "executionContextId", "$ref": "Runtime.ExecutionContextId", "description": "Specifies in which isolated context to perform script run. Each content script lives in an isolated context and this parameter is used to specify one of those contexts." }
-                ],
-                "returns": [
-                    { "name": "scriptId", "$ref": "ScriptId", "optional": true, "description": "Id of the script." },
-                    { "name": "exceptionDetails", "$ref": "ExceptionDetails", "optional": true, "description": "Exception details."}
-                ],
-                "description": "Compiles expression."
-            },
-            {
-                "name": "runScript",
-                "hidden": true,
-                "parameters": [
-                    { "name": "scriptId", "$ref": "ScriptId", "description": "Id of the script to run." },
-                    { "name": "executionContextId", "$ref": "Runtime.ExecutionContextId", "description": "Specifies in which isolated context to perform script run. Each content script lives in an isolated context and this parameter is used to specify one of those contexts." },
-                    { "name": "objectGroup", "type": "string", "optional": true, "description": "Symbolic group name that can be used to release multiple objects." },
-                    { "name": "doNotPauseOnExceptionsAndMuteConsole", "type": "boolean", "optional": true, "description": "Specifies whether script run should stop on exceptions and mute console. Overrides setPauseOnException state." }
-                ],
-                "returns": [
-                    { "name": "result", "$ref": "Runtime.RemoteObject", "description": "Run result." },
-                    { "name": "exceptionDetails", "$ref": "ExceptionDetails", "optional": true, "description": "Exception details."}
-                ],
-                "description": "Runs script with given id in a given context."
             },
             {
                 "name": "setVariableValue",
@@ -3897,7 +3897,7 @@
             {
                 "name": "setBlackboxedRanges",
                 "parameters": [
-                    { "name": "scriptId", "$ref": "ScriptId", "description": "Id of the script." },
+                    { "name": "scriptId", "$ref": "Runtime.ScriptId", "description": "Id of the script." },
                     { "name": "positions", "type": "array", "items": { "$ref": "ScriptPosition" } }
                 ],
                 "hidden": true,
@@ -3912,7 +3912,7 @@
             {
                 "name": "scriptParsed",
                 "parameters": [
-                    { "name": "scriptId", "$ref": "ScriptId", "description": "Identifier of the script parsed." },
+                    { "name": "scriptId", "$ref": "Runtime.ScriptId", "description": "Identifier of the script parsed." },
                     { "name": "url", "type": "string", "description": "URL or name of the script parsed (if any)." },
                     { "name": "startLine", "type": "integer", "description": "Line offset of the script within the resource with given URL (for script tags)." },
                     { "name": "startColumn", "type": "integer", "description": "Column offset of the script within the resource with given URL." },
@@ -3930,7 +3930,7 @@
             {
                 "name": "scriptFailedToParse",
                 "parameters": [
-                    { "name": "scriptId", "$ref": "ScriptId", "description": "Identifier of the script parsed." },
+                    { "name": "scriptId", "$ref": "Runtime.ScriptId", "description": "Identifier of the script parsed." },
                     { "name": "url", "type": "string", "description": "URL or name of the script parsed (if any)." },
                     { "name": "startLine", "type": "integer", "description": "Line offset of the script within the resource with given URL (for script tags)." },
                     { "name": "startColumn", "type": "integer", "description": "Column offset of the script within the resource with given URL." },
@@ -4104,7 +4104,7 @@
                 "description": "CPU Profile node. Holds callsite information, execution statistics and child nodes.",
                 "properties": [
                     { "name": "functionName", "type": "string", "description": "Function name." },
-                    { "name": "scriptId", "$ref": "Debugger.ScriptId", "description": "Script identifier." },
+                    { "name": "scriptId", "$ref": "Runtime.ScriptId", "description": "Script identifier." },
                     { "name": "url", "type": "string", "description": "URL." },
                     { "name": "lineNumber", "type": "integer", "description": "1-based line number of the function start position." },
                     { "name": "columnNumber", "type": "integer", "description": "1-based column number of the function start position." },

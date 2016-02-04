@@ -776,7 +776,7 @@ WebInspector.ConsoleView.prototype = {
      * @param {?WebInspector.RemoteObject} result
      * @param {boolean} wasThrown
      * @param {!WebInspector.ConsoleMessage} originatingConsoleMessage
-     * @param {?DebuggerAgent.ExceptionDetails=} exceptionDetails
+     * @param {?RuntimeAgent.ExceptionDetails=} exceptionDetails
      */
     _printResult: function(result, wasThrown, originatingConsoleMessage, exceptionDetails)
     {

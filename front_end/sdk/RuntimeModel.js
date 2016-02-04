@@ -160,6 +160,60 @@ WebInspector.RuntimeModel.prototype = {
         this._agent.setCustomObjectFormatterEnabled(enabled);
     },
 
+    /**
+     * @param {string} expression
+     * @param {string} sourceURL
+     * @param {boolean} persistScript
+     * @param {number} executionContextId
+     * @param {function(!RuntimeAgent.ScriptId=, ?RuntimeAgent.ExceptionDetails=)=} callback
+     */
+    compileScript: function(expression, sourceURL, persistScript, executionContextId, callback)
+    {
+        this._agent.compileScript(expression, sourceURL, persistScript, executionContextId, innerCallback);
+
+        /**
+         * @param {?Protocol.Error} error
+         * @param {!RuntimeAgent.ScriptId=} scriptId
+         * @param {?RuntimeAgent.ExceptionDetails=} exceptionDetails
+         */
+        function innerCallback(error, scriptId, exceptionDetails)
+        {
+            if (error) {
+                console.error(error);
+                return;
+            }
+            if (callback)
+                callback(scriptId, exceptionDetails);
+        }
+    },
+
+    /**
+     * @param {!RuntimeAgent.ScriptId} scriptId
+     * @param {number} executionContextId
+     * @param {string=} objectGroup
+     * @param {boolean=} doNotPauseOnExceptionsAndMuteConsole
+     * @param {function(?RuntimeAgent.RemoteObject, ?RuntimeAgent.ExceptionDetails=)=} callback
+     */
+    runScript: function(scriptId, executionContextId, objectGroup, doNotPauseOnExceptionsAndMuteConsole, callback)
+    {
+        this._agent.runScript(scriptId, executionContextId, objectGroup, doNotPauseOnExceptionsAndMuteConsole, innerCallback);
+
+        /**
+         * @param {?Protocol.Error} error
+         * @param {?RuntimeAgent.RemoteObject} result
+         * @param {?RuntimeAgent.ExceptionDetails=} exceptionDetails
+         */
+        function innerCallback(error, result, exceptionDetails)
+        {
+            if (error) {
+                console.error(error);
+                return;
+            }
+            if (callback)
+                callback(result, exceptionDetails);
+        }
+    },
+
     __proto__: WebInspector.SDKModel.prototype
 }
 
@@ -268,7 +322,7 @@ WebInspector.ExecutionContext.prototype = {
      * @param {boolean} doNotPauseOnExceptionsAndMuteConsole
      * @param {boolean} returnByValue
      * @param {boolean} generatePreview
-     * @param {function(?WebInspector.RemoteObject, boolean, ?RuntimeAgent.RemoteObject=, ?DebuggerAgent.ExceptionDetails=)} callback
+     * @param {function(?WebInspector.RemoteObject, boolean, ?RuntimeAgent.RemoteObject=, ?RuntimeAgent.ExceptionDetails=)} callback
      */
     evaluate: function(expression, objectGroup, includeCommandLineAPI, doNotPauseOnExceptionsAndMuteConsole, returnByValue, generatePreview, callback)
     {
@@ -284,7 +338,7 @@ WebInspector.ExecutionContext.prototype = {
      * @param {string} objectGroup
      * @param {boolean} returnByValue
      * @param {boolean} generatePreview
-     * @param {function(?WebInspector.RemoteObject, boolean, ?RuntimeAgent.RemoteObject=, ?DebuggerAgent.ExceptionDetails=)} callback
+     * @param {function(?WebInspector.RemoteObject, boolean, ?RuntimeAgent.RemoteObject=, ?RuntimeAgent.ExceptionDetails=)} callback
      */
     globalObject: function(objectGroup, returnByValue, generatePreview, callback)
     {
@@ -298,7 +352,7 @@ WebInspector.ExecutionContext.prototype = {
      * @param {boolean} doNotPauseOnExceptionsAndMuteConsole
      * @param {boolean} returnByValue
      * @param {boolean} generatePreview
-     * @param {function(?WebInspector.RemoteObject, boolean, ?RuntimeAgent.RemoteObject=, ?DebuggerAgent.ExceptionDetails=)} callback
+     * @param {function(?WebInspector.RemoteObject, boolean, ?RuntimeAgent.RemoteObject=, ?RuntimeAgent.ExceptionDetails=)} callback
      */
     _evaluateGlobal: function(expression, objectGroup, includeCommandLineAPI, doNotPauseOnExceptionsAndMuteConsole, returnByValue, generatePreview, callback)
     {
@@ -312,7 +366,7 @@ WebInspector.ExecutionContext.prototype = {
          * @param {?Protocol.Error} error
          * @param {!RuntimeAgent.RemoteObject} result
          * @param {boolean=} wasThrown
-         * @param {?DebuggerAgent.ExceptionDetails=} exceptionDetails
+         * @param {?RuntimeAgent.ExceptionDetails=} exceptionDetails
          */
         function evalCallback(error, result, wasThrown, exceptionDetails)
         {

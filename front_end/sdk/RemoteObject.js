@@ -658,7 +658,7 @@ WebInspector.RemoteObjectImpl.prototype = {
          * @param {?Protocol.Error} error
          * @param {!Array.<!RuntimeAgent.PropertyDescriptor>} properties
          * @param {!Array.<!RuntimeAgent.InternalPropertyDescriptor>=} internalProperties
-         * @param {?DebuggerAgent.ExceptionDetails=} exceptionDetails
+         * @param {?RuntimeAgent.ExceptionDetails=} exceptionDetails
          * @this {WebInspector.RemoteObjectImpl}
          */
         function remoteObjectBinder(error, properties, internalProperties, exceptionDetails)

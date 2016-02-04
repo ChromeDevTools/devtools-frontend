@@ -199,7 +199,7 @@ WebInspector.ConsoleModel.evaluateCommandInConsole = function(executionContext, 
      * @param {?WebInspector.RemoteObject} result
      * @param {boolean} wasThrown
      * @param {?RuntimeAgent.RemoteObject=} valueResult
-     * @param {?DebuggerAgent.ExceptionDetails=} exceptionDetails
+     * @param {?RuntimeAgent.ExceptionDetails=} exceptionDetails
      */
     function printResult(result, wasThrown, valueResult, exceptionDetails)
     {

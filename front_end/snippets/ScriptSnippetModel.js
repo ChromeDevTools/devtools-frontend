@@ -219,18 +219,18 @@ WebInspector.ScriptSnippetModel.prototype = {
         this._restoreBreakpoints(uiSourceCode, breakpointLocations);
 
         var target = executionContext.target();
-        var debuggerModel = executionContext.debuggerModel;
+        var runtimeModel = target.runtimeModel;
         var evaluationIndex = this._nextEvaluationIndex();
         var mapping = this._mappingForTarget.get(target);
         mapping._setEvaluationIndex(evaluationIndex, uiSourceCode);
         var evaluationUrl = mapping._evaluationSourceURL(uiSourceCode);
         var expression = uiSourceCode.workingCopy();
         WebInspector.console.show();
-        debuggerModel.compileScript(expression, "", true, executionContext.id, compileCallback.bind(this));
+        runtimeModel.compileScript(expression, "", true, executionContext.id, compileCallback.bind(this));
 
         /**
-         * @param {!DebuggerAgent.ScriptId=} scriptId
-         * @param {?DebuggerAgent.ExceptionDetails=} exceptionDetails
+         * @param {!RuntimeAgent.ScriptId=} scriptId
+         * @param {?RuntimeAgent.ExceptionDetails=} exceptionDetails
          * @this {WebInspector.ScriptSnippetModel}
          */
         function compileCallback(scriptId, exceptionDetails)
@@ -244,7 +244,7 @@ WebInspector.ScriptSnippetModel.prototype = {
                 return;
             }
 
-            mapping._addScript(debuggerModel.scriptForId(scriptId), uiSourceCode);
+            mapping._addScript(executionContext.debuggerModel.scriptForId(scriptId), uiSourceCode);
             var breakpointLocations = this._removeBreakpoints(uiSourceCode);
             this._restoreBreakpoints(uiSourceCode, breakpointLocations);
 
@@ -253,19 +253,19 @@ WebInspector.ScriptSnippetModel.prototype = {
     },
 
     /**
-     * @param {!DebuggerAgent.ScriptId} scriptId
+     * @param {!RuntimeAgent.ScriptId} scriptId
      * @param {!WebInspector.ExecutionContext} executionContext
      * @param {?string=} sourceURL
      */
     _runScript: function(scriptId, executionContext, sourceURL)
     {
         var target = executionContext.target();
-        executionContext.debuggerModel.runScript(scriptId, executionContext.id, "console", false, runCallback.bind(this, target));
+        target.runtimeModel.runScript(scriptId, executionContext.id, "console", false, runCallback.bind(this, target));
 
         /**
          * @param {!WebInspector.Target} target
          * @param {?RuntimeAgent.RemoteObject} result
-         * @param {?DebuggerAgent.ExceptionDetails=} exceptionDetails
+         * @param {?RuntimeAgent.ExceptionDetails=} exceptionDetails
          * @this {WebInspector.ScriptSnippetModel}
          */
         function runCallback(target, result, exceptionDetails)
@@ -301,7 +301,7 @@ WebInspector.ScriptSnippetModel.prototype = {
 
     /**
      * @param {!WebInspector.Target} target
-     * @param {?DebuggerAgent.ExceptionDetails=} exceptionDetails
+     * @param {?RuntimeAgent.ExceptionDetails=} exceptionDetails
      * @param {?string=} sourceURL
      */
     _printRunOrCompileScriptResultFailure: function(target, exceptionDetails, sourceURL)

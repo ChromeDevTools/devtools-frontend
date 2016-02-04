@@ -455,7 +455,7 @@ WebInspector.DebuggerModel.prototype = {
     },
 
     /**
-     * @param {!DebuggerAgent.ScriptId} scriptId
+     * @param {!RuntimeAgent.ScriptId} scriptId
      * @return {!WebInspector.Script}
      */
     scriptForId: function(scriptId)
@@ -474,7 +474,7 @@ WebInspector.DebuggerModel.prototype = {
     },
 
     /**
-     * @param {!DebuggerAgent.ScriptId} scriptId
+     * @param {!RuntimeAgent.ScriptId} scriptId
      * @param {string} newSource
      * @param {function(?Protocol.Error, !DebuggerAgent.SetScriptSourceError=)} callback
      */
@@ -484,7 +484,7 @@ WebInspector.DebuggerModel.prototype = {
     },
 
     /**
-     * @param {!DebuggerAgent.ScriptId} scriptId
+     * @param {!RuntimeAgent.ScriptId} scriptId
      * @param {string} newSource
      * @param {function(?Protocol.Error, !DebuggerAgent.SetScriptSourceError=)} callback
      * @param {?Protocol.Error} error
@@ -573,7 +573,7 @@ WebInspector.DebuggerModel.prototype = {
     },
 
     /**
-     * @param {!DebuggerAgent.ScriptId} scriptId
+     * @param {!RuntimeAgent.ScriptId} scriptId
      * @param {string} sourceURL
      * @param {number} startLine
      * @param {number} startColumn
@@ -654,7 +654,7 @@ WebInspector.DebuggerModel.prototype = {
     },
 
     /**
-     * @param {!DebuggerAgent.ScriptId} scriptId
+     * @param {!RuntimeAgent.ScriptId} scriptId
      * @param {number} lineNumber
      * @param {number} columnNumber
      * @return {?WebInspector.DebuggerModel.Location}
@@ -708,14 +708,14 @@ WebInspector.DebuggerModel.prototype = {
      * @param {boolean} doNotPauseOnExceptionsAndMuteConsole
      * @param {boolean} returnByValue
      * @param {boolean} generatePreview
-     * @param {function(?WebInspector.RemoteObject, boolean, ?RuntimeAgent.RemoteObject=, ?DebuggerAgent.ExceptionDetails=)} callback
+     * @param {function(?WebInspector.RemoteObject, boolean, ?RuntimeAgent.RemoteObject=, ?RuntimeAgent.ExceptionDetails=)} callback
      */
     evaluateOnSelectedCallFrame: function(code, objectGroup, includeCommandLineAPI, doNotPauseOnExceptionsAndMuteConsole, returnByValue, generatePreview, callback)
     {
         /**
          * @param {?RuntimeAgent.RemoteObject} result
          * @param {boolean=} wasThrown
-         * @param {?DebuggerAgent.ExceptionDetails=} exceptionDetails
+         * @param {?RuntimeAgent.ExceptionDetails=} exceptionDetails
          * @this {WebInspector.DebuggerModel}
          */
         function didEvaluate(result, wasThrown, exceptionDetails)
@@ -758,60 +758,6 @@ WebInspector.DebuggerModel.prototype = {
             var rawLocation = script ? this.createRawLocation(script, location.lineNumber, location.columnNumber || 0) : null;
             var sourceURL = script ? script.contentURL() : null;
             callback({location: rawLocation, sourceURL: sourceURL, functionName: response.functionName, scopeChain: response.scopeChain || null});
-        }
-    },
-
-    /**
-     * @param {string} expression
-     * @param {string} sourceURL
-     * @param {boolean} persistScript
-     * @param {number} executionContextId
-     * @param {function(!DebuggerAgent.ScriptId=, ?DebuggerAgent.ExceptionDetails=)=} callback
-     */
-    compileScript: function(expression, sourceURL, persistScript, executionContextId, callback)
-    {
-        this._agent.compileScript(expression, sourceURL, persistScript, executionContextId, innerCallback);
-
-        /**
-         * @param {?Protocol.Error} error
-         * @param {!DebuggerAgent.ScriptId=} scriptId
-         * @param {?DebuggerAgent.ExceptionDetails=} exceptionDetails
-         */
-        function innerCallback(error, scriptId, exceptionDetails)
-        {
-            if (error) {
-                console.error(error);
-                return;
-            }
-            if (callback)
-                callback(scriptId, exceptionDetails);
-        }
-    },
-
-    /**
-     * @param {!DebuggerAgent.ScriptId} scriptId
-     * @param {number} executionContextId
-     * @param {string=} objectGroup
-     * @param {boolean=} doNotPauseOnExceptionsAndMuteConsole
-     * @param {function(?RuntimeAgent.RemoteObject, ?DebuggerAgent.ExceptionDetails=)=} callback
-     */
-    runScript: function(scriptId, executionContextId, objectGroup, doNotPauseOnExceptionsAndMuteConsole, callback)
-    {
-        this._agent.runScript(scriptId, executionContextId, objectGroup, doNotPauseOnExceptionsAndMuteConsole, innerCallback);
-
-        /**
-         * @param {?Protocol.Error} error
-         * @param {?RuntimeAgent.RemoteObject} result
-         * @param {?DebuggerAgent.ExceptionDetails=} exceptionDetails
-         */
-        function innerCallback(error, result, exceptionDetails)
-        {
-            if (error) {
-                console.error(error);
-                return;
-            }
-            if (callback)
-                callback(result, exceptionDetails);
         }
     },
 
@@ -992,7 +938,7 @@ WebInspector.DebuggerDispatcher.prototype = {
 
     /**
      * @override
-     * @param {!DebuggerAgent.ScriptId} scriptId
+     * @param {!RuntimeAgent.ScriptId} scriptId
      * @param {string} sourceURL
      * @param {number} startLine
      * @param {number} startColumn
@@ -1012,7 +958,7 @@ WebInspector.DebuggerDispatcher.prototype = {
 
     /**
      * @override
-     * @param {!DebuggerAgent.ScriptId} scriptId
+     * @param {!RuntimeAgent.ScriptId} scriptId
      * @param {string} sourceURL
      * @param {number} startLine
      * @param {number} startColumn
@@ -1265,7 +1211,7 @@ WebInspector.DebuggerModel.CallFrame.prototype = {
      * @param {boolean} doNotPauseOnExceptionsAndMuteConsole
      * @param {boolean} returnByValue
      * @param {boolean} generatePreview
-     * @param {function(?RuntimeAgent.RemoteObject, boolean=, ?DebuggerAgent.ExceptionDetails=)} callback
+     * @param {function(?RuntimeAgent.RemoteObject, boolean=, ?RuntimeAgent.ExceptionDetails=)} callback
      */
     evaluate: function(code, objectGroup, includeCommandLineAPI, doNotPauseOnExceptionsAndMuteConsole, returnByValue, generatePreview, callback)
     {
@@ -1273,7 +1219,7 @@ WebInspector.DebuggerModel.CallFrame.prototype = {
          * @param {?Protocol.Error} error
          * @param {!RuntimeAgent.RemoteObject} result
          * @param {boolean=} wasThrown
-         * @param {?DebuggerAgent.ExceptionDetails=} exceptionDetails
+         * @param {?RuntimeAgent.ExceptionDetails=} exceptionDetails
          */
         function didEvaluateOnCallFrame(error, result, wasThrown, exceptionDetails)
         {

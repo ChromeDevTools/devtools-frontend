@@ -149,11 +149,13 @@ WebInspector.DeviceModeToolbar.prototype = {
         this._uaItem = new WebInspector.ToolbarText();
         this._uaItem.setVisible(false);
         this._uaItem.setTitle(WebInspector.UIString("User agent type"));
+        this._uaItem.element.style.opacity = "0.5";
         toolbar.appendToolbarItem(this._uaItem);
 
         this._deviceScaleItem = new WebInspector.ToolbarText();
         this._deviceScaleItem.setVisible(false);
         this._deviceScaleItem.setTitle(WebInspector.UIString("Device pixel ratio"));
+        this._deviceScaleItem.element.style.opacity = "0.5";
         toolbar.appendToolbarItem(this._deviceScaleItem);
 
         var moreOptionsButton = new WebInspector.ToolbarMenuButton(this._appendOptionsMenuItems.bind(this));
@@ -355,8 +357,12 @@ WebInspector.DeviceModeToolbar.prototype = {
             return;
 
         var devices = this._allDevices();
-        if (devices.indexOf(this._model.device()) === -1)
-            this._emulateDevice(devices[0] || WebInspector.emulatedDevicesList.standard()[0]);
+        if (devices.indexOf(this._model.device()) === -1) {
+            if (devices.length)
+                this._emulateDevice(devices[0]);
+            else
+                this._model.emulate(WebInspector.DeviceModeModel.Type.Responsive, null, null);
+        }
     },
 
     /**

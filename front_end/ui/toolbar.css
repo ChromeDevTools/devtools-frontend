@@ -91,6 +91,11 @@
     flex: auto;
     overflow: hidden;
     text-align: right;
+    color: #333 !important;
+}
+
+.toolbar-button .toolbar-dropdown-arrow {
+    background-color: #333 !important;
 }
 
 .toolbar-has-glyph .toolbar-text {
@@ -127,8 +132,7 @@
     opacity: 0.5;
 }
 
-.toolbar-button:enabled.hover:not(:active) .toolbar-glyph,
-.toolbar-button:enabled.hover:not(:active) .toolbar-dropdown-arrow {
+.toolbar-button:enabled.hover:not(:active) .toolbar-glyph {
     background-color: #333;
 }
 

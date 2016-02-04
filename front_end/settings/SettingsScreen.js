@@ -327,6 +327,7 @@ WebInspector.WorkspaceSettingsTab.prototype = {
         var folderExcludeSetting = WebInspector.isolatedFileSystemManager.workspaceFolderExcludePatternSetting();
         var setValue = WebInspector.bindInput(inputElement, folderExcludeSetting.set.bind(folderExcludeSetting), regexValidator, false);
         folderExcludeSetting.addChangeListener(() => setValue.call(null, folderExcludeSetting.get()));
+        setValue(folderExcludeSetting.get());
         return p;
 
         /**

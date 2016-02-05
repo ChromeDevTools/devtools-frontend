@@ -104,14 +104,15 @@ WebInspector.PromiseDetails.prototype = {
             this.status = details.status;
         if (details.parentId)
             this.parentId = details.parentId;
-        if (details.callFrame)
-            this.callFrame = details.callFrame;
         if (details.creationTime)
             this.creationTime = details.creationTime;
         if (details.settlementTime)
             this.settlementTime = details.settlementTime;
-        if (details.creationStack)
+        if (details.creationStack) {
             this.creationStack = details.creationStack;
+            if (this.creationStack.callFrames.length)
+                this.callFrame = this.creationStack.callFrames[0];
+        }
         if (details.asyncCreationStack)
             this.asyncCreationStack = details.asyncCreationStack;
         if (details.settlementStack)

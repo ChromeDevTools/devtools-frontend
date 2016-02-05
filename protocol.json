@@ -3558,7 +3558,6 @@
                     { "name": "id", "type": "integer", "description": "Unique id of the promise." },
                     { "name": "status", "type": "string", "optional": true, "enum": ["pending", "resolved", "rejected"], "description": "Status of the promise." },
                     { "name": "parentId", "type": "integer", "optional": true, "description": "Id of the parent promise." },
-                    { "name": "callFrame", "$ref": "Runtime.CallFrame", "optional": true, "description": "Top call frame on promise creation."},
                     { "name": "creationTime", "type": "number", "optional": true, "description": "Creation time of the promise." },
                     { "name": "settlementTime", "type": "number", "optional": true, "description": "Settlement time of the promise." },
                     { "name": "creationStack", "$ref": "Runtime.StackTrace", "optional": true, "description": "JavaScript stack trace on promise creation." },

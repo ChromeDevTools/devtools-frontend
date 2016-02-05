@@ -48,6 +48,21 @@ WebInspector.NetworkDataGridNode._hoveredRowSymbol = Symbol("hoveredRow");
 
 WebInspector.NetworkDataGridNode.prototype = {
     /**
+     * @return {string}
+     */
+    displayType: function()
+    {
+        var mimeType = this._request.mimeType || this._request.requestContentType() || "";
+        var resourceType = this._request.resourceType();
+        var simpleType = resourceType.name();
+
+        if (resourceType == WebInspector.resourceTypes.Other || resourceType == WebInspector.resourceTypes.Image)
+            simpleType = mimeType.replace(/^(application|image)\//, "");
+
+        return simpleType;
+    },
+
+    /**
      * @return {!WebInspector.NetworkRequest}
      */
     request: function()
@@ -309,15 +324,7 @@ WebInspector.NetworkDataGridNode.prototype = {
      */
     _renderTypeCell: function(cell)
     {
-        var mimeType = this._request.mimeType || this._request.requestContentType() || "";
-        var resourceType = this._request.resourceType();
-        var simpleType = resourceType.name();
-
-        if (resourceType == WebInspector.resourceTypes.Other
-            || resourceType == WebInspector.resourceTypes.Image)
-            simpleType = mimeType.replace(/^(application|image)\//, "");
-
-        cell.setTextAndTitle(simpleType);
+        cell.setTextAndTitle(this.displayType());
     },
 
     /**
@@ -595,6 +602,23 @@ WebInspector.NetworkDataGridNode.SizeComparator = function(a, b)
     if (a._request.cached() && !b._request.cached())
         return -1;
     return (a._request.transferSize - b._request.transferSize) || a._request.indentityCompare(b._request);
+}
+
+/**
+ * @param {!WebInspector.NetworkDataGridNode} a
+ * @param {!WebInspector.NetworkDataGridNode} b
+ * @return {number}
+ */
+WebInspector.NetworkDataGridNode.TypeComparator = function(a, b)
+{
+    var aSimpleType = a.displayType();
+    var bSimpleType = b.displayType();
+
+    if (aSimpleType > bSimpleType)
+        return 1;
+    if (bSimpleType > aSimpleType)
+        return -1;
+    return a._request.indentityCompare(b._request);
 }
 
 /**

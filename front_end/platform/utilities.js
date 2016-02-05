@@ -1199,7 +1199,7 @@ function createSearchRegex(query, caseSensitive, isRegex)
  */
 function createPlainTextSearchRegex(query, flags)
 {
-    // This should be kept the same as the one in ContentSearchUtils.cpp.
+    // This should be kept the same as the one in V8StringUtil.cpp.
     var regexSpecialCharacters = String.regexSpecialCharacters();
     var regex = "";
     for (var i = 0; i < query.length; ++i) {

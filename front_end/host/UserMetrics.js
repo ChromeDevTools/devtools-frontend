@@ -72,15 +72,6 @@ WebInspector.UserMetrics._PanelCodes = {
     layers: 9
 }
 
-WebInspector.UserMetrics._DrawerCodes = {
-    "console": 1,
-    "animations": 2,
-    "network.config": 3,
-    "rendering": 4,
-    "sensors": 5,
-    "sources.search": 6
-}
-
 WebInspector.UserMetrics.prototype = {
     /**
      * @param {string} panelName
@@ -90,16 +81,6 @@ WebInspector.UserMetrics.prototype = {
         var code = WebInspector.UserMetrics._PanelCodes[panelName] || 0;
         var size = Object.keys(WebInspector.UserMetrics._PanelCodes).length + 1;
         InspectorFrontendHost.recordEnumeratedHistogram("DevTools.PanelShown", code, size);
-    },
-
-    /**
-     * @param {string} viewId
-     */
-    drawerShown: function(viewId)
-    {
-        var code = WebInspector.UserMetrics._DrawerCodes[viewId] || 0;
-        var size = Object.keys(WebInspector.UserMetrics._DrawerCodes).length + 1;
-        InspectorFrontendHost.recordEnumeratedHistogram("DevTools.DrawerShown", code, size);
     },
 
     /**

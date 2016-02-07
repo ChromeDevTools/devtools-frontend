@@ -31,13 +31,6 @@ try:
 except ImportError:
     import json
 
-rjsmin_path = path.abspath(join(
-    path.dirname(__file__),
-    '..',
-    '..',
-    'build',
-    'scripts'))
-sys.path.append(rjsmin_path)
 import rjsmin
 
 

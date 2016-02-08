@@ -412,13 +412,16 @@ WebInspector.CountersGraph.CounterUI = function(memoryCountersPane, title, curre
     this._formatter = formatter || Number.withThousandsSeparator;
     var container = memoryCountersPane._infoWidget.element.createChild("div", "memory-counter-selector-info");
 
-    this._filter = new WebInspector.CheckboxFilterUI(title, title);
+    this._setting = WebInspector.settings.createSetting("timelineCountersGraph-" + title, true);
+    this._filter = new WebInspector.ToolbarCheckbox(title, title, this._setting);
     var color = WebInspector.Color.parse(graphColor).setAlpha(0.5).asString(WebInspector.Color.Format.RGBA);
-    if (color)
-        this._filter.setColor(color, "rgba(0,0,0,0.3)");
-    this._filter.addEventListener(WebInspector.FilterUI.Events.FilterChanged, this._toggleCounterGraph.bind(this));
-    container.appendChild(this._filter.element());
-    this._range = this._filter.labelElement().createChild("span", "range");
+    if (color) {
+        this._filter.element.backgroundColor = color;
+        this._filter.element.borderColor = "transparent";
+    }
+    this._filter.inputElement.addEventListener("click", this._toggleCounterGraph.bind(this));
+    container.appendChild(this._filter.element);
+    this._range = this._filter.element.createChild("span", "range");
 
     this._value = memoryCountersPane._currentValuesBar.createChild("span", "memory-counter-value");
     this._value.style.color = graphColor;

@@ -793,12 +793,12 @@ WebInspector.SecurityOriginView = function(panel, origin, originState)
 
             var table = new WebInspector.SecurityDetailsTable();
             certificateSection.appendChild(table.element());
-            table.addRow("Subject", certificateDetails.subject.name);
-            table.addRow("SAN", sanDiv);
-            table.addRow("Valid From", validFromString);
-            table.addRow("Valid Until", validUntilString);
-            table.addRow("Issuer", certificateDetails.issuer);
-            table.addRow("SCTs", this.sctSummary(originState.securityDetails.certificateValidationDetails));
+            table.addRow(WebInspector.UIString("Subject"), certificateDetails.subject.name);
+            table.addRow(WebInspector.UIString("SAN"), sanDiv);
+            table.addRow(WebInspector.UIString("Valid From"), validFromString);
+            table.addRow(WebInspector.UIString("Valid Until"), validUntilString);
+            table.addRow(WebInspector.UIString("Issuer"), certificateDetails.issuer);
+            table.addRow(WebInspector.UIString("SCTs"), this.sctSummary(originState.securityDetails.certificateValidationDetails));
             table.addRow("", WebInspector.SecurityPanel.createCertificateViewerButton(WebInspector.UIString("Open full certificate details"), originState.securityDetails.certificateId));
         }
 

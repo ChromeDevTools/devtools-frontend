@@ -1010,6 +1010,9 @@ function installBackwardsCompatibility()
     styleElement.type = "text/css";
     styleElement.textContent = "html /deep/ * { min-width: 0; min-height: 0; }";
     window.document.head.appendChild(styleElement);
+
+    // Support for legacy (<M49) frontends. Remove in M52.
+    Event.prototype.deepPath = undefined;
 }
 
 function windowLoaded()

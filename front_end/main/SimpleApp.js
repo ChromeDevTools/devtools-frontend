@@ -14,15 +14,13 @@ WebInspector.SimpleApp.prototype = {
     /**
      * @override
      * @param {!Document} document
-     * @param {function()} callback
      */
-    presentUI: function(document, callback)
+    presentUI: function(document)
     {
         var rootView = new WebInspector.RootView();
         WebInspector.inspectorView.show(rootView.element);
         WebInspector.inspectorView.showInitialPanel();
         rootView.attachToDocument(document);
-        callback();
     }
 };
 

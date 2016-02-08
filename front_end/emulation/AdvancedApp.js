@@ -15,9 +15,8 @@ WebInspector.AdvancedApp.prototype = {
     /**
      * @override
      * @param {!Document} document
-     * @param {function()} callback
      */
-    presentUI: function(document, callback)
+    presentUI: function(document)
     {
         var rootView = new WebInspector.RootView();
 
@@ -39,11 +38,6 @@ WebInspector.AdvancedApp.prototype = {
         console.timeStamp("AdvancedApp.attachToBody");
         rootView.attachToDocument(document);
         this._inspectedPagePlaceholder.update();
-
-        if (this._isDocked())
-            callback();
-        else
-            this._presentUICallback = callback;
     },
 
     /**
@@ -75,12 +69,6 @@ WebInspector.AdvancedApp.prototype = {
         this._toolboxRootView.attachToDocument(toolboxDocument);
 
         this._updateDeviceModeView();
-
-        if (this._presentUICallback) {
-            var callback = this._presentUICallback;
-            delete this._presentUICallback;
-            callback();
-        }
     },
 
     _updateDeviceModeView: function()

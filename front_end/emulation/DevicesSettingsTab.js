@@ -28,8 +28,9 @@ WebInspector.DevicesSettingsTab = function()
     this._list.show(this.containerElement);
 
     this._muteUpdate = false;
-    WebInspector.emulatedDevicesList.addEventListener(WebInspector.EmulatedDevicesList.Events.CustomDevicesUpdated, this._devicesUpdated, this);
-    WebInspector.emulatedDevicesList.addEventListener(WebInspector.EmulatedDevicesList.Events.StandardDevicesUpdated, this._devicesUpdated, this);
+    this._emulatedDevicesList = WebInspector.EmulatedDevicesList.instance();
+    this._emulatedDevicesList.addEventListener(WebInspector.EmulatedDevicesList.Events.CustomDevicesUpdated, this._devicesUpdated, this);
+    this._emulatedDevicesList.addEventListener(WebInspector.EmulatedDevicesList.Events.StandardDevicesUpdated, this._devicesUpdated, this);
 
     this.setDefaultFocusedElement(this._addCustomButton);
 }
@@ -48,13 +49,13 @@ WebInspector.DevicesSettingsTab.prototype = {
 
         this._list.clear();
 
-        var devices = WebInspector.emulatedDevicesList.custom().slice();
+        var devices = this._emulatedDevicesList.custom().slice();
         for (var i = 0; i < devices.length; ++i)
             this._list.appendItem(devices[i], true);
 
         this._list.appendSeparator();
 
-        devices = WebInspector.emulatedDevicesList.standard().slice();
+        devices = this._emulatedDevicesList.standard().slice();
         devices.sort(WebInspector.EmulatedDevice.deviceComparator);
         for (var i = 0; i < devices.length; ++i)
             this._list.appendItem(devices[i], false);
@@ -67,9 +68,9 @@ WebInspector.DevicesSettingsTab.prototype = {
     {
         this._muteUpdate = true;
         if (custom)
-            WebInspector.emulatedDevicesList.saveCustomDevices();
+            this._emulatedDevicesList.saveCustomDevices();
         else
-            WebInspector.emulatedDevicesList.saveStandardDevices();
+            this._emulatedDevicesList.saveStandardDevices();
         this._muteUpdate = false;
     },
 
@@ -81,7 +82,7 @@ WebInspector.DevicesSettingsTab.prototype = {
         device.horizontal.height = 400;
         device.vertical.width = 400;
         device.vertical.height = 700;
-        this._list.addNewItem(WebInspector.emulatedDevicesList.custom().length, device);
+        this._list.addNewItem(this._emulatedDevicesList.custom().length, device);
     },
 
     /**
@@ -131,7 +132,7 @@ WebInspector.DevicesSettingsTab.prototype = {
      */
     removeItemRequested: function(item, index)
     {
-        WebInspector.emulatedDevicesList.removeCustomDevice(/** @type {!WebInspector.EmulatedDevice} */ (item));
+        this._emulatedDevicesList.removeCustomDevice(/** @type {!WebInspector.EmulatedDevice} */ (item));
     },
 
     /**
@@ -155,9 +156,9 @@ WebInspector.DevicesSettingsTab.prototype = {
         device.modes.push({title: "", orientation: WebInspector.EmulatedDevice.Horizontal, insets: new Insets(0, 0, 0, 0), images: null});
 
         if (isNew)
-            WebInspector.emulatedDevicesList.addCustomDevice(device);
+            this._emulatedDevicesList.addCustomDevice(device);
         else
-            WebInspector.emulatedDevicesList.saveCustomDevices();
+            this._emulatedDevicesList.saveCustomDevices();
         this._addCustomButton.scrollIntoViewIfNeeded();
         this._addCustomButton.focus();
     },

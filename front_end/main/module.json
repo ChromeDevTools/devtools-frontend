@@ -2,12 +2,6 @@
     "extensions": [
         {
             "type": "@WebInspector.AppProvider",
-            "condition": "can_dock",
-            "className": "WebInspector.AdvancedAppProvider",
-            "order": 0
-        },
-        {
-            "type": "@WebInspector.AppProvider",
             "className": "WebInspector.SimpleAppProvider",
             "order": 10
         },
@@ -275,14 +269,6 @@
         {
             "type": "setting",
             "category": "Appearance",
-            "title": "Don't show emulation warnings",
-            "settingName": "disableOverridesWarning",
-            "settingType": "boolean",
-            "defaultValue": false
-        },
-        {
-            "type": "setting",
-            "category": "Appearance",
             "title": "Don't show Chrome Data Saver warning",
             "settingName": "disableDataSaverInfobar",
             "settingType": "boolean",
@@ -327,11 +313,9 @@
         "extensions",
         "host",
         "platform",
-        "sdk",
-        "emulation"
+        "sdk"
     ],
     "scripts": [
-        "AdvancedApp.js",
         "FrontendWebSocketAPI.js",
         "RenderingOptions.js",
         "SimpleApp.js",

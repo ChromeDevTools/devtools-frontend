@@ -40,8 +40,9 @@ WebInspector.DeviceModeToolbar = function(model, showMediaInspectorSetting, show
     optionsToolbar.makeWrappable(true);
     this._fillOptionsToolbar(optionsToolbar);
 
-    WebInspector.emulatedDevicesList.addEventListener(WebInspector.EmulatedDevicesList.Events.CustomDevicesUpdated, this._deviceListChanged, this);
-    WebInspector.emulatedDevicesList.addEventListener(WebInspector.EmulatedDevicesList.Events.StandardDevicesUpdated, this._deviceListChanged, this);
+    this._emulatedDevicesList = WebInspector.EmulatedDevicesList.instance();
+    this._emulatedDevicesList.addEventListener(WebInspector.EmulatedDevicesList.Events.CustomDevicesUpdated, this._deviceListChanged, this);
+    this._emulatedDevicesList.addEventListener(WebInspector.EmulatedDevicesList.Events.StandardDevicesUpdated, this._deviceListChanged, this);
 
     this._persistenceSetting = WebInspector.settings.createSetting("emulation.deviceModeValue", {device: "", orientation: "", mode: ""});
 }
@@ -304,7 +305,7 @@ WebInspector.DeviceModeToolbar.prototype = {
      */
     _standardDevices: function()
     {
-        return this._filterDevices(WebInspector.emulatedDevicesList.standard());
+        return this._filterDevices(this._emulatedDevicesList.standard());
     },
 
     /**
@@ -312,7 +313,7 @@ WebInspector.DeviceModeToolbar.prototype = {
      */
     _customDevices: function()
     {
-        return this._filterDevices(WebInspector.emulatedDevicesList.custom());
+        return this._filterDevices(this._emulatedDevicesList.custom());
     },
 
     /**
@@ -332,7 +333,7 @@ WebInspector.DeviceModeToolbar.prototype = {
         appendGroup.call(this, this._standardDevices());
         appendGroup.call(this, this._customDevices());
         contextMenu.appendSeparator();
-        contextMenu.appendItem(WebInspector.UIString("Edit\u2026"), WebInspector.emulatedDevicesList.revealCustomSetting.bind(WebInspector.emulatedDevicesList), false);
+        contextMenu.appendItem(WebInspector.UIString("Edit\u2026"), this._emulatedDevicesList.revealCustomSetting.bind(this._emulatedDevicesList), false);
 
         /**
          * @param {!Array<!WebInspector.EmulatedDevice>} devices

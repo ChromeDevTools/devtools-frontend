@@ -20,9 +20,8 @@ WebInspector.ScreencastApp.prototype = {
     /**
      * @override
      * @param {!Document} document
-     * @param {function()} callback
      */
-    presentUI: function(document, callback)
+    presentUI: function(document)
     {
         var rootView = new WebInspector.RootView();
 
@@ -35,7 +34,6 @@ WebInspector.ScreencastApp.prototype = {
         this._rootSplitWidget.setSidebarWidget(WebInspector.inspectorView);
         WebInspector.inspectorView.showInitialPanel();
         rootView.attachToDocument(document);
-        callback();
     },
 
     /**

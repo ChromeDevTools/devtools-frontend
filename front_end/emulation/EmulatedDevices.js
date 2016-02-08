@@ -500,5 +500,15 @@ WebInspector.EmulatedDevicesList.prototype = {
     __proto__: WebInspector.Object.prototype
 }
 
-/** @type {!WebInspector.EmulatedDevicesList} */
-WebInspector.emulatedDevicesList;
+/** @type {?WebInspector.EmulatedDevicesList} */
+WebInspector.EmulatedDevicesList._instance;
+
+/**
+ * @return {!WebInspector.EmulatedDevicesList}
+ */
+WebInspector.EmulatedDevicesList.instance = function()
+{
+    if (!WebInspector.EmulatedDevicesList._instance)
+        WebInspector.EmulatedDevicesList._instance = new WebInspector.EmulatedDevicesList();
+    return /** @type {!WebInspector.EmulatedDevicesList} */ (WebInspector.EmulatedDevicesList._instance);
+}

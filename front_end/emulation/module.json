@@ -1,6 +1,12 @@
 {
     "extensions": [
         {
+            "type": "@WebInspector.AppProvider",
+            "condition": "can_dock",
+            "className": "WebInspector.AdvancedAppProvider",
+            "order": 0
+        },
+        {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "emulation.toggle-device-mode",
             "className": "WebInspector.DeviceModeWrapper.ActionDelegate",
@@ -77,6 +83,7 @@
         "ui"
     ],
     "scripts": [
+        "AdvancedApp.js",
         "EmulatedDevices.js",
         "DevicesSettingsTab.js",
         "DeviceOrientation.js",

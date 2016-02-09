@@ -346,10 +346,25 @@ WebInspector.NavigatorView.prototype = {
             return frameNode;
 
         frameNode = new WebInspector.NavigatorGroupTreeNode(this, project, target.id() + ":" + frame.id, WebInspector.NavigatorView.Types.Frame, frame.displayName());
+        frameNode.setHoverCallback(hoverCallback);
         this._frameNodes.set(frame, frameNode);
         this._frameNode(project, target, frame.parentFrame).appendChild(frameNode);
         if (!frame.parentFrame)
             frameNode.treeNode()._boostOrder = true;
+
+        /**
+         * @param {boolean} hovered
+         */
+        function hoverCallback(hovered)
+        {
+            if (hovered) {
+                var domModel = WebInspector.DOMModel.fromTarget(target);
+                if (domModel)
+                    domModel.highlightFrame(frame.id);
+            } else {
+                WebInspector.DOMModel.hideDOMNodeHighlight();
+            }
+        }
         return frameNode;
     },
 
@@ -771,8 +786,9 @@ WebInspector.NavigatorView._treeElementsCompare = function compare(treeElement1,
  * @param {!WebInspector.NavigatorView} navigatorView
  * @param {string} type
  * @param {string} title
+ * @param {function(boolean)=} hoverCallback
  */
-WebInspector.NavigatorFolderTreeElement = function(navigatorView, type, title)
+WebInspector.NavigatorFolderTreeElement = function(navigatorView, type, title, hoverCallback)
 {
     TreeElement.call(this, "", true);
     this.listItemElement.classList.add("navigator-" + type + "-tree-item", "navigator-folder-tree-item");
@@ -781,6 +797,7 @@ WebInspector.NavigatorFolderTreeElement = function(navigatorView, type, title)
     this.tooltip = title;
     this.createIcon();
     this._navigatorView = navigatorView;
+    this._hoverCallback = hoverCallback;
 }
 
 WebInspector.NavigatorFolderTreeElement.prototype = {
@@ -794,6 +811,8 @@ WebInspector.NavigatorFolderTreeElement.prototype = {
         this.collapse();
         this._node.onattach();
         this.listItemElement.addEventListener("contextmenu", this._handleContextMenuEvent.bind(this), false);
+        this.listItemElement.addEventListener("mousemove", this._mouseMove.bind(this), false);
+        this.listItemElement.addEventListener("mouseleave", this._mouseLeave.bind(this), false);
     },
 
     /**
@@ -820,6 +839,28 @@ WebInspector.NavigatorFolderTreeElement.prototype = {
             return;
         this.select();
         this._navigatorView.handleFolderContextMenu(event, this._node);
+    },
+
+    /**
+     * @param {!Event} event
+     */
+    _mouseMove: function(event)
+    {
+        if (this._hovered || !this._hoverCallback)
+            return;
+        this._hovered = true;
+        this._hoverCallback(true);
+    },
+
+    /**
+     * @param {!Event} event
+     */
+    _mouseLeave: function(event)
+    {
+        if (!this._hoverCallback)
+            return;
+        this._hovered = false;
+        this._hoverCallback(false);
     },
 
     __proto__: TreeElement.prototype
@@ -1486,6 +1527,14 @@ WebInspector.NavigatorGroupTreeNode = function(navigatorView, project, id, type,
 
 WebInspector.NavigatorGroupTreeNode.prototype = {
     /**
+     * @param {function(boolean)} hoverCallback
+     */
+    setHoverCallback: function(hoverCallback)
+    {
+        this._hoverCallback = hoverCallback;
+    },
+
+    /**
      * @override
      * @return {!TreeElement}
      */
@@ -1493,7 +1542,7 @@ WebInspector.NavigatorGroupTreeNode.prototype = {
     {
         if (this._treeElement)
             return this._treeElement;
-        this._treeElement = new WebInspector.NavigatorFolderTreeElement(this._navigatorView, this._type, this._title);
+        this._treeElement = new WebInspector.NavigatorFolderTreeElement(this._navigatorView, this._type, this._title, this._hoverCallback);
         this._treeElement.setNode(this);
         return this._treeElement;
     },

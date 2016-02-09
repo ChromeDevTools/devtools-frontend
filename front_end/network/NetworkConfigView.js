@@ -157,6 +157,8 @@ WebInspector.NetworkConfigView.createUserAgentSelectAndInput = function()
 
     function textDoubleClicked()
     {
+        if (userAgentSelectElement.selectedIndex === userAgents.length - 1)
+            return;
         userAgentSelectElement.selectedIndex = userAgents.length - 1;
         userAgentSelected();
     }

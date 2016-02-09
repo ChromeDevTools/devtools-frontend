@@ -375,7 +375,7 @@ WebInspector.DeviceModeModel.prototype = {
 
     _scaleSettingChanged: function()
     {
-        this._calculateAndEmulate(true);
+        this._calculateAndEmulate(false);
     },
 
     _widthSettingChanged: function()

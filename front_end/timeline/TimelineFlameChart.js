@@ -177,9 +177,11 @@ WebInspector.TimelineFlameChartDataProviderBase.prototype = {
      * @param {number} barY
      * @param {number} barWidth
      * @param {number} barHeight
+     * @param {number} unclippedBarX
+     * @param {number} timeToPixels
      * @return {boolean}
      */
-    decorateEntry: function(entryIndex, context, text, barX, barY, barWidth, barHeight)
+    decorateEntry: function(entryIndex, context, text, barX, barY, barWidth, barHeight, unclippedBarX, timeToPixels)
     {
         return false;
     },
@@ -659,32 +661,22 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
             barWidth -= 2 * hPadding;
             barY += vPadding;
             barHeight -= 2 * vPadding + 1;
-
             context.fillStyle = frame.idle ? "white" : "#eee";
             context.fillRect(barX, barY, barWidth, barHeight);
             if (frame.hasWarnings())
                 paintWarningDecoration(barX, barWidth);
-
             var frameDurationText = Number.preciseMillisToString(frame.duration, 1);
             var textWidth = context.measureText(frameDurationText).width;
-            if (barWidth > textWidth) {
+            if (barWidth >= textWidth) {
                 context.fillStyle = this.textColor(entryIndex);
-                context.fillText(frameDurationText, barX + ((barWidth - textWidth) >> 1), barY + barHeight - 3);
+                context.fillText(frameDurationText, barX + (barWidth - textWidth) / 2, barY + barHeight - 3);
             }
             return true;
         }
 
-        if (barWidth > 10 && text) {
-            context.save();
-            context.fillStyle = this.textColor(entryIndex);
-            context.font = this._font;
-            context.fillText(text, barX + this.textPadding(), barY + barHeight - this.textBaseline());
-            context.restore();
-        }
-
         if (type === WebInspector.TimelineFlameChartEntryType.Event) {
-            var event = /** {!WebInspector.TracingModel.Event} */ (data);
-            if (event.warning)
+            var event = /** @type {!WebInspector.TracingModel.Event} */ (this._entryData[entryIndex]);
+            if (event && event.warning)
                 paintWarningDecoration(barX, barWidth - 1.5);
         }
 
@@ -708,7 +700,7 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
             context.restore();
         }
 
-        return true;
+        return false;
     },
 
     /**
@@ -999,23 +991,31 @@ WebInspector.TimelineFlameChartNetworkDataProvider.prototype = {
      * @param {number} barY
      * @param {number} barWidth
      * @param {number} barHeight
+     * @param {number} unclippedBarX
+     * @param {number} timeToPixels
      * @return {boolean}
      */
-    decorateEntry: function(index, context, text, barX, barY, barWidth, barHeight)
+    decorateEntry: function(index, context, text, barX, barY, barWidth, barHeight, unclippedBarX, timeToPixels)
     {
         var minTransferWidthPx = 2;
         var request = /** @type {!WebInspector.TimelineModel.NetworkRequest} */ (this._requests[index]);
         var startTime = request.startTime;
-        var responseTime = request.responseTime || request.endTime;
-        var requestDuration = request.endTime - startTime;
-        var waitingWidth;
-        if (isFinite(requestDuration))
-            waitingWidth = requestDuration ? (responseTime - startTime) / requestDuration * barWidth : 0;
-        else
-            waitingWidth = barWidth;
-        waitingWidth = Math.min(waitingWidth, barWidth - minTransferWidthPx);
-        context.fillStyle = "hsla(0, 0%, 100%, 0.5)";
-        context.fillRect(barX, barY, waitingWidth, barHeight);
+        var endTime = request.endTime;
+        var lastX = unclippedBarX;
+        context.fillStyle = "hsla(0, 0%, 100%, 0.6)";
+        for (var i = 0; i < request.children.length; ++i) {
+            var event = request.children[i];
+            var t0 = event.startTime;
+            var t1 = event.endTime || event.startTime;
+            var x0 = Math.floor(unclippedBarX + (t0 - startTime) * timeToPixels - 1);
+            var x1 = Math.floor(unclippedBarX + (t1 - startTime) * timeToPixels + 1);
+            if (x0 > lastX)
+                context.fillRect(lastX, barY, x0 - lastX, barHeight);
+            lastX = x1;
+        }
+        var endX = unclippedBarX + (endTime - startTime) * timeToPixels;
+        if (endX > lastX)
+            context.fillRect(lastX, barY, Math.min(endX - lastX, 1e5), barHeight);
         if (typeof request.priority === "string") {
             var color = this._colorForPriority(request.priority);
             if (color) {

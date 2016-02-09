@@ -1540,6 +1540,8 @@ WebInspector.TimelineModel.NetworkRequest = function(event)
 {
     this.startTime = event.name === WebInspector.TimelineModel.RecordType.ResourceSendRequest ? event.startTime : 0;
     this.endTime = Infinity;
+    /** @type {!Array<!WebInspector.TracingModel.Event>} */
+    this.children = [];
     this.addEvent(event);
 }
 
@@ -1549,6 +1551,7 @@ WebInspector.TimelineModel.NetworkRequest.prototype = {
      */
     addEvent: function(event)
     {
+        this.children.push(event);
         var recordType = WebInspector.TimelineModel.RecordType;
         this.startTime = Math.min(this.startTime, event.startTime);
         var eventData = event.args["data"];

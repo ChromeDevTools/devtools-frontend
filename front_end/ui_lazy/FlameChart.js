@@ -211,9 +211,11 @@ WebInspector.FlameChartDataProvider.prototype = {
      * @param {number} barY
      * @param {number} barWidth
      * @param {number} barHeight
+     * @param {number} unclippedBarX
+     * @param {number} timeToPixels
      * @return {boolean}
      */
-    decorateEntry: function(entryIndex, context, text, barX, barY, barWidth, barHeight) { },
+    decorateEntry: function(entryIndex, context, text, barX, barY, barWidth, barHeight, unclippedBarX, timeToPixels) { },
 
     /**
      * @param {number} entryIndex
@@ -1124,7 +1126,6 @@ WebInspector.FlameChart.prototype = {
 
         var barHeight = this._barHeight;
 
-        var textBaseHeight = this._baseHeight + barHeight - this._dataProvider.textBaseline();
         var colorBuckets = {};
         var minVisibleBarLevel = Math.max(Math.floor((this._scrollTop - this._baseHeight) / barHeight), 0);
         var maxVisibleBarLevel = Math.min(Math.floor((this._scrollTop - this._baseHeight + height) / barHeight), this._dataProvider.maxStackDepth());
@@ -1209,6 +1210,7 @@ WebInspector.FlameChart.prototype = {
         context.stroke();
 
         context.textBaseline = "alphabetic";
+        var textBaseHeight = this._barHeight - this._dataProvider.textBaseline();
 
         for (var i = 0; i < nextTitleIndex; ++i) {
             var entryIndex = titleIndices[i];
@@ -1223,13 +1225,13 @@ WebInspector.FlameChart.prototype = {
                 context.font = this._dataProvider.entryFont(entryIndex);
                 text = this._prepareText(context, text, barWidth - 2 * textPadding);
             }
-            if (this._dataProvider.decorateEntry(entryIndex, context, text, barX, barY, barWidth, barHeight))
+            var unclippedBarX = this._timeToPosition(entryStartTime);
+            if (this._dataProvider.decorateEntry(entryIndex, context, text, barX, barY, barWidth, barHeight, unclippedBarX, this._timeToPixel))
                 continue;
             if (!text || !text.length)
                 continue;
-
             context.fillStyle = this._dataProvider.textColor(entryIndex);
-            context.fillText(text, barX + textPadding, textBaseHeight - barLevel * this._barHeightDelta);
+            context.fillText(text, barX + textPadding, barY + textBaseHeight);
         }
 
         this._drawFlowEvents(context, width, height);

@@ -188,8 +188,6 @@ WebInspector.DeviceModeModel.prototype = {
     setHeightAndScaleToFit: function(height)
     {
         height = Math.max(Math.min(height, WebInspector.DeviceModeModel.MaxDeviceSize), 0);
-        if (height === this._preferredScaledHeight())
-            height = 0;
         this._scaleSetting.set(this._calculateFitScale(this._widthSetting.get(), height));
         this._heightSetting.set(height);
     },

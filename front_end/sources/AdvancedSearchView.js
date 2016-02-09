@@ -28,7 +28,7 @@ WebInspector.AdvancedSearchView = function()
     this._search.setAttribute("type", "text");
     this._search.classList.add("search-config-search");
     this._search.setAttribute("results", "0");
-    this._search.setAttribute("size", 30);
+    this._search.setAttribute("size", 42);
 
     this._ignoreCaseLabel = createCheckboxLabel(WebInspector.UIString("Ignore case"));
     this._ignoreCaseLabel.classList.add("search-config-label");

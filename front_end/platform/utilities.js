@@ -296,8 +296,8 @@ String.hashCode = function(string)
         return 0;
     var result = 0;
     for (var i = 0; i < string.length; ++i)
-        result = (result * 3 + string.charCodeAt(i)) | 0;
-    return result;
+        result = (result * 31 + string.charCodeAt(i)) | 0;
+    return Math.abs(result);
 }
 
 /**

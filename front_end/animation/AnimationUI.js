@@ -399,19 +399,7 @@ WebInspector.AnimationUI.Colors = {
  */
 WebInspector.AnimationUI.Color = function(animation)
 {
-    /**
-     * @param {string} string
-     * @return {number}
-     */
-    function hash(string)
-    {
-        var hash = 0;
-        for (var i = 0; i < string.length; i++)
-            hash = (hash << 5) + hash + string.charCodeAt(i);
-        return Math.abs(hash);
-    }
-
     var names = Object.keys(WebInspector.AnimationUI.Colors);
-    var color = WebInspector.AnimationUI.Colors[names[hash(animation.name() || animation.id()) % names.length]];
+    var color = WebInspector.AnimationUI.Colors[names[String.hashCode(animation.name() || animation.id()) % names.length]];
     return color.asString(WebInspector.Color.Format.RGB);
 }

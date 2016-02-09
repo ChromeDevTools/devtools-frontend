@@ -281,7 +281,7 @@ WebInspector.TimelineFlameChartDataProvider = function(model, frameModel, irMode
     this._frameModel = frameModel;
     this._irModel = irModel;
     this._consoleColorGenerator = new WebInspector.FlameChart.ColorGenerator(
-        { min: 30, max: 55, count: 5 },
+        { min: 30, max: 55 },
         { min: 70, max: 100, count: 6 },
         50, 0.7);
 }

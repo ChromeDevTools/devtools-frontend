@@ -358,7 +358,7 @@ WebInspector.CPUFlameChartDataProvider.colorGenerator = function()
 {
     if (!WebInspector.CPUFlameChartDataProvider._colorGenerator) {
         var colorGenerator = new WebInspector.FlameChart.ColorGenerator(
-            { min: 180, max: 310, count: 7 },
+            { min: 30, max: 330 },
             { min: 50, max: 80, count: 5 },
             { min: 80, max: 90, count: 3 });
 

@@ -49,7 +49,7 @@ WebInspector.CountersGraph = function(delegate, model, filters)
 
     // Create selectors
     this._infoWidget = new WebInspector.HBox();
-    this._infoWidget.element.classList.add("memory-counter-selector-swatches");
+    this._infoWidget.element.classList.add("memory-counter-selector-swatches", "timeline-toolbar-resizer");
     this._infoWidget.show(this.element);
 
     this._graphsContainer = new WebInspector.VBox();
@@ -130,6 +130,15 @@ WebInspector.CountersGraph.prototype = {
             this._counterUI[i].reset();
         }
         this.refresh();
+    },
+
+    /**
+     * @override
+     * @return {?Element}
+     */
+    resizerElement: function()
+    {
+        return this._infoWidget.element;
     },
 
     _resize: function()

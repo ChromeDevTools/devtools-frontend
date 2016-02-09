@@ -1272,6 +1272,15 @@ WebInspector.TimelineFlameChartView.prototype = {
 
     /**
      * @override
+     * @return {?Element}
+     */
+    resizerElement: function()
+    {
+        return null;
+    },
+
+    /**
+     * @override
      * @param {number} windowStartTime
      * @param {number} windowEndTime
      */

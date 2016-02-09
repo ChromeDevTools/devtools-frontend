@@ -44,7 +44,7 @@ WebInspector.StackView.prototype = {
      * @param {string=} sidebarSizeSettingName
      * @param {number=} defaultSidebarWidth
      * @param {number=} defaultSidebarHeight
-     * @return {!WebInspector.SplitWidget}
+     * @return {?WebInspector.SplitWidget}
      */
     appendView: function(view, sidebarSizeSettingName, defaultSidebarWidth, defaultSidebarHeight)
     {
@@ -59,8 +59,9 @@ WebInspector.StackView.prototype = {
             this._currentSplitWidget.showBoth();
         }
 
+        var lastSplitWidget = this._currentSplitWidget;
         this._currentSplitWidget = splitWidget;
-        return splitWidget;
+        return lastSplitWidget;
     },
 
     detachChildWidgets: function()

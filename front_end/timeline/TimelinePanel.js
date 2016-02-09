@@ -288,7 +288,12 @@ WebInspector.TimelinePanel.prototype = {
     {
         modeView.setWindowTimes(this.windowStartTime(), this.windowEndTime());
         modeView.refreshRecords();
-        this._stackView.appendView(modeView.view(), "timelinePanelTimelineStackSplitViewState", undefined, 112);
+        var splitWidget = this._stackView.appendView(modeView.view(), "timelinePanelTimelineStackSplitViewState", undefined, 112);
+        var resizer = modeView.resizerElement();
+        if (splitWidget && resizer) {
+            splitWidget.hideDefaultResizer();
+            splitWidget.installResizer(resizer);
+        }
         this._currentViews.push(modeView);
     },
 
@@ -1263,6 +1268,15 @@ WebInspector.TimelineTreeModeView.prototype = {
 
     /**
      * @override
+     * @return {?Element}
+     */
+    resizerElement: function()
+    {
+        return null;
+    },
+
+    /**
+     * @override
      */
     highlightSearchResult: function()
     {
@@ -1542,6 +1556,11 @@ WebInspector.TimelineModeView.prototype = {
     view: function() {},
 
     dispose: function() {},
+
+    /**
+     * @return {?Element}
+     */
+    resizerElement: function() {},
 
     reset: function() {},
 

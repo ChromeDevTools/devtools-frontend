@@ -229,6 +229,12 @@
     min-height: 100%;
 }
 
+.timeline-toolbar-resizer {
+    background-image: url(Images/toolbarResizerVertical.png);
+    background-repeat: no-repeat;
+    background-position: right center, center;
+}
+
 .memory-graph-label {
     position: absolute;
     right: 0;

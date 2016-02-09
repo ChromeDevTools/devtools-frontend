@@ -29,7 +29,11 @@ WebInspector.NetworkConditionsSelector.throughputText = function(throughput)
     if (throughput < 0)
         return "";
     var throughputInKbps = throughput / (1024 / 8);
-    return (throughputInKbps < 1024) ? WebInspector.UIString("%d kb/s", throughputInKbps) : WebInspector.UIString("%d Mb/s", (throughputInKbps / 1024) | 0);
+    if (throughputInKbps < 1024)
+        return WebInspector.UIString("%d kb/s", throughputInKbps);
+    if (throughputInKbps < 1024 * 10)
+        return WebInspector.UIString("%.1f Mb/s", throughputInKbps / 1024);
+    return WebInspector.UIString("%d Mb/s", (throughputInKbps / 1024) | 0);
 }
 
 /** @type {!Array.<!WebInspector.NetworkConditionsProfile>} */

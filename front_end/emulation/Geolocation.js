@@ -63,18 +63,11 @@ WebInspector.Geolocation.parseSetting = function(value)
  */
 WebInspector.Geolocation.parseUserInput = function(latitudeString, longitudeString, errorStatus)
 {
-    function isUserInputValid(value)
-    {
-        if (!value)
-            return true;
-        return /^[-]?[0-9]*[.]?[0-9]*$/.test(value);
-    }
-
     if (!latitudeString && !longitudeString)
         return null;
 
-    var isLatitudeValid = isUserInputValid(latitudeString);
-    var isLongitudeValid = isUserInputValid(longitudeString);
+    var isLatitudeValid = WebInspector.Geolocation.latitudeValidator(latitudeString);
+    var isLongitudeValid = WebInspector.Geolocation.longitudeValidator(longitudeString);
 
     if (!isLatitudeValid && !isLongitudeValid)
         return null;
@@ -83,4 +76,22 @@ WebInspector.Geolocation.parseUserInput = function(latitudeString, longitudeStri
     var longitude = isLongitudeValid ? parseFloat(longitudeString) : -1;
 
     return new WebInspector.Geolocation(latitude, longitude, errorStatus ? "PositionUnavailable" : "");
+}
+
+/**
+ * @param {string} value
+ * @return {boolean}
+ */
+WebInspector.Geolocation.latitudeValidator = function(value)
+{
+    return !value || (/^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value) && value >= -90 && value <= 90);
+}
+
+/**
+ * @param {string} value
+ * @return {boolean}
+ */
+WebInspector.Geolocation.longitudeValidator = function(value)
+{
+    return !value || (/^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value) && value >= -180 && value <= 180);
 }

@@ -14,6 +14,7 @@
 
 .sensors-view input {
     text-align: right;
+    width: 80px;
 }
 
 .sensors-view input[type=text]:enabled:focus,

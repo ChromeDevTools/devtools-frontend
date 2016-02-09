@@ -81,10 +81,14 @@ WebInspector.SensorsView.prototype = {
         var cellElement = rowElement.createChild("td");
         cellElement = rowElement.createChild("td");
         cellElement.createTextChild(WebInspector.UIString("Lat = "));
-        this._latitudeElement = WebInspector.SettingsUI.createInput(cellElement, "geolocation-override-latitude", String(geolocation.latitude), this._applyGeolocationUserInput.bind(this), true);
+        this._latitudeElement = cellElement.createChild("input");
+        this._latitudeElement.type = "text";
+        WebInspector.bindInput(this._latitudeElement, this._applyGeolocationUserInput.bind(this), WebInspector.Geolocation.latitudeValidator, true)(String(geolocation.latitude));
         cellElement.createTextChild(" , ");
         cellElement.createTextChild(WebInspector.UIString("Lon = "));
-        this._longitudeElement = WebInspector.SettingsUI.createInput(cellElement, "geolocation-override-longitude", String(geolocation.longitude), this._applyGeolocationUserInput.bind(this), true);
+        this._longitudeElement = cellElement.createChild("input");
+        this._longitudeElement.type = "text";
+        WebInspector.bindInput(this._longitudeElement, this._applyGeolocationUserInput.bind(this), WebInspector.Geolocation.longitudeValidator, true)(String(geolocation.longitude));
         rowElement = tableElement.createChild("tr");
         cellElement = rowElement.createChild("td");
         cellElement.colSpan = 2;
@@ -100,7 +104,7 @@ WebInspector.SensorsView.prototype = {
 
     _appendDeviceOrientationOverrideControl: function()
     {
-        var checkboxLabel = createCheckboxLabel(WebInspector.UIString("Emulate accelerometer"));
+        var checkboxLabel = createCheckboxLabel(WebInspector.UIString("Emulate device orientation"));
         this._overrideDeviceOrientationCheckbox = checkboxLabel.checkboxElement;
         this._overrideDeviceOrientationCheckbox.addEventListener("click", this._deviceOrientationOverrideCheckboxClicked.bind(this));
         this.contentElement.appendChild(checkboxLabel);
@@ -151,9 +155,9 @@ WebInspector.SensorsView.prototype = {
             return;
 
         if (modificationSource != WebInspector.SensorsView.DeviceOrientationModificationSource.UserInput) {
-            this._alphaElement.value = deviceOrientation.alpha;
-            this._betaElement.value = deviceOrientation.beta;
-            this._gammaElement.value = deviceOrientation.gamma;
+            this._alphaSetter(deviceOrientation.alpha);
+            this._betaSetter(deviceOrientation.beta);
+            this._gammaSetter(deviceOrientation.gamma);
         }
 
         if (modificationSource != WebInspector.SensorsView.DeviceOrientationModificationSource.UserDrag)
@@ -165,16 +169,17 @@ WebInspector.SensorsView.prototype = {
 
     /**
      * @param {!Element} parentElement
-     * @param {string} id
+     * @param {!Element} input
      * @param {string} label
-     * @param {string} defaultText
-     * @return {!Element}
+     * @return {function(string)}
      */
-    _createAxisInput: function(parentElement, id, label, defaultText)
+    _createAxisInput: function(parentElement, input, label)
     {
         var div = parentElement.createChild("div", "accelerometer-axis-input-container");
         div.createTextChild(label);
-        return WebInspector.SettingsUI.createInput(div, id, defaultText, this._applyDeviceOrientationUserInput.bind(this), true);
+        div.appendChild(input);
+        input.type = "text";
+        return WebInspector.bindInput(input, this._applyDeviceOrientationUserInput.bind(this), WebInspector.DeviceOrientation.validator, true);
     },
 
     /**
@@ -188,9 +193,17 @@ WebInspector.SensorsView.prototype = {
         var rowElement = tableElement.createChild("tr");
         var cellElement = rowElement.createChild("td", "accelerometer-inputs-cell");
 
-        this._alphaElement = this._createAxisInput(cellElement, "device-orientation-override-alpha", "\u03B1: ", String(deviceOrientation.alpha));
-        this._betaElement = this._createAxisInput(cellElement, "device-orientation-override-beta", "\u03B2: ", String(deviceOrientation.beta));
-        this._gammaElement = this._createAxisInput(cellElement, "device-orientation-override-gamma", "\u03B3: ", String(deviceOrientation.gamma));
+        this._alphaElement = createElement("input");
+        this._alphaSetter = this._createAxisInput(cellElement, this._alphaElement, "\u03B1: ");
+        this._alphaSetter(String(deviceOrientation.alpha));
+
+        this._betaElement = createElement("input");
+        this._betaSetter = this._createAxisInput(cellElement, this._betaElement, "\u03B2: ");
+        this._betaSetter(String(deviceOrientation.beta));
+
+        this._gammaElement = createElement("input");
+        this._gammaSetter = this._createAxisInput(cellElement, this._gammaElement, "\u03B3: ");
+        this._gammaSetter(String(deviceOrientation.gamma));
 
         cellElement.appendChild(createTextButton(WebInspector.UIString("Reset"), this._resetDeviceOrientation.bind(this), "accelerometer-reset-button"));
 

@@ -54,19 +54,12 @@ WebInspector.DeviceOrientation.parseSetting = function(value)
  */
 WebInspector.DeviceOrientation.parseUserInput = function(alphaString, betaString, gammaString)
 {
-    function isUserInputValid(value)
-    {
-        if (!value)
-            return true;
-        return /^[-]?[0-9]*[.]?[0-9]*$/.test(value);
-    }
-
     if (!alphaString && !betaString && !gammaString)
         return null;
 
-    var isAlphaValid = isUserInputValid(alphaString);
-    var isBetaValid = isUserInputValid(betaString);
-    var isGammaValid = isUserInputValid(gammaString);
+    var isAlphaValid = WebInspector.DeviceOrientation.validator(alphaString);
+    var isBetaValid = WebInspector.DeviceOrientation.validator(betaString);
+    var isGammaValid = WebInspector.DeviceOrientation.validator(gammaString);
 
     if (!isAlphaValid && !isBetaValid && !isGammaValid)
         return null;
@@ -76,4 +69,13 @@ WebInspector.DeviceOrientation.parseUserInput = function(alphaString, betaString
     var gamma = isGammaValid ? parseFloat(gammaString) : -1;
 
     return new WebInspector.DeviceOrientation(alpha, beta, gamma);
+}
+
+/**
+ * @param {string} value
+ * @return {boolean}
+ */
+WebInspector.DeviceOrientation.validator = function(value)
+{
+    return !value || /^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value);
 }

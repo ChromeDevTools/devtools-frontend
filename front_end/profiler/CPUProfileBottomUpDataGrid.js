@@ -302,6 +302,29 @@ WebInspector.BottomUpProfileDataGridTree.prototype = {
             this.sort(this.lastComparator, true);
     },
 
+    /**
+     * @override
+     * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
+     * @param {boolean} shouldJump
+     * @param {boolean=} jumpBackwards
+     * @return {number}
+     */
+    performSearch: function(searchConfig, shouldJump, jumpBackwards)
+    {
+        this.searchCanceled();
+        var matchesQuery = this._matchFunction(searchConfig);
+        if (!matchesQuery)
+            return 0;
+
+        this._searchResults = [];
+        for (var current = this.children[0]; current; current = current.traverseNextNode(true, null, true)) {
+            if (matchesQuery(current))
+                this._searchResults.push({ profileNode: current });
+        }
+        this._searchResultIndex = jumpBackwards ? 0 : this._searchResults.length - 1;
+        return this._searchResults.length;
+    },
+
     buildData: function()
     {
     },

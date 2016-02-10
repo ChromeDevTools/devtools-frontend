@@ -446,18 +446,14 @@ WebInspector.ProfileDataGridTree.prototype = {
     },
 
     /**
-     * @override
      * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
-     * @param {boolean} shouldJump
-     * @param {boolean=} jumpBackwards
-     * @return {number}
+     * @return {?function(!WebInspector.ProfileDataGridNode):boolean}
      */
-    performSearch: function(searchConfig, shouldJump, jumpBackwards)
+    _matchFunction: function(searchConfig)
     {
-        this.searchCanceled();
         var query = searchConfig.query.trim();
         if (!query.length)
-            return 0;
+            return null;
 
         var greaterThan = (query.startsWith(">"));
         var lessThan = (query.startsWith("<"));
@@ -540,14 +536,27 @@ WebInspector.ProfileDataGridTree.prototype = {
 
             return false;
         }
+        return matchesQuery;
+    },
 
-        var current = this.children[0];
+    /**
+     * @override
+     * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
+     * @param {boolean} shouldJump
+     * @param {boolean=} jumpBackwards
+     * @return {number}
+     */
+    performSearch: function(searchConfig, shouldJump, jumpBackwards)
+    {
+        this.searchCanceled();
+        var matchesQuery = this._matchFunction(searchConfig);
+        if (!matchesQuery)
+            return 0;
+
         this._searchResults = [];
-        while (current) {
+        for (var current = this.children[0]; current; current = current.traverseNextNode(false, null, false)) {
             if (matchesQuery(current))
                 this._searchResults.push({ profileNode: current });
-
-            current = current.traverseNextNode(false, null, false);
         }
         this._searchResultIndex = jumpBackwards ? 0 : this._searchResults.length - 1;
         return this._searchResults.length;

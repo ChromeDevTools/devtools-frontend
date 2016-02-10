@@ -45,7 +45,6 @@ WebInspector.AdvancedSearchView = function()
     this._searchToolbarElement = this.contentElement.createChild("div", "search-toolbar-summary");
     this._searchMessageElement = this._searchToolbarElement.createChild("div", "search-message");
     this._searchProgressPlaceholderElement = this._searchToolbarElement.createChild("div", "flex-centered");
-    this._searchToolbarElement.createChild("div", "search-message-spacer");
     this._searchResultsMessageElement = this._searchToolbarElement.createChild("div", "search-message");
 
     this._advancedSearchConfig = WebInspector.settings.createLocalSetting("advancedSearchConfig", new WebInspector.SearchConfig("", true, false).toPlainObject());

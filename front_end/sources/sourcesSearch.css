@@ -47,10 +47,7 @@
 
 .search-toolbar-summary .search-message {
     padding-top: 2px;
-}
-
-.search-toolbar-summary .search-message-spacer {
-    flex-grow: 1;
+    padding-left: 1ex;
 }
 
 #search-results-pane-file-based li {

@@ -265,7 +265,7 @@ WebInspector.DeviceModeView.prototype = {
 
         this._toolbar.update();
         this._loadScreenImage(this._model.screenImage());
-        this._mediaInspector.setAxisTransform(-cssScreenRect.left * zoomFactor / this._model.scale(), this._model.scale());
+        this._mediaInspector.setAxisTransform(-(cssScreenRect.left + cssScreenRect.width / 2) * zoomFactor * 2 / this._model.scale(), this._model.scale() * 0.5);
         if (callDoResize)
             this.doResize();
         if (updateRulers) {

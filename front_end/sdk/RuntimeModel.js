@@ -451,8 +451,13 @@ WebInspector.ExecutionContext.prototype = {
                         if (type === "array" && o === object && ArrayBuffer.isView(o) && o.length > 9999)
                             continue;
                         var names = Object.getOwnPropertyNames(o);
-                        for (var i = 0; i < names.length; ++i)
+                        var isArray = Array.isArray(o);
+                        for (var i = 0; i < names.length; ++i) {
+                            // Skip array elements indexes.
+                            if (isArray && /^[0-9]/.test(names[i]))
+                                continue;
                             resultSet[names[i]] = true;
+                        }
                     } catch (e) {
                     }
                 }

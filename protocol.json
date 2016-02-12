@@ -975,6 +975,13 @@
                 "description": "Disables reporting of execution contexts creation."
             },
             {
+                "name": "isRunRequired",
+                "returns": [
+                    { "name": "result", "type": "boolean", "description": "True if the Runtime is in paused on start state." }
+                ],
+                "hidden": true
+            },
+            {
                 "name": "setCustomObjectFormatterEnabled",
                 "parameters": [
                     {
@@ -4283,7 +4290,19 @@
                 ]
             },
             {
-                "name": "setWaitForDebuggerOnStart",
+                "name": "connectToWorker",
+                "parameters": [
+                    { "name": "workerId", "type": "string" }
+                ]
+            },
+            {
+                "name": "disconnectFromWorker",
+                "parameters": [
+                    { "name": "workerId", "type": "string" }
+                ]
+            },
+            {
+                "name": "setAutoconnectToWorkers",
                 "parameters": [
                     { "name": "value", "type": "boolean" }
                 ]
@@ -4295,7 +4314,7 @@
                 "parameters": [
                     { "name": "workerId", "type": "string" },
                     { "name": "url", "type": "string" },
-                    { "name": "waitingForDebugger", "type": "boolean" }
+                    { "name": "inspectorConnected", "type": "boolean" }
                 ]
             },
             {

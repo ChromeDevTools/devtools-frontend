@@ -538,6 +538,7 @@ WebInspector.AnimationTimeline.prototype = {
         this.scheduleRedraw();
         if (this._scrubberPlayer)
             this._syncScrubber();
+        delete this._gridOffsetLeft;
     },
 
     /**

@@ -335,32 +335,16 @@ WebInspector.DeviceModeModel.prototype = {
         if (!this._target) {
             this._target = target;
             var domModel = WebInspector.DOMModel.fromTarget(this._target);
-            domModel.addEventListener(WebInspector.DOMModel.Events.InspectModeWillBeToggled, this._inspectModeWillBeToggled, this);
+            if (domModel)
+                domModel.addEventListener(WebInspector.DOMModel.Events.InspectModeWillBeToggled, this._reapplyTouch, this);
             if (this._onTargetAvailable) {
                 var callback = this._onTargetAvailable;
                 this._onTargetAvailable = null;
                 callback();
+            } else {
+                this._reapplyTouch();
             }
         }
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _inspectModeWillBeToggled: function(event)
-    {
-        var inspectModeEnabled = /** @type {boolean} */ (event.data);
-        if (inspectModeEnabled) {
-            this._applyTouch(false, false);
-            return;
-        }
-
-        if (this._type === WebInspector.DeviceModeModel.Type.Device)
-            this._applyTouch(this._device.touch(), this._device.mobile());
-        else if (this._type === WebInspector.DeviceModeModel.Type.None)
-            this._applyTouch(false, false);
-        else if (this._type === WebInspector.DeviceModeModel.Type.Responsive)
-            this._applyTouch(this._uaSetting.get() !== WebInspector.DeviceModeModel.UA.Desktop, this._uaSetting.get() === WebInspector.DeviceModeModel.UA.Mobile);
     },
 
     /**
@@ -369,8 +353,12 @@ WebInspector.DeviceModeModel.prototype = {
      */
     targetRemoved: function(target)
     {
-        if (this._target === target)
+        if (this._target === target) {
+            var domModel = WebInspector.DOMModel.fromTarget(this._target);
+            if (domModel)
+                domModel.removeEventListener(WebInspector.DOMModel.Events.InspectModeWillBeToggled, this._reapplyTouch, this);
             this._target = null;
+        }
     },
 
     _scaleSettingChanged: function()
@@ -427,13 +415,11 @@ WebInspector.DeviceModeModel.prototype = {
             this._fitScale = this._calculateFitScale(orientation.width, orientation.height);
             this._applyDeviceMetrics(new Size(orientation.width, orientation.height), this._mode.insets, this._scaleSetting.get(), this._device.deviceScaleFactor, this._device.mobile(), resetPageScaleFactor);
             this._applyUserAgent(this._device.userAgent);
-            this._applyTouch(this._device.touch(), this._device.mobile());
             this._applyScreenOrientation(this._mode.orientation == WebInspector.EmulatedDevice.Horizontal ? "landscapePrimary" : "portraitPrimary");
         } else if (this._type === WebInspector.DeviceModeModel.Type.None) {
             this._fitScale = this._calculateFitScale(this._availableSize.width, this._availableSize.height);
             this._applyDeviceMetrics(this._availableSize, new Insets(0, 0, 0, 0), 1, 0, false, resetPageScaleFactor);
             this._applyUserAgent("");
-            this._applyTouch(false, false);
             this._applyScreenOrientation("");
         } else if (this._type === WebInspector.DeviceModeModel.Type.Responsive) {
             var screenWidth = this._widthSetting.get();
@@ -447,9 +433,9 @@ WebInspector.DeviceModeModel.prototype = {
             this._fitScale = this._calculateFitScale(this._widthSetting.get(), this._heightSetting.get());
             this._applyDeviceMetrics(new Size(screenWidth, screenHeight), new Insets(0, 0, 0, 0), this._scaleSetting.get(), this._deviceScaleFactorSetting.get() || defaultDeviceScaleFactor, mobile, resetPageScaleFactor);
             this._applyUserAgent(mobile ? WebInspector.DeviceModeModel._defaultMobileUserAgent : "");
-            this._applyTouch(this._uaSetting.get() !== WebInspector.DeviceModeModel.UA.Desktop, mobile);
             this._applyScreenOrientation(screenHeight >= screenWidth ? "portraitPrimary" : "landscapePrimary");
         }
+        this._reapplyTouch();
         this._updateCallback.call(null);
     },
 
@@ -472,6 +458,23 @@ WebInspector.DeviceModeModel.prototype = {
     {
         this._scaleSetting.set(this._calculateFitScale(width, height));
         this.setWidth(width);
+    },
+
+    _reapplyTouch: function()
+    {
+        var domModel = this._target ? WebInspector.DOMModel.fromTarget(this._target) : null;
+        var inspectModeEnabled = domModel ? domModel.inspectModeEnabled() : false;
+        if (inspectModeEnabled) {
+            this._applyTouch(false, false);
+            return;
+        }
+
+        if (this._type === WebInspector.DeviceModeModel.Type.Device)
+            this._applyTouch(this._device.touch(), this._device.mobile());
+        else if (this._type === WebInspector.DeviceModeModel.Type.None)
+            this._applyTouch(false, false);
+        else if (this._type === WebInspector.DeviceModeModel.Type.Responsive)
+            this._applyTouch(this._uaSetting.get() !== WebInspector.DeviceModeModel.UA.Desktop, this._uaSetting.get() === WebInspector.DeviceModeModel.UA.Mobile);
     },
 
     /**

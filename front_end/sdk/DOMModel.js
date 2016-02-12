@@ -1086,6 +1086,7 @@ WebInspector.DOMModel = function(target) {
 
     this._showRulers = false;
     this._showExtensionLines = false;
+    this._inspectModeEnabled = false;
 
     this._defaultHighlighter = new WebInspector.DefaultDOMNodeHighlighter(this._agent);
     this._highlighter = this._defaultHighlighter;
@@ -1786,10 +1787,19 @@ WebInspector.DOMModel.prototype = {
          */
         function onDocumentAvailable()
         {
-            this.dispatchEventToListeners(WebInspector.DOMModel.Events.InspectModeWillBeToggled, mode !== DOMAgent.InspectMode.None);
+            this._inspectModeEnabled = mode !== DOMAgent.InspectMode.None;
+            this.dispatchEventToListeners(WebInspector.DOMModel.Events.InspectModeWillBeToggled, this._inspectModeEnabled);
             this._highlighter.setInspectMode(mode, this._buildHighlightConfig(), callback);
         }
         this.requestDocument(onDocumentAvailable.bind(this));
+    },
+
+    /**
+     * @return {boolean}
+     */
+    inspectModeEnabled: function()
+    {
+        return this._inspectModeEnabled;
     },
 
     /**

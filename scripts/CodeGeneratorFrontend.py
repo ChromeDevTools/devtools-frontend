@@ -157,7 +157,7 @@ class Templates:
             fill_recursive(os.path.dirname(path_part), depth - 1)
             components.append(os.path.basename(path_part))
 
-        # Typical path is /Source/WebCore/inspector/CodeGeneratorInspector.py
+        # Typical path is /Source/platform/inspector_protocol/CodeGenerator.py
         # Let's take 4 components from the real path then.
         fill_recursive(absolute_path, 4)
 

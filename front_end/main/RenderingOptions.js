@@ -47,11 +47,17 @@ WebInspector.RenderingOptionsView = function()
     var scrollingTitle = WebInspector.UIString("Shows areas of the page that slow down scrolling:\nTouch and mousewheel event listeners can delay scrolling.\nSome areas need to repaint their content when scrolled.");
     this._appendCheckbox(WebInspector.UIString("Show scrolling perf issues"), "setShowScrollBottleneckRects", scrollingTitle);
 
-    // Print media.
-    var checkboxLabel = createCheckboxLabel(WebInspector.UIString("Emulate print media"), false);
-    this._printCheckbox = checkboxLabel.checkboxElement;
-    this._printCheckbox.addEventListener("click", this._printToggled.bind(this));
-    this.contentElement.appendChild(checkboxLabel);
+    // CSS media.
+    var mediaRow = this.contentElement.createChild("div", "media-row");
+    var checkboxLabel = createCheckboxLabel(WebInspector.UIString("Emulate media"), false);
+    this._mediaCheckbox = checkboxLabel.checkboxElement;
+    this._mediaCheckbox.addEventListener("click", this._mediaToggled.bind(this), false);
+    mediaRow.appendChild(checkboxLabel);
+    this._mediaSelect = mediaRow.createChild("select", "chrome-select");
+    this._mediaSelect.appendChild(new Option(WebInspector.UIString("print"), "print"));
+    this._mediaSelect.appendChild(new Option(WebInspector.UIString("screen"), "screen"));
+    this._mediaSelect.addEventListener("change", this._mediaToggled.bind(this), false);
+    this._mediaSelect.disabled = true;
 
     WebInspector.targetManager.observeTargets(this, WebInspector.Target.Type.Page);
 }
@@ -93,12 +99,13 @@ WebInspector.RenderingOptionsView.prototype = {
             if (this._settings.get(setterName).checked)
                 target.renderingAgent()[setterName](true);
         }
-        if (this._printCheckbox.checked)
+        if (this._mediaCheckbox.checked)
             this._applyPrintMediaOverride(target);
     },
 
-    _printToggled: function()
+    _mediaToggled: function()
     {
+        this._mediaSelect.disabled = !this._mediaCheckbox.checked;
         var targets = WebInspector.targetManager.targets(WebInspector.Target.Type.Page);
         for (var target of targets)
             this._applyPrintMediaOverride(target);
@@ -109,8 +116,7 @@ WebInspector.RenderingOptionsView.prototype = {
      */
     _applyPrintMediaOverride: function(target)
     {
-        var enabled = this._printCheckbox.checked;
-        target.emulationAgent().setEmulatedMedia(enabled ? "print" : "");
+        target.emulationAgent().setEmulatedMedia(this._mediaCheckbox.checked ? this._mediaSelect.value : "");
         var cssModel = WebInspector.CSSStyleModel.fromTarget(target);
         if (cssModel)
             cssModel.mediaQueryResultChanged();

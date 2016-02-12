@@ -8,3 +8,13 @@ label {
     margin: 12px 0 0 0;
     padding: 0 4px 0 12px;
 }
+
+.media-row {
+    display: flex;
+    align-items: center;
+    margin-top: 9px;
+}
+
+.media-row > label {
+    margin: 0 5px 0 0;
+}

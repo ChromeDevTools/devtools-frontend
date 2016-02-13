@@ -4178,6 +4178,28 @@
                 "id": "HeapSnapshotObjectId",
                 "type": "string",
                 "description": "Heap snapshot object id."
+            },
+            {
+                "id": "SamplingHeapProfileNode",
+                "type": "object",
+                "description": "Sampling Heap Profile node. Holds callsite information, allocation statistics and child nodes.",
+                "properties": [
+                    { "name": "functionName", "type": "string", "description": "Function name." },
+                    { "name": "scriptId", "$ref": "Runtime.ScriptId", "description": "Script identifier." },
+                    { "name": "url", "type": "string", "description": "URL." },
+                    { "name": "lineNumber", "type": "integer", "description": "1-based line number of the function start position." },
+                    { "name": "columnNumber", "type": "integer", "description": "1-based column number of the function start position." },
+                    { "name": "totalSize", "type": "number", "description": "Total allocations size in bytes." },
+                    { "name": "children", "type": "array", "items": { "$ref": "SamplingHeapProfileNode" }, "description": "Child nodes." }
+                ]
+            },
+            {
+                "id": "SamplingHeapProfile",
+                "type": "object",
+                "description": "Profile.",
+                "properties": [
+                    { "name": "head", "$ref": "SamplingHeapProfileNode" }
+                ]
             }
         ],
         "commands": [
@@ -4233,6 +4255,15 @@
                 ],
                 "returns": [
                     { "name": "heapSnapshotObjectId", "$ref": "HeapSnapshotObjectId", "description": "Id of the heap snapshot object corresponding to the passed remote object id." }
+                ]
+            },
+            {
+                "name": "startSampling"
+            },
+            {
+                "name": "stopSampling",
+                "returns": [
+                    { "name": "profile", "$ref": "SamplingHeapProfile", "description": "Recorded sampling heap profile." }
                 ]
             }
         ],

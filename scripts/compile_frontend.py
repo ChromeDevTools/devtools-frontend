@@ -72,12 +72,13 @@ def to_platform_path_exact(filepath):
 scripts_path = path.dirname(path.abspath(__file__))
 devtools_path = path.dirname(scripts_path)
 inspector_path = path.join(path.dirname(devtools_path), 'core', 'inspector')
+v8_inspector_path = path.join(path.dirname(devtools_path), 'platform', 'v8_inspector')
 devtools_frontend_path = path.join(devtools_path, 'front_end')
 patched_es6_externs_file = to_platform_path(path.join(devtools_frontend_path, 'es6.js'))
 global_externs_file = to_platform_path(path.join(devtools_frontend_path, 'externs.js'))
 protocol_externs_file = path.join(devtools_frontend_path, 'protocol_externs.js')
-injected_script_source_name = path.join(inspector_path, 'v8/InjectedScriptSource.js')
-injected_script_externs_file = path.join(inspector_path, 'v8/injected_script_externs.js')
+injected_script_source_name = path.join(v8_inspector_path, 'InjectedScriptSource.js')
+injected_script_externs_file = path.join(v8_inspector_path, 'injected_script_externs.js')
 
 jsmodule_name_prefix = 'jsmodule_'
 runtime_module_name = '_runtime'

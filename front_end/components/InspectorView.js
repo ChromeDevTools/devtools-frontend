@@ -348,6 +348,7 @@ WebInspector.InspectorView.prototype = {
         this._pushToHistory(panel.name);
         WebInspector.userMetrics.panelShown(panel.name);
         panel.focus();
+
         return panel;
     },
 
@@ -385,6 +386,15 @@ WebInspector.InspectorView.prototype = {
     closeDrawer: function()
     {
         this._drawer.closeDrawer();
+    },
+
+    /**
+     * @param {boolean} minimized
+     */
+    setDrawerMinimized: function(minimized)
+    {
+        this._drawerSplitWidget.setSidebarMinimized(minimized);
+        this._drawerSplitWidget.setResizable(!minimized);
     },
 
     /**

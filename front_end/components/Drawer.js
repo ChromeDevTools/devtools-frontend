@@ -40,6 +40,7 @@ WebInspector.Drawer = function(splitWidget)
     this._splitWidget = splitWidget;
     splitWidget.hideDefaultResizer();
     splitWidget.setSidebarWidget(this);
+    this.setMinimumSize(0, 27);
 
     this._tabbedPane = new WebInspector.TabbedPane();
     this._tabbedPane.element.id = "drawer-tabbed-pane";

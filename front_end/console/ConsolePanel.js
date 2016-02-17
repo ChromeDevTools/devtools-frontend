@@ -63,6 +63,9 @@ WebInspector.ConsolePanel.prototype = {
     wasShown: function()
     {
         WebInspector.Panel.prototype.wasShown.call(this);
+        var wrapper = WebInspector.ConsolePanel.WrapperView._instance;
+        if (wrapper && wrapper.isShowing())
+            WebInspector.inspectorView.setDrawerMinimized(true);
         this._view.show(this.element);
     },
 
@@ -74,6 +77,7 @@ WebInspector.ConsolePanel.prototype = {
         WebInspector.Panel.prototype.willHide.call(this);
         if (WebInspector.ConsolePanel.WrapperView._instance)
             WebInspector.ConsolePanel.WrapperView._instance._showViewInWrapper();
+        WebInspector.inspectorView.setDrawerMinimized(false);
     },
 
     /**
@@ -107,6 +111,13 @@ WebInspector.ConsolePanel.WrapperView.prototype = {
     {
         if (!WebInspector.inspectorView.currentPanel() || WebInspector.inspectorView.currentPanel().name !== "console")
             this._showViewInWrapper();
+        else
+            WebInspector.inspectorView.setDrawerMinimized(true);
+    },
+
+    willHide: function()
+    {
+        WebInspector.inspectorView.setDrawerMinimized(false);
     },
 
     /**

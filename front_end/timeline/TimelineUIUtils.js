@@ -120,6 +120,11 @@ WebInspector.TimelineUIUtils._initEventStyles = function()
     eventStyles[recordTypes.ResizeImage] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("Image Resize"), categories["painting"]);
     eventStyles[recordTypes.GPUTask] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("GPU"), categories["gpu"]);
     eventStyles[recordTypes.LatencyInfo] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("Input Latency"), categories["scripting"]);
+
+    eventStyles[recordTypes.GCIdleLazySweep] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("DOM GC"), categories["scripting"]);
+    eventStyles[recordTypes.GCCompleteSweep] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("DOM GC"), categories["scripting"]);
+    eventStyles[recordTypes.GCCollectGarbage] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("DOM GC"), categories["scripting"]);
+
     WebInspector.TimelineUIUtils._eventStylesMap = eventStyles;
     return eventStyles;
 }
@@ -412,6 +417,18 @@ WebInspector.TimelineUIUtils.buildDetailsTextForTraceEvent = function(event, tar
         detailsText = eventData && eventData["name"];
         break;
 
+    case recordType.GCIdleLazySweep:
+        detailsText = WebInspector.UIString("idle sweep");
+        break;
+
+    case recordType.GCCompleteSweep:
+        detailsText = WebInspector.UIString("complete sweep");
+        break;
+
+    case recordType.GCCollectGarbage:
+        detailsText = WebInspector.UIString("collect");
+        break;
+
     default:
         if (event.hasCategory(WebInspector.TimelineModel.Category.Console))
             detailsText = null;
@@ -474,6 +491,9 @@ WebInspector.TimelineUIUtils.buildDetailsNodeForTraceEvent = function(event, tar
     case recordType.WebSocketSendHandshakeRequest:
     case recordType.WebSocketReceiveHandshakeResponse:
     case recordType.WebSocketDestroy:
+    case recordType.GCIdleLazySweep:
+    case recordType.GCCompleteSweep:
+    case recordType.GCCollectGarbage:
         detailsText = WebInspector.TimelineUIUtils.buildDetailsTextForTraceEvent(event, target);
         break;
     case recordType.PaintImage:

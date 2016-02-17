@@ -113,25 +113,26 @@
                 ]
             },
             {
+                "id": "FrameResource",
+                "type": "object",
+                "description": "Information about the Resource on the page.",
+                "properties": [
+                    { "name": "url", "type": "string", "description": "Resource URL." },
+                    { "name": "type", "$ref": "ResourceType", "description": "Type of this resource." },
+                    { "name": "mimeType", "type": "string", "description": "Resource mimeType as determined by the browser." },
+                    { "name": "failed", "type": "boolean", "optional": true, "description": "True if the resource failed to load." },
+                    { "name": "canceled", "type": "boolean", "optional": true, "description": "True if the resource was canceled during loading." }
+                ],
+                "hidden": true
+            },
+            {
                 "id": "FrameResourceTree",
                 "type": "object",
                 "description": "Information about the Frame hierarchy along with their cached resources.",
                 "properties": [
                     { "name": "frame", "$ref": "Frame", "description": "Frame information for this tree item." },
                     { "name": "childFrames", "type": "array", "optional": true, "items": { "$ref": "FrameResourceTree" }, "description": "Child frames." },
-                    { "name": "resources", "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": [
-                                { "name": "url", "type": "string", "description": "Resource URL." },
-                                { "name": "type", "$ref": "ResourceType", "description": "Type of this resource." },
-                                { "name": "mimeType", "type": "string", "description": "Resource mimeType as determined by the browser." },
-                                { "name": "failed", "type": "boolean", "optional": true, "description": "True if the resource failed to load." },
-                                { "name": "canceled", "type": "boolean", "optional": true, "description": "True if the resource was canceled during loading." }
-                            ]
-                        },
-                        "description": "Information about frame resources."
-                    }
+                    { "name": "resources", "type": "array", "items": { "$ref": "FrameResource" }, "description": "Information about frame resources." }
                 ],
                 "hidden": true
             },
@@ -3539,15 +3540,11 @@
                 "id": "SetScriptSourceError",
                 "type": "object",
                 "properties": [
-                    { "name": "compileError", "optional": true, "type": "object", "properties":
-                        [
-                            { "name": "message", "type": "string", "description": "Compiler error message" },
-                            { "name": "lineNumber", "type": "integer", "description": "Compile error line number (1-based)" },
-                            { "name": "columnNumber", "type": "integer", "description": "Compile error column number (1-based)" }
-                        ]
-                    }
+                    { "name": "message", "type": "string", "description": "Compiler error message" },
+                    { "name": "lineNumber", "type": "integer", "description": "Compile error line number (1-based)" },
+                    { "name": "columnNumber", "type": "integer", "description": "Compile error column number (1-based)" }
                 ],
-                "description": "Error data for setScriptSource command. compileError is a case type for uncompilable script source error.",
+                "description": "Error data for setScriptSource command. Contains uncompilable script source error.",
                 "hidden": true
             },
             {
@@ -3707,11 +3704,9 @@
                 "returns": [
                     { "name": "callFrames", "type": "array", "optional": true, "items": { "$ref": "CallFrame" }, "description": "New stack trace in case editing has happened while VM was stopped." },
                     { "name": "stackChanged", "type": "boolean", "optional": true, "description": "Whether current call stack  was modified after applying the changes.", "hidden": true },
-                    { "name": "asyncStackTrace", "$ref": "StackTrace", "optional": true, "description": "Async stack trace, if any.", "hidden": true }
+                    { "name": "asyncStackTrace", "$ref": "StackTrace", "optional": true, "description": "Async stack trace, if any.", "hidden": true },
+                    { "name": "compileError", "optional": true, "$ref": "SetScriptSourceError", "description": "Error data if any." }
                 ],
-                "error": {
-                    "$ref": "SetScriptSourceError"
-                },
                 "description": "Edits JavaScript source live."
             },
             {

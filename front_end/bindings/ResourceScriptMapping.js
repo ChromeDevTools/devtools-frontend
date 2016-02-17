@@ -351,21 +351,20 @@ WebInspector.ResourceScriptFile.prototype = {
          */
         function scriptSourceWasSet(error, errorData)
         {
-            if (!error)
+            if (!error && !errorData)
                 this._scriptSource = source;
             this._update();
 
-            if (!error)
+            if (!error && !errorData)
                 return;
             var warningLevel = WebInspector.Console.MessageLevel.Warning;
             if (!errorData) {
                 WebInspector.console.addMessage(WebInspector.UIString("LiveEdit failed: %s", error), warningLevel);
                 return;
             }
-            var compileError = errorData.compileError;
-            if (compileError) {
-                var messageText = WebInspector.UIString("LiveEdit compile failed: %s", compileError.message);
-                this._uiSourceCode.addLineMessage(WebInspector.UISourceCode.Message.Level.Error, messageText, compileError.lineNumber - 1, compileError.columnNumber + 1);
+            if (errorData) {
+                var messageText = WebInspector.UIString("LiveEdit compile failed: %s", errorData.message);
+                this._uiSourceCode.addLineMessage(WebInspector.UISourceCode.Message.Level.Error, messageText, errorData.lineNumber - 1, errorData.columnNumber + 1);
             } else {
                 WebInspector.console.addMessage(WebInspector.UIString("Unknown LiveEdit error: %s; %s", JSON.stringify(errorData), error), warningLevel);
             }

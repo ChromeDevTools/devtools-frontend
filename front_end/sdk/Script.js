@@ -220,17 +220,17 @@ WebInspector.Script.prototype = {
         /**
          * @this {WebInspector.Script}
          * @param {?Protocol.Error} error
-         * @param {!DebuggerAgent.SetScriptSourceError=} errorData
          * @param {!Array.<!DebuggerAgent.CallFrame>=} callFrames
          * @param {boolean=} stackChanged
          * @param {!DebuggerAgent.StackTrace=} asyncStackTrace
+         * @param {!DebuggerAgent.SetScriptSourceError=} compileError
          */
-        function didEditScriptSource(error, errorData, callFrames, stackChanged, asyncStackTrace)
+        function didEditScriptSource(error, callFrames, stackChanged, asyncStackTrace, compileError)
         {
-            if (!error)
+            if (!error && !compileError)
                 this._source = newSource;
             var needsStepIn = !!stackChanged;
-            callback(error, errorData, callFrames, asyncStackTrace, needsStepIn);
+            callback(error, compileError, callFrames, asyncStackTrace, needsStepIn);
         }
 
         newSource = WebInspector.Script._trimSourceURLComment(newSource);

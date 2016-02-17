@@ -215,7 +215,7 @@ WebInspector.ServiceWorkerOriginElement = function(manager, originHost)
     this._originHost = originHost;
     this._element = createElementWithClass("div", "service-workers-origin");
     this._listItemNode = this._element.createChild("li", "service-workers-origin-title");
-    this._listItemNode.createChild("div").createTextChild(originHost);
+    this._listItemNode.createChild("div").setTextAndTitle(originHost);
     this._childrenListNode = this._element.createChild("ol");
 }
 
@@ -316,7 +316,7 @@ WebInspector.SWRegistrationElement.prototype = {
     _updateRegistration: function(registration)
     {
         this._registration = registration;
-        this._titleNode.textContent = WebInspector.UIString(registration.isDeleted ? "Scope: %s - deleted" : "Scope: %s", registration.scopeURL.asParsedURL().path);
+        this._titleNode.setTextAndTitle(WebInspector.UIString(registration.isDeleted ? "Scope: %s - deleted" : "Scope: %s", registration.scopeURL.asParsedURL().path));
         this._updateButton.disabled = !!registration.isDeleted;
         this._deleteButton.disabled = !!registration.isDeleted;
 
@@ -378,7 +378,7 @@ WebInspector.SWRegistrationElement.prototype = {
             icon.title = WebInspector.UIString("ID: %s", version.id);
         }
         var modeTabText = modeTab.createChild("div", "service-workers-versions-mode-tab-text");
-        modeTabText.createTextChild(WebInspector.UIString(modeTitle));
+        modeTabText.setTextAndTitle(WebInspector.UIString(modeTitle));
         if (selected) {
             modeTab.classList.add("service-workers-versions-mode-tab-selected");
             modeTabText.classList.add("service-workers-versions-mode-tab-text-selected");
@@ -508,8 +508,7 @@ WebInspector.SWVersionElement.prototype = {
      */
     _updateVersion: function(version)
     {
-        this._stateCell.removeChildren();
-        this._stateCell.createTextChild(version.status);
+        this._stateCell.setTextAndTitle(version.status);
 
         this._workerCell.removeChildren();
         if (version.isRunning() || version.isStarting() || version.isStartable()) {
@@ -525,25 +524,19 @@ WebInspector.SWVersionElement.prototype = {
                 startButton.addEventListener("click", this._startButtonClicked.bind(this), false);
                 startButton.title = WebInspector.UIString("Start");
             }
-            runningStatusRightCell.createTextChild(version.runningStatus);
+            runningStatusRightCell.setTextAndTitle(version.runningStatus);
             if (version.isRunning() || version.isStarting()) {
                 var inspectButton = runningStatusRightCell.createChild("div", "service-workers-versions-table-running-status-inspect");
-                inspectButton.createTextChild(WebInspector.UIString("inspect"));
+                inspectButton.setTextAndTitle(WebInspector.UIString("inspect"));
                 inspectButton.addEventListener("click", this._inspectButtonClicked.bind(this, version.id), false);
             }
         } else {
-            this._workerCell.createTextChild(version.runningStatus);
+            this._workerCell.setTextAndTitle(version.runningStatus);
         }
 
-        this._scriptCell.removeChildren();
-        this._scriptCell.createTextChild(version.scriptURL.asParsedURL().path);
-
-        this._updatedCell.removeChildren();
-        if (version.scriptResponseTime)
-            this._updatedCell.createTextChild((new Date(version.scriptResponseTime * 1000)).toConsoleTime());
-        this._scriptLastModifiedCell.removeChildren();
-        if (version.scriptLastModified)
-            this._scriptLastModifiedCell.createTextChild((new Date(version.scriptLastModified * 1000)).toConsoleTime());
+        this._scriptCell.setTextAndTitle(version.scriptURL.asParsedURL().path);
+        this._updatedCell.setTextAndTitle(version.scriptResponseTime ? (new Date(version.scriptResponseTime * 1000)).toConsoleTime() : '');
+        this._scriptLastModifiedCell.setTextAndTitle(version.scriptLastModified ? (new Date(version.scriptLastModified * 1000)).toConsoleTime() : '');
 
         this._messagesPanel.removeChildren();
         if (version.scriptLastModified) {
@@ -592,7 +585,7 @@ WebInspector.SWVersionElement.prototype = {
     _addTableRow: function(tableElement, title)
     {
         var rowElement = tableElement.createChild("div", "service-workers-versions-table-row");
-        rowElement.createChild("div", "service-workers-versions-table-row-title").createTextChild(title);
+        rowElement.createChild("div", "service-workers-versions-table-row-title").setTextAndTitle(title);
         return rowElement.createChild("div", "service-workers-versions-table-row-content");
     },
 

@@ -13,7 +13,7 @@
         "DefaultScriptMapping.js",
         "FileSystemWorkspaceBinding.js",
         "FileUtils.js",
-        "BlackboxSupport.js",
+        "BlackboxManager.js",
         "NetworkMapping.js",
         "NetworkProject.js",
         "PresentationConsoleMessageHelper.js",

@@ -241,6 +241,14 @@ WebInspector.SourceMap.prototype = {
     },
 
     /**
+     * @return {!Array<!WebInspector.SourceMap.Entry>}
+     */
+    mappings: function()
+    {
+        return this._mappings;
+    },
+
+    /**
      * @param {string} sourceURL
      * @return {!Array.<!WebInspector.SourceMap.Entry>}
      */

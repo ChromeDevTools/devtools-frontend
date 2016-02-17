@@ -231,6 +231,18 @@ WebInspector.DebuggerWorkspaceBinding.prototype = {
     },
 
     /**
+     * @param {!WebInspector.Script} script
+     * @return {?WebInspector.SourceMap}
+     */
+    sourceMapForScript: function(script)
+    {
+        var targetData = this._targetToData.get(script.target());
+        if (!targetData)
+            return null;
+        return targetData._compilerMapping.sourceMapForScript(script);
+    },
+
+    /**
      * @param {!WebInspector.Event} event
      */
     _globalObjectCleared: function(event)

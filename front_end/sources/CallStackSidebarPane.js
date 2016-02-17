@@ -118,7 +118,7 @@ WebInspector.CallStackSidebarPane.prototype = {
             callFrameItem.element.addEventListener("contextmenu", this._callFrameContextMenu.bind(this, callFrameItem), true);
             this.callFrames.push(callFrameItem);
 
-            if (WebInspector.BlackboxSupport.isBlackboxed(callFrame.script.sourceURL, callFrame.script.isContentScript())) {
+            if (WebInspector.blackboxManager.isBlackboxedRawLocation(callFrame.location())) {
                 callFrameItem.setHidden(true);
                 callFrameItem.setDimmed(true);
                 ++this._hiddenCallFrames;
@@ -169,8 +169,9 @@ WebInspector.CallStackSidebarPane.prototype = {
 
         contextMenu.appendItem(WebInspector.UIString.capitalize("Copy ^stack ^trace"), this._copyStackTrace.bind(this));
 
+        var isBlackboxed = WebInspector.blackboxManager.isBlackboxedRawLocation(callFrame._callFrame.location());
         var script = callFrame._callFrame.script;
-        this.appendBlackboxURLContextMenuItems(contextMenu, script.sourceURL, script.isContentScript());
+        this.appendBlackboxURLContextMenuItems(contextMenu, script.sourceURL, script.isContentScript(), isBlackboxed);
 
         contextMenu.show();
     },
@@ -194,15 +195,15 @@ WebInspector.CallStackSidebarPane.prototype = {
      * @param {!WebInspector.ContextMenu} contextMenu
      * @param {string} url
      * @param {boolean} isContentScript
+     * @param {boolean} isBlackboxed
      */
-    appendBlackboxURLContextMenuItems: function(contextMenu, url, isContentScript)
+    appendBlackboxURLContextMenuItems: function(contextMenu, url, isContentScript, isBlackboxed)
     {
-        var blackboxed = WebInspector.BlackboxSupport.isBlackboxed(url, isContentScript);
-        var canBlackBox = WebInspector.BlackboxSupport.canBlackboxURL(url);
-        if (!blackboxed && !isContentScript && !canBlackBox)
+        var canBlackBox = WebInspector.blackboxManager.canBlackboxURL(url);
+        if (!isBlackboxed && !isContentScript && !canBlackBox)
             return;
 
-        if (blackboxed) {
+        if (isBlackboxed) {
             contextMenu.appendItem(WebInspector.UIString.capitalize("Stop ^blackboxing"), this._handleContextMenuBlackboxURL.bind(this, url, isContentScript, false));
         } else {
             if (canBlackBox)
@@ -223,9 +224,9 @@ WebInspector.CallStackSidebarPane.prototype = {
             if (isContentScript)
                 WebInspector.moduleSetting("skipContentScripts").set(true);
             else
-                WebInspector.BlackboxSupport.blackboxURL(url);
+                WebInspector.blackboxManager.blackboxURL(url);
         } else {
-            WebInspector.BlackboxSupport.unblackbox(url, isContentScript);
+            WebInspector.blackboxManager.unblackbox(url, isContentScript);
         }
     },
 

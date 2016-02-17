@@ -204,10 +204,10 @@ WebInspector.Linkifier.prototype = {
         var columnNumber = callFrame.columnNumber ? callFrame.columnNumber - 1 : 0;
         var anchor = this.linkifyScriptLocation(target, callFrame.scriptId, callFrame.url, lineNumber, columnNumber, classes);
         var debuggerModel = WebInspector.DebuggerModel.fromTarget(target);
-        var script = debuggerModel && debuggerModel.scriptForId(callFrame.scriptId);
-        var blackboxed = script ?
-            WebInspector.BlackboxSupport.isBlackboxed(script.sourceURL, script.isContentScript()) :
-            WebInspector.BlackboxSupport.isBlackboxedURL(callFrame.url);
+        var location = debuggerModel && debuggerModel.createRawLocationByScriptId(callFrame.scriptId, callFrame.lineNumber, callFrame.columnNumber);
+        var blackboxed = location ?
+            WebInspector.blackboxManager.isBlackboxedRawLocation(location) :
+            WebInspector.blackboxManager.isBlackboxedURL(callFrame.url);
         if (blackboxed)
             anchor.classList.add("webkit-html-blackbox-link");
 

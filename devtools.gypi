@@ -169,7 +169,7 @@
             'front_end/workspace/Workspace.js',
         ],
         'devtools_bindings_js_files': [
-            'front_end/bindings/BlackboxSupport.js',
+            'front_end/bindings/BlackboxManager.js',
             'front_end/bindings/BreakpointManager.js',
             'front_end/bindings/CompilerScriptMapping.js',
             'front_end/bindings/ContentProviderBasedProject.js',

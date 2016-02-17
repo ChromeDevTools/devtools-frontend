@@ -157,6 +157,15 @@ WebInspector.CompilerScriptMapping.prototype = {
     },
 
     /**
+     * @param {!WebInspector.Script} script
+     * @return {?WebInspector.SourceMap}
+     */
+    sourceMapForScript: function(script)
+    {
+        return this._sourceMapForScriptId[script.scriptId];
+    },
+
+    /**
      * @param {!WebInspector.Event} event
      */
     _sourceMapURLAdded: function(event)
@@ -187,6 +196,8 @@ WebInspector.CompilerScriptMapping.prototype = {
      */
     _sourceMapLoaded: function(script, uiSourceCodePath, sourceMap)
     {
+        WebInspector.blackboxManager.sourceMapLoaded(script, sourceMap);
+
         this._stubUISourceCodes.delete(script.scriptId);
         this._stubProject.removeFile(uiSourceCodePath);
 

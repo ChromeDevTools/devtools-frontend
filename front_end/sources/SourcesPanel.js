@@ -928,7 +928,8 @@ WebInspector.SourcesPanel.prototype = {
         if (contentType.hasScripts() && projectType !== WebInspector.projectTypes.Snippets) {
             var networkURL = this._networkMapping.networkURL(uiSourceCode);
             var url = projectType === WebInspector.projectTypes.Formatter ? uiSourceCode.url() : networkURL;
-            this.sidebarPanes.callstack.appendBlackboxURLContextMenuItems(contextMenu, url, projectType === WebInspector.projectTypes.ContentScripts);
+            var isBlackboxed = WebInspector.blackboxManager.isBlackboxedUISourceCode(uiSourceCode);
+            this.sidebarPanes.callstack.appendBlackboxURLContextMenuItems(contextMenu, url, projectType === WebInspector.projectTypes.ContentScripts, isBlackboxed);
         }
     },
 

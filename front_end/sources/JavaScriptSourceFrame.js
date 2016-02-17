@@ -150,7 +150,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
         var networkURL = WebInspector.networkMapping.networkURL(this.uiSourceCode());
         var url = projectType === WebInspector.projectTypes.Formatter ? this.uiSourceCode().url() : networkURL;
         var isContentScript = projectType === WebInspector.projectTypes.ContentScripts;
-        if (!WebInspector.BlackboxSupport.isBlackboxed(url, isContentScript)) {
+        if (!WebInspector.blackboxManager.isBlackboxedUISourceCode(this.uiSourceCode())) {
             this._hideBlackboxInfobar();
             return;
         }
@@ -172,7 +172,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
 
         function unblackbox()
         {
-            WebInspector.BlackboxSupport.unblackbox(url, isContentScript);
+            WebInspector.blackboxManager.unblackbox(url, isContentScript);
         }
 
         this._updateInfobars();

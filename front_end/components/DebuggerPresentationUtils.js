@@ -22,13 +22,13 @@ WebInspector.DebuggerPresentationUtils.callFrameAnchorFromStackTrace = function(
             return null;
         if (showBlackboxed)
             return callFrames[0];
-        for (var i = 0; i < callFrames.length; ++i) {
-            var script = debuggerModel && debuggerModel.scriptForId(callFrames[i].scriptId);
-            var blackboxed = script ?
-                WebInspector.BlackboxSupport.isBlackboxed(script.sourceURL, script.isContentScript()) :
-                WebInspector.BlackboxSupport.isBlackboxedURL(callFrames[i].url);
+        for (var callFrame of callFrames) {
+            var location = debuggerModel && debuggerModel.createRawLocationByScriptId(callFrame.scriptId, callFrame.lineNumber, callFrame.columnNumber);
+            var blackboxed = location ?
+                WebInspector.blackboxManager.isBlackboxedRawLocation(location) :
+                WebInspector.blackboxManager.isBlackboxedURL(callFrame.url);
             if (!blackboxed)
-                return callFrames[i];
+                return callFrame;
         }
         return null;
     }

@@ -1061,7 +1061,7 @@ WebInspector.NetworkRequest.prototype = {
     },
 
     /**
-     * @return {!{type: !WebInspector.NetworkRequest.InitiatorType, url: string, lineNumber: number, columnNumber: number}}
+     * @return {!{type: !WebInspector.NetworkRequest.InitiatorType, url: string, lineNumber: number, columnNumber: number, scriptId: ?string}}
      */
     initiatorInfo: function()
     {
@@ -1072,6 +1072,7 @@ WebInspector.NetworkRequest.prototype = {
         var url = "";
         var lineNumber = -Infinity;
         var columnNumber = -Infinity;
+        var scriptId = null;
         var initiator = this._initiator;
 
         if (this.redirectSource) {
@@ -1083,17 +1084,21 @@ WebInspector.NetworkRequest.prototype = {
                 url = initiator.url ? initiator.url : url;
                 lineNumber = initiator.lineNumber ? initiator.lineNumber : lineNumber;
             } else if (initiator.type === NetworkAgent.InitiatorType.Script) {
-                var topFrame = initiator.stack && initiator.stack.callFrames.length ? initiator.stack.callFrames[0] : null;
-                if (topFrame && topFrame.url) {
+                for (var stack = initiator.stack; stack; stack = stack.parent) {
+                    var topFrame = stack.callFrames.length ? stack.callFrames[0] : null;
+                    if (!topFrame)
+                        continue;
                     type = WebInspector.NetworkRequest.InitiatorType.Script;
-                    url = topFrame.url;
+                    url = topFrame.url || WebInspector.UIString("<anonymous>");
                     lineNumber = topFrame.lineNumber;
                     columnNumber = topFrame.columnNumber;
+                    scriptId = topFrame.scriptId;
+                    break;
                 }
             }
         }
 
-        this._initiatorInfo = {type: type, url: url, lineNumber: lineNumber, columnNumber: columnNumber};
+        this._initiatorInfo = {type: type, url: url, lineNumber: lineNumber, columnNumber: columnNumber, scriptId: scriptId};
         return this._initiatorInfo;
     },
 

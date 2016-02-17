@@ -156,6 +156,7 @@ WebInspector.TimelineUIUtils.categoryForRecord = function(record)
     return WebInspector.TimelineUIUtils.eventStyle(record.traceEvent()).category;
 }
 
+
 /**
  * @param {!WebInspector.TracingModel.Event} event
  * @return {!{title: string, category: !WebInspector.TimelineCategory}}
@@ -163,9 +164,15 @@ WebInspector.TimelineUIUtils.categoryForRecord = function(record)
 WebInspector.TimelineUIUtils.eventStyle = function(event)
 {
     var eventStyles = WebInspector.TimelineUIUtils._initEventStyles();
-    if (event.hasCategory(WebInspector.TimelineModel.Category.Console) || event.hasCategory(WebInspector.TimelineModel.Category.UserTiming) || event.hasCategory(WebInspector.TimelineModel.Category.LatencyInfo))
+    if (event.hasCategory(WebInspector.TimelineModel.Category.Console) || event.hasCategory(WebInspector.TimelineModel.Category.UserTiming))
         return { title: event.name, category: WebInspector.TimelineUIUtils.categories()["scripting"] };
 
+    if (event.hasCategory(WebInspector.TimelineModel.Category.LatencyInfo)) {
+        /** @const */
+        var prefix = "InputLatency::";
+        var name = event.name.startsWith(prefix) ? event.name.substr(prefix.length) : event.name;
+        return { title: name, category: WebInspector.TimelineUIUtils.categories()["scripting"] };
+    }
     var result = eventStyles[event.name];
     if (!result) {
         result = new WebInspector.TimelineRecordStyle(event.name,  WebInspector.TimelineUIUtils.categories()["other"], true);

@@ -83,7 +83,6 @@ WebInspector.TimelineIRModel.prototype = {
         if (animations)
             this._processAnimations(animations);
         var range = new WebInspector.SegmentedRange();
-        range.append(new WebInspector.Segment(timelineModel.minimumRecordTime(), timelineModel.maximumRecordTime(), WebInspector.TimelineIRModel.Phases.Idle));
         range.appendRange(this._drags); // Drags take lower precedence than animation, as we can't detect them reliably.
         range.appendRange(this._cssAnimations);
         range.appendRange(this._scrolls);
@@ -150,6 +149,8 @@ WebInspector.TimelineIRModel.prototype = {
                 break;
 
             case eventTypes.TouchStart:
+                // We do not produce any response segment for TouchStart -- there's either going to be one upon
+                // TouchMove for drag, or one for GestureTap.
                 if (touchStart) {
                     WebInspector.console.error(WebInspector.UIString("Two touches at the same time? %s vs %s", touchStart.startTime, event.startTime));
                     break;
@@ -163,16 +164,15 @@ WebInspector.TimelineIRModel.prototype = {
                 break;
 
             case eventTypes.TouchMove:
-                if (firstTouchMove || !touchStart)
-                    break;
-                firstTouchMove = event;
-                this._responses.append(new WebInspector.Segment(touchStart.startTime, firstTouchMove.endTime, phases.Response));
+                if (firstTouchMove) {
+                    this._drags.append(this._segmentForEvent(event, phases.Drag));
+                } else if (touchStart) {
+                    firstTouchMove = event;
+                    this._responses.append(new WebInspector.Segment(touchStart.startTime, event.endTime, phases.Response));
+                }
                 break;
 
             case eventTypes.TouchEnd:
-                if (!touchStart)
-                    break;
-                this._drags.append(new WebInspector.Segment(firstTouchMove ? firstTouchMove.endTime : touchStart.startTime, event.endTime, phases.Drag));
                 touchStart = null;
                 break;
 
@@ -186,8 +186,6 @@ WebInspector.TimelineIRModel.prototype = {
                     this._responses.append(this._segmentForEvent(mouseDown, phases.Response));
                     this._responses.append(this._segmentForEvent(event, phases.Response));
                 } else if (mouseDown) {
-                    if (mouseMove && canMerge(thresholdsMs.mouse, mouseMove, event))
-                        this._drags.append(new WebInspector.Segment(mouseMove.endTime, event.startTime, phases.Drag));
                     this._drags.append(this._segmentForEvent(event, phases.Drag));
                 }
                 mouseMove = event;
@@ -252,10 +250,10 @@ WebInspector.TimelineIRModel.prototype = {
         var thresholdsMs = WebInspector.TimelineIRModel._mergeThresholdsMs;
 
         this._segments = [];
-        this._drags = new WebInspector.SegmentedRange(merge.bind(null, 0));
-        this._cssAnimations = new WebInspector.SegmentedRange(merge.bind(null, WebInspector.TimelineIRModel._mergeThresholdsMs.animation));
+        this._drags = new WebInspector.SegmentedRange(merge.bind(null, thresholdsMs.mouse));
+        this._cssAnimations = new WebInspector.SegmentedRange(merge.bind(null, thresholdsMs.animation));
         this._responses = new WebInspector.SegmentedRange(merge.bind(null, 0));
-        this._scrolls = new WebInspector.SegmentedRange(merge.bind(null, 0));
+        this._scrolls = new WebInspector.SegmentedRange(merge.bind(null, thresholdsMs.animation));
 
         /**
          * @param {number} threshold

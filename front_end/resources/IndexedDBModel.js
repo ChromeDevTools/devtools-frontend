@@ -330,7 +330,7 @@ WebInspector.IndexedDBModel.prototype = {
 
             if (!this._databaseNamesBySecurityOrigin[databaseId.securityOrigin])
                 return;
-            var databaseModel = new WebInspector.IndexedDBModel.Database(databaseId, databaseWithObjectStores.version, databaseWithObjectStores.intVersion);
+            var databaseModel = new WebInspector.IndexedDBModel.Database(databaseId, databaseWithObjectStores.intVersion);
             this._databases.set(databaseId, databaseModel);
             for (var i = 0; i < databaseWithObjectStores.objectStores.length; ++i) {
                 var objectStore = databaseWithObjectStores.objectStores[i];
@@ -459,13 +459,11 @@ WebInspector.IndexedDBModel.DatabaseId.prototype = {
 /**
  * @constructor
  * @param {!WebInspector.IndexedDBModel.DatabaseId} databaseId
- * @param {string} version
  * @param {number} intVersion
  */
-WebInspector.IndexedDBModel.Database = function(databaseId, version, intVersion)
+WebInspector.IndexedDBModel.Database = function(databaseId, intVersion)
 {
     this.databaseId = databaseId;
-    this.version = version;
     this.intVersion = intVersion;
     this.objectStores = {};
 }

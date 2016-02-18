@@ -221,9 +221,8 @@ WebInspector.BlackboxManager.prototype = {
         var promises = [];
         for (var debuggerModel of WebInspector.DebuggerModel.instances()) {
             for (var scriptId in debuggerModel.scripts) {
-                let script = debuggerModel.scripts[scriptId];
+                var script = debuggerModel.scripts[scriptId];
                 promises.push(this._addScript(script)
-                                  .then(() => this._debuggerWorkspaceBinding.sourceMapForScript(script))
                                   .then(loadSourceMap.bind(this, script)));
             }
         }
@@ -231,13 +230,12 @@ WebInspector.BlackboxManager.prototype = {
 
         /**
          * @param {!WebInspector.Script} script
-         * @param {?WebInspector.SourceMap} sourceMap
          * @return {!Promise<undefined>}
          * @this {WebInspector.BlackboxManager}
          */
-        function loadSourceMap(script, sourceMap)
+        function loadSourceMap(script)
         {
-            return this.sourceMapLoaded(script, sourceMap);
+            return this.sourceMapLoaded(script, this._debuggerWorkspaceBinding.sourceMapForScript(script));
         }
     },
 

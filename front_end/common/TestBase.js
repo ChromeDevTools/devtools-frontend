@@ -79,6 +79,7 @@ WebInspector.TestBase.prototype.releaseControl = function()
         clearTimeout(this.timerId_);
         this.timerId_ = -1;
     }
+    this.controlTaken_ = false;
     this.reportOk_();
 };
 
@@ -107,7 +108,7 @@ WebInspector.TestBase.prototype.reportFailure_ = function(error)
 
 /**
  * Run specified test on a fresh instance of the test suite.
- * @param {string} name Name of a test method from implementation class.
+ * @param {Array<string>} args method name followed by its parameters.
  */
 WebInspector.TestBase.prototype.dispatch = function(args)
 {
@@ -121,6 +122,19 @@ WebInspector.TestBase.prototype.dispatch = function(args)
     }
 };
 
+
+/**
+ * Wrap an async method with TestBase.{takeControl(), releaseControl()}
+ * and invoke TestBase.reportOk_ upon completion.
+ * @param {Array<string>} args method name followed by its parameters.
+ */
+WebInspector.TestBase.prototype.waitForAsync = function(var_args)
+{
+    var args = Array.prototype.slice.call(arguments);
+    this.takeControl();
+    args.push(this.releaseControl.bind(this));
+    this.dispatch(args);
+};
 
 /**
  * Overrides the method with specified name until it's called first time.

@@ -260,7 +260,7 @@ WebInspector.ScriptSnippetModel.prototype = {
     _runScript: function(scriptId, executionContext, sourceURL)
     {
         var target = executionContext.target();
-        target.runtimeModel.runScript(scriptId, executionContext.id, "console", false, runCallback.bind(this, target));
+        target.runtimeModel.runScript(scriptId, executionContext.id, "console", false, true, runCallback.bind(this, target));
 
         /**
          * @param {!WebInspector.Target} target

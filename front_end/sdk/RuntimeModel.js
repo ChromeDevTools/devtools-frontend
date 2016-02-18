@@ -192,11 +192,12 @@ WebInspector.RuntimeModel.prototype = {
      * @param {number} executionContextId
      * @param {string=} objectGroup
      * @param {boolean=} doNotPauseOnExceptionsAndMuteConsole
+     * @param {boolean=} includeCommandLineAPI
      * @param {function(?RuntimeAgent.RemoteObject, ?RuntimeAgent.ExceptionDetails=)=} callback
      */
-    runScript: function(scriptId, executionContextId, objectGroup, doNotPauseOnExceptionsAndMuteConsole, callback)
+    runScript: function(scriptId, executionContextId, objectGroup, doNotPauseOnExceptionsAndMuteConsole, includeCommandLineAPI, callback)
     {
-        this._agent.runScript(scriptId, executionContextId, objectGroup, doNotPauseOnExceptionsAndMuteConsole, innerCallback);
+        this._agent.runScript(scriptId, executionContextId, objectGroup, doNotPauseOnExceptionsAndMuteConsole, includeCommandLineAPI, innerCallback);
 
         /**
          * @param {?Protocol.Error} error

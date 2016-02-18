@@ -385,7 +385,7 @@ WebInspector.CPUProfileFlameChart = function(dataProvider)
     this._overviewPane = new WebInspector.CPUProfileFlameChart.OverviewPane(dataProvider);
     this._overviewPane.show(this.element);
 
-    this._mainPane = new WebInspector.FlameChart(dataProvider, this._overviewPane, true);
+    this._mainPane = new WebInspector.FlameChart(dataProvider, this._overviewPane);
     this._mainPane.show(this.element);
     this._mainPane.addEventListener(WebInspector.FlameChart.Events.EntrySelected, this._onEntrySelected, this);
     this._overviewPane.addEventListener(WebInspector.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);

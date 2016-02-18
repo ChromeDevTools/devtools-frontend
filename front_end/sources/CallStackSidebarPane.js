@@ -425,10 +425,13 @@ WebInspector.CallStackSidebarPane.CallFrame = function(callFrame, asyncCallFrame
 
 WebInspector.CallStackSidebarPane.CallFrame.prototype = {
     /**
-     * @param {!WebInspector.UILocation} uiLocation
+     * @param {!WebInspector.LiveLocation} liveLocation
      */
-    _update: function(uiLocation)
+    _update: function(liveLocation)
     {
+        var uiLocation = liveLocation.uiLocation();
+        if (!uiLocation)
+            return;
         var text = uiLocation.linkText();
         this.setSubtitle(text.trimMiddle(30));
         this.subtitleElement.title = text;

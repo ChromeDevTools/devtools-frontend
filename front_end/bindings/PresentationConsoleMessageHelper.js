@@ -173,12 +173,15 @@ WebInspector.PresentationConsoleMessage = function(message, rawLocation)
 
 WebInspector.PresentationConsoleMessage.prototype = {
     /**
-     * @param {!WebInspector.UILocation} uiLocation
+     * @param {!WebInspector.LiveLocation} liveLocation
      */
-    _updateLocation: function(uiLocation)
+    _updateLocation: function(liveLocation)
     {
         if (this._uiMessage)
             this._uiMessage.remove();
+        var uiLocation = liveLocation.uiLocation();
+        if (!uiLocation)
+            return;
         this._uiMessage = uiLocation.uiSourceCode.addLineMessage(this._level, this._text, uiLocation.lineNumber, uiLocation.columnNumber);
     },
 

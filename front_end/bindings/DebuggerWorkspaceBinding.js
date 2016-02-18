@@ -121,7 +121,7 @@ WebInspector.DebuggerWorkspaceBinding.prototype = {
 
     /**
      * @param {!WebInspector.DebuggerModel.Location} rawLocation
-     * @param {function(!WebInspector.UILocation):(boolean|undefined)} updateDelegate
+     * @param {function(!WebInspector.LiveLocation)} updateDelegate
      * @return {!WebInspector.DebuggerWorkspaceBinding.Location}
      */
     createLiveLocation: function(rawLocation, updateDelegate)
@@ -135,7 +135,7 @@ WebInspector.DebuggerWorkspaceBinding.prototype = {
 
     /**
      * @param {!WebInspector.DebuggerModel.CallFrame} callFrame
-     * @param {function(!WebInspector.UILocation):(boolean|undefined)} updateDelegate
+     * @param {function(!WebInspector.LiveLocation)} updateDelegate
      * @return {!WebInspector.DebuggerWorkspaceBinding.Location}
      */
     createCallFrameLiveLocation: function(callFrame, updateDelegate)
@@ -469,7 +469,7 @@ WebInspector.DebuggerWorkspaceBinding.ScriptInfo.prototype = {
     },
 
     /**
-     * @param {!WebInspector.LiveLocation} location
+     * @param {!WebInspector.DebuggerWorkspaceBinding.Location} location
      */
     _addLocation: function(location)
     {
@@ -478,7 +478,7 @@ WebInspector.DebuggerWorkspaceBinding.ScriptInfo.prototype = {
     },
 
     /**
-     * @param {!WebInspector.LiveLocation} location
+     * @param {!WebInspector.DebuggerWorkspaceBinding.Location} location
      */
     _removeLocation: function(location)
     {
@@ -512,7 +512,7 @@ WebInspector.DebuggerWorkspaceBinding.ScriptInfo.prototype = {
  * @param {!WebInspector.Script} script
  * @param {!WebInspector.DebuggerModel.Location} rawLocation
  * @param {!WebInspector.DebuggerWorkspaceBinding} binding
- * @param {function(!WebInspector.UILocation):(boolean|undefined)} updateDelegate
+ * @param {function(!WebInspector.LiveLocation)} updateDelegate
  */
 WebInspector.DebuggerWorkspaceBinding.Location = function(script, rawLocation, binding, updateDelegate)
 {
@@ -537,6 +537,15 @@ WebInspector.DebuggerWorkspaceBinding.Location.prototype = {
     {
         WebInspector.LiveLocation.prototype.dispose.call(this);
         this._binding._removeLiveLocation(this);
+    },
+
+    /**
+     * @override
+     * @return {boolean}
+     */
+    isBlackboxed: function()
+    {
+        return WebInspector.blackboxManager.isBlackboxedRawLocation(this._rawLocation);
     },
 
     __proto__: WebInspector.LiveLocation.prototype

@@ -4,7 +4,7 @@
 
 /**
  * @constructor
- * @param {function(!WebInspector.UILocation):(boolean|undefined)} updateDelegate
+ * @param {function(!WebInspector.LiveLocation)} updateDelegate
  */
 WebInspector.LiveLocation = function(updateDelegate)
 {
@@ -14,11 +14,7 @@ WebInspector.LiveLocation = function(updateDelegate)
 WebInspector.LiveLocation.prototype = {
     update: function()
     {
-        var uiLocation = this.uiLocation();
-        if (!uiLocation)
-            return;
-        if (this._updateDelegate(uiLocation))
-            this.dispose();
+        this._updateDelegate(this);
     },
 
     /**
@@ -32,5 +28,13 @@ WebInspector.LiveLocation.prototype = {
     dispose: function()
     {
         // Overridden by subclasses.
+    },
+
+    /**
+     * @return {boolean}
+     */
+    isBlackboxed: function()
+    {
+        throw "Not implemented";
     }
 }

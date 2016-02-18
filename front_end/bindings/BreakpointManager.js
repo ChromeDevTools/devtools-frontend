@@ -919,10 +919,13 @@ WebInspector.BreakpointManager.TargetBreakpoint.prototype = {
 
     /**
      * @param {!WebInspector.DebuggerModel.Location} location
-     * @param {!WebInspector.UILocation} uiLocation
+     * @param {!WebInspector.LiveLocation} liveLocation
      */
-    _locationUpdated: function(location, uiLocation)
+    _locationUpdated: function(location, liveLocation)
     {
+        var uiLocation = liveLocation.uiLocation();
+        if (!uiLocation)
+            return;
         var oldUILocation = this._uiLocations[location.id()] || null;
         this._uiLocations[location.id()] = uiLocation;
         this._breakpoint._replaceUILocation(oldUILocation, uiLocation);

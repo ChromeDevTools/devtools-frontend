@@ -24,7 +24,6 @@ WebInspector.BlackboxManager = function(debuggerWorkspaceBinding, networkMapping
 }
 
 WebInspector.BlackboxManager.prototype = {
-
     /**
      * @param {function(!WebInspector.Event)} listener
      * @param {!Object=} thisObject
@@ -308,10 +307,12 @@ WebInspector.BlackboxManager.prototype = {
          */
         function updateState(success)
         {
-            if (success)
+            if (success) {
                 this._scriptIdToPositions.set(script.scriptId, positions);
-            else if (!this._scriptIdToPositions.has(script.scriptId))
+                this._debuggerWorkspaceBinding.updateLocations(script);
+            } else if (!this._scriptIdToPositions.has(script.scriptId)) {
                 this._scriptIdToPositions.set(script.scriptId, []);
+            }
         }
     },
 

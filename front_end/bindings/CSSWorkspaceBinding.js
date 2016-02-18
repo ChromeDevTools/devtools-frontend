@@ -100,7 +100,7 @@ WebInspector.CSSWorkspaceBinding.prototype = {
 
     /**
      * @param {!WebInspector.CSSLocation} rawLocation
-     * @param {function(!WebInspector.UILocation):(boolean|undefined)} updateDelegate
+     * @param {function(!WebInspector.LiveLocation)} updateDelegate
      * @return {!WebInspector.CSSWorkspaceBinding.LiveLocation}
      */
     createLiveLocation: function(rawLocation, updateDelegate)
@@ -314,7 +314,7 @@ WebInspector.CSSWorkspaceBinding.HeaderInfo.prototype = {
  * @param {?WebInspector.CSSStyleSheetHeader} header
  * @param {!WebInspector.CSSLocation} rawLocation
  * @param {!WebInspector.CSSWorkspaceBinding} binding
- * @param {function(!WebInspector.UILocation):(boolean|undefined)} updateDelegate
+ * @param {function(!WebInspector.LiveLocation)} updateDelegate
  */
 WebInspector.CSSWorkspaceBinding.LiveLocation = function(cssModel, header, rawLocation, binding, updateDelegate)
 {
@@ -395,6 +395,15 @@ WebInspector.CSSWorkspaceBinding.LiveLocation.prototype = {
             this._binding._removeLiveLocation(this);
         this._cssModel.removeEventListener(WebInspector.CSSStyleModel.Events.StyleSheetAdded, this._styleSheetAdded, this);
         this._cssModel.removeEventListener(WebInspector.CSSStyleModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this);
+    },
+
+    /**
+     * @override
+     * @return {boolean}
+     */
+    isBlackboxed: function()
+    {
+        return false;
     },
 
     __proto__: WebInspector.LiveLocation.prototype

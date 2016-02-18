@@ -227,27 +227,28 @@ WebInspector.TracingModel.prototype = {
         else
             this._backingStorage.appendString(stringPayload);
 
-        if (payload.ph !== WebInspector.TracingModel.Phase.Metadata) {
-            var timestamp = payload.ts / 1000;
-            // We do allow records for unrelated threads to arrive out-of-order,
-            // so there's a chance we're getting records from the past.
-            if (timestamp && (!this._minimumRecordTime || timestamp < this._minimumRecordTime))
-                this._minimumRecordTime = timestamp;
-            var endTimeStamp = (payload.ts + (payload.dur || 0)) / 1000;
-            this._maximumRecordTime = Math.max(this._maximumRecordTime, endTimeStamp);
-            var event = process._addEvent(payload);
-            if (!event)
-                return;
-            // Build async event when we've got events from all threads & processes, so we can sort them and process in the
-            // chronological order. However, also add individual async events to the thread flow (above), so we can easily
-            // display them on the same chart as other events, should we choose so.
-            if (WebInspector.TracingModel.isAsyncPhase(payload.ph))
-                this._asyncEvents.push(event);
-            event._setBackingStorage(backingStorage);
-            if (event.hasCategory(WebInspector.TracingModel.DevToolsMetadataEventCategory))
-                this._devToolsMetadataEvents.push(event);
+        var timestamp = payload.ts / 1000;
+        // We do allow records for unrelated threads to arrive out-of-order,
+        // so there's a chance we're getting records from the past.
+        if (timestamp && (!this._minimumRecordTime || timestamp < this._minimumRecordTime))
+            this._minimumRecordTime = timestamp;
+        var endTimeStamp = (payload.ts + (payload.dur || 0)) / 1000;
+        this._maximumRecordTime = Math.max(this._maximumRecordTime, endTimeStamp);
+        var event = process._addEvent(payload);
+        if (!event)
             return;
-        }
+        // Build async event when we've got events from all threads & processes, so we can sort them and process in the
+        // chronological order. However, also add individual async events to the thread flow (above), so we can easily
+        // display them on the same chart as other events, should we choose so.
+        if (WebInspector.TracingModel.isAsyncPhase(payload.ph))
+            this._asyncEvents.push(event);
+        event._setBackingStorage(backingStorage);
+        if (event.hasCategory(WebInspector.TracingModel.DevToolsMetadataEventCategory))
+            this._devToolsMetadataEvents.push(event);
+
+        if (payload.ph !== WebInspector.TracingModel.Phase.Metadata)
+            return;
+
         switch (payload.name) {
         case WebInspector.TracingModel.MetadataEvent.ProcessSortIndex:
             process._setSortIndex(payload.args["sort_index"]);

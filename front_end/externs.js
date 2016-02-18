@@ -42,6 +42,9 @@ Event.prototype.isMetaOrCtrlForTest;
 /** @type {string} */
 Event.prototype.code;
 
+/** @type {function():!Array<!EventTarget>|undefined} */
+Event.prototype.deepPath;
+
 /**
  * @type {number}
  */

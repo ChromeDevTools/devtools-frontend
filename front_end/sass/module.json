@@ -3,6 +3,6 @@
     "scripts": [
         "SASSSupport.js",
         "ASTService.js",
-        "SASSLiveSourceMap.js"
+        "ASTSourceMap.js"
     ]
 }

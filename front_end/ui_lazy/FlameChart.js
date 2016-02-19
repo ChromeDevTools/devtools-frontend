@@ -101,7 +101,8 @@ WebInspector.FlameChart = function(dataProvider, flameChartDelegate)
     this._highlightedEntryIndex = -1;
     this._selectedEntryIndex = -1;
     this._rawTimelineDataLength = 0;
-    this._textWidth = {};
+    /** @type {!Map<string,!Map<string,number>>} */
+    this._textWidth = new Map();
 
     this._lastMouseOffsetX = 0;
 }
@@ -1514,15 +1515,15 @@ WebInspector.FlameChart.prototype = {
             return context.measureText(text).width;
 
         var font = context.font;
-        var textWidths = this._textWidth[font];
+        var textWidths = this._textWidth.get(font);
         if (!textWidths) {
-            textWidths = {};
-            this._textWidth[font] = textWidths;
+            textWidths = new Map();
+            this._textWidth.set(font, textWidths);
         }
-        var width = textWidths[text];
+        var width = textWidths.get(text);
         if (!width) {
             width = context.measureText(text).width;
-            textWidths[text] = width;
+            textWidths.set(text, width);
         }
         return width;
     },
@@ -1612,7 +1613,8 @@ WebInspector.FlameChart.prototype = {
         this._selectedEntryIndex = -1;
         this._rangeSelectionStart = 0;
         this._rangeSelectionEnd = 0;
-        this._textWidth = {};
+        /** @type {!Map<string,!Map<string,number>>} */
+        this._textWidth = new Map();
         this.update();
     },
 

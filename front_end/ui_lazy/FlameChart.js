@@ -91,13 +91,12 @@ WebInspector.FlameChart = function(dataProvider, flameChartDelegate)
 
     this._windowLeft = 0.0;
     this._windowRight = 1.0;
-    this._windowWidth = 1.0;
     this._timeWindowLeft = 0;
     this._timeWindowRight = Infinity;
     this._barHeight = dataProvider.barHeight();
     this._paddingLeft = this._dataProvider.paddingLeft();
-    this._markerPadding = 2;
-    this._markerRadius = this._barHeight / 2 - this._markerPadding;
+    var markerPadding = 2;
+    this._markerRadius = this._barHeight / 2 - markerPadding;
     this._highlightedMarkerIndex = -1;
     this._highlightedEntryIndex = -1;
     this._selectedEntryIndex = -1;
@@ -1120,7 +1119,7 @@ WebInspector.FlameChart.prototype = {
         context.scale(ratio, ratio);
 
         var timeWindowRight = this._timeWindowRight;
-        var timeWindowLeft = this._timeWindowLeft - this._paddingLeftTime;
+        var timeWindowLeft = this._timeWindowLeft - this._paddingLeft / this._timeToPixel;
         var entryTotalTimes = timelineData.entryTotalTimes;
         var entryStartTimes = timelineData.entryStartTimes;
         var entryLevels = timelineData.entryLevels;
@@ -1533,27 +1532,24 @@ WebInspector.FlameChart.prototype = {
         this._totalTime = this._dataProvider.totalTime();
         this._minimumBoundary = this._dataProvider.minimumBoundary();
 
+        var windowWidth = 1;
         if (this._timeWindowRight !== Infinity) {
             this._windowLeft = (this._timeWindowLeft - this._minimumBoundary) / this._totalTime;
             this._windowRight = (this._timeWindowRight - this._minimumBoundary) / this._totalTime;
-            this._windowWidth = this._windowRight - this._windowLeft;
+            windowWidth = this._windowRight - this._windowLeft;
         } else if (this._timeWindowLeft === Infinity) {
             this._windowLeft = Infinity;
             this._windowRight = Infinity;
-            this._windowWidth = 1;
         } else {
             this._windowLeft = 0;
             this._windowRight = 1;
-            this._windowWidth = 1;
         }
 
-        this._pixelWindowWidth = this._offsetWidth - this._paddingLeft;
-        this._totalPixels = Math.floor(this._pixelWindowWidth / this._windowWidth);
-        this._pixelWindowLeft = Math.floor(this._totalPixels * this._windowLeft);
+        var totalPixels = Math.floor((this._offsetWidth - this._paddingLeft) / windowWidth);
+        this._pixelWindowLeft = Math.floor(totalPixels * this._windowLeft);
 
-        this._timeToPixel = this._totalPixels / this._totalTime;
-        this._pixelToTime = this._totalTime / this._totalPixels;
-        this._paddingLeftTime = this._paddingLeft / this._timeToPixel;
+        this._timeToPixel = totalPixels / this._totalTime;
+        this._pixelToTime = this._totalTime / totalPixels;
 
         this._totalHeight = this._levelToHeight(this._dataProvider.maxStackDepth());
         this._vScrollContent.style.height = this._totalHeight + "px";

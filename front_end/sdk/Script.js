@@ -64,7 +64,7 @@ WebInspector.Script.Events = {
     SourceMapURLAdded: "SourceMapURLAdded"
 }
 
-WebInspector.Script.sourceURLRegex = /^[\040\t]*\/\/# sourceURL=\s*(\S*?)\s*$/m;
+WebInspector.Script.sourceURLRegex = /^[\040\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/m;
 
 /**
  * @param {string} source
@@ -73,8 +73,11 @@ WebInspector.Script.sourceURLRegex = /^[\040\t]*\/\/# sourceURL=\s*(\S*?)\s*$/m;
 WebInspector.Script._trimSourceURLComment = function(source)
 {
     var sourceURLIndex = source.lastIndexOf("//# sourceURL=");
-    if (sourceURLIndex === -1)
-        return source;
+    if (sourceURLIndex === -1) {
+        sourceURLIndex = source.lastIndexOf("//@ sourceURL=");
+        if (sourceURLIndex === -1)
+            return source;
+    }
     var sourceURLLineIndex = source.lastIndexOf("\n", sourceURLIndex);
     if (sourceURLLineIndex === -1)
         return source;

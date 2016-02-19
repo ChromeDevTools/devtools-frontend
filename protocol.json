@@ -3175,6 +3175,16 @@
                     { "name": "style", "$ref": "CSSStyle", "description": "Associated style declaration." }
                 ],
                 "description": "CSS keyframe rule representation."
+            },
+            {
+                "id": "StyleDeclarationEdit",
+                "type": "object",
+                "properties": [
+                    { "name": "styleSheetId", "$ref": "StyleSheetId", "description": "The css style sheet identifier." },
+                    { "name": "range", "$ref": "SourceRange", "description": "The range of the style text in the enclosing stylesheet." },
+                    { "name": "text", "type": "string", "description": "New style text."}
+                ],
+                "description": "A descriptor of operation to mutate style declaration text."
             }
         ],
         "commands": [
@@ -3280,16 +3290,14 @@
                 "description": "Modifies the keyframe rule key text."
             },
             {
-                "name": "setStyleText",
+                "name": "setStyleTexts",
                 "parameters": [
-                    { "name": "styleSheetId", "$ref": "StyleSheetId" },
-                    { "name": "range", "$ref": "SourceRange" },
-                    { "name": "text", "type": "string" }
+                    { "name": "edits", "type": "array", "items": { "$ref": "StyleDeclarationEdit" }}
                 ],
                 "returns": [
-                    { "name": "style", "$ref": "CSSStyle", "description": "The resulting style after the selector modification." }
+                    { "name": "styles", "type": "array", "items": { "$ref": "CSSStyle" }, "description": "The resulting styles after modification." }
                 ],
-                "description": "Modifies the style text."
+                "description": "Applies specified style edits one after another in the given order."
             },
             {
                 "name": "setMediaText",

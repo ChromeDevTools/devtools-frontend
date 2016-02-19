@@ -80,6 +80,48 @@ WebInspector.CSSStyleModel.PseudoStateMarker = "pseudo-state-marker";
 
 WebInspector.CSSStyleModel.prototype = {
     /**
+     * @param {!Array<!CSSAgent.StyleSheetId>} styleSheetIds
+     * @param {!Array<!WebInspector.TextRange>} ranges
+     * @param {!Array<string>} texts
+     * @param {boolean} majorChange
+     * @return {!Promise<?Array<!CSSAgent.CSSStyle>>}
+     */
+    setStyleTexts: function(styleSheetIds, ranges, texts, majorChange)
+    {
+        /**
+         * @param {?Protocol.Error} error
+         * @param {?Array<!CSSAgent.CSSStyle>} stylePayloads
+         * @return {?Array<!CSSAgent.CSSStyle>}
+         * @this {WebInspector.CSSStyleModel}
+         */
+        function parsePayload(error, stylePayloads)
+        {
+            if (error || !stylePayloads || !stylePayloads.length)
+                return null;
+
+            if (majorChange)
+                this._domModel.markUndoableState();
+            var uniqueIDs = new Set(styleSheetIds);
+            for (var styleSheetId of uniqueIDs)
+                this._fireStyleSheetChanged(styleSheetId);
+            return stylePayloads;
+        }
+
+        console.assert(styleSheetIds.length === ranges.length && ranges.length === texts.length, "Array lengths must be equal");
+        var edits = [];
+        for (var i = 0; i < styleSheetIds.length; ++i) {
+            edits.push({
+                styleSheetId: styleSheetIds[i],
+                range: ranges[i].serializeToObject(),
+                text: texts[i]
+            });
+        }
+
+        return this._agent.setStyleTexts(edits, parsePayload.bind(this))
+            .catchException(/** @type {?Array<!CSSAgent.CSSStyle>} */(null));
+    },
+
+    /**
      * @return {!Promise.<!Array.<!WebInspector.CSSMedia>>}
      */
     mediaQueriesPromise: function()
@@ -946,28 +988,21 @@ WebInspector.CSSStyleDeclaration.prototype = {
      */
     setText: function(text, majorChange)
     {
-        if (!this.styleSheetId)
-            return Promise.resolve(false);
-
         /**
-         * @param {?Protocol.Error} error
-         * @param {?CSSAgent.CSSStyle} stylePayload
+         * @param {?Array<!CSSAgent.CSSStyle>} stylePayloads
          * @return {boolean}
          * @this {WebInspector.CSSStyleDeclaration}
          */
-        function parsePayload(error, stylePayload)
+        function onPayload(stylePayloads)
         {
-            if (error || !stylePayload)
+            if (!stylePayloads)
                 return false;
-
-            if (majorChange)
-                this._cssModel._domModel.markUndoableState();
-            this._reinitialize(stylePayload);
-            this._cssModel._fireStyleSheetChanged(this.styleSheetId);
+            this._reinitialize(stylePayloads[0]);
             return true;
         }
 
-        return this._cssModel._agent.setStyleText(this.styleSheetId, this.range.serializeToObject(), text, parsePayload.bind(this))
+        return this._cssModel.setStyleTexts([this.styleSheetId], [this.range], [text], majorChange)
+            .then(onPayload.bind(this))
             .catchException(false);
     },
 

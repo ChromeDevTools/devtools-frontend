@@ -139,9 +139,21 @@ WebInspector.CSSParser.prototype = {
 WebInspector.CSSParser.DataChunk;
 
 /**
- * @typedef {{selectorText: string, lineNumber: number, columnNumber: number, properties: !Array.<!WebInspector.CSSParser.Property>}}
+ * @constructor
  */
-WebInspector.CSSParser.StyleRule;
+WebInspector.CSSParser.StyleRule = function()
+{
+    /** @type {string} */
+    this.selectorText;
+    /** @type {!WebInspector.CSSParser.Range} */
+    this.styleRange;
+    /** @type {number} */
+    this.lineNumber;
+    /** @type {number} */
+    this.columnNumber;
+    /** @type {!Array.<!WebInspector.CSSParser.Property>} */
+    this.properties;
+}
 
 /**
  * @typedef {{atRule: string, lineNumber: number, columnNumber: number}}

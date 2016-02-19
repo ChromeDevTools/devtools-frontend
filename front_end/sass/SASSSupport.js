@@ -35,7 +35,7 @@ WebInspector.SASSSupport.parseCSS = function(cssParserService, url, text)
                 var property = new WebInspector.SASSSupport.Property(document, name, value, WebInspector.TextRange.fromObject(cssProperty.range), !!cssProperty.disabled);
                 properties.push(property);
             }
-            rules.push(new WebInspector.SASSSupport.Rule(document, rule.selectorText, properties));
+            rules.push(new WebInspector.SASSSupport.Rule(document, rule.selectorText, WebInspector.TextRange.fromObject(rule.styleRange), properties));
         }
         return new WebInspector.SASSSupport.AST(document, rules);
     }
@@ -53,9 +53,9 @@ WebInspector.SASSSupport.parseSCSS = function(tokenizerFactory, url, text)
     var result = WebInspector.SASSSupport._innerParseSCSS(document, tokenizerFactory);
 
     var rules = [
-        new WebInspector.SASSSupport.Rule(document, "variables", result.variables),
-        new WebInspector.SASSSupport.Rule(document, "properties", result.properties),
-        new WebInspector.SASSSupport.Rule(document, "mixins", result.mixins)
+        new WebInspector.SASSSupport.Rule(document, "variables", WebInspector.TextRange.createFromLocation(0, 0), result.variables),
+        new WebInspector.SASSSupport.Rule(document, "properties", WebInspector.TextRange.createFromLocation(0, 0), result.properties),
+        new WebInspector.SASSSupport.Rule(document, "mixins", WebInspector.TextRange.createFromLocation(0, 0), result.mixins)
     ];
 
     return new WebInspector.SASSSupport.AST(document, rules);
@@ -416,13 +416,15 @@ WebInspector.SASSSupport.Property.prototype = {
  * @extends {WebInspector.SASSSupport.Node}
  * @param {!WebInspector.SASSSupport.ASTDocument} document
  * @param {string} selector
+ * @param {!WebInspector.TextRange} styleRange
  * @param {!Array<!WebInspector.SASSSupport.Property>} properties
  */
-WebInspector.SASSSupport.Rule = function(document, selector, properties)
+WebInspector.SASSSupport.Rule = function(document, selector, styleRange, properties)
 {
     WebInspector.SASSSupport.Node.call(this, document);
     this.selector = selector;
     this.properties = properties;
+    this.styleRange = styleRange;
     for (var i = 0; i < this.properties.length; ++i)
         this.properties[i].parent = this;
 
@@ -439,7 +441,7 @@ WebInspector.SASSSupport.Rule.prototype = {
         var properties = [];
         for (var i = 0; i < this.properties.length; ++i)
             properties.push(this.properties[i].clone(document));
-        return new WebInspector.SASSSupport.Rule(document, this.selector, properties);
+        return new WebInspector.SASSSupport.Rule(document, this.selector, this.styleRange.clone(), properties);
     },
 
     /**

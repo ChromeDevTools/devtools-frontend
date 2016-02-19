@@ -70,7 +70,7 @@ WebInspector.SASSSupport.SCSSParserStates = {
     VariableValue: "VariableValue",
     MixinName: "MixinName",
     MixinValue: "MixinValue",
-    Media: "Media",
+    Media: "Media"
 }
 
 /**
@@ -139,7 +139,9 @@ WebInspector.SASSSupport._innerParseSCSS = function(document, tokenizerFactory)
             }
             break;
         case States.VariableName:
-            if (tokenValue === ")" && tokenType === UndefTokenType) {
+            if (tokenValue === "}" && tokenType === UndefTokenType) {
+                state = States.Initial;
+            } else if (tokenValue === ")" && tokenType === UndefTokenType) {
                 state = States.Initial;
             } else if (tokenValue === ":" && tokenType === UndefTokenType) {
                 state = States.VariableValue;

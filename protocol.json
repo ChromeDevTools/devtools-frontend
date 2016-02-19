@@ -5025,6 +5025,7 @@
                 "hidden": true,
                 "properties": [
                     { "name": "id", "type": "string", "description": "<code>Animation</code>'s id." },
+                    { "name": "name", "type": "string", "description": "<code>Animation</code>'s name." },
                     { "name": "pausedState", "type": "boolean", "hidden": "true", "description": "<code>Animation</code>'s internal paused state." },
                     { "name": "playState", "type": "string", "description": "<code>Animation</code>'s play state." },
                     { "name": "playbackRate", "type": "number", "description": "<code>Animation</code>'s playback rate." },
@@ -5049,7 +5050,6 @@
                     { "name": "duration", "type": "number", "description": "<code>AnimationEffect</code>'s iteration duration." },
                     { "name": "direction", "type": "string", "description": "<code>AnimationEffect</code>'s playback direction." },
                     { "name": "fill", "type": "string", "description": "<code>AnimationEffect</code>'s fill mode." },
-                    { "name": "name", "type": "string", "description": "<code>AnimationEffect</code>'s name." },
                     { "name": "backendNodeId", "$ref": "DOM.BackendNodeId", "description": "<code>AnimationEffect</code>'s target node." },
                     { "name": "keyframesRule", "$ref": "KeyframesRule", "optional": true, "description": "<code>AnimationEffect</code>'s keyframes." },
                     { "name": "easing", "type": "string", "description": "<code>AnimationEffect</code>'s timing function." }

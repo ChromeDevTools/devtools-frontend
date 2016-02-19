@@ -264,7 +264,7 @@ WebInspector.AnimationModel.Animation.prototype = {
      */
     name: function()
     {
-        return this.source().name();
+        return this._payload.name;
     },
 
     /**
@@ -511,14 +511,6 @@ WebInspector.AnimationModel.AnimationEffect.prototype = {
     fill: function()
     {
         return this._payload.fill;
-    },
-
-    /**
-     * @return {string}
-     */
-    name: function()
-    {
-        return this._payload.name;
     },
 
     /**

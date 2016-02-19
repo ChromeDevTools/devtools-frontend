@@ -17,7 +17,8 @@ WebInspector.DeviceModeModel = function(updateCallback)
     this._initialized = false;
     this._deviceMetricsThrottler = new WebInspector.Throttler(0);
     this._appliedDeviceSize = new Size(1, 1);
-    this._currentDeviceScaleFactor = window.devicePixelRatio;
+    this._appliedDeviceScaleFactor = window.devicePixelRatio;
+    this._appliedUserAgentType = WebInspector.DeviceModeModel.UA.Desktop;
 
     this._scaleSetting = WebInspector.settings.createSetting("emulation.deviceScale", 1);
     // We've used to allow zero before.
@@ -76,6 +77,7 @@ WebInspector.DeviceModeModel.Type = {
 /** @enum {string} */
 WebInspector.DeviceModeModel.UA = {
     Mobile: "Mobile",
+    MobileNoTouch: "MobileNoTouch",
     Desktop: "Desktop",
     DesktopTouch: "DesktopTouch"
 }
@@ -107,7 +109,7 @@ WebInspector.DeviceModeModel.deviceScaleFactorValidator = function(value)
 
 WebInspector.DeviceModeModel._touchEventsScriptIdSymbol = Symbol("DeviceModeModel.touchEventsScriptIdSymbol");
 WebInspector.DeviceModeModel._defaultMobileUserAgent = "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.76 Mobile Safari/537.36";
-WebInspector.DeviceModeModel._defaultMobileScaleFactor = 2;
+WebInspector.DeviceModeModel.defaultMobileScaleFactor = 2;
 
 WebInspector.DeviceModeModel.prototype = {
     /**
@@ -273,6 +275,22 @@ WebInspector.DeviceModeModel.prototype = {
     },
 
     /**
+     * @return {number}
+     */
+    appliedDeviceScaleFactor: function()
+    {
+        return this._appliedDeviceScaleFactor;
+    },
+
+    /**
+     * @return {!WebInspector.DeviceModeModel.UA}
+     */
+    appliedUserAgentType: function()
+    {
+        return this._appliedUserAgentType;
+    },
+
+    /**
      * @return {boolean}
      */
     isFullHeight: function()
@@ -302,19 +320,6 @@ WebInspector.DeviceModeModel.prototype = {
     deviceScaleFactorSetting: function()
     {
         return this._deviceScaleFactorSetting;
-    },
-
-    /**
-     * @return {number}
-     */
-    defaultDeviceScaleFactor: function()
-    {
-        if (this._type === WebInspector.DeviceModeModel.Type.Responsive)
-            return this._uaSetting.get() === WebInspector.DeviceModeModel.UA.Mobile ? WebInspector.DeviceModeModel._defaultMobileScaleFactor : this._currentDeviceScaleFactor;
-        else if (this._type === WebInspector.DeviceModeModel.Type.Device)
-            return this._device.deviceScaleFactor;
-        else
-            return this._currentDeviceScaleFactor;
     },
 
     reset: function()
@@ -413,11 +418,16 @@ WebInspector.DeviceModeModel.prototype = {
         if (this._type === WebInspector.DeviceModeModel.Type.Device) {
             var orientation = this._device.orientationByName(this._mode.orientation);
             this._fitScale = this._calculateFitScale(orientation.width, orientation.height);
+            if (this._device.mobile())
+                this._appliedUserAgentType = this._device.touch() ? WebInspector.DeviceModeModel.UA.Mobile : WebInspector.DeviceModeModel.UA.MobileNoTouch;
+            else
+                this._appliedUserAgentType = this._device.touch() ? WebInspector.DeviceModeModel.UA.DesktopTouch : WebInspector.DeviceModeModel.UA.Desktop;
             this._applyDeviceMetrics(new Size(orientation.width, orientation.height), this._mode.insets, this._scaleSetting.get(), this._device.deviceScaleFactor, this._device.mobile(), resetPageScaleFactor);
             this._applyUserAgent(this._device.userAgent);
             this._applyScreenOrientation(this._mode.orientation == WebInspector.EmulatedDevice.Horizontal ? "landscapePrimary" : "portraitPrimary");
         } else if (this._type === WebInspector.DeviceModeModel.Type.None) {
             this._fitScale = this._calculateFitScale(this._availableSize.width, this._availableSize.height);
+            this._appliedUserAgentType = WebInspector.DeviceModeModel.UA.Desktop;
             this._applyDeviceMetrics(this._availableSize, new Insets(0, 0, 0, 0), 1, 0, false, resetPageScaleFactor);
             this._applyUserAgent("");
             this._applyScreenOrientation("");
@@ -428,9 +438,10 @@ WebInspector.DeviceModeModel.prototype = {
             var screenHeight = this._heightSetting.get();
             if (!screenHeight || screenHeight > this._preferredScaledHeight())
                 screenHeight = this._preferredScaledHeight();
-            var mobile = this._uaSetting.get() === WebInspector.DeviceModeModel.UA.Mobile;
-            var defaultDeviceScaleFactor = mobile ? WebInspector.DeviceModeModel._defaultMobileScaleFactor : 0;
+            var mobile = this._uaSetting.get() === WebInspector.DeviceModeModel.UA.Mobile || this._uaSetting.get() === WebInspector.DeviceModeModel.UA.MobileNoTouch;
+            var defaultDeviceScaleFactor = mobile ? WebInspector.DeviceModeModel.defaultMobileScaleFactor : 0;
             this._fitScale = this._calculateFitScale(this._widthSetting.get(), this._heightSetting.get());
+            this._appliedUserAgentType = this._uaSetting.get();
             this._applyDeviceMetrics(new Size(screenWidth, screenHeight), new Insets(0, 0, 0, 0), this._scaleSetting.get(), this._deviceScaleFactorSetting.get() || defaultDeviceScaleFactor, mobile, resetPageScaleFactor);
             this._applyUserAgent(mobile ? WebInspector.DeviceModeModel._defaultMobileUserAgent : "");
             this._applyScreenOrientation(screenHeight >= screenWidth ? "portraitPrimary" : "landscapePrimary");
@@ -474,7 +485,7 @@ WebInspector.DeviceModeModel.prototype = {
         else if (this._type === WebInspector.DeviceModeModel.Type.None)
             this._applyTouch(false, false);
         else if (this._type === WebInspector.DeviceModeModel.Type.Responsive)
-            this._applyTouch(this._uaSetting.get() !== WebInspector.DeviceModeModel.UA.Desktop, this._uaSetting.get() === WebInspector.DeviceModeModel.UA.Mobile);
+            this._applyTouch(this._uaSetting.get() === WebInspector.DeviceModeModel.UA.DesktopTouch || this._uaSetting.get() === WebInspector.DeviceModeModel.UA.Mobile, this._uaSetting.get() === WebInspector.DeviceModeModel.UA.Mobile);
     },
 
     /**
@@ -504,6 +515,7 @@ WebInspector.DeviceModeModel.prototype = {
         var positionY = insets.top;
 
         this._appliedDeviceSize = screenSize;
+        this._appliedDeviceScaleFactor = deviceScaleFactor || window.devicePixelRatio;
         this._screenRect = new WebInspector.Rect(
             Math.max(0, (this._availableSize.width - screenSize.width * scale) / 2),
             0,

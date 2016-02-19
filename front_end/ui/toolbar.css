@@ -128,7 +128,7 @@
 
 /* Button */
 
-.toolbar-button:disabled .toolbar-glyph {
+.toolbar-button:disabled {
     opacity: 0.5;
 }
 

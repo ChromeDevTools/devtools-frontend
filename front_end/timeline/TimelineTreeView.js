@@ -403,8 +403,17 @@ WebInspector.TimelineTreeView.eventStackFrame = function(event)
  */
 WebInspector.TimelineTreeView.eventURL = function(event)
 {
+    var data = event.args["data"] || event.args["beginData"];
+    if (data && data["url"])
+        return data["url"];
     var frame = WebInspector.TimelineTreeView.eventStackFrame(event);
-    return frame && frame["url"] || null;
+    while (frame) {
+        var url = frame["url"];
+        if (url)
+            return url;
+        frame = frame.parent;
+    }
+    return null;
 }
 
 /**

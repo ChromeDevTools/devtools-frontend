@@ -5,29 +5,35 @@
 WebInspector.SASSLiveSourceMap = {}
 
 /**
- * @param {!WebInspector.SourceMapTracker} tracker
- * @param {!WebInspector.CSSParser} cssParser
- * @param {!WebInspector.TokenizerFactory} tokenizer
+ * @param {!WebInspector.ASTService} astService
+ * @param {!WebInspector.CSSStyleModel} cssModel
+ * @param {!WebInspector.SourceMap} sourceMap
  * @return {!Promise<?WebInspector.SASSLiveSourceMap.CSSToSASSMapping>}
  */
-WebInspector.SASSLiveSourceMap._loadMapping = function(tracker, cssParser, tokenizer)
+WebInspector.SASSLiveSourceMap._createASTMapping = function(astService, cssModel, sourceMap)
 {
+    var headerIds = cssModel.styleSheetIdsForURL(sourceMap.compiledURL());
+    if (!headerIds || !headerIds.length)
+        return Promise.resolve(/** @type {?WebInspector.SASSLiveSourceMap.CSSToSASSMapping} */(null));
+    var header = cssModel.styleSheetHeaderForId(headerIds[0]);
+
     var sassModels = new Map();
     var cssAST = null;
     var promises = [];
-    for (var url of tracker.sassURLs()) {
-        var sassPromise = tracker.content(url)
-            .then(text => WebInspector.SASSSupport.parseSCSS(url, text, tokenizer))
+    for (var url of sourceMap.sources()) {
+        var contentProvider = sourceMap.sourceContentProvider(url, WebInspector.resourceTypes.SourceMapStyleSheet);
+        var sassPromise = contentProvider.requestContent()
+            .then(text => astService.parseSCSS(url, text || ""))
             .then(ast => sassModels.set(url, ast));
         promises.push(sassPromise);
     }
-    var cssPromise = tracker.content(tracker.cssURL())
-        .then(text => WebInspector.SASSSupport.parseCSS(cssParser, tracker.cssURL(), text))
+    var cssPromise = header.requestContent()
+        .then(text => astService.parseCSS(sourceMap.compiledURL(), text || ""))
         .then(ast => cssAST = ast);
     promises.push(cssPromise);
 
     return Promise.all(promises)
-        .then(() => WebInspector.SASSLiveSourceMap.CSSToSASSMapping.fromSourceMap(tracker.sourceMap(), cssAST, sassModels))
+        .then(() => WebInspector.SASSLiveSourceMap.CSSToSASSMapping.fromSourceMap(sourceMap, cssAST, sassModels))
         .catchException(/** @type {?WebInspector.SASSLiveSourceMap.CSSToSASSMapping} */(null));
 }
 

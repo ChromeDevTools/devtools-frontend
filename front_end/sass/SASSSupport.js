@@ -5,14 +5,14 @@
 WebInspector.SASSSupport = {}
 
 /**
- * @param {!WebInspector.CSSParser} parser
+ * @param {!WebInspector.CSSParserService} cssParserService
  * @param {string} url
  * @param {string} text
  * @return {!Promise<!WebInspector.SASSSupport.AST>}
  */
-WebInspector.SASSSupport.parseCSS = function(parser, url, text)
+WebInspector.SASSSupport.parseCSS = function(cssParserService, url, text)
 {
-    return parser.parsePromise(text)
+    return cssParserService.parseCSS(text)
         .then(onParsed);
 
     /**
@@ -42,12 +42,12 @@ WebInspector.SASSSupport.parseCSS = function(parser, url, text)
 }
 
 /**
+ * @param {!WebInspector.TokenizerFactory} tokenizerFactory
  * @param {string} url
  * @param {string} text
- * @param {!WebInspector.TokenizerFactory} tokenizerFactory
  * @return {!WebInspector.SASSSupport.AST}
  */
-WebInspector.SASSSupport.parseSCSS = function(url, text, tokenizerFactory)
+WebInspector.SASSSupport.parseSCSS = function(tokenizerFactory, url, text)
 {
     var document = new WebInspector.SASSSupport.ASTDocument(url, text);
     var result = WebInspector.SASSSupport._innerParseSCSS(document, tokenizerFactory);

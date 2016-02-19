@@ -404,7 +404,7 @@
     flex-shrink: 0;
 }
 
-.console-message-text {
+.console-message-text .object-value-string {
     white-space: pre-wrap;
 }
 

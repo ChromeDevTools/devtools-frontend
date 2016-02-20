@@ -465,27 +465,49 @@ WebInspector.SASSSupport.Rule.prototype = {
     },
 
     /**
+     * @param {!Array<string>} nameTexts
+     * @param {!Array<string>} valueTexts
+     * @param {!Array<boolean>} disabledStates
+     * @param {!WebInspector.SASSSupport.Property} anchorProperty
+     * @param {boolean} insertBefore
+     * @return {!Array<!WebInspector.SASSSupport.Property>}
+     */
+    insertProperties: function(nameTexts, valueTexts, disabledStates, anchorProperty, insertBefore)
+    {
+        console.assert(this.properties.length, "Cannot insert in empty rule.");
+        console.assert(nameTexts.length === valueTexts.length && valueTexts.length === disabledStates.length, "Input array should be of the same size.");
+
+        this._addTrailingSemicolon();
+        var newProperties = [];
+        var index = this.properties.indexOf(anchorProperty);
+        for (var i = 0; i < nameTexts.length; ++i) {
+            var nameText = nameTexts[i];
+            var valueText = valueTexts[i];
+            var disabled = disabledStates[i];
+            this.document.edits.push(this._insertPropertyEdit(nameText, valueText, disabled, anchorProperty, insertBefore));
+
+            var name = new WebInspector.SASSSupport.TextNode(this.document, nameText, WebInspector.TextRange.createFromLocation(0, 0));
+            var value = new WebInspector.SASSSupport.TextNode(this.document, valueText, WebInspector.TextRange.createFromLocation(0, 0));
+            var newProperty = new WebInspector.SASSSupport.Property(this.document, name, value, WebInspector.TextRange.createFromLocation(0, 0), disabled);
+
+            this.properties.splice(insertBefore ? index + i : index + i + 1, 0, newProperty);
+            newProperty.parent = this;
+
+            newProperties.push(newProperty);
+        }
+        return newProperties;
+    },
+
+    /**
      * @param {string} nameText
      * @param {string} valueText
      * @param {boolean} disabled
      * @param {!WebInspector.SASSSupport.Property} anchorProperty
      * @param {boolean} insertBefore
-     * @return {!WebInspector.SASSSupport.Property}
+     * @return {!WebInspector.SourceEdit}
      */
-    insertProperty: function(nameText, valueText, disabled, anchorProperty, insertBefore)
+    _insertPropertyEdit: function(nameText, valueText, disabled, anchorProperty, insertBefore)
     {
-        console.assert(this.properties.length, "Cannot insert in empty rule.");
-
-        this._addTrailingSemicolon();
-
-        var name = new WebInspector.SASSSupport.TextNode(this.document, nameText, WebInspector.TextRange.createFromLocation(10, 0));
-        var value = new WebInspector.SASSSupport.TextNode(this.document, valueText, WebInspector.TextRange.createFromLocation(10, 0));
-        var newProperty = new WebInspector.SASSSupport.Property(this.document, name, value, WebInspector.TextRange.createFromLocation(10, 0), disabled);
-
-        var index = this.properties.indexOf(anchorProperty);
-        this.properties.splice(insertBefore ? index : index + 1, 0, newProperty);
-        newProperty.parent = this;
-
         var oldRange = insertBefore ? anchorProperty.range.collapseToStart() : anchorProperty.range.collapseToEnd();
         var indent = (new WebInspector.TextRange(anchorProperty.range.startLine, 0, anchorProperty.range.startLine, anchorProperty.range.startColumn)).extract(this.document.text);
         if (!/^\s+$/.test(indent)) indent = "";
@@ -495,12 +517,11 @@ WebInspector.SASSSupport.Rule.prototype = {
         var rightComment = disabled ? " */" : "";
 
         if (insertBefore) {
-            newText = String.sprintf("%s%s: %s;%s\n%s", leftComment, newProperty.name.text, newProperty.value.text, rightComment, indent);
+            newText = String.sprintf("%s%s: %s;%s\n%s", leftComment, nameText, valueText, rightComment, indent);
         } else {
-            newText = String.sprintf("\n%s%s%s: %s;%s", indent, leftComment, newProperty.name.text, newProperty.value.text, rightComment);
+            newText = String.sprintf("\n%s%s%s: %s;%s", indent, leftComment, nameText, valueText, rightComment);
         }
-        this.document.edits.push(new WebInspector.SourceEdit(this.document.url, oldRange, "", newText));
-        return newProperty;
+        return new WebInspector.SourceEdit(this.document.url, oldRange, "", newText);
     },
 
     __proto__: WebInspector.SASSSupport.Node.prototype

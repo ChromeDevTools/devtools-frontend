@@ -86,28 +86,8 @@ WebInspector.TimelineJSProfileProcessor.generateJSFrameEvents = function(events)
     var jsFrameEvents = [];
     var jsFramesStack = [];
     var lockedJsStackDepth = [];
-    var currentSamplingIntervalMs = 0.1;
-    var lastStackSampleTime = 0;
     var ordinal = 0;
     var filterNativeFunctions = !WebInspector.moduleSetting("showNativeFunctionsInJSProfile").get();
-
-    /**
-     * @param {!WebInspector.TracingModel.Event} e
-     */
-    function updateSamplingInterval(e)
-    {
-        if (e.name !== WebInspector.TimelineModel.RecordType.JSSample)
-            return;
-        var time = e.startTime;
-        var interval = time - lastStackSampleTime;
-        lastStackSampleTime = time;
-        // Do not take into account intervals longer than 10ms.
-        if (!interval || interval > 10)
-            return;
-        // Use exponential moving average with a smoothing factor of 0.1
-        var alpha = 0.1;
-        currentSamplingIntervalMs += alpha * (interval - currentSamplingIntervalMs);
-    }
 
     /**
      * @param {!WebInspector.TracingModel.Event} e
@@ -127,7 +107,6 @@ WebInspector.TimelineJSProfileProcessor.generateJSFrameEvents = function(events)
     function onInstantEvent(e, parent)
     {
         e.ordinal = ++ordinal;
-        updateSamplingInterval(e);
         if (parent && isJSInvocationEvent(parent))
             extractStackTrace(e);
     }
@@ -157,11 +136,8 @@ WebInspector.TimelineJSProfileProcessor.generateJSFrameEvents = function(events)
             console.error("Trying to truncate higher than the current stack size at " + time);
             depth = jsFramesStack.length;
         }
-        var minFrameDurationMs = currentSamplingIntervalMs / 2;
-        for (var k = 0; k < depth; ++k)
+        for (var k = 0; k < jsFramesStack.length; ++k)
             jsFramesStack[k].setEndTime(time);
-        for (var k = depth; k < jsFramesStack.length; ++k)
-            jsFramesStack[k].setEndTime(Math.min(eventEndTime(jsFramesStack[k]) + minFrameDurationMs, time));
         jsFramesStack.length = depth;
     }
 

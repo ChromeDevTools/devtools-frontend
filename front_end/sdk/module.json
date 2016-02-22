@@ -40,6 +40,12 @@
             "settingName": "enableAsyncStackTraces",
             "settingType": "boolean",
             "defaultValue": false
+        },
+        {
+            "type": "setting",
+            "settingName": "showMetricsRulers",
+            "settingType": "boolean",
+            "defaultValue": false
         }
     ],
     "scripts": [

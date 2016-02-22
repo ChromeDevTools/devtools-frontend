@@ -288,6 +288,12 @@
             "className": "WebInspector.HandlerRegistry.OpenAnchorLocationSettingUI"
         },
         {
+            "type": "@WebInspector.SettingUI",
+            "category": "Elements",
+            "order": 3,
+            "className": "WebInspector.ShowMetricsRulersSettingUI"
+        },
+        {
             "type": "context-menu-item",
             "location": "mainMenu/navigate",
             "title": "More tools",

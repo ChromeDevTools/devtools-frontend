@@ -58,15 +58,6 @@
         {
             "type": "setting",
             "category": "Elements",
-            "order": 3,
-            "title": "Show rulers",
-            "settingName": "showMetricsRulers",
-            "settingType": "boolean",
-            "defaultValue": false
-        },
-        {
-            "type": "setting",
-            "category": "Elements",
             "order": 4,
             "title": "Reveal DOM node on hover.",
             "settingName": "highlightNodeOnHoverInOverlay",

@@ -1084,8 +1084,6 @@ WebInspector.DOMModel = function(target) {
     this._attributeLoadNodeIds = {};
     target.registerDOMDispatcher(new WebInspector.DOMDispatcher(this));
 
-    this._showRulers = false;
-    this._showExtensionLines = false;
     this._inspectModeEnabled = false;
 
     this._defaultHighlighter = new WebInspector.DefaultDOMNodeHighlighter(this._agent);
@@ -1803,23 +1801,13 @@ WebInspector.DOMModel.prototype = {
     },
 
     /**
-     * @param {boolean} showRulers
-     * @param {boolean} showExtensionLines
-     */
-    setHighlightSettings: function(showRulers, showExtensionLines)
-    {
-        this._showRulers = showRulers;
-        this._showExtensionLines = showExtensionLines;
-    },
-
-    /**
      * @param {string=} mode
      * @return {!DOMAgent.HighlightConfig}
      */
     _buildHighlightConfig: function(mode)
     {
         mode = mode || "all";
-        var highlightConfig = { showInfo: mode === "all", showRulers: this._showRulers, showExtensionLines: this._showExtensionLines };
+        var highlightConfig = { showInfo: mode === "all", showRulers: WebInspector.moduleSetting("showMetricsRulers").get(), showExtensionLines: true };
         if (mode === "all" || mode === "content")
             highlightConfig.contentColor = WebInspector.Color.PageHighlight.Content.toProtocolRGBA();
 

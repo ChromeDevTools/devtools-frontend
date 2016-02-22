@@ -1115,4 +1115,24 @@ WebInspector.AutoAttachToCreatedPagesSync.prototype = {
     }
 }
 
+/**
+ * @constructor
+ * @implements {WebInspector.SettingUI}
+ */
+WebInspector.ShowMetricsRulersSettingUI = function()
+{
+}
+
+WebInspector.ShowMetricsRulersSettingUI.prototype = {
+    /**
+     * @override
+     * @return {?Element}
+     */
+    settingElement: function()
+    {
+        return WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Show rulers"), WebInspector.moduleSetting("showMetricsRulers"));
+    }
+}
+
+
 new WebInspector.Main();

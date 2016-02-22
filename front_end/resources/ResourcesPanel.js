@@ -69,11 +69,6 @@ WebInspector.ResourcesPanel = function()
     this.cacheStorageListTreeElement = new WebInspector.ServiceWorkerCacheTreeElement(this);
     this._sidebarTree.appendChild(this.cacheStorageListTreeElement);
 
-    if (Runtime.experiments.isEnabled("fileSystemInspection")) {
-        this.fileSystemListTreeElement = new WebInspector.FileSystemListTreeElement(this);
-        this._sidebarTree.appendChild(this.fileSystemListTreeElement);
-    }
-
     var mainContainer = new WebInspector.VBox();
     this.storageViews = mainContainer.element.createChild("div", "vbox flex-auto");
     this._storageViewToolbar = new WebInspector.Toolbar("resources-toolbar", mainContainer.element);
@@ -164,8 +159,6 @@ WebInspector.ResourcesPanel.prototype = {
         this._populateApplicationCacheTree();
         this.indexedDBListTreeElement._initialize();
         this.cacheStorageListTreeElement._initialize();
-        if (Runtime.experiments.isEnabled("fileSystemInspection"))
-            this.fileSystemListTreeElement._initialize();
         this._initDefaultSelection();
         this._initialized = true;
     },
@@ -1672,76 +1665,6 @@ WebInspector.IndexedDBTreeElement.prototype = {
 
 /**
  * @constructor
- * @extends {WebInspector.StorageCategoryTreeElement}
- * @param {!WebInspector.ResourcesPanel} storagePanel
- */
-WebInspector.FileSystemListTreeElement = function(storagePanel)
-{
-    WebInspector.StorageCategoryTreeElement.call(this, storagePanel, WebInspector.UIString("FileSystem"), "FileSystem", ["file-system-storage-tree-item"]);
-}
-
-WebInspector.FileSystemListTreeElement.prototype = {
-    _initialize: function()
-    {
-        this._refreshFileSystem();
-    },
-
-    onattach: function()
-    {
-        WebInspector.StorageCategoryTreeElement.prototype.onattach.call(this);
-        this.listItemElement.addEventListener("contextmenu", this._handleContextMenuEvent.bind(this), true);
-    },
-
-    _handleContextMenuEvent: function(event)
-    {
-        var contextMenu = new WebInspector.ContextMenu(event);
-        contextMenu.appendItem(WebInspector.UIString.capitalize("Refresh FileSystem ^list"), this._refreshFileSystem.bind(this));
-        contextMenu.show();
-    },
-
-    _fileSystemAdded: function(event)
-    {
-        var fileSystem = /** @type {!WebInspector.FileSystemModel.FileSystem} */ (event.data);
-        var fileSystemTreeElement = new WebInspector.FileSystemTreeElement(this._storagePanel, fileSystem);
-        this.appendChild(fileSystemTreeElement);
-    },
-
-    _fileSystemRemoved: function(event)
-    {
-        var fileSystem = /** @type {!WebInspector.FileSystemModel.FileSystem} */ (event.data);
-        var fileSystemTreeElement = this._fileSystemTreeElementByName(fileSystem.name);
-        if (!fileSystemTreeElement)
-            return;
-        fileSystemTreeElement.clear();
-        this.removeChild(fileSystemTreeElement);
-    },
-
-    _fileSystemTreeElementByName: function(fileSystemName)
-    {
-        for (var child of this.children()) {
-            var fschild = /** @type {!WebInspector.FileSystemTreeElement} */ (child);
-            if (fschild.fileSystemName === fileSystemName)
-                return fschild;
-        }
-        return null;
-    },
-
-    _refreshFileSystem: function()
-    {
-        if (!this._fileSystemModel) {
-            this._fileSystemModel = new WebInspector.FileSystemModel(this.target());
-            this._fileSystemModel.addEventListener(WebInspector.FileSystemModel.EventTypes.FileSystemAdded, this._fileSystemAdded, this);
-            this._fileSystemModel.addEventListener(WebInspector.FileSystemModel.EventTypes.FileSystemRemoved, this._fileSystemRemoved, this);
-        }
-
-        this._fileSystemModel.refreshFileSystemList();
-    },
-
-    __proto__: WebInspector.StorageCategoryTreeElement.prototype
-}
-
-/**
- * @constructor
  * @extends {WebInspector.BaseStorageTreeElement}
  * @param {!WebInspector.ResourcesPanel} storagePanel
  * @param {!WebInspector.IndexedDBModel} model
@@ -2225,51 +2148,6 @@ WebInspector.ApplicationCacheFrameTreeElement.prototype = {
         WebInspector.BaseStorageTreeElement.prototype.onselect.call(this, selectedByUser);
         this._storagePanel.showApplicationCache(this._frameId);
         return false;
-    },
-
-    __proto__: WebInspector.BaseStorageTreeElement.prototype
-}
-
-/**
- * @constructor
- * @extends {WebInspector.BaseStorageTreeElement}
- * @param {!WebInspector.ResourcesPanel} storagePanel
- * @param {!WebInspector.FileSystemModel.FileSystem} fileSystem
- */
-WebInspector.FileSystemTreeElement = function(storagePanel, fileSystem)
-{
-    var displayName = fileSystem.type + " - " + fileSystem.origin;
-    WebInspector.BaseStorageTreeElement.call(this, storagePanel, displayName, ["file-system-storage-tree-item"]);
-    this._fileSystem = fileSystem;
-}
-
-WebInspector.FileSystemTreeElement.prototype = {
-    get fileSystemName()
-    {
-        return this._fileSystem.name;
-    },
-
-    get itemURL()
-    {
-        return "filesystem://" + this._fileSystem.name;
-    },
-
-    /**
-     * @override
-     * @return {boolean}
-     */
-    onselect: function(selectedByUser)
-    {
-        WebInspector.BaseStorageTreeElement.prototype.onselect.call(this, selectedByUser);
-        this._fileSystemView = new WebInspector.FileSystemView(this._fileSystem);
-        this._storagePanel.showFileSystem(this._fileSystemView);
-        return false;
-    },
-
-    clear: function()
-    {
-        if (this.fileSystemView && this._storagePanel.visibleView === this.fileSystemView)
-            this._storagePanel.closeVisibleView();
     },
 
     __proto__: WebInspector.BaseStorageTreeElement.prototype

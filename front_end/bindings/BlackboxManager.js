@@ -49,7 +49,7 @@ WebInspector.BlackboxManager.prototype = {
     isBlackboxedRawLocation: function(location)
     {
         if (!this._scriptIdToPositions.has(location.scriptId))
-            return false;
+            return this._isBlackboxedScript(location.script());
         var positions = this._scriptIdToPositions.get(location.scriptId);
         var index = positions.lowerBound(location, comparator);
         return !!(index % 2);
@@ -84,12 +84,15 @@ WebInspector.BlackboxManager.prototype = {
 
     /**
      * @param {string} url
+     * @param {boolean=} isContentScript
      * @return {boolean}
      */
-    isBlackboxedURL: function(url)
+    isBlackboxedURL: function(url, isContentScript)
     {
         if (this._isBlackboxedURLCache.has(url))
             return !!this._isBlackboxedURLCache.get(url);
+        if (isContentScript && WebInspector.moduleSetting("skipContentScripts").get())
+            return true;
         var regex = WebInspector.moduleSetting("skipStackFramesPattern").asRegExp();
         var isBlackboxed = regex && regex.test(url);
         this._isBlackboxedURLCache.set(url, isBlackboxed);
@@ -274,9 +277,7 @@ WebInspector.BlackboxManager.prototype = {
      */
     _isBlackboxedScript: function(script)
     {
-        if (script.isContentScript() && WebInspector.moduleSetting("skipContentScripts").get())
-            return true;
-        return this.isBlackboxedURL(script.sourceURL);
+        return this.isBlackboxedURL(script.sourceURL, script.isContentScript());
     },
 
     /**
@@ -310,6 +311,9 @@ WebInspector.BlackboxManager.prototype = {
             if (success) {
                 this._scriptIdToPositions.set(script.scriptId, positions);
                 this._debuggerWorkspaceBinding.updateLocations(script);
+                var isBlackboxed = positions.length !== 0;
+                if (!isBlackboxed && script.sourceMapURL)
+                    this._debuggerWorkspaceBinding.maybeLoadSourceMap(script);
             } else if (!this._scriptIdToPositions.has(script.scriptId)) {
                 this._scriptIdToPositions.set(script.scriptId, []);
             }

@@ -243,6 +243,17 @@ WebInspector.DebuggerWorkspaceBinding.prototype = {
     },
 
     /**
+     * @param {!WebInspector.Script} script
+     */
+    maybeLoadSourceMap: function(script)
+    {
+        var targetData = this._targetToData.get(script.target());
+        if (!targetData)
+            return;
+        targetData._compilerMapping.maybeLoadSourceMap(script);
+    },
+
+    /**
      * @param {!WebInspector.Event} event
      */
     _globalObjectCleared: function(event)

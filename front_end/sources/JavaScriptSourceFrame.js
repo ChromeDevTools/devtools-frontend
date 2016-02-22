@@ -162,6 +162,10 @@ WebInspector.JavaScriptSourceFrame.prototype = {
         this._blackboxInfobar = infobar;
 
         infobar.createDetailsRowMessage(WebInspector.UIString("Debugger will skip stepping through this script, and will not stop on exceptions"));
+
+        var scriptFile = this._scriptFileForTarget.valuesArray()[0];
+        if (scriptFile.hasSourceMapURL())
+            infobar.createDetailsRowMessage(WebInspector.UIString("Source map found, but ignored for blackboxed file."));
         infobar.createDetailsRowMessage();
         infobar.createDetailsRowMessage(WebInspector.UIString("Possible ways to cancel this behavior are:"));
 
@@ -345,7 +349,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
          */
         function populateSourceMapMembers()
         {
-            if (this.uiSourceCode().project().type() === WebInspector.projectTypes.Network && WebInspector.moduleSetting("jsSourceMapsEnabled").get()) {
+            if (this.uiSourceCode().project().type() === WebInspector.projectTypes.Network && WebInspector.moduleSetting("jsSourceMapsEnabled").get() && !WebInspector.blackboxManager.isBlackboxedUISourceCode(this.uiSourceCode())) {
                 if (this._scriptFileForTarget.size) {
                     var scriptFile = this._scriptFileForTarget.valuesArray()[0];
                     var addSourceMapURLLabel = WebInspector.UIString.capitalize("Add ^source ^map\u2026");

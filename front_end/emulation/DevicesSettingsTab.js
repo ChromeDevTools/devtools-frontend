@@ -154,7 +154,12 @@ WebInspector.DevicesSettingsTab.prototype = {
         device.modes = [];
         device.modes.push({title: "", orientation: WebInspector.EmulatedDevice.Vertical, insets: new Insets(0, 0, 0, 0), images: null});
         device.modes.push({title: "", orientation: WebInspector.EmulatedDevice.Horizontal, insets: new Insets(0, 0, 0, 0), images: null});
-
+        device.capabilities = [];
+        var uaType = editor.control("ua-type").value;
+        if (uaType === WebInspector.DeviceModeModel.UA.Mobile || uaType === WebInspector.DeviceModeModel.UA.MobileNoTouch)
+            device.capabilities.push(WebInspector.EmulatedDevice.Capability.Mobile);
+        if (uaType === WebInspector.DeviceModeModel.UA.Mobile || uaType === WebInspector.DeviceModeModel.UA.DesktopTouch)
+            device.capabilities.push(WebInspector.EmulatedDevice.Capability.Touch);
         if (isNew)
             this._emulatedDevicesList.addCustomDevice(device);
         else
@@ -177,6 +182,12 @@ WebInspector.DevicesSettingsTab.prototype = {
         editor.control("height").value = this._toNumericInputValue(device.vertical.height);
         editor.control("scale").value = this._toNumericInputValue(device.deviceScaleFactor);
         editor.control("user-agent").value = device.userAgent;
+        var uaType;
+        if (device.mobile())
+            uaType = device.touch() ? WebInspector.DeviceModeModel.UA.Mobile : WebInspector.DeviceModeModel.UA.MobileNoTouch;
+        else
+            uaType = device.touch() ? WebInspector.DeviceModeModel.UA.DesktopTouch : WebInspector.DeviceModeModel.UA.Desktop;
+        editor.control("ua-type").value = uaType;
         return editor;
     },
 
@@ -193,16 +204,18 @@ WebInspector.DevicesSettingsTab.prototype = {
         var content = editor.contentElement();
 
         var fields = content.createChild("div", "devices-edit-fields");
-        fields.appendChild(editor.createInput("title", "text", WebInspector.UIString("Device name"), titleValidator));
+        fields.createChild("div", "hbox").appendChild(editor.createInput("title", "text", WebInspector.UIString("Device name"), titleValidator));
         var screen = fields.createChild("div", "hbox");
-        var width = editor.createInput("width", "text", WebInspector.UIString("Width"), sizeValidator);
-        width.classList.add("device-edit-small");
-        screen.appendChild(width);
-        var height = editor.createInput("height", "text", WebInspector.UIString("height"), sizeValidator);
-        height.classList.add("device-edit-small");
-        screen.appendChild(height);
-        screen.appendChild(editor.createInput("scale", "text", WebInspector.UIString("Device pixel ratio"), scaleValidator));
-        fields.appendChild(editor.createInput("user-agent", "text", WebInspector.UIString("User agent string"), userAgentValidator));
+        screen.appendChild(editor.createInput("width", "text", WebInspector.UIString("Width"), sizeValidator));
+        screen.appendChild(editor.createInput("height", "text", WebInspector.UIString("height"), sizeValidator));
+        var dpr = editor.createInput("scale", "text", WebInspector.UIString("Device pixel ratio"), scaleValidator);
+        dpr.classList.add("device-edit-fixed");
+        screen.appendChild(dpr);
+        var ua = fields.createChild("div", "hbox");
+        ua.appendChild(editor.createInput("user-agent", "text", WebInspector.UIString("User agent string"), () => true));
+        var uaType = editor.createSelect("ua-type", [WebInspector.DeviceModeModel.UA.Mobile, WebInspector.DeviceModeModel.UA.MobileNoTouch, WebInspector.DeviceModeModel.UA.Desktop, WebInspector.DeviceModeModel.UA.DesktopTouch], () => true);
+        uaType.classList.add("device-edit-fixed");
+        ua.appendChild(uaType);
 
         return editor;
 
@@ -238,17 +251,6 @@ WebInspector.DevicesSettingsTab.prototype = {
         function scaleValidator(item, index, input)
         {
             return WebInspector.DeviceModeModel.deviceScaleFactorValidator(input.value);
-        }
-
-        /**
-         * @param {*} item
-         * @param {number} index
-         * @param {!HTMLInputElement|!HTMLSelectElement} input
-         * @return {boolean}
-         */
-        function userAgentValidator(item, index, input)
-        {
-            return true;
         }
     },
 

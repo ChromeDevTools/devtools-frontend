@@ -76,10 +76,10 @@ WebInspector.DeviceModeModel.Type = {
 
 /** @enum {string} */
 WebInspector.DeviceModeModel.UA = {
-    Mobile: "Mobile",
-    MobileNoTouch: "MobileNoTouch",
-    Desktop: "Desktop",
-    DesktopTouch: "DesktopTouch"
+    Mobile: WebInspector.UIString("Mobile"),
+    MobileNoTouch: WebInspector.UIString("Mobile (no touch)"),
+    Desktop: WebInspector.UIString("Desktop"),
+    DesktopTouch: WebInspector.UIString("Desktop (touch)")
 }
 
 WebInspector.DeviceModeModel.MinDeviceSize = 50;

@@ -78,6 +78,10 @@
     padding: 3px;
 }
 
-.devices-edit-fields input.device-edit-small {
-    flex: 0 0 80px;
+.devices-edit-fields .device-edit-fixed {
+    flex: 0 0 140px;
+}
+
+.devices-edit-fields select {
+    margin: 8px 5px 0 5px;
 }

@@ -235,10 +235,10 @@ WebInspector.DeviceModeToolbar.prototype = {
     _appendUserAgentMenuItems: function(contextMenu)
     {
         var uaSetting = this._model.uaSetting();
-        appendUAItem(WebInspector.UIString("Mobile"), WebInspector.DeviceModeModel.UA.Mobile);
-        appendUAItem(WebInspector.UIString("Mobile (no touch)"), WebInspector.DeviceModeModel.UA.MobileNoTouch);
-        appendUAItem(WebInspector.UIString("Desktop"), WebInspector.DeviceModeModel.UA.Desktop);
-        appendUAItem(WebInspector.UIString("Desktop (touch)"), WebInspector.DeviceModeModel.UA.DesktopTouch);
+        appendUAItem(WebInspector.DeviceModeModel.UA.Mobile, WebInspector.DeviceModeModel.UA.Mobile);
+        appendUAItem(WebInspector.DeviceModeModel.UA.MobileNoTouch, WebInspector.DeviceModeModel.UA.MobileNoTouch);
+        appendUAItem(WebInspector.DeviceModeModel.UA.Desktop, WebInspector.DeviceModeModel.UA.Desktop);
+        appendUAItem(WebInspector.DeviceModeModel.UA.DesktopTouch, WebInspector.DeviceModeModel.UA.DesktopTouch);
 
         /**
          * @param {string} title
@@ -506,14 +506,7 @@ WebInspector.DeviceModeToolbar.prototype = {
 
         var uaType = this._model.appliedUserAgentType();
         if (uaType !== this._cachedUaType) {
-            var uaTitle = WebInspector.UIString("Desktop");
-            if (uaType === WebInspector.DeviceModeModel.UA.Mobile)
-                uaTitle = WebInspector.UIString("Mobile");
-            if (uaType === WebInspector.DeviceModeModel.UA.MobileNoTouch)
-                uaTitle = WebInspector.UIString("Mobile (no touch)");
-            if (uaType === WebInspector.DeviceModeModel.UA.DesktopTouch)
-                uaTitle = WebInspector.UIString("Desktop (touch)");
-            this._uaItem.setText(uaTitle);
+            this._uaItem.setText(uaType);
             this._cachedUaType = uaType;
         }
 

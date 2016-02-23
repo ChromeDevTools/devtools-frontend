@@ -274,10 +274,8 @@ InspectorBackendClass.Connection.prototype = {
         }
 
         var messageObject = {};
-
         var messageId = this.nextMessageId();
         messageObject.id = messageId;
-
         messageObject.method = method;
         if (params)
             messageObject.params = params;

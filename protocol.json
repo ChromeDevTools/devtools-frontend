@@ -234,7 +234,6 @@
             },
             {
               "name": "getNavigationHistory",
-              "parameters": [],
               "returns": [
                 { "name": "currentIndex", "type": "integer", "description": "Index of the current navigation history entry." },
                 { "name": "entries", "type": "array", "items": { "$ref": "NavigationEntry" }, "description": "Array of navigation history entries." }
@@ -400,7 +399,6 @@
                 "name": "captureScreenshot",
                 "async": true,
                 "description": "Capture page screenshot.",
-                "parameters": [],
                 "returns": [
                     { "name": "data", "type": "string", "description": "Base64-encoded image data (PNG)." }
                 ],

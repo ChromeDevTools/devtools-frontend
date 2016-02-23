@@ -11,31 +11,48 @@
 }
 
 .media-inspector-marker-container {
-    position: relative;
     height: 14px;
     margin: 2px 0;
+    position: relative;
+}
+
+.media-inspector-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    pointer-events: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
 }
 
 .media-inspector-marker {
-    position: absolute;
-    top: 1px;
-    bottom: 1px;
+    flex: none;
+    pointer-events: auto;
+    margin: 1px 0;
     white-space: nowrap;
     z-index: auto;
+    position: relative;
+}
+
+.media-inspector-marker-spacer {
+    flex: auto;
 }
 
 .media-inspector-marker:hover {
-    top: -1px;
-    bottom: -1px;
+    margin: -1px 0;
     opacity: 1;
 }
 
 .media-inspector-marker-max-width {
     background-color: hsl(207, 90%, 77%);
     border-right: 2px solid hsl(207, 90%, 61%);
+    border-left: 2px solid hsl(207, 90%, 61%);
 }
 
-.media-inspector-marker-max-width.media-inspector-marker-inactive:not(:hover) {
+.media-inspector-marker-inactive .media-inspector-marker-max-width:not(:hover) {
     background-color: hsl(199, 94%, 94%);
 }
 
@@ -45,7 +62,7 @@
     border-right: 2px solid hsl(92, 48%, 42%);
 }
 
-.media-inspector-marker-min-max-width.media-inspector-marker-inactive:not(:hover) {
+.media-inspector-marker-inactive .media-inspector-marker-min-max-width:not(:hover) {
     background-color: hsl(125, 39%, 94%);
 }
 
@@ -55,11 +72,19 @@
 
 .media-inspector-marker-min-width {
     background-color: hsl(36, 100%, 75%);
+    flex: auto;
+}
+
+.media-inspector-marker-inactive .media-inspector-marker-min-width:not(:hover) {
+    background-color: hsl(37, 100%, 94%);
+}
+
+.media-inspector-marker-min-width-right {
     border-left: 2px solid hsl(30, 100%, 48%);
 }
 
-.media-inspector-marker-min-width.media-inspector-marker-inactive:not(:hover) {
-    background-color: hsl(37, 100%, 94%);
+.media-inspector-marker-min-width-left {
+    border-right: 2px solid hsl(30, 100%, 48%);
 }
 
 /* Media query labels */

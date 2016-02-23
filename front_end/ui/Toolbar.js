@@ -639,6 +639,11 @@ WebInspector.ToolbarMenuButton.prototype = {
      */
     _mouseDown: function(event)
     {
+        if (event.buttons !== 1) {
+            WebInspector.ToolbarButton.prototype._mouseDown.call(this, event);
+            return;
+        }
+
         var contextMenu = new WebInspector.ContextMenu(event,
             this._useSoftMenu,
             this.element.totalOffsetLeft(),

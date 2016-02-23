@@ -1807,7 +1807,8 @@ WebInspector.DOMModel.prototype = {
     _buildHighlightConfig: function(mode)
     {
         mode = mode || "all";
-        var highlightConfig = { showInfo: mode === "all", showRulers: WebInspector.moduleSetting("showMetricsRulers").get(), showExtensionLines: true };
+        var showRulers = WebInspector.moduleSetting("showMetricsRulers").get();
+        var highlightConfig = { showInfo: mode === "all", showRulers: showRulers, showExtensionLines: showRulers };
         if (mode === "all" || mode === "content")
             highlightConfig.contentColor = WebInspector.Color.PageHighlight.Content.toProtocolRGBA();
 

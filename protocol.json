@@ -336,8 +336,7 @@
                     { "name": "screenWidth", "type": "integer", "optional": true, "description": "Overriding screen width value in pixels (minimum 0, maximum 10000000). Only used for |mobile==true|." },
                     { "name": "screenHeight", "type": "integer", "optional": true, "description": "Overriding screen height value in pixels (minimum 0, maximum 10000000). Only used for |mobile==true|." },
                     { "name": "positionX", "type": "integer", "optional": true, "description": "Overriding view X position on screen in pixels (minimum 0, maximum 10000000). Only used for |mobile==true|." },
-                    { "name": "positionY", "type": "integer", "optional": true, "description": "Overriding view Y position on screen in pixels (minimum 0, maximum 10000000). Only used for |mobile==true|." },
-                    { "name": "screenOrientation", "$ref": "Emulation.ScreenOrientation", "optional": true, "description": "Screen orientation override." }
+                    { "name": "positionY", "type": "integer", "optional": true, "description": "Overriding view Y position on screen in pixels (minimum 0, maximum 10000000). Only used for |mobile==true|." }
                 ],
                 "handlers": ["browser"],
                 "redirect": "Emulation",
@@ -640,17 +639,6 @@
         "domain": "Emulation",
         "description": "This domain emulates different environments for the page.",
         "hidden": true,
-        "types": [
-            {
-                "id": "ScreenOrientation",
-                "type": "object",
-                "description": "Screen orientation.",
-                "properties": [
-                    { "name": "type",  "type": "string", "enum": ["portraitPrimary", "portraitSecondary", "landscapePrimary", "landscapeSecondary"], "description": "Orientation type." },
-                    { "name": "angle",  "type": "integer", "description": "Orientation angle." }
-                ]
-            }
-        ],
         "commands": [
             {
                 "name": "setDeviceMetricsOverride",
@@ -667,8 +655,7 @@
                     { "name": "screenWidth", "type": "integer", "optional": true, "description": "Overriding screen width value in pixels (minimum 0, maximum 10000000). Only used for |mobile==true|." },
                     { "name": "screenHeight", "type": "integer", "optional": true, "description": "Overriding screen height value in pixels (minimum 0, maximum 10000000). Only used for |mobile==true|." },
                     { "name": "positionX", "type": "integer", "optional": true, "description": "Overriding view X position on screen in pixels (minimum 0, maximum 10000000). Only used for |mobile==true|." },
-                    { "name": "positionY", "type": "integer", "optional": true, "description": "Overriding view Y position on screen in pixels (minimum 0, maximum 10000000). Only used for |mobile==true|." },
-                    { "name": "screenOrientation", "$ref": "ScreenOrientation", "optional": true, "description": "Screen orientation override." }
+                    { "name": "positionY", "type": "integer", "optional": true, "description": "Overriding view Y position on screen in pixels (minimum 0, maximum 10000000). Only used for |mobile==true|." }
                 ],
                 "handlers": ["browser"]
             },
@@ -4819,6 +4806,32 @@
             {
                 "name": "clearDeviceOrientationOverride",
                 "description": "Clears the overridden Device Orientation."
+            }
+        ]
+    },
+    {
+        "domain": "ScreenOrientation",
+        "hidden": true,
+        "types": [
+            {
+                "id": "OrientationType",
+                "type": "string",
+                "enum": ["portraitPrimary", "portraitSecondary", "landscapePrimary", "landscapeSecondary"],
+                "description": "Orientation type"
+            }
+        ],
+        "commands": [
+            {
+                "name": "setScreenOrientationOverride",
+                "description": "Overrides the Screen Orientation.",
+                "parameters": [
+                    { "name": "angle", "type": "integer", "description": "Orientation angle" },
+                    { "name": "type", "$ref": "OrientationType", "description": "Orientation type" }
+                ]
+            },
+            {
+                "name": "clearScreenOrientationOverride",
+                "description": "Clears the overridden Screen Orientation."
             }
         ]
     },

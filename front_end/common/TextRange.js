@@ -320,14 +320,12 @@ WebInspector.SourceRange = function(offset, length)
  * @constructor
  * @param {string} sourceURL
  * @param {!WebInspector.TextRange} oldRange
- * @param {string} oldText
  * @param {string} newText
  */
-WebInspector.SourceEdit = function(sourceURL, oldRange, oldText, newText)
+WebInspector.SourceEdit = function(sourceURL, oldRange, newText)
 {
     this.sourceURL = sourceURL;
     this.oldRange = oldRange;
-    this.oldText = oldText;
     this.newText = newText;
 }
 

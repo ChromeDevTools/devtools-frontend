@@ -314,7 +314,7 @@ WebInspector.SASSSupport.TextNode.prototype = {
         if (this.text === newText)
             return;
         this.text = newText;
-        this.document.edits.push(new WebInspector.SourceEdit(this.document.url, this.range, this.text, newText));
+        this.document.edits.push(new WebInspector.SourceEdit(this.document.url, this.range, newText));
     },
 
     /**
@@ -379,17 +379,17 @@ WebInspector.SASSSupport.Property.prototype = {
         this.disabled = disabled;
         if (disabled) {
             var oldRange1 = WebInspector.TextRange.createFromLocation(this.range.startLine, this.range.startColumn);
-            var edit1 = new WebInspector.SourceEdit(this.document.url, oldRange1, "", "/* ");
+            var edit1 = new WebInspector.SourceEdit(this.document.url, oldRange1, "/* ");
             var oldRange2 = WebInspector.TextRange.createFromLocation(this.range.endLine, this.range.endColumn);
-            var edit2 = new WebInspector.SourceEdit(this.document.url, oldRange2, "", " */");
+            var edit2 = new WebInspector.SourceEdit(this.document.url, oldRange2, " */");
             this.document.edits.push(edit1, edit2);
             return;
         }
         var oldRange1 = new WebInspector.TextRange(this.range.startLine, this.range.startColumn, this.range.startLine, this.name.range.startColumn);
         var text = this.document.text;
-        var edit1 = new WebInspector.SourceEdit(this.document.url, oldRange1, oldRange1.extract(text), "");
+        var edit1 = new WebInspector.SourceEdit(this.document.url, oldRange1, "");
         var oldRange2 = new WebInspector.TextRange(this.range.endLine, this.range.endColumn - 2, this.range.endLine, this.range.endColumn);
-        var edit2 = new WebInspector.SourceEdit(this.document.url, oldRange2, "*/", "");
+        var edit2 = new WebInspector.SourceEdit(this.document.url, oldRange2, "");
         this.document.edits.push(edit1, edit2);
     },
 
@@ -407,7 +407,7 @@ WebInspector.SASSSupport.Property.prototype = {
             oldRange = lineRange;
         else
             oldRange = this.range;
-        this.document.edits.push(new WebInspector.SourceEdit(this.document.url, oldRange, oldRange.extract(this.document.text), ""));
+        this.document.edits.push(new WebInspector.SourceEdit(this.document.url, oldRange, ""));
     },
 
     __proto__: WebInspector.SASSSupport.Node.prototype
@@ -461,7 +461,7 @@ WebInspector.SASSSupport.Rule.prototype = {
         if (this._hasTrailingSemicolon || !this.properties)
             return;
         this._hasTrailingSemicolon = true;
-        this.document.edits.push(new WebInspector.SourceEdit(this.document.url, this.properties.peekLast().range.collapseToEnd(), "", ";"))
+        this.document.edits.push(new WebInspector.SourceEdit(this.document.url, this.properties.peekLast().range.collapseToEnd(), ";"))
     },
 
     /**
@@ -521,7 +521,7 @@ WebInspector.SASSSupport.Rule.prototype = {
         } else {
             newText = String.sprintf("\n%s%s%s: %s;%s", indent, leftComment, nameText, valueText, rightComment);
         }
-        return new WebInspector.SourceEdit(this.document.url, oldRange, "", newText);
+        return new WebInspector.SourceEdit(this.document.url, oldRange, newText);
     },
 
     __proto__: WebInspector.SASSSupport.Node.prototype

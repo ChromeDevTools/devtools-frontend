@@ -177,7 +177,7 @@ WebInspector.NetworkPanel.prototype = {
     {
         var toolbarItem = new WebInspector.ToolbarComboBox(null);
         toolbarItem.setMaxWidth(140);
-        new WebInspector.NetworkConditionsSelector(toolbarItem.selectElement());
+        WebInspector.NetworkConditionsSelector.decorateSelect(toolbarItem.selectElement());
         return toolbarItem;
     },
 

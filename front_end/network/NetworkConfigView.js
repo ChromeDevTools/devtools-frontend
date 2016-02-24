@@ -41,7 +41,7 @@ WebInspector.NetworkConfigView.prototype = {
     _createNetworkThrottlingSection: function()
     {
         var section = this._createSection(WebInspector.UIString("Network throttling"), "network-config-throttling");
-        new WebInspector.NetworkConditionsSelector(/** @type {!HTMLSelectElement} */(section.createChild("select", "chrome-select")));
+        WebInspector.NetworkConditionsSelector.decorateSelect(/** @type {!HTMLSelectElement} */(section.createChild("select", "chrome-select")));
     },
 
     _createUserAgentSection: function()

@@ -86,22 +86,6 @@
             "persistence": "closeable",
             "order": 40,
             "className": "WebInspector.NetworkConfigView"
-        },
-        {
-            "type": "setting",
-            "settingName": "networkConditionsCustomProfiles",
-            "settingType": "array",
-            "defaultValue": []
-        },
-        {
-            "type": "settings-view",
-            "name": "network-conditions",
-            "title": "Throttling",
-            "order": "35",
-            "className": "WebInspector.NetworkConditionsSettingsTab",
-            "settings": [
-                "networkConditionsCustomProfiles"
-            ]
         }
     ],
     "dependencies": [
@@ -117,7 +101,6 @@
         "HARWriter.js",
         "JSONView.js",
         "RequestView.js",
-        "NetworkConditionsSelector.js",
         "NetworkConfigView.js",
         "NetworkDataGridNode.js",
         "NetworkItemView.js",
@@ -137,7 +120,6 @@
     "resources": [
         "blockedURLsPane.css",
         "eventSourceMessagesView.css",
-        "networkConditionsSettingsTab.css",
         "networkConfigView.css",
         "networkLogView.css",
         "networkPanel.css",

@@ -20,6 +20,9 @@ WebInspector.DeviceModeToolbar = function(model, showMediaInspectorSetting, show
     this._showUserAgentTypeSetting = WebInspector.settings.createSetting("emulation.showUserAgentType", false);
     this._showUserAgentTypeSetting.addChangeListener(this._updateUserAgentTypeVisibility, this);
 
+    this._showNetworkConditionsSetting = WebInspector.settings.createSetting("emulation.showNetworkConditions", false);
+    this._showNetworkConditionsSetting.addChangeListener(this._updateNetworkConditionsVisibility, this);
+
     /** @type {!Map<!WebInspector.EmulatedDevice, !WebInspector.EmulatedDevice.Mode>} */
     this._lastMode = new Map();
 
@@ -136,13 +139,7 @@ WebInspector.DeviceModeToolbar.prototype = {
         this._scaleItem.setGlyph("");
         this._scaleItem.turnIntoSelect();
         toolbar.appendToolbarItem(this._scaleItem);
-    },
 
-    /**
-     * @param {!WebInspector.Toolbar} toolbar
-     */
-    _fillModeToolbar: function(toolbar)
-    {
         toolbar.appendToolbarItem(this._wrapToolbarItem(createElementWithClass("div", "device-mode-empty-toolbar-element")));
         this._deviceScaleItem = new WebInspector.ToolbarMenuButton(this._appendDeviceScaleMenuItems.bind(this));
         this._deviceScaleItem.setVisible(this._showDeviceScaleFactorSetting.get());
@@ -160,7 +157,13 @@ WebInspector.DeviceModeToolbar.prototype = {
         this._uaItem.turnIntoSelect();
         this._uaItem.element.style.padding = "0 5px";
         toolbar.appendToolbarItem(this._uaItem);
+    },
 
+    /**
+     * @param {!WebInspector.Toolbar} toolbar
+     */
+    _fillModeToolbar: function(toolbar)
+    {
         toolbar.appendToolbarItem(this._wrapToolbarItem(createElementWithClass("div", "device-mode-empty-toolbar-element")));
         this._modeButton = new WebInspector.ToolbarButton("", "rotate-screen-toolbar-item");
         this._modeButton.addEventListener("click", this._modeMenuClicked, this);
@@ -172,6 +175,13 @@ WebInspector.DeviceModeToolbar.prototype = {
      */
     _fillOptionsToolbar: function(toolbar)
     {
+        this._networkConditionsItem = WebInspector.NetworkConditionsSelector.createToolbarMenuButton();
+        this._networkConditionsItem.setVisible(this._showNetworkConditionsSetting.get());
+        this._networkConditionsItem.setTitle(WebInspector.UIString("Network throttling"));
+        this._networkConditionsItem.element.style.padding = "0 5px";
+        this._networkConditionsItem.element.style.maxWidth = "140px";
+        toolbar.appendToolbarItem(this._networkConditionsItem);
+
         var moreOptionsButton = new WebInspector.ToolbarMenuButton(this._appendOptionsMenuItems.bind(this));
         moreOptionsButton.setTitle(WebInspector.UIString("More options"));
         toolbar.appendToolbarItem(moreOptionsButton);
@@ -257,10 +267,10 @@ WebInspector.DeviceModeToolbar.prototype = {
     {
         contextMenu.appendCheckboxItem(WebInspector.UIString("Show device pixel ratio"), this._toggleDeviceScaleFactor.bind(this), this._showDeviceScaleFactorSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
         contextMenu.appendCheckboxItem(WebInspector.UIString("Show device type"), this._toggleUserAgentType.bind(this), this._showUserAgentTypeSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
+        contextMenu.appendCheckboxItem(WebInspector.UIString("Show throttling"), this._toggleNetworkConditions.bind(this), this._showNetworkConditionsSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
         contextMenu.appendCheckboxItem(WebInspector.UIString("Show media queries"), this._toggleMediaInspector.bind(this), this._showMediaInspectorSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
         contextMenu.appendCheckboxItem(WebInspector.UIString("Show rulers"), this._toggleRulers.bind(this), this._showRulersSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
         contextMenu.appendSeparator();
-        contextMenu.appendItem(WebInspector.UIString("Configure network\u2026"), this._openNetworkConfig.bind(this), false);
         contextMenu.appendItemsAtLocation("deviceModeMenu");
         contextMenu.appendSeparator();
         contextMenu.appendItem(WebInspector.UIString("Reset to defaults"), this._reset.bind(this));
@@ -286,11 +296,9 @@ WebInspector.DeviceModeToolbar.prototype = {
         this._showRulersSetting.set(!this._showRulersSetting.get());
     },
 
-    _openNetworkConfig: function()
+    _toggleNetworkConditions: function()
     {
-        InspectorFrontendHost.bringToFront();
-        // TODO(dgozman): make it explicit.
-        WebInspector.actionRegistry.action("network.show-config").execute();
+        this._showNetworkConditionsSetting.set(!this._showNetworkConditionsSetting.get());
     },
 
     _reset: function()
@@ -299,6 +307,7 @@ WebInspector.DeviceModeToolbar.prototype = {
         this._showUserAgentTypeSetting.set(false);
         this._showMediaInspectorSetting.set(false);
         this._showRulersSetting.set(false);
+        this._showNetworkConditionsSetting.set(false);
         this._model.reset();
     },
 
@@ -412,6 +421,11 @@ WebInspector.DeviceModeToolbar.prototype = {
     _updateUserAgentTypeVisibility: function()
     {
         this._uaItem.setVisible(this._showUserAgentTypeSetting.get());
+    },
+
+    _updateNetworkConditionsVisibility: function()
+    {
+        this._networkConditionsItem.setVisible(this._showNetworkConditionsSetting.get());
     },
 
     /**

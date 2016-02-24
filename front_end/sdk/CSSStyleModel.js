@@ -1601,7 +1601,7 @@ WebInspector.CSSProperty.prototype = {
         {
             if (!insideProperty) {
                 var disabledProperty = tokenType && tokenType.includes("css-comment") && isDisabledProperty(token);
-                var isPropertyStart = tokenType && (tokenType.includes("css-meta") || tokenType.includes("css-property") || tokenType.includes("css-variable-2"));
+                var isPropertyStart = tokenType && (tokenType.includes("css-string") || tokenType.includes("css-meta") || tokenType.includes("css-property") || tokenType.includes("css-variable-2"));
                 if (disabledProperty) {
                     result = result.trimRight() + indentation + token;
                 } else if (isPropertyStart) {

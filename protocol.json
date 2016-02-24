@@ -1809,7 +1809,7 @@
                 "description": "Database with an array of object stores.",
                 "properties": [
                     { "name": "name", "type": "string", "description": "Database name." },
-                    { "name": "intVersion", "type": "integer", "description": "Database version." },
+                    { "name": "version", "type": "integer", "description": "Database version." },
                     { "name": "objectStores", "type": "array", "items": { "$ref": "ObjectStore" }, "description": "Object stores in this database." }
                 ]
             },

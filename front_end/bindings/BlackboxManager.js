@@ -17,8 +17,8 @@ WebInspector.BlackboxManager = function(debuggerWorkspaceBinding, networkMapping
     WebInspector.moduleSetting("skipStackFramesPattern").addChangeListener(this._patternChanged.bind(this));
     WebInspector.moduleSetting("skipContentScripts").addChangeListener(this._patternChanged.bind(this));
 
-    /** @type {!Map<string, !Array<!DebuggerAgent.ScriptPosition>>} */
-    this._scriptIdToPositions = new Map();
+    /** @type {!Map<!WebInspector.DebuggerModel, !Map<string, !Array<!DebuggerAgent.ScriptPosition>>>} */
+    this._debuggerModelData = new Map();
     /** @type {!Map<string, boolean>} */
     this._isBlackboxedURLCache = new Map();
 }
@@ -48,9 +48,9 @@ WebInspector.BlackboxManager.prototype = {
      */
     isBlackboxedRawLocation: function(location)
     {
-        if (!this._scriptIdToPositions.has(location.scriptId))
+        var positions = this._scriptPositions(location.script());
+        if (!positions)
             return this._isBlackboxedScript(location.script());
-        var positions = this._scriptIdToPositions.get(location.scriptId);
         var index = positions.lowerBound(location, comparator);
         return !!(index % 2);
 
@@ -108,13 +108,13 @@ WebInspector.BlackboxManager.prototype = {
     {
         if (!sourceMap)
             return Promise.resolve();
-        if (!this._scriptIdToPositions.has(script.scriptId))
+        var previousScriptState = this._scriptPositions(script);
+        if (!previousScriptState)
             return Promise.resolve();
 
         var mappings = sourceMap.mappings().slice();
         mappings.sort(mappingComparator);
 
-        var previousScriptState = this._scriptIdToPositions.get(script.scriptId);
         if (!mappings.length) {
             if (previousScriptState.length > 0)
                 return this._setScriptState(script, []).then(this._sourceMapLoadedForTest);
@@ -246,9 +246,13 @@ WebInspector.BlackboxManager.prototype = {
         // This method is sniffed in tests.
     },
 
-    _globalObjectCleared: function()
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _globalObjectCleared: function(event)
     {
-        this._scriptIdToPositions.clear();
+        var debuggerModel = /** @type {!WebInspector.DebuggerModel} */ (event.target);
+        this._debuggerModelData.delete(debuggerModel);
         this._isBlackboxedURLCache.clear();
     },
 
@@ -282,14 +286,37 @@ WebInspector.BlackboxManager.prototype = {
 
     /**
      * @param {!WebInspector.Script} script
+     * @return {?Array<!DebuggerAgent.ScriptPosition>}
+     */
+    _scriptPositions: function(script)
+    {
+        if (this._debuggerModelData.has(script.debuggerModel))
+            return this._debuggerModelData.get(script.debuggerModel).get(script.scriptId) || null;
+        return null;
+    },
+
+    /**
+     * @param {!WebInspector.Script} script
+     * @param {!Array<!DebuggerAgent.ScriptPosition>} positions
+     */
+    _setScriptPositions: function(script, positions)
+    {
+        var debuggerModel = script.debuggerModel;
+        if (!this._debuggerModelData.has(debuggerModel))
+            this._debuggerModelData.set(debuggerModel, new Map());
+        this._debuggerModelData.get(debuggerModel).set(script.scriptId, positions);
+    },
+
+    /**
+     * @param {!WebInspector.Script} script
      * @param {!Array<!DebuggerAgent.ScriptPosition>} positions
      * @return {!Promise<undefined>}
      */
     _setScriptState: function(script, positions)
     {
-        if (this._scriptIdToPositions.has(script.scriptId)) {
+        var previousScriptState = this._scriptPositions(script);
+        if (previousScriptState) {
             var hasChanged = false;
-            var previousScriptState = this._scriptIdToPositions.get(script.scriptId);
             hasChanged = previousScriptState.length !== positions.length;
             for (var i = 0; !hasChanged && i < positions.length; ++i)
                 hasChanged = positions[i].line !== previousScriptState[i].line || positions[i].column !== previousScriptState[i].column;
@@ -309,13 +336,15 @@ WebInspector.BlackboxManager.prototype = {
         function updateState(success)
         {
             if (success) {
-                this._scriptIdToPositions.set(script.scriptId, positions);
+                this._setScriptPositions(script, positions);
                 this._debuggerWorkspaceBinding.updateLocations(script);
                 var isBlackboxed = positions.length !== 0;
                 if (!isBlackboxed && script.sourceMapURL)
                     this._debuggerWorkspaceBinding.maybeLoadSourceMap(script);
-            } else if (!this._scriptIdToPositions.has(script.scriptId)) {
-                this._scriptIdToPositions.set(script.scriptId, []);
+            } else {
+                var hasPositions = !!this._scriptPositions(script);
+                if (!hasPositions)
+                    this._setScriptPositions(script, []);
             }
         }
     },

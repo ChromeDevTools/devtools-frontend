@@ -150,6 +150,8 @@ WebInspector.SASSProcessor._editsFromCSSDiff = function(cssDiff, map)
         var operation = null;
         if (change.type === T.ValueChanged || change.type === T.NameChanged)
             operation = WebInspector.SASSProcessor.SetTextOperation.fromCSSChange(change, map);
+        else if (change.type === T.PropertyToggled)
+            operation = WebInspector.SASSProcessor.TogglePropertyOperation.fromCSSChange(change, map);
         if (!operation) {
             WebInspector.console.error("Operation ignored: " + change.type);
             continue;
@@ -280,6 +282,79 @@ WebInspector.SASSProcessor.SetTextOperation.prototype = {
     {
         var sassNode = /** @type {?WebInspector.SASSSupport.TextNode} */(nodeMapping.get(this._sassNode)) || this._sassNode;
         return new WebInspector.SASSProcessor.SetTextOperation(newMap, sassNode, this._newText);
+    },
+
+    __proto__: WebInspector.SASSProcessor.EditOperation.prototype
+}
+
+/**
+ * @constructor
+ * @extends {WebInspector.SASSProcessor.EditOperation}
+ * @param {!WebInspector.ASTSourceMap} map
+ * @param {!WebInspector.SASSSupport.Property} sassProperty
+ * @param {boolean} newDisabled
+ */
+WebInspector.SASSProcessor.TogglePropertyOperation = function(map, sassProperty, newDisabled)
+{
+    WebInspector.SASSProcessor.EditOperation.call(this, map, sassProperty.document.url);
+    this._sassProperty = sassProperty;
+    this._newDisabled = newDisabled;
+}
+
+/**
+ * @param {!WebInspector.SASSSupport.PropertyChange} change
+ * @param {!WebInspector.ASTSourceMap} map
+ * @return {?WebInspector.SASSProcessor.TogglePropertyOperation}
+ */
+WebInspector.SASSProcessor.TogglePropertyOperation.fromCSSChange = function(change, map)
+{
+    var oldCSSProperty = /** @type {!WebInspector.SASSSupport.Property} */(change.oldProperty());
+    console.assert(oldCSSProperty, "TogglePropertyOperation must have old CSS property");
+    var sassProperty = map.toSASSProperty(oldCSSProperty);
+    if (!sassProperty)
+        return null;
+    var newDisabled = change.newProperty().disabled;
+    return new WebInspector.SASSProcessor.TogglePropertyOperation(map, sassProperty, newDisabled);
+}
+
+WebInspector.SASSProcessor.TogglePropertyOperation.prototype = {
+    /**
+     * @override
+     * @param {!WebInspector.SASSProcessor.EditOperation} other
+     * @return {boolean}
+     */
+    merge: function(other)
+    {
+        if (!(other instanceof WebInspector.SASSProcessor.TogglePropertyOperation))
+            return false;
+        return this._sassProperty === other._sassProperty;
+    },
+
+    /**
+     * @override
+     * @return {!Array<!WebInspector.SASSSupport.Rule>}
+     */
+    perform: function()
+    {
+        this._sassProperty.setDisabled(this._newDisabled);
+        var cssProperties = this.map.toCSSProperties(this._sassProperty);
+        for (var property of cssProperties)
+            property.setDisabled(this._newDisabled);
+
+        var cssRules = cssProperties.map(property => property.parent);
+        return cssRules;
+    },
+
+    /**
+     * @override
+     * @param {!WebInspector.ASTSourceMap} newMap
+     * @param {!Map<!WebInspector.SASSSupport.Node, !WebInspector.SASSSupport.Node>} nodeMapping
+     * @return {!WebInspector.SASSProcessor.TogglePropertyOperation}
+     */
+    rebase: function(newMap, nodeMapping)
+    {
+        var sassProperty = /** @type {?WebInspector.SASSSupport.Property} */(nodeMapping.get(this._sassProperty)) || this._sassProperty;
+        return new WebInspector.SASSProcessor.TogglePropertyOperation(newMap, sassProperty, this._newDisabled);
     },
 
     __proto__: WebInspector.SASSProcessor.EditOperation.prototype

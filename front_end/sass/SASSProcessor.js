@@ -152,6 +152,8 @@ WebInspector.SASSProcessor._editsFromCSSDiff = function(cssDiff, map)
             operation = WebInspector.SASSProcessor.SetTextOperation.fromCSSChange(change, map);
         else if (change.type === T.PropertyToggled)
             operation = WebInspector.SASSProcessor.TogglePropertyOperation.fromCSSChange(change, map);
+        else if (change.type === T.PropertyRemoved)
+            operation = WebInspector.SASSProcessor.RemovePropertyOperation.fromCSSChange(change, map);
         if (!operation) {
             WebInspector.console.error("Operation ignored: " + change.type);
             continue;
@@ -360,3 +362,75 @@ WebInspector.SASSProcessor.TogglePropertyOperation.prototype = {
     __proto__: WebInspector.SASSProcessor.EditOperation.prototype
 }
 
+/**
+ * @constructor
+ * @extends {WebInspector.SASSProcessor.EditOperation}
+ * @param {!WebInspector.ASTSourceMap} map
+ * @param {!WebInspector.SASSSupport.Property} sassProperty
+ */
+WebInspector.SASSProcessor.RemovePropertyOperation = function(map, sassProperty)
+{
+    WebInspector.SASSProcessor.EditOperation.call(this, map, sassProperty.document.url);
+    this._sassProperty = sassProperty;
+}
+
+/**
+ * @param {!WebInspector.SASSSupport.PropertyChange} change
+ * @param {!WebInspector.ASTSourceMap} map
+ * @return {?WebInspector.SASSProcessor.RemovePropertyOperation}
+ */
+WebInspector.SASSProcessor.RemovePropertyOperation.fromCSSChange = function(change, map)
+{
+    var removedProperty = /** @type {!WebInspector.SASSSupport.Property} */(change.oldProperty());
+    console.assert(removedProperty, "RemovePropertyOperation must have removed CSS property");
+    var sassProperty = map.toSASSProperty(removedProperty);
+    if (!sassProperty)
+        return null;
+    return new WebInspector.SASSProcessor.RemovePropertyOperation(map, sassProperty);
+}
+
+WebInspector.SASSProcessor.RemovePropertyOperation.prototype = {
+    /**
+     * @override
+     * @param {!WebInspector.SASSProcessor.EditOperation} other
+     * @return {boolean}
+     */
+    merge: function(other)
+    {
+        if (!(other instanceof WebInspector.SASSProcessor.RemovePropertyOperation))
+            return false;
+        return this._sassProperty === other._sassProperty;
+    },
+
+    /**
+     * @override
+     * @return {!Array<!WebInspector.SASSSupport.Rule>}
+     */
+    perform: function()
+    {
+        var cssProperties = this.map.toCSSProperties(this._sassProperty);
+        var cssRules = cssProperties.map(property => property.parent);
+        this._sassProperty.remove();
+        for (var cssProperty of cssProperties) {
+            cssProperty.remove();
+            this.map.unmapCssFromSass(cssProperty.name, this._sassProperty.name);
+            this.map.unmapCssFromSass(cssProperty.value, this._sassProperty.value);
+        }
+
+        return cssRules;
+    },
+
+    /**
+     * @override
+     * @param {!WebInspector.ASTSourceMap} newMap
+     * @param {!Map<!WebInspector.SASSSupport.Node, !WebInspector.SASSSupport.Node>} nodeMapping
+     * @return {!WebInspector.SASSProcessor.RemovePropertyOperation}
+     */
+    rebase: function(newMap, nodeMapping)
+    {
+        var sassProperty = /** @type {?WebInspector.SASSSupport.Property} */(nodeMapping.get(this._sassProperty)) || this._sassProperty;
+        return new WebInspector.SASSProcessor.RemovePropertyOperation(newMap, sassProperty);
+    },
+
+    __proto__: WebInspector.SASSProcessor.EditOperation.prototype
+}

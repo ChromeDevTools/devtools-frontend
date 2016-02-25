@@ -41,7 +41,6 @@
         "BreakpointsSidebarPaneBase.js",
         "CustomPreviewSection.js",
         "DataSaverInfobar.js",
-        "DebuggerPresentationUtils.js",
         "DOMBreakpointsSidebarPane.js",
         "DOMPresentationUtils.js",
         "DockController.js",

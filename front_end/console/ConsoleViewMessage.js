@@ -213,11 +213,8 @@ WebInspector.ConsoleViewMessage.prototype = {
             if (consoleMessage.scriptId) {
                 this._anchorElement = this._linkifyScriptId(consoleMessage.scriptId, consoleMessage.url || "", consoleMessage.line, consoleMessage.column);
             } else {
-                var showBlackboxed = (consoleMessage.source !== WebInspector.ConsoleMessage.MessageSource.ConsoleAPI);
-                var debuggerModel = WebInspector.DebuggerModel.fromTarget(this._target());
-                var callFrame = WebInspector.DebuggerPresentationUtils.callFrameAnchorFromStackTrace(debuggerModel, consoleMessage.stackTrace, showBlackboxed);
-                if (callFrame && callFrame.scriptId)
-                    this._anchorElement = this._linkifyCallFrame(callFrame);
+                if (consoleMessage.stackTrace && consoleMessage.stackTrace.callFrames.length)
+                    this._anchorElement = this._linkifyStackTraceTopFrame(consoleMessage.stackTrace);
                 else if (consoleMessage.url && consoleMessage.url !== "undefined")
                     this._anchorElement = this._linkifyLocation(consoleMessage.url, consoleMessage.line, consoleMessage.column);
             }
@@ -276,13 +273,15 @@ WebInspector.ConsoleViewMessage.prototype = {
     },
 
     /**
-     * @param {!RuntimeAgent.CallFrame} callFrame
+     * @param {!RuntimeAgent.StackTrace} stackTrace
      * @return {?Element}
      */
-    _linkifyCallFrame: function(callFrame)
+    _linkifyStackTraceTopFrame: function(stackTrace)
     {
         var target = this._target();
-        return this._linkifier.linkifyConsoleCallFrame(target, callFrame, "console-message-url");
+        if (!target)
+            return null;
+        return this._linkifier.linkifyStackTraceTopFrame(target, stackTrace, "console-message-url");
     },
 
     /**

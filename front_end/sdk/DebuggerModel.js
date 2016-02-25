@@ -107,6 +107,16 @@ WebInspector.DebuggerModel.BreakReason = {
     Other: "other"
 }
 
+/**
+ * @param {number=} value
+ * @return {number}
+ */
+WebInspector.DebuggerModel.fromOneBased = function(value)
+{
+    // FIXME(webkit:62725): console stack trace line/column numbers are one-based.
+    return value ? value - 1 : 0;
+}
+
 WebInspector.DebuggerModel.prototype = {
     /**
      * @return {boolean}
@@ -672,6 +682,28 @@ WebInspector.DebuggerModel.prototype = {
     {
         var script = this.scriptForId(scriptId);
         return script ? this.createRawLocation(script, lineNumber, columnNumber) : null;
+    },
+
+    /**
+     * @param {!RuntimeAgent.StackTrace} stackTrace
+     * @return {!Array<!WebInspector.DebuggerModel.Location>}
+     */
+    createRawLocationsByStackTrace: function(stackTrace)
+    {
+        var frames = [];
+        while (stackTrace) {
+            for (var frame of stackTrace.callFrames)
+                frames.push(frame);
+            stackTrace = stackTrace.parent;
+        }
+
+        var rawLocations = [];
+        for (var frame of frames) {
+            var rawLocation = this.createRawLocationByScriptId(frame.scriptId, WebInspector.DebuggerModel.fromOneBased(frame.lineNumber), WebInspector.DebuggerModel.fromOneBased(frame.columnNumber));
+            if (rawLocation)
+                rawLocations.push(rawLocation);
+        }
+        return rawLocations;
     },
 
     /**

@@ -288,10 +288,8 @@ WebInspector.AsyncOperationsSidebarPane.prototype = {
         var label = createCheckboxLabel(title, operation[this._checkedSymbol]);
         label.checkboxElement.addEventListener("click", this._checkboxClicked.bind(this, operation.id), false);
         element.appendChild(label);
-        var debuggerModel = WebInspector.DebuggerModel.fromTarget(this._target);
-        var callFrame = WebInspector.DebuggerPresentationUtils.callFrameAnchorFromStackTrace(debuggerModel, operation.stack, this._revealBlackboxedCallFrames);
-        if (callFrame)
-            element.createChild("div").appendChild(this._linkifier.linkifyConsoleCallFrame(this._target, callFrame));
+        if (operation.stack && operation.stack.callFrames.length)
+            element.createChild("div").appendChild(this._linkifier.linkifyStackTraceTopFrame(this._target, operation.stack));
 
         element[this._operationIdSymbol] = operation.id;
         this._operationIdToElement.set(operation.id, element);

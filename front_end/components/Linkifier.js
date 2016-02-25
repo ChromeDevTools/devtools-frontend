@@ -200,10 +200,34 @@ WebInspector.Linkifier.prototype = {
      */
     linkifyConsoleCallFrame: function(target, callFrame, classes)
     {
-        // FIXME(62725): console stack trace line/column numbers are one-based.
-        var lineNumber = callFrame.lineNumber ? callFrame.lineNumber - 1 : 0;
-        var columnNumber = callFrame.columnNumber ? callFrame.columnNumber - 1 : 0;
-        return this.linkifyScriptLocation(target, callFrame.scriptId, callFrame.url, lineNumber, columnNumber, classes);
+        return this.linkifyScriptLocation(target, callFrame.scriptId, callFrame.url, WebInspector.DebuggerModel.fromOneBased(callFrame.lineNumber), WebInspector.DebuggerModel.fromOneBased(callFrame.columnNumber), classes);
+    },
+
+    /**
+     * @param {!WebInspector.Target} target
+     * @param {!RuntimeAgent.StackTrace} stackTrace
+     * @param {string=} classes
+     * @return {!Element}
+     */
+    linkifyStackTraceTopFrame: function(target, stackTrace, classes)
+    {
+        console.assert(stackTrace.callFrames && stackTrace.callFrames.length);
+
+        var topFrame = stackTrace.callFrames[0];
+        var fallbackAnchor = WebInspector.linkifyResourceAsNode(topFrame.url, WebInspector.DebuggerModel.fromOneBased(topFrame.lineNumber), WebInspector.DebuggerModel.fromOneBased(topFrame.columnNumber), classes);
+        if (target.isDetached())
+            return fallbackAnchor;
+
+        var debuggerModel = WebInspector.DebuggerModel.fromTarget(target);
+        var rawLocations = debuggerModel.createRawLocationsByStackTrace(stackTrace);
+        if (rawLocations.length === 0)
+            return fallbackAnchor;
+
+        var anchor = this._createAnchor(classes);
+        var liveLocation = WebInspector.debuggerWorkspaceBinding.createStackTraceTopFrameLiveLocation(rawLocations, this._updateAnchor.bind(this, anchor));
+        this._liveLocationsByTarget.get(target).set(anchor, liveLocation);
+        anchor[WebInspector.Linkifier._fallbackAnchorSymbol] = fallbackAnchor;
+        return anchor;
     },
 
     /**

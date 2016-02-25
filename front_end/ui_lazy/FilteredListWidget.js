@@ -296,13 +296,13 @@ WebInspector.FilteredListWidget.prototype = {
         switch (event.keyCode) {
         case WebInspector.KeyboardShortcut.Keys.Down.code:
             if (++newSelectedIndex >= this._filteredItems.length)
-                newSelectedIndex = this._filteredItems.length - 1;
+                newSelectedIndex = 0;
             this._updateSelection(newSelectedIndex, true);
             event.consume(true);
             break;
         case WebInspector.KeyboardShortcut.Keys.Up.code:
             if (--newSelectedIndex < 0)
-                newSelectedIndex = 0;
+                newSelectedIndex = this._filteredItems.length - 1;
             this._updateSelection(newSelectedIndex, false);
             event.consume(true);
             break;

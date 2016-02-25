@@ -769,7 +769,7 @@ WebInspector.ConsoleView.prototype = {
         var str = this._prompt.text();
         if (!str.length)
             return;
-        this._appendCommand(str, true);
+        this._appendCommand(str.replaceControlCharacters(), true);
     },
 
     /**

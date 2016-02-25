@@ -92,6 +92,16 @@ String.prototype.findAll = function(string)
 }
 
 /**
+ * @return {string}
+ */
+String.prototype.replaceControlCharacters = function()
+{
+    // Replace C0 and C1 control character sets with printable character.
+    // Do not replace '\n' and '\r'.
+    return this.replace(/[\u0000-\u0009\u000b\u000c\u000e-\u001f\u0080-\u009f]/g, "�");
+}
+
+/**
  * @return {boolean}
  */
 String.prototype.isWhitespace = function()

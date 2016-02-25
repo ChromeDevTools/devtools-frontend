@@ -4,13 +4,14 @@
 
 /**
  * @constructor
- * @param {!WebInspector.SASSSupport.AST} cssAST
- * @param {!Map<string, !WebInspector.SASSSupport.AST>} sassModels
+ * @param {string} cssURL
+ * @param {!Map<string, !WebInspector.SASSSupport.AST>} models
  */
-WebInspector.ASTSourceMap = function(cssAST, sassModels)
+WebInspector.ASTSourceMap = function(cssURL, models)
 {
-    this._cssAST = cssAST;
-    this._sassModels = sassModels;
+    this._cssURL = cssURL;
+    /** @type {!Map<string, !WebInspector.SASSSupport.AST>} */
+    this._models = models;
     /** @type {!Map<!WebInspector.SASSSupport.TextNode, !WebInspector.SASSSupport.TextNode>} */
     this._cssToSass = new Map();
     /** @type {!Multimap<!WebInspector.SASSSupport.TextNode, !WebInspector.SASSSupport.TextNode>} */
@@ -30,23 +31,24 @@ WebInspector.ASTSourceMap.fromSourceMap = function(astService, cssModel, sourceM
         return Promise.resolve(/** @type {?WebInspector.ASTSourceMap} */(null));
     var header = cssModel.styleSheetHeaderForId(headerIds[0]);
 
-    var sassModels = new Map();
-    var cssAST = null;
+    /** @type {!Map<string, !WebInspector.SASSSupport.AST>} */
+    var models = new Map();
     var promises = [];
     for (var url of sourceMap.sources()) {
         var contentProvider = sourceMap.sourceContentProvider(url, WebInspector.resourceTypes.SourceMapStyleSheet);
         var sassPromise = contentProvider.requestContent()
             .then(onSCSSText.bind(null, url))
-            .then(ast => sassModels.set(ast.document.url, ast));
+            .then(ast => models.set(ast.document.url, ast));
         promises.push(sassPromise);
     }
+    var cssURL = sourceMap.compiledURL();
     var cssPromise = header.requestContent()
-        .then(text => astService.parseCSS(sourceMap.compiledURL(), text || ""))
-        .then(ast => cssAST = ast);
+        .then(text => astService.parseCSS(cssURL, text || ""))
+        .then(ast => models.set(ast.document.url, ast));
     promises.push(cssPromise);
 
     return Promise.all(promises)
-        .then(() => onParsed(cssAST, sassModels, sourceMap))
+        .then(() => onParsed(cssURL, models, sourceMap))
         .catchException(/** @type {?WebInspector.ASTSourceMap} */(null));
 
     /**
@@ -60,44 +62,53 @@ WebInspector.ASTSourceMap.fromSourceMap = function(astService, cssModel, sourceM
     }
 
     /**
-     * @param {!WebInspector.SASSSupport.AST} cssAST
-     * @param {!Map<string, !WebInspector.SASSSupport.AST>} sassModels
+     * @param {string} cssURL
+     * @param {!Map<string, !WebInspector.SASSSupport.AST>} models
      * @param {!WebInspector.SourceMap} sourceMap
+     * @return {!WebInspector.ASTSourceMap}
      */
-    function onParsed(cssAST, sassModels, sourceMap)
+    function onParsed(cssURL, models, sourceMap)
     {
-        var mapping = new WebInspector.ASTSourceMap(cssAST, sassModels);
+        var map = new WebInspector.ASTSourceMap(cssURL, models);
         //FIXME: this works O(N^2).
-        cssAST.visit(map);
-        return mapping;
+        map.cssAST().visit(onNode);
+        return map;
 
         /**
          * @param {!WebInspector.SASSSupport.Node} cssNode
          */
-        function map(cssNode)
+        function onNode(cssNode)
         {
             if (!(cssNode instanceof WebInspector.SASSSupport.TextNode))
                 return;
             var entry = sourceMap.findEntry(cssNode.range.endLine, cssNode.range.endColumn);
             if (!entry || !entry.sourceURL || typeof entry.sourceLineNumber === "undefined" || typeof entry.sourceColumnNumber === "undefined")
                 return;
-            var sassAST = sassModels.get(entry.sourceURL);
+            var sassAST = models.get(entry.sourceURL);
             if (!sassAST)
                 return;
             var sassNode = sassAST.findNodeForPosition(entry.sourceLineNumber, entry.sourceColumnNumber);
             if (sassNode)
-                mapping.mapCssToSass(cssNode, sassNode);
+                map.mapCssToSass(cssNode, sassNode);
         }
     }
 }
 
 WebInspector.ASTSourceMap.prototype = {
     /**
+     * @return {string}
+     */
+    cssURL: function()
+    {
+        return this._cssURL;
+    },
+
+    /**
      * @return {!WebInspector.SASSSupport.AST}
      */
     cssAST: function()
     {
-        return this._cssAST;
+        return /** @type {!WebInspector.SASSSupport.AST} */(this._models.get(this._cssURL));
     },
 
     /**
@@ -105,7 +116,17 @@ WebInspector.ASTSourceMap.prototype = {
      */
     sassModels: function()
     {
-        return this._sassModels;
+        var sassModels = new Map(this._models);
+        sassModels.delete(this._cssURL);
+        return sassModels;
+    },
+
+    /**
+     * @return {!Map<string, !WebInspector.SASSSupport.AST>}
+     */
+    models: function()
+    {
+        return new Map(this._models);
     },
 
     /**
@@ -167,39 +188,31 @@ WebInspector.ASTSourceMap.prototype = {
     },
 
     /**
-     * @param {!WebInspector.SASSSupport.ASTDiff} cssDiff
+     * @param {!Array<!WebInspector.SASSSupport.AST>} updated
+     * @param {!Map<!WebInspector.SASSSupport.Node, !WebInspector.SASSSupport.Node>=} outNodeMapping
      * @return {!WebInspector.ASTSourceMap}
      */
-    rebaseForCSSDiff: function(cssDiff)
+    rebase: function(updated, outNodeMapping)
     {
-        var newMapping = new WebInspector.ASTSourceMap(cssDiff.newAST, this._sassModels);
-        var cssNodes = this._cssToSass.keysArray();
-        for (var i = 0; i < cssNodes.length; ++i) {
-            var cssNode = cssNodes[i];
-            var sassNode = this._cssToSass.get(cssNode);
-            var mappedNode = cssDiff.mapping.get(cssNode);
-            if (mappedNode && sassNode)
-                newMapping.mapCssToSass(mappedNode, sassNode);
-        }
-        return newMapping;
-    },
+        outNodeMapping = outNodeMapping || new Map();
+        outNodeMapping.clear();
 
-    /**
-     * @param {!WebInspector.SASSSupport.ASTDiff} sassDiff
-     * @return {!WebInspector.ASTSourceMap}
-     */
-    rebaseForSASSDiff: function(sassDiff)
-    {
-        var sassModels = new Map(this._sassModels);
-        sassModels.set(sassDiff.url, sassDiff.newAST);
-        var newMapping = new WebInspector.ASTSourceMap(this._cssAST, sassModels);
+        var models = new Map(this._models);
+        for (var newAST of updated) {
+            var oldAST = models.get(newAST.document.url);
+            var equal = oldAST.match(newAST, outNodeMapping);
+            console.assert(equal);
+            models.set(newAST.document.url, newAST);
+        }
+
+        var newMapping = new WebInspector.ASTSourceMap(this._cssURL, models);
         var cssNodes = this._cssToSass.keysArray();
         for (var i = 0; i < cssNodes.length; ++i) {
             var cssNode = cssNodes[i];
-            var sassNode = this._cssToSass.get(cssNode);
-            var mappedNode = sassNode.document.url === sassDiff.url ? sassDiff.mapping.get(sassNode) : sassNode;
-            if (mappedNode)
-                newMapping.mapCssToSass(cssNode, mappedNode);
+            var sassNode = /** @type {!WebInspector.SASSSupport.TextNode} */(this._cssToSass.get(cssNode));
+            var mappedCSSNode = /** @type {!WebInspector.SASSSupport.TextNode} */(outNodeMapping.get(cssNode) || cssNode);
+            var mappedSASSNode = /** @type {!WebInspector.SASSSupport.TextNode} */(outNodeMapping.get(sassNode) || sassNode);
+            newMapping.mapCssToSass(mappedCSSNode, mappedSASSNode);
         }
         return newMapping;
     },

@@ -326,6 +326,20 @@ WebInspector.SASSSupport.TextNode.prototype = {
         return new WebInspector.SASSSupport.TextNode(document, this.text, this.range.clone());
     },
 
+    /**
+     * @param {!WebInspector.SASSSupport.TextNode} other
+     * @param {!Map<!WebInspector.SASSSupport.Node, !WebInspector.SASSSupport.Node>=} outNodeMapping
+     * @return {boolean}
+     */
+    match: function(other, outNodeMapping)
+    {
+        if (this.text.trim() !== other.text.trim())
+            return false;
+        if (outNodeMapping)
+            outNodeMapping.set(this, other);
+        return true;
+    },
+
     __proto__: WebInspector.SASSSupport.Node.prototype
 }
 
@@ -367,6 +381,20 @@ WebInspector.SASSSupport.Property.prototype = {
         callback(this);
         callback(this.name);
         callback(this.value);
+    },
+
+    /**
+     * @param {!WebInspector.SASSSupport.Property} other
+     * @param {!Map<!WebInspector.SASSSupport.Node, !WebInspector.SASSSupport.Node>=} outNodeMapping
+     * @return {boolean}
+     */
+    match: function(other, outNodeMapping)
+    {
+        if (this.disabled !== other.disabled)
+            return false;
+        if (outNodeMapping)
+            outNodeMapping.set(this, other);
+        return this.name.match(other.name, outNodeMapping) && this.value.match(other.value, outNodeMapping);
     },
 
     /**
@@ -454,6 +482,25 @@ WebInspector.SASSSupport.Rule.prototype = {
         callback(this);
         for (var i = 0; i < this.properties.length; ++i)
             this.properties[i].visit(callback);
+    },
+
+    /**
+     * @param {!WebInspector.SASSSupport.Rule} other
+     * @param {!Map<!WebInspector.SASSSupport.Node, !WebInspector.SASSSupport.Node>=} outNodeMapping
+     * @return {boolean}
+     */
+    match: function(other, outNodeMapping)
+    {
+        if (this.selector !== other.selector)
+            return false;
+        if (this.properties.length !== other.properties.length)
+            return false;
+        if (outNodeMapping)
+            outNodeMapping.set(this, other);
+        var result = true;
+        for (var i = 0; result && i < this.properties.length; ++i)
+            result = result && this.properties[i].match(other.properties[i], outNodeMapping);
+        return result;
     },
 
     _addTrailingSemicolon: function()
@@ -552,6 +599,25 @@ WebInspector.SASSSupport.AST.prototype = {
         for (var i = 0; i < this.rules.length; ++i)
             rules.push(this.rules[i].clone(document));
         return new WebInspector.SASSSupport.AST(document, rules);
+    },
+
+    /**
+     * @param {!WebInspector.SASSSupport.AST} other
+     * @param {!Map<!WebInspector.SASSSupport.Node, !WebInspector.SASSSupport.Node>=} outNodeMapping
+     * @return {boolean}
+     */
+    match: function(other, outNodeMapping)
+    {
+        if (other.document.url !== this.document.url)
+            return false;
+        if (other.rules.length !== this.rules.length)
+            return false;
+        if (outNodeMapping)
+            outNodeMapping.set(this, other);
+        var result = true;
+        for (var i = 0; result && i < this.rules.length; ++i)
+            result = result && this.rules[i].match(other.rules[i], outNodeMapping);
+        return result;
     },
 
     /**

@@ -72,6 +72,15 @@ WebInspector.CPUFlameChartDataProvider.prototype = {
     },
 
     /**
+     * @return {number}
+     * @override
+     */
+    groupSeparatorHeight: function()
+    {
+        return 5;
+    },
+
+    /**
      * @override
      * @param {number} startTime
      * @param {number} endTime
@@ -180,7 +189,7 @@ WebInspector.CPUFlameChartDataProvider.prototype = {
 
         this._maxStackDepth = maxDepth;
 
-        this._timelineData = new WebInspector.FlameChart.TimelineData(entryLevels, entryTotalTimes, entryStartTimes);
+        this._timelineData = new WebInspector.FlameChart.TimelineData(entryLevels, entryTotalTimes, entryStartTimes, null);
 
         /** @type {!Array.<!ProfilerAgent.CPUProfileNode>} */
         this._entryNodes = entryNodes;

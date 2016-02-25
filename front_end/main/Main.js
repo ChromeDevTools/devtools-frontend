@@ -214,7 +214,7 @@ WebInspector.Main.prototype = {
         new WebInspector.Main.InspectedNodeRevealer();
         new WebInspector.NetworkPanelIndicator();
         new WebInspector.SourcesPanelIndicator();
-        new WebInspector.AutoAttachToCreatedPagesSync();
+        new WebInspector.BackendSettingsSync();
         WebInspector.domBreakpointsSidebarPane = new WebInspector.DOMBreakpointsSidebarPane();
 
         WebInspector.actionRegistry = new WebInspector.ActionRegistry();
@@ -1081,19 +1081,22 @@ WebInspector.TargetCrashedScreen.prototype = {
  * @constructor
  * @implements {WebInspector.TargetManager.Observer}
  */
-WebInspector.AutoAttachToCreatedPagesSync = function()
+WebInspector.BackendSettingsSync = function()
 {
-    this._setting = WebInspector.settings.moduleSetting("autoAttachToCreatedPages");
-    this._setting.addChangeListener(this._update, this);
+    this._autoAttachSetting = WebInspector.settings.moduleSetting("autoAttachToCreatedPages");
+    this._autoAttachSetting.addChangeListener(this._update, this);
+    this._disableJavascriptSetting = WebInspector.settings.moduleSetting("javaScriptDisabled");
+    this._disableJavascriptSetting.addChangeListener(this._update, this);
     WebInspector.targetManager.observeTargets(this, WebInspector.Target.Type.Page);
 }
 
-WebInspector.AutoAttachToCreatedPagesSync.prototype = {
+WebInspector.BackendSettingsSync.prototype = {
     _update: function()
     {
-        var value = this._setting.get();
-        for (var target of WebInspector.targetManager.targets(WebInspector.Target.Type.Page))
-            target.pageAgent().setAutoAttachToCreatedPages(value);
+        for (var target of WebInspector.targetManager.targets(WebInspector.Target.Type.Page)) {
+            target.pageAgent().setAutoAttachToCreatedPages(this._autoAttachSetting.get());
+            target.emulationAgent().setScriptExecutionDisabled(this._disableJavascriptSetting.get());
+        }
     },
 
     /**
@@ -1102,7 +1105,8 @@ WebInspector.AutoAttachToCreatedPagesSync.prototype = {
      */
     targetAdded: function(target)
     {
-        target.pageAgent().setAutoAttachToCreatedPages(this._setting.get());
+        target.pageAgent().setAutoAttachToCreatedPages(this._autoAttachSetting.get());
+        target.emulationAgent().setScriptExecutionDisabled(this._disableJavascriptSetting.get());
     },
 
     /**

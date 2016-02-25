@@ -154,6 +154,8 @@ WebInspector.SASSProcessor._editsFromCSSDiff = function(cssDiff, map)
             operation = WebInspector.SASSProcessor.TogglePropertyOperation.fromCSSChange(change, map);
         else if (change.type === T.PropertyRemoved)
             operation = WebInspector.SASSProcessor.RemovePropertyOperation.fromCSSChange(change, map);
+        else if (change.type === T.PropertyAdded)
+            operation = WebInspector.SASSProcessor.InsertPropertiesOperation.fromCSSChange(change, map);
         if (!operation) {
             WebInspector.console.error("Operation ignored: " + change.type);
             continue;
@@ -430,6 +432,116 @@ WebInspector.SASSProcessor.RemovePropertyOperation.prototype = {
     {
         var sassProperty = /** @type {?WebInspector.SASSSupport.Property} */(nodeMapping.get(this._sassProperty)) || this._sassProperty;
         return new WebInspector.SASSProcessor.RemovePropertyOperation(newMap, sassProperty);
+    },
+
+    __proto__: WebInspector.SASSProcessor.EditOperation.prototype
+}
+
+/**
+ * @constructor
+ * @extends {WebInspector.SASSProcessor.EditOperation}
+ * @param {!WebInspector.ASTSourceMap} map
+ * @param {!WebInspector.SASSSupport.Property} sassAnchor
+ * @param {boolean} insertBefore
+ * @param {!Array<string>} propertyNames
+ * @param {!Array<string>} propertyValues
+ * @param {!Array<boolean>} disabledStates
+ */
+WebInspector.SASSProcessor.InsertPropertiesOperation = function(map, sassAnchor, insertBefore, propertyNames, propertyValues, disabledStates)
+{
+    console.assert(propertyNames.length === propertyValues.length && propertyValues.length === disabledStates.length);
+    WebInspector.SASSProcessor.EditOperation.call(this, map, sassAnchor.document.url);
+    this._sassAnchor = sassAnchor;
+    this._insertBefore = insertBefore;
+    this._nameTexts = propertyNames;
+    this._valueTexts = propertyValues;
+    this._disabledStates = disabledStates;
+}
+
+/**
+ * @param {!WebInspector.SASSSupport.PropertyChange} change
+ * @param {!WebInspector.ASTSourceMap} map
+ * @return {?WebInspector.SASSProcessor.InsertPropertiesOperation}
+ */
+WebInspector.SASSProcessor.InsertPropertiesOperation.fromCSSChange = function(change, map)
+{
+    var insertBefore = false;
+    var cssAnchor = null;
+    var sassAnchor = null;
+    if (change.oldPropertyIndex) {
+        cssAnchor = change.oldRule.properties[change.oldPropertyIndex - 1].name;
+        sassAnchor = map.toSASSNode(cssAnchor);
+    } else {
+        insertBefore = true;
+        cssAnchor = change.oldRule.properties[0].name;
+        sassAnchor = map.toSASSNode(cssAnchor);
+    }
+    if (!sassAnchor)
+        return null;
+    var insertedProperty = /** @type {!WebInspector.SASSSupport.Property} */(change.newProperty());
+    console.assert(insertedProperty, "InsertPropertiesOperation must have inserted CSS property");
+    var names = [insertedProperty.name.text];
+    var values = [insertedProperty.value.text];
+    var disabledStates = [insertedProperty.disabled];
+    return new WebInspector.SASSProcessor.InsertPropertiesOperation(map, sassAnchor.parent, insertBefore, names, values, disabledStates);
+}
+
+WebInspector.SASSProcessor.InsertPropertiesOperation.prototype = {
+    /**
+     * @override
+     * @param {!WebInspector.SASSProcessor.EditOperation} other
+     * @return {boolean}
+     */
+    merge: function(other)
+    {
+        if (!(other instanceof WebInspector.SASSProcessor.InsertPropertiesOperation))
+            return false;
+        if (this._sassAnchor !== other._sassAnchor || this._insertBefore !== other._insertBefore)
+            return false;
+        var names = new Set(this._nameTexts);
+        for (var i = 0; i < other._nameTexts.length; ++i) {
+            var nameText = other._nameTexts[i];
+            if (names.has(nameText))
+                continue;
+            this._nameTexts.push(nameText);
+            this._valueTexts.push(other._valueTexts[i]);
+            this._disabledStates.push(other._disabledStates[i]);
+        }
+        return true;
+    },
+
+    /**
+     * @override
+     * @return {!Array<!WebInspector.SASSSupport.Rule>}
+     */
+    perform: function()
+    {
+        var cssRules = [];
+        var sassRule = this._sassAnchor.parent;
+        var newSASSProperties = sassRule.insertProperties(this._nameTexts, this._valueTexts, this._disabledStates, this._sassAnchor, this._insertBefore);
+        var cssAnchors = this.map.toCSSProperties(this._sassAnchor);
+        for (var cssAnchor of cssAnchors) {
+            var cssRule = cssAnchor.parent;
+            cssRules.push(cssRule);
+            var newCSSProperties = cssRule.insertProperties(this._nameTexts, this._valueTexts, this._disabledStates, cssAnchor, this._insertBefore);
+            for (var i = 0; i < newCSSProperties.length; ++i) {
+                this.map.mapCssToSass(newCSSProperties[i].name, newSASSProperties[i].name);
+                this.map.mapCssToSass(newCSSProperties[i].value, newSASSProperties[i].value);
+            }
+        }
+        return cssRules;
+    },
+
+    /**
+     * @override
+     * @param {!WebInspector.ASTSourceMap} newMap
+     * @param {!Map<!WebInspector.SASSSupport.Node, !WebInspector.SASSSupport.Node>} nodeMapping
+     * @return {!WebInspector.SASSProcessor.InsertPropertiesOperation}
+     */
+    rebase: function(newMap, nodeMapping)
+    {
+        var sassAnchor = /** @type {?WebInspector.SASSSupport.Property} */(nodeMapping.get(this._sassAnchor)) || this._sassAnchor;
+        return new WebInspector.SASSProcessor.InsertPropertiesOperation(newMap, sassAnchor, this._insertBefore, this._nameTexts, this._valueTexts, this._disabledStates);
     },
 
     __proto__: WebInspector.SASSProcessor.EditOperation.prototype

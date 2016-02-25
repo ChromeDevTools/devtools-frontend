@@ -256,6 +256,14 @@ WebInspector.SASSSupport.ASTDocument.prototype = {
     },
 
     /**
+     * @return {boolean}
+     */
+    hasChanged: function()
+    {
+        return !!this.edits.length;
+    },
+
+    /**
      * @return {string}
      */
     newText: function()
@@ -680,6 +688,24 @@ WebInspector.SASSSupport.PropertyChange = function(type, oldRule, newRule, oldPr
     this.newRule = newRule;
     this.oldPropertyIndex = oldPropertyIndex;
     this.newPropertyIndex = newPropertyIndex;
+}
+
+WebInspector.SASSSupport.PropertyChange.prototype = {
+    /**
+     * @return {?WebInspector.SASSSupport.Property}
+     */
+    oldProperty: function()
+    {
+        return this.oldRule.properties[this.oldPropertyIndex] || null;
+    },
+
+    /**
+     * @return {?WebInspector.SASSSupport.Property}
+     */
+    newProperty: function()
+    {
+        return this.newRule.properties[this.newPropertyIndex] || null;
+    }
 }
 
 /**

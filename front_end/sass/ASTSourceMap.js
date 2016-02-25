@@ -130,6 +130,15 @@ WebInspector.ASTSourceMap.prototype = {
     },
 
     /**
+     * @param {string} url
+     * @return {?WebInspector.SASSSupport.AST}
+     */
+    modelForURL: function(url)
+    {
+        return this._models.get(url) || null;
+    },
+
+    /**
      * @param {!WebInspector.SASSSupport.TextNode} css
      * @param {!WebInspector.SASSSupport.TextNode} sass
      */
@@ -190,7 +199,7 @@ WebInspector.ASTSourceMap.prototype = {
     /**
      * @param {!Array<!WebInspector.SASSSupport.AST>} updated
      * @param {!Map<!WebInspector.SASSSupport.Node, !WebInspector.SASSSupport.Node>=} outNodeMapping
-     * @return {!WebInspector.ASTSourceMap}
+     * @return {?WebInspector.ASTSourceMap}
      */
     rebase: function(updated, outNodeMapping)
     {
@@ -200,21 +209,21 @@ WebInspector.ASTSourceMap.prototype = {
         var models = new Map(this._models);
         for (var newAST of updated) {
             var oldAST = models.get(newAST.document.url);
-            var equal = oldAST.match(newAST, outNodeMapping);
-            console.assert(equal);
+            if (!oldAST.match(newAST, outNodeMapping))
+                return null;
             models.set(newAST.document.url, newAST);
         }
 
-        var newMapping = new WebInspector.ASTSourceMap(this._cssURL, models);
+        var newMap = new WebInspector.ASTSourceMap(this._cssURL, models);
         var cssNodes = this._cssToSass.keysArray();
         for (var i = 0; i < cssNodes.length; ++i) {
             var cssNode = cssNodes[i];
             var sassNode = /** @type {!WebInspector.SASSSupport.TextNode} */(this._cssToSass.get(cssNode));
             var mappedCSSNode = /** @type {!WebInspector.SASSSupport.TextNode} */(outNodeMapping.get(cssNode) || cssNode);
             var mappedSASSNode = /** @type {!WebInspector.SASSSupport.TextNode} */(outNodeMapping.get(sassNode) || sassNode);
-            newMapping.mapCssToSass(mappedCSSNode, mappedSASSNode);
+            newMap.mapCssToSass(mappedCSSNode, mappedSASSNode);
         }
-        return newMapping;
+        return newMap;
     },
 
     /**

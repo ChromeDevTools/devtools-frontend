@@ -1273,6 +1273,16 @@ Set.prototype.valuesArray = function()
 }
 
 /**
+ * @param {!Iterable<T>} iterable
+ * @template T
+ */
+Set.prototype.addAll = function(iterable)
+{
+    for (var e of iterable)
+        this.add(e);
+}
+
+/**
  * @return {T}
  * @template T
  */

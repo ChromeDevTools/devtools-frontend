@@ -121,6 +121,7 @@
         'devtools_sass_js_files': [
             'front_end/sass/ASTService.js',
             'front_end/sass/ASTSourceMap.js',
+            'front_end/sass/SASSProcessor.js',
             'front_end/sass/SASSSupport.js',
         ],
         'devtools_screencast_js_files': [

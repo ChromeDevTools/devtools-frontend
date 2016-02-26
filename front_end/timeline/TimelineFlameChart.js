@@ -82,7 +82,7 @@ WebInspector.TimelineFlameChartDataProviderBase.prototype = {
      */
     groupSeparatorHeight: function()
     {
-        return 12;
+        return 3;
     },
 
     /**

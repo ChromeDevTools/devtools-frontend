@@ -1356,22 +1356,19 @@ WebInspector.FlameChart.prototype = {
             this._drawCollapsedOverviewForGroup(offset + 1, group.startLevel, endLevel);
         });
 
-        var headerX = 2;
+        var headerLeftPadding = 6;
         var arrowSide = 8;
-        var arrowHeight = arrowSide * Math.sqrt(3) / 2;
-        var expansionArrowX = headerX + arrowHeight;
+        var expansionArrowX = headerLeftPadding + arrowSide / 2;
         context.font = "11px " + WebInspector.fontFamily();
 
         context.save();
         context.fillStyle = "rgba(255, 255, 255, 0.5)";
-        context.shadowColor = "#fff";
-        context.shadowBlur = 10;
         forEachGroup(firstVisibleGroup, drawBackground.bind(this));
         context.restore();
 
-        context.fillStyle = "#888888";
+        context.fillStyle = "#6e6e6e";
         context.beginPath();
-        forEachGroup(firstVisibleGroup, (offset, index, group) => drawExpansionArrow(expansionArrowX, offset + barHeight / 2, group.expanded));
+        forEachGroup(firstVisibleGroup, (offset, index, group) => drawExpansionArrow(expansionArrowX, offset + textBaseHeight - arrowSide / 2, group.expanded));
         context.fill();
 
         context.fillStyle = "#222";
@@ -1405,10 +1402,10 @@ WebInspector.FlameChart.prototype = {
          */
         function drawBackground(offset, index, group)
         {
-            var backgroundPadding = 3;
-            var textPadding = 4;
-            var width = this._measureWidth(context, group.name) + textPadding + 2 * arrowSide;
-            context.fillRect(headerX, offset + backgroundPadding, width, barHeight - 2 * backgroundPadding);
+            var vPadding = 2;
+            var hPadding = 3;
+            var width = this._measureWidth(context, group.name) + 1.5 * arrowSide + 2 * hPadding;
+            context.fillRect(headerLeftPadding - hPadding, offset + vPadding, width, barHeight - 2 * vPadding);
         }
 
         /**
@@ -1418,14 +1415,14 @@ WebInspector.FlameChart.prototype = {
          */
         function drawExpansionArrow(x, y, expanded)
         {
-            var arrowCenterOffset = arrowHeight / 3;
+            var arrowHeight = arrowSide * Math.sqrt(3) / 2;
+            var arrowCenterOffset = Math.round(arrowHeight / 2);
             context.save();
             context.translate(x, y);
             context.rotate(expanded ? Math.PI / 2 : 0);
             context.moveTo(-arrowCenterOffset, -arrowSide / 2);
             context.lineTo(-arrowCenterOffset, arrowSide / 2);
-            context.lineTo(2 * arrowCenterOffset, 0);
-            context.lineTo(-arrowCenterOffset, -arrowSide / 2);
+            context.lineTo(arrowHeight - arrowCenterOffset, 0);
             context.restore();
         }
 

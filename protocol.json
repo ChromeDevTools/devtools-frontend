@@ -633,6 +633,13 @@
                 "parameters": [
                     { "name": "show", "type": "boolean", "description": "True for showing scroll bottleneck rects" }
                 ]
+            },
+            {
+                "name": "setShowViewportSizeOnResize",
+                "description": "Paints viewport size upon main frame resize.",
+                "parameters": [
+                    { "name": "show", "type": "boolean", "description": "Whether to paint size or not." }
+                ]
             }
         ]
     },

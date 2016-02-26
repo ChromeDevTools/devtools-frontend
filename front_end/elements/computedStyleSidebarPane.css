@@ -10,18 +10,31 @@
 
 .computed-style-property {
     display: flex;
-    flex-wrap: wrap;
+    overflow: hidden;
+    flex: auto;
 }
 
 .computed-style-property .property-name {
-    width: 16em;
+    min-width: 5em;
     text-overflow: ellipsis;
     overflow: hidden;
+    flex-shrink: 1;
+    flex-basis: 16em;
+    flex-grow: 1;
 }
 
 .computed-style-property .property-value {
-    min-width: 5em;
+    margin-left: 2em;
     position: relative;
+    display: flex;
+    flex-shrink: 0;
+    flex-basis: 5em;
+    flex-grow: 10;
+}
+
+.computed-style-property .property-value-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .tree-outline li:hover .goto-source-icon {

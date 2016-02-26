@@ -167,9 +167,11 @@ WebInspector.ComputedStyleWidget.prototype = {
             colon.textContent = ":";
             propertyNameElement.appendChild(colon);
 
-            var propertyValueElement = renderer.renderValue();
-            propertyValueElement.classList.add("property-value");
-            propertyElement.appendChild(propertyValueElement);
+            var propertyValueElement = propertyElement.createChild("span", "property-value");
+
+            var propertyValueText = renderer.renderValue();
+            propertyValueText.classList.add("property-value-text");
+            propertyValueElement.appendChild(propertyValueText);
 
             var semicolon = createElementWithClass("span", "delimeter");
             semicolon.textContent = ";";

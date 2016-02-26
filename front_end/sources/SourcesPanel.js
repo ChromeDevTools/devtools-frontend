@@ -931,12 +931,8 @@ WebInspector.SourcesPanel.prototype = {
                 contextMenu.appendItem(WebInspector.UIString.capitalize("Continue to ^here"), this._continueToLocation.bind(this, uiLocation));
         }
 
-        if (contentType.hasScripts() && projectType !== WebInspector.projectTypes.Snippets) {
-            var networkURL = this._networkMapping.networkURL(uiSourceCode);
-            var url = projectType === WebInspector.projectTypes.Formatter ? uiSourceCode.url() : networkURL;
-            var isBlackboxed = WebInspector.blackboxManager.isBlackboxedUISourceCode(uiSourceCode);
-            this.sidebarPanes.callstack.appendBlackboxURLContextMenuItems(contextMenu, url, projectType === WebInspector.projectTypes.ContentScripts, isBlackboxed);
-        }
+        if (contentType.hasScripts() && projectType !== WebInspector.projectTypes.Snippets)
+            this.sidebarPanes.callstack.appendBlackboxURLContextMenuItems(contextMenu, uiSourceCode);
     },
 
     /**

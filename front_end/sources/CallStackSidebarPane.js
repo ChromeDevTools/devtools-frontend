@@ -169,9 +169,8 @@ WebInspector.CallStackSidebarPane.prototype = {
 
         contextMenu.appendItem(WebInspector.UIString.capitalize("Copy ^stack ^trace"), this._copyStackTrace.bind(this));
 
-        var isBlackboxed = WebInspector.blackboxManager.isBlackboxedRawLocation(callFrame._callFrame.location());
-        var script = callFrame._callFrame.script;
-        this.appendBlackboxURLContextMenuItems(contextMenu, script.sourceURL, script.isContentScript(), isBlackboxed);
+        var uiLocation = WebInspector.debuggerWorkspaceBinding.rawLocationToUILocation(callFrame._callFrame.location());
+        this.appendBlackboxURLContextMenuItems(contextMenu, uiLocation.uiSourceCode);
 
         contextMenu.show();
     },
@@ -193,40 +192,26 @@ WebInspector.CallStackSidebarPane.prototype = {
 
     /**
      * @param {!WebInspector.ContextMenu} contextMenu
-     * @param {string} url
-     * @param {boolean} isContentScript
-     * @param {boolean} isBlackboxed
+     * @param {!WebInspector.UISourceCode} uiSourceCode
      */
-    appendBlackboxURLContextMenuItems: function(contextMenu, url, isContentScript, isBlackboxed)
+    appendBlackboxURLContextMenuItems: function(contextMenu, uiSourceCode)
     {
-        var canBlackBox = WebInspector.blackboxManager.canBlackboxURL(url);
-        if (!isBlackboxed && !isContentScript && !canBlackBox)
-            return;
+        var canBlackbox = WebInspector.blackboxManager.canBlackboxUISourceCode(uiSourceCode);
+        var isBlackboxed = WebInspector.blackboxManager.isBlackboxedUISourceCode(uiSourceCode);
+        var isContentScript = uiSourceCode.project().type() === WebInspector.projectTypes.ContentScripts;
 
-        if (isBlackboxed) {
-            contextMenu.appendItem(WebInspector.UIString.capitalize("Stop ^blackboxing"), this._handleContextMenuBlackboxURL.bind(this, url, isContentScript, false));
-        } else {
-            if (canBlackBox)
-                contextMenu.appendItem(WebInspector.UIString.capitalize("Blackbox ^script"), this._handleContextMenuBlackboxURL.bind(this, url, false, true));
-            if (isContentScript)
-                contextMenu.appendItem(WebInspector.UIString.capitalize("Blackbox ^all ^content ^scripts"), this._handleContextMenuBlackboxURL.bind(this, url, true, true));
-        }
-    },
-
-    /**
-     * @param {string} url
-     * @param {boolean} isContentScript
-     * @param {boolean} blackbox
-     */
-    _handleContextMenuBlackboxURL: function(url, isContentScript, blackbox)
-    {
-        if (blackbox) {
-            if (isContentScript)
-                WebInspector.moduleSetting("skipContentScripts").set(true);
+        var manager = WebInspector.blackboxManager;
+        if (canBlackbox) {
+            if (isBlackboxed)
+                contextMenu.appendItem(WebInspector.UIString.capitalize("Stop ^blackboxing"), manager.unblackboxUISourceCode.bind(manager, uiSourceCode));
             else
-                WebInspector.blackboxManager.blackboxURL(url);
-        } else {
-            WebInspector.blackboxManager.unblackbox(url, isContentScript);
+                contextMenu.appendItem(WebInspector.UIString.capitalize("Blackbox ^script"), manager.blackboxUISourceCode.bind(manager, uiSourceCode));
+        }
+        if (isContentScript) {
+            if (isBlackboxed)
+                contextMenu.appendItem(WebInspector.UIString.capitalize("Stop blackboxing ^all ^content ^scripts"), manager.blackboxContentScripts.bind(manager));
+            else
+                contextMenu.appendItem(WebInspector.UIString.capitalize("Blackbox ^all ^content ^scripts"), manager.unblackboxContentScripts.bind(manager));
         }
     },
 

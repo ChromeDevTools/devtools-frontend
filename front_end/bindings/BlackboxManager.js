@@ -77,9 +77,8 @@ WebInspector.BlackboxManager.prototype = {
         var isContentScript = projectType === WebInspector.projectTypes.ContentScripts;
         if (isContentScript && WebInspector.moduleSetting("skipContentScripts").get())
             return true;
-        var networkURL = this._networkMapping.networkURL(uiSourceCode);
-        var url = projectType === WebInspector.projectTypes.Formatter ? uiSourceCode.url() : networkURL;
-        return this.isBlackboxedURL(url);
+        var url = this._uiSourceCodeURL(uiSourceCode);
+        return url ? this.isBlackboxedURL(url) : false;
     },
 
     /**
@@ -155,18 +154,63 @@ WebInspector.BlackboxManager.prototype = {
     },
 
     /**
-     * @param {string} url
+     * @param {!WebInspector.UISourceCode} uiSourceCode
+     * @return {?string}
+     */
+    _uiSourceCodeURL: function(uiSourceCode)
+    {
+        var networkURL = this._networkMapping.networkURL(uiSourceCode);
+        var projectType = uiSourceCode.project().type();
+        if (projectType === WebInspector.projectTypes.Debugger)
+            return null;
+        var url = projectType === WebInspector.projectTypes.Formatter ? uiSourceCode.url() : networkURL;
+        return url ? url : null;
+    },
+
+    /**
+     * @param {!WebInspector.UISourceCode} uiSourceCode
      * @return {boolean}
      */
-    canBlackboxURL: function(url)
+    canBlackboxUISourceCode: function(uiSourceCode)
     {
-        return !!this._urlToRegExpString(url);
+        var url = this._uiSourceCodeURL(uiSourceCode);
+        return url ? !!this._urlToRegExpString(url) : false;
+    },
+
+    /**
+     * @param {!WebInspector.UISourceCode} uiSourceCode
+     */
+    blackboxUISourceCode: function(uiSourceCode)
+    {
+        var url = this._uiSourceCodeURL(uiSourceCode);
+        if (url)
+            this._blackboxURL(url);
+    },
+
+    /**
+     * @param {!WebInspector.UISourceCode} uiSourceCode
+     */
+    unblackboxUISourceCode: function(uiSourceCode)
+    {
+        var url = this._uiSourceCodeURL(uiSourceCode);
+        if (url)
+            this._unblackboxURL(url);
+    },
+
+    blackboxContentScripts: function()
+    {
+        WebInspector.moduleSetting("skipContentScripts").set(true);
+    },
+
+    unblackboxContentScripts: function()
+    {
+        WebInspector.moduleSetting("skipContentScripts").set(false);
     },
 
     /**
      * @param {string} url
      */
-    blackboxURL: function(url)
+    _blackboxURL: function(url)
     {
         var regexPatterns = WebInspector.moduleSetting("skipStackFramesPattern").getAsArray();
         var regexValue = this._urlToRegExpString(url);
@@ -188,13 +232,9 @@ WebInspector.BlackboxManager.prototype = {
 
     /**
      * @param {string} url
-     * @param {boolean} isContentScript
      */
-    unblackbox: function(url, isContentScript)
+    _unblackboxURL: function(url)
     {
-        if (isContentScript)
-            WebInspector.moduleSetting("skipContentScripts").set(false);
-
         var regexPatterns = WebInspector.moduleSetting("skipStackFramesPattern").getAsArray();
         var regexValue = WebInspector.blackboxManager._urlToRegExpString(url);
         if (!regexValue)

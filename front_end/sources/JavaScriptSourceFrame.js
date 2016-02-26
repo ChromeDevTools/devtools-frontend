@@ -142,15 +142,16 @@ WebInspector.JavaScriptSourceFrame.prototype = {
 
     _showBlackboxInfobarIfNeeded: function()
     {
-        if (!this.uiSourceCode().contentType().hasScripts())
+        var uiSourceCode = this.uiSourceCode();
+        if (!uiSourceCode.contentType().hasScripts())
             return;
-        var projectType = this.uiSourceCode().project().type();
+        var projectType = uiSourceCode.project().type();
         if (projectType === WebInspector.projectTypes.Snippets)
             return;
-        var networkURL = WebInspector.networkMapping.networkURL(this.uiSourceCode());
-        var url = projectType === WebInspector.projectTypes.Formatter ? this.uiSourceCode().url() : networkURL;
+        var networkURL = WebInspector.networkMapping.networkURL(uiSourceCode);
+        var url = projectType === WebInspector.projectTypes.Formatter ? uiSourceCode.url() : networkURL;
         var isContentScript = projectType === WebInspector.projectTypes.ContentScripts;
-        if (!WebInspector.blackboxManager.isBlackboxedUISourceCode(this.uiSourceCode())) {
+        if (!WebInspector.blackboxManager.isBlackboxedUISourceCode(uiSourceCode)) {
             this._hideBlackboxInfobar();
             return;
         }
@@ -163,8 +164,8 @@ WebInspector.JavaScriptSourceFrame.prototype = {
 
         infobar.createDetailsRowMessage(WebInspector.UIString("Debugger will skip stepping through this script, and will not stop on exceptions"));
 
-        var scriptFile = this._scriptFileForTarget.valuesArray()[0];
-        if (scriptFile.hasSourceMapURL())
+        var scriptFile = this._scriptFileForTarget.size ? this._scriptFileForTarget.valuesArray()[0] : null;
+        if (scriptFile && scriptFile.hasSourceMapURL())
             infobar.createDetailsRowMessage(WebInspector.UIString("Source map found, but ignored for blackboxed file."));
         infobar.createDetailsRowMessage();
         infobar.createDetailsRowMessage(WebInspector.UIString("Possible ways to cancel this behavior are:"));
@@ -176,7 +177,9 @@ WebInspector.JavaScriptSourceFrame.prototype = {
 
         function unblackbox()
         {
-            WebInspector.blackboxManager.unblackbox(url, isContentScript);
+            WebInspector.blackboxManager.unblackboxUISourceCode(uiSourceCode);
+            if (projectType === WebInspector.projectTypes.ContentScripts)
+                WebInspector.blackboxManager.unblackboxContentScripts();
         }
 
         this._updateInfobars();

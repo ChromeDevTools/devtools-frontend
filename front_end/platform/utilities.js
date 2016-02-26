@@ -97,8 +97,8 @@ String.prototype.findAll = function(string)
 String.prototype.replaceControlCharacters = function()
 {
     // Replace C0 and C1 control character sets with printable character.
-    // Do not replace '\n' and '\r'.
-    return this.replace(/[\u0000-\u0009\u000b\u000c\u000e-\u001f\u0080-\u009f]/g, "�");
+    // Do not replace '\t', \n' and '\r'.
+    return this.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u0080-\u009f]/g, "�");
 }
 
 /**

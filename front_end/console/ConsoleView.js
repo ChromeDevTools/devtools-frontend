@@ -769,7 +769,7 @@ WebInspector.ConsoleView.prototype = {
         var str = this._prompt.text();
         if (!str.length)
             return;
-        this._appendCommand(str.replaceControlCharacters(), true);
+        this._appendCommand(str, true);
     },
 
     /**
@@ -1173,7 +1173,7 @@ WebInspector.ConsoleCommand.prototype = {
             this._element.message = this;
 
             this._formattedCommand = createElementWithClass("span", "console-message-text source-code");
-            this._formattedCommand.textContent = this.text;
+            this._formattedCommand.textContent = this.text.replaceControlCharacters();
             this._element.appendChild(this._formattedCommand);
 
             var javascriptSyntaxHighlighter = new WebInspector.DOMSyntaxHighlighter("text/javascript", true);

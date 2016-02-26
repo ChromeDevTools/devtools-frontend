@@ -115,6 +115,7 @@ WebInspector.ResourceTreeModel.prototype = {
     {
         if (error) {
             this._cachedResourcesProcessed = true;
+            this.dispatchEventToListeners(WebInspector.ResourceTreeModel.EventTypes.CachedResourcesLoaded);
             return;
         }
 

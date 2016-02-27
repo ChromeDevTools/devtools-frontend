@@ -109,6 +109,7 @@
         "TimelineModel.js",
         "TimelineIRModel.js",
         "TimelineJSProfile.js",
+        "TimelineLoader.js",
         "TimelineFrameModel.js",
         "TimelineEventOverview.js",
         "TimelineFlameChart.js",

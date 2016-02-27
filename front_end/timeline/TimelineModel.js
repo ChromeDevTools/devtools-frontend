@@ -551,7 +551,7 @@ WebInspector.TimelineModel.prototype = {
      */
     setEventsForTest: function(events)
     {
-        this._startCollectingTraceEvents(false);
+        this.startCollectingTraceEvents(false);
         this._tracingModel.addEvents(events);
         this.tracingComplete();
     },
@@ -658,7 +658,7 @@ WebInspector.TimelineModel.prototype = {
     /**
      * @param {boolean} fromFile
      */
-    _startCollectingTraceEvents: function(fromFile)
+    startCollectingTraceEvents: function(fromFile)
     {
         this._tracingModel.reset();
         this.reset();
@@ -670,7 +670,7 @@ WebInspector.TimelineModel.prototype = {
      */
     tracingStarted: function()
     {
-        this._startCollectingTraceEvents(false);
+        this.startCollectingTraceEvents(false);
     },
 
     /**
@@ -1348,33 +1348,6 @@ WebInspector.TimelineModel.prototype = {
         }
     },
 
-    /**
-     * @param {!Blob} file
-     * @param {!WebInspector.Progress} progress
-     */
-    loadFromFile: function(file, progress)
-    {
-        var delegate = new WebInspector.TimelineModelLoadFromFileDelegate(this, progress);
-        var fileReader = this._createFileReader(file, delegate);
-        var loader = new WebInspector.TracingModelLoader(this, new WebInspector.ProgressProxy(null), fileReader.cancel.bind(fileReader));
-        fileReader.start(loader);
-    },
-
-    /**
-     * @param {string} url
-     * @param {!WebInspector.Progress} progress
-     */
-    loadFromURL: function(url, progress)
-    {
-        var stream = new WebInspector.TracingModelLoader(this, progress);
-        WebInspector.ResourceLoader.loadAsStream(url, null, stream);
-    },
-
-    _createFileReader: function(file, delegate)
-    {
-        return new WebInspector.ChunkedFileReader(file, WebInspector.TimelineModel.TransferChunkLengthBytes, delegate);
-    },
-
     reset: function()
     {
         this._virtualThreads = [];
@@ -1627,79 +1600,6 @@ WebInspector.TimelineVisibleEventsFilter.prototype = {
 
 /**
  * @constructor
- * @implements {WebInspector.OutputStreamDelegate}
- * @param {!WebInspector.TimelineModel} model
- * @param {!WebInspector.Progress} progress
- */
-WebInspector.TimelineModelLoadFromFileDelegate = function(model, progress)
-{
-    this._model = model;
-    this._progress = progress;
-}
-
-WebInspector.TimelineModelLoadFromFileDelegate.prototype = {
-    /**
-     * @override
-     */
-    onTransferStarted: function()
-    {
-        this._progress.setTitle(WebInspector.UIString("Loading\u2026"));
-    },
-
-    /**
-     * @override
-     * @param {!WebInspector.ChunkedReader} reader
-     */
-    onChunkTransferred: function(reader)
-    {
-        if (this._progress.isCanceled()) {
-            reader.cancel();
-            this._progress.done();
-            this._model.reset();
-            return;
-        }
-
-        var totalSize = reader.fileSize();
-        if (totalSize) {
-            this._progress.setTotalWork(totalSize);
-            this._progress.setWorked(reader.loadedSize());
-        }
-    },
-
-    /**
-     * @override
-     */
-    onTransferFinished: function()
-    {
-        this._progress.done();
-    },
-
-    /**
-     * @override
-     * @param {!WebInspector.ChunkedReader} reader
-     * @param {!Event} event
-     */
-    onError: function(reader, event)
-    {
-        this._progress.done();
-        this._model.reset();
-        switch (event.target.error.code) {
-        case FileError.NOT_FOUND_ERR:
-            WebInspector.console.error(WebInspector.UIString("File \"%s\" not found.", reader.fileName()));
-            break;
-        case FileError.NOT_READABLE_ERR:
-            WebInspector.console.error(WebInspector.UIString("File \"%s\" is not readable", reader.fileName()));
-            break;
-        case FileError.ABORT_ERR:
-            break;
-        default:
-            WebInspector.console.error(WebInspector.UIString("An error occurred while reading the file \"%s\"", reader.fileName()));
-        }
-    }
-}
-
-/**
- * @constructor
  * @extends {WebInspector.TimelineModel.Filter}
  * @param {!Array<string>} excludeNames
  */
@@ -1744,191 +1644,6 @@ WebInspector.ExcludeTopLevelFilter.prototype = {
     },
 
     __proto__: WebInspector.TimelineModel.Filter.prototype
-}
-
-/**
- * @constructor
- * @implements {WebInspector.OutputStream}
- * @param {!WebInspector.TimelineModel} model
- * @param {!WebInspector.Progress} progress
- * @param {function()=} canceledCallback
- */
-WebInspector.TracingModelLoader = function(model, progress, canceledCallback)
-{
-    this._model = model;
-
-    this._canceledCallback = canceledCallback;
-    this._progress = progress;
-    this._progress.setTitle(WebInspector.UIString("Loading"));
-    this._progress.setTotalWork(WebInspector.TracingModelLoader._totalProgress);  // Unknown, will loop the values.
-
-    this._state = WebInspector.TracingModelLoader.State.Initial;
-    this._buffer = "";
-    this._firstChunk = true;
-    this._wasCanceledOnce = false;
-
-    this._loadedBytes = 0;
-    this._jsonTokenizer = new WebInspector.TextUtils.BalancedJSONTokenizer(this._writeBalancedJSON.bind(this), true);
-}
-
-WebInspector.TracingModelLoader._totalProgress = 100000;
-
-WebInspector.TracingModelLoader.State = {
-    Initial: "Initial",
-    LookingForEvents: "LookingForEvents",
-    ReadingEvents: "ReadingEvents"
-}
-
-WebInspector.TracingModelLoader.prototype = {
-    /**
-     * @override
-     * @param {string} chunk
-     */
-    write: function(chunk)
-    {
-        this._loadedBytes += chunk.length;
-        if (this._progress.isCanceled() && !this._wasCanceledOnce) {
-            this._wasCanceled = true;
-            this._reportErrorAndCancelLoading();
-            return;
-        }
-        this._progress.setWorked(this._loadedBytes % WebInspector.TracingModelLoader._totalProgress,
-                                 WebInspector.UIString("Loaded %s", Number.bytesToString(this._loadedBytes)));
-        if (this._state === WebInspector.TracingModelLoader.State.Initial) {
-            if (chunk[0] === "{")
-                this._state = WebInspector.TracingModelLoader.State.LookingForEvents;
-            else if (chunk[0] === "[")
-                this._state = WebInspector.TracingModelLoader.State.ReadingEvents;
-            else {
-                this._reportErrorAndCancelLoading(WebInspector.UIString("Malformed timeline data: Unknown JSON format"));
-                return;
-            }
-        }
-
-        if (this._state === WebInspector.TracingModelLoader.State.LookingForEvents) {
-            var objectName = "\"traceEvents\":";
-            var startPos = this._buffer.length - objectName.length;
-            this._buffer += chunk;
-            var pos = this._buffer.indexOf(objectName, startPos);
-            if (pos === -1)
-                return;
-            chunk = this._buffer.slice(pos + objectName.length)
-            this._state = WebInspector.TracingModelLoader.State.ReadingEvents;
-        }
-
-        this._jsonTokenizer.write(chunk);
-    },
-
-    /**
-     * @param {string} data
-     */
-    _writeBalancedJSON: function(data)
-    {
-        var json = data + "]";
-
-        if (this._firstChunk) {
-            this._model._startCollectingTraceEvents(true);
-        } else {
-            var commaIndex = json.indexOf(",");
-            if (commaIndex !== -1)
-                json = json.slice(commaIndex + 1);
-            json = "[" + json;
-        }
-
-        var items;
-        try {
-            items = /** @type {!Array.<!WebInspector.TracingManager.EventPayload>} */ (JSON.parse(json));
-        } catch (e) {
-            this._reportErrorAndCancelLoading(WebInspector.UIString("Malformed timeline data: %s", e.toString()));
-            return;
-        }
-
-        if (this._firstChunk) {
-            this._firstChunk = false;
-            if (this._looksLikeAppVersion(items[0])) {
-                this._reportErrorAndCancelLoading(WebInspector.UIString("Legacy Timeline format is not supported."));
-                return;
-            }
-        }
-
-        try {
-            this._model._tracingModel.addEvents(items);
-        } catch(e) {
-            this._reportErrorAndCancelLoading(WebInspector.UIString("Malformed timeline data: %s", e.toString()));
-            return;
-        }
-    },
-
-    /**
-     * @param {string=} message
-     */
-    _reportErrorAndCancelLoading: function(message)
-    {
-        if (message)
-            WebInspector.console.error(message);
-        this._model.tracingComplete();
-        this._model.reset();
-        if (this._canceledCallback)
-            this._canceledCallback();
-        this._progress.done();
-    },
-
-    _looksLikeAppVersion: function(item)
-    {
-        return typeof item === "string" && item.indexOf("Chrome") !== -1;
-    },
-
-    /**
-     * @override
-     */
-    close: function()
-    {
-        this._model._loadedFromFile = true;
-        this._model.tracingComplete();
-        if (this._progress)
-            this._progress.done();
-    }
-}
-
-/**
- * @constructor
- * @param {!WebInspector.OutputStream} stream
- * @implements {WebInspector.OutputStreamDelegate}
- */
-WebInspector.TracingTimelineSaver = function(stream)
-{
-    this._stream = stream;
-}
-
-WebInspector.TracingTimelineSaver.prototype = {
-    /**
-     * @override
-     */
-    onTransferStarted: function()
-    {
-        this._stream.write("[");
-    },
-
-    /**
-     * @override
-     */
-    onTransferFinished: function()
-    {
-        this._stream.write("]");
-    },
-
-    /**
-     * @override
-     * @param {!WebInspector.ChunkedReader} reader
-     */
-    onChunkTransferred: function(reader) { },
-
-    /**
-     * @override
-     * @param {!WebInspector.ChunkedReader} reader
-     * @param {!Event} event
-     */
-    onError: function(reader, event) { }
 }
 
 /**

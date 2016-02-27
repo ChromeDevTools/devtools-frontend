@@ -116,6 +116,7 @@
         "TimelineUIUtils.js",
         "TimelineLayersView.js",
         "TimelinePaintProfilerView.js",
+        "TimelineProfileTree.js",
         "TransformController.js",
         "PaintProfilerView.js",
         "TimelinePanel.js"

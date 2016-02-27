@@ -685,6 +685,7 @@
             'front_end/timeline/TimelineModel.js',
             'front_end/timeline/TimelinePaintProfilerView.js',
             'front_end/timeline/TimelinePanel.js',
+            'front_end/timeline/TimelineProfileTree.js',
             'front_end/timeline/TimelineTreeView.js',
             'front_end/timeline/TimelineUIUtils.js',
             'front_end/timeline/TransformController.js',

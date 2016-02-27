@@ -41,31 +41,8 @@ WebInspector.TimelineTreeView = function(model)
     this._splitWidget.setSidebarWidget(this._detailsView);
     this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SelectedNode, this._updateDetailsForSelection, this);
 
-    /** @type {?WebInspector.TimelineTreeView.ProfileTreeNode|undefined} */
+    /** @type {?WebInspector.TimelineProfileTree.Node|undefined} */
     this._lastSelectedNode;
-}
-
-/**
- * @constructor
- */
-WebInspector.TimelineTreeView.ProfileTreeNode = function()
-{
-    /** @type {number} */
-    this.totalTime;
-    /** @type {number} */
-    this.selfTime;
-    /** @type {string} */
-    this.name;
-    /** @type {string} */
-    this.color;
-    /** @type {string} */
-    this.id;
-    /** @type {!WebInspector.TracingModel.Event} */
-    this.event;
-    /** @type {?Map<string|symbol,!WebInspector.TimelineTreeView.ProfileTreeNode>} */
-    this.children;
-    /** @type {?WebInspector.TimelineTreeView.ProfileTreeNode} */
-    this.parent;
 }
 
 WebInspector.TimelineTreeView.prototype = {
@@ -102,7 +79,7 @@ WebInspector.TimelineTreeView.prototype = {
     _populateToolbar: function(parent) { },
 
     /**
-     * @param {?WebInspector.TimelineTreeView.ProfileTreeNode} node
+     * @param {?WebInspector.TimelineProfileTree.Node} node
      */
     _onHover: function(node) { },
 
@@ -116,7 +93,7 @@ WebInspector.TimelineTreeView.prototype = {
     },
 
     /**
-     * @param {!WebInspector.TimelineTreeView.ProfileTreeNode} treeNode
+     * @param {!WebInspector.TimelineProfileTree.Node} treeNode
      * @param {boolean} suppressSelectedEvent
      */
     selectProfileNode: function(treeNode, suppressSelectedEvent)
@@ -159,7 +136,7 @@ WebInspector.TimelineTreeView.prototype = {
     },
 
     /**
-     * @return {!WebInspector.TimelineTreeView.ProfileTreeNode}
+     * @return {!WebInspector.TimelineProfileTree.Node}
      */
     _buildTree: function()
     {
@@ -168,70 +145,11 @@ WebInspector.TimelineTreeView.prototype = {
 
     /**
      * @param {function(!WebInspector.TracingModel.Event):(string|symbol)=} eventIdCallback
-     * @return {!WebInspector.TimelineTreeView.ProfileTreeNode}
+     * @return {!WebInspector.TimelineProfileTree.Node}
      */
     _buildTopDownTree: function(eventIdCallback)
     {
-        // Temporarily deposit a big enough value that exceeds the max recording time.
-        var /** @const */ initialTime = 1e7;
-        var root = new WebInspector.TimelineTreeView.ProfileTreeNode();
-        root.totalTime = initialTime;
-        root.selfTime = initialTime;
-        root.name = WebInspector.UIString("Top-Down Chart");
-        root.children = /** @type {!Map<string, !WebInspector.TimelineTreeView.ProfileTreeNode>} */ (new Map());
-        var parent = root;
-
-        /**
-         * @this {WebInspector.TimelineTreeView}
-         * @param {!WebInspector.TracingModel.Event} e
-         */
-        function onStartEvent(e)
-        {
-            if (!WebInspector.TimelineModel.isVisible(this._filters, e))
-                return;
-            var time = e.endTime ? Math.min(this._endTime, e.endTime) - Math.max(this._startTime, e.startTime) : 0;
-            var id = eventIdCallback ? eventIdCallback(e) : Symbol("uniqueEventId");
-            if (!parent.children)
-                parent.children = /** @type {!Map<string,!WebInspector.TimelineTreeView.ProfileTreeNode>} */ (new Map());
-            var node = parent.children.get(id);
-            if (node) {
-                node.selfTime += time;
-                node.totalTime += time;
-            } else {
-                node = new WebInspector.TimelineTreeView.ProfileTreeNode();
-                node.totalTime = time;
-                node.selfTime = time;
-                node.parent = parent;
-                node.id = id;
-                node.event = e;
-                parent.children.set(id, node);
-            }
-            parent.selfTime -= time;
-            if (parent.selfTime < 0) {
-                console.log("Error: Negative self of " + parent.selfTime, e);
-                parent.selfTime = 0;
-            }
-            if (e.endTime)
-                parent = node;
-        }
-
-        /**
-         * @this {WebInspector.TimelineTreeView}
-         * @param {!WebInspector.TracingModel.Event} e
-         */
-        function onEndEvent(e)
-        {
-            if (!WebInspector.TimelineModel.isVisible(this._filters, e))
-                return;
-            parent = parent.parent;
-        }
-
-        var instantEventCallback = eventIdCallback ? undefined : onStartEvent.bind(this); // Ignore instant events when aggregating.
-        var events = this._model.mainThreadEvents();
-        WebInspector.TimelineModel.forEachEvent(events, onStartEvent.bind(this), onEndEvent.bind(this), instantEventCallback, this._startTime, this._endTime);
-        root.totalTime -= root.selfTime;
-        root.selfTime = 0;
-        return root;
+        return WebInspector.TimelineProfileTree.buildTopDown(this._model.mainThreadEvents(), this._filters, this._startTime, this._endTime, eventIdCallback)
     },
 
     /**
@@ -324,7 +242,7 @@ WebInspector.TimelineTreeView.prototype = {
     },
 
     /**
-     * @param {!WebInspector.TimelineTreeView.ProfileTreeNode} node
+     * @param {!WebInspector.TimelineProfileTree.Node} node
      * @return {boolean}
      */
     _showDetailsForNode: function(node)
@@ -348,7 +266,7 @@ WebInspector.TimelineTreeView.prototype = {
     },
 
     /**
-     * @param {!WebInspector.TimelineTreeView.ProfileTreeNode} treeNode
+     * @param {!WebInspector.TimelineProfileTree.Node} treeNode
      * @return {?WebInspector.TimelineTreeView.GridNode}
      */
     _dataGridNodeForTreeNode: function(treeNode)
@@ -419,7 +337,7 @@ WebInspector.TimelineTreeView.eventURL = function(event)
 /**
  * @constructor
  * @extends {WebInspector.SortableDataGridNode}
- * @param {!WebInspector.TimelineTreeView.ProfileTreeNode} profileNode
+ * @param {!WebInspector.TimelineProfileTree.Node} profileNode
  * @param {number} grandTotalTime
  * @param {number} maxSelfTime
  * @param {number} maxTotalTime
@@ -530,7 +448,7 @@ WebInspector.TimelineTreeView.GridNode.prototype = {
 /**
  * @constructor
  * @extends {WebInspector.TimelineTreeView.GridNode}
- * @param {!WebInspector.TimelineTreeView.ProfileTreeNode} profileNode
+ * @param {!WebInspector.TimelineProfileTree.Node} profileNode
  * @param {number} grandTotalTime
  * @param {number} maxSelfTime
  * @param {number} maxTotalTime
@@ -651,8 +569,8 @@ WebInspector.AggregatedTimelineTreeView.prototype = {
     },
 
     /**
-     * @param {!WebInspector.TimelineTreeView.ProfileTreeNode} treeNode
-     * @return {!Array<!WebInspector.TimelineTreeView.ProfileTreeNode>}
+     * @param {!WebInspector.TimelineProfileTree.Node} treeNode
+     * @return {!Array<!WebInspector.TimelineProfileTree.Node>}
      */
     _buildHeaviestStack: function(treeNode)
     {
@@ -693,9 +611,9 @@ WebInspector.AggregatedTimelineTreeView.prototype = {
     },
 
     /**
-     * @param {function(!WebInspector.TimelineTreeView.ProfileTreeNode):string} nodeToGroupId
-     * @param {!WebInspector.TimelineTreeView.ProfileTreeNode} node
-     * @return {!WebInspector.TimelineTreeView.ProfileTreeNode}
+     * @param {function(!WebInspector.TimelineProfileTree.Node):string} nodeToGroupId
+     * @param {!WebInspector.TimelineProfileTree.Node} node
+     * @return {!WebInspector.TimelineProfileTree.Node}
      */
     _nodeToGroupNode: function(nodeToGroupId, node)
     {
@@ -706,11 +624,11 @@ WebInspector.AggregatedTimelineTreeView.prototype = {
     /**
      * @param {string} id
      * @param {!WebInspector.TracingModel.Event} event
-     * @return {!WebInspector.TimelineTreeView.ProfileTreeNode}
+     * @return {!WebInspector.TimelineProfileTree.Node}
      */
     _buildGroupNode: function(id, event)
     {
-        var groupNode = new WebInspector.TimelineTreeView.ProfileTreeNode();
+        var groupNode = new WebInspector.TimelineProfileTree.Node();
         groupNode.id = id;
         groupNode.selfTime = 0;
         groupNode.totalTime = 0;
@@ -734,12 +652,12 @@ WebInspector.AggregatedTimelineTreeView.prototype = {
     },
 
     /**
-     * @return {?function(!WebInspector.TimelineTreeView.ProfileTreeNode):string}
+     * @return {?function(!WebInspector.TimelineProfileTree.Node):string}
      */
     _nodeToGroupIdFunction: function()
     {
         /**
-         * @param {!WebInspector.TimelineTreeView.ProfileTreeNode} node
+         * @param {!WebInspector.TimelineProfileTree.Node} node
          * @return {string}
          */
         function groupByCategory(node)
@@ -748,7 +666,7 @@ WebInspector.AggregatedTimelineTreeView.prototype = {
         }
 
         /**
-         * @param {!WebInspector.TimelineTreeView.ProfileTreeNode} node
+         * @param {!WebInspector.TimelineProfileTree.Node} node
          * @return {string}
          */
         function groupByURL(node)
@@ -758,7 +676,7 @@ WebInspector.AggregatedTimelineTreeView.prototype = {
 
         /**
          * @param {boolean} groupSubdomains
-         * @param {!WebInspector.TimelineTreeView.ProfileTreeNode} node
+         * @param {!WebInspector.TimelineProfileTree.Node} node
          * @return {string}
          */
         function groupByDomain(groupSubdomains, node)
@@ -787,7 +705,7 @@ WebInspector.AggregatedTimelineTreeView.prototype = {
             for (var context of target.runtimeModel.executionContexts())
                 executionContextNamesByOrigin.set(context.origin, context.name);
         }
-        var groupByMap = /** @type {!Map<!WebInspector.AggregatedTimelineTreeView.GroupBy,?function(!WebInspector.TimelineTreeView.ProfileTreeNode):string>} */ (new Map([
+        var groupByMap = /** @type {!Map<!WebInspector.AggregatedTimelineTreeView.GroupBy,?function(!WebInspector.TimelineProfileTree.Node):string>} */ (new Map([
             [WebInspector.AggregatedTimelineTreeView.GroupBy.None, null],
             [WebInspector.AggregatedTimelineTreeView.GroupBy.Category, groupByCategory],
             [WebInspector.AggregatedTimelineTreeView.GroupBy.Subdomain, groupByDomain.bind(null, false)],
@@ -799,7 +717,7 @@ WebInspector.AggregatedTimelineTreeView.prototype = {
 
     /**
      * @override
-     * @param {!WebInspector.TimelineTreeView.ProfileTreeNode} node
+     * @param {!WebInspector.TimelineProfileTree.Node} node
      * @return {boolean}
      */
     _showDetailsForNode: function(node)
@@ -827,7 +745,7 @@ WebInspector.CallTreeTimelineTreeView = function(model)
 WebInspector.CallTreeTimelineTreeView.prototype = {
     /**
      * @override
-     * @return {!WebInspector.TimelineTreeView.ProfileTreeNode}
+     * @return {!WebInspector.TimelineProfileTree.Node}
      */
     _buildTree: function()
     {
@@ -836,8 +754,8 @@ WebInspector.CallTreeTimelineTreeView.prototype = {
     },
 
     /**
-     * @param {!WebInspector.TimelineTreeView.ProfileTreeNode} topDownTree
-     * @return {!WebInspector.TimelineTreeView.ProfileTreeNode}
+     * @param {!WebInspector.TimelineProfileTree.Node} topDownTree
+     * @return {!WebInspector.TimelineProfileTree.Node}
      */
     _performTopDownTreeGrouping: function(topDownTree)
     {
@@ -875,7 +793,7 @@ WebInspector.BottomUpTimelineTreeView = function(model)
 WebInspector.BottomUpTimelineTreeView.prototype = {
     /**
      * @override
-     * @return {!WebInspector.TimelineTreeView.ProfileTreeNode}
+     * @return {!WebInspector.TimelineProfileTree.Node}
      */
     _buildTree: function()
     {
@@ -883,89 +801,7 @@ WebInspector.BottomUpTimelineTreeView.prototype = {
         this._groupNodes = new Map();
         var nodeToGroupId = this._nodeToGroupIdFunction();
         var nodeToGroupNode = nodeToGroupId ? this._nodeToGroupNode.bind(this, nodeToGroupId) : null;
-        return this._buildBottomUpTree(topDown, nodeToGroupNode);
-    },
-
-    /**
-     * @param {!WebInspector.TimelineTreeView.ProfileTreeNode} topDownTree
-     * @param {?function(!WebInspector.TimelineTreeView.ProfileTreeNode):!WebInspector.TimelineTreeView.ProfileTreeNode=} groupingCallback
-     * @return {!WebInspector.TimelineTreeView.ProfileTreeNode}
-     */
-    _buildBottomUpTree: function(topDownTree, groupingCallback)
-    {
-        var buRoot = new WebInspector.TimelineTreeView.ProfileTreeNode();
-        buRoot.selfTime = 0;
-        buRoot.totalTime = 0;
-        buRoot.name = WebInspector.UIString("Bottom-Up Chart");
-        /** @type {!Map<string, !WebInspector.TimelineTreeView.ProfileTreeNode>} */
-        buRoot.children = new Map();
-        var nodesOnStack = /** @type {!Set<string>} */ (new Set());
-        if (topDownTree.children)
-            topDownTree.children.forEach(processNode);
-        buRoot.totalTime = topDownTree.totalTime;
-
-        /**
-         * @param {!WebInspector.TimelineTreeView.ProfileTreeNode} tdNode
-         */
-        function processNode(tdNode)
-        {
-            var buParent = groupingCallback && groupingCallback(tdNode) || buRoot;
-            if (buParent !== buRoot) {
-                buRoot.children.set(buParent.id, buParent);
-                buParent.parent = buRoot;
-            }
-            appendNode(tdNode, buParent);
-            var hadNode = nodesOnStack.has(tdNode.id);
-            if (!hadNode)
-                nodesOnStack.add(tdNode.id);
-            if (tdNode.children)
-                tdNode.children.forEach(processNode);
-            if (!hadNode)
-                nodesOnStack.delete(tdNode.id);
-        }
-
-        /**
-         * @param {!WebInspector.TimelineTreeView.ProfileTreeNode} tdNode
-         * @param {!WebInspector.TimelineTreeView.ProfileTreeNode} buParent
-         */
-        function appendNode(tdNode, buParent)
-        {
-            var selfTime = tdNode.selfTime;
-            var totalTime = tdNode.totalTime;
-            buParent.selfTime += selfTime;
-            buParent.totalTime += selfTime;
-            while (tdNode.parent) {
-                if (!buParent.children)
-                    buParent.children = /** @type {!Map<string,!WebInspector.TimelineTreeView.ProfileTreeNode>} */ (new Map());
-                var id = tdNode.id;
-                var buNode = buParent.children.get(id);
-                if (!buNode) {
-                    buNode = new WebInspector.TimelineTreeView.ProfileTreeNode();
-                    buNode.selfTime = selfTime;
-                    buNode.totalTime = totalTime;
-                    buNode.name = tdNode.name;
-                    buNode.event = tdNode.event;
-                    buNode.id = id;
-                    buNode.parent = buParent;
-                    buParent.children.set(id, buNode);
-                } else {
-                    buNode.selfTime += selfTime;
-                    if (!nodesOnStack.has(id))
-                        buNode.totalTime += totalTime;
-                }
-                tdNode = tdNode.parent;
-                buParent = buNode;
-            }
-        }
-
-        // Purge zero self time nodes.
-        var rootChildren = buRoot.children;
-        for (var item of rootChildren.entries()) {
-            if (item[1].selfTime === 0)
-                rootChildren.delete(item[0]);
-        }
-
-        return buRoot;
+        return WebInspector.TimelineProfileTree.buildBottomUp(topDown, nodeToGroupNode);
     },
 
     __proto__: WebInspector.AggregatedTimelineTreeView.prototype
@@ -1003,7 +839,7 @@ WebInspector.EventsTimelineTreeView.prototype = {
 
     /**
      * @override
-     * @return {!WebInspector.TimelineTreeView.ProfileTreeNode}
+     * @return {!WebInspector.TimelineProfileTree.Node}
      */
     _buildTree: function()
     {
@@ -1021,7 +857,7 @@ WebInspector.EventsTimelineTreeView.prototype = {
 
     /**
      * @param {!WebInspector.TracingModel.Event} event
-     * @return {?WebInspector.TimelineTreeView.ProfileTreeNode}
+     * @return {?WebInspector.TimelineProfileTree.Node}
      */
     _findNodeWithEvent: function(event)
     {
@@ -1033,7 +869,7 @@ WebInspector.EventsTimelineTreeView.prototype = {
                 iterators.pop();
                 continue;
             }
-            var child = /** @type {!WebInspector.TimelineTreeView.ProfileTreeNode} */ (iterator.value);
+            var child = /** @type {!WebInspector.TimelineProfileTree.Node} */ (iterator.value);
             if (child.event === event)
                 return child;
             if (child.children)
@@ -1079,7 +915,7 @@ WebInspector.EventsTimelineTreeView.prototype = {
 
     /**
      * @override
-     * @param {!WebInspector.TimelineTreeView.ProfileTreeNode} node
+     * @param {!WebInspector.TimelineProfileTree.Node} node
      * @return {boolean}
      */
     _showDetailsForNode: function(node)
@@ -1102,7 +938,7 @@ WebInspector.EventsTimelineTreeView.prototype = {
 
     /**
      * @override
-     * @param {?WebInspector.TimelineTreeView.ProfileTreeNode} node
+     * @param {?WebInspector.TimelineProfileTree.Node} node
      */
     _onHover: function(node)
     {
@@ -1141,8 +977,8 @@ WebInspector.TimelineStackView.Events = {
 
 WebInspector.TimelineStackView.prototype = {
     /**
-     * @param {!Array<!WebInspector.TimelineTreeView.ProfileTreeNode>} stack
-     * @param {!WebInspector.TimelineTreeView.ProfileTreeNode} selectedNode
+     * @param {!Array<!WebInspector.TimelineProfileTree.Node>} stack
+     * @param {!WebInspector.TimelineProfileTree.Node} selectedNode
      */
     setStack: function(stack, selectedNode)
     {
@@ -1160,7 +996,7 @@ WebInspector.TimelineStackView.prototype = {
     },
 
     /**
-     * @return {?WebInspector.TimelineTreeView.ProfileTreeNode}
+     * @return {?WebInspector.TimelineProfileTree.Node}
      */
     selectedTreeNode: function()
     {

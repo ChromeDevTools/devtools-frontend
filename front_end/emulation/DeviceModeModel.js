@@ -51,10 +51,6 @@ WebInspector.DeviceModeModel = function(updateCallback)
     this._device = null;
     /** @type {?WebInspector.EmulatedDevice.Mode} */
     this._mode = null;
-    /** @type {boolean} */
-    this._touchEnabled = false;
-    /** @type {string} */
-    this._touchConfiguration = "";
     /** @type {number} */
     this._fitScale = 1;
 
@@ -105,7 +101,6 @@ WebInspector.DeviceModeModel.deviceScaleFactorValidator = function(value)
     return false;
 }
 
-WebInspector.DeviceModeModel._touchEventsScriptIdSymbol = Symbol("DeviceModeModel.touchEventsScriptIdSymbol");
 WebInspector.DeviceModeModel._defaultMobileUserAgent = "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.76 Mobile Safari/537.36";
 WebInspector.DeviceModeModel.defaultMobileScaleFactor = 2;
 
@@ -337,15 +332,10 @@ WebInspector.DeviceModeModel.prototype = {
     {
         if (!this._target) {
             this._target = target;
-            var domModel = WebInspector.DOMModel.fromTarget(this._target);
-            if (domModel)
-                domModel.addEventListener(WebInspector.DOMModel.Events.InspectModeWillBeToggled, this._reapplyTouch, this);
             if (this._onTargetAvailable) {
                 var callback = this._onTargetAvailable;
                 this._onTargetAvailable = null;
                 callback();
-            } else {
-                this._reapplyTouch();
             }
         }
     },
@@ -356,12 +346,8 @@ WebInspector.DeviceModeModel.prototype = {
      */
     targetRemoved: function(target)
     {
-        if (this._target === target) {
-            var domModel = WebInspector.DOMModel.fromTarget(this._target);
-            if (domModel)
-                domModel.removeEventListener(WebInspector.DOMModel.Events.InspectModeWillBeToggled, this._reapplyTouch, this);
+        if (this._target === target)
             this._target = null;
-        }
     },
 
     _scaleSettingChanged: function()
@@ -422,11 +408,13 @@ WebInspector.DeviceModeModel.prototype = {
                 this._appliedUserAgentType = this._device.touch() ? WebInspector.DeviceModeModel.UA.DesktopTouch : WebInspector.DeviceModeModel.UA.Desktop;
             this._applyDeviceMetrics(new Size(orientation.width, orientation.height), this._mode.insets, this._scaleSetting.get(), this._device.deviceScaleFactor, this._device.mobile(), this._mode.orientation == WebInspector.EmulatedDevice.Horizontal ? "landscapePrimary" : "portraitPrimary", resetPageScaleFactor);
             this._applyUserAgent(this._device.userAgent);
+            this._applyTouch(this._device.touch(), this._device.mobile());
         } else if (this._type === WebInspector.DeviceModeModel.Type.None) {
             this._fitScale = this._calculateFitScale(this._availableSize.width, this._availableSize.height);
             this._appliedUserAgentType = WebInspector.DeviceModeModel.UA.Desktop;
             this._applyDeviceMetrics(this._availableSize, new Insets(0, 0, 0, 0), 1, 0, false, "", resetPageScaleFactor);
             this._applyUserAgent("");
+            this._applyTouch(false, false);
         } else if (this._type === WebInspector.DeviceModeModel.Type.Responsive) {
             var screenWidth = this._widthSetting.get();
             if (!screenWidth || screenWidth > this._preferredScaledWidth())
@@ -440,8 +428,8 @@ WebInspector.DeviceModeModel.prototype = {
             this._appliedUserAgentType = this._uaSetting.get();
             this._applyDeviceMetrics(new Size(screenWidth, screenHeight), new Insets(0, 0, 0, 0), this._scaleSetting.get(), this._deviceScaleFactorSetting.get() || defaultDeviceScaleFactor, mobile, screenHeight >= screenWidth ? "portraitPrimary" : "landscapePrimary", resetPageScaleFactor);
             this._applyUserAgent(mobile ? WebInspector.DeviceModeModel._defaultMobileUserAgent : "");
+            this._applyTouch(this._uaSetting.get() === WebInspector.DeviceModeModel.UA.DesktopTouch || this._uaSetting.get() === WebInspector.DeviceModeModel.UA.Mobile, this._uaSetting.get() === WebInspector.DeviceModeModel.UA.Mobile);
         }
-        this._reapplyTouch();
         this._updateCallback.call(null);
     },
 
@@ -464,23 +452,6 @@ WebInspector.DeviceModeModel.prototype = {
     {
         this._scaleSetting.set(this._calculateFitScale(width, height));
         this.setWidth(width);
-    },
-
-    _reapplyTouch: function()
-    {
-        var domModel = this._target ? WebInspector.DOMModel.fromTarget(this._target) : null;
-        var inspectModeEnabled = domModel ? domModel.inspectModeEnabled() : false;
-        if (inspectModeEnabled) {
-            this._applyTouch(false, false);
-            return;
-        }
-
-        if (this._type === WebInspector.DeviceModeModel.Type.Device)
-            this._applyTouch(this._device.touch(), this._device.mobile());
-        else if (this._type === WebInspector.DeviceModeModel.Type.None)
-            this._applyTouch(false, false);
-        else if (this._type === WebInspector.DeviceModeModel.Type.Responsive)
-            this._applyTouch(this._uaSetting.get() === WebInspector.DeviceModeModel.UA.DesktopTouch || this._uaSetting.get() === WebInspector.DeviceModeModel.UA.Mobile, this._uaSetting.get() === WebInspector.DeviceModeModel.UA.Mobile);
     },
 
     /**
@@ -570,52 +541,12 @@ WebInspector.DeviceModeModel.prototype = {
         // Used for sniffing in tests.
     },
 
+    /**
+     * @param {boolean} touchEnabled
+     * @param {boolean} mobile
+     */
     _applyTouch: function(touchEnabled, mobile)
     {
-        var configuration = mobile ? "mobile" : "desktop";
-        if (!this._target || (this._touchEnabled === touchEnabled && this._touchConfiguration === configuration))
-            return;
-
-        var target = this._target;
-
-        /**
-         * @suppressGlobalPropertiesCheck
-         */
-        const injectedFunction = function() {
-            const touchEvents = ["ontouchstart", "ontouchend", "ontouchmove", "ontouchcancel"];
-            var recepients = [window.__proto__, document.__proto__];
-            for (var i = 0; i < touchEvents.length; ++i) {
-                for (var j = 0; j < recepients.length; ++j) {
-                    if (!(touchEvents[i] in recepients[j]))
-                        Object.defineProperty(recepients[j], touchEvents[i], { value: null, writable: true, configurable: true, enumerable: true });
-                }
-            }
-        };
-
-        var symbol = WebInspector.DeviceModeModel._touchEventsScriptIdSymbol;
-
-        if (typeof target[symbol] !== "undefined") {
-            target.pageAgent().removeScriptToEvaluateOnLoad(target[symbol]);
-            delete target[symbol];
-        }
-
-        if (touchEnabled)
-            target.pageAgent().addScriptToEvaluateOnLoad("(" + injectedFunction.toString() + ")()", scriptAddedCallback);
-
-        /**
-         * @param {?Protocol.Error} error
-         * @param {string} scriptId
-         */
-        function scriptAddedCallback(error, scriptId)
-        {
-            if (error)
-                delete target[symbol];
-            else
-                target[symbol] = scriptId;
-        }
-
-        target.emulationAgent().setTouchEmulationEnabled(touchEnabled, configuration);
-        this._touchEnabled = touchEnabled;
-        this._touchConfiguration = configuration;
+        WebInspector.MultitargetTouchModel.instance().setTouchEnabled(touchEnabled, mobile);
     }
 }

@@ -91,6 +91,7 @@
         "InspectedPagePlaceholder.js",
         "MediaQueryInspector.js",
         "SensorsView.js",
+        "TouchModel.js",
         "DeviceModeModel.js",
         "DeviceModeToolbar.js",
         "DeviceModeView.js",

@@ -21,6 +21,8 @@ WebInspector.SensorsView = function()
     this._deviceOrientation = WebInspector.DeviceOrientation.parseSetting(this._deviceOrientationSetting.get());
     this._deviceOrientationEnabled = false;
     this._appendDeviceOrientationOverrideControl();
+
+    this._appendTouchControl();
 }
 
 WebInspector.SensorsView.prototype = {
@@ -295,6 +297,21 @@ WebInspector.SensorsView.prototype = {
             return new WebInspector.Geometry.Vector(sphereX, sphereY, 0.5 / Math.sqrt(sqrSum));
 
         return new WebInspector.Geometry.Vector(sphereX, sphereY, Math.sqrt(1 - sqrSum));
+    },
+
+    _appendTouchControl: function()
+    {
+        var label = this.contentElement.createChild("label", "touch-label");
+        label.createChild("span", "").textContent = WebInspector.UIString("Touch");
+        var select = label.createChild("select", "chrome-select");
+        select.appendChild(new Option(WebInspector.UIString("Device-based"), "auto"));
+        select.appendChild(new Option(WebInspector.UIString("Force enabled"), "enabled"));
+        select.addEventListener("change", applyTouch, false);
+
+        function applyTouch()
+        {
+            WebInspector.MultitargetTouchModel.instance().setCustomTouchEnabled(select.value === "enabled");
+        }
     },
 
     __proto__ : WebInspector.VBox.prototype

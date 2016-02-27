@@ -214,6 +214,7 @@
             'front_end/emulation/InspectedPagePlaceholder.js',
             'front_end/emulation/MediaQueryInspector.js',
             'front_end/emulation/SensorsView.js',
+            'front_end/emulation/TouchModel.js',
         ],
         'devtools_ui_js_files': [
             'front_end/ui/checkboxTextLabel.css',

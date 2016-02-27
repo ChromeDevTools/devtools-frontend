@@ -150,3 +150,11 @@ fieldset.device-orientation-override-section[disabled] .accelerometer-stage {
 fieldset.device-orientation-override-section {
     display: flex;
 }
+
+.touch-label {
+    margin-top: 10px;
+}
+
+.touch-label select {
+    margin-left: 10px;
+}

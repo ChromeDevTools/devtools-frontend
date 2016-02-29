@@ -683,7 +683,6 @@
             'front_end/timeline/TimelineIRModel.js',
             'front_end/timeline/TimelineJSProfile.js',
             'front_end/timeline/TimelineLayersView.js',
-            'front_end/timeline/TimelineLoader.js',
             'front_end/timeline/TimelineModel.js',
             'front_end/timeline/TimelinePaintProfilerView.js',
             'front_end/timeline/TimelinePanel.js',

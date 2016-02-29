@@ -134,12 +134,6 @@
     background-color: rgb(56, 121, 217);
 }
 
-.elements-tree-outline ol.shadow-root {
-    margin-left: 5px;
-    padding-left: 5px;
-    border-left: 1px solid rgb(190, 190, 190);
-}
-
 .elements-tree-outline ol.shadow-root-depth-4 {
     background-color: rgba(0, 0, 0, 0.04);
 }
@@ -348,3 +342,27 @@ ol:focus li.selected .webkit-html-attribute-name {
     -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
 }
 } /* media */
+
+/** Guide line */
+li.selected {
+    z-index: 0;
+}
+
+li.hovered:not(.always-parent) + ol.children, .elements-tree-outline ol.shadow-root, li.selected:not(.always-parent) + ol.children {
+    margin-left: 5px;
+    -webkit-padding-start: 6px;
+    border-width: 1px;
+    border-left-style: solid;
+}
+
+li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
+    border-color: hsla(0,0%,0%,0.1);
+}
+
+.elements-tree-outline ol.shadow-root {
+    border-color: hsla(0,0%,80%,1);
+}
+
+li.selected:not(.always-parent) + ol.children {
+    border-color: hsla(216,68%,80%,1) !important;
+}

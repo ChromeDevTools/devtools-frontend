@@ -536,7 +536,7 @@ WebInspector.TimelinePanel.prototype = {
     {
         if (this._state !== WebInspector.TimelinePanel.State.Idle)
             return;
-        this._model.loadFromFile(file, this._prepareToLoadTimeline());
+        WebInspector.TimelineLoader.loadFromFile(this._model, file, this._prepareToLoadTimeline());
         this._createFileSelector();
     },
 
@@ -547,7 +547,7 @@ WebInspector.TimelinePanel.prototype = {
     {
         if (this._state !== WebInspector.TimelinePanel.State.Idle)
             return;
-        this._model.loadFromURL(url, this._prepareToLoadTimeline());
+        WebInspector.TimelineLoader.loadFromURL(this._model, url, this._prepareToLoadTimeline());
     },
 
     _refreshViews: function()

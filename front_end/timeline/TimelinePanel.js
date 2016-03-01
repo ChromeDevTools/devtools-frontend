@@ -513,7 +513,7 @@ WebInspector.TimelinePanel.prototype = {
         {
             if (!accepted)
                 return;
-            var saver = new WebInspector.TracingTimelineSaver(stream);
+            var saver = new WebInspector.TracingTimelineSaver();
             this._tracingModelBackingStorage.writeToStream(stream, saver);
         }
         stream.open(fileName, callback.bind(this));

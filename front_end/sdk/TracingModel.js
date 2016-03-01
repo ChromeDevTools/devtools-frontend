@@ -175,6 +175,8 @@ WebInspector.TracingModel.prototype = {
     tracingComplete: function()
     {
         this._processPendingAsyncEvents();
+        if (!this._firstWritePending)
+            this._backingStorage.appendString("]");
         this._backingStorage.finishWriting();
         for (var process of Object.values(this._processById)) {
             for (var thread of Object.values(process._threads))
@@ -192,7 +194,7 @@ WebInspector.TracingModel.prototype = {
         this._devToolsMetadataEvents = [];
         if (this._backingStorage)
             this._backingStorage.reset();
-        this._appendDelimiter = false;
+        this._firstWritePending = true;
         /** @type {!Array<!WebInspector.TracingModel.Event>} */
         this._asyncEvents = [];
         /** @type {!Map<string, !WebInspector.TracingModel.AsyncEvent>} */
@@ -215,9 +217,8 @@ WebInspector.TracingModel.prototype = {
         }
 
         var eventsDelimiter = ",\n";
-        if (this._appendDelimiter)
-            this._backingStorage.appendString(eventsDelimiter);
-        this._appendDelimiter = true;
+        this._backingStorage.appendString(this._firstWritePending ? "[" : eventsDelimiter);
+        this._firstWritePending = false;
         var stringPayload = JSON.stringify(payload);
         var isAccessible = payload.ph === WebInspector.TracingModel.Phase.SnapshotObject;
         var backingStorage = null;

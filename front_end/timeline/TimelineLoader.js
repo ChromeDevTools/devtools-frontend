@@ -260,30 +260,22 @@ WebInspector.TimelineModelLoadFromFileDelegate.prototype = {
 
 /**
  * @constructor
- * @param {!WebInspector.OutputStream} stream
  * @implements {WebInspector.OutputStreamDelegate}
  */
-WebInspector.TracingTimelineSaver = function(stream)
+WebInspector.TracingTimelineSaver = function()
 {
-    this._stream = stream;
 }
 
 WebInspector.TracingTimelineSaver.prototype = {
     /**
      * @override
      */
-    onTransferStarted: function()
-    {
-        this._stream.write("[");
-    },
+    onTransferStarted: function() { },
 
     /**
      * @override
      */
-    onTransferFinished: function()
-    {
-        this._stream.write("]");
-    },
+    onTransferFinished: function() { },
 
     /**
      * @override
@@ -296,5 +288,9 @@ WebInspector.TracingTimelineSaver.prototype = {
      * @param {!WebInspector.ChunkedReader} reader
      * @param {!Event} event
      */
-    onError: function(reader, event) { }
+    onError: function(reader, event)
+    {
+        var error = event.target.error;
+        WebInspector.console.error(WebInspector.UIString("Failed to save timeline: %s (%s, %s)", error.message, error.name, error.code));
+    }
 }

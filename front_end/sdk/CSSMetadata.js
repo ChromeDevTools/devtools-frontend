@@ -217,10 +217,6 @@ WebInspector.CSSMetadata._propertyDataMap = {
         "normal", "wider", "narrower", "ultra-condensed", "extra-condensed", "condensed", "semi-condensed",
         "semi-expanded", "expanded", "extra-expanded", "ultra-expanded"
     ] },
-    "-webkit-background-composite": { values: [
-        "highlight", "clear", "copy", "source-over", "source-in", "source-out", "source-atop", "destination-over",
-        "destination-in", "destination-out", "destination-atop", "xor", "plus-darker", "plus-lighter"
-    ] },
     "border-left-width": { values: [
         "medium", "thick", "thin"
     ] },

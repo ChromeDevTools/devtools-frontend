@@ -273,7 +273,7 @@ WebInspector.ComputedStyleWidget.prototype = {
             var rule = property.ownerStyle.parentRule;
             if (rule) {
                 var linkSpan = trace.createChild("span", "trace-link");
-                linkSpan.appendChild(WebInspector.StylePropertiesSection.createRuleOriginNode(cssModel, this._linkifier, rule));
+                linkSpan.appendChild(WebInspector.StylePropertiesSection.createRuleOriginNode(matchedStyles, this._linkifier, rule));
             }
 
             var selectorElement = trace.createChild("span", "property-trace-selector");

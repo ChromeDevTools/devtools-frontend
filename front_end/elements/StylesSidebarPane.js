@@ -1203,13 +1203,13 @@ WebInspector.StylePropertiesSection.prototype = {
 
         this._mediaListElement.classList.toggle("media-matches", this._matchedStyles.mediaMatches(this._style));
 
-        if (!this._matchedStyles.hasMatchingSelectors(this._style))
+        if (!this._matchedStyles.hasMatchingSelectors(/** @type {!WebInspector.CSSStyleRule} */(rule)))
             return;
 
         var selectors = rule.selectors;
         var fragment = createDocumentFragment();
         var currentMatch = 0;
-        var matchingSelectors = rule.matchingSelectors;
+        var matchingSelectors = this._matchedStyles.matchingSelectors(/** @type {!WebInspector.CSSStyleRule} */(rule));
         for (var i = 0; i < selectors.length ; ++i) {
             if (i)
                 fragment.createTextChild(", ");
@@ -1521,10 +1521,9 @@ WebInspector.StylePropertiesSection.prototype = {
             return;
 
         /**
-         * @param {boolean} success
          * @this {WebInspector.StylePropertiesSection}
          */
-        function headerTextCommitted(success)
+        function headerTextCommitted()
         {
             delete this._parentPane._userOperation;
             this._moveEditorFromSelector(moveDirection);
@@ -1539,39 +1538,49 @@ WebInspector.StylePropertiesSection.prototype = {
     /**
      * @param {!WebInspector.CSSRule} rule
      * @param {string} newContent
-     * @return {!Promise.<boolean>}
+     * @return {!Promise}
      */
     _setHeaderText: function(rule, newContent)
     {
         /**
-         * @param {!WebInspector.CSSRule} rule
+         * @param {!WebInspector.CSSStyleRule} rule
          * @param {!WebInspector.TextRange} oldSelectorRange
          * @param {boolean} success
-         * @return {boolean}
+         * @return {!Promise}
          * @this {WebInspector.StylePropertiesSection}
          */
-        function updateSourceRanges(rule, oldSelectorRange, success)
+        function onSelectorsUpdated(rule, oldSelectorRange, success)
         {
-            if (success) {
-                var doesAffectSelectedNode = rule.matchingSelectors.length > 0;
-                this.element.classList.toggle("no-affect", !doesAffectSelectedNode);
-
-                this._matchedStyles.resetActiveProperties();
-                var newSelectorRange = /** @type {!WebInspector.TextRange} */(rule.selectorRange());
-                rule.style.sourceStyleSheetEdited(/** @type {string} */(rule.styleSheetId), oldSelectorRange, newSelectorRange);
-                this._parentPane._styleSheetRuleEdited(rule, oldSelectorRange, newSelectorRange);
-                this._parentPane._refreshUpdate(this);
-            }
-            return true;
+            if (!success)
+                return Promise.resolve();
+            return this._matchedStyles.recomputeMatchingSelectors(rule)
+                .then(updateSourceRanges.bind(this, rule, oldSelectorRange));
         }
 
-        if (!(rule instanceof WebInspector.CSSStyleRule))
-            return Promise.resolve(false);
+        /**
+         * @param {!WebInspector.CSSStyleRule} rule
+         * @param {!WebInspector.TextRange} oldSelectorRange
+         * @this {WebInspector.StylePropertiesSection}
+         */
+        function updateSourceRanges(rule, oldSelectorRange)
+        {
+            var doesAffectSelectedNode = this._matchedStyles.matchingSelectors(rule).length > 0;
+            this.element.classList.toggle("no-affect", !doesAffectSelectedNode);
+
+            this._matchedStyles.resetActiveProperties();
+            var newSelectorRange = /** @type {!WebInspector.TextRange} */(rule.selectorRange());
+            rule.style.sourceStyleSheetEdited(/** @type {string} */(rule.styleSheetId), oldSelectorRange, newSelectorRange);
+            this._parentPane._styleSheetRuleEdited(rule, oldSelectorRange, newSelectorRange);
+            this._parentPane._refreshUpdate(this);
+        }
+
+        console.assert(rule instanceof WebInspector.CSSStyleRule);
         var oldSelectorRange = rule.selectorRange();
         if (!oldSelectorRange)
-            return Promise.resolve(false);
+            return Promise.resolve();
         var selectedNode = this._parentPane.node();
-        return rule.setSelectorText(selectedNode ? selectedNode.id : 0, newContent).then(updateSourceRanges.bind(this, rule, oldSelectorRange));
+        return rule.setSelectorText(newContent)
+            .then(onSelectorsUpdated.bind(this, /** @type {!WebInspector.CSSStyleRule} */(rule), oldSelectorRange));
     },
 
     _editingSelectorCommittedForTest: function() { },
@@ -1579,7 +1588,7 @@ WebInspector.StylePropertiesSection.prototype = {
     _updateRuleOrigin: function()
     {
         this._selectorRefElement.removeChildren();
-        this._selectorRefElement.appendChild(WebInspector.StylePropertiesSection.createRuleOriginNode(this._parentPane._cssModel, this._parentPane._linkifier, this._style.parentRule));
+        this._selectorRefElement.appendChild(WebInspector.StylePropertiesSection.createRuleOriginNode(this._matchedStyles, this._parentPane._linkifier, this._style.parentRule));
     },
 
     _editingSelectorEnded: function()
@@ -1598,26 +1607,28 @@ WebInspector.StylePropertiesSection.prototype = {
 }
 
 /**
- * @param {!WebInspector.CSSStyleModel} cssModel
+ * @param {!WebInspector.CSSStyleModel.MatchedStyleResult} matchedStyles
  * @param {!WebInspector.Linkifier} linkifier
  * @param {?WebInspector.CSSRule} rule
  * @return {!Node}
  */
-WebInspector.StylePropertiesSection.createRuleOriginNode = function(cssModel, linkifier, rule)
+WebInspector.StylePropertiesSection.createRuleOriginNode = function(matchedStyles, linkifier, rule)
 {
     if (!rule)
         return createTextNode("");
 
-    var firstMatchingIndex = rule.matchingSelectors && rule.matchingSelectors.length ? rule.matchingSelectors[0] : 0;
     var ruleLocation;
-    if (rule instanceof WebInspector.CSSStyleRule)
+    if (rule instanceof WebInspector.CSSStyleRule) {
+        var matchingSelectors = matchedStyles.matchingSelectors(rule);
+        var firstMatchingIndex = matchingSelectors.length ? matchingSelectors[0] : 0;
         ruleLocation = rule.selectors[firstMatchingIndex].range;
-    else if (rule instanceof WebInspector.CSSKeyframeRule)
+    } else if (rule instanceof WebInspector.CSSKeyframeRule) {
         ruleLocation = rule.key().range;
+    }
 
-    var header = rule.styleSheetId ? cssModel.styleSheetHeaderForId(rule.styleSheetId) : null;
+    var header = rule.styleSheetId ? matchedStyles.cssModel().styleSheetHeaderForId(rule.styleSheetId) : null;
     if (ruleLocation && rule.styleSheetId && header && header.resourceURL())
-        return WebInspector.StylePropertiesSection._linkifyRuleLocation(cssModel, linkifier, rule.styleSheetId, ruleLocation);
+        return WebInspector.StylePropertiesSection._linkifyRuleLocation(matchedStyles.cssModel(), linkifier, rule.styleSheetId, ruleLocation);
 
     if (rule.isUserAgent())
         return createTextNode(WebInspector.UIString("user agent stylesheet"));
@@ -1718,17 +1729,28 @@ WebInspector.BlankStylePropertiesSection.prototype = {
         }
 
         /**
-         * @param {?WebInspector.CSSRule} newRule
+         * @param {?WebInspector.CSSStyleRule} newRule
+         * @return {!Promise}
          * @this {WebInspector.StylePropertiesSection}
          */
-        function userCallback(newRule)
+        function onRuleAdded(newRule)
         {
             if (!newRule) {
                 this.editingSelectorCancelled();
                 this._editingSelectorCommittedForTest();
-                return;
+                return Promise.resolve();
             }
-            var doesSelectorAffectSelectedNode = newRule.matchingSelectors.length > 0;
+            return this._matchedStyles.addNewRule(newRule, this._matchedStyles.node())
+                .then(onAddedToCascade.bind(this, newRule));
+        }
+
+        /**
+         * @param {!WebInspector.CSSStyleRule} newRule
+         * @this {WebInspector.StylePropertiesSection}
+         */
+        function onAddedToCascade(newRule)
+        {
+            var doesSelectorAffectSelectedNode = this._matchedStyles.matchingSelectors(newRule).length > 0;
             this._makeNormal(newRule);
 
             if (!doesSelectorAffectSelectedNode)
@@ -1757,7 +1779,8 @@ WebInspector.BlankStylePropertiesSection.prototype = {
 
         var cssModel = this._parentPane._cssModel;
         var ruleText = this._rulePrefix() + newContent + " {}";
-        cssModel.addRule(this._styleSheetId, this._parentPane.node(), ruleText, this._ruleLocation, userCallback.bind(this));
+        cssModel.addRule(this._styleSheetId, ruleText, this._ruleLocation)
+            .then(onRuleAdded.bind(this));
     },
 
     editingSelectorCancelled: function()
@@ -1813,7 +1836,7 @@ WebInspector.KeyframePropertiesSection.prototype = {
      * @override
      * @param {!WebInspector.CSSRule} rule
      * @param {string} newContent
-     * @return {!Promise.<boolean>}
+     * @return {!Promise}
      */
     _setHeaderText: function(rule, newContent)
     {
@@ -1821,25 +1844,22 @@ WebInspector.KeyframePropertiesSection.prototype = {
          * @param {!WebInspector.CSSRule} rule
          * @param {!WebInspector.TextRange} oldRange
          * @param {boolean} success
-         * @return {boolean}
          * @this {WebInspector.KeyframePropertiesSection}
          */
         function updateSourceRanges(rule, oldRange, success)
         {
-            if (success) {
-                var newRange = /** @type {!WebInspector.TextRange} */(rule.key().range);
-                rule.style.sourceStyleSheetEdited(/** @type {string} */(rule.styleSheetId), oldRange, newRange);
-                this._parentPane._styleSheetRuleEdited(rule, oldRange, newRange);
-                this._parentPane._refreshUpdate(this);
-            }
-            return true;
+            if (!success)
+                return;
+            var newRange = /** @type {!WebInspector.TextRange} */(rule.key().range);
+            rule.style.sourceStyleSheetEdited(/** @type {string} */(rule.styleSheetId), oldRange, newRange);
+            this._parentPane._styleSheetRuleEdited(rule, oldRange, newRange);
+            this._parentPane._refreshUpdate(this);
         }
 
-        if (!(rule instanceof WebInspector.CSSKeyframeRule))
-            return Promise.resolve(false);
+        console.assert(rule instanceof WebInspector.CSSKeyframeRule);
         var oldRange = rule.key().range;
         if (!oldRange)
-            return Promise.resolve(false);
+            return Promise.resolve();
         var selectedNode = this._parentPane.node();
         return rule.setKeyText(newContent).then(updateSourceRanges.bind(this, rule, oldRange));
     },

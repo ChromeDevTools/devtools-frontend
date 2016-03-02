@@ -1,0 +1,12 @@
+{
+    "dependencies": [
+        "common"
+    ],
+    "scripts": [
+        "../acorn/acorn.js",
+        "ESTreeWalker.js"
+    ],
+    "skip_compilation": [
+        "../acorn/acorn.js"
+    ]
+}

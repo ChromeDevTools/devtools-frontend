@@ -7,13 +7,13 @@
  * @param {function(!ESTree.Node)} beforeVisit
  * @param {function(!ESTree.Node)} afterVisit
  */
-FormatterWorker.ESTreeWalker = function(beforeVisit, afterVisit)
+WebInspector.ESTreeWalker = function(beforeVisit, afterVisit)
 {
     this._beforeVisit = beforeVisit;
     this._afterVisit = afterVisit;
 }
 
-FormatterWorker.ESTreeWalker.prototype = {
+WebInspector.ESTreeWalker.prototype = {
     /**
      * @param {!ESTree.Node} ast
      */
@@ -34,7 +34,7 @@ FormatterWorker.ESTreeWalker.prototype = {
 
         this._beforeVisit.call(null, node);
 
-        var walkOrder = FormatterWorker.ESTreeWalker._walkOrder[node.type];
+        var walkOrder = WebInspector.ESTreeWalker._walkOrder[node.type];
         if (!walkOrder) {
             console.error("Walk order not defined for " + node.type);
             return;
@@ -73,7 +73,7 @@ FormatterWorker.ESTreeWalker.prototype = {
 }
 
 /** @enum {!Array.<string>} */
-FormatterWorker.ESTreeWalker._walkOrder = {
+WebInspector.ESTreeWalker._walkOrder = {
     "ArrayExpression": ["elements"],
     "ArrowFunctionExpression": ["params", "body"],
     "AssignmentExpression": ["left", "right"],

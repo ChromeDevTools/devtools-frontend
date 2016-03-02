@@ -341,6 +341,7 @@
         }
     ],
     "dependencies": [
+        "es_tree",
         "components",
         "source_frame",
         "snippets",
@@ -358,6 +359,7 @@
         "FilePathScoreFunction.js",
         "FilteredUISourceCodeListDelegate.js",
         "UISourceCodeFrame.js",
+        "SourceMapNamesResolver.js",
         "JavaScriptBreakpointsSidebarPane.js",
         "JavaScriptOutlineDialog.js",
         "JavaScriptSourceFrame.js",

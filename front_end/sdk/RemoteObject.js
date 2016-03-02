@@ -178,6 +178,16 @@ WebInspector.RemoteObject.prototype = {
     },
 
     /**
+     * @param {string|!RuntimeAgent.CallArgument} name
+     * @param {string} value
+     * @param {function(string=)} callback
+     */
+    setPropertyValue: function(name, value, callback)
+    {
+        throw "Not implemented";
+    },
+
+    /**
      * @param {function(this:Object, ...)} functionDeclaration
      * @param {!Array<!RuntimeAgent.CallArgument>=} args
      * @param {function(?WebInspector.RemoteObject, boolean=)=} callback
@@ -707,6 +717,7 @@ WebInspector.RemoteObjectImpl.prototype = {
     },
 
     /**
+     * @override
      * @param {string|!RuntimeAgent.CallArgument} name
      * @param {string} value
      * @param {function(string=)} callback
@@ -1051,12 +1062,13 @@ WebInspector.ScopeRemoteObject.prototype = {
     /**
      * @override
      * @param {!RuntimeAgent.RemoteObject} result
-     * @param {!RuntimeAgent.CallArgument} name
+     * @param {!RuntimeAgent.CallArgument} argumentName
      * @param {function(string=)} callback
      */
-    doSetObjectPropertyValue: function(result, name, callback)
+    doSetObjectPropertyValue: function(result, argumentName, callback)
     {
-        this._debuggerModel.setVariableValue(this._scopeRef.number, /** @type {string} */ (name.value), WebInspector.RemoteObject.toCallArgument(result), this._scopeRef.callFrameId, this._scopeRef.functionId, setVariableValueCallback.bind(this));
+        var name = /** @type {string} */ (argumentName.value);
+        this._debuggerModel.setVariableValue(this._scopeRef.number, name, WebInspector.RemoteObject.toCallArgument(result), this._scopeRef.callFrameId, this._scopeRef.functionId, setVariableValueCallback.bind(this));
 
         /**
          * @param {string=} error

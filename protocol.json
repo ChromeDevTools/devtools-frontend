@@ -3455,7 +3455,9 @@
                 "properties": [
                     { "name": "type", "type": "string", "enum": ["global", "local", "with", "closure", "catch", "block", "script"], "description": "Scope type." },
                     { "name": "object", "$ref": "Runtime.RemoteObject", "description": "Object representing the scope. For <code>global</code> and <code>with</code> scopes it represents the actual object; for the rest of the scopes, it is artificial transient object enumerating scope variables as its properties." },
-                    { "name": "name", "type": "string", "optional": true, "hidden": true }
+                    { "name": "name", "type": "string", "optional": true, "hidden": true },
+                    { "name": "startLocation", "$ref": "Location", "optional": true, "hidden": true, "description": "Location in the source code where scope starts" },
+                    { "name": "endLocation", "$ref": "Location", "optional": true, "hidden": true, "description": "Location in the source code where scope ends" }
                 ],
                 "description": "Scope description."
             },

@@ -719,7 +719,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
         var localScope = callFrame.localScope();
         var functionLocation = callFrame.functionLocation();
         if (localScope && functionLocation)
-            localScope.object().getAllProperties(false, this._prepareScopeVariables.bind(this, callFrame));
+            WebInspector.SourceMapNamesResolver.resolveScopeInObject(localScope).getAllProperties(false, this._prepareScopeVariables.bind(this, callFrame));
 
         if (this._clearValueWidgetsTimer) {
             clearTimeout(this._clearValueWidgetsTimer);

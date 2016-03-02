@@ -32,6 +32,7 @@
     { "name": "sass" },
     { "name": "accessibility" },
     { "name": "animation" },
+    { "name": "es_tree" },
     { "name": "screencast", "condition": "remoteFrontend", "type": "remote" },
     { "name": "emulated_devices", "type": "remote" },
 

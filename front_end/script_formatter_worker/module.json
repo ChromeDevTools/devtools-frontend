@@ -5,10 +5,11 @@
         "../cm/css.js",
         "../cm/xml.js",
         "../cm/htmlmixed.js",
+        "../common/WebInspector.js",
+        "../es_tree/ESTreeWalker.js",
         "ScriptFormatterWorker.js",
         "../acorn/acorn.js",
         "CSSFormatter.js",
-        "ESTreeWalker.js",
         "AcornTokenizer.js",
         "JavaScriptFormatter.js"
     ],

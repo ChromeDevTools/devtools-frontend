@@ -1339,6 +1339,8 @@ WebInspector.DebuggerModel.Scope = function(callFrame, ordinal)
     this._type = this._payload.type;
     this._name = this._payload.name;
     this._ordinal = ordinal;
+    this._startLocation = this._payload.startLocation ? WebInspector.DebuggerModel.Location.fromPayload(callFrame.debuggerModel, this._payload.startLocation) : null;
+    this._endLocation = this._payload.endLocation ? WebInspector.DebuggerModel.Location.fromPayload(callFrame.debuggerModel, this._payload.endLocation) : null;
 }
 
 WebInspector.DebuggerModel.Scope.prototype = {
@@ -1359,6 +1361,22 @@ WebInspector.DebuggerModel.Scope.prototype = {
     },
 
     /**
+     * @return {?WebInspector.DebuggerModel.Location}
+     */
+    startLocation: function()
+    {
+        return this._startLocation;
+    },
+
+    /**
+     * @return {?WebInspector.DebuggerModel.Location}
+     */
+    endLocation: function()
+    {
+        return this._endLocation;
+    },
+
+    /**
      * @return {!WebInspector.RemoteObject}
      */
     object: function()
@@ -1373,7 +1391,7 @@ WebInspector.DebuggerModel.Scope.prototype = {
         else
             this._object = runtimeModel.createRemoteObject(this._payload.object);
 
-        return this._callFrame.target().runtimeModel.createRemoteObject(this._payload.object);
+        return this._object;
     },
 
     /**

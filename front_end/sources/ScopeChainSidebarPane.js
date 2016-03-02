@@ -113,7 +113,7 @@ WebInspector.ScopeChainSidebarPane.prototype = {
             titleElement.createChild("div", "scope-chain-sidebar-pane-section-subtitle").textContent = subtitle;
             titleElement.createChild("div", "scope-chain-sidebar-pane-section-title").textContent = title;
 
-            var section = new WebInspector.ObjectPropertiesSection(scope.object(), titleElement, emptyPlaceholder, true, extraProperties);
+            var section = new WebInspector.ObjectPropertiesSection(WebInspector.SourceMapNamesResolver.resolveScopeInObject(scope), titleElement, emptyPlaceholder, true, extraProperties);
             this._expandController.watchSection(title + (subtitle ? ":" + subtitle : ""), section);
 
             if (scope.type() === DebuggerAgent.ScopeType.Global)

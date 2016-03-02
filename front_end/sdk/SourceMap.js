@@ -39,6 +39,7 @@ function SourceMapV3()
     /** @type {!Array.<!SourceMapV3.Section>|undefined} */ this.sections;
     /** @type {string} */ this.mappings;
     /** @type {string|undefined} */ this.sourceRoot;
+    /** @type {!Array.<string>|undefined} */ this.names;
 }
 
 /**
@@ -138,7 +139,7 @@ WebInspector.SourceMap.prototype = {
         return this._sourceMappingURL;
     },
 
-   /**
+    /**
      * @return {!Array.<string>}
      */
     sources: function()
@@ -289,6 +290,7 @@ WebInspector.SourceMap.prototype = {
         var nameIndex = 0;
 
         var sources = [];
+        var names = map.names || [];
         var sourceRoot = map.sourceRoot || "";
         if (sourceRoot && !sourceRoot.endsWith("/"))
             sourceRoot += "/";
@@ -337,7 +339,7 @@ WebInspector.SourceMap.prototype = {
             if (!this._isSeparator(stringCharIterator.peek()))
                 nameIndex += this._decodeVLQ(stringCharIterator);
 
-            this._mappings.push(new WebInspector.SourceMap.Entry(lineNumber, columnNumber, sourceURL, sourceLineNumber, sourceColumnNumber));
+            this._mappings.push(new WebInspector.SourceMap.Entry(lineNumber, columnNumber, sourceURL, sourceLineNumber, sourceColumnNumber, names[nameIndex]));
         }
 
         for (var i = 0; i < this._mappings.length; ++i) {
@@ -430,12 +432,14 @@ WebInspector.SourceMap.StringCharIterator.prototype = {
  * @param {string=} sourceURL
  * @param {number=} sourceLineNumber
  * @param {number=} sourceColumnNumber
+ * @param {string=} name
  */
-WebInspector.SourceMap.Entry = function(lineNumber, columnNumber, sourceURL, sourceLineNumber, sourceColumnNumber)
+WebInspector.SourceMap.Entry = function(lineNumber, columnNumber, sourceURL, sourceLineNumber, sourceColumnNumber, name)
 {
     this.lineNumber = lineNumber;
     this.columnNumber = columnNumber;
     this.sourceURL = sourceURL;
     this.sourceLineNumber = sourceLineNumber;
     this.sourceColumnNumber = sourceColumnNumber;
+    this.name = name;
 }

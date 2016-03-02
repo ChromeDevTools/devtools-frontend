@@ -44,7 +44,7 @@ FormatterWorker.JavaScriptFormatter.prototype = {
     format: function()
     {
         var ast = acorn.parse(this._content, { ranges: false, ecmaVersion: 6 });
-        var walker = new FormatterWorker.ESTreeWalker(this._beforeVisit.bind(this), this._afterVisit.bind(this));
+        var walker = new WebInspector.ESTreeWalker(this._beforeVisit.bind(this), this._afterVisit.bind(this));
         walker.walk(ast);
     },
 

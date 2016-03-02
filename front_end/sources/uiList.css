@@ -23,7 +23,7 @@
     font-weight: bold;
 }
 
-.list-item:hover {
+.list-item:not(.ignore-hover):hover {
     background-color: #eee;
 }
 

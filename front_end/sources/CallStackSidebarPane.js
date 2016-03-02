@@ -34,7 +34,7 @@ WebInspector.CallStackSidebarPane = function()
     this.element.tabIndex = 0;
     this.callFrameList = new WebInspector.UIList();
     this.callFrameList.show(this.element);
-
+    this._linkifier = new WebInspector.Linkifier();
     WebInspector.moduleSetting("enableAsyncStackTraces").addChangeListener(this._asyncStackTracesStateChanged, this);
     WebInspector.moduleSetting("skipStackFramesPattern").addChangeListener(this._blackboxingStateChanged, this);
 }
@@ -53,6 +53,7 @@ WebInspector.CallStackSidebarPane.prototype = {
     {
         this.callFrameList.detach();
         this.callFrameList.clear();
+        this._linkifier.reset();
         this.element.removeChildren();
 
         if (!details) {
@@ -78,7 +79,7 @@ WebInspector.CallStackSidebarPane.prototype = {
         while (asyncStackTrace) {
             var title = WebInspector.asyncStackTraceLabel(asyncStackTrace.description);
             var asyncCallFrame = new WebInspector.UIList.Item(title, "", true);
-            asyncCallFrame.element.addEventListener("click", this._selectNextVisibleCallFrame.bind(this, this.callFrames.length, false), false);
+            asyncCallFrame.setHoverable(false);
             asyncCallFrame.element.addEventListener("contextmenu", this._asyncCallFrameContextMenu.bind(this, this.callFrames.length), true);
             this._appendSidebarCallFrames(asyncStackTrace.callFrames, asyncCallFrame);
             asyncStackTrace = asyncStackTrace.asyncStackTrace;
@@ -113,8 +114,9 @@ WebInspector.CallStackSidebarPane.prototype = {
         var allCallFramesHidden = true;
         for (var i = 0, n = callFrames.length; i < n; ++i) {
             var callFrame = callFrames[i];
-            var callFrameItem = new WebInspector.CallStackSidebarPane.CallFrame(callFrame, asyncCallFrameItem);
-            callFrameItem.element.addEventListener("click", this._callFrameSelected.bind(this, callFrameItem), false);
+            var callFrameItem = new WebInspector.CallStackSidebarPane.CallFrame(callFrame, this._linkifier, asyncCallFrameItem);
+            if (!asyncCallFrameItem)
+                callFrameItem.element.addEventListener("click", this._callFrameSelected.bind(this, callFrameItem), false);
             callFrameItem.element.addEventListener("contextmenu", this._callFrameContextMenu.bind(this, callFrameItem), true);
             this.callFrames.push(callFrameItem);
 
@@ -398,14 +400,22 @@ WebInspector.CallStackSidebarPane.prototype = {
  * @constructor
  * @extends {WebInspector.UIList.Item}
  * @param {!WebInspector.DebuggerModel.CallFrame} callFrame
+ * @param {!WebInspector.Linkifier} linkifier
  * @param {!WebInspector.UIList.Item=} asyncCallFrame
  */
-WebInspector.CallStackSidebarPane.CallFrame = function(callFrame, asyncCallFrame)
+WebInspector.CallStackSidebarPane.CallFrame = function(callFrame, linkifier, asyncCallFrame)
 {
     WebInspector.UIList.Item.call(this, WebInspector.beautifyFunctionName(callFrame.functionName), "");
-    WebInspector.debuggerWorkspaceBinding.createCallFrameLiveLocation(callFrame, this._update.bind(this));
     this._callFrame = callFrame;
     this._asyncCallFrame = asyncCallFrame;
+
+    if (asyncCallFrame) {
+        var locationElement = linkifier.linkifyRawLocation(callFrame.location(), callFrame.script.sourceURL);
+        this.subtitleElement.appendChild(locationElement);
+        this.setHoverable(false);
+    } else {
+        WebInspector.debuggerWorkspaceBinding.createCallFrameLiveLocation(callFrame, this._update.bind(this));
+    }
 }
 
 WebInspector.CallStackSidebarPane.CallFrame.prototype = {

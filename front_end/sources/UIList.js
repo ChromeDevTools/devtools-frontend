@@ -224,5 +224,13 @@ WebInspector.UIList.Item.prototype = {
 
     discard: function()
     {
-    }
+    },
+
+    /**
+     * @param {boolean} hoverable
+     */
+    setHoverable: function(hoverable)
+    {
+        this.element.classList.toggle("ignore-hover", !hoverable);
+    },
 }

@@ -1610,7 +1610,7 @@ WebInspector.HeapProfileHeader.prototype = {
                 fileOutputStream.close();
             } else if (this._tempFile) {
                 var delegate = new WebInspector.SaveSnapshotOutputStreamDelegate(this);
-                this._tempFile.writeToOutputSteam(fileOutputStream, delegate);
+                this._tempFile.copyToOutputStream(fileOutputStream, delegate);
             } else {
                 this._onTempFileReady = onOpen.bind(this, accepted);
                 this._updateSaveProgress(0, 1);

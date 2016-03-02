@@ -306,6 +306,28 @@ WebInspector.TextRange.prototype = {
 }
 
 /**
+ * @param {!WebInspector.TextRange} oldRange
+ * @param {string} newText
+ * @return {!WebInspector.TextRange}
+ */
+WebInspector.TextRange.fromEdit = function(oldRange, newText)
+{
+    var endLine = oldRange.startLine;
+    var endColumn = oldRange.startColumn + newText.length;
+    var lineEndings = newText.lineEndings();
+    if (lineEndings.length > 1) {
+        endLine = oldRange.startLine + lineEndings.length - 1;
+        var len = lineEndings.length;
+        endColumn = lineEndings[len - 1] - lineEndings[len - 2] - 1;
+    }
+    return new WebInspector.TextRange(
+        oldRange.startLine,
+        oldRange.startColumn,
+        endLine,
+        endColumn);
+}
+
+/**
  * @constructor
  * @param {number} offset
  * @param {number} length
@@ -361,19 +383,7 @@ WebInspector.SourceEdit.prototype = {
      */
     newRange: function()
     {
-        var endLine = this.oldRange.startLine;
-        var endColumn = this.oldRange.startColumn + this.newText.length;
-        var lineEndings = this.newText.lineEndings();
-        if (lineEndings.length > 1) {
-            endLine = this.oldRange.startLine + lineEndings.length - 1;
-            var len = lineEndings.length;
-            endColumn = lineEndings[len - 1] - lineEndings[len - 2] - 1;
-        }
-        return new WebInspector.TextRange(
-            this.oldRange.startLine,
-            this.oldRange.startColumn,
-            endLine,
-            endColumn);
+        return WebInspector.TextRange.fromEdit(this.oldRange, this.newText);
     },
 
     /**

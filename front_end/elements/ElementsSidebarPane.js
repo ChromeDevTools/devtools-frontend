@@ -139,7 +139,10 @@ WebInspector.ElementsSidebarPane.prototype = {
      */
     onDOMModelChanged: function(node) { },
 
-    onCSSModelChanged: function() { },
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    onCSSModelChanged: function(event) { },
 
     onFrameResizedThrottled: function() { },
 

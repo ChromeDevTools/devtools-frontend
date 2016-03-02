@@ -62,6 +62,21 @@ WebInspector.CSSStyleModel.MediaTypes = ["all", "braille", "embossed", "handheld
 
 WebInspector.CSSStyleModel.PseudoStateMarker = "pseudo-state-marker";
 
+/**
+ * @constructor
+ * @param {!CSSAgent.StyleSheetId} styleSheetId
+ * @param {!WebInspector.TextRange} oldRange
+ * @param {string} newText
+ * @param {?Object} payload
+ */
+WebInspector.CSSStyleModel.Edit = function(styleSheetId, oldRange, newText, payload)
+{
+    this.styleSheetId = styleSheetId;
+    this.oldRange = oldRange;
+    this.newRange = WebInspector.TextRange.fromEdit(oldRange, newText);
+    this.payload = payload;
+}
+
 WebInspector.CSSStyleModel.prototype = {
     /**
      * @param {!Array<!CSSAgent.StyleSheetId>} styleSheetIds
@@ -80,14 +95,15 @@ WebInspector.CSSStyleModel.prototype = {
          */
         function parsePayload(error, stylePayloads)
         {
-            if (error || !stylePayloads || !stylePayloads.length)
+            if (error || !stylePayloads || stylePayloads.length !== ranges.length)
                 return null;
 
             if (majorChange)
                 this._domModel.markUndoableState();
-            var uniqueIDs = new Set(styleSheetIds);
-            for (var styleSheetId of uniqueIDs)
-                this._fireStyleSheetChanged(styleSheetId);
+            for (var i = 0; i < ranges.length; ++i) {
+                var edit = new WebInspector.CSSStyleModel.Edit(styleSheetIds[i], ranges[i], texts[i], stylePayloads[i]);
+                this._fireStyleSheetChanged(styleSheetIds[i], edit);
+            }
             return stylePayloads;
         }
 
@@ -317,16 +333,17 @@ WebInspector.CSSStyleModel.prototype = {
         /**
          * @param {?Protocol.Error} error
          * @param {!CSSAgent.CSSMedia} mediaPayload
-         * @return {?WebInspector.CSSMedia}
+         * @return {boolean}
          * @this {WebInspector.CSSStyleModel}
          */
         function parsePayload(error, mediaPayload)
         {
             if (!mediaPayload)
-                return null;
+                return false;
             this._domModel.markUndoableState();
-            this._fireStyleSheetChanged(media.parentStyleSheetId);
-            return WebInspector.CSSMedia.parsePayload(this, mediaPayload);
+            var edit = new WebInspector.CSSStyleModel.Edit(media.parentStyleSheetId, media.range, newMediaText, mediaPayload);
+            this._fireStyleSheetChanged(media.parentStyleSheetId, edit);
+            return true;
         }
 
         console.assert(!!media.parentStyleSheetId);
@@ -358,7 +375,8 @@ WebInspector.CSSStyleModel.prototype = {
             if (error || !rulePayload)
                 return null;
             this._domModel.markUndoableState();
-            this._fireStyleSheetChanged(styleSheetId);
+            var edit = new WebInspector.CSSStyleModel.Edit(styleSheetId, ruleLocation, ruleText, rulePayload);
+            this._fireStyleSheetChanged(styleSheetId, edit);
             return new WebInspector.CSSStyleRule(this, rulePayload);
         }
     },
@@ -419,10 +437,11 @@ WebInspector.CSSStyleModel.prototype = {
 
     /**
      * @param {!CSSAgent.StyleSheetId} styleSheetId
+     * @param {!WebInspector.CSSStyleModel.Edit=} edit
      */
-    _fireStyleSheetChanged: function(styleSheetId)
+    _fireStyleSheetChanged: function(styleSheetId, edit)
     {
-        this.dispatchEventToListeners(WebInspector.CSSStyleModel.Events.StyleSheetChanged, { styleSheetId: styleSheetId });
+        this.dispatchEventToListeners(WebInspector.CSSStyleModel.Events.StyleSheetChanged, { styleSheetId: styleSheetId, edit: edit });
     },
 
     /**
@@ -628,6 +647,22 @@ WebInspector.CSSStyleDeclaration.Type = {
 
 WebInspector.CSSStyleDeclaration.prototype = {
     /**
+     * @param {!WebInspector.CSSStyleModel.Edit} edit
+     */
+    rebase: function(edit)
+    {
+        if (this.styleSheetId !== edit.styleSheetId || !this.range)
+            return;
+        if (edit.oldRange.equal(this.range)) {
+            this._reinitialize(/** @type {!CSSAgent.CSSStyle} */(edit.payload));
+        } else {
+            this.range = this.range.rebaseAfterTextEdit(edit.oldRange, edit.newRange);
+            for (var i = 0; i < this._allProperties.length; ++i)
+                this._allProperties[i].rebase(edit);
+        }
+    },
+
+    /**
      * @param {!CSSAgent.CSSStyle} payload
      */
     _reinitialize: function(payload)
@@ -760,21 +795,6 @@ WebInspector.CSSStyleDeclaration.prototype = {
         return this._cssModel;
     },
 
-    /**
-     * @param {string} styleSheetId
-     * @param {!WebInspector.TextRange} oldRange
-     * @param {!WebInspector.TextRange} newRange
-     */
-    sourceStyleSheetEdited: function(styleSheetId, oldRange, newRange)
-    {
-        if (this.styleSheetId !== styleSheetId)
-            return;
-        if (this.range)
-            this.range = this.range.rebaseAfterTextEdit(oldRange, newRange);
-        for (var i = 0; i < this._allProperties.length; ++i)
-            this._allProperties[i].sourceStyleSheetEdited(styleSheetId, oldRange, newRange);
-    },
-
     _computeInactiveProperties: function()
     {
         var activeProperties = {};
@@ -890,18 +910,14 @@ WebInspector.CSSStyleDeclaration.prototype = {
         /**
          * @param {?Array<!CSSAgent.CSSStyle>} stylePayloads
          * @return {boolean}
-         * @this {WebInspector.CSSStyleDeclaration}
          */
         function onPayload(stylePayloads)
         {
-            if (!stylePayloads)
-                return false;
-            this._reinitialize(stylePayloads[0]);
-            return true;
+            return !!stylePayloads;
         }
 
         return this._cssModel.setStyleTexts([this.styleSheetId], [this.range], [text], majorChange)
-            .then(onPayload.bind(this))
+            .then(onPayload)
             .catchException(false);
     },
 
@@ -939,30 +955,15 @@ WebInspector.CSSValue = function(payload)
         this.range = WebInspector.TextRange.fromObject(payload.range);
 }
 
-/**
- * @param {!CSSAgent.SelectorList} selectorList
- * @return {!Array<!WebInspector.CSSValue>}
- */
-WebInspector.CSSValue.parseSelectorListPayload = function(selectorList)
-{
-    var selectors = [];
-    for (var i = 0; i < selectorList.selectors.length; ++i) {
-        var selectorPayload = selectorList.selectors[i];
-        selectors.push(new WebInspector.CSSValue(selectorPayload));
-    }
-    return selectors;
-}
-
 WebInspector.CSSValue.prototype = {
     /**
-     * @param {!WebInspector.TextRange} oldRange
-     * @param {!WebInspector.TextRange} newRange
+     * @param {!WebInspector.CSSStyleModel.Edit} edit
      */
-    sourceStyleRuleEdited: function(oldRange, newRange)
+    rebase: function(edit)
     {
         if (!this.range)
             return;
-        this.range = this.range.rebaseAfterTextEdit(oldRange, newRange);
+        this.range = this.range.rebaseAfterTextEdit(edit.oldRange, edit.newRange);
     }
 }
 
@@ -986,13 +987,13 @@ WebInspector.CSSRule = function(cssModel, payload)
 
 WebInspector.CSSRule.prototype = {
     /**
-     * @param {string} styleSheetId
-     * @param {!WebInspector.TextRange} oldRange
-     * @param {!WebInspector.TextRange} newRange
+     * @param {!WebInspector.CSSStyleModel.Edit} edit
      */
-    sourceStyleSheetEdited: function(styleSheetId, oldRange, newRange)
+    rebase: function(edit)
     {
-        this.style.sourceStyleSheetEdited(styleSheetId, oldRange, newRange);
+        if (this.styleSheetId !== edit.styleSheetId)
+            return;
+        this.style.rebase(edit);
     },
 
     /**
@@ -1049,9 +1050,7 @@ WebInspector.CSSStyleRule = function(cssModel, payload)
 {
     WebInspector.CSSRule.call(this, cssModel, payload);
 
-    /** @type {!Array.<!WebInspector.CSSValue>} */
-    this.selectors = WebInspector.CSSValue.parseSelectorListPayload(payload.selectorList);
-
+    this._reinitializeSelectors(payload.selectorList);
     if (payload.media)
         this.media = WebInspector.CSSMedia.parseMediaArrayPayload(cssModel, payload.media);
 }
@@ -1079,34 +1078,48 @@ WebInspector.CSSStyleRule.createDummyRule = function(cssModel, selectorText)
 
 WebInspector.CSSStyleRule.prototype = {
     /**
+     * @param {!CSSAgent.SelectorList} selectorList
+     */
+    _reinitializeSelectors: function(selectorList)
+    {
+        /** @type {!Array.<!WebInspector.CSSValue>} */
+        this.selectors = [];
+        for (var i = 0; i < selectorList.selectors.length; ++i)
+            this.selectors.push(new WebInspector.CSSValue(selectorList.selectors[i]));
+    },
+
+    /**
      * @param {string} newSelector
      * @return {!Promise.<boolean>}
      */
     setSelectorText: function(newSelector)
     {
         /**
+         * @param {!CSSAgent.StyleSheetId} styleSheetId
+         * @param {!WebInspector.TextRange} range
          * @param {?Protocol.Error} error
          * @param {?CSSAgent.SelectorList} selectorPayload
          * @return {boolean}
          * @this {WebInspector.CSSRule}
          */
-        function callback(error, selectorPayload)
+        function callback(styleSheetId, range, error, selectorPayload)
         {
             if (error || !selectorPayload)
                 return false;
             this._cssModel._domModel.markUndoableState();
-            this._cssModel._fireStyleSheetChanged(/** @type {string} */(this.styleSheetId));
-            this.selectors = WebInspector.CSSValue.parseSelectorListPayload(selectorPayload);
+            var edit = new WebInspector.CSSStyleModel.Edit(styleSheetId, range, newSelector, selectorPayload);
+            this._cssModel._fireStyleSheetChanged(styleSheetId, edit);
             return true;
         }
 
-        if (!this.styleSheetId)
+        var styleSheetId = this.styleSheetId;
+        if (!styleSheetId)
             throw "No rule stylesheet id";
         var range = this.selectorRange();
         if (!range)
             throw "Rule selector is not editable";
         WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.StyleRuleEdited);
-        return this._cssModel._agent.setRuleSelector(this.styleSheetId, range, newSelector, callback.bind(this))
+        return this._cssModel._agent.setRuleSelector(styleSheetId, range, newSelector, callback.bind(this, styleSheetId, range))
             .catchException(false);
     },
 
@@ -1159,47 +1172,24 @@ WebInspector.CSSStyleRule.prototype = {
 
     /**
      * @override
-     * @param {string} styleSheetId
-     * @param {!WebInspector.TextRange} oldRange
-     * @param {!WebInspector.TextRange} newRange
+     * @param {!WebInspector.CSSStyleModel.Edit} edit
      */
-    sourceStyleSheetEdited: function(styleSheetId, oldRange, newRange)
+    rebase: function(edit)
     {
-        this._sourceStyleSheetEditedWithMedia(styleSheetId, oldRange, newRange, null, null);
-    },
-
-    /**
-     * @param {string} styleSheetId
-     * @param {!WebInspector.TextRange} oldRange
-     * @param {!WebInspector.TextRange} newRange
-     * @param {?WebInspector.CSSMedia} oldMedia
-     * @param {?WebInspector.CSSMedia} newMedia
-     */
-    _sourceStyleSheetEditedWithMedia: function(styleSheetId, oldRange, newRange, oldMedia, newMedia)
-    {
-        if (this.styleSheetId === styleSheetId) {
+        if (this.styleSheetId !== edit.styleSheetId)
+            return;
+        if (this.selectorRange().equal(edit.oldRange)) {
+            this._reinitializeSelectors(/** @type {!CSSAgent.SelectorList} */(edit.payload));
+        } else {
             for (var i = 0; i < this.selectors.length; ++i)
-                this.selectors[i].sourceStyleRuleEdited(oldRange, newRange);
+                this.selectors[i].rebase(edit);
         }
         if (this.media) {
-            for (var i = 0; i < this.media.length; ++i) {
-                if (oldMedia && newMedia && oldMedia.equal(this.media[i])) {
-                    this.media[i] = newMedia;
-                } else {
-                    this.media[i].sourceStyleSheetEdited(styleSheetId, oldRange, newRange);
-                }
-            }
+            for (var media of this.media)
+                media.rebase(edit);
         }
-        WebInspector.CSSRule.prototype.sourceStyleSheetEdited.call(this, styleSheetId, oldRange, newRange);
-    },
 
-    /**
-     * @param {!WebInspector.CSSMedia} oldMedia
-     * @param {!WebInspector.CSSMedia} newMedia
-     */
-    mediaEdited: function(oldMedia, newMedia)
-    {
-        this._sourceStyleSheetEditedWithMedia(/** @type {string} */ (oldMedia.parentStyleSheetId), oldMedia.range, newMedia.range, oldMedia, newMedia);
+        WebInspector.CSSRule.prototype.rebase.call(this, edit);
     },
 
     __proto__: WebInspector.CSSRule.prototype
@@ -1244,29 +1234,40 @@ WebInspector.CSSKeyframesRule.prototype = {
 WebInspector.CSSKeyframeRule = function(cssModel, payload)
 {
     WebInspector.CSSRule.call(this, cssModel, payload);
-    this._keyText = new WebInspector.CSSValue(payload.keyText);
+    this._reinitializeKey(payload.keyText);
 }
 
 WebInspector.CSSKeyframeRule.prototype = {
     /**
      * @return {!WebInspector.CSSValue}
-        */
+     */
     key: function()
     {
         return this._keyText;
     },
 
     /**
-     * @override
-     * @param {string} styleSheetId
-     * @param {!WebInspector.TextRange} oldRange
-     * @param {!WebInspector.TextRange} newRange
+     * @param {!CSSAgent.Value} payload
      */
-    sourceStyleSheetEdited: function(styleSheetId, oldRange, newRange)
+    _reinitializeKey: function(payload)
     {
-        if (this.styleSheetId === styleSheetId)
-            this._keyText.sourceStyleRuleEdited(oldRange, newRange);
-        WebInspector.CSSRule.prototype.sourceStyleSheetEdited.call(this, styleSheetId, oldRange, newRange);
+        this._keyText = new WebInspector.CSSValue(payload);
+    },
+
+    /**
+     * @override
+     * @param {!WebInspector.CSSStyleModel.Edit} edit
+     */
+    rebase: function(edit)
+    {
+        if (this.styleSheetId !== edit.styleSheetId || !this._keyText.range)
+            return;
+        if (edit.oldRange.equal(this._keyText.range))
+            this._reinitializeKey(/** @type {!CSSAgent.Value} */(edit.payload));
+        else
+            this._keyText.rebase(edit);
+
+        WebInspector.CSSRule.prototype.rebase.call(this, edit);
     },
 
     /**
@@ -1276,28 +1277,31 @@ WebInspector.CSSKeyframeRule.prototype = {
     setKeyText: function(newKeyText)
     {
         /**
+         * @param {!CSSAgent.StyleSheetId} styleSheetId
+         * @param {!WebInspector.TextRange} range
          * @param {?Protocol.Error} error
          * @param {!CSSAgent.Value} payload
          * @return {boolean}
          * @this {WebInspector.CSSKeyframeRule}
          */
-        function callback(error, payload)
+        function callback(styleSheetId, range, error, payload)
         {
             if (error || !payload)
                 return false;
             this._cssModel._domModel.markUndoableState();
-            this._cssModel._fireStyleSheetChanged(/** @type {string} */(this.styleSheetId));
-            this._keyText = new WebInspector.CSSValue(payload);
+            var edit = new WebInspector.CSSStyleModel.Edit(styleSheetId, range, newKeyText, payload);
+            this._cssModel._fireStyleSheetChanged(styleSheetId, edit);
             return true;
         }
 
-        if (!this.styleSheetId)
+        var styleSheetId = this.styleSheetId;
+        if (!styleSheetId)
             throw "No rule stylesheet id";
         var range = this._keyText.range;
         if (!range)
             throw "Keyframe key is not editable";
         WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.StyleRuleEdited);
-        return this._cssModel._agent.setKeyframeKey(this.styleSheetId, range, newKeyText, callback.bind(this))
+        return this._cssModel._agent.setKeyframeKey(styleSheetId, range, newKeyText, callback.bind(this, styleSheetId, range))
             .catchException(false);
     },
 
@@ -1352,16 +1356,14 @@ WebInspector.CSSProperty.parsePayload = function(ownerStyle, index, payload)
 
 WebInspector.CSSProperty.prototype = {
     /**
-     * @param {string} styleSheetId
-     * @param {!WebInspector.TextRange} oldRange
-     * @param {!WebInspector.TextRange} newRange
+     * @param {!WebInspector.CSSStyleModel.Edit} edit
      */
-    sourceStyleSheetEdited: function(styleSheetId, oldRange, newRange)
+    rebase: function(edit)
     {
-        if (this.ownerStyle.styleSheetId !== styleSheetId)
+        if (this.ownerStyle.styleSheetId !== edit.styleSheetId)
             return;
         if (this.range)
-            this.range = this.range.rebaseAfterTextEdit(oldRange, newRange);
+            this.range = this.range.rebaseAfterTextEdit(edit.oldRange, edit.newRange);
     },
 
     /**
@@ -1656,17 +1658,7 @@ WebInspector.CSSMediaQueryExpression.prototype = {
 WebInspector.CSSMedia = function(cssModel, payload)
 {
     this._cssModel = cssModel;
-    this.text = payload.text;
-    this.source = payload.source;
-    this.sourceURL = payload.sourceURL || "";
-    this.range = payload.range ? WebInspector.TextRange.fromObject(payload.range) : null;
-    this.parentStyleSheetId = payload.parentStyleSheetId;
-    this.mediaList = null;
-    if (payload.mediaList) {
-        this.mediaList = [];
-        for (var i = 0; i < payload.mediaList.length; ++i)
-            this.mediaList.push(WebInspector.CSSMediaQuery.parsePayload(payload.mediaList[i]));
-    }
+    this._reinitialize(payload);
 }
 
 WebInspector.CSSMedia.Source = {
@@ -1701,16 +1693,34 @@ WebInspector.CSSMedia.parseMediaArrayPayload = function(cssModel, payload)
 
 WebInspector.CSSMedia.prototype = {
     /**
-     * @param {string} styleSheetId
-     * @param {!WebInspector.TextRange} oldRange
-     * @param {!WebInspector.TextRange} newRange
+     * @param {!CSSAgent.CSSMedia} payload
      */
-    sourceStyleSheetEdited: function(styleSheetId, oldRange, newRange)
+    _reinitialize: function(payload)
     {
-        if (this.parentStyleSheetId !== styleSheetId)
+        this.text = payload.text;
+        this.source = payload.source;
+        this.sourceURL = payload.sourceURL || "";
+        this.range = payload.range ? WebInspector.TextRange.fromObject(payload.range) : null;
+        this.parentStyleSheetId = payload.parentStyleSheetId;
+        this.mediaList = null;
+        if (payload.mediaList) {
+            this.mediaList = [];
+            for (var i = 0; i < payload.mediaList.length; ++i)
+                this.mediaList.push(WebInspector.CSSMediaQuery.parsePayload(payload.mediaList[i]));
+        }
+    },
+
+    /**
+     * @param {!WebInspector.CSSStyleModel.Edit} edit
+     */
+    rebase: function(edit)
+    {
+        if (this.parentStyleSheetId !== edit.styleSheetId || !this.range)
             return;
-        if (this.range)
-            this.range = this.range.rebaseAfterTextEdit(oldRange, newRange);
+        if (edit.oldRange.equal(this.range))
+            this._reinitialize(/** @type {!CSSAgent.CSSMedia} */(edit.payload));
+        else
+            this.range = this.range.rebaseAfterTextEdit(edit.oldRange, edit.newRange);
     },
 
     /**

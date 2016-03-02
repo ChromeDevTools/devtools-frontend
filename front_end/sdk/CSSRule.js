@@ -109,8 +109,7 @@ WebInspector.CSSStyleRule = function(cssModel, payload)
     WebInspector.CSSRule.call(this, cssModel, payload);
 
     this._reinitializeSelectors(payload.selectorList);
-    if (payload.media)
-        this.media = WebInspector.CSSMedia.parseMediaArrayPayload(cssModel, payload.media);
+    this.media = payload.media ? WebInspector.CSSMedia.parseMediaArrayPayload(cssModel, payload.media) : [];
 }
 
 /**
@@ -222,10 +221,8 @@ WebInspector.CSSStyleRule.prototype = {
             for (var i = 0; i < this.selectors.length; ++i)
                 this.selectors[i].rebase(edit);
         }
-        if (this.media) {
-            for (var media of this.media)
-                media.rebase(edit);
-        }
+        for (var media of this.media)
+            media.rebase(edit);
 
         WebInspector.CSSRule.prototype.rebase.call(this, edit);
     },

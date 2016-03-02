@@ -286,18 +286,7 @@ WebInspector.CSSStyleDeclaration.prototype = {
      */
     setText: function(text, majorChange)
     {
-        /**
-         * @param {?Array<!CSSAgent.CSSStyle>} stylePayloads
-         * @return {boolean}
-         */
-        function onPayload(stylePayloads)
-        {
-            return !!stylePayloads;
-        }
-
         return this._cssModel.setStyleTexts([this.styleSheetId], [this.range], [text], majorChange)
-            .then(onPayload)
-            .catchException(false);
     },
 
     /**

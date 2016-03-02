@@ -999,12 +999,10 @@ WebInspector.StylePropertiesSection.prototype = {
     },
 
     /**
-     * @param {?Array.<!WebInspector.CSSMedia>} mediaRules
+     * @param {!Array.<!WebInspector.CSSMedia>} mediaRules
      */
     _createMediaList: function(mediaRules)
     {
-        if (!mediaRules)
-            return;
         for (var i = mediaRules.length - 1; i >= 0; --i) {
             var media = mediaRules[i];
             // Don't display trivial non-print media types.
@@ -1038,7 +1036,8 @@ WebInspector.StylePropertiesSection.prototype = {
     _updateMediaList: function()
     {
         this._mediaListElement.removeChildren();
-        this._createMediaList(this._style.parentRule ? this._style.parentRule.media : null);
+        if (this._style.parentRule && this._style.parentRule instanceof WebInspector.CSSStyleRule)
+            this._createMediaList(this._style.parentRule.media);
     },
 
     /**

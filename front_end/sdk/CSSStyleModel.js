@@ -91,20 +91,20 @@ WebInspector.CSSStyleModel.prototype = {
      * @param {!Array<!WebInspector.TextRange>} ranges
      * @param {!Array<string>} texts
      * @param {boolean} majorChange
-     * @return {!Promise<?Array<!CSSAgent.CSSStyle>>}
+     * @return {!Promise<boolean>}
      */
     setStyleTexts: function(styleSheetIds, ranges, texts, majorChange)
     {
         /**
          * @param {?Protocol.Error} error
          * @param {?Array<!CSSAgent.CSSStyle>} stylePayloads
-         * @return {?Array<!CSSAgent.CSSStyle>}
+         * @return {boolean}
          * @this {WebInspector.CSSStyleModel}
          */
         function parsePayload(error, stylePayloads)
         {
             if (error || !stylePayloads || stylePayloads.length !== ranges.length)
-                return null;
+                return false;
 
             if (majorChange)
                 this._domModel.markUndoableState();
@@ -112,7 +112,7 @@ WebInspector.CSSStyleModel.prototype = {
                 var edit = new WebInspector.CSSStyleModel.Edit(styleSheetIds[i], ranges[i], texts[i], stylePayloads[i]);
                 this._fireStyleSheetChanged(styleSheetIds[i], edit);
             }
-            return stylePayloads;
+            return true;
         }
 
         console.assert(styleSheetIds.length === ranges.length && ranges.length === texts.length, "Array lengths must be equal");
@@ -126,7 +126,7 @@ WebInspector.CSSStyleModel.prototype = {
         }
 
         return this._agent.setStyleTexts(edits, parsePayload.bind(this))
-            .catchException(/** @type {?Array<!CSSAgent.CSSStyle>} */(null));
+            .catchException(false);
     },
 
     /**

@@ -2,6 +2,7 @@
     "extensions": [
         {
             "type": "@WebInspector.ActionDelegate",
+            "category": "Mobile",
             "actionId": "devices.dialog.show",
             "className": "WebInspector.DevicesDialog.ActionDelegate",
             "title": "Inspect devices\u2026"

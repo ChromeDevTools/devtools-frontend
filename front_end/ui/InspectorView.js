@@ -46,7 +46,7 @@ WebInspector.InspectorView = function()
     this._drawerSplitWidget.show(this.element);
 
     this._tabbedPane = new WebInspector.TabbedPane();
-    this._tabbedPane.registerRequiredCSS("components/inspectorViewTabbedPane.css");
+    this._tabbedPane.registerRequiredCSS("ui/inspectorViewTabbedPane.css");
     this._tabbedPane.element.classList.add("inspector-view-tabbed-pane");
     this._tabbedPane.setTabSlider(true);
     this._tabbedPane.setAllowTabReorder(true, false);
@@ -85,8 +85,6 @@ WebInspector.InspectorView = function()
         var panelName = /** @type {string} */ (event.data);
         this.showPanel(panelName);
     }
-
-    WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged.bind(this));
 };
 
 WebInspector.InspectorView.prototype = {
@@ -221,11 +219,11 @@ WebInspector.InspectorView.prototype = {
     },
 
     /**
-     * @param {!WebInspector.Event} event
+     * @param {boolean} allTargetsSuspended
      */
-    _onSuspendStateChanged: function(event)
+    onSuspendStateChanged: function(allTargetsSuspended)
     {
-        this._currentPanelLocked = WebInspector.targetManager.allTargetsSuspended();
+        this._currentPanelLocked = allTargetsSuspended;
         this._tabbedPane.setCurrentTabLocked(this._currentPanelLocked);
         if (this._leftToolbar)
             this._leftToolbar.setEnabled(!this._currentPanelLocked);

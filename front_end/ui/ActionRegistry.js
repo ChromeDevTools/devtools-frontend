@@ -31,6 +31,14 @@ WebInspector.ActionRegistry.prototype = {
     },
 
     /**
+     * @return {!Array.<!WebInspector.Action>}
+     */
+    availableActions: function()
+    {
+        return this.applicableActions(this._actionsById.keysArray(), WebInspector.context);
+    },
+
+    /**
      * @param {!Array.<string>} actionIds
      * @param {!WebInspector.Context} context
      * @return {!Array.<!WebInspector.Action>}
@@ -175,6 +183,22 @@ WebInspector.Action.prototype = {
 
         this._title = title;
         this.dispatchEventToListeners(WebInspector.Action.Events.TitleChanged, this._title);
+    },
+
+    /**
+     * @return {string}
+     */
+    category: function()
+    {
+        return this._extension.descriptor()["category"] || "";
+    },
+
+    /**
+     * @return {string}
+     */
+    tags: function()
+    {
+        return this._extension.descriptor()["tags"] || "";
     },
 
     /**

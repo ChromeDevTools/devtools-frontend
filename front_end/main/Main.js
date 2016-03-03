@@ -181,6 +181,7 @@ WebInspector.Main.prototype = {
         WebInspector.dockController = new WebInspector.DockController(canDock);
         WebInspector.multitargetConsoleModel = new WebInspector.MultitargetConsoleModel();
         WebInspector.multitargetNetworkManager = new WebInspector.MultitargetNetworkManager();
+        WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged.bind(this));
 
         WebInspector.shortcutsScreen = new WebInspector.ShortcutsScreen();
         // set order of some sections explicitly
@@ -342,7 +343,7 @@ WebInspector.Main.prototype = {
 
     _registerForwardedShortcuts: function()
     {
-        /** @const */ var forwardedActions = ["main.toggle-dock", "debugger.toggle-breakpoints-active", "debugger.toggle-pause"];
+        /** @const */ var forwardedActions = ["main.toggle-dock", "debugger.toggle-breakpoints-active", "debugger.toggle-pause", "commandMenu.show"];
         var actionKeys = WebInspector.shortcutRegistry.keysForActions(forwardedActions).map(WebInspector.KeyboardShortcut.keyCodeAndModifiersFromKey);
         InspectorFrontendHost.setWhitelistedShortcuts(JSON.stringify(actionKeys));
     },
@@ -604,6 +605,12 @@ WebInspector.Main.prototype = {
         var debuggerModel = WebInspector.DebuggerModel.fromTarget(this._mainTarget);
         if (debuggerModel)
             WebInspector.TargetCrashedScreen.show(debuggerModel);
+    },
+
+    _onSuspendStateChanged: function()
+    {
+        var suspended = WebInspector.targetManager.allTargetsSuspended();
+        WebInspector.inspectorView.onSuspendStateChanged(suspended);
     },
 
     /**

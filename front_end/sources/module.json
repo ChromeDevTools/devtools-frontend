@@ -18,6 +18,7 @@
             "iconClass": "pause-toolbar-item",
             "className": "WebInspector.SourcesPanel.RevealingActionDelegate",
             "contextTypes": ["WebInspector.SourcesPanel", "WebInspector.ShortcutRegistry.ForwardedShortcut"],
+            "title": "Toggle paused",
             "bindings": [
                 {
                     "platform": "windows,linux",
@@ -123,6 +124,7 @@
             "actionId": "sources.search.toggle",
             "title": "Search all files",
             "className": "WebInspector.AdvancedSearchView.ActionDelegate",
+            "category": "DevTools",
             "bindings": [
                 {
                     "platform": "mac",
@@ -295,9 +297,9 @@
             "settingType": "enum",
             "defaultValue": "original",
             "options": [
-                ["None", "none"],
-                ["All", "all"],
-                ["Trailing", "trailing"]
+                { "title": "Do not show whitespace characters", "text": "None", "value": "none" },
+                { "title": "Show all whitespace characters", "text": "All", "value": "all" },
+                { "title": "Show trailing whitespace characters", "text": "Trailing", "value": "trailing" }
             ]
         },
         {

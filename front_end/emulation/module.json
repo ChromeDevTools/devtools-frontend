@@ -8,10 +8,11 @@
         },
         {
             "type": "@WebInspector.ActionDelegate",
+            "category": "Mobile",
             "actionId": "emulation.toggle-device-mode",
             "className": "WebInspector.DeviceModeWrapper.ActionDelegate",
             "condition": "can_dock",
-            "title": "Toggle device mode",
+            "title": "Toggle device toolbar",
             "iconClass": "phone-toolbar-item",
             "bindings": [
                 {
@@ -60,7 +61,8 @@
             "title": "Sensors",
             "persistence": "closeable",
             "order": 100,
-            "className": "WebInspector.SensorsView"
+            "className": "WebInspector.SensorsView",
+            "tags": "geolocation, accelerometer, device orientation"
         },
         {
             "type": "@WebInspector.ActionDelegate",

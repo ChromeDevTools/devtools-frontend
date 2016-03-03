@@ -62,7 +62,7 @@ WebInspector.FilteredListWidget.filterRegex = function(query)
         if (toEscape.indexOf(c) !== -1)
             c = "\\" + c;
         if (i)
-            regexString += "[^" + c + "]*";
+            regexString += "[^\\0" + c + "]*";
         regexString += c;
     }
     return new RegExp(regexString, "i");
@@ -502,13 +502,21 @@ WebInspector.FilteredListWidget.Delegate.prototype = {
 
         var text = element.textContent;
         var ranges = rangesForMatch(text, query);
-        if (!ranges)
+        if (!ranges || !this.caseSensitive())
             ranges = rangesForMatch(text.toUpperCase(), query.toUpperCase());
         if (ranges) {
             WebInspector.highlightRangesWithStyleClass(element, ranges, "highlight");
             return true;
         }
         return false;
+    },
+
+    /**
+     * @return {boolean}
+     */
+    caseSensitive: function()
+    {
+        return true;
     },
 
     /**

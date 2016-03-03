@@ -16,10 +16,10 @@
             "settingType": "enum",
             "defaultValue": "    ",
             "options": [
-                ["2 spaces", "  "],
-                ["4 spaces", "    "],
-                ["8 spaces", "        "],
-                ["Tab character", "\t"]
+                { "title": "Set indentation to 2 spaces", "text": "2 spaces", "value": "  " },
+                { "title": "Set indentation to 4 spaces", "text": "4 spaces", "value": "    " },
+                { "title": "Set indentation to 8 spaces", "text": "8 spaces", "value": "        " },
+                { "title": "Set indentation to tab character", "text": "Tab character", "value": "\t" }
             ]
         }
     ],

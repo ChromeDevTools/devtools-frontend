@@ -32,6 +32,7 @@
         },
         {
             "type": "@WebInspector.ActionDelegate",
+            "category": "Console",
             "actionId": "console.clear",
             "title": "Clear console",
             "iconClass": "clear-toolbar-item",
@@ -53,7 +54,11 @@
             "title": "Hide network messages",
             "settingName": "hideNetworkMessages",
             "settingType": "boolean",
-            "defaultValue": false
+            "defaultValue": false,
+            "options": [
+                { "value": true, "title": "Hide network messages" },
+                { "value": false, "title": "Show network messages" }
+            ]
         },
         {
             "type": "setting",
@@ -69,7 +74,11 @@
             "title": "Preserve log upon navigation",
             "settingName": "preserveConsoleLog",
             "settingType": "boolean",
-            "defaultValue": false
+            "defaultValue": false,
+            "options": [
+                { "value": true, "title": "Preserve log upon navigation" },
+                { "value": false, "title": "Do not preserve log upon navigation" }
+            ]
         },
         {
             "type": "setting",
@@ -77,7 +86,11 @@
             "title": "Show timestamps",
             "settingName": "consoleTimestampsEnabled",
             "settingType": "boolean",
-            "defaultValue": false
+            "defaultValue": false,
+            "options": [
+                { "value": true, "title": "Show timestamps" },
+                { "value": false, "title": "Hide timestamps" }
+            ]
         }
     ],
     "dependencies": [

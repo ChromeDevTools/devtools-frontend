@@ -2,8 +2,9 @@
     "extensions": [
         {
             "type": "@WebInspector.ActionDelegate",
+            "category": "Settings",
             "actionId": "settings.show",
-            "title": "Settings",
+            "title": "Preferences",
             "className": "WebInspector.SettingsController.ActionDelegate",
             "bindings": [
                 {
@@ -13,12 +14,14 @@
         },
         {
             "type": "@WebInspector.ActionDelegate",
+            "category": "Settings",
             "actionId": "settings.help",
             "title": "Help",
             "className": "WebInspector.SettingsController.ActionDelegate"
         },
         {
             "type": "@WebInspector.ActionDelegate",
+            "category": "Settings",
             "actionId": "settings.shortcuts",
             "title": "Shortcuts",
             "className": "WebInspector.SettingsController.ActionDelegate"

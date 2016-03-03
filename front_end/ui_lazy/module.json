@@ -1,4 +1,21 @@
 {
+    "extensions": [
+        {
+            "type": "@WebInspector.ActionDelegate",
+            "actionId": "commandMenu.show",
+            "className": "WebInspector.CommandMenu.ShowActionDelegate",
+            "bindings": [
+                {
+                    "platform": "windows,linux",
+                    "shortcut": "Ctrl+Shift+P"
+                },
+                {
+                    "platform": "mac",
+                    "shortcut": "Meta+Shift+P"
+                }
+            ]
+        }
+    ],
     "dependencies": [
         "platform",
         "common",
@@ -12,6 +29,7 @@
         "SortableDataGrid.js",
         "ShowMoreDataGridNode.js",
         "FilteredListWidget.js",
+        "CommandMenu.js",
         "FlameChart.js",
         "OverviewGrid.js",
         "PieChart.js",

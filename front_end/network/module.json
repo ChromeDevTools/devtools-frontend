@@ -32,7 +32,12 @@
             "title": "Color-code resource types",
             "settingName": "networkColorCodeResourceTypes",
             "settingType": "boolean",
-            "defaultValue": false
+            "defaultValue": false,
+            "tags": "color code, resource type",
+            "options": [
+                { "value": true, "title": "Color code by resource type" },
+                { "value": false, "title": "Use default colors" }
+            ]
         },
         {
             "type": "@WebInspector.ActionDelegate",
@@ -85,7 +90,8 @@
             "title": "Network conditions",
             "persistence": "closeable",
             "order": 40,
-            "className": "WebInspector.NetworkConfigView"
+            "className": "WebInspector.NetworkConfigView",
+            "tags": "disk cache, network throttling, useragent, user agent"
         }
     ],
     "dependencies": [

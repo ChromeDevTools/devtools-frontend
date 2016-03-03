@@ -930,7 +930,7 @@ WebInspector.AuditRules.ImageDimensionsRule.prototype = {
             var targetResult = {};
 
             /**
-             * @param {?WebInspector.CSSStyleModel.MatchedStyleResult} matchedStyleResult
+             * @param {?WebInspector.CSSMatchedStyles} matchedStyleResult
              */
             function matchedCallback(matchedStyleResult)
             {

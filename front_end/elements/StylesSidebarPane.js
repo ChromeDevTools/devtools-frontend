@@ -247,20 +247,20 @@ WebInspector.StylesSidebarPane.prototype = {
     },
 
     /**
-     * @return {!Promise.<?WebInspector.CSSStyleModel.MatchedStyleResult>}
+     * @return {!Promise.<?WebInspector.CSSMatchedStyles>}
      */
     fetchMatchedCascade: function()
     {
         var node = this.node();
         if (!node)
-            return Promise.resolve(/** @type {?WebInspector.CSSStyleModel.MatchedStyleResult} */(null));
+            return Promise.resolve(/** @type {?WebInspector.CSSMatchedStyles} */(null));
         if (!this._matchedCascadePromise)
             this._matchedCascadePromise = this._matchedStylesForNode(node).then(validateStyles.bind(this));
         return this._matchedCascadePromise;
 
         /**
-         * @param {?WebInspector.CSSStyleModel.MatchedStyleResult} matchedStyles
-         * @return {?WebInspector.CSSStyleModel.MatchedStyleResult}
+         * @param {?WebInspector.CSSMatchedStyles} matchedStyles
+         * @return {?WebInspector.CSSMatchedStyles}
          * @this {WebInspector.StylesSidebarPane}
          */
         function validateStyles(matchedStyles)
@@ -271,13 +271,13 @@ WebInspector.StylesSidebarPane.prototype = {
 
     /**
      * @param {!WebInspector.DOMNode} node
-     * @return {!Promise.<?WebInspector.CSSStyleModel.MatchedStyleResult>}
+     * @return {!Promise.<?WebInspector.CSSMatchedStyles>}
      */
     _matchedStylesForNode: function(node)
     {
         var cssModel = this.cssModel();
         if (!cssModel)
-            return Promise.resolve(/** @type {?WebInspector.CSSStyleModel.MatchedStyleResult} */(null));
+            return Promise.resolve(/** @type {?WebInspector.CSSMatchedStyles} */(null));
         return cssModel.matchedStylesPromise(node.id)
     },
 
@@ -348,7 +348,7 @@ WebInspector.StylesSidebarPane.prototype = {
     },
 
     /**
-     * @param {?WebInspector.CSSStyleModel.MatchedStyleResult} matchedStyles
+     * @param {?WebInspector.CSSMatchedStyles} matchedStyles
      */
     _innerRebuildUpdate: function(matchedStyles)
     {
@@ -411,7 +411,7 @@ WebInspector.StylesSidebarPane.prototype = {
     },
 
     /**
-     * @param {!WebInspector.CSSStyleModel.MatchedStyleResult} matchedStyles
+     * @param {!WebInspector.CSSMatchedStyles} matchedStyles
      * @return {!Array.<!WebInspector.SectionBlock>}
      */
     _rebuildSectionsForMatchedStyleRules: function(matchedStyles)
@@ -721,7 +721,7 @@ WebInspector.SectionBlock.prototype = {
 /**
  * @constructor
  * @param {!WebInspector.StylesSidebarPane} parentPane
- * @param {!WebInspector.CSSStyleModel.MatchedStyleResult} matchedStyles
+ * @param {!WebInspector.CSSMatchedStyles} matchedStyles
  * @param {!WebInspector.CSSStyleDeclaration} style
  */
 WebInspector.StylePropertiesSection = function(parentPane, matchedStyles, style)
@@ -1143,7 +1143,7 @@ WebInspector.StylePropertiesSection.prototype = {
      */
     _isPropertyOverloaded: function(property)
     {
-        return this._matchedStyles.propertyState(property) === WebInspector.CSSStyleModel.MatchedStyleResult.PropertyState.Overloaded;
+        return this._matchedStyles.propertyState(property) === WebInspector.CSSMatchedStyles.PropertyState.Overloaded;
     },
 
     /**
@@ -1569,7 +1569,7 @@ WebInspector.StylePropertiesSection.prototype = {
 }
 
 /**
- * @param {!WebInspector.CSSStyleModel.MatchedStyleResult} matchedStyles
+ * @param {!WebInspector.CSSMatchedStyles} matchedStyles
  * @param {!WebInspector.Linkifier} linkifier
  * @param {?WebInspector.CSSRule} rule
  * @return {!Node}
@@ -1628,7 +1628,7 @@ WebInspector.StylePropertiesSection._linkifyRuleLocation = function(cssModel, li
  * @constructor
  * @extends {WebInspector.StylePropertiesSection}
  * @param {!WebInspector.StylesSidebarPane} stylesPane
- * @param {!WebInspector.CSSStyleModel.MatchedStyleResult} matchedStyles
+ * @param {!WebInspector.CSSMatchedStyles} matchedStyles
  * @param {string} defaultSelectorText
  * @param {string} styleSheetId
  * @param {!WebInspector.TextRange} ruleLocation
@@ -1769,7 +1769,7 @@ WebInspector.BlankStylePropertiesSection.prototype = {
  * @constructor
  * @extends {WebInspector.StylePropertiesSection}
  * @param {!WebInspector.StylesSidebarPane} stylesPane
- * @param {!WebInspector.CSSStyleModel.MatchedStyleResult} matchedStyles
+ * @param {!WebInspector.CSSMatchedStyles} matchedStyles
  * @param {!WebInspector.CSSStyleDeclaration} style
  */
 WebInspector.KeyframePropertiesSection = function(stylesPane, matchedStyles, style)
@@ -1864,7 +1864,7 @@ WebInspector.KeyframePropertiesSection.prototype = {
  * @constructor
  * @extends {TreeElement}
  * @param {!WebInspector.StylesSidebarPane} stylesPane
- * @param {!WebInspector.CSSStyleModel.MatchedStyleResult} matchedStyles
+ * @param {!WebInspector.CSSMatchedStyles} matchedStyles
  * @param {!WebInspector.CSSProperty} property
  * @param {boolean} isShorthand
  * @param {boolean} inherited
@@ -2150,7 +2150,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
             var section = this.section();
             if (section) {
                 inherited = section.isPropertyInherited(name);
-                overloaded = this._matchedStyles.propertyState(longhandProperties[i]) === WebInspector.CSSStyleModel.MatchedStyleResult.PropertyState.Overloaded;
+                overloaded = this._matchedStyles.propertyState(longhandProperties[i]) === WebInspector.CSSMatchedStyles.PropertyState.Overloaded;
             }
 
             var item = new WebInspector.StylePropertyTreeElement(this._parentPane, this._matchedStyles, longhandProperties[i], false, inherited, overloaded);

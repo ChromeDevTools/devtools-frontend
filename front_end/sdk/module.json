@@ -59,6 +59,7 @@
         "CookieParser.js",
         "CPUProfileDataModel.js",
         "CPUProfilerModel.js",
+        "CSSMatchedStyles.js",
         "CSSMedia.js",
         "CSSMetadata.js",
         "CSSParser.js",

@@ -128,7 +128,7 @@ WebInspector.ComputedStyleWidget.prototype = {
 
     /**
      * @param {?WebInspector.SharedSidebarModel.ComputedStyle} nodeStyle
-     * @param {?WebInspector.CSSStyleModel.MatchedStyleResult} matchedStyles
+     * @param {?WebInspector.CSSMatchedStyles} matchedStyles
      */
     _innerRebuildUpdate: function(nodeStyle, matchedStyles)
     {
@@ -241,7 +241,7 @@ WebInspector.ComputedStyleWidget.prototype = {
 
     /**
      * @param {!WebInspector.CSSStyleModel} cssModel
-     * @param {!WebInspector.CSSStyleModel.MatchedStyleResult} matchedStyles
+     * @param {!WebInspector.CSSMatchedStyles} matchedStyles
      * @param {!WebInspector.DOMNode} node
      * @param {!TreeElement} rootTreeElement
      * @param {!Array<!WebInspector.CSSProperty>} tracedProperties
@@ -253,7 +253,7 @@ WebInspector.ComputedStyleWidget.prototype = {
         for (var property of tracedProperties) {
             var trace = createElement("div");
             trace.classList.add("property-trace");
-            if (matchedStyles.propertyState(property) === WebInspector.CSSStyleModel.MatchedStyleResult.PropertyState.Overloaded)
+            if (matchedStyles.propertyState(property) === WebInspector.CSSMatchedStyles.PropertyState.Overloaded)
                 trace.classList.add("property-trace-inactive");
             else
                 activeProperty = property;
@@ -289,7 +289,7 @@ WebInspector.ComputedStyleWidget.prototype = {
     },
 
     /**
-     * @param {!WebInspector.CSSStyleModel.MatchedStyleResult} matchedStyles
+     * @param {!WebInspector.CSSMatchedStyles} matchedStyles
      * @return {!Map<string, !Array<!WebInspector.CSSProperty>>}
      */
     _computePropertyTraces: function(matchedStyles)
@@ -309,7 +309,7 @@ WebInspector.ComputedStyleWidget.prototype = {
     },
 
     /**
-     * @param {!WebInspector.CSSStyleModel.MatchedStyleResult} matchedStyles
+     * @param {!WebInspector.CSSMatchedStyles} matchedStyles
      * @return {!Set<string>}
      */
     _computeInheritedProperties: function(matchedStyles)

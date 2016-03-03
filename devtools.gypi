@@ -135,6 +135,7 @@
             'front_end/sdk/CookieParser.js',
             'front_end/sdk/CPUProfileDataModel.js',
             'front_end/sdk/CPUProfilerModel.js',
+            'front_end/sdk/CSSMatchedStyles.js',
             'front_end/sdk/CSSMedia.js',
             'front_end/sdk/CSSMetadata.js',
             'front_end/sdk/CSSParser.js',

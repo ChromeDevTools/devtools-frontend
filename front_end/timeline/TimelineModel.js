@@ -261,8 +261,6 @@ WebInspector.TimelineModel.forAllRecords = function(recordsArray, preOrderCallba
     return processRecords(recordsArray, 0);
 }
 
-WebInspector.TimelineModel.TransferChunkLengthBytes = 5000000;
-
 WebInspector.TimelineModel.DevToolsMetadataEvent = {
     TracingStartedInBrowser: "TracingStartedInBrowser",
     TracingStartedInPage: "TracingStartedInPage",
@@ -660,6 +658,7 @@ WebInspector.TimelineModel.prototype = {
      */
     startCollectingTraceEvents: function(fromFile)
     {
+        this._loadedFromFile = fromFile;
         this._tracingModel.reset();
         this.reset();
         this.dispatchEventToListeners(WebInspector.TimelineModel.Events.RecordingStarted, { fromFile: fromFile });

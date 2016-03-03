@@ -6,23 +6,20 @@
  * @constructor
  * @implements {WebInspector.OutputStream}
  * @implements {WebInspector.OutputStreamDelegate}
- * @param {!WebInspector.TimelineModel} model
- * @param {!WebInspector.Progress} progress
+ * @param {!WebInspector.TracingModel} model
+ * @param {!WebInspector.TimelineLifecycleDelegate} delegate
  */
-WebInspector.TimelineLoader = function(model, progress)
+WebInspector.TimelineLoader = function(model, delegate)
 {
     this._model = model;
+    this._delegate = delegate;
 
     /** @type {?function()} */
     this._canceledCallback = null;
-    this._progress = progress;
-    this._progress.setTitle(WebInspector.UIString("Loading"));
-    this._progress.setTotalWork(WebInspector.TimelineLoader._totalProgress);  // Unknown, will loop the values.
 
     this._state = WebInspector.TimelineLoader.State.Initial;
     this._buffer = "";
     this._firstChunk = true;
-    this._wasCanceledOnce = false;
 
     this._loadedBytes = 0;
     /** @type {number} */
@@ -31,30 +28,35 @@ WebInspector.TimelineLoader = function(model, progress)
 }
 
 /**
- * @param {!WebInspector.TimelineModel} model
+ * @param {!WebInspector.TracingModel} model
  * @param {!File} file
- * @param {!WebInspector.Progress} progress
+ * @param {!WebInspector.TimelineLifecycleDelegate} delegate
+ * @return {!WebInspector.TimelineLoader}
  */
-WebInspector.TimelineLoader.loadFromFile = function(model, file, progress)
+WebInspector.TimelineLoader.loadFromFile = function(model, file, delegate)
 {
-    var loader = new WebInspector.TimelineLoader(model, progress);
+    var loader = new WebInspector.TimelineLoader(model, delegate);
     var fileReader = WebInspector.TimelineLoader._createFileReader(file, loader);
     loader._canceledCallback = fileReader.cancel.bind(fileReader);
     loader._totalSize = file.size;
-    progress.setTotalWork(loader._totalSize);
     fileReader.start(loader);
+    return loader;
 }
 
 /**
- * @param {!WebInspector.TimelineModel} model
+ * @param {!WebInspector.TracingModel} model
  * @param {string} url
- * @param {!WebInspector.Progress} progress
+ * @param {!WebInspector.TimelineLifecycleDelegate} delegate
+ * @return {!WebInspector.TimelineLoader}
  */
-WebInspector.TimelineLoader.loadFromURL = function(model, url, progress)
+WebInspector.TimelineLoader.loadFromURL = function(model, url, delegate)
 {
-    var stream = new WebInspector.TimelineLoader(model, progress);
+    var stream = new WebInspector.TimelineLoader(model, delegate);
     WebInspector.ResourceLoader.loadAsStream(url, null, stream);
+    return stream;
 }
+
+WebInspector.TimelineLoader.TransferChunkLengthBytes = 5000000;
 
 /**
  * @param {!File} file
@@ -63,11 +65,8 @@ WebInspector.TimelineLoader.loadFromURL = function(model, url, progress)
  */
 WebInspector.TimelineLoader._createFileReader = function(file, delegate)
 {
-    return new WebInspector.ChunkedFileReader(file, WebInspector.TimelineModel.TransferChunkLengthBytes, delegate);
+    return new WebInspector.ChunkedFileReader(file, WebInspector.TimelineLoader.TransferChunkLengthBytes, delegate);
 }
-
-
-WebInspector.TimelineLoader._totalProgress = 100000;
 
 WebInspector.TimelineLoader.State = {
     Initial: "Initial",
@@ -76,26 +75,27 @@ WebInspector.TimelineLoader.State = {
 }
 
 WebInspector.TimelineLoader.prototype = {
+    cancel: function()
+    {
+        this._model.reset();
+        this._delegate.loadingComplete(false);
+        this._delegate = null;
+        if (this._canceledCallback)
+            this._canceledCallback();
+    },
+
     /**
      * @override
      * @param {string} chunk
      */
     write: function(chunk)
     {
-        this._loadedBytes += chunk.length;
-        if (this._progress.isCanceled() && !this._wasCanceledOnce) {
-            this._wasCanceled = true;
-            this._reportErrorAndCancelLoading();
+        if (!this._delegate)
             return;
-        }
-        if (this._firstChunk)
-            this._progress.setTitle(WebInspector.UIString("Loading\u2026"));
-        if (this._totalSize) {
-            this._progress.setWorked(this._loadedBytes);
-        } else {
-            this._progress.setWorked(this._loadedBytes % WebInspector.TimelineLoader._totalProgress,
-                                     WebInspector.UIString("Loaded %s", Number.bytesToString(this._loadedBytes)));
-        }
+        this._loadedBytes += chunk.length;
+        if (!this._firstChunk)
+            this._delegate.loadingProgress(this._totalSize ? this._loadedBytes / this._totalSize : undefined);
+
         if (this._state === WebInspector.TimelineLoader.State.Initial) {
             if (chunk[0] === "{")
                 this._state = WebInspector.TimelineLoader.State.LookingForEvents;
@@ -129,7 +129,7 @@ WebInspector.TimelineLoader.prototype = {
         var json = data + "]";
 
         if (this._firstChunk) {
-            this._model.startCollectingTraceEvents(true);
+            this._delegate.loadingStarted();
         } else {
             var commaIndex = json.indexOf(",");
             if (commaIndex !== -1)
@@ -154,7 +154,7 @@ WebInspector.TimelineLoader.prototype = {
         }
 
         try {
-            this._model.traceEventsCollected(items);
+            this._model.addEvents(items);
         } catch(e) {
             this._reportErrorAndCancelLoading(WebInspector.UIString("Malformed timeline data: %s", e.toString()));
             return;
@@ -168,11 +168,7 @@ WebInspector.TimelineLoader.prototype = {
     {
         if (message)
             WebInspector.console.error(message);
-        this._model.tracingComplete();
-        this._model.reset();
-        if (this._canceledCallback)
-            this._canceledCallback();
-        this._progress.done();
+        this.cancel();
     },
 
     /**
@@ -190,8 +186,8 @@ WebInspector.TimelineLoader.prototype = {
     close: function()
     {
         this._model._loadedFromFile = true;
-        this._model.tracingComplete();
-        this._progress.done();
+        if (this._delegate)
+            this._delegate.loadingComplete(true);
     },
 
     /**

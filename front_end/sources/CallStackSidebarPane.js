@@ -81,7 +81,7 @@ WebInspector.CallStackSidebarPane.prototype = {
             asyncCallFrame.setHoverable(false);
             asyncCallFrame.element.addEventListener("contextmenu", this._asyncCallFrameContextMenu.bind(this, this.callFrames.length), true);
             this._appendSidebarCallFrames(this._callFramesFromRuntime(asyncStackTrace.callFrames, asyncCallFrame), asyncCallFrame);
-            asyncStackTrace = asyncStackTrace.asyncStackTrace;
+            asyncStackTrace = asyncStackTrace.parent;
         }
 
         if (topStackHidden)

@@ -132,6 +132,7 @@ WebInspector.CallStackSidebarPane.prototype = {
             var columnNumber = callFrame.columnNumber ? callFrame.columnNumber - 1 : 0;
             var location = new WebInspector.DebuggerModel.Location(this._debuggerModel, callFrame.scriptId, lineNumber, columnNumber);
             var callFrameItem = new WebInspector.CallStackSidebarPane.CallFrame(callFrame.functionName, location, this._linkifier, null, asyncCallFrameItem);
+            callFrameItem.element.addEventListener("click", this._asyncCallFrameClicked.bind(this, callFrameItem), false);
             callFrameItems.push(callFrameItem);
         }
         return callFrameItems;
@@ -362,6 +363,15 @@ WebInspector.CallStackSidebarPane.prototype = {
     /**
      * @param {!WebInspector.CallStackSidebarPane.CallFrame} callFrameItem
      */
+    _asyncCallFrameClicked: function(callFrameItem)
+    {
+        var uiLocation = WebInspector.debuggerWorkspaceBinding.rawLocationToUILocation(callFrameItem._location);
+        WebInspector.Revealer.reveal(uiLocation);
+    },
+
+    /**
+     * @param {!WebInspector.CallStackSidebarPane.CallFrame} callFrameItem
+     */
     _callFrameSelected: function(callFrameItem)
     {
         callFrameItem.element.scrollIntoViewIfNeeded();
@@ -440,7 +450,6 @@ WebInspector.CallStackSidebarPane.CallFrame = function(functionName, location, l
     if (asyncCallFrame) {
         var locationElement = linkifier.linkifyRawLocation(location, location.script().sourceURL);
         this.subtitleElement.appendChild(locationElement);
-        this.setHoverable(false);
     } else {
         WebInspector.debuggerWorkspaceBinding.createCallFrameLiveLocation(location, this._update.bind(this));
     }

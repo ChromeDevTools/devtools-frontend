@@ -218,7 +218,7 @@ WebInspector.Script.prototype = {
 
     /**
      * @param {string} newSource
-     * @param {function(?Protocol.Error, !DebuggerAgent.SetScriptSourceError=, !Array.<!DebuggerAgent.CallFrame>=, !DebuggerAgent.StackTrace=, boolean=)} callback
+     * @param {function(?Protocol.Error, !DebuggerAgent.SetScriptSourceError=, !Array.<!DebuggerAgent.CallFrame>=, !RuntimeAgent.StackTrace=, boolean=)} callback
      */
     editSource: function(newSource, callback)
     {
@@ -227,7 +227,7 @@ WebInspector.Script.prototype = {
          * @param {?Protocol.Error} error
          * @param {!Array.<!DebuggerAgent.CallFrame>=} callFrames
          * @param {boolean=} stackChanged
-         * @param {!DebuggerAgent.StackTrace=} asyncStackTrace
+         * @param {!RuntimeAgent.StackTrace=} asyncStackTrace
          * @param {!DebuggerAgent.SetScriptSourceError=} compileError
          */
         function didEditScriptSource(error, callFrames, stackChanged, asyncStackTrace, compileError)

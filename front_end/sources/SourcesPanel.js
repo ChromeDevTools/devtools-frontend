@@ -291,7 +291,7 @@ WebInspector.SourcesPanel.prototype = {
             }
         } else {
             if (details.callFrames.length)
-                WebInspector.debuggerWorkspaceBinding.createCallFrameLiveLocation(details.callFrames[0], didGetUILocation.bind(this));
+                WebInspector.debuggerWorkspaceBinding.createCallFrameLiveLocation(details.callFrames[0].location(), didGetUILocation.bind(this));
             else
                 console.warn("ScriptsPanel paused, but callFrames.length is zero."); // TODO remove this once we understand this case better
         }
@@ -436,7 +436,7 @@ WebInspector.SourcesPanel.prototype = {
         this.sidebarPanes.scopechain.update(callFrame);
         this.sidebarPanes.watchExpressions.refreshExpressions();
         this.sidebarPanes.callstack.setSelectedCallFrame(callFrame);
-        WebInspector.debuggerWorkspaceBinding.createCallFrameLiveLocation(callFrame, this._executionLineChanged.bind(this));
+        WebInspector.debuggerWorkspaceBinding.createCallFrameLiveLocation(callFrame.location(), this._executionLineChanged.bind(this));
     },
 
     /**

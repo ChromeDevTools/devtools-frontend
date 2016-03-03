@@ -147,17 +147,17 @@ WebInspector.DebuggerWorkspaceBinding.prototype = {
     },
 
     /**
-     * @param {!WebInspector.DebuggerModel.CallFrame} callFrame
+     * @param {!WebInspector.DebuggerModel.Location} location
      * @param {function(!WebInspector.LiveLocation)} updateDelegate
      * @return {!WebInspector.DebuggerWorkspaceBinding.Location}
      */
-    createCallFrameLiveLocation: function(callFrame, updateDelegate)
+    createCallFrameLiveLocation: function(location, updateDelegate)
     {
-        var target = callFrame.target();
-        this._ensureInfoForScript(callFrame.script);
-        var location = this.createLiveLocation(callFrame.location(), updateDelegate);
-        this._registerCallFrameLiveLocation(target, location);
-        return location;
+        var target = location.target();
+        this._ensureInfoForScript(location.script());
+        var liveLocation = this.createLiveLocation(location, updateDelegate);
+        this._registerCallFrameLiveLocation(target, liveLocation);
+        return liveLocation;
     },
 
     /**

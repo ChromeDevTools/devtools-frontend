@@ -2989,9 +2989,9 @@ WebInspector.StylesSidebarPropertyRenderer._urlRegex = function(value)
 {
     // Heuristically choose between single-quoted, double-quoted or plain URL regex.
     if (/url\(\s*'.*\s*'\s*\)/.test(value))
-        return /url\(\s*('.+')\s*\)/g;
+        return /url\(\s*('.+?')\s*\)/g;
     if (/url\(\s*".*\s*"\s*\)/.test(value))
-        return /url\(\s*(".+")\s*\)/g;
+        return /url\(\s*(".+?")\s*\)/g;
     return /url\(\s*([^)]+)\s*\)/g;
 }
 

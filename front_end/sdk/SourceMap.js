@@ -89,12 +89,15 @@ WebInspector.SourceMap = function(compiledURL, sourceMappingURL, payload)
 /**
  * @param {string} sourceMapURL
  * @param {string} compiledURL
- * @param {function(?WebInspector.SourceMap)} callback
+ * @return {!Promise<?WebInspector.SourceMap>}
  * @this {WebInspector.SourceMap}
  */
-WebInspector.SourceMap.load = function(sourceMapURL, compiledURL, callback)
+WebInspector.SourceMap.load = function(sourceMapURL, compiledURL)
 {
+    var callback;
+    var promise = new Promise(fulfill => callback = fulfill);
     WebInspector.multitargetNetworkManager.loadResource(sourceMapURL, contentLoaded);
+    return promise;
 
     /**
      * @param {number} statusCode
@@ -113,6 +116,7 @@ WebInspector.SourceMap.load = function(sourceMapURL, compiledURL, callback)
         try {
             var payload = /** @type {!SourceMapV3} */ (JSON.parse(content));
             var baseURL = sourceMapURL.startsWith("data:") ? compiledURL : sourceMapURL;
+
             callback(new WebInspector.SourceMap(compiledURL, baseURL, payload));
         } catch(e) {
             console.error(e);

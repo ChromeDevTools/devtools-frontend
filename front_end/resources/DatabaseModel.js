@@ -165,8 +165,8 @@ WebInspector.DatabaseModel.prototype = {
     databases: function()
     {
         var result = [];
-        for (var databaseId in this._databases)
-            result.push(this._databases[databaseId]);
+        for (var database of this._databases)
+            result.push(database);
         return result;
     },
 

@@ -1321,11 +1321,13 @@ WebInspector.ElementsTreeOutline.prototype = {
     {
         var visibleChildren = WebInspector.ElementsTreeElement.visibleShadowRoots(node);
 
-        if (node.importedDocument())
-            visibleChildren.push(node.importedDocument());
+        var importedDocument = node.importedDocument();
+        if (importedDocument)
+            visibleChildren.push(importedDocument);
 
-        if (node.templateContent())
-            visibleChildren.push(node.templateContent());
+        var templateContent = node.templateContent();
+        if (templateContent)
+            visibleChildren.push(templateContent);
 
         var beforePseudoElement = node.beforePseudoElement();
         if (beforePseudoElement)

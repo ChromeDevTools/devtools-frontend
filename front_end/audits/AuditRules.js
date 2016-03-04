@@ -44,7 +44,7 @@ WebInspector.AuditRules.CacheableResponseCodes =
 
 /**
  * @param {!Array.<!WebInspector.NetworkRequest>} requests
- * @param {?Array.<!WebInspector.resourceTypes>} types
+ * @param {?Array.<!WebInspector.ResourceType>} types
  * @param {boolean} needFullResources
  * @return {!Object.<string, !Array.<!WebInspector.NetworkRequest|string>>}
  */

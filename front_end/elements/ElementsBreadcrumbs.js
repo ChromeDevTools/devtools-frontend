@@ -206,7 +206,7 @@ WebInspector.ElementsBreadcrumbs.prototype = {
 
         // Reset crumb styles.
         for (var i = 0; i < crumbs.childNodes.length; ++i) {
-            var crumb = crumbs.childNodes[i];
+            var crumb = crumbs.children[i];
             // Find the selected crumb and index.
             if (!selectedCrumb && crumb.classList.contains("selected")) {
                 selectedCrumb = crumb;
@@ -284,7 +284,7 @@ WebInspector.ElementsBreadcrumbs.prototype = {
 
             function shrinkCrumbAtIndex(index)
             {
-                var shrinkCrumb = crumbs.childNodes[index];
+                var shrinkCrumb = crumbs.children[index];
                 if (shrinkCrumb && shrinkCrumb !== significantCrumb)
                     shrinkingFunction(shrinkCrumb);
                 if (crumbsAreSmallerThanContainer())

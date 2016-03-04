@@ -152,8 +152,8 @@ WebInspector.DevicesSettingsTab.prototype = {
         device.deviceScaleFactor = editor.control("scale").value ? parseFloat(editor.control("scale").value) : 0;
         device.userAgent = editor.control("user-agent").value;
         device.modes = [];
-        device.modes.push({title: "", orientation: WebInspector.EmulatedDevice.Vertical, insets: new Insets(0, 0, 0, 0), images: null});
-        device.modes.push({title: "", orientation: WebInspector.EmulatedDevice.Horizontal, insets: new Insets(0, 0, 0, 0), images: null});
+        device.modes.push({title: "", orientation: WebInspector.EmulatedDevice.Vertical, insets: new Insets(0, 0, 0, 0), image: null});
+        device.modes.push({title: "", orientation: WebInspector.EmulatedDevice.Horizontal, insets: new Insets(0, 0, 0, 0), image: null});
         device.capabilities = [];
         var uaType = editor.control("ua-type").value;
         if (uaType === WebInspector.DeviceModeModel.UA.Mobile || uaType === WebInspector.DeviceModeModel.UA.MobileNoTouch)

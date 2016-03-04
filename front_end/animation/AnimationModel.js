@@ -883,7 +883,7 @@ WebInspector.AnimationModel.ScreenshotCapture = function(target, model)
     this._model.addEventListener(WebInspector.AnimationModel.Events.ModelReset, this._stopScreencast, this);
 }
 
-/** @typedef {{ time: number, screenshots: !Array.<string>}} */
+/** @typedef {{ time: number, endTime: number, screenshots: !Array.<string>}} */
 WebInspector.AnimationModel.ScreenshotCapture.Request;
 
 WebInspector.AnimationModel.ScreenshotCapture.prototype = {

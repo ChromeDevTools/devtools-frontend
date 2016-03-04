@@ -401,11 +401,12 @@ WebInspector.DeviceModeToolbar.prototype = {
      */
     _deviceListChanged: function()
     {
-        if (!this._model.device())
+        var device = this._model.device();
+        if (!device)
             return;
 
         var devices = this._allDevices();
-        if (devices.indexOf(this._model.device()) === -1) {
+        if (devices.indexOf(device) === -1) {
             if (devices.length)
                 this._emulateDevice(devices[0]);
             else

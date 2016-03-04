@@ -58,7 +58,7 @@ WebInspector.AXNodeSubPane.prototype = {
             {
                 ignoredReasons.appendChild(new WebInspector.AXNodeIgnoredReasonTreeElement(property, axNode, target));
             }
-            var ignoredReasonsArray = /** @type {!Array.<!Object>} */(axNode.ignoredReasons);
+            var ignoredReasonsArray = /** @type {!Array<!AccessibilityAgent.AXProperty>} */(axNode.ignoredReasons);
             for (var reason of ignoredReasonsArray)
                 addIgnoredReason(reason);
             if (!ignoredReasons.firstChild())

@@ -1156,7 +1156,7 @@ WebInspector.StylePropertiesSection.prototype = {
             hasMatchingChild |= child._updateFilter();
 
         var regex = this._parentPane.filterRegex();
-        var hideRule = !hasMatchingChild && regex && !regex.test(this.element.textContent);
+        var hideRule = !hasMatchingChild && !!regex && !regex.test(this.element.textContent);
         this.element.classList.toggle("hidden", hideRule);
         if (!hideRule && this._style.parentRule)
             this._markSelectorHighlights();

@@ -478,7 +478,7 @@ WebInspector.ConsoleViewMessage.prototype = {
     {
         var property = propertyPath.peekLast();
         if (property.type === "accessor")
-            return this._formatAsAccessorProperty(object, propertyPath.select("name"), false);
+            return this._formatAsAccessorProperty(object, propertyPath.map(property => property.name), false);
         return this._previewFormatter.renderPropertyPreview(property.type, /** @type {string} */ (property.subtype), property.value);
     },
 
@@ -647,7 +647,7 @@ WebInspector.ConsoleViewMessage.prototype = {
             return;
         }
 
-        var elements = [];
+        var elements = {};
         for (var i = 0; i < properties.length; ++i) {
             var property = properties[i];
             var name = property.name;

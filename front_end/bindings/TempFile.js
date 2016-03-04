@@ -233,7 +233,7 @@ WebInspector.TempFile.prototype = {
  */
 WebInspector.DeferredTempFile = function(dirPath, name)
 {
-    /** @type {!Array.<!{strings: !Array.<string>, callback: function(number)}>} */
+    /** @type {!Array.<!{strings: !Array.<string>, callback: ?function(number)}>} */
     this._chunks = [];
     this._tempFile = null;
     this._isWriting = false;
@@ -254,7 +254,7 @@ WebInspector.DeferredTempFile.prototype = {
     {
         if (this._finishCallback)
             throw new Error("No writes are allowed after close.");
-        this._chunks.push({strings: strings, callback: callback});
+        this._chunks.push({strings: strings, callback: callback || null});
         if (this._tempFile && !this._isWriting)
             this._writeNextChunk();
     },

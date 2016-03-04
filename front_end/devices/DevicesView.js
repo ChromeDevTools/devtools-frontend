@@ -450,7 +450,7 @@ WebInspector.DevicesView.DeviceView.prototype = {
             this._deviceSerial.textContent = "#" + device.adbSerial;
 
         this._deviceOffline.classList.toggle("hidden", device.adbConnected);
-        this._noBrowsers.classList.toggle("hidden", !device.adbConnected || device.browsers.length);
+        this._noBrowsers.classList.toggle("hidden", !device.adbConnected || !!device.browsers.length);
         this._browsers.classList.toggle("hidden", !device.adbConnected || !device.browsers.length);
 
         var browserIds = new Set();

@@ -86,48 +86,30 @@ WebInspector.WorkerManager.prototype = {
     _onSuspendStateChanged: function()
     {
         var suspended = WebInspector.targetManager.allTargetsSuspended();
-        this.target().workerAgent().setAutoconnectToWorkers(!suspended);
+        this.target().workerAgent().setWaitForDebuggerOnStart(!suspended);
     },
 
     /**
      * @param {string} workerId
      * @param {string} url
-     * @param {boolean} inspectorConnected
+     * @param {boolean} waitingForDebugger
      */
-    _workerCreated: function(workerId, url, inspectorConnected)
+    _workerCreated: function(workerId, url, waitingForDebugger)
     {
-        var connection = new WebInspector.WorkerConnection(this, workerId, inspectorConnected, onConnectionReady.bind(this));
+        var connection = new WebInspector.WorkerConnection(this, workerId);
         this._connections.set(workerId, connection);
 
-        /**
-         * @param {!InspectorBackendClass.Connection} connection
-         * @this {WebInspector.WorkerManager}
-         */
-        function onConnectionReady(connection)
-        {
-            var parsedURL = url.asParsedURL();
-            var workerName = parsedURL ? parsedURL.lastPathComponentWithFragment() : "#" + (++this._lastAnonymousTargetId);
-            var target = WebInspector.targetManager.createTarget(workerName, WebInspector.Target.Type.DedicatedWorker, connection, this.target());
-            this._targetsByWorkerId.set(workerId, target);
+        var parsedURL = url.asParsedURL();
+        var workerName = parsedURL ? parsedURL.lastPathComponentWithFragment() : "#" + (++this._lastAnonymousTargetId);
+        var target = WebInspector.targetManager.createTarget(workerName, WebInspector.Target.Type.DedicatedWorker, connection, this.target());
+        this._targetsByWorkerId.set(workerId, target);
 
-            if (inspectorConnected)
-                target.runtimeAgent().isRunRequired(pauseInDebuggerAndRunIfRequired.bind(null, target));
-        }
-
-        /**
-         * @param {!WebInspector.Target} target
-         * @param {?Protocol.Error} error
-         * @param {boolean} required
-         */
-        function pauseInDebuggerAndRunIfRequired(target, error, required)
-        {
-            // Only pause new worker if debugging SW - we are going through the
-            // pause on start checkbox.
-            var mainIsServiceWorker = WebInspector.targetManager.mainTarget().isServiceWorker();
-            if (mainIsServiceWorker && required)
-                target.debuggerAgent().pause();
-            target.runtimeAgent().run();
-        }
+        // Only pause new worker if debugging SW - we are going through the
+        // pause on start checkbox.
+        var mainIsServiceWorker = WebInspector.targetManager.mainTarget().isServiceWorker();
+        if (mainIsServiceWorker && waitingForDebugger)
+            target.debuggerAgent().pause();
+        target.runtimeAgent().run();
     },
 
     /**
@@ -187,11 +169,11 @@ WebInspector.WorkerDispatcher.prototype = {
      * @override
      * @param {string} workerId
      * @param {string} url
-     * @param {boolean} inspectorConnected
+     * @param {boolean} waitingForDebugger
      */
-    workerCreated: function(workerId, url, inspectorConnected)
+    workerCreated: function(workerId, url, waitingForDebugger)
     {
-        this._workerManager._workerCreated(workerId, url, inspectorConnected);
+        this._workerManager._workerCreated(workerId, url, waitingForDebugger);
     },
 
     /**
@@ -219,22 +201,14 @@ WebInspector.WorkerDispatcher.prototype = {
  * @extends {InspectorBackendClass.Connection}
  * @param {!WebInspector.WorkerManager} workerManager
  * @param {string} workerId
- * @param {boolean} inspectorConnected
- * @param {function(!InspectorBackendClass.Connection)} onConnectionReady
  */
-WebInspector.WorkerConnection = function(workerManager, workerId, inspectorConnected, onConnectionReady)
+WebInspector.WorkerConnection = function(workerManager, workerId)
 {
     InspectorBackendClass.Connection.call(this);
     //FIXME: remove resourceTreeModel and others from worker targets
     this.suppressErrorsForDomains(["Worker", "Page", "CSS", "DOM", "DOMStorage", "Database", "Network", "IndexedDB"]);
     this._agent = workerManager.target().workerAgent();
     this._workerId = workerId;
-
-
-    if (!inspectorConnected)
-        this._agent.connectToWorker(workerId, onConnectionReady.bind(null, this));
-    else
-        onConnectionReady.call(null, this);
 }
 
 WebInspector.WorkerConnection.prototype = {

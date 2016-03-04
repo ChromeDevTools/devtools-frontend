@@ -213,12 +213,6 @@ DevToolsHost.ContextMenuDescriptor;
 DevToolsHost.zoomFactor = function() { }
 
 /**
- * @param {number} length
- * @return {number}
- */
-DevToolsHost.convertLengthForEmbedder = function(length) { }
-
-/**
  * @param {string} origin
  * @param {string} script
  */

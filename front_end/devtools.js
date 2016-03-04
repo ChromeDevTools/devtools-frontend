@@ -400,13 +400,7 @@ InspectorFrontendHostImpl.prototype = {
      */
     setInspectedPageBounds: function(bounds)
     {
-        var converted = {
-          x: Math.round(DevToolsHost.convertLengthForEmbedder(bounds.x)),
-          y: Math.round(DevToolsHost.convertLengthForEmbedder(bounds.y)),
-          width: Math.round(DevToolsHost.convertLengthForEmbedder(bounds.width)),
-          height: Math.round(DevToolsHost.convertLengthForEmbedder(bounds.height))
-        };
-        DevToolsAPI.sendMessageToEmbedder("setInspectedPageBounds", [converted], null);
+        DevToolsAPI.sendMessageToEmbedder("setInspectedPageBounds", [bounds], null);
     },
 
     /**

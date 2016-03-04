@@ -53,20 +53,36 @@ WebInspector.SourceMapNamesResolver._resolveScope = function(scope)
         var scopeStart = textRange.toSourceRange(content).offset;
         var prefix = "function fui";
         var root = acorn.parse(prefix + scopeText, {});
-        var declarators = [];
+        /** @type {!Array<!ESTree.Node>} */
+        var identifiers = [];
         var functionDeclarationCounter = 0;
         var walker = new WebInspector.ESTreeWalker(beforeVisit, afterVisit);
+
+        /**
+         * @param {!ESTree.Node} node
+         * @return {boolean}
+         */
+        function isFunction(node)
+        {
+            return node.type === "FunctionDeclaration" || node.type === "FunctionExpression";
+        }
 
         /**
          * @param {!ESTree.Node} node
          */
         function beforeVisit(node)
         {
-            if (node.type === "FunctionDeclaration" || node.type === "FunctionExpression")
+            if (isFunction(node))
                 functionDeclarationCounter++;
 
-            if (node.type === "VariableDeclarator" && functionDeclarationCounter === 1)
-                declarators.push(node);
+            if (functionDeclarationCounter > 1)
+                return;
+
+            if (isFunction(node) && node.params)
+                identifiers.pushAll(node.params);
+
+            if (node.type === "VariableDeclarator")
+                identifiers.push(node.id);
         }
 
         /**
@@ -74,7 +90,7 @@ WebInspector.SourceMapNamesResolver._resolveScope = function(scope)
          */
         function afterVisit(node)
         {
-            if (node.type === "FunctionDeclaration" || node.type === "FunctionExpression")
+            if (isFunction(node))
                 functionDeclarationCounter--;
         }
 
@@ -83,8 +99,8 @@ WebInspector.SourceMapNamesResolver._resolveScope = function(scope)
         var namesMapping = new Map();
         var lineEndings = content.lineEndings();
 
-        for (var i = 0; i < declarators.length; ++i) {
-            var id = declarators[i].id;
+        for (var i = 0; i < identifiers.length; ++i) {
+            var id = identifiers[i];
             var start = scopeStart + id.start - prefix.length;
 
             var lineNumber = lineEndings.lowerBound(start);

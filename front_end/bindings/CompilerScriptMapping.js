@@ -49,8 +49,8 @@ WebInspector.CompilerScriptMapping = function(debuggerModel, workspace, networkM
 
     /** @type {!Map<string, !Promise<?WebInspector.SourceMap>>} */
     this._sourceMapLoadingPromises = new Map();
-    /** @type {!Object.<string, !WebInspector.SourceMap>} */
-    this._sourceMapForScriptId = {};
+    /** @type {!Map<string, !WebInspector.SourceMap>} */
+    this._sourceMapForScriptId = new Map();
     /** @type {!Map.<!WebInspector.SourceMap, !WebInspector.Script>} */
     this._scriptForSourceMap = new Map();
     /** @type {!Map.<string, !WebInspector.SourceMap>} */
@@ -82,7 +82,7 @@ WebInspector.CompilerScriptMapping.prototype = {
      * @return {boolean}
      */
     mapsToSourceCode: function (rawLocation) {
-        var sourceMap = this._sourceMapForScriptId[rawLocation.scriptId];
+        var sourceMap = this._sourceMapForScriptId.get(rawLocation.scriptId);
         if (!sourceMap) {
             return true;
         }
@@ -102,7 +102,7 @@ WebInspector.CompilerScriptMapping.prototype = {
         if (stubUISourceCode)
             return new WebInspector.UILocation(stubUISourceCode, rawLocation.lineNumber, rawLocation.columnNumber);
 
-        var sourceMap = this._sourceMapForScriptId[debuggerModelLocation.scriptId];
+        var sourceMap = this._sourceMapForScriptId.get(debuggerModelLocation.scriptId);
         if (!sourceMap)
             return null;
         var lineNumber = debuggerModelLocation.lineNumber;
@@ -160,7 +160,7 @@ WebInspector.CompilerScriptMapping.prototype = {
      */
     sourceMapForScript: function(script)
     {
-        return this._sourceMapForScriptId[script.scriptId];
+        return this._sourceMapForScriptId.get(script.scriptId) || null;
     },
 
     /**
@@ -172,7 +172,7 @@ WebInspector.CompilerScriptMapping.prototype = {
             return;
         if (this._sourceMapLoadingPromises.has(script.sourceMapURL))
             return;
-        if (this._sourceMapForScriptId[script.scriptId])
+        if (this._sourceMapForScriptId.has(script.scriptId))
             return;
         this._processScript(script);
     },
@@ -221,12 +221,12 @@ WebInspector.CompilerScriptMapping.prototype = {
         }
 
         if (this._scriptForSourceMap.get(sourceMap)) {
-            this._sourceMapForScriptId[script.scriptId] = sourceMap;
+            this._sourceMapForScriptId.set(script.scriptId, sourceMap);
             this._debuggerWorkspaceBinding.updateLocations(script);
             return;
         }
 
-        this._sourceMapForScriptId[script.scriptId] = sourceMap;
+        this._sourceMapForScriptId.set(script.scriptId, sourceMap);
         this._scriptForSourceMap.set(sourceMap, script);
 
         // Report sources.
@@ -379,7 +379,7 @@ WebInspector.CompilerScriptMapping.prototype = {
         this._sourceMapForURL.valuesArray().forEach(unbindSourceMapSources.bind(this));
 
         this._sourceMapLoadingPromises.clear();
-        this._sourceMapForScriptId = {};
+        this._sourceMapForScriptId.clear()
         this._scriptForSourceMap.clear();
         this._sourceMapForURL.clear();
     },

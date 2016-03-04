@@ -116,7 +116,7 @@ WebInspector.BlackboxManager.prototype = {
 
         if (!mappings.length) {
             if (previousScriptState.length > 0)
-                return this._setScriptState(script, []).then(this._sourceMapLoadedForTest);
+                return this._setScriptState(script, []);
         }
 
         var currentBlackboxed = false;
@@ -128,13 +128,13 @@ WebInspector.BlackboxManager.prototype = {
             currentBlackboxed = true;
         }
         for (var mapping of mappings) {
-            if (currentBlackboxed !== this.isBlackboxedURL(mapping.sourceURL)) {
+            if (mapping.sourceURL && currentBlackboxed !== this.isBlackboxedURL(mapping.sourceURL)) {
                 positions.push({ line: mapping.lineNumber, column: mapping.columnNumber });
                 currentBlackboxed = !currentBlackboxed;
             }
             isBlackboxed = currentBlackboxed || isBlackboxed;
         }
-        return this._setScriptState(script, !isBlackboxed ? [] : positions).then(this._sourceMapLoadedForTest);
+        return this._setScriptState(script, !isBlackboxed ? [] : positions);
         /**
          * @param {!WebInspector.SourceMap.Entry} a
          * @param {!WebInspector.SourceMap.Entry} b
@@ -146,11 +146,6 @@ WebInspector.BlackboxManager.prototype = {
                 return a.lineNumber - b.lineNumber;
             return a.columnNumber - b.columnNumber;
         }
-    },
-
-    _sourceMapLoadedForTest: function()
-    {
-        // This method is sniffed in tests.
     },
 
     /**
@@ -268,7 +263,7 @@ WebInspector.BlackboxManager.prototype = {
                                   .then(loadSourceMap.bind(this, script)));
             }
         }
-        Promise.all(promises).then(this._patternChangeFinishedForTests);
+        Promise.all(promises).then(this._patternChangeFinishedForTests.bind(this));
 
         /**
          * @param {!WebInspector.Script} script

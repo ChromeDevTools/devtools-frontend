@@ -182,7 +182,7 @@ WebInspector.StylesSourceMapping.prototype = {
 
     _unbindAllUISourceCodes: function()
     {
-        for (var styleFile of this._styleFiles.keys())
+        for (var styleFile of this._styleFiles.values())
             styleFile.dispose();
         this._styleFiles.clear();
         this._urlToHeadersByFrameId = new Map();

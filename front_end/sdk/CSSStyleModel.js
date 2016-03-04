@@ -806,21 +806,21 @@ WebInspector.CSSDispatcher.prototype = {
 WebInspector.CSSStyleModel.ComputedStyleLoader = function(cssModel)
 {
     this._cssModel = cssModel;
-    /** @type {!Map.<!DOMAgent.NodeId, !Promise.<?WebInspector.CSSStyleDeclaration>>} */
+    /** @type {!Map<!DOMAgent.NodeId, !Promise<?Map<string, string>>>} */
     this._nodeIdToPromise = new Map();
 }
 
 WebInspector.CSSStyleModel.ComputedStyleLoader.prototype = {
     /**
      * @param {!DOMAgent.NodeId} nodeId
-     * @return {!Promise.<?Map.<string, string>>}
+     * @return {!Promise<?Map<string, string>>}
      */
     computedStylePromise: function(nodeId)
     {
-        if (!this._nodeIdToPromise[nodeId])
-            this._nodeIdToPromise[nodeId] = this._cssModel._agent.getComputedStyleForNode(nodeId, parsePayload).then(cleanUp.bind(this));
+        if (!this._nodeIdToPromise.has(nodeId))
+            this._nodeIdToPromise.set(nodeId, this._cssModel._agent.getComputedStyleForNode(nodeId, parsePayload).then(cleanUp.bind(this)));
 
-        return this._nodeIdToPromise[nodeId];
+        return /** @type {!Promise.<?Map.<string, string>>} */(this._nodeIdToPromise.get(nodeId));
 
         /**
          * @param {?Protocol.Error} error
@@ -844,7 +844,7 @@ WebInspector.CSSStyleModel.ComputedStyleLoader.prototype = {
          */
         function cleanUp(computedStyle)
         {
-            delete this._nodeIdToPromise[nodeId];
+            this._nodeIdToPromise.delete(nodeId);
             return computedStyle;
         }
     }

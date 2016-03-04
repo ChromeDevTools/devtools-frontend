@@ -263,10 +263,6 @@ WebInspector.PaintProfilerCommandLogView = function()
     this._treeOutline = new TreeOutlineInShadow();
     this.element.appendChild(this._treeOutline.element);
 
-    this._treeOutline.element.addEventListener("mousemove", this._onMouseMove.bind(this), false);
-    this._treeOutline.element.addEventListener("mouseout", this._onMouseMove.bind(this), false);
-    this._treeOutline.element.addEventListener("contextmenu", this._onContextMenu.bind(this), true);
-
     this._reset();
 }
 
@@ -312,40 +308,6 @@ WebInspector.PaintProfilerCommandLogView.prototype = {
         this._log = [];
     },
 
-    /**
-     * @param {?Event} event
-     */
-    _onMouseMove: function(event)
-    {
-        var node = this._treeOutline.treeElementFromEvent(event);
-        if (node === this._lastHoveredNode || !(node instanceof WebInspector.LogTreeElement))
-            return;
-        if (this._lastHoveredNode)
-            this._lastHoveredNode.setHovered(false);
-        this._lastHoveredNode = node;
-        if (this._lastHoveredNode)
-            this._lastHoveredNode.setHovered(true);
-    },
-
-    /**
-     * @param {!Event} event
-     */
-    _onContextMenu: function(event)
-    {
-        if (!this._target)
-            return;
-        var node = this._treeOutline.treeElementFromEvent(event);
-        if (!node || !(node instanceof WebInspector.LogTreeElement))
-            return;
-        var logItem = /** @type {!WebInspector.LogTreeElement} */ (node)._logItem;
-        if (!logItem.nodeId())
-            return;
-        var contextMenu = new WebInspector.ContextMenu(event);
-        var domNode = new WebInspector.DeferredDOMNode(this._target, logItem.nodeId());
-        contextMenu.appendApplicableItems(domNode);
-        contextMenu.show();
-    },
-
     __proto__: WebInspector.VBox.prototype
 };
 
@@ -376,7 +338,7 @@ WebInspector.LogTreeElement.prototype = {
     },
 
     /**
-      * @param {!Object<string,*>} param
+      * @param {*} param
       * @param {string} name
       * @return {string}
       */
@@ -397,7 +359,7 @@ WebInspector.LogTreeElement.prototype = {
     },
 
     /**
-      * @param {?Array<!Object<string, *>>} params
+      * @param {?Object<string, *>} params
       * @return {string}
       */
     _paramsToString: function(params)
@@ -416,36 +378,6 @@ WebInspector.LogTreeElement.prototype = {
         var title = createDocumentFragment();
         title.createTextChild(this._logItem.method + "(" + this._paramsToString(this._logItem.params) + ")");
         this.title = title;
-    },
-
-    /**
-     * @param {boolean} hovered
-     */
-    setHovered: function(hovered)
-    {
-        this.listItemElement.classList.toggle("hovered", hovered);
-        var target = this._ownerView._target;
-        if (!target)
-            return;
-        if (!hovered) {
-            WebInspector.DOMModel.hideDOMNodeHighlight();
-            return;
-        }
-        var logItem = /** @type {!WebInspector.PaintProfilerLogItem} */ (this._logItem);
-        if (!logItem)
-            return;
-        var backendNodeId = logItem.nodeId();
-        if (!backendNodeId)
-            return;
-        new WebInspector.DeferredDOMNode(target, backendNodeId).resolve(highlightNode);
-        /**
-         * @param {?WebInspector.DOMNode} node
-         */
-        function highlightNode(node)
-        {
-            if (node)
-                node.highlight();
-        }
     },
 
     __proto__: TreeElement.prototype

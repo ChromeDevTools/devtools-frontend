@@ -67,7 +67,8 @@ WebInspector.SuggestBox = function(suggestBoxDelegate, maxItemsHeight)
     this._detailsPopup = this._container.createChild("div", "suggest-box details-popup monospace");
     this._detailsPopup.classList.add("hidden");
     this._asyncDetailsCallback = null;
-    this._asyncDetailsPromises = /** @type {!Map<number, !Promise>} */ ({});
+    /** @type {!Map<number, !Promise<{detail: string, description: string}>>} */
+    this._asyncDetailsPromises = new Map();
 }
 
 WebInspector.SuggestBox.prototype = {
@@ -265,7 +266,7 @@ WebInspector.SuggestBox.prototype = {
     _updateItems: function(items, userEnteredText, asyncDetails)
     {
         this._length = items.length;
-        this._asyncDetailsPromises = {};
+        this._asyncDetailsPromises.clear();
         this._asyncDetailsCallback = asyncDetails;
         this._element.removeChildren();
         delete this._selectedElement;
@@ -279,19 +280,19 @@ WebInspector.SuggestBox.prototype = {
 
     /**
      * @param {number} index
-     * @return {!Promise<({detail: string, description: string}|undefined)>}
+     * @return {!Promise<?{detail: string, description: string}>}
      */
     _asyncDetails: function(index)
     {
         if (!this._asyncDetailsCallback)
-            return Promise.resolve();
-        if (!this._asyncDetailsPromises[index])
-            this._asyncDetailsPromises[index] = this._asyncDetailsCallback(index);
-        return this._asyncDetailsPromises[index];
+            return Promise.resolve(/** @type {?{description: string, detail: string}} */(null));
+        if (!this._asyncDetailsPromises.has(index))
+            this._asyncDetailsPromises.set(index, this._asyncDetailsCallback(index));
+        return /** @type {!Promise<?{detail: string, description: string}>} */(this._asyncDetailsPromises.get(index));
     },
 
     /**
-     * @param {{detail: string, description: string}=} details
+     * @param {?{detail: string, description: string}} details
      */
     _showDetailsPopup: function(details)
     {
@@ -326,7 +327,7 @@ WebInspector.SuggestBox.prototype = {
             this._selectedElement.scrollIntoViewIfNeeded(false);
 
         /**
-         * @param {{detail: string, description: string}=} details
+         * @param {?{detail: string, description: string}} details
          * @this {WebInspector.SuggestBox}
          */
         function showDetails(details)

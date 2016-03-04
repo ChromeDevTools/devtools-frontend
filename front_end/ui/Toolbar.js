@@ -162,7 +162,7 @@ WebInspector.Toolbar.prototype = {
         if (lastSeparator && lastSeparator !== this._items.peekLast())
             lastSeparator.setVisible(false);
 
-        this.element.classList.toggle("hidden", lastSeparator && lastSeparator.visible() && !nonSeparatorVisible);
+        this.element.classList.toggle("hidden", !!lastSeparator && lastSeparator.visible() && !nonSeparatorVisible);
     }
 }
 

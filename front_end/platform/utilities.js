@@ -1301,9 +1301,9 @@ Map.prototype.valuesArray = function()
 }
 
 /**
- * @return {!Array.<K>}
+ * @return {!Array<K>}
  * @template K, V
- * @this {Map.<K, V>}
+ * @this {Map<K, V>}
  */
 Map.prototype.keysArray = function()
 {

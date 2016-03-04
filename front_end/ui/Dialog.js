@@ -156,7 +156,7 @@ WebInspector.Dialog.prototype = {
     _restoreTabIndexOnElements: function()
     {
         for (var element of this._tabIndexMap.keys())
-            element.tabIndex = this._tabIndexMap.get(element);
+            element.tabIndex = /** @type {number} */(this._tabIndexMap.get(element));
         this._tabIndexMap.clear();
     },
 

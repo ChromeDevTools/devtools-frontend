@@ -301,7 +301,7 @@ WebInspector.ContextMenu = function(event, useSoftMenu, x, y)
     WebInspector.ContextSubMenuItem.call(this, this, "");
     /** @type {!Array.<!Promise.<!Array.<!WebInspector.ContextMenu.Provider>>>} */
     this._pendingPromises = [];
-    /** @type {!Array.<!Promise.<!Object>>} */
+    /** @type {!Array<!Object>} */
     this._pendingTargets = [];
     this._event = event;
     this._useSoftMenu = !!useSoftMenu;

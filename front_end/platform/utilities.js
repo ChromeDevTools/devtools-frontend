@@ -1261,19 +1261,6 @@ function numberToStringWithSpacesPadding(value, symbolsCount)
 }
 
 /**
- * @param {!Iterator.<T>} iterator
- * @return {!Array.<T>}
- * @template T
- */
-Array.from = function(iterator)
-{
-    var values = [];
-    for (var iteratorValue = iterator.next(); !iteratorValue.done; iteratorValue = iterator.next())
-        values.push(iteratorValue.value);
-    return values;
-}
-
-/**
  * @return {!Array.<T>}
  * @template T
  */

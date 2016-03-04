@@ -112,9 +112,9 @@ function normalizePath(path)
  */
 function loadScriptsPromise(scriptNames, base)
 {
-    /** @type {!Array.<!Promise.<string>>} */
+    /** @type {!Array<!Promise<undefined>>} */
     var promises = [];
-    /** @type {!Array.<string>} */
+    /** @type {!Array<string>} */
     var urls = [];
     var sources = new Array(scriptNames.length);
     var scriptToEval = 0;

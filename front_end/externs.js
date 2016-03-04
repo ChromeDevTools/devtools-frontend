@@ -174,6 +174,16 @@ Array.prototype.intersectOrdered = function(array, comparator) {}
  */
 Array.prototype.mergeOrdered = function(array, comparator) {}
 
+/**
+ * @param {string|!IArrayLike<T>|!Iterable<T>} arrayLike
+ * @param {function(this:S, (string|T), number,
+ *     (string|!IArrayLike<T>|!Iterable<T>)): R=} opt_mapFn
+ * @param {S=} opt_this
+ * @return {!Array<R>}
+ * @template T,S,R
+ */
+Array.from = function(arrayLike, opt_mapFn, opt_this) {};
+
 // File System API
 /**
  * @constructor

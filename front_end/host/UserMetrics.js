@@ -75,7 +75,8 @@ WebInspector.UserMetrics._PanelCodes = {
     "drawer-network.config": 12,
     "drawer-rendering": 13,
     "drawer-sensors": 14,
-    "drawer-sources.search": 15
+    "drawer-sources.search": 15,
+    security: 16
 }
 
 WebInspector.UserMetrics.prototype = {

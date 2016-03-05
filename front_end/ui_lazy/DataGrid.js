@@ -159,8 +159,23 @@ WebInspector.DataGrid = function(columnsArray, editCallback, deleteCallback, ref
 // Keep in sync with .data-grid col.corner style rule.
 WebInspector.DataGrid.CornerWidth = 14;
 
-/** @typedef {!{id: ?string, editable: boolean, longText: ?boolean, sort: !WebInspector.DataGrid.Order, sortable: boolean, align: !WebInspector.DataGrid.Align, nonSelectable: boolean}} */
-WebInspector.DataGrid.ColumnDescriptor;
+/**
+ * @constructor
+ */
+WebInspector.DataGrid.ColumnDescriptor = function()
+{
+    /** @type {string} */ this.id;
+    /** @type {string} */ this.title;
+    /** @type {string} */ this.width;
+    /** @type {boolean} */ this.fixedWidth;
+    /** @type {boolean} */ this.sortable;
+    /** @type {?WebInspector.DataGrid.Order|undefined} */ this.sort;
+    /** @type {?WebInspector.DataGrid.Align|undefined} */ this.align;
+    /** @type {boolean|undefined} */ this.editable;
+    /** @type {boolean|undefined} */ this.nonSelectable;
+    /** @type {boolean|undefined} */ this.longText;
+    /** @type {boolean|undefined} */ this.disclosure;
+}
 
 WebInspector.DataGrid.Events = {
     SelectedNode: "SelectedNode",

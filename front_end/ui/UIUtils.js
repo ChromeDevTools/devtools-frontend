@@ -1665,7 +1665,7 @@ WebInspector.ThemeSupport.prototype = {
 
     /**
      * @param {string} id
-     * @param {!CSSStyleSheet} styleSheet
+     * @param {!StyleSheet} styleSheet
      * @return {string}
      */
     _patchForTheme: function(id, styleSheet)

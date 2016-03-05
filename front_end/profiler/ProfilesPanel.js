@@ -163,13 +163,11 @@ WebInspector.ProfileType.prototype = {
     },
 
     /**
-     * @nosideeffects
      * @param {number} uid
      * @return {?WebInspector.ProfileHeader}
      */
     getProfile: function(uid)
     {
-
         for (var i = 0; i < this._profiles.length; ++i) {
             if (this._profiles[i].uid === uid)
                 return this._profiles[i];

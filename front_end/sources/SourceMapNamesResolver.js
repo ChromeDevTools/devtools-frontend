@@ -82,7 +82,7 @@ WebInspector.SourceMapNamesResolver._resolveScope = function(scope)
                 identifiers.pushAll(node.params);
 
             if (node.type === "VariableDeclarator")
-                identifiers.push(node.id);
+                identifiers.push(/** @type {!ESTree.Node} */(node.id));
         }
 
         /**

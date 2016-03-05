@@ -264,8 +264,8 @@ WebInspector.LayerTreeBase.prototype = {
         function populateBackendNodeMap(nodesMap)
         {
             if (nodesMap) {
-                for (var entry of nodesMap)
-                    this._backendNodeIdToNode.set(entry[0], entry[1]);
+                for (var nodeId of nodesMap.keysArray())
+                    this._backendNodeIdToNode.set(nodeId, nodesMap.get(nodeId) || null);
             }
             callback();
         }
@@ -382,7 +382,7 @@ WebInspector.TracingLayerTree.prototype = {
     _extractNodeIdsToResolve: function(nodeIdsToResolve, seenNodeIds, payload)
     {
         var backendNodeId = payload.owner_node;
-        if (backendNodeId && !this._backendNodeIdToNode[backendNodeId])
+        if (backendNodeId && !this._backendNodeIdToNode.has(backendNodeId))
             nodeIdsToResolve.add(backendNodeId);
         for (var i = 0; payload.children && i < payload.children.length; ++i)
             this._extractNodeIdsToResolve(nodeIdsToResolve, seenNodeIds, payload.children[i]);

@@ -694,7 +694,7 @@ ESTree.Node = function()
     this.params;
     /** @type {(string|undefined)} */
     this.name;
-    /** @type {(!Array.<!ESTree.Node>|undefined)} */
+    /** @type {(?ESTree.Node|undefined)} */
     this.id;
 }
 

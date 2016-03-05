@@ -953,7 +953,7 @@ function platformExtensionAPI(coreAPI)
     {
         return tabId;
     }
-    chrome = window.chrome || {};
+    var chrome = window.chrome || {};
     // Override chrome.devtools as a workaround for a error-throwing getter being exposed
     // in extension pages loaded into a non-extension process (only happens for remote client
     // extensions)

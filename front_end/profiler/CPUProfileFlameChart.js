@@ -214,7 +214,7 @@ WebInspector.CPUFlameChartDataProvider.prototype = {
     /**
      * @override
      * @param {number} entryIndex
-     * @return {?Array<!{title: string, value: (string,!Element)}>}
+     * @return {?Array<!{title: string, value: (string|!Element)}>}
      */
     prepareHighlightedEntryInfo: function(entryIndex)
     {

@@ -38,8 +38,10 @@ WebInspector.HeapSnapshotWorkerProxy = function(eventHandler)
     this._eventHandler = eventHandler;
     this._nextObjectId = 1;
     this._nextCallId = 1;
-    this._callbacks = [];
-    this._previousCallbacks = [];
+    /** @type {!Map<number, function(*)>} */
+    this._callbacks = new Map();
+    /** @type {!Set<number>} */
+    this._previousCallbacks = new Set();
     this._worker = new WorkerRuntime.Worker("heap_snapshot_worker");
     this._worker.onmessage = this._messageReceived.bind(this);
 }
@@ -73,7 +75,7 @@ WebInspector.HeapSnapshotWorkerProxy.prototype = {
     evaluateForTest: function(script, callback)
     {
         var callId = this._nextCallId++;
-        this._callbacks[callId] = callback;
+        this._callbacks.set(callId, callback);
         this._postMessage({callId: callId, disposition: "evaluateForTest", source: script});
     },
 
@@ -100,7 +102,7 @@ WebInspector.HeapSnapshotWorkerProxy.prototype = {
         }
 
         if (callback) {
-            this._callbacks[callId] = wrapCallback.bind(this);
+            this._callbacks.set(callId, wrapCallback.bind(this));
             this._postMessage({callId: callId, disposition: "factory", objectId: objectId, methodName: methodName, methodArguments: methodArguments, newObjectId: newObjectId});
             return null;
         } else {
@@ -119,7 +121,7 @@ WebInspector.HeapSnapshotWorkerProxy.prototype = {
         var callId = this._nextCallId++;
         var methodArguments = Array.prototype.slice.call(arguments, 3);
         if (callback)
-            this._callbacks[callId] = callback;
+            this._callbacks.set(callId, callback);
         this._postMessage({callId: callId, disposition: "method", objectId: objectId, methodName: methodName, methodArguments: methodArguments});
     },
 
@@ -133,17 +135,13 @@ WebInspector.HeapSnapshotWorkerProxy.prototype = {
 
     _checkLongRunningCalls: function()
     {
-        for (var callId in this._previousCallbacks)
-            if (!(callId in this._callbacks))
-                delete this._previousCallbacks[callId];
-        var hasLongRunningCalls = false;
-        for (callId in this._previousCallbacks) {
-            hasLongRunningCalls = true;
-            break;
-        }
+        for (var callId of this._previousCallbacks)
+            if (!this._callbacks.has(callId))
+                this._previousCallbacks.delete(callId);
+        var hasLongRunningCalls = !!this._previousCallbacks.size;
         this.dispatchEventToListeners("wait", hasLongRunningCalls);
-        for (callId in this._callbacks)
-            this._previousCallbacks[callId] = true;
+        for (var callId of this._callbacks.keysArray())
+            this._previousCallbacks.add(callId);
     },
 
     /**
@@ -161,13 +159,13 @@ WebInspector.HeapSnapshotWorkerProxy.prototype = {
             if (data.errorMethodName)
                 WebInspector.console.error(WebInspector.UIString("An error occurred when a call to method '%s' was requested", data.errorMethodName));
             WebInspector.console.error(data["errorCallStack"]);
-            delete this._callbacks[data.callId];
+            this._callbacks.delete(data.callId);
             return;
         }
-        if (!this._callbacks[data.callId])
+        if (!this._callbacks.has(data.callId))
             return;
-        var callback = this._callbacks[data.callId];
-        delete this._callbacks[data.callId];
+        var callback = this._callbacks.get(data.callId);
+        this._callbacks.delete(data.callId);
         callback(data.result);
     },
 

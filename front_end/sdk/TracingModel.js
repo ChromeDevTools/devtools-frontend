@@ -10,10 +10,10 @@
  */
 WebInspector.TracingModel = function(backingStorage)
 {
-    this.reset();
-    // Set backing storage after reset so that we do not perform
-    // an extra reset of backing storage -- this is not free.
     this._backingStorage = backingStorage;
+    // Avoid extra reset of the storage as it's expensive.
+    this._firstWritePending = true;
+    this.reset();
 }
 
 /**
@@ -175,9 +175,9 @@ WebInspector.TracingModel.prototype = {
     tracingComplete: function()
     {
         this._processPendingAsyncEvents();
-        if (!this._firstWritePending)
-            this._backingStorage.appendString("]");
+        this._backingStorage.appendString(this._firstWritePending ? "[]" : "]");
         this._backingStorage.finishWriting();
+        this._firstWritePending = false;
         for (var process of Object.values(this._processById)) {
             for (var thread of Object.values(process._threads))
                 thread.tracingComplete();
@@ -192,8 +192,9 @@ WebInspector.TracingModel.prototype = {
         this._minimumRecordTime = 0;
         this._maximumRecordTime = 0;
         this._devToolsMetadataEvents = [];
-        if (this._backingStorage)
+        if (!this._firstWritePending)
             this._backingStorage.reset();
+
         this._firstWritePending = true;
         /** @type {!Array<!WebInspector.TracingModel.Event>} */
         this._asyncEvents = [];

@@ -652,29 +652,40 @@ TestSuite.prototype.waitForTestResultsInConsole = function()
     this.takeControl();
 };
 
+TestSuite.prototype._overrideMethod = function(receiver, methodName, override)
+{
+    var original = receiver[methodName];
+    if (typeof original !== "function") {
+        this.fail(`TestSuite._overrideMethod: $[methodName] is not a function`);
+        return;
+    }
+    receiver[methodName] = function()
+    {
+        try {
+            var value = original.apply(receiver, arguments);
+        } finally {
+            receiver[methodName] = original;
+        }
+        override.apply(original, arguments);
+        return value;
+    }
+}
+
 TestSuite.prototype.startTimeline = function(callback)
 {
+    var test = this;
     this.showPanel("timeline").then(function() {
-        WebInspector.panels.timeline._model.addEventListener(WebInspector.TimelineModel.Events.RecordingStarted, onRecordingStarted);
-        WebInspector.panels.timeline._toggleRecording();
+        var timeline = WebInspector.panels.timeline;
+        test._overrideMethod(timeline, "recordingStarted", callback);
+        timeline._toggleRecording();
     });
-
-    function onRecordingStarted()
-    {
-        WebInspector.panels.timeline._model.removeEventListener(WebInspector.TimelineModel.Events.RecordingStarted, onRecordingStarted);
-        callback();
-    }
 }
 
 TestSuite.prototype.stopTimeline = function(callback)
 {
-    WebInspector.panels.timeline._model.addEventListener(WebInspector.TimelineModel.Events.RecordingStopped, onRecordingStopped);
-    WebInspector.panels.timeline._toggleRecording();
-    function onRecordingStopped()
-    {
-        WebInspector.panels.timeline._model.removeEventListener(WebInspector.TimelineModel.Events.RecordingStopped, onRecordingStopped);
-        callback();
-    }
+    var timeline = WebInspector.panels.timeline;
+    this._overrideMethod(timeline, "loadingComplete", callback);
+    timeline._toggleRecording();
 }
 
 TestSuite.prototype.invokePageFunctionAsync = function(functionName, opt_args, callback_is_always_last)

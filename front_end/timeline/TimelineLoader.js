@@ -147,6 +147,7 @@ WebInspector.TimelineLoader.prototype = {
 
         if (this._firstChunk) {
             this._firstChunk = false;
+            this._model.reset();
             if (this._looksLikeAppVersion(items[0])) {
                 this._reportErrorAndCancelLoading(WebInspector.UIString("Legacy Timeline format is not supported."));
                 return;
@@ -185,7 +186,7 @@ WebInspector.TimelineLoader.prototype = {
      */
     close: function()
     {
-        this._model._loadedFromFile = true;
+        this._model.tracingComplete();
         if (this._delegate)
             this._delegate.loadingComplete(true);
     },

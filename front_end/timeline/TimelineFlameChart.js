@@ -1267,7 +1267,6 @@ WebInspector.TimelineFlameChartView = function(delegate, timelineModel, frameMod
 
     this._onMainEntrySelected = this._onEntrySelected.bind(this, this._dataProvider);
     this._onNetworkEntrySelected = this._onEntrySelected.bind(this, this._networkDataProvider);
-    this._model.addEventListener(WebInspector.TimelineModel.Events.RecordingStarted, this._onRecordingStarted, this);
     this._mainView.addEventListener(WebInspector.FlameChart.Events.EntrySelected, this._onMainEntrySelected, this);
     this._networkView.addEventListener(WebInspector.FlameChart.Events.EntrySelected, this._onNetworkEntrySelected, this);
     WebInspector.blackboxManager.addChangeListener(this.refreshRecords, this);
@@ -1279,7 +1278,6 @@ WebInspector.TimelineFlameChartView.prototype = {
      */
     dispose: function()
     {
-        this._model.removeEventListener(WebInspector.TimelineModel.Events.RecordingStarted, this._onRecordingStarted, this);
         this._mainView.removeEventListener(WebInspector.FlameChart.Events.EntrySelected, this._onMainEntrySelected, this);
         this._networkView.removeEventListener(WebInspector.FlameChart.Events.EntrySelected, this._onNetworkEntrySelected, this);
         WebInspector.blackboxManager.removeChangeListener(this.refreshRecords, this);
@@ -1370,20 +1368,12 @@ WebInspector.TimelineFlameChartView.prototype = {
      */
     reset: function()
     {
-        this._automaticallySizeWindow = true;
         this._dataProvider.reset();
         this._mainView.reset();
         this._mainView.setWindowTimes(0, Infinity);
         this._networkDataProvider.reset();
         this._networkView.reset();
         this._networkView.setWindowTimes(0, Infinity);
-    },
-
-    _onRecordingStarted: function()
-    {
-        this._automaticallySizeWindow = true;
-        this._mainView.reset();
-        this._networkView.reset();
     },
 
     /**

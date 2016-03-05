@@ -688,6 +688,7 @@
             'front_end/timeline/Layers3DView.js',
             'front_end/timeline/MemoryCountersGraph.js',
             'front_end/timeline/PaintProfilerView.js',
+            'front_end/timeline/TimelineController.js',
             'front_end/timeline/TimelineEventOverview.js',
             'front_end/timeline/TimelineFlameChart.js',
             'front_end/timeline/TimelineFrameModel.js',

@@ -30,20 +30,12 @@
 
 /**
  * @constructor
- * @param {!WebInspector.TracingModel} tracingModel
  * @param {!WebInspector.TimelineModel.Filter} eventFilter
- * @extends {WebInspector.Object}
- * @implements {WebInspector.TargetManager.Observer}
- * @implements {WebInspector.TracingManagerClient}
  */
-WebInspector.TimelineModel = function(tracingModel, eventFilter)
+WebInspector.TimelineModel = function(eventFilter)
 {
-    WebInspector.Object.call(this);
-    this._tracingModel = tracingModel;
     this._eventFilter = eventFilter;
-    this._targets = [];
     this.reset();
-    WebInspector.targetManager.observeTargets(this);
 }
 
 /**
@@ -168,14 +160,6 @@ WebInspector.TimelineModel.RecordType = {
     // CpuProfile is a virtual event created on frontend to support
     // serialization of CPU Profiles within tracing timeline data.
     CpuProfile: "CpuProfile"
-}
-
-WebInspector.TimelineModel.Events = {
-    RecordsCleared: "RecordsCleared",
-    RecordingStarted: "RecordingStarted",
-    RecordingStopped: "RecordingStopped",
-    BufferUsage: "BufferUsage",
-    RetrieveEventsProgress: "RetrieveEventsProgress"
 }
 
 WebInspector.TimelineModel.Category = {
@@ -423,64 +407,6 @@ WebInspector.TimelineModel._eventType = function(event)
 
 WebInspector.TimelineModel.prototype = {
     /**
-     * @param {boolean} captureCauses
-     * @param {boolean} enableJSSampling
-     * @param {boolean} captureMemory
-     * @param {boolean} capturePictures
-     * @param {boolean} captureFilmStrip
-     */
-    startRecording: function(captureCauses, enableJSSampling, captureMemory, capturePictures, captureFilmStrip)
-    {
-        function disabledByDefault(category)
-        {
-            return "disabled-by-default-" + category;
-        }
-        var categoriesArray = [
-            "-*",
-            "devtools.timeline",
-            disabledByDefault("devtools.timeline"),
-            disabledByDefault("devtools.timeline.frame"),
-            WebInspector.TracingModel.TopLevelEventCategory,
-            WebInspector.TimelineModel.Category.Console,
-            WebInspector.TimelineModel.Category.UserTiming
-        ];
-        if (Runtime.experiments.isEnabled("timelineLatencyInfo"))
-            categoriesArray.push(WebInspector.TimelineModel.Category.LatencyInfo)
-
-        if (Runtime.experiments.isEnabled("timelineFlowEvents")) {
-            categoriesArray.push(disabledByDefault("toplevel.flow"),
-                                 disabledByDefault("ipc.flow"));
-        }
-        if (Runtime.experiments.isEnabled("timelineTracingJSProfile") && enableJSSampling) {
-            categoriesArray.push(disabledByDefault("v8.cpu_profile"));
-            if (WebInspector.moduleSetting("highResolutionCpuProfiling").get())
-                categoriesArray.push(disabledByDefault("v8.cpu_profile.hires"));
-        }
-        if (captureCauses || enableJSSampling)
-            categoriesArray.push(disabledByDefault("devtools.timeline.stack"));
-        if (captureCauses && Runtime.experiments.isEnabled("timelineInvalidationTracking"))
-            categoriesArray.push(disabledByDefault("devtools.timeline.invalidationTracking"));
-        if (capturePictures) {
-            categoriesArray.push(disabledByDefault("devtools.timeline.layers"),
-                                 disabledByDefault("devtools.timeline.picture"),
-                                 disabledByDefault("blink.graphics_context_annotations"));
-        }
-        if (captureFilmStrip)
-            categoriesArray.push(disabledByDefault("devtools.screenshot"));
-
-        var categories = categoriesArray.join(",");
-        this._startRecordingWithCategories(categories, enableJSSampling);
-    },
-
-    stopRecording: function()
-    {
-        WebInspector.targetManager.resumeAllTargets();
-        this._allProfilesStoppedPromise = this._stopProfilingOnAllTargets();
-        if (this._targets[0])
-            this._targets[0].tracingManager.stop();
-    },
-
-    /**
      * @param {?function(!WebInspector.TimelineModel.Record)|?function(!WebInspector.TimelineModel.Record,number)} preOrderCallback
      * @param {function(!WebInspector.TimelineModel.Record)|function(!WebInspector.TimelineModel.Record,number)=} postOrderCallback
      */
@@ -541,197 +467,22 @@ WebInspector.TimelineModel.prototype = {
     target: function()
     {
         // FIXME: Consider returning null for loaded traces.
-        return this._targets[0];
+        return WebInspector.targetManager.targets()[0];
     },
 
     /**
-     * @param {!Array.<!WebInspector.TracingManager.EventPayload>} events
+     * @param {!WebInspector.TracingModel} tracingModel
+     * @param {boolean=} produceTraceStartedInPage
      */
-    setEventsForTest: function(events)
+    setEvents: function(tracingModel, produceTraceStartedInPage)
     {
-        this.startCollectingTraceEvents(false);
-        this._tracingModel.addEvents(events);
-        this.tracingComplete();
-    },
-
-    /**
-     * @override
-     * @param {!WebInspector.Target} target
-     */
-    targetAdded: function(target)
-    {
-        this._targets.push(target);
-        if (this._profiling)
-            this._startProfilingOnTarget(target);
-    },
-
-    /**
-     * @override
-     * @param {!WebInspector.Target} target
-     */
-    targetRemoved: function(target)
-    {
-        this._targets.remove(target, true);
-        // FIXME: We'd like to stop profiling on the target and retrieve a profile
-        // but it's too late. Backend connection is closed.
-    },
-
-    /**
-     * @param {!WebInspector.Target} target
-     * @return {!Promise}
-     */
-    _startProfilingOnTarget: function(target)
-    {
-        return target.profilerAgent().start();
-    },
-
-    /**
-     * @return {!Promise}
-     */
-    _startProfilingOnAllTargets: function()
-    {
-        var intervalUs = WebInspector.moduleSetting("highResolutionCpuProfiling").get() ? 100 : 1000;
-        this._targets[0].profilerAgent().setSamplingInterval(intervalUs);
-        this._profiling = true;
-        return Promise.all(this._targets.map(this._startProfilingOnTarget));
-    },
-
-    /**
-     * @param {!WebInspector.Target} target
-     * @return {!Promise}
-     */
-    _stopProfilingOnTarget: function(target)
-    {
-        /**
-         * @param {?Protocol.Error} error
-         * @param {?ProfilerAgent.CPUProfile} profile
-         * @return {?ProfilerAgent.CPUProfile}
-         */
-        function extractProfile(error, profile)
-        {
-            return !error && profile ? profile : null;
-        }
-        return target.profilerAgent().stop(extractProfile).then(this._addCpuProfile.bind(this, target.id()));
-    },
-
-    /**
-     * @return {!Promise}
-     */
-    _stopProfilingOnAllTargets: function()
-    {
-        var targets = this._profiling ? this._targets : [];
-        this._profiling = false;
-        return Promise.all(targets.map(this._stopProfilingOnTarget, this));
-    },
-
-    /**
-     * @param {string} categories
-     * @param {boolean=} enableJSSampling
-     * @param {function(?string)=} callback
-     */
-    _startRecordingWithCategories: function(categories, enableJSSampling, callback)
-    {
-        if (!this._targets.length)
-            return;
-        WebInspector.targetManager.suspendAllTargets();
-        var profilingStartedPromise = enableJSSampling && !Runtime.experiments.isEnabled("timelineTracingJSProfile") ?
-            this._startProfilingOnAllTargets() : Promise.resolve();
-        var samplingFrequencyHz = WebInspector.moduleSetting("highResolutionCpuProfiling").get() ? 10000 : 1000;
-        var options = "sampling-frequency=" + samplingFrequencyHz;
-        var mainTarget = this._targets[0];
-        var tracingManager = mainTarget.tracingManager;
-        mainTarget.resourceTreeModel.suspendReload();
-        profilingStartedPromise.then(tracingManager.start.bind(tracingManager, this, categories, options, onTraceStarted));
-        /**
-         * @param {?string} error
-         */
-        function onTraceStarted(error)
-        {
-            mainTarget.resourceTreeModel.resumeReload();
-            if (callback)
-                callback(error);
-        }
-    },
-
-    /**
-     * @param {boolean} fromFile
-     */
-    startCollectingTraceEvents: function(fromFile)
-    {
-        this._loadedFromFile = fromFile;
-        this._tracingModel.reset();
         this.reset();
-        this.dispatchEventToListeners(WebInspector.TimelineModel.Events.RecordingStarted, { fromFile: fromFile });
-    },
-
-    /**
-     * @override
-     */
-    tracingStarted: function()
-    {
-        this.startCollectingTraceEvents(false);
-    },
-
-    /**
-     * @param {!Array.<!WebInspector.TracingManager.EventPayload>} events
-     * @override
-     */
-    traceEventsCollected: function(events)
-    {
-        this._tracingModel.addEvents(events);
-    },
-
-    /**
-     * @override
-     */
-    tracingComplete: function()
-    {
-        if (!this._allProfilesStoppedPromise) {
-            this._didStopRecordingTraceEvents();
-            return;
-        }
-        this._allProfilesStoppedPromise.then(this._didStopRecordingTraceEvents.bind(this));
-        this._allProfilesStoppedPromise = null;
-    },
-
-    /**
-     * @param {number} usage
-     * @override
-     */
-    tracingBufferUsage: function(usage)
-    {
-        this.dispatchEventToListeners(WebInspector.TimelineModel.Events.BufferUsage, usage);
-    },
-
-    /**
-     * @param {number} progress
-     * @override
-     */
-    eventsRetrievalProgress: function(progress)
-    {
-        this.dispatchEventToListeners(WebInspector.TimelineModel.Events.RetrieveEventsProgress, progress);
-    },
-
-    /**
-     * @param {number} targetId
-     * @param {?ProfilerAgent.CPUProfile} cpuProfile
-     */
-    _addCpuProfile: function(targetId, cpuProfile)
-    {
-        if (!cpuProfile)
-            return;
-        if (!this._cpuProfiles)
-            this._cpuProfiles = new Map();
-        this._cpuProfiles.set(targetId, cpuProfile);
-    },
-
-    _didStopRecordingTraceEvents: function()
-    {
-        var metadataEvents = this._processMetadataEvents();
-        this._injectCpuProfileEvents(metadataEvents);
-        this._tracingModel.tracingComplete();
-
         this._resetProcessingState();
+
+        this._minimumRecordTime = tracingModel.minimumRecordTime();
+        this._maximumRecordTime = tracingModel.maximumRecordTime();
+
+        var metadataEvents = this._processMetadataEvents(tracingModel, !!produceTraceStartedInPage);
         var startTime = 0;
         for (var i = 0, length = metadataEvents.page.length; i < length; i++) {
             var metaEvent = metadataEvents.page[i];
@@ -748,21 +499,21 @@ WebInspector.TimelineModel.prototype = {
         this._inspectedTargetEvents.sort(WebInspector.TracingModel.Event.compareStartTime);
 
         this._cpuProfiles = null;
-        this._processBrowserEvents();
+        this._processBrowserEvents(tracingModel);
         this._buildTimelineRecords();
-        this._buildGPUTasks();
+        this._buildGPUTasks(tracingModel);
         this._insertFirstPaintEvent();
         this._resetProcessingState();
-
-        this.dispatchEventToListeners(WebInspector.TimelineModel.Events.RecordingStopped);
     },
 
     /**
+     * @param {!WebInspector.TracingModel} tracingModel
+     * @param {boolean} produceTraceStartedInPage
      * @return {!WebInspector.TimelineModel.MetadataEvents}
      */
-    _processMetadataEvents: function()
+    _processMetadataEvents: function(tracingModel, produceTraceStartedInPage)
     {
-        var metadataEvents = this._tracingModel.devToolsMetadataEvents();
+        var metadataEvents = tracingModel.devToolsMetadataEvents();
 
         var pageDevToolsMetadataEvents = [];
         var workersDevToolsMetadataEvents = [];
@@ -778,7 +529,7 @@ WebInspector.TimelineModel.prototype = {
         }
         if (!pageDevToolsMetadataEvents.length) {
             // The trace is probably coming not from DevTools. Make a mock Metadata event.
-            var pageMetaEvent = this._loadedFromFile ? this._makeMockPageMetadataEvent() : null;
+            var pageMetaEvent = produceTraceStartedInPage ? this._makeMockPageMetadataEvent(tracingModel) : null;
             if (!pageMetaEvent) {
                 console.error(WebInspector.TimelineModel.DevToolsMetadataEvent.TracingStartedInPage + " event not found.");
                 return {page: [], workers: []};
@@ -815,13 +566,14 @@ WebInspector.TimelineModel.prototype = {
     },
 
     /**
+     * @param {!WebInspector.TracingModel} tracingModel
      * @return {?WebInspector.TracingModel.Event}
      */
-    _makeMockPageMetadataEvent: function()
+    _makeMockPageMetadataEvent: function(tracingModel)
     {
         var rendererMainThreadName = WebInspector.TimelineModel.RendererMainThreadName;
         // FIXME: pick up the first renderer process for now.
-        var process = Object.values(this._tracingModel.sortedProcesses()).filter(function(p) { return p.threadByName(rendererMainThreadName); })[0];
+        var process = Object.values(tracingModel.sortedProcesses()).filter(function(p) { return p.threadByName(rendererMainThreadName); })[0];
         var thread = process && process.threadByName(rendererMainThreadName);
         if (!thread)
             return null;
@@ -829,55 +581,9 @@ WebInspector.TimelineModel.prototype = {
             WebInspector.TracingModel.DevToolsMetadataEventCategory,
             WebInspector.TimelineModel.DevToolsMetadataEvent.TracingStartedInPage,
             WebInspector.TracingModel.Phase.Metadata,
-            this._tracingModel.minimumRecordTime(), thread);
+            tracingModel.minimumRecordTime(), thread);
         pageMetaEvent.addArgs({"data": {"sessionId": "mockSessionId"}});
         return pageMetaEvent;
-    },
-
-    /**
-     * @param {number} pid
-     * @param {number} tid
-     * @param {?ProfilerAgent.CPUProfile} cpuProfile
-     */
-    _injectCpuProfileEvent: function(pid, tid, cpuProfile)
-    {
-        if (!cpuProfile)
-            return;
-        var cpuProfileEvent = /** @type {!WebInspector.TracingManager.EventPayload} */ ({
-            cat: WebInspector.TracingModel.DevToolsMetadataEventCategory,
-            ph: WebInspector.TracingModel.Phase.Instant,
-            ts: this._tracingModel.maximumRecordTime() * 1000,
-            pid: pid,
-            tid: tid,
-            name: WebInspector.TimelineModel.RecordType.CpuProfile,
-            args: { data: { cpuProfile: cpuProfile } }
-        });
-        this._tracingModel.addEvents([cpuProfileEvent]);
-    },
-
-    /**
-     * @param {!WebInspector.TimelineModel.MetadataEvents} metadataEvents
-     */
-    _injectCpuProfileEvents: function(metadataEvents)
-    {
-        if (!this._cpuProfiles)
-            return;
-        var mainMetaEvent = metadataEvents.page.peekLast();
-        if (!mainMetaEvent)
-            return;
-        var pid = mainMetaEvent.thread.process().id();
-        var mainTarget = this._targets[0];
-        var mainCpuProfile = this._cpuProfiles.get(mainTarget.id());
-        this._injectCpuProfileEvent(pid, mainMetaEvent.thread.id(), mainCpuProfile);
-        for (var metaEvent of metadataEvents.workers) {
-            var workerId = metaEvent.args["data"]["workerId"];
-            var target = mainTarget.workerManager ? mainTarget.workerManager.targetByWorkerId(workerId) : null;
-            if (!target)
-                continue;
-            var cpuProfile = this._cpuProfiles.get(target.id());
-            this._injectCpuProfileEvent(pid, metaEvent.args["data"]["workerThreadId"], cpuProfile);
-        }
-        this._cpuProfiles = null;
     },
 
     _insertFirstPaintEvent: function()
@@ -898,9 +604,12 @@ WebInspector.TimelineModel.prototype = {
         this._eventDividerRecords.splice(insertionIndexForObjectInListSortedByFunction(firstPaintRecord, this._eventDividerRecords, WebInspector.TimelineModel.Record._compareStartTime), 0, firstPaintRecord);
     },
 
-    _processBrowserEvents: function()
+    /**
+     * @param {!WebInspector.TracingModel} tracingModel
+     */
+    _processBrowserEvents: function(tracingModel)
     {
-        var browserMain = this._tracingModel.threadByName("Browser", "CrBrowserMain");
+        var browserMain = tracingModel.threadByName("Browser", "CrBrowserMain");
         if (!browserMain)
             return;
         // Disregard regular events, we don't need them yet, but still process to get proper metadata.
@@ -933,9 +642,12 @@ WebInspector.TimelineModel.prototype = {
         this._records = topLevelRecords;
     },
 
-    _buildGPUTasks: function()
+    /**
+     * @param {!WebInspector.TracingModel} tracingModel
+     */
+    _buildGPUTasks: function(tracingModel)
     {
-        var mainThread = this._tracingModel.threadByName("GPU Process", "CrGpuMain");
+        var mainThread = tracingModel.threadByName("GPU Process", "CrGpuMain");
         if (!mainThread)
             return;
         var events = mainThread.events();
@@ -1368,8 +1080,8 @@ WebInspector.TimelineModel.prototype = {
         this._sessionId = null;
         /** @type {?number} */
         this._mainFrameNodeId = null;
-        this._loadedFromFile = false;
-        this.dispatchEventToListeners(WebInspector.TimelineModel.Events.RecordsCleared);
+        this._minimumRecordTime = 0;
+        this._maximumRecordTime = 0;
     },
 
     /**
@@ -1377,7 +1089,7 @@ WebInspector.TimelineModel.prototype = {
      */
     minimumRecordTime: function()
     {
-        return this._tracingModel.minimumRecordTime();
+        return this._minimumRecordTime;
     },
 
     /**
@@ -1385,7 +1097,7 @@ WebInspector.TimelineModel.prototype = {
      */
     maximumRecordTime: function()
     {
-        return this._tracingModel.maximumRecordTime();
+        return this._maximumRecordTime;
     },
 
     /**
@@ -1498,8 +1210,6 @@ WebInspector.TimelineModel.prototype = {
         }
         return zeroStartRequestsList.concat(requestsList);
     },
-
-    __proto__: WebInspector.Object.prototype
 }
 
 /**

@@ -106,6 +106,7 @@
         "LayerViewHost.js",
         "Layers3DView.js",
         "MemoryCountersGraph.js",
+        "TimelineController.js",
         "TimelineModel.js",
         "TimelineIRModel.js",
         "TimelineJSProfile.js",

@@ -20,15 +20,6 @@
         {
             "type": "setting",
             "category": "Network",
-            "title": "Show primary load waterfall",
-            "settingName": "networkShowPrimaryLoadWaterfall",
-            "settingType": "boolean",
-            "experiment": "showPrimaryLoadWaterfallInNetworkTimeline",
-            "defaultValue": false
-        },
-        {
-            "type": "setting",
-            "category": "Network",
             "title": "Color-code resource types",
             "settingName": "networkColorCodeResourceTypes",
             "settingType": "boolean",

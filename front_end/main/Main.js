@@ -125,7 +125,6 @@ WebInspector.Main.prototype = {
         Runtime.experiments.register("timelineShowAllEvents", "Show all events on Timeline", true);
         Runtime.experiments.register("timelineLatencyInfo", "Show input latency events on the Timeline", true);
         Runtime.experiments.register("securityPanel", "Security panel");
-        Runtime.experiments.register("showPrimaryLoadWaterfallInNetworkTimeline", "Show primary load waterfall in Network timeline", true);
         Runtime.experiments.register("stepIntoAsync", "Step into async");
         Runtime.experiments.register("timelineFlowEvents", "Timeline flow events", true);
         Runtime.experiments.register("timelineInvalidationTracking", "Timeline invalidation tracking", true);

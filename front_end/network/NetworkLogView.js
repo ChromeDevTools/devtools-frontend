@@ -986,18 +986,6 @@ WebInspector.NetworkLogView.prototype = {
 
         this._highlightNthMatchedRequestForSearch(this._updateMatchCountAndFindMatchIndex(this._currentMatchedRequestNode), false);
 
-        if (this._shouldSetWaterfallWindow && this._mainRequestLoadTime !== -1) {
-            var waterfallWindow = this.calculator().boundary();
-            var overtime = this._mainRequestLoadTime - waterfallWindow.minimum;
-            overtime = Number.constrain(overtime, WebInspector.NetworkLogView._waterfallMinOvertime, WebInspector.NetworkLogView._waterfallMaxOvertime)
-            var waterfallEnd = this._mainRequestLoadTime + overtime;
-            if (waterfallEnd <= waterfallWindow.maximum) {
-                waterfallWindow.maximum = waterfallEnd;
-                this._shouldSetWaterfallWindow = false;
-                this._timeCalculator.setWindow(waterfallWindow);
-            }
-        }
-
         if (!this.calculator().boundary().equals(oldBoundary)) {
             // The boundaries changed, so all item graphs are stale.
             this._updateDividersIfNeeded();
@@ -1014,9 +1002,6 @@ WebInspector.NetworkLogView.prototype = {
     {
         this._requestWithHighlightedInitiators = null;
         this.dispatchEventToListeners(WebInspector.NetworkLogView.EventTypes.RequestSelected, null);
-
-        /** @type {boolean} */
-        this._shouldSetWaterfallWindow = Runtime.experiments.isEnabled("showPrimaryLoadWaterfallInNetworkTimeline") && this._networkShowPrimaryLoadWaterfallSetting.get();
 
         this._clearSearchMatchedList();
         if (this._popoverHelper)

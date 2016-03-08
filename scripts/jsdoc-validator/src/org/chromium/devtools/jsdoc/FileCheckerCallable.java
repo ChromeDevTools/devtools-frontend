@@ -59,7 +59,7 @@ public class FileCheckerCallable implements Callable<ValidatorContext> {
 
     private static Node parseScript(final ValidatorContext context) {
         Config config = ParserRunner.createConfig(
-            true, true, LanguageMode.ECMASCRIPT5_STRICT, EXTRA_ANNOTATIONS);
+            true, true, true, LanguageMode.ECMASCRIPT5_STRICT, EXTRA_ANNOTATIONS);
         ErrorReporter errorReporter = new ErrorReporter() {
             @Override
             public void warning(String message, String sourceName, int line, int lineOffset) {

@@ -42,9 +42,6 @@ Event.prototype.isMetaOrCtrlForTest;
 /** @type {string} */
 Event.prototype.code;
 
-/** @type {function():!Array<!EventTarget>|undefined} */
-Event.prototype.deepPath;
-
 /**
  * @type {number}
  */
@@ -81,27 +78,27 @@ Array.prototype.rotate = function(index) {}
  */
 Array.prototype.sortNumbers = function() {}
 /**
- * @param {!T} object
- * @param {function(!T,!S):number=} comparator
+ * @param {!S} object
+ * @param {function(!S,!T):number=} comparator
  * @return {number}
- * @this {Array.<S>}
- * @template T,S
+ * @this {Array.<T>}
+ * @template S
  */
 Array.prototype.lowerBound = function(object, comparator) {}
 /**
- * @param {!T} object
- * @param {function(!T,!S):number=} comparator
+ * @param {!S} object
+ * @param {function(!S,!T):number=} comparator
  * @return {number}
- * @this {Array.<S>}
- * @template T,S
+ * @this {Array.<T>}
+ * @template S
  */
 Array.prototype.upperBound = function(object, comparator) {}
 /**
- * @param {!T} value
- * @param {function(!T,!S):number} comparator
+ * @param {!S} value
+ * @param {function(!S,!T):number} comparator
  * @return {number}
- * @this {Array.<S>}
- * @template T,S
+ * @this {Array.<T>}
+ * @template S
  */
 Array.prototype.binaryIndexOf = function(value, comparator) {}
 /**
@@ -173,16 +170,6 @@ Array.prototype.intersectOrdered = function(array, comparator) {}
  * @template T
  */
 Array.prototype.mergeOrdered = function(array, comparator) {}
-
-/**
- * @param {string|!IArrayLike<T>|!Iterable<T>} arrayLike
- * @param {function(this:S, (string|T), number,
- *     (string|!IArrayLike<T>|!Iterable<T>)): R=} opt_mapFn
- * @param {S=} opt_this
- * @return {!Array<R>}
- * @template T,S,R
- */
-Array.from = function(arrayLike, opt_mapFn, opt_this) {};
 
 // File System API
 /**

@@ -1270,7 +1270,7 @@ Set.prototype.valuesArray = function()
 }
 
 /**
- * @param {!Iterable<T>} iterable
+ * @param {!Iterable<T>|!Array<!T>} iterable
  * @template T
  */
 Set.prototype.addAll = function(iterable)
@@ -1291,9 +1291,7 @@ Map.prototype.remove = function(key)
 }
 
 /**
- * @return {!Array.<V>}
- * @template K, V
- * @this {Map.<K, V>}
+ * @return {!Array<!VALUE>}
  */
 Map.prototype.valuesArray = function()
 {
@@ -1301,9 +1299,7 @@ Map.prototype.valuesArray = function()
 }
 
 /**
- * @return {!Array<K>}
- * @template K, V
- * @this {Map<K, V>}
+ * @return {!Array<!KEY>}
  */
 Map.prototype.keysArray = function()
 {

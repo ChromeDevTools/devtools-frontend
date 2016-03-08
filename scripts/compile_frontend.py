@@ -74,7 +74,6 @@ devtools_path = path.dirname(scripts_path)
 inspector_path = path.join(path.dirname(devtools_path), 'core', 'inspector')
 v8_inspector_path = path.join(path.dirname(devtools_path), 'platform', 'v8_inspector')
 devtools_frontend_path = path.join(devtools_path, 'front_end')
-patched_es6_externs_file = to_platform_path(path.join(devtools_frontend_path, 'es6.js'))
 global_externs_file = to_platform_path(path.join(devtools_frontend_path, 'externs.js'))
 protocol_externs_file = path.join(devtools_frontend_path, 'protocol_externs.js')
 injected_script_source_name = path.join(v8_inspector_path, 'InjectedScriptSource.js')
@@ -356,7 +355,6 @@ try:
     checked_modules = modules_to_check()
     for name in checked_modules:
         closure_args = ' '.join(common_closure_args)
-        closure_args += ' --externs ' + to_platform_path(patched_es6_externs_file)
         closure_args += ' --externs ' + to_platform_path(global_externs_file)
         closure_args += ' --externs ' + platform_protocol_externs_file
         runtime_module = module_arg(runtime_module_name) + ':1 --js ' + runtime_js_path
@@ -366,7 +364,6 @@ finally:
     compiler_args_file.close()
 
 modular_compiler_proc = popen(java_exec + ['-jar', closure_runner_jar, '--compiler-args-file', to_platform_path_exact(compiler_args_file.name)])
-
 
 def unclosure_injected_script(sourceFileName, outFileName):
 

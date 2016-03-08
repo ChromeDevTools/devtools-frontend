@@ -347,7 +347,7 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
     reset: function()
     {
         WebInspector.TimelineFlameChartDataProviderBase.prototype.reset.call(this);
-        /** @type {!Array<!WebInspector.TracingModel.Event|!WebInspector.TimelineFrame|!WebInspector.TimelineIRModel.Phases>} */
+        /** @type {!Array<!WebInspector.TracingModel.Event|!WebInspector.TimelineFrame|!WebInspector.TimelineIRModel.Phases|null>} */
         this._entryData = [];
         /** @type {!Array<!WebInspector.TimelineFlameChartEntryType>} */
         this._entryTypeByLevel = [];
@@ -843,7 +843,7 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
     _appendSegment: function(segment)
     {
         var index = this._entryData.length;
-        this._entryData.push(segment.data);
+        this._entryData.push(/** @type {!WebInspector.TimelineIRModel.Phases} */(segment.data));
         this._entryIndexToTitle[index] = /** @type {string} */ (segment.data);
         this._timelineData.entryLevels[index] = this._currentLevel;
         this._timelineData.entryTotalTimes[index] = segment.end - segment.begin;
@@ -879,7 +879,7 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
 
         if (this._lastSelection && this._lastSelection.timelineSelection.object() === selection.object())
             return this._lastSelection.entryIndex;
-        var index = this._entryData.indexOf(selection.object());
+        var index = this._entryData.indexOf(/** @type {!WebInspector.TracingModel.Event|!WebInspector.TimelineFrame|!WebInspector.TimelineIRModel.Phases} */(selection.object()));
         if (index !== -1)
             this._lastSelection = new WebInspector.TimelineFlameChartView.Selection(selection, index);
         return index;

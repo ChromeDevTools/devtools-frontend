@@ -102,8 +102,23 @@ public class Runner {
             List<CompilerInstanceDescriptor> descriptors, ExecutorService executor) {
         List<Future<CompilerRunner>> futures = new ArrayList<>(descriptors.size());
         for (CompilerInstanceDescriptor descriptor : descriptors) {
-            CompilerRunner task = new CompilerRunner(descriptor, new ByteArrayOutputStream(512));
-            futures.add(executor.submit(task));
+            try {
+                ByteArrayOutputStream rawStream = new ByteArrayOutputStream(512);
+                PrintStream errPrintStream = new PrintStream(rawStream, false, "UTF-8");
+                // We have to create instance of LocalCommandLineRunner object here,
+                // because its constructor should be executed on a single thread.
+                // Constructor is parsing flags and creating options object that can
+                // be used later in parallel during compilation.
+                LocalCommandLineRunner runner =
+                        new LocalCommandLineRunner(descriptor.commandLine.split(" +"),
+                                System.out, errPrintStream);
+
+                CompilerRunner task = new CompilerRunner(descriptor, rawStream, runner);
+                futures.add(executor.submit(task));
+            } catch (Exception e) {
+                System.err.println("ERROR - " + e.getMessage());
+                e.printStackTrace(System.err);
+            }
         }
 
         for (Future<CompilerRunner> future : futures) {
@@ -168,22 +183,8 @@ public class Runner {
 
     private static class LocalCommandLineRunner extends CommandLineRunner {
 
-        private static final String EXCLUDED_EXTERNS_ES6_JS = "externs.zip//es6.js";
-
         protected LocalCommandLineRunner(String[] args, PrintStream out, PrintStream err) {
             super(args, out, err);
-        }
-
-        @Override
-        protected List<SourceFile> createExterns() throws FlagUsageException, IOException {
-            List<SourceFile> externs = super.createExterns();
-            ArrayList<SourceFile> result = new ArrayList<>(externs.size());
-            for (SourceFile sourceFile: externs) {
-                if (!EXCLUDED_EXTERNS_ES6_JS.equals(sourceFile.getName())) {
-                    result.add(sourceFile);
-                }
-            }
-            return result;
         }
 
         @Override
@@ -220,28 +221,23 @@ public class Runner {
         private final CompilerInstanceDescriptor descriptor;
         private final ByteArrayOutputStream errStream;
         private int result;
+        private final LocalCommandLineRunner runner;
 
         public CompilerRunner(
-                CompilerInstanceDescriptor descriptor, ByteArrayOutputStream errStream) {
+                CompilerInstanceDescriptor descriptor, ByteArrayOutputStream errStream,
+                LocalCommandLineRunner runner) {
             this.descriptor = descriptor;
             this.errStream = errStream;
+            this.runner = runner;
         }
 
         @Override
         public CompilerRunner call() throws Exception {
-            PrintStream errPrintStream = new PrintStream(errStream, false, "UTF-8");
-            LocalCommandLineRunner runner =
-                    new LocalCommandLineRunner(prepareArgs(), System.out, errPrintStream);
-            if (!runner.shouldRunCompiler()) {
+            if (!this.runner.shouldRunCompiler()) {
                 this.result = -1;
             }
-            this.result = runner.execute();
+            this.result = this.runner.execute();
             return this;
-        }
-
-        private String[] prepareArgs() {
-            // FIXME: This does not support quoted arguments.
-            return descriptor.commandLine.split(" +");
         }
     }
 

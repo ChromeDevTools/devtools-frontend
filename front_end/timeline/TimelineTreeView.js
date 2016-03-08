@@ -153,7 +153,7 @@ WebInspector.TimelineTreeView.prototype = {
     },
 
     /**
-     * @param {!Array.<!WebInspector.DataGrid.ColumnDescriptor>} columns
+     * @param {!Array<!WebInspector.DataGrid.ColumnDescriptor>} columns
      */
     _populateColumns: function(columns)
     {

@@ -116,7 +116,7 @@ WebInspector.ASTSourceMap.prototype = {
      */
     sassModels: function()
     {
-        var sassModels = new Map(this._models);
+        var sassModels = /** @type {!Map<string, !WebInspector.SASSSupport.AST>} */(new Map(this._models));
         sassModels.delete(this._cssURL);
         return sassModels;
     },
@@ -126,7 +126,7 @@ WebInspector.ASTSourceMap.prototype = {
      */
     models: function()
     {
-        return new Map(this._models);
+        return /** @type {!Map<string, !WebInspector.SASSSupport.AST>} */(new Map(this._models));
     },
 
     /**
@@ -206,7 +206,7 @@ WebInspector.ASTSourceMap.prototype = {
         outNodeMapping = outNodeMapping || new Map();
         outNodeMapping.clear();
 
-        var models = new Map(this._models);
+        var models = /** @type {!Map<string, !WebInspector.SASSSupport.AST>} */(new Map(this._models));
         for (var newAST of updated) {
             var oldAST = models.get(newAST.document.url);
             if (!oldAST.match(newAST, outNodeMapping))

@@ -127,7 +127,7 @@ WebInspector.InspectorView.prototype = {
         }
 
         WebInspector.startBatchUpdate();
-        /** @type {!Map.<!WebInspector.PanelDescriptor, number>} */
+        /** @type {!Map<!WebInspector.PanelDescriptor, number>} */
         var panelWeights = new Map();
         self.runtime.extensions(WebInspector.PanelFactory).forEach(processPanelExtensions.bind(this));
         var sortedPanels = panelWeights.keysArray().sort(orderComparator);

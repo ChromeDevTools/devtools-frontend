@@ -172,7 +172,7 @@ WebInspector.TimelineProfileTree.buildBottomUp = function(topDownTree, groupingC
     var rootChildren = buRoot.children;
     for (var item of rootChildren.entries()) {
         if (item[1].selfTime === 0)
-            rootChildren.delete(item[0]);
+            rootChildren.delete(/** @type {string} */(item[0]));
     }
 
     return buRoot;

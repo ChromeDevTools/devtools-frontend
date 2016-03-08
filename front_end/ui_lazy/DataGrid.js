@@ -99,7 +99,7 @@ WebInspector.DataGrid = function(columnsArray, editCallback, deleteCallback, ref
 
     for (var i = 0; i < columnsArray.length; ++i) {
         var column = columnsArray[i];
-        var columnIdentifier = column.identifier = column.id || i;
+        var columnIdentifier = column.identifier = column.id || String(i);
         this._columns[columnIdentifier] = column;
         if (column.disclosure)
             this.disclosureColumnIdentifier = columnIdentifier;
@@ -160,22 +160,22 @@ WebInspector.DataGrid = function(columnsArray, editCallback, deleteCallback, ref
 WebInspector.DataGrid.CornerWidth = 14;
 
 /**
- * @constructor
+ * @typedef {{
+ *   id: string,
+ *   title: string,
+ *   sortable: boolean,
+ *   sort: (?WebInspector.DataGrid.Order|undefined),
+ *   align: (?WebInspector.DataGrid.Align|undefined),
+ *   fixedWidth: (boolean|undefined),
+ *   editable: (boolean|undefined),
+ *   nonSelectable: (boolean|undefined),
+ *   longText: (boolean|undefined),
+ *   disclosure: (boolean|undefined),
+ *   identifier: (string|undefined),
+ *   weight: (number|undefined)
+ * }}
  */
-WebInspector.DataGrid.ColumnDescriptor = function()
-{
-    /** @type {string} */ this.id;
-    /** @type {string} */ this.title;
-    /** @type {string} */ this.width;
-    /** @type {boolean} */ this.fixedWidth;
-    /** @type {boolean} */ this.sortable;
-    /** @type {?WebInspector.DataGrid.Order|undefined} */ this.sort;
-    /** @type {?WebInspector.DataGrid.Align|undefined} */ this.align;
-    /** @type {boolean|undefined} */ this.editable;
-    /** @type {boolean|undefined} */ this.nonSelectable;
-    /** @type {boolean|undefined} */ this.longText;
-    /** @type {boolean|undefined} */ this.disclosure;
-}
+WebInspector.DataGrid.ColumnDescriptor;
 
 WebInspector.DataGrid.Events = {
     SelectedNode: "SelectedNode",
@@ -217,7 +217,7 @@ WebInspector.DataGrid.prototype = {
 
         for (var i = 0; i < this._visibleColumnsArray.length; ++i) {
             var column = this._visibleColumnsArray[i];
-            var columnIdentifier = column.identifier;
+            var columnIdentifier = column.identifier || String(i);
             var headerColumn = this._headerTableColumnGroup.createChild("col");
             var dataColumn = this._dataTableColumnGroup.createChild("col");
             if (column.width) {
@@ -717,7 +717,7 @@ WebInspector.DataGrid.prototype = {
         this._visibleColumnsArray = [];
         for (var i = 0; i < this._columnsArray.length; ++i) {
             var column = this._columnsArray[i];
-            if (columnsVisibility[column.identifier])
+            if (columnsVisibility[column.identifier || String(i)])
                 this._visibleColumnsArray.push(column);
         }
         this._refreshHeader();
@@ -1236,7 +1236,7 @@ WebInspector.DataGridNode.prototype = {
         this._element.removeChildren();
         var columnsArray = this.dataGrid._visibleColumnsArray;
         for (var i = 0; i < columnsArray.length; ++i)
-            this._element.appendChild(this.createCell(columnsArray[i].identifier));
+            this._element.appendChild(this.createCell(columnsArray[i].identifier || String(i)));
         this._element.appendChild(this._createTDWithClass("corner"));
     },
 

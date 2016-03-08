@@ -4,25 +4,22 @@
 
 /**
  * @constructor
- * @param {function(!Array<!WebInspector.NetworkConditionsProfileGroup>):!Array<!{conditions: ?WebInspector.NetworkManager.Conditions}>} populateCallback
+ * @param {function(!Array<!WebInspector.NetworkConditionsGroup>):!Array<?WebInspector.NetworkManager.Conditions>} populateCallback
  * @param {function(number)} selectCallback
  */
 WebInspector.NetworkConditionsSelector = function(populateCallback, selectCallback)
 {
     this._populateCallback = populateCallback;
     this._selectCallback = selectCallback;
-    this._customSetting = WebInspector.moduleSetting("networkConditionsCustomProfiles");
+    this._customSetting = WebInspector.moduleSetting("customNetworkConditions");
     this._customSetting.addChangeListener(this._populateOptions, this);
     this._manager = WebInspector.multitargetNetworkManager;
     this._manager.addEventListener(WebInspector.MultitargetNetworkManager.Events.ConditionsChanged, this._conditionsChanged, this);
     this._populateOptions();
 }
 
-/** @typedef {!{title: string, value: !WebInspector.NetworkManager.Conditions}} */
-WebInspector.NetworkConditionsProfile;
-
-/** @typedef {!{title: string, items: !Array<!WebInspector.NetworkConditionsProfile>}} */
-WebInspector.NetworkConditionsProfileGroup;
+/** @typedef {!{title: string, items: !Array<!WebInspector.NetworkManager.Conditions>}} */
+WebInspector.NetworkConditionsGroup;
 
 /**
  * @param {number} throughput
@@ -40,47 +37,44 @@ WebInspector.NetworkConditionsSelector._throughputText = function(throughput)
     return WebInspector.UIString("%d Mb/s", (throughputInKbps / 1024) | 0);
 }
 
-/** @type {!Array.<!WebInspector.NetworkConditionsProfile>} */
-WebInspector.NetworkConditionsSelector._networkConditionsPresets = [
-    {title: "Offline", value: {download: 0 * 1024 / 8, upload: 0 * 1024 / 8, latency: 0}},
-    {title: "GPRS", value: {download: 50 * 1024 / 8, upload: 20 * 1024 / 8, latency: 500}},
-    {title: "Regular 2G", value: {download: 250 * 1024 / 8, upload: 50 * 1024 / 8, latency: 300}},
-    {title: "Good 2G", value: {download: 450 * 1024 / 8, upload: 150 * 1024 / 8, latency: 150}},
-    {title: "Regular 3G", value: {download: 750 * 1024 / 8, upload: 250 * 1024 / 8, latency: 100}},
-    {title: "Good 3G", value: {download: 1.5 * 1024 * 1024 / 8, upload: 750 * 1024 / 8, latency: 40}},
-    {title: "Regular 4G", value: {download: 4 * 1024 * 1024 / 8, upload: 3 * 1024 * 1024 / 8, latency: 20}},
-    {title: "DSL", value: {download: 2 * 1024 * 1024 / 8, upload: 1 * 1024 * 1024 / 8, latency: 5}},
-    {title: "WiFi", value: {download: 30 * 1024 * 1024 / 8, upload: 15 * 1024 * 1024 / 8, latency: 2}}
+/** @type {!Array.<!WebInspector.NetworkManager.Conditions>} */
+WebInspector.NetworkConditionsSelector._presets = [
+    {title: "Offline", download: 0 * 1024 / 8, upload: 0 * 1024 / 8, latency: 0},
+    {title: "GPRS", download: 50 * 1024 / 8, upload: 20 * 1024 / 8, latency: 500},
+    {title: "Regular 2G", download: 250 * 1024 / 8, upload: 50 * 1024 / 8, latency: 300},
+    {title: "Good 2G", download: 450 * 1024 / 8, upload: 150 * 1024 / 8, latency: 150},
+    {title: "Regular 3G", download: 750 * 1024 / 8, upload: 250 * 1024 / 8, latency: 100},
+    {title: "Good 3G", download: 1.5 * 1024 * 1024 / 8, upload: 750 * 1024 / 8, latency: 40},
+    {title: "Regular 4G", download: 4 * 1024 * 1024 / 8, upload: 3 * 1024 * 1024 / 8, latency: 20},
+    {title: "DSL", download: 2 * 1024 * 1024 / 8, upload: 1 * 1024 * 1024 / 8, latency: 5},
+    {title: "WiFi", download: 30 * 1024 * 1024 / 8, upload: 15 * 1024 * 1024 / 8, latency: 2}
 ];
 
-/** @type {!WebInspector.NetworkConditionsProfile} */
-WebInspector.NetworkConditionsSelector._disabledPreset = {title: "No throttling", value: {download: -1, upload: -1, latency: 0}};
-
 /**
- * @param {!WebInspector.NetworkConditionsProfile} preset
+ * @param {!WebInspector.NetworkManager.Conditions} conditions
  * @return {!{text: string, title: string}}
  */
-WebInspector.NetworkConditionsSelector._profileTitle = function(preset)
+WebInspector.NetworkConditionsSelector._conditionsTitle = function(conditions)
 {
-    var downloadInKbps = preset.value.download / (1024 / 8);
-    var uploadInKbps = preset.value.upload / (1024 / 8);
-    var isThrottling = (downloadInKbps >= 0) || (uploadInKbps >= 0) || (preset.value.latency > 0);
-    var presetTitle = WebInspector.UIString(preset.title);
+    var downloadInKbps = conditions.download / (1024 / 8);
+    var uploadInKbps = conditions.upload / (1024 / 8);
+    var isThrottling = (downloadInKbps >= 0) || (uploadInKbps >= 0) || (conditions.latency > 0);
+    var conditionTitle = WebInspector.UIString(conditions.title);
     if (!isThrottling)
-        return {text: presetTitle, title: presetTitle};
+        return {text: conditionTitle, title: conditionTitle};
 
-    var downloadText = WebInspector.NetworkConditionsSelector._throughputText(preset.value.download);
-    var uploadText = WebInspector.NetworkConditionsSelector._throughputText(preset.value.upload);
-    var title = WebInspector.UIString("%s (%s\u2b07 %s\u2b06 %dms RTT)", presetTitle, downloadText, uploadText, preset.value.latency);
-    return {text: title, title: WebInspector.UIString("Maximum download throughput: %s.\r\nMaximum upload throughput: %s.\r\nMinimum round-trip time: %dms.", downloadText, uploadText, preset.value.latency)};
+    var downloadText = WebInspector.NetworkConditionsSelector._throughputText(conditions.download);
+    var uploadText = WebInspector.NetworkConditionsSelector._throughputText(conditions.upload);
+    var title = WebInspector.UIString("%s (%s\u2b07 %s\u2b06 %dms RTT)", conditionTitle, downloadText, uploadText, conditions.latency);
+    return {text: title, title: WebInspector.UIString("Maximum download throughput: %s.\r\nMaximum upload throughput: %s.\r\nMinimum round-trip time: %dms.", downloadText, uploadText, conditions.latency)};
 }
 
 WebInspector.NetworkConditionsSelector.prototype = {
     _populateOptions: function()
     {
         var customGroup = {title: WebInspector.UIString("Custom"), items: this._customSetting.get()};
-        var presetsGroup = {title: WebInspector.UIString("Presets"), items: WebInspector.NetworkConditionsSelector._networkConditionsPresets};
-        var disabledGroup = {title: WebInspector.UIString("Disabled"), items: [WebInspector.NetworkConditionsSelector._disabledPreset]};
+        var presetsGroup = {title: WebInspector.UIString("Presets"), items: WebInspector.NetworkConditionsSelector._presets};
+        var disabledGroup = {title: WebInspector.UIString("Disabled"), items: [WebInspector.NetworkManager.NoThrottlingConditions]};
         this._options = this._populateCallback([customGroup, presetsGroup, disabledGroup]);
         this._conditionsChanged();
     },
@@ -104,9 +98,9 @@ WebInspector.NetworkConditionsSelector.prototype = {
         var value = this._manager.networkConditions();
         for (var index = 0; index < this._options.length; ++index) {
             var option = this._options[index];
-            if (!option.conditions)
+            if (!option)
                 continue;
-            if (option.conditions.download === value.download && option.conditions.upload === value.upload && option.conditions.latency === value.latency)
+            if (option.download === value.download && option.upload === value.upload && option.latency === value.latency && option.title === value.title)
                 this._selectCallback(index);
         }
     }
@@ -122,8 +116,8 @@ WebInspector.NetworkConditionsSelector.decorateSelect = function(selectElement)
     selectElement.addEventListener("change", optionSelected, false);
 
     /**
-     * @param {!Array.<!WebInspector.NetworkConditionsProfileGroup>} groups
-     * @return {!Array<!{conditions: ?WebInspector.NetworkManager.Conditions}>}
+     * @param {!Array.<!WebInspector.NetworkConditionsGroup>} groups
+     * @return {!Array<?WebInspector.NetworkManager.Conditions>}
      */
     function populate(groups)
     {
@@ -135,14 +129,14 @@ WebInspector.NetworkConditionsSelector.decorateSelect = function(selectElement)
             groupElement.label = group.title;
             if (!i) {
                 groupElement.appendChild(new Option(WebInspector.UIString("Add\u2026"), WebInspector.UIString("Add\u2026")));
-                options.push({conditions: null});
+                options.push(null);
             }
-            for (var preset of group.items) {
-                var title = WebInspector.NetworkConditionsSelector._profileTitle(preset);
+            for (var conditions of group.items) {
+                var title = WebInspector.NetworkConditionsSelector._conditionsTitle(conditions);
                 var option = new Option(title.text, title.text);
                 option.title = title.title;
                 groupElement.appendChild(option);
-                options.push({conditions: preset.value});
+                options.push(conditions);
             }
         }
         return options;
@@ -153,7 +147,7 @@ WebInspector.NetworkConditionsSelector.decorateSelect = function(selectElement)
         if (selectElement.selectedIndex === 0)
             selector.revealAndUpdate();
         else
-            selector.optionSelected(options[selectElement.selectedIndex].conditions);
+            selector.optionSelected(options[selectElement.selectedIndex]);
     }
 
     /**
@@ -175,8 +169,8 @@ WebInspector.NetworkConditionsSelector.createToolbarMenuButton = function()
     button.setGlyph("");
     button.turnIntoSelect();
 
-    /** @type {!Array<!{separator: boolean, text: string, title: string, conditions: !WebInspector.NetworkManager.Conditions}>} */
-    var items = [];
+    /** @type {!Array<?WebInspector.NetworkManager.Conditions>} */
+    var options = [];
     var selectedIndex = -1;
     var selector = new WebInspector.NetworkConditionsSelector(populate, select);
     return button;
@@ -186,31 +180,29 @@ WebInspector.NetworkConditionsSelector.createToolbarMenuButton = function()
      */
     function appendItems(contextMenu)
     {
-        for (var index = 0; index < items.length; ++index) {
-            var item = items[index];
-            if (item.separator)
+        for (var index = 0; index < options.length; ++index) {
+            var conditions = options[index];
+            if (!conditions)
                 contextMenu.appendSeparator();
             else
-                contextMenu.appendCheckboxItem(item.title, selector.optionSelected.bind(selector, item.conditions), selectedIndex === index);
+                contextMenu.appendCheckboxItem(WebInspector.NetworkConditionsSelector._conditionsTitle(conditions).text, selector.optionSelected.bind(selector, conditions), selectedIndex === index);
         }
         contextMenu.appendItem(WebInspector.UIString("Edit\u2026"), selector.revealAndUpdate.bind(selector));
     }
 
     /**
-     * @param {!Array.<!WebInspector.NetworkConditionsProfileGroup>} groups
-     * @return {!Array<!{conditions: !WebInspector.NetworkManager.Conditions}>}
+     * @param {!Array.<!WebInspector.NetworkConditionsGroup>} groups
+     * @return {!Array<?WebInspector.NetworkManager.Conditions>}
      */
     function populate(groups)
     {
-        items = [];
+        options = [];
         for (var group of groups) {
-            for (var preset of group.items) {
-                var title = WebInspector.NetworkConditionsSelector._profileTitle(preset);
-                items.push({separator: false, text: preset.title, title: title.text, conditions: preset.value});
-            }
-            items.push({separator: true, text: "", title: "", conditions: null});
+            for (var conditions of group.items)
+                options.push(conditions);
+            options.push(null);
         }
-        return /** @type {!Array<!{conditions: !WebInspector.NetworkManager.Conditions}>} */ (items);
+        return options;
     }
 
     /**
@@ -219,7 +211,7 @@ WebInspector.NetworkConditionsSelector.createToolbarMenuButton = function()
     function select(index)
     {
         selectedIndex = index;
-        button.setText(items[index].text);
+        button.setText(options[index].title);
     }
 }
 
@@ -243,7 +235,7 @@ WebInspector.NetworkConditionsSettingsTab = function()
     this._list.registerRequiredCSS("components/networkConditionsSettingsTab.css");
     this._list.show(this.contentElement);
 
-    this._customSetting = WebInspector.moduleSetting("networkConditionsCustomProfiles");
+    this._customSetting = WebInspector.moduleSetting("customNetworkConditions");
     this._customSetting.addChangeListener(this._conditionsUpdated, this);
 
     this.setDefaultFocusedElement(addButton);
@@ -267,14 +259,14 @@ WebInspector.NetworkConditionsSettingsTab.prototype = {
 
         this._list.appendSeparator();
 
-        conditions = WebInspector.NetworkConditionsSelector._networkConditionsPresets;
+        conditions = WebInspector.NetworkConditionsSelector._presets;
         for (var i = 0; i < conditions.length; ++i)
             this._list.appendItem(conditions[i], false);
     },
 
     _addButtonClicked: function()
     {
-        this._list.addNewItem(this._customSetting.get().length, {title: "", value: {download: -1, upload: -1, latency: 0}});
+        this._list.addNewItem(this._customSetting.get().length, {title: "", download: -1, upload: -1, latency: 0});
     },
 
     /**
@@ -285,18 +277,18 @@ WebInspector.NetworkConditionsSettingsTab.prototype = {
      */
     renderItem: function(item, editable)
     {
-        var conditions = /** @type {!WebInspector.NetworkConditionsProfile} */ (item);
+        var conditions = /** @type {!WebInspector.NetworkManager.Conditions} */ (item);
         var element = createElementWithClass("div", "conditions-list-item");
         var title = element.createChild("div", "conditions-list-text conditions-list-title");
         var titleText = title.createChild("div", "conditions-list-title-text");
         titleText.textContent = conditions.title;
         titleText.title = conditions.title;
         element.createChild("div", "conditions-list-separator");
-        element.createChild("div", "conditions-list-text").textContent = WebInspector.NetworkConditionsSelector._throughputText(conditions.value.download);
+        element.createChild("div", "conditions-list-text").textContent = WebInspector.NetworkConditionsSelector._throughputText(conditions.download);
         element.createChild("div", "conditions-list-separator");
-        element.createChild("div", "conditions-list-text").textContent = WebInspector.NetworkConditionsSelector._throughputText(conditions.value.upload);
+        element.createChild("div", "conditions-list-text").textContent = WebInspector.NetworkConditionsSelector._throughputText(conditions.upload);
         element.createChild("div", "conditions-list-separator");
-        element.createChild("div", "conditions-list-text").textContent = WebInspector.UIString("%dms", conditions.value.latency);
+        element.createChild("div", "conditions-list-text").textContent = WebInspector.UIString("%dms", conditions.latency);
         return element;
     },
 
@@ -320,14 +312,14 @@ WebInspector.NetworkConditionsSettingsTab.prototype = {
      */
     commitEdit: function(item, editor, isNew)
     {
-        var conditions = /** @type {?WebInspector.NetworkConditionsProfile} */ (item);
+        var conditions = /** @type {?WebInspector.NetworkManager.Conditions} */ (item);
         conditions.title = editor.control("title").value.trim();
         var download = editor.control("download").value.trim();
-        conditions.value.download = download ? parseInt(download, 10) * (1024 / 8) : -1;
+        conditions.download = download ? parseInt(download, 10) * (1024 / 8) : -1;
         var upload = editor.control("upload").value.trim();
-        conditions.value.upload = upload ? parseInt(upload, 10) * (1024 / 8) : -1;
+        conditions.upload = upload ? parseInt(upload, 10) * (1024 / 8) : -1;
         var latency = editor.control("latency").value.trim();
-        conditions.value.latency = latency ? parseInt(latency, 10) : 0;
+        conditions.latency = latency ? parseInt(latency, 10) : 0;
 
         var list = this._customSetting.get();
         if (isNew)
@@ -342,12 +334,12 @@ WebInspector.NetworkConditionsSettingsTab.prototype = {
      */
     beginEdit: function(item)
     {
-        var conditions = /** @type {?WebInspector.NetworkConditionsProfile} */ (item);
+        var conditions = /** @type {?WebInspector.NetworkManager.Conditions} */ (item);
         var editor = this._createEditor();
         editor.control("title").value = conditions.title;
-        editor.control("download").value = conditions.value.download <= 0 ? "" : String(conditions.value.download / (1024 / 8));
-        editor.control("upload").value = conditions.value.upload <= 0 ? "" : String(conditions.value.upload / (1024 / 8));
-        editor.control("latency").value = conditions.value.latency ? String(conditions.value.latency) : "";
+        editor.control("download").value = conditions.download <= 0 ? "" : String(conditions.download / (1024 / 8));
+        editor.control("upload").value = conditions.upload <= 0 ? "" : String(conditions.upload / (1024 / 8));
+        editor.control("latency").value = conditions.latency ? String(conditions.latency) : "";
         return editor;
     },
 

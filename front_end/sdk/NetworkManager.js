@@ -71,8 +71,10 @@ WebInspector.NetworkManager._MIMETypes = {
     "text/vtt":                    {"texttrack": true},
 }
 
-/** @typedef {{download: number, upload: number, latency: number}} */
+/** @typedef {{download: number, upload: number, latency: number, title: string}} */
 WebInspector.NetworkManager.Conditions;
+/** @type {!WebInspector.NetworkManager.Conditions} */
+WebInspector.NetworkManager.NoThrottlingConditions = {title: WebInspector.UIString("No throttling"), download: -1, upload: -1, latency: 0};
 
 WebInspector.NetworkManager.prototype = {
     /**
@@ -654,7 +656,7 @@ WebInspector.MultitargetNetworkManager = function()
     /** @type {!Set<!Protocol.NetworkAgent>} */
     this._agentsCapableOfEmulation = new Set();
     /** @type {!WebInspector.NetworkManager.Conditions} */
-    this._networkConditions = { download: -1, upload: -1, latency: 0 };
+    this._networkConditions = WebInspector.NetworkManager.NoThrottlingConditions;
 }
 
 WebInspector.MultitargetNetworkManager.Events = {

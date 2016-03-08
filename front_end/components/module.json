@@ -17,7 +17,7 @@
         },
         {
             "type": "setting",
-            "settingName": "networkConditionsCustomProfiles",
+            "settingName": "customNetworkConditions",
             "settingType": "array",
             "defaultValue": []
         },
@@ -28,7 +28,7 @@
             "order": "35",
             "className": "WebInspector.NetworkConditionsSettingsTab",
             "settings": [
-                "networkConditionsCustomProfiles"
+                "customNetworkConditions"
             ]
         }
     ],

@@ -624,6 +624,15 @@
     -webkit-user-select: text;
 }
 
+.sidebar-pane.composite .platform-fonts .font-name {
+    font-weight: bold;
+}
+
+.sidebar-pane.composite .platform-fonts .font-usage {
+    color: #888;
+    padding-left: 3px;
+}
+
 .sidebar-pane.composite .platform-fonts .sidebar-separator {
     height: 24px;
     background-color: #f1f1f1;
@@ -640,7 +649,7 @@
     padding-left: 1em;
 }
 
-.sidebar-pane.composite .platform-fonts .font-stats-item .delimeter {
+.sidebar-pane.composite .platform-fonts .font-stats-item .font-delimeter {
     margin: 0 1ex 0 1ex;
 }
 

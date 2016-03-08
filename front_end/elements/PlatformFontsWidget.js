@@ -99,12 +99,15 @@ WebInspector.PlatformFontsWidget.prototype = {
             var fontNameElement = fontStatElement.createChild("span", "font-name");
             fontNameElement.textContent = platformFonts[i].familyName;
 
-            var fontDelimeterElement = fontStatElement.createChild("span", "delimeter");
+            var fontDelimeterElement = fontStatElement.createChild("span", "font-delimeter");
             fontDelimeterElement.textContent = "\u2014";
+
+            var fontOrigin = fontStatElement.createChild("span");
+            fontOrigin.textContent = platformFonts[i].isCustomFont? WebInspector.UIString("Network resource") : WebInspector.UIString("Local file");
 
             var fontUsageElement = fontStatElement.createChild("span", "font-usage");
             var usage = platformFonts[i].glyphCount;
-            fontUsageElement.textContent = usage === 1 ? WebInspector.UIString("%d glyph", usage) : WebInspector.UIString("%d glyphs", usage);
+            fontUsageElement.textContent = usage === 1 ? WebInspector.UIString("(%d glyph)", usage) : WebInspector.UIString("(%d glyphs)", usage);
         }
     },
 

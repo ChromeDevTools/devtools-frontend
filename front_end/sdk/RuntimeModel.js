@@ -579,7 +579,8 @@ WebInspector.EventListener = function(target, type, useCapture, handler, origina
     this._handler = handler;
     this._originalHandler = originalHandler || handler;
     this._location = location;
-    this._sourceURL = location.script().contentURL();
+    var script = location.script();
+    this._sourceURL = script ? script.contentURL() : "";
     this._removeFunction = removeFunction;
     this._listenerType = listenerType || "normal";
 }

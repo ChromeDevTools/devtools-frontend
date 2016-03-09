@@ -72,15 +72,6 @@ WebInspector.CPUFlameChartDataProvider.prototype = {
     },
 
     /**
-     * @return {number}
-     * @override
-     */
-    groupSeparatorHeight: function()
-    {
-        return 5;
-    },
-
-    /**
      * @override
      * @param {number} startTime
      * @param {number} endTime

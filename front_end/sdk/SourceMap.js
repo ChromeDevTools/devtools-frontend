@@ -277,7 +277,13 @@ WebInspector.SourceMap.prototype = {
         {
             if (a.sourceLineNumber !== b.sourceLineNumber)
                 return a.sourceLineNumber - b.sourceLineNumber;
-            return a.sourceColumnNumber - b.sourceColumnNumber;
+            if (a.sourceColumnNumber !== b.sourceColumnNumber)
+                return a.sourceColumnNumber - b.sourceColumnNumber;
+
+            if (a.lineNumber !== b.lineNumber)
+                return a.lineNumber - b.lineNumber;
+
+            return a.columnNumber - b.columnNumber;
         }
     },
 
@@ -386,6 +392,35 @@ WebInspector.SourceMap.prototype = {
         var negative = result & 1;
         result >>= 1;
         return negative ? -result : result;
+    },
+
+    /**
+     * @param {string} url
+     * @param {!WebInspector.TextRange} textRange
+     * @return {!WebInspector.TextRange}
+     */
+    reverseMapTextRange: function(url, textRange)
+    {
+        /**
+         * @param {!{lineNumber: number, columnNumber: number}} position
+         * @param {!WebInspector.SourceMap.Entry} mapping
+         * @return {number}
+         */
+        function comparator(position, mapping)
+        {
+            if (position.lineNumber !== mapping.sourceLineNumber)
+                return position.lineNumber - mapping.sourceLineNumber;
+
+            return position.columnNumber - mapping.sourceColumnNumber;
+        }
+
+        var mappings = this._reversedMappings(url);
+        var startIndex = mappings.lowerBound({lineNumber: textRange.startLine, columnNumber: textRange.startColumn}, comparator);
+        var endIndex = mappings.upperBound({lineNumber: textRange.endLine, columnNumber: textRange.endColumn}, comparator);
+
+        var startMapping = mappings[startIndex];
+        var endMapping = mappings[endIndex];
+        return new WebInspector.TextRange(startMapping.lineNumber, startMapping.columnNumber, endMapping.lineNumber, endMapping.columnNumber);
     },
 
     _VLQ_BASE_SHIFT: 5,

@@ -484,6 +484,7 @@
         ],
         'devtools_es_tree_js_files': [
             'front_end/es_tree/ESTreeWalker.js',
+            'front_end/es_tree/AcornTokenizer.js',
         ],
         'devtools_extensions_js_files': [
             'front_end/extensions/ExtensionAuditCategory.js',
@@ -595,9 +596,9 @@
             'front_end/cm/headlesscodemirror.js',
             'front_end/cm/htmlmixed.js',
             'front_end/cm/xml.js',
+            'front_end/es_tree/AcornTokenizer.js',
             'front_end/es_tree/ESTreeWalker.js',
             'front_end/platform/utilities.js',
-            'front_end/script_formatter_worker/AcornTokenizer.js',
             'front_end/script_formatter_worker/CSSFormatter.js',
             'front_end/script_formatter_worker/JavaScriptFormatter.js',
             'front_end/script_formatter_worker/ScriptFormatterWorker.js',

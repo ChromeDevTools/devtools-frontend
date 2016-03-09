@@ -37,7 +37,7 @@ FormatterWorker.JavaScriptFormatter = function(content, builder)
 {
     this._content = content;
     this._builder = builder;
-    this._tokenizer = new FormatterWorker.AcornTokenizer(this._content);
+    this._tokenizer = new WebInspector.AcornTokenizer(this._content);
 }
 
 FormatterWorker.JavaScriptFormatter.prototype = {
@@ -118,7 +118,7 @@ FormatterWorker.JavaScriptFormatter.prototype = {
      */
     _formatToken: function(node, token)
     {
-        var AT = FormatterWorker.AcornTokenizer;
+        var AT = WebInspector.AcornTokenizer;
         if (AT.lineComment(token))
             return "tn";
         if (AT.blockComment(token))

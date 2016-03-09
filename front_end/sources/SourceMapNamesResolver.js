@@ -5,7 +5,7 @@
 WebInspector.SourceMapNamesResolver = {};
 
 WebInspector.SourceMapNamesResolver._cachedMapSymbol = Symbol("cache");
-WebInspector.SourceMapNamesResolver._cachedPromiseSymbol = Symbol("cache");
+WebInspector.SourceMapNamesResolver._cachedPromiseSymbol = Symbol("cachePromise");
 
 /**
  * @param {!WebInspector.DebuggerModel.Scope} scope
@@ -23,11 +23,11 @@ WebInspector.SourceMapNamesResolver._resolveScope = function(scope)
 
     var startLocation = scope.startLocation();
     var endLocation = scope.endLocation();
-    var script = startLocation.script();
 
-    if (scope.type() === DebuggerAgent.ScopeType.Global || !startLocation || !endLocation || !script.sourceMapURL || script !== endLocation.script())
+    if (scope.type() === DebuggerAgent.ScopeType.Global || !startLocation || !endLocation || !startLocation.script().sourceMapURL || (startLocation.script() !== endLocation.script()))
         return Promise.resolve(new Map());
 
+    var script = startLocation.script();
     var sourceMap = WebInspector.debuggerWorkspaceBinding.sourceMapForScript(script);
     if (!sourceMap)
         return Promise.resolve(new Map());
@@ -113,6 +113,144 @@ WebInspector.SourceMapNamesResolver._resolveScope = function(scope)
         scope[WebInspector.SourceMapNamesResolver._cachedMapSymbol] = namesMapping;
         delete scope[WebInspector.SourceMapNamesResolver._cachedPromiseSymbol];
         return namesMapping;
+    }
+}
+
+/**
+ * @param {!WebInspector.DebuggerModel.CallFrame} callFrame
+ * @return {!Promise.<!Map<string, string>>}
+ */
+WebInspector.SourceMapNamesResolver._allVariablesInCallFrame = function(callFrame)
+{
+    var cached = callFrame[WebInspector.SourceMapNamesResolver._cachedMapSymbol];
+    if (cached)
+        return Promise.resolve(cached);
+
+    var promises = [];
+    var scopeChain = callFrame.scopeChain();
+    for (var i = 0; i < scopeChain.length; ++i)
+        promises.push(WebInspector.SourceMapNamesResolver._resolveScope(scopeChain[i]));
+
+    return Promise.all(promises).then(mergeVariables);
+
+    /**
+     * @param {!Array<!Map<string, string>>} nameMappings
+     * @return {!Map<string, string>}
+     */
+    function mergeVariables(nameMappings)
+    {
+        var reverseMapping = new Map();
+        for (var map of nameMappings) {
+            for (var compiledName of map.keys()) {
+                var originalName = map.get(compiledName);
+                if (!reverseMapping.has(originalName))
+                    reverseMapping.set(originalName, compiledName);
+            }
+        }
+        callFrame[WebInspector.SourceMapNamesResolver._cachedMapSymbol] = reverseMapping;
+        return reverseMapping;
+    }
+}
+
+/**
+ * @param {!WebInspector.DebuggerModel.CallFrame} callFrame
+ * @param {string} originalText
+ * @param {!WebInspector.UISourceCode} uiSourceCode
+ * @param {number} lineNumber
+ * @param {number} startColumnNumber
+ * @param {number} endColumnNumber
+ * @return {!Promise<string>}
+ */
+WebInspector.SourceMapNamesResolver.resolveExpression = function(callFrame, originalText, uiSourceCode, lineNumber, startColumnNumber, endColumnNumber)
+{
+    if (!Runtime.experiments.isEnabled("resolveVariableNames"))
+        return Promise.resolve("");
+
+    return WebInspector.SourceMapNamesResolver._allVariablesInCallFrame(callFrame).then(findCompiledName);
+
+    /**
+     * @param {!Map<string, string>} reverseMapping
+     * @return {!Promise<string>}
+     */
+    function findCompiledName(reverseMapping)
+    {
+        if (reverseMapping.has(originalText))
+            return Promise.resolve(reverseMapping.get(originalText) || "");
+
+        return WebInspector.SourceMapNamesResolver._resolveExpression(callFrame, uiSourceCode, lineNumber, startColumnNumber, endColumnNumber)
+    }
+}
+
+/**
+ * @param {!WebInspector.DebuggerModel.CallFrame} callFrame
+ * @param {!WebInspector.UISourceCode} uiSourceCode
+ * @param {number} lineNumber
+ * @param {number} startColumnNumber
+ * @param {number} endColumnNumber
+ * @return {!Promise<string>}
+ */
+WebInspector.SourceMapNamesResolver._resolveExpression = function(callFrame, uiSourceCode, lineNumber, startColumnNumber, endColumnNumber)
+{
+    var target = callFrame.target();
+    var rawLocation = WebInspector.debuggerWorkspaceBinding.uiLocationToRawLocation(target, uiSourceCode, lineNumber, startColumnNumber);
+    if (!rawLocation)
+        return Promise.resolve("");
+
+    var script = rawLocation.script();
+    var sourceMap = WebInspector.debuggerWorkspaceBinding.sourceMapForScript(script);
+    if (!sourceMap)
+        return Promise.resolve("");
+
+    return script.requestContent().then(onContent);
+
+    /**
+     * @param {?string} content
+     * @return {string}
+     */
+    function onContent(content)
+    {
+        if (!content)
+            return "";
+
+        var textRange = sourceMap.reverseMapTextRange(uiSourceCode.url(), new WebInspector.TextRange(lineNumber, startColumnNumber, lineNumber, endColumnNumber));
+        var originalText = textRange.extract(content);
+        if (!originalText)
+            return "";
+
+        var tokenizer = acorn.tokenizer(originalText, {ecmaVersion: 6});
+        try {
+            var token = tokenizer.getToken();
+            while (token.type !== acorn.tokTypes.eof && WebInspector.AcornTokenizer.punctuator(token))
+                token = tokenizer.getToken();
+
+            var startIndex = token.start;
+            var endIndex = token.end;
+            var openBracketsCounter = 0;
+            while (token.type !== acorn.tokTypes.eof) {
+                var isIdentifier = WebInspector.AcornTokenizer.identifier(token);
+                var isThis = WebInspector.AcornTokenizer.keyword(token, "this");
+                var isString = token.type === acorn.tokTypes.string;
+                if (!isThis && !isIdentifier && !isString)
+                    break;
+
+                endIndex = token.end;
+                token = tokenizer.getToken();
+                while (WebInspector.AcornTokenizer.punctuator(token, ".[]")) {
+                    if (WebInspector.AcornTokenizer.punctuator(token, "["))
+                        openBracketsCounter++;
+
+                    if (WebInspector.AcornTokenizer.punctuator(token, "]")) {
+                        endIndex = openBracketsCounter > 0 ? token.end : endIndex;
+                        openBracketsCounter--;
+                    }
+
+                    token = tokenizer.getToken();
+                }
+            }
+            return originalText.substring(startIndex, endIndex);
+        } catch (e) {
+            return "";
+        }
     }
 }
 

@@ -6,7 +6,7 @@
  * @constructor
  * @param {string} content
  */
-FormatterWorker.AcornTokenizer = function(content)
+WebInspector.AcornTokenizer = function(content)
 {
     this._content = content;
     this._comments = [];
@@ -23,12 +23,13 @@ FormatterWorker.AcornTokenizer = function(content)
  * @param {string=} values
  * @return {boolean}
  */
-FormatterWorker.AcornTokenizer.punctuator = function(token, values)
+WebInspector.AcornTokenizer.punctuator = function(token, values)
 {
     return token.type !== acorn.tokTypes.num &&
         token.type !== acorn.tokTypes.regexp &&
         token.type !== acorn.tokTypes.string &&
         token.type !== acorn.tokTypes.name &&
+        !token.type.keyword &&
         (!values || (token.type.label.length === 1 && values.indexOf(token.type.label) !== -1));
 }
 
@@ -37,7 +38,7 @@ FormatterWorker.AcornTokenizer.punctuator = function(token, values)
  * @param {string=} keyword
  * @return {boolean}
  */
-FormatterWorker.AcornTokenizer.keyword = function(token, keyword)
+WebInspector.AcornTokenizer.keyword = function(token, keyword)
 {
     return !!token.type.keyword && token.type !== acorn.tokTypes._true && token.type !== acorn.tokTypes._false &&
         (!keyword || token.type.keyword === keyword);
@@ -48,7 +49,7 @@ FormatterWorker.AcornTokenizer.keyword = function(token, keyword)
  * @param {string=} identifier
  * @return {boolean}
  */
-FormatterWorker.AcornTokenizer.identifier = function(token, identifier)
+WebInspector.AcornTokenizer.identifier = function(token, identifier)
 {
     return token.type === acorn.tokTypes.name && (!identifier || token.value === identifier);
 }
@@ -57,7 +58,7 @@ FormatterWorker.AcornTokenizer.identifier = function(token, identifier)
  * @param {!Acorn.TokenOrComment} token
  * @return {boolean}
  */
-FormatterWorker.AcornTokenizer.lineComment = function(token)
+WebInspector.AcornTokenizer.lineComment = function(token)
 {
     return token.type === "Line";
 }
@@ -66,12 +67,12 @@ FormatterWorker.AcornTokenizer.lineComment = function(token)
  * @param {!Acorn.TokenOrComment} token
  * @return {boolean}
  */
-FormatterWorker.AcornTokenizer.blockComment = function(token)
+WebInspector.AcornTokenizer.blockComment = function(token)
 {
     return token.type === "Block";
 }
 
-FormatterWorker.AcornTokenizer.prototype = {
+WebInspector.AcornTokenizer.prototype = {
     /**
      * @return {!Acorn.TokenOrComment}
      */
@@ -145,14 +146,3 @@ FormatterWorker.AcornTokenizer.prototype = {
         return this._tokenColumnStart;
     }
 }
-
-// A dummy javascript mode which is used only by htmlmixed mode to advance
-// stream until a </script> is found.
-CodeMirror.defineMode("javascript", function(config, parserConfig) {
-    return {
-        token: function(stream, state)
-        {
-            return stream.next();
-        }
-    }
-});

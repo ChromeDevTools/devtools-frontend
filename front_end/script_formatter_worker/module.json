@@ -10,7 +10,7 @@
         "ScriptFormatterWorker.js",
         "../acorn/acorn.js",
         "CSSFormatter.js",
-        "AcornTokenizer.js",
+        "../es_tree/AcornTokenizer.js",
         "JavaScriptFormatter.js"
     ],
     "skip_compilation": [

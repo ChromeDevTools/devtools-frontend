@@ -4,6 +4,7 @@
     ],
     "scripts": [
         "../acorn/acorn.js",
+        "AcornTokenizer.js",
         "ESTreeWalker.js"
     ],
     "skip_compilation": [

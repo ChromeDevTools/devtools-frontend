@@ -46,7 +46,6 @@ WebInspector.RenderingOptionsView = function()
     this._appendCheckbox(WebInspector.UIString("Show FPS meter"), "setShowFPSCounter");
     var scrollingTitle = WebInspector.UIString("Shows areas of the page that slow down scrolling:\nTouch and mousewheel event listeners can delay scrolling.\nSome areas need to repaint their content when scrolled.");
     this._appendCheckbox(WebInspector.UIString("Show scrolling perf issues"), "setShowScrollBottleneckRects", scrollingTitle);
-    this._appendCheckbox(WebInspector.UIString("Show page size on resize"), "setShowViewportSizeOnResize");
 
     // CSS media.
     var mediaRow = this.contentElement.createChild("div", "media-row");

@@ -430,6 +430,8 @@ WebInspector.DeviceModeModel.prototype = {
             this._applyUserAgent(mobile ? WebInspector.DeviceModeModel._defaultMobileUserAgent : "");
             this._applyTouch(this._uaSetting.get() === WebInspector.DeviceModeModel.UA.DesktopTouch || this._uaSetting.get() === WebInspector.DeviceModeModel.UA.Mobile, this._uaSetting.get() === WebInspector.DeviceModeModel.UA.Mobile);
         }
+        if (this._target)
+            this._target.renderingAgent().setShowViewportSizeOnResize(this._type === WebInspector.DeviceModeModel.Type.None);
         this._updateCallback.call(null);
     },
 

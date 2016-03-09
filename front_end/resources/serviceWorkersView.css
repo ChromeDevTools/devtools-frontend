@@ -19,6 +19,7 @@
 .service-workers-root {
     margin: 0;
     padding: 5px;
+    -webkit-user-select: text;
 }
 
 .service-workers-root ol {

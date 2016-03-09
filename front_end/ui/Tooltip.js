@@ -70,7 +70,7 @@ WebInspector.Tooltip.prototype = {
         }
 
         if (typeof tooltip.content === "string")
-            this._tooltipElement.textContent = tooltip.content;
+            this._tooltipElement.setTextContentTruncatedIfNeeded(tooltip.content);
         else
             this._tooltipElement.appendChild(tooltip.content);
 

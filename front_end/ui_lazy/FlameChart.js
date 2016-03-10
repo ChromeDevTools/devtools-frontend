@@ -1114,7 +1114,7 @@ WebInspector.FlameChart.prototype = {
         var groups = this._rawTimelineData.groups || [];
         var group = this._groupOffsets.upperBound(y) - 1;
 
-        if (group >= 0 && y - this._groupOffsets[group] < groups[group].style.height)
+        if (group >= 0 && group < groups.length && y - this._groupOffsets[group] < groups[group].style.height)
             return group;
         return -1;
     },
@@ -1333,9 +1333,11 @@ WebInspector.FlameChart.prototype = {
         var barHeight = this._barHeight;
         var textBaseHeight = barHeight - this._dataProvider.textBaseline();
         var groups = this._rawTimelineData.groups || [];
+        if (!groups.length)
+            return;
+
         var groupOffsets = this._groupOffsets;
         var lastGroupOffset = Array.prototype.peekLast.call(groupOffsets);
-
         var firstVisibleGroup = Math.max(groupOffsets.upperBound(top) - 1, 0);
 
         context.save();

@@ -1055,13 +1055,14 @@ WebInspector.ObjectPropertiesSection.createNameElement = function(name)
  */
 WebInspector.ObjectPropertiesSection.valueTextForFunctionDescription = function(description)
 {
-    var matches = /function\s([^)]*)/.exec(description);
+    var text = description.replace(/^function [gs]et /, "function ");
+    var matches = /function\s([^)]*)/.exec(text);
     if (!matches) {
         // process shorthand methods
-        matches = /[^(]*(\([^)]*)/.exec(description);
+        matches = /[^(]*(\([^)]*)/.exec(text);
     }
     var match = matches ? matches[1] : null;
-    return match ? match.replace(/\n/g, " ") + ")" : (description || "");
+    return match ? match.replace(/\n/g, " ") + ")" : (text || "");
 }
 
 /**

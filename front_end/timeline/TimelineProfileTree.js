@@ -191,7 +191,7 @@ WebInspector.TimelineProfileTree.eventURL = function(event)
     var data = event.args["data"] || event.args["beginData"];
     if (data && data["url"])
         return data["url"];
-    var frame = WebInspector.TimelineTreeView.eventStackFrame(event);
+    var frame = WebInspector.TimelineProfileTree.eventStackFrame(event);
     while (frame) {
         var url = frame["url"];
         if (url)
@@ -199,6 +199,21 @@ WebInspector.TimelineProfileTree.eventURL = function(event)
         frame = frame.parent;
     }
     return null;
+}
+
+/**
+ * @param {!WebInspector.TracingModel.Event} event
+ * @return {?Object}
+ */
+WebInspector.TimelineProfileTree.eventStackFrame = function(event)
+{
+    if (event.name == WebInspector.TimelineModel.RecordType.JSFrame)
+        return event.args["data"];
+    var topFrame = event.stackTrace && event.stackTrace[0];
+    if (topFrame)
+        return topFrame;
+    var initiator = event.initiator;
+    return initiator && initiator.stackTrace && initiator.stackTrace[0] || null;
 }
 
 /**

@@ -291,21 +291,6 @@ WebInspector.TimelineTreeView.eventNameForSorting = function(event)
 }
 
 /**
- * @param {!WebInspector.TracingModel.Event} event
- * @return {?Object}
- */
-WebInspector.TimelineTreeView.eventStackFrame = function(event)
-{
-    if (event.name == WebInspector.TimelineModel.RecordType.JSFrame)
-        return event.args["data"];
-    var topFrame = event.stackTrace && event.stackTrace[0];
-    if (topFrame)
-        return topFrame;
-    var initiator = event.initiator;
-    return initiator && initiator.stackTrace && initiator.stackTrace[0] || null;
-}
-
-/**
  * @constructor
  * @extends {WebInspector.SortableDataGridNode}
  * @param {!WebInspector.TimelineProfileTree.Node} profileNode
@@ -362,7 +347,7 @@ WebInspector.TimelineTreeView.GridNode.prototype = {
             name.textContent = event.name === WebInspector.TimelineModel.RecordType.JSFrame
                 ? WebInspector.beautifyFunctionName(event.args["data"]["functionName"])
                 : WebInspector.TimelineUIUtils.eventTitle(event);
-            var frame = WebInspector.TimelineTreeView.eventStackFrame(event);
+            var frame = WebInspector.TimelineProfileTree.eventStackFrame(event);
             if (frame && frame["url"]) {
                 var callFrame = /** @type {!RuntimeAgent.CallFrame} */ (frame);
                 container.createChild("div", "activity-link").appendChild(this._treeView.linkifyLocation(callFrame));

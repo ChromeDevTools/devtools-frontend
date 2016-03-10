@@ -559,10 +559,7 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
     {
         if (!this._irModel)
             return;
-        var segments = this._irModel.interactionRecords();
-        if (!segments || !segments.length)
-            return;
-        segments.forEach(this._appendSegment, this);
+        this._irModel.interactionRecords().forEach(this._appendSegment, this);
         this._entryTypeByLevel[this._currentLevel++] = WebInspector.TimelineFlameChartEntryType.InteractionRecord;
     },
 

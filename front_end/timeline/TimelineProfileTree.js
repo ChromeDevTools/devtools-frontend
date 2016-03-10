@@ -14,10 +14,6 @@ WebInspector.TimelineProfileTree.Node = function()
     /** @type {number} */
     this.selfTime;
     /** @type {string} */
-    this.name;
-    /** @type {string} */
-    this.color;
-    /** @type {string} */
     this.id;
     /** @type {!WebInspector.TracingModel.Event} */
     this.event;
@@ -25,6 +21,17 @@ WebInspector.TimelineProfileTree.Node = function()
     this.children;
     /** @type {?WebInspector.TimelineProfileTree.Node} */
     this.parent;
+    this._isGroupNode = false;
+}
+
+WebInspector.TimelineProfileTree.Node.prototype = {
+    /**
+     * @return {boolean}
+     */
+    isGroupNode: function()
+    {
+        return this._isGroupNode;
+    }
 }
 
 /**
@@ -42,7 +49,6 @@ WebInspector.TimelineProfileTree.buildTopDown = function(events, filters, startT
     var root = new WebInspector.TimelineProfileTree.Node();
     root.totalTime = initialTime;
     root.selfTime = initialTime;
-    root.name = WebInspector.UIString("Top-Down Chart");
     root.children = /** @type {!Map<string, !WebInspector.TimelineProfileTree.Node>} */ (new Map());
     var parent = root;
 
@@ -106,7 +112,6 @@ WebInspector.TimelineProfileTree.buildBottomUp = function(topDownTree, groupingC
     var buRoot = new WebInspector.TimelineProfileTree.Node();
     buRoot.selfTime = 0;
     buRoot.totalTime = 0;
-    buRoot.name = WebInspector.UIString("Bottom-Up Chart");
     /** @type {!Map<string, !WebInspector.TimelineProfileTree.Node>} */
     buRoot.children = new Map();
     var nodesOnStack = /** @type {!Set<string>} */ (new Set());
@@ -153,7 +158,6 @@ WebInspector.TimelineProfileTree.buildBottomUp = function(topDownTree, groupingC
                 buNode = new WebInspector.TimelineProfileTree.Node();
                 buNode.selfTime = selfTime;
                 buNode.totalTime = totalTime;
-                buNode.name = tdNode.name;
                 buNode.event = tdNode.event;
                 buNode.id = id;
                 buNode.parent = buParent;
@@ -176,5 +180,181 @@ WebInspector.TimelineProfileTree.buildBottomUp = function(topDownTree, groupingC
     }
 
     return buRoot;
+}
 
+/**
+ * @param {!WebInspector.TracingModel.Event} event
+ * @return {?string}
+ */
+WebInspector.TimelineProfileTree.eventURL = function(event)
+{
+    var data = event.args["data"] || event.args["beginData"];
+    if (data && data["url"])
+        return data["url"];
+    var frame = WebInspector.TimelineTreeView.eventStackFrame(event);
+    while (frame) {
+        var url = frame["url"];
+        if (url)
+            return url;
+        frame = frame.parent;
+    }
+    return null;
+}
+
+/**
+ * @constructor
+ * @param {function(!WebInspector.TracingModel.Event):string} categoryMapper
+ */
+WebInspector.TimelineAggregator = function(categoryMapper)
+{
+    this._categoryMapper = categoryMapper;
+    /** @type {!Map<string, !WebInspector.TimelineProfileTree.Node>} */
+    this._groupNodes = new Map();
+}
+
+/**
+ * @enum {string}
+ */
+WebInspector.TimelineAggregator.GroupBy = {
+    None: "None",
+    Category: "Category",
+    Domain: "Domain",
+    Subdomain: "Subdomain",
+    URL: "URL"
+}
+
+/**
+ * @param {!WebInspector.TracingModel.Event} event
+ * @return {string}
+ */
+WebInspector.TimelineAggregator.eventId = function(event)
+{
+    if (event.name === WebInspector.TimelineModel.RecordType.JSFrame) {
+        var data = event.args["data"];
+        return "f:" + data["functionName"] + "@" + (data["scriptId"] || data["url"] || "");
+    }
+    return event.name + ":@" + WebInspector.TimelineProfileTree.eventURL(event);
+}
+
+WebInspector.TimelineAggregator._extensionInternalPrefix = "extensions::";
+WebInspector.TimelineAggregator._groupNodeFlag = Symbol("groupNode");
+
+/**
+ * @param {string} url
+ * @return {boolean}
+ */
+WebInspector.TimelineAggregator.isExtensionInternalURL = function(url)
+{
+    return url.startsWith(WebInspector.TimelineAggregator._extensionInternalPrefix);
+}
+
+WebInspector.TimelineAggregator.prototype = {
+    /**
+     * @param {!WebInspector.TimelineAggregator.GroupBy} groupBy
+     * @return {?function(!WebInspector.TimelineProfileTree.Node):!WebInspector.TimelineProfileTree.Node}
+     */
+    groupFunction: function(groupBy)
+    {
+        var idMapper = this._nodeToGroupIdFunction(groupBy);
+        return idMapper && this._nodeToGroupNode.bind(this, idMapper);
+    },
+
+    /**
+     * @param {!WebInspector.TimelineProfileTree.Node} root
+     * @param {!WebInspector.TimelineAggregator.GroupBy} groupBy
+     * @return {!WebInspector.TimelineProfileTree.Node}
+     */
+    performGrouping: function(root, groupBy)
+    {
+        var nodeMapper = this.groupFunction(groupBy);
+        if (!nodeMapper)
+            return root;
+        for (var node of root.children.values()) {
+            var groupNode = nodeMapper(node);
+            groupNode.parent = root;
+            groupNode.selfTime += node.selfTime;
+            groupNode.totalTime += node.totalTime;
+            groupNode.children.set(node.id, node);
+            node.parent = root;
+        }
+        root.children = this._groupNodes;
+        return root;
+    },
+
+    /**
+     * @param {!WebInspector.TimelineAggregator.GroupBy} groupBy
+     * @return {?function(!WebInspector.TimelineProfileTree.Node):string}
+     */
+    _nodeToGroupIdFunction: function(groupBy)
+    {
+        /**
+         * @param {!WebInspector.TimelineProfileTree.Node} node
+         * @return {string}
+         */
+        function groupByURL(node)
+        {
+            return WebInspector.TimelineProfileTree.eventURL(node.event) || "";
+        }
+
+        /**
+         * @param {boolean} groupSubdomains
+         * @param {!WebInspector.TimelineProfileTree.Node} node
+         * @return {string}
+         */
+        function groupByDomain(groupSubdomains, node)
+        {
+            var url = WebInspector.TimelineProfileTree.eventURL(node.event) || "";
+            if (WebInspector.TimelineAggregator.isExtensionInternalURL(url))
+                return WebInspector.TimelineAggregator._extensionInternalPrefix;
+            var parsedURL = url.asParsedURL();
+            if (!parsedURL)
+                return "";
+            if (parsedURL.scheme === "chrome-extension")
+                return parsedURL.scheme + "://" + parsedURL.host;
+            if (!groupSubdomains)
+                return parsedURL.host;
+            if (/^[.0-9]+$/.test(parsedURL.host))
+                return parsedURL.host;
+            var domainMatch = /([^.]*\.)?[^.]*$/.exec(parsedURL.host);
+            return domainMatch && domainMatch[0] || "";
+        }
+
+        switch (groupBy) {
+        case WebInspector.TimelineAggregator.GroupBy.None: return null;
+        case WebInspector.TimelineAggregator.GroupBy.Category: return node => node.event ? this._categoryMapper(node.event) : "";
+        case WebInspector.TimelineAggregator.GroupBy.Subdomain: return groupByDomain.bind(null, false);
+        case WebInspector.TimelineAggregator.GroupBy.Domain: return groupByDomain.bind(null, true);
+        case WebInspector.TimelineAggregator.GroupBy.URL: return groupByURL;
+        default: return null;
+        }
+    },
+
+    /**
+     * @param {string} id
+     * @param {!WebInspector.TracingModel.Event} event
+     * @return {!WebInspector.TimelineProfileTree.Node}
+     */
+    _buildGroupNode: function(id, event)
+    {
+        var groupNode = new WebInspector.TimelineProfileTree.Node();
+        groupNode.id = id;
+        groupNode.selfTime = 0;
+        groupNode.totalTime = 0;
+        groupNode.children = new Map();
+        groupNode.event = event;
+        groupNode._isGroupNode = true;
+        this._groupNodes.set(id, groupNode);
+        return groupNode;
+    },
+
+    /**
+     * @param {function(!WebInspector.TimelineProfileTree.Node):string} nodeToGroupId
+     * @param {!WebInspector.TimelineProfileTree.Node} node
+     * @return {!WebInspector.TimelineProfileTree.Node}
+     */
+    _nodeToGroupNode: function(nodeToGroupId, node)
+    {
+        var id = nodeToGroupId(node);
+        return this._groupNodes.get(id) || this._buildGroupNode(id, node.event);
+    },
 }

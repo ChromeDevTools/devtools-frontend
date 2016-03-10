@@ -122,7 +122,7 @@ WebInspector.FlameChartDataProvider = function()
 }
 
 /**
- * @typedef {!{name: string, startLevel: number, expanded: boolean, style: !WebInspector.FlameChart.GroupStyle}}
+ * @typedef {!{name: string, startLevel: number, expanded: (boolean|undefined), style: !WebInspector.FlameChart.GroupStyle}}
  */
 WebInspector.FlameChart.Group;
 
@@ -1401,7 +1401,7 @@ WebInspector.FlameChart.prototype = {
         context.beginPath();
         forEachGroup((offset, index, group) => {
             if (group.style.collapsible)
-                drawExpansionArrow(expansionArrowX, offset + textBaseHeight - arrowSide / 2, group.expanded)
+                drawExpansionArrow(expansionArrowX, offset + textBaseHeight - arrowSide / 2, !!group.expanded)
         });
         context.fill();
 

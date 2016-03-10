@@ -39,6 +39,8 @@ WebInspector.CodeMirrorTextEditor = function(url, delegate)
     WebInspector.VBox.call(this);
     this._delegate = delegate;
     this._url = url;
+    /** @type {!Map<string, !Set<number>>}} */
+    this._decoratedGutterLines = new Map();
 
     this.registerRequiredCSS("cm/codemirror.css");
     this.registerRequiredCSS("source_frame/cmdevtools.css");
@@ -1114,6 +1116,42 @@ WebInspector.CodeMirrorTextEditor.prototype = {
             if (classes[i].startsWith("cm-breakpoint"))
                 this._codeMirror.removeLineClass(lineNumber, "wrap", classes[i]);
         }
+    },
+
+    /**
+     * @param {number} lineNumber
+     * @param {string} type
+     * @param {!Element} element
+     */
+    setGutterDecoration: function(lineNumber, type, element)
+    {
+        var lines = this._decoratedGutterLines.get(type);
+        if (!lines) {
+            lines = new Set();
+            this._decoratedGutterLines.set(type, lines);
+            var gutters = this._codeMirror.getOption("gutters");
+            var gutterType = "CodeMirror-gutter-" + type;
+            if (gutters.indexOf(gutterType) === -1) {
+                gutters = gutters.concat([gutterType]);
+                this._codeMirror.setOption("gutters", gutters);
+                this._codeMirror.refresh();
+            }
+        }
+        lines.add(lineNumber);
+        this._codeMirror.setGutterMarker(lineNumber, "CodeMirror-gutter-" + type, element);
+    },
+
+    /**
+     * @param {string} type
+     */
+    resetGutterDecorations: function(type)
+    {
+        this._decoratedGutterLines.delete(type);
+        var gutters = this._codeMirror.getOption("gutters").slice();
+        if (!gutters.remove("CodeMirror-gutter-" + type))
+            return;
+        this._codeMirror.setOption("gutters", gutters);
+        this._codeMirror.refresh();
     },
 
     /**

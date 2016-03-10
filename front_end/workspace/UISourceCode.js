@@ -52,6 +52,8 @@ WebInspector.UISourceCode = function(project, url, contentType)
     this._requestContentCallback = null;
     /** @type {?Promise<?string>} */
     this._requestContentPromise = null;
+    /** @type {!Map<string, !Array<!WebInspector.UISourceCode.LineMarker>>} */
+    this._lineDecorations = new Map();
 
     /** @type {!Array.<!WebInspector.Revision>} */
     this.history = [];
@@ -71,6 +73,8 @@ WebInspector.UISourceCode.Events = {
     SourceMappingChanged: "SourceMappingChanged",
     MessageAdded: "MessageAdded",
     MessageRemoved: "MessageRemoved",
+    LineDecorationAdded: "LineDecorationAdded",
+    LineDecorationRemoved: "LineDecorationRemoved"
 }
 
 WebInspector.UISourceCode.prototype = {
@@ -644,6 +648,42 @@ WebInspector.UISourceCode.prototype = {
             this.dispatchEventToListeners(WebInspector.UISourceCode.Events.MessageRemoved, message);
     },
 
+    /**
+     * @param {number} lineNumber
+     * @param {string} type
+     * @param {?} data
+     */
+    addLineDecoration: function(lineNumber, type, data)
+    {
+        var markers = this._lineDecorations.get(type);
+        if (!markers) {
+            markers = [];
+            this._lineDecorations.set(type, markers);
+        }
+        var marker = new WebInspector.UISourceCode.LineMarker(lineNumber, type, data);
+        markers.push(marker);
+        this.dispatchEventToListeners(WebInspector.UISourceCode.Events.LineDecorationAdded, marker);
+    },
+
+    /**
+     * @param {string} type
+     */
+    removeAllLineDecorations: function(type)
+    {
+        var markers = this._lineDecorations.get(type) || [];
+        markers.forEach(this.dispatchEventToListeners.bind(this, WebInspector.UISourceCode.Events.LineDecorationRemoved));
+        this._lineDecorations.delete(type);
+    },
+
+    /**
+     * @param {string} type
+     * @return {?Array<!WebInspector.UISourceCode.LineMarker>}
+     */
+    lineDecorations: function(type)
+    {
+        return this._lineDecorations.get(type) || null;
+    },
+
     __proto__: WebInspector.Object.prototype
 }
 
@@ -837,7 +877,8 @@ WebInspector.UISourceCode.Message.prototype = {
     /**
      * @return {!WebInspector.TextRange}
      */
-    range: function() {
+    range: function()
+    {
         return this._range;
     },
 
@@ -869,5 +910,44 @@ WebInspector.UISourceCode.Message.prototype = {
     remove: function()
     {
         this._uiSourceCode.removeMessage(this);
+    }
+}
+
+/**
+ * @constructor
+ * @param {number} line
+ * @param {string} type
+ * @param {?} data
+ */
+WebInspector.UISourceCode.LineMarker = function(line, type, data)
+{
+    this._line = line;
+    this._type = type;
+    this._data = data;
+}
+
+WebInspector.UISourceCode.LineMarker.prototype = {
+    /**
+     * @return {number}
+     */
+    line: function()
+    {
+        return this._line;
+    },
+
+    /**
+     * @return {string}
+     */
+    type: function()
+    {
+        return this._type;
+    },
+
+    /**
+     * @return {*}
+     */
+    data: function()
+    {
+        return this._data;
     }
 }

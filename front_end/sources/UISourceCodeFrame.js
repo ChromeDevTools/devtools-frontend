@@ -37,10 +37,14 @@ WebInspector.UISourceCodeFrame = function(uiSourceCode)
     WebInspector.SourceFrame.call(this, this._uiSourceCode);
     this.textEditor.setAutocompleteDelegate(new WebInspector.SimpleAutocompleteDelegate());
     this._rowMessageBuckets = {};
+    /** @type {!Set<string>} */
+    this._typeDecorationsPending = new Set();
     this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.WorkingCopyChanged, this._onWorkingCopyChanged, this);
     this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.WorkingCopyCommitted, this._onWorkingCopyCommitted, this);
     this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.MessageAdded, this._onMessageAdded, this);
     this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.MessageRemoved, this._onMessageRemoved, this);
+    this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.LineDecorationAdded, this._onLineDecorationAdded, this);
+    this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.LineDecorationRemoved, this._onLineDecorationRemoved, this);
     this._updateStyle();
 
     this._errorPopoverHelper = new WebInspector.PopoverHelper(this.element, this._getErrorAnchor.bind(this), this._showErrorPopover.bind(this));
@@ -118,6 +122,7 @@ WebInspector.UISourceCodeFrame.prototype = {
         WebInspector.SourceFrame.prototype.onTextEditorContentLoaded.call(this);
         for (var message of this._uiSourceCode.messages())
             this._addMessageToSource(message);
+        this._decorateAllTypes();
     },
 
     /**
@@ -330,6 +335,44 @@ WebInspector.UISourceCodeFrame.prototype = {
         }
     },
 
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _onLineDecorationAdded: function(event)
+    {
+        var marker = /** @type {!WebInspector.UISourceCode.LineMarker} */ (event.data);
+        this._decorateTypeThrottled(marker.type());
+    },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _onLineDecorationRemoved: function(event)
+    {
+        var marker = /** @type {!WebInspector.UISourceCode.LineMarker} */ (event.data);
+        this._decorateTypeThrottled(marker.type());
+    },
+
+    /**
+     * @param {string} type
+     */
+    _decorateTypeThrottled: function(type)
+    {
+        if (this._typeDecorationsPending.has(type))
+            return;
+        this._typeDecorationsPending.add(type);
+        self.runtime.extensions(WebInspector.UISourceCodeFrame.LineDecorator).find(extension => extension.descriptor()["decoratorType"] === type).instancePromise().then(decorator => {
+            this._typeDecorationsPending.delete(type);
+            decorator.decorate(this.uiSourceCode(), this._textEditor);
+        });
+    },
+
+    _decorateAllTypes: function()
+    {
+        var extensions = self.runtime.extensions(WebInspector.UISourceCodeFrame.LineDecorator);
+        extensions.forEach(extension => this._decorateTypeThrottled(extension.descriptor()["decoratorType"]));
+    },
+
     __proto__: WebInspector.SourceFrame.prototype
 }
 
@@ -340,6 +383,19 @@ WebInspector.UISourceCodeFrame._iconClassPerLevel[WebInspector.UISourceCode.Mess
 WebInspector.UISourceCodeFrame._lineClassPerLevel = {};
 WebInspector.UISourceCodeFrame._lineClassPerLevel[WebInspector.UISourceCode.Message.Level.Error] = "text-editor-line-with-error";
 WebInspector.UISourceCodeFrame._lineClassPerLevel[WebInspector.UISourceCode.Message.Level.Warning] = "text-editor-line-with-warning";
+
+/**
+ * @interface
+ */
+WebInspector.UISourceCodeFrame.LineDecorator = function() { }
+
+WebInspector.UISourceCodeFrame.LineDecorator.prototype = {
+    /**
+     * @param {!WebInspector.UISourceCode} uiSourceCode
+     * @param {!WebInspector.CodeMirrorTextEditor} textEditor
+     */
+    decorate: function(uiSourceCode, textEditor) { }
+}
 
 /**
  * @constructor

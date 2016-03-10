@@ -3710,17 +3710,6 @@
                 "description": "Changes value of variable in a callframe or a closure. Either callframe or function must be specified. Object-based scopes are not supported and must be mutated manually."
             },
             {
-                "name": "getStepInPositions",
-                "parameters": [
-                    { "name": "callFrameId", "$ref": "CallFrameId", "description": "Id of a call frame where the current statement should be analized" }
-                ],
-                "returns": [
-                    { "name": "stepInPositions", "type": "array", "items": { "$ref": "Location" }, "optional": true, "description": "experimental" }
-                ],
-                "hidden": true,
-                "description": "Lists all positions where step-in is possible for a current statement in a specified call frame"
-            },
-            {
                 "name": "getBacktrace",
                 "returns": [
                     { "name": "callFrames", "type": "array", "items": { "$ref": "CallFrame" }, "description": "Call stack the virtual machine stopped on." },

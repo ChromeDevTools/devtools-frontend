@@ -1478,9 +1478,11 @@ WebInspector.FlameChart.prototype = {
                 var group = groups[i];
                 if (groupTop - group.style.padding > top + height)
                     break;
-                var firstGroup = group.style.nestingLevel > groupStack.peekLast().nestingLevel
-                if (!firstGroup)
+                var firstGroup = true;
+                while (groupStack.peekLast().nestingLevel >= group.style.nestingLevel) {
                     groupStack.pop();
+                    firstGroup = false;
+                }
                 var parentGroupVisible = groupStack.peekLast().visible;
                 var thisGroupVisible = parentGroupVisible && (!group.style.collapsible || group.expanded);
                 groupStack.push({nestingLevel: group.style.nestingLevel, visible: thisGroupVisible});
@@ -1698,9 +1700,11 @@ WebInspector.FlameChart.prototype = {
             while (groupIndex < groups.length - 1 && level === groups[groupIndex + 1].startLevel) {
                 ++groupIndex;
                 var style = groups[groupIndex].style;
-                var nextLevel = groupStack.peekLast().nestingLevel < style.nestingLevel;
-                if (!nextLevel)
+                var nextLevel = true;
+                while (groupStack.peekLast().nestingLevel >= style.nestingLevel) {
                     groupStack.pop();
+                    nextLevel = false;
+                }
                 var thisGroupIsVisible = style.collapsible ? groups[groupIndex].expanded : true;
                 var parentGroupIsVisible = groupStack.peekLast().visible;
                 visible = thisGroupIsVisible && parentGroupIsVisible;

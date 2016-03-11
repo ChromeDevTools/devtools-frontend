@@ -108,7 +108,7 @@ WebInspector.CSSMediaQueryExpression.prototype = {
 
 /**
  * @constructor
- * @param {!WebInspector.CSSStyleModel} cssModel
+ * @param {!WebInspector.CSSModel} cssModel
  * @param {!CSSAgent.CSSMedia} payload
  */
 WebInspector.CSSMedia = function(cssModel, payload)
@@ -125,7 +125,7 @@ WebInspector.CSSMedia.Source = {
 };
 
 /**
- * @param {!WebInspector.CSSStyleModel} cssModel
+ * @param {!WebInspector.CSSModel} cssModel
  * @param {!CSSAgent.CSSMedia} payload
  * @return {!WebInspector.CSSMedia}
  */
@@ -135,7 +135,7 @@ WebInspector.CSSMedia.parsePayload = function(cssModel, payload)
 }
 
 /**
- * @param {!WebInspector.CSSStyleModel} cssModel
+ * @param {!WebInspector.CSSModel} cssModel
  * @param {!Array.<!CSSAgent.CSSMedia>} payload
  * @return {!Array.<!WebInspector.CSSMedia>}
  */
@@ -167,7 +167,7 @@ WebInspector.CSSMedia.prototype = {
     },
 
     /**
-     * @param {!WebInspector.CSSStyleModel.Edit} edit
+     * @param {!WebInspector.CSSModel.Edit} edit
      */
     rebase: function(edit)
     {

@@ -48,7 +48,7 @@ WebInspector.StylesSidebarPane = function()
     this._keyDownBound = this._keyDown.bind(this);
     this._keyUpBound = this._keyUp.bind(this);
 
-    WebInspector.targetManager.addModelListener(WebInspector.CSSStyleModel, WebInspector.CSSStyleModel.Events.LayoutEditorChange, this._onLayoutEditorChange, this);
+    WebInspector.targetManager.addModelListener(WebInspector.CSSModel, WebInspector.CSSModel.Events.LayoutEditorChange, this._onLayoutEditorChange, this);
 }
 
 /**
@@ -111,7 +111,7 @@ WebInspector.StylesSidebarPane.prototype = {
      */
     _onLayoutEditorChange: function(event)
     {
-        var cssModel = /** @type {!WebInspector.CSSStyleModel} */(event.target);
+        var cssModel = /** @type {!WebInspector.CSSModel} */(event.target);
         var styleSheetId = event.data["id"];
         var sourceRange = /** @type {!CSSAgent.SourceRange} */(event.data["range"]);
         var range = WebInspector.TextRange.fromObject(sourceRange);
@@ -298,7 +298,7 @@ WebInspector.StylesSidebarPane.prototype = {
      */
     onCSSModelChanged: function(event)
     {
-        var edit = event && event.data ? /** @type {?WebInspector.CSSStyleModel.Edit} */(event.data.edit) : null;
+        var edit = event && event.data ? /** @type {?WebInspector.CSSModel.Edit} */(event.data.edit) : null;
         if (edit) {
             for (var section of this.allSections())
                 section._styleSheetEdited(edit);
@@ -984,7 +984,7 @@ WebInspector.StylePropertiesSection.prototype = {
     },
 
     /**
-     * @param {!WebInspector.CSSStyleModel.Edit} edit
+     * @param {!WebInspector.CSSModel.Edit} edit
      */
     _styleSheetEdited: function(edit)
     {
@@ -1609,7 +1609,7 @@ WebInspector.StylePropertiesSection.createRuleOriginNode = function(matchedStyle
 }
 
 /**
- * @param {!WebInspector.CSSStyleModel} cssModel
+ * @param {!WebInspector.CSSModel} cssModel
  * @param {!WebInspector.Linkifier} linkifier
  * @param {string} styleSheetId
  * @param {!WebInspector.TextRange} ruleLocation

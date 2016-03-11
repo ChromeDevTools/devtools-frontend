@@ -67,7 +67,7 @@ WebInspector.MetricsSidebarPane.prototype = {
             this._updateMetrics(style);
         }
         /**
-         * @param {?WebInspector.CSSStyleModel.InlineStyleResult} inlineStyleResult
+         * @param {?WebInspector.CSSModel.InlineStyleResult} inlineStyleResult
          * @this {WebInspector.MetricsSidebarPane}
          */
         function inlineStyleCallback(inlineStyleResult)

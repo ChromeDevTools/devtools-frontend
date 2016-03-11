@@ -14,7 +14,7 @@ WebInspector.CSSWorkspaceBinding = function(targetManager, workspace, networkMap
     this._workspace = workspace;
     this._networkMapping = networkMapping;
 
-    /** @type {!Map.<!WebInspector.CSSStyleModel, !WebInspector.CSSWorkspaceBinding.TargetInfo>} */
+    /** @type {!Map.<!WebInspector.CSSModel, !WebInspector.CSSWorkspaceBinding.TargetInfo>} */
     this._modelToTargetInfo = new Map();
     targetManager.observeTargets(this);
 
@@ -28,7 +28,7 @@ WebInspector.CSSWorkspaceBinding.prototype = {
      */
     targetAdded: function(target)
     {
-        var cssModel = WebInspector.CSSStyleModel.fromTarget(target);
+        var cssModel = WebInspector.CSSModel.fromTarget(target);
         if (cssModel)
             this._modelToTargetInfo.set(cssModel, new WebInspector.CSSWorkspaceBinding.TargetInfo(cssModel, this._workspace, this._networkMapping));
     },
@@ -39,7 +39,7 @@ WebInspector.CSSWorkspaceBinding.prototype = {
      */
     targetRemoved: function(target)
     {
-        var cssModel = WebInspector.CSSStyleModel.fromTarget(target);
+        var cssModel = WebInspector.CSSModel.fromTarget(target);
         if (cssModel)
             this._modelToTargetInfo.remove(cssModel)._dispose();
     },
@@ -83,7 +83,7 @@ WebInspector.CSSWorkspaceBinding.prototype = {
     _mainFrameCreatedOrNavigated: function(event)
     {
         var target = /** @type {!WebInspector.ResourceTreeModel} */ (event.target).target();
-        var cssModel = WebInspector.CSSStyleModel.fromTarget(target);
+        var cssModel = WebInspector.CSSModel.fromTarget(target);
         if (cssModel)
             this._modelToTargetInfo.get(cssModel)._reset();
     },
@@ -171,7 +171,7 @@ WebInspector.CSSWorkspaceBinding.prototype = {
 
 /**
  * @constructor
- * @param {!WebInspector.CSSStyleModel} cssModel
+ * @param {!WebInspector.CSSModel} cssModel
  * @param {!WebInspector.Workspace} workspace
  * @param {!WebInspector.NetworkMapping} networkMapping
  */
@@ -184,8 +184,8 @@ WebInspector.CSSWorkspaceBinding.TargetInfo = function(cssModel, workspace, netw
     /** @type {!Map.<string, !WebInspector.CSSWorkspaceBinding.HeaderInfo>} */
     this._headerInfoById = new Map();
 
-    cssModel.addEventListener(WebInspector.CSSStyleModel.Events.StyleSheetAdded, this._styleSheetAdded, this);
-    cssModel.addEventListener(WebInspector.CSSStyleModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this);
+    cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetAdded, this._styleSheetAdded, this);
+    cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this);
 }
 
 WebInspector.CSSWorkspaceBinding.TargetInfo.prototype = {
@@ -231,8 +231,8 @@ WebInspector.CSSWorkspaceBinding.TargetInfo.prototype = {
     _dispose: function()
     {
         this._reset();
-        this._cssModel.removeEventListener(WebInspector.CSSStyleModel.Events.StyleSheetAdded, this._styleSheetAdded, this);
-        this._cssModel.removeEventListener(WebInspector.CSSStyleModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this);
+        this._cssModel.removeEventListener(WebInspector.CSSModel.Events.StyleSheetAdded, this._styleSheetAdded, this);
+        this._cssModel.removeEventListener(WebInspector.CSSModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this);
     },
 
     _reset: function()
@@ -310,7 +310,7 @@ WebInspector.CSSWorkspaceBinding.HeaderInfo.prototype = {
 /**
  * @constructor
  * @extends {WebInspector.LiveLocation}
- * @param {!WebInspector.CSSStyleModel} cssModel
+ * @param {!WebInspector.CSSModel} cssModel
  * @param {?WebInspector.CSSStyleSheetHeader} header
  * @param {!WebInspector.CSSLocation} rawLocation
  * @param {!WebInspector.CSSWorkspaceBinding} binding
@@ -360,15 +360,15 @@ WebInspector.CSSWorkspaceBinding.LiveLocation.prototype = {
     {
         this._header = header;
         this._binding._addLiveLocation(this);
-        this._cssModel.removeEventListener(WebInspector.CSSStyleModel.Events.StyleSheetAdded, this._styleSheetAdded, this);
-        this._cssModel.addEventListener(WebInspector.CSSStyleModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this);
+        this._cssModel.removeEventListener(WebInspector.CSSModel.Events.StyleSheetAdded, this._styleSheetAdded, this);
+        this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this);
     },
 
     _clearStyleSheet: function()
     {
         delete this._header;
-        this._cssModel.removeEventListener(WebInspector.CSSStyleModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this);
-        this._cssModel.addEventListener(WebInspector.CSSStyleModel.Events.StyleSheetAdded, this._styleSheetAdded, this);
+        this._cssModel.removeEventListener(WebInspector.CSSModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this);
+        this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetAdded, this._styleSheetAdded, this);
     },
 
     /**
@@ -393,8 +393,8 @@ WebInspector.CSSWorkspaceBinding.LiveLocation.prototype = {
         WebInspector.LiveLocation.prototype.dispose.call(this);
         if (this._header)
             this._binding._removeLiveLocation(this);
-        this._cssModel.removeEventListener(WebInspector.CSSStyleModel.Events.StyleSheetAdded, this._styleSheetAdded, this);
-        this._cssModel.removeEventListener(WebInspector.CSSStyleModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this);
+        this._cssModel.removeEventListener(WebInspector.CSSModel.Events.StyleSheetAdded, this._styleSheetAdded, this);
+        this._cssModel.removeEventListener(WebInspector.CSSModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this);
     },
 
     /**

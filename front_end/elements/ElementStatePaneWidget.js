@@ -25,7 +25,7 @@ WebInspector.ElementStatePaneWidget = function(toolbarItem)
         var node = WebInspector.context.flavor(WebInspector.DOMNode);
         if (!node)
             return;
-        WebInspector.CSSStyleModel.fromNode(node).forcePseudoState(node, event.target.state, event.target.checked);
+        WebInspector.CSSModel.fromNode(node).forcePseudoState(node, event.target.state, event.target.checked);
     }
 
     /**
@@ -65,13 +65,13 @@ WebInspector.ElementStatePaneWidget.prototype = {
             return;
 
         if (this._target) {
-            var cssModel = WebInspector.CSSStyleModel.fromTarget(this._target);
-            cssModel.removeEventListener(WebInspector.CSSStyleModel.Events.PseudoStateForced, this._pseudoStateForced, this)
+            var cssModel = WebInspector.CSSModel.fromTarget(this._target);
+            cssModel.removeEventListener(WebInspector.CSSModel.Events.PseudoStateForced, this._pseudoStateForced, this)
         }
         this._target = target;
         if (target) {
-            var cssModel = WebInspector.CSSStyleModel.fromTarget(target);
-            cssModel.addEventListener(WebInspector.CSSStyleModel.Events.PseudoStateForced, this._pseudoStateForced, this)
+            var cssModel = WebInspector.CSSModel.fromTarget(target);
+            cssModel.addEventListener(WebInspector.CSSModel.Events.PseudoStateForced, this._pseudoStateForced, this)
         }
     },
 
@@ -101,7 +101,7 @@ WebInspector.ElementStatePaneWidget.prototype = {
     {
         var node = WebInspector.context.flavor(WebInspector.DOMNode);
         if (node) {
-            var nodePseudoState = WebInspector.CSSStyleModel.fromNode(node).pseudoState(node);
+            var nodePseudoState = WebInspector.CSSModel.fromNode(node).pseudoState(node);
             for (var input of this._inputs) {
                 input.disabled = !!node.pseudoType();
                 input.checked = nodePseudoState.indexOf(input.state) >= 0;

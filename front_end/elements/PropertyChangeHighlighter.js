@@ -5,7 +5,7 @@
 /**
  * @constructor
  * @param {!WebInspector.StylesSidebarPane} ssp
- * @param {!WebInspector.CSSStyleModel} cssModel
+ * @param {!WebInspector.CSSModel} cssModel
  * @param {!CSSAgent.StyleSheetId} styleSheetId
  * @param {!WebInspector.TextRange} range
  */

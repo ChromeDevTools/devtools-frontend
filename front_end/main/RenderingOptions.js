@@ -117,7 +117,7 @@ WebInspector.RenderingOptionsView.prototype = {
     _applyPrintMediaOverride: function(target)
     {
         target.emulationAgent().setEmulatedMedia(this._mediaCheckbox.checked ? this._mediaSelect.value : "");
-        var cssModel = WebInspector.CSSStyleModel.fromTarget(target);
+        var cssModel = WebInspector.CSSModel.fromTarget(target);
         if (cssModel)
             cssModel.mediaQueryResultChanged();
     },

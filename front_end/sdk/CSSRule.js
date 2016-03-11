@@ -15,7 +15,7 @@ WebInspector.CSSValue = function(payload)
 
 WebInspector.CSSValue.prototype = {
     /**
-     * @param {!WebInspector.CSSStyleModel.Edit} edit
+     * @param {!WebInspector.CSSModel.Edit} edit
      */
     rebase: function(edit)
     {
@@ -27,7 +27,7 @@ WebInspector.CSSValue.prototype = {
 
 /**
  * @constructor
- * @param {!WebInspector.CSSStyleModel} cssModel
+ * @param {!WebInspector.CSSModel} cssModel
  * @param {{style: !CSSAgent.CSSStyle, styleSheetId: (string|undefined), origin: !CSSAgent.StyleSheetOrigin}} payload
  */
 WebInspector.CSSRule = function(cssModel, payload)
@@ -45,7 +45,7 @@ WebInspector.CSSRule = function(cssModel, payload)
 
 WebInspector.CSSRule.prototype = {
     /**
-     * @param {!WebInspector.CSSStyleModel.Edit} edit
+     * @param {!WebInspector.CSSModel.Edit} edit
      */
     rebase: function(edit)
     {
@@ -101,7 +101,7 @@ WebInspector.CSSRule.prototype = {
 /**
  * @constructor
  * @extends {WebInspector.CSSRule}
- * @param {!WebInspector.CSSStyleModel} cssModel
+ * @param {!WebInspector.CSSModel} cssModel
  * @param {!CSSAgent.CSSRule} payload
  */
 WebInspector.CSSStyleRule = function(cssModel, payload)
@@ -113,7 +113,7 @@ WebInspector.CSSStyleRule = function(cssModel, payload)
 }
 
 /**
- * @param {!WebInspector.CSSStyleModel} cssModel
+ * @param {!WebInspector.CSSModel} cssModel
  * @param {string} selectorText
  * @return {!WebInspector.CSSStyleRule}
  */
@@ -209,7 +209,7 @@ WebInspector.CSSStyleRule.prototype = {
 
     /**
      * @override
-     * @param {!WebInspector.CSSStyleModel.Edit} edit
+     * @param {!WebInspector.CSSModel.Edit} edit
      */
     rebase: function(edit)
     {
@@ -232,7 +232,7 @@ WebInspector.CSSStyleRule.prototype = {
 
 /**
  * @constructor
- * @param {!WebInspector.CSSStyleModel} cssModel
+ * @param {!WebInspector.CSSModel} cssModel
  * @param {!CSSAgent.CSSKeyframesRule} payload
  */
 WebInspector.CSSKeyframesRule = function(cssModel, payload)
@@ -263,7 +263,7 @@ WebInspector.CSSKeyframesRule.prototype = {
 /**
  * @constructor
  * @extends {WebInspector.CSSRule}
- * @param {!WebInspector.CSSStyleModel} cssModel
+ * @param {!WebInspector.CSSModel} cssModel
  * @param {!CSSAgent.CSSKeyframeRule} payload
  */
 WebInspector.CSSKeyframeRule = function(cssModel, payload)
@@ -291,7 +291,7 @@ WebInspector.CSSKeyframeRule.prototype = {
 
     /**
      * @override
-     * @param {!WebInspector.CSSStyleModel.Edit} edit
+     * @param {!WebInspector.CSSModel.Edit} edit
      */
     rebase: function(edit)
     {

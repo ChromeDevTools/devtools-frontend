@@ -4,7 +4,7 @@
 
 /**
  * @constructor
- * @param {!WebInspector.CSSStyleModel} cssModel
+ * @param {!WebInspector.CSSModel} cssModel
  * @param {!WebInspector.DOMNode} node
  * @param {?CSSAgent.CSSStyle} inlinePayload
  * @param {?CSSAgent.CSSStyle} attributesPayload
@@ -134,7 +134,7 @@ WebInspector.CSSMatchedStyles.prototype = {
     },
 
     /**
-     * @return {!WebInspector.CSSStyleModel}
+     * @return {!WebInspector.CSSModel}
      */
     cssModel: function()
     {

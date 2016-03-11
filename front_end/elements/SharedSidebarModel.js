@@ -41,7 +41,7 @@ WebInspector.SharedSidebarModel.prototype = {
     },
 
     /**
-     * @return {?WebInspector.CSSStyleModel}
+     * @return {?WebInspector.CSSModel}
      */
     cssModel: function()
     {
@@ -72,18 +72,18 @@ WebInspector.SharedSidebarModel.prototype = {
         this._target = target;
         var domModel = null;
         if (target) {
-            this._cssModel = WebInspector.CSSStyleModel.fromTarget(target);
+            this._cssModel = WebInspector.CSSModel.fromTarget(target);
             domModel = WebInspector.DOMModel.fromTarget(target);
         }
 
         if (domModel && this._cssModel) {
             this._targetEvents = [
-                this._cssModel.addEventListener(WebInspector.CSSStyleModel.Events.StyleSheetAdded,  this._onComputedStyleChanged, this),
-                this._cssModel.addEventListener(WebInspector.CSSStyleModel.Events.StyleSheetRemoved,  this._onComputedStyleChanged, this),
-                this._cssModel.addEventListener(WebInspector.CSSStyleModel.Events.StyleSheetChanged,  this._onComputedStyleChanged, this),
-                this._cssModel.addEventListener(WebInspector.CSSStyleModel.Events.MediaQueryResultChanged,  this._onComputedStyleChanged, this),
-                this._cssModel.addEventListener(WebInspector.CSSStyleModel.Events.PseudoStateForced,  this._onComputedStyleChanged, this),
-                this._cssModel.addEventListener(WebInspector.CSSStyleModel.Events.ModelWasEnabled,  this._onComputedStyleChanged, this),
+                this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetAdded,  this._onComputedStyleChanged, this),
+                this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetRemoved,  this._onComputedStyleChanged, this),
+                this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetChanged,  this._onComputedStyleChanged, this),
+                this._cssModel.addEventListener(WebInspector.CSSModel.Events.MediaQueryResultChanged,  this._onComputedStyleChanged, this),
+                this._cssModel.addEventListener(WebInspector.CSSModel.Events.PseudoStateForced,  this._onComputedStyleChanged, this),
+                this._cssModel.addEventListener(WebInspector.CSSModel.Events.ModelWasEnabled,  this._onComputedStyleChanged, this),
                 domModel.addEventListener(WebInspector.DOMModel.Events.DOMMutated, this._onComputedStyleChanged, this)
             ];
         }

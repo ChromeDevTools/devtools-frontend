@@ -25,7 +25,7 @@ WebInspector.ElementsSidebarPane.prototype = {
     },
 
     /**
-     * @return {?WebInspector.CSSStyleModel}
+     * @return {?WebInspector.CSSModel}
      */
     cssModel: function()
     {
@@ -86,19 +86,19 @@ WebInspector.ElementsSidebarPane.prototype = {
         var domModel = null;
         var resourceTreeModel = null;
         if (target) {
-            this._cssModel = WebInspector.CSSStyleModel.fromTarget(target);
+            this._cssModel = WebInspector.CSSModel.fromTarget(target);
             domModel = WebInspector.DOMModel.fromTarget(target);
             resourceTreeModel = target.resourceTreeModel;
         }
 
         if (this._cssModel && domModel && resourceTreeModel) {
             this._targetEvents = [
-                this._cssModel.addEventListener(WebInspector.CSSStyleModel.Events.StyleSheetAdded, this.onCSSModelChanged, this),
-                this._cssModel.addEventListener(WebInspector.CSSStyleModel.Events.StyleSheetRemoved, this.onCSSModelChanged, this),
-                this._cssModel.addEventListener(WebInspector.CSSStyleModel.Events.StyleSheetChanged, this.onCSSModelChanged, this),
-                this._cssModel.addEventListener(WebInspector.CSSStyleModel.Events.MediaQueryResultChanged, this.onCSSModelChanged, this),
-                this._cssModel.addEventListener(WebInspector.CSSStyleModel.Events.PseudoStateForced, this.onCSSModelChanged, this),
-                this._cssModel.addEventListener(WebInspector.CSSStyleModel.Events.ModelWasEnabled, this.onCSSModelChanged, this),
+                this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetAdded, this.onCSSModelChanged, this),
+                this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetRemoved, this.onCSSModelChanged, this),
+                this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetChanged, this.onCSSModelChanged, this),
+                this._cssModel.addEventListener(WebInspector.CSSModel.Events.MediaQueryResultChanged, this.onCSSModelChanged, this),
+                this._cssModel.addEventListener(WebInspector.CSSModel.Events.PseudoStateForced, this.onCSSModelChanged, this),
+                this._cssModel.addEventListener(WebInspector.CSSModel.Events.ModelWasEnabled, this.onCSSModelChanged, this),
                 domModel.addEventListener(WebInspector.DOMModel.Events.DOMMutated, this._domModelChanged, this),
                 resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.FrameResized, this._onFrameResized, this),
             ];

@@ -50,7 +50,7 @@ WebInspector.CSSProperty.parsePayload = function(ownerStyle, index, payload)
 
 WebInspector.CSSProperty.prototype = {
     /**
-     * @param {!WebInspector.CSSStyleModel.Edit} edit
+     * @param {!WebInspector.CSSModel.Edit} edit
      */
     rebase: function(edit)
     {

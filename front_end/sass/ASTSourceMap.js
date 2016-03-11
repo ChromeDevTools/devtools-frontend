@@ -20,7 +20,7 @@ WebInspector.ASTSourceMap = function(cssURL, models)
 
 /**
  * @param {!WebInspector.ASTService} astService
- * @param {!WebInspector.CSSStyleModel} cssModel
+ * @param {!WebInspector.CSSModel} cssModel
  * @param {!WebInspector.SourceMap} sourceMap
  * @return {!Promise<?WebInspector.ASTSourceMap>}
  */

@@ -87,10 +87,10 @@ WebInspector.NetworkProject = function(target, workspace, networkMapping)
         debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this);
         debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.FailedToParseScriptSource, this._parsedScriptSource, this);
     }
-    var cssModel = WebInspector.CSSStyleModel.fromTarget(target);
+    var cssModel = WebInspector.CSSModel.fromTarget(target);
     if (cssModel) {
-        cssModel.addEventListener(WebInspector.CSSStyleModel.Events.StyleSheetAdded, this._styleSheetAdded, this);
-        cssModel.addEventListener(WebInspector.CSSStyleModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this);
+        cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetAdded, this._styleSheetAdded, this);
+        cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this);
     }
     target.targetManager().addEventListener(WebInspector.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
 }
@@ -430,10 +430,10 @@ WebInspector.NetworkProject.prototype = {
             debuggerModel.removeEventListener(WebInspector.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this);
             debuggerModel.removeEventListener(WebInspector.DebuggerModel.Events.FailedToParseScriptSource, this._parsedScriptSource, this);
         }
-        var cssModel = WebInspector.CSSStyleModel.fromTarget(target);
+        var cssModel = WebInspector.CSSModel.fromTarget(target);
         if (cssModel) {
-            cssModel.removeEventListener(WebInspector.CSSStyleModel.Events.StyleSheetAdded, this._styleSheetAdded, this);
-            cssModel.removeEventListener(WebInspector.CSSStyleModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this);
+            cssModel.removeEventListener(WebInspector.CSSModel.Events.StyleSheetAdded, this._styleSheetAdded, this);
+            cssModel.removeEventListener(WebInspector.CSSModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this);
         }
         delete target[WebInspector.NetworkProject._networkProjectSymbol];
     },

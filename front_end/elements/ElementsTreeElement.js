@@ -121,7 +121,7 @@ WebInspector.ElementsTreeElement.canShowInlineText = function(node)
 WebInspector.ElementsTreeElement.populateForcedPseudoStateItems = function(subMenu, node)
 {
     const pseudoClasses = ["active", "hover", "focus", "visited"];
-    var forcedPseudoState = WebInspector.CSSStyleModel.fromNode(node).pseudoState(node);
+    var forcedPseudoState = WebInspector.CSSModel.fromNode(node).pseudoState(node);
     for (var i = 0; i < pseudoClasses.length; ++i) {
         var pseudoClassForced = forcedPseudoState.indexOf(pseudoClasses[i]) >= 0;
         subMenu.appendCheckboxItem(":" + pseudoClasses[i], setPseudoStateCallback.bind(null, pseudoClasses[i], !pseudoClassForced), pseudoClassForced, false);
@@ -133,7 +133,7 @@ WebInspector.ElementsTreeElement.populateForcedPseudoStateItems = function(subMe
      */
     function setPseudoStateCallback(pseudoState, enabled)
     {
-        WebInspector.CSSStyleModel.fromNode(node).forcePseudoState(node, pseudoState, enabled);
+        WebInspector.CSSModel.fromNode(node).forcePseudoState(node, pseudoState, enabled);
     }
 }
 

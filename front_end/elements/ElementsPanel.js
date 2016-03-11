@@ -1236,7 +1236,7 @@ WebInspector.ElementsPanel.PseudoStateMarkerDecorator.prototype = {
      */
     decorate: function(node)
     {
-        return { color: "orange", title: WebInspector.UIString("Element state: %s", ":" + WebInspector.CSSStyleModel.fromNode(node).pseudoState(node).join(", :")) };
+        return { color: "orange", title: WebInspector.UIString("Element state: %s", ":" + WebInspector.CSSModel.fromNode(node).pseudoState(node).join(", :")) };
     }
 }
 

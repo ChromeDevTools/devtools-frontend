@@ -31,7 +31,7 @@
 /**
  * @constructor
  * @implements {WebInspector.CSSSourceMapping}
- * @param {!WebInspector.CSSStyleModel} cssModel
+ * @param {!WebInspector.CSSModel} cssModel
  * @param {!WebInspector.Workspace} workspace
  * @param {!WebInspector.NetworkMapping} networkMapping
  */
@@ -46,7 +46,7 @@ WebInspector.StylesSourceMapping = function(cssModel, workspace, networkMapping)
 
     cssModel.target().resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._unbindAllUISourceCodes, this);
 
-    this._cssModel.addEventListener(WebInspector.CSSStyleModel.Events.StyleSheetChanged, this._styleSheetChanged, this);
+    this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetChanged, this._styleSheetChanged, this);
     /** @type {!Map<string, !Map<string, !Map<string, !WebInspector.CSSStyleSheetHeader>>>} */
     this._urlToHeadersByFrameId = new Map();
     /** @type {!Map.<!WebInspector.UISourceCode, !WebInspector.StyleFile>} */

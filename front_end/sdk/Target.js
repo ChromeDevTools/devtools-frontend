@@ -43,7 +43,7 @@ WebInspector.Target = function(targetManager, name, type, connection, parentTarg
 
     if (this._type === WebInspector.Target.Type.Page) {
         new WebInspector.DOMModel(this);
-        new WebInspector.CSSStyleModel(this);
+        new WebInspector.CSSModel(this);
     }
 
     /** @type {?WebInspector.WorkerManager} */

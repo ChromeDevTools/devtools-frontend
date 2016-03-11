@@ -4,7 +4,7 @@
 
 /**
  * @constructor
- * @param {!WebInspector.CSSStyleModel} cssModel
+ * @param {!WebInspector.CSSModel} cssModel
  * @param {?WebInspector.CSSRule} parentRule
  * @param {!CSSAgent.CSSStyle} payload
  * @param {!WebInspector.CSSStyleDeclaration.Type} type
@@ -26,7 +26,7 @@ WebInspector.CSSStyleDeclaration.Type = {
 
 WebInspector.CSSStyleDeclaration.prototype = {
     /**
-     * @param {!WebInspector.CSSStyleModel.Edit} edit
+     * @param {!WebInspector.CSSModel.Edit} edit
      */
     rebase: function(edit)
     {
@@ -167,7 +167,7 @@ WebInspector.CSSStyleDeclaration.prototype = {
     },
 
     /**
-     * @return {!WebInspector.CSSStyleModel}
+     * @return {!WebInspector.CSSModel}
      */
     cssModel: function()
     {

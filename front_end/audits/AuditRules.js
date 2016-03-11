@@ -374,7 +374,7 @@ WebInspector.AuditRules.UnusedCssRule.prototype = {
     doRun: function(target, requests, result, callback, progress)
     {
         var domModel = WebInspector.DOMModel.fromTarget(target);
-        var cssModel = WebInspector.CSSStyleModel.fromTarget(target);
+        var cssModel = WebInspector.CSSModel.fromTarget(target);
         if (!domModel || !cssModel) {
             callback(null);
             return;
@@ -856,7 +856,7 @@ WebInspector.AuditRules.ImageDimensionsRule.prototype = {
     doRun: function(target, requests, result, callback, progress)
     {
         var domModel = WebInspector.DOMModel.fromTarget(target);
-        var cssModel = WebInspector.CSSStyleModel.fromTarget(target);
+        var cssModel = WebInspector.CSSModel.fromTarget(target);
         if (!domModel || !cssModel) {
             callback(null);
             return;
@@ -1237,7 +1237,7 @@ WebInspector.AuditRules.CSSRuleBase.prototype = {
      */
     doRun: function(target, requests, result, callback, progress)
     {
-        var cssModel = WebInspector.CSSStyleModel.fromTarget(target);
+        var cssModel = WebInspector.CSSModel.fromTarget(target);
         if (!cssModel) {
             callback(null);
             return;

@@ -31,7 +31,7 @@
 /**
  * @constructor
  * @implements {WebInspector.CSSSourceMapping}
- * @param {!WebInspector.CSSStyleModel} cssModel
+ * @param {!WebInspector.CSSModel} cssModel
  * @param {!WebInspector.NetworkMapping} networkMapping
  * @param {!WebInspector.NetworkProject} networkProject
  */
@@ -41,7 +41,7 @@ WebInspector.SASSSourceMapping = function(cssModel, networkMapping, networkProje
     this._networkProject = networkProject;
     this._reset();
     WebInspector.moduleSetting("cssSourceMapsEnabled").addChangeListener(this._toggleSourceMapSupport, this);
-    this._cssModel.addEventListener(WebInspector.CSSStyleModel.Events.StyleSheetChanged, this._styleSheetChanged, this);
+    this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetChanged, this._styleSheetChanged, this);
     cssModel.target().resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._reset, this);
     this._networkMapping = networkMapping;
 }

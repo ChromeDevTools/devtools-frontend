@@ -392,7 +392,7 @@ WebInspector.AnimationModel.Animation.prototype = {
         else
             return;
 
-        var cssModel = WebInspector.CSSStyleModel.fromTarget(node.target());
+        var cssModel = WebInspector.CSSModel.fromTarget(node.target());
         if (!cssModel)
             return;
         cssModel.setEffectivePropertyValueForNode(node.id, animationPrefix + "duration", duration + "ms");

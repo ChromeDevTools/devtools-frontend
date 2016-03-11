@@ -5,7 +5,7 @@
 /**
  * @constructor
  * @implements {WebInspector.ContentProvider}
- * @param {!WebInspector.CSSStyleModel} cssModel
+ * @param {!WebInspector.CSSModel} cssModel
  * @param {!CSSAgent.CSSStyleSheetHeader} payload
  */
 WebInspector.CSSStyleSheetHeader = function(cssModel, payload)
@@ -44,7 +44,7 @@ WebInspector.CSSStyleSheetHeader.prototype = {
     },
 
     /**
-     * @return {!WebInspector.CSSStyleModel}
+     * @return {!WebInspector.CSSModel}
      */
     cssModel: function()
     {

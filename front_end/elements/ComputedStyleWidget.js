@@ -240,7 +240,7 @@ WebInspector.ComputedStyleWidget.prototype = {
     },
 
     /**
-     * @param {!WebInspector.CSSStyleModel} cssModel
+     * @param {!WebInspector.CSSModel} cssModel
      * @param {!WebInspector.CSSMatchedStyles} matchedStyles
      * @param {!WebInspector.DOMNode} node
      * @param {!TreeElement} rootTreeElement

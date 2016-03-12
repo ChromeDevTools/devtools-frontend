@@ -289,9 +289,9 @@ WebInspector.TimelineFlameChartDataProvider = function(model, frameModel, irMode
         padding: 4,
         height: 17,
         collapsible: true,
-        color: "#222",
+        color: WebInspector.themeSupport.patchColor("#222", WebInspector.ThemeSupport.ColorUsage.Foreground),
         font: this._font,
-        backgroundColor: "white",
+        backgroundColor: WebInspector.themeSupport.patchColor("white", WebInspector.ThemeSupport.ColorUsage.Background),
         nestingLevel: 0,
     };
 
@@ -300,8 +300,8 @@ WebInspector.TimelineFlameChartDataProvider = function(model, frameModel, irMode
         height: 17,
         collapsible: false,
         font: this._font,
-        color: "#222",
-        backgroundColor: "#bbb",
+        color: WebInspector.themeSupport.patchColor("#222", WebInspector.ThemeSupport.ColorUsage.Foreground),
+        backgroundColor: WebInspector.themeSupport.patchColor("#bbb", WebInspector.ThemeSupport.ColorUsage.Background),
         nestingLevel: 1,
     };
 }

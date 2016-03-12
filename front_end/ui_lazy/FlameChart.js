@@ -1318,12 +1318,13 @@ WebInspector.FlameChart.prototype = {
         var groupOffsets = this._groupOffsets;
         var lastGroupOffset = Array.prototype.peekLast.call(groupOffsets);
         var firstVisibleGroup = Math.max(groupOffsets.upperBound(top) - 1, 0);
+        var colorUsage = WebInspector.ThemeSupport.ColorUsage;
 
         context.save();
         context.scale(ratio, ratio);
         context.translate(0, -top);
 
-        context.fillStyle = "#eee";
+        context.fillStyle = WebInspector.themeSupport.patchColor("#eee", colorUsage.Background);
         forEachGroup((offset, index, group) => {
             var paddingHeight = group.style.padding;
             if (paddingHeight < 5)
@@ -1333,7 +1334,7 @@ WebInspector.FlameChart.prototype = {
         if (groups.length && lastGroupOffset < top + height)
             context.fillRect(0, lastGroupOffset + 2, width, top + height - lastGroupOffset)
 
-        context.strokeStyle = "#ddd";
+        context.strokeStyle = WebInspector.themeSupport.patchColor("#ddd", colorUsage.Background);
         context.beginPath();
         forEachGroup((offset, index, group, isFirst) => {
             if (isFirst || group.style.padding < 4)
@@ -1344,7 +1345,7 @@ WebInspector.FlameChart.prototype = {
         hLine(lastGroupOffset + 1.5);
         context.stroke();
 
-        context.strokeStyle = "#bbb";
+        context.strokeStyle = WebInspector.themeSupport.patchColor("#bbb", colorUsage.Background);
         context.beginPath();
         forEachGroup((offset, index, group, isFirst) => {
             if (isFirst || group.style.padding < 4)
@@ -1371,14 +1372,24 @@ WebInspector.FlameChart.prototype = {
         var headerLeftPadding = 6;
         var arrowSide = 8;
         var expansionArrowX = headerLeftPadding + arrowSide / 2;
-        context.font = "11px " + WebInspector.fontFamily();
 
         context.save();
-        context.fillStyle = "rgba(255, 255, 255, 0.5)";
-        forEachGroup(drawBackground.bind(this));
+        var titleBackgroundColor = WebInspector.themeSupport.patchColor("rgba(255, 255, 255, 0.5)", colorUsage.Background);
+        forEachGroup((offset, index, group) => {
+            context.font = group.style.font;
+            if (group.style.collapsible && !group.expanded) {
+                var vPadding = 2;
+                var hPadding = 3;
+                var width = this._measureWidth(context, group.name) + 1.5 * arrowSide + 2 * hPadding;
+                context.fillStyle = titleBackgroundColor;
+                context.fillRect(headerLeftPadding - hPadding, offset + vPadding, width, barHeight - 2 * vPadding);
+            }
+            context.fillStyle = group.style.color;
+            context.fillText(group.name, Math.floor(expansionArrowX + arrowSide), offset + textBaseHeight);
+        });
         context.restore();
 
-        context.fillStyle = "#6e6e6e";
+        context.fillStyle = WebInspector.themeSupport.patchColor("#6e6e6e", colorUsage.Foreground);
         context.beginPath();
         forEachGroup((offset, index, group) => {
             if (group.style.collapsible)
@@ -1386,13 +1397,7 @@ WebInspector.FlameChart.prototype = {
         });
         context.fill();
 
-        forEachGroup((offset, index, group) => {
-            context.fillStyle = group.style.color;
-            context.font = group.style.font;
-            context.fillText(group.name, Math.floor(expansionArrowX + arrowSide), offset + textBaseHeight);
-        });
-
-        context.strokeStyle = "#ddd";
+        context.strokeStyle = WebInspector.themeSupport.patchColor("#ddd", colorUsage.Background);
         context.beginPath();
         forEachGroup((offset, index, group) => {
             if (group.expanded)
@@ -1409,22 +1414,6 @@ WebInspector.FlameChart.prototype = {
         {
             context.moveTo(0, y);
             context.lineTo(width, y);
-        }
-
-        /**
-         * @param {number} offset
-         * @param {number} index
-         * @param {!WebInspector.FlameChart.Group} group
-         * @this {WebInspector.FlameChart}
-         */
-        function drawBackground(offset, index, group)
-        {
-            if (!group.style.collapsible || group.expanded)
-                return;
-            var vPadding = 2;
-            var hPadding = 3;
-            var width = this._measureWidth(context, group.name) + 1.5 * arrowSide + 2 * hPadding;
-            context.fillRect(headerLeftPadding - hPadding, offset + vPadding, width, barHeight - 2 * vPadding);
         }
 
         /**

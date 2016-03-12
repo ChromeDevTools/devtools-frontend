@@ -1596,6 +1596,16 @@ WebInspector.ThemeSupport = function(setting)
     this._setting = setting;
 }
 
+/**
+ * @enum {number}
+ */
+WebInspector.ThemeSupport.ColorUsage = {
+    Unknown: 0,
+    Foreground: 1 << 0,
+    Background: 1 << 1,
+    Selection: 1 << 2,
+};
+
 WebInspector.ThemeSupport.prototype = {
     /**
      * @return {boolean}
@@ -1732,15 +1742,20 @@ WebInspector.ThemeSupport.prototype = {
         }
 
         isSelection = isSelection || selectorText.indexOf("selected") !== -1 || selectorText.indexOf(".selection") !== -1;
-        var isBackground = name.indexOf("background") === 0 || name.indexOf("border") === 0;
-        var isForeground = name.indexOf("background") === -1;
+        var colorUsage = WebInspector.ThemeSupport.ColorUsage.Unknown;
+        if (isSelection)
+            colorUsage |= WebInspector.ThemeSupport.ColorUsage.Selection;
+        if (name.indexOf("background") === 0 || name.indexOf("border") === 0)
+            colorUsage |= WebInspector.ThemeSupport.ColorUsage.Background;
+        if (name.indexOf("background") === -1)
+            colorUsage |= WebInspector.ThemeSupport.ColorUsage.Foreground;
 
         var colorRegex = /((?:rgb|hsl)a?\([^)]+\)|#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|\b\w+\b(?!-))/g;
         output.push(name);
         output.push(":");
         var items = value.replace(colorRegex, "\0$1\0").split("\0");
         for (var i = 0; i < items.length; ++i)
-            output.push(this._patchColor(items[i], isSelection, isBackground, isForeground));
+            output.push(this.patchColor(items[i], colorUsage));
         if (style.getPropertyPriority(name))
             output.push(" !important");
         output.push(";");
@@ -1748,19 +1763,17 @@ WebInspector.ThemeSupport.prototype = {
 
     /**
      * @param {string} text
-     * @param {boolean} isSelection
-     * @param {boolean} isBackground
-     * @param {boolean} isForeground
+     * @param {!WebInspector.ThemeSupport.ColorUsage} colorUsage
      * @return {string}
      */
-    _patchColor: function(text, isSelection, isBackground, isForeground)
+    patchColor: function(text, colorUsage)
     {
         var color = WebInspector.Color.parse(text);
         if (!color)
             return text;
 
         var hsla = color.hsla();
-        this._patchHSLA(hsla, isSelection, isBackground, isForeground);
+        this._patchHSLA(hsla, colorUsage);
         var rgba = [];
         WebInspector.Color.hsl2rgb(hsla, rgba);
         var outColor = new WebInspector.Color(rgba, color.format());
@@ -1772,11 +1785,9 @@ WebInspector.ThemeSupport.prototype = {
 
     /**
      * @param {!Array<number>} hsla
-     * @param {boolean} isSelection
-     * @param {boolean} isBackground
-     * @param {boolean} isForeground
+     * @param {!WebInspector.ThemeSupport.ColorUsage} colorUsage
      */
-    _patchHSLA: function(hsla, isSelection, isBackground, isForeground)
+    _patchHSLA: function(hsla, colorUsage)
     {
         var hue = hsla[0];
         var sat = hsla[1];
@@ -1785,10 +1796,10 @@ WebInspector.ThemeSupport.prototype = {
 
         switch (this._themeName) {
         case "dark":
-            if (isSelection)
+            if (colorUsage & WebInspector.ThemeSupport.ColorUsage.Selection)
                 hue = (hue + 0.5) % 1;
-            var minCap = isBackground ? 0.14 : 0;
-            var maxCap = isForeground ? 0.9 : 1;
+            var minCap = colorUsage & WebInspector.ThemeSupport.ColorUsage.Background ? 0.14 : 0;
+            var maxCap = colorUsage & WebInspector.ThemeSupport.ColorUsage.Foreground ? 0.9 : 1;
             lit = 1 - lit;
             if (lit < minCap * 2)
                 lit = minCap + lit / 2;

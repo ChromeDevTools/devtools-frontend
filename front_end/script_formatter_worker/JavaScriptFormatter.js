@@ -31,7 +31,7 @@
 /**
  * @constructor
  * @param {string} content
- * @param {!FormatterWorker.JavaScriptFormattedContentBuilder} builder
+ * @param {!FormatterWorker.FormattedContentBuilder} builder
  */
 FormatterWorker.JavaScriptFormatter = function(content, builder)
 {
@@ -56,7 +56,9 @@ FormatterWorker.JavaScriptFormatter.prototype = {
     {
         for (var i = 0; i < format.length; ++i) {
             if (format[i] === "s")
-                this._builder.addSpace();
+                this._builder.addSoftSpace();
+            else if (format[i] === "S")
+                this._builder.addHardSpace();
             else if (format[i] === "n")
                 this._builder.addNewLine();
             else if (format[i] === ">")
@@ -182,7 +184,7 @@ FormatterWorker.JavaScriptFormatter.prototype = {
                 var declarations = /** @type {!Array.<!ESTree.Node>} */(node.declarations);
                 for (var i = 0; i < declarations.length; ++i)
                     allVariablesInitialized = allVariablesInitialized && !!declarations[i].init;
-                return !this._inForLoopHeader(node) && allVariablesInitialized ? "nssts" : "ts";
+                return !this._inForLoopHeader(node) && allVariablesInitialized ? "nSSts" : "ts";
             }
         } else if (node.type === "BlockStatement") {
             if (AT.punctuator(token, "{"))
@@ -297,15 +299,13 @@ FormatterWorker.JavaScriptFormatter.prototype = {
 
 /**
  * @constructor
- * @param {string} content
  * @param {!{original: !Array.<number>, formatted: !Array.<number>}} mapping
  * @param {number} originalOffset
  * @param {number} formattedOffset
  * @param {string} indentString
  */
-FormatterWorker.JavaScriptFormattedContentBuilder = function(content, mapping, originalOffset, formattedOffset, indentString)
+FormatterWorker.FormattedContentBuilder = function(mapping, originalOffset, formattedOffset, indentString)
 {
-    this._originalContent = content;
     this._originalOffset = originalOffset;
     this._lastOriginalPosition = 0;
 
@@ -319,10 +319,15 @@ FormatterWorker.JavaScriptFormattedContentBuilder = function(content, mapping, o
     this._lineNumber = 0;
     this._nestingLevel = 0;
     this._indentString = indentString;
-    this._cachedIndents = {};
+    /** @type {!Map<number, string>} */
+    this._cachedIndents = new Map();
+
+    this._newLines = 0;
+    this._softSpace = false;
+    this._hardSpaces = 0;
 }
 
-FormatterWorker.JavaScriptFormattedContentBuilder.prototype = {
+FormatterWorker.FormattedContentBuilder.prototype = {
     /**
      * @param {string} token
      * @param {number} startPosition
@@ -331,41 +336,42 @@ FormatterWorker.JavaScriptFormattedContentBuilder.prototype = {
      */
     addToken: function(token, startPosition, startLine, endLine)
     {
-        while (this._lineNumber < startLine) {
-            this._addText("\n");
-            this._addIndent();
-            this._needNewLine = false;
-            this._lineNumber += 1;
-        }
-
-        if (this._needNewLine) {
-            this._addText("\n");
-            this._addIndent();
-            this._needNewLine = false;
-        }
+        if (this._lineNumber < startLine)
+            this._newLines = Math.max(this._newLines, startLine - this._lineNumber);
 
         var last = this._formattedContent.peekLast();
         if (last && /\w/.test(last[last.length - 1]) && /\w/.test(token))
-            this.addSpace();
+            this.addSoftSpace();
 
+        this._appendFormatting();
+
+        // Insert token.
         this._addMappingIfNeeded(startPosition);
         this._addText(token);
         this._lineNumber = endLine;
     },
 
-    addSpace: function()
+    addSoftSpace: function()
     {
-        if (this._needNewLine) {
-            this._addText("\n");
-            this._addIndent();
-            this._needNewLine = false;
-        }
-        this._addText(" ");
+        if (!this._hardSpaces)
+            this._softSpace = true;
     },
 
-    addNewLine: function()
+    addHardSpace: function()
     {
-        this._needNewLine = true;
+        this._softSpace = false;
+        ++this._hardSpaces;
+    },
+
+    /**
+     * @param {boolean=} noSquash
+     */
+    addNewLine: function(noSquash)
+    {
+        if (noSquash)
+            ++this._newLines;
+        else
+            this._newLines = this._newLines || 1;
     },
 
     increaseNestingLevel: function()
@@ -375,7 +381,26 @@ FormatterWorker.JavaScriptFormattedContentBuilder.prototype = {
 
     decreaseNestingLevel: function()
     {
-        this._nestingLevel -= 1;
+        if (this._nestingLevel > 0)
+            this._nestingLevel -= 1;
+    },
+
+    _appendFormatting: function()
+    {
+        if (this._newLines) {
+            for (var i = 0; i < this._newLines; ++i)
+                this._addText("\n");
+            this._addText(this._indent());
+        } else if (this._softSpace) {
+            this._addText(" ");
+        }
+        if (this._hardSpaces) {
+            for (var i = 0; i < this._hardSpaces; ++i)
+                this._addText(" ");
+        }
+        this._newLines = 0;
+        this._softSpace = false;
+        this._hardSpaces = 0;
     },
 
     /**
@@ -383,24 +408,26 @@ FormatterWorker.JavaScriptFormattedContentBuilder.prototype = {
      */
     content: function()
     {
-        return this._formattedContent.join("") + (this._needNewLine ? "\n" : "");
+        return this._formattedContent.join("") + (this._newLines ? "\n" : "");
     },
 
-    _addIndent: function()
+    /**
+     * @return {string}
+     */
+    _indent: function()
     {
-        if (this._cachedIndents[this._nestingLevel]) {
-            this._addText(this._cachedIndents[this._nestingLevel]);
-            return;
-        }
+        var cachedValue = this._cachedIndents.get(this._nestingLevel)
+        if (cachedValue)
+            return cachedValue;
 
         var fullIndent = "";
         for (var i = 0; i < this._nestingLevel; ++i)
             fullIndent += this._indentString;
-        this._addText(fullIndent);
 
         // Cache a maximum of 20 nesting level indents.
         if (this._nestingLevel <= 20)
-            this._cachedIndents[this._nestingLevel] = fullIndent;
+            this._cachedIndents.set(this._nestingLevel, fullIndent);
+        return fullIndent;
     },
 
     /**

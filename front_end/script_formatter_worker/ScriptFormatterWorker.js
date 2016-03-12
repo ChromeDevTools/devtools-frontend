@@ -363,7 +363,7 @@ FormatterWorker._formatScript = function(content, mapping, offset, formattedOffs
 {
     var formattedContent;
     try {
-        var builder = new FormatterWorker.JavaScriptFormattedContentBuilder(content, mapping, offset, formattedOffset, indentString);
+        var builder = new FormatterWorker.FormattedContentBuilder(mapping, offset, formattedOffset, indentString);
         var formatter = new FormatterWorker.JavaScriptFormatter(content, builder);
         formatter.format();
         formattedContent = builder.content();
@@ -386,7 +386,7 @@ FormatterWorker._formatCSS = function(content, mapping, offset, formattedOffset,
 {
     var formattedContent;
     try {
-        var builder = new FormatterWorker.CSSFormattedContentBuilder(content, mapping, offset, formattedOffset, indentString);
+        var builder = new FormatterWorker.FormattedContentBuilder(mapping, offset, formattedOffset, indentString);
         var formatter = new FormatterWorker.CSSFormatter(content, builder);
         formatter.format();
         formattedContent = builder.content();

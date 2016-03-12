@@ -31,7 +31,7 @@
 /**
  * @constructor
  * @param {string} content
- * @param {!FormatterWorker.CSSFormattedContentBuilder} builder
+ * @param {!FormatterWorker.FormattedContentBuilder} builder
  */
 FormatterWorker.CSSFormatter = function(content, builder)
 {
@@ -52,7 +52,6 @@ FormatterWorker.CSSFormatter.prototype = {
             var line = lines[i];
             tokenize(line, this._tokenCallback.bind(this, i));
         }
-        this._builder.flushNewLines(true);
     },
 
     /**
@@ -71,7 +70,7 @@ FormatterWorker.CSSFormatter.prototype = {
         var isWhitespace = /^\s+$/.test(token);
         if (isWhitespace) {
             if (!this._state.eatWhitespace)
-                this._builder.addSpace();
+                this._builder.addSoftSpace();
             return;
         }
         this._state.eatWhitespace = false;
@@ -80,10 +79,11 @@ FormatterWorker.CSSFormatter.prototype = {
 
         if (token !== "}") {
             if (this._state.afterClosingBrace)
-                this._builder.addNewLine();
+                this._builder.addNewLine(true);
             this._state.afterClosingBrace = false;
         }
         var startPosition = (startLine ? this._lineEndings[startLine - 1] : 0) + startColumn;
+        var endLine = startLine + token.lineCount() - 1;
         if (token === "}") {
             if (this._state.inPropertyValue)
                 this._builder.addNewLine();
@@ -91,21 +91,21 @@ FormatterWorker.CSSFormatter.prototype = {
             this._state.afterClosingBrace = true;
             this._state.inPropertyValue = false;
         } else if (token === ":" && !this._state.inPropertyValue && this._state.seenProperty) {
-            this._builder.addToken(token, startPosition, startLine, startColumn);
-            this._builder.addSpace();
+            this._builder.addToken(token, startPosition, startLine, endLine);
+            this._builder.addSoftSpace();
             this._state.eatWhitespace = true;
             this._state.inPropertyValue = true;
             this._state.seenProperty = false;
             return;
         } else if (token === "{") {
-            this._builder.addSpace();
-            this._builder.addToken(token, startPosition, startLine, startColumn);
+            this._builder.addSoftSpace();
+            this._builder.addToken(token, startPosition, startLine, endLine);
             this._builder.addNewLine();
             this._builder.increaseNestingLevel();
             return;
         }
 
-        this._builder.addToken(token, startPosition, startLine, startColumn);
+        this._builder.addToken(token, startPosition, startLine, endLine);
 
         if (type === "comment" && !this._state.inPropertyValue && !this._state.seenProperty)
             this._builder.addNewLine();
@@ -115,162 +115,5 @@ FormatterWorker.CSSFormatter.prototype = {
         } else if (token === "}") {
             this._builder.addNewLine();
         }
-    }
-}
-
-/**
- * @constructor
- * @param {string} content
- * @param {!{original: !Array.<number>, formatted: !Array.<number>}} mapping
- * @param {number} originalOffset
- * @param {number} formattedOffset
- * @param {string} indentString
- */
-FormatterWorker.CSSFormattedContentBuilder = function(content, mapping, originalOffset, formattedOffset, indentString)
-{
-    this._originalContent = content;
-    this._originalOffset = originalOffset;
-    this._lastOriginalPosition = 0;
-
-    this._formattedContent = [];
-    this._formattedContentLength = 0;
-    this._formattedOffset = formattedOffset;
-    this._lastFormattedPosition = 0;
-
-    this._mapping = mapping;
-
-    this._lineNumber = 0;
-    this._nestingLevel = 0;
-    this._needNewLines = 0;
-    this._atLineStart = true;
-    this._indentString = indentString;
-    this._cachedIndents = {};
-}
-
-FormatterWorker.CSSFormattedContentBuilder.prototype = {
-    /**
-     * @param {string} token
-     * @param {number} startPosition
-     * @param {number} startLine
-     * @param {number} startColumn
-     */
-    addToken: function(token, startPosition, startLine, startColumn)
-    {
-        if ((this._isWhitespaceRun || this._atLineStart) && /^\s+$/.test(token))
-            return;
-
-        if (this._isWhitespaceRun && this._lineNumber === startLine && !this._needNewLines)
-            this._addText(" ");
-
-        this._isWhitespaceRun = false;
-        this._atLineStart = false;
-
-        while (this._lineNumber < startLine) {
-            this._addText("\n");
-            this._addIndent();
-            this._needNewLines = 0;
-            this._lineNumber += 1;
-            this._atLineStart = true;
-        }
-
-        if (this._needNewLines) {
-            this.flushNewLines();
-            this._addIndent();
-            this._atLineStart = true;
-        }
-
-        this._addMappingIfNeeded(startPosition);
-        this._addText(token);
-        this._lineNumber = startLine;
-    },
-
-    addSpace: function()
-    {
-        if (this._isWhitespaceRun)
-            return;
-        this._isWhitespaceRun = true;
-    },
-
-    addNewLine: function()
-    {
-        ++this._needNewLines;
-    },
-
-    /**
-     * @param {boolean=} atLeastOne
-     */
-    flushNewLines: function(atLeastOne)
-    {
-        var newLineCount = atLeastOne && !this._needNewLines ? 1 : this._needNewLines;
-        if (newLineCount)
-            this._isWhitespaceRun = false;
-        for (var i = 0; i < newLineCount; ++i)
-            this._addText("\n");
-        this._needNewLines = 0;
-    },
-
-    increaseNestingLevel: function()
-    {
-        this._nestingLevel += 1;
-    },
-
-    /**
-     * @param {boolean=} addNewline
-     */
-    decreaseNestingLevel: function(addNewline)
-    {
-        if (this._nestingLevel)
-            this._nestingLevel -= 1;
-        if (addNewline)
-            this.addNewLine();
-    },
-
-    /**
-     * @return {string}
-     */
-    content: function()
-    {
-        return this._formattedContent.join("");
-    },
-
-    _addIndent: function()
-    {
-        if (this._cachedIndents[this._nestingLevel]) {
-            this._addText(this._cachedIndents[this._nestingLevel]);
-            return;
-        }
-
-        var fullIndent = "";
-        for (var i = 0; i < this._nestingLevel; ++i)
-            fullIndent += this._indentString;
-        this._addText(fullIndent);
-
-        // Cache a maximum of 20 nesting level indents.
-        if (this._nestingLevel <= 20)
-            this._cachedIndents[this._nestingLevel] = fullIndent;
-    },
-
-    /**
-     * @param {string} text
-     */
-    _addText: function(text)
-    {
-        if (!text)
-            return;
-        this._formattedContent.push(text);
-        this._formattedContentLength += text.length;
-    },
-
-    /**
-     * @param {number} originalPosition
-     */
-    _addMappingIfNeeded: function(originalPosition)
-    {
-        if (originalPosition - this._lastOriginalPosition === this._formattedContentLength - this._lastFormattedPosition)
-            return;
-        this._mapping.original.push(this._originalOffset + originalPosition);
-        this._lastOriginalPosition = originalPosition;
-        this._mapping.formatted.push(this._formattedOffset + this._formattedContentLength);
-        this._lastFormattedPosition = this._formattedContentLength;
     }
 }

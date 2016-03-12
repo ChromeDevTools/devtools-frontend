@@ -304,10 +304,21 @@ String.hashCode = function(string)
 {
     if (!string)
         return 0;
-    var result = 0;
-    for (var i = 0; i < string.length; ++i)
-        result = (result * 31 + string.charCodeAt(i)) | 0;
-    return Math.abs(result);
+    // Hash algorithm for substrings is described in "Über die Komplexität der Multiplikation in
+    // eingeschränkten Branchingprogrammmodellen" by Woelfe.
+    // http://opendatastructures.org/versions/edition-0.1d/ods-java/node33.html#SECTION00832000000000000000
+    var p = ((1 << 30) * 4 - 5); // prime: 2^32 - 5
+    var z = 0x5033d967;          // 32 bits from random.org
+    var z2 = 0x59d2f15d;         // random odd 32 bit number
+    var s = 0;
+    var zi = 1;
+    for (var i = 0; i < string.length; i++) {
+        var xi = string.charCodeAt(i) * z2;
+        s = (s + zi * xi) % p;
+        zi = (zi * z) % p;
+    }
+    s = (s + zi * (p - 1)) % p;
+    return Math.abs(s|0);
 }
 
 /**

@@ -1,28 +1,34 @@
 .CodeMirror {
-  line-height: 1.2em !important;
-  background-color: transparent !important;
+    line-height: 1.2em !important;
+    background-color: transparent !important;
 }
 
 .CodeMirror-linewidget {
-  overflow: visible !important;
+    overflow: visible !important;
+}
+
+.CodeMirror-gutter-performance {
+    width: 74px;
+    background-color: white;
+    margin-left: 3px;
 }
 
 .CodeMirror .source-frame-eval-expression {
-  outline: 0;
-  border: 1px solid rgb(163, 41, 34);
-  border-left-width: 0;
-  border-right-width: 0;
-  background-color: rgb(255, 255, 194);
+    outline: 0;
+    border: 1px solid rgb(163, 41, 34);
+    border-left-width: 0;
+    border-right-width: 0;
+    background-color: rgb(255, 255, 194);
 }
 
 .CodeMirror .source-frame-eval-expression-end {
-  border-right-width: 1px;
-  margin-right: -1px;
+    border-right-width: 1px;
+    margin-right: -1px;
 }
 
 .CodeMirror .source-frame-eval-expression-start {
-  border-left-width: 1px;
-  margin-left: -1px;
+    border-left-width: 1px;
+    margin-left: -1px;
 }
 
 .CodeMirror-readonly .CodeMirror-cursor {
@@ -30,23 +36,23 @@
 }
 
 .CodeMirror .CodeMirror-gutters {
-  border-right: 1px solid rgb(187, 187, 187);
-  background-color: #eee;
+    border-right: 1px solid rgb(187, 187, 187);
+    background-color: #eee;
 }
 
 .CodeMirror .CodeMirror-linenumber {
-  color: rgb(128, 128, 128);
+    color: rgb(128, 128, 128);
 }
 
 .CodeMirror-linenumber {
-  min-width: 22px !important;
+    min-width: 22px !important;
 }
 
 .cm-highlight {
-  -webkit-animation: fadeout 2s 0s;
+    -webkit-animation: fadeout 2s 0s;
 }
 .-theme-with-dark-background .cm-highlight {
-  -webkit-animation: fadeout-dark 2s 0s;
+    -webkit-animation: fadeout-dark 2s 0s;
 }
 @-webkit-keyframes fadeout {
     from {background-color: rgb(255, 255, 120); }
@@ -58,7 +64,7 @@
 }
 
 .cm-highlight.cm-execution-line {
-  -webkit-animation: fadeout-execution-line 1s 0s;
+    -webkit-animation: fadeout-execution-line 1s 0s;
 }
 @-webkit-keyframes fadeout-execution-line {
     from {background-color: rgb(121, 141, 254); }
@@ -66,35 +72,35 @@
 }
 
 .cm-breakpoint .CodeMirror-linenumber {
-  color: white;
-  border-width: 1px 4px 1px 1px !important;
-  -webkit-border-image: url(Images/breakpoint.png) 1 4 1 1;
-  margin: 0 0 0 3px !important;
-  padding-right: 3px;
-  padding-left: 1px;
-  height: 11px;
-  line-height: 12px !important;
+    color: white;
+    border-width: 1px 4px 1px 1px !important;
+    -webkit-border-image: url(Images/breakpoint.png) 1 4 1 1;
+    margin: 0 0 0 3px !important;
+    padding-right: 3px;
+    padding-left: 1px;
+    height: 11px;
+    line-height: 12px !important;
 }
 
 .cm-line-without-source-mapping {
-  background-color: #fafafa;
+    background-color: #fafafa;
 }
 
 .cm-breakpoint.cm-breakpoint-conditional .CodeMirror-linenumber {
-  -webkit-border-image: url(Images/breakpointConditional.png) 1 4 1 1;
+    -webkit-border-image: url(Images/breakpointConditional.png) 1 4 1 1;
 }
 
 @media (-webkit-min-device-pixel-ratio: 1.5) {
 .cm-breakpoint .CodeMirror-linenumber {
-  -webkit-border-image: url(Images/breakpoint_2x.png) 2 8 2 2;
+    -webkit-border-image: url(Images/breakpoint_2x.png) 2 8 2 2;
 }
 .cm-breakpoint.cm-breakpoint-conditional .CodeMirror-linenumber {
-  -webkit-border-image: url(Images/breakpointConditional_2x.png) 2 8 2 2;
+    -webkit-border-image: url(Images/breakpointConditional_2x.png) 2 8 2 2;
 }
 } /* media */
 
 .cm-breakpoint-disabled .CodeMirror-linenumber {
-  opacity: 0.5;
+    opacity: 0.5;
 }
 
 .breakpoints-deactivated .cm-breakpoint .CodeMirror-linenumber {
@@ -106,12 +112,12 @@
 }
 
 .CodeMirror-matchingbracket {
-  border-bottom: 1px solid black;
-  color: #222 !important;
+    border-bottom: 1px solid black;
+    color: #222 !important;
 }
 
 .CodeMirror-nonmatchingbracket {
-  color: #222 !important;
+    color: #222 !important;
 }
 
 .cm-whitespace::before {
@@ -242,6 +248,11 @@
     color: #eee;
 }
 
+.CodeMirror .text-editor-line-marker-performance {
+    text-align: right;
+    padding-right: 3px;
+}
+
 .CodeMirror .text-editor-line-decoration {
     position: absolute;
 }
@@ -309,9 +320,9 @@
 }
 
 .CodeMirror .text-editor-line-decoration-wave {
-  background-image: url(Images/errorWave.png);
-  background-repeat: repeat-x;
-  background-size: contain;
+    background-image: url(Images/errorWave.png);
+    background-repeat: repeat-x;
+    background-size: contain;
 }
 
 @media (-webkit-min-device-pixel-ratio: 1.5) {
@@ -322,11 +333,11 @@
 
 /** @see crbug.com/358161 */
 .CodeMirror .CodeMirror-vscrollbar, .CodeMirror .CodeMirror-hscrollbar {
-  transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 .CodeMirror .CodeMirror-activeline-background {
-  background-color: transparent;
+    background-color: transparent;
 }
 
 .cm-trailing-whitespace {

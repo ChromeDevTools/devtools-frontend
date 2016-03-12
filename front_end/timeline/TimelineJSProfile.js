@@ -6,15 +6,12 @@
 WebInspector.TimelineJSProfileProcessor = { };
 
 /**
- * @param {!ProfilerAgent.CPUProfile} jsProfile
+ * @param {!WebInspector.CPUProfileDataModel} jsProfileModel
  * @param {!WebInspector.TracingModel.Thread} thread
  * @return {!Array<!WebInspector.TracingModel.Event>}
  */
-WebInspector.TimelineJSProfileProcessor.generateTracingEventsFromCpuProfile = function(jsProfile, thread)
+WebInspector.TimelineJSProfileProcessor.generateTracingEventsFromCpuProfile = function(jsProfileModel, thread)
 {
-    if (!jsProfile.samples)
-        return [];
-    var jsProfileModel = new WebInspector.CPUProfileDataModel(jsProfile);
     var idleNode = jsProfileModel.idleNode;
     var programNode = jsProfileModel.programNode;
     var gcNode = jsProfileModel.gcNode;

@@ -729,8 +729,11 @@ WebInspector.TimelineModel.prototype = {
             var cpuProfileEvent = events.peekLast();
             if (cpuProfileEvent && cpuProfileEvent.name === WebInspector.TimelineModel.RecordType.CpuProfile) {
                 var cpuProfile = cpuProfileEvent.args["data"]["cpuProfile"];
-                if (cpuProfile)
-                    jsSamples = WebInspector.TimelineJSProfileProcessor.generateTracingEventsFromCpuProfile(cpuProfile, thread);
+                if (cpuProfile) {
+                    var jsProfileModel = new WebInspector.CPUProfileDataModel(cpuProfile);
+                    this._lineLevelCPUProfile.appendCPUProfile(jsProfileModel);
+                    jsSamples = WebInspector.TimelineJSProfileProcessor.generateTracingEventsFromCpuProfile(jsProfileModel, thread);
+                }
             }
         }
 
@@ -1061,6 +1064,7 @@ WebInspector.TimelineModel.prototype = {
 
     reset: function()
     {
+        this._lineLevelCPUProfile = new WebInspector.TimelineModel.LineLevelProfile();
         this._virtualThreads = [];
         /** @type {!Array.<!WebInspector.TracingModel.Event>} */
         this._mainThreadEvents = [];
@@ -1082,6 +1086,14 @@ WebInspector.TimelineModel.prototype = {
         this._mainFrameNodeId = null;
         this._minimumRecordTime = 0;
         this._maximumRecordTime = 0;
+    },
+
+    /**
+     * @return {!WebInspector.TimelineModel.LineLevelProfile}
+     */
+    lineLevelCPUProfile: function()
+    {
+        return this._lineLevelCPUProfile;
     },
 
     /**
@@ -1721,5 +1733,53 @@ WebInspector.TimelineAsyncEventTracker.prototype = {
             initiatorMap.set(id, event);
         else
             event.initiator = initiatorMap.get(id) || null;
+    }
+}
+
+/**
+ * @constructor
+ */
+WebInspector.TimelineModel.LineLevelProfile = function()
+{
+    /** @type {!Map<string, !Map<number, number>>} */
+    this._files = new Map();
+}
+
+WebInspector.TimelineModel.LineLevelProfile.prototype = {
+    /**
+     * @param {!WebInspector.CPUProfileDataModel} profile
+     */
+    appendCPUProfile: function(profile)
+    {
+        var nodesToGo = [profile.profileHead];
+        var sampleDuration = (profile.profileEndTime - profile.profileStartTime) / profile.totalHitCount;
+        while (nodesToGo.length) {
+            var nodes = nodesToGo.pop().children;
+            for (var i = 0; i < nodes.length; ++i) {
+                var node = nodes[i];
+                nodesToGo.push(node);
+                if (!node.url || !node.positionTicks)
+                    continue;
+                var fileInfo = this._files.get(node.url);
+                if (!fileInfo) {
+                    fileInfo = new Map();
+                    this._files.set(node.url, fileInfo);
+                }
+                for (var j = 0; j < node.positionTicks.length; ++j) {
+                    var lineInfo = node.positionTicks[j];
+                    var line = lineInfo.line - 1;
+                    var time = lineInfo.ticks * sampleDuration;
+                    fileInfo.set(line, (fileInfo.get(line) || 0) + time);
+                }
+            }
+        }
+    },
+
+    /**
+     * @return {!Map<string, !Map<number, number>>}
+     */
+    files: function()
+    {
+        return this._files;
     }
 }

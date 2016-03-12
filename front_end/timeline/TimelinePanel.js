@@ -679,6 +679,7 @@ WebInspector.TimelinePanel.prototype = {
     {
         this._tracingModel.reset();
         this._model.reset();
+        this._resetLineLevelCPUProfile();
         this._showRecordingHelpMessage();
 
         this.requestWindowTimes(0, Infinity);
@@ -806,6 +807,7 @@ WebInspector.TimelinePanel.prototype = {
         this._frameModel.addTraceEvents(this._model.target(), this._model.inspectedTargetEvents(), this._model.sessionId() || "");
         if (this._irModel)
             this._irModel.populate(this._model);
+        this._setLineLevelCPUProfile(this._model.lineLevelCPUProfile());
         if (this._statusPane)
             this._statusPane.hide();
         delete this._statusPane;
@@ -1259,6 +1261,28 @@ WebInspector.TimelinePanel.prototype = {
             rightTime = Math.min(rightTime + 0.05 * span, this._tracingModel.maximumRecordTime());
         }
         this.requestWindowTimes(leftTime, rightTime);
+    },
+
+    /**
+     * @param {!WebInspector.TimelineModel.LineLevelProfile} profile
+     */
+    _setLineLevelCPUProfile: function(profile)
+    {
+        for (var fileInfo of profile.files()) {
+            var uiSourceCode = WebInspector.workspace.uiSourceCodeForURL(/** @type {string} */ (fileInfo[0]));
+            if (!uiSourceCode)
+                continue;
+            for (var lineInfo of fileInfo[1]) {
+                var line = lineInfo[0];
+                var time = lineInfo[1];
+                uiSourceCode.addLineDecoration(line, WebInspector.TimelineUIUtils.PerformanceLineDecorator.type, time);
+            }
+        }
+    },
+
+    _resetLineLevelCPUProfile: function()
+    {
+        WebInspector.workspace.uiSourceCodes().forEach(uiSourceCode => uiSourceCode.removeAllLineDecorations(WebInspector.TimelineUIUtils.PerformanceLineDecorator.type));
     },
 
     __proto__: WebInspector.Panel.prototype

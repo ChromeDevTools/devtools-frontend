@@ -21,6 +21,11 @@
             "className": "WebInspector.LoadTimelineHandler"
         },
         {
+            "type": "@WebInspector.UISourceCodeFrame.LineDecorator",
+            "className": "WebInspector.TimelineUIUtils.PerformanceLineDecorator",
+            "decoratorType": "performance"
+        },
+        {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "timeline.toggle-recording",
             "iconClass": "record-toolbar-item",
@@ -96,6 +101,8 @@
     "dependencies": [
         "components",
         "components_lazy",
+        "source_frame",
+        "sources",
         "ui_lazy"
     ],
     "scripts": [

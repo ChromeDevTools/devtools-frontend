@@ -2101,3 +2101,36 @@ WebInspector.TimelineUIUtils.eventWarning = function(event, warningType)
     }
     return span;
 }
+
+/**
+ * @constructor
+ * @implements {WebInspector.UISourceCodeFrame.LineDecorator}
+ */
+WebInspector.TimelineUIUtils.PerformanceLineDecorator = function()
+{
+}
+
+WebInspector.TimelineUIUtils.PerformanceLineDecorator.type = "performance";
+
+WebInspector.TimelineUIUtils.PerformanceLineDecorator.prototype = {
+    /**
+     * @override
+     * @param {!WebInspector.UISourceCode} uiSourceCode
+     * @param {!WebInspector.CodeMirrorTextEditor} textEditor
+     */
+    decorate: function(uiSourceCode, textEditor)
+    {
+        var type = WebInspector.TimelineUIUtils.PerformanceLineDecorator.type;
+        var decorations = uiSourceCode.lineDecorations(type) || [];
+        textEditor.resetGutterDecorations(type);
+        for (var decoration of decorations) {
+            var time = /** @type {number} */ (decoration.data());
+            var text = WebInspector.UIString("%.1f\xa0ms", time);
+            var intensity = Number.constrain(Math.log10(1 + 2 * time) / 5, 0.02, 1);
+            var element = createElementWithClass("div", "text-editor-line-marker-performance");
+            element.textContent = text;
+            element.style.backgroundColor = `rgba(255, 0, 0, ${intensity.toFixed(3)})`;
+            textEditor.setGutterDecoration(decoration.line(), decoration.type(), element);
+        }
+    }
+}

@@ -40,6 +40,7 @@ WebInspector.CPUProfileDataModel.prototype = {
             return result;
         }
         profile.totalHitCount = totalHitCount(profile.head);
+        this.totalHitCount = profile.totalHitCount;
 
         var duration = this.profileEndTime - this.profileStartTime;
         var samplingInterval = duration / profile.totalHitCount;

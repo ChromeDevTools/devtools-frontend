@@ -44,7 +44,6 @@ FormatterWorker.CSSFormatter = function(content, builder)
 FormatterWorker.CSSFormatter.prototype = {
     format: function()
     {
-        this._lineEndings = this._content.lineEndings();
         var tokenize = FormatterWorker.createTokenizer("text/css");
         var lines = this._content.split("\n");
 
@@ -82,7 +81,7 @@ FormatterWorker.CSSFormatter.prototype = {
                 this._builder.addNewLine(true);
             this._state.afterClosingBrace = false;
         }
-        var startPosition = (startLine ? this._lineEndings[startLine - 1] : 0) + startColumn;
+        var startPosition = this._content.offsetFromPosition(startLine, startColumn);
         var endLine = startLine + token.lineCount() - 1;
         if (token === "}") {
             if (this._state.inPropertyValue)

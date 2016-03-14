@@ -230,8 +230,8 @@ WebInspector.TextRange.prototype = {
      */
     toSourceRange: function(text)
     {
-        var start = (this.startLine ? text.lineEndings()[this.startLine - 1] + 1 : 0) + this.startColumn;
-        var end = (this.endLine ? text.lineEndings()[this.endLine - 1] + 1 : 0) + this.endColumn;
+        var start = text.offsetFromPosition(this.startLine, this.startColumn);
+        var end = text.offsetFromPosition(this.endLine, this.endColumn);
         return new WebInspector.SourceRange(start, end - start);
     },
 

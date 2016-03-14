@@ -131,6 +131,16 @@ String.prototype.lineCount = function()
 }
 
 /**
+ * @param {number} lineNumber
+ * @param {number} columNumber
+ * @return {number}
+ */
+String.prototype.offsetFromPosition = function(lineNumber, columNumber)
+{
+    return (lineNumber ? this.lineEndings()[lineNumber - 1] + 1 : 0) + columNumber;
+}
+
+/**
  * @return {string}
  */
 String.prototype.lineAt = function(lineNumber)

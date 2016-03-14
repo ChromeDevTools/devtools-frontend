@@ -134,7 +134,8 @@ WebInspector.FlameChart.Group;
  *     font: string,
  *     color: string,
  *     backgroundColor: string,
- *     nestingLevel: number
+ *     nestingLevel: number,
+ *     shareHeaderLine: (boolean|undefined)
  * }}
  */
 WebInspector.FlameChart.GroupStyle;
@@ -814,21 +815,39 @@ WebInspector.FlameChart.prototype = {
             return;
         var groupIndex = this._coordinatesToGroupIndex(event.offsetX, event.offsetY);
         if (groupIndex >= 0) {
-            var group = this._rawTimelineData.groups[groupIndex];
-            if (!group.style.collapsible)
-                return;
-            group.expanded = !group.expanded;
-            this._groupExpansionState[group.name] = group.expanded;
-            if (this._groupExpansionSetting)
-                this._groupExpansionSetting.set(this._groupExpansionState);
-            this._updateLevelPositions();
-            this._updateHeight();
-            this._resetCanvas();
-            this._draw(this._offsetWidth, this._offsetHeight);
+            this._toggleGroupVisibility(groupIndex);
             return;
         }
         this._hideRangeSelection();
         this.dispatchEventToListeners(WebInspector.FlameChart.Events.EntrySelected, this._highlightedEntryIndex);
+    },
+
+    /**
+     * @param {number} groupIndex
+     */
+    _toggleGroupVisibility: function(groupIndex)
+    {
+        var groups = this._rawTimelineData.groups;
+        var group = groups[groupIndex];
+        if (!group.style.collapsible)
+            return;
+        group.expanded = !group.expanded;
+        this._groupExpansionState[group.name] = group.expanded;
+        if (this._groupExpansionSetting)
+            this._groupExpansionSetting.set(this._groupExpansionState);
+        this._updateLevelPositions();
+
+        this._updateHighlight();
+        if (!group.expanded) {
+            var timelineData = this._timelineData();
+            var level = timelineData.entryLevels[this._selectedEntryIndex];
+            if (this._selectedEntryIndex >= 0 && level >= group.startLevel && (groupIndex === groups.length || groups[groupIndex + 1].startLevel > level))
+                this._selectedEntryIndex = -1;
+        }
+
+        this._updateHeight();
+        this._resetCanvas();
+        this._draw(this._offsetWidth, this._offsetHeight);
     },
 
     /**
@@ -1028,7 +1047,7 @@ WebInspector.FlameChart.prototype = {
             return -1;
         var cursorTime = this._cursorTime(x);
         var cursorLevel = this._visibleLevelOffsets.upperBound(y) - 1;
-        if (cursorLevel < 0)
+        if (cursorLevel < 0 || !this._visibleLevels[cursorLevel])
             return -1;
         var offsetFromLevel = y - this._visibleLevelOffsets[cursorLevel];
         if (offsetFromLevel > this._barHeight)
@@ -1093,7 +1112,7 @@ WebInspector.FlameChart.prototype = {
         var groups = this._rawTimelineData.groups || [];
         var group = this._groupOffsets.upperBound(y) - 1;
 
-        if (group >= 0 && group < groups.length && y - this._groupOffsets[group] < groups[group].style.height)
+        if (group >= 0 && group < groups.length && y - this._groupOffsets[group] < groups[group].style.height && !groups[group].style.shareHeaderLine)
             return group;
         return -1;
     },
@@ -1337,10 +1356,12 @@ WebInspector.FlameChart.prototype = {
         context.strokeStyle = WebInspector.themeSupport.patchColor("#ddd", colorUsage.Background);
         context.beginPath();
         forEachGroup((offset, index, group, isFirst) => {
-            if (isFirst || group.style.padding < 4)
+            if (isFirst)
                 return;
-            hLine(offset - group.style.padding + 1.5);
-            hLine(offset - 1.5);
+            if (group.style.padding > 1)
+                hLine(offset - 1.5);
+            if (group.style.padding > 2)
+                hLine(offset - group.style.padding + 1.5);
         });
         hLine(lastGroupOffset + 1.5);
         context.stroke();
@@ -1357,7 +1378,9 @@ WebInspector.FlameChart.prototype = {
         context.stroke();
 
         forEachGroup((offset, index, group) => {
-            if (!group.style.collapsible || group.expanded) {
+            if (group.style.shareHeaderLine)
+                return;
+            if ((!group.style.collapsible || group.expanded)) {
                 context.fillStyle = group.style.backgroundColor;
                 context.fillRect(0, offset, width, group.style.height);
                 return;
@@ -1374,14 +1397,13 @@ WebInspector.FlameChart.prototype = {
         var expansionArrowX = headerLeftPadding + arrowSide / 2;
 
         context.save();
-        var titleBackgroundColor = WebInspector.themeSupport.patchColor("rgba(255, 255, 255, 0.5)", colorUsage.Background);
         forEachGroup((offset, index, group) => {
             context.font = group.style.font;
-            if (group.style.collapsible && !group.expanded) {
+            if (group.style.collapsible && !group.expanded || group.style.shareHeaderLine) {
                 var vPadding = 2;
                 var hPadding = 3;
                 var width = this._measureWidth(context, group.name) + 1.5 * arrowSide + 2 * hPadding;
-                context.fillStyle = titleBackgroundColor;
+                context.fillStyle = WebInspector.Color.parse(group.style.backgroundColor).setAlpha(0.5).asString(null);
                 context.fillRect(headerLeftPadding - hPadding, offset + vPadding, width, barHeight - 2 * vPadding);
             }
             context.fillStyle = group.style.color;
@@ -1653,9 +1675,9 @@ WebInspector.FlameChart.prototype = {
 
     _updateLevelPositions: function()
     {
-        var levelCount = this._timelineLevels.length;
+        var levelCount = this._dataProvider.maxStackDepth();
         var groups = this._rawTimelineData.groups || [];
-        this._visibleLevelOffsets = new Uint32Array(levelCount);
+        this._visibleLevelOffsets = new Uint32Array(levelCount + 1);
         this._visibleLevels = new Uint8Array(levelCount);
         this._groupOffsets = new Uint32Array(groups.length + 1);
 
@@ -1680,7 +1702,7 @@ WebInspector.FlameChart.prototype = {
                 if (parentGroupIsVisible)
                     currentOffset += nextLevel ? 0 : style.padding;
                 this._groupOffsets[groupIndex] = currentOffset;
-                if (parentGroupIsVisible)
+                if (parentGroupIsVisible && !style.shareHeaderLine)
                     currentOffset += style.height;
             }
             this._visibleLevels[level] = visible;
@@ -1690,6 +1712,7 @@ WebInspector.FlameChart.prototype = {
         }
         if (groupIndex >= 0)
             this._groupOffsets[groupIndex + 1] = currentOffset;
+        this._visibleLevelOffsets[level] = currentOffset;
     },
 
     /**

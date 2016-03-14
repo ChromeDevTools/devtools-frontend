@@ -296,13 +296,14 @@ WebInspector.TimelineFlameChartDataProvider = function(model, frameModel, irMode
     };
 
     this._headerLevel2 = {
-        padding: 0,
+        padding: 2,
         height: 17,
         collapsible: false,
         font: this._font,
         color: WebInspector.themeSupport.patchColor("#222", WebInspector.ThemeSupport.ColorUsage.Foreground),
-        backgroundColor: WebInspector.themeSupport.patchColor("#bbb", WebInspector.ThemeSupport.ColorUsage.Background),
+        backgroundColor: WebInspector.themeSupport.patchColor("white", WebInspector.ThemeSupport.ColorUsage.Background),
         nestingLevel: 1,
+        shareHeaderLine: true
     };
 }
 

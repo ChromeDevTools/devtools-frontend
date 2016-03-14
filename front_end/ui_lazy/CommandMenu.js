@@ -112,8 +112,22 @@ WebInspector.CommandMenuDelegate.prototype = {
      */
     itemScoreAt: function(itemIndex, query)
     {
-        // TODO(samli): Improve scoring.
-        return 1;
+        var command = this._commands[itemIndex];
+        var opcodes = WebInspector.Diff.charDiff(query.toLowerCase(), command.title.toLowerCase());
+        var score = 0;
+        // Score longer sequences higher.
+        for (var i = 0; i < opcodes.length; ++i) {
+            if (opcodes[i][0] === WebInspector.Diff.Operation.Equal)
+                score += opcodes[i][1].length * opcodes[i][1].length;
+        }
+
+        // Score panel/drawer reveals above regular actions.
+        if (command.title.startsWith("Panel"))
+            score += 2;
+        else if (command.title.startsWith("Drawer"))
+            score += 1;
+
+        return score;
     },
 
     /**

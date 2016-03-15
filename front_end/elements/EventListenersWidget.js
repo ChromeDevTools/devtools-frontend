@@ -120,7 +120,7 @@ WebInspector.EventListenersWidget.prototype = {
             if (node.frameId()) {
                 for (var i = 0; i < executionContexts.length; ++i) {
                     var executionContext = executionContexts[i];
-                    if (executionContext.frameId === node.frameId() && executionContext.isMainWorldContext)
+                    if (executionContext.frameId === node.frameId() && executionContext.isDefault)
                         context = executionContext;
                 }
             } else {

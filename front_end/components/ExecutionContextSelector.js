@@ -81,7 +81,7 @@ WebInspector.ExecutionContextSelector.prototype = {
      */
     _contextPersistentId: function(executionContext)
     {
-        return executionContext.isMainWorldContext ? executionContext.target().name() + ":" + executionContext.frameId : "";
+        return executionContext.isDefault ? executionContext.target().name() + ":" + executionContext.frameId : "";
     },
 
     /**
@@ -101,7 +101,7 @@ WebInspector.ExecutionContextSelector.prototype = {
 
         var newContext = executionContexts[0];
         for (var i = 1; i < executionContexts.length; ++i) {
-            if (executionContexts[i].isMainWorldContext)
+            if (executionContexts[i].isDefault)
                 newContext = executionContexts[i];
         }
         this._context.setFlavor(WebInspector.ExecutionContext, newContext);

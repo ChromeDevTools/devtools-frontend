@@ -87,7 +87,7 @@ WebInspector.RuntimeModel.prototype = {
         if (context.name == WebInspector.RuntimeModel._privateScript && !context.origin && !Runtime.experiments.isEnabled("privateScriptInspection")) {
             return;
         }
-        var executionContext = new WebInspector.ExecutionContext(this.target(), context.id, context.name, context.origin, !context.type, context.frameId);
+        var executionContext = new WebInspector.ExecutionContext(this.target(), context.id, context.name, context.origin, context.isDefault, context.frameId);
         this._executionContextById[executionContext.id] = executionContext;
         this.dispatchEventToListeners(WebInspector.RuntimeModel.Events.ExecutionContextCreated, executionContext);
     },
@@ -264,16 +264,16 @@ WebInspector.RuntimeDispatcher.prototype = {
  * @param {number} id
  * @param {string} name
  * @param {string} origin
- * @param {boolean} isPageContext
+ * @param {boolean} isDefault
  * @param {string=} frameId
  */
-WebInspector.ExecutionContext = function(target, id, name, origin, isPageContext, frameId)
+WebInspector.ExecutionContext = function(target, id, name, origin, isDefault, frameId)
 {
     WebInspector.SDKObject.call(this, target);
     this.id = id;
     this.name = name;
     this.origin = origin;
-    this.isMainWorldContext = isPageContext;
+    this.isDefault = isDefault;
     this.runtimeModel = target.runtimeModel;
     this.debuggerModel = WebInspector.DebuggerModel.fromTarget(target);
     this.frameId = frameId;
@@ -308,9 +308,9 @@ WebInspector.ExecutionContext.comparator = function(a, b)
         return frameIdDiff;
 
     // Main world context should always go first.
-    if (a.isMainWorldContext)
+    if (a.isDefault)
         return -1;
-    if (b.isMainWorldContext)
+    if (b.isDefault)
         return +1;
     return a.name.localeCompare(b.name);
 }

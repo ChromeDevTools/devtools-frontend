@@ -959,7 +959,7 @@ WebInspector.ExtensionServer.prototype = {
             if (contextSecurityOrigin) {
                 for (var i = 0; i < executionContexts.length; ++i) {
                     var executionContext = executionContexts[i];
-                    if (executionContext.frameId === frame.id && executionContext.origin === contextSecurityOrigin && !executionContext.isMainWorldContext)
+                    if (executionContext.frameId === frame.id && executionContext.origin === contextSecurityOrigin && !executionContext.isDefault)
                         context = executionContext;
 
                 }
@@ -970,7 +970,7 @@ WebInspector.ExtensionServer.prototype = {
             } else {
                 for (var i = 0; i < executionContexts.length; ++i) {
                     var executionContext = executionContexts[i];
-                    if (executionContext.frameId === frame.id && executionContext.isMainWorldContext)
+                    if (executionContext.frameId === frame.id && executionContext.isDefault)
                         context = executionContext;
 
                 }

@@ -32,7 +32,7 @@ WebInspector.ExecutionContextModel.prototype = {
     _titleFor: function(executionContext)
     {
         var result;
-        if (executionContext.isMainWorldContext) {
+        if (executionContext.isDefault) {
             if (executionContext.frameId) {
                 var frame = executionContext.target().resourceTreeModel.frameForId(executionContext.frameId);
                 result =  frame ? frame.displayName() : (executionContext.origin || executionContext.name);

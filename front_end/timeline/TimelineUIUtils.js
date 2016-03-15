@@ -469,13 +469,7 @@ WebInspector.TimelineUIUtils.buildDetailsTextForTraceEvent = function(event, tar
     function linkifyTopCallFrameAsText()
     {
         var frame = WebInspector.TimelineUIUtils.topStackFrame(event);
-        var text = frame ? linkifyLocationAsText(frame.scriptId, frame.lineNumber, frame.columnNumber) : null;
-        if (frame && !text) {
-            text = frame.url;
-            if (typeof frame.lineNumber === "number")
-                text += ":" + (frame.lineNumber + 1);
-        }
-        return text;
+        return frame ? linkifyLocationAsText(frame.scriptId, frame.lineNumber, frame.columnNumber) : null;
     }
 }
 

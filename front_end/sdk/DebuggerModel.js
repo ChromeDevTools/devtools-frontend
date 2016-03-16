@@ -808,12 +808,11 @@ WebInspector.DebuggerModel.prototype = {
      * @param {string} variableName
      * @param {!RuntimeAgent.CallArgument} newValue
      * @param {string} callFrameId
-     * @param {string} functionObjectId
      * @param {function(string=)=} callback
      */
-    setVariableValue: function(scopeNumber, variableName, newValue, callFrameId, functionObjectId, callback)
+    setVariableValue: function(scopeNumber, variableName, newValue, callFrameId, callback)
     {
-        this._agent.setVariableValue(scopeNumber, variableName, newValue, callFrameId, functionObjectId, innerCallback);
+        this._agent.setVariableValue(scopeNumber, variableName, newValue, callFrameId, innerCallback);
 
         /**
          * @param {?Protocol.Error} error
@@ -1376,7 +1375,7 @@ WebInspector.DebuggerModel.Scope.prototype = {
 
         var declarativeScope = this._type !== DebuggerAgent.ScopeType.With && this._type !== DebuggerAgent.ScopeType.Global;
         if (declarativeScope)
-            this._object = runtimeModel.createScopeRemoteObject(this._payload.object, new WebInspector.ScopeRef(this._ordinal, this._callFrame.id, undefined));
+            this._object = runtimeModel.createScopeRemoteObject(this._payload.object, new WebInspector.ScopeRef(this._ordinal, this._callFrame.id));
         else
             this._object = runtimeModel.createRemoteObject(this._payload.object);
 

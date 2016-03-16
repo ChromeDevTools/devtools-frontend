@@ -1048,8 +1048,13 @@ WebInspector.ScopeRemoteObject.prototype = {
          */
         function wrappedCallback(properties, internalProperties)
         {
-            if (this._scopeRef && Array.isArray(properties))
+            if (this._scopeRef && Array.isArray(properties)) {
                 this._savedScopeProperties = properties.slice();
+                if (!this._scopeRef.callFrameId) {
+                    for (var property of this._savedScopeProperties)
+                        property.writable = false;
+                }
+            }
             callback(properties, internalProperties);
         }
 
@@ -1068,7 +1073,7 @@ WebInspector.ScopeRemoteObject.prototype = {
     doSetObjectPropertyValue: function(result, argumentName, callback)
     {
         var name = /** @type {string} */ (argumentName.value);
-        this._debuggerModel.setVariableValue(this._scopeRef.number, name, WebInspector.RemoteObject.toCallArgument(result), this._scopeRef.callFrameId, this._scopeRef.functionId, setVariableValueCallback.bind(this));
+        this._debuggerModel.setVariableValue(this._scopeRef.number, name, WebInspector.RemoteObject.toCallArgument(result), this._scopeRef.callFrameId, setVariableValueCallback.bind(this));
 
         /**
          * @param {string=} error
@@ -1094,17 +1099,14 @@ WebInspector.ScopeRemoteObject.prototype = {
 };
 
 /**
- * Either callFrameId or functionId (exactly one) must be defined.
  * @constructor
  * @param {number} number
  * @param {string=} callFrameId
- * @param {string=} functionId
  */
-WebInspector.ScopeRef = function(number, callFrameId, functionId)
+WebInspector.ScopeRef = function(number, callFrameId)
 {
     this.number = number;
     this.callFrameId = callFrameId;
-    this.functionId = functionId;
 }
 
 /**

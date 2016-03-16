@@ -630,7 +630,7 @@ WebInspector.FunctionScopeMainTreeElement.prototype = {
                     property.parentObject = null;
                     this.appendChild(new WebInspector.ObjectPropertyTreeElement(property));
                 } else {
-                    var scopeRef = new WebInspector.ScopeRef(i, undefined, this._remoteObject.objectId);
+                    var scopeRef = new WebInspector.ScopeRef(i, undefined);
                     var remoteObject = runtimeModel.createScopeRemoteObject(scope.object, scopeRef);
                     var scopeTreeElement = new WebInspector.ScopeTreeElement(title, remoteObject);
                     this.appendChild(scopeTreeElement);

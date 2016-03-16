@@ -430,6 +430,7 @@
             'front_end/elements/computedStyleSidebarPane.css',
             'front_end/elements/elementsPanel.css',
             'front_end/elements/elementsTreeOutline.css',
+            'front_end/elements/platformFontsWidget.css',
             'front_end/elements/spectrum.css',
             'front_end/elements/BezierEditor.js',
             'front_end/elements/BezierUI.js',

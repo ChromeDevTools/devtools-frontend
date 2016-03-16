@@ -179,6 +179,7 @@
         "computedStyleSidebarPane.css",
         "elementsPanel.css",
         "elementsTreeOutline.css",
-        "spectrum.css"
+        "spectrum.css",
+        "platformFontsWidget.css"
     ]
 }

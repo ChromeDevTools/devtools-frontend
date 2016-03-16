@@ -35,16 +35,16 @@
  */
 WebInspector.PlatformFontsWidget = function(sharedModel)
 {
-    WebInspector.ThrottledWidget.call(this);
-    this.element.classList.add("platform-fonts");
+    WebInspector.ThrottledWidget.call(this, true);
+    this.registerRequiredCSS("elements/platformFontsWidget.css");
 
     this._sharedModel = sharedModel;
     this._sharedModel.addEventListener(WebInspector.SharedSidebarModel.Events.ComputedStyleChanged, this.update, this);
 
-    this._sectionTitle = createElementWithClass("div", "sidebar-separator");
-    this.element.appendChild(this._sectionTitle);
+    this._sectionTitle = createElementWithClass("div", "title");
+    this.contentElement.appendChild(this._sectionTitle);
     this._sectionTitle.textContent = WebInspector.UIString("Rendered Fonts");
-    this._fontStatsSection = this.element.createChild("div", "stats-section");
+    this._fontStatsSection = this.contentElement.createChild("div", "stats-section");
 }
 
 /**

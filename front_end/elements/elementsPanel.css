@@ -620,39 +620,6 @@
     margin-left: 4px;
 }
 
-.sidebar-pane.composite .platform-fonts {
-    -webkit-user-select: text;
-}
-
-.sidebar-pane.composite .platform-fonts .font-name {
-    font-weight: bold;
-}
-
-.sidebar-pane.composite .platform-fonts .font-usage {
-    color: #888;
-    padding-left: 3px;
-}
-
-.sidebar-pane.composite .platform-fonts .sidebar-separator {
-    height: 24px;
-    background-color: #f1f1f1;
-    border-color: #ddd;
-    display: flex;
-    align-items: center;
-}
-
-.sidebar-pane.composite .platform-fonts .stats-section {
-    margin: 5px 0;
-}
-
-.sidebar-pane.composite .platform-fonts .font-stats-item {
-    padding-left: 1em;
-}
-
-.sidebar-pane.composite .platform-fonts .font-stats-item .font-delimeter {
-    margin: 0 1ex 0 1ex;
-}
-
 .sidebar-pane.composite .metrics-and-styles .metrics {
     border-bottom: none;
 }

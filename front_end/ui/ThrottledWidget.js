@@ -5,10 +5,11 @@
 /**
  * @constructor
  * @extends {WebInspector.Widget}
+ * @param {boolean=} isWebComponent
  */
-WebInspector.ThrottledWidget = function()
+WebInspector.ThrottledWidget = function(isWebComponent)
 {
-    WebInspector.Widget.call(this);
+    WebInspector.Widget.call(this, isWebComponent);
     this._updateThrottler = new WebInspector.Throttler(100);
     this._updateWhenVisible = false;
 }

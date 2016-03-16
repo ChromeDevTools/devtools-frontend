@@ -227,7 +227,7 @@ WebInspector.CSSMetadata._propertyDataMap = {
         "horizontal-tb", "vertical-rl", "vertical-lr"
     ] },
     "-webkit-writing-mode": { values: [
-        "lr", "rl", "tb", "lr-tb", "rl-tb", "tb-rl", "horizontal-tb", "vertical-rl", "vertical-lr", "horizontal-bt"
+        "lr", "rl", "tb", "lr-tb", "rl-tb", "tb-rl", "horizontal-tb", "vertical-rl", "vertical-lr"
     ] },
     "border-collapse": { values: [
         "collapse", "separate"

@@ -66,7 +66,7 @@ WebInspector.ObjectEventListenersSidebarPane.prototype = {
          */
         function windowObjectInContext(fulfill, reject)
         {
-            executionContext.evaluate("self", WebInspector.ObjectEventListenersSidebarPane._objectGroupName, false, true, false, false, mycallback);
+            executionContext.evaluate("self", WebInspector.ObjectEventListenersSidebarPane._objectGroupName, false, true, false, false, false, mycallback);
             /**
              * @param {?WebInspector.RemoteObject} object
              */

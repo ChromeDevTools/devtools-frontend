@@ -214,7 +214,7 @@ WebInspector.ConsoleModel.evaluateCommandInConsole = function(executionContext, 
     }
     if (/^\s*\{/.test(text) && /\}\s*$/.test(text))
         text = '(' + text + ')';
-    executionContext.evaluate(text, "console", !!useCommandLineAPI, false, false, true, printResult);
+    executionContext.evaluate(text, "console", !!useCommandLineAPI, false, false, true, true, printResult);
 
     WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.ConsoleEvaluated);
 }

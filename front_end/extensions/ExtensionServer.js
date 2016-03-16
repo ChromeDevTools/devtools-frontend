@@ -984,7 +984,7 @@ WebInspector.ExtensionServer.prototype = {
         if (!target)
             return;
 
-        target.runtimeAgent().evaluate(expression, "extension", exposeCommandLineAPI, true, contextId, returnByValue, false, onEvalute);
+        target.runtimeAgent().evaluate(expression, "extension", exposeCommandLineAPI, true, contextId, returnByValue, false, false, onEvalute);
 
         /**
          * @param {?Protocol.Error} error

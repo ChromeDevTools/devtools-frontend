@@ -323,9 +323,10 @@ WebInspector.ExecutionContext.prototype = {
      * @param {boolean} doNotPauseOnExceptionsAndMuteConsole
      * @param {boolean} returnByValue
      * @param {boolean} generatePreview
+     * @param {boolean} userGesture
      * @param {function(?WebInspector.RemoteObject, boolean, ?RuntimeAgent.RemoteObject=, ?RuntimeAgent.ExceptionDetails=)} callback
      */
-    evaluate: function(expression, objectGroup, includeCommandLineAPI, doNotPauseOnExceptionsAndMuteConsole, returnByValue, generatePreview, callback)
+    evaluate: function(expression, objectGroup, includeCommandLineAPI, doNotPauseOnExceptionsAndMuteConsole, returnByValue, generatePreview, userGesture, callback)
     {
         // FIXME: It will be moved to separate ExecutionContext.
         if (this.debuggerModel.selectedCallFrame()) {
@@ -343,7 +344,7 @@ WebInspector.ExecutionContext.prototype = {
      */
     globalObject: function(objectGroup, returnByValue, generatePreview, callback)
     {
-        this._evaluateGlobal("this", objectGroup, false, true, returnByValue, generatePreview, callback);
+        this._evaluateGlobal("this", objectGroup, false, true, returnByValue, generatePreview, false, callback);
     },
 
     /**
@@ -353,9 +354,10 @@ WebInspector.ExecutionContext.prototype = {
      * @param {boolean} doNotPauseOnExceptionsAndMuteConsole
      * @param {boolean} returnByValue
      * @param {boolean} generatePreview
+     * @param {boolean} userGesture
      * @param {function(?WebInspector.RemoteObject, boolean, ?RuntimeAgent.RemoteObject=, ?RuntimeAgent.ExceptionDetails=)} callback
      */
-    _evaluateGlobal: function(expression, objectGroup, includeCommandLineAPI, doNotPauseOnExceptionsAndMuteConsole, returnByValue, generatePreview, callback)
+    _evaluateGlobal: function(expression, objectGroup, includeCommandLineAPI, doNotPauseOnExceptionsAndMuteConsole, returnByValue, generatePreview, userGesture, callback)
     {
         if (!expression) {
             // There is no expression, so the completion should happen against global properties.
@@ -382,7 +384,7 @@ WebInspector.ExecutionContext.prototype = {
             else
                 callback(this.runtimeModel.createRemoteObject(result), !!wasThrown, undefined, exceptionDetails);
         }
-        this.target().runtimeAgent().evaluate(expression, objectGroup, includeCommandLineAPI, doNotPauseOnExceptionsAndMuteConsole, this.id, returnByValue, generatePreview, evalCallback.bind(this));
+        this.target().runtimeAgent().evaluate(expression, objectGroup, includeCommandLineAPI, doNotPauseOnExceptionsAndMuteConsole, this.id, returnByValue, generatePreview, userGesture, evalCallback.bind(this));
     },
 
     /**
@@ -417,7 +419,7 @@ WebInspector.ExecutionContext.prototype = {
         if (!expressionString && this.debuggerModel.selectedCallFrame())
             this.debuggerModel.selectedCallFrame().variableNames(receivedPropertyNames.bind(this));
         else
-            this.evaluate(expressionString, "completion", true, true, false, false, evaluated.bind(this));
+            this.evaluate(expressionString, "completion", true, true, false, false, false, evaluated.bind(this));
 
         /**
          * @this {WebInspector.ExecutionContext}
@@ -468,7 +470,7 @@ WebInspector.ExecutionContext.prototype = {
             if (result.type === "object" || result.type === "function")
                 result.callFunctionJSON(getCompletions, [WebInspector.RemoteObject.toCallArgument(result.subtype)], receivedPropertyNames.bind(this));
             else if (result.type === "string" || result.type === "number" || result.type === "boolean")
-                this.evaluate("(" + getCompletions + ")(\"" + result.type + "\")", "completion", false, true, true, false, receivedPropertyNamesFromEval.bind(this));
+                this.evaluate("(" + getCompletions + ")(\"" + result.type + "\")", "completion", false, true, true, false, false, receivedPropertyNamesFromEval.bind(this));
         }
 
         /**

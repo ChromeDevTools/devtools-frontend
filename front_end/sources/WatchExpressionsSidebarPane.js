@@ -258,7 +258,7 @@ WebInspector.WatchExpression.prototype = {
     {
         var currentExecutionContext = WebInspector.context.flavor(WebInspector.ExecutionContext);
         if (currentExecutionContext && this._expression)
-            currentExecutionContext.evaluate(this._expression, WebInspector.WatchExpression._watchObjectGroupId, false, true, false, false, this._createWatchExpression.bind(this));
+            currentExecutionContext.evaluate(this._expression, WebInspector.WatchExpression._watchObjectGroupId, false, true, false, false, false, this._createWatchExpression.bind(this));
     },
 
     startEditing: function()

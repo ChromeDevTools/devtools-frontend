@@ -126,7 +126,7 @@ WebInspector.EventListenersWidget.prototype = {
             } else {
                 context = executionContexts[0];
             }
-            context.evaluate("self", WebInspector.EventListenersWidget._objectGroupName, false, true, false, false, fulfill);
+            context.evaluate("self", WebInspector.EventListenersWidget._objectGroupName, false, true, false, false, false, fulfill);
         }
     },
 

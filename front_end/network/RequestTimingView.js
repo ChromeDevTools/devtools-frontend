@@ -237,16 +237,16 @@ WebInspector.RequestTimingView.createTimingTable = function(request, navigationS
         if (WebInspector.RequestTimingView.ConnectionSetupRangeNames[rangeName]) {
             if (!connectionHeader) {
                 connectionHeader = tableElement.createChild("tr", "network-timing-table-header");
-                connectionHeader.createChild("td").createTextChild("Connection Setup");
+                connectionHeader.createChild("td").createTextChild(WebInspector.UIString("Connection Setup"));
                 connectionHeader.createChild("td").createTextChild("");
-                connectionHeader.createChild("td").createTextChild("TIME");
+                connectionHeader.createChild("td").createTextChild(WebInspector.UIString("TIME"));
             }
         } else {
             if (!dataHeader) {
                 dataHeader = tableElement.createChild("tr", "network-timing-table-header");
-                dataHeader.createChild("td").createTextChild("Request/Response");
+                dataHeader.createChild("td").createTextChild(WebInspector.UIString("Request/Response"));
                 dataHeader.createChild("td").createTextChild("");
-                dataHeader.createChild("td").createTextChild("TIME");
+                dataHeader.createChild("td").createTextChild(WebInspector.UIString("TIME"));
             }
         }
 

@@ -644,6 +644,16 @@ WebInspector.ToolbarMenuButton.prototype = {
             return;
         }
 
+        if (!this._triggerTimeout)
+            this._triggerTimeout = setTimeout(this._trigger.bind(this, event), 200);
+    },
+
+    /**
+     * @param {!Event} event
+     */
+    _trigger: function(event)
+    {
+        delete this._triggerTimeout;
         var contextMenu = new WebInspector.ContextMenu(event,
             this._useSoftMenu,
             this.element.totalOffsetLeft(),
@@ -658,6 +668,10 @@ WebInspector.ToolbarMenuButton.prototype = {
      */
     _clicked: function(event)
     {
+        if (!this._triggerTimeout)
+            return;
+        clearTimeout(this._triggerTimeout);
+        this._trigger(event);
     },
 
     __proto__: WebInspector.ToolbarButton.prototype

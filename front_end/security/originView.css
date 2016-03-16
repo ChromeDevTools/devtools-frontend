@@ -19,10 +19,15 @@
     padding-bottom: 1.5em;
 }
 
+.security-origin-view .origin-display {
+  padding-left: 18px;
+}
+
 .security-origin-view .origin-display .security-property {
-    margin: -1px 2px 0px 0px;
     display: inline-block;
     vertical-align: middle;
+    position: absolute;
+    left: 18px;
 }
 
 .security-origin-view .origin-view-title {

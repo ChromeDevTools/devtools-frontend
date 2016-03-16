@@ -74,6 +74,14 @@
         {
             "type": "@WebInspector.CodeMirrorMimeMode",
             "className": "WebInspector.DefaultCodeMirrorMimeMode",
+            "fileName": "jsx.js",
+            "mimeTypes": [
+                "text/jsx"
+            ]
+        },
+        {
+            "type": "@WebInspector.CodeMirrorMimeMode",
+            "className": "WebInspector.DefaultCodeMirrorMimeMode",
             "fileName": "stylus.js",
             "mimeTypes": [
                 "text/x-styl"
@@ -94,6 +102,7 @@
         "shell.js",
         "livescript.js",
         "clojure.js",
-        "stylus.js"
+        "stylus.js",
+        "jsx.js"
     ]
 }

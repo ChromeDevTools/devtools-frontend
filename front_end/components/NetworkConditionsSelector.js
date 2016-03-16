@@ -76,7 +76,14 @@ WebInspector.NetworkConditionsSelector.prototype = {
         var presetsGroup = {title: WebInspector.UIString("Presets"), items: WebInspector.NetworkConditionsSelector._presets};
         var disabledGroup = {title: WebInspector.UIString("Disabled"), items: [WebInspector.NetworkManager.NoThrottlingConditions]};
         this._options = this._populateCallback([customGroup, presetsGroup, disabledGroup]);
-        this._conditionsChanged();
+        if (!this._conditionsChanged()) {
+            for (var i = this._options.length - 1; i >= 0; i--) {
+                if (this._options[i]) {
+                    this.optionSelected(/** @type {!WebInspector.NetworkManager.Conditions} */ (this._options[i]));
+                    break;
+                }
+            }
+        }
     },
 
     revealAndUpdate: function()
@@ -93,16 +100,20 @@ WebInspector.NetworkConditionsSelector.prototype = {
         this._manager.setNetworkConditions(conditions);
     },
 
+    /**
+     * @return {boolean}
+     */
     _conditionsChanged: function()
     {
         var value = this._manager.networkConditions();
         for (var index = 0; index < this._options.length; ++index) {
             var option = this._options[index];
-            if (!option)
-                continue;
-            if (option.download === value.download && option.upload === value.upload && option.latency === value.latency && option.title === value.title)
+            if (option && option.download === value.download && option.upload === value.upload && option.latency === value.latency && option.title === value.title) {
                 this._selectCallback(index);
+                return true;
+            }
         }
+        return false;
     }
 }
 

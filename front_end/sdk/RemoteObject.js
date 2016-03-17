@@ -740,7 +740,7 @@ WebInspector.RemoteObjectImpl.prototype = {
         function evaluatedCallback(error, result, wasThrown)
         {
             if (error || wasThrown) {
-                callback(error || result.description);
+                callback(error || (result.type !== "string" ? result.description : /** @type {string} */(result.value)));
                 return;
             }
 

@@ -35,9 +35,9 @@ WebInspector.SASSProcessor.prototype = {
                 continue;
             var promise;
             if (ast.document.url === this._map.cssURL())
-                promise = this._astService.parseCSS(ast.document.url, ast.document.newText());
+                promise = this._astService.parseCSS(ast.document.url, ast.document.newText().value());
             else
-                promise = this._astService.parseSCSS(ast.document.url, ast.document.newText());
+                promise = this._astService.parseSCSS(ast.document.url, ast.document.newText().value());
             promises.push(promise);
         }
 
@@ -61,7 +61,7 @@ WebInspector.SASSProcessor.prototype = {
         for (var rule of changedCSSRules) {
             var oldRange = rule.styleRange;
             var newRule = nodeMapping.get(rule);
-            var newText = newRule.styleRange.extract(newRule.document.text);
+            var newText = newRule.document.text.extract(newRule.styleRange);
             cssEdits.push(new WebInspector.SourceEdit(newRule.document.url, oldRange, newText));
         }
 
@@ -70,7 +70,7 @@ WebInspector.SASSProcessor.prototype = {
         for (var model of changedModels) {
             if (model.document.url === map.cssURL())
                 continue;
-            newSASSSources.set(model.document.url, model.document.text);
+            newSASSSources.set(model.document.url, model.document.text.value());
         }
         return new WebInspector.SASSProcessor.Result(map, cssEdits, newSASSSources);
     }
@@ -101,12 +101,9 @@ WebInspector.SASSProcessor.processCSSEdits = function(astService, map, ranges, n
     console.assert(ranges.length === newTexts.length);
     var cssURL = map.cssURL();
     var cssText = map.cssAST().document.text;
-    for (var i = 0; i < ranges.length; ++i) {
-        var range = ranges[i];
-        var edit = new WebInspector.SourceEdit(cssURL, range, newTexts[i]);
-        cssText = edit.applyToText(cssText);
-    }
-    return astService.parseCSS(cssURL, cssText)
+    for (var i = 0; i < ranges.length; ++i)
+        cssText = new WebInspector.Text(cssText.replaceRange(ranges[i], newTexts[i]));
+    return astService.parseCSS(cssURL, cssText.value())
         .then(onCSSParsed);
 
     /**

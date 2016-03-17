@@ -21,7 +21,7 @@ WebInspector.SASSSupport.parseCSS = function(cssParserService, url, text)
      */
     function onParsed(parsedCSS)
     {
-        var document = new WebInspector.SASSSupport.ASTDocument(url, text);
+        var document = new WebInspector.SASSSupport.ASTDocument(url, new WebInspector.Text(text));
         var rules = [];
         for (var i = 0; i < parsedCSS.length; ++i) {
             var rule = parsedCSS[i];
@@ -49,7 +49,7 @@ WebInspector.SASSSupport.parseCSS = function(cssParserService, url, text)
  */
 WebInspector.SASSSupport.parseSCSS = function(tokenizerFactory, url, text)
 {
-    var document = new WebInspector.SASSSupport.ASTDocument(url, text);
+    var document = new WebInspector.SASSSupport.ASTDocument(url, new WebInspector.Text(text));
     var result = WebInspector.SASSSupport._innerParseSCSS(document, tokenizerFactory);
 
     var rules = [
@@ -80,7 +80,7 @@ WebInspector.SASSSupport.SCSSParserStates = {
  */
 WebInspector.SASSSupport._innerParseSCSS = function(document, tokenizerFactory)
 {
-    var lines = document.text.split("\n");
+    var lines = document.text.value().split("\n");
     var properties = [];
     var variables = [];
     var mixins = [];
@@ -118,7 +118,7 @@ WebInspector.SASSSupport._innerParseSCSS = function(document, tokenizerFactory)
                     break;
                 var uncommentedText = tokenValue.substring(2, tokenValue.length - 2);
                 var fakeRuleText = "a{\n" + uncommentedText + "}";
-                var fakeDocument = new WebInspector.SASSSupport.ASTDocument("", fakeRuleText);
+                var fakeDocument = new WebInspector.SASSSupport.ASTDocument("", new WebInspector.Text(fakeRuleText));
                 var result = WebInspector.SASSSupport._innerParseSCSS(fakeDocument, tokenizerFactory);
                 if (result.properties.length === 1 && result.variables.length === 0 && result.mixins.length === 0) {
                     var disabledProperty = result.properties[0];
@@ -237,7 +237,7 @@ WebInspector.SASSSupport._innerParseSCSS = function(document, tokenizerFactory)
 /**
  * @constructor
  * @param {string} url
- * @param {string} text
+ * @param {!WebInspector.Text} text
  */
 WebInspector.SASSSupport.ASTDocument = function(url, text)
 {
@@ -264,14 +264,17 @@ WebInspector.SASSSupport.ASTDocument.prototype = {
     },
 
     /**
-     * @return {string}
+     * @return {!WebInspector.Text}
      */
     newText: function()
     {
         this.edits.stableSort(sequentialOrder);
         var text = this.text;
-        for (var i = this.edits.length - 1; i >= 0; --i)
-            text = this.edits[i].applyToText(text);
+        for (var i = this.edits.length - 1; i >= 0; --i) {
+            var range = this.edits[i].oldRange;
+            var newText = this.edits[i].newText;
+            text = new WebInspector.Text(text.replaceRange(range, newText));
+        }
         return text;
 
         /**
@@ -422,7 +425,6 @@ WebInspector.SASSSupport.Property.prototype = {
             return;
         }
         var oldRange1 = new WebInspector.TextRange(this.range.startLine, this.range.startColumn, this.range.startLine, this.name.range.startColumn);
-        var text = this.document.text;
         var edit1 = new WebInspector.SourceEdit(this.document.url, oldRange1, "");
         var oldRange2 = new WebInspector.TextRange(this.range.endLine, this.range.endColumn - 2, this.range.endLine, this.range.endColumn);
         var edit2 = new WebInspector.SourceEdit(this.document.url, oldRange2, "");
@@ -439,7 +441,7 @@ WebInspector.SASSSupport.Property.prototype = {
 
         var lineRange = new WebInspector.TextRange(this.range.startLine, 0, this.range.endLine + 1, 0);
         var oldRange;
-        if (lineRange.extract(this.document.text).trim() === this.range.extract(this.document.text).trim())
+        if (this.document.text.extract(lineRange).trim() === this.document.text.extract(this.range).trim())
             oldRange = lineRange;
         else
             oldRange = this.range;
@@ -466,7 +468,7 @@ WebInspector.SASSSupport.Rule = function(document, selector, styleRange, propert
     for (var i = 0; i < this.properties.length; ++i)
         this.properties[i].parent = this;
 
-    this._hasTrailingSemicolon = !this.properties.length || this.properties.peekLast().range.extract(this.document.text).endsWith(";");
+    this._hasTrailingSemicolon = !this.properties.length || this.document.text.extract(this.properties.peekLast().range).endsWith(";");
 }
 
 WebInspector.SASSSupport.Rule.prototype = {
@@ -564,7 +566,7 @@ WebInspector.SASSSupport.Rule.prototype = {
     _insertPropertyEdit: function(nameText, valueText, disabled, anchorProperty, insertBefore)
     {
         var oldRange = insertBefore ? anchorProperty.range.collapseToStart() : anchorProperty.range.collapseToEnd();
-        var indent = (new WebInspector.TextRange(anchorProperty.range.startLine, 0, anchorProperty.range.startLine, anchorProperty.range.startColumn)).extract(this.document.text);
+        var indent = this.document.text.extract(new WebInspector.TextRange(anchorProperty.range.startLine, 0, anchorProperty.range.startLine, anchorProperty.range.startColumn));
         if (!/^\s+$/.test(indent)) indent = "";
 
         var newText = "";

@@ -49,8 +49,9 @@ WebInspector.SourceMapNamesResolver._resolveScope = function(scope)
         var endLocation = scope.endLocation();
         var textRange = new WebInspector.TextRange(startLocation.lineNumber, startLocation.columnNumber, endLocation.lineNumber, endLocation.columnNumber);
 
-        var scopeText = textRange.extract(content);
-        var scopeStart = textRange.toSourceRange(content).offset;
+        var text = new WebInspector.Text(content);
+        var scopeText = text.extract(textRange);
+        var scopeStart = text.toSourceRange(textRange).offset;
         var prefix = "function fui";
         var root = acorn.parse(prefix + scopeText, {});
         /** @type {!Array<!ESTree.Node>} */
@@ -97,7 +98,7 @@ WebInspector.SourceMapNamesResolver._resolveScope = function(scope)
         walker.walk(root);
 
         var namesMapping = new Map();
-        var lineEndings = content.lineEndings();
+        var lineEndings = content.computeLineEndings();
 
         for (var i = 0; i < identifiers.length; ++i) {
             var id = identifiers[i];
@@ -212,8 +213,9 @@ WebInspector.SourceMapNamesResolver._resolveExpression = function(callFrame, uiS
         if (!content)
             return "";
 
+        var text = new WebInspector.Text(content);
         var textRange = sourceMap.reverseMapTextRange(uiSourceCode.url(), new WebInspector.TextRange(lineNumber, startColumnNumber, lineNumber, endColumnNumber));
-        var originalText = textRange.extract(content);
+        var originalText = text.extract(textRange);
         if (!originalText)
             return "";
 

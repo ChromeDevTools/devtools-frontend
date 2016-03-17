@@ -225,17 +225,6 @@ WebInspector.TextRange.prototype = {
     },
 
     /**
-     * @param {string} text
-     * @return {!WebInspector.SourceRange}
-     */
-    toSourceRange: function(text)
-    {
-        var start = text.offsetFromPosition(this.startLine, this.startColumn);
-        var end = text.offsetFromPosition(this.endLine, this.endColumn);
-        return new WebInspector.SourceRange(start, end - start);
-    },
-
-    /**
      * @param {!WebInspector.TextRange} originalRange
      * @param {!WebInspector.TextRange} editedRange
      * @return {!WebInspector.TextRange}
@@ -268,27 +257,6 @@ WebInspector.TextRange.prototype = {
     },
 
     /**
-     * @param {string} text
-     * @param {string} replacement
-     * @return {string}
-     */
-    replaceInText: function(text, replacement)
-    {
-        var sourceRange = this.toSourceRange(text);
-        return text.substring(0, sourceRange.offset) + replacement + text.substring(sourceRange.offset + sourceRange.length);
-    },
-
-    /**
-     * @param {string} text
-     * @return {string}
-     */
-    extract: function(text)
-    {
-        var sourceRange = this.toSourceRange(text);
-        return text.substr(sourceRange.offset, sourceRange.length);
-    },
-
-    /**
      * @param {number} lineNumber
      * @param {number} columnNumber
      * @return {boolean}
@@ -314,7 +282,7 @@ WebInspector.TextRange.fromEdit = function(oldRange, newText)
 {
     var endLine = oldRange.startLine;
     var endColumn = oldRange.startColumn + newText.length;
-    var lineEndings = newText.lineEndings();
+    var lineEndings = newText.computeLineEndings();
     if (lineEndings.length > 1) {
         endLine = oldRange.startLine + lineEndings.length - 1;
         var len = lineEndings.length;
@@ -340,7 +308,7 @@ WebInspector.SourceRange = function(offset, length)
 
 WebInspector.SourceRange.prototype = {
     /**
-     * @param {string} text
+     * @param {!WebInspector.Text} text
      * @return {!WebInspector.TextRange}
      */
     toTextRange: function(text)
@@ -350,7 +318,7 @@ WebInspector.SourceRange.prototype = {
         return new WebInspector.TextRange(p1.lineNumber, p1.columnNumber, p2.lineNumber, p2.columnNumber);
 
         /**
-         * @param {string} text
+         * @param {!WebInspector.Text} text
          * @param {number} offset
          * @return {!{lineNumber: number, columnNumber: number}}
          */
@@ -385,13 +353,5 @@ WebInspector.SourceEdit.prototype = {
     {
         return WebInspector.TextRange.fromEdit(this.oldRange, this.newText);
     },
-
-    /**
-     * @param {string} text
-     * @return {string}
-     */
-    applyToText: function(text)
-    {
-        return this.oldRange.replaceInText(text, this.newText);
-    },
 }
+

@@ -79,10 +79,10 @@ WebInspector.ContentProvider.performSearchInContent = function(content, query, c
 {
     var regex = createSearchRegex(query, caseSensitive, isRegex);
 
-    var contentString = new String(content);
+    var text = new WebInspector.Text(content);
     var result = [];
-    for (var i = 0; i < contentString.lineCount(); ++i) {
-        var lineContent = contentString.lineAt(i);
+    for (var i = 0; i < text.lineCount(); ++i) {
+        var lineContent = text.lineAt(i);
         regex.lastIndex = 0;
         if (regex.exec(lineContent))
             result.push(new WebInspector.ContentProvider.SearchMatch(i, lineContent));

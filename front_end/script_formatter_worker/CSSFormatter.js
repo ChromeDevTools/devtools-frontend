@@ -36,6 +36,7 @@
 FormatterWorker.CSSFormatter = function(content, builder)
 {
     this._content = content;
+    this._lineEndings = this._content.computeLineEndings();
     this._builder = builder;
     this._lastLine = -1;
     this._state = {};
@@ -45,22 +46,19 @@ FormatterWorker.CSSFormatter.prototype = {
     format: function()
     {
         var tokenize = FormatterWorker.createTokenizer("text/css");
-        var lines = this._content.split("\n");
-
-        for (var i = 0; i < lines.length; ++i) {
-            var line = lines[i];
-            tokenize(line, this._tokenCallback.bind(this, i));
-        }
+        tokenize(this._content, this._tokenCallback.bind(this));
     },
 
     /**
-     * @param {number} startLine
      * @param {string} token
      * @param {?string} type
-     * @param {number} startColumn
+     * @param {number} startPosition
+     * @param {number} endPosition
      */
-    _tokenCallback: function(startLine, token, type, startColumn)
+    _tokenCallback: function(token, type, startPosition, endPosition)
     {
+        var startLine = this._lineEndings.lowerBound(startPosition);
+        var endLine = this._lineEndings.lowerBound(endPosition);
         if (startLine !== this._lastLine)
             this._state.eatWhitespace = true;
         if (/^property/.test(type) && !this._state.inPropertyValue)
@@ -81,8 +79,6 @@ FormatterWorker.CSSFormatter.prototype = {
                 this._builder.addNewLine(true);
             this._state.afterClosingBrace = false;
         }
-        var startPosition = this._content.offsetFromPosition(startLine, startColumn);
-        var endLine = startLine + token.lineCount() - 1;
         if (token === "}") {
             if (this._state.inPropertyValue)
                 this._builder.addNewLine();

@@ -19,6 +19,7 @@
         "StaticContentProvider.js",
         "OutputStream.js",
         "TestBase.js",
+        "Text.js",
         "TextRange.js",
         "TextUtils.js",
         "Throttler.js",

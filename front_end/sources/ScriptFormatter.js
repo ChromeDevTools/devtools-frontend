@@ -110,7 +110,7 @@ WebInspector.ScriptFormatter.prototype = {
         var originalContent = this._originalContent;
         var formattedContent = event.data.content;
         var mapping = event.data["mapping"];
-        var sourceMapping = new WebInspector.FormatterSourceMappingImpl(originalContent.lineEndings(), formattedContent.lineEndings(), mapping);
+        var sourceMapping = new WebInspector.FormatterSourceMappingImpl(originalContent.computeLineEndings(), formattedContent.computeLineEndings(), mapping);
         this._callback(formattedContent, sourceMapping);
     }
 }

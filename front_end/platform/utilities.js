@@ -112,46 +112,11 @@ String.prototype.isWhitespace = function()
 /**
  * @return {!Array.<number>}
  */
-String.prototype.lineEndings = function()
+String.prototype.computeLineEndings = function()
 {
-    if (!this._lineEndings) {
-        this._lineEndings = this.findAll("\n");
-        this._lineEndings.push(this.length);
-    }
-    return this._lineEndings;
-}
-
-/**
- * @return {number}
- */
-String.prototype.lineCount = function()
-{
-    var lineEndings = this.lineEndings();
-    return lineEndings.length;
-}
-
-/**
- * @param {number} lineNumber
- * @param {number} columNumber
- * @return {number}
- */
-String.prototype.offsetFromPosition = function(lineNumber, columNumber)
-{
-    return (lineNumber ? this.lineEndings()[lineNumber - 1] + 1 : 0) + columNumber;
-}
-
-/**
- * @return {string}
- */
-String.prototype.lineAt = function(lineNumber)
-{
-    var lineEndings = this.lineEndings();
-    var lineStart = lineNumber > 0 ? lineEndings[lineNumber - 1] + 1 : 0;
-    var lineEnd = lineEndings[lineNumber];
-    var lineContent = this.substring(lineStart, lineEnd);
-    if (lineContent.length > 0 && lineContent.charAt(lineContent.length - 1) === "\r")
-        lineContent = lineContent.substring(0, lineContent.length - 1);
-    return lineContent;
+    var endings = this.findAll("\n");
+    endings.push(this.length);
+    return endings;
 }
 
 /**

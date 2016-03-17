@@ -89,9 +89,9 @@ WebInspector.JavaScriptBreakpointsSidebarPane.prototype = {
         {
             var lineNumber = uiLocation.lineNumber
             var columnNumber = uiLocation.columnNumber;
-            var contentString = new String(content);
-            if (lineNumber < contentString.lineCount()) {
-                var lineText = contentString.lineAt(lineNumber);
+            var text = new WebInspector.Text(content || "");
+            if (lineNumber < text.lineCount()) {
+                var lineText = text.lineAt(lineNumber);
                 var maxSnippetLength = 200;
                 var snippetStartIndex = columnNumber > 100 ? columnNumber : 0;
                 snippetElement.textContent = lineText.substr(snippetStartIndex).trimEnd(maxSnippetLength);

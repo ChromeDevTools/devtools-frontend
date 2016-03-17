@@ -115,7 +115,8 @@ WebInspector.CSSProperty.prototype = {
         var range = this.range.relativeTo(this.ownerStyle.range.startLine, this.ownerStyle.range.startColumn);
         var indentation = this.ownerStyle.cssText ? this._detectIndentation(this.ownerStyle.cssText) : WebInspector.moduleSetting("textEditorIndent").get();
         var endIndentation = this.ownerStyle.cssText ? indentation.substring(0, this.ownerStyle.range.endColumn) : "";
-        var newStyleText = range.replaceInText(this.ownerStyle.cssText || "", String.sprintf(";%s;", propertyText));
+        var text = new WebInspector.Text(this.ownerStyle.cssText || "");
+        var newStyleText = text.replaceRange(range, String.sprintf(";%s;", propertyText));
 
         return self.runtime.instancePromise(WebInspector.TokenizerFactory)
             .then(this._formatStyle.bind(this, newStyleText, indentation, endIndentation))

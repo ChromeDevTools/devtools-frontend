@@ -82,7 +82,7 @@ WebInspector.TimelineIRModel.prototype = {
         var animations = asyncEventsByGroup.get(groups.animation);
         if (animations)
             this._processAnimations(animations);
-        var range = new SegmentedRange();
+        var range = new WebInspector.SegmentedRange();
         range.appendRange(this._drags); // Drags take lower precedence than animation, as we can't detect them reliably.
         range.appendRange(this._cssAnimations);
         range.appendRange(this._scrolls);
@@ -129,7 +129,7 @@ WebInspector.TimelineIRModel.prototype = {
                 // FIXME: also process renderer fling events.
                 if (!flingStart)
                     break;
-                this._scrolls.append(new Segment(flingStart.startTime, event.endTime, phases.Fling));
+                this._scrolls.append(new WebInspector.Segment(flingStart.startTime, event.endTime, phases.Fling));
                 flingStart = null;
                 break;
 
@@ -168,7 +168,7 @@ WebInspector.TimelineIRModel.prototype = {
                     this._drags.append(this._segmentForEvent(event, phases.Drag));
                 } else if (touchStart) {
                     firstTouchMove = event;
-                    this._responses.append(new Segment(touchStart.startTime, event.endTime, phases.Response));
+                    this._responses.append(new WebInspector.Segment(touchStart.startTime, event.endTime, phases.Response));
                 }
                 break;
 
@@ -199,7 +199,7 @@ WebInspector.TimelineIRModel.prototype = {
             case eventTypes.MouseWheel:
                 // Do not consider first MouseWheel as trace viewer's implementation does -- in case of MouseWheel it's not really special.
                 if (mouseWheel && canMerge(thresholdsMs.mouse, mouseWheel, event))
-                    this._scrolls.append(new Segment(mouseWheel.endTime, event.startTime, phases.Scroll));
+                    this._scrolls.append(new WebInspector.Segment(mouseWheel.endTime, event.startTime, phases.Scroll));
                 this._scrolls.append(this._segmentForEvent(event, phases.Scroll));
                 mouseWheel = event;
                 break;
@@ -230,15 +230,15 @@ WebInspector.TimelineIRModel.prototype = {
     /**
      * @param {!WebInspector.TracingModel.AsyncEvent} event
      * @param {!WebInspector.TimelineIRModel.Phases} phase
-     * @return {!Segment}
+     * @return {!WebInspector.Segment}
      */
     _segmentForEvent: function(event, phase)
     {
-        return new Segment(event.startTime, event.endTime, phase);
+        return new WebInspector.Segment(event.startTime, event.endTime, phase);
     },
 
     /**
-     * @return {!Array<!Segment>}
+     * @return {!Array<!WebInspector.Segment>}
      */
     interactionRecords: function()
     {
@@ -250,15 +250,15 @@ WebInspector.TimelineIRModel.prototype = {
         var thresholdsMs = WebInspector.TimelineIRModel._mergeThresholdsMs;
 
         this._segments = [];
-        this._drags = new SegmentedRange(merge.bind(null, thresholdsMs.mouse));
-        this._cssAnimations = new SegmentedRange(merge.bind(null, thresholdsMs.animation));
-        this._responses = new SegmentedRange(merge.bind(null, 0));
-        this._scrolls = new SegmentedRange(merge.bind(null, thresholdsMs.animation));
+        this._drags = new WebInspector.SegmentedRange(merge.bind(null, thresholdsMs.mouse));
+        this._cssAnimations = new WebInspector.SegmentedRange(merge.bind(null, thresholdsMs.animation));
+        this._responses = new WebInspector.SegmentedRange(merge.bind(null, 0));
+        this._scrolls = new WebInspector.SegmentedRange(merge.bind(null, thresholdsMs.animation));
 
         /**
          * @param {number} threshold
-         * @param {!Segment} first
-         * @param {!Segment} second
+         * @param {!WebInspector.Segment} first
+         * @param {!WebInspector.Segment} second
          */
         function merge(threshold, first, second)
         {

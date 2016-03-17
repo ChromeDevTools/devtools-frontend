@@ -72,6 +72,7 @@
             'front_end/common/Settings.js',
             'front_end/common/StaticContentProvider.js',
             'front_end/common/OutputStream.js',
+            'front_end/common/SegmentedRange.js',
             'front_end/common/TestBase.js',
             'front_end/common/Text.js',
             'front_end/common/TextDictionary.js',

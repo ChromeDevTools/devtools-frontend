@@ -18,6 +18,7 @@
         "Settings.js",
         "StaticContentProvider.js",
         "OutputStream.js",
+        "SegmentedRange.js",
         "TestBase.js",
         "Text.js",
         "TextRange.js",

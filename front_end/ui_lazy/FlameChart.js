@@ -1490,7 +1490,7 @@ WebInspector.FlameChart.prototype = {
      */
     _drawCollapsedOverviewForGroup: function(y, startLevel, endLevel)
     {
-        var range = new SegmentedRange(mergeCallback);
+        var range = new WebInspector.SegmentedRange(mergeCallback);
         var timeWindowRight = this._timeWindowRight;
         var timeWindowLeft = this._timeWindowLeft - this._paddingLeft / this._timeToPixel;
         var context = this._canvas.getContext("2d");
@@ -1514,7 +1514,7 @@ WebInspector.FlameChart.prototype = {
                     break;
                 lastDrawOffset = startPosition;
                 var color = this._dataProvider.entryColor(entryIndex);
-                range.append(new Segment(startPosition, this._timeToPositionClipped(entryEndTime), color));
+                range.append(new WebInspector.Segment(startPosition, this._timeToPositionClipped(entryEndTime), color));
             }
         }
 
@@ -1534,9 +1534,9 @@ WebInspector.FlameChart.prototype = {
         context.fill();
 
         /**
-         * @param {!Segment} a
-         * @param {!Segment} b
-         * @return {?Segment}
+         * @param {!WebInspector.Segment} a
+         * @param {!WebInspector.Segment} b
+         * @return {?WebInspector.Segment}
          */
         function mergeCallback(a, b)
         {

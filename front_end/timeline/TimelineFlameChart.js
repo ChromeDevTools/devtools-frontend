@@ -837,7 +837,7 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
     },
 
     /**
-     * @param {!Segment} segment
+     * @param {!WebInspector.Segment} segment
      */
     _appendSegment: function(segment)
     {

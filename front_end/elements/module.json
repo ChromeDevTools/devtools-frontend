@@ -32,7 +32,7 @@
             "defaultValue": "original",
             "options": [
                 { "title": "Set color format as authored", "text": "As authored", "value": "original" },
-                { "title": "Set color format to HEX", "text": "HEX: #DAC0DE", "value": "hex", "raw": true },
+                { "title": "Set color format to HEX", "text": "HEX: #dac0de", "value": "hex", "raw": true },
                 { "title": "Set color format to RGB", "text": "RGB: rgb(128, 255, 255)", "value": "rgb", "raw": true },
                 { "title": "Set color format to HSL", "text": "HSL: hsl(300, 80%, 90%)", "value": "hsl", "raw": true }
             ]

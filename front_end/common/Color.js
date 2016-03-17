@@ -80,7 +80,7 @@ WebInspector.Color.parse = function(text)
     var match = value.match(simple);
     if (match) {
         if (match[1]) { // hex
-            var hex = match[1].toUpperCase();
+            var hex = match[1].toLowerCase();
             var format;
             if (hex.length === 3) {
                 format = WebInspector.Color.Format.ShortHEX;
@@ -327,11 +327,11 @@ WebInspector.Color.prototype = {
         case WebInspector.Color.Format.HEX:
             if (this.hasAlpha())
                 return null;
-            return String.sprintf("#%s%s%s", toHexValue(this._rgba[0]), toHexValue(this._rgba[1]), toHexValue(this._rgba[2])).toUpperCase();
+            return String.sprintf("#%s%s%s", toHexValue(this._rgba[0]), toHexValue(this._rgba[1]), toHexValue(this._rgba[2])).toLowerCase();;
         case WebInspector.Color.Format.ShortHEX:
             if (!this.canBeShortHex())
                 return null;
-            return String.sprintf("#%s%s%s", toShortHexValue(this._rgba[0]), toShortHexValue(this._rgba[1]), toShortHexValue(this._rgba[2])).toUpperCase();
+            return String.sprintf("#%s%s%s", toShortHexValue(this._rgba[0]), toShortHexValue(this._rgba[1]), toShortHexValue(this._rgba[2])).toLowerCase();;
         case WebInspector.Color.Format.Nickname:
             return this.nickname();
         }

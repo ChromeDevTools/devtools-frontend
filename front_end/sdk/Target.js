@@ -175,6 +175,14 @@ WebInspector.Target.prototype = {
         return this._modelByConstructor.get(modelClass) || null;
     },
 
+    /**
+     * @return {!Array<!WebInspector.SDKModel>}
+     */
+    models: function()
+    {
+        return this._modelByConstructor.valuesArray();
+    },
+
     __proto__: Protocol.Agents.prototype
 }
 

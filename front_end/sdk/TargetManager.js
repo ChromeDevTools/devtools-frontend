@@ -40,7 +40,7 @@ WebInspector.TargetManager.prototype = {
         this.dispatchEventToListeners(WebInspector.TargetManager.Events.SuspendStateChanged);
 
         for (var i = 0; i < this._targets.length; ++i) {
-            for (var model of this._targets[i]._modelByConstructor.values())
+            for (var model of this._targets[i].models())
                 model.suspendModel();
         }
     },
@@ -57,7 +57,7 @@ WebInspector.TargetManager.prototype = {
 
         var promises = [];
         for (var i = 0; i < this._targets.length; ++i) {
-            for (var model of this._targets[i]._modelByConstructor.values())
+            for (var model of this._targets[i].models())
                 promises.push(model.resumeModel());
         }
         return Promise.all(promises);
@@ -126,7 +126,7 @@ WebInspector.TargetManager.prototype = {
     addModelListener: function(modelClass, eventType, listener, thisObject)
     {
         for (var i = 0; i < this._targets.length; ++i) {
-            var model = this._targets[i]._modelByConstructor.get(modelClass);
+            var model = this._targets[i].model(modelClass);
             if (model)
                 model.addEventListener(eventType, listener, thisObject);
         }
@@ -147,7 +147,7 @@ WebInspector.TargetManager.prototype = {
             return;
 
         for (var i = 0; i < this._targets.length; ++i) {
-            var model = this._targets[i]._modelByConstructor.get(modelClass);
+            var model = this._targets[i].model(modelClass);
             if (model)
                 model.removeEventListener(eventType, listener, thisObject);
         }

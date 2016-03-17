@@ -53,6 +53,7 @@
         "../InspectorBackendCommands.js",
         "InspectorBackendHostedMode.js",
         "Target.js",
+        "TargetManager.js",
         "ApplicationCacheModel.js",
         "ConsoleModel.js",
         "ContentProviders.js",

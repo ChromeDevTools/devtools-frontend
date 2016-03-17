@@ -161,6 +161,7 @@
             'front_end/sdk/ServiceWorkerManager.js',
             'front_end/sdk/SourceMap.js',
             'front_end/sdk/Target.js',
+            'front_end/sdk/TargetManager.js',
             'front_end/sdk/TracingManager.js',
             'front_end/sdk/TracingModel.js',
             'front_end/sdk/WorkerManager.js',

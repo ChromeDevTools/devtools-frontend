@@ -7,11 +7,12 @@
         "../cm/htmlmixed.js",
         "../common/WebInspector.js",
         "../es_tree/ESTreeWalker.js",
-        "ScriptFormatterWorker.js",
+        "FormatterWorker.js",
         "../acorn/acorn.js",
         "CSSFormatter.js",
         "../es_tree/AcornTokenizer.js",
-        "JavaScriptFormatter.js"
+        "JavaScriptFormatter.js",
+        "FormattedContentBuilder.js"
     ],
     "skip_compilation": [
         "../acorn/acorn.js",

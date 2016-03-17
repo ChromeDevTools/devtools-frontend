@@ -37,6 +37,6 @@
     { "name": "emulated_devices", "type": "remote" },
 
     { "name": "heap_snapshot_worker", "type": "worker" },
-    { "name": "script_formatter_worker", "type": "worker" },
+    { "name": "formatter_worker", "type": "worker" },
     { "name": "temp_storage_shared_worker", "type": "worker" }
 ]

@@ -262,7 +262,6 @@ WebInspector.TimelineFlameChartDataProviderBase.prototype = {
  * @enum {symbol}
  */
 WebInspector.TimelineFlameChartEntryType = {
-    Header: Symbol("Header"),
     Frame: Symbol("Frame"),
     Event: Symbol("Event"),
     InteractionRecord: Symbol("InteractionRecord"),
@@ -359,7 +358,7 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
     reset: function()
     {
         WebInspector.TimelineFlameChartDataProviderBase.prototype.reset.call(this);
-        /** @type {!Array<!WebInspector.TracingModel.Event|!WebInspector.TimelineFrame|!WebInspector.TimelineIRModel.Phases|null>} */
+        /** @type {!Array<!WebInspector.TracingModel.Event|!WebInspector.TimelineFrame|!WebInspector.TimelineIRModel.Phases>} */
         this._entryData = [];
         /** @type {!Array<!WebInspector.TimelineFlameChartEntryType>} */
         this._entryTypeByLevel = [];
@@ -387,26 +386,21 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
         this._currentLevel = 0;
         this._appendFrameBars(this._frameModel.frames());
         this._appendInteractionRecords();
-        this._appendThreadTimelineData(WebInspector.UIString("Main Thread"), this._model.mainThreadEvents(), this._model.mainThreadAsyncEvents(), true);
-        if (Runtime.experiments.isEnabled("gpuTimeline"))
-            this._appendGPUEvents();
 
         var threads = this._model.virtualThreads();
-        var compositorThreads;
-        var otherThreads;
-        if (Runtime.experiments.isEnabled("timelineCollapsible")) {
-            compositorThreads = threads.filter(thread => thread.name.startsWith("CompositorTileWorker"));
-            otherThreads = threads.filter(thread => !thread.name.startsWith("CompositorTileWorker"));
-        } else {
-            compositorThreads = [];
-            otherThreads = threads;
-        }
-        otherThreads.forEach(thread => this._appendThreadTimelineData(thread.name, thread.events, thread.asyncEventsByGroup));
+        var compositorThreads = threads.filter(thread => thread.name.startsWith("CompositorTileWorker"));
+        var otherThreads = threads.filter(thread => !thread.name.startsWith("CompositorTileWorker"));
         if (compositorThreads.length) {
             this._appendHeader(WebInspector.UIString("Rasterizer Threads"), this._headerLevel1);
             for (var i = 0; i < compositorThreads.length; ++i)
                 this._appendSyncEvents(compositorThreads[i].events, WebInspector.UIString("Rasterizer Thread %d", i), this._headerLevel2);
         }
+
+        this._appendThreadTimelineData(WebInspector.UIString("Main Thread"), this._model.mainThreadEvents(), this._model.mainThreadAsyncEvents(), true);
+        if (Runtime.experiments.isEnabled("gpuTimeline"))
+            this._appendGPUEvents();
+
+        otherThreads.forEach(thread => this._appendThreadTimelineData(thread.name, thread.events, thread.asyncEventsByGroup));
 
         /**
          * @param {!WebInspector.TimelineFlameChartMarker} a
@@ -656,8 +650,6 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
         }
         if (type === WebInspector.TimelineFlameChartEntryType.Frame)
             return "white";
-        if (type === WebInspector.TimelineFlameChartEntryType.Header)
-            return "#aaa";
         if (type === WebInspector.TimelineFlameChartEntryType.InteractionRecord)
             return WebInspector.TimelineUIUtils.interactionPhaseColor(/** @type {!WebInspector.TimelineIRModel.Phases} */ (this._entryData[entryIndex]));
         return "";
@@ -747,24 +739,7 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
      */
     _appendHeader: function(title, style, expanded)
     {
-        if (Runtime.experiments.isEnabled("timelineCollapsible"))
-            this._timelineData.groups.push({startLevel: this._currentLevel, name: title, expanded: expanded, style: style});
-        else
-            this._appendHeaderRecord(title)
-    },
-
-    /**
-     * @param {string} title
-     */
-    _appendHeaderRecord: function(title)
-    {
-        var index = this._entryData.length;
-        this._entryIndexToTitle[index] = title;
-        this._entryData.push(null);
-        this._entryTypeByLevel[this._currentLevel] = WebInspector.TimelineFlameChartEntryType.Header;
-        this._timelineData.entryLevels[index] = this._currentLevel++;
-        this._timelineData.entryTotalTimes[index] = this._timeSpan;
-        this._timelineData.entryStartTimes[index] = this._minimumBoundary;
+        this._timelineData.groups.push({startLevel: this._currentLevel, name: title, expanded: expanded, style: style});
     },
 
     /**

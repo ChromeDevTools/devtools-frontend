@@ -4796,50 +4796,16 @@
     },
     {
         "domain": "Tracing",
-        "types": [
-            {
-                "id": "MemoryDumpTrigger",
-                "type": "object",
-                "properties": [
-                    { "name": "mode", "type": "string", "enum": ["light", "detailed"], "description": "Level of detail of the triggered memory dumps." },
-                    { "name": "periodicIntervalMs", "type": "integer", "description": "Length of the periodic intervals between the triggered memory dumps." }
-                ],
-                "description": "Memory dump trigger configuration."
-            },
-            {
-                "id": "MemoryDumpConfig",
-                "type": "object",
-                "properties": [
-                    { "name": "triggers", "type": "array", "items": { "$ref": "MemoryDumpTrigger" }, "optional": false, "description": "Memory dump trigger configuration." }
-                ],
-                "description": "Configuration for memory dump triggers. Used only when \"memory-infra\" category is enabled."
-            },
-            {
-                "id": "TraceConfig",
-                "type": "object",
-                "properties": [
-                    { "name": "recordMode", "type": "string", "optional": true, "enum": ["recordUntilFull", "recordContinuously", "recordAsMuchAsPossible", "echoToConsole"], "description": "Controls how the trace buffer stores data." },
-                    { "name": "enableSampling", "type": "boolean", "optional": true, "description": "Turns on JavaScript stack sampling." },
-                    { "name": "enableSystrace", "type": "boolean", "optional": true, "description": "Turns on system tracing." },
-                    { "name": "enableArgumentFilter", "type": "boolean", "optional": true, "description": "Turns on argument filter." },
-                    { "name": "includedCategories", "type": "array", "items": { "type": "string" }, "optional": true, "description": "Included category filters." },
-                    { "name": "excludedCategories", "type": "array", "items": { "type": "string" }, "optional": true, "description": "Excluded category filters." },
-                    { "name": "syntheticDelays", "type": "array", "items": { "type": "string" }, "optional": true, "description": "Configuration to synthesize the delays in tracing." },
-                    { "name": "memoryDumpConfig", "$ref": "MemoryDumpConfig", "optional": true, "description": "Configuration for memory dump triggers. Used only when \"memory-infra\" category is enabled." }
-                ]
-            }
-        ],
         "commands": [
             {
                 "name": "start",
                 "async": true,
                 "description": "Start trace events collection.",
                 "parameters": [
-                    { "name": "categories", "type": "string", "optional": true, "deprecated": true, "description": "Category/tag filter" },
-                    { "name": "options", "type": "string", "optional": true, "deprecated": true, "description": "Tracing options" },
+                    { "name": "categories", "type": "string", "optional": true, "description": "Category/tag filter" },
+                    { "name": "options", "type": "string", "optional": true, "description": "Tracing options" },
                     { "name": "bufferUsageReportingInterval", "type": "number", "optional": true, "description": "If set, the agent will issue bufferUsage events at this interval, specified in milliseconds" },
-                    { "name": "transferMode", "type": "string", "enum": ["ReportEvents", "ReturnAsStream"], "optional": true, "description": "Whether to report trace events as series of dataCollected events or to save trace to a stream (defaults to <code>ReportEvents</code>)." },
-                    { "name": "traceConfig", "$ref": "TraceConfig", "optional": true, "description": "" }
+                    { "name": "transferMode", "type": "string", "enum": ["ReportEvents", "ReturnAsStream"], "optional": true, "description": "Whether to report trace events as series of dataCollected events or to save trace to a stream (defaults to <code>ReportEvents</code>)." }
                 ],
                 "handlers": ["browser", "renderer"]
             },

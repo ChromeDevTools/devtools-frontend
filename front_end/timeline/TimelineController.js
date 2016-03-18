@@ -16,6 +16,8 @@ WebInspector.TimelineController = function(target, delegate, tracingModel)
     this._target = target;
     this._tracingModel = tracingModel;
     this._targets = [];
+    this._allProfilesStoppedPromise = Promise.resolve();
+    this._targetsResumedPromise = Promise.resolve();
     WebInspector.targetManager.observeTargets(this);
 }
 
@@ -74,7 +76,7 @@ WebInspector.TimelineController.prototype = {
     {
         this._allProfilesStoppedPromise = this._stopProfilingOnAllTargets();
         this._target.tracingManager.stop();
-        WebInspector.targetManager.resumeAllTargets();
+        this._targetsResumedPromise = WebInspector.targetManager.resumeAllTargets();
         this._delegate.loadingStarted();
     },
 
@@ -205,12 +207,8 @@ WebInspector.TimelineController.prototype = {
      */
     tracingComplete: function()
     {
-        if (!this._allProfilesStoppedPromise) {
-            this._didStopRecordingTraceEvents();
-            return;
-        }
-        this._allProfilesStoppedPromise.then(this._didStopRecordingTraceEvents.bind(this));
-        this._allProfilesStoppedPromise = null;
+        Promise.all([this._allProfilesStoppedPromise, this._targetsResumedPromise])
+            .then(this._didStopRecordingTraceEvents.bind(this));
     },
 
     _didStopRecordingTraceEvents: function()

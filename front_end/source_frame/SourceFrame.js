@@ -405,7 +405,7 @@ WebInspector.SourceFrame.prototype = {
      */
     _searchResultIndexForCurrentSelection: function()
     {
-        return insertionIndexForObjectInListSortedByFunction(this._textEditor.selection().collapseToEnd(), this._searchResults, WebInspector.TextRange.comparator);
+        return this._searchResults.lowerBound(this._textEditor.selection().collapseToEnd(), WebInspector.TextRange.comparator);
     },
 
     jumpToNextSearchResult: function()
@@ -483,7 +483,7 @@ WebInspector.SourceFrame.prototype = {
             return;
 
         // Calculate the position of the end of the last range to be edited.
-        var currentRangeIndex = insertionIndexForObjectInListSortedByFunction(this._textEditor.selection(), ranges, WebInspector.TextRange.comparator);
+        var currentRangeIndex = ranges.lowerBound(this._textEditor.selection(), WebInspector.TextRange.comparator);
         var lastRangeIndex = mod(currentRangeIndex - 1, ranges.length);
         var lastRange = ranges[lastRangeIndex];
         var replacementLineEndings = replacement.computeLineEndings();

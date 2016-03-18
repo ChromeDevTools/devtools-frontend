@@ -71,8 +71,8 @@ WebInspector.TimelineFrameModelBase.prototype = {
             return value - object.endTime;
         }
         var frames = this._frames;
-        var firstFrame = insertionIndexForObjectInListSortedByFunction(startTime, frames, compareEndTime);
-        var lastFrame = insertionIndexForObjectInListSortedByFunction(endTime, frames, compareStartTime);
+        var firstFrame = frames.lowerBound(startTime, compareEndTime);
+        var lastFrame = frames.lowerBound(endTime, compareStartTime);
         return frames.slice(firstFrame, lastFrame);
     },
 

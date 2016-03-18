@@ -931,23 +931,6 @@ Object.defineProperty(Array.prototype, "mergeOrdered",
 
 }());
 
-
-/**
- * @param {!T} object
- * @param {!Array.<!S>} list
- * @param {function(!T,!S):number=} comparator
- * @param {boolean=} insertionIndexAfter
- * @return {number}
- * @template T,S
- */
-function insertionIndexForObjectInListSortedByFunction(object, list, comparator, insertionIndexAfter)
-{
-    if (insertionIndexAfter)
-        return list.upperBound(object, comparator);
-    else
-        return list.lowerBound(object, comparator);
-}
-
 /**
  * @param {string} format
  * @param {...*} var_arg

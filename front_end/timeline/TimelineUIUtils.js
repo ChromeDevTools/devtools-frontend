@@ -854,7 +854,7 @@ WebInspector.TimelineUIUtils.buildRangeStats = function(model, startTime, endTim
         return value < task.endTime() ? -1 : 1;
     }
     var mainThreadTasks = model.mainThreadTasks();
-    var taskIndex = insertionIndexForObjectInListSortedByFunction(startTime, mainThreadTasks, compareEndTime);
+    var taskIndex = mainThreadTasks.lowerBound(startTime, compareEndTime);
     for (; taskIndex < mainThreadTasks.length; ++taskIndex) {
         var task = mainThreadTasks[taskIndex];
         if (task.startTime() > endTime)

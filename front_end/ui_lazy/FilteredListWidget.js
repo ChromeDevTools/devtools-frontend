@@ -220,7 +220,7 @@ WebInspector.FilteredListWidget.prototype = {
 
                 // Find its index in the scores array (earlier elements have bigger scores).
                 if (score > minBestScore || bestScores.length < bestItemsToCollect) {
-                    var index = insertionIndexForObjectInListSortedByFunction(score, bestScores, compareIntegers, true);
+                    var index =  bestScores.upperBound(score, compareIntegers);
                     bestScores.splice(index, 0, score);
                     bestItems.splice(index, 0, i);
                     if (bestScores.length > bestItemsToCollect) {

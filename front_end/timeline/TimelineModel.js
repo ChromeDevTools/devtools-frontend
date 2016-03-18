@@ -593,15 +593,15 @@ WebInspector.TimelineModel.prototype = {
 
         // First Paint is actually a DrawFrame that happened after first CompositeLayers following last CommitLoadEvent.
         var recordTypes = WebInspector.TimelineModel.RecordType;
-        var i = insertionIndexForObjectInListSortedByFunction(this._firstCompositeLayers, this._inspectedTargetEvents, WebInspector.TracingModel.Event.compareStartTime);
+        var i = this._inspectedTargetEvents.lowerBound(this._firstCompositeLayers, WebInspector.TracingModel.Event.compareStartTime);
         for (; i < this._inspectedTargetEvents.length && this._inspectedTargetEvents[i].name !== recordTypes.DrawFrame; ++i) { }
         if (i >= this._inspectedTargetEvents.length)
             return;
         var drawFrameEvent = this._inspectedTargetEvents[i];
         var firstPaintEvent = new WebInspector.TracingModel.Event(drawFrameEvent.categoriesString, recordTypes.MarkFirstPaint, WebInspector.TracingModel.Phase.Instant, drawFrameEvent.startTime, drawFrameEvent.thread);
-        this._mainThreadEvents.splice(insertionIndexForObjectInListSortedByFunction(firstPaintEvent, this._mainThreadEvents, WebInspector.TracingModel.Event.compareStartTime), 0, firstPaintEvent);
+        this._mainThreadEvents.splice(this._mainThreadEvents.lowerBound(firstPaintEvent, WebInspector.TracingModel.Event.compareStartTime), 0, firstPaintEvent);
         var firstPaintRecord = new WebInspector.TimelineModel.Record(firstPaintEvent);
-        this._eventDividerRecords.splice(insertionIndexForObjectInListSortedByFunction(firstPaintRecord, this._eventDividerRecords, WebInspector.TimelineModel.Record._compareStartTime), 0, firstPaintRecord);
+        this._eventDividerRecords.splice(this._eventDividerRecords.lowerBound(firstPaintRecord, WebInspector.TimelineModel.Record._compareStartTime), 0, firstPaintRecord);
     },
 
     /**

@@ -471,7 +471,7 @@ TreeElement.prototype = {
 
         var insertionIndex;
         if (this.treeOutline && this.treeOutline._comparator)
-            insertionIndex = insertionIndexForObjectInListSortedByFunction(child, this._children, this.treeOutline._comparator);
+            insertionIndex = this._children.lowerBound(child, this.treeOutline._comparator);
         else
             insertionIndex = this._children.length;
         this.insertChild(child, insertionIndex);

@@ -2135,7 +2135,7 @@ WebInspector.TimelineUIUtils.PerformanceLineDecorator.prototype = {
             var intensity = Number.constrain(Math.log10(1 + 2 * time) / 5, 0.02, 1);
             var element = createElementWithClass("div", "text-editor-line-marker-performance");
             element.textContent = text;
-            element.style.backgroundColor = `rgba(255, 0, 0, ${intensity.toFixed(3)})`;
+            element.style.backgroundColor = `hsla(44, 100%, 50%, ${intensity.toFixed(3)})`;
             textEditor.setGutterDecoration(decoration.line(), decoration.type(), element);
         }
     }

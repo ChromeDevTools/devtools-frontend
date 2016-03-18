@@ -311,9 +311,14 @@ WebInspector.FileSystemMapping.prototype = {
             if (filePathCharacter === "/")
                 commonPathSuffixLength = i;
         }
-        var pathPrefix = filePath.substring(fileSystemPath.length, filePath.length - commonPathSuffixLength);
+        var from = fileSystemPath.length;
+        var to = filePath.length - commonPathSuffixLength;
+        var pathPrefix = filePath.substring(from, to);
         var urlPrefix = url.substr(0, url.length - commonPathSuffixLength);
-        this.addFileMapping(fileSystemPath, urlPrefix, pathPrefix);
+        if (to >= from)
+            this.addFileMapping(fileSystemPath, urlPrefix, pathPrefix);
+        else
+            this.addFileMapping(fileSystemPath, urlPrefix + pathPrefix, "/");
     },
 
     resetForTesting: function()

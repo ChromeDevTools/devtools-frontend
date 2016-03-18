@@ -58,8 +58,6 @@ WebInspector.TimelinePanel = function()
     if (Runtime.experiments.isEnabled("timelineLatencyInfo"))
         this._irModel = new WebInspector.TimelineIRModel();
 
-    this._controller = new WebInspector.TimelineController(this, this._tracingModel);
-
     if (Runtime.experiments.isEnabled("cpuThrottling"))
         this._cpuThrottlingManager = new WebInspector.CPUThrottlingManager();
 
@@ -614,10 +612,14 @@ WebInspector.TimelinePanel.prototype = {
     _startRecording: function(userInitiated)
     {
         console.assert(!this._statusPane, "Status pane is already opened.");
+        var mainTarget = WebInspector.targetManager.mainTarget();
+        if (!mainTarget)
+            return;
         this._setState(WebInspector.TimelinePanel.State.StartPending);
         this._showRecordingStarted();
 
         this._autoRecordGeneration = userInitiated ? null : Symbol("Generation");
+        this._controller = new WebInspector.TimelineController(mainTarget, this, this._tracingModel);
         this._controller.startRecording(true, this._captureJSProfileSetting.get(), this._captureMemorySetting.get(), this._captureLayersAndPicturesSetting.get(), this._captureFilmStripSetting && this._captureFilmStripSetting.get());
 
         for (var i = 0; i < this._overviewControls.length; ++i)
@@ -639,6 +641,7 @@ WebInspector.TimelinePanel.prototype = {
         this._setState(WebInspector.TimelinePanel.State.StopPending);
         this._autoRecordGeneration = null;
         this._controller.stopRecording();
+        this._controller = null;
         this._setUIControlsEnabled(true);
     },
 

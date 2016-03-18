@@ -8,11 +8,11 @@
  */
 WebInspector.DataSaverInfobar = function()
 {
-    WebInspector.Infobar.call(this, WebInspector.Infobar.Type.Warning, WebInspector.UIString("Data Saver is enabled"), WebInspector.settings.moduleSetting("disableDataSaverInfobar"));
+    WebInspector.Infobar.call(this, WebInspector.Infobar.Type.Warning, WebInspector.UIString("Consider disabling Chrome Data Saver while debugging."), WebInspector.settings.moduleSetting("disableDataSaverInfobar"));
     var message = this.createDetailsRowMessage();
-    message.createTextChild("Consider disabling ");
+    message.createTextChild("More information about  ");
     message.appendChild(WebInspector.linkifyURLAsNode("https://support.google.com/chrome/answer/2392284?hl=en", "Chrome Data Saver", undefined, true));
-    message.createTextChild(WebInspector.UIString(" while debugging."));
+    message.createTextChild(".");
 }
 
 WebInspector.DataSaverInfobar._infobars = [];

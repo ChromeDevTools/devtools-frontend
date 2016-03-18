@@ -395,10 +395,9 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
             for (var i = 0; i < compositorThreads.length; ++i)
                 this._appendSyncEvents(compositorThreads[i].events, WebInspector.UIString("Rasterizer Thread %d", i), this._headerLevel2);
         }
+        this._appendGPUEvents();
 
         this._appendThreadTimelineData(WebInspector.UIString("Main Thread"), this._model.mainThreadEvents(), this._model.mainThreadAsyncEvents(), true);
-        if (Runtime.experiments.isEnabled("gpuTimeline"))
-            this._appendGPUEvents();
 
         otherThreads.forEach(thread => this._appendThreadTimelineData(thread.name, thread.events, thread.asyncEventsByGroup));
 
@@ -546,7 +545,7 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
 
     _appendGPUEvents: function()
     {
-        if (this._appendSyncEvents(this._model.gpuTasks().map(record => record.traceEvent()), WebInspector.UIString("GPU"), this._headerLevel1))
+        if (this._appendSyncEvents(this._model.gpuEvents(), WebInspector.UIString("GPU"), this._headerLevel1, false))
             ++this._currentLevel;
     },
 

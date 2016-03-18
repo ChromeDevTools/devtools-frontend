@@ -501,7 +501,7 @@ WebInspector.TimelineModel.prototype = {
         this._cpuProfiles = null;
         this._processBrowserEvents(tracingModel);
         this._buildTimelineRecords();
-        this._buildGPUTasks(tracingModel);
+        this._buildGPUEvents(tracingModel);
         this._insertFirstPaintEvent();
         this._resetProcessingState();
     },
@@ -645,17 +645,13 @@ WebInspector.TimelineModel.prototype = {
     /**
      * @param {!WebInspector.TracingModel} tracingModel
      */
-    _buildGPUTasks: function(tracingModel)
+    _buildGPUEvents: function(tracingModel)
     {
-        var mainThread = tracingModel.threadByName("GPU Process", "CrGpuMain");
-        if (!mainThread)
+        var thread = tracingModel.threadByName("GPU Process", "CrGpuMain");
+        if (!thread)
             return;
-        var events = mainThread.events();
-        var recordTypes = WebInspector.TimelineModel.RecordType;
-        for (var i = 0; i < events.length; ++i) {
-            if (events[i].name === recordTypes.GPUTask)
-                this._gpuTasks.push(new WebInspector.TimelineModel.Record(events[i]));
-        }
+        var gpuEventName = WebInspector.TimelineModel.RecordType.GPUTask;
+        this._gpuEvents = thread.events().filter(event => event.name === gpuEventName);
     },
 
     /**
@@ -1066,19 +1062,19 @@ WebInspector.TimelineModel.prototype = {
     {
         this._lineLevelCPUProfile = new WebInspector.TimelineModel.LineLevelProfile();
         this._virtualThreads = [];
-        /** @type {!Array.<!WebInspector.TracingModel.Event>} */
+        /** @type {!Array<!WebInspector.TracingModel.Event>} */
         this._mainThreadEvents = [];
         /** @type {!Map<!WebInspector.AsyncEventGroup, !Array<!WebInspector.TracingModel.AsyncEvent>>} */
         this._mainThreadAsyncEventsByGroup = new Map();
-        /** @type {!Array.<!WebInspector.TracingModel.Event>} */
+        /** @type {!Array<!WebInspector.TracingModel.Event>} */
         this._inspectedTargetEvents = [];
-        /** @type {!Array.<!WebInspector.TimelineModel.Record>} */
+        /** @type {!Array<!WebInspector.TimelineModel.Record>} */
         this._records = [];
-        /** @type {!Array.<!WebInspector.TimelineModel.Record>} */
+        /** @type {!Array<!WebInspector.TimelineModel.Record>} */
         this._mainThreadTasks = [];
-        /** @type {!Array.<!WebInspector.TimelineModel.Record>} */
-        this._gpuTasks = [];
-        /** @type {!Array.<!WebInspector.TimelineModel.Record>} */
+        /** @type {!Array<!WebInspector.TracingModel.Event>} */
+        this._gpuEvents = [];
+        /** @type {!Array<!WebInspector.TimelineModel.Record>} */
         this._eventDividerRecords = [];
         /** @type {?string} */
         this._sessionId = null;
@@ -1169,11 +1165,11 @@ WebInspector.TimelineModel.prototype = {
     },
 
     /**
-     * @return {!Array.<!WebInspector.TimelineModel.Record>}
+     * @return {!Array<!WebInspector.TracingModel.Event>}
      */
-    gpuTasks: function()
+    gpuEvents: function()
     {
-        return this._gpuTasks;
+        return this._gpuEvents;
     },
 
     /**

@@ -512,14 +512,17 @@ WebInspector.linkifyURLAsNode = function(url, linkText, classes, isExternal, too
 {
     if (!linkText)
         linkText = url;
-    classes = (classes ? classes + " " : "");
-    classes += isExternal ? "webkit-html-external-link" : "webkit-html-resource-link";
 
-    var a = createElement("a");
-    var href = sanitizeHref(url);
-    if (href !== null)
+    var a = createElementWithClass("a", classes);
+    var href = url;
+    if (url.trim().toLowerCase().startsWith("javascript:"))
+        href = null;
+    if (isExternal && WebInspector.ParsedURL.isRelativeURL(url))
+        href = null;
+    if (href !== null) {
         a.href = href;
-    a.className = classes;
+        a.classList.add(isExternal ? "webkit-html-external-link" : "webkit-html-resource-link");
+    }
     if (!tooltipText && linkText !== url)
         a.title = url;
     else if (tooltipText)

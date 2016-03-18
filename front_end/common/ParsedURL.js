@@ -303,6 +303,15 @@ WebInspector.ParsedURL.splitLineAndColumn = function(string)
 }
 
 /**
+ * @param {string} url
+ * @return {boolean}
+ */
+WebInspector.ParsedURL.isRelativeURL = function(url)
+{
+    return !(/^[A-Za-z][A-Za-z0-9+.-]*:/.test(url));
+}
+
+/**
  * @return {?WebInspector.ParsedURL}
  */
 String.prototype.asParsedURL = function()

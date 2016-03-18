@@ -252,15 +252,6 @@ String.prototype.compareTo = function(other)
 }
 
 /**
- * @param {string} href
- * @return {?string}
- */
-function sanitizeHref(href)
-{
-    return href && href.trim().toLowerCase().startsWith("javascript:") ? null : href;
-}
-
-/**
  * @return {string}
  */
 String.prototype.removeURLFragment = function()

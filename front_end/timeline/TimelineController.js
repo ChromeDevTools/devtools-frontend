@@ -44,8 +44,7 @@ WebInspector.TimelineController.prototype = {
             WebInspector.TimelineModel.Category.Console,
             WebInspector.TimelineModel.Category.UserTiming
         ];
-        if (Runtime.experiments.isEnabled("timelineLatencyInfo"))
-            categoriesArray.push(WebInspector.TimelineModel.Category.LatencyInfo)
+        categoriesArray.push(WebInspector.TimelineModel.Category.LatencyInfo)
 
         if (Runtime.experiments.isEnabled("timelineFlowEvents")) {
             categoriesArray.push(disabledByDefault("toplevel.flow"),

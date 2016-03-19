@@ -1009,8 +1009,6 @@ WebInspector.TimelineModel.prototype = {
             return groups.console;
         if (asyncEvent.hasCategory(WebInspector.TimelineModel.Category.UserTiming))
             return groups.userTiming;
-        if (!Runtime.experiments.isEnabled("timelineLatencyInfo"))
-            return null;
         if (asyncEvent.name === WebInspector.TimelineModel.RecordType.Animation)
             return groups.animation;
         if (asyncEvent.hasCategory(WebInspector.TimelineModel.Category.LatencyInfo) || asyncEvent.name === WebInspector.TimelineModel.RecordType.ImplSideFling) {

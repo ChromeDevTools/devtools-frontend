@@ -272,7 +272,7 @@ WebInspector.TimelineFlameChartEntryType = {
  * @extends {WebInspector.TimelineFlameChartDataProviderBase}
  * @param {!WebInspector.TimelineModel} model
  * @param {!WebInspector.TimelineFrameModelBase} frameModel
- * @param {?WebInspector.TimelineIRModel} irModel
+ * @param {!WebInspector.TimelineIRModel} irModel
  */
 WebInspector.TimelineFlameChartDataProvider = function(model, frameModel, irModel)
 {
@@ -506,10 +506,16 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
      */
     _appendAsyncEvents: function(asyncEvents)
     {
-        var groups = Object.values(WebInspector.TimelineUIUtils.asyncEventGroups());
+        var groups = WebInspector.TimelineUIUtils.asyncEventGroups();
+        var groupArray = Object.values(groups);
 
-        for (var groupIndex = 0; groupIndex < groups.length; ++groupIndex) {
-            var group = groups[groupIndex];
+        if (!Runtime.experiments.isEnabled("timelineLatencyInfo")) {
+            groupArray.remove(groups.animation);
+            groupArray.remove(groups.input);
+        }
+
+        for (var groupIndex = 0; groupIndex < groupArray.length; ++groupIndex) {
+            var group = groupArray[groupIndex];
             var events = asyncEvents.get(group);
             if (events)
                 this._appendAsyncEventsGroup(group.title, events);
@@ -551,8 +557,6 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
 
     _appendInteractionRecords: function()
     {
-        if (!this._irModel)
-            return;
         this._irModel.interactionRecords().forEach(this._appendSegment, this);
         this._entryTypeByLevel[this._currentLevel++] = WebInspector.TimelineFlameChartEntryType.InteractionRecord;
     },
@@ -1238,7 +1242,7 @@ WebInspector.TimelineFlameChartMarker.prototype = {
  * @param {!WebInspector.TimelineModeViewDelegate} delegate
  * @param {!WebInspector.TimelineModel} timelineModel
  * @param {!WebInspector.TimelineFrameModelBase} frameModel
- * @param {?WebInspector.TimelineIRModel} irModel
+ * @param {!WebInspector.TimelineIRModel} irModel
  */
 WebInspector.TimelineFlameChartView = function(delegate, timelineModel, frameModel, irModel)
 {

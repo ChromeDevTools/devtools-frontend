@@ -232,10 +232,6 @@ WebInspector.StylesSourceMapping.prototype = {
         this._unbindUISourceCode(uiSourceCode);
     },
 
-    _initialize: function()
-    {
-    },
-
     /**
      * @param {!WebInspector.UISourceCode} uiSourceCode
      * @param {string} content

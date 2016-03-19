@@ -39,40 +39,36 @@ WebInspector.SASSSourceMapping = function(cssModel, networkMapping, networkProje
 {
     this._cssModel = cssModel;
     this._networkProject = networkProject;
-    this._reset();
-    WebInspector.moduleSetting("cssSourceMapsEnabled").addChangeListener(this._toggleSourceMapSupport, this);
-    this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetChanged, this._styleSheetChanged, this);
-    cssModel.target().resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._reset, this);
     this._networkMapping = networkMapping;
+    this._cssModel.addEventListener(WebInspector.CSSModel.Events.SourceMapAttached, this._sourceMapAttached, this);
+    this._cssModel.addEventListener(WebInspector.CSSModel.Events.SourceMapDetached, this._sourceMapDetached, this);
 }
 
 WebInspector.SASSSourceMapping.prototype = {
     /**
      * @param {!WebInspector.Event} event
      */
-    _styleSheetChanged: function(event)
+    _sourceMapAttached: function(event)
     {
-        var id = /** @type {!CSSAgent.StyleSheetId} */ (event.data.styleSheetId);
-        var header = this._cssModel.styleSheetHeaderForId(id);
-        if (!header)
-            return;
-        this.removeHeader(header);
-        this.addHeader(header);
+        var header = /** @type {!WebInspector.CSSStyleSheetHeader} */ (event.data);
+        var sourceMap = this._cssModel.sourceMapForHeader(header);
+        var sources = sourceMap.sources();
+        for (var sassURL of sourceMap.sources()) {
+            if (!this._networkMapping.hasMappingForNetworkURL(sassURL)) {
+                var contentProvider = sourceMap.sourceContentProvider(sassURL, WebInspector.resourceTypes.SourceMapStyleSheet);
+                this._networkProject.addFileForURL(sassURL, contentProvider, WebInspector.ResourceTreeFrame.fromStyleSheet(header));
+            }
+        }
+        WebInspector.cssWorkspaceBinding.updateLocations(header);
     },
 
     /**
      * @param {!WebInspector.Event} event
      */
-    _toggleSourceMapSupport: function(event)
+    _sourceMapDetached: function(event)
     {
-        var enabled = /** @type {boolean} */ (event.data);
-        var headers = this._cssModel.styleSheetHeaders();
-        for (var i = 0; i < headers.length; ++i) {
-            if (enabled)
-                this.addHeader(headers[i]);
-            else
-                this.removeHeader(headers[i]);
-        }
+        var header = /** @type {!WebInspector.CSSStyleSheetHeader} */(event.data);
+        WebInspector.cssWorkspaceBinding.updateLocations(header);
     },
 
     /**
@@ -80,22 +76,9 @@ WebInspector.SASSSourceMapping.prototype = {
      */
     addHeader: function(header)
     {
-        if (!header.sourceMapURL || !header.sourceURL || !WebInspector.moduleSetting("cssSourceMapsEnabled").get())
+        if (!header.sourceMapURL)
             return;
-        var completeSourceMapURL = WebInspector.ParsedURL.completeURL(header.sourceURL, header.sourceMapURL);
-        if (!completeSourceMapURL)
-            return;
-        this._loadSourceMap(completeSourceMapURL, header)
-            .then(sourceMapLoaded.bind(this));
-
-        /**
-         * @this {WebInspector.SASSSourceMapping}
-         */
-        function sourceMapLoaded()
-        {
-            WebInspector.cssWorkspaceBinding.pushSourceMapping(header, this);
-        }
-
+        WebInspector.cssWorkspaceBinding.pushSourceMapping(header, this);
     },
 
     /**
@@ -103,51 +86,9 @@ WebInspector.SASSSourceMapping.prototype = {
      */
     removeHeader: function(header)
     {
-        if (!header.sourceURL)
+        if (!header.sourceMapURL)
             return;
-        this._sourceMapByStyleSheetURL.delete(header.sourceURL);
         WebInspector.cssWorkspaceBinding.updateLocations(header);
-    },
-
-    /**
-     * @param {string} completeSourceMapURL
-     * @param {!WebInspector.CSSStyleSheetHeader} header
-     * @return {!Promise}
-     */
-    _loadSourceMap: function(completeSourceMapURL, header)
-    {
-        var loadingPromise = this._sourceMapLoadingPromises.get(completeSourceMapURL);
-        if (!loadingPromise) {
-            loadingPromise = WebInspector.SourceMap.load(completeSourceMapURL, header.sourceURL)
-                .then(sourceMapLoaded.bind(this));
-            this._sourceMapLoadingPromises.set(completeSourceMapURL, loadingPromise);
-        }
-
-        return loadingPromise;
-
-        /**
-         * @param {?WebInspector.SourceMap} sourceMap
-         * @this {WebInspector.SASSSourceMapping}
-         */
-        function sourceMapLoaded(sourceMap)
-        {
-            if (!sourceMap) {
-                this._sourceMapLoadingPromises.delete(completeSourceMapURL);
-                this._sourceMapByStyleSheetURL.delete(header.sourceURL);
-                return;
-            }
-
-            this._sourceMapByStyleSheetURL.set(header.sourceURL, sourceMap);
-
-            // Report sources.
-            var sources = sourceMap.sources();
-            for (var sassURL of sourceMap.sources()) {
-                if (!this._networkMapping.hasMappingForNetworkURL(sassURL)) {
-                    var contentProvider = sourceMap.sourceContentProvider(sassURL, WebInspector.resourceTypes.SourceMapStyleSheet);
-                    this._networkProject.addFileForURL(sassURL, contentProvider, WebInspector.ResourceTreeFrame.fromStyleSheet(header));
-                }
-            }
-        }
     },
 
     /**
@@ -157,7 +98,7 @@ WebInspector.SASSSourceMapping.prototype = {
      */
     rawLocationToUILocation: function(rawLocation)
     {
-        var sourceMap = this._sourceMapByStyleSheetURL.get(rawLocation.url);
+        var sourceMap = this._cssModel.sourceMapForHeader(rawLocation.header());
         if (!sourceMap)
             return null;
         var entry = sourceMap.findEntry(rawLocation.lineNumber, rawLocation.columnNumber);
@@ -207,13 +148,5 @@ WebInspector.SASSSourceMapping.prototype = {
     target: function()
     {
         return this._cssModel.target();
-    },
-
-    _reset: function()
-    {
-        /** @type {!Map<string, !Promise>} */
-        this._sourceMapLoadingPromises = new Map();
-        /** @type {!Map<string, !WebInspector.SourceMap>} */
-        this._sourceMapByStyleSheetURL = new Map();
     }
 }

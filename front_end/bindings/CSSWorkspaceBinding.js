@@ -218,6 +218,10 @@ WebInspector.CSSWorkspaceBinding.TargetInfo.prototype = {
         return this._headerInfoById.get(id);
     },
 
+    /**
+     * @param {!WebInspector.CSSStyleSheetHeader} header
+     * @return {!WebInspector.CSSWorkspaceBinding.HeaderInfo}
+     */
     _ensureInfoForHeader: function(header)
     {
         var info = this._headerInfoById.get(header.id);

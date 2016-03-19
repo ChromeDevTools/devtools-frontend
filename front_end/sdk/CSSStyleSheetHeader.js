@@ -15,7 +15,6 @@ WebInspector.CSSStyleSheetHeader = function(cssModel, payload)
     this.frameId = payload.frameId;
     this.sourceURL = payload.sourceURL;
     this.hasSourceURL = !!payload.hasSourceURL;
-    this.sourceMapURL = payload.sourceMapURL;
     this.origin = payload.origin;
     this.title = payload.title;
     this.disabled = payload.disabled;
@@ -24,6 +23,7 @@ WebInspector.CSSStyleSheetHeader = function(cssModel, payload)
     this.startColumn = payload.startColumn;
     if (payload.ownerNode)
         this.ownerNode = new WebInspector.DeferredDOMNode(cssModel.target(), payload.ownerNode);
+    this.setSourceMapURL(payload.sourceMapURL);
 }
 
 WebInspector.CSSStyleSheetHeader.prototype = {
@@ -32,7 +32,8 @@ WebInspector.CSSStyleSheetHeader.prototype = {
      */
     setSourceMapURL: function(sourceMapURL)
     {
-        this.sourceMapURL = sourceMapURL;
+        var completeSourceMapURL = this.sourceURL && sourceMapURL ? WebInspector.ParsedURL.completeURL(this.sourceURL, sourceMapURL) : null;
+        this.sourceMapURL = completeSourceMapURL;
     },
 
     /**

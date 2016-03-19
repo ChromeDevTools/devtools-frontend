@@ -1336,7 +1336,6 @@ WebInspector.FlameChart.prototype = {
 
         var groupOffsets = this._groupOffsets;
         var lastGroupOffset = Array.prototype.peekLast.call(groupOffsets);
-        var firstVisibleGroup = Math.max(groupOffsets.upperBound(top) - 1, 0);
         var colorUsage = WebInspector.ThemeSupport.ColorUsage;
 
         context.save();
@@ -1463,7 +1462,7 @@ WebInspector.FlameChart.prototype = {
         {
             /** @type !Array<{nestingLevel: number, visible: boolean}> */
             var groupStack = [{nestingLevel: -1, visible: true}];
-            for (var i = firstVisibleGroup; i < groups.length; ++i) {
+            for (var i = 0; i < groups.length; ++i) {
                 var groupTop = groupOffsets[i];
                 var group = groups[i];
                 if (groupTop - group.style.padding > top + height)
@@ -1476,7 +1475,7 @@ WebInspector.FlameChart.prototype = {
                 var parentGroupVisible = groupStack.peekLast().visible;
                 var thisGroupVisible = parentGroupVisible && (!group.style.collapsible || group.expanded);
                 groupStack.push({nestingLevel: group.style.nestingLevel, visible: thisGroupVisible});
-                if (!parentGroupVisible)
+                if (!parentGroupVisible || groupTop + group.style.height < top)
                     continue;
                 callback(groupTop, i, group, firstGroup);
             }

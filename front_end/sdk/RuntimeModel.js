@@ -106,6 +106,9 @@ WebInspector.RuntimeModel.prototype = {
 
     _executionContextsCleared: function()
     {
+        var debuggerModel = WebInspector.DebuggerModel.fromTarget(this.target());
+        if (debuggerModel)
+            debuggerModel.globalObjectCleared();
         var contexts = this.executionContexts();
         this._executionContextById = {};
         for (var  i = 0; i < contexts.length; ++i)

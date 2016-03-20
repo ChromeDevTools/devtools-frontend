@@ -158,7 +158,7 @@ WebInspector.DebuggerModel.prototype = {
         this._debuggerEnabled = false;
         this._isPausing = false;
         this.asyncStackTracesStateChanged();
-        this._globalObjectCleared();
+        this.globalObjectCleared();
         this.dispatchEventToListeners(WebInspector.DebuggerModel.Events.DebuggerWasDisabled);
     },
 
@@ -418,10 +418,11 @@ WebInspector.DebuggerModel.prototype = {
         this._breakpointResolvedEventTarget.dispatchEventToListeners(breakpointId, WebInspector.DebuggerModel.Location.fromPayload(this, location));
     },
 
-    _globalObjectCleared: function()
+    globalObjectCleared: function()
     {
         this._setDebuggerPausedDetails(null);
         this._reset();
+        // TODO(dgozman): move clients to ExecutionContextDestroyed/ScriptCollected events.
         this.dispatchEventToListeners(WebInspector.DebuggerModel.Events.GlobalObjectCleared);
     },
 
@@ -967,14 +968,6 @@ WebInspector.DebuggerDispatcher.prototype = {
     resumed: function()
     {
         this._debuggerModel._resumedScript();
-    },
-
-    /**
-     * @override
-     */
-    globalObjectCleared: function()
-    {
-        this._debuggerModel._globalObjectCleared();
     },
 
     /**

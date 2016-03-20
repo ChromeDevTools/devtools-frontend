@@ -3785,10 +3785,6 @@
         ],
         "events": [
             {
-                "name": "globalObjectCleared",
-                "description": "Called when global has been cleared and debugger client should reset its state. Happens upon navigation or reload."
-            },
-            {
                 "name": "scriptParsed",
                 "parameters": [
                     { "name": "scriptId", "$ref": "Runtime.ScriptId", "description": "Identifier of the script parsed." },

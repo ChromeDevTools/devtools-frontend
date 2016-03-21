@@ -30,19 +30,27 @@
 
 /**
  * @constructor
- * @param {string} content
  * @param {!FormatterWorker.FormattedContentBuilder} builder
  */
-FormatterWorker.JavaScriptFormatter = function(content, builder)
+FormatterWorker.JavaScriptFormatter = function(builder)
 {
-    this._content = content;
     this._builder = builder;
-    this._tokenizer = new WebInspector.AcornTokenizer(this._content);
 }
 
 FormatterWorker.JavaScriptFormatter.prototype = {
-    format: function()
+    /**
+     * @param {string} text
+     * @param {!Array<number>} lineEndings
+     * @param {number} fromOffset
+     * @param {number} toOffset
+     */
+    format: function(text, lineEndings, fromOffset, toOffset)
     {
+        this._lineOffset = lineEndings.lowerBound(fromOffset);
+        this._fromOffset = fromOffset;
+        this._toOffset = toOffset;
+        this._content = text.substring(this._fromOffset, this._toOffset);
+        this._tokenizer = new WebInspector.AcornTokenizer(this._content);
         var ast = acorn.parse(this._content, { ranges: false, ecmaVersion: 6 });
         var walker = new WebInspector.ESTreeWalker(this._beforeVisit.bind(this), this._afterVisit.bind(this));
         walker.walk(ast);
@@ -66,7 +74,7 @@ FormatterWorker.JavaScriptFormatter.prototype = {
             else if (format[i] === "<")
                 this._builder.decreaseNestingLevel();
             else if (format[i] === "t")
-                this._builder.addToken(this._content.substring(token.start, token.end), token.start, this._tokenizer.tokenLineStart(), this._tokenizer.tokenLineEnd());
+                this._builder.addToken(this._content.substring(token.start, token.end), this._fromOffset + token.start, this._lineOffset + this._tokenizer.tokenLineStart(), this._lineOffset + this._tokenizer.tokenLineEnd());
         }
     },
 

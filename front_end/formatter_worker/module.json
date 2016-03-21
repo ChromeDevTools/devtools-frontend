@@ -4,7 +4,6 @@
         "../cm/headlesscodemirror.js",
         "../cm/css.js",
         "../cm/xml.js",
-        "../cm/htmlmixed.js",
         "../common/WebInspector.js",
         "../es_tree/ESTreeWalker.js",
         "FormatterWorker.js",
@@ -18,7 +17,6 @@
         "../acorn/acorn.js",
         "../cm/headlesscodemirror.js",
         "../cm/css.js",
-        "../cm/xml.js",
-        "../cm/htmlmixed.js"
+        "../cm/xml.js"
     ]
 }

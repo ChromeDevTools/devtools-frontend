@@ -30,25 +30,32 @@
 var FormatterWorker = {
     /**
      * @param {string} mimeType
-     * @return {function(string, function(string, ?string, number, number))}
+     * @return {function(string, function(string, ?string, number, number):(!Object|undefined))}
      */
     createTokenizer: function(mimeType)
     {
         var mode = CodeMirror.getMode({indentUnit: 2}, mimeType);
         var state = CodeMirror.startState(mode);
+        /**
+         * @param {string} line
+         * @param {function(string, ?string, number, number):?} callback
+         */
         function tokenize(line, callback)
         {
             var stream = new CodeMirror.StringStream(line);
             while (!stream.eol()) {
                 var style = mode.token(stream, state);
                 var value = stream.current();
-                callback(value, style, stream.start, stream.start + value.length);
+                if (callback(value, style, stream.start, stream.start + value.length) === FormatterWorker.AbortTokenization)
+                    return;
                 stream.start = stream.pos;
             }
         }
         return tokenize;
     }
 };
+
+FormatterWorker.AbortTokenization = {};
 
 /**
  * @typedef {{indentString: string, content: string, mimeType: string}}
@@ -71,18 +78,65 @@ FormatterWorker.format = function(params)
     // Default to a 4-space indent.
     var indentString = params.indentString || "    ";
     var result = {};
-
-    if (params.mimeType === "text/html") {
-        var formatter = new FormatterWorker.HTMLFormatter(indentString);
-        result = formatter.format(params.content);
-    } else if (params.mimeType === "text/css") {
+    var builder = new FormatterWorker.FormattedContentBuilder(indentString);
+    var text = params.content;
+    var lineEndings = text.computeLineEndings();
+    try {
+        switch (params.mimeType) {
+        case "text/html":
+            formatMixedHTML(builder, text, lineEndings);
+            break;
+        case "text/css":
+            var formatter = new FormatterWorker.CSSFormatter(builder);
+            formatter.format(text, lineEndings, 0, text.length);
+            break;
+        case "text/javascript":
+            var formatter = new FormatterWorker.JavaScriptFormatter(builder);
+            formatter.format(text, lineEndings, 0, text.length);
+            break;
+        default:
+            var formatter = new FormatterWorker.IdentityFormatter(builder);
+            formatter.format(text, lineEndings, 0, text.length);
+        }
+        result.mapping = builder.mapping();
+        result.content = builder.content();
+    } catch (e) {
+        console.error(e);
         result.mapping = { original: [0], formatted: [0] };
-        result.content = FormatterWorker._formatCSS(params.content, result.mapping, 0, 0, indentString);
-    } else {
-        result.mapping = { original: [0], formatted: [0] };
-        result.content = FormatterWorker._formatScript(params.content, result.mapping, 0, 0, indentString);
+        result.content = text;
     }
     postMessage(result);
+}
+
+/**
+ * @param {!FormatterWorker.FormattedContentBuilder} builder
+ * @param {string} text
+ * @param {!Array<number>} lineEndings
+ */
+function formatMixedHTML(builder, text, lineEndings)
+{
+    var htmlFormatter = new FormatterWorker.HTMLFormatter(builder);
+    var jsFormatter = new FormatterWorker.JavaScriptFormatter(builder);
+    var cssFormatter = new FormatterWorker.CSSFormatter(builder);
+    var identityFormatter = new FormatterWorker.IdentityFormatter(builder);
+
+    var offset = 0;
+    while (offset < text.length) {
+        var result = htmlFormatter.format(text, lineEndings, offset);
+        if (result.offset >= text.length)
+            break;
+        builder.addNewLine();
+        var closeTag = "</" + result.tagName;
+        offset = text.indexOf(closeTag, result.offset);
+        if (offset === -1)
+            offset = text.length;
+        if (result.tagName === "script")
+            jsFormatter.format(text, lineEndings, result.offset, offset);
+        else if (result.tagName === "style")
+            cssFormatter.format(text, lineEndings, result.offset, offset);
+        else
+            identityFormatter.format(text, lineEndings, result.offset, offset);
+    }
 }
 
 /**
@@ -352,184 +406,102 @@ FormatterWorker._innerParseCSS = function(text, chunkCallback)
 }
 
 /**
- * @param {string} content
- * @param {!{original: !Array.<number>, formatted: !Array.<number>}} mapping
- * @param {number} offset
- * @param {number} formattedOffset
- * @param {string} indentString
- * @return {string}
+ * @constructor
+ * @param {!FormatterWorker.FormattedContentBuilder} builder
  */
-FormatterWorker._formatScript = function(content, mapping, offset, formattedOffset, indentString)
+FormatterWorker.IdentityFormatter = function(builder)
 {
-    var formattedContent;
-    try {
-        var builder = new FormatterWorker.FormattedContentBuilder(mapping, offset, formattedOffset, indentString);
-        var formatter = new FormatterWorker.JavaScriptFormatter(content, builder);
-        formatter.format();
-        formattedContent = builder.content();
-    } catch (e) {
-        console.error(e);
-        formattedContent = content;
-    }
-    return formattedContent;
+    this._builder = builder;
 }
 
-/**
- * @param {string} content
- * @param {!{original: !Array.<number>, formatted: !Array.<number>}} mapping
- * @param {number} offset
- * @param {number} formattedOffset
- * @param {string} indentString
- * @return {string}
- */
-FormatterWorker._formatCSS = function(content, mapping, offset, formattedOffset, indentString)
-{
-    var formattedContent;
-    try {
-        var builder = new FormatterWorker.FormattedContentBuilder(mapping, offset, formattedOffset, indentString);
-        var formatter = new FormatterWorker.CSSFormatter(content, builder);
-        formatter.format();
-        formattedContent = builder.content();
-    } catch (e) {
-        formattedContent = content;
+FormatterWorker.IdentityFormatter.prototype = {
+    /**
+     * @param {string} text
+     * @param {!Array<number>} lineEndings
+     * @param {number} fromOffset
+     * @param {number} toOffset
+     */
+    format: function(text, lineEndings, fromOffset, toOffset)
+    {
+        var content = text.substring(fromOffset, toOffset);
+        var startLine = lineEndings.lowerBound(fromOffset);
+        var endLine = lineEndings.lowerBound(toOffset);
+        this._builder.addToken(content, fromOffset, startLine, endLine);
     }
-    return formattedContent;
 }
 
 /**
  * @constructor
- * @param {string} indentString
+ * @param {!FormatterWorker.FormattedContentBuilder} builder
  */
-FormatterWorker.HTMLFormatter = function(indentString)
+FormatterWorker.HTMLFormatter = function(builder)
 {
-    this._indentString = indentString;
+    this._builder = builder;
+}
+
+/**
+ * @constructor
+ * @param {string} tagName
+ * @param {number} offset
+ */
+FormatterWorker.HTMLFormatter.Result = function(tagName, offset)
+{
+    this.tagName = tagName;
+    this.offset = offset;
 }
 
 FormatterWorker.HTMLFormatter.prototype = {
     /**
-     * @param {string} content
-     * @return {!{content: string, mapping: {original: !Array.<number>, formatted: !Array.<number>}}}
+     * @param {string} text
+     * @param {!Array<number>} lineEndings
+     * @param {number} fromOffset
+     * @return {!FormatterWorker.HTMLFormatter.Result}
      */
-    format: function(content)
+    format: function(text, lineEndings, fromOffset)
     {
-        this.line = content;
-        this._content = content;
-        this._formattedContent = "";
-        this._mapping = { original: [0], formatted: [0] };
-        this._position = 0;
-
-        var scriptOpened = false;
-        var styleOpened = false;
-        var tokenizer = FormatterWorker.createTokenizer("text/html");
+        var content = text.substring(fromOffset);
+        var tagName = "";
         var accumulatedTokenValue = "";
-        var accumulatedTokenStart = 0;
+        var lastOffset = fromOffset;
 
         /**
+         * @param {string} tokenValue
+         * @param {?string} type
+         * @param {number} tokenStart
+         * @param {number} tokenEnd
+         * @return {(!Object|undefined)}
          * @this {FormatterWorker.HTMLFormatter}
          */
-        function processToken(tokenValue, tokenType, tokenStart, tokenEnd) {
-            if (!tokenType)
+        function processToken(tokenValue, type, tokenStart, tokenEnd)
+        {
+            tokenStart += fromOffset;
+            tokenEnd += fromOffset;
+            lastOffset = tokenEnd;
+            var startLine = lineEndings.lowerBound(tokenStart);
+            var endLine = lineEndings.lowerBound(tokenEnd);
+            this._builder.addToken(tokenValue, tokenStart, startLine, endLine);
+
+            if (!type)
                 return;
-            tokenType = tokenType.split(" ").keySet();
+            var tokenType = type.split(" ").keySet();
             if (!tokenType["tag"])
                 return;
+
             if (tokenType["bracket"] && (tokenValue === "<" || tokenValue === "</")) {
                 accumulatedTokenValue = tokenValue;
-                accumulatedTokenStart = tokenStart;
                 return;
             }
+
+            if (tagName && tokenValue === ">")
+                return FormatterWorker.AbortTokenization;
+
             accumulatedTokenValue = accumulatedTokenValue + tokenValue.toLowerCase();
-            if (accumulatedTokenValue === "<script") {
-                scriptOpened = true;
-            } else if (scriptOpened && tokenValue === ">") {
-                scriptOpened = false;
-                this._scriptStarted(tokenEnd);
-            } else if (accumulatedTokenValue === "</script") {
-                this._scriptEnded(accumulatedTokenStart);
-            } else if (accumulatedTokenValue === "<style") {
-                styleOpened = true;
-            } else if (styleOpened && tokenValue === ">") {
-                styleOpened = false;
-                this._styleStarted(tokenEnd);
-            } else if (accumulatedTokenValue === "</style") {
-                this._styleEnded(accumulatedTokenStart);
-            }
+            if (accumulatedTokenValue === "<script" || accumulatedTokenValue === "<style")
+                tagName = accumulatedTokenValue.substring(1);
             accumulatedTokenValue = "";
         }
+        var tokenizer = FormatterWorker.createTokenizer("text/html");
         tokenizer(content, processToken.bind(this));
-
-        this._formattedContent += this._content.substring(this._position);
-        return { content: this._formattedContent, mapping: this._mapping };
+        return new FormatterWorker.HTMLFormatter.Result(tagName, lastOffset);
     },
-
-    /**
-     * @param {number} cursor
-     */
-    _scriptStarted: function(cursor)
-    {
-        this._handleSubFormatterStart(cursor);
-    },
-
-    /**
-     * @param {number} cursor
-     */
-    _scriptEnded: function(cursor)
-    {
-        this._handleSubFormatterEnd(FormatterWorker._formatScript, cursor);
-    },
-
-    /**
-     * @param {number} cursor
-     */
-    _styleStarted: function(cursor)
-    {
-        this._handleSubFormatterStart(cursor);
-    },
-
-    /**
-     * @param {number} cursor
-     */
-    _styleEnded: function(cursor)
-    {
-        this._handleSubFormatterEnd(FormatterWorker._formatCSS, cursor);
-    },
-
-    /**
-     * @param {number} cursor
-     */
-    _handleSubFormatterStart: function(cursor)
-    {
-        this._formattedContent += this._content.substring(this._position, cursor);
-        this._formattedContent += "\n";
-        this._position = cursor;
-    },
-
-    /**
-     * @param {function(string, !{formatted: !Array.<number>, original: !Array.<number>}, number, number, string)} formatFunction
-     * @param {number} cursor
-     */
-    _handleSubFormatterEnd: function(formatFunction, cursor)
-    {
-        if (cursor === this._position)
-            return;
-
-        var scriptContent = this._content.substring(this._position, cursor);
-        this._mapping.original.push(this._position);
-        this._mapping.formatted.push(this._formattedContent.length);
-        var formattedScriptContent = formatFunction(scriptContent, this._mapping, this._position, this._formattedContent.length, this._indentString);
-
-        this._formattedContent += formattedScriptContent;
-        this._position = cursor;
-    }
 }
-
-// A dummy javascript mode which is used only by htmlmixed mode to advance
-// stream until a </script> is found.
-CodeMirror.defineMode("javascript", function(config, parserConfig) {
-    return {
-        token: function(stream, state)
-        {
-            return stream.next();
-        }
-    }
-});

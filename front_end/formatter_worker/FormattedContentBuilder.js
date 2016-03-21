@@ -4,22 +4,18 @@
 
 /**
  * @constructor
- * @param {!{original: !Array.<number>, formatted: !Array.<number>}} mapping
- * @param {number} originalOffset
- * @param {number} formattedOffset
  * @param {string} indentString
  */
-FormatterWorker.FormattedContentBuilder = function(mapping, originalOffset, formattedOffset, indentString)
+FormatterWorker.FormattedContentBuilder = function(indentString)
 {
-    this._originalOffset = originalOffset;
     this._lastOriginalPosition = 0;
 
     this._formattedContent = [];
     this._formattedContentLength = 0;
-    this._formattedOffset = formattedOffset;
     this._lastFormattedPosition = 0;
 
-    this._mapping = mapping;
+    /** @type {!{original: !Array.<number>, formatted: !Array.<number>}} */
+    this._mapping = { original: [0], formatted: [0] };
 
     this._lineNumber = 0;
     this._nestingLevel = 0;
@@ -117,6 +113,14 @@ FormatterWorker.FormattedContentBuilder.prototype = {
     },
 
     /**
+     * @return {!{original: !Array.<number>, formatted: !Array.<number>}}
+     */
+    mapping: function()
+    {
+        return this._mapping;
+    },
+
+    /**
      * @return {string}
      */
     _indent: function()
@@ -151,9 +155,9 @@ FormatterWorker.FormattedContentBuilder.prototype = {
     {
         if (originalPosition - this._lastOriginalPosition === this._formattedContentLength - this._lastFormattedPosition)
             return;
-        this._mapping.original.push(this._originalOffset + originalPosition);
+        this._mapping.original.push(originalPosition);
         this._lastOriginalPosition = originalPosition;
-        this._mapping.formatted.push(this._formattedOffset + this._formattedContentLength);
+        this._mapping.formatted.push(this._formattedContentLength);
         this._lastFormattedPosition = this._formattedContentLength;
     }
 }

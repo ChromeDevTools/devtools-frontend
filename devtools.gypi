@@ -598,7 +598,6 @@
             'front_end/acorn/acorn.js',
             'front_end/cm/css.js',
             'front_end/cm/headlesscodemirror.js',
-            'front_end/cm/htmlmixed.js',
             'front_end/cm/xml.js',
             'front_end/es_tree/AcornTokenizer.js',
             'front_end/es_tree/ESTreeWalker.js',

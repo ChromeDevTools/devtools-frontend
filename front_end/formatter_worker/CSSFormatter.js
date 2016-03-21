@@ -30,23 +30,29 @@
 
 /**
  * @constructor
- * @param {string} content
  * @param {!FormatterWorker.FormattedContentBuilder} builder
  */
-FormatterWorker.CSSFormatter = function(content, builder)
+FormatterWorker.CSSFormatter = function(builder)
 {
-    this._content = content;
-    this._lineEndings = this._content.computeLineEndings();
     this._builder = builder;
-    this._lastLine = -1;
-    this._state = {};
 }
 
 FormatterWorker.CSSFormatter.prototype = {
-    format: function()
+    /**
+     * @param {string} text
+     * @param {!Array.<number>} lineEndings
+     * @param {number} fromOffset
+     * @param {number} toOffset
+     */
+    format: function(text, lineEndings, fromOffset, toOffset)
     {
+        this._lineEndings = lineEndings;
+        this._fromOffset = fromOffset;
+        this._toOffset = toOffset;
+        this._lastLine = -1;
+        this._state = {};
         var tokenize = FormatterWorker.createTokenizer("text/css");
-        tokenize(this._content, this._tokenCallback.bind(this));
+        tokenize(text.substring(this._fromOffset, this._toOffset), this._tokenCallback.bind(this));
     },
 
     /**
@@ -57,6 +63,8 @@ FormatterWorker.CSSFormatter.prototype = {
      */
     _tokenCallback: function(token, type, startPosition, endPosition)
     {
+        startPosition += this._fromOffset;
+        endPosition += this._fromOffset;
         var startLine = this._lineEndings.lowerBound(startPosition);
         var endLine = this._lineEndings.lowerBound(endPosition);
         if (startLine !== this._lastLine)

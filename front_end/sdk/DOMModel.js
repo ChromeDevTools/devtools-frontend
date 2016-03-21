@@ -63,7 +63,8 @@ WebInspector.DOMNode = function(domModel, doc, isInShadowTree, payload)
     if (payload.attributes)
         this._setAttributesPayload(payload.attributes);
 
-    this._markers = {};
+    /** @type {!Map<string, ?>} */
+    this._markers = new Map();
     this._subtreeMarkerCount = 0;
 
     this._childNodeCount = payload.childNodeCount || 0;
@@ -795,10 +796,10 @@ WebInspector.DOMNode.prototype = {
     setMarker: function(name, value)
     {
         if (value === null) {
-            if (!this._markers.hasOwnProperty(name))
+            if (!this._markers.has(name))
                 return;
 
-            delete this._markers[name];
+            this._markers.delete(name);
             for (var node = this; node; node = node.parentNode)
                 --node._subtreeMarkerCount;
             for (var node = this; node; node = node.parentNode)
@@ -806,11 +807,11 @@ WebInspector.DOMNode.prototype = {
             return;
         }
 
-        if (this.parentNode && !this._markers.hasOwnProperty(name)) {
+        if (this.parentNode && !this._markers.has(name)) {
             for (var node = this; node; node = node.parentNode)
                 ++node._subtreeMarkerCount;
         }
-        this._markers[name] = value;
+        this._markers.set(name, value);
         for (var node = this; node; node = node.parentNode)
             this._domModel.dispatchEventToListeners(WebInspector.DOMModel.Events.MarkersChanged, node);
     },
@@ -822,15 +823,7 @@ WebInspector.DOMNode.prototype = {
      */
     marker: function(name)
     {
-        return this._markers[name] || null;
-    },
-
-    /**
-     * @return {!Array<string>}
-     */
-    markers: function()
-    {
-        return Object.values(this._markers);
+        return this._markers.get(name) || null;
     },
 
     /**
@@ -845,7 +838,7 @@ WebInspector.DOMNode.prototype = {
         {
             if (!node._subtreeMarkerCount)
                 return;
-            for (var marker in node._markers)
+            for (var marker of node._markers.keys())
                 visitor(node, marker);
             if (!node._children)
                 return;

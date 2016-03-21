@@ -113,7 +113,7 @@ WebInspector.CommandMenuDelegate.prototype = {
     itemScoreAt: function(itemIndex, query)
     {
         var command = this._commands[itemIndex];
-        var opcodes = WebInspector.Diff.charDiff(query.toLowerCase(), command.title.toLowerCase());
+        var opcodes = WebInspector.Diff.charDiff(query.toLowerCase(), command.title().toLowerCase());
         var score = 0;
         // Score longer sequences higher.
         for (var i = 0; i < opcodes.length; ++i) {
@@ -122,9 +122,9 @@ WebInspector.CommandMenuDelegate.prototype = {
         }
 
         // Score panel/drawer reveals above regular actions.
-        if (command.title.startsWith("Panel"))
+        if (command.title().startsWith("Panel"))
             score += 2;
-        else if (command.title.startsWith("Drawer"))
+        else if (command.title().startsWith("Drawer"))
             score += 1;
 
         return score;

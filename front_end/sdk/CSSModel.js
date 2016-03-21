@@ -455,7 +455,9 @@ WebInspector.CSSModel.prototype = {
             if (pseudoClasses.indexOf(pseudoClass) < 0)
                 return false;
             pseudoClasses.remove(pseudoClass);
-            if (!pseudoClasses.length)
+            if (pseudoClasses.length)
+                node.setMarker(WebInspector.CSSModel.PseudoStateMarker, pseudoClasses);
+            else
                 node.setMarker(WebInspector.CSSModel.PseudoStateMarker, null);
         }
 

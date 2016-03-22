@@ -34,7 +34,7 @@ WebInspector.SASSProcessor.prototype = {
             if (!ast.document.hasChanged())
                 continue;
             var promise;
-            if (ast.document.url === this._map.cssURL())
+            if (ast.document.url === this._map.compiledURL())
                 promise = this._astService.parseCSS(ast.document.url, ast.document.newText().value());
             else
                 promise = this._astService.parseSCSS(ast.document.url, ast.document.newText().value());
@@ -68,12 +68,33 @@ WebInspector.SASSProcessor.prototype = {
         /** @type {!Map<string, string>} */
         var newSASSSources = new Map();
         for (var model of changedModels) {
-            if (model.document.url === map.cssURL())
+            if (model.document.url === map.compiledURL())
                 continue;
             newSASSSources.set(model.document.url, model.document.text.value());
         }
         return new WebInspector.SASSProcessor.Result(map, cssEdits, newSASSSources);
     }
+}
+
+/**
+ * @param {!WebInspector.ASTSourceMap} map
+ * @return {boolean}
+ */
+WebInspector.SASSProcessor.validate = function(map)
+{
+    var cssAST = map.compiledModel();
+    var cssNodes = map.allCompiledNodes();
+    for (var i = 0; i < cssNodes.length; ++i) {
+        var cssNode = cssNodes[i];
+        if (!cssNode.parent || !(cssNode.parent instanceof WebInspector.SASSSupport.Property))
+            continue;
+        if (cssNode !== cssNode.parent.name)
+            continue;
+        var sassNode = map.toSourceNode(cssNode);
+        if (sassNode && cssNode.text.trim() !== sassNode.text.trim())
+            return false;
+    }
+    return true;
 }
 
 /**
@@ -90,6 +111,27 @@ WebInspector.SASSProcessor.Result = function(map, cssEdits, newSASSSources)
 }
 
 /**
+ * @param {!WebInspector.ASTSourceMap} map
+ * @param {!WebInspector.SASSSupport.Property} cssProperty
+ * @return {?WebInspector.SASSSupport.Property}
+ */
+WebInspector.SASSProcessor._toSASSProperty = function(map, cssProperty)
+{
+    var sassName = map.toSourceNode(cssProperty.name);
+    return sassName ? sassName.parent : null;
+}
+
+/**
+ * @param {!WebInspector.ASTSourceMap} map
+ * @param {!WebInspector.SASSSupport.Property} sassProperty
+ * @return {!Array<!WebInspector.SASSSupport.Property>}
+ */
+WebInspector.SASSProcessor._toCSSProperties = function(map, sassProperty)
+{
+    return map.toCompiledNodes(sassProperty.name).map(name => name.parent);
+}
+
+/**
  * @param {!WebInspector.ASTService} astService
  * @param {!WebInspector.ASTSourceMap} map
  * @param {!Array<!WebInspector.TextRange>} ranges
@@ -99,8 +141,8 @@ WebInspector.SASSProcessor.Result = function(map, cssEdits, newSASSSources)
 WebInspector.SASSProcessor.processCSSEdits = function(astService, map, ranges, newTexts)
 {
     console.assert(ranges.length === newTexts.length);
-    var cssURL = map.cssURL();
-    var cssText = map.cssAST().document.text;
+    var cssURL = map.compiledURL();
+    var cssText = map.compiledModel().document.text;
     for (var i = 0; i < ranges.length; ++i)
         cssText = new WebInspector.Text(cssText.replaceRange(ranges[i], newTexts[i]));
     return astService.parseCSS(cssURL, cssText.value())
@@ -113,12 +155,12 @@ WebInspector.SASSProcessor.processCSSEdits = function(astService, map, ranges, n
     function onCSSParsed(newCSSAST)
     {
         //TODO(lushnikov): only diff changed styles.
-        var cssDiff = WebInspector.SASSSupport.diffModels(map.cssAST(), newCSSAST);
+        var cssDiff = WebInspector.SASSSupport.diffModels(map.compiledModel(), newCSSAST);
         var edits = WebInspector.SASSProcessor._editsFromCSSDiff(cssDiff, map);
 
         // Determine AST trees which will change and clone them.
         var changedURLs = new Set(edits.map(edit => edit.sassURL));
-        changedURLs.add(map.cssURL());
+        changedURLs.add(map.compiledURL());
         var clonedModels = [];
         for (var url of changedURLs)
             clonedModels.push(map.modelForURL(url).clone());
@@ -235,10 +277,10 @@ WebInspector.SASSProcessor.SetTextOperation.fromCSSChange = function(change, map
     var sassNode = null;
     if (change.type === WebInspector.SASSSupport.PropertyChangeType.NameChanged) {
         newValue = newProperty.name.text;
-        sassNode = map.toSASSNode(oldProperty.name);
+        sassNode = map.toSourceNode(oldProperty.name);
     } else {
         newValue = newProperty.value.text;
-        sassNode = map.toSASSNode(oldProperty.value);
+        sassNode = map.toSourceNode(oldProperty.value);
     }
     if (!sassNode)
         return null;
@@ -265,7 +307,7 @@ WebInspector.SASSProcessor.SetTextOperation.prototype = {
     perform: function()
     {
         this._sassNode.setText(this._newText);
-        var nodes = this.map.toCSSNodes(this._sassNode);
+        var nodes = this.map.toCompiledNodes(this._sassNode);
         for (var node of nodes)
             node.setText(this._newText);
 
@@ -311,7 +353,7 @@ WebInspector.SASSProcessor.TogglePropertyOperation.fromCSSChange = function(chan
 {
     var oldCSSProperty = /** @type {!WebInspector.SASSSupport.Property} */(change.oldProperty());
     console.assert(oldCSSProperty, "TogglePropertyOperation must have old CSS property");
-    var sassProperty = map.toSASSProperty(oldCSSProperty);
+    var sassProperty = WebInspector.SASSProcessor._toSASSProperty(map, oldCSSProperty);
     if (!sassProperty)
         return null;
     var newDisabled = change.newProperty().disabled;
@@ -338,7 +380,7 @@ WebInspector.SASSProcessor.TogglePropertyOperation.prototype = {
     perform: function()
     {
         this._sassProperty.setDisabled(this._newDisabled);
-        var cssProperties = this.map.toCSSProperties(this._sassProperty);
+        var cssProperties = WebInspector.SASSProcessor._toCSSProperties(this.map, this._sassProperty);
         for (var property of cssProperties)
             property.setDisabled(this._newDisabled);
 
@@ -382,7 +424,7 @@ WebInspector.SASSProcessor.RemovePropertyOperation.fromCSSChange = function(chan
 {
     var removedProperty = /** @type {!WebInspector.SASSSupport.Property} */(change.oldProperty());
     console.assert(removedProperty, "RemovePropertyOperation must have removed CSS property");
-    var sassProperty = map.toSASSProperty(removedProperty);
+    var sassProperty = WebInspector.SASSProcessor._toSASSProperty(map, removedProperty);
     if (!sassProperty)
         return null;
     return new WebInspector.SASSProcessor.RemovePropertyOperation(map, sassProperty);
@@ -407,13 +449,13 @@ WebInspector.SASSProcessor.RemovePropertyOperation.prototype = {
      */
     perform: function()
     {
-        var cssProperties = this.map.toCSSProperties(this._sassProperty);
+        var cssProperties = WebInspector.SASSProcessor._toCSSProperties(this.map, this._sassProperty);
         var cssRules = cssProperties.map(property => property.parent);
         this._sassProperty.remove();
         for (var cssProperty of cssProperties) {
             cssProperty.remove();
-            this.map.unmapCssFromSass(cssProperty.name, this._sassProperty.name);
-            this.map.unmapCssFromSass(cssProperty.value, this._sassProperty.value);
+            this.map.removeMapping(cssProperty.name, this._sassProperty.name);
+            this.map.removeMapping(cssProperty.value, this._sassProperty.value);
         }
 
         return cssRules;
@@ -467,11 +509,11 @@ WebInspector.SASSProcessor.InsertPropertiesOperation.fromCSSChange = function(ch
     var sassAnchor = null;
     if (change.oldPropertyIndex) {
         cssAnchor = change.oldRule.properties[change.oldPropertyIndex - 1].name;
-        sassAnchor = map.toSASSNode(cssAnchor);
+        sassAnchor = map.toSourceNode(cssAnchor);
     } else {
         insertBefore = true;
         cssAnchor = change.oldRule.properties[0].name;
-        sassAnchor = map.toSASSNode(cssAnchor);
+        sassAnchor = map.toSourceNode(cssAnchor);
     }
     if (!sassAnchor)
         return null;
@@ -516,14 +558,14 @@ WebInspector.SASSProcessor.InsertPropertiesOperation.prototype = {
         var cssRules = [];
         var sassRule = this._sassAnchor.parent;
         var newSASSProperties = sassRule.insertProperties(this._nameTexts, this._valueTexts, this._disabledStates, this._sassAnchor, this._insertBefore);
-        var cssAnchors = this.map.toCSSProperties(this._sassAnchor);
+        var cssAnchors = WebInspector.SASSProcessor._toCSSProperties(this.map, this._sassAnchor);
         for (var cssAnchor of cssAnchors) {
             var cssRule = cssAnchor.parent;
             cssRules.push(cssRule);
             var newCSSProperties = cssRule.insertProperties(this._nameTexts, this._valueTexts, this._disabledStates, cssAnchor, this._insertBefore);
             for (var i = 0; i < newCSSProperties.length; ++i) {
-                this.map.mapCssToSass(newCSSProperties[i].name, newSASSProperties[i].name);
-                this.map.mapCssToSass(newCSSProperties[i].value, newSASSProperties[i].value);
+                this.map.addMapping(newCSSProperties[i].name, newSASSProperties[i].name);
+                this.map.addMapping(newCSSProperties[i].value, newSASSProperties[i].value);
             }
         }
         return cssRules;

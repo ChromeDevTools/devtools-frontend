@@ -769,7 +769,7 @@ WebInspector.StylePropertiesSection = function(parentPane, matchedStyles, style)
         items.push(backgroundButton);
 
         if (rule) {
-            var newRuleButton = new WebInspector.ToolbarButton(WebInspector.UIString("Insert Style Rule"), "add-toolbar-item");
+            var newRuleButton = new WebInspector.ToolbarButton(WebInspector.UIString("Insert Style Rule Below"), "add-toolbar-item");
             newRuleButton.addEventListener("click", this._onNewRuleClick.bind(this));
             items.push(newRuleButton);
         }

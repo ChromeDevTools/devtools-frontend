@@ -328,7 +328,7 @@ WebInspector.Main.prototype = {
         function inspectorAgentEnableCallback()
         {
             console.timeStamp("Main.inspectorAgentEnableCallback");
-            WebInspector.notifications.dispatchEventToListeners(WebInspector.NotificationService.Events.InspectorAgentEnabledForTests);
+            InspectorFrontendHost.readyForTest();
             // Asynchronously run the extensions.
             setTimeout(lateInitialization, 0);
         }

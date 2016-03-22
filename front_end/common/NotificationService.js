@@ -15,7 +15,6 @@ WebInspector.NotificationService.prototype = {
 }
 
 WebInspector.NotificationService.Events = {
-    InspectorAgentEnabledForTests: "InspectorAgentEnabledForTests",
     SelectedNodeChanged: "SelectedNodeChanged"
 }
 

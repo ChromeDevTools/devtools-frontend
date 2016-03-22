@@ -383,6 +383,13 @@ WebInspector.InspectorFrontendHostStub.prototype = {
 
     /**
      * @override
+     */
+    readyForTest: function()
+    {
+    },
+
+    /**
+     * @override
      * @param {boolean} discoverUsbDevices
      * @param {boolean} portForwardingEnabled
      * @param {!Adb.PortForwardingConfig} portForwardingConfig

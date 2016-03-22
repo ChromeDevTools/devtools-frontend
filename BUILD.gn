@@ -76,7 +76,7 @@ visibility = [ "//third_party/WebKit/*" ]
 group("devtools_frontend_resources") {
   public_deps = [
     ":build_applications",
-    ":copy_compatibility_scripts",
+    ":copy_embedder_scripts",
     ":copy_emulated_devices_images",
     ":copy_inspector_images",
     ":devtools_extension_api",
@@ -85,8 +85,8 @@ group("devtools_frontend_resources") {
   ]
 }
 
-copy("copy_compatibility_scripts") {
-  sources = gypi_values.devtools_compatibility_scripts
+copy("copy_embedder_scripts") {
+  sources = gypi_values.devtools_embedder_scripts
   outputs = [
     resources_out_dir + "{{source_file_part}}",
   ]
@@ -113,7 +113,7 @@ action("generate_devtools_grd") {
     ":devtools_frontend_resources",
   ]
   inputs = gypi_values.devtools_image_files + all_devtools_files
-  inputs += gypi_values.devtools_compatibility_scripts
+  inputs += gypi_values.devtools_embedder_scripts
 
   if (debug_devtools) {
     # Debug: all files are picked as-is.
@@ -181,18 +181,17 @@ action("generate_devtools_grd") {
     "front_end",
   ]
 
-  args =
-      rebase_path(generated_files, root_build_dir) +
-      rebase_path(generated_files, root_build_dir) +
-      rebase_path(gypi_values.devtools_compatibility_scripts, root_build_dir) +
-      static_files_args + [ "--relative_path_dirs" ] +
-      rebase_path(relative_path_dirs, root_build_dir) +
-      [
-        "--images",
-        rebase_path(images_path, root_build_dir),
-        "--output",
-        rebase_path(outfile, root_build_dir),
-      ]
+  args = rebase_path(generated_files, root_build_dir) +
+         rebase_path(generated_files, root_build_dir) +
+         rebase_path(gypi_values.devtools_embedder_scripts, root_build_dir) +
+         static_files_args + [ "--relative_path_dirs" ] +
+         rebase_path(relative_path_dirs, root_build_dir) +
+         [
+           "--images",
+           rebase_path(images_path, root_build_dir),
+           "--output",
+           rebase_path(outfile, root_build_dir),
+         ]
 }
 
 action("devtools_extension_api") {

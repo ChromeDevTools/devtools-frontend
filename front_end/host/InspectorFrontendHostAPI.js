@@ -292,6 +292,8 @@ InspectorFrontendHostAPI.prototype = {
      */
     isUnderTest: function() { },
 
+    readyForTest: function() { },
+
     /**
      * @return {boolean}
      */

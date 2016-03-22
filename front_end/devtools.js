@@ -675,6 +675,14 @@ InspectorFrontendHostImpl.prototype = {
 
     /**
      * @override
+     */
+    readyForTest: function()
+    {
+        DevToolsAPI.sendMessageToEmbedder("readyForTest", [], null);
+    },
+
+    /**
+     * @override
      * @param {boolean} discoverUsbDevices
      * @param {boolean} portForwardingEnabled
      * @param {!Adb.PortForwardingConfig} portForwardingConfig
@@ -1019,35 +1027,6 @@ if (window.document.head && (window.document.readyState === "complete" || window
     installBackwardsCompatibility();
 else
     window.addEventListener("DOMContentLoaded", windowLoaded, false);
-
-// UITests ------------------------------------------------------------------
-
-if (window.domAutomationController) {
-    var uiTests = {};
-
-    uiTests._dispatchIfReady = function()
-    {
-        if (uiTests._testSuite && uiTests._pendingDispatchArgs) {
-            var args = uiTests._pendingDispatchArgs;
-            delete uiTests._pendingDispatchArgs;
-            uiTests._testSuite.dispatch(args);
-        }
-    }
-
-    uiTests.dispatchOnTestSuite = function(args)
-    {
-        uiTests._pendingDispatchArgs = args;
-        uiTests._dispatchIfReady();
-    };
-
-    uiTests.testSuiteReady = function(testSuiteConstructor)
-    {
-        uiTests._testSuite = testSuiteConstructor(window.domAutomationController);
-        uiTests._dispatchIfReady();
-    };
-
-    window.uiTests = uiTests;
-}
 
 })(window);
 

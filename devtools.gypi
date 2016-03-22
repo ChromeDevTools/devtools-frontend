@@ -48,8 +48,9 @@
             '<@(devtools_ui_js_files)',
             '<@(devtools_workspace_js_files)',
         ],
-        'devtools_compatibility_scripts': [
+        'devtools_embedder_scripts': [
             'front_end/devtools.js',
+            'front_end/Tests.js',
         ],
         'devtools_core_base_files': [
             'front_end/inspector.js',
@@ -73,7 +74,6 @@
             'front_end/common/StaticContentProvider.js',
             'front_end/common/OutputStream.js',
             'front_end/common/SegmentedRange.js',
-            'front_end/common/TestBase.js',
             'front_end/common/Text.js',
             'front_end/common/TextDictionary.js',
             'front_end/common/TextRange.js',
@@ -312,7 +312,6 @@
             'front_end/main/OverlayController.js',
             'front_end/main/RenderingOptions.js',
             'front_end/main/SimpleApp.js',
-            'front_end/main/Tests.js',
         ],
         'devtools_module_json_files': [
             'front_end/accessibility/module.json',

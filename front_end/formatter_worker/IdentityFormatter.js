@@ -4,14 +4,14 @@
 
 /**
  * @constructor
- * @param {!FormatterWorker.FormattedContentBuilder} builder
+ * @param {!WebInspector.FormattedContentBuilder} builder
  */
-FormatterWorker.IdentityFormatter = function(builder)
+WebInspector.IdentityFormatter = function(builder)
 {
     this._builder = builder;
 }
 
-FormatterWorker.IdentityFormatter.prototype = {
+WebInspector.IdentityFormatter.prototype = {
     /**
      * @param {string} text
      * @param {!Array<number>} lineEndings

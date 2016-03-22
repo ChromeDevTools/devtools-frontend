@@ -6,7 +6,7 @@
  * @constructor
  * @param {string} indentString
  */
-FormatterWorker.FormattedContentBuilder = function(indentString)
+WebInspector.FormattedContentBuilder = function(indentString)
 {
     this._lastOriginalPosition = 0;
 
@@ -28,7 +28,7 @@ FormatterWorker.FormattedContentBuilder = function(indentString)
     this._hardSpaces = 0;
 }
 
-FormatterWorker.FormattedContentBuilder.prototype = {
+WebInspector.FormattedContentBuilder.prototype = {
     /**
      * @param {string} token
      * @param {number} startPosition

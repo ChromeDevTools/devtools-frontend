@@ -30,14 +30,14 @@
 
 /**
  * @constructor
- * @param {!FormatterWorker.FormattedContentBuilder} builder
+ * @param {!WebInspector.FormattedContentBuilder} builder
  */
-FormatterWorker.JavaScriptFormatter = function(builder)
+WebInspector.JavaScriptFormatter = function(builder)
 {
     this._builder = builder;
 }
 
-FormatterWorker.JavaScriptFormatter.prototype = {
+WebInspector.JavaScriptFormatter.prototype = {
     /**
      * @param {string} text
      * @param {!Array<number>} lineEndings

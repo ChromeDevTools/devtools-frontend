@@ -30,14 +30,14 @@
 
 /**
  * @constructor
- * @param {!FormatterWorker.FormattedContentBuilder} builder
+ * @param {!WebInspector.FormattedContentBuilder} builder
  */
-FormatterWorker.CSSFormatter = function(builder)
+WebInspector.CSSFormatter = function(builder)
 {
     this._builder = builder;
 }
 
-FormatterWorker.CSSFormatter.prototype = {
+WebInspector.CSSFormatter.prototype = {
     /**
      * @param {string} text
      * @param {!Array.<number>} lineEndings
@@ -51,7 +51,7 @@ FormatterWorker.CSSFormatter.prototype = {
         this._toOffset = toOffset;
         this._lastLine = -1;
         this._state = {};
-        var tokenize = FormatterWorker.createTokenizer("text/css");
+        var tokenize = WebInspector.createTokenizer("text/css");
         tokenize(text.substring(this._fromOffset, this._toOffset), this._tokenCallback.bind(this));
     },
 

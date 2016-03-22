@@ -4,9 +4,9 @@
 
 /**
  * @constructor
- * @param {!FormatterWorker.FormattedContentBuilder} builder
+ * @param {!WebInspector.FormattedContentBuilder} builder
  */
-FormatterWorker.HTMLFormatter = function(builder)
+WebInspector.HTMLFormatter = function(builder)
 {
     this._builder = builder;
 }
@@ -16,18 +16,18 @@ FormatterWorker.HTMLFormatter = function(builder)
  * @param {string} tagName
  * @param {number} offset
  */
-FormatterWorker.HTMLFormatter.Result = function(tagName, offset)
+WebInspector.HTMLFormatter.Result = function(tagName, offset)
 {
     this.tagName = tagName;
     this.offset = offset;
 }
 
-FormatterWorker.HTMLFormatter.prototype = {
+WebInspector.HTMLFormatter.prototype = {
     /**
      * @param {string} text
      * @param {!Array<number>} lineEndings
      * @param {number} fromOffset
-     * @return {!FormatterWorker.HTMLFormatter.Result}
+     * @return {!WebInspector.HTMLFormatter.Result}
      */
     format: function(text, lineEndings, fromOffset)
     {
@@ -42,7 +42,7 @@ FormatterWorker.HTMLFormatter.prototype = {
          * @param {number} tokenStart
          * @param {number} tokenEnd
          * @return {(!Object|undefined)}
-         * @this {FormatterWorker.HTMLFormatter}
+         * @this {WebInspector.HTMLFormatter}
          */
         function processToken(tokenValue, type, tokenStart, tokenEnd)
         {
@@ -65,15 +65,15 @@ FormatterWorker.HTMLFormatter.prototype = {
             }
 
             if (tagName && tokenValue === ">")
-                return FormatterWorker.AbortTokenization;
+                return WebInspector.AbortTokenization;
 
             accumulatedTokenValue = accumulatedTokenValue + tokenValue.toLowerCase();
             if (accumulatedTokenValue === "<script" || accumulatedTokenValue === "<style")
                 tagName = accumulatedTokenValue.substring(1);
             accumulatedTokenValue = "";
         }
-        var tokenizer = FormatterWorker.createTokenizer("text/html");
+        var tokenizer = WebInspector.createTokenizer("text/html");
         tokenizer(content, processToken.bind(this));
-        return new FormatterWorker.HTMLFormatter.Result(tagName, lastOffset);
+        return new WebInspector.HTMLFormatter.Result(tagName, lastOffset);
     },
 }

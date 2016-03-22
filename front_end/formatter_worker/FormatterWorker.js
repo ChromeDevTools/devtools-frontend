@@ -27,87 +27,83 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-var FormatterWorker = {
-    /**
-     * @param {string} mimeType
-     * @return {function(string, function(string, ?string, number, number):(!Object|undefined))}
-     */
-    createTokenizer: function(mimeType)
-    {
-        var mode = CodeMirror.getMode({indentUnit: 2}, mimeType);
-        var state = CodeMirror.startState(mode);
-        /**
-         * @param {string} line
-         * @param {function(string, ?string, number, number):?} callback
-         */
-        function tokenize(line, callback)
-        {
-            var stream = new CodeMirror.StringStream(line);
-            while (!stream.eol()) {
-                var style = mode.token(stream, state);
-                var value = stream.current();
-                if (callback(value, style, stream.start, stream.start + value.length) === FormatterWorker.AbortTokenization)
-                    return;
-                stream.start = stream.pos;
-            }
-        }
-        return tokenize;
-    }
-};
-
-FormatterWorker.AbortTokenization = {};
 
 /**
- * @typedef {{indentString: string, content: string, mimeType: string}}
+ * @param {string} mimeType
+ * @return {function(string, function(string, ?string, number, number):(!Object|undefined))}
  */
-var FormatterParameters;
+WebInspector.createTokenizer = function(mimeType)
+{
+    var mode = CodeMirror.getMode({indentUnit: 2}, mimeType);
+    var state = CodeMirror.startState(mode);
+    /**
+     * @param {string} line
+     * @param {function(string, ?string, number, number):?} callback
+     */
+    function tokenize(line, callback)
+    {
+        var stream = new CodeMirror.StringStream(line);
+        while (!stream.eol()) {
+            var style = mode.token(stream, state);
+            var value = stream.current();
+            if (callback(value, style, stream.start, stream.start + value.length) === WebInspector.AbortTokenization)
+                return;
+            stream.start = stream.pos;
+        }
+    }
+    return tokenize;
+}
+
+WebInspector.AbortTokenization = {};
 
 self.onmessage = function(event) {
-    var data = /** @type !{method: string, params: !FormatterParameters} */ (event.data);
-    if (!data.method)
+    var method = /** @type {string} */(event.data.method);
+    var params = /** @type !{indentString: string, content: string, mimeType: string} */ (event.data.params);
+    if (!method)
         return;
 
-    switch (data.method) {
+    switch (method) {
     case "format":
-        FormatterWorker.format(data.params);
+        WebInspector.format(params.mimeType, params.content, params.indentString);
         break;
     case "parseCSS":
-        FormatterWorker.parseCSS(data.params);
+        WebInspector.parseCSS(params.content);
         break;
     case "javaScriptOutline":
-        FormatterWorker.javaScriptOutline(data.params);
+        WebInspector.javaScriptOutline(params.content);
         break;
     default:
-        console.error("Unsupport method name: " + data.method);
+        console.error("Unsupport method name: " + method);
     }
 };
 
 /**
- * @param {!FormatterParameters} params
+ * @param {string} mimeType
+ * @param {string} text
+ * @param {string=} indentString
  */
-FormatterWorker.format = function(params)
+WebInspector.format = function(mimeType, text, indentString)
 {
     // Default to a 4-space indent.
-    var indentString = params.indentString || "    ";
+    indentString = indentString || "    ";
     var result = {};
-    var builder = new FormatterWorker.FormattedContentBuilder(indentString);
-    var text = params.content;
+    var builder = new WebInspector.FormattedContentBuilder(indentString);
     var lineEndings = text.computeLineEndings();
     try {
-        switch (params.mimeType) {
+        switch (mimeType) {
         case "text/html":
             formatMixedHTML(builder, text, lineEndings);
             break;
         case "text/css":
-            var formatter = new FormatterWorker.CSSFormatter(builder);
+            var formatter = new WebInspector.CSSFormatter(builder);
             formatter.format(text, lineEndings, 0, text.length);
             break;
         case "text/javascript":
-            var formatter = new FormatterWorker.JavaScriptFormatter(builder);
+            var formatter = new WebInspector.JavaScriptFormatter(builder);
             formatter.format(text, lineEndings, 0, text.length);
             break;
         default:
-            var formatter = new FormatterWorker.IdentityFormatter(builder);
+            var formatter = new WebInspector.IdentityFormatter(builder);
             formatter.format(text, lineEndings, 0, text.length);
         }
         result.mapping = builder.mapping();
@@ -121,16 +117,16 @@ FormatterWorker.format = function(params)
 }
 
 /**
- * @param {!FormatterWorker.FormattedContentBuilder} builder
+ * @param {!WebInspector.FormattedContentBuilder} builder
  * @param {string} text
  * @param {!Array<number>} lineEndings
  */
 function formatMixedHTML(builder, text, lineEndings)
 {
-    var htmlFormatter = new FormatterWorker.HTMLFormatter(builder);
-    var jsFormatter = new FormatterWorker.JavaScriptFormatter(builder);
-    var cssFormatter = new FormatterWorker.CSSFormatter(builder);
-    var identityFormatter = new FormatterWorker.IdentityFormatter(builder);
+    var htmlFormatter = new WebInspector.HTMLFormatter(builder);
+    var jsFormatter = new WebInspector.JavaScriptFormatter(builder);
+    var cssFormatter = new WebInspector.CSSFormatter(builder);
+    var identityFormatter = new WebInspector.IdentityFormatter(builder);
 
     var offset = 0;
     while (offset < text.length) {

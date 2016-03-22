@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 /**
- * @param {!Object} params
+ * @param {string} content
  */
-FormatterWorker.javaScriptOutline = function(params)
+WebInspector.javaScriptOutline = function(content)
 {
     var chunkSize = 100000; // characters per data chunk
     var outlineChunk = [];
@@ -16,7 +16,7 @@ FormatterWorker.javaScriptOutline = function(params)
     var isReadingArguments = false;
     var argumentsText = "";
     var currentFunction = null;
-    var tokenizer = new WebInspector.AcornTokenizer(params.content);
+    var tokenizer = new WebInspector.AcornTokenizer(content);
     var AT = WebInspector.AcornTokenizer;
 
     while (tokenizer.peekToken()) {
@@ -24,7 +24,7 @@ FormatterWorker.javaScriptOutline = function(params)
         if (AT.lineComment(token) || AT.blockComment(token))
             continue;
 
-        var tokenValue = params.content.substring(token.start, token.end);
+        var tokenValue = content.substring(token.start, token.end);
 
         if (AT.identifier(token) && previousToken && (AT.identifier(previousToken, "get") || AT.identifier(previousToken, "set"))) {
             currentFunction = {

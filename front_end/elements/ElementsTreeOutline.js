@@ -44,6 +44,8 @@ WebInspector.ElementsTreeOutline = function(domModel, omitRootDOMNode, selectEna
 
     this._shadowRoot = WebInspector.createShadowRootWithCoreStyles(element, "elements/elementsTreeOutline.css");
     var outlineDisclosureElement = this._shadowRoot.createChild("div", "elements-disclosure");
+    if (Runtime.experiments.isEnabled("reducedIndentation"))
+        outlineDisclosureElement.classList.add("elements-reduced-indentation");
 
     TreeOutline.call(this);
     this._element = this.element;

@@ -80,6 +80,7 @@
     padding-left: 1px;
     height: 11px;
     line-height: 12px !important;
+    border-style: solid;
 }
 
 .cm-line-without-source-mapping {

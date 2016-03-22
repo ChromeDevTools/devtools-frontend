@@ -44,12 +44,7 @@ WebInspector.NetworkManager = function(target)
         this._networkAgent.setCacheDisabled(true);
     if (WebInspector.moduleSetting("monitoringXHREnabled").get())
         this._networkAgent.setMonitoringXHREnabled(true);
-
-    // Limit buffer when talking to a remote device.
-    if (Runtime.queryParam("remoteFrontend") || Runtime.queryParam("ws"))
-        this._networkAgent.enable(10000000, 5000000);
-    else
-        this._networkAgent.enable();
+    this._networkAgent.enable();
 
     /** @type {!Map<!NetworkAgent.CertificateId, !Promise<!NetworkAgent.CertificateDetails>>} */
     this._certificateDetailsCache = new Map();

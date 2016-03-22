@@ -1412,11 +1412,7 @@
         "commands": [
             {
                 "name": "enable",
-                "description": "Enables network tracking, network events will now be delivered to the client.",
-                "parameters": [
-                    { "name": "maxTotalBufferSize", "type": "integer", "optional": true, "hidden": true, "description": "Buffer size in bytes to use when preserving network payloads (XHRs, etc)." },
-                    { "name": "maxResourceBufferSize", "type": "integer", "optional": true, "hidden": true, "description": "Per-resource buffer size in bytes to use when preserving network payloads (XHRs, etc)." }
-                ]
+                "description": "Enables network tracking, network events will now be delivered to the client."
             },
             {
                 "name": "disable",

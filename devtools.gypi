@@ -605,6 +605,10 @@
             'front_end/formatter_worker/CSSFormatter.js',
             'front_end/formatter_worker/FormattedContentBuilder.js',
             'front_end/formatter_worker/JavaScriptFormatter.js',
+            'front_end/formatter_worker/CSSRuleParser.js',
+            'front_end/formatter_worker/HTMLFormatter.js',
+            'front_end/formatter_worker/IdentityFormatter.js',
+            'front_end/formatter_worker/JavaScriptOutline.js',
             'front_end/formatter_worker/FormatterWorker.js',
         ],
         'devtools_settings_js_files': [

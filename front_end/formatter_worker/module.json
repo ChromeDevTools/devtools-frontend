@@ -11,7 +11,11 @@
         "CSSFormatter.js",
         "../es_tree/AcornTokenizer.js",
         "JavaScriptFormatter.js",
-        "FormattedContentBuilder.js"
+        "FormattedContentBuilder.js",
+        "CSSRuleParser.js",
+        "HTMLFormatter.js",
+        "IdentityFormatter.js",
+        "JavaScriptOutline.js"
     ],
     "skip_compilation": [
         "../acorn/acorn.js",

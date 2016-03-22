@@ -418,7 +418,7 @@ WebInspector.ShortcutsScreen.SourcesPanelShortcuts = {
     ],
 
     GoToMember: [
-        WebInspector.KeyboardShortcut.makeDescriptor("p", WebInspector.KeyboardShortcut.Modifiers.CtrlOrMeta | WebInspector.KeyboardShortcut.Modifiers.Shift)
+        WebInspector.KeyboardShortcut.makeDescriptor("o", WebInspector.KeyboardShortcut.Modifiers.CtrlOrMeta | WebInspector.KeyboardShortcut.Modifiers.Shift)
     ],
 
     GoToLine: [

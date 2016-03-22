@@ -765,7 +765,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
             for (var line of this._valueWidgets.keys())
                 toLine = Math.max(toLine, line + 1);
         }
-        if (fromLine >= toLine || toLine - fromLine > 500) {
+        if (fromLine >= toLine || toLine - fromLine > 500 || fromLine < 0 || toLine >= this.textEditor.linesCount) {
             this._clearValueWidgets();
             return;
         }

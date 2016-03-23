@@ -169,6 +169,9 @@ WebInspector.PropertiesWidget.prototype = {
     _propertyExpanded: function(event)
     {
         WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.DOMPropertiesExpanded);
+        for (var section of this.sections) {
+            section.removeEventListener(TreeOutline.Events.ElementExpanded, this._propertyExpanded, this);
+        }
     },
 
     /**

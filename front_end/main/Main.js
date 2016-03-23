@@ -58,7 +58,6 @@ WebInspector.Main.prototype = {
         if (InspectorFrontendHost.isUnderTest())
             self.runtime.useTestBase();
         InspectorFrontendHost.getPreferences(this._gotPreferences.bind(this));
-        new WebInspector.FrontendWebSocketAPI();
     },
 
     /**

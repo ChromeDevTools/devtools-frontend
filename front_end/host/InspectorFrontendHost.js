@@ -443,14 +443,6 @@ WebInspector.InspectorFrontendHostStub.prototype = {
     isHostedMode: function()
     {
         return true;
-    },
-
-    /**
-     * @override
-     * @param {string} message
-     */
-    sendFrontendAPINotification: function(message)
-    {
     }
 };
 

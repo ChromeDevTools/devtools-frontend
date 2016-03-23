@@ -38,14 +38,11 @@ InspectorFrontendHostAPI.Events = {
     DevicesUpdated: "devicesUpdated",
     DispatchMessage: "dispatchMessage",
     DispatchMessageChunk: "dispatchMessageChunk",
-    DispatchFrontendAPIMessage: "dispatchFrontendAPIMessage",
     EnterInspectElementMode: "enterInspectElementMode",
     FileSystemsLoaded: "fileSystemsLoaded",
     FileSystemRemoved: "fileSystemRemoved",
     FileSystemAdded: "fileSystemAdded",
     FileSystemFilesChanged: "fileSystemFilesChanged",
-    FrontendAPIAttached: "frontendAPIAttached",
-    FrontendAPIDetached: "frontendAPIDetached",
     IndexingTotalWorkCalculated: "indexingTotalWorkCalculated",
     IndexingWorked: "indexingWorked",
     IndexingDone: "indexingDone",
@@ -71,14 +68,11 @@ InspectorFrontendHostAPI.EventDescriptors = [
     [InspectorFrontendHostAPI.Events.DevicesUpdated, ["devices"]],
     [InspectorFrontendHostAPI.Events.DispatchMessage, ["messageObject"]],
     [InspectorFrontendHostAPI.Events.DispatchMessageChunk, ["messageChunk", "messageSize"]],
-    [InspectorFrontendHostAPI.Events.DispatchFrontendAPIMessage, ["messageObject"]],
     [InspectorFrontendHostAPI.Events.EnterInspectElementMode, []],
     [InspectorFrontendHostAPI.Events.FileSystemsLoaded, ["fileSystems"]],
     [InspectorFrontendHostAPI.Events.FileSystemRemoved, ["fileSystemPath"]],
     [InspectorFrontendHostAPI.Events.FileSystemAdded, ["errorMessage", "fileSystem"]],
     [InspectorFrontendHostAPI.Events.FileSystemFilesChanged, ["paths"]],
-    [InspectorFrontendHostAPI.Events.FrontendAPIAttached, ["frontendAPIAttached"]],
-    [InspectorFrontendHostAPI.Events.FrontendAPIDetached, ["frontendAPIDetached"]],
     [InspectorFrontendHostAPI.Events.IndexingTotalWorkCalculated, ["requestId", "fileSystemPath", "totalWork"]],
     [InspectorFrontendHostAPI.Events.IndexingWorked, ["requestId", "fileSystemPath", "worked"]],
     [InspectorFrontendHostAPI.Events.IndexingDone, ["requestId", "fileSystemPath"]],
@@ -297,10 +291,5 @@ InspectorFrontendHostAPI.prototype = {
     /**
      * @return {boolean}
      */
-    isHostedMode: function() { },
-
-    /**
-     * @param {string} message
-     */
-    sendFrontendAPINotification: function(message) { }
+    isHostedMode: function() { }
 }

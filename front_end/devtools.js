@@ -297,24 +297,6 @@ DevToolsAPIImpl.prototype = {
     streamWrite: function(id, chunk)
     {
         this._dispatchOnInspectorFrontendAPI("streamWrite", [id, chunk]);
-    },
-
-    frontendAPIAttached: function()
-    {
-        this._dispatchOnInspectorFrontendAPI("frontendAPIAttached", []);
-    },
-
-    frontendAPIDetached: function()
-    {
-        this._dispatchOnInspectorFrontendAPI("frontendAPIDetached", []);
-    },
-
-    /**
-     * @param {string} command
-     */
-    dispatchFrontendAPIMessage: function(command)
-    {
-        this._dispatchOnInspectorFrontendAPI("dispatchFrontendAPIMessage", [command]);
     }
 }
 
@@ -539,15 +521,6 @@ InspectorFrontendHostImpl.prototype = {
 
     /**
      * @override
-     * @param {string} message
-     */
-    sendFrontendAPINotification: function(message)
-    {
-        DevToolsAPI.sendMessageToEmbedder("sendFrontendAPINotification", [message], null);
-    },
-
-    /**
-     * @override
      */
     requestFileSystems: function()
     {
@@ -743,6 +716,14 @@ InspectorFrontendHostImpl.prototype = {
     },
 
     // Backward-compatible methods below this line --------------------------------------------
+
+    /**
+     * Support for legacy front-ends (<M50).
+     * @param {string} message
+     */
+    sendFrontendAPINotification: function(message)
+    {
+    },
 
     /**
      * Support for legacy front-ends (<M41).

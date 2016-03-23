@@ -352,7 +352,6 @@
         "sdk"
     ],
     "scripts": [
-        "FrontendWebSocketAPI.js",
         "RenderingOptions.js",
         "SimpleApp.js",
         "OverlayController.js",

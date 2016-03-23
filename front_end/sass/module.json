@@ -4,6 +4,7 @@
         "SASSSupport.js",
         "ASTService.js",
         "SASSProcessor.js",
-        "ASTSourceMap.js"
+        "ASTSourceMap.js",
+        "SASSSourceMapFactory.js"
     ]
 }

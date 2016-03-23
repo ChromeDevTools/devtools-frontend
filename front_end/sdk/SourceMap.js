@@ -60,7 +60,6 @@ SourceMapV3.Offset = function()
     /** @type {number} */ this.column;
 }
 
-
 /**
  * @constructor
  * @param {number} lineNumber
@@ -114,6 +113,45 @@ WebInspector.SourceMap.prototype = {
      * @return {?WebInspector.SourceMapEntry}
      */
     findEntry: function(lineNumber, columnNumber) { },
+
+    /**
+     * @return {boolean}
+     */
+    editable: function() { },
+
+    /**
+     * @param {!Array<!WebInspector.TextRange>} ranges
+     * @param {!Array<string>} texts
+     * @return {!Promise<?WebInspector.SourceMap.EditResult>}
+     */
+    editCompiled: function(ranges, texts) { },
+}
+
+/**
+ * @constructor
+ * @param {!WebInspector.SourceMap} map
+ * @param {!Array<!WebInspector.SourceEdit>} compiledEdits
+ * @param {!Map<string, string>} newSources
+ */
+WebInspector.SourceMap.EditResult = function(map, compiledEdits, newSources)
+{
+    this.map = map;
+    this.compiledEdits = compiledEdits;
+    this.newSources = newSources;
+}
+
+/**
+ * @interface
+ */
+WebInspector.SourceMapFactory = function() { }
+
+WebInspector.SourceMapFactory.prototype = {
+    /**
+     * @param {!WebInspector.Target} target
+     * @param {!WebInspector.SourceMap} sourceMap
+     * @return {!Promise<?WebInspector.SourceMap>}
+     */
+    editableSourceMap: function(target, sourceMap) { },
 }
 
 /**
@@ -223,6 +261,26 @@ WebInspector.TextSourceMap.prototype = {
         if (sourceContent)
             return new WebInspector.StaticContentProvider(contentType, sourceContent);
         return new WebInspector.CompilerSourceMappingContentProvider(sourceURL, contentType);
+    },
+
+    /**
+     * @override
+     * @return {boolean}
+     */
+    editable: function()
+    {
+        return false;
+    },
+
+    /**
+     * @override
+     * @param {!Array<!WebInspector.TextRange>} ranges
+     * @param {!Array<string>} texts
+     * @return {!Promise<?WebInspector.SourceMap.EditResult>}
+     */
+    editCompiled: function(ranges, texts)
+    {
+        return Promise.resolve(/** @type {?WebInspector.SourceMap.EditResult} */(null));
     },
 
     /**

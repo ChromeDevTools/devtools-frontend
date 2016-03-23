@@ -122,6 +122,7 @@
             'front_end/sass/ASTSourceMap.js',
             'front_end/sass/SASSProcessor.js',
             'front_end/sass/SASSSupport.js',
+            'front_end/sass/SASSSourceMapFactory.js',
         ],
         'devtools_screencast_js_files': [
             'front_end/screencast/screencastView.css',

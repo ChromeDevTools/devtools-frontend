@@ -17,7 +17,7 @@ WebInspector.SASSProcessor = function(astService, map, editOperations)
 
 WebInspector.SASSProcessor.prototype = {
     /**
-     * @return {!Promise<?WebInspector.SASSProcessor.Result>}
+     * @return {!Promise<?WebInspector.SourceMap.EditResult>}
      */
     _mutate: function()
     {
@@ -48,7 +48,7 @@ WebInspector.SASSProcessor.prototype = {
     /**
      * @param {!Set<!WebInspector.SASSSupport.Rule>} changedCSSRules
      * @param {!Array<!WebInspector.SASSSupport.AST>} changedModels
-     * @return {?WebInspector.SASSProcessor.Result}
+     * @return {?WebInspector.SourceMap.EditResult}
      */
     _onFinished: function(changedCSSRules, changedModels)
     {
@@ -72,42 +72,8 @@ WebInspector.SASSProcessor.prototype = {
                 continue;
             newSASSSources.set(model.document.url, model.document.text.value());
         }
-        return new WebInspector.SASSProcessor.Result(map, cssEdits, newSASSSources);
+        return new WebInspector.SourceMap.EditResult(map, cssEdits, newSASSSources);
     }
-}
-
-/**
- * @param {!WebInspector.ASTSourceMap} map
- * @return {boolean}
- */
-WebInspector.SASSProcessor.validate = function(map)
-{
-    var cssAST = map.compiledModel();
-    var cssNodes = map.allCompiledNodes();
-    for (var i = 0; i < cssNodes.length; ++i) {
-        var cssNode = cssNodes[i];
-        if (!cssNode.parent || !(cssNode.parent instanceof WebInspector.SASSSupport.Property))
-            continue;
-        if (cssNode !== cssNode.parent.name)
-            continue;
-        var sassNode = map.toSourceNode(cssNode);
-        if (sassNode && cssNode.text.trim() !== sassNode.text.trim())
-            return false;
-    }
-    return true;
-}
-
-/**
- * @constructor
- * @param {!WebInspector.ASTSourceMap} map
- * @param {!Array<!WebInspector.SourceEdit>} cssEdits
- * @param {!Map<string, string>} newSASSSources
- */
-WebInspector.SASSProcessor.Result = function(map, cssEdits, newSASSSources)
-{
-    this.map = map;
-    this.cssEdits = cssEdits;
-    this.newSASSSources = newSASSSources;
 }
 
 /**
@@ -136,7 +102,7 @@ WebInspector.SASSProcessor._toCSSProperties = function(map, sassProperty)
  * @param {!WebInspector.ASTSourceMap} map
  * @param {!Array<!WebInspector.TextRange>} ranges
  * @param {!Array<string>} newTexts
- * @return {!Promise<?WebInspector.SASSProcessor.Result>}
+ * @return {!Promise<?WebInspector.SourceMap.EditResult>}
  */
 WebInspector.SASSProcessor.processCSSEdits = function(astService, map, ranges, newTexts)
 {
@@ -150,7 +116,7 @@ WebInspector.SASSProcessor.processCSSEdits = function(astService, map, ranges, n
 
     /**
      * @param {!WebInspector.SASSSupport.AST} newCSSAST
-     * @return {!Promise<?WebInspector.SASSProcessor.Result>}
+     * @return {!Promise<?WebInspector.SourceMap.EditResult>}
      */
     function onCSSParsed(newCSSAST)
     {

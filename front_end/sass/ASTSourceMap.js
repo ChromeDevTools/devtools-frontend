@@ -8,9 +8,11 @@
  * @param {string} compiledURL
  * @param {string} sourceMapURL
  * @param {!Map<string, !WebInspector.SASSSupport.AST>} models
+ * @param {?function(!WebInspector.ASTSourceMap, !Array<!WebInspector.TextRange>, !Array<string>):!Promise<?WebInspector.SourceMap.EditResult>} editCallback
  */
-WebInspector.ASTSourceMap = function(compiledURL, sourceMapURL, models)
+WebInspector.ASTSourceMap = function(compiledURL, sourceMapURL, models, editCallback)
 {
+    this._editCallback = editCallback;
     this._compiledURL = compiledURL;
     this._sourceMapURL = sourceMapURL;
     /** @type {!Map<string, !WebInspector.SASSSupport.AST>} */
@@ -19,82 +21,6 @@ WebInspector.ASTSourceMap = function(compiledURL, sourceMapURL, models)
     this._compiledToSource = new Map();
     /** @type {!Multimap<!WebInspector.SASSSupport.TextNode, !WebInspector.SASSSupport.TextNode>} */
     this._sourceToCompiled = new Multimap();
-}
-
-/**
- * @param {!WebInspector.ASTService} astService
- * @param {!WebInspector.CSSModel} cssModel
- * @param {!WebInspector.TextSourceMap} sourceMap
- * @return {!Promise<?WebInspector.ASTSourceMap>}
- */
-WebInspector.ASTSourceMap.fromSourceMap = function(astService, cssModel, sourceMap)
-{
-    var headerIds = cssModel.styleSheetIdsForURL(sourceMap.compiledURL());
-    if (!headerIds || !headerIds.length)
-        return Promise.resolve(/** @type {?WebInspector.ASTSourceMap} */(null));
-    var header = cssModel.styleSheetHeaderForId(headerIds[0]);
-
-    /** @type {!Map<string, !WebInspector.SASSSupport.AST>} */
-    var models = new Map();
-    var promises = [];
-    for (var url of sourceMap.sourceURLs()) {
-        var contentProvider = sourceMap.sourceContentProvider(url, WebInspector.resourceTypes.SourceMapStyleSheet);
-        var sassPromise = contentProvider.requestContent()
-            .then(onSCSSText.bind(null, url))
-            .then(ast => models.set(ast.document.url, ast));
-        promises.push(sassPromise);
-    }
-    var cssURL = sourceMap.compiledURL();
-    var cssPromise = header.requestContent()
-        .then(text => astService.parseCSS(cssURL, text || ""))
-        .then(ast => models.set(ast.document.url, ast));
-    promises.push(cssPromise);
-
-    return Promise.all(promises)
-        .then(() => onParsed(cssURL, models, sourceMap))
-        .catchException(/** @type {?WebInspector.ASTSourceMap} */(null));
-
-    /**
-     * @param {string} url
-     * @param {?string} text
-     * @return {!Promise<!WebInspector.SASSSupport.AST>}
-     */
-    function onSCSSText(url, text)
-    {
-        return astService.parseSCSS(url, text || "");
-    }
-
-    /**
-     * @param {string} cssURL
-     * @param {!Map<string, !WebInspector.SASSSupport.AST>} models
-     * @param {!WebInspector.TextSourceMap} sourceMap
-     * @return {!WebInspector.ASTSourceMap}
-     */
-    function onParsed(cssURL, models, sourceMap)
-    {
-        var map = new WebInspector.ASTSourceMap(cssURL, sourceMap.url(), models);
-        //FIXME: this works O(N^2).
-        map.compiledModel().visit(onNode);
-        return map;
-
-        /**
-         * @param {!WebInspector.SASSSupport.Node} cssNode
-         */
-        function onNode(cssNode)
-        {
-            if (!(cssNode instanceof WebInspector.SASSSupport.TextNode))
-                return;
-            var entry = sourceMap.findEntry(cssNode.range.endLine, cssNode.range.endColumn);
-            if (!entry || !entry.sourceURL || typeof entry.sourceLineNumber === "undefined" || typeof entry.sourceColumnNumber === "undefined")
-                return;
-            var sassAST = models.get(entry.sourceURL);
-            if (!sassAST)
-                return;
-            var sassNode = sassAST.findNodeForPosition(entry.sourceLineNumber, entry.sourceColumnNumber);
-            if (sassNode)
-                map.addMapping(cssNode, sassNode);
-        }
-    }
 }
 
 WebInspector.ASTSourceMap.prototype = {
@@ -154,6 +80,26 @@ WebInspector.ASTSourceMap.prototype = {
         if (!sourceNode)
             return null;
         return new WebInspector.SourceMapEntry(lineNumber, columnNumber, sourceNode.document.url, sourceNode.range.startLine, sourceNode.range.startColumn);
+    },
+
+    /**
+     * @override
+     * @return {boolean}
+     */
+    editable: function()
+    {
+        return !!this._editCallback;
+    },
+
+    /**
+     * @override
+     * @param {!Array<!WebInspector.TextRange>} ranges
+     * @param {!Array<string>} texts
+     * @return {!Promise<?WebInspector.SourceMap.EditResult>}
+     */
+    editCompiled: function(ranges, texts)
+    {
+        return this._editCallback.call(null, this, ranges, texts);
     },
 
     /**
@@ -231,14 +177,6 @@ WebInspector.ASTSourceMap.prototype = {
     },
 
     /**
-     * @return {!Array<!WebInspector.SASSSupport.TextNode>}
-     */
-    allCompiledNodes: function()
-    {
-        return this._compiledToSource.keysArray();
-    },
-
-    /**
      * @param {!Array<!WebInspector.SASSSupport.AST>} updated
      * @param {!Map<!WebInspector.SASSSupport.Node, !WebInspector.SASSSupport.Node>=} outNodeMapping
      * @return {?WebInspector.ASTSourceMap}
@@ -256,7 +194,7 @@ WebInspector.ASTSourceMap.prototype = {
             models.set(newAST.document.url, newAST);
         }
 
-        var newMap = new WebInspector.ASTSourceMap(this._compiledURL, this._sourceMapURL, models);
+        var newMap = new WebInspector.ASTSourceMap(this._compiledURL, this._sourceMapURL, models, this._editCallback);
         var compiledNodes = this._compiledToSource.keysArray();
         for (var i = 0; i < compiledNodes.length; ++i) {
             var compiledNode = compiledNodes[i];

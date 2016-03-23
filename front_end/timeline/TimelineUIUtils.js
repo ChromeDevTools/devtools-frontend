@@ -694,6 +694,8 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
         contentHelper.appendTextRow(WebInspector.UIString("Callback ID"), eventData["id"]);
         break;
     case recordTypes.FunctionCall:
+        if (typeof eventData["functionName"] === "string")
+            contentHelper.appendTextRow(WebInspector.UIString("Function"), WebInspector.beautifyFunctionName(eventData["functionName"]));
         if (eventData["scriptName"])
             contentHelper.appendLocationRow(WebInspector.UIString("Location"), eventData["scriptName"], eventData["scriptLine"]);
         break;

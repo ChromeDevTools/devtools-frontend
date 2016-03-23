@@ -1269,14 +1269,20 @@ WebInspector.TimelinePanel.prototype = {
      */
     _setLineLevelCPUProfile: function(profile)
     {
+        var debuggerModel = WebInspector.DebuggerModel.fromTarget(WebInspector.targetManager.mainTarget());
+        if (!debuggerModel)
+            return;
         for (var fileInfo of profile.files()) {
-            var uiSourceCode = WebInspector.workspace.uiSourceCodeForURL(/** @type {string} */ (fileInfo[0]));
-            if (!uiSourceCode)
-                continue;
+            var url = /** @type {string} */ (fileInfo[0]);
+            var uiSourceCode = WebInspector.workspace.uiSourceCodeForURL(url);
             for (var lineInfo of fileInfo[1]) {
-                var line = lineInfo[0];
+                var line = lineInfo[0] - 1;
                 var time = lineInfo[1];
-                uiSourceCode.addLineDecoration(line, WebInspector.TimelineUIUtils.PerformanceLineDecorator.type, time);
+                var rawLocation = debuggerModel.createRawLocationByURL(url, line, 0);
+                if (rawLocation)
+                    new WebInspector.TimelineUIUtils.LineLevelProfilePresentation(rawLocation, time);
+                else if (uiSourceCode)
+                    uiSourceCode.addLineDecoration(line, WebInspector.TimelineUIUtils.PerformanceLineDecorator.type, time);
             }
         }
     },

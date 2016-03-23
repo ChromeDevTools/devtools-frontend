@@ -2110,6 +2110,31 @@ WebInspector.TimelineUIUtils.eventWarning = function(event, warningType)
 
 /**
  * @constructor
+ * @param {!WebInspector.DebuggerModel.Location} rawLocation
+ * @param {number} time
+ */
+WebInspector.TimelineUIUtils.LineLevelProfilePresentation = function(rawLocation, time)
+{
+    this._time = time;
+    WebInspector.debuggerWorkspaceBinding.createLiveLocation(rawLocation, this.updateLocation.bind(this));
+}
+
+WebInspector.TimelineUIUtils.LineLevelProfilePresentation.prototype = {
+    /**
+     * @param {!WebInspector.LiveLocation} liveLocation
+     */
+    updateLocation: function(liveLocation)
+    {
+        if (this._uiLocation)
+            this._uiLocation.uiSourceCode.removeLineDecoration(this._uiLocation.lineNumber, WebInspector.TimelineUIUtils.PerformanceLineDecorator.type);
+        this._uiLocation = liveLocation.uiLocation();
+        if (this._uiLocation)
+            this._uiLocation.uiSourceCode.addLineDecoration(this._uiLocation.lineNumber, WebInspector.TimelineUIUtils.PerformanceLineDecorator.type, this._time);
+    }
+}
+
+/**
+ * @constructor
  * @implements {WebInspector.UISourceCodeFrame.LineDecorator}
  */
 WebInspector.TimelineUIUtils.PerformanceLineDecorator = function()
@@ -2127,9 +2152,11 @@ WebInspector.TimelineUIUtils.PerformanceLineDecorator.prototype = {
     decorate: function(uiSourceCode, textEditor)
     {
         var type = WebInspector.TimelineUIUtils.PerformanceLineDecorator.type;
-        var decorations = uiSourceCode.lineDecorations(type) || [];
+        var decorations = uiSourceCode.lineDecorations(type);
         textEditor.resetGutterDecorations(type);
-        for (var decoration of decorations) {
+        if (!decorations)
+            return;
+        for (var decoration of decorations.values()) {
             var time = /** @type {number} */ (decoration.data());
             var text = WebInspector.UIString("%.1f\xa0ms", time);
             var intensity = Number.constrain(Math.log10(1 + 2 * time) / 5, 0.02, 1);

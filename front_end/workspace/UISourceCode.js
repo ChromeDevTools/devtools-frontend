@@ -52,7 +52,7 @@ WebInspector.UISourceCode = function(project, url, contentType)
     this._requestContentCallback = null;
     /** @type {?Promise<?string>} */
     this._requestContentPromise = null;
-    /** @type {!Map<string, !Array<!WebInspector.UISourceCode.LineMarker>>} */
+    /** @type {!Map<string, !Map<number, !WebInspector.UISourceCode.LineMarker>>} */
     this._lineDecorations = new Map();
 
     /** @type {!Array.<!WebInspector.Revision>} */
@@ -657,12 +657,30 @@ WebInspector.UISourceCode.prototype = {
     {
         var markers = this._lineDecorations.get(type);
         if (!markers) {
-            markers = [];
+            markers = new Map();
             this._lineDecorations.set(type, markers);
         }
         var marker = new WebInspector.UISourceCode.LineMarker(lineNumber, type, data);
-        markers.push(marker);
+        markers.set(lineNumber, marker);
         this.dispatchEventToListeners(WebInspector.UISourceCode.Events.LineDecorationAdded, marker);
+    },
+
+    /**
+     * @param {number} lineNumber
+     * @param {string} type
+     */
+    removeLineDecoration: function(lineNumber, type)
+    {
+        var markers = this._lineDecorations.get(type);
+        if (!markers)
+            return;
+        var marker = markers.get(lineNumber);
+        if (!marker)
+            return;
+        markers.delete(lineNumber);
+        this.dispatchEventToListeners(WebInspector.UISourceCode.Events.LineDecorationRemoved, marker);
+        if (!markers.size)
+            this._lineDecorations.delete(type);
     },
 
     /**
@@ -670,14 +688,18 @@ WebInspector.UISourceCode.prototype = {
      */
     removeAllLineDecorations: function(type)
     {
-        var markers = this._lineDecorations.get(type) || [];
-        markers.forEach(this.dispatchEventToListeners.bind(this, WebInspector.UISourceCode.Events.LineDecorationRemoved));
+        var markers = this._lineDecorations.get(type);
+        if (!markers)
+            return;
         this._lineDecorations.delete(type);
+        markers.forEach(marker => {
+            this.dispatchEventToListeners(WebInspector.UISourceCode.Events.LineDecorationRemoved, marker);
+        });
     },
 
     /**
      * @param {string} type
-     * @return {?Array<!WebInspector.UISourceCode.LineMarker>}
+     * @return {?Map<number, !WebInspector.UISourceCode.LineMarker>}
      */
     lineDecorations: function(type)
     {

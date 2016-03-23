@@ -1761,7 +1761,7 @@ WebInspector.TimelineModel.LineLevelProfile.prototype = {
                 }
                 for (var j = 0; j < node.positionTicks.length; ++j) {
                     var lineInfo = node.positionTicks[j];
-                    var line = lineInfo.line - 1;
+                    var line = lineInfo.line;
                     var time = lineInfo.ticks * sampleDuration;
                     fileInfo.set(line, (fileInfo.get(line) || 0) + time);
                 }

@@ -245,7 +245,7 @@ WebInspector.DebuggerWorkspaceBinding.prototype = {
 
     /**
      * @param {!WebInspector.Script} script
-     * @return {?WebInspector.SourceMap}
+     * @return {?WebInspector.TextSourceMap}
      */
     sourceMapForScript: function(script)
     {

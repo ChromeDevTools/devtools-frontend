@@ -60,21 +60,78 @@ SourceMapV3.Offset = function()
     /** @type {number} */ this.column;
 }
 
+
+/**
+ * @constructor
+ * @param {number} lineNumber
+ * @param {number} columnNumber
+ * @param {string=} sourceURL
+ * @param {number=} sourceLineNumber
+ * @param {number=} sourceColumnNumber
+ * @param {string=} name
+ */
+WebInspector.SourceMapEntry = function(lineNumber, columnNumber, sourceURL, sourceLineNumber, sourceColumnNumber, name)
+{
+    this.lineNumber = lineNumber;
+    this.columnNumber = columnNumber;
+    this.sourceURL = sourceURL;
+    this.sourceLineNumber = sourceLineNumber;
+    this.sourceColumnNumber = sourceColumnNumber;
+    this.name = name;
+}
+
+/**
+ * @interface
+ */
+WebInspector.SourceMap = function() { }
+
+WebInspector.SourceMap.prototype = {
+    /**
+     * @return {string}
+     */
+    compiledURL: function() { },
+
+    /**
+     * @return {string}
+     */
+    url: function() { },
+
+    /**
+     * @return {!Array<string>}
+     */
+    sourceURLs: function() { },
+
+    /**
+     * @param {string} sourceURL
+     * @param {!WebInspector.ResourceType} contentType
+     * @return {!WebInspector.ContentProvider}
+     */
+    sourceContentProvider: function(sourceURL, contentType) { },
+
+    /**
+     * @param {number} lineNumber in compiled resource
+     * @param {number} columnNumber in compiled resource
+     * @return {?WebInspector.SourceMapEntry}
+     */
+    findEntry: function(lineNumber, columnNumber) { },
+}
+
 /**
  * Implements Source Map V3 model. See https://github.com/google/closure-compiler/wiki/Source-Maps
  * for format description.
  * @constructor
+ * @implements {WebInspector.SourceMap}
  * @param {string} compiledURL
  * @param {string} sourceMappingURL
  * @param {!SourceMapV3} payload
  */
-WebInspector.SourceMap = function(compiledURL, sourceMappingURL, payload)
+WebInspector.TextSourceMap = function(compiledURL, sourceMappingURL, payload)
 {
-    if (!WebInspector.SourceMap.prototype._base64Map) {
+    if (!WebInspector.TextSourceMap.prototype._base64Map) {
         const base64Digits = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-        WebInspector.SourceMap.prototype._base64Map = {};
+        WebInspector.TextSourceMap.prototype._base64Map = {};
         for (var i = 0; i < base64Digits.length; ++i)
-            WebInspector.SourceMap.prototype._base64Map[base64Digits.charAt(i)] = i;
+            WebInspector.TextSourceMap.prototype._base64Map[base64Digits.charAt(i)] = i;
     }
 
     this._compiledURL = compiledURL;
@@ -89,10 +146,10 @@ WebInspector.SourceMap = function(compiledURL, sourceMappingURL, payload)
 /**
  * @param {string} sourceMapURL
  * @param {string} compiledURL
- * @return {!Promise<?WebInspector.SourceMap>}
- * @this {WebInspector.SourceMap}
+ * @return {!Promise<?WebInspector.TextSourceMap>}
+ * @this {WebInspector.TextSourceMap}
  */
-WebInspector.SourceMap.load = function(sourceMapURL, compiledURL)
+WebInspector.TextSourceMap.load = function(sourceMapURL, compiledURL)
 {
     var callback;
     var promise = new Promise(fulfill => callback = fulfill);
@@ -117,7 +174,7 @@ WebInspector.SourceMap.load = function(sourceMapURL, compiledURL)
             var payload = /** @type {!SourceMapV3} */ (JSON.parse(content));
             var baseURL = sourceMapURL.startsWith("data:") ? compiledURL : sourceMapURL;
 
-            callback(new WebInspector.SourceMap(compiledURL, baseURL, payload));
+            callback(new WebInspector.TextSourceMap(compiledURL, baseURL, payload));
         } catch(e) {
             console.error(e);
             WebInspector.console.error("Failed to parse SourceMap: " + sourceMapURL);
@@ -126,8 +183,9 @@ WebInspector.SourceMap.load = function(sourceMapURL, compiledURL)
     }
 }
 
-WebInspector.SourceMap.prototype = {
+WebInspector.TextSourceMap.prototype = {
     /**
+     * @override
      * @return {string}
      */
     compiledURL: function()
@@ -136,6 +194,7 @@ WebInspector.SourceMap.prototype = {
     },
 
     /**
+     * @override
      * @return {string}
      */
     url: function()
@@ -144,30 +203,23 @@ WebInspector.SourceMap.prototype = {
     },
 
     /**
+     * @override
      * @return {!Array.<string>}
      */
-    sources: function()
+    sourceURLs: function()
     {
         return Object.keys(this._sources);
     },
 
     /**
-     * @param {string} sourceURL
-     * @return {string|undefined}
-     */
-    sourceContent: function(sourceURL)
-    {
-        return this._sourceContentByURL[sourceURL];
-    },
-
-    /**
+     * @override
      * @param {string} sourceURL
      * @param {!WebInspector.ResourceType} contentType
      * @return {!WebInspector.ContentProvider}
      */
     sourceContentProvider: function(sourceURL, contentType)
     {
-        var sourceContent = this.sourceContent(sourceURL);
+        var sourceContent = this._sourceContentByURL[sourceURL];
         if (sourceContent)
             return new WebInspector.StaticContentProvider(contentType, sourceContent);
         return new WebInspector.CompilerSourceMappingContentProvider(sourceURL, contentType);
@@ -196,9 +248,10 @@ WebInspector.SourceMap.prototype = {
     },
 
     /**
+     * @override
      * @param {number} lineNumber in compiled resource
      * @param {number} columnNumber in compiled resource
-     * @return {?WebInspector.SourceMap.Entry}
+     * @return {?WebInspector.SourceMapEntry}
      */
     findEntry: function(lineNumber, columnNumber)
     {
@@ -224,7 +277,7 @@ WebInspector.SourceMap.prototype = {
     /**
      * @param {string} sourceURL
      * @param {number} lineNumber
-     * @return {?WebInspector.SourceMap.Entry}
+     * @return {?WebInspector.SourceMapEntry}
      */
     firstSourceLineMapping: function(sourceURL, lineNumber)
     {
@@ -236,7 +289,7 @@ WebInspector.SourceMap.prototype = {
 
         /**
          * @param {number} lineNumber
-         * @param {!WebInspector.SourceMap.Entry} mapping
+         * @param {!WebInspector.SourceMapEntry} mapping
          * @return {number}
          */
         function lineComparator(lineNumber, mapping)
@@ -246,7 +299,7 @@ WebInspector.SourceMap.prototype = {
     },
 
     /**
-     * @return {!Array<!WebInspector.SourceMap.Entry>}
+     * @return {!Array<!WebInspector.SourceMapEntry>}
      */
     mappings: function()
     {
@@ -255,7 +308,7 @@ WebInspector.SourceMap.prototype = {
 
     /**
      * @param {string} sourceURL
-     * @return {!Array.<!WebInspector.SourceMap.Entry>}
+     * @return {!Array.<!WebInspector.SourceMapEntry>}
      */
     _reversedMappings: function(sourceURL)
     {
@@ -269,8 +322,8 @@ WebInspector.SourceMap.prototype = {
         return mappings;
 
         /**
-         * @param {!WebInspector.SourceMap.Entry} a
-         * @param {!WebInspector.SourceMap.Entry} b
+         * @param {!WebInspector.SourceMapEntry} a
+         * @param {!WebInspector.SourceMapEntry} b
          * @return {number}
          */
         function sourceMappingComparator(a, b)
@@ -317,7 +370,7 @@ WebInspector.SourceMap.prototype = {
                 this._sourceContentByURL[url] = map.sourcesContent[i];
         }
 
-        var stringCharIterator = new WebInspector.SourceMap.StringCharIterator(map.mappings);
+        var stringCharIterator = new WebInspector.TextSourceMap.StringCharIterator(map.mappings);
         var sourceURL = sources[sourceIndex];
 
         while (true) {
@@ -335,7 +388,7 @@ WebInspector.SourceMap.prototype = {
 
             columnNumber += this._decodeVLQ(stringCharIterator);
             if (!stringCharIterator.hasNext() || this._isSeparator(stringCharIterator.peek())) {
-                this._mappings.push(new WebInspector.SourceMap.Entry(lineNumber, columnNumber));
+                this._mappings.push(new WebInspector.SourceMapEntry(lineNumber, columnNumber));
                 continue;
             }
 
@@ -349,7 +402,7 @@ WebInspector.SourceMap.prototype = {
             if (!this._isSeparator(stringCharIterator.peek()))
                 nameIndex += this._decodeVLQ(stringCharIterator);
 
-            this._mappings.push(new WebInspector.SourceMap.Entry(lineNumber, columnNumber, sourceURL, sourceLineNumber, sourceColumnNumber, names[nameIndex]));
+            this._mappings.push(new WebInspector.SourceMapEntry(lineNumber, columnNumber, sourceURL, sourceLineNumber, sourceColumnNumber, names[nameIndex]));
         }
 
         for (var i = 0; i < this._mappings.length; ++i) {
@@ -374,7 +427,7 @@ WebInspector.SourceMap.prototype = {
     },
 
     /**
-     * @param {!WebInspector.SourceMap.StringCharIterator} stringCharIterator
+     * @param {!WebInspector.TextSourceMap.StringCharIterator} stringCharIterator
      * @return {number}
      */
     _decodeVLQ: function(stringCharIterator)
@@ -403,7 +456,7 @@ WebInspector.SourceMap.prototype = {
     {
         /**
          * @param {!{lineNumber: number, columnNumber: number}} position
-         * @param {!WebInspector.SourceMap.Entry} mapping
+         * @param {!WebInspector.SourceMapEntry} mapping
          * @return {number}
          */
         function comparator(position, mapping)
@@ -432,13 +485,13 @@ WebInspector.SourceMap.prototype = {
  * @constructor
  * @param {string} string
  */
-WebInspector.SourceMap.StringCharIterator = function(string)
+WebInspector.TextSourceMap.StringCharIterator = function(string)
 {
     this._string = string;
     this._position = 0;
 }
 
-WebInspector.SourceMap.StringCharIterator.prototype = {
+WebInspector.TextSourceMap.StringCharIterator.prototype = {
     /**
      * @return {string}
      */
@@ -462,23 +515,4 @@ WebInspector.SourceMap.StringCharIterator.prototype = {
     {
         return this._position < this._string.length;
     }
-}
-
-/**
- * @constructor
- * @param {number} lineNumber
- * @param {number} columnNumber
- * @param {string=} sourceURL
- * @param {number=} sourceLineNumber
- * @param {number=} sourceColumnNumber
- * @param {string=} name
- */
-WebInspector.SourceMap.Entry = function(lineNumber, columnNumber, sourceURL, sourceLineNumber, sourceColumnNumber, name)
-{
-    this.lineNumber = lineNumber;
-    this.columnNumber = columnNumber;
-    this.sourceURL = sourceURL;
-    this.sourceLineNumber = sourceLineNumber;
-    this.sourceColumnNumber = sourceColumnNumber;
-    this.name = name;
 }

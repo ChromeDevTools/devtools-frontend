@@ -4,12 +4,15 @@
 
 /**
  * @constructor
+ * @implements {WebInspector.SourceMap}
  * @param {string} compiledURL
+ * @param {string} sourceMapURL
  * @param {!Map<string, !WebInspector.SASSSupport.AST>} models
  */
-WebInspector.ASTSourceMap = function(compiledURL, models)
+WebInspector.ASTSourceMap = function(compiledURL, sourceMapURL, models)
 {
     this._compiledURL = compiledURL;
+    this._sourceMapURL = sourceMapURL;
     /** @type {!Map<string, !WebInspector.SASSSupport.AST>} */
     this._models = models;
     /** @type {!Map<!WebInspector.SASSSupport.TextNode, !WebInspector.SASSSupport.TextNode>} */
@@ -21,7 +24,7 @@ WebInspector.ASTSourceMap = function(compiledURL, models)
 /**
  * @param {!WebInspector.ASTService} astService
  * @param {!WebInspector.CSSModel} cssModel
- * @param {!WebInspector.SourceMap} sourceMap
+ * @param {!WebInspector.TextSourceMap} sourceMap
  * @return {!Promise<?WebInspector.ASTSourceMap>}
  */
 WebInspector.ASTSourceMap.fromSourceMap = function(astService, cssModel, sourceMap)
@@ -34,7 +37,7 @@ WebInspector.ASTSourceMap.fromSourceMap = function(astService, cssModel, sourceM
     /** @type {!Map<string, !WebInspector.SASSSupport.AST>} */
     var models = new Map();
     var promises = [];
-    for (var url of sourceMap.sources()) {
+    for (var url of sourceMap.sourceURLs()) {
         var contentProvider = sourceMap.sourceContentProvider(url, WebInspector.resourceTypes.SourceMapStyleSheet);
         var sassPromise = contentProvider.requestContent()
             .then(onSCSSText.bind(null, url))
@@ -64,12 +67,12 @@ WebInspector.ASTSourceMap.fromSourceMap = function(astService, cssModel, sourceM
     /**
      * @param {string} cssURL
      * @param {!Map<string, !WebInspector.SASSSupport.AST>} models
-     * @param {!WebInspector.SourceMap} sourceMap
+     * @param {!WebInspector.TextSourceMap} sourceMap
      * @return {!WebInspector.ASTSourceMap}
      */
     function onParsed(cssURL, models, sourceMap)
     {
-        var map = new WebInspector.ASTSourceMap(cssURL, models);
+        var map = new WebInspector.ASTSourceMap(cssURL, sourceMap.url(), models);
         //FIXME: this works O(N^2).
         map.compiledModel().visit(onNode);
         return map;
@@ -96,11 +99,61 @@ WebInspector.ASTSourceMap.fromSourceMap = function(astService, cssModel, sourceM
 
 WebInspector.ASTSourceMap.prototype = {
     /**
+     * @override
      * @return {string}
      */
     compiledURL: function()
     {
         return this._compiledURL;
+    },
+
+    /**
+     * @override
+     * @return {string}
+     */
+    url: function()
+    {
+        return this._sourceMapURL;
+    },
+
+    /**
+     * @override
+     * @return {!Array<string>}
+     */
+    sourceURLs: function()
+    {
+        return this._models.keysArray().filter(url => url !== this._compiledURL);
+    },
+
+    /**
+     * @override
+     * @param {string} sourceURL
+     * @param {!WebInspector.ResourceType} contentType
+     * @return {!WebInspector.ContentProvider}
+     */
+    sourceContentProvider: function(sourceURL, contentType)
+    {
+        var model = this.modelForURL(sourceURL);
+        var sourceContent = model ? model.document.text.value() : "";
+        return new WebInspector.StaticContentProvider(contentType, sourceContent);
+    },
+
+    /**
+     * @override
+     * @param {number} lineNumber
+     * @param {number=} columnNumber
+     * @return {?WebInspector.SourceMapEntry}
+     */
+    findEntry: function(lineNumber, columnNumber)
+    {
+        columnNumber = columnNumber || 0;
+        var compiledNode = this.compiledModel().findNodeForPosition(lineNumber, columnNumber);
+        if (!compiledNode)
+            return null;
+        var sourceNode = this.toSourceNode(compiledNode);
+        if (!sourceNode)
+            return null;
+        return new WebInspector.SourceMapEntry(lineNumber, columnNumber, sourceNode.document.url, sourceNode.range.startLine, sourceNode.range.startColumn);
     },
 
     /**
@@ -203,7 +256,7 @@ WebInspector.ASTSourceMap.prototype = {
             models.set(newAST.document.url, newAST);
         }
 
-        var newMap = new WebInspector.ASTSourceMap(this._compiledURL, models);
+        var newMap = new WebInspector.ASTSourceMap(this._compiledURL, this._sourceMapURL, models);
         var compiledNodes = this._compiledToSource.keysArray();
         for (var i = 0; i < compiledNodes.length; ++i) {
             var compiledNode = compiledNodes[i];

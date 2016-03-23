@@ -52,8 +52,7 @@ WebInspector.SASSSourceMapping.prototype = {
     {
         var header = /** @type {!WebInspector.CSSStyleSheetHeader} */ (event.data);
         var sourceMap = this._cssModel.sourceMapForHeader(header);
-        var sources = sourceMap.sources();
-        for (var sassURL of sourceMap.sources()) {
+        for (var sassURL of sourceMap.sourceURLs()) {
             if (!this._networkMapping.hasMappingForNetworkURL(sassURL)) {
                 var contentProvider = sourceMap.sourceContentProvider(sassURL, WebInspector.resourceTypes.SourceMapStyleSheet);
                 this._networkProject.addFileForURL(sassURL, contentProvider, WebInspector.ResourceTreeFrame.fromStyleSheet(header));

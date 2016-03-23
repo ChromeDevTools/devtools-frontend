@@ -47,13 +47,13 @@ WebInspector.CompilerScriptMapping = function(debuggerModel, workspace, networkM
     this._networkProject = networkProject;
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
 
-    /** @type {!Map<string, !Promise<?WebInspector.SourceMap>>} */
+    /** @type {!Map<string, !Promise<?WebInspector.TextSourceMap>>} */
     this._sourceMapLoadingPromises = new Map();
-    /** @type {!Map<string, !WebInspector.SourceMap>} */
+    /** @type {!Map<string, !WebInspector.TextSourceMap>} */
     this._sourceMapForScriptId = new Map();
-    /** @type {!Map.<!WebInspector.SourceMap, !WebInspector.Script>} */
+    /** @type {!Map.<!WebInspector.TextSourceMap, !WebInspector.Script>} */
     this._scriptForSourceMap = new Map();
-    /** @type {!Map.<string, !WebInspector.SourceMap>} */
+    /** @type {!Map.<string, !WebInspector.TextSourceMap>} */
     this._sourceMapForURL = new Map();
     /** @type {!Map.<string, !WebInspector.UISourceCode>} */
     this._stubUISourceCodes = new Map();
@@ -156,7 +156,7 @@ WebInspector.CompilerScriptMapping.prototype = {
 
     /**
      * @param {!WebInspector.Script} script
-     * @return {?WebInspector.SourceMap}
+     * @return {?WebInspector.TextSourceMap}
      */
     sourceMapForScript: function(script)
     {
@@ -206,7 +206,7 @@ WebInspector.CompilerScriptMapping.prototype = {
     /**
      * @param {!WebInspector.Script} script
      * @param {string} uiSourceCodePath
-     * @param {?WebInspector.SourceMap} sourceMap
+     * @param {?WebInspector.TextSourceMap} sourceMap
      */
     _sourceMapLoaded: function(script, uiSourceCodePath, sourceMap)
     {
@@ -230,7 +230,7 @@ WebInspector.CompilerScriptMapping.prototype = {
         this._scriptForSourceMap.set(sourceMap, script);
 
         // Report sources.
-        var sourceURLs = sourceMap.sources();
+        var sourceURLs = sourceMap.sourceURLs();
         var missingSources = [];
         for (var i = 0; i < sourceURLs.length; ++i) {
             var sourceURL = sourceURLs[i];
@@ -317,7 +317,7 @@ WebInspector.CompilerScriptMapping.prototype = {
 
     /**
      * @param {!WebInspector.Script} script
-     * @return {!Promise<?WebInspector.SourceMap>}
+     * @return {!Promise<?WebInspector.TextSourceMap>}
      */
     _loadSourceMapForScript: function(script)
     {
@@ -325,25 +325,25 @@ WebInspector.CompilerScriptMapping.prototype = {
         // relative links.
         var scriptURL = WebInspector.ParsedURL.completeURL(this._target.resourceTreeModel.inspectedPageURL(), script.sourceURL);
         if (!scriptURL)
-            return Promise.resolve(/** @type {?WebInspector.SourceMap} */(null));
+            return Promise.resolve(/** @type {?WebInspector.TextSourceMap} */(null));
 
         console.assert(script.sourceMapURL);
         var scriptSourceMapURL = /** @type {string} */ (script.sourceMapURL);
 
         var sourceMapURL = WebInspector.ParsedURL.completeURL(scriptURL, scriptSourceMapURL);
         if (!sourceMapURL)
-            return Promise.resolve(/** @type {?WebInspector.SourceMap} */(null));
+            return Promise.resolve(/** @type {?WebInspector.TextSourceMap} */(null));
 
         var loadingPromise = this._sourceMapLoadingPromises.get(sourceMapURL);
         if (!loadingPromise) {
-            loadingPromise = WebInspector.SourceMap.load(sourceMapURL, scriptURL).then(sourceMapLoaded.bind(this, sourceMapURL));
+            loadingPromise = WebInspector.TextSourceMap.load(sourceMapURL, scriptURL).then(sourceMapLoaded.bind(this, sourceMapURL));
             this._sourceMapLoadingPromises.set(sourceMapURL, loadingPromise);
         }
         return loadingPromise;
 
         /**
          * @param {string} url
-         * @param {?WebInspector.SourceMap} sourceMap
+         * @param {?WebInspector.TextSourceMap} sourceMap
          * @this {WebInspector.CompilerScriptMapping}
          */
         function sourceMapLoaded(url, sourceMap)
@@ -360,7 +360,7 @@ WebInspector.CompilerScriptMapping.prototype = {
     _debuggerReset: function()
     {
         /**
-         * @param {!WebInspector.SourceMap} sourceMap
+         * @param {!WebInspector.TextSourceMap} sourceMap
          * @this {WebInspector.CompilerScriptMapping}
          */
         function unbindSourceMapSources(sourceMap)
@@ -368,7 +368,7 @@ WebInspector.CompilerScriptMapping.prototype = {
             var script = this._scriptForSourceMap.get(sourceMap);
             if (!script)
                 return;
-            var sourceURLs = sourceMap.sources();
+            var sourceURLs = sourceMap.sourceURLs();
             for (var i = 0; i < sourceURLs.length; ++i) {
                 var uiSourceCode = this._networkMapping.uiSourceCodeForScriptURL(sourceURLs[i], script);
                 if (uiSourceCode)

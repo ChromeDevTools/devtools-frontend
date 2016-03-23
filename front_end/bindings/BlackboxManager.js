@@ -100,7 +100,7 @@ WebInspector.BlackboxManager.prototype = {
 
     /**
      * @param {!WebInspector.Script} script
-     * @param {?WebInspector.SourceMap} sourceMap
+     * @param {?WebInspector.TextSourceMap} sourceMap
      * @return {!Promise<undefined>}
      */
     sourceMapLoaded: function(script, sourceMap)
@@ -136,8 +136,8 @@ WebInspector.BlackboxManager.prototype = {
         }
         return this._setScriptState(script, !isBlackboxed ? [] : positions);
         /**
-         * @param {!WebInspector.SourceMap.Entry} a
-         * @param {!WebInspector.SourceMap.Entry} b
+         * @param {!WebInspector.SourceMapEntry} a
+         * @param {!WebInspector.SourceMapEntry} b
          * @return {number}
          */
         function mappingComparator(a, b)

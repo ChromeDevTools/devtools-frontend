@@ -29,8 +29,9 @@
  */
 
 /**
- * @extends {WebInspector.VBoxWithToolbarItems}
  * @constructor
+ * @extends {WebInspector.VBoxWithToolbarItems}
+ * @implements {WebInspector.Searchable}
  * @implements {WebInspector.Replaceable}
  * @param {!WebInspector.ContentProvider} contentProvider
  */
@@ -54,6 +55,11 @@ WebInspector.SourceFrame = function(contentProvider)
     this.element.addEventListener("keydown", this._handleKeyDown.bind(this), false);
 
     this._sourcePosition = new WebInspector.ToolbarText();
+
+    /**
+     * @type {?WebInspector.SearchableView}
+     */
+    this._searchableView = null;
 }
 
 WebInspector.SourceFrame.Events = {
@@ -230,8 +236,8 @@ WebInspector.SourceFrame.prototype = {
      */
     onTextChanged: function(oldRange, newRange)
     {
-        if (this._searchResultsChangedCallback)
-            this._searchResultsChangedCallback();
+        if (this._searchConfig && this._searchableView)
+            this.performSearch(this._searchConfig, false, false);
     },
 
     /**
@@ -300,12 +306,19 @@ WebInspector.SourceFrame.prototype = {
     onTextEditorContentLoaded: function() {},
 
     /**
+     * @param {?WebInspector.SearchableView} view
+     */
+    setSearchableView: function(view)
+    {
+        this._searchableView = view;
+    },
+
+    /**
      * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
      * @param {boolean} shouldJump
      * @param {boolean} jumpBackwards
-     * @param {function(!WebInspector.Widget, number)} searchFinishedCallback
      */
-    _doFindSearchMatches: function(searchConfig, shouldJump, jumpBackwards, searchFinishedCallback)
+    _doFindSearchMatches: function(searchConfig, shouldJump, jumpBackwards)
     {
         this._currentSearchResultIndex = -1;
         this._searchResults = [];
@@ -313,7 +326,10 @@ WebInspector.SourceFrame.prototype = {
         var regex = searchConfig.toSearchRegex();
         this._searchRegex = regex;
         this._searchResults = this._collectRegexMatches(regex);
-        searchFinishedCallback(this, this._searchResults.length);
+
+        if (this._searchableView)
+            this._searchableView.updateSearchMatchesCount(this._searchResults.length);
+
         if (!this._searchResults.length)
             this._textEditor.cancelSearchResultsHighlight();
         else if (shouldJump && jumpBackwards)
@@ -325,23 +341,22 @@ WebInspector.SourceFrame.prototype = {
     },
 
     /**
+     * @override
      * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
      * @param {boolean} shouldJump
-     * @param {boolean} jumpBackwards
-     * @param {function(!WebInspector.Widget, number)} searchFinishedCallback
-     * @param {function(number)} currentMatchChangedCallback
-     * @param {function()} searchResultsChangedCallback
+     * @param {boolean=} jumpBackwards
      */
-    performSearch: function(searchConfig, shouldJump, jumpBackwards, searchFinishedCallback, currentMatchChangedCallback, searchResultsChangedCallback)
+    performSearch: function(searchConfig, shouldJump, jumpBackwards)
     {
+        if (this._searchableView)
+            this._searchableView.updateSearchMatchesCount(0);
+
         this._resetSearch();
-        this._currentSearchMatchChangedCallback = currentMatchChangedCallback;
-        this._searchResultsChangedCallback = searchResultsChangedCallback;
-        var searchFunction = this._doFindSearchMatches.bind(this, searchConfig, shouldJump, jumpBackwards, searchFinishedCallback);
+        this._searchConfig = searchConfig;
         if (this.loaded)
-            searchFunction.call(this);
+            this._doFindSearchMatches(searchConfig, shouldJump, !!jumpBackwards)
         else
-            this._delayedFindSearchMatches = searchFunction;
+            this._delayedFindSearchMatches = this._doFindSearchMatches.bind(this, searchConfig, shouldJump, !!jumpBackwards);
 
         this._ensureContentLoaded();
     },
@@ -356,21 +371,23 @@ WebInspector.SourceFrame.prototype = {
         if (!this._searchResults.length)
             return;
         this._currentSearchResultIndex = -1;
-        if (this._currentSearchMatchChangedCallback)
-            this._currentSearchMatchChangedCallback(this._currentSearchResultIndex);
+        if (this._searchableView)
+            this._searchableView.updateCurrentMatchIndex(this._currentSearchResultIndex);
         this._textEditor.highlightSearchResults(this._searchRegex, null);
     },
 
     _resetSearch: function()
     {
+        delete this._searchConfig;
         delete this._delayedFindSearchMatches;
-        delete this._currentSearchMatchChangedCallback;
-        delete this._searchResultsChangedCallback;
         this._currentSearchResultIndex = -1;
         this._searchResults = [];
         delete this._searchRegex;
     },
 
+    /**
+     * @override
+     */
     searchCanceled: function()
     {
         var range = this._currentSearchResultIndex !== -1 ? this._searchResults[this._currentSearchResultIndex] : null;
@@ -408,6 +425,9 @@ WebInspector.SourceFrame.prototype = {
         return this._searchResults.lowerBound(this._textEditor.selection().collapseToEnd(), WebInspector.TextRange.comparator);
     },
 
+    /**
+     * @override
+     */
     jumpToNextSearchResult: function()
     {
         var currentIndex = this._searchResultIndexForCurrentSelection();
@@ -415,10 +435,31 @@ WebInspector.SourceFrame.prototype = {
         this.jumpToSearchResult(nextIndex);
     },
 
+    /**
+     * @override
+     */
     jumpToPreviousSearchResult: function()
     {
         var currentIndex = this._searchResultIndexForCurrentSelection();
         this.jumpToSearchResult(currentIndex - 1);
+    },
+
+    /**
+     * @override
+     * @return {boolean}
+     */
+    supportsCaseSensitiveSearch: function ()
+    {
+        return true;
+    },
+
+    /**
+     * @override
+     * @return {boolean}
+     */
+    supportsRegexSearch: function()
+    {
+        return true;
     },
 
     get currentSearchResultIndex()
@@ -431,8 +472,8 @@ WebInspector.SourceFrame.prototype = {
         if (!this.loaded || !this._searchResults.length)
             return;
         this._currentSearchResultIndex = (index + this._searchResults.length) % this._searchResults.length;
-        if (this._currentSearchMatchChangedCallback)
-            this._currentSearchMatchChangedCallback(this._currentSearchResultIndex);
+        if (this._searchableView)
+            this._searchableView.updateCurrentMatchIndex(this._currentSearchResultIndex);
         this._textEditor.highlightSearchResults(this._searchRegex, this._searchResults[this._currentSearchResultIndex]);
     },
 

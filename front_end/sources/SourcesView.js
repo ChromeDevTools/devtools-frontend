@@ -316,9 +316,18 @@ WebInspector.SourcesView.prototype = {
         if (this._currentUISourceCode === uiSourceCode)
             return sourceView;
 
+        var currentFrame = this.currentSourceFrame();
+        if (currentFrame)
+            currentFrame.setSearchableView(null);
+
         this._currentUISourceCode = uiSourceCode;
         this._editorContainer.showFile(uiSourceCode);
         this._updateScriptViewToolbarItems();
+
+        currentFrame = this.currentSourceFrame();
+        if (currentFrame)
+            currentFrame.setSearchableView(this._searchableView);
+
         return sourceView;
     },
 
@@ -497,8 +506,6 @@ WebInspector.SourcesView.prototype = {
      */
     performSearch: function(searchConfig, shouldJump, jumpBackwards)
     {
-        this._searchableView.updateSearchMatchesCount(0);
-
         var sourceFrame = this.currentSourceFrame();
         if (!sourceFrame)
             return;
@@ -506,37 +513,7 @@ WebInspector.SourcesView.prototype = {
         this._searchView = sourceFrame;
         this._searchConfig = searchConfig;
 
-        /**
-         * @param {!WebInspector.Widget} view
-         * @param {number} searchMatches
-         * @this {WebInspector.SourcesView}
-         */
-        function finishedCallback(view, searchMatches)
-        {
-            if (!searchMatches)
-                return;
-
-            this._searchableView.updateSearchMatchesCount(searchMatches);
-        }
-
-        /**
-         * @param {number} currentMatchIndex
-         * @this {WebInspector.SourcesView}
-         */
-        function currentMatchChanged(currentMatchIndex)
-        {
-            this._searchableView.updateCurrentMatchIndex(currentMatchIndex);
-        }
-
-        /**
-         * @this {WebInspector.SourcesView}
-         */
-        function searchResultsChanged()
-        {
-            this.performSearch(this._searchConfig, false, false);
-        }
-
-        this._searchView.performSearch(this._searchConfig, shouldJump, !!jumpBackwards, finishedCallback.bind(this), currentMatchChanged.bind(this), searchResultsChanged.bind(this));
+        this._searchView.performSearch(this._searchConfig, shouldJump, jumpBackwards);
     },
 
     /**

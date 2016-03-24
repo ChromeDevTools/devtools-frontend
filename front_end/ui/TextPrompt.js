@@ -471,7 +471,7 @@ WebInspector.TextPrompt.prototype = {
 
     /**
      * @param {string} prefix
-     * @return {!Array.<string>}
+     * @return {!WebInspector.SuggestBox.Suggestions}
      */
     additionalCompletions: function(prefix)
     {
@@ -489,18 +489,20 @@ WebInspector.TextPrompt.prototype = {
     _completionsReady: function(selection, originalWordPrefixRange, reverse, force, completions, selectedIndex)
     {
         var prefix = originalWordPrefixRange.toString();
-        if (prefix || force) {
-            if (prefix)
-                completions = completions.concat(this.additionalCompletions(prefix));
-            else
-                completions = this.additionalCompletions(prefix).concat(completions);
-        }
 
         // Filter out dupes.
         var store = new Set();
         completions = completions.filter(item => !store.has(item) && !!store.add(item));
+        var annotatedCompletions = completions.map(item => ({title: item}));
 
-        if (!this._waitingForCompletions || !completions.length) {
+        if (prefix || force) {
+            if (prefix)
+                annotatedCompletions = annotatedCompletions.concat(this.additionalCompletions(prefix));
+            else
+                annotatedCompletions = this.additionalCompletions(prefix).concat(annotatedCompletions);
+        }
+
+        if (!this._waitingForCompletions || !annotatedCompletions.length) {
             this.hideSuggestBox();
             return;
         }
@@ -522,7 +524,7 @@ WebInspector.TextPrompt.prototype = {
         this._userEnteredText = fullWordRange.toString();
 
         if (this._suggestBox)
-            this._suggestBox.updateSuggestions(this._boxForAnchorAtStart(selection, fullWordRange), completions, selectedIndex, !this.isCaretAtEndOfPrompt(), this._userEnteredText);
+            this._suggestBox.updateSuggestions(this._boxForAnchorAtStart(selection, fullWordRange), annotatedCompletions, selectedIndex, !this.isCaretAtEndOfPrompt(), this._userEnteredText);
 
         if (selectedIndex === -1)
             return;
@@ -531,7 +533,7 @@ WebInspector.TextPrompt.prototype = {
         this._commonPrefix = this._buildCommonPrefix(completions, wordPrefixLength);
 
         if (this.isCaretAtEndOfPrompt()) {
-            var completionText = completions[selectedIndex];
+            var completionText = annotatedCompletions[selectedIndex].title;
             var prefixText = this._userEnteredRange.toString();
             var suffixText = completionText.substring(wordPrefixLength);
             this._userEnteredRange.deleteContents();
@@ -827,7 +829,7 @@ WebInspector.TextPromptWithHistory.prototype = {
     /**
      * @override
      * @param {string} prefix
-     * @return {!Array.<string>}
+     * @return {!WebInspector.SuggestBox.Suggestions}
      */
     additionalCompletions: function(prefix)
     {
@@ -835,11 +837,15 @@ WebInspector.TextPromptWithHistory.prototype = {
             return [];
         var result = [];
         var text = this.text();
+        var set = new Set();
         for (var i = this._data.length - 1; i >= 0 && result.length < 50; --i) {
             var item = this._data[i];
             if (!item.startsWith(text))
                 continue;
-            result.push(item.substring(text.length - prefix.length));
+            if (set.has(item))
+                continue;
+            set.add(item);
+            result.push({title: item.substring(text.length - prefix.length), className: "additional"});
         }
         return result;
     },

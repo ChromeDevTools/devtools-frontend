@@ -49,6 +49,13 @@
             ]
         },
         {
+            "type": "@WebInspector.ActionDelegate",
+            "category": "Console",
+            "actionId": "console.clear.history",
+            "title": "Clear console history",
+            "className": "WebInspector.ConsoleView.ActionDelegate"
+        },
+        {
             "type": "setting",
             "category": "Console",
             "title": "Hide network messages",

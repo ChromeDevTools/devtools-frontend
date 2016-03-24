@@ -91,6 +91,30 @@
     white-space: nowrap;
 }
 
+.suggest-box .suggest-box-content-item.additional {
+    background-color: #f9f9f9;
+}
+
+.suggest-box .suggest-box-content-item.additional::before {
+    display: inline-block;
+    content: "";
+    -webkit-user-select: none;
+    background-image: url(Images/toolbarButtonGlyphs.png);
+    background-size: 352px 168px;
+    width: 10px;
+    height: 10px;
+    position: relative;
+    top: 2px;
+    margin-right: 4px;
+    background-position: -192px -96px;
+}
+
+@media (-webkit-min-device-pixel-ratio: 1.5) {
+.suggest-box .suggest-box-content-item.additional::before {
+    background-image: url(Images/toolbarButtonGlyphs_2x.png);
+}
+} /* media */
+
 .suggest-box .suggest-box-content-item .prefix {
     font-weight: bold;
 }

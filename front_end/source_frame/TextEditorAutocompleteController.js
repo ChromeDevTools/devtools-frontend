@@ -138,7 +138,7 @@ WebInspector.TextEditorAutocompleteController.prototype = {
         this._prefixRange = prefixRange;
         if (!oldPrefixRange || prefixRange.startLine !== oldPrefixRange.startLine || prefixRange.startColumn !== oldPrefixRange.startColumn)
             this._updateAnchorBox();
-        this._suggestBox.updateSuggestions(this._anchorBox, wordsWithPrefix, 0, true, this._textEditor.copyRange(prefixRange));
+        this._suggestBox.updateSuggestions(this._anchorBox, wordsWithPrefix.map(item => ({title: item})), 0, true, this._textEditor.copyRange(prefixRange));
         if (!this._suggestBox.visible())
             this.finishAutocomplete();
         this._onSuggestionsShownForTest(wordsWithPrefix);

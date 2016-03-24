@@ -33,18 +33,7 @@
 WebInspector.ConsolePanel = function()
 {
     WebInspector.Panel.call(this, "console");
-    this._view = WebInspector.ConsolePanel._view();
-}
-
-/**
- * @return {!WebInspector.ConsoleView}
- */
-WebInspector.ConsolePanel._view = function()
-{
-    if (!WebInspector.ConsolePanel._consoleView)
-        WebInspector.ConsolePanel._consoleView = new WebInspector.ConsoleView();
-
-    return WebInspector.ConsolePanel._consoleView;
+    this._view = WebInspector.ConsoleView.instance();
 }
 
 WebInspector.ConsolePanel.prototype = {
@@ -86,7 +75,7 @@ WebInspector.ConsolePanel.prototype = {
      */
     searchableView: function()
     {
-        return WebInspector.ConsolePanel._view().searchableView();
+        return WebInspector.ConsoleView.instance().searchableView();
     },
 
     __proto__: WebInspector.Panel.prototype
@@ -103,7 +92,7 @@ WebInspector.ConsolePanel.WrapperView = function()
 
     WebInspector.ConsolePanel.WrapperView._instance = this;
 
-    this._view = WebInspector.ConsolePanel._view();
+    this._view = WebInspector.ConsoleView.instance();
 }
 
 WebInspector.ConsolePanel.WrapperView.prototype = {
@@ -158,7 +147,7 @@ WebInspector.ConsolePanel.ConsoleRevealer.prototype = {
      */
     reveal: function(object)
     {
-        var consoleView = WebInspector.ConsolePanel._view();
+        var consoleView = WebInspector.ConsoleView.instance();
         if (consoleView.isShowing()) {
             consoleView.focus();
             return Promise.resolve();

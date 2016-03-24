@@ -17,6 +17,13 @@
         ],
         "events": [
             {
+                "name": "evaluateForTestInFrontend",
+                "parameters": [
+                    { "name": "testCallId", "type": "integer" },
+                    { "name": "script", "type": "string" }
+                ]
+            },
+            {
                 "name": "inspect",
                 "parameters": [
                     { "name": "object", "$ref": "Runtime.RemoteObject" },

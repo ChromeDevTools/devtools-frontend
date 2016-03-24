@@ -161,15 +161,6 @@ DevToolsAPIImpl.prototype = {
     },
 
     /**
-     * @param {number} callId
-     * @param {string} script
-     */
-    evaluateForTestInFrontend: function(callId, script)
-    {
-        this._dispatchOnInspectorFrontendAPI("evaluateForTestInFrontend", [callId, script]);
-    },
-
-    /**
      * @param {!Array.<!{fileSystemName: string, rootURL: string, fileSystemPath: string}>} fileSystems
      */
     fileSystemsLoaded: function(fileSystems)

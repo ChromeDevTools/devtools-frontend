@@ -318,20 +318,22 @@ WebInspector.Main.prototype = {
 
         this._mainTarget.registerInspectorDispatcher(this);
         InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.ReloadInspectedPage, this._reloadInspectedPage, this);
-        InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.EvaluateForTestInFrontend, this._evaluateForTestInFrontend, this);
 
         if (this._mainTarget.isServiceWorker() || this._mainTarget.isPage())
             this._mainTarget.runtimeAgent().run();
 
-        this._mainTarget.inspectorAgent().enable();
-        InspectorFrontendHost.readyForTest();
+        this._mainTarget.inspectorAgent().enable(inspectorAgentEnableCallback);
 
-        // Asynchronously run the extensions.
-        setTimeout(lateInitialization, 0);
+        function inspectorAgentEnableCallback()
+        {
+            console.timeStamp("Main.inspectorAgentEnableCallback");
+            InspectorFrontendHost.readyForTest();
+            // Asynchronously run the extensions.
+            setTimeout(lateInitialization, 0);
+        }
 
         function lateInitialization()
         {
-            console.timeStamp("Main.lateInitialization");
             WebInspector.extensionServer.initializeExtensions();
         }
     },
@@ -609,15 +611,14 @@ WebInspector.Main.prototype = {
     },
 
     /**
-     * @param {!WebInspector.Event} event
+     * @override
+     * @param {number} callId
+     * @param {string} script
      */
-    _evaluateForTestInFrontend: function(event)
+    evaluateForTestInFrontend: function(callId, script)
     {
         if (!InspectorFrontendHost.isUnderTest())
             return;
-
-        var callId = /** @type {number} */ (event.data["callId"]);
-        var script = /** @type {number} */ (event.data["script"]);
 
         /**
          * @suppressGlobalPropertiesCheck

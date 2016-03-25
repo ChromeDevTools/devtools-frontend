@@ -78,6 +78,8 @@ global_externs_file = to_platform_path(path.join(devtools_frontend_path, 'extern
 protocol_externs_file = path.join(devtools_frontend_path, 'protocol_externs.js')
 injected_script_source_name = path.join(v8_inspector_path, 'InjectedScriptSource.js')
 injected_script_externs_file = path.join(v8_inspector_path, 'injected_script_externs.js')
+debugger_script_source_name = path.join(v8_inspector_path, 'DebuggerScript.js')
+debugger_script_externs_file = path.join(v8_inspector_path, 'debugger_script_externs.js')
 
 jsmodule_name_prefix = 'jsmodule_'
 runtime_module_name = '_runtime'
@@ -403,6 +405,16 @@ command = spawned_compiler_command + [
 
 injectedScriptCompileProc = popen(command)
 
+print 'Compiling DebuggerScript.js...'
+
+command = spawned_compiler_command + [
+    '--externs', to_platform_path_exact(debugger_script_externs_file),
+    '--module', jsmodule_name_prefix + 'debugger_script' + ':1',
+    '--js', to_platform_path(debugger_script_source_name)
+]
+
+debuggerScriptCompileProc = popen(command)
+
 print 'Compiling devtools.js...'
 
 command = spawned_compiler_command + [
@@ -491,6 +503,10 @@ if error_count:
 (injectedScriptCompileOut, _) = injectedScriptCompileProc.communicate()
 print 'InjectedScriptSource.js compilation output:%s' % os.linesep, injectedScriptCompileOut
 errors_found |= hasErrors(injectedScriptCompileOut)
+
+(debuggerScriptCompilerOut, _) = debuggerScriptCompileProc.communicate()
+print 'DebuggerScript.js compilation output:%s' % os.linesep, debuggerScriptCompilerOut
+errors_found |= hasErrors(debuggerScriptCompilerOut)
 
 (devtoolsJSCompileOut, _) = devtoolsJSCompileProc.communicate()
 print 'devtools.js compilation output:%s' % os.linesep, devtoolsJSCompileOut

@@ -355,3 +355,12 @@ WebInspector.SourceEdit.prototype = {
     },
 }
 
+/**
+ * @param {!WebInspector.SourceEdit} edit1
+ * @param {!WebInspector.SourceEdit} edit2
+ * @return {number}
+ */
+WebInspector.SourceEdit.comparator = function(edit1, edit2)
+{
+    return WebInspector.TextRange.comparator(edit1.oldRange, edit2.oldRange);
+}

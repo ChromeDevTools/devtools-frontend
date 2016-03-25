@@ -112,6 +112,7 @@ WebInspector.Main.prototype = {
         Runtime.experiments.register("layersPanel", "Layers panel");
         Runtime.experiments.register("layoutEditor", "Layout editor", true);
         Runtime.experiments.register("inspectTooltip", "Dark inspect element tooltip");
+        Runtime.experiments.register("liveSASS", "Live SASS", true);
         Runtime.experiments.register("multipleTimelineViews", "Multiple main views on Timeline", true);
         Runtime.experiments.register("networkRequestHeadersFilterInDetailsView", "Network request headers filter in details view", true);
         Runtime.experiments.register("networkRequestsOnTimeline", "Network requests on Timeline", true);

@@ -66,7 +66,8 @@ WebInspector.CSSModel.Events = {
     StyleSheetChanged: "StyleSheetChanged",
     StyleSheetRemoved: "StyleSheetRemoved",
     SourceMapAttached: "SourceMapAttached",
-    SourceMapDetached: "SourceMapDetached"
+    SourceMapDetached: "SourceMapDetached",
+    SourceMapChanged: "SourceMapChanged"
 }
 
 WebInspector.CSSModel.MediaTypes = ["all", "braille", "embossed", "handheld", "print", "projection", "screen", "speech", "tty", "tv"];
@@ -116,6 +117,15 @@ WebInspector.CSSModel.prototype = {
     _sourceMapLoadedForTest: function() { },
 
     /**
+     * @param {!WebInspector.SourceMap} sourceMap
+     * @return {!Array<!WebInspector.CSSStyleSheetHeader>}
+     */
+    headersForSourceMap: function(sourceMap)
+    {
+        return this._sourceMapURLToHeaders.get(sourceMap.url()).valuesArray();
+    },
+
+    /**
      * @param {!WebInspector.CSSStyleSheetHeader} header
      */
     _attachSourceMap: function(header)
@@ -129,16 +139,37 @@ WebInspector.CSSModel.prototype = {
         }
         if (!this._sourceMapLoadingStyleSheetsIds.has(sourceMapURL)) {
             WebInspector.TextSourceMap.load(sourceMapURL, header.sourceURL)
-                .then(onSourceMapLoaded.bind(this, sourceMapURL));
+                .then(onTextSourceMapLoaded.bind(this, sourceMapURL))
+                .then(onSourceMap.bind(this, sourceMapURL));
         }
         this._sourceMapLoadingStyleSheetsIds.set(sourceMapURL, header.id);
 
         /**
          * @param {string} sourceMapURL
          * @param {?WebInspector.TextSourceMap} sourceMap
+         * @return {!Promise<?WebInspector.SourceMap>}
          * @this {WebInspector.CSSModel}
          */
-        function onSourceMapLoaded(sourceMapURL, sourceMap)
+        function onTextSourceMapLoaded(sourceMapURL, sourceMap)
+        {
+            if (!sourceMap)
+                return Promise.resolve(/** @type {?WebInspector.SourceMap} */(null));
+            var factoryExtension = this._factoryForSourceMap(sourceMap);
+            if (!factoryExtension)
+                return Promise.resolve(/** @type {?WebInspector.SourceMap} */(sourceMap));
+
+            return factoryExtension.instancePromise()
+                .then(factory => factory.editableSourceMap(this.target(), sourceMap))
+                .then(map => map || sourceMap)
+                .catchException(/** @type {?WebInspector.SourceMap} */(null));
+        }
+
+        /**
+         * @param {string} sourceMapURL
+         * @param {?WebInspector.SourceMap} sourceMap
+         * @this {WebInspector.CSSModel}
+         */
+        function onSourceMap(sourceMapURL, sourceMap)
         {
             this._sourceMapLoadedForTest();
             var styleSheetIds = this._sourceMapLoadingStyleSheetsIds.get(sourceMapURL);
@@ -153,6 +184,8 @@ WebInspector.CSSModel.prototype = {
             }
             if (!headers.size)
                 return;
+            if (sourceMap.editable())
+                WebInspector.console.log(WebInspector.UIString("LiveSASS started: %s", sourceMapURL));
             this._sourceMapByURL.set(sourceMapURL, sourceMap);
             for (var header of headers)
                 attach.call(this, sourceMapURL, header);
@@ -171,6 +204,21 @@ WebInspector.CSSModel.prototype = {
     },
 
     /**
+     * @param {!WebInspector.SourceMap} sourceMap
+     * @return {?Runtime.Extension}
+     */
+    _factoryForSourceMap: function(sourceMap)
+    {
+        var sourceExtensions = new Set(sourceMap.sourceURLs().map(url => WebInspector.TextUtils.extension(url)));
+        for (var runtimeExtension of self.runtime.extensions(WebInspector.SourceMapFactory)) {
+            var supportedExtensions = new Set(runtimeExtension.descriptor()["extensions"]);
+            if (supportedExtensions.containsAll(sourceExtensions))
+                return runtimeExtension;
+        }
+        return null;
+    },
+
+    /**
      * @param {!WebInspector.CSSStyleSheetHeader} header
      */
     _detachSourceMap: function(header)
@@ -179,6 +227,9 @@ WebInspector.CSSModel.prototype = {
             return;
         this._sourceMapURLToHeaders.remove(header.sourceMapURL, header);
         if (!this._sourceMapURLToHeaders.has(header.sourceMapURL))
+            var sourceMap = this._sourceMapByURL.get(header.sourceMapURL);
+            if (sourceMap.editable())
+                WebInspector.console.log(WebInspector.UIString("LiveSASS stopped: %s", header.sourceMapURL));
             this._sourceMapByURL.delete(header.sourceMapURL);
         this.dispatchEventToListeners(WebInspector.CSSModel.Events.SourceMapDetached, header);
     },
@@ -192,13 +243,126 @@ WebInspector.CSSModel.prototype = {
     },
 
     /**
+     * @param {!CSSAgent.StyleSheetId} styleSheetId
+     * @param {!WebInspector.TextRange} range
+     * @param {string} text
+     * @param {boolean} majorChange
+     * @return {!Promise<boolean>}
+     */
+    setStyleText: function(styleSheetId, range, text, majorChange)
+    {
+        var original = this._innerSetStyleTexts.bind(this, [styleSheetId], [range], [text], majorChange);
+        var header = this.styleSheetHeaderForId(styleSheetId);
+        if (!header)
+            return original();
+
+        var sourceMap = this.sourceMapForHeader(header);
+        if (!sourceMap)
+            return original();
+
+        var originalAndDetach = originalAndDetachIfSuccess.bind(this, header);
+
+        if (!sourceMap.editable())
+            return originalAndDetach();
+
+        return /** @type {!Promise<boolean>} */(sourceMap.editCompiled([range], [text])
+            .then(onEditingDone.bind(this))
+            .catch(onError.bind(this, header)));
+
+        /**
+         * @param {?WebInspector.SourceMap.EditResult} editResult
+         * @return {!Promise<boolean>}
+         * @this {WebInspector.CSSModel}
+         */
+        function onEditingDone(editResult)
+        {
+            if (!editResult)
+                return originalAndDetach();
+
+            var edits = editResult.compiledEdits;
+            if (!edits.length)
+                return onCSSPatched.call(this, editResult, true);
+
+            edits.sort(WebInspector.SourceEdit.comparator);
+            edits = edits.reverse();
+
+            var styleSheetIds = [];
+            var ranges = [];
+            var texts = [];
+            for (var edit of edits) {
+                styleSheetIds.push(header.id);
+                ranges.push(edit.oldRange);
+                texts.push(edit.newText);
+            }
+            return this._innerSetStyleTexts(styleSheetIds, ranges, texts, majorChange)
+                .then(onCSSPatched.bind(this, editResult));
+        }
+
+        /**
+         * @param {!WebInspector.SourceMap.EditResult} editResult
+         * @param {boolean} success
+         * @return {!Promise<boolean>}
+         * @this {WebInspector.CSSModel}
+         */
+        function onCSSPatched(editResult, success)
+        {
+            if (!success)
+                return originalAndDetach();
+
+            this._sourceMapByURL.set(header.sourceMapURL, editResult.map);
+            this.dispatchEventToListeners(WebInspector.CSSModel.Events.SourceMapChanged, {
+                sourceMap: editResult.map,
+                newSources: editResult.newSources
+            });
+            return Promise.resolve(true);
+        }
+
+        /**
+         * @param {!WebInspector.CSSStyleSheetHeader} header
+         * @param {*} error
+         * @return {!Promise<boolean>}
+         * @this {WebInspector.CSSModel}
+         */
+        function onError(header, error)
+        {
+            WebInspector.console.error(WebInspector.UIString("LiveSASS failed: %s", sourceMap.compiledURL()));
+            console.error(error);
+            this._detachSourceMap(header);
+            return original();
+        }
+
+        /**
+         * @param {!WebInspector.CSSStyleSheetHeader} header
+         * @return {!Promise<boolean>}
+         * @this {WebInspector.CSSModel}
+         */
+        function originalAndDetachIfSuccess(header)
+        {
+            return this._innerSetStyleTexts([styleSheetId], [range], [text], majorChange)
+                .then(detachIfSuccess.bind(this));
+
+            /**
+             * @param {boolean} success
+             * @return {boolean}
+             * @this {WebInspector.CSSModel}
+             */
+            function detachIfSuccess(success)
+            {
+                if (success)
+                    this._detachSourceMap(header);
+                return success;
+            }
+        }
+    },
+
+    /**
      * @param {!Array<!CSSAgent.StyleSheetId>} styleSheetIds
      * @param {!Array<!WebInspector.TextRange>} ranges
      * @param {!Array<string>} texts
      * @param {boolean} majorChange
      * @return {!Promise<boolean>}
      */
-    setStyleTexts: function(styleSheetIds, ranges, texts, majorChange)
+    _innerSetStyleTexts: function(styleSheetIds, ranges, texts, majorChange)
     {
         /**
          * @param {?Protocol.Error} error
@@ -254,7 +418,7 @@ WebInspector.CSSModel.prototype = {
                 return false;
             this._domModel.markUndoableState();
             var edit = new WebInspector.CSSModel.Edit(styleSheetId, range, text, selectorPayload);
-            this._fireStyleSheetChanged(styleSheetId, edit);
+            this._fireStyleSheetChangedAndDetach(styleSheetId, edit);
             return true;
         }
 
@@ -283,7 +447,7 @@ WebInspector.CSSModel.prototype = {
                 return false;
             this._domModel.markUndoableState();
             var edit = new WebInspector.CSSModel.Edit(styleSheetId, range, text, payload);
-            this._fireStyleSheetChanged(styleSheetId, edit);
+            this._fireStyleSheetChangedAndDetach(styleSheetId, edit);
             return true;
         }
 
@@ -515,7 +679,7 @@ WebInspector.CSSModel.prototype = {
                 return false;
             this._domModel.markUndoableState();
             var edit = new WebInspector.CSSModel.Edit(media.parentStyleSheetId, media.range, newMediaText, mediaPayload);
-            this._fireStyleSheetChanged(media.parentStyleSheetId, edit);
+            this._fireStyleSheetChangedAndDetach(media.parentStyleSheetId, edit);
             return true;
         }
 
@@ -549,7 +713,7 @@ WebInspector.CSSModel.prototype = {
                 return null;
             this._domModel.markUndoableState();
             var edit = new WebInspector.CSSModel.Edit(styleSheetId, ruleLocation, ruleText, rulePayload);
-            this._fireStyleSheetChanged(styleSheetId, edit);
+            this._fireStyleSheetChangedAndDetach(styleSheetId, edit);
             return new WebInspector.CSSStyleRule(this, rulePayload);
         }
     },
@@ -614,10 +778,19 @@ WebInspector.CSSModel.prototype = {
      */
     _fireStyleSheetChanged: function(styleSheetId, edit)
     {
+        this.dispatchEventToListeners(WebInspector.CSSModel.Events.StyleSheetChanged, { styleSheetId: styleSheetId, edit: edit });
+    },
+
+    /**
+     * @param {!CSSAgent.StyleSheetId} styleSheetId
+     * @param {!WebInspector.CSSModel.Edit=} edit
+     */
+    _fireStyleSheetChangedAndDetach: function(styleSheetId, edit)
+    {
+        this.dispatchEventToListeners(WebInspector.CSSModel.Events.StyleSheetChanged, { styleSheetId: styleSheetId, edit: edit });
         var header = this.styleSheetHeaderForId(styleSheetId);
         if (header)
             this._detachSourceMap(header);
-        this.dispatchEventToListeners(WebInspector.CSSModel.Events.StyleSheetChanged, { styleSheetId: styleSheetId, edit: edit });
     },
 
     /**
@@ -886,7 +1059,7 @@ WebInspector.CSSDispatcher.prototype = {
      */
     styleSheetChanged: function(styleSheetId)
     {
-        this._cssModel._fireStyleSheetChanged(styleSheetId);
+        this._cssModel._fireStyleSheetChangedAndDetach(styleSheetId);
     },
 
     /**

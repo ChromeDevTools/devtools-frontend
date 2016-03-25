@@ -42,6 +42,7 @@ WebInspector.SASSSourceMapping = function(cssModel, networkMapping, networkProje
     this._networkMapping = networkMapping;
     this._cssModel.addEventListener(WebInspector.CSSModel.Events.SourceMapAttached, this._sourceMapAttached, this);
     this._cssModel.addEventListener(WebInspector.CSSModel.Events.SourceMapDetached, this._sourceMapDetached, this);
+    this._cssModel.addEventListener(WebInspector.CSSModel.Events.SourceMapChanged, this._sourceMapChanged, this);
 }
 
 WebInspector.SASSSourceMapping.prototype = {
@@ -68,6 +69,32 @@ WebInspector.SASSSourceMapping.prototype = {
     {
         var header = /** @type {!WebInspector.CSSStyleSheetHeader} */(event.data);
         WebInspector.cssWorkspaceBinding.updateLocations(header);
+    },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _sourceMapChanged: function(event)
+    {
+        var sourceMap = /** @type {!WebInspector.SourceMap} */(event.data.sourceMap);
+        var newSources = /** @type {!Map<string, string>} */(event.data.newSources);
+        var headers = this._cssModel.headersForSourceMap(sourceMap);
+        var handledUISourceCodes = new Set();
+        for (var header of headers) {
+            WebInspector.cssWorkspaceBinding.updateLocations(header);
+            for (var sourceURL of newSources.keys()) {
+                var uiSourceCode = this._networkMapping.uiSourceCodeForStyleURL(sourceURL, header);
+                if (!uiSourceCode) {
+                    console.error("Failed to update source for " + sourceURL);
+                    continue;
+                }
+                if (handledUISourceCodes.has(uiSourceCode))
+                    continue;
+                handledUISourceCodes.add(uiSourceCode);
+                var sassText = /** @type {string} */(newSources.get(sourceURL));
+                uiSourceCode.addRevision(sassText);
+            }
+        }
     },
 
     /**

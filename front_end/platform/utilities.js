@@ -1240,6 +1240,20 @@ Set.prototype.addAll = function(iterable)
 }
 
 /**
+ * @param {!Iterable<T>|!Array<!T>} iterable
+ * @return {boolean}
+ * @template T
+ */
+Set.prototype.containsAll = function(iterable)
+{
+    for (var e of iterable) {
+        if (!this.has(e))
+            return false;
+    }
+    return true;
+}
+
+/**
  * @return {T}
  * @template T
  */

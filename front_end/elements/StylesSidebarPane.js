@@ -218,10 +218,11 @@ WebInspector.StylesSidebarPane.prototype = {
         if (!node)
             return;
 
+        var fullRefresh = Runtime.experiments.isEnabled("liveSASS");
         for (var section of this.allSections()) {
             if (section.isBlank)
                 continue;
-            section.update(section === editedSection);
+            section.update(fullRefresh || section === editedSection);
         }
 
         if (this._filterRegex)

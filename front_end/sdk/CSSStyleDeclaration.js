@@ -286,7 +286,7 @@ WebInspector.CSSStyleDeclaration.prototype = {
      */
     setText: function(text, majorChange)
     {
-        return this._cssModel.setStyleTexts([this.styleSheetId], [this.range], [text], majorChange)
+        return this._cssModel.setStyleText(this.styleSheetId, this.range, text, majorChange)
     },
 
     /**

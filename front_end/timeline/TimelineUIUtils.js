@@ -90,6 +90,7 @@ WebInspector.TimelineUIUtils._initEventStyles = function()
     eventStyles[recordTypes.XHRLoad] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("XHR Load"), categories["scripting"]);
     eventStyles[recordTypes.CompileScript] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("Compile Script"), categories["scripting"]);
     eventStyles[recordTypes.EvaluateScript] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("Evaluate Script"), categories["scripting"]);
+    eventStyles[recordTypes.ParseScriptOnBackground] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("Parse Script"), categories["scripting"]);
     eventStyles[recordTypes.MarkLoad] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("Load event"), categories["scripting"], true);
     eventStyles[recordTypes.MarkDOMContent] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("DOMContentLoaded event"), categories["scripting"], true);
     eventStyles[recordTypes.MarkFirstPaint] = new WebInspector.TimelineRecordStyle(WebInspector.UIString("First paint"), categories["painting"], true);
@@ -391,13 +392,14 @@ WebInspector.TimelineUIUtils.buildDetailsTextForTraceEvent = function(event, tar
     case recordType.EvaluateScript:
         var url = eventData["url"];
         if (url)
-            detailsText = detailsText = WebInspector.displayNameForURL(url) + ":" + eventData["lineNumber"];
+            detailsText = WebInspector.displayNameForURL(url) + ":" + eventData["lineNumber"];
         break;
+    case recordType.ParseScriptOnBackground:
     case recordType.XHRReadyStateChange:
     case recordType.XHRLoad:
         var url = eventData["url"];
         if (url)
-            detailsText = detailsText = WebInspector.displayNameForURL(url);
+            detailsText = WebInspector.displayNameForURL(url);
         break;
 
     case recordType.WebSocketCreate:
@@ -539,6 +541,11 @@ WebInspector.TimelineUIUtils.buildDetailsNodeForTraceEvent = function(event, tar
         var url = eventData["url"];
         if (url)
             details = linkifyLocation("", url, eventData["lineNumber"], 0);
+        break;
+    case recordType.ParseScriptOnBackground:
+        var url = eventData["url"];
+        if (url)
+            details = linkifyLocation("", url, 0, 0);
         break;
     default:
         if (event.hasCategory(WebInspector.TimelineModel.Category.Console))

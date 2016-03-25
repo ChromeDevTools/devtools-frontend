@@ -52,98 +52,60 @@ WebInspector.ProfileDataGridNode = function(profileNode, owningTree, hasChildren
 WebInspector.ProfileDataGridNode.prototype = {
     /**
      * @override
-     * @param {string} columnIdentifier
+     * @param {string} columnId
      * @return {!Element}
      */
-    createCell: function(columnIdentifier)
+    createCell: function(columnId)
     {
-        var cell = this._createValueCell(columnIdentifier) || WebInspector.DataGridNode.prototype.createCell.call(this, columnIdentifier);
-
-        if (columnIdentifier === "self" && this._searchMatchedSelfColumn)
-            cell.classList.add("highlight");
-        else if (columnIdentifier === "total" && this._searchMatchedTotalColumn)
-            cell.classList.add("highlight");
-
-        if (columnIdentifier !== "function")
+        /**
+         * @param {number} value
+         * @param {number} percent
+         * @return {!Element}
+         */
+        function createValueCell(value, percent)
+        {
+            var cell = createElementWithClass("td", "numeric-column");
+            var div = cell.createChild("div", "profile-multiple-values");
+            div.createChild("span").textContent = WebInspector.UIString("%.1f\u2009ms", value);
+            div.createChild("span", "percent-column").textContent = percent >= 0 ? WebInspector.UIString("%.2f\u2009%%", percent) : "";
             return cell;
+        }
 
-        if (this._deoptReason)
-            cell.classList.add("not-optimized");
+        var cell;
+        var isIdleNode = this.profileNode === this.tree.profileView.profile.idleNode;
+        switch (columnId) {
+        case "self":
+            cell = createValueCell(this.selfTime, isIdleNode ? -1 : this.selfPercent);
+            cell.classList.toggle("highlight", this._searchMatchedSelfColumn);
+            break;
 
-        if (this._searchMatchedFunctionColumn)
-            cell.classList.add("highlight");
+        case "total":
+            cell = createValueCell(this.totalTime, isIdleNode ? -1 : this.totalPercent);
+            cell.classList.toggle("highlight", this._searchMatchedTotalColumn);
+            break;
 
-        if (this.profileNode.scriptId !== "0") {
+        case "function":
+            cell = this.createTD(columnId);
+            cell.classList.toggle("highlight", this._searchMatchedFunctionColumn);
+            if (this._deoptReason) {
+                cell.classList.add("not-optimized");
+                cell.createChild("span", "profile-warn-marker").title = WebInspector.UIString("Not optimized: %s", this._deoptReason);
+            }
+            cell.createTextChild(this.functionName);
+            if (this.profileNode.scriptId === "0")
+                break;
             var target = this.tree.profileView.target();
             var callFrame = /** @type {!RuntimeAgent.CallFrame} */ (this.profileNode);
             var urlElement = this.tree.profileView._linkifier.linkifyConsoleCallFrame(target, callFrame, "profile-node-file");
             urlElement.style.maxWidth = "75%";
-            cell.insertBefore(urlElement, cell.firstChild);
-        }
+            cell.appendChild(urlElement);
+            break;
 
+        default:
+            cell = WebInspector.DataGridNode.prototype.createCell.call(this, columnId);
+            break;
+        }
         return cell;
-    },
-
-    /**
-     * @param {string} columnIdentifier
-     * @return {?Element}
-     */
-    _createValueCell: function(columnIdentifier)
-    {
-        if (columnIdentifier !== "self" && columnIdentifier !== "total")
-            return null;
-
-        var cell = createElement("td");
-        cell.className = "numeric-column";
-        var div = createElement("div");
-        var valueSpan = createElement("span");
-        valueSpan.textContent = this.data[columnIdentifier];
-        div.appendChild(valueSpan);
-        var percentColumn = columnIdentifier + "-percent";
-        if (percentColumn in this.data) {
-            var percentSpan = createElement("span");
-            percentSpan.className = "percent-column";
-            percentSpan.textContent = this.data[percentColumn];
-            div.appendChild(percentSpan);
-            div.classList.add("profile-multiple-values");
-        }
-        cell.appendChild(div);
-        return cell;
-    },
-
-    buildData: function()
-    {
-        function formatMilliseconds(time)
-        {
-            return WebInspector.UIString("%.1f\u2009ms", time);
-        }
-        function formatPercent(value)
-        {
-            return WebInspector.UIString("%.2f\u2009%%", value);
-        }
-
-        var functionName;
-        if (this._deoptReason) {
-            var content = createDocumentFragment();
-            var marker = content.createChild("span", "profile-warn-marker");
-            marker.title = WebInspector.UIString("Not optimized: %s", this._deoptReason);
-            content.createTextChild(this.functionName);
-            functionName = content;
-        } else {
-            functionName = this.functionName;
-        }
-
-        this.data = {
-            "function": functionName,
-            "self-percent": formatPercent(this.selfPercent),
-            "self": formatMilliseconds(this.selfTime),
-            "total-percent": formatPercent(this.totalPercent),
-            "total": formatMilliseconds(this.totalTime),
-        };
-        if (this.profileNode === this.tree.profileView.profile.idleNode) {
-            this.data['self-percent'] = undefined;
-            this.data['total-percent'] = undefined
-        }
     },
 
     select: function(supressSelectedEvent)

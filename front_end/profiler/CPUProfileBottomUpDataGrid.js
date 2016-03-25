@@ -172,9 +172,6 @@ WebInspector.BottomUpProfileDataGridNode._sharedPopulate = function(container)
         }
     }
 
-    for (var i = 0; i < container.children.length; ++i)
-        container.children[i].buildData();
-
     delete container._remainingNodeInfos;
 }
 
@@ -323,10 +320,6 @@ WebInspector.BottomUpProfileDataGridTree.prototype = {
         }
         this._searchResultIndex = jumpBackwards ? 0 : this._searchResults.length - 1;
         return this._searchResults.length;
-    },
-
-    buildData: function()
-    {
     },
 
     /**

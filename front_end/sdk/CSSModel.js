@@ -47,8 +47,9 @@ WebInspector.CSSModel = function(target)
     /** @type {!Map.<string, !Object.<!PageAgent.FrameId, !Array.<!CSSAgent.StyleSheetId>>>} */
     this._styleSheetIdsForURL = new Map();
 
-    /** @type {!Map<string, !Promise>} */
-    this._sourceMapLoadingPromises = new Map();
+    /** @type {!Multimap<string, !CSSAgent.StyleSheetId>} */
+    this._sourceMapLoadingStyleSheetsIds = new Multimap();
+
     /** @type {!Map<string, !WebInspector.SourceMap>} */
     this._sourceMapByURL = new Map();
     /** @type {!Multimap<string, !WebInspector.CSSStyleSheetHeader>} */
@@ -99,7 +100,7 @@ WebInspector.CSSModel.prototype = {
             if (enabled)
                 this._attachSourceMap(header);
             else
-                this._detachSourceMap(header.sourceMapURL, header);
+                this._detachSourceMap(header);
         }
     },
 
@@ -112,6 +113,8 @@ WebInspector.CSSModel.prototype = {
         return this._sourceMapByURL.get(header.sourceMapURL) || null;
     },
 
+    _sourceMapLoadedForTest: function() { },
+
     /**
      * @param {!WebInspector.CSSStyleSheetHeader} header
      */
@@ -120,16 +123,15 @@ WebInspector.CSSModel.prototype = {
         var sourceMapURL = header.sourceMapURL;
         if (!sourceMapURL || !WebInspector.moduleSetting("cssSourceMapsEnabled").get())
             return;
-        this._sourceMapURLToHeaders.set(sourceMapURL, header);
         if (this._sourceMapByURL.has(sourceMapURL)) {
-            this.dispatchEventToListeners(WebInspector.CSSModel.Events.SourceMapAttached, header);
+            attach.call(this, sourceMapURL, header);
             return;
         }
-        if (this._sourceMapLoadingPromises.has(sourceMapURL))
-            return;
-        var loadingPromise = WebInspector.TextSourceMap.load(sourceMapURL, header.sourceURL)
-            .then(onSourceMapLoaded.bind(this, sourceMapURL));
-        this._sourceMapLoadingPromises.set(sourceMapURL, loadingPromise);
+        if (!this._sourceMapLoadingStyleSheetsIds.has(sourceMapURL)) {
+            WebInspector.TextSourceMap.load(sourceMapURL, header.sourceURL)
+                .then(onSourceMapLoaded.bind(this, sourceMapURL));
+        }
+        this._sourceMapLoadingStyleSheetsIds.set(sourceMapURL, header.id);
 
         /**
          * @param {string} sourceMapURL
@@ -138,27 +140,46 @@ WebInspector.CSSModel.prototype = {
          */
         function onSourceMapLoaded(sourceMapURL, sourceMap)
         {
-            this._sourceMapLoadingPromises.delete(sourceMapURL);
-            var headers = this._sourceMapURLToHeaders.get(sourceMapURL);
-            if (!headers || !sourceMap)
+            this._sourceMapLoadedForTest();
+            var styleSheetIds = this._sourceMapLoadingStyleSheetsIds.get(sourceMapURL);
+            this._sourceMapLoadingStyleSheetsIds.removeAll(sourceMapURL);
+            if (!sourceMap)
+                return;
+            var headers = new Set();
+            for (var styleSheetId of styleSheetIds) {
+                var header = this.styleSheetHeaderForId(styleSheetId);
+                if (header)
+                    headers.add(header);
+            }
+            if (!headers.size)
                 return;
             this._sourceMapByURL.set(sourceMapURL, sourceMap);
             for (var header of headers)
-                this.dispatchEventToListeners(WebInspector.CSSModel.Events.SourceMapAttached, header);
+                attach.call(this, sourceMapURL, header);
+        }
+
+        /**
+         * @param {string} sourceMapURL
+         * @param {!WebInspector.CSSStyleSheetHeader} header
+         * @this {WebInspector.CSSModel}
+         */
+        function attach(sourceMapURL, header)
+        {
+            this._sourceMapURLToHeaders.set(sourceMapURL, header);
+            this.dispatchEventToListeners(WebInspector.CSSModel.Events.SourceMapAttached, header);
         }
     },
 
     /**
-     * @param {?string} sourceMapURL
      * @param {!WebInspector.CSSStyleSheetHeader} header
      */
-    _detachSourceMap: function(sourceMapURL, header)
+    _detachSourceMap: function(header)
     {
-        if (!sourceMapURL)
+        if (!header.sourceMapURL || !this._sourceMapURLToHeaders.hasValue(header.sourceMapURL, header))
             return;
-        this._sourceMapURLToHeaders.remove(sourceMapURL, header);
-        if (!this._sourceMapURLToHeaders.has(sourceMapURL))
-            this._sourceMapByURL.delete(sourceMapURL);
+        this._sourceMapURLToHeaders.remove(header.sourceMapURL, header);
+        if (!this._sourceMapURLToHeaders.has(header.sourceMapURL))
+            this._sourceMapByURL.delete(header.sourceMapURL);
         this.dispatchEventToListeners(WebInspector.CSSModel.Events.SourceMapDetached, header);
     },
 
@@ -595,7 +616,7 @@ WebInspector.CSSModel.prototype = {
     {
         var header = this.styleSheetHeaderForId(styleSheetId);
         if (header)
-            this._detachSourceMap(header.sourceMapURL, header);
+            this._detachSourceMap(header);
         this.dispatchEventToListeners(WebInspector.CSSModel.Events.StyleSheetChanged, { styleSheetId: styleSheetId, edit: edit });
     },
 
@@ -640,7 +661,7 @@ WebInspector.CSSModel.prototype = {
             if (!Object.keys(frameIdToStyleSheetIds).length)
                 this._styleSheetIdsForURL.remove(url);
         }
-        this._detachSourceMap(header.sourceMapURL, header);
+        this._detachSourceMap(header);
         this.dispatchEventToListeners(WebInspector.CSSModel.Events.StyleSheetRemoved, header);
     },
 
@@ -668,7 +689,7 @@ WebInspector.CSSModel.prototype = {
      */
     setStyleSheetText: function(styleSheetId, newText, majorChange)
     {
-        var header = this._styleSheetIdToHeader.get(styleSheetId);
+        var header = /** @type {!WebInspector.CSSStyleSheetHeader} */(this._styleSheetIdToHeader.get(styleSheetId));
         console.assert(header);
         newText = WebInspector.CSSModel.trimSourceURL(newText);
         if (header.hasSourceURL)
@@ -683,12 +704,9 @@ WebInspector.CSSModel.prototype = {
          */
         function callback(error, sourceMapURL)
         {
-            var oldSourceMapURL = header.sourceMapURL;
+            this._detachSourceMap(header);
             header.setSourceMapURL(sourceMapURL);
-            if (oldSourceMapURL !== header.sourceMapURL) {
-                this._detachSourceMap(oldSourceMapURL, header);
-                this._attachSourceMap(header);
-            }
+            this._attachSourceMap(header);
             if (error)
                 return error;
             if (majorChange)
@@ -734,12 +752,12 @@ WebInspector.CSSModel.prototype = {
         this._styleSheetIdsForURL.clear();
         this._styleSheetIdToHeader.clear();
         for (var i = 0; i < headers.length; ++i) {
-            this._detachSourceMap(headers[i].sourceMapURL, headers[i]);
+            this._detachSourceMap(headers[i]);
             this.dispatchEventToListeners(WebInspector.CSSModel.Events.StyleSheetRemoved, headers[i]);
         }
         this._sourceMapByURL.clear();
         this._sourceMapURLToHeaders.clear();
-        this._sourceMapLoadingPromises.clear();
+        this._sourceMapLoadingStyleSheetsIds.clear();
     },
 
     /**

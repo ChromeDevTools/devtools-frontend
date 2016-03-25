@@ -1313,6 +1313,19 @@ Multimap.prototype = {
     },
 
     /**
+     * @param {K} key
+     * @param {V} value
+     * @return {boolean}
+     */
+    hasValue: function(key, value)
+    {
+        var set = this._map.get(key);
+        if (!set)
+            return false;
+        return set.has(value);
+    },
+
+    /**
      * @return {number}
      */
     get size()

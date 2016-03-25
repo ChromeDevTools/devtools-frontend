@@ -1354,26 +1354,12 @@ WebInspector.FlameChart.prototype = {
         if (groups.length && lastGroupOffset < top + height)
             context.fillRect(0, lastGroupOffset + 2, width, top + height - lastGroupOffset)
 
-        context.strokeStyle = WebInspector.themeSupport.patchColor("#ddd", colorUsage.Background);
-        context.beginPath();
-        forEachGroup((offset, index, group, isFirst) => {
-            if (isFirst)
-                return;
-            if (group.style.padding > 1)
-                hLine(offset - 1.5);
-            if (group.style.padding > 2)
-                hLine(offset - group.style.padding + 1.5);
-        });
-        hLine(lastGroupOffset + 1.5);
-        context.stroke();
-
         context.strokeStyle = WebInspector.themeSupport.patchColor("#bbb", colorUsage.Background);
         context.beginPath();
         forEachGroup((offset, index, group, isFirst) => {
             if (isFirst || group.style.padding < 4)
                 return;
-            hLine(offset - group.style.padding + 0.5);
-            hLine(offset - 0.5);
+            hLine(offset - 2.5);
         });
         hLine(lastGroupOffset + 0.5);
         context.stroke();
@@ -1422,10 +1408,6 @@ WebInspector.FlameChart.prototype = {
 
         context.strokeStyle = WebInspector.themeSupport.patchColor("#ddd", colorUsage.Background);
         context.beginPath();
-        forEachGroup((offset, index, group) => {
-            if (group.expanded)
-                hLine(offset + barHeight - 0.5);
-        });
         context.stroke();
 
         context.restore();

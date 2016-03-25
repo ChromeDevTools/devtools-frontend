@@ -291,7 +291,7 @@ WebInspector.TimelineFlameChartDataProvider = function(model, frameModel, irMode
         color: WebInspector.themeSupport.patchColor("#222", WebInspector.ThemeSupport.ColorUsage.Foreground),
         font: this._font,
         backgroundColor: WebInspector.themeSupport.patchColor("white", WebInspector.ThemeSupport.ColorUsage.Background),
-        nestingLevel: 0,
+        nestingLevel: 0
     };
 
     this._headerLevel2 = {
@@ -388,16 +388,15 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
         this._appendInteractionRecords();
 
         var threads = this._model.virtualThreads();
+        this._appendThreadTimelineData(WebInspector.UIString("Main"), this._model.mainThreadEvents(), this._model.mainThreadAsyncEvents(), true);
         var compositorThreads = threads.filter(thread => thread.name.startsWith("CompositorTileWorker"));
         var otherThreads = threads.filter(thread => !thread.name.startsWith("CompositorTileWorker"));
         if (compositorThreads.length) {
-            this._appendHeader(WebInspector.UIString("Rasterizer Threads"), this._headerLevel1);
+            this._appendHeader(WebInspector.UIString("Raster"), this._headerLevel1);
             for (var i = 0; i < compositorThreads.length; ++i)
                 this._appendSyncEvents(compositorThreads[i].events, WebInspector.UIString("Rasterizer Thread %d", i), this._headerLevel2);
         }
         this._appendGPUEvents();
-
-        this._appendThreadTimelineData(WebInspector.UIString("Main Thread"), this._model.mainThreadEvents(), this._model.mainThreadAsyncEvents(), true);
 
         otherThreads.forEach(thread => this._appendThreadTimelineData(thread.name, thread.events, thread.asyncEventsByGroup));
 
@@ -654,7 +653,7 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
         if (type === WebInspector.TimelineFlameChartEntryType.Frame)
             return "white";
         if (type === WebInspector.TimelineFlameChartEntryType.InteractionRecord)
-            return WebInspector.TimelineUIUtils.interactionPhaseColor(/** @type {!WebInspector.TimelineIRModel.Phases} */ (this._entryData[entryIndex]));
+            return "transparent";
         return "";
     },
 
@@ -681,10 +680,8 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
             barWidth -= 2 * hPadding;
             barY += vPadding;
             barHeight -= 2 * vPadding + 1;
-            context.fillStyle = frame.idle ? "white" : "#eee";
+            context.fillStyle = frame.idle ? "white" : (frame.hasWarnings() ? "#fad1d1" : "#d7f0d1");
             context.fillRect(barX, barY, barWidth, barHeight);
-            if (frame.hasWarnings())
-                paintWarningDecoration(barX, barWidth);
             var frameDurationText = Number.preciseMillisToString(frame.duration, 1);
             var textWidth = context.measureText(frameDurationText).width;
             if (barWidth >= textWidth) {
@@ -692,6 +689,15 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
                 context.fillText(frameDurationText, barX + (barWidth - textWidth) / 2, barY + barHeight - 3);
             }
             return true;
+        }
+
+        if (type === WebInspector.TimelineFlameChartEntryType.InteractionRecord) {
+            var color = WebInspector.TimelineUIUtils.interactionPhaseColor(/** @type {!WebInspector.TimelineIRModel.Phases} */ (this._entryData[entryIndex]));
+            context.fillStyle = color;
+            context.fillRect(barX, barY, barWidth - 1, 2);
+            context.fillRect(barX, barY - 3, 2, 3);
+            context.fillRect(barX + barWidth - 3, barY - 3, 2, 3);
+            return false;
         }
 
         if (type === WebInspector.TimelineFlameChartEntryType.Event) {

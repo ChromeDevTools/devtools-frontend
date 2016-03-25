@@ -39,7 +39,7 @@ WebInspector.NetworkConditionsSelector._throughputText = function(throughput)
 
 /** @type {!Array.<!WebInspector.NetworkManager.Conditions>} */
 WebInspector.NetworkConditionsSelector._presets = [
-    {title: "Offline", download: 0 * 1024 / 8, upload: 0 * 1024 / 8, latency: 0},
+    WebInspector.NetworkManager.OfflineConditions,
     {title: "GPRS", download: 50 * 1024 / 8, upload: 20 * 1024 / 8, latency: 500},
     {title: "Regular 2G", download: 250 * 1024 / 8, upload: 50 * 1024 / 8, latency: 300},
     {title: "Good 2G", download: 450 * 1024 / 8, upload: 150 * 1024 / 8, latency: 150},
@@ -433,4 +433,33 @@ WebInspector.NetworkConditionsSettingsTab.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
+}
+
+/**
+ * @constructor
+ * @implements {WebInspector.ActionDelegate}
+ */
+WebInspector.NetworkConditionsActionDelegate = function()
+{
+}
+
+WebInspector.NetworkConditionsActionDelegate.prototype = {
+    /**
+     * @override
+     * @param {!WebInspector.Context} context
+     * @param {string} actionId
+     * @return {boolean}
+     */
+    handleAction: function(context, actionId)
+    {
+        if (actionId === "components.network-online") {
+            WebInspector.multitargetNetworkManager.setNetworkConditions(WebInspector.NetworkManager.NoThrottlingConditions);
+            return true;
+        }
+        if (actionId === "components.network-offline") {
+            WebInspector.multitargetNetworkManager.setNetworkConditions(WebInspector.NetworkManager.OfflineConditions);
+            return true;
+        }
+        return false;
+    }
 }

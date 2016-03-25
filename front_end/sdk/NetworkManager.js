@@ -80,6 +80,8 @@ WebInspector.NetworkManager._MIMETypes = {
 WebInspector.NetworkManager.Conditions;
 /** @type {!WebInspector.NetworkManager.Conditions} */
 WebInspector.NetworkManager.NoThrottlingConditions = {title: WebInspector.UIString("No throttling"), download: -1, upload: -1, latency: 0};
+/** @type {!WebInspector.NetworkManager.Conditions} */
+WebInspector.NetworkManager.OfflineConditions = {title: WebInspector.UIString("Offline"), download: 0, upload: 0, latency: 0};
 
 WebInspector.NetworkManager.prototype = {
     /**

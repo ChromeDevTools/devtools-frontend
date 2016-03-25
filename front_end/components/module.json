@@ -22,6 +22,22 @@
             "defaultValue": []
         },
         {
+            "type": "@WebInspector.ActionDelegate",
+            "actionId": "components.network-offline",
+            "category": "Network",
+            "title": "Go offline",
+            "className": "WebInspector.NetworkConditionsActionDelegate",
+            "tags": "device"
+        },
+        {
+            "type": "@WebInspector.ActionDelegate",
+            "actionId": "components.network-online",
+            "category": "Network",
+            "title": "Go online",
+            "className": "WebInspector.NetworkConditionsActionDelegate",
+            "tags": "device"
+        },
+        {
             "type": "settings-view",
             "name": "network-conditions",
             "title": "Throttling",

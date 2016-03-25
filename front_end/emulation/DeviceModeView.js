@@ -16,10 +16,9 @@ WebInspector.DeviceModeView = function()
 
     this._model = new WebInspector.DeviceModeModel(this._updateUI.bind(this));
     this._mediaInspector = new WebInspector.MediaQueryInspector(() => this._model.appliedDeviceSize().width, this._model.setWidth.bind(this._model));
-    // TODO(dgozman): remove CountUpdated event.
-    this._showMediaInspectorSetting = WebInspector.settings.createSetting("showMediaQueryInspector", false);
+    this._showMediaInspectorSetting = WebInspector.settings.moduleSetting("showMediaQueryInspector");
     this._showMediaInspectorSetting.addChangeListener(this._updateUI, this);
-    this._showRulersSetting = WebInspector.settings.createSetting("emulation.showRulers", false);
+    this._showRulersSetting = WebInspector.settings.moduleSetting("emulation.showRulers");
     this._showRulersSetting.addChangeListener(this._updateUI, this);
 
     this._topRuler = new WebInspector.DeviceModeView.Ruler(true, this._model.setWidthAndScaleToFit.bind(this._model));

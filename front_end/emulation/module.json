@@ -33,6 +33,30 @@
             "order": 1
         },
         {
+            "type": "setting",
+            "category": "Mobile",
+            "settingName": "showMediaQueryInspector",
+            "settingType": "boolean",
+            "defaultValue": false,
+            "options": [
+                {"value": true, "title": "Show media queries"},
+                {"value": false, "title": "Hide media queries"}
+            ],
+            "tags": "device"
+        },
+        {
+            "type": "setting",
+            "category": "Mobile",
+            "settingName": "emulation.showRulers",
+            "settingType": "boolean",
+            "defaultValue": false,
+            "options": [
+                {"value": true, "title": "Show rulers"},
+                {"value": false, "title": "Hide rulers"}
+            ],
+            "tags": "device"
+        },
+        {
             "type": "settings-view",
             "name": "devices",
             "title": "Devices",

@@ -26,7 +26,6 @@
     { "name": "cm_modes", "type": "remote" },
     { "name": "settings" },
     { "name": "layers" },
-    { "name": "promises" },
     { "name": "snippets" },
     { "name": "diff" },
     { "name": "sass" },

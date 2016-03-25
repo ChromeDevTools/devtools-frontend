@@ -89,8 +89,7 @@ WebInspector.DebuggerModel.Events = {
     FailedToParseScriptSource: "FailedToParseScriptSource",
     GlobalObjectCleared: "GlobalObjectCleared",
     CallFrameSelected: "CallFrameSelected",
-    ConsoleCommandEvaluatedInSelectedCallFrame: "ConsoleCommandEvaluatedInSelectedCallFrame",
-    PromiseUpdated: "PromiseUpdated",
+    ConsoleCommandEvaluatedInSelectedCallFrame: "ConsoleCommandEvaluatedInSelectedCallFrame"
 }
 
 /** @enum {string} */
@@ -351,43 +350,6 @@ WebInspector.DebuggerModel.prototype = {
         }
     },
 
-    /**
-     * @param {boolean} captureStacks
-     */
-    enablePromiseTracker: function(captureStacks)
-    {
-        this._agent.enablePromiseTracker(captureStacks);
-    },
-
-    disablePromiseTracker: function()
-    {
-        this._agent.disablePromiseTracker();
-    },
-
-    /**
-     * @param {number} promiseId
-     * @param {string=} objectGroup
-     * @param {function(?RuntimeAgent.RemoteObject)=} callback
-     */
-    getPromiseById: function(promiseId, objectGroup, callback)
-    {
-        this._agent.getPromiseById(promiseId, objectGroup, innerCallback);
-
-        /**
-         * @param {?Protocol.Error} error
-         * @param {?RuntimeAgent.RemoteObject} promise
-         */
-        function innerCallback(error, promise)
-        {
-            if (error) {
-                console.error(error);
-                callback(null);
-                return;
-            }
-            callback(promise);
-        }
-    },
-
     flushAsyncOperationEvents: function()
     {
         this._agent.flushAsyncOperationEvents();
@@ -424,15 +386,6 @@ WebInspector.DebuggerModel.prototype = {
         this._reset();
         // TODO(dgozman): move clients to ExecutionContextDestroyed/ScriptCollected events.
         this.dispatchEventToListeners(WebInspector.DebuggerModel.Events.GlobalObjectCleared);
-    },
-
-    /**
-     * @param {string} eventType
-     * @param {!DebuggerAgent.PromiseDetails} promise
-     */
-    _promiseUpdated: function(eventType, promise)
-    {
-        this.dispatchEventToListeners(WebInspector.DebuggerModel.Events.PromiseUpdated, { eventType: eventType, promise: promise });
     },
 
     /**
@@ -1021,16 +974,6 @@ WebInspector.DebuggerDispatcher.prototype = {
     breakpointResolved: function(breakpointId, location)
     {
         this._debuggerModel._breakpointResolved(breakpointId, location);
-    },
-
-    /**
-     * @override
-     * @param {string} eventType
-     * @param {!DebuggerAgent.PromiseDetails} promise
-     */
-    promiseUpdated: function(eventType, promise)
-    {
-        this._debuggerModel._promiseUpdated(eventType, promise);
     },
 
     /**

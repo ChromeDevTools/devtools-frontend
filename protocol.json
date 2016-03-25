@@ -3455,21 +3455,6 @@
                 "hidden": true
             },
             {
-                "id": "PromiseDetails",
-                "type": "object",
-                "description": "Information about the promise. All fields but id are optional and if present they reflect the new state of the property on the promise with given id.",
-                "properties": [
-                    { "name": "id", "type": "integer", "description": "Unique id of the promise." },
-                    { "name": "status", "type": "string", "optional": true, "enum": ["pending", "resolved", "rejected"], "description": "Status of the promise." },
-                    { "name": "parentId", "type": "integer", "optional": true, "description": "Id of the parent promise." },
-                    { "name": "creationTime", "type": "number", "optional": true, "description": "Creation time of the promise." },
-                    { "name": "settlementTime", "type": "number", "optional": true, "description": "Settlement time of the promise." },
-                    { "name": "creationStack", "$ref": "Runtime.StackTrace", "optional": true, "description": "JavaScript stack trace on promise creation." },
-                    { "name": "settlementStack", "$ref": "Runtime.StackTrace", "optional": true, "description": "JavaScript stack trace on promise settlement." }
-                ],
-                "hidden": true
-            },
-            {
                 "id": "AsyncOperation",
                 "type": "object",
                 "description": "Information about the async operation.",
@@ -3725,31 +3710,6 @@
                 "description": "Enables or disables async call stacks tracking."
             },
             {
-                "name": "enablePromiseTracker",
-                "parameters": [
-                    { "name": "captureStacks", "type": "boolean", "optional": true, "description": "Whether to capture stack traces for promise creation and settlement events (default: false)." }
-                ],
-                "hidden": true,
-                "description": "Enables promise tracking, information about <code>Promise</code>s created or updated will now be stored on the backend."
-            },
-            {
-                "name": "disablePromiseTracker",
-                "hidden": true,
-                "description": "Disables promise tracking."
-            },
-            {
-                "name": "getPromiseById",
-                "parameters": [
-                    { "name": "promiseId", "type": "integer" },
-                    { "name": "objectGroup", "type": "string", "optional": true, "description": "Symbolic group name that can be used to release multiple objects." }
-                ],
-                "returns": [
-                    { "name": "promise", "$ref": "Runtime.RemoteObject", "description": "Object wrapper for <code>Promise</code> with specified ID, if any." }
-                ],
-                "hidden": true,
-                "description": "Returns <code>Promise</code> with specified ID."
-            },
-            {
                 "name": "flushAsyncOperationEvents",
                 "hidden": true,
                 "description": "Fires pending <code>asyncOperationStarted</code> events (if any), as if a debugger stepping session has just been started."
@@ -3842,15 +3802,6 @@
             {
                 "name": "resumed",
                 "description": "Fired when the virtual machine resumed execution."
-            },
-            {
-                "name": "promiseUpdated",
-                "parameters": [
-                    { "name": "eventType", "type": "string", "enum": ["new", "update", "gc"], "description": "Type of the event." },
-                    { "name": "promise", "$ref": "PromiseDetails", "description": "Information about the updated <code>Promise</code>." }
-                ],
-                "description": "Fired when a <code>Promise</code> is created, updated or garbage collected.",
-                "hidden": true
             },
             {
                 "name": "asyncOperationStarted",

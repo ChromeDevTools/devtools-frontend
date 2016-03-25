@@ -337,7 +337,6 @@
             'front_end/network/module.json',
             'front_end/platform/module.json',
             'front_end/profiler/module.json',
-            'front_end/promises/module.json',
             'front_end/resources/module.json',
             'front_end/sass/module.json',
             'front_end/security/module.json',
@@ -496,10 +495,6 @@
             'front_end/extensions/ExtensionServer.js',
             'front_end/extensions/ExtensionView.js',
             '<@(devtools_extension_api_files)',
-        ],
-        'devtools_promises_js_files': [
-            'front_end/promises/promisePane.css',
-            'front_end/promises/PromisePane.js',
         ],
         'devtools_heap_snapshot_worker_js_files': [
             'front_end/common/TextUtils.js',
@@ -775,7 +770,6 @@
             '<@(devtools_layers_js_files)',
             '<@(devtools_network_js_files)',
             '<@(devtools_profiler_js_files)',
-            '<@(devtools_promises_js_files)',
             '<@(devtools_resources_js_files)',
             '<@(devtools_sass_js_files)',
             '<@(devtools_security_js_files)',

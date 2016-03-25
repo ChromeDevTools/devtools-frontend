@@ -116,7 +116,6 @@ WebInspector.Main.prototype = {
         Runtime.experiments.register("networkRequestHeadersFilterInDetailsView", "Network request headers filter in details view", true);
         Runtime.experiments.register("networkRequestsOnTimeline", "Network requests on Timeline", true);
         Runtime.experiments.register("privateScriptInspection", "Private script inspection");
-        Runtime.experiments.register("promiseTracker", "Promise inspector");
         Runtime.experiments.register("reducedIndentation", "Reduced indentation in Elements DOM tree");
         Runtime.experiments.register("requestBlocking", "Request blocking", true);
         Runtime.experiments.register("resolveVariableNames", "Resolve variable names", true);
@@ -134,8 +133,6 @@ WebInspector.Main.prototype = {
         if (InspectorFrontendHost.isUnderTest()) {
             var testPath = JSON.parse(prefs["testPath"] || "\"\"");
             // Enable experiments for testing.
-            if (testPath.indexOf("debugger/promise") !== -1)
-                Runtime.experiments.enableForTest("promiseTracker");
             if (testPath.indexOf("layers/") !== -1)
                 Runtime.experiments.enableForTest("layersPanel");
             if (testPath.indexOf("timeline/") !== -1 || testPath.indexOf("layers/") !== -1)

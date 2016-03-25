@@ -101,12 +101,13 @@ WebInspector.CSSWorkspaceBinding.prototype = {
     /**
      * @param {!WebInspector.CSSLocation} rawLocation
      * @param {function(!WebInspector.LiveLocation)} updateDelegate
+     * @param {!WebInspector.LiveLocationPool} locationPool
      * @return {!WebInspector.CSSWorkspaceBinding.LiveLocation}
      */
-    createLiveLocation: function(rawLocation, updateDelegate)
+    createLiveLocation: function(rawLocation, updateDelegate, locationPool)
     {
         var header = rawLocation.styleSheetId ? rawLocation.cssModel().styleSheetHeaderForId(rawLocation.styleSheetId) : null;
-        return new WebInspector.CSSWorkspaceBinding.LiveLocation(rawLocation.cssModel(), header, rawLocation, this, updateDelegate);
+        return new WebInspector.CSSWorkspaceBinding.LiveLocation(rawLocation.cssModel(), header, rawLocation, this, updateDelegate, locationPool);
     },
 
     /**
@@ -313,16 +314,17 @@ WebInspector.CSSWorkspaceBinding.HeaderInfo.prototype = {
 
 /**
  * @constructor
- * @extends {WebInspector.LiveLocation}
+ * @extends {WebInspector.LiveLocationWithPool}
  * @param {!WebInspector.CSSModel} cssModel
  * @param {?WebInspector.CSSStyleSheetHeader} header
  * @param {!WebInspector.CSSLocation} rawLocation
  * @param {!WebInspector.CSSWorkspaceBinding} binding
  * @param {function(!WebInspector.LiveLocation)} updateDelegate
+ * @param {!WebInspector.LiveLocationPool} locationPool
  */
-WebInspector.CSSWorkspaceBinding.LiveLocation = function(cssModel, header, rawLocation, binding, updateDelegate)
+WebInspector.CSSWorkspaceBinding.LiveLocation = function(cssModel, header, rawLocation, binding, updateDelegate, locationPool)
 {
-    WebInspector.LiveLocation.call(this, updateDelegate);
+    WebInspector.LiveLocationWithPool.call(this, updateDelegate, locationPool);
     this._cssModel = cssModel;
     this._rawLocation = rawLocation;
     this._binding = binding;
@@ -392,9 +394,12 @@ WebInspector.CSSWorkspaceBinding.LiveLocation.prototype = {
         return uiSourceCode.uiLocation(cssLocation.lineNumber, cssLocation.columnNumber);
     },
 
+    /**
+     * @override
+     */
     dispose: function()
     {
-        WebInspector.LiveLocation.prototype.dispose.call(this);
+        WebInspector.LiveLocationWithPool.prototype.dispose.call(this);
         if (this._header)
             this._binding._removeLiveLocation(this);
         this._cssModel.removeEventListener(WebInspector.CSSModel.Events.StyleSheetAdded, this._styleSheetAdded, this);
@@ -410,7 +415,7 @@ WebInspector.CSSWorkspaceBinding.LiveLocation.prototype = {
         return false;
     },
 
-    __proto__: WebInspector.LiveLocation.prototype
+    __proto__: WebInspector.LiveLocationWithPool.prototype
 }
 
 /**

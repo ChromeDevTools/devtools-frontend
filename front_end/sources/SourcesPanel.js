@@ -103,6 +103,9 @@ WebInspector.SourcesPanel = function(workspaceForTest)
     this._updateDebuggerButtons();
     this._pauseOnExceptionEnabledChanged();
     WebInspector.moduleSetting("pauseOnExceptionEnabled").addChangeListener(this._pauseOnExceptionEnabledChanged, this);
+
+    this._liveLocationPool = new WebInspector.LiveLocationPool();
+
     this._setTarget(WebInspector.context.flavor(WebInspector.Target));
     WebInspector.breakpointManager.addEventListener(WebInspector.BreakpointManager.Events.BreakpointsActiveStateChanged, this._breakpointsActiveStateChanged, this);
     WebInspector.context.addFlavorChangeListener(WebInspector.Target, this._onCurrentTargetChanged, this);
@@ -291,7 +294,7 @@ WebInspector.SourcesPanel.prototype = {
             }
         } else {
             if (details.callFrames.length)
-                WebInspector.debuggerWorkspaceBinding.createCallFrameLiveLocation(details.callFrames[0].location(), didGetUILocation.bind(this));
+                WebInspector.debuggerWorkspaceBinding.createCallFrameLiveLocation(details.callFrames[0].location(), didGetUILocation.bind(this), this._liveLocationPool);
             else
                 console.warn("ScriptsPanel paused, but callFrames.length is zero."); // TODO remove this once we understand this case better
         }
@@ -436,7 +439,7 @@ WebInspector.SourcesPanel.prototype = {
         this.sidebarPanes.scopechain.update(callFrame);
         this.sidebarPanes.watchExpressions.refreshExpressions();
         this.sidebarPanes.callstack.setSelectedCallFrame(callFrame);
-        WebInspector.debuggerWorkspaceBinding.createCallFrameLiveLocation(callFrame.location(), this._executionLineChanged.bind(this));
+        WebInspector.debuggerWorkspaceBinding.createCallFrameLiveLocation(callFrame.location(), this._executionLineChanged.bind(this), this._liveLocationPool);
     },
 
     /**
@@ -507,6 +510,7 @@ WebInspector.SourcesPanel.prototype = {
 
         if (this._switchToPausedTargetTimeout)
             clearTimeout(this._switchToPausedTargetTimeout);
+        this._liveLocationPool.disposeAll();
     },
 
     /**

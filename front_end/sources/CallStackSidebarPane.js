@@ -37,6 +37,9 @@ WebInspector.CallStackSidebarPane = function()
     this._linkifier = new WebInspector.Linkifier();
     WebInspector.moduleSetting("enableAsyncStackTraces").addChangeListener(this._asyncStackTracesStateChanged, this);
     WebInspector.moduleSetting("skipStackFramesPattern").addChangeListener(this._blackboxingStateChanged, this);
+    /** @type {!Array<!WebInspector.CallStackSidebarPane.CallFrame>} */
+    this.callFrames = [];
+    this._locationPool = new WebInspector.LiveLocationPool();
 }
 
 /** @enum {string} */
@@ -55,6 +58,7 @@ WebInspector.CallStackSidebarPane.prototype = {
         this.callFrameList.clear();
         this._linkifier.reset();
         this.element.removeChildren();
+        this._locationPool.disposeAll();
 
         if (!details) {
             var infoElement = this.element.createChild("div", "callstack-info");
@@ -68,7 +72,6 @@ WebInspector.CallStackSidebarPane.prototype = {
 
         delete this._statusMessageElement;
         delete this._hiddenCallFramesMessageElement;
-        /** @type {!Array.<!WebInspector.CallStackSidebarPane.CallFrame>} */
         this.callFrames = [];
         this._hiddenCallFrames = 0;
 
@@ -110,7 +113,7 @@ WebInspector.CallStackSidebarPane.prototype = {
         var callFrameItems = [];
         for (var i = 0, n = callFrames.length; i < n; ++i) {
             var callFrame = callFrames[i];
-            var callFrameItem = new WebInspector.CallStackSidebarPane.CallFrame(callFrame.functionName, callFrame.location(), this._linkifier, callFrame);
+            var callFrameItem = new WebInspector.CallStackSidebarPane.CallFrame(callFrame.functionName, callFrame.location(), this._linkifier, callFrame, this._locationPool);
             callFrameItem.element.addEventListener("click", this._callFrameSelected.bind(this, callFrameItem), false);
             callFrameItems.push(callFrameItem);
         }
@@ -131,7 +134,7 @@ WebInspector.CallStackSidebarPane.prototype = {
             var lineNumber = callFrame.lineNumber ? callFrame.lineNumber - 1 : 0;
             var columnNumber = callFrame.columnNumber ? callFrame.columnNumber - 1 : 0;
             var location = new WebInspector.DebuggerModel.Location(this._debuggerModel, callFrame.scriptId, lineNumber, columnNumber);
-            var callFrameItem = new WebInspector.CallStackSidebarPane.CallFrame(callFrame.functionName, location, this._linkifier, null, asyncCallFrameItem);
+            var callFrameItem = new WebInspector.CallStackSidebarPane.CallFrame(callFrame.functionName, location, this._linkifier, null, this._locationPool, asyncCallFrameItem);
             callFrameItem.element.addEventListener("click", this._asyncCallFrameClicked.bind(this, callFrameItem), false);
             callFrameItems.push(callFrameItem);
         }
@@ -438,9 +441,10 @@ WebInspector.CallStackSidebarPane.prototype = {
  * @param {!WebInspector.DebuggerModel.Location} location
  * @param {!WebInspector.Linkifier} linkifier
  * @param {?WebInspector.DebuggerModel.CallFrame} debuggerCallFrame
+ * @param {!WebInspector.LiveLocationPool} locationPool
  * @param {!WebInspector.UIList.Item=} asyncCallFrame
  */
-WebInspector.CallStackSidebarPane.CallFrame = function(functionName, location, linkifier, debuggerCallFrame, asyncCallFrame)
+WebInspector.CallStackSidebarPane.CallFrame = function(functionName, location, linkifier, debuggerCallFrame, locationPool, asyncCallFrame)
 {
     WebInspector.UIList.Item.call(this, WebInspector.beautifyFunctionName(functionName), "");
     this._location = location;
@@ -451,7 +455,8 @@ WebInspector.CallStackSidebarPane.CallFrame = function(functionName, location, l
         var locationElement = linkifier.linkifyRawLocation(location, location.script().sourceURL);
         this.subtitleElement.appendChild(locationElement);
     } else {
-        WebInspector.debuggerWorkspaceBinding.createCallFrameLiveLocation(location, this._update.bind(this));
+        this._liveLocationPool = new WebInspector.LiveLocationPool();
+        WebInspector.debuggerWorkspaceBinding.createCallFrameLiveLocation(location, this._update.bind(this), locationPool);
     }
 }
 

@@ -48,6 +48,8 @@ WebInspector.PresentationConsoleMessageHelper = function(workspace)
     WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this);
     WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.FailedToParseScriptSource, this._parsedScriptSource, this);
     WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this);
+
+    this._locationPool = new WebInspector.LiveLocationPool();
 }
 
 WebInspector.PresentationConsoleMessageHelper.prototype = {
@@ -101,7 +103,7 @@ WebInspector.PresentationConsoleMessageHelper.prototype = {
      */
     _addConsoleMessageToScript: function(message, rawLocation)
     {
-        this._presentationConsoleMessages.push(new WebInspector.PresentationConsoleMessage(message, rawLocation));
+        this._presentationConsoleMessages.push(new WebInspector.PresentationConsoleMessage(message, rawLocation, this._locationPool));
     },
 
     /**
@@ -151,6 +153,7 @@ WebInspector.PresentationConsoleMessageHelper.prototype = {
         for (var i = 0; i < this._presentationConsoleMessages.length; ++i)
             this._presentationConsoleMessages[i].dispose();
         this._presentationConsoleMessages = [];
+        this._locationPool.disposeAll();
     },
 
     _debuggerReset: function()
@@ -163,12 +166,13 @@ WebInspector.PresentationConsoleMessageHelper.prototype = {
  * @constructor
  * @param {!WebInspector.ConsoleMessage} message
  * @param {!WebInspector.DebuggerModel.Location} rawLocation
+ * @param {!WebInspector.LiveLocationPool} locationPool
  */
-WebInspector.PresentationConsoleMessage = function(message, rawLocation)
+WebInspector.PresentationConsoleMessage = function(message, rawLocation, locationPool)
 {
     this._text = message.messageText;
     this._level = message.level === WebInspector.ConsoleMessage.MessageLevel.Error ? WebInspector.UISourceCode.Message.Level.Error : WebInspector.UISourceCode.Message.Level.Warning;
-    this._liveLocation = WebInspector.debuggerWorkspaceBinding.createLiveLocation(rawLocation, this._updateLocation.bind(this));
+    WebInspector.debuggerWorkspaceBinding.createLiveLocation(rawLocation, this._updateLocation.bind(this), locationPool);
 }
 
 WebInspector.PresentationConsoleMessage.prototype = {
@@ -187,7 +191,6 @@ WebInspector.PresentationConsoleMessage.prototype = {
 
     dispose: function()
     {
-        this._liveLocation.dispose();
         if (this._uiMessage)
             this._uiMessage.remove();
     }

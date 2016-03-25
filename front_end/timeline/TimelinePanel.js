@@ -119,6 +119,7 @@ WebInspector.TimelinePanel = function()
     this._detailsSplitWidget.hideSidebar();
     WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
     this._showRecordingHelpMessage();
+    this._locationPool = new WebInspector.LiveLocationPool();
 }
 
 /**
@@ -1280,7 +1281,7 @@ WebInspector.TimelinePanel.prototype = {
                 var time = lineInfo[1];
                 var rawLocation = debuggerModel.createRawLocationByURL(url, line, 0);
                 if (rawLocation)
-                    new WebInspector.TimelineUIUtils.LineLevelProfilePresentation(rawLocation, time);
+                    new WebInspector.TimelineUIUtils.LineLevelProfilePresentation(rawLocation, time, this._locationPool);
                 else if (uiSourceCode)
                     uiSourceCode.addLineDecoration(line, WebInspector.TimelineUIUtils.PerformanceLineDecorator.type, time);
             }
@@ -1289,6 +1290,7 @@ WebInspector.TimelinePanel.prototype = {
 
     _resetLineLevelCPUProfile: function()
     {
+        this._locationPool.disposeAll();
         WebInspector.workspace.uiSourceCodes().forEach(uiSourceCode => uiSourceCode.removeAllLineDecorations(WebInspector.TimelineUIUtils.PerformanceLineDecorator.type));
     },
 

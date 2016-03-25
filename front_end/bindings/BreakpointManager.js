@@ -739,8 +739,7 @@ WebInspector.BreakpointManager.TargetBreakpoint = function(debuggerModel, breakp
     this._networkMapping = networkMapping;
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
 
-    /** @type {!Array.<!WebInspector.DebuggerWorkspaceBinding.Location>} */
-    this._liveLocations = [];
+    this._liveLocations = new WebInspector.LiveLocationPool();
 
     /** @type {!Object.<string, !WebInspector.UILocation>} */
     this._uiLocations = {};
@@ -763,10 +762,7 @@ WebInspector.BreakpointManager.TargetBreakpoint.prototype = {
             this._breakpoint._removeUILocation(uiLocations[i]);
 
         this._uiLocations = {};
-
-        for (var i = 0; i < this._liveLocations.length; ++i)
-            this._liveLocations[i].dispose();
-        this._liveLocations = [];
+        this._liveLocations.disposeAll();
     },
 
     _scheduleUpdateInDebugger: function()
@@ -944,7 +940,7 @@ WebInspector.BreakpointManager.TargetBreakpoint.prototype = {
             this._breakpoint.remove();
             return false;
         }
-        this._liveLocations.push(this._debuggerWorkspaceBinding.createLiveLocation(location, this._locationUpdated.bind(this, location)));
+        this._debuggerWorkspaceBinding.createLiveLocation(location, this._locationUpdated.bind(this, location), this._liveLocations);
         return true;
     },
 

@@ -2121,11 +2121,12 @@ WebInspector.TimelineUIUtils.eventWarning = function(event, warningType)
  * @constructor
  * @param {!WebInspector.DebuggerModel.Location} rawLocation
  * @param {number} time
+ * @param {!WebInspector.LiveLocationPool} locationPool
  */
-WebInspector.TimelineUIUtils.LineLevelProfilePresentation = function(rawLocation, time)
+WebInspector.TimelineUIUtils.LineLevelProfilePresentation = function(rawLocation, time, locationPool)
 {
     this._time = time;
-    WebInspector.debuggerWorkspaceBinding.createLiveLocation(rawLocation, this.updateLocation.bind(this));
+    WebInspector.debuggerWorkspaceBinding.createLiveLocation(rawLocation, this.updateLocation.bind(this), locationPool);
 }
 
 WebInspector.TimelineUIUtils.LineLevelProfilePresentation.prototype = {

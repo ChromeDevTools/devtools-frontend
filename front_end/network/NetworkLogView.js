@@ -252,7 +252,7 @@ WebInspector.NetworkLogView.prototype = {
 
     _addFilters: function()
     {
-        this._textFilterUI = new WebInspector.TextFilterUI();
+        this._textFilterUI = new WebInspector.TextFilterUI(true);
         this._textFilterUI.addEventListener(WebInspector.FilterUI.Events.FilterChanged, this._filterChanged, this);
         this._filterBar.addFilter(this._textFilterUI);
 
@@ -1570,7 +1570,7 @@ WebInspector.NetworkLogView.prototype = {
      */
     supportsRegexSearch: function()
     {
-        return false;
+        return true;
     },
 
     /**
@@ -1634,8 +1634,14 @@ WebInspector.NetworkLogView.prototype = {
      */
     _parseFilterQuery: function(query)
     {
-        var parsedQuery = this._suggestionBuilder.parseQuery(query);
-        this._filters = parsedQuery.text.map(this._createTextFilter);
+        var parsedQuery;
+        if (this._textFilterUI.isRegexChecked() && query !== "")
+            parsedQuery = {text: [query], filters: []};
+        else
+            parsedQuery = this._suggestionBuilder.parseQuery(query);
+
+        this._filters = parsedQuery.text.map(this._createTextFilter, this);
+
         var n = parsedQuery.filters.length;
         for (var i = 0; i < n; ++i) {
             var filter = parsedQuery.filters[i];
@@ -1651,11 +1657,12 @@ WebInspector.NetworkLogView.prototype = {
     _createTextFilter: function(text)
     {
         var negative = false;
-        if (text[0] === "-" && text.length > 1) {
+        if (!this._textFilterUI.isRegexChecked() && text[0] === "-" && text.length > 1) {
             negative = true;
             text = text.substring(1);
         }
-        var regexp = new RegExp(text.escapeForRegExp(), "i");
+        var regexp = this._textFilterUI.regex();
+
         var filter = WebInspector.NetworkLogView._requestNameOrPathFilter.bind(null, regexp);
         if (negative)
             filter = WebInspector.NetworkLogView._negativeFilter.bind(null, filter);
@@ -1935,12 +1942,14 @@ WebInspector.NetworkLogView._negativeFilter = function(filter, request)
 }
 
 /**
- * @param {!RegExp} regex
+ * @param {?RegExp} regex
  * @param {!WebInspector.NetworkRequest} request
  * @return {boolean}
  */
 WebInspector.NetworkLogView._requestNameOrPathFilter = function(regex, request)
 {
+    if (!regex)
+        return false;
     return regex.test(request.name()) || regex.test(request.path());
 }
 

@@ -49,9 +49,7 @@ WebInspector.HTMLFormatter.prototype = {
             tokenStart += fromOffset;
             tokenEnd += fromOffset;
             lastOffset = tokenEnd;
-            var startLine = lineEndings.lowerBound(tokenStart);
-            var endLine = lineEndings.lowerBound(tokenEnd);
-            this._builder.addToken(tokenValue, tokenStart, startLine, endLine);
+            this._builder.addToken(tokenValue, tokenStart);
 
             if (!type)
                 return;

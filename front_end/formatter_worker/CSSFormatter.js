@@ -59,14 +59,11 @@ WebInspector.CSSFormatter.prototype = {
      * @param {string} token
      * @param {?string} type
      * @param {number} startPosition
-     * @param {number} endPosition
      */
-    _tokenCallback: function(token, type, startPosition, endPosition)
+    _tokenCallback: function(token, type, startPosition)
     {
         startPosition += this._fromOffset;
-        endPosition += this._fromOffset;
         var startLine = this._lineEndings.lowerBound(startPosition);
-        var endLine = this._lineEndings.lowerBound(endPosition);
         if (startLine !== this._lastLine)
             this._state.eatWhitespace = true;
         if (/^property/.test(type) && !this._state.inPropertyValue)
@@ -94,7 +91,7 @@ WebInspector.CSSFormatter.prototype = {
             this._state.afterClosingBrace = true;
             this._state.inPropertyValue = false;
         } else if (token === ":" && !this._state.inPropertyValue && this._state.seenProperty) {
-            this._builder.addToken(token, startPosition, startLine, endLine);
+            this._builder.addToken(token, startPosition);
             this._builder.addSoftSpace();
             this._state.eatWhitespace = true;
             this._state.inPropertyValue = true;
@@ -102,13 +99,13 @@ WebInspector.CSSFormatter.prototype = {
             return;
         } else if (token === "{") {
             this._builder.addSoftSpace();
-            this._builder.addToken(token, startPosition, startLine, endLine);
+            this._builder.addToken(token, startPosition);
             this._builder.addNewLine();
             this._builder.increaseNestingLevel();
             return;
         }
 
-        this._builder.addToken(token, startPosition, startLine, endLine);
+        this._builder.addToken(token, startPosition);
 
         if (type === "comment" && !this._state.inPropertyValue && !this._state.seenProperty)
             this._builder.addNewLine();

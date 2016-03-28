@@ -17,7 +17,6 @@ WebInspector.FormattedContentBuilder = function(indentString)
     /** @type {!{original: !Array.<number>, formatted: !Array.<number>}} */
     this._mapping = { original: [0], formatted: [0] };
 
-    this._lineNumber = 0;
     this._nestingLevel = 0;
     this._indentString = indentString;
     /** @type {!Map<number, string>} */
@@ -31,15 +30,10 @@ WebInspector.FormattedContentBuilder = function(indentString)
 WebInspector.FormattedContentBuilder.prototype = {
     /**
      * @param {string} token
-     * @param {number} startPosition
-     * @param {number} startLine
-     * @param {number} endLine
+     * @param {number} offset
      */
-    addToken: function(token, startPosition, startLine, endLine)
+    addToken: function(token, offset)
     {
-        if (this._lineNumber < startLine)
-            this._newLines = Math.max(this._newLines, startLine - this._lineNumber);
-
         var last = this._formattedContent.peekLast();
         if (last && /\w/.test(last[last.length - 1]) && /\w/.test(token))
             this.addSoftSpace();
@@ -47,9 +41,8 @@ WebInspector.FormattedContentBuilder.prototype = {
         this._appendFormatting();
 
         // Insert token.
-        this._addMappingIfNeeded(startPosition);
+        this._addMappingIfNeeded(offset);
         this._addText(token);
-        this._lineNumber = endLine;
     },
 
     addSoftSpace: function()

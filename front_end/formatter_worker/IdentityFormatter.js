@@ -21,9 +21,7 @@ WebInspector.IdentityFormatter.prototype = {
     format: function(text, lineEndings, fromOffset, toOffset)
     {
         var content = text.substring(fromOffset, toOffset);
-        var startLine = lineEndings.lowerBound(fromOffset);
-        var endLine = lineEndings.lowerBound(toOffset);
-        this._builder.addToken(content, fromOffset, startLine, endLine);
+        this._builder.addToken(content, fromOffset);
     }
 }
 

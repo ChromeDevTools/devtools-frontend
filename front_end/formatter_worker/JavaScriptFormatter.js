@@ -46,7 +46,6 @@ WebInspector.JavaScriptFormatter.prototype = {
      */
     format: function(text, lineEndings, fromOffset, toOffset)
     {
-        this._lineOffset = lineEndings.lowerBound(fromOffset);
         this._fromOffset = fromOffset;
         this._toOffset = toOffset;
         this._content = text.substring(this._fromOffset, this._toOffset);
@@ -74,7 +73,7 @@ WebInspector.JavaScriptFormatter.prototype = {
             else if (format[i] === "<")
                 this._builder.decreaseNestingLevel();
             else if (format[i] === "t")
-                this._builder.addToken(this._content.substring(token.start, token.end), this._fromOffset + token.start, this._lineOffset + this._tokenizer.tokenLineStart(), this._lineOffset + this._tokenizer.tokenLineEnd());
+                this._builder.addToken(this._content.substring(token.start, token.end), this._fromOffset + token.start);
         }
     },
 
@@ -132,7 +131,7 @@ WebInspector.JavaScriptFormatter.prototype = {
         if (AT.lineComment(token))
             return "tn";
         if (AT.blockComment(token))
-            return "t";
+            return "tn";
         if (node.type === "ContinueStatement" || node.type === "BreakStatement") {
             return node.label && AT.keyword(token) ? "ts" : "t";
         } else if (node.type === "Identifier") {

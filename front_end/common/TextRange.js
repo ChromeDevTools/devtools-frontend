@@ -197,15 +197,6 @@ WebInspector.TextRange.prototype = {
     },
 
     /**
-     * @param {number} lineOffset
-     * @return {!WebInspector.TextRange}
-     */
-    shift: function(lineOffset)
-    {
-        return new WebInspector.TextRange(this.startLine + lineOffset, this.startColumn, this.endLine + lineOffset, this.endColumn);
-    },
-
-    /**
      * @param {number} line
      * @param {number} column
      * @return {!WebInspector.TextRange}

@@ -95,3 +95,52 @@ WebInspector.Text.prototype = {
         return this._value.substr(sourceRange.offset, sourceRange.length);
     },
 }
+
+/**
+ * @constructor
+ * @param {!Array<number>} lineEndings
+ */
+WebInspector.TextCursor = function(lineEndings)
+{
+    this._lineEndings = lineEndings;
+    this._offset = 0;
+    this._lineNumber = 0;
+    this._columnNumber = 0;
+}
+
+WebInspector.TextCursor.prototype = {
+    /**
+     * @param {number} offset
+     */
+    advance: function(offset)
+    {
+        this._offset = offset;
+        while (this._lineNumber < this._lineEndings.length && this._lineEndings[this._lineNumber] < this._offset)
+            ++this._lineNumber;
+        this._columnNumber = this._lineNumber ? this._offset - this._lineEndings[this._lineNumber - 1] - 1 : this._offset;
+    },
+
+    /**
+     * @return {number}
+     */
+    offset: function()
+    {
+        return this._offset;
+    },
+
+    /**
+     * @return {number}
+     */
+    lineNumber: function()
+    {
+        return this._lineNumber;
+    },
+
+    /**
+     * @return {number}
+     */
+    columnNumber: function()
+    {
+        return this._columnNumber;
+    }
+}

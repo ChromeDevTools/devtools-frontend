@@ -538,7 +538,7 @@ WebInspector.ElementsTreeElement.prototype = {
         var openTagElement = this._node[this.treeOutline.treeElementSymbol()] || this;
         var isEditable = this.hasEditableNode();
         if (isEditable && !this._editing)
-            contextMenu.appendAction("elements.edit-as-html", WebInspector.UIString("Edit as HTML"));
+            contextMenu.appendItem(WebInspector.UIString("Edit as HTML"), this._editAsHTML.bind(this));
         var isShadowRoot = this._node.isShadowRoot();
 
         // Place it here so that all "Copy"-ing items stick together.
@@ -1613,6 +1613,12 @@ WebInspector.ElementsTreeElement.prototype = {
         }
 
         this._node.resolveToObject("", scrollIntoViewCallback);
+    },
+
+    _editAsHTML: function ()
+    {
+        var promise = WebInspector.Revealer.revealPromise(this.node());
+        promise.then(() => WebInspector.actionRegistry.action("elements.edit-as-html").execute());
     },
 
     __proto__: TreeElement.prototype

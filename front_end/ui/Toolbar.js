@@ -101,6 +101,11 @@ WebInspector.Toolbar.prototype = {
         this.appendToolbarItem(new WebInspector.ToolbarSeparator());
     },
 
+    appendSpacer: function()
+    {
+        this.appendToolbarItem(new WebInspector.ToolbarSeparator(true));
+    },
+
     /**
      * @param {string} text
      */
@@ -719,10 +724,11 @@ WebInspector.ToolbarSettingToggle.prototype = {
 /**
  * @constructor
  * @extends {WebInspector.ToolbarItem}
+ * @param {boolean=} spacer
  */
-WebInspector.ToolbarSeparator = function()
+WebInspector.ToolbarSeparator = function(spacer)
 {
-    WebInspector.ToolbarItem.call(this, createElementWithClass("div", "toolbar-divider"));
+    WebInspector.ToolbarItem.call(this, createElementWithClass("div", spacer ? "toolbar-spacer" : "toolbar-divider"));
 }
 
 WebInspector.ToolbarSeparator.prototype = {

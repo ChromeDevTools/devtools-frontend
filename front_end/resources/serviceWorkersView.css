@@ -51,15 +51,14 @@
     position: relative;
 }
 
+.service-workers-registration-header .toolbar {
+    flex: auto;
+}
+
 .service-workers-registration-title {
     flex: none;
     font-size: 15px;
     padding: 4px;
-}
-
-.service-workers-registration-buttons {
-    flex: 1 1 0;
-    padding: 1px;
 }
 
 .service-workers-registration-content {
@@ -177,63 +176,6 @@
     color: hsl(240, 85%, 37%);
     cursor: pointer;
     text-decoration: underline;
-}
-
-.service-workers-button {
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
-    -webkit-mask-size: 352px 168px;
-    background-color: rgba(0, 0, 0, 0.75);
-    height: 24px;
-    opacity: 0.8;
-    width: 32px;
-    border: 0;
-    padding: 0;
-}
-
-@media (-webkit-min-device-pixel-ratio: 1.5) {
-.service-workers-button {
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
-}
-} /* media */
-
-.service-workers-button:hover {
-    opacity: 1;
-}
-
-.service-workers-button:active {
-    opacity: 0.8;
-}
-
-.service-workers-button:disabled {
-    opacity: 0.5;
-}
-
-.service-workers-start-button {
-    -webkit-mask-position: -64px -48px;
-}
-
-.service-workers-stop-button {
-    -webkit-mask-position: -96px -48px;
-}
-
-.service-workers-delete-button {
-    float: right;
-    -webkit-mask-position: -128px -24px;
-    position: relative;
-}
-
-.service-workers-update-button {
-    -webkit-mask-image: url(Images/updateServiceWorker.svg);
-    -webkit-mask-position: 7px 3px;
-    -webkit-mask-repeat: no-repeat;
-    -webkit-mask-size: 18px 18px;
-}
-
-.service-workers-push-button {
-    -webkit-mask-image: url(Images/notifications.svg);
-    -webkit-mask-position: 7px 3px;
-    -webkit-mask-repeat: no-repeat;
-    -webkit-mask-size: 18px 18px;
 }
 
 .service-workers-versions-option-panel {

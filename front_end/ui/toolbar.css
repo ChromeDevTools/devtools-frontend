@@ -227,6 +227,10 @@ input.toolbar-item.hover {
     height: 16px;
 }
 
+.toolbar-spacer {
+    flex: auto;
+}
+
 /* Long click */
 
 .long-click-glyph {
@@ -336,6 +340,10 @@ input.toolbar-item.hover {
     transform: scaleX(-1);
 }
 
+.stop-toolbar-item.toolbar-glyph {
+    -webkit-mask-position: -96px -48px;
+}
+
 .pause-on-exceptions-toolbar-item.toolbar-glyph {
     -webkit-mask-position: -256px 0;
 }
@@ -354,6 +362,10 @@ input.toolbar-item.hover {
 
 .breakpoint-toolbar-item.toolbar-glyph {
     -webkit-mask-position: 0 -24px;
+}
+
+.notification-toolbar-item.toolbar-glyph {
+    -webkit-mask-position: -32px -120px;
 }
 
 .format-toolbar-item.toolbar-glyph {

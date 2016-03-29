@@ -817,7 +817,6 @@
             'front_end/Images/localStorage.png',
             'front_end/Images/navigationControls.png',
             'front_end/Images/navigationControls_2x.png',
-            'front_end/Images/notifications.svg',
             'front_end/Images/paneAddButtons.png',
             'front_end/Images/paneFilterButtons.png',
             'front_end/Images/paneRefreshButtons.png',
@@ -861,7 +860,6 @@
             'front_end/Images/toolbarItemSelected.png',
             'front_end/Images/touchCursor.png',
             'front_end/Images/touchCursor_2x.png',
-            'front_end/Images/updateServiceWorker.svg',
         ],
         'devtools_extension_api_files': [
             'front_end/extensions/ExtensionAPI.js',

@@ -277,19 +277,25 @@ WebInspector.SWRegistrationElement = function(manager, originElement, registrati
     this._registration = registration;
     this._element = createElementWithClass("div", "service-workers-registration");
     var headerNode = this._element.createChild("div", "service-workers-registration-header");
+
     this._titleNode = headerNode.createChild("div", "service-workers-registration-title");
-    var buttonsNode = headerNode.createChild("div", "service-workers-registration-buttons");
-    this._updateButton = buttonsNode.createChild("button", "service-workers-button service-workers-update-button");
-    this._updateButton.addEventListener("click", this._updateButtonClicked.bind(this), false);
-    this._updateButton.title = WebInspector.UIString("Update");
-    this._updateButton.disabled = true
-    this._pushButton = buttonsNode.createChild("button", "service-workers-button service-workers-push-button");
-    this._pushButton.addEventListener("click", this._pushButtonClicked.bind(this), false);
-    this._pushButton.title = WebInspector.UIString("Emulate push event");
-    this._pushButton.disabled = true
-    this._deleteButton = buttonsNode.createChild("button", "service-workers-button service-workers-delete-button");
-    this._deleteButton.addEventListener("click", this._deleteButtonClicked.bind(this), false);
-    this._deleteButton.title = WebInspector.UIString("Delete");
+
+    var toolbar = new WebInspector.Toolbar("", headerNode);
+    toolbar.appendSeparator();
+
+    this._updateButton = new WebInspector.ToolbarButton(WebInspector.UIString("Update"), "refresh-toolbar-item", WebInspector.UIString("Update"));
+    this._updateButton.addEventListener("click", this._updateButtonClicked.bind(this));
+    toolbar.appendToolbarItem(this._updateButton);
+    toolbar.appendSeparator();
+
+    this._pushButton = new WebInspector.ToolbarButton(WebInspector.UIString("Emulate push event"), "notification-toolbar-item", WebInspector.UIString("Push"));
+    this._pushButton.addEventListener("click", this._pushButtonClicked.bind(this));
+    toolbar.appendToolbarItem(this._pushButton);
+    toolbar.appendSpacer();
+    this._deleteButton = new WebInspector.ToolbarButton(WebInspector.UIString("Delete"), "garbage-collect-toolbar-item", WebInspector.UIString("Delete"));
+    this._deleteButton.addEventListener("click", this._deleteButtonClicked.bind(this));
+    toolbar.appendToolbarItem(this._deleteButton);
+
     this._childrenListNode = this._element.createChild("div", "service-workers-registration-content");
 
     /**
@@ -317,8 +323,8 @@ WebInspector.SWRegistrationElement.prototype = {
     {
         this._registration = registration;
         this._titleNode.setTextAndTitle(WebInspector.UIString(registration.isDeleted ? "Scope: %s - deleted" : "Scope: %s", registration.scopeURL.asParsedURL().path));
-        this._updateButton.disabled = !!registration.isDeleted;
-        this._deleteButton.disabled = !!registration.isDeleted;
+        this._updateButton.setEnabled(!registration.isDeleted);
+        this._deleteButton.setEnabled(!registration.isDeleted);
 
         var lastFocusedVersionId = undefined;
         if (this._categorizedVersions[this._selectedMode].length)
@@ -344,7 +350,7 @@ WebInspector.SWRegistrationElement.prototype = {
                 }
             }
         }
-        this._pushButton.disabled = !this._categorizedVersions[WebInspector.ServiceWorkerVersion.Modes.Active].length || !!this._registration.isDeleted;
+        this._pushButton.setEnabled(!!this._categorizedVersions[WebInspector.ServiceWorkerVersion.Modes.Active].length && !this._registration.isDeleted);
 
         this._updateVersionList();
     },
@@ -428,7 +434,7 @@ WebInspector.SWRegistrationElement.prototype = {
     },
 
     /**
-     * @param {!Event} event
+     * @param {!WebInspector.Event} event
      */
     _deleteButtonClicked: function(event)
     {
@@ -436,7 +442,7 @@ WebInspector.SWRegistrationElement.prototype = {
     },
 
     /**
-     * @param {!Event} event
+     * @param {!WebInspector.Event} event
      */
     _updateButtonClicked: function(event)
     {
@@ -444,7 +450,7 @@ WebInspector.SWRegistrationElement.prototype = {
     },
 
     /**
-     * @param {!Event} event
+     * @param {!WebInspector.Event} event
      */
     _pushButtonClicked: function(event)
     {
@@ -516,13 +522,15 @@ WebInspector.SWVersionElement.prototype = {
             var runningStatusLeftCell = runningStatusCell.createChild("div", "service-workers-versions-table-running-status-left-cell");
             var runningStatusRightCell = runningStatusCell.createChild("div", "service-workers-versions-table-running-status-right-cell");
             if (version.isRunning() || version.isStarting()) {
-                var stopButton = runningStatusLeftCell.createChild("button", "service-workers-button service-workers-stop-button");
-                stopButton.addEventListener("click", this._stopButtonClicked.bind(this, version.id), false);
-                stopButton.title = WebInspector.UIString("Stop");
+                var toolbar = new WebInspector.Toolbar("", runningStatusLeftCell);
+                var stopButton = new WebInspector.ToolbarButton(WebInspector.UIString("Stop"), "stop-toolbar-item");
+                stopButton.addEventListener("click", this._stopButtonClicked.bind(this, version.id));
+                toolbar.appendToolbarItem(stopButton);
             } else if (version.isStartable()) {
-                var startButton = runningStatusLeftCell.createChild("button", "service-workers-button service-workers-start-button");
-                startButton.addEventListener("click", this._startButtonClicked.bind(this), false);
-                startButton.title = WebInspector.UIString("Start");
+                var toolbar = new WebInspector.Toolbar("", runningStatusLeftCell);
+                var startButton = new WebInspector.ToolbarButton(WebInspector.UIString("Start"), "play-toolbar-item");
+                startButton.addEventListener("click", this._startButtonClicked.bind(this));
+                toolbar.appendToolbarItem(startButton);
             }
             runningStatusRightCell.setTextAndTitle(version.runningStatus);
             if (version.isRunning() || version.isStarting()) {
@@ -627,7 +635,7 @@ WebInspector.SWVersionElement.prototype = {
     },
 
     /**
-     * @param {!Event} event
+     * @param {!WebInspector.Event} event
      */
     _startButtonClicked: function(event)
     {
@@ -636,7 +644,7 @@ WebInspector.SWVersionElement.prototype = {
 
     /**
      * @param {string} versionId
-     * @param {!Event} event
+     * @param {!WebInspector.Event} event
      */
     _stopButtonClicked: function(versionId, event)
     {

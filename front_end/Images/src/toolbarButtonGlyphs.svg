@@ -21,13 +21,13 @@
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><sodipodi:namedview
      showgrid="true"
      id="namedview3397"
-     inkscape:zoom="9.4896946"
+     inkscape:zoom="4.7448473"
      inkscape:cx="52.098429"
      inkscape:cy="52.790212"
-     inkscape:window-width="2560"
-     inkscape:window-height="1547"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-width="2495"
+     inkscape:window-height="1576"
+     inkscape:window-x="65"
+     inkscape:window-y="24"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg3395"
      inkscape:snap-global="false"
@@ -1059,4 +1059,7 @@
          inkscape:connector-curvature="0"
          d="m 8,13 c 2.761424,0 5,-2.238576 5,-5 C 13,5.2385763 10.761424,3 8,3 5.2385763,3 3,5.2385763 3,8 c 0,2.761424 2.2385763,5 5,5 z M 8,11 8,9 5,9 5,7 8,7 8,5 11,8 8,11 z"
          id="forward-right"
-         sketch:type="MSShapeGroup" /></g></g></svg>
+         sketch:type="MSShapeGroup" /></g></g><path
+     inkscape:connector-curvature="0"
+     d="m 47.558737,139.53673 c 0.881189,0 1.594914,-0.65825 1.594914,-1.47095 h -3.189829 c 0,0.8127 0.713724,1.47095 1.594915,1.47095 z m 5.183471,-4.41282 v -4.04509 c 0,-2.26158 -1.702572,-4.14806 -3.987286,-4.64817 v -0.50012 c 0,-0.61044 -0.534296,-1.10321 -1.196185,-1.10321 -0.66189,0 -1.196186,0.49277 -1.196186,1.10321 v 0.50012 c -2.284715,0.50011 -3.987286,2.38659 -3.987286,4.64817 v 4.04509 l -1.594914,1.47093 v 0.73547 h 13.55677 v -0.73547 l -1.594913,-1.47093 z"
+     id="path4-4" /></svg>

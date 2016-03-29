@@ -49,13 +49,19 @@ WebInspector.HAREntry.prototype = {
      */
     build: function()
     {
+        var ipAddress = this._request.remoteAddress();
+        var portPositionInString = ipAddress.lastIndexOf(":");
+        if (portPositionInString !== -1)
+            ipAddress = ipAddress.substr(0, portPositionInString);
+
         var entry = {
             startedDateTime: WebInspector.HARLog.pseudoWallTime(this._request, this._request.startTime),
             time: this._request.timing ? WebInspector.HAREntry._toMilliseconds(this._request.duration) : 0,
             request: this._buildRequest(),
             response: this._buildResponse(),
             cache: { }, // Not supported yet.
-            timings: this._buildTimings()
+            timings: this._buildTimings(),
+            serverIPAddress: ipAddress
         };
 
         if (this._request.connectionId !== "0")

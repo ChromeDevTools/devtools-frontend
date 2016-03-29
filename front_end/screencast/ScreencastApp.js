@@ -90,12 +90,6 @@ WebInspector.ScreencastApp.prototype = {
             this._rootSplitWidget.showBoth();
         else
             this._rootSplitWidget.hideMain();
-    },
-
-    _requestAppBanner: function()
-    {
-        if (this._target && this._target.pageAgent())
-            this._target.pageAgent().requestAppBanner();
     }
 };
 
@@ -131,33 +125,6 @@ WebInspector.ScreencastApp.ToolbarButtonProvider.prototype = {
         return WebInspector.ScreencastApp._instance()._toggleButton;
     }
 }
-
-
-/**
- * @constructor
- * @implements {WebInspector.ActionDelegate}
- */
-WebInspector.ScreencastApp.ActionDelegate = function()
-{
-};
-
-WebInspector.ScreencastApp.ActionDelegate.prototype = {
-    /**
-     * @override
-     * @param {!WebInspector.Context} context
-     * @param {string} actionId
-     * @return {boolean}
-     */
-    handleAction: function(context, actionId)
-    {
-        if (actionId === "screencast.request-app-banner") {
-            WebInspector.ScreencastApp._instance()._requestAppBanner()
-            return true;
-        }
-        return false;
-    }
-};
-
 
 /**
  * @constructor

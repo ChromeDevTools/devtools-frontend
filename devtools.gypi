@@ -105,6 +105,7 @@
             'front_end/components/ObjectPopoverHelper.js',
             'front_end/components/ObjectPropertiesSection.js',
             'front_end/components/RemoteObjectPreviewFormatter.js',
+            'front_end/components/RequestAppBannerActionDelegate.js',
             'front_end/components/ShortcutsScreen.js',
             'front_end/components/EventListenersUtils.js',
             'front_end/components/EventListenersView.js',

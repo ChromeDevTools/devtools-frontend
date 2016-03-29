@@ -46,6 +46,12 @@
             "settings": [
                 "customNetworkConditions"
             ]
+        },
+        {
+            "type": "@WebInspector.ActionDelegate",
+            "actionId": "components.request-app-banner",
+            "className": "WebInspector.RequestAppBannerActionDelegate",
+            "title": "Trigger add to homescreen"
         }
     ],
     "dependencies": [
@@ -68,6 +74,7 @@
         "ObjectPopoverHelper.js",
         "ObjectPropertiesSection.js",
         "RemoteObjectPreviewFormatter.js",
+        "RequestAppBannerActionDelegate.js",
         "ShortcutsScreen.js",
         "EventListenersUtils.js",
         "EventListenersView.js",

@@ -89,17 +89,10 @@
             "tags": "geolocation, accelerometer, device orientation"
         },
         {
-            "type": "@WebInspector.ActionDelegate",
-            "actionId": "emulation.request-app-banner",
-            "className": "WebInspector.DeviceModeWrapper.ActionDelegate",
-            "title": "Request app banner\u2026"
-        },
-        {
             "type": "context-menu-item",
             "location": "deviceModeMenu/tools",
-            "experiment": "appBanner",
             "order": 10,
-            "actionId": "emulation.request-app-banner"
+            "actionId": "components.request-app-banner"
         }
     ],
     "dependencies": [

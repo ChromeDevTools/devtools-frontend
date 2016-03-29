@@ -80,12 +80,6 @@ WebInspector.DeviceModeWrapper.ActionDelegate.prototype = {
                 WebInspector.DeviceModeView._wrapperInstance._toggleDeviceMode();
                 return true;
             }
-            if (actionId === "emulation.request-app-banner") {
-                var target = WebInspector.targetManager.mainTarget();
-                if (target && target.isPage())
-                    target.pageAgent().requestAppBanner();
-                return true;
-            }
         }
         return false;
     }

@@ -190,7 +190,7 @@ WebInspector.resourceTypes = {
     Other: new WebInspector.ResourceType("other", "Other", WebInspector.resourceCategories.Other, false),
     SourceMapScript: new WebInspector.ResourceType("sm-script", "Script", WebInspector.resourceCategories.Script, false),
     SourceMapStyleSheet: new WebInspector.ResourceType("sm-stylesheet", "Stylesheet", WebInspector.resourceCategories.Stylesheet, false),
-    Manifest: new WebInspector.ResourceType("manifest", "Manifest", WebInspector.resourceCategories.Manifest, false),
+    Manifest: new WebInspector.ResourceType("manifest", "Manifest", WebInspector.resourceCategories.Manifest, true),
 }
 
 /**

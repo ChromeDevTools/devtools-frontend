@@ -26,6 +26,18 @@
             ]
         },
         {
+            "type": "@WebInspector.ActionDelegate",
+            "actionId": "emulation.capture-screenshot",
+            "className": "WebInspector.DeviceModeWrapper.ActionDelegate",
+            "title": "Capture screenshot"
+        },
+        {
+            "type": "context-menu-item",
+            "location": "deviceModeMenu/tools",
+            "order": 12,
+            "actionId": "emulation.capture-screenshot"
+        },
+        {
             "type": "@WebInspector.ToolbarItem.Provider",
             "actionId": "emulation.toggle-device-mode",
             "condition": "can_dock",

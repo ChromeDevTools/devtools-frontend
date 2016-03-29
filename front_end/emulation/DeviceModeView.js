@@ -351,6 +351,51 @@ WebInspector.DeviceModeView.prototype = {
         this._model.emulate(WebInspector.DeviceModeModel.Type.None, null, null);
     },
 
+    captureScreenshot: function()
+    {
+        var mainTarget = WebInspector.targetManager.mainTarget();
+        if (!mainTarget)
+            return;
+        mainTarget.pageAgent().captureScreenshot(screenshotCaptured.bind(this));
+
+        /**
+         * @param {?Protocol.Error} error
+         * @param {string} content
+         * @this {WebInspector.DeviceModeView}
+         */
+        function screenshotCaptured(error, content)
+        {
+            if (error)
+                return;
+
+            // Create a canvas to splice the images together.
+            var canvas = createElement("canvas");
+            var ctx = canvas.getContext("2d");
+            var screenRect = this._model.screenRect();
+            canvas.width = screenRect.width;
+            canvas.height = screenRect.height;
+            // Add any available screen images.
+            if (this._model.screenImage()) {
+                var screenImage = new Image();
+                screenImage.srcset = this._model.screenImage();
+                ctx.drawImage(screenImage, 0, 0, screenRect.width, screenRect.height);
+            }
+            var pageImage = new Image();
+            pageImage.src = "data:image/png;base64," + content;
+            var visiblePageRect = this._model.visiblePageRect();
+            ctx.drawImage(pageImage, visiblePageRect.left, visiblePageRect.top, visiblePageRect.width, visiblePageRect.height);
+            var mainFrame = mainTarget.resourceTreeModel.mainFrame;
+            var fileName = mainFrame ? mainFrame.url.trimURL().removeURLFragment() : "";
+            if (this._model.type() === WebInspector.DeviceModeModel.Type.Device)
+                fileName += WebInspector.UIString("(%s)", this._model.device().title);
+            // Trigger download.
+            var link = createElement("a");
+            link.download = fileName + ".png";
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        }
+    },
+
     __proto__: WebInspector.VBox.prototype
 }
 

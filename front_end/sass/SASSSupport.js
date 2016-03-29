@@ -168,7 +168,9 @@ WebInspector.SASSSupport._innerParseSCSS = function(document, tokenizerFactory)
             }
             break;
         case States.PropertyName:
-            if (tokenValue === ":" && tokenType === UndefTokenType) {
+            if (tokenValue === "{" && tokenType === UndefTokenType) {
+                state = States.Initial;
+            } else if (tokenValue === ":" && tokenType === UndefTokenType) {
                 state = States.PropertyValue;
                 propertyName.range.endLine = startLine;
                 propertyName.range.endColumn = startColumn;
@@ -178,7 +180,9 @@ WebInspector.SASSSupport._innerParseSCSS = function(document, tokenizerFactory)
             }
             break;
         case States.PropertyValue:
-            if ((tokenValue === "}" || tokenValue === ";") && tokenType === UndefTokenType) {
+            if (tokenValue === "{" && tokenType === UndefTokenType) {
+                state = States.Initial;
+            } else if ((tokenValue === "}" || tokenValue === ";") && tokenType === UndefTokenType) {
                 propertyValue.range.endLine = startLine;
                 propertyValue.range.endColumn = startColumn;
                 var property = new WebInspector.SASSSupport.Property(document, propertyName, propertyValue, propertyName.range.clone(), false);

@@ -966,11 +966,16 @@ WebInspector.NetworkLogView.prototype = {
             var node = this._nodesByRequestId.get(requestId);
             if (!node)
                 continue;
-            if (!node[WebInspector.NetworkLogView._isFilteredOutSymbol])
-                rootNode.removeChild(node);
-            node[WebInspector.NetworkLogView._isFilteredOutSymbol] = !this._applyFilter(node);
-            if (!node[WebInspector.NetworkLogView._isFilteredOutSymbol])
-                nodesToInsert.push(node);
+            var isFilteredOut = !this._applyFilter(node);
+            if (node[WebInspector.NetworkLogView._isFilteredOutSymbol] !== isFilteredOut) {
+                if (!node[WebInspector.NetworkLogView._isFilteredOutSymbol])
+                    rootNode.removeChild(node);
+
+                node[WebInspector.NetworkLogView._isFilteredOutSymbol] = isFilteredOut;
+
+                if (!node[WebInspector.NetworkLogView._isFilteredOutSymbol])
+                    nodesToInsert.push(node);
+            }
             var request = node.request();
             this._timeCalculator.updateBoundaries(request);
             this._durationCalculator.updateBoundaries(request);

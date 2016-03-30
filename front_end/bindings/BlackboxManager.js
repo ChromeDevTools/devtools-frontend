@@ -117,6 +117,7 @@ WebInspector.BlackboxManager.prototype = {
         if (!mappings.length) {
             if (previousScriptState.length > 0)
                 return this._setScriptState(script, []);
+            return Promise.resolve();
         }
 
         var currentBlackboxed = false;

@@ -59,10 +59,8 @@
         },
         {
             "type": "@WebInspector.ActionDelegate",
-            "category": "Navigation",
             "actionId": "main.debug-reload",
             "className": "WebInspector.Main.ReloadActionDelegate",
-            "title": "Clear cache & hard reload page",
             "bindings": [
                 {
                     "shortcut": "Alt+R"

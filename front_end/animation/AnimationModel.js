@@ -771,7 +771,12 @@ WebInspector.AnimationModel.AnimationGroup.prototype = {
             return !error ? currentTime : 0;
         }
 
-        return this.target().animationAgent().getCurrentTime(this._animations[0].id(), callback).catchException(0);
+        var longestAnim = null;
+        for (var anim of this._animations) {
+            if (!longestAnim || anim.endTime() > longestAnim.endTime())
+                longestAnim = anim;
+        }
+        return this.target().animationAgent().getCurrentTime(longestAnim.id(), callback).catchException(0);
     },
 
     /**

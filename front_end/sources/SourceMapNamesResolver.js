@@ -38,12 +38,12 @@ WebInspector.SourceMapNamesResolver._resolveScope = function(scope)
 
     /**
      * @param {?string} content
-     * @return {!Map<string, string>}
+     * @return {!Promise<!Map<string, string>>}
      */
     function onContent(content)
     {
         if (!content)
-            return new Map();
+            return Promise.resolve(new Map());
 
         var startLocation = scope.startLocation();
         var endLocation = scope.endLocation();
@@ -53,56 +53,26 @@ WebInspector.SourceMapNamesResolver._resolveScope = function(scope)
         var scopeText = text.extract(textRange);
         var scopeStart = text.toSourceRange(textRange).offset;
         var prefix = "function fui";
-        var root = acorn.parse(prefix + scopeText, {});
-        /** @type {!Array<!ESTree.Node>} */
-        var identifiers = [];
-        var functionDeclarationCounter = 0;
-        var walker = new WebInspector.ESTreeWalker(beforeVisit, afterVisit);
 
-        /**
-         * @param {!ESTree.Node} node
-         * @return {boolean}
-         */
-        function isFunction(node)
-        {
-            return node.type === "FunctionDeclaration" || node.type === "FunctionExpression";
-        }
+        return WebInspector.SourceMapNamesResolverWorker._instance().javaScriptIdentifiers(prefix + scopeText)
+            .then(onIdentifiers.bind(null, text, scopeStart, prefix));
+    }
 
-        /**
-         * @param {!ESTree.Node} node
-         */
-        function beforeVisit(node)
-        {
-            if (isFunction(node))
-                functionDeclarationCounter++;
-
-            if (functionDeclarationCounter > 1)
-                return;
-
-            if (isFunction(node) && node.params)
-                identifiers.pushAll(node.params);
-
-            if (node.type === "VariableDeclarator")
-                identifiers.push(/** @type {!ESTree.Node} */(node.id));
-        }
-
-        /**
-         * @param {!ESTree.Node} node
-         */
-        function afterVisit(node)
-        {
-            if (isFunction(node))
-                functionDeclarationCounter--;
-        }
-
-        walker.walk(root);
-
+    /**
+     * @param {!WebInspector.Text} text
+     * @param {number} scopeStart
+     * @param {string} prefix
+     * @param {!Array<!{name: string, offset: number}>} identifiers
+     * @return {!Map<string, string>}
+     */
+    function onIdentifiers(text, scopeStart, prefix, identifiers)
+    {
         var namesMapping = new Map();
-        var lineEndings = content.computeLineEndings();
+        var lineEndings = text.lineEndings();
 
         for (var i = 0; i < identifiers.length; ++i) {
             var id = identifiers[i];
-            var start = scopeStart + id.start - prefix.length;
+            var start = scopeStart + id.offset - prefix.length;
 
             var lineNumber = lineEndings.lowerBound(start);
             var columnNumber = start - (lineNumber === 0 ? 0 : (lineEndings[lineNumber - 1] + 1));
@@ -113,9 +83,12 @@ WebInspector.SourceMapNamesResolver._resolveScope = function(scope)
 
         scope[WebInspector.SourceMapNamesResolver._cachedMapSymbol] = namesMapping;
         delete scope[WebInspector.SourceMapNamesResolver._cachedPromiseSymbol];
+        WebInspector.SourceMapNamesResolver._scopeResolvedForTest();
         return namesMapping;
     }
 }
+
+WebInspector.SourceMapNamesResolver._scopeResolvedForTest = function() { }
 
 /**
  * @param {!WebInspector.DebuggerModel.CallFrame} callFrame
@@ -206,53 +179,19 @@ WebInspector.SourceMapNamesResolver._resolveExpression = function(callFrame, uiS
 
     /**
      * @param {?string} content
-     * @return {string}
+     * @return {!Promise<string>}
      */
     function onContent(content)
     {
         if (!content)
-            return "";
+            return Promise.resolve("");
 
         var text = new WebInspector.Text(content);
         var textRange = sourceMap.reverseMapTextRange(uiSourceCode.url(), new WebInspector.TextRange(lineNumber, startColumnNumber, lineNumber, endColumnNumber));
         var originalText = text.extract(textRange);
         if (!originalText)
-            return "";
-
-        var tokenizer = acorn.tokenizer(originalText, {ecmaVersion: 6});
-        try {
-            var token = tokenizer.getToken();
-            while (token.type !== acorn.tokTypes.eof && WebInspector.AcornTokenizer.punctuator(token))
-                token = tokenizer.getToken();
-
-            var startIndex = token.start;
-            var endIndex = token.end;
-            var openBracketsCounter = 0;
-            while (token.type !== acorn.tokTypes.eof) {
-                var isIdentifier = WebInspector.AcornTokenizer.identifier(token);
-                var isThis = WebInspector.AcornTokenizer.keyword(token, "this");
-                var isString = token.type === acorn.tokTypes.string;
-                if (!isThis && !isIdentifier && !isString)
-                    break;
-
-                endIndex = token.end;
-                token = tokenizer.getToken();
-                while (WebInspector.AcornTokenizer.punctuator(token, ".[]")) {
-                    if (WebInspector.AcornTokenizer.punctuator(token, "["))
-                        openBracketsCounter++;
-
-                    if (WebInspector.AcornTokenizer.punctuator(token, "]")) {
-                        endIndex = openBracketsCounter > 0 ? token.end : endIndex;
-                        openBracketsCounter--;
-                    }
-
-                    token = tokenizer.getToken();
-                }
-            }
-            return originalText.substring(startIndex, endIndex);
-        } catch (e) {
-            return "";
-        }
+            return Promise.resolve("");
+        return WebInspector.SourceMapNamesResolverWorker._instance().evaluatableJavaScriptSubstring(originalText);
     }
 }
 
@@ -518,4 +457,100 @@ WebInspector.SourceMapNamesResolver.RemoteObject.prototype = {
     },
 
     __proto__: WebInspector.RemoteObject.prototype
+}
+
+/**
+ * @constructor
+ */
+WebInspector.SourceMapNamesResolverWorker = function()
+{
+    this._worker = new WorkerRuntime.Worker("formatter_worker");
+    this._worker.onmessage = this._onMessage.bind(this);
+    this._methodNames = [];
+    this._contents = [];
+    this._callbacks = [];
+}
+
+WebInspector.SourceMapNamesResolverWorker.prototype = {
+    /**
+     * @param {string} text
+     * @return {!Promise<string>}
+     */
+    evaluatableJavaScriptSubstring: function(text)
+    {
+        var callback;
+        var promise = new Promise(fulfill => callback = fulfill);
+        this._methodNames.push("evaluatableJavaScriptSubstring");
+        this._contents.push(text);
+        this._callbacks.push(this._evaluatableJavaScriptSubstringCallback.bind(this, callback));
+        this._maybeRunTask();
+        return promise;
+    },
+
+    /**
+     * @param {function(string)} callback
+     * @param {!MessageEvent} event
+     */
+    _evaluatableJavaScriptSubstringCallback: function(callback, event)
+    {
+        callback.call(null, /** @type {string} */(event.data));
+    },
+
+    /**
+     * @param {string} text
+     * @return {!Promise<!Array<!{name: string, offset: number}>>}
+     */
+    javaScriptIdentifiers: function(text)
+    {
+        var callback;
+        var promise = new Promise(fulfill => callback = fulfill);
+        this._methodNames.push("javaScriptIdentifiers");
+        this._contents.push(text);
+        this._callbacks.push(this._javaScriptIdentifiersCallback.bind(this, callback));
+        this._maybeRunTask();
+        return promise;
+    },
+
+    /**
+     * @param {function(!Array<!{name: string, offset: number}>)} callback
+     * @param {!MessageEvent} event
+     */
+    _javaScriptIdentifiersCallback: function(callback, event)
+    {
+        callback.call(null, /** @type {!Array<!{name: string, offset: number}>} */(event.data));
+    },
+
+    /**
+     * @param {!MessageEvent} event
+     */
+    _onMessage: function(event)
+    {
+        var callback = this._callbacks[0];
+        this._methodNames.shift();
+        this._contents.shift();
+        this._callbacks.shift();
+        callback.call(null, event);
+        this._runningTask = false;
+        this._maybeRunTask();
+    },
+
+    _maybeRunTask: function()
+    {
+        if (this._runningTask || !this._methodNames.length)
+            return;
+        this._runningTask = true;
+        var methodName = this._methodNames[0];
+        var content = this._contents[0];
+        this._worker.postMessage({ method: methodName, params: { content: content } });
+    }
+}
+
+/**
+ * @return {!WebInspector.SourceMapNamesResolverWorker}
+ */
+WebInspector.SourceMapNamesResolverWorker._instance = function()
+{
+    if (!WebInspector.SourceMapNamesResolverWorker._instanceObject)
+        WebInspector.SourceMapNamesResolverWorker._instanceObject = new WebInspector.SourceMapNamesResolverWorker();
+    return WebInspector.SourceMapNamesResolverWorker._instanceObject;
 }

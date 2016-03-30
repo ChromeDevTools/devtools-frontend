@@ -72,10 +72,111 @@ self.onmessage = function(event) {
     case "javaScriptOutline":
         WebInspector.javaScriptOutline(params.content);
         break;
+    case "javaScriptIdentifiers":
+        WebInspector.javaScriptIdentifiers(params.content);
+        break;
+    case "evaluatableJavaScriptSubstring":
+        WebInspector.evaluatableJavaScriptSubstring(params.content);
+        break;
     default:
         console.error("Unsupport method name: " + method);
     }
 };
+
+/**
+ * @param {string} content
+ */
+WebInspector.evaluatableJavaScriptSubstring = function(content)
+{
+    var tokenizer = acorn.tokenizer(content, {ecmaVersion: 6});
+    var result = "";
+    try {
+        var token = tokenizer.getToken();
+        while (token.type !== acorn.tokTypes.eof && WebInspector.AcornTokenizer.punctuator(token))
+            token = tokenizer.getToken();
+
+        var startIndex = token.start;
+        var endIndex = token.end;
+        var openBracketsCounter = 0;
+        while (token.type !== acorn.tokTypes.eof) {
+            var isIdentifier = WebInspector.AcornTokenizer.identifier(token);
+            var isThis = WebInspector.AcornTokenizer.keyword(token, "this");
+            var isString = token.type === acorn.tokTypes.string;
+            if (!isThis && !isIdentifier && !isString)
+                break;
+
+            endIndex = token.end;
+            token = tokenizer.getToken();
+            while (WebInspector.AcornTokenizer.punctuator(token, ".[]")) {
+                if (WebInspector.AcornTokenizer.punctuator(token, "["))
+                    openBracketsCounter++;
+
+                if (WebInspector.AcornTokenizer.punctuator(token, "]")) {
+                    endIndex = openBracketsCounter > 0 ? token.end : endIndex;
+                    openBracketsCounter--;
+                }
+
+                token = tokenizer.getToken();
+            }
+        }
+        result = content.substring(startIndex, endIndex);
+    } catch (e) {
+        console.error(e);
+    }
+    postMessage(result);
+}
+
+/**
+ * @param {string} content
+ */
+WebInspector.javaScriptIdentifiers = function(content)
+{
+    var root = acorn.parse(content, {});
+    /** @type {!Array<!ESTree.Node>} */
+    var identifiers = [];
+    var functionDeclarationCounter = 0;
+    var walker = new WebInspector.ESTreeWalker(beforeVisit, afterVisit);
+
+    /**
+     * @param {!ESTree.Node} node
+     * @return {boolean}
+     */
+    function isFunction(node)
+    {
+        return node.type === "FunctionDeclaration" || node.type === "FunctionExpression";
+    }
+
+    /**
+     * @param {!ESTree.Node} node
+     */
+    function beforeVisit(node)
+    {
+        if (isFunction(node))
+            functionDeclarationCounter++;
+
+        if (functionDeclarationCounter > 1)
+            return;
+
+        if (isFunction(node) && node.params)
+            identifiers.pushAll(node.params);
+
+        if (node.type === "VariableDeclarator")
+            identifiers.push(/** @type {!ESTree.Node} */(node.id));
+    }
+
+    /**
+     * @param {!ESTree.Node} node
+     */
+    function afterVisit(node)
+    {
+        if (isFunction(node))
+            functionDeclarationCounter--;
+    }
+
+    walker.walk(root);
+    var reduced = identifiers.map(id => ({name: id.name, offset: id.start}));
+    postMessage(reduced);
+}
 
 /**
  * @param {string} mimeType

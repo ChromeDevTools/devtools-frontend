@@ -343,7 +343,6 @@
         }
     ],
     "dependencies": [
-        "es_tree",
         "components",
         "source_frame",
         "snippets",

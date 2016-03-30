@@ -377,6 +377,7 @@ WebInspector.DeviceModeView.prototype = {
             // Add any available screen images.
             if (this._model.screenImage()) {
                 var screenImage = new Image();
+                screenImage.crossOrigin = "Anonymous";
                 screenImage.srcset = this._model.screenImage();
                 ctx.drawImage(screenImage, 0, 0, screenRect.width, screenRect.height);
             }

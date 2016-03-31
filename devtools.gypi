@@ -658,7 +658,6 @@
             'front_end/sources/ScopeChainSidebarPane.js',
             'front_end/sources/ScriptFormatter.js',
             'front_end/sources/ScriptFormatterEditorAction.js',
-            'front_end/sources/ServiceWorkersSidebarPane.js',
             'front_end/sources/SimpleHistoryManager.js',
             'front_end/sources/SourceMapNamesResolver.js',
             'front_end/sources/SourcesNavigator.js',

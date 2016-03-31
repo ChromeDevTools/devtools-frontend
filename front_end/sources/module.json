@@ -368,7 +368,6 @@
         "NavigatorView.js",
         "RevisionHistoryView.js",
         "ScopeChainSidebarPane.js",
-        "ServiceWorkersSidebarPane.js",
         "SourcesNavigator.js",
         "StyleSheetOutlineDialog.js",
         "TabbedEditorContainer.js",

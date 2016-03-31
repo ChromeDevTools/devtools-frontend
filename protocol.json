@@ -4200,8 +4200,7 @@
                 "properties": [
                     { "name": "registrationId", "type": "string" },
                     { "name": "scopeURL", "type": "string" },
-                    { "name": "isDeleted", "type": "boolean" },
-                    { "name": "forceUpdateOnPageLoad", "type": "boolean", "optional": true }
+                    { "name": "isDeleted", "type": "boolean" }
                 ]
             },
             {
@@ -4317,16 +4316,8 @@
                 "handlers": ["browser"]
             },
             {
-                "name": "setDebugOnStart",
-                "parameters": [
-                    { "name": "debugOnStart", "type": "boolean" }
-                ],
-                "handlers": ["browser"]
-            },
-            {
                 "name": "setForceUpdateOnPageLoad",
                 "parameters": [
-                    { "name": "registrationId", "type": "string" },
                     { "name": "forceUpdateOnPageLoad", "type": "boolean" }
                 ],
                 "handlers": ["browser"]
@@ -4401,13 +4392,6 @@
                 "name": "workerErrorReported",
                 "parameters": [
                     { "name": "errorMessage", "$ref": "ServiceWorkerErrorMessage" }
-                ],
-                "handlers": ["browser"]
-            },
-            {
-                "name": "debugOnStartUpdated",
-                "parameters": [
-                    { "name": "debugOnStart", "type": "boolean" }
                 ],
                 "handlers": ["browser"]
             }

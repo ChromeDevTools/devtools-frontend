@@ -4,19 +4,14 @@
  * found in the LICENSE file.
  */
 
-.service-workers-settings {
-    border-bottom: 1px solid #e1e1e1;
-    min-height: 26px;
-    overflow: hidden;
-    padding: 5px;
-    white-space: nowrap;
-    flex: none;
+.service-workers-view > .toolbar {
+    border-bottom: 1px solid #dadada;
 }
 
 .service-workers-root {
+   -webkit-user-select: text;
     margin: 0;
     padding: 5px;
-    -webkit-user-select: text;
     display: flex;
 }
 

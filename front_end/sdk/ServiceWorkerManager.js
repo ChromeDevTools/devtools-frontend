@@ -44,13 +44,16 @@ WebInspector.ServiceWorkerManager = function(target)
     /** @type {!Map.<string, !WebInspector.ServiceWorkerRegistration>} */
     this._registrations = new Map();
     this.enable();
+    this._forceUpdateSetting = WebInspector.settings.createSetting("serviceWorkerUpdateOnReload", false);
+    if (this._forceUpdateSetting.get())
+        this._forceUpdateSettingChanged();
+    this._forceUpdateSetting.addChangeListener(this._forceUpdateSettingChanged, this);
 }
 
 WebInspector.ServiceWorkerManager.Events = {
     WorkersUpdated: "WorkersUpdated",
     RegistrationUpdated: "RegistrationUpdated",
-    RegistrationDeleted: "RegistrationDeleted",
-    DebugOnStartUpdated: "DebugOnStartUpdated"
+    RegistrationDeleted: "RegistrationDeleted"
 }
 
 WebInspector.ServiceWorkerManager.prototype = {
@@ -92,31 +95,6 @@ WebInspector.ServiceWorkerManager.prototype = {
     hasWorkers: function()
     {
         return !!this._workers.size;
-    },
-
-    /**
-     * @return {boolean}
-     */
-    debugOnStart: function()
-    {
-        return !!this._debugOnStart;
-    },
-
-    /**
-     * @param {boolean} flag
-     */
-    setDebugOnStart: function(flag)
-    {
-        this._agent.setDebugOnStart(flag);
-    },
-
-    /**
-     * @param {string} registrationId
-     * @param {boolean} flag
-     */
-    setForceUpdateOnPageLoad: function(registrationId, flag)
-    {
-        this._agent.setForceUpdateOnPageLoad(registrationId, flag);
     },
 
     /**
@@ -346,20 +324,24 @@ WebInspector.ServiceWorkerManager.prototype = {
     },
 
     /**
-     * @param {boolean} flag
-     */
-    _debugOnStartUpdated: function(flag)
-    {
-        this._debugOnStart = flag;
-        this.dispatchEventToListeners(WebInspector.ServiceWorkerManager.Events.DebugOnStartUpdated, flag);
-    },
-
-    /**
      * @param {!WebInspector.Event} event
      */
     _mainFrameNavigated: function(event)
     {
         // Attach to the new worker set.
+    },
+
+    /**
+     * @return {!WebInspector.Setting}
+     */
+    forceUpdateOnReloadSetting: function()
+    {
+        return this._forceUpdateSetting;
+    },
+
+    _forceUpdateSettingChanged: function()
+    {
+        this._agent.setForceUpdateOnPageLoad(this._forceUpdateSetting.get());
     },
 
     __proto__: WebInspector.SDKObject.prototype
@@ -503,15 +485,6 @@ WebInspector.ServiceWorkerDispatcher.prototype = {
     workerErrorReported: function(errorMessage)
     {
         this._manager._workerErrorReported(errorMessage);
-    },
-
-    /**
-     * @override
-     * @param {boolean} flag
-     */
-    debugOnStartUpdated: function(flag)
-    {
-        this._manager._debugOnStartUpdated(flag);
     }
 }
 

@@ -11,12 +11,6 @@
             "type": "@WebInspector.Revealer",
             "contextTypes": ["WebInspector.Resource"],
             "className": "WebInspector.ResourcesPanel.ResourceRevealer"
-        },
-        {
-            "type": "setting",
-            "settingName": "serviceWorkerUpdateOnReload",
-            "settingType": "boolean",
-            "defaultValue": "false"
         }
     ],
     "dependencies": ["source_frame", "ui_lazy", "components_lazy"],

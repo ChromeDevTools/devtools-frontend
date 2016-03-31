@@ -20,13 +20,7 @@ WebInspector.ServiceWorkersView = function()
     /** @type {!Map.<string, !WebInspector.ServiceWorkerOriginWidget>} */
     this._registrationIdToOriginWidgetMap = new Map();
 
-    var settingsDiv = createElementWithClass("div", "service-workers-settings");
-    var debugOnStartCheckboxLabel = createCheckboxLabel(WebInspector.UIString("Open DevTools window and pause JavaScript execution on Service Worker startup for debugging."));
-    this._debugOnStartCheckbox = debugOnStartCheckboxLabel.checkboxElement;
-    this._debugOnStartCheckbox.addEventListener("change", this._debugOnStartCheckboxChanged.bind(this), false)
-    this._debugOnStartCheckbox.disabled = true
-    settingsDiv.appendChild(debugOnStartCheckboxLabel);
-    this.contentElement.appendChild(settingsDiv);
+    this._toolbar = new WebInspector.Toolbar("", this.contentElement);
 
     this._root = this.contentElement.createChild("div");
     this._root.classList.add("service-workers-root");
@@ -46,14 +40,14 @@ WebInspector.ServiceWorkersView.prototype = {
         this._target = target;
         this._manager = this._target.serviceWorkerManager;
 
-        this._debugOnStartCheckbox.disabled = false;
-        this._debugOnStartCheckbox.checked = this._manager.debugOnStart();
+        var forceUpdate = new WebInspector.ToolbarCheckbox(WebInspector.UIString("Update on reload"), WebInspector.UIString("Update Service Worker on page reload"), this._manager.forceUpdateOnReloadSetting());
+        this._toolbar.appendToolbarItem(forceUpdate);
+
         for (var registration of this._manager.registrations().values())
             this._updateRegistration(registration);
 
         this._manager.addEventListener(WebInspector.ServiceWorkerManager.Events.RegistrationUpdated, this._registrationUpdated, this);
         this._manager.addEventListener(WebInspector.ServiceWorkerManager.Events.RegistrationDeleted, this._registrationDeleted, this);
-        this._manager.addEventListener(WebInspector.ServiceWorkerManager.Events.DebugOnStartUpdated, this._debugOnStartUpdated, this);
         this._target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.SecurityOriginAdded, this._securityOriginAdded, this);
         this._target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.SecurityOriginRemoved, this._securityOriginRemoved, this);
         var securityOrigins = this._target.resourceTreeModel.securityOrigins();
@@ -123,15 +117,6 @@ WebInspector.ServiceWorkersView.prototype = {
     /**
      * @param {!WebInspector.Event} event
      */
-    _debugOnStartUpdated: function(event)
-    {
-        var debugOnStart = /** @type {boolean} */ (event.data);
-        this._debugOnStartCheckbox.checked = debugOnStart;
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
     _securityOriginAdded: function(event)
     {
         this._addOrigin(/** @type {string} */ (event.data));
@@ -172,14 +157,6 @@ WebInspector.ServiceWorkersView.prototype = {
         if (!originWidget)
           return;
         originWidget.detach();
-    },
-
-    _debugOnStartCheckboxChanged: function()
-    {
-        if (!this._manager)
-            return;
-        this._manager.setDebugOnStart(this._debugOnStartCheckbox.checked);
-        this._debugOnStartCheckbox.checked = this._manager.debugOnStart();
     },
 
     __proto__: WebInspector.VBox.prototype

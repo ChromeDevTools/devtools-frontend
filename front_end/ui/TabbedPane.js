@@ -84,19 +84,28 @@ WebInspector.TabbedPane.prototype = {
     },
 
     /**
+     * @return {!Array.<string>}
+     */
+    tabIds: function()
+    {
+        return this._tabs.map(tab => tab._id);
+    },
+
+    /**
      * @return {!Array.<!WebInspector.Widget>}
      */
     tabViews: function()
     {
-        /**
-         * @param {!WebInspector.TabbedPaneTab} tab
-         * @return {!WebInspector.Widget}
-         */
-        function tabToView(tab)
-        {
-            return tab.view;
-        }
-        return this._tabs.map(tabToView);
+        return this._tabs.map(tab => tab.view);
+    },
+
+    /**
+     * @param {string} tabId
+     * @return {?WebInspector.Widget}
+     */
+    tabView: function(tabId)
+    {
+        return this._tabsById[tabId] ? this._tabsById[tabId].view : null;
     },
 
     /**
@@ -359,6 +368,16 @@ WebInspector.TabbedPane.prototype = {
         var tab = this._tabsById[id];
         if (tab._setIconType(iconType, iconTooltip))
             this._updateTabElements();
+    },
+
+    /**
+     * @param {string} id
+     * @param {boolean} enabled
+     */
+    setTabEnabled: function(id, enabled)
+    {
+        var tab = this._tabsById[id];
+        tab.tabElement.classList.toggle("disabled", !enabled);
     },
 
     /**

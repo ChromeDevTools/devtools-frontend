@@ -260,6 +260,11 @@
     visibility: visible;
 }
 
+.tabbed-pane-header-tab.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
 .tabbed-pane-header.tabbed-pane-no-header-background {
     background-color: transparent;
 }

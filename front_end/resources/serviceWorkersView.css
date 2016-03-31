@@ -4,27 +4,25 @@
  * found in the LICENSE file.
  */
 
-.service-workers-view {
-    overflow: auto;
-}
-
 .service-workers-settings {
     border-bottom: 1px solid #e1e1e1;
     min-height: 26px;
     overflow: hidden;
     padding: 5px;
     white-space: nowrap;
+    flex: none;
 }
 
 .service-workers-root {
     margin: 0;
     padding: 5px;
     -webkit-user-select: text;
+    display: flex;
 }
 
 .service-workers-root ol {
     list-style-type: none;
-    padding-left: 12px;
+    padding-left: 0;
 }
 
 .service-workers-origin {
@@ -32,27 +30,23 @@
 }
 
 .service-workers-origin-title {
-    font-size: 20px;
+    font-size: 17px;
+    flex: none;
 }
 
 .service-workers-registration {
-    border-right: 1px solid #e1e1e1;
     margin-top: 5px;
     margin-bottom: 10px;
     padding: 0;
-}
-
-.service-workers-registration-header {
-    border-left: 1px solid #e1e1e1;
-    border-top: 1px solid #e1e1e1;
-    display: flex;
-    flex-wrap: wrap;
-    overflow: hidden;
-    position: relative;
-}
-
-.service-workers-registration-header .toolbar {
     flex: auto;
+}
+
+.service-workers-registration .tabbed-pane > .widget {
+    overflow: auto;
+}
+
+.service-workers-registration .toolbar {
+    flex: none;
 }
 
 .service-workers-registration-title {
@@ -61,57 +55,10 @@
     padding: 4px;
 }
 
-.service-workers-registration-content {
-    border: 0;
-    padding: 0;
-}
-
-.service-workers-versions-mode-tab-list {
-    display: flex;
-}
-
-.service-workers-versions-mode-tab {
-    border-bottom: 1px solid #e1e1e1;
-    border-left: 1px solid #e1e1e1;
-    border-top: 1px solid #e1e1e1;
-    display: flex;
-    flex: 1 1 0;
-    flex-wrap: wrap;
-    overflow: hidden;
-    padding: 3px;
-}
-
-.service-workers-versions-mode-tab-disabled {
-    background-color: #eee;
-}
-
-.service-workers-versions-mode-tab-selected {
-    border-bottom: 0;
-}
-
-.service-workers-versions-mode-tab-icon {
-    height: 16px;
-    margin: 1px;
-    -webkit-mask-image: url(Images/serviceWorker.svg);
-    -webkit-mask-size: 16px 16px;
-    width: 16px;
-}
-
-.service-workers-versions-mode-tab-text {
-    margin: 2px;
-}
-
-.service-workers-versions-mode-tab-text-disabled {
-    color: #888;
-}
-
-.service-workers-versions-mode-tab-text-selected {
-    font-weight: bold;
-}
-
 .service-workers-versions-panel {
     border-bottom: 1px solid #e1e1e1;
     border-left: 1px solid #e1e1e1;
+    border-right: 1px solid #e1e1e1;
     display: flex;
 }
 
@@ -150,8 +97,12 @@
 }
 
 .service-workers-versions-table-messages-content {
-    overflow: auto;
     padding: 3px 3px 3px 10px;
+    line-height: 22px;
+    max-height: 150px;
+    border-left: 1px solid #eee;
+    overflow: auto;
+    margin-right: 10px;
 }
 
 .service-workers-versions-table-clients-title {
@@ -188,12 +139,13 @@
     display: flex;
 }
 
-.service-workers-error-message {
-    font-weight: bold;
+.service-workers-error > label {
+    flex: none;
 }
 
 .service-workers-info {
     display: flex;
+    align-items: center;
 }
 
 .service-worker-client-focus {
@@ -201,44 +153,4 @@
    cursor: pointer;
    padding-left: 4px;
    text-decoration: underline;
-}
-
-.service-workers-color-0 {
-    background-color: #003366;
-}
-
-.service-workers-color-1 {
-    background-color: #663300;
-}
-
-.service-workers-color-2 {
-    background-color: #660066;
-}
-
-.service-workers-color-3 {
-    background-color: #003300;
-}
-
-.service-workers-color-4 {
-    background-color: #993333;
-}
-
-.service-workers-color-5 {
-    background-color: #000066;
-}
-
-.service-workers-color-6 {
-    background-color: #006666;
-}
-
-.service-workers-color-7 {
-    background-color: #996600;
-}
-
-.service-workers-color-8 {
-    background-color: #9900CC;
-}
-
-.service-workers-color-9 {
-    background-color: #336600;
 }

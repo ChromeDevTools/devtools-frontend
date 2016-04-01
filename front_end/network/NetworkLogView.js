@@ -961,7 +961,10 @@ WebInspector.NetworkLogView.prototype = {
 
         var dataGrid = this._dataGrid;
         var rootNode = dataGrid.rootNode();
+        /** @type {!Array<!WebInspector.NetworkDataGridNode> } */
         var nodesToInsert = [];
+        /** @type {!Array<!WebInspector.NetworkDataGridNode> } */
+        var nodesToRefresh = [];
         for (var requestId in this._staleRequestIds) {
             var node = this._nodesByRequestId.get(requestId);
             if (!node)
@@ -976,6 +979,8 @@ WebInspector.NetworkLogView.prototype = {
                 if (!node[WebInspector.NetworkLogView._isFilteredOutSymbol])
                     nodesToInsert.push(node);
             }
+            if (!isFilteredOut)
+                nodesToRefresh.push(node);
             var request = node.request();
             this._timeCalculator.updateBoundaries(request);
             this._durationCalculator.updateBoundaries(request);
@@ -985,9 +990,11 @@ WebInspector.NetworkLogView.prototype = {
             var node = nodesToInsert[i];
             var request = node.request();
             dataGrid.insertChild(node);
-            node.refresh();
             node[WebInspector.NetworkLogView._isMatchingSearchQuerySymbol] = this._matchRequest(request);
         }
+
+        for (var node of nodesToRefresh)
+            node.refresh();
 
         this._highlightNthMatchedRequestForSearch(this._updateMatchCountAndFindMatchIndex(this._currentMatchedRequestNode), false);
 

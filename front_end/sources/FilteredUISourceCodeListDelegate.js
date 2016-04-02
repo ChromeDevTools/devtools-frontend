@@ -122,7 +122,7 @@ WebInspector.FilteredUISourceCodeListDelegate.prototype = {
         var fileNameIndex = fullDisplayName.lastIndexOf("/");
 
         titleElement.textContent = uiSourceCode.displayName() + (this._queryLineNumberAndColumnNumber || "");
-        subtitleElement.textContent = fullDisplayName.trimEnd(100);
+        this._renderSubtitleElement(subtitleElement, fullDisplayName);
         subtitleElement.title = fullDisplayName;
         var ranges = [];
         for (var i = 0; i < indexes.length; ++i)
@@ -135,6 +135,23 @@ WebInspector.FilteredUISourceCodeListDelegate.prototype = {
         } else {
             WebInspector.highlightRangesWithStyleClass(subtitleElement, ranges, "highlight");
         }
+    },
+
+    /**
+     * @param {!Element} element
+     * @param {string} text
+     */
+    _renderSubtitleElement: function(element, text)
+    {
+        element.removeChildren();
+        var splitPosition = text.lastIndexOf("/");
+        if (text.length > 55)
+            splitPosition = text.length - 55;
+        var first = element.createChild("div", "first-part");
+        first.textContent = text.substring(0, splitPosition);
+        var second = element.createChild("div", "second-part");
+        second.textContent = text.substring(splitPosition);
+        element.title = text;
     },
 
     /**

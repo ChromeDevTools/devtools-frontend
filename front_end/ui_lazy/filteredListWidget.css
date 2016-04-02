@@ -61,6 +61,13 @@
     overflow: hidden;
     text-overflow: ellipsis;
     color: rgb(155, 155, 155);
+    display: flex;
+}
+
+.filtered-list-widget-item .filtered-list-widget-subtitle .first-part {
+    flex-shrink: 1000;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .filtered-list-widget-item.one-row {

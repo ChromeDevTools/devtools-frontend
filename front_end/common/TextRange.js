@@ -187,6 +187,20 @@ WebInspector.TextRange.prototype = {
     },
 
     /**
+     * @param {number} lineNumber
+     * @param {number} columnNumber
+     * @return {number}
+     */
+    compareToPosition: function(lineNumber, columnNumber)
+    {
+        if (lineNumber < this.startLine || (lineNumber === this.startLine && columnNumber < this.startColumn))
+            return -1;
+        if (lineNumber > this.endLine || (lineNumber === this.endLine && columnNumber > this.endColumn))
+            return 1;
+        return 0;
+    },
+
+    /**
      * @param {!WebInspector.TextRange} other
      * @return {boolean}
      */

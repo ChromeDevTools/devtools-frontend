@@ -662,19 +662,51 @@ WebInspector.SASSSupport.AST.prototype = {
      */
     findNodeForPosition: function(lineNumber, columnNumber)
     {
-        var result = null;
-        this.visit(onNode);
-        return result;
+        this._ensureNodePositionsIndex();
+        var index = this._sortedTextNodes.lowerBound({lineNumber: lineNumber, columnNumber: columnNumber}, nodeComparator);
+        var node = this._sortedTextNodes[index];
+        if (!node)
+            return null;
+        return node.range.containsLocation(lineNumber, columnNumber) ? node : null;
+
+        /**
+         * @param {!{lineNumber: number, columnNumber: number}} position
+         * @param {!WebInspector.SASSSupport.TextNode} textNode
+         * @return {number}
+         */
+        function nodeComparator(position, textNode)
+        {
+            return textNode.range.compareToPosition(position.lineNumber, position.columnNumber);
+        }
+    },
+
+    _ensureNodePositionsIndex: function()
+    {
+        if (this._sortedTextNodes)
+            return;
+        this._sortedTextNodes = [];
+        this.visit(onNode.bind(this));
+        this._sortedTextNodes.sort(nodeComparator);
 
         /**
          * @param {!WebInspector.SASSSupport.Node} node
+         * @this {WebInspector.SASSSupport.AST}
          */
         function onNode(node)
         {
             if (!(node instanceof WebInspector.SASSSupport.TextNode))
                 return;
-            if (node.range.containsLocation(lineNumber, columnNumber))
-                result = node;
+            this._sortedTextNodes.push(node);
+        }
+
+        /**
+         * @param {!WebInspector.SASSSupport.TextNode} text1
+         * @param {!WebInspector.SASSSupport.TextNode} text2
+         * @return {number}
+         */
+        function nodeComparator(text1, text2)
+        {
+            return WebInspector.TextRange.comparator(text1.range, text2.range);
         }
     },
 

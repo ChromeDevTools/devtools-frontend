@@ -59,7 +59,6 @@ WebInspector.SASSSourceMapFactory.prototype = {
     {
         var editCallback = WebInspector.SASSProcessor.processCSSEdits.bind(WebInspector.SASSProcessor, this._astService);
         var map = new WebInspector.ASTSourceMap(sourceMap.compiledURL(), sourceMap.url(), models, editCallback);
-        //FIXME: this works O(N^2).
         var valid = true;
         map.compiledModel().visit(onNode);
         return valid ? map : null;

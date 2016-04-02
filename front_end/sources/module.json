@@ -319,14 +319,6 @@
             "defaultValue": true
         },
         {
-            "type": "setting",
-            "title": "Auto-reload generated CSS",
-            "parentSettingName": "cssSourceMapsEnabled",
-            "settingName": "cssReloadEnabled",
-            "settingType": "boolean",
-            "defaultValue": false
-        },
-        {
             "type": "drawer-view",
             "name": "sources.search",
             "title": "Search",

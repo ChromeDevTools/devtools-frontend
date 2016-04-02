@@ -187,7 +187,7 @@ WebInspector.GenericSettingsTab.isSettingVisible = function(extension)
     var descriptor = extension.descriptor();
     if (!("title" in descriptor))
         return false;
-    if (!(("category" in descriptor) || ("parentSettingName" in descriptor)))
+    if (!("category" in descriptor))
         return false;
     return true;
 }
@@ -207,18 +207,6 @@ WebInspector.GenericSettingsTab.prototype = {
         var uiTitle = WebInspector.UIString(extension.title(WebInspector.platform()));
 
         var sectionElement = this._sectionElement(sectionName);
-        var parentSettingName = descriptor["parentSettingName"];
-        var parentSettingElement = parentSettingName ? this._nameToSettingElement.get(descriptor["parentSettingName"]) : null;
-        var parentFieldset = null;
-        if (parentSettingElement) {
-            parentFieldset = parentSettingElement.__fieldset;
-            if (!parentFieldset) {
-                parentFieldset = WebInspector.SettingsUI.createSettingFieldset(WebInspector.moduleSetting(parentSettingName));
-                parentSettingElement.appendChild(parentFieldset);
-                parentSettingElement.__fieldset = parentFieldset;
-            }
-        }
-
         var settingControl;
 
         switch (descriptor["settingType"]) {
@@ -240,7 +228,7 @@ WebInspector.GenericSettingsTab.prototype = {
             return;
         }
         this._nameToSettingElement.set(settingName, settingControl);
-        (parentFieldset || sectionElement).appendChild(/** @type {!Element} */ (settingControl));
+        sectionElement.appendChild(/** @type {!Element} */ (settingControl));
     },
 
     /**

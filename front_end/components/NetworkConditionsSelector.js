@@ -23,18 +23,20 @@ WebInspector.NetworkConditionsGroup;
 
 /**
  * @param {number} throughput
+ * @param {boolean=} plainText
  * @return {string}
  */
-WebInspector.NetworkConditionsSelector._throughputText = function(throughput)
+WebInspector.NetworkConditionsSelector._throughputText = function(throughput, plainText)
 {
     if (throughput < 0)
         return "";
     var throughputInKbps = throughput / (1024 / 8);
+    var delimiter = plainText ? "" : " ";
     if (throughputInKbps < 1024)
-        return WebInspector.UIString("%d kb/s", throughputInKbps);
+        return WebInspector.UIString("%d%skb/s", throughputInKbps, delimiter);
     if (throughputInKbps < 1024 * 10)
-        return WebInspector.UIString("%.1f Mb/s", throughputInKbps / 1024);
-    return WebInspector.UIString("%d Mb/s", (throughputInKbps / 1024) | 0);
+        return WebInspector.UIString("%.1f%sMb/s", throughputInKbps / 1024, delimiter);
+    return WebInspector.UIString("%d%sMb/s", (throughputInKbps / 1024) | 0, delimiter);
 }
 
 /** @type {!Array.<!WebInspector.NetworkManager.Conditions>} */
@@ -52,9 +54,10 @@ WebInspector.NetworkConditionsSelector._presets = [
 
 /**
  * @param {!WebInspector.NetworkManager.Conditions} conditions
+ * @param {boolean=} plainText
  * @return {!{text: string, title: string}}
  */
-WebInspector.NetworkConditionsSelector._conditionsTitle = function(conditions)
+WebInspector.NetworkConditionsSelector._conditionsTitle = function(conditions, plainText)
 {
     var downloadInKbps = conditions.download / (1024 / 8);
     var uploadInKbps = conditions.upload / (1024 / 8);
@@ -63,9 +66,10 @@ WebInspector.NetworkConditionsSelector._conditionsTitle = function(conditions)
     if (!isThrottling)
         return {text: conditionTitle, title: conditionTitle};
 
-    var downloadText = WebInspector.NetworkConditionsSelector._throughputText(conditions.download);
-    var uploadText = WebInspector.NetworkConditionsSelector._throughputText(conditions.upload);
-    var title = WebInspector.UIString("%s (%s\u2b07 %s\u2b06 %dms RTT)", conditionTitle, downloadText, uploadText, conditions.latency);
+    var downloadText = WebInspector.NetworkConditionsSelector._throughputText(conditions.download, plainText);
+    var uploadText = WebInspector.NetworkConditionsSelector._throughputText(conditions.upload, plainText);
+    var pattern = plainText ? "%s (%dms, %s, %s)" : "%s (%dms RTT, %s\u2b07, %s\u2b06)";
+    var title = WebInspector.UIString(pattern, conditionTitle, conditions.latency, downloadText, uploadText);
     return {text: title, title: WebInspector.UIString("Maximum download throughput: %s.\r\nMaximum upload throughput: %s.\r\nMinimum round-trip time: %dms.", downloadText, uploadText, conditions.latency)};
 }
 
@@ -196,7 +200,7 @@ WebInspector.NetworkConditionsSelector.createToolbarMenuButton = function()
             if (!conditions)
                 contextMenu.appendSeparator();
             else
-                contextMenu.appendCheckboxItem(WebInspector.NetworkConditionsSelector._conditionsTitle(conditions).text, selector.optionSelected.bind(selector, conditions), selectedIndex === index);
+                contextMenu.appendCheckboxItem(WebInspector.NetworkConditionsSelector._conditionsTitle(conditions, true).text, selector.optionSelected.bind(selector, conditions), selectedIndex === index);
         }
         contextMenu.appendItem(WebInspector.UIString("Edit\u2026"), selector.revealAndUpdate.bind(selector));
     }

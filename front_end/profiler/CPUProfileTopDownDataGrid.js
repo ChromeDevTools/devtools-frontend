@@ -90,15 +90,15 @@ WebInspector.TopDownProfileDataGridNode._excludeRecursively = function(container
 /**
  * @constructor
  * @extends {WebInspector.ProfileDataGridTree}
- * @param {!WebInspector.CPUProfileView} profileView
+ * @param {!WebInspector.ProfileDataGridNode.Formatter} formatter
+ * @param {!WebInspector.SearchableView} searchableView
  * @param {!ProfilerAgent.CPUProfileNode} rootProfileNode
+ * @param {number} totalTime
  */
-WebInspector.TopDownProfileDataGridTree = function(profileView, rootProfileNode)
+WebInspector.TopDownProfileDataGridTree = function(formatter, searchableView, rootProfileNode, totalTime)
 {
-    WebInspector.ProfileDataGridTree.call(this, profileView, rootProfileNode);
-
+    WebInspector.ProfileDataGridTree.call(this, formatter, searchableView, totalTime);
     this._remainingChildren = rootProfileNode.children;
-
     WebInspector.ProfileDataGridNode.populate(this);
 }
 

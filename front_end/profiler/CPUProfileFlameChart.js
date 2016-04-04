@@ -373,15 +373,17 @@ WebInspector.CPUFlameChartDataProvider.colorGenerator = function()
 
 /**
  * @constructor
- * @implements {WebInspector.CPUProfileView.Searchable}
+ * @implements {WebInspector.Searchable}
  * @extends {WebInspector.VBox}
+ * @param {!WebInspector.SearchableView} searchableView
  * @param {!WebInspector.FlameChartDataProvider} dataProvider
  */
-WebInspector.CPUProfileFlameChart = function(dataProvider)
+WebInspector.CPUProfileFlameChart = function(searchableView, dataProvider)
 {
     WebInspector.VBox.call(this);
     this.element.id = "cpu-flame-chart";
 
+    this._searchableView = searchableView;
     this._overviewPane = new WebInspector.CPUProfileFlameChart.OverviewPane(dataProvider);
     this._overviewPane.show(this.element);
 
@@ -437,7 +439,6 @@ WebInspector.CPUProfileFlameChart.prototype = {
      * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
      * @param {boolean} shouldJump
      * @param {boolean=} jumpBackwards
-     * @return {number}
      */
     performSearch: function(searchConfig, shouldJump, jumpBackwards)
     {
@@ -446,7 +447,7 @@ WebInspector.CPUProfileFlameChart.prototype = {
         var selectedEntryIndex = this._searchResultIndex !== -1 ? this._searchResults[this._searchResultIndex] : -1;
         this._searchResults = [];
         var entriesCount = this._dataProvider._entryNodes.length;
-        for(var index = 0; index < entriesCount; ++index) {
+        for (var index = 0; index < entriesCount; ++index) {
             if (this._dataProvider.entryTitle(index).match(matcher))
                 this._searchResults.push(index);
         }
@@ -456,10 +457,11 @@ WebInspector.CPUProfileFlameChart.prototype = {
             if (this._searchResultIndex === -1)
                 this._searchResultIndex = jumpBackwards ? this._searchResults.length - 1 : 0;
             this._mainPane.setSelectedEntry(this._searchResults[this._searchResultIndex]);
-        } else
+        } else {
             this.searchCanceled();
-
-        return this._searchResults.length;
+        }
+        this._searchableView.updateSearchMatchesCount(this._searchResults.length);
+        this._searchableView.updateCurrentMatchIndex(this._searchResultIndex);
     },
 
     /**
@@ -479,6 +481,7 @@ WebInspector.CPUProfileFlameChart.prototype = {
     {
         this._searchResultIndex = (this._searchResultIndex + 1) % this._searchResults.length;
         this._mainPane.setSelectedEntry(this._searchResults[this._searchResultIndex]);
+        this._searchableView.updateCurrentMatchIndex(this._searchResultIndex);
     },
 
     /**
@@ -488,15 +491,25 @@ WebInspector.CPUProfileFlameChart.prototype = {
     {
         this._searchResultIndex = (this._searchResultIndex - 1 + this._searchResults.length) % this._searchResults.length;
         this._mainPane.setSelectedEntry(this._searchResults[this._searchResultIndex]);
+        this._searchableView.updateCurrentMatchIndex(this._searchResultIndex);
     },
 
     /**
      * @override
-     * @return {number}
+     * @return {boolean}
      */
-    currentSearchResultIndex: function()
+    supportsCaseSensitiveSearch: function()
     {
-        return this._searchResultIndex;
+        return true;
+    },
+
+    /**
+     * @override
+     * @return {boolean}
+     */
+    supportsRegexSearch: function()
+    {
+        return false;
     },
 
     __proto__: WebInspector.VBox.prototype

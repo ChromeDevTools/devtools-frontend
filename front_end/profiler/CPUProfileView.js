@@ -23,7 +23,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 /**
  * @constructor
  * @implements {WebInspector.Searchable}
@@ -40,6 +39,7 @@ WebInspector.CPUProfileView = function(profileHeader)
     this._searchableView.show(this.element);
 
     this._viewType = WebInspector.settings.createSetting("cpuProfilerView", WebInspector.CPUProfileView._TypeHeavy);
+    this._nodeFormatter = new WebInspector.CPUProfileView.NodeFormatter(this);
 
     var columns = [];
     columns.push({id: "self", title: WebInspector.UIString("Self"), width: "120px", sort: WebInspector.DataGrid.Order.Descending, sortable: true});
@@ -48,6 +48,8 @@ WebInspector.CPUProfileView = function(profileHeader)
 
     this.dataGrid = new WebInspector.DataGrid(columns);
     this.dataGrid.addEventListener(WebInspector.DataGrid.Events.SortingChanged, this._sortProfile, this);
+    this.dataGrid.addEventListener(WebInspector.DataGrid.Events.SelectedNode, this._nodeSelected.bind(this, true));
+    this.dataGrid.addEventListener(WebInspector.DataGrid.Events.DeselectedNode, this._nodeSelected.bind(this, false));
 
     this.viewSelectComboBox = new WebInspector.ToolbarComboBox(this._changeView.bind(this));
 
@@ -76,6 +78,8 @@ WebInspector.CPUProfileView = function(profileHeader)
     this._linkifier = new WebInspector.Linkifier(new WebInspector.Linkifier.DefaultFormatter(30));
 
     this.profile = new WebInspector.CPUProfileDataModel(profileHeader._profile || profileHeader.protocolProfile());
+    this.totalCpuTime = this.profile.profileHead.totalTime;
+    this.totalCpuTime -= this.profile.idleNode ? this.profile.idleNode.totalTime : 0;
 
     this._changeView();
     if (this._flameChart)
@@ -85,30 +89,6 @@ WebInspector.CPUProfileView = function(profileHeader)
 WebInspector.CPUProfileView._TypeFlame = "Flame";
 WebInspector.CPUProfileView._TypeTree = "Tree";
 WebInspector.CPUProfileView._TypeHeavy = "Heavy";
-
-/**
- * @interface
- */
-WebInspector.CPUProfileView.Searchable = function()
-{
-}
-
-WebInspector.CPUProfileView.Searchable.prototype = {
-    jumpToNextSearchResult: function() {},
-    jumpToPreviousSearchResult: function() {},
-    searchCanceled: function() {},
-    /**
-     * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
-     * @param {boolean} shouldJump
-     * @param {boolean=} jumpBackwards
-     * @return {number}
-     */
-    performSearch: function(searchConfig, shouldJump, jumpBackwards) {},
-    /**
-     * @return {number}
-     */
-    currentSearchResultIndex: function() {}
-}
 
 WebInspector.CPUProfileView.prototype = {
     focus: function()
@@ -152,7 +132,7 @@ WebInspector.CPUProfileView.prototype = {
     _getBottomUpProfileDataGridTree: function()
     {
         if (!this._bottomUpProfileDataGridTree)
-            this._bottomUpProfileDataGridTree = new WebInspector.BottomUpProfileDataGridTree(this, /** @type {!ProfilerAgent.CPUProfileNode} */ (this.profile.profileHead));
+            this._bottomUpProfileDataGridTree = new WebInspector.BottomUpProfileDataGridTree(this._nodeFormatter, this._searchableView, /** @type {!ProfilerAgent.CPUProfileNode} */ (this.profile.profileHead), this.totalCpuTime);
         return this._bottomUpProfileDataGridTree;
     },
 
@@ -162,7 +142,7 @@ WebInspector.CPUProfileView.prototype = {
     _getTopDownProfileDataGridTree: function()
     {
         if (!this._topDownProfileDataGridTree)
-            this._topDownProfileDataGridTree = new WebInspector.TopDownProfileDataGridTree(this, /** @type {!ProfilerAgent.CPUProfileNode} */ (this.profile.profileHead));
+            this._topDownProfileDataGridTree = new WebInspector.TopDownProfileDataGridTree(this._nodeFormatter, this._searchableView, /** @type {!ProfilerAgent.CPUProfileNode} */ (this.profile.profileHead), this.totalCpuTime);
         return this._topDownProfileDataGridTree;
     },
 
@@ -238,9 +218,7 @@ WebInspector.CPUProfileView.prototype = {
      */
     performSearch: function(searchConfig, shouldJump, jumpBackwards)
     {
-        var matchesCount = this._searchableElement.performSearch(searchConfig, shouldJump, jumpBackwards);
-        this._searchableView.updateSearchMatchesCount(matchesCount);
-        this._searchableView.updateCurrentMatchIndex(this._searchableElement.currentSearchResultIndex());
+        this._searchableElement.performSearch(searchConfig, shouldJump, jumpBackwards);
     },
 
     /**
@@ -249,7 +227,6 @@ WebInspector.CPUProfileView.prototype = {
     jumpToNextSearchResult: function()
     {
         this._searchableElement.jumpToNextSearchResult();
-        this._searchableView.updateCurrentMatchIndex(this._searchableElement.currentSearchResultIndex());
     },
 
     /**
@@ -258,7 +235,6 @@ WebInspector.CPUProfileView.prototype = {
     jumpToPreviousSearchResult: function()
     {
         this._searchableElement.jumpToPreviousSearchResult();
-        this._searchableView.updateCurrentMatchIndex(this._searchableElement.currentSearchResultIndex());
     },
 
     _ensureFlameChartCreated: function()
@@ -266,7 +242,7 @@ WebInspector.CPUProfileView.prototype = {
         if (this._flameChart)
             return;
         this._dataProvider = new WebInspector.CPUFlameChartDataProvider(this.profile, this._profileHeader.target());
-        this._flameChart = new WebInspector.CPUProfileFlameChart(this._dataProvider);
+        this._flameChart = new WebInspector.CPUProfileFlameChart(this._searchableView, this._dataProvider);
         this._flameChart.addEventListener(WebInspector.FlameChart.Events.EntrySelected, this._onEntrySelected.bind(this));
     },
 
@@ -326,6 +302,15 @@ WebInspector.CPUProfileView.prototype = {
         this._visibleView.show(this._searchableView.element);
     },
 
+    /**
+     * @param {boolean} selected
+     */
+    _nodeSelected: function(selected)
+    {
+        this.focusButton.setEnabled(selected);
+        this.excludeButton.setEnabled(selected);
+    },
+
     _focusClicked: function(event)
     {
         if (!this.dataGrid.selectedNode)
@@ -359,18 +344,6 @@ WebInspector.CPUProfileView.prototype = {
         this._linkifier.reset();
         this.refresh();
         this.refreshVisibleData();
-    },
-
-    _dataGridNodeSelected: function(node)
-    {
-        this.focusButton.setEnabled(true);
-        this.excludeButton.setEnabled(true);
-    },
-
-    _dataGridNodeDeselected: function(node)
-    {
-        this.focusButton.setEnabled(false);
-        this.excludeButton.setEnabled(false);
     },
 
     _sortProfile: function()
@@ -822,4 +795,47 @@ WebInspector.CPUProfileHeader.prototype = {
     },
 
     __proto__: WebInspector.ProfileHeader.prototype
+}
+
+/**
+ * @implements {WebInspector.ProfileDataGridNode.Formatter}
+ * @constructor
+ */
+WebInspector.CPUProfileView.NodeFormatter = function(profileView)
+{
+    this._profileView = profileView;
+}
+
+WebInspector.CPUProfileView.NodeFormatter.prototype = {
+    /**
+     * @override
+     * @param {number} value
+     * @return {string}
+     */
+    formatValue: function(value)
+    {
+        return WebInspector.UIString("%.1f\u2009ms", value);
+    },
+
+    /**
+     * @override
+     * @param {number} value
+     * @param {!WebInspector.ProfileDataGridNode} node
+     * @return {string}
+     */
+    formatPercent: function(value, node)
+    {
+        return node.profileNode === this._profileView.profile.idleNode ? "" : WebInspector.UIString("%.2f\u2009%%", value);
+    },
+
+    /**
+     * @override
+     * @param  {!WebInspector.ProfileDataGridNode} node
+     * @return {!Element}
+     */
+    linkifyNode: function(node)
+    {
+        var callFrame = /** @type {!RuntimeAgent.CallFrame} */ (node.profileNode);
+        return this._profileView._linkifier.linkifyConsoleCallFrame(this._profileView.target(), callFrame, "profile-node-file");
+    }
 }

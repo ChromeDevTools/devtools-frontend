@@ -178,12 +178,14 @@ WebInspector.BottomUpProfileDataGridNode._sharedPopulate = function(container)
 /**
  * @constructor
  * @extends {WebInspector.ProfileDataGridTree}
- * @param {!WebInspector.CPUProfileView} profileView
+ * @param {!WebInspector.ProfileDataGridNode.Formatter} formatter
+ * @param {!WebInspector.SearchableView} searchableView
  * @param {!ProfilerAgent.CPUProfileNode} rootProfileNode
+ * @param {number} totalTime
  */
-WebInspector.BottomUpProfileDataGridTree = function(profileView, rootProfileNode)
+WebInspector.BottomUpProfileDataGridTree = function(formatter, searchableView, rootProfileNode, totalTime)
 {
-    WebInspector.ProfileDataGridTree.call(this, profileView, rootProfileNode);
+    WebInspector.ProfileDataGridTree.call(this, formatter, searchableView, totalTime);
 
     // Iterate each node in pre-order.
     var profileNodeUIDs = 0;
@@ -304,14 +306,13 @@ WebInspector.BottomUpProfileDataGridTree.prototype = {
      * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
      * @param {boolean} shouldJump
      * @param {boolean=} jumpBackwards
-     * @return {number}
      */
     performSearch: function(searchConfig, shouldJump, jumpBackwards)
     {
         this.searchCanceled();
         var matchesQuery = this._matchFunction(searchConfig);
         if (!matchesQuery)
-            return 0;
+            return;
 
         this._searchResults = [];
         for (var current = this.children[0]; current; current = current.traverseNextNode(true, null, true)) {
@@ -319,7 +320,8 @@ WebInspector.BottomUpProfileDataGridTree.prototype = {
                 this._searchResults.push({ profileNode: current });
         }
         this._searchResultIndex = jumpBackwards ? 0 : this._searchResults.length - 1;
-        return this._searchResults.length;
+        this._searchableView.updateSearchMatchesCount(this._searchResults.length);
+        this._searchableView.updateCurrentMatchIndex(this._searchResultIndex);
     },
 
     /**

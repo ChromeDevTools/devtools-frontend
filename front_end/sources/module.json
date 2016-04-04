@@ -68,23 +68,6 @@
         },
         {
             "type": "@WebInspector.ActionDelegate",
-            "actionId": "debugger.step-into-async",
-            "experiment": "stepIntoAsync",
-            "className": "WebInspector.SourcesPanel.DebuggingActionDelegate",
-            "contextTypes": ["WebInspector.SourcesPanel"],
-            "bindings": [
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Alt+F11 Alt+Ctrl+;"
-                },
-                {
-                    "platform": "mac",
-                    "shortcut": "Alt+F11 Alt+Meta+;"
-                }
-            ]
-        },
-        {
-            "type": "@WebInspector.ActionDelegate",
             "actionId": "debugger.step-out",
             "className": "WebInspector.SourcesPanel.DebuggingActionDelegate",
             "title": "Step out of current function",
@@ -344,7 +327,6 @@
     "scripts": [
         "UIList.js",
         "AddSourceMapURLDialog.js",
-        "AsyncOperationsSidebarPane.js",
         "CallStackSidebarPane.js",
         "SimpleHistoryManager.js",
         "EditingLocationHistoryManager.js",

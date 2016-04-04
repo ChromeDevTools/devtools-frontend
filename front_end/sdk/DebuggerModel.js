@@ -78,8 +78,6 @@ WebInspector.DebuggerModel.PauseOnExceptionsState = {
 
 /** @enum {string} */
 WebInspector.DebuggerModel.Events = {
-    AsyncOperationStarted: "AsyncOperationStarted",
-    AsyncOperationCompleted: "AsyncOperationCompleted",
     DebuggerWasEnabled: "DebuggerWasEnabled",
     DebuggerWasDisabled: "DebuggerWasDisabled",
     BeforeDebuggerPaused: "BeforeDebuggerPaused",
@@ -94,7 +92,6 @@ WebInspector.DebuggerModel.Events = {
 
 /** @enum {string} */
 WebInspector.DebuggerModel.BreakReason = {
-    AsyncOperation: "AsyncOperation",
     DOM: "DOM",
     EventListener: "EventListener",
     XHR: "XHR",
@@ -208,11 +205,6 @@ WebInspector.DebuggerModel.prototype = {
     stepInto: function()
     {
         this._agent.stepInto();
-    },
-
-    stepIntoAsync: function()
-    {
-        this._agent.stepIntoAsync();
     },
 
     stepOver: function()
@@ -350,27 +342,6 @@ WebInspector.DebuggerModel.prototype = {
         }
     },
 
-    flushAsyncOperationEvents: function()
-    {
-        this._agent.flushAsyncOperationEvents();
-    },
-
-    /**
-     * @param {number} operationId
-     */
-    setAsyncOperationBreakpoint: function(operationId)
-    {
-        this._agent.setAsyncOperationBreakpoint(operationId);
-    },
-
-    /**
-     * @param {number} operationId
-     */
-    removeAsyncOperationBreakpoint: function(operationId)
-    {
-        this._agent.removeAsyncOperationBreakpoint(operationId);
-    },
-
     /**
      * @param {!DebuggerAgent.BreakpointId} breakpointId
      * @param {!DebuggerAgent.Location} location
@@ -386,22 +357,6 @@ WebInspector.DebuggerModel.prototype = {
         this._reset();
         // TODO(dgozman): move clients to ExecutionContextDestroyed/ScriptCollected events.
         this.dispatchEventToListeners(WebInspector.DebuggerModel.Events.GlobalObjectCleared);
-    },
-
-    /**
-     * @param {!DebuggerAgent.AsyncOperation} operation
-     */
-    _asyncOperationStarted: function(operation)
-    {
-        this.dispatchEventToListeners(WebInspector.DebuggerModel.Events.AsyncOperationStarted, operation);
-    },
-
-    /**
-     * @param {number} operationId
-     */
-    _asyncOperationCompleted: function(operationId)
-    {
-        this.dispatchEventToListeners(WebInspector.DebuggerModel.Events.AsyncOperationCompleted, operationId);
     },
 
     _reset: function()
@@ -974,24 +929,6 @@ WebInspector.DebuggerDispatcher.prototype = {
     breakpointResolved: function(breakpointId, location)
     {
         this._debuggerModel._breakpointResolved(breakpointId, location);
-    },
-
-    /**
-     * @override
-     * @param {!DebuggerAgent.AsyncOperation} operation
-     */
-    asyncOperationStarted: function(operation)
-    {
-        this._debuggerModel._asyncOperationStarted(operation);
-    },
-
-    /**
-     * @override
-     * @param {number} operationId
-     */
-    asyncOperationCompleted: function(operationId)
-    {
-        this._debuggerModel._asyncOperationCompleted(operationId);
     }
 }
 

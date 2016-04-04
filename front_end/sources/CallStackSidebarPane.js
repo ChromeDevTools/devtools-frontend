@@ -45,7 +45,6 @@ WebInspector.CallStackSidebarPane = function()
 /** @enum {string} */
 WebInspector.CallStackSidebarPane.Events = {
     CallFrameSelected: "CallFrameSelected",
-    RevealHiddenCallFrames: "RevealHiddenCallFrames"
 }
 
 WebInspector.CallStackSidebarPane.prototype = {
@@ -191,7 +190,6 @@ WebInspector.CallStackSidebarPane.prototype = {
             this._hiddenCallFramesMessageElement.remove();
             delete this._hiddenCallFramesMessageElement;
         }
-        this.dispatchEventToListeners(WebInspector.CallStackSidebarPane.Events.RevealHiddenCallFrames);
     },
 
     /**

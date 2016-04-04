@@ -3452,16 +3452,6 @@
                 "hidden": true
             },
             {
-                "id": "AsyncOperation",
-                "type": "object",
-                "description": "Information about the async operation.",
-                "properties": [
-                    { "name": "id", "type": "integer", "description": "Unique id of the async operation." },
-                    { "name": "stack", "$ref": "Runtime.StackTrace", "optional": true, "description": "Stack trace where async operation was scheduled." }
-                ],
-                "hidden": true
-            },
-            {
                 "id": "SearchMatch",
                 "type": "object",
                 "description": "Search match for resource.",
@@ -3557,11 +3547,6 @@
             {
                 "name": "resume",
                 "description": "Resumes JavaScript execution."
-            },
-            {
-                "name": "stepIntoAsync",
-                "description": "Steps into the first async operation handler that was scheduled by or after the current statement.",
-                "hidden": true
             },
             {
                 "name": "searchInContent",
@@ -3707,27 +3692,6 @@
                 "description": "Enables or disables async call stacks tracking."
             },
             {
-                "name": "flushAsyncOperationEvents",
-                "hidden": true,
-                "description": "Fires pending <code>asyncOperationStarted</code> events (if any), as if a debugger stepping session has just been started."
-            },
-            {
-                "name": "setAsyncOperationBreakpoint",
-                "parameters": [
-                    { "name": "operationId", "type": "integer", "description": "ID of the async operation to set breakpoint for." }
-                ],
-                "hidden": true,
-                "description": "Sets breakpoint on AsyncOperation callback handler."
-            },
-            {
-                "name": "removeAsyncOperationBreakpoint",
-                "parameters": [
-                    { "name": "operationId", "type": "integer", "description": "ID of the async operation to remove breakpoint for." }
-                ],
-                "hidden": true,
-                "description": "Removes AsyncOperation breakpoint."
-            },
-            {
                 "name": "setBlackboxedRanges",
                 "parameters": [
                     { "name": "scriptId", "$ref": "Runtime.ScriptId", "description": "Id of the script." },
@@ -3789,7 +3753,7 @@
                 "name": "paused",
                 "parameters": [
                     { "name": "callFrames", "type": "array", "items": { "$ref": "CallFrame" }, "description": "Call stack the virtual machine stopped on." },
-                    { "name": "reason", "type": "string", "enum": [ "XHR", "DOM", "EventListener", "exception", "assert", "CSPViolation", "debugCommand", "promiseRejection", "AsyncOperation", "other" ], "description": "Pause reason." },
+                    { "name": "reason", "type": "string", "enum": [ "XHR", "DOM", "EventListener", "exception", "assert", "CSPViolation", "debugCommand", "promiseRejection", "other" ], "description": "Pause reason." },
                     { "name": "data", "type": "object", "optional": true, "description": "Object containing break-specific auxiliary properties." },
                     { "name": "hitBreakpoints", "type": "array", "optional": true, "items": { "type": "string" }, "description": "Hit breakpoints IDs", "hidden": true },
                     { "name": "asyncStackTrace", "$ref": "Runtime.StackTrace", "optional": true, "description": "Async stack trace, if any.", "hidden": true }
@@ -3799,22 +3763,6 @@
             {
                 "name": "resumed",
                 "description": "Fired when the virtual machine resumed execution."
-            },
-            {
-                "name": "asyncOperationStarted",
-                "parameters": [
-                    { "name": "operation", "$ref": "AsyncOperation", "description": "Information about the async operation." }
-                ],
-                "description": "Fired when an async operation is scheduled (while in a debugger stepping session).",
-                "hidden": true
-            },
-            {
-                "name": "asyncOperationCompleted",
-                "parameters": [
-                    { "name": "id", "type": "integer", "description": "ID of the async operation that was completed." }
-                ],
-                "description": "Fired when an async operation is completed (while in a debugger stepping session).",
-                "hidden": true
             }
         ]
     },

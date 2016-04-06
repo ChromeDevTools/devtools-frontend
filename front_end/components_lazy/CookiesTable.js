@@ -51,7 +51,7 @@ WebInspector.CookiesTable = function(expandable, refreshCallback, selectedCallba
         {id: "size", title: WebInspector.UIString("Size"), sortable: true, align: WebInspector.DataGrid.Align.Right, weight: 7},
         {id: "httpOnly", title: WebInspector.UIString("HTTP"), sortable: true, align: WebInspector.DataGrid.Align.Center, weight: 7},
         {id: "secure", title: WebInspector.UIString("Secure"), sortable: true, align: WebInspector.DataGrid.Align.Center, weight: 7},
-        {id: "sameSite", title: WebInspector.UIString("Same-Site"), sortable: true, align: WebInspector.DataGrid.Align.Center, weight: 7}
+        {id: "sameSite", title: WebInspector.UIString("SameSite"), sortable: true, align: WebInspector.DataGrid.Align.Center, weight: 7}
     ];
 
     if (readOnly)
@@ -261,7 +261,7 @@ WebInspector.CookiesTable.prototype = {
         const checkmark = "\u2713";
         data.httpOnly = (cookie.httpOnly() ? checkmark : "");
         data.secure = (cookie.secure() ? checkmark : "");
-        data.sameSite = (cookie.sameSite() ? checkmark : "");
+        data.sameSite = cookie.sameSite() || "";
 
         var node = new WebInspector.DataGridNode(data);
         node.cookie = cookie;

@@ -220,7 +220,7 @@ WebInspector.HAREntry.prototype = {
      */
     _buildCookie: function(cookie)
     {
-        return {
+        var c = {
             name: cookie.name(),
             value: cookie.value(),
             path: cookie.path(),
@@ -229,6 +229,9 @@ WebInspector.HAREntry.prototype = {
             httpOnly: cookie.httpOnly(),
             secure: cookie.secure()
         };
+        if (cookie.sameSite())
+            c.sameSite = cookie.sameSite();
+        return c;
     },
 
     /**

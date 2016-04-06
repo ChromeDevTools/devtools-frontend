@@ -1394,7 +1394,8 @@
                     { "name": "size", "type": "integer", "description": "Cookie size." },
                     { "name": "httpOnly", "type": "boolean", "description": "True if cookie is http-only." },
                     { "name": "secure", "type": "boolean", "description": "True if cookie is secure." },
-                    { "name": "session", "type": "boolean", "description": "True in case of session cookie." }
+                    { "name": "session", "type": "boolean", "description": "True in case of session cookie." },
+                    { "name": "sameSite", "type": "string", "optional": true, "enum": ["Strict", "Lax"], "description": "Represents the cookies' 'SameSite' status: https://tools.ietf.org/html/draft-west-first-party-cookies" }
                 ],
                 "hidden": true
             }

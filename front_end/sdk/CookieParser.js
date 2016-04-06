@@ -258,11 +258,11 @@ WebInspector.Cookie.prototype = {
     },
 
     /**
-     * @return {boolean}
+     * @return {string}
      */
     sameSite: function ()
     {
-        return "samesite" in this._attributes;
+        return this._attributes["samesite"];
     },
 
     /**
@@ -429,7 +429,7 @@ WebInspector.Cookies._parseProtocolCookie = function(target, protocolCookie)
     if (protocolCookie["secure"])
         cookie.addAttribute("secure");
     if (protocolCookie["sameSite"])
-        cookie.addAttribute("sameSite");
+        cookie.addAttribute("sameSite", protocolCookie["sameSite"]);
     cookie.setSize(protocolCookie["size"]);
     return cookie;
 }

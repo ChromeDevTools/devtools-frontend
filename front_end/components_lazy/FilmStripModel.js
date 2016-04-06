@@ -71,17 +71,8 @@ WebInspector.FilmStripModel.prototype = {
      */
     frameByTimestamp: function(timestamp)
     {
-        /**
-         * @param {number} timestamp
-         * @param {!WebInspector.FilmStripModel.Frame} frame
-         * @return {number}
-         */
-        function comparator(timestamp, frame)
-        {
-            return timestamp - frame.timestamp;
-        }
-        var index = this._frames.lowerBound(timestamp, comparator);
-        return index < this._frames.length ? this._frames[index] : null;
+        var index = this._frames.upperBound(timestamp, (timestamp, frame) => timestamp - frame.timestamp) - 1;
+        return index >= 0 ? this._frames[index] : null;
     }
 }
 

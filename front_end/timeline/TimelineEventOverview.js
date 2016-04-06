@@ -461,10 +461,12 @@ WebInspector.TimelineFilmStripOverview.prototype = {
         this._imageByFrame(frames[0]).then(image => {
             if (this._drawGeneration !== drawGeneration)
                 return;
-            if (!image.naturalHeight)
+            if (!image.naturalWidth || !image.naturalHeight)
                 return;
             var imageHeight = this._canvas.height - 2 * WebInspector.TimelineFilmStripOverview.Padding;
             var imageWidth = Math.ceil(imageHeight * image.naturalWidth / image.naturalHeight);
+            var popoverScale = Math.min(200 / image.naturalWidth, 1);
+            this._emptyImage = new Image(image.naturalWidth * popoverScale, image.naturalHeight * popoverScale);
             this._drawFrames(imageWidth, imageHeight);
         });
     },
@@ -516,7 +518,9 @@ WebInspector.TimelineFilmStripOverview.prototype = {
         context.beginPath();
         for (var x = padding; x < width; x += imageWidth + 2 * padding) {
             var time = zeroTime + (x + imageWidth / 2) * scale;
-            var frame = this._frameByTime(time);
+            var frame = this._filmStripModel.frameByTimestamp(time);
+            if (!frame)
+                continue;
             context.rect(x - 0.5, 0.5, imageWidth + 1, imageHeight + 1);
             this._imageByFrame(frame).then(drawFrameImage.bind(this, x));
         }
@@ -538,28 +542,6 @@ WebInspector.TimelineFilmStripOverview.prototype = {
     },
 
     /**
-     * @param {number} time
-     * @return {!WebInspector.FilmStripModel.Frame}
-     */
-    _frameByTime: function(time)
-    {
-        /**
-         * @param {number} time
-         * @param {!WebInspector.FilmStripModel.Frame} frame
-         * @return {number}
-         */
-        function comparator(time, frame)
-        {
-            return time - frame.timestamp;
-        }
-        // Using the first frame to fill the interval between recording start
-        // and a moment the frame is taken.
-        var frames = this._filmStripModel.frames();
-        var index = Math.max(frames.upperBound(time, comparator) - 1, 0);
-        return frames[index];
-    },
-
-    /**
      * @override
      * @param {number} x
      * @return {!Promise<?Element>}
@@ -570,10 +552,11 @@ WebInspector.TimelineFilmStripOverview.prototype = {
             return Promise.resolve(/** @type {?Element} */ (null));
 
         var time = this._calculator.positionToTime(x);
-        var frame = this._frameByTime(time);
+        var frame = this._filmStripModel.frameByTimestamp(time);
         if (frame === this._lastFrame)
             return Promise.resolve(this._lastElement);
-        return this._imageByFrame(frame).then(createFrameElement.bind(this));
+        var imagePromise = frame ? this._imageByFrame(frame) : Promise.resolve(this._emptyImage);
+        return imagePromise.then(createFrameElement.bind(this));
 
         /**
          * @this {WebInspector.TimelineFilmStripOverview}
@@ -596,7 +579,7 @@ WebInspector.TimelineFilmStripOverview.prototype = {
      */
     reset: function()
     {
-        this._lastFrame = null;
+        this._lastFrame = undefined;
         this._lastElement = null;
         this._filmStripModel = new WebInspector.FilmStripModel(this._tracingModel);
         /** @type {!Map<!WebInspector.FilmStripModel.Frame,!Promise<!HTMLImageElement>>} */

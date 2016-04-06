@@ -141,17 +141,7 @@ WebInspector.TimelineOverviewPane.prototype = {
     {
         var document = this.element.ownerDocument;
         var x = this._cursorPosition;
-        var promises = this._overviewControls.map(mapToPopover);
-
-        /**
-         * @param {!WebInspector.TimelineOverview} control
-         * @return {!Promise<?Element>}
-         */
-        function mapToPopover(control)
-        {
-            return control.popoverElementPromise(x)
-        }
-
+        var promises = this._overviewControls.map(control => control.popoverElementPromise(x));
         return Promise.all(promises).then(buildFragment);
 
         /**

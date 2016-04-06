@@ -4,6 +4,10 @@
  * found in the LICENSE file.
  */
 
+.service-workers-view {
+  overflow-y: scroll;
+}
+
 .service-workers-view > .toolbar {
     border-bottom: 1px solid #dadada;
 }
@@ -12,7 +16,6 @@
    -webkit-user-select: text;
     margin: 0;
     padding: 5px;
-    display: flex;
 }
 
 .service-workers-root ol {

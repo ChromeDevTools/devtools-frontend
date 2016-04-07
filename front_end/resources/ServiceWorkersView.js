@@ -314,9 +314,21 @@ WebInspector.SWRegistrationWidget.prototype = {
         /** @type {!Map<string, !WebInspector.SWVersionWidget>} */
         var versionWidgets = new Map();
 
-        var modesWithVersions = new Set();
+        // Remove all the redundant workers that are older than the
+        // active version.
+        var versions = registration.versions.valuesArray();
+        var activeVersion = versions.find(version => version.mode() === WebInspector.ServiceWorkerVersion.Modes.Active);
+        if (activeVersion) {
+            versions = versions.filter(version => {
+                if (version.mode() == WebInspector.ServiceWorkerVersion.Modes.Redundant)
+                    return version.scriptLastModified > activeVersion.scriptLastModified;
+                return true;
+            });
+        }
+
         var firstMode;
-        for (var version of registration.versions.valuesArray()) {
+        var modesWithVersions = new Set();
+        for (var version of versions) {
             if (version.isStoppedAndRedundant() && !version.errorMessages.length)
                 continue;
             var mode = version.mode();
@@ -329,7 +341,7 @@ WebInspector.SWRegistrationWidget.prototype = {
                 versionWidget._updateVersion(version);
             else
                 versionWidget = new WebInspector.SWVersionWidget(this._manager, this._registration.scopeURL, version);
-            versionWidget.show(view.element);
+            versionWidget.show(view.element, view.element.firstElementChild);
             versionWidgets.set(version.id, versionWidget);
         }
         for (var id of this._versionWidgets.keys()) {
@@ -347,7 +359,7 @@ WebInspector.SWRegistrationWidget.prototype = {
             this._tabbedPane.selectTab(this._lastManuallySelectedTab);
             return;
         }
-        if (modesWithVersions.has(WebInspector.ServiceWorkerVersion.Modes.Active)) {
+        if (activeVersion) {
             this._tabbedPane.selectTab(WebInspector.ServiceWorkerVersion.Modes.Active);
             return;
         }

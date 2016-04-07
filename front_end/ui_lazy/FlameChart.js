@@ -102,6 +102,18 @@ WebInspector.FlameChart = function(dataProvider, flameChartDelegate, groupExpans
     this._paddingLeft = this._dataProvider.paddingLeft();
     var markerPadding = 2;
     this._markerRadius = this._barHeight / 2 - markerPadding;
+
+    /** @const */
+    this._headerLeftPadding = 6;
+    /** @const */
+    this._arrowSide = 8;
+    /** @const */
+    this._expansionArrowX = this._headerLeftPadding + this._arrowSide / 2;
+    /** @const */
+    this._headerLabelXPadding = 3;
+    /** @const */
+    this._headerLabelYPadding = 2;
+
     this._highlightedMarkerIndex = -1;
     this._highlightedEntryIndex = -1;
     this._selectedEntryIndex = -1;
@@ -137,7 +149,8 @@ WebInspector.FlameChart.Group;
  *     color: string,
  *     backgroundColor: string,
  *     nestingLevel: number,
- *     shareHeaderLine: (boolean|undefined)
+ *     shareHeaderLine: (boolean|undefined),
+ *     useFirstLineForOverview: (boolean|undefined)
  * }}
  */
 WebInspector.FlameChart.GroupStyle;
@@ -747,6 +760,11 @@ WebInspector.FlameChart.prototype = {
             return;
         if (this._isDragging)
             return;
+        if (this._coordinatesToGroupIndex(event.offsetX, event.offsetY) >= 0) {
+            this.hideHighlight();
+            this._canvas.style.cursor = "pointer";
+            return;
+        }
         this._updateHighlight();
     },
 
@@ -1114,9 +1132,17 @@ WebInspector.FlameChart.prototype = {
         var groups = this._rawTimelineData.groups || [];
         var group = this._groupOffsets.upperBound(y) - 1;
 
-        if (group >= 0 && group < groups.length && y - this._groupOffsets[group] < groups[group].style.height && !groups[group].style.shareHeaderLine)
-            return group;
-        return -1;
+        if (group < 0 || group >= groups.length || y - this._groupOffsets[group] >= groups[group].style.height)
+            return -1;
+        var context = this._canvas.getContext("2d");
+        context.save();
+        context.font = groups[group].style.font;
+        var right = this._headerLeftPadding + this._labelWidthForGroup(context, groups[group]);
+        context.restore();
+        if (x > right)
+            return -1;
+
+        return group;
     },
 
     /**
@@ -1379,22 +1405,16 @@ WebInspector.FlameChart.prototype = {
             this._drawCollapsedOverviewForGroup(offset + 1, group.startLevel, endLevel);
         });
 
-        var headerLeftPadding = 6;
-        var arrowSide = 8;
-        var expansionArrowX = headerLeftPadding + arrowSide / 2;
-
         context.save();
         forEachGroup((offset, index, group) => {
             context.font = group.style.font;
             if (group.style.collapsible && !group.expanded || group.style.shareHeaderLine) {
-                var vPadding = 2;
-                var hPadding = 3;
-                var width = this._measureWidth(context, group.name) + 1.5 * arrowSide + 2 * hPadding;
-                context.fillStyle = WebInspector.Color.parse(group.style.backgroundColor).setAlpha(0.5).asString(null);
-                context.fillRect(headerLeftPadding - hPadding, offset + vPadding, width, barHeight - 2 * vPadding);
+                var width = this._labelWidthForGroup(context, group);
+                context.fillStyle = WebInspector.Color.parse(group.style.backgroundColor).setAlpha(0.7).asString(null);
+                context.fillRect(this._headerLeftPadding - this._headerLabelXPadding, offset + this._headerLabelYPadding, width, barHeight - 2 * this._headerLabelYPadding);
             }
             context.fillStyle = group.style.color;
-            context.fillText(group.name, Math.floor(expansionArrowX + arrowSide), offset + textBaseHeight);
+            context.fillText(group.name, Math.floor(this._expansionArrowX + this._arrowSide), offset + textBaseHeight);
         });
         context.restore();
 
@@ -1402,7 +1422,7 @@ WebInspector.FlameChart.prototype = {
         context.beginPath();
         forEachGroup((offset, index, group) => {
             if (group.style.collapsible)
-                drawExpansionArrow(expansionArrowX, offset + textBaseHeight - arrowSide / 2, !!group.expanded)
+                drawExpansionArrow.call(this, this._expansionArrowX, offset + textBaseHeight - this._arrowSide / 2, !!group.expanded)
         });
         context.fill();
 
@@ -1425,16 +1445,17 @@ WebInspector.FlameChart.prototype = {
          * @param {number} x
          * @param {number} y
          * @param {boolean} expanded
+         * @this {WebInspector.FlameChart}
          */
         function drawExpansionArrow(x, y, expanded)
         {
-            var arrowHeight = arrowSide * Math.sqrt(3) / 2;
+            var arrowHeight = this._arrowSide * Math.sqrt(3) / 2;
             var arrowCenterOffset = Math.round(arrowHeight / 2);
             context.save();
             context.translate(x, y);
             context.rotate(expanded ? Math.PI / 2 : 0);
-            context.moveTo(-arrowCenterOffset, -arrowSide / 2);
-            context.lineTo(-arrowCenterOffset, arrowSide / 2);
+            context.moveTo(-arrowCenterOffset, -this._arrowSide / 2);
+            context.lineTo(-arrowCenterOffset, this._arrowSide / 2);
             context.lineTo(arrowHeight - arrowCenterOffset, 0);
             context.restore();
         }
@@ -1464,6 +1485,16 @@ WebInspector.FlameChart.prototype = {
                 callback(groupTop, i, group, firstGroup);
             }
         }
+    },
+
+    /**
+     * @param {!CanvasRenderingContext2D} context
+     * @param {!WebInspector.FlameChart.Group} group
+     * @return {number}
+     */
+    _labelWidthForGroup: function(context, group)
+    {
+       return this._measureWidth(context, group.name) + 1.5 * this._arrowSide + 2 * this._headerLabelXPadding;
     },
 
     /**
@@ -1688,9 +1719,10 @@ WebInspector.FlameChart.prototype = {
                 if (parentGroupIsVisible && !style.shareHeaderLine)
                     currentOffset += style.height;
             }
-            this._visibleLevels[level] = visible;
+            var thisLevelIsVisible = visible || groupIndex >= 0 && groups[groupIndex].style.useFirstLineForOverview && level === groups[groupIndex].startLevel;
+            this._visibleLevels[level] = thisLevelIsVisible;
             this._visibleLevelOffsets[level] = currentOffset;
-            if (visible)
+            if (thisLevelIsVisible)
                 currentOffset += this._barHeight;
         }
         if (groupIndex >= 0)

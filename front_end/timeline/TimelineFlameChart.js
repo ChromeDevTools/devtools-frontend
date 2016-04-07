@@ -304,6 +304,28 @@ WebInspector.TimelineFlameChartDataProvider = function(model, frameModel, irMode
         nestingLevel: 1,
         shareHeaderLine: true
     };
+
+    this._interactionsHeaderLevel1 = {
+        padding: 4,
+        height: 17,
+        collapsible: Runtime.experiments.isEnabled("timelineLatencyInfo"),
+        color: WebInspector.themeSupport.patchColor("#222", WebInspector.ThemeSupport.ColorUsage.Foreground),
+        font: this._font,
+        backgroundColor: WebInspector.themeSupport.patchColor("white", WebInspector.ThemeSupport.ColorUsage.Background),
+        nestingLevel: 0,
+        useFirstLineForOverview: true,
+        shareHeaderLine: true
+    };
+
+    this._interactionsHeaderLevel2 = {
+        padding: 4,
+        height: 17,
+        collapsible: true,
+        color: WebInspector.themeSupport.patchColor("#222", WebInspector.ThemeSupport.ColorUsage.Foreground),
+        font: this._font,
+        backgroundColor: WebInspector.themeSupport.patchColor("white", WebInspector.ThemeSupport.ColorUsage.Background),
+        nestingLevel: 1
+    };
 }
 
 WebInspector.TimelineFlameChartDataProvider.InstantEventVisibleDurationMs = 0.001;
@@ -385,7 +407,20 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
         this._timeSpan = this._model.isEmpty() ?  1000 : this._model.maximumRecordTime() - this._minimumBoundary;
         this._currentLevel = 0;
         this._appendFrameBars(this._frameModel.frames());
+
+        this._appendHeader(WebInspector.UIString("Interactions"), this._interactionsHeaderLevel1);
         this._appendInteractionRecords();
+
+        if (Runtime.experiments.isEnabled("timelineLatencyInfo")) {
+            var asyncEventGroups = WebInspector.TimelineUIUtils.asyncEventGroups();
+            var inputLatencies = this._model.mainThreadAsyncEvents().get(asyncEventGroups.input);
+            if (inputLatencies && inputLatencies.length)
+                this._appendAsyncEventsGroup(asyncEventGroups.input.title, inputLatencies, this._interactionsHeaderLevel2);
+
+            var animations = this._model.mainThreadAsyncEvents().get(asyncEventGroups.animation);
+            if (animations && animations.length)
+                this._appendAsyncEventsGroup(asyncEventGroups.animation.title, animations, this._interactionsHeaderLevel2);
+        }
 
         var threads = this._model.virtualThreads();
         this._appendThreadTimelineData(WebInspector.UIString("Main"), this._model.mainThreadEvents(), this._model.mainThreadAsyncEvents(), true);
@@ -508,24 +543,23 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
         var groups = WebInspector.TimelineUIUtils.asyncEventGroups();
         var groupArray = Object.values(groups);
 
-        if (!Runtime.experiments.isEnabled("timelineLatencyInfo")) {
-            groupArray.remove(groups.animation);
-            groupArray.remove(groups.input);
-        }
+        groupArray.remove(groups.animation);
+        groupArray.remove(groups.input);
 
         for (var groupIndex = 0; groupIndex < groupArray.length; ++groupIndex) {
             var group = groupArray[groupIndex];
             var events = asyncEvents.get(group);
             if (events)
-                this._appendAsyncEventsGroup(group.title, events);
+                this._appendAsyncEventsGroup(group.title, events, this._headerLevel1);
         }
     },
 
     /**
      * @param {string} header
      * @param {!Array<!WebInspector.TracingModel.AsyncEvent>} events
+     * @param {!WebInspector.FlameChart.GroupStyle} style
      */
-    _appendAsyncEventsGroup: function(header, events)
+    _appendAsyncEventsGroup: function(header, events, style)
     {
         var lastUsedTimeByLevel = [];
         var groupHeaderAppended = false;
@@ -534,7 +568,7 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
             if (!this._isVisible(asyncEvent))
                 continue;
             if (!groupHeaderAppended) {
-                this._appendHeader(header, this._headerLevel1);
+                this._appendHeader(header, style);
                 groupHeaderAppended = true;
             }
             var startTime = asyncEvent.startTime;

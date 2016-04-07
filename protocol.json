@@ -8,21 +8,15 @@
             {
                 "name": "enable",
                 "description": "Enables inspector domain notifications.",
-                "handlers": ["browser", "renderer"]
+                "handlers": ["browser"]
             },
             {
                 "name": "disable",
-                "description": "Disables inspector domain notifications."
+                "description": "Disables inspector domain notifications.",
+                "handlers": ["browser"]
             }
         ],
         "events": [
-            {
-                "name": "inspect",
-                "parameters": [
-                    { "name": "object", "$ref": "Runtime.RemoteObject" },
-                    { "name": "hints", "type": "object" }
-                ]
-            },
             {
                 "name": "detached",
                 "description": "Fired when remote debugging connection is about to be terminated. Contains detach reason.",
@@ -1045,6 +1039,14 @@
             {
                 "name": "executionContextsCleared",
                 "description": "Issued when all executionContexts were cleared in browser"
+            },
+            {
+                "name": "inspectRequested",
+                "parameters": [
+                    { "name": "object", "$ref": "RemoteObject" },
+                    { "name": "hints", "type": "object" }
+                ],
+                "hidden": true
             }
         ]
     },

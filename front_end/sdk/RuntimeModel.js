@@ -218,6 +218,40 @@ WebInspector.RuntimeModel.prototype = {
         }
     },
 
+    /**
+     * @param {!RuntimeAgent.RemoteObject} payload
+     * @param {!Object=} hints
+     */
+    _inspectRequested: function(payload, hints)
+    {
+        var object = this.createRemoteObject(payload);
+
+        if (object.isNode()) {
+            WebInspector.Revealer.revealPromise(object).then(object.release.bind(object));
+            return;
+        }
+
+        if (object.type === "function") {
+            WebInspector.RemoteFunction.objectAsFunction(object).targetFunctionDetails().then(didGetDetails);
+            return;
+        }
+
+        /**
+         * @param {?WebInspector.DebuggerModel.FunctionDetails} response
+         */
+        function didGetDetails(response)
+        {
+            object.release();
+            if (!response || !response.location)
+                return;
+            WebInspector.Revealer.reveal(response.location);
+        }
+
+        if (hints.copyToClipboard)
+            InspectorFrontendHost.copyText(object.value);
+        object.release();
+    },
+
     __proto__: WebInspector.SDKModel.prototype
 }
 
@@ -256,8 +290,17 @@ WebInspector.RuntimeDispatcher.prototype = {
     executionContextsCleared: function()
     {
         this._runtimeModel._executionContextsCleared();
-    }
+    },
 
+    /**
+     * @override
+     * @param {!RuntimeAgent.RemoteObject} payload
+     * @param {!Object=} hints
+     */
+    inspectRequested: function(payload, hints)
+    {
+        this._runtimeModel._inspectRequested(payload, hints);
+    }
 }
 
 /**

@@ -544,42 +544,6 @@ WebInspector.Main.prototype = {
 
     /**
      * @override
-     * @param {!RuntimeAgent.RemoteObject} payload
-     * @param {!Object=} hints
-     */
-    inspect: function(payload, hints)
-    {
-        var object = this._mainTarget.runtimeModel.createRemoteObject(payload);
-        if (object.isNode()) {
-            WebInspector.Revealer.revealPromise(object).then(object.release.bind(object));
-            return;
-        }
-
-        if (object.type === "function") {
-            WebInspector.RemoteFunction.objectAsFunction(object).targetFunctionDetails().then(didGetDetails);
-            return;
-        }
-
-        /**
-         * @param {?WebInspector.DebuggerModel.FunctionDetails} response
-         */
-        function didGetDetails(response)
-        {
-            object.release();
-
-            if (!response || !response.location)
-                return;
-
-            WebInspector.Revealer.reveal(WebInspector.debuggerWorkspaceBinding.rawLocationToUILocation(response.location));
-        }
-
-        if (hints.copyToClipboard)
-            InspectorFrontendHost.copyText(object.value);
-        object.release();
-    },
-
-    /**
-     * @override
      * @param {string} reason
      */
     detached: function(reason)

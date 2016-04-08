@@ -137,7 +137,7 @@ WebInspector.SourceMapNamesResolver._allVariablesInCallFrame = function(callFram
  */
 WebInspector.SourceMapNamesResolver.resolveExpression = function(callFrame, originalText, uiSourceCode, lineNumber, startColumnNumber, endColumnNumber)
 {
-    if (!Runtime.experiments.isEnabled("resolveVariableNames"))
+    if (!Runtime.experiments.isEnabled("resolveVariableNames") || !uiSourceCode.contentType().isFromSourceMap())
         return Promise.resolve("");
 
     return WebInspector.SourceMapNamesResolver._allVariablesInCallFrame(callFrame).then(findCompiledName);

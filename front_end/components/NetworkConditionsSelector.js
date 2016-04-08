@@ -147,7 +147,7 @@ WebInspector.NetworkConditionsSelector.decorateSelect = function(selectElement)
                 options.push(null);
             }
             for (var conditions of group.items) {
-                var title = WebInspector.NetworkConditionsSelector._conditionsTitle(conditions);
+                var title = WebInspector.NetworkConditionsSelector._conditionsTitle(conditions, true);
                 var option = new Option(title.text, title.text);
                 option.title = title.title;
                 groupElement.appendChild(option);

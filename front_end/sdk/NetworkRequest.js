@@ -207,8 +207,6 @@ WebInspector.NetworkRequest.prototype = {
      */
     setRemoteAddress: function(ip, port)
     {
-        if (ip.indexOf(":") !== -1)
-            ip = "[" + ip + "]";
         this._remoteAddress = ip + ":" + port;
         this.dispatchEventToListeners(WebInspector.NetworkRequest.Events.RemoteAddressChanged, this);
     },

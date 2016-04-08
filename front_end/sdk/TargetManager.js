@@ -108,13 +108,13 @@ WebInspector.TargetManager.prototype = {
     },
 
     /**
-     * @param {boolean=} ignoreCache
+     * @param {boolean=} bypassCache
      * @param {string=} injectedScript
      */
-    reloadPage: function(ignoreCache, injectedScript)
+    reloadPage: function(bypassCache, injectedScript)
     {
         if (this._targets.length)
-            this._targets[0].resourceTreeModel.reloadPage(ignoreCache, injectedScript);
+            this._targets[0].resourceTreeModel.reloadPage(bypassCache, injectedScript);
     },
 
     /**

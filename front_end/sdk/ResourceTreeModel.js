@@ -444,21 +444,21 @@ WebInspector.ResourceTreeModel.prototype = {
     },
 
     /**
-     * @param {boolean=} ignoreCache
+     * @param {boolean=} bypassCache
      * @param {string=} scriptToEvaluateOnLoad
      */
-    reloadPage: function(ignoreCache, scriptToEvaluateOnLoad)
+    reloadPage: function(bypassCache, scriptToEvaluateOnLoad)
     {
         // Only dispatch PageReloadRequested upon first reload request to simplify client logic.
         if (!this._pendingReloadOptions)
             this.dispatchEventToListeners(WebInspector.ResourceTreeModel.EventTypes.PageReloadRequested);
         if (this._reloadSuspensionCount) {
-            this._pendingReloadOptions = [ignoreCache, scriptToEvaluateOnLoad];
+            this._pendingReloadOptions = [bypassCache, scriptToEvaluateOnLoad];
             return;
         }
         this._pendingReloadOptions = null;
         this.dispatchEventToListeners(WebInspector.ResourceTreeModel.EventTypes.WillReloadPage);
-        this._agent.reload(ignoreCache, scriptToEvaluateOnLoad);
+        this._agent.reload(bypassCache, scriptToEvaluateOnLoad);
     },
 
     __proto__: WebInspector.SDKModel.prototype

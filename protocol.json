@@ -3786,6 +3786,7 @@
                 "properties": [
                     { "name": "type", "type": "string", "description": "<code>EventListener</code>'s type." },
                     { "name": "useCapture", "type": "boolean", "description": "<code>EventListener</code>'s useCapture." },
+                    { "name": "passive", "type": "boolean", "description": "<code>EventListener</code>'s passive flag." },
                     { "name": "location", "$ref": "Debugger.Location", "description": "Handler code location." },
                     { "name": "handler", "$ref": "Runtime.RemoteObject", "optional": true, "description": "Event handler function value." },
                     { "name": "originalHandler", "$ref": "Runtime.RemoteObject", "optional": true, "description": "Event original handler function value." }

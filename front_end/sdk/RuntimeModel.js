@@ -613,17 +613,19 @@ WebInspector.ExecutionContext.prototype = {
  * @param {!WebInspector.Target} target
  * @param {string} type
  * @param {boolean} useCapture
+ * @param {boolean} passive
  * @param {?WebInspector.RemoteObject} handler
  * @param {?WebInspector.RemoteObject} originalHandler
  * @param {!WebInspector.DebuggerModel.Location} location
  * @param {?WebInspector.RemoteObject} removeFunction
  * @param {string=} listenerType
  */
-WebInspector.EventListener = function(target, type, useCapture, handler, originalHandler, location, removeFunction, listenerType)
+WebInspector.EventListener = function(target, type, useCapture, passive, handler, originalHandler, location, removeFunction, listenerType)
 {
     WebInspector.SDKObject.call(this, target);
     this._type = type;
     this._useCapture = useCapture;
+    this._passive = passive;
     this._handler = handler;
     this._originalHandler = originalHandler || handler;
     this._location = location;
@@ -648,6 +650,14 @@ WebInspector.EventListener.prototype = {
     useCapture: function()
     {
         return this._useCapture;
+    },
+
+    /**
+     * @return {boolean}
+     */
+    passive: function()
+    {
+        return this._passive;
     },
 
     /**
@@ -709,18 +719,20 @@ WebInspector.EventListener.prototype = {
                 WebInspector.RemoteObject.toCallArgument(this._removeFunction),
                 WebInspector.RemoteObject.toCallArgument(this._type),
                 WebInspector.RemoteObject.toCallArgument(this._originalHandler),
-                WebInspector.RemoteObject.toCallArgument(this._useCapture)
+                WebInspector.RemoteObject.toCallArgument(this._useCapture),
+                WebInspector.RemoteObject.toCallArgument(this._passive),
             ], success);
 
             /**
-             * @param {function(string, function(), boolean)} func
+             * @param {function(string, function(), boolean, boolean)} func
              * @param {string} type
              * @param {function()} listener
              * @param {boolean} useCapture
+             * @param {boolean} passive
              */
-            function callCustomRemove(func, type, listener, useCapture)
+            function callCustomRemove(func, type, listener, useCapture, passive)
             {
-                func.call(null, type, listener, useCapture);
+                func.call(null, type, listener, useCapture, passive);
             }
         }
     },

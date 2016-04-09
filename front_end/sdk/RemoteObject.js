@@ -591,7 +591,7 @@ WebInspector.RemoteObjectImpl.prototype = {
             /**
              * @suppressReceiverCheck
              * @this {Node}
-             * @return {function(this:Node, string, function(), boolean=): undefined}
+             * @return {function(this:Node, string, function(), boolean=, boolean=): undefined}
              */
             function nodeRemoveEventListener()
             {
@@ -600,11 +600,27 @@ WebInspector.RemoteObjectImpl.prototype = {
                  * @param {string} type
                  * @param {function()} handler
                  * @param {boolean=} useCapture
+                 * @param {boolean=} passive
                  * @this {Node}
                  */
-                function removeEventListenerWrapper(type, handler, useCapture)
+                function removeEventListenerWrapper(type, handler, useCapture, passive)
                 {
-                    this.removeEventListener(type, handler, useCapture);
+                    // TODO(dtapuska): Remove this one closure compiler is updated
+                    // to handle EventListenerOptions and passive event listeners
+                    // has shipped. Don't JSDoc these otherwise it will fail.
+                    // @return {boolean|undefined|{capture: (boolean|undefined), passive: boolean}}
+                    function eventListenerOptions()
+                    {
+                        if (passive && useCapture)
+                            return {"capture": useCapture, "passive": passive};
+                        else if (passive)
+                            return {"passive": passive};
+                        else if (useCapture)
+                            return {"capture": useCapture};
+                        else
+                            return {};
+                    }
+                    this.removeEventListener(type, handler, eventListenerOptions());
                     if (this["on" + type])
                         this["on" + type] = null;
                 }
@@ -619,6 +635,7 @@ WebInspector.RemoteObjectImpl.prototype = {
                 return new WebInspector.EventListener(this._target,
                                                       payload.type,
                                                       payload.useCapture,
+                                                      payload.passive,
                                                       payload.handler ? this.target().runtimeModel.createRemoteObject(payload.handler) : null,
                                                       payload.originalHandler ? this.target().runtimeModel.createRemoteObject(payload.originalHandler) : null,
                                                       WebInspector.DebuggerModel.Location.fromPayload(this._debuggerModel, payload.location),

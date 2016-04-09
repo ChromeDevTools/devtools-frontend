@@ -38,10 +38,20 @@ WebInspector.EventListenersWidget = function()
 
     this._showForAncestorsSetting = WebInspector.settings.createSetting("showEventListenersForAncestors", true);
     this._showForAncestorsSetting.addChangeListener(this.update.bind(this));
+
+    this._dispatchFilterBySetting = WebInspector.settings.createSetting("eventListenerDispatchFilterType", WebInspector.EventListenersWidget.DispatchFilterBy.All);
+    this._dispatchFilterBySetting.addChangeListener(this.update.bind(this));
+
     this._showFrameworkListenersSetting = WebInspector.settings.createSetting("showFrameowkrListeners", true);
     this._showFrameworkListenersSetting.addChangeListener(this._showFrameworkListenersChanged.bind(this));
     this._eventListenersView = new WebInspector.EventListenersView(this.element);
     WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this.update, this);
+}
+
+WebInspector.EventListenersWidget.DispatchFilterBy = {
+    All : "All",
+    Blocking : "Blocking",
+    Passive : "Passive"
 }
 
 /**
@@ -55,6 +65,24 @@ WebInspector.EventListenersWidget.createSidebarWrapper = function()
     refreshButton.addEventListener("click", widget.update.bind(widget));
     result.toolbar().appendToolbarItem(refreshButton);
     result.toolbar().appendToolbarItem(new WebInspector.ToolbarCheckbox(WebInspector.UIString("Ancestors"), WebInspector.UIString("Show listeners on the ancestors"), widget._showForAncestorsSetting));
+    var dispatchFilter = new WebInspector.ToolbarComboBox(widget._onDispatchFilterTypeChanged.bind(widget));
+
+    /**
+     * @param {string} name
+     * @param {string} value
+     */
+    function addDispatchFilterOption(name, value)
+    {
+        var option = dispatchFilter.createOption(name, "", value);
+        if (value === widget._dispatchFilterBySetting.get())
+            dispatchFilter.select(option);
+    }
+    addDispatchFilterOption(WebInspector.UIString("All"), WebInspector.EventListenersWidget.DispatchFilterBy.All);
+    addDispatchFilterOption(WebInspector.UIString("Passive"), WebInspector.EventListenersWidget.DispatchFilterBy.Passive);
+    addDispatchFilterOption(WebInspector.UIString("Blocking"), WebInspector.EventListenersWidget.DispatchFilterBy.Blocking);
+    dispatchFilter.setMaxWidth(200);
+    result.toolbar().appendToolbarItem(dispatchFilter);
+
     result.toolbar().appendToolbarItem(new WebInspector.ToolbarCheckbox(WebInspector.UIString("Framework listeners"), WebInspector.UIString("Resolve event listeners bound with framework"), widget._showFrameworkListenersSetting));
     return result;
 }
@@ -95,10 +123,20 @@ WebInspector.EventListenersWidget.prototype = {
         return Promise.all(promises).then(this._eventListenersView.addObjects.bind(this._eventListenersView)).then(this._showFrameworkListenersChanged.bind(this));
     },
 
+    /**
+     * @param {!Event} event
+     */
+    _onDispatchFilterTypeChanged: function(event)
+    {
+        this._dispatchFilterBySetting.set(event.target.value);
+    },
 
     _showFrameworkListenersChanged: function()
     {
-        this._eventListenersView.showFrameworkListeners(this._showFrameworkListenersSetting.get());
+        var dispatchFilter = this._dispatchFilterBySetting.get();
+        var showPassive = dispatchFilter == WebInspector.EventListenersWidget.DispatchFilterBy.All || dispatchFilter == WebInspector.EventListenersWidget.DispatchFilterBy.Passive;
+        var showBlocking = dispatchFilter == WebInspector.EventListenersWidget.DispatchFilterBy.All || dispatchFilter == WebInspector.EventListenersWidget.DispatchFilterBy.Blocking;
+        this._eventListenersView.showFrameworkListeners(this._showFrameworkListenersSetting.get(), showPassive, showBlocking);
     },
 
     /**

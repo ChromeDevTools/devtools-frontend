@@ -144,8 +144,10 @@ WebInspector.EventListenersView.prototype = {
 
     /**
      * @param {boolean} showFramework
+     * @param {boolean} showPassive
+     * @param {boolean} showBlocking
      */
-    showFrameworkListeners: function(showFramework)
+    showFrameworkListeners: function(showFramework, showPassive, showBlocking)
     {
         var eventTypes = this._treeOutline.rootElement().children();
         for (var eventType of eventTypes) {
@@ -156,6 +158,10 @@ WebInspector.EventListenersView.prototype = {
                 if (listenerType === "frameworkUser" && !showFramework)
                     hidden = true;
                 if (listenerType === "frameworkInternal" && showFramework)
+                    hidden = true;
+                if (!showPassive && listenerElement.eventListener().passive())
+                    hidden = true;
+                if (!showBlocking && !listenerElement.eventListener().passive())
                     hidden = true;
                 listenerElement.hidden = hidden;
                 hiddenEventType = hiddenEventType && hidden;
@@ -267,6 +273,7 @@ WebInspector.ObjectEventListenerBar.prototype = {
         var eventListener = this._eventListener;
         var runtimeModel = eventListener.target().runtimeModel;
         properties.push(runtimeModel.createRemotePropertyFromPrimitiveValue("useCapture", eventListener.useCapture()));
+        properties.push(runtimeModel.createRemotePropertyFromPrimitiveValue("passive", eventListener.passive()));
         if (typeof eventListener.handler() !== "undefined")
             properties.push(new WebInspector.RemoteObjectProperty("handler", eventListener.handler()));
         WebInspector.ObjectPropertyTreeElement.populateWithProperties(this, properties, [], true, null);

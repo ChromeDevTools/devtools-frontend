@@ -87,36 +87,14 @@ WebInspector.Action = function(extension)
     this._extension = extension;
     this._enabled = true;
     this._toggled = false;
-    this._title = this._extension.descriptor()["title"] || "";
-
-    this._statesCount = this._extension.descriptor()["states"] || 2;
-    if (this._statesCount == 2)
-        this._state = WebInspector.Action._ToggleState.Off;
-    else
-        this._state = "0";
-}
-
-WebInspector.Action._ToggleState = {
-    On: "on",
-    Off: "off"
 }
 
 WebInspector.Action.Events = {
     Enabled: "Enabled",
-    StateChanged: "StateChanged",
-    TitleChanged: "TitleChanged",
+    Toggled: "Toggled"
 }
 
 WebInspector.Action.prototype = {
-
-    /**
-     * @return {number}
-     */
-    statesCount: function()
-    {
-        return this._statesCount;
-    },
-
     /**
      * @return {string}
      */
@@ -174,18 +152,6 @@ WebInspector.Action.prototype = {
     },
 
     /**
-     * @param {string} title
-     */
-    setTitle: function(title)
-    {
-        if (this._title === title)
-            return;
-
-        this._title = title;
-        this.dispatchEventToListeners(WebInspector.Action.Events.TitleChanged, this._title);
-    },
-
-    /**
      * @return {string}
      */
     category: function()
@@ -206,28 +172,15 @@ WebInspector.Action.prototype = {
      */
     title: function()
     {
-        return this._title;
-    },
-
-    /**
-     * @return {string}
-     */
-    state: function()
-    {
-        return this._state;
-    },
-
-    /**
-     * @param {string} newState
-     */
-    setState: function(newState)
-    {
-        if (this._state === newState)
-            return;
-
-        var oldState = this._state;
-        this._state = newState;
-        this.dispatchEventToListeners(WebInspector.Action.Events.StateChanged, {oldState: oldState, newState: newState})
+        var title = this._extension.title(WebInspector.platform());
+        var options = this._extension.descriptor()["options"];
+        if (options) {
+            for (var pair of options) {
+                if (pair["value"] !== this._toggled)
+                    title = pair["title"];
+            }
+        }
+        return title;
     },
 
     /**
@@ -235,9 +188,7 @@ WebInspector.Action.prototype = {
      */
     toggled: function()
     {
-        if (this._statesCount !== 2)
-            throw("Only used toggled when there are 2 states, otherwise, use state");
-        return this.state() === WebInspector.Action._ToggleState.On;
+        return this._toggled;
     },
 
     /**
@@ -245,9 +196,11 @@ WebInspector.Action.prototype = {
      */
     setToggled: function(toggled)
     {
-        if (this._statesCount !== 2)
-            throw("Only used toggled when there are 2 states, otherwise, use state");
-        this.setState(toggled ? WebInspector.Action._ToggleState.On : WebInspector.Action._ToggleState.Off);
+        if (this._toggled === toggled)
+            return;
+
+        this._toggled = toggled;
+        this.dispatchEventToListeners(WebInspector.Action.Events.Toggled, toggled);
     },
 
     __proto__: WebInspector.Object.prototype

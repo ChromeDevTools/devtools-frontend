@@ -31,6 +31,10 @@
             "iconClass": "record-toolbar-item",
             "contextTypes": ["WebInspector.TimelinePanel"],
             "className": "WebInspector.TimelinePanel.ActionDelegate",
+            "options": [
+                { "value": true, "title": "Record" },
+                { "value": false, "title": "Stop" }
+            ],
             "bindings": [
                 {
                     "platform": "windows,linux",

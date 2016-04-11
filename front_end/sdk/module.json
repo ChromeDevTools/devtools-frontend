@@ -25,9 +25,14 @@
         },
         {
             "type": "setting",
+            "category": "Debugger",
             "settingName": "pauseOnExceptionEnabled",
             "settingType": "boolean",
-            "defaultValue": false
+            "defaultValue": false,
+            "options": [
+                { "value": true, "title": "Pause on exceptions" },
+                { "value": false, "title": "Do not pause on exceptions" }
+            ]
         },
         {
             "type": "setting",
@@ -37,9 +42,14 @@
         },
         {
             "type": "setting",
+            "category": "Debugger",
             "settingName": "enableAsyncStackTraces",
             "settingType": "boolean",
-            "defaultValue": false
+            "defaultValue": false,
+            "options": [
+                { "value": true, "title": "Capture async stack traces" },
+                { "value": false, "title": "Do not capture async stack traces" }
+            ]
         },
         {
             "type": "setting",

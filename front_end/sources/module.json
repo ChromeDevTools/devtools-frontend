@@ -14,11 +14,15 @@
         },
         {
             "type": "@WebInspector.ActionDelegate",
+            "category": "Debugger",
             "actionId": "debugger.toggle-pause",
             "iconClass": "pause-toolbar-item",
             "className": "WebInspector.SourcesPanel.RevealingActionDelegate",
             "contextTypes": ["WebInspector.SourcesPanel", "WebInspector.ShortcutRegistry.ForwardedShortcut"],
-            "title": "Toggle paused",
+            "options": [
+                { "value": true, "title": "Pause script execution" },
+                { "value": false, "title": "Resume script execution" }
+            ],
             "bindings": [
                 {
                     "platform": "windows,linux",
@@ -121,10 +125,15 @@
         },
         {
             "type": "@WebInspector.ActionDelegate",
+            "category": "Debugger",
             "actionId": "debugger.toggle-breakpoints-active",
             "iconClass": "breakpoint-toolbar-item",
             "className": "WebInspector.SourcesPanel.DebuggingActionDelegate",
             "contextTypes": ["WebInspector.SourcesPanel"],
+            "options": [
+                { "value": true, "title": "Deactivate breakpoints" },
+                { "value": false, "title": "Activate breakpoints" }
+            ],
             "bindings": [
                 {
                     "platform": "windows,linux",

@@ -43,6 +43,10 @@
             "iconClass": "record-toolbar-item",
             "contextTypes": ["WebInspector.NetworkPanel"],
             "className": "WebInspector.NetworkPanel.RecordActionDelegate",
+            "options": [
+                { "value": true, "title": "Record network log" },
+                { "value": false, "title": "Stop recording network log" }
+            ],
             "bindings": [
                 {
                     "platform": "windows,linux",

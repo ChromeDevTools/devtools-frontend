@@ -1061,7 +1061,7 @@ WebInspector.HeapSnapshotProfileType.prototype = {
 
     get buttonTooltip()
     {
-        return WebInspector.UIString("Take heap snapshot.");
+        return WebInspector.UIString("Take heap snapshot");
     },
 
     /**
@@ -1279,7 +1279,7 @@ WebInspector.TrackingHeapSnapshotProfileType.prototype = {
 
     get buttonTooltip()
     {
-        return this._recording ? WebInspector.UIString("Stop recording heap profile.") : WebInspector.UIString("Start recording heap profile.");
+        return this._recording ? WebInspector.UIString("Stop recording heap profile") : WebInspector.UIString("Start recording heap profile");
     },
 
     /**

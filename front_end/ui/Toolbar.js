@@ -485,25 +485,18 @@ WebInspector.ToolbarToggle.prototype = {
  */
 WebInspector.Toolbar.createActionButton = function(action, toggledOptions, untoggledOptions)
 {
-    var button = new WebInspector.ToolbarButton(action.title(), action.icon());
+    var button = new WebInspector.ToolbarToggle(action.title(), action.icon());
     button.addEventListener("click", action.execute, action);
     action.addEventListener(WebInspector.Action.Events.Enabled, enabledChanged);
-    action.addEventListener(WebInspector.Action.Events.StateChanged, stateChanged);
-    action.addEventListener(WebInspector.Action.Events.TitleChanged, titleChanged);
+    action.addEventListener(WebInspector.Action.Events.Toggled, toggled);
     /** @type {?WebInspector.LongClickController} */
     var longClickController = null;
     /** @type {?Array<!WebInspector.ToolbarButton>} */
     var longClickButtons = null;
     /** @type {?Element} */
     var longClickGlyph = null;
-    titleChanged();
-    stateChanged();
+    toggled();
     return button;
-
-    function titleChanged()
-    {
-        WebInspector.Tooltip.install(button.element, action.title(), action.id());
-    }
 
     /**
      * @param {!WebInspector.Event} event
@@ -513,17 +506,16 @@ WebInspector.Toolbar.createActionButton = function(action, toggledOptions, untog
         button.setEnabled(/** @type {boolean} */ (event.data));
     }
 
-    function stateChanged()
+    function toggled()
     {
-        button.setState(action.state());
+        button.setToggled(action.toggled());
+        if (action.title())
+            WebInspector.Tooltip.install(button.element, action.title(), action.id());
         updateOptions();
     }
 
     function updateOptions()
     {
-        if (action.statesCount() !== 2)
-            return;
-
         var buttons = action.toggled() ? (toggledOptions || null) : (untoggledOptions || null);
 
         if (buttons && buttons.length) {
@@ -546,7 +538,7 @@ WebInspector.Toolbar.createActionButton = function(action, toggledOptions, untog
     function showOptions()
     {
         var buttons = longClickButtons.slice();
-        var mainButtonClone = new WebInspector.ToolbarButton(action.title(), action.icon());
+        var mainButtonClone = new WebInspector.ToolbarToggle(action.title(), action.icon());
         mainButtonClone.addEventListener("click", clicked);
 
         /**
@@ -557,7 +549,7 @@ WebInspector.Toolbar.createActionButton = function(action, toggledOptions, untog
             button._clicked(/** @type {!Event} */ (event.data));
         }
 
-        mainButtonClone.setState(action.state());
+        mainButtonClone.setToggled(action.toggled());
         buttons.push(mainButtonClone);
 
         var document = button.element.ownerDocument;

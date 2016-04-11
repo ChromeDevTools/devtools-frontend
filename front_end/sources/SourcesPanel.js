@@ -45,8 +45,6 @@ WebInspector.SourcesPanel = function(workspaceForTest)
     this._stepIntoAction = WebInspector.actionRegistry.action("debugger.step-into");
     this._stepOutAction = WebInspector.actionRegistry.action("debugger.step-out");
     this._toggleBreakpointsActiveAction = WebInspector.actionRegistry.action("debugger.toggle-breakpoints-active");
-    this._toggleBreakpointsActiveAction.setToggled(false);
-    this._toggleBreakpointsActiveAction.setTitle(WebInspector.UIString("Deactivate breakpoints"));
 
     this._debugToolbar = this._createDebugToolbar();
     this._debugToolbarDrawer = this._createDebugToolbarDrawer();
@@ -466,14 +464,12 @@ WebInspector.SourcesPanel.prototype = {
             this._stepIntoAction.setEnabled(false);
             this._stepOutAction.setEnabled(false);
         } else if (this._paused) {
-            this._togglePauseAction.setTitle(WebInspector.UIString("Resume script execution"));
             this._togglePauseAction.setToggled(true);
             this._togglePauseAction.setEnabled(true);
             this._stepOverAction.setEnabled(true);
             this._stepIntoAction.setEnabled(true);
             this._stepOutAction.setEnabled(true);
         } else {
-            this._togglePauseAction.setTitle(WebInspector.UIString("Pause script execution"));
             this._togglePauseAction.setToggled(false);
             this._togglePauseAction.setEnabled(!currentDebuggerModel.isPausing());
             this._stepOverAction.setEnabled(false);
@@ -703,10 +699,6 @@ WebInspector.SourcesPanel.prototype = {
         this._toggleBreakpointsActiveAction.setToggled(!active);
         this.sidebarPanes.jsBreakpoints.listElement.classList.toggle("breakpoints-list-deactivated", !active);
         this._sourcesView.toggleBreakpointsActiveState(active);
-        if (active)
-            this._toggleBreakpointsActiveAction.setTitle(WebInspector.UIString("Deactivate breakpoints"));
-        else
-            this._toggleBreakpointsActiveAction.setTitle(WebInspector.UIString("Activate breakpoints"));
     },
 
     /**

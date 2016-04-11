@@ -653,10 +653,6 @@ WebInspector.TimelinePanel.prototype = {
     _updateTimelineControls: function()
     {
         var state = WebInspector.TimelinePanel.State;
-        var title =
-            this._state === state.Idle ? WebInspector.UIString("Record") :
-            this._state === state.Recording ? WebInspector.UIString("Stop") : "";
-        this._toggleRecordAction.setTitle(title);
         this._toggleRecordAction.setToggled(this._state === state.Recording);
         this._toggleRecordAction.setEnabled(this._state === state.Recording || this._state === state.Idle);
         this._panelToolbar.setEnabled(this._state !== state.Loading);

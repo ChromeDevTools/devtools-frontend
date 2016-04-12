@@ -3,6 +3,8 @@
     width: 232px;
     height: 240px;
     -webkit-user-select: none;
+    /* Prevents the popover from jumping when focus() is called */
+    display: block !important;
 }
 
 :host(.palettes-enabled) {

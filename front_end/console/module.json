@@ -98,6 +98,18 @@
                 { "value": true, "title": "Show timestamps" },
                 { "value": false, "title": "Hide timestamps" }
             ]
+        },
+        {
+            "type": "setting",
+            "category": "Console",
+            "title": "Autocomplete from history",
+            "settingName": "consoleHistoryAutocomplete",
+            "settingType": "boolean",
+            "defaultValue": true,
+            "options": [
+                { "value": true, "title": "Autocomplete from history" },
+                { "value": false, "title": "Do not autocomplete from history" }
+            ]
         }
     ],
     "dependencies": [

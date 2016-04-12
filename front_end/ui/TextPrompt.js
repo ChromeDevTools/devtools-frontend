@@ -814,6 +814,8 @@ WebInspector.TextPromptWithHistory = function(completions, stopCharacters)
      * @type {number}
      */
     this._historyOffset = 1;
+
+    this._addCompletionsFromHistory = true;
 }
 
 WebInspector.TextPromptWithHistory.prototype = {
@@ -833,7 +835,7 @@ WebInspector.TextPromptWithHistory.prototype = {
      */
     additionalCompletions: function(prefix)
     {
-        if (!this.isCaretAtEndOfPrompt())
+        if (!this._addCompletionsFromHistory || !this.isCaretAtEndOfPrompt())
             return [];
         var result = [];
         var text = this.text();
@@ -857,6 +859,14 @@ WebInspector.TextPromptWithHistory.prototype = {
     {
         this._data = [].concat(data);
         this._historyOffset = 1;
+    },
+
+    /**
+     * @param {boolean} value
+     */
+    setAddCompletionsFromHistory: function(value)
+    {
+        this._addCompletionsFromHistory = value;
     },
 
     /**

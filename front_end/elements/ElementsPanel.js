@@ -465,6 +465,7 @@ WebInspector.ElementsPanel.prototype = {
             }
             var node = nodeId ? domModel.nodeForId(nodeId) : null;
             selectNode.call(this, node);
+            this._lastSelectedNodeSelectedForTest();
         }
 
         if (this._omitDefaultSelection)
@@ -476,6 +477,8 @@ WebInspector.ElementsPanel.prototype = {
             selectNode.call(this, null);
         delete this._selectedPathOnReset;
     },
+
+    _lastSelectedNodeSelectedForTest: function() { },
 
     /**
      * @override

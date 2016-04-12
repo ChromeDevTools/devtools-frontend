@@ -586,6 +586,11 @@ WebInspector.TextPrompt.prototype = {
      */
     _applySuggestion: function(completionText, isIntermediateSuggestion)
     {
+        if (!this._userEnteredRange) {
+            // We could have already cleared autocompletion range by the time this is called. (crbug.com/587683)
+            return;
+        }
+
         var wordPrefixLength = this._userEnteredText ? this._userEnteredText.length : 0;
 
         this._userEnteredRange.deleteContents();

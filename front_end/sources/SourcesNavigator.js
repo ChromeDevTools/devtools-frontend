@@ -143,6 +143,8 @@ WebInspector.SourcesNavigatorView = function()
 {
     WebInspector.NavigatorView.call(this);
     WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
+
+    this._scriptsTree.setInteractiveFilterable(true);
 }
 
 WebInspector.SourcesNavigatorView.prototype = {

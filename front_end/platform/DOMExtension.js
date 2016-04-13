@@ -348,9 +348,10 @@ Element.prototype.removeChildren = function()
 Element.prototype.isInsertionCaretInside = function()
 {
     var selection = this.getComponentSelection();
-    if (!selection.rangeCount || !selection.isCollapsed)
+    // @see crbug.com/602541
+    var selectionRange = selection && selection.rangeCount ? selection.getRangeAt(0) : null;
+    if (!selectionRange || !selection.isCollapsed)
         return false;
-    var selectionRange = selection.getRangeAt(0);
     return selectionRange.startContainer.isSelfOrDescendant(this);
 }
 

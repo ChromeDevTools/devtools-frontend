@@ -278,7 +278,8 @@ WebInspector.ViewportControl.prototype = {
      */
     _updateSelectionModel: function(selection)
     {
-        if (!selection || !selection.rangeCount || selection.isCollapsed) {
+        var range = selection && selection.rangeCount ? selection.getRangeAt(0) : null;
+        if (!range || selection.isCollapsed) {
             this._headSelection = null;
             this._anchorSelection = null;
             return false;
@@ -287,7 +288,6 @@ WebInspector.ViewportControl.prototype = {
         var firstSelected = Number.MAX_VALUE;
         var lastSelected = -1;
 
-        var range = selection.getRangeAt(0);
         var hasVisibleSelection = false;
         for (var i = 0; i < this._renderedItems.length; ++i) {
             if (range.intersectsNode(this._renderedItems[i].element())) {

@@ -392,10 +392,10 @@ WebInspector.TextPrompt.prototype = {
     {
         this.clearAutoComplete(true);
         var selection = this._element.getComponentSelection();
-        if (!selection.rangeCount)
+        var selectionRange = selection && selection.rangeCount ? selection.getRangeAt(0) : null;
+        if (!selectionRange)
             return;
 
-        var selectionRange = selection.getRangeAt(0);
         var shouldExit;
 
         if (!force && !this.isCaretAtEndOfPrompt() && !this.isSuggestBoxVisible())
@@ -684,10 +684,10 @@ WebInspector.TextPrompt.prototype = {
     isCaretAtEndOfPrompt: function()
     {
         var selection = this._element.getComponentSelection();
-        if (!selection.rangeCount || !selection.isCollapsed)
+        var selectionRange = selection && selection.rangeCount ? selection.getRangeAt(0) : null;
+        if (!selectionRange || !selection.isCollapsed)
             return false;
 
-        var selectionRange = selection.getRangeAt(0);
         var node = selectionRange.startContainer;
         if (!node.isSelfOrDescendant(this._element))
             return false;

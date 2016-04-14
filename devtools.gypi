@@ -156,6 +156,7 @@
             'front_end/sdk/NetworkManager.js',
             'front_end/sdk/NetworkRequest.js',
             'front_end/sdk/PaintProfiler.js',
+            'front_end/sdk/ProfileTreeModel.js',
             'front_end/sdk/RemoteObject.js',
             'front_end/sdk/Resource.js',
             'front_end/sdk/ResourceTreeModel.js',

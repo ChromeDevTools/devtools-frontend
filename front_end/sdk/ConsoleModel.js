@@ -190,6 +190,7 @@ WebInspector.ConsoleModel.prototype = {
 WebInspector.ConsoleModel.evaluateCommandInConsole = function(executionContext, text, useCommandLineAPI)
 {
     var target = executionContext.target();
+    var requestedText = text;
 
     var commandMessage = new WebInspector.ConsoleMessage(target, WebInspector.ConsoleMessage.MessageSource.JS, null, text, WebInspector.ConsoleMessage.MessageType.Command);
     commandMessage.setExecutionContextId(executionContext.id);
@@ -209,7 +210,7 @@ WebInspector.ConsoleModel.evaluateCommandInConsole = function(executionContext, 
         WebInspector.console.showPromise().then(reportUponEvaluation);
         function reportUponEvaluation()
         {
-            target.consoleModel.dispatchEventToListeners(WebInspector.ConsoleModel.Events.CommandEvaluated, {result: result, wasThrown: wasThrown, text: text, commandMessage: commandMessage, exceptionDetails: exceptionDetails});
+            target.consoleModel.dispatchEventToListeners(WebInspector.ConsoleModel.Events.CommandEvaluated, {result: result, wasThrown: wasThrown, text: requestedText, commandMessage: commandMessage, exceptionDetails: exceptionDetails});
         }
     }
     if (/^\s*\{/.test(text) && /\}\s*$/.test(text))

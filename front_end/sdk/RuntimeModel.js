@@ -495,8 +495,8 @@ WebInspector.ExecutionContext.prototype = {
                     object = this;
 
                 var resultSet = {};
-                for (var o = object; o; o = o.__proto__) {
-                    try {
+                try {
+                    for (var o = object; o; o = o.__proto__) {
                         if (type === "array" && o === object && ArrayBuffer.isView(o) && o.length > 9999)
                             continue;
                         var names = Object.getOwnPropertyNames(o);
@@ -507,8 +507,8 @@ WebInspector.ExecutionContext.prototype = {
                                 continue;
                             resultSet[names[i]] = true;
                         }
-                    } catch (e) {
                     }
+                } catch (e) {
                 }
                 return resultSet;
             }

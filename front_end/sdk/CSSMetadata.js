@@ -601,6 +601,12 @@ WebInspector.CSSMetadata._propertyDataMap = {
     "-webkit-line-break": { values: [
         "auto", "loose", "normal", "strict"
     ] },
+    "-webkit-user-select": { values: [
+        "none", "text", "all"
+    ] },
+    "-webkit-user-modify": { values: [
+        "read-only", "read-write", "read-write-plaintext-only"
+    ] },
     "text-align-last": { values: [
         "auto", "start", "end", "left", "right", "center", "justify"
     ] },

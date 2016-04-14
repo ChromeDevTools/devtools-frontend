@@ -1281,7 +1281,7 @@ WebInspector.ElementsTreeElement.prototype = {
             return anchor;
         }
 
-        if (node && name === "src" || name === "href") {
+        if (node && (name === "src" || name === "href")) {
             attrValueElement.appendChild(linkifyValue.call(this, value));
         } else if (node && node.nodeName().toLowerCase() === "img" && name === "srcset") {
             var sources = value.split(",");

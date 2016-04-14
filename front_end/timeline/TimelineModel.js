@@ -156,7 +156,7 @@ WebInspector.TimelineModel.RecordType = {
     ImplSideFling: "InputHandlerProxy::HandleGestureFling::started",
     GCIdleLazySweep: "ThreadState::performIdleLazySweep",
     GCCompleteSweep: "ThreadState::completeSweep",
-    GCCollectGarbage: "BlinkGCMarking",
+    GCCollectGarbage: "Heap::collectGarbage",
 
     // CpuProfile is a virtual event created on frontend to support
     // serialization of CPU Profiles within tracing timeline data.

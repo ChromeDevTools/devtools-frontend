@@ -68,7 +68,6 @@
         "ConsoleModel.js",
         "ContentProviders.js",
         "CookieParser.js",
-        "ProfileTreeModel.js",
         "CPUProfileDataModel.js",
         "CPUProfilerModel.js",
         "CSSMatchedStyles.js",

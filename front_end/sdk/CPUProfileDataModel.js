@@ -2,82 +2,72 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/**
- * @constructor
- * @extends {WebInspector.ProfileNode}
- * @param {!ProfilerAgent.CPUProfileNode} sourceNode
- * @param {number} sampleTime
- */
-WebInspector.CPUProfileNode = function(sourceNode, sampleTime)
-{
-    WebInspector.ProfileNode.call(this, sourceNode.functionName, sourceNode.scriptId, sourceNode.url, sourceNode.lineNumber, sourceNode.columnNumber);
-    this.id = sourceNode.id;
-    this.self = sourceNode.hitCount * sampleTime;
-    this.callUID = sourceNode.callUID;
-    this.positionTicks = sourceNode.positionTicks;
-    this.deoptReason = sourceNode.deoptReason;
-    // TODO: Remove the following field in favor of this.self
-    this.selfTime = this.self;
-}
-
-WebInspector.CPUProfileNode.prototype = {
-    __proto__: WebInspector.ProfileNode.prototype
-}
 
 /**
  * @constructor
- * @extends {WebInspector.ProfileTreeModel}
  * @param {!ProfilerAgent.CPUProfile} profile
  */
 WebInspector.CPUProfileDataModel = function(profile)
 {
+    this.profileHead = profile.head;
     this.samples = profile.samples;
     this.timestamps = profile.timestamps;
-    // Convert times from sec to msec.
     this.profileStartTime = profile.startTime * 1000;
     this.profileEndTime = profile.endTime * 1000;
-    this.totalHitCount = 0;
-    if (!WebInspector.moduleSetting("showNativeFunctionsInJSProfile").get())
-        this._filterNativeFrames(profile.head);
-    this.profileHead = this._translateProfileTree(profile.head);
-    WebInspector.ProfileTreeModel.call(this, this.profileHead, this.profileStartTime, this.profileEndTime);
-    this._extractMetaNodes();
+    this._assignParentsInProfile();
     if (this.samples) {
-        this._buildIdToNodeMap();
         this._sortSamples();
         this._normalizeTimestamps();
+        this._buildIdToNodeMap();
         this._fixMissingSamples();
     }
-    this._assignTotalTimes(this.profileHead);
+    if (!WebInspector.moduleSetting("showNativeFunctionsInJSProfile").get())
+        this._filterNativeFrames();
+    this._assignDepthsInProfile();
+    this._calculateTimes(profile);
 }
 
 WebInspector.CPUProfileDataModel.prototype = {
     /**
-     * @param {!ProfilerAgent.CPUProfileNode} root
+     * @param {!ProfilerAgent.CPUProfile} profile
      */
-    _filterNativeFrames: function(root)
+    _calculateTimes: function(profile)
     {
-        // TODO: get rid of this function and do the filtering while _translateProfileTree
+        function totalHitCount(node) {
+            var result = node.hitCount;
+            for (var i = 0; i < node.children.length; i++)
+                result += totalHitCount(node.children[i]);
+            return result;
+        }
+        profile.totalHitCount = totalHitCount(profile.head);
+        this.totalHitCount = profile.totalHitCount;
+
+        var duration = this.profileEndTime - this.profileStartTime;
+        var samplingInterval = duration / profile.totalHitCount;
+        this.samplingInterval = samplingInterval;
+
+        function calculateTimesForNode(node) {
+            node.selfTime = node.hitCount * samplingInterval;
+            var totalHitCount = node.hitCount;
+            for (var i = 0; i < node.children.length; i++)
+                totalHitCount += calculateTimesForNode(node.children[i]);
+            node.totalTime = totalHitCount * samplingInterval;
+            return totalHitCount;
+        }
+        calculateTimesForNode(profile.head);
+    },
+
+    _filterNativeFrames: function()
+    {
         if (this.samples) {
-            /** @type {!Map<number, !ProfilerAgent.CPUProfileNode>} */
-            var idToNode = new Map();
-            var stack = [root];
-            while (stack.length) {
-                var node = stack.pop();
-                idToNode.set(node.id, node);
-                for (var i = 0; i < node.children.length; i++) {
-                    node.children[i].parent = node;
-                    stack.push(node.children[i]);
-                }
-            }
             for (var i = 0; i < this.samples.length; ++i) {
-                var node = idToNode.get(this.samples[i]);
+                var node = this.nodeByIndex(i);
                 while (isNativeNode(node))
                     node = node.parent;
                 this.samples[i] = node.id;
             }
         }
-        processSubtree(root);
+        processSubtree(this.profileHead);
 
         /**
          * @param {!ProfilerAgent.CPUProfileNode} node
@@ -128,43 +118,44 @@ WebInspector.CPUProfileDataModel.prototype = {
         }
     },
 
-    /**
-     * @param {!ProfilerAgent.CPUProfileNode} root
-     * @return {!WebInspector.CPUProfileNode}
-     */
-    _translateProfileTree: function(root)
+    _assignParentsInProfile: function()
     {
-        /**
-         * @param  {!ProfilerAgent.CPUProfileNode} node
-         * @return {number}
-         */
-        function computeHitCountForSubtree(node)
-        {
-            return node.children.reduce((acc, node) => acc + computeHitCountForSubtree(node), node.hitCount);
+        var head = this.profileHead;
+        head.parent = null;
+        var nodesToTraverse = [ head ];
+        while (nodesToTraverse.length) {
+            var parent = nodesToTraverse.pop();
+            var children = parent.children;
+            var length = children.length;
+            for (var i = 0; i < length; ++i) {
+                var child = children[i];
+                child.parent = parent;
+                if (child.children.length)
+                    nodesToTraverse.push(child);
+            }
         }
-        this.totalHitCount = computeHitCountForSubtree(root);
-        var sampleTime = (this.profileEndTime - this.profileStartTime) / this.totalHitCount;
-        var resultRoot = new WebInspector.CPUProfileNode(root, sampleTime);
-        var targetNodeStack = [resultRoot];
-        var sourceNodeStack = [root];
-        while (sourceNodeStack.length) {
-            var sourceNode = sourceNodeStack.pop();
-            var parentNode = targetNodeStack.pop();
-            parentNode.children = sourceNode.children.map(child => new WebInspector.CPUProfileNode(child, sampleTime));
-            sourceNodeStack.push.apply(sourceNodeStack, sourceNode.children);
-            targetNodeStack.push.apply(targetNodeStack, parentNode.children);
-        }
-        return resultRoot;
     },
 
-    /**
-     * @param {!WebInspector.ProfileNode} node
-     */
-    _assignTotalTimes: function(node)
+    _assignDepthsInProfile: function()
     {
-        // TODO: get rid of this field in favor of this.total
-        node.totalTime = node.total;
-        node.children.forEach(this._assignTotalTimes, this);
+        var head = this.profileHead;
+        head.depth = -1;
+        this.maxDepth = 0;
+        var nodesToTraverse = [ head ];
+        while (nodesToTraverse.length) {
+            var parent = nodesToTraverse.pop();
+            var depth = parent.depth + 1;
+            if (depth > this.maxDepth)
+                this.maxDepth = depth;
+            var children = parent.children;
+            var length = children.length;
+            for (var i = 0; i < length; ++i) {
+                var child = children[i];
+                child.depth = depth;
+                if (child.children.length)
+                    nodesToTraverse.push(child);
+            }
+        }
     },
 
     _sortSamples: function()
@@ -222,7 +213,7 @@ WebInspector.CPUProfileDataModel.prototype = {
 
     _buildIdToNodeMap: function()
     {
-        /** @type {!Object<number, !WebInspector.CPUProfileNode>} */
+        /** @type {!Object.<number, !ProfilerAgent.CPUProfileNode>} */
         this._idToNode = {};
         var idToNode = this._idToNode;
         var stack = [this.profileHead];
@@ -232,10 +223,7 @@ WebInspector.CPUProfileDataModel.prototype = {
             for (var i = 0; i < node.children.length; i++)
                 stack.push(node.children[i]);
         }
-    },
 
-    _extractMetaNodes: function()
-    {
         var topLevelNodes = this.profileHead.children;
         for (var i = 0; i < topLevelNodes.length && !(this.gcNode && this.programNode && this.idleNode); i++) {
             var node = topLevelNodes[i];
@@ -277,8 +265,8 @@ WebInspector.CPUProfileDataModel.prototype = {
         }
 
         /**
-         * @param {!WebInspector.ProfileNode} node
-         * @return {!WebInspector.ProfileNode}
+         * @param {!ProfilerAgent.CPUProfileNode} node
+         * @return {!ProfilerAgent.CPUProfileNode}
          */
         function bottomNode(node)
         {
@@ -298,8 +286,8 @@ WebInspector.CPUProfileDataModel.prototype = {
     },
 
     /**
-     * @param {function(number, !WebInspector.CPUProfileNode, number)} openFrameCallback
-     * @param {function(number, !WebInspector.CPUProfileNode, number, number, number)} closeFrameCallback
+     * @param {function(number, !ProfilerAgent.CPUProfileNode, number)} openFrameCallback
+     * @param {function(number, !ProfilerAgent.CPUProfileNode, number, number, number)} closeFrameCallback
      * @param {number=} startTime
      * @param {number=} stopTime
      */
@@ -370,7 +358,7 @@ WebInspector.CPUProfileDataModel.prototype = {
                 var start = stackStartTimes[stackTop];
                 var duration = sampleTime - start;
                 stackChildrenDuration[stackTop - 1] += duration;
-                closeFrameCallback(prevNode.depth, /** @type {!WebInspector.CPUProfileNode} */(prevNode), start, duration, duration - stackChildrenDuration[stackTop]);
+                closeFrameCallback(prevNode.depth, prevNode, start, duration, duration - stackChildrenDuration[stackTop]);
                 --stackTop;
                 if (node.depth === prevNode.depth) {
                     stackNodes.push(node);
@@ -402,19 +390,18 @@ WebInspector.CPUProfileDataModel.prototype = {
             var start = stackStartTimes[stackTop];
             var duration = sampleTime - start;
             stackChildrenDuration[stackTop - 1] += duration;
-            closeFrameCallback(node.depth, /** @type {!WebInspector.CPUProfileNode} */(node), start, duration, duration - stackChildrenDuration[stackTop]);
+            closeFrameCallback(node.depth, node, start, duration, duration - stackChildrenDuration[stackTop]);
             --stackTop;
         }
     },
 
     /**
      * @param {number} index
-     * @return {!WebInspector.CPUProfileNode}
+     * @return {!ProfilerAgent.CPUProfileNode}
      */
     nodeByIndex: function(index)
     {
         return this._idToNode[this.samples[index]];
-    },
+    }
 
-    __proto__: WebInspector.ProfileTreeModel.prototype
 }

@@ -288,6 +288,48 @@ WebInspector.SourceMapNamesResolver._resolveExpression = function(callFrame, uiS
 }
 
 /**
+ * @param {?WebInspector.DebuggerModel.CallFrame} callFrame
+ * @return {!Promise<?WebInspector.RemoteObject>}
+ */
+WebInspector.SourceMapNamesResolver.resolveThisObject = function(callFrame)
+{
+    if (!callFrame)
+        return Promise.resolve(/** @type {?WebInspector.RemoteObject} */(null));
+    if (!Runtime.experiments.isEnabled("resolveVariableNames"))
+        return Promise.resolve(callFrame.thisObject());
+
+    return WebInspector.SourceMapNamesResolver._resolveScope(callFrame.scopeChain()[0])
+        .then(onScopeResolved);
+
+    /**
+     * @param {!Map<string, string>} namesMapping
+     * @return {!Promise<?WebInspector.RemoteObject>}
+     */
+    function onScopeResolved(namesMapping)
+    {
+        var thisMappings = namesMapping.inverse().get("this");
+        if (!thisMappings || thisMappings.size !== 1)
+            return Promise.resolve(callFrame.thisObject());
+
+        var thisMapping = thisMappings.valuesArray()[0];
+        var callback;
+        var promise = new Promise(fulfill => callback = fulfill);
+        callFrame.evaluate(thisMapping, "backtrace", false, true, false, true, onEvaluated.bind(null, callback));
+        return promise;
+    }
+
+    /**
+     * @param {function(!WebInspector.RemoteObject)} callback
+     * @param {?RuntimeAgent.RemoteObject} evaluateResult
+     */
+    function onEvaluated(callback, evaluateResult)
+    {
+        var remoteObject = evaluateResult ? callFrame.target().runtimeModel.createRemoteObject(evaluateResult) : callFrame.thisObject();
+        callback(remoteObject);
+    }
+}
+
+/**
  * @param {!WebInspector.DebuggerModel.Scope} scope
  * @return {!WebInspector.RemoteObject}
  */

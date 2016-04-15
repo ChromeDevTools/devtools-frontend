@@ -1281,6 +1281,19 @@ Map.prototype.keysArray = function()
 }
 
 /**
+ * @return {!Multimap<!KEY, !VALUE>}
+ */
+Map.prototype.inverse = function()
+{
+    var result = new Multimap();
+    for (var key of this.keys()) {
+        var value = this.get(key);
+        result.set(value, key);
+    }
+    return result;
+}
+
+/**
  * @constructor
  * @template K, V
  */

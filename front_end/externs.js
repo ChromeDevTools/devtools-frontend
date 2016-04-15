@@ -683,6 +683,8 @@ ESTree.Node = function()
     this.name;
     /** @type {(?ESTree.Node|undefined)} */
     this.id;
+    /** @type {(number|undefined)} */
+    this.length;
 }
 
 /**

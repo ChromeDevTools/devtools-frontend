@@ -129,6 +129,16 @@ WebInspector.TextCursor.prototype = {
     },
 
     /**
+     * @param {number} offset
+     */
+    resetTo: function(offset)
+    {
+        this._offset = offset;
+        this._lineNumber = this._lineEndings.lowerBound(offset);
+        this._columnNumber = this._lineNumber ? this._offset - this._lineEndings[this._lineNumber - 1] - 1 : this._offset;
+    },
+
+    /**
      * @return {number}
      */
     lineNumber: function()

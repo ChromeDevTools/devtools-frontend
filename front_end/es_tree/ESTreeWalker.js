@@ -5,13 +5,15 @@
 /**
  * @constructor
  * @param {function(!ESTree.Node)} beforeVisit
- * @param {function(!ESTree.Node)} afterVisit
+ * @param {function(!ESTree.Node)=} afterVisit
  */
 WebInspector.ESTreeWalker = function(beforeVisit, afterVisit)
 {
     this._beforeVisit = beforeVisit;
-    this._afterVisit = afterVisit;
+    this._afterVisit = afterVisit || new Function();
 }
+
+WebInspector.ESTreeWalker.SkipSubtree = {};
 
 WebInspector.ESTreeWalker.prototype = {
     /**
@@ -32,7 +34,10 @@ WebInspector.ESTreeWalker.prototype = {
             return;
         node.parent = parent;
 
-        this._beforeVisit.call(null, node);
+        if (this._beforeVisit.call(null, node) === WebInspector.ESTreeWalker.SkipSubtree) {
+            this._afterVisit.call(null, node);
+            return;
+        }
 
         var walkOrder = WebInspector.ESTreeWalker._walkOrder[node.type];
         if (!walkOrder) {

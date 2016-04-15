@@ -5,53 +5,49 @@
 WebInspector.SourceMapNamesResolver = {};
 
 WebInspector.SourceMapNamesResolver._cachedMapSymbol = Symbol("cache");
-WebInspector.SourceMapNamesResolver._cachedPromiseSymbol = Symbol("cachePromise");
+WebInspector.SourceMapNamesResolver._cachedIdentifiersSymbol = Symbol("cachedIdentifiers");
+
+/**
+ * @constructor
+ * @param {string} name
+ * @param {number} lineNumber
+ * @param {number} columnNumber
+ */
+WebInspector.SourceMapNamesResolver.Identifier = function(name, lineNumber, columnNumber)
+{
+    this.name = name;
+    this.lineNumber = lineNumber;
+    this.columnNumber = columnNumber;
+}
 
 /**
  * @param {!WebInspector.DebuggerModel.Scope} scope
- * @return {!Promise.<!Map<string, string>>}
+ * @return {!Promise<!Array<!WebInspector.SourceMapNamesResolver.Identifier>>}
  */
-WebInspector.SourceMapNamesResolver._resolveScope = function(scope)
+WebInspector.SourceMapNamesResolver._scopeIdentifiers = function(scope)
 {
-    var cachedMap = scope[WebInspector.SourceMapNamesResolver._cachedMapSymbol];
-    if (cachedMap)
-        return Promise.resolve(cachedMap);
-
-    var cachedPromise = scope[WebInspector.SourceMapNamesResolver._cachedPromiseSymbol];
-    if (cachedPromise)
-        return cachedPromise;
-
     var startLocation = scope.startLocation();
     var endLocation = scope.endLocation();
 
     if (scope.type() === DebuggerAgent.ScopeType.Global || !startLocation || !endLocation || !startLocation.script().sourceMapURL || (startLocation.script() !== endLocation.script()))
-        return Promise.resolve(new Map());
+        return Promise.resolve(/** @type {!Array<!WebInspector.SourceMapNamesResolver.Identifier>}*/([]));
 
     var script = startLocation.script();
-    var sourceMap = WebInspector.debuggerWorkspaceBinding.sourceMapForScript(script);
-    if (!sourceMap)
-        return Promise.resolve(new Map());
-
-    var promise = script.requestContent().then(onContent);
-    scope[WebInspector.SourceMapNamesResolver._cachedPromiseSymbol] = promise;
-    return promise;
+    return script.requestContent().then(onContent);
 
     /**
      * @param {?string} content
-     * @return {!Promise<!Map<string, string>>}
+     * @return {!Promise<!Array<!WebInspector.SourceMapNamesResolver.Identifier>>}
      */
     function onContent(content)
     {
         if (!content)
-            return Promise.resolve(new Map());
-
-        var startLocation = scope.startLocation();
-        var endLocation = scope.endLocation();
-        var textRange = new WebInspector.TextRange(startLocation.lineNumber, startLocation.columnNumber, endLocation.lineNumber, endLocation.columnNumber);
+            return Promise.resolve(/** @type {!Array<!WebInspector.SourceMapNamesResolver.Identifier>}*/([]));
 
         var text = new WebInspector.Text(content);
-        var scopeText = text.extract(textRange);
-        var scopeStart = text.toSourceRange(textRange).offset;
+        var scopeRange = new WebInspector.TextRange(startLocation.lineNumber, startLocation.columnNumber, endLocation.lineNumber, endLocation.columnNumber)
+        var scopeText = text.extract(scopeRange);
+        var scopeStart = text.toSourceRange(scopeRange).offset;
         var prefix = "function fui";
 
         return WebInspector.SourceMapNamesResolverWorker._instance().javaScriptIdentifiers(prefix + scopeText)
@@ -63,28 +59,124 @@ WebInspector.SourceMapNamesResolver._resolveScope = function(scope)
      * @param {number} scopeStart
      * @param {string} prefix
      * @param {!Array<!{name: string, offset: number}>} identifiers
-     * @return {!Map<string, string>}
+     * @return {!Array<!WebInspector.SourceMapNamesResolver.Identifier>}
      */
     function onIdentifiers(text, scopeStart, prefix, identifiers)
     {
-        var namesMapping = new Map();
-        var lineEndings = text.lineEndings();
-
+        var result = [];
+        var cursor = new WebInspector.TextCursor(text.lineEndings());
+        var promises = [];
         for (var i = 0; i < identifiers.length; ++i) {
             var id = identifiers[i];
+            if (id.offset < prefix.length)
+                continue;
             var start = scopeStart + id.offset - prefix.length;
+            cursor.resetTo(start);
+            result.push(new WebInspector.SourceMapNamesResolver.Identifier(id.name, cursor.lineNumber(), cursor.columnNumber()));
+        }
+        return result;
+    }
+}
 
-            var lineNumber = lineEndings.lowerBound(start);
-            var columnNumber = start - (lineNumber === 0 ? 0 : (lineEndings[lineNumber - 1] + 1));
-            var entry = sourceMap.findEntry(lineNumber, columnNumber);
-            if (entry)
+/**
+ * @param {!WebInspector.DebuggerModel.Scope} scope
+ * @return {!Promise.<!Map<string, string>>}
+ */
+WebInspector.SourceMapNamesResolver._resolveScope = function(scope)
+{
+    var identifiersPromise = scope[WebInspector.SourceMapNamesResolver._cachedIdentifiersSymbol];
+    if (identifiersPromise)
+        return identifiersPromise;
+
+    var script = scope.callFrame().script;
+    var sourceMap = WebInspector.debuggerWorkspaceBinding.sourceMapForScript(script);
+    if (!sourceMap)
+        return Promise.resolve(new Map());
+
+    /** @type {!Map<string, !WebInspector.Text>} */
+    var textCache = new Map();
+    identifiersPromise = WebInspector.SourceMapNamesResolver._scopeIdentifiers(scope).then(onIdentifiers);
+    scope[WebInspector.SourceMapNamesResolver._cachedIdentifiersSymbol] = identifiersPromise;
+    return identifiersPromise;
+
+    /**
+     * @param {!Array<!WebInspector.SourceMapNamesResolver.Identifier>} identifiers
+     * @return {!Promise<!Map<string, string>>}
+     */
+    function onIdentifiers(identifiers)
+    {
+        var namesMapping = new Map();
+        // Extract as much as possible from SourceMap.
+        for (var i = 0; i < identifiers.length; ++i) {
+            var id = identifiers[i];
+            var entry = sourceMap.findEntry(id.lineNumber, id.columnNumber);
+            if (entry && entry.name)
                 namesMapping.set(id.name, entry.name);
         }
 
-        scope[WebInspector.SourceMapNamesResolver._cachedMapSymbol] = namesMapping;
-        delete scope[WebInspector.SourceMapNamesResolver._cachedPromiseSymbol];
-        WebInspector.SourceMapNamesResolver._scopeResolvedForTest();
-        return namesMapping;
+        // Resolve missing identifier names from sourcemap ranges.
+        var promises = [];
+        for (var i = 0; i < identifiers.length; ++i) {
+            var id = identifiers[i];
+            if (namesMapping.has(id.name))
+                continue;
+            var promise = resolveSourceName(id).then(onSourceNameResolved.bind(null, namesMapping, id));
+            promises.push(promise);
+        }
+        return Promise.all(promises)
+            .then(() => WebInspector.SourceMapNamesResolver._scopeResolvedForTest())
+            .then(() => namesMapping)
+    }
+
+    /**
+     * @param {!Map<string, string>} namesMapping
+     * @param {!WebInspector.SourceMapNamesResolver.Identifier} id
+     * @param {?string} sourceName
+     */
+    function onSourceNameResolved(namesMapping, id, sourceName)
+    {
+        if (!sourceName)
+            return;
+        namesMapping.set(id.name, sourceName);
+    }
+
+    /**
+     * @param {!WebInspector.SourceMapNamesResolver.Identifier} id
+     * @return {!Promise<?string>}
+     */
+    function resolveSourceName(id)
+    {
+        var startEntry = sourceMap.findEntry(id.lineNumber, id.columnNumber);
+        var endEntry = sourceMap.findEntry(id.lineNumber, id.columnNumber + id.name.length);
+        if (!startEntry || !endEntry || !startEntry.sourceURL || startEntry.sourceURL !== endEntry.sourceURL
+            || !startEntry.sourceLineNumber || !startEntry.sourceColumnNumber
+            || !endEntry.sourceLineNumber || !endEntry.sourceColumnNumber)
+            return Promise.resolve(/** @type {?string} */(null));
+        var sourceTextRange = new WebInspector.TextRange(startEntry.sourceLineNumber, startEntry.sourceColumnNumber, endEntry.sourceLineNumber, endEntry.sourceColumnNumber);
+        var uiSourceCode = WebInspector.networkMapping.uiSourceCodeForScriptURL(startEntry.sourceURL, script);
+        if (!uiSourceCode)
+            return Promise.resolve(/** @type {?string} */(null));
+
+        return uiSourceCode.requestContent()
+            .then(onSourceContent.bind(null, sourceTextRange));
+    }
+
+    /**
+     * @param {!WebInspector.TextRange} sourceTextRange
+     * @param {?string} content
+     * @return {?string}
+     */
+    function onSourceContent(sourceTextRange, content)
+    {
+        if (!content)
+            return null;
+        var text = textCache.get(content);
+        if (!text) {
+            text = new WebInspector.Text(content);
+            textCache.set(content, text);
+        }
+        var originalIdentifier = text.extract(sourceTextRange).trim();
+        return /[a-zA-Z0-9_$]+/.test(originalIdentifier) ? originalIdentifier : null;
     }
 }
 
@@ -151,7 +243,7 @@ WebInspector.SourceMapNamesResolver.resolveExpression = function(callFrame, orig
         if (reverseMapping.has(originalText))
             return Promise.resolve(reverseMapping.get(originalText) || "");
 
-        return WebInspector.SourceMapNamesResolver._resolveExpression(callFrame, uiSourceCode, lineNumber, startColumnNumber, endColumnNumber)
+        return WebInspector.SourceMapNamesResolver._resolveExpression(callFrame, uiSourceCode, lineNumber, startColumnNumber, endColumnNumber);
     }
 }
 

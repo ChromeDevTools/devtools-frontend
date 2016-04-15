@@ -1038,7 +1038,6 @@ WebInspector.DebuggerModel.CallFrame.fromPayloadArray = function(debuggerModel, 
 }
 
 WebInspector.DebuggerModel.CallFrame.prototype = {
-
     /**
      * @return {!WebInspector.Script}
      */
@@ -1205,6 +1204,14 @@ WebInspector.DebuggerModel.Scope = function(callFrame, ordinal)
 }
 
 WebInspector.DebuggerModel.Scope.prototype = {
+    /**
+     * @return {!WebInspector.DebuggerModel.CallFrame}
+     */
+    callFrame: function()
+    {
+        return this._callFrame;
+    },
+
     /**
      * @return {string}
      */

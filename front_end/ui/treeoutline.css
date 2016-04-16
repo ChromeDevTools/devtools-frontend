@@ -125,7 +125,3 @@ ol.tree-outline:focus li.selected * {
 .tree-outline ol.children.expanded {
     display: block;
 }
-
-.tree-text-interactive-highlight {
-    text-decoration: underline;
-}

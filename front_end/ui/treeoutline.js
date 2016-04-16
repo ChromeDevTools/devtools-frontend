@@ -43,18 +43,9 @@ function TreeOutline(nonFocusable)
     this._contentElement = this._rootElement._childrenListNode;
     this._contentElement.addEventListener("keydown", this._treeKeyDown.bind(this), true);
 
-    this.element = this._contentElement;
-
     this.setFocusable(!nonFocusable);
 
-    this.element.addEventListener("keypress", this._handleKeyPressForHighlighting.bind(this), true);
-    this.element.addEventListener("blur", this._clearFilter.bind(this), true);
-    this.element.addEventListener("click", this._clearFilter.bind(this), true);
-
-    this._currentSelectionFilterString = "";
-    this._interactiveFilterEnabled = false;
-    /** @type {!Array.<!TreeElement>} */
-    this._highlightedNodes = []
+    this.element = this._contentElement;
 }
 
 TreeOutline.Events = {
@@ -81,89 +72,6 @@ TreeOutline.prototype = {
     rootElement: function()
     {
         return this._rootElement;
-    },
-
-    /**
-     * @param {boolean} enable
-     */
-    setInteractiveFilterable: function(enable)
-    {
-        if (enable === this._interactiveFilterEnabled)
-            return;
-        if (!enable)
-            this._setCurrentSelectionFilterString("");
-        this._interactiveFilterEnabled = enable;
-    },
-
-    /**
-     * @param {string} filterString
-     */
-    _setCurrentSelectionFilterString: function(filterString)
-    {
-        this._currentSelectionFilterString = filterString;
-        this._refreshHighlighting();
-    },
-
-    /**
-     * @param {string} filterString
-     * @return {!RegExp}
-     */
-    _makeFilterRegexFromString: function(filterString)
-    {
-        return new RegExp(filterString.escapeForRegExp(), "gi")
-    },
-
-    _refreshHighlighting: function()
-    {
-        if (!this._rootElement)
-            return;
-
-        for (var changedNode of this._highlightedNodes)
-            changedNode._revertHighlightChanges();
-
-        this._highlightedNodes = [];
-
-        if (!this._currentSelectionFilterString)
-            return;
-
-        if (this.selectedTreeElement && !this.selectedTreeElement.selectable) {
-            if (!this.selectNext())
-                this.selectPrevious();
-        }
-
-        var filterRegex = this._makeFilterRegexFromString(this._currentSelectionFilterString);
-        var node = this._rootElement.firstChild();
-        while (node) {
-            if (node._applyHighlightFilter(filterRegex))
-                this._highlightedNodes.push(node);
-            node = node.traverseNextTreeElement(true, null, true);
-        }
-    },
-
-    _clearFilter: function()
-    {
-        if (this._interactiveFilterEnabled)
-            this._setCurrentSelectionFilterString("");
-    },
-
-    /**
-     * @param {!Event} event
-     */
-    _handleKeyPressForHighlighting: function(event)
-    {
-        if (!this._interactiveFilterEnabled)
-            return;
-
-        if (event.target !== this._contentElement)
-            return;
-
-        if (!this.selectedTreeElement || event.shiftKey || event.metaKey || event.ctrlKey)
-            return;
-
-        var currentFilterString = this._currentSelectionFilterString;
-        var key = event.data;
-        if (key !== "\r" && key !== "\n" && (key !== " " || currentFilterString))
-            this._setCurrentSelectionFilterString(currentFilterString + event.data);
     },
 
     /**
@@ -244,9 +152,9 @@ TreeOutline.prototype = {
     setFocusable: function(focusable)
     {
         if (focusable)
-            this.element.setAttribute("tabIndex", 0);
+            this._contentElement.setAttribute("tabIndex", 0);
         else
-            this.element.removeAttribute("tabIndex");
+            this._contentElement.removeAttribute("tabIndex");
     },
 
     focus: function()
@@ -321,24 +229,13 @@ TreeOutline.prototype = {
         if (!this.selectedTreeElement || event.shiftKey || event.metaKey || event.ctrlKey)
             return;
 
-        var currentFilterString = this._currentSelectionFilterString;
         var handled = false;
-        var key = event.keyCode;
         var nextSelectedElement;
-
-        switch (key) {
-        case WebInspector.KeyboardShortcut.Keys.Up.code:
-            if (!event.altKey)
-                handled = this.selectPrevious();
-            break;
-        case WebInspector.KeyboardShortcut.Keys.Down.code:
-            if (!event.altKey)
-                handled = this.selectNext();
-            break;
-        case WebInspector.KeyboardShortcut.Keys.Left.code:
-            if (this._interactiveFilterEnabled)
-                this._clearFilter();
-
+        if (event.keyIdentifier === "Up" && !event.altKey) {
+            handled = this.selectPrevious();
+        } else if (event.keyIdentifier === "Down" && !event.altKey) {
+            handled = this.selectNext();
+        } else if (event.keyIdentifier === "Left") {
             if (this.selectedTreeElement.expanded) {
                 if (event.altKey)
                     this.selectedTreeElement.collapseRecursively();
@@ -352,15 +249,10 @@ TreeOutline.prototype = {
                     while (nextSelectedElement && !nextSelectedElement.selectable)
                         nextSelectedElement = nextSelectedElement.parent;
                     handled = nextSelectedElement ? true : false;
-                } else if (this.selectedTreeElement.parent) {
+                } else if (this.selectedTreeElement.parent)
                     this.selectedTreeElement.parent.collapse();
-                }
             }
-            break;
-        case WebInspector.KeyboardShortcut.Keys.Right.code:
-            if (this._interactiveFilterEnabled)
-                this._clearFilter();
-
+        } else if (event.keyIdentifier === "Right") {
             if (!this.selectedTreeElement.revealed()) {
                 this.selectedTreeElement.reveal();
                 handled = true;
@@ -378,41 +270,12 @@ TreeOutline.prototype = {
                         this.selectedTreeElement.expand();
                 }
             }
-            break;
-        case WebInspector.KeyboardShortcut.Keys.Backspace.code:
-            if (this._interactiveFilterEnabled && currentFilterString) {
-                handled = true;
-                this._setCurrentSelectionFilterString(currentFilterString.substr(0, currentFilterString.length - 1));
-            } else {
-                handled = this.selectedTreeElement.ondelete();
-            }
-            break;
-        case WebInspector.KeyboardShortcut.Keys.Delete.code:
-            if (this._interactiveFilterEnabled && currentFilterString) {
-                handled = true;
-                this._clearFilter();
-            } else
-                handled = this.selectedTreeElement.ondelete();
-            break;
-        case WebInspector.KeyboardShortcut.Keys.Esc.code:
-            if (this._interactiveFilterEnabled) {
-                if (currentFilterString)
-                    handled = true;
-                this._clearFilter();
-            }
-            break;
-        case WebInspector.KeyboardShortcut.Keys.Space.code:
-            if (!currentFilterString)
-                handled = this.selectedTreeElement.onspace();
-            break;
-        default:
-            if (isEnterKey(event)) {
-                if (this._interactiveFilterEnabled)
-                    this._clearFilter();
-
-                handled = this.selectedTreeElement.onenter();
-            }
-        }
+        } else if (event.keyCode === 8 /* Backspace */ || event.keyCode === 46 /* Delete */)
+            handled = this.selectedTreeElement.ondelete();
+        else if (isEnterKey(event))
+            handled = this.selectedTreeElement.onenter();
+        else if (event.keyCode === WebInspector.KeyboardShortcut.Keys.Space.code)
+            handled = this.selectedTreeElement.onspace();
 
         if (nextSelectedElement) {
             nextSelectedElement.reveal();
@@ -514,50 +377,12 @@ function TreeElement(title, expandable)
     this.selected = false;
     this.setExpandable(expandable || false);
     this._collapsible = true;
-
-    /** @type {!Array.<!Object>} */
-    this._highlightChanges = [];
 }
 
 /** @const */
 TreeElement._ArrowToggleWidth = 10;
 
 TreeElement.prototype = {
-    /**
-     * @return {boolean}
-     */
-    _checkFilter: function()
-    {
-        return this.treeOutline._currentSelectionFilterString ? this.treeOutline._makeFilterRegexFromString(this.treeOutline._currentSelectionFilterString).test(this._titleElement.textContent) : true;
-    },
-
-    /**
-     * @param {!RegExp} regex
-     * @return {boolean}
-     */
-    _applyHighlightFilter: function(regex) {
-        var textContent = this._listItemNode.textContent;
-        var ranges = [];
-
-        this._revertHighlightChanges();
-
-        var match = regex.exec(textContent);
-        while (match) {
-            ranges.push(new WebInspector.SourceRange(match.index, match[0].length));
-            match = regex.exec(textContent);
-        }
-        if (ranges.length)
-            WebInspector.highlightRangesWithStyleClass(this._listItemNode, ranges, "tree-text-interactive-highlight", this._highlightChanges);
-
-        return !!this._highlightChanges.length
-    },
-
-    _revertHighlightChanges: function()
-    {
-        WebInspector.revertDomChanges(this._highlightChanges);
-        this._highlightChanges = [];
-    },
-
     /**
      * @param {?TreeElement} ancestor
      * @return {boolean}
@@ -778,7 +603,7 @@ TreeElement.prototype = {
 
     get selectable()
     {
-        if (this._hidden || !this._checkFilter())
+        if (this._hidden)
             return false;
         return this._selectable;
     },

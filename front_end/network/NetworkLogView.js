@@ -622,26 +622,36 @@ WebInspector.NetworkLogView.prototype = {
     {
         this._sortingFunctions = {};
         this._sortingFunctions.name = WebInspector.NetworkDataGridNode.NameComparator;
-        this._sortingFunctions.method = WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, "requestMethod", false);
-        this._sortingFunctions.status = WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, "statusCode", false);
-        this._sortingFunctions.protocol = WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, "protocol", false);
-        this._sortingFunctions.scheme = WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, "scheme", false);
-        this._sortingFunctions.domain = WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, "domain", false);
+        this._sortingFunctions.method = WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, "requestMethod");
+        this._sortingFunctions.status = WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, "statusCode");
+        this._sortingFunctions.protocol = WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, "protocol");
+        this._sortingFunctions.scheme = WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, "scheme");
+        this._sortingFunctions.domain = WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, "domain");
         this._sortingFunctions.remoteAddress = WebInspector.NetworkDataGridNode.RemoteAddressComparator;
         this._sortingFunctions.type = WebInspector.NetworkDataGridNode.TypeComparator;
         this._sortingFunctions.initiator = WebInspector.NetworkDataGridNode.InitiatorComparator;
         this._sortingFunctions.cookies = WebInspector.NetworkDataGridNode.RequestCookiesCountComparator;
         this._sortingFunctions.setCookies = WebInspector.NetworkDataGridNode.ResponseCookiesCountComparator;
         this._sortingFunctions.size = WebInspector.NetworkDataGridNode.SizeComparator;
-        this._sortingFunctions.time = WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, "duration", false);
-        this._sortingFunctions.connectionId = WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, "connectionId", false);
+        this._sortingFunctions.time = WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, "duration");
+        this._sortingFunctions.connectionId = WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, "connectionId");
         this._sortingFunctions.priority = WebInspector.NetworkDataGridNode.InitialPriorityComparator;
-        this._sortingFunctions.timeline = WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, "startTime", false);
-        this._sortingFunctions.startTime = WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, "startTime", false);
-        this._sortingFunctions.endTime = WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, "endTime", false);
-        this._sortingFunctions.responseTime = WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, "responseReceivedTime", false);
-        this._sortingFunctions.duration = WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, "duration", true);
-        this._sortingFunctions.latency = WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, "latency", true);
+        this._sortingFunctions.timeline = WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, "startTime");
+        this._sortingFunctions.startTime = WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, "startTime");
+        this._sortingFunctions.endTime = WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, "endTime");
+        this._sortingFunctions.responseTime = WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, "responseReceivedTime");
+        this._sortingFunctions.duration = WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, "duration");
+        this._sortingFunctions.latency = WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, "latency");
+
+        this._sortingFunctions["Cache-Control"] = WebInspector.NetworkDataGridNode.ResponseHeaderStringComparator.bind(null, "Cache-Control");
+        this._sortingFunctions["Connection"] = WebInspector.NetworkDataGridNode.ResponseHeaderStringComparator.bind(null, "Connection");
+        this._sortingFunctions["Content-Encoding"] = WebInspector.NetworkDataGridNode.ResponseHeaderStringComparator.bind(null, "Content-Encoding");
+        this._sortingFunctions["Content-Length"] = WebInspector.NetworkDataGridNode.ResponseHeaderNumberComparator.bind(null, "Content-Length");
+        this._sortingFunctions["ETag"] = WebInspector.NetworkDataGridNode.ResponseHeaderStringComparator.bind(null, "ETag");
+        this._sortingFunctions["Keep-Alive"] = WebInspector.NetworkDataGridNode.ResponseHeaderStringComparator.bind(null, "Keep-Alive");
+        this._sortingFunctions["Last-Modified"] = WebInspector.NetworkDataGridNode.ResponseHeaderDateComparator.bind(null, "Last-Modified");
+        this._sortingFunctions["Server"] = WebInspector.NetworkDataGridNode.ResponseHeaderStringComparator.bind(null, "Server");
+        this._sortingFunctions["Vary"] = WebInspector.NetworkDataGridNode.ResponseHeaderStringComparator.bind(null, "Vary");
     },
 
     _createCalculators: function()

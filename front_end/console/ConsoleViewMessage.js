@@ -488,13 +488,15 @@ WebInspector.ConsoleViewMessage.prototype = {
      */
     _formatParameterAsNode: function(object, elem)
     {
-        WebInspector.Renderer.renderPromise(object).then(appendRenderer, failedToRender.bind(this));
+        WebInspector.Renderer.renderPromise(object).then(appendRenderer.bind(this), failedToRender.bind(this));
         /**
          * @param {!Element} rendererElement
+         * @this {WebInspector.ConsoleViewMessage}
          */
         function appendRenderer(rendererElement)
         {
             elem.appendChild(rendererElement);
+            this._formattedParameterAsNodeForTest();
         }
 
         /**
@@ -504,6 +506,10 @@ WebInspector.ConsoleViewMessage.prototype = {
         {
             this._formatParameterAsObject(object, elem, false);
         }
+    },
+
+    _formattedParameterAsNodeForTest: function()
+    {
     },
 
     /**

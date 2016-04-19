@@ -14,6 +14,7 @@ WebInspector.DeviceModeToolbar = function(model, showMediaInspectorSetting, show
     this._showMediaInspectorSetting = showMediaInspectorSetting;
     this._showRulersSetting = showRulersSetting;
 
+    this._deviceOutlineSetting = this._model.deviceOutlineSetting();
     this._showDeviceScaleFactorSetting = WebInspector.settings.createSetting("emulation.showDeviceScaleFactor", false);
     this._showDeviceScaleFactorSetting.addChangeListener(this._updateDeviceScaleFactorVisibility, this);
 
@@ -270,7 +271,9 @@ WebInspector.DeviceModeToolbar.prototype = {
         contextMenu.appendCheckboxItem(WebInspector.UIString("Show throttling"), this._toggleNetworkConditions.bind(this), this._showNetworkConditionsSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
         contextMenu.appendCheckboxItem(WebInspector.UIString("Show media queries"), this._toggleMediaInspector.bind(this), this._showMediaInspectorSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
         contextMenu.appendCheckboxItem(WebInspector.UIString("Show rulers"), this._toggleRulers.bind(this), this._showRulersSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
-        contextMenu.appendSeparator();
+        if (Runtime.experiments.isEnabled("deviceFrames")) {
+            contextMenu.appendCheckboxItem(WebInspector.UIString("Show device frame"), this._toggleDeviceFrames.bind(this), this._deviceOutlineSetting.get() && this._model.outlineImage() !== "", (this._model.type() === WebInspector.DeviceModeModel.Type.None || this._model.outlineImage() === ""));
+        }
         contextMenu.appendItemsAtLocation("deviceModeMenu");
         contextMenu.appendSeparator();
         contextMenu.appendItem(WebInspector.UIString("Reset to defaults"), this._reset.bind(this));
@@ -279,6 +282,11 @@ WebInspector.DeviceModeToolbar.prototype = {
     _toggleDeviceScaleFactor: function()
     {
         this._showDeviceScaleFactorSetting.set(!this._showDeviceScaleFactorSetting.get());
+    },
+
+    _toggleDeviceFrames: function()
+    {
+        this._deviceOutlineSetting.set(!this._deviceOutlineSetting.get());
     },
 
     _toggleUserAgentType: function()

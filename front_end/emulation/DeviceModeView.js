@@ -41,10 +41,15 @@ WebInspector.DeviceModeView.prototype = {
         this._mediaInspectorContainer = this._contentClip.createChild("div", "device-mode-media-container");
         this._contentArea = this._contentClip.createChild("div", "device-mode-content-area");
 
+        this._outlineImage = this._contentArea.createChild("img", "device-mode-outline-image hidden fill");
+        this._outlineImage.addEventListener("load", this._onImageLoaded.bind(this, this._outlineImage, true), false);
+        this._outlineImage.addEventListener("error", this._onImageLoaded.bind(this, this._outlineImage, false), false);
+        this._outlineImage.classList.toggle("device-frame-visible", this._model.deviceOutlineSetting().get());
+
         this._screenArea = this._contentArea.createChild("div", "device-mode-screen-area");
         this._screenImage = this._screenArea.createChild("img", "device-mode-screen-image hidden");
-        this._screenImage.addEventListener("load", this._onScreenImageLoaded.bind(this, true), false);
-        this._screenImage.addEventListener("error", this._onScreenImageLoaded.bind(this, false), false);
+        this._screenImage.addEventListener("load", this._onImageLoaded.bind(this, this._screenImage, true), false);
+        this._screenImage.addEventListener("error", this._onImageLoaded.bind(this, this._screenImage, false), false);
 
         this._bottomRightResizerElement = this._screenArea.createChild("div", "device-mode-resizer device-mode-bottom-right-resizer");
         this._bottomRightResizerElement.createChild("div", "");
@@ -188,21 +193,30 @@ WebInspector.DeviceModeView.prototype = {
 
     _updateUI: function()
     {
+        /**
+         * @param {!Element} element
+         * @param {!WebInspector.Rect} rect
+         */
+        function applyRect(element, rect)
+        {
+            element.style.left = rect.left + "px";
+            element.style.top = rect.top + "px";
+            element.style.width = rect.width + "px";
+            element.style.height = rect.height + "px";
+        }
+
         if (!this.isShowing())
             return;
 
         var zoomFactor = WebInspector.zoomManager.zoomFactor();
         var callDoResize = false;
-        var showRulers = this._showRulersSetting.get() && this._model.type() !== WebInspector.DeviceModeModel.Type.None;
+        var showRulers = this._showRulersSetting.get() && !this._model.deviceOutlineSetting().get() && this._model.type() !== WebInspector.DeviceModeModel.Type.None;
         var contentAreaResized = false;
         var updateRulers = false;
 
         var cssScreenRect = this._model.screenRect().scale(1 / zoomFactor);
         if (!cssScreenRect.isEqual(this._cachedCssScreenRect)) {
-            this._screenArea.style.left = cssScreenRect.left + "px";
-            this._screenArea.style.top = cssScreenRect.top + "px";
-            this._screenArea.style.width = cssScreenRect.width + "px";
-            this._screenArea.style.height = cssScreenRect.height + "px";
+            applyRect(this._screenArea, cssScreenRect);
             this._leftRuler.element.style.left = cssScreenRect.left + "px";
             updateRulers = true;
             callDoResize = true;
@@ -211,13 +225,18 @@ WebInspector.DeviceModeView.prototype = {
 
         var cssVisiblePageRect = this._model.visiblePageRect().scale(1 / zoomFactor);
         if (!cssVisiblePageRect.isEqual(this._cachedCssVisiblePageRect)) {
-            this._pageArea.style.left = cssVisiblePageRect.left + "px";
-            this._pageArea.style.top = cssVisiblePageRect.top + "px";
-            this._pageArea.style.width = cssVisiblePageRect.width + "px";
-            this._pageArea.style.height = cssVisiblePageRect.height + "px";
+            applyRect(this._pageArea, cssVisiblePageRect);
             callDoResize = true;
             this._cachedCssVisiblePageRect = cssVisiblePageRect;
         }
+
+        var outlineRect = this._model.outlineRect().scale(1 / zoomFactor);
+        if (!outlineRect.isEqual(this._cachedOutlineRect)) {
+            applyRect(this._outlineImage, outlineRect);
+            callDoResize = true;
+            this._cachedOutlineRect = outlineRect;
+        }
+        this._outlineImage.classList.toggle("device-frame-visible", (this._model.deviceOutlineSetting().get() && this._model.outlineImage()));
 
         var resizable = this._model.type() === WebInspector.DeviceModeModel.Type.Responsive;
         if (resizable !== this._cachedResizable) {
@@ -243,7 +262,7 @@ WebInspector.DeviceModeView.prototype = {
         if (showRulers !== this._cachedShowRulers) {
             this._contentClip.classList.toggle("device-mode-rulers-visible", showRulers);
             if (showRulers) {
-                this._topRuler.show(this._contentClip, this._contentArea);
+                this._topRuler.show(this._contentArea);
                 this._leftRuler.show(this._contentArea);
             } else {
                 this._topRuler.detach();
@@ -263,36 +282,41 @@ WebInspector.DeviceModeView.prototype = {
         }
 
         this._toolbar.update();
-        this._loadScreenImage(this._model.screenImage());
+        this._loadImage(this._screenImage, this._model.screenImage());
+        this._loadImage(this._outlineImage, this._model.outlineImage());
         this._mediaInspector.setAxisTransform(this._model.scale());
         if (callDoResize)
             this.doResize();
         if (updateRulers) {
             this._topRuler.render(this._cachedCssScreenRect ? this._cachedCssScreenRect.left : 0, this._model.scale());
             this._leftRuler.render(0, this._model.scale());
+            this._topRuler.element.style.top = this._cachedCssScreenRect ? this._cachedCssScreenRect.top + "px" : 0;
+            this._leftRuler.element.style.top = this._cachedCssScreenRect ? this._cachedCssScreenRect.top + "px" : 0;
         }
         if (contentAreaResized)
             this._contentAreaResized();
     },
 
     /**
+     * @param {!Element} element
      * @param {string} srcset
      */
-    _loadScreenImage: function(srcset)
+    _loadImage: function(element, srcset)
     {
-        if (this._screenImage.getAttribute("srcset") === srcset)
+        if (element.getAttribute("srcset") === srcset)
             return;
-        this._screenImage.setAttribute("srcset", srcset);
+        element.setAttribute("srcset", srcset);
         if (!srcset)
-            this._screenImage.classList.toggle("hidden", true);
+            element.classList.toggle("hidden", true);
     },
 
     /**
+     * @param {!Element} element
      * @param {boolean} success
      */
-    _onScreenImageLoaded: function(success)
+    _onImageLoaded: function(element, success)
     {
-        this._screenImage.classList.toggle("hidden", !success);
+        element.classList.toggle("hidden", !success);
     },
 
     _contentAreaResized: function()

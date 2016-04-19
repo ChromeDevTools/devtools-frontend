@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="917px" height="455px" viewBox="0 0 917 455" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Nexus 5X</title>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Nexus5X" transform="translate(458.500000, 227.500000) rotate(-90.000000) translate(-458.500000, -227.500000) translate(231.000000, -231.000000)">
+            <rect id="Rectangle-path" fill="#656565" opacity="0.7" x="0" y="0" width="451.2" height="916.9" rx="59"></rect>
+            <path d="M3.8,62.4 C3.8,29.8 30.2,3.4 62.8,3.4 L388.8,3.4 C421.3,3.4 447.8,29.9 447.8,62.4 L447.8,853 C447.8,885.5 421.3,912 388.8,912 L62.8,912 C30.2,912 3.8,885.5 3.8,853 L3.8,62.3 L3.8,62.4 Z" id="Shape" fill="#000000" opacity="0.7"></path>
+            <rect id="Rectangle-path" fill="#2B292B" x="6.9" y="7.2" width="438.2" height="905.4" rx="59"></rect>
+            <path d="M451.2,238.2 L455,238.2 L455,300.7 L451.2,300.7 L451.2,238.2 Z M451.2,363.2 L453.9,363.2 L453.9,500.4 L451,500.4 L451.2,363.2 Z" id="Shape" fill="#656364"></path>
+            <g id="Group" transform="translate(76.000000, 30.000000)">
+                <path d="M9.2,18 C14.2,18 18,14.2 18,9.3 C18,4.5 14,0.6 9.2,0.6 C4.4,0.6 0.5,4.6 0.5,9.3 C0.5,14.3 4.5,18.1 9.2,18.1 L9.2,18 Z" id="Shape" fill="#373737" opacity="0.6"></path>
+                <circle id="Oval" fill="#160F26" cx="9.2" cy="9.3" r="5"></circle>
+            </g>
+            <path d="M19.4,87.6 L430.4,87.6 L430.4,818.6 L19.4,818.6 L19.4,87.6 Z" id="Shape" fill="#171717" opacity="0.5"></path>
+            <rect id="Rectangle-path" stroke="#393939" stroke-width="2" fill="#0D0B0B" opacity="0.3" x="143.3" y="871.3" width="164.2" height="14.5" rx="7"></rect>
+            <rect id="Rectangle-path" stroke="#393939" stroke-width="2" fill="#0D0B0B" opacity="0.3" x="143.3" y="32.5" width="164.2" height="14.5" rx="7"></rect>
+        </g>
+    </g>
+</svg>

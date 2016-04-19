@@ -48,10 +48,6 @@
     box-shadow: inset 0 -1px #ccc;
 }
 
-.device-mode-content-clip:not(.device-mode-rulers-visible) .device-mode-media-container {
-    margin-bottom: 20px;
-}
-
 .device-mode-presets-container {
     flex: 0 0 20px;
     display: flex;
@@ -131,6 +127,10 @@
     top: 0;
     width: 100%;
     height: 100%;
+}
+
+.device-mode-outline-image.device-frame-visible + .device-mode-screen-area {
+    box-shadow: none;
 }
 
 .device-mode-resizer {

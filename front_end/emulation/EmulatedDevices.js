@@ -133,7 +133,6 @@ WebInspector.EmulatedDevice.fromJSONV1 = function(json)
                     throw new Error("Emulated device has wrong outline insets");
                 result.outlineImage = /** @type {string} */ (parseValue(json["outline"], "image", "string"));
             }
-
             return /** @type {!WebInspector.EmulatedDevice.Orientation} */ (result);
         }
 
@@ -304,6 +303,20 @@ WebInspector.EmulatedDevice.prototype = {
         if (!this._extension)
             return mode.image;
         return this._extension.module().substituteURL(mode.image);
+    },
+
+    /**
+     * @param {!WebInspector.EmulatedDevice.Mode} mode
+     * @return {string}
+     */
+    outlineImage: function(mode)
+    {
+        var orientation = this.orientationByName(mode.orientation);
+        if (!orientation.outlineImage)
+            return "";
+        if (!this._extension)
+            return orientation.outlineImage;
+        return this._extension.module().substituteURL(orientation.outlineImage);
     },
 
     /**

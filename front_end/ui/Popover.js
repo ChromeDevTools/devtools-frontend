@@ -243,7 +243,7 @@ WebInspector.Popover.prototype = {
         }
 
         this.element.className = WebInspector.Popover._classNamePrefix + " " + verticalAlignment + "-" + horizontalAlignment + "-arrow";
-        this.element.positionAt(newElementPosition.x, Math.max(0, newElementPosition.y - borderWidth), container);
+        this.element.positionAt(newElementPosition.x, newElementPosition.y - borderWidth, container);
         this.element.style.width = newElementPosition.width + borderWidth * 2 + "px";
         this.element.style.height = newElementPosition.height + borderWidth * 2 + "px";
     },

@@ -43,10 +43,12 @@ WebInspector.ServiceWorkersView.prototype = {
         this._target = target;
         this._manager = this._target.serviceWorkerManager;
 
-        var forceUpdate = new WebInspector.ToolbarCheckbox(WebInspector.UIString("Update on reload"), WebInspector.UIString("Update Service Worker on page reload"), this._manager.forceUpdateOnReloadSetting());
+        var forceUpdate = new WebInspector.ToolbarCheckbox(WebInspector.UIString("Update worker on reload"), WebInspector.UIString("Update Service Worker on page reload"), this._manager.forceUpdateOnReloadSetting());
         this._toolbar.appendToolbarItem(forceUpdate);
-
-        this._showAllCheckbox = new WebInspector.ToolbarCheckbox(WebInspector.UIString("Show all"), WebInspector.UIString("Show all Service Workers"));
+        var fallbackToNetwork = new WebInspector.ToolbarCheckbox(WebInspector.UIString("Bypass worker for network"), WebInspector.UIString("Bypass Service Worker and load resources from the network"), target.networkManager.bypassServiceWorkerSetting());
+        this._toolbar.appendToolbarItem(fallbackToNetwork);
+        this._toolbar.appendSpacer();
+        this._showAllCheckbox = new WebInspector.ToolbarCheckbox(WebInspector.UIString("Show all"), WebInspector.UIString("Show all Service Workers regardless of the scope"));
         this._showAllCheckbox.inputElement.addEventListener("change", this._onShowAllCheckboxChanged.bind(this), false);
         this._toolbar.appendToolbarItem(this._showAllCheckbox);
 

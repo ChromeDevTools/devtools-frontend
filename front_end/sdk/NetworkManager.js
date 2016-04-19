@@ -54,6 +54,11 @@ WebInspector.NetworkManager = function(target)
     /** @type {!Map<!NetworkAgent.CertificateId, !Promise<!NetworkAgent.CertificateDetails>>} */
     this._certificateDetailsCache = new Map();
 
+    this._bypassServiceWorkerSetting = WebInspector.settings.createSetting("bypassServiceWorker", false);
+    if (this._bypassServiceWorkerSetting.get())
+        this._bypassServiceWorkerChanged();
+    this._bypassServiceWorkerSetting.addChangeListener(this._bypassServiceWorkerChanged, this);
+
     WebInspector.moduleSetting("cacheDisabled").addChangeListener(this._cacheDisabledSettingChanged, this);
 }
 
@@ -143,6 +148,19 @@ WebInspector.NetworkManager.prototype = {
 
         this._certificateDetailsCache.set(certificateId, promise);
         return promise;
+    },
+
+    /**
+     * @return {!WebInspector.Setting}
+     */
+    bypassServiceWorkerSetting: function()
+    {
+        return this._bypassServiceWorkerSetting;
+    },
+
+    _bypassServiceWorkerChanged: function()
+    {
+        this._networkAgent.setBypassServiceWorker(this._bypassServiceWorkerSetting.get());
     },
 
     __proto__: WebInspector.SDKModel.prototype

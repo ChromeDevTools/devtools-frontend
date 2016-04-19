@@ -217,7 +217,7 @@ WebInspector.ResourcesPanel.prototype = {
         this.cookieListTreeElement.removeChildren();
         this.cacheStorageListTreeElement.removeChildren();
 
-        if (this.visibleView && !(this.visibleView instanceof WebInspector.StorageCategoryView))
+        if (this.visibleView && !(this.visibleView instanceof WebInspector.StorageCategoryView) && !(this.visibleView instanceof WebInspector.ServiceWorkersView))
             this.visibleView.detach();
 
         this._storageViewToolbar.removeToolbarItems();
@@ -1513,29 +1513,37 @@ WebInspector.SWCacheTreeElement.prototype = {
 
 /**
  * @constructor
- * @extends {WebInspector.StorageCategoryTreeElement}
+ * @extends {WebInspector.BaseStorageTreeElement}
  * @param {!WebInspector.ResourcesPanel} storagePanel
  */
 WebInspector.ServiceWorkersTreeElement = function(storagePanel)
 {
-    WebInspector.StorageCategoryTreeElement.call(this, storagePanel, WebInspector.UIString("Service Workers"), "Service Workers", ["service-workers-tree-item"]);
+    WebInspector.BaseStorageTreeElement.call(this, storagePanel, "Service Workers", ["service-workers-tree-item"], false);
 }
 
 WebInspector.ServiceWorkersTreeElement.prototype = {
+    /**
+     * @return {string}
+     */
+    get itemURL()
+    {
+        return "service-workers://";
+    },
+
     /**
      * @override
      * @return {boolean}
      */
     onselect: function(selectedByUser)
     {
-        WebInspector.StorageCategoryTreeElement.prototype.onselect.call(this, selectedByUser);
+        WebInspector.BaseStorageTreeElement.prototype.onselect.call(this, selectedByUser);
         if (!this._view)
             this._view = new WebInspector.ServiceWorkersView();
         this._storagePanel.showServiceWorkersView(this._view);
         return false;
     },
 
-    __proto__: WebInspector.StorageCategoryTreeElement.prototype
+    __proto__: WebInspector.BaseStorageTreeElement.prototype
 }
 
 

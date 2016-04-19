@@ -1547,6 +1547,14 @@
                 "description": "Toggles ignoring cache for each request. If <code>true</code>, cache will not be used."
             },
             {
+                "name": "setBypassServiceWorker",
+                "parameters": [
+                    { "name": "bypass", "type": "boolean", "description": "Bypass service worker and load from network." }
+                ],
+                "hidden": true,
+                "description": "Toggles ignoring of service worker for each request."
+            },
+            {
                 "name": "setDataSizeLimitsForTest",
                 "parameters": [
                     { "name": "maxTotalSize", "type": "integer", "description": "Maximum total buffer size." },

@@ -485,6 +485,18 @@
             'front_end/emulated_devices/google-nexus-5x-vertical-keyboard-2x.png',
             'front_end/emulated_devices/google-nexus-5x-vertical-navigation-1x.png',
             'front_end/emulated_devices/google-nexus-5x-vertical-navigation-2x.png',
+            'front_end/emulated_devices/iPad-landscape.svg',
+            'front_end/emulated_devices/iPad-portrait.svg',
+            'front_end/emulated_devices/iPhone5-landscape.svg',
+            'front_end/emulated_devices/iPhone5-portrait.svg',
+            'front_end/emulated_devices/iPhone6-landscape.svg',
+            'front_end/emulated_devices/iPhone6-portrait.svg',
+            'front_end/emulated_devices/iPhone6Plus-landscape.svg',
+            'front_end/emulated_devices/iPhone6Plus-portrait.svg',
+            'front_end/emulated_devices/Nexus5X-landscape.svg',
+            'front_end/emulated_devices/Nexus5X-portrait.svg',
+            'front_end/emulated_devices/Nexus6P-landscape.svg',
+            'front_end/emulated_devices/Nexus6P-portrait.svg'
         ],
         'devtools_es_tree_js_files': [
             'front_end/es_tree/ESTreeWalker.js',

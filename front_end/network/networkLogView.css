@@ -384,7 +384,8 @@
 .network-graph-bar.request-timing.dns,
 .network-graph-bar.request-timing.ssl,
 .network-graph-bar.request-timing.connecting,
-.network-graph-bar.request-timing.blocking {
+.network-graph-bar.request-timing.blocking,
+.network-graph-bar.request-timing.push {
     margin: 3px 0;
 }
 
@@ -393,7 +394,8 @@
     border: solid 1px #AAAAAA;
 }
 
-.network-graph-bar.request-timing.receiving, -theme-preserve {
+.network-graph-bar.request-timing.receiving, -theme-preserve,
+.network-graph-bar.request-timing.receiving-push, -theme-preserve {
     background-color: #03A9F4;
 }
 
@@ -419,6 +421,10 @@
 
 .network-graph-bar.request-timing.blocking, -theme-preserve {
     background-color: #AAAAAA;
+}
+
+.network-graph-bar.request-timing.push, -theme-preserve {
+    background-color: #8CDBff;
 }
 
 .network-graph-bar.cached {

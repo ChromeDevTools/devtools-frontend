@@ -251,7 +251,7 @@ WebInspector.NetworkOverview.prototype = {
             var request = requests[i];
             var band = this._bandId(request.connectionId);
             var y = (band === -1) ? 0 : (band % this._numBands + 1);
-            var timeRanges = WebInspector.RequestTimingView.calculateRequestTimeRanges(request);
+            var timeRanges = WebInspector.RequestTimingView.calculateRequestTimeRanges(request, this._calculator.minimumBoundary());
             for (var j = 0; j < timeRanges.length; ++j) {
                 var type = timeRanges[j].name;
                 if (band !== -1 || type === WebInspector.RequestTimeRangeNames.Total)
@@ -268,6 +268,7 @@ WebInspector.NetworkOverview.prototype = {
         drawLines(WebInspector.RequestTimeRangeNames.Connecting, "#FF9800");
         drawLines(WebInspector.RequestTimeRangeNames.ServiceWorker, "#FF9800");
         drawLines(WebInspector.RequestTimeRangeNames.ServiceWorkerPreparation, "#FF9800");
+        drawLines(WebInspector.RequestTimeRangeNames.Push, "#8CDBff");
         drawLines(WebInspector.RequestTimeRangeNames.Proxy, "#A1887F");
         drawLines(WebInspector.RequestTimeRangeNames.DNS, "#009688");
         drawLines(WebInspector.RequestTimeRangeNames.SSL, "#9C27B0");

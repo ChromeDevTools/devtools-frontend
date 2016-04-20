@@ -1223,6 +1223,8 @@
                     { "name": "workerReady", "type": "number", "description": "Finished Starting ServiceWorker.", "hidden": true },
                     { "name": "sendStart", "type": "number", "description": "Started sending request." },
                     { "name": "sendEnd", "type": "number", "description": "Finished sending request." },
+                    { "name": "pushStart", "type": "number", "description": "Time the server started pushing request.", "hidden": true },
+                    { "name": "pushEnd", "type": "number", "description": "Time the server finished pushing request.", "hidden": true },
                     { "name": "receiveHeadersEnd", "type": "number", "description": "Finished receiving response headers." }
                 ]
             },

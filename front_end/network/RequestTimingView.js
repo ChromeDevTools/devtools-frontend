@@ -73,12 +73,14 @@ WebInspector.RequestTimingView.prototype = {
 
 /** @enum {string} */
 WebInspector.RequestTimeRangeNames = {
+    Push: "push",
     Queueing: "queueing",
     Blocking: "blocking",
     Connecting: "connecting",
     DNS: "dns",
     Proxy: "proxy",
     Receiving: "receiving",
+    ReceivingPush: "receiving-push",
     Sending: "sending",
     ServiceWorker: "serviceworker",
     ServiceWorkerPreparation: "serviceworker-preparation",
@@ -106,11 +108,13 @@ WebInspector.RequestTimeRange;
 WebInspector.RequestTimingView._timeRangeTitle = function(name)
 {
     switch (name) {
+    case WebInspector.RequestTimeRangeNames.Push: return WebInspector.UIString("Receiving Push");
     case WebInspector.RequestTimeRangeNames.Queueing: return WebInspector.UIString("Queueing");
     case WebInspector.RequestTimeRangeNames.Blocking: return WebInspector.UIString("Stalled");
     case WebInspector.RequestTimeRangeNames.Connecting: return WebInspector.UIString("Initial connection");
     case WebInspector.RequestTimeRangeNames.DNS: return WebInspector.UIString("DNS Lookup");
     case WebInspector.RequestTimeRangeNames.Proxy: return WebInspector.UIString("Proxy negotiation");
+    case WebInspector.RequestTimeRangeNames.ReceivingPush: return WebInspector.UIString("Reading Push");
     case WebInspector.RequestTimeRangeNames.Receiving: return WebInspector.UIString("Content Download");
     case WebInspector.RequestTimeRangeNames.Sending: return WebInspector.UIString("Request sent");
     case WebInspector.RequestTimeRangeNames.ServiceWorker: return WebInspector.UIString("Request to ServiceWorker");
@@ -124,9 +128,10 @@ WebInspector.RequestTimingView._timeRangeTitle = function(name)
 
 /**
  * @param {!WebInspector.NetworkRequest} request
+ * @param {number} navigationStart
  * @return {!Array.<!WebInspector.RequestTimeRange>}
  */
-WebInspector.RequestTimingView.calculateRequestTimeRanges = function(request)
+WebInspector.RequestTimingView.calculateRequestTimeRanges = function(request, navigationStart)
 {
     var result = [];
     /**
@@ -180,6 +185,13 @@ WebInspector.RequestTimingView.calculateRequestTimeRanges = function(request)
     var endTime = firstPositive([request.endTime, request.responseReceivedTime]) || startTime;
 
     addRange(WebInspector.RequestTimeRangeNames.Total, issueTime < startTime ? issueTime : startTime, endTime);
+    if (timing.pushStart) {
+        var pushEnd = timing.pushEnd || endTime;
+        // Only show the part of push that happened after the navigation/reload.
+        // Pushes that happened on the same connection before we started main request will not be shown.
+        if (pushEnd > navigationStart)
+            addRange(WebInspector.RequestTimeRangeNames.Push, Math.max(timing.pushStart, navigationStart), pushEnd);
+    }
     if (issueTime < startTime)
         addRange(WebInspector.RequestTimeRangeNames.Queueing, issueTime, startTime);
 
@@ -188,7 +200,7 @@ WebInspector.RequestTimingView.calculateRequestTimeRanges = function(request)
         addOffsetRange(WebInspector.RequestTimeRangeNames.ServiceWorkerPreparation, timing.workerStart, timing.workerReady);
         addOffsetRange(WebInspector.RequestTimeRangeNames.ServiceWorker, timing.workerReady, timing.sendEnd);
         addOffsetRange(WebInspector.RequestTimeRangeNames.Waiting, timing.sendEnd, timing.receiveHeadersEnd);
-    } else {
+    } else if (!timing.pushStart) {
         var blocking = firstPositive([timing.dnsStart, timing.connectStart, timing.sendStart]) || 0;
         addOffsetRange(WebInspector.RequestTimeRangeNames.Blocking, 0, blocking);
         addOffsetRange(WebInspector.RequestTimeRangeNames.Proxy, timing.proxyStart, timing.proxyEnd);
@@ -200,7 +212,7 @@ WebInspector.RequestTimingView.calculateRequestTimeRanges = function(request)
     }
 
     if (request.endTime !== -1)
-        addRange(WebInspector.RequestTimeRangeNames.Receiving, request.responseReceivedTime, endTime);
+        addRange(timing.pushStart ? WebInspector.RequestTimeRangeNames.ReceivingPush : WebInspector.RequestTimeRangeNames.Receiving, request.responseReceivedTime, endTime);
 
     return result;
 }
@@ -218,9 +230,9 @@ WebInspector.RequestTimingView.createTimingTable = function(request, navigationS
     colgroup.createChild("col", "bars");
     colgroup.createChild("col", "duration");
 
-    var timeRanges = WebInspector.RequestTimingView.calculateRequestTimeRanges(request);
-    var startTime = timeRanges[0].start;
-    var endTime = timeRanges[0].end;
+    var timeRanges = WebInspector.RequestTimingView.calculateRequestTimeRanges(request, navigationStart);
+    var startTime = timeRanges.map(r => r.start).reduce((a, b) => Math.min(a, b));
+    var endTime = timeRanges.map(r => r.end).reduce((a, b) => Math.max(a, b));
     var scale = 100 / (endTime - startTime);
 
     var connectionHeader;
@@ -234,20 +246,14 @@ WebInspector.RequestTimingView.createTimingTable = function(request, navigationS
             totalDuration = range.end - range.start;
             continue;
         }
-        if (WebInspector.RequestTimingView.ConnectionSetupRangeNames[rangeName]) {
-            if (!connectionHeader) {
-                connectionHeader = tableElement.createChild("tr", "network-timing-table-header");
-                connectionHeader.createChild("td").createTextChild(WebInspector.UIString("Connection Setup"));
-                connectionHeader.createChild("td").createTextChild("");
-                connectionHeader.createChild("td").createTextChild(WebInspector.UIString("TIME"));
-            }
+        if (rangeName === WebInspector.RequestTimeRangeNames.Push) {
+            createHeader(WebInspector.UIString("Server Push"));
+        } else if (WebInspector.RequestTimingView.ConnectionSetupRangeNames[rangeName]) {
+            if (!connectionHeader)
+                connectionHeader = createHeader(WebInspector.UIString("Connection Setup"));
         } else {
-            if (!dataHeader) {
-                dataHeader = tableElement.createChild("tr", "network-timing-table-header");
-                dataHeader.createChild("td").createTextChild(WebInspector.UIString("Request/Response"));
-                dataHeader.createChild("td").createTextChild("");
-                dataHeader.createChild("td").createTextChild(WebInspector.UIString("TIME"));
-            }
+            if (!dataHeader)
+                dataHeader = createHeader(WebInspector.UIString("Request/Response"));
         }
 
         var left = (scale * (range.start - startTime));
@@ -279,4 +285,16 @@ WebInspector.RequestTimingView.createTimingTable = function(request, navigationS
     footer.createChild("td").createTextChild(Number.secondsToString(totalDuration, true));
 
     return tableElement;
+
+    /**
+     * param {string} title
+     */
+    function createHeader(title)
+    {
+        var dataHeader = tableElement.createChild("tr", "network-timing-table-header");
+        dataHeader.createChild("td").createTextChild(title);
+        dataHeader.createChild("td").createTextChild("");
+        dataHeader.createChild("td").createTextChild(WebInspector.UIString("TIME"));
+        return dataHeader;
+    }
 }

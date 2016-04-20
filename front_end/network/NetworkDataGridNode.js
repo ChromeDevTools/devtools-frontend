@@ -336,6 +336,8 @@ WebInspector.NetworkDataGridNode.prototype = {
         var request = this._request;
         var initiator = request.initiatorInfo();
 
+        if (request.timing && request.timing.pushStart)
+            cell.appendChild(createTextNode(WebInspector.UIString("Push / ")));
         switch (initiator.type) {
         case WebInspector.NetworkRequest.InitiatorType.Parser:
             cell.title = initiator.url + ":" + initiator.lineNumber;
@@ -364,9 +366,9 @@ WebInspector.NetworkDataGridNode.prototype = {
             break;
 
         default:
-            cell.title = "";
+            cell.title = WebInspector.UIString("Other");
             cell.classList.add("network-dim-cell");
-            cell.setTextAndTitle(WebInspector.UIString("Other"));
+            cell.appendChild(createTextNode(WebInspector.UIString("Other")));
         }
     },
 
@@ -427,7 +429,7 @@ WebInspector.NetworkDataGridNode.prototype = {
     _updateTimingGraph: function()
     {
         var calculator = this._parentView.calculator();
-        var timeRanges = WebInspector.RequestTimingView.calculateRequestTimeRanges(this._request);
+        var timeRanges = WebInspector.RequestTimingView.calculateRequestTimeRanges(this._request, calculator.minimumBoundary());
         var right = timeRanges[0].end;
 
         var container = this._barAreaElement;

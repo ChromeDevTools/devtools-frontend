@@ -159,8 +159,13 @@
     background-color: #00C853;
 }
 
-.network-timing-bar.receiving, -theme-preserve {
+.network-timing-bar.receiving, -theme-preserve,
+.network-timing-bar.receiving-push, -theme-preserve {
     background-color: #03A9F4;
+}
+
+.network-timing-bar.push, -theme-preserve {
+    background-color: #8CDBff;
 }
 
 .network-timing-bar.proxy,

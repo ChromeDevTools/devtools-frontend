@@ -526,6 +526,36 @@ TestSuite.prototype.testNetworkTiming = function()
 };
 
 
+TestSuite.prototype.testPushTimes = function(url)
+{
+    var test = this;
+    var pendingResourceCount = 2;
+
+    function finishResource(resource, finishTime)
+    {
+        test.assertTrue(typeof resource.timing.pushStart === "number" && resource.timing.pushStart > 0, `pushStart is invalid: ${resource.timing.pushStart}`);
+        test.assertTrue(typeof resource.timing.pushEnd === "number", `pushEnd is invalid: ${resource.timing.pushEnd}`);
+        test.assertTrue(resource.timing.pushStart < resource.startTime, "pushStart should be before startTime");
+        if (resource.url.endsWith("?pushUseNullEndTime")) {
+            test.assertTrue(resource.timing.pushEnd === 0, `pushEnd should be 0 but is ${resource.timing.pushEnd}`);
+        } else {
+            test.assertTrue(resource.timing.pushStart < resource.timing.pushEnd, `pushStart should be before pushEnd (${resource.timing.pushStart} >= ${resource.timing.pushEnd})`);
+            // The below assertion is just due to the way we generate times in the moch URLRequestJob and is not generally an invariant.
+            test.assertTrue(resource.timing.pushEnd < resource.endTime, "pushEnd should be before endTime");
+            test.assertTrue(resource.startTime < resource.timing.pushEnd, "pushEnd should be after startTime");
+        }
+        if (!--pendingResourceCount)
+            test.releaseControl();
+    }
+
+    this.addSniffer(WebInspector.NetworkDispatcher.prototype, "_finishNetworkRequest", finishResource, true);
+
+    test.evaluateInConsole_("addImage('" + url + "')", function(resultText) {});
+    test.evaluateInConsole_("addImage('" + url + "?pushUseNullEndTime')", function(resultText) {});
+    this.takeControl();
+};
+
+
 TestSuite.prototype.testConsoleOnNavigateBack = function()
 {
     if (WebInspector.multitargetConsoleModel.messages().length === 1)

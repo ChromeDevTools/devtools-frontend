@@ -193,7 +193,8 @@ WebInspector.format = function(mimeType, text, indentString)
     try {
         switch (mimeType) {
         case "text/html":
-            formatMixedHTML(builder, text, lineEndings);
+            var formatter = new WebInspector.HTMLFormatter(builder);
+            formatter.format(text, lineEndings);
             break;
         case "text/css":
             var formatter = new WebInspector.CSSFormatter(builder);
@@ -216,35 +217,3 @@ WebInspector.format = function(mimeType, text, indentString)
     }
     postMessage(result);
 }
-
-/**
- * @param {!WebInspector.FormattedContentBuilder} builder
- * @param {string} text
- * @param {!Array<number>} lineEndings
- */
-function formatMixedHTML(builder, text, lineEndings)
-{
-    var htmlFormatter = new WebInspector.HTMLFormatter(builder);
-    var jsFormatter = new WebInspector.JavaScriptFormatter(builder);
-    var cssFormatter = new WebInspector.CSSFormatter(builder);
-    var identityFormatter = new WebInspector.IdentityFormatter(builder);
-
-    var offset = 0;
-    while (offset < text.length) {
-        var result = htmlFormatter.format(text, lineEndings, offset);
-        if (result.offset >= text.length)
-            break;
-        builder.addNewLine();
-        var closeTag = "</" + result.tagName;
-        offset = text.indexOf(closeTag, result.offset);
-        if (offset === -1)
-            offset = text.length;
-        if (result.tagName === "script")
-            jsFormatter.format(text, lineEndings, result.offset, offset);
-        else if (result.tagName === "style")
-            cssFormatter.format(text, lineEndings, result.offset, offset);
-        else
-            identityFormatter.format(text, lineEndings, result.offset, offset);
-    }
-}
-

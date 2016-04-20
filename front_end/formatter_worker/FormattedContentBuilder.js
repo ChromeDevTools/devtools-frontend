@@ -62,6 +62,9 @@ WebInspector.FormattedContentBuilder.prototype = {
      */
     addNewLine: function(noSquash)
     {
+        // Avoid leading newlines.
+        if (!this._formattedContentLength)
+            return;
         if (noSquash)
             ++this._newLines;
         else

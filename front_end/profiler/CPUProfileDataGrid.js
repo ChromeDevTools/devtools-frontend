@@ -26,7 +26,7 @@
 /**
  * @constructor
  * @extends {WebInspector.DataGridNode}
- * @param {!ProfilerAgent.CPUProfileNode} profileNode
+ * @param {!WebInspector.ProfileNode} profileNode
  * @param {!WebInspector.ProfileDataGridTree} owningTree
  * @param {boolean} hasChildren
  */
@@ -41,8 +41,8 @@ WebInspector.ProfileDataGridNode = function(profileNode, owningTree, hasChildren
     this.lastComparator = null;
 
     this.callUID = profileNode.callUID;
-    this.selfTime = profileNode.selfTime;
-    this.totalTime = profileNode.totalTime;
+    this.self = profileNode.self;
+    this.total = profileNode.total;
     this.functionName = WebInspector.beautifyFunctionName(profileNode.functionName);
     this._deoptReason = profileNode.deoptReason && profileNode.deoptReason !== "no reason" ? profileNode.deoptReason : "";
     this.url = profileNode.url;
@@ -59,12 +59,12 @@ WebInspector.ProfileDataGridNode.prototype = {
         var cell;
         switch (columnId) {
         case "self":
-            cell = this._createValueCell(this.selfTime, this.selfPercent);
+            cell = this._createValueCell(this.self, this.selfPercent);
             cell.classList.toggle("highlight", this._searchMatchedSelfColumn);
             break;
 
         case "total":
-            cell = this._createValueCell(this.totalTime, this.totalPercent);
+            cell = this._createValueCell(this.total, this.totalPercent);
             cell.classList.toggle("highlight", this._searchMatchedTotalColumn);
             break;
 
@@ -188,12 +188,12 @@ WebInspector.ProfileDataGridNode.prototype = {
 
     get selfPercent()
     {
-        return this.selfTime / this.tree.totalTime * 100.0;
+        return this.self / this.tree.total * 100.0;
     },
 
     get totalPercent()
     {
-        return this.totalTime / this.tree.totalTime * 100.0;
+        return this.total / this.tree.total * 100.0;
     },
 
     populate: function()
@@ -216,8 +216,8 @@ WebInspector.ProfileDataGridNode.prototype = {
         if (this._savedChildren)
             return;
 
-        this._savedSelfTime = this.selfTime;
-        this._savedTotalTime = this.totalTime;
+        this._savedSelf = this.self;
+        this._savedTotal = this.total;
 
         this._savedChildren = this.children.slice();
     },
@@ -232,8 +232,8 @@ WebInspector.ProfileDataGridNode.prototype = {
         if (!this._savedChildren)
             return;
 
-        this.selfTime = this._savedSelfTime;
-        this.totalTime = this._savedTotalTime;
+        this.self = this._savedSelf;
+        this.total = this._savedTotal;
 
         this.removeChildren();
 
@@ -265,10 +265,10 @@ WebInspector.ProfileDataGridNode.prototype = {
  */
 WebInspector.ProfileDataGridNode.merge = function(container, child, shouldAbsorb)
 {
-    container.selfTime += child.selfTime;
+    container.self += child.self;
 
     if (!shouldAbsorb)
-        container.totalTime += child.totalTime;
+        container.total += child.total;
 
     var children = container.children.slice();
 
@@ -317,15 +317,15 @@ WebInspector.ProfileDataGridNode.populate = function(container)
  * @implements {WebInspector.Searchable}
  * @param {!WebInspector.ProfileDataGridNode.Formatter} formatter
  * @param {!WebInspector.SearchableView} searchableView
- * @param {number} totalTime
+ * @param {number} total
  */
-WebInspector.ProfileDataGridTree = function(formatter, searchableView, totalTime)
+WebInspector.ProfileDataGridTree = function(formatter, searchableView, total)
 {
     this.tree = this;
     this.children = [];
     this._formatter = formatter;
     this._searchableView = searchableView;
-    this.totalTime = totalTime;
+    this.total = total;
     this.lastComparator = null;
     this.childrenByCallUID = {};
 }
@@ -368,7 +368,7 @@ WebInspector.ProfileDataGridTree.prototype = {
         if (this._savedChildren)
             return;
 
-        this._savedTotalTime = this.totalTime;
+        this._savedTotal = this.total;
         this._savedChildren = this.children.slice();
     },
 
@@ -378,7 +378,7 @@ WebInspector.ProfileDataGridTree.prototype = {
             return;
 
         this.children = this._savedChildren;
-        this.totalTime = this._savedTotalTime;
+        this.total = this._savedTotal;
 
         var children = this.children;
         var count = children.length;
@@ -449,21 +449,21 @@ WebInspector.ProfileDataGridTree.prototype = {
                 }
             } else if (millisecondsUnits || secondsUnits) {
                 if (lessThan) {
-                    if (profileDataGridNode.selfTime < queryNumberMilliseconds)
+                    if (profileDataGridNode.self < queryNumberMilliseconds)
                         profileDataGridNode._searchMatchedSelfColumn = true;
-                    if (profileDataGridNode.totalTime < queryNumberMilliseconds)
+                    if (profileDataGridNode.total < queryNumberMilliseconds)
                         profileDataGridNode._searchMatchedTotalColumn = true;
                 } else if (greaterThan) {
-                    if (profileDataGridNode.selfTime > queryNumberMilliseconds)
+                    if (profileDataGridNode.self > queryNumberMilliseconds)
                         profileDataGridNode._searchMatchedSelfColumn = true;
-                    if (profileDataGridNode.totalTime > queryNumberMilliseconds)
+                    if (profileDataGridNode.total > queryNumberMilliseconds)
                         profileDataGridNode._searchMatchedTotalColumn = true;
                 }
 
                 if (equalTo) {
-                    if (profileDataGridNode.selfTime == queryNumberMilliseconds)
+                    if (profileDataGridNode.self == queryNumberMilliseconds)
                         profileDataGridNode._searchMatchedSelfColumn = true;
-                    if (profileDataGridNode.totalTime == queryNumberMilliseconds)
+                    if (profileDataGridNode.total == queryNumberMilliseconds)
                         profileDataGridNode._searchMatchedTotalColumn = true;
                 }
             }

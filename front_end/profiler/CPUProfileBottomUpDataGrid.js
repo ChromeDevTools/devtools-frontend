@@ -32,13 +32,12 @@
 /**
  * @constructor
  * @extends {WebInspector.ProfileDataGridNode}
- * @param {!ProfilerAgent.CPUProfileNode} profileNode
+ * @param {!WebInspector.ProfileNode} profileNode
  * @param {!WebInspector.TopDownProfileDataGridTree} owningTree
  */
 WebInspector.BottomUpProfileDataGridNode = function(profileNode, owningTree)
 {
     WebInspector.ProfileDataGridNode.call(this, profileNode, owningTree, this._willHaveChildren(profileNode));
-
     this._remainingNodeInfos = [];
 }
 
@@ -49,9 +48,8 @@ WebInspector.BottomUpProfileDataGridNode.prototype = {
     _takePropertiesFromProfileDataGridNode: function(profileDataGridNode)
     {
         this.save();
-
-        this.selfTime = profileDataGridNode.selfTime;
-        this.totalTime = profileDataGridNode.totalTime;
+        this.self = profileDataGridNode.self;
+        this.total = profileDataGridNode.total;
     },
 
     /**
@@ -106,8 +104,7 @@ WebInspector.BottomUpProfileDataGridNode.prototype = {
      */
     merge: function(child, shouldAbsorb)
     {
-        this.selfTime -= child.selfTime;
-
+        this.self -= child.self;
         WebInspector.ProfileDataGridNode.prototype.merge.call(this, child, shouldAbsorb);
     },
 
@@ -145,12 +142,12 @@ WebInspector.BottomUpProfileDataGridNode._sharedPopulate = function(container)
 
         // If we already have this child, then merge the data together.
         if (child) {
-            var totalTimeAccountedFor = nodeInfo.totalTimeAccountedFor;
+            var totalAccountedFor = nodeInfo.totalAccountedFor;
 
-            child.selfTime += focusNode.selfTime;
+            child.self += focusNode.self;
 
-            if (!totalTimeAccountedFor)
-                child.totalTime += focusNode.totalTime;
+            if (!totalAccountedFor)
+                child.total += focusNode.total;
         } else {
             // If not, add it as a true ancestor.
             // In heavy mode, we take our visual identity from ancestor node...
@@ -158,8 +155,8 @@ WebInspector.BottomUpProfileDataGridNode._sharedPopulate = function(container)
 
             if (ancestor !== focusNode) {
                 // But the actual statistics from the "root" node (bottom of the callstack).
-                child.selfTime = focusNode.selfTime;
-                child.totalTime = focusNode.totalTime;
+                child.self = focusNode.self;
+                child.total = focusNode.total;
             }
 
             container.appendChild(child);
@@ -180,12 +177,12 @@ WebInspector.BottomUpProfileDataGridNode._sharedPopulate = function(container)
  * @extends {WebInspector.ProfileDataGridTree}
  * @param {!WebInspector.ProfileDataGridNode.Formatter} formatter
  * @param {!WebInspector.SearchableView} searchableView
- * @param {!ProfilerAgent.CPUProfileNode} rootProfileNode
- * @param {number} totalTime
+ * @param {!WebInspector.ProfileNode} rootProfileNode
+ * @param {number} total
  */
-WebInspector.BottomUpProfileDataGridTree = function(formatter, searchableView, rootProfileNode, totalTime)
+WebInspector.BottomUpProfileDataGridTree = function(formatter, searchableView, rootProfileNode, total)
 {
-    WebInspector.ProfileDataGridTree.call(this, formatter, searchableView, totalTime);
+    WebInspector.ProfileDataGridTree.call(this, formatter, searchableView, total);
 
     // Iterate each node in pre-order.
     var profileNodeUIDs = 0;
@@ -208,7 +205,7 @@ WebInspector.BottomUpProfileDataGridTree = function(formatter, searchableView, r
             if (profileNode.parent) {
                 // The total time of this ancestor is accounted for if we're in any form of recursive cycle.
                 var visitedNodes = visitedProfileNodesForCallUID[profileNode.callUID];
-                var totalTimeAccountedFor = false;
+                var totalAccountedFor = false;
 
                 if (!visitedNodes) {
                     visitedNodes = {};
@@ -219,7 +216,7 @@ WebInspector.BottomUpProfileDataGridTree = function(formatter, searchableView, r
                     var parentCount = parentProfileNodes.length;
                     for (var parentIndex = 0; parentIndex < parentCount; ++parentIndex) {
                         if (visitedNodes[parentProfileNodes[parentIndex].UID]) {
-                            totalTimeAccountedFor = true;
+                            totalAccountedFor = true;
                             break;
                         }
                     }
@@ -227,7 +224,7 @@ WebInspector.BottomUpProfileDataGridTree = function(formatter, searchableView, r
 
                 visitedNodes[profileNode.UID] = true;
 
-                this._remainingNodeInfos.push({ ancestor:profileNode, focusNode:profileNode, totalTimeAccountedFor:totalTimeAccountedFor });
+                this._remainingNodeInfos.push({ ancestor: profileNode, focusNode: profileNode, totalAccountedFor: totalAccountedFor });
             }
 
             var children = profileNode.children;
@@ -270,7 +267,7 @@ WebInspector.BottomUpProfileDataGridTree.prototype = {
         }
 
         this.children = [focusNode];
-        this.totalTime = profileDataGridNode.totalTime;
+        this.total = profileDataGridNode.total;
     },
 
     /**

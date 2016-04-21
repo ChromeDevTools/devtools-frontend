@@ -78,8 +78,8 @@ WebInspector.CPUProfileView = function(profileHeader)
     this._linkifier = new WebInspector.Linkifier(new WebInspector.Linkifier.DefaultFormatter(30));
 
     this.profile = new WebInspector.CPUProfileDataModel(profileHeader._profile || profileHeader.protocolProfile());
-    this.totalCpuTime = this.profile.profileHead.totalTime;
-    this.totalCpuTime -= this.profile.idleNode ? this.profile.idleNode.totalTime : 0;
+    this.totalCpuTime = this.profile.profileHead.total;
+    this.totalCpuTime -= this.profile.idleNode ? this.profile.idleNode.total : 0;
 
     this._changeView();
     if (this._flameChart)
@@ -132,7 +132,7 @@ WebInspector.CPUProfileView.prototype = {
     _getBottomUpProfileDataGridTree: function()
     {
         if (!this._bottomUpProfileDataGridTree)
-            this._bottomUpProfileDataGridTree = new WebInspector.BottomUpProfileDataGridTree(this._nodeFormatter, this._searchableView, /** @type {!ProfilerAgent.CPUProfileNode} */ (this.profile.profileHead), this.totalCpuTime);
+            this._bottomUpProfileDataGridTree = new WebInspector.BottomUpProfileDataGridTree(this._nodeFormatter, this._searchableView, this.profile.profileHead, this.totalCpuTime);
         return this._bottomUpProfileDataGridTree;
     },
 
@@ -142,7 +142,7 @@ WebInspector.CPUProfileView.prototype = {
     _getTopDownProfileDataGridTree: function()
     {
         if (!this._topDownProfileDataGridTree)
-            this._topDownProfileDataGridTree = new WebInspector.TopDownProfileDataGridTree(this._nodeFormatter, this._searchableView, /** @type {!ProfilerAgent.CPUProfileNode} */ (this.profile.profileHead), this.totalCpuTime);
+            this._topDownProfileDataGridTree = new WebInspector.TopDownProfileDataGridTree(this._nodeFormatter, this._searchableView, this.profile.profileHead, this.totalCpuTime);
         return this._topDownProfileDataGridTree;
     },
 
@@ -350,12 +350,7 @@ WebInspector.CPUProfileView.prototype = {
     {
         var sortAscending = this.dataGrid.isSortOrderAscending();
         var sortColumnIdentifier = this.dataGrid.sortColumnIdentifier();
-        var sortProperty = {
-                "self": "selfTime",
-                "total": "totalTime",
-                "function": "functionName"
-            }[sortColumnIdentifier];
-
+        var sortProperty = sortColumnIdentifier === "function" ? "functionName" : sortColumnIdentifier || "";
         this.profileDataGridTree.sort(WebInspector.ProfileDataGridTree.propertyComparator(sortProperty, sortAscending));
 
         this.refresh();

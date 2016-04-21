@@ -26,7 +26,7 @@
 /**
  * @constructor
  * @extends {WebInspector.ProfileDataGridNode}
- * @param {!ProfilerAgent.CPUProfileNode} profileNode
+ * @param {!WebInspector.ProfileNode} profileNode
  * @param {!WebInspector.TopDownProfileDataGridTree} owningTree
  */
 WebInspector.TopDownProfileDataGridNode = function(profileNode, owningTree)
@@ -92,12 +92,12 @@ WebInspector.TopDownProfileDataGridNode._excludeRecursively = function(container
  * @extends {WebInspector.ProfileDataGridTree}
  * @param {!WebInspector.ProfileDataGridNode.Formatter} formatter
  * @param {!WebInspector.SearchableView} searchableView
- * @param {!ProfilerAgent.CPUProfileNode} rootProfileNode
- * @param {number} totalTime
+ * @param {!WebInspector.ProfileNode} rootProfileNode
+ * @param {number} total
  */
-WebInspector.TopDownProfileDataGridTree = function(formatter, searchableView, rootProfileNode, totalTime)
+WebInspector.TopDownProfileDataGridTree = function(formatter, searchableView, rootProfileNode, total)
 {
-    WebInspector.ProfileDataGridTree.call(this, formatter, searchableView, totalTime);
+    WebInspector.ProfileDataGridTree.call(this, formatter, searchableView, total);
     this._remainingChildren = rootProfileNode.children;
     WebInspector.ProfileDataGridNode.populate(this);
 }
@@ -115,7 +115,7 @@ WebInspector.TopDownProfileDataGridTree.prototype = {
         profileDataGridNode.savePosition();
 
         this.children = [profileDataGridNode];
-        this.totalTime = profileDataGridNode.totalTime;
+        this.total = profileDataGridNode.total;
     },
 
     /**

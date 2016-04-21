@@ -97,7 +97,7 @@ WebInspector.CPUFlameChartDataProvider.prototype = {
      */
     totalTime: function()
     {
-        return this._cpuProfile.profileHead.totalTime;
+        return this._cpuProfile.profileHead.total;
     },
 
     /**

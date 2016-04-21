@@ -16,8 +16,6 @@ WebInspector.CPUProfileNode = function(sourceNode, sampleTime)
     this.callUID = sourceNode.callUID;
     this.positionTicks = sourceNode.positionTicks;
     this.deoptReason = sourceNode.deoptReason;
-    // TODO: Remove the following field in favor of this.self
-    this.selfTime = this.self;
 }
 
 WebInspector.CPUProfileNode.prototype = {
@@ -48,7 +46,6 @@ WebInspector.CPUProfileDataModel = function(profile)
         this._normalizeTimestamps();
         this._fixMissingSamples();
     }
-    this._assignTotalTimes(this.profileHead);
 }
 
 WebInspector.CPUProfileDataModel.prototype = {
@@ -155,16 +152,6 @@ WebInspector.CPUProfileDataModel.prototype = {
             targetNodeStack.push.apply(targetNodeStack, parentNode.children);
         }
         return resultRoot;
-    },
-
-    /**
-     * @param {!WebInspector.ProfileNode} node
-     */
-    _assignTotalTimes: function(node)
-    {
-        // TODO: get rid of this field in favor of this.total
-        node.totalTime = node.total;
-        node.children.forEach(this._assignTotalTimes, this);
     },
 
     _sortSamples: function()

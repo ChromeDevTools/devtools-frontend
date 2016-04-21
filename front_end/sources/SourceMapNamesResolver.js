@@ -295,7 +295,7 @@ WebInspector.SourceMapNamesResolver.resolveThisObject = function(callFrame)
 {
     if (!callFrame)
         return Promise.resolve(/** @type {?WebInspector.RemoteObject} */(null));
-    if (!Runtime.experiments.isEnabled("resolveVariableNames"))
+    if (!Runtime.experiments.isEnabled("resolveVariableNames") || !callFrame.scopeChain().length)
         return Promise.resolve(callFrame.thisObject());
 
     return WebInspector.SourceMapNamesResolver._resolveScope(callFrame.scopeChain()[0])

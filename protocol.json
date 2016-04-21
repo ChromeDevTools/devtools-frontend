@@ -3989,7 +3989,7 @@
                     { "name": "url", "type": "string", "description": "URL." },
                     { "name": "lineNumber", "type": "integer", "description": "1-based line number of the function start position." },
                     { "name": "columnNumber", "type": "integer", "description": "1-based column number of the function start position." },
-                    { "name": "totalSize", "type": "number", "description": "Total allocations size in bytes." },
+                    { "name": "selfSize", "type": "number", "description": "Allocations size in bytes for the node excluding children." },
                     { "name": "children", "type": "array", "items": { "$ref": "SamplingHeapProfileNode" }, "description": "Child nodes." }
                 ]
             },

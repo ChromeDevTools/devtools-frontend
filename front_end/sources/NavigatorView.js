@@ -135,6 +135,25 @@ WebInspector.NavigatorView.appendAddFolderItem = function(contextMenu)
     contextMenu.appendItem(addFolderLabel, addFolder);
 }
 
+/**
+ * @param {!WebInspector.ContextMenu} contextMenu
+ * @param {string=} path
+ */
+WebInspector.NavigatorView.appendSearchItem = function(contextMenu, path)
+{
+    function searchPath()
+    {
+        WebInspector.AdvancedSearchView.openSearch("", path.trim());
+    }
+
+    var searchLabel = WebInspector.UIString.capitalize("Search in ^folder");
+    if (!path || !path.trim()) {
+        path = "*";
+        searchLabel = WebInspector.UIString.capitalize("Search in ^all ^files");
+    }
+    contextMenu.appendItem(searchLabel, searchPath);
+}
+
 WebInspector.NavigatorView.prototype = {
     /**
      * @param {!WebInspector.Workspace} workspace
@@ -578,6 +597,9 @@ WebInspector.NavigatorView.prototype = {
         var project = node._project;
 
         var contextMenu = new WebInspector.ContextMenu(event);
+
+        WebInspector.NavigatorView.appendSearchItem(contextMenu, path);
+        contextMenu.appendSeparator();
 
         if (project && project.type() === WebInspector.projectTypes.FileSystem) {
             contextMenu.appendItem(WebInspector.UIString.capitalize("Refresh"), this._handleContextMenuRefresh.bind(this, project, path));

@@ -109,18 +109,18 @@
     display: block;
 }
 
-.cpu-profile-view {
+.profile-view {
     display: flex;
     overflow: hidden;
 }
 
-.cpu-profile-view .data-grid {
+.profile-view .data-grid {
     border: none;
     flex: auto;
 }
 
-.cpu-profile-view .data-grid th.self-column,
-.cpu-profile-view .data-grid th.total-column {
+.profile-view .data-grid th.self-column,
+.profile-view .data-grid th.total-column {
     text-align: center;
 }
 

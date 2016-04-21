@@ -66,7 +66,7 @@ WebInspector.TopDownProfileDataGridNode._sharedPopulate = function(container)
 
 /**
  * @param {!WebInspector.TopDownProfileDataGridNode|!WebInspector.TopDownProfileDataGridTree} container
- * @param {number} aCallUID
+ * @param {number|string} aCallUID
  */
 WebInspector.TopDownProfileDataGridNode._excludeRecursively = function(container, aCallUID)
 {

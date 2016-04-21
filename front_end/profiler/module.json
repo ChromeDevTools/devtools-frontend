@@ -68,11 +68,13 @@
     ],
     "scripts": [
         "ProfilesPanel.js",
+        "ProfileView.js",
         "CPUProfileDataGrid.js",
         "CPUProfileBottomUpDataGrid.js",
         "CPUProfileTopDownDataGrid.js",
         "CPUProfileFlameChart.js",
         "CPUProfileView.js",
+        "HeapProfileView.js",
         "HeapSnapshotCommon.js",
         "HeapSnapshotProxy.js",
         "HeapSnapshotDataGrids.js",

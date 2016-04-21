@@ -20,7 +20,6 @@ WebInspector.HeapProfilerModel.Events = {
 }
 
 WebInspector.HeapProfilerModel.prototype = {
-
     enable: function()
     {
         if (this._enabled)
@@ -28,6 +27,22 @@ WebInspector.HeapProfilerModel.prototype = {
 
         this._enabled = true;
         this._heapProfilerAgent.enable();
+    },
+
+    startSampling: function()
+    {
+        this._heapProfilerAgent.startSampling();
+    },
+
+    /**
+     * @return {!Promise.<?ProfilerAgent.CPUProfile>}
+     */
+    stopSampling: function()
+    {
+        this._isRecording = false;
+        var currentProfile = null;
+        return this._heapProfilerAgent.stopSampling((error, profile) => { currentProfile = !error ? profile : null; })
+            .then(() => currentProfile);
     },
 
     /**

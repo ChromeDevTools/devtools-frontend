@@ -15,6 +15,8 @@ WebInspector.ProfileTypeRegistry = function()
     this._addProfileType(this.heapSnapshotProfileType);
     this.trackingHeapSnapshotProfileType = new WebInspector.TrackingHeapSnapshotProfileType();
     this._addProfileType(this.trackingHeapSnapshotProfileType);
+    this.samplingHeapProfileType = new WebInspector.SamplingHeapProfileType();
+    this._addProfileType(this.samplingHeapProfileType);
 }
 
 WebInspector.ProfileTypeRegistry.prototype = {

@@ -566,6 +566,7 @@
             'front_end/profiler/CPUProfileFlameChart.js',
             'front_end/profiler/CPUProfileTopDownDataGrid.js',
             'front_end/profiler/CPUProfileView.js',
+            'front_end/profiler/HeapProfileView.js',
             'front_end/profiler/HeapSnapshotCommon.js',
             'front_end/profiler/HeapSnapshotDataGrids.js',
             'front_end/profiler/HeapSnapshotGridNodes.js',
@@ -574,6 +575,7 @@
             'front_end/profiler/ProfileLauncherView.js',
             'front_end/profiler/ProfilesPanel.js',
             'front_end/profiler/ProfileTypeRegistry.js',
+            'front_end/profiler/ProfileView.js',
             'front_end/profiler/TargetsComboBoxController.js',
         ],
         'devtools_resources_js_files': [

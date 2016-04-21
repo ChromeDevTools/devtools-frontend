@@ -38,7 +38,7 @@ WebInspector.CPUProfileDataModel = function(profile)
     if (!WebInspector.moduleSetting("showNativeFunctionsInJSProfile").get())
         this._filterNativeFrames(profile.head);
     this.profileHead = this._translateProfileTree(profile.head);
-    WebInspector.ProfileTreeModel.call(this, this.profileHead, this.profileStartTime, this.profileEndTime);
+    WebInspector.ProfileTreeModel.call(this, this.profileHead);
     this._extractMetaNodes();
     if (this.samples) {
         this._buildIdToNodeMap();
@@ -292,7 +292,7 @@ WebInspector.CPUProfileDataModel.prototype = {
      */
     forEachFrame: function(openFrameCallback, closeFrameCallback, startTime, stopTime)
     {
-        if (!this.profileHead)
+        if (!this.profileHead || !this.samples)
             return;
 
         startTime = startTime || 0;

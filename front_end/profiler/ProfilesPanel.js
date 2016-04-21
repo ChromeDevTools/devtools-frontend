@@ -57,6 +57,14 @@ WebInspector.ProfileType.Events = {
 
 WebInspector.ProfileType.prototype = {
     /**
+     * @return {string}
+     */
+    typeName: function()
+    {
+        return "";
+    },
+
+    /**
      * @return {number}
      */
     nextProfileUid: function()
@@ -671,7 +679,8 @@ WebInspector.ProfilesPanel.prototype = {
      */
     _registerProfileType: function(profileType)
     {
-        this._launcherView.addProfileType(profileType);
+        if (Runtime.experiments.isEnabled("samplingHeapProfiler") || profileType !== WebInspector.SamplingHeapProfileType.instance)
+            this._launcherView.addProfileType(profileType);
         var profileTypeSection = new WebInspector.ProfileTypeSidebarSection(this, profileType);
         this._typeIdToSidebarSection[profileType.id] = profileTypeSection;
         this._sidebarTree.appendChild(profileTypeSection);

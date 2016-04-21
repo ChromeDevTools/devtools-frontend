@@ -15,7 +15,7 @@ WebInspector.ProfileNode = function(functionName, scriptId, url, lineNumber, col
         lineNumber: lineNumber,
         columnNumber: columnNumber
     };
-    /** @type {number} */
+    /** @type {number|string} */
     this.callUID;
     /** @type {number} */
     this.self = 0;
@@ -74,16 +74,12 @@ WebInspector.ProfileNode.prototype = {
 /**
  * @constructor
  * @param {!WebInspector.ProfileNode} root
- * @param {number} begin
- * @param {number} end
  */
-WebInspector.ProfileTreeModel = function(root, begin, end)
+WebInspector.ProfileTreeModel = function(root)
 {
     this.root = root;
-    this.begin = begin;
-    this.end = end;
+    this.total = this._calculateTotals(this.root);
     this._assignDepthsAndParents();
-    this._calculateTotals(this.root);
 }
 
 WebInspector.ProfileTreeModel.prototype = {

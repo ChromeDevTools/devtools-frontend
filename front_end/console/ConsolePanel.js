@@ -49,6 +49,14 @@ WebInspector.ConsolePanel.prototype = {
     /**
      * @override
      */
+    focus: function()
+    {
+        this._view.focus();
+    },
+
+    /**
+     * @override
+     */
     wasShown: function()
     {
         WebInspector.Panel.prototype.wasShown.call(this);

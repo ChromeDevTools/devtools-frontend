@@ -1287,95 +1287,6 @@ WebInspector.TimelineLifecycleDelegate.prototype = {
 
 /**
  * @constructor
- * @extends {WebInspector.VBox}
- * @implements {WebInspector.TimelineModeView}
- * @param {!WebInspector.TimelineModeViewDelegate} delegate
- * @param {!WebInspector.TimelineTreeView} innerTreeView
- */
-WebInspector.TimelineTreeModeView = function(delegate, innerTreeView)
-{
-    WebInspector.VBox.call(this);
-    this._treeView = innerTreeView;
-    this._treeView.show(this.element);
-}
-
-WebInspector.TimelineTreeModeView.prototype = {
-    /**
-     * @override
-     */
-    dispose: function()
-    {
-    },
-
-    /**
-     * @override
-     * @return {?Element}
-     */
-    resizerElement: function()
-    {
-        return null;
-    },
-
-    /**
-     * @override
-     */
-    highlightSearchResult: function()
-    {
-    },
-
-    /**
-     * @override
-     * @param {?WebInspector.TracingModel.Event} event
-     */
-    highlightEvent: function(event)
-    {
-    },
-
-    /**
-     * @override
-     */
-    refreshRecords: function()
-    {
-    },
-
-    /**
-     * @override
-     */
-    reset: function()
-    {
-    },
-
-    /**
-     * @override
-     */
-    setSelection: function()
-    {
-    },
-
-    /**
-     * @override
-     * @param {number} startTime
-     * @param {number} endTime
-     */
-    setWindowTimes: function(startTime, endTime)
-    {
-        this._treeView.setRange(startTime, endTime);
-    },
-
-    /**
-     * @override
-     * @return {!WebInspector.Widget}
-     */
-    view: function()
-    {
-        return this;
-    },
-
-    __proto__: WebInspector.VBox.prototype
-}
-
-/**
- * @constructor
  * @extends {WebInspector.TabbedPane}
  * @param {!WebInspector.TimelineModel} timelineModel
  * @param {!WebInspector.TimelineModeViewDelegate} delegate
@@ -1742,36 +1653,6 @@ WebInspector.TimelineTextFilter.prototype = {
     accept: function(event)
     {
         return !this._regExp || WebInspector.TimelineUIUtils.testContentMatching(event, this._regExp);
-    },
-
-    __proto__: WebInspector.TimelineModel.Filter.prototype
-}
-
-/**
- * @constructor
- * @extends {WebInspector.TimelineModel.Filter}
- */
-WebInspector.TimelineStaticFilter = function()
-{
-    WebInspector.TimelineModel.Filter.call(this);
-}
-
-WebInspector.TimelineStaticFilter.prototype = {
-    /**
-     * @override
-     * @param {!WebInspector.TracingModel.Event} event
-     * @return {boolean}
-     */
-    accept: function(event)
-    {
-        switch (event.name) {
-        case WebInspector.TimelineModel.RecordType.EventDispatch:
-            return event.hasChildren;
-        case WebInspector.TimelineModel.RecordType.JSFrame:
-            return false;
-        default:
-            return true;
-        }
     },
 
     __proto__: WebInspector.TimelineModel.Filter.prototype

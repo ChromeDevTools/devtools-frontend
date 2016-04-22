@@ -254,7 +254,7 @@ WebInspector.TimelineFlameChartDataProviderBase.prototype = {
      */
     _isVisible: function(event)
     {
-        return this._filters.every(function (filter) { return filter.accept(event); });
+        return this._filters.every(function(filter) { return filter.accept(event); });
     }
 }
 
@@ -772,7 +772,7 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
     {
         var type = this._entryType(entryIndex);
         return type === WebInspector.TimelineFlameChartEntryType.Frame ||
-            type === WebInspector.TimelineFlameChartEntryType.Event && !!/** @type {!WebInspector.TracingModel.Event} */ (this._entryData[entryIndex]).warning;
+            type === WebInspector.TimelineFlameChartEntryType.Event && !!(/** @type {!WebInspector.TracingModel.Event} */ (this._entryData[entryIndex]).warning);
     },
 
     /**
@@ -827,7 +827,7 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
             timelineData.flowEndLevels[flowIndex] = level;
         }
 
-        switch(event.phase) {
+        switch (event.phase) {
         case WebInspector.TracingModel.Phase.FlowBegin:
             this._flowEventIndexById[event.id] = pushStartFlow(event);
             break;

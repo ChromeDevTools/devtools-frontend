@@ -132,7 +132,7 @@ WebInspector.TempFile.prototype = {
      */
     write: function(strings, callback)
     {
-        var blob = new Blob(strings, {type: 'text/plain'});
+        var blob = new Blob(strings, {type: "text/plain"});
         this._writer.onerror = function(e)
         {
             WebInspector.console.error("Failed to write into a temp file: " + e.target.error.message);
@@ -206,7 +206,7 @@ WebInspector.TempFile.prototype = {
          */
         function didGetFile(file)
         {
-            var reader = new WebInspector.ChunkedFileReader(file, 10*1000*1000, delegate);
+            var reader = new WebInspector.ChunkedFileReader(file, 10 * 1000 * 1000, delegate);
             reader.start(outputStream);
         }
 

@@ -487,7 +487,7 @@ TreeElement.prototype = {
             this._children = [];
 
         if (!child)
-            throw("child can't be undefined or null");
+            throw "child can't be undefined or null";
 
         console.assert(!child.parent, "Attempting to insert a child that is already in the tree, reparenting is not supported.");
 
@@ -535,7 +535,7 @@ TreeElement.prototype = {
     removeChildAtIndex: function(childIndex)
     {
         if (childIndex < 0 || childIndex >= this._children.length)
-            throw("childIndex out of range");
+            throw "childIndex out of range";
 
         var child = this._children[childIndex];
         this._children.splice(childIndex, 1);
@@ -570,13 +570,13 @@ TreeElement.prototype = {
     removeChild: function(child)
     {
         if (!child)
-            throw("child can't be undefined or null");
+            throw "child can't be undefined or null";
         if (child.parent !== this)
             return;
 
         var childIndex = this._children.indexOf(child);
         if (childIndex === -1)
-            throw("child not found in this node's children");
+            throw "child not found in this node's children";
 
         this.removeChildAtIndex(childIndex);
     },

@@ -156,7 +156,7 @@ WebInspector.TimelineLoader.prototype = {
 
         try {
             this._model.addEvents(items);
-        } catch(e) {
+        } catch (e) {
             this._reportErrorAndCancelLoading(WebInspector.UIString("Malformed timeline data: %s", e.toString()));
             return;
         }

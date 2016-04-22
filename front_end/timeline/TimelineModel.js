@@ -303,7 +303,7 @@ WebInspector.TimelineModel.Record.prototype = {
     target: function()
     {
         var threadName = this._event.thread.name();
-        //FIXME: correctly specify target
+        // FIXME: correctly specify target
         return threadName === WebInspector.TimelineModel.RendererMainThreadName ? WebInspector.targetManager.targets()[0] || null : null;
     },
 
@@ -755,7 +755,7 @@ WebInspector.TimelineModel.prototype = {
         }
 
         this._eventStack = [];
-        var i = events.lowerBound(startTime, function (time, event) { return time - event.startTime });
+        var i = events.lowerBound(startTime, function(time, event) { return time - event.startTime });
         var length = events.length;
         for (; i < length; i++) {
             var event = events[i];
@@ -782,7 +782,7 @@ WebInspector.TimelineModel.prototype = {
      */
     _processAsyncEvents: function(asyncEventsByGroup, asyncEvents, startTime, endTime)
     {
-        var i = startTime ? asyncEvents.lowerBound(startTime, function (time, asyncEvent) { return time - asyncEvent.startTime }) : 0;
+        var i = startTime ? asyncEvents.lowerBound(startTime, function(time, asyncEvent) { return time - asyncEvent.startTime }) : 0;
         for (; i < asyncEvents.length; ++i) {
             var asyncEvent = asyncEvents[i];
             if (endTime && asyncEvent.startTime >= endTime)

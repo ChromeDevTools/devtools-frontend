@@ -543,7 +543,7 @@ WebInspector.TracingModel.Event.prototype = {
  * @param {!WebInspector.TracingModel.Event} b
  * @return {number}
  */
-WebInspector.TracingModel.Event.compareStartTime = function (a, b)
+WebInspector.TracingModel.Event.compareStartTime = function(a, b)
 {
     return a.startTime - b.startTime;
 }
@@ -553,7 +553,7 @@ WebInspector.TracingModel.Event.compareStartTime = function (a, b)
  * @param {!WebInspector.TracingModel.Event} b
  * @return {number}
  */
-WebInspector.TracingModel.Event.compareStartAndEndTime = function (a, b)
+WebInspector.TracingModel.Event.compareStartAndEndTime = function(a, b)
 {
     return a.startTime - b.startTime || (b.endTime != undefined && a.endTime !== undefined && b.endTime - a.endTime) || 0;
 }
@@ -563,7 +563,7 @@ WebInspector.TracingModel.Event.compareStartAndEndTime = function (a, b)
  * @param {!WebInspector.TracingModel.Event} b
  * @return {number}
  */
-WebInspector.TracingModel.Event.orderedCompareStartTime = function (a, b)
+WebInspector.TracingModel.Event.orderedCompareStartTime = function(a, b)
 {
     // Array.mergeOrdered coalesces objects if comparator returns 0.
     // To change this behavior this comparator return -1 in the case events

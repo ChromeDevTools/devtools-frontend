@@ -357,7 +357,7 @@ WebInspector.ViewportDataGridNode.prototype = {
         if (child.nextSibling)
             child.nextSibling.previousSibling = child.previousSibling;
         if (child.parent !== this)
-            throw("removeChild: Node is not a child of this node.");
+            throw "removeChild: Node is not a child of this node.";
 
         child._unlink();
         this.children.remove(child, true);

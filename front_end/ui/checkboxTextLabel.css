@@ -54,3 +54,7 @@ input.dt-checkbox-themed:after {
 }
 
 } /* media */
+
+::content .dt-checkbox-subtitle {
+    color: gray;
+}

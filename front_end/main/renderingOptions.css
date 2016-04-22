@@ -4,19 +4,33 @@
  * found in the LICENSE file.
  */
 
+:host {
+    padding: 12px;
+ }
+
 label {
-    margin: 12px 0 0 0;
-    padding: 0 4px 0 12px;
+    margin: 0px 0px 10px 0px;
     flex: none;
 }
 
 .media-row {
-    display: flex;
-    align-items: center;
-    margin-top: 9px;
-    flex: none;
+    margin-left: 25px;
 }
 
-.media-row > label {
-    margin: 0 5px 0 0;
+.panel-section-separator {
+    height: 1px;
+    margin-bottom: 10px;
+    background: #f0f0f0;
+}
+
+.dt-checkbox-text {
+    color: #262626;
+    font-size: 12px;
+    margin-left: 6px;
+}
+
+.dt-checkbox-subtitle {
+    color: #4a4a4a;
+    font-size: 10px;
+    margin-top: 2px;
 }

@@ -1256,15 +1256,20 @@ function createRadioLabel(name, title, checked)
 /**
  * @param {string=} title
  * @param {boolean=} checked
+ * @param {string=} subtitle
  * @return {!Element}
  */
-function createCheckboxLabel(title, checked)
+function createCheckboxLabel(title, checked, subtitle)
 {
     var element = createElement("label", "dt-checkbox");
     element.checkboxElement.checked = !!checked;
     if (title !== undefined) {
         element.textElement = element.createChild("div", "dt-checkbox-text");
         element.textElement.textContent = title;
+        if (subtitle !== undefined) {
+            element.subtitleElement = element.textElement.createChild("div", "dt-checkbox-subtitle");
+            element.subtitleElement.textContent = subtitle;
+        }
     }
     return element;
 }

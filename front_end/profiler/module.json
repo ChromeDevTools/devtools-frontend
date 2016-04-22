@@ -69,9 +69,9 @@
     "scripts": [
         "ProfilesPanel.js",
         "ProfileView.js",
-        "CPUProfileDataGrid.js",
-        "CPUProfileBottomUpDataGrid.js",
-        "CPUProfileTopDownDataGrid.js",
+        "ProfileDataGrid.js",
+        "BottomUpProfileDataGrid.js",
+        "TopDownProfileDataGrid.js",
         "CPUProfileFlameChart.js",
         "CPUProfileView.js",
         "HeapProfileView.js",

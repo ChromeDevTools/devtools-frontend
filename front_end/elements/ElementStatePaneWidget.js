@@ -89,7 +89,7 @@ WebInspector.ElementStatePaneWidget.prototype = {
      */
     onNodeChanged: function(newNode)
     {
-        this._updateTarget(newNode? newNode.target() : null);
+        this._updateTarget(newNode ? newNode.target() : null);
         this.update();
     },
 

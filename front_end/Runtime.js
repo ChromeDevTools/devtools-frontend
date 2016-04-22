@@ -80,7 +80,7 @@ function loadResourcePromise(url)
  */
 function normalizePath(path)
 {
-    if (path.indexOf("..") === -1 && path.indexOf('.') === -1)
+    if (path.indexOf("..") === -1 && path.indexOf(".") === -1)
         return path;
 
     var normalizedSegments = [];

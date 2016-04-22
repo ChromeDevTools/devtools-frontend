@@ -543,7 +543,7 @@ WebInspector.InspectorView.prototype = {
         var tabs = /** @type {!Array.<!WebInspector.TabbedPaneTab>} */(event.data);
         var tabOrders = this._tabOrderSetting.get();
         for (var i = 0; i < tabs.length; i++)
-            tabOrders[tabs[i].id] = (i + 1)* 10;
+            tabOrders[tabs[i].id] = (i + 1) * 10;
         this._tabOrderSetting.set(tabOrders);
     },
 

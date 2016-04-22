@@ -38,7 +38,7 @@ WebInspector.ExecutionContextModel.prototype = {
                 result =  frame ? frame.displayName() : (executionContext.origin || executionContext.name);
             } else {
                 var parsedUrl = executionContext.origin.asParsedURL();
-                var name = parsedUrl? parsedUrl.lastPathComponentWithFragment() : executionContext.name;
+                var name = parsedUrl ? parsedUrl.lastPathComponentWithFragment() : executionContext.name;
                 result = executionContext.target().decorateLabel(name);
             }
         } else {

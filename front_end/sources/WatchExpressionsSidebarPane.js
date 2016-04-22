@@ -340,7 +340,7 @@ WebInspector.WatchExpression.prototype = {
     {
         this._result = result;
 
-        var headerElement= createElementWithClass("div", "watch-expression-header");
+        var headerElement = createElementWithClass("div", "watch-expression-header");
         var deleteButton = headerElement.createChild("button", "watch-expression-delete-button");
         deleteButton.title = WebInspector.UIString("Delete watch expression");
         deleteButton.addEventListener("click", this._deleteWatchExpression.bind(this), false);

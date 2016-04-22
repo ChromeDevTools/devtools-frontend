@@ -559,7 +559,7 @@ WebInspector.ScreencastView.prototype = {
      * @param {!DOMAgent.Quad} clipQuad
      * @param {!DOMAgent.RGBA} fillColor
      */
-    _drawOutlinedQuadWithClip: function (quad, clipQuad, fillColor)
+    _drawOutlinedQuadWithClip: function(quad, clipQuad, fillColor)
     {
         this._context.fillStyle = this._cssColor(fillColor);
         this._context.save();
@@ -722,7 +722,7 @@ WebInspector.ScreencastView.prototype = {
 
         this._navigationUrl = this._navigationBar.createChild("input");
         this._navigationUrl.type = "text";
-        this._navigationUrl.addEventListener('keyup', this._navigationUrlKeyUp.bind(this), true);
+        this._navigationUrl.addEventListener("keyup", this._navigationUrlKeyUp.bind(this), true);
 
         this._navigationProgressBar = new WebInspector.ScreencastView.ProgressTracker(this._navigationBar.createChild("div", "progress"));
 
@@ -746,7 +746,7 @@ WebInspector.ScreencastView.prototype = {
 
     _navigationUrlKeyUp: function(event)
     {
-        if (event.keyIdentifier != 'Enter')
+        if (event.keyIdentifier != "Enter")
             return;
         var url = this._navigationUrl.value;
         if (!url)

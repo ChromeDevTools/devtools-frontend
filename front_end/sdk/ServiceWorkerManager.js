@@ -497,7 +497,7 @@ WebInspector.ServiceWorkerDispatcher.prototype = {
 WebInspector.ServiceWorkerConnection = function(agent, workerId)
 {
     InspectorBackendClass.Connection.call(this);
-    //FIXME: remove resourceTreeModel and others from worker targets
+    // FIXME: remove resourceTreeModel and others from worker targets
     this.suppressErrorsForDomains(["Worker", "Page", "CSS", "DOM", "DOMStorage", "Database", "Network", "IndexedDB"]);
     this._agent = agent;
     this._workerId = workerId;

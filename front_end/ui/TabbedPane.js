@@ -278,7 +278,7 @@ WebInspector.TabbedPane.prototype = {
      */
     allTabs: function()
     {
-        return this._tabs.map(function (tab) { return tab.id; });
+        return this._tabs.map(function(tab) { return tab.id; });
     },
 
     /**
@@ -310,7 +310,7 @@ WebInspector.TabbedPane.prototype = {
         }
         if (index === -1)
             return [];
-        return this._tabs.slice(index + 1).map(function (tab) { return tab.id; });
+        return this._tabs.slice(index + 1).map(function(tab) { return tab.id; });
     },
 
     /**

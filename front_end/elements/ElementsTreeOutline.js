@@ -667,7 +667,7 @@ WebInspector.ElementsTreeOutline.prototype = {
     /**
      * @param {?TreeElement} treeElement
      */
-    setHoverEffect: function (treeElement)
+    setHoverEffect: function(treeElement)
     {
         if (this._previousHoveredElement === treeElement)
             return;
@@ -749,7 +749,7 @@ WebInspector.ElementsTreeOutline.prototype = {
         treeElement.listItemElement.classList.add("elements-drag-over");
         this._dragOverTreeElement = treeElement;
         event.preventDefault();
-        event.dataTransfer.dropEffect = 'move';
+        event.dataTransfer.dropEffect = "move";
         return false;
     },
 

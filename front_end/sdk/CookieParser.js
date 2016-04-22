@@ -260,7 +260,7 @@ WebInspector.Cookie.prototype = {
     /**
      * @return {string}
      */
-    sameSite: function ()
+    sameSite: function()
     {
         return this._attributes["samesite"];
     },
@@ -456,7 +456,7 @@ WebInspector.Cookies.cookieMatchesResourceURL = function(cookie, resourceURL)
  */
 WebInspector.Cookies.cookieDomainMatchesResourceDomain = function(cookieDomain, resourceDomain)
 {
-    if (cookieDomain.charAt(0) !== '.')
+    if (cookieDomain.charAt(0) !== ".")
         return resourceDomain === cookieDomain;
     return !!resourceDomain.match(new RegExp("^([^\\.]+\\.)*" + cookieDomain.substring(1).escapeForRegExp() + "$", "i"));
 }

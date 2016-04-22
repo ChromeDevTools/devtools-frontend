@@ -688,7 +688,7 @@ WebInspector.Spectrum.prototype = {
                 if (!isRgb && (i === 1 || i === 2))
                     this._textValues[i].value += "%";
             }
-            this._textValues[3].value= Math.round(colorValues[3] * 100) / 100;
+            this._textValues[3].value = Math.round(colorValues[3] * 100) / 100;
         }
     },
 
@@ -949,7 +949,7 @@ WebInspector.Spectrum.PaletteGenerator.prototype = {
 
             // First trim the shades of gray
             if (hsvb[1] < 0.12 && hsva[1] < 0.12)
-                return hsvb[2]*hsvb[3] - hsva[2]*hsva[3];
+                return hsvb[2] * hsvb[3] - hsva[2] * hsva[3];
             if (hsvb[1] < 0.12)
                 return -1;
             if (hsva[1] < 0.12)
@@ -957,7 +957,7 @@ WebInspector.Spectrum.PaletteGenerator.prototype = {
 
             // Equal hue -> sort by sat
             if (hsvb[0] === hsva[0])
-                return hsvb[1]*hsvb[3] - hsva[1]*hsva[3];
+                return hsvb[1] * hsvb[3] - hsva[1] * hsva[3];
 
             return (hsvb[0] + 0.94) % 1 - (hsva[0] + 0.94) % 1;
         }

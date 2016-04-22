@@ -201,11 +201,11 @@ WebInspector.Color.prototype = {
         if (min === max)
             var h = 0;
         else if (r === max)
-            var h = ((1/6 * (g - b) / diff) + 1) % 1;
+            var h = ((1 / 6 * (g - b) / diff) + 1) % 1;
         else if (g === max)
-            var h = (1/6 * (b - r) / diff) + 1/3;
+            var h = (1 / 6 * (b - r) / diff) + 1 / 3;
         else
-            var h = (1/6 * (r - g) / diff) + 2/3;
+            var h = (1 / 6 * (r - g) / diff) + 2 / 3;
 
         var l = 0.5 * add;
 
@@ -474,7 +474,7 @@ WebInspector.Color._hsva2hsla = function(hsva, out_hsla)
 
     out_hsla[0] = h;
     out_hsla[1] = s;
-    out_hsla[2] = t/2;
+    out_hsla[2] = t / 2;
     out_hsla[3] = hsva[3];
 }
 
@@ -554,9 +554,9 @@ WebInspector.Color.luminance = function(rgba)
     var gSRGB = rgba[1];
     var bSRGB = rgba[2];
 
-    var r = rSRGB <= 0.03928 ? rSRGB / 12.92 : Math.pow(((rSRGB + 0.055)/1.055), 2.4);
-    var g = gSRGB <= 0.03928 ? gSRGB / 12.92 : Math.pow(((gSRGB + 0.055)/1.055), 2.4);
-    var b = bSRGB <= 0.03928 ? bSRGB / 12.92 : Math.pow(((bSRGB + 0.055)/1.055), 2.4);
+    var r = rSRGB <= 0.03928 ? rSRGB / 12.92 : Math.pow(((rSRGB + 0.055) / 1.055), 2.4);
+    var g = gSRGB <= 0.03928 ? gSRGB / 12.92 : Math.pow(((gSRGB + 0.055) / 1.055), 2.4);
+    var b = bSRGB <= 0.03928 ? bSRGB / 12.92 : Math.pow(((bSRGB + 0.055) / 1.055), 2.4);
 
     return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }

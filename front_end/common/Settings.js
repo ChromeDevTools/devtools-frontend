@@ -265,7 +265,7 @@ WebInspector.Setting.prototype = {
         if (this._storage.has(this._name)) {
             try {
                 this._value = JSON.parse(this._storage.get(this._name));
-            } catch(e) {
+            } catch (e) {
                 this._storage.remove(this._name);
             }
         }
@@ -282,10 +282,10 @@ WebInspector.Setting.prototype = {
             var settingString = JSON.stringify(value);
             try {
                 this._storage.set(this._name, settingString);
-            } catch(e) {
+            } catch (e) {
                 this._printSettingsSavingError(e.message, this._name, settingString);
             }
-        } catch(e) {
+        } catch (e) {
             WebInspector.console.error("Cannot stringify setting with name: " + this._name + ", error: " + e.message);
         }
         this._eventSupport.dispatchEventToListeners(this._name, value);
@@ -519,7 +519,7 @@ WebInspector.VersionController.prototype = {
             }
 
             var newName = settingNames[oldName];
-            var invert = "WebInspector.Drawer.showOnLoad" === oldName;
+            var invert = oldName === "WebInspector.Drawer.showOnLoad";
             var hidden = oldSetting.get() !== invert;
             oldSetting.remove();
             var showMode = hidden ? "OnlyMain" : "Both";

@@ -162,9 +162,9 @@ WebInspector.ElementsPanel.prototype = {
         this._animatedToolbarPane = widget;
 
         if (this._currentToolbarPane)
-            this._toolbarPaneElement.style.animationName = 'styles-element-state-pane-slideout';
+            this._toolbarPaneElement.style.animationName = "styles-element-state-pane-slideout";
         else if (widget)
-            this._toolbarPaneElement.style.animationName = 'styles-element-state-pane-slidein';
+            this._toolbarPaneElement.style.animationName = "styles-element-state-pane-slidein";
 
         if (widget)
             widget.show(this._toolbarPaneElement);
@@ -177,7 +177,7 @@ WebInspector.ElementsPanel.prototype = {
          */
         function onAnimationEnd()
         {
-            this._toolbarPaneElement.style.removeProperty('animation-name');
+            this._toolbarPaneElement.style.removeProperty("animation-name");
             this._toolbarPaneElement.removeEventListener("animationend", listener, false);
 
             if (this._currentToolbarPane)

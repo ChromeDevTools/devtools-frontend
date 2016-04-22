@@ -214,7 +214,7 @@ WebInspector.ConsoleModel.evaluateCommandInConsole = function(executionContext, 
         }
     }
     if (/^\s*\{/.test(text) && /\}\s*$/.test(text))
-        text = '(' + text + ')';
+        text = "(" + text + ")";
     executionContext.evaluate(text, "console", !!useCommandLineAPI, false, false, true, true, printResult);
 
     WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.ConsoleEvaluated);
@@ -465,7 +465,7 @@ WebInspector.ConsoleMessage.MessageLevel = {
  * @param {!WebInspector.ConsoleMessage} b
  * @return {number}
  */
-WebInspector.ConsoleMessage.timestampComparator = function (a, b)
+WebInspector.ConsoleMessage.timestampComparator = function(a, b)
 {
     return a.timestamp - b.timestamp;
 }

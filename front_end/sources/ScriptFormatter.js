@@ -85,7 +85,7 @@ WebInspector.Formatter.positionToLocation = function(lineEndings, position)
  */
 WebInspector.ScriptFormatter = function(mimeType, content, callback)
 {
-    content = content.replace(/\r\n?|[\n\u2028\u2029]/g, "\n").replace(/^\uFEFF/, '');
+    content = content.replace(/\r\n?|[\n\u2028\u2029]/g, "\n").replace(/^\uFEFF/, "");
     this._callback = callback;
     this._originalContent = content;
 

@@ -406,7 +406,7 @@ WebInspector.WritableProfileHeader.prototype = {
     onError: function(reader, e)
     {
         var subtitle;
-        switch(e.target.error.code) {
+        switch (e.target.error.code) {
         case e.target.error.NOT_FOUND_ERR:
             subtitle = WebInspector.UIString("'%s' not found.", reader.fileName());
             break;

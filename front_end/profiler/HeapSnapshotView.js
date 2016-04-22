@@ -1239,7 +1239,7 @@ WebInspector.TrackingHeapSnapshotProfileType.prototype = {
         var index;
         for (var i = 0; i < samples.length; i += 3) {
             index = samples[i];
-            var size  = samples[i+2];
+            var size  = samples[i + 2];
             this._profileSamples.sizes[index] = size;
             if (!this._profileSamples.max[index])
                 this._profileSamples.max[index] = size;
@@ -1687,7 +1687,7 @@ WebInspector.HeapSnapshotLoadFromFileDelegate.prototype = {
     onError: function(reader, e)
     {
         var subtitle;
-        switch(e.target.error.code) {
+        switch (e.target.error.code) {
         case e.target.error.NOT_FOUND_ERR:
             subtitle = WebInspector.UIString("'%s' not found.", reader.fileName());
             break;

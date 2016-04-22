@@ -90,7 +90,7 @@ WebInspector.PlatformFontsWidget.prototype = {
         if (isEmptySection)
             return;
 
-        platformFonts.sort(function (a, b) {
+        platformFonts.sort(function(a, b) {
             return b.glyphCount - a.glyphCount;
         });
         for (var i = 0; i < platformFonts.length; ++i) {
@@ -103,7 +103,7 @@ WebInspector.PlatformFontsWidget.prototype = {
             fontDelimeterElement.textContent = "\u2014";
 
             var fontOrigin = fontStatElement.createChild("span");
-            fontOrigin.textContent = platformFonts[i].isCustomFont? WebInspector.UIString("Network resource") : WebInspector.UIString("Local file");
+            fontOrigin.textContent = platformFonts[i].isCustomFont ? WebInspector.UIString("Network resource") : WebInspector.UIString("Local file");
 
             var fontUsageElement = fontStatElement.createChild("span", "font-usage");
             var usage = platformFonts[i].glyphCount;

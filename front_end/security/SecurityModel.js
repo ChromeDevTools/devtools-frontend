@@ -75,7 +75,7 @@ WebInspector.SecurityModel.SecurityStateComparator = function(a, b)
  * @param {?SecurityAgent.MixedContentStatus} mixedContentStatus
  * @param {boolean} schemeIsCryptographic
  */
-WebInspector.PageSecurityState = function (securityState, explanations, mixedContentStatus, schemeIsCryptographic) {
+WebInspector.PageSecurityState = function(securityState, explanations, mixedContentStatus, schemeIsCryptographic) {
     this.securityState = securityState;
     this.explanations = explanations;
     this.mixedContentStatus = mixedContentStatus;

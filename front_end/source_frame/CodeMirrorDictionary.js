@@ -62,7 +62,7 @@ WebInspector.CodeMirrorDictionary.prototype = {
      */
     _validWord: function(word)
     {
-        return !!word.length && (word[0] < '0' || word[0] > '9');
+        return !!word.length && (word[0] < "0" || word[0] > "9");
     },
 
     /**

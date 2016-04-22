@@ -176,7 +176,7 @@ WebInspector.ConsoleViewMessage.prototype = {
                         break;
                     default:
                         if (consoleMessage.parameters && consoleMessage.parameters.length === 1 && consoleMessage.parameters[0].type === "string")
-                             this._messageElement = this._tryFormatAsError(/**@type {string} */(consoleMessage.parameters[0].value));
+                             this._messageElement = this._tryFormatAsError(/** @type {string} */(consoleMessage.parameters[0].value));
 
                         var args = consoleMessage.parameters || [consoleMessage.messageText];
                         this._messageElement = this._messageElement || this._format(args);
@@ -636,7 +636,7 @@ WebInspector.ConsoleViewMessage.prototype = {
                 span.appendChild(WebInspector.linkifyStringAsFragment(text));
                 event.consume(true);
             }
-            detailedLink._showDetailedForTest = showDetailed.bind(null, new MouseEvent('click'));
+            detailedLink._showDetailedForTest = showDetailed.bind(null, new MouseEvent("click"));
             detailedLink.addEventListener("click", showDetailed, false);
         }
     },
@@ -844,7 +844,7 @@ WebInspector.ConsoleViewMessage.prototype = {
             else if (typeof b !== "undefined") {
                 var toAppend = WebInspector.linkifyStringAsFragment(String(b));
                 if (currentStyle) {
-                    var wrapper = createElement('span');
+                    var wrapper = createElement("span");
                     wrapper.appendChild(toAppend);
                     applyCurrentStyle(wrapper);
                     for (var i = 0; i < wrapper.children.length; ++i)

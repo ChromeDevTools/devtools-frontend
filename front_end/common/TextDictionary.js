@@ -68,7 +68,7 @@ WebInspector.TextDictionary.prototype = {
     wordsWithPrefix: function(prefix)
     {
         var words = [];
-        for(var i in this._words) {
+        for (var i in this._words) {
             if (i.startsWith(prefix))
                 words.push(i);
         }

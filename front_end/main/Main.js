@@ -83,7 +83,7 @@ WebInspector.Main.prototype = {
                 var settings = JSON.parse(window.decodeURI(settingsParam));
                 for (var key in settings)
                     prefs[key] = settings[key];
-            } catch(e) {
+            } catch (e) {
                 // Ignore malformed settings.
             }
         }

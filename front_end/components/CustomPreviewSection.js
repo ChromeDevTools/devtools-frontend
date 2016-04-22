@@ -62,7 +62,7 @@ WebInspector.CustomPreviewComponent.prototype = {
     {
         var contextMenu = new WebInspector.ContextMenu(event);
         if (this._customPreviewSection)
-            contextMenu.appendItem(WebInspector.UIString.capitalize("Show as Javascript ^object" ), this._disassemble.bind(this));
+            contextMenu.appendItem(WebInspector.UIString.capitalize("Show as Javascript ^object"), this._disassemble.bind(this));
         contextMenu.appendApplicableItems(this._object);
         contextMenu.show();
     },

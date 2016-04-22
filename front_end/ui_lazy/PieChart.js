@@ -49,7 +49,7 @@ WebInspector.PieChart = function(size, formatter, showTotal)
         this._totalElement = this._foregroundElement.createChild("div", "pie-chart-total");
     this._formatter = formatter;
     this._slices = [];
-    this._lastAngle = -Math.PI/2;
+    this._lastAngle = -Math.PI / 2;
     this._setSize(size);
 }
 

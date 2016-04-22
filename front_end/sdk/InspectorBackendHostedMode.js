@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-//This should be executed immediately after InspectorBackend and InspectorBackendCommands
+// This should be executed immediately after InspectorBackend and InspectorBackendCommands
 
 WebInspector.InspectorBackendHostedMode = {};
 
@@ -53,7 +53,7 @@ WebInspector.InspectorBackendHostedMode.generateCommands = function(schema)
             var value = items[m];
             var name = value.replace(/-(\w)/g, toUpperCase.bind(null, 1)).toTitleCase();
             name = name.replace(/HTML|XML|WML|API/ig, toUpperCase.bind(null, 0));
-            members.push(name + ": \"" + value +"\"");
+            members.push(name + ": \"" + value + "\"");
         }
         return "InspectorBackend.registerEnum(\"" + enumName + "\", {" + members.join(", ") + "});";
     }

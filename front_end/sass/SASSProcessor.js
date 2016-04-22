@@ -122,7 +122,7 @@ WebInspector.SASSProcessor.processCSSEdits = function(astService, map, ranges, n
     {
         if (newCSSAST.rules.length !== map.compiledModel().rules.length)
             return Promise.resolve(/** @type {?WebInspector.SourceMap.EditResult} */(null));
-        //TODO(lushnikov): only diff changed styles.
+        // TODO(lushnikov): only diff changed styles.
         var cssDiff = WebInspector.SASSSupport.diffModels(map.compiledModel(), newCSSAST);
         var edits = WebInspector.SASSProcessor._editsFromCSSDiff(cssDiff, map);
 

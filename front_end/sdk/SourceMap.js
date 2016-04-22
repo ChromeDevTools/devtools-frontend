@@ -207,13 +207,13 @@ WebInspector.TextSourceMap.load = function(sourceMapURL, compiledURL)
         }
 
         if (content.slice(0, 3) === ")]}")
-            content = content.substring(content.indexOf('\n'));
+            content = content.substring(content.indexOf("\n"));
         try {
             var payload = /** @type {!SourceMapV3} */ (JSON.parse(content));
             var baseURL = sourceMapURL.startsWith("data:") ? compiledURL : sourceMapURL;
 
             callback(new WebInspector.TextSourceMap(compiledURL, baseURL, payload));
-        } catch(e) {
+        } catch (e) {
             console.error(e);
             WebInspector.console.error("Failed to parse SourceMap: " + sourceMapURL);
             callback(null);

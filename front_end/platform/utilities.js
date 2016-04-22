@@ -167,7 +167,7 @@ String.prototype.escapeForRegExp = function()
  */
 String.prototype.escapeHTML = function()
 {
-    return this.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); //" doublequotes just for editor
+    return this.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); // " doublequotes just for editor
 }
 
 /**
@@ -284,7 +284,7 @@ String.hashCode = function(string)
         zi = (zi * z) % p;
     }
     s = (s + zi * (p - 1)) % p;
-    return Math.abs(s|0);
+    return Math.abs(s | 0);
 }
 
 /**
@@ -295,7 +295,7 @@ String.hashCode = function(string)
 String.isDigitAt = function(string, index)
 {
     var c = string.charCodeAt(index);
-    return 48 <= c && c <= 57;
+    return (48 <= c && c <= 57);
 }
 
 /**
@@ -929,7 +929,7 @@ Object.defineProperty(Array.prototype, "mergeOrdered",
     }
 });
 
-}());
+})();
 
 /**
  * @param {string} format
@@ -1538,7 +1538,7 @@ Promise.prototype.spread = function(callback)
  * @template T
  */
 Promise.prototype.catchException = function(defaultValue) {
-    return this.catch(function (error) {
+    return this.catch(function(error) {
         console.error(error);
         return defaultValue;
     });

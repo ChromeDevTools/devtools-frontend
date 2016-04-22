@@ -852,7 +852,7 @@ WebInspector.highlightRangesWithStyleClass = function(element, resultRanges, sty
     changes = changes || [];
     var highlightNodes = [];
     var textNodes = element.childTextNodes();
-    var lineText = textNodes.map(function (node) { return node.textContent; }).join("");
+    var lineText = textNodes.map(function(node) { return node.textContent; }).join("");
     var ownerDocument = element.ownerDocument;
 
     if (textNodes.length === 0)
@@ -1704,7 +1704,7 @@ WebInspector.ThemeSupport.prototype = {
             var fullText = result.join("\n");
             this._cachedThemePatches.set(id, fullText);
             return fullText;
-        } catch(e) {
+        } catch (e) {
            this._setting.set("default");
            return "";
         }

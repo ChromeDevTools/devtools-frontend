@@ -99,7 +99,7 @@ WebInspector.DefaultScriptMapping.prototype = {
 
         var splitURL = WebInspector.ParsedURL.splitURLIntoPathComponents(script.sourceURL);
         var url = splitURL[splitURL.length - 1];
-        url = "debugger:///VM" + script.scriptId + (url ? " " + url: "");
+        url = "debugger:///VM" + script.scriptId + (url ? " " + url : "");
 
         var uiSourceCode = this._project.createUISourceCode(url, WebInspector.resourceTypes.Script);
         uiSourceCode[WebInspector.DefaultScriptMapping._scriptSymbol] = script;

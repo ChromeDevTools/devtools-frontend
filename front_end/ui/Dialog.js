@@ -182,7 +182,7 @@ WebInspector.Dialog.prototype = {
         var container = WebInspector.Dialog._modalHostView.element;
 
         var width = container.offsetWidth - 10;
-        var height = container.offsetHeight- 10;
+        var height = container.offsetHeight - 10;
 
         if (this._wrapsContent) {
             width = Math.min(width, this.contentElement.offsetWidth);

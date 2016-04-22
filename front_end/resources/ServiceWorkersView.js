@@ -475,8 +475,8 @@ WebInspector.SWVersionWidget.prototype = {
         }
 
         this._scriptCell.setTextAndTitle(version.scriptURL.asParsedURL().path);
-        this._updatedCell.setTextAndTitle(version.scriptResponseTime ? (new Date(version.scriptResponseTime * 1000)).toConsoleTime() : '');
-        this._scriptLastModifiedCell.setTextAndTitle(version.scriptLastModified ? (new Date(version.scriptLastModified * 1000)).toConsoleTime() : '');
+        this._updatedCell.setTextAndTitle(version.scriptResponseTime ? (new Date(version.scriptResponseTime * 1000)).toConsoleTime() : "");
+        this._scriptLastModifiedCell.setTextAndTitle(version.scriptLastModified ? (new Date(version.scriptLastModified * 1000)).toConsoleTime() : "");
 
         this._messagesPanel.removeChildren();
         if (version.scriptLastModified) {

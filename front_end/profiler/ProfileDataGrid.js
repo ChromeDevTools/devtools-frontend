@@ -422,7 +422,7 @@ WebInspector.ProfileDataGridTree.prototype = {
 
         var matcher = createPlainTextSearchRegex(query, "i");
 
-        function matchesQuery(/*ProfileDataGridNode*/ profileDataGridNode)
+        function matchesQuery(/** @ProfileDataGridNode */ profileDataGridNode)
         {
             delete profileDataGridNode._searchMatchedSelfColumn;
             delete profileDataGridNode._searchMatchedTotalColumn;

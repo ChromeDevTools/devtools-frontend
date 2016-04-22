@@ -560,7 +560,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
         var endHighlight = anchorBox.highlight.endColumn;
         var line = this.textEditor.line(lineNumber);
         if (!anchorBox.forSelection) {
-            while (startHighlight > 1 && line.charAt(startHighlight - 1) === '.') {
+            while (startHighlight > 1 && line.charAt(startHighlight - 1) === ".") {
                 var token = this.textEditor.tokenAtTextPosition(lineNumber, startHighlight - 2);
                 if (!token || !token.type) {
                     this._popoverHelper.hidePopover();
@@ -749,7 +749,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
             return;
         }
 
-        var functionUILocation = WebInspector.debuggerWorkspaceBinding.rawLocationToUILocation(/**@type {!WebInspector.DebuggerModel.Location} */ (callFrame.functionLocation()));
+        var functionUILocation = WebInspector.debuggerWorkspaceBinding.rawLocationToUILocation(/** @type {!WebInspector.DebuggerModel.Location} */ (callFrame.functionLocation()));
         var executionUILocation = WebInspector.debuggerWorkspaceBinding.rawLocationToUILocation(callFrame.location());
         if (functionUILocation.uiSourceCode !== this.uiSourceCode() || executionUILocation.uiSourceCode !== this.uiSourceCode()) {
             this._clearValueWidgets();

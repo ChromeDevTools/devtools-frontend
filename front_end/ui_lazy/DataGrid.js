@@ -746,7 +746,7 @@ WebInspector.DataGrid.prototype = {
             // Get the width of the cell in the first (and only) row of the
             // header table in order to determine the width of the column, since
             // it is not possible to query a column for its width.
-            left[i] = (left[i-1] || 0) + this.headerTableBody.rows[0].cells[i].offsetWidth;
+            left[i] = (left[i - 1] || 0) + this.headerTableBody.rows[0].cells[i].offsetWidth;
         }
 
         // Make n - 1 resizers for n columns.
@@ -1450,7 +1450,7 @@ WebInspector.DataGridNode.prototype = {
     insertChild: function(child, index)
     {
         if (!child)
-            throw("insertChild: Node can't be undefined or null.");
+            throw "insertChild: Node can't be undefined or null.";
         if (child.parent === this) {
             var currentIndex = this.children.indexOf(child);
             if (currentIndex < 0)
@@ -1503,9 +1503,9 @@ WebInspector.DataGridNode.prototype = {
     removeChild: function(child)
     {
         if (!child)
-            throw("removeChild: Node can't be undefined or null.");
+            throw "removeChild: Node can't be undefined or null.";
         if (child.parent !== this)
-            throw("removeChild: Node is not a child of this node.");
+            throw "removeChild: Node is not a child of this node.";
 
         if (this.dataGrid)
             this.dataGrid.updateSelectionBeforeRemoval(child, false);
@@ -1818,7 +1818,7 @@ WebInspector.DataGridNode.prototype = {
             return;
 
         if (!this.parent)
-            throw("savePosition: Node must have a parent.");
+            throw "savePosition: Node must have a parent.";
         this._savedPosition = {
             parent: this.parent,
             index: this.parent.children.indexOf(this)

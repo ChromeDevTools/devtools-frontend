@@ -1066,7 +1066,7 @@ WebInspector.CodeMirrorTextEditor.prototype = {
     _contextMenu: function(event)
     {
         var contextMenu = new WebInspector.ContextMenu(event);
-        event.consume(true); //Consume event now to prevent document from handling the async menu
+        event.consume(true); // Consume event now to prevent document from handling the async menu
         var target = event.target.enclosingNodeOrSelfWithClass("CodeMirror-gutter-elt");
         var promise;
         if (target)

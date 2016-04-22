@@ -518,7 +518,7 @@ var InspectorFrontendHost = window.InspectorFrontendHost || null;
                 if (signature.length < 2) {
                     try {
                         InspectorFrontendHost.events.dispatchEventToListeners(name, params[0]);
-                    } catch(e) {
+                    } catch (e) {
                         console.error(e + " " + e.stack);
                     }
                     return;
@@ -528,7 +528,7 @@ var InspectorFrontendHost = window.InspectorFrontendHost || null;
                     data[signature[i]] = params[i];
                 try {
                     InspectorFrontendHost.events.dispatchEventToListeners(name, data);
-                } catch(e) {
+                } catch (e) {
                     console.error(e + " " + e.stack);
                 }
             }

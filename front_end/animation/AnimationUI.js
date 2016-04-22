@@ -321,7 +321,7 @@ WebInspector.AnimationUI.prototype = {
     /**
      * @param {!Event} event
      */
-    _mouseMove: function (event)
+    _mouseMove: function(event)
     {
         this._movementInMs = (event.clientX - this._downMouseX) / this._timeline.pixelMsRatio();
         if (this._delay() + this._duration() > this._timeline.duration() * 0.8)

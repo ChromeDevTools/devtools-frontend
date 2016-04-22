@@ -619,7 +619,7 @@ WebInspector.SecurityMainView.prototype = {
         this.refreshExplanations();
     },
 
-    refreshExplanations: function ()
+    refreshExplanations: function()
     {
         this._securityExplanations.removeChildren();
         for (var explanation of this._explanations)
@@ -628,7 +628,7 @@ WebInspector.SecurityMainView.prototype = {
         this._addMixedContentExplanations();
     },
 
-    _addMixedContentExplanations: function ()
+    _addMixedContentExplanations: function()
     {
         if (!this._schemeIsCryptographic)
             return;
@@ -802,7 +802,7 @@ WebInspector.SecurityOriginView = function(panel, origin, originState)
             table.addRow("", WebInspector.SecurityPanel.createCertificateViewerButton(WebInspector.UIString("Open full certificate details"), originState.securityDetails.certificateId));
         }
 
-        function displayCertificateDetailsUnavailable ()
+        function displayCertificateDetailsUnavailable()
         {
             certificateSection.createChild("div").textContent = WebInspector.UIString("Certificate details unavailable.");
         }

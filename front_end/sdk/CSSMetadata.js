@@ -166,8 +166,8 @@ WebInspector.CSSMetadata.isPropertyInherited = function(propertyName)
 }
 
 WebInspector.CSSMetadata._distanceProperties = [
-    'background-position', 'border-spacing', 'bottom', 'font-size', 'height', 'left', 'letter-spacing', 'max-height', 'max-width', 'min-height',
-    'min-width', 'right', 'text-indent', 'top', 'width', 'word-spacing'
+    "background-position", "border-spacing", "bottom", "font-size", "height", "left", "letter-spacing", "max-height", "max-width", "min-height",
+    "min-width", "right", "text-indent", "top", "width", "word-spacing"
 ];
 
 WebInspector.CSSMetadata._bezierAwareProperties = [

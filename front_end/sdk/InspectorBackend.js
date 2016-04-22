@@ -637,7 +637,7 @@ InspectorBackendClass.AgentPrototype.prototype = {
         }
 
         var argumentsArray = [];
-        argumentsArray[0] = messageObject.error ? messageObject.error.message: null;
+        argumentsArray[0] = messageObject.error ? messageObject.error.message : null;
 
         if (this._hasErrorData[methodName])
             argumentsArray[1] = messageObject.error ? messageObject.error.data : null;

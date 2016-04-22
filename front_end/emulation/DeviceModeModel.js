@@ -434,7 +434,7 @@ WebInspector.DeviceModeModel.prototype = {
 
         if (this._type === WebInspector.DeviceModeModel.Type.Device) {
             var orientation = this._device.orientationByName(this._mode.orientation);
-            var outline = (this._deviceOutlineSetting.get() && Runtime.experiments.isEnabled("deviceFrames"))? orientation.outlineInsets : new Insets(0,0,0,0);
+            var outline = (this._deviceOutlineSetting.get() && Runtime.experiments.isEnabled("deviceFrames")) ? orientation.outlineInsets : new Insets(0,0,0,0);
             this._fitScale = this._calculateFitScale(orientation.width, orientation.height);
             if (this._device.mobile())
                 this._appliedUserAgentType = this._device.touch() ? WebInspector.DeviceModeModel.UA.Mobile : WebInspector.DeviceModeModel.UA.MobileNoTouch;
@@ -476,7 +476,7 @@ WebInspector.DeviceModeModel.prototype = {
      */
     _calculateFitScale: function(screenWidth, screenHeight)
     {
-        var scale = Math.min(screenWidth ? this._preferredSize.width / screenWidth: 1, screenHeight ? this._preferredSize.height / screenHeight : 1);
+        var scale = Math.min(screenWidth ? this._preferredSize.width / screenWidth : 1, screenHeight ? this._preferredSize.height / screenHeight : 1);
         return Math.min(scale, 1);
     },
 

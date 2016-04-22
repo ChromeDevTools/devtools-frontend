@@ -603,7 +603,7 @@ WebInspector.AXNodeIgnoredReasonTreeElement.prototype = {
 WebInspector.AXNodeIgnoredReasonTreeElement.createReasonElement = function(reason, axNode)
 {
     var reasonElement = null;
-    switch(reason) {
+    switch (reason) {
     case "activeModalDialog":
         reasonElement = WebInspector.formatLocalized("Element is hidden by active modal dialog:\u00a0", []);
         break;

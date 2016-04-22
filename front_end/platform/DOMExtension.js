@@ -186,7 +186,7 @@ Element.prototype.isScrolledToBottom = function()
  */
 function removeSubsequentNodes(fromNode, toNode)
 {
-    for (var node = fromNode; node && node !== toNode; ) {
+    for (var node = fromNode; node && node !== toNode;) {
         var nodeToRemove = node;
         node = node.nextSibling;
         nodeToRemove.remove();
@@ -746,7 +746,7 @@ Node.prototype.appendChildren = function(var_args)
  */
 Node.prototype.deepTextContent = function()
 {
-    return this.childTextNodes().map(function (node) { return node.textContent; }).join("");
+    return this.childTextNodes().map(function(node) { return node.textContent; }).join("");
 }
 
 /**

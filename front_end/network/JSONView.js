@@ -41,13 +41,13 @@ WebInspector.JSONView = function(parsedJSON)
 }
 
 // "false", "true", "null", ",", "{", "}", "[", "]", number, double-quoted string.
-WebInspector.JSONView._jsonToken = new RegExp('(?:false|true|null|[/*&\\|;=\\(\\),\\{\\}\\[\\]]|(?:-?\\b(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?\\b)|(?:\"(?:[^\\0-\\x08\\x0a-\\x1f\"\\\\]|\\\\(?:[\"/\\\\bfnrt]|u[0-9A-Fa-f]{4}))*\"))', 'g');
+WebInspector.JSONView._jsonToken = new RegExp('(?:false|true|null|[/*&\\|;=\\(\\),\\{\\}\\[\\]]|(?:-?\\b(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?\\b)|(?:\"(?:[^\\0-\\x08\\x0a-\\x1f\"\\\\]|\\\\(?:[\"/\\\\bfnrt]|u[0-9A-Fa-f]{4}))*\"))', "g");
 
 // Escaped unicode char.
-WebInspector.JSONView._escapedUnicode = new RegExp('\\\\(?:([^u])|u(.{4}))', 'g');
+WebInspector.JSONView._escapedUnicode = new RegExp("\\\\(?:([^u])|u(.{4}))", "g");
 
 // Map from escaped char to its literal value.
-WebInspector.JSONView._standardEscapes = {'"': '"', '/': '/', '\\': '\\', 'b': '\b', 'f': '\f', 'n': '\n', 'r': '\r', 't': '\t'};
+WebInspector.JSONView._standardEscapes = {'"': '"', "/": "/", "\\": "\\", "b": "\b", "f": "\f", "n": "\n", "r": "\r", "t": "\t"};
 
 /**
  * @param {string} full

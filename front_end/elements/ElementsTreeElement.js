@@ -449,10 +449,10 @@ WebInspector.ElementsTreeElement.prototype = {
             tag.insertBefore(node, tag.lastChild);
         else {
             var nodeName = tag.textContent.match(/^<(.*?)>$/)[1];
-            tag.textContent = '';
-            tag.createTextChild('<' + nodeName);
+            tag.textContent = "";
+            tag.createTextChild("<" + nodeName);
             tag.appendChild(node);
-            tag.createTextChild('>');
+            tag.createTextChild(">");
         }
 
         this.updateSelection();
@@ -746,7 +746,7 @@ WebInspector.ElementsTreeElement.prototype = {
          */
         function editingComitted(element, newTagName)
         {
-            tagNameElement.removeEventListener('keyup', keyupListener, false);
+            tagNameElement.removeEventListener("keyup", keyupListener, false);
             this._tagNameEditingCommitted.apply(this, arguments);
         }
 
@@ -755,11 +755,11 @@ WebInspector.ElementsTreeElement.prototype = {
          */
         function editingCancelled()
         {
-            tagNameElement.removeEventListener('keyup', keyupListener, false);
+            tagNameElement.removeEventListener("keyup", keyupListener, false);
             this._editingCancelled.apply(this, arguments);
         }
 
-        tagNameElement.addEventListener('keyup', keyupListener, false);
+        tagNameElement.addEventListener("keyup", keyupListener, false);
 
         var config = new WebInspector.InplaceEditor.Config(editingComitted.bind(this), editingCancelled.bind(this), tagName);
         this._editing = WebInspector.InplaceEditor.startEditing(tagNameElement, config);
@@ -1024,14 +1024,14 @@ WebInspector.ElementsTreeElement.prototype = {
         // in the child element list.
         if (this.expanded) {
             var closers = this._childrenListNode.querySelectorAll(".close");
-            return closers[closers.length-1];
+            return closers[closers.length - 1];
         }
 
         // Remaining cases are single line non-expanded elements with a closing
         // tag, or HTML elements without a closing tag (such as <br>). Return
         // null in the case where there isn't a closing tag.
         var tags = this.listItemElement.getElementsByClassName("webkit-html-tag");
-        return (tags.length === 1 ? null : tags[tags.length-1]);
+        return (tags.length === 1 ? null : tags[tags.length - 1]);
     },
 
     /**
@@ -1615,7 +1615,7 @@ WebInspector.ElementsTreeElement.prototype = {
         this._node.resolveToObject("", scrollIntoViewCallback);
     },
 
-    _editAsHTML: function ()
+    _editAsHTML: function()
     {
         var promise = WebInspector.Revealer.revealPromise(this.node());
         promise.then(() => WebInspector.actionRegistry.action("elements.edit-as-html").execute());

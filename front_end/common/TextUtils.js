@@ -108,7 +108,7 @@ WebInspector.TextUtils = {
     textToWords: function(text, isWordChar, wordCallback)
     {
         var startWord = -1;
-        for(var i = 0; i < text.length; ++i) {
+        for (var i = 0; i < text.length; ++i) {
             if (!isWordChar(text.charAt(i))) {
                 if (startWord !== -1)
                     wordCallback(text.substring(startWord, i));

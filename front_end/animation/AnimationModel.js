@@ -568,7 +568,7 @@ WebInspector.AnimationModel.KeyframesRule = function(target, payload)
 {
     WebInspector.SDKObject.call(this, target);
     this._payload = payload;
-    this._keyframes = this._payload.keyframes.map(function (keyframeStyle) {
+    this._keyframes = this._payload.keyframes.map(function(keyframeStyle) {
         return new WebInspector.AnimationModel.KeyframeStyle(target, keyframeStyle);
     });
 }
@@ -579,7 +579,7 @@ WebInspector.AnimationModel.KeyframesRule.prototype = {
      */
     _setKeyframesPayload: function(payload)
     {
-        this._keyframes = payload.map(function (keyframeStyle) {
+        this._keyframes = payload.map(function(keyframeStyle) {
             return new WebInspector.AnimationModel.KeyframeStyle(this._target, keyframeStyle);
         });
     },

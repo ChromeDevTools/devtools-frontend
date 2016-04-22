@@ -448,7 +448,7 @@ WebInspector.SourceFrame.prototype = {
      * @override
      * @return {boolean}
      */
-    supportsCaseSensitiveSearch: function ()
+    supportsCaseSensitiveSearch: function()
     {
         return true;
     },

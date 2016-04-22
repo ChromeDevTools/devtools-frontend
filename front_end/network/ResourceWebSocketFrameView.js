@@ -168,7 +168,7 @@ WebInspector.ResourceWebSocketFrameNode = function(frame)
     this._dataText = frame.text;
     var length = frame.text.length;
     var time = new Date(frame.time * 1000);
-    var timeText = ("0" + time.getHours()).substr(-2) + ":" + ("0" + time.getMinutes()).substr(-2)+ ":" + ("0" + time.getSeconds()).substr(-2) + "." + ("00" + time.getMilliseconds()).substr(-3);
+    var timeText = ("0" + time.getHours()).substr(-2) + ":" + ("0" + time.getMinutes()).substr(-2) + ":" + ("0" + time.getSeconds()).substr(-2) + "." + ("00" + time.getMilliseconds()).substr(-3);
     var timeNode = createElement("div");
     timeNode.createTextChild(timeText);
     timeNode.title = time.toLocaleString();

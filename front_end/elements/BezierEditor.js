@@ -202,7 +202,7 @@ WebInspector.BezierEditor.prototype = {
      * @param {string} drawPath
      * @return {!Element}
      */
-    _createPresetModifyIcon: function (parentElement, className, drawPath)
+    _createPresetModifyIcon: function(parentElement, className, drawPath)
     {
         var icon = parentElement.createSVGChild("svg", "bezier-preset-modify " + className);
         icon.setAttribute("width", 20);

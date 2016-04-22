@@ -6,26 +6,30 @@
 
 .network-config {
     padding: 12px;
+    display: block;
 }
 
 .network-config-group {
     display: flex;
-    padding-top: 12px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     flex-wrap: wrap;
     flex: 0 0 auto;
     min-height: 30px;
-    border-top: 1px solid #ccc;
 }
 
 .network-config-title {
-    flex: 1 1 68px;
     margin-right: 16px;
-    text-align: right;
+    width: 130px;
 }
 
 .network-config-fields {
     flex: 2 0 200px;
+}
+
+.panel-section-separator {
+    height: 1px;
+    margin-bottom: 10px;
+    background: #f0f0f0;
 }
 
 /* Disable cache */
@@ -60,7 +64,7 @@
 .network-config-ua input:not(.dt-radio-button) {
     display: block;
     width: calc(100% - 20px);
-    max-width: 400px;
+    max-width: 250px;
     border: 1px solid #bfbfbf;
     border-radius: 2px;
     box-sizing: border-box;
@@ -81,7 +85,7 @@
 
 .network-config-ua .chrome-select {
     width: calc(100% - 20px);
-    max-width: 230px;
+    max-width: 250px;
 }
 
 .network-config-ua label[is="dt-radio"] {

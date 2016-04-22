@@ -205,7 +205,10 @@ WorkerRuntime.Worker.prototype = {
          */
         function setOnMessage(worker)
         {
-            worker.onmessage = listener;
+            if (worker.port)
+                worker.port.onmessage = listener;
+            else
+                worker.onmessage = listener;
         }
     },
 
@@ -221,55 +224,10 @@ WorkerRuntime.Worker.prototype = {
          */
         function setOnError(worker)
         {
-            worker.onerror = listener;
-        }
-    },
-
-    get port()
-    {
-        return new WorkerRuntime.Worker.FuturePort(this);
-    }
-}
-
-/**
- * @constructor
- * @param {!WorkerRuntime.Worker} worker
- */
-WorkerRuntime.Worker.FuturePort = function(worker)
-{
-    this._worker = worker;
-}
-
-WorkerRuntime.Worker.FuturePort.prototype = {
-    /**
-     * @param {?function(!MessageEvent.<?>)} listener
-     */
-    set onmessage(listener)
-    {
-        this._worker._workerPromise.then(setOnMessage);
-
-        /**
-         * @param {!SharedWorker} worker
-         */
-        function setOnMessage(worker)
-        {
-            worker.port.onmessage = listener;
-        }
-    },
-
-    /**
-     * @param {?function(!Event)} listener
-     */
-    set onerror(listener)
-    {
-        this._worker._workerPromise.then(setOnError);
-
-        /**
-         * @param {!SharedWorker} worker
-         */
-        function setOnError(worker)
-        {
-            worker.port.onerror = listener;
+            if (worker.port)
+                worker.port.onerror = listener;
+            else
+                worker.onerror = listener;
         }
     }
 }

@@ -420,8 +420,7 @@ WebInspector.TempFile._clearTempStorage = function(fulfill, reject)
     try {
         var worker = new WorkerRuntime.Worker("temp_storage_shared_worker", "TempStorageCleaner");
         worker.onerror = handleError;
-        worker.port.onmessage = handleMessage;
-        worker.port.onerror = handleError;
+        worker.onmessage = handleMessage;
     } catch (e) {
         if (e.name === "URLMismatchError")
             console.log("Shared worker wasn't started due to url difference. " + e);

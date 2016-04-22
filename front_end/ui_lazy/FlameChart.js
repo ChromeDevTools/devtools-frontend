@@ -45,8 +45,6 @@ WebInspector.FlameChartDelegate.prototype = {
      * @param {number} endTime
      */
     updateRangeSelection: function(startTime, endTime) { },
-
-    endRangeSelection: function() { }
 }
 
 /**
@@ -713,7 +711,6 @@ WebInspector.FlameChart.prototype = {
     _endRangeSelection: function()
     {
         this._isDragging = false;
-        this._flameChartDelegate.endRangeSelection();
         this._updateHighlight();
     },
 

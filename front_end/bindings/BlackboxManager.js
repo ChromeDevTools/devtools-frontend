@@ -6,6 +6,7 @@
  * @constructor
  * @param {!WebInspector.DebuggerWorkspaceBinding} debuggerWorkspaceBinding
  * @param {!WebInspector.NetworkMapping} networkMapping
+ * @implements {WebInspector.TargetManager.Observer}
  */
 WebInspector.BlackboxManager = function(debuggerWorkspaceBinding, networkMapping)
 {
@@ -21,6 +22,8 @@ WebInspector.BlackboxManager = function(debuggerWorkspaceBinding, networkMapping
     this._debuggerModelData = new Map();
     /** @type {!Map<string, boolean>} */
     this._isBlackboxedURLCache = new Map();
+
+    WebInspector.targetManager.observeTargets(this);
 }
 
 WebInspector.BlackboxManager.prototype = {
@@ -40,6 +43,40 @@ WebInspector.BlackboxManager.prototype = {
     removeChangeListener: function(listener, thisObject)
     {
         WebInspector.moduleSetting("skipStackFramesPattern").removeChangeListener(listener, thisObject);
+    },
+
+     /**
+     * @override
+     * @param {!WebInspector.Target} target
+     */
+    targetAdded: function(target)
+    {
+        var debuggerModel = WebInspector.DebuggerModel.fromTarget(target);
+        if (debuggerModel)
+            this._setBlackboxPatterns(debuggerModel);
+    },
+
+    /**
+     * @override
+     * @param {!WebInspector.Target} target
+     */
+    targetRemoved: function(target)
+    {
+    },
+
+    /**
+     * @param {!WebInspector.DebuggerModel} debuggerModel
+     * @return {!Promise<boolean>}
+     */
+    _setBlackboxPatterns: function(debuggerModel)
+    {
+        var regexPatterns = WebInspector.moduleSetting("skipStackFramesPattern").getAsArray();
+        var patterns = /** @type {!Array<string>} */([]);
+        for (var item of regexPatterns) {
+            if (!item.disabled && item.pattern)
+                patterns.push(item.pattern);
+        }
+        return debuggerModel.setBlackboxPatterns(patterns);
     },
 
     /**
@@ -258,6 +295,7 @@ WebInspector.BlackboxManager.prototype = {
 
         var promises = [];
         for (var debuggerModel of WebInspector.DebuggerModel.instances()) {
+            promises.push(this._setBlackboxPatterns.bind(this, debuggerModel));
             for (var scriptId in debuggerModel.scripts) {
                 var script = debuggerModel.scripts[scriptId];
                 promises.push(this._addScript(script)

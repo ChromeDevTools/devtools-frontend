@@ -3705,6 +3705,14 @@
                 "description": "Enables or disables async call stacks tracking."
             },
             {
+                "name": "setBlackboxPatterns",
+                "parameters": [
+                    { "name": "patterns", "type": "array", "items": { "type": "string" }, "description": "Array of regexps that will be used to check script url for blackbox state." }
+                ],
+                "hidden": true,
+                "description": "Replace previous blackbox patterns with passed ones. Forces backend to skip stepping/pausing in scripts with url matching one of the patterns. VM will try to leave blackboxed script by performing 'step in' several times, finally resorting to 'step out' if unsuccessful."
+            },
+            {
                 "name": "setBlackboxedRanges",
                 "parameters": [
                     { "name": "scriptId", "$ref": "Runtime.ScriptId", "description": "Id of the script." },

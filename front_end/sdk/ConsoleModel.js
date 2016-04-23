@@ -125,7 +125,7 @@ WebInspector.ConsoleModel.prototype = {
             return false;
 
         // ignore Chromecast's cast_sender spam
-        if (msg.url.includes("://boadgeojelhgndaghljhdicfkmllpafd") ||  msg.url.includes("://dliochdbjfkdbacpmhlcpmleaejidimm") ||  msg.url.includes("://pkedcjkdefgpdelpbcmbmeomcjbeemfm") || msg.url.includes("://fjhoaacokmgbjemoflkofnenfaiekifl") || msg.url.includes("://ekpaaapppgpmolpcldedioblbkmijaca"))
+        if (msg.url.includes("://boadgeojelhgndaghljhdicfkmllpafd") ||  msg.url.includes("://dliochdbjfkdbacpmhlcpmleaejidimm") ||  msg.url.includes("://pkedcjkdefgpdelpbcmbmeomcjbeemfm") || msg.url.includes("://fjhoaacokmgbjemoflkofnenfaiekifl") || msg.url.includes("://fmfcbgogabcbclcofgocippekhfcmgfj") || msg.url.includes("://enhhojjnijigcajfphajepfemndkmdlo") || msg.url.includes("://ekpaaapppgpmolpcldedioblbkmijaca"))
             return true;
 
         return false;

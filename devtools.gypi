@@ -620,6 +620,7 @@
             'front_end/formatter_worker/IdentityFormatter.js',
             'front_end/formatter_worker/JavaScriptOutline.js',
             'front_end/formatter_worker/FormatterWorker.js',
+            'front_end/formatter_worker/RelaxedJSONParser.js',
         ],
         'devtools_settings_js_files': [
             'front_end/settings/editFileSystemView.css',

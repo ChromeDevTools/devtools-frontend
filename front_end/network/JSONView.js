@@ -40,100 +40,47 @@ WebInspector.JSONView = function(parsedJSON)
     this.element.classList.add("json-view");
 }
 
-// "false", "true", "null", ",", "{", "}", "[", "]", number, double-quoted string.
-WebInspector.JSONView._jsonToken = new RegExp('(?:false|true|null|[/*&\\|;=\\(\\),\\{\\}\\[\\]]|(?:-?\\b(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?\\b)|(?:\"(?:[^\\0-\\x08\\x0a-\\x1f\"\\\\]|\\\\(?:[\"/\\\\bfnrt]|u[0-9A-Fa-f]{4}))*\"))', "g");
-
-// Escaped unicode char.
-WebInspector.JSONView._escapedUnicode = new RegExp("\\\\(?:([^u])|u(.{4}))", "g");
-
-// Map from escaped char to its literal value.
-WebInspector.JSONView._standardEscapes = {'"': '"', "/": "/", "\\": "\\", "b": "\b", "f": "\f", "n": "\n", "r": "\r", "t": "\t"};
-
 /**
- * @param {string} full
- * @param {string} standard
- * @param {string} unicode
- * @return {string}
+ * @param {?string} text
+ * @return {!Promise<?WebInspector.ParsedJSON>}
  */
-WebInspector.JSONView._unescape = function(full, standard, unicode)
+WebInspector.JSONView.parseJSON = function(text)
 {
-    return standard ? WebInspector.JSONView._standardEscapes[standard] : String.fromCharCode(parseInt(unicode, 16));
-}
+    var returnObj = null;
+    if (text)
+        returnObj = WebInspector.JSONView._extractJSON(/** @type {string} */ (text));
+    if (!returnObj)
+        return Promise.resolve(/** @type {?WebInspector.ParsedJSON} */ (null));
+    return new Promise(runParser);
 
-/**
- * @param {string} text
- * @return {string}
- */
-WebInspector.JSONView._unescapeString = function(text)
-{
-    return text.indexOf("\\") === -1 ? text : text.replace(WebInspector.JSONView._escapedUnicode, WebInspector.JSONView._unescape);
-}
+    /**
+     * @param {function(*)} success
+     */
+    function runParser(success) {
+        var worker = new WorkerRuntime.Worker("formatter_worker");
+        worker.onmessage =  /** @type function(!MessageEvent) */ (handleReturnedJSON);
+        worker.postMessage({method: "relaxedJSONParser", params:{content: returnObj.data}});
 
-/**
- * @return {*}
- */
-WebInspector.JSONView._buildObjectFromJSON = function(text)
-{
-    var regExp = WebInspector.JSONView._jsonToken;
-    regExp.lastIndex = 0;
-    var result = [];
-    var tip = result;
-    var stack = [];
-    var key = undefined;
-    var token = undefined;
-    var lastToken = undefined;
-    while (true) {
-        var match = regExp.exec(text);
-        if (match === null)
-            break;
-        lastToken = token;
-        token = match[0];
-        var code = token.charCodeAt(0);
-        if ((code === 0x5b) || (code === 0x7b)) { // [ or {
-            var newTip = (code === 0x5b) ? [] : {};
-            tip[key || tip.length] = newTip;
-            stack.push(tip);
-            tip = newTip;
-        } else if ((code === 0x5d) || (code === 0x7d)) { // ] or }
-            tip = stack.pop();
-            if (!tip)
-                break;
-        } else if (code === 0x2C) { // ,
-            if (Array.isArray(tip) && (lastToken === undefined || lastToken === "[" || lastToken === ","))
-                tip[tip.length] = undefined;
-        } else if (code === 0x22) { // "
-            token = WebInspector.JSONView._unescapeString(token.substring(1, token.length - 1));
-            if (!key) {
-                if (Array.isArray(tip)) {
-                  key = tip.length;
-                } else {
-                    key = token || "";
-                    continue;
-                }
+        /**
+         * @param {!MessageEvent} event
+         */
+        function handleReturnedJSON(event) {
+            worker.terminate();
+            if (!event.data) {
+                success(null);
+                return;
             }
-            tip[key] = token;
-        } else if (code === 0x66) { // f
-            tip[key || tip.length] = false;
-        } else if (code === 0x6e) { // n
-            tip[key || tip.length] = null;
-        } else if (code === 0x74) { // t
-            tip[key || tip.length] = true;
-        } else if (code === 0x2f || code === 0x2a || code === 0x26 || code === 0x7c || code === 0x3b || code === 0x3d || code === 0x28 || code === 0x29) { // /*&|;=()
-            // Looks like JavaScript
-            throw "Invalid JSON";
-        } else { // sign or digit
-            tip[key || tip.length] = +(token);
+            returnObj.data = event.data;
+            success(returnObj);
         }
-        key = undefined;
     }
-    return (result.length > 1) ? result : result[0];
 }
 
 /**
  * @param {string} text
  * @return {?WebInspector.ParsedJSON}
  */
-WebInspector.JSONView.parseJSON = function(text)
+WebInspector.JSONView._extractJSON = function(text)
 {
     // Do not treat HTML as JSON.
     if (text.startsWith("<"))
@@ -154,11 +101,7 @@ WebInspector.JSONView.parseJSON = function(text)
     if (suffix.trim().length && !(suffix.trim().startsWith(")") && prefix.trim().endsWith("(")))
         return null;
 
-    try {
-        return new WebInspector.ParsedJSON(WebInspector.JSONView._buildObjectFromJSON(text), prefix, suffix);
-    } catch (e) {
-        return null;
-    }
+    return new WebInspector.ParsedJSON(text, prefix, suffix);
 }
 
 /**
@@ -192,8 +135,8 @@ WebInspector.JSONView.prototype = {
         var obj = WebInspector.RemoteObject.fromLocalObject(this._parsedJSON.data);
         var title = this._parsedJSON.prefix + obj.description + this._parsedJSON.suffix;
         var section = new WebInspector.ObjectPropertiesSection(obj, title);
+        section.setEditable(false);
         section.expand();
-        section.editable = false;
         this.element.appendChild(section.element);
     },
 

@@ -47,10 +47,14 @@ WebInspector.ResourceWebSocketFrameView = function(request)
 
     this._dataGrid.setName("ResourceWebSocketFrameView");
     this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SelectedNode, this._onFrameSelected, this);
+    this._dataGrid.addEventListener(WebInspector.DataGrid.Events.DeselectedNode, this._onFrameDeselected, this);
     this._splitWidget.setMainWidget(this._dataGrid.asWidget());
 
     var view = new WebInspector.EmptyWidget("Select frame to browse its content.");
     this._splitWidget.setSidebarWidget(view);
+
+    /** @type {?WebInspector.ResourceWebSocketFrameNode} */
+    this._selectedNode = null;
 }
 
 /** @enum {number} */
@@ -116,12 +120,41 @@ WebInspector.ResourceWebSocketFrameView.prototype = {
     _onFrameSelected: function(event)
     {
         var selectedNode = /** @type {!WebInspector.ResourceWebSocketFrameNode} */ (event.target.selectedNode);
+        this._currentSelectedNode = selectedNode;
         var contentProvider = selectedNode.contentProvider();
-        contentProvider.requestContent().then(content => {
-            var parsedJSON = content ? WebInspector.JSONView.parseJSON(content) : null;
-            var view = parsedJSON ? new WebInspector.JSONView(parsedJSON) : new WebInspector.ResourceSourceFrame(contentProvider);
-            this._splitWidget.setSidebarWidget(view);
-        });
+        contentProvider.requestContent().then(contentHandler.bind(this));
+
+        /**
+         * @param {(string|null)} content
+         * @this {WebInspector.ResourceWebSocketFrameView}
+         */
+        function contentHandler(content) {
+            if (this._currentSelectedNode !== selectedNode)
+                return;
+            WebInspector.JSONView.parseJSON(content).then(handleJSONData.bind(this));
+        }
+
+        /**
+         * @param {?WebInspector.ParsedJSON} parsedJSON
+         * @this {WebInspector.ResourceWebSocketFrameView}
+         */
+        function handleJSONData(parsedJSON)
+        {
+            if (this._currentSelectedNode !== selectedNode)
+                return;
+            if (parsedJSON)
+                this._splitWidget.setSidebarWidget(new WebInspector.JSONView(parsedJSON));
+            else
+                this._splitWidget.setSidebarWidget(new WebInspector.ResourceSourceFrame(contentProvider));
+        }
+    },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _onFrameDeselected: function(event)
+    {
+        this._currentSelectedNode = null;
     },
 
     refresh: function()

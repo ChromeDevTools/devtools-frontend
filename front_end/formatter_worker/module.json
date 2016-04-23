@@ -15,7 +15,8 @@
         "CSSRuleParser.js",
         "HTMLFormatter.js",
         "IdentityFormatter.js",
-        "JavaScriptOutline.js"
+        "JavaScriptOutline.js",
+        "RelaxedJSONParser.js"
     ],
     "skip_compilation": [
         "../acorn/acorn.js",

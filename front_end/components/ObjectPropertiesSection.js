@@ -89,6 +89,14 @@ WebInspector.ObjectPropertiesSection.prototype = {
     },
 
     /**
+     * @param {boolean} value
+     */
+    setEditable: function(value)
+    {
+        this._editable = value;
+    },
+
+    /**
      * @return {!TreeElement}
      */
     objectTreeElement: function()

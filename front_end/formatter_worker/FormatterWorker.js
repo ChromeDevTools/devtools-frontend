@@ -78,10 +78,21 @@ self.onmessage = function(event) {
     case "evaluatableJavaScriptSubstring":
         WebInspector.evaluatableJavaScriptSubstring(params.content);
         break;
+    case "relaxedJSONParser":
+        WebInspector.relaxedJSONParser(params.content);
+        break;
     default:
         console.error("Unsupport method name: " + method);
     }
 };
+
+/**
+ * @param {string} content
+ */
+WebInspector.relaxedJSONParser = function(content)
+{
+    postMessage(WebInspector.RelaxedJSONParser.parse(content));
+}
 
 /**
  * @param {string} content

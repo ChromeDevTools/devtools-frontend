@@ -55,6 +55,7 @@ WebInspector.RuntimeModel = function(target)
 WebInspector.RuntimeModel.Events = {
     ExecutionContextCreated: "ExecutionContextCreated",
     ExecutionContextDestroyed: "ExecutionContextDestroyed",
+    ExecutionContextChanged: "ExecutionContextChanged"
 }
 
 WebInspector.RuntimeModel._privateScript = "private script";
@@ -67,6 +68,18 @@ WebInspector.RuntimeModel.prototype = {
     executionContexts: function()
     {
         return Object.values(this._executionContextById);
+    },
+
+    /**
+     * @return {?WebInspector.ExecutionContext}
+     */
+    defaultExecutionContext: function()
+    {
+        for (var context of Object.values(this._executionContextById)) {
+            if (context.isDefault)
+                return context;
+        }
+        return null;
     },
 
     /**
@@ -323,6 +336,9 @@ WebInspector.ExecutionContext = function(target, id, name, origin, isDefault, fr
     this.runtimeModel = target.runtimeModel;
     this.debuggerModel = WebInspector.DebuggerModel.fromTarget(target);
     this.frameId = frameId;
+
+    var parsedUrl = origin.asParsedURL();
+    this._label = parsedUrl ? parsedUrl.lastPathComponentWithFragment() : name;
 }
 
 /**
@@ -602,6 +618,23 @@ WebInspector.ExecutionContext.prototype = {
             results.push(property.split("\n").join("\\n"));
         }
         completionsReadyCallback(results);
+    },
+
+    /**
+     * @return {string}
+     */
+    label: function()
+    {
+        return this._label;
+    },
+
+    /**
+     * @param {string} label
+     */
+    setLabel: function(label)
+    {
+        this._label = label;
+        this.runtimeModel.dispatchEventToListeners(WebInspector.RuntimeModel.Events.ExecutionContextChanged, this);
     },
 
     __proto__: WebInspector.SDKObject.prototype

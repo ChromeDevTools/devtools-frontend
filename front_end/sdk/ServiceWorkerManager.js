@@ -48,6 +48,7 @@ WebInspector.ServiceWorkerManager = function(target)
     if (this._forceUpdateSetting.get())
         this._forceUpdateSettingChanged();
     this._forceUpdateSetting.addChangeListener(this._forceUpdateSettingChanged, this);
+    WebInspector.targetManager.addModelListener(WebInspector.RuntimeModel, WebInspector.RuntimeModel.Events.ExecutionContextCreated, this._executionContextCreated, this);
 }
 
 WebInspector.ServiceWorkerManager.Events = {
@@ -235,6 +236,7 @@ WebInspector.ServiceWorkerManager.prototype = {
     _workerCreated: function(workerId, url, versionId)
     {
         new WebInspector.ServiceWorker(this, workerId, url, versionId);
+        this._updateWorkerStatuses();
     },
 
     /**
@@ -309,6 +311,22 @@ WebInspector.ServiceWorkerManager.prototype = {
                 this.dispatchEventToListeners(WebInspector.ServiceWorkerManager.Events.RegistrationUpdated, registration);
             }
         }
+        this._updateWorkerStatuses();
+    },
+
+    _updateWorkerStatuses: function()
+    {
+        /** @type {!Map<string, string>} */
+        var versionById = new Map();
+        for (var registration of this._registrations.valuesArray()) {
+            for (var version of registration.versions.valuesArray())
+                versionById.set(version.id, version.status);
+        }
+        for (var worker of this._workers.valuesArray()) {
+            var status = versionById.get(worker.versionId());
+            if (status)
+                worker.setStatus(status);
+        }
     },
 
     /**
@@ -344,6 +362,20 @@ WebInspector.ServiceWorkerManager.prototype = {
         this._agent.setForceUpdateOnPageLoad(this._forceUpdateSetting.get());
     },
 
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _executionContextCreated: function(event)
+    {
+        var executionContext = /** @type {!WebInspector.ExecutionContext} */ (event.data);
+        var target = executionContext.target();
+        if (!target.parentTarget())
+            return;
+        var worker = target.parentTarget()[WebInspector.ServiceWorker.Symbol];
+        if (worker)
+            worker._setContextLabelFor(executionContext);
+    },
+
     __proto__: WebInspector.SDKObject.prototype
 }
 
@@ -368,9 +400,12 @@ WebInspector.ServiceWorker = function(manager, workerId, url, versionId)
 
     this._manager._workers.set(workerId, this);
     this._target = WebInspector.targetManager.createTarget(this._name, WebInspector.Target.Type.ServiceWorker, this._connection, manager.target());
+    this._target[WebInspector.ServiceWorker.Symbol] = this;
     this._manager.dispatchEventToListeners(WebInspector.ServiceWorkerManager.Events.WorkersUpdated);
     this._target.runtimeAgent().run();
 }
+
+WebInspector.ServiceWorker.Symbol = Symbol("serviceWorker");
 
 WebInspector.ServiceWorker._lastAnonymousTargetId = 0;
 
@@ -410,6 +445,34 @@ WebInspector.ServiceWorker.prototype = {
     stop: function()
     {
         this._agent.stop(this._workerId);
+    },
+
+    /** @param {string} status */
+    setStatus: function(status)
+    {
+       if (this._status === status)
+           return;
+        this._status = status;
+
+        for (var target of WebInspector.targetManager.targets()) {
+            if (target.parentTarget() !== this._target)
+                continue;
+            for (var context of target.runtimeModel.executionContexts())
+                this._setContextLabelFor(context);
+        }
+    },
+
+    /**
+     * @param {!WebInspector.ExecutionContext} context
+     */
+    _setContextLabelFor: function(context)
+    {
+        var parsedUrl = context.origin.asParsedURL();
+        var label = parsedUrl ? parsedUrl.lastPathComponentWithFragment() : context.name;
+        if (this._status)
+            context.setLabel(label + " (" + this._status + ")");
+        else
+            context.setLabel(label);
     },
 
     _closeConnection: function()

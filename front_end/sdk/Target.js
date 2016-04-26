@@ -49,7 +49,6 @@ WebInspector.Target.prototype = {
     },
 
     /**
-     *
      * @return {string}
      */
     name: function()

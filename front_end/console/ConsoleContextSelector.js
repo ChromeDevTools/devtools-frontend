@@ -7,7 +7,7 @@
  * @implements {WebInspector.TargetManager.Observer}
  * @param {!Element} selectElement
  */
-WebInspector.ExecutionContextModel = function(selectElement)
+WebInspector.ConsoleContextSelector = function(selectElement)
 {
     this._selectElement = selectElement;
     /**
@@ -17,14 +17,14 @@ WebInspector.ExecutionContextModel = function(selectElement)
 
     WebInspector.targetManager.observeTargets(this);
     WebInspector.targetManager.addModelListener(WebInspector.RuntimeModel, WebInspector.RuntimeModel.Events.ExecutionContextCreated, this._onExecutionContextCreated, this);
+    WebInspector.targetManager.addModelListener(WebInspector.RuntimeModel, WebInspector.RuntimeModel.Events.ExecutionContextChanged, this._onExecutionContextChanged, this);
     WebInspector.targetManager.addModelListener(WebInspector.RuntimeModel, WebInspector.RuntimeModel.Events.ExecutionContextDestroyed, this._onExecutionContextDestroyed, this);
-    WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.EventTypes.FrameNavigated, this._onFrameNavigated, this);
 
     this._selectElement.addEventListener("change", this._executionContextChanged.bind(this), false);
     WebInspector.context.addFlavorChangeListener(WebInspector.ExecutionContext, this._executionContextChangedExternally, this);
 }
 
-WebInspector.ExecutionContextModel.prototype = {
+WebInspector.ConsoleContextSelector.prototype = {
     /**
      * @param {!WebInspector.ExecutionContext} executionContext
      * @return {string}
@@ -35,14 +35,12 @@ WebInspector.ExecutionContextModel.prototype = {
         if (executionContext.isDefault) {
             if (executionContext.frameId) {
                 var frame = executionContext.target().resourceTreeModel.frameForId(executionContext.frameId);
-                result =  frame ? frame.displayName() : (executionContext.origin || executionContext.name);
+                result =  frame ? frame.displayName() : executionContext.label();
             } else {
-                var parsedUrl = executionContext.origin.asParsedURL();
-                var name = parsedUrl ? parsedUrl.lastPathComponentWithFragment() : executionContext.name;
-                result = executionContext.target().decorateLabel(name);
+                result = executionContext.target().decorateLabel(executionContext.label());
             }
         } else {
-            result = "\u00a0\u00a0\u00a0\u00a0" + (executionContext.name || executionContext.origin);
+            result = "\u00a0\u00a0\u00a0\u00a0" + (executionContext.label() || executionContext.origin);
         }
 
         var maxLength = 50;
@@ -91,6 +89,17 @@ WebInspector.ExecutionContextModel.prototype = {
     },
 
     /**
+     * @param {!WebInspector.Event} event
+     */
+    _onExecutionContextChanged: function(event)
+    {
+        var executionContext = /** @type {!WebInspector.ExecutionContext} */ (event.data);
+        var option = this._optionByExecutionContext.get(executionContext);
+        if (option)
+            option.text = this._titleFor(executionContext);
+    },
+
+    /**
      * @param {!WebInspector.ExecutionContext} executionContext
      */
     _executionContextDestroyed: function(executionContext)
@@ -106,20 +115,6 @@ WebInspector.ExecutionContextModel.prototype = {
     {
         var executionContext = /** @type {!WebInspector.ExecutionContext} */ (event.data);
         this._executionContextDestroyed(executionContext);
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _onFrameNavigated: function(event)
-    {
-        var frame = /** @type {!WebInspector.ResourceTreeFrame} */ (event.data);
-        var executionContexts = this._optionByExecutionContext.keysArray();
-        for (var i = 0; i < executionContexts.length; ++i) {
-            var context = executionContexts[i];
-            if (context.frameId === frame.id)
-                this._optionByExecutionContext.get(context).text = this._titleFor(context);
-        }
     },
 
     /**

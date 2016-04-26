@@ -68,7 +68,6 @@
         "DOMPresentationUtils.js",
         "DockController.js",
         "ExecutionContextSelector.js",
-        "ExecutionContextModel.js",
         "HandlerRegistry.js",
         "Linkifier.js",
         "NetworkConditionsSelector.js",

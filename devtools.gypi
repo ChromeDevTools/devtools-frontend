@@ -97,7 +97,6 @@
             'front_end/components/DOMBreakpointsSidebarPane.js',
             'front_end/components/DOMPresentationUtils.js',
             'front_end/components/ExecutionContextSelector.js',
-            'front_end/components/ExecutionContextModel.js',
             'front_end/components/HandlerRegistry.js',
             'front_end/components/BreakpointsSidebarPaneBase.js',
             'front_end/components/Linkifier.js',
@@ -413,6 +412,7 @@
             'front_end/components_lazy/FilmStripView.js',
         ],
         'devtools_console_js_files': [
+            'front_end/console/ConsoleContextSelector.js',
             'front_end/console/consoleView.css',
             'front_end/console/ConsolePanel.js',
             'front_end/console/ConsoleView.js',

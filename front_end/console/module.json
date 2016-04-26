@@ -116,6 +116,7 @@
         "components", "ui_lazy"
     ],
     "scripts": [
+        "ConsoleContextSelector.js",
         "ConsoleViewMessage.js",
         "ConsoleView.js",
         "ConsolePanel.js"

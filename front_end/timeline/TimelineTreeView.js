@@ -6,8 +6,9 @@
  * @constructor
  * @extends {WebInspector.VBox}
  * @param {!WebInspector.TimelineModel} model
+ * @param {!Array<!WebInspector.TimelineModel.Filter>} filters
  */
-WebInspector.TimelineTreeView = function(model)
+WebInspector.TimelineTreeView = function(model, filters)
 {
     WebInspector.VBox.call(this);
     this.element.classList.add("timeline-tree-view");
@@ -15,11 +16,7 @@ WebInspector.TimelineTreeView = function(model)
     this._model = model;
     this._linkifier = new WebInspector.Linkifier();
 
-    this._filters = [];
-    if (!Runtime.experiments.isEnabled("timelineShowAllEvents")) {
-        this._filters.push(WebInspector.TimelineUIUtils.visibleEventsFilter());
-        this._filters.push(new WebInspector.ExcludeTopLevelFilter());
-    }
+    this._filters = filters.slice();
 
     var columns = [];
     this._populateColumns(columns);
@@ -446,11 +443,12 @@ WebInspector.TimelineTreeView.TreeGridNode.prototype = {
  * @constructor
  * @extends {WebInspector.TimelineTreeView}
  * @param {!WebInspector.TimelineModel} model
+ * @param {!Array<!WebInspector.TimelineModel.Filter>} filters
  */
-WebInspector.AggregatedTimelineTreeView = function(model)
+WebInspector.AggregatedTimelineTreeView = function(model, filters)
 {
     this._groupBySetting = WebInspector.settings.createSetting("timelineTreeGroupBy", WebInspector.TimelineAggregator.GroupBy.Category);
-    WebInspector.TimelineTreeView.call(this, model);
+    WebInspector.TimelineTreeView.call(this, model, filters);
     var nonessentialEvents = [
         WebInspector.TimelineModel.RecordType.EventDispatch,
         WebInspector.TimelineModel.RecordType.FunctionCall,
@@ -610,10 +608,11 @@ WebInspector.AggregatedTimelineTreeView.prototype = {
  * @constructor
  * @extends {WebInspector.AggregatedTimelineTreeView}
  * @param {!WebInspector.TimelineModel} model
+ * @param {!Array<!WebInspector.TimelineModel.Filter>} filters
  */
-WebInspector.CallTreeTimelineTreeView = function(model)
+WebInspector.CallTreeTimelineTreeView = function(model, filters)
 {
-    WebInspector.AggregatedTimelineTreeView.call(this, model);
+    WebInspector.AggregatedTimelineTreeView.call(this, model, filters);
     this._dataGrid.markColumnAsSortedBy("total", WebInspector.DataGrid.Order.Descending);
 }
 
@@ -636,10 +635,11 @@ WebInspector.CallTreeTimelineTreeView.prototype = {
  * @constructor
  * @extends {WebInspector.AggregatedTimelineTreeView}
  * @param {!WebInspector.TimelineModel} model
+ * @param {!Array<!WebInspector.TimelineModel.Filter>} filters
  */
-WebInspector.BottomUpTimelineTreeView = function(model)
+WebInspector.BottomUpTimelineTreeView = function(model, filters)
 {
-    WebInspector.AggregatedTimelineTreeView.call(this, model);
+    WebInspector.AggregatedTimelineTreeView.call(this, model, filters);
     this._dataGrid.markColumnAsSortedBy("self", WebInspector.DataGrid.Order.Descending);
 }
 
@@ -662,13 +662,14 @@ WebInspector.BottomUpTimelineTreeView.prototype = {
  * @constructor
  * @extends {WebInspector.TimelineTreeView}
  * @param {!WebInspector.TimelineModel} model
+ * @param {!Array<!WebInspector.TimelineModel.Filter>} filters
  * @param {!WebInspector.TimelineModeViewDelegate} delegate
  */
-WebInspector.EventsTimelineTreeView = function(model, delegate)
+WebInspector.EventsTimelineTreeView = function(model, filters, delegate)
 {
     this._filtersControl = new WebInspector.TimelineFilters();
     this._filtersControl.addEventListener(WebInspector.TimelineFilters.Events.FilterChanged, this._onFilterChanged, this);
-    WebInspector.TimelineTreeView.call(this, model);
+    WebInspector.TimelineTreeView.call(this, model, filters);
     this._delegate = delegate;
     this._filters.push.apply(this._filters, this._filtersControl.filters());
     this._dataGrid.markColumnAsSortedBy("startTime", WebInspector.DataGrid.Order.Ascending);

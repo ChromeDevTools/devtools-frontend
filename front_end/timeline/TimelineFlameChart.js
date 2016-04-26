@@ -32,8 +32,9 @@
  * @constructor
  * @implements {WebInspector.FlameChartDataProvider}
  * @param {!WebInspector.TimelineModel} model
+ * @param {!Array<!WebInspector.TimelineModel.Filter>} filters
  */
-WebInspector.TimelineFlameChartDataProviderBase = function(model)
+WebInspector.TimelineFlameChartDataProviderBase = function(model, filters)
 {
     WebInspector.FlameChartDataProvider.call(this);
     this.reset();
@@ -41,11 +42,7 @@ WebInspector.TimelineFlameChartDataProviderBase = function(model)
     /** @type {?WebInspector.FlameChart.TimelineData} */
     this._timelineData;
     this._font = "11px " + WebInspector.fontFamily();
-    this._filters = [];
-    if (!Runtime.experiments.isEnabled("timelineShowAllEvents")) {
-        this._filters.push(WebInspector.TimelineUIUtils.visibleEventsFilter());
-        this._filters.push(new WebInspector.ExcludeTopLevelFilter());
-    }
+    this._filters = filters;
 }
 
 WebInspector.TimelineFlameChartDataProviderBase.prototype = {
@@ -273,10 +270,11 @@ WebInspector.TimelineFlameChartEntryType = {
  * @param {!WebInspector.TimelineModel} model
  * @param {!WebInspector.TimelineFrameModelBase} frameModel
  * @param {!WebInspector.TimelineIRModel} irModel
+ * @param {!Array<!WebInspector.TimelineModel.Filter>} filters
  */
-WebInspector.TimelineFlameChartDataProvider = function(model, frameModel, irModel)
+WebInspector.TimelineFlameChartDataProvider = function(model, frameModel, irModel, filters)
 {
-    WebInspector.TimelineFlameChartDataProviderBase.call(this, model);
+    WebInspector.TimelineFlameChartDataProviderBase.call(this, model, filters);
     this._frameModel = frameModel;
     this._irModel = irModel;
     this._consoleColorGenerator = new WebInspector.FlameChart.ColorGenerator(
@@ -937,7 +935,7 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
  */
 WebInspector.TimelineFlameChartNetworkDataProvider = function(model)
 {
-    WebInspector.TimelineFlameChartDataProviderBase.call(this, model);
+    WebInspector.TimelineFlameChartDataProviderBase.call(this, model, []);
     var loadingCategory = WebInspector.TimelineUIUtils.categories()["loading"];
     this._waitingColor = loadingCategory.childColor;
     this._processingColor = loadingCategory.color;
@@ -1283,8 +1281,9 @@ WebInspector.TimelineFlameChartMarker.prototype = {
  * @param {!WebInspector.TimelineModel} timelineModel
  * @param {!WebInspector.TimelineFrameModelBase} frameModel
  * @param {!WebInspector.TimelineIRModel} irModel
+ * @param {!Array<!WebInspector.TimelineModel.Filter>} filters
  */
-WebInspector.TimelineFlameChartView = function(delegate, timelineModel, frameModel, irModel)
+WebInspector.TimelineFlameChartView = function(delegate, timelineModel, frameModel, irModel, filters)
 {
     WebInspector.VBox.call(this);
     this.element.classList.add("timeline-flamechart");
@@ -1293,7 +1292,7 @@ WebInspector.TimelineFlameChartView = function(delegate, timelineModel, frameMod
 
     this._splitWidget = new WebInspector.SplitWidget(false, false, "timelineFlamechartMainView", 150);
 
-    this._dataProvider = new WebInspector.TimelineFlameChartDataProvider(this._model, frameModel, irModel);
+    this._dataProvider = new WebInspector.TimelineFlameChartDataProvider(this._model, frameModel, irModel, filters);
     var mainViewGroupExpansionSetting = WebInspector.settings.createSetting("timelineFlamechartMainViewGroupExpansion", {});
     this._mainView = new WebInspector.FlameChart(this._dataProvider, this, mainViewGroupExpansionSetting);
 
@@ -1424,18 +1423,17 @@ WebInspector.TimelineFlameChartView.prototype = {
 
     /**
      * @override
-     * @param {?WebInspector.TimelineModel.Record} record
+     * @param {?WebInspector.TracingModel.Event} event
      * @param {string=} regex
-     * @param {boolean=} selectRecord
+     * @param {boolean=} select
      */
-    highlightSearchResult: function(record, regex, selectRecord)
+    highlightSearchResult: function(event, regex, select)
     {
-        if (!record) {
+        if (!event) {
             this._delegate.select(null);
             return;
         }
-        var traceEvent = record.traceEvent();
-        var entryIndex = this._dataProvider._entryData.indexOf(traceEvent);
+        var entryIndex = this._dataProvider._entryData.indexOf(event);
         var timelineSelection = this._dataProvider.createSelection(entryIndex);
         if (timelineSelection)
             this._delegate.select(timelineSelection);

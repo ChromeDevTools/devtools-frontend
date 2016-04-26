@@ -199,35 +199,7 @@ WebInspector.CountersGraph.prototype = {
             }
         }
         if (bestTime !== undefined)
-            this._revealRecordAt(bestTime);
-    },
-
-    /**
-     * @param {number} time
-     */
-    _revealRecordAt: function(time)
-    {
-        var recordToReveal;
-        /**
-         * @param {!WebInspector.TimelineModel.Record} record
-         * @return {boolean}
-         * @this {WebInspector.CountersGraph}
-         */
-        function findRecordToReveal(record)
-        {
-            if (!WebInspector.TimelineModel.isVisible(this._filters, record.traceEvent()))
-                return false;
-            if (record.startTime() <= time && time <= record.endTime()) {
-                recordToReveal = record;
-                return true;
-            }
-            // If there is no record containing the time than use the latest one before that time.
-            if (!recordToReveal || record.endTime() < time && recordToReveal.endTime() < record.endTime())
-                recordToReveal = record;
-            return false;
-        }
-        this._model.forAllRecords(null, findRecordToReveal.bind(this));
-        this._delegate.select(recordToReveal ? WebInspector.TimelineSelection.fromTraceEvent(recordToReveal.traceEvent()) : null);
+            this._delegate.selectEntryAtTime(bestTime);
     },
 
     /**
@@ -283,11 +255,11 @@ WebInspector.CountersGraph.prototype = {
 
     /**
      * @override
-     * @param {?WebInspector.TimelineModel.Record} record
+     * @param {?WebInspector.TracingModel.Event} event
      * @param {string=} regex
-     * @param {boolean=} selectRecord
+     * @param {boolean=} select
      */
-    highlightSearchResult: function(record, regex, selectRecord)
+    highlightSearchResult: function(event, regex, select)
     {
     },
 

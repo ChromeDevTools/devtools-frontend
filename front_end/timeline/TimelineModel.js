@@ -217,35 +217,6 @@ WebInspector.TimelineModel.forEachEvent = function(events, onStartEvent, onEndEv
         onEndEvent(stack.pop());
 }
 
-/**
- * @param {!Array.<!WebInspector.TimelineModel.Record>} recordsArray
- * @param {?function(!WebInspector.TimelineModel.Record)|?function(!WebInspector.TimelineModel.Record,number)} preOrderCallback
- * @param {function(!WebInspector.TimelineModel.Record)|function(!WebInspector.TimelineModel.Record,number)=} postOrderCallback
- * @return {boolean}
- */
-WebInspector.TimelineModel.forAllRecords = function(recordsArray, preOrderCallback, postOrderCallback)
-{
-    /**
-     * @param {!Array.<!WebInspector.TimelineModel.Record>} records
-     * @param {number} depth
-     * @return {boolean}
-     */
-    function processRecords(records, depth)
-    {
-        for (var i = 0; i < records.length; ++i) {
-            var record = records[i];
-            if (preOrderCallback && preOrderCallback(record, depth))
-                return true;
-            if (processRecords(record.children(), depth + 1))
-                return true;
-            if (postOrderCallback && postOrderCallback(record, depth))
-                return true;
-        }
-        return false;
-    }
-    return processRecords(recordsArray, 0);
-}
-
 WebInspector.TimelineModel.DevToolsMetadataEvent = {
     TracingStartedInBrowser: "TracingStartedInBrowser",
     TracingStartedInPage: "TracingStartedInPage",
@@ -408,12 +379,32 @@ WebInspector.TimelineModel._eventType = function(event)
 
 WebInspector.TimelineModel.prototype = {
     /**
+     * @deprecated Test use only!
      * @param {?function(!WebInspector.TimelineModel.Record)|?function(!WebInspector.TimelineModel.Record,number)} preOrderCallback
      * @param {function(!WebInspector.TimelineModel.Record)|function(!WebInspector.TimelineModel.Record,number)=} postOrderCallback
+     * @return {boolean}
      */
     forAllRecords: function(preOrderCallback, postOrderCallback)
     {
-        WebInspector.TimelineModel.forAllRecords(this._records, preOrderCallback, postOrderCallback);
+        /**
+         * @param {!Array.<!WebInspector.TimelineModel.Record>} records
+         * @param {number} depth
+         * @return {boolean}
+         */
+        function processRecords(records, depth)
+        {
+            for (var i = 0; i < records.length; ++i) {
+                var record = records[i];
+                if (preOrderCallback && preOrderCallback(record, depth))
+                    return true;
+                if (processRecords(record.children(), depth + 1))
+                    return true;
+                if (postOrderCallback && postOrderCallback(record, depth))
+                    return true;
+            }
+            return false;
+        }
+        return processRecords(this._records, 0);
     },
 
     /**

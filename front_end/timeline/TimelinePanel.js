@@ -50,6 +50,13 @@ WebInspector.TimelinePanel = function()
     this._millisecondsToRecordAfterLoadEvent = 3000;
     this._toggleRecordAction = WebInspector.actionRegistry.action("timeline.toggle-recording");
 
+    /** @type {!Array<!WebInspector.TimelineModel.Filter>} */
+    this._filters = [];
+    if (!Runtime.experiments.isEnabled("timelineShowAllEvents")) {
+        this._filters.push(WebInspector.TimelineUIUtils.visibleEventsFilter());
+        this._filters.push(new WebInspector.ExcludeTopLevelFilter());
+    }
+
     // Create models.
     this._tracingModelBackingStorage = new WebInspector.TempFileBackingStorage("tracing");
     this._tracingModel = new WebInspector.TracingModel(this._tracingModelBackingStorage);
@@ -91,7 +98,7 @@ WebInspector.TimelinePanel = function()
     // Create top level properties splitter.
     this._detailsSplitWidget = new WebInspector.SplitWidget(false, true, "timelinePanelDetailsSplitViewState");
     this._detailsSplitWidget.element.classList.add("timeline-details-split");
-    this._detailsView = new WebInspector.TimelineDetailsView(this._model, this);
+    this._detailsView = new WebInspector.TimelineDetailsView(this._model, this._filters, this);
     this._detailsSplitWidget.installResizer(this._detailsView.headerElement());
     this._detailsSplitWidget.setSidebarWidget(this._detailsView);
 
@@ -111,6 +118,11 @@ WebInspector.TimelinePanel = function()
     WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
     this._showRecordingHelpMessage();
     this._locationPool = new WebInspector.LiveLocationPool();
+
+    /** @type {!WebInspector.TracingModel.Event}|undefined */
+    this._selectedSearchResult;
+    /** @type {!Array<!WebInspector.TracingModel.Event>}|undefined */
+    this._searchResults;
 }
 
 /**
@@ -529,7 +541,7 @@ WebInspector.TimelinePanel.prototype = {
 
         // Set up the main view.
         this._removeAllModeViews();
-        this._flameChart = new WebInspector.TimelineFlameChartView(this, this._model, this._frameModel, this._irModel);
+        this._flameChart = new WebInspector.TimelineFlameChartView(this, this._model, this._frameModel, this._irModel, this._filters);
         this._flameChart.enableNetworkPane(this._captureNetworkSetting.get());
         this._addModeView(this._flameChart);
 
@@ -932,25 +944,20 @@ WebInspector.TimelinePanel.prototype = {
      */
     _updateSearchResults: function(shouldJump, jumpBackwards)
     {
-        var searchRegExp = this._searchRegex;
-        if (!searchRegExp)
+        if (!this._searchRegex)
             return;
 
+        // FIXME: search on all threads.
+        var events = this._model.mainThreadEvents();
+        var filters = this._filters.concat([new WebInspector.TimelineTextFilter(this._searchRegex)]);
         var matches = [];
-
-        /**
-         * @param {!WebInspector.TimelineModel.Record} record
-         * @this {WebInspector.TimelinePanel}
-         */
-        function processRecord(record)
-        {
-            if (record.endTime() < this._windowStartTime ||
-                record.startTime() > this._windowEndTime)
-                return;
-            if (WebInspector.TimelineUIUtils.testContentMatching(record.traceEvent(), searchRegExp))
-                matches.push(record);
+        for (var index = events.lowerBound(this._windowStartTime, (time, event) => time - event.startTime); index < events.length; ++index) {
+            var event = events[index];
+            if (event.startTime > this._windowEndTime)
+                break;
+            if (WebInspector.TimelineModel.isVisible(filters, event))
+                matches.push(event);
         }
-        this._model.forAllFilteredRecords([WebInspector.TimelineUIUtils.visibleEventsFilter()], processRecord.bind(this));
 
         var matchesCount = matches.length;
         if (matchesCount) {
@@ -1123,6 +1130,27 @@ WebInspector.TimelinePanel.prototype = {
 
     /**
      * @override
+     * @param {number} time
+     */
+    selectEntryAtTime: function(time)
+    {
+        var events = this._model.mainThreadEvents();
+        // Find best match, then backtrack to the first visible entry.
+        for (var index = events.upperBound(time, (time, event) => time - event.startTime) - 1; index >= 0; --index) {
+            var event = events[index];
+            var endTime = event.endTime || event.startTime;
+            if (WebInspector.TracingModel.isTopLevelEvent(event) && endTime < time)
+                break;
+            if (WebInspector.TimelineModel.isVisible(this._filters, event) && endTime >= time) {
+                this.select(WebInspector.TimelineSelection.fromTraceEvent(event));
+                return;
+            }
+        }
+        this.select(null);
+    },
+
+    /**
+     * @override
      * @param {?WebInspector.TracingModel.Event} event
      */
     highlightEvent: function(event)
@@ -1289,9 +1317,10 @@ WebInspector.TimelineLifecycleDelegate.prototype = {
  * @constructor
  * @extends {WebInspector.TabbedPane}
  * @param {!WebInspector.TimelineModel} timelineModel
+ * @param {!Array<!WebInspector.TimelineModel.Filter>} filters
  * @param {!WebInspector.TimelineModeViewDelegate} delegate
  */
-WebInspector.TimelineDetailsView = function(timelineModel, delegate)
+WebInspector.TimelineDetailsView = function(timelineModel, filters, delegate)
 {
     WebInspector.TabbedPane.call(this);
     this.element.classList.add("timeline-details");
@@ -1306,15 +1335,15 @@ WebInspector.TimelineDetailsView = function(timelineModel, delegate)
     /** @type Map<string, WebInspector.TimelineTreeView> */
     this._rangeDetailViews = new Map();
 
-    var bottomUpView = new WebInspector.BottomUpTimelineTreeView(timelineModel);
+    var bottomUpView = new WebInspector.BottomUpTimelineTreeView(timelineModel, filters);
     this.appendTab(tabIds.BottomUp, WebInspector.UIString("Bottom-Up"), bottomUpView);
     this._rangeDetailViews.set(tabIds.BottomUp, bottomUpView);
 
-    var callTreeView = new WebInspector.CallTreeTimelineTreeView(timelineModel);
+    var callTreeView = new WebInspector.CallTreeTimelineTreeView(timelineModel, filters);
     this.appendTab(tabIds.CallTree, WebInspector.UIString("Call Tree"), callTreeView);
     this._rangeDetailViews.set(tabIds.CallTree, callTreeView);
 
-    var eventsView = new WebInspector.EventsTimelineTreeView(timelineModel, delegate);
+    var eventsView = new WebInspector.EventsTimelineTreeView(timelineModel, filters, delegate);
     this.appendTab(tabIds.Events, WebInspector.UIString("Event Log"), eventsView);
     this._rangeDetailViews.set(tabIds.Events, eventsView);
 
@@ -1518,11 +1547,11 @@ WebInspector.TimelineModeView.prototype = {
     refreshRecords: function() {},
 
     /**
-     * @param {?WebInspector.TimelineModel.Record} record
+     * @param {?WebInspector.TracingModel.Event} event
      * @param {string=} regex
-     * @param {boolean=} selectRecord
+     * @param {boolean=} select
      */
-    highlightSearchResult: function(record, regex, selectRecord) {},
+    highlightSearchResult: function(event, regex, select) {},
 
     /**
      * @param {number} startTime
@@ -1558,6 +1587,11 @@ WebInspector.TimelineModeViewDelegate.prototype = {
      * @param {!WebInspector.TimelinePanel.DetailsTab=} preferredTab
      */
     select: function(selection, preferredTab) {},
+
+    /**
+     * @param {number} time
+     */
+    selectEntryAtTime: function(time) {},
 
     /**
      * @param {!Node} node
@@ -1630,10 +1664,12 @@ WebInspector.TimelineIsLongFilter.prototype = {
 /**
  * @constructor
  * @extends {WebInspector.TimelineModel.Filter}
+ * @param {!RegExp=} regExp
  */
-WebInspector.TimelineTextFilter = function()
+WebInspector.TimelineTextFilter = function(regExp)
 {
     WebInspector.TimelineModel.Filter.call(this);
+    this._setRegExp(regExp || null);
 }
 
 WebInspector.TimelineTextFilter.prototype = {

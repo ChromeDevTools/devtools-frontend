@@ -1,0 +1,7 @@
+{
+    "modules": [
+        { "name": "formatter_worker", "type": "autostart" }
+    ],
+
+    "has_html": false
+}

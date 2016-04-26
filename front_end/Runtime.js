@@ -168,9 +168,8 @@ function loadScriptsPromise(scriptNames, base)
 /**
  * @constructor
  * @param {!Array.<!Runtime.ModuleDescriptor>} descriptors
- * @param {!Array.<string>=} coreModuleNames
  */
-function Runtime(descriptors, coreModuleNames)
+function Runtime(descriptors)
 {
     /**
      * @type {!Array.<!Runtime.Module>}
@@ -197,8 +196,6 @@ function Runtime(descriptors, coreModuleNames)
 
     for (var i = 0; i < descriptors.length; ++i)
         this._registerModule(descriptors[i]);
-    if (coreModuleNames)
-        this._loadAutoStartModules(coreModuleNames);
 }
 
 /**
@@ -221,6 +218,7 @@ Runtime.isReleaseMode = function()
 
 /**
  * @param {string} appName
+ * @return {!Promise.<undefined>}
  */
 Runtime.startApplication = function(appName)
 {
@@ -238,19 +236,19 @@ Runtime.startApplication = function(appName)
     else
         applicationPromise = loadResourcePromise(appName + ".json").then(JSON.parse.bind(JSON));
 
-    applicationPromise.then(parseModuleDescriptors);
+    return applicationPromise.then(parseModuleDescriptors);
 
     /**
-     * @param {!Array.<!Object>} configuration
+     * @param {!{modules: !Array.<!Object>, has_html: boolean}} appDescriptor
+     * @return {!Promise.<undefined>}
      */
-    function parseModuleDescriptors(configuration)
+    function parseModuleDescriptors(appDescriptor)
     {
+        var configuration = appDescriptor.modules;
         var moduleJSONPromises = [];
         var coreModuleNames = [];
         for (var i = 0; i < configuration.length; ++i) {
             var descriptor = configuration[i];
-            if (descriptor["type"] === "worker")
-                continue;
             var name = descriptor["name"];
             var moduleJSON = allDescriptorsByName[name];
             if (moduleJSON)
@@ -261,9 +259,11 @@ Runtime.startApplication = function(appName)
                 coreModuleNames.push(name);
         }
 
-        Promise.all(moduleJSONPromises).then(instantiateRuntime);
+        return Promise.all(moduleJSONPromises).then(instantiateRuntime);
+
         /**
          * @param {!Array.<!Object>} moduleDescriptors
+         * @return {!Promise.<undefined>}
          */
         function instantiateRuntime(moduleDescriptors)
         {
@@ -271,8 +271,68 @@ Runtime.startApplication = function(appName)
                 moduleDescriptors[i]["name"] = configuration[i]["name"];
                 moduleDescriptors[i]["condition"] = configuration[i]["condition"];
             }
-            self.runtime = new Runtime(moduleDescriptors, coreModuleNames);
+            self.runtime = new Runtime(moduleDescriptors);
+            if (coreModuleNames)
+                return /** @type {!Promise<undefined>} */ (self.runtime._loadAutoStartModules(coreModuleNames));
+            return Promise.resolve();
         }
+    }
+}
+
+/**
+ * @param {string} appName
+ * @return {!Promise.<undefined>}
+ */
+Runtime.startWorker = function(appName)
+{
+    return Runtime.startApplication(appName).then(sendWorkerReady);
+
+    function sendWorkerReady()
+    {
+        self.postMessage("workerReady");
+    }
+}
+
+/** @type {?function(!MessagePort)} */
+Runtime._sharedWorkerNewPortCallback = null;
+/** @type {!Array<!MessagePort>} */
+Runtime._sharedWorkerConnectedPorts = [];
+
+/**
+ * @param {string} appName
+ */
+Runtime.startSharedWorker = function(appName)
+{
+    var startPromise = Runtime.startApplication(appName);
+
+    /**
+     * @param {!MessageEvent} event
+     */
+    self.onconnect = function(event)
+    {
+        var newPort = /** @type {!MessagePort} */ (event.ports[0]);
+        startPromise.then(sendWorkerReadyAndContinue);
+
+        function sendWorkerReadyAndContinue()
+        {
+            newPort.postMessage("workerReady");
+            if (Runtime._sharedWorkerNewPortCallback)
+                Runtime._sharedWorkerNewPortCallback.call(null, newPort);
+            else
+                Runtime._sharedWorkerConnectedPorts.push(newPort);
+        }
+    }
+}
+
+/**
+ * @param {function(!MessagePort)} callback
+ */
+Runtime.setSharedWorkerNewPortCallback = function(callback)
+{
+    Runtime._sharedWorkerNewPortCallback = callback;
+    while (Runtime._sharedWorkerConnectedPorts.length) {
+        var port = Runtime._sharedWorkerConnectedPorts.shift();
+        callback.call(null, port);
     }
 }
 
@@ -550,7 +610,7 @@ Runtime.prototype = {
     {
         if (!this._cachedTypeClasses[typeName]) {
             var path = typeName.split(".");
-            var object = window;
+            var object = self;
             for (var i = 0; object && (i < path.length); ++i)
                 object = object[path[i]];
             if (object)
@@ -787,7 +847,7 @@ Runtime.Module.prototype = {
         if (className in this._instanceMap)
             return this._instanceMap[className];
 
-        var constructorFunction = window.eval(className);
+        var constructorFunction = self.eval(className);
         if (!(constructorFunction instanceof Function)) {
             this._instanceMap[className] = null;
             return null;
@@ -1105,9 +1165,9 @@ Runtime._remoteBase = Runtime.queryParam("remoteBase");
  */
 Runtime.resolveSourceURL = function(path)
 {
-    var sourceURL = window.location.href;
-    if (window.location.search)
-        sourceURL = sourceURL.replace(window.location.search, "");
+    var sourceURL = self.location.href;
+    if (self.location.search)
+        sourceURL = sourceURL.replace(self.location.search, "");
     sourceURL = sourceURL.substring(0, sourceURL.lastIndexOf("/") + 1) + path;
     return "\n/*# sourceURL=" + sourceURL + " */";
 }

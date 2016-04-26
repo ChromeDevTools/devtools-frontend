@@ -55,6 +55,12 @@
         'devtools_core_base_files': [
             'front_end/inspector.js',
             'front_end/inspector.json',
+            'front_end/formatter_worker.js',
+            'front_end/formatter_worker.json',
+            'front_end/heap_snapshot_worker.js',
+            'front_end/heap_snapshot_worker.json',
+            'front_end/temp_storage_shared_worker.js',
+            'front_end/temp_storage_shared_worker.json',
             'front_end/toolbox.js',
             'front_end/toolbox.json',
             'front_end/Runtime.js',
@@ -81,7 +87,7 @@
             'front_end/common/Throttler.js',
             'front_end/common/UIString.js',
             'front_end/common/WebInspector.js',
-            'front_end/common/WorkerRuntime.js',
+            'front_end/common/Worker.js',
         ],
         'devtools_components_js_files': [
             'front_end/components/breakpointsList.css',

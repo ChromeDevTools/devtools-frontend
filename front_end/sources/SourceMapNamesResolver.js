@@ -598,7 +598,7 @@ WebInspector.SourceMapNamesResolver.RemoteObject.prototype = {
  */
 WebInspector.SourceMapNamesResolverWorker = function()
 {
-    this._worker = new WorkerRuntime.Worker("formatter_worker");
+    this._worker = new WebInspector.Worker("formatter_worker");
     this._worker.onmessage = this._onMessage.bind(this);
     this._methodNames = [];
     this._contents = [];

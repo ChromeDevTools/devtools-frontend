@@ -1,0 +1,7 @@
+{
+    "modules": [
+        { "name": "heap_snapshot_worker", "type": "autostart" }
+    ],
+
+    "has_html": false
+}

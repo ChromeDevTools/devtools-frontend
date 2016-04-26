@@ -36,11 +36,10 @@ var isTempStorageCleared = false;
 var tempStorageError;
 
 /**
- * @param {!MessageEvent} event
+ * @param {!MessagePort} newPort
  */
-self.onconnect = function(event)
+function onNewPort(newPort)
 {
-    var newPort = /** @type {!MessagePort} */ (event.ports[0]);
     if (isTempStorageCleared) {
         notifyTempStorageCleared(newPort);
         return;
@@ -139,3 +138,5 @@ function removePort(port)
     var index = ports.indexOf(port);
     ports.splice(index, 1);
 }
+
+Runtime.setSharedWorkerNewPortCallback(onNewPort);

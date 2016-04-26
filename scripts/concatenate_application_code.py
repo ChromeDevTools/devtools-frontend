@@ -8,7 +8,6 @@
 Release:
   - Concatenates autostart modules, application modules' module.json descriptors,
     and the application loader into a single script.
-  - Concatenates all workers' dependencies into individual worker loader scripts.
   - Builds app.html referencing the application script.
 Debug:
   - Copies the module directories into their destinations.
@@ -101,12 +100,11 @@ class ReleaseBuilder(AppBuilder):
         AppBuilder.__init__(self, application_name, descriptors, application_dir, output_dir)
 
     def build_app(self):
-        self._build_html()
+        if self.descriptors.has_html:
+            self._build_html()
         self._build_app_script()
         for module in filter(lambda desc: (not desc.get('type') or desc.get('type') == 'remote'), self.descriptors.application.values()):
             self._concatenate_dynamic_module(module['name'])
-        for module in filter(lambda desc: desc.get('type') == 'worker', self.descriptors.application.values()):
-            self._concatenate_worker(module['name'])
 
     def _build_html(self):
         html_name = self.app_file('html')
@@ -182,7 +180,7 @@ class ReleaseBuilder(AppBuilder):
                     bail_error('Non-autostart dependencies specified for the autostarted module "%s": %s' % (name, non_autostart_deps))
                 output.write('\n/* Module %s */\n' % name)
                 modular_build.concatenate_scripts(desc.get('scripts'), join(self.application_dir, name), self.output_dir, output)
-            elif type != 'worker':
+            else:
                 non_autostart.add(name)
 
     def _concatenate_application_script(self, output):
@@ -214,27 +212,6 @@ class ReleaseBuilder(AppBuilder):
         write_file(output_file_path, minify_js(output.getvalue()))
         output.close()
 
-    def _concatenate_worker(self, module_name):
-        descriptor = self.descriptors.modules[module_name]
-        scripts = descriptor.get('scripts')
-        if not scripts:
-            return
-
-        output = StringIO()
-        output.write('/* Worker %s */\n' % module_name)
-        dep_descriptors = []
-        for dep_name in self.descriptors.sorted_dependencies_closure(module_name):
-            dep_descriptor = self.descriptors.modules[dep_name]
-            dep_descriptors.append(dep_descriptor)
-            scripts = dep_descriptor.get('scripts')
-            if scripts:
-                output.write('\n/* Module %s */\n' % dep_name)
-                modular_build.concatenate_scripts(scripts, join(self.application_dir, dep_name), self.output_dir, output)
-
-        output_file_path = concatenated_module_filename(module_name, self.output_dir)
-        write_file(output_file_path, minify_js(output.getvalue()))
-        output.close()
-
 
 # Outputs:
 #   <app_name>.html as-is
@@ -245,7 +222,8 @@ class DebugBuilder(AppBuilder):
         AppBuilder.__init__(self, application_name, descriptors, application_dir, output_dir)
 
     def build_app(self):
-        self._build_html()
+        if self.descriptors.has_html:
+            self._build_html()
         js_name = self.app_file('js')
         src_name = join(os.getcwd(), self.application_dir, js_name)
         symlink_or_copy_file(src_name, join(self.output_dir, js_name), True)

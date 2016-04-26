@@ -10,7 +10,7 @@
  */
 WebInspector.CSSParser = function()
 {
-    this._worker = new WorkerRuntime.Worker("formatter_worker");
+    this._worker = new WebInspector.Worker("formatter_worker");
     this._worker.onmessage = this._onRuleChunk.bind(this);
     this._rules = [];
 }

@@ -42,7 +42,7 @@ WebInspector.HeapSnapshotWorkerProxy = function(eventHandler)
     this._callbacks = new Map();
     /** @type {!Set<number>} */
     this._previousCallbacks = new Set();
-    this._worker = new WorkerRuntime.Worker("heap_snapshot_worker");
+    this._worker = new WebInspector.Worker("heap_snapshot_worker");
     this._worker.onmessage = this._messageReceived.bind(this);
 }
 

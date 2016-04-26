@@ -418,7 +418,7 @@ WebInspector.TempFile._clearTempStorage = function(fulfill, reject)
     }
 
     try {
-        var worker = new WorkerRuntime.Worker("temp_storage_shared_worker", "TempStorageCleaner");
+        var worker = new WebInspector.Worker("temp_storage_shared_worker", "TempStorageCleaner");
         worker.onerror = handleError;
         worker.onmessage = handleMessage;
     } catch (e) {

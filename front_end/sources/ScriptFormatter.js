@@ -89,7 +89,7 @@ WebInspector.ScriptFormatter = function(mimeType, content, callback)
     this._callback = callback;
     this._originalContent = content;
 
-    this._worker = new WorkerRuntime.Worker("formatter_worker");
+    this._worker = new WebInspector.Worker("formatter_worker");
     this._worker.onmessage = this._didFormatContent.bind(this);
 
     var parameters = {

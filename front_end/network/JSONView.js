@@ -57,7 +57,7 @@ WebInspector.JSONView.parseJSON = function(text)
      * @param {function(*)} success
      */
     function runParser(success) {
-        var worker = new WorkerRuntime.Worker("formatter_worker");
+        var worker = new WebInspector.Worker("formatter_worker");
         worker.onmessage =  /** @type function(!MessageEvent) */ (handleReturnedJSON);
         worker.postMessage({method: "relaxedJSONParser", params:{content: returnObj.data}});
 

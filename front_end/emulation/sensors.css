@@ -6,6 +6,8 @@
 
 .sensors-view {
     padding: 12px;
+    display: block;
+    overflow: auto;
 }
 
 .sensors-view label {
@@ -17,13 +19,13 @@
     width: 80px;
 }
 
-.sensors-view input[type=text]:not(.error-input):enabled:focus,
+.sensors-view input:not(.error-input):enabled:focus,
 .sensors-view select:enabled:focus {
     border-color: rgb(77, 144, 254);
     outline: none;
 }
 
-.sensors-view input[type=text],
+.sensors-view input,
 .sensors-view select {
     border: 1px solid #bfbfbf;
     border-radius: 2px;
@@ -31,12 +33,16 @@
     color: #444;
     font: inherit;
     border-width: 1px;
+    text-align: left;
 }
 
-.sensors-view input[type=text] {
-    margin-left: 3px;
+.sensors-view input {
     min-height: 2em;
     padding: 3px;
+    width: 100%;
+    max-width: 128px;
+    margin: -5px 10px 0px 0px;
+    text-align: end;
 }
 
 .sensors-view input[readonly] {
@@ -45,7 +51,7 @@
 
 .sensors-view fieldset {
     border: none;
-    padding: 0 0 5px 15px;
+    padding: 10px 0px;
     flex: 0 0 auto;
 }
 
@@ -57,8 +63,35 @@
     display: none;
 }
 
-.sensors-view input[type='text']:focus::-webkit-input-placeholder {
+.sensors-view input:focus::-webkit-input-placeholder {
     color: transparent !important;
+}
+
+.sensors-view .chrome-select {
+    max-width: 200px;
+    width: 100%;
+}
+
+.sensors-group-title {
+    width: 100px;
+    line-height: 24px;
+}
+
+.sensors-group {
+    display: flex;
+}
+
+.geo-fields {
+    flex: 2 0 200px;
+}
+
+.latlong-group {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.latlong-title {
+    width: 70px;
 }
 
 /* Accelerometer */
@@ -84,6 +117,10 @@ fieldset.device-orientation-override-section[disabled] .accelerometer-stage {
     width: 80px;
     height: 108px;
     -webkit-transform-style: preserve-3d;
+}
+
+.accelerometer-box.smooth-transition {
+    transition: 0.2s ease transform;
 }
 
 .accelerometer-box section {
@@ -147,8 +184,17 @@ fieldset.device-orientation-override-section[disabled] .accelerometer-stage {
     margin-bottom: 10px;
 }
 
+.accelerometer-axis-input-container input {
+    max-width: 80px;
+}
+
+.accelerometer-reset-button {
+    min-width: 80px;
+}
+
 fieldset.device-orientation-override-section {
     display: flex;
+    margin-left: -3px;
 }
 
 .touch-label {
@@ -157,4 +203,10 @@ fieldset.device-orientation-override-section {
 
 .touch-label select {
     margin-left: 10px;
+}
+
+.panel-section-separator {
+    height: 2px;
+    margin-bottom: 12px;
+    background: #f1f1f1;
 }

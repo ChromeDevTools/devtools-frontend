@@ -1524,7 +1524,11 @@ WebInspector.bindInput = function(input, apply, validate, numeric)
         var valid = validate(value);
         input.classList.toggle("error-input", !valid);
         input.value = value;
-        input.setSelectionRange(value.length, value.length);
+
+        // Selection range operations are not supported by type "number" inputs.  This browser
+        // behavior is detailed by the WHATWG forms spec.
+        if (input.type !== "number")
+            input.setSelectionRange(value.length, value.length);
     }
 
     return setValue;

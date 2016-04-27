@@ -91,6 +91,19 @@ WebInspector.ServiceWorkerManager.prototype = {
     },
 
     /**
+     * @param {string} versionId
+     * @return {boolean}
+     */
+    hasWorkerWithVersionId: function(versionId)
+    {
+        for (var pair of this._workers) {
+            if (pair[1]._versionId === versionId)
+                return true;
+        }
+        return false;
+    },
+
+    /**
      * @return {boolean}
      */
     hasWorkers: function()

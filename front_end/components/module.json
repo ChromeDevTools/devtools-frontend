@@ -52,7 +52,7 @@
             "category": "Mobile",
             "actionId": "components.request-app-banner",
             "className": "WebInspector.RequestAppBannerActionDelegate",
-            "title": "Trigger add to homescreen"
+            "title": "Add to homescreen"
         }
     ],
     "dependencies": [

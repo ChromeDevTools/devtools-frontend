@@ -275,7 +275,7 @@ WebInspector.SWRegistrationWidget = function(manager, originWidget, registration
     this._pushButton.addEventListener("click", this._pushButtonClicked.bind(this));
     toolbar.appendToolbarItem(this._pushButton);
     toolbar.appendSpacer();
-    this._deleteButton = new WebInspector.ToolbarButton(WebInspector.UIString("Delete"), "garbage-collect-toolbar-item", WebInspector.UIString("Delete"));
+    this._deleteButton = new WebInspector.ToolbarButton(WebInspector.UIString("Unregister service worker"), "garbage-collect-toolbar-item", WebInspector.UIString("Unregister"));
     this._deleteButton.addEventListener("click", this._deleteButtonClicked.bind(this));
     toolbar.appendToolbarItem(this._deleteButton);
 
@@ -424,18 +424,17 @@ WebInspector.SWVersionWidget.prototype = {
     _createElements: function()
     {
         var panel = createElementWithClass("div", "service-workers-versions-panel");
-        var leftPanel = panel.createChild("div", "service-workers-versions-panel-left");
-        var rightPanel = panel.createChild("div", "service-workers-versions-panel-right");
-        this._stateCell = this._addTableRow(leftPanel, WebInspector.UIString("State"));
-        this._workerCell = this._addTableRow(leftPanel, WebInspector.UIString("Worker"));
-        this._scriptCell = this._addTableRow(leftPanel, WebInspector.UIString("Script URL"));
+        var leftPanel = panel.createChild("div", "service-workers-versions-panel-top");
+        var rightPanel = panel.createChild("div", "service-workers-versions-panel-bottom");
+        this._scriptCell = this._addTableRow(leftPanel, WebInspector.UIString("URL"));
+        this._workerCell = this._addTableRow(leftPanel, WebInspector.UIString("State"));
         this._updatedCell = this._addTableRow(leftPanel, WebInspector.UIString("Updated"));
         this._updatedCell.classList.add("service-worker-script-response-time");
         this._scriptLastModifiedCell = this._addTableRow(leftPanel, WebInspector.UIString("Last-Modified"));
         this._scriptLastModifiedCell.classList.add("service-worker-script-last-modified");
-        rightPanel.createChild("div", "service-workers-versions-table-messages-title").createTextChild(WebInspector.UIString("Recent messages"));
+        rightPanel.createChild("div", "service-workers-versions-table-title").createTextChild(WebInspector.UIString("Recent messages"));
         this._messagesPanel = rightPanel.createChild("div", "service-workers-versions-table-messages-content");
-        this._clientsTitle = rightPanel.createChild("div", "service-workers-versions-table-clients-title");
+        this._clientsTitle = rightPanel.createChild("div", "service-workers-versions-table-title");
         this._clientsTitle.createTextChild(WebInspector.UIString("Controlled clients"));
         this._clientsPanel = rightPanel.createChild("div", "service-workers-versions-table-clients-content");
         this.element.appendChild(panel);
@@ -446,27 +445,25 @@ WebInspector.SWVersionWidget.prototype = {
      */
     _updateVersion: function(version)
     {
-        this._stateCell.setTextAndTitle(version.status);
-
         this._workerCell.removeChildren();
         if (version.isRunning() || version.isStarting() || version.isStartable()) {
             var runningStatusCell = this._workerCell.createChild("div", "service-workers-versions-table-worker-running-status-cell");
-            var runningStatusLeftCell = runningStatusCell.createChild("div", "service-workers-versions-table-running-status-left-cell");
-            var runningStatusRightCell = runningStatusCell.createChild("div", "service-workers-versions-table-running-status-right-cell");
+            var runningStatusLeftCell = runningStatusCell.createChild("div");
+            var runningStatusRightCell = runningStatusCell.createChild("div");
             if (version.isRunning() || version.isStarting()) {
-                var toolbar = new WebInspector.Toolbar("", runningStatusLeftCell);
+                var toolbar = new WebInspector.Toolbar("", runningStatusRightCell);
                 var stopButton = new WebInspector.ToolbarButton(WebInspector.UIString("Stop"), "stop-toolbar-item");
                 stopButton.addEventListener("click", this._stopButtonClicked.bind(this, version.id));
                 toolbar.appendToolbarItem(stopButton);
             } else if (version.isStartable()) {
-                var toolbar = new WebInspector.Toolbar("", runningStatusLeftCell);
+                var toolbar = new WebInspector.Toolbar("", runningStatusRightCell);
                 var startButton = new WebInspector.ToolbarButton(WebInspector.UIString("Start"), "play-toolbar-item");
                 startButton.addEventListener("click", this._startButtonClicked.bind(this));
                 toolbar.appendToolbarItem(startButton);
             }
-            runningStatusRightCell.setTextAndTitle(version.runningStatus);
-            if (version.isRunning() || version.isStarting()) {
-                var inspectButton = runningStatusRightCell.createChild("div", "service-workers-versions-table-running-status-inspect");
+            runningStatusLeftCell.setTextAndTitle(version.runningStatus);
+            if ((version.isRunning() || version.isStarting()) && !this._manager.hasWorkerWithVersionId(version.id)) {
+                var inspectButton = runningStatusLeftCell.createChild("span", "service-workers-versions-table-running-status-inspect");
                 inspectButton.setTextAndTitle(WebInspector.UIString("inspect"));
                 inspectButton.addEventListener("click", this._inspectButtonClicked.bind(this, version.id), false);
             }

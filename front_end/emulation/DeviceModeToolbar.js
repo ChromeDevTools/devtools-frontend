@@ -266,14 +266,16 @@ WebInspector.DeviceModeToolbar.prototype = {
      */
     _appendOptionsMenuItems: function(contextMenu)
     {
-        contextMenu.appendCheckboxItem(WebInspector.UIString("Show device pixel ratio"), this._toggleDeviceScaleFactor.bind(this), this._showDeviceScaleFactorSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
-        contextMenu.appendCheckboxItem(WebInspector.UIString("Show device type"), this._toggleUserAgentType.bind(this), this._showUserAgentTypeSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
-        contextMenu.appendCheckboxItem(WebInspector.UIString("Show throttling"), this._toggleNetworkConditions.bind(this), this._showNetworkConditionsSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
-        contextMenu.appendCheckboxItem(WebInspector.UIString("Show media queries"), this._toggleMediaInspector.bind(this), this._showMediaInspectorSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
-        contextMenu.appendCheckboxItem(WebInspector.UIString("Show rulers"), this._toggleRulers.bind(this), this._showRulersSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
+        var submenu = contextMenu.appendSubMenuItem(WebInspector.UIString("Show"));
+        submenu.appendCheckboxItem(WebInspector.UIString("Device pixel ratio"), this._toggleDeviceScaleFactor.bind(this), this._showDeviceScaleFactorSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
+        submenu.appendCheckboxItem(WebInspector.UIString("Device type"), this._toggleUserAgentType.bind(this), this._showUserAgentTypeSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
+        submenu.appendCheckboxItem(WebInspector.UIString("Network throttling"), this._toggleNetworkConditions.bind(this), this._showNetworkConditionsSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
+        submenu.appendCheckboxItem(WebInspector.UIString("Media queries"), this._toggleMediaInspector.bind(this), this._showMediaInspectorSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
+        submenu.appendCheckboxItem(WebInspector.UIString("Rulers"), this._toggleRulers.bind(this), this._showRulersSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
         if (Runtime.experiments.isEnabled("deviceFrames")) {
             contextMenu.appendCheckboxItem(WebInspector.UIString("Show device frame"), this._toggleDeviceFrames.bind(this), this._deviceOutlineSetting.get() && this._model.outlineImage() !== "", (this._model.type() === WebInspector.DeviceModeModel.Type.None || this._model.outlineImage() === ""));
         }
+        contextMenu.appendSeparator();
         contextMenu.appendItemsAtLocation("deviceModeMenu");
         contextMenu.appendSeparator();
         contextMenu.appendItem(WebInspector.UIString("Reset to defaults"), this._reset.bind(this));

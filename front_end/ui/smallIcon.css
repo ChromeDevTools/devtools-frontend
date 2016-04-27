@@ -7,8 +7,9 @@
 div {
     width: 10px;
     height: 10px;
-    margin-right: 2px;
+    margin-right: 4px;
     display: inline-block;
+    flex-shrink: 0;
 }
 
 div.error-icon,

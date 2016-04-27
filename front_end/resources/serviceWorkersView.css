@@ -5,7 +5,7 @@
  */
 
 .service-workers-view {
-  overflow-y: scroll;
+    overflow-y: scroll;
 }
 
 .service-workers-view > .toolbar {
@@ -14,8 +14,8 @@
 
 .service-workers-root {
    -webkit-user-select: text;
-    margin: 0;
-    padding: 5px;
+   margin: 5px;
+   overflow: auto;
 }
 
 .service-workers-root ol {
@@ -25,18 +25,21 @@
 
 .service-workers-origin {
     padding: 5px;
+    background-color: white;
 }
 
 .service-workers-origin-title {
-    font-size: 17px;
+    font-size: 14px;
     flex: none;
 }
 
 .service-workers-registration {
+    background-color: white;
     margin-top: 5px;
     margin-bottom: 10px;
     padding: 0;
     flex: auto;
+    box-shadow: #ccc 0px 0px 4px;
 }
 
 .service-workers-registration .tabbed-pane > .widget {
@@ -54,20 +57,16 @@
 }
 
 .service-workers-versions-panel {
-    border-bottom: 1px solid #e1e1e1;
-    border-left: 1px solid #e1e1e1;
-    border-right: 1px solid #e1e1e1;
     display: flex;
+    flex-direction: column;
 }
 
-.service-workers-versions-panel-left {
-    flex: 3 3 0;
+.service-workers-versions-panel-top {
+    flex: none;
     overflow: hidden;
-    padding: 3px;
 }
-.service-workers-versions-panel-right {
-    flex: 5 5 0;
-    padding: 3px;
+.service-workers-versions-panel-bottom {
+    flex: none;
 }
 
 .service-workers-versions-table-row {
@@ -78,53 +77,54 @@
     color: #888;
     flex: 1 1 0;
     overflow: hidden;
-    padding: 8px;
+    padding-left: 6px;
     text-overflow: ellipsis;
+    height: 24px;
+    align-items: center;
+    display: flex;
 }
 
 .service-workers-versions-table-row-content {
-    flex: 2 2 0;
+    flex: 3 3 0;
     overflow: hidden;
-    padding: 8px;
+    padding: 2px;
     text-overflow: ellipsis;
+    line-height: 24px;
+    height: 24px;
+    align-items: center;
+    display: flex;
 }
 
-.service-workers-versions-table-messages-title {
+.service-workers-versions-table-title {
     color: #888;
-    padding: 8px 8px 3px 8px;
+    padding: 0 6px;
+    line-height: 24px;
 }
 
 .service-workers-versions-table-messages-content {
-    padding: 3px 3px 3px 10px;
+    padding-left: 10px;
     line-height: 22px;
     max-height: 150px;
-    border-left: 1px solid #eee;
     overflow: auto;
     margin-right: 10px;
 }
 
-.service-workers-versions-table-clients-title {
-    color: #888;
-    padding: 8px 8px 3px 8px;
-}
-
 .service-workers-versions-table-clients-content {
     overflow: auto;
-    padding: 3px 3px 3px 10px;
+    line-height: 24px;
+    padding-left: 23px;
 }
 
 .service-workers-versions-table-worker-running-status-cell {
     display: flex;
-}
-
-.service-workers-versions-table-running-status-right-cell {
-    padding: 3px;
+    align-items: center;
 }
 
 .service-workers-versions-table-running-status-inspect {
     color: hsl(240, 85%, 37%);
     cursor: pointer;
     text-decoration: underline;
+    padding: 0 6px;
 }
 
 .service-workers-versions-option-panel {

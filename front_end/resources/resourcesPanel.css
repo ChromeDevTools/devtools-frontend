@@ -348,3 +348,7 @@ li.selected .base-storage-tree-element-subtitle {
 .file-system-storage-tree-item .icon {
     content: url(Images/fileSystem.png);
 }
+
+.service-worker-info-message {
+    padding: 10px;
+}

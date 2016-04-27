@@ -6,31 +6,64 @@
 
 .search-drawer-header {
     flex: none;
-    padding: 4px;
     display: flex;
+    border-bottom: 2px solid #e8e8e8;
 }
 
-.search-drawer-header input[type="text"].search-config-search {
-    -webkit-appearance: none;
-    padding: 0 3px;
-    margin: 0;
-    border: 1px solid rgb(163, 163, 163);
-    height: 20px;
+.search-drawer-header input.search-config-search {
+    padding: 0 28px;
+    margin: 1px 0px 0px 1px;
+    height: 28px;
     border-radius: 2px;
     color: #303030;
+    border: none;
 }
 
-.search-drawer-header input[type="search"].search-config-search:focus {
-    border: 1px solid rgb(190, 190, 190);
-    outline: none;
+.search-drawer-header .search-icon {
+    background-image: url(Images/toolbarButtonGlyphs.png);
+    background-size: 352px 168px;
+    background-position: -234px 138px;
+    left: 10px;
+    top: 10px;
+    width: 12px;
+    height: 12px;
+    position: absolute;
 }
 
-:host-context(.platform-mac) .search-drawer-header input[type="search"].search-config-search {
+.search-config-search::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+}
+
+.search-drawer-header .search-cancel-button {
+    position: relative;
+    left: -22px;
+    top: 9px;
+}
+
+.search-drawer-header .search-cancel-button::before {
+    content: '';
+    background-image: url(Images/toolbarButtonGlyphs.png);
+    background-size: 352px 168px;
+    left: 0;
+    top: 0;
+    width: 13px;
+    height: 13px;
+    background-position: -143px -96px;
+    position: absolute;
+}
+
+:host-context(.platform-mac) .search-drawer-header input.search-config-search {
     top: 1px;
 }
 
+.search-drawer-header label.search-config-label:first-of-type {
+    border-left: 1px solid #dadada;
+    margin: 0px 0px 0px 1px;
+    padding-left: 10px;
+}
+
 .search-drawer-header label.search-config-label {
-    margin: auto 0;
+    margin: 2px 0px;
     margin-left: 8px;
     color: #303030;
     display: flex;
@@ -82,6 +115,14 @@
 }
 
 @media (-webkit-min-device-pixel-ratio: 1.5) {
+.search-drawer-header .search-icon {
+    background-image: url(Images/toolbarButtonGlyphs_2x.png);
+}
+
+.search-drawer-header .search-cancel-button::before {
+    background-image: url(Images/toolbarButtonGlyphs_2x.png);
+}
+
 #search-results-pane-file-based li.parent::before {
     background-image: url(Images/toolbarButtonGlyphs_2x.png);
 }

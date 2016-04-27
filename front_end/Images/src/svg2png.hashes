@@ -1,7 +1,8 @@
 {
-    "errorWave.svg": "e183fa242a22ed4784a92f6becbc2c45",
-    "breakpoint.svg": "69cd92d807259c022791112809b97799",
-    "settingsListRemove.svg": "ce9e7c5c5cdaef28e6ee51d9478d5485",
     "breakpointConditional.svg": "4cf90210b2af2ed84db2f60b07bcde28",
-    "toolbarButtonGlyphs.svg": "304b6a326639d26c4710d57205413323"
+    "errorWave.svg": "e183fa242a22ed4784a92f6becbc2c45",
+    "settingsListRemove.svg": "ce9e7c5c5cdaef28e6ee51d9478d5485",
+    "toolbarButtonGlyphs.svg": "8e895729ba7499dc478860a078c21696",
+    "breakpoint.svg": "69cd92d807259c022791112809b97799",
+    "search.svg": "fc990dd3836aec510d7ca1f36c2a3142"
 }

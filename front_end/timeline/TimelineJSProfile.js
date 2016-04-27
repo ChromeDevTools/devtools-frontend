@@ -23,6 +23,10 @@ WebInspector.TimelineJSProfileProcessor.generateTracingEventsFromCpuProfile = fu
     nodeToStackMap.set(programNode, []);
     for (var i = 0; i < samples.length; ++i) {
         var node = jsProfileModel.nodeByIndex(i);
+        if (!node) {
+            console.error(`Node with unknown id ${samples[i]} at index ${i}`);
+            continue;
+        }
         if (node === gcNode || node === idleNode)
             continue;
         var callFrames = nodeToStackMap.get(node);

@@ -396,28 +396,52 @@ WebInspector.DeviceModeView.prototype = {
             var canvas = createElement("canvas");
             var ctx = canvas.getContext("2d");
             var screenRect = this._model.screenRect();
-            canvas.width = screenRect.width;
-            canvas.height = screenRect.height;
+            var dpr = window.devicePixelRatio;
+            canvas.width = screenRect.width * dpr;
+            canvas.height = screenRect.height * dpr;
             // Add any available screen images.
             if (this._model.screenImage()) {
                 var screenImage = new Image();
                 screenImage.crossOrigin = "Anonymous";
                 screenImage.srcset = this._model.screenImage();
-                ctx.drawImage(screenImage, 0, 0, screenRect.width, screenRect.height);
+                screenImage.onload = onImageLoad.bind(this);
+                screenImage.onerror = paintScreenshot.bind(this);
+            } else {
+                paintScreenshot.call(this);
             }
-            var pageImage = new Image();
-            pageImage.src = "data:image/png;base64," + content;
-            var visiblePageRect = this._model.visiblePageRect();
-            ctx.drawImage(pageImage, visiblePageRect.left, visiblePageRect.top, visiblePageRect.width, visiblePageRect.height);
-            var mainFrame = mainTarget.resourceTreeModel.mainFrame;
-            var fileName = mainFrame ? mainFrame.url.trimURL().removeURLFragment() : "";
-            if (this._model.type() === WebInspector.DeviceModeModel.Type.Device)
-                fileName += WebInspector.UIString("(%s)", this._model.device().title);
-            // Trigger download.
-            var link = createElement("a");
-            link.download = fileName + ".png";
-            link.href = canvas.toDataURL("image/png");
-            link.click();
+
+            /**
+             * @this {WebInspector.DeviceModeView}
+             */
+            function onImageLoad()
+            {
+                ctx.drawImage(screenImage, 0, 0, screenRect.width * dpr, screenRect.height * dpr);
+                paintScreenshot.call(this);
+            }
+
+            /**
+             * @this {WebInspector.DeviceModeView}
+             */
+            function paintScreenshot()
+            {
+                var pageImage = new Image();
+                pageImage.src = "data:image/png;base64," + content;
+                var visiblePageRect = this._model.visiblePageRect().scale(dpr);
+                ctx.drawImage(pageImage,
+                              visiblePageRect.left,
+                              visiblePageRect.top,
+                              visiblePageRect.width,
+                              visiblePageRect.height);
+                var mainFrame = mainTarget.resourceTreeModel.mainFrame;
+                var fileName = mainFrame ? mainFrame.url.trimURL().removeURLFragment() : "";
+                if (this._model.type() === WebInspector.DeviceModeModel.Type.Device)
+                    fileName += WebInspector.UIString("(%s)", this._model.device().title);
+                // Trigger download.
+                var link = createElement("a");
+                link.download = fileName + ".png";
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            }
         }
     },
 

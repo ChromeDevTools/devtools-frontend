@@ -4066,7 +4066,10 @@
                 ]
             },
             {
-                "name": "startSampling"
+                "name": "startSampling",
+                "parameters": [
+                    { "name": "samplingInterval", "type": "number", "optional": true, "description": "Average sample interval in bytes. Poisson distribution is used for the intervals. The default value is 32768 bytes." }
+                ]
             },
             {
                 "name": "stopSampling",

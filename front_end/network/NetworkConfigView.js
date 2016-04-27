@@ -164,7 +164,7 @@ WebInspector.NetworkConfigView.createUserAgentSelectAndInput = function()
 }
 
 
-/** @type {!Array.<{title: string, value: !Array.<{title: string, value: string}>}>} */
+/** @type {!Array.<{title: string, values: !Array.<{title: string, value: string}>}>} */
 WebInspector.NetworkConfigView._userAgentGroups = [
     {
         title: "Android",
@@ -184,12 +184,20 @@ WebInspector.NetworkConfigView._userAgentGroups = [
     {
         title: "Chrome",
         values: [
-            {title: "Chrome 47 \u2014 Mac", value: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.80 Safari/537.36"},
-            {title: "Chrome 47 \u2014 Windows", value: "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.73 Safari/537.36"},
-            {title: "Chrome 47 \u2014 Android Tablet", value: "Mozilla/5.0 (Linux; Android 4.3; Nexus 7 Build/JSS15Q) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.76 Safari/537.36"},
             {title: "Chrome 47 \u2014 Android Mobile", value: "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.76 Mobile Safari/537.36"},
+            {title: "Chrome 47 \u2014 Android Tablet", value: "Mozilla/5.0 (Linux; Android 4.3; Nexus 7 Build/JSS15Q) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.76 Safari/537.36"},
+            {title: "Chrome 47 \u2014 iPhone", value: "Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1 (KHTML, like Gecko) CriOS/47.0.2526.70 Mobile/13B143 Safari/601.1.46"},
             {title: "Chrome 47 \u2014 iPad", value: "Mozilla/5.0 (iPad; CPU OS 9_1 like Mac OS X) AppleWebKit/601.1 (KHTML, like Gecko) CriOS/47.0.2526.70 Mobile/13B143 Safari/601.1.46"},
-            {title: "Chrome 47 \u2014 iPhone", value: "Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1 (KHTML, like Gecko) CriOS/47.0.2526.70 Mobile/13B143 Safari/601.1.46"}
+            {title: "Chrome 47 \u2014 Mac", value: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.80 Safari/537.36"},
+            {title: "Chrome 47 \u2014 Windows", value: "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.73 Safari/537.36"}
+        ]
+    },
+    {
+        title: "Edge",
+        values: [
+            {title: "Edge \u2014 Windows", value: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10240"},
+            {title: "Edge \u2014 Mobile", value: "Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 640 XL LTE) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Mobile Safari/537.36 Edge/12.10166"},
+            {title: "Edge \u2014 XBox", value: "Mozilla/5.0 (Windows NT 10.0; Win64; x64; Xbox; Xbox One) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/13.10586"}
         ]
     },
     {
@@ -197,6 +205,8 @@ WebInspector.NetworkConfigView._userAgentGroups = [
         values: [
             {title: "Firefox 42 \u2014 Android Mobile", value: "Mozilla/5.0 (Android 4.4; Mobile; rv:42.0) Gecko/42.0 Firefox/42.0"},
             {title: "Firefox 42 \u2014 Android Tablet", value: "Mozilla/5.0 (Android 4.4; Tablet; rv:42.0) Gecko/42.0 Firefox/42.0"},
+            {title: "Firefox 42 \u2014 iPhone", value: "Mozilla/5.0 (iPhone; CPU iPhone OS 8_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) FxiOS/1.0 Mobile/12F69 Safari/600.1.4"},
+            {title: "Firefox 42 \u2014 iPad", value: "Mozilla/5.0 (iPad; CPU iPhone OS 8_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) FxiOS/1.0 Mobile/12F69 Safari/600.1.4"},
             {title: "Firefox 42 \u2014 Mac", value: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:42.0) Gecko/20100101 Firefox/42.0"},
             {title: "Firefox 42 \u2014 Windows", value: "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:42.0) Gecko/20100101 Firefox/42.0"}
         ]
@@ -206,12 +216,6 @@ WebInspector.NetworkConfigView._userAgentGroups = [
         values: [
             {title: "Googlebot", value: "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"},
             {title: "Googlebot Smartphone", value: "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.96 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"}
-        ]
-    },
-    {
-        title: "Edge",
-        values: [
-            {title: "Microsoft Edge", value: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10240"}
         ]
     },
     {
@@ -225,32 +229,22 @@ WebInspector.NetworkConfigView._userAgentGroups = [
         ]
     },
     {
-        title: "Safari",
-        values: [
-            {title: "iPad \u2014 iOS 9", value: "Mozilla/5.0 (iPad; CPU OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B137 Safari/601.1"},
-            {title: "iPhone \u2014 iOS 9", value: "Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B137 Safari/601.1"}
-        ]
-    },
-    {
-        title: "MeeGo",
-        values: [
-            {title: "MeeGo \u2014 Nokia N9", value: "Mozilla/5.0 (MeeGo; NokiaN9) AppleWebKit/534.13 (KHTML, like Gecko) NokiaBrowser/8.5.0 Mobile Safari/534.13"}
-        ]
-    },
-    {
         title: "Opera",
         values: [
             {title: "Opera 33 \u2014 Mac", value: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36 OPR/33.0.1990.115"},
             {title: "Opera 33 \u2014 Windows", value: "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.71 Safari/537.36 OPR/33.0.1990.43"},
             {title: "Opera 12 \u2014 Mac", value: "Opera/9.80 (Macintosh; Intel Mac OS X 10.9.1) Presto/2.12.388 Version/12.16"},
-            {title: "Opera 12 \u2014 Windows", value: "Opera/9.80 (Windows NT 6.1) Presto/2.12.388 Version/12.16"}
+            {title: "Opera 12 \u2014 Windows", value: "Opera/9.80 (Windows NT 6.1) Presto/2.12.388 Version/12.16"},
+            {title: "Opera Mobile \u2014 Android Mobile", value: "Opera/12.02 (Android 4.1; Linux; Opera Mobi/ADR-1111101157; U; en-US) Presto/2.9.201 Version/12.02"},
+            {title: "Opera Mini \u2014 iOS", value: "Opera/9.80 (iPhone; Opera Mini/8.0.0/34.2336; U; en) Presto/2.8.119 Version/11.10"}
         ]
     },
     {
-        title: "Silk",
+        title: "Safari",
         values: [
-            {title: "Silk \u2014 Kindle Fire (Desktop view)", value: "Mozilla/5.0 (Linux; U; en-us; KFTHWI Build/JDQ39) AppleWebKit/535.19 (KHTML, like Gecko) Silk/3.13 Safari/535.19 Silk-Accelerated=true"},
-            {title: "Silk \u2014 Kindle Fire (Mobile view)", value: "Mozilla/5.0 (Linux; U; Android 4.2.2; en-us; KFTHWI Build/JDQ39) AppleWebKit/535.19 (KHTML, like Gecko) Silk/3.13 Mobile Safari/535.19 Silk-Accelerated=true"}
+            {title: "Safari \u2014 iPad iOS 9", value: "Mozilla/5.0 (iPad; CPU OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B137 Safari/601.1"},
+            {title: "Safari \u2014 iPhone iOS 9", value: "Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B137 Safari/601.1"},
+            {title: "Safari \u2014 Mac", value: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.75.14 (KHTML, like Gecko) Version/7.0.3 Safari/7046A194A"}
         ]
     }
 ]

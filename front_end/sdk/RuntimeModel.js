@@ -239,6 +239,11 @@ WebInspector.RuntimeModel.prototype = {
     {
         var object = this.createRemoteObject(payload);
 
+        if (hints.copyToClipboard) {
+            this._copyRequested(object);
+            return;
+        }
+
         if (object.isNode()) {
             WebInspector.Revealer.revealPromise(object).then(object.release.bind(object));
             return;
@@ -259,10 +264,37 @@ WebInspector.RuntimeModel.prototype = {
                 return;
             WebInspector.Revealer.reveal(response.location);
         }
-
-        if (hints.copyToClipboard)
-            InspectorFrontendHost.copyText(object.value);
         object.release();
+    },
+
+    /**
+     * @param {!WebInspector.RemoteObject} object
+     */
+    _copyRequested: function(object)
+    {
+        if (!object.objectId) {
+            InspectorFrontendHost.copyText(object.value);
+            return;
+        }
+        object.callFunctionJSON(toStringForClipboard, [ { value : object.subtype } ], InspectorFrontendHost.copyText.bind(InspectorFrontendHost));
+
+        /**
+         * @param {string} subtype
+         * @this {Object}
+         * @suppressReceiverCheck
+         */
+        function toStringForClipboard(subtype)
+        {
+            if (subtype === "node")
+                return this.outerHTML;
+            if (subtype && typeof this === "undefined")
+                return subtype + "";
+            try {
+                return JSON.stringify(this, null, "  ");
+            } catch (e) {
+                return "" + this;
+            }
+        }
     },
 
     __proto__: WebInspector.SDKModel.prototype

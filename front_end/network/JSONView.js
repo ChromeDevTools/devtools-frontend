@@ -51,28 +51,19 @@ WebInspector.JSONView.parseJSON = function(text)
         returnObj = WebInspector.JSONView._extractJSON(/** @type {string} */ (text));
     if (!returnObj)
         return Promise.resolve(/** @type {?WebInspector.ParsedJSON} */ (null));
-    return new Promise(runParser);
+    return WebInspector.formatterWorkerPool.runTask("relaxedJSONParser", {content: returnObj.data})
+        .then(handleReturnedJSON)
 
     /**
-     * @param {function(*)} success
+     * @param {?MessageEvent} event
+     * @return {?WebInspector.ParsedJSON}
      */
-    function runParser(success) {
-        var worker = new WebInspector.Worker("formatter_worker");
-        worker.onmessage =  /** @type function(!MessageEvent) */ (handleReturnedJSON);
-        worker.postMessage({method: "relaxedJSONParser", params:{content: returnObj.data}});
-
-        /**
-         * @param {!MessageEvent} event
-         */
-        function handleReturnedJSON(event) {
-            worker.terminate();
-            if (!event.data) {
-                success(null);
-                return;
-            }
-            returnObj.data = event.data;
-            success(returnObj);
-        }
+    function handleReturnedJSON(event)
+    {
+        if (!event || !event.data)
+            return null;
+        returnObj.data = event.data;
+        return returnObj;
     }
 }
 

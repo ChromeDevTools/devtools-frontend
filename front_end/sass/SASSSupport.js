@@ -5,14 +5,14 @@
 WebInspector.SASSSupport = {}
 
 /**
- * @param {!WebInspector.CSSParserService} cssParserService
  * @param {string} url
  * @param {string} text
  * @return {!Promise<!WebInspector.SASSSupport.AST>}
  */
-WebInspector.SASSSupport.parseCSS = function(cssParserService, url, text)
+WebInspector.SASSSupport.parseCSS = function(url, text)
 {
-    return cssParserService.parseCSS(text)
+    var cssParser = new WebInspector.CSSParser();
+    return cssParser.parsePromise(text)
         .then(onParsed);
 
     /**

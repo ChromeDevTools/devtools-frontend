@@ -24,6 +24,7 @@
         "TextUtils.js",
         "Throttler.js",
         "UIString.js",
-        "ModuleExtensionInterfaces.js"
+        "ModuleExtensionInterfaces.js",
+        "FormatterWorkerPool.js"
     ]
 }

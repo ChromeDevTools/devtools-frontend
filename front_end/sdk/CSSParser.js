@@ -10,9 +10,8 @@
  */
 WebInspector.CSSParser = function()
 {
-    this._worker = new WebInspector.Worker("formatter_worker");
-    this._worker.onmessage = this._onRuleChunk.bind(this);
     this._rules = [];
+    this._terminated = false;
 }
 
 WebInspector.CSSParser.Events = {
@@ -63,11 +62,10 @@ WebInspector.CSSParser.prototype = {
 
     dispose: function()
     {
-        if (this._worker) {
-            this._worker.terminate();
-            delete this._worker;
-            this._runFinishedCallback([]);
-        }
+        if (this._terminated)
+            return;
+        this._terminated = true;
+        this._runFinishedCallback([]);
     },
 
     /**
@@ -95,14 +93,22 @@ WebInspector.CSSParser.prototype = {
     _innerParse: function(text)
     {
         this._rules = [];
-        this._worker.postMessage({ method: "parseCSS", params: { content: text } });
+        var params = { content: text };
+        WebInspector.formatterWorkerPool.runChunkedTask("parseCSS", params, this._onRuleChunk.bind(this));
     },
 
     /**
-     * @param {!MessageEvent} event
+     * @param {?MessageEvent} event
      */
     _onRuleChunk: function(event)
     {
+        if (this._terminated)
+            return;
+        if (!event) {
+            this._onFinishedParsing();
+            this.dispatchEventToListeners(WebInspector.CSSParser.Events.RulesParsed);
+            return;
+        }
         var data = /** @type {!WebInspector.CSSParser.DataChunk} */ (event.data);
         var chunk = data.chunk;
         for (var i = 0; i < chunk.length; ++i)
@@ -187,77 +193,4 @@ WebInspector.CSSParser.Property = function()
     this.range;
     /** @type {(boolean|undefined)} */
     this.disabled;
-}
-
-/**
- * @constructor
- */
-WebInspector.CSSParserService = function()
-{
-    this._cssParser = null;
-    this._cssRequests = [];
-    this._terminated = false;
-}
-
-WebInspector.CSSParserService.prototype = {
-    /**
-     * @param {string} text
-     * @return {!Promise<!Array.<!WebInspector.CSSParser.Rule>>}
-     */
-    parseCSS: function(text)
-    {
-        console.assert(!this._terminated, "Illegal call parseCSS on terminated CSSParserService.");
-        if (!this._cssParser)
-            this._cssParser = new WebInspector.CSSParser();
-        var request = new WebInspector.CSSParserService.ParseRequest(text);
-        this._cssRequests.push(request);
-        this._maybeParseCSS();
-        return request.parsedPromise;
-    },
-
-    _maybeParseCSS: function()
-    {
-        if (this._terminated || this._isParsingCSS || !this._cssRequests.length)
-            return;
-        this._isParsingCSS = true;
-        var request = this._cssRequests.shift();
-        this._cssParser.parsePromise(request.text)
-            .catchException(/** @type {!Array.<!WebInspector.CSSParser.Rule>} */([]))
-            .then(onCSSParsed.bind(this));
-
-        /**
-         * @param {!Array.<!WebInspector.CSSParser.Rule>} rules
-         * @this {WebInspector.CSSParserService}
-         */
-        function onCSSParsed(rules)
-        {
-            request.parsedCallback.call(null, rules);
-            this._isParsingCSS = false;
-            this._maybeParseCSS();
-        }
-    },
-
-    dispose: function()
-    {
-        if (this._terminated)
-            return;
-        this._terminated = true;
-        if (this._cssParser)
-            this._cssParser.dispose();
-        for (var request of this._cssRequests)
-            request.parsedCallback.call(null, /** @type {!Array.<!WebInspector.CSSParser.Rule>} */([]));
-        this._cssRequests = [];
-    },
-}
-
-/**
- * @constructor
- * @param {string} text
- */
-WebInspector.CSSParserService.ParseRequest = function(text)
-{
-    this.text = text;
-    /** @type {function(!Array.<!WebInspector.CSSParser.Rule>)} */
-    this.parsedCallback;
-    this.parsedPromise = new Promise(fulfill => this.parsedCallback = fulfill);
 }

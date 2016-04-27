@@ -89,28 +89,28 @@ WebInspector.ScriptFormatter = function(mimeType, content, callback)
     this._callback = callback;
     this._originalContent = content;
 
-    this._worker = new WebInspector.Worker("formatter_worker");
-    this._worker.onmessage = this._didFormatContent.bind(this);
-
     var parameters = {
         mimeType: mimeType,
         content: content,
         indentString: WebInspector.moduleSetting("textEditorIndent").get()
     };
-    this._worker.postMessage({ method: "format", params: parameters });
+    WebInspector.formatterWorkerPool.runTask("format", parameters)
+        .then(this._didFormatContent.bind(this));
 }
 
 WebInspector.ScriptFormatter.prototype = {
     /**
-     * @param {!MessageEvent} event
+     * @param {?MessageEvent} event
      */
     _didFormatContent: function(event)
     {
-        this._worker.terminate();
-        var originalContent = this._originalContent;
-        var formattedContent = event.data.content;
-        var mapping = event.data["mapping"];
-        var sourceMapping = new WebInspector.FormatterSourceMappingImpl(originalContent.computeLineEndings(), formattedContent.computeLineEndings(), mapping);
+        var formattedContent = "";
+        var mapping = [];
+        if (event) {
+            formattedContent = event.data.content;
+            mapping = event.data["mapping"];
+        }
+        var sourceMapping = new WebInspector.FormatterSourceMappingImpl(this._originalContent.computeLineEndings(), formattedContent.computeLineEndings(), mapping);
         this._callback(formattedContent, sourceMapping);
     }
 }

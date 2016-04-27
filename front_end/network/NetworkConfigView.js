@@ -115,9 +115,8 @@ WebInspector.NetworkConfigView.createUserAgentSelectAndInput = function()
     settingChanged();
     userAgentSelectElement.addEventListener("change", userAgentSelected, false);
 
-    otherUserAgentElement.addEventListener("dblclick", textDoubleClicked, true);
     otherUserAgentElement.addEventListener("blur", textChanged, false);
-    otherUserAgentElement.addEventListener("keydown", textKeyDown, false);
+    otherUserAgentElement.addEventListener("keyup", textChanged, false);
 
     function userAgentSelected()
     {
@@ -126,10 +125,7 @@ WebInspector.NetworkConfigView.createUserAgentSelectAndInput = function()
             userAgentSetting.set(value);
             otherUserAgentElement.value = value;
             otherUserAgentElement.title = value;
-            otherUserAgentElement.readOnly = true;
         } else {
-            otherUserAgentElement.readOnly = false;
-            otherUserAgentElement.value = "";
             otherUserAgentElement.focus();
         }
     }
@@ -147,7 +143,6 @@ WebInspector.NetworkConfigView.createUserAgentSelectAndInput = function()
             }
         }
 
-        otherUserAgentElement.readOnly = selectionRestored;
         if (!selectionRestored)
             userAgentSelectElement.selectedIndex = 0;
 
@@ -155,20 +150,6 @@ WebInspector.NetworkConfigView.createUserAgentSelectAndInput = function()
             otherUserAgentElement.value = value;
             otherUserAgentElement.title = value;
         }
-    }
-
-    function textKeyDown(event)
-    {
-        if (isEnterKey(event))
-            textChanged();
-    }
-
-    function textDoubleClicked()
-    {
-        if (userAgentSelectElement.selectedIndex === 0)
-            return;
-        userAgentSelectElement.selectedIndex = 0;
-        userAgentSelected();
     }
 
     function textChanged()

@@ -45,7 +45,7 @@ WebInspector.DeviceModeModel = function(updateCallback)
     this._deviceScaleFactorSetting = WebInspector.settings.createSetting("emulation.deviceScaleFactor", 0);
     this._deviceScaleFactorSetting.addChangeListener(this._deviceScaleFactorSettingChanged, this);
 
-    this._deviceOutlineSetting = WebInspector.settings.createSetting("emulation.deviceOutline", true);
+    this._deviceOutlineSetting = WebInspector.settings.createSetting("emulation.deviceOutline", false);
     this._deviceOutlineSetting.addChangeListener(this._deviceOutlineSettingChanged, this);
 
     /** @type {!WebInspector.DeviceModeModel.Type} */

@@ -698,9 +698,11 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
      * @param {number} barY
      * @param {number} barWidth
      * @param {number} barHeight
+     * @param {number} unclippedBarX
+     * @param {number} timeToPixels
      * @return {boolean}
      */
-    decorateEntry: function(entryIndex, context, text, barX, barY, barWidth, barHeight)
+    decorateEntry: function(entryIndex, context, text, barX, barY, barWidth, barHeight, unclippedBarX, timeToPixels)
     {
         var data = this._entryData[entryIndex];
         var type = this._entryType(entryIndex);
@@ -734,7 +736,12 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
 
         if (type === WebInspector.TimelineFlameChartEntryType.Event) {
             var event = /** @type {!WebInspector.TracingModel.Event} */ (this._entryData[entryIndex]);
-            if (event && event.warning)
+            if (event.hasCategory(WebInspector.TimelineModel.Category.LatencyInfo) && event.timeWaitingForMainThread) {
+                context.fillStyle = "rgba(255, 140, 120, 0.6)";
+                var width = Math.floor(unclippedBarX - barX + event.timeWaitingForMainThread * timeToPixels);
+                context.fillRect(barX, barY, width, barHeight - 1);
+            }
+            if (event.warning)
                 paintWarningDecoration(barX, barWidth - 1.5);
         }
 

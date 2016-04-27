@@ -1015,6 +1015,11 @@ WebInspector.TimelineModel.prototype = {
                     return null;
                 if (asyncEvent.name === WebInspector.TimelineModel.RecordType.InputLatencyMouseMove && !asyncEvent.causedFrame)
                     return null;
+                var rendererMain = data["INPUT_EVENT_LATENCY_RENDERER_MAIN_COMPONENT"];
+                if (rendererMain) {
+                    var time = rendererMain["time"] / 1000;
+                    asyncEvent.steps[0].timeWaitingForMainThread = time - asyncEvent.steps[0].startTime;
+                }
             }
             return groups.input;
         }

@@ -677,7 +677,7 @@ WebInspector.TracingModel.AsyncEvent.prototype = {
      */
     _addStep: function(event)
     {
-        this.steps.push(event)
+        this.steps.push(event);
         if (event.phase === WebInspector.TracingModel.Phase.AsyncEnd || event.phase === WebInspector.TracingModel.Phase.NestableAsyncEnd) {
             this.setEndTime(event.startTime);
             // FIXME: ideally, we shouldn't do this, but this makes the logic of converting

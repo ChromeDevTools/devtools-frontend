@@ -819,6 +819,9 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
         break;
     }
 
+    if (event.timeWaitingForMainThread)
+        contentHelper.appendTextRow(WebInspector.UIString("Time Waiting for Main Thread"), Number.millisToString(event.timeWaitingForMainThread, true));
+
     var relatedNode = relatedNodesMap && relatedNodesMap.get(event.backendNodeId);
     if (relatedNode)
         contentHelper.appendElementRow(relatedNodeLabel || WebInspector.UIString("Related Node"), WebInspector.DOMPresentationUtils.linkifyNodeReference(relatedNode));

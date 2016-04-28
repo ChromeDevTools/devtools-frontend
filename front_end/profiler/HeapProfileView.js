@@ -21,6 +21,20 @@ WebInspector.HeapProfileView = function(profileHeader)
 }
 
 WebInspector.HeapProfileView.prototype = {
+    /**
+     * @override
+     * @param {string} columnId
+     * @return {string}
+     */
+    columnHeader: function(columnId)
+    {
+        switch (columnId) {
+        case "self": return WebInspector.UIString("Self Size (bytes)");
+        case "total": return WebInspector.UIString("Total Size (bytes)");
+        }
+        return "";
+    },
+
     __proto__: WebInspector.ProfileView.prototype
 }
 

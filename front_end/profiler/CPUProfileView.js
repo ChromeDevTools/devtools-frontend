@@ -39,6 +39,20 @@ WebInspector.CPUProfileView = function(profileHeader)
 }
 
 WebInspector.CPUProfileView.prototype = {
+    /**
+     * @override
+     * @param {string} columnId
+     * @return {string}
+     */
+    columnHeader: function(columnId)
+    {
+        switch (columnId) {
+        case "self": return WebInspector.UIString("Self Time");
+        case "total": return WebInspector.UIString("Total Time");
+        }
+        return "";
+    },
+
     __proto__: WebInspector.ProfileView.prototype
 }
 

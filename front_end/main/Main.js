@@ -108,7 +108,6 @@ WebInspector.Main.prototype = {
         Runtime.experiments.register("cpuThrottling", "CPU throttling", true);
         Runtime.experiments.register("deviceFrames", "Device frames", true);
         Runtime.experiments.register("emptySourceMapAutoStepping", "Empty sourcemap auto-stepping");
-        Runtime.experiments.register("samplingHeapProfiler", "Sampling Heap Profiler", true);
         Runtime.experiments.register("inputEventsOnTimelineOverview", "Input events on Timeline overview", true);
         Runtime.experiments.register("layersPanel", "Layers panel");
         Runtime.experiments.register("layoutEditor", "Layout editor", true);

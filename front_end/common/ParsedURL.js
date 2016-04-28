@@ -263,7 +263,19 @@ WebInspector.ParsedURL.prototype = {
      */
     domain: function()
     {
+        if (this.isDataURL())
+            return "data:";
         return this.host + (this.port ? ":" + this.port : "");
+    },
+
+    /**
+     * @return {string}
+     */
+    securityOrigin: function()
+    {
+        if (this.isDataURL())
+            return "data:";
+        return this.scheme + "://" + this.domain();
     },
 
     /**

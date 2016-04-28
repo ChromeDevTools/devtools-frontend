@@ -39,7 +39,6 @@
     margin-bottom: 10px;
     padding: 0;
     flex: auto;
-    box-shadow: #ccc 0px 0px 4px;
 }
 
 .service-workers-registration .tabbed-pane > .widget {

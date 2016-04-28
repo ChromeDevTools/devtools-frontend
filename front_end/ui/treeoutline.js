@@ -655,6 +655,18 @@ TreeElement.prototype = {
     },
 
     /**
+     * @return {string}
+     */
+    titleAsText: function()
+    {
+        if (!this._title)
+            return "";
+        if (typeof this._title === "string")
+            return this._title;
+        return this._title.textContent;
+    },
+
+    /**
      * @param {!WebInspector.InplaceEditor.Config} editingConfig
      */
     startEditingTitle: function(editingConfig)

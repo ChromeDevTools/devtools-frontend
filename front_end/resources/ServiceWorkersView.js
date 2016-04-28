@@ -111,7 +111,7 @@ WebInspector.ServiceWorkersView.prototype = {
         var parsedURL = registration.scopeURL.asParsedURL();
         if (!parsedURL)
           return;
-        var originHost = parsedURL.host;
+        var originHost = parsedURL.securityOrigin();
         var originWidget = this._originHostToOriginWidgetMap.get(originHost);
         if (!originWidget) {
             originWidget = new WebInspector.ServiceWorkerOriginWidget(this._manager, originHost);
@@ -158,7 +158,7 @@ WebInspector.ServiceWorkersView.prototype = {
         var parsedURL = securityOrigin.asParsedURL();
         if (!parsedURL)
           return;
-        var originHost = parsedURL.host;
+        var originHost = parsedURL.securityOrigin();
         if (this._securityOriginHosts.has(originHost))
             return;
         this._securityOriginHosts.add(originHost);
@@ -177,7 +177,7 @@ WebInspector.ServiceWorkersView.prototype = {
         var parsedURL = securityOrigin.asParsedURL();
         if (!parsedURL)
           return;
-        var originHost = parsedURL.host;
+        var originHost = parsedURL.securityOrigin();
         if (!this._securityOriginHosts.has(originHost))
             return;
         this._securityOriginHosts.delete(originHost);

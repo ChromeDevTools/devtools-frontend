@@ -588,6 +588,7 @@
         'devtools_resources_js_files': [
             'front_end/resources/indexedDBViews.css',
             'front_end/resources/resourcesPanel.css',
+            'front_end/resources/resourcesSidebar.css',
             'front_end/resources/serviceWorkerCacheViews.css',
             'front_end/resources/serviceWorkersView.css',
             'front_end/resources/ApplicationCacheItemsView.js',

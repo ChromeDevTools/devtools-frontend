@@ -1,0 +1,148 @@
+/*
+ * Copyright 2016 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.tree-outline {
+    padding-left: 0;
+    color: rgb(90, 90, 90);
+}
+
+.tree-outline > ol {
+    padding-bottom: 10px;
+}
+
+.icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+}
+
+.tree-outline-disclosure li {
+    min-height: 20px;
+}
+
+li.storage-group-list-item {
+    border-top: 1px solid rgb(230, 230, 230);
+    padding: 10px 8px 6px 8px;
+}
+
+li.storage-group-list-item::before {
+    display: none;
+}
+
+.navigator-tree-item .icon {
+    -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
+    -webkit-mask-size: 352px 168px;
+    width: 32px;
+    height: 24px;
+    margin: -3px -3px -3px -7px;
+    -webkit-mask-position: -224px -72px;
+}
+
+@media (-webkit-min-device-pixel-ratio: 1.5) {
+.navigator-tree-item .icon {
+    -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
+}
+} /* media */
+
+.navigator-file-tree-item .icon {
+    -webkit-mask-position: -224px -72px;
+    background: linear-gradient(45deg, hsl(0, 0%, 50%), hsl(0, 0%, 70%));
+}
+
+:focus .navigator-file-tree-item.selected .icon {
+    background: white !important;
+}
+
+:focus .navigator-folder-tree-item.selected .icon {
+    background: white !important;
+}
+
+.navigator-folder-tree-item .icon {
+    -webkit-mask-position: -64px -120px;
+    background: linear-gradient(45deg, hsl(210, 82%, 65%), hsl(210, 82%, 80%));
+}
+
+.navigator-domain-tree-item .icon  {
+    -webkit-mask-position: -160px -144px;
+}
+
+.navigator-frame-tree-item .icon {
+    -webkit-mask-position: -256px -144px;
+}
+
+.navigator-script-tree-item .icon {
+    background: linear-gradient(45deg, hsl(48, 70%, 50%), hsl(48, 70%, 70%));
+}
+
+.navigator-stylesheet-tree-item .icon {
+    background: linear-gradient(45deg, hsl(256, 50%, 50%), hsl(256, 50%, 70%));
+}
+
+.navigator-image-tree-item .icon,
+.navigator-font-tree-item .icon {
+    background: linear-gradient(45deg, hsl(109, 33%, 50%), hsl(109, 33%, 70%));
+}
+
+.database-storage-tree-item .icon {
+    content: url(Images/database.png);
+}
+
+.database-table-storage-tree-item .icon {
+    content: url(Images/databaseTable.png);
+}
+
+.indexed-db-storage-tree-item .icon {
+    content: url(Images/indexedDB.png);
+}
+
+.indexed-db-object-store-storage-tree-item .icon {
+    content: url(Images/indexedDBObjectStore.png);
+}
+
+.indexed-db-index-storage-tree-item .icon {
+    content: url(Images/indexedDBIndex.png);
+}
+
+.service-worker-cache-tree-item .icon {
+    content: url(Images/indexedDBObjectStore.png);
+}
+
+.service-worker-cache-storage-tree-item .icon {
+    content: url(Images/indexedDB.png);
+}
+
+.service-workers-tree-item .icon {
+    content: url(Images/serviceWorker.svg);
+}
+
+li.service-workers-tree-item {
+    padding: 16px 0;
+}
+
+:focus .service-workers-tree-item.selected .icon {
+    -webkit-filter: invert();
+}
+
+.-theme-with-dark-background .service-workers-tree-item .icon,
+{
+    -webkit-filter: invert(70%);
+}
+
+.domstorage-storage-tree-item.local-storage .icon {
+    content: url(Images/localStorage.png);
+}
+
+.domstorage-storage-tree-item.session-storage .icon {
+    content: url(Images/sessionStorage.png);
+}
+
+.cookie-storage-tree-item .icon {
+    content: url(Images/cookie.png);
+}
+
+.application-cache-storage-tree-item .icon {
+    content: url(Images/applicationCache.png);
+}

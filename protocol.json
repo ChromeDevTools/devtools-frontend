@@ -143,7 +143,7 @@
             {
                 "id": "ScreencastFrameMetadata",
                 "type": "object",
-                "description": "Screencast frame metadata",
+                "description": "Screencast frame metadata.",
                 "properties": [
                     { "name": "offsetTop", "type": "number", "hidden": true, "description": "Top offset in DIP." },
                     { "name": "pageScaleFactor", "type": "number", "hidden": true, "description": "Page scale factor." },
@@ -157,9 +157,21 @@
             },
             {
                 "id": "DialogType",
-                "description": "Javascript dialog type",
+                "description": "Javascript dialog type.",
                 "type": "string",
                 "enum": ["alert", "confirm", "prompt", "beforeunload"],
+                "hidden": true
+            },
+            {
+                "id": "AppManifestError",
+                "description": "Error while paring app manifest.",
+                "type": "object",
+                "properties": [
+                  { "name": "message", "type": "string", "description": "Error message." },
+                  { "name": "critical", "type": "integer", "description": "If criticial, this is a non-recoverable parse error." },
+                  { "name": "line", "type": "integer", "description": "Error line." },
+                  { "name": "column", "type": "integer", "description": "Error column." }
+                ],
                 "hidden": true
             }
         ],
@@ -446,6 +458,15 @@
                 ],
                 "hidden": true,
                 "description": "Sets overlay message."
+            },
+            {
+                "name": "getAppManifest",
+                "hidden": true,
+                "returns": [
+                    { "name": "data", "type": "string", "optional": true, "description": "Manifest content." },
+                    { "name": "errors", "type": "array", "items": { "$ref": "AppManifestError" } }
+                ],
+                "handlers": ["none"]
             },
             {
                 "name": "requestAppBanner",

@@ -35,26 +35,24 @@
  */
 WebInspector.Worker = function(appName, workerName)
 {
-    var isSharedWorker = !!workerName;
-
     var url = appName + ".js";
     var remoteBase = Runtime.queryParam("remoteBase");
     if (remoteBase)
         url += "?remoteBase=" + remoteBase;
 
+    var callback;
+    /** @type {!Promise<!Worker|!SharedWorker>} */
+    this._workerPromise = new Promise(fulfill => callback = fulfill);
+
     /** @type {!Worker|!SharedWorker} */
     var worker;
-    var callback;
-    try {
-        if (isSharedWorker) {
-            worker = new SharedWorker(url, workerName);
-            worker.port.onmessage = onMessage;
-        } else {
-            worker = new Worker(url);
-            worker.onmessage = onMessage;
-        }
-    } catch(e) {
-        return Promise.reject(e);
+    var isSharedWorker = !!workerName;
+    if (isSharedWorker) {
+        worker = new SharedWorker(url, workerName);
+        worker.port.onmessage = onMessage;
+    } else {
+        worker = new Worker(url);
+        worker.onmessage = onMessage;
     }
 
     /**
@@ -69,9 +67,6 @@ WebInspector.Worker = function(appName, workerName)
             worker.onmessage = null;
         callback(worker);
     }
-
-    /** @type {!Promise<!Worker|!SharedWorker>} */
-    this._workerPromise = new Promise(fulfill => callback = fulfill);
 }
 
 WebInspector.Worker.prototype = {

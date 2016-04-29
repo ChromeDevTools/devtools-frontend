@@ -1,0 +1,19 @@
+{
+    "dependencies": [
+        "formatter_worker"
+    ],
+    "scripts": [
+        "gonzales-scss.js",
+        "SCSSParser.js"
+    ],
+    "extensions": [
+        {
+            "type": "@WebInspector.FormatterWorkerContentParser",
+            "className": "WebInspector.SCSSParser",
+            "mimeType": "text/x-scss"
+        }
+    ],
+    "skip_compilation": [
+        "gonzales-scss.js"
+    ]
+}

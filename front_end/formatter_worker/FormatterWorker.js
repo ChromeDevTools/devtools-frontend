@@ -69,6 +69,9 @@ self.onmessage = function(event) {
     case "parseCSS":
         WebInspector.parseCSS(params.content);
         break;
+    case "parseSCSS":
+        WebInspector.FormatterWorkerContentParser.parse(params.content, "text/x-scss");
+        break;
     case "javaScriptOutline":
         WebInspector.javaScriptOutline(params.content);
         break;
@@ -227,4 +230,36 @@ WebInspector.format = function(mimeType, text, indentString)
         result.content = text;
     }
     postMessage(result);
+}
+
+/**
+ * @interface
+ */
+WebInspector.FormatterWorkerContentParser = function() { }
+
+WebInspector.FormatterWorkerContentParser.prototype = {
+    /**
+     * @param {string} content
+     * @return {!Object}
+     */
+    parse: function(content) { }
+}
+
+WebInspector.FormatterWorkerContentParser.parse = function(content, mimeType)
+{
+    var extension = self.runtime.extensions(WebInspector.FormatterWorkerContentParser).find(findExtension);
+    console.assert(extension);
+    extension.instancePromise()
+        .then(instance => instance.parse(content))
+        .catchException(null)
+        .then(postMessage);
+
+    /**
+     * @param {!Runtime.Extension} extension
+     * @return {boolean}
+     */
+    function findExtension(extension)
+    {
+        return extension.descriptor()["mimeType"] === mimeType;
+    }
 }

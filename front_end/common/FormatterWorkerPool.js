@@ -59,7 +59,7 @@ WebInspector.FormatterWorkerPool.prototype = {
 
         this._workerTasks.set(worker, null);
         this._processNextTask();
-        task.callback(event);
+        task.callback(event.data ? event : null);
     },
 
     /**

@@ -7,8 +7,6 @@
  */
 WebInspector.ASTService = function()
 {
-    this._sassInitPromise = self.runtime.instancePromise(WebInspector.TokenizerFactory);
-    this._terminated = false;
 }
 
 WebInspector.ASTService.prototype = {
@@ -19,7 +17,6 @@ WebInspector.ASTService.prototype = {
      */
     parseCSS: function(url, text)
     {
-        console.assert(!this._terminated, "Illegal call parseCSS on terminated ASTService.");
         return WebInspector.SASSSupport.parseCSS(url, text);
     },
 
@@ -30,7 +27,6 @@ WebInspector.ASTService.prototype = {
      */
     parseSCSS: function(url, text)
     {
-        console.assert(!this._terminated, "Illegal call parseSCSS on terminated ASTService.");
-        return this._sassInitPromise.then(tokenizer => WebInspector.SASSSupport.parseSCSS(tokenizer, url, text));
+        return WebInspector.SASSSupport.parseSCSS(url, text);
     },
 }

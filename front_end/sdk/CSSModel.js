@@ -157,7 +157,6 @@ WebInspector.CSSModel.prototype = {
             var factoryExtension = this._factoryForSourceMap(sourceMap);
             if (!factoryExtension)
                 return Promise.resolve(/** @type {?WebInspector.SourceMap} */(sourceMap));
-
             return factoryExtension.instancePromise()
                 .then(factory => factory.editableSourceMap(this.target(), sourceMap))
                 .then(map => map || sourceMap)

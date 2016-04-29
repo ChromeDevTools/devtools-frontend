@@ -281,6 +281,7 @@
                             '<(_output_path)/elements_module.js',
                             '<(_output_path)/emulated_devices_module.js',
                             '<(_output_path)/es_tree_module.js',
+                            '<(_output_path)/gonzales_module.js',
                             '<(_output_path)/layers_module.js',
                             '<(_output_path)/network_module.js',
                             '<(_output_path)/profiler_module.js',

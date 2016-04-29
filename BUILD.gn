@@ -33,10 +33,13 @@ devtools_modules_js_files =
     gypi_values.devtools_cm_modes_js_files +
     gypi_values.devtools_components_lazy_js_files +
     gypi_values.devtools_console_js_files +
-    gypi_values.devtools_devices_js_files + gypi_values.devtools_diff_js_files +
+    gypi_values.devtools_devices_js_files +
+    gypi_values.devtools_diff_js_files +
     gypi_values.devtools_elements_js_files +
     gypi_values.devtools_emulated_devices_js_files +
-    gypi_values.devtools_es_tree_js_files + devtools_extensions_js_files +
+    gypi_values.devtools_es_tree_js_files +
+                devtools_extensions_js_files +
+    gypi_values.devtools_gonzales_js_files +
     gypi_values.devtools_heap_snapshot_worker_js_files +
     gypi_values.devtools_layers_js_files +
     gypi_values.devtools_network_js_files +
@@ -269,8 +272,8 @@ action("build_applications") {
       resources_out_dir + "heap_snapshot_worker.js",
       resources_out_dir + "temp_storage_shared_worker.js",
       resources_out_dir + "accessibility_module.js",
-      resources_out_dir + "audits_module.js",
       resources_out_dir + "animation_module.js",
+      resources_out_dir + "audits_module.js",
       resources_out_dir + "cm_modes_module.js",
       resources_out_dir + "components_lazy_module.js",
       resources_out_dir + "console_module.js",
@@ -279,13 +282,14 @@ action("build_applications") {
       resources_out_dir + "elements_module.js",
       resources_out_dir + "emulated_devices_module.js",
       resources_out_dir + "es_tree_module.js",
+      resources_out_dir + "gonzales_module.js",
       resources_out_dir + "layers_module.js",
       resources_out_dir + "network_module.js",
       resources_out_dir + "profiler_module.js",
       resources_out_dir + "resources_module.js",
       resources_out_dir + "sass_module.js",
-      resources_out_dir + "security_module.js",
       resources_out_dir + "screencast_module.js",
+      resources_out_dir + "security_module.js",
       resources_out_dir + "settings_module.js",
       resources_out_dir + "snippets_module.js",
       resources_out_dir + "source_frame_module.js",

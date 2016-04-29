@@ -338,6 +338,7 @@
             'front_end/emulation/module.json',
             'front_end/es_tree/module.json',
             'front_end/extensions/module.json',
+            'front_end/gonzales/module.json',
             'front_end/heap_snapshot_worker/module.json',
             'front_end/host/module.json',
             'front_end/layers/module.json',
@@ -516,6 +517,10 @@
             'front_end/extensions/ExtensionServer.js',
             'front_end/extensions/ExtensionView.js',
             '<@(devtools_extension_api_files)',
+        ],
+        'devtools_gonzales_js_files': [
+            'front_end/gonzales/gonzales-scss.js',
+            'front_end/gonzales/SCSSParser.js',
         ],
         'devtools_heap_snapshot_worker_js_files': [
             'front_end/common/TextUtils.js',
@@ -789,6 +794,7 @@
             '<@(devtools_emulated_devices_js_files)',
             '<@(devtools_es_tree_js_files)',
             '<@(devtools_extensions_js_files)',
+            '<@(devtools_gonzales_js_files)',
             '<@(devtools_heap_snapshot_worker_js_files)',
             '<@(devtools_layers_js_files)',
             '<@(devtools_network_js_files)',

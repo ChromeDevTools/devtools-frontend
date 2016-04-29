@@ -25,7 +25,7 @@ WebInspector.AdvancedSearchView = function()
 
     this._search = WebInspector.HistoryInput.create();
     this._searchPanelElement.appendChild(this._search);
-    this._search.placeholder = WebInspector.UIString("Search all sources (use \"file:\" to filter by path)");
+    this._search.placeholder = WebInspector.UIString("Search all sources (use \"file:\" to filter by path)\u200e");
     this._search.setAttribute("type", "text");
     this._search.classList.add("search-config-search");
     this._search.setAttribute("results", "0");

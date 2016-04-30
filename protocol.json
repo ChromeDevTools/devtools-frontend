@@ -463,8 +463,9 @@
                 "name": "getAppManifest",
                 "hidden": true,
                 "returns": [
-                    { "name": "data", "type": "string", "optional": true, "description": "Manifest content." },
-                    { "name": "errors", "type": "array", "items": { "$ref": "AppManifestError" } }
+                    { "name": "url", "type": "string", "description": "Manifest location." },
+                    { "name": "errors", "type": "array", "items": { "$ref": "AppManifestError" } },
+                    { "name": "data", "type": "string", "optional": true, "description": "Manifest content." }
                 ],
                 "handlers": ["none"]
             },

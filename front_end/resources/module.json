@@ -15,6 +15,7 @@
     ],
     "dependencies": ["source_frame", "ui_lazy", "components_lazy"],
     "scripts": [
+        "AppManifestView.js",
         "ApplicationCacheItemsView.js",
         "CookieItemsView.js",
         "DatabaseModel.js",
@@ -29,6 +30,7 @@
         "ServiceWorkersView.js"
     ],
     "resources": [
+        "appManifestView.css",
         "indexedDBViews.css",
         "resourcesPanel.css",
         "resourcesSidebar.css",

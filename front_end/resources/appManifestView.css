@@ -1,0 +1,86 @@
+/*
+ * Copyright 2016 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+    background-color: #f9f9f9;
+}
+
+.app-content-box {
+    background-color: white;
+    white-space: nowrap;
+    overflow: auto;
+}
+
+.app-manifest-title {
+    font-size: 14px;
+    padding: 12px 24px;
+}
+
+.app-manifest-url {
+    font-size: 12px;
+    padding: 0 24px 12px;
+    border-bottom: 1px solid rgb(230, 230, 230);
+}
+
+.app-manifest-section {
+    display: flex;
+    padding: 12px 6px;
+    border-bottom: 1px solid rgb(230, 230, 230);
+    flex-direction: column;
+}
+
+.app-manifest-section-title {
+    margin-bottom: 10px;
+    padding-left: 18px;
+}
+
+.app-manifest-field {
+    display: flex;
+    margin-top: 1px;
+    margin-bottom: 10px;
+}
+
+.app-manifest-field-name {
+    color: #888;
+    flex: 0 0 128px;
+    text-align: right;
+    padding: 0 6px;
+    white-space: pre;
+}
+
+.app-manifest-field-value {
+    flex: auto;
+    padding: 0 6px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.app-manifest-field-value .color-swatch {
+    width: 16px;
+    height: 16px;
+    display: block;
+}
+
+.app-manifest-errors {
+    padding-left: 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+.app-manifest-errors label {
+    padding: 4px;
+}
+
+.app-manifest-icons {
+    display: flex;
+    flex-direction: column;
+}
+
+.app-manifest-icons > img {
+    flex: none;
+    max-width: 200px;
+    max-height: 200px;
+}

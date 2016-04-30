@@ -461,6 +461,28 @@ WebInspector.ResourceTreeModel.prototype = {
         this._agent.reload(bypassCache, scriptToEvaluateOnLoad);
     },
 
+    /**
+     * @param {function(string, ?string,!Array<!PageAgent.AppManifestError>)} callback
+     */
+    fetchAppManifest: function(callback)
+    {
+        this._agent.getAppManifest(myCallback);
+        /**
+         * @param {?Protocol.Error} protocolError
+         * @param {string} url
+         * @param {!Array<!PageAgent.AppManifestError>} errors
+         * @param {string=} data
+         */
+        function myCallback(protocolError, url, errors, data)
+        {
+            if (protocolError) {
+                callback(url, null, []);
+                return;
+            }
+            callback(url, data || null, errors);
+        }
+    },
+
     __proto__: WebInspector.SDKModel.prototype
 }
 

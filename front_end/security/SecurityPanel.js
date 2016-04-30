@@ -741,14 +741,14 @@ WebInspector.SecurityOriginView = function(panel, origin, originState)
     this.registerRequiredCSS("security/originView.css");
     this.registerRequiredCSS("security/lockIcon.css");
 
-    var titleSection = this.element.createChild("div", "origin-view-section title-section");
+    var titleSection = this.element.createChild("div", "title-section");
     titleSection.createChild("div", "origin-view-title").textContent = WebInspector.UIString("Origin");
     var originDisplay = titleSection.createChild("div", "origin-display");
     this._originLockIcon = originDisplay.createChild("span", "security-property");
     this._originLockIcon.classList.add("security-property-" + originState.securityState);
     // TODO(lgarron): Highlight the origin scheme. https://crbug.com/523589
     originDisplay.createChild("span", "origin").textContent = origin;
-    var originNetworkLink = originDisplay.createChild("div", "link");
+    var originNetworkLink = titleSection.createChild("div", "link");
     originNetworkLink.textContent = WebInspector.UIString("View requests in Network Panel");
     function showOriginRequestsInNetworkPanel()
     {

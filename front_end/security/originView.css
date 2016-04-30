@@ -3,6 +3,11 @@
  * found in the LICENSE file.
  */
 
+.title-section {
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgb(230, 230, 230);
+}
+
 .security-origin-view {
     overflow-x: hidden;
     overflow-y: scroll;
@@ -11,16 +16,18 @@
 }
 
 .security-origin-view .origin-view-section {
-    padding: 1.5em 1.5em 1.5em;
     border-bottom: 1px solid rgb(230, 230, 230);
-}
-
-.security-origin-view .title-section {
-    padding-bottom: 1.5em;
+    padding: 12px 6px;
 }
 
 .security-origin-view .origin-display {
-  padding-left: 18px;
+    padding-left: 38px;
+    display: flex;
+    align-items: center;
+}
+
+.title-section > .link {
+    padding: 6px 0 0 39px
 }
 
 .security-origin-view .origin-display .security-property {
@@ -31,22 +38,17 @@
 }
 
 .security-origin-view .origin-view-title {
-    font-size: 1.25em;
-    margin-top: 0.5em;
-    margin-bottom: 0.25em;
+    font-size: 15px;
+    padding: 12px 24px;
 }
 
-.security-origin-view .origin-view-section-title {
-    font-weight: bold;
-    font-size: 1em;
-    margin-bottom: 0.25em;
-}
+.security-origin-view .origin-view-section-title {margin-bottom: 10px;padding-left: 18px;}
 
 .security-origin-view .details-table-row {
     display: flex;
     white-space: nowrap;
     overflow: hidden;
-    margin-top: 6px;
+    line-height: 22px;
 }
 
 .security-origin-view .details-table-row > div {
@@ -55,7 +57,7 @@
 
 .security-origin-view .details-table-row > div:first-child {
     color: rgb(140, 140, 140);
-    width: 7em;
+    width: 128px;
     margin-right: 1em;
     flex: none;
     display: flex;

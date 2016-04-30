@@ -1254,6 +1254,19 @@ function createRadioLabel(name, title, checked)
 }
 
 /**
+ * @param {string} title
+ * @param {string} iconClass
+ * @return {!Element}
+ */
+function createLabel(title, iconClass)
+{
+    var element = createElement("label", "dt-icon-label");
+    element.createChild("span").textContent = title;
+    element.type = iconClass;
+    return element;
+}
+
+/**
  * @param {string=} title
  * @param {boolean=} checked
  * @param {string=} subtitle

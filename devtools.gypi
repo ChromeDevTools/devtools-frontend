@@ -591,11 +591,13 @@
             'front_end/profiler/TopDownProfileDataGrid.js',
         ],
         'devtools_resources_js_files': [
+            'front_end/resources/appManifestView.css',
             'front_end/resources/indexedDBViews.css',
             'front_end/resources/resourcesPanel.css',
             'front_end/resources/resourcesSidebar.css',
             'front_end/resources/serviceWorkerCacheViews.css',
             'front_end/resources/serviceWorkersView.css',
+            'front_end/resources/AppManifestView.js',
             'front_end/resources/ApplicationCacheItemsView.js',
             'front_end/resources/CookieItemsView.js',
             'front_end/resources/DatabaseModel.js',

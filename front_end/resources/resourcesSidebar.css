@@ -118,10 +118,6 @@ li.storage-group-list-item::before {
     content: url(Images/serviceWorker.svg);
 }
 
-li.service-workers-tree-item {
-    padding: 16px 0;
-}
-
 :focus .service-workers-tree-item.selected .icon {
     -webkit-filter: invert();
 }

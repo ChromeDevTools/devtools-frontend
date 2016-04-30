@@ -425,11 +425,10 @@
     white-space: nowrap !important;
 }
 
-.object-info-state-note {
+.object-state-note {
     display: inline-block;
     width: 11px;
     height: 11px;
-    background-color: rgb(179, 203, 247);
     color: white;
     text-align: center;
     border-radius: 3px;
@@ -438,14 +437,30 @@
     font-size: 9px;
 }
 
-.-theme-with-dark-background .object-info-state-note {
+.-theme-with-dark-background .object-state-note {
     background-color: hsl(230, 100%, 80%);
 }
 
-.object-info-state-note::before {
+.info-note {
+    background-color: rgb(179, 203, 247);
+}
+
+.info-note::before {
     content: "i";
 }
 
-.console-view-object-properties-section:not(.expanded) .object-info-state-note {
+.warning-note {
+    background-color: rgb(255, 161, 45);
+}
+
+.warning-note::before {
+    content: "!";
+}
+
+.console-view-object-properties-section:not(.expanded) .info-note {
+    display: none;
+}
+
+.console-view-object-properties-section.expanded .warning-note {
     display: none;
 }

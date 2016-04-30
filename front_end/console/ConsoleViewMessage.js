@@ -56,6 +56,7 @@ WebInspector.ConsoleViewMessage = function(consoleMessage, linkifier, nestingLev
         "map": this._formatParameterAsObject,
         "node": this._formatParameterAsNode,
         "object": this._formatParameterAsObject,
+        "proxy": this._formatParameterAsObject,
         "set": this._formatParameterAsObject,
         "string": this._formatParameterAsString
     };
@@ -424,7 +425,13 @@ WebInspector.ConsoleViewMessage.prototype = {
                 titleElement.createTextChild(obj.description || "");
             }
         }
-        var note = titleElement.createChild("span", "object-info-state-note");
+        if (obj.subtype === "proxy") {
+            var warning = titleElement.createChild("span", "object-state-note");
+            warning.classList.add("warning-note");
+            warning.title = WebInspector.UIString("Expansion of the Proxy object can lead to JavaScript execution.");
+        }
+        var note = titleElement.createChild("span", "object-state-note");
+        note.classList.add("info-note");
         note.title = WebInspector.UIString("Object value at left was snapshotted when logged, value below was evaluated just now.");
         var section = new WebInspector.ObjectPropertiesSection(obj, titleElement);
         section.enableContextMenu();

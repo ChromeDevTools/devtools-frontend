@@ -163,7 +163,7 @@ input {
 
 input[type="search"]:focus,
 input[type="text"]:focus {
-    outline: auto 5px -webkit-focus-ring-color;
+    outline: auto rgb(56, 121, 217);
 }
 
 

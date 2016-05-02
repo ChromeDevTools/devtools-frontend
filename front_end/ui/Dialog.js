@@ -105,6 +105,16 @@ WebInspector.Dialog.prototype = {
     },
 
     /**
+     * @param {number=} positionX
+     * @param {number=} positionY
+     */
+    setPosition: function(positionX, positionY)
+    {
+        this._defaultPositionX = positionX;
+        this._defaultPositionY = positionY;
+    },
+
+    /**
      * @param {!Size} size
      */
     setMaxSize: function(size)
@@ -194,11 +204,21 @@ WebInspector.Dialog.prototype = {
             height = Math.min(height, this._maxSize.height);
         }
 
-        var positionX = (container.offsetWidth - width) / 2;
-        positionX = Number.constrain(positionX, 0, container.offsetWidth - width);
+        var positionX;
+        if (typeof this._defaultPositionX === "number") {
+            positionX = this._defaultPositionX;
+        } else {
+            positionX = (container.offsetWidth - width) / 2;
+            positionX = Number.constrain(positionX, 0, container.offsetWidth - width);
+        }
 
-        var positionY = (container.offsetHeight - height) / 2;
-        positionY = Number.constrain(positionY, 0, container.offsetHeight - height);
+        var positionY;
+        if (typeof this._defaultPositionY === "number") {
+            positionY = this._defaultPositionY;
+        } else {
+            positionY = (container.offsetHeight - height) / 2;
+            positionY = Number.constrain(positionY, 0, container.offsetHeight - height);
+        }
 
         this.element.style.width = width + "px";
         this.element.style.height = height + "px";

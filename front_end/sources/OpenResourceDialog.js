@@ -54,6 +54,15 @@ WebInspector.OpenResourceDialog.prototype = {
         return !WebInspector.Project.isServiceProject(project);
     },
 
+    /**
+     * @override
+     * @return {boolean}
+     */
+    renderAsTwoRows: function()
+    {
+        return true;
+    },
+
     __proto__: WebInspector.FilteredUISourceCodeListDelegate.prototype
 }
 
@@ -65,7 +74,7 @@ WebInspector.OpenResourceDialog.prototype = {
  */
 WebInspector.OpenResourceDialog.show = function(sourcesView, query, defaultScores, history)
 {
-    var filteredItemSelectionDialog = new WebInspector.FilteredListWidget(new WebInspector.OpenResourceDialog(sourcesView, defaultScores, history), true);
+    var filteredItemSelectionDialog = new WebInspector.FilteredListWidget(new WebInspector.OpenResourceDialog(sourcesView, defaultScores, history));
     filteredItemSelectionDialog.showAsDialog();
     filteredItemSelectionDialog.setQuery(query);
 }
@@ -105,6 +114,15 @@ WebInspector.SelectUISourceCodeForProjectTypesDialog.prototype = {
         return this._types.indexOf(project.type()) !== -1;
     },
 
+    /**
+     * @override
+     * @return {boolean}
+     */
+    renderAsTwoRows: function()
+    {
+        return true;
+    },
+
     __proto__: WebInspector.FilteredUISourceCodeListDelegate.prototype
 }
 
@@ -115,7 +133,7 @@ WebInspector.SelectUISourceCodeForProjectTypesDialog.prototype = {
  */
 WebInspector.SelectUISourceCodeForProjectTypesDialog.show = function(name, types, callback)
 {
-    var filteredItemSelectionDialog = new WebInspector.FilteredListWidget(new WebInspector.SelectUISourceCodeForProjectTypesDialog(types, callback), true);
+    var filteredItemSelectionDialog = new WebInspector.FilteredListWidget(new WebInspector.SelectUISourceCodeForProjectTypesDialog(types, callback));
     filteredItemSelectionDialog.showAsDialog();
     filteredItemSelectionDialog.setQuery(name);
 }

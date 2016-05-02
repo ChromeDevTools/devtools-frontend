@@ -48,7 +48,7 @@ WebInspector.StyleSheetOutlineDialog = function(uiSourceCode, selectItemCallback
 WebInspector.StyleSheetOutlineDialog.show = function(uiSourceCode, selectItemCallback)
 {
     WebInspector.StyleSheetOutlineDialog._instanceForTests = new WebInspector.StyleSheetOutlineDialog(uiSourceCode, selectItemCallback);
-    new WebInspector.FilteredListWidget(WebInspector.StyleSheetOutlineDialog._instanceForTests, false).showAsDialog();
+    new WebInspector.FilteredListWidget(WebInspector.StyleSheetOutlineDialog._instanceForTests).showAsDialog();
 }
 
 WebInspector.StyleSheetOutlineDialog.prototype = {

@@ -25,7 +25,7 @@ WebInspector.JavaScriptOutlineDialog = function(uiSourceCode, selectItemCallback
  */
 WebInspector.JavaScriptOutlineDialog.show = function(uiSourceCode, selectItemCallback)
 {
-    new WebInspector.FilteredListWidget(new WebInspector.JavaScriptOutlineDialog(uiSourceCode, selectItemCallback), false).showAsDialog();
+    new WebInspector.FilteredListWidget(new WebInspector.JavaScriptOutlineDialog(uiSourceCode, selectItemCallback)).showAsDialog();
 }
 
 WebInspector.JavaScriptOutlineDialog.prototype = {

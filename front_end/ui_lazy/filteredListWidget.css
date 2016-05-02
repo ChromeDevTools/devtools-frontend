@@ -13,7 +13,7 @@
 .filtered-list-widget-prompt-element {
     flex: 0 0 36px;
     border: 0;
-    box-shadow: rgba(140, 140, 140, 0.5) 0 4px 16px;
+    box-shadow: rgba(140, 140, 140, 0.2) 0 2px 2px;
     margin: 0;
     padding: 0 6px;
     z-index: 1;
@@ -30,11 +30,11 @@
 .filtered-list-widget > div.container {
     flex: auto;
     overflow-y: auto;
-    background: white;
+    background: #fbfbfb;
 }
 
 .filtered-list-widget-item {
-    padding: 6px;
+    padding: 4px 6px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -42,7 +42,7 @@
 }
 
 .filtered-list-widget-item.selected {
-    background-color: #eee;
+    background-color: #f0f0f0;
 }
 
 .filtered-list-widget-item span.highlight {
@@ -76,4 +76,16 @@
 
 .filtered-list-widget-item.two-rows {
     border-bottom: 1px solid rgb(235, 235, 235);
+}
+
+.tag {
+    color: white;
+    padding: 1px 3px;
+    margin-right: 5px;
+    border-radius: 2px;
+    line-height: 18px;
+}
+
+.filtered-list-widget-item .tag .highlight {
+    color: white;
 }

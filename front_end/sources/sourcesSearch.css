@@ -8,6 +8,8 @@
     flex: none;
     display: flex;
     border-bottom: 2px solid #e8e8e8;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .search-drawer-header input.search-config-search {
@@ -17,6 +19,7 @@
     border-radius: 2px;
     color: #303030;
     border: none;
+    min-width: 95px;
 }
 
 .search-drawer-header .search-icon {
@@ -63,7 +66,7 @@
 }
 
 .search-drawer-header label.search-config-label {
-    margin: 2px 0px;
+    margin: 2px 4px;
     margin-left: 8px;
     color: #303030;
     display: flex;
@@ -81,6 +84,9 @@
 .search-toolbar-summary .search-message {
     padding-top: 2px;
     padding-left: 1ex;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 #search-results-pane-file-based li {

@@ -126,7 +126,7 @@ WebInspector.NetworkConfigView.createUserAgentSelectAndInput = function()
             otherUserAgentElement.value = value;
             otherUserAgentElement.title = value;
         } else {
-            otherUserAgentElement.focus();
+            otherUserAgentElement.select();
         }
     }
 
@@ -145,17 +145,13 @@ WebInspector.NetworkConfigView.createUserAgentSelectAndInput = function()
 
         if (!selectionRestored)
             userAgentSelectElement.selectedIndex = 0;
-
-        if (otherUserAgentElement.value !== value) {
-            otherUserAgentElement.value = value;
-            otherUserAgentElement.title = value;
-        }
     }
 
     function textChanged()
     {
         if (userAgentSetting.get() !== otherUserAgentElement.value) {
             userAgentSetting.set(otherUserAgentElement.value);
+            otherUserAgentElement.title = otherUserAgentElement.value;
             settingChanged();
         }
     }

@@ -214,19 +214,12 @@ WebInspector.GlassPane.prototype = {
     dispose: function()
     {
         delete WebInspector._glassPane;
-        if (WebInspector.GlassPane.DefaultFocusedViewStack.length)
-            WebInspector.GlassPane.DefaultFocusedViewStack.peekLast().focus();
         this.element.remove();
     }
 }
 
 /** @type {!WebInspector.GlassPane|undefined} */
 WebInspector._glassPane;
-
-/**
- * @type {!Array.<!WebInspector.Widget|!WebInspector.Dialog>}
- */
-WebInspector.GlassPane.DefaultFocusedViewStack = [];
 
 /**
  * @param {?Node=} node

@@ -73,7 +73,6 @@ WebInspector.Dialog.prototype = {
 
         this._glassPane = new WebInspector.GlassPane(document, this._dimmed);
         this._glassPane.element.addEventListener("click", this._onGlassPaneClick.bind(this), false);
-        WebInspector.GlassPane.DefaultFocusedViewStack.push(this);
 
         WebInspector.Widget.prototype.show.call(this, this._glassPane.element);
 
@@ -86,12 +85,13 @@ WebInspector.Dialog.prototype = {
      */
     detach: function()
     {
+        var previousFocusElement = WebInspector.previousFocusElement();
         WebInspector.Widget.prototype.detach.call(this);
-
-        WebInspector.GlassPane.DefaultFocusedViewStack.pop();
         this._glassPane.dispose();
         delete this._glassPane;
 
+        if (previousFocusElement)
+            previousFocusElement.focus();
         this._restoreTabIndexOnElements();
 
         delete WebInspector.Dialog._instance;

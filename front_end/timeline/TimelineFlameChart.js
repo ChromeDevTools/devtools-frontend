@@ -1306,13 +1306,9 @@ WebInspector.TimelineFlameChartView = function(delegate, timelineModel, frameMod
     this._networkDataProvider = new WebInspector.TimelineFlameChartNetworkDataProvider(this._model);
     this._networkView = new WebInspector.FlameChart(this._networkDataProvider, this);
 
-    if (Runtime.experiments.isEnabled("networkRequestsOnTimeline")) {
-        this._splitWidget.setMainWidget(this._mainView);
-        this._splitWidget.setSidebarWidget(this._networkView);
-        this._splitWidget.show(this.element);
-    } else {
-        this._mainView.show(this.element);
-    }
+    this._splitWidget.setMainWidget(this._mainView);
+    this._splitWidget.setSidebarWidget(this._networkView);
+    this._splitWidget.show(this.element);
 
     this._onMainEntrySelected = this._onEntrySelected.bind(this, this._dataProvider);
     this._onNetworkEntrySelected = this._onEntrySelected.bind(this, this._networkDataProvider);

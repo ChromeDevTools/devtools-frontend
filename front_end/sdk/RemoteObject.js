@@ -978,13 +978,25 @@ WebInspector.RemoteObject.loadFromObjectPerProto = function(object, callback)
         if (--resultCounter)
             return;
         if (savedOwnProperties && savedAccessorProperties) {
-            var combinedList = savedAccessorProperties.slice(0);
+            var propertiesMap = new Map();
+            var propertySymbols = [];
+            for (var i = 0; i < savedAccessorProperties.length; i++) {
+                var property = savedAccessorProperties[i];
+                if (property.symbol)
+                    propertySymbols.push(property);
+                else
+                    propertiesMap.set(property.name, property);
+            }
             for (var i = 0; i < savedOwnProperties.length; i++) {
                 var property = savedOwnProperties[i];
-                if (!property.isAccessorProperty())
-                    combinedList.push(property);
+                if (property.isAccessorProperty())
+                    continue;
+                if (property.symbol)
+                    propertySymbols.push(property);
+                else
+                    propertiesMap.set(property.name, property);
             }
-            return callback(combinedList, savedInternalProperties ? savedInternalProperties : null);
+            return callback(propertiesMap.valuesArray().concat(propertySymbols), savedInternalProperties ? savedInternalProperties : null);
         } else {
             callback(null, null);
         }

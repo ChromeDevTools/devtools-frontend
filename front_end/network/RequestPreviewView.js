@@ -148,8 +148,10 @@ WebInspector.RequestPreviewView.prototype = {
         }
 
         var xmlView = this._xmlView();
-        if (xmlView)
-            return xmlView;
+        if (xmlView) {
+            callback(xmlView);
+            return;
+        }
 
         WebInspector.JSONView.parseJSON(this._requestContent()).then(chooseView.bind(this)).then(callback);
 

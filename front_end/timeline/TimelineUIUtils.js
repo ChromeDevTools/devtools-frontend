@@ -226,7 +226,8 @@ WebInspector.TimelineUIUtils._interactionPhaseStyles = function()
             [WebInspector.TimelineIRModel.Phases.Scroll, {color: "hsl(256, 67%, 70%)", label: WebInspector.UIString("Scroll")}],
             [WebInspector.TimelineIRModel.Phases.Fling, {color: "hsl(256, 67%, 70%)", label: WebInspector.UIString("Fling")}],
             [WebInspector.TimelineIRModel.Phases.Drag, {color: "hsl(256, 67%, 70%)", label: WebInspector.UIString("Drag")}],
-            [WebInspector.TimelineIRModel.Phases.Animation, {color: "hsl(256, 67%, 70%)", label: WebInspector.UIString("Animation")}]
+            [WebInspector.TimelineIRModel.Phases.Animation, {color: "hsl(256, 67%, 70%)", label: WebInspector.UIString("Animation")}],
+            [WebInspector.TimelineIRModel.Phases.Uncategorized, {color: "hsl(0, 0%, 87%)", label: WebInspector.UIString("Uncategorized")}]
         ]);
         WebInspector.TimelineUIUtils._interactionPhaseStylesMap = map;
     }

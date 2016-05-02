@@ -316,13 +316,14 @@ WebInspector.TimelineFlameChartDataProvider = function(model, frameModel, irMode
     };
 
     this._interactionsHeaderLevel2 = {
-        padding: 4,
+        padding: 2,
         height: 17,
         collapsible: true,
         color: WebInspector.themeSupport.patchColor("#222", WebInspector.ThemeSupport.ColorUsage.Foreground),
         font: this._font,
         backgroundColor: WebInspector.themeSupport.patchColor("white", WebInspector.ThemeSupport.ColorUsage.Background),
-        nestingLevel: 1
+        nestingLevel: 1,
+        shareHeaderLine: true
     };
 }
 
@@ -384,9 +385,12 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
         this._entryTypeByLevel = [];
         /** @type {!Array<string>} */
         this._entryIndexToTitle = [];
-        /** @type {!Array.<!WebInspector.TimelineFlameChartMarker>} */
+        /** @type {!Array<!WebInspector.TimelineFlameChartMarker>} */
         this._markers = [];
-        this._asyncColorByCategory = {};
+        /** @type {!Map<!WebInspector.TimelineCategory, string>} */
+        this._asyncColorByCategory = new Map();
+        /** @type {!Map<!WebInspector.TimelineIRModel.Phases, string>} */
+        this._asyncColorByInteractionPhase = new Map();
     },
 
     /**
@@ -666,6 +670,18 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
      */
     entryColor: function(entryIndex)
     {
+        // This is not annotated due to closure compiler failure to properly infer cache container's template type.
+        function patchColorAndCache(cache, key, lookupColor)
+        {
+            var color = cache.get(key);
+            if (color)
+                return color;
+            var parsedColor = WebInspector.Color.parse(lookupColor(key));
+            color = parsedColor.setAlpha(0.7).asString(WebInspector.Color.Format.RGBA) || "";
+            cache.set(key, color);
+            return color;
+        }
+
         var type = this._entryType(entryIndex);
         if (type === WebInspector.TimelineFlameChartEntryType.Event) {
             var event = /** @type {!WebInspector.TracingModel.Event} */ (this._entryData[entryIndex]);
@@ -673,14 +689,12 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
                 return WebInspector.TimelineUIUtils.eventColor(event);
             if (event.hasCategory(WebInspector.TimelineModel.Category.Console) || event.hasCategory(WebInspector.TimelineModel.Category.UserTiming))
                 return this._consoleColorGenerator.colorForID(event.name);
+            if (event.hasCategory(WebInspector.TimelineModel.Category.LatencyInfo)) {
+                var phase = WebInspector.TimelineIRModel.phaseForEvent(event) || WebInspector.TimelineIRModel.Phases.Uncategorized;
+                return patchColorAndCache(this._asyncColorByInteractionPhase, phase, WebInspector.TimelineUIUtils.interactionPhaseColor);
+            }
             var category = WebInspector.TimelineUIUtils.eventStyle(event).category;
-            var color = this._asyncColorByCategory[category.name];
-            if (color)
-                return color;
-            var parsedColor = WebInspector.Color.parse(category.color);
-            color = parsedColor.setAlpha(0.7).asString(WebInspector.Color.Format.RGBA) || "";
-            this._asyncColorByCategory[category.name] = color;
-            return color;
+            return patchColorAndCache(this._asyncColorByCategory, category, () => category.color);
         }
         if (type === WebInspector.TimelineFlameChartEntryType.Frame)
             return "white";
@@ -737,9 +751,9 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
         if (type === WebInspector.TimelineFlameChartEntryType.Event) {
             var event = /** @type {!WebInspector.TracingModel.Event} */ (this._entryData[entryIndex]);
             if (event.hasCategory(WebInspector.TimelineModel.Category.LatencyInfo) && event.timeWaitingForMainThread) {
-                context.fillStyle = "rgba(255, 140, 120, 0.6)";
+                context.fillStyle = "hsla(0, 70%, 60%, 1)";
                 var width = Math.floor(unclippedBarX - barX + event.timeWaitingForMainThread * timeToPixels);
-                context.fillRect(barX, barY, width, barHeight - 1);
+                context.fillRect(barX, barY + barHeight - 3, width, 2);
             }
             if (event.warning)
                 paintWarningDecoration(barX, barWidth - 1.5);

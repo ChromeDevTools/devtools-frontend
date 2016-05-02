@@ -19,7 +19,8 @@ WebInspector.TimelineIRModel.Phases = {
     Scroll: "Scroll",
     Fling: "Fling",
     Drag: "Drag",
-    Animation: "Animation"
+    Animation: "Animation",
+    Uncategorized: "Uncategorized"
 };
 
 /**
@@ -62,6 +63,17 @@ WebInspector.TimelineIRModel._mergeThresholdsMs = {
     mouse: 40,
 };
 
+WebInspector.TimelineIRModel._eventIRPhase = Symbol("eventIRPhase");
+
+/**
+ * @param {!WebInspector.TracingModel.Event} event
+ * @return {!WebInspector.TimelineIRModel.Phases}
+ */
+WebInspector.TimelineIRModel.phaseForEvent = function(event)
+{
+    return event[WebInspector.TimelineIRModel._eventIRPhase];
+}
+
 WebInspector.TimelineIRModel.prototype = {
     /**
      * @param {!WebInspector.TimelineModel} timelineModel
@@ -99,6 +111,7 @@ WebInspector.TimelineIRModel.prototype = {
         var phases = WebInspector.TimelineIRModel.Phases;
         var thresholdsMs = WebInspector.TimelineIRModel._mergeThresholdsMs;
 
+        var scrollStart;
         var flingStart;
         var touchStart;
         var firstTouchMove;
@@ -112,6 +125,20 @@ WebInspector.TimelineIRModel.prototype = {
                 console.assert(false, "Unordered input events");
             var type = this._inputEventType(event.name);
             switch (type) {
+
+            case eventTypes.ScrollBegin:
+                this._scrolls.append(this._segmentForEvent(event, phases.Scroll));
+                scrollStart = event;
+                break;
+
+            case eventTypes.ScrollEnd:
+                if (scrollStart)
+                    this._scrolls.append(this._segmentForEventRange(scrollStart, event, phases.Scroll));
+                else
+                    this._scrolls.append(this._segmentForEvent(event, phases.Scroll));
+                scrollStart = null;
+                break;
+
             case eventTypes.ScrollUpdate:
                 touchStart = null; // Since we're scrolling now, disregard other touch gestures.
                 this._scrolls.append(this._segmentForEvent(event, phases.Scroll));
@@ -129,7 +156,7 @@ WebInspector.TimelineIRModel.prototype = {
                 // FIXME: also process renderer fling events.
                 if (!flingStart)
                     break;
-                this._scrolls.append(new WebInspector.Segment(flingStart.startTime, event.endTime, phases.Fling));
+                this._scrolls.append(this._segmentForEventRange(flingStart, event, phases.Fling));
                 flingStart = null;
                 break;
 
@@ -156,6 +183,7 @@ WebInspector.TimelineIRModel.prototype = {
                     break;
                 }
                 touchStart = event;
+                event.steps[0][WebInspector.TimelineIRModel._eventIRPhase] = phases.Response;
                 firstTouchMove = null;
                 break;
 
@@ -168,7 +196,7 @@ WebInspector.TimelineIRModel.prototype = {
                     this._drags.append(this._segmentForEvent(event, phases.Drag));
                 } else if (touchStart) {
                     firstTouchMove = event;
-                    this._responses.append(new WebInspector.Segment(touchStart.startTime, event.endTime, phases.Response));
+                    this._responses.append(this._segmentForEventRange(touchStart, event, phases.Response));
                 }
                 break;
 
@@ -199,8 +227,9 @@ WebInspector.TimelineIRModel.prototype = {
             case eventTypes.MouseWheel:
                 // Do not consider first MouseWheel as trace viewer's implementation does -- in case of MouseWheel it's not really special.
                 if (mouseWheel && canMerge(thresholdsMs.mouse, mouseWheel, event))
-                    this._scrolls.append(new WebInspector.Segment(mouseWheel.endTime, event.startTime, phases.Scroll));
-                this._scrolls.append(this._segmentForEvent(event, phases.Scroll));
+                    this._scrolls.append(this._segmentForEventRange(mouseWheel, event, phases.Scroll));
+                else
+                    this._scrolls.append(this._segmentForEvent(event, phases.Scroll));
                 mouseWheel = event;
                 break;
             }
@@ -234,7 +263,30 @@ WebInspector.TimelineIRModel.prototype = {
      */
     _segmentForEvent: function(event, phase)
     {
+        this._setPhaseForEvent(event, phase);
         return new WebInspector.Segment(event.startTime, event.endTime, phase);
+    },
+
+    /**
+     * @param {!WebInspector.TracingModel.AsyncEvent} startEvent
+     * @param {!WebInspector.TracingModel.AsyncEvent} endEvent
+     * @param {!WebInspector.TimelineIRModel.Phases} phase
+     * @return {!WebInspector.Segment}
+     */
+    _segmentForEventRange: function(startEvent, endEvent, phase)
+    {
+        this._setPhaseForEvent(startEvent, phase);
+        this._setPhaseForEvent(endEvent, phase);
+        return new WebInspector.Segment(startEvent.startTime, endEvent.endTime, phase);
+    },
+
+    /**
+     * @param {!WebInspector.TracingModel.AsyncEvent} asyncEvent
+     * @param {!WebInspector.TimelineIRModel.Phases} phase
+     */
+    _setPhaseForEvent: function(asyncEvent, phase)
+    {
+        asyncEvent.steps[0][WebInspector.TimelineIRModel._eventIRPhase] = phase;
     },
 
     /**

@@ -106,7 +106,7 @@ WebInspector.FlameChart = function(dataProvider, flameChartDelegate, groupExpans
     /** @const */
     this._arrowSide = 8;
     /** @const */
-    this._expansionArrowX = this._headerLeftPadding + this._arrowSide / 2;
+    this._expansionArrowIndent = this._headerLeftPadding + this._arrowSide / 2;
     /** @const */
     this._headerLabelXPadding = 3;
     /** @const */
@@ -844,10 +844,10 @@ WebInspector.FlameChart.prototype = {
      */
     _toggleGroupVisibility: function(groupIndex)
     {
+        if (!this._isGroupCollapsible(groupIndex))
+            return;
         var groups = this._rawTimelineData.groups;
         var group = groups[groupIndex];
-        if (!group.style.collapsible)
-            return;
         group.expanded = !group.expanded;
         this._groupExpansionState[group.name] = group.expanded;
         if (this._groupExpansionSetting)
@@ -1368,7 +1368,7 @@ WebInspector.FlameChart.prototype = {
         context.translate(0, -top);
 
         context.fillStyle = WebInspector.themeSupport.patchColor("#eee", colorUsage.Background);
-        forEachGroup((offset, index, group) => {
+        forEachGroup.call(this, (offset, index, group) => {
             var paddingHeight = group.style.padding;
             if (paddingHeight < 5)
                 return;
@@ -1379,7 +1379,7 @@ WebInspector.FlameChart.prototype = {
 
         context.strokeStyle = WebInspector.themeSupport.patchColor("#bbb", colorUsage.Background);
         context.beginPath();
-        forEachGroup((offset, index, group, isFirst) => {
+        forEachGroup.call(this, (offset, index, group, isFirst) => {
             if (isFirst || group.style.padding < 4)
                 return;
             hLine(offset - 2.5);
@@ -1387,12 +1387,14 @@ WebInspector.FlameChart.prototype = {
         hLine(lastGroupOffset + 0.5);
         context.stroke();
 
-        forEachGroup((offset, index, group) => {
-            if (group.style.shareHeaderLine)
+        forEachGroup.call(this, (offset, index, group) => {
+            if (group.style.useFirstLineForOverview)
                 return;
-            if ((!group.style.collapsible || group.expanded)) {
-                context.fillStyle = group.style.backgroundColor;
-                context.fillRect(0, offset, width, group.style.height);
+            if (!this._isGroupCollapsible(index) || group.expanded) {
+                if (!group.style.shareHeaderLine) {
+                    context.fillStyle = group.style.backgroundColor;
+                    context.fillRect(0, offset, width, group.style.height);
+                }
                 return;
             }
             var nextGroup = index + 1;
@@ -1403,23 +1405,23 @@ WebInspector.FlameChart.prototype = {
         });
 
         context.save();
-        forEachGroup((offset, index, group) => {
+        forEachGroup.call(this, (offset, index, group) => {
             context.font = group.style.font;
-            if (group.style.collapsible && !group.expanded || group.style.shareHeaderLine) {
+            if (this._isGroupCollapsible(index) && !group.expanded || group.style.shareHeaderLine) {
                 var width = this._labelWidthForGroup(context, group);
                 context.fillStyle = WebInspector.Color.parse(group.style.backgroundColor).setAlpha(0.7).asString(null);
                 context.fillRect(this._headerLeftPadding - this._headerLabelXPadding, offset + this._headerLabelYPadding, width, barHeight - 2 * this._headerLabelYPadding);
             }
             context.fillStyle = group.style.color;
-            context.fillText(group.name, Math.floor(this._expansionArrowX + this._arrowSide), offset + textBaseHeight);
+            context.fillText(group.name, Math.floor(this._expansionArrowIndent * (group.style.nestingLevel + 1) + this._arrowSide), offset + textBaseHeight);
         });
         context.restore();
 
         context.fillStyle = WebInspector.themeSupport.patchColor("#6e6e6e", colorUsage.Foreground);
         context.beginPath();
-        forEachGroup((offset, index, group) => {
-            if (group.style.collapsible)
-                drawExpansionArrow.call(this, this._expansionArrowX, offset + textBaseHeight - this._arrowSide / 2, !!group.expanded)
+        forEachGroup.call(this, (offset, index, group) => {
+            if (this._isGroupCollapsible(index))
+                drawExpansionArrow.call(this, this._expansionArrowIndent * (group.style.nestingLevel + 1), offset + textBaseHeight - this._arrowSide / 2, !!group.expanded)
         });
         context.fill();
 
@@ -1459,6 +1461,7 @@ WebInspector.FlameChart.prototype = {
 
         /**
          * @param {function(number, number, !WebInspector.FlameChart.Group, boolean)} callback
+         * @this {WebInspector.FlameChart}
          */
         function forEachGroup(callback)
         {
@@ -1475,7 +1478,7 @@ WebInspector.FlameChart.prototype = {
                     firstGroup = false;
                 }
                 var parentGroupVisible = groupStack.peekLast().visible;
-                var thisGroupVisible = parentGroupVisible && (!group.style.collapsible || group.expanded);
+                var thisGroupVisible = parentGroupVisible && (!this._isGroupCollapsible(i) || group.expanded);
                 groupStack.push({nestingLevel: group.style.nestingLevel, visible: thisGroupVisible});
                 if (!parentGroupVisible || groupTop + group.style.height < top)
                     continue;
@@ -1491,7 +1494,7 @@ WebInspector.FlameChart.prototype = {
      */
     _labelWidthForGroup: function(context, group)
     {
-       return this._measureWidth(context, group.name) + 1.5 * this._arrowSide + 2 * this._headerLabelXPadding;
+       return this._measureWidth(context, group.name) + this._expansionArrowIndent * (group.style.nestingLevel + 1) + 2 * this._headerLabelXPadding;
     },
 
     /**
@@ -1706,7 +1709,7 @@ WebInspector.FlameChart.prototype = {
                     groupStack.pop();
                     nextLevel = false;
                 }
-                var thisGroupIsVisible = style.collapsible ? groups[groupIndex].expanded : true;
+                var thisGroupIsVisible = groupIndex >= 0 && this._isGroupCollapsible(groupIndex) ? groups[groupIndex].expanded : true;
                 var parentGroupIsVisible = groupStack.peekLast().visible;
                 visible = thisGroupIsVisible && parentGroupIsVisible;
                 groupStack.push({nestingLevel: style.nestingLevel, visible: visible});
@@ -1716,15 +1719,33 @@ WebInspector.FlameChart.prototype = {
                 if (parentGroupIsVisible && !style.shareHeaderLine)
                     currentOffset += style.height;
             }
-            var thisLevelIsVisible = visible || groupIndex >= 0 && groups[groupIndex].style.useFirstLineForOverview && level === groups[groupIndex].startLevel;
+            var isFirstOnLevel = groupIndex >= 0 && level === groups[groupIndex].startLevel;
+            var thisLevelIsVisible = visible || isFirstOnLevel && groups[groupIndex].style.useFirstLineForOverview;
             this._visibleLevels[level] = thisLevelIsVisible;
             this._visibleLevelOffsets[level] = currentOffset;
-            if (thisLevelIsVisible)
+            if (thisLevelIsVisible || (parentGroupIsVisible && style.shareHeaderLine && isFirstOnLevel))
                 currentOffset += this._barHeight;
         }
         if (groupIndex >= 0)
             this._groupOffsets[groupIndex + 1] = currentOffset;
         this._visibleLevelOffsets[level] = currentOffset;
+    },
+
+    /**
+     * @param {number} index
+     */
+    _isGroupCollapsible: function(index)
+    {
+        var groups = this._rawTimelineData.groups || [];
+        var style = groups[index].style;
+        if (!style.shareHeaderLine || !style.collapsible)
+            return !!style.collapsible;
+        var isLastGroup = index + 1 >= groups.length;
+        if (!isLastGroup && groups[index + 1].style.nestingLevel > style.nestingLevel)
+            return true;
+        var nextGroupLevel = isLastGroup ? this._dataProvider.maxStackDepth() : groups[index + 1].startLevel;
+        // For groups that only have one line and share header line, pretend these are not collapsible.
+        return nextGroupLevel !== groups[index].startLevel + 1;
     },
 
     /**

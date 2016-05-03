@@ -434,7 +434,7 @@ WebInspector.DeviceModeModel.prototype = {
 
         if (this._type === WebInspector.DeviceModeModel.Type.Device) {
             var orientation = this._device.orientationByName(this._mode.orientation);
-            var outline = new Insets(0, 0, 0, 0);
+            var outline = new Insets(0, 20, 0, 0);
             if (Runtime.experiments.isEnabled("deviceFrames") && this._deviceOutlineSetting.get())
                 outline = orientation.outlineInsets || outline;
             this._fitScale = this._calculateFitScale(orientation.width, orientation.height);
@@ -448,7 +448,7 @@ WebInspector.DeviceModeModel.prototype = {
         } else if (this._type === WebInspector.DeviceModeModel.Type.None) {
             this._fitScale = this._calculateFitScale(this._availableSize.width, this._availableSize.height);
             this._appliedUserAgentType = WebInspector.DeviceModeModel.UA.Desktop;
-            this._applyDeviceMetrics(this._availableSize, new Insets(0, 0, 0, 0), new Insets(0, 0, 0, 0), 1, 0, false, "", resetPageScaleFactor);
+            this._applyDeviceMetrics(this._availableSize, new Insets(0, 0, 0, 0), new Insets(0, 20, 0, 0), 1, 0, false, "", resetPageScaleFactor);
             this._applyUserAgent("");
             this._applyTouch(false, false);
         } else if (this._type === WebInspector.DeviceModeModel.Type.Responsive) {
@@ -462,7 +462,7 @@ WebInspector.DeviceModeModel.prototype = {
             var defaultDeviceScaleFactor = mobile ? WebInspector.DeviceModeModel.defaultMobileScaleFactor : 0;
             this._fitScale = this._calculateFitScale(this._widthSetting.get(), this._heightSetting.get());
             this._appliedUserAgentType = this._uaSetting.get();
-            this._applyDeviceMetrics(new Size(screenWidth, screenHeight), new Insets(0, 0, 0, 0), new Insets(0, 0, 0, 0), this._scaleSetting.get(), this._deviceScaleFactorSetting.get() || defaultDeviceScaleFactor, mobile, screenHeight >= screenWidth ? "portraitPrimary" : "landscapePrimary", resetPageScaleFactor);
+            this._applyDeviceMetrics(new Size(screenWidth, screenHeight), new Insets(0, 0, 0, 0), new Insets(0, 20, 0, 0), this._scaleSetting.get(), this._deviceScaleFactorSetting.get() || defaultDeviceScaleFactor, mobile, screenHeight >= screenWidth ? "portraitPrimary" : "landscapePrimary", resetPageScaleFactor);
             this._applyUserAgent(mobile ? WebInspector.DeviceModeModel._defaultMobileUserAgent : "");
             this._applyTouch(this._uaSetting.get() === WebInspector.DeviceModeModel.UA.DesktopTouch || this._uaSetting.get() === WebInspector.DeviceModeModel.UA.Mobile, this._uaSetting.get() === WebInspector.DeviceModeModel.UA.Mobile);
         }

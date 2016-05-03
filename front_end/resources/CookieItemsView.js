@@ -125,7 +125,7 @@ WebInspector.CookieItemsView.prototype = {
         function populateResourcesForDocuments(resource)
         {
             var url = resource.documentURL.asParsedURL();
-            if (url && url.host == this._cookieDomain)
+            if (url && url.securityOrigin() == this._cookieDomain)
                 resourceURLsForDocumentURL.push(resource.url);
         }
         WebInspector.forAllResources(populateResourcesForDocuments.bind(this));

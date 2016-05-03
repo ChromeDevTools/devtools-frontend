@@ -23,16 +23,11 @@ WebInspector.SecurityPanel = function()
 
     /** @type {!Map<!WebInspector.SecurityPanel.Origin, !WebInspector.SecurityPanel.OriginState>} */
     this._origins = new Map();
-    WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._onMainFrameNavigated, this);
 
     /** @type {!Map<!WebInspector.NetworkLogView.MixedContentFilterValues, number>} */
     this._filterRequestCounts = new Map();
 
     WebInspector.targetManager.observeTargets(this, WebInspector.Target.Type.Page);
-
-    WebInspector.targetManager.addModelListener(WebInspector.NetworkManager, WebInspector.NetworkManager.EventTypes.ResponseReceived, this._onResponseReceived, this);
-    WebInspector.targetManager.addModelListener(WebInspector.NetworkManager, WebInspector.NetworkManager.EventTypes.RequestFinished, this._onRequestFinished, this);
-    WebInspector.targetManager.addModelListener(WebInspector.SecurityModel, WebInspector.SecurityModel.EventTypes.SecurityStateChanged, this._onSecurityStateChanged, this);
 }
 
 /** @typedef {string} */
@@ -248,7 +243,17 @@ WebInspector.SecurityPanel.prototype = {
      */
     targetAdded: function(target)
     {
-        WebInspector.SecurityModel.fromTarget(target);
+        if (this._target)
+            return;
+
+        this._target = target;
+
+        target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._onMainFrameNavigated, this);
+        target.networkManager.addEventListener(WebInspector.NetworkManager.EventTypes.ResponseReceived, this._onResponseReceived, this);
+        target.networkManager.addEventListener(WebInspector.NetworkManager.EventTypes.RequestFinished, this._onRequestFinished, this);
+
+        var securityModel = WebInspector.SecurityModel.fromTarget(target);
+        securityModel.addEventListener(WebInspector.SecurityModel.EventTypes.SecurityStateChanged, this._onSecurityStateChanged, this);
     },
 
     /**
@@ -277,11 +282,12 @@ WebInspector.SecurityPanel.prototype = {
         var request = this._lastResponseReceivedForLoaderId.get(frame.loaderId);
         this._clearOrigins();
 
-        var origin = WebInspector.ParsedURL.splitURLIntoPathComponents(request.url)[0];
-        this._sidebarTree.setMainOrigin(origin);
 
-        if (request)
+        if (request) {
+            var origin = WebInspector.ParsedURL.splitURLIntoPathComponents(request.url)[0];
+            this._sidebarTree.setMainOrigin(origin);
             this._processRequest(request);
+        }
     },
 
     __proto__: WebInspector.PanelWithSidebar.prototype

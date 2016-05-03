@@ -1135,6 +1135,17 @@ WebInspector.DOMModel.hideDOMNodeHighlight = function()
         domModel.highlightDOMNode(0);
 }
 
+WebInspector.DOMModel.muteHighlight = function()
+{
+    WebInspector.DOMModel.hideDOMNodeHighlight();
+    WebInspector.DOMModel._highlightDisabled = true;
+}
+
+WebInspector.DOMModel.unmuteHighlight = function()
+{
+    WebInspector.DOMModel._highlightDisabled = false;
+}
+
 WebInspector.DOMModel.cancelSearch = function()
 {
     for (var domModel of WebInspector.DOMModel.instances())
@@ -1737,6 +1748,8 @@ WebInspector.DOMModel.prototype = {
      */
     highlightDOMNodeWithConfig: function(nodeId, config, backendNodeId, objectId)
     {
+        if (WebInspector.DOMModel._highlightDisabled)
+            return;
         config = config || { mode: "all", showInfo: undefined, selectors: undefined };
         if (this._hideDOMNodeHighlightTimeout) {
             clearTimeout(this._hideDOMNodeHighlightTimeout);
@@ -1764,6 +1777,8 @@ WebInspector.DOMModel.prototype = {
      */
     highlightFrame: function(frameId)
     {
+        if (WebInspector.DOMModel._highlightDisabled)
+            return;
         this._highlighter.highlightFrame(frameId);
     },
 

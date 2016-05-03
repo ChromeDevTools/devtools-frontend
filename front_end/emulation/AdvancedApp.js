@@ -24,6 +24,7 @@ WebInspector.AdvancedApp.prototype = {
         this._rootSplitWidget.show(rootView.element);
 
         this._rootSplitWidget.setSidebarWidget(WebInspector.inspectorView);
+        WebInspector.inspectorView.setOwnerSplit(this._rootSplitWidget);
 
         this._inspectedPagePlaceholder = new WebInspector.InspectedPagePlaceholder();
         this._inspectedPagePlaceholder.addEventListener(WebInspector.InspectedPagePlaceholder.Events.Update, this._onSetInspectedPageBounds.bind(this), this);

@@ -380,6 +380,17 @@ WebInspector.DeviceModeView.prototype = {
         var mainTarget = WebInspector.targetManager.mainTarget();
         if (!mainTarget)
             return;
+        WebInspector.DOMModel.muteHighlight();
+
+        var zoomFactor = WebInspector.zoomManager.zoomFactor();
+        var rect = this._contentArea.getBoundingClientRect();
+        var availableSize = new Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
+
+        if (availableSize.width < this._model.screenRect().width ||
+            availableSize.height < this._model.screenRect().height) {
+            WebInspector.inspectorView.minimize();
+        }
+
         mainTarget.pageAgent().captureScreenshot(screenshotCaptured.bind(this));
 
         /**
@@ -389,8 +400,11 @@ WebInspector.DeviceModeView.prototype = {
          */
         function screenshotCaptured(error, content)
         {
-            if (error)
+            if (error) {
+                WebInspector.DOMModel.unmuteHighlight();
+                WebInspector.inspectorView.restore();
                 return;
+            }
 
             // Create a canvas to splice the images together.
             var canvas = createElement("canvas");
@@ -441,6 +455,8 @@ WebInspector.DeviceModeView.prototype = {
                 link.download = fileName + ".png";
                 link.href = canvas.toDataURL("image/png");
                 link.click();
+                WebInspector.DOMModel.unmuteHighlight();
+                WebInspector.inspectorView.restore();
             }
         }
     },

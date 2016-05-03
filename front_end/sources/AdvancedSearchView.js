@@ -18,7 +18,7 @@ WebInspector.AdvancedSearchView = function()
 
     this._searchPanelElement = this.contentElement.createChild("div", "search-drawer-header");
     this._searchPanelElement.addEventListener("keydown", this._onKeyDown.bind(this), false);
-    this._searchPanelElement.addEventListener("keyup", this._onKeyUp.bind(this), false);
+    this._searchPanelElement.addEventListener("input", this._onInput.bind(this), false);
 
     this._searchResultsElement = this.contentElement.createChild("div");
     this._searchResultsElement.className = "search-results";
@@ -296,7 +296,7 @@ WebInspector.AdvancedSearchView.prototype = {
         }
     },
 
-    _onKeyUp: function()
+    _onInput: function()
     {
         if (this._search.value && this._search.value.length)
             this._searchInputClearElement.hidden = false;

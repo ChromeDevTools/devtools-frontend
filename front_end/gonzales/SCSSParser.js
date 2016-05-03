@@ -10,51 +10,67 @@ WebInspector.SCSSParser = function()
 {
 }
 
-/**
- * @constructor
- */
-WebInspector.SCSSParser.Result = function()
-{
-    this.properties = [];
-    this.variables = [];
-    this.mixins = [];
-}
-
 WebInspector.SCSSParser.prototype = {
     /**
      * @override
      * @param {string} content
-     * @return {!WebInspector.SCSSParser.Result}
+     * @return {!Array<!WebInspector.SCSSParser.Rule>}
      */
     parse: function(content)
     {
-        var result = new WebInspector.SCSSParser.Result();
         var ast = null;
         try {
             ast = gonzales.parse(content, {syntax: "scss"});
         } catch (e) {
-            return result;
+            return [];
         }
 
-        var extractedNodes = [];
-        WebInspector.SCSSParser.extractNodes(ast, extractedNodes);
+        /** @type {!{properties: !Array<!Gonzales.Node>, node: !Gonzales.Node}} */
+        var rootBlock = {
+            properties: [],
+            node: ast
+        };
+        /** @type {!Array<!{properties: !Array<!Gonzales.Node>, node: !Gonzales.Node}>} */
+        var blocks = [rootBlock];
+        ast.selectors = [];
+        WebInspector.SCSSParser.extractNodes(ast, blocks, rootBlock);
 
-        for (var node of extractedNodes) {
+        var rules = [];
+        for (var block of blocks)
+            this._handleBlock(block, rules);
+        return rules;
+    },
+
+    /**
+     * @param {!{node: !Gonzales.Node, properties: !Array<!Gonzales.Node>}} block
+     * @param {!Array<!WebInspector.SCSSParser.Rule>} output
+     */
+    _handleBlock: function(block, output)
+    {
+        var selectors = block.node.selectors.map(WebInspector.SCSSParser.rangeFromNode);
+        var properties = [];
+        var styleRange = WebInspector.SCSSParser.rangeFromNode(block.node);
+        styleRange.startColumn += 1;
+        styleRange.endColumn -= 1;
+        for (var node of block.properties) {
             if (node.type === "declaration")
-                this._handleDeclaration(node, result);
+                this._handleDeclaration(node, properties);
             else if (node.type === "include")
-                this._handleInclude(node, result);
+                this._handleInclude(node, properties);
             else if (node.type === "multilineComment" && node.start.line === node.end.line)
-                this._handleComment(node, result);
+                this._handleComment(node, properties);
         }
-        return result;
+        if (!selectors.length && !properties.length)
+            return;
+        var rule = new WebInspector.SCSSParser.Rule(selectors, properties, styleRange);
+        output.push(rule);
     },
 
     /**
      * @param {!Gonzales.Node} node
-     * @param {!WebInspector.SCSSParser.Result} result
+     * @param {!Array<!WebInspector.SCSSParser.Property>} output
      */
-    _handleDeclaration: function(node, result)
+    _handleDeclaration: function(node, output)
     {
         var propertyNode = node.content.find(node => node.type === "property");
         var delimeterNode = node.content.find(node => node.type === "propertyDelimiter");
@@ -67,18 +83,14 @@ WebInspector.SCSSParser.prototype = {
         var range = /** @type {!WebInspector.TextRange} */(node.declarationRange);
 
         var property = new WebInspector.SCSSParser.Property(range, nameRange, valueRange, false);
-        var isVariable = !!propertyNode.content.find(node => node.type === "variable");
-        if (isVariable)
-            result.variables.push(property);
-        else
-            result.properties.push(property);
+        output.push(property);
     },
 
     /**
      * @param {!Gonzales.Node} node
-     * @param {!WebInspector.SCSSParser.Result} result
+     * @param {!Array<!WebInspector.SCSSParser.Property>} output
      */
-    _handleInclude: function(node, result)
+    _handleInclude: function(node, output)
     {
         var mixinName = node.content.find(node => node.type === "ident");
         if (!mixinName)
@@ -92,25 +104,25 @@ WebInspector.SCSSParser.prototype = {
             var range = WebInspector.SCSSParser.rangeFromNode(node);
             var valueRange = WebInspector.SCSSParser.rangeFromNode(parameter);
             var property = new WebInspector.SCSSParser.Property(range, nameRange, valueRange, false);
-            result.mixins.push(property);
+            output.push(property);
         }
     },
 
     /**
      * @param {!Gonzales.Node} node
-     * @param {!WebInspector.SCSSParser.Result} result
+     * @param {!Array<!WebInspector.SCSSParser.Property>} output
      */
-    _handleComment: function(node, result)
+    _handleComment: function(node, output)
     {
         if (node.start.line !== node.end.line)
             return;
         var innerText = /** @type {string} */(node.content);
         var innerResult = this.parse(innerText);
-        if (innerResult.properties.length !== 1 || innerResult.variables.length !== 0 || innerResult.mixins.length !== 0)
+        if (innerResult.length !== 1 || innerResult[0].properties.length !== 1)
             return;
-        var property = innerResult.properties[0];
+        var property = innerResult[0].properties[0];
         var disabledProperty = property.rebaseInsideOneLineComment(node);
-        result.properties.push(disabledProperty);
+        output.push(disabledProperty);
     },
 }
 
@@ -167,28 +179,55 @@ WebInspector.SCSSParser.Property.prototype = {
 }
 
 /**
- * @param {!Gonzales.Node} node
- * @param {!Array<!Gonzales.Node>} output
+ * @constructor
+ * @param {!Array<!WebInspector.TextRange>} selectors
+ * @param {!Array<!WebInspector.SCSSParser.Property>} properties
+ * @param {!WebInspector.TextRange} styleRange
  */
-WebInspector.SCSSParser.extractNodes = function(node, output)
+WebInspector.SCSSParser.Rule = function(selectors, properties, styleRange)
+{
+    this.selectors = selectors;
+    this.properties = properties;
+    this.styleRange = styleRange;
+}
+
+/**
+ * @param {!Gonzales.Node} node
+ * @param {!Array<{node: !Gonzales.Node, properties: !Array<!Gonzales.Node>}>} blocks
+ * @param {!{node: !Gonzales.Node, properties: !Array<!Gonzales.Node>}} lastBlock
+ */
+WebInspector.SCSSParser.extractNodes = function(node, blocks, lastBlock)
 {
     if (!Array.isArray(node.content))
         return;
+    if (node.type === "block") {
+        lastBlock = {
+            node: node,
+            properties: []
+        };
+        blocks.push(lastBlock);
+    }
     var lastDeclaration = null;
+    var selectors = [];
     for (var i = 0; i < node.content.length; ++i) {
         var child = node.content[i];
         if (child.type === "declarationDelimiter" && lastDeclaration) {
             lastDeclaration.declarationRange.endLine = child.end.line - 1;
             lastDeclaration.declarationRange.endColumn = child.end.column;
             lastDeclaration = null;
+        } else if (child.type === "selector") {
+            selectors.push(child);
+        } else if (child.type === "block") {
+            child.selectors = selectors;
+            selectors = [];
         }
         if (child.type === "include" || child.type === "declaration" || child.type === "multilineComment")
-            output.push(child);
+            lastBlock.properties.push(child);
         if (child.type === "declaration") {
             lastDeclaration = child;
             lastDeclaration.declarationRange = WebInspector.TextRange.createFromLocation(child.start.line - 1, child.start.column - 1);
         }
-        WebInspector.SCSSParser.extractNodes(child, output);
+        WebInspector.SCSSParser.extractNodes(child, blocks, lastBlock);
     }
     if (lastDeclaration) {
         lastDeclaration.declarationRange.endLine = node.end.line - 1;

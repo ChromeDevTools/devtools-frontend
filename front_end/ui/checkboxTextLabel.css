@@ -55,6 +55,10 @@ input.dt-checkbox-themed:after {
 
 } /* media */
 
+::content .dt-checkbox-text {
+    margin-left: 3px;
+}
+
 ::content .dt-checkbox-subtitle {
     color: gray;
 }

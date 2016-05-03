@@ -378,23 +378,26 @@ WebInspector.TimelinePanel.prototype = {
 
         this._panelToolbar.appendText(WebInspector.UIString("Capture:"));
 
-        this._captureNetworkSetting.addChangeListener(this._onNetworkChanged, this);
+        var screenshotCheckbox = this._createSettingCheckbox(
+            WebInspector.UIString("Screenshots"), this._captureFilmStripSetting, WebInspector.UIString("Capture screenshots while recording. (Has small performance overhead)"));
+
         if (!Runtime.experiments.isEnabled("timelineRecordingPerspectives") || perspectiveSetting.get() === WebInspector.TimelinePanel.Perspectives.Custom) {
             this._panelToolbar.appendToolbarItem(this._createSettingCheckbox(
                 WebInspector.UIString("Network"), this._captureNetworkSetting, WebInspector.UIString("Show network requests information")));
             this._panelToolbar.appendToolbarItem(this._createSettingCheckbox(
-                WebInspector.UIString("JS Profile"), this._captureJSProfileSetting, WebInspector.UIString("Capture JavaScript stacks with sampling profiler. (Has performance overhead)")));
-            this._captureMemorySetting.addChangeListener(this._onModeChanged, this);
+                WebInspector.UIString("JS Profile"), this._captureJSProfileSetting, WebInspector.UIString("Capture JavaScript stacks with sampling profiler. (Has small performance overhead)")));
+            this._panelToolbar.appendToolbarItem(screenshotCheckbox);
             this._panelToolbar.appendToolbarItem(this._createSettingCheckbox(
                 WebInspector.UIString("Memory"), this._captureMemorySetting, WebInspector.UIString("Capture memory information on every timeline event.")));
             this._panelToolbar.appendToolbarItem(this._createSettingCheckbox(
-                WebInspector.UIString("Paint"), this._captureLayersAndPicturesSetting, WebInspector.UIString("Capture graphics layer positions and painted pictures. (Has performance overhead)")));
+                WebInspector.UIString("Paint"), this._captureLayersAndPicturesSetting, WebInspector.UIString("Capture graphics layer positions and rasterization draw calls. (Has large performance overhead)")));
+        } else {
+            this._panelToolbar.appendToolbarItem(screenshotCheckbox);
         }
 
+        this._captureNetworkSetting.addChangeListener(this._onNetworkChanged, this);
+        this._captureMemorySetting.addChangeListener(this._onModeChanged, this);
         this._captureFilmStripSetting.addChangeListener(this._onModeChanged, this);
-        this._panelToolbar.appendToolbarItem(this._createSettingCheckbox(WebInspector.UIString("Screenshots"),
-                                                                         this._captureFilmStripSetting,
-                                                                         WebInspector.UIString("Capture screenshots while recording. (Has performance overhead)")));
 
         this._panelToolbar.appendSeparator();
         var garbageCollectButton = new WebInspector.ToolbarButton(WebInspector.UIString("Collect garbage"), "garbage-collect-toolbar-item");

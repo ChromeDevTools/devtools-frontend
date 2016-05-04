@@ -136,21 +136,19 @@ WebInspector.CSSWorkspaceBinding.prototype = {
     propertyUILocation: function(cssProperty, forName)
     {
         var style = cssProperty.ownerStyle;
-        if (!style || !style.parentRule || !style.styleSheetId)
+        if (!style || style.type !== WebInspector.CSSStyleDeclaration.Type.Regular || !style.styleSheetId)
             return null;
-
-        var range = cssProperty.range;
-        if (!range)
-            return null;
-
         var header = style.cssModel().styleSheetHeaderForId(style.styleSheetId);
         if (!header)
             return null;
 
-        var line = forName ? range.startLine : range.endLine;
-        // End of range is exclusive, so subtract 1 from the end offset.
-        var column = forName ? range.startColumn : range.endColumn - (cssProperty.text && cssProperty.text.endsWith(";") ? 2 : 1);
-        var rawLocation = new WebInspector.CSSLocation(header, header.lineNumberInSource(line), header.columnNumberInSource(line, column));
+        var range = forName ? cssProperty.nameRange() : cssProperty.valueRange();
+        if (!range)
+            return null;
+
+        var lineNumber = range.startLine;
+        var columnNumber = range.startColumn;
+        var rawLocation = new WebInspector.CSSLocation(header, header.lineNumberInSource(lineNumber), header.columnNumberInSource(lineNumber, columnNumber));
         return this.rawLocationToUILocation(rawLocation);
     },
 

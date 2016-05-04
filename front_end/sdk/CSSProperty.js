@@ -28,6 +28,8 @@ WebInspector.CSSProperty = function(ownerStyle, index, name, value, important, d
     this.text = text;
     this.range = range ? WebInspector.TextRange.fromObject(range) : null;
     this._active = true;
+    this._nameRange = null;
+    this._valueRange = null;
 }
 
 /**
@@ -49,6 +51,62 @@ WebInspector.CSSProperty.parsePayload = function(ownerStyle, index, payload)
 }
 
 WebInspector.CSSProperty.prototype = {
+    _ensureRanges: function()
+    {
+        if (this._nameRange && this._valueRange)
+            return;
+        var range = this.range;
+        var text = this.text ? new WebInspector.Text(this.text) : null;
+        if (!range || !text)
+            return;
+
+        var nameIndex = text.value().indexOf(this.name);
+        var valueIndex = text.value().lastIndexOf(this.value);
+        if (nameIndex === -1 || valueIndex === -1 || nameIndex > valueIndex)
+            return;
+
+        var nameSourceRange = new WebInspector.SourceRange(nameIndex, this.name.length);
+        var valueSourceRange = new WebInspector.SourceRange(valueIndex, this.value.length);
+
+        this._nameRange = rebase(text.toTextRange(nameSourceRange), range.startLine, range.startColumn);
+        this._valueRange = rebase(text.toTextRange(valueSourceRange), range.startLine, range.startColumn);
+
+        /**
+         * @param {!WebInspector.TextRange} oneLineRange
+         * @param {number} lineOffset
+         * @param {number} columnOffset
+         * @return {!WebInspector.TextRange}
+         */
+        function rebase(oneLineRange, lineOffset, columnOffset)
+        {
+            if (oneLineRange.startLine === 0) {
+                oneLineRange.startColumn += columnOffset;
+                oneLineRange.endColumn += columnOffset;
+            }
+            oneLineRange.startLine += lineOffset;
+            oneLineRange.endLine += lineOffset;
+            return oneLineRange;
+        }
+    },
+
+    /**
+     * @return {?WebInspector.TextRange}
+     */
+    nameRange: function()
+    {
+        this._ensureRanges();
+        return this._nameRange;
+    },
+
+    /**
+     * @return {?WebInspector.TextRange}
+     */
+    valueRange: function()
+    {
+        this._ensureRanges();
+        return this._valueRange;
+    },
+
     /**
      * @param {!WebInspector.CSSModel.Edit} edit
      */

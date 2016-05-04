@@ -75,6 +75,25 @@ WebInspector.Text.prototype = {
     },
 
     /**
+     * @param {!WebInspector.SourceRange} sourceRange
+     * @return {!WebInspector.TextRange}
+     */
+    toTextRange: function(sourceRange)
+    {
+        var cursor = new WebInspector.TextCursor(this.lineEndings());
+        var result = WebInspector.TextRange.createFromLocation(0, 0);
+
+        cursor.resetTo(sourceRange.offset);
+        result.startLine = cursor.lineNumber();
+        result.startColumn = cursor.columnNumber();
+
+        cursor.advance(sourceRange.offset + sourceRange.length);
+        result.endLine = cursor.lineNumber();
+        result.endColumn = cursor.columnNumber();
+        return result;
+    },
+
+    /**
      * @param {!WebInspector.TextRange} range
      * @param {string} replacement
      * @return {string}
@@ -93,7 +112,7 @@ WebInspector.Text.prototype = {
     {
         var sourceRange = this.toSourceRange(range);
         return this._value.substr(sourceRange.offset, sourceRange.length);
-    },
+    }
 }
 
 /**

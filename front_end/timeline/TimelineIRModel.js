@@ -34,7 +34,7 @@ WebInspector.TimelineIRModel.InputEvents = {
     FlingStart: "GestureFlingStart",
     ImplSideFling: WebInspector.TimelineModel.RecordType.ImplSideFling,
     KeyDown: "KeyDown",
-    KeyDownRow: "RawKeyDown",
+    KeyDownRaw: "RawKeyDown",
     KeyUp: "KeyUp",
     LatencyScrollUpdate: "ScrollUpdate",
     MouseDown: "MouseDown",
@@ -167,7 +167,7 @@ WebInspector.TimelineIRModel.prototype = {
             case eventTypes.ShowPress:
             case eventTypes.Tap:
             case eventTypes.KeyDown:
-            case eventTypes.KeyDownRow:
+            case eventTypes.KeyDownRaw:
             case eventTypes.KeyUp:
             case eventTypes.Char:
             case eventTypes.Click:

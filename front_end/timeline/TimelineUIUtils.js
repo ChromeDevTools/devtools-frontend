@@ -129,6 +129,49 @@ WebInspector.TimelineUIUtils._initEventStyles = function()
     WebInspector.TimelineUIUtils._eventStylesMap = eventStyles;
     return eventStyles;
 }
+
+/**
+ * @param {!WebInspector.TimelineIRModel.InputEvents} inputEventType
+ * @return {?string}
+ */
+WebInspector.TimelineUIUtils.inputEventDisplayName = function(inputEventType)
+{
+    if (!WebInspector.TimelineUIUtils._inputEventToDisplayName) {
+        var inputEvent = WebInspector.TimelineIRModel.InputEvents;
+
+        /** @type {!Map<!WebInspector.TimelineIRModel.InputEvents, string>} */
+        WebInspector.TimelineUIUtils._inputEventToDisplayName = new Map([
+            [inputEvent.Char, WebInspector.UIString("Key Character")],
+            [inputEvent.KeyDown, WebInspector.UIString("Key Down")],
+            [inputEvent.KeyDownRaw, WebInspector.UIString("Key Down")],
+            [inputEvent.KeyUp, WebInspector.UIString("Key Up")],
+            [inputEvent.Click, WebInspector.UIString("Click")],
+            [inputEvent.ContextMenu, WebInspector.UIString("Context Menu")],
+            [inputEvent.MouseDown, WebInspector.UIString("Mouse Down")],
+            [inputEvent.MouseMove, WebInspector.UIString("Mouse Move")],
+            [inputEvent.MouseUp, WebInspector.UIString("Mouse Up")],
+            [inputEvent.MouseWheel, WebInspector.UIString("Mouse Wheel")],
+            [inputEvent.ScrollBegin, WebInspector.UIString("Scroll Begin")],
+            [inputEvent.ScrollEnd, WebInspector.UIString("Scroll End")],
+            [inputEvent.ScrollUpdate, WebInspector.UIString("Scroll Update")],
+            [inputEvent.FlingStart, WebInspector.UIString("Fling Start")],
+            [inputEvent.FlingCancel, WebInspector.UIString("Fling Halt")],
+            [inputEvent.Tap, WebInspector.UIString("Tap")],
+            [inputEvent.TapCancel, WebInspector.UIString("Tap Halt")],
+            [inputEvent.ShowPress, WebInspector.UIString("Tap Begin")],
+            [inputEvent.TapDown, WebInspector.UIString("Tap Down")],
+            [inputEvent.TouchCancel, WebInspector.UIString("Touch Cancel")],
+            [inputEvent.TouchEnd, WebInspector.UIString("Touch End")],
+            [inputEvent.TouchMove, WebInspector.UIString("Touch Move")],
+            [inputEvent.TouchStart, WebInspector.UIString("Touch Start")],
+            [inputEvent.PinchBegin, WebInspector.UIString("Pinch Begin")],
+            [inputEvent.PinchEnd, WebInspector.UIString("Pinch End")],
+            [inputEvent.PinchUpdate, WebInspector.UIString("Pinch Update")]
+        ]);
+    }
+    return WebInspector.TimelineUIUtils._inputEventToDisplayName.get(inputEventType) || null;
+}
+
 /**
  * @param {!WebInspector.TracingModel.Event} traceEvent
  * @param {!RegExp} regExp
@@ -171,8 +214,9 @@ WebInspector.TimelineUIUtils.eventStyle = function(event)
     if (event.hasCategory(WebInspector.TimelineModel.Category.LatencyInfo)) {
         /** @const */
         var prefix = "InputLatency::";
-        var name = event.name.startsWith(prefix) ? event.name.substr(prefix.length) : event.name;
-        return { title: name, category: WebInspector.TimelineUIUtils.categories()["scripting"] };
+        var inputEventType = event.name.startsWith(prefix) ? event.name.substr(prefix.length) : event.name;
+        var displayName = WebInspector.TimelineUIUtils.inputEventDisplayName(/** @type {!WebInspector.TimelineIRModel.InputEvents} */ (inputEventType));
+        return { title: displayName || inputEventType, category: WebInspector.TimelineUIUtils.categories()["scripting"] };
     }
     var result = eventStyles[event.name];
     if (!result) {

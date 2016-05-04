@@ -7,7 +7,6 @@
 .sensors-view {
     padding: 12px;
     display: block;
-    overflow: auto;
 }
 
 .sensors-view label {
@@ -40,7 +39,7 @@
     min-height: 2em;
     padding: 3px;
     width: 100%;
-    max-width: 128px;
+    max-width: 100px;
     margin: -5px 10px 0px 0px;
     text-align: end;
 }
@@ -52,6 +51,7 @@
 .sensors-view fieldset {
     border: none;
     padding: 10px 0px;
+    margin-left: 0;
     flex: 0 0 auto;
 }
 
@@ -185,7 +185,7 @@ fieldset.device-orientation-override-section[disabled] .accelerometer-stage {
 }
 
 .accelerometer-axis-input-container input {
-    max-width: 80px;
+    max-width: 100px;
 }
 
 .accelerometer-reset-button {

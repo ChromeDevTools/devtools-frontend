@@ -77,5 +77,5 @@ WebInspector.DeviceOrientation.parseUserInput = function(alphaString, betaString
  */
 WebInspector.DeviceOrientation.validator = function(value)
 {
-    return !value || /^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value);
+    return /^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value);
 }

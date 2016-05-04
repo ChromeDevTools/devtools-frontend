@@ -85,7 +85,8 @@ WebInspector.Geolocation.parseUserInput = function(latitudeString, longitudeStri
  */
 WebInspector.Geolocation.latitudeValidator = function(value)
 {
-    return !value || (/^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value) && value >= -90 && value <= 90);
+    var numValue = parseFloat(value);
+    return /^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value) && numValue >= -90 && numValue <= 90;
 }
 
 /**
@@ -94,7 +95,8 @@ WebInspector.Geolocation.latitudeValidator = function(value)
  */
 WebInspector.Geolocation.longitudeValidator = function(value)
 {
-    return !value || (/^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value) && value >= -180 && value <= 180);
+    var numValue = parseFloat(value);
+    return /^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value) && numValue >= -180 && numValue <= 180;
 }
 
 WebInspector.Geolocation.DefaultMockAccuracy = 150;

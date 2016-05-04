@@ -66,14 +66,16 @@ WebInspector.SensorsView.prototype = {
         var longitudeGroup = this._fieldsetElement.createChild("div", "latlong-group");
 
         this._latitudeInput = latitudeGroup.createChild("input");
-        this._latitudeInput.setAttribute("type", "text");
+        this._latitudeInput.setAttribute("type", "number");
         this._latitudeInput.value = 0;
-        WebInspector.bindInput(this._latitudeInput, this._applyGeolocationUserInput.bind(this), WebInspector.Geolocation.latitudeValidator, true)(String(geolocation.latitude));
+        this._latitudeSetter = WebInspector.bindInput(this._latitudeInput, this._applyGeolocationUserInput.bind(this), WebInspector.Geolocation.latitudeValidator, true);
+        this._latitudeSetter(String(geolocation.latitude));
 
         this._longitudeInput = longitudeGroup.createChild("input");
-        this._longitudeInput.setAttribute("type", "text");
+        this._longitudeInput.setAttribute("type", "number");
         this._longitudeInput.value = 0;
-        WebInspector.bindInput(this._longitudeInput, this._applyGeolocationUserInput.bind(this), WebInspector.Geolocation.longitudeValidator, true)(String(geolocation.longitude));
+        this._longitudeSetter = WebInspector.bindInput(this._longitudeInput, this._applyGeolocationUserInput.bind(this), WebInspector.Geolocation.longitudeValidator, true);
+        this._longitudeSetter(String(geolocation.longitude));
 
         latitudeGroup.createChild("div", "latlong-title").textContent = WebInspector.UIString("Latitude");
         longitudeGroup.createChild("div", "latlong-title").textContent = WebInspector.UIString("Longitude");
@@ -95,8 +97,8 @@ WebInspector.SensorsView.prototype = {
             this._geolocationOverrideEnabled = true;
             var coordinates = JSON.parse(value);
             this._geolocation = new WebInspector.Geolocation(coordinates[0], coordinates[1], false);
-            this._latitudeInput.value = coordinates[0];
-            this._longitudeInput.value = coordinates[1];
+            this._latitudeSetter(coordinates[0]);
+            this._longitudeSetter(coordinates[1]);
         }
 
         this._applyGeolocation();
@@ -202,6 +204,7 @@ WebInspector.SensorsView.prototype = {
     _resetDeviceOrientation: function()
     {
         this._setDeviceOrientation(new WebInspector.DeviceOrientation(0, 0, 0), WebInspector.SensorsView.DeviceOrientationModificationSource.ResetButton);
+        this._setSelectElementLabel(this._orientationSelectElement, "[0, 0, 0]");
     },
 
     /**
@@ -265,15 +268,15 @@ WebInspector.SensorsView.prototype = {
         var cellElement = rowElement.createChild("td", "accelerometer-inputs-cell");
 
         this._alphaElement = createElement("input");
-        this._alphaSetter = this._createAxisInput(cellElement, this._alphaElement, WebInspector.UIString("Tilt left/right (\u03B1)"));
+        this._alphaSetter = this._createAxisInput(cellElement, this._alphaElement, WebInspector.UIString("\u03B1 (alpha)"));
         this._alphaSetter(String(deviceOrientation.alpha));
 
         this._betaElement = createElement("input");
-        this._betaSetter = this._createAxisInput(cellElement, this._betaElement, WebInspector.UIString("Tilt front/back (\u03B2)"));
+        this._betaSetter = this._createAxisInput(cellElement, this._betaElement, WebInspector.UIString("\u03B2 (beta)"));
         this._betaSetter(String(deviceOrientation.beta));
 
         this._gammaElement = createElement("input");
-        this._gammaSetter = this._createAxisInput(cellElement, this._gammaElement, WebInspector.UIString("Rotate (\u03B3)"));
+        this._gammaSetter = this._createAxisInput(cellElement, this._gammaElement, WebInspector.UIString("\u03B3 (gamma)"));
         this._gammaSetter(String(deviceOrientation.gamma));
 
         cellElement.appendChild(createTextButton(WebInspector.UIString("Reset"), this._resetDeviceOrientation.bind(this), "accelerometer-reset-button"));

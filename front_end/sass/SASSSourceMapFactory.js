@@ -70,7 +70,7 @@ WebInspector.SASSSourceMapFactory.prototype = {
         {
             if (!(cssNode instanceof WebInspector.SASSSupport.TextNode))
                 return;
-            var entry = sourceMap.findEntry(cssNode.range.endLine, cssNode.range.endColumn);
+            var entry = sourceMap.findEntry(cssNode.range.startLine, cssNode.range.startColumn);
             if (!entry || !entry.sourceURL || typeof entry.sourceLineNumber === "undefined" || typeof entry.sourceColumnNumber === "undefined")
                 return;
             var sassAST = models.get(entry.sourceURL);

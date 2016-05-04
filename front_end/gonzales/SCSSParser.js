@@ -73,13 +73,12 @@ WebInspector.SCSSParser.prototype = {
     _handleDeclaration: function(node, output)
     {
         var propertyNode = node.content.find(node => node.type === "property");
-        var delimeterNode = node.content.find(node => node.type === "propertyDelimiter");
         var valueNode = node.content.find(node => node.type === "value");
-        if (!propertyNode || !delimeterNode || !valueNode)
+        if (!propertyNode || !valueNode)
             return;
 
-        var nameRange = new WebInspector.TextRange(propertyNode.start.line - 1, propertyNode.start.column - 1, delimeterNode.start.line - 1, delimeterNode.start.column - 1);
-        var valueRange = new WebInspector.TextRange(delimeterNode.end.line - 1, delimeterNode.end.column, valueNode.end.line - 1, valueNode.end.column);
+        var nameRange = WebInspector.SCSSParser.rangeFromNode(propertyNode);
+        var valueRange = WebInspector.SCSSParser.rangeFromNode(valueNode);
         var range = /** @type {!WebInspector.TextRange} */(node.declarationRange);
 
         var property = new WebInspector.SCSSParser.Property(range, nameRange, valueRange, false);

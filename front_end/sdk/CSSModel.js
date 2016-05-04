@@ -276,7 +276,7 @@ WebInspector.CSSModel.prototype = {
         function onEditingDone(editResult)
         {
             if (!editResult)
-                return originalAndDetach();
+                return Promise.resolve(false);
 
             var edits = editResult.compiledEdits;
             if (!edits.length)

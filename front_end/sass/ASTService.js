@@ -17,7 +17,7 @@ WebInspector.ASTService.prototype = {
      */
     parseCSS: function(url, text)
     {
-        return WebInspector.SASSSupport.parseCSS(url, text);
+        return WebInspector.SASSSupport.parseSCSS(url, text);
     },
 
     /**

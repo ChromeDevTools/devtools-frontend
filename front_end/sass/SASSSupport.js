@@ -6,43 +6,6 @@ WebInspector.SASSSupport = {}
 
 /**
  * @param {string} url
- * @param {string} text
- * @return {!Promise<!WebInspector.SASSSupport.AST>}
- */
-WebInspector.SASSSupport.parseCSS = function(url, text)
-{
-    var cssParser = new WebInspector.CSSParser();
-    return cssParser.parsePromise(text)
-        .then(onParsed);
-
-    /**
-     * @param {!Array.<!WebInspector.CSSParser.Rule>} parsedCSS
-     * @return {!WebInspector.SASSSupport.AST}
-     */
-    function onParsed(parsedCSS)
-    {
-        var document = new WebInspector.SASSSupport.ASTDocument(url, new WebInspector.Text(text));
-        var rules = [];
-        for (var i = 0; i < parsedCSS.length; ++i) {
-            var rule = parsedCSS[i];
-            if (!rule.properties)
-                continue;
-            var properties = [];
-            for (var j = 0; j < rule.properties.length; ++j) {
-                var cssProperty = rule.properties[j];
-                var name = new WebInspector.SASSSupport.TextNode(document, cssProperty.name, WebInspector.TextRange.fromObject(cssProperty.nameRange));
-                var value = new WebInspector.SASSSupport.TextNode(document, cssProperty.value, WebInspector.TextRange.fromObject(cssProperty.valueRange));
-                var property = new WebInspector.SASSSupport.Property(document, name, value, WebInspector.TextRange.fromObject(cssProperty.range), !!cssProperty.disabled);
-                properties.push(property);
-            }
-            rules.push(new WebInspector.SASSSupport.Rule(document, rule.selectorText, WebInspector.TextRange.fromObject(rule.styleRange), properties));
-        }
-        return new WebInspector.SASSSupport.AST(document, rules);
-    }
-}
-
-/**
- * @param {string} url
  * @param {string} content
  * @return {!Promise<!WebInspector.SASSSupport.AST>}
  */

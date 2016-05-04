@@ -28,16 +28,10 @@ WebInspector.SASSSupport.parseSCSS = function(url, content)
         var rules = [];
         for (var i = 0; i < data.length; ++i) {
             var rulePayload = data[i];
-            var selectorText = "";
-            if (rulePayload.selectors.length) {
-                var first = rulePayload.selectors[0];
-                var last = rulePayload.selectors.peekLast();
-                var selectorRange = new WebInspector.TextRange(first.startLine, first.startColumn, last.endLine, last.endColumn);
-                selectorText = text.extract(selectorRange);
-            }
+            var selectors = rulePayload.selectors.map(createTextNode);
             var properties = rulePayload.properties.map(createProperty);
             var range = WebInspector.TextRange.fromObject(rulePayload.styleRange);
-            var rule = new WebInspector.SASSSupport.Rule(document, selectorText, range, properties);
+            var rule = new WebInspector.SASSSupport.Rule(document, selectors, range, properties);
             rules.push(rule);
         }
         return new WebInspector.SASSSupport.AST(document, rules);
@@ -285,14 +279,14 @@ WebInspector.SASSSupport.Property.prototype = {
  * @constructor
  * @extends {WebInspector.SASSSupport.Node}
  * @param {!WebInspector.SASSSupport.ASTDocument} document
- * @param {string} selector
+ * @param {!Array<!WebInspector.SASSSupport.TextNode>} selectors
  * @param {!WebInspector.TextRange} styleRange
  * @param {!Array<!WebInspector.SASSSupport.Property>} properties
  */
-WebInspector.SASSSupport.Rule = function(document, selector, styleRange, properties)
+WebInspector.SASSSupport.Rule = function(document, selectors, styleRange, properties)
 {
     WebInspector.SASSSupport.Node.call(this, document);
-    this.selector = selector;
+    this.selectors = selectors;
     this.properties = properties;
     this.styleRange = styleRange;
     for (var i = 0; i < this.properties.length; ++i)
@@ -311,7 +305,10 @@ WebInspector.SASSSupport.Rule.prototype = {
         var properties = [];
         for (var i = 0; i < this.properties.length; ++i)
             properties.push(this.properties[i].clone(document));
-        return new WebInspector.SASSSupport.Rule(document, this.selector, this.styleRange.clone(), properties);
+        var selectors = [];
+        for (var i = 0; i < this.selectors.length; ++i)
+            selectors.push(this.selectors[i].clone(document));
+        return new WebInspector.SASSSupport.Rule(document, selectors, this.styleRange.clone(), properties);
     },
 
     /**
@@ -320,6 +317,8 @@ WebInspector.SASSSupport.Rule.prototype = {
     visit: function(callback)
     {
         callback(this);
+        for (var i = 0; i < this.selectors.length; ++i)
+            callback(this.selectors[i]);
         for (var i = 0; i < this.properties.length; ++i)
             this.properties[i].visit(callback);
     },
@@ -331,13 +330,15 @@ WebInspector.SASSSupport.Rule.prototype = {
      */
     match: function(other, outNodeMapping)
     {
-        if (this.selector !== other.selector)
+        if (this.selectors.length !== other.selectors.length)
             return false;
         if (this.properties.length !== other.properties.length)
             return false;
         if (outNodeMapping)
             outNodeMapping.set(this, other);
         var result = true;
+        for (var i = 0; result && i < this.selectors.length; ++i)
+            result = result && this.selectors[i].match(other.selectors[i], outNodeMapping);
         for (var i = 0; result && i < this.properties.length; ++i)
             result = result && this.properties[i].match(other.properties[i], outNodeMapping);
         return result;

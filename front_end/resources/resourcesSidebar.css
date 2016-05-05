@@ -36,9 +36,11 @@ li.storage-group-list-item::before {
     -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
     -webkit-mask-size: 352px 168px;
     width: 32px;
-    height: 24px;
-    margin: -3px -3px -3px -7px;
+    height: 20px;
     -webkit-mask-position: -224px -72px;
+    position: relative;
+    top: -2px;
+    margin-right: -3px;
 }
 
 @media (-webkit-min-device-pixel-ratio: 1.5) {
@@ -141,4 +143,3 @@ li.storage-group-list-item::before {
 
 .application-cache-storage-tree-item .icon {
     content: url(Images/applicationCache.png);
-}

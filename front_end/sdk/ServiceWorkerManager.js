@@ -54,6 +54,7 @@ WebInspector.ServiceWorkerManager = function(target)
 WebInspector.ServiceWorkerManager.Events = {
     WorkersUpdated: "WorkersUpdated",
     RegistrationUpdated: "RegistrationUpdated",
+    RegistrationErrorAdded: "RegistrationErrorAdded",
     RegistrationDeleted: "RegistrationDeleted"
 }
 
@@ -92,15 +93,15 @@ WebInspector.ServiceWorkerManager.prototype = {
 
     /**
      * @param {string} versionId
-     * @return {boolean}
+     * @return {?WebInspector.Target}
      */
-    hasWorkerWithVersionId: function(versionId)
+    targetForVersionId: function(versionId)
     {
         for (var pair of this._workers) {
             if (pair[1]._versionId === versionId)
-                return true;
+                return pair[1]._target;
         }
-        return false;
+        return null;
     },
 
     /**
@@ -198,6 +199,14 @@ WebInspector.ServiceWorkerManager.prototype = {
     startWorker: function(scope)
     {
         this._agent.startWorker(scope);
+    },
+
+    /**
+     * @param {string} scope
+     */
+    skipWaiting: function(scope)
+    {
+        this._agent.skipWaiting(scope);
     },
 
     /**
@@ -345,13 +354,13 @@ WebInspector.ServiceWorkerManager.prototype = {
     /**
      * @param {!ServiceWorkerAgent.ServiceWorkerErrorMessage} payload
      */
-     _workerErrorReported: function(payload)
+    _workerErrorReported: function(payload)
     {
         var registration = this._registrations.get(payload.registrationId);
         if (!registration)
             return;
-        registration._addError(payload);
-        this.dispatchEventToListeners(WebInspector.ServiceWorkerManager.Events.RegistrationUpdated, registration);
+        registration.errors.push(payload);
+        this.dispatchEventToListeners(WebInspector.ServiceWorkerManager.Events.RegistrationErrorAdded, { registration: registration, error: payload });
     },
 
     /**
@@ -483,7 +492,7 @@ WebInspector.ServiceWorker.prototype = {
         var parsedUrl = context.origin.asParsedURL();
         var label = parsedUrl ? parsedUrl.lastPathComponentWithFragment() : context.name;
         if (this._status)
-            context.setLabel(label + " (" + this._status + ")");
+            context.setLabel(label + " #" + this._versionId + " (" + this._status + ")");
         else
             context.setLabel(label);
     },
@@ -628,18 +637,6 @@ WebInspector.TargetInfo.prototype = {
 
 /**
  * @constructor
- * @param {!ServiceWorkerAgent.ServiceWorkerErrorMessage} payload
- */
-WebInspector.ServiceWorkerErrorMessage = function(payload)
-{
-    this.errorMessage = payload.errorMessage;
-    this.sourceURL = payload.sourceURL;
-    this.lineNumber = payload.lineNumber;
-    this.columnNumber = payload.columnNumber;
-}
-
-/**
- * @constructor
  * @param {!WebInspector.ServiceWorkerRegistration} registration
  * @param {!ServiceWorkerAgent.ServiceWorkerVersion} payload
  */
@@ -647,8 +644,6 @@ WebInspector.ServiceWorkerVersion = function(registration, payload)
 {
     this.registration = registration;
     this._update(payload);
-    /** @type {!Array<!WebInspector.ServiceWorkerErrorMessage>} */
-    this.errorMessages = [];
 }
 
 /**
@@ -669,14 +664,14 @@ WebInspector.ServiceWorkerVersion.prototype = {
     {
         this.id = payload.versionId;
         this.scriptURL = payload.scriptURL;
+        this.securityOrigin = payload.scriptURL.asParsedURL().securityOrigin();
         this.runningStatus = payload.runningStatus;
         this.status = payload.status;
         this.scriptLastModified = payload.scriptLastModified;
         this.scriptResponseTime = payload.scriptResponseTime;
-        this.controlledClients = []
-        for (var i = 0; i < payload.controlledClients.length; ++i) {
+        this.controlledClients = [];
+        for (var i = 0; i < payload.controlledClients.length; ++i)
             this.controlledClients.push(payload.controlledClients[i]);
-        }
     },
 
     /**
@@ -787,14 +782,6 @@ WebInspector.ServiceWorkerVersion.prototype = {
         else if (this.isActivating() || this.isActivated())
             return WebInspector.ServiceWorkerVersion.Modes.Active;
         return WebInspector.ServiceWorkerVersion.Modes.Redundant;
-    },
-
-    /**
-     * @param {!ServiceWorkerAgent.ServiceWorkerErrorMessage} payload
-     */
-    _addError: function(payload)
-    {
-        this.errorMessages.push(new WebInspector.ServiceWorkerErrorMessage(payload));
     }
 }
 
@@ -808,6 +795,8 @@ WebInspector.ServiceWorkerRegistration = function(payload)
    /** @type {!Map.<string, !WebInspector.ServiceWorkerVersion>} */
    this.versions = new Map();
    this._deleting = false;
+   /** @type {!Array<!ServiceWorkerAgent.ServiceWorkerErrorMessage>} */
+   this.errors = [];
 }
 
 WebInspector.ServiceWorkerRegistration.prototype = {
@@ -816,10 +805,32 @@ WebInspector.ServiceWorkerRegistration.prototype = {
      */
     _update: function(payload)
     {
+        this._fingerprint = Symbol("fingerprint");
         this.id = payload.registrationId;
         this.scopeURL = payload.scopeURL;
+        this.securityOrigin = payload.scopeURL.asParsedURL().securityOrigin();
         this.isDeleted = payload.isDeleted;
         this.forceUpdateOnPageLoad = payload.forceUpdateOnPageLoad;
+    },
+
+    /**
+     * @return {symbol}
+     */
+    fingerprint: function()
+    {
+        return this._fingerprint;
+    },
+
+    /**
+     * @return {!Map<string, !WebInspector.ServiceWorkerVersion>}
+     */
+    versionsByMode: function()
+    {
+        /** @type {!Map<string, !WebInspector.ServiceWorkerVersion>} */
+        var result = new Map();
+        for (var version of this.versions.values())
+            result.set(version.mode(), version);
+        return result;
     },
 
     /**
@@ -828,6 +839,7 @@ WebInspector.ServiceWorkerRegistration.prototype = {
      */
     _updateVersion: function(payload)
     {
+        this._fingerprint = Symbol("fingerprint");
         var version = this.versions.get(payload.versionId);
         if (!version) {
             version = new WebInspector.ServiceWorkerVersion(this, payload);
@@ -836,16 +848,6 @@ WebInspector.ServiceWorkerRegistration.prototype = {
         }
         version._update(payload);
         return version;
-    },
-
-    /**
-     * @param {!ServiceWorkerAgent.ServiceWorkerErrorMessage} payload
-     */
-    _addError: function(payload)
-    {
-        var version = this.versions.get(payload.versionId);
-        if (version)
-            version._addError(payload);
     },
 
     /**
@@ -863,20 +865,14 @@ WebInspector.ServiceWorkerRegistration.prototype = {
     /**
      * @return {boolean}
      */
-    _hasErrorLog: function()
-    {
-        for (var version of this.versions.values()) {
-            if (version.errorMessages.length)
-                return true;
-        }
-        return false;
-    },
-
-    /**
-     * @return {boolean}
-     */
     _shouldBeRemoved: function()
     {
-        return this._isRedundant() && (!this._hasErrorLog() || this._deleting);
+        return this._isRedundant() && (!this.errors.length || this._deleting);
+    },
+
+    clearErrors: function()
+    {
+        this._fingerprint = Symbol("fingerprint");
+        this.errors = [];
     }
 }

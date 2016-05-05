@@ -10,23 +10,14 @@
 WebInspector.ServiceWorkersView = function()
 {
     WebInspector.VBox.call(this, true);
-    this.registerRequiredCSS("resources/serviceWorkersView.css");
-    this.contentElement.classList.add("service-workers-view");
 
+    this._reportView = new WebInspector.ReportView(WebInspector.UIString("Service Workers"));
+    this._reportView.show(this.contentElement);
 
-    /** @type {boolean} */
-    this._showAll = false;
-    /** @type {!Set.<string>} */
-    this._securityOriginHosts = new Set();
-    /** @type {!Map.<string, !WebInspector.ServiceWorkerOriginWidget>} */
-    this._originHostToOriginWidgetMap = new Map();
-    /** @type {!Map.<string, !WebInspector.ServiceWorkerOriginWidget>} */
-    this._registrationIdToOriginWidgetMap = new Map();
+    this._toolbar = this._reportView.createToolbar();
 
-    this._toolbar = new WebInspector.Toolbar("", this.contentElement);
-
-    this._root = this.contentElement.createChild("div");
-    this._root.classList.add("service-workers-root");
+    /** @type {!Map<!WebInspector.ServiceWorkerRegistration, !WebInspector.ServiceWorkersView.Section>} */
+    this._sections = new Map();
 
     WebInspector.targetManager.observeTargets(this);
 }
@@ -43,13 +34,13 @@ WebInspector.ServiceWorkersView.prototype = {
         this._target = target;
         this._manager = this._target.serviceWorkerManager;
 
-        var forceUpdate = new WebInspector.ToolbarCheckbox(WebInspector.UIString("Update worker on reload"), WebInspector.UIString("Update Service Worker on page reload"), this._manager.forceUpdateOnReloadSetting());
+        var forceUpdate = new WebInspector.ToolbarCheckbox(WebInspector.UIString("Force update on reload"), WebInspector.UIString("Force update Service Worker on page reload"), this._manager.forceUpdateOnReloadSetting());
         this._toolbar.appendToolbarItem(forceUpdate);
         var fallbackToNetwork = new WebInspector.ToolbarCheckbox(WebInspector.UIString("Bypass worker for network"), WebInspector.UIString("Bypass Service Worker and load resources from the network"), target.networkManager.bypassServiceWorkerSetting());
         this._toolbar.appendToolbarItem(fallbackToNetwork);
         this._toolbar.appendSpacer();
-        this._showAllCheckbox = new WebInspector.ToolbarCheckbox(WebInspector.UIString("Show all"), WebInspector.UIString("Show all Service Workers regardless of the scope"));
-        this._showAllCheckbox.inputElement.addEventListener("change", this._onShowAllCheckboxChanged.bind(this), false);
+        this._showAllCheckbox = new WebInspector.ToolbarCheckbox(WebInspector.UIString("Show all"), WebInspector.UIString("Show all Service Workers regardless of the origin"));
+        this._showAllCheckbox.inputElement.addEventListener("change", this._updateSectionVisibility.bind(this), false);
         this._toolbar.appendToolbarItem(this._showAllCheckbox);
 
         for (var registration of this._manager.registrations().values())
@@ -57,11 +48,9 @@ WebInspector.ServiceWorkersView.prototype = {
 
         this._manager.addEventListener(WebInspector.ServiceWorkerManager.Events.RegistrationUpdated, this._registrationUpdated, this);
         this._manager.addEventListener(WebInspector.ServiceWorkerManager.Events.RegistrationDeleted, this._registrationDeleted, this);
-        this._target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.SecurityOriginAdded, this._securityOriginAdded, this);
-        this._target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.SecurityOriginRemoved, this._securityOriginRemoved, this);
-        var securityOrigins = this._target.resourceTreeModel.securityOrigins();
-        for (var i = 0; i < securityOrigins.length; ++i)
-            this._addOrigin(securityOrigins[i]);
+        this._manager.addEventListener(WebInspector.ServiceWorkerManager.Events.RegistrationErrorAdded, this._registrationErrorAdded, this);
+        this._target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.SecurityOriginAdded, this._updateSectionVisibility, this);
+        this._target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.SecurityOriginRemoved, this._updateSectionVisibility, this);
     },
 
     /**
@@ -75,22 +64,12 @@ WebInspector.ServiceWorkersView.prototype = {
         delete this._target;
     },
 
-    /**
-     * @param {!Event} event
-     */
-    _onShowAllCheckboxChanged: function(event)
+    _updateSectionVisibility: function()
     {
-        this._showAll = this._showAllCheckbox.checked();
-        if (this._showAll) {
-            for (var originWidget of this._originHostToOriginWidgetMap.values()) {
-                if (!originWidget.parentWidget())
-                    originWidget.show(this._root);
-            }
-        } else {
-            for (var originWidget of this._originHostToOriginWidgetMap.values()) {
-                if (originWidget.parentWidget() && !this._securityOriginHosts.has(originWidget._originHost))
-                    originWidget.detach();
-            }
+        var securityOrigins = new Set(this._target.resourceTreeModel.securityOrigins());
+        for (var section of this._sections.values()) {
+            var visible = this._showAllCheckbox.checked() || securityOrigins.has(section._registration.securityOrigin);
+            section._section.element.classList.toggle("hidden", !visible);
         }
     },
 
@@ -104,23 +83,30 @@ WebInspector.ServiceWorkersView.prototype = {
     },
 
     /**
+     * @param {!WebInspector.Event} event
+     */
+    _registrationErrorAdded: function(event)
+    {
+        var registration = /** @type {!WebInspector.ServiceWorkerRegistration} */ (event.data["registration"]);
+        var error = /** @type {!ServiceWorkerAgent.ServiceWorkerErrorMessage} */ (event.data["error"]);
+        var section = this._sections.get(registration);
+        if (!section)
+            return;
+        section._addError(error);
+    },
+
+    /**
      * @param {!WebInspector.ServiceWorkerRegistration} registration
      */
     _updateRegistration: function(registration)
     {
-        var parsedURL = registration.scopeURL.asParsedURL();
-        if (!parsedURL)
-          return;
-        var originHost = parsedURL.securityOrigin();
-        var originWidget = this._originHostToOriginWidgetMap.get(originHost);
-        if (!originWidget) {
-            originWidget = new WebInspector.ServiceWorkerOriginWidget(this._manager, originHost);
-            if (this._securityOriginHosts.has(originHost) || this._showAll)
-                originWidget.show(this._root);
-            this._originHostToOriginWidgetMap.set(originHost, originWidget);
+        var section = this._sections.get(registration);
+        if (!section) {
+            section = new WebInspector.ServiceWorkersView.Section(this._manager, this._reportView.appendSection(""), registration);
+            this._sections.set(registration, section);
         }
-        this._registrationIdToOriginWidgetMap.set(registration.id, originWidget);
-        originWidget._updateRegistration(registration);
+        this._updateSectionVisibility();
+        section._scheduleUpdate();
     },
 
     /**
@@ -129,64 +115,10 @@ WebInspector.ServiceWorkersView.prototype = {
     _registrationDeleted: function(event)
     {
         var registration = /** @type {!WebInspector.ServiceWorkerRegistration} */ (event.data);
-        var registrationId = registration.id;
-        var originWidget = this._registrationIdToOriginWidgetMap.get(registrationId);
-        if (!originWidget)
-            return;
-        this._registrationIdToOriginWidgetMap.delete(registrationId);
-        originWidget._deleteRegistration(registrationId);
-        if (originWidget._hasRegistration())
-            return;
-        if (originWidget.parentWidget())
-            originWidget.detach();
-        this._originHostToOriginWidgetMap.delete(originWidget._originHost);
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _securityOriginAdded: function(event)
-    {
-        this._addOrigin(/** @type {string} */ (event.data));
-    },
-
-    /**
-     * @param {string} securityOrigin
-     */
-    _addOrigin: function(securityOrigin)
-    {
-        var parsedURL = securityOrigin.asParsedURL();
-        if (!parsedURL)
-          return;
-        var originHost = parsedURL.securityOrigin();
-        if (this._securityOriginHosts.has(originHost))
-            return;
-        this._securityOriginHosts.add(originHost);
-        var originWidget = this._originHostToOriginWidgetMap.get(originHost);
-        if (!originWidget)
-          return;
-        originWidget.show(this._root);
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _securityOriginRemoved: function(event)
-    {
-        var securityOrigin = /** @type {string} */ (event.data);
-        var parsedURL = securityOrigin.asParsedURL();
-        if (!parsedURL)
-          return;
-        var originHost = parsedURL.securityOrigin();
-        if (!this._securityOriginHosts.has(originHost))
-            return;
-        this._securityOriginHosts.delete(originHost);
-        if (this._showAll)
-           return;
-        var originWidget = this._originHostToOriginWidgetMap.get(originHost);
-        if (!originWidget)
-          return;
-        originWidget.detach();
+        var section = this._sections.get(registration);
+        if (section)
+            section._section.remove();
+        this._sections.delete(registration);
     },
 
     __proto__: WebInspector.VBox.prototype
@@ -194,336 +126,173 @@ WebInspector.ServiceWorkersView.prototype = {
 
 /**
  * @constructor
- * @extends {WebInspector.VBox}
  * @param {!WebInspector.ServiceWorkerManager} manager
- * @param {string} originHost
- */
-WebInspector.ServiceWorkerOriginWidget = function(manager, originHost)
-{
-    WebInspector.VBox.call(this);
-    this._manager = manager;
-    /** @type {!Map.<string, !WebInspector.SWRegistrationWidget>} */
-    this._registrationWidgets = new Map();
-    this._originHost = originHost;
-    this.element.classList.add("service-workers-origin");
-    this._titleElement = this.element.createChild("span", "service-workers-origin-title");
-}
-
-WebInspector.ServiceWorkerOriginWidget.prototype = {
-    /**
-     * @return {boolean}
-     */
-    _hasRegistration: function()
-    {
-        return this._registrationWidgets.size != 0;
-    },
-
-    /**
-     * @param {!WebInspector.ServiceWorkerRegistration} registration
-     */
-    _updateRegistration: function(registration)
-    {
-        this._titleElement.setTextAndTitle(WebInspector.UIString(registration.isDeleted ? "%s%s - deleted" : "%s%s", this._originHost, registration.scopeURL.asParsedURL().path));
-
-        var registrationWidget = this._registrationWidgets.get(registration.id);
-        if (registrationWidget) {
-            registrationWidget._updateRegistration(registration);
-            return;
-        }
-        registrationWidget = new WebInspector.SWRegistrationWidget(this._manager, this, registration);
-        this._registrationWidgets.set(registration.id, registrationWidget);
-        registrationWidget.show(this.element);
-    },
-
-    /**
-     * @param {string} registrationId
-     */
-    _deleteRegistration: function(registrationId)
-    {
-        var registrationWidget = this._registrationWidgets.get(registrationId);
-        if (!registrationWidget)
-            return;
-        this._registrationWidgets.delete(registrationId);
-        registrationWidget.detach();
-    },
-
-    __proto__: WebInspector.VBox.prototype
-}
-
-/**
- * @constructor
- * @extends {WebInspector.VBox}
- * @param {!WebInspector.ServiceWorkerManager} manager
- * @param {!WebInspector.ServiceWorkerOriginWidget} originWidget
+ * @param {!WebInspector.ReportView.Section} section
  * @param {!WebInspector.ServiceWorkerRegistration} registration
  */
-WebInspector.SWRegistrationWidget = function(manager, originWidget, registration)
+WebInspector.ServiceWorkersView.Section = function(manager, section, registration)
 {
-    WebInspector.VBox.call(this);
     this._manager = manager;
-    this._originWidget = originWidget;
+    this._section = section;
     this._registration = registration;
-    this.element.classList.add("service-workers-registration");
 
-    var toolbar = new WebInspector.Toolbar("", this.element);
-    this._updateButton = new WebInspector.ToolbarButton(WebInspector.UIString("Update"), "refresh-toolbar-item", WebInspector.UIString("Update"));
+    this._toolbar = section.createToolbar();
+    this._toolbar.renderAsLinks();
+    this._updateButton = new WebInspector.ToolbarButton(WebInspector.UIString("Update"), undefined, WebInspector.UIString("Update"));
     this._updateButton.addEventListener("click", this._updateButtonClicked.bind(this));
-    toolbar.appendToolbarItem(this._updateButton);
-
-    toolbar.appendSeparator();
-    this._pushButton = new WebInspector.ToolbarButton(WebInspector.UIString("Emulate push event"), "notification-toolbar-item", WebInspector.UIString("Push"));
+    this._toolbar.appendToolbarItem(this._updateButton);
+    this._pushButton = new WebInspector.ToolbarButton(WebInspector.UIString("Emulate push event"), undefined, WebInspector.UIString("Push"));
     this._pushButton.addEventListener("click", this._pushButtonClicked.bind(this));
-    toolbar.appendToolbarItem(this._pushButton);
-    toolbar.appendSpacer();
-    this._deleteButton = new WebInspector.ToolbarButton(WebInspector.UIString("Unregister service worker"), "garbage-collect-toolbar-item", WebInspector.UIString("Unregister"));
-    this._deleteButton.addEventListener("click", this._deleteButtonClicked.bind(this));
-    toolbar.appendToolbarItem(this._deleteButton);
+    this._toolbar.appendToolbarItem(this._pushButton);
+    this._deleteButton = new WebInspector.ToolbarButton(WebInspector.UIString("Unregister service worker"), undefined, WebInspector.UIString("Unregister"));
+    this._deleteButton.addEventListener("click", this._unregisterButtonClicked.bind(this));
+    this._toolbar.appendToolbarItem(this._deleteButton);
 
-    this._tabbedPane = new WebInspector.TabbedPane();
-    this._tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, this._tabSelected, this);
-    var modes = WebInspector.ServiceWorkerVersion.Modes;
-    this._tabbedPane.appendTab(modes.Installing, WebInspector.UIString("Installing"), new WebInspector.VBox());
-    this._tabbedPane.appendTab(modes.Waiting, WebInspector.UIString("Waiting"), new WebInspector.VBox());
-    this._tabbedPane.appendTab(modes.Active, WebInspector.UIString("Active"), new WebInspector.VBox());
-    this._tabbedPane.appendTab(modes.Redundant, WebInspector.UIString("Redundant"), new WebInspector.VBox());
-    this._tabbedPane.show(this.element);
+    // Preserve the order.
+    this._section.appendField(WebInspector.UIString("Source"));
+    this._section.appendField(WebInspector.UIString("Status"));
+    this._section.appendField(WebInspector.UIString("Clients"));
+    this._section.appendField(WebInspector.UIString("Errors"));
+    this._errorsList = this._wrapWidget(this._section.appendRow());
+    this._errorsList.classList.add("service-worker-error-stack", "monospace", "hidden");
 
-    /** @type {!Map<string, !WebInspector.SWVersionWidget>} */
-    this._versionWidgets = new Map();
-
-    this._updateRegistration(registration);
+    this._linkifier = new WebInspector.Linkifier();
+    /** @type {!Map<string, !WebInspector.TargetInfo>} */
+    this._clientInfoCache = new Map();
+    for (var error of registration.errors)
+        this._addError(error);
+    this._throttler = new WebInspector.Throttler(500);
 }
 
-WebInspector.SWRegistrationWidget.prototype = {
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _tabSelected: function(event)
+WebInspector.ServiceWorkersView.Section.prototype = {
+    _scheduleUpdate: function()
     {
-        if (event.data["isUserGesture"])
-            this._lastManuallySelectedTab = event.data["tabId"];
+        if (WebInspector.ServiceWorkersView._noThrottle) {
+            this._update();
+            return;
+        }
+        this._throttler.schedule(this._update.bind(this));
     },
 
     /**
-     * @param {!WebInspector.ServiceWorkerRegistration} registration
+     * @return {!Promise}
      */
-    _updateRegistration: function(registration)
+    _update: function()
     {
-        this._registration = registration;
-        this._updateButton.setEnabled(!registration.isDeleted);
-        this._deleteButton.setEnabled(!registration.isDeleted);
+        var fingerprint = this._registration.fingerprint();
+        if (fingerprint === this._fingerprint)
+            return Promise.resolve();
+        this._fingerprint = fingerprint;
 
-        /** @type {!Map<string, !WebInspector.SWVersionWidget>} */
-        var versionWidgets = new Map();
+        this._toolbar.setEnabled(!this._registration.isDeleted);
 
-        // Remove all the redundant workers that are older than the
-        // active version.
-        var versions = registration.versions.valuesArray();
-        var activeVersion = versions.find(version => version.mode() === WebInspector.ServiceWorkerVersion.Modes.Active);
-        if (activeVersion) {
-            versions = versions.filter(version => {
-                if (version.mode() == WebInspector.ServiceWorkerVersion.Modes.Redundant)
-                    return version.scriptLastModified > activeVersion.scriptLastModified;
-                return true;
-            });
+        var versions = this._registration.versionsByMode();
+        var title = this._registration.isDeleted ? WebInspector.UIString("%s - deleted", this._registration.scopeURL) : this._registration.scopeURL;
+        this._section.setTitle(title);
+
+        var active = versions.get(WebInspector.ServiceWorkerVersion.Modes.Active);
+        var waiting = versions.get(WebInspector.ServiceWorkerVersion.Modes.Waiting);
+        var installing = versions.get(WebInspector.ServiceWorkerVersion.Modes.Installing);
+
+        var statusValue = this._wrapWidget(this._section.appendField(WebInspector.UIString("Status")));
+        statusValue.removeChildren();
+        var versionsStack = statusValue.createChild("div", "service-worker-version-stack");
+        versionsStack.createChild("div", "service-worker-version-stack-bar");
+
+        if (active) {
+            var scriptElement = this._section.appendField(WebInspector.UIString("Source"));
+            scriptElement.removeChildren();
+            var components = WebInspector.ParsedURL.splitURLIntoPathComponents(active.scriptURL);
+            scriptElement.appendChild(WebInspector.linkifyURLAsNode(active.scriptURL, components.peekLast()));
+            scriptElement.createChild("div", "report-field-value-subtitle").textContent = WebInspector.UIString("Last modified %s", new Date(active.scriptLastModified * 1000).toLocaleString());
+
+            var activeEntry = versionsStack.createChild("div", "service-worker-version");
+            activeEntry.createChild("div", "service-worker-active-circle");
+            activeEntry.createChild("span").textContent = WebInspector.UIString("#%s active and is %s", active.id, active.runningStatus);
+
+            if (active.isRunning() || active.isStarting()) {
+                var stopButton = createLink(activeEntry, WebInspector.UIString("stop"), this._stopButtonClicked.bind(this, active.id));
+                if (!this._manager.targetForVersionId(active.id)) {
+                    var inspectButton = createLink(activeEntry, WebInspector.UIString("inspect"), this._inspectButtonClicked.bind(this, active.id));
+                }
+            } else if (active.isStartable()) {
+                var startButton = createLink(activeEntry, WebInspector.UIString("start"), this._startButtonClicked.bind(this));
+            }
+
+            var clientsList = this._wrapWidget(this._section.appendField(WebInspector.UIString("Clients")));
+            clientsList.removeChildren();
+            this._section.setFieldVisible(WebInspector.UIString("Clients"), active.controlledClients.length);
+            for (var client of active.controlledClients) {
+                var clientLabelText = clientsList.createChild("div", "service-worker-client");
+                if (this._clientInfoCache.has(client))
+                    this._updateClientInfo(clientLabelText, /** @type {!WebInspector.TargetInfo} */(this._clientInfoCache.get(client)));
+                this._manager.getTargetInfo(client, this._onClientInfo.bind(this, clientLabelText));
+            }
         }
 
-        var firstMode;
-        var modesWithVersions = new Set();
-        for (var version of versions) {
-            if (version.isStoppedAndRedundant() && !version.errorMessages.length)
-                continue;
-            var mode = version.mode();
-            if (!firstMode)
-                firstMode = mode;
-            modesWithVersions.add(mode);
-            var view = this._tabbedPane.tabView(mode);
-            var versionWidget = this._versionWidgets.get(version.id);
-            if (versionWidget)
-                versionWidget._updateVersion(version);
-            else
-                versionWidget = new WebInspector.SWVersionWidget(this._manager, this._registration.scopeURL, version);
-            versionWidget.show(view.element, view.element.firstElementChild);
-            versionWidgets.set(version.id, versionWidget);
+        if (waiting) {
+            var waitingEntry = versionsStack.createChild("div", "service-worker-version");
+            waitingEntry.createChild("div", "service-worker-waiting-circle");
+            waitingEntry.createChild("span").textContent = WebInspector.UIString("#%s waiting to activate", waiting.id);
+            var skipButton = createLink(waitingEntry, WebInspector.UIString("skipWaiting"), this._skipButtonClicked.bind(this));
+            waitingEntry.createChild("div", "service-worker-subtitle").textContent = new Date(waiting.scriptLastModified * 1000).toLocaleString();
         }
-        for (var id of this._versionWidgets.keys()) {
-            if (!versionWidgets.has(id))
-                this._versionWidgets.get(id).detach();
+        if (installing) {
+            var installingEntry = versionsStack.createChild("div", "service-worker-version");
+            installingEntry.createChild("div", "service-worker-installing-circle");
+            installingEntry.createChild("span").textContent = WebInspector.UIString("#%s installing", installing.id);
+            installingEntry.createChild("div", "service-worker-subtitle").textContent = new Date(installing.scriptLastModified * 1000).toLocaleString();
         }
-        this._versionWidgets = versionWidgets;
 
-        for (var id of this._tabbedPane.tabIds())
-            this._tabbedPane.setTabEnabled(id, modesWithVersions.has(id));
+        this._section.setFieldVisible(WebInspector.UIString("Errors"), !!this._registration.errors.length);
+        var errorsValue = this._wrapWidget(this._section.appendField(WebInspector.UIString("Errors")));
+        var errorsLabel = createLabel(String(this._registration.errors.length), "error-icon");
+        errorsLabel.classList.add("service-worker-errors-label");
+        errorsValue.appendChild(errorsLabel);
+        this._moreButton = createLink(errorsValue, this._errorsList.classList.contains("hidden") ? WebInspector.UIString("details") : WebInspector.UIString("hide"),  this._moreErrorsButtonClicked.bind(this));
+        var clearButton = createLink(errorsValue, WebInspector.UIString("clear"), this._clearErrorsButtonClicked.bind(this));
 
-        this._pushButton.setEnabled(modesWithVersions.has(WebInspector.ServiceWorkerVersion.Modes.Active) && !this._registration.isDeleted);
-
-        if (modesWithVersions.has(this._lastManuallySelectedTab)) {
-            this._tabbedPane.selectTab(this._lastManuallySelectedTab);
-            return;
+        /**
+         * @param {!Element} parent
+         * @param {string} title
+         * @param {function()} listener
+         */
+        function createLink(parent, title, listener)
+        {
+            var span = parent.createChild("span", "link");
+            span.textContent = title;
+            span.addEventListener("click", listener, false);
         }
-        if (activeVersion) {
-            this._tabbedPane.selectTab(WebInspector.ServiceWorkerVersion.Modes.Active);
-            return;
-        }
-        if (firstMode)
-            this._tabbedPane.selectTab(firstMode);
+        return Promise.resolve();
     },
 
     /**
-     * @param {!WebInspector.Event} event
+     * @param {!ServiceWorkerAgent.ServiceWorkerErrorMessage} error
      */
-    _deleteButtonClicked: function(event)
+    _addError: function(error)
+    {
+        var target = this._manager.targetForVersionId(error.versionId);
+        var message = this._errorsList.createChild("div");
+        if (this._errorsList.childElementCount > 100)
+            this._errorsList.firstElementChild.remove();
+        message.appendChild(this._linkifier.linkifyScriptLocation(target, null, error.sourceURL, error.lineNumber));
+        message.appendChild(createLabel("#" + error.versionId + ": " + error.errorMessage, "error-icon"));
+    },
+
+    _unregisterButtonClicked: function()
     {
         this._manager.deleteRegistration(this._registration.id);
     },
 
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _updateButtonClicked: function(event)
+    _updateButtonClicked: function()
     {
         this._manager.updateRegistration(this._registration.id);
     },
 
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _pushButtonClicked: function(event)
+    _pushButtonClicked: function()
     {
         var data = "Test push message from DevTools."
         this._manager.deliverPushMessage(this._registration.id, data);
-    },
-
-    __proto__: WebInspector.VBox.prototype
-}
-
-/**
- * @constructor
- * @extends {WebInspector.VBox}
- * @param {!WebInspector.ServiceWorkerManager} manager
- * @param {string} scopeURL
- * @param {!WebInspector.ServiceWorkerVersion} version
- */
-WebInspector.SWVersionWidget = function(manager, scopeURL, version)
-{
-    WebInspector.VBox.call(this);
-    this._manager = manager;
-    this._scopeURL = scopeURL;
-    this._version = version;
-    this.element.classList.add("service-workers-version", "flex-none");
-
-    /**
-     * @type {!Object.<string, !WebInspector.TargetInfo>}
-     */
-    this._clientInfoCache = {};
-    this._createElements();
-    this._updateVersion(version);
-}
-
-WebInspector.SWVersionWidget.prototype = {
-    _createElements: function()
-    {
-        var panel = createElementWithClass("div", "service-workers-versions-panel");
-        var leftPanel = panel.createChild("div", "service-workers-versions-panel-top");
-        var rightPanel = panel.createChild("div", "service-workers-versions-panel-bottom");
-        this._scriptCell = this._addTableRow(leftPanel, WebInspector.UIString("URL"));
-        this._workerCell = this._addTableRow(leftPanel, WebInspector.UIString("State"));
-        this._updatedCell = this._addTableRow(leftPanel, WebInspector.UIString("Updated"));
-        this._updatedCell.classList.add("service-worker-script-response-time");
-        this._scriptLastModifiedCell = this._addTableRow(leftPanel, WebInspector.UIString("Last-Modified"));
-        this._scriptLastModifiedCell.classList.add("service-worker-script-last-modified");
-        rightPanel.createChild("div", "service-workers-versions-table-title").createTextChild(WebInspector.UIString("Recent messages"));
-        this._messagesPanel = rightPanel.createChild("div", "service-workers-versions-table-messages-content");
-        this._clientsTitle = rightPanel.createChild("div", "service-workers-versions-table-title");
-        this._clientsTitle.createTextChild(WebInspector.UIString("Controlled clients"));
-        this._clientsPanel = rightPanel.createChild("div", "service-workers-versions-table-clients-content");
-        this.element.appendChild(panel);
-    },
-
-    /**
-     * @param {!WebInspector.ServiceWorkerVersion} version
-     */
-    _updateVersion: function(version)
-    {
-        this._workerCell.removeChildren();
-        if (version.isRunning() || version.isStarting() || version.isStartable()) {
-            var runningStatusCell = this._workerCell.createChild("div", "service-workers-versions-table-worker-running-status-cell");
-            var runningStatusLeftCell = runningStatusCell.createChild("div");
-            var runningStatusRightCell = runningStatusCell.createChild("div");
-            if (version.isRunning() || version.isStarting()) {
-                var toolbar = new WebInspector.Toolbar("", runningStatusRightCell);
-                var stopButton = new WebInspector.ToolbarButton(WebInspector.UIString("Stop"), "stop-toolbar-item");
-                stopButton.addEventListener("click", this._stopButtonClicked.bind(this, version.id));
-                toolbar.appendToolbarItem(stopButton);
-            } else if (version.isStartable()) {
-                var toolbar = new WebInspector.Toolbar("", runningStatusRightCell);
-                var startButton = new WebInspector.ToolbarButton(WebInspector.UIString("Start"), "play-toolbar-item");
-                startButton.addEventListener("click", this._startButtonClicked.bind(this));
-                toolbar.appendToolbarItem(startButton);
-            }
-            runningStatusLeftCell.setTextAndTitle(version.runningStatus);
-            if ((version.isRunning() || version.isStarting()) && !this._manager.hasWorkerWithVersionId(version.id)) {
-                var inspectButton = runningStatusLeftCell.createChild("span", "service-workers-versions-table-running-status-inspect");
-                inspectButton.setTextAndTitle(WebInspector.UIString("inspect"));
-                inspectButton.addEventListener("click", this._inspectButtonClicked.bind(this, version.id), false);
-            }
-        } else {
-            this._workerCell.setTextAndTitle(version.runningStatus);
-        }
-
-        this._scriptCell.setTextAndTitle(version.scriptURL.asParsedURL().path);
-        this._updatedCell.setTextAndTitle(version.scriptResponseTime ? (new Date(version.scriptResponseTime * 1000)).toConsoleTime() : "");
-        this._scriptLastModifiedCell.setTextAndTitle(version.scriptLastModified ? (new Date(version.scriptLastModified * 1000)).toConsoleTime() : "");
-
-        this._messagesPanel.removeChildren();
-        if (version.scriptLastModified) {
-            var scriptLastModifiedLabel = this._messagesPanel.createChild("label", " service-workers-info service-worker-script-last-modified", "dt-icon-label");
-            scriptLastModifiedLabel.type = "info-icon";
-            scriptLastModifiedLabel.createTextChild(WebInspector.UIString("Last-Modified: %s", (new Date(version.scriptLastModified * 1000)).toConsoleTime()));
-        }
-        if (version.scriptResponseTime) {
-            var scriptResponseTimeDiv = this._messagesPanel.createChild("label", " service-workers-info service-worker-script-response-time", "dt-icon-label");
-            scriptResponseTimeDiv.type = "info-icon";
-            scriptResponseTimeDiv.createTextChild(WebInspector.UIString("Server response time: %s", (new Date(version.scriptResponseTime * 1000)).toConsoleTime()));
-        }
-
-        var errorMessages = version.errorMessages;
-        for (var index = 0; index < errorMessages.length; ++index) {
-            var errorDiv = this._messagesPanel.createChild("div", "service-workers-error");
-            errorDiv.createChild("label", "", "dt-icon-label").type = "error-icon";
-            errorDiv.createChild("div", "service-workers-error-message").createTextChild(errorMessages[index].errorMessage);
-            var script_path = errorMessages[index].sourceURL;
-            var script_url;
-            if (script_url = script_path.asParsedURL())
-                script_path = script_url.displayName;
-            if (script_path.length && errorMessages[index].lineNumber != -1)
-                script_path = String.sprintf("(%s:%d)", script_path, errorMessages[index].lineNumber);
-            errorDiv.createChild("div", "service-workers-error-line").createTextChild(script_path);
-        }
-
-        this._clientsTitle.classList.toggle("hidden", version.controlledClients.length == 0);
-
-        this._clientsPanel.removeChildren();
-        for (var i = 0; i < version.controlledClients.length; ++i) {
-            var client = version.controlledClients[i];
-            var clientLabelText = this._clientsPanel.createChild("div", "service-worker-client");
-            if (this._clientInfoCache[client]) {
-                this._updateClientInfo(clientLabelText, this._clientInfoCache[client]);
-            }
-            this._manager.getTargetInfo(client, this._onClientInfo.bind(this, clientLabelText));
-        }
-    },
-
-    /**
-     * @param {!Element} tableElement
-     * @param {string} title
-     * @return {!Element}
-     */
-    _addTableRow: function(tableElement, title)
-    {
-        var rowElement = tableElement.createChild("div", "service-workers-versions-table-row");
-        rowElement.createChild("div", "service-workers-versions-table-row-title").setTextAndTitle(title);
-        return rowElement.createChild("div", "service-workers-versions-table-row-content");
     },
 
     /**
@@ -534,7 +303,7 @@ WebInspector.SWVersionWidget.prototype = {
     {
         if (!targetInfo)
             return;
-        this._clientInfoCache[targetInfo.id] = targetInfo;
+        this._clientInfoCache.set(targetInfo.id, targetInfo);
         this._updateClientInfo(element, targetInfo);
     },
 
@@ -549,8 +318,8 @@ WebInspector.SWVersionWidget.prototype = {
             return;
         }
         element.removeChildren();
-        element.createTextChild(WebInspector.UIString("Tab: %s", targetInfo.url));
-        var focusLabel = element.createChild("label", "service-worker-client-focus");
+        element.createTextChild(targetInfo.url);
+        var focusLabel = element.createChild("label", "link");
         focusLabel.createTextChild("focus");
         focusLabel.addEventListener("click", this._activateTarget.bind(this, targetInfo.id), true);
     },
@@ -563,31 +332,65 @@ WebInspector.SWVersionWidget.prototype = {
         this._manager.activateTarget(targetId);
     },
 
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _startButtonClicked: function(event)
+    _startButtonClicked: function()
     {
-        this._manager.startWorker(this._scopeURL);
+        this._manager.startWorker(this._registration.scopeURL);
+    },
+
+    _skipButtonClicked: function()
+    {
+        this._manager.skipWaiting(this._registration.scopeURL);
     },
 
     /**
      * @param {string} versionId
-     * @param {!WebInspector.Event} event
      */
-    _stopButtonClicked: function(versionId, event)
+    _stopButtonClicked: function(versionId)
     {
         this._manager.stopWorker(versionId);
     },
 
+    _moreErrorsButtonClicked: function()
+    {
+        var newVisible = this._errorsList.classList.contains("hidden");
+        this._moreButton.textContent = newVisible ? WebInspector.UIString("hide") : WebInspector.UIString("details");
+        this._errorsList.classList.toggle("hidden", !newVisible);
+    },
+
+    _clearErrorsButtonClicked: function()
+    {
+        this._errorsList.removeChildren();
+        this._registration.clearErrors();
+        this._scheduleUpdate();
+        if (!this._errorsList.classList.contains("hidden"))
+            this._moreErrorsButtonClicked();
+    },
+
     /**
      * @param {string} versionId
-     * @param {!Event} event
      */
-    _inspectButtonClicked: function(versionId, event)
+    _inspectButtonClicked: function(versionId)
     {
         this._manager.inspectWorker(versionId);
     },
 
-    __proto__: WebInspector.VBox.prototype
+    /**
+     * @param {!Element} container
+     * @return {!Element}
+     */
+    _wrapWidget: function(container)
+    {
+        var shadowRoot = WebInspector.createShadowRootWithCoreStyles(container);
+        WebInspector.appendStyle(shadowRoot, "resources/serviceWorkersView.css");
+        var contentElement = createElement("div");
+        shadowRoot.appendChild(contentElement);
+        return contentElement;
+    },
+
+    _dispose: function()
+    {
+        this._linkifier.dispose();
+        if (this._pendingUpdate)
+            clearTimeout(this._pendingUpdate);
+    }
 }

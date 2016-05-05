@@ -17,7 +17,7 @@
 
 .security-origin-view .origin-view-section {
     border-bottom: 1px solid rgb(230, 230, 230);
-    padding: 12px 6px;
+    padding: 12px 6px 12px 18px;
 }
 
 .security-origin-view .origin-display {
@@ -42,7 +42,11 @@
     padding: 12px 24px;
 }
 
-.security-origin-view .origin-view-section-title {margin-bottom: 10px;padding-left: 18px;}
+.security-origin-view .origin-view-section-title {
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #555;
+}
 
 .security-origin-view .details-table-row {
     display: flex;

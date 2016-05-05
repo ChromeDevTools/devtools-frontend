@@ -4,150 +4,87 @@
  * found in the LICENSE file.
  */
 
-.service-workers-view {
-    overflow-y: scroll;
+.service-worker-error-stack {
+    max-height: 200px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ccc;
+    background-color: #fff0f0;
+    color: red;
+    line-height: 18px;
+    margin: 10px 2px 0 -14px;
+    white-space: initial;
 }
 
-.service-workers-view > .toolbar {
-    border-bottom: 1px solid #dadada;
-}
-
-.service-workers-root {
-   -webkit-user-select: text;
-   margin: 5px;
-   overflow: auto;
-}
-
-.service-workers-root ol {
-    list-style-type: none;
-    padding-left: 0;
-}
-
-.service-workers-origin {
-    padding: 5px;
-    background-color: white;
-}
-
-.service-workers-origin-title {
-    font-size: 14px;
+.service-worker-error-stack > div {
     flex: none;
+    padding: 3px 4px;
 }
 
-.service-workers-registration {
-    background-color: white;
-    margin-top: 5px;
-    margin-bottom: 10px;
-    padding: 0;
+.service-worker-error-stack > div:not(:last-child) {
+    border-bottom: 1px solid #ffd7d7;
+}
+
+.service-worker-error-stack label {
     flex: auto;
 }
 
-.service-workers-registration .tabbed-pane > .widget {
-    overflow: auto;
-}
-
-.service-workers-registration .toolbar {
-    flex: none;
-}
-
-.service-workers-registration-title {
-    flex: none;
-    font-size: 15px;
-    padding: 4px;
-}
-
-.service-workers-versions-panel {
-    display: flex;
-    flex-direction: column;
-}
-
-.service-workers-versions-panel-top {
-    flex: none;
-    overflow: hidden;
-}
-.service-workers-versions-panel-bottom {
-    flex: none;
-}
-
-.service-workers-versions-table-row {
-    display: flex;
-}
-
-.service-workers-versions-table-row-title {
-    color: #888;
-    flex: 1 1 0;
-    overflow: hidden;
-    padding-left: 6px;
-    text-overflow: ellipsis;
-    height: 24px;
-    align-items: center;
-    display: flex;
-}
-
-.service-workers-versions-table-row-content {
-    flex: 3 3 0;
-    overflow: hidden;
-    padding: 2px;
-    text-overflow: ellipsis;
-    line-height: 24px;
-    height: 24px;
-    align-items: center;
-    display: flex;
-}
-
-.service-workers-versions-table-title {
-    color: #888;
-    padding: 0 6px;
-    line-height: 24px;
-}
-
-.service-workers-versions-table-messages-content {
-    padding-left: 10px;
-    line-height: 22px;
-    max-height: 150px;
-    overflow: auto;
-    margin-right: 10px;
-}
-
-.service-workers-versions-table-clients-content {
-    overflow: auto;
-    line-height: 24px;
-    padding-left: 23px;
-}
-
-.service-workers-versions-table-worker-running-status-cell {
-    display: flex;
-    align-items: center;
-}
-
-.service-workers-versions-table-running-status-inspect {
-    color: hsl(240, 85%, 37%);
+.service-worker-error-stack a {
+    float: right;
+    color: rgb(33%, 33%, 33%);
     cursor: pointer;
-    text-decoration: underline;
-    padding: 0 6px;
 }
 
-.service-workers-versions-option-panel {
-    border-bottom: 1px solid #e1e1e1;
-    border-left: 1px solid #e1e1e1;
-    display: flex;
+.service-worker-version-stack {
+    position: relative;
 }
 
-.service-workers-error {
-    display: flex;
+.service-worker-version-stack-bar {
+    position: absolute;
+    top: 10px;
+    bottom: 20px;
+    left: 4px;
+    content: "";
+    border-left: 1px solid #888;
+    z-index: 0;
 }
 
-.service-workers-error > label {
-    flex: none;
+.service-worker-version:not(:last-child) {
+    margin-bottom: 7px;
 }
 
-.service-workers-info {
-    display: flex;
-    align-items: center;
+.service-worker-active-circle,
+.service-worker-waiting-circle,
+.service-worker-installing-circle {
+    position: relative;
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    z-index: 10;
+    margin-right: 5px;
+    border-radius: 50%;
+    border: 1px solid #555;
 }
 
-.service-worker-client-focus {
-   color: hsl(240, 85%, 37%);
-   cursor: pointer;
-   padding-left: 4px;
-   text-decoration: underline;
+.service-worker-active-circle {
+    background-color: #50B04F;
+}
+.service-worker-waiting-circle {
+    background-color: #F38E24;
+
+}
+.service-worker-installing-circle {
+    background-color: white;
+}
+
+
+.service-worker-subtitle {
+    padding-left: 14px;
+    line-height: 14px;
+    color: #888;
+}
+
+.link {
+    margin-left: 10px;
 }

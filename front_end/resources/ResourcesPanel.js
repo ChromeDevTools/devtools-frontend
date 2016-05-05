@@ -48,8 +48,8 @@ WebInspector.ResourcesPanel = function()
     this.setDefaultFocusedElement(this._sidebarTree.element);
 
     this._applicationTreeElement = this._addSidebarSection(WebInspector.UIString("Application"));
-    var manifestTreeElement = new WebInspector.AppManifestTreeElement(this);
-    this._applicationTreeElement.appendChild(manifestTreeElement);
+    this._manifestTreeElement = new WebInspector.AppManifestTreeElement(this);
+    this._applicationTreeElement.appendChild(this._manifestTreeElement);
 
     var storageTreeElement = this._addSidebarSection(WebInspector.UIString("Storage"));
     this.localStorageListTreeElement = new WebInspector.StorageCategoryTreeElement(this, WebInspector.UIString("Local Storage"), "LocalStorage", ["domstorage-storage-tree-item", "local-storage"]);
@@ -114,12 +114,8 @@ WebInspector.ResourcesPanel.prototype = {
 
     wasShown: function()
     {
-        if (!this._sidebarTree.selectedTreeElement) {
-            if (this.serviceWorkersTreeElement)
-                this.serviceWorkersTreeElement.select();
-            else
-                this.localStorageListTreeElement.select();
-        }
+        if (!this._sidebarTree.selectedTreeElement)
+            this._manifestTreeElement.select();
     },
 
     /**
@@ -134,7 +130,7 @@ WebInspector.ResourcesPanel.prototype = {
 
         if (target.serviceWorkerManager) {
             this.serviceWorkersTreeElement = new WebInspector.ServiceWorkersTreeElement(this);
-            this._applicationTreeElement.insertChild(this.serviceWorkersTreeElement, 0);
+            this._applicationTreeElement.appendChild(this.serviceWorkersTreeElement);
         }
 
         this._databaseModel = WebInspector.DatabaseModel.fromTarget(target);

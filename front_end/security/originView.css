@@ -4,7 +4,7 @@
  */
 
 .title-section {
-    padding-bottom: 10px;
+    padding: 12px 0;
     border-bottom: 1px solid rgb(230, 230, 230);
 }
 
@@ -21,6 +21,7 @@
 }
 
 .security-origin-view .origin-display {
+    font-size: 15px;
     padding-left: 38px;
     display: flex;
     align-items: center;
@@ -37,15 +38,9 @@
     left: 18px;
 }
 
-.security-origin-view .origin-view-title {
-    font-size: 15px;
-    padding: 12px 24px;
-}
-
 .security-origin-view .origin-view-section-title {
     margin-bottom: 10px;
-    font-weight: bold;
-    color: #555;
+    padding-left: 18px;
 }
 
 .security-origin-view .details-table-row {

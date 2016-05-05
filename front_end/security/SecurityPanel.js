@@ -748,7 +748,6 @@ WebInspector.SecurityOriginView = function(panel, origin, originState)
     this.registerRequiredCSS("security/lockIcon.css");
 
     var titleSection = this.element.createChild("div", "title-section");
-    titleSection.createChild("div", "origin-view-title").textContent = WebInspector.UIString("Origin");
     var originDisplay = titleSection.createChild("div", "origin-display");
     this._originLockIcon = originDisplay.createChild("span", "security-property");
     this._originLockIcon.classList.add("security-property-" + originState.securityState);

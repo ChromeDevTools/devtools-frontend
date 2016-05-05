@@ -13,11 +13,13 @@ WebInspector.Throttler = function(timeout)
     this._asSoonAsPossible = false;
     /** @type {?function():(!Promise.<?>)} */
     this._process = null;
+    this._lastCompleteTime = 0;
 }
 
 WebInspector.Throttler.prototype = {
     _processCompleted: function()
     {
+        this._lastCompleteTime = window.performance.now();
         this._isRunningProcess = false;
         if (this._process)
             this._innerSchedule(false);
@@ -53,12 +55,19 @@ WebInspector.Throttler.prototype = {
 
         // Run the first scheduled task instantly.
         var hasScheduledTasks = !!this._processTimeout || this._isRunningProcess;
-        asSoonAsPossible = !!asSoonAsPossible || !hasScheduledTasks;
+        var okToFire = window.performance.now() - this._lastCompleteTime > this._timeout;
+        asSoonAsPossible = !!asSoonAsPossible || (!hasScheduledTasks && okToFire);
 
         var forceTimerUpdate = asSoonAsPossible && !this._asSoonAsPossible;
         this._asSoonAsPossible = this._asSoonAsPossible || asSoonAsPossible;
 
         this._innerSchedule(forceTimerUpdate);
+    },
+
+    flush: function()
+    {
+        if (this._process)
+            this._onTimeout();
     },
 
     /**

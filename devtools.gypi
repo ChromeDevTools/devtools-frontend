@@ -817,6 +817,12 @@
             '<@(devtools_ui_lazy_js_files)',
         ],
         'devtools_image_files': [
+            'front_end/Images/accelerometer-back.png',
+            'front_end/Images/accelerometer-bottom.png',
+            'front_end/Images/accelerometer-front.png',
+            'front_end/Images/accelerometer-left.png',
+            'front_end/Images/accelerometer-right.png',
+            'front_end/Images/accelerometer-top.png',
             'front_end/Images/applicationCache.png',
             'front_end/Images/breakpoint.png',
             'front_end/Images/breakpoint_2x.png',

@@ -53,6 +53,7 @@
     padding: 10px 0px;
     margin-left: 0;
     flex: 0 0 auto;
+    margin: 0;
 }
 
 .sensors-view fieldset[disabled] {
@@ -68,8 +69,7 @@
 }
 
 .sensors-view .chrome-select {
-    max-width: 200px;
-    width: 100%;
+    width: 200px;
 }
 
 .sensors-group-title {
@@ -79,6 +79,7 @@
 
 .sensors-group {
     display: flex;
+    flex-wrap: wrap;
 }
 
 .geo-fields {
@@ -96,88 +97,197 @@
 
 /* Accelerometer */
 
+.orientation-content {
+    display: flex;
+}
+
+.orientation-fields {
+    margin-right: 10px;
+}
+
 .accelerometer-stage {
     -webkit-perspective: 700px;
     -webkit-perspective-origin: 50% 50%;
-    width: 200px;
-    height: 130px;
+    width: 160px;
+    height: 150px;
+    background: -webkit-linear-gradient(#E1F5FE 0%, #E1F5FE 64%, #b0Ebf3 64%, #DEF6F9 100%);
+    transition: 0.2s ease opacity, 0.2s ease -webkit-filter;
+}
+
+.accelerometer-stage.disabled {
+    -webkit-filter: grayscale();
+    opacity: 0.5;
 }
 
 fieldset.device-orientation-override-section[disabled] .accelerometer-stage {
     cursor: default !important;
 }
 
+.accelerometer-element,
+.accelerometer-element::before,
+.accelerometer-element::after
+{
+    position: absolute;
+    box-sizing: border-box;
+    transform-style: preserve-3d;
+    background: no-repeat;
+    background-size: cover;
+    backface-visibility: hidden;
+}
+
 .accelerometer-box {
-    pointer-events:none;
-    margin-top: -54px;
-    margin-left: -40px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 80px;
-    height: 108px;
-    -webkit-transform-style: preserve-3d;
+    width: 66px;
+    height: 122px;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
 }
 
-.accelerometer-box.smooth-transition {
-    transition: 0.2s ease transform;
+.accelerometer-box.is-animating {
+    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 }
 
-.accelerometer-box section {
-    margin-top: -54px;
-    margin-left: -40px;
-    position: absolute;
-    display: block;
-    overflow: hidden;
-    top: 50%;
-    left: 50%;
-    -webkit-transform-style: flat;
-    -webkit-box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.7);
+.accelerometer-front,
+.accelerometer-back
+{
+    width: 66px;
+    height: 122px;
+    border-radius: 8px;
 }
 
-.accelerometer-box .front {
-    border:15px solid black;
-    width: 80px;
-    height: 107px;
-    background-color: gray;
-    transform: translate3d(0, 0, 10px);
+.accelerometer-front {
+    background-image: url(Images/accelerometer-front.png);
 }
 
-.accelerometer-box .back {
-    width: 80px;
-    height: 107px;
-    background-color: black;
-    transform: rotateY(-180deg) translate3d(0, 0, 10px);
+.accelerometer-back {
+    transform: rotateY(180deg) translateZ(12px);
+    background-image: url(Images/accelerometer-back.png);
 }
 
-.accelerometer-box .top {
-    overflow: hidden;
-    width: 80px;
-    height: 20px;
-    background-color: #75CE89;
-    transform: rotateX(-90deg) translate3d(0, 0, -10px);
+
+.accelerometer-left,
+.accelerometer-right {
+    width: 12px;
+    height: 106px;
+    top: 8px;
+    background-position: center center;
 }
 
-.accelerometer-box .bottom {
-    overflow: hidden;
-    width: 80px;
-    height: 20px;
-    background-color: #865C6C;
-    transform: rotateX(90deg) translate3d(0, 0, -97px);
+.accelerometer-left {
+    left: -12px;
+    transform-origin: right center;
+    transform: rotateY(-90deg);
+    background-image: url(Images/accelerometer-left.png);
 }
 
-.accelerometer-box .left {
-    width: 20px;
-    height: 107px;
-    background-color: #7992CB;
-    transform: rotateY(90deg) translate3d(0, 0, 70px);
+
+.accelerometer-right {
+    right: -12px;
+    transform-origin: left center;
+    transform: rotateY(90deg);
+    background-image: url(Images/accelerometer-right.png);
 }
 
-.accelerometer-box .right {
-    width: 20px;
-    height: 107px;
-    background-color: #7992CB;
-    transform: rotateY(-90deg) translate3d(0, 0, 10px);
+.accelerometer-left::before,
+.accelerometer-left::after,
+.accelerometer-right::before,
+.accelerometer-right::after
+{
+    content: '';
+    width: 12px;
+    height: 6px;
+}
+
+.accelerometer-left::before,
+.accelerometer-left::after
+{
+    background-image: url(Images/accelerometer-left.png);
+}
+
+.accelerometer-right::before,
+.accelerometer-right::after
+{
+    background-image: url(Images/accelerometer-right.png);
+}
+
+.accelerometer-left::before,
+.accelerometer-right::before {
+    top: -6px;
+    transform-origin: center bottom;
+    transform: rotateX(26deg);
+    background-position: center top;
+}
+
+.accelerometer-left::after,
+.accelerometer-right::after {
+    bottom: -6px;
+    transform-origin: center top;
+    transform: rotateX(-25deg);
+    background-position: center bottom;
+}
+
+.accelerometer-top,
+.accelerometer-bottom {
+    width: 50px;
+    height: 12px;
+    left: 8px;
+    background-position: center center;
+}
+
+.accelerometer-top {
+    top: -12px;
+    transform-origin: center bottom;
+    transform: rotateX(90deg);
+    background-image: url(Images/accelerometer-top.png);
+}
+
+
+.accelerometer-bottom {
+    bottom: -12px;
+    transform-origin: center top;
+    transform: rotateX(-90deg);
+    background-image: url(Images/accelerometer-bottom.png);
+}
+
+
+.accelerometer-top::before,
+.accelerometer-top::after,
+.accelerometer-bottom::before,
+.accelerometer-bottom::after
+{
+    content: '';
+    width: 8px;
+    height: 12px;
+}
+
+.accelerometer-top::before,
+.accelerometer-top::after
+{
+    background-image: url(Images/accelerometer-top.png);
+}
+
+.accelerometer-bottom::before,
+.accelerometer-bottom::after
+{
+    background-image: url(Images/accelerometer-bottom.png);
+}
+
+.accelerometer-top::before,
+.accelerometer-bottom::before {
+    left: -6px;
+    transform-origin: right center;
+    transform: rotateY(-26deg);
+    background-position: left center;
+}
+
+.accelerometer-top::after,
+.accelerometer-bottom::after {
+    right: -6px;
+    transform-origin: left center;
+    transform: rotateY(26deg);
+    background-position: right center;
 }
 
 .accelerometer-axis-input-container {
@@ -193,8 +303,8 @@ fieldset.device-orientation-override-section[disabled] .accelerometer-stage {
 }
 
 fieldset.device-orientation-override-section {
+    margin: 0;
     display: flex;
-    margin-left: -3px;
 }
 
 .touch-label {

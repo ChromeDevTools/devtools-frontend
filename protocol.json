@@ -4725,21 +4725,9 @@
         "domain": "Tracing",
         "types": [
             {
-                "id": "MemoryDumpTrigger",
-                "type": "object",
-                "properties": [
-                    { "name": "mode", "type": "string", "enum": ["light", "detailed"], "description": "Level of detail of the triggered memory dumps." },
-                    { "name": "periodicIntervalMs", "type": "integer", "description": "Length of the periodic intervals between the triggered memory dumps." }
-                ],
-                "description": "Memory dump trigger configuration."
-            },
-            {
                 "id": "MemoryDumpConfig",
                 "type": "object",
-                "properties": [
-                    { "name": "triggers", "type": "array", "items": { "$ref": "MemoryDumpTrigger" }, "optional": false, "description": "Memory dump trigger configuration." }
-                ],
-                "description": "Configuration for memory dump triggers. Used only when \"memory-infra\" category is enabled."
+                "description": "Configuration for memory dump. Used only when \"memory-infra\" category is enabled."
             },
             {
                 "id": "TraceConfig",

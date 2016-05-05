@@ -114,9 +114,7 @@ WebInspector.NetworkConfigView.createUserAgentSelectAndInput = function()
 
     settingChanged();
     userAgentSelectElement.addEventListener("change", userAgentSelected, false);
-
-    otherUserAgentElement.addEventListener("blur", textChanged, false);
-    otherUserAgentElement.addEventListener("keyup", textChanged, false);
+    otherUserAgentElement.addEventListener("input", textChanged, false);
 
     function userAgentSelected()
     {

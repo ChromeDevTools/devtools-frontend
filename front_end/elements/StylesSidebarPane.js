@@ -759,48 +759,7 @@ WebInspector.StylePropertiesSection = function(parentPane, matchedStyles, style)
     var closeBrace = this.element.createChild("div", "sidebar-pane-closing-brace");
     closeBrace.textContent = "}";
 
-    if (this.editable) {
-        var items = [];
-        var colorButton = new WebInspector.ToolbarButton(WebInspector.UIString("Add color"), "foreground-color-toolbar-item");
-        colorButton.addEventListener("click", this._onInsertColorPropertyClick.bind(this));
-        items.push(colorButton);
-
-        var backgroundButton = new WebInspector.ToolbarButton(WebInspector.UIString("Add background-color"), "background-color-toolbar-item");
-        backgroundButton.addEventListener("click", this._onInsertBackgroundColorPropertyClick.bind(this));
-        items.push(backgroundButton);
-
-        if (rule) {
-            var newRuleButton = new WebInspector.ToolbarButton(WebInspector.UIString("Insert Style Rule Below"), "add-toolbar-item");
-            newRuleButton.addEventListener("click", this._onNewRuleClick.bind(this));
-            items.push(newRuleButton);
-        }
-
-        var menuButton = new WebInspector.ToolbarButton(WebInspector.UIString("More tools\u2026"), "menu-toolbar-item");
-        items.push(menuButton);
-
-        if (items.length) {
-            var sectionToolbar = new WebInspector.Toolbar("sidebar-pane-section-toolbar", closeBrace);
-
-            for (var i = 0; i < items.length; ++i)
-                sectionToolbar.appendToolbarItem(items[i]);
-
-            items.pop();
-
-            /**
-             * @param {!Array<!WebInspector.ToolbarButton>} items
-             * @param {boolean} value
-             */
-            function setItemsVisibility(items, value)
-            {
-                for (var i = 0; i < items.length; ++i)
-                    items[i].setVisible(value);
-                menuButton.setVisible(!value);
-            }
-            setItemsVisibility(items, false);
-            sectionToolbar.element.addEventListener("mouseenter", setItemsVisibility.bind(null, items, true));
-            sectionToolbar.element.addEventListener("mouseleave", setItemsVisibility.bind(null, items, false));
-        }
-    }
+    this._createHoverMenuToolbar(closeBrace);
 
     this._selectorElement.addEventListener("click", this._handleSelectorClick.bind(this), false);
     this.element.addEventListener("mousedown", this._handleEmptySpaceMouseDown.bind(this), false);
@@ -835,6 +794,66 @@ WebInspector.StylePropertiesSection = function(parentPane, matchedStyles, style)
 }
 
 WebInspector.StylePropertiesSection.prototype = {
+    /**
+     * @param {!Element} container
+     */
+    _createHoverMenuToolbar: function(container)
+    {
+        if (!this.editable)
+            return;
+        var items = [];
+        var colorButton = new WebInspector.ToolbarButton(WebInspector.UIString("Add color"), "foreground-color-toolbar-item");
+        colorButton.addEventListener("click", this._onInsertColorPropertyClick.bind(this));
+        items.push(colorButton);
+
+        var backgroundButton = new WebInspector.ToolbarButton(WebInspector.UIString("Add background-color"), "background-color-toolbar-item");
+        backgroundButton.addEventListener("click", this._onInsertBackgroundColorPropertyClick.bind(this));
+        items.push(backgroundButton);
+
+        var newRuleButton = null;
+        if (this._style.parentRule) {
+            newRuleButton = new WebInspector.ToolbarButton(WebInspector.UIString("Insert Style Rule Below"), "add-toolbar-item");
+            newRuleButton.addEventListener("click", this._onNewRuleClick.bind(this));
+            items.push(newRuleButton);
+        }
+
+        var sectionToolbar = new WebInspector.Toolbar("sidebar-pane-section-toolbar", container);
+        for (var i = 0; i < items.length; ++i)
+            sectionToolbar.appendToolbarItem(items[i]);
+
+        var menuButton = new WebInspector.ToolbarButton(WebInspector.UIString("More tools\u2026"), "menu-toolbar-item");
+        sectionToolbar.appendToolbarItem(menuButton);
+        setItemsVisibility.call(this, items, false);
+        sectionToolbar.element.addEventListener("mouseenter", setItemsVisibility.bind(this, items, true));
+        sectionToolbar.element.addEventListener("mouseleave", setItemsVisibility.bind(this, items, false));
+
+        /**
+         * @param {!Array<!WebInspector.ToolbarButton>} items
+         * @param {boolean} value
+         * @this {WebInspector.StylePropertiesSection}
+         */
+        function setItemsVisibility(items, value)
+        {
+            for (var i = 0; i < items.length; ++i)
+                items[i].setVisible(value);
+            menuButton.setVisible(!value);
+            if (this._isSASSStyle())
+                newRuleButton.setVisible(false);
+        }
+    },
+
+    /**
+     * @return {boolean}
+     */
+    _isSASSStyle: function()
+    {
+        var header = this._style.styleSheetId ? this._style.cssModel().styleSheetHeaderForId(this._style.styleSheetId) : null;
+        if (!header)
+            return false;
+        var sourceMap = header.cssModel().sourceMapForHeader(header);
+        return sourceMap ? sourceMap.editable() : false;
+    },
+
     /**
      * @return {!WebInspector.CSSStyleDeclaration}
      */
@@ -1302,6 +1321,9 @@ WebInspector.StylePropertiesSection.prototype = {
             return;
         }
 
+        if (!this.editable || this._isSASSStyle())
+            return;
+
         var config = new WebInspector.InplaceEditor.Config(this._editingMediaCommitted.bind(this, media), this._editingMediaCancelled.bind(this, element), undefined, this._editingMediaBlurHandler.bind(this));
         WebInspector.InplaceEditor.startEditing(element, config);
 
@@ -1409,7 +1431,7 @@ WebInspector.StylePropertiesSection.prototype = {
 
     _startEditingOnMouseEvent: function()
     {
-        if (!this.editable)
+        if (!this.editable || this._isSASSStyle())
             return;
 
         var rule = this._style.parentRule;

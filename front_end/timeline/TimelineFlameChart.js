@@ -306,7 +306,7 @@ WebInspector.TimelineFlameChartDataProvider = function(model, frameModel, irMode
     this._interactionsHeaderLevel1 = {
         padding: 4,
         height: 17,
-        collapsible: Runtime.experiments.isEnabled("timelineLatencyInfo"),
+        collapsible: true,
         color: WebInspector.themeSupport.patchColor("#222", WebInspector.ThemeSupport.ColorUsage.Foreground),
         font: this._font,
         backgroundColor: WebInspector.themeSupport.patchColor("white", WebInspector.ThemeSupport.ColorUsage.Background),
@@ -413,16 +413,14 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
         this._appendHeader(WebInspector.UIString("Interactions"), this._interactionsHeaderLevel1);
         this._appendInteractionRecords();
 
-        if (Runtime.experiments.isEnabled("timelineLatencyInfo")) {
-            var asyncEventGroups = WebInspector.TimelineUIUtils.asyncEventGroups();
-            var inputLatencies = this._model.mainThreadAsyncEvents().get(asyncEventGroups.input);
-            if (inputLatencies && inputLatencies.length)
-                this._appendAsyncEventsGroup(asyncEventGroups.input.title, inputLatencies, this._interactionsHeaderLevel2);
+        var asyncEventGroups = WebInspector.TimelineUIUtils.asyncEventGroups();
+        var inputLatencies = this._model.mainThreadAsyncEvents().get(asyncEventGroups.input);
+        if (inputLatencies && inputLatencies.length)
+            this._appendAsyncEventsGroup(asyncEventGroups.input.title, inputLatencies, this._interactionsHeaderLevel2);
 
-            var animations = this._model.mainThreadAsyncEvents().get(asyncEventGroups.animation);
-            if (animations && animations.length)
-                this._appendAsyncEventsGroup(asyncEventGroups.animation.title, animations, this._interactionsHeaderLevel2);
-        }
+        var animations = this._model.mainThreadAsyncEvents().get(asyncEventGroups.animation);
+        if (animations && animations.length)
+            this._appendAsyncEventsGroup(asyncEventGroups.animation.title, animations, this._interactionsHeaderLevel2);
 
         var threads = this._model.virtualThreads();
         this._appendThreadTimelineData(WebInspector.UIString("Main"), this._model.mainThreadEvents(), this._model.mainThreadAsyncEvents(), true);

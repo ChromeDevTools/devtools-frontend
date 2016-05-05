@@ -449,18 +449,6 @@
     content: "i";
 }
 
-.warning-note {
-    background-color: rgb(255, 161, 45);
-}
-
-.warning-note::before {
-    content: "!";
-}
-
 .console-view-object-properties-section:not(.expanded) .info-note {
-    display: none;
-}
-
-.console-view-object-properties-section.expanded .warning-note {
     display: none;
 }

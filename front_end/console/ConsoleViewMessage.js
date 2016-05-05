@@ -425,11 +425,6 @@ WebInspector.ConsoleViewMessage.prototype = {
                 titleElement.createTextChild(obj.description || "");
             }
         }
-        if (obj.subtype === "proxy") {
-            var warning = titleElement.createChild("span", "object-state-note");
-            warning.classList.add("warning-note");
-            warning.title = WebInspector.UIString("Expansion of the Proxy object can lead to JavaScript execution.");
-        }
         var note = titleElement.createChild("span", "object-state-note");
         note.classList.add("info-note");
         note.title = WebInspector.UIString("Object value at left was snapshotted when logged, value below was evaluated just now.");

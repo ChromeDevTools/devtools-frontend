@@ -230,9 +230,10 @@ WebInspector.RemoteObject.prototype = {
     },
 
     /**
-     * @param {function(this:Object, ...)} functionDeclaration
+     * @template T
+     * @param {function(this:Object, ...):T} functionDeclaration
      * @param {!Array<!RuntimeAgent.CallArgument>|undefined} args
-     * @param {function(*)} callback
+     * @param {function(T)} callback
      */
     callFunctionJSON: function(functionDeclaration, args, callback)
     {

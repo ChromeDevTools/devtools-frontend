@@ -105,7 +105,7 @@
 .webkit-html-external-link,
 .webkit-html-resource-link {
     /* Keep this in sync with view-source.css (.webkit-html-external-link, .webkit-html-resource-link) */
-    color: #00e;
+    color: rgb(17, 85, 204);
 }
 
 .-theme-with-dark-background .webkit-html-external-link,

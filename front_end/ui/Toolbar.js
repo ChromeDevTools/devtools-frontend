@@ -73,6 +73,11 @@ WebInspector.Toolbar.prototype = {
         this._contentElement.classList.add("toolbar-toggled-gray");
     },
 
+    renderAsLinks: function()
+    {
+        this._contentElement.classList.add("toolbar-render-as-links");
+    },
+
     /**
      * @param {boolean} enabled
      */

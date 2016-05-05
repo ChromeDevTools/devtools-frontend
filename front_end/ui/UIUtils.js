@@ -1857,5 +1857,49 @@ WebInspector.uiLabelForPriority = function(priority)
     return labelMap.get(priority) || WebInspector.UIString("Unknown");
 }
 
+/**
+ * @param {string} url
+ * @param {string=} linkText
+ * @param {string=} classes
+ * @param {boolean=} isExternal
+ * @param {string=} tooltipText
+ * @return {!Element}
+ */
+WebInspector.linkifyURLAsNode = function(url, linkText, classes, isExternal, tooltipText)
+{
+    if (!linkText)
+        linkText = url;
+
+    var a = createElementWithClass("a", classes);
+    var href = url;
+    if (url.trim().toLowerCase().startsWith("javascript:"))
+        href = null;
+    if (isExternal && WebInspector.ParsedURL.isRelativeURL(url))
+        href = null;
+    if (href !== null) {
+        a.href = href;
+        a.classList.add(isExternal ? "webkit-html-external-link" : "webkit-html-resource-link");
+    }
+    if (!tooltipText && linkText !== url)
+        a.title = url;
+    else if (tooltipText)
+        a.title = tooltipText;
+    a.textContent = linkText.trimMiddle(150);
+    if (isExternal)
+        a.setAttribute("target", "_blank");
+
+    return a;
+}
+
+/**
+ * @param {string} article
+ * @param {string} title
+ * @return {!Element}
+ */
+WebInspector.linkifyDocumentationURLAsNode = function(article, title)
+{
+    return WebInspector.linkifyURLAsNode("https://developers.google.com/web/tools/chrome-devtools/" + article, title, undefined, true);
+}
+
 /** @type {!WebInspector.ThemeSupport} */
 WebInspector.themeSupport;

@@ -106,7 +106,14 @@
     font-weight: bold;
 }
 
-.toolbar-button:not(.toolbar-has-glyph):not(.toolbar-has-dropdown):not(.menu-toolbar-item).hover {
+.toolbar-render-as-links * {
+    font-weight: initial;
+    color: rgb(17, 85, 204);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+:not(.toolbar-render-as-links) .toolbar-button:not(.toolbar-has-glyph):not(.toolbar-has-dropdown):not(.menu-toolbar-item).hover {
     background-color: #f3f3f3;
 }
 
@@ -132,11 +139,11 @@
     opacity: 0.5;
 }
 
-.toolbar-button:enabled.hover:not(:active) .toolbar-glyph {
+:not(.toolbar-render-as-links) .toolbar-button:enabled.hover:not(:active) .toolbar-glyph {
     background-color: #333;
 }
 
-.toolbar-button:enabled.hover:not(:active) .toolbar-text {
+:not(.toolbar-render-as-links) .toolbar-button:enabled.hover:not(:active) .toolbar-text {
     color: #333;
 }
 

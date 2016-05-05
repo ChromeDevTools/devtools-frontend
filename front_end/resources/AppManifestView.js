@@ -12,59 +12,33 @@ WebInspector.AppManifestView = function()
     WebInspector.VBox.call(this, true);
     this.registerRequiredCSS("resources/appManifestView.css");
 
-    this._contentBox = this.contentElement.createChild("div", "app-content-box");
-    this._contentBox.createChild("div", "app-manifest-title").textContent = WebInspector.UIString("App Manifest");
-    this._urlElement = this._contentBox.createChild("div", "app-manifest-url link");
-    this._identitySection = this._createSection(WebInspector.UIString("Identity"));
-    this._presentationSection = this._createSection(WebInspector.UIString("Presentation"));
-    var iconsSection = this._createSection(WebInspector.UIString("Icons"));
-    this._iconsList = iconsSection.createChild("div", "app-manifest-icons");
-    this._errorsSection = this._createSection(WebInspector.UIString("Errors and warnings"));
-    this._errorsList = this._errorsSection.createChild("div", "app-manifest-errors");
+    this._reportView = new WebInspector.ReportView(WebInspector.UIString("App Manifest"));
+    this._reportView.show(this.contentElement);
+    this._errorsSection = this._reportView.appendSection(WebInspector.UIString("Errors and warnings"));
+    this._identitySection = this._reportView.appendSection(WebInspector.UIString("Identity"));
+    this._presentationSection = this._reportView.appendSection(WebInspector.UIString("Presentation"));
+    this._iconsSection = this._reportView.appendSection(WebInspector.UIString("Icons"));
 
-    this._nameField = this._createField(this._identitySection, WebInspector.UIString("Name"));
-    this._shortNameField = this._createField(this._identitySection, WebInspector.UIString("Short name"));
+    this._nameField = this._identitySection.appendField(WebInspector.UIString("Name"));
+    this._shortNameField = this._identitySection.appendField(WebInspector.UIString("Short name"));
 
-    this._startURLField = this._createField(this._presentationSection, WebInspector.UIString("Start URL"));
+    this._startURLField = this._presentationSection.appendField(WebInspector.UIString("Start URL"));
 
-    var themeColorField = this._createField(this._presentationSection, WebInspector.UIString("Theme color"));
+    var themeColorField = this._presentationSection.appendField(WebInspector.UIString("Theme color"));
     this._themeColorSwatch = WebInspector.ColorSwatch.create();
     themeColorField.appendChild(this._themeColorSwatch);
 
-    var backgroundColorField = this._createField(this._presentationSection, WebInspector.UIString("Background color"));
+    var backgroundColorField = this._presentationSection.appendField(WebInspector.UIString("Background color"));
     this._backgroundColorSwatch = WebInspector.ColorSwatch.create();
     backgroundColorField.appendChild(this._backgroundColorSwatch);
 
-    this._orientationField = this._createField(this._presentationSection, WebInspector.UIString("Orientation"));
-    this._displayField = this._createField(this._presentationSection, WebInspector.UIString("Display"));
+    this._orientationField = this._presentationSection.appendField(WebInspector.UIString("Orientation"));
+    this._displayField = this._presentationSection.appendField(WebInspector.UIString("Display"));
 
     WebInspector.targetManager.observeTargets(this);
 }
 
 WebInspector.AppManifestView.prototype = {
-    /**
-     * @param {string} title
-     * @return {!Element}
-     */
-    _createSection: function(title)
-    {
-        var section = this._contentBox.createChild("div", "app-manifest-section");
-        section.createChild("div", "app-manifest-section-title").textContent = title;
-        return section;
-    },
-
-    /**
-     * @param {string} title
-     * @param {!Element} section
-     * @return {!Element}
-     */
-    _createField: function(section, title)
-    {
-        var row = section.createChild("div", "app-manifest-field");
-        row.createChild("div", "app-manifest-field-name").textContent = title;
-        return row.createChild("div", "app-manifest-field-value");
-    },
-
     /**
      * @override
      * @param {!WebInspector.Target} target
@@ -99,13 +73,11 @@ WebInspector.AppManifestView.prototype = {
      */
     _renderManifest: function(url, data, errors)
     {
-        this._urlElement.removeChildren();
-        if (url)
-            this._urlElement.appendChild(WebInspector.linkifyResourceAsNode(url, undefined, undefined, undefined, undefined, url));
-        this._errorsList.removeChildren();
-        this._errorsSection.classList.toggle("hidden", !errors.length);
+        this._reportView.setURL(url);
+        this._errorsSection.clearContent();
+        this._errorsSection.element.classList.toggle("hidden", !errors.length);
         for (var error of errors)
-            this._errorsList.appendChild(createLabel(error.message, error.critical ? "error-icon" : "warning-icon"));
+            this._errorsSection.appendRow().appendChild(createLabel(error.message, error.critical ? "error-icon" : "warning-icon"));
 
         if (!data)
             data = "{}";
@@ -127,11 +99,13 @@ WebInspector.AppManifestView.prototype = {
         this._displayField.textContent = stringProperty("display");
 
         var icons = parsedManifest["icons"] || [];
-        this._iconsList.removeChildren();
+        this._iconsSection.clearContent();
         for (var icon of icons) {
             var title = (icon["sizes"] || "") + "\n" + (icon["type"] || "");
-            var field = this._createField(this._iconsList, title);
+            var field = this._iconsSection.appendField(title);
             var imageElement = field.createChild("img");
+            imageElement.style.maxWidth = "200px";
+            imageElement.style.maxHeight = "200px";
             imageElement.src = WebInspector.ParsedURL.completeURL(url, icon["src"]);
         }
 

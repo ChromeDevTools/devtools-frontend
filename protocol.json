@@ -4297,6 +4297,13 @@
                 "handlers": ["browser"]
             },
             {
+                "name": "skipWaiting",
+                "parameters": [
+                    { "name": "scopeURL", "type": "string" }
+                ],
+                "handlers": ["browser"]
+            },
+            {
                 "name": "stopWorker",
                 "parameters": [
                     { "name": "versionId", "type": "string" }

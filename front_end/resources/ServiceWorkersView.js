@@ -211,12 +211,11 @@ WebInspector.ServiceWorkersView.Section.prototype = {
             activeEntry.createChild("span").textContent = WebInspector.UIString("#%s active and is %s", active.id, active.runningStatus);
 
             if (active.isRunning() || active.isStarting()) {
-                var stopButton = createLink(activeEntry, WebInspector.UIString("stop"), this._stopButtonClicked.bind(this, active.id));
-                if (!this._manager.targetForVersionId(active.id)) {
-                    var inspectButton = createLink(activeEntry, WebInspector.UIString("inspect"), this._inspectButtonClicked.bind(this, active.id));
-                }
+                createLink(activeEntry, WebInspector.UIString("stop"), this._stopButtonClicked.bind(this, active.id));
+                if (!this._manager.targetForVersionId(active.id))
+                    createLink(activeEntry, WebInspector.UIString("inspect"), this._inspectButtonClicked.bind(this, active.id));
             } else if (active.isStartable()) {
-                var startButton = createLink(activeEntry, WebInspector.UIString("start"), this._startButtonClicked.bind(this));
+                createLink(activeEntry, WebInspector.UIString("start"), this._startButtonClicked.bind(this));
             }
 
             var clientsList = this._wrapWidget(this._section.appendField(WebInspector.UIString("Clients")));
@@ -234,14 +233,18 @@ WebInspector.ServiceWorkersView.Section.prototype = {
             var waitingEntry = versionsStack.createChild("div", "service-worker-version");
             waitingEntry.createChild("div", "service-worker-waiting-circle");
             waitingEntry.createChild("span").textContent = WebInspector.UIString("#%s waiting to activate", waiting.id);
-            var skipButton = createLink(waitingEntry, WebInspector.UIString("skipWaiting"), this._skipButtonClicked.bind(this));
+            createLink(waitingEntry, WebInspector.UIString("skipWaiting"), this._skipButtonClicked.bind(this));
             waitingEntry.createChild("div", "service-worker-subtitle").textContent = new Date(waiting.scriptLastModified * 1000).toLocaleString();
+            if (!this._manager.targetForVersionId(waiting.id) && (waiting.isRunning() || waiting.isStarting()))
+                createLink(waitingEntry, WebInspector.UIString("inspect"), this._inspectButtonClicked.bind(this, waiting.id));
         }
         if (installing) {
             var installingEntry = versionsStack.createChild("div", "service-worker-version");
             installingEntry.createChild("div", "service-worker-installing-circle");
             installingEntry.createChild("span").textContent = WebInspector.UIString("#%s installing", installing.id);
             installingEntry.createChild("div", "service-worker-subtitle").textContent = new Date(installing.scriptLastModified * 1000).toLocaleString();
+            if (!this._manager.targetForVersionId(installing.id) && (installing.isRunning() || installing.isStarting()))
+                createLink(installingEntry, WebInspector.UIString("inspect"), this._inspectButtonClicked.bind(this, installing.id));
         }
 
         this._section.setFieldVisible(WebInspector.UIString("Errors"), !!this._registration.errors.length);
@@ -250,18 +253,20 @@ WebInspector.ServiceWorkersView.Section.prototype = {
         errorsLabel.classList.add("service-worker-errors-label");
         errorsValue.appendChild(errorsLabel);
         this._moreButton = createLink(errorsValue, this._errorsList.classList.contains("hidden") ? WebInspector.UIString("details") : WebInspector.UIString("hide"),  this._moreErrorsButtonClicked.bind(this));
-        var clearButton = createLink(errorsValue, WebInspector.UIString("clear"), this._clearErrorsButtonClicked.bind(this));
+        createLink(errorsValue, WebInspector.UIString("clear"), this._clearErrorsButtonClicked.bind(this));
 
         /**
          * @param {!Element} parent
          * @param {string} title
          * @param {function()} listener
+         * @return {!Element}
          */
         function createLink(parent, title, listener)
         {
             var span = parent.createChild("span", "link");
             span.textContent = title;
             span.addEventListener("click", listener, false);
+            return span;
         }
         return Promise.resolve();
     },

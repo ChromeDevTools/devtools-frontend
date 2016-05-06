@@ -67,6 +67,8 @@ WebInspector.NetworkRequest = function(target, requestId, url, documentURL, fram
 
     /** @type {?NetworkAgent.ResourcePriority} */
     this._initialPriority = null;
+    /** @type {?NetworkAgent.ResourcePriority} */
+    this._currentPriority = null;
 
     /** @type {!WebInspector.ResourceType} */
     this._resourceType = WebInspector.resourceTypes.Other;
@@ -1000,6 +1002,22 @@ WebInspector.NetworkRequest.prototype = {
     initialPriority: function()
     {
         return this._initialPriority;
+    },
+
+    /**
+     * @param {!NetworkAgent.ResourcePriority} priority
+     */
+    setPriority: function(priority)
+    {
+        this._currentPriority = priority;
+    },
+
+    /**
+     * @return {?NetworkAgent.ResourcePriority}
+     */
+    priority: function()
+    {
+        return this._currentPriority || this._initialPriority || null;
     },
 
     /**

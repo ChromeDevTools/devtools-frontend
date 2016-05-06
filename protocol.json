@@ -1609,6 +1609,16 @@
         ],
         "events": [
             {
+                "name": "resourceChangedPriority",
+                "description": "Fired when resource loading priority is changed",
+                "parameters": [
+                    { "name": "requestId", "$ref": "RequestId", "description": "Request identifier." },
+                    { "name": "newPriority", "$ref": "ResourcePriority", "description": "New priority" },
+                    { "name": "timestamp", "$ref": "Timestamp", "description": "Timestamp." }
+                ],
+                "hidden": true
+            },
+            {
                 "name": "requestWillBeSent",
                 "description": "Fired when page is about to send HTTP request.",
                 "parameters": [

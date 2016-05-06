@@ -293,6 +293,19 @@ WebInspector.NetworkDispatcher.prototype = {
     /**
      * @override
      * @param {!NetworkAgent.RequestId} requestId
+     * @param {!NetworkAgent.ResourcePriority} newPriority
+     * @param {!NetworkAgent.Timestamp} timestamp
+     */
+    resourceChangedPriority: function(requestId, newPriority, timestamp)
+    {
+        var networkRequest = this._inflightRequestsById[requestId];
+        if (networkRequest)
+            networkRequest.setPriority(newPriority);
+    },
+
+    /**
+     * @override
+     * @param {!NetworkAgent.RequestId} requestId
      * @param {!PageAgent.FrameId} frameId
      * @param {!NetworkAgent.LoaderId} loaderId
      * @param {string} documentURL

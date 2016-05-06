@@ -68,7 +68,6 @@ WebInspector.ExtensionServer = function()
     this._registerHandler(commands.Reload, this._onReload.bind(this));
     this._registerHandler(commands.SetOpenResourceHandler, this._onSetOpenResourceHandler.bind(this));
     this._registerHandler(commands.SetResourceContent, this._onSetResourceContent.bind(this));
-    this._registerHandler(commands.SetSidebarHeight, this._onSetSidebarHeight.bind(this));
     this._registerHandler(commands.SetSidebarContent, this._onSetSidebarContent.bind(this));
     this._registerHandler(commands.SetSidebarPage, this._onSetSidebarPage.bind(this));
     this._registerHandler(commands.ShowPanel, this._onShowPanel.bind(this));
@@ -333,15 +332,6 @@ WebInspector.ExtensionServer.prototype = {
     sidebarPanes: function()
     {
         return this._sidebarPanes;
-    },
-
-    _onSetSidebarHeight: function(message)
-    {
-        var sidebar = this._clientObjects[message.id];
-        if (!sidebar)
-            return this._status.E_NOTFOUND(message.id);
-        sidebar.setHeight(message.height);
-        return this._status.OK();
     },
 
     _onSetSidebarContent: function(message, port)

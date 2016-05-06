@@ -81,7 +81,6 @@ function defineCommonExtensionSymbols(apiPrivate)
         SetOpenResourceHandler: "setOpenResourceHandler",
         SetResourceContent: "setResourceContent",
         SetSidebarContent: "setSidebarContent",
-        SetSidebarHeight: "setSidebarHeight",
         SetSidebarPage: "setSidebarPage",
         ShowPanel: "showPanel",
         StopAuditCategoryRun: "stopAuditCategoryRun",
@@ -388,6 +387,20 @@ function defineDeprecatedProperty(object, className, oldName, newName)
     object.__defineGetter__(oldName, getter);
 }
 
+function defineDeprecatedMethod(object, className, oldName)
+{
+    var warningGiven = false;
+    function noop()
+    {
+        if (warningGiven)
+            return;
+
+        console.warn(className + "." + oldName + " is deprecated, please don't use it. It is a no-op.");
+        warningGiven = true;
+    }
+    object[oldName] = noop;
+}
+
 function extractCallbackArgument(args)
 {
     var lastArgument = args[args.length - 1];
@@ -481,14 +494,10 @@ ExtensionPanelImpl.prototype = {
 function ExtensionSidebarPaneImpl(id)
 {
     ExtensionViewImpl.call(this, id);
+    defineDeprecatedMethod(this, "ExtensionSidebarPane", "setHeight");
 }
 
 ExtensionSidebarPaneImpl.prototype = {
-    setHeight: function(height)
-    {
-        extensionServer.sendRequest({ command: commands.SetSidebarHeight, id: this._id, height: height });
-    },
-
     setExpression: function(expression, rootTitle, evaluateOptions)
     {
         var request = {

@@ -5110,5 +5110,40 @@
                 "hidden": true
             }
         ]
+    },
+    {
+        "domain": "Storage",
+        "hidden": true,
+        "types": [
+            {
+                "id": "StorageType",
+                "type": "string",
+                "enum": [
+                    "appcache",
+                    "cookies",
+                    "file_systems",
+                    "indexeddb",
+                    "local_storage",
+                    "shader_cache",
+                    "websql",
+                    "webrtc_indetity",
+                    "service_workers",
+                    "cache_storage",
+                    "all"
+                ],
+                "description": "Enum of possible storage types."
+            }
+        ],
+        "commands": [
+            {
+                "name": "clearDataForOrigin",
+                "parameters": [
+                    { "name": "origin", "type": "string", "description": "Security origin." },
+                    { "name": "storageTypes", "type": "string", "description": "Comma separated origin names." }
+                ],
+                "description": "Clears storage for origin.",
+                "handlers": ["browser"]
+            }
+        ]
     }]
 }

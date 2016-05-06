@@ -33,8 +33,9 @@ WebInspector.Tooltip.prototype = {
      */
     _mouseMove: function(event)
     {
-        var path = event.path;
-        if (!path || event.buttons !== 0)
+        var mouseEvent = /** @type {!MouseEvent} */ (event);
+        var path = mouseEvent.path;
+        if (!path || mouseEvent.buttons !== 0 || (mouseEvent.movementX === 0 && mouseEvent.movementY === 0))
             return;
 
         if (this._anchorElement && path.indexOf(this._anchorElement) === -1)
@@ -44,7 +45,7 @@ WebInspector.Tooltip.prototype = {
             if (element === this._anchorElement) {
                 return;
             } else if (element[WebInspector.Tooltip._symbol]) {
-                this._show(element, event);
+                this._show(element, mouseEvent);
                 return;
             }
         }

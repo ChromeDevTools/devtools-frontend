@@ -43,6 +43,17 @@ Event.prototype.isMetaOrCtrlForTest;
 Event.prototype.code;
 
 /**
+ * TODO(luoe): MouseEvent properties movementX and movementY from the
+ * PointerLock API are not yet standard. Once they are included in
+ * Closure Compiler, these custom externs can be removed.
+ */
+/** @type {number} */
+MouseEvent.prototype.movementX;
+
+/** @type {number} */
+MouseEvent.prototype.movementY;
+
+/**
  * @type {number}
  */
 KeyboardEvent.DOM_KEY_LOCATION_NUMPAD;

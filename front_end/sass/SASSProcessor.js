@@ -448,18 +448,18 @@ WebInspector.SASSProcessor.RemovePropertyOperation.prototype = {
  * @constructor
  * @extends {WebInspector.SASSProcessor.EditOperation}
  * @param {!WebInspector.ASTSourceMap} map
- * @param {!WebInspector.SASSSupport.Property} sassAnchor
- * @param {boolean} insertBefore
+ * @param {!WebInspector.SASSSupport.Rule} sassRule
+ * @param {?WebInspector.SASSSupport.Property} afterSASSProperty
  * @param {!Array<string>} propertyNames
  * @param {!Array<string>} propertyValues
  * @param {!Array<boolean>} disabledStates
  */
-WebInspector.SASSProcessor.InsertPropertiesOperation = function(map, sassAnchor, insertBefore, propertyNames, propertyValues, disabledStates)
+WebInspector.SASSProcessor.InsertPropertiesOperation = function(map, sassRule, afterSASSProperty, propertyNames, propertyValues, disabledStates)
 {
     console.assert(propertyNames.length === propertyValues.length && propertyValues.length === disabledStates.length);
-    WebInspector.SASSProcessor.EditOperation.call(this, map, sassAnchor.document.url);
-    this._sassAnchor = sassAnchor;
-    this._insertBefore = insertBefore;
+    WebInspector.SASSProcessor.EditOperation.call(this, map, sassRule.document.url);
+    this._sassRule = sassRule;
+    this._afterSASSProperty = afterSASSProperty
     this._nameTexts = propertyNames;
     this._valueTexts = propertyValues;
     this._disabledStates = disabledStates;
@@ -472,25 +472,26 @@ WebInspector.SASSProcessor.InsertPropertiesOperation = function(map, sassAnchor,
  */
 WebInspector.SASSProcessor.InsertPropertiesOperation.fromCSSChange = function(change, map)
 {
-    var insertBefore = false;
-    var cssAnchor = null;
-    var sassAnchor = null;
+    var sassRule = null;
+    var afterSASSProperty = null;
     if (change.oldPropertyIndex) {
-        cssAnchor = change.oldRule.properties[change.oldPropertyIndex - 1].name;
-        sassAnchor = map.toSourceNode(cssAnchor);
+        var cssAnchor = change.oldRule.properties[change.oldPropertyIndex - 1].name;
+        var sassAnchor = map.toSourceNode(cssAnchor);
+        afterSASSProperty = sassAnchor ? sassAnchor.parent : null;
+        sassRule = afterSASSProperty ? afterSASSProperty.parent : null;
     } else {
-        insertBefore = true;
-        cssAnchor = change.oldRule.properties[0].name;
-        sassAnchor = map.toSourceNode(cssAnchor);
+        var cssAnchor = change.oldRule.blockStart;
+        var sassAnchor = map.toSourceNode(cssAnchor);
+        sassRule = sassAnchor ? sassAnchor.parent : null;
     }
-    if (!sassAnchor)
+    if (!sassRule)
         return null;
     var insertedProperty = /** @type {!WebInspector.SASSSupport.Property} */(change.newProperty());
     console.assert(insertedProperty, "InsertPropertiesOperation must have inserted CSS property");
     var names = [insertedProperty.name.text];
     var values = [insertedProperty.value.text];
     var disabledStates = [insertedProperty.disabled];
-    return new WebInspector.SASSProcessor.InsertPropertiesOperation(map, sassAnchor.parent, insertBefore, names, values, disabledStates);
+    return new WebInspector.SASSProcessor.InsertPropertiesOperation(map, sassRule, afterSASSProperty, names, values, disabledStates);
 }
 
 WebInspector.SASSProcessor.InsertPropertiesOperation.prototype = {
@@ -503,7 +504,7 @@ WebInspector.SASSProcessor.InsertPropertiesOperation.prototype = {
     {
         if (!(other instanceof WebInspector.SASSProcessor.InsertPropertiesOperation))
             return false;
-        if (this._sassAnchor !== other._sassAnchor || this._insertBefore !== other._insertBefore)
+        if (this._sassRule !== other._sassRule || this._afterSASSProperty !== other._afterSASSProperty)
             return false;
         var names = new Set(this._nameTexts);
         for (var i = 0; i < other._nameTexts.length; ++i) {
@@ -523,17 +524,22 @@ WebInspector.SASSProcessor.InsertPropertiesOperation.prototype = {
      */
     perform: function()
     {
+        var newSASSProperties = this._sassRule.insertProperties(this._afterSASSProperty, this._nameTexts, this._valueTexts, this._disabledStates);
         var cssRules = [];
-        var sassRule = this._sassAnchor.parent;
-        var newSASSProperties = sassRule.insertProperties(this._nameTexts, this._valueTexts, this._disabledStates, this._sassAnchor, this._insertBefore);
-        var cssAnchors = WebInspector.SASSProcessor._toCSSProperties(this.map, this._sassAnchor);
-        for (var cssAnchor of cssAnchors) {
-            var cssRule = cssAnchor.parent;
-            cssRules.push(cssRule);
-            var newCSSProperties = cssRule.insertProperties(this._nameTexts, this._valueTexts, this._disabledStates, cssAnchor, this._insertBefore);
-            for (var i = 0; i < newCSSProperties.length; ++i) {
-                this.map.addMapping(newCSSProperties[i].name, newSASSProperties[i].name);
-                this.map.addMapping(newCSSProperties[i].value, newSASSProperties[i].value);
+        var afterCSSProperties = [];
+        if (this._afterSASSProperty) {
+            afterCSSProperties = WebInspector.SASSProcessor._toCSSProperties(this.map, this._afterSASSProperty);
+            cssRules = afterCSSProperties.map(property => property.parent);
+        } else {
+            cssRules = this.map.toCompiledNodes(this._sassRule.blockStart).map(blockStart => blockStart.parent);
+        }
+        for (var i = 0; i < cssRules.length; ++i) {
+            var cssRule = cssRules[i];
+            var afterCSSProperty = afterCSSProperties.length ? afterCSSProperties[i] : null;
+            var newCSSProperties = cssRule.insertProperties(afterCSSProperty, this._nameTexts, this._valueTexts, this._disabledStates);
+            for (var j = 0; j < newCSSProperties.length; ++j) {
+                this.map.addMapping(newCSSProperties[j].name, newSASSProperties[j].name);
+                this.map.addMapping(newCSSProperties[j].value, newSASSProperties[j].value);
             }
         }
         return cssRules;
@@ -547,8 +553,9 @@ WebInspector.SASSProcessor.InsertPropertiesOperation.prototype = {
      */
     rebase: function(newMap, nodeMapping)
     {
-        var sassAnchor = /** @type {?WebInspector.SASSSupport.Property} */(nodeMapping.get(this._sassAnchor)) || this._sassAnchor;
-        return new WebInspector.SASSProcessor.InsertPropertiesOperation(newMap, sassAnchor, this._insertBefore, this._nameTexts, this._valueTexts, this._disabledStates);
+        var sassRule = /** @type {?WebInspector.SASSSupport.Rule} */(nodeMapping.get(this._sassRule)) || this._sassRule;
+        var afterSASSProperty = this._afterSASSProperty ? /** @type {?WebInspector.SASSSupport.Property} */(nodeMapping.get(this._afterSASSProperty)) || this._afterSASSProperty : null;
+        return new WebInspector.SASSProcessor.InsertPropertiesOperation(newMap, sassRule, afterSASSProperty, this._nameTexts, this._valueTexts, this._disabledStates);
     },
 
     __proto__: WebInspector.SASSProcessor.EditOperation.prototype

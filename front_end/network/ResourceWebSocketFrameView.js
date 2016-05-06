@@ -143,7 +143,7 @@ WebInspector.ResourceWebSocketFrameView.prototype = {
             if (this._currentSelectedNode !== selectedNode)
                 return;
             if (parsedJSON)
-                this._splitWidget.setSidebarWidget(new WebInspector.JSONView(parsedJSON));
+                this._splitWidget.setSidebarWidget(WebInspector.JSONView.createSearchableView(parsedJSON));
             else
                 this._splitWidget.setSidebarWidget(new WebInspector.ResourceSourceFrame(contentProvider));
         }

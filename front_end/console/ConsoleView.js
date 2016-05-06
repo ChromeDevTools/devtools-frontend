@@ -831,7 +831,7 @@ WebInspector.ConsoleView.prototype = {
      */
     _commandEvaluated: function(event)
     {
-        var data = /** {{result: ?WebInspector.RemoteObject, wasThrown: boolean, text: string, commandMessage: !WebInspector.ConsoleMessage}} */ (event.data);
+        var data = /** @type {{result: ?WebInspector.RemoteObject, wasThrown: boolean, text: string, commandMessage: !WebInspector.ConsoleMessage}} */ (event.data);
         this._prompt.pushHistoryItem(data.text);
         this._consoleHistorySetting.set(this._prompt.historyData().slice(-WebInspector.ConsoleView.persistedHistorySize));
         this._printResult(data.result, data.wasThrown, data.commandMessage, data.exceptionDetails);
@@ -995,13 +995,11 @@ WebInspector.ConsoleView.prototype = {
         if (!this._regexMatchRanges.length)
             return;
 
-        var currentSearchResultClassName = "current-search-result";
-
         var matchRange;
         if (this._currentMatchRangeIndex >= 0) {
             matchRange = this._regexMatchRanges[this._currentMatchRangeIndex];
             var message = this._visibleViewMessages[matchRange.messageIndex];
-            message.searchHighlightNode(matchRange.matchIndex).classList.remove(currentSearchResultClassName);
+            message.searchHighlightNode(matchRange.matchIndex).classList.remove(WebInspector.highlightedCurrentSearchResultClassName);
         }
 
         index = mod(index, this._regexMatchRanges.length);
@@ -1010,7 +1008,7 @@ WebInspector.ConsoleView.prototype = {
         matchRange = this._regexMatchRanges[index];
         var message = this._visibleViewMessages[matchRange.messageIndex];
         var highlightNode = message.searchHighlightNode(matchRange.matchIndex);
-        highlightNode.classList.add(currentSearchResultClassName);
+        highlightNode.classList.add(WebInspector.highlightedCurrentSearchResultClassName);
         this._viewport.scrollItemIntoView(matchRange.messageIndex);
         highlightNode.scrollIntoViewIfNeeded();
     },

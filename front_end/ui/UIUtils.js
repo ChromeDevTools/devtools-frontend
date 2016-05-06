@@ -30,6 +30,7 @@
  */
 
 WebInspector.highlightedSearchResultClassName = "highlighted-search-result";
+WebInspector.highlightedCurrentSearchResultClassName = "current-search-result";
 
 /**
  * @param {!Element} element

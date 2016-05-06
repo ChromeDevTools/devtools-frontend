@@ -31,6 +31,7 @@
 /**
  * @constructor
  * @extends {WebInspector.VBox}
+ * @implements {WebInspector.Searchable}
  * @param {!WebInspector.ParsedJSON} parsedJSON
  */
 WebInspector.JSONView = function(parsedJSON)
@@ -38,6 +39,32 @@ WebInspector.JSONView = function(parsedJSON)
     WebInspector.VBox.call(this);
     this._parsedJSON = parsedJSON;
     this.element.classList.add("json-view");
+
+    /** @type {?WebInspector.SearchableView} */
+    this._searchableView;
+    /** @type {!WebInspector.ObjectPropertiesSection} */
+    this._treeOutline;
+    /** @type {number} */
+    this._currentSearchFocusIndex = 0;
+    /** @type {!Array.<!TreeElement>} */
+    this._currentSearchTreeElements = [];
+    /** @type {?RegExp} */
+    this._searchRegex = null;
+}
+
+/**
+ * @param {!WebInspector.ParsedJSON} parsedJSON
+ * @return {!WebInspector.SearchableView}
+ */
+WebInspector.JSONView.createSearchableView = function(parsedJSON)
+{
+    var jsonView = new WebInspector.JSONView(parsedJSON);
+    var searchableView = new WebInspector.SearchableView(jsonView);
+    searchableView.setPlaceholder(WebInspector.UIString("Find"));
+    jsonView._searchableView = searchableView;
+    jsonView.show(searchableView.element);
+    jsonView.element.setAttribute("tabIndex", 0);
+    return searchableView;
 }
 
 /**
@@ -125,10 +152,147 @@ WebInspector.JSONView.prototype = {
 
         var obj = WebInspector.RemoteObject.fromLocalObject(this._parsedJSON.data);
         var title = this._parsedJSON.prefix + obj.description + this._parsedJSON.suffix;
-        var section = new WebInspector.ObjectPropertiesSection(obj, title);
-        section.setEditable(false);
-        section.expand();
-        this.element.appendChild(section.element);
+        this._treeOutline = new WebInspector.ObjectPropertiesSection(obj, title);
+        this._treeOutline.setEditable(false);
+        this._treeOutline.expand();
+        this.element.appendChild(this._treeOutline.element);
+    },
+
+    /**
+     * @param {number} index
+     */
+    _jumpToMatch: function(index)
+    {
+        if (!this._searchRegex)
+            return;
+        var previousFocusElement = this._currentSearchTreeElements[this._currentSearchFocusIndex];
+        if (previousFocusElement)
+            previousFocusElement.setSearchRegex(this._searchRegex);
+
+        var newFocusElement = this._currentSearchTreeElements[index];
+        if (newFocusElement) {
+            this._updateSearchIndex(index);
+            newFocusElement.setSearchRegex(this._searchRegex, WebInspector.highlightedCurrentSearchResultClassName);
+            newFocusElement.reveal();
+        } else {
+            this._updateSearchIndex(0);
+        }
+    },
+
+    /**
+     * @param {number} count
+     */
+    _updateSearchCount: function(count)
+    {
+        if (!this._searchableView)
+            return;
+        this._searchableView.updateSearchMatchesCount(count);
+    },
+
+    /**
+     * @param {number} index
+     */
+    _updateSearchIndex: function(index)
+    {
+        this._currentSearchFocusIndex = index;
+        if (!this._searchableView)
+            return;
+        this._searchableView.updateCurrentMatchIndex(index);
+    },
+
+    /**
+     * @override
+     */
+    searchCanceled: function()
+    {
+        this._searchRegex = null;
+        this._currentSearchTreeElements = [];
+
+        for (var element = this._treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
+            if (!(element instanceof WebInspector.ObjectPropertyTreeElement))
+                continue;
+            element.revertHighlightChanges();
+        }
+        this._updateSearchCount(0);
+        this._updateSearchIndex(0);
+    },
+
+    /**
+     * @override
+     * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
+     * @param {boolean} shouldJump
+     * @param {boolean=} jumpBackwards
+     */
+    performSearch: function(searchConfig, shouldJump, jumpBackwards)
+    {
+        var newIndex = this._currentSearchFocusIndex;
+        var previousSearchFocusElement = this._currentSearchTreeElements[newIndex];
+        this.searchCanceled();
+        this._searchRegex = searchConfig.toSearchRegex(true);
+
+        for (var element = this._treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
+            if (!(element instanceof WebInspector.ObjectPropertyTreeElement))
+                continue;
+            var hasMatch = element.setSearchRegex(this._searchRegex);
+            if (hasMatch)
+                this._currentSearchTreeElements.push(element);
+            if (previousSearchFocusElement === element) {
+                var currentIndex = this._currentSearchTreeElements.length - 1;
+                if (hasMatch || jumpBackwards)
+                    newIndex = currentIndex;
+                else
+                    newIndex = currentIndex + 1;
+            }
+        }
+        this._updateSearchCount(this._currentSearchTreeElements.length);
+
+        if (!this._currentSearchTreeElements.length) {
+            this._updateSearchIndex(0);
+            return;
+        }
+        newIndex = mod(newIndex, this._currentSearchTreeElements.length);
+
+        this._jumpToMatch(newIndex);
+    },
+
+    /**
+     * @override
+     */
+    jumpToNextSearchResult: function()
+    {
+        if (!this._currentSearchTreeElements.length)
+            return;
+        var newIndex = mod(this._currentSearchFocusIndex + 1, this._currentSearchTreeElements.length);
+        this._jumpToMatch(newIndex);
+    },
+
+    /**
+     * @override
+     */
+    jumpToPreviousSearchResult: function()
+    {
+        if (!this._currentSearchTreeElements.length)
+            return;
+        var newIndex = mod(this._currentSearchFocusIndex - 1, this._currentSearchTreeElements.length);
+        this._jumpToMatch(newIndex);
+    },
+
+    /**
+     * @override
+     * @return {boolean}
+     */
+    supportsCaseSensitiveSearch: function()
+    {
+        return true;
+    },
+
+    /**
+     * @override
+     * @return {boolean}
+     */
+    supportsRegexSearch: function()
+    {
+        return true;
     },
 
     __proto__: WebInspector.VBox.prototype

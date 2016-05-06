@@ -74,9 +74,18 @@ WebInspector.RequestPreviewView.prototype = {
                     toolbar.appendToolbarItem(item);
             }
             this.innerView = this._previewView;
+            this._previewViewHandledForTest(this._previewView);
         }
     },
 
+    /**
+     * @param {!WebInspector.Widget} view
+     */
+    _previewViewHandledForTest: function(view) { },
+
+    /**
+     * @return {!WebInspector.EmptyWidget}
+     */
     _createEmptyWidget: function()
     {
         return this._createMessageView(WebInspector.UIString("This request has no preview available."));
@@ -102,13 +111,13 @@ WebInspector.RequestPreviewView.prototype = {
 
     /**
      * @param {?WebInspector.ParsedJSON} parsedJSON
-     * @return {?WebInspector.JSONView}
+     * @return {?WebInspector.SearchableView}
      */
     _jsonView: function(parsedJSON)
     {
         if (!parsedJSON || typeof parsedJSON.data !== "object")
             return null;
-        return new WebInspector.JSONView(/** @type {!WebInspector.ParsedJSON} */ (parsedJSON));
+        return WebInspector.JSONView.createSearchableView(/** @type {!WebInspector.ParsedJSON} */ (parsedJSON));
     },
 
     /**

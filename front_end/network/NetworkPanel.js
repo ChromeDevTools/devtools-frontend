@@ -53,10 +53,6 @@ WebInspector.NetworkPanel = function()
     this._filterBar = new WebInspector.FilterBar("networkPanel", true);
     this._filterBar.show(this.element);
 
-    this._searchableView = new WebInspector.SearchableView(this);
-    this._searchableView.setPlaceholder(WebInspector.UIString("Find by filename or path"));
-    this._searchableView.show(this.element);
-
     // Create top overview component.
     this._overviewPane = new WebInspector.TimelineOverviewPane("network");
     this._overviewPane.addEventListener(WebInspector.TimelineOverviewPane.Events.WindowChanged, this._onWindowChanged.bind(this));
@@ -68,14 +64,19 @@ WebInspector.NetworkPanel = function()
     this._splitWidget = new WebInspector.SplitWidget(true, false, "networkPanelSplitViewState");
     this._splitWidget.hideMain();
 
-    this._splitWidget.show(this._searchableView.element);
+    this._splitWidget.show(this.element);
 
     this._progressBarContainer = createElement("div");
     this._createToolbarButtons();
 
+    this._searchableView = new WebInspector.SearchableView(this);
+    this._searchableView.setPlaceholder(WebInspector.UIString("Find by filename or path"));
+
     /** @type {!WebInspector.NetworkLogView} */
     this._networkLogView = new WebInspector.NetworkLogView(this._filterBar, this._progressBarContainer, this._networkLogLargeRowsSetting);
-    this._splitWidget.setSidebarWidget(this._networkLogView);
+    this._networkLogView.show(this._searchableView.element);
+
+    this._splitWidget.setSidebarWidget(this._searchableView);
 
     this._detailsWidget = new WebInspector.VBox();
     this._detailsWidget.element.classList.add("network-details-view");
@@ -283,7 +284,7 @@ WebInspector.NetworkPanel.prototype = {
     {
         var toggled = this._networkLogShowOverviewSetting.get();
         if (toggled)
-            this._overviewPane.show(this._searchableView.element, this._splitWidget.element);
+            this._overviewPane.show(this.element, this._splitWidget.element);
         else
             this._overviewPane.detach();
         this.doResize();
@@ -297,7 +298,7 @@ WebInspector.NetworkPanel.prototype = {
             this._filmStripView.setMode(WebInspector.FilmStripView.Modes.FrameBased);
             this._filmStripView.element.classList.add("network-film-strip");
             this._filmStripRecorder = new WebInspector.NetworkPanel.FilmStripRecorder(this._networkLogView.timeCalculator(), this._filmStripView);
-            this._filmStripView.show(this._searchableView.element, this._searchableView.element.firstElementChild);
+            this._filmStripView.show(this.element, this.element.firstElementChild);
             this._filmStripView.addEventListener(WebInspector.FilmStripView.Events.FrameSelected, this._onFilmFrameSelected, this);
             this._filmStripView.addEventListener(WebInspector.FilmStripView.Events.FrameEnter, this._onFilmFrameEnter, this);
             this._filmStripView.addEventListener(WebInspector.FilmStripView.Events.FrameExit, this._onFilmFrameExit, this);

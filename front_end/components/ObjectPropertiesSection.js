@@ -213,9 +213,55 @@ WebInspector.ObjectPropertyTreeElement = function(property)
     TreeElement.call(this);
     this.toggleOnClick = true;
     this.selectable = false;
+    /** @type {!Array.<!Object>} */
+    this._highlightChanges = [];
 }
 
 WebInspector.ObjectPropertyTreeElement.prototype = {
+    /**
+     * @param {!RegExp} regex
+     * @param {string=} additionalCssClassName
+     * @return {boolean}
+     */
+    setSearchRegex: function(regex, additionalCssClassName) {
+        var cssClasses = WebInspector.highlightedSearchResultClassName;
+        if (additionalCssClassName)
+            cssClasses += " " + additionalCssClassName;
+        this.revertHighlightChanges();
+
+        this._applySearch(regex, this.nameElement, cssClasses);
+        var valueType = this.property.value.type;
+        if (valueType !== "object" && valueType !== "array")
+            this._applySearch(regex, this.valueElement, cssClasses);
+
+        return !!this._highlightChanges.length;
+    },
+
+    /**
+     * @param {!RegExp} regex
+     * @param {!Element} element
+     * @param {string} cssClassName
+     */
+    _applySearch: function(regex, element, cssClassName)
+    {
+        var ranges = [];
+        var content = element.textContent;
+        regex.lastIndex = 0;
+        var match = regex.exec(content);
+        while (match) {
+            ranges.push(new WebInspector.SourceRange(match.index, match[0].length));
+            match = regex.exec(content);
+        }
+        if (ranges.length)
+            WebInspector.highlightRangesWithStyleClass(element, ranges, cssClassName, this._highlightChanges);
+    },
+
+    revertHighlightChanges: function()
+    {
+        WebInspector.revertDomChanges(this._highlightChanges);
+        this._highlightChanges = [];
+    },
+
     onpopulate: function()
     {
         var propertyValue = /** @type {!WebInspector.RemoteObject} */ (this.property.value);

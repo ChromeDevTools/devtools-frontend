@@ -208,7 +208,7 @@ WebInspector.ServiceWorkersView.Section.prototype = {
 
             var activeEntry = versionsStack.createChild("div", "service-worker-version");
             activeEntry.createChild("div", "service-worker-active-circle");
-            activeEntry.createChild("span").textContent = WebInspector.UIString("#%s active and is %s", active.id, active.runningStatus);
+            activeEntry.createChild("span").textContent = WebInspector.UIString("#%s activated and is %s", active.id, active.runningStatus);
 
             if (active.isRunning() || active.isStarting()) {
                 createLink(activeEntry, WebInspector.UIString("stop"), this._stopButtonClicked.bind(this, active.id));

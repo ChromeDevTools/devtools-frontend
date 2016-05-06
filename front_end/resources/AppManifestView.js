@@ -14,8 +14,15 @@ WebInspector.AppManifestView = function()
 
     this._reportView = new WebInspector.ReportView(WebInspector.UIString("App Manifest"));
     this._reportView.show(this.contentElement);
+
     this._errorsSection = this._reportView.appendSection(WebInspector.UIString("Errors and warnings"));
     this._identitySection = this._reportView.appendSection(WebInspector.UIString("Identity"));
+    var toolbar = this._identitySection.createToolbar();
+    toolbar.renderAsLinks();
+    var addToHomeScreen = new WebInspector.ToolbarButton(WebInspector.UIString("Add to homescreen"), undefined, WebInspector.UIString("Add to homescreen"));
+    addToHomeScreen.addEventListener("click", this._addToHomescreen.bind(this));
+    toolbar.appendToolbarItem(addToHomeScreen);
+
     this._presentationSection = this._reportView.appendSection(WebInspector.UIString("Presentation"));
     this._iconsSection = this._reportView.appendSection(WebInspector.UIString("Icons"));
 
@@ -119,6 +126,15 @@ WebInspector.AppManifestView.prototype = {
             if (typeof value !== "string")
                 return "";
             return value;
+        }
+    },
+
+    _addToHomescreen: function()
+    {
+        var target = WebInspector.targetManager.mainTarget();
+        if (target && target.isPage()) {
+            target.pageAgent().requestAppBanner();
+            WebInspector.console.show();
         }
     },
 

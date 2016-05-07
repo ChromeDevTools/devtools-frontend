@@ -290,8 +290,8 @@ WebInspector.DeviceModeView.prototype = {
         if (updateRulers) {
             this._topRuler.render(this._cachedCssScreenRect ? this._cachedCssScreenRect.left : 0, this._model.scale());
             this._leftRuler.render(0, this._model.scale());
-            this._topRuler.element.style.top = this._cachedCssScreenRect ? this._cachedCssScreenRect.top + "px" : 0;
-            this._leftRuler.element.style.top = this._cachedCssScreenRect ? this._cachedCssScreenRect.top + "px" : 0;
+            this._topRuler.element.style.top = this._cachedCssScreenRect ? this._cachedCssScreenRect.top + "px" : "0";
+            this._leftRuler.element.style.top = this._cachedCssScreenRect ? this._cachedCssScreenRect.top + "px" : "0";
         }
         if (contentAreaResized)
             this._contentAreaResized();

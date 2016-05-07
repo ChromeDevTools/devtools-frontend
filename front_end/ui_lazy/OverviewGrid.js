@@ -170,11 +170,11 @@ WebInspector.OverviewGrid.Window = function(parentElement, dividersLabelBarEleme
     WebInspector.appendStyle(this._parentElement, "ui_lazy/overviewGrid.css");
 
     this._leftResizeElement = parentElement.createChild("div", "overview-grid-window-resizer");
-    this._leftResizeElement.style.left = 0;
+    this._leftResizeElement.style.left = "0";
     WebInspector.installDragHandle(this._leftResizeElement, this._resizerElementStartDragging.bind(this), this._leftResizeElementDragging.bind(this), null, "ew-resize");
 
     this._rightResizeElement = parentElement.createChild("div", "overview-grid-window-resizer");
-    this._rightResizeElement.style.right = 0;
+    this._rightResizeElement.style.right = "0";
     WebInspector.installDragHandle(this._rightResizeElement, this._resizerElementStartDragging.bind(this), this._rightResizeElementDragging.bind(this), null, "ew-resize");
     this.setEnabled(true);
 }

@@ -167,6 +167,18 @@ WebInspector.IndexedDBModel.prototype = {
         this._enabled = true;
     },
 
+    /**
+     * @param {string} origin
+     */
+    clearForOrigin: function(origin)
+    {
+        if (!this._enabled)
+            return;
+
+        this._removeOrigin(origin);
+        this._addOrigin(origin);
+    },
+
     refreshDatabaseNames: function()
     {
         for (var securityOrigin in this._databaseNamesBySecurityOrigin)

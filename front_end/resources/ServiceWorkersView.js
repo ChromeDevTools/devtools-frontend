@@ -29,7 +29,7 @@ WebInspector.ServiceWorkersView.prototype = {
      */
     targetAdded: function(target)
     {
-        if (this._target)
+        if (this._target || !target.serviceWorkerManager)
             return;
         this._target = target;
         this._manager = this._target.serviceWorkerManager;

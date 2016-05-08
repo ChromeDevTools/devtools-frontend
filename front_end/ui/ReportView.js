@@ -21,6 +21,18 @@ WebInspector.ReportView = function(title)
 
 WebInspector.ReportView.prototype = {
     /**
+     * @param {string} subtitle
+     */
+    setSubtitle: function(subtitle)
+    {
+        if (this._subtitleElement && this._subtitleElement.textContent === subtitle)
+            return;
+        if (!this._subtitleElement)
+            this._subtitleElement = this._headerElement.createChild("div", "report-subtitle");
+        this._subtitleElement.textContent = subtitle;
+    },
+
+    /**
      * @param {?string} url
      */
     setURL: function(url)
@@ -48,11 +60,12 @@ WebInspector.ReportView.prototype = {
 
     /**
      * @param {string} title
+     * @param {string=} className
      * @return {!WebInspector.ReportView.Section}
      */
-    appendSection: function(title)
+    appendSection: function(title, className)
     {
-        var section = new WebInspector.ReportView.Section(title);
+        var section = new WebInspector.ReportView.Section(title, className);
         section.show(this._sectionList);
         return section;
     },
@@ -69,11 +82,14 @@ WebInspector.ReportView.prototype = {
  * @constructor
  * @extends {WebInspector.VBox}
  * @param {string} title
+ * @param {string=} className
  */
-WebInspector.ReportView.Section = function(title)
+WebInspector.ReportView.Section = function(title, className)
 {
     WebInspector.VBox.call(this);
     this.element.classList.add("report-section");
+    if (className)
+        this.element.classList.add(className);
     this._headerElement = this.element.createChild("div", "report-section-header");
     this._titleElement = this._headerElement.createChild("div", "report-section-title");
     this._titleElement.textContent = title;

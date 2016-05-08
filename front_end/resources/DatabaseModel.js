@@ -143,10 +143,12 @@ WebInspector.DatabaseModel = function(target)
 
     this._databases = [];
     this._agent = target.databaseAgent();
+    this.target().registerDatabaseDispatcher(new WebInspector.DatabaseDispatcher(this));
 }
 
 WebInspector.DatabaseModel.Events = {
-    DatabaseAdded: "DatabaseAdded"
+    DatabaseAdded: "DatabaseAdded",
+    DatabasesRemoved: "DatabasesRemoved"
 }
 
 WebInspector.DatabaseModel.prototype = {
@@ -154,9 +156,18 @@ WebInspector.DatabaseModel.prototype = {
     {
         if (this._enabled)
             return;
-        this.target().registerDatabaseDispatcher(new WebInspector.DatabaseDispatcher(this));
         this._agent.enable();
         this._enabled = true;
+    },
+
+    disable: function()
+    {
+        if (!this._enabled)
+            return;
+        this._enabled = false;
+        this._databases = [];
+        this._agent.disable();
+        this.dispatchEventToListeners(WebInspector.DatabaseModel.Events.DatabasesRemoved);
     },
 
     /**

@@ -28,12 +28,12 @@
 
 /**
  * @constructor
- * @extends {WebInspector.SDKObject}
+ * @extends {WebInspector.SDKModel}
  * @param {!WebInspector.Target} target
  */
 WebInspector.ApplicationCacheModel = function(target)
 {
-    WebInspector.SDKObject.call(this, target);
+    WebInspector.SDKModel.call(this, WebInspector.ApplicationCacheModel, target);
 
     target.registerApplicationCacheDispatcher(new WebInspector.ApplicationCacheDispatcher(this));
     this._agent = target.applicationCacheAgent();
@@ -46,7 +46,6 @@ WebInspector.ApplicationCacheModel = function(target)
     this._manifestURLsByFrame = {};
 
     this._mainFrameNavigated();
-
     this._onLine = true;
 }
 
@@ -54,6 +53,7 @@ WebInspector.ApplicationCacheModel.EventTypes = {
     FrameManifestStatusUpdated: "FrameManifestStatusUpdated",
     FrameManifestAdded: "FrameManifestAdded",
     FrameManifestRemoved: "FrameManifestRemoved",
+    FrameManifestsReset: "FrameManifestsReset",
     NetworkStateChanged: "NetworkStateChanged"
 }
 
@@ -76,6 +76,13 @@ WebInspector.ApplicationCacheModel.prototype = {
     {
         var frame = /** @type {!WebInspector.ResourceTreeFrame} */ (event.data);
         this._frameManifestRemoved(frame.id);
+    },
+
+    reset: function()
+    {
+        this._statuses = {};
+        this._manifestURLsByFrame = {};
+        this.dispatchEventToListeners(WebInspector.ApplicationCacheModel.EventTypes.FrameManifestsReset);
     },
 
     _mainFrameNavigated: function()
@@ -227,7 +234,7 @@ WebInspector.ApplicationCacheModel.prototype = {
         this.dispatchEventToListeners(WebInspector.ApplicationCacheModel.EventTypes.NetworkStateChanged, isNowOnline);
     },
 
-    __proto__: WebInspector.SDKObject.prototype
+    __proto__: WebInspector.SDKModel.prototype
 }
 
 /**
@@ -259,4 +266,13 @@ WebInspector.ApplicationCacheDispatcher.prototype = {
     {
         this._applicationCacheModel._networkStateUpdated(isNowOnline);
     }
+}
+
+/**
+ * @param {!WebInspector.Target} target
+ * @return {?WebInspector.ApplicationCacheModel}
+ */
+WebInspector.ApplicationCacheModel.fromTarget = function(target)
+{
+    return /** @type {?WebInspector.ApplicationCacheModel} */ (target.model(WebInspector.ApplicationCacheModel));
 }

@@ -40,8 +40,20 @@ WebInspector.ServiceWorkerCacheModel.prototype = {
         this._enabled = true;
     },
 
+    /**
+     * @param {string} origin
+     */
+    clearForOrigin: function(origin)
+    {
+        this._removeOrigin(origin);
+        this._addOrigin(origin);
+    },
+
     refreshCacheNames: function()
     {
+        for (var cache of this._caches.values())
+            this._cacheRemoved(cache);
+        this._caches.clear();
         var securityOrigins = this.target().resourceTreeModel.securityOrigins();
         for (var securityOrigin of securityOrigins)
             this._loadCacheNames(securityOrigin);

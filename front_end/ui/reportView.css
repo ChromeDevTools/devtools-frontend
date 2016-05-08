@@ -28,14 +28,14 @@
     font-size: 15px;
 }
 
-.report-url {
+.report-url, .report-subtitle {
     font-size: 12px;
     margin-top: 10px;
 }
 
 .report-section {
     display: flex;
-    padding: 12px 6px;
+    padding: 12px;
     border-bottom: 1px solid rgb(230, 230, 230);
     flex-direction: column;
 }
@@ -62,7 +62,7 @@
 }
 
 .report-row {
-    padding: 0 0 2px 18px;
+    margin: 10px 0 2px 18px;
 }
 
 .report-field-name {

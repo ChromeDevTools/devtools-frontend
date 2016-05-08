@@ -144,13 +144,23 @@ WebInspector.DOMStorageModel.prototype = {
     },
 
     /**
+     * @param {string} origin
+     */
+    clearForOrigin: function(origin)
+    {
+        if (!this._enabled)
+            return;
+        this._removeOrigin(origin);
+        this._addOrigin(origin);
+    },
+
+    /**
      * @param {!WebInspector.Event} event
      */
     _securityOriginAdded: function(event)
     {
         this._addOrigin(/** @type {string} */ (event.data));
     },
-
 
     /**
      * @param {string} securityOrigin
@@ -175,7 +185,14 @@ WebInspector.DOMStorageModel.prototype = {
      */
     _securityOriginRemoved: function(event)
     {
-        var securityOrigin = /** @type {string} */ (event.data);
+        this._removeOrigin(/** @type {string} */ (event.data));
+    },
+
+    /**
+     * @param {string} securityOrigin
+     */
+    _removeOrigin: function(securityOrigin)
+    {
         var localStorageKey = this._storageKey(securityOrigin, true);
         var localStorage = this._storages[localStorageKey];
         console.assert(localStorage);

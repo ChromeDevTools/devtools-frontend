@@ -420,8 +420,8 @@ WebInspector.TimelinePanel.prototype = {
                     this._cpuThrottlingCombobox.select(option);
             }
             addGroupingOption.call(this, WebInspector.UIString("No CPU throttling"), 1);
-            for (var rate of [1.2, 1.5, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20, 30, 50])
-                addGroupingOption.call(this, WebInspector.UIString("%fx slowdown", rate), rate);
+            addGroupingOption.call(this, WebInspector.UIString("High end device\u2003(2x slowdown)"), 2);
+            addGroupingOption.call(this, WebInspector.UIString("Low end device\u2003(5x slowdown)"), 5);
             this._panelToolbar.appendToolbarItem(this._cpuThrottlingCombobox);
         }
     },

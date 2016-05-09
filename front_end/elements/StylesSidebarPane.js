@@ -1041,7 +1041,7 @@ WebInspector.StylePropertiesSection.prototype = {
                 mediaContainerElement.insertBefore(decoration, mediaTextElement);
                 decoration.textContent = "@media ";
                 mediaTextElement.textContent = media.text;
-                if (media.parentStyleSheetId) {
+                if (media.styleSheetId) {
                     mediaDataElement.classList.add("editable-media");
                     mediaTextElement.addEventListener("click", this._handleMediaRuleClick.bind(this, media, mediaTextElement), false);
                 }
@@ -1399,7 +1399,7 @@ WebInspector.StylePropertiesSection.prototype = {
 
         // This gets deleted in finishOperation(), which is called both on success and failure.
         this._parentPane._userOperation = true;
-        this._parentPane._cssModel.setMediaText(media.parentStyleSheetId, media.range, newContent)
+        this._parentPane._cssModel.setMediaText(media.styleSheetId, media.range, newContent)
             .then(userCallback.bind(this));
     },
 

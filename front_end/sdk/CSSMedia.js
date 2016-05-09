@@ -157,7 +157,7 @@ WebInspector.CSSMedia.prototype = {
         this.source = payload.source;
         this.sourceURL = payload.sourceURL || "";
         this.range = payload.range ? WebInspector.TextRange.fromObject(payload.range) : null;
-        this.parentStyleSheetId = payload.parentStyleSheetId;
+        this.styleSheetId = payload.styleSheetId;
         this.mediaList = null;
         if (payload.mediaList) {
             this.mediaList = [];
@@ -171,7 +171,7 @@ WebInspector.CSSMedia.prototype = {
      */
     rebase: function(edit)
     {
-        if (this.parentStyleSheetId !== edit.styleSheetId || !this.range)
+        if (this.styleSheetId !== edit.styleSheetId || !this.range)
             return;
         if (edit.oldRange.equal(this.range))
             this._reinitialize(/** @type {!CSSAgent.CSSMedia} */(edit.payload));
@@ -185,9 +185,9 @@ WebInspector.CSSMedia.prototype = {
      */
     equal: function(other)
     {
-        if (!this.parentStyleSheetId || !this.range || !other.range)
+        if (!this.styleSheetId || !this.range || !other.range)
             return false;
-        return  this.parentStyleSheetId === other.parentStyleSheetId && this.range.equal(other.range);
+        return  this.styleSheetId === other.styleSheetId && this.range.equal(other.range);
     },
 
     /**
@@ -235,7 +235,7 @@ WebInspector.CSSMedia.prototype = {
      */
     header: function()
     {
-        return this.parentStyleSheetId ? this._cssModel.styleSheetHeaderForId(this.parentStyleSheetId) : null;
+        return this.styleSheetId ? this._cssModel.styleSheetHeaderForId(this.styleSheetId) : null;
     },
 
     /**
@@ -250,4 +250,3 @@ WebInspector.CSSMedia.prototype = {
         return new WebInspector.CSSLocation(header, lineNumber, this.columnNumberInSource());
     }
 }
-

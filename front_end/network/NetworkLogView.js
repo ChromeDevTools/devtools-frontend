@@ -761,7 +761,7 @@ WebInspector.NetworkLogView.prototype = {
             appendChunk(separator);
             appendChunk(WebInspector.UIString("%s transferred", Number.bytesToString(transferSize)));
         }
-        if (baseTime !== -1) {
+        if (baseTime !== -1 && maxTime !== -1) {
             appendChunk(separator);
             appendChunk(WebInspector.UIString("Finish: %s", Number.secondsToString(maxTime - baseTime)));
             if (this._mainRequestDOMContentLoadedTime !== -1 && this._mainRequestDOMContentLoadedTime > baseTime) {

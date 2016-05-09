@@ -10,9 +10,8 @@
 }
 
 .clear-storage-button .report-row {
-    margin: 0;
+    margin: 0 0 0 20px;
     display: flex;
-    justify-content: flex-end;
 }
 
 .link {

@@ -144,8 +144,10 @@ WebInspector.ClearStorageView.prototype = {
         }
 
         this._clearButton.disabled = true;
+        this._clearButton.textContent = WebInspector.UIString("Clearing...");
         setTimeout(() => {
             this._clearButton.disabled = false;
+            this._clearButton.textContent = WebInspector.UIString("Clear selected");
         }, 500);
     },
 

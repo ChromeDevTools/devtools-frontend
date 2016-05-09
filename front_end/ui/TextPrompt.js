@@ -44,6 +44,7 @@ WebInspector.TextPrompt = function(completions, stopCharacters)
     this._loadCompletions = completions;
     this._completionStopCharacters = stopCharacters || " =:[({;,!+-*/&|^<>.";
     this._autocompletionTimeout = WebInspector.TextPrompt.DefaultAutocompletionTimeout;
+    this._title = "";
 }
 
 WebInspector.TextPrompt.DefaultAutocompletionTimeout = 250;
@@ -137,6 +138,9 @@ WebInspector.TextPrompt.prototype = {
         if (this._suggestBoxEnabled)
             this._suggestBox = new WebInspector.SuggestBox(this);
 
+        if (this._title)
+            this._proxyElement.title = this._title;
+
         return this._proxyElement;
     },
 
@@ -187,6 +191,24 @@ WebInspector.TextPrompt.prototype = {
 
         this.moveCaretToEndOfPrompt();
         this._element.scrollIntoView();
+    },
+
+    /**
+     * @return {string}
+     */
+    title: function()
+    {
+        return this._title;
+    },
+
+    /**
+     * @param {string} title
+     */
+    setTitle: function(title)
+    {
+        this._title = title;
+        if (this._proxyElement)
+            this.proxyElement.title = title;
     },
 
     _removeFromElement: function()

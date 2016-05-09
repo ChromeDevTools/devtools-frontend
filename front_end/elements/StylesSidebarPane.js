@@ -2850,8 +2850,19 @@ WebInspector.StylesSidebarPane.CSSPropertyPrompt = function(cssCompletions, tree
     this._treeElement = treeElement;
     this._isEditingName = isEditingName;
 
-    if (!isEditingName)
+    if (!isEditingName) {
         this.disableDefaultSuggestionForEmptyInput();
+
+        // If a CSS value is being edited that has a numeric or hex substring, hint that precision modifier shortcuts are available.
+        if (treeElement && treeElement.valueElement) {
+            var cssValueText = treeElement.valueElement.textContent;
+            if (cssValueText.match(/#[\da-f]{3,6}$/i))
+                this.setTitle(WebInspector.UIString("Increment/decrement with mousewheel or up/down keys. %s: R ±1, Shift: G ±1, Alt: B ±1", WebInspector.isMac() ? "Cmd" : "Ctrl"));
+            else if (cssValueText.match(/\d+/))
+                this.setTitle(WebInspector.UIString("Increment/decrement with mousewheel or up/down keys. %s: ±100, Shift: ±10, Alt: ±0.1", WebInspector.isMac() ? "Cmd" : "Ctrl"));
+        }
+
+    }
 }
 
 WebInspector.StylesSidebarPane.CSSPropertyPrompt.prototype = {

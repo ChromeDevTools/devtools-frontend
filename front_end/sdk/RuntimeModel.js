@@ -594,7 +594,7 @@ WebInspector.ExecutionContext.prototype = {
             {
                 if (!object)
                     receivedPropertyNames.call(this, null);
-                else if (object.type === "object")
+                else if (object.type === "object" || object.type === "function")
                     object.callFunctionJSON(getCompletions, [WebInspector.RemoteObject.toCallArgument(object.subtype)], receivedPropertyNames.bind(this));
                 else if (object.type === "string" || object.type === "number" || object.type === "boolean")
                     this.evaluate("(" + getCompletions + ")(\"" + result.type + "\")", "completion", false, true, true, false, false, receivedPropertyNamesFromEval.bind(this));

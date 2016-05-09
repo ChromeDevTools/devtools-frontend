@@ -660,11 +660,12 @@ WebInspector.CSSModel.prototype = {
     },
 
     /**
-     * @param {!WebInspector.CSSMedia} media
+     * @param {!CSSAgent.StyleSheetId} styleSheetId
+     * @param {!WebInspector.TextRange} range
      * @param {string} newMediaText
-     * @param {function(?WebInspector.CSSMedia)} userCallback
+     * @return {!Promise<boolean>}
      */
-    setMediaText: function(media, newMediaText, userCallback)
+    setMediaText: function(styleSheetId, range, newMediaText)
     {
         /**
          * @param {?Protocol.Error} error
@@ -677,16 +678,14 @@ WebInspector.CSSModel.prototype = {
             if (!mediaPayload)
                 return false;
             this._domModel.markUndoableState();
-            var edit = new WebInspector.CSSModel.Edit(media.parentStyleSheetId, media.range, newMediaText, mediaPayload);
-            this._fireStyleSheetChangedAndDetach(media.parentStyleSheetId, edit);
+            var edit = new WebInspector.CSSModel.Edit(styleSheetId, range, newMediaText, mediaPayload);
+            this._fireStyleSheetChangedAndDetach(styleSheetId, edit);
             return true;
         }
 
-        console.assert(!!media.parentStyleSheetId);
         WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.StyleRuleEdited);
-        this._agent.setMediaText(media.parentStyleSheetId, media.range, newMediaText, parsePayload.bind(this))
-            .catchException(null)
-            .then(userCallback);
+        return this._agent.setMediaText(styleSheetId, range, newMediaText, parsePayload.bind(this))
+            .catchException(false);
     },
 
     /**

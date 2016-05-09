@@ -1399,7 +1399,8 @@ WebInspector.StylePropertiesSection.prototype = {
 
         // This gets deleted in finishOperation(), which is called both on success and failure.
         this._parentPane._userOperation = true;
-        this._parentPane._cssModel.setMediaText(media, newContent, userCallback.bind(this));
+        this._parentPane._cssModel.setMediaText(media.parentStyleSheetId, media.range, newContent)
+            .then(userCallback.bind(this));
     },
 
     _editingMediaTextCommittedForTest: function() { },

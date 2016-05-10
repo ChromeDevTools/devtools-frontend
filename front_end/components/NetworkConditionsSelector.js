@@ -231,6 +231,35 @@ WebInspector.NetworkConditionsSelector.createToolbarMenuButton = function()
 }
 
 /**
+ * @return {!WebInspector.ToolbarCheckbox}
+ */
+WebInspector.NetworkConditionsSelector.createOfflineToolbarCheckbox = function()
+{
+    var checkbox = new WebInspector.ToolbarCheckbox(WebInspector.UIString("Offline"), WebInspector.UIString("Force disconnected from network"), undefined, forceOffline);
+    WebInspector.multitargetNetworkManager.addEventListener(WebInspector.MultitargetNetworkManager.Events.ConditionsChanged, networkConditionsChanged);
+    var lastNetworkConditions;
+
+    function forceOffline()
+    {
+        if (checkbox.checked()) {
+            lastNetworkConditions = WebInspector.multitargetNetworkManager.networkConditions();
+            WebInspector.multitargetNetworkManager.setNetworkConditions(WebInspector.NetworkManager.OfflineConditions);
+        } else {
+            WebInspector.multitargetNetworkManager.setNetworkConditions(lastNetworkConditions);
+        }
+    }
+
+    function networkConditionsChanged()
+    {
+        var conditions = WebInspector.multitargetNetworkManager.networkConditions();
+        if (conditions !== WebInspector.NetworkManager.OfflineConditions)
+            lastNetworkConditions = conditions;
+        checkbox.setChecked(conditions === WebInspector.NetworkManager.OfflineConditions);
+    }
+    return checkbox;
+}
+
+/**
  * @constructor
  * @extends {WebInspector.VBox}
  * @implements {WebInspector.ListWidget.Delegate}

@@ -886,8 +886,9 @@ WebInspector.ToolbarComboBox.prototype = {
  * @param {string} text
  * @param {string=} title
  * @param {!WebInspector.Setting=} setting
+ * @param {function()=} listener
  */
-WebInspector.ToolbarCheckbox = function(text, title, setting)
+WebInspector.ToolbarCheckbox = function(text, title, setting, listener)
 {
     WebInspector.ToolbarItem.call(this, createCheckboxLabel(text));
     this.element.classList.add("checkbox");
@@ -896,6 +897,8 @@ WebInspector.ToolbarCheckbox = function(text, title, setting)
         this.element.title = title;
     if (setting)
         WebInspector.SettingsUI.bindCheckbox(this.inputElement, setting);
+    if (listener)
+        this.inputElement.addEventListener("click", listener, false);
 }
 
 WebInspector.ToolbarCheckbox.prototype = {
@@ -905,6 +908,14 @@ WebInspector.ToolbarCheckbox.prototype = {
     checked: function()
     {
         return this.inputElement.checked;
+    },
+
+    /**
+     * @param {boolean} value
+     */
+    setChecked: function(value)
+    {
+        this.inputElement.checked = value;
     },
 
     __proto__: WebInspector.ToolbarItem.prototype

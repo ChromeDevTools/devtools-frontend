@@ -15,7 +15,8 @@ WebInspector.AnimationTimeline = function()
 
     this._grid = this.contentElement.createSVGChild("svg", "animation-timeline-grid");
 
-    this._underlyingPlaybackRate = 1;
+    this._playbackRate = 1;
+    this._allPaused = false;
     this._createHeader();
     this._animationsContainer = this.contentElement.createChild("div", "animation-timeline-rows");
     var timelineHint = this.contentElement.createChild("div", "animation-timeline-rows-hint");
@@ -127,11 +128,15 @@ WebInspector.AnimationTimeline.prototype = {
         topToolbar.appendToolbarItem(clearButton);
         topToolbar.appendSeparator();
 
+        this._pauseButton = new WebInspector.ToolbarToggle(WebInspector.UIString("Pause all"), "pause-toolbar-item");
+        this._pauseButton.addEventListener("click", this._togglePauseAll.bind(this));
+        topToolbar.appendToolbarItem(this._pauseButton);
+
         var playbackRateControl = toolbarContainer.createChild("div", "animation-playback-rate-control");
         this._playbackRateButtons = [];
         for (var playbackRate of WebInspector.AnimationTimeline.GlobalPlaybackRates) {
             var button = playbackRateControl.createChild("div", "animation-playback-rate-button");
-            button.textContent = WebInspector.UIString(playbackRate * 100 + "%");
+            button.textContent = playbackRate ? WebInspector.UIString(playbackRate * 100 + "%") : WebInspector.UIString("Pause");
             button.playbackRate = playbackRate;
             button.addEventListener("click", this._setPlaybackRate.bind(this, playbackRate));
             button.title = WebInspector.UIString("Set speed to ") + button.textContent;
@@ -198,15 +203,23 @@ WebInspector.AnimationTimeline.prototype = {
     {
     },
 
+    _togglePauseAll: function()
+    {
+        this._allPaused = !this._allPaused;
+        this._pauseButton.setToggled(this._allPaused);
+        this._setPlaybackRate(this._playbackRate);
+        this._pauseButton.setTitle(this._allPaused ? WebInspector.UIString("Resume all") : WebInspector.UIString("Pause all"));
+    },
+
     /**
      * @param {number} playbackRate
      */
     _setPlaybackRate: function(playbackRate)
     {
-        this._underlyingPlaybackRate = playbackRate;
+        this._playbackRate = playbackRate;
         var target = WebInspector.targetManager.mainTarget();
         if (target)
-            WebInspector.AnimationModel.fromTarget(target).setPlaybackRate(this._underlyingPlaybackRate);
+            WebInspector.AnimationModel.fromTarget(target).setPlaybackRate(this._allPaused ? 0 : this._playbackRate);
         WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.AnimationsPlaybackRateChanged);
         if (this._scrubberPlayer)
             this._scrubberPlayer.playbackRate = this._effectivePlaybackRate();
@@ -217,7 +230,7 @@ WebInspector.AnimationTimeline.prototype = {
     _updatePlaybackControls: function()
     {
         for (var button of this._playbackRateButtons) {
-            var selected = this._underlyingPlaybackRate === button.playbackRate;
+            var selected = this._playbackRate === button.playbackRate;
             button.classList.toggle("selected", selected);
         }
     },
@@ -247,28 +260,12 @@ WebInspector.AnimationTimeline.prototype = {
         }
     },
 
-    _updateAnimationsPlaybackRate: function()
-    {
-        /**
-         * @param {number} playbackRate
-         * @this {WebInspector.AnimationTimeline}
-         */
-        function syncPlaybackRate(playbackRate)
-        {
-            this._underlyingPlaybackRate = playbackRate || 1;
-            this._updatePlaybackControls();
-        }
-
-        for (var target of WebInspector.targetManager.targets(WebInspector.Target.Type.Page))
-            WebInspector.AnimationModel.fromTarget(target).playbackRatePromise().then(syncPlaybackRate.bind(this));
-    },
-
     /**
      * @return {number}
      */
     _effectivePlaybackRate: function()
     {
-        return this._selectedGroup && this._selectedGroup.paused() ? 0 : this._underlyingPlaybackRate;
+        return this._selectedGroup && this._selectedGroup.paused() ? 0 : this._playbackRate;
     },
 
     /**
@@ -328,7 +325,12 @@ WebInspector.AnimationTimeline.prototype = {
     _reset: function()
     {
         this._clearTimeline();
-        this._updateAnimationsPlaybackRate();
+        if (this._allPaused) {
+            this._playbackRate = 1;
+            this._togglePauseAll();
+        } else {
+            this._setPlaybackRate(1);
+        }
         for (var group of this._groupBuffer)
             group.release();
         this._groupBuffer = [];

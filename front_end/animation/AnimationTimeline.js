@@ -265,7 +265,7 @@ WebInspector.AnimationTimeline.prototype = {
      */
     _effectivePlaybackRate: function()
     {
-        return this._selectedGroup && this._selectedGroup.paused() ? 0 : this._playbackRate;
+        return (this._allPaused || (this._selectedGroup && this._selectedGroup.paused())) ? 0 : this._playbackRate;
     },
 
     /**

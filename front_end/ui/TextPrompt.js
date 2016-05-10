@@ -208,7 +208,7 @@ WebInspector.TextPrompt.prototype = {
     {
         this._title = title;
         if (this._proxyElement)
-            this.proxyElement.title = title;
+            this._proxyElement.title = title;
     },
 
     _removeFromElement: function()

@@ -326,6 +326,7 @@ WebInspector._modifiedHexValue = function(hexString, event)
     if (!direction)
         return hexString;
 
+    var mouseEvent = /** @type {!MouseEvent} */(event);
     var number = parseInt(hexString, 16);
     if (isNaN(number) || !isFinite(number))
         return hexString;
@@ -344,11 +345,11 @@ WebInspector._modifiedHexValue = function(hexString, event)
     // If no shortcut keys are pressed then increase hex value by 1.
     // Keys can be pressed together to increase RGB channels. e.g trying different shades.
     var delta = 0;
-    if (WebInspector.KeyboardShortcut.eventHasCtrlOrMeta(event))
+    if (WebInspector.KeyboardShortcut.eventHasCtrlOrMeta(mouseEvent))
         delta += Math.pow(16, channelLen * 2);
-    if (event.shiftKey)
+    if (mouseEvent.shiftKey)
         delta += Math.pow(16, channelLen);
-    if (event.altKey)
+    if (mouseEvent.altKey)
         delta += 1;
     if (delta === 0)
         delta = 1;
@@ -376,17 +377,19 @@ WebInspector._modifiedFloatNumber = function(number, event)
     if (!direction)
         return number;
 
+    var mouseEvent = /** @type {!MouseEvent} */(event);
+
     // Precision modifier keys work with both mousewheel and up/down keys.
     // When ctrl is pressed, increase by 100.
     // When shift is pressed, increase by 10.
     // When alt is pressed, increase by 0.1.
     // Otherwise increase by 1.
     var delta = 1;
-    if (WebInspector.KeyboardShortcut.eventHasCtrlOrMeta(event))
+    if (WebInspector.KeyboardShortcut.eventHasCtrlOrMeta(mouseEvent))
         delta = 100;
-    else if (event.shiftKey)
+    else if (mouseEvent.shiftKey)
         delta = 10;
-    else if (event.altKey)
+    else if (mouseEvent.altKey)
         delta = 0.1;
 
     if (direction === "Down")

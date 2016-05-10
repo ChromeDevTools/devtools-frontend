@@ -110,7 +110,7 @@
     -webkit-perspective-origin: 50% 50%;
     width: 160px;
     height: 150px;
-    background: -webkit-linear-gradient(#E1F5FE 0%, #E1F5FE 64%, #b0Ebf3 64%, #DEF6F9 100%);
+    background: linear-gradient(#E1F5FE 0%, #E1F5FE 64%, #b0Ebf3 64%, #DEF6F9 100%);
     transition: 0.2s ease opacity, 0.2s ease -webkit-filter;
 }
 

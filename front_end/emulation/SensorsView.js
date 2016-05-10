@@ -155,7 +155,7 @@ WebInspector.SensorsView.prototype = {
         this._deviceOrientationFieldset = this._createDeviceOrientationOverrideElement(this._deviceOrientation);
 
         this._stageElement = orientationContent.createChild("div", "accelerometer-stage");
-        this._stageElement.title = WebInspector.UIString("shift+drag to rotate around the z-axis");
+        this._stageElement.title = WebInspector.UIString("Shift+drag to rotate around the y-axis");
         this._boxElement = this._stageElement.createChild("section", "accelerometer-box accelerometer-element");
 
         this._boxElement.createChild("section", "accelerometer-front accelerometer-element");
@@ -165,7 +165,7 @@ WebInspector.SensorsView.prototype = {
         this._boxElement.createChild("section", "accelerometer-right accelerometer-element");
         this._boxElement.createChild("section", "accelerometer-bottom accelerometer-element");
 
-        WebInspector.installDragHandle(this._stageElement, this._onBoxDragStart.bind(this), this._onBoxDrag.bind(this), this._onBoxDragEnd.bind(this), "-webkit-grabbing", "-webkit-grab");
+        WebInspector.installDragHandle(this._stageElement, this._onBoxDragStart.bind(this), this._onBoxDrag.bind(this), null, "-webkit-grabbing", "-webkit-grab");
 
         fields.appendChild(this._deviceOrientationFieldset);
         this._enableOrientationFields(true);
@@ -316,10 +316,26 @@ WebInspector.SensorsView.prototype = {
      */
     _setBoxOrientation: function(deviceOrientation)
     {
-        var matrix = new WebKitCSSMatrix();
-        this._boxMatrix = matrix.rotate(90-deviceOrientation.beta, deviceOrientation.gamma, -deviceOrientation.alpha);
+        var matrix = this._viewportPreviewMatrix(true);
+        this._boxMatrix = matrix.rotate(-deviceOrientation.beta, deviceOrientation.gamma, -deviceOrientation.alpha);
+
         this._boxElement.classList.add("is-animating");
-        this._boxElement.style.webkitTransform = this._boxMatrix.toString();
+        this._boxElement.style.transform = this._boxMatrix.toString();
+    },
+
+    /**
+     * @param {boolean=} toViewportPreview
+     * @return {!CSSMatrix}
+     */
+    _viewportPreviewMatrix: function(toViewportPreview)
+    {
+        // The default orientation [0, 0, 0] represents a device with
+        // screen facing up. This transformation shifts the
+        // orientation displayed in the 3D preview to be front-facing
+        // instead of top-down.
+        var betaRotate = toViewportPreview ? 90 : -90;
+        var matrix = new WebKitCSSMatrix();
+        return matrix.rotate(betaRotate, 0, 0);
     },
 
     /**
@@ -335,7 +351,7 @@ WebInspector.SensorsView.prototype = {
         event.consume(true);
         var axis, angle;
         if (event.shiftKey) {
-            axis = new WebInspector.Geometry.Vector(0, 0, 1);
+            axis = new WebInspector.Geometry.Vector(0, 0, -1);
             angle = (this._mouseDownVector.x - mouseMoveVector.x)*WebInspector.SensorsView.ShiftDragOrientationSpeed;
         } else {
             axis = WebInspector.Geometry.crossProduct(this._mouseDownVector, mouseMoveVector);
@@ -344,12 +360,13 @@ WebInspector.SensorsView.prototype = {
         }
         var matrix = new WebKitCSSMatrix();
         var rotationMatrix = matrix.rotateAxisAngle(axis.x, axis.y, axis.z, angle);
-        this._currentMatrix = rotationMatrix.multiply(this._boxMatrix);
+        var transformFromScreen = this._viewportPreviewMatrix();
 
-        var mat90 = new WebKitCSSMatrix();
-        mat90.rotate(90);
-        this._boxElement.style.webkitTransform = mat90.multiply(this._currentMatrix);
-        var eulerAngles = WebInspector.Geometry.EulerAngles.fromRotationMatrix(this._currentMatrix);
+        this._boxMatrix = rotationMatrix.multiply(this._originalBoxMatrix);
+        this._boxElement.style.transform = this._boxMatrix.toString();
+
+        var currentMatrix = transformFromScreen.multiply(this._boxMatrix);
+        var eulerAngles = WebInspector.Geometry.EulerAngles.fromRotationMatrix(currentMatrix);
         var newOrientation = new WebInspector.DeviceOrientation(-eulerAngles.alpha, -eulerAngles.beta, eulerAngles.gamma);
         this._setDeviceOrientation(newOrientation, WebInspector.SensorsView.DeviceOrientationModificationSource.UserDrag);
         this._setSelectElementLabel(this._orientationSelectElement, WebInspector.SensorsView.NonPresetOptions.Custom);
@@ -366,17 +383,13 @@ WebInspector.SensorsView.prototype = {
             return false;
 
         this._mouseDownVector = this._calculateRadiusVector(event.x, event.y);
+        this._originalBoxMatrix = this._boxMatrix;
 
         if (!this._mouseDownVector)
             return false;
 
         event.consume(true);
         return true;
-    },
-
-    _onBoxDragEnd: function()
-    {
-        this._boxMatrix = this._currentMatrix;
     },
 
     /**
@@ -463,9 +476,9 @@ WebInspector.SensorsView.PresetOrientations = [
         title: "Presets",
         value: [
             {title: WebInspector.UIString("Portrait"), orientation: "[0, 90, 0]"},
-            {title: WebInspector.UIString("Portrait upside down"), orientation: "[180, 90, 0]"},
-            {title: WebInspector.UIString("Landscape left"), orientation: "[90, 90, 0]"},
-            {title: WebInspector.UIString("Landscape right"), orientation: "[270, 90, 0]"},
+            {title: WebInspector.UIString("Portrait upside down"), orientation: "[180, -90, 0]"},
+            {title: WebInspector.UIString("Landscape left"), orientation: "[0, 90, -90]"},
+            {title: WebInspector.UIString("Landscape right"), orientation: "[0, 90, 90]"},
             {title: WebInspector.UIString("Display up"), orientation: "[0, 0, 0]"},
             {title: WebInspector.UIString("Display down"), orientation: "[0, 180, 0]"}
         ]

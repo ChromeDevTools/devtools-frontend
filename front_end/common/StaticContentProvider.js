@@ -7,13 +7,13 @@
  * @implements {WebInspector.ContentProvider}
  * @param {!WebInspector.ResourceType} contentType
  * @param {string} content
- * @param {string=} contentURL
+ * @param {string} contentURL
  */
 WebInspector.StaticContentProvider = function(contentType, content, contentURL)
 {
     this._content = content;
     this._contentType = contentType;
-    this._contentURL = contentURL || "";
+    this._contentURL = contentURL;
 }
 
 /**

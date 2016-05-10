@@ -111,7 +111,7 @@ WebInspector.ResourceWebSocketFrameView.prototype = {
     _frameAdded: function(event)
     {
         var frame = /** @type {!WebInspector.NetworkRequest.WebSocketFrame} */ (event.data);
-        this._dataGrid.insertChild(new WebInspector.ResourceWebSocketFrameNode(frame));
+        this._dataGrid.insertChild(new WebInspector.ResourceWebSocketFrameNode(this._request.url, frame));
     },
 
     /**
@@ -162,7 +162,7 @@ WebInspector.ResourceWebSocketFrameView.prototype = {
         this._dataGrid.rootNode().removeChildren();
         var frames = this._request.frames();
         for (var i = 0; i < frames.length; ++i)
-            this._dataGrid.insertChild(new WebInspector.ResourceWebSocketFrameNode(frames[i]));
+            this._dataGrid.insertChild(new WebInspector.ResourceWebSocketFrameNode(this._request.url, frames[i]));
     },
 
     /**
@@ -193,12 +193,14 @@ WebInspector.ResourceWebSocketFrameView.prototype = {
 /**
  * @constructor
  * @extends {WebInspector.SortableDataGridNode}
+ * @param {string} url
  * @param {!WebInspector.NetworkRequest.WebSocketFrame} frame
  */
-WebInspector.ResourceWebSocketFrameNode = function(frame)
+WebInspector.ResourceWebSocketFrameNode = function(url, frame)
 {
     this._frame = frame;
     this._dataText = frame.text;
+    this._url = url;
     var length = frame.text.length;
     var time = new Date(frame.time * 1000);
     var timeText = ("0" + time.getHours()).substr(-2) + ":" + ("0" + time.getMinutes()).substr(-2) + ":" + ("0" + time.getSeconds()).substr(-2) + "." + ("00" + time.getMilliseconds()).substr(-3);
@@ -240,7 +242,7 @@ WebInspector.ResourceWebSocketFrameNode.prototype = {
      */
     contentProvider: function()
     {
-        return new WebInspector.StaticContentProvider(WebInspector.resourceTypes.WebSocket, this._dataText);
+        return new WebInspector.StaticContentProvider(WebInspector.resourceTypes.WebSocket, this._dataText, this._url);
     },
 
     __proto__: WebInspector.SortableDataGridNode.prototype

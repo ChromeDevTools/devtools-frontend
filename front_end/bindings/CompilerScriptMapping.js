@@ -240,7 +240,7 @@ WebInspector.CompilerScriptMapping.prototype = {
             var uiSourceCode = this._networkMapping.uiSourceCodeForScriptURL(sourceURL, script);
             if (!uiSourceCode && !this._networkMapping.hasMappingForNetworkURL(sourceURL)) {
                 var contentProvider = sourceMap.sourceContentProvider(sourceURL, WebInspector.resourceTypes.SourceMapScript);
-                uiSourceCode = this._networkProject.addFileForURL(sourceURL, contentProvider, WebInspector.ResourceTreeFrame.fromScript(script), script.isContentScript());
+                uiSourceCode = this._networkProject.addFile(contentProvider, WebInspector.ResourceTreeFrame.fromScript(script), script.isContentScript());
                 uiSourceCode[WebInspector.CompilerScriptMapping._originSymbol] = script.sourceURL;
             }
             if (uiSourceCode) {

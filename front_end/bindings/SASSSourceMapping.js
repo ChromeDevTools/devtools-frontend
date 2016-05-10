@@ -56,7 +56,7 @@ WebInspector.SASSSourceMapping.prototype = {
         for (var sassURL of sourceMap.sourceURLs()) {
             if (!this._networkMapping.hasMappingForNetworkURL(sassURL)) {
                 var contentProvider = sourceMap.sourceContentProvider(sassURL, WebInspector.resourceTypes.SourceMapStyleSheet);
-                this._networkProject.addFileForURL(sassURL, contentProvider, WebInspector.ResourceTreeFrame.fromStyleSheet(header));
+                this._networkProject.addFile(contentProvider, WebInspector.ResourceTreeFrame.fromStyleSheet(header));
             }
         }
         WebInspector.cssWorkspaceBinding.updateLocations(header);

@@ -785,6 +785,8 @@ WebInspector.setCurrentFocusElement = function(x)
     if (WebInspector._currentFocusElement !== x)
         WebInspector._previousFocusElement = WebInspector._currentFocusElement;
     WebInspector._currentFocusElement = x;
+    if (WebInspector._previousFocusElement && WebInspector._previousFocusElement !== x)
+        WebInspector._previousFocusElement.blur();
 
     if (x) {
         x.focus();
@@ -801,8 +803,7 @@ WebInspector.setCurrentFocusElement = function(x)
             selection.removeAllRanges();
             selection.addRange(selectionRange);
         }
-    } else if (WebInspector._previousFocusElement)
-        WebInspector._previousFocusElement.blur();
+    }
 }
 
 WebInspector.restoreFocusFromElement = function(element)

@@ -35,7 +35,7 @@
 WebInspector.ResourceSourceFrame = function(resource)
 {
     this._resource = resource;
-    WebInspector.SourceFrame.call(this, resource);
+    WebInspector.SourceFrame.call(this, resource.contentURL(), resource.requestContent.bind(resource));
 }
 
 /**

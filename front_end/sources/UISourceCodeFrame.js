@@ -34,7 +34,8 @@
 WebInspector.UISourceCodeFrame = function(uiSourceCode)
 {
     this._uiSourceCode = uiSourceCode;
-    WebInspector.SourceFrame.call(this, this._uiSourceCode);
+    WebInspector.SourceFrame.call(this, uiSourceCode.contentURL(), workingCopy);
+
     this.textEditor.setAutocompleteDelegate(new WebInspector.SimpleAutocompleteDelegate());
     this._rowMessageBuckets = {};
     /** @type {!Set<string>} */
@@ -49,6 +50,16 @@ WebInspector.UISourceCodeFrame = function(uiSourceCode)
 
     this._errorPopoverHelper = new WebInspector.PopoverHelper(this.element, this._getErrorAnchor.bind(this), this._showErrorPopover.bind(this));
     this._errorPopoverHelper.setTimeout(100, 100);
+
+    /**
+     * @return {!Promise<?string>}
+     */
+    function workingCopy()
+    {
+        if (uiSourceCode.isDirty())
+            return /** @type {!Promise<?string>} */(Promise.resolve(uiSourceCode.workingCopy()));
+        return uiSourceCode.requestContent();
+    }
 }
 
 WebInspector.UISourceCodeFrame.prototype = {

@@ -33,14 +33,15 @@
  * @extends {WebInspector.VBoxWithToolbarItems}
  * @implements {WebInspector.Searchable}
  * @implements {WebInspector.Replaceable}
- * @param {!WebInspector.ContentProvider} contentProvider
+ * @param {string} url
+ * @param {function(): !Promise<?string>} lazyContent
  */
-WebInspector.SourceFrame = function(contentProvider)
+WebInspector.SourceFrame = function(url, lazyContent)
 {
     WebInspector.VBoxWithToolbarItems.call(this);
 
-    this._url = contentProvider.contentURL();
-    this._contentProvider = contentProvider;
+    this._url = url;
+    this._lazyContent = lazyContent;
 
     var textEditorDelegate = new WebInspector.TextEditorDelegateForSourceFrame(this);
 
@@ -133,7 +134,7 @@ WebInspector.SourceFrame.prototype = {
     {
         if (!this._contentRequested) {
             this._contentRequested = true;
-            this._contentProvider.requestContent().then(this.setContent.bind(this));
+            this._lazyContent().then(this.setContent.bind(this));
         }
     },
 

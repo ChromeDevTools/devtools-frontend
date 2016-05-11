@@ -44,7 +44,7 @@ WebInspector.ClearStorageView = function(resourcesPanel)
 
     WebInspector.targetManager.observeTargets(this);
     var footer = this._reportView.appendSection("", "clear-storage-button").appendRow();
-    this._clearButton = createTextButton(WebInspector.UIString("Clear selected"), this._clear.bind(this), WebInspector.UIString("Clear selected"));
+    this._clearButton = createTextButton(WebInspector.UIString("Clear site data"), this._clear.bind(this), WebInspector.UIString("Clear site data"));
     footer.appendChild(this._clearButton);
 }
 
@@ -130,7 +130,8 @@ WebInspector.ClearStorageView.prototype = {
         }
 
         if (set.has(StorageAgent.StorageType.Cache_storage) || hasAll) {
-            for (var target of WebInspector.targetManager.targets()) {
+            var target = WebInspector.targetManager.mainTarget();
+            if (target) {
                 var model = WebInspector.ServiceWorkerCacheModel.fromTarget(target);
                 if (model)
                     model.clearForOrigin(this._securityOrigin);

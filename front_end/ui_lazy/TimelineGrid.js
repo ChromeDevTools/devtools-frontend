@@ -138,7 +138,7 @@ WebInspector.TimelineGrid.drawCanvasGrid = function(canvas, calculator, dividerO
         var position = calculator.computePosition(time);
         context.beginPath();
         if (!printDeltas || i !== 0 && position - lastPosition > minWidthForTitle) {
-            var text = printDeltas ? calculator.formatTime(calculator.zeroTime() + time - lastTime) : calculator.formatTime(time, precision);
+            var text = printDeltas ? calculator.formatValue(calculator.zeroTime() + time - lastTime) : calculator.formatValue(time, precision);
             var textWidth = context.measureText(text).width;
             var textPosition = printDeltas ? (position + lastPosition - textWidth) / 2 : position - textWidth - paddingRight;
             context.fillText(text, textPosition, paddingTop);
@@ -203,7 +203,7 @@ WebInspector.TimelineGrid.prototype = {
 
             var time = dividerOffsets[i];
             var position = calculator.computePosition(time);
-            dividerLabelBar._labelElement.textContent = calculator.formatTime(time, precision);
+            dividerLabelBar._labelElement.textContent = calculator.formatValue(time, precision);
 
             var percentLeft = 100 * position / dividersElementClientWidth;
             divider.style.left = percentLeft + "%";
@@ -323,7 +323,7 @@ WebInspector.TimelineGrid.Calculator.prototype = {
      * @param {number=} precision
      * @return {string}
      */
-    formatTime: function(time, precision) { },
+    formatValue: function(time, precision) { },
 
     /** @return {number} */
     minimumBoundary: function() { },

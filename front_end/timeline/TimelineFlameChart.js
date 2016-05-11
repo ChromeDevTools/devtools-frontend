@@ -118,6 +118,17 @@ WebInspector.TimelineFlameChartDataProviderBase.prototype = {
 
     /**
      * @override
+     * @param {number} value
+     * @param {number=} precision
+     * @return {string}
+     */
+    formatValue: function(value, precision)
+    {
+        return Number.preciseMillisToString(value, precision);
+    },
+
+    /**
+     * @override
      * @return {number}
      */
     maxStackDepth: function()

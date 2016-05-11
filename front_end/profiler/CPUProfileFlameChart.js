@@ -32,18 +32,16 @@
 /**
  * @constructor
  * @implements {WebInspector.FlameChartDataProvider}
- * @param {!WebInspector.CPUProfileDataModel} cpuProfile
  * @param {?WebInspector.Target} target
  */
-WebInspector.CPUFlameChartDataProvider = function(cpuProfile, target)
+WebInspector.ProfileFlameChartDataProvider = function(target)
 {
     WebInspector.FlameChartDataProvider.call(this);
-    this._cpuProfile = cpuProfile;
     this._target = target;
-    this._colorGenerator = WebInspector.CPUFlameChartDataProvider.colorGenerator();
+    this._colorGenerator = WebInspector.ProfileFlameChartDataProvider.colorGenerator();
 }
 
-WebInspector.CPUFlameChartDataProvider.prototype = {
+WebInspector.ProfileFlameChartDataProvider.prototype = {
     /**
      * @override
      * @return {number}
@@ -102,6 +100,17 @@ WebInspector.CPUFlameChartDataProvider.prototype = {
 
     /**
      * @override
+     * @param {number} value
+     * @param {number=} precision
+     * @return {string}
+     */
+    formatValue: function(value, precision)
+    {
+        return Number.preciseMillisToString(value, precision);
+    },
+
+    /**
+     * @override
      * @return {number}
      */
     maxStackDepth: function()
@@ -123,83 +132,7 @@ WebInspector.CPUFlameChartDataProvider.prototype = {
      */
     _calculateTimelineData: function()
     {
-        /**
-         * @constructor
-         * @param {number} depth
-         * @param {number} duration
-         * @param {number} startTime
-         * @param {number} selfTime
-         * @param {!ProfilerAgent.CPUProfileNode} node
-         */
-        function ChartEntry(depth, duration, startTime, selfTime, node)
-        {
-            this.depth = depth;
-            this.duration = duration;
-            this.startTime = startTime;
-            this.selfTime = selfTime;
-            this.node = node;
-        }
-
-        /** @type {!Array.<?ChartEntry>} */
-        var entries = [];
-        /** @type {!Array.<number>} */
-        var stack = [];
-        var maxDepth = 5;
-
-        function onOpenFrame()
-        {
-            stack.push(entries.length);
-            // Reserve space for the entry, as they have to be ordered by startTime.
-            // The entry itself will be put there in onCloseFrame.
-            entries.push(null);
-        }
-        function onCloseFrame(depth, node, startTime, totalTime, selfTime)
-        {
-            var index = stack.pop();
-            entries[index] = new ChartEntry(depth, totalTime, startTime, selfTime, node);
-            maxDepth = Math.max(maxDepth, depth);
-        }
-        this._cpuProfile.forEachFrame(onOpenFrame, onCloseFrame);
-
-        /** @type {!Array.<!ProfilerAgent.CPUProfileNode>} */
-        var entryNodes = new Array(entries.length);
-        var entryLevels = new Uint8Array(entries.length);
-        var entryTotalTimes = new Float32Array(entries.length);
-        var entrySelfTimes = new Float32Array(entries.length);
-        var entryStartTimes = new Float64Array(entries.length);
-        var minimumBoundary = this.minimumBoundary();
-
-        for (var i = 0; i < entries.length; ++i) {
-            var entry = entries[i];
-            entryNodes[i] = entry.node;
-            entryLevels[i] = entry.depth;
-            entryTotalTimes[i] = entry.duration;
-            entryStartTimes[i] = entry.startTime;
-            entrySelfTimes[i] = entry.selfTime;
-        }
-
-        this._maxStackDepth = maxDepth;
-
-        this._timelineData = new WebInspector.FlameChart.TimelineData(entryLevels, entryTotalTimes, entryStartTimes, null);
-
-        /** @type {!Array.<!ProfilerAgent.CPUProfileNode>} */
-        this._entryNodes = entryNodes;
-        this._entrySelfTimes = entrySelfTimes;
-
-        return this._timelineData;
-    },
-
-    /**
-     * @param {number} ms
-     * @return {string}
-     */
-    _millisecondsToString: function(ms)
-    {
-        if (ms === 0)
-            return "0";
-        if (ms < 1000)
-            return WebInspector.UIString("%.1f\u2009ms", ms);
-        return Number.secondsToString(ms / 1000, true);
+        throw "Not implemented.";
     },
 
     /**
@@ -209,35 +142,7 @@ WebInspector.CPUFlameChartDataProvider.prototype = {
      */
     prepareHighlightedEntryInfo: function(entryIndex)
     {
-        var timelineData = this._timelineData;
-        var node = this._entryNodes[entryIndex];
-        if (!node)
-            return null;
-
-        var entryInfo = [];
-        /**
-         * @param {string} title
-         * @param {string} value
-         */
-        function pushEntryInfoRow(title, value)
-        {
-            entryInfo.push({ title: title, value: value });
-        }
-        var name = WebInspector.beautifyFunctionName(node.functionName);
-        pushEntryInfoRow(WebInspector.UIString("Name"), name);
-        var selfTime = this._millisecondsToString(this._entrySelfTimes[entryIndex]);
-        var totalTime = this._millisecondsToString(timelineData.entryTotalTimes[entryIndex]);
-        pushEntryInfoRow(WebInspector.UIString("Self time"), selfTime);
-        pushEntryInfoRow(WebInspector.UIString("Total time"), totalTime);
-        var callFrame = /** @type {!RuntimeAgent.CallFrame} */ (node);
-        var text = (new WebInspector.Linkifier()).linkifyConsoleCallFrame(this._target, callFrame).textContent;
-        pushEntryInfoRow(WebInspector.UIString("URL"), text);
-        pushEntryInfoRow(WebInspector.UIString("Aggregated self time"), Number.secondsToString(node.selfTime / 1000, true));
-        pushEntryInfoRow(WebInspector.UIString("Aggregated total time"), Number.secondsToString(node.totalTime / 1000, true));
-        if (node.deoptReason && node.deoptReason !== "no reason")
-            pushEntryInfoRow(WebInspector.UIString("Not optimized"), node.deoptReason);
-
-        return entryInfo;
+        throw "Not implemented.";
     },
 
     /**
@@ -336,7 +241,7 @@ WebInspector.CPUFlameChartDataProvider.prototype = {
      */
     paddingLeft: function()
     {
-        return 15;
+        return 0;
     },
 
     /**
@@ -354,9 +259,9 @@ WebInspector.CPUFlameChartDataProvider.prototype = {
 /**
  * @return {!WebInspector.FlameChart.ColorGenerator}
  */
-WebInspector.CPUFlameChartDataProvider.colorGenerator = function()
+WebInspector.ProfileFlameChartDataProvider.colorGenerator = function()
 {
-    if (!WebInspector.CPUFlameChartDataProvider._colorGenerator) {
+    if (!WebInspector.ProfileFlameChartDataProvider._colorGenerator) {
         var colorGenerator = new WebInspector.FlameChart.ColorGenerator(
             { min: 30, max: 330 },
             { min: 50, max: 80, count: 5 },
@@ -365,9 +270,9 @@ WebInspector.CPUFlameChartDataProvider.colorGenerator = function()
         colorGenerator.setColorForID("(idle)", "hsl(0, 0%, 94%)");
         colorGenerator.setColorForID("(program)", "hsl(0, 0%, 80%)");
         colorGenerator.setColorForID("(garbage collector)", "hsl(0, 0%, 80%)");
-        WebInspector.CPUFlameChartDataProvider._colorGenerator = colorGenerator;
+        WebInspector.ProfileFlameChartDataProvider._colorGenerator = colorGenerator;
     }
-    return WebInspector.CPUFlameChartDataProvider._colorGenerator;
+    return WebInspector.ProfileFlameChartDataProvider._colorGenerator;
 }
 
 
@@ -519,8 +424,9 @@ WebInspector.CPUProfileFlameChart.prototype = {
  * @constructor
  * @implements {WebInspector.TimelineGrid.Calculator}
  */
-WebInspector.CPUProfileFlameChart.OverviewCalculator = function()
+WebInspector.CPUProfileFlameChart.OverviewCalculator = function(dataProvider)
 {
+    this._dataProvider = dataProvider;
 }
 
 WebInspector.CPUProfileFlameChart.OverviewCalculator.prototype = {
@@ -560,9 +466,9 @@ WebInspector.CPUProfileFlameChart.OverviewCalculator.prototype = {
      * @param {number=} precision
      * @return {string}
      */
-    formatTime: function(value, precision)
+    formatValue: function(value, precision)
     {
-        return Number.secondsToString((value - this._minimumBoundaries) / 1000, !!precision);
+        return this._dataProvider.formatValue(value - this._minimumBoundaries, precision);
     },
 
     /**
@@ -617,7 +523,7 @@ WebInspector.CPUProfileFlameChart.OverviewPane = function(dataProvider)
     this._overviewGrid.element.classList.add("fill");
     this._overviewCanvas = this._overviewContainer.createChild("canvas", "cpu-profile-flame-chart-overview-canvas");
     this._overviewContainer.appendChild(this._overviewGrid.element);
-    this._overviewCalculator = new WebInspector.CPUProfileFlameChart.OverviewCalculator();
+    this._overviewCalculator = new WebInspector.CPUProfileFlameChart.OverviewCalculator(dataProvider);
     this._dataProvider = dataProvider;
     this._overviewGrid.addEventListener(WebInspector.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
 }

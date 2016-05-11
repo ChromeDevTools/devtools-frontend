@@ -2101,7 +2101,7 @@ WebInspector.HeapTrackingOverviewGrid.OverviewCalculator.prototype = {
      * @param {number=} precision
      * @return {string}
      */
-    formatTime: function(value, precision)
+    formatValue: function(value, precision)
     {
         return Number.secondsToString(value / 1000, !!precision);
     },

@@ -53,6 +53,15 @@ WebInspector.CPUProfileView.prototype = {
         return "";
     },
 
+    /**
+     * @override
+     * @return {!WebInspector.FlameChartDataProvider}
+     */
+    createFlameChartDataProvider: function()
+    {
+        return new WebInspector.CPUFlameChartDataProvider(this.profile, this._profileHeader.target());
+    },
+
     __proto__: WebInspector.ProfileView.prototype
 }
 
@@ -332,4 +341,144 @@ WebInspector.CPUProfileView.NodeFormatter.prototype = {
         var callFrame = node.profileNode.frame;
         return this._profileView.linkifier().linkifyConsoleCallFrame(this._profileView.target(), callFrame, "profile-node-file");
     }
+}
+
+/**
+ * @constructor
+ * @extends {WebInspector.ProfileFlameChartDataProvider}
+ * @param {!WebInspector.CPUProfileDataModel} cpuProfile
+ * @param {?WebInspector.Target} target
+ */
+WebInspector.CPUFlameChartDataProvider = function(cpuProfile, target)
+{
+    WebInspector.ProfileFlameChartDataProvider.call(this, target);
+    this._cpuProfile = cpuProfile;
+}
+
+WebInspector.CPUFlameChartDataProvider.prototype = {
+    /**
+     * @override
+     * @return {!WebInspector.FlameChart.TimelineData}
+     */
+    _calculateTimelineData: function()
+    {
+        /**
+         * @constructor
+         * @param {number} depth
+         * @param {number} duration
+         * @param {number} startTime
+         * @param {number} selfTime
+         * @param {!ProfilerAgent.CPUProfileNode} node
+         */
+        function ChartEntry(depth, duration, startTime, selfTime, node)
+        {
+            this.depth = depth;
+            this.duration = duration;
+            this.startTime = startTime;
+            this.selfTime = selfTime;
+            this.node = node;
+        }
+
+        /** @type {!Array.<?ChartEntry>} */
+        var entries = [];
+        /** @type {!Array.<number>} */
+        var stack = [];
+        var maxDepth = 5;
+
+        function onOpenFrame()
+        {
+            stack.push(entries.length);
+            // Reserve space for the entry, as they have to be ordered by startTime.
+            // The entry itself will be put there in onCloseFrame.
+            entries.push(null);
+        }
+        function onCloseFrame(depth, node, startTime, totalTime, selfTime)
+        {
+            var index = stack.pop();
+            entries[index] = new ChartEntry(depth, totalTime, startTime, selfTime, node);
+            maxDepth = Math.max(maxDepth, depth);
+        }
+        this._cpuProfile.forEachFrame(onOpenFrame, onCloseFrame);
+
+        /** @type {!Array.<!ProfilerAgent.CPUProfileNode>} */
+        var entryNodes = new Array(entries.length);
+        var entryLevels = new Uint8Array(entries.length);
+        var entryTotalTimes = new Float32Array(entries.length);
+        var entrySelfTimes = new Float32Array(entries.length);
+        var entryStartTimes = new Float64Array(entries.length);
+        var minimumBoundary = this.minimumBoundary();
+
+        for (var i = 0; i < entries.length; ++i) {
+            var entry = entries[i];
+            entryNodes[i] = entry.node;
+            entryLevels[i] = entry.depth;
+            entryTotalTimes[i] = entry.duration;
+            entryStartTimes[i] = entry.startTime;
+            entrySelfTimes[i] = entry.selfTime;
+        }
+
+        this._maxStackDepth = maxDepth;
+
+        this._timelineData = new WebInspector.FlameChart.TimelineData(entryLevels, entryTotalTimes, entryStartTimes, null);
+
+        /** @type {!Array.<!ProfilerAgent.CPUProfileNode>} */
+        this._entryNodes = entryNodes;
+        this._entrySelfTimes = entrySelfTimes;
+
+        return this._timelineData;
+    },
+
+    /**
+     * @override
+     * @param {number} entryIndex
+     * @return {?Array<!{title: string, value: (string|!Element)}>}
+     */
+    prepareHighlightedEntryInfo: function(entryIndex)
+    {
+        var timelineData = this._timelineData;
+        var node = this._entryNodes[entryIndex];
+        if (!node)
+            return null;
+
+        var entryInfo = [];
+        /**
+         * @param {string} title
+         * @param {string} value
+         */
+        function pushEntryInfoRow(title, value)
+        {
+            entryInfo.push({ title: title, value: value });
+        }
+        /**
+         * @param {number} ms
+         * @return {string}
+         */
+        function millisecondsToString(ms)
+        {
+            if (ms === 0)
+                return "0";
+            if (ms < 1000)
+                return WebInspector.UIString("%.1f\u2009ms", ms);
+            return Number.secondsToString(ms / 1000, true);
+        }
+        var name = WebInspector.beautifyFunctionName(node.functionName);
+        pushEntryInfoRow(WebInspector.UIString("Name"), name);
+        var selfTime = millisecondsToString(this._entrySelfTimes[entryIndex]);
+        var totalTime = millisecondsToString(timelineData.entryTotalTimes[entryIndex]);
+        pushEntryInfoRow(WebInspector.UIString("Self time"), selfTime);
+        pushEntryInfoRow(WebInspector.UIString("Total time"), totalTime);
+        var callFrame = /** @type {!RuntimeAgent.CallFrame} */ (node);
+        var linkifier = new WebInspector.Linkifier();
+        var text = linkifier.linkifyConsoleCallFrame(this._target, callFrame).textContent;
+        linkifier.dispose();
+        pushEntryInfoRow(WebInspector.UIString("URL"), text);
+        pushEntryInfoRow(WebInspector.UIString("Aggregated self time"), Number.secondsToString(node.selfTime / 1000, true));
+        pushEntryInfoRow(WebInspector.UIString("Aggregated total time"), Number.secondsToString(node.totalTime / 1000, true));
+        if (node.deoptReason && node.deoptReason !== "no reason")
+            pushEntryInfoRow(WebInspector.UIString("Not optimized"), node.deoptReason);
+
+        return entryInfo;
+    },
+
+    __proto__: WebInspector.ProfileFlameChartDataProvider.prototype
 }

@@ -601,7 +601,7 @@ WebInspector.CounterGraphCalculator.prototype = {
      * @param {number=} precision
      * @return {string}
      */
-    formatTime: function(value, precision)
+    formatValue: function(value, precision)
     {
         return Number.preciseMillisToString(value - this.zeroTime(), precision);
     },

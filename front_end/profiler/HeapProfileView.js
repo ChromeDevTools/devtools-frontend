@@ -14,6 +14,7 @@ WebInspector.HeapProfileView = function(profileHeader)
     this.profile = new WebInspector.SamplingHeapProfileModel(profileHeader._profile || profileHeader.protocolProfile());
     this.adjustedTotal = this.profile.total;
     var views = [
+        WebInspector.ProfileView.ViewTypes.Flame,
         WebInspector.ProfileView.ViewTypes.Heavy,
         WebInspector.ProfileView.ViewTypes.Tree
     ];
@@ -33,6 +34,15 @@ WebInspector.HeapProfileView.prototype = {
         case "total": return WebInspector.UIString("Total Size (bytes)");
         }
         return "";
+    },
+
+    /**
+     * @override
+     * @return {!WebInspector.FlameChartDataProvider}
+     */
+    createFlameChartDataProvider: function()
+    {
+        return new WebInspector.HeapFlameChartDataProvider(this.profile, this._profileHeader.target());
     },
 
     __proto__: WebInspector.ProfileView.prototype
@@ -295,4 +305,129 @@ WebInspector.HeapProfileView.NodeFormatter.prototype = {
         var callFrame = node.profileNode.frame;
         return this._profileView.linkifier().linkifyConsoleCallFrame(this._profileView.target(), callFrame, "profile-node-file");
     }
+}
+
+/**
+ * @constructor
+ * @extends {WebInspector.ProfileFlameChartDataProvider}
+ * @param {!WebInspector.ProfileTreeModel} profile
+ * @param {?WebInspector.Target} target
+ */
+WebInspector.HeapFlameChartDataProvider = function(profile, target)
+{
+    WebInspector.ProfileFlameChartDataProvider.call(this, target);
+    this._profile = profile;
+}
+
+WebInspector.HeapFlameChartDataProvider.prototype = {
+    /**
+     * @override
+     * @return {number}
+     */
+    minimumBoundary: function()
+    {
+        return 0;
+    },
+
+    /**
+     * @override
+     * @return {number}
+     */
+    totalTime: function()
+    {
+        return this._profile.root.total;
+    },
+
+    /**
+     * @override
+     * @param {number} value
+     * @param {number=} precision
+     * @return {string}
+     */
+    formatValue: function(value, precision)
+    {
+        return WebInspector.UIString("%s\u2009KB", Number.withThousandsSeparator(value / 1e3));
+    },
+
+    /**
+     * @override
+     * @return {!WebInspector.FlameChart.TimelineData}
+     */
+    _calculateTimelineData: function()
+    {
+        /**
+         * @param  {!WebInspector.ProfileNode} node
+         * @return {number}
+         */
+        function nodesCount(node)
+        {
+            return node.children.reduce((count, node) => count + nodesCount(node), 1);
+        }
+        var count = nodesCount(this._profile.root);
+        /** @type {!Array<!WebInspector.ProfileNode>} */
+        var entryNodes = new Array(count);
+        var entryLevels = new Uint8Array(count);
+        var entryTotalTimes = new Float32Array(count);
+        var entryStartTimes = new Float64Array(count);
+        var depth = 0;
+        var maxDepth = 0;
+        var position = 0;
+        var index = 0;
+
+        /**
+         * @param {!WebInspector.ProfileNode} node
+         */
+        function addNode(node)
+        {
+            var start = position;
+            entryNodes[index] = node;
+            entryLevels[index] = depth;
+            entryTotalTimes[index] = node.total;
+            entryStartTimes[index] = position;
+            ++index;
+            ++depth;
+            node.children.forEach(addNode);
+            --depth;
+            maxDepth = Math.max(maxDepth, depth);
+            position = start + node.total;
+        }
+        addNode(this._profile.root);
+
+        this._maxStackDepth = maxDepth + 1;
+        this._entryNodes = entryNodes;
+        this._timelineData = new WebInspector.FlameChart.TimelineData(entryLevels, entryTotalTimes, entryStartTimes, null);
+
+        return this._timelineData;
+    },
+
+    /**
+     * @override
+     * @param {number} entryIndex
+     * @return {?Array<!{title: string, value: (string|!Element)}>}
+     */
+    prepareHighlightedEntryInfo: function(entryIndex)
+    {
+        var node = this._entryNodes[entryIndex];
+        if (!node)
+            return null;
+        var entryInfo = [];
+        /**
+         * @param {string} title
+         * @param {string} value
+         */
+        function pushEntryInfoRow(title, value)
+        {
+            entryInfo.push({ title: title, value: value });
+        }
+        pushEntryInfoRow(WebInspector.UIString("Name"), WebInspector.beautifyFunctionName(node.functionName));
+        pushEntryInfoRow(WebInspector.UIString("Self size"), Number.bytesToString(node.self));
+        pushEntryInfoRow(WebInspector.UIString("Total size"), Number.bytesToString(node.total));
+        var linkifier = new WebInspector.Linkifier();
+        var text = (new WebInspector.Linkifier()).linkifyConsoleCallFrame(this._target, node.frame).textContent;
+        linkifier.dispose();
+        pushEntryInfoRow(WebInspector.UIString("URL"), text);
+        return entryInfo;
+    },
+
+    __proto__: WebInspector.ProfileFlameChartDataProvider.prototype
 }

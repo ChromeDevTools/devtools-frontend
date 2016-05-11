@@ -236,11 +236,19 @@ WebInspector.ProfileView.prototype = {
         return this._linkifier;
     },
 
+    /**
+     * @return {!WebInspector.FlameChartDataProvider}
+     */
+    createFlameChartDataProvider: function()
+    {
+        throw "Not implemented";
+    },
+
     _ensureFlameChartCreated: function()
     {
         if (this._flameChart)
             return;
-        this._dataProvider = new WebInspector.CPUFlameChartDataProvider(this.profile, this._profileHeader.target());
+        this._dataProvider = this.createFlameChartDataProvider();
         this._flameChart = new WebInspector.CPUProfileFlameChart(this._searchableView, this._dataProvider);
         this._flameChart.addEventListener(WebInspector.FlameChart.Events.EntrySelected, this._onEntrySelected.bind(this));
     },

@@ -63,7 +63,8 @@ WebInspector.FlameChart = function(dataProvider, flameChartDelegate, groupExpans
     this._groupExpansionSetting = groupExpansionSetting;
     this._groupExpansionState = groupExpansionSetting && groupExpansionSetting.get() || {};
 
-    this._calculator = new WebInspector.FlameChart.Calculator();
+    this._dataProvider = dataProvider;
+    this._calculator = new WebInspector.FlameChart.Calculator(dataProvider);
 
     this._canvas = this.contentElement.createChild("canvas");
     this._canvas.tabIndex = 1;
@@ -87,8 +88,6 @@ WebInspector.FlameChart = function(dataProvider, flameChartDelegate, groupExpans
     this._selectedElement = this.contentElement.createChild("div", "flame-chart-selected-element");
     this._selectionOverlay = this.contentElement.createChild("div", "flame-chart-selection-overlay hidden");
     this._selectedTimeSpanLabel = this._selectionOverlay.createChild("div", "time-span");
-
-    this._dataProvider = dataProvider;
 
     this._windowLeft = 0.0;
     this._windowRight = 1.0;
@@ -196,6 +195,13 @@ WebInspector.FlameChartDataProvider.prototype = {
      * @return {number}
      */
     totalTime: function() { },
+
+    /**
+     * @param {number} value
+     * @param {number=} precision
+     * @return {string}
+     */
+    formatValue: function(value, precision) { },
 
     /**
      * @return {number}
@@ -395,9 +401,11 @@ WebInspector.FlameChart.ColorGenerator.prototype = {
 /**
  * @constructor
  * @implements {WebInspector.TimelineGrid.Calculator}
+ * @param {!WebInspector.FlameChartDataProvider} dataProvider
  */
-WebInspector.FlameChart.Calculator = function()
+WebInspector.FlameChart.Calculator = function(dataProvider)
 {
+    this._dataProvider = dataProvider;
     this._paddingLeft = 0;
 }
 
@@ -441,9 +449,9 @@ WebInspector.FlameChart.Calculator.prototype = {
      * @param {number=} precision
      * @return {string}
      */
-    formatTime: function(value, precision)
+    formatValue: function(value, precision)
     {
-        return Number.preciseMillisToString(value - this._zeroTime, precision);
+        return this._dataProvider.formatValue(value - this._zeroTime, precision);
     },
 
     /**

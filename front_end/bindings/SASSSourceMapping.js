@@ -92,7 +92,7 @@ WebInspector.SASSSourceMapping.prototype = {
                     continue;
                 handledUISourceCodes.add(uiSourceCode);
                 var sassText = /** @type {string} */(newSources.get(sourceURL));
-                uiSourceCode.addRevision(sassText);
+                uiSourceCode.setWorkingCopy(sassText);
             }
         }
     },

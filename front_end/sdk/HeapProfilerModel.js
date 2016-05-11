@@ -31,7 +31,8 @@ WebInspector.HeapProfilerModel.prototype = {
 
     startSampling: function()
     {
-        this._heapProfilerAgent.startSampling();
+        var defaultSamplingIntervalInBytes = 16384;
+        this._heapProfilerAgent.startSampling(defaultSamplingIntervalInBytes);
     },
 
     /**

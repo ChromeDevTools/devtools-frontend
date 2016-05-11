@@ -814,9 +814,15 @@ WebInspector.CSSModel.prototype = {
         if (!promise) {
             promise = this.getStyleSheetText(header.id);
             this._originalStyleSheetText.set(header, promise);
+            this._originalContentRequestedForTest(header);
         }
         return promise;
     },
+
+    /**
+     * @param {!WebInspector.CSSStyleSheetHeader} header
+     */
+    _originalContentRequestedForTest: function(header) { },
 
     /**
      * @param {!WebInspector.CSSStyleSheetHeader} header

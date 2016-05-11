@@ -7,13 +7,25 @@
  * @implements {WebInspector.ContentProvider}
  * @param {string} contentURL
  * @param {!WebInspector.ResourceType} contentType
- * @param {!Promise<string>} contentGetter
+ * @param {function():!Promise<string>} lazyContent
  */
-WebInspector.StaticContentProvider = function(contentURL, contentType, contentGetter)
+WebInspector.StaticContentProvider = function(contentURL, contentType, lazyContent)
 {
     this._contentURL = contentURL;
     this._contentType = contentType;
-    this._contentGetter = contentGetter;
+    this._lazyContent = lazyContent;
+}
+
+/**
+ * @param {string} contentURL
+ * @param {!WebInspector.ResourceType} contentType
+ * @param {string} content
+ * @return {!WebInspector.StaticContentProvider}
+ */
+WebInspector.StaticContentProvider.fromString = function(contentURL, contentType, content)
+{
+    var lazyContent = () => Promise.resolve(content);
+    return new WebInspector.StaticContentProvider(contentURL, contentType, lazyContent);
 }
 
 WebInspector.StaticContentProvider.prototype = {
@@ -41,7 +53,7 @@ WebInspector.StaticContentProvider.prototype = {
      */
     requestContent: function()
     {
-        return /** @type {!Promise<?string>} */(this._contentGetter);
+        return /** @type {!Promise<?string>} */(this._lazyContent());
     },
 
     /**
@@ -61,6 +73,6 @@ WebInspector.StaticContentProvider.prototype = {
             callback(WebInspector.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex));
         }
 
-        this._contentGetter.then(performSearch);
+        this._lazyContent().then(performSearch);
     }
 }

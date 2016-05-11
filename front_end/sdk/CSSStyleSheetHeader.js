@@ -33,8 +33,8 @@ WebInspector.CSSStyleSheetHeader.prototype = {
     originalContentProvider: function()
     {
         if (!this._originalContentProvider) {
-            var originalContentPromise = this._cssModel.originalStyleSheetText(this);
-            this._originalContentProvider = new WebInspector.StaticContentProvider(this.contentURL(), this.contentType(), originalContentPromise);
+            var lazyContent = this._cssModel.originalStyleSheetText.bind(this._cssModel, this);
+            this._originalContentProvider = new WebInspector.StaticContentProvider(this.contentURL(), this.contentType(), lazyContent);
         }
         return this._originalContentProvider;
     },

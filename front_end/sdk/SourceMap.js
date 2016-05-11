@@ -259,7 +259,7 @@ WebInspector.TextSourceMap.prototype = {
     {
         var sourceContent = this._sourceContentByURL[sourceURL];
         if (sourceContent)
-            return new WebInspector.StaticContentProvider(sourceURL, contentType, Promise.resolve(sourceContent));
+            return WebInspector.StaticContentProvider.fromString(sourceURL, contentType, sourceContent);
         return new WebInspector.CompilerSourceMappingContentProvider(sourceURL, contentType);
     },
 

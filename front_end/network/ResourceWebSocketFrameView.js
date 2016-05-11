@@ -242,7 +242,7 @@ WebInspector.ResourceWebSocketFrameNode.prototype = {
      */
     contentProvider: function()
     {
-        return new WebInspector.StaticContentProvider(this._url, WebInspector.resourceTypes.WebSocket, Promise.resolve(this._dataText));
+        return WebInspector.StaticContentProvider.fromString(this._url, WebInspector.resourceTypes.WebSocket, this._dataText);
     },
 
     __proto__: WebInspector.SortableDataGridNode.prototype

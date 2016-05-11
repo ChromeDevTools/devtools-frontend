@@ -40,7 +40,7 @@ WebInspector.SASSSourceMapFactory.prototype = {
             promises.push(sassPromise);
         }
         var cssURL = sourceMap.compiledURL();
-        var cssPromise = header.requestContent()
+        var cssPromise = header.originalContentProvider().requestContent()
             .then(text => this._astService.parseCSS(cssURL, text || ""))
             .then(ast => models.set(ast.document.url, ast));
         promises.push(cssPromise);

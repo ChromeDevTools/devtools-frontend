@@ -196,7 +196,7 @@ WebInspector.CompilerScriptMapping.prototype = {
         if (WebInspector.blackboxManager.isBlackboxedURL(script.sourceURL, script.isContentScript()))
             return;
         // Create stub UISourceCode for the time source mapping is being loaded.
-        var stubUISourceCode = this._stubProject.addContentProvider(script.sourceURL, new WebInspector.StaticContentProvider(WebInspector.resourceTypes.Script, "\n\n\n\n\n// Please wait a bit.\n// Compiled script is not shown while source map is being loaded!", script.sourceURL));
+        var stubUISourceCode = this._stubProject.addContentProvider(script.sourceURL, new WebInspector.StaticContentProvider(script.sourceURL, WebInspector.resourceTypes.Script, Promise.resolve("\n\n\n\n\n// Please wait a bit.\n// Compiled script is not shown while source map is being loaded!")));
         this._stubUISourceCodes.set(script.scriptId, stubUISourceCode);
 
         this._debuggerWorkspaceBinding.pushSourceMapping(script, this);

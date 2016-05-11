@@ -48,6 +48,9 @@ WebInspector.StylesSidebarPane = function()
     this._keyDownBound = this._keyDown.bind(this);
     this._keyUpBound = this._keyUp.bind(this);
 
+     /** @type {!Array<!WebInspector.SectionBlock>} */
+    this._sectionBlocks = [];
+
     WebInspector.targetManager.addModelListener(WebInspector.CSSModel, WebInspector.CSSModel.Events.LayoutEditorChange, this._onLayoutEditorChange, this);
 }
 

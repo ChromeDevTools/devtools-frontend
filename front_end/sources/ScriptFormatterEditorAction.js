@@ -369,7 +369,7 @@ WebInspector.ScriptFormatterEditorAction.prototype = {
         {
             var scripts = this._scriptsForUISourceCode(uiSourceCode);
             var formattedURL = uiSourceCode.url() + ":formatted";
-            var contentProvider = new WebInspector.StaticContentProvider(uiSourceCode.contentType(), formattedContent, formattedURL);
+            var contentProvider = new WebInspector.StaticContentProvider(formattedURL, uiSourceCode.contentType(), Promise.resolve(formattedContent));
             var formattedUISourceCode = this._project.addContentProvider(formattedURL, contentProvider);
             var formattedPath = formattedUISourceCode.url();
             var formatData = new WebInspector.FormatterScriptMapping.FormatData(uiSourceCode.project().id(), uiSourceCode.url(), formatterMapping, scripts);

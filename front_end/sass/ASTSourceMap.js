@@ -61,7 +61,7 @@ WebInspector.ASTSourceMap.prototype = {
     {
         var model = this.modelForURL(sourceURL);
         var sourceContent = model ? model.document.text.value() : "";
-        return new WebInspector.StaticContentProvider(contentType, sourceContent, sourceURL);
+        return new WebInspector.StaticContentProvider(sourceURL, contentType, Promise.resolve(sourceContent));
     },
 
     /**

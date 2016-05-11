@@ -308,10 +308,11 @@ WebInspector.NetworkProject.prototype = {
         if (header.isInline && !header.hasSourceURL && header.origin !== "inspector")
             return;
 
-        var uiSourceCode = this._createFile(header, WebInspector.ResourceTreeFrame.fromStyleSheet(header), false);
+        var originalContentProvider = header.originalContentProvider();
+        var uiSourceCode = this._createFile(originalContentProvider, WebInspector.ResourceTreeFrame.fromStyleSheet(header), false);
         if (uiSourceCode) {
             uiSourceCode[WebInspector.NetworkProject._styleSheetSymbol] = header;
-            this._addUISourceCodeWithProvider(uiSourceCode, header);
+            this._addUISourceCodeWithProvider(uiSourceCode, originalContentProvider);
         }
     },
 

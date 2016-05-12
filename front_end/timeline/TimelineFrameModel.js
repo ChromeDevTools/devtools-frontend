@@ -31,12 +31,19 @@
 /**
  * @constructor
  */
-WebInspector.TimelineFrameModelBase = function()
+WebInspector.TimelineFrameModel = function()
 {
     this.reset();
 }
 
-WebInspector.TimelineFrameModelBase.prototype = {
+WebInspector.TimelineFrameModel._mainFrameMarkers = [
+    WebInspector.TimelineModel.RecordType.ScheduleStyleRecalculation,
+    WebInspector.TimelineModel.RecordType.InvalidateLayout,
+    WebInspector.TimelineModel.RecordType.BeginMainThreadFrame,
+    WebInspector.TimelineModel.RecordType.ScrollLayer
+];
+
+WebInspector.TimelineFrameModel.prototype = {
     /**
      * @return {!Array.<!WebInspector.TimelineFrame>}
      */
@@ -205,6 +212,9 @@ WebInspector.TimelineFrameModelBase.prototype = {
         this._lastNeedsBeginFrame = null;
         this._framePendingActivation = null;
         this._lastTaskBeginTime = null;
+        this._target = null;
+        this._sessionId = null;
+        this._currentTaskTimeByCategory = {};
     },
 
     /**
@@ -339,32 +349,6 @@ WebInspector.TimelineFrameModelBase.prototype = {
                 return result;
         }
         return null;
-    }
-}
-
-/**
- * @constructor
- * @extends {WebInspector.TimelineFrameModelBase}
- */
-WebInspector.TracingTimelineFrameModel = function()
-{
-    WebInspector.TimelineFrameModelBase.call(this);
-}
-
-WebInspector.TracingTimelineFrameModel._mainFrameMarkers = [
-    WebInspector.TimelineModel.RecordType.ScheduleStyleRecalculation,
-    WebInspector.TimelineModel.RecordType.InvalidateLayout,
-    WebInspector.TimelineModel.RecordType.BeginMainThreadFrame,
-    WebInspector.TimelineModel.RecordType.ScrollLayer
-];
-
-WebInspector.TracingTimelineFrameModel.prototype = {
-    reset: function()
-    {
-        WebInspector.TimelineFrameModelBase.prototype.reset.call(this);
-        this._target = null;
-        this._sessionId = null;
-        this._currentTaskTimeByCategory = {};
     },
 
     /**
@@ -445,7 +429,7 @@ WebInspector.TracingTimelineFrameModel.prototype = {
             this._currentTaskTimeByCategory = {};
             this._lastTaskBeginTime = event.startTime;
         }
-        if (!this._framePendingCommit && WebInspector.TracingTimelineFrameModel._mainFrameMarkers.indexOf(event.name) >= 0)
+        if (!this._framePendingCommit && WebInspector.TimelineFrameModel._mainFrameMarkers.indexOf(event.name) >= 0)
             this._framePendingCommit = new WebInspector.PendingFrame(this._lastTaskBeginTime || event.startTime, this._currentTaskTimeByCategory);
         if (!this._framePendingCommit) {
             this._addTimeForCategory(this._currentTaskTimeByCategory, event);
@@ -472,8 +456,6 @@ WebInspector.TracingTimelineFrameModel.prototype = {
         var categoryName = WebInspector.TimelineUIUtils.eventStyle(event).category.name;
         timeByCategory[categoryName] = (timeByCategory[categoryName] || 0) + event.selfTime;
     },
-
-    __proto__: WebInspector.TimelineFrameModelBase.prototype
 }
 
 /**

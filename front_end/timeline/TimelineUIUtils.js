@@ -1626,7 +1626,7 @@ WebInspector.TimelineUIUtils.generatePieChart = function(aggregatedStats, selfCa
 }
 
 /**
- * @param {!WebInspector.TimelineFrameModelBase} frameModel
+ * @param {!WebInspector.TimelineFrameModel} frameModel
  * @param {!WebInspector.TimelineFrame} frame
  * @param {?WebInspector.FilmStripModel.Frame} filmStripFrame
  * @return {!Element}

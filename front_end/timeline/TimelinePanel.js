@@ -61,7 +61,7 @@ WebInspector.TimelinePanel = function()
     this._tracingModelBackingStorage = new WebInspector.TempFileBackingStorage("tracing");
     this._tracingModel = new WebInspector.TracingModel(this._tracingModelBackingStorage);
     this._model = new WebInspector.TimelineModel(WebInspector.TimelineUIUtils.visibleEventsFilter());
-    this._frameModel = new WebInspector.TracingTimelineFrameModel();
+    this._frameModel = new WebInspector.TimelineFrameModel();
     this._irModel = new WebInspector.TimelineIRModel();
 
     if (Runtime.experiments.isEnabled("cpuThrottling"))

@@ -279,7 +279,7 @@ WebInspector.TimelineFlameChartEntryType = {
  * @constructor
  * @extends {WebInspector.TimelineFlameChartDataProviderBase}
  * @param {!WebInspector.TimelineModel} model
- * @param {!WebInspector.TimelineFrameModelBase} frameModel
+ * @param {!WebInspector.TimelineFrameModel} frameModel
  * @param {!WebInspector.TimelineIRModel} irModel
  * @param {!Array<!WebInspector.TimelineModel.Filter>} filters
  */
@@ -1309,7 +1309,7 @@ WebInspector.TimelineFlameChartMarker.prototype = {
  * @implements {WebInspector.FlameChartDelegate}
  * @param {!WebInspector.TimelineModeViewDelegate} delegate
  * @param {!WebInspector.TimelineModel} timelineModel
- * @param {!WebInspector.TimelineFrameModelBase} frameModel
+ * @param {!WebInspector.TimelineFrameModel} frameModel
  * @param {!WebInspector.TimelineIRModel} irModel
  * @param {!Array<!WebInspector.TimelineModel.Filter>} filters
  */

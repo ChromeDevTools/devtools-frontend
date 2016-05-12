@@ -368,7 +368,7 @@ WebInspector.TimelineEventOverview.CPUActivity.prototype = {
  * @constructor
  * @extends {WebInspector.TimelineEventOverview}
  * @param {!WebInspector.TimelineModel} model
- * @param {!WebInspector.TimelineFrameModelBase} frameModel
+ * @param {!WebInspector.TimelineFrameModel} frameModel
  */
 WebInspector.TimelineEventOverview.Responsiveness = function(model, frameModel)
 {
@@ -594,7 +594,7 @@ WebInspector.TimelineFilmStripOverview.prototype = {
  * @constructor
  * @extends {WebInspector.TimelineEventOverview}
  * @param {!WebInspector.TimelineModel} model
- * @param {!WebInspector.TimelineFrameModelBase} frameModel
+ * @param {!WebInspector.TimelineFrameModel} frameModel
  */
 WebInspector.TimelineEventOverview.Frames = function(model, frameModel)
 {

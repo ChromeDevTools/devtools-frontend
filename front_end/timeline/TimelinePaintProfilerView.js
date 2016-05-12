@@ -4,7 +4,7 @@
 
 /**
  * @constructor
- * @param {!WebInspector.TracingTimelineFrameModel} frameModel
+ * @param {!WebInspector.TimelineFrameModel} frameModel
  * @extends {WebInspector.SplitWidget}
  */
 WebInspector.TimelinePaintProfilerView = function(frameModel)

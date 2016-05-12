@@ -235,7 +235,7 @@ WebInspector.DeviceModeModel.prototype = {
      */
     outlineImage: function()
     {
-        return (this._device && this._mode && Runtime.experiments.isEnabled("deviceFrames") && this._deviceOutlineSetting.get()) ? this._device.outlineImage(this._mode) : "";
+        return (this._device && this._mode && this._deviceOutlineSetting.get()) ? this._device.outlineImage(this._mode) : "";
     },
 
     /**
@@ -432,7 +432,7 @@ WebInspector.DeviceModeModel.prototype = {
         if (this._type !== WebInspector.DeviceModeModel.Type.Device)
             return outline;
         var orientation = this._device.orientationByName(this._mode.orientation);
-        if (Runtime.experiments.isEnabled("deviceFrames") && this._deviceOutlineSetting.get())
+        if (this._deviceOutlineSetting.get())
             outline = orientation.outlineInsets || outline;
         return outline;
     },

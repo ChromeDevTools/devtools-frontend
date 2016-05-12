@@ -267,8 +267,7 @@ WebInspector.DeviceModeToolbar.prototype = {
     _appendOptionsMenuItems: function(contextMenu)
     {
         var submenu = contextMenu.appendSubMenuItem(WebInspector.UIString("Show"));
-        if (Runtime.experiments.isEnabled("deviceFrames"))
-            submenu.appendCheckboxItem(WebInspector.UIString("Device frame"), this._toggleDeviceFrames.bind(this), this._deviceOutlineSetting.get(), this._model.type() !== WebInspector.DeviceModeModel.Type.Device);
+        submenu.appendCheckboxItem(WebInspector.UIString("Device frame"), this._toggleDeviceOutline.bind(this), this._deviceOutlineSetting.get(), this._model.type() !== WebInspector.DeviceModeModel.Type.Device);
         submenu.appendCheckboxItem(WebInspector.UIString("Device pixel ratio"), this._toggleDeviceScaleFactor.bind(this), this._showDeviceScaleFactorSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
         submenu.appendCheckboxItem(WebInspector.UIString("Device type"), this._toggleUserAgentType.bind(this), this._showUserAgentTypeSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
         submenu.appendCheckboxItem(WebInspector.UIString("Network throttling"), this._toggleNetworkConditions.bind(this), this._showNetworkConditionsSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
@@ -285,7 +284,7 @@ WebInspector.DeviceModeToolbar.prototype = {
         this._showDeviceScaleFactorSetting.set(!this._showDeviceScaleFactorSetting.get());
     },
 
-    _toggleDeviceFrames: function()
+    _toggleDeviceOutline: function()
     {
         this._deviceOutlineSetting.set(!this._deviceOutlineSetting.get());
     },

@@ -704,13 +704,7 @@ Runtime.Module.prototype = {
      */
     enabled: function()
     {
-        var activatorExperiment = this._descriptor["experiment"];
-        if (activatorExperiment && !Runtime.experiments.isEnabled(activatorExperiment))
-            return false;
-        var condition = this._descriptor["condition"];
-        if (condition && !Runtime.queryParam(condition))
-            return false;
-        return true;
+        return Runtime._isDescriptorEnabled(this._descriptor);
     },
 
     /**
@@ -860,6 +854,25 @@ Runtime.Module.prototype = {
 }
 
 /**
+ * @param {!Object} descriptor
+ * @return {boolean}
+ */
+Runtime._isDescriptorEnabled = function(descriptor)
+{
+    var activatorExperiment = descriptor["experiment"];
+    if (activatorExperiment && activatorExperiment.startsWith("!") && Runtime.experiments.isEnabled(activatorExperiment.substring(1)))
+        return false;
+    if (activatorExperiment && !activatorExperiment.startsWith("!") && !Runtime.experiments.isEnabled(activatorExperiment))
+        return false;
+    var condition = descriptor["condition"];
+    if (condition && !condition.startsWith("!") && !Runtime.queryParam(condition))
+        return false;
+    if (condition && condition.startsWith("!") && Runtime.queryParam(condition.substring(1)))
+        return false;
+    return true;
+}
+
+/**
  * @constructor
  * @param {!Runtime.Module} module
  * @param {!Runtime.ExtensionDescriptor} descriptor
@@ -900,15 +913,7 @@ Runtime.Extension.prototype = {
      */
     enabled: function()
     {
-        var activatorExperiment = this.descriptor()["experiment"];
-        if (activatorExperiment && activatorExperiment.startsWith("!") && Runtime.experiments.isEnabled(activatorExperiment.substring(1)))
-            return false;
-        if (activatorExperiment && !activatorExperiment.startsWith("!") && !Runtime.experiments.isEnabled(activatorExperiment))
-            return false;
-        var condition = this.descriptor()["condition"];
-        if (condition && !Runtime.queryParam(condition))
-            return false;
-        return this._module.enabled();
+        return this._module.enabled() && Runtime._isDescriptorEnabled(this.descriptor());
     },
 
     /**

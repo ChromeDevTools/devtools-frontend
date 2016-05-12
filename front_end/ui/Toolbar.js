@@ -956,8 +956,10 @@ WebInspector.ExtensibleToolbar.prototype = {
             var descriptor = extension.descriptor();
             if (descriptor["separator"])
                 return Promise.resolve(/** @type {?WebInspector.ToolbarItem} */(new WebInspector.ToolbarSeparator()));
-            if (descriptor["actionId"])
-                return Promise.resolve(/** @type {?WebInspector.ToolbarItem} */(WebInspector.Toolbar.createActionButton(WebInspector.actionRegistry.action(descriptor["actionId"]))));
+            if (descriptor["actionId"]) {
+                var action = WebInspector.actionRegistry.action(descriptor["actionId"]);
+                return Promise.resolve(/** @type {?WebInspector.ToolbarItem} */(action ? WebInspector.Toolbar.createActionButton(action) : null));
+            }
             return extension.instancePromise().then(fetchItemFromProvider);
 
             /**

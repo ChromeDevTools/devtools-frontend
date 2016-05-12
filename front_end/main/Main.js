@@ -235,7 +235,9 @@ WebInspector.Main.prototype = {
         app.presentUI(document);
 
         var toggleSearchNodeAction = WebInspector.actionRegistry.action("elements.toggle-element-search");
-        InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.EnterInspectElementMode, toggleSearchNodeAction.execute.bind(toggleSearchNodeAction), this);
+        // TODO: we should not access actions from other modules.
+        if (toggleSearchNodeAction)
+            InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.EnterInspectElementMode, toggleSearchNodeAction.execute.bind(toggleSearchNodeAction), this);
         WebInspector.inspectorView.createToolbars();
         InspectorFrontendHost.loadCompleted();
 
@@ -447,7 +449,8 @@ WebInspector.Main.prototype = {
         section.addKey(advancedSearchShortcut, WebInspector.UIString("Search across all sources"));
 
         var inspectElementModeShortcuts = WebInspector.shortcutRegistry.shortcutDescriptorsForAction("elements.toggle-element-search");
-        section.addKey(inspectElementModeShortcuts[0], WebInspector.UIString("Select node to inspect"));
+        if (inspectElementModeShortcuts.length)
+            section.addKey(inspectElementModeShortcuts[0], WebInspector.UIString("Select node to inspect"));
 
         var openResourceShortcut = WebInspector.KeyboardShortcut.makeDescriptor("p", WebInspector.KeyboardShortcut.Modifiers.CtrlOrMeta);
         section.addKey(openResourceShortcut, WebInspector.UIString("Go to source"));
@@ -884,6 +887,9 @@ WebInspector.Main.MainMenuItem.prototype = {
  */
 WebInspector.NetworkPanelIndicator = function()
 {
+    // TODO: we should not access network from other modules.
+    if (!WebInspector.inspectorView.hasPanel("network"))
+        return;
     var manager = WebInspector.multitargetNetworkManager;
     manager.addEventListener(WebInspector.MultitargetNetworkManager.Events.ConditionsChanged, updateVisibility);
     var blockedURLsSetting = WebInspector.moduleSetting("blockedURLs");

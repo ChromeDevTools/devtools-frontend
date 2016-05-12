@@ -60,19 +60,17 @@ WebInspector.ActionRegistry.prototype = {
          */
         function extensionToAction(extension)
         {
-            return this.action(extension.descriptor()["actionId"]);
+            return /** @type {!WebInspector.Action} */(this.action(extension.descriptor()["actionId"]));
         }
     },
 
     /**
      * @param {string} actionId
-     * @return {!WebInspector.Action}
+     * @return {?WebInspector.Action}
      */
     action: function(actionId)
     {
-        var action = this._actionsById.get(actionId);
-        console.assert(action, "No action found for actionId '" + actionId + "'");
-        return /** @type {!WebInspector.Action} */ (action);
+        return this._actionsById.get(actionId) || null;
     }
 }
 

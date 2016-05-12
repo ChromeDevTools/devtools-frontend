@@ -48,7 +48,7 @@ WebInspector.TimelinePanel = function()
     this._windowStartTime = 0;
     this._windowEndTime = Infinity;
     this._millisecondsToRecordAfterLoadEvent = 3000;
-    this._toggleRecordAction = WebInspector.actionRegistry.action("timeline.toggle-recording");
+    this._toggleRecordAction = /** @type {!WebInspector.Action }*/ (WebInspector.actionRegistry.action("timeline.toggle-recording"));
 
     /** @type {!Array<!WebInspector.TimelineModel.Filter>} */
     this._filters = [];

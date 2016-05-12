@@ -39,12 +39,12 @@ WebInspector.SourcesPanel = function(workspaceForTest)
     this._workspace = workspaceForTest || WebInspector.workspace;
     this._networkMapping = WebInspector.networkMapping;
 
-    this._runSnippetAction = WebInspector.actionRegistry.action("debugger.run-snippet");
-    this._togglePauseAction = WebInspector.actionRegistry.action("debugger.toggle-pause");
-    this._stepOverAction = WebInspector.actionRegistry.action("debugger.step-over");
-    this._stepIntoAction = WebInspector.actionRegistry.action("debugger.step-into");
-    this._stepOutAction = WebInspector.actionRegistry.action("debugger.step-out");
-    this._toggleBreakpointsActiveAction = WebInspector.actionRegistry.action("debugger.toggle-breakpoints-active");
+    this._runSnippetAction = /** @type {!WebInspector.Action }*/ (WebInspector.actionRegistry.action("debugger.run-snippet"));
+    this._togglePauseAction = /** @type {!WebInspector.Action }*/ (WebInspector.actionRegistry.action("debugger.toggle-pause"));
+    this._stepOverAction = /** @type {!WebInspector.Action }*/ (WebInspector.actionRegistry.action("debugger.step-over"));
+    this._stepIntoAction = /** @type {!WebInspector.Action }*/ (WebInspector.actionRegistry.action("debugger.step-into"));
+    this._stepOutAction = /** @type {!WebInspector.Action }*/ (WebInspector.actionRegistry.action("debugger.step-out"));
+    this._toggleBreakpointsActiveAction = /** @type {!WebInspector.Action }*/ (WebInspector.actionRegistry.action("debugger.toggle-breakpoints-active"));
 
     this._debugToolbar = this._createDebugToolbar();
     this._debugToolbarDrawer = this._createDebugToolbarDrawer();

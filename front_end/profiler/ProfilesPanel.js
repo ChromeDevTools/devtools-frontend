@@ -466,7 +466,7 @@ WebInspector.ProfilesPanel = function()
     this.panelSidebarElement().insertBefore(toolbarContainerLeft, this.panelSidebarElement().firstChild);
     var toolbar = new WebInspector.Toolbar("", toolbarContainerLeft);
 
-    this._toggleRecordAction = WebInspector.actionRegistry.action("profiler.toggle-recording");
+    this._toggleRecordAction = /** @type {!WebInspector.Action }*/ (WebInspector.actionRegistry.action("profiler.toggle-recording"));
     this._toggleRecordButton = WebInspector.Toolbar.createActionButton(this._toggleRecordAction);
     toolbar.appendToolbarItem(this._toggleRecordButton);
 

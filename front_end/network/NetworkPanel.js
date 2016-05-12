@@ -42,7 +42,7 @@ WebInspector.NetworkPanel = function()
     this._networkLogShowOverviewSetting = WebInspector.settings.createSetting("networkLogShowOverview", true);
     this._networkLogLargeRowsSetting = WebInspector.settings.createSetting("networkLogLargeRows", false);
     this._networkRecordFilmStripSetting = WebInspector.settings.createSetting("networkRecordFilmStripSetting", false);
-    this._toggleRecordAction = WebInspector.actionRegistry.action("network.toggle-recording");
+    this._toggleRecordAction = /** @type {!WebInspector.Action }*/(WebInspector.actionRegistry.action("network.toggle-recording"));
 
     /** @type {?WebInspector.FilmStripView} */
     this._filmStripView = null;
@@ -160,7 +160,7 @@ WebInspector.NetworkPanel.prototype = {
     {
         var setting = WebInspector.moduleSetting("blockedURLs");
         setting.addChangeListener(updateAction);
-        var action = WebInspector.actionRegistry.action("network.blocked-urls.show");
+        var action = /** @type {!WebInspector.Action }*/(WebInspector.actionRegistry.action("network.blocked-urls.show"));
         var button = WebInspector.Toolbar.createActionButton(action);
         button.setVisible(Runtime.experiments.isEnabled("requestBlocking"));
         updateAction();

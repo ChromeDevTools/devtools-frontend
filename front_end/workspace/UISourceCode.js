@@ -532,7 +532,7 @@ WebInspector.UISourceCode.prototype = {
      */
     extension: function()
     {
-        return WebInspector.TextUtils.extension(this._name);
+        return WebInspector.ParsedURL.extractExtension(this._name);
     },
 
     /**

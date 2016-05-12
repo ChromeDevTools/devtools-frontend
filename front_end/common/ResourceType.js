@@ -199,11 +199,11 @@ WebInspector.resourceTypes = {
  */
 WebInspector.ResourceType.mimeFromURL = function(url)
 {
-    var name = WebInspector.TextUtils.fileName(url);
+    var name = WebInspector.ParsedURL.extractName(url);
     if (WebInspector.ResourceType.mimeTypeByName[name]) {
         return WebInspector.ResourceType.mimeTypeByName[name];
     }
-    var ext = WebInspector.TextUtils.extension(url).toLowerCase();
+    var ext = WebInspector.ParsedURL.extractExtension(url).toLowerCase();
     return WebInspector.ResourceType.mimeTypeByExtension[ext];
 }
 

@@ -148,39 +148,6 @@ WebInspector.TextUtils = {
     isLowerCase: function(text)
     {
         return text === text.toLowerCase();
-    },
-
-    /**
-     * @param {string} text
-     * @param {string} delimiter
-     * @return {string}
-     */
-    _lastSectionBeforeQuery: function(text, delimiter)
-    {
-        var lastIndexOfDot = text.lastIndexOf(delimiter);
-        var extension = lastIndexOfDot !== -1 ? text.substr(lastIndexOfDot + 1) : "";
-        var indexOfQuestionMark = extension.indexOf("?");
-        if (indexOfQuestionMark !== -1)
-            extension = extension.substr(0, indexOfQuestionMark);
-        return extension;
-    },
-
-    /**
-     * @param {string} text
-     * @return {string}
-     */
-    extension: function(text)
-    {
-        return WebInspector.TextUtils._lastSectionBeforeQuery(text, ".");
-    },
-
-    /**
-     * @param {string} text
-     * @return {string}
-     */
-    fileName: function(text)
-    {
-        return WebInspector.TextUtils._lastSectionBeforeQuery(text, "/");
     }
 }
 

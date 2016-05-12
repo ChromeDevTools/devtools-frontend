@@ -296,7 +296,7 @@ WebInspector.IsolatedFileSystem.prototype = {
         {
             var reader = new FileReader();
             reader.onloadend = readerLoadEnd;
-            if (WebInspector.IsolatedFileSystem.ImageExtensions.has(WebInspector.TextUtils.extension(path)))
+            if (WebInspector.IsolatedFileSystem.ImageExtensions.has(WebInspector.ParsedURL.extractExtension(path)))
                 reader.readAsDataURL(file);
             else
                 reader.readAsText(file);

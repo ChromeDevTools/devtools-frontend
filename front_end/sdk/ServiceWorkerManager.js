@@ -173,7 +173,7 @@ WebInspector.ServiceWorkerManager.prototype = {
         var registration = this._registrations.get(registrationId);
         if (!registration)
             return;
-        var origin = WebInspector.ParsedURL.splitURLIntoPathComponents(registration.scopeURL)[0];
+        var origin = WebInspector.ParsedURL.extractOrigin(registration.scopeURL);
         this._agent.deliverPushMessage(origin, registrationId, data);
     },
 

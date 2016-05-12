@@ -92,6 +92,8 @@ WebInspector.ParsedURL = function(url)
  */
 WebInspector.ParsedURL.splitURLIntoPathComponents = function(url)
 {
+    if (url.startsWith("/"))
+        url = "file://" + url;
     var parsedURL = new WebInspector.ParsedURL(url);
     var origin;
     var folderPath;
@@ -134,6 +136,30 @@ WebInspector.ParsedURL.extractOrigin = function(url)
     if (parsedURL.port)
         origin += ":" + parsedURL.port;
     return origin;
+}
+
+/**
+ * @param {string} url
+ * @return {string}
+ */
+WebInspector.ParsedURL.extractExtension = function(url)
+{
+    var lastIndexOfDot = url.lastIndexOf(".");
+    var extension = lastIndexOfDot !== -1 ? url.substr(lastIndexOfDot + 1) : "";
+    var indexOfQuestionMark = extension.indexOf("?");
+    if (indexOfQuestionMark !== -1)
+        extension = extension.substr(0, indexOfQuestionMark);
+    return extension;
+}
+
+/**
+ * @param {string} url
+ * @return {string}
+ */
+WebInspector.ParsedURL.extractName = function(url)
+{
+    var index = url.lastIndexOf("/");
+    return index !== -1 ? url.substr(index + 1) : url;
 }
 
 /**

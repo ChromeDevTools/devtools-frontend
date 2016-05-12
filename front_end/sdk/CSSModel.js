@@ -211,7 +211,7 @@ WebInspector.CSSModel.prototype = {
      */
     _factoryForSourceMap: function(sourceMap)
     {
-        var sourceExtensions = new Set(sourceMap.sourceURLs().map(url => WebInspector.TextUtils.extension(url)));
+        var sourceExtensions = new Set(sourceMap.sourceURLs().map(url => WebInspector.ParsedURL.extractExtension(url)));
         for (var runtimeExtension of self.runtime.extensions(WebInspector.SourceMapFactory)) {
             var supportedExtensions = new Set(runtimeExtension.descriptor()["extensions"]);
             if (supportedExtensions.containsAll(sourceExtensions))

@@ -141,7 +141,7 @@ WebInspector.SecurityPanel.prototype = {
      */
     _processRequest: function(request)
     {
-        var origin = WebInspector.ParsedURL.splitURLIntoPathComponents(request.url)[0];
+        var origin = WebInspector.ParsedURL.extractOrigin(request.url);
 
         if (!origin) {
             // We don't handle resources like data: URIs. Most of them don't affect the lock icon.
@@ -284,7 +284,7 @@ WebInspector.SecurityPanel.prototype = {
 
 
         if (request) {
-            var origin = WebInspector.ParsedURL.splitURLIntoPathComponents(request.url)[0];
+            var origin = WebInspector.ParsedURL.extractOrigin(request.url);
             this._sidebarTree.setMainOrigin(origin);
             this._processRequest(request);
         }

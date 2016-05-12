@@ -214,7 +214,7 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
     requestFileContent: function(uiSourceCode, callback)
     {
         var filePath = this._filePathForUISourceCode(uiSourceCode);
-        var isImage = WebInspector.FileSystemWorkspaceBinding._imageExtensions.has(WebInspector.TextUtils.extension(filePath));
+        var isImage = WebInspector.FileSystemWorkspaceBinding._imageExtensions.has(WebInspector.ParsedURL.extractExtension(filePath));
 
         this._fileSystem.requestFileContent(filePath, isImage ? base64CallbackWrapper : callback);
 

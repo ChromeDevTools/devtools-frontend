@@ -203,8 +203,8 @@ WebInspector.ServiceWorkersView.Section.prototype = {
         if (active) {
             var scriptElement = this._section.appendField(WebInspector.UIString("Source"));
             scriptElement.removeChildren();
-            var components = WebInspector.ParsedURL.splitURLIntoPathComponents(active.scriptURL);
-            scriptElement.appendChild(WebInspector.linkifyURLAsNode(active.scriptURL, components.peekLast()));
+            var fileName = WebInspector.ParsedURL.extractName(active.scriptURL);
+            scriptElement.appendChild(WebInspector.linkifyURLAsNode(active.scriptURL, fileName));
             scriptElement.createChild("div", "report-field-value-subtitle").textContent = WebInspector.UIString("Last modified %s", new Date(active.scriptLastModified * 1000).toLocaleString());
 
             var activeEntry = versionsStack.createChild("div", "service-worker-version");

@@ -24,10 +24,9 @@ WebInspector.SASSSourceMapFactory.prototype = {
         if (!cssModel)
             return Promise.resolve(/** @type {?WebInspector.SourceMap} */(null));
 
-        var headerIds = cssModel.styleSheetIdsForURL(sourceMap.compiledURL());
-        if (!headerIds || !headerIds.length)
+        var header = cssModel.styleSheetHeaders().find(styleSheetHeader => styleSheetHeader.sourceMapURL === sourceMap.url());
+        if (!header)
             return Promise.resolve(/** @type {?WebInspector.SourceMap} */(null));
-        var header = cssModel.styleSheetHeaderForId(headerIds[0]);
 
         /** @type {!Map<string, !WebInspector.SASSSupport.AST>} */
         var models = new Map();

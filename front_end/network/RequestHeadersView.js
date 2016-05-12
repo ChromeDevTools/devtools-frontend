@@ -123,6 +123,8 @@ WebInspector.RequestHeadersView.prototype = {
             }
         }
         var div = createElementWithClass("div", className);
+        if (value === "")
+            div.classList.add("empty-value");
         if (errorDecoding)
             div.createChild("span", "error-message").textContent = WebInspector.UIString("(unable to decode value)");
         else
@@ -225,14 +227,18 @@ WebInspector.RequestHeadersView.prototype = {
 
         for (var i = 0; i < params.length; ++i) {
             var paramNameValue = createDocumentFragment();
-            var name = this._formatParameter(params[i].name + ":", "header-name", this._decodeRequestParameters);
-            var value = this._formatParameter(params[i].value, "header-value source-code", this._decodeRequestParameters);
-            paramNameValue.appendChild(name);
-            paramNameValue.appendChild(value);
+            if (params[i].name !== "") {
+                var name = this._formatParameter(params[i].name + ":", "header-name", this._decodeRequestParameters);
+                var value = this._formatParameter(params[i].value, "header-value source-code", this._decodeRequestParameters);
+                paramNameValue.appendChild(name);
+                paramNameValue.appendChild(value);
+            } else {
+                paramNameValue.appendChild(this._formatParameter(WebInspector.UIString("(empty)"), "empty-request-header", this._decodeRequestParameters));
+            }
 
-            var parmTreeElement = new TreeElement(paramNameValue);
-            parmTreeElement.selectable = false;
-            paramsTreeElement.appendChild(parmTreeElement);
+            var paramTreeElement = new TreeElement(paramNameValue);
+            paramTreeElement.selectable = false;
+            paramsTreeElement.appendChild(paramTreeElement);
         }
     },
 

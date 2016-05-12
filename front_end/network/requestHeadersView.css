@@ -103,6 +103,10 @@
     margin-top: 1px;
 }
 
+.request-headers-view .outline-disclosure .empty-request-header {
+    color: rgba(33%, 33%, 33%, 0.5);
+}
+
 .resource-status-image {
     margin-top: -2px;
     margin-right: 3px;

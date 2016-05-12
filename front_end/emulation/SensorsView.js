@@ -130,14 +130,14 @@ WebInspector.SensorsView.prototype = {
     _createDeviceOrientationSection: function()
     {
         var orientationGroup = this.contentElement.createChild("section", "sensors-group");
-        orientationGroup.createChild("div", "sensors-group-title").textContent = WebInspector.UIString("Accelerometer");
+        orientationGroup.createChild("div", "sensors-group-title").textContent = WebInspector.UIString("Orientation");
         var orientationContent = orientationGroup.createChild("div", "orientation-content");
         var fields = orientationContent.createChild("div", "orientation-fields");
 
-        const accelerometerOffOption = {title: WebInspector.UIString("Off"), orientation: WebInspector.SensorsView.NonPresetOptions.NoOverride};
+        const orientationOffOption = {title: WebInspector.UIString("Off"), orientation: WebInspector.SensorsView.NonPresetOptions.NoOverride};
         const customOrientationOption = {title: WebInspector.UIString("Custom orientation..."), orientation: WebInspector.SensorsView.NonPresetOptions.Custom};
         this._orientationSelectElement = this.contentElement.createChild("select", "chrome-select");
-        this._orientationSelectElement.appendChild(new Option(accelerometerOffOption.title, accelerometerOffOption.orientation));
+        this._orientationSelectElement.appendChild(new Option(orientationOffOption.title, orientationOffOption.orientation));
         this._orientationSelectElement.appendChild(new Option(customOrientationOption.title, customOrientationOption.orientation));
 
         var orientationGroups = WebInspector.SensorsView.PresetOrientations;
@@ -154,16 +154,16 @@ WebInspector.SensorsView.prototype = {
 
         this._deviceOrientationFieldset = this._createDeviceOrientationOverrideElement(this._deviceOrientation);
 
-        this._stageElement = orientationContent.createChild("div", "accelerometer-stage");
-        this._stageElement.title = WebInspector.UIString("Shift+drag to rotate around the y-axis");
-        this._boxElement = this._stageElement.createChild("section", "accelerometer-box accelerometer-element");
+        this._stageElement = orientationContent.createChild("div", "orientation-stage");
+        this._stageElement.title = WebInspector.UIString("Shift+drag horizontally to rotate around the y-axis");
+        this._boxElement = this._stageElement.createChild("section", "orientation-box orientation-element");
 
-        this._boxElement.createChild("section", "accelerometer-front accelerometer-element");
-        this._boxElement.createChild("section", "accelerometer-top accelerometer-element");
-        this._boxElement.createChild("section", "accelerometer-back accelerometer-element");
-        this._boxElement.createChild("section", "accelerometer-left accelerometer-element");
-        this._boxElement.createChild("section", "accelerometer-right accelerometer-element");
-        this._boxElement.createChild("section", "accelerometer-bottom accelerometer-element");
+        this._boxElement.createChild("section", "orientation-front orientation-element");
+        this._boxElement.createChild("section", "orientation-top orientation-element");
+        this._boxElement.createChild("section", "orientation-back orientation-element");
+        this._boxElement.createChild("section", "orientation-left orientation-element");
+        this._boxElement.createChild("section", "orientation-right orientation-element");
+        this._boxElement.createChild("section", "orientation-bottom orientation-element");
 
         WebInspector.installDragHandle(this._stageElement, this._onBoxDragStart.bind(this), this._onBoxDrag.bind(this), null, "-webkit-grabbing", "-webkit-grab");
 
@@ -278,7 +278,7 @@ WebInspector.SensorsView.prototype = {
      */
     _createAxisInput: function(parentElement, input, label)
     {
-        var div = parentElement.createChild("div", "accelerometer-axis-input-container");
+        var div = parentElement.createChild("div", "orientation-axis-input-container");
         div.appendChild(input);
         div.createTextChild(label);
         input.type = "number";
@@ -293,7 +293,7 @@ WebInspector.SensorsView.prototype = {
     {
         var fieldsetElement = createElement("fieldset");
         fieldsetElement.classList.add("device-orientation-override-section");
-        var cellElement = fieldsetElement.createChild("td", "accelerometer-inputs-cell");
+        var cellElement = fieldsetElement.createChild("td", "orientation-inputs-cell");
 
         this._alphaElement = createElement("input");
         this._alphaSetter = this._createAxisInput(cellElement, this._alphaElement, WebInspector.UIString("\u03B1 (alpha)"));
@@ -307,7 +307,7 @@ WebInspector.SensorsView.prototype = {
         this._gammaSetter = this._createAxisInput(cellElement, this._gammaElement, WebInspector.UIString("\u03B3 (gamma)"));
         this._gammaSetter(String(deviceOrientation.gamma));
 
-        cellElement.appendChild(createTextButton(WebInspector.UIString("Reset"), this._resetDeviceOrientation.bind(this), "accelerometer-reset-button"));
+        cellElement.appendChild(createTextButton(WebInspector.UIString("Reset"), this._resetDeviceOrientation.bind(this), "orientation-reset-button"));
         return fieldsetElement;
     },
 

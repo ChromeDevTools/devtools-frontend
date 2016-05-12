@@ -267,14 +267,13 @@ WebInspector.DeviceModeToolbar.prototype = {
     _appendOptionsMenuItems: function(contextMenu)
     {
         var submenu = contextMenu.appendSubMenuItem(WebInspector.UIString("Show"));
+        if (Runtime.experiments.isEnabled("deviceFrames"))
+            submenu.appendCheckboxItem(WebInspector.UIString("Device frame"), this._toggleDeviceFrames.bind(this), this._deviceOutlineSetting.get(), this._model.type() !== WebInspector.DeviceModeModel.Type.Device);
         submenu.appendCheckboxItem(WebInspector.UIString("Device pixel ratio"), this._toggleDeviceScaleFactor.bind(this), this._showDeviceScaleFactorSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
         submenu.appendCheckboxItem(WebInspector.UIString("Device type"), this._toggleUserAgentType.bind(this), this._showUserAgentTypeSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
         submenu.appendCheckboxItem(WebInspector.UIString("Network throttling"), this._toggleNetworkConditions.bind(this), this._showNetworkConditionsSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
         submenu.appendCheckboxItem(WebInspector.UIString("Media queries"), this._toggleMediaInspector.bind(this), this._showMediaInspectorSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
         submenu.appendCheckboxItem(WebInspector.UIString("Rulers"), this._toggleRulers.bind(this), this._showRulersSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
-        if (Runtime.experiments.isEnabled("deviceFrames")) {
-            submenu.appendCheckboxItem(WebInspector.UIString("Device frame"), this._toggleDeviceFrames.bind(this), this._deviceOutlineSetting.get() && this._model.outlineImage() !== "", (this._model.type() === WebInspector.DeviceModeModel.Type.None || this._model.outlineImage() === ""));
-        }
         contextMenu.appendSeparator();
         contextMenu.appendItemsAtLocation("deviceModeMenu");
         contextMenu.appendSeparator();

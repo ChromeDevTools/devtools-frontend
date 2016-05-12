@@ -136,7 +136,7 @@ WebInspector.DeviceModeModel.prototype = {
             this._mode = mode;
             if (this._initialized) {
                 var orientation = device.orientationByName(mode.orientation);
-                this._scaleSetting.set(this._calculateFitScale(orientation.width, orientation.height));
+                this._scaleSetting.set(this._calculateFitScale(orientation.width, orientation.height, this._currentOutline()));
             }
         } else {
             this._device = null;
@@ -235,8 +235,7 @@ WebInspector.DeviceModeModel.prototype = {
      */
     outlineImage: function()
     {
-        return (this._device && this._mode && Runtime.experiments.isEnabled("deviceFrames")) ?
-            this._device.outlineImage(this._mode) : "";
+        return (this._device && this._mode && Runtime.experiments.isEnabled("deviceFrames") && this._deviceOutlineSetting.get()) ? this._device.outlineImage(this._mode) : "";
     },
 
     /**
@@ -425,6 +424,20 @@ WebInspector.DeviceModeModel.prototype = {
     },
 
     /**
+     * @return {!Insets}
+     */
+    _currentOutline: function()
+    {
+        var outline = new Insets(0, 0, 0, 0);
+        if (this._type !== WebInspector.DeviceModeModel.Type.Device)
+            return outline;
+        var orientation = this._device.orientationByName(this._mode.orientation);
+        if (Runtime.experiments.isEnabled("deviceFrames") && this._deviceOutlineSetting.get())
+            outline = orientation.outlineInsets || outline;
+        return outline;
+    },
+
+    /**
      * @param {boolean} resetPageScaleFactor
      */
     _calculateAndEmulate: function(resetPageScaleFactor)
@@ -434,10 +447,8 @@ WebInspector.DeviceModeModel.prototype = {
 
         if (this._type === WebInspector.DeviceModeModel.Type.Device) {
             var orientation = this._device.orientationByName(this._mode.orientation);
-            var outline = new Insets(0, 20, 0, 0);
-            if (Runtime.experiments.isEnabled("deviceFrames") && this._deviceOutlineSetting.get())
-                outline = orientation.outlineInsets || outline;
-            this._fitScale = this._calculateFitScale(orientation.width, orientation.height);
+            var outline = this._currentOutline();
+            this._fitScale = this._calculateFitScale(orientation.width, orientation.height, outline);
             if (this._device.mobile())
                 this._appliedUserAgentType = this._device.touch() ? WebInspector.DeviceModeModel.UA.Mobile : WebInspector.DeviceModeModel.UA.MobileNoTouch;
             else
@@ -448,7 +459,7 @@ WebInspector.DeviceModeModel.prototype = {
         } else if (this._type === WebInspector.DeviceModeModel.Type.None) {
             this._fitScale = this._calculateFitScale(this._availableSize.width, this._availableSize.height);
             this._appliedUserAgentType = WebInspector.DeviceModeModel.UA.Desktop;
-            this._applyDeviceMetrics(this._availableSize, new Insets(0, 0, 0, 0), new Insets(0, 20, 0, 0), 1, 0, false, "", resetPageScaleFactor);
+            this._applyDeviceMetrics(this._availableSize, new Insets(0, 0, 0, 0), new Insets(0, 0, 0, 0), 1, 0, false, "", resetPageScaleFactor);
             this._applyUserAgent("");
             this._applyTouch(false, false);
         } else if (this._type === WebInspector.DeviceModeModel.Type.Responsive) {
@@ -462,7 +473,7 @@ WebInspector.DeviceModeModel.prototype = {
             var defaultDeviceScaleFactor = mobile ? WebInspector.DeviceModeModel.defaultMobileScaleFactor : 0;
             this._fitScale = this._calculateFitScale(this._widthSetting.get(), this._heightSetting.get());
             this._appliedUserAgentType = this._uaSetting.get();
-            this._applyDeviceMetrics(new Size(screenWidth, screenHeight), new Insets(0, 0, 0, 0), new Insets(0, 20, 0, 0), this._scaleSetting.get(), this._deviceScaleFactorSetting.get() || defaultDeviceScaleFactor, mobile, screenHeight >= screenWidth ? "portraitPrimary" : "landscapePrimary", resetPageScaleFactor);
+            this._applyDeviceMetrics(new Size(screenWidth, screenHeight), new Insets(0, 0, 0, 0), new Insets(0, 0, 0, 0), this._scaleSetting.get(), this._deviceScaleFactorSetting.get() || defaultDeviceScaleFactor, mobile, screenHeight >= screenWidth ? "portraitPrimary" : "landscapePrimary", resetPageScaleFactor);
             this._applyUserAgent(mobile ? WebInspector.DeviceModeModel._defaultMobileUserAgent : "");
             this._applyTouch(this._uaSetting.get() === WebInspector.DeviceModeModel.UA.DesktopTouch || this._uaSetting.get() === WebInspector.DeviceModeModel.UA.Mobile, this._uaSetting.get() === WebInspector.DeviceModeModel.UA.Mobile);
         }
@@ -474,11 +485,14 @@ WebInspector.DeviceModeModel.prototype = {
     /**
      * @param {number} screenWidth
      * @param {number} screenHeight
+     * @param {!Insets=} outline
      * @return {number}
      */
-    _calculateFitScale: function(screenWidth, screenHeight)
+    _calculateFitScale: function(screenWidth, screenHeight, outline)
     {
-        var scale = Math.min(screenWidth ? this._preferredSize.width / screenWidth : 1, screenHeight ? this._preferredSize.height / screenHeight : 1);
+        var outlineWidth = outline ? outline.left + outline.right : 0;
+        var outlineHeight = outline ? outline.top + outline.bottom : 0;
+        var scale = Math.min(screenWidth ? this._preferredSize.width / (screenWidth + outlineWidth) : 1, screenHeight ? this._preferredSize.height / (screenHeight + outlineHeight) : 1);
         return Math.min(scale, 1);
     },
 

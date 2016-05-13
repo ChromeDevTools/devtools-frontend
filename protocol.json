@@ -473,6 +473,13 @@
                 "name": "requestAppBanner",
                 "hidden": true,
                 "handlers": ["browser"]
+            },
+            {
+                "name": "setBlockedEventsWarningThreshold",
+                "hidden": true,
+                "parameters": [
+                    { "name": "threshold", "type": "number", "description": "If set to a positive number, specifies threshold in seconds for input event latency that will cause a console warning about blocked event to be issued. If zero or less, the warning is disabled." }
+                ]
             }
         ],
         "events": [

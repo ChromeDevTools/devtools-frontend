@@ -1056,16 +1056,26 @@ WebInspector.BackendSettingsSync = function()
     this._autoAttachSetting.addChangeListener(this._update, this);
     this._disableJavascriptSetting = WebInspector.settings.moduleSetting("javaScriptDisabled");
     this._disableJavascriptSetting.addChangeListener(this._update, this);
+    this._blockedEventsWarningSetting = WebInspector.settings.moduleSetting("blockedEventsWarningEnabled");
+    this._blockedEventsWarningSetting.addChangeListener(this._update, this);
     WebInspector.targetManager.observeTargets(this, WebInspector.Target.Type.Page);
 }
 
 WebInspector.BackendSettingsSync.prototype = {
+    /**
+     * @param {!WebInspector.Target} target
+     */
+    _updateTarget: function(target)
+    {
+        var blockedEventsWarningThresholdSeconds = 0.1;
+        target.pageAgent().setBlockedEventsWarningThreshold(this._blockedEventsWarningSetting.get() ? blockedEventsWarningThresholdSeconds : 0);
+        target.pageAgent().setAutoAttachToCreatedPages(this._autoAttachSetting.get());
+        target.emulationAgent().setScriptExecutionDisabled(this._disableJavascriptSetting.get());
+    },
+
     _update: function()
     {
-        for (var target of WebInspector.targetManager.targets(WebInspector.Target.Type.Page)) {
-            target.pageAgent().setAutoAttachToCreatedPages(this._autoAttachSetting.get());
-            target.emulationAgent().setScriptExecutionDisabled(this._disableJavascriptSetting.get());
-        }
+        WebInspector.targetManager.targets(WebInspector.Target.Type.Page).forEach(this._updateTarget, this);
     },
 
     /**
@@ -1074,8 +1084,7 @@ WebInspector.BackendSettingsSync.prototype = {
      */
     targetAdded: function(target)
     {
-        target.pageAgent().setAutoAttachToCreatedPages(this._autoAttachSetting.get());
-        target.emulationAgent().setScriptExecutionDisabled(this._disableJavascriptSetting.get());
+        this._updateTarget(target);
         target.renderingAgent().setShowViewportSizeOnResize(true);
     },
 

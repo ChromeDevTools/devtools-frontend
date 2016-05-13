@@ -299,6 +299,14 @@
             "defaultValue": false
         },
         {
+            "type": "setting",
+            "category": "Console",
+            "title": "Report input events blocked for too long",
+            "settingName": "blockedEventsWarningEnabled",
+            "settingType": "boolean",
+            "defaultValue": true
+        },
+        {
             "type": "@WebInspector.SettingUI",
             "category": "Extensions",
             "className": "WebInspector.HandlerRegistry.OpenAnchorLocationSettingUI"

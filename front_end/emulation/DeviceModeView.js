@@ -454,13 +454,17 @@ WebInspector.DeviceModeView.prototype = {
              */
             function paintScreenshot()
             {
+                ctx.strokeStyle = "hsla(0, 0%, 98%, 0.5)";
+                ctx.lineWidth = 1;
+                ctx.setLineDash([10, 10]);
+                ctx.strokeRect(screenRect.left + 1, screenRect.top + 1, screenRect.width - 2, screenRect.height - 2);
                 var pageImage = new Image();
                 pageImage.src = "data:image/png;base64," + content;
                 ctx.drawImage(pageImage,
                               visiblePageRect.left,
                               visiblePageRect.top,
-                              visiblePageRect.width,
-                              visiblePageRect.height);
+                              Math.min(pageImage.naturalWidth, screenRect.width),
+                              Math.min(pageImage.naturalHeight, screenRect.height));
                 var mainFrame = mainTarget.resourceTreeModel.mainFrame;
                 var fileName = mainFrame ? mainFrame.url.trimURL().removeURLFragment() : "";
                 if (this._model.type() === WebInspector.DeviceModeModel.Type.Device)

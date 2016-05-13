@@ -28,8 +28,10 @@
         {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "emulation.capture-screenshot",
+            "category": "Mobile",
             "className": "WebInspector.DeviceModeWrapper.ActionDelegate",
-            "title": "Capture screenshot"
+            "title": "Capture screenshot",
+            "tags": "device"
         },
         {
             "type": "context-menu-item",
@@ -65,6 +67,18 @@
             "options": [
                 {"value": true, "title": "Show rulers"},
                 {"value": false, "title": "Hide rulers"}
+            ],
+            "tags": "device"
+        },
+        {
+            "type": "setting",
+            "category": "Mobile",
+            "settingName": "emulation.showDeviceOutline",
+            "settingType": "boolean",
+            "defaultValue": false,
+            "options": [
+                {"value": true, "title": "Show device frame"},
+                {"value": false, "title": "Hide device frame"}
             ],
             "tags": "device"
         },

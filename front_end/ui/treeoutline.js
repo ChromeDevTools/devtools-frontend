@@ -40,12 +40,12 @@ function TreeOutline(nonFocusable)
     /** @type {?function(!TreeElement, !TreeElement):number} */
     this._comparator = null;
 
-    this._contentElement = this._rootElement._childrenListNode;
-    this._contentElement.addEventListener("keydown", this._treeKeyDown.bind(this), true);
+    this.contentElement = this._rootElement._childrenListNode;
+    this.contentElement.addEventListener("keydown", this._treeKeyDown.bind(this), true);
 
     this.setFocusable(!nonFocusable);
 
-    this.element = this._contentElement;
+    this.element = this.contentElement;
 }
 
 TreeOutline.Events = {
@@ -119,7 +119,7 @@ TreeOutline.prototype = {
      */
     treeElementFromPoint: function(x, y)
     {
-        var node = this._contentElement.ownerDocument.deepElementFromPoint(x, y);
+        var node = this.contentElement.ownerDocument.deepElementFromPoint(x, y);
         if (!node)
             return null;
 
@@ -152,14 +152,14 @@ TreeOutline.prototype = {
     setFocusable: function(focusable)
     {
         if (focusable)
-            this._contentElement.setAttribute("tabIndex", 0);
+            this.contentElement.setAttribute("tabIndex", 0);
         else
-            this._contentElement.removeAttribute("tabIndex");
+            this.contentElement.removeAttribute("tabIndex");
     },
 
     focus: function()
     {
-        this._contentElement.focus();
+        this.contentElement.focus();
     },
 
     /**
@@ -223,7 +223,7 @@ TreeOutline.prototype = {
      */
     _treeKeyDown: function(event)
     {
-        if (event.target !== this._contentElement)
+        if (event.target !== this.contentElement)
             return;
 
         if (!this.selectedTreeElement || event.shiftKey || event.metaKey || event.ctrlKey)
@@ -317,14 +317,13 @@ TreeOutline.prototype = {
 function TreeOutlineInShadow()
 {
     TreeOutline.call(this);
-    var innerElement = this.element;
-    innerElement.classList.add("tree-outline");
+    this.contentElement.classList.add("tree-outline");
 
     // Redefine element to the external one.
     this.element = createElement("div");
     this._shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element, "ui/treeoutline.css");
     this._disclosureElement = this._shadowRoot.createChild("div", "tree-outline-disclosure");
-    this._disclosureElement.appendChild(innerElement);
+    this._disclosureElement.appendChild(this.contentElement);
     this._renderSelection = true;
 }
 

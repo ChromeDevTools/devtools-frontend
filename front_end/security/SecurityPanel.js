@@ -16,7 +16,7 @@ WebInspector.SecurityPanel = function()
     this._sidebarMainViewElement = new WebInspector.SecurityPanelSidebarTreeElement(WebInspector.UIString("Overview"), this._setVisibleView.bind(this, this._mainView), "security-main-view-sidebar-tree-item", "lock-icon");
     this._sidebarTree = new WebInspector.SecurityPanelSidebarTree(this._sidebarMainViewElement, this.showOrigin.bind(this));
     this.panelSidebarElement().appendChild(this._sidebarTree.element);
-    this.setDefaultFocusedElement(this._sidebarTree.element);
+    this.setDefaultFocusedElement(this._sidebarTree.contentElement);
 
     /** @type {!Map<!NetworkAgent.LoaderId, !WebInspector.NetworkRequest>} */
     this._lastResponseReceivedForLoaderId = new Map();

@@ -36,7 +36,10 @@ WebInspector.UISourceCodeFrame = function(uiSourceCode)
     this._uiSourceCode = uiSourceCode;
     WebInspector.SourceFrame.call(this, uiSourceCode.contentURL(), workingCopy);
 
+    if (Runtime.experiments.isEnabled("sourceDiff"))
+        this._diff = new WebInspector.SourceCodeDiff(uiSourceCode, this.textEditor);
     this.textEditor.setAutocompleteDelegate(new WebInspector.SimpleAutocompleteDelegate());
+
     this._rowMessageBuckets = {};
     /** @type {!Set<string>} */
     this._typeDecorationsPending = new Set();
@@ -74,6 +77,8 @@ WebInspector.UISourceCodeFrame.prototype = {
     wasShown: function()
     {
         WebInspector.SourceFrame.prototype.wasShown.call(this);
+        if (this._diff)
+            this._diff.updateImmediately();
         this._boundWindowFocused = this._windowFocused.bind(this);
         this.element.ownerDocument.defaultView.addEventListener("focus", this._boundWindowFocused, false);
         this._checkContentUpdated();
@@ -160,6 +165,8 @@ WebInspector.UISourceCodeFrame.prototype = {
      */
     _onWorkingCopyChanged: function(event)
     {
+        if (this._diff)
+            this._diff.updateWhenPossible();
         if (this._muteSourceCodeEvents)
             return;
         this._innerSetContent(this._uiSourceCode.workingCopy());
@@ -177,6 +184,8 @@ WebInspector.UISourceCodeFrame.prototype = {
         }
         this._textEditor.markClean();
         this._updateStyle();
+        if (this._diff)
+            this._diff.updateWhenPossible();
     },
 
     _updateStyle: function()

@@ -2209,11 +2209,12 @@ WebInspector.TimelineUIUtils.PerformanceLineDecorator.prototype = {
      */
     decorate: function(uiSourceCode, textEditor)
     {
-        var type = WebInspector.TimelineUIUtils.PerformanceLineDecorator.type;
-        var decorations = uiSourceCode.lineDecorations(type);
-        textEditor.resetGutterDecorations(type);
+        var gutterType = "CodeMirror-gutter-performance";
+        var decorations = uiSourceCode.lineDecorations(WebInspector.TimelineUIUtils.PerformanceLineDecorator.type);
+        textEditor.uninstallGutter(gutterType);
         if (!decorations)
             return;
+        textEditor.installGutter(gutterType, false);
         for (var decoration of decorations.values()) {
             var time = /** @type {number} */ (decoration.data());
             var text = WebInspector.UIString("%.1f\xa0ms", time);
@@ -2221,7 +2222,7 @@ WebInspector.TimelineUIUtils.PerformanceLineDecorator.prototype = {
             var element = createElementWithClass("div", "text-editor-line-marker-performance");
             element.textContent = text;
             element.style.backgroundColor = `hsla(44, 100%, 50%, ${intensity.toFixed(3)})`;
-            textEditor.setGutterDecoration(decoration.line(), decoration.type(), element);
+            textEditor.setGutterDecoration(decoration.line(), gutterType, element);
         }
     }
 }

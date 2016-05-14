@@ -76,3 +76,39 @@
     -webkit-animation: source-frame-value-update-highlight-animation 0.8s 1 cubic-bezier(0, 0, 0.2, 1);
     border-radius: 2px;
 }
+
+.diff-entry-insert .diff-marker {
+    border-left: 4px solid hsla(144, 55%, 37%, 1);
+}
+
+.diff-entry-insert .CodeMirror-gutter-wrapper {
+    background-color: hsla(144,55%,49%,.2);
+}
+
+.diff-entry-modify .diff-marker {
+    border-left: 4px solid #9C27B0;
+}
+
+.diff-entry-modify .CodeMirror-gutter-wrapper {
+    background-color: rgba(186,104,200,0.2);
+}
+
+.diff-entry-delete .diff-marker {
+    width: 0;
+    height: 0;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-left: 6px solid #D32F2F;
+    position: relative;
+    top: 7px;
+    cursor: pointer;
+    left: 0px;
+}
+
+.diff-entry-delete .CodeMirror-gutter-wrapper {
+    border-bottom: 2px solid #D32F2F;
+}
+
+.CodeMirror-gutter-diff {
+    width: 4px;
+}

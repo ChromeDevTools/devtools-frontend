@@ -39,8 +39,8 @@ WebInspector.CodeMirrorTextEditor = function(url, delegate)
     WebInspector.VBox.call(this);
     this._delegate = delegate;
     this._url = url;
-    /** @type {!Map<string, !Set<number>>}} */
-    this._decoratedGutterLines = new Map();
+    /** @type {!Array<string>} */
+    this._gutters = ["CodeMirror-linenumbers"];
 
     this.registerRequiredCSS("cm/codemirror.css");
     this.registerRequiredCSS("source_frame/cmdevtools.css");
@@ -1119,39 +1119,40 @@ WebInspector.CodeMirrorTextEditor.prototype = {
     },
 
     /**
-     * @param {number} lineNumber
      * @param {string} type
-     * @param {!Element} element
+     * @param {boolean} leftToNumbers
      */
-    setGutterDecoration: function(lineNumber, type, element)
+    installGutter: function(type, leftToNumbers)
     {
-        var lines = this._decoratedGutterLines.get(type);
-        if (!lines) {
-            lines = new Set();
-            this._decoratedGutterLines.set(type, lines);
-            var gutters = this._codeMirror.getOption("gutters");
-            var gutterType = "CodeMirror-gutter-" + type;
-            if (gutters.indexOf(gutterType) === -1) {
-                gutters = gutters.concat([gutterType]);
-                this._codeMirror.setOption("gutters", gutters);
-                this._codeMirror.refresh();
-            }
-        }
-        lines.add(lineNumber);
-        this._codeMirror.setGutterMarker(lineNumber, "CodeMirror-gutter-" + type, element);
+        if (this._gutters.indexOf(type) !== -1)
+            return;
+        if (leftToNumbers)
+            this._gutters.unshift(type);
+        else
+            this._gutters.push(type);
+        this._codeMirror.setOption("gutters", this._gutters.slice());
+        this._codeMirror.refresh();
     },
 
     /**
      * @param {string} type
      */
-    resetGutterDecorations: function(type)
+    uninstallGutter: function(type)
     {
-        this._decoratedGutterLines.delete(type);
-        var gutters = this._codeMirror.getOption("gutters").slice();
-        if (!gutters.remove("CodeMirror-gutter-" + type))
-            return;
-        this._codeMirror.setOption("gutters", gutters);
+        this._gutters = this._gutters.filter(gutter => gutter !== type);
+        this._codeMirror.setOption("gutters", this._gutters.slice());
         this._codeMirror.refresh();
+    },
+
+    /**
+     * @param {number} lineNumber
+     * @param {string} type
+     * @param {?Element} element
+     */
+    setGutterDecoration: function(lineNumber, type, element)
+    {
+        console.assert(this._gutters.indexOf(type) !== -1, "Cannot decorate unexisting gutter.")
+        this._codeMirror.setGutterMarker(lineNumber, type, element);
     },
 
     /**

@@ -346,6 +346,7 @@
         "SourceMapNamesResolver.js",
         "JavaScriptBreakpointsSidebarPane.js",
         "JavaScriptOutlineDialog.js",
+        "SourceCodeDiff.js",
         "JavaScriptSourceFrame.js",
         "CSSSourceFrame.js",
         "NavigatorView.js",

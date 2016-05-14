@@ -693,6 +693,7 @@
             'front_end/sources/ScriptFormatter.js',
             'front_end/sources/ScriptFormatterEditorAction.js',
             'front_end/sources/SimpleHistoryManager.js',
+            'front_end/sources/SourceCodeDiff.js',
             'front_end/sources/SourceMapNamesResolver.js',
             'front_end/sources/SourcesNavigator.js',
             'front_end/sources/SourcesPanel.js',

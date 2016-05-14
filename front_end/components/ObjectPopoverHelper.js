@@ -96,11 +96,17 @@ WebInspector.ObjectPopoverHelper.prototype = {
 
             var rawLocation = response.location;
             var sourceURL = response.sourceURL;
-            if (rawLocation && sourceURL) {
-                var link = this._lazyLinkifier().linkifyRawLocation(rawLocation, sourceURL, "function-location-link");
-                title.appendChild(link);
+            var linkContainer = title.createChild("div", "function-title-link-container");
+            if (rawLocation) {
+                var sectionToolbar = new WebInspector.Toolbar("function-location-step-into", linkContainer);
+                var stepInto = new WebInspector.ToolbarButton(WebInspector.UIString("Step into function"), "step-in-toolbar-item");
+                stepInto.addEventListener("click", () => rawLocation.continueToLocation());
+                sectionToolbar.appendToolbarItem(stepInto);
             }
-
+            if (rawLocation && sourceURL) {
+                var link = this._lazyLinkifier().linkifyRawLocation(rawLocation, sourceURL);
+                linkContainer.appendChild(link);
+            }
             container.appendChild(popoverContentElement);
             popover.showForAnchor(container, anchorElement);
         }

@@ -68,10 +68,25 @@
     margin-left: 10px;
 }
 
+.function-location-step-into {
+    position: relative;
+    height: 14px;
+    top: -7px;
+}
+
 .function-popover-title {
     border-bottom: 1px solid #AAA;
     margin-bottom: 3px;
     padding-bottom: 2px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.function-title-link-container {
+    display: flex;
+    align-items: center;
+    position: relative;
 }
 
 .function-popover-title .function-name {

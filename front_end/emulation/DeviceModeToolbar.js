@@ -266,51 +266,36 @@ WebInspector.DeviceModeToolbar.prototype = {
      */
     _appendOptionsMenuItems: function(contextMenu)
     {
-        var submenu = contextMenu.appendSubMenuItem(WebInspector.UIString("Show"));
-        submenu.appendCheckboxItem(WebInspector.UIString("Device frame"), this._toggleDeviceOutline.bind(this), this._deviceOutlineSetting.get(), this._model.type() !== WebInspector.DeviceModeModel.Type.Device);
-        submenu.appendCheckboxItem(WebInspector.UIString("Device pixel ratio"), this._toggleDeviceScaleFactor.bind(this), this._showDeviceScaleFactorSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
-        submenu.appendCheckboxItem(WebInspector.UIString("Device type"), this._toggleUserAgentType.bind(this), this._showUserAgentTypeSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
-        submenu.appendCheckboxItem(WebInspector.UIString("Network throttling"), this._toggleNetworkConditions.bind(this), this._showNetworkConditionsSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
-        submenu.appendCheckboxItem(WebInspector.UIString("Media queries"), this._toggleMediaInspector.bind(this), this._showMediaInspectorSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
-        submenu.appendCheckboxItem(WebInspector.UIString("Rulers"), this._toggleRulers.bind(this), this._showRulersSetting.get(), this._model.type() === WebInspector.DeviceModeModel.Type.None);
+        var model = this._model;
+        appendToggleItem(this._deviceOutlineSetting, WebInspector.UIString("Hide device frame"), WebInspector.UIString("Show device frame"), model.type() !== WebInspector.DeviceModeModel.Type.Device);
+        appendToggleItem(this._showMediaInspectorSetting, WebInspector.UIString("Hide media queries"), WebInspector.UIString("Show media queries"));
+        appendToggleItem(this._showRulersSetting, WebInspector.UIString("Hide rulers"), WebInspector.UIString("Show rulers"));
+        contextMenu.appendSeparator();
+        appendToggleItem(this._showDeviceScaleFactorSetting, WebInspector.UIString("Remove device pixel ratio"), WebInspector.UIString("Add device pixel ratio"));
+        appendToggleItem(this._showUserAgentTypeSetting, WebInspector.UIString("Remove device type"), WebInspector.UIString("Add device type"));
+        appendToggleItem(this._showNetworkConditionsSetting, WebInspector.UIString("Remove network throttling"), WebInspector.UIString("Add network throttling"));
         contextMenu.appendSeparator();
         contextMenu.appendItemsAtLocation("deviceModeMenu");
         contextMenu.appendSeparator();
         contextMenu.appendItem(WebInspector.UIString("Reset to defaults"), this._reset.bind(this));
-    },
 
-    _toggleDeviceScaleFactor: function()
-    {
-        this._showDeviceScaleFactorSetting.set(!this._showDeviceScaleFactorSetting.get());
-    },
-
-    _toggleDeviceOutline: function()
-    {
-        this._deviceOutlineSetting.set(!this._deviceOutlineSetting.get());
-    },
-
-    _toggleUserAgentType: function()
-    {
-        this._showUserAgentTypeSetting.set(!this._showUserAgentTypeSetting.get());
-    },
-
-    _toggleMediaInspector: function()
-    {
-        this._showMediaInspectorSetting.set(!this._showMediaInspectorSetting.get());
-    },
-
-    _toggleRulers: function()
-    {
-        this._showRulersSetting.set(!this._showRulersSetting.get());
-    },
-
-    _toggleNetworkConditions: function()
-    {
-        this._showNetworkConditionsSetting.set(!this._showNetworkConditionsSetting.get());
+        /**
+         * @param {!WebInspector.Setting} setting
+         * @param {string} title1
+         * @param {string} title2
+         * @param {boolean=} disabled
+         */
+        function appendToggleItem(setting, title1, title2, disabled)
+        {
+            if (typeof disabled === "undefined")
+                disabled = model.type() === WebInspector.DeviceModeModel.Type.None;
+            contextMenu.appendItem(setting.get() ? title1 : title2, setting.set.bind(setting, !setting.get()), disabled);
+        }
     },
 
     _reset: function()
     {
+        this._deviceOutlineSetting.set(false);
         this._showDeviceScaleFactorSetting.set(false);
         this._showUserAgentTypeSetting.set(false);
         this._showMediaInspectorSetting.set(false);

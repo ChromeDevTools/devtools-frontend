@@ -113,12 +113,6 @@
             "order": 100,
             "className": "WebInspector.SensorsView",
             "tags": "geolocation, accelerometer, device orientation"
-        },
-        {
-            "type": "context-menu-item",
-            "location": "deviceModeMenu/tools",
-            "order": 10,
-            "actionId": "components.request-app-banner"
         }
     ],
     "dependencies": [

@@ -617,10 +617,9 @@ WebInspector.NetworkPanel.RequestRevealer.prototype = {
     /**
      * @override
      * @param {!Object} request
-     * @param {number=} lineNumber
      * @return {!Promise}
      */
-    reveal: function(request, lineNumber)
+    reveal: function(request)
     {
         if (!(request instanceof WebInspector.NetworkRequest))
             return Promise.reject(new Error("Internal error: not a network request"));

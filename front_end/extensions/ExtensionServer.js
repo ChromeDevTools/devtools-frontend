@@ -371,7 +371,7 @@ WebInspector.ExtensionServer.prototype = {
 
         var resource = WebInspector.resourceForURL(message.url);
         if (resource) {
-            WebInspector.Revealer.reveal(resource, message.lineNumber);
+            WebInspector.Revealer.reveal(resource);
             return this._status.OK();
         }
 

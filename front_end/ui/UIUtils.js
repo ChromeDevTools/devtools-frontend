@@ -785,6 +785,8 @@ WebInspector.setCurrentFocusElement = function(x)
 {
     if (WebInspector._glassPane && x && !WebInspector._glassPane.element.isAncestor(x))
         return;
+    if (x && !x.ownerDocument.isAncestor(x))
+        return;
     if (WebInspector._currentFocusElement !== x)
         WebInspector._previousFocusElement = WebInspector._currentFocusElement;
     WebInspector._currentFocusElement = x;

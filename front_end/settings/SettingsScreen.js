@@ -536,10 +536,9 @@ WebInspector.SettingsController.Revealer.prototype = {
     /**
      * @override
      * @param {!Object} object
-     * @param {number=} lineNumber
      * @return {!Promise}
      */
-    reveal: function(object, lineNumber)
+    reveal: function(object)
     {
         console.assert(object instanceof WebInspector.Setting);
         var setting = /** @type {!WebInspector.Setting} */ (object);

@@ -1414,23 +1414,29 @@ WebInspector.StylePropertiesSection.prototype = {
     _handleSelectorClick: function(event)
     {
         if (WebInspector.KeyboardShortcut.eventHasCtrlOrMeta(/** @type {!MouseEvent} */(event)) && this.navigable && event.target.classList.contains("simple-selector")) {
-            var index = event.target._selectorIndex;
-            var cssModel = this._parentPane._cssModel;
-            var rule = this._style.parentRule;
-            var header = cssModel.styleSheetHeaderForId(/** @type {string} */(rule.styleSheetId));
-            if (!header) {
-                event.consume(true);
-                return;
-            }
-            var rawLocation = new WebInspector.CSSLocation(header, rule.lineNumberInSource(index), rule.columnNumberInSource(index));
-            var uiLocation = WebInspector.cssWorkspaceBinding.rawLocationToUILocation(rawLocation);
-            if (uiLocation)
-                WebInspector.Revealer.reveal(uiLocation);
+            this._navigateToSelectorSource(event.target._selectorIndex, true);
             event.consume(true);
             return;
         }
         this._startEditingOnMouseEvent();
         event.consume(true);
+    },
+
+    /**
+     * @param {number} index
+     * @param {boolean} focus
+     */
+    _navigateToSelectorSource: function(index, focus)
+    {
+        var cssModel = this._parentPane._cssModel;
+        var rule = this._style.parentRule;
+        var header = cssModel.styleSheetHeaderForId(/** @type {string} */(rule.styleSheetId));
+        if (!header)
+            return;
+        var rawLocation = new WebInspector.CSSLocation(header, rule.lineNumberInSource(index), rule.columnNumberInSource(index));
+        var uiLocation = WebInspector.cssWorkspaceBinding.rawLocationToUILocation(rawLocation);
+        if (uiLocation)
+            WebInspector.Revealer.reveal(uiLocation, !focus);
     },
 
     _startEditingOnMouseEvent: function()
@@ -1464,6 +1470,8 @@ WebInspector.StylePropertiesSection.prototype = {
 
         element.getComponentSelection().setBaseAndExtent(element, 0, element, 1);
         this._parentPane.setEditingStyle(true);
+        if (element.classList.contains("simple-selector"))
+            this._navigateToSelectorSource(0, false);
     },
 
     /**
@@ -2298,14 +2306,16 @@ WebInspector.StylePropertyTreeElement.prototype = {
 
     /**
      * @param {!Element} element
+     * @param {boolean=} omitFocus
      */
-    _navigateToSource: function(element)
+    _navigateToSource: function(element, omitFocus)
     {
-        console.assert(this.section().navigable);
+        if (!this.section().navigable)
+            return;
         var propertyNameClicked = element === this.nameElement;
         var uiLocation = WebInspector.cssWorkspaceBinding.propertyUILocation(this.property, propertyNameClicked);
         if (uiLocation)
-            WebInspector.Revealer.reveal(uiLocation);
+            WebInspector.Revealer.reveal(uiLocation, omitFocus);
     },
 
     /**
@@ -2438,6 +2448,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
             this._prompt.addEventListener(WebInspector.TextPrompt.Events.ItemAccepted, applyItemCallback, this);
         }
         var proxyElement = this._prompt.attachAndStartEditing(selectElement, blurListener.bind(this, context));
+        this._navigateToSource(selectElement, true);
 
         proxyElement.addEventListener("keydown", this._editingNameValueKeyDown.bind(this, context), false);
         proxyElement.addEventListener("keypress", this._editingNameValueKeyPress.bind(this, context), false);

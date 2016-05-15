@@ -46,19 +46,19 @@ WebInspector.Revealer = function()
 
 /**
  * @param {?Object} revealable
- * @param {number=} lineNumber
+ * @param {boolean=} omitFocus
  */
-WebInspector.Revealer.reveal = function(revealable, lineNumber)
+WebInspector.Revealer.reveal = function(revealable, omitFocus)
 {
-    WebInspector.Revealer.revealPromise(revealable, lineNumber);
+    WebInspector.Revealer.revealPromise(revealable, omitFocus);
 }
 
 /**
  * @param {?Object} revealable
- * @param {number=} lineNumber
+ * @param {boolean=} omitFocus
  * @return {!Promise.<undefined>}
  */
-WebInspector.Revealer.revealPromise = function(revealable, lineNumber)
+WebInspector.Revealer.revealPromise = function(revealable, omitFocus)
 {
     if (!revealable)
         return Promise.reject(new Error("Can't reveal " + revealable));
@@ -72,7 +72,7 @@ WebInspector.Revealer.revealPromise = function(revealable, lineNumber)
     {
         var promises = [];
         for (var i = 0; i < revealers.length; ++i)
-            promises.push(revealers[i].reveal(/** @type {!Object} */ (revealable), lineNumber));
+            promises.push(revealers[i].reveal(/** @type {!Object} */ (revealable), omitFocus));
         return Promise.race(promises);
     }
 }
@@ -80,10 +80,10 @@ WebInspector.Revealer.revealPromise = function(revealable, lineNumber)
 WebInspector.Revealer.prototype = {
     /**
      * @param {!Object} object
-     * @param {number=} lineNumber
+     * @param {boolean=} omitFocus
      * @return {!Promise}
      */
-    reveal: function(object, lineNumber) {}
+    reveal: function(object, omitFocus) {}
 }
 
 /**

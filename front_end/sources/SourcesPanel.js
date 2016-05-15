@@ -172,12 +172,30 @@ WebInspector.SourcesPanel.prototype = {
     {
         WebInspector.context.setFlavor(WebInspector.SourcesPanel, this);
         WebInspector.Panel.prototype.wasShown.call(this);
+        var wrapper = WebInspector.SourcesPanel.WrapperView._instance;
+        if (wrapper && wrapper.isShowing())
+            WebInspector.inspectorView.setDrawerMinimized(true);
+        this.editorView.setMainWidget(this._sourcesView);
     },
 
     willHide: function()
     {
         WebInspector.Panel.prototype.willHide.call(this);
         WebInspector.context.setFlavor(WebInspector.SourcesPanel, null);
+        if (WebInspector.SourcesPanel.WrapperView._instance && WebInspector.SourcesPanel.WrapperView._instance.isShowing()) {
+            WebInspector.SourcesPanel.WrapperView._instance._showViewInWrapper();
+            WebInspector.inspectorView.setDrawerMinimized(false);
+        }
+    },
+
+    /**
+     * @return {boolean}
+     */
+    _ensureSourcesViewVisible: function()
+    {
+        if (WebInspector.SourcesPanel.WrapperView._instance && WebInspector.SourcesPanel.WrapperView._instance.isShowing())
+            return true;
+        return this === WebInspector.inspectorView.setCurrentPanel(this);
     },
 
     onResize: function()
@@ -338,24 +356,34 @@ WebInspector.SourcesPanel.prototype = {
      * @param {!WebInspector.UISourceCode} uiSourceCode
      * @param {number=} lineNumber 0-based
      * @param {number=} columnNumber
+     * @param {boolean=} omitFocus
      */
-    showUISourceCode: function(uiSourceCode, lineNumber, columnNumber)
+    showUISourceCode: function(uiSourceCode, lineNumber, columnNumber, omitFocus)
     {
-        this._showEditor();
-        this._sourcesView.showSourceLocation(uiSourceCode, lineNumber, columnNumber);
+        if (omitFocus) {
+            var wrapperShowing = WebInspector.SourcesPanel.WrapperView._instance && WebInspector.SourcesPanel.WrapperView._instance.isShowing();
+            if (!this.isShowing() && !wrapperShowing)
+                return;
+        } else {
+            this._showEditor();
+        }
+        this._sourcesView.showSourceLocation(uiSourceCode, lineNumber, columnNumber, omitFocus);
     },
 
     _showEditor: function()
     {
+        if (WebInspector.SourcesPanel.WrapperView._instance && WebInspector.SourcesPanel.WrapperView._instance.isShowing())
+            return;
         WebInspector.inspectorView.setCurrentPanel(this);
     },
 
     /**
      * @param {!WebInspector.UILocation} uiLocation
+     * @param {boolean=} omitFocus
      */
-    showUILocation: function(uiLocation)
+    showUILocation: function(uiLocation, omitFocus)
     {
-        this.showUISourceCode(uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber);
+        this.showUISourceCode(uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber, omitFocus);
     },
 
     /**
@@ -1209,13 +1237,14 @@ WebInspector.SourcesPanel.UILocationRevealer.prototype = {
     /**
      * @override
      * @param {!Object} uiLocation
+     * @param {boolean=} omitFocus
      * @return {!Promise}
      */
-    reveal: function(uiLocation)
+    reveal: function(uiLocation, omitFocus)
     {
         if (!(uiLocation instanceof WebInspector.UILocation))
             return Promise.reject(new Error("Internal error: not a ui location"));
-        WebInspector.SourcesPanel.instance().showUILocation(uiLocation);
+        WebInspector.SourcesPanel.instance().showUILocation(uiLocation, omitFocus);
         return Promise.resolve();
     }
 }
@@ -1232,13 +1261,14 @@ WebInspector.SourcesPanel.DebuggerLocationRevealer.prototype = {
     /**
      * @override
      * @param {!Object} rawLocation
+     * @param {boolean=} omitFocus
      * @return {!Promise}
      */
-    reveal: function(rawLocation)
+    reveal: function(rawLocation, omitFocus)
     {
         if (!(rawLocation instanceof WebInspector.DebuggerModel.Location))
             return Promise.reject(new Error("Internal error: not a debugger location"));
-        WebInspector.SourcesPanel.instance().showUILocation(WebInspector.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation));
+        WebInspector.SourcesPanel.instance().showUILocation(WebInspector.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation), omitFocus);
         return Promise.resolve();
     }
 }
@@ -1255,13 +1285,14 @@ WebInspector.SourcesPanel.UISourceCodeRevealer.prototype = {
     /**
      * @override
      * @param {!Object} uiSourceCode
+     * @param {boolean=} omitFocus
      * @return {!Promise}
      */
-    reveal: function(uiSourceCode)
+    reveal: function(uiSourceCode, omitFocus)
     {
         if (!(uiSourceCode instanceof WebInspector.UISourceCode))
             return Promise.reject(new Error("Internal error: not a ui source code"));
-        WebInspector.SourcesPanel.instance().showUISourceCode(uiSourceCode);
+        WebInspector.SourcesPanel.instance().showUISourceCode(uiSourceCode, undefined, undefined, omitFocus);
         return Promise.resolve();
     }
 }
@@ -1303,7 +1334,7 @@ WebInspector.SourcesPanel.RevealingActionDelegate.prototype = {
     handleAction: function(context, actionId)
     {
         var panel = WebInspector.SourcesPanel.instance();
-        if (panel !== WebInspector.inspectorView.setCurrentPanel(panel))
+        if (!panel._ensureSourcesViewVisible())
             return false;
         switch (actionId) {
         case "debugger.toggle-pause":
@@ -1388,4 +1419,52 @@ WebInspector.SourcesPanelFactory.prototype = {
     {
         return WebInspector.SourcesPanel.instance();
     }
+}
+
+/**
+ * @constructor
+ * @extends {WebInspector.VBox}
+ */
+WebInspector.SourcesPanel.WrapperView = function()
+{
+    WebInspector.VBox.call(this);
+    this.element.classList.add("sources-view-wrapper");
+    WebInspector.SourcesPanel.WrapperView._instance = this;
+    this._view = WebInspector.SourcesPanel.instance()._sourcesView;
+}
+
+WebInspector.SourcesPanel.WrapperView.prototype = {
+    wasShown: function()
+    {
+        if (WebInspector.inspectorView.currentPanel() && WebInspector.inspectorView.currentPanel().name !== "sources")
+            this._showViewInWrapper();
+        else
+            WebInspector.inspectorView.setDrawerMinimized(true);
+    },
+
+    willHide: function()
+    {
+        WebInspector.inspectorView.setDrawerMinimized(false);
+    },
+
+    /**
+     * @override
+     * @return {!Element}
+     */
+    defaultFocusedElement: function()
+    {
+        return this._view.defaultFocusedElement();
+    },
+
+    focus: function()
+    {
+        this._view.focus();
+    },
+
+    _showViewInWrapper: function()
+    {
+        this._view.show(this.element);
+    },
+
+    __proto__: WebInspector.VBox.prototype
 }

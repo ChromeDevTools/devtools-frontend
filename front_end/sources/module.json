@@ -324,6 +324,14 @@
             "title": "History",
             "persistence": "temporary",
             "className": "WebInspector.RevisionHistoryView"
+        },
+        {
+            "type": "drawer-view",
+            "name": "sources.quick",
+            "title": "Quick source",
+            "persistence": "closeable",
+            "order": 1000,
+            "className": "WebInspector.SourcesPanel.WrapperView"
         }
     ],
     "dependencies": [

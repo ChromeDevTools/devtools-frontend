@@ -1087,10 +1087,7 @@ WebInspector.ElementsTreeElement.prototype = {
         }
 
         /** Keep it in sync with elementsTreeOutline.css **/
-        if (Runtime.experiments.isEnabled("reducedIndentation"))
-            this._gutterContainer.style.left = (-8 * (depth - 2) - (this.isExpandable() ? -2 : 8)) + "px";
-        else
-            this._gutterContainer.style.left = (-12 * (depth - 2) - (this.isExpandable() ? 1 : 12)) + "px";
+        this._gutterContainer.style.left = (-12 * (depth - 2) - (this.isExpandable() ? 1 : 12)) + "px";
 
         if (this.isClosingTag())
             return;

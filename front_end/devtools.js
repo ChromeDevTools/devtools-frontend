@@ -964,8 +964,28 @@ function installObjectObserve()
 /**
  * @suppressGlobalPropertiesCheck
  */
+function sanitizeRemoteFrontendUrl()
+{
+    var queryParams = location.search;
+    if (!queryParams)
+        return;
+    var params = queryParams.substring(1).split("&");
+    for (var i = 0; i < params.length; ++i) {
+        var pair = params[i].split("=");
+        var name = pair.shift();
+        var value = pair.join("=");
+        if (name === "remoteFrontendUrl" && !value.startsWith("https://chrome-devtools-frontend.appspot.com/"))
+            location.search = "";
+    }
+}
+
+/**
+ * @suppressGlobalPropertiesCheck
+ */
 function installBackwardsCompatibility()
 {
+    sanitizeRemoteFrontendUrl();
+
     if (window.location.search.indexOf("remoteFrontend") === -1)
         return;
 
@@ -1021,6 +1041,7 @@ function windowLoaded()
     installBackwardsCompatibility();
 }
 
+sanitizeRemoteFrontendUrl();
 if (window.document.head && (window.document.readyState === "complete" || window.document.readyState === "interactive"))
     installBackwardsCompatibility();
 else

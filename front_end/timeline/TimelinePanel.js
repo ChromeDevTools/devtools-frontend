@@ -1841,7 +1841,7 @@ WebInspector.LoadTimelineHandler.prototype = {
     handleQueryParam: function(value)
     {
         WebInspector.TimelinePanel.show();
-        WebInspector.TimelinePanel.instance()._loadFromURL(value);
+        WebInspector.TimelinePanel.instance()._loadFromURL(window.decodeURIComponent(value));
     }
 }
 

@@ -205,7 +205,7 @@ WebInspector.ServiceWorkersView.Section.prototype = {
             scriptElement.removeChildren();
             var fileName = WebInspector.ParsedURL.extractName(active.scriptURL);
             scriptElement.appendChild(WebInspector.linkifyURLAsNode(active.scriptURL, fileName));
-            scriptElement.createChild("div", "report-field-value-subtitle").textContent = WebInspector.UIString("Last modified %s", new Date(active.scriptLastModified * 1000).toLocaleString());
+            scriptElement.createChild("div", "report-field-value-subtitle").textContent = WebInspector.UIString("Received %s", new Date(active.scriptResponseTime * 1000).toLocaleString());
 
             var activeEntry = versionsStack.createChild("div", "service-worker-version");
             activeEntry.createChild("div", "service-worker-active-circle");
@@ -235,7 +235,7 @@ WebInspector.ServiceWorkersView.Section.prototype = {
             waitingEntry.createChild("div", "service-worker-waiting-circle");
             waitingEntry.createChild("span").textContent = WebInspector.UIString("#%s waiting to activate", waiting.id);
             createLink(waitingEntry, WebInspector.UIString("skipWaiting"), this._skipButtonClicked.bind(this));
-            waitingEntry.createChild("div", "service-worker-subtitle").textContent = new Date(waiting.scriptLastModified * 1000).toLocaleString();
+            waitingEntry.createChild("div", "service-worker-subtitle").textContent = new Date(waiting.scriptResponseTime * 1000).toLocaleString();
             if (!this._manager.targetForVersionId(waiting.id) && (waiting.isRunning() || waiting.isStarting()))
                 createLink(waitingEntry, WebInspector.UIString("inspect"), this._inspectButtonClicked.bind(this, waiting.id));
         }
@@ -243,7 +243,7 @@ WebInspector.ServiceWorkersView.Section.prototype = {
             var installingEntry = versionsStack.createChild("div", "service-worker-version");
             installingEntry.createChild("div", "service-worker-installing-circle");
             installingEntry.createChild("span").textContent = WebInspector.UIString("#%s installing", installing.id);
-            installingEntry.createChild("div", "service-worker-subtitle").textContent = new Date(installing.scriptLastModified * 1000).toLocaleString();
+            installingEntry.createChild("div", "service-worker-subtitle").textContent = new Date(installing.scriptResponseTime * 1000).toLocaleString();
             if (!this._manager.targetForVersionId(installing.id) && (installing.isRunning() || installing.isStarting()))
                 createLink(installingEntry, WebInspector.UIString("inspect"), this._inspectButtonClicked.bind(this, installing.id));
         }

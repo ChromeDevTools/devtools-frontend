@@ -97,9 +97,9 @@ WebInspector.ObjectPopoverHelper.prototype = {
             var rawLocation = response.location;
             var sourceURL = response.sourceURL;
             var linkContainer = title.createChild("div", "function-title-link-container");
-            if (rawLocation) {
+            if (rawLocation && Runtime.experiments.isEnabled("continueToFirstInvocation")) {
                 var sectionToolbar = new WebInspector.Toolbar("function-location-step-into", linkContainer);
-                var stepInto = new WebInspector.ToolbarButton(WebInspector.UIString("Step into function"), "step-in-toolbar-item");
+                var stepInto = new WebInspector.ToolbarButton(WebInspector.UIString("Continue to first invocation"), "step-in-toolbar-item");
                 stepInto.addEventListener("click", () => rawLocation.continueToLocation());
                 sectionToolbar.appendToolbarItem(stepInto);
             }

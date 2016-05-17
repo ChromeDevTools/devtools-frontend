@@ -71,7 +71,7 @@
 .function-location-step-into {
     position: relative;
     height: 14px;
-    top: -7px;
+    transform: rotate(-90deg);
 }
 
 .function-popover-title {

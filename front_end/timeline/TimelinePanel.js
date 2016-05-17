@@ -117,7 +117,6 @@ WebInspector.TimelinePanel = function()
     this._detailsSplitWidget.hideSidebar();
     WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
     this._showRecordingHelpMessage();
-    this._locationPool = new WebInspector.LiveLocationPool();
 
     /** @type {!WebInspector.TracingModel.Event}|undefined */
     this._selectedSearchResult;
@@ -648,9 +647,9 @@ WebInspector.TimelinePanel.prototype = {
 
     _clear: function()
     {
+        WebInspector.LineLevelProfile.instance().reset();
         this._tracingModel.reset();
         this._model.reset();
-        this._resetLineLevelCPUProfile();
         this._showRecordingHelpMessage();
 
         this.requestWindowTimes(0, Infinity);
@@ -777,7 +776,7 @@ WebInspector.TimelinePanel.prototype = {
         this._frameModel.reset();
         this._frameModel.addTraceEvents(this._model.target(), this._model.inspectedTargetEvents(), this._model.sessionId() || "");
         this._irModel.populate(this._model);
-        this._setLineLevelCPUProfile(this._model.lineLevelCPUProfile());
+        this._model.cpuProfiles().forEach(profile => WebInspector.LineLevelProfile.instance().appendCPUProfile(profile));
         if (this._statusPane)
             this._statusPane.hide();
         delete this._statusPane;
@@ -1247,35 +1246,6 @@ WebInspector.TimelinePanel.prototype = {
             rightTime = Math.min(rightTime + 0.05 * span, this._tracingModel.maximumRecordTime());
         }
         this.requestWindowTimes(leftTime, rightTime);
-    },
-
-    /**
-     * @param {!WebInspector.TimelineModel.LineLevelProfile} profile
-     */
-    _setLineLevelCPUProfile: function(profile)
-    {
-        var debuggerModel = WebInspector.DebuggerModel.fromTarget(WebInspector.targetManager.mainTarget());
-        if (!debuggerModel)
-            return;
-        for (var fileInfo of profile.files()) {
-            var url = /** @type {string} */ (fileInfo[0]);
-            var uiSourceCode = WebInspector.workspace.uiSourceCodeForURL(url);
-            for (var lineInfo of fileInfo[1]) {
-                var line = lineInfo[0] - 1;
-                var time = lineInfo[1];
-                var rawLocation = debuggerModel.createRawLocationByURL(url, line, 0);
-                if (rawLocation)
-                    new WebInspector.TimelineUIUtils.LineLevelProfilePresentation(rawLocation, time, this._locationPool);
-                else if (uiSourceCode)
-                    uiSourceCode.addLineDecoration(line, WebInspector.TimelineUIUtils.PerformanceLineDecorator.type, time);
-            }
-        }
-    },
-
-    _resetLineLevelCPUProfile: function()
-    {
-        this._locationPool.disposeAll();
-        WebInspector.workspace.uiSourceCodes().forEach(uiSourceCode => uiSourceCode.removeAllLineDecorations(WebInspector.TimelineUIUtils.PerformanceLineDecorator.type));
     },
 
     __proto__: WebInspector.Panel.prototype

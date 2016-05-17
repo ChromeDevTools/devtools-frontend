@@ -64,6 +64,7 @@
     ],
     "dependencies": [
         "components",
+        "components_lazy",
         "ui_lazy"
     ],
     "scripts": [

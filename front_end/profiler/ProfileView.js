@@ -137,6 +137,9 @@ WebInspector.ProfileView.prototype = {
         return this._topDownProfileDataGridTree;
     },
 
+    /**
+     * @override
+     */
     willHide: function()
     {
         this._currentSearchResultIndex = -1;

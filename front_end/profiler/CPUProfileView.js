@@ -41,6 +41,17 @@ WebInspector.CPUProfileView = function(profileHeader)
 WebInspector.CPUProfileView.prototype = {
     /**
      * @override
+     */
+    wasShown: function()
+    {
+        WebInspector.ProfileView.prototype.wasShown.call(this);
+        var lineLevelProfile = WebInspector.LineLevelProfile.instance();
+        lineLevelProfile.reset();
+        lineLevelProfile.appendCPUProfile(this.profile);
+    },
+
+    /**
+     * @override
      * @param {string} columnId
      * @return {string}
      */

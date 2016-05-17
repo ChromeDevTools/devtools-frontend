@@ -420,6 +420,7 @@
             'front_end/components_lazy/CookiesTable.js',
             'front_end/components_lazy/FilmStripModel.js',
             'front_end/components_lazy/FilmStripView.js',
+            'front_end/components_lazy/LineLevelProfile.js',
         ],
         'devtools_console_js_files': [
             'front_end/console/ConsoleContextSelector.js',

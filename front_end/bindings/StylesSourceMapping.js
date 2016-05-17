@@ -377,7 +377,7 @@ WebInspector.StyleFile.prototype = {
     _styleContentSet: function(error)
     {
         if (error)
-            WebInspector.console.error(error);
+            console.error(error);
     },
 
     /**

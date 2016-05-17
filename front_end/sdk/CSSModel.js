@@ -186,8 +186,6 @@ WebInspector.CSSModel.prototype = {
             }
             if (!headers.size)
                 return;
-            if (sourceMap.editable())
-                WebInspector.console.log(WebInspector.UIString("LiveSASS started: %s", sourceMapURL));
             this._sourceMapByURL.set(sourceMapURL, sourceMap);
             for (var header of headers)
                 attach.call(this, sourceMapURL, header);
@@ -229,9 +227,6 @@ WebInspector.CSSModel.prototype = {
             return;
         this._sourceMapURLToHeaders.remove(header.sourceMapURL, header);
         if (!this._sourceMapURLToHeaders.has(header.sourceMapURL))
-            var sourceMap = this._sourceMapByURL.get(header.sourceMapURL);
-            if (sourceMap.editable())
-                WebInspector.console.log(WebInspector.UIString("LiveSASS stopped: %s", header.sourceMapURL));
             this._sourceMapByURL.delete(header.sourceMapURL);
         this.dispatchEventToListeners(WebInspector.CSSModel.Events.SourceMapDetached, header);
     },

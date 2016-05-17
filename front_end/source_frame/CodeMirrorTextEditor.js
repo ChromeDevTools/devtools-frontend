@@ -1457,6 +1457,22 @@ WebInspector.CodeMirrorTextEditor.prototype = {
     /**
      * @return {number}
      */
+    scrollTop: function()
+    {
+        return this._codeMirror.getScrollInfo().top;
+    },
+
+    /**
+     * @param {number} scrollTop
+     */
+    setScrollTop: function(scrollTop)
+    {
+        this._codeMirror.scrollTo(0, scrollTop);
+    },
+
+    /**
+     * @return {number}
+     */
     lastVisibleLine: function()
     {
         var scrollInfo = this._codeMirror.getScrollInfo();

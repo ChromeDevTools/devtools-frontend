@@ -287,10 +287,10 @@ WebInspector.SourceFrame.prototype = {
             this._textEditor.setText(content || "");
             this._textEditor.markClean();
         } else {
-            var firstLine = this._textEditor.firstVisibleLine();
+            var scrollTop = this._textEditor.scrollTop();
             var selection = this._textEditor.selection();
             this._textEditor.setText(content || "");
-            this._textEditor.scrollToLine(firstLine);
+            this._textEditor.setScrollTop(scrollTop);
             this._textEditor.setSelection(selection);
         }
 

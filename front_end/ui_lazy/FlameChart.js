@@ -123,7 +123,7 @@ WebInspector.FlameChart = function(dataProvider, flameChartDelegate, groupExpans
 
 WebInspector.FlameChart.DividersBarHeight = 18;
 
-WebInspector.FlameChart.MinimalTimeWindowMs = 0.01;
+WebInspector.FlameChart.MinimalTimeWindowMs = 0.5;
 
 /**
  * @interface

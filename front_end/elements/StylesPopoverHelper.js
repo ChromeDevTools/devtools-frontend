@@ -197,6 +197,9 @@ WebInspector.BezierPopoverIcon.prototype = {
 
         this._originalPropertyText = this._treeElement.property.propertyText;
         this._treeElement.parentPane().setEditingStyle(true);
+        var uiLocation = WebInspector.cssWorkspaceBinding.propertyUILocation(this._treeElement.property, false /* forName */);
+        if (uiLocation)
+            WebInspector.Revealer.reveal(uiLocation, true /* omitFocus */);
     },
 
     /**
@@ -307,6 +310,9 @@ WebInspector.ColorSwatchPopoverIcon.prototype = {
 
         this._originalPropertyText = this._treeElement.property.propertyText;
         this._treeElement.parentPane().setEditingStyle(true);
+        var uiLocation = WebInspector.cssWorkspaceBinding.propertyUILocation(this._treeElement.property, false /* forName */);
+        if (uiLocation)
+            WebInspector.Revealer.reveal(uiLocation, true /* omitFocus */);
     },
 
     /**

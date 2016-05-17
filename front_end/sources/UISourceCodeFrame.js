@@ -77,8 +77,6 @@ WebInspector.UISourceCodeFrame.prototype = {
     wasShown: function()
     {
         WebInspector.SourceFrame.prototype.wasShown.call(this);
-        if (this._diff)
-            this._diff.updateImmediately();
         this._boundWindowFocused = this._windowFocused.bind(this);
         this.element.ownerDocument.defaultView.addEventListener("focus", this._boundWindowFocused, false);
         this._checkContentUpdated();
@@ -204,6 +202,8 @@ WebInspector.UISourceCodeFrame.prototype = {
     {
         this._isSettingContent = true;
         this.setContent(content);
+        if (this._diff)
+            this._diff.updateImmediately();
         delete this._isSettingContent;
     },
 

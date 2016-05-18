@@ -237,6 +237,8 @@ WebInspector.NetworkConditionsSelector.createOfflineToolbarCheckbox = function()
 {
     var checkbox = new WebInspector.ToolbarCheckbox(WebInspector.UIString("Offline"), WebInspector.UIString("Force disconnected from network"), undefined, forceOffline);
     WebInspector.multitargetNetworkManager.addEventListener(WebInspector.MultitargetNetworkManager.Events.ConditionsChanged, networkConditionsChanged);
+    checkbox.setChecked(WebInspector.multitargetNetworkManager.networkConditions() === WebInspector.NetworkManager.OfflineConditions);
+
     var lastNetworkConditions;
 
     function forceOffline()

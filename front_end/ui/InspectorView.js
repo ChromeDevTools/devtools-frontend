@@ -396,6 +396,14 @@ WebInspector.InspectorView.prototype = {
     },
 
     /**
+     * @return {boolean}
+     */
+    isDrawerMinimized: function()
+    {
+        return this._drawerSplitWidget.isSidebarMinimized();
+    },
+
+    /**
      * @override
      * @return {!Element}
      */

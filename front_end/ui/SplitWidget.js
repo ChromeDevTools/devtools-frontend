@@ -290,6 +290,14 @@ WebInspector.SplitWidget.prototype = {
     },
 
     /**
+     * @return {boolean}
+     */
+    isSidebarMinimized: function()
+    {
+        return this._sidebarMinimized;
+    },
+
+    /**
      * @param {!WebInspector.Widget} sideToShow
      * @param {!WebInspector.Widget} sideToHide
      * @param {!Element} shadowToShow

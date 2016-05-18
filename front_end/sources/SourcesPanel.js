@@ -173,8 +173,10 @@ WebInspector.SourcesPanel.prototype = {
         WebInspector.context.setFlavor(WebInspector.SourcesPanel, this);
         WebInspector.Panel.prototype.wasShown.call(this);
         var wrapper = WebInspector.SourcesPanel.WrapperView._instance;
-        if (wrapper && wrapper.isShowing())
+        if (wrapper && wrapper.isShowing()) {
             WebInspector.inspectorView.setDrawerMinimized(true);
+            WebInspector.SourcesPanel.updateResizer(this);
+        }
         this.editorView.setMainWidget(this._sourcesView);
     },
 
@@ -182,9 +184,10 @@ WebInspector.SourcesPanel.prototype = {
     {
         WebInspector.Panel.prototype.willHide.call(this);
         WebInspector.context.setFlavor(WebInspector.SourcesPanel, null);
-        if (WebInspector.SourcesPanel.WrapperView._instance && WebInspector.SourcesPanel.WrapperView._instance.isShowing()) {
+        if (WebInspector.SourcesPanel.WrapperView.isShowing()) {
             WebInspector.SourcesPanel.WrapperView._instance._showViewInWrapper();
             WebInspector.inspectorView.setDrawerMinimized(false);
+            WebInspector.SourcesPanel.updateResizer(this);
         }
     },
 
@@ -193,7 +196,7 @@ WebInspector.SourcesPanel.prototype = {
      */
     _ensureSourcesViewVisible: function()
     {
-        if (WebInspector.SourcesPanel.WrapperView._instance && WebInspector.SourcesPanel.WrapperView._instance.isShowing())
+        if (WebInspector.SourcesPanel.WrapperView.isShowing())
             return true;
         return this === WebInspector.inspectorView.setCurrentPanel(this);
     },
@@ -1095,10 +1098,7 @@ WebInspector.SourcesPanel.prototype = {
         this._splitWidget.setVertical(!vertically);
         this._splitWidget.element.classList.toggle("sources-split-view-vertical", vertically);
 
-        if (!vertically)
-            this._splitWidget.uninstallResizer(this._sourcesView.toolbarContainerElement());
-        else
-            this._splitWidget.installResizer(this._sourcesView.toolbarContainerElement());
+        WebInspector.SourcesPanel.updateResizer(this);
 
         // Create vertical box with stack.
         var vbox = new WebInspector.VBox();
@@ -1403,6 +1403,17 @@ WebInspector.SourcesPanel.instance = function()
 }
 
 /**
+ * @param {!WebInspector.SourcesPanel} panel
+ */
+WebInspector.SourcesPanel.updateResizer = function(panel)
+{
+    if (panel._splitWidget.isVertical() || (WebInspector.SourcesPanel.WrapperView.isShowing() && !WebInspector.inspectorView.isDrawerMinimized()))
+        panel._splitWidget.uninstallResizer(panel._sourcesView.toolbarContainerElement());
+    else
+        panel._splitWidget.installResizer(panel._sourcesView.toolbarContainerElement());
+}
+
+/**
  * @constructor
  * @implements {WebInspector.PanelFactory}
  */
@@ -1440,11 +1451,13 @@ WebInspector.SourcesPanel.WrapperView.prototype = {
             this._showViewInWrapper();
         else
             WebInspector.inspectorView.setDrawerMinimized(true);
+        WebInspector.SourcesPanel.updateResizer(WebInspector.SourcesPanel.instance());
     },
 
     willHide: function()
     {
         WebInspector.inspectorView.setDrawerMinimized(false);
+        setImmediate(() => WebInspector.SourcesPanel.updateResizer(WebInspector.SourcesPanel.instance()));
     },
 
     /**
@@ -1467,4 +1480,12 @@ WebInspector.SourcesPanel.WrapperView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
+}
+
+/**
+ * @return {boolean}
+ */
+WebInspector.SourcesPanel.WrapperView.isShowing = function()
+{
+    return !!WebInspector.SourcesPanel.WrapperView._instance && WebInspector.SourcesPanel.WrapperView._instance.isShowing();
 }

@@ -55,11 +55,9 @@ li.storage-group-list-item::before {
     background: linear-gradient(45deg, hsl(0, 0%, 50%), hsl(0, 0%, 70%));
 }
 
-:focus .navigator-file-tree-item.selected .icon {
-    background: white !important;
-}
-
-:focus .navigator-folder-tree-item.selected .icon {
+:focus .navigator-file-tree-item.selected .icon,
+:focus .navigator-folder-tree-item.selected .icon,
+:focus .navigator-frame-tree-item.selected .icon {
     background: white !important;
 }
 
@@ -74,6 +72,7 @@ li.storage-group-list-item::before {
 
 .navigator-frame-tree-item .icon {
     -webkit-mask-position: -256px -144px;
+    background-color: #5a5a5a;
 }
 
 .navigator-script-tree-item .icon {
@@ -89,36 +88,28 @@ li.storage-group-list-item::before {
     background: linear-gradient(45deg, hsl(109, 33%, 50%), hsl(109, 33%, 70%));
 }
 
-.database-storage-tree-item .icon {
-    content: url(Images/database.png);
+.resource-tree-item .icon {
+    -webkit-mask: url(Images/resourceGlyphs.png) no-repeat 0 0;
+    -webkit-mask-size: 140px 20px;
+    background: rgba(90, 90, 90, .7);
 }
 
-.database-table-storage-tree-item .icon {
-    content: url(Images/databaseTable.png);
+@media (-webkit-min-device-pixel-ratio: 1.5) {
+.resource-tree-item .icon {
+    -webkit-mask-image: url(Images/resourceGlyphs_2x.png);
+}
+} /* media */
+
+:focus .resource-tree-item.selected .icon {
+    background: white !important;
 }
 
-.indexed-db-storage-tree-item .icon {
-    content: url(Images/indexedDB.png);
+.database-tree-item .icon {
+    -webkit-mask-position: -60px 0;
 }
 
-.indexed-db-object-store-storage-tree-item .icon {
-    content: url(Images/indexedDBObjectStore.png);
-}
-
-.indexed-db-index-storage-tree-item .icon {
-    content: url(Images/indexedDBIndex.png);
-}
-
-.service-worker-cache-tree-item .icon {
-    content: url(Images/indexedDBObjectStore.png);
-}
-
-.service-worker-cache-storage-tree-item .icon {
-    content: url(Images/indexedDB.png);
-}
-
-.service-workers-tree-item .icon {
-    content: url(Images/serviceWorker.svg);
+.table-tree-item .icon {
+    -webkit-mask-position: -80px 0;
 }
 
 :focus .service-workers-tree-item.selected .icon {
@@ -130,17 +121,18 @@ li.storage-group-list-item::before {
     -webkit-filter: invert(70%);
 }
 
-.domstorage-storage-tree-item.local-storage .icon {
-    content: url(Images/localStorage.png);
+.cookie-tree-item .icon {
+    -webkit-mask-position: -120px 0;
 }
 
-.domstorage-storage-tree-item.session-storage .icon {
-    content: url(Images/sessionStorage.png);
+.manifest-tree-item .icon {
+    -webkit-mask-position: 0 0;
 }
 
-.cookie-storage-tree-item .icon {
-    content: url(Images/cookie.png);
+.service-worker-tree-item .icon {
+    -webkit-mask-position: -20px 0;
 }
 
-.application-cache-storage-tree-item .icon {
-    content: url(Images/applicationCache.png);
+.clear-storage-tree-item .icon {
+    -webkit-mask-position: -40px 0;
+}

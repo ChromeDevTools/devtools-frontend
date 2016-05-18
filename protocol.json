@@ -792,14 +792,16 @@
                     { "name": "customPreview", "$ref": "CustomPreview", "optional": true, "hidden": true}
                 ]
             },
-            {   "id": "CustomPreview",
+            {
+                "id": "CustomPreview",
                 "type": "object",
                 "hidden": true,
                 "properties": [
                     { "name": "header", "type": "string"},
                     { "name": "hasBody", "type": "boolean"},
-                    {"name": "formatterObjectId", "$ref": "RemoteObjectId"},
-                    {"name": "configObjectId", "$ref": "RemoteObjectId", "optional": true}
+                    { "name": "formatterObjectId", "$ref": "RemoteObjectId"},
+                    { "name": "bindRemoteObjectFunctionId", "$ref": "RemoteObjectId" },
+                    { "name": "configObjectId", "$ref": "RemoteObjectId", "optional": true }
                 ]
             },
             {

@@ -184,10 +184,11 @@ WebInspector.CustomPreviewSection.prototype = {
          * @suppressGlobalPropertiesCheck
          * @suppress {undefinedVars}
          * @this {Object}
+         * @param {function(!Object, *):*} bindRemoteObject
          * @param {*=} formatter
          * @param {*=} config
          */
-        function load(formatter, config)
+        function load(bindRemoteObject, formatter, config)
         {
             /**
              * @param {*} jsonMLObject
@@ -210,7 +211,7 @@ WebInspector.CustomPreviewSection.prototype = {
                     if (typeof originObject === "undefined")
                         throw "Illegal format: obligatory attribute \"object\" isn't specified";
 
-                    jsonMLObject[1] = bindRemoteObject(originObject, false, false, null, false, config);
+                    jsonMLObject[1] = bindRemoteObject(originObject, config);
                     startIndex = 2;
                 }
                 for (var i = startIndex; i < jsonMLObject.length; ++i)
@@ -228,7 +229,7 @@ WebInspector.CustomPreviewSection.prototype = {
         }
 
         var customPreview = this._object.customPreview();
-        var args = [{objectId: customPreview.formatterObjectId}];
+        var args = [{objectId: customPreview.bindRemoteObjectFunctionId}, {objectId: customPreview.formatterObjectId}];
         if (customPreview.configObjectId)
             args.push({objectId: customPreview.configObjectId});
         this._object.callFunctionJSON(load, args, onBodyLoaded.bind(this));

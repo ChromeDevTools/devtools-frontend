@@ -14,6 +14,8 @@ WebInspector.SourceCodeDiff = function(uiSourceCode, textEditor)
     this._decorations = [];
     this._textEditor.installGutter(WebInspector.SourceCodeDiff.DiffGutterType, true);
     this._diffBaseline = this._uiSourceCode.requestOriginalContent();
+    /** @type {!Array<!WebInspector.TextEditorPositionHandle>}*/
+    this._animatedLines = [];
 }
 
 /** @type {number} */
@@ -23,14 +25,14 @@ WebInspector.SourceCodeDiff.UpdateTimeout = 200;
 WebInspector.SourceCodeDiff.DiffGutterType = "CodeMirror-gutter-diff";
 
 WebInspector.SourceCodeDiff.prototype = {
-    updateWhenPossible: function()
+    updateDiffMarkersWhenPossible: function()
     {
         if (this._updateTimeout)
             clearTimeout(this._updateTimeout);
-        this._updateTimeout = setTimeout(this.updateImmediately.bind(this), WebInspector.SourceCodeDiff.UpdateTimeout);
+        this._updateTimeout = setTimeout(this.updateDiffMarkersImmediately.bind(this), WebInspector.SourceCodeDiff.UpdateTimeout);
     },
 
-    updateImmediately: function()
+    updateDiffMarkersImmediately: function()
     {
         if (this._updateTimeout)
             clearTimeout(this._updateTimeout);
@@ -39,30 +41,78 @@ WebInspector.SourceCodeDiff.prototype = {
     },
 
     /**
-     * @param {!Array<!WebInspector.SourceCodeDiff.GutterDecoration>} decorations
+     * @param {?string} oldContent
+     * @param {?string} newContent
      */
-    _installEditorDecorations: function(decorations)
+    highlightModifiedLines: function(oldContent, newContent)
     {
-        this._textEditor.operation(operation);
+        if (typeof oldContent !== "string" || typeof newContent !== "string")
+            return;
 
+        var diff = this._computeDiff(oldContent, newContent);
+        var changedLines = [];
+        for (var i = 0; i < diff.length; ++i) {
+            var diffEntry = diff[i];
+            if (diffEntry.type === WebInspector.SourceCodeDiff.GutterDecorationType.Delete)
+                continue;
+            for (var lineNumber = diffEntry.from; lineNumber < diffEntry.to; ++lineNumber) {
+                var position = this._textEditor.textEditorPositionHandle(lineNumber, 0);
+                if (position)
+                    changedLines.push(position);
+            }
+        }
+        this._updateHighlightedLines(changedLines);
+        this._animationTimeout = setTimeout(this._updateHighlightedLines.bind(this, []), 400); // // Keep this timeout in sync with sourcesView.css.
+    },
+
+    /**
+     * @param {!Array<!WebInspector.TextEditorPositionHandle>} newLines
+     */
+    _updateHighlightedLines: function(newLines)
+    {
+        if (this._animationTimeout)
+            clearTimeout(this._animationTimeout);
+        this._animationTimeout = null;
+        this._textEditor.operation(operation.bind(this));
+
+        /**
+         * @this {WebInspector.SourceCodeDiff}
+         */
         function operation()
         {
-            for (var decoration of decorations)
-                decoration.install();
+            toggleLines.call(this, false);
+            this._animatedLines = newLines;
+            toggleLines.call(this, true);
+        }
+
+        /**
+         * @param {boolean} value
+         * @this {WebInspector.SourceCodeDiff}
+         */
+        function toggleLines(value)
+        {
+            for (var i = 0; i < this._animatedLines.length; ++i) {
+                var location = this._animatedLines[i].resolve();
+                if (location)
+                    this._textEditor.toggleLineClass(location.lineNumber, "highlight-line-modification", value);
+            }
         }
     },
 
     /**
-     * @param {!Array<!WebInspector.SourceCodeDiff.GutterDecoration>} decorations
+     * @param {!Array<!WebInspector.SourceCodeDiff.GutterDecoration>} removed
+     * @param {!Array<!WebInspector.SourceCodeDiff.GutterDecoration>} added
      */
-    _removeEditorDecorations: function(decorations)
+    _updateDecorations: function(removed, added)
     {
         this._textEditor.operation(operation);
 
         function operation()
         {
-            for (var decoration of decorations)
+            for (var decoration of removed)
                 decoration.remove();
+            for (var decoration of added)
+                decoration.install();
         }
     },
 
@@ -145,23 +195,37 @@ WebInspector.SourceCodeDiff.prototype = {
     {
         var current = this._uiSourceCode.workingCopy();
         if (typeof current !== "string" || typeof baseline !== "string") {
-            this._removeEditorDecorations(this._decorations);
+            this._updateDecorations(this._decorations, [] /* added */);
             this._decorations = [];
             return;
         }
 
         var diff = this._computeDiff(baseline, current);
-        var updater = new WebInspector.SourceCodeDiff.DecorationUpdater(this._textEditor, this._decorations);
+
+        /** @type {!Map<number, !WebInspector.SourceCodeDiff.GutterDecoration>} */
+        var oldDecorations = new Map();
+        for (var i = 0; i < this._decorations.length; ++i) {
+            var decoration = this._decorations[i];
+            var lineNumber = decoration.lineNumber();
+            if (lineNumber === -1)
+                continue;
+            oldDecorations.set(lineNumber, decoration);
+        }
+
+        /** @type {!Map<number, !{lineNumber: number, type: !WebInspector.SourceCodeDiff.GutterDecorationType}>} */
+        var newDecorations = new Map();
         for (var i = 0; i < diff.length; ++i) {
             var diffEntry = diff[i];
             for (var lineNumber = diffEntry.from; lineNumber < diffEntry.to; ++lineNumber)
-                updater.addDecoration(diffEntry.type, lineNumber);
+                newDecorations.set(lineNumber, {lineNumber: lineNumber, type: diffEntry.type});
         }
-        updater.finalize();
-        this._removeEditorDecorations(updater.removed());
-        this._installEditorDecorations(updater.added());
-        this._decorations = updater.newDecorations();
-    }
+
+        var decorationDiff = oldDecorations.diff(newDecorations, (e1, e2) => e1.type === e2.type);
+        var addedDecorations = decorationDiff.added.map(entry => new WebInspector.SourceCodeDiff.GutterDecoration(this._textEditor, entry.lineNumber, entry.type));
+
+        this._decorations = decorationDiff.equal.concat(addedDecorations);
+        this._updateDecorations(decorationDiff.removed, addedDecorations);
+    },
 }
 
 /** @enum {string} */
@@ -188,7 +252,7 @@ WebInspector.SourceCodeDiff.GutterDecoration = function(textEditor, lineNumber, 
         this._className = "diff-entry-delete";
     else if (type === WebInspector.SourceCodeDiff.GutterDecorationType.Modify)
         this._className = "diff-entry-modify";
-    this._type = type;
+    this.type = type;
 }
 
 WebInspector.SourceCodeDiff.GutterDecoration.prototype = {
@@ -201,14 +265,6 @@ WebInspector.SourceCodeDiff.GutterDecoration.prototype = {
         if (!location)
             return -1;
         return location.lineNumber;
-    },
-
-    /**
-     * @return {!WebInspector.SourceCodeDiff.GutterDecorationType}
-     */
-    type: function()
-    {
-        return this._type;
     },
 
     install: function()
@@ -229,78 +285,5 @@ WebInspector.SourceCodeDiff.GutterDecoration.prototype = {
             return;
         this._textEditor.setGutterDecoration(location.lineNumber, WebInspector.SourceCodeDiff.DiffGutterType, null);
         this._textEditor.toggleLineClass(location.lineNumber, this._className, false);
-    }
-}
-
-/**
- * @constructor
- * @param {!WebInspector.CodeMirrorTextEditor} textEditor
- * @param {!Array<!WebInspector.SourceCodeDiff.GutterDecoration>} decorations
- */
-WebInspector.SourceCodeDiff.DecorationUpdater = function(textEditor, decorations)
-{
-    this._textEditor = textEditor;
-    this._oldDecorations = decorations;
-    this._oldIndex = 0;
-
-    this._removed = [];
-    this._added = [];
-    this._newDecorations = [];
-}
-
-WebInspector.SourceCodeDiff.DecorationUpdater.prototype = {
-    /**
-     * @param {!WebInspector.SourceCodeDiff.GutterDecorationType} type
-     * @param {number} lineNumber
-     */
-    addDecoration: function(type, lineNumber)
-    {
-        while (this._oldIndex < this._oldDecorations.length) {
-            var decoration = this._oldDecorations[this._oldIndex];
-            var decorationLine = decoration.lineNumber();
-            if (decorationLine === lineNumber && decoration.type() === type) {
-                ++this._oldIndex;
-                this._newDecorations.push(decoration);
-                return;
-            }
-            if (decorationLine >= lineNumber)
-                break;
-
-            this._removed.push(decoration);
-            ++this._oldIndex;
-        }
-        var decoration = new WebInspector.SourceCodeDiff.GutterDecoration(this._textEditor, lineNumber, type);
-        this._added.push(decoration);
-        this._newDecorations.push(decoration);
-    },
-
-    finalize: function()
-    {
-        while (this._oldIndex < this._oldDecorations.length)
-            this._removed.push(this._oldDecorations[this._oldIndex++]);
-    },
-
-    /**
-     * @return {!Array<!WebInspector.SourceCodeDiff.GutterDecoration>}
-     */
-    added: function()
-    {
-        return this._added;
-    },
-
-    /**
-     * @return {!Array<!WebInspector.SourceCodeDiff.GutterDecoration>}
-     */
-    removed: function()
-    {
-        return this._removed;
-    },
-
-    /**
-     * @return {!Array<!WebInspector.SourceCodeDiff.GutterDecoration>}
-     */
-    newDecorations: function()
-    {
-        return this._newDecorations;
     }
 }

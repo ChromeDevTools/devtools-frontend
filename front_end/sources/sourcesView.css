@@ -112,3 +112,27 @@
 .CodeMirror-gutter-diff {
     width: 4px;
 }
+
+.highlight-line-modification {
+    animation: source-line-modification-background-fadeout 0.4s 0s;
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
+
+.highlight-line-modification span {
+    animation: source-line-modification-foreground-fadeout 0.4s 0s;
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
+
+@keyframes source-line-modification-background-fadeout {
+    from { background-color: rgba(158, 54, 153, 0.5); }
+    50% { background-color: rgba(158, 54, 153, 0.5); }
+    90% { background-color: rgba(158, 54, 153, 0); }
+    to { background-color: transparent; }
+}
+
+@keyframes source-line-modification-foreground-fadeout {
+    from { color: white; }
+    50% { color: white; }
+    90% { color: intial; }
+    to { color: intial; }
+}

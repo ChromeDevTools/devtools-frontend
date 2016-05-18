@@ -116,12 +116,6 @@ WebInspector.ResourcesPanel.prototype = {
         return treeElement;
     },
 
-    wasShown: function()
-    {
-        if (!this._sidebarTree.selectedTreeElement)
-            this._manifestTreeElement.select();
-    },
-
     /**
      * @override
      * @param {!WebInspector.Target} target
@@ -137,7 +131,6 @@ WebInspector.ResourcesPanel.prototype = {
         if (target.resourceTreeModel.cachedResourcesLoaded())
             this._initialize();
 
-        target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.Load, this._loadEventFired, this);
         target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.CachedResourcesLoaded, this._initialize, this);
         target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.WillLoadCachedResources, this._resetWithFrames, this);
         this._databaseModel.addEventListener(WebInspector.DatabaseModel.Events.DatabaseAdded, this._databaseAdded, this);
@@ -154,7 +147,6 @@ WebInspector.ResourcesPanel.prototype = {
             return;
         delete this._target;
 
-        target.resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.EventTypes.Load, this._loadEventFired, this);
         target.resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.EventTypes.CachedResourcesLoaded, this._initialize, this);
         target.resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.EventTypes.WillLoadCachedResources, this._resetWithFrames, this);
         this._databaseModel.removeEventListener(WebInspector.DatabaseModel.Events.DatabaseAdded, this._databaseAdded, this);
@@ -182,19 +174,10 @@ WebInspector.ResourcesPanel.prototype = {
         this.indexedDBListTreeElement._initialize();
         this.cacheStorageListTreeElement._initialize();
         this._initDefaultSelection();
-        this._initialized = true;
-    },
-
-    _loadEventFired: function()
-    {
-        this._initDefaultSelection();
     },
 
     _initDefaultSelection: function()
     {
-        if (!this._initialized)
-            return;
-
         var itemURL = this._resourcesLastSelectedItemSetting.get();
         if (itemURL) {
             var rootElement = this._sidebarTree.rootElement();
@@ -205,12 +188,7 @@ WebInspector.ResourcesPanel.prototype = {
                 }
             }
         }
-
-        var mainResource = this._target.resourceTreeModel.inspectedPageURL() && this.resourcesListTreeElement && this.resourcesListTreeElement.expanded
-                ? this._target.resourceTreeModel.resourceForURL(this._target.resourceTreeModel.inspectedPageURL())
-                : null;
-        if (mainResource)
-            this.showResource(mainResource);
+        this._manifestTreeElement.select();
     },
 
     _resetWithFrames: function()

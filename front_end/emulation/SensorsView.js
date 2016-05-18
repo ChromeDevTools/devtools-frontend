@@ -156,7 +156,8 @@ WebInspector.SensorsView.prototype = {
 
         this._stageElement = orientationContent.createChild("div", "orientation-stage");
         this._stageElement.title = WebInspector.UIString("Shift+drag horizontally to rotate around the y-axis");
-        this._boxElement = this._stageElement.createChild("section", "orientation-box orientation-element");
+        this._orientationLayer = this._stageElement.createChild("div", "orientation-layer");
+        this._boxElement = this._orientationLayer.createChild("section", "orientation-box orientation-element");
 
         this._boxElement.createChild("section", "orientation-front orientation-element");
         this._boxElement.createChild("section", "orientation-top orientation-element");
@@ -169,7 +170,7 @@ WebInspector.SensorsView.prototype = {
 
         fields.appendChild(this._deviceOrientationFieldset);
         this._enableOrientationFields(true);
-        this._setBoxOrientation(this._deviceOrientation);
+        this._setBoxOrientation(this._deviceOrientation, false);
     },
 
     /**
@@ -261,10 +262,8 @@ WebInspector.SensorsView.prototype = {
             this._gammaSetter(roundAngle(deviceOrientation.gamma));
         }
 
-        if (modificationSource != WebInspector.SensorsView.DeviceOrientationModificationSource.UserDrag)
-            this._setBoxOrientation(deviceOrientation);
-        else
-            this._boxElement.classList.remove("is-animating");
+        var animate = modificationSource !== WebInspector.SensorsView.DeviceOrientationModificationSource.UserDrag;
+        this._setBoxOrientation(deviceOrientation, animate);
 
         this._deviceOrientation = deviceOrientation;
         this._applyDeviceOrientation();
@@ -313,29 +312,19 @@ WebInspector.SensorsView.prototype = {
 
     /**
      * @param {!WebInspector.DeviceOrientation} deviceOrientation
+     * @param {boolean} animate
      */
-    _setBoxOrientation: function(deviceOrientation)
+    _setBoxOrientation: function(deviceOrientation, animate)
     {
-        var matrix = this._viewportPreviewMatrix(true);
-        this._boxMatrix = matrix.rotate(-deviceOrientation.beta, deviceOrientation.gamma, -deviceOrientation.alpha);
+        if (animate)
+            this._stageElement.classList.add("is-animating");
+        else
+            this._stageElement.classList.remove("is-animating");
 
-        this._boxElement.classList.add("is-animating");
-        this._boxElement.style.transform = this._boxMatrix.toString();
-    },
-
-    /**
-     * @param {boolean=} toViewportPreview
-     * @return {!CSSMatrix}
-     */
-    _viewportPreviewMatrix: function(toViewportPreview)
-    {
-        // The default orientation [0, 0, 0] represents a device with
-        // screen facing up. This transformation shifts the
-        // orientation displayed in the 3D preview to be front-facing
-        // instead of top-down.
-        var betaRotate = toViewportPreview ? 90 : -90;
         var matrix = new WebKitCSSMatrix();
-        return matrix.rotate(betaRotate, 0, 0);
+        this._boxMatrix = matrix.rotate(-deviceOrientation.beta, deviceOrientation.gamma, -deviceOrientation.alpha);
+        var eulerAngles = WebInspector.Geometry.EulerAngles.fromRotationMatrix(this._boxMatrix);
+        this._orientationLayer.style.transform = eulerAngles.toRotate3DString();
     },
 
     /**
@@ -355,17 +344,18 @@ WebInspector.SensorsView.prototype = {
             angle = (this._mouseDownVector.x - mouseMoveVector.x)*WebInspector.SensorsView.ShiftDragOrientationSpeed;
         } else {
             axis = WebInspector.Geometry.crossProduct(this._mouseDownVector, mouseMoveVector);
-            axis.normalize();
             angle = WebInspector.Geometry.calculateAngle(this._mouseDownVector, mouseMoveVector);
         }
-        var matrix = new WebKitCSSMatrix();
-        var rotationMatrix = matrix.rotateAxisAngle(axis.x, axis.y, axis.z, angle);
-        var transformFromScreen = this._viewportPreviewMatrix();
 
-        this._boxMatrix = rotationMatrix.multiply(this._originalBoxMatrix);
-        this._boxElement.style.transform = this._boxMatrix.toString();
+        // The mouse movement vectors occur in the screen space, which is offset by 90 degrees from
+        // the actual device orientation.
+        var currentMatrix = new WebKitCSSMatrix();
+        currentMatrix = currentMatrix
+            .rotate(-90, 0, 0)
+            .rotateAxisAngle(axis.x, axis.y, axis.z, angle)
+            .rotate(90, 0, 0)
+            .multiply(this._originalBoxMatrix);
 
-        var currentMatrix = transformFromScreen.multiply(this._boxMatrix);
         var eulerAngles = WebInspector.Geometry.EulerAngles.fromRotationMatrix(currentMatrix);
         var newOrientation = new WebInspector.DeviceOrientation(-eulerAngles.alpha, -eulerAngles.beta, eulerAngles.gamma);
         this._setDeviceOrientation(newOrientation, WebInspector.SensorsView.DeviceOrientationModificationSource.UserDrag);

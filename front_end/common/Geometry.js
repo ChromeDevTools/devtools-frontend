@@ -206,11 +206,11 @@ WebInspector.Geometry.EulerAngles.prototype = {
      */
     toRotate3DString: function()
     {
-        var gammaAxisY = Math.sin(WebInspector.Geometry.degreesToRadians(this.beta));
+        var gammaAxisY = -Math.sin(WebInspector.Geometry.degreesToRadians(this.beta));
         var gammaAxisZ = Math.cos(WebInspector.Geometry.degreesToRadians(this.beta));
         var axis = {
-            alpha: [0, -1, 0],
-            beta: [1, 0, 0],
+            alpha: [0, 1, 0],
+            beta: [-1, 0, 0],
             gamma: [0, gammaAxisY, gammaAxisZ]
         };
         return "rotate3d(" + axis.alpha.join(",") + "," + this.alpha + "deg) "

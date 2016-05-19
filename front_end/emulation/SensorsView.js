@@ -253,7 +253,7 @@ WebInspector.SensorsView.prototype = {
          */
         function roundAngle(angle)
         {
-            return Math.round(angle*10000)/10000;
+            return Math.round(angle * 10000) / 10000;
         }
 
         if (modificationSource != WebInspector.SensorsView.DeviceOrientationModificationSource.UserInput) {
@@ -321,9 +321,10 @@ WebInspector.SensorsView.prototype = {
         else
             this._stageElement.classList.remove("is-animating");
 
+        // The CSS transform should not depend on matrix3d, which does not interpolate well.
         var matrix = new WebKitCSSMatrix();
         this._boxMatrix = matrix.rotate(-deviceOrientation.beta, deviceOrientation.gamma, -deviceOrientation.alpha);
-        var eulerAngles = WebInspector.Geometry.EulerAngles.fromRotationMatrix(this._boxMatrix);
+        var eulerAngles = new WebInspector.Geometry.EulerAngles(deviceOrientation.alpha, deviceOrientation.beta, deviceOrientation.gamma);
         this._orientationLayer.style.transform = eulerAngles.toRotate3DString();
     },
 
@@ -341,7 +342,7 @@ WebInspector.SensorsView.prototype = {
         var axis, angle;
         if (event.shiftKey) {
             axis = new WebInspector.Geometry.Vector(0, 0, -1);
-            angle = (this._mouseDownVector.x - mouseMoveVector.x)*WebInspector.SensorsView.ShiftDragOrientationSpeed;
+            angle = (this._mouseDownVector.x - mouseMoveVector.x) * WebInspector.SensorsView.ShiftDragOrientationSpeed;
         } else {
             axis = WebInspector.Geometry.crossProduct(this._mouseDownVector, mouseMoveVector);
             angle = WebInspector.Geometry.calculateAngle(this._mouseDownVector, mouseMoveVector);

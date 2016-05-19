@@ -256,6 +256,17 @@ WebInspector.TimelineUIUtils.eventTitle = function(event)
     return title;
 }
 
+/**
+ * @param {!WebInspector.TracingModel.Event} event
+ * @return {?string}
+ */
+WebInspector.TimelineUIUtils.eventURL = function(event)
+{
+    if (event.url)
+        return event.url;
+    var data = event.args["data"] || event.args["beginData"];
+    return data && data.url || null;
+}
 
 /**
  * !Map<!WebInspector.TimelineIRModel.Phases, !{color: string, label: string}>
@@ -973,29 +984,6 @@ WebInspector.TimelineUIUtils._collectAggregatedStatsForRecord = function(record,
 
 /**
  * @param {!WebInspector.TimelineModel.NetworkRequest} request
- * @return {!Array<!{title: string, value: (string|!Element)}>}
- */
-WebInspector.TimelineUIUtils.buildNetworkRequestInfo = function(request)
-{
-    var duration = request.endTime - (request.startTime || -Infinity);
-    var items = [];
-    if (request.url)
-        items.push({ title: WebInspector.UIString("URL"), value: WebInspector.linkifyURLAsNode(request.url) });
-    if (isFinite(duration))
-        items.push({ title: WebInspector.UIString("Duration"), value: Number.millisToString(duration, true) });
-    if (request.requestMethod)
-        items.push({ title: WebInspector.UIString("Request Method"), value: request.requestMethod });
-    if (typeof request.priority === "string") {
-        var priority = WebInspector.uiLabelForPriority(/** @type {!NetworkAgent.ResourcePriority} */ (request.priority));
-        items.push({ title: WebInspector.UIString("Priority"), value: priority });
-    }
-    if (request.mimeType)
-        items.push({ title: WebInspector.UIString("Mime Type"), value: request.mimeType });
-    return items;
-}
-
-/**
- * @param {!WebInspector.TimelineModel.NetworkRequest} request
  * @param {!WebInspector.TimelineModel} model
  * @param {!WebInspector.Linkifier} linkifier
  * @return {!Promise<!DocumentFragment>}
@@ -1005,12 +993,30 @@ WebInspector.TimelineUIUtils.buildNetworkRequestDetails = function(request, mode
     var target = model.target();
     var contentHelper = new WebInspector.TimelineDetailsContentHelper(target, linkifier);
 
-    var info = WebInspector.TimelineUIUtils.buildNetworkRequestInfo(request);
-    for (var item of info) {
-        if (typeof item.value === "string")
-            contentHelper.appendTextRow(item.title, item.value);
-        else
-            contentHelper.appendElementRow(item.title, item.value);
+    var duration = request.endTime - (request.startTime || -Infinity);
+    var items = [];
+    if (request.url)
+        contentHelper.appendElementRow(WebInspector.UIString("URL"), WebInspector.linkifyURLAsNode(request.url));
+    if (isFinite(duration))
+        contentHelper.appendTextRow(WebInspector.UIString("Duration"), Number.millisToString(duration, true));
+    if (request.requestMethod)
+        contentHelper.appendTextRow(WebInspector.UIString("Request Method"), request.requestMethod);
+    if (typeof request.priority === "string") {
+        var priority = WebInspector.uiLabelForPriority(/** @type {!NetworkAgent.ResourcePriority} */ (request.priority));
+        contentHelper.appendTextRow(WebInspector.UIString("Priority"), priority);
+    }
+    if (request.mimeType)
+        contentHelper.appendTextRow(WebInspector.UIString("Mime Type"), request.mimeType);
+
+    var title = WebInspector.UIString("Initiator");
+    var sendRequest = request.children[0];
+    var topFrame = WebInspector.TimelineUIUtils.topStackFrame(sendRequest);
+    if (topFrame) {
+        contentHelper.appendElementRow(title, linkifier.linkifyConsoleCallFrame(target, topFrame));
+    } else if (sendRequest.initiator) {
+        var initiatorURL = WebInspector.TimelineUIUtils.eventURL(sendRequest.initiator);
+        if (initiatorURL)
+            contentHelper.appendElementRow(title, linkifier.linkifyScriptLocation(target, null, initiatorURL, 0));
     }
 
     /**

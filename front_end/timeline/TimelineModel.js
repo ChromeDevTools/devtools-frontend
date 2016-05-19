@@ -824,6 +824,7 @@ WebInspector.TimelineModel.prototype = {
         case recordTypes.ResourceSendRequest:
         case recordTypes.WebSocketCreate:
             event.url = event.args["data"]["url"];
+            event.initiator = eventStack.peekLast() || null;
             break;
 
         case recordTypes.ScheduleStyleRecalculation:

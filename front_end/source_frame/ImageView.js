@@ -104,9 +104,10 @@ WebInspector.ImageView.prototype = {
     _contextMenu: function(event)
     {
         var contextMenu = new WebInspector.ContextMenu(event);
-        contextMenu.appendItem(WebInspector.UIString.capitalize("Copy ^image URL"), this._copyImageURL.bind(this));
+        if (!this._parsedURL.isDataURL())
+            contextMenu.appendItem(WebInspector.UIString.capitalize("Copy ^image URL"), this._copyImageURL.bind(this));
         if (this._imagePreviewElement.src)
-            contextMenu.appendItem(WebInspector.UIString.capitalize("Copy ^image as Data URL"), this._copyImageAsDataURL.bind(this));
+            contextMenu.appendItem(WebInspector.UIString.capitalize("Copy ^image as Data URI"), this._copyImageAsDataURL.bind(this));
         contextMenu.appendItem(WebInspector.UIString.capitalize("Open ^image in ^new ^tab"), this._openInNewTab.bind(this));
         contextMenu.show();
     },

@@ -121,13 +121,12 @@ WebInspector.RequestPreviewView.prototype = {
     },
 
     /**
-     * @return {?WebInspector.XMLView}
+     * @return {?WebInspector.SearchableView}
      */
     _xmlView: function()
     {
-        var content = this._requestContent();
-        var parsedXML = WebInspector.XMLView.parseXML(content, this.request.mimeType);
-        return parsedXML ? new WebInspector.XMLView(parsedXML) : null;
+        var parsedXML = WebInspector.XMLView.parseXML(this._requestContent(), this.request.mimeType);
+        return parsedXML ? WebInspector.XMLView.createSearchableView(parsedXML) : null;
     },
 
     /**

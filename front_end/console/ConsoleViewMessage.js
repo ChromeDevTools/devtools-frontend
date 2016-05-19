@@ -411,12 +411,7 @@ WebInspector.ConsoleViewMessage.prototype = {
         var titleElement = createElement("span");
         if (includePreview && obj.preview) {
             titleElement.classList.add("console-object-preview");
-            var lossless = this._previewFormatter.appendObjectPreview(titleElement, obj.preview);
-            if (lossless) {
-                elem.appendChild(titleElement);
-                titleElement.addEventListener("contextmenu", this._contextMenuEventFired.bind(this, obj), false);
-                return;
-            }
+            this._previewFormatter.appendObjectPreview(titleElement, obj.preview);
         } else {
             if (obj.type === "function") {
                 WebInspector.ObjectPropertiesSection.formatObjectAsFunction(obj, titleElement, false);
@@ -587,11 +582,9 @@ WebInspector.ConsoleViewMessage.prototype = {
         }
 
         var dataGridContainer = element.createChild("span");
-        if (!preview.lossless || !flatValues.length) {
-            element.appendChild(this._formatParameter(table, true, false));
-            if (!flatValues.length)
-                return element;
-        }
+        element.appendChild(this._formatParameter(table, true, false));
+        if (!flatValues.length)
+            return element;
 
         columnNames.unshift(WebInspector.UIString("(index)"));
         var dataGrid = WebInspector.SortableDataGrid.create(columnNames, flatValues);

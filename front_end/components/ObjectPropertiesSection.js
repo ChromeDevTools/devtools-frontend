@@ -301,15 +301,16 @@ WebInspector.ObjectPropertyTreeElement.prototype = {
             this.nameElement.classList.add("properties-accessor-property-name");
         if (this.property.synthetic)
             this.nameElement.classList.add("synthetic-property");
-        if (this.property.symbol)
-            this.nameElement.addEventListener("contextmenu", this._contextMenuFired.bind(this, this.property.symbol), false);
+
+        this._updatePropertyPath();
+        this.nameElement.addEventListener("contextmenu", this._contextMenuFired.bind(this, this.property), false);
 
         var separatorElement = createElementWithClass("span", "object-properties-section-separator");
         separatorElement.textContent = ": ";
 
         if (this.property.value) {
             this.valueElement = WebInspector.ObjectPropertiesSection.createValueElementWithCustomSupport(this.property.value, this.property.wasThrown, this.listItemElement);
-            this.valueElement.addEventListener("contextmenu", this._contextMenuFired.bind(this, this.property.value), false);
+            this.valueElement.addEventListener("contextmenu", this._contextMenuFired.bind(this, this.property), false);
         } else if (this.property.getter) {
             this.valueElement = WebInspector.ObjectPropertyTreeElement.createRemoteObjectAccessorPropertySpan(this.property.parentObject, [this.property.name], this._onInvokeGetterClick.bind(this));
         } else {
@@ -322,10 +323,36 @@ WebInspector.ObjectPropertyTreeElement.prototype = {
         this.listItemElement.appendChildren(this.nameElement, separatorElement, this.valueElement);
     },
 
-    _contextMenuFired: function(value, event)
+    _updatePropertyPath: function()
+    {
+        if (this.nameElement.title)
+            return;
+
+        var useDotNotation = /^(_|\$|[A-Z])(_|\$|[A-Z]|\d)*$/i;
+        var isInteger = /^[1-9]\d*$/;
+        var name = this.property.name;
+        var parentPath = this.parent.nameElement ? this.parent.nameElement.title : "";
+        if (useDotNotation.test(name))
+            this.nameElement.title = parentPath + "." + name;
+        else if (isInteger.test(name))
+            this.nameElement.title = parentPath + "[" + name + "]";
+        else
+            this.nameElement.title = parentPath + "[\"" + name + "\"]";
+    },
+
+    /**
+     * @param {!WebInspector.RemoteObjectProperty} property
+     * @param {!Event} event
+     */
+    _contextMenuFired: function(property, event)
     {
         var contextMenu = new WebInspector.ContextMenu(event);
-        contextMenu.appendApplicableItems(value);
+        if (property.symbol)
+            contextMenu.appendApplicableItems(property.symbol);
+        if (property.value)
+            contextMenu.appendApplicableItems(property.value);
+        var copyPathHandler = InspectorFrontendHost.copyText.bind(InspectorFrontendHost, this.nameElement.title);
+        contextMenu.beforeShow(() => { contextMenu.appendItem(WebInspector.UIString.capitalize("Copy ^property ^path"), copyPathHandler); });
         contextMenu.show();
     },
 

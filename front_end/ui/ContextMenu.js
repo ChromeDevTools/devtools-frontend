@@ -350,16 +350,24 @@ WebInspector.ContextMenu.prototype = {
         return this._id++;
     },
 
+    /**
+     * @param {function()} callback
+     */
+    beforeShow: function(callback)
+    {
+        this._beforeShow = callback;
+    },
+
     show: function()
     {
-        Promise.all(this._pendingPromises).then(populateAndShow.bind(this));
+        Promise.all(this._pendingPromises).then(populate.bind(this)).then(this._innerShow.bind(this));
         WebInspector.ContextMenu._pendingMenu = this;
 
         /**
          * @param {!Array.<!Array.<!WebInspector.ContextMenu.Provider>>} appendCallResults
          * @this {WebInspector.ContextMenu}
          */
-        function populateAndShow(appendCallResults)
+        function populate(appendCallResults)
         {
             if (WebInspector.ContextMenu._pendingMenu !== this)
                 return;
@@ -379,7 +387,6 @@ WebInspector.ContextMenu.prototype = {
 
             this._pendingPromises = [];
             this._pendingTargets = [];
-            this._innerShow();
         }
 
         this._event.consume(true);
@@ -393,6 +400,11 @@ WebInspector.ContextMenu.prototype = {
 
     _innerShow: function()
     {
+        if (typeof this._beforeShow === "function") {
+            this._beforeShow();
+            delete this._beforeShow;
+        }
+
         var menuObject = this._buildDescriptors();
 
         WebInspector._contextMenu = this;

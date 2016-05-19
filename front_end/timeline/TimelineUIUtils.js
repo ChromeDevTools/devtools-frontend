@@ -612,8 +612,6 @@ WebInspector.TimelineUIUtils.buildDetailsNodeForTraceEvent = function(event, tar
      */
     function linkifyLocation(scriptId, url, lineNumber, columnNumber)
     {
-        if (!url)
-            return null;
         // FIXME(62725): stack trace line/column numbers are one-based.
         if (columnNumber)
             --columnNumber;

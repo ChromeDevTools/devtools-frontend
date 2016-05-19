@@ -940,7 +940,7 @@ WebInspector.CSSModel.prototype = {
         function textCallback(error, text)
         {
             if (error || text === null) {
-                WebInspector.console.error("Failed to get text for stylesheet " + styleSheetId + ": " + error)
+                console.error("Failed to get text for stylesheet " + styleSheetId + ": " + error)
                 text = "";
                 // Fall through.
             }

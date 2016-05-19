@@ -74,7 +74,7 @@ WebInspector.FlameChart = function(dataProvider, flameChartDelegate, groupExpans
     this._canvas.addEventListener("mousewheel", this._onMouseWheel.bind(this), false);
     this._canvas.addEventListener("click", this._onClick.bind(this), false);
     this._canvas.addEventListener("keydown", this._onKeyDown.bind(this), false);
-    WebInspector.installInertialDragHandle(this._canvas, this._startCanvasDragging.bind(this), this._canvasDragging.bind(this), this._endCanvasDragging.bind(this), "-webkit-grabbing", null);
+    WebInspector.installDragHandle(this._canvas, this._startCanvasDragging.bind(this), this._canvasDragging.bind(this), this._endCanvasDragging.bind(this), "-webkit-grabbing", null);
     WebInspector.installDragHandle(this._canvas, this._startRangeSelection.bind(this), this._rangeSelectionDragging.bind(this), this._endRangeSelection.bind(this), "text", null);
 
     this._vScrollElement = this.contentElement.createChild("div", "flame-chart-v-scroll");
@@ -632,13 +632,12 @@ WebInspector.FlameChart.prototype = {
     },
 
     /**
-     * @param {number} x
-     * @param {number} y
+     * @param {!MouseEvent} event
      */
-    _updateMaxDragOffset: function(x, y)
+    _updateMaxDragOffset: function(event)
     {
-        var dx = x - this._dragStartX;
-        var dy = y - this._dragStartY;
+        var dx = event.pageX - this._dragStartX;
+        var dy = event.pageY - this._dragStartY;
         var dragOffsetSquared = dx * dx + dy * dy;
         this._maxDragOffsetSquared = Math.max(this._maxDragOffsetSquared, dragOffsetSquared);
     },
@@ -652,12 +651,10 @@ WebInspector.FlameChart.prototype = {
     },
 
     /**
-     * @param {number} x
-     * @param {number} y
      * @param {!MouseEvent} event
      * @return {boolean}
      */
-    _startCanvasDragging: function(x, y, event)
+    _startCanvasDragging: function(event)
     {
         if (event.shiftKey)
             return false;
@@ -665,29 +662,30 @@ WebInspector.FlameChart.prototype = {
             return false;
         this._isDragging = true;
         this._initMaxDragOffset(event);
-        this._dragStartPointX = x;
-        this._dragStartPointY = y;
+        this._dragStartPointX = event.pageX;
+        this._dragStartPointY = event.pageY;
         this._dragStartScrollTop = this._vScrollElement.scrollTop;
+        this._dragStartWindowLeft = this._timeWindowLeft;
+        this._dragStartWindowRight = this._timeWindowRight;
         this._canvas.style.cursor = "";
         this.hideHighlight();
         return true;
     },
 
     /**
-     * @param {number} x
-     * @param {number} y
+     * @param {!MouseEvent} event
      */
-    _canvasDragging: function(x, y)
+    _canvasDragging: function(event)
     {
-        var pixelShift = this._dragStartPointX - x;
-        this._dragStartPointX = x;
+        var pixelShift = this._dragStartPointX - event.pageX;
+        this._dragStartPointX = event.pageX;
         this._muteAnimation = true;
         this._handlePanGesture(pixelShift * this._pixelToTime);
         this._muteAnimation = false;
 
-        var pixelScroll = this._dragStartPointY - y;
+        var pixelScroll = this._dragStartPointY - event.pageY;
         this._vScrollElement.scrollTop = this._dragStartScrollTop + pixelScroll;
-        this._updateMaxDragOffset(x, y);
+        this._updateMaxDragOffset(event);
     },
 
     _endCanvasDragging: function()
@@ -734,7 +732,7 @@ WebInspector.FlameChart.prototype = {
      */
     _rangeSelectionDragging: function(event)
     {
-        this._updateMaxDragOffset(event.pageX, event.pageY);
+        this._updateMaxDragOffset(event);
         var x = Number.constrain(event.pageX + this._selectionOffsetShiftX, 0, this._offsetWidth);
         var start = this._cursorTime(this._selectionStartX);
         var end = this._cursorTime(x);

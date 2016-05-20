@@ -501,6 +501,15 @@ WebInspector.FlameChart.prototype = {
     },
 
     /**
+     * @override
+     * @return {!Array.<!Element>}
+     */
+    elementsToRestoreScrollPositionsFor: function()
+    {
+        return [this._vScrollElement];
+    },
+
+    /**
      * @param {number} entryIndex
      */
     highlightEntry: function(entryIndex)
@@ -1995,6 +2004,7 @@ WebInspector.FlameChart.prototype = {
     reset: function()
     {
         this._vScrollElement.scrollTop = 0;
+        this._scrollTop = 0;
         this._highlightedMarkerIndex = -1;
         this._highlightedEntryIndex = -1;
         this._selectedEntryIndex = -1;

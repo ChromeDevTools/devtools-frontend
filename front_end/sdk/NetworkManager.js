@@ -692,7 +692,7 @@ WebInspector.MultitargetNetworkManager = function()
 
     this._userAgentOverride = "";
     /** @type {!Set<!Protocol.NetworkAgent>} */
-    this._agentsCapableOfEmulation = new Set();
+    this._agents = new Set();
     /** @type {!WebInspector.NetworkManager.Conditions} */
     this._networkConditions = WebInspector.NetworkManager.NoThrottlingConditions;
 }
@@ -716,20 +716,9 @@ WebInspector.MultitargetNetworkManager.prototype = {
             networkAgent.setUserAgentOverride(this._currentUserAgent());
         for (var url of this._blockedURLs)
             networkAgent.addBlockedURL(url);
-
-        networkAgent.canEmulateNetworkConditions(callback.bind(this));
-
-        /**
-         * @this {WebInspector.MultitargetNetworkManager}
-         */
-        function callback(error, canEmulate)
-        {
-            if (error || !canEmulate)
-                return;
-            this._agentsCapableOfEmulation.add(networkAgent);
-            if (this.isThrottling())
-                this._updateNetworkConditions(networkAgent);
-        }
+        this._agents.add(networkAgent);
+        if (this.isThrottling())
+            this._updateNetworkConditions(networkAgent);
     },
 
     /**
@@ -738,7 +727,7 @@ WebInspector.MultitargetNetworkManager.prototype = {
      */
     targetRemoved: function(target)
     {
-        this._agentsCapableOfEmulation.delete(target.networkAgent());
+        this._agents.delete(target.networkAgent());
     },
 
     /**
@@ -763,7 +752,7 @@ WebInspector.MultitargetNetworkManager.prototype = {
     setNetworkConditions: function(conditions)
     {
         this._networkConditions = conditions;
-        for (var agent of this._agentsCapableOfEmulation)
+        for (var agent of this._agents)
             this._updateNetworkConditions(agent);
         this.dispatchEventToListeners(WebInspector.MultitargetNetworkManager.Events.ConditionsChanged);
     },

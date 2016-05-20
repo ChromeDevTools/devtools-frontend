@@ -1569,7 +1569,7 @@
                     { "name": "uploadThroughput", "type": "number", "description": "Maximal aggregated upload throughput." }
                 ],
                 "hidden": true,
-                "handlers": ["browser", "renderer"]
+                "handlers": ["browser"]
             },
             {
                 "name": "setCacheDisabled",

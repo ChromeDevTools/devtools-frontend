@@ -356,11 +356,10 @@
 .timeline-details-view-block {
     flex: none;
     display: flex;
-    box-shadow: #ccc 1px 1px 3px;
     background-color: white;
     flex-direction: column;
-    margin: 3px 4px;
     padding-bottom: 5px;
+    border-bottom: 1px solid #ccc;
 }
 
 .timeline-details-view-row {

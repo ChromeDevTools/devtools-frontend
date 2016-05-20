@@ -16,7 +16,6 @@ module.exports = {
      * Severity: 2 == error, 1 == warning, 0 == off.
      */
     "rules": {
-
         /**
          * Enforced rules
          */
@@ -28,7 +27,6 @@ module.exports = {
         }],
         "comma-style": [2, "last"],
         "wrap-iife": [2, "inside"],
-        "yoda": [2, "never"],
         "spaced-comment": [2, "always", {
             "markers": ["*"]
         }],

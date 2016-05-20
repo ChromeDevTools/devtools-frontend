@@ -12,7 +12,7 @@ import sys
 
 files_to_lint = None
 
-if len(sys.argv) == 2:
+if len(sys.argv) >= 2:
     if sys.argv[1] == "--help":
         print("Usage: %s [file|dir|glob]*" % path.basename(sys.argv[0]))
         print
@@ -21,7 +21,7 @@ if len(sys.argv) == 2:
         sys.exit(0)
 
     else:
-        print "Linting only this path:\n %s" % sys.argv[1:]
+        print("Linting only these files:\n %s" % sys.argv[1:])
         files_to_lint = sys.argv[1:]
 
 
@@ -68,7 +68,7 @@ def which(program):
     return None
 
 
-print "Linting JavaScript with eslint...\n"
+print("Linting JavaScript with eslint...\n")
 
 
 def js_lint(files_list=None):
@@ -76,13 +76,14 @@ def js_lint(files_list=None):
 
     eslint_path = which("eslint")
     if not eslint_path:
-        print "!! Skipping JavaScript linting because eslint is not installed."
-        print "!!   npm install -g eslint"
+        print("!! NOTE: Skipping JavaScript linting because eslint is not installed.")
+        print("!!   npm install -g eslint")
         eslint_errors_found = False  # Linting is opt-in for now, so this is a soft failure
         return eslint_errors_found
 
     if files_list is None:
         files_list = [devtools_frontend_path]
+    files_list = [file_name for file_name in files_list if not file_name.endswith(".eslintrc.js")]
 
     eslintconfig_path = path.join(devtools_path, "front_end/.eslintrc.js")
     eslintignore_path = path.join(devtools_path, "front_end/.eslintignore")
@@ -90,23 +91,23 @@ def js_lint(files_list=None):
         eslint_path,
         "--config", to_platform_path_exact(eslintconfig_path),
         "--ignore-path", to_platform_path_exact(eslintignore_path),
-        " ".join(files_list)
-        ]
+    ] + files_list
 
     eslint_proc = popen(exec_command)
     (eslint_proc_out, _) = eslint_proc.communicate()
     if eslint_proc.returncode != 0:
         eslint_errors_found = True
     else:
-        print "eslint exited successfully"
+        print("eslint exited successfully")
 
-    print eslint_proc_out
+    print(eslint_proc_out)
+    return eslint_errors_found
 
 
 errors_found = js_lint(files_to_lint)
 
 if errors_found:
-    print "ERRORS DETECTED"
+    print("ERRORS DETECTED")
     sys.exit(1)
 else:
-    print "OK"
+    print("OK")

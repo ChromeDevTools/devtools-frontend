@@ -4,5 +4,5 @@
 
 // Release build has Runtime.js bundled.
 if (!self.Runtime)
-    self.importScripts('Runtime.js');
+    self.importScripts("Runtime.js");
 Runtime.startWorker("formatter_worker");

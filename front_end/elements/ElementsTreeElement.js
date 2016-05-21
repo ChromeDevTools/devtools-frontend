@@ -545,16 +545,16 @@ WebInspector.ElementsTreeElement.prototype = {
         var copyMenu = contextMenu.appendSubMenuItem(WebInspector.UIString("Copy"));
         var createShortcut = WebInspector.KeyboardShortcut.shortcutToString;
         var modifier = WebInspector.KeyboardShortcut.Modifiers.CtrlOrMeta;
+        var treeOutline = this.treeOutline;
         var menuItem;
         if (!isShadowRoot)
-            menuItem = copyMenu.appendItem(WebInspector.UIString("Copy outerHTML"), this.treeOutline.performCopyOrCut.bind(this.treeOutline, false, this._node));
+            menuItem = copyMenu.appendItem(WebInspector.UIString("Copy outerHTML"), treeOutline.performCopyOrCut.bind(treeOutline, false, this._node));
             menuItem.setShortcut(createShortcut("V", modifier));
         if (this._node.nodeType() === Node.ELEMENT_NODE)
             copyMenu.appendItem(WebInspector.UIString.capitalize("Copy selector"), this._copyCSSPath.bind(this));
         if (!isShadowRoot)
             copyMenu.appendItem(WebInspector.UIString("Copy XPath"), this._copyXPath.bind(this));
         if (!isShadowRoot) {
-            var treeOutline = this.treeOutline;
             menuItem = copyMenu.appendItem(WebInspector.UIString("Cut element"), treeOutline.performCopyOrCut.bind(treeOutline, true, this._node), !this.hasEditableNode());
             menuItem.setShortcut(createShortcut("X", modifier));
             menuItem = copyMenu.appendItem(WebInspector.UIString("Copy element"), treeOutline.performCopyOrCut.bind(treeOutline, false, this._node));
@@ -564,12 +564,16 @@ WebInspector.ElementsTreeElement.prototype = {
         }
 
         contextMenu.appendSeparator();
-        menuItem = contextMenu.appendCheckboxItem(WebInspector.UIString("Hide element"), this.treeOutline.toggleHideElement.bind(this.treeOutline, this._node), this.treeOutline.isToggledToHidden(this._node));
+        menuItem = contextMenu.appendCheckboxItem(WebInspector.UIString("Hide element"), treeOutline.toggleHideElement.bind(treeOutline, this._node), treeOutline.isToggledToHidden(this._node));
         menuItem.setShortcut(WebInspector.shortcutRegistry.shortcutTitleForAction("elements.hide-element"));
 
 
         if (isEditable)
             contextMenu.appendItem(WebInspector.UIString("Delete element"), this.remove.bind(this));
+        contextMenu.appendSeparator();
+
+        contextMenu.appendItem(WebInspector.UIString("Expand all"), this.expandRecursively.bind(this));
+        contextMenu.appendItem(WebInspector.UIString("Collapse all"), this.collapseRecursively.bind(this));
         contextMenu.appendSeparator();
     },
 

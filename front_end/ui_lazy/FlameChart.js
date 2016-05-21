@@ -1950,6 +1950,10 @@ WebInspector.FlameChart.prototype = {
     {
         this._totalHeight = this._levelToHeight(this._dataProvider.maxStackDepth());
         this._vScrollContent.style.height = this._totalHeight + "px";
+        if (this._scrollTop + this._offsetHeight > this._totalHeight) {
+            this._scrollTop = Math.max(0, this._totalHeight - this._offsetHeight);
+            this._vScrollElement.scrollTop = this._scrollTop;
+        }
     },
 
     onResize: function()

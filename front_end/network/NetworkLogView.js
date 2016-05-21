@@ -1496,7 +1496,7 @@ WebInspector.NetworkLogView.prototype = {
      */
     _matchRequest: function(request)
     {
-        var re = this._searchRegExp;
+        var re = this._searchRegex;
         if (!re)
             return false;
         return re.test(request.name()) || (this._networkLogLargeRowsSetting.get() && re.test(request.path()));
@@ -1546,7 +1546,7 @@ WebInspector.NetworkLogView.prototype = {
         var request = node.request();
         if (reveal)
             WebInspector.Revealer.reveal(request);
-        var highlightedSubstringChanges = node.highlightMatchedSubstring(this._searchRegExp);
+        var highlightedSubstringChanges = node.highlightMatchedSubstring(this._searchRegex);
         this._highlightedSubstringChanges.push(highlightedSubstringChanges);
 
         this._currentMatchedRequestNode = node;
@@ -1565,7 +1565,7 @@ WebInspector.NetworkLogView.prototype = {
         var query = searchConfig.query;
         var currentMatchedRequestNode = this._currentMatchedRequestNode;
         this._clearSearchMatchedList();
-        this._searchRegExp = createPlainTextSearchRegex(query, "i");
+        this._searchRegex = createPlainTextSearchRegex(query, "i");
 
         /** @type {!Array.<!WebInspector.NetworkDataGridNode>} */
         var nodes = this._dataGrid.rootNode().children;
@@ -1679,13 +1679,17 @@ WebInspector.NetworkLogView.prototype = {
     _createTextFilter: function(text)
     {
         var negative = false;
+        /** @type {?RegExp} */
+        var regex;
         if (!this._textFilterUI.isRegexChecked() && text[0] === "-" && text.length > 1) {
             negative = true;
             text = text.substring(1);
+            regex = new RegExp(text.escapeForRegExp(), "i");
+        } else {
+            regex = this._textFilterUI.regex();
         }
-        var regexp = this._textFilterUI.regex();
 
-        var filter = WebInspector.NetworkLogView._requestNameOrPathFilter.bind(null, regexp);
+        var filter = WebInspector.NetworkLogView._requestNameOrPathFilter.bind(null, regex);
         if (negative)
             filter = WebInspector.NetworkLogView._negativeFilter.bind(null, filter);
         return filter;
@@ -1809,7 +1813,7 @@ WebInspector.NetworkLogView.prototype = {
      */
     searchCanceled: function()
     {
-        delete this._searchRegExp;
+        delete this._searchRegex;
         this._clearSearchMatchedList();
         this.dispatchEventToListeners(WebInspector.NetworkLogView.EventTypes.SearchCountUpdated, 0);
     },

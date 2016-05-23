@@ -132,6 +132,15 @@ WebInspector.Drawer.prototype = {
     },
 
     /**
+     * @override
+     * @return {!Element}
+     */
+    defaultFocusedElement: function()
+    {
+        return this._tabbedPane.defaultFocusedElement();
+    },
+
+    /**
      * @return {?string}
      */
     selectedViewId: function()

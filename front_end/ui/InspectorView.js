@@ -409,6 +409,8 @@ WebInspector.InspectorView.prototype = {
      */
     defaultFocusedElement: function()
     {
+        if (this._drawer.hasFocus())
+            return this._drawer.defaultFocusedElement();
         return this._currentPanel ? this._currentPanel.defaultFocusedElement() : null;
     },
 

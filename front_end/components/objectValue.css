@@ -46,7 +46,7 @@
 .object-value-node,
 .object-value-array {
     position: relative;
-    vertical-align: top;
+    vertical-align: baseline;
     color: inherit;
     display: inline-block;
 }

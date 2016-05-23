@@ -122,6 +122,10 @@
 }
 } /* media */
 
+.console-message > .outline-disclosure li.parent {
+    margin-top: 0;
+}
+
 .console-message > .outline-disclosure li.parent::before {
     top: 0;
 }
@@ -451,4 +455,8 @@
 
 .console-view-object-properties-section:not(.expanded) .info-note {
     display: none;
+}
+
+.console-view-object-properties-section {
+    padding: 0px;
 }

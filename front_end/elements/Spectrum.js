@@ -90,7 +90,7 @@ WebInspector.Spectrum = function()
     // HEX display.
     this._hexContainer = this.contentElement.createChild("div", "spectrum-text spectrum-text-hex source-code");
     this._hexValue = this._hexContainer.createChild("input", "spectrum-text-value");
-    this._hexValue.maxLength = 7;
+    this._hexValue.maxLength = 9;
     this._hexValue.addEventListener("keydown", this._inputChanged.bind(this), false);
     this._hexValue.addEventListener("input", this._inputChanged.bind(this), false);
     this._hexValue.addEventListener("mousewheel", this._inputChanged.bind(this), false);
@@ -165,8 +165,8 @@ WebInspector.Spectrum = function()
         var hsva = this._hsv.slice();
         hsva[3] = Number.constrain(newAlpha, 0, 1);
         var colorFormat = undefined;
-        if (hsva[3] !== 1 && (this._colorFormat === WebInspector.Color.Format.ShortHEX || this._colorFormat === WebInspector.Color.Format.HEX || this._colorFormat === WebInspector.Color.Format.Nickname))
-            colorFormat = WebInspector.Color.Format.RGB;
+        if (hsva[3] !== 1 && this._colorFormat === WebInspector.Color.Format.Nickname)
+            colorFormat = WebInspector.Color.Format.HEX;
         this._innerSetColor(hsva, "", colorFormat, WebInspector.Spectrum._ChangeSource.Other);
     }
 
@@ -584,11 +584,16 @@ WebInspector.Spectrum.prototype = {
         if (colorString !== undefined)
             this._colorString = colorString;
         if (colorFormat !== undefined) {
-            console.assert(colorFormat !== WebInspector.Color.Format.Original, "Spectrum's color format cannot be Original");
-            if (colorFormat === WebInspector.Color.Format.RGBA)
-                colorFormat = WebInspector.Color.Format.RGB;
-            else if (colorFormat === WebInspector.Color.Format.HSLA)
-                colorFormat = WebInspector.Color.Format.HSL;
+            var cf = WebInspector.Color.Format;
+            console.assert(colorFormat !== cf.Original, "Spectrum's color format cannot be Original");
+            if (colorFormat === cf.RGBA)
+                colorFormat = cf.RGB;
+            else if (colorFormat === cf.HSLA)
+                colorFormat = cf.HSL;
+            else if (colorFormat === cf.HEXA)
+                colorFormat = cf.HEX;
+            else if (colorFormat === cf.ShortHEXA)
+                colorFormat = cf.ShortHEX;
             this._colorFormat = colorFormat;
         }
 
@@ -631,14 +636,23 @@ WebInspector.Spectrum.prototype = {
         if (colorString)
             return colorString;
 
-        if (this._colorFormat === cf.Nickname || this._colorFormat === cf.ShortHEX) {
+        if (this._colorFormat === cf.Nickname) {
             colorString = color.asString(cf.HEX);
             if (colorString)
                 return colorString;
         }
 
-        console.assert(color.hasAlpha());
-        return this._colorFormat === cf.HSL ? /** @type {string} */(color.asString(cf.HSLA)) : /** @type {string} */(color.asString(cf.RGBA));
+        if (this._colorFormat === cf.ShortHEX)
+            colorString = color.asString(color.detectHEXFormat());
+        else if (this._colorFormat === cf.HEX)
+            colorString = color.asString(color.hasAlpha() ? cf.HEXA : cf.HEX);
+        else if (this._colorFormat === cf.HSL)
+            colorString = color.asString(cf.HSLA);
+        else
+            colorString = color.asString(cf.RGBA);
+
+        console.assert(colorString);
+        return colorString || "";
     },
 
     _updateHelperLocations: function()
@@ -672,10 +686,11 @@ WebInspector.Spectrum.prototype = {
         if (this._colorFormat === cf.HEX || this._colorFormat === cf.ShortHEX || this._colorFormat === cf.Nickname) {
             this._hexContainer.hidden = false;
             this._displayContainer.hidden = true;
-            if (this._colorFormat === cf.ShortHEX && this._color().canBeShortHex())
-                this._hexValue.value = this._color().asString(cf.ShortHEX);
+            if (this._colorFormat === cf.ShortHEX)
+                this._hexValue.value = this._color().asString(this._color().detectHEXFormat());
             else
-                this._hexValue.value = this._color().asString(cf.HEX);
+                // Don't use short HEX if original was not in that format.
+                this._hexValue.value = this._color().asString(this._color().hasAlpha() ? cf.HEXA : cf.HEX);
         } else {
             // RGBA, HSLA display.
             this._hexContainer.hidden = true;
@@ -802,7 +817,7 @@ WebInspector.Spectrum.prototype = {
         var format = cf.RGB;
         if (this._colorFormat === cf.RGB)
             format = cf.HSL;
-        else if (this._colorFormat === cf.HSL && !this._color().hasAlpha())
+        else if (this._colorFormat === cf.HSL)
             format = this._originalFormat === cf.ShortHEX ? cf.ShortHEX : cf.HEX;
         this._innerSetColor(undefined, "", format, WebInspector.Spectrum._ChangeSource.Other);
     },
@@ -849,7 +864,7 @@ WebInspector.Spectrum.prototype = {
             return;
         var hsv = color.hsva();
         if (this._colorFormat === cf.HEX || this._colorFormat === cf.ShortHEX)
-            this._colorFormat = color.canBeShortHex() ? cf.ShortHEX : cf.HEX;
+            this._colorFormat = color.detectHEXFormat();
         this._innerSetColor(hsv, colorString, undefined, WebInspector.Spectrum._ChangeSource.Input);
     },
 

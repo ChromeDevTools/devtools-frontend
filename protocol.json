@@ -4352,6 +4352,16 @@
                 "handlers": ["browser"]
             },
             {
+                "name": "dispatchSyncEvent",
+                "parameters": [
+                    { "name": "origin", "type": "string" },
+                    { "name": "registrationId", "type": "string" },
+                    { "name": "tag", "type": "string" },
+                    { "name": "lastChance", "type": "boolean" }
+                ],
+                "handlers": ["browser"]
+            },
+            {
                 "name": "getTargetInfo",
                 "parameters": [
                     { "name": "targetId", "$ref": "TargetID" }

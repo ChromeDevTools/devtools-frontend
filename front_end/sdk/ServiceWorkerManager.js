@@ -178,6 +178,20 @@ WebInspector.ServiceWorkerManager.prototype = {
     },
 
     /**
+     * @param {string} registrationId
+     * @param {string} tag
+     * @param {boolean} lastChance
+     */
+    dispatchSyncEvent: function(registrationId, tag, lastChance)
+    {
+        var registration = this._registrations.get(registrationId);
+        if (!registration)
+            return;
+        var origin = WebInspector.ParsedURL.extractOrigin(registration.scopeURL);
+        this._agent.dispatchSyncEvent(origin, registrationId, tag, lastChance);
+    },
+
+    /**
      * @param {!ServiceWorkerAgent.TargetID} targetId
      */
     activateTarget: function(targetId)

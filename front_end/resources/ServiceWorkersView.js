@@ -145,6 +145,9 @@ WebInspector.ServiceWorkersView.Section = function(manager, section, registratio
     this._pushButton = new WebInspector.ToolbarButton(WebInspector.UIString("Emulate push event"), undefined, WebInspector.UIString("Push"));
     this._pushButton.addEventListener("click", this._pushButtonClicked.bind(this));
     this._toolbar.appendToolbarItem(this._pushButton);
+    this._syncButton = new WebInspector.ToolbarButton(WebInspector.UIString("Emulate background sync event"), undefined, WebInspector.UIString("Sync"));
+    this._syncButton.addEventListener("click", this._syncButtonClicked.bind(this));
+    this._toolbar.appendToolbarItem(this._syncButton);
     this._deleteButton = new WebInspector.ToolbarButton(WebInspector.UIString("Unregister service worker"), undefined, WebInspector.UIString("Unregister"));
     this._deleteButton.addEventListener("click", this._unregisterButtonClicked.bind(this));
     this._toolbar.appendToolbarItem(this._deleteButton);
@@ -297,8 +300,15 @@ WebInspector.ServiceWorkersView.Section.prototype = {
 
     _pushButtonClicked: function()
     {
-        var data = "Test push message from DevTools."
+        var data = "Test push message from DevTools.";
         this._manager.deliverPushMessage(this._registration.id, data);
+    },
+
+    _syncButtonClicked: function()
+    {
+        var tag = "test-tag-from-devtools";
+        var lastChance = true;
+        this._manager.dispatchSyncEvent(this._registration.id, tag, lastChance);
     },
 
     /**

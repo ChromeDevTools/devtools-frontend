@@ -55,7 +55,7 @@ def _CheckDevtoolsStyle(input_api, output_api):
         if process.returncode != 0:
             return [output_api.PresubmitError(out)]
         if "NOTE" in out:
-            return [output_api.PresubmitPromptWarning(out)]
+            return [output_api.PresubmitNotifyResult(out)]
     return []
 
 

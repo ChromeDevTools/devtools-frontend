@@ -558,6 +558,7 @@ WebInspector.SettingsController.Revealer.prototype = {
             if (!WebInspector.GenericSettingsTab.isSettingVisible(extension))
                 return;
             if (extension.descriptor()["settingName"] === setting.name) {
+                InspectorFrontendHost.bringToFront();
                 WebInspector._settingsController.showSettingsScreen("preferences");
                 success = true;
             }
@@ -570,6 +571,7 @@ WebInspector.SettingsController.Revealer.prototype = {
         {
             var settings = extension.descriptor()["settings"];
             if (settings && settings.indexOf(setting.name) !== -1) {
+                InspectorFrontendHost.bringToFront();
                 WebInspector._settingsController.showSettingsScreen("preferences");
                 success = true;
             }
@@ -582,6 +584,7 @@ WebInspector.SettingsController.Revealer.prototype = {
         {
             var settings = extension.descriptor()["settings"];
             if (settings && settings.indexOf(setting.name) !== -1) {
+                InspectorFrontendHost.bringToFront();
                 WebInspector._settingsController.showSettingsScreen(extension.descriptor()["name"]);
                 success = true;
             }

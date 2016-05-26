@@ -410,8 +410,10 @@ WebInspector.DeviceModeView.prototype = {
             WebInspector.DOMModel.unmuteHighlight();
             WebInspector.inspectorView.restore();
 
-            if (error)
+            if (error) {
+                console.error(error);
                 return;
+            }
 
             // Create a canvas to splice the images together.
             var canvas = createElement("canvas");
@@ -422,6 +424,7 @@ WebInspector.DeviceModeView.prototype = {
             var promise = Promise.resolve();
             if (this._model.outlineImage())
                 promise = promise.then(paintImage.bind(null, this._model.outlineImage(), outlineRect));
+            promise = promise.then(drawBorder);
             if (this._model.screenImage())
                 promise = promise.then(paintImage.bind(null, this._model.screenImage(), screenRect));
             promise.then(paintScreenshot.bind(this));
@@ -449,15 +452,19 @@ WebInspector.DeviceModeView.prototype = {
                 }
             }
 
-            /**
-             * @this {WebInspector.DeviceModeView}
-             */
-            function paintScreenshot()
+            function drawBorder()
             {
                 ctx.strokeStyle = "hsla(0, 0%, 98%, 0.5)";
                 ctx.lineWidth = 1;
                 ctx.setLineDash([10, 10]);
                 ctx.strokeRect(screenRect.left + 1, screenRect.top + 1, screenRect.width - 2, screenRect.height - 2);
+            }
+
+            /**
+             * @this {WebInspector.DeviceModeView}
+             */
+            function paintScreenshot()
+            {
                 var pageImage = new Image();
                 pageImage.src = "data:image/png;base64," + content;
                 ctx.drawImage(pageImage,

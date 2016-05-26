@@ -1011,7 +1011,7 @@ function installBackwardsCompatibility()
         throw new Error("getPropertyCSSValue is undefined");
     }
 
-    // Support for legacy (<M41) frontends. Remove in M45.
+    // Support for legacy (<M41) frontends.
     window.CSSStyleDeclaration.prototype.getPropertyCSSValue = getValue;
 
     function CSSPrimitiveValue()
@@ -1020,7 +1020,7 @@ function installBackwardsCompatibility()
     CSSPrimitiveValue.CSS_PX = 5;
     window.CSSPrimitiveValue = CSSPrimitiveValue;
 
-    // Support for legacy (<M44) frontends. Remove in M48.
+    // Support for legacy (<M44) frontends.
     var styleElement = window.document.createElement("style");
     styleElement.type = "text/css";
     styleElement.textContent = "html /deep/ * { min-width: 0; min-height: 0; }";
@@ -1031,7 +1031,7 @@ function installBackwardsCompatibility()
     styleElement.textContent += "\nhtml /deep/ .cm-breakpoint.cm-breakpoint-conditional .CodeMirror-linenumber { border-style: solid !important; }";
     window.document.head.appendChild(styleElement);
 
-    // Support for legacy (<M49) frontends. Remove in M52.
+    // Support for legacy (<M49) frontends.
     Event.prototype.deepPath = undefined;
 }
 

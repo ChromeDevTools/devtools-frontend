@@ -70,7 +70,7 @@ WebInspector.ExecutionContextSelector.prototype = {
         var newContext = /** @type {?WebInspector.ExecutionContext} */ (event.data);
         if (newContext) {
             this._context.setFlavor(WebInspector.Target, newContext.target());
-            if (!this._contextIsGoingAway)
+            if (!this._ignoreContextChanged)
                 this._lastSelectedContextId = this._contextPersistentId(newContext);
         }
     },
@@ -99,12 +99,45 @@ WebInspector.ExecutionContextSelector.prototype = {
         if (!executionContexts.length)
             return;
 
-        var newContext = executionContexts[0];
-        for (var i = 1; i < executionContexts.length; ++i) {
-            if (executionContexts[i].isDefault)
+        var newContext = null;
+        for (var i = 0; i < executionContexts.length && !newContext; ++i) {
+            if (this._shouldSwitchToContext(executionContexts[i]))
                 newContext = executionContexts[i];
         }
-        this._context.setFlavor(WebInspector.ExecutionContext, newContext);
+        for (var i = 0; i < executionContexts.length && !newContext; ++i) {
+            if (this._isMainFrameContext(executionContexts[i]))
+                newContext = executionContexts[i];
+        }
+        this._ignoreContextChanged = true;
+        this._context.setFlavor(WebInspector.ExecutionContext, newContext || executionContexts[0]);
+        this._ignoreContextChanged = false;
+    },
+
+    /**
+     * @param {!WebInspector.ExecutionContext} executionContext
+     * @return {boolean}
+     */
+    _shouldSwitchToContext: function(executionContext)
+    {
+        if (this._lastSelectedContextId && this._lastSelectedContextId === this._contextPersistentId(executionContext))
+            return true;
+        if (!this._lastSelectedContextId && this._isMainFrameContext(executionContext))
+            return true;
+        return false;
+    },
+
+    /**
+     * @param {!WebInspector.ExecutionContext} executionContext
+     * @return {boolean}
+     */
+    _isMainFrameContext: function(executionContext)
+    {
+        if (!executionContext.isDefault)
+            return false;
+        var frame = executionContext.target().resourceTreeModel.frameForId(executionContext.frameId);
+        if (frame && frame.isMainFrame())
+            return true;
+        return false;
     },
 
     /**
@@ -113,8 +146,11 @@ WebInspector.ExecutionContextSelector.prototype = {
     _onExecutionContextCreated: function(event)
     {
         var executionContext = /** @type {!WebInspector.ExecutionContext} */ (event.data);
-        if (!this._context.flavor(WebInspector.ExecutionContext) || (this._lastSelectedContextId && this._lastSelectedContextId === this._contextPersistentId(executionContext)))
+        if (!this._context.flavor(WebInspector.ExecutionContext) || this._shouldSwitchToContext(executionContext)) {
+            this._ignoreContextChanged = true;
             this._context.setFlavor(WebInspector.ExecutionContext, executionContext);
+            this._ignoreContextChanged = false;
+        }
     },
 
     /**
@@ -131,18 +167,29 @@ WebInspector.ExecutionContextSelector.prototype = {
     {
         var targets = this._targetManager.targetsWithJSContext();
         var newContext = null;
-        for (var i = 0; i < targets.length; ++i) {
+        for (var i = 0; i < targets.length && !newContext; ++i) {
             if (targets[i].isServiceWorker())
                 continue;
             var executionContexts = targets[i].runtimeModel.executionContexts();
-            if (executionContexts.length) {
-                newContext = executionContexts[0];
-                break;
+            for (var executionContext of executionContexts) {
+                if (this._isMainFrameContext(executionContext)) {
+                    newContext = executionContext;
+                    break;
+                }
             }
         }
-        this._contextIsGoingAway = true;
+        if (!newContext) {
+            for (var i = 0; i < targets.length && !newContext; ++i) {
+                var executionContexts = targets[i].runtimeModel.executionContexts();
+                if (executionContexts.length) {
+                    newContext = executionContexts[0];
+                    break;
+                }
+            }
+        }
+        this._ignoreContextChanged = true;
         this._context.setFlavor(WebInspector.ExecutionContext, newContext);
-        this._contextIsGoingAway = false;
+        this._ignoreContextChanged = false;
     }
 }
 

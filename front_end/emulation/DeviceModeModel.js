@@ -453,7 +453,7 @@ WebInspector.DeviceModeModel.prototype = {
                 this._appliedUserAgentType = this._device.touch() ? WebInspector.DeviceModeModel.UA.Mobile : WebInspector.DeviceModeModel.UA.MobileNoTouch;
             else
                 this._appliedUserAgentType = this._device.touch() ? WebInspector.DeviceModeModel.UA.DesktopTouch : WebInspector.DeviceModeModel.UA.Desktop;
-            this._applyDeviceMetrics(new Size(orientation.width, orientation.height), this._mode.insets, outline, this._scaleSetting.get(), this._device.deviceScaleFactor, this._device.mobile(), this._mode.orientation == WebInspector.EmulatedDevice.Horizontal ? "landscapePrimary" : "portraitPrimary", resetPageScaleFactor);
+            this._applyDeviceMetrics(new Size(orientation.width, orientation.height), this._mode.insets, outline, this._scaleSetting.get(), this._device.deviceScaleFactor, this._device.mobile(), this._mode.orientation === WebInspector.EmulatedDevice.Horizontal ? "landscapePrimary" : "portraitPrimary", resetPageScaleFactor);
             this._applyUserAgent(this._device.userAgent);
             this._applyTouch(this._device.touch(), this._device.mobile());
         } else if (this._type === WebInspector.DeviceModeModel.Type.None) {

@@ -207,7 +207,7 @@ WebInspector.TimelineProfileTree.eventURL = function(event)
  */
 WebInspector.TimelineProfileTree.eventStackFrame = function(event)
 {
-    if (event.name == WebInspector.TimelineModel.RecordType.JSFrame)
+    if (event.name === WebInspector.TimelineModel.RecordType.JSFrame)
         return event.args["data"];
     var topFrame = event.stackTrace && event.stackTrace[0];
     if (topFrame)

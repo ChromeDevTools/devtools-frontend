@@ -1697,7 +1697,7 @@ WebInspector.CodeMirrorPositionHandle.prototype = {
      */
     equal: function(positionHandle)
     {
-        return positionHandle._lineHandle === this._lineHandle && positionHandle._columnNumber == this._columnNumber && positionHandle._codeMirror === this._codeMirror;
+        return positionHandle._lineHandle === this._lineHandle && positionHandle._columnNumber === this._columnNumber && positionHandle._codeMirror === this._codeMirror;
     }
 }
 

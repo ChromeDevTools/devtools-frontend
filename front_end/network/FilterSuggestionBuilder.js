@@ -53,7 +53,7 @@ WebInspector.FilterSuggestionBuilder.prototype = {
     {
         var text = input.value;
         var end = input.selectionEnd;
-        if (end != text.length)
+        if (end !== text.length)
             return null;
 
         var start = input.selectionStart;
@@ -189,7 +189,7 @@ WebInspector.FilterSuggestionBuilder.prototype = {
             var negative = key.startsWith("-");
             if (negative)
                 key = key.substring(1);
-            if (this._keys.indexOf(key) == -1) {
+            if (this._keys.indexOf(key) === -1) {
                 text.push(part);
                 continue;
             }

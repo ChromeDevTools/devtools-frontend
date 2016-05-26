@@ -491,7 +491,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
      */
     _isIdentifier: function(tokenType)
     {
-        return tokenType.startsWith("js-variable") || tokenType.startsWith("js-property") || tokenType == "js-def";
+        return tokenType.startsWith("js-variable") || tokenType.startsWith("js-property") || tokenType === "js-def";
     },
 
     _getPopoverAnchor: function(element, event)
@@ -591,7 +591,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
         function showObjectPopover(result, wasThrown)
         {
             var target = WebInspector.context.flavor(WebInspector.Target);
-            if (selectedCallFrame.target() != target || !debuggerModel.isPaused() || !result) {
+            if (selectedCallFrame.target() !== target || !debuggerModel.isPaused() || !result) {
                 this._popoverHelper.hidePopover();
                 return;
             }
@@ -1064,7 +1064,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
         var lineNumber = eventData.lineNumber;
         var eventObject = eventData.event;
 
-        if (eventObject.button != 0 || eventObject.altKey || eventObject.ctrlKey || eventObject.metaKey)
+        if (eventObject.button !== 0 || eventObject.altKey || eventObject.ctrlKey || eventObject.metaKey)
             return;
 
         this._toggleBreakpoint(lineNumber, eventObject.shiftKey);

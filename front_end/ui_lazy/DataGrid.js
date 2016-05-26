@@ -395,7 +395,7 @@ WebInspector.DataGrid.prototype = {
             }
         }
 
-        if (textBeforeEditing == newText) {
+        if (textBeforeEditing === newText) {
             this._editingCancelled(element);
             moveToNextIfNeeded.call(this, false);
             return;

@@ -97,7 +97,7 @@ WebInspector.RuntimeModel.prototype = {
     _executionContextCreated: function(context)
     {
         // The private script context should be hidden behind an experiment.
-        if (context.name == WebInspector.RuntimeModel._privateScript && !context.origin && !Runtime.experiments.isEnabled("privateScriptInspection")) {
+        if (context.name === WebInspector.RuntimeModel._privateScript && !context.origin && !Runtime.experiments.isEnabled("privateScriptInspection")) {
             return;
         }
         var executionContext = new WebInspector.ExecutionContext(this.target(), context.id, context.name, context.origin, context.isDefault, context.frameId);
@@ -499,7 +499,7 @@ WebInspector.ExecutionContext.prototype = {
         if (dotNotation || bracketNotation)
             expressionString = expressionString.substr(0, lastIndex);
 
-        if (expressionString && parseInt(expressionString, 10) == expressionString) {
+        if (expressionString && !isNaN(expressionString)) {
             // User is entering float value, do not suggest anything.
             completionsReadyCallback([]);
             return;

@@ -998,6 +998,7 @@ function installBackwardsCompatibility()
     function getValue(property)
     {
         // Note that |property| comes from another context, so we can't use === here.
+        // eslint-disable-next-line eqeqeq
         if (property == "padding-left") {
             return {
                 /**

@@ -773,7 +773,7 @@ WebInspector.Spectrum.prototype = {
             var v = lastV;
             v = lastV + currentSlope * dS;
 
-            v = approach(V, v, s == 0);
+            v = approach(V, v, s === 0);
             if (v === null)
                 break;
 

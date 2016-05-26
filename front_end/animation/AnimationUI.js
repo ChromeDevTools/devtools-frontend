@@ -305,7 +305,7 @@ WebInspector.AnimationUI.prototype = {
      */
     _mouseDown: function(mouseEventType, keyframeIndex, event)
     {
-        if (event.buttons == 2)
+        if (event.buttons === 2)
             return false;
         if (this._svg.enclosingNodeOrSelfWithClass("animation-node-removed"))
             return false;

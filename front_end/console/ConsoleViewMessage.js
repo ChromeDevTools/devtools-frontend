@@ -555,7 +555,7 @@ WebInspector.ConsoleViewMessage.prototype = {
             const maxColumnsToRender = 20;
             for (var j = 0; j < rowPreview.properties.length; ++j) {
                 var cellProperty = rowPreview.properties[j];
-                var columnRendered = columnNames.indexOf(cellProperty.name) != -1;
+                var columnRendered = columnNames.indexOf(cellProperty.name) !== -1;
                 if (!columnRendered) {
                     if (columnNames.length === maxColumnsToRender)
                         continue;
@@ -1284,7 +1284,7 @@ WebInspector.ConsoleViewMessage.prototype = {
             start = links[i].positionRight;
         }
 
-        if (start != string.length)
+        if (start !== string.length)
             formattedResult.appendChild(WebInspector.linkifyStringAsFragment(string.substring(start)));
 
         return formattedResult;

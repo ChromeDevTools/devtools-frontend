@@ -130,7 +130,7 @@ WebInspector.FilePathScoreFunction.prototype = {
         var isWordStart = this._testWordStart(data, j);
         var isFileName = j > this._fileNameIndex;
         var isPathTokenStart = j === 0 || data[j - 1] === "/";
-        var isCapsMatch = query[i] === data[j] && query[i] == this._queryUpperCase[i];
+        var isCapsMatch = query[i] === data[j] && query[i] === this._queryUpperCase[i];
         var score = 10;
         if (isPathTokenStart)
             score += 4;

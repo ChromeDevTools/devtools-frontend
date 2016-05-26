@@ -116,7 +116,7 @@ WebInspector.CustomPreviewSection.prototype = {
             return createElement("span");
         }
         var element = createElement(/** @type {string} */ (tagName));
-        if ((typeof object[0] == "object") && !Array.isArray(object[0])) {
+        if ((typeof object[0] === "object") && !Array.isArray(object[0])) {
             var attributes = object.shift();
             for (var key in attributes) {
                 var value = attributes[key];

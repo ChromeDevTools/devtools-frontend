@@ -256,7 +256,7 @@ WebInspector.SensorsView.prototype = {
             return Math.round(angle * 10000) / 10000;
         }
 
-        if (modificationSource != WebInspector.SensorsView.DeviceOrientationModificationSource.UserInput) {
+        if (modificationSource !== WebInspector.SensorsView.DeviceOrientationModificationSource.UserInput) {
             this._alphaSetter(roundAngle(deviceOrientation.alpha));
             this._betaSetter(roundAngle(deviceOrientation.beta));
             this._gammaSetter(roundAngle(deviceOrientation.gamma));

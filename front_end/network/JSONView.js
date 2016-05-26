@@ -133,7 +133,7 @@ WebInspector.JSONView._findBrackets = function(text, open, close)
     var start = text.indexOf(open);
     var end = text.lastIndexOf(close);
     var length = end - start - 1;
-    if (start == -1 || end == -1 || end < start)
+    if (start === -1 || end === -1 || end < start)
         length = -1;
     return {start: start, end: end, length: length};
 }

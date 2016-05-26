@@ -196,7 +196,7 @@ WebInspector.MediaQueryInspector.prototype = {
         queryModels.sort(compareModels);
         queryModels = this._squashAdjacentEqual(queryModels);
 
-        var allEqual = this._cachedQueryModels && this._cachedQueryModels.length == queryModels.length;
+        var allEqual = this._cachedQueryModels && this._cachedQueryModels.length === queryModels.length;
         for (var i = 0; allEqual && i < queryModels.length; ++i)
             allEqual = allEqual && this._cachedQueryModels[i].equals(queryModels[i]);
         if (allEqual)

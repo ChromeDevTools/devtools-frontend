@@ -389,7 +389,7 @@ WebInspector.ElementsPanel.prototype = {
             var executionContexts = selectedNode.target().runtimeModel.executionContexts();
             var nodeFrameId = selectedNode.frameId();
             for (var context of executionContexts) {
-                if (context.frameId == nodeFrameId) {
+                if (context.frameId === nodeFrameId) {
                     WebInspector.context.setFlavor(WebInspector.ExecutionContext, context);
                     break;
                 }

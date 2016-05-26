@@ -395,7 +395,7 @@ WebInspector.NetworkDispatcher.prototype = {
             return;
 
         networkRequest.resourceSize += dataLength;
-        if (encodedDataLength != -1)
+        if (encodedDataLength !== -1)
             networkRequest.increaseTransferSize(encodedDataLength);
         networkRequest.endTime = time;
 

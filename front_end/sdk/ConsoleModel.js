@@ -121,7 +121,7 @@ WebInspector.ConsoleModel.prototype = {
      */
     _isBlacklisted: function(msg)
     {
-        if (msg.source != WebInspector.ConsoleMessage.MessageSource.Network || msg.level != WebInspector.ConsoleMessage.MessageLevel.Error || !msg.url || !msg.url.startsWith("chrome-extension"))
+        if (msg.source !== WebInspector.ConsoleMessage.MessageSource.Network || msg.level !== WebInspector.ConsoleMessage.MessageLevel.Error || !msg.url || !msg.url.startsWith("chrome-extension"))
             return false;
 
         // ignore Chromecast's cast_sender spam

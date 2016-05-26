@@ -132,7 +132,7 @@ WebInspector.SidebarPaneTitle.prototype = {
     _collapse: function()
     {
         this.element.classList.remove("expanded");
-        if (this._pane.element.parentNode == this.element.parentNode)
+        if (this._pane.element.parentNode === this.element.parentNode)
             this._pane.detach();
     },
 

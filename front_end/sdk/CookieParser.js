@@ -445,7 +445,7 @@ WebInspector.Cookies.cookieMatchesResourceURL = function(cookie, resourceURL)
     if (!url || !WebInspector.Cookies.cookieDomainMatchesResourceDomain(cookie.domain(), url.host))
         return false;
     return (url.path.startsWith(cookie.path())
-        && (!cookie.port() || url.port == cookie.port())
+        && (!cookie.port() || url.port === cookie.port())
         && (!cookie.secure() || url.scheme === "https"));
 }
 

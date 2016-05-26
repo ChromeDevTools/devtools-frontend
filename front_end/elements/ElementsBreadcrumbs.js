@@ -307,7 +307,7 @@ WebInspector.ElementsBreadcrumbs.prototype = {
                 // with a tie going to child crumbs.
                 var startIndex = 0;
                 var endIndex = crumbs.childNodes.length - 1;
-                while (startIndex != significantIndex || endIndex != significantIndex) {
+                while (startIndex !== significantIndex || endIndex !== significantIndex) {
                     var startDistance = significantIndex - startIndex;
                     var endDistance = endIndex - significantIndex;
                     if (startDistance >= endDistance)

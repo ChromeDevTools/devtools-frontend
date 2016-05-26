@@ -56,7 +56,7 @@ WebInspector.NetworkDataGridNode.prototype = {
         var resourceType = this._request.resourceType();
         var simpleType = resourceType.name();
 
-        if (resourceType == WebInspector.resourceTypes.Other || resourceType == WebInspector.resourceTypes.Image)
+        if (resourceType === WebInspector.resourceTypes.Other || resourceType === WebInspector.resourceTypes.Image)
             simpleType = mimeType.replace(/^(application|image)\//, "");
 
         return simpleType;
@@ -528,7 +528,7 @@ WebInspector.NetworkDataGridNode.prototype = {
         if (labelAfter && (graphElementOffsetWidth * ((100 - this._percentages.end) / 100)) < (labelRightElementOffsetWidth + 10))
             var rightHidden = true;
 
-        if (barLeftElementOffsetWidth == barRightElementOffsetWidth) {
+        if (barLeftElementOffsetWidth === barRightElementOffsetWidth) {
             // The left/right label data are the same, so a before/after label can be replaced by an on-bar label.
             if (labelBefore && !labelAfter)
                 leftHidden = true;
@@ -718,7 +718,7 @@ WebInspector.NetworkDataGridNode.RequestPropertyComparator = function(propertyNa
 {
     var aValue = a._request[propertyName];
     var bValue = b._request[propertyName];
-    if (aValue == bValue)
+    if (aValue === bValue)
         return a._request.indentityCompare(b._request);
     return aValue > bValue ? 1 : -1;
 }
@@ -746,7 +746,7 @@ WebInspector.NetworkDataGridNode.ResponseHeaderNumberComparator = function(prope
 {
     var aValue = (a._request.responseHeaderValue(propertyName) !== undefined) ? parseFloat(a._request.responseHeaderValue(propertyName)) : -Infinity;
     var bValue = (b._request.responseHeaderValue(propertyName) !== undefined) ? parseFloat(b._request.responseHeaderValue(propertyName)) : -Infinity;
-    if (aValue == bValue)
+    if (aValue === bValue)
         return a._request.indentityCompare(b._request);
     return aValue > bValue ? 1 : -1;
 }
@@ -763,7 +763,7 @@ WebInspector.NetworkDataGridNode.ResponseHeaderDateComparator = function(propert
     var bHeader = b._request.responseHeaderValue(propertyName);
     var aValue = aHeader ? new Date(aHeader).getTime() : -Infinity;
     var bValue = bHeader ? new Date(bHeader).getTime() : -Infinity;
-    if (aValue == bValue)
+    if (aValue === bValue)
         return a._request.indentityCompare(b._request);
     return aValue > bValue ? 1 : -1;
 }

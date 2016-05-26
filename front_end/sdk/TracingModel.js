@@ -555,7 +555,7 @@ WebInspector.TracingModel.Event.compareStartTime = function(a, b)
  */
 WebInspector.TracingModel.Event.compareStartAndEndTime = function(a, b)
 {
-    return a.startTime - b.startTime || (b.endTime != undefined && a.endTime !== undefined && b.endTime - a.endTime) || 0;
+    return a.startTime - b.startTime || (b.endTime !== undefined && a.endTime !== undefined && b.endTime - a.endTime) || 0;
 }
 
 /**

@@ -172,7 +172,7 @@ WebInspector.IDBDataView.prototype = {
         if (Array.isArray(keyPath)) {
             keyColumnHeaderFragment.createTextChild("[");
             for (var i = 0; i < keyPath.length; ++i) {
-                if (i != 0)
+                if (i !== 0)
                     keyColumnHeaderFragment.createTextChild(", ");
                 keyColumnHeaderFragment.appendChild(this._keyPathStringFragment(keyPath[i]));
             }

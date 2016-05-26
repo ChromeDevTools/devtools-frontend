@@ -446,9 +446,9 @@ WebInspector.ProfileDataGridTree.prototype = {
                 }
 
                 if (equalTo) {
-                    if (profileDataGridNode.selfPercent == queryNumber)
+                    if (profileDataGridNode.selfPercent === queryNumber)
                         profileDataGridNode._searchMatchedSelfColumn = true;
-                    if (profileDataGridNode.totalPercent == queryNumber)
+                    if (profileDataGridNode.totalPercent === queryNumber)
                         profileDataGridNode._searchMatchedTotalColumn = true;
                 }
             } else if (millisecondsUnits || secondsUnits) {
@@ -465,9 +465,9 @@ WebInspector.ProfileDataGridTree.prototype = {
                 }
 
                 if (equalTo) {
-                    if (profileDataGridNode.self == queryNumberMilliseconds)
+                    if (profileDataGridNode.self === queryNumberMilliseconds)
                         profileDataGridNode._searchMatchedSelfColumn = true;
-                    if (profileDataGridNode.total == queryNumberMilliseconds)
+                    if (profileDataGridNode.total === queryNumberMilliseconds)
                         profileDataGridNode._searchMatchedTotalColumn = true;
                 }
             }

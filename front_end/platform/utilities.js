@@ -257,7 +257,7 @@ String.prototype.compareTo = function(other)
 String.prototype.removeURLFragment = function()
 {
     var fragmentIndex = this.indexOf("#");
-    if (fragmentIndex == -1)
+    if (fragmentIndex === -1)
         fragmentIndex = this.length;
     return this.substring(0, fragmentIndex);
 }
@@ -1174,7 +1174,7 @@ function createPlainTextSearchRegex(query, flags)
     var regex = "";
     for (var i = 0; i < query.length; ++i) {
         var c = query.charAt(i);
-        if (regexSpecialCharacters.indexOf(c) != -1)
+        if (regexSpecialCharacters.indexOf(c) !== -1)
             regex += "\\";
         regex += c;
     }

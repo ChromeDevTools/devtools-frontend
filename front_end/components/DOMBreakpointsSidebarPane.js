@@ -438,7 +438,7 @@ WebInspector.DOMBreakpointsSidebarPane.prototype = {
 
     onContentReady: function()
     {
-        for (var i = 0; i != this._proxies.length; i++)
+        for (var i = 0; i < this._proxies.length; i++)
             this._proxies[i].onContentReady();
     },
 

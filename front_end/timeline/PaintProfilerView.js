@@ -129,7 +129,7 @@ WebInspector.PaintProfilerView.prototype = {
                 heightByCategory[categoryName] = (heightByCategory[categoryName] || 0) + sample;
             }
             ++i;
-            if (i - lastBarIndex == this._samplesPerBar || i == sampleCount) {
+            if (i - lastBarIndex === this._samplesPerBar || i === sampleCount) {
                 // Normalize by total number of samples accumulated.
                 var factor = this._profiles.length * (i - lastBarIndex);
                 lastBarTime /= factor;

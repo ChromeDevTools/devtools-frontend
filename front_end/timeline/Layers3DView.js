@@ -792,7 +792,7 @@ WebInspector.Layers3DView.prototype = {
     {
         var selection = this._selectionFromEventPoint(event);
         if (selection) {
-            if (selection.type() == WebInspector.LayerView.Selection.Type.Tile)
+            if (selection.type() === WebInspector.LayerView.Selection.Type.Tile)
                 this.dispatchEventToListeners(WebInspector.Layers3DView.Events.PaintProfilerRequested, selection.traceEvent());
             else if (selection.layer())
                 this.dispatchEventToListeners(WebInspector.Layers3DView.Events.LayerSnapshotRequested, selection.layer());

@@ -134,8 +134,8 @@ WebInspector.EventListenersWidget.prototype = {
     _showFrameworkListenersChanged: function()
     {
         var dispatchFilter = this._dispatchFilterBySetting.get();
-        var showPassive = dispatchFilter == WebInspector.EventListenersWidget.DispatchFilterBy.All || dispatchFilter == WebInspector.EventListenersWidget.DispatchFilterBy.Passive;
-        var showBlocking = dispatchFilter == WebInspector.EventListenersWidget.DispatchFilterBy.All || dispatchFilter == WebInspector.EventListenersWidget.DispatchFilterBy.Blocking;
+        var showPassive = dispatchFilter === WebInspector.EventListenersWidget.DispatchFilterBy.All || dispatchFilter === WebInspector.EventListenersWidget.DispatchFilterBy.Passive;
+        var showBlocking = dispatchFilter === WebInspector.EventListenersWidget.DispatchFilterBy.All || dispatchFilter === WebInspector.EventListenersWidget.DispatchFilterBy.Blocking;
         this._eventListenersView.showFrameworkListeners(this._showFrameworkListenersSetting.get(), showPassive, showBlocking);
     },
 

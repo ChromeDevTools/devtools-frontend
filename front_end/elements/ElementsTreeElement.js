@@ -46,7 +46,7 @@ WebInspector.ElementsTreeElement = function(node, elementCloseTag)
 
     this._elementCloseTag = elementCloseTag;
 
-    if (this._node.nodeType() == Node.ELEMENT_NODE && !elementCloseTag)
+    if (this._node.nodeType() === Node.ELEMENT_NODE && !elementCloseTag)
         this._canAddAttributes = true;
     this._searchQuery = null;
     this._expandedChildrenLimit = WebInspector.ElementsTreeElement.InitialChildrenLimit;
@@ -464,10 +464,10 @@ WebInspector.ElementsTreeElement.prototype = {
      */
     _startEditingTarget: function(eventTarget)
     {
-        if (this.treeOutline.selectedDOMNode() != this._node)
+        if (this.treeOutline.selectedDOMNode() !== this._node)
             return false;
 
-        if (this._node.nodeType() != Node.ELEMENT_NODE && this._node.nodeType() != Node.TEXT_NODE)
+        if (this._node.nodeType() !== Node.ELEMENT_NODE && this._node.nodeType() !== Node.TEXT_NODE)
             return false;
 
         var textNode = eventTarget.enclosingNodeOrSelfWithClass("webkit-html-text-node");
@@ -1085,7 +1085,7 @@ WebInspector.ElementsTreeElement.prototype = {
     {
         var treeElement = this.parent;
         var depth = 0;
-        while (treeElement != null) {
+        while (treeElement !== null) {
             depth++;
             treeElement = treeElement.parent;
         }

@@ -132,7 +132,7 @@ WebInspector.SecurityPanel.prototype = {
     _onResponseReceived: function(event)
     {
         var request = /** @type {!WebInspector.NetworkRequest} */ (event.data);
-        if (request.resourceType() == WebInspector.resourceTypes.Document)
+        if (request.resourceType() === WebInspector.resourceTypes.Document)
             this._lastResponseReceivedForLoaderId.set(request.loaderId, request);
     },
 
@@ -159,7 +159,7 @@ WebInspector.SecurityPanel.prototype = {
             var originState = this._origins.get(origin);
             var oldSecurityState = originState.securityState;
             originState.securityState = this._securityStateMin(oldSecurityState, securityState);
-            if (oldSecurityState != originState.securityState) {
+            if (oldSecurityState !== originState.securityState) {
                 this._sidebarTree.updateOrigin(origin, securityState);
                 if (originState.originView)
                     originState.originView.setSecurityState(securityState);

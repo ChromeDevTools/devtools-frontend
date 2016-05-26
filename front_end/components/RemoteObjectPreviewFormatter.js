@@ -87,7 +87,7 @@ WebInspector.RemoteObjectPreviewFormatter.prototype = {
 
             var property = properties[i];
             var name = property.name;
-            if (!isArray || name != i || i >= arrayLength) {
+            if (!isArray || name !== String(i) || i >= arrayLength) {
                 if (/^\s|\s$|^$|\n/.test(name))
                     parentElement.createChild("span", "name").createTextChildren("\"", name.replace(/\n/g, "\u21B5"), "\"");
                 else

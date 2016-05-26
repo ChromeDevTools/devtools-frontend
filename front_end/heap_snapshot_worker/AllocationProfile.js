@@ -131,7 +131,7 @@ WebInspector.AllocationProfile.prototype = {
             if (info.totalCount === 0)
                 continue;
             var nodeId = this._nextNodeId++;
-            var isRoot = i == 0;
+            var isRoot = i === 0;
             result.push(this._serializeNode(
                 nodeId,
                 info,

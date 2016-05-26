@@ -77,7 +77,7 @@ WebInspector.ScopeChainSidebarPane.prototype = {
                 emptyPlaceholder = WebInspector.UIString("No Variables");
                 if (thisObject)
                     extraProperties.push(new WebInspector.RemoteObjectProperty("this", thisObject));
-                if (i == 0) {
+                if (i === 0) {
                     var details = callFrame.debuggerModel.debuggerPausedDetails();
                     var exception = details.exception();
                     if (exception)

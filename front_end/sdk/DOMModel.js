@@ -705,7 +705,7 @@ WebInspector.DOMNode.prototype = {
     _renumber: function()
     {
         this._childNodeCount = this._children.length;
-        if (this._childNodeCount == 0) {
+        if (this._childNodeCount === 0) {
             this.firstChild = null;
             this.lastChild = null;
             return;
@@ -1694,7 +1694,7 @@ WebInspector.DOMModel.prototype = {
                 callback(null);
                 return;
             }
-            if (nodeIds.length != 1)
+            if (nodeIds.length !== 1)
                 return;
 
             callback(this.nodeForId(nodeIds[0]));

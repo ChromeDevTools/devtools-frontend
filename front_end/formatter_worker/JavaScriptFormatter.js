@@ -281,7 +281,7 @@ WebInspector.JavaScriptFormatter.prototype = {
                 return "";
             if (node.parent && node.parent.type === "DoWhileStatement")
                 return "";
-            if (node.parent && node.parent.type === "TryStatement" && node.parent.block == node)
+            if (node.parent && node.parent.type === "TryStatement" && node.parent.block === node)
                 return "s";
             if (node.parent && node.parent.type === "CatchClause" && node.parent.parent.finalizer)
                 return "s";

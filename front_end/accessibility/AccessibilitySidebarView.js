@@ -258,7 +258,7 @@ WebInspector.AXComputedTextSubPane.prototype = {
 
         var propertiesArray = /** @type {!Array.<!AccessibilityAgent.AXProperty> } */ (axNode.properties);
         for (var property of propertiesArray) {
-            if (property.name == AccessibilityAgent.AXWidgetAttributes.Valuetext) {
+            if (property.name === AccessibilityAgent.AXWidgetAttributes.Valuetext) {
                 addProperty(property);
                 break;
             }

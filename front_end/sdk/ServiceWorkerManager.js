@@ -638,14 +638,14 @@ WebInspector.TargetInfo.prototype = {
      */
     isWebContents: function()
     {
-        return this.type == "web_contents";
+        return this.type === "web_contents";
     },
     /**
      * @return {boolean}
      */
     isFrame: function()
     {
-        return this.type == "frame";
+        return this.type === "frame";
     },
 }
 
@@ -701,7 +701,7 @@ WebInspector.ServiceWorkerVersion.prototype = {
      */
     isStoppedAndRedundant: function()
     {
-        return this.runningStatus == ServiceWorkerAgent.ServiceWorkerVersionRunningStatus.Stopped && this.status == ServiceWorkerAgent.ServiceWorkerVersionStatus.Redundant;
+        return this.runningStatus === ServiceWorkerAgent.ServiceWorkerVersionRunningStatus.Stopped && this.status === ServiceWorkerAgent.ServiceWorkerVersionStatus.Redundant;
     },
 
     /**
@@ -709,7 +709,7 @@ WebInspector.ServiceWorkerVersion.prototype = {
      */
     isStopped: function()
     {
-        return this.runningStatus == ServiceWorkerAgent.ServiceWorkerVersionRunningStatus.Stopped;
+        return this.runningStatus === ServiceWorkerAgent.ServiceWorkerVersionRunningStatus.Stopped;
     },
 
     /**
@@ -717,7 +717,7 @@ WebInspector.ServiceWorkerVersion.prototype = {
      */
     isStarting: function()
     {
-        return this.runningStatus == ServiceWorkerAgent.ServiceWorkerVersionRunningStatus.Starting;
+        return this.runningStatus === ServiceWorkerAgent.ServiceWorkerVersionRunningStatus.Starting;
     },
 
     /**
@@ -725,7 +725,7 @@ WebInspector.ServiceWorkerVersion.prototype = {
      */
     isRunning: function()
     {
-        return this.runningStatus == ServiceWorkerAgent.ServiceWorkerVersionRunningStatus.Running;
+        return this.runningStatus === ServiceWorkerAgent.ServiceWorkerVersionRunningStatus.Running;
     },
 
     /**
@@ -733,7 +733,7 @@ WebInspector.ServiceWorkerVersion.prototype = {
      */
     isStopping: function()
     {
-        return this.runningStatus == ServiceWorkerAgent.ServiceWorkerVersionRunningStatus.Stopping;
+        return this.runningStatus === ServiceWorkerAgent.ServiceWorkerVersionRunningStatus.Stopping;
     },
 
     /**
@@ -741,7 +741,7 @@ WebInspector.ServiceWorkerVersion.prototype = {
      */
     isNew: function()
     {
-        return this.status == ServiceWorkerAgent.ServiceWorkerVersionStatus.New;
+        return this.status === ServiceWorkerAgent.ServiceWorkerVersionStatus.New;
     },
 
     /**
@@ -749,7 +749,7 @@ WebInspector.ServiceWorkerVersion.prototype = {
      */
     isInstalling: function()
     {
-        return this.status == ServiceWorkerAgent.ServiceWorkerVersionStatus.Installing;
+        return this.status === ServiceWorkerAgent.ServiceWorkerVersionStatus.Installing;
     },
 
     /**
@@ -757,7 +757,7 @@ WebInspector.ServiceWorkerVersion.prototype = {
      */
     isInstalled: function()
     {
-        return this.status == ServiceWorkerAgent.ServiceWorkerVersionStatus.Installed;
+        return this.status === ServiceWorkerAgent.ServiceWorkerVersionStatus.Installed;
     },
 
     /**
@@ -765,7 +765,7 @@ WebInspector.ServiceWorkerVersion.prototype = {
      */
     isActivating: function()
     {
-        return this.status == ServiceWorkerAgent.ServiceWorkerVersionStatus.Activating;
+        return this.status === ServiceWorkerAgent.ServiceWorkerVersionStatus.Activating;
     },
 
     /**
@@ -773,7 +773,7 @@ WebInspector.ServiceWorkerVersion.prototype = {
      */
     isActivated: function()
     {
-        return this.status == ServiceWorkerAgent.ServiceWorkerVersionStatus.Activated;
+        return this.status === ServiceWorkerAgent.ServiceWorkerVersionStatus.Activated;
     },
 
     /**
@@ -781,7 +781,7 @@ WebInspector.ServiceWorkerVersion.prototype = {
      */
     isRedundant: function()
     {
-        return this.status == ServiceWorkerAgent.ServiceWorkerVersionStatus.Redundant;
+        return this.status === ServiceWorkerAgent.ServiceWorkerVersionStatus.Redundant;
     },
 
     /**

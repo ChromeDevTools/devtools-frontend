@@ -383,7 +383,7 @@ WebInspector.WatchExpression.prototype = {
     _onSectionClick: function(event)
     {
         event.consume(true);
-        if (event.detail == 1) {
+        if (event.detail === 1) {
             this._preventClickTimeout = setTimeout(handleClick.bind(this), 333);
         } else {
             clearTimeout(this._preventClickTimeout);

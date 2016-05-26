@@ -125,7 +125,7 @@ WebInspector.Geometry.CubicBezier.parse = function(text)
 {
     var keywordValues = WebInspector.Geometry.CubicBezier.KeywordValues;
     var value = text.toLowerCase().replace(/\s+/g, "");
-    if (Object.keys(keywordValues).indexOf(value) != -1)
+    if (Object.keys(keywordValues).indexOf(value) !== -1)
         return WebInspector.Geometry.CubicBezier.parse(keywordValues[value]);
     var bezierRegex = /^cubic-bezier\(([^,]+),([^,]+),([^,]+),([^,]+)\)$/;
     var match = value.match(bezierRegex);
@@ -406,7 +406,7 @@ Insets.prototype = {
      */
     isEqual: function(insets)
     {
-        return !!insets && this.left === insets.left && this.top === insets.top && this.right == insets.right && this.bottom == insets.bottom;
+        return !!insets && this.left === insets.left && this.top === insets.top && this.right === insets.right && this.bottom === insets.bottom;
     }
 }
 
@@ -433,7 +433,7 @@ WebInspector.Rect.prototype = {
      */
     isEqual: function(rect)
     {
-        return !!rect && this.left === rect.left && this.top === rect.top && this.width == rect.width && this.height == rect.height;
+        return !!rect && this.left === rect.left && this.top === rect.top && this.width === rect.width && this.height === rect.height;
     },
 
     /**

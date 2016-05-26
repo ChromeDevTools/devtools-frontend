@@ -219,9 +219,9 @@ WebInspector.TextRange.prototype = {
     {
         var relative = this.clone();
 
-        if (this.startLine == line)
+        if (this.startLine === line)
             relative.startColumn -= column;
-        if (this.endLine == line)
+        if (this.endLine === line)
             relative.endColumn -= column;
 
         relative.startLine -= line;

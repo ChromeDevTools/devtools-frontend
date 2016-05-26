@@ -772,7 +772,7 @@ WebInspector.SplitWidget.prototype = {
     hasCustomResizer: function()
     {
         var elements = this._resizerWidget.elements();
-        return elements.length > 1 || (elements.length == 1 && elements[0] !== this._resizerElement);
+        return elements.length > 1 || (elements.length === 1 && elements[0] !== this._resizerElement);
     },
 
     /**

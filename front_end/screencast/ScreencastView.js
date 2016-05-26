@@ -746,7 +746,7 @@ WebInspector.ScreencastView.prototype = {
 
     _navigationUrlKeyUp: function(event)
     {
-        if (event.keyIdentifier != "Enter")
+        if (event.keyIdentifier !== "Enter")
             return;
         var url = this._navigationUrl.value;
         if (!url)
@@ -770,8 +770,8 @@ WebInspector.ScreencastView.prototype = {
         this._historyIndex = currentIndex;
         this._historyEntries = entries;
 
-        this._navigationBack.disabled = currentIndex == 0;
-        this._navigationForward.disabled = currentIndex == (entries.length - 1);
+        this._navigationBack.disabled = currentIndex === 0;
+        this._navigationForward.disabled = currentIndex === (entries.length - 1);
 
         var url = entries[currentIndex].url;
         var match = url.match(WebInspector.ScreencastView._HttpRegex);

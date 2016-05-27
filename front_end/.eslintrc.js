@@ -36,22 +36,13 @@ module.exports = {
             "getWithoutSet": false,
             "setWithoutGet": false
         }],
-        "handle-callback-err": 2,
-        "id-blacklist": 2,
-        "id-match": 2,
-        "max-nested-callbacks": 2,
 
         // anti-patterns
         "no-with": 2,
         "no-multi-str": 2,
         "no-caller": 2,
-        "no-implicit-coercion": [2, {
-            "boolean": false,
-            "number": false,
-            "string": false
-        }],
         "no-implied-eval": 2,
-        "no-label-var": 2,
+        "no-labels": 2,
         "no-new-object": 2,
         "no-octal-escape": 2,
         "no-self-compare": 2,
@@ -60,43 +51,33 @@ module.exports = {
         // es2015 features
         "no-useless-constructor": 2,
         "require-yield": 2,
-        "yield-star-spacing": 2,
-        "sort-imports": 2,
         "template-curly-spacing": [2, "never"],
 
         // spacing details
         "space-infix-ops": 2,
         "space-in-parens": [2, "never"],
-        "space-before-function-paren": [ 2, "never" ],
+        "space-before-function-paren": [2, "never"],
         "no-whitespace-before-property": 2,
-        "space-unary-ops": [2, {
-            "words": false,
-            "nonwords": false
-        }],
-        "keyword-spacing": [2,{
+        "keyword-spacing": [2, {
             "overrides": {
-            "if": {"after": true},
-            "else": {"after": true},
-            "for": {"after": true},
-            "while": {"after": true},
-            "do": {"after": true},
-            "switch": {"after": true},
-            "return": {"after": true}
+                "if": {"after": true},
+                "else": {"after": true},
+                "for": {"after": true},
+                "while": {"after": true},
+                "do": {"after": true},
+                "switch": {"after": true},
+                "return": {"after": true}
             }
         }],
-        "arrow-spacing": [
-            2,
-            {
-                "after": true,
-                "before": true
-            }
-        ],
+        "arrow-spacing": [2, {
+            "after": true,
+            "before": true
+        }],
 
         // file whitespace
-        "no-multiple-empty-lines": 2,
+        "no-multiple-empty-lines": [2, {"max": 2}],
         "no-mixed-spaces-and-tabs": 2,
         "no-trailing-spaces": 2,
-        "eol-last": 2,
         "linebreak-style": [ 2, "unix" ],
 
 
@@ -118,6 +99,5 @@ module.exports = {
 
         // no-implicit-globals will prevent accidental globals
         "no-implicit-globals": [0]
-
     }
 };

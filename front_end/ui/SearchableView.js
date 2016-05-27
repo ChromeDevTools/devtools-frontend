@@ -417,6 +417,11 @@ WebInspector.SearchableView.prototype = {
      */
     _onSearchKeyDown: function(event)
     {
+        if (isEscKey(event)) {
+            this.closeSearch();
+            event.consume(true);
+            return;
+        }
         if (!isEnterKey(event))
             return;
 

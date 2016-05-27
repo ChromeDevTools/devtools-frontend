@@ -107,6 +107,7 @@ WebInspector.ESTreeWalker._walkOrder = {
     "CatchClause": ["param", "body"],
     "ClassBody": ["body"],
     "ClassDeclaration": ["id", "superClass", "body"],
+    "ClassExpression": ["id", "superClass", "body"],
     "ConditionalExpression": ["test", "consequent", "alternate"],
     "ContinueStatement": ["label"],
     "DebuggerStatement": [],

@@ -71,7 +71,7 @@ WebInspector.PropertyChangeHighlighter.prototype = {
                     { offset: 0.5, backgroundColor: "rgba(158, 54, 153, 1)", color: "white" },
                     { offset: 0.9, backgroundColor: "rgba(158, 54, 153, 0)", color: "initial" },
                     { offset: 1, backgroundColor: "white", color: "initial" }
-                ], { duration : 400, easing: "cubic-bezier(0, 0, 0.2, 1)" });
+            ], { duration : 400, easing: "cubic-bezier(0, 0, 0.2, 1)" });
         }
     },
 
@@ -133,6 +133,6 @@ WebInspector.PropertyRevealHighlighter.prototype = {
                 { offset: 0, backgroundColor: "rgba(255, 255, 0, 0.2)"},
                 { offset: 0.1, backgroundColor: "rgba(255, 255, 0, 0.7)"},
                 { offset: 1, backgroundColor: "transparent"}
-            ], { duration : 2000, easing: "cubic-bezier(0, 0, 0.2, 1)" });
+        ], { duration : 2000, easing: "cubic-bezier(0, 0, 0.2, 1)" });
     },
 }

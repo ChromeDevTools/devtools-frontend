@@ -206,15 +206,15 @@ WebInspector.ApplicationCacheItemsView.prototype = {
         }
         function localeCompare(field, resource1, resource2)
         {
-             return sortDirection * (resource1[field] + "").localeCompare(resource2[field] + "");
+            return sortDirection * (resource1[field] + "").localeCompare(resource2[field] + "");
         }
 
         var comparator;
         switch (parseInt(this._dataGrid.sortColumnIdentifier(), 10)) {
-            case 0: comparator = localeCompare.bind(null, "name"); break;
-            case 1: comparator = localeCompare.bind(null, "type"); break;
-            case 2: comparator = numberCompare.bind(null, "size"); break;
-            default: localeCompare.bind(null, "resource"); // FIXME: comparator = ?
+        case 0: comparator = localeCompare.bind(null, "name"); break;
+        case 1: comparator = localeCompare.bind(null, "type"); break;
+        case 2: comparator = numberCompare.bind(null, "size"); break;
+        default: localeCompare.bind(null, "resource"); // FIXME: comparator = ?
         }
 
         this._resources.sort(comparator);

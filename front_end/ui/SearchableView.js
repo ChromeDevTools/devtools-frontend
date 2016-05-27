@@ -527,7 +527,7 @@ WebInspector.SearchableView.prototype = {
         var caseSensitive = this._caseSensitiveButton ? this._caseSensitiveButton.toggled() : false;
         var isRegex = this._regexButton ? this._regexButton.toggled() : false;
         return new WebInspector.SearchableView.SearchConfig(query, caseSensitive, isRegex);
-     },
+    },
 
     _updateSecondRowVisibility: function()
     {

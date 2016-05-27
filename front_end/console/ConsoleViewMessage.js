@@ -153,34 +153,34 @@ WebInspector.ConsoleViewMessage.prototype = {
         if (!this._messageElement) {
             if (consoleMessage.source === WebInspector.ConsoleMessage.MessageSource.ConsoleAPI) {
                 switch (consoleMessage.type) {
-                    case WebInspector.ConsoleMessage.MessageType.Trace:
-                        this._messageElement = this._format(consoleMessage.parameters || ["console.trace()"]);
-                        break;
-                    case WebInspector.ConsoleMessage.MessageType.Clear:
-                        this._messageElement = createTextNode(WebInspector.UIString("Console was cleared"));
-                        this._formattedMessage.classList.add("console-info");
-                        break;
-                    case WebInspector.ConsoleMessage.MessageType.Assert:
-                        var args = [WebInspector.UIString("Assertion failed:")];
-                        if (consoleMessage.parameters)
-                            args = args.concat(consoleMessage.parameters);
-                        this._messageElement = this._format(args);
-                        break;
-                    case WebInspector.ConsoleMessage.MessageType.Dir:
-                        var obj = consoleMessage.parameters ? consoleMessage.parameters[0] : undefined;
-                        var args = ["%O", obj];
-                        this._messageElement = this._format(args);
-                        break;
-                    case WebInspector.ConsoleMessage.MessageType.Profile:
-                    case WebInspector.ConsoleMessage.MessageType.ProfileEnd:
-                        this._messageElement = this._format([consoleMessage.messageText]);
-                        break;
-                    default:
-                        if (consoleMessage.parameters && consoleMessage.parameters.length === 1 && consoleMessage.parameters[0].type === "string")
-                             this._messageElement = this._tryFormatAsError(/** @type {string} */(consoleMessage.parameters[0].value));
+                case WebInspector.ConsoleMessage.MessageType.Trace:
+                    this._messageElement = this._format(consoleMessage.parameters || ["console.trace()"]);
+                    break;
+                case WebInspector.ConsoleMessage.MessageType.Clear:
+                    this._messageElement = createTextNode(WebInspector.UIString("Console was cleared"));
+                    this._formattedMessage.classList.add("console-info");
+                    break;
+                case WebInspector.ConsoleMessage.MessageType.Assert:
+                    var args = [WebInspector.UIString("Assertion failed:")];
+                    if (consoleMessage.parameters)
+                        args = args.concat(consoleMessage.parameters);
+                    this._messageElement = this._format(args);
+                    break;
+                case WebInspector.ConsoleMessage.MessageType.Dir:
+                    var obj = consoleMessage.parameters ? consoleMessage.parameters[0] : undefined;
+                    var args = ["%O", obj];
+                    this._messageElement = this._format(args);
+                    break;
+                case WebInspector.ConsoleMessage.MessageType.Profile:
+                case WebInspector.ConsoleMessage.MessageType.ProfileEnd:
+                    this._messageElement = this._format([consoleMessage.messageText]);
+                    break;
+                default:
+                    if (consoleMessage.parameters && consoleMessage.parameters.length === 1 && consoleMessage.parameters[0].type === "string")
+                        this._messageElement = this._tryFormatAsError(/** @type {string} */(consoleMessage.parameters[0].value));
 
-                        var args = consoleMessage.parameters || [consoleMessage.messageText];
-                        this._messageElement = this._messageElement || this._format(args);
+                    var args = consoleMessage.parameters || [consoleMessage.messageText];
+                    this._messageElement = this._messageElement || this._format(args);
                 }
             } else if (consoleMessage.source === WebInspector.ConsoleMessage.MessageSource.Network) {
                 if (consoleMessage.request) {
@@ -1058,91 +1058,91 @@ WebInspector.ConsoleViewMessage.prototype = {
     {
         var sourceString;
         switch (this._message.source) {
-            case WebInspector.ConsoleMessage.MessageSource.XML:
-                sourceString = "XML";
-                break;
-            case WebInspector.ConsoleMessage.MessageSource.JS:
-                sourceString = "JavaScript";
-                break;
-            case WebInspector.ConsoleMessage.MessageSource.Network:
-                sourceString = "Network";
-                break;
-            case WebInspector.ConsoleMessage.MessageSource.ConsoleAPI:
-                sourceString = "ConsoleAPI";
-                break;
-            case WebInspector.ConsoleMessage.MessageSource.Storage:
-                sourceString = "Storage";
-                break;
-            case WebInspector.ConsoleMessage.MessageSource.AppCache:
-                sourceString = "AppCache";
-                break;
-            case WebInspector.ConsoleMessage.MessageSource.Rendering:
-                sourceString = "Rendering";
-                break;
-            case WebInspector.ConsoleMessage.MessageSource.CSS:
-                sourceString = "CSS";
-                break;
-            case WebInspector.ConsoleMessage.MessageSource.Security:
-                sourceString = "Security";
-                break;
-            case WebInspector.ConsoleMessage.MessageSource.Other:
-                sourceString = "Other";
-                break;
+        case WebInspector.ConsoleMessage.MessageSource.XML:
+            sourceString = "XML";
+            break;
+        case WebInspector.ConsoleMessage.MessageSource.JS:
+            sourceString = "JavaScript";
+            break;
+        case WebInspector.ConsoleMessage.MessageSource.Network:
+            sourceString = "Network";
+            break;
+        case WebInspector.ConsoleMessage.MessageSource.ConsoleAPI:
+            sourceString = "ConsoleAPI";
+            break;
+        case WebInspector.ConsoleMessage.MessageSource.Storage:
+            sourceString = "Storage";
+            break;
+        case WebInspector.ConsoleMessage.MessageSource.AppCache:
+            sourceString = "AppCache";
+            break;
+        case WebInspector.ConsoleMessage.MessageSource.Rendering:
+            sourceString = "Rendering";
+            break;
+        case WebInspector.ConsoleMessage.MessageSource.CSS:
+            sourceString = "CSS";
+            break;
+        case WebInspector.ConsoleMessage.MessageSource.Security:
+            sourceString = "Security";
+            break;
+        case WebInspector.ConsoleMessage.MessageSource.Other:
+            sourceString = "Other";
+            break;
         }
 
         var typeString;
         switch (this._message.type) {
-            case WebInspector.ConsoleMessage.MessageType.Log:
-                typeString = "Log";
-                break;
-            case WebInspector.ConsoleMessage.MessageType.Dir:
-                typeString = "Dir";
-                break;
-            case WebInspector.ConsoleMessage.MessageType.DirXML:
-                typeString = "Dir XML";
-                break;
-            case WebInspector.ConsoleMessage.MessageType.Trace:
-                typeString = "Trace";
-                break;
-            case WebInspector.ConsoleMessage.MessageType.StartGroupCollapsed:
-            case WebInspector.ConsoleMessage.MessageType.StartGroup:
-                typeString = "Start Group";
-                break;
-            case WebInspector.ConsoleMessage.MessageType.EndGroup:
-                typeString = "End Group";
-                break;
-            case WebInspector.ConsoleMessage.MessageType.Assert:
-                typeString = "Assert";
-                break;
-            case WebInspector.ConsoleMessage.MessageType.Result:
-                typeString = "Result";
-                break;
-            case WebInspector.ConsoleMessage.MessageType.Profile:
-            case WebInspector.ConsoleMessage.MessageType.ProfileEnd:
-                typeString = "Profiling";
-                break;
+        case WebInspector.ConsoleMessage.MessageType.Log:
+            typeString = "Log";
+            break;
+        case WebInspector.ConsoleMessage.MessageType.Dir:
+            typeString = "Dir";
+            break;
+        case WebInspector.ConsoleMessage.MessageType.DirXML:
+            typeString = "Dir XML";
+            break;
+        case WebInspector.ConsoleMessage.MessageType.Trace:
+            typeString = "Trace";
+            break;
+        case WebInspector.ConsoleMessage.MessageType.StartGroupCollapsed:
+        case WebInspector.ConsoleMessage.MessageType.StartGroup:
+            typeString = "Start Group";
+            break;
+        case WebInspector.ConsoleMessage.MessageType.EndGroup:
+            typeString = "End Group";
+            break;
+        case WebInspector.ConsoleMessage.MessageType.Assert:
+            typeString = "Assert";
+            break;
+        case WebInspector.ConsoleMessage.MessageType.Result:
+            typeString = "Result";
+            break;
+        case WebInspector.ConsoleMessage.MessageType.Profile:
+        case WebInspector.ConsoleMessage.MessageType.ProfileEnd:
+            typeString = "Profiling";
+            break;
         }
 
         var levelString;
         switch (this._message.level) {
-            case WebInspector.ConsoleMessage.MessageLevel.Log:
-                levelString = "Log";
-                break;
-            case WebInspector.ConsoleMessage.MessageLevel.Warning:
-                levelString = "Warning";
-                break;
-            case WebInspector.ConsoleMessage.MessageLevel.Debug:
-                levelString = "Debug";
-                break;
-            case WebInspector.ConsoleMessage.MessageLevel.Error:
-                levelString = "Error";
-                break;
-            case WebInspector.ConsoleMessage.MessageLevel.RevokedError:
-                levelString = "RevokedError";
-                break;
-            case WebInspector.ConsoleMessage.MessageLevel.Info:
-                levelString = "Info";
-                break;
+        case WebInspector.ConsoleMessage.MessageLevel.Log:
+            levelString = "Log";
+            break;
+        case WebInspector.ConsoleMessage.MessageLevel.Warning:
+            levelString = "Warning";
+            break;
+        case WebInspector.ConsoleMessage.MessageLevel.Debug:
+            levelString = "Debug";
+            break;
+        case WebInspector.ConsoleMessage.MessageLevel.Error:
+            levelString = "Error";
+            break;
+        case WebInspector.ConsoleMessage.MessageLevel.RevokedError:
+            levelString = "RevokedError";
+            break;
+        case WebInspector.ConsoleMessage.MessageLevel.Info:
+            levelString = "Info";
+            break;
         }
 
         return sourceString + " " + typeString + " " + levelString + ": " + this.formattedMessage().textContent + "\n" + this._message.url + " line " + this._message.line;
@@ -1321,7 +1321,7 @@ WebInspector.ConsoleGroupViewMessage.prototype = {
      */
     collapsed: function()
     {
-       return this._collapsed;
+        return this._collapsed;
     },
 
     /**

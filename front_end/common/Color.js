@@ -426,12 +426,12 @@ WebInspector.Color.prototype = {
      * @param {number} alpha
      * @return {!WebInspector.Color}
      */
-     setAlpha: function(alpha)
-     {
-         var rgba = this._rgba.slice();
-         rgba[3] = alpha;
-         return new WebInspector.Color(rgba, WebInspector.Color.Format.RGBA);
-     }
+    setAlpha: function(alpha)
+    {
+        var rgba = this._rgba.slice();
+        rgba[3] = alpha;
+        return new WebInspector.Color(rgba, WebInspector.Color.Format.RGBA);
+    }
 }
 
 /**

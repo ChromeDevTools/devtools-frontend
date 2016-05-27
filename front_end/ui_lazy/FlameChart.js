@@ -1513,7 +1513,7 @@ WebInspector.FlameChart.prototype = {
      */
     _labelWidthForGroup: function(context, group)
     {
-       return this._measureWidth(context, group.name) + this._expansionArrowIndent * (group.style.nestingLevel + 1) + 2 * this._headerLabelXPadding;
+        return this._measureWidth(context, group.name) + this._expansionArrowIndent * (group.style.nestingLevel + 1) + 2 * this._headerLabelXPadding;
     },
 
     /**
@@ -1837,7 +1837,7 @@ WebInspector.FlameChart.prototype = {
      */
     _levelToHeight: function(level)
     {
-         return this._visibleLevelOffsets[level];
+        return this._visibleLevelOffsets[level];
     },
 
     /**

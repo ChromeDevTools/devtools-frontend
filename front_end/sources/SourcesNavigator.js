@@ -163,13 +163,13 @@ WebInspector.SourcesNavigatorView.prototype = {
      */
     _inspectedURLChanged: function(event)
     {
-       var nodes = this._uiSourceCodeNodes.valuesArray();
-       for (var i = 0; i < nodes.length; ++i) {
-           var uiSourceCode = nodes[i].uiSourceCode();
-           var inspectedPageURL = WebInspector.targetManager.inspectedPageURL();
-           if (inspectedPageURL && WebInspector.networkMapping.networkURL(uiSourceCode) === inspectedPageURL)
-              this.revealUISourceCode(uiSourceCode, true);
-       }
+        var nodes = this._uiSourceCodeNodes.valuesArray();
+        for (var i = 0; i < nodes.length; ++i) {
+            var uiSourceCode = nodes[i].uiSourceCode();
+            var inspectedPageURL = WebInspector.targetManager.inspectedPageURL();
+            if (inspectedPageURL && WebInspector.networkMapping.networkURL(uiSourceCode) === inspectedPageURL)
+                this.revealUISourceCode(uiSourceCode, true);
+        }
     },
 
     /**

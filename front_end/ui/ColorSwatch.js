@@ -123,33 +123,33 @@ WebInspector.ColorSwatch._nextColorFormat = function(color, curFormat)
     var cf = WebInspector.Color.Format;
 
     switch (curFormat) {
-        case cf.Original:
-            return !color.hasAlpha() ? cf.RGB : cf.RGBA;
+    case cf.Original:
+        return !color.hasAlpha() ? cf.RGB : cf.RGBA;
 
-        case cf.RGB:
-        case cf.RGBA:
-            return !color.hasAlpha() ? cf.HSL : cf.HSLA;
+    case cf.RGB:
+    case cf.RGBA:
+        return !color.hasAlpha() ? cf.HSL : cf.HSLA;
 
-        case cf.HSL:
-        case cf.HSLA:
-            if (color.nickname())
-                return cf.Nickname;
-            return color.detectHEXFormat();
+    case cf.HSL:
+    case cf.HSLA:
+        if (color.nickname())
+            return cf.Nickname;
+        return color.detectHEXFormat();
 
-        case cf.ShortHEX:
-            return cf.HEX;
+    case cf.ShortHEX:
+        return cf.HEX;
 
-        case cf.ShortHEXA:
-            return cf.HEXA;
+    case cf.ShortHEXA:
+        return cf.HEXA;
 
-        case cf.HEXA:
-        case cf.HEX:
-            return cf.Original;
+    case cf.HEXA:
+    case cf.HEX:
+        return cf.Original;
 
-        case cf.Nickname:
-            return color.detectHEXFormat();
+    case cf.Nickname:
+        return color.detectHEXFormat();
 
-        default:
-            return cf.RGBA;
+    default:
+        return cf.RGBA;
     }
 }

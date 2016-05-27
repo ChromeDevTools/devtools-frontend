@@ -127,9 +127,9 @@ WebInspector.ServiceWorkerManager.prototype = {
     findVersion: function(versionId)
     {
         for (var registration of this.registrations().values()) {
-           var version = registration.versions.get(versionId);
-           if (version)
-              return version;
+            var version = registration.versions.get(versionId);
+            if (version)
+                return version;
         }
         return null;
     },
@@ -486,8 +486,8 @@ WebInspector.ServiceWorker.prototype = {
     /** @param {string} status */
     setStatus: function(status)
     {
-       if (this._status === status)
-           return;
+        if (this._status === status)
+            return;
         this._status = status;
 
         for (var target of WebInspector.targetManager.targets()) {
@@ -805,12 +805,12 @@ WebInspector.ServiceWorkerVersion.prototype = {
 */
 WebInspector.ServiceWorkerRegistration = function(payload)
 {
-   this._update(payload);
-   /** @type {!Map.<string, !WebInspector.ServiceWorkerVersion>} */
-   this.versions = new Map();
-   this._deleting = false;
-   /** @type {!Array<!ServiceWorkerAgent.ServiceWorkerErrorMessage>} */
-   this.errors = [];
+    this._update(payload);
+    /** @type {!Map.<string, !WebInspector.ServiceWorkerVersion>} */
+    this.versions = new Map();
+    this._deleting = false;
+    /** @type {!Array<!ServiceWorkerAgent.ServiceWorkerErrorMessage>} */
+    this.errors = [];
 }
 
 WebInspector.ServiceWorkerRegistration.prototype = {

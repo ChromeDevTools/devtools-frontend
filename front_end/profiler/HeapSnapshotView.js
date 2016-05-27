@@ -269,7 +269,7 @@ WebInspector.HeapSnapshotView.SummaryPerspective.prototype = {
         return true;
     },
 
-   __proto__: WebInspector.HeapSnapshotView.Perspective.prototype
+    __proto__: WebInspector.HeapSnapshotView.Perspective.prototype
 }
 
 /**
@@ -314,7 +314,7 @@ WebInspector.HeapSnapshotView.ComparisonPerspective.prototype = {
         return true;
     },
 
-   __proto__: WebInspector.HeapSnapshotView.Perspective.prototype
+    __proto__: WebInspector.HeapSnapshotView.Perspective.prototype
 }
 
 /**
@@ -348,7 +348,7 @@ WebInspector.HeapSnapshotView.ContainmentPerspective.prototype = {
         return heapSnapshotView._containmentDataGrid;
     },
 
-   __proto__: WebInspector.HeapSnapshotView.Perspective.prototype
+    __proto__: WebInspector.HeapSnapshotView.Perspective.prototype
 }
 
 /**
@@ -412,7 +412,7 @@ WebInspector.HeapSnapshotView.AllocationPerspective.prototype = {
         return heapSnapshotView._allocationDataGrid;
     },
 
-   __proto__: WebInspector.HeapSnapshotView.Perspective.prototype
+    __proto__: WebInspector.HeapSnapshotView.Perspective.prototype
 }
 
 /**
@@ -444,7 +444,7 @@ WebInspector.HeapSnapshotView.StatisticsPerspective.prototype = {
         return null;
     },
 
-   __proto__: WebInspector.HeapSnapshotView.Perspective.prototype
+    __proto__: WebInspector.HeapSnapshotView.Perspective.prototype
 }
 
 

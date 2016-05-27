@@ -253,10 +253,10 @@ WebInspector.RemoteObject.prototype = {
         /**
          * @this {WebInspector.RemoteObject}
          */
-         function promiseConstructor(success)
-         {
+        function promiseConstructor(success)
+        {
             this.callFunctionJSON(functionDeclaration, args, success);
-         }
+        }
     },
 
     /**

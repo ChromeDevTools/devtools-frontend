@@ -1893,10 +1893,10 @@ WebInspector.NetworkLogView.prototype = {
                 if (code < 256) {
                     // Add leading zero when needed to not care about the next character.
                     return code < 16 ? "\\x0" + code.toString(16) : "\\x" + code.toString(16);
-                 }
-                 code = code.toString(16);
-                 return "\\u" + ("0000" + code).substr(code.length, 4);
-             }
+                }
+                code = code.toString(16);
+                return "\\u" + ("0000" + code).substr(code.length, 4);
+            }
 
             if (/[^\x20-\x7E]|\'/.test(str)) {
                 // Use ANSI-C quoting syntax.
@@ -1921,15 +1921,15 @@ WebInspector.NetworkLogView.prototype = {
         var data = [];
         var requestContentType = request.requestContentType();
         if (requestContentType && requestContentType.startsWith("application/x-www-form-urlencoded") && request.requestFormData) {
-           data.push("--data");
-           data.push(escapeString(request.requestFormData));
-           ignoredHeaders["content-length"] = true;
-           inferredMethod = "POST";
+            data.push("--data");
+            data.push(escapeString(request.requestFormData));
+            ignoredHeaders["content-length"] = true;
+            inferredMethod = "POST";
         } else if (request.requestFormData) {
-           data.push("--data-binary");
-           data.push(escapeString(request.requestFormData));
-           ignoredHeaders["content-length"] = true;
-           inferredMethod = "POST";
+            data.push("--data-binary");
+            data.push(escapeString(request.requestFormData));
+            ignoredHeaders["content-length"] = true;
+            inferredMethod = "POST";
         }
 
         if (request.requestMethod !== inferredMethod) {

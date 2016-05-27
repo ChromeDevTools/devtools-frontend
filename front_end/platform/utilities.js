@@ -485,8 +485,7 @@ Date.prototype.toConsoleTime = function()
            leadZero3(this.getMilliseconds());
 }
 
-Object.defineProperty(Array.prototype, "remove",
-{
+Object.defineProperty(Array.prototype, "remove", {
     /**
      * @param {!T} value
      * @param {boolean=} firstOnly
@@ -512,8 +511,7 @@ Object.defineProperty(Array.prototype, "remove",
     }
 });
 
-Object.defineProperty(Array.prototype, "keySet",
-{
+Object.defineProperty(Array.prototype, "keySet", {
     /**
      * @return {!Object.<string, boolean>}
      * @this {Array.<*>}
@@ -527,8 +525,7 @@ Object.defineProperty(Array.prototype, "keySet",
     }
 });
 
-Object.defineProperty(Array.prototype, "pushAll",
-{
+Object.defineProperty(Array.prototype, "pushAll", {
     /**
      * @param {!Array.<!T>} array
      * @this {Array.<!T>}
@@ -540,8 +537,7 @@ Object.defineProperty(Array.prototype, "pushAll",
     }
 });
 
-Object.defineProperty(Array.prototype, "rotate",
-{
+Object.defineProperty(Array.prototype, "rotate", {
     /**
      * @param {number} index
      * @return {!Array.<!T>}
@@ -557,8 +553,7 @@ Object.defineProperty(Array.prototype, "rotate",
     }
 });
 
-Object.defineProperty(Array.prototype, "sortNumbers",
-{
+Object.defineProperty(Array.prototype, "sortNumbers", {
     /**
      * @this {Array.<number>}
      */
@@ -583,75 +578,74 @@ Object.defineProperty(Uint32Array.prototype, "sort", {
 });
 
 (function() {
-var partition = {
-    /**
-     * @this {Array.<number>}
-     * @param {function(number, number): number} comparator
-     * @param {number} left
-     * @param {number} right
-     * @param {number} pivotIndex
-     */
-    value: function(comparator, left, right, pivotIndex)
-    {
-        function swap(array, i1, i2)
+    var partition = {
+        /**
+         * @this {Array.<number>}
+         * @param {function(number, number): number} comparator
+         * @param {number} left
+         * @param {number} right
+         * @param {number} pivotIndex
+         */
+        value: function(comparator, left, right, pivotIndex)
         {
-            var temp = array[i1];
-            array[i1] = array[i2];
-            array[i2] = temp;
-        }
-
-        var pivotValue = this[pivotIndex];
-        swap(this, right, pivotIndex);
-        var storeIndex = left;
-        for (var i = left; i < right; ++i) {
-            if (comparator(this[i], pivotValue) < 0) {
-                swap(this, storeIndex, i);
-                ++storeIndex;
+            function swap(array, i1, i2)
+            {
+                var temp = array[i1];
+                array[i1] = array[i2];
+                array[i2] = temp;
             }
-        }
-        swap(this, right, storeIndex);
-        return storeIndex;
-    }
-};
-Object.defineProperty(Array.prototype, "partition", partition);
-Object.defineProperty(Uint32Array.prototype, "partition", partition);
 
-var sortRange = {
-    /**
-     * @param {function(number, number): number} comparator
-     * @param {number} leftBound
-     * @param {number} rightBound
-     * @param {number} sortWindowLeft
-     * @param {number} sortWindowRight
-     * @return {!Array.<number>}
-     * @this {Array.<number>}
-     */
-    value: function(comparator, leftBound, rightBound, sortWindowLeft, sortWindowRight)
-    {
-        function quickSortRange(array, comparator, left, right, sortWindowLeft, sortWindowRight)
-        {
-            if (right <= left)
-                return;
-            var pivotIndex = Math.floor(Math.random() * (right - left)) + left;
-            var pivotNewIndex = array.partition(comparator, left, right, pivotIndex);
-            if (sortWindowLeft < pivotNewIndex)
-                quickSortRange(array, comparator, left, pivotNewIndex - 1, sortWindowLeft, sortWindowRight);
-            if (pivotNewIndex < sortWindowRight)
-                quickSortRange(array, comparator, pivotNewIndex + 1, right, sortWindowLeft, sortWindowRight);
+            var pivotValue = this[pivotIndex];
+            swap(this, right, pivotIndex);
+            var storeIndex = left;
+            for (var i = left; i < right; ++i) {
+                if (comparator(this[i], pivotValue) < 0) {
+                    swap(this, storeIndex, i);
+                    ++storeIndex;
+                }
+            }
+            swap(this, right, storeIndex);
+            return storeIndex;
         }
-        if (leftBound === 0 && rightBound === (this.length - 1) && sortWindowLeft === 0 && sortWindowRight >= rightBound)
-            this.sort(comparator);
-        else
-            quickSortRange(this, comparator, leftBound, rightBound, sortWindowLeft, sortWindowRight);
-        return this;
+    };
+    Object.defineProperty(Array.prototype, "partition", partition);
+    Object.defineProperty(Uint32Array.prototype, "partition", partition);
+
+    var sortRange = {
+        /**
+         * @param {function(number, number): number} comparator
+         * @param {number} leftBound
+         * @param {number} rightBound
+         * @param {number} sortWindowLeft
+         * @param {number} sortWindowRight
+         * @return {!Array.<number>}
+         * @this {Array.<number>}
+         */
+        value: function(comparator, leftBound, rightBound, sortWindowLeft, sortWindowRight)
+        {
+            function quickSortRange(array, comparator, left, right, sortWindowLeft, sortWindowRight)
+            {
+                if (right <= left)
+                    return;
+                var pivotIndex = Math.floor(Math.random() * (right - left)) + left;
+                var pivotNewIndex = array.partition(comparator, left, right, pivotIndex);
+                if (sortWindowLeft < pivotNewIndex)
+                    quickSortRange(array, comparator, left, pivotNewIndex - 1, sortWindowLeft, sortWindowRight);
+                if (pivotNewIndex < sortWindowRight)
+                    quickSortRange(array, comparator, pivotNewIndex + 1, right, sortWindowLeft, sortWindowRight);
+            }
+            if (leftBound === 0 && rightBound === (this.length - 1) && sortWindowLeft === 0 && sortWindowRight >= rightBound)
+                this.sort(comparator);
+            else
+                quickSortRange(this, comparator, leftBound, rightBound, sortWindowLeft, sortWindowRight);
+            return this;
+        }
     }
-}
-Object.defineProperty(Array.prototype, "sortRange", sortRange);
-Object.defineProperty(Uint32Array.prototype, "sortRange", sortRange);
+    Object.defineProperty(Array.prototype, "sortRange", sortRange);
+    Object.defineProperty(Uint32Array.prototype, "sortRange", sortRange);
 })();
 
-Object.defineProperty(Array.prototype, "stableSort",
-{
+Object.defineProperty(Array.prototype, "stableSort", {
     /**
      * @param {function(?T, ?T): number=} comparator
      * @return {!Array.<?T>}
@@ -703,8 +697,7 @@ Object.defineProperty(Array.prototype, "stableSort",
     }
 });
 
-Object.defineProperty(Array.prototype, "qselect",
-{
+Object.defineProperty(Array.prototype, "qselect", {
     /**
      * @param {number} k
      * @param {function(number, number): number=} comparator
@@ -732,8 +725,7 @@ Object.defineProperty(Array.prototype, "qselect",
     }
 });
 
-Object.defineProperty(Array.prototype, "lowerBound",
-{
+Object.defineProperty(Array.prototype, "lowerBound", {
     /**
      * Return index of the leftmost element that is equal or greater
      * than the specimen object. If there's no such element (i.e. all
@@ -770,8 +762,7 @@ Object.defineProperty(Array.prototype, "lowerBound",
     }
 });
 
-Object.defineProperty(Array.prototype, "upperBound",
-{
+Object.defineProperty(Array.prototype, "upperBound", {
     /**
      * Return index of the leftmost element that is greater
      * than the specimen object. If there's no such element (i.e. all
@@ -820,8 +811,7 @@ Object.defineProperty(Float64Array.prototype, "lowerBound", {
     value: Array.prototype.lowerBound
 });
 
-Object.defineProperty(Array.prototype, "binaryIndexOf",
-{
+Object.defineProperty(Array.prototype, "binaryIndexOf", {
     /**
      * @param {!T} value
      * @param {function(!T,!S):number} comparator
@@ -836,8 +826,7 @@ Object.defineProperty(Array.prototype, "binaryIndexOf",
     }
 });
 
-Object.defineProperty(Array.prototype, "select",
-{
+Object.defineProperty(Array.prototype, "select", {
     /**
      * @param {string} field
      * @return {!Array.<!T>}
@@ -853,8 +842,7 @@ Object.defineProperty(Array.prototype, "select",
     }
 });
 
-Object.defineProperty(Array.prototype, "peekLast",
-{
+Object.defineProperty(Array.prototype, "peekLast", {
     /**
      * @return {!T|undefined}
      * @this {Array.<!T>}
@@ -867,68 +855,64 @@ Object.defineProperty(Array.prototype, "peekLast",
 });
 
 (function(){
-
-/**
- * @param {!Array.<T>} array1
- * @param {!Array.<T>} array2
- * @param {function(T,T):number} comparator
- * @param {boolean} mergeNotIntersect
- * @return {!Array.<T>}
- * @template T
- */
-function mergeOrIntersect(array1, array2, comparator, mergeNotIntersect)
-{
-    var result = [];
-    var i = 0;
-    var j = 0;
-    while (i < array1.length && j < array2.length) {
-        var compareValue = comparator(array1[i], array2[j]);
-        if (mergeNotIntersect || !compareValue)
-            result.push(compareValue <= 0 ? array1[i] : array2[j]);
-        if (compareValue <= 0)
-            i++;
-        if (compareValue >= 0)
-            j++;
-    }
-    if (mergeNotIntersect) {
-        while (i < array1.length)
-            result.push(array1[i++]);
-        while (j < array2.length)
-            result.push(array2[j++]);
-    }
-    return result;
-}
-
-Object.defineProperty(Array.prototype, "intersectOrdered",
-{
     /**
-     * @param {!Array.<T>} array
+     * @param {!Array.<T>} array1
+     * @param {!Array.<T>} array2
      * @param {function(T,T):number} comparator
+     * @param {boolean} mergeNotIntersect
      * @return {!Array.<T>}
-     * @this {!Array.<T>}
      * @template T
      */
-    value: function(array, comparator)
+    function mergeOrIntersect(array1, array2, comparator, mergeNotIntersect)
     {
-        return mergeOrIntersect(this, array, comparator, false);
+        var result = [];
+        var i = 0;
+        var j = 0;
+        while (i < array1.length && j < array2.length) {
+            var compareValue = comparator(array1[i], array2[j]);
+            if (mergeNotIntersect || !compareValue)
+                result.push(compareValue <= 0 ? array1[i] : array2[j]);
+            if (compareValue <= 0)
+                i++;
+            if (compareValue >= 0)
+                j++;
+        }
+        if (mergeNotIntersect) {
+            while (i < array1.length)
+                result.push(array1[i++]);
+            while (j < array2.length)
+                result.push(array2[j++]);
+        }
+        return result;
     }
-});
 
-Object.defineProperty(Array.prototype, "mergeOrdered",
-{
-    /**
-     * @param {!Array.<T>} array
-     * @param {function(T,T):number} comparator
-     * @return {!Array.<T>}
-     * @this {!Array.<T>}
-     * @template T
-     */
-    value: function(array, comparator)
-    {
-        return mergeOrIntersect(this, array, comparator, true);
-    }
-});
+    Object.defineProperty(Array.prototype, "intersectOrdered", {
+        /**
+         * @param {!Array.<T>} array
+         * @param {function(T,T):number} comparator
+         * @return {!Array.<T>}
+         * @this {!Array.<T>}
+         * @template T
+         */
+        value: function(array, comparator)
+        {
+            return mergeOrIntersect(this, array, comparator, false);
+        }
+    });
 
+    Object.defineProperty(Array.prototype, "mergeOrdered", {
+        /**
+         * @param {!Array.<T>} array
+         * @param {function(T,T):number} comparator
+         * @return {!Array.<T>}
+         * @this {!Array.<T>}
+         * @template T
+         */
+        value: function(array, comparator)
+        {
+            return mergeOrIntersect(this, array, comparator, true);
+        }
+    });
 })();
 
 /**

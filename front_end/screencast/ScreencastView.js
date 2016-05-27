@@ -585,7 +585,7 @@ WebInspector.ScreencastView.prototype = {
         this._nodeIdElement.textContent = this._node.getAttribute("id") ? "#" + this._node.getAttribute("id") : "";
         var className = this._node.getAttribute("class");
         if (className && className.length > 50)
-           className = className.substring(0, 50) + "\u2026";
+            className = className.substring(0, 50) + "\u2026";
         this._classNameElement.textContent = className || "";
         this._nodeWidthElement.textContent = this._model.width;
         this._nodeHeightElement.textContent = this._model.height;
@@ -734,7 +734,7 @@ WebInspector.ScreencastView.prototype = {
     {
         var newIndex = this._historyIndex + offset;
         if (newIndex < 0 || newIndex >= this._historyEntries.length)
-          return;
+            return;
         this._target.pageAgent().navigateToHistoryEntry(this._historyEntries[newIndex].id);
         this._requestNavigationHistory();
     },
@@ -765,7 +765,7 @@ WebInspector.ScreencastView.prototype = {
     _onNavigationHistory: function(error, currentIndex, entries)
     {
         if (error)
-          return;
+            return;
 
         this._historyIndex = currentIndex;
         this._historyEntries = entries;
@@ -788,7 +788,7 @@ WebInspector.ScreencastView.prototype = {
         return true;
     },
 
-  __proto__: WebInspector.VBox.prototype
+    __proto__: WebInspector.VBox.prototype
 }
 
 /**
@@ -832,14 +832,14 @@ WebInspector.ScreencastView.ProgressTracker.prototype = {
 
     _onRequestStarted: function(event)
     {
-      if (!this._navigationProgressVisible())
-          return;
-      var request = /** @type {!WebInspector.NetworkRequest} */ (event.data);
-      // Ignore long-living WebSockets for the sake of progress indicator, as we won't be waiting them anyway.
-      if (request.type === WebInspector.resourceTypes.WebSocket)
-          return;
-      this._requestIds[request.requestId] = request;
-      ++this._startedRequests;
+        if (!this._navigationProgressVisible())
+            return;
+        var request = /** @type {!WebInspector.NetworkRequest} */ (event.data);
+        // Ignore long-living WebSockets for the sake of progress indicator, as we won't be waiting them anyway.
+        if (request.type === WebInspector.resourceTypes.WebSocket)
+            return;
+        this._requestIds[request.requestId] = request;
+        ++this._startedRequests;
     },
 
     _onRequestFinished: function(event)
@@ -858,9 +858,9 @@ WebInspector.ScreencastView.ProgressTracker.prototype = {
     _updateProgress: function(progress)
     {
         if (!this._navigationProgressVisible())
-          return;
+            return;
         if (this._maxDisplayedProgress >= progress)
-          return;
+            return;
         this._maxDisplayedProgress = progress;
         this._displayProgress(progress);
     },

@@ -385,18 +385,18 @@ WebInspector.ObjectPropertyTreeElement.prototype = {
 
     _editingEnded: function()
     {
-       this._prompt.detach();
-       delete this._prompt;
-       this._editableDiv.remove();
-       this._updateExpandable();
-       this.listItemElement.scrollLeft = 0;
-       this.listItemElement.classList.remove("editing-sub-part");
+        this._prompt.detach();
+        delete this._prompt;
+        this._editableDiv.remove();
+        this._updateExpandable();
+        this.listItemElement.scrollLeft = 0;
+        this.listItemElement.classList.remove("editing-sub-part");
     },
 
     _editingCancelled: function()
     {
-       this.valueElement.classList.remove("hidden");
-       this._editingEnded();
+        this.valueElement.classList.remove("hidden");
+        this._editingEnded();
     },
 
     /**
@@ -404,14 +404,14 @@ WebInspector.ObjectPropertyTreeElement.prototype = {
      */
     _editingCommitted: function(originalContent)
     {
-       var userInput = this._prompt.text();
-       if (userInput === originalContent) {
-           this._editingCancelled(); // nothing changed, so cancel
-           return;
-       }
+        var userInput = this._prompt.text();
+        if (userInput === originalContent) {
+            this._editingCancelled(); // nothing changed, so cancel
+            return;
+        }
 
-       this._editingEnded();
-       this._applyExpression(userInput);
+        this._editingEnded();
+        this._applyExpression(userInput);
     },
 
     /**

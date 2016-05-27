@@ -1248,7 +1248,7 @@ WebInspector.CodeMirrorTextEditor.prototype = {
         this.clearPositionHighlight();
         this._highlightedLine = this._codeMirror.getLineHandle(lineNumber);
         if (!this._highlightedLine)
-          return;
+            return;
         this._revealLine(lineNumber);
         if (shouldHighlight) {
             this._codeMirror.addLineClass(this._highlightedLine, null, "cm-highlight");

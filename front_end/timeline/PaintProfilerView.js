@@ -203,7 +203,7 @@ WebInspector.PaintProfilerView.prototype = {
         }
         this._pieChart.setTotal(totalTime / this._profiles.length);
         for (var color in timeByCategory)
-          this._pieChart.addSlice(timeByCategory[color] / this._profiles.length, color);
+            this._pieChart.addSlice(timeByCategory[color] / this._profiles.length, color);
     },
 
     /**

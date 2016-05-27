@@ -281,7 +281,7 @@ WebInspector.ParsedURL.prototype = {
      */
     lastPathComponentWithFragment: function()
     {
-       return this.lastPathComponent + (this.fragment ? "#" + this.fragment : "");
+        return this.lastPathComponent + (this.fragment ? "#" + this.fragment : "");
     },
 
     /**

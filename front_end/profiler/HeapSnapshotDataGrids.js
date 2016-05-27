@@ -1032,8 +1032,8 @@ WebInspector.AllocationDataGrid.prototype = {
     /**
      * @return {function(!Object, !Object):number}
      */
-     _createComparator: function()
-     {
+    _createComparator: function()
+    {
         var fieldName = this.sortColumnIdentifier();
         var compareResult = (this.sortOrder() === WebInspector.DataGrid.Order.Ascending) ? +1 : -1;
         /**
@@ -1050,7 +1050,7 @@ WebInspector.AllocationDataGrid.prototype = {
             return 0;
         }
         return compare;
-     },
+    },
 
     __proto__: WebInspector.HeapSnapshotViewportDataGrid.prototype
 }

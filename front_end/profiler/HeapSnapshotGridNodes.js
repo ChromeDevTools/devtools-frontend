@@ -233,12 +233,12 @@ WebInspector.HeapSnapshotGridNode.prototype = {
     {
         var indexOfFirstChildInRange = 0;
         for (var i = 0; i < this._retrievedChildrenRanges.length; i++) {
-           var range = this._retrievedChildrenRanges[i];
-           if (range.from <= nodePosition && nodePosition < range.to) {
-               var childIndex = indexOfFirstChildInRange + nodePosition - range.from;
-               return this.allChildren()[childIndex];
-           }
-           indexOfFirstChildInRange += range.to - range.from + 1;
+            var range = this._retrievedChildrenRanges[i];
+            if (range.from <= nodePosition && nodePosition < range.to) {
+                var childIndex = indexOfFirstChildInRange + nodePosition - range.from;
+                return this.allChildren()[childIndex];
+            }
+            indexOfFirstChildInRange += range.to - range.from + 1;
         }
         return null;
     },

@@ -190,7 +190,7 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
     {
         var isEditing = false;
         for (var watchExpression of this._watchExpressions)
-           isEditing |=  watchExpression.isEditing();
+            isEditing |=  watchExpression.isEditing();
 
         if (!isEditing)
             contextMenu.appendItem(WebInspector.UIString.capitalize("Add ^watch ^expression"), this._addButtonClicked.bind(this));

@@ -63,42 +63,36 @@ WebInspector.HeapSnapshotWorkerDispatcher.prototype = {
         var response = {callId: data.callId};
         try {
             switch (data.disposition) {
-                case "create": {
-                    var constructorFunction = this._findFunction(data.methodName);
-                    this._objects[data.objectId] = new constructorFunction(this);
-                    break;
+            case "create":
+                var constructorFunction = this._findFunction(data.methodName);
+                this._objects[data.objectId] = new constructorFunction(this);
+                break;
+            case "dispose":
+                delete this._objects[data.objectId];
+                break;
+            case "getter":
+                var object = this._objects[data.objectId];
+                var result = object[data.methodName];
+                response.result = result;
+                break;
+            case "factory":
+                var object = this._objects[data.objectId];
+                var result = object[data.methodName].apply(object, data.methodArguments);
+                if (result)
+                    this._objects[data.newObjectId] = result;
+                response.result = !!result;
+                break;
+            case "method":
+                var object = this._objects[data.objectId];
+                response.result = object[data.methodName].apply(object, data.methodArguments);
+                break;
+            case "evaluateForTest":
+                try {
+                    response.result = eval(data.source);
+                } catch (e) {
+                    response.result = e.toString();
                 }
-                case "dispose": {
-                    delete this._objects[data.objectId];
-                    break;
-                }
-                case "getter": {
-                    var object = this._objects[data.objectId];
-                    var result = object[data.methodName];
-                    response.result = result;
-                    break;
-                }
-                case "factory": {
-                    var object = this._objects[data.objectId];
-                    var result = object[data.methodName].apply(object, data.methodArguments);
-                    if (result)
-                        this._objects[data.newObjectId] = result;
-                    response.result = !!result;
-                    break;
-                }
-                case "method": {
-                    var object = this._objects[data.objectId];
-                    response.result = object[data.methodName].apply(object, data.methodArguments);
-                    break;
-                }
-                case "evaluateForTest": {
-                    try {
-                        response.result = eval(data.source);
-                    } catch (e) {
-                        response.result = e.toString();
-                    }
-                    break;
-                }
+                break;
             }
         } catch (e) {
             response.error = e.toString();

@@ -344,7 +344,7 @@ WebInspector.ScriptFormatterEditorAction.prototype = {
             var formattedUISourceCode = this._workspace.uiSourceCode(this._projectId, uiSourceCodePath);
             var formatData = formattedUISourceCode ? this._formatData.get(formattedUISourceCode) : null;
             if (formatData)
-                 this._showIfNeeded(uiSourceCode, /** @type {!WebInspector.UISourceCode} */ (formattedUISourceCode), formatData.mapping);
+                this._showIfNeeded(uiSourceCode, /** @type {!WebInspector.UISourceCode} */ (formattedUISourceCode), formatData.mapping);
             return;
         }
 

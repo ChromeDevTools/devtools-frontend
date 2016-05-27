@@ -149,7 +149,7 @@ Element.prototype.positionAt = function(x, y, relativeTo)
 {
     var shift = {x: 0, y: 0};
     if (relativeTo)
-       shift = relativeTo.boxInWindow(this.ownerDocument.defaultView);
+        shift = relativeTo.boxInWindow(this.ownerDocument.defaultView);
 
     if (typeof x === "number")
         this.style.setProperty("left", (shift.x + x) + "px");
@@ -634,16 +634,16 @@ KeyboardEvent.prototype.__defineGetter__("data", function()
     // Emulate "data" attribute from DOM 3 TextInput event.
     // See http://www.w3.org/TR/DOM-Level-3-Events/#events-Events-TextEvent-data
     switch (this.type) {
-        case "keypress":
-            if (!this.ctrlKey && !this.metaKey)
-                return String.fromCharCode(this.charCode);
-            else
+    case "keypress":
+        if (!this.ctrlKey && !this.metaKey)
+            return String.fromCharCode(this.charCode);
+        else
                 return "";
-        case "keydown":
-        case "keyup":
-            if (!this.ctrlKey && !this.metaKey && !this.altKey)
-                return String.fromCharCode(this.which);
-            else
+    case "keydown":
+    case "keyup":
+        if (!this.ctrlKey && !this.metaKey && !this.altKey)
+            return String.fromCharCode(this.which);
+        else
                 return "";
     }
 });

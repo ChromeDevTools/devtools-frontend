@@ -647,11 +647,11 @@ WebInspector.SecurityMainView.prototype = {
         }
 
         if (this._mixedContentStatus && (!this._mixedContentStatus.displayedInsecureContent && !this._mixedContentStatus.ranInsecureContent)) {
-                this._addExplanation(/** @type {!SecurityAgent.SecurityStateExplanation} */ ({
-                    "securityState": SecurityAgent.SecurityState.Secure,
-                    "summary": WebInspector.UIString("Secure Resources"),
-                    "description": WebInspector.UIString("All resources on this page are served securely.")
-                }));
+            this._addExplanation(/** @type {!SecurityAgent.SecurityStateExplanation} */ ({
+                "securityState": SecurityAgent.SecurityState.Secure,
+                "summary": WebInspector.UIString("Secure Resources"),
+                "description": WebInspector.UIString("All resources on this page are served securely.")
+            }));
         }
 
         if (this._panel.filterRequestCount(WebInspector.NetworkLogView.MixedContentFilterValues.Blocked) > 0)

@@ -53,7 +53,7 @@ WebInspector.AnimationGroupPreviewUI.prototype = {
                 { offset: 0, width: "0%", opacity: 1 },
                 { offset: 0.9, width: "100%", opacity: 1 },
                 { offset: 1, width: "100%", opacity: 0 }
-            ], { duration : 200, easing: "cubic-bezier(0, 0, 0.2, 1)" });
+        ], { duration : 200, easing: "cubic-bezier(0, 0, 0.2, 1)" });
     },
 
     _render: function()

@@ -47,9 +47,9 @@ WebInspector.ActionRegistry.prototype = {
     {
         var extensions = [];
         actionIds.forEach(function(actionId) {
-           var action = this._actionsById.get(actionId);
-           if (action)
-               extensions.push(action._extension);
+            var action = this._actionsById.get(actionId);
+            if (action)
+                extensions.push(action._extension);
         }, this);
         return context.applicableExtensions(extensions).valuesArray().map(extensionToAction.bind(this));
 

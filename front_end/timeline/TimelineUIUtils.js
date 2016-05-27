@@ -275,7 +275,7 @@ WebInspector.TimelineUIUtils._interactionPhaseStyles = function()
 {
     var map = WebInspector.TimelineUIUtils._interactionPhaseStylesMap;
     if (!map) {
-         map = new Map([
+        map = new Map([
             [WebInspector.TimelineIRModel.Phases.Idle, {color: "white", label: "Idle"}],
             [WebInspector.TimelineIRModel.Phases.Response, {color: "hsl(43, 83%, 64%)", label: WebInspector.UIString("Response")}],
             [WebInspector.TimelineIRModel.Phases.Scroll, {color: "hsl(256, 67%, 70%)", label: WebInspector.UIString("Scroll")}],
@@ -588,8 +588,8 @@ WebInspector.TimelineUIUtils.buildDetailsNodeForTraceEvent = function(event, tar
         details.createTextChild(WebInspector.beautifyFunctionName(eventData["functionName"]));
         var location = linkifyLocation(eventData["scriptId"], eventData["url"], eventData["lineNumber"], eventData["columnNumber"]);
         if (location) {
-           details.createTextChild(" @ ");
-           details.appendChild(location);
+            details.createTextChild(" @ ");
+            details.appendChild(location);
         }
         break;
     case recordType.CompileScript:
@@ -1599,13 +1599,13 @@ WebInspector.TimelineUIUtils.generatePieChart = function(aggregatedStats, selfCa
      */
     function appendLegendRow(name, title, value, color)
     {
-         if (!value)
-             return;
-         pieChart.addSlice(value, color);
-         var rowElement = footerElement.createChild("div");
-         rowElement.createChild("span", "timeline-aggregated-legend-value").textContent = Number.preciseMillisToString(value, 1);
-         rowElement.createChild("span", "timeline-aggregated-legend-swatch").style.backgroundColor = color;
-         rowElement.createChild("span", "timeline-aggregated-legend-title").textContent = title;
+        if (!value)
+            return;
+        pieChart.addSlice(value, color);
+        var rowElement = footerElement.createChild("div");
+        rowElement.createChild("span", "timeline-aggregated-legend-value").textContent = Number.preciseMillisToString(value, 1);
+        rowElement.createChild("span", "timeline-aggregated-legend-swatch").style.backgroundColor = color;
+        rowElement.createChild("span", "timeline-aggregated-legend-title").textContent = title;
     }
 
     // In case of self time, first add self, then children of the same category.

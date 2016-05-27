@@ -373,7 +373,7 @@ WebInspector.CountersGraph.Counter.prototype = {
 
         this.x = new Array(this.values.length);
         for (var i = this._minimumIndex + 1; i <= this._maximumIndex; i++)
-             this.x[i] = xFactor * (this.times[i] - this._minTime);
+            this.x[i] = xFactor * (this.times[i] - this._minTime);
     }
 }
 
@@ -514,14 +514,14 @@ WebInspector.CountersGraph.CounterUI.prototype = {
         var currentY = Math.round(originY + height - (value - minValue) * yFactor);
         ctx.moveTo(0, currentY);
         for (var i = counter._minimumIndex; i <= counter._maximumIndex; i++) {
-             var x = Math.round(counter.x[i]);
-             ctx.lineTo(x, currentY);
-             var currentValue = values[i];
-             if (typeof currentValue !== "undefined")
+            var x = Math.round(counter.x[i]);
+            ctx.lineTo(x, currentY);
+            var currentValue = values[i];
+            if (typeof currentValue !== "undefined")
                 value = currentValue;
-             currentY = Math.round(originY + height - (value - minValue) * yFactor);
-             ctx.lineTo(x, currentY);
-             yValues[i] = currentY;
+            currentY = Math.round(originY + height - (value - minValue) * yFactor);
+            ctx.lineTo(x, currentY);
+            yValues[i] = currentY;
         }
         yValues.length = i;
         ctx.lineTo(width, currentY);

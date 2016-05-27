@@ -349,10 +349,10 @@ WebInspector.IndexedDBModel.prototype = {
                 var objectStoreIDBKeyPath = WebInspector.IndexedDBModel.idbKeyPathFromKeyPath(objectStore.keyPath);
                 var objectStoreModel = new WebInspector.IndexedDBModel.ObjectStore(objectStore.name, objectStoreIDBKeyPath, objectStore.autoIncrement);
                 for (var j = 0; j < objectStore.indexes.length; ++j) {
-                     var index = objectStore.indexes[j];
-                     var indexIDBKeyPath = WebInspector.IndexedDBModel.idbKeyPathFromKeyPath(index.keyPath);
-                     var indexModel = new WebInspector.IndexedDBModel.Index(index.name, indexIDBKeyPath, index.unique, index.multiEntry);
-                     objectStoreModel.indexes[indexModel.name] = indexModel;
+                    var index = objectStore.indexes[j];
+                    var indexIDBKeyPath = WebInspector.IndexedDBModel.idbKeyPathFromKeyPath(index.keyPath);
+                    var indexModel = new WebInspector.IndexedDBModel.Index(index.name, indexIDBKeyPath, index.unique, index.multiEntry);
+                    objectStoreModel.indexes[indexModel.name] = indexModel;
                 }
                 databaseModel.objectStores[objectStoreModel.name] = objectStoreModel;
             }

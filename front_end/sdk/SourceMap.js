@@ -316,15 +316,15 @@ WebInspector.TextSourceMap.prototype = {
         var first = 0;
         var count = this._mappings.length;
         while (count > 1) {
-          var step = count >> 1;
-          var middle = first + step;
-          var mapping = this._mappings[middle];
-          if (lineNumber < mapping.lineNumber || (lineNumber === mapping.lineNumber && columnNumber < mapping.columnNumber))
-              count = step;
-          else {
-              first = middle;
-              count -= step;
-          }
+            var step = count >> 1;
+            var middle = first + step;
+            var mapping = this._mappings[middle];
+            if (lineNumber < mapping.lineNumber || (lineNumber === mapping.lineNumber && columnNumber < mapping.columnNumber)) {
+                count = step;
+            } else {
+                first = middle;
+                count -= step;
+            }
         }
         var entry = this._mappings[first];
         if (!first && entry && (lineNumber < entry.lineNumber || (lineNumber === entry.lineNumber && columnNumber < entry.columnNumber)))

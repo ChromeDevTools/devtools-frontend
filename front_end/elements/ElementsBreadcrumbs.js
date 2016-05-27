@@ -146,31 +146,31 @@ WebInspector.ElementsBreadcrumbs.prototype = {
 
             var crumbTitle = "";
             switch (current.nodeType()) {
-                case Node.ELEMENT_NODE:
-                    if (current.pseudoType())
-                        crumbTitle = "::" + current.pseudoType();
-                    else
-                        WebInspector.DOMPresentationUtils.decorateNodeLabel(current, crumb);
-                    break;
+            case Node.ELEMENT_NODE:
+                if (current.pseudoType())
+                    crumbTitle = "::" + current.pseudoType();
+                else
+                    WebInspector.DOMPresentationUtils.decorateNodeLabel(current, crumb);
+                break;
 
-                case Node.TEXT_NODE:
-                    crumbTitle = WebInspector.UIString("(text)");
-                    break;
+            case Node.TEXT_NODE:
+                crumbTitle = WebInspector.UIString("(text)");
+                break;
 
-                case Node.COMMENT_NODE:
-                    crumbTitle = "<!-->";
-                    break;
+            case Node.COMMENT_NODE:
+                crumbTitle = "<!-->";
+                break;
 
-                case Node.DOCUMENT_TYPE_NODE:
-                    crumbTitle = "<!DOCTYPE>";
-                    break;
+            case Node.DOCUMENT_TYPE_NODE:
+                crumbTitle = "<!DOCTYPE>";
+                break;
 
-                case Node.DOCUMENT_FRAGMENT_NODE:
-                    crumbTitle = current.shadowRootType() ? "#shadow-root" : current.nodeNameInCorrectCase();
-                    break;
+            case Node.DOCUMENT_FRAGMENT_NODE:
+                crumbTitle = current.shadowRootType() ? "#shadow-root" : current.nodeNameInCorrectCase();
+                break;
 
-                default:
-                    crumbTitle = current.nodeNameInCorrectCase();
+            default:
+                crumbTitle = current.nodeNameInCorrectCase();
             }
 
             if (!crumb.childNodes.length) {

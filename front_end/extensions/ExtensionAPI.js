@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable indent */
+
 function defineCommonExtensionSymbols(apiPrivate)
 {
     if (!apiPrivate.audits)

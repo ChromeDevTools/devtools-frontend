@@ -107,8 +107,8 @@ WebInspector.AuditFormatters.prototype = {
         case "boolean":
         case "number":
             formatter = WebInspector.AuditFormatters.Registry.text;
-        args = [value.toString()];
-        break;
+            args = [value.toString()];
+            break;
 
         case "object":
             if (value instanceof Node)

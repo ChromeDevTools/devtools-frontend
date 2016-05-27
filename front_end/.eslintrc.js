@@ -21,6 +21,7 @@ module.exports = {
          */
 
         // syntax preferences
+        "indent": [2, 4],
         "quotes": [2, "double", {
             "avoidEscape": true,
             "allowTemplateLiterals": true

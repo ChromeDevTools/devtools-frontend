@@ -103,15 +103,15 @@ WebInspector.ConsoleModel.prototype = {
     _incrementErrorWarningCount: function(msg)
     {
         switch (msg.level) {
-            case WebInspector.ConsoleMessage.MessageLevel.Warning:
-                this._warnings++;
-                break;
-            case WebInspector.ConsoleMessage.MessageLevel.Error:
-                this._errors++;
-                break;
-            case WebInspector.ConsoleMessage.MessageLevel.RevokedError:
-                this._revokedErrors++;
-                break;
+        case WebInspector.ConsoleMessage.MessageLevel.Warning:
+            this._warnings++;
+            break;
+        case WebInspector.ConsoleMessage.MessageLevel.Error:
+            this._errors++;
+            break;
+        case WebInspector.ConsoleMessage.MessageLevel.RevokedError:
+            this._revokedErrors++;
+            break;
         }
     },
 

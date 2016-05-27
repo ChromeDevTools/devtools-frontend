@@ -838,7 +838,7 @@ WebInspector._documentBlurred = function(document, event)
     // This is the case when event.relatedTarget is null (no element is being focused)
     // and document.activeElement is reset to default (this is not a window blur).
     if (!event.relatedTarget && document.activeElement === document.body)
-      WebInspector.setCurrentFocusElement(null);
+        WebInspector.setCurrentFocusElement(null);
 }
 
 WebInspector._textInputTypes = ["text", "search", "tel", "url", "email", "password"].keySet();
@@ -1821,8 +1821,8 @@ WebInspector.ThemeSupport.prototype = {
             this._cachedThemePatches.set(id, fullText);
             return fullText;
         } catch (e) {
-           this._setting.set("default");
-           return "";
+            this._setting.set("default");
+            return "";
         }
     },
 

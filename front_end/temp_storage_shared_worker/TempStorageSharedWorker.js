@@ -102,10 +102,10 @@ function clearTempStorage()
 
 function didClearTempStorage()
 {
-  isTempStorageCleared = true;
-  for (var i = 0; i < ports.length; i++)
-      notifyTempStorageCleared(ports[i]);
-  ports = null;
+    isTempStorageCleared = true;
+    for (var i = 0; i < ports.length; i++)
+        notifyTempStorageCleared(ports[i]);
+    ports = null;
 }
 
 /**

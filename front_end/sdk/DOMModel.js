@@ -617,7 +617,7 @@ WebInspector.DOMNode.prototype = {
                 continue;
 
             if (!oldAttributesMap[name] || oldAttributesMap[name].value !== value)
-              attributesChanged = true;
+                attributesChanged = true;
         }
         return attributesChanged;
     },

@@ -427,8 +427,8 @@ WebInspector.TimelinePanel.prototype = {
 
     _prepareToLoadTimeline: function()
     {
-         console.assert(this._state === WebInspector.TimelinePanel.State.Idle);
-         this._setState(WebInspector.TimelinePanel.State.Loading);
+        console.assert(this._state === WebInspector.TimelinePanel.State.Idle);
+        this._setState(WebInspector.TimelinePanel.State.Loading);
     },
 
     _createFileSelector: function()

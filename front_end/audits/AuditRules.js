@@ -61,8 +61,8 @@ WebInspector.AuditRules.getDomainToResourcesMap = function(requests, types, need
         var domain = parsedURL.host;
         var domainResources = domainToResourcesMap[domain];
         if (domainResources === undefined) {
-          domainResources = [];
-          domainToResourcesMap[domain] = domainResources;
+            domainResources = [];
+            domainToResourcesMap[domain] = domainResources;
         }
         domainResources.push(needFullResources ? request : request.url);
     }

@@ -95,7 +95,7 @@ WebInspector.Geometry.Point.prototype = {
      */
     toString: function()
     {
-       return Math.round(this.x * 100) / 100 + ", " + Math.round(this.y * 100) / 100;
+        return Math.round(this.x * 100) / 100 + ", " + Math.round(this.y * 100) / 100;
     }
 }
 

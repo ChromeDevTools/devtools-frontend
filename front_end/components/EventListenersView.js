@@ -40,7 +40,7 @@ WebInspector.EventListenersView.prototype = {
         for (var object of objects)
             promises.push(this._addObject(object));
         return Promise.all(promises).then(this.addEmptyHolderIfNeeded.bind(this)).then(this._eventListenersArrivedForTest.bind(this));
-     },
+    },
 
     /**
      * @param {!WebInspector.RemoteObject} object
@@ -195,7 +195,7 @@ WebInspector.EventListenersView.prototype = {
             allHidden = allHidden && eventType.hidden;
         }
         if (allHidden && !this._emptyHolder.parentNode)
-           this._element.appendChild(this._emptyHolder);
+            this._element.appendChild(this._emptyHolder);
     },
 
     reset: function()

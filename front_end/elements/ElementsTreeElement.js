@@ -189,12 +189,12 @@ WebInspector.ElementsTreeElement.prototype = {
         function updateEntryHide(entry)
         {
             switch (entry.type) {
-                case "added":
-                    entry.node.remove();
-                    break;
-                case "changed":
-                    entry.node.textContent = entry.oldText;
-                    break;
+            case "added":
+                entry.node.remove();
+                break;
+            case "changed":
+                entry.node.textContent = entry.oldText;
+                break;
             }
         }
 
@@ -1389,110 +1389,110 @@ WebInspector.ElementsTreeElement.prototype = {
         var titleDOM = createDocumentFragment();
 
         switch (node.nodeType()) {
-            case Node.ATTRIBUTE_NODE:
-                this._buildAttributeDOM(titleDOM, /** @type {string} */ (node.name), /** @type {string} */ (node.value), updateRecord, true);
+        case Node.ATTRIBUTE_NODE:
+            this._buildAttributeDOM(titleDOM, /** @type {string} */ (node.name), /** @type {string} */ (node.value), updateRecord, true);
+            break;
+
+        case Node.ELEMENT_NODE:
+            var pseudoType = node.pseudoType();
+            if (pseudoType) {
+                this._buildPseudoElementDOM(titleDOM, pseudoType);
                 break;
+            }
 
-            case Node.ELEMENT_NODE:
-                var pseudoType = node.pseudoType();
-                if (pseudoType) {
-                    this._buildPseudoElementDOM(titleDOM, pseudoType);
-                    break;
-                }
+            var tagName = node.nodeNameInCorrectCase();
+            if (this._elementCloseTag) {
+                this._buildTagDOM(titleDOM, tagName, true, true, updateRecord);
+                break;
+            }
 
-                var tagName = node.nodeNameInCorrectCase();
-                if (this._elementCloseTag) {
-                    this._buildTagDOM(titleDOM, tagName, true, true, updateRecord);
-                    break;
-                }
+            this._buildTagDOM(titleDOM, tagName, false, false, updateRecord);
 
-                this._buildTagDOM(titleDOM, tagName, false, false, updateRecord);
-
-                if (this.isExpandable()) {
-                    if (!this.expanded) {
-                        var textNodeElement = titleDOM.createChild("span", "webkit-html-text-node bogus");
-                        textNodeElement.textContent = "\u2026";
-                        titleDOM.createTextChild("\u200B");
-                        this._buildTagDOM(titleDOM, tagName, true, false, updateRecord);
-                    }
-                    break;
-                }
-
-                if (WebInspector.ElementsTreeElement.canShowInlineText(node)) {
-                    var textNodeElement = titleDOM.createChild("span", "webkit-html-text-node");
-                    var result = this._convertWhitespaceToEntities(node.firstChild.nodeValue());
-                    textNodeElement.textContent = result.text;
-                    WebInspector.highlightRangesWithStyleClass(textNodeElement, result.entityRanges, "webkit-html-entity-value");
+            if (this.isExpandable()) {
+                if (!this.expanded) {
+                    var textNodeElement = titleDOM.createChild("span", "webkit-html-text-node bogus");
+                    textNodeElement.textContent = "\u2026";
                     titleDOM.createTextChild("\u200B");
                     this._buildTagDOM(titleDOM, tagName, true, false, updateRecord);
-                    if (updateRecord && updateRecord.hasChangedChildren())
-                        WebInspector.runCSSAnimationOnce(textNodeElement, "dom-update-highlight");
-                    if (updateRecord && updateRecord.isCharDataModified())
-                        WebInspector.runCSSAnimationOnce(textNodeElement, "dom-update-highlight");
-                    break;
-                }
-
-                if (this.treeOutline.isXMLMimeType || !WebInspector.ElementsTreeElement.ForbiddenClosingTagElements[tagName])
-                    this._buildTagDOM(titleDOM, tagName, true, false, updateRecord);
-                break;
-
-            case Node.TEXT_NODE:
-                if (node.parentNode && node.parentNode.nodeName().toLowerCase() === "script") {
-                    var newNode = titleDOM.createChild("span", "webkit-html-text-node webkit-html-js-node");
-                    newNode.textContent = node.nodeValue();
-
-                    var javascriptSyntaxHighlighter = new WebInspector.DOMSyntaxHighlighter("text/javascript", true);
-                    javascriptSyntaxHighlighter.syntaxHighlightNode(newNode).then(updateSearchHighlight.bind(this));
-                } else if (node.parentNode && node.parentNode.nodeName().toLowerCase() === "style") {
-                    var newNode = titleDOM.createChild("span", "webkit-html-text-node webkit-html-css-node");
-                    newNode.textContent = node.nodeValue();
-
-                    var cssSyntaxHighlighter = new WebInspector.DOMSyntaxHighlighter("text/css", true);
-                    cssSyntaxHighlighter.syntaxHighlightNode(newNode).then(updateSearchHighlight.bind(this));
-                } else {
-                    titleDOM.createTextChild("\"");
-                    var textNodeElement = titleDOM.createChild("span", "webkit-html-text-node");
-                    var result = this._convertWhitespaceToEntities(node.nodeValue());
-                    textNodeElement.textContent = result.text;
-                    WebInspector.highlightRangesWithStyleClass(textNodeElement, result.entityRanges, "webkit-html-entity-value");
-                    titleDOM.createTextChild("\"");
-                    if (updateRecord && updateRecord.isCharDataModified())
-                        WebInspector.runCSSAnimationOnce(textNodeElement, "dom-update-highlight");
                 }
                 break;
+            }
 
-            case Node.COMMENT_NODE:
-                var commentElement = titleDOM.createChild("span", "webkit-html-comment");
-                commentElement.createTextChild("<!--" + node.nodeValue() + "-->");
+            if (WebInspector.ElementsTreeElement.canShowInlineText(node)) {
+                var textNodeElement = titleDOM.createChild("span", "webkit-html-text-node");
+                var result = this._convertWhitespaceToEntities(node.firstChild.nodeValue());
+                textNodeElement.textContent = result.text;
+                WebInspector.highlightRangesWithStyleClass(textNodeElement, result.entityRanges, "webkit-html-entity-value");
+                titleDOM.createTextChild("\u200B");
+                this._buildTagDOM(titleDOM, tagName, true, false, updateRecord);
+                if (updateRecord && updateRecord.hasChangedChildren())
+                    WebInspector.runCSSAnimationOnce(textNodeElement, "dom-update-highlight");
+                if (updateRecord && updateRecord.isCharDataModified())
+                    WebInspector.runCSSAnimationOnce(textNodeElement, "dom-update-highlight");
                 break;
+            }
 
-            case Node.DOCUMENT_TYPE_NODE:
-                var docTypeElement = titleDOM.createChild("span", "webkit-html-doctype");
-                docTypeElement.createTextChild("<!DOCTYPE " + node.nodeName());
-                if (node.publicId) {
-                    docTypeElement.createTextChild(" PUBLIC \"" + node.publicId + "\"");
-                    if (node.systemId)
-                        docTypeElement.createTextChild(" \"" + node.systemId + "\"");
-                } else if (node.systemId)
-                    docTypeElement.createTextChild(" SYSTEM \"" + node.systemId + "\"");
+            if (this.treeOutline.isXMLMimeType || !WebInspector.ElementsTreeElement.ForbiddenClosingTagElements[tagName])
+                this._buildTagDOM(titleDOM, tagName, true, false, updateRecord);
+            break;
 
-                if (node.internalSubset)
-                    docTypeElement.createTextChild(" [" + node.internalSubset + "]");
+        case Node.TEXT_NODE:
+            if (node.parentNode && node.parentNode.nodeName().toLowerCase() === "script") {
+                var newNode = titleDOM.createChild("span", "webkit-html-text-node webkit-html-js-node");
+                newNode.textContent = node.nodeValue();
 
-                docTypeElement.createTextChild(">");
-                break;
+                var javascriptSyntaxHighlighter = new WebInspector.DOMSyntaxHighlighter("text/javascript", true);
+                javascriptSyntaxHighlighter.syntaxHighlightNode(newNode).then(updateSearchHighlight.bind(this));
+            } else if (node.parentNode && node.parentNode.nodeName().toLowerCase() === "style") {
+                var newNode = titleDOM.createChild("span", "webkit-html-text-node webkit-html-css-node");
+                newNode.textContent = node.nodeValue();
 
-            case Node.CDATA_SECTION_NODE:
-                var cdataElement = titleDOM.createChild("span", "webkit-html-text-node");
-                cdataElement.createTextChild("<![CDATA[" + node.nodeValue() + "]]>");
-                break;
+                var cssSyntaxHighlighter = new WebInspector.DOMSyntaxHighlighter("text/css", true);
+                cssSyntaxHighlighter.syntaxHighlightNode(newNode).then(updateSearchHighlight.bind(this));
+            } else {
+                titleDOM.createTextChild("\"");
+                var textNodeElement = titleDOM.createChild("span", "webkit-html-text-node");
+                var result = this._convertWhitespaceToEntities(node.nodeValue());
+                textNodeElement.textContent = result.text;
+                WebInspector.highlightRangesWithStyleClass(textNodeElement, result.entityRanges, "webkit-html-entity-value");
+                titleDOM.createTextChild("\"");
+                if (updateRecord && updateRecord.isCharDataModified())
+                    WebInspector.runCSSAnimationOnce(textNodeElement, "dom-update-highlight");
+            }
+            break;
 
-            case Node.DOCUMENT_FRAGMENT_NODE:
-                var fragmentElement = titleDOM.createChild("span", "webkit-html-fragment");
-                fragmentElement.textContent = node.nodeNameInCorrectCase().collapseWhitespace();
-                break;
-            default:
-                titleDOM.createTextChild(node.nodeNameInCorrectCase().collapseWhitespace());
+        case Node.COMMENT_NODE:
+            var commentElement = titleDOM.createChild("span", "webkit-html-comment");
+            commentElement.createTextChild("<!--" + node.nodeValue() + "-->");
+            break;
+
+        case Node.DOCUMENT_TYPE_NODE:
+            var docTypeElement = titleDOM.createChild("span", "webkit-html-doctype");
+            docTypeElement.createTextChild("<!DOCTYPE " + node.nodeName());
+            if (node.publicId) {
+                docTypeElement.createTextChild(" PUBLIC \"" + node.publicId + "\"");
+                if (node.systemId)
+                    docTypeElement.createTextChild(" \"" + node.systemId + "\"");
+            } else if (node.systemId)
+                docTypeElement.createTextChild(" SYSTEM \"" + node.systemId + "\"");
+
+            if (node.internalSubset)
+                docTypeElement.createTextChild(" [" + node.internalSubset + "]");
+
+            docTypeElement.createTextChild(">");
+            break;
+
+        case Node.CDATA_SECTION_NODE:
+            var cdataElement = titleDOM.createChild("span", "webkit-html-text-node");
+            cdataElement.createTextChild("<![CDATA[" + node.nodeValue() + "]]>");
+            break;
+
+        case Node.DOCUMENT_FRAGMENT_NODE:
+            var fragmentElement = titleDOM.createChild("span", "webkit-html-fragment");
+            fragmentElement.textContent = node.nodeNameInCorrectCase().collapseWhitespace();
+            break;
+        default:
+            titleDOM.createTextChild(node.nodeNameInCorrectCase().collapseWhitespace());
         }
 
         /**

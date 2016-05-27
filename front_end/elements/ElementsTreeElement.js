@@ -547,9 +547,10 @@ WebInspector.ElementsTreeElement.prototype = {
         var modifier = WebInspector.KeyboardShortcut.Modifiers.CtrlOrMeta;
         var treeOutline = this.treeOutline;
         var menuItem;
-        if (!isShadowRoot)
+        if (!isShadowRoot) {
             menuItem = copyMenu.appendItem(WebInspector.UIString("Copy outerHTML"), treeOutline.performCopyOrCut.bind(treeOutline, false, this._node));
             menuItem.setShortcut(createShortcut("V", modifier));
+        }
         if (this._node.nodeType() === Node.ELEMENT_NODE)
             copyMenu.appendItem(WebInspector.UIString.capitalize("Copy selector"), this._copyCSSPath.bind(this));
         if (!isShadowRoot)

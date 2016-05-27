@@ -290,6 +290,15 @@ WebInspector.TextFilterUI.prototype = {
     },
 
     /**
+     * @param {boolean} checked
+     */
+    setRegexChecked: function(checked)
+    {
+        if (this._supportRegex)
+            this._regexCheckBox.checked = checked;
+    },
+
+    /**
      * @return {?RegExp}
      */
     regex: function()
@@ -503,7 +512,7 @@ WebInspector.NamedBitSetFilterUI = function(items, setting)
         setting.addChangeListener(this._settingChanged.bind(this));
         this._settingChanged();
     } else {
-        this._toggleTypeFilter(WebInspector.NamedBitSetFilterUI.ALL_TYPES, false);
+        this._toggleTypeFilter(WebInspector.NamedBitSetFilterUI.ALL_TYPES, false /* allowMultiSelect */);
     }
 }
 
@@ -513,6 +522,11 @@ WebInspector.NamedBitSetFilterUI.Item;
 WebInspector.NamedBitSetFilterUI.ALL_TYPES = "all";
 
 WebInspector.NamedBitSetFilterUI.prototype = {
+    reset: function()
+    {
+        this._toggleTypeFilter(WebInspector.NamedBitSetFilterUI.ALL_TYPES, false /* allowMultiSelect */);
+    },
+
     /**
      * @override
      * @return {boolean}
@@ -733,6 +747,14 @@ WebInspector.CheckboxFilterUI.prototype = {
     checked: function()
     {
         return this._checkboxElement.checked;
+    },
+
+    /**
+     * @param {boolean} checked
+     */
+    setChecked: function(checked)
+    {
+        this._checkboxElement.checked = checked;
     },
 
     /**

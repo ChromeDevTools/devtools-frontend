@@ -1055,11 +1055,14 @@ WebInspector.NetworkLogView.prototype = {
     },
 
     /**
-      * @param {string} filterString
-      */
+     * @param {string} filterString
+     */
     setTextFilterValue: function(filterString)
     {
         this._textFilterUI.setValue(filterString);
+        this._textFilterUI.setRegexChecked(false);
+        this._dataURLFilterUI.setChecked(false);
+        this._resourceCategoryFilterUI.reset();
     },
 
     /**

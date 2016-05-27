@@ -637,8 +637,8 @@ WebInspector.NetworkPanel.show = function()
 }
 
 /**
-  * @param {!Array<{filterType: !WebInspector.NetworkLogView.FilterType, filterValue: string}>} filters
-  */
+ * @param {!Array<{filterType: !WebInspector.NetworkLogView.FilterType, filterValue: string}>} filters
+ */
 WebInspector.NetworkPanel.revealAndFilter = function(filters)
 {
     var panel = WebInspector.NetworkPanel._instance();

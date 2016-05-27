@@ -52,7 +52,9 @@ WebInspector.CSSFormatter.prototype = {
         this._lastLine = -1;
         this._state = {};
         var tokenize = WebInspector.createTokenizer("text/css");
+        var oldEnforce = this._builder.setEnforceSpaceBetweenWords(false);
         tokenize(text.substring(this._fromOffset, this._toOffset), this._tokenCallback.bind(this));
+        this._builder.setEnforceSpaceBetweenWords(oldEnforce);
     },
 
     /**

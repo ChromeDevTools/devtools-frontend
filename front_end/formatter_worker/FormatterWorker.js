@@ -245,6 +245,10 @@ WebInspector.FormatterWorkerContentParser.prototype = {
     parse: function(content) { }
 }
 
+/**
+ * @param {string} content
+ * @param {string} mimeType
+ */
 WebInspector.FormatterWorkerContentParser.parse = function(content, mimeType)
 {
     var extension = self.runtime.extensions(WebInspector.FormatterWorkerContentParser).find(findExtension);

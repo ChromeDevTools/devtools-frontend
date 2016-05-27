@@ -25,9 +25,21 @@ WebInspector.FormattedContentBuilder = function(indentString)
     this._newLines = 0;
     this._softSpace = false;
     this._hardSpaces = 0;
+    this._enforceSpaceBetweenWords = true;
 }
 
 WebInspector.FormattedContentBuilder.prototype = {
+    /**
+     * @param {boolean} value
+     * @return {boolean}
+     */
+    setEnforceSpaceBetweenWords: function(value)
+    {
+        var oldValue = this._enforceSpaceBetweenWords;
+        this._enforceSpaceBetweenWords = value;
+        return oldValue;
+    },
+
     /**
      * @param {string} token
      * @param {number} offset
@@ -35,7 +47,7 @@ WebInspector.FormattedContentBuilder.prototype = {
     addToken: function(token, offset)
     {
         var last = this._formattedContent.peekLast();
-        if (last && /\w/.test(last[last.length - 1]) && /\w/.test(token))
+        if (this._enforceSpaceBetweenWords && last && /\w/.test(last[last.length - 1]) && /\w/.test(token))
             this.addSoftSpace();
 
         this._appendFormatting();

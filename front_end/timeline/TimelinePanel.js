@@ -61,7 +61,7 @@ WebInspector.TimelinePanel = function()
     this._tracingModelBackingStorage = new WebInspector.TempFileBackingStorage("tracing");
     this._tracingModel = new WebInspector.TracingModel(this._tracingModelBackingStorage);
     this._model = new WebInspector.TimelineModel(WebInspector.TimelineUIUtils.visibleEventsFilter());
-    this._frameModel = new WebInspector.TimelineFrameModel();
+    this._frameModel = new WebInspector.TimelineFrameModel(event => WebInspector.TimelineUIUtils.eventStyle(event).category.name);
     this._irModel = new WebInspector.TimelineIRModel();
 
     if (Runtime.experiments.isEnabled("cpuThrottling"))
@@ -775,7 +775,10 @@ WebInspector.TimelinePanel.prototype = {
         this._model.setEvents(this._tracingModel, loadedFromFile);
         this._frameModel.reset();
         this._frameModel.addTraceEvents(this._model.target(), this._model.inspectedTargetEvents(), this._model.sessionId() || "");
-        this._irModel.populate(this._model);
+
+        var groups = WebInspector.TimelineModel.AsyncEventGroup;
+        var asyncEventsByGroup = this._model.mainThreadAsyncEvents();
+        this._irModel.populate(asyncEventsByGroup.get(groups.input), asyncEventsByGroup.get(groups.animation));
         this._model.cpuProfiles().forEach(profile => WebInspector.LineLevelProfile.instance().appendCPUProfile(profile));
         if (this._statusPane)
             this._statusPane.hide();

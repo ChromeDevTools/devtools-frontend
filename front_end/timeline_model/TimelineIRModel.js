@@ -76,22 +76,18 @@ WebInspector.TimelineIRModel.phaseForEvent = function(event)
 
 WebInspector.TimelineIRModel.prototype = {
     /**
-     * @param {!WebInspector.TimelineModel} timelineModel
+     * @param {?Array<!WebInspector.TracingModel.AsyncEvent>} inputLatencies
+     * @param {?Array<!WebInspector.TracingModel.AsyncEvent>} animations
      */
-    populate: function(timelineModel)
+    populate: function(inputLatencies, animations)
     {
         var eventTypes = WebInspector.TimelineIRModel.InputEvents;
         var phases = WebInspector.TimelineIRModel.Phases;
 
         this.reset();
-
-        var groups = WebInspector.TimelineUIUtils.asyncEventGroups();
-        var asyncEventsByGroup = timelineModel.mainThreadAsyncEvents();
-        var inputLatencies = asyncEventsByGroup.get(groups.input);
         if (!inputLatencies)
             return;
         this._processInputLatencies(inputLatencies);
-        var animations = asyncEventsByGroup.get(groups.animation);
         if (animations)
             this._processAnimations(animations);
         var range = new WebInspector.SegmentedRange();

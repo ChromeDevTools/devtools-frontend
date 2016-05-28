@@ -30,9 +30,11 @@
 
 /**
  * @constructor
+ * @param {function(!WebInspector.TracingModel.Event):string} categoryMapper
  */
-WebInspector.TimelineFrameModel = function()
+WebInspector.TimelineFrameModel = function(categoryMapper)
 {
+    this._categoryMapper = categoryMapper;
     this.reset();
 }
 
@@ -389,7 +391,7 @@ WebInspector.TimelineFrameModel.prototype = {
             if (event.thread === this._mainThread)
                 this._addMainThreadTraceEvent(event);
             else if (this._lastFrame && event.selfTime && !WebInspector.TracingModel.isTopLevelEvent(event))
-                this._lastFrame._addTimeForCategory(WebInspector.TimelineUIUtils.eventStyle(event).category.name, event.selfTime);
+                this._lastFrame._addTimeForCategory(this._categoryMapper(event), event.selfTime);
         }
     },
 
@@ -453,7 +455,7 @@ WebInspector.TimelineFrameModel.prototype = {
     {
         if (!event.selfTime)
             return;
-        var categoryName = WebInspector.TimelineUIUtils.eventStyle(event).category.name;
+        var categoryName = this._categoryMapper(event);
         timeByCategory[categoryName] = (timeByCategory[categoryName] || 0) + event.selfTime;
     },
 }

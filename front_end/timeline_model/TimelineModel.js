@@ -184,6 +184,16 @@ WebInspector.TimelineModel.WorkerThreadName = "DedicatedWorker Thread";
 WebInspector.TimelineModel.RendererMainThreadName = "CrRendererMain";
 
 /**
+ * @enum {symbol}
+ */
+WebInspector.TimelineModel.AsyncEventGroup = {
+    animation: Symbol("animation"),
+    console: Symbol("console"),
+    userTiming: Symbol("userTiming"),
+    input: Symbol("input")
+};
+
+/**
  * @param {!Array.<!WebInspector.TracingModel.Event>} events
  * @param {function(!WebInspector.TracingModel.Event)} onStartEvent
  * @param {function(!WebInspector.TracingModel.Event)} onEndEvent
@@ -232,7 +242,7 @@ WebInspector.TimelineModel.VirtualThread = function(name)
     this.name = name;
     /** @type {!Array<!WebInspector.TracingModel.Event>} */
     this.events = [];
-    /** @type {!Map<!WebInspector.AsyncEventGroup, !Array<!WebInspector.TracingModel.AsyncEvent>>} */
+    /** @type {!Map<!WebInspector.TimelineModel.AsyncEventGroup, !Array<!WebInspector.TracingModel.AsyncEvent>>} */
     this.asyncEventsByGroup = new Map();
 }
 
@@ -612,7 +622,7 @@ WebInspector.TimelineModel.prototype = {
             return;
         // Disregard regular events, we don't need them yet, but still process to get proper metadata.
         browserMain.events().forEach(this._processBrowserEvent, this);
-        /** @type {!Map<!WebInspector.AsyncEventGroup, !Array<!WebInspector.TracingModel.AsyncEvent>>} */
+        /** @type {!Map<!WebInspector.TimelineModel.AsyncEventGroup, !Array<!WebInspector.TracingModel.AsyncEvent>>} */
         var asyncEventsByGroup = new Map();
         this._processAsyncEvents(asyncEventsByGroup, browserMain.asyncEvents());
         this._mergeAsyncEvents(this._mainThreadAsyncEventsByGroup, asyncEventsByGroup);
@@ -672,7 +682,7 @@ WebInspector.TimelineModel.prototype = {
             if (WebInspector.TracingModel.isAsyncBeginPhase(event.phase) && parentRecord && event.endTime > parentRecord._event.endTime)
                 continue;
             var record = new WebInspector.TimelineModel.Record(event);
-            if (WebInspector.TimelineUIUtils.isMarkerEvent(event))
+            if (WebInspector.TimelineModel.isMarkerEvent(event))
                 this._eventDividerRecords.push(record);
             if (!this._eventFilter.accept(event) && !WebInspector.TracingModel.isTopLevelEvent(event))
                 continue;
@@ -772,7 +782,7 @@ WebInspector.TimelineModel.prototype = {
     },
 
     /**
-     * @param {!Map<!WebInspector.AsyncEventGroup, !Array<!WebInspector.TracingModel.AsyncEvent>>} asyncEventsByGroup
+     * @param {!Map<!WebInspector.TimelineModel.AsyncEventGroup, !Array<!WebInspector.TracingModel.AsyncEvent>>} asyncEventsByGroup
      * @param {!Array<!WebInspector.TracingModel.AsyncEvent>} asyncEvents
      * @param {number=} startTime
      * @param {number=} endTime
@@ -999,11 +1009,11 @@ WebInspector.TimelineModel.prototype = {
 
     /**
      * @param {!WebInspector.TracingModel.AsyncEvent} asyncEvent
-     * @return {?WebInspector.AsyncEventGroup}
+     * @return {?WebInspector.TimelineModel.AsyncEventGroup}
      */
     _processAsyncEvent: function(asyncEvent)
     {
-        var groups = WebInspector.TimelineUIUtils.asyncEventGroups();
+        var groups = WebInspector.TimelineModel.AsyncEventGroup;
         if (asyncEvent.hasCategory(WebInspector.TimelineModel.Category.Console))
             return groups.console;
         if (asyncEvent.hasCategory(WebInspector.TimelineModel.Category.UserTiming))
@@ -1048,8 +1058,8 @@ WebInspector.TimelineModel.prototype = {
     },
 
     /**
-     * @param {!Map<!WebInspector.AsyncEventGroup, !Array<!WebInspector.TracingModel.AsyncEvent>>} target
-     * @param {!Map<!WebInspector.AsyncEventGroup, !Array<!WebInspector.TracingModel.AsyncEvent>>} source
+     * @param {!Map<!WebInspector.TimelineModel.AsyncEventGroup, !Array<!WebInspector.TracingModel.AsyncEvent>>} target
+     * @param {!Map<!WebInspector.TimelineModel.AsyncEventGroup, !Array<!WebInspector.TracingModel.AsyncEvent>>} source
      */
     _mergeAsyncEvents: function(target, source)
     {
@@ -1065,7 +1075,7 @@ WebInspector.TimelineModel.prototype = {
         this._virtualThreads = [];
         /** @type {!Array<!WebInspector.TracingModel.Event>} */
         this._mainThreadEvents = [];
-        /** @type {!Map<!WebInspector.AsyncEventGroup, !Array<!WebInspector.TracingModel.AsyncEvent>>} */
+        /** @type {!Map<!WebInspector.TimelineModel.AsyncEventGroup, !Array<!WebInspector.TracingModel.AsyncEvent>>} */
         this._mainThreadAsyncEventsByGroup = new Map();
         /** @type {!Array<!WebInspector.TracingModel.Event>} */
         this._inspectedTargetEvents = [];
@@ -1128,7 +1138,7 @@ WebInspector.TimelineModel.prototype = {
     },
 
     /**
-     * @return {!Map<!WebInspector.AsyncEventGroup, !Array.<!WebInspector.TracingModel.AsyncEvent>>}
+     * @return {!Map<!WebInspector.TimelineModel.AsyncEventGroup, !Array.<!WebInspector.TracingModel.AsyncEvent>>}
      */
     mainThreadAsyncEvents: function()
     {
@@ -1227,6 +1237,25 @@ WebInspector.TimelineModel.isVisible = function(filters, event)
             return false;
     }
     return true;
+}
+
+/**
+ * @param {!WebInspector.TracingModel.Event} event
+ * @return {boolean}
+ */
+WebInspector.TimelineModel.isMarkerEvent = function(event)
+{
+    var recordTypes = WebInspector.TimelineModel.RecordType;
+    switch (event.name) {
+    case recordTypes.TimeStamp:
+    case recordTypes.MarkFirstPaint:
+        return true;
+    case recordTypes.MarkDOMContent:
+    case recordTypes.MarkLoad:
+        return event.args["data"]["isMainFrame"];
+    default:
+        return false;
+    }
 }
 
 /**

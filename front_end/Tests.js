@@ -951,7 +951,7 @@ TestSuite.prototype.checkInputEventsPresent = function()
     var expectedEvents = new Set(arguments);
     var model = WebInspector.panels.timeline._model;
     var asyncEvents = model.mainThreadAsyncEvents();
-    var input = asyncEvents.get(WebInspector.TimelineUIUtils.asyncEventGroups().input) || [];
+    var input = asyncEvents.get(WebInspector.TimelineModel.AsyncEventGroup.input) || [];
     var prefix = "InputLatency::";
     for (var e of input) {
         if (!e.name.startsWith(prefix))

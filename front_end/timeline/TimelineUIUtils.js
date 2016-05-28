@@ -308,25 +308,6 @@ WebInspector.TimelineUIUtils.interactionPhaseLabel = function(phase)
 }
 
 /**
- * @param {!WebInspector.TracingModel.Event} event
- * @return {boolean}
- */
-WebInspector.TimelineUIUtils.isMarkerEvent = function(event)
-{
-    var recordTypes = WebInspector.TimelineModel.RecordType;
-    switch (event.name) {
-    case recordTypes.TimeStamp:
-    case recordTypes.MarkFirstPaint:
-        return true;
-    case recordTypes.MarkDOMContent:
-    case recordTypes.MarkLoad:
-        return event.args["data"]["isMainFrame"];
-    default:
-        return false;
-    }
-}
-
-/**
  * @param {!RuntimeAgent.CallFrame} frame
  * @return {boolean}
  */
@@ -1546,28 +1527,21 @@ WebInspector.TimelineUIUtils.categories = function()
 };
 
 /**
- * @constructor
- * @param {string} title
+ * @param {!WebInspector.TimelineModel.AsyncEventGroup} group
+ * @return {string}
  */
-WebInspector.AsyncEventGroup = function(title)
+WebInspector.TimelineUIUtils.titleForAsyncEventGroup = function(group)
 {
-    this.title = title;
-}
-
-/**
- * @return {!Object<string, !WebInspector.AsyncEventGroup>}
- */
-WebInspector.TimelineUIUtils.asyncEventGroups = function()
-{
-    if (WebInspector.TimelineUIUtils._asyncEventGroups)
-        return WebInspector.TimelineUIUtils._asyncEventGroups;
-    WebInspector.TimelineUIUtils._asyncEventGroups = {
-        animation: new WebInspector.AsyncEventGroup(WebInspector.UIString("Animation")),
-        console: new WebInspector.AsyncEventGroup(WebInspector.UIString("Console")),
-        userTiming: new WebInspector.AsyncEventGroup(WebInspector.UIString("User Timing")),
-        input: new WebInspector.AsyncEventGroup(WebInspector.UIString("Input"))
-    };
-    return WebInspector.TimelineUIUtils._asyncEventGroups;
+    if (!WebInspector.TimelineUIUtils._titleForAsyncEventGroupMap) {
+        var groups = WebInspector.TimelineModel.AsyncEventGroup;
+        WebInspector.TimelineUIUtils._titleForAsyncEventGroupMap = new Map([
+            [groups.animation, WebInspector.UIString("Animation")],
+            [groups.console, WebInspector.UIString("Console")],
+            [groups.userTiming, WebInspector.UIString("User Timing")],
+            [groups.input, WebInspector.UIString("Input")]
+        ]);
+    }
+    return WebInspector.TimelineUIUtils._titleForAsyncEventGroupMap.get(group) || "";
 }
 
 /**

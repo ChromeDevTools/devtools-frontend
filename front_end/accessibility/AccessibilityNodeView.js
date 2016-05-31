@@ -221,7 +221,8 @@ WebInspector.AXNodePropertyTreeElement.prototype = {
         if (value.type === AXValueType.Idref || value.type === AXValueType.Node ||
             value.type === AXValueType.IdrefList || value.type === AXValueType.NodeList) {
             this.appendRelatedNodeListValueElement(value);
-            return null;
+            if (!value.value)
+                return null;
         } else if (value.sources) {
             var sources = value.sources;
             for (var i = 0; i < sources.length; i++) {
@@ -242,9 +243,16 @@ WebInspector.AXNodePropertyTreeElement.prototype = {
      */
     appendRelatedNode: function(relatedNode, index)
     {
-        if (index > 0)
-            this.listItemElement.createTextChild(",\u00a0");
+        var deferredNode = new WebInspector.DeferredDOMNode(this._target, relatedNode.backendNodeId);
+        var nodeTreeElement = new WebInspector.AXRelatedNodeSourceTreeElement({ deferredNode: deferredNode }, relatedNode);
+        this.appendChild(nodeTreeElement);
+    },
 
+    /**
+     * @param {!AccessibilityAgent.AXRelatedNode} relatedNode
+     */
+    appendRelatedNodeInline: function(relatedNode)
+    {
         var deferredNode = new WebInspector.DeferredDOMNode(this._target, relatedNode.backendNodeId);
         var linkedNode = new WebInspector.AXRelatedNodeElement({ deferredNode: deferredNode }, relatedNode);
         this.listItemElement.appendChild(linkedNode.render());
@@ -255,7 +263,16 @@ WebInspector.AXNodePropertyTreeElement.prototype = {
      */
     appendRelatedNodeListValueElement: function(value)
     {
+        if (value.relatedNodes.length === 1 && !value.value) {
+            this.appendRelatedNodeInline(value.relatedNodes[0]);
+            return;
+        }
+
         value.relatedNodes.forEach(this.appendRelatedNode, this);
+        if (value.relatedNodes.length <= 3)
+            this.expand();
+        else
+            this.collapse();
     },
 
     __proto__: TreeElement.prototype
@@ -322,18 +339,6 @@ WebInspector.AXValueSourceTreeElement.prototype = {
     onattach: function()
     {
         this._update();
-    },
-
-    /**
-     * @param {!AccessibilityAgent.AXRelatedNode} relatedNode
-     * @param {number} index
-     * @override
-     */
-    appendRelatedNode: function(relatedNode, index)
-    {
-        var deferredNode = new WebInspector.DeferredDOMNode(this._target, relatedNode.backendNodeId);
-        var nodeTreeElement = new WebInspector.AXRelatedNodeSourceTreeElement({ deferredNode: deferredNode }, relatedNode);
-        this.appendChild(nodeTreeElement);
     },
 
     /**

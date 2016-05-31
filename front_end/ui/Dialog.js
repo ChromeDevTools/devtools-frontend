@@ -73,7 +73,10 @@ WebInspector.Dialog.prototype = {
 
         this._glassPane = new WebInspector.GlassPane(document, this._dimmed);
         this._glassPane.element.addEventListener("click", this._onGlassPaneClick.bind(this), false);
-        WebInspector.GlassPane.DefaultFocusedViewStack.push(this);
+
+        // When a dialog closes, focus should be restored to the previous focused element when
+        // possible, otherwise the default inspector view element.
+        WebInspector.Dialog._previousFocusedElement = WebInspector.currentFocusElement() || WebInspector.Dialog._modalHostView.defaultFocusedElement();
 
         WebInspector.Widget.prototype.show.call(this, this._glassPane.element);
 
@@ -88,9 +91,12 @@ WebInspector.Dialog.prototype = {
     {
         WebInspector.Widget.prototype.detach.call(this);
 
-        WebInspector.GlassPane.DefaultFocusedViewStack.pop();
         this._glassPane.dispose();
         delete this._glassPane;
+
+        if (WebInspector.Dialog._previousFocusedElement)
+            WebInspector.Dialog._previousFocusedElement.focus();
+        delete WebInspector.Dialog._previousFocusedElement;
 
         this._restoreTabIndexOnElements();
 
@@ -250,6 +256,9 @@ WebInspector.Dialog.prototype = {
 
     __proto__: WebInspector.Widget.prototype
 };
+
+/** @type {?Element} */
+WebInspector.Dialog._previousFocusedElement = null;
 
 /** @type {?WebInspector.Widget} */
 WebInspector.Dialog._modalHostView = null;

@@ -102,9 +102,11 @@ WebInspector.FilteredListWidget.prototype = {
         if (!this._delegate.itemCount())
             return;
         var selectedIndex = this._shouldShowMatchingItems() && this._selectedIndexInFiltered < this._filteredItems.length ? this._filteredItems[this._selectedIndexInFiltered] : null;
-        this._delegate.selectItemWithQuery(selectedIndex, this._value());
+
+        // Detach dialog before allowing delegate to override focus.
         if (this._dialog)
             this._dialog.detach();
+        this._delegate.selectItemWithQuery(selectedIndex, this._value());
     },
 
     _itemsLoaded: function()
@@ -353,9 +355,11 @@ WebInspector.FilteredListWidget.prototype = {
         var itemElement = event.target.enclosingNodeOrSelfWithClass("filtered-list-widget-item");
         if (!itemElement)
             return;
-        this._delegate.selectItemWithQuery(itemElement._index, this._value());
+
+        // Detach dialog before allowing delegate to override focus.
         if (this._dialog)
             this._dialog.detach();
+        this._delegate.selectItemWithQuery(itemElement._index, this._value());
     },
 
     /**

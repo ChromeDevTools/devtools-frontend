@@ -290,19 +290,12 @@ WebInspector.GlassPane.prototype = {
     dispose: function()
     {
         delete WebInspector._glassPane;
-        if (WebInspector.GlassPane.DefaultFocusedViewStack.length)
-            WebInspector.GlassPane.DefaultFocusedViewStack.peekLast().focus();
         this.element.remove();
     }
 }
 
 /** @type {!WebInspector.GlassPane|undefined} */
 WebInspector._glassPane;
-
-/**
- * @type {!Array.<!WebInspector.Widget|!WebInspector.Dialog>}
- */
-WebInspector.GlassPane.DefaultFocusedViewStack = [];
 
 /**
  * @param {?Node=} node
@@ -1631,11 +1624,6 @@ WebInspector.bindInput = function(input, apply, validate, numeric)
         var valid = validate(value);
         input.classList.toggle("error-input", !valid);
         input.value = value;
-
-        // Selection range operations are not supported by type "number" inputs.  This browser
-        // behavior is detailed by the WHATWG forms spec.
-        if (input.type !== "number")
-            input.setSelectionRange(value.length, value.length);
     }
 
     return setValue;

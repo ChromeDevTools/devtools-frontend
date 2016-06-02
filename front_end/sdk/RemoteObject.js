@@ -559,21 +559,7 @@ WebInspector.RemoteObjectImpl.prototype = {
                 return;
             }
 
-            /** @type {?WebInspector.RemoteObject} */
-            var removeFunction = null;
-
-            this.callFunctionPromise(nodeRemoveEventListener).then(storeRemoveFunction.bind(this));
-
-            /**
-             * @param {!WebInspector.CallFunctionResult} result
-             * @this {WebInspector.RemoteObject}
-             */
-            function storeRemoveFunction(result)
-            {
-                if (!result.wasThrown && result.object)
-                    removeFunction = result.object;
-                this.target().domdebuggerAgent().getEventListeners(this._objectId, mycallback.bind(this));
-            }
+            this.target().domdebuggerAgent().getEventListeners(this._objectId, mycallback.bind(this));
 
             /**
              * @this {!WebInspector.RemoteObject}
@@ -590,44 +576,6 @@ WebInspector.RemoteObjectImpl.prototype = {
             }
 
             /**
-             * @suppressReceiverCheck
-             * @this {Node}
-             * @return {function(this:Node, string, function(), boolean=, boolean=): undefined}
-             */
-            function nodeRemoveEventListener()
-            {
-                return removeEventListenerWrapper.bind(this);
-                /**
-                 * @param {string} type
-                 * @param {function()} handler
-                 * @param {boolean=} useCapture
-                 * @param {boolean=} passive
-                 * @this {Node}
-                 */
-                function removeEventListenerWrapper(type, handler, useCapture, passive)
-                {
-                    // TODO(dtapuska): Remove this one closure compiler is updated
-                    // to handle EventListenerOptions and passive event listeners
-                    // has shipped. Don't JSDoc these otherwise it will fail.
-                    // @return {boolean|undefined|{capture: (boolean|undefined), passive: boolean}}
-                    function eventListenerOptions()
-                    {
-                        if (passive && useCapture)
-                            return {"capture": useCapture, "passive": passive};
-                        else if (passive)
-                            return {"passive": passive};
-                        else if (useCapture)
-                            return {"capture": useCapture};
-                        else
-                            return {};
-                    }
-                    this.removeEventListener(type, handler, eventListenerOptions());
-                    if (this["on" + type])
-                        this["on" + type] = null;
-                }
-            }
-
-            /**
              * @this {!WebInspector.RemoteObject}
              * @param {!DOMDebuggerAgent.EventListener} payload
              */
@@ -640,7 +588,7 @@ WebInspector.RemoteObjectImpl.prototype = {
                                                       payload.handler ? this.target().runtimeModel.createRemoteObject(payload.handler) : null,
                                                       payload.originalHandler ? this.target().runtimeModel.createRemoteObject(payload.originalHandler) : null,
                                                       WebInspector.DebuggerModel.Location.fromPayload(this._debuggerModel, payload.location),
-                                                      removeFunction);
+                                                      payload.removeFunction ? this.target().runtimeModel.createRemoteObject(payload.removeFunction) : null);
             }
         }
     },

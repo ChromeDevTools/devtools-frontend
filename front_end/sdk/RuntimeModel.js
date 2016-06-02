@@ -810,33 +810,24 @@ WebInspector.EventListener.prototype = {
     {
         if (!this._removeFunction)
             return Promise.resolve();
-        return new Promise(promiseConstructor.bind(this));
-
-        /**
-         * @param {function()} success
-         * @this {WebInspector.EventListener}
-         */
-        function promiseConstructor(success)
-        {
-            this._removeFunction.callFunction(callCustomRemove, [
-                WebInspector.RemoteObject.toCallArgument(this._removeFunction),
+        return this._removeFunction.callFunctionPromise(callCustomRemove, [
                 WebInspector.RemoteObject.toCallArgument(this._type),
                 WebInspector.RemoteObject.toCallArgument(this._originalHandler),
                 WebInspector.RemoteObject.toCallArgument(this._useCapture),
                 WebInspector.RemoteObject.toCallArgument(this._passive),
-            ], success);
+            ]).then(() => undefined);
 
-            /**
-             * @param {function(string, function(), boolean, boolean)} func
-             * @param {string} type
-             * @param {function()} listener
-             * @param {boolean} useCapture
-             * @param {boolean} passive
-             */
-            function callCustomRemove(func, type, listener, useCapture, passive)
-            {
-                func.call(null, type, listener, useCapture, passive);
-            }
+        /**
+         * @param {string} type
+         * @param {function()} listener
+         * @param {boolean} useCapture
+         * @param {boolean} passive
+         * @this {Function}
+         * @suppressReceiverCheck
+         */
+        function callCustomRemove(type, listener, useCapture, passive)
+        {
+            this.call(null, type, listener, useCapture, passive);
         }
     },
 

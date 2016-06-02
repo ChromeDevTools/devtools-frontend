@@ -3854,7 +3854,8 @@
                     { "name": "passive", "type": "boolean", "description": "<code>EventListener</code>'s passive flag." },
                     { "name": "location", "$ref": "Debugger.Location", "description": "Handler code location." },
                     { "name": "handler", "$ref": "Runtime.RemoteObject", "optional": true, "description": "Event handler function value." },
-                    { "name": "originalHandler", "$ref": "Runtime.RemoteObject", "optional": true, "description": "Event original handler function value." }
+                    { "name": "originalHandler", "$ref": "Runtime.RemoteObject", "optional": true, "description": "Event original handler function value." },
+                    { "name": "removeFunction", "$ref": "Runtime.RemoteObject", "optional": true, "description": "Event listener remove function." }
                 ],
                 "hidden": true
             }

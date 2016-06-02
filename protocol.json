@@ -73,7 +73,7 @@
     {
         "domain": "Page",
         "description": "Actions and events related to the inspected page belong to the page domain.",
-        "depends": ["Debugger", "DOM"],
+        "dependencies": ["Debugger", "DOM"],
         "types": [
             {
                 "id": "ResourceType",
@@ -1084,7 +1084,7 @@
     {
         "domain": "Console",
         "description": "Console domain defines methods and events for interaction with the JavaScript console. Console collects messages created by means of the <a href='http://getfirebug.com/wiki/index.php/Console_API'>JavaScript Console API</a>. One needs to enable this domain using <code>enable</code> command in order to start receiving the console messages. Browser collects messages issued while console domain is not enabled as well and reports them using <code>messageAdded</code> notification upon enabling.",
-        "depends": ["Runtime"],
+        "dependencies": ["Runtime"],
         "types": [
             {
                 "id": "Timestamp",
@@ -1159,6 +1159,11 @@
         "hidden": true,
         "types": [
             {
+                "id": "CertificateId",
+                "type": "integer",
+                "description": "An internal certificate ID value."
+            },
+            {
                 "id": "SecurityState",
                 "type": "string",
                 "enum": ["unknown", "neutral", "insecure", "warning", "secure", "info"],
@@ -1171,7 +1176,7 @@
                     { "name": "securityState", "$ref": "SecurityState", "description": "Security state representing the severity of the factor being explained." },
                     { "name": "summary", "type": "string", "description": "Short phrase describing the type of factor." },
                     { "name": "description", "type": "string", "description": "Full text explanation of the factor." },
-                    { "name": "certificateId", "$ref": "Network.CertificateId", "optional": true, "description": "Associated certificate id." }
+                    { "name": "certificateId", "$ref": "CertificateId", "optional": true, "description": "Associated certificate id." }
                 ],
                 "description": "An explanation of an factor contributing to the security state."
             },
@@ -1216,7 +1221,7 @@
     {
         "domain": "Network",
         "description": "Network domain allows tracking network activities of the page. It exposes information about http, file, data and other requests and responses, their headers, bodies, timing, etc.",
-        "depends": ["Runtime"],
+        "dependencies": ["Runtime", "Security"],
         "types": [
             {
                 "id": "LoaderId",
@@ -1281,11 +1286,6 @@
                 ]
             },
             {
-                "id": "CertificateId",
-                "type": "integer",
-                "description": "An internal certificate ID value."
-            },
-            {
                 "id": "CertificateSubject",
                 "type": "object",
                 "description": "Subject of a certificate.",
@@ -1325,7 +1325,7 @@
                     { "name": "keyExchange", "type": "string", "description": "Key Exchange used by the connection." },
                     { "name": "cipher", "type": "string", "description": "Cipher name." },
                     { "name": "mac", "type": "string", "optional": true, "description": "TLS MAC. Note that AEAD ciphers do not have separate MACs." },
-                    { "name": "certificateId", "$ref": "CertificateId", "description": "Certificate ID value." },
+                    { "name": "certificateId", "$ref": "Security.CertificateId", "description": "Certificate ID value." },
                     { "name": "certificateValidationDetails", "$ref": "CertificateValidationDetails", "optional": true, "description": "Validation details for the request's certficate." }
                 ]
             },
@@ -1602,7 +1602,7 @@
                 "name": "getCertificateDetails",
                 "description": "Returns details for the given certificate.",
                 "parameters": [
-                    { "name": "certificateId", "$ref": "CertificateId", "description": "ID of the certificate to get details for." }
+                    { "name": "certificateId", "$ref": "Security.CertificateId", "description": "ID of the certificate to get details for." }
                 ],
                 "returns": [
                     { "name": "result", "$ref": "CertificateDetails", "description": "Certificate details." }
@@ -1613,7 +1613,7 @@
                 "name": "showCertificateViewer",
                 "description": "Displays native dialog with the certificate details.",
                 "parameters": [
-                    { "name": "certificateId", "$ref": "CertificateId", "description": "Certificate id." }
+                    { "name": "certificateId", "$ref": "Security.CertificateId", "description": "Certificate id." }
                 ],
                 "handlers": ["browser"]
             }
@@ -2249,7 +2249,7 @@
     {
         "domain": "DOM",
         "description": "This domain exposes DOM read/write operations. Each DOM Node is represented with its mirror object that has an <code>id</code>. This <code>id</code> can be used to get additional information on the Node, resolve it into the JavaScript object wrapper, etc. It is important that client receives DOM events only for the nodes that are known to the client. Backend keeps track of the nodes that were sent to the client and never sends the same node twice. It is client's responsibility to collect information about the nodes that were sent to the client.<p>Note that <code>iframe</code> owner elements will return corresponding document elements as their child nodes.</p>",
-        "depends": ["Runtime"],
+        "dependencies": ["Runtime"],
         "types": [
             {
                 "id": "NodeId",
@@ -2929,7 +2929,7 @@
         "domain": "CSS",
         "hidden": true,
         "description": "This domain exposes CSS read/write operations. All CSS objects (stylesheets, rules, and styles) have an associated <code>id</code> used in subsequent operations on the related object. Each object type has a specific <code>id</code> structure, and those are not interchangeable between objects of different kinds. CSS objects can be loaded using the <code>get*ForNode()</code> calls (which accept a DOM node id). A client can also discover all the existing stylesheets with the <code>getAllStyleSheets()</code> method (or keeping track of the <code>styleSheetAdded</code>/<code>styleSheetRemoved</code> events) and subsequently load the required stylesheet contents using the <code>getStyleSheet[Text]()</code> methods.",
-        "depends": ["DOM"],
+        "dependencies": ["DOM"],
         "types": [
             {
                 "id": "StyleSheetId",
@@ -3407,7 +3407,7 @@
     {
         "domain": "Debugger",
         "description": "Debugger domain exposes JavaScript debugging capabilities. It allows setting and removing breakpoints, stepping through execution, exploring stack traces, etc.",
-        "depends": ["Runtime"],
+        "dependencies": ["Runtime"],
         "types": [
             {
                 "id": "BreakpointId",
@@ -3836,6 +3836,7 @@
     {
         "domain": "DOMDebugger",
         "description": "DOM debugging allows setting breakpoints on particular DOM operations and events. JavaScript execution will stop on these operations as if there was a regular breakpoint set.",
+        "dependencies": ["DOM", "Debugger"],
         "types": [
             {
                 "id": "DOMBreakpointType",
@@ -3936,7 +3937,7 @@
     },
     {
         "domain": "Profiler",
-        "depends": ["Runtime"],
+        "dependencies": ["Runtime", "Debugger"],
         "hidden": true,
         "types": [
             {
@@ -4027,7 +4028,7 @@
     },
     {
         "domain": "HeapProfiler",
-        "depends": ["Runtime"],
+        "dependencies": ["Runtime"],
         "hidden": true,
         "types": [
             {
@@ -4578,6 +4579,7 @@
     {
         "domain": "LayerTree",
         "hidden": true,
+        "dependencies": ["DOM"],
         "types": [
             {
                 "id": "LayerId",
@@ -4859,7 +4861,7 @@
     {
         "domain": "Animation",
         "hidden": true,
-        "depends": ["Runtime", "DOM"],
+        "dependencies": ["Runtime", "DOM"],
         "types": [
             {
                 "id": "Animation",
@@ -5020,7 +5022,7 @@
     {
         "domain": "Accessibility",
         "hidden": true,
-        "depends": ["DOM"],
+        "dependencies": ["DOM"],
         "types": [
             {
                 "id": "AXNodeId",

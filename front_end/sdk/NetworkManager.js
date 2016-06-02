@@ -51,7 +51,7 @@ WebInspector.NetworkManager = function(target)
     else
         this._networkAgent.enable();
 
-    /** @type {!Map<!NetworkAgent.CertificateId, !Promise<!NetworkAgent.CertificateDetails>>} */
+    /** @type {!Map<!SecurityAgent.CertificateId, !Promise<!NetworkAgent.CertificateDetails>>} */
     this._certificateDetailsCache = new Map();
 
     this._bypassServiceWorkerSetting = WebInspector.settings.createSetting("bypassServiceWorker", false);
@@ -113,7 +113,7 @@ WebInspector.NetworkManager.prototype = {
     },
 
     /**
-     * @param {!NetworkAgent.CertificateId} certificateId
+     * @param {!SecurityAgent.CertificateId} certificateId
      * @return {!Promise<!NetworkAgent.CertificateDetails>}
      */
     certificateDetailsPromise: function(certificateId)
@@ -880,7 +880,7 @@ WebInspector.MultitargetNetworkManager.prototype = {
     },
 
     /**
-     * @param {!NetworkAgent.CertificateId} certificateId
+     * @param {!SecurityAgent.CertificateId} certificateId
      */
     showCertificateViewer: function(certificateId)
     {

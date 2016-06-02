@@ -305,7 +305,7 @@ WebInspector.SecurityPanel._instance = function()
 
 /**
  * @param {string} text
- * @param {!NetworkAgent.CertificateId} certificateId
+ * @param {!SecurityAgent.CertificateId} certificateId
  * @return {!Element}
  */
 WebInspector.SecurityPanel.createCertificateViewerButton = function(text, certificateId)

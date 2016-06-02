@@ -548,6 +548,10 @@ WebInspector.DeviceModeView.Ruler.prototype = {
             step = 4;
         if (this._scale < 0.4)
             step = 8;
+        if (this._scale < 0.2)
+            step = 16;
+        if (this._scale < 0.1)
+            step = 32;
 
         for (var i = count; i < this._count; i++) {
             if (!(i % step))

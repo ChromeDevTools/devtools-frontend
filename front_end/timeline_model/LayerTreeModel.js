@@ -194,6 +194,7 @@ WebInspector.LayerTreeBase.prototype = {
     {
         this._root = null;
         this._contentRoot = null;
+        this._layers = null;
     },
 
     /**
@@ -218,6 +219,14 @@ WebInspector.LayerTreeBase.prototype = {
     contentRoot: function()
     {
         return this._contentRoot;
+    },
+
+    /**
+     * @return {!Array.<!WebInspector.Layer>}
+     */
+    layers: function()
+    {
+        return this._layers;
     },
 
     /**
@@ -312,12 +321,20 @@ WebInspector.TracingLayerTree = function(target)
 WebInspector.TracingLayerTree.prototype = {
     /**
      * @param {!WebInspector.TracingLayerPayload} root
+     * @param {?Array.<!WebInspector.TracingLayerPayload>} layers
      * @param {function()} callback
      */
-    setLayers: function(root, callback)
+    setLayers: function(root, layers, callback)
     {
         var idsToResolve = new Set();
-        this._extractNodeIdsToResolve(idsToResolve, {}, root);
+        if (root) {
+            // This is a legacy code path for compatibility, as cc is removing
+            // layer tree hierarchy, this code will eventually be removed.
+            this._extractNodeIdsToResolve(idsToResolve, {}, root);
+        } else {
+            for (var i = 0; i < layers.length; ++i)
+                this._extractNodeIdsToResolve(idsToResolve, {}, layers[i]);
+        }
         this._resolveBackendNodeIds(idsToResolve, onBackendNodeIdsResolved.bind(this));
 
         /**
@@ -328,7 +345,17 @@ WebInspector.TracingLayerTree.prototype = {
             var oldLayersById = this._layersById;
             this._layersById = {};
             this._contentRoot = null;
-            this._root = this._innerSetLayers(oldLayersById, root);
+            if (root) {
+                this._root = this._innerSetLayers(oldLayersById, root);
+            } else {
+                this._layers = layers.map(this._innerSetLayers.bind(this, oldLayersById));
+                this._root = this._contentRoot;
+                for (var i = 0; i < this._layers.length; ++i) {
+                    if (this._layers[i].id() !== this._contentRoot.id()) {
+                        this._contentRoot.addChild(this._layers[i]);
+                    }
+                }
+            }
             callback();
         }
     },

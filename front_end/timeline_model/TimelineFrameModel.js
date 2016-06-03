@@ -491,10 +491,11 @@ WebInspector.DeferredTracingLayerTree.prototype = {
             var viewport = result["device_viewport_size"];
             var tiles = result["active_tiles"];
             var rootLayer = result["active_tree"]["root_layer"];
+            var layers = result["active_tree"]["layers"];
             var layerTree = new WebInspector.TracingLayerTree(this._target);
             layerTree.setViewportSize(viewport);
             layerTree.setTiles(tiles);
-            layerTree.setLayers(rootLayer, callback.bind(null, layerTree));
+            layerTree.setLayers(rootLayer, layers, callback.bind(null, layerTree));
         }
     },
 

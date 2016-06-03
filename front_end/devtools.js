@@ -303,10 +303,28 @@ DevToolsAPIImpl.prototype = {
     /**
      * @param {number} id
      * @param {string} chunk
+     * @param {boolean} encoded
      */
-    streamWrite: function(id, chunk)
+    streamWrite: function(id, chunk, encoded)
     {
-        this._dispatchOnInspectorFrontendAPI("streamWrite", [id, chunk]);
+        this._dispatchOnInspectorFrontendAPI("streamWrite", [id, encoded ? this._decodeBase64(chunk) : chunk]);
+    },
+
+    /**
+     * @param {string} chunk
+     * @return {string}
+     */
+    _decodeBase64: function(chunk)
+    {
+        var request = new XMLHttpRequest();
+        request.open("GET", "data:text/plain;base64," + chunk, false);
+        request.send(null);
+        if (request.status === 200) {
+            return request.responseText;
+        } else {
+            console.error("Error while decoding chunk in streamWrite");
+            return "";
+        }
     }
 }
 

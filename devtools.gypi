@@ -359,6 +359,7 @@
             'front_end/sources/module.json',
             'front_end/snippets/module.json',
             'front_end/temp_storage_shared_worker/module.json',
+            'front_end/timeline_model/module.json',
             'front_end/timeline/module.json',
             'front_end/toolbox_bootstrap/module.json',
             'front_end/ui/module.json',

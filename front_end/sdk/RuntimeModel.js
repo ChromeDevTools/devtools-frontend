@@ -714,6 +714,7 @@ WebInspector.ExecutionContext.prototype = {
  * @constructor
  * @extends {WebInspector.SDKObject}
  * @param {!WebInspector.Target} target
+ * @param {!WebInspector.RemoteObject} eventTarget
  * @param {string} type
  * @param {boolean} useCapture
  * @param {boolean} passive
@@ -723,9 +724,10 @@ WebInspector.ExecutionContext.prototype = {
  * @param {?WebInspector.RemoteObject} removeFunction
  * @param {string=} listenerType
  */
-WebInspector.EventListener = function(target, type, useCapture, passive, handler, originalHandler, location, removeFunction, listenerType)
+WebInspector.EventListener = function(target, eventTarget, type, useCapture, passive, handler, originalHandler, location, removeFunction, listenerType)
 {
     WebInspector.SDKObject.call(this, target);
+    this._eventTarget = eventTarget;
     this._type = type;
     this._useCapture = useCapture;
     this._passive = passive;
@@ -832,6 +834,42 @@ WebInspector.EventListener.prototype = {
     },
 
     /**
+     * @return {!Promise<undefined>}
+     */
+    togglePassive: function()
+    {
+        return new Promise(promiseConstructor.bind(this));
+
+        /**
+         * @param {function()} success
+         * @this {WebInspector.EventListener}
+         */
+        function promiseConstructor(success)
+        {
+            this._eventTarget.callFunctionPromise(callTogglePassive, [
+                WebInspector.RemoteObject.toCallArgument(this._type),
+                WebInspector.RemoteObject.toCallArgument(this._originalHandler),
+                WebInspector.RemoteObject.toCallArgument(this._useCapture),
+                WebInspector.RemoteObject.toCallArgument(this._passive),
+            ]).then(success);
+
+            /**
+             * @param {string} type
+             * @param {function()} listener
+             * @param {boolean} useCapture
+             * @param {boolean} passive
+             * @this {Object}
+             * @suppressReceiverCheck
+             */
+            function callTogglePassive(type, listener, useCapture, passive)
+            {
+                this.removeEventListener(type, listener, {capture: useCapture});
+                this.addEventListener(type, listener, {capture: useCapture, passive: !passive});
+            }
+        }
+    },
+
+    /**
      * @return {string}
      */
     listenerType: function()
@@ -845,6 +883,22 @@ WebInspector.EventListener.prototype = {
     setListenerType: function(listenerType)
     {
         this._listenerType = listenerType;
+    },
+
+    /**
+     * @return {boolean}
+     */
+    isScrollBlockingType: function()
+    {
+        return this._type === "touchstart" || this._type === "touchmove" || this._type === "mousewheel" || this._type === "wheel";
+    },
+
+    /**
+     * @return {boolean}
+     */
+    isNormalListenerType: function()
+    {
+        return this._listenerType === "normal";
     },
 
     __proto__: WebInspector.SDKObject.prototype

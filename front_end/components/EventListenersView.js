@@ -10,10 +10,12 @@ WebInspector.EventListenersResult;
 /**
  * @constructor
  * @param {!Element} element
+ * @param {function()} changeCallback
  */
-WebInspector.EventListenersView = function(element)
+WebInspector.EventListenersView = function(element, changeCallback)
 {
     this._element = element;
+    this._changeCallback = changeCallback;
     this._treeOutline = new TreeOutlineInShadow();
     this._treeOutline.hideOverflow();
     this._treeOutline.registerRequiredCSS("components/objectValue.css");
@@ -178,7 +180,7 @@ WebInspector.EventListenersView.prototype = {
     {
         var treeItem = this._treeItemMap.get(type);
         if (!treeItem) {
-            treeItem = new WebInspector.EventListenersTreeElement(type, this._linkifier);
+            treeItem = new WebInspector.EventListenersTreeElement(type, this._linkifier, this._changeCallback);
             this._treeItemMap.set(type, treeItem);
             treeItem.hidden = true;
             this._treeOutline.appendChild(treeItem);
@@ -216,13 +218,15 @@ WebInspector.EventListenersView.prototype = {
  * @extends {TreeElement}
  * @param {string} type
  * @param {!WebInspector.Linkifier} linkifier
+ * @param {function()} changeCallback
  */
-WebInspector.EventListenersTreeElement = function(type, linkifier)
+WebInspector.EventListenersTreeElement = function(type, linkifier, changeCallback)
 {
     TreeElement.call(this, type);
     this.toggleOnClick = true;
     this.selectable = false;
     this._linkifier = linkifier;
+    this._changeCallback = changeCallback;
 }
 
 /**
@@ -243,7 +247,7 @@ WebInspector.EventListenersTreeElement.prototype = {
      */
     addObjectEventListener: function(eventListener, object)
     {
-        var treeElement = new WebInspector.ObjectEventListenerBar(eventListener, object, this._linkifier);
+        var treeElement = new WebInspector.ObjectEventListenerBar(eventListener, object, this._linkifier, this._changeCallback);
         this.appendChild(/** @type {!TreeElement} */ (treeElement));
     },
 
@@ -256,14 +260,16 @@ WebInspector.EventListenersTreeElement.prototype = {
  * @param {!WebInspector.EventListener} eventListener
  * @param {!WebInspector.RemoteObject} object
  * @param {!WebInspector.Linkifier} linkifier
+ * @param {function()} changeCallback
  */
-WebInspector.ObjectEventListenerBar = function(eventListener, object, linkifier)
+WebInspector.ObjectEventListenerBar = function(eventListener, object, linkifier, changeCallback)
 {
     TreeElement.call(this, "", true);
     this._eventListener = eventListener;
     this.editable = false;
     this.selectable = false;
     this._setTitle(object, linkifier);
+    this._changeCallback = changeCallback;
 }
 
 WebInspector.ObjectEventListenerBar.prototype = {
@@ -292,11 +298,20 @@ WebInspector.ObjectEventListenerBar.prototype = {
         title.appendChild(WebInspector.ObjectPropertiesSection.createValueElement(object, false));
 
         if (this._eventListener.removeFunction()) {
-            var deleteButton = title.createChild("span", "event-listener-delete-button");
+            var deleteButton = title.createChild("span", "event-listener-button");
             deleteButton.textContent = WebInspector.UIString("Remove");
             deleteButton.title = WebInspector.UIString("Delete event listener");
             deleteButton.addEventListener("click", removeListener.bind(this), false);
             title.appendChild(deleteButton);
+        }
+
+        if (this._eventListener.isScrollBlockingType() &&
+            this._eventListener.isNormalListenerType()) {
+            var passiveButton = title.createChild("span", "event-listener-button");
+            passiveButton.textContent = WebInspector.UIString("Toggle Passive");
+            passiveButton.title = WebInspector.UIString("Toggle whether event listener is passive or blocking");
+            passiveButton.addEventListener("click", togglePassiveListener.bind(this), false);
+            title.appendChild(passiveButton);
         }
 
         /**
@@ -308,6 +323,16 @@ WebInspector.ObjectEventListenerBar.prototype = {
             event.consume();
             this._removeListenerBar();
             this._eventListener.remove();
+        }
+
+        /**
+         * @param {!WebInspector.Event} event
+         * @this {WebInspector.ObjectEventListenerBar}
+         */
+        function togglePassiveListener(event)
+        {
+            event.consume();
+            this._eventListener.togglePassive().then(this._changeCallback());
         }
     },
 

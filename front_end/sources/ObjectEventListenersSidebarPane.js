@@ -16,7 +16,7 @@ WebInspector.ObjectEventListenersSidebarPane = function()
     this._refreshButton.setEnabled(false);
     this.toolbar().appendToolbarItem(this._refreshButton);
 
-    this._eventListenersView = new WebInspector.EventListenersView(this.element);
+    this._eventListenersView = new WebInspector.EventListenersView(this.element, this.update.bind(this));
 }
 
 WebInspector.ObjectEventListenersSidebarPane._objectGroupName = "object-event-listeners-sidebar-pane";

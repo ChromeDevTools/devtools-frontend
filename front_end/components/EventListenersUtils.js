@@ -179,7 +179,7 @@ WebInspector.EventListener.frameworkEventListeners = function(object)
             {
                 if (!location)
                     throw new Error("Empty event listener's location");
-                return new WebInspector.EventListener(handler._target, type, useCapture, passive, handler, originalHandler, location, removeFunctionObject, "frameworkUser");
+                return new WebInspector.EventListener(handler._target, object, type, useCapture, passive, handler, originalHandler, location, removeFunctionObject, "frameworkUser");
             }
         }
     }

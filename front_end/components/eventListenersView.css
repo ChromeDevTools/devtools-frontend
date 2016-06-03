@@ -37,7 +37,7 @@
     margin-left: 5px;
 }
 
-.event-listener-delete-button {
+.event-listener-button {
     padding: 0 3px;
     background-color: #f2f2f2;
     border-radius: 3px;
@@ -47,10 +47,10 @@
     cursor: pointer;
 }
 
-.event-listener-delete-button:hover {
+.event-listener-button:hover {
     background-color: #e0e0e0;
 }
 
-.tree-outline-disclosure li:hover .event-listener-delete-button {
+.tree-outline-disclosure li:hover .event-listener-button {
     display: inline;
 }

@@ -44,7 +44,7 @@ WebInspector.EventListenersWidget = function()
 
     this._showFrameworkListenersSetting = WebInspector.settings.createSetting("showFrameowkrListeners", true);
     this._showFrameworkListenersSetting.addChangeListener(this._showFrameworkListenersChanged.bind(this));
-    this._eventListenersView = new WebInspector.EventListenersView(this.element);
+    this._eventListenersView = new WebInspector.EventListenersView(this.element, this.update.bind(this));
     WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this.update, this);
 }
 

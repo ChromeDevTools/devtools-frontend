@@ -582,6 +582,7 @@ WebInspector.RemoteObjectImpl.prototype = {
             function createEventListener(payload)
             {
                 return new WebInspector.EventListener(this._target,
+                                                      this,
                                                       payload.type,
                                                       payload.useCapture,
                                                       payload.passive,

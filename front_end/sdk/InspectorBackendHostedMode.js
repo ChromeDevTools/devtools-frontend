@@ -122,4 +122,4 @@ WebInspector.InspectorBackendHostedMode.generateCommands = function(schema)
     return result.join("\n");
 }
 
-WebInspector.InspectorBackendHostedMode.loadFromJSONIfNeeded("../protocol.json");
+WebInspector.InspectorBackendHostedMode.loadFromJSONIfNeeded("../inspector.json");

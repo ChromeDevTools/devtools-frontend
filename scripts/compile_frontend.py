@@ -97,7 +97,7 @@ loaded_css_regex = re.compile(r'(?:registerRequiredCSS|WebInspector\.View\.creat
 java_build_regex = re.compile(r'^\w+ version "(\d+)\.(\d+)')
 errors_found = False
 
-generate_protocol_externs.generate_protocol_externs(protocol_externs_file, path.join(devtools_path, 'protocol.json'))
+generate_protocol_externs.generate_protocol_externs(protocol_externs_file, path.join(inspector_path, 'browser_protocol.js'), path.join(v8_inspector_path, 'v8_protocol.js'))
 
 
 # Based on http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python.

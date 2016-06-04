@@ -3,6 +3,7 @@
 # found in the LICENSE file.
 
 import("//build/config/features.gni")
+import("//third_party/WebKit/Source/core/core.gni")
 
 gypi_values = exec_script("//build/gypi_to_gn.py",
                           [ rebase_path("devtools.gypi") ],
@@ -224,9 +225,11 @@ action("supported_css_properties") {
 
 action("frontend_protocol_sources") {
   script = "scripts/CodeGeneratorFrontend.py"
-
+  deps = [
+    "../core/inspector:protocol_version",
+  ]
   inputs = [
-    "protocol.json",
+    "$blink_core_output_dir/inspector/protocol.json",
   ]
   outputs = [
     resources_out_dir + "InspectorBackendCommands.js",

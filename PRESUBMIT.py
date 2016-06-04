@@ -71,7 +71,8 @@ def _CompileDevtoolsFrontend(input_api, output_api):
     if (any(devtools_front_end in path for path in local_paths) or
         any("protocol.json" in path for path in local_paths) or
         any("compile_frontend.py" in path for path in local_paths) or
-        any("InjectedScriptSource.js" in path for path in local_paths)):
+        any("InjectedScriptSource.js" in path for path in local_paths) or
+        any("DebuggerScript.js" in path for path in local_paths)):
         lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
             "scripts", "compile_frontend.py")
         out, _ = input_api.subprocess.Popen(

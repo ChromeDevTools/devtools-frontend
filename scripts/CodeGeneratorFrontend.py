@@ -53,7 +53,7 @@ except Exception:
     # Work with python 2 and 3 http://docs.python.org/py3k/howto/pyporting.html
     exc = sys.exc_info()[1]
     sys.stderr.write("Failed to parse command-line arguments: %s\n\n" % exc)
-    sys.stderr.write("Usage: <script> protocol.json --output_js_dir <output_js_dir>\n")
+    sys.stderr.write("Usage: <script> some.json --output_js_dir <output_js_dir>\n")
     exit(1)
 
 

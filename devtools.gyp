@@ -188,12 +188,12 @@
         {
           'target_name': 'frontend_protocol_sources',
           'type': 'none',
+          'dependencies': [
+            '../core/inspector/inspector.gyp:protocol_version'
+          ],
           'actions': [
             {
               'action_name': 'generateInspectorProtocolFrontendSources',
-              'dependencies': [
-                '../core/inspector:protocol_version'
-              ],
               'inputs': [
                 # The python script in action below.
                 'scripts/CodeGeneratorFrontend.py',

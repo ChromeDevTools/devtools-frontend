@@ -112,7 +112,7 @@ WebInspector.Main.prototype = {
         Runtime.experiments.register("layersPanel", "Layers panel");
         Runtime.experiments.register("layoutEditor", "Layout editor", true);
         Runtime.experiments.register("inspectTooltip", "Dark inspect element tooltip");
-        Runtime.experiments.register("liveSASS", "Live SASS", true);
+        Runtime.experiments.register("liveSASS", "Live SASS");
         Runtime.experiments.register("privateScriptInspection", "Private script inspection");
         Runtime.experiments.register("requestBlocking", "Request blocking", true);
         Runtime.experiments.register("resolveVariableNames", "Resolve variable names");

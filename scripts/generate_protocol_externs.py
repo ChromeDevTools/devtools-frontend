@@ -97,7 +97,7 @@ def load_schema(file, domains):
     input_file = open(file, "r")
     json_string = input_file.read()
     parsed_json = json.loads(json_string)
-    domains.append(parsed_json["domains"])
+    domains.extend(parsed_json["domains"])
 
 
 def generate_protocol_externs(output_path, file1, file2):

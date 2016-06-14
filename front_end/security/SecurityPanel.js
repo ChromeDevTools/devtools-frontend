@@ -608,7 +608,7 @@ WebInspector.SecurityMainView.prototype = {
         this._securityState = newSecurityState;
         this._summarySection.classList.add("security-summary-" + this._securityState);
         var summaryExplanationStrings = {
-            "unknown":  WebInspector.UIString("This security of this page is unknown."),
+            "unknown":  WebInspector.UIString("The security of this page is unknown."),
             "insecure": WebInspector.UIString("This page is insecure (broken HTTPS)."),
             "neutral":  WebInspector.UIString("This page is not secure."),
             "secure":   WebInspector.UIString("This page is secure (valid HTTPS).")

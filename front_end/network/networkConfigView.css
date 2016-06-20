@@ -84,7 +84,8 @@
 }
 
 .network-config-ua input[type="text"]:invalid {
-    outline: auto red;
+    outline: auto 2px red;
+    outline-offset: -2px;
 }
 
 .network-config-ua .chrome-select {

@@ -116,7 +116,7 @@ WebInspector.NetworkConfigView.createUserAgentSelectAndInput = function()
 
     settingChanged();
     userAgentSelectElement.addEventListener("change", userAgentSelected, false);
-    otherUserAgentElement.addEventListener("input", textChanged, false);
+    otherUserAgentElement.addEventListener("input", applyOtherUserAgent, false);
 
     function userAgentSelected()
     {
@@ -147,7 +147,7 @@ WebInspector.NetworkConfigView.createUserAgentSelectAndInput = function()
             userAgentSelectElement.selectedIndex = 0;
     }
 
-    function textChanged()
+    function applyOtherUserAgent()
     {
         if (userAgentSetting.get() !== otherUserAgentElement.value) {
             userAgentSetting.set(otherUserAgentElement.value);

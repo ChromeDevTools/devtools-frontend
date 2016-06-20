@@ -985,6 +985,8 @@ function installObjectObserve()
  */
 function sanitizeRemoteFrontendUrl()
 {
+    var remoteBaseRegexp = /^https:\/\/chrome-devtools-frontend\.appspot\.com\/serve_file\/@[0-9a-zA-Z]+\/?$/;
+    var remoteFrontendUrlRegexp = /^https:\/\/chrome-devtools-frontend\.appspot\.com\/serve_rev\/@?[0-9a-zA-Z]+\/(devtools|inspector)\.html$/;
     var queryParams = location.search;
     if (!queryParams)
         return;
@@ -993,7 +995,9 @@ function sanitizeRemoteFrontendUrl()
         var pair = params[i].split("=");
         var name = pair.shift();
         var value = pair.join("=");
-        if (name === "remoteFrontendUrl" && !value.startsWith("https://chrome-devtools-frontend.appspot.com/"))
+        if (name === "remoteFrontendUrl" && !remoteFrontendUrlRegexp.test(value))
+            location.search = "";
+        if (name === "remoteBase" && !remoteBaseRegexp.test(value))
             location.search = "";
     }
 }

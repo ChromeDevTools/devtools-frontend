@@ -121,8 +121,13 @@ function loadScriptsPromise(scriptNames, base)
     for (var i = 0; i < scriptNames.length; ++i) {
         var scriptName = scriptNames[i];
         var sourceURL = (base || self._importScriptPathPrefix) + scriptName;
+
         var schemaIndex = sourceURL.indexOf("://") + 3;
-        sourceURL = sourceURL.substring(0, schemaIndex) + normalizePath(sourceURL.substring(schemaIndex));
+        var pathIndex = sourceURL.indexOf("/", schemaIndex);
+        if (pathIndex === -1)
+            pathIndex = sourceURL.length;
+        sourceURL = sourceURL.substring(0, pathIndex) + normalizePath(sourceURL.substring(pathIndex));
+
         if (_loadedScripts[sourceURL])
             continue;
         urls.push(sourceURL);
@@ -1160,7 +1165,8 @@ Runtime.experiments = new Runtime.ExperimentsSupport();
 Runtime._remoteBase = Runtime.queryParam("remoteBase");
 {(function validateRemoteBase()
 {
-    if (Runtime._remoteBase && !Runtime._remoteBase.startsWith("https://chrome-devtools-frontend.appspot.com/"))
+    var remoteBaseRegexp = /^https:\/\/chrome-devtools-frontend\.appspot\.com\/serve_file\/@[0-9a-zA-Z]+\/?$/;
+    if (Runtime._remoteBase && !remoteBaseRegexp.test(Runtime._remoteBase))
         Runtime._remoteBase = null;
 })();}
 

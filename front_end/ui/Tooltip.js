@@ -106,6 +106,7 @@ WebInspector.Tooltip.prototype = {
         const anchorOffset = 2;
         const pageMargin = 2;
         var cursorOffset = 10;
+        this._tooltipElement.classList.toggle("tooltip-breakword", !this._tooltipElement.textContent.match("\\s"));
         this._tooltipElement.style.maxWidth = (containerOffsetWidth - pageMargin * 2) + "px";
         this._tooltipElement.style.maxHeight = "";
         var tooltipWidth = this._tooltipElement.offsetWidth;

@@ -28,6 +28,10 @@
     overflow: hidden;
 }
 
+.tooltip-breakword {
+    word-break: break-word;
+}
+
 .tooltip.shown {
     visibility: visible;
     transition-delay: 600ms;

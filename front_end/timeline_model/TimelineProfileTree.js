@@ -218,11 +218,13 @@ WebInspector.TimelineProfileTree.eventStackFrame = function(event)
 
 /**
  * @constructor
- * @param {function(!WebInspector.TracingModel.Event):{title: string, category: !WebInspector.TimelineCategory}} eventStyleMapper
+ * @param {function(!WebInspector.TracingModel.Event):string} titleMapper
+ * @param {function(!WebInspector.TracingModel.Event):string} categoryMapper
  */
-WebInspector.TimelineAggregator = function(eventStyleMapper)
+WebInspector.TimelineAggregator = function(titleMapper, categoryMapper)
 {
-    this._eventStyleMapper = eventStyleMapper;
+    this._titleMapper = titleMapper;
+    this._categoryMapper = categoryMapper;
     /** @type {!Map<string, !WebInspector.TimelineProfileTree.Node>} */
     this._groupNodes = new Map();
 }
@@ -337,8 +339,8 @@ WebInspector.TimelineAggregator.prototype = {
 
         switch (groupBy) {
         case WebInspector.TimelineAggregator.GroupBy.None: return null;
-        case WebInspector.TimelineAggregator.GroupBy.EventName: return node => node.event ? this._eventStyleMapper(node.event).title : "";
-        case WebInspector.TimelineAggregator.GroupBy.Category: return node => node.event ? this._eventStyleMapper(node.event).category.name : "";
+        case WebInspector.TimelineAggregator.GroupBy.EventName: return node => node.event ? this._titleMapper(node.event) : "";
+        case WebInspector.TimelineAggregator.GroupBy.Category: return node => node.event ? this._categoryMapper(node.event) : "";
         case WebInspector.TimelineAggregator.GroupBy.Subdomain: return groupByDomain.bind(null, false);
         case WebInspector.TimelineAggregator.GroupBy.Domain: return groupByDomain.bind(null, true);
         case WebInspector.TimelineAggregator.GroupBy.URL: return groupByURL;

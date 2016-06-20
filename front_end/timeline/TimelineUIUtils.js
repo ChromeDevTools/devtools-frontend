@@ -313,7 +313,7 @@ WebInspector.TimelineUIUtils.interactionPhaseLabel = function(phase)
  */
 WebInspector.TimelineUIUtils.isUserFrame = function(frame)
 {
-    return frame.scriptId !== "0" && frame.url && !frame.url.startsWith("native ");
+    return frame.scriptId !== "0" && !(frame.url && frame.url.startsWith("native "));
 }
 
 /**

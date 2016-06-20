@@ -613,6 +613,17 @@ WebInspector.AggregatedTimelineTreeView.prototype = {
         return true;
     },
 
+    /**
+     * @return {!WebInspector.TimelineAggregator}
+     */
+    _createAggregator: function()
+    {
+         return new WebInspector.TimelineAggregator(
+             event => WebInspector.TimelineUIUtils.eventStyle(event).title,
+             event => WebInspector.TimelineUIUtils.eventStyle(event).category.name
+         );
+    },
+
     __proto__: WebInspector.TimelineTreeView.prototype,
 };
 
@@ -636,8 +647,7 @@ WebInspector.CallTreeTimelineTreeView.prototype = {
     _buildTree: function()
     {
         var topDown = this._buildTopDownTree(WebInspector.TimelineAggregator.eventId);
-        var aggregator = new WebInspector.TimelineAggregator(event => WebInspector.TimelineUIUtils.eventStyle(event));
-        return aggregator.performGrouping(topDown, this._groupBySetting.get());
+        return this._createAggregator().performGrouping(topDown, this._groupBySetting.get());
     },
 
     __proto__: WebInspector.AggregatedTimelineTreeView.prototype,
@@ -663,8 +673,7 @@ WebInspector.BottomUpTimelineTreeView.prototype = {
     _buildTree: function()
     {
         var topDown = this._buildTopDownTree(WebInspector.TimelineAggregator.eventId);
-        var aggregator = new WebInspector.TimelineAggregator(event => WebInspector.TimelineUIUtils.eventStyle(event));
-        return WebInspector.TimelineProfileTree.buildBottomUp(topDown, aggregator.groupFunction(this._groupBySetting.get()));
+        return WebInspector.TimelineProfileTree.buildBottomUp(topDown, this._createAggregator().groupFunction(this._groupBySetting.get()));
     },
 
     __proto__: WebInspector.AggregatedTimelineTreeView.prototype

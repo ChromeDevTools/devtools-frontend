@@ -401,6 +401,13 @@ WebInspector.Linkifier.DefaultCSSFormatter.prototype = {
 WebInspector.Linkifier.MaxLengthForDisplayedURLs = 150;
 
 /**
+ * The maximum length before strings are considered too long for finding URLs.
+ * @const
+ * @type {number}
+ */
+WebInspector.Linkifier.MaxLengthToIgnoreLinkifier = 10000;
+
+/**
  * @interface
  */
 WebInspector.Linkifier.LinkHandler = function()
@@ -446,7 +453,7 @@ WebInspector.linkifyStringAsFragmentWithCustomLinkifier = function(string, linki
     var container = createDocumentFragment();
     var linkStringRegEx = /(?:[a-zA-Z][a-zA-Z0-9+.-]{2,}:\/\/|data:|www\.)[\w$\-_+*'=\|\/\\(){}[\]^%@&#~,:;.!?]{2,}[\w$\-_+*=\|\/\\({^%@&#~]/;
 
-    while (string && string.length < 10000) {
+    while (string && string.length < WebInspector.Linkifier.MaxLengthToIgnoreLinkifier) {
         var linkString = linkStringRegEx.exec(string);
         if (!linkString)
             break;

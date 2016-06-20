@@ -1192,8 +1192,12 @@ WebInspector.ConsoleCommand.prototype = {
             this._formattedCommand.textContent = this.text.replaceControlCharacters();
             this._element.appendChild(this._formattedCommand);
 
-            var javascriptSyntaxHighlighter = new WebInspector.DOMSyntaxHighlighter("text/javascript", true);
-            javascriptSyntaxHighlighter.syntaxHighlightNode(this._formattedCommand).then(this._updateSearch.bind(this))
+            if (this._formattedCommand.textContent.length < WebInspector.ConsoleCommand.MaxLengthToIgnoreHighlighter) {
+                var javascriptSyntaxHighlighter = new WebInspector.DOMSyntaxHighlighter("text/javascript", true);
+                javascriptSyntaxHighlighter.syntaxHighlightNode(this._formattedCommand).then(this._updateSearch.bind(this))
+            } else {
+                this._updateSearch();
+            }
         }
         return this._element;
     },
@@ -1205,6 +1209,13 @@ WebInspector.ConsoleCommand.prototype = {
 
     __proto__: WebInspector.ConsoleViewMessage.prototype
 }
+
+/**
+ * The maximum length before strings are considered too long for syntax highlighting.
+ * @const
+ * @type {number}
+ */
+WebInspector.ConsoleCommand.MaxLengthToIgnoreHighlighter = 10000;
 
 /**
  * @constructor

@@ -8,7 +8,7 @@
     padding: 2px 0 0 5px;
     overflow: hidden;
     display: list-item;
-    min-height: 16px;
+    min-height: 17px;
 }
 
 .tree-outline-disclosure > li {

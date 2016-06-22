@@ -229,10 +229,11 @@ DevToolsAPIImpl.prototype = {
     },
 
     /**
-     * @param {{type: string, keyIdentifier: string, keyCode: number, modifiers: number}} event
+     * @param {{type: string, key: string, code: string, keyCode: number, modifiers: number}} event
      */
     keyEventUnhandled: function(event)
     {
+        event.keyIdentifier = keyCodeToKeyIdentifier(event.keyCode);
         this._dispatchOnInspectorFrontendAPI("keyEventUnhandled", [event]);
     },
 
@@ -1002,6 +1003,78 @@ function sanitizeRemoteFrontendUrl()
     }
 }
 
+var staticKeyIdentifiers = new Map([
+    [0x12, "Alt"],
+    [0x11, "Control"],
+    [0x10, "Shift"],
+    [0x14, "CapsLock"],
+    [0x5b, "Win"],
+    [0x5c, "Win"],
+    [0x0c, "Clear"],
+    [0x28, "Down"],
+    [0x23, "End"],
+    [0x0a, "Enter"],
+    [0x0d, "Enter"],
+    [0x2b, "Execute"],
+    [0x70, "F1"],
+    [0x71, "F2"],
+    [0x72, "F3"],
+    [0x73, "F4"],
+    [0x74, "F5"],
+    [0x75, "F6"],
+    [0x76, "F7"],
+    [0x77, "F8"],
+    [0x78, "F9"],
+    [0x79, "F10"],
+    [0x7a, "F11"],
+    [0x7b, "F12"],
+    [0x7c, "F13"],
+    [0x7d, "F14"],
+    [0x7e, "F15"],
+    [0x7f, "F16"],
+    [0x80, "F17"],
+    [0x81, "F18"],
+    [0x82, "F19"],
+    [0x83, "F20"],
+    [0x84, "F21"],
+    [0x85, "F22"],
+    [0x86, "F23"],
+    [0x87, "F24"],
+    [0x2f, "Help"],
+    [0x24, "Home"],
+    [0x2d, "Insert"],
+    [0x25, "Left"],
+    [0x22, "PageDown"],
+    [0x21, "PageUp"],
+    [0x13, "Pause"],
+    [0x2c, "PrintScreen"],
+    [0x27, "Right"],
+    [0x91, "Scroll"],
+    [0x29, "Select"],
+    [0x26, "Up"],
+    [0x2e, "U+007F"], // Standard says that DEL becomes U+007F.
+    [0xb0, "MediaNextTrack"],
+    [0xb1, "MediaPreviousTrack"],
+    [0xb2, "MediaStop"],
+    [0xb3, "MediaPlayPause"],
+    [0xad, "VolumeMute"],
+    [0xae, "VolumeDown"],
+    [0xaf, "VolumeUp"],
+]);
+
+function keyCodeToKeyIdentifier(keyCode)
+{
+    var result = staticKeyIdentifiers.get(keyCode);
+    if (result !== undefined)
+        return result;
+    result = "U+";
+    var hexString = keyCode.toString(16).toUpperCase();
+    for (var i = hexString.length; i < 4; ++i)
+        result += "0";
+    result += hexString;
+    return result;
+}
+
 /**
  * @suppressGlobalPropertiesCheck
  */
@@ -1011,6 +1084,16 @@ function installBackwardsCompatibility()
 
     if (window.location.search.indexOf("remoteFrontend") === -1)
         return;
+
+    // Support for legacy (<M53) frontends.
+    if (!window.KeyboardEvent.prototype.hasOwnProperty("keyIdentifier")) {
+        Object.defineProperty(window.KeyboardEvent.prototype, "keyIdentifier", {
+            get: function()
+            {
+                return keyCodeToKeyIdentifier(this.keyCode);
+            }
+        });
+    }
 
     // Support for legacy (<M50) frontends.
     installObjectObserve();

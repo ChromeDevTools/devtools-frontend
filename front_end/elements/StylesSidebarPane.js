@@ -631,8 +631,7 @@ WebInspector.StylesSidebarPane.createPropertyFilterElement = function(placeholde
      */
     function keydownHandler(event)
     {
-        var Esc = "U+001B";
-        if (event.keyIdentifier !== Esc || !input.value)
+        if (event.key !== "Escape" || !input.value)
             return;
         event.consume(true);
         input.value = "";
@@ -2473,7 +2472,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
         if (isEnterKey(event)) {
             event.preventDefault();
             result = "forward";
-        } else if (event.keyCode === WebInspector.KeyboardShortcut.Keys.Esc.code || event.keyIdentifier === "U+001B")
+        } else if (event.keyCode === WebInspector.KeyboardShortcut.Keys.Esc.code || event.key === "Escape")
             result = "cancel";
         else if (!context.isEditingName && this._newProperty && event.keyCode === WebInspector.KeyboardShortcut.Keys.Backspace.code) {
             // For a new property, when Backspace is pressed at the beginning of new property value, move back to the property name.
@@ -2482,7 +2481,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
                 event.preventDefault();
                 result = "backward";
             }
-        } else if (event.keyIdentifier === "U+0009") { // Tab key.
+        } else if (event.key === "Tab") {
             result = event.shiftKey ? "backward" : "forward";
             event.preventDefault();
         }
@@ -2887,9 +2886,9 @@ WebInspector.StylesSidebarPane.CSSPropertyPrompt.prototype = {
      */
     onKeyDown: function(event)
     {
-        switch (event.keyIdentifier) {
-        case "Up":
-        case "Down":
+        switch (event.key) {
+        case "ArrowUp":
+        case "ArrowDown":
         case "PageUp":
         case "PageDown":
             if (this._handleNameOrValueUpDown(event)) {

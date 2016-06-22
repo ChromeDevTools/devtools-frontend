@@ -264,15 +264,15 @@ WebInspector.FilmStripView.Dialog.prototype = {
      */
     _keyDown: function(event)
     {
-        switch (event.keyIdentifier) {
-        case "Left":
+        switch (event.key) {
+        case "ArrowLeft":
             if (WebInspector.isMac() && event.metaKey)
                 this._onFirstFrame();
             else
                 this._onPrevFrame();
             break;
 
-        case "Right":
+        case "ArrowRight":
             if (WebInspector.isMac() && event.metaKey)
                 this._onLastFrame();
             else

@@ -643,7 +643,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
 
     _onKeyDown: function(event)
     {
-        if (event.keyIdentifier === "U+001B") { // Escape key
+        if (event.key === "Escape") {
             if (this._popoverHelper.isPopoverVisible()) {
                 this._popoverHelper.hidePopover();
                 event.consume();

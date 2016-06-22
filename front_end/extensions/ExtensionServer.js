@@ -621,7 +621,6 @@ WebInspector.ExtensionServer.prototype = {
 
     _onForwardKeyboardEvent: function(message)
     {
-        const Esc = "U+001B";
         message.entries.forEach(handleEventEntry);
 
         /**
@@ -630,12 +629,15 @@ WebInspector.ExtensionServer.prototype = {
          */
         function handleEventEntry(entry)
         {
-            if (!entry.ctrlKey && !entry.altKey && !entry.metaKey && !/^F\d+$/.test(entry.keyIdentifier) && entry.keyIdentifier !== Esc)
+            if (!entry.ctrlKey && !entry.altKey && !entry.metaKey && !/^F\d+$/.test(entry.key) && entry.key !== "Escape")
                 return;
             // Fool around closure compiler -- it has its own notion of both KeyboardEvent constructor
             // and initKeyboardEvent methods and overriding these in externs.js does not have effect.
             var event = new window.KeyboardEvent(entry.eventType, {
                 keyIdentifier: entry.keyIdentifier,
+                key: entry.key,
+                code: entry.code,
+                keyCode: entry.keyCode,
                 location: entry.location,
                 ctrlKey: entry.ctrlKey,
                 altKey: entry.altKey,

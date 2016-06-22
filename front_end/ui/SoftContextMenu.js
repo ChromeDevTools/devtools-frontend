@@ -300,18 +300,18 @@ WebInspector.SoftContextMenu.prototype = {
 
     _menuKeyDown: function(event)
     {
-        switch (event.keyIdentifier) {
-        case "Up":
+        switch (event.key) {
+        case "ArrowUp":
             this._highlightPrevious(); break;
-        case "Down":
+        case "ArrowDown":
             this._highlightNext(); break;
-        case "Left":
+        case "ArrowLeft":
             if (this._parentMenu) {
                 this._highlightMenuItem(null, false);
                 this._parentMenu._hideSubMenu();
             }
             break;
-        case "Right":
+        case "ArrowRight":
             if (!this._highlightedMenuItemElement)
                 break;
             if (this._highlightedMenuItemElement._subItems) {
@@ -320,13 +320,13 @@ WebInspector.SoftContextMenu.prototype = {
                 this._subMenu._highlightNext();
             }
             break;
-        case "U+001B": // Escape
+        case "Escape":
             this._discardMenu(false, event); break;
         case "Enter":
             if (!isEnterKey(event))
                 break;
             // Fall through
-        case "U+0020": // Space
+        case " ": // Space
             if (this._highlightedMenuItemElement)
                 this._triggerAction(this._highlightedMenuItemElement, event);
             if (this._highlightedMenuItemElement._subItems) {

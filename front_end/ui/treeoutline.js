@@ -231,11 +231,11 @@ TreeOutline.prototype = {
 
         var handled = false;
         var nextSelectedElement;
-        if (event.keyIdentifier === "Up" && !event.altKey) {
+        if (event.key === "ArrowUp" && !event.altKey) {
             handled = this.selectPrevious();
-        } else if (event.keyIdentifier === "Down" && !event.altKey) {
+        } else if (event.key === "ArrowDown" && !event.altKey) {
             handled = this.selectNext();
-        } else if (event.keyIdentifier === "Left") {
+        } else if (event.key === "ArrowLeft") {
             if (this.selectedTreeElement.expanded) {
                 if (event.altKey)
                     this.selectedTreeElement.collapseRecursively();
@@ -252,7 +252,7 @@ TreeOutline.prototype = {
                 } else if (this.selectedTreeElement.parent)
                     this.selectedTreeElement.parent.collapse();
             }
-        } else if (event.keyIdentifier === "Right") {
+        } else if (event.key === "ArrowRight") {
             if (!this.selectedTreeElement.revealed()) {
                 this.selectedTreeElement.reveal();
                 handled = true;

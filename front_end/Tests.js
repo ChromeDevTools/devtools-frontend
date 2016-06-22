@@ -1103,11 +1103,9 @@ TestSuite.prototype._waitForTargets = function(n, callback)
 /**
  * Key event with given key identifier.
  */
-TestSuite.createKeyEvent = function(keyIdentifier)
+TestSuite.createKeyEvent = function(key)
 {
-    var evt = document.createEvent("KeyboardEvent");
-    evt.initKeyboardEvent("keydown", true /* can bubble */, true /* can cancel */, null /* view */, keyIdentifier, "");
-    return evt;
+    return new KeyboardEvent("keydown", {bubbles: true, cancelable:true, key: key});
 };
 
 window.uiTests = new TestSuite(window.domAutomationController);

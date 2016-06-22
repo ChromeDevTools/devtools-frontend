@@ -759,14 +759,14 @@ WebInspector.ElementsPanel.prototype = {
          */
         function handleUndoRedo(treeOutline)
         {
-            if (WebInspector.KeyboardShortcut.eventHasCtrlOrMeta(event) && !event.shiftKey && event.keyIdentifier === "U+005A") { // Z key
+            if (WebInspector.KeyboardShortcut.eventHasCtrlOrMeta(event) && !event.shiftKey && (event.key === "Z" || event.key === "z")) { // Z key
                 treeOutline.domModel().undo();
                 event.handled = true;
                 return;
             }
 
-            var isRedoKey = WebInspector.isMac() ? event.metaKey && event.shiftKey && event.keyIdentifier === "U+005A" : // Z key
-                                                   event.ctrlKey && event.keyIdentifier === "U+0059"; // Y key
+            var isRedoKey = WebInspector.isMac() ? event.metaKey && event.shiftKey && (event.key === "Z" || event.key === "z") : // Z key
+                                                   event.ctrlKey && (event.key === "Y" || event.key === "y"); // Y key
             if (isRedoKey) {
                 treeOutline.domModel().redo();
                 event.handled = true;

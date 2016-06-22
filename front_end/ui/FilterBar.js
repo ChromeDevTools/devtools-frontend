@@ -417,13 +417,13 @@ WebInspector.TextFilterUI.prototype = {
     _onInputKeyDown: function(event)
     {
         var handled = false;
-        if (event.keyIdentifier === "U+0008") { // Backspace
+        if (event.key === "Backspace") {
             this._suppressSuggestion = true;
         } else if (this._suggestBox.visible()) {
-            if (event.keyIdentifier === "U+001B") { // Esc
+            if (event.key === "Escape") {
                 this._cancelSuggestion();
                 handled = true;
-            } else if (event.keyIdentifier === "U+0009") { // Tab
+            } else if (event.key === "Tab") {
                 this._suggestBox.acceptSuggestion();
                 this._valueChanged(true);
                 handled = true;

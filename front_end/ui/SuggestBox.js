@@ -396,10 +396,10 @@ WebInspector.SuggestBox.prototype = {
      */
     keyPressed: function(event)
     {
-        switch (event.keyIdentifier) {
-        case "Up":
+        switch (event.key) {
+        case "ArrowUp":
             return this.upKeyPressed();
-        case "Down":
+        case "ArrowDown":
             return this.downKeyPressed();
         case "PageUp":
             return this.pageUpKeyPressed();

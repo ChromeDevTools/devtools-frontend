@@ -309,28 +309,28 @@ WebInspector.TextPrompt.prototype = {
         var handled = false;
         delete this._needUpdateAutocomplete;
 
-        switch (event.keyIdentifier) {
-        case "U+0009": // Tab
+        switch (event.key) {
+        case "Tab":
             handled = this.tabKeyPressed(event);
             break;
-        case "Left":
+        case "ArrowLeft":
         case "Home":
             this._removeSuggestionAids();
             break;
-        case "Right":
+        case "ArrowRight":
         case "End":
             if (this.isCaretAtEndOfPrompt())
                 handled = this.acceptAutoComplete();
             else
                 this._removeSuggestionAids();
             break;
-        case "U+001B": // Esc
+        case "Escape":
             if (this.isSuggestBoxVisible()) {
                 this._removeSuggestionAids();
                 handled = true;
             }
             break;
-        case "U+0020": // Space
+        case " ": // Space
             if (event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey) {
                 this._updateAutoComplete(true);
                 handled = true;
@@ -965,25 +965,27 @@ WebInspector.TextPromptWithHistory.prototype = {
         var newText;
         var isPrevious;
 
-        switch (event.keyIdentifier) {
-        case "Up":
+        switch (event.key) {
+        case "ArrowUp":
             if (!this.isCaretOnFirstLine() || this.isSuggestBoxVisible())
                 break;
             newText = this._previous();
             isPrevious = true;
             break;
-        case "Down":
+        case "ArrowDown":
             if (!this.isCaretOnLastLine() || this.isSuggestBoxVisible())
                 break;
             newText = this._next();
             break;
-        case "U+0050": // Ctrl+P = Previous
+        case "P": // Ctrl+P = Previous
+        case "p":
             if (WebInspector.isMac() && event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey) {
                 newText = this._previous();
                 isPrevious = true;
             }
             break;
-        case "U+004E": // Ctrl+N = Next
+        case "N": // Ctrl+N = Next
+        case "n":
             if (WebInspector.isMac() && event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey)
                 newText = this._next();
             break;

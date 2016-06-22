@@ -119,12 +119,12 @@ WebInspector.StylesPopoverHelper.prototype = {
      */
     _onKeyDown: function(event)
     {
-        if (event.keyIdentifier === "Enter") {
+        if (event.key === "Enter") {
             this.hide(true);
             event.consume(true);
             return;
         }
-        if (event.keyIdentifier === "U+001B") { // Escape key
+        if (event.key === "Escape") {
             this.hide(false);
             event.consume(true);
         }

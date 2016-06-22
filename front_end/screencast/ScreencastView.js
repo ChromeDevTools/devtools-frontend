@@ -746,7 +746,7 @@ WebInspector.ScreencastView.prototype = {
 
     _navigationUrlKeyUp: function(event)
     {
-        if (event.keyIdentifier !== "Enter")
+        if (event.key !== "Enter")
             return;
         var url = this._navigationUrl.value;
         if (!url)

@@ -837,8 +837,8 @@ WebInspector.Spectrum.prototype = {
         }
 
         var inputElement = /** @type {!Element} */(event.currentTarget);
-        var arrowKeyOrMouseWheelEvent = (event.keyIdentifier === "Up" || event.keyIdentifier === "Down" || event.type === "mousewheel");
-        var pageKeyPressed = (event.keyIdentifier === "PageUp" || event.keyIdentifier === "PageDown");
+        var arrowKeyOrMouseWheelEvent = (event.key === "ArrowUp" || event.key === "ArrowDown" || event.type === "mousewheel");
+        var pageKeyPressed = (event.key === "PageUp" || event.key === "PageDown");
         if (arrowKeyOrMouseWheelEvent || pageKeyPressed) {
             var newValue = WebInspector.createReplacementString(inputElement.value, event);
             if (newValue) {

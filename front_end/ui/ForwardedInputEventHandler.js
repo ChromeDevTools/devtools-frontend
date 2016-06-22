@@ -18,7 +18,7 @@ WebInspector.ForwardedInputEventHandler.prototype = {
     {
         var data = event.data;
         var type = /** @type {string} */ (data.type);
-        var keyIdentifier = /** @type {string} */ (data.keyIdentifier);
+        var key = /** @type {string} */ (data.key);
         var keyCode = /** @type {number} */ (data.keyCode);
         var modifiers =/** @type {number} */ (data.modifiers);
 
@@ -26,7 +26,7 @@ WebInspector.ForwardedInputEventHandler.prototype = {
             return;
 
         WebInspector.context.setFlavor(WebInspector.ShortcutRegistry.ForwardedShortcut, WebInspector.ShortcutRegistry.ForwardedShortcut.instance);
-        WebInspector.shortcutRegistry.handleKey(WebInspector.KeyboardShortcut.makeKey(keyCode, modifiers), keyIdentifier);
+        WebInspector.shortcutRegistry.handleKey(WebInspector.KeyboardShortcut.makeKey(keyCode, modifiers), key);
         WebInspector.context.setFlavor(WebInspector.ShortcutRegistry.ForwardedShortcut, null);
     }
 }

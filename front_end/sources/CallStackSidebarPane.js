@@ -425,7 +425,7 @@ WebInspector.CallStackSidebarPane.prototype = {
     {
         if (event.altKey || event.shiftKey || event.metaKey || event.ctrlKey)
             return;
-        if (event.keyIdentifier === "Up" && this._selectPreviousCallFrameOnStack() || event.keyIdentifier === "Down" && this._selectNextCallFrameOnStack())
+        if (event.key === "ArrowUp" && this._selectPreviousCallFrameOnStack() || event.key === "ArrowDown" && this._selectNextCallFrameOnStack())
             event.consume(true);
     },
 

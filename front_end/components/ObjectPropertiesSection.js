@@ -425,7 +425,7 @@ WebInspector.ObjectPropertyTreeElement.prototype = {
             this._editingCommitted(originalContent);
             return;
         }
-        if (event.keyIdentifier === "U+001B") { // Esc
+        if (event.key === "Escape") {
             event.consume();
             this._editingCancelled();
             return;

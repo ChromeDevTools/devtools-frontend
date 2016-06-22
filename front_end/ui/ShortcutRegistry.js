@@ -76,15 +76,15 @@ WebInspector.ShortcutRegistry.prototype = {
      */
     handleShortcut: function(event)
     {
-        this.handleKey(WebInspector.KeyboardShortcut.makeKeyFromEvent(event), event.keyIdentifier, event);
+        this.handleKey(WebInspector.KeyboardShortcut.makeKeyFromEvent(event), event.key, event);
     },
 
     /**
      * @param {number} key
-     * @param {string} keyIdentifier
+     * @param {string} domKey
      * @param {!KeyboardEvent=} event
      */
-    handleKey: function(key, keyIdentifier, event)
+    handleKey: function(key, domKey, event)
     {
         var keyModifiers = key >> 8;
         var actions = this._applicableActions(key);
@@ -123,7 +123,7 @@ WebInspector.ShortcutRegistry.prototype = {
          */
         function isPossiblyInputKey()
         {
-            if (!event || !WebInspector.isEditing() || /^F\d+|Control|Shift|Alt|Meta|Win|U\+001B$/.test(keyIdentifier))
+            if (!event || !WebInspector.isEditing() || /^F\d+|Control|Shift|Alt|Meta|Escape|Win|U\+001B$/.test(domKey))
                 return false;
 
             if (!keyModifiers)

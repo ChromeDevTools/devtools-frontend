@@ -520,7 +520,7 @@ WebInspector.DevicesView.DeviceView.prototype = {
          */
         function newTabKeyDown(event)
         {
-            if (event.keyIdentifier === "Enter") {
+            if (event.key === "Enter") {
                 event.consume(true);
                 openNewTab();
             }

@@ -376,9 +376,9 @@ WebInspector._valueModificationDirection = function(event)
         else if (event.wheelDeltaY < 0 || event.wheelDeltaX < 0)
             direction = "Down";
     } else {
-        if (event.keyIdentifier === "Up" || event.keyIdentifier === "PageUp")
+        if (event.key === "ArrowUp" || event.key === "PageUp")
             direction = "Up";
-        else if (event.keyIdentifier === "Down" || event.keyIdentifier === "PageDown")
+        else if (event.key === "ArrowDown" || event.key === "PageDown")
             direction = "Down";
     }
     return direction;
@@ -527,8 +527,8 @@ WebInspector.handleElementValueModifications = function(event, element, finishHa
         return document.createRange();
     }
 
-    var arrowKeyOrMouseWheelEvent = (event.keyIdentifier === "Up" || event.keyIdentifier === "Down" || event.type === "mousewheel");
-    var pageKeyPressed = (event.keyIdentifier === "PageUp" || event.keyIdentifier === "PageDown");
+    var arrowKeyOrMouseWheelEvent = (event.key === "ArrowUp" || event.key === "ArrowDown" || event.type === "mousewheel");
+    var pageKeyPressed = (event.key === "PageUp" || event.key === "PageDown");
     if (!arrowKeyOrMouseWheelEvent && !pageKeyPressed)
         return false;
 
@@ -1594,7 +1594,7 @@ WebInspector.bindInput = function(input, apply, validate, numeric)
         if (!numeric)
             return;
 
-        var increment = event.keyIdentifier === "Up" ? 1 : event.keyIdentifier === "Down" ? -1 : 0;
+        var increment = event.key === "ArrowUp" ? 1 : event.key === "ArrowDown" ? -1 : 0;
         if (!increment)
             return;
         if (event.shiftKey)

@@ -813,9 +813,8 @@ var forwardTimer = null;
 
 function forwardKeyboardEvent(event)
 {
-    const Esc = "U+001B";
     // We only care about global hotkeys, not about random text
-    if (!event.ctrlKey && !event.altKey && !event.metaKey && !/^F\d+$/.test(event.keyIdentifier) && event.keyIdentifier !== Esc)
+    if (!event.ctrlKey && !event.altKey && !event.metaKey && !/^F\d+$/.test(event.key) && event.key !== "Escape")
         return;
     var requestPayload = {
         eventType: event.type,
@@ -823,6 +822,8 @@ function forwardKeyboardEvent(event)
         altKey: event.altKey,
         metaKey: event.metaKey,
         keyIdentifier: event.keyIdentifier,
+        key: event.key,
+        code: event.code,
         location: event.location,
         keyCode: event.keyCode
     };

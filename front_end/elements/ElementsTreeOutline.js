@@ -884,12 +884,12 @@ WebInspector.ElementsTreeOutline.prototype = {
             return;
 
         if (WebInspector.KeyboardShortcut.eventHasCtrlOrMeta(event) && node.parentNode) {
-            if (event.keyIdentifier === "Up" && node.previousSibling) {
+            if (event.key === "ArrowUp" && node.previousSibling) {
                 node.moveTo(node.parentNode, node.previousSibling, this.selectNodeAfterEdit.bind(this, treeElement.expanded));
                 event.handled = true;
                 return;
             }
-            if (event.keyIdentifier === "Down" && node.nextSibling) {
+            if (event.key === "ArrowDown" && node.nextSibling) {
                 node.moveTo(node.parentNode, node.nextSibling.nextSibling, this.selectNodeAfterEdit.bind(this, treeElement.expanded));
                 event.handled = true;
                 return;

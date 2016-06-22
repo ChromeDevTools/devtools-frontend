@@ -180,9 +180,9 @@ WebInspector.InplaceEditor.prototype = {
                 event.ctrlKey && !event.shiftKey && !event.metaKey && !event.altKey;
             if (isEnterKey(event) && (event.isMetaOrCtrlForTest || !isMultiline || isMetaOrCtrl))
                 return "commit";
-            else if (event.keyCode === WebInspector.KeyboardShortcut.Keys.Esc.code || event.keyIdentifier === "U+001B")
+            else if (event.keyCode === WebInspector.KeyboardShortcut.Keys.Esc.code || event.key === "Escape")
                 return "cancel";
-            else if (!isMultiline && event.keyIdentifier === "U+0009") // Tab key
+            else if (!isMultiline && event.key === "Tab")
                 return "move-" + (event.shiftKey ? "backward" : "forward");
             return "";
         }
@@ -197,7 +197,7 @@ WebInspector.InplaceEditor.prototype = {
                 event.consume(true);
             } else if (result && result.startsWith("move-")) {
                 moveDirection = result.substring(5);
-                if (event.keyIdentifier !== "U+0009")
+                if (event.key !== "Tab")
                     blurEventListener();
             }
         }

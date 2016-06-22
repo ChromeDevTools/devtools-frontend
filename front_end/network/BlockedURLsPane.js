@@ -118,7 +118,7 @@ WebInspector.BlockedURLsPane.prototype = {
             if (isEnterKey(event)) {
                 event.consume();
                 commit.call(this);
-            } else if (event.keyCode === WebInspector.KeyboardShortcut.Keys.Esc.code || event.keyIdentifier === "U+001B") {
+            } else if (event.keyCode === WebInspector.KeyboardShortcut.Keys.Esc.code || event.key === "Escape") {
                 event.consume();
                 finish.call(this);
                 this._update();

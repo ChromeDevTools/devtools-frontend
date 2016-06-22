@@ -67,9 +67,6 @@ WebInspector.InspectorView = function()
     /** @type {!Object.<string, !Promise.<!WebInspector.Panel> >} */
     this._panelPromises = {};
 
-    // Windows and Mac have two different definitions of '[' and ']', so accept both of each.
-    this._openBracketIdentifiers = ["U+005B", "U+00DB"].keySet();
-    this._closeBracketIdentifiers = ["U+005D", "U+00DD"].keySet();
     this._lastActivePanelSetting = WebInspector.settings.createSetting("lastActivePanel", "elements");
 
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.ShowPanel, showPanel.bind(this));
@@ -451,7 +448,7 @@ WebInspector.InspectorView.prototype = {
         // BUG85312: On French AZERTY keyboards, AltGr-]/[ combinations (synonymous to Ctrl-Alt-]/[ on Windows) are used to enter ]/[,
         // so for a ]/[-related keydown we delay the panel switch using a timer, to see if there is a keypress event following this one.
         // If there is, we cancel the timer and do not consider this a panel switch.
-        if (!WebInspector.isWin() || (!this._openBracketIdentifiers[event.keyIdentifier] && !this._closeBracketIdentifiers[event.keyIdentifier])) {
+        if (!WebInspector.isWin() || (event.key !== "[" && event.key !== "]")) {
             this._keyDownInternal(event);
             return;
         }
@@ -466,10 +463,10 @@ WebInspector.InspectorView.prototype = {
 
         var direction = 0;
 
-        if (this._openBracketIdentifiers[event.keyIdentifier])
+        if (event.key === "[")
             direction = -1;
 
-        if (this._closeBracketIdentifiers[event.keyIdentifier])
+        if (event.key === "]")
             direction = 1;
 
         if (!direction)

@@ -505,9 +505,9 @@ WebInspector.ProfilesPanel.prototype = {
     _onKeyDown: function(event)
     {
         var handled = false;
-        if (event.keyIdentifier === "Down" && !event.altKey)
+        if (event.key === "ArrowDown" && !event.altKey)
             handled = this._sidebarTree.selectNext();
-        else if (event.keyIdentifier === "Up" && !event.altKey)
+        else if (event.key === "ArrowUp" && !event.altKey)
             handled = this._sidebarTree.selectPrevious();
         if (handled)
             event.consume(true);

@@ -109,6 +109,7 @@ WebInspector.ImageView.prototype = {
         if (this._imagePreviewElement.src)
             contextMenu.appendItem(WebInspector.UIString.capitalize("Copy ^image as Data URI"), this._copyImageAsDataURL.bind(this));
         contextMenu.appendItem(WebInspector.UIString.capitalize("Open ^image in ^new ^tab"), this._openInNewTab.bind(this));
+        contextMenu.appendItem(WebInspector.UIString.capitalize("Save\u2026"), this._saveImage.bind(this));
         contextMenu.show();
     },
 
@@ -120,6 +121,14 @@ WebInspector.ImageView.prototype = {
     _copyImageURL: function()
     {
         InspectorFrontendHost.copyText(this._url);
+    },
+
+    _saveImage: function()
+    {
+        var link = createElement("a");
+        link.download = this._parsedURL.displayName;
+        link.href = this._url;
+        link.click();
     },
 
     _openInNewTab: function()

@@ -33,6 +33,10 @@
     position: absolute;
 }
 
+.elements-disclosure li.selected.editing-as-html:after {
+    display: none;
+}
+
 .elements-disclosure ol:focus li.selected:after {
     color: white;
 }

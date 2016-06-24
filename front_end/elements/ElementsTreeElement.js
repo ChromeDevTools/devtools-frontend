@@ -807,6 +807,7 @@ WebInspector.ElementsTreeElement.prototype = {
             this._childrenListNode.style.display = "none";
         // Append editor.
         this.listItemElement.appendChild(this._htmlEditElement);
+        this.listItemElement.classList.add("editing-as-html");
         this.treeOutline.element.addEventListener("mousedown", consume, false);
 
         this.updateSelection();
@@ -831,6 +832,7 @@ WebInspector.ElementsTreeElement.prototype = {
             delete this._editing;
             this.treeOutline.setMultilineEditing(null);
 
+            this.listItemElement.classList.remove("editing-as-html");
             // Remove editor.
             this.listItemElement.removeChild(this._htmlEditElement);
             delete this._htmlEditElement;

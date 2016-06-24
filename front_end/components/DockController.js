@@ -123,6 +123,8 @@ WebInspector.DockController.prototype = {
 
         if (this._dockSide)
             this._lastDockStateSetting.set(this._dockSide);
+
+        WebInspector.DockController._previousFocusedElement = WebInspector.currentFocusElement();
         var eventData = { from: this._dockSide, to: dockSide };
         this.dispatchEventToListeners(WebInspector.DockController.Events.BeforeDockSideChanged, eventData);
         console.timeStamp("DockController.setIsDocked");
@@ -139,6 +141,10 @@ WebInspector.DockController.prototype = {
     _setIsDockedResponse: function(eventData)
     {
         this.dispatchEventToListeners(WebInspector.DockController.Events.AfterDockSideChanged, eventData);
+
+        if (WebInspector.DockController._previousFocusedElement)
+            WebInspector.DockController._previousFocusedElement.focus();
+        delete WebInspector.DockController._previousFocusedElement;
     },
 
     /**

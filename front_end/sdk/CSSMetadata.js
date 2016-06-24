@@ -429,7 +429,7 @@ WebInspector.CSSMetadata._propertyDataMap = {
         "repeat", "stretch"
     ] },
     "text-decoration": { values: [
-        "blink", "line-through", "overline", "underline"
+        "none", "blink", "line-through", "overline", "underline"
     ] },
     "position": { values: [
         "absolute", "fixed", "relative", "static"

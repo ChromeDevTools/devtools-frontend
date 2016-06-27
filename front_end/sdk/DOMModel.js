@@ -349,7 +349,17 @@ WebInspector.DOMNode.prototype = {
         var shadowRootType = this.shadowRootType();
         if (shadowRootType)
             return "#shadow-root (" + shadowRootType + ")";
-        return this.isXMLNode() ? this.nodeName() : this.nodeName().toLowerCase();
+
+        // If there is no local name, it's case sensitive
+        if (!this.localName())
+            return this.nodeName();
+
+        // If the names are different lengths, there is a prefix and it's case sensitive
+        if (this.localName().length !== this.nodeName().length)
+            return this.nodeName();
+
+        // Return the localname, which will be case insensitive if its an html node
+        return this.localName();
     },
 
     /**

@@ -293,6 +293,9 @@ WebInspector.CSSMetadata._propertyDataMap = {
     "overflow": { values: [
         "hidden", "auto", "visible", "overlay", "scroll"
     ] },
+    "contain": { values: [
+        "none", "strict", "content", "size", "layout", "style", "paint"
+    ] },
     "text-rendering": { values: [
         "auto", "optimizeSpeed", "optimizeLegibility", "geometricPrecision"
     ] },

@@ -331,10 +331,13 @@ WebInspector.StyleFile = function(uiSourceCode, mapping)
 {
     this._uiSourceCode = uiSourceCode;
     this._mapping = mapping;
-    this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.WorkingCopyChanged, this._workingCopyChanged, this);
-    this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.WorkingCopyCommitted, this._workingCopyCommitted, this);
+    this._eventListeners = [
+        this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.WorkingCopyChanged, this._workingCopyChanged, this),
+        this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.WorkingCopyCommitted, this._workingCopyCommitted, this)
+    ];
     this._uiSourceCode.forceLoadOnCheckContent();
     this._commitThrottler = new WebInspector.Throttler(WebInspector.StyleFile.updateTimeout);
+    this._terminated = false;
 }
 
 WebInspector.StyleFile.updateTimeout = 200;
@@ -365,6 +368,8 @@ WebInspector.StyleFile.prototype = {
 
     _commitIncrementalEdit: function()
     {
+        if (this._terminated)
+            return;
         var promise = this._mapping._setStyleContent(this._uiSourceCode, this._uiSourceCode.workingCopy(), this._isMajorChangePending)
             .then(this._styleContentSet.bind(this))
         this._isMajorChangePending = false;
@@ -392,7 +397,9 @@ WebInspector.StyleFile.prototype = {
 
     dispose: function()
     {
-        this._uiSourceCode.removeEventListener(WebInspector.UISourceCode.Events.WorkingCopyCommitted, this._workingCopyCommitted, this);
-        this._uiSourceCode.removeEventListener(WebInspector.UISourceCode.Events.WorkingCopyChanged, this._workingCopyChanged, this);
+        if (this._terminated)
+            return;
+        this._terminated = true;
+        WebInspector.EventTarget.removeEventListeners(this._eventListeners);
     }
 }

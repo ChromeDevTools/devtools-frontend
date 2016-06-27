@@ -438,6 +438,9 @@ WebInspector.TimelineUIUtils.buildDetailsTextForTraceEvent = function(event, tar
         if (url)
             detailsText = WebInspector.displayNameForURL(url);
         break;
+    case recordType.TimeStamp:
+        detailsText = eventData["message"];
+        break;
 
     case recordType.WebSocketCreate:
     case recordType.WebSocketSendHandshakeRequest:

@@ -1310,7 +1310,7 @@ WebInspector.FlameChart.prototype = {
             context.fill();
         }
 
-        context.strokeStyle = "rgb(0, 0, 0)";
+        context.strokeStyle = "rgba(0, 0, 0, 0.2)";
         context.beginPath();
         for (var m = 0; m < nextMarkerIndex; ++m) {
             var entryIndex = markerIndices[m];

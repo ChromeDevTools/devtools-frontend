@@ -639,7 +639,7 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
      */
     prepareHighlightedEntryInfo: function(entryIndex)
     {
-        var time;
+        var time = "";
         var title;
         var warning;
         var type = this._entryType(entryIndex);
@@ -648,9 +648,11 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
             var totalTime = event.duration;
             var selfTime = event.selfTime;
             var /** @const */ eps = 1e-6;
-            time = typeof totalTime === "number" && Math.abs(totalTime - selfTime) > eps && selfTime > eps ?
-                WebInspector.UIString("%s (self %s)", Number.millisToString(totalTime, true), Number.millisToString(selfTime, true)) :
-                Number.millisToString(totalTime, true);
+            if (typeof totalTime === "number") {
+                time = Math.abs(totalTime - selfTime) > eps && selfTime > eps ?
+                    WebInspector.UIString("%s (self %s)", Number.millisToString(totalTime, true), Number.millisToString(selfTime, true)) :
+                    Number.millisToString(totalTime, true);
+            }
             title = this.entryTitle(entryIndex);
             warning = WebInspector.TimelineUIUtils.eventWarning(event);
         } else if (type === WebInspector.TimelineFlameChartEntryType.Frame) {
@@ -826,7 +828,12 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
         var index = this._entryData.length;
         this._entryData.push(event);
         this._timelineData.entryLevels[index] = level;
-        this._timelineData.entryTotalTimes[index] = event.duration || WebInspector.TimelineFlameChartDataProvider.InstantEventVisibleDurationMs;
+        var duration;
+        if (WebInspector.TimelineModel.isMarkerEvent(event))
+            duration = undefined;
+        else
+            duration = event.duration || WebInspector.TimelineFlameChartDataProvider.InstantEventVisibleDurationMs;
+        this._timelineData.entryTotalTimes[index] = duration;
         this._timelineData.entryStartTimes[index] = event.startTime;
     },
 

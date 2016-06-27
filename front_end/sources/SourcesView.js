@@ -786,3 +786,28 @@ WebInspector.SourcesView.SwitchFileActionDelegate.prototype = {
         return true;
     }
 }
+
+/**
+ * @constructor
+ * @implements {WebInspector.ActionDelegate}
+ */
+WebInspector.SourcesView.CloseAllActionDelegate = function()
+{
+}
+
+WebInspector.SourcesView.CloseAllActionDelegate.prototype = {
+    /**
+     * @override
+     * @param {!WebInspector.Context} context
+     * @param {string} actionId
+     * @return {boolean}
+     */
+    handleAction: function(context, actionId)
+    {
+        var sourcesView = WebInspector.context.flavor(WebInspector.SourcesView);
+        if (!sourcesView)
+            return false;
+        sourcesView._editorContainer.closeAllFiles();
+        return true;
+    }
+}

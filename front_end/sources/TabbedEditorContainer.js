@@ -131,6 +131,11 @@ WebInspector.TabbedEditorContainer.prototype = {
         this._closeTabs([tabId]);
     },
 
+    closeAllFiles: function()
+    {
+        this._closeTabs(this._tabbedPane.allTabs());
+    },
+
     /**
      * @return {!Array.<!WebInspector.UISourceCode>}
      */

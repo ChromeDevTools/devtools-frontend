@@ -332,6 +332,13 @@
             "persistence": "closeable",
             "order": 1000,
             "className": "WebInspector.SourcesPanel.WrapperView"
+        },
+        {
+            "type": "@WebInspector.ActionDelegate",
+            "category": "Sources",
+            "actionId": "sources.close-all",
+            "className": "WebInspector.SourcesView.CloseAllActionDelegate",
+            "title": "Close All"
         }
     ],
     "dependencies": [

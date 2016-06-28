@@ -786,6 +786,12 @@ WebInspector.SecurityOriginView = function(panel, origin, originState)
         var certificateSection = this.element.createChild("div", "origin-view-section");
         certificateSection.createChild("div", "origin-view-section-title").textContent = WebInspector.UIString("Certificate");
 
+        if (originState.securityDetails.signedCertificateTimestampList.length) {
+            // Create the Certificate Transparency section outside the callback, so that it appears in the right place.
+            var sctSection = this.element.createChild("div", "origin-view-section");
+            sctSection.createChild("div", "origin-view-section-title").textContent = WebInspector.UIString("Certificate Transparency");
+        }
+
         /**
          * @this {WebInspector.SecurityOriginView}
          * @param {?NetworkAgent.CertificateDetails} certificateDetails
@@ -805,6 +811,53 @@ WebInspector.SecurityOriginView = function(panel, origin, originState)
             table.addRow(WebInspector.UIString("Issuer"), certificateDetails.issuer);
             table.addRow(WebInspector.UIString("SCTs"), this.sctSummary(originState.securityDetails.certificateValidationDetails));
             table.addRow("", WebInspector.SecurityPanel.createCertificateViewerButton(WebInspector.UIString("Open full certificate details"), originState.securityDetails.certificateId));
+
+            if (!originState.securityDetails.signedCertificateTimestampList.length)
+                return;
+
+            // Show summary of SCT(s) of Certificate Transparency.
+            var sctSummaryTable = new WebInspector.SecurityDetailsTable();
+            sctSummaryTable.element().classList.add("sct-summary");
+            sctSection.appendChild(sctSummaryTable.element());
+            for (var i = 0; i < originState.securityDetails.signedCertificateTimestampList.length; i++)
+            {
+                var sct = originState.securityDetails.signedCertificateTimestampList[i];
+                sctSummaryTable.addRow(WebInspector.UIString("SCT"), sct.logDescription + " (" + sct.origin + ", " + sct.status + ")");
+            }
+
+            // Show detailed SCT(s) of Certificate Transparency.
+            var sctTableWrapper = sctSection.createChild("div", "sct-details");
+            sctTableWrapper.classList.add("hidden");
+            for (var i = 0; i < originState.securityDetails.signedCertificateTimestampList.length; i++)
+            {
+                var sctTable = new WebInspector.SecurityDetailsTable();
+                sctTableWrapper.appendChild(sctTable.element());
+                var sct = originState.securityDetails.signedCertificateTimestampList[i];
+                sctTable.addRow(WebInspector.UIString("Log Name"), sct.logDescription);
+                sctTable.addRow(WebInspector.UIString("Log ID"), sct.logId.replace(/(.{2})/g,"$1 "));
+                sctTable.addRow(WebInspector.UIString("Validation Status"), sct.status);
+                sctTable.addRow(WebInspector.UIString("Origin"), sct.origin);
+                sctTable.addRow(WebInspector.UIString("Issued At"), new Date(sct.timestamp).toUTCString());
+                sctTable.addRow(WebInspector.UIString("Hash Algorithm"), sct.hashAlgorithm);
+                sctTable.addRow(WebInspector.UIString("Signature Algorithm"), sct.signatureAlgorithm);
+                sctTable.addRow(WebInspector.UIString("Signature Data"), sct.signatureData.replace(/(.{2})/g,"$1 "));
+            }
+
+            // Add link to toggle between displaying of the summary of the SCT(s) and the detailed SCT(s).
+            var toggleSctsDetailsLink = sctSection.createChild("div", "link");
+            toggleSctsDetailsLink.classList.add("sct-toggle");
+            toggleSctsDetailsLink.textContent = WebInspector.UIString("Show full details");
+            function toggleSctDetailsDisplay()
+            {
+                var isDetailsShown = !sctTableWrapper.classList.contains("hidden");
+                if (isDetailsShown)
+                    toggleSctsDetailsLink.textContent = WebInspector.UIString("Show full details");
+                else
+                    toggleSctsDetailsLink.textContent = WebInspector.UIString("Hide full details");
+                sctSummaryTable.element().classList.toggle("hidden");
+                sctTableWrapper.classList.toggle("hidden");
+            }
+            toggleSctsDetailsLink.addEventListener("click", toggleSctDetailsDisplay, false);
         }
 
         function displayCertificateDetailsUnavailable()

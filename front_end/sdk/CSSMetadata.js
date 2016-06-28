@@ -639,9 +639,6 @@ WebInspector.CSSMetadata._propertyDataMap = {
         "normal", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "hard-light", "soft-light",
         "difference", "exclusion", "hue", "saturation", "color", "luminosity", "unset"
     ] },
-    "contain": { values: [
-        "none", "strict", "content", "size", "layout", "style", "paint"
-    ] }
 }
 
 /**

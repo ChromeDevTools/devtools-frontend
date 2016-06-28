@@ -456,11 +456,11 @@ WebInspector.NetworkDispatcher.prototype = {
      * @override
      * @param {!NetworkAgent.RequestId} requestId
      * @param {string} requestURL
-     * @param {!NetworkAgent.Initiator=} initiator
      */
-    webSocketCreated: function(requestId, requestURL, initiator)
+    webSocketCreated: function(requestId, requestURL)
     {
-        var networkRequest = new WebInspector.NetworkRequest(this._manager._target, requestId, requestURL, "", "", "", initiator || null);
+        // FIXME: WebSocket MUST have initiator info.
+        var networkRequest = new WebInspector.NetworkRequest(this._manager._target, requestId, requestURL, "", "", "", null);
         networkRequest.setResourceType(WebInspector.resourceTypes.WebSocket);
         this._startNetworkRequest(networkRequest);
     },

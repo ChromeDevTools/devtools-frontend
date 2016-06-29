@@ -88,6 +88,33 @@ WebInspector.NetworkManager.NoThrottlingConditions = {title: WebInspector.UIStri
 /** @type {!WebInspector.NetworkManager.Conditions} */
 WebInspector.NetworkManager.OfflineConditions = {title: WebInspector.UIString("Offline"), download: 0, upload: 0, latency: 0};
 
+/**
+ * @param {!WebInspector.NetworkManager.Conditions} conditions
+ * @return {!NetworkAgent.ConnectionType}
+ * TODO(allada): this belongs to NetworkConditionsSelector, which should hardcode/guess it.
+ */
+WebInspector.NetworkManager._connectionType = function(conditions)
+{
+    if (!conditions.download && !conditions.upload)
+        return NetworkAgent.ConnectionType.None;
+    var types = WebInspector.NetworkManager._connectionTypes;
+    if (!types) {
+        WebInspector.NetworkManager._connectionTypes = [];
+        types = WebInspector.NetworkManager._connectionTypes;
+        types.push(["2g", NetworkAgent.ConnectionType.Cellular2g]);
+        types.push(["3g", NetworkAgent.ConnectionType.Cellular3g]);
+        types.push(["4g", NetworkAgent.ConnectionType.Cellular4g]);
+        types.push(["bluetooth", NetworkAgent.ConnectionType.Bluetooth]);
+        types.push(["wifi", NetworkAgent.ConnectionType.Wifi]);
+        types.push(["wimax", NetworkAgent.ConnectionType.Wimax]);
+    }
+    for (var type of types) {
+        if (conditions.title.toLowerCase().indexOf(type[0]) !== -1)
+            return type[1];
+    }
+    return NetworkAgent.ConnectionType.Other;
+}
+
 WebInspector.NetworkManager.prototype = {
     /**
      * @param {string} url
@@ -774,7 +801,7 @@ WebInspector.MultitargetNetworkManager.prototype = {
         if (!this.isThrottling()) {
             networkAgent.emulateNetworkConditions(false, 0, 0, 0);
         } else {
-            networkAgent.emulateNetworkConditions(this.isOffline(), conditions.latency, conditions.download < 0 ? 0 : conditions.download, conditions.upload < 0 ? 0 : conditions.upload);
+            networkAgent.emulateNetworkConditions(this.isOffline(), conditions.latency, conditions.download < 0 ? 0 : conditions.download, conditions.upload < 0 ? 0 : conditions.upload, WebInspector.NetworkManager._connectionType(conditions));
         }
     },
 

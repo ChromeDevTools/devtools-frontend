@@ -75,7 +75,7 @@ WebInspector.ElementsTreeElementHighlighter.prototype = {
         this._currentHighlightedElement = treeElement;
         this._treeOutline.setHoverEffect(treeElement);
         if (treeElement)
-            treeElement.reveal();
+            treeElement.reveal(true);
 
         this._isModifyingTreeOutline = false;
     },

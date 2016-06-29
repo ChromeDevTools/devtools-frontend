@@ -320,29 +320,6 @@ WebInspector.DebuggerModel.prototype = {
     },
 
     /**
-     * @param {string} objectId
-     * @param {function(?Array.<!DebuggerAgent.CollectionEntry>)} callback
-     */
-    getCollectionEntries: function(objectId, callback)
-    {
-        this._agent.getCollectionEntries(objectId, innerCallback);
-
-        /**
-         * @param {?Protocol.Error} error
-         * @param {?Array.<!DebuggerAgent.CollectionEntry>} response
-         */
-        function innerCallback(error, response)
-        {
-            if (error) {
-                console.error(error);
-                callback(null);
-                return;
-            }
-            callback(response);
-        }
-    },
-
-    /**
      * @param {!DebuggerAgent.BreakpointId} breakpointId
      * @param {!DebuggerAgent.Location} location
      */

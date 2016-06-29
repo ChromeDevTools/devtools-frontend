@@ -591,15 +591,6 @@ WebInspector.SourceMapNamesResolver.RemoteObject.prototype = {
         this._object.generatorObjectDetails(callback);
     },
 
-    /**
-     * @override
-     * @param {function(?Array<!DebuggerAgent.CollectionEntry>)} callback
-     */
-    collectionEntries: function(callback)
-    {
-        this._object.collectionEntries(callback);
-    },
-
     __proto__: WebInspector.RemoteObject.prototype
 }
 

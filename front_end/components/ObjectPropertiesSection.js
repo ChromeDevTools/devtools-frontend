@@ -575,7 +575,12 @@ WebInspector.ObjectPropertyTreeElement.populateWithProperties = function(treeNod
     if (internalProperties) {
         for (var i = 0; i < internalProperties.length; i++) {
             internalProperties[i].parentObject = value;
-            treeNode.appendChild(new WebInspector.ObjectPropertyTreeElement(internalProperties[i]));
+            var treeElement = new WebInspector.ObjectPropertyTreeElement(internalProperties[i]);
+            if (internalProperties[i].name === "[[Entries]]") {
+                treeElement.setExpandable(true);
+                treeElement.expand();
+            }
+            treeNode.appendChild(treeElement);
         }
     }
     if (value && value.type === "function") {
@@ -595,9 +600,6 @@ WebInspector.ObjectPropertyTreeElement.populateWithProperties = function(treeNod
         if (!hasTargetFunction)
             treeNode.appendChild(new WebInspector.FunctionScopeMainTreeElement(value));
     }
-    if (value && value.type === "object" && (value.subtype === "map" || value.subtype === "set" || value.subtype === "iterator"))
-        treeNode.appendChild(new WebInspector.CollectionEntriesMainTreeElement(value));
-
     WebInspector.ObjectPropertyTreeElement._appendEmptyPlaceholderIfNeeded(treeNode, emptyPlaceholder);
 }
 
@@ -722,56 +724,6 @@ WebInspector.FunctionScopeMainTreeElement.prototype = {
         }
 
         this._remoteObject.functionDetails(didGetDetails.bind(this));
-    },
-
-    __proto__: TreeElement.prototype
-}
-
-/**
- * @constructor
- * @extends {TreeElement}
- * @param {!WebInspector.RemoteObject} remoteObject
- */
-WebInspector.CollectionEntriesMainTreeElement = function(remoteObject)
-{
-    TreeElement.call(this, "<entries>", true);
-    this.toggleOnClick = true;
-    this.selectable = false;
-    this._remoteObject = remoteObject;
-    this.expand();
-}
-
-WebInspector.CollectionEntriesMainTreeElement.prototype = {
-    onpopulate: function()
-    {
-        /**
-         * @param {?Array.<!DebuggerAgent.CollectionEntry>} entries
-         * @this {WebInspector.CollectionEntriesMainTreeElement}
-         */
-        function didGetCollectionEntries(entries)
-        {
-            if (!entries)
-                return;
-            this.removeChildren();
-
-            var entriesLocalObject = [];
-            var runtimeModel = this._remoteObject.target().runtimeModel;
-            for (var i = 0; i < entries.length; ++i) {
-                var entry = entries[i];
-                if (entry.key) {
-                    entriesLocalObject.push(new WebInspector.MapEntryLocalJSONObject({
-                        key: runtimeModel.createRemoteObject(entry.key),
-                        value: runtimeModel.createRemoteObject(entry.value)
-                    }));
-                } else {
-                    entriesLocalObject.push(runtimeModel.createRemoteObject(entry.value));
-                }
-            }
-            WebInspector.ObjectPropertyTreeElement._populate(this, WebInspector.RemoteObject.fromLocalObject(entriesLocalObject), true, WebInspector.UIString("No Entries"));
-            this.title = "<entries>[" + entriesLocalObject.length + "]";
-        }
-
-        this._remoteObject.collectionEntries(didGetCollectionEntries.bind(this));
     },
 
     __proto__: TreeElement.prototype

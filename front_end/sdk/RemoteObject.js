@@ -314,14 +314,6 @@ WebInspector.RemoteObject.prototype = {
     generatorObjectDetails: function(callback)
     {
         callback(null);
-    },
-
-    /**
-     * @param {function(?Array<!DebuggerAgent.CollectionEntry>)} callback
-     */
-    collectionEntries: function(callback)
-    {
-        callback(null);
     }
 }
 
@@ -892,19 +884,6 @@ WebInspector.RemoteObjectImpl.prototype = {
     generatorObjectDetails: function(callback)
     {
         this._debuggerModel.generatorObjectDetails(this, callback);
-    },
-
-    /**
-     * @override
-     * @param {function(?Array.<!DebuggerAgent.CollectionEntry>)} callback
-     */
-    collectionEntries: function(callback)
-    {
-        if (!this._objectId) {
-            callback(null);
-            return;
-        }
-        this._debuggerModel.getCollectionEntries(this._objectId, callback);
     },
 
     __proto__: WebInspector.RemoteObject.prototype
@@ -1587,31 +1566,4 @@ WebInspector.RemoteFunction.prototype = {
     {
         return this._object;
     }
-}
-
-/**
- * @constructor
- * @extends {WebInspector.LocalJSONObject}
- * @param {*} value
- */
-WebInspector.MapEntryLocalJSONObject = function(value)
-{
-    WebInspector.LocalJSONObject.call(this, value);
-}
-
-WebInspector.MapEntryLocalJSONObject.prototype = {
-    /**
-     * @override
-     * @return {string}
-     */
-    get description()
-    {
-        if (!this._cachedDescription) {
-            var children = this._children();
-            this._cachedDescription = "{" + this._formatValue(children[0].value) + " => " + this._formatValue(children[1].value) + "}";
-        }
-        return this._cachedDescription;
-    },
-
-    __proto__: WebInspector.LocalJSONObject.prototype
 }

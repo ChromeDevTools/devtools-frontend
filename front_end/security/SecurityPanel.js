@@ -836,7 +836,7 @@ WebInspector.SecurityOriginView = function(panel, origin, originState)
                 sctTable.addRow(WebInspector.UIString("Log Name"), sct.logDescription);
                 sctTable.addRow(WebInspector.UIString("Log ID"), sct.logId.replace(/(.{2})/g,"$1 "));
                 sctTable.addRow(WebInspector.UIString("Validation Status"), sct.status);
-                sctTable.addRow(WebInspector.UIString("Origin"), sct.origin);
+                sctTable.addRow(WebInspector.UIString("Source"), sct.origin);
                 sctTable.addRow(WebInspector.UIString("Issued At"), new Date(sct.timestamp).toUTCString());
                 sctTable.addRow(WebInspector.UIString("Hash Algorithm"), sct.hashAlgorithm);
                 sctTable.addRow(WebInspector.UIString("Signature Algorithm"), sct.signatureAlgorithm);

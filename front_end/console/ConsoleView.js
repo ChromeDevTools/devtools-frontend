@@ -184,6 +184,8 @@ WebInspector.ConsoleView.prototype = {
      */
     _onMainFrameNavigated: function(event)
     {
+        if (!WebInspector.moduleSetting("preserveConsoleLog").get())
+            return;
         var frame = /** @type {!WebInspector.ResourceTreeFrame} */(event.data);
         WebInspector.console.log(WebInspector.UIString("Navigated to %s", frame.url));
     },

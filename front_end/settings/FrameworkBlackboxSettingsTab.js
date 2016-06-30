@@ -28,11 +28,13 @@ WebInspector.FrameworkBlackboxSettingsTab = function()
     placeholder.textContent = WebInspector.UIString("No blackboxed patterns");
     this._list.setEmptyPlaceholder(placeholder);
     this._list.show(this.contentElement);
-    this.contentElement.appendChild(createTextButton(WebInspector.UIString("Add pattern..."), this._addButtonClicked.bind(this), "add-button"));
+    var addPatternButton = createTextButton(WebInspector.UIString("Add pattern..."), this._addButtonClicked.bind(this), "add-button");
+    this.contentElement.appendChild(addPatternButton);
 
     this._setting = WebInspector.moduleSetting("skipStackFramesPattern");
     this._setting.addChangeListener(this._settingUpdated, this);
 
+    this.setDefaultFocusedElement(addPatternButton);
     this.contentElement.tabIndex = 0;
 }
 

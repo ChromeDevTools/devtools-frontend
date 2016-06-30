@@ -932,7 +932,7 @@ Event.prototype.deepElementFromPoint = function()
 Event.prototype.deepActiveElement = function()
 {
     var activeElement = this.target && this.target.ownerDocument ? this.target.ownerDocument.activeElement : null;
-    while (activeElement && activeElement.shadowRoot)
+    while (activeElement && activeElement.shadowRoot && activeElement.shadowRoot.activeElement)
         activeElement = activeElement.shadowRoot.activeElement;
     return activeElement;
 }

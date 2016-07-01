@@ -868,8 +868,10 @@ WebInspector.ElementsPanel.prototype = {
      */
     _leaveUserAgentShadowDOM: function(node)
     {
-        var userAgentShadowRoot = node.ancestorUserAgentShadowRoot();
-        return userAgentShadowRoot ? /** @type {!WebInspector.DOMNode} */ (userAgentShadowRoot.parentNode) : node;
+        var userAgentShadowRoot;
+        while ((userAgentShadowRoot = node.ancestorUserAgentShadowRoot()) && userAgentShadowRoot.parentNode)
+            node = userAgentShadowRoot.parentNode;
+        return node;
     },
 
     /**

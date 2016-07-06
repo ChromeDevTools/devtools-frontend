@@ -71,7 +71,7 @@
     to { background-color: rgb(171, 191, 254); }
 }
 
-.cm-breakpoint .CodeMirror-linenumber {
+.cm-breakpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
     color: white;
     border-width: 1px 4px 1px 1px !important;
     -webkit-border-image: url(Images/breakpoint.png) 1 4 1 1;
@@ -83,8 +83,8 @@
     border-style: solid;
 }
 
-.cm-line-without-source-mapping {
-    background-color: #fafafa;
+.cm-line-without-source-mapping .CodeMirror-linenumber {
+    color: rgba(128, 128, 128, 0.4);
 }
 
 .cm-breakpoint.cm-breakpoint-conditional .CodeMirror-linenumber {

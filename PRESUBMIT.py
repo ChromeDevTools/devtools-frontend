@@ -69,10 +69,10 @@ def _CompileDevtoolsFrontend(input_api, output_api):
     # should be added to the list of triggers.
     devtools_front_end = input_api.os_path.join("devtools", "front_end")
     if (any(devtools_front_end in path for path in local_paths) or
-        any("protocol.json" in path for path in local_paths) or
-        any("compile_frontend.py" in path for path in local_paths) or
-        any("InjectedScriptSource.js" in path for path in local_paths) or
-        any("DebuggerScript.js" in path for path in local_paths)):
+            any("_protocol.json" in path for path in local_paths) or
+            any("compile_frontend.py" in path for path in local_paths) or
+            any("InjectedScriptSource.js" in path for path in local_paths) or
+            any("DebuggerScript.js" in path for path in local_paths)):
         lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
             "scripts", "compile_frontend.py")
         out, _ = input_api.subprocess.Popen(

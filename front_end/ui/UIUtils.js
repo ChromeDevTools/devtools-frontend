@@ -1720,6 +1720,14 @@ WebInspector.ThemeSupport.prototype = {
     },
 
     /**
+     * @return {string}
+     */
+    themeName: function()
+    {
+        return this._themeName;
+    },
+
+    /**
      * @param {!Element} element
      */
     injectHighlightStyleSheets: function(element)

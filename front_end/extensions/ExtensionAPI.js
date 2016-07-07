@@ -978,6 +978,7 @@ function platformExtensionAPI(coreAPI)
     chrome.devtools.inspectedWindow.__proto__ = coreAPI.inspectedWindow;
     chrome.devtools.network = coreAPI.network;
     chrome.devtools.panels = coreAPI.panels;
+    chrome.devtools.panels.themeName = themeName;
 
     // default to expose experimental APIs for now.
     if (extensionInfo.exposeExperimentalAPIs !== false) {
@@ -998,27 +999,30 @@ function platformExtensionAPI(coreAPI)
 /**
  * @param {!ExtensionDescriptor} extensionInfo
  * @param {string} inspectedTabId
+ * @param {string} themeName
  * @return {string}
  */
-function buildPlatformExtensionAPI(extensionInfo, inspectedTabId)
+function buildPlatformExtensionAPI(extensionInfo, inspectedTabId, themeName)
 {
     return "var extensionInfo = " + JSON.stringify(extensionInfo) + ";" +
        "var tabId = " + inspectedTabId + ";" +
+       "var themeName = '" + themeName + "';" +
        platformExtensionAPI.toString();
 }
 
 /**
  * @param {!ExtensionDescriptor} extensionInfo
  * @param {string} inspectedTabId
+ * @param {string} themeName
  * @return {string}
  */
-function buildExtensionAPIInjectedScript(extensionInfo, inspectedTabId)
+function buildExtensionAPIInjectedScript(extensionInfo, inspectedTabId, themeName)
 {
     return "(function(injectedScriptId){ " +
         "var extensionServer;" +
         defineCommonExtensionSymbols.toString() + ";" +
         injectedExtensionAPI.toString() + ";" +
-        buildPlatformExtensionAPI(extensionInfo, inspectedTabId) + ";" +
+        buildPlatformExtensionAPI(extensionInfo, inspectedTabId, themeName) + ";" +
         "platformExtensionAPI(injectedExtensionAPI(injectedScriptId));" +
         "return {};" +
         "})";

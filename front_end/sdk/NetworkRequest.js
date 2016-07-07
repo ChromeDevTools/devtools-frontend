@@ -44,6 +44,8 @@ WebInspector.NetworkRequest = function(target, requestId, url, documentURL, fram
 {
     WebInspector.SDKObject.call(this, target);
 
+    this._networkLog = /** @type {!WebInspector.NetworkLog} */ (WebInspector.NetworkLog.fromTarget(target));
+    this._networkManager = /** @type {!WebInspector.NetworkManager} */ (WebInspector.NetworkManager.fromTarget(target));
     this._requestId = requestId;
     this.url = url;
     this._documentURL = documentURL;
@@ -1124,7 +1126,7 @@ WebInspector.NetworkRequest.prototype = {
     initiatorRequest: function()
     {
         if (this._initiatorRequest === undefined)
-            this._initiatorRequest = this.target().networkLog.requestForURL(this.initiatorInfo().url);
+            this._initiatorRequest = this._networkLog.requestForURL(this.initiatorInfo().url);
         return this._initiatorRequest;
     },
 
@@ -1205,6 +1207,22 @@ WebInspector.NetworkRequest.prototype = {
     replayXHR: function()
     {
         this.target().networkAgent().replayXHR(this.requestId);
+    },
+
+    /**
+     * @return {!WebInspector.NetworkLog}
+     */
+    networkLog: function()
+    {
+        return this._networkLog;
+    },
+
+    /**
+     * @return {!WebInspector.NetworkManager}
+     */
+    networkManager: function()
+    {
+        return this._networkManager;
     },
 
     __proto__: WebInspector.SDKObject.prototype

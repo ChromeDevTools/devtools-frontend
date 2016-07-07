@@ -196,12 +196,16 @@ WebInspector.TargetManager.prototype = {
 
         /** @type {!WebInspector.ConsoleModel} */
         target.consoleModel = new WebInspector.ConsoleModel(target);
-        /** @type {!WebInspector.NetworkManager} */
-        target.networkManager = new WebInspector.NetworkManager(target);
+
+        var networkManager = null;
+        if (!target.isJSInspector())
+            networkManager = new WebInspector.NetworkManager(target);
+
         /** @type {!WebInspector.ResourceTreeModel} */
-        target.resourceTreeModel = new WebInspector.ResourceTreeModel(target);
-        /** @type {!WebInspector.NetworkLog} */
-        target.networkLog = new WebInspector.NetworkLog(target);
+        target.resourceTreeModel = new WebInspector.ResourceTreeModel(target, networkManager);
+
+        if (networkManager)
+            new WebInspector.NetworkLog(target, networkManager);
 
         /** @type {!WebInspector.RuntimeModel} */
         target.runtimeModel = new WebInspector.RuntimeModel(target);
@@ -214,7 +218,7 @@ WebInspector.TargetManager.prototype = {
         }
 
         /** @type {?WebInspector.WorkerManager} */
-        target.workerManager = !target.isDedicatedWorker() ? new WebInspector.WorkerManager(target) : null;
+        target.workerManager = target.supportsWorkers() ? new WebInspector.WorkerManager(target) : null;
         /** @type {!WebInspector.CPUProfilerModel} */
         target.cpuProfilerModel = new WebInspector.CPUProfilerModel(target);
         /** @type {!WebInspector.HeapProfilerModel} */

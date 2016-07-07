@@ -34,7 +34,8 @@ WebInspector.Target = function(targetManager, name, type, connection, parentTarg
 WebInspector.Target.Type = {
     Page: 1,
     DedicatedWorker: 2,
-    ServiceWorker: 4
+    ServiceWorker: 4,
+    JSInspector: 8
 }
 
 WebInspector.Target._nextId = 1;
@@ -106,7 +107,7 @@ WebInspector.Target.prototype = {
      */
     isWorker: function()
     {
-        return this.isDedicatedWorker() || this.isServiceWorker();
+        return this.isDedicatedWorker() || this.isServiceWorker() || this.isJSInspector();
     },
 
     /**
@@ -128,9 +129,25 @@ WebInspector.Target.prototype = {
     /**
      * @return {boolean}
      */
+    isJSInspector: function()
+    {
+        return this._type === WebInspector.Target.Type.JSInspector;
+    },
+
+    /**
+     * @return {boolean}
+     */
     hasJSContext: function()
     {
         return !this.isServiceWorker();
+    },
+
+    /**
+     * @return {boolean}
+     */
+    supportsWorkers: function()
+    {
+        return this.isPage() || this.isServiceWorker();
     },
 
     /**
@@ -150,9 +167,6 @@ WebInspector.Target.prototype = {
     _dispose: function()
     {
         this._targetManager.dispatchEventToListeners(WebInspector.TargetManager.Events.TargetDisposed, this);
-        this.networkManager.dispose();
-        this.cpuProfilerModel.dispose();
-        WebInspector.ServiceWorkerCacheModel.fromTarget(this).dispose();
         if (this.workerManager)
             this.workerManager.dispose();
     },
@@ -218,6 +232,7 @@ WebInspector.SDKModel = function(modelClass, target)
 {
     WebInspector.SDKObject.call(this, target);
     target._modelByConstructor.set(modelClass, this);
+    WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.TargetDisposed, this._targetDisposed, this);
 }
 
 WebInspector.SDKModel.prototype = {
@@ -235,6 +250,20 @@ WebInspector.SDKModel.prototype = {
     resumeModel: function()
     {
         return Promise.resolve();
+    },
+
+    dispose: function() { },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _targetDisposed: function(event)
+    {
+        var target = /** @type {!WebInspector.Target} */ (event.data);
+        if (target !== this._target)
+            return;
+        this.dispose();
+        WebInspector.targetManager.removeEventListener(WebInspector.TargetManager.Events.TargetDisposed, this._targetDisposed, this);
     },
 
     __proto__: WebInspector.SDKObject.prototype

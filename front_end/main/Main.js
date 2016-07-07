@@ -308,7 +308,12 @@ WebInspector.Main.prototype = {
             WebInspector.RemoteDebuggingTerminatedScreen.show(event.data.reason);
         }
 
-        var targetType = Runtime.queryParam("isSharedWorker") ? WebInspector.Target.Type.ServiceWorker : WebInspector.Target.Type.Page;
+        var targetType = WebInspector.Target.Type.Page;
+        if (Runtime.queryParam("isSharedWorker"))
+            targetType = WebInspector.Target.Type.ServiceWorker;
+        else if (Runtime.queryParam("v8only"))
+            targetType = WebInspector.Target.Type.JSInspector;
+
         this._mainTarget = WebInspector.targetManager.createTarget(WebInspector.UIString("Main"), targetType, connection, null);
         console.timeStamp("Main._mainTargetCreated");
         this._registerShortcuts();
@@ -317,7 +322,7 @@ WebInspector.Main.prototype = {
         InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.ReloadInspectedPage, this._reloadInspectedPage, this);
         InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.EvaluateForTestInFrontend, this._evaluateForTestInFrontend, this);
 
-        if (this._mainTarget.isServiceWorker() || this._mainTarget.isPage())
+        if (this._mainTarget.isServiceWorker() || this._mainTarget.isPage() || this._mainTarget.isJSInspector())
             this._mainTarget.runtimeAgent().run();
 
         this._mainTarget.inspectorAgent().enable();

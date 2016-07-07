@@ -66,7 +66,7 @@ WebInspector.HAREntry.prototype = {
 
         if (this._request.connectionId !== "0")
             entry.connection = this._request.connectionId;
-        var page = this._request.target().networkLog.pageLoadForRequest(this._request);
+        var page = this._request.networkLog().pageLoadForRequest(this._request);
         if (page)
             entry.pageref = "page_" + page.id;
         return entry;
@@ -328,7 +328,7 @@ WebInspector.HARLog.prototype = {
         var pages = [];
         for (var i = 0; i < this._requests.length; ++i) {
             var request = this._requests[i];
-            var page = request.target().networkLog.pageLoadForRequest(request);
+            var page = request.networkLog().pageLoadForRequest(request);
             if (!page || seenIdentifiers[page.id])
                 continue;
             seenIdentifiers[page.id] = true;

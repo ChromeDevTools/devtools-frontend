@@ -81,6 +81,15 @@ WebInspector.NetworkManager._MIMETypes = {
     "text/vtt":                    {"texttrack": true},
 }
 
+/**
+ * @param {!WebInspector.Target} target
+ * @return {?WebInspector.NetworkManager}
+ */
+WebInspector.NetworkManager.fromTarget = function(target)
+{
+    return /** @type {?WebInspector.NetworkManager} */ (target.model(WebInspector.NetworkManager));
+}
+
 /** @typedef {{download: number, upload: number, latency: number, title: string}} */
 WebInspector.NetworkManager.Conditions;
 /** @type {!WebInspector.NetworkManager.Conditions} */

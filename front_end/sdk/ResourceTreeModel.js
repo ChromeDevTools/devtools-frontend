@@ -32,13 +32,17 @@
  * @constructor
  * @extends {WebInspector.SDKModel}
  * @param {!WebInspector.Target} target
+ * @param {?WebInspector.NetworkManager} networkManager
  */
-WebInspector.ResourceTreeModel = function(target)
+WebInspector.ResourceTreeModel = function(target, networkManager)
 {
     WebInspector.SDKModel.call(this, WebInspector.ResourceTreeModel, target);
-
-    target.networkManager.addEventListener(WebInspector.NetworkManager.EventTypes.RequestFinished, this._onRequestFinished, this);
-    target.networkManager.addEventListener(WebInspector.NetworkManager.EventTypes.RequestUpdateDropped, this._onRequestUpdateDropped, this);
+    if (networkManager) {
+        networkManager.addEventListener(WebInspector.NetworkManager.EventTypes.RequestFinished,
+            this._onRequestFinished, this);
+        networkManager.addEventListener(WebInspector.NetworkManager.EventTypes.RequestUpdateDropped,
+            this._onRequestUpdateDropped, this);
+    }
 
     this._agent = target.pageAgent();
     this._agent.enable();

@@ -39,7 +39,6 @@ WebInspector.DebuggerModel = function(target)
 
     target.registerDebuggerDispatcher(new WebInspector.DebuggerDispatcher(this));
     this._agent = target.debuggerAgent();
-    WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.TargetDisposed, this._targetDisposed, this);
 
     /** @type {?WebInspector.DebuggerPausedDetails} */
     this._debuggerPausedDetails = null;
@@ -786,14 +785,8 @@ WebInspector.DebuggerModel.prototype = {
         }
     },
 
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _targetDisposed: function(event)
+    dispose: function()
     {
-        var target = /** @type {!WebInspector.Target} */ (event.data);
-        if (target !== this.target())
-            return;
         WebInspector.moduleSetting("pauseOnExceptionEnabled").removeChangeListener(this._pauseOnExceptionStateChanged, this);
         WebInspector.moduleSetting("pauseOnCaughtException").removeChangeListener(this._pauseOnExceptionStateChanged, this);
         WebInspector.moduleSetting("enableAsyncStackTraces").removeChangeListener(this.asyncStackTracesStateChanged, this);

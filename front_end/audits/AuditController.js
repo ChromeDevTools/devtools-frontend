@@ -71,7 +71,8 @@ WebInspector.AuditController.prototype = {
             resultCallback(mainResourceURL, results);
         }
 
-        var requests = target.networkLog.requests().slice();
+        var networkLog = WebInspector.NetworkLog.fromTarget(target);
+        var requests = networkLog ? networkLog.requests().slice() : [];
         var compositeProgress = new WebInspector.CompositeProgress(this._progress);
         var subprogresses = [];
         for (var i = 0; i < categories.length; ++i)

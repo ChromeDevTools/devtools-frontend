@@ -172,7 +172,7 @@ WebInspector.SecurityPanel.prototype = {
             var securityDetails = request.securityDetails();
             if (securityDetails) {
                 originState.securityDetails = securityDetails;
-                originState.certificateDetailsPromise = request.target().networkManager.certificateDetailsPromise(securityDetails.certificateId);
+                originState.certificateDetailsPromise = request.networkManager().certificateDetailsPromise(securityDetails.certificateId);
             }
 
             this._origins.set(origin, originState);
@@ -249,8 +249,11 @@ WebInspector.SecurityPanel.prototype = {
         this._target = target;
 
         target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._onMainFrameNavigated, this);
-        target.networkManager.addEventListener(WebInspector.NetworkManager.EventTypes.ResponseReceived, this._onResponseReceived, this);
-        target.networkManager.addEventListener(WebInspector.NetworkManager.EventTypes.RequestFinished, this._onRequestFinished, this);
+        var networkManager = WebInspector.NetworkManager.fromTarget(target);
+        if (networkManager) {
+            networkManager.addEventListener(WebInspector.NetworkManager.EventTypes.ResponseReceived, this._onResponseReceived, this);
+            networkManager.addEventListener(WebInspector.NetworkManager.EventTypes.RequestFinished, this._onRequestFinished, this);
+        }
 
         var securityModel = WebInspector.SecurityModel.fromTarget(target);
         securityModel.addEventListener(WebInspector.SecurityModel.EventTypes.SecurityStateChanged, this._onSecurityStateChanged, this);

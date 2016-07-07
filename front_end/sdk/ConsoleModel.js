@@ -269,7 +269,8 @@ WebInspector.ConsoleMessage = function(target, source, level, messageText, type,
     this._messageId = messageId || 0;
     this._relatedMessageId = relatedMessageId || 0;
 
-    this.request = requestId ? target.networkLog.requestForId(requestId) : null;
+    var networkLog = target && WebInspector.NetworkLog.fromTarget(target);
+    this.request = (requestId && networkLog) ? networkLog.requestForId(requestId) : null;
 
     if (this.request) {
         var initiator = this.request.initiator();

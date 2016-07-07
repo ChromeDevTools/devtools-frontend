@@ -211,7 +211,9 @@ WebInspector.NetworkLogView.prototype = {
             target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.Load, this._loadEventFired, this);
             target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.DOMContentLoaded, this._domContentLoadedEventFired, this);
         }
-        target.networkLog.requests().forEach(this._appendRequest.bind(this));
+        var networkLog = WebInspector.NetworkLog.fromTarget(target);
+        if (networkLog)
+            networkLog.requests().forEach(this._appendRequest.bind(this));
     },
 
     /**
@@ -1166,7 +1168,8 @@ WebInspector.NetworkLogView.prototype = {
 
         // Pick provisional load requests.
         var requestsToPick = [];
-        var requests = frame.target().networkLog.requests();
+        var networkLog = WebInspector.NetworkLog.fromTarget(frame.target());
+        var requests = networkLog ? networkLog.requests() : [];
         for (var i = 0; i < requests.length; ++i) {
             var request = requests[i];
             if (request.loaderId === loaderId)

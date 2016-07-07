@@ -30,19 +30,29 @@
 
 /**
  * @constructor
- * @extends {WebInspector.SDKObject}
+ * @extends {WebInspector.SDKModel}
  * @param {!WebInspector.Target} target
+ * @param {!WebInspector.NetworkManager} networkManager
  */
-WebInspector.NetworkLog = function(target)
+WebInspector.NetworkLog = function(target, networkManager)
 {
-    WebInspector.SDKObject.call(this, target);
+    WebInspector.SDKModel.call(this, WebInspector.NetworkLog, target);
 
     this._requests = [];
     this._requestForId = {};
-    target.networkManager.addEventListener(WebInspector.NetworkManager.EventTypes.RequestStarted, this._onRequestStarted, this);
+    networkManager.addEventListener(WebInspector.NetworkManager.EventTypes.RequestStarted, this._onRequestStarted, this);
     target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._onMainFrameNavigated, this);
     target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.Load, this._onLoad, this);
     target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.DOMContentLoaded, this._onDOMContentLoaded, this);
+}
+
+/**
+ * @param {!WebInspector.Target} target
+ * @return {?WebInspector.NetworkLog}
+ */
+WebInspector.NetworkLog.fromTarget = function(target)
+{
+    return /** @type {?WebInspector.NetworkLog} */ (target.model(WebInspector.NetworkLog));
 }
 
 /**
@@ -52,7 +62,8 @@ WebInspector.NetworkLog = function(target)
 WebInspector.NetworkLog.requestForURL = function(url)
 {
     for (var target of WebInspector.targetManager.targets()) {
-        var result = target.networkLog.requestForURL(url);
+        var networkLog = WebInspector.NetworkLog.fromTarget(target);
+        var result = networkLog && networkLog.requestForURL(url);
         if (result)
             return result;
     }
@@ -66,7 +77,9 @@ WebInspector.NetworkLog.requests = function()
 {
     var result = [];
     for (var target of WebInspector.targetManager.targets()) {
-        result = result.concat(target.networkLog.requests());
+        var networkLog = WebInspector.NetworkLog.fromTarget(target);
+        if (networkLog)
+            result = result.concat(networkLog.requests());
     }
     return result;
 }
@@ -162,7 +175,7 @@ WebInspector.NetworkLog.prototype = {
         return this._requestForId[requestId];
     },
 
-    __proto__: WebInspector.SDKObject.prototype
+    __proto__: WebInspector.SDKModel.prototype
 }
 
 /**

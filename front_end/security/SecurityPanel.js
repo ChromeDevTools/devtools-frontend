@@ -556,7 +556,10 @@ WebInspector.SecurityMainView = function(panel)
     this._panel = panel;
 
     this._summarySection = this.contentElement.createChild("div", "security-summary");
-    this._securityExplanations = this.contentElement.createChild("div", "security-explanation-list");
+
+    // Info explanations should appear after all others.
+    this._securityExplanationsMain = this.contentElement.createChild("div", "security-explanation-list");
+    this._securityExplanationsExtra = this.contentElement.createChild("div", "security-explanation-list security-explanations-extra");
 
     // Fill the security summary section.
     this._summarySection.createChild("div", "security-summary-section-title").textContent = WebInspector.UIString("Security Overview");
@@ -575,12 +578,13 @@ WebInspector.SecurityMainView = function(panel)
 
 WebInspector.SecurityMainView.prototype = {
     /**
+     * @param {!Element} parent
      * @param {!SecurityAgent.SecurityStateExplanation} explanation
      * @return {!Element}
      */
-    _addExplanation: function(explanation)
+    _addExplanation: function(parent, explanation)
     {
-        var explanationSection = this._securityExplanations.createChild("div", "security-explanation");
+        var explanationSection = parent.createChild("div", "security-explanation");
         explanationSection.classList.add("security-explanation-" + explanation.securityState);
 
         explanationSection.createChild("div", "security-property").classList.add("security-property-" + explanation.securityState);
@@ -630,9 +634,15 @@ WebInspector.SecurityMainView.prototype = {
 
     refreshExplanations: function()
     {
-        this._securityExplanations.removeChildren();
-        for (var explanation of this._explanations)
-            this._addExplanation(explanation);
+        this._securityExplanationsMain.removeChildren();
+        this._securityExplanationsExtra.removeChildren();
+        for (var explanation of this._explanations) {
+            if (explanation.securityState === SecurityAgent.SecurityState.Info) {
+                this._addExplanation(this._securityExplanationsExtra, explanation);
+            } else {
+                this._addExplanation(this._securityExplanationsMain, explanation);
+            }
+        }
 
         this._addMixedContentExplanations();
     },
@@ -644,13 +654,13 @@ WebInspector.SecurityMainView.prototype = {
 
         if (this._mixedContentStatus && (this._mixedContentStatus.ranInsecureContent || this._mixedContentStatus.displayedInsecureContent)) {
             if (this._mixedContentStatus.ranInsecureContent)
-                this._addMixedContentExplanation(this._mixedContentStatus.ranInsecureContentStyle, WebInspector.UIString("Active Mixed Content"), WebInspector.UIString("You have recently allowed insecure content (such as scripts or iframes) to run on this site."), WebInspector.NetworkLogView.MixedContentFilterValues.BlockOverridden, showBlockOverriddenMixedContentInNetworkPanel);
+                this._addMixedContentExplanation(this._securityExplanationsMain, this._mixedContentStatus.ranInsecureContentStyle, WebInspector.UIString("Active Mixed Content"), WebInspector.UIString("You have recently allowed insecure content (such as scripts or iframes) to run on this site."), WebInspector.NetworkLogView.MixedContentFilterValues.BlockOverridden, showBlockOverriddenMixedContentInNetworkPanel);
             if (this._mixedContentStatus.displayedInsecureContent)
-                this._addMixedContentExplanation(this._mixedContentStatus.displayedInsecureContentStyle, WebInspector.UIString("Mixed Content"), WebInspector.UIString("The site includes HTTP resources."), WebInspector.NetworkLogView.MixedContentFilterValues.Displayed, showDisplayedMixedContentInNetworkPanel);
+                this._addMixedContentExplanation(this._securityExplanationsMain, this._mixedContentStatus.displayedInsecureContentStyle, WebInspector.UIString("Mixed Content"), WebInspector.UIString("The site includes HTTP resources."), WebInspector.NetworkLogView.MixedContentFilterValues.Displayed, showDisplayedMixedContentInNetworkPanel);
         }
 
         if (this._mixedContentStatus && (!this._mixedContentStatus.displayedInsecureContent && !this._mixedContentStatus.ranInsecureContent)) {
-            this._addExplanation(/** @type {!SecurityAgent.SecurityStateExplanation} */ ({
+            this._addExplanation(this._securityExplanationsMain, /** @type {!SecurityAgent.SecurityStateExplanation} */ ({
                 "securityState": SecurityAgent.SecurityState.Secure,
                 "summary": WebInspector.UIString("Secure Resources"),
                 "description": WebInspector.UIString("All resources on this page are served securely.")
@@ -658,7 +668,7 @@ WebInspector.SecurityMainView.prototype = {
         }
 
         if (this._panel.filterRequestCount(WebInspector.NetworkLogView.MixedContentFilterValues.Blocked) > 0)
-            this._addMixedContentExplanation(SecurityAgent.SecurityState.Info, WebInspector.UIString("Blocked mixed content"), WebInspector.UIString("Your page requested insecure resources that were blocked."), WebInspector.NetworkLogView.MixedContentFilterValues.Blocked, showBlockedMixedContentInNetworkPanel);
+            this._addMixedContentExplanation(this._securityExplanationsExtra, SecurityAgent.SecurityState.Info, WebInspector.UIString("Blocked mixed content"), WebInspector.UIString("Your page requested insecure resources that were blocked."), WebInspector.NetworkLogView.MixedContentFilterValues.Blocked, showBlockedMixedContentInNetworkPanel);
 
         /**
          * @param {!Event} e
@@ -704,13 +714,14 @@ WebInspector.SecurityMainView.prototype = {
     },
 
     /**
+     * @param {!Element} parent
      * @param {!SecurityAgent.SecurityState} securityState
      * @param {string} summary
      * @param {string} description
      * @param {!WebInspector.NetworkLogView.MixedContentFilterValues} filterKey
      * @param {!Function} networkFilterFn
      */
-    _addMixedContentExplanation: function(securityState, summary, description, filterKey, networkFilterFn)
+    _addMixedContentExplanation: function(parent, securityState, summary, description, filterKey, networkFilterFn)
     {
         var mixedContentExplanation = /** @type {!SecurityAgent.SecurityStateExplanation} */ ({
             "securityState": securityState,
@@ -719,7 +730,7 @@ WebInspector.SecurityMainView.prototype = {
         });
 
         var filterRequestCount = this._panel.filterRequestCount(filterKey);
-        var requestsAnchor = this._addExplanation(mixedContentExplanation).createChild("div", "security-mixed-content link");
+        var requestsAnchor = this._addExplanation(parent, mixedContentExplanation).createChild("div", "security-mixed-content link");
         if (filterRequestCount > 0) {
             requestsAnchor.textContent = WebInspector.UIString("View %d request%s in Network Panel", filterRequestCount, (filterRequestCount > 1 ? "s" : ""));
         } else {

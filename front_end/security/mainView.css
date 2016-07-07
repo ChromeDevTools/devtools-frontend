@@ -144,11 +144,15 @@
 .security-explanation-text {
     flex: auto;
     white-space: normal;
+    max-width: 400px;
 }
 
-.security-explanation-info {
-    border-bottom: none;
+.security-explanations-extra .security-explanation {
     background-color: transparent;
+}
+
+.security-explanations-extra .security-explanation:only-child {
+    border-bottom: none;
 }
 
 .security-certificate-button {

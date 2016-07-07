@@ -107,6 +107,7 @@
         "NetworkItemView.js",
         "NetworkTimeCalculator.js",
         "NetworkLogView.js",
+        "NetworkLogViewColumns.js",
         "NetworkOverview.js",
         "RequestCookiesView.js",
         "RequestHeadersView.js",

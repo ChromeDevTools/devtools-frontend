@@ -561,6 +561,7 @@
             'front_end/network/NetworkDataGridNode.js',
             'front_end/network/NetworkItemView.js',
             'front_end/network/NetworkLogView.js',
+            'front_end/network/NetworkLogViewColumns.js',
             'front_end/network/NetworkOverview.js',
             'front_end/network/NetworkPanel.js',
             'front_end/network/NetworkTimeCalculator.js',

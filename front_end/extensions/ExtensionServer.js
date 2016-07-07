@@ -634,7 +634,6 @@ WebInspector.ExtensionServer.prototype = {
             // Fool around closure compiler -- it has its own notion of both KeyboardEvent constructor
             // and initKeyboardEvent methods and overriding these in externs.js does not have effect.
             var event = new window.KeyboardEvent(entry.eventType, {
-                keyIdentifier: entry.keyIdentifier,
                 key: entry.key,
                 code: entry.code,
                 keyCode: entry.keyCode,
@@ -653,9 +652,8 @@ WebInspector.ExtensionServer.prototype = {
             var keyCode = entry.keyCode;
             if (!keyCode) {
                 // This is required only for synthetic events (e.g. dispatched in tests).
-                var match = entry.keyIdentifier.match(/^U\+([\dA-Fa-f]+)$/);
-                if (match)
-                    keyCode = parseInt(match[1], 16);
+                if (entry.key === "Escape")
+                    keyCode = 27;
             }
             return keyCode || 0;
         }

@@ -260,7 +260,7 @@ WebInspector.CSSModel.prototype = {
         var originalAndDetach = originalAndDetachIfSuccess.bind(this, header);
 
         if (!sourceMap.editable())
-            return originalAndDetach();
+            return original();
 
         return /** @type {!Promise<boolean>} */(sourceMap.editCompiled([range], [text])
             .then(onEditingDone.bind(this))
@@ -418,7 +418,7 @@ WebInspector.CSSModel.prototype = {
                 return false;
             this._domModel.markUndoableState();
             var edit = new WebInspector.CSSModel.Edit(styleSheetId, range, text, selectorPayload);
-            this._fireStyleSheetChangedAndDetach(styleSheetId, edit);
+            this._fireStyleSheetChanged(styleSheetId, edit);
             return true;
         }
 
@@ -448,7 +448,7 @@ WebInspector.CSSModel.prototype = {
                 return false;
             this._domModel.markUndoableState();
             var edit = new WebInspector.CSSModel.Edit(styleSheetId, range, text, payload);
-            this._fireStyleSheetChangedAndDetach(styleSheetId, edit);
+            this._fireStyleSheetChanged(styleSheetId, edit);
             return true;
         }
 
@@ -682,7 +682,7 @@ WebInspector.CSSModel.prototype = {
                 return false;
             this._domModel.markUndoableState();
             var edit = new WebInspector.CSSModel.Edit(styleSheetId, range, newMediaText, mediaPayload);
-            this._fireStyleSheetChangedAndDetach(styleSheetId, edit);
+            this._fireStyleSheetChanged(styleSheetId, edit);
             return true;
         }
 
@@ -716,7 +716,7 @@ WebInspector.CSSModel.prototype = {
                 return null;
             this._domModel.markUndoableState();
             var edit = new WebInspector.CSSModel.Edit(styleSheetId, ruleLocation, ruleText, rulePayload);
-            this._fireStyleSheetChangedAndDetach(styleSheetId, edit);
+            this._fireStyleSheetChanged(styleSheetId, edit);
             return new WebInspector.CSSStyleRule(this, rulePayload);
         }
     },
@@ -782,18 +782,6 @@ WebInspector.CSSModel.prototype = {
     _fireStyleSheetChanged: function(styleSheetId, edit)
     {
         this.dispatchEventToListeners(WebInspector.CSSModel.Events.StyleSheetChanged, { styleSheetId: styleSheetId, edit: edit });
-    },
-
-    /**
-     * @param {!CSSAgent.StyleSheetId} styleSheetId
-     * @param {!WebInspector.CSSModel.Edit=} edit
-     */
-    _fireStyleSheetChangedAndDetach: function(styleSheetId, edit)
-    {
-        this.dispatchEventToListeners(WebInspector.CSSModel.Events.StyleSheetChanged, { styleSheetId: styleSheetId, edit: edit });
-        var header = this.styleSheetHeaderForId(styleSheetId);
-        if (header)
-            this._detachSourceMap(header);
     },
 
     /**
@@ -1096,7 +1084,7 @@ WebInspector.CSSDispatcher.prototype = {
      */
     styleSheetChanged: function(styleSheetId)
     {
-        this._cssModel._fireStyleSheetChangedAndDetach(styleSheetId);
+        this._cssModel._fireStyleSheetChanged(styleSheetId);
     },
 
     /**

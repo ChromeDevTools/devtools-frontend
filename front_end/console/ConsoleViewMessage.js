@@ -420,13 +420,26 @@ WebInspector.ConsoleViewMessage.prototype = {
                 titleElement.createTextChild(obj.description || "");
             }
         }
+
+        var section = this._buildExpandableObjectSection(obj, titleElement);
+        elem.appendChild(section.element);
+    },
+
+    /**
+     * @param {!WebInspector.RemoteObject} obj
+     * @param {!Element} titleElement
+     * @return {!WebInspector.ObjectPropertiesSection}
+     */
+    _buildExpandableObjectSection: function(obj, titleElement)
+    {
         var note = titleElement.createChild("span", "object-state-note");
         note.classList.add("info-note");
         note.title = WebInspector.UIString("Object value at left was snapshotted when logged, value below was evaluated just now.");
+
         var section = new WebInspector.ObjectPropertiesSection(obj, titleElement, this._linkifier);
-        section.enableContextMenu();
-        elem.appendChild(section.element);
         section.element.classList.add("console-view-object-properties-section");
+        section.enableContextMenu();
+        return section;
     },
 
     /**
@@ -444,7 +457,7 @@ WebInspector.ConsoleViewMessage.prototype = {
          */
         function formatTargetFunction(targetFunction)
         {
-            var functionElement = createElement("span")
+            var functionElement = createElement("span");
             WebInspector.ObjectPropertiesSection.formatObjectAsFunction(targetFunction, functionElement, true, includePreview);
             element.appendChild(functionElement);
             if (targetFunction !== func) {
@@ -528,7 +541,7 @@ WebInspector.ConsoleViewMessage.prototype = {
         if (this.useArrayPreviewInFormatter(array) || array.arrayLength() > maxFlatArrayLength)
             this._formatParameterAsArrayOrObject(array, elem, this.useArrayPreviewInFormatter(array) || array.arrayLength() <= maxFlatArrayLength);
         else
-            array.getAllProperties(false, this._printArray.bind(this, array, elem));
+            array.getAllProperties(false, this._printArrayResult.bind(this, array, elem));
     },
 
     /**
@@ -641,13 +654,14 @@ WebInspector.ConsoleViewMessage.prototype = {
      * @param {!Element} elem
      * @param {?Array.<!WebInspector.RemoteObjectProperty>} properties
      */
-    _printArray: function(array, elem, properties)
+    _printArrayResult: function(array, elem, properties)
     {
         if (!properties) {
             this._formatParameterAsObject(array, elem, false);
             return;
         }
 
+        var titleElement = createElement("span");
         var elements = {};
         for (var i = 0; i < properties.length; ++i) {
             var property = properties[i];
@@ -660,14 +674,14 @@ WebInspector.ConsoleViewMessage.prototype = {
                 elements[name] = this._formatAsArrayEntry(property.value);
         }
 
-        elem.createTextChild("[");
+        titleElement.createTextChild("[");
         var lastNonEmptyIndex = -1;
 
-        function appendUndefined(elem, index)
+        function appendUndefined(titleElement, index)
         {
             if (index - lastNonEmptyIndex <= 1)
                 return;
-            var span = elem.createChild("span", "object-value-undefined");
+            var span = titleElement.createChild("span", "object-value-undefined");
             span.textContent = WebInspector.UIString("undefined × %d", index - lastNonEmptyIndex - 1);
         }
 
@@ -678,19 +692,21 @@ WebInspector.ConsoleViewMessage.prototype = {
                 continue;
 
             if (i - lastNonEmptyIndex > 1) {
-                appendUndefined(elem, i);
-                elem.createTextChild(", ");
+                appendUndefined(titleElement, i);
+                titleElement.createTextChild(", ");
             }
 
-            elem.appendChild(element);
+            titleElement.appendChild(element);
             lastNonEmptyIndex = i;
             if (i < length - 1)
-                elem.createTextChild(", ");
+                titleElement.createTextChild(", ");
         }
-        appendUndefined(elem, length);
+        appendUndefined(titleElement, length);
 
-        elem.createTextChild("]");
-        elem.addEventListener("contextmenu", this._contextMenuEventFired.bind(this, array), false);
+        titleElement.createTextChild("]");
+
+        var section = this._buildExpandableObjectSection(array, titleElement);
+        elem.appendChild(section.element);
     },
 
     /**
@@ -699,8 +715,11 @@ WebInspector.ConsoleViewMessage.prototype = {
      */
     _formatAsArrayEntry: function(output)
     {
-        // Prevent infinite expansion of cross-referencing arrays.
-        return this._formatParameter(output, output.subtype === "array", false);
+        if (this._message.type === WebInspector.ConsoleMessage.MessageType.DirXML) {
+            // Prevent infinite expansion of cross-referencing arrays.
+            return this._formatParameter(output, output.subtype === "array", false);
+        }
+        return this._previewFormatter.renderPropertyPreview(output.type, output.subtype, output.description);
     },
 
     /**

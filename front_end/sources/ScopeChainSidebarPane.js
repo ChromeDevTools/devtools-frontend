@@ -32,6 +32,7 @@ WebInspector.ScopeChainSidebarPane = function()
 {
     WebInspector.SidebarPane.call(this, WebInspector.UIString("Scope"));
     this._expandController = new WebInspector.ObjectPropertiesSectionExpandController();
+    this._linkifier = new WebInspector.Linkifier();
 }
 
 WebInspector.ScopeChainSidebarPane._pathSymbol = Symbol("path");
@@ -42,6 +43,7 @@ WebInspector.ScopeChainSidebarPane.prototype = {
      */
     update: function(callFrame)
     {
+        this._linkifier.reset();
         WebInspector.SourceMapNamesResolver.resolveThisObject(callFrame)
             .then(this._innerUpdate.bind(this, callFrame));
     },
@@ -120,7 +122,7 @@ WebInspector.ScopeChainSidebarPane.prototype = {
             titleElement.createChild("div", "scope-chain-sidebar-pane-section-subtitle").textContent = subtitle;
             titleElement.createChild("div", "scope-chain-sidebar-pane-section-title").textContent = title;
 
-            var section = new WebInspector.ObjectPropertiesSection(WebInspector.SourceMapNamesResolver.resolveScopeInObject(scope), titleElement, emptyPlaceholder, true, extraProperties);
+            var section = new WebInspector.ObjectPropertiesSection(WebInspector.SourceMapNamesResolver.resolveScopeInObject(scope), titleElement, this._linkifier, emptyPlaceholder, true, extraProperties);
             this._expandController.watchSection(title + (subtitle ? ":" + subtitle : ""), section);
 
             if (scope.type() === DebuggerAgent.ScopeType.Global)

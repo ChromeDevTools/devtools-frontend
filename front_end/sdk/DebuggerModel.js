@@ -61,9 +61,6 @@ WebInspector.DebuggerModel = function(target)
 /** @typedef {{location: ?WebInspector.DebuggerModel.Location, sourceURL: ?string, functionName: string, scopeChain: (Array.<!DebuggerAgent.Scope>|null)}} */
 WebInspector.DebuggerModel.FunctionDetails;
 
-/** @typedef {{location: ?WebInspector.DebuggerModel.Location, sourceURL: ?string, functionName: string, status: string}} */
-WebInspector.DebuggerModel.GeneratorObjectDetails;
-
 /**
  * Keep these in sync with WebCore::V8Debugger
  *
@@ -712,34 +709,6 @@ WebInspector.DebuggerModel.prototype = {
             }
             if (callback)
                 callback();
-        }
-    },
-
-    /**
-     * @param {!WebInspector.RemoteObject} remoteObject
-     * @param {function(?WebInspector.DebuggerModel.GeneratorObjectDetails)} callback
-     */
-    generatorObjectDetails: function(remoteObject, callback)
-    {
-        this._agent.getGeneratorObjectDetails(remoteObject.objectId, didGetDetails.bind(this));
-
-        /**
-         * @param {?Protocol.Error} error
-         * @param {!DebuggerAgent.GeneratorObjectDetails} response
-         * @this {WebInspector.DebuggerModel}
-         */
-        function didGetDetails(error, response)
-        {
-            if (error) {
-                console.error(error);
-                callback(null);
-                return;
-            }
-            var location = response.location;
-            var script = location && this.scriptForId(location.scriptId);
-            var rawLocation = script ? this.createRawLocation(script, location.lineNumber, location.columnNumber || 0) : null;
-            var sourceURL = script ? script.contentURL() : null;
-            callback({location: rawLocation, sourceURL: sourceURL, functionName: response.functionName, status: response.status});
         }
     },
 

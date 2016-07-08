@@ -112,23 +112,6 @@ WebInspector.ObjectPopoverHelper.prototype = {
         }
 
         /**
-         * @param {?WebInspector.DebuggerModel.GeneratorObjectDetails} response
-         * @this {WebInspector.ObjectPopoverHelper}
-         */
-        function didGetGeneratorObjectDetails(response)
-        {
-            if (!response || popover.disposed)
-                return;
-
-            var rawLocation = response.location;
-            var sourceURL = response.sourceURL;
-            if (rawLocation && sourceURL) {
-                var link = this._lazyLinkifier().linkifyRawLocation(rawLocation, sourceURL, "function-location-link");
-                this._titleElement.appendChild(link);
-            }
-        }
-
-        /**
          * @param {!WebInspector.RemoteObject} result
          * @param {boolean} wasThrown
          * @param {!Element=} anchorOverride
@@ -176,20 +159,16 @@ WebInspector.ObjectPopoverHelper.prototype = {
                     popoverContentElement = createElement("div");
                     this._titleElement = popoverContentElement.createChild("div", "monospace");
                     this._titleElement.createChild("span", "source-frame-popover-title").textContent = description;
-                    var section = new WebInspector.ObjectPropertiesSection(result, "");
+                    var section = new WebInspector.ObjectPropertiesSection(result, "", this._lazyLinkifier());
                     section.element.classList.add("source-frame-popover-tree");
                     section.titleLessMode();
                     popoverContentElement.appendChild(section.element);
-
-                    if (result.subtype === "generator")
-                        result.generatorObjectDetails(didGetGeneratorObjectDetails.bind(this));
                 }
                 var popoverWidth = 300;
                 var popoverHeight = 250;
                 popover.showForAnchor(popoverContentElement, anchorElement, popoverWidth, popoverHeight);
             }
         }
-
         this._queryObject(element, didQueryObject.bind(this), this._popoverObjectGroup);
     },
 

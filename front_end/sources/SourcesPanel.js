@@ -952,8 +952,6 @@ WebInspector.SourcesPanel.prototype = {
         contextMenu.appendItem(WebInspector.UIString.capitalize("Store as ^global ^variable"), this._saveToTempVariable.bind(this, remoteObject));
         if (remoteObject.type === "function")
             contextMenu.appendItem(WebInspector.UIString.capitalize("Show ^function ^definition"), this._showFunctionDefinition.bind(this, remoteObject));
-        if (remoteObject.subtype === "generator")
-            contextMenu.appendItem(WebInspector.UIString.capitalize("Show ^generator ^location"), this._showGeneratorLocation.bind(this, remoteObject));
     },
 
     /**
@@ -1042,21 +1040,13 @@ WebInspector.SourcesPanel.prototype = {
      */
     _showFunctionDefinition: function(remoteObject)
     {
-        remoteObject.debuggerModel().functionDetails(remoteObject, this._didGetFunctionOrGeneratorObjectDetails.bind(this));
-    },
-
-    /**
-     * @param {!WebInspector.RemoteObject} remoteObject
-     */
-    _showGeneratorLocation: function(remoteObject)
-    {
-        remoteObject.debuggerModel().generatorObjectDetails(remoteObject, this._didGetFunctionOrGeneratorObjectDetails.bind(this));
+        remoteObject.debuggerModel().functionDetails(remoteObject, this._didGetFunctionDetails.bind(this));
     },
 
     /**
      * @param {?{location: ?WebInspector.DebuggerModel.Location}} response
      */
-    _didGetFunctionOrGeneratorObjectDetails: function(response)
+    _didGetFunctionDetails: function(response)
     {
         if (!response || !response.location)
             return;

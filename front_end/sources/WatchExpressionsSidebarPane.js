@@ -54,6 +54,8 @@ WebInspector.WatchExpressionsSidebarPane = function()
     this._expandController = new WebInspector.ObjectPropertiesSectionExpandController();
 
     WebInspector.context.addFlavorChangeListener(WebInspector.ExecutionContext, this.refreshExpressions, this);
+
+    this._linkifier = new WebInspector.Linkifier();
 }
 
 WebInspector.WatchExpressionsSidebarPane.prototype = {
@@ -129,6 +131,7 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
 
     _rebuildWatchExpressions: function()
     {
+        this._linkifier.reset();
         this._bodyElement.removeChildren();
         this._watchExpressions = [];
         this._emptyElement = this._bodyElement.createChild("div", "info");
@@ -150,7 +153,7 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
     _createWatchExpression: function(expression)
     {
         this._emptyElement.classList.add("hidden");
-        var watchExpression = new WebInspector.WatchExpression(expression, this._expandController);
+        var watchExpression = new WebInspector.WatchExpression(expression, this._expandController, this._linkifier);
         watchExpression.addEventListener(WebInspector.WatchExpression.Events.ExpressionUpdated, this._watchExpressionUpdated.bind(this));
         this._bodyElement.appendChild(watchExpression.element());
         this._watchExpressions.push(watchExpression);
@@ -218,13 +221,15 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
  * @extends {WebInspector.Object}
  * @param {?string} expression
  * @param {!WebInspector.ObjectPropertiesSectionExpandController} expandController
+ * @param {!WebInspector.Linkifier} linkifier
  */
-WebInspector.WatchExpression = function(expression, expandController)
+WebInspector.WatchExpression = function(expression, expandController, linkifier)
 {
     this._expression = expression;
     this._expandController = expandController;
     this._element = createElementWithClass("div", "watch-expression monospace");
     this._editing = false;
+    this._linkifier = linkifier;
 
     this._createWatchExpression(null, false);
     this.update();
@@ -352,7 +357,7 @@ WebInspector.WatchExpression.prototype = {
             titleElement.classList.add("dimmed");
             this._valueElement.textContent = WebInspector.UIString("<not available>");
         } else {
-            this._valueElement = WebInspector.ObjectPropertiesSection.createValueElementWithCustomSupport(result, wasThrown, titleElement);
+            this._valueElement = WebInspector.ObjectPropertiesSection.createValueElementWithCustomSupport(result, wasThrown, titleElement, this._linkifier);
         }
         var separatorElement = createElementWithClass("span", "watch-expressions-separator");
         separatorElement.textContent = ": ";
@@ -362,7 +367,7 @@ WebInspector.WatchExpression.prototype = {
         this._objectPropertiesSection = null;
         if (!wasThrown && result && result.hasChildren && !result.customPreview()) {
             headerElement.classList.add("watch-expression-object-header");
-            this._objectPropertiesSection = new WebInspector.ObjectPropertiesSection(result, headerElement);
+            this._objectPropertiesSection = new WebInspector.ObjectPropertiesSection(result, headerElement, this._linkifier);
             this._objectPresentationElement = this._objectPropertiesSection.element;
             this._expandController.watchSection(/** @type {string} */ (this._expression), this._objectPropertiesSection);
             var objectTreeElement = this._objectPropertiesSection.objectTreeElement();

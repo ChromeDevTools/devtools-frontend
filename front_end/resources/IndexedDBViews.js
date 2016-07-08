@@ -384,7 +384,7 @@ WebInspector.IDBDataGridNode.prototype = {
         case "key":
         case "primaryKey":
             cell.removeChildren();
-            var objectElement = WebInspector.ObjectPropertiesSection.defaultObjectPresentation(value, true);
+            var objectElement = WebInspector.ObjectPropertiesSection.defaultObjectPresentation(value, undefined, true);
             cell.appendChild(objectElement);
             break;
         default:

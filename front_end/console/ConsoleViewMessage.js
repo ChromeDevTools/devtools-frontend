@@ -423,7 +423,7 @@ WebInspector.ConsoleViewMessage.prototype = {
         var note = titleElement.createChild("span", "object-state-note");
         note.classList.add("info-note");
         note.title = WebInspector.UIString("Object value at left was snapshotted when logged, value below was evaluated just now.");
-        var section = new WebInspector.ObjectPropertiesSection(obj, titleElement);
+        var section = new WebInspector.ObjectPropertiesSection(obj, titleElement, this._linkifier);
         section.enableContextMenu();
         elem.appendChild(section.element);
         section.element.classList.add("console-view-object-properties-section");

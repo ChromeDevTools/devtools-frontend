@@ -195,114 +195,114 @@ WebInspector.resourceTypes = {
 
 /**
  * @param {string} url
- * @return {string}
+ * @return {string|undefined}
  */
 WebInspector.ResourceType.mimeFromURL = function(url)
 {
     var name = WebInspector.ParsedURL.extractName(url);
-    if (WebInspector.ResourceType.mimeTypeByName[name]) {
-        return WebInspector.ResourceType.mimeTypeByName[name];
+    if (WebInspector.ResourceType._mimeTypeByName.has(name)) {
+        return WebInspector.ResourceType._mimeTypeByName.get(name);
     }
     var ext = WebInspector.ParsedURL.extractExtension(url).toLowerCase();
-    return WebInspector.ResourceType.mimeTypeByExtension[ext];
+    return WebInspector.ResourceType._mimeTypeByExtension.get(ext);
 }
 
-WebInspector.ResourceType.mimeTypeByName = {
+WebInspector.ResourceType._mimeTypeByName = new Map([
     // CoffeeScript
-    "Cakefile": "text/x-coffeescript"
-}
+    ["Cakefile", "text/x-coffeescript"]
+]);
 
-WebInspector.ResourceType.mimeTypeByExtension = {
+WebInspector.ResourceType._mimeTypeByExtension = new Map([
     // Web extensions
-    "js": "text/javascript",
-    "css": "text/css",
-    "html": "text/html",
-    "htm": "text/html",
-    "xml": "application/xml",
-    "xsl": "application/xml",
+    ["js", "text/javascript"],
+    ["css", "text/css"],
+    ["html", "text/html"],
+    ["htm", "text/html"],
+    ["xml", "application/xml"],
+    ["xsl", "application/xml"],
 
-    // HTML Embedded Scripts: ASP, JSP
-    "asp": "application/x-aspx",
-    "aspx": "application/x-aspx",
-    "jsp": "application/x-jsp",
+    // HTML Embedded Scripts, ASP], JSP
+    ["asp", "application/x-aspx"],
+    ["aspx", "application/x-aspx"],
+    ["jsp", "application/x-jsp"],
 
     // C/C++
-    "c": "text/x-c++src",
-    "cc": "text/x-c++src",
-    "cpp": "text/x-c++src",
-    "h": "text/x-c++src",
-    "m": "text/x-c++src",
-    "mm": "text/x-c++src",
+    ["c", "text/x-c++src"],
+    ["cc", "text/x-c++src"],
+    ["cpp", "text/x-c++src"],
+    ["h", "text/x-c++src"],
+    ["m", "text/x-c++src"],
+    ["mm", "text/x-c++src"],
 
     // CoffeeScript
-    "coffee": "text/x-coffeescript",
+    ["coffee", "text/x-coffeescript"],
 
     // Dart
-    "dart": "text/javascript",
+    ["dart", "text/javascript"],
 
     // TypeScript
-    "ts": "text/typescript",
-    "tsx": "text/typescript",
+    ["ts", "text/typescript"],
+    ["tsx", "text/typescript"],
 
     // JSON
-    "json": "application/json",
-    "gyp": "application/json",
-    "gypi": "application/json",
+    ["json", "application/json"],
+    ["gyp", "application/json"],
+    ["gypi", "application/json"],
 
     // C#
-    "cs": "text/x-csharp",
+    ["cs", "text/x-csharp"],
 
     // Java
-    "java": "text/x-java",
+    ["java", "text/x-java"],
 
     // Less
-    "less": "text/x-less",
+    ["less", "text/x-less"],
 
     // PHP
-    "php": "text/x-php",
-    "phtml": "application/x-httpd-php",
+    ["php", "text/x-php"],
+    ["phtml", "application/x-httpd-php"],
 
     // Python
-    "py": "text/x-python",
+    ["py", "text/x-python"],
 
     // Shell
-    "sh": "text/x-sh",
+    ["sh", "text/x-sh"],
 
     // SCSS
-    "scss": "text/x-scss",
+    ["scss", "text/x-scss"],
 
     // Video Text Tracks.
-    "vtt": "text/vtt",
+    ["vtt", "text/vtt"],
 
     // LiveScript
-    "ls": "text/x-livescript",
+    ["ls", "text/x-livescript"],
 
     // ClojureScript
-    "cljs": "text/x-clojure",
-    "cljc": "text/x-clojure",
-    "cljx": "text/x-clojure",
+    ["cljs", "text/x-clojure"],
+    ["cljc", "text/x-clojure"],
+    ["cljx", "text/x-clojure"],
 
     // Stylus
-    "styl": "text/x-styl",
+    ["styl", "text/x-styl"],
 
     // JSX
-    "jsx": "text/jsx",
+    ["jsx", "text/jsx"],
 
     // Image
-    "jpeg": "image/jpeg",
-    "jpg": "image/jpeg",
-    "svg": "image/svg",
-    "gif": "image/gif",
-    "webp": "image/webp",
-    "png": "image/png",
-    "ico": "image/ico",
-    "tiff": "image/tiff",
-    "tif": "image/tif",
-    "bmp": "image/bmp",
+    ["jpeg", "image/jpeg"],
+    ["jpg", "image/jpeg"],
+    ["svg", "image/svg"],
+    ["gif", "image/gif"],
+    ["webp", "image/webp"],
+    ["png", "image/png"],
+    ["ico", "image/ico"],
+    ["tiff", "image/tiff"],
+    ["tif", "image/tif"],
+    ["bmp", "image/bmp"],
 
     // Font
-    "ttf": "font/opentype",
-    "otf": "font/opentype",
-    "ttc": "font/opentype",
-    "woff": "application/font-woff"
-}
+    ["ttf", "font/opentype"],
+    ["otf", "font/opentype"],
+    ["ttc", "font/opentype"],
+    ["woff", "application/font-woff"]
+]);

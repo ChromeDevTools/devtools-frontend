@@ -214,6 +214,30 @@ Runtime._queryParamsObject = { __proto__: null };
 Runtime.cachedResources = { __proto__: null };
 
 /**
+ * @param {string} url
+ * @param {boolean} appendSourceURL
+ * @return {!Promise<undefined>}
+ */
+Runtime.loadResourceIntoCache = function(url, appendSourceURL)
+{
+    return loadResourcePromise(url).then(cacheResource.bind(this, url), cacheResource.bind(this, url, undefined));
+
+    /**
+     * @param {string} path
+     * @param {string=} content
+     */
+    function cacheResource(path, content)
+    {
+        if (!content) {
+            console.error("Failed to load resource: " + path);
+            return;
+        }
+        var sourceURL = appendSourceURL ? Runtime.resolveSourceURL(path) : "";
+        Runtime.cachedResources[path] = content + sourceURL;
+    }
+}
+
+/**
  * @return {boolean}
  */
 Runtime.isReleaseMode = function()
@@ -773,22 +797,9 @@ Runtime.Module.prototype = {
         var promises = [];
         for (var i = 0; i < resources.length; ++i) {
             var url = this._modularizeURL(resources[i]);
-            promises.push(loadResourcePromise(url).then(cacheResource.bind(this, url), cacheResource.bind(this, url, undefined)));
+            promises.push(Runtime.loadResourceIntoCache(url, true));
         }
         return Promise.all(promises).then(undefined);
-
-        /**
-         * @param {string} path
-         * @param {string=} content
-         */
-        function cacheResource(path, content)
-        {
-            if (!content) {
-                console.error("Failed to load resource: " + path);
-                return;
-            }
-            Runtime.cachedResources[path] = content + Runtime.resolveSourceURL(path);
-        }
     },
 
     /**

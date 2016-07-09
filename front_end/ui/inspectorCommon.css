@@ -25,7 +25,7 @@
 .platform-windows .monospace,
 .platform-windows .source-code {
     font-size: 12px !important;
-    font-family: Consolas, Lucida Console, monospace;
+    font-family: Consolas, Lucida Console, Courier New, monospace;
 }
 
 :host-context(.platform-linux) .monospace,

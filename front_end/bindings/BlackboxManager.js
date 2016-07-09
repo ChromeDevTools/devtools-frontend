@@ -98,9 +98,9 @@ WebInspector.BlackboxManager.prototype = {
          */
         function comparator(a, b)
         {
-            if (a.lineNumber !== b.line)
-                return a.lineNumber - b.line;
-            return a.columnNumber - b.column;
+            if (a.lineNumber !== b.lineNumber)
+                return a.lineNumber - b.lineNumber;
+            return a.columnNumber - b.columnNumber;
         }
     },
 
@@ -162,12 +162,12 @@ WebInspector.BlackboxManager.prototype = {
         var positions = [];
         // If content in script file begin is not mapped and one or more ranges are blackboxed then blackbox it.
         if (mappings[0].lineNumber !== 0 || mappings[0].columnNumber !== 0) {
-            positions.push({ line: 0, column: 0});
+            positions.push({ lineNumber: 0, columnNumber: 0});
             currentBlackboxed = true;
         }
         for (var mapping of mappings) {
             if (mapping.sourceURL && currentBlackboxed !== this.isBlackboxedURL(mapping.sourceURL)) {
-                positions.push({ line: mapping.lineNumber, column: mapping.columnNumber });
+                positions.push({ lineNumber: mapping.lineNumber, columnNumber: mapping.columnNumber });
                 currentBlackboxed = !currentBlackboxed;
             }
             isBlackboxed = currentBlackboxed || isBlackboxed;
@@ -346,7 +346,7 @@ WebInspector.BlackboxManager.prototype = {
     _addScript: function(script)
     {
         var blackboxed = this._isBlackboxedScript(script);
-        return this._setScriptState(script, blackboxed ? [ { line: 0, column: 0 } ] : []);
+        return this._setScriptState(script, blackboxed ? [ { lineNumber: 0, columnNumber: 0 } ] : []);
     },
 
     /**
@@ -393,7 +393,7 @@ WebInspector.BlackboxManager.prototype = {
             var hasChanged = false;
             hasChanged = previousScriptState.length !== positions.length;
             for (var i = 0; !hasChanged && i < positions.length; ++i)
-                hasChanged = positions[i].line !== previousScriptState[i].line || positions[i].column !== previousScriptState[i].column;
+                hasChanged = positions[i].lineNumber !== previousScriptState[i].lineNumber || positions[i].columnNumber !== previousScriptState[i].columnNumber;
             if (!hasChanged)
                 return Promise.resolve();
         } else {

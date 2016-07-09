@@ -313,8 +313,8 @@ WebInspector.ScriptSnippetModel.prototype = {
             exceptionDetails.text,
             undefined,
             sourceURL,
-            exceptionDetails.line,
-            exceptionDetails.column,
+            exceptionDetails.lineNumber + 1,
+            exceptionDetails.columnNumber + 1,
             undefined,
             undefined,
             exceptionDetails.stack);

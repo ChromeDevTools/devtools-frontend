@@ -339,6 +339,62 @@ WebInspector.RuntimeDispatcher.prototype = {
 
     /**
      * @override
+     * @param {number} exceptionId
+     * @param {number} timestamp
+     * @param {!RuntimeAgent.ExceptionDetails} details
+     * @param {!RuntimeAgent.RemoteObject=} exception
+     * @param {number=} executionContextId
+     */
+    exceptionThrown: function(exceptionId, timestamp, details, exception, executionContextId)
+    {
+        var consoleMessage = new WebInspector.ConsoleMessage(
+            this._runtimeModel.target(),
+            WebInspector.ConsoleMessage.MessageSource.JS,
+            WebInspector.ConsoleMessage.MessageLevel.Error,
+            details.text,
+            undefined,
+            details.url,
+            typeof details.lineNumber === "undefined" ? undefined : details.lineNumber + 1,
+            typeof details.columnNumber === "undefined" ? undefined : details.columnNumber + 1,
+            undefined,
+            exception ? ["Uncaught (in promise)", exception] : undefined,
+            details.stack,
+            timestamp,
+            executionContextId,
+            details.scriptId);
+        consoleMessage.setExceptionId(exceptionId);
+        this._runtimeModel.target().consoleModel.addMessage(consoleMessage);
+    },
+
+    /**
+     * @override
+     * @param {number} timestamp
+     * @param {string} message
+     * @param {number} exceptionId
+     */
+    exceptionRevoked: function(timestamp, message, exceptionId)
+    {
+        var consoleMessage = new WebInspector.ConsoleMessage(
+            this._runtimeModel.target(),
+            WebInspector.ConsoleMessage.MessageSource.JS,
+            WebInspector.ConsoleMessage.MessageLevel.RevokedError,
+            message,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            timestamp,
+            undefined,
+            undefined);
+        consoleMessage.setRevokedExceptionId(exceptionId);
+        this._runtimeModel.target().consoleModel.addMessage(consoleMessage);
+    },
+
+    /**
+     * @override
      * @param {!RuntimeAgent.RemoteObject} payload
      * @param {!Object=} hints
      */

@@ -450,16 +450,68 @@ WebInspector.Linkifier.liveLocationText = function(target, scriptId, lineNumber,
  */
 WebInspector.linkifyStringAsFragmentWithCustomLinkifier = function(string, linkifier)
 {
+    // Spec: https://url.spec.whatwg.org/#url-code-points
     var container = createDocumentFragment();
-    var linkStringRegEx = /(?:[a-zA-Z][a-zA-Z0-9+.-]{2,}:\/\/|data:|www\.)[\w$\-_+*'=\|\/\\(){}[\]^%@&#~,:;.!?]{2,}[\w$\-_+*=\|\/\\({^%@&#~]/;
+    var protocol = "(?:[a-zA-Z][a-zA-Z0-9]{2,}://";
+    var userPassLogin = "(?:\\w+(?::\\w+)?@)?";
+    var domainOrIPV4 = "[a-zA-Z0-9](?:[a-zA-Z0-9]*|(?:-|\\.)[a-zA-Z0-9]+)+";
+    var ipv6 = "\\[(?:(?::|\\.)?[a-zA-Z0-9]{0,4}){2,8}\\]";
+    var portPattern = "(?::[0-9]{1,4})";
+    var domainPattern = "(?:" + ipv6 + "|" + domainOrIPV4 + ")" + portPattern + "?";
+    var encodedURIPattern = "%[0-9]{2}";
+    var mayContainPunctuationIfNoSpaceAfter = "[.,:;](?!\\s|$)";
+    var uriPattern = "(?:(?:\\?|/|#)(?:[\\w" +
+        "!$&'()*+\\-/=?#@_~" +
+        "\\u{00A0}-\\u{D7FF}" +
+        "\\u{E000}-\\u{FDCF}" +
+        "\\u{FDF0}-\\u{FFFD}" +
+        "\\u{10000}-\\u{1FFFD}" +
+        "\\u{20000}-\\u{2FFFD}" +
+        "\\u{30000}-\\u{3FFFD}" +
+        "\\u{40000}-\\u{4FFFD}" +
+        "\\u{50000}-\\u{5FFFD}" +
+        "\\u{60000}-\\u{6FFFD}" +
+        "\\u{70000}-\\u{7FFFD}" +
+        "\\u{80000}-\\u{8FFFD}" +
+        "\\u{90000}-\\u{9FFFD}" +
+        "\\u{A0000}-\\u{AFFFD}" +
+        "\\u{B0000}-\\u{BFFFD}" +
+        "\\u{C0000}-\\u{CFFFD}" +
+        "\\u{D0000}-\\u{DFFFD}" +
+        "\\u{E0000}-\\u{EFFFD}" +
+        "\\u{F0000}-\\u{FFFFD}" +
+        "\\u{100000}-\\u{10FFFD}" +
+        "]*|" + mayContainPunctuationIfNoSpaceAfter + "|" + encodedURIPattern + ")*)?";
+    var beginInPunctuationOrSpace = "([;:.,\\s;]|^)";
+    var endInPunctuationOrSpace = "(?=[;:.,\\s;]|$)";
+    var dataURI = "data:[^,]*,";
+    var protocolPattern = protocol + userPassLogin + domainPattern + "|www\\.(?:" + domainOrIPV4 + ")" + portPattern + "?)";
+    var doubleQuotes = "\"(?:" + protocolPattern + "|" + dataURI + ")[^\"]*(?=\")";
+    var singleQuotes = "'(?:" + protocolPattern + "|" + dataURI + ")[^']*(?=')";
+    var accentQuotes = "`(?:" + protocolPattern + "|" + dataURI + ")[^`]*(?=`)";
+    var parenthesis = "\\((?:" + protocolPattern + "|" + dataURI + ")[^)]*(?=\\))";
+    var squareBrackets = "\\[(?:" + protocolPattern + "|" + dataURI + ")[^\\]]*(?=\\])";
+    var linkStringRegEx = new RegExp("(?:(?:" + doubleQuotes + "|" + singleQuotes + "|" + accentQuotes + "|" + parenthesis + "|" + squareBrackets + ")|" + beginInPunctuationOrSpace + protocolPattern + uriPattern + endInPunctuationOrSpace + ")", "u");
 
     while (string && string.length < WebInspector.Linkifier.MaxLengthToIgnoreLinkifier) {
-        var linkString = linkStringRegEx.exec(string);
-        if (!linkString)
+        var match = linkStringRegEx.exec(string);
+        if (!match)
             break;
+        var linkString = match[0];
+        var firstChar = linkString[0];
+        if (firstChar === "'" || firstChar === "\"" || firstChar === "`" || firstChar === "(" || firstChar === "[") {
+            match.index += 1;
+            linkString = linkString.substr(1);
+        }
+        var nonAlphaNumericFirstCharacter = match[1]
+        if (nonAlphaNumericFirstCharacter) {
+            // Unmatches/removes beginInPunctuationOrSpace from match.
+            match.index += nonAlphaNumericFirstCharacter.length;
+            linkString = linkString.substr(nonAlphaNumericFirstCharacter.length);
+        }
 
-        linkString = linkString[0];
-        var linkIndex = string.indexOf(linkString);
+
+        var linkIndex = match.index;
         var nonLink = string.substring(0, linkIndex);
         container.appendChild(createTextNode(nonLink));
 

@@ -94,7 +94,6 @@ WebInspector.DebuggerModel.BreakReason = {
     Exception: "exception",
     PromiseRejection: "promiseRejection",
     Assert: "assert",
-    CSPViolation: "CSPViolation",
     DebugCommand: "debugCommand",
     Other: "other"
 }

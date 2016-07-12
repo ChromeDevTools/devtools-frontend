@@ -455,6 +455,16 @@ Runtime._assert = function(value, message)
     Runtime._originalAssert.call(Runtime._console, value, message + " " + new Error().stack);
 }
 
+Runtime._platform = "";
+
+/**
+ * @param {string} platform
+ */
+Runtime.setPlatform = function(platform)
+{
+    Runtime._platform = platform;
+}
+
 Runtime.prototype = {
     useTestBase: function()
     {
@@ -563,11 +573,12 @@ Runtime.prototype = {
     /**
      * @param {*} type
      * @param {?Object=} context
+     * @param {boolean=} sortByTitle
      * @return {!Array.<!Runtime.Extension>}
      */
-    extensions: function(type, context)
+    extensions: function(type, context, sortByTitle)
     {
-        return this._extensions.filter(filter).sort(orderComparator);
+        return this._extensions.filter(filter).sort(sortByTitle ? titleComparator : orderComparator);
 
         /**
          * @param {!Runtime.Extension} extension
@@ -592,6 +603,18 @@ Runtime.prototype = {
             var order1 = extension1.descriptor()["order"] || 0;
             var order2 = extension2.descriptor()["order"] || 0;
             return order1 - order2;
+        }
+
+        /**
+         * @param {!Runtime.Extension} extension1
+         * @param {!Runtime.Extension} extension2
+         * @return {number}
+         */
+        function titleComparator(extension1, extension2)
+        {
+            var title1 = extension1.title() || "";
+            var title2 = extension2.title() || "";
+            return title1.localeCompare(title2);
         }
     },
 
@@ -978,13 +1001,12 @@ Runtime.Extension.prototype = {
     },
 
     /**
-     * @param {string} platform
      * @return {string}
      */
-    title: function(platform)
+    title: function()
     {
         // FIXME: should be WebInspector.UIString() but runtime is not l10n aware yet.
-        return this._descriptor["title-" + platform] || this._descriptor["title"];
+        return this._descriptor["title-" + Runtime._platform] || this._descriptor["title"];
     }
 }
 

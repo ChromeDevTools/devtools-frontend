@@ -645,7 +645,7 @@ WebInspector.DOMPresentationUtils.MarkerDecorator.prototype = {
  */
 WebInspector.DOMPresentationUtils.GenericDecorator = function(extension)
 {
-    this._title = WebInspector.UIString(extension.title(WebInspector.platform()));
+    this._title = WebInspector.UIString(extension.title());
     this._color = extension.descriptor()["color"];
 }
 

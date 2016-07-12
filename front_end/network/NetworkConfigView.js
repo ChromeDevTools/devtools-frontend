@@ -244,25 +244,3 @@ WebInspector.NetworkConfigView._userAgentGroups = [
         ]
     }
 ]
-
-/**
- * @constructor
- * @implements {WebInspector.ActionDelegate}
- */
-WebInspector.NetworkConfigView.ShowActionDelegate = function()
-{
-}
-
-WebInspector.NetworkConfigView.ShowActionDelegate.prototype = {
-    /**
-     * @override
-     * @param {!WebInspector.Context} context
-     * @param {string} actionId
-     * @return {boolean}
-     */
-    handleAction: function(context, actionId)
-    {
-        WebInspector.inspectorView.showViewInDrawer("network.config");
-        return true;
-    }
-}

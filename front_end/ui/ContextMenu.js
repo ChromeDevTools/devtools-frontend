@@ -171,11 +171,14 @@ WebInspector.ContextSubMenuItem.prototype = {
     /**
      * @param {string} label
      * @param {boolean=} disabled
+     * @param {string=} subMenuId
      * @return {!WebInspector.ContextSubMenuItem}
      */
-    appendSubMenuItem: function(label, disabled)
+    appendSubMenuItem: function(label, disabled, subMenuId)
     {
         var item = new WebInspector.ContextSubMenuItem(this._contextMenu, label, disabled);
+        if (subMenuId)
+            this._contextMenu._namedSubMenus.set(subMenuId, item);
         this._pushItem(item);
         return item;
     },
@@ -246,7 +249,7 @@ WebInspector.ContextSubMenuItem.prototype = {
         {
             var subMenuId = extension.descriptor()["subMenuId"];
             if (subMenuId) {
-                var subMenuItem = menu.appendSubMenuItem(extension.title(WebInspector.platform()));
+                var subMenuItem = menu.appendSubMenuItem(extension.title(), false, subMenuId);
                 subMenuItem.appendItemsAtLocation(subMenuId);
             } else {
                 menu.appendAction(extension.descriptor()["actionId"]);
@@ -309,6 +312,8 @@ WebInspector.ContextMenu = function(event, useSoftMenu, x, y)
     this._y = y === undefined ? event.y : y;
     this._handlers = {};
     this._id = 0;
+    /** @type {!Map<string, !WebInspector.ContextSubMenuItem>} */
+    this._namedSubMenus = new Map();
 }
 
 WebInspector.ContextMenu.initialize = function()
@@ -481,6 +486,15 @@ WebInspector.ContextMenu.prototype = {
     {
         this._pendingPromises.push(self.runtime.instancesPromise(WebInspector.ContextMenu.Provider, target));
         this._pendingTargets.push(target);
+    },
+
+    /**
+     * @param {string} name
+     * @return {?WebInspector.ContextSubMenuItem}
+     */
+    namedSubMenu: function(name)
+    {
+        return this._namedSubMenus.get(name) || null;
     },
 
     __proto__: WebInspector.ContextSubMenuItem.prototype

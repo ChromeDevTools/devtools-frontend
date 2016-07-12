@@ -134,13 +134,21 @@ WebInspector.ElementsPanel.prototype = {
 
     /**
      * @param {?WebInspector.Widget} widget
+     * @param {!WebInspector.ToolbarToggle=} toggle
      */
-    showToolbarPane: function(widget)
+    showToolbarPane: function(widget, toggle)
     {
+        if (this._pendingWidgetToggle)
+            this._pendingWidgetToggle.setToggled(false);
+        this._pendingWidgetToggle = toggle;
+
         if (this._animatedToolbarPane !== undefined)
             this._pendingWidget = widget;
         else
             this._startToolbarPaneAnimation(widget);
+
+        if (widget && toggle)
+            toggle.setToggled(true);
     },
 
     /**
@@ -1243,56 +1251,4 @@ WebInspector.ElementsPanel.PseudoStateMarkerDecorator.prototype = {
     {
         return { color: "orange", title: WebInspector.UIString("Element state: %s", ":" + WebInspector.CSSModel.fromNode(node).pseudoState(node).join(", :")) };
     }
-}
-
-/**
- * @constructor
- * @extends {WebInspector.ThrottledWidget}
- * @param {!WebInspector.ToolbarItem} toolbarItem
- */
-WebInspector.ElementsPanel.BaseToolbarPaneWidget = function(toolbarItem)
-{
-    WebInspector.ThrottledWidget.call(this);
-    this._toolbarItem = toolbarItem;
-    WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this._nodeChanged, this);
-}
-
-WebInspector.ElementsPanel.BaseToolbarPaneWidget.prototype = {
-    _nodeChanged: function()
-    {
-        if (!this.isShowing())
-            return;
-
-        var elementNode = WebInspector.SharedSidebarModel.elementNode(WebInspector.context.flavor(WebInspector.DOMNode));
-        this.onNodeChanged(elementNode);
-    },
-
-    /**
-     * @param {?WebInspector.DOMNode} newNode
-     * @protected
-     */
-    onNodeChanged: function(newNode)
-    {
-    },
-
-    /**
-     * @override
-     */
-    willHide: function()
-    {
-        this._toolbarItem.setToggled(false);
-        WebInspector.ThrottledWidget.prototype.willHide.call(this);
-    },
-
-    /**
-     * @override
-     */
-    wasShown: function()
-    {
-        this._toolbarItem.setToggled(true);
-        this._nodeChanged();
-        WebInspector.ThrottledWidget.prototype.wasShown.call(this);
-    },
-
-    __proto__: WebInspector.ThrottledWidget.prototype
 }

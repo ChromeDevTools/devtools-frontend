@@ -961,6 +961,20 @@ WebInspector.DOMNode.prototype = {
         this._agent.setInspectedNode(node.id);
     },
 
+    /**
+     *  @return {?WebInspector.DOMNode}
+     */
+    enclosingElementOrSelf: function()
+    {
+        var node = this;
+        if (node && node.nodeType() === Node.TEXT_NODE && node.parentNode)
+            node = node.parentNode;
+
+        if (node && node.nodeType() !== Node.ELEMENT_NODE)
+            node = null;
+        return node;
+    },
+
     __proto__: WebInspector.SDKObject.prototype
 }
 

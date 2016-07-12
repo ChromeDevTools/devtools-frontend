@@ -13,20 +13,6 @@ WebInspector.SharedSidebarModel = function()
     WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this._onNodeChanged, this);
 }
 
-/**
- * @param {?WebInspector.DOMNode} node
- * @return {?WebInspector.DOMNode}
- */
-WebInspector.SharedSidebarModel.elementNode = function(node)
-{
-    if (node && node.nodeType() === Node.TEXT_NODE && node.parentNode)
-        node = node.parentNode;
-
-    if (node && node.nodeType() !== Node.ELEMENT_NODE)
-        node = null;
-    return node;
-}
-
 WebInspector.SharedSidebarModel.Events = {
     ComputedStyleChanged: "ComputedStyleChanged"
 }
@@ -94,7 +80,7 @@ WebInspector.SharedSidebarModel.prototype = {
      */
     _elementNode: function()
     {
-        return WebInspector.SharedSidebarModel.elementNode(this.node());
+        return this.node() ? this.node().enclosingElementOrSelf() : null;
     },
 
     /**

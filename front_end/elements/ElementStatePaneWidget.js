@@ -4,12 +4,11 @@
 
 /**
  * @constructor
- * @extends {WebInspector.ElementsPanel.BaseToolbarPaneWidget}
- * @param {!WebInspector.ToolbarItem} toolbarItem
+ * @extends {WebInspector.Widget}
  */
-WebInspector.ElementStatePaneWidget = function(toolbarItem)
+WebInspector.ElementStatePaneWidget = function()
 {
-    WebInspector.ElementsPanel.BaseToolbarPaneWidget.call(this, toolbarItem);
+    WebInspector.Widget.call(this);
     this.element.className = "styles-element-state-pane";
     this.element.createChild("div").createTextChild(WebInspector.UIString("Force element state"));
     var table = createElementWithClass("table", "source-code");
@@ -53,6 +52,7 @@ WebInspector.ElementStatePaneWidget = function(toolbarItem)
     tr.appendChild(createCheckbox.call(null, "visited"));
 
     this.element.appendChild(table);
+    WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this._update, this);
 }
 
 WebInspector.ElementStatePaneWidget.prototype = {
@@ -66,40 +66,33 @@ WebInspector.ElementStatePaneWidget.prototype = {
 
         if (this._target) {
             var cssModel = WebInspector.CSSModel.fromTarget(this._target);
-            cssModel.removeEventListener(WebInspector.CSSModel.Events.PseudoStateForced, this._pseudoStateForced, this)
+            cssModel.removeEventListener(WebInspector.CSSModel.Events.PseudoStateForced, this._update, this)
         }
         this._target = target;
         if (target) {
             var cssModel = WebInspector.CSSModel.fromTarget(target);
-            cssModel.addEventListener(WebInspector.CSSModel.Events.PseudoStateForced, this._pseudoStateForced, this)
+            cssModel.addEventListener(WebInspector.CSSModel.Events.PseudoStateForced, this._update, this)
         }
     },
 
     /**
-     * @param {!WebInspector.Event} event
+     * @override
      */
-    _pseudoStateForced: function(event)
+    wasShown: function()
     {
-        this.update();
+        this._update();
     },
 
-    /**
-     * @override
-     * @param {?WebInspector.DOMNode} newNode
-     */
-    onNodeChanged: function(newNode)
+    _update: function()
     {
-        this._updateTarget(newNode ? newNode.target() : null);
-        this.update();
-    },
+        if (!this.isShowing())
+            return;
 
-    /**
-     * @override
-     * @return {!Promise.<?>}
-     */
-    doUpdate: function()
-    {
         var node = WebInspector.context.flavor(WebInspector.DOMNode);
+        if (node)
+            node = node.enclosingElementOrSelf();
+
+        this._updateTarget(node ? node.target() : null);
         if (node) {
             var nodePseudoState = WebInspector.CSSModel.fromNode(node).pseudoState(node);
             for (var input of this._inputs) {
@@ -112,10 +105,9 @@ WebInspector.ElementStatePaneWidget.prototype = {
                 input.checked = false;
             }
         }
-        return Promise.resolve();
     },
 
-    __proto__: WebInspector.ElementsPanel.BaseToolbarPaneWidget.prototype
+    __proto__: WebInspector.Widget.prototype
 }
 
 /**
@@ -127,15 +119,13 @@ WebInspector.ElementStatePaneWidget.ButtonProvider = function()
     this._button = new WebInspector.ToolbarToggle(WebInspector.UIString("Toggle Element State"), "", WebInspector.UIString(":hov"));
     this._button.addEventListener("click", this._clicked, this);
     this._button.element.classList.add("monospace");
-    this._view = new WebInspector.ElementStatePaneWidget(this.item());
-    WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this._nodeChanged, this);
-    this._nodeChanged();
+    this._view = new WebInspector.ElementStatePaneWidget();
 }
 
 WebInspector.ElementStatePaneWidget.ButtonProvider.prototype = {
     _clicked: function()
     {
-        WebInspector.ElementsPanel.instance().showToolbarPane(!this._view.isShowing() ? this._view : null);
+        WebInspector.ElementsPanel.instance().showToolbarPane(!this._view.isShowing() ? this._view : null, this._button);
     },
 
     /**
@@ -145,13 +135,5 @@ WebInspector.ElementStatePaneWidget.ButtonProvider.prototype = {
     item: function()
     {
         return this._button;
-    },
-
-    _nodeChanged: function()
-    {
-        var enabled = !!WebInspector.context.flavor(WebInspector.DOMNode);
-        this._button.setEnabled(enabled);
-        if (!enabled && this._button.toggled())
-            WebInspector.ElementsPanel.instance().showToolbarPane(null);
     }
 }

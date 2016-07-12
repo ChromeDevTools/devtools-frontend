@@ -4,24 +4,24 @@
 
 /**
  * @constructor
- * @extends {WebInspector.ElementsPanel.BaseToolbarPaneWidget}
- * @param {!WebInspector.ToolbarItem} toolbarItem
+ * @extends {WebInspector.Widget}
  */
-WebInspector.ClassesPaneWidget = function(toolbarItem)
+WebInspector.ClassesPaneWidget = function()
 {
-    WebInspector.ElementsPanel.BaseToolbarPaneWidget.call(this, toolbarItem);
+    WebInspector.Widget.call(this);
     this.element.className = "styles-element-classes-pane";
     var container = this.element.createChild("div", "title-container");
-    var input = container.createChild("input", "new-class-input monospace");
-    input.placeholder = WebInspector.UIString("Add new class");
-    input.addEventListener("keydown", this._onKeyDown.bind(this), false);
-    this.setDefaultFocusedElement(input);
+    this._input = container.createChild("input", "new-class-input monospace");
+    this._input.placeholder = WebInspector.UIString("Add new class");
+    this._input.addEventListener("keydown", this._onKeyDown.bind(this), false);
+    this.setDefaultFocusedElement(this._input);
     this._classesContainer = this.element.createChild("div", "source-code");
     this._classesContainer.classList.add("styles-element-classes-container");
 
     WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.DOMMutated, this._onDOMMutated, this);
     /** @type {!Set<!WebInspector.DOMNode>} */
     this._mutatingNodes = new Set();
+    WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this._update, this);
 }
 
 WebInspector.ClassesPaneWidget._classesSymbol = Symbol("WebInspector.ClassesPaneWidget._classesSymbol");
@@ -55,7 +55,7 @@ WebInspector.ClassesPaneWidget.prototype = {
             this._toggleClass(node, className, true);
         }
         this._installNodeClasses(node);
-        this.update();
+        this._update();
         event.consume(true);
     },
 
@@ -68,19 +68,31 @@ WebInspector.ClassesPaneWidget.prototype = {
         if (this._mutatingNodes.has(node))
             return;
         delete node[WebInspector.ClassesPaneWidget._classesSymbol];
-        this.update();
+        this._update();
     },
 
     /**
      * @override
-     * @return {!Promise.<?>}
      */
-    doUpdate: function()
+    wasShown: function()
     {
-        this._classesContainer.removeChildren();
+        this._update();
+    },
+
+    _update: function()
+    {
+        if (!this.isShowing())
+            return;
+
         var node = WebInspector.context.flavor(WebInspector.DOMNode);
+        if (node)
+            node = node.enclosingElementOrSelf();
+
+        this._classesContainer.removeChildren();
+        this._input.disabled = !node;
+
         if (!node)
-            return Promise.resolve();
+            return;
 
         var classes = this._nodeClasses(node);
         var keys = classes.keysArray();
@@ -92,7 +104,6 @@ WebInspector.ClassesPaneWidget.prototype = {
             label.checkboxElement.addEventListener("click", this._onClick.bind(this, className), false);
             this._classesContainer.appendChild(label);
         }
-        return Promise.resolve();
     },
 
     /**
@@ -168,16 +179,7 @@ WebInspector.ClassesPaneWidget.prototype = {
         }
     },
 
-    /**
-     * @override
-     * @param {?WebInspector.DOMNode} newNode
-     */
-    onNodeChanged: function(newNode)
-    {
-        this.update();
-    },
-
-    __proto__: WebInspector.ElementsPanel.BaseToolbarPaneWidget.prototype
+    __proto__: WebInspector.Widget.prototype
 }
 
 /**
@@ -190,15 +192,13 @@ WebInspector.ClassesPaneWidget.ButtonProvider = function()
     this._button.setText(".cls");
     this._button.element.classList.add("monospace");
     this._button.addEventListener("click", this._clicked, this);
-    this._view = new WebInspector.ClassesPaneWidget(this.item());
-    WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this._nodeChanged, this);
-    this._nodeChanged();
+    this._view = new WebInspector.ClassesPaneWidget();
 }
 
 WebInspector.ClassesPaneWidget.ButtonProvider.prototype = {
     _clicked: function()
     {
-        WebInspector.ElementsPanel.instance().showToolbarPane(!this._view.isShowing() ? this._view : null);
+        WebInspector.ElementsPanel.instance().showToolbarPane(!this._view.isShowing() ? this._view : null, this._button);
     },
 
     /**
@@ -208,14 +208,5 @@ WebInspector.ClassesPaneWidget.ButtonProvider.prototype = {
     item: function()
     {
         return this._button;
-    },
-
-    _nodeChanged: function()
-    {
-        var node = WebInspector.context.flavor(WebInspector.DOMNode);
-        var enabled = !!node;
-        this._button.setEnabled(enabled);
-        if (!enabled && this._button.toggled())
-            WebInspector.ElementsPanel.instance().showToolbarPane(null);
     }
 }

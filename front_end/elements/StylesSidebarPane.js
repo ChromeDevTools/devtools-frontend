@@ -206,7 +206,7 @@ WebInspector.StylesSidebarPane.prototype = {
     setNode: function(node)
     {
         this._stylesPopoverHelper.hide();
-        node = WebInspector.SharedSidebarModel.elementNode(node);
+        node = node ? node.enclosingElementOrSelf() : null;
 
         this._resetCache();
         WebInspector.ElementsSidebarPane.prototype.setNode.call(this, node);

@@ -439,14 +439,6 @@ WebInspector.ElementsTreeOutline.prototype = {
             this._revealAndSelectNode(selectedNode, true);
     },
 
-    updateSelection: function()
-    {
-        if (!this.selectedTreeElement)
-            return;
-        var element = this.selectedTreeElement;
-        element.updateSelection();
-    },
-
     _selectedNodeChanged: function()
     {
         this.dispatchEventToListeners(WebInspector.ElementsTreeOutline.Events.SelectedNodeChanged, this._selectedDOMNode);
@@ -743,7 +735,6 @@ WebInspector.ElementsTreeOutline.prototype = {
             node = node.parentNode;
         }
 
-        treeElement.updateSelection();
         treeElement.listItemElement.classList.add("elements-drag-over");
         this._dragOverTreeElement = treeElement;
         event.preventDefault();
@@ -822,7 +813,6 @@ WebInspector.ElementsTreeOutline.prototype = {
     _clearDragOverTreeElementMarker: function()
     {
         if (this._dragOverTreeElement) {
-            this._dragOverTreeElement.updateSelection();
             this._dragOverTreeElement.listItemElement.classList.remove("elements-drag-over");
             delete this._dragOverTreeElement;
         }
@@ -1243,7 +1233,6 @@ WebInspector.ElementsTreeOutline.prototype = {
             this._element.classList.remove("hidden");
             if (originalScrollTop)
                 treeOutlineContainerElement.scrollTop = originalScrollTop;
-            this.updateSelection();
         }
 
         this._updateRecords.clear();
@@ -1748,10 +1737,6 @@ WebInspector.ElementsTreeOutline.ShortcutTreeElement.prototype = {
             return;
         this._hovered = x;
         this.listItemElement.classList.toggle("hovered", x);
-    },
-
-    updateSelection: function()
-    {
     },
 
     /**

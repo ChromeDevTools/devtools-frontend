@@ -229,7 +229,7 @@ WebInspector.ElementsTreeElement.prototype = {
 
         if (this.listItemElement) {
             if (x) {
-                this.updateSelection();
+                this._createSelection();
                 this.listItemElement.classList.add("hovered");
             } else {
                 this.listItemElement.classList.remove("hovered");
@@ -253,7 +253,7 @@ WebInspector.ElementsTreeElement.prototype = {
         this._expandedChildrenLimit = expandedChildrenLimit;
     },
 
-    updateSelection: function()
+    _createSelection: function()
     {
         var listItemElement = this.listItemElement;
         if (!listItemElement)
@@ -290,7 +290,7 @@ WebInspector.ElementsTreeElement.prototype = {
     onattach: function()
     {
         if (this._hovered) {
-            this.updateSelection();
+            this._createSelection();
             this.listItemElement.classList.add("hovered");
         }
 
@@ -337,7 +337,6 @@ WebInspector.ElementsTreeElement.prototype = {
             return;
 
         this.updateTitle();
-        this.treeOutline.updateSelection();
     },
 
     oncollapse: function()
@@ -346,7 +345,6 @@ WebInspector.ElementsTreeElement.prototype = {
             return;
 
         this.updateTitle();
-        this.treeOutline.updateSelection();
     },
 
     /**
@@ -373,7 +371,7 @@ WebInspector.ElementsTreeElement.prototype = {
         this.treeOutline.selectDOMNode(this._node, selectedByUser);
         if (selectedByUser)
             this._node.highlight();
-        this.updateSelection();
+        this._createSelection();
         this.treeOutline.suppressRevealAndSelect = false;
         return true;
     },
@@ -454,8 +452,6 @@ WebInspector.ElementsTreeElement.prototype = {
             tag.appendChild(node);
             tag.createTextChild(">");
         }
-
-        this.updateSelection();
     },
 
     /**
@@ -810,8 +806,6 @@ WebInspector.ElementsTreeElement.prototype = {
         this.listItemElement.classList.add("editing-as-html");
         this.treeOutline.element.addEventListener("mousedown", consume, false);
 
-        this.updateSelection();
-
         /**
          * @param {!Element} element
          * @param {string} newValue
@@ -847,7 +841,6 @@ WebInspector.ElementsTreeElement.prototype = {
             }
 
             this.treeOutline.element.removeEventListener("mousedown", consume, false);
-            this.updateSelection();
             this.treeOutline.focus();
         }
 
@@ -1079,7 +1072,7 @@ WebInspector.ElementsTreeElement.prototype = {
 
         delete this.selectionElement;
         if (this.selected)
-            this.updateSelection();
+            this._createSelection();
         this._preventFollowingLinksOnDoubleClick();
         this._highlightSearchResults();
     },

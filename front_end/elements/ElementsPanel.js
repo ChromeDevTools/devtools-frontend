@@ -299,7 +299,6 @@ WebInspector.ElementsPanel.prototype = {
             width -= this._splitWidget.sidebarSize();
         for (var i = 0; i < this._treeOutlines.length; ++i) {
             this._treeOutlines[i].setVisibleWidth(width);
-            this._treeOutlines[i].updateSelection();
         }
         this._breadcrumbs.updateSizes();
     },
@@ -337,7 +336,6 @@ WebInspector.ElementsPanel.prototype = {
 
         for (var i = 0; i < this._treeOutlines.length; ++i) {
             var treeOutline = this._treeOutlines[i];
-            treeOutline.updateSelection();
             treeOutline.setVisible(true);
 
             if (!treeOutline.rootDOMNode)
@@ -559,14 +557,6 @@ WebInspector.ElementsPanel.prototype = {
         this._contentElement.classList.toggle("elements-wrap", event.data);
         for (var i = 0; i < this._treeOutlines.length; ++i)
             this._treeOutlines[i].setWordWrap(/** @type {boolean} */ (event.data));
-
-        var selectedNode = this.selectedDOMNode();
-        if (!selectedNode)
-            return;
-
-        var treeElement = this._treeElementForNode(selectedNode);
-        if (treeElement)
-            treeElement.updateSelection(); // Recalculate selection highlight dimensions.
     },
 
     switchToAndFocus: function(node)

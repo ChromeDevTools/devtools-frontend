@@ -170,7 +170,7 @@ WebInspector.Action.prototype = {
      */
     title: function()
     {
-        var title = this._extension.title(WebInspector.platform());
+        var title = this._extension.title();
         var options = this._extension.descriptor()["options"];
         if (options) {
             for (var pair of options) {

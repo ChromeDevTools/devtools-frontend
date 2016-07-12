@@ -758,29 +758,3 @@ WebInspector.AnimationTimeline.StepTimingFunction.parse = function(text) {
         return new WebInspector.AnimationTimeline.StepTimingFunction(parseInt(match[1], 10), match[2]);
     return null;
 }
-
-/**
- * @constructor
- * @implements {WebInspector.ToolbarItem.Provider}
- */
-WebInspector.AnimationTimeline.ButtonProvider = function()
-{
-    this._button = new WebInspector.ToolbarButton(WebInspector.UIString("Animations"), "animation-toolbar-item");
-    this._button.addEventListener("click", this._clicked, this);
-}
-
-WebInspector.AnimationTimeline.ButtonProvider.prototype = {
-    _clicked: function()
-    {
-        WebInspector.inspectorView.showViewInDrawer("animations");
-    },
-
-    /**
-     * @override
-     * @return {!WebInspector.ToolbarItem}
-     */
-    item: function()
-    {
-        return this._button;
-    }
-}

@@ -1,12 +1,6 @@
 {
     "extensions": [
         {
-            "type": "@WebInspector.ToolbarItem.Provider",
-            "className": "WebInspector.AnimationTimeline.ButtonProvider",
-            "order": 2,
-            "location": "styles-sidebarpane-toolbar"
-        },
-        {
             "type": "drawer-view",
             "name": "animations",
             "title": "Animations",

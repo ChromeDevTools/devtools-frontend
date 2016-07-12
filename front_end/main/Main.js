@@ -57,7 +57,6 @@ WebInspector.Main.prototype = {
 
         if (InspectorFrontendHost.isUnderTest())
             self.runtime.useTestBase();
-        Runtime.setPlatform(WebInspector.platform());
         InspectorFrontendHost.getPreferences(this._gotPreferences.bind(this));
     },
 
@@ -884,13 +883,6 @@ WebInspector.Main.MainMenuItem.prototype = {
 
         contextMenu.appendAction("main.toggle-drawer", WebInspector.inspectorView.drawerVisible() ? WebInspector.UIString("Hide console") : WebInspector.UIString("Show console"));
         contextMenu.appendItemsAtLocation("mainMenu");
-        var moreTools = contextMenu.namedSubMenu("mainMenuMoreTools");
-        var extensions = self.runtime.extensions("drawer-view", undefined, true);
-        for (var extension of extensions) {
-            var descriptor = extension.descriptor();
-            moreTools.appendItem(extension.title(), WebInspector.inspectorView.showViewInDrawer.bind(WebInspector.inspectorView, descriptor["name"]));
-        }
-
         contextMenu.show();
     }
 }

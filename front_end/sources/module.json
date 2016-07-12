@@ -147,6 +147,11 @@
         },
         {
             "type": "context-menu-item",
+            "location": "mainMenu/navigate",
+            "actionId": "sources.search.toggle"
+        },
+        {
+            "type": "context-menu-item",
             "location": "navigatorMenu/navigate",
             "actionId": "sources.go-to-source"
         },

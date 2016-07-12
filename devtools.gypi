@@ -432,6 +432,7 @@
         ],
         'devtools_devices_js_files': [
             'front_end/devices/devicesView.css',
+            'front_end/devices/DevicesDialog.js',
             'front_end/devices/DevicesView.js',
         ],
         'devtools_diff_js_files': [

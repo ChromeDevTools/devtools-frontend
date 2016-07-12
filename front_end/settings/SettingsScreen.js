@@ -204,7 +204,7 @@ WebInspector.GenericSettingsTab.prototype = {
         var sectionName = descriptor["category"];
         var settingName = descriptor["settingName"];
         var setting = WebInspector.moduleSetting(settingName);
-        var uiTitle = WebInspector.UIString(extension.title());
+        var uiTitle = WebInspector.UIString(extension.title(WebInspector.platform()));
 
         var sectionElement = this._sectionElement(sectionName);
         var settingControl;

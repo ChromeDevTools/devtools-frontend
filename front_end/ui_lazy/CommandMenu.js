@@ -307,7 +307,7 @@ WebInspector.CommandMenu.createRevealPanelCommand = function(extension)
 {
     var panelName = extension.descriptor()["name"];
     var tags = extension.descriptor()["tags"] || "";
-    return WebInspector.CommandMenu.createCommand(WebInspector.UIString("Panel"), tags, WebInspector.UIString("Show %s", extension.title()), "", executeHandler, availableHandler);
+    return WebInspector.CommandMenu.createCommand(WebInspector.UIString("Panel"), tags, WebInspector.UIString("Show %s", extension.title(WebInspector.platform())), "", executeHandler, availableHandler);
 
     /**
      * @return {boolean}
@@ -332,7 +332,7 @@ WebInspector.CommandMenu.createRevealDrawerCommand = function(extension)
     var drawerId = extension.descriptor()["name"];
     var executeHandler = WebInspector.inspectorView.showViewInDrawer.bind(WebInspector.inspectorView, drawerId);
     var tags = extension.descriptor()["tags"] || "";
-    return WebInspector.CommandMenu.createCommand(WebInspector.UIString("Drawer"), tags, WebInspector.UIString("Show %s", extension.title()), "", executeHandler);
+    return WebInspector.CommandMenu.createCommand(WebInspector.UIString("Drawer"), tags, WebInspector.UIString("Show %s", extension.title(WebInspector.platform())), "", executeHandler);
 }
 
 /** @type {!WebInspector.CommandMenu} */

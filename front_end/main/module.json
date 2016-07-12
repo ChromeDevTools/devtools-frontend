@@ -178,6 +178,12 @@
             ]
         },
         {
+            "type": "@WebInspector.ActionDelegate",
+            "actionId": "main.show-rendering-options",
+            "title": "Rendering settings",
+            "className": "WebInspector.RenderingOptionsView.ShowActionDelegate"
+        },
+        {
             "type": "@WebInspector.ToolbarItem.Provider",
             "separator": true,
             "location": "main-toolbar-left",
@@ -315,8 +321,14 @@
             "type": "context-menu-item",
             "location": "mainMenu/navigate",
             "title": "More tools",
-            "subMenuId": "mainMenuMoreTools",
+            "subMenuId": "mainMenu/tools",
             "order": 80
+        },
+        {
+            "type": "context-menu-item",
+            "location": "mainMenu/tools/open",
+            "order": 80,
+            "actionId": "main.show-rendering-options"
         },
         {
             "type": "drawer-view",

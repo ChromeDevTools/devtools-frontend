@@ -68,6 +68,18 @@
             "experiment": "requestBlocking"
         },
         {
+            "type": "@WebInspector.ActionDelegate",
+            "actionId": "network.show-config",
+            "title": "Network conditions",
+            "className": "WebInspector.NetworkConfigView.ShowActionDelegate"
+        },
+        {
+            "type": "context-menu-item",
+            "location": "mainMenu/tools/open",
+            "order": 60,
+            "actionId": "network.show-config"
+        },
+        {
             "type": "drawer-view",
             "name": "network.config",
             "title": "Network conditions",

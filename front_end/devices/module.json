@@ -1,18 +1,23 @@
 {
     "extensions": [
         {
-            "type": "drawer-view",
-            "name": "remote-devices",
-            "title": "Remote devices",
-            "persistence": "closeable",
+            "type": "@WebInspector.ActionDelegate",
+            "category": "Mobile",
+            "actionId": "devices.dialog.show",
+            "className": "WebInspector.DevicesDialog.ActionDelegate",
+            "title": "Inspect devices\u2026"
+        },
+        {
+            "type": "context-menu-item",
+            "location": "mainMenu/tools/open",
             "order": 50,
-            "className": "WebInspector.DevicesView",
-            "tags": "usb, android, mobile"
+            "actionId": "devices.dialog.show"
         }
     ],
     "dependencies": ["platform", "ui", "host", "components"],
     "scripts": [
-        "DevicesView.js"
+        "DevicesView.js",
+        "DevicesDialog.js"
     ],
     "resources": [
         "devicesView.css"

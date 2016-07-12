@@ -85,14 +85,6 @@
     white-space: pre;
 }
 
-.discovery-view {
-    overflow: auto;
-}
-
-.discovery-view > * {
-    flex: none;
-}
-
 .usb-checkbox {
     padding-bottom: 8px;
     margin-top: 20px;
@@ -121,7 +113,7 @@
 .port-forwarding-list {
     margin: 10px 0 0 25px;
     max-width: 500px;
-    flex: none;
+    flex: 0 1 auto;
 }
 
 .port-forwarding-list-empty {
@@ -214,7 +206,7 @@
     flex: auto;
     overflow: auto;
     padding-right: 10px;
-    margin-top: 30px;
+    margin-top: 20px;
 }
 
 .device-browser-list > div {
@@ -281,7 +273,7 @@
 }
 
 .device-page-url {
-    margin: 3px 100px 3px 0;
+    margin: 3px 0;
 }
 
 .device-page-url a {

@@ -166,3 +166,25 @@ WebInspector.RenderingOptionsView.instance = function()
         WebInspector.RenderingOptionsView._instanceObject = new WebInspector.RenderingOptionsView();
     return WebInspector.RenderingOptionsView._instanceObject;
 }
+
+/**
+ * @constructor
+ * @implements {WebInspector.ActionDelegate}
+ */
+WebInspector.RenderingOptionsView.ShowActionDelegate = function()
+{
+}
+
+WebInspector.RenderingOptionsView.ShowActionDelegate.prototype = {
+    /**
+     * @override
+     * @param {!WebInspector.Context} context
+     * @param {string} actionId
+     * @return {boolean}
+     */
+    handleAction: function(context, actionId)
+    {
+        WebInspector.inspectorView.showViewInDrawer("rendering");
+        return true;
+    }
+}

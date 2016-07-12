@@ -1273,7 +1273,11 @@ WebInspector.ExtensibleTabbedPaneController.prototype = {
             this._extensions.set(id, extensions[i]);
             if (this._isPermanentTab(id))
                 this._appendTab(extensions[i]);
-            else if (this._isCloseableTab(id) && this._closeableTabSetting.get()[id])
+        }
+
+        for (var i = 0; i < extensions.length; i++) {
+            var id = extensions[i].descriptor()["name"];
+            if (this._isCloseableTab(id) && this._closeableTabSetting.get()[id])
                 this._appendTab(extensions[i]);
         }
     },
@@ -1309,10 +1313,13 @@ WebInspector.ExtensibleTabbedPaneController.prototype = {
      */
     _appendTabsToMenu: function(contextMenu)
     {
-        var extensions = self.runtime.extensions(this._extensionPoint, undefined, true);
-        for (var extension of extensions) {
-            var title = WebInspector.UIString(extension.title());
-            contextMenu.appendItem(title, this.showTab.bind(this, extension.descriptor()["name"]));
+        for (var id of this._extensions.keysArray().filter(this._isPermanentTab.bind(this))) {
+            var title = WebInspector.UIString(this._extensions.get(id).title(WebInspector.platform()));
+            contextMenu.appendItem(title, this.showTab.bind(this, id));
+        }
+        for (var id of this._extensions.keysArray().filter(this._isCloseableTab.bind(this))) {
+            var title = WebInspector.UIString(this._extensions.get(id).title(WebInspector.platform()));
+            contextMenu.appendItem(title, this.showTab.bind(this, id));
         }
     },
 
@@ -1323,7 +1330,7 @@ WebInspector.ExtensibleTabbedPaneController.prototype = {
     {
         var descriptor = extension.descriptor();
         var id = descriptor["name"];
-        var title = WebInspector.UIString(extension.title());
+        var title = WebInspector.UIString(extension.title(WebInspector.platform()));
         var closeable = descriptor["persistence"] === "closeable" || descriptor["persistence"] === "temporary";
         this._tabbedPane.appendTab(id, title, this._views.get(id) || new WebInspector.Widget(), undefined, false, closeable);
     },

@@ -213,10 +213,35 @@ WebInspector.ConsoleModel.evaluateCommandInConsole = function(executionContext, 
             target.consoleModel.dispatchEventToListeners(WebInspector.ConsoleModel.Events.CommandEvaluated, {result: result, wasThrown: wasThrown, text: requestedText, commandMessage: commandMessage, exceptionDetails: exceptionDetails});
         }
     }
-    if (/^\s*\{/.test(text) && /\}\s*$/.test(text))
-        text = "(" + text + ")";
-    executionContext.evaluate(text, "console", !!useCommandLineAPI, false, false, true, true, printResult);
 
+    /**
+     * @param {string} code
+     * @suppress {uselessCode}
+     * @return {boolean}
+     */
+    function looksLikeAnObjectLiteral(code)
+    {
+        // Only parenthesize what appears to be an object literal.
+        if (!(/^\s*\{/.test(code) && /\}\s*$/.test(code)))
+            return false;
+
+        try {
+            // Check if the code can be interpreted as an expression.
+            Function("return " + code + ";");
+
+            // No syntax error! Does it work parenthesized?
+            Function("(" + code + ")");
+
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    if (looksLikeAnObjectLiteral(text))
+        text = "(" + text + ")";
+
+    executionContext.evaluate(text, "console", !!useCommandLineAPI, false, false, true, true, printResult);
     WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.ConsoleEvaluated);
 }
 

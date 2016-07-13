@@ -717,6 +717,20 @@ TestSuite.prototype.testDeviceMetricsOverrides = function()
     step1();
 };
 
+TestSuite.prototype.testDispatchKeyEventDoesNotCrash = function()
+{
+    WebInspector.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent({
+        type: "rawKeyDown",
+        windowsVirtualKeyCode: 0x23,
+        key: "End"
+    });
+    WebInspector.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent({
+        type: "keyUp",
+        windowsVirtualKeyCode: 0x23,
+        key: "End"
+    });
+};
+
 TestSuite.prototype.testEmulateNetworkConditions = function()
 {
     var test = this;

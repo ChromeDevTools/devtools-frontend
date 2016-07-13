@@ -61,7 +61,7 @@ WebInspector.DeviceModeModel = function(updateCallback)
     this._target = null;
     /** @type {?function()} */
     this._onTargetAvailable = null;
-    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Type.Page);
+    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.Browser);
 }
 
 /** @enum {string} */

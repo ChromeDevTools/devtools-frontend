@@ -12,7 +12,7 @@ WebInspector.MultitargetTouchModel = function()
     this._touchMobile = false;
     this._customTouchEnabled = false;
 
-    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Type.Page);
+    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.Browser);
 }
 
 WebInspector.MultitargetTouchModel._symbol = Symbol("MultitargetTouchModel.symbol");
@@ -40,7 +40,7 @@ WebInspector.MultitargetTouchModel.prototype = {
 
     _updateAllTargets: function()
     {
-        for (var target of WebInspector.targetManager.targets(WebInspector.Target.Type.Page))
+        for (var target of WebInspector.targetManager.targets(WebInspector.Target.Capability.Browser))
             this._applyToTarget(target);
     },
 

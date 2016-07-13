@@ -129,7 +129,7 @@ WebInspector.ResourceTreeModel.prototype = {
         this._inspectedPageURL = mainFramePayload.frame.url;
 
         // Do not process SW resources.
-        if (this.target().isPage())
+        if (this.target().hasBrowserCapability())
             this._addFramesRecursively(null, mainFramePayload);
         else
             this._addSecurityOrigin(mainFramePayload.frame.securityOrigin);

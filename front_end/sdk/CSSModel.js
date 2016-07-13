@@ -1193,8 +1193,6 @@ WebInspector.CSSModel.ComputedStyleLoader.prototype = {
  */
 WebInspector.CSSModel.fromTarget = function(target)
 {
-    if (!target.isPage())
-        return null;
     return /** @type {?WebInspector.CSSModel} */ (target.model(WebInspector.CSSModel));
 }
 

@@ -608,7 +608,7 @@ TestSuite.prototype.testPauseInSharedWorkerInitialization1 = function()
 
     function callback()
     {
-        var target = WebInspector.targetManager.targetsWithJSContext()[0];
+        var target = WebInspector.targetManager.targets(WebInspector.Target.Capability.JS)[0];
         target._connection.deprecatedRunAfterPendingDispatches(this.releaseControl.bind(this));
     }
 };
@@ -620,7 +620,7 @@ TestSuite.prototype.testPauseInSharedWorkerInitialization2 = function()
 
     function callback()
     {
-        var target = WebInspector.targetManager.targetsWithJSContext()[0];
+        var target = WebInspector.targetManager.targets(WebInspector.Target.Capability.JS)[0];
         var debuggerModel = WebInspector.DebuggerModel.fromTarget(target);
         if (debuggerModel.isPaused()) {
             this.releaseControl();

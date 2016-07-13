@@ -101,12 +101,12 @@ WebInspector.WorkerManager.prototype = {
 
         var parsedURL = url.asParsedURL();
         var workerName = parsedURL ? parsedURL.lastPathComponentWithFragment() : "#" + (++this._lastAnonymousTargetId);
-        var target = WebInspector.targetManager.createTarget(workerName, WebInspector.Target.Type.DedicatedWorker, connection, this.target());
+        var target = WebInspector.targetManager.createTarget(workerName, WebInspector.Target.Capability.JS, connection, this.target());
         this._targetsByWorkerId.set(workerId, target);
 
         // Only pause new worker if debugging SW - we are going through the
         // pause on start checkbox.
-        var mainIsServiceWorker = WebInspector.targetManager.mainTarget().isServiceWorker();
+        var mainIsServiceWorker = WebInspector.targetManager.mainTarget().hasWorkerCapability() && !WebInspector.targetManager.mainTarget().hasBrowserCapability();
         if (mainIsServiceWorker && waitingForDebugger)
             target.debuggerAgent().pause();
         target.runtimeAgent().run();

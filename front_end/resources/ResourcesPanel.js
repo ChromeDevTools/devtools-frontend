@@ -167,7 +167,7 @@ WebInspector.ResourcesPanel.prototype = {
         if (cacheStorageModel)
             cacheStorageModel.enable();
 
-        if (this._target.isPage())
+        if (this._target.hasBrowserCapability())
             this._populateResourceTree();
         this._populateDOMStorageTree();
         this._populateApplicationCacheTree();

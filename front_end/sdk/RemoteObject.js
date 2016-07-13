@@ -507,7 +507,7 @@ WebInspector.RemoteObjectImpl.prototype = {
          */
         function eventListeners(fulfill, reject)
         {
-            if (!this.target().isPage()) {
+            if (!this.target().hasBrowserCapability()) {
                 // TODO(kozyatinskiy): figure out how this should work for |window| when there is no DOMDebugger.
                 fulfill([]);
                 return;

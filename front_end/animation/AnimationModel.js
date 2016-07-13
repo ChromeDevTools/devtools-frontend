@@ -202,10 +202,12 @@ WebInspector.AnimationModel._symbol = Symbol("AnimationModel");
 
 /**
  * @param {!WebInspector.Target} target
- * @return {!WebInspector.AnimationModel}
+ * @return {?WebInspector.AnimationModel}
  */
 WebInspector.AnimationModel.fromTarget = function(target)
 {
+    if (!target.hasBrowserCapability())
+        return null;
     if (!target[WebInspector.AnimationModel._symbol])
         target[WebInspector.AnimationModel._symbol] = new WebInspector.AnimationModel(target);
 

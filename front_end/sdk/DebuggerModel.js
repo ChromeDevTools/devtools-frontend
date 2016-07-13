@@ -1289,7 +1289,7 @@ WebInspector.DebuggerModel.instances = function()
  */
 WebInspector.DebuggerModel.fromTarget = function(target)
 {
-    if (!target || !target.hasJSContext())
+    if (!target || !target.hasJSCapability())
         return null;
     return /** @type {?WebInspector.DebuggerModel} */ (target.model(WebInspector.DebuggerModel));
 }

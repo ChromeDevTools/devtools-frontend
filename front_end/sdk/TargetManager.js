@@ -15,7 +15,7 @@ WebInspector.TargetManager = function()
     this._targets = [];
     /** @type {!Array.<!WebInspector.TargetManager.Observer>} */
     this._observers = [];
-    this._observerTypeSymbol = Symbol("observerType");
+    this._observerCapabiliesMaskSymbol = Symbol("observerCapabilitiesMask");
     /** @type {!Object.<string, !Array.<{modelClass: !Function, thisObject: (!Object|undefined), listener: function(!WebInspector.Event)}>>} */
     this._modelListeners = {};
     this._isSuspended = false;
@@ -163,14 +163,14 @@ WebInspector.TargetManager.prototype = {
 
     /**
      * @param {!WebInspector.TargetManager.Observer} targetObserver
-     * @param {number=} type
+     * @param {number=} capabilitiesMask
      */
-    observeTargets: function(targetObserver, type)
+    observeTargets: function(targetObserver, capabilitiesMask)
     {
-        if (this._observerTypeSymbol in targetObserver)
+        if (this._observerCapabiliesMaskSymbol in targetObserver)
             throw new Error("Observer can only be registered once");
-        targetObserver[this._observerTypeSymbol] = type || 0x7fff;
-        this.targets(type).forEach(targetObserver.targetAdded.bind(targetObserver));
+        targetObserver[this._observerCapabiliesMaskSymbol] = capabilitiesMask || 0;
+        this.targets(capabilitiesMask).forEach(targetObserver.targetAdded.bind(targetObserver));
         this._observers.push(targetObserver);
     },
 
@@ -179,20 +179,20 @@ WebInspector.TargetManager.prototype = {
      */
     unobserveTargets: function(targetObserver)
     {
-        delete targetObserver[this._observerTypeSymbol];
+        delete targetObserver[this._observerCapabiliesMaskSymbol];
         this._observers.remove(targetObserver);
     },
 
     /**
      * @param {string} name
-     * @param {number} type
+     * @param {number} capabilitiesMask
      * @param {!InspectorBackendClass.Connection} connection
      * @param {?WebInspector.Target} parentTarget
      * @return {!WebInspector.Target}
      */
-    createTarget: function(name, type, connection, parentTarget)
+    createTarget: function(name, capabilitiesMask, connection, parentTarget)
     {
-        var target = new WebInspector.Target(this, name, type, connection, parentTarget);
+        var target = new WebInspector.Target(this, name, capabilitiesMask, connection, parentTarget);
 
         /** @type {!WebInspector.ConsoleModel} */
         target.consoleModel = new WebInspector.ConsoleModel(target);
@@ -200,7 +200,7 @@ WebInspector.TargetManager.prototype = {
         target.runtimeModel = new WebInspector.RuntimeModel(target);
 
         var networkManager = null;
-        if (!target.isJSInspector())
+        if (target.hasNetworkCapability())
             networkManager = new WebInspector.NetworkManager(target);
 
         /** @type {!WebInspector.ResourceTreeModel} */
@@ -209,16 +209,16 @@ WebInspector.TargetManager.prototype = {
         if (networkManager)
             new WebInspector.NetworkLog(target, networkManager);
 
-        if (target.hasJSContext())
+        if (target.hasJSCapability())
             new WebInspector.DebuggerModel(target);
 
-        if (target.type() === WebInspector.Target.Type.Page) {
+        if (target.hasBrowserCapability()) {
             new WebInspector.DOMModel(target);
             new WebInspector.CSSModel(target);
         }
 
         /** @type {?WebInspector.WorkerManager} */
-        target.workerManager = target.supportsWorkers() ? new WebInspector.WorkerManager(target) : null;
+        target.workerManager = target.hasWorkerCapability() ? new WebInspector.WorkerManager(target) : null;
         /** @type {!WebInspector.CPUProfilerModel} */
         target.cpuProfilerModel = new WebInspector.CPUProfilerModel(target);
         /** @type {!WebInspector.HeapProfilerModel} */
@@ -226,7 +226,7 @@ WebInspector.TargetManager.prototype = {
 
         target.tracingManager = new WebInspector.TracingManager(target);
 
-        if (target.isPage())
+        if (target.hasBrowserCapability())
             target.serviceWorkerManager = new WebInspector.ServiceWorkerManager(target);
 
         this.addTarget(target);
@@ -234,17 +234,12 @@ WebInspector.TargetManager.prototype = {
     },
 
     /**
-     * @param {number} type
+     * @param {!WebInspector.Target} target
      * @return {!Array<!WebInspector.TargetManager.Observer>}
      */
-    _observersByType: function(type)
+    _observersForTarget: function(target)
     {
-        var result = [];
-        for (var observer of this._observers) {
-            if (observer[this._observerTypeSymbol] & type)
-                result.push(observer);
-        }
-        return result;
+        return this._observers.filter((observer) => target.hasAllCapabilities(observer[this._observerCapabiliesMaskSymbol] || 0));
     },
 
     /**
@@ -260,7 +255,7 @@ WebInspector.TargetManager.prototype = {
             target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.PageReloadRequested, this._redispatchEvent, this);
             target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.WillReloadPage, this._redispatchEvent, this);
         }
-        var copy = this._observersByType(target.type());
+        var copy = this._observersForTarget(target);
         for (var i = 0; i < copy.length; ++i)
             copy[i].targetAdded(target);
 
@@ -286,7 +281,7 @@ WebInspector.TargetManager.prototype = {
             target.resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.EventTypes.Load, this._redispatchEvent, this);
             target.resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.EventTypes.WillReloadPage, this._redispatchEvent, this);
         }
-        var copy = this._observersByType(target.type());
+        var copy = this._observersForTarget(target);
         for (var i = 0; i < copy.length; ++i)
             copy[i].targetRemoved(target);
 
@@ -301,42 +296,15 @@ WebInspector.TargetManager.prototype = {
     },
 
     /**
-     * @param {number=} type
-     * @return {boolean}
-     */
-    hasTargets: function(type)
-    {
-        return !!this.targets(type).length;
-    },
-
-    /**
-     * @param {number=} type
+     * @param {number=} capabilitiesMask
      * @return {!Array.<!WebInspector.Target>}
      */
-    targets: function(type)
+    targets: function(capabilitiesMask)
     {
-        if (!type)
+        if (!capabilitiesMask)
             return this._targets.slice();
-
-        var result = [];
-        for (var target of this._targets) {
-            if (target.type() & type)
-                result.push(target);
-        }
-        return result;
-    },
-
-    /**
-     * @return {!Array.<!WebInspector.Target>}
-     */
-    targetsWithJSContext: function()
-    {
-        var result = [];
-        for (var target of this._targets) {
-            if (target.hasJSContext())
-                result.push(target);
-        }
-        return result;
+        else
+            return this._targets.filter((target) => target.hasAllCapabilities(capabilitiesMask || 0));
     },
 
     /**

@@ -26,7 +26,7 @@ WebInspector.Geolocation.prototype = {
 
     apply: function()
     {
-        for (var target of WebInspector.targetManager.targets(WebInspector.Target.Type.Page)) {
+        for (var target of WebInspector.targetManager.targets(WebInspector.Target.Capability.Browser)) {
             if (this.error)
                 target.emulationAgent().setGeolocationOverride();
             else
@@ -36,7 +36,7 @@ WebInspector.Geolocation.prototype = {
 
     clear: function()
     {
-        for (var target of WebInspector.targetManager.targets(WebInspector.Target.Type.Page))
+        for (var target of WebInspector.targetManager.targets(WebInspector.Target.Capability.Browser))
             target.emulationAgent().clearGeolocationOverride();
     }
 }

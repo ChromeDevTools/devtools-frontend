@@ -82,7 +82,7 @@ WebInspector.RenderingOptionsView = function()
     this._mediaSelect.addEventListener("change", this._mediaToggled.bind(this), false);
     this._mediaSelect.disabled = true;
 
-    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Type.Page);
+    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.Browser);
 }
 
 WebInspector.RenderingOptionsView.prototype = {
@@ -108,9 +108,8 @@ WebInspector.RenderingOptionsView.prototype = {
     _settingToggled: function(setterName)
     {
         var enabled = this._settings.get(setterName).checked;
-        var targets = WebInspector.targetManager.targets(WebInspector.Target.Type.Page);
-        for (var i = 0; i < targets.length; ++i)
-            targets[i].renderingAgent()[setterName](enabled);
+        for (var target of WebInspector.targetManager.targets(WebInspector.Target.Capability.Browser))
+            target.renderingAgent()[setterName](enabled);
     },
 
     /**
@@ -130,7 +129,7 @@ WebInspector.RenderingOptionsView.prototype = {
     _mediaToggled: function()
     {
         this._mediaSelect.disabled = !this._mediaCheckbox.checked;
-        var targets = WebInspector.targetManager.targets(WebInspector.Target.Type.Page);
+        var targets = WebInspector.targetManager.targets(WebInspector.Target.Capability.Browser);
         for (var target of targets)
             this._applyPrintMediaOverride(target);
     },

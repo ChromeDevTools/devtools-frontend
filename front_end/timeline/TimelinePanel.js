@@ -2002,7 +2002,7 @@ WebInspector.CPUThrottlingManager = function()
 {
     this._targets = [];
     this._throttlingRate = 1.; // No throttling
-    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Type.Page);
+    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.Browser);
 }
 
 WebInspector.CPUThrottlingManager.prototype = {

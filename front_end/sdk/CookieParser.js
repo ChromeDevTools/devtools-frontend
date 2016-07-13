@@ -406,7 +406,7 @@ WebInspector.Cookies.getCookiesAsync = function(callback)
     }
 
     var barrier = new CallbackBarrier();
-    for (var target of WebInspector.targetManager.targets(WebInspector.Target.Type.Page))
+    for (var target of WebInspector.targetManager.targets(WebInspector.Target.Capability.Network))
         target.networkAgent().getCookies(barrier.createCallback(mycallback.bind(null, target)));
     barrier.callWhenDone(callback.bind(null, allCookies));
 }

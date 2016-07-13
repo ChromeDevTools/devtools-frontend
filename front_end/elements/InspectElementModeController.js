@@ -40,7 +40,7 @@ WebInspector.InspectElementModeController = function()
 
     this._mode = DOMAgent.InspectMode.None;
     WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
-    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Type.Page);
+    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.Browser);
 }
 
 WebInspector.InspectElementModeController.prototype = {

@@ -399,7 +399,7 @@ WebInspector.NavigatorView.prototype = {
 
         var targetNode = this._rootNode.child("target:" + target.id());
         if (!targetNode) {
-            targetNode = new WebInspector.NavigatorGroupTreeNode(this, project, "target:" + target.id(), target.isWorker() ? WebInspector.NavigatorView.Types.Worker : WebInspector.NavigatorView.Types.NetworkFolder, target.name());
+            targetNode = new WebInspector.NavigatorGroupTreeNode(this, project, "target:" + target.id(), !target.hasBrowserCapability() ? WebInspector.NavigatorView.Types.Worker : WebInspector.NavigatorView.Types.NetworkFolder, target.name());
             this._rootNode.appendChild(targetNode);
         }
         return targetNode;

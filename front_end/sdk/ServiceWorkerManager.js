@@ -435,7 +435,8 @@ WebInspector.ServiceWorker = function(manager, workerId, url, versionId)
     this._scope = parsedURL.host + parsedURL.folderPathComponents;
 
     this._manager._workers.set(workerId, this);
-    this._target = WebInspector.targetManager.createTarget(this._name, WebInspector.Target.Type.ServiceWorker, this._connection, manager.target());
+    var capabilities = WebInspector.Target.Capability.Network | WebInspector.Target.Capability.Worker;
+    this._target = WebInspector.targetManager.createTarget(this._name, capabilities, this._connection, manager.target());
     this._target[WebInspector.ServiceWorker.Symbol] = this;
     this._manager.dispatchEventToListeners(WebInspector.ServiceWorkerManager.Events.WorkersUpdated);
     this._target.runtimeAgent().run();

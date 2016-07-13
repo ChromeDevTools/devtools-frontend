@@ -10,7 +10,7 @@
  */
 WebInspector.ExecutionContextSelector = function(targetManager, context)
 {
-    targetManager.observeTargets(this);
+    targetManager.observeTargets(this, WebInspector.Target.Capability.JS);
     context.addFlavorChangeListener(WebInspector.ExecutionContext, this._executionContextChanged, this);
     context.addFlavorChangeListener(WebInspector.Target, this._targetChanged, this);
 
@@ -28,8 +28,6 @@ WebInspector.ExecutionContextSelector.prototype = {
      */
     targetAdded: function(target)
     {
-        if (!target.hasJSContext())
-            return;
         // Defer selecting default target since we need all clients to get their
         // targetAdded notifications first.
         setImmediate(deferred.bind(this));
@@ -51,13 +49,11 @@ WebInspector.ExecutionContextSelector.prototype = {
      */
     targetRemoved: function(target)
     {
-        if (!target.hasJSContext())
-            return;
         var currentExecutionContext = this._context.flavor(WebInspector.ExecutionContext);
         if (currentExecutionContext && currentExecutionContext.target() === target)
             this._currentExecutionContextGone();
 
-        var targets = this._targetManager.targetsWithJSContext();
+        var targets = this._targetManager.targets(WebInspector.Target.Capability.JS);
         if (this._context.flavor(WebInspector.Target) === target && targets.length)
             this._context.setFlavor(WebInspector.Target, targets[0]);
     },
@@ -165,11 +161,9 @@ WebInspector.ExecutionContextSelector.prototype = {
 
     _currentExecutionContextGone: function()
     {
-        var targets = this._targetManager.targetsWithJSContext();
+        var targets = this._targetManager.targets(WebInspector.Target.Capability.JS);
         var newContext = null;
         for (var i = 0; i < targets.length && !newContext; ++i) {
-            if (targets[i].isServiceWorker())
-                continue;
             var executionContexts = targets[i].runtimeModel.executionContexts();
             for (var executionContext of executionContexts) {
                 if (this._isMainFrameContext(executionContext)) {

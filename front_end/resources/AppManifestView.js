@@ -132,7 +132,7 @@ WebInspector.AppManifestView.prototype = {
     _addToHomescreen: function()
     {
         var target = WebInspector.targetManager.mainTarget();
-        if (target && target.isPage()) {
+        if (target && target.hasBrowserCapability()) {
             target.pageAgent().requestAppBanner();
             WebInspector.console.show();
         }

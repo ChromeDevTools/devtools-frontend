@@ -39,7 +39,7 @@ WebInspector.RuntimeModel = function(target)
 
     this._agent = target.runtimeAgent();
     this.target().registerRuntimeDispatcher(new WebInspector.RuntimeDispatcher(this));
-    if (target.hasJSContext())
+    if (target.hasJSCapability())
         this._agent.enable();
     /**
      * @type {!Object.<number, !WebInspector.ExecutionContext>}
@@ -459,9 +459,9 @@ WebInspector.ExecutionContext.comparator = function(a, b)
      */
     function targetWeight(target)
     {
-        if (target.isPage())
+        if (target.hasBrowserCapability())
             return 3;
-        if (target.isDedicatedWorker())
+        if (target.hasJSCapability())
             return 2;
         return 1;
     }

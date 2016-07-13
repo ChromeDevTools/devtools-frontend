@@ -42,7 +42,7 @@ WebInspector.EventListenerBreakpointsSidebarPane = function()
     this._createCategory(WebInspector.UIString("Window"), ["close"], true);
     this._createCategory(WebInspector.UIString("XHR"), ["readystatechange", "load", "loadstart", "loadend", "abort", "error", "progress", "timeout"], false, ["XMLHttpRequest", "XMLHttpRequestUpload"]);
 
-    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Type.Page);
+    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.Browser);
 }
 
 WebInspector.EventListenerBreakpointsSidebarPane.categoryListener = "listener:";
@@ -234,20 +234,20 @@ WebInspector.EventListenerBreakpointsSidebarPane.prototype = {
      */
     _updateBreakpointOnTarget: function(eventName, eventTargetName, enable, target)
     {
-        var targets = target ? [target] : WebInspector.targetManager.targets(WebInspector.Target.Type.Page);
-        for (var i = 0; i < targets.length; ++i) {
+        var targets = target ? [target] : WebInspector.targetManager.targets(WebInspector.Target.Capability.Browser);
+        for (target of targets) {
             if (eventName.startsWith(WebInspector.EventListenerBreakpointsSidebarPane.categoryListener)) {
                 var protocolEventName = eventName.substring(WebInspector.EventListenerBreakpointsSidebarPane.categoryListener.length);
                 if (enable)
-                    targets[i].domdebuggerAgent().setEventListenerBreakpoint(protocolEventName, eventTargetName);
+                    target.domdebuggerAgent().setEventListenerBreakpoint(protocolEventName, eventTargetName);
                 else
-                    targets[i].domdebuggerAgent().removeEventListenerBreakpoint(protocolEventName, eventTargetName);
+                    target.domdebuggerAgent().removeEventListenerBreakpoint(protocolEventName, eventTargetName);
             } else if (eventName.startsWith(WebInspector.EventListenerBreakpointsSidebarPane.categoryInstrumentation)) {
                 var protocolEventName = eventName.substring(WebInspector.EventListenerBreakpointsSidebarPane.categoryInstrumentation.length);
                 if (enable)
-                    targets[i].domdebuggerAgent().setInstrumentationBreakpoint(protocolEventName);
+                    target.domdebuggerAgent().setInstrumentationBreakpoint(protocolEventName);
                 else
-                    targets[i].domdebuggerAgent().removeInstrumentationBreakpoint(protocolEventName);
+                    target.domdebuggerAgent().removeInstrumentationBreakpoint(protocolEventName);
             }
         }
     },

@@ -266,8 +266,8 @@ WebInspector.ConsoleView.prototype = {
     targetAdded: function(target)
     {
         this._viewport.invalidate();
-        if (WebInspector.targetManager.targets().length > 1 && WebInspector.targetManager.mainTarget().isPage())
-            this._showAllMessagesCheckbox.element.classList.toggle("hidden", false);
+        var hasMultipleCotexts = WebInspector.targetManager.targets(WebInspector.Target.Capability.JS).length > 1;
+        this._showAllMessagesCheckbox.element.classList.toggle("hidden", !hasMultipleCotexts);
     },
 
     /**

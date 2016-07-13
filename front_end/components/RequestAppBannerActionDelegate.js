@@ -20,7 +20,7 @@ WebInspector.RequestAppBannerActionDelegate.prototype = {
     handleAction: function(context, actionId)
     {
         var target = WebInspector.targetManager.mainTarget();
-        if (target && target.isPage()) {
+        if (target && target.hasBrowserCapability()) {
             target.pageAgent().requestAppBanner();
             WebInspector.console.show();
         }

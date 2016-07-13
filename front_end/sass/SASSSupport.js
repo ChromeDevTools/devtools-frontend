@@ -250,7 +250,10 @@ WebInspector.SASSSupport.Property.prototype = {
         }
         var oldRange1 = new WebInspector.TextRange(this.range.startLine, this.range.startColumn, this.range.startLine, this.name.range.startColumn);
         var edit1 = new WebInspector.SourceEdit(this.document.url, oldRange1, "");
-        var oldRange2 = new WebInspector.TextRange(this.range.endLine, this.range.endColumn - 2, this.range.endLine, this.range.endColumn);
+
+        var propertyText = this.document.text.extract(this.range);
+        var endsWithSemicolon = propertyText.slice(0, -2).trim().endsWith(";");
+        var oldRange2 = new WebInspector.TextRange(this.range.endLine, this.value.range.endColumn + (endsWithSemicolon ? 1 : 0), this.range.endLine, this.range.endColumn);
         var edit2 = new WebInspector.SourceEdit(this.document.url, oldRange2, "");
         this.document.edits.push(edit1, edit2);
     },

@@ -803,7 +803,7 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
         break;
     case recordTypes.Layout:
         var beginData = event.args["beginData"];
-        contentHelper.appendTextRow(WebInspector.UIString("Nodes That Need Layout"), beginData["dirtyObjects"]);
+        contentHelper.appendTextRow(WebInspector.UIString("Nodes That Need Layout"), WebInspector.UIString("%s of %s", beginData["dirtyObjects"], beginData["totalObjects"]));
         relatedNodeLabel = WebInspector.UIString("Layout root");
         break;
     case recordTypes.ConsoleTime:

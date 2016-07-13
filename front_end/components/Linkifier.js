@@ -204,7 +204,19 @@ WebInspector.Linkifier.prototype = {
      */
     linkifyConsoleCallFrame: function(target, callFrame, classes)
     {
-        return this.linkifyScriptLocation(target, callFrame.scriptId, callFrame.url, WebInspector.DebuggerModel.fromOneBased(callFrame.lineNumber), WebInspector.DebuggerModel.fromOneBased(callFrame.columnNumber), classes);
+        return this.linkifyScriptLocation(target, callFrame.scriptId, callFrame.url, callFrame.lineNumber, callFrame.columnNumber, classes);
+    },
+
+    /**
+     * @param {?WebInspector.Target} target
+     * @param {!RuntimeAgent.CallFrame} callFrame
+     * @param {string=} classes
+     * @return {!Element}
+     */
+    linkifyConsoleCallFrameForTimeline: function(target, callFrame, classes)
+    {
+        // TODO(kozyatinskiy): remove this when Profilers will migrate to 0-based lineNumber and columnNumber.
+        return this.linkifyScriptLocation(target, callFrame.scriptId, callFrame.url, callFrame.lineNumber - 1, callFrame.columnNumber - 1, classes);
     },
 
     /**
@@ -218,7 +230,7 @@ WebInspector.Linkifier.prototype = {
         console.assert(stackTrace.callFrames && stackTrace.callFrames.length);
 
         var topFrame = stackTrace.callFrames[0];
-        var fallbackAnchor = WebInspector.linkifyResourceAsNode(topFrame.url, WebInspector.DebuggerModel.fromOneBased(topFrame.lineNumber), WebInspector.DebuggerModel.fromOneBased(topFrame.columnNumber), classes);
+        var fallbackAnchor = WebInspector.linkifyResourceAsNode(topFrame.url, topFrame.lineNumber, topFrame.columnNumber, classes);
         if (target.isDetached())
             return fallbackAnchor;
 

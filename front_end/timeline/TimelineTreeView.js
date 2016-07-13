@@ -86,7 +86,7 @@ WebInspector.TimelineTreeView.prototype = {
      */
     linkifyLocation: function(frame)
     {
-        return this._linkifier.linkifyConsoleCallFrame(this._model.target(), frame);
+        return this._linkifier.linkifyConsoleCallFrameForTimeline(this._model.target(), frame);
     },
 
     /**
@@ -618,10 +618,10 @@ WebInspector.AggregatedTimelineTreeView.prototype = {
      */
     _createAggregator: function()
     {
-         return new WebInspector.TimelineAggregator(
-             event => WebInspector.TimelineUIUtils.eventStyle(event).title,
-             event => WebInspector.TimelineUIUtils.eventStyle(event).category.name
-         );
+        return new WebInspector.TimelineAggregator(
+            event => WebInspector.TimelineUIUtils.eventStyle(event).title,
+            event => WebInspector.TimelineUIUtils.eventStyle(event).category.name
+        );
     },
 
     __proto__: WebInspector.TimelineTreeView.prototype,

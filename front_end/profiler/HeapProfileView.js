@@ -302,8 +302,7 @@ WebInspector.HeapProfileView.NodeFormatter.prototype = {
      */
     linkifyNode: function(node)
     {
-        var callFrame = node.profileNode.frame;
-        return this._profileView.linkifier().linkifyConsoleCallFrame(this._profileView.target(), callFrame, "profile-node-file");
+        return this._profileView.linkifier().linkifyConsoleCallFrameForTimeline(this._profileView.target(), node.profileNode.frame, "profile-node-file");
     }
 }
 
@@ -423,7 +422,7 @@ WebInspector.HeapFlameChartDataProvider.prototype = {
         pushEntryInfoRow(WebInspector.UIString("Self size"), Number.bytesToString(node.self));
         pushEntryInfoRow(WebInspector.UIString("Total size"), Number.bytesToString(node.total));
         var linkifier = new WebInspector.Linkifier();
-        var text = (new WebInspector.Linkifier()).linkifyConsoleCallFrame(this._target, node.frame).textContent;
+        var text = (new WebInspector.Linkifier()).linkifyConsoleCallFrameForTimeline(this._target, node.frame).textContent;
         linkifier.dispose();
         pushEntryInfoRow(WebInspector.UIString("URL"), text);
         return entryInfo;

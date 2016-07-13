@@ -349,8 +349,7 @@ WebInspector.CPUProfileView.NodeFormatter.prototype = {
      */
     linkifyNode: function(node)
     {
-        var callFrame = node.profileNode.frame;
-        return this._profileView.linkifier().linkifyConsoleCallFrame(this._profileView.target(), callFrame, "profile-node-file");
+        return this._profileView.linkifier().linkifyConsoleCallFrameForTimeline(this._profileView.target(), node.profileNode.frame, "profile-node-file");
     }
 }
 
@@ -478,9 +477,8 @@ WebInspector.CPUFlameChartDataProvider.prototype = {
         var totalTime = millisecondsToString(timelineData.entryTotalTimes[entryIndex]);
         pushEntryInfoRow(WebInspector.UIString("Self time"), selfTime);
         pushEntryInfoRow(WebInspector.UIString("Total time"), totalTime);
-        var callFrame = /** @type {!RuntimeAgent.CallFrame} */ (node);
         var linkifier = new WebInspector.Linkifier();
-        var text = linkifier.linkifyConsoleCallFrame(this._target, callFrame).textContent;
+        var text = linkifier.linkifyConsoleCallFrameForTimeline(this._target, node).textContent;
         linkifier.dispose();
         pushEntryInfoRow(WebInspector.UIString("URL"), text);
         pushEntryInfoRow(WebInspector.UIString("Aggregated self time"), Number.secondsToString(node.selfTime / 1000, true));

@@ -619,7 +619,7 @@ WebInspector.TimelineUIUtils.buildDetailsNodeForTraceEvent = function(event, tar
     function linkifyTopCallFrame()
     {
         var frame = WebInspector.TimelineUIUtils.topStackFrame(event);
-        return frame ? linkifier.linkifyConsoleCallFrame(target, frame, "timeline-details") : null;
+        return frame ? linkifier.linkifyConsoleCallFrameForTimeline(target, frame, "timeline-details") : null;
     }
 }
 
@@ -996,7 +996,7 @@ WebInspector.TimelineUIUtils.buildNetworkRequestDetails = function(request, mode
     var sendRequest = request.children[0];
     var topFrame = WebInspector.TimelineUIUtils.topStackFrame(sendRequest);
     if (topFrame) {
-        contentHelper.appendElementRow(title, linkifier.linkifyConsoleCallFrame(target, topFrame));
+        contentHelper.appendElementRow(title, linkifier.linkifyConsoleCallFrameForTimeline(target, topFrame));
     } else if (sendRequest.initiator) {
         var initiatorURL = WebInspector.TimelineUIUtils.eventURL(sendRequest.initiator);
         if (initiatorURL)
@@ -1241,7 +1241,7 @@ WebInspector.TimelineUIUtils.InvalidationsGroupElement.prototype = {
             var stack = title.createChild("span", "monospace");
             stack.createChild("span").textContent = WebInspector.beautifyFunctionName(topFrame.functionName);
             stack.createChild("span").textContent = " @ ";
-            stack.createChild("span").appendChild(this._contentHelper.linkifier().linkifyConsoleCallFrame(target, topFrame));
+            stack.createChild("span").appendChild(this._contentHelper.linkifier().linkifyConsoleCallFrameForTimeline(target, topFrame));
         }
 
         return title;

@@ -57,6 +57,10 @@ WebInspector.ElementsTreeOutline = function(domModel, omitRootDOMNode, selectEna
     this._element.addEventListener("drop", this._ondrop.bind(this), false);
     this._element.addEventListener("dragend", this._ondragend.bind(this), false);
     this._element.addEventListener("contextmenu", this._contextMenuEventFired.bind(this), false);
+    this._element.addEventListener("clipboard-beforecopy", this._onBeforeCopy.bind(this), false);
+    this._element.addEventListener("clipboard-copy", this._onCopyOrCut.bind(this, false), false);
+    this._element.addEventListener("clipboard-cut", this._onCopyOrCut.bind(this, true), false);
+    this._element.addEventListener("clipboard-paste", this._onPaste.bind(this), false);
 
     outlineDisclosureElement.appendChild(this._element);
     this.element = element;
@@ -222,15 +226,24 @@ WebInspector.ElementsTreeOutline.prototype = {
     },
 
     /**
+     * @param {!Event} event
+     */
+    _onBeforeCopy: function(event)
+    {
+        event.handled = true;
+    },
+
+    /**
      * @param {boolean} isCut
      * @param {!Event} event
      */
-    handleCopyOrCutKeyboardEvent: function(isCut, event)
+    _onCopyOrCut: function(isCut, event)
     {
         this._setClipboardData(null);
+        var originalEvent = event["original"];
 
         // Don't prevent the normal copy if the user has a selection.
-        if (!event.target.isComponentSelectionCollapsed())
+        if (!originalEvent.target.isComponentSelectionCollapsed())
             return;
 
         // Do not interfere with text editing.
@@ -241,8 +254,8 @@ WebInspector.ElementsTreeOutline.prototype = {
         if (!targetNode)
             return;
 
-        event.clipboardData.clearData();
-        event.preventDefault();
+        originalEvent.clipboardData.clearData();
+        event.handled = true;
 
         this.performCopyOrCut(isCut, targetNode);
     },
@@ -293,7 +306,7 @@ WebInspector.ElementsTreeOutline.prototype = {
     /**
      * @param {!Event} event
      */
-    handlePasteKeyboardEvent: function(event)
+    _onPaste: function(event)
     {
         // Do not interfere with text editing.
         if (WebInspector.isEditing())
@@ -303,7 +316,7 @@ WebInspector.ElementsTreeOutline.prototype = {
         if (!targetNode || !this.canPaste(targetNode))
             return;
 
-        event.preventDefault();
+        event.handled = true;
         this._performPaste(targetNode);
     },
 

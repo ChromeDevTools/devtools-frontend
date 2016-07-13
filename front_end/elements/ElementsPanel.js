@@ -787,18 +787,6 @@ WebInspector.ElementsPanel.prototype = {
     },
 
     /**
-     * @return {?WebInspector.ElementsTreeOutline}
-     */
-    _focusedTreeOutline: function()
-    {
-        for (var i = 0; i < this._treeOutlines.length; ++i) {
-            if (this._treeOutlines[i].hasFocus())
-                return this._treeOutlines[i];
-        }
-        return null;
-    },
-
-    /**
      * @param {!WebInspector.DOMNode} node
      * @return {?WebInspector.ElementsTreeElement}
      */
@@ -806,36 +794,6 @@ WebInspector.ElementsPanel.prototype = {
     {
         var treeOutline = this._treeOutlineForNode(node);
         return /** @type {?WebInspector.ElementsTreeElement} */ (treeOutline.findTreeElement(node));
-    },
-
-    /**
-     * @param {!Event} event
-     */
-    handleCopyEvent: function(event)
-    {
-        var treeOutline = this._focusedTreeOutline();
-        if (treeOutline)
-            treeOutline.handleCopyOrCutKeyboardEvent(false, event);
-    },
-
-    /**
-     * @param {!Event} event
-     */
-    handleCutEvent: function(event)
-    {
-        var treeOutline = this._focusedTreeOutline();
-        if (treeOutline)
-            treeOutline.handleCopyOrCutKeyboardEvent(true, event);
-    },
-
-    /**
-     * @param {!Event} event
-     */
-    handlePasteEvent: function(event)
-    {
-        var treeOutline = this._focusedTreeOutline();
-        if (treeOutline)
-            treeOutline.handlePasteKeyboardEvent(event);
     },
 
     /**

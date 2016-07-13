@@ -493,32 +493,16 @@ WebInspector.Main.prototype = {
         WebInspector.shortcutRegistry.handleShortcut(event);
     },
 
-    _documentCanCopy: function(event)
+    /**
+     * @param {!Event} event
+     */
+    _redispatchClipboardEvent: function(event)
     {
-        var panel = WebInspector.inspectorView.currentPanel();
-        if (panel && panel["handleCopyEvent"])
+        var eventCopy = new CustomEvent("clipboard-" + event.type);
+        eventCopy["original"] = event;
+        event.deepActiveElement().dispatchEvent(eventCopy);
+        if (eventCopy.handled)
             event.preventDefault();
-    },
-
-    _documentCopy: function(event)
-    {
-        var panel = WebInspector.inspectorView.currentPanel();
-        if (panel && panel["handleCopyEvent"])
-            panel["handleCopyEvent"](event);
-    },
-
-    _documentCut: function(event)
-    {
-        var panel = WebInspector.inspectorView.currentPanel();
-        if (panel && panel["handleCutEvent"])
-            panel["handleCutEvent"](event);
-    },
-
-    _documentPaste: function(event)
-    {
-        var panel = WebInspector.inspectorView.currentPanel();
-        if (panel && panel["handlePasteEvent"])
-            panel["handlePasteEvent"](event);
     },
 
     _contextMenuEventFired: function(event)
@@ -533,10 +517,10 @@ WebInspector.Main.prototype = {
     _addMainEventListeners: function(document)
     {
         document.addEventListener("keydown", this._postDocumentKeyDown.bind(this), false);
-        document.addEventListener("beforecopy", this._documentCanCopy.bind(this), true);
-        document.addEventListener("copy", this._documentCopy.bind(this), false);
-        document.addEventListener("cut", this._documentCut.bind(this), false);
-        document.addEventListener("paste", this._documentPaste.bind(this), false);
+        document.addEventListener("beforecopy", this._redispatchClipboardEvent.bind(this), true);
+        document.addEventListener("copy", this._redispatchClipboardEvent.bind(this), false);
+        document.addEventListener("cut", this._redispatchClipboardEvent.bind(this), false);
+        document.addEventListener("paste", this._redispatchClipboardEvent.bind(this), false);
         document.addEventListener("contextmenu", this._contextMenuEventFired.bind(this), true);
         document.addEventListener("click", this._documentClick.bind(this), false);
     },

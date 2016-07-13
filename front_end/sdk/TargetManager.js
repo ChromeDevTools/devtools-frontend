@@ -196,6 +196,8 @@ WebInspector.TargetManager.prototype = {
 
         /** @type {!WebInspector.ConsoleModel} */
         target.consoleModel = new WebInspector.ConsoleModel(target);
+        /** @type {!WebInspector.RuntimeModel} */
+        target.runtimeModel = new WebInspector.RuntimeModel(target);
 
         var networkManager = null;
         if (!target.isJSInspector())
@@ -207,8 +209,6 @@ WebInspector.TargetManager.prototype = {
         if (networkManager)
             new WebInspector.NetworkLog(target, networkManager);
 
-        /** @type {!WebInspector.RuntimeModel} */
-        target.runtimeModel = new WebInspector.RuntimeModel(target);
         if (target.hasJSContext())
             new WebInspector.DebuggerModel(target);
 

@@ -46,7 +46,7 @@ WebInspector.Spectrum = function()
     }
 
     WebInspector.VBox.call(this, true);
-    this.registerRequiredCSS("elements/spectrum.css");
+    this.registerRequiredCSS("components/spectrum.css");
     this.contentElement.tabIndex = 0;
 
     this._colorElement = this.contentElement.createChild("div", "spectrum-color");

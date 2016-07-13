@@ -76,6 +76,7 @@
         "RemoteObjectPreviewFormatter.js",
         "RequestAppBannerActionDelegate.js",
         "ShortcutsScreen.js",
+        "Spectrum.js",
         "EventListenersUtils.js",
         "EventListenersView.js",
         "Reload.js"
@@ -87,6 +88,7 @@
         "domUtils.css",
         "networkConditionsSettingsTab.css",
         "objectPropertiesSection.css",
-        "objectValue.css"
+        "objectValue.css",
+        "spectrum.css"
     ]
 }

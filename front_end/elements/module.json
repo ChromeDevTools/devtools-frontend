@@ -160,7 +160,6 @@
         "BezierUI.js",
         "StylesPopoverHelper.js",
         "BezierEditor.js",
-        "Spectrum.js",
         "ElementsBreadcrumbs.js",
         "ElementsSidebarPane.js",
         "ElementsSidebarView.js",
@@ -185,7 +184,6 @@
         "computedStyleSidebarPane.css",
         "elementsPanel.css",
         "elementsTreeOutline.css",
-        "spectrum.css",
         "platformFontsWidget.css"
     ]
 }

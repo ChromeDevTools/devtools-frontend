@@ -281,31 +281,6 @@ WebInspector.RemoteObject.prototype = {
     isNode: function()
     {
         return false;
-    },
-
-    /**
-     * @param {function(?WebInspector.DebuggerModel.FunctionDetails)} callback
-     */
-    functionDetails: function(callback)
-    {
-        callback(null);
-    },
-
-    /**
-     * @return {!Promise<?WebInspector.DebuggerModel.FunctionDetails>}
-     */
-    functionDetailsPromise: function()
-    {
-        return new Promise(promiseConstructor.bind(this));
-
-        /**
-         * @param {function(?WebInspector.DebuggerModel.FunctionDetails)} success
-         * @this {WebInspector.RemoteObject}
-         */
-        function promiseConstructor(success)
-        {
-            this.functionDetails(success);
-        }
     }
 }
 
@@ -858,15 +833,6 @@ WebInspector.RemoteObjectImpl.prototype = {
     isNode: function()
     {
         return !!this._objectId && this.type === "object" && this.subtype === "node";
-    },
-
-    /**
-     * @override
-     * @param {function(?WebInspector.DebuggerModel.FunctionDetails)} callback
-     */
-    functionDetails: function(callback)
-    {
-        this._debuggerModel.functionDetails(this, callback);
     },
 
     __proto__: WebInspector.RemoteObject.prototype
@@ -1526,7 +1492,7 @@ WebInspector.RemoteFunction.prototype = {
         function functionDetails(targetFunction)
         {
             var boundReleaseFunctionDetails = releaseTargetFunction.bind(null, this._object !== targetFunction ? targetFunction : null);
-            return targetFunction.functionDetailsPromise().then(boundReleaseFunctionDetails);
+            return targetFunction.debuggerModel().functionDetailsPromise(targetFunction).then(boundReleaseFunctionDetails);
         }
 
         /**

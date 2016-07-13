@@ -573,15 +573,6 @@ WebInspector.SourceMapNamesResolver.RemoteObject.prototype = {
         return this._object.isNode();
     },
 
-    /**
-     * @override
-     * @param {function(?WebInspector.DebuggerModel.FunctionDetails)} callback
-     */
-    functionDetails: function(callback)
-    {
-        this._object.functionDetails(callback);
-    },
-
     __proto__: WebInspector.RemoteObject.prototype
 }
 

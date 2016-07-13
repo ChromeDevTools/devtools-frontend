@@ -75,7 +75,7 @@ WebInspector.ObjectPopoverHelper.prototype = {
                 }
             }
             WebInspector.ObjectPropertiesSection.formatObjectAsFunction(funcObject, popoverValueElement, true);
-            funcObject.functionDetails(didGetFunctionDetails.bind(this, popoverContentElement, anchorElement));
+            funcObject.debuggerModel().functionDetailsPromise(funcObject).then(didGetFunctionDetails.bind(this, popoverContentElement, anchorElement));
         }
 
         /**
@@ -95,7 +95,6 @@ WebInspector.ObjectPopoverHelper.prototype = {
             functionName.textContent = WebInspector.beautifyFunctionName(response.functionName);
 
             var rawLocation = response.location;
-            var sourceURL = response.sourceURL;
             var linkContainer = title.createChild("div", "function-title-link-container");
             if (rawLocation && Runtime.experiments.isEnabled("continueToFirstInvocation")) {
                 var sectionToolbar = new WebInspector.Toolbar("function-location-step-into", linkContainer);
@@ -103,6 +102,7 @@ WebInspector.ObjectPopoverHelper.prototype = {
                 stepInto.addEventListener("click", () => rawLocation.continueToLocation());
                 sectionToolbar.appendToolbarItem(stepInto);
             }
+            var sourceURL = rawLocation.script() ? rawLocation.script().sourceURL : null;
             if (rawLocation && sourceURL) {
                 var link = this._lazyLinkifier().linkifyRawLocation(rawLocation, sourceURL);
                 linkContainer.appendChild(link);

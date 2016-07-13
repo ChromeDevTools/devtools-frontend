@@ -591,23 +591,6 @@ WebInspector.ObjectPropertyTreeElement.populateWithProperties = function(treeNod
             treeNode.appendChild(treeElement);
         }
     }
-    if (value && value.type === "function") {
-        // Whether function has TargetFunction internal property.
-        // This is a simple way to tell that the function is actually a bound function (we are not told).
-        // Bound function never has inner scope and doesn't need corresponding UI node.
-        var hasTargetFunction = false;
-
-        if (internalProperties) {
-            for (var i = 0; i < internalProperties.length; i++) {
-                if (internalProperties[i].name === "[[TargetFunction]]") {
-                    hasTargetFunction = true;
-                    break;
-                }
-            }
-        }
-        if (!hasTargetFunction)
-            treeNode.appendChild(new WebInspector.FunctionScopeMainTreeElement(value, linkifier));
-    }
     WebInspector.ObjectPropertyTreeElement._appendEmptyPlaceholderIfNeeded(treeNode, emptyPlaceholder);
 }
 
@@ -649,117 +632,6 @@ WebInspector.ObjectPropertyTreeElement.createRemoteObjectAccessorPropertySpan = 
     }
 
     return rootElement;
-}
-
-/**
- * @constructor
- * @extends {TreeElement}
- * @param {!WebInspector.RemoteObject} remoteObject
- * @param {!WebInspector.Linkifier=} linkifier
- */
-WebInspector.FunctionScopeMainTreeElement = function(remoteObject, linkifier)
-{
-    TreeElement.call(this, "<function scope>", true);
-    this.toggleOnClick = true;
-    this.selectable = false;
-    this._remoteObject = remoteObject;
-    this._linkifier = linkifier;
-}
-
-WebInspector.FunctionScopeMainTreeElement.prototype = {
-    onpopulate: function()
-    {
-        /**
-         * @param {?WebInspector.DebuggerModel.FunctionDetails} response
-         * @this {WebInspector.FunctionScopeMainTreeElement}
-         */
-        function didGetDetails(response)
-        {
-            if (!response)
-                return;
-            this.removeChildren();
-
-            var scopeChain = response.scopeChain || [];
-            for (var i = 0; i < scopeChain.length; ++i) {
-                var scope = scopeChain[i];
-                var title = null;
-                var isTrueObject = false;
-
-                switch (scope.type) {
-                case DebuggerAgent.ScopeType.Local:
-                    // Not really expecting this scope type here.
-                    title = WebInspector.UIString("Local");
-                    break;
-                case DebuggerAgent.ScopeType.Closure:
-                    title = WebInspector.UIString("Closure");
-                    break;
-                case DebuggerAgent.ScopeType.Catch:
-                    title = WebInspector.UIString("Catch");
-                    break;
-                case DebuggerAgent.ScopeType.Block:
-                    title = WebInspector.UIString("Block");
-                    break;
-                case DebuggerAgent.ScopeType.Script:
-                    title = WebInspector.UIString("Script");
-                    break;
-                case DebuggerAgent.ScopeType.With:
-                    title = WebInspector.UIString("With Block");
-                    isTrueObject = true;
-                    break;
-                case DebuggerAgent.ScopeType.Global:
-                    title = WebInspector.UIString("Global");
-                    isTrueObject = true;
-                    break;
-                default:
-                    console.error("Unknown scope type: " + scope.type);
-                    continue;
-                }
-
-                var runtimeModel = this._remoteObject.target().runtimeModel;
-                if (isTrueObject) {
-                    var remoteObject = runtimeModel.createRemoteObject(scope.object);
-                    var property = new WebInspector.RemoteObjectProperty(title, remoteObject);
-                    property.writable = false;
-                    property.parentObject = null;
-                    this.appendChild(new WebInspector.ObjectPropertyTreeElement(property, this._linkifier));
-                } else {
-                    var scopeRef = new WebInspector.ScopeRef(i, undefined);
-                    var remoteObject = runtimeModel.createScopeRemoteObject(scope.object, scopeRef);
-                    var scopeTreeElement = new WebInspector.ScopeTreeElement(title, remoteObject);
-                    this.appendChild(scopeTreeElement);
-                }
-            }
-
-            WebInspector.ObjectPropertyTreeElement._appendEmptyPlaceholderIfNeeded(this, WebInspector.UIString("No Scopes"));
-        }
-
-        this._remoteObject.functionDetails(didGetDetails.bind(this));
-    },
-
-    __proto__: TreeElement.prototype
-}
-
-/**
- * @constructor
- * @extends {TreeElement}
- * @param {string} title
- * @param {!WebInspector.RemoteObject} remoteObject
- */
-WebInspector.ScopeTreeElement = function(title, remoteObject)
-{
-    TreeElement.call(this, title, true);
-    this.toggleOnClick = true;
-    this.selectable = false;
-    this._remoteObject = remoteObject;
-}
-
-WebInspector.ScopeTreeElement.prototype = {
-    onpopulate: function()
-    {
-        WebInspector.ObjectPropertyTreeElement._populate(this, this._remoteObject, false);
-    },
-
-    __proto__: TreeElement.prototype
 }
 
 /**
@@ -1192,8 +1064,13 @@ WebInspector.ObjectPropertiesSection.createValueElement = function(value, wasThr
         valueElement.title = description || "";
     }
 
-    if (type === "object" && subtype === "internal#location" && linkifier)
-        return linkifier.linkifyScriptLocation(value.target(), value.value.scriptId, "", value.value.lineNumber, value.value.columnNumber);
+    if (type === "object" && subtype === "internal#location") {
+        var rawLocation = value.debuggerModel().createRawLocationByScriptId(value.value.scriptId, value.value.lineNumber, value.value.columnNumber);
+        if (rawLocation && linkifier)
+            return linkifier.linkifyRawLocation(rawLocation, "");
+        else
+            valueElement.textContent = "<unknown>";
+    }
 
     function mouseMove()
     {
@@ -1225,7 +1102,7 @@ WebInspector.ObjectPropertiesSection.createValueElement = function(value, wasThr
  */
 WebInspector.ObjectPropertiesSection.formatObjectAsFunction = function(func, element, linkify, includePreview)
 {
-    func.functionDetails(didGetDetails);
+    func.debuggerModel().functionDetailsPromise(func).then(didGetDetails);
 
     /**
      * @param {?WebInspector.DebuggerModel.FunctionDetails} response

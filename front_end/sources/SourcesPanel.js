@@ -1038,7 +1038,7 @@ WebInspector.SourcesPanel.prototype = {
      */
     _showFunctionDefinition: function(remoteObject)
     {
-        remoteObject.debuggerModel().functionDetails(remoteObject, this._didGetFunctionDetails.bind(this));
+        remoteObject.debuggerModel().functionDetailsPromise(remoteObject).then(this._didGetFunctionDetails.bind(this));
     },
 
     /**

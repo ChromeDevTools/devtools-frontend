@@ -137,7 +137,7 @@ WebInspector.EventListener.frameworkEventListeners = function(object)
             function storeFunctionWithDetails(functionObject)
             {
                 handler = functionObject;
-                return /** @type {!Promise<undefined>} */(functionObject.functionDetailsPromise().then(storeFunctionDetails));
+                return /** @type {!Promise<undefined>} */(functionObject.debuggerModel().functionDetailsPromise(functionObject).then(storeFunctionDetails));
             }
 
             /**

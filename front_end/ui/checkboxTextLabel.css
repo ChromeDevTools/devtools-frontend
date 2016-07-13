@@ -18,6 +18,10 @@ input {
     flex-shrink: 0;
 }
 
+input.dt-checkbox-visualize-focus:focus {
+    outline: auto 5px -webkit-focus-ring-color;
+}
+
 input.dt-checkbox-themed {
     -webkit-appearance: none;
     margin: 0 5px auto 2px;

@@ -21,6 +21,11 @@
             "type": "@WebInspector.Revealer",
             "contextTypes": ["WebInspector.DOMNode", "WebInspector.DeferredDOMNode", "WebInspector.RemoteObject" ],
             "className": "WebInspector.ElementsPanel.DOMNodeRevealer"
+        },        
+        {
+            "type": "@WebInspector.Revealer",
+            "contextTypes": ["WebInspector.CSSProperty" ],
+            "className": "WebInspector.ElementsPanel.CSSPropertyRevealer"
         },
         {
             "type": "setting",
@@ -160,12 +165,12 @@
         "BezierUI.js",
         "StylesPopoverHelper.js",
         "BezierEditor.js",
+        "ComputedStyleModel.js",
         "ElementsBreadcrumbs.js",
         "ElementsSidebarPane.js",
         "ElementsSidebarView.js",
         "ElementsTreeElement.js",
         "ElementsTreeOutline.js",
-        "SharedSidebarModel.js",
         "EventListenersWidget.js",
         "MetricsSidebarPane.js",
         "PlatformFontsWidget.js",

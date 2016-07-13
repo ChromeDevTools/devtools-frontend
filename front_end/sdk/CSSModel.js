@@ -996,6 +996,26 @@ WebInspector.CSSModel.prototype = {
         this._agent.setEffectivePropertyValueForNode(nodeId, name, value);
     },
 
+    /**
+     * @param {!WebInspector.DOMNode} node
+     * @return {!Promise.<?WebInspector.CSSMatchedStyles>}
+     */
+    cachedMatchedCascadeForNode: function(node)
+    {
+        if (this._cachedMatchedCascadeNode !== node)
+            this.discardCachedMatchedCascade();
+        this._cachedMatchedCascadeNode = node;
+        if (!this._cachedMatchedCascadePromise)
+            this._cachedMatchedCascadePromise = this.matchedStylesPromise(node.id);
+        return this._cachedMatchedCascadePromise;
+    },
+
+    discardCachedMatchedCascade: function()
+    {
+        delete this._cachedMatchedCascadeNode;
+        delete this._cachedMatchedCascadePromise;
+    },
+
     __proto__: WebInspector.SDKModel.prototype
 }
 

@@ -31,7 +31,7 @@
 /**
  * @constructor
  * @extends {WebInspector.ThrottledWidget}
- * @param {!WebInspector.SharedSidebarModel} sharedModel
+ * @param {!WebInspector.ComputedStyleModel} sharedModel
  */
 WebInspector.PlatformFontsWidget = function(sharedModel)
 {
@@ -39,7 +39,7 @@ WebInspector.PlatformFontsWidget = function(sharedModel)
     this.registerRequiredCSS("elements/platformFontsWidget.css");
 
     this._sharedModel = sharedModel;
-    this._sharedModel.addEventListener(WebInspector.SharedSidebarModel.Events.ComputedStyleChanged, this.update, this);
+    this._sharedModel.addEventListener(WebInspector.ComputedStyleModel.Events.ComputedStyleChanged, this.update, this);
 
     this._sectionTitle = createElementWithClass("div", "title");
     this.contentElement.appendChild(this._sectionTitle);
@@ -48,7 +48,7 @@ WebInspector.PlatformFontsWidget = function(sharedModel)
 }
 
 /**
- * @param {!WebInspector.SharedSidebarModel} sharedModel
+ * @param {!WebInspector.ComputedStyleModel} sharedModel
  * @return {!WebInspector.ElementsSidebarViewWrapperPane}
  */
 WebInspector.PlatformFontsWidget.createSidebarWrapper = function(sharedModel)

@@ -6,18 +6,18 @@
  * @extends {WebInspector.Object}
  * @constructor
  */
-WebInspector.SharedSidebarModel = function()
+WebInspector.ComputedStyleModel = function()
 {
     WebInspector.Object.call(this);
     this._node = WebInspector.context.flavor(WebInspector.DOMNode);
     WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this._onNodeChanged, this);
 }
 
-WebInspector.SharedSidebarModel.Events = {
+WebInspector.ComputedStyleModel.Events = {
     ComputedStyleChanged: "ComputedStyleChanged"
 }
 
-WebInspector.SharedSidebarModel.prototype = {
+WebInspector.ComputedStyleModel.prototype = {
     /**
      * @return {?WebInspector.DOMNode}
      */
@@ -84,14 +84,14 @@ WebInspector.SharedSidebarModel.prototype = {
     },
 
     /**
-     * @return {!Promise.<?WebInspector.SharedSidebarModel.ComputedStyle>}
+     * @return {!Promise.<?WebInspector.ComputedStyleModel.ComputedStyle>}
      */
     fetchComputedStyle: function()
     {
         var elementNode = this._elementNode();
         var cssModel = this.cssModel();
         if (!elementNode || !cssModel)
-            return Promise.resolve(/** @type {?WebInspector.SharedSidebarModel.ComputedStyle} */(null));
+            return Promise.resolve(/** @type {?WebInspector.ComputedStyleModel.ComputedStyle} */(null));
 
         if (!this._computedStylePromise)
             this._computedStylePromise = cssModel.computedStylePromise(elementNode.id).then(verifyOutdated.bind(this, elementNode));
@@ -101,19 +101,19 @@ WebInspector.SharedSidebarModel.prototype = {
         /**
          * @param {!WebInspector.DOMNode} elementNode
          * @param {?Map.<string, string>} style
-         * @return {?WebInspector.SharedSidebarModel.ComputedStyle}
-         * @this {WebInspector.SharedSidebarModel}
+         * @return {?WebInspector.ComputedStyleModel.ComputedStyle}
+         * @this {WebInspector.ComputedStyleModel}
          */
         function verifyOutdated(elementNode, style)
         {
-            return elementNode === this._elementNode() && style ? new WebInspector.SharedSidebarModel.ComputedStyle(elementNode, style) : /** @type {?WebInspector.SharedSidebarModel.ComputedStyle} */(null);
+            return elementNode === this._elementNode() && style ? new WebInspector.ComputedStyleModel.ComputedStyle(elementNode, style) : /** @type {?WebInspector.ComputedStyleModel.ComputedStyle} */(null);
         }
     },
 
     _onComputedStyleChanged: function()
     {
         delete this._computedStylePromise;
-        this.dispatchEventToListeners(WebInspector.SharedSidebarModel.Events.ComputedStyleChanged);
+        this.dispatchEventToListeners(WebInspector.ComputedStyleModel.Events.ComputedStyleChanged);
     },
 
     __proto__: WebInspector.Object.prototype
@@ -124,7 +124,7 @@ WebInspector.SharedSidebarModel.prototype = {
  * @param {!WebInspector.DOMNode} node
  * @param {!Map.<string, string>} computedStyle
  */
-WebInspector.SharedSidebarModel.ComputedStyle = function(node, computedStyle)
+WebInspector.ComputedStyleModel.ComputedStyle = function(node, computedStyle)
 {
     this.node = node;
     this.computedStyle = computedStyle;

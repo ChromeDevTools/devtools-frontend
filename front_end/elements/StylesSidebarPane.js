@@ -242,26 +242,26 @@ WebInspector.StylesSidebarPane.prototype = {
     {
         this._discardElementUnderMouse();
 
-        return this.fetchMatchedCascade()
+        return this._fetchMatchedCascade()
             .then(this._innerRebuildUpdate.bind(this));
     },
 
     _resetCache: function()
     {
-        delete this._matchedCascadePromise;
+        if (this.cssModel())
+            this.cssModel().discardCachedMatchedCascade();
     },
 
     /**
      * @return {!Promise.<?WebInspector.CSSMatchedStyles>}
      */
-    fetchMatchedCascade: function()
+    _fetchMatchedCascade: function()
     {
         var node = this.node();
-        if (!node)
+        if (!node || !this.cssModel())
             return Promise.resolve(/** @type {?WebInspector.CSSMatchedStyles} */(null));
-        if (!this._matchedCascadePromise)
-            this._matchedCascadePromise = this._matchedStylesForNode(node).then(validateStyles.bind(this));
-        return this._matchedCascadePromise;
+
+        return this.cssModel().cachedMatchedCascadeForNode(node).then(validateStyles.bind(this));
 
         /**
          * @param {?WebInspector.CSSMatchedStyles} matchedStyles
@@ -272,18 +272,6 @@ WebInspector.StylesSidebarPane.prototype = {
         {
             return matchedStyles && matchedStyles.node() === this.node() ? matchedStyles : null;
         }
-    },
-
-    /**
-     * @param {!WebInspector.DOMNode} node
-     * @return {!Promise.<?WebInspector.CSSMatchedStyles>}
-     */
-    _matchedStylesForNode: function(node)
-    {
-        var cssModel = this.cssModel();
-        if (!cssModel)
-            return Promise.resolve(/** @type {?WebInspector.CSSMatchedStyles} */(null));
-        return cssModel.matchedStylesPromise(node.id)
     },
 
     /**

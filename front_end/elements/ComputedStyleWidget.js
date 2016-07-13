@@ -30,11 +30,8 @@
 /**
  * @constructor
  * @extends {WebInspector.ThrottledWidget}
- * @param {!WebInspector.StylesSidebarPane} stylesSidebarPane
- * @param {!WebInspector.SharedSidebarModel} sharedModel
- * @param {function(!WebInspector.CSSProperty)} revealCallback
  */
-WebInspector.ComputedStyleWidget = function(stylesSidebarPane, sharedModel, revealCallback)
+WebInspector.ComputedStyleWidget = function()
 {
     WebInspector.ThrottledWidget.call(this);
     this.element.classList.add("computed-style-sidebar-pane");
@@ -42,8 +39,8 @@ WebInspector.ComputedStyleWidget = function(stylesSidebarPane, sharedModel, reve
     this.registerRequiredCSS("elements/computedStyleSidebarPane.css");
     this._alwaysShowComputedProperties = { "display": true, "height": true, "width": true };
 
-    this._sharedModel = sharedModel;
-    this._sharedModel.addEventListener(WebInspector.SharedSidebarModel.Events.ComputedStyleChanged, this.update, this);
+    this._computedStyleModel = new WebInspector.ComputedStyleModel();
+    this._computedStyleModel.addEventListener(WebInspector.ComputedStyleModel.Events.ComputedStyleChanged, this.update, this);
 
     this._showInheritedComputedStylePropertiesSetting = WebInspector.settings.createSetting("showInheritedComputedStyleProperties", false);
     this._showInheritedComputedStylePropertiesSetting.addChangeListener(this._showInheritedComputedStyleChanged.bind(this));
@@ -62,9 +59,7 @@ WebInspector.ComputedStyleWidget = function(stylesSidebarPane, sharedModel, reve
     this._propertiesOutline.element.classList.add("monospace", "computed-properties");
     this.element.appendChild(this._propertiesOutline.element);
 
-    this._stylesSidebarPane = stylesSidebarPane;
     this._linkifier = new WebInspector.Linkifier(new WebInspector.Linkifier.DefaultCSSFormatter());
-    this._revealCallback = revealCallback;
 
     /**
      * @param {?RegExp} regex
@@ -75,17 +70,17 @@ WebInspector.ComputedStyleWidget = function(stylesSidebarPane, sharedModel, reve
         this._filterRegex = regex;
         this._updateFilter(regex);
     }
+
+    var fontsWidget = new WebInspector.PlatformFontsWidget(this._computedStyleModel);
+    fontsWidget.show(this.element);
 }
 
 /**
- * @param {!WebInspector.StylesSidebarPane} stylesSidebarPane
- * @param {!WebInspector.SharedSidebarModel} sharedModel
- * @param {function(!WebInspector.CSSProperty)} revealCallback
  * @return {!WebInspector.ElementsSidebarViewWrapperPane}
  */
-WebInspector.ComputedStyleWidget.createSidebarWrapper = function(stylesSidebarPane, sharedModel, revealCallback)
+WebInspector.ComputedStyleWidget.createSidebarWrapper = function()
 {
-    var widget = new WebInspector.ComputedStyleWidget(stylesSidebarPane, sharedModel, revealCallback);
+    var widget = new WebInspector.ComputedStyleWidget();
     return new WebInspector.ElementsSidebarViewWrapperPane(WebInspector.UIString("Computed Style"), widget)
 }
 
@@ -104,11 +99,33 @@ WebInspector.ComputedStyleWidget.prototype = {
     doUpdate: function()
     {
         var promises = [
-            this._sharedModel.fetchComputedStyle(),
-            this._stylesSidebarPane.fetchMatchedCascade()
+            this._computedStyleModel.fetchComputedStyle(),
+            this._fetchMatchedCascade()
         ];
         return Promise.all(promises)
             .spread(this._innerRebuildUpdate.bind(this));
+    },
+
+    /**
+     * @return {!Promise.<?WebInspector.CSSMatchedStyles>}
+     */
+    _fetchMatchedCascade: function()
+    {
+        var node = this._computedStyleModel.node();
+        if (!node || !this._computedStyleModel.cssModel())
+            return Promise.resolve(/** @type {?WebInspector.CSSMatchedStyles} */(null));
+
+        return this._computedStyleModel.cssModel().cachedMatchedCascadeForNode(node).then(validateStyles.bind(this));
+
+        /**
+         * @param {?WebInspector.CSSMatchedStyles} matchedStyles
+         * @return {?WebInspector.CSSMatchedStyles}
+         * @this {WebInspector.ComputedStyleWidget}
+         */
+        function validateStyles(matchedStyles)
+        {
+            return matchedStyles && matchedStyles.node() === this._computedStyleModel.node() ? matchedStyles : null;
+        }
     },
 
     /**
@@ -127,14 +144,14 @@ WebInspector.ComputedStyleWidget.prototype = {
     },
 
     /**
-     * @param {?WebInspector.SharedSidebarModel.ComputedStyle} nodeStyle
+     * @param {?WebInspector.ComputedStyleModel.ComputedStyle} nodeStyle
      * @param {?WebInspector.CSSMatchedStyles} matchedStyles
      */
     _innerRebuildUpdate: function(nodeStyle, matchedStyles)
     {
         this._propertiesOutline.removeChildren();
         this._linkifier.reset();
-        var cssModel = this._sharedModel.cssModel();
+        var cssModel = this._computedStyleModel.cssModel();
         if (!nodeStyle || !matchedStyles || !cssModel)
             return;
 
@@ -234,8 +251,7 @@ WebInspector.ComputedStyleWidget.prototype = {
      */
     _navigateToSource: function(cssProperty, event)
     {
-        if (this._revealCallback)
-            this._revealCallback.call(null, cssProperty);
+        WebInspector.Revealer.reveal(cssProperty);
         event.consume(true);
     },
 

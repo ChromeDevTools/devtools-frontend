@@ -71,11 +71,8 @@ WebInspector.ElementsPanel = function()
     this._elementsSidebarViewWrappers = [];
     this._currentToolbarPane = null;
 
-    var sharedSidebarModel = new WebInspector.SharedSidebarModel();
-    this.sidebarPanes.platformFonts = WebInspector.PlatformFontsWidget.createSidebarWrapper(sharedSidebarModel);
     this.sidebarPanes.styles = new WebInspector.StylesSidebarPane();
-    this.sidebarPanes.computedStyle = WebInspector.ComputedStyleWidget.createSidebarWrapper(this.sidebarPanes.styles, sharedSidebarModel, this._revealProperty.bind(this));
-
+    this.sidebarPanes.computedStyle = WebInspector.ComputedStyleWidget.createSidebarWrapper();
     this.sidebarPanes.metrics = new WebInspector.MetricsSidebarPane();
     this.sidebarPanes.properties = WebInspector.PropertiesWidget.createSidebarWrapper();
     this.sidebarPanes.domBreakpoints = WebInspector.domBreakpointsSidebarPane.createProxy(this);
@@ -948,7 +945,6 @@ WebInspector.ElementsPanel.prototype = {
         this.sidebarPanes.styles.show(matchedStylePanesWrapper.element);
         this.sidebarPanes.computedStyle.show(computedStylePanesWrapper.element);
         showMetrics.call(this, horizontally);
-        this.sidebarPanes.platformFonts.show(computedStylePanesWrapper.element);
 
         this.sidebarPaneView.addPane(this.sidebarPanes.eventListeners);
         this.sidebarPaneView.addPane(this.sidebarPanes.domBreakpoints);
@@ -1031,9 +1027,7 @@ WebInspector.ElementsPanel.ContextMenuProvider.prototype = {
  * @constructor
  * @implements {WebInspector.Revealer}
  */
-WebInspector.ElementsPanel.DOMNodeRevealer = function()
-{
-}
+WebInspector.ElementsPanel.DOMNodeRevealer = function() { }
 
 WebInspector.ElementsPanel.DOMNodeRevealer.prototype = {
     /**
@@ -1084,6 +1078,25 @@ WebInspector.ElementsPanel.DOMNodeRevealer.prototype = {
                 reject(new Error("Could not resolve node to reveal."));
             }
         }
+    }
+}
+
+/**
+ * @constructor
+ * @implements {WebInspector.Revealer}
+ */
+WebInspector.ElementsPanel.CSSPropertyRevealer = function() { }
+
+WebInspector.ElementsPanel.CSSPropertyRevealer.prototype = {
+    /**
+     * @override
+     * @param {!Object} property
+     * @return {!Promise}
+     */
+    reveal: function(property)
+    {
+        var panel = WebInspector.ElementsPanel.instance();
+        return panel._revealProperty(/** @type {!WebInspector.CSSProperty} */ (property));
     }
 }
 

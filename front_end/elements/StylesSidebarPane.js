@@ -50,6 +50,7 @@ WebInspector.StylesSidebarPane = function()
 
      /** @type {!Array<!WebInspector.SectionBlock>} */
     this._sectionBlocks = [];
+    WebInspector.StylesSidebarPane._instance = this;
 
     WebInspector.targetManager.addModelListener(WebInspector.CSSModel, WebInspector.CSSModel.Events.LayoutEditorChange, this._onLayoutEditorChange, this);
 }
@@ -3124,23 +3125,50 @@ WebInspector.StylesSidebarPropertyRenderer.prototype = {
     }
 }
 
-
 /**
- * @return {!WebInspector.ToolbarItem}
+ * @constructor
+ * @implements {WebInspector.ToolbarItem.Provider}
  */
-WebInspector.StylesSidebarPane.createAddNewRuleButton = function(stylesSidebarPane)
+WebInspector.StylesSidebarPane.ButtonProvider = function()
 {
-    var button = new WebInspector.ToolbarButton(WebInspector.UIString("New Style Rule"), "add-toolbar-item");
-    button.addEventListener("click", stylesSidebarPane._createNewRuleInViaInspectorStyleSheet, stylesSidebarPane);
-    button.element.createChild("div", "long-click-glyph toolbar-button-theme");
-    new WebInspector.LongClickController(button.element, stylesSidebarPane._onAddButtonLongClick.bind(stylesSidebarPane));
-    WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, onNodeChanged);
-    onNodeChanged();
-    return button;
+    this._button = new WebInspector.ToolbarButton(WebInspector.UIString("New Style Rule"), "add-toolbar-item");
+    this._button.addEventListener("click", this._clicked, this);
+    this._button.element.createChild("div", "long-click-glyph toolbar-button-theme");
+    new WebInspector.LongClickController(this._button.element, this._longClicked.bind(this));
+    WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, onNodeChanged.bind(this));
+    onNodeChanged.call(this);
 
+    /**
+     * @this {WebInspector.StylesSidebarPane.ButtonProvider}
+     */
     function onNodeChanged()
     {
         var node = WebInspector.context.flavor(WebInspector.DOMNode);
-        button.setEnabled(!!node);
+        node = node ? node.enclosingElementOrSelf() : null;
+        this._button.setEnabled(!!node);
+    }
+}
+
+WebInspector.StylesSidebarPane.ButtonProvider.prototype = {
+    _clicked: function()
+    {
+        WebInspector.StylesSidebarPane._instance._createNewRuleInViaInspectorStyleSheet();
+    },
+
+    /**
+     * @param {!Event} e
+     */
+    _longClicked: function(e)
+    {
+        WebInspector.StylesSidebarPane._instance._onAddButtonLongClick(e);
+    },
+
+    /**
+     * @override
+     * @return {!WebInspector.ToolbarItem}
+     */
+    item: function()
+    {
+        return this._button;
     }
 }

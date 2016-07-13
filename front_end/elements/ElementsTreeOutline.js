@@ -81,6 +81,17 @@ WebInspector.ElementsTreeOutline = function(domModel, omitRootDOMNode, selectEna
     this._domModel.addEventListener(WebInspector.DOMModel.Events.MarkersChanged, this._markersChanged, this);
 }
 
+WebInspector.ElementsTreeOutline._treeOutlineSymbol = Symbol("treeOutline");
+
+/**
+ * @param {!WebInspector.DOMModel} domModel
+ * @return {?WebInspector.ElementsTreeOutline}
+ */
+WebInspector.ElementsTreeOutline.forDOMModel = function(domModel)
+{
+    return domModel[WebInspector.ElementsTreeOutline._treeOutlineSymbol] || null;
+}
+
 /** @typedef {{node: !WebInspector.DOMNode, isCut: boolean}} */
 WebInspector.ElementsTreeOutline.ClipboardData;
 
@@ -1056,6 +1067,7 @@ WebInspector.ElementsTreeOutline.prototype = {
 
     wireToDOMModel: function()
     {
+        this._domModel[WebInspector.ElementsTreeOutline._treeOutlineSymbol] = this;
         this._domModel.addEventListener(WebInspector.DOMModel.Events.NodeInserted, this._nodeInserted, this);
         this._domModel.addEventListener(WebInspector.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
         this._domModel.addEventListener(WebInspector.DOMModel.Events.AttrModified, this._attributeModified, this);
@@ -1076,6 +1088,7 @@ WebInspector.ElementsTreeOutline.prototype = {
         this._domModel.removeEventListener(WebInspector.DOMModel.Events.DocumentUpdated, this._documentUpdated, this);
         this._domModel.removeEventListener(WebInspector.DOMModel.Events.ChildNodeCountUpdated, this._childNodeCountUpdated, this);
         this._domModel.removeEventListener(WebInspector.DOMModel.Events.DistributedNodesChanged, this._distributedNodesChanged, this);
+        delete this._domModel[WebInspector.ElementsTreeOutline._treeOutlineSymbol];
     },
 
     /**

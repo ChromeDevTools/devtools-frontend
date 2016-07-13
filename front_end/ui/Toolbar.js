@@ -945,7 +945,7 @@ WebInspector.ExtensibleToolbar.prototype = {
             if (extensions[i].descriptor()["location"] === location)
                 promises.push(resolveItem(extensions[i]));
         }
-        this._promise = Promise.all(promises).then(appendItemsInOrder.bind(this));
+        Promise.all(promises).then(appendItemsInOrder.bind(this));
 
         /**
          * @param {!Runtime.Extension} extension
@@ -983,14 +983,6 @@ WebInspector.ExtensibleToolbar.prototype = {
                     this.appendToolbarItem(item);
             }
         }
-    },
-
-    /**
-     * @return {!Promise}
-     */
-    onLoad: function()
-    {
-        return this._promise;
     },
 
     __proto__: WebInspector.Toolbar.prototype

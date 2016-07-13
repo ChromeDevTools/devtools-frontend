@@ -81,6 +81,12 @@
             "location": "styles-sidebarpane-toolbar"
         },
         {
+            "type": "@WebInspector.ToolbarItem.Provider",
+            "className": "WebInspector.StylesSidebarPane.ButtonProvider",
+            "order": 100,
+            "location": "styles-sidebarpane-toolbar"
+        },
+        {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "elements.hide-element",
             "contextTypes": ["WebInspector.ElementsPanel"],

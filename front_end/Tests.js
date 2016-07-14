@@ -913,6 +913,15 @@ TestSuite.prototype.testSettings = function()
     }
 }
 
+TestSuite.prototype.testWindowInitializedOnNavigateBack = function()
+{
+    var messages = WebInspector.multitargetConsoleModel.messages();
+    this.assertEquals(1, messages.length);
+    var text = messages[0].messageText;
+    if (text.indexOf("Uncaught") !== -1)
+        this.fail(text);
+};
+
 TestSuite.prototype.waitForTestResultsInConsole = function()
 {
     var messages = WebInspector.multitargetConsoleModel.messages();

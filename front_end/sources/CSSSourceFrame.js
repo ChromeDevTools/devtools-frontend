@@ -38,7 +38,11 @@ WebInspector.CSSSourceFrame = function(uiSourceCode)
     WebInspector.UISourceCodeFrame.call(this, uiSourceCode);
     this.textEditor.setAutocompleteDelegate(new WebInspector.CSSSourceFrame.AutocompleteDelegate());
     this._registerShortcuts();
+    this._colorBookmarks = [];
 }
+
+/** @type {number} */
+WebInspector.CSSSourceFrame.UpdateTimeout = 200;
 
 WebInspector.CSSSourceFrame.prototype = {
     _registerShortcuts: function()
@@ -97,7 +101,113 @@ WebInspector.CSSSourceFrame.prototype = {
         return true;
     },
 
+    _updateColorSwatches: function()
+    {
+        if (this._updateTimeout)
+            clearTimeout(this._updateTimeout);
+        this._updateTimeout = null;
+
+        var colorPositions = this._extractColorPositions(this.textEditor.text());
+        this.textEditor.operation(this._putColorSwatchesInline.bind(this, colorPositions));
+    },
+
+    /**
+     * @param {string} content
+     * @return {?Array<!WebInspector.CSSSourceFrame.ColorPosition>}
+     */
+    _extractColorPositions: function(content)
+    {
+        if (!content)
+            return null;
+
+        var colorPositions = [];
+        var text = new WebInspector.Text(content);
+        var numberOfLines = text.lineCount();
+        var colorRegex = /[\s:;,(){}]((?:rgb|hsl)a?\([^)]+\)|#[0-9a-f]{8}|#[0-9a-f]{6}|#[0-9a-f]{3,4}|[a-z]+)(?=[\s;,(){}])/gi;
+        for (var lineNumber = 0; lineNumber < numberOfLines; lineNumber++) {
+            var line = text.lineAt(lineNumber) + "\n";
+            var match;
+            while ((match = colorRegex.exec(line)) !== null) {
+                if (match.length < 2)
+                    continue;
+
+                var colorText = match[1];
+                var color = WebInspector.Color.parse(colorText);
+                if (color)
+                    colorPositions.push(new WebInspector.CSSSourceFrame.ColorPosition(color, lineNumber, match.index + 1, colorText.length));
+            }
+        }
+
+        return colorPositions;
+    },
+
+    /**
+     * @param {?Array<!WebInspector.CSSSourceFrame.ColorPosition>} colorPositions
+     */
+    _putColorSwatchesInline: function(colorPositions)
+    {
+        this._clearColorBookmarks();
+        if (!colorPositions)
+            return;
+
+        for (var i = 0; i < colorPositions.length; i++) {
+            var colorPosition = colorPositions[i];
+
+            var swatch = WebInspector.ColorSwatch.create();
+            swatch.setColorText(colorPosition.color.asString(WebInspector.Color.Format.Original));
+            swatch.hideText(true);
+
+            var bookmark = this.textEditor.addBookmark(colorPosition.textRange.startLine, colorPosition.textRange.startColumn, swatch);
+            this._colorBookmarks.push(bookmark);
+        }
+    },
+
+    _clearColorBookmarks: function()
+    {
+        for (var i = 0; i < this._colorBookmarks.length; i++)
+            this._colorBookmarks[i].clear();
+        this._colorBookmarks = [];
+    },
+
+    /**
+     * @override
+     */
+    onTextEditorContentLoaded: function()
+    {
+        WebInspector.UISourceCodeFrame.prototype.onTextEditorContentLoaded.call(this);
+        if (Runtime.experiments.isEnabled("sourceColorPicker"))
+            this._updateColorSwatches();
+    },
+
+    /**
+     * @override
+     * @param {!WebInspector.TextRange} oldRange
+     * @param {!WebInspector.TextRange} newRange
+     */
+    onTextChanged: function(oldRange, newRange)
+    {
+        WebInspector.UISourceCodeFrame.prototype.onTextChanged.call(this, oldRange, newRange);
+        if (Runtime.experiments.isEnabled("sourceColorPicker")) {
+            if (this._updateTimeout)
+                clearTimeout(this._updateTimeout);
+            this._updateTimeout = setTimeout(this._updateColorSwatches.bind(this), WebInspector.CSSSourceFrame.UpdateTimeout);
+        }
+    },
+
     __proto__: WebInspector.UISourceCodeFrame.prototype
+}
+
+/**
+ * @constructor
+ * @param {!WebInspector.Color} color
+ * @param {number} lineNumber
+ * @param {number} startColumn
+ * @param {number} textLength
+ */
+WebInspector.CSSSourceFrame.ColorPosition = function(color, lineNumber, startColumn, textLength)
+{
+    this.color = color;
+    this.textRange = new WebInspector.TextRange(lineNumber, startColumn, lineNumber, startColumn + textLength);
 }
 
 /**

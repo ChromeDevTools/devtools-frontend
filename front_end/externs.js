@@ -585,6 +585,12 @@ CodeMirror.StringStream.prototype = {
     sol: function() { }
 }
 
+/** @constructor */
+CodeMirror.TextMarker = function(doc, type) { }
+CodeMirror.TextMarker.prototype = {
+    clear: function() { }
+}
+
 /** @type {Object.<string, !Object.<string, string>>} */
 CodeMirror.keyMap;
 

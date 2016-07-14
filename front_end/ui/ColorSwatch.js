@@ -43,6 +43,14 @@ WebInspector.ColorSwatch.prototype = {
     },
 
     /**
+     * @param {boolean} hide
+     */
+    hideText: function(hide)
+    {
+        this._colorValueElement.hidden = hide;
+    },
+
+    /**
      * @return {!WebInspector.Color.Format}
      */
     format: function()

@@ -82,6 +82,9 @@ WebInspector.ConsoleModel.prototype = {
         if (msg.source === WebInspector.ConsoleMessage.MessageSource.Worker && msg.target().workerManager && msg.target().workerManager.targetByWorkerId(msg.workerId))
             return;
 
+        if (msg.source === WebInspector.ConsoleMessage.MessageSource.ConsoleAPI && msg.type === WebInspector.ConsoleMessage.MessageType.Clear)
+            this.clear();
+
         if (msg.level === WebInspector.ConsoleMessage.MessageLevel.RevokedError && msg._revokedExceptionId) {
             var exceptionMessage = this._messageByExceptionId.get(msg._revokedExceptionId);
             if (!exceptionMessage)
@@ -145,10 +148,10 @@ WebInspector.ConsoleModel.prototype = {
     requestClearMessages: function()
     {
         this._consoleAgent.clearMessages();
-        this._messagesCleared();
+        this.clear();
     },
 
-    _messagesCleared: function()
+    clear: function()
     {
         this._messages = [];
         this._messageByExceptionId.clear();
@@ -563,8 +566,6 @@ WebInspector.ConsoleDispatcher.prototype = {
      */
     messagesCleared: function()
     {
-        if (!WebInspector.moduleSetting("preserveConsoleLog").get())
-            this._console._messagesCleared();
     }
 }
 

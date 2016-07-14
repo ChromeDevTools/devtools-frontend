@@ -78,18 +78,6 @@
         {
             "type": "setting",
             "category": "Console",
-            "title": "Preserve log upon navigation",
-            "settingName": "preserveConsoleLog",
-            "settingType": "boolean",
-            "defaultValue": false,
-            "options": [
-                { "value": true, "title": "Preserve log upon navigation" },
-                { "value": false, "title": "Do not preserve log upon navigation" }
-            ]
-        },
-        {
-            "type": "setting",
-            "category": "Console",
             "title": "Show timestamps",
             "settingName": "consoleTimestampsEnabled",
             "settingType": "boolean",

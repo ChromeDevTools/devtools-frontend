@@ -150,7 +150,6 @@ WebInspector.ConsoleView = function()
 
     this._registerWithMessageSink();
     WebInspector.targetManager.observeTargets(this);
-    WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.MainFrameNavigated, this._onMainFrameNavigated, this);
 
     this._initConsoleMessages();
 
@@ -177,17 +176,6 @@ WebInspector.ConsoleView.prototype = {
     _consoleHistoryAutocompleteChanged: function()
     {
         this._prompt.setAddCompletionsFromHistory(this._consoleHistoryAutocompleteSetting.get());
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _onMainFrameNavigated: function(event)
-    {
-        if (!WebInspector.moduleSetting("preserveConsoleLog").get())
-            return;
-        var frame = /** @type {!WebInspector.ResourceTreeFrame} */(event.data);
-        WebInspector.console.log(WebInspector.UIString("Navigated to %s", frame.url));
     },
 
     _initConsoleMessages: function()

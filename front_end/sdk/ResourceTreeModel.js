@@ -289,8 +289,13 @@ WebInspector.ResourceTreeModel.prototype = {
             this._inspectedPageURL = frame.url;
 
         this.dispatchEventToListeners(WebInspector.ResourceTreeModel.EventTypes.FrameNavigated, frame);
-        if (frame.isMainFrame())
+        if (frame.isMainFrame()) {
             this.dispatchEventToListeners(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, frame);
+            if (WebInspector.moduleSetting("preserveConsoleLog").get())
+                WebInspector.console.log(WebInspector.UIString("Navigated to %s", frame.url));
+            else
+                this.target().consoleModel.clear();
+        }
         if (addedOrigin)
             this._addSecurityOrigin(addedOrigin);
 

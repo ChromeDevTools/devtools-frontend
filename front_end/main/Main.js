@@ -950,6 +950,23 @@ WebInspector.Main.InspectedNodeRevealer.prototype = {
 }
 
 /**
+ * @param {string} method
+ * @param {?Object} params
+ * @return {!Promise}
+ */
+WebInspector.sendOverProtocol = function(method, params)
+{
+    var connection = WebInspector.targetManager.mainTarget().connection();
+    return new Promise((resolve, reject) => {
+        connection.sendRawMessageForTesting(method, params, (err, result) => {
+            if (err)
+                return reject(err);
+            return resolve(result);
+        });
+    });
+}
+
+/**
  * @constructor
  * @extends {WebInspector.VBox}
  * @param {string} reason

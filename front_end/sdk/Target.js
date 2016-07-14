@@ -75,6 +75,15 @@ WebInspector.Target.prototype = {
     },
 
     /**
+     *
+     * @return {!InspectorBackendClass.Connection}
+     */
+    connection: function()
+    {
+        return this._connection;
+    },
+
+    /**
      * @param {string} label
      * @return {string}
      */

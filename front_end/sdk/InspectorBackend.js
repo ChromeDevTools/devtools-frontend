@@ -318,6 +318,17 @@ InspectorBackendClass.Connection.prototype = {
     },
 
     /**
+     * @param {string} method
+     * @param {?Object} params
+     * @param {?function(*)} callback
+     */
+    sendRawMessageForTesting: function(method, params, callback)
+    {
+        var domain = method.split(".")[0];
+        this._wrapCallbackAndSendMessageObject(domain, method, params, callback);
+    },
+
+    /**
      * @param {!Object|string} message
      */
     dispatch: function(message)

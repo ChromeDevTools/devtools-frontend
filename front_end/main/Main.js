@@ -326,7 +326,8 @@ WebInspector.Main.prototype = {
 
         this._mainTarget.runtimeAgent().run();
 
-        this._mainTarget.inspectorAgent().enable();
+        if (this._mainTarget.hasBrowserCapability())
+            this._mainTarget.inspectorAgent().enable();
         InspectorFrontendHost.readyForTest();
 
         // Asynchronously run the extensions.

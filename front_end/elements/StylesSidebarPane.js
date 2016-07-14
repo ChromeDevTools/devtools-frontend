@@ -53,6 +53,7 @@ WebInspector.StylesSidebarPane = function()
     WebInspector.StylesSidebarPane._instance = this;
 
     WebInspector.targetManager.addModelListener(WebInspector.CSSModel, WebInspector.CSSModel.Events.LayoutEditorChange, this._onLayoutEditorChange, this);
+    WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this.forceUpdate, this);
 }
 
 /**
@@ -133,9 +134,11 @@ WebInspector.StylesSidebarPane.prototype = {
         this.update();
     },
 
-    onUndoOrRedoHappened: function()
+    forceUpdate: function()
     {
-        this.setNode(this.node());
+        this._stylesPopoverHelper.hide();
+        this._resetCache();
+        this.update();
     },
 
     /**
@@ -198,19 +201,6 @@ WebInspector.StylesSidebarPane.prototype = {
     {
         this._filterRegex = regex;
         this._updateFilter();
-    },
-
-    /**
-     * @override
-     * @param {?WebInspector.DOMNode} node
-     */
-    setNode: function(node)
-    {
-        this._stylesPopoverHelper.hide();
-        node = node ? node.enclosingElementOrSelf() : null;
-
-        this._resetCache();
-        WebInspector.ElementsSidebarPane.prototype.setNode.call(this, node);
     },
 
     /**
@@ -303,41 +293,6 @@ WebInspector.StylesSidebarPane.prototype = {
 
         this._resetCache();
         this.update();
-    },
-
-    /**
-     * @override
-     */
-    onFrameResizedThrottled: function()
-    {
-        this.onCSSModelChanged();
-    },
-
-    /**
-     * @override
-     * @param {!WebInspector.DOMNode} node
-     */
-    onDOMModelChanged: function(node)
-    {
-        // Any attribute removal or modification can affect the styles of "related" nodes.
-        // Do not touch the styles if they are being edited.
-        if (this._isEditingStyle || this._userOperation)
-            return;
-
-        if (!this._canAffectCurrentStyles(node))
-            return;
-
-        this._resetCache();
-        this.update();
-    },
-
-    /**
-     * @param {?WebInspector.DOMNode} node
-     */
-    _canAffectCurrentStyles: function(node)
-    {
-        var currentNode = this.node();
-        return currentNode && (currentNode === node || node.parentNode === currentNode.parentNode || node.isAncestor(currentNode));
     },
 
     /**
@@ -1390,7 +1345,7 @@ WebInspector.StylePropertiesSection.prototype = {
 
         // This gets deleted in finishOperation(), which is called both on success and failure.
         this._parentPane._userOperation = true;
-        this._parentPane._cssModel.setMediaText(media.styleSheetId, media.range, newContent)
+        this._parentPane.cssModel().setMediaText(media.styleSheetId, media.range, newContent)
             .then(userCallback.bind(this));
     },
 
@@ -1416,7 +1371,7 @@ WebInspector.StylePropertiesSection.prototype = {
      */
     _navigateToSelectorSource: function(index, focus)
     {
-        var cssModel = this._parentPane._cssModel;
+        var cssModel = this._parentPane.cssModel();
         var rule = this._style.parentRule;
         var header = cssModel.styleSheetHeaderForId(/** @type {string} */(rule.styleSheetId));
         if (!header)
@@ -1659,12 +1614,13 @@ WebInspector.StylePropertiesSection._linkifyRuleLocation = function(cssModel, li
  */
 WebInspector.BlankStylePropertiesSection = function(stylesPane, matchedStyles, defaultSelectorText, styleSheetId, ruleLocation, insertAfterStyle)
 {
-    var rule = WebInspector.CSSStyleRule.createDummyRule(stylesPane._cssModel, defaultSelectorText);
+    var cssModel = /** @type {!WebInspector.CSSModel} */(stylesPane.cssModel());
+    var rule = WebInspector.CSSStyleRule.createDummyRule(cssModel, defaultSelectorText);
     WebInspector.StylePropertiesSection.call(this, stylesPane, matchedStyles, rule.style);
     this._ruleLocation = ruleLocation;
     this._styleSheetId = styleSheetId;
     this._selectorRefElement.removeChildren();
-    this._selectorRefElement.appendChild(WebInspector.StylePropertiesSection._linkifyRuleLocation(this._parentPane._cssModel, this._parentPane._linkifier, styleSheetId, this._actualRuleLocation()));
+    this._selectorRefElement.appendChild(WebInspector.StylePropertiesSection._linkifyRuleLocation(cssModel, this._parentPane._linkifier, styleSheetId, this._actualRuleLocation()));
     if (insertAfterStyle && insertAfterStyle.parentRule)
         this._createMediaList(insertAfterStyle.parentRule.media);
     this.element.classList.add("blank-section");
@@ -1756,7 +1712,7 @@ WebInspector.BlankStylePropertiesSection.prototype = {
             newContent = newContent.trim();
         this._parentPane._userOperation = true;
 
-        var cssModel = this._parentPane._cssModel;
+        var cssModel = this._parentPane.cssModel();
         var ruleText = this._rulePrefix() + newContent + " {}";
         cssModel.addRule(this._styleSheetId, ruleText, this._ruleLocation)
             .then(onRuleAdded.bind(this));

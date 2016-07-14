@@ -760,7 +760,7 @@ WebInspector.ElementsPanel.prototype = {
         if (!treeOutline.editing()) {
             handleUndoRedo.call(null, treeOutline);
             if (event.handled) {
-                this.sidebarPanes.styles.onUndoOrRedoHappened();
+                this.sidebarPanes.styles.forceUpdate();
                 return;
             }
         }

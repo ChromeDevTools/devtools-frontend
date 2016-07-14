@@ -86,23 +86,7 @@ WebInspector.MetricsSidebarPane.prototype = {
     /**
      * @override
      */
-    onDOMModelChanged: function()
-    {
-        this.update();
-    },
-
-    /**
-     * @override
-     */
     onCSSModelChanged: function()
-    {
-        this.update();
-    },
-
-    /**
-     * @override
-     */
-    onFrameResizedThrottled: function()
     {
         this.update();
     },
@@ -469,7 +453,7 @@ WebInspector.MetricsSidebarPane.prototype = {
                 this.originalPropertyData = this.previousPropertyDataCandidate;
 
             if (typeof this._highlightMode !== "undefined")
-                this._node.highlight(this._highlightMode);
+                this.node().highlight(this._highlightMode);
 
             if (commitEditor)
                 this.update();

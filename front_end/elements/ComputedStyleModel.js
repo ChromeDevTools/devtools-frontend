@@ -31,7 +31,7 @@ WebInspector.ComputedStyleModel.prototype = {
      */
     cssModel: function()
     {
-        return this._cssModel;
+        return this._cssModel && this._cssModel.isEnabled() ? this._cssModel : null;
     },
 
     /**
@@ -41,7 +41,7 @@ WebInspector.ComputedStyleModel.prototype = {
     {
         this._node = /** @type {?WebInspector.DOMNode} */(event.data);
         this._updateTarget(this._node ? this._node.target() : null);
-        this._onComputedStyleChanged();
+        this._onComputedStyleChanged(null);
     },
 
     /**
@@ -56,23 +56,68 @@ WebInspector.ComputedStyleModel.prototype = {
             this._targetEvents = null;
         }
         this._target = target;
+
         var domModel = null;
+        var resourceTreeModel = null;
         if (target) {
             this._cssModel = WebInspector.CSSModel.fromTarget(target);
             domModel = WebInspector.DOMModel.fromTarget(target);
+            resourceTreeModel = target.resourceTreeModel;
         }
 
-        if (domModel && this._cssModel) {
+        if (this._cssModel && domModel && resourceTreeModel) {
             this._targetEvents = [
-                this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetAdded,  this._onComputedStyleChanged, this),
-                this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetRemoved,  this._onComputedStyleChanged, this),
-                this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetChanged,  this._onComputedStyleChanged, this),
-                this._cssModel.addEventListener(WebInspector.CSSModel.Events.MediaQueryResultChanged,  this._onComputedStyleChanged, this),
-                this._cssModel.addEventListener(WebInspector.CSSModel.Events.PseudoStateForced,  this._onComputedStyleChanged, this),
-                this._cssModel.addEventListener(WebInspector.CSSModel.Events.ModelWasEnabled,  this._onComputedStyleChanged, this),
-                domModel.addEventListener(WebInspector.DOMModel.Events.DOMMutated, this._onComputedStyleChanged, this)
+                this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetAdded, this._onComputedStyleChanged, this),
+                this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetRemoved, this._onComputedStyleChanged, this),
+                this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetChanged, this._onComputedStyleChanged, this),
+                this._cssModel.addEventListener(WebInspector.CSSModel.Events.MediaQueryResultChanged, this._onComputedStyleChanged, this),
+                this._cssModel.addEventListener(WebInspector.CSSModel.Events.PseudoStateForced, this._onComputedStyleChanged, this),
+                this._cssModel.addEventListener(WebInspector.CSSModel.Events.ModelWasEnabled, this._onComputedStyleChanged, this),
+                domModel.addEventListener(WebInspector.DOMModel.Events.DOMMutated, this._onDOMModelChanged, this),
+                resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.FrameResized, this._onFrameResized, this),
             ];
         }
+    },
+
+     /**
+     * @param {?WebInspector.Event} event
+     */
+    _onComputedStyleChanged: function(event)
+    {
+        delete this._computedStylePromise;
+        this.dispatchEventToListeners(WebInspector.ComputedStyleModel.Events.ComputedStyleChanged, event ? event.data : null);
+    },
+
+     /**
+     * @param {!WebInspector.Event} event
+     */
+    _onDOMModelChanged: function(event)
+    {
+        // Any attribute removal or modification can affect the styles of "related" nodes.
+        var node = /** @type {!WebInspector.DOMNode} */ (event.data);
+        if (!this._node || this._node !== node && node.parentNode !== this._node.parentNode && !node.isAncestor(this._node))
+            return;
+        this._onComputedStyleChanged(null);
+    },
+
+   /**
+     * @param {!WebInspector.Event} event
+     */
+    _onFrameResized: function(event)
+    {
+        /**
+         * @this {WebInspector.ComputedStyleModel}
+         */
+        function refreshContents()
+        {
+            this._onComputedStyleChanged(null);
+            delete this._frameResizedTimer;
+        }
+
+        if (this._frameResizedTimer)
+            clearTimeout(this._frameResizedTimer);
+
+        this._frameResizedTimer = setTimeout(refreshContents.bind(this), 100);
     },
 
     /**
@@ -108,12 +153,6 @@ WebInspector.ComputedStyleModel.prototype = {
         {
             return elementNode === this._elementNode() && style ? new WebInspector.ComputedStyleModel.ComputedStyle(elementNode, style) : /** @type {?WebInspector.ComputedStyleModel.ComputedStyle} */(null);
         }
-    },
-
-    _onComputedStyleChanged: function()
-    {
-        delete this._computedStylePromise;
-        this.dispatchEventToListeners(WebInspector.ComputedStyleModel.Events.ComputedStyleChanged);
     },
 
     __proto__: WebInspector.Object.prototype

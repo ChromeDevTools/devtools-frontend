@@ -10,9 +10,11 @@
 WebInspector.ElementsSidebarPane = function(title)
 {
     WebInspector.SidebarPane.call(this, title);
-    this._node = null;
-    this._updateController = new WebInspector.ElementsSidebarPane._UpdateController(this, this.doUpdate.bind(this));
-    WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this._nodeChanged, this);
+    this._computedStyleModel = new WebInspector.ComputedStyleModel();
+    this._computedStyleModel.addEventListener(WebInspector.ComputedStyleModel.Events.ComputedStyleChanged, this.onCSSModelChanged, this);
+
+    this._updateThrottler = new WebInspector.Throttler(100);
+    this._updateWhenVisible = false;
 }
 
 WebInspector.ElementsSidebarPane.prototype = {
@@ -21,7 +23,7 @@ WebInspector.ElementsSidebarPane.prototype = {
      */
     node: function()
     {
-        return this._node;
+        return this._computedStyleModel.node();
     },
 
     /**
@@ -29,25 +31,7 @@ WebInspector.ElementsSidebarPane.prototype = {
      */
     cssModel: function()
     {
-        return this._cssModel && this._cssModel.isEnabled() ? this._cssModel : null;
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _nodeChanged: function(event)
-    {
-        this.setNode(/** @type {?WebInspector.DOMNode} */ (event.data));
-    },
-
-    /**
-     * @param {?WebInspector.DOMNode} node
-     */
-    setNode: function(node)
-    {
-        this._node = node;
-        this._updateTarget(node ? node.target() : null);
-        this.update();
+        return this._computedStyleModel.cssModel();
     },
 
     /**
@@ -61,128 +45,32 @@ WebInspector.ElementsSidebarPane.prototype = {
 
     update: function()
     {
-        this._updateController.update();
+        this._updateWhenVisible = !this.isShowing();
+        if (this._updateWhenVisible)
+            return;
+        this._updateThrottler.schedule(innerUpdate.bind(this));
+
+        /**
+         * @return {!Promise.<?>}
+         * @this {WebInspector.ElementsSidebarPane}
+         */
+        function innerUpdate()
+        {
+            return this.isShowing() ? this.doUpdate() : Promise.resolve();
+        }
     },
 
     wasShown: function()
     {
         WebInspector.SidebarPane.prototype.wasShown.call(this);
-        this._updateController.viewWasShown();
+        if (this._updateWhenVisible)
+            this.update();
     },
-
-    /**
-     * @param {?WebInspector.Target} target
-     */
-    _updateTarget: function(target)
-    {
-        if (this._target === target)
-            return;
-        if (this._targetEvents) {
-            WebInspector.EventTarget.removeEventListeners(this._targetEvents);
-            this._targetEvents = null;
-        }
-        this._target = target;
-
-        var domModel = null;
-        var resourceTreeModel = null;
-        if (target) {
-            this._cssModel = WebInspector.CSSModel.fromTarget(target);
-            domModel = WebInspector.DOMModel.fromTarget(target);
-            resourceTreeModel = target.resourceTreeModel;
-        }
-
-        if (this._cssModel && domModel && resourceTreeModel) {
-            this._targetEvents = [
-                this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetAdded, this.onCSSModelChanged, this),
-                this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetRemoved, this.onCSSModelChanged, this),
-                this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetChanged, this.onCSSModelChanged, this),
-                this._cssModel.addEventListener(WebInspector.CSSModel.Events.MediaQueryResultChanged, this.onCSSModelChanged, this),
-                this._cssModel.addEventListener(WebInspector.CSSModel.Events.PseudoStateForced, this.onCSSModelChanged, this),
-                this._cssModel.addEventListener(WebInspector.CSSModel.Events.ModelWasEnabled, this.onCSSModelChanged, this),
-                domModel.addEventListener(WebInspector.DOMModel.Events.DOMMutated, this._domModelChanged, this),
-                resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.FrameResized, this._onFrameResized, this),
-            ];
-        }
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _onFrameResized: function(event)
-    {
-        /**
-         * @this {WebInspector.ElementsSidebarPane}
-         */
-        function refreshContents()
-        {
-            this.onFrameResizedThrottled();
-            delete this._frameResizedTimer;
-        }
-
-        if (this._frameResizedTimer)
-            clearTimeout(this._frameResizedTimer);
-
-        this._frameResizedTimer = setTimeout(refreshContents.bind(this), 100);
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _domModelChanged: function(event)
-    {
-        var node = /** @type {!WebInspector.DOMNode} */ (event.data);
-        this.onDOMModelChanged(node)
-    },
-
-    /**
-     * @param {!WebInspector.DOMNode} node
-     */
-    onDOMModelChanged: function(node) { },
 
     /**
      * @param {!WebInspector.Event} event
      */
     onCSSModelChanged: function(event) { },
 
-    onFrameResizedThrottled: function() { },
-
     __proto__: WebInspector.SidebarPane.prototype
-}
-
-/**
- * @constructor
- * @param {!WebInspector.Widget} view
- * @param {function():!Promise.<?>} doUpdate
- */
-WebInspector.ElementsSidebarPane._UpdateController = function(view, doUpdate)
-{
-    this._view = view;
-    this._updateThrottler = new WebInspector.Throttler(100);
-    this._updateWhenVisible = false;
-    this._doUpdate = doUpdate;
-}
-
-WebInspector.ElementsSidebarPane._UpdateController.prototype = {
-    update: function()
-    {
-        this._updateWhenVisible = !this._view.isShowing();
-        if (this._updateWhenVisible)
-            return;
-        this._updateThrottler.schedule(innerUpdate.bind(this));
-
-        /**
-         * @this {WebInspector.ElementsSidebarPane._UpdateController}
-         * @return {!Promise.<?>}
-         */
-        function innerUpdate()
-        {
-            return this._view.isShowing() ? this._doUpdate.call(null) : Promise.resolve();
-        }
-    },
-
-    viewWasShown: function()
-    {
-        if (this._updateWhenVisible)
-            this.update();
-    }
 }

@@ -37,7 +37,8 @@ WebInspector.ProfileDataGridNode = function(profileNode, owningTree, hasChildren
     WebInspector.DataGridNode.call(this, null, hasChildren);
 
     this.tree = owningTree;
-    this.childrenByCallUID = {};
+    /** @type {!Map<string, !WebInspector.ProfileDataGridNode>} */
+    this.childrenByCallUID = new Map();
     this.lastComparator = null;
 
     this.callUID = profileNode.callUID;
@@ -154,7 +155,7 @@ WebInspector.ProfileDataGridNode.prototype = {
     {
         WebInspector.DataGridNode.prototype.insertChild.call(this, profileDataGridNode, index);
 
-        this.childrenByCallUID[profileDataGridNode.callUID] = /** @type {!WebInspector.ProfileDataGridNode} */ (profileDataGridNode);
+        this.childrenByCallUID.set(profileDataGridNode.callUID, /** @type {!WebInspector.ProfileDataGridNode} */ (profileDataGridNode));
     },
 
     /**
@@ -165,14 +166,14 @@ WebInspector.ProfileDataGridNode.prototype = {
     {
         WebInspector.DataGridNode.prototype.removeChild.call(this, profileDataGridNode);
 
-        delete this.childrenByCallUID[/** @type {!WebInspector.ProfileDataGridNode} */ (profileDataGridNode).callUID];
+        this.childrenByCallUID.delete((/** @type {!WebInspector.ProfileDataGridNode} */ (profileDataGridNode)).callUID);
     },
 
     removeChildren: function()
     {
         WebInspector.DataGridNode.prototype.removeChildren.call(this);
 
-        this.childrenByCallUID = {};
+        this.childrenByCallUID.clear();
     },
 
     /**
@@ -183,7 +184,7 @@ WebInspector.ProfileDataGridNode.prototype = {
     {
         if (!node)
             return null;
-        return this.childrenByCallUID[node.callUID];
+        return this.childrenByCallUID.get(node.callUID);
     },
 
     get selfPercent()
@@ -286,10 +287,10 @@ WebInspector.ProfileDataGridNode.merge = function(container, child, shouldAbsorb
 
     for (var index = 0; index < count; ++index) {
         var orphanedChild = children[index];
-        var existingChild = container.childrenByCallUID[orphanedChild.callUID];
+        var existingChild = container.childrenByCallUID.get(orphanedChild.callUID);
 
         if (existingChild)
-            existingChild.merge(orphanedChild, false);
+            existingChild.merge(/** @type{!WebInspector.ProfileDataGridNode} */(orphanedChild), false);
         else
             container.appendChild(orphanedChild);
     }
@@ -327,7 +328,7 @@ WebInspector.ProfileDataGridTree = function(formatter, searchableView, total)
     this._searchableView = searchableView;
     this.total = total;
     this.lastComparator = null;
-    this.childrenByCallUID = {};
+    this.childrenByCallUID = new Map();
 }
 
 WebInspector.ProfileDataGridTree.prototype = {
@@ -344,13 +345,13 @@ WebInspector.ProfileDataGridTree.prototype = {
     insertChild: function(child, index)
     {
         this.children.splice(index, 0, child);
-        this.childrenByCallUID[child.callUID] = child;
+        this.childrenByCallUID.set(child.callUID, child);
     },
 
     removeChildren: function()
     {
         this.children = [];
-        this.childrenByCallUID = {};
+        this.childrenByCallUID.clear();
     },
 
     populateChildren: function()

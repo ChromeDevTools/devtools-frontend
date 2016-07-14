@@ -65,7 +65,7 @@ WebInspector.BottomUpProfileDataGridNode.prototype = {
     },
 
     /**
-     * @param {number} aCallUID
+     * @param {string} aCallUID
      */
     _exclude: function(aCallUID)
     {
@@ -80,7 +80,7 @@ WebInspector.BottomUpProfileDataGridNode.prototype = {
         while (index--)
             children[index]._exclude(aCallUID);
 
-        var child = this.childrenByCallUID[aCallUID];
+        var child = this.childrenByCallUID.get(aCallUID);
 
         if (child)
             this.merge(child, true);
@@ -187,7 +187,8 @@ WebInspector.BottomUpProfileDataGridTree = function(formatter, searchableView, r
     // Iterate each node in pre-order.
     var profileNodeUIDs = 0;
     var profileNodeGroups = [[], [rootProfileNode]];
-    var visitedProfileNodesForCallUID = {};
+    /** @type {!Map<string, !Set<number>>} */
+    var visitedProfileNodesForCallUID = new Map();
 
     this._remainingNodeInfos = [];
 
@@ -204,25 +205,25 @@ WebInspector.BottomUpProfileDataGridTree = function(formatter, searchableView, r
 
             if (profileNode.parent) {
                 // The total time of this ancestor is accounted for if we're in any form of recursive cycle.
-                var visitedNodes = visitedProfileNodesForCallUID[profileNode.callUID];
+                var visitedNodes = visitedProfileNodesForCallUID.get(profileNode.callUID);
                 var totalAccountedFor = false;
 
                 if (!visitedNodes) {
-                    visitedNodes = {};
-                    visitedProfileNodesForCallUID[profileNode.callUID] = visitedNodes;
+                    visitedNodes = new Set();
+                    visitedProfileNodesForCallUID.set(profileNode.callUID, visitedNodes);
                 } else {
                     // The total time for this node has already been accounted for iff one of it's parents has already been visited.
                     // We can do this check in this style because we are traversing the tree in pre-order.
                     var parentCount = parentProfileNodes.length;
                     for (var parentIndex = 0; parentIndex < parentCount; ++parentIndex) {
-                        if (visitedNodes[parentProfileNodes[parentIndex].UID]) {
+                        if (visitedNodes.has(parentProfileNodes[parentIndex].UID)) {
                             totalAccountedFor = true;
                             break;
                         }
                     }
                 }
 
-                visitedNodes[profileNode.UID] = true;
+                visitedNodes.add(profileNode.UID);
 
                 this._remainingNodeInfos.push({ ancestor: profileNode, focusNode: profileNode, totalAccountedFor: totalAccountedFor });
             }
@@ -281,7 +282,7 @@ WebInspector.BottomUpProfileDataGridTree.prototype = {
         this.save();
 
         var excludedCallUID = profileDataGridNode.callUID;
-        var excludedTopLevelChild = this.childrenByCallUID[excludedCallUID];
+        var excludedTopLevelChild = this.childrenByCallUID.get(excludedCallUID);
 
         // If we have a top level node that is excluded, get rid of it completely (not keeping children),
         // since bottom up data relies entirely on the root node.

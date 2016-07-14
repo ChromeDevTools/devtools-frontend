@@ -66,7 +66,7 @@ WebInspector.TopDownProfileDataGridNode._sharedPopulate = function(container)
 
 /**
  * @param {!WebInspector.TopDownProfileDataGridNode|!WebInspector.TopDownProfileDataGridTree} container
- * @param {number|string} aCallUID
+ * @param {string} aCallUID
  */
 WebInspector.TopDownProfileDataGridNode._excludeRecursively = function(container, aCallUID)
 {
@@ -81,7 +81,7 @@ WebInspector.TopDownProfileDataGridNode._excludeRecursively = function(container
     while (index--)
         WebInspector.TopDownProfileDataGridNode._excludeRecursively(children[index], aCallUID);
 
-    var child = container.childrenByCallUID[aCallUID];
+    var child = container.childrenByCallUID.get(aCallUID);
 
     if (child)
         WebInspector.ProfileDataGridNode.merge(container, child, true);

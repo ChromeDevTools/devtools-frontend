@@ -13,7 +13,6 @@ WebInspector.CPUProfileNode = function(sourceNode, sampleTime)
     WebInspector.ProfileNode.call(this, sourceNode.functionName, sourceNode.scriptId, sourceNode.url, sourceNode.lineNumber, sourceNode.columnNumber);
     this.id = sourceNode.id;
     this.self = sourceNode.hitCount * sampleTime;
-    this.callUID = sourceNode.callUID;
     this.positionTicks = sourceNode.positionTicks;
     this.deoptReason = sourceNode.deoptReason;
 }

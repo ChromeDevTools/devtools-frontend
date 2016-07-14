@@ -223,7 +223,6 @@ WebInspector.SamplingHeapProfileNode = function(node)
 {
     WebInspector.ProfileNode.call(this, node.functionName, node.scriptId, node.url, node.lineNumber, node.columnNumber);
     this.self = node.selfSize;
-    this.callUID = `${this.frame.functionName}@${this.frame.scriptId}:${this.frame.lineNumber}`;
 }
 
 WebInspector.SamplingHeapProfileNode.prototype = {

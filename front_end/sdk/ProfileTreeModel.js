@@ -15,8 +15,8 @@ WebInspector.ProfileNode = function(functionName, scriptId, url, lineNumber, col
         lineNumber: lineNumber,
         columnNumber: columnNumber
     };
-    /** @type {number|string} */
-    this.callUID;
+    /** @type {string} */
+    this.callUID = `${this.frame.functionName}@${this.frame.scriptId}:${this.frame.lineNumber}`;
     /** @type {number} */
     this.self = 0;
     /** @type {number} */

@@ -21,7 +21,8 @@ WebInspector.NetworkLogViewColumns = function(networkLogView, networkLogLargeRow
         columnsVisibility[columnId] = savedColumnsVisibility.hasOwnProperty(columnId) ? savedColumnsVisibility[columnId] : defaultColumnsVisibility[columnId];
     this._columnsVisibilitySetting.set(columnsVisibility);
 
-    networkLogLargeRowsSetting.addChangeListener(this._updateRowsSize, this);
+    this._networkLogLargeRowsSetting = networkLogLargeRowsSetting;
+    this._networkLogLargeRowsSetting.addChangeListener(this._updateRowsSize, this);
 
     /** @type {!Array<{time: number, element: !Element}>} */
     this._eventDividers = [];
@@ -270,6 +271,8 @@ WebInspector.NetworkLogViewColumns.prototype = {
         this._patchTimelineHeader();
 
         this._dataGrid.addEventListener(WebInspector.DataGrid.Events.ColumnsResized, this.updateDividersIfNeeded, this);
+
+        this._updateRowsSize();
 
         return this._dataGrid;
     },
@@ -608,11 +611,8 @@ WebInspector.NetworkLogViewColumns.prototype = {
         this._timelineGrid.showEventDividers();
     },
 
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _updateRowsSize: function(event)
+    _updateRowsSize: function()
     {
-        this._timelineGrid.element.classList.toggle("small", !event.data);
+        this._timelineGrid.element.classList.toggle("small", !this._networkLogLargeRowsSetting.get());
     }
 }

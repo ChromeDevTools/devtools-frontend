@@ -662,12 +662,14 @@ WebInspector.DebuggerModel.prototype = {
          */
         function buildDetails(response)
         {
-            if (!response || !response.internalProperties)
+            if (!response)
                 return null;
             var location = null;
-            for (var prop of response.internalProperties) {
-                if (prop.name === "[[FunctionLocation]]")
-                    location = prop.value;
+            if (response.internalProperties) {
+                for (var prop of response.internalProperties) {
+                    if (prop.name === "[[FunctionLocation]]")
+                        location = prop.value;
+                }
             }
             var functionName = null;
             if (response.properties) {

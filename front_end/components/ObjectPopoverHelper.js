@@ -102,7 +102,7 @@ WebInspector.ObjectPopoverHelper.prototype = {
                 stepInto.addEventListener("click", () => rawLocation.continueToLocation());
                 sectionToolbar.appendToolbarItem(stepInto);
             }
-            var sourceURL = rawLocation.script() ? rawLocation.script().sourceURL : null;
+            var sourceURL = rawLocation && rawLocation.script() ? rawLocation.script().sourceURL : null;
             if (rawLocation && sourceURL) {
                 var link = this._lazyLinkifier().linkifyRawLocation(rawLocation, sourceURL);
                 linkContainer.appendChild(link);

@@ -248,7 +248,7 @@ WebInspector.SourcesView.prototype = {
         var networkURL = WebInspector.networkMapping.networkURL(uiSourceCode);
         var currentNetworkURL = WebInspector.networkMapping.networkURL(currentUISourceCode);
         if (currentUISourceCode.isFromServiceProject() && currentUISourceCode !== uiSourceCode && currentNetworkURL === networkURL && networkURL) {
-            this._showFile(uiSourceCode);
+            this._editorContainer.showFile(uiSourceCode);
             this._editorContainer.removeUISourceCode(currentUISourceCode);
         }
     },
@@ -298,37 +298,13 @@ WebInspector.SourcesView.prototype = {
     showSourceLocation: function(uiSourceCode, lineNumber, columnNumber, omitFocus, omitHighlight)
     {
         this._historyManager.updateCurrentState();
-        var sourceView = this._showFile(uiSourceCode);
-        if (typeof lineNumber === "number" && sourceView instanceof WebInspector.UISourceCodeFrame)
-            /** @type {!WebInspector.UISourceCodeFrame} */(sourceView).revealPosition(lineNumber, columnNumber, !omitHighlight);
+        this._editorContainer.showFile(uiSourceCode)
+        var currentSourceFrame = this.currentSourceFrame();
+        if (currentSourceFrame && typeof lineNumber === "number")
+            currentSourceFrame.revealPosition(lineNumber, columnNumber, !omitHighlight);
         this._historyManager.pushNewState();
         if (!omitFocus)
-            sourceView.focus();
-    },
-
-    /**
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     * @return {!WebInspector.Widget}
-     */
-    _showFile: function(uiSourceCode)
-    {
-        var sourceView = this._getOrCreateSourceView(uiSourceCode);
-        if (this._currentUISourceCode === uiSourceCode)
-            return sourceView;
-
-        var currentFrame = this.currentSourceFrame();
-        if (currentFrame)
-            currentFrame.setSearchableView(null);
-
-        this._currentUISourceCode = uiSourceCode;
-        this._editorContainer.showFile(uiSourceCode);
-        this._updateScriptViewToolbarItems();
-
-        currentFrame = this.currentSourceFrame();
-        if (currentFrame)
-            currentFrame.setSearchableView(this._searchableView);
-
-        return sourceView;
+            this.visibleView().focus();
     },
 
     /**
@@ -441,6 +417,9 @@ WebInspector.SourcesView.prototype = {
         }
     },
 
+    /**
+     * @param {!WebInspector.Event} event
+     */
     _editorClosed: function(event)
     {
         var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data);
@@ -462,20 +441,24 @@ WebInspector.SourcesView.prototype = {
         this.dispatchEventToListeners(WebInspector.SourcesView.Events.EditorClosed, data);
     },
 
+    /**
+     * @param {!WebInspector.Event} event
+     */
     _editorSelected: function(event)
     {
-        var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data.currentFile);
-        var shouldUseHistoryManager = uiSourceCode !== this._currentUISourceCode && event.data.userGesture;
-        if (shouldUseHistoryManager)
-            this._historyManager.updateCurrentState();
-        var sourceView = this._showFile(uiSourceCode);
-        if (shouldUseHistoryManager)
-            this._historyManager.pushNewState();
+        this._currentUISourceCode = /** @type {!WebInspector.UISourceCode} */(event.data.currentFile);
+        var previousSourceFrame = event.data.previousView instanceof WebInspector.UISourceCodeFrame ? event.data.previousView : null;
+        if (previousSourceFrame)
+            previousSourceFrame.setSearchableView(null);
+        var currentSourceFrame = event.data.currentView instanceof WebInspector.UISourceCodeFrame ? event.data.currentView : null;
+        if (currentSourceFrame)
+            currentSourceFrame.setSearchableView(this._searchableView);
 
-        this._searchableView.setReplaceable(sourceView instanceof WebInspector.UISourceCodeFrame && /** @type {!WebInspector.UISourceCodeFrame} */(sourceView).canEditSource());
+        this._searchableView.setReplaceable(!!currentSourceFrame && currentSourceFrame.canEditSource());
         this._searchableView.refreshSearch();
+        this._updateScriptViewToolbarItems();
 
-        this.dispatchEventToListeners(WebInspector.SourcesView.Events.EditorSelected, uiSourceCode);
+        this.dispatchEventToListeners(WebInspector.SourcesView.Events.EditorSelected, this._currentUISourceCode);
     },
 
     /**

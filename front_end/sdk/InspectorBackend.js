@@ -320,7 +320,7 @@ InspectorBackendClass.Connection.prototype = {
     /**
      * @param {string} method
      * @param {?Object} params
-     * @param {?function(*)} callback
+     * @param {?function(...*)} callback
      */
     sendRawMessageForTesting: function(method, params, callback)
     {

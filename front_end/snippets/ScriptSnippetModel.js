@@ -317,7 +317,7 @@ WebInspector.ScriptSnippetModel.prototype = {
             exceptionDetails.columnNumber + 1,
             undefined,
             undefined,
-            exceptionDetails.stack);
+            exceptionDetails.stackTrace);
         target.consoleModel.addMessage(consoleMessage);
     },
 

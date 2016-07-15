@@ -69,9 +69,9 @@ WebInspector.JavaScriptCompiler.prototype = {
                 this.scheduleCompile();
                 return;
             }
-            if (!exceptionDetails || !exceptionDetails.hasOwnProperty("lineNumber"))
+            if (!exceptionDetails)
                 return;
-            this._sourceFrame.uiSourceCode().addLineMessage(WebInspector.UISourceCode.Message.Level.Error, exceptionDetails.text, /** @type {number} */(exceptionDetails.lineNumber), exceptionDetails.columnNumber);
+            this._sourceFrame.uiSourceCode().addLineMessage(WebInspector.UISourceCode.Message.Level.Error, exceptionDetails.text, exceptionDetails.lineNumber, exceptionDetails.columnNumber);
             this._compilationFinishedForTest();
         }
     },

@@ -357,7 +357,7 @@ WebInspector.DebuggerModel.prototype = {
     /**
      * @param {!RuntimeAgent.ScriptId} scriptId
      * @param {string} newSource
-     * @param {function(?Protocol.Error, !DebuggerAgent.SetScriptSourceError=)} callback
+     * @param {function(?Protocol.Error, !RuntimeAgent.ExceptionDetails=)} callback
      */
     setScriptSource: function(scriptId, newSource, callback)
     {
@@ -367,24 +367,24 @@ WebInspector.DebuggerModel.prototype = {
     /**
      * @param {!RuntimeAgent.ScriptId} scriptId
      * @param {string} newSource
-     * @param {function(?Protocol.Error, !DebuggerAgent.SetScriptSourceError=)} callback
+     * @param {function(?Protocol.Error, !RuntimeAgent.ExceptionDetails=)} callback
      * @param {?Protocol.Error} error
-     * @param {!DebuggerAgent.SetScriptSourceError=} errorData
+     * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
      * @param {!Array.<!DebuggerAgent.CallFrame>=} callFrames
      * @param {!RuntimeAgent.StackTrace=} asyncStackTrace
      * @param {boolean=} needsStepIn
      */
-    _didEditScriptSource: function(scriptId, newSource, callback, error, errorData, callFrames, asyncStackTrace, needsStepIn)
+    _didEditScriptSource: function(scriptId, newSource, callback, error, exceptionDetails, callFrames, asyncStackTrace, needsStepIn)
     {
         if (needsStepIn) {
             this.stepInto();
-            this._pendingLiveEditCallback = callback.bind(this, error, errorData);
+            this._pendingLiveEditCallback = callback.bind(this, error, exceptionDetails);
             return;
         }
 
         if (!error && callFrames && callFrames.length)
             this._pausedScript(callFrames, this._debuggerPausedDetails.reason, this._debuggerPausedDetails.auxData, this._debuggerPausedDetails.breakpointIds, asyncStackTrace);
-        callback(error, errorData);
+        callback(error, exceptionDetails);
     },
 
     /**

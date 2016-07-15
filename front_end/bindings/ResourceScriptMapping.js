@@ -358,28 +358,23 @@ WebInspector.ResourceScriptFile.prototype = {
 
         /**
          * @param {?string} error
-         * @param {!DebuggerAgent.SetScriptSourceError=} errorData
+         * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
          * @this {WebInspector.ResourceScriptFile}
          */
-        function scriptSourceWasSet(error, errorData)
+        function scriptSourceWasSet(error, exceptionDetails)
         {
-            if (!error && !errorData)
+            if (!error && !exceptionDetails)
                 this._scriptSource = source;
             this._update();
 
-            if (!error && !errorData)
+            if (!error && !exceptionDetails)
                 return;
-            var warningLevel = WebInspector.Console.MessageLevel.Warning;
-            if (!errorData) {
-                WebInspector.console.addMessage(WebInspector.UIString("LiveEdit failed: %s", error), warningLevel);
+            if (!exceptionDetails) {
+                WebInspector.console.addMessage(WebInspector.UIString("LiveEdit failed: %s", error), WebInspector.Console.MessageLevel.Warning);
                 return;
             }
-            if (errorData) {
-                var messageText = WebInspector.UIString("LiveEdit compile failed: %s", errorData.message);
-                this._uiSourceCode.addLineMessage(WebInspector.UISourceCode.Message.Level.Error, messageText, errorData.lineNumber - 1, errorData.columnNumber + 1);
-            } else {
-                WebInspector.console.addMessage(WebInspector.UIString("Unknown LiveEdit error: %s; %s", JSON.stringify(errorData), error), warningLevel);
-            }
+            var messageText = WebInspector.UIString("LiveEdit compile failed: %s", exceptionDetails.text);
+            this._uiSourceCode.addLineMessage(WebInspector.UISourceCode.Message.Level.Error, messageText, exceptionDetails.lineNumber, exceptionDetails.columnNumber);
         }
     },
 

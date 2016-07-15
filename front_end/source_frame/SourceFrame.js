@@ -301,10 +301,10 @@ WebInspector.SourceFrame.prototype = {
             this._delayedFindSearchMatches();
             delete this._delayedFindSearchMatches;
         }
-        this.onTextEditorContentLoaded();
+        this.onTextEditorContentSet();
     },
 
-    onTextEditorContentLoaded: function() {},
+    onTextEditorContentSet: function() {},
 
     /**
      * @param {?WebInspector.SearchableView} view

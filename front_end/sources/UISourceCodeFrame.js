@@ -131,11 +131,11 @@ WebInspector.UISourceCodeFrame.prototype = {
     /**
      * @override
      */
-    onTextEditorContentLoaded: function()
+    onTextEditorContentSet: function()
     {
         if (this._diff)
             this._diff.updateDiffMarkersImmediately();
-        WebInspector.SourceFrame.prototype.onTextEditorContentLoaded.call(this);
+        WebInspector.SourceFrame.prototype.onTextEditorContentSet.call(this);
         for (var message of this._uiSourceCode.messages())
             this._addMessageToSource(message);
         this._decorateAllTypes();

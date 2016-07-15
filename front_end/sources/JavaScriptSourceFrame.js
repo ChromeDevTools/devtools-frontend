@@ -996,9 +996,9 @@ WebInspector.JavaScriptSourceFrame.prototype = {
     /**
      * @override
      */
-    onTextEditorContentLoaded: function()
+    onTextEditorContentSet: function()
     {
-        WebInspector.UISourceCodeFrame.prototype.onTextEditorContentLoaded.call(this);
+        WebInspector.UISourceCodeFrame.prototype.onTextEditorContentSet.call(this);
         if (this._executionLocation)
             this.setExecutionLocation(this._executionLocation);
 

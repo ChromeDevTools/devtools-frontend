@@ -172,9 +172,9 @@ WebInspector.CSSSourceFrame.prototype = {
     /**
      * @override
      */
-    onTextEditorContentLoaded: function()
+    onTextEditorContentSet: function()
     {
-        WebInspector.UISourceCodeFrame.prototype.onTextEditorContentLoaded.call(this);
+        WebInspector.UISourceCodeFrame.prototype.onTextEditorContentSet.call(this);
         if (Runtime.experiments.isEnabled("sourceColorPicker"))
             this._updateColorSwatches();
     },

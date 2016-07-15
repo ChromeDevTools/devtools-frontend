@@ -385,11 +385,10 @@ WebInspector.RuntimeDispatcher.prototype = {
 
     /**
      * @override
-     * @param {number} timestamp
      * @param {string} message
      * @param {number} exceptionId
      */
-    exceptionRevoked: function(timestamp, message, exceptionId)
+    exceptionRevoked: function(message, exceptionId)
     {
         var consoleMessage = new WebInspector.ConsoleMessage(
             this._runtimeModel.target(),
@@ -403,7 +402,7 @@ WebInspector.RuntimeDispatcher.prototype = {
             undefined,
             undefined,
             undefined,
-            timestamp,
+            undefined,
             undefined,
             undefined);
         consoleMessage.setRevokedExceptionId(exceptionId);

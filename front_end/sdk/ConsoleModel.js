@@ -552,7 +552,7 @@ WebInspector.ConsoleDispatcher.prototype = {
             payload.networkRequestId,
             payload.parameters,
             payload.stack,
-            payload.timestamp * 1000, // Convert to ms.
+            payload.timestamp,
             payload.executionContextId,
             payload.scriptId,
             payload.workerId);

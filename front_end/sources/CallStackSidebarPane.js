@@ -129,10 +129,7 @@ WebInspector.CallStackSidebarPane.prototype = {
         var callFrameItems = [];
         for (var i = 0, n = callFrames.length; i < n; ++i) {
             var callFrame = callFrames[i];
-            // TODO(591496): conform location in debugger and runtime
-            var lineNumber = callFrame.lineNumber ? callFrame.lineNumber - 1 : 0;
-            var columnNumber = callFrame.columnNumber ? callFrame.columnNumber - 1 : 0;
-            var location = new WebInspector.DebuggerModel.Location(this._debuggerModel, callFrame.scriptId, lineNumber, columnNumber);
+            var location = new WebInspector.DebuggerModel.Location(this._debuggerModel, callFrame.scriptId, callFrame.lineNumber, callFrame.columnNumber);
             var callFrameItem = new WebInspector.CallStackSidebarPane.CallFrame(callFrame.functionName, location, this._linkifier, null, this._locationPool, asyncCallFrameItem);
             callFrameItem.element.addEventListener("click", this._asyncCallFrameClicked.bind(this, callFrameItem), false);
             callFrameItems.push(callFrameItem);

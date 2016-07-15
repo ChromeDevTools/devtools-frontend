@@ -412,6 +412,49 @@ WebInspector.RuntimeDispatcher.prototype = {
 
     /**
      * @override
+     * @param {string} type
+     * @param {!Array.<!RuntimeAgent.RemoteObject>} args
+     * @param {number} executionContextId
+     * @param {number} timestamp
+     * @param {!RuntimeAgent.StackTrace=} stackTrace
+     */
+    consoleAPICalled: function(type, args, executionContextId, timestamp, stackTrace)
+    {
+        var level = WebInspector.ConsoleMessage.MessageLevel.Log;
+        if (type === WebInspector.ConsoleMessage.MessageType.Debug)
+            level = WebInspector.ConsoleMessage.MessageLevel.Debug;
+        if (type === WebInspector.ConsoleMessage.MessageType.Error || type === WebInspector.ConsoleMessage.MessageType.Assert)
+            level = WebInspector.ConsoleMessage.MessageLevel.Error;
+        if (type === WebInspector.ConsoleMessage.MessageType.Warning)
+            level = WebInspector.ConsoleMessage.MessageLevel.Warning;
+        if (type === WebInspector.ConsoleMessage.MessageType.Info)
+            level = WebInspector.ConsoleMessage.MessageLevel.Info;
+        var message = "";
+        if (args.length && typeof args[0].value === "string")
+            message = args[0].value;
+        else if (args.length && args[0].description)
+            message = args[0].description;
+        var callFrame = stackTrace && stackTrace.callFrames.length ? stackTrace.callFrames[0] : null;
+        var consoleMessage = new WebInspector.ConsoleMessage(
+            this._runtimeModel.target(),
+            WebInspector.ConsoleMessage.MessageSource.ConsoleAPI,
+            level,
+            /** @type {string} */ (message),
+            type,
+            callFrame ? callFrame.url : undefined,
+            callFrame ? callFrame.lineNumber + 1 : undefined,
+            callFrame ? callFrame.columnNumber + 1 : undefined,
+            undefined,
+            args,
+            stackTrace,
+            timestamp,
+            executionContextId,
+            undefined);
+        this._runtimeModel.target().consoleModel.addMessage(consoleMessage);
+    },
+
+    /**
+     * @override
      * @param {!RuntimeAgent.RemoteObject} payload
      * @param {!Object=} hints
      */

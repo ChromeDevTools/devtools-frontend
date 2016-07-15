@@ -480,6 +480,10 @@ WebInspector.ConsoleMessage.MessageSource = {
  */
 WebInspector.ConsoleMessage.MessageType = {
     Log: "log",
+    Debug: "debug",
+    Info: "info",
+    Error: "error",
+    Warning: "warning",
     Dir: "dir",
     DirXML: "dirxml",
     Table: "table",
@@ -534,6 +538,8 @@ WebInspector.ConsoleDispatcher.prototype = {
      */
     messageAdded: function(payload)
     {
+        if (payload.source === WebInspector.ConsoleMessage.MessageSource.ConsoleAPI)
+            return;
         var consoleMessage = new WebInspector.ConsoleMessage(
             this._console.target(),
             payload.source,

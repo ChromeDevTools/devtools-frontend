@@ -10,7 +10,18 @@
  */
 WebInspector.CPUProfileNode = function(sourceNode, sampleTime)
 {
-    WebInspector.ProfileNode.call(this, sourceNode.functionName, sourceNode.scriptId, sourceNode.url, sourceNode.lineNumber, sourceNode.columnNumber);
+    if (sourceNode.callFrame) {
+        WebInspector.ProfileNode.call(this, sourceNode.callFrame);
+    } else {
+        // Backward compatibility for old CPUProfileNode format.
+        var frame = /** @type {!RuntimeAgent.CallFrame} */(sourceNode);
+        WebInspector.ProfileNode.call(this, {
+            functionName: frame.functionName,
+            scriptId: frame.scriptId, url: frame.url,
+            lineNumber: frame.lineNumber - 1,
+            columnNumber: frame.columnNumber - 1
+        });
+    }
     this.id = sourceNode.id;
     this.self = sourceNode.hitCount * sampleTime;
     this.positionTicks = sourceNode.positionTicks;
@@ -65,6 +76,8 @@ WebInspector.CPUProfileDataModel.prototype = {
          */
         function isNativeNode(node)
         {
+            if (node.callFrame)
+                return !!node.callFrame.url && node.callFrame.url.startsWith("native ");
             return !!node.url && node.url.startsWith("native ");
         }
         this.totalHitCount = computeHitCountForSubtree(root);

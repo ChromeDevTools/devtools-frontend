@@ -349,7 +349,7 @@ WebInspector.CPUProfileView.NodeFormatter.prototype = {
      */
     linkifyNode: function(node)
     {
-        return this._profileView.linkifier().linkifyConsoleCallFrameForTimeline(this._profileView.target(), node.profileNode.frame, "profile-node-file");
+        return this._profileView.linkifier().linkifyConsoleCallFrame(this._profileView.target(), node.profileNode.callFrame, "profile-node-file");
     }
 }
 
@@ -378,7 +378,7 @@ WebInspector.CPUFlameChartDataProvider.prototype = {
          * @param {number} duration
          * @param {number} startTime
          * @param {number} selfTime
-         * @param {!ProfilerAgent.CPUProfileNode} node
+         * @param {!WebInspector.CPUProfileNode} node
          */
         function ChartEntry(depth, duration, startTime, selfTime, node)
         {
@@ -402,6 +402,13 @@ WebInspector.CPUFlameChartDataProvider.prototype = {
             // The entry itself will be put there in onCloseFrame.
             entries.push(null);
         }
+        /**
+         * @param {number} depth
+         * @param {!WebInspector.CPUProfileNode} node
+         * @param {number} startTime
+         * @param {number} totalTime
+         * @param {number} selfTime
+         */
         function onCloseFrame(depth, node, startTime, totalTime, selfTime)
         {
             var index = stack.pop();
@@ -410,7 +417,7 @@ WebInspector.CPUFlameChartDataProvider.prototype = {
         }
         this._cpuProfile.forEachFrame(onOpenFrame, onCloseFrame);
 
-        /** @type {!Array.<!ProfilerAgent.CPUProfileNode>} */
+        /** @type {!Array<!WebInspector.CPUProfileNode>} */
         var entryNodes = new Array(entries.length);
         var entryLevels = new Uint8Array(entries.length);
         var entryTotalTimes = new Float32Array(entries.length);
@@ -431,7 +438,7 @@ WebInspector.CPUFlameChartDataProvider.prototype = {
 
         this._timelineData = new WebInspector.FlameChart.TimelineData(entryLevels, entryTotalTimes, entryStartTimes, null);
 
-        /** @type {!Array.<!ProfilerAgent.CPUProfileNode>} */
+        /** @type {!Array<!WebInspector.CPUProfileNode>} */
         this._entryNodes = entryNodes;
         this._entrySelfTimes = entrySelfTimes;
 
@@ -478,11 +485,11 @@ WebInspector.CPUFlameChartDataProvider.prototype = {
         pushEntryInfoRow(WebInspector.UIString("Self time"), selfTime);
         pushEntryInfoRow(WebInspector.UIString("Total time"), totalTime);
         var linkifier = new WebInspector.Linkifier();
-        var text = linkifier.linkifyConsoleCallFrameForTimeline(this._target, node).textContent;
+        var text = linkifier.linkifyConsoleCallFrame(this._target, node.callFrame).textContent;
         linkifier.dispose();
         pushEntryInfoRow(WebInspector.UIString("URL"), text);
-        pushEntryInfoRow(WebInspector.UIString("Aggregated self time"), Number.secondsToString(node.selfTime / 1000, true));
-        pushEntryInfoRow(WebInspector.UIString("Aggregated total time"), Number.secondsToString(node.totalTime / 1000, true));
+        pushEntryInfoRow(WebInspector.UIString("Aggregated self time"), Number.secondsToString(node.self / 1000, true));
+        pushEntryInfoRow(WebInspector.UIString("Aggregated total time"), Number.secondsToString(node.total / 1000, true));
         if (node.deoptReason && node.deoptReason !== "no reason")
             pushEntryInfoRow(WebInspector.UIString("Not optimized"), node.deoptReason);
 

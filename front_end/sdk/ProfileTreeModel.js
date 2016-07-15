@@ -4,19 +4,14 @@
 
 /**
  * @constructor
+ * @param {!RuntimeAgent.CallFrame} callFrame
  */
-WebInspector.ProfileNode = function(functionName, scriptId, url, lineNumber, columnNumber)
+WebInspector.ProfileNode = function(callFrame)
 {
     /** @type {!RuntimeAgent.CallFrame} */
-    this.frame = {
-        functionName: functionName,
-        scriptId: scriptId,
-        url: url,
-        lineNumber: lineNumber,
-        columnNumber: columnNumber
-    };
+    this.callFrame = callFrame;
     /** @type {string} */
-    this.callUID = `${this.frame.functionName}@${this.frame.scriptId}:${this.frame.lineNumber}`;
+    this.callUID = `${this.callFrame.functionName}@${this.callFrame.scriptId}:${this.callFrame.lineNumber}`;
     /** @type {number} */
     this.self = 0;
     /** @type {number} */
@@ -35,7 +30,7 @@ WebInspector.ProfileNode.prototype = {
      */
     get functionName()
     {
-        return this.frame.functionName;
+        return this.callFrame.functionName;
     },
 
     /**
@@ -43,7 +38,7 @@ WebInspector.ProfileNode.prototype = {
      */
     get scriptId()
     {
-        return this.frame.scriptId;
+        return this.callFrame.scriptId;
     },
 
     /**
@@ -51,7 +46,7 @@ WebInspector.ProfileNode.prototype = {
      */
     get url()
     {
-        return this.frame.url;
+        return this.callFrame.url;
     },
 
     /**
@@ -59,7 +54,7 @@ WebInspector.ProfileNode.prototype = {
      */
     get lineNumber()
     {
-        return this.frame.lineNumber;
+        return this.callFrame.lineNumber;
     },
 
     /**
@@ -67,7 +62,7 @@ WebInspector.ProfileNode.prototype = {
      */
     get columnNumber()
     {
-        return this.frame.columnNumber;
+        return this.callFrame.columnNumber;
     }
 }
 

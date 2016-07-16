@@ -2172,14 +2172,6 @@ WebInspector.StorageCategoryView = function()
 }
 
 WebInspector.StorageCategoryView.prototype = {
-    /**
-     * @return {!Array.<!WebInspector.ToolbarItem>}
-     */
-    toolbarItems: function()
-    {
-        return [];
-    },
-
     setText: function(text)
     {
         this._emptyWidget.text = text;

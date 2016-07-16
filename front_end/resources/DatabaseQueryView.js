@@ -53,14 +53,6 @@ WebInspector.DatabaseQueryView.Events = {
 }
 
 WebInspector.DatabaseQueryView.prototype = {
-    /**
-     * @return {!Array.<!WebInspector.ToolbarItem>}
-     */
-    toolbarItems: function()
-    {
-        return [];
-    },
-
     _messagesClicked: function()
     {
         if (!this._prompt.isCaretInsidePrompt() && this.element.isComponentSelectionCollapsed())

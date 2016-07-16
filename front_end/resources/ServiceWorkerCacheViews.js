@@ -4,13 +4,13 @@
 
 /**
  * @constructor
- * @extends {WebInspector.VBox}
+ * @extends {WebInspector.VBoxWithToolbarItems}
  * @param {!WebInspector.ServiceWorkerCacheModel} model
  * @param {!WebInspector.ServiceWorkerCacheModel.Cache} cache
  */
 WebInspector.ServiceWorkerCacheView = function(model, cache)
 {
-    WebInspector.VBox.call(this);
+    WebInspector.VBoxWithToolbarItems.call(this);
     this.registerRequiredCSS("resources/serviceWorkerCacheViews.css");
 
     this._model = model;
@@ -145,6 +145,7 @@ WebInspector.ServiceWorkerCacheView.prototype = {
     },
 
     /**
+     * @override
      * @return {!Array.<!WebInspector.ToolbarItem>}
      */
     toolbarItems: function()
@@ -158,5 +159,5 @@ WebInspector.ServiceWorkerCacheView.prototype = {
         this._entries = [];
     },
 
-    __proto__: WebInspector.VBox.prototype
+    __proto__: WebInspector.VBoxWithToolbarItems.prototype
 }

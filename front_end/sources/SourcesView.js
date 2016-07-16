@@ -26,7 +26,7 @@ WebInspector.SourcesView = function(workspace, sourcesPanel)
     this._searchableView.setMinimalSearchQuerySize(0);
     this._searchableView.show(this.element);
 
-    /** @type {!Map.<!WebInspector.UISourceCode, !WebInspector.VBoxWithToolbarItems>} */
+    /** @type {!Map.<!WebInspector.UISourceCode, !WebInspector.Widget>} */
     this._sourceViewByUISourceCode = new Map();
 
     var tabbedEditorPlaceholderText = WebInspector.isMac() ? WebInspector.UIString("Hit Cmd+P to open a file") : WebInspector.UIString("Hit Ctrl+P to open a file");
@@ -281,9 +281,9 @@ WebInspector.SourcesView.prototype = {
     _updateScriptViewToolbarItems: function()
     {
         this._scriptViewToolbar.removeToolbarItems();
-        var view = /** @type {?WebInspector.VBoxWithToolbarItems} */(this.visibleView());
-        if (view) {
-            for (var item of view.toolbarItems())
+        var view = this.visibleView()
+        if (view instanceof WebInspector.VBoxWithToolbarItems) {
+            for (var item of (/** @type {?WebInspector.VBoxWithToolbarItems} */(view)).toolbarItems())
                 this._scriptViewToolbar.appendToolbarItem(item);
         }
     },
@@ -332,7 +332,7 @@ WebInspector.SourcesView.prototype = {
             sourceFrame.setHighlighterType(WebInspector.NetworkProject.uiSourceCodeMimeType(uiSourceCode));
             this._historyManager.trackSourceFrameCursorJumps(sourceFrame);
         }
-        this._sourceViewByUISourceCode.set(uiSourceCode, /** @type {!WebInspector.VBoxWithToolbarItems} */(sourceFrame || sourceView));
+        this._sourceViewByUISourceCode.set(uiSourceCode, /** @type {!WebInspector.Widget} */(sourceFrame || sourceView));
         return /** @type {!WebInspector.Widget} */(sourceFrame || sourceView);
     },
 

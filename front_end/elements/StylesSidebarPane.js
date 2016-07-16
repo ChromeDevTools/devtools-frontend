@@ -510,8 +510,13 @@ WebInspector.StylesSidebarPane.prototype = {
         if (this._elementUnderMouse && event.target !== this._elementUnderMouse)
             this._discardElementUnderMouse();
         this._elementUnderMouse = event.target;
-        if (WebInspector.KeyboardShortcut.eventHasCtrlOrMeta(/** @type {!MouseEvent} */(event)))
+        if (WebInspector.KeyboardShortcut.eventHasCtrlOrMeta(/** @type {!MouseEvent} */(event))) {
             this._elementUnderMouse.classList.add("styles-panel-hovered");
+            var selectorElement = this._elementUnderMouse.enclosingNodeOrSelfWithClass("selector");
+            var sectionElement = selectorElement ? selectorElement.enclosingNodeOrSelfWithClass("styles-section") : null;
+            if (sectionElement)
+                sectionElement._section.makeHoverableSelectorsMode();
+        }
     },
 
     /**
@@ -1129,6 +1134,14 @@ WebInspector.StylePropertiesSection.prototype = {
         return !hideRule;
     },
 
+    makeHoverableSelectorsMode: function()
+    {
+        if (this._hoverableSelectorsMode)
+            return;
+        this._hoverableSelectorsMode = true;
+        this._markSelectorMatches();
+    },
+
     _markSelectorMatches: function()
     {
         var rule = this._style.parentRule;
@@ -1140,29 +1153,72 @@ WebInspector.StylePropertiesSection.prototype = {
         if (!this._matchedStyles.hasMatchingSelectors(/** @type {!WebInspector.CSSStyleRule} */(rule)))
             return;
 
-        var selectors = rule.selectors;
-        var fragment = createDocumentFragment();
-        var currentMatch = 0;
-        var matchingSelectors = this._matchedStyles.matchingSelectors(/** @type {!WebInspector.CSSStyleRule} */(rule));
-        for (var i = 0; i < selectors.length ; ++i) {
-            if (i)
-                fragment.createTextChild(", ");
-            var isSelectorMatching = matchingSelectors[currentMatch] === i;
-            if (isSelectorMatching)
-                ++currentMatch;
-            var matchingSelectorClass = isSelectorMatching ? " selector-matches" : "";
-            var selectorElement = createElement("span");
-            selectorElement.className = "simple-selector" + matchingSelectorClass;
-            if (rule.styleSheetId)
-                selectorElement._selectorIndex = i;
-            selectorElement.textContent = selectors[i].text;
+        var selectorTexts = rule.selectors.map(selector => selector.text);
 
-            fragment.appendChild(selectorElement);
-        }
+        var matchingSelectorIndexes = this._matchedStyles.matchingSelectors(/** @type {!WebInspector.CSSStyleRule} */(rule));
+        var matchingSelectors = new Array(selectorTexts.length).fill(false);
+        for (var matchingIndex of matchingSelectorIndexes)
+            matchingSelectors[matchingIndex] = true;
 
+        var fragment = this._hoverableSelectorsMode ? this._renderHoverableSelectors(selectorTexts, matchingSelectors) : this._renderSimplifiedSelectors(selectorTexts, matchingSelectors);
         this._selectorElement.removeChildren();
         this._selectorElement.appendChild(fragment);
         this._markSelectorHighlights();
+    },
+
+    /**
+     * @param {!Array<string>} selectors
+     * @param {!Array<boolean>} matchingSelectors
+     * @return {!DocumentFragment}
+     */
+    _renderHoverableSelectors: function(selectors, matchingSelectors)
+    {
+        var fragment = createDocumentFragment();
+        for (var i = 0; i < selectors.length ; ++i) {
+            if (i)
+                fragment.createTextChild(", ");
+            fragment.appendChild(this._createSelectorElement(selectors[i], matchingSelectors[i], i));
+        }
+        return fragment;
+    },
+
+    /**
+     * @param {string} text
+     * @param {boolean} isMatching
+     * @param {number=} navigationIndex
+     * @return {!Element}
+     */
+    _createSelectorElement: function(text, isMatching, navigationIndex)
+    {
+        var element = createElementWithClass("span", "simple-selector");
+        element.classList.toggle("selector-matches", isMatching);
+        if (typeof navigationIndex === "number")
+            element._selectorIndex = navigationIndex;
+        element.textContent = text;
+        return element;
+    },
+
+    /**
+     * @param {!Array<string>} selectors
+     * @param {!Array<boolean>} matchingSelectors
+     * @return {!DocumentFragment}
+     */
+    _renderSimplifiedSelectors: function(selectors, matchingSelectors)
+    {
+        var fragment = createDocumentFragment();
+        var currentMatching = false;
+        var text = "";
+        for (var i = 0; i < selectors.length; ++i) {
+            if (currentMatching !== matchingSelectors[i] && text) {
+                fragment.appendChild(this._createSelectorElement(text, currentMatching));
+                text = "";
+            }
+            currentMatching = matchingSelectors[i];
+            text += selectors[i] + (i === selectors.length - 1 ? "" : ", ");
+        }
+        if (text)
+            fragment.appendChild(this._createSelectorElement(text, currentMatching));
+        return fragment;
     },
 
     _markSelectorHighlights: function()

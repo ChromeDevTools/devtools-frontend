@@ -149,6 +149,14 @@ WebInspector.ComputedStyleWidget.prototype = {
      */
     _innerRebuildUpdate: function(nodeStyle, matchedStyles)
     {
+        /** @type {!Set<string>} */
+        var expandedProperties = new Set();
+        for (var treeElement of this._propertiesOutline.rootElement().children()) {
+            if (!treeElement.expanded)
+                continue;
+            var propertyName = treeElement[WebInspector.ComputedStyleWidget._propertySymbol].name;
+            expandedProperties.add(propertyName);
+        }
         this._propertiesOutline.removeChildren();
         this._linkifier.reset();
         var cssModel = this._computedStyleModel.cssModel();
@@ -213,6 +221,8 @@ WebInspector.ComputedStyleWidget.prototype = {
                 treeElement.listItemElement.addEventListener("click", handleClick.bind(null, treeElement), false);
                 var gotoSourceElement = propertyValueElement.createChild("div", "goto-source-icon");
                 gotoSourceElement.addEventListener("click", this._navigateToSource.bind(this, activeProperty));
+                if (expandedProperties.has(propertyName))
+                    treeElement.expand();
             }
         }
 

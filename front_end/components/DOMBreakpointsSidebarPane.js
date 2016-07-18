@@ -348,7 +348,7 @@ WebInspector.DOMBreakpointsSidebarPane.prototype = {
         var element = this._breakpointElements[breakpointId];
         if (!element)
             return;
-        this.expand();
+        this.expandPane();
         element.classList.add("breakpoint-hit");
         this._highlightedElement = element;
     },
@@ -453,7 +453,7 @@ WebInspector.DOMBreakpointsSidebarPane.prototype = {
  */
 WebInspector.DOMBreakpointsSidebarPane.Proxy = function(pane, panel)
 {
-    WebInspector.SidebarPane.call(this, pane.title());
+    WebInspector.SidebarPane.call(this, WebInspector.UIString("DOM Breakpoints"));
     this.registerRequiredCSS("components/breakpointsList.css");
 
     this._wrappedPane = pane;
@@ -461,9 +461,9 @@ WebInspector.DOMBreakpointsSidebarPane.Proxy = function(pane, panel)
 }
 
 WebInspector.DOMBreakpointsSidebarPane.Proxy.prototype = {
-    expand: function()
+    expandPane: function()
     {
-        this._wrappedPane.expand();
+        this._wrappedPane.expandPane();
     },
 
     onContentReady: function()

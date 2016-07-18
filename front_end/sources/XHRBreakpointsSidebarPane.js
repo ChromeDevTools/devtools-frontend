@@ -52,7 +52,7 @@ WebInspector.XHRBreakpointsSidebarPane.prototype = {
         if (event)
             event.consume();
 
-        this.expand();
+        this.expandPane();
 
         var inputElementContainer = createElementWithClass("p", "breakpoint-condition");
         inputElementContainer.textContent = WebInspector.UIString("Break when URL contains:");
@@ -217,7 +217,7 @@ WebInspector.XHRBreakpointsSidebarPane.prototype = {
         var element = this._breakpointElements.get(url);
         if (!element)
             return;
-        this.expand();
+        this.expandPane();
         element.classList.add("breakpoint-hit");
         this._highlightedElement = element;
     },

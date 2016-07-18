@@ -57,7 +57,7 @@ WebInspector.AccessibilitySidebarView.prototype = {
             this._axNodeSubPane = new WebInspector.AXNodeSubPane();
             this._axNodeSubPane.setNode(this.node());
             this._axNodeSubPane.show(this.element);
-            this._axNodeSubPane.expand();
+            this._axNodeSubPane.expandPane();
 
             this._sidebarPaneStack = new WebInspector.SidebarPaneStack();
             this._sidebarPaneStack.element.classList.add("flex-auto");

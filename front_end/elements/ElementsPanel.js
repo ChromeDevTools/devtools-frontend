@@ -101,7 +101,7 @@ WebInspector.ElementsPanel.prototype = {
     _revealProperty: function(cssProperty)
     {
         var stylesSidebarPane = this.sidebarPanes.styles;
-        this.sidebarPaneView.selectTab(stylesSidebarPane.title());
+        this.sidebarPaneView.selectTab(WebInspector.UIString("Styles"));
         stylesSidebarPane.revealProperty(/** @type {!WebInspector.CSSProperty} */(cssProperty));
         return Promise.resolve();
     },
@@ -902,9 +902,9 @@ WebInspector.ElementsPanel.prototype = {
         function tabSelected(event)
         {
             var tabId = /** @type {string} */ (event.data.tabId);
-            if (tabId === computedPane.title())
+            if (tabId === WebInspector.UIString("Computed"))
                 showMetrics.call(this, true);
-            else if (tabId === stylesPane.title())
+            else if (tabId === WebInspector.UIString("Styles"))
                 showMetrics.call(this, false);
         }
 
@@ -918,7 +918,7 @@ WebInspector.ElementsPanel.prototype = {
         if (horizontally) {
             this._splitWidget.installResizer(this.sidebarPaneView.headerElement());
 
-            var compositePane = new WebInspector.SidebarPane(this.sidebarPanes.styles.title());
+            var compositePane = new WebInspector.SidebarPane(WebInspector.UIString("Styles"));
             compositePane.element.classList.add("composite");
             compositePane.element.classList.add("fill");
 
@@ -931,7 +931,7 @@ WebInspector.ElementsPanel.prototype = {
             computedPane.show(computedStylePanesWrapper.element);
             this.sidebarPaneView.addPane(compositePane);
         } else {
-            var stylesPane = new WebInspector.SidebarPane(this.sidebarPanes.styles.title());
+            var stylesPane = new WebInspector.SidebarPane(WebInspector.UIString("Styles"));
             stylesPane.element.classList.add("composite", "fill", "metrics-and-styles");
 
             matchedStylesContainer.show(stylesPane.element);
@@ -959,7 +959,7 @@ WebInspector.ElementsPanel.prototype = {
             this._addExtensionSidebarPane(extensionSidebarPanes[i]);
 
         this._splitWidget.setSidebarWidget(this.sidebarPaneView);
-        this.sidebarPanes.styles.expand();
+        this.sidebarPanes.styles.expandPane();
 
         if (selectedTabId)
             this.sidebarPaneView.selectTab(selectedTabId);

@@ -75,7 +75,7 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
      */
     addExpression: function(expressionString)
     {
-        this.expand();
+        this.expandPane();
         if (this._requiresUpdate) {
             this._rebuildWatchExpressions();
             delete this._requiresUpdate;
@@ -87,7 +87,7 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
     expandIfNecessary: function()
     {
         if (this._watchExpressionsSetting.get().length)
-            this.expand();
+            this.expandPane();
     },
 
     _saveExpressions: function()
@@ -116,7 +116,7 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
     {
         if (event)
             event.consume(true);
-        this.expand();
+        this.expandPane();
         this._createWatchExpression(null).startEditing();
     },
 

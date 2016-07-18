@@ -56,15 +56,7 @@ WebInspector.SidebarPane.prototype = {
         return this._toolbar;
     },
 
-    /**
-     * @return {string}
-     */
-    title: function()
-    {
-        return this._title;
-    },
-
-    expand: function()
+    expandPane: function()
     {
         this.onContentReady();
     },
@@ -116,7 +108,7 @@ WebInspector.SidebarPaneTitle = function(container, pane)
     this._pane = pane;
 
     this.element = container.createChild("div", "sidebar-pane-title");
-    this.element.textContent = pane.title();
+    this.element.textContent = pane._title;
     this.element.tabIndex = 0;
     this.element.addEventListener("click", this._toggleExpanded.bind(this), false);
     this.element.addEventListener("keydown", this._onTitleKeyDown.bind(this), false);
@@ -141,7 +133,7 @@ WebInspector.SidebarPaneTitle.prototype = {
         if (this.element.classList.contains("expanded"))
             this._collapse();
         else
-            this._pane.expand();
+            this._pane.expandPane();
     },
 
     /**
@@ -213,7 +205,7 @@ WebInspector.SidebarTabbedPane.prototype = {
      */
     addPane: function(pane)
     {
-        var title = pane.title();
+        var title = pane._title;
         this.appendTab(title, title, pane);
         if (pane._toolbar)
             pane.element.insertBefore(pane._toolbar.element, pane.element.firstChild);

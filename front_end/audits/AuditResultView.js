@@ -80,7 +80,7 @@ WebInspector.AuditCategoryResultPane = function(categoryResult)
         var treeElement = this._appendResult(this._treeOutline.rootElement(), ruleResult, ruleResult.severity);
         treeElement.listItemElement.classList.add("audit-result");
     }
-    this.expand();
+    this.expandPane();
 }
 
 WebInspector.AuditCategoryResultPane.prototype = {

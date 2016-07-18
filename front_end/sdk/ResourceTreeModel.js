@@ -981,5 +981,14 @@ WebInspector.PageDispatcher.prototype = {
     interstitialHidden: function()
     {
         // Frontend is not interested in interstitials.
+    },
+
+    /**
+     * @override
+     */
+    navigationRequested: function()
+    {
+       // Frontend is not interested in interstitials.
     }
+
 }

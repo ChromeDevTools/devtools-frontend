@@ -345,11 +345,11 @@ WebInspector.CPUProfileView.NodeFormatter.prototype = {
     /**
      * @override
      * @param  {!WebInspector.ProfileDataGridNode} node
-     * @return {!Element}
+     * @return {?Element}
      */
     linkifyNode: function(node)
     {
-        return this._profileView.linkifier().linkifyConsoleCallFrame(this._profileView.target(), node.profileNode.callFrame, "profile-node-file");
+        return this._profileView.linkifier().maybeLinkifyConsoleCallFrame(this._profileView.target(), node.profileNode.callFrame, "profile-node-file");
     }
 }
 
@@ -485,9 +485,10 @@ WebInspector.CPUFlameChartDataProvider.prototype = {
         pushEntryInfoRow(WebInspector.UIString("Self time"), selfTime);
         pushEntryInfoRow(WebInspector.UIString("Total time"), totalTime);
         var linkifier = new WebInspector.Linkifier();
-        var text = linkifier.linkifyConsoleCallFrame(this._target, node.callFrame).textContent;
+        var link = linkifier.maybeLinkifyConsoleCallFrame(this._target, node.callFrame);
+        if (link)
+            pushEntryInfoRow(WebInspector.UIString("URL"), link.textContent);
         linkifier.dispose();
-        pushEntryInfoRow(WebInspector.UIString("URL"), text);
         pushEntryInfoRow(WebInspector.UIString("Aggregated self time"), Number.secondsToString(node.self / 1000, true));
         pushEntryInfoRow(WebInspector.UIString("Aggregated total time"), Number.secondsToString(node.total / 1000, true));
         if (node.deoptReason && node.deoptReason !== "no reason")

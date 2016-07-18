@@ -103,10 +103,8 @@ WebInspector.ObjectPopoverHelper.prototype = {
                 sectionToolbar.appendToolbarItem(stepInto);
             }
             var sourceURL = rawLocation && rawLocation.script() ? rawLocation.script().sourceURL : null;
-            if (rawLocation && sourceURL) {
-                var link = this._lazyLinkifier().linkifyRawLocation(rawLocation, sourceURL);
-                linkContainer.appendChild(link);
-            }
+            if (rawLocation && sourceURL)
+                linkContainer.appendChild(this._lazyLinkifier().linkifyRawLocation(rawLocation, sourceURL));
             container.appendChild(popoverContentElement);
             popover.showForAnchor(container, anchorElement);
         }

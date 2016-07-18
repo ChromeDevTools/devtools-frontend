@@ -236,8 +236,11 @@ WebInspector.DOMPresentationUtils.buildStackTracePreviewContents = function(targ
         for (var stackFrame of stackTrace.callFrames) {
             var row = createElement("tr");
             row.createChild("td", "function-name").textContent = WebInspector.beautifyFunctionName(stackFrame.functionName);
-            row.createChild("td").textContent = " @ ";
-            row.createChild("td").appendChild(linkifier.linkifyConsoleCallFrame(target, stackFrame));
+            var link = linkifier.maybeLinkifyConsoleCallFrame(target, stackFrame);
+            if (link) {
+                row.createChild("td").textContent = " @ ";
+                row.createChild("td").appendChild(link);
+            }
             contentElement.appendChild(row);
         }
     }

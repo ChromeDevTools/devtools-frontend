@@ -1068,8 +1068,7 @@ WebInspector.ObjectPropertiesSection.createValueElement = function(value, wasThr
         var rawLocation = value.debuggerModel().createRawLocationByScriptId(value.value.scriptId, value.value.lineNumber, value.value.columnNumber);
         if (rawLocation && linkifier)
             return linkifier.linkifyRawLocation(rawLocation, "");
-        else
-            valueElement.textContent = "<unknown>";
+        valueElement.textContent = "<unknown>";
     }
 
     function mouseMove()

@@ -530,7 +530,7 @@ WebInspector.TimelineUIUtils.buildDetailsTextForTraceEvent = function(event, tar
 WebInspector.TimelineUIUtils.buildDetailsNodeForTraceEvent = function(event, target, linkifier)
 {
     var recordType = WebInspector.TimelineModel.RecordType;
-    var details;
+    var details = null;
     var detailsText;
     var eventData = event.args["data"];
     switch (event.name) {
@@ -604,6 +604,7 @@ WebInspector.TimelineUIUtils.buildDetailsNodeForTraceEvent = function(event, tar
      * @param {string} url
      * @param {number} lineNumber
      * @param {number=} columnNumber
+     * @return {?Element}
      */
     function linkifyLocation(scriptId, url, lineNumber, columnNumber)
     {
@@ -619,7 +620,7 @@ WebInspector.TimelineUIUtils.buildDetailsNodeForTraceEvent = function(event, tar
     function linkifyTopCallFrame()
     {
         var frame = WebInspector.TimelineUIUtils.topStackFrame(event);
-        return frame ? linkifier.linkifyConsoleCallFrameForTimeline(target, frame, "timeline-details") : null;
+        return frame ? linkifier.maybeLinkifyConsoleCallFrameForTimeline(target, frame, "timeline-details") : null;
     }
 }
 
@@ -996,11 +997,16 @@ WebInspector.TimelineUIUtils.buildNetworkRequestDetails = function(request, mode
     var sendRequest = request.children[0];
     var topFrame = WebInspector.TimelineUIUtils.topStackFrame(sendRequest);
     if (topFrame) {
-        contentHelper.appendElementRow(title, linkifier.linkifyConsoleCallFrameForTimeline(target, topFrame));
+        var link = linkifier.maybeLinkifyConsoleCallFrameForTimeline(target, topFrame);
+        if (link)
+            contentHelper.appendElementRow(title, link);
     } else if (sendRequest.initiator) {
         var initiatorURL = WebInspector.TimelineUIUtils.eventURL(sendRequest.initiator);
-        if (initiatorURL)
-            contentHelper.appendElementRow(title, linkifier.linkifyScriptLocation(target, null, initiatorURL, 0));
+        if (initiatorURL) {
+            var link = linkifier.maybeLinkifyScriptLocation(target, null, initiatorURL, 0);
+            if (link)
+                contentHelper.appendElementRow(title, link);
+        }
     }
 
     /**
@@ -1240,8 +1246,11 @@ WebInspector.TimelineUIUtils.InvalidationsGroupElement.prototype = {
             title.createTextChild(WebInspector.UIString(". "));
             var stack = title.createChild("span", "monospace");
             stack.createChild("span").textContent = WebInspector.beautifyFunctionName(topFrame.functionName);
-            stack.createChild("span").textContent = " @ ";
-            stack.createChild("span").appendChild(this._contentHelper.linkifier().linkifyConsoleCallFrameForTimeline(target, topFrame));
+            var link = this._contentHelper.linkifier().maybeLinkifyConsoleCallFrameForTimeline(target, topFrame);
+            if (link) {
+                stack.createChild("span").textContent = " @ ";
+                stack.createChild("span").appendChild(link);
+            }
         }
 
         return title;
@@ -2051,7 +2060,10 @@ WebInspector.TimelineDetailsContentHelper.prototype = {
             return;
         if (startColumn)
             --startColumn;
-        this.appendElementRow(title, this._linkifier.linkifyScriptLocation(this._target, null, url, startLine - 1, startColumn));
+        var link = this._linkifier.maybeLinkifyScriptLocation(this._target, null, url, startLine - 1, startColumn);
+        if (!link)
+            return;
+        this.appendElementRow(title, link);
     },
 
     /**
@@ -2065,7 +2077,10 @@ WebInspector.TimelineDetailsContentHelper.prototype = {
         if (!this._linkifier || !this._target)
             return;
         var locationContent = createElement("span");
-        locationContent.appendChild(this._linkifier.linkifyScriptLocation(this._target, null, url, startLine - 1));
+        var link = this._linkifier.maybeLinkifyScriptLocation(this._target, null, url, startLine - 1);
+        if (!link)
+            return;
+        locationContent.appendChild(link);
         locationContent.createTextChild(String.sprintf(" [%s\u2026%s]", startLine, endLine || ""));
         this.appendElementRow(title, locationContent);
     },

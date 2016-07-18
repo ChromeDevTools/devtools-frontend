@@ -82,11 +82,11 @@ WebInspector.TimelineTreeView.prototype = {
 
     /**
      * @param {!RuntimeAgent.CallFrame} frame
-     * @return {!Element}
+     * @return {?Element}
      */
     linkifyLocation: function(frame)
     {
-        return this._linkifier.linkifyConsoleCallFrameForTimeline(this._model.target(), frame);
+        return this._linkifier.maybeLinkifyConsoleCallFrameForTimeline(this._model.target(), frame);
     },
 
     /**
@@ -347,7 +347,9 @@ WebInspector.TimelineTreeView.GridNode.prototype = {
             var frame = WebInspector.TimelineProfileTree.eventStackFrame(event);
             if (frame && frame["url"]) {
                 var callFrame = /** @type {!RuntimeAgent.CallFrame} */ (frame);
-                container.createChild("div", "activity-link").appendChild(this._treeView.linkifyLocation(callFrame));
+                var link = this._treeView.linkifyLocation(callFrame);
+                if (link)
+                    container.createChild("div", "activity-link").appendChild(link);
             }
             icon.style.backgroundColor = WebInspector.TimelineUIUtils.eventColor(event);
         }

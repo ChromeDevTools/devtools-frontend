@@ -80,6 +80,8 @@ WebInspector.ProfileDataGridNode.prototype = {
             if (this.profileNode.scriptId === "0")
                 break;
             var urlElement = this.tree._formatter.linkifyNode(this);
+            if (!urlElement)
+                break;
             urlElement.style.maxWidth = "75%";
             cell.appendChild(urlElement);
             break;
@@ -648,7 +650,7 @@ WebInspector.ProfileDataGridNode.Formatter.prototype = {
 
     /**
      * @param  {!WebInspector.ProfileDataGridNode} node
-     * @return {!Element}
+     * @return {?Element}
      */
     linkifyNode: function(node) { }
 }

@@ -40,7 +40,7 @@ WebInspector.StylesSidebarPane = function()
     WebInspector.moduleSetting("textEditorIndent").addChangeListener(this.update.bind(this));
 
     this._sectionsContainer = this.element.createChild("div");
-    this._stylesPopoverHelper = new WebInspector.StylesPopoverHelper();
+    this._swatchPopoverHelper = new WebInspector.SwatchPopoverHelper();
     this._linkifier = new WebInspector.Linkifier(new WebInspector.Linkifier.DefaultCSSFormatter());
 
     this.element.classList.add("styles-pane");
@@ -136,7 +136,7 @@ WebInspector.StylesSidebarPane.prototype = {
 
     forceUpdate: function()
     {
-        this._stylesPopoverHelper.hide();
+        this._swatchPopoverHelper.hide();
         this._resetCache();
         this.update();
     },
@@ -490,7 +490,7 @@ WebInspector.StylesSidebarPane.prototype = {
     {
         this.element.ownerDocument.body.removeEventListener("keydown", this._keyDownBound, false);
         this.element.ownerDocument.body.removeEventListener("keyup", this._keyUpBound, false);
-        this._stylesPopoverHelper.hide();
+        this._swatchPopoverHelper.hide();
         this._discardElementUnderMouse();
         WebInspector.ElementsSidebarPane.prototype.willHide.call(this);
     },
@@ -2014,8 +2014,8 @@ WebInspector.StylePropertyTreeElement.prototype = {
             return swatch;
         }
 
-        var stylesPopoverHelper = this._parentPane._stylesPopoverHelper;
-        var swatchIcon = new WebInspector.ColorSwatchPopoverIcon(this, stylesPopoverHelper, text);
+        var swatchPopoverHelper = this._parentPane._swatchPopoverHelper;
+        var swatchIcon = new WebInspector.ColorSwatchPopoverIcon(this, swatchPopoverHelper, text);
 
         /**
          * @param {?Array<string>} backgroundColors
@@ -2069,8 +2069,8 @@ WebInspector.StylePropertyTreeElement.prototype = {
         var geometry = WebInspector.Geometry.CubicBezier.parse(text);
         if (!geometry || !this._editable())
             return createTextNode(text);
-        var stylesPopoverHelper = this._parentPane._stylesPopoverHelper;
-        return new WebInspector.BezierPopoverIcon(this, stylesPopoverHelper, text).element();
+        var swatchPopoverHelper = this._parentPane._swatchPopoverHelper;
+        return new WebInspector.BezierPopoverIcon(this, swatchPopoverHelper, text).element();
     },
 
     _updateState: function()

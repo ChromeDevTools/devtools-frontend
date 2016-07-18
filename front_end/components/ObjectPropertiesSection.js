@@ -470,7 +470,7 @@ WebInspector.ObjectPropertyTreeElement.prototype = {
                 parent.invalidateChildren();
                 parent.expand();
             }
-        };
+        }
     },
 
     /**

@@ -2210,7 +2210,7 @@ WebInspector.HeapSnapshotStatisticsView.prototype = {
 WebInspector.HeapAllocationStackView = function(target)
 {
     WebInspector.Widget.call(this);
-    this._target = target;;
+    this._target = target;
     this._linkifier = new WebInspector.Linkifier();
 }
 

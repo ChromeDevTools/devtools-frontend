@@ -26,6 +26,7 @@ module.exports = {
             "avoidEscape": true,
             "allowTemplateLiterals": true
         }],
+        "no-extra-semi": 2,
         "comma-style": [2, "last"],
         "wrap-iife": [2, "inside"],
         "spaced-comment": [2, "always", {

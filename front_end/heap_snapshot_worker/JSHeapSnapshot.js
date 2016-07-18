@@ -401,7 +401,7 @@ WebInspector.JSHeapSnapshot.prototype = {
         var nodes = this.nodes;
         var nodesLength = nodes.length;
         var nodeTypeOffset = this._nodeTypeOffset;
-        var nodeSizeOffset = this._nodeSelfSizeOffset;;
+        var nodeSizeOffset = this._nodeSelfSizeOffset;
         var nodeNativeType = this._nodeNativeType;
         var nodeCodeType = this._nodeCodeType;
         var nodeConsStringType = this._nodeConsStringType;
@@ -606,7 +606,7 @@ WebInspector.JSHeapSnapshotNode.prototype = {
     {
         var snapshot = this._snapshot;
         var nodes = snapshot.nodes;
-        var type = nodes[this.nodeIndex + snapshot._nodeTypeOffset];;
+        var type = nodes[this.nodeIndex + snapshot._nodeTypeOffset];
         if (type === snapshot._nodeObjectType || type === snapshot._nodeNativeType)
             return nodes[this.nodeIndex + snapshot._nodeNameOffset];
         return -1 - type;
@@ -796,7 +796,7 @@ WebInspector.JSHeapSnapshotEdge.prototype = {
         case "hidden":
         case "invisible":
             return "{" + name + "}";
-        };
+        }
         return "?" + name + "?";
     },
 

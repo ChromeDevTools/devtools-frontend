@@ -584,7 +584,7 @@ WebInspector.HeapSnapshotGenericObjectNode.prototype = {
         case "array":
             value = (value || "") + "[]";
             break;
-        };
+        }
         if (this._reachableFromWindow)
             valueStyle += " highlight";
         if (value === "Object")

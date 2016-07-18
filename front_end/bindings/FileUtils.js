@@ -200,7 +200,7 @@ WebInspector.createFileSelectorElement = function(callback)
     function onChange(event)
     {
         callback(fileSelectorElement.files[0]);
-    };
+    }
     return fileSelectorElement;
 }
 

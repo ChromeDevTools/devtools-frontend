@@ -36,7 +36,7 @@ var _loadedScripts = {};
 // FIXME: This is a workaround to force Closure compiler provide
 // the standard ES6 runtime for all modules. This should be removed
 // once Closure provides standard externs for Map et al.
-for (var k of []) {};
+for (var k of []) {}
 
 /**
  * @param {string} url

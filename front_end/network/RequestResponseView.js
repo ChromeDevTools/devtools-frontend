@@ -46,7 +46,7 @@ WebInspector.RequestResponseView.prototype = {
 
         var contentProvider = new WebInspector.RequestResponseView.ContentProvider(this.request);
         var highlighterType = this.request.resourceType().canonicalMimeType() || this.request.mimeType;
-        this._sourceView = WebInspector.ResourceSourceFrame.createSearchableView(contentProvider, highlighterType);;
+        this._sourceView = WebInspector.ResourceSourceFrame.createSearchableView(contentProvider, highlighterType);
         return this._sourceView;
     },
 

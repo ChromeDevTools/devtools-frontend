@@ -1274,7 +1274,7 @@ WebInspector.HeapSnapshot.prototype = {
         function traceIdFilter(node)
         {
             return !!set[node.traceNodeId()];
-        };
+        }
         return traceIdFilter;
     },
 

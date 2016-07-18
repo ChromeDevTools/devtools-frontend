@@ -174,6 +174,13 @@
                   { "name": "column", "type": "integer", "description": "Error column." }
                 ],
                 "hidden": true
+            },
+            {
+                "id": "NavigationResponse",
+                "description": "Proceed: allow the navigation; Cancel: cancel the navigation; CancelAndIgnore: cancels the navigation and makes the requester of the navigation acts like the request was never made.",
+                "type": "string",
+                "enum": ["Proceed", "Cancel", "CancelAndIgnore"],
+                "hidden": true
             }
         ],
         "commands": [
@@ -481,6 +488,25 @@
                 "parameters": [
                     { "name": "threshold", "type": "number", "description": "If set to a positive number, specifies threshold in seconds for input event latency that will cause a console warning about blocked event to be issued. If zero or less, the warning is disabled." }
                 ]
+            },
+            {
+                "name": "setControlNavigations",
+                "parameters": [
+                    { "name": "enabled", "type": "boolean" }
+                ],
+                "description": "Toggles navigation throttling which allows programatic control over navigation and redirect response.",
+                "hidden": true,
+                "handlers": ["browser"]
+            },
+            {
+                "name": "processNavigation",
+                "parameters": [
+                    { "name": "response", "$ref": "NavigationResponse" },
+                    { "name": "navigationId", "type": "integer" }
+                ],
+                "description": "Should be sent in response to a navigationRequested or a redirectRequested event, telling the browser how to handle the navigation.",
+                "hidden": true,
+                "handlers": ["browser"]
             }
         ],
         "events": [
@@ -611,6 +637,17 @@
                 "name": "interstitialHidden",
                 "description": "Fired when interstitial page was hidden",
                 "hidden": true,
+                "handlers": ["browser"]
+            },
+            {
+                "name": "navigationRequested",
+                "description": "Fired when a navigation is started if navigation throttles are enabled.  The navigation will be deferred until processNavigation is called.",
+                "parameters": [
+                    { "name": "isInMainFrame", "type": "boolean", "description": "Whether the navigation is taking place in the main frame or in a subframe." },
+                    { "name": "isRedirect", "type": "boolean", "description": "Whether the navigation has encountered a server redirect or not." },
+                    { "name": "navigationId", "type": "integer" },
+                    { "name": "url", "type": "string", "description": "URL of requested navigation." }
+                ],
                 "handlers": ["browser"]
             }
         ]
@@ -4230,7 +4267,7 @@
                 "name": "createTarget",
                 "description": "Creates a new page.",
                 "parameters": [
-                    { "name": "initialUrl", "type": "string", "description": "The initial URL the page will be navigated to." },
+                    { "name": "url", "type": "string", "description": "The initial URL the page will be navigated to." },
                     { "name": "width", "type": "integer", "description": "Window width (headless chrome only).", "optional": true },
                     { "name": "height", "type": "integer", "description": "Window height (headless chrome only).", "optional": true },
                     { "name": "browserContextId", "$ref": "BrowserContextID", "description": "The browser context to create the page in (headless chrome only).", "optional": true }
@@ -4318,8 +4355,8 @@
                 "type": "object",
                 "properties": [
                     { "name": "devices", "type": "array", "items": { "$ref": "GPUDevice" }, "description": "The graphics devices on the system. Element 0 is the primary GPU." },
-                    { "name": "auxAttributes", "type": "object", "optional": "true", "description": "An optional dictionary of additional GPU related attributes." },
-                    { "name": "featureStatus", "type": "object", "optional": "true", "description": "An optional dictionary of graphics features and their status." },
+                    { "name": "auxAttributes", "type": "object", "optional": true, "description": "An optional dictionary of additional GPU related attributes." },
+                    { "name": "featureStatus", "type": "object", "optional": true, "description": "An optional dictionary of graphics features and their status." },
                     { "name": "driverBugWorkarounds", "type": "array", "items": { "type": "string" }, "description": "An optional array of GPU driver bug workarounds." }
                 ],
                 "description": "Provides information about the GPU(s) on the system."

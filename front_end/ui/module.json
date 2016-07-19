@@ -38,6 +38,7 @@
         "SoftContextMenu.js",
         "SplitWidget.js",
         "StackView.js",
+        "SwatchPopoverHelper.js",
         "Toolbar.js",
         "Tooltip.js",
         "SuggestBox.js",

@@ -21,7 +21,7 @@
             "type": "@WebInspector.Revealer",
             "contextTypes": ["WebInspector.DOMNode", "WebInspector.DeferredDOMNode", "WebInspector.RemoteObject" ],
             "className": "WebInspector.ElementsPanel.DOMNodeRevealer"
-        },        
+        },
         {
             "type": "@WebInspector.Revealer",
             "contextTypes": ["WebInspector.CSSProperty" ],
@@ -163,7 +163,7 @@
     "scripts": [
         "InspectElementModeController.js",
         "BezierUI.js",
-        "StylesPopoverHelper.js",
+        "ColorSwatchPopoverIcon.js",
         "BezierEditor.js",
         "ComputedStyleModel.js",
         "ElementsBreadcrumbs.js",

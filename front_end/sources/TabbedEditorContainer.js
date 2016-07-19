@@ -515,11 +515,11 @@ WebInspector.TabbedEditorContainer.prototype = {
     },
 
     /**
-     * @return {!WebInspector.UISourceCode} uiSourceCode
+     * @return {?WebInspector.UISourceCode} uiSourceCode
      */
     currentFile: function()
     {
-        return this._currentFile;
+        return this._currentFile || null;
     },
 
     __proto__: WebInspector.Object.prototype

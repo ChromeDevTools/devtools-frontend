@@ -96,7 +96,7 @@ WebInspector.IsolatedFileSystem.create = function(manager, path, embedderPath, n
 }
 
 /**
- * @param {!FileError} error
+ * @param {!DOMException} error
  * @return {string}
  */
 WebInspector.IsolatedFileSystem.errorMessage = function(error)
@@ -216,7 +216,7 @@ WebInspector.IsolatedFileSystem.prototype = {
              */
             function fileCreationError(error)
             {
-                if (error.code === FileError.INVALID_MODIFICATION_ERR) {
+                if (error.name === 'InvalidModificationError') {
                     dirEntryLoaded.call(this, dirEntry);
                     return;
                 }
@@ -264,6 +264,8 @@ WebInspector.IsolatedFileSystem.prototype = {
         /**
          * @param {!FileError} error
          * @this {WebInspector.IsolatedFileSystem}
+         * @suppress {checkTypes}
+         * TODO(jsbell): Update externs replacing FileError with DOMException. https://crbug.com/496901
          */
         function errorHandler(error)
         {
@@ -322,7 +324,7 @@ WebInspector.IsolatedFileSystem.prototype = {
          */
         function errorHandler(error)
         {
-            if (error.code === FileError.NOT_FOUND_ERR) {
+            if (error.name === 'NotFoundError') {
                 callback(null);
                 return;
             }
@@ -436,7 +438,7 @@ WebInspector.IsolatedFileSystem.prototype = {
          */
         function newFileEntryLoadErrorHandler(error)
         {
-            if (error.code !== FileError.NOT_FOUND_ERR) {
+            if (error.name !== 'NotFoundError') {
                 callback(false);
                 return;
             }

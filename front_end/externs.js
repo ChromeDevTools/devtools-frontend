@@ -757,3 +757,10 @@ Gonzales.Node = function()
     /** @type {(string|!Array<!Gonzales.Node>)} */
     this.content;
 }
+
+/**
+ * @type {string}
+ * @see http://heycam.github.io/webidl/#es-DOMException-prototype-object
+ * TODO(jsbell): DOMException should be a subclass of Error.
+ */
+DOMException.prototype.message;

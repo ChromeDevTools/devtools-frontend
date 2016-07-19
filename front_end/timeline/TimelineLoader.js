@@ -214,14 +214,14 @@ WebInspector.TimelineLoader.prototype = {
      */
     onError: function(reader, event)
     {
-        switch (event.target.error.code) {
-        case FileError.NOT_FOUND_ERR:
+        switch (event.target.error.name) {
+        case 'NotFoundError':
             this._reportErrorAndCancelLoading(WebInspector.UIString("File \"%s\" not found.", reader.fileName()));
             break;
-        case FileError.NOT_READABLE_ERR:
+        case 'NotReadableError':
             this._reportErrorAndCancelLoading(WebInspector.UIString("File \"%s\" is not readable", reader.fileName()));
             break;
-        case FileError.ABORT_ERR:
+        case 'AbortError':
             break;
         default:
             this._reportErrorAndCancelLoading(WebInspector.UIString("An error occurred while reading the file \"%s\"", reader.fileName()));

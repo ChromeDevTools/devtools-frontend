@@ -212,7 +212,7 @@ WebInspector.TargetManager.prototype = {
         if (target.hasJSCapability())
             new WebInspector.DebuggerModel(target);
 
-        if (target.hasBrowserCapability()) {
+        if (target.hasDOMCapability()) {
             new WebInspector.DOMModel(target);
             new WebInspector.CSSModel(target);
         }

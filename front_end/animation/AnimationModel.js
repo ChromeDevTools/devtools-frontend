@@ -206,7 +206,7 @@ WebInspector.AnimationModel._symbol = Symbol("AnimationModel");
  */
 WebInspector.AnimationModel.fromTarget = function(target)
 {
-    if (!target.hasBrowserCapability())
+    if (!target.hasDOMCapability())
         return null;
     if (!target[WebInspector.AnimationModel._symbol])
         target[WebInspector.AnimationModel._symbol] = new WebInspector.AnimationModel(target);

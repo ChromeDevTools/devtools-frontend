@@ -929,7 +929,7 @@ WebInspector.Spectrum.PaletteGenerator = function(callback)
     /** @type {!Map.<string, number>} */
     this._frequencyMap = new Map();
     var stylesheetPromises = [];
-    for (var target of WebInspector.targetManager.targets(WebInspector.Target.Capability.Browser)) {
+    for (var target of WebInspector.targetManager.targets(WebInspector.Target.Capability.DOM)) {
         var cssModel = WebInspector.CSSModel.fromTarget(target);
         for (var stylesheet of cssModel.allStyleSheets())
             stylesheetPromises.push(new Promise(this._processStylesheet.bind(this, stylesheet)));

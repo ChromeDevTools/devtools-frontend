@@ -1299,7 +1299,7 @@ WebInspector.LayerTreeDispatcher.prototype = {
  */
 WebInspector.LayerTreeModel.fromTarget = function(target)
 {
-    if (!target.hasBrowserCapability())
+    if (!target.hasDOMCapability())
         return null;
 
     var model = /** @type {?WebInspector.LayerTreeModel} */ (target.model(WebInspector.LayerTreeModel));

@@ -44,9 +44,9 @@ WebInspector.ConsoleModel = function(target)
     this._warnings = 0;
     this._errors = 0;
     this._revokedErrors = 0;
-    this._consoleAgent = target.consoleAgent();
-    target.registerConsoleDispatcher(new WebInspector.ConsoleDispatcher(this));
-    this._enableAgent();
+    this._logAgent = target.logAgent();
+    target.registerLogDispatcher(new WebInspector.LogDispatcher(this));
+    this._logAgent.enable();
 }
 
 WebInspector.ConsoleModel.Events = {
@@ -57,20 +57,6 @@ WebInspector.ConsoleModel.Events = {
 }
 
 WebInspector.ConsoleModel.prototype = {
-    _enableAgent: function()
-    {
-        this._enablingConsole = true;
-
-        /**
-         * @this {WebInspector.ConsoleModel}
-         */
-        function callback()
-        {
-            delete this._enablingConsole;
-        }
-        this._consoleAgent.enable(callback.bind(this));
-    },
-
     /**
      * @param {!WebInspector.ConsoleMessage} msg
      */
@@ -147,7 +133,7 @@ WebInspector.ConsoleModel.prototype = {
 
     requestClearMessages: function()
     {
-        this._consoleAgent.clearMessages();
+        this._logAgent.clear();
         this.clear();
     },
 
@@ -250,14 +236,6 @@ WebInspector.ConsoleModel.evaluateCommandInConsole = function(executionContext, 
     executionContext.evaluate(text, "console", !!useCommandLineAPI, false, false, true, true, printResult);
     WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.ConsoleEvaluated);
 }
-
-WebInspector.ConsoleModel.clearConsole = function()
-{
-    var targets = WebInspector.targetManager.targets();
-    for (var i = 0; i < targets.length; ++i)
-        targets[i].consoleModel.requestClearMessages();
-}
-
 
 /**
  * @constructor
@@ -523,55 +501,38 @@ WebInspector.ConsoleMessage.timestampComparator = function(a, b)
 
 /**
  * @constructor
- * @implements {ConsoleAgent.Dispatcher}
+ * @implements {LogAgent.Dispatcher}
  * @param {!WebInspector.ConsoleModel} console
  */
-WebInspector.ConsoleDispatcher = function(console)
+WebInspector.LogDispatcher = function(console)
 {
     this._console = console;
 }
 
-WebInspector.ConsoleDispatcher.prototype = {
+WebInspector.LogDispatcher.prototype = {
     /**
      * @override
-     * @param {!ConsoleAgent.ConsoleMessage} payload
+     * @param {!LogAgent.LogEntry} payload
      */
-    messageAdded: function(payload)
+    entryAdded: function(payload)
     {
-        if (payload.source === WebInspector.ConsoleMessage.MessageSource.ConsoleAPI)
-            return;
         var consoleMessage = new WebInspector.ConsoleMessage(
             this._console.target(),
             payload.source,
             payload.level,
             payload.text,
-            payload.type,
+            undefined,
             payload.url,
-            payload.line,
-            payload.column,
+            typeof payload.lineNumber === "undefined" ? undefined : payload.lineNumber + 1,
+            undefined,
             payload.networkRequestId,
-            payload.parameters,
-            payload.stack,
+            undefined,
+            payload.stackTrace,
             payload.timestamp,
-            payload.executionContextId,
-            payload.scriptId,
+            undefined,
+            undefined,
             payload.workerId);
         this._console.addMessage(consoleMessage);
-    },
-
-    /**
-     * @override
-     * @param {number} count
-     */
-    messageRepeatCountUpdated: function(count)
-    {
-    },
-
-    /**
-     * @override
-     */
-    messagesCleared: function()
-    {
     }
 }
 

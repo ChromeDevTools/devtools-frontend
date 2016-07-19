@@ -1301,6 +1301,14 @@ WebInspector.ConsoleView.instance = function()
     return WebInspector.ConsoleView._instance;
 }
 
+WebInspector.ConsoleView.clearConsole = function()
+{
+    for (var target of WebInspector.targetManager.targets()) {
+        target.runtimeModel.discardConsoleEntries();
+        target.consoleModel.requestClearMessages();
+    }
+}
+
 /**
  * @constructor
  * @implements {WebInspector.ActionDelegate}
@@ -1323,7 +1331,7 @@ WebInspector.ConsoleView.ActionDelegate.prototype = {
             WebInspector.console.show();
             return true;
         case "console.clear":
-            WebInspector.ConsoleModel.clearConsole();
+            WebInspector.ConsoleView.clearConsole();
             return true;
         case "console.clear.history":
             WebInspector.ConsoleView.instance()._clearHistory();

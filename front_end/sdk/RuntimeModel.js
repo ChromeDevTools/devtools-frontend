@@ -184,6 +184,11 @@ WebInspector.RuntimeModel.prototype = {
         return new WebInspector.RemoteObjectProperty(name, this.createRemoteObjectFromPrimitiveValue(value));
     },
 
+    discardConsoleEntries: function()
+    {
+        this._agent.discardConsoleEntries();
+    },
+
     /**
      * @param {!WebInspector.Event} event
      */

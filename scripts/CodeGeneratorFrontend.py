@@ -186,6 +186,8 @@ class Generator:
         for json_domain in json_api["domains"]:
             domain_name = json_domain["domain"]
             domain_name_lower = domain_name.lower()
+            if domain_name_lower == "console":
+                continue
 
             Generator.backend_js_domain_initializer_list.append("// %s.\n" % domain_name)
 

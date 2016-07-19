@@ -84,9 +84,18 @@ WebInspector.TimelineTreeView.prototype = {
      * @param {!RuntimeAgent.CallFrame} frame
      * @return {?Element}
      */
+    _linkifyLocationForTracing: function(frame)
+    {
+        return this._linkifier.maybeLinkifyConsoleCallFrameForTracing(this._model.target(), frame);
+    },
+
+    /**
+     * @param {!RuntimeAgent.CallFrame} frame
+     * @return {?Element}
+     */
     linkifyLocation: function(frame)
     {
-        return this._linkifier.maybeLinkifyConsoleCallFrameForTimeline(this._model.target(), frame);
+        return this._linkifier.maybeLinkifyConsoleCallFrame(this._model.target(), frame);
     },
 
     /**
@@ -347,7 +356,9 @@ WebInspector.TimelineTreeView.GridNode.prototype = {
             var frame = WebInspector.TimelineProfileTree.eventStackFrame(event);
             if (frame && frame["url"]) {
                 var callFrame = /** @type {!RuntimeAgent.CallFrame} */ (frame);
-                var link = this._treeView.linkifyLocation(callFrame);
+                var link = event.name === WebInspector.TimelineModel.RecordType.JSFrame
+                    ? this._treeView.linkifyLocation(callFrame)
+                    : this._treeView._linkifyLocationForTracing(callFrame);
                 if (link)
                     container.createChild("div", "activity-link").appendChild(link);
             }

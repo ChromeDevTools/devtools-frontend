@@ -565,7 +565,7 @@ WebInspector.TimelineUIUtils.buildDetailsNodeForTraceEvent = function(event, tar
             details = WebInspector.linkifyResourceAsNode(event.url);
         break;
     case recordType.FunctionCall:
-        details = linkifyLocation(eventData["scriptId"], eventData["scriptName"], eventData["scriptLine"], 0);
+        details = linkifyLocation(eventData["scriptId"], eventData["scriptName"], eventData["scriptLine"] - 1, 0);
         break;
     case recordType.JSFrame:
         details = createElement("span");
@@ -580,7 +580,7 @@ WebInspector.TimelineUIUtils.buildDetailsNodeForTraceEvent = function(event, tar
     case recordType.EvaluateScript:
         var url = eventData["url"];
         if (url)
-            details = linkifyLocation("", url, eventData["lineNumber"], 0);
+            details = linkifyLocation("", url, eventData["lineNumber"] - 1, 0);
         break;
     case recordType.ParseScriptOnBackground:
         var url = eventData["url"];
@@ -608,10 +608,7 @@ WebInspector.TimelineUIUtils.buildDetailsNodeForTraceEvent = function(event, tar
      */
     function linkifyLocation(scriptId, url, lineNumber, columnNumber)
     {
-        // FIXME(62725): stack trace line/column numbers are one-based.
-        if (columnNumber)
-            --columnNumber;
-        return linkifier.linkifyScriptLocation(target, scriptId, url, lineNumber - 1, columnNumber, "timeline-details");
+        return linkifier.linkifyScriptLocation(target, scriptId, url, lineNumber, columnNumber, "timeline-details");
     }
 
     /**
@@ -620,7 +617,7 @@ WebInspector.TimelineUIUtils.buildDetailsNodeForTraceEvent = function(event, tar
     function linkifyTopCallFrame()
     {
         var frame = WebInspector.TimelineUIUtils.topStackFrame(event);
-        return frame ? linkifier.maybeLinkifyConsoleCallFrameForTimeline(target, frame, "timeline-details") : null;
+        return frame ? linkifier.maybeLinkifyConsoleCallFrameForTracing(target, frame, "timeline-details") : null;
     }
 }
 
@@ -997,7 +994,7 @@ WebInspector.TimelineUIUtils.buildNetworkRequestDetails = function(request, mode
     var sendRequest = request.children[0];
     var topFrame = WebInspector.TimelineUIUtils.topStackFrame(sendRequest);
     if (topFrame) {
-        var link = linkifier.maybeLinkifyConsoleCallFrameForTimeline(target, topFrame);
+        var link = linkifier.maybeLinkifyConsoleCallFrameForTracing(target, topFrame);
         if (link)
             contentHelper.appendElementRow(title, link);
     } else if (sendRequest.initiator) {
@@ -1246,7 +1243,7 @@ WebInspector.TimelineUIUtils.InvalidationsGroupElement.prototype = {
             title.createTextChild(WebInspector.UIString(". "));
             var stack = title.createChild("span", "monospace");
             stack.createChild("span").textContent = WebInspector.beautifyFunctionName(topFrame.functionName);
-            var link = this._contentHelper.linkifier().maybeLinkifyConsoleCallFrameForTimeline(target, topFrame);
+            var link = this._contentHelper.linkifier().maybeLinkifyConsoleCallFrameForTracing(target, topFrame);
             if (link) {
                 stack.createChild("span").textContent = " @ ";
                 stack.createChild("span").appendChild(link);

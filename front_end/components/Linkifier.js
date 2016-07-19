@@ -229,9 +229,9 @@ WebInspector.Linkifier.prototype = {
      * @param {string=} classes
      * @return {?Element}
      */
-    maybeLinkifyConsoleCallFrameForTimeline: function(target, callFrame, classes)
+    maybeLinkifyConsoleCallFrameForTracing: function(target, callFrame, classes)
     {
-        // TODO(kozyatinskiy): remove this when Profilers will migrate to 0-based lineNumber and columnNumber.
+        // TODO(kozyatinskiy): remove this when tracing will migrate to 0-based lineNumber and columnNumber.
         return this.linkifyScriptLocation(target, callFrame.scriptId, callFrame.url, callFrame.lineNumber - 1, callFrame.columnNumber - 1, classes);
     },
 

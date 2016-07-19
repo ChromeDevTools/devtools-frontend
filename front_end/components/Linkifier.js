@@ -172,7 +172,7 @@ WebInspector.Linkifier.prototype = {
             return fallbackAnchor;
 
         var rawLocation =
-            debuggerModel.createRawLocationByScriptId(scriptId, lineNumber, columnNumber || 0) ||
+            (scriptId ? debuggerModel.createRawLocationByScriptId(scriptId, lineNumber, columnNumber || 0) : null) ||
             debuggerModel.createRawLocationByURL(sourceURL, lineNumber, columnNumber || 0);
         if (!rawLocation)
             return fallbackAnchor;

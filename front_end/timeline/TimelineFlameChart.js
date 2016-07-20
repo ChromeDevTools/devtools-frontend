@@ -357,7 +357,7 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
                 return WebInspector.UIString("Blackboxed");
             var name = WebInspector.TimelineUIUtils.eventStyle(event).title;
             // TODO(yurys): support event dividers
-            var detailsText = WebInspector.TimelineUIUtils.buildDetailsTextForTraceEvent(event, this._model.target());
+            var detailsText = WebInspector.TimelineUIUtils.buildDetailsTextForTraceEvent(event, this._model.targetByEvent(event));
             if (event.name === WebInspector.TimelineModel.RecordType.JSFrame && detailsText)
                 return detailsText;
             return detailsText ? WebInspector.UIString("%s (%s)", name, detailsText) : name;

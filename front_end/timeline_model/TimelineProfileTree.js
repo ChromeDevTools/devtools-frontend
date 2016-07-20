@@ -203,17 +203,17 @@ WebInspector.TimelineProfileTree.eventURL = function(event)
 
 /**
  * @param {!WebInspector.TracingModel.Event} event
- * @return {?Object}
+ * @return {?RuntimeAgent.CallFrame}
  */
 WebInspector.TimelineProfileTree.eventStackFrame = function(event)
 {
     if (event.name === WebInspector.TimelineModel.RecordType.JSFrame)
-        return event.args["data"];
+        return /** @type {?RuntimeAgent.CallFrame} */ (event.args["data"] || null);
     var topFrame = event.stackTrace && event.stackTrace[0];
     if (topFrame)
-        return topFrame;
+        return /** @type {!RuntimeAgent.CallFrame} */ (topFrame);
     var initiator = event.initiator;
-    return initiator && initiator.stackTrace && initiator.stackTrace[0] || null;
+    return /** @type {?RuntimeAgent.CallFrame} */ (initiator && initiator.stackTrace && initiator.stackTrace[0] || null);
 }
 
 /**

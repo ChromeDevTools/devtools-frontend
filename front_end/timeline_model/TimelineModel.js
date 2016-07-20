@@ -471,12 +471,15 @@ WebInspector.TimelineModel.prototype = {
     },
 
     /**
+     * @param {!WebInspector.TracingModel.Event} event
      * @return {?WebInspector.Target}
      */
-    target: function()
+    targetByEvent: function(event)
     {
         // FIXME: Consider returning null for loaded traces.
-        return WebInspector.targetManager.targets()[0];
+        var workerId = this._workerIdByThread.get(event.thread);
+        var mainTarget = WebInspector.targetManager.mainTarget();
+        return workerId ? mainTarget.workerManager.targetByWorkerId(workerId) : mainTarget;
     },
 
     /**
@@ -499,9 +502,15 @@ WebInspector.TimelineModel.prototype = {
             var endTime = i + 1 < length ? metadataEvents.page[i + 1].startTime : Infinity;
             this._currentPage = metaEvent.args["data"] && metaEvent.args["data"]["page"];
             for (var thread of process.sortedThreads()) {
-                if (thread.name() === WebInspector.TimelineModel.WorkerThreadName && !metadataEvents.workers.some(function(e) { return e.args["data"]["workerThreadId"] === thread.id(); }))
-                    continue;
-                this._processThreadEvents(startTime, endTime, metaEvent.thread, thread);
+                if (thread.name() === WebInspector.TimelineModel.WorkerThreadName) {
+                    var workerMetaEvent = metadataEvents.workers.find(e => e.args["data"]["workerThreadId"] === thread.id());
+                    if (!workerMetaEvent)
+                        continue;
+                    var workerId = workerMetaEvent.args["data"]["workerId"];
+                    if (workerId)
+                        this._workerIdByThread.set(thread, workerId);
+                }
+                this._processThreadEvents(startTime, endTime, thread, thread === metaEvent.thread);
             }
             startTime = endTime;
         }
@@ -718,10 +727,10 @@ WebInspector.TimelineModel.prototype = {
     /**
      * @param {number} startTime
      * @param {number} endTime
-     * @param {!WebInspector.TracingModel.Thread} mainThread
      * @param {!WebInspector.TracingModel.Thread} thread
+     * @param {boolean} isMainThread
      */
-    _processThreadEvents: function(startTime, endTime, mainThread, thread)
+    _processThreadEvents: function(startTime, endTime, thread, isMainThread)
     {
         var events = thread.events();
         var asyncEvents = thread.asyncEvents();
@@ -751,7 +760,7 @@ WebInspector.TimelineModel.prototype = {
 
         var threadEvents;
         var threadAsyncEventsByGroup;
-        if (thread === mainThread) {
+        if (isMainThread) {
             threadEvents = this._mainThreadEvents;
             threadAsyncEventsByGroup = this._mainThreadAsyncEventsByGroup;
         } else {
@@ -1093,6 +1102,8 @@ WebInspector.TimelineModel.prototype = {
         this._mainFrameNodeId = null;
         /** @type {!Array<!WebInspector.CPUProfileDataModel>} */
         this._cpuProfiles = [];
+        /** @type {!WeakMap<!WebInspector.TracingModel.Thread, string>} */
+        this._workerIdByThread = new WeakMap();
         this._minimumRecordTime = 0;
         this._maximumRecordTime = 0;
     },

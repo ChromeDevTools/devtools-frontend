@@ -81,21 +81,20 @@ WebInspector.TimelineTreeView.prototype = {
     _onHover: function(node) { },
 
     /**
-     * @param {!RuntimeAgent.CallFrame} frame
+     * @param {!WebInspector.TracingModel.Event} event
      * @return {?Element}
      */
-    _linkifyLocationForTracing: function(frame)
+    _linkifyLocation: function(event)
     {
-        return this._linkifier.maybeLinkifyConsoleCallFrameForTracing(this._model.target(), frame);
-    },
-
-    /**
-     * @param {!RuntimeAgent.CallFrame} frame
-     * @return {?Element}
-     */
-    linkifyLocation: function(frame)
-    {
-        return this._linkifier.maybeLinkifyConsoleCallFrame(this._model.target(), frame);
+        var target = this._model.targetByEvent(event);
+        if (!target)
+            return null;
+        var frame = WebInspector.TimelineProfileTree.eventStackFrame(event);
+        if (!frame)
+            return null;
+        return event.name === WebInspector.TimelineModel.RecordType.JSFrame
+            ? this._linkifier.maybeLinkifyConsoleCallFrame(target, frame)
+            : this._linkifier.maybeLinkifyConsoleCallFrameForTracing(target, frame);
     },
 
     /**
@@ -353,15 +352,9 @@ WebInspector.TimelineTreeView.GridNode.prototype = {
             name.textContent = event.name === WebInspector.TimelineModel.RecordType.JSFrame
                 ? WebInspector.beautifyFunctionName(event.args["data"]["functionName"])
                 : WebInspector.TimelineUIUtils.eventTitle(event);
-            var frame = WebInspector.TimelineProfileTree.eventStackFrame(event);
-            if (frame && frame["url"]) {
-                var callFrame = /** @type {!RuntimeAgent.CallFrame} */ (frame);
-                var link = event.name === WebInspector.TimelineModel.RecordType.JSFrame
-                    ? this._treeView.linkifyLocation(callFrame)
-                    : this._treeView._linkifyLocationForTracing(callFrame);
-                if (link)
-                    container.createChild("div", "activity-link").appendChild(link);
-            }
+            var link = this._treeView._linkifyLocation(event);
+            if (link)
+                container.createChild("div", "activity-link").appendChild(link);
             icon.style.backgroundColor = WebInspector.TimelineUIUtils.eventColor(event);
         }
         return cell;

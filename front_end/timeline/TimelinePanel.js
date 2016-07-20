@@ -774,7 +774,7 @@ WebInspector.TimelinePanel.prototype = {
             this._statusPane.updateStatus(WebInspector.UIString("Processing timeline\u2026"));
         this._model.setEvents(this._tracingModel, loadedFromFile);
         this._frameModel.reset();
-        this._frameModel.addTraceEvents(this._model.target(), this._model.inspectedTargetEvents(), this._model.sessionId() || "");
+        this._frameModel.addTraceEvents(WebInspector.targetManager.mainTarget(), this._model.inspectedTargetEvents(), this._model.sessionId() || "");
 
         var groups = WebInspector.TimelineModel.AsyncEventGroup;
         var asyncEventsByGroup = this._model.mainThreadAsyncEvents();
@@ -1088,7 +1088,7 @@ WebInspector.TimelinePanel.prototype = {
      */
     _showEventInPaintProfiler: function(event, isCloseable)
     {
-        var target = this._model.target();
+        var target = WebInspector.targetManager.mainTarget();
         if (!target)
             return;
         var paintProfilerView = this._paintProfilerView();

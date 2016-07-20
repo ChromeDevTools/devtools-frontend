@@ -590,7 +590,7 @@ WebInspector.TimelineModel.prototype = {
     {
         var rendererMainThreadName = WebInspector.TimelineModel.RendererMainThreadName;
         // FIXME: pick up the first renderer process for now.
-        var process = Object.values(tracingModel.sortedProcesses()).filter(function(p) { return p.threadByName(rendererMainThreadName); })[0];
+        var process = tracingModel.sortedProcesses().filter(function(p) { return p.threadByName(rendererMainThreadName); })[0];
         var thread = process && process.threadByName(rendererMainThreadName);
         if (!thread)
             return null;

@@ -160,16 +160,16 @@ WebInspector.TracingModel.prototype = {
         this._backingStorage.appendString(this._firstWritePending ? "[]" : "]");
         this._backingStorage.finishWriting();
         this._firstWritePending = false;
-        for (var process of Object.values(this._processById)) {
-            for (var thread of Object.values(process._threads))
+        for (var process of this._processById.values()) {
+            for (var thread of process._threads.values())
                 thread.tracingComplete();
         }
     },
 
     reset: function()
     {
-        /** @type {!Object.<(number|string), !WebInspector.TracingModel.Process>} */
-        this._processById = {};
+        /** @type {!Map<(number|string), !WebInspector.TracingModel.Process>} */
+        this._processById = new Map();
         this._processByName = new Map();
         this._minimumRecordTime = 0;
         this._maximumRecordTime = 0;
@@ -193,10 +193,10 @@ WebInspector.TracingModel.prototype = {
       */
     _addEvent: function(payload)
     {
-        var process = this._processById[payload.pid];
+        var process = this._processById.get(payload.pid);
         if (!process) {
             process = new WebInspector.TracingModel.Process(this, payload.pid);
-            this._processById[payload.pid] = process;
+            this._processById.set(payload.pid, process);
         }
 
         var eventsDelimiter = ",\n";
@@ -272,7 +272,7 @@ WebInspector.TracingModel.prototype = {
      */
     sortedProcesses: function()
     {
-        return WebInspector.TracingModel.NamedObject._sort(Object.values(this._processById));
+        return WebInspector.TracingModel.NamedObject._sort(this._processById.valuesArray());
     },
 
     /**
@@ -750,8 +750,8 @@ WebInspector.TracingModel.Process = function(model, id)
     WebInspector.TracingModel.NamedObject.call(this);
     this._setName("Process " + id);
     this._id = id;
-    /** @type {!Object.<number, !WebInspector.TracingModel.Thread>} */
-    this._threads = {};
+    /** @type {!Map<number, !WebInspector.TracingModel.Thread>} */
+    this._threads = new Map();
     this._threadByName = new Map();
     this._model = model;
 }
@@ -771,10 +771,10 @@ WebInspector.TracingModel.Process.prototype = {
      */
     threadById: function(id)
     {
-        var thread = this._threads[id];
+        var thread = this._threads.get(id);
         if (!thread) {
             thread = new WebInspector.TracingModel.Thread(this, id);
-            this._threads[id] = thread;
+            this._threads.set(id, thread);
         }
         return thread;
     },
@@ -811,7 +811,7 @@ WebInspector.TracingModel.Process.prototype = {
      */
     sortedThreads: function()
     {
-        return WebInspector.TracingModel.NamedObject._sort(Object.values(this._threads));
+        return WebInspector.TracingModel.NamedObject._sort(this._threads.valuesArray());
     },
 
     __proto__: WebInspector.TracingModel.NamedObject.prototype

@@ -89,7 +89,7 @@ WebInspector.ResourceTreeModel.frames = function()
 {
     var result = [];
     for (var target of WebInspector.targetManager.targets())
-        result = result.concat(Object.values(target.resourceTreeModel._frames));
+        result = result.concat(target.resourceTreeModel._frames.valuesArray());
     return result;
 }
 
@@ -111,8 +111,8 @@ WebInspector.ResourceTreeModel.resourceForURL = function(url)
 WebInspector.ResourceTreeModel.prototype = {
     _fetchResourceTree: function()
     {
-        /** @type {!Object.<string, !WebInspector.ResourceTreeFrame>} */
-        this._frames = {};
+        /** @type {!Map<string, !WebInspector.ResourceTreeFrame>} */
+        this._frames = new Map();
         this._cachedResourcesProcessed = false;
         this._agent.getResourceTree(this._processCachedResources.bind(this));
     },
@@ -176,7 +176,7 @@ WebInspector.ResourceTreeModel.prototype = {
      */
     _addFrame: function(frame, aboutToNavigate)
     {
-        this._frames[frame.id] = frame;
+        this._frames.set(frame.id, frame);
         if (frame.isMainFrame())
             this.mainFrame = frame;
         this.dispatchEventToListeners(WebInspector.ResourceTreeModel.EventTypes.FrameAdded, frame);
@@ -249,10 +249,10 @@ WebInspector.ResourceTreeModel.prototype = {
         // Do nothing unless cached resource tree is processed - it will overwrite everything.
         if (!this._cachedResourcesProcessed && parentFrameId)
             return null;
-        if (this._frames[frameId])
+        if (this._frames.has(frameId))
             return null;
 
-        var parentFrame = parentFrameId ? this._frames[parentFrameId] : null;
+        var parentFrame = parentFrameId ? (this._frames.get(parentFrameId) || null) : null;
         var frame = new WebInspector.ResourceTreeFrame(this, parentFrame, frameId);
         if (frame.isMainFrame() && this.mainFrame) {
             this._handleMainFrameDetached(this.mainFrame);
@@ -271,7 +271,7 @@ WebInspector.ResourceTreeModel.prototype = {
         // Do nothing unless cached resource tree is processed - it will overwrite everything.
         if (!this._cachedResourcesProcessed && framePayload.parentId)
             return;
-        var frame = this._frames[framePayload.id];
+        var frame = this._frames.get(framePayload.id);
         if (!frame) {
             // Simulate missed "frameAttached" for a main frame navigation to the new backend process.
             console.assert(!framePayload.parentId, "Main frame shouldn't have parent frame id.");
@@ -317,7 +317,7 @@ WebInspector.ResourceTreeModel.prototype = {
         if (!this._cachedResourcesProcessed)
             return;
 
-        var frame = this._frames[frameId];
+        var frame = this._frames.get(frameId);
         if (!frame)
             return;
 
@@ -340,7 +340,7 @@ WebInspector.ResourceTreeModel.prototype = {
         if (request.failed || request.resourceType() === WebInspector.resourceTypes.XHR)
             return;
 
-        var frame = this._frames[request.frameId];
+        var frame = this._frames.get(request.frameId);
         if (frame)
             frame._addRequest(request);
     },
@@ -354,7 +354,7 @@ WebInspector.ResourceTreeModel.prototype = {
             return;
 
         var frameId = event.data.frameId;
-        var frame = this._frames[frameId];
+        var frame = this._frames.get(frameId);
         if (!frame)
             return;
 
@@ -372,7 +372,7 @@ WebInspector.ResourceTreeModel.prototype = {
      */
     frameForId: function(frameId)
     {
-        return this._frames[frameId];
+        return this._frames.get(frameId);
     },
 
     /**
@@ -387,11 +387,11 @@ WebInspector.ResourceTreeModel.prototype = {
     },
 
     /**
-     * @return {!Array.<!WebInspector.ResourceTreeFrame>}
+     * @return {!Array<!WebInspector.ResourceTreeFrame>}
      */
     frames: function()
     {
-        return Object.values(this._frames);
+        return this._frames.valuesArray();
     },
 
     /**
@@ -725,7 +725,7 @@ WebInspector.ResourceTreeFrame.prototype = {
     _remove: function()
     {
         this._removeChildFrames();
-        delete this._model._frames[this.id];
+        this._model._frames.delete(this.id);
         this._model.dispatchEventToListeners(WebInspector.ResourceTreeModel.EventTypes.FrameDetached, this);
     },
 

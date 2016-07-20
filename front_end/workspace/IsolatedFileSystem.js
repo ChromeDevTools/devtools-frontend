@@ -526,7 +526,7 @@ WebInspector.IsolatedFileSystem.prototype = {
     _saveExcludedFolders: function()
     {
         var settingValue = this._excludedFoldersSetting.get();
-        settingValue[this._path] = Array.from(this._excludedFolders.values());
+        settingValue[this._path] = this._excludedFolders.valuesArray();
         this._excludedFoldersSetting.set(settingValue);
     },
 

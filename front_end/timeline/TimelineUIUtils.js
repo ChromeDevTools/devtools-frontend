@@ -1156,11 +1156,13 @@ WebInspector.TimelineUIUtils._generateInvalidationsForType = function(type, targ
     contentHelper.appendElementRow(title, invalidationsTreeOutline.element, false, true);
 
     /**
-     * @param {!Array.<!WebInspector.InvalidationTrackingEvent>} invalidations
+     * @param {!Array<!WebInspector.InvalidationTrackingEvent>} invalidations
+     * @return {!Array<!Array<!WebInspector.InvalidationTrackingEvent>>}
      */
     function groupInvalidationsByCause(invalidations)
     {
-        var causeToInvalidationMap = {};
+        /** @type {!Map<string, !Array<!WebInspector.InvalidationTrackingEvent>>} */
+        var causeToInvalidationMap = new Map();
         for (var index = 0; index < invalidations.length; index++) {
             var invalidation = invalidations[index];
             var causeKey = "";
@@ -1176,12 +1178,12 @@ WebInspector.TimelineUIUtils._generateInvalidationsForType = function(type, targ
                 });
             }
 
-            if (causeToInvalidationMap[causeKey])
-                causeToInvalidationMap[causeKey].push(invalidation);
+            if (causeToInvalidationMap.has(causeKey))
+                causeToInvalidationMap.get(causeKey).push(invalidation);
             else
-                causeToInvalidationMap[causeKey] = [ invalidation ];
+                causeToInvalidationMap.set(causeKey, [ invalidation ]);
         }
-        return Object.values(causeToInvalidationMap);
+        return causeToInvalidationMap.valuesArray();
     }
 }
 

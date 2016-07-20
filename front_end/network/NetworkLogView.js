@@ -133,8 +133,8 @@ WebInspector.NetworkLogView.IsFilterType = {
     Running: "running"
 };
 
-/** @type {!Array.<string>} */
-WebInspector.NetworkLogView._searchKeys = Object.values(WebInspector.NetworkLogView.FilterType);
+/** @type {!Array<string>} */
+WebInspector.NetworkLogView._searchKeys = Object.keys(WebInspector.NetworkLogView.FilterType).map(key => WebInspector.NetworkLogView.FilterType[key]);
 
 WebInspector.NetworkLogView.prototype = {
     /**

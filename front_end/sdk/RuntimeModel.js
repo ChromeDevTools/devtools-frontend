@@ -41,10 +41,8 @@ WebInspector.RuntimeModel = function(target)
     this.target().registerRuntimeDispatcher(new WebInspector.RuntimeDispatcher(this));
     if (target.hasJSCapability())
         this._agent.enable();
-    /**
-     * @type {!Object.<number, !WebInspector.ExecutionContext>}
-     */
-    this._executionContextById = {};
+    /** @type {!Map<number, !WebInspector.ExecutionContext>} */
+    this._executionContextById = new Map();
     this._executionContextComparator = WebInspector.ExecutionContext.comparator;
 
     if (WebInspector.moduleSetting("customFormatters").get())
@@ -68,7 +66,7 @@ WebInspector.RuntimeModel.prototype = {
      */
     executionContexts: function()
     {
-        return Object.values(this._executionContextById).sort(this.executionContextComparator());
+        return this._executionContextById.valuesArray().sort(this.executionContextComparator());
     },
 
     /**
@@ -92,7 +90,7 @@ WebInspector.RuntimeModel.prototype = {
      */
     defaultExecutionContext: function()
     {
-        for (var context of Object.values(this._executionContextById)) {
+        for (var context of this._executionContextById.values()) {
             if (context.isDefault)
                 return context;
         }
@@ -105,7 +103,7 @@ WebInspector.RuntimeModel.prototype = {
      */
     executionContext: function(id)
     {
-        return this._executionContextById[id] || null;
+        return this._executionContextById.get(id) || null;
     },
 
     /**
@@ -118,7 +116,7 @@ WebInspector.RuntimeModel.prototype = {
             return;
         }
         var executionContext = new WebInspector.ExecutionContext(this.target(), context.id, context.name, context.origin, context.isDefault, context.frameId);
-        this._executionContextById[executionContext.id] = executionContext;
+        this._executionContextById.set(executionContext.id, executionContext);
         this.dispatchEventToListeners(WebInspector.RuntimeModel.Events.ExecutionContextCreated, executionContext);
     },
 
@@ -127,10 +125,10 @@ WebInspector.RuntimeModel.prototype = {
      */
     _executionContextDestroyed: function(executionContextId)
     {
-        var executionContext = this._executionContextById[executionContextId];
+        var executionContext = this._executionContextById.get(executionContextId);
         if (!executionContext)
             return;
-        delete this._executionContextById[executionContextId];
+        this._executionContextById.delete(executionContextId);
         this.dispatchEventToListeners(WebInspector.RuntimeModel.Events.ExecutionContextDestroyed, executionContext);
     },
 
@@ -140,7 +138,7 @@ WebInspector.RuntimeModel.prototype = {
         if (debuggerModel)
             debuggerModel.globalObjectCleared();
         var contexts = this.executionContexts();
-        this._executionContextById = {};
+        this._executionContextById.clear();
         for (var  i = 0; i < contexts.length; ++i)
             this.dispatchEventToListeners(WebInspector.RuntimeModel.Events.ExecutionContextDestroyed, contexts[i]);
     },

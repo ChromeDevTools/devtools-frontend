@@ -554,7 +554,7 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
     _appendAsyncEvents: function(asyncEvents)
     {
         var groups = WebInspector.TimelineModel.AsyncEventGroup;
-        var groupArray = Object.values(groups);
+        var groupArray = Object.keys(groups).map(key => groups[key]);
 
         groupArray.remove(groups.animation);
         groupArray.remove(groups.input);

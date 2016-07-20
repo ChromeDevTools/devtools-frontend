@@ -1281,7 +1281,7 @@ WebInspector.DOMModel.prototype = {
      */
     pushNodesByBackendIdsToFrontend: function(backendNodeIds, callback)
     {
-        var backendNodeIdsArray = Array.from(backendNodeIds.values());
+        var backendNodeIdsArray = backendNodeIds.valuesArray();
         /**
          * @param {?Array<!DOMAgent.NodeId>} nodeIds
          * @this {!WebInspector.DOMModel}

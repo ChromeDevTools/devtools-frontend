@@ -483,8 +483,8 @@ WebInspector.BreakpointManager.Breakpoint = function(breakpointManager, projectI
     this._columnNumber = columnNumber;
     this._sourceFileId = sourceFileId;
 
-    /** @type {!Object.<string, number>} */
-    this._numberOfDebuggerLocationForUILocation = {};
+    /** @type {!Map<string, number>} */
+    this._numberOfDebuggerLocationForUILocation = new Map();
 
     // Force breakpoint update.
     /** @type {string} */ this._condition;
@@ -580,10 +580,9 @@ WebInspector.BreakpointManager.Breakpoint.prototype = {
         this._removeUILocation(oldUILocation, true);
         this._removeFakeBreakpointAtPrimaryLocation();
 
-        if (!this._numberOfDebuggerLocationForUILocation[newUILocation.id()])
-            this._numberOfDebuggerLocationForUILocation[newUILocation.id()] = 0;
-
-        if (++this._numberOfDebuggerLocationForUILocation[newUILocation.id()] === 1)
+        var current = (this._numberOfDebuggerLocationForUILocation.get(newUILocation.id()) || 0) + 1;
+        this._numberOfDebuggerLocationForUILocation.set(newUILocation.id(), current);
+        if (current === 1)
             this._breakpointManager._uiLocationAdded(this, newUILocation);
     },
 
@@ -593,10 +592,14 @@ WebInspector.BreakpointManager.Breakpoint.prototype = {
      */
     _removeUILocation: function(uiLocation, muteCreationFakeBreakpoint)
     {
-        if (!uiLocation || --this._numberOfDebuggerLocationForUILocation[uiLocation.id()] !== 0)
+        if (!uiLocation || !this._numberOfDebuggerLocationForUILocation.has(uiLocation.id()))
+            return;
+        var current = (this._numberOfDebuggerLocationForUILocation.get(uiLocation.id()) || 0) - 1;
+        this._numberOfDebuggerLocationForUILocation.set(uiLocation.id(), current);
+        if (current !== 0)
             return;
 
-        delete this._numberOfDebuggerLocationForUILocation[uiLocation.id()];
+        this._numberOfDebuggerLocationForUILocation.delete(uiLocation.id());
         this._breakpointManager._uiLocationRemoved(this, uiLocation);
         if (!muteCreationFakeBreakpoint)
             this._fakeBreakpointAtPrimaryLocation();
@@ -694,7 +697,7 @@ WebInspector.BreakpointManager.Breakpoint.prototype = {
 
     _fakeBreakpointAtPrimaryLocation: function()
     {
-        if (this._isRemoved || !Object.isEmpty(this._numberOfDebuggerLocationForUILocation) || this._fakePrimaryLocation)
+        if (this._isRemoved || this._numberOfDebuggerLocationForUILocation.size || this._fakePrimaryLocation)
             return;
 
         var uiSourceCode = this._breakpointManager._workspace.uiSourceCode(this._projectId, this._path);
@@ -741,8 +744,8 @@ WebInspector.BreakpointManager.TargetBreakpoint = function(debuggerModel, breakp
 
     this._liveLocations = new WebInspector.LiveLocationPool();
 
-    /** @type {!Object.<string, !WebInspector.UILocation>} */
-    this._uiLocations = {};
+    /** @type {!Map<string, !WebInspector.UILocation>} */
+    this._uiLocations = new Map();
     this._debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.DebuggerWasDisabled, this._cleanUpAfterDebuggerIsGone, this);
     this._debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.DebuggerWasEnabled, this._scheduleUpdateInDebugger, this);
     this._hasPendingUpdate = false;
@@ -757,11 +760,10 @@ WebInspector.BreakpointManager.TargetBreakpoint.prototype = {
 
     _resetLocations: function()
     {
-        var uiLocations = Object.values(this._uiLocations);
-        for (var i = 0; i < uiLocations.length; ++i)
-            this._breakpoint._removeUILocation(uiLocations[i]);
+        for (var uiLocation of this._uiLocations.values())
+            this._breakpoint._removeUILocation(uiLocation);
 
-        this._uiLocations = {};
+        this._uiLocations.clear();
         this._liveLocations.disposeAll();
     },
 
@@ -922,8 +924,8 @@ WebInspector.BreakpointManager.TargetBreakpoint.prototype = {
         var uiLocation = liveLocation.uiLocation();
         if (!uiLocation)
             return;
-        var oldUILocation = this._uiLocations[location.id()] || null;
-        this._uiLocations[location.id()] = uiLocation;
+        var oldUILocation = this._uiLocations.get(location.id()) || null;
+        this._uiLocations.set(location.id(), uiLocation);
         this._breakpoint._replaceUILocation(oldUILocation, uiLocation);
     },
 

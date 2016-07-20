@@ -457,7 +457,7 @@ WebInspector.Workspace.prototype = {
      */
     projects: function()
     {
-        return Array.from(this._projects.values());
+        return this._projects.valuesArray();
     },
 
     /**

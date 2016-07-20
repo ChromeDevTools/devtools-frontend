@@ -477,26 +477,27 @@ WebInspector.ExtensionServer.prototype = {
     },
 
     /**
-     * @return {!Array.<!WebInspector.ContentProvider>}
+     * @return {!Array<!WebInspector.ContentProvider>}
      */
     _onGetPageResources: function()
     {
-        var resources = {};
+        /** @type {!Map<string, !WebInspector.ContentProvider>} */
+        var resources = new Map();
 
         /**
          * @this {WebInspector.ExtensionServer}
          */
         function pushResourceData(contentProvider)
         {
-            if (!resources[contentProvider.contentURL()])
-                resources[contentProvider.contentURL()] = this._makeResource(contentProvider);
+            if (!resources.has(contentProvider.contentURL()))
+                resources.set(contentProvider.contentURL(), this._makeResource(contentProvider));
         }
         var uiSourceCodes = WebInspector.workspace.uiSourceCodesForProjectType(WebInspector.projectTypes.Network);
         uiSourceCodes = uiSourceCodes.concat(WebInspector.workspace.uiSourceCodesForProjectType(WebInspector.projectTypes.ContentScripts));
         uiSourceCodes.forEach(pushResourceData.bind(this));
         for (var target of WebInspector.targetManager.targets())
             target.resourceTreeModel.forAllResources(pushResourceData.bind(this));
-        return Object.values(resources);
+        return resources.valuesArray();
     },
 
     /**

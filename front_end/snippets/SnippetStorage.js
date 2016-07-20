@@ -34,7 +34,8 @@
  */
 WebInspector.SnippetStorage = function(settingPrefix, namePrefix)
 {
-    this._snippets = {};
+    /** @type {!Map<string,!WebInspector.Snippet>} */
+    this._snippets = new Map();
 
     this._lastSnippetIdentifierSetting = WebInspector.settings.createSetting(settingPrefix + "Snippets_lastIdentifier", 0);
     this._snippetsSetting = WebInspector.settings.createSetting(settingPrefix + "Snippets", []);
@@ -52,29 +53,26 @@ WebInspector.SnippetStorage.prototype = {
     _saveSettings: function()
     {
         var savedSnippets = [];
-        for (var id in this._snippets)
-            savedSnippets.push(this._snippets[id].serializeToObject());
+        for (var snippet of this._snippets.values())
+            savedSnippets.push(snippet.serializeToObject());
         this._snippetsSetting.set(savedSnippets);
     },
 
     /**
-     * @return {!Array.<!WebInspector.Snippet>}
+     * @return {!Array<!WebInspector.Snippet>}
      */
     snippets: function()
     {
-        var result = [];
-        for (var id in this._snippets)
-            result.push(this._snippets[id]);
-        return result;
+        return this._snippets.valuesArray();
     },
 
     /**
      * @param {string} id
-     * @return {!WebInspector.Snippet}
+     * @return {?WebInspector.Snippet}
      */
     snippetForId: function(id)
     {
-        return this._snippets[id];
+        return this._snippets.get(id);
     },
 
     /**
@@ -83,10 +81,10 @@ WebInspector.SnippetStorage.prototype = {
      */
     snippetForName: function(name)
     {
-        var snippets = Object.values(this._snippets);
-        for (var i = 0; i < snippets.length; ++i)
-            if (snippets[i].name === name)
-                return snippets[i];
+        for (var snippet of this._snippets.values()) {
+            if (snippet.name === name)
+                return snippet;
+        }
         return null;
     },
 
@@ -102,7 +100,7 @@ WebInspector.SnippetStorage.prototype = {
      */
     deleteSnippet: function(snippet)
     {
-        delete this._snippets[snippet.id];
+        this._snippets.delete(snippet.id);
         this._saveSettings();
     },
 
@@ -125,7 +123,7 @@ WebInspector.SnippetStorage.prototype = {
      */
     _snippetAdded: function(snippet)
     {
-        this._snippets[snippet.id] = snippet;
+        this._snippets.set(snippet.id, snippet);
     },
 
     __proto__: WebInspector.Object.prototype

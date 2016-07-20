@@ -42,31 +42,6 @@ console.assert = function(value, message)
 var ArrayLike;
 
 /**
- * @param {!Object} obj
- * @return {boolean}
- */
-Object.isEmpty = function(obj)
-{
-    for (var i in obj)
-        return false;
-    return true;
-}
-
-/**
- * @param {!Object.<string,!T>} obj
- * @return {!Array.<!T>}
- * @template T
- */
-Object.values = function(obj)
-{
-    var result = Object.keys(obj);
-    var length = result.length;
-    for (var i = 0; i < length; ++i)
-        result[i] = obj[result[i]];
-    return result;
-}
-
-/**
  * @param {number} m
  * @param {number} n
  * @return {number}

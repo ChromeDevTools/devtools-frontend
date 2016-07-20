@@ -254,6 +254,11 @@
                 "description": "Disables reporting of execution contexts creation."
             },
             {
+                "name": "discardConsoleEntries",
+                "hidden": true,
+                "description": "Discards collected exceptions and console API calls."
+            },
+            {
                 "name": "setCustomObjectFormatterEnabled",
                 "parameters": [
                     {
@@ -710,8 +715,9 @@
     },
     {
         "domain": "Console",
-        "description": "Console domain defines methods and events for interaction with the JavaScript console. Console collects messages created by means of the <a href='http://getfirebug.com/wiki/index.php/Console_API'>JavaScript Console API</a>. One needs to enable this domain using <code>enable</code> command in order to start receiving the console messages. Browser collects messages issued while console domain is not enabled as well and reports them using <code>messageAdded</code> notification upon enabling.",
+        "description": "This domain is deprecated - use Runtime or Log instead.",
         "dependencies": ["Runtime"],
+        "deprecated": true,
         "types": [
             {
                 "id": "ConsoleMessage",
@@ -721,18 +727,9 @@
                     { "name": "source", "type": "string", "enum": ["xml", "javascript", "network", "console-api", "storage", "appcache", "rendering", "security", "other", "deprecation", "worker"], "description": "Message source." },
                     { "name": "level", "type": "string", "enum": ["log", "warning", "error", "debug", "info"], "description": "Message severity." },
                     { "name": "text", "type": "string", "description": "Message text." },
-                    { "name": "type", "type": "string", "optional": true, "enum": ["log", "dir", "dirxml", "table", "trace", "clear", "startGroup", "startGroupCollapsed", "endGroup", "assert", "profile", "profileEnd"], "description": "Never present. Use Runtime.consoleAPICalled instead." },
-                    { "name": "scriptId", "type": "string", "optional": true, "description": "Script ID of the message origin." },
                     { "name": "url", "type": "string", "optional": true, "description": "URL of the message origin." },
-                    { "name": "line", "type": "integer", "optional": true, "description": "Line number in the resource that generated this message." },
-                    { "name": "column", "type": "integer", "optional": true, "description": "Column number in the resource that generated this message." },
-                    { "name": "repeatCount", "type": "integer", "optional": true, "description": "Repeat count for repeated messages." },
-                    { "name": "parameters", "type": "array", "items": { "$ref": "Runtime.RemoteObject" }, "optional": true, "description": "Never present. Use Runtime.consoleAPICalled instead." },
-                    { "name": "stack", "$ref": "Runtime.StackTrace", "optional": true, "description": "JavaScript stack trace for assertions and error messages." },
-                    { "name": "networkRequestId", "type": "string", "optional": true, "description": "Identifier of the network request associated with this message." },
-                    { "name": "timestamp", "$ref": "Runtime.Timestamp", "description": "Timestamp, when this message was fired.", "hidden": true },
-                    { "name": "executionContextId", "$ref": "Runtime.ExecutionContextId", "optional": true, "description": "Identifier of the context where this message was created", "hidden": true },
-                    { "name": "workerId", "type": "string", "optional": true, "description": "Identifier of the worker this message came from.", "hidden": true }
+                    { "name": "line", "type": "integer", "optional": true, "description": "Line number in the resource that generated this message (1-based)." },
+                    { "name": "column", "type": "integer", "optional": true, "description": "Column number in the resource that generated this message (1-based)." }
                 ]
             }
         ],
@@ -747,7 +744,7 @@
             },
             {
                 "name": "clearMessages",
-                "description": "Clears console messages collected in the browser."
+                "description": "Does nothing."
             }
         ],
         "events": [
@@ -764,7 +761,7 @@
                     { "name": "count", "type": "integer", "description": "New repeat count value." },
                     { "name": "timestamp", "$ref": "Runtime.Timestamp", "description": "Timestamp of most recent message in batch.", "hidden": true }
                 ],
-                "description": "Is not issued. Will be gone in the future versions of the protocol.",
+                "description": "Not issued.",
                 "deprecated": true
             },
             {

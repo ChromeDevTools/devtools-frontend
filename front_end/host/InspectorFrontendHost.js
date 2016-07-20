@@ -449,7 +449,7 @@ WebInspector.InspectorFrontendHostStub.prototype = {
 /**
  * @type {!InspectorFrontendHostAPI}
  */
-var InspectorFrontendHost = window.InspectorFrontendHost || null;
+window.InspectorFrontendHost = window.InspectorFrontendHost || null;
 
 (function(){
 

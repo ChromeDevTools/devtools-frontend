@@ -4,7 +4,7 @@
 
 
 /** @interface */
-function InspectorFrontendHostAPI()
+window.InspectorFrontendHostAPI = function()
 {
 }
 

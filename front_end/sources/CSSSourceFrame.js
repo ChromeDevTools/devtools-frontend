@@ -39,6 +39,8 @@ WebInspector.CSSSourceFrame = function(uiSourceCode)
     this.textEditor.setAutocompleteDelegate(new WebInspector.CSSSourceFrame.AutocompleteDelegate());
     this._registerShortcuts();
     this._colorBookmarks = [];
+    this._swatchPopoverHelper = new WebInspector.SwatchPopoverHelper();
+    this._muteColorProcessing = false;
 }
 
 /** @type {number} */
@@ -155,6 +157,8 @@ WebInspector.CSSSourceFrame.prototype = {
 
             var swatch = WebInspector.ColorSwatch.create();
             swatch.setColorText(colorPosition.color.asString(WebInspector.Color.Format.Original));
+            swatch.iconElement().title = WebInspector.UIString("Open color picker.");
+            swatch.iconElement().addEventListener("click", this._showSpectrum.bind(this, swatch, colorPosition), true);
             swatch.hideText(true);
 
             var bookmark = this.textEditor.addBookmark(colorPosition.textRange.startLine, colorPosition.textRange.startColumn, swatch);
@@ -170,12 +174,63 @@ WebInspector.CSSSourceFrame.prototype = {
     },
 
     /**
+     * @param {!WebInspector.ColorSwatch} swatch
+     * @param {!WebInspector.CSSSourceFrame.ColorPosition} colorPosition
+     * @param {!Event} event
+     */
+    _showSpectrum: function(swatch, colorPosition, event)
+    {
+        event.consume(true);
+        if (this._swatchPopoverHelper.isShowing()) {
+            this._swatchPopoverHelper.hide();
+            return;
+        }
+        this._currentSwatch = swatch;
+        this._currentColorPosition = colorPosition;
+        this._spectrum = new WebInspector.Spectrum();
+        this._spectrum.setColor(swatch.color(), swatch.format());
+        this._spectrum.addEventListener(WebInspector.Spectrum.Events.SizeChanged, this._spectrumResized, this);
+        this._spectrum.addEventListener(WebInspector.Spectrum.Events.ColorChanged, this._spectrumChanged, this);
+        this._swatchPopoverHelper.show(this._spectrum, swatch.iconElement(), this._spectrumHidden.bind(this));
+    },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _spectrumResized: function(event)
+    {
+        this._swatchPopoverHelper.reposition();
+    },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _spectrumChanged: function(event)
+    {
+        this._muteColorProcessing = true;
+        var colorString = /** @type {string} */ (event.data);
+        this._currentSwatch.setColorText(colorString);
+        this._textEditor.editRange(this._currentColorPosition.textRange, colorString);
+        this._currentColorPosition.color = WebInspector.Color.parse(colorString);
+        this._currentColorPosition.textRange.endColumn = this._currentColorPosition.textRange.startColumn + colorString.length;
+    },
+
+    _spectrumHidden: function()
+    {
+        this._muteColorProcessing = false;
+        this._spectrum.removeEventListener(WebInspector.Spectrum.Events.SizeChanged, this._spectrumResized, this);
+        this._spectrum.removeEventListener(WebInspector.Spectrum.Events.ColorChanged, this._spectrumChanged, this);
+        delete this._spectrum;
+        this._updateColorSwatches();
+    },
+
+    /**
      * @override
      */
     onTextEditorContentSet: function()
     {
         WebInspector.UISourceCodeFrame.prototype.onTextEditorContentSet.call(this);
-        if (Runtime.experiments.isEnabled("sourceColorPicker"))
+        if (!this._muteColorProcessing && Runtime.experiments.isEnabled("sourceColorPicker"))
             this._updateColorSwatches();
     },
 
@@ -187,11 +242,22 @@ WebInspector.CSSSourceFrame.prototype = {
     onTextChanged: function(oldRange, newRange)
     {
         WebInspector.UISourceCodeFrame.prototype.onTextChanged.call(this, oldRange, newRange);
-        if (Runtime.experiments.isEnabled("sourceColorPicker")) {
+        if (!this._muteColorProcessing && Runtime.experiments.isEnabled("sourceColorPicker")) {
             if (this._updateTimeout)
                 clearTimeout(this._updateTimeout);
             this._updateTimeout = setTimeout(this._updateColorSwatches.bind(this), WebInspector.CSSSourceFrame.UpdateTimeout);
         }
+    },
+
+    /**
+     * @override
+     * @param {number} lineNumber
+     */
+    scrollChanged: function(lineNumber)
+    {
+        WebInspector.UISourceCodeFrame.prototype.scrollChanged.call(this, lineNumber);
+        if (this._swatchPopoverHelper.isShowing())
+            this._swatchPopoverHelper.hide();
     },
 
     __proto__: WebInspector.UISourceCodeFrame.prototype

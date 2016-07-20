@@ -87,9 +87,8 @@ WebInspector.PresentationConsoleMessageHelper.prototype = {
         if (!debuggerModel)
             return null;
         var callFrame = message.stackTrace && message.stackTrace.callFrames ? message.stackTrace.callFrames[0] : null;
-        // FIXME(62725): stack trace line/column numbers are one-based.
-        var lineNumber = callFrame ? callFrame.lineNumber : message.line - 1;
-        var columnNumber = message.column ? message.column - 1 : 0;
+        var lineNumber = callFrame ? callFrame.lineNumber : message.line;
+        var columnNumber = callFrame ? callFrame.columnNumber : message.column;
         if (callFrame)
             columnNumber = callFrame.columnNumber;
         if (message.scriptId)

@@ -267,9 +267,6 @@ WebInspector.ConsoleViewMessage.prototype = {
         var target = this._target();
         if (!target)
             return null;
-        // FIXME(62725): stack trace line/column numbers are one-based.
-        lineNumber = lineNumber ? lineNumber - 1 : 0;
-        columnNumber = columnNumber ? columnNumber - 1 : 0;
         return this._linkifier.linkifyScriptLocation(target, null, url, lineNumber, columnNumber, "console-message-url");
     },
 
@@ -297,9 +294,6 @@ WebInspector.ConsoleViewMessage.prototype = {
         var target = this._target();
         if (!target)
             return null;
-        // FIXME(62725): stack trace line/column numbers are one-based.
-        lineNumber = lineNumber ? lineNumber - 1 : 0;
-        columnNumber = columnNumber ? columnNumber - 1 : 0;
         return this._linkifier.linkifyScriptLocation(target, scriptId, url, lineNumber, columnNumber, "console-message-url");
     },
 

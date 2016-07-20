@@ -25,11 +25,11 @@
 
 /**
  * @constructor
- * @extends {WebInspector.SidebarPane}
+ * @extends {WebInspector.View}
  */
 WebInspector.CallStackSidebarPane = function()
 {
-    WebInspector.SidebarPane.call(this, WebInspector.UIString("Call Stack"));
+    WebInspector.View.call(this, WebInspector.UIString("Call Stack"));
     this.element.addEventListener("keydown", this._keyDown.bind(this), true);
     this.element.tabIndex = 0;
     this.callFrameList = new WebInspector.UIList();
@@ -426,7 +426,7 @@ WebInspector.CallStackSidebarPane.prototype = {
             event.consume(true);
     },
 
-    __proto__: WebInspector.SidebarPane.prototype
+    __proto__: WebInspector.View.prototype
 }
 
 /**

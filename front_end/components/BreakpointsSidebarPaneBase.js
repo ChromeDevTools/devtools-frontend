@@ -30,12 +30,12 @@
 
 /**
  * @constructor
- * @extends {WebInspector.SidebarPane}
+ * @extends {WebInspector.View}
  * @param {string} title
  */
 WebInspector.BreakpointsSidebarPaneBase = function(title)
 {
-    WebInspector.SidebarPane.call(this, title);
+    WebInspector.View.call(this, title);
     this.registerRequiredCSS("components/breakpointsList.css");
 
     this.listElement = createElement("ol");
@@ -92,5 +92,5 @@ WebInspector.BreakpointsSidebarPaneBase.prototype = {
         }
     },
 
-    __proto__: WebInspector.SidebarPane.prototype
+    __proto__: WebInspector.View.prototype
 }

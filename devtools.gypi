@@ -305,12 +305,12 @@
             'front_end/ui/SuggestBox.js',
             'front_end/ui/TabbedPane.js',
             'front_end/ui/TextPrompt.js',
+            'front_end/ui/ThrottledView.js',
             'front_end/ui/UIUtils.js',
             'front_end/ui/ViewportControl.js',
             'front_end/ui/Widget.js',
             'front_end/ui/ZoomManager.js',
             'front_end/ui/treeoutline.js',
-            'front_end/ui/ThrottledWidget.js'
         ],
         'devtools_main_js_files': [
             'front_end/main/errorWarningCounter.css',
@@ -453,7 +453,6 @@
             'front_end/elements/ElementsBreadcrumbs.js',
             'front_end/elements/ElementsPanel.js',
             'front_end/elements/ElementsSidebarPane.js',
-            'front_end/elements/ElementsSidebarView.js',
             'front_end/elements/ElementsTreeElement.js',
             'front_end/elements/ElementsTreeElementHighlighter.js',
             'front_end/elements/ElementsTreeOutline.js',

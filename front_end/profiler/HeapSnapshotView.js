@@ -32,13 +32,13 @@
  * @constructor
  * @implements {WebInspector.ProfileType.DataDisplayDelegate}
  * @implements {WebInspector.Searchable}
- * @extends {WebInspector.VBoxWithToolbarItems}
+ * @extends {WebInspector.View}
  * @param {!WebInspector.ProfileType.DataDisplayDelegate} dataDisplayDelegate
  * @param {!WebInspector.HeapProfileHeader} profile
  */
 WebInspector.HeapSnapshotView = function(dataDisplayDelegate, profile)
 {
-    WebInspector.VBoxWithToolbarItems.call(this);
+    WebInspector.View.call(this, WebInspector.UIString("Heap Snapshot"));
 
     this.element.classList.add("heap-snapshot-view");
 
@@ -1011,7 +1011,7 @@ WebInspector.HeapSnapshotView.prototype = {
             this._trackingOverviewGrid.dispose();
     },
 
-    __proto__: WebInspector.VBoxWithToolbarItems.prototype
+    __proto__: WebInspector.View.prototype
 }
 
 /**

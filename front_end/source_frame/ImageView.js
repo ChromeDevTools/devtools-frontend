@@ -27,14 +27,14 @@
  */
 
 /**
- * @extends {WebInspector.VBoxWithToolbarItems}
+ * @extends {WebInspector.View}
  * @constructor
  * @param {string} mimeType
  * @param {!WebInspector.ContentProvider} contentProvider
  */
 WebInspector.ImageView = function(mimeType, contentProvider)
 {
-    WebInspector.VBoxWithToolbarItems.call(this);
+    WebInspector.View.call(this, WebInspector.UIString("Image"));
     this.registerRequiredCSS("source_frame/imageView.css");
     this.element.classList.add("image-view");
     this._url = contentProvider.contentURL();
@@ -136,5 +136,5 @@ WebInspector.ImageView.prototype = {
         InspectorFrontendHost.openInNewTab(this._url);
     },
 
-    __proto__: WebInspector.VBoxWithToolbarItems.prototype
+    __proto__: WebInspector.View.prototype
 }

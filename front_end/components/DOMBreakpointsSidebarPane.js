@@ -348,7 +348,7 @@ WebInspector.DOMBreakpointsSidebarPane.prototype = {
         var element = this._breakpointElements[breakpointId];
         if (!element)
             return;
-        this.expandPane();
+        this.requestReveal();
         element.classList.add("breakpoint-hit");
         this._highlightedElement = element;
     },
@@ -436,24 +436,18 @@ WebInspector.DOMBreakpointsSidebarPane.prototype = {
         return proxy;
     },
 
-    onContentReady: function()
-    {
-        for (var i = 0; i < this._proxies.length; i++)
-            this._proxies[i].onContentReady();
-    },
-
     __proto__: WebInspector.BreakpointsSidebarPaneBase.prototype
 }
 
 /**
  * @constructor
- * @extends {WebInspector.SidebarPane}
+ * @extends {WebInspector.View}
  * @param {!WebInspector.DOMBreakpointsSidebarPane} pane
  * @param {!WebInspector.Panel} panel
  */
 WebInspector.DOMBreakpointsSidebarPane.Proxy = function(pane, panel)
 {
-    WebInspector.SidebarPane.call(this, WebInspector.UIString("DOM Breakpoints"));
+    WebInspector.View.call(this, WebInspector.UIString("DOM Breakpoints"));
     this.registerRequiredCSS("components/breakpointsList.css");
 
     this._wrappedPane = pane;
@@ -461,22 +455,9 @@ WebInspector.DOMBreakpointsSidebarPane.Proxy = function(pane, panel)
 }
 
 WebInspector.DOMBreakpointsSidebarPane.Proxy.prototype = {
-    expandPane: function()
-    {
-        this._wrappedPane.expandPane();
-    },
-
-    onContentReady: function()
-    {
-        if (this._panel.isShowing())
-            this._reattachBody();
-
-        WebInspector.SidebarPane.prototype.onContentReady.call(this);
-    },
-
     wasShown: function()
     {
-        WebInspector.SidebarPane.prototype.wasShown.call(this);
+        WebInspector.View.prototype.wasShown.call(this);
         this._reattachBody();
     },
 
@@ -486,7 +467,7 @@ WebInspector.DOMBreakpointsSidebarPane.Proxy.prototype = {
             this._wrappedPane.show(this.element);
     },
 
-    __proto__: WebInspector.SidebarPane.prototype
+    __proto__: WebInspector.View.prototype
 }
 
 /**

@@ -29,11 +29,11 @@
 
 /**
  * @constructor
- * @extends {WebInspector.ThrottledWidget}
+ * @extends {WebInspector.ThrottledView}
  */
 WebInspector.ComputedStyleWidget = function()
 {
-    WebInspector.ThrottledWidget.call(this);
+    WebInspector.ThrottledView.call(this, WebInspector.UIString("Computed Style"));
     this.element.classList.add("computed-style-sidebar-pane");
 
     this.registerRequiredCSS("elements/computedStyleSidebarPane.css");
@@ -73,15 +73,6 @@ WebInspector.ComputedStyleWidget = function()
 
     var fontsWidget = new WebInspector.PlatformFontsWidget(this._computedStyleModel);
     fontsWidget.show(this.element);
-}
-
-/**
- * @return {!WebInspector.ElementsSidebarViewWrapperPane}
- */
-WebInspector.ComputedStyleWidget.createSidebarWrapper = function()
-{
-    var widget = new WebInspector.ComputedStyleWidget();
-    return new WebInspector.ElementsSidebarViewWrapperPane(WebInspector.UIString("Computed Style"), widget)
 }
 
 WebInspector.ComputedStyleWidget._propertySymbol = Symbol("property");
@@ -364,5 +355,5 @@ WebInspector.ComputedStyleWidget.prototype = {
         }
     },
 
-    __proto__: WebInspector.ThrottledWidget.prototype
+    __proto__: WebInspector.ThrottledView.prototype
 }

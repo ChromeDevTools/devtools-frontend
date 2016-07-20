@@ -39,16 +39,16 @@
         "SplitWidget.js",
         "StackView.js",
         "SwatchPopoverHelper.js",
+        "TextPrompt.js",
+        "ThrottledView.js",
         "Toolbar.js",
         "Tooltip.js",
         "SuggestBox.js",
         "TabbedPane.js",
         "SidebarPane.js",
-        "TextPrompt.js",
         "UIUtils.js",
         "ViewportControl.js",
-        "ZoomManager.js",
-        "ThrottledWidget.js"
+        "ZoomManager.js"
     ],
     "resources": [
         "checkboxTextLabel.css",

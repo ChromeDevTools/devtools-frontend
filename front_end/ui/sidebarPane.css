@@ -27,31 +27,19 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-.sidebar-pane {
-    position: relative;
-    flex-direction: column;
-    display: flex;
-    flex: none;
+.sidebar-pane-container {
+    overflow: auto;
 }
 
-.sidebar-pane-hidden {
-    display: none;
-}
-
-.sidebar-pane .info {
+.sidebar-pane-container .info {
     text-align: center;
     font-style: italic;
     padding: 6px;
     color: #888;
 }
 
-.sidebar-pane .section .properties-tree {
-    padding-left: 16px;
-}
-
-.sidebar-tabbed-pane .tabbed-pane-header {
-    border-bottom: 1px solid rgb(202, 202, 202);
-    background-color: #eee;
+.sidebar-hidden-override {
+    display: none !important;
 }
 
 .sidebar-pane-title {
@@ -98,11 +86,11 @@
     -webkit-mask-position: -20px -96px;
 }
 
-.sidebar-pane > .toolbar {
+.sidebar-pane-container .toolbar {
     border-bottom: 1px solid #eee;
 }
 
-.sidebar-pane > .toolbar > * {
+.sidebar-pane-container .toolbar > * {
     pointer-events: auto;
 }
 
@@ -111,21 +99,3 @@
     right: 0;
     top: -3px;
 }
-
-.section > .header input[type=checkbox] {
-    height: 1em;
-    width: 1em;
-    margin-left: 0;
-    margin-top: 0;
-    margin-bottom: 0.25em;
-    vertical-align: bottom;
-}
-
-.hidden-callframes-message {
-    text-align: center;
-    font-style: italic;
-    padding: 4px;
-    color: #888;
-    background-color: #FFFFC2;
-}
-

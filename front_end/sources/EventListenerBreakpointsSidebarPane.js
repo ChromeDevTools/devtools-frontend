@@ -4,12 +4,12 @@
 
 /**
  * @constructor
- * @extends {WebInspector.SidebarPane}
+ * @extends {WebInspector.View}
  * @implements {WebInspector.TargetManager.Observer}
  */
 WebInspector.EventListenerBreakpointsSidebarPane = function()
 {
-    WebInspector.SidebarPane.call(this, WebInspector.UIString("Event Listener Breakpoints"));
+    WebInspector.View.call(this, WebInspector.UIString("Event Listener Breakpoints"));
     this.registerRequiredCSS("components/breakpointsList.css");
 
     this._eventListenerBreakpointsSetting = WebInspector.settings.createLocalSetting("eventListenerBreakpoints", []);
@@ -303,7 +303,7 @@ WebInspector.EventListenerBreakpointsSidebarPane.prototype = {
             breakpointItem = this._findBreakpointItem(eventName, WebInspector.EventListenerBreakpointsSidebarPane.eventTargetAny);
         if (!breakpointItem)
             return;
-        this.expandPane();
+        this.requestReveal();
         breakpointItem.parent.element.expand();
         breakpointItem.element.listItemElement.classList.add("breakpoint-hit");
         this._highlightedElement = breakpointItem.element.listItemElement;
@@ -344,5 +344,5 @@ WebInspector.EventListenerBreakpointsSidebarPane.prototype = {
         }
     },
 
-    __proto__: WebInspector.SidebarPane.prototype
+    __proto__: WebInspector.View.prototype
 }

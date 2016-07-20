@@ -109,7 +109,6 @@
 .callstack-info {
     text-align: center;
     font-style: italic;
-    font-size: 90%;
     padding: 6px;
     color: #888;
     pointer-events: none;
@@ -144,7 +143,6 @@
 
 .watch-expressions {
     overflow-x: hidden;
-    padding: 3px 6px 6px 0px;
 }
 
 .watch-expressions .dimmed {
@@ -167,6 +165,7 @@
     position: relative;
     padding: 1px 0px 1px 6px;
     flex: none;
+    min-height: 20px;
 }
 
 .watch-expressions .name {
@@ -255,4 +254,12 @@
 .scope-chain-sidebar-pane-section {
     padding: 2px 4px 2px 4px;
     overflow: hidden;
+}
+
+.hidden-callframes-message {
+    text-align: center;
+    font-style: italic;
+    padding: 4px;
+    color: #888;
+    background-color: #FFFFC2;
 }

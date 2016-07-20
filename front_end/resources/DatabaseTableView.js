@@ -25,11 +25,11 @@
 
 /**
  * @constructor
- * @extends {WebInspector.VBoxWithToolbarItems}
+ * @extends {WebInspector.View}
  */
 WebInspector.DatabaseTableView = function(database, tableName)
 {
-    WebInspector.VBoxWithToolbarItems.call(this);
+    WebInspector.View.call(this, WebInspector.UIString("Database"));
 
     this.database = database;
     this.tableName = tableName;
@@ -143,5 +143,5 @@ WebInspector.DatabaseTableView.prototype = {
         this.update();
     },
 
-    __proto__: WebInspector.VBoxWithToolbarItems.prototype
+    __proto__: WebInspector.View.prototype
 }

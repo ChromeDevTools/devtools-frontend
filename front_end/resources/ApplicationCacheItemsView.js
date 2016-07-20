@@ -25,11 +25,11 @@
 
 /**
  * @constructor
- * @extends {WebInspector.VBoxWithToolbarItems}
+ * @extends {WebInspector.View}
  */
 WebInspector.ApplicationCacheItemsView = function(model, frameId)
 {
-    WebInspector.VBoxWithToolbarItems.call(this);
+    WebInspector.View.call(this, WebInspector.UIString("AppCache"));
 
     this._model = model;
 
@@ -258,6 +258,6 @@ WebInspector.ApplicationCacheItemsView.prototype = {
         // this._update();
     },
 
-    __proto__: WebInspector.VBoxWithToolbarItems.prototype
+    __proto__: WebInspector.View.prototype
 }
 

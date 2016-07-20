@@ -183,7 +183,7 @@ WebInspector.ExtensionButton.prototype = {
 
 /**
  * @constructor
- * @extends {WebInspector.SidebarPane}
+ * @extends {WebInspector.View}
  * @param {!WebInspector.ExtensionServer} server
  * @param {string} panelName
  * @param {string} title
@@ -191,7 +191,8 @@ WebInspector.ExtensionButton.prototype = {
  */
 WebInspector.ExtensionSidebarPane = function(server, panelName, title, id)
 {
-    WebInspector.SidebarPane.call(this, title);
+    WebInspector.View.call(this, title);
+    this.element.classList.add("fill");
     this._panelName = panelName;
     this._server = server;
     this._id = id;
@@ -314,5 +315,5 @@ WebInspector.ExtensionSidebarPane.prototype = {
         callback();
     },
 
-    __proto__: WebInspector.SidebarPane.prototype
+    __proto__: WebInspector.View.prototype
 }

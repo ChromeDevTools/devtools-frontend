@@ -4,17 +4,18 @@
 
 /**
  * @constructor
- * @extends {WebInspector.Widget}
+ * @extends {WebInspector.View}
+ * @param {string} title
  * @param {boolean=} isWebComponent
  */
-WebInspector.ThrottledWidget = function(isWebComponent)
+WebInspector.ThrottledView = function(title, isWebComponent)
 {
-    WebInspector.Widget.call(this, isWebComponent);
+    WebInspector.View.call(this, title, isWebComponent);
     this._updateThrottler = new WebInspector.Throttler(100);
     this._updateWhenVisible = false;
 }
 
-WebInspector.ThrottledWidget.prototype = {
+WebInspector.ThrottledView.prototype = {
     /**
      * @protected
      * @return {!Promise.<?>}
@@ -32,7 +33,7 @@ WebInspector.ThrottledWidget.prototype = {
         this._updateThrottler.schedule(innerUpdate.bind(this));
 
         /**
-         * @this {WebInspector.ThrottledWidget}
+         * @this {WebInspector.ThrottledView}
          * @return {!Promise.<?>}
          */
         function innerUpdate()
@@ -51,10 +52,10 @@ WebInspector.ThrottledWidget.prototype = {
      */
     wasShown: function()
     {
-        WebInspector.Widget.prototype.wasShown.call(this);
+        WebInspector.View.prototype.wasShown.call(this);
         if (this._updateWhenVisible)
             this.update();
     },
 
-    __proto__: WebInspector.Widget.prototype
+    __proto__: WebInspector.View.prototype
 }

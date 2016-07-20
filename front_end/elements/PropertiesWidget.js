@@ -29,25 +29,17 @@
 
 /**
  * @constructor
- * @extends {WebInspector.ThrottledWidget}
+ * @extends {WebInspector.ThrottledView}
  */
 WebInspector.PropertiesWidget = function()
 {
-    WebInspector.ThrottledWidget.call(this);
+    WebInspector.ThrottledView.call(this, WebInspector.UIString("Properties"));
 
     WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.AttrModified, this._onNodeChange, this);
     WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.AttrRemoved, this._onNodeChange, this);
     WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.CharacterDataModified, this._onNodeChange, this);
     WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.ChildNodeCountUpdated, this._onNodeChange, this);
     WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this._setNode, this);
-}
-
-/**
- * @return {!WebInspector.ElementsSidebarViewWrapperPane}
- */
-WebInspector.PropertiesWidget.createSidebarWrapper = function()
-{
-    return new WebInspector.ElementsSidebarViewWrapperPane(WebInspector.UIString("Properties"), new WebInspector.PropertiesWidget());
 }
 
 WebInspector.PropertiesWidget._objectGroupName = "properties-sidebar-pane";
@@ -188,5 +180,5 @@ WebInspector.PropertiesWidget.prototype = {
         this.update();
     },
 
-    __proto__: WebInspector.ThrottledWidget.prototype
+    __proto__: WebInspector.ThrottledView.prototype
 }

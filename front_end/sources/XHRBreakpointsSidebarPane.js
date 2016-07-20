@@ -17,7 +17,7 @@ WebInspector.XHRBreakpointsSidebarPane = function()
 
     var addButton = new WebInspector.ToolbarButton(WebInspector.UIString("Add breakpoint"), "add-toolbar-item");
     addButton.addEventListener("click", this._addButtonClicked.bind(this));
-    this.toolbar().appendToolbarItem(addButton);
+    this.addToolbarItem(addButton);
 
     this.emptyElement.addEventListener("contextmenu", this._emptyElementContextMenu.bind(this), true);
 
@@ -52,7 +52,7 @@ WebInspector.XHRBreakpointsSidebarPane.prototype = {
         if (event)
             event.consume();
 
-        this.expandPane();
+        this.requestReveal();
 
         var inputElementContainer = createElementWithClass("p", "breakpoint-condition");
         inputElementContainer.textContent = WebInspector.UIString("Break when URL contains:");
@@ -217,7 +217,7 @@ WebInspector.XHRBreakpointsSidebarPane.prototype = {
         var element = this._breakpointElements.get(url);
         if (!element)
             return;
-        this.expandPane();
+        this.requestReveal();
         element.classList.add("breakpoint-hit");
         this._highlightedElement = element;
     },

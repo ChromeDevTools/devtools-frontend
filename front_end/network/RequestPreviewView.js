@@ -68,9 +68,9 @@ WebInspector.RequestPreviewView.prototype = {
         function handlePreviewView(view) {
             this._previewView = view;
             this._previewView.show(this.element);
-            if (this._previewView instanceof WebInspector.VBoxWithToolbarItems) {
+            if (this._previewView instanceof WebInspector.View) {
                 var toolbar = new WebInspector.Toolbar("network-item-preview-toolbar", this.element);
-                for (var item of /** @type {!WebInspector.VBoxWithToolbarItems} */ (this._previewView).toolbarItems())
+                for (var item of /** @type {!WebInspector.View} */ (this._previewView).toolbarItems())
                     toolbar.appendToolbarItem(item);
             }
             this.innerView = this._previewView;

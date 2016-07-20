@@ -4,11 +4,11 @@
 
 /**
  * @constructor
- * @extends {WebInspector.ThrottledWidget}
+ * @extends {WebInspector.ThrottledView}
  */
 WebInspector.AccessibilitySidebarView = function()
 {
-    WebInspector.ThrottledWidget.call(this);
+    WebInspector.ThrottledView.call(this, WebInspector.UIString("Accessibility"));
     this._axNodeSubPane = null;
     this._node = null;
     this._sidebarPaneStack = null;
@@ -51,13 +51,12 @@ WebInspector.AccessibilitySidebarView.prototype = {
      */
     wasShown: function()
     {
-        WebInspector.ThrottledWidget.prototype.wasShown.call(this);
+        WebInspector.ThrottledView.prototype.wasShown.call(this);
 
         if (!this._sidebarPaneStack) {
             this._axNodeSubPane = new WebInspector.AXNodeSubPane();
             this._axNodeSubPane.setNode(this.node());
             this._axNodeSubPane.show(this.element);
-            this._axNodeSubPane.expandPane();
 
             this._sidebarPaneStack = new WebInspector.SidebarPaneStack();
             this._sidebarPaneStack.element.classList.add("flex-auto");
@@ -117,17 +116,17 @@ WebInspector.AccessibilitySidebarView.prototype = {
     },
 
 
-    __proto__: WebInspector.ThrottledWidget.prototype
+    __proto__: WebInspector.ThrottledView.prototype
 };
 
 /**
  * @constructor
- * @extends {WebInspector.SidebarPane}
+ * @extends {WebInspector.View}
  * @param {string} name
  */
 WebInspector.AccessibilitySubPane = function(name)
 {
-    WebInspector.SidebarPane.call(this, name);
+    WebInspector.View.call(this, name);
 
     this._axNode = null;
     this.registerRequiredCSS("accessibility/accessibilityNode.css");
@@ -185,5 +184,5 @@ WebInspector.AccessibilitySubPane.prototype = {
         return treeOutline;
     },
 
-    __proto__: WebInspector.SidebarPane.prototype
+    __proto__: WebInspector.View.prototype
 }

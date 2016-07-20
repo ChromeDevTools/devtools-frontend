@@ -4,13 +4,13 @@
 
 /**
  * @constructor
- * @extends {WebInspector.SidebarPane}
+ * @extends {WebInspector.View}
  * @param {!WebInspector.BreakpointManager} breakpointManager
  * @param {function(!WebInspector.UISourceCode, number=, number=, boolean=)} showSourceLineDelegate
  */
 WebInspector.JavaScriptBreakpointsSidebarPane = function(breakpointManager, showSourceLineDelegate)
 {
-    WebInspector.SidebarPane.call(this, WebInspector.UIString("Breakpoints"));
+    WebInspector.View.call(this, WebInspector.UIString("Breakpoints"));
     this.registerRequiredCSS("components/breakpointsList.css");
 
     this._breakpointManager = breakpointManager;
@@ -113,7 +113,7 @@ WebInspector.JavaScriptBreakpointsSidebarPane.prototype = {
         var breakpointItem = { element: element, checkbox: checkboxLabel.checkboxElement };
         this._items.set(breakpoint, breakpointItem);
 
-        this.expandPane();
+        this.requestReveal();
     },
 
     /**
@@ -256,5 +256,5 @@ WebInspector.JavaScriptBreakpointsSidebarPane.prototype = {
         this._items.clear();
     },
 
-    __proto__: WebInspector.SidebarPane.prototype
+    __proto__: WebInspector.View.prototype
 }

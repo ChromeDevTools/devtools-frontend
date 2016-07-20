@@ -30,12 +30,12 @@
 
 /**
  * @constructor
- * @extends {WebInspector.ThrottledWidget}
+ * @extends {WebInspector.ThrottledView}
  * @param {!WebInspector.ComputedStyleModel} sharedModel
  */
 WebInspector.PlatformFontsWidget = function(sharedModel)
 {
-    WebInspector.ThrottledWidget.call(this, true);
+    WebInspector.ThrottledView.call(this, WebInspector.UIString("Fonts"), true);
     this.registerRequiredCSS("elements/platformFontsWidget.css");
 
     this._sharedModel = sharedModel;
@@ -45,16 +45,6 @@ WebInspector.PlatformFontsWidget = function(sharedModel)
     this.contentElement.appendChild(this._sectionTitle);
     this._sectionTitle.textContent = WebInspector.UIString("Rendered Fonts");
     this._fontStatsSection = this.contentElement.createChild("div", "stats-section");
-}
-
-/**
- * @param {!WebInspector.ComputedStyleModel} sharedModel
- * @return {!WebInspector.ElementsSidebarViewWrapperPane}
- */
-WebInspector.PlatformFontsWidget.createSidebarWrapper = function(sharedModel)
-{
-    var widget = new WebInspector.PlatformFontsWidget(sharedModel);
-    return new WebInspector.ElementsSidebarViewWrapperPane(WebInspector.UIString("Fonts"), widget)
 }
 
 WebInspector.PlatformFontsWidget.prototype = {
@@ -111,5 +101,5 @@ WebInspector.PlatformFontsWidget.prototype = {
         }
     },
 
-    __proto__: WebInspector.ThrottledWidget.prototype
+    __proto__: WebInspector.ThrottledView.prototype
 }

@@ -29,11 +29,11 @@
 
 /**
  * @constructor
- * @extends {WebInspector.ThrottledWidget}
+ * @extends {WebInspector.ThrottledView}
  */
 WebInspector.EventListenersWidget = function()
 {
-    WebInspector.ThrottledWidget.call(this);
+    WebInspector.ThrottledView.call(this, WebInspector.UIString("Event Listeners"));
     this.element.classList.add("events-pane");
 
     this._showForAncestorsSetting = WebInspector.settings.createSetting("showEventListenersForAncestors", true);
@@ -45,6 +45,31 @@ WebInspector.EventListenersWidget = function()
     this._showFrameworkListenersSetting = WebInspector.settings.createSetting("showFrameowkrListeners", true);
     this._showFrameworkListenersSetting.addChangeListener(this._showFrameworkListenersChanged.bind(this));
     this._eventListenersView = new WebInspector.EventListenersView(this.element, this.update.bind(this));
+
+    var refreshButton = new WebInspector.ToolbarButton(WebInspector.UIString("Refresh"), "refresh-toolbar-item");
+    refreshButton.addEventListener("click", this.update.bind(this));
+    this.addToolbarItem(refreshButton);
+    this.addToolbarItem(new WebInspector.ToolbarCheckbox(WebInspector.UIString("Ancestors"), WebInspector.UIString("Show listeners on the ancestors"), this._showForAncestorsSetting));
+    var dispatchFilter = new WebInspector.ToolbarComboBox(this._onDispatchFilterTypeChanged.bind(this));
+
+    /**
+     * @param {string} name
+     * @param {string} value
+     * @this {WebInspector.EventListenersWidget}
+     */
+    function addDispatchFilterOption(name, value)
+    {
+        var option = dispatchFilter.createOption(name, "", value);
+        if (value === this._dispatchFilterBySetting.get())
+            dispatchFilter.select(option);
+    }
+    addDispatchFilterOption.call(this, WebInspector.UIString("All"), WebInspector.EventListenersWidget.DispatchFilterBy.All);
+    addDispatchFilterOption.call(this, WebInspector.UIString("Passive"), WebInspector.EventListenersWidget.DispatchFilterBy.Passive);
+    addDispatchFilterOption.call(this, WebInspector.UIString("Blocking"), WebInspector.EventListenersWidget.DispatchFilterBy.Blocking);
+    dispatchFilter.setMaxWidth(200);
+    this.addToolbarItem(dispatchFilter);
+    this.addToolbarItem(new WebInspector.ToolbarCheckbox(WebInspector.UIString("Framework listeners"), WebInspector.UIString("Resolve event listeners bound with framework"), this._showFrameworkListenersSetting));
+
     WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this.update, this);
 }
 
@@ -52,39 +77,6 @@ WebInspector.EventListenersWidget.DispatchFilterBy = {
     All : "All",
     Blocking : "Blocking",
     Passive : "Passive"
-}
-
-/**
- * @return {!WebInspector.ElementsSidebarViewWrapperPane}
- */
-WebInspector.EventListenersWidget.createSidebarWrapper = function()
-{
-    var widget = new WebInspector.EventListenersWidget();
-    var result = new WebInspector.ElementsSidebarViewWrapperPane(WebInspector.UIString("Event Listeners"), widget);
-    var refreshButton = new WebInspector.ToolbarButton(WebInspector.UIString("Refresh"), "refresh-toolbar-item");
-    refreshButton.addEventListener("click", widget.update.bind(widget));
-    result.toolbar().appendToolbarItem(refreshButton);
-    result.toolbar().appendToolbarItem(new WebInspector.ToolbarCheckbox(WebInspector.UIString("Ancestors"), WebInspector.UIString("Show listeners on the ancestors"), widget._showForAncestorsSetting));
-    var dispatchFilter = new WebInspector.ToolbarComboBox(widget._onDispatchFilterTypeChanged.bind(widget));
-
-    /**
-     * @param {string} name
-     * @param {string} value
-     */
-    function addDispatchFilterOption(name, value)
-    {
-        var option = dispatchFilter.createOption(name, "", value);
-        if (value === widget._dispatchFilterBySetting.get())
-            dispatchFilter.select(option);
-    }
-    addDispatchFilterOption(WebInspector.UIString("All"), WebInspector.EventListenersWidget.DispatchFilterBy.All);
-    addDispatchFilterOption(WebInspector.UIString("Passive"), WebInspector.EventListenersWidget.DispatchFilterBy.Passive);
-    addDispatchFilterOption(WebInspector.UIString("Blocking"), WebInspector.EventListenersWidget.DispatchFilterBy.Blocking);
-    dispatchFilter.setMaxWidth(200);
-    result.toolbar().appendToolbarItem(dispatchFilter);
-
-    result.toolbar().appendToolbarItem(new WebInspector.ToolbarCheckbox(WebInspector.UIString("Framework listeners"), WebInspector.UIString("Resolve event listeners bound with framework"), widget._showFrameworkListenersSetting));
-    return result;
 }
 
 WebInspector.EventListenersWidget._objectGroupName = "event-listeners-panel";
@@ -172,5 +164,5 @@ WebInspector.EventListenersWidget.prototype = {
     {
     },
 
-    __proto__: WebInspector.ThrottledWidget.prototype
+    __proto__: WebInspector.ThrottledView.prototype
 }

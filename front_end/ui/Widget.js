@@ -635,19 +635,83 @@ WebInspector.VBoxWithResizeCallback.prototype = {
 /**
  * @constructor
  * @extends {WebInspector.VBox}
+ * @param {string} title
+ * @param {boolean=} isWebComponent
  */
-WebInspector.VBoxWithToolbarItems = function()
+WebInspector.View = function(title, isWebComponent)
 {
-    WebInspector.VBox.call(this);
+    WebInspector.VBox.call(this, isWebComponent);
+    this._title = title;
+    /** @type {!Array<!WebInspector.ToolbarItem>} */
+    this._toolbarItems = [];
 }
 
-WebInspector.VBoxWithToolbarItems.prototype = {
+WebInspector.View.prototype = {
+    /**
+     * @return {string}
+     */
+    title: function()
+    {
+        return this._title;
+    },
+
+    /**
+     * @param {function()} callback
+     */
+    setRevealCallback: function(callback)
+    {
+        this._revealCallback = callback;
+        if (this._setRevealRequested) {
+            callback();
+            delete this._setRevealRequested;
+        }
+    },
+
+    /**
+     * @param {function(boolean)} callback
+     */
+    setRequestVisibleCallback: function(callback)
+    {
+        this._requestVisibleCallback = callback;
+        if (this._setVisibleRequested !== undefined) {
+            callback(this._setVisibleRequested);
+            delete this._setVisibleRequested;
+        }
+    },
+
+    requestReveal: function()
+    {
+        if (this._revealCallback)
+            this._revealCallback();
+        else
+            this._setRevealRequested = true;
+    },
+
+    /**
+     * @param {boolean} visible
+     */
+    requestSetVisible: function(visible)
+    {
+        if (this._requestVisibleCallback)
+            this._requestVisibleCallback(visible);
+        else
+            this._setVisibleRequested = visible;
+    },
+
+    /**
+     * @param {!WebInspector.ToolbarItem} item
+     */
+    addToolbarItem: function(item)
+    {
+        this._toolbarItems.push(item);
+    },
+
     /**
      * @return {!Array<!WebInspector.ToolbarItem>}
      */
     toolbarItems: function()
     {
-        return [];
+        return this._toolbarItems;
     },
 
     __proto__: WebInspector.VBox.prototype

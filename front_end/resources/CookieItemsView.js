@@ -29,11 +29,11 @@
 
 /**
  * @constructor
- * @extends {WebInspector.VBoxWithToolbarItems}
+ * @extends {WebInspector.View}
  */
 WebInspector.CookieItemsView = function(treeElement, cookieDomain)
 {
-    WebInspector.VBoxWithToolbarItems.call(this);
+    WebInspector.View.call(this, WebInspector.UIString("Cookies"));
 
     this.element.classList.add("storage-view");
 
@@ -187,5 +187,5 @@ WebInspector.CookieItemsView.prototype = {
         }
     },
 
-    __proto__: WebInspector.VBoxWithToolbarItems.prototype
+    __proto__: WebInspector.View.prototype
 }

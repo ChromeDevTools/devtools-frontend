@@ -1,8 +1,7 @@
 {
     "extensions": [
         {
-            "title": "Accessibility",
-            "type": "@WebInspector.Widget",
+            "type": "@WebInspector.View",
             "location": "elements-panel",
             "className": "WebInspector.AccessibilitySidebarView"
         }

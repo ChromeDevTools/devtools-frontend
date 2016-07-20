@@ -282,8 +282,8 @@ WebInspector.SourcesView.prototype = {
     {
         this._scriptViewToolbar.removeToolbarItems();
         var view = this.visibleView()
-        if (view instanceof WebInspector.VBoxWithToolbarItems) {
-            for (var item of (/** @type {?WebInspector.VBoxWithToolbarItems} */(view)).toolbarItems())
+        if (view instanceof WebInspector.View) {
+            for (var item of (/** @type {?WebInspector.View} */(view)).toolbarItems())
                 this._scriptViewToolbar.appendToolbarItem(item);
         }
     },

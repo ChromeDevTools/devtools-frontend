@@ -168,7 +168,6 @@
         "ComputedStyleModel.js",
         "ElementsBreadcrumbs.js",
         "ElementsSidebarPane.js",
-        "ElementsSidebarView.js",
         "ElementsTreeElement.js",
         "ElementsTreeOutline.js",
         "EventListenersWidget.js",

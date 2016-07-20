@@ -762,6 +762,7 @@ li.editing .enabled-button {
 
 .properties-widget-section {
     padding: 2px 0px 2px 5px;
+    flex: none;
 }
 
 .sidebar-pane-section-toolbar {

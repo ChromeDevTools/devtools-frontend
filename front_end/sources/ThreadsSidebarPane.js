@@ -4,13 +4,13 @@
 
 /**
  * @constructor
- * @extends {WebInspector.SidebarPane}
+ * @extends {WebInspector.View}
  * @implements {WebInspector.TargetManager.Observer}
  */
 WebInspector.ThreadsSidebarPane = function()
 {
-    WebInspector.SidebarPane.call(this, WebInspector.UIString("Threads"));
-    this.setVisible(false);
+    WebInspector.View.call(this, WebInspector.UIString("Threads"));
+    this.requestSetVisible(false);
 
     /** @type {!Map.<!WebInspector.DebuggerModel, !WebInspector.UIList.Item>} */
     this._debuggerModelToListItems = new Map();
@@ -58,7 +58,7 @@ WebInspector.ThreadsSidebarPane.prototype = {
     _updateVisibility: function()
     {
         this._wasVisibleAtLeastOnce = this._wasVisibleAtLeastOnce || this._debuggerModelToListItems.size > 1;
-        this.setVisible(this._wasVisibleAtLeastOnce);
+        this.requestSetVisible(this._wasVisibleAtLeastOnce);
     },
 
     /**
@@ -148,5 +148,5 @@ WebInspector.ThreadsSidebarPane.prototype = {
     },
 
 
-    __proto__: WebInspector.SidebarPane.prototype
+    __proto__: WebInspector.View.prototype
 }

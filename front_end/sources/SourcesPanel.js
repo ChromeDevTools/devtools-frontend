@@ -1104,7 +1104,7 @@ WebInspector.SourcesPanel.prototype = {
             this._extensionSidebarPanesContainer = sidebarPaneStack;
             this.sidebarPaneView = vbox;
 
-            this.sidebarPanes.scopechain.expandPane();
+            this.sidebarPanes.scopechain.requestReveal();
             this.sidebarPanes.watchExpressions.expandIfNecessary();
         } else {
             var splitWidget = new WebInspector.SplitWidget(true, true, "sourcesPanelDebuggerSidebarSplitViewState", 0.5);
@@ -1136,9 +1136,9 @@ WebInspector.SourcesPanel.prototype = {
             this._addExtensionSidebarPane(extensionSidebarPanes[i]);
 
         this._splitWidget.setSidebarWidget(this.sidebarPaneView);
-        this.sidebarPanes.threads.expandPane();
-        this.sidebarPanes.jsBreakpoints.expandPane();
-        this.sidebarPanes.callstack.expandPane();
+        this.sidebarPanes.threads.requestReveal();
+        this.sidebarPanes.jsBreakpoints.requestReveal();
+        this.sidebarPanes.callstack.requestReveal();
     },
 
     /**

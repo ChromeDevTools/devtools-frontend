@@ -340,9 +340,9 @@ WebInspector.NetworkDataGridNode.prototype = {
             cell.appendChild(createTextNode(WebInspector.UIString("Push / ")));
         switch (initiator.type) {
         case WebInspector.NetworkRequest.InitiatorType.Parser:
-            cell.title = initiator.url + ":" + initiator.lineNumber;
+            cell.title = initiator.url + ":" + (initiator.lineNumber + 1);
             var uiSourceCode = WebInspector.networkMapping.uiSourceCodeForURLForAnyTarget(initiator.url);
-            cell.appendChild(WebInspector.linkifyResourceAsNode(initiator.url, initiator.lineNumber - 1, initiator.columnNumber - 1, undefined, undefined, uiSourceCode ? uiSourceCode.displayName() : undefined));
+            cell.appendChild(WebInspector.linkifyResourceAsNode(initiator.url, initiator.lineNumber, initiator.columnNumber, undefined, undefined, uiSourceCode ? uiSourceCode.displayName() : undefined));
             this._appendSubtitle(cell, WebInspector.UIString("Parser"));
             break;
 
@@ -356,7 +356,7 @@ WebInspector.NetworkDataGridNode.prototype = {
 
         case WebInspector.NetworkRequest.InitiatorType.Script:
             if (!this._linkifiedInitiatorAnchor) {
-                this._linkifiedInitiatorAnchor = this._parentView.linkifier.linkifyScriptLocation(request.target(), initiator.scriptId, initiator.url, initiator.lineNumber - 1, initiator.columnNumber - 1);
+                this._linkifiedInitiatorAnchor = this._parentView.linkifier.linkifyScriptLocation(request.target(), initiator.scriptId, initiator.url, initiator.lineNumber, initiator.columnNumber);
                 this._linkifiedInitiatorAnchor.title = "";
             }
             cell.appendChild(this._linkifiedInitiatorAnchor);

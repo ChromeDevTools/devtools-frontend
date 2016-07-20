@@ -285,7 +285,7 @@ WebInspector.ConsoleMessage = function(target, source, level, messageText, type,
             this.stackTrace = initiator.stack || undefined;
             if (initiator.url) {
                 this.url = initiator.url;
-                this.line = (initiator.lineNumber - 1) || 0;
+                this.line = initiator.lineNumber || 0;
             }
         }
     }

@@ -979,6 +979,8 @@ WebInspector.RemoteDebuggingTerminatedScreen = function(reason)
     message.createChild("span").textContent = WebInspector.UIString("Debugging connection was closed. Reason: ");
     message.createChild("span", "reason").textContent = reason;
     this.contentElement.createChild("div", "message").textContent = WebInspector.UIString("Reconnect when ready by reopening DevTools.");
+    var button = createTextButton(WebInspector.UIString("Reconnect DevTools"), () => window.location.reload());
+    this.contentElement.createChild("div", "button").appendChild(button);
 }
 
 /**

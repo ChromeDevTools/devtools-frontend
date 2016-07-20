@@ -5,13 +5,18 @@
  */
 
 .widget {
-    padding: 25px;
+    padding: 20px;
 }
 
-.message {
+.message, .button {
     font-size: larger;
     white-space: pre;
     margin: 5px;
+}
+
+.button {
+    text-align: center;
+    margin-top: 10px;
 }
 
 .reason {

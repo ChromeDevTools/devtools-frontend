@@ -1,0 +1,25 @@
+{
+  "name": "chrome-devtools-frontend",
+  "version": "1.0.XXXXXX",
+  "description": "Chrome DevTools UI",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChromeDevTools/devtools-frontend.git"
+  },
+  "keywords": [
+    "devtools",
+    "chrome",
+    "chromium",
+    "blink",
+    "debugger"
+  ],
+  "author": "The Chromium Authors",
+  "license": "SEE LICENSE IN https://chromium.googlesource.com/chromium/src/+/master/LICENSE",
+  "bugs": {
+    "url": "https://bugs.chromium.org/p/chromium/issues/list?can=2&q=component:Platform%3EDevTools%20&sort=-opened&colspec=ID%20Stars%20Owner%20Summary%20Modified%20Opened"
+  },
+  "homepage": "https://devtools.chrome.com"
+}

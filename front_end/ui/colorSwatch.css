@@ -26,6 +26,7 @@
     height: 100%;
     display: inline-block;
     border: 1px solid rgba(128, 128, 128, 0.6);
+    cursor: default;
 }
 
 .color-swatch-inner:hover {

@@ -6,6 +6,7 @@
 
 .computed-properties {
     -webkit-user-select: text;
+    flex-shrink: 0;
 }
 
 .computed-style-property {

@@ -42,6 +42,7 @@ WebInspector.PlatformFontsWidget = function(sharedModel)
     this._sharedModel.addEventListener(WebInspector.ComputedStyleModel.Events.ComputedStyleChanged, this.update, this);
 
     this._sectionTitle = createElementWithClass("div", "title");
+    this.contentElement.classList.add("platform-fonts");
     this.contentElement.appendChild(this._sectionTitle);
     this._sectionTitle.textContent = WebInspector.UIString("Rendered Fonts");
     this._fontStatsSection = this.contentElement.createChild("div", "stats-section");

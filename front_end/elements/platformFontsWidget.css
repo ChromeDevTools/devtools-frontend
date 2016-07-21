@@ -8,6 +8,10 @@
     -webkit-user-select: text;
 }
 
+.platform-fonts {
+    flex-shrink: 0;
+}
+
 .font-name {
     font-weight: bold;
 }

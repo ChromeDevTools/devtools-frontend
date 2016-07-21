@@ -108,7 +108,7 @@ WebInspector.Dialog.prototype = {
     {
         var closeButton = this.contentElement.createChild("div", "dialog-close-button", "dt-close-button");
         closeButton.gray = true;
-        closeButton.addEventListener("click", this.detach.bind(this, false), false);
+        closeButton.addEventListener("click", this.detach.bind(this), false);
     },
 
     /**

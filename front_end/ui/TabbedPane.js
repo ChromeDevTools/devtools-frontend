@@ -208,6 +208,7 @@ WebInspector.TabbedPane.prototype = {
         else
             this._tabs.push(tab);
         this._tabsHistory.push(tab);
+        view.attach(this.element);
         if (this._tabsHistory[0] === tab && this.isShowing())
             this.selectTab(tab.id, userGesture);
         this._updateTabElements();
@@ -258,6 +259,7 @@ WebInspector.TabbedPane.prototype = {
         this._tabs.splice(this._tabs.indexOf(tab), 1);
         if (tab._shown)
             this._hideTabElement(tab);
+        tab.view.detach();
 
         var eventData = { tabId: id, view: tab.view, isUserGesture: userGesture };
         this.dispatchEventToListeners(WebInspector.TabbedPane.EventTypes.TabClosed, eventData);
@@ -423,13 +425,17 @@ WebInspector.TabbedPane.prototype = {
     changeTabView: function(id, view)
     {
         var tab = this._tabsById[id];
-        if (this._currentTab && this._currentTab.id === tab.id) {
-            if (tab.view !== view)
-                this._hideTab(tab);
-            tab.view = view;
+        if (tab.view === view)
+            return;
+
+        var isSelected = this._currentTab && this._currentTab.id === id;
+        if (isSelected)
+            this._hideTab(tab);
+        tab.view.detach();
+        tab.view = view;
+        tab.view.attach(this.element);
+        if (isSelected)
             this._showTab(tab);
-        } else
-            tab.view = view;
     },
 
     onResize: function()
@@ -759,7 +765,7 @@ WebInspector.TabbedPane.prototype = {
     _showTab: function(tab)
     {
         tab.tabElement.classList.add("selected");
-        tab.view.show(this.element);
+        tab.view.showWidget();
         this._updateTabSlider();
     },
 
@@ -785,7 +791,7 @@ WebInspector.TabbedPane.prototype = {
     _hideTab: function(tab)
     {
         tab.tabElement.classList.remove("selected");
-        tab.view.detach();
+        tab.view.hideWidget();
     },
 
     /**

@@ -158,8 +158,9 @@ WebInspector.SplitWidget.prototype = {
         if (widget) {
             widget.element.classList.add("insertion-point-main");
             widget.element.classList.remove("insertion-point-sidebar");
+            widget.attach(this.element, this._sidebarWidget ? this._sidebarWidget.element : null);
             if (this._showMode === WebInspector.SplitWidget.ShowMode.OnlyMain || this._showMode === WebInspector.SplitWidget.ShowMode.Both)
-                widget.show(this.element);
+                widget.showWidget();
         }
     },
 
@@ -176,8 +177,9 @@ WebInspector.SplitWidget.prototype = {
         if (widget) {
             widget.element.classList.add("insertion-point-sidebar");
             widget.element.classList.remove("insertion-point-main");
+            widget.attach(this.element);
             if (this._showMode === WebInspector.SplitWidget.ShowMode.OnlySidebar || this._showMode === WebInspector.SplitWidget.ShowMode.Both)
-                widget.show(this.element);
+                widget.showWidget();
         }
     },
 
@@ -316,13 +318,13 @@ WebInspector.SplitWidget.prototype = {
             if (sideToShow) {
                 // Make sure main is first in the children list.
                 if (sideToShow === this._mainWidget)
-                    this._mainWidget.show(this.element, this._sidebarWidget ? this._sidebarWidget.element : null);
+                    this._mainWidget.showWidget();
                 else
-                    this._sidebarWidget.show(this.element);
+                    this._sidebarWidget.showWidget();
             }
             if (sideToHide) {
                 this._detaching = true;
-                sideToHide.detach();
+                sideToHide.hideWidget();
                 delete this._detaching;
             }
 
@@ -380,9 +382,9 @@ WebInspector.SplitWidget.prototype = {
 
         // Make sure main is the first in the children list.
         if (this._sidebarWidget)
-            this._sidebarWidget.show(this.element);
+            this._sidebarWidget.showWidget();
         if (this._mainWidget)
-            this._mainWidget.show(this.element, this._sidebarWidget ? this._sidebarWidget.element : null);
+            this._mainWidget.showWidget();
         // Order widgets in DOM properly.
         this.setSecondIsSidebar(this._secondIsSidebar);
 

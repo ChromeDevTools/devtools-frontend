@@ -1023,7 +1023,7 @@ WebInspector.TargetCrashedScreen.show = function(debuggerModel)
     dialog.setWrapsContent(true);
     dialog.addCloseButton();
     dialog.setDimmed(true);
-    var hideBound = dialog.detach.bind(dialog);
+    var hideBound = dialog.detach.bind(dialog, false);
     debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.GlobalObjectCleared, hideBound);
 
     new WebInspector.TargetCrashedScreen(onHide).show(dialog.element);

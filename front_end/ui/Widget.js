@@ -41,7 +41,7 @@ WebInspector.Widget = function(isWebComponent)
     }
     this._isWebComponent = isWebComponent;
     this.element.__widget = this;
-    this._visible = false;
+    this._visible = true;
     this._isRoot = false;
     this._isShowing = false;
     this._children = [];
@@ -119,7 +119,7 @@ WebInspector.Widget.prototype = {
     {
         if (this._isRoot)
             return true;
-        return !!this._parentWidget && this._parentWidget.isShowing();
+        return this._parentWidget && this._parentWidget.isShowing();
     },
 
     /**
@@ -210,48 +210,27 @@ WebInspector.Widget.prototype = {
      */
     show: function(parentElement, insertBefore)
     {
-        this.attach(parentElement, insertBefore);
-        this.showWidget();
-    },
-
-    /**
-     * @param {?Element} parentElement
-     * @param {?Element=} insertBefore
-     */
-    attach: function(parentElement, insertBefore)
-    {
         WebInspector.Widget.__assert(parentElement, "Attempt to attach widget with no parent element");
 
         // Update widget hierarchy.
-        var currentParent = parentElement;
-        while (currentParent && !currentParent.__widget)
-            currentParent = currentParent.parentElementOrShadowHost();
-        var newParentWidget = currentParent ? currentParent.__widget : null;
+        if (this.element.parentElement !== parentElement) {
+            if (this.element.parentElement)
+                this.detach();
 
-        if (this._parentWidget && newParentWidget !== this._parentWidget) {
-            // Reparent.
-            this.detach();
-        }
+            var currentParent = parentElement;
+            while (currentParent && !currentParent.__widget)
+                currentParent = currentParent.parentElementOrShadowHost();
 
-        if (newParentWidget) {
-            if (this._parentWidget !== newParentWidget) {
-                this._parentWidget = newParentWidget;
+            if (currentParent) {
+                this._parentWidget = currentParent.__widget;
                 this._parentWidget._children.push(this);
-            }
-            this._isRoot = false;
-        } else {
-            WebInspector.Widget.__assert(this._isRoot, "Attempt to attach widget to orphan node");
+                this._isRoot = false;
+            } else
+                WebInspector.Widget.__assert(this._isRoot, "Attempt to attach widget to orphan node");
+        } else if (this._visible) {
+            return;
         }
 
-        this._parentElement = parentElement;
-        this._insertBeforeElement = insertBefore;
-    },
-
-    showWidget: function()
-    {
-        WebInspector.Widget.__assert(this._parentElement, "Attempt to show detached widget");
-        if (this._visible)
-            return;
         this._visible = true;
 
         if (this._parentIsShowing())
@@ -260,12 +239,12 @@ WebInspector.Widget.prototype = {
         this.element.classList.remove("hidden");
 
         // Reparent
-        if (this.element.parentElement !== this._parentElement) {
-            WebInspector.Widget._incrementWidgetCounter(this._parentElement, this.element);
-            if (this._insertBeforeElement)
-                WebInspector.Widget._originalInsertBefore.call(this._parentElement, this.element, this._insertBeforeElement);
+        if (this.element.parentElement !== parentElement) {
+            WebInspector.Widget._incrementWidgetCounter(parentElement, this.element);
+            if (insertBefore)
+                WebInspector.Widget._originalInsertBefore.call(parentElement, this.element, insertBefore);
             else
-                WebInspector.Widget._originalAppendChild.call(this._parentElement, this.element);
+                WebInspector.Widget._originalAppendChild.call(parentElement, this.element);
         }
 
         if (this._parentIsShowing())
@@ -277,51 +256,35 @@ WebInspector.Widget.prototype = {
             this._processOnResize();
     },
 
-    hideWidget: function()
-    {
-        this._hideWidget();
-    },
-
     /**
      * @param {boolean=} overrideHideOnDetach
-     * @return {boolean}
      */
-    _hideWidget: function(overrideHideOnDetach)
+    detach: function(overrideHideOnDetach)
     {
-        WebInspector.Widget.__assert(this._parentElement, "Attempt to hide detached widget");
-        if (!this._visible)
-            return false;
-        this._visible = false;
-        var parentElement = this._parentElement;
+        var parentElement = this.element.parentElement;
+        if (!parentElement)
+            return;
 
         if (this._parentIsShowing())
             this._processWillHide();
 
         if (!overrideHideOnDetach && this.shouldHideOnDetach()) {
             this.element.classList.add("hidden");
+            this._visible = false;
             if (this._parentIsShowing())
                 this._processWasHidden();
             if (this._parentWidget && this._hasNonZeroConstraints())
                 this._parentWidget.invalidateConstraints();
-            return true;
+            return;
         }
 
         // Force legal removal
         WebInspector.Widget._decrementWidgetCounter(parentElement, this.element);
         WebInspector.Widget._originalRemoveChild.call(parentElement, this.element);
 
+        this._visible = false;
         if (this._parentIsShowing())
             this._processWasHidden();
-        return true;
-    },
-
-    detach: function()
-    {
-        if (!this._parentWidget)
-            return;
-        var wasShown = this._hideWidget(true);
-        if (!wasShown)
-            return;
 
         // Update widget hierarchy.
         if (this._parentWidget) {
@@ -331,13 +294,10 @@ WebInspector.Widget.prototype = {
             this._parentWidget.childWasDetached(this);
             var parent = this._parentWidget;
             this._parentWidget = null;
-            this._parentElement = null;
-            this._insertBeforeElement = null;
             if (this._hasNonZeroConstraints())
                 parent.invalidateConstraints();
-        } else {
+        } else
             WebInspector.Widget.__assert(this._isRoot, "Removing non-root widget from DOM");
-        }
     },
 
     detachChildWidgets: function()

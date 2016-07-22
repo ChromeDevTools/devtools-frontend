@@ -197,7 +197,7 @@ WebInspector.ViewportControl.prototype = {
         delete this._cumulativeHeights;
         delete this._cachedProviderElements;
         this._itemCount = this._provider.itemCount();
-        this._innerRefresh(false);
+        this.refresh();
     },
 
     /**
@@ -376,14 +376,6 @@ WebInspector.ViewportControl.prototype = {
 
     refresh: function()
     {
-        this._innerRefresh(false);
-    },
-
-    /**
-     * @param {boolean} isUserGesture
-     */
-    _innerRefresh: function(isUserGesture)
-    {
         if (!this._visibleHeight())
             return;  // Do nothing for invisible controls.
 
@@ -416,7 +408,7 @@ WebInspector.ViewportControl.prototype = {
         var oldFirstVisibleIndex = this._firstVisibleIndex;
         var oldLastVisibleIndex = this._lastVisibleIndex;
 
-        var shouldStickToBottom = !isUserGesture && this._stickToBottom && this._scrolledToBottom;
+        var shouldStickToBottom = this._stickToBottom && this._scrolledToBottom;
 
         if (shouldStickToBottom) {
             this._lastVisibleIndex = this._itemCount - 1;
@@ -568,7 +560,7 @@ WebInspector.ViewportControl.prototype = {
      */
     _onScroll: function(event)
     {
-        this._innerRefresh(event.isTrusted);
+        this.refresh();
     },
 
     /**
@@ -622,7 +614,7 @@ WebInspector.ViewportControl.prototype = {
     {
         this._rebuildCumulativeHeightsIfNeeded();
         this.element.scrollTop = index > 0 ? this._cumulativeHeights[index - 1] : 0;
-        this._innerRefresh(false);
+        this.refresh();
     },
 
     /**
@@ -632,7 +624,7 @@ WebInspector.ViewportControl.prototype = {
     {
         this._rebuildCumulativeHeightsIfNeeded();
         this.element.scrollTop = this._cumulativeHeights[index] - this._visibleHeight();
-        this._innerRefresh(false);
+        this.refresh();
     },
 
     /**

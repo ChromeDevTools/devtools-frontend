@@ -215,7 +215,7 @@ WebInspector.TextSourceMap.load = function(sourceMapURL, compiledURL)
             callback(new WebInspector.TextSourceMap(compiledURL, baseURL, payload));
         } catch (e) {
             console.error(e);
-            WebInspector.console.error("Failed to parse SourceMap: " + sourceMapURL);
+            WebInspector.console.warn("DevTools failed to parse SourceMap: " + sourceMapURL);
             callback(null);
         }
     }

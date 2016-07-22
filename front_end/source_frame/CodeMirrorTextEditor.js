@@ -1340,12 +1340,13 @@ WebInspector.CodeMirrorTextEditor.prototype = {
     /**
      * @param {!WebInspector.TextRange} range
      * @param {string} text
+     * @param {string=} origin
      * @return {!WebInspector.TextRange}
      */
-    editRange: function(range, text)
+    editRange: function(range, text, origin)
     {
         var pos = WebInspector.CodeMirrorUtils.toPos(range);
-        this._codeMirror.replaceRange(text, pos.start, pos.end);
+        this._codeMirror.replaceRange(text, pos.start, pos.end, origin);
         var newRange = WebInspector.CodeMirrorUtils.toRange(pos.start, this._codeMirror.posFromIndex(this._codeMirror.indexFromPos(pos.start) + text.length));
         this._delegate.onTextChanged(range, newRange);
         if (WebInspector.moduleSetting("textEditorAutoDetectIndent").get())

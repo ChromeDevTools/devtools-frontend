@@ -187,6 +187,7 @@ WebInspector.CSSSourceFrame.prototype = {
         }
         this._currentSwatch = swatch;
         this._currentColorPosition = colorPosition;
+        this.textEditor.setSelection(WebInspector.TextRange.createFromLocation(colorPosition.textRange.startLine, colorPosition.textRange.startColumn));
         this._spectrum = new WebInspector.Spectrum();
         this._spectrum.setColor(swatch.color(), swatch.format());
         this._spectrum.addEventListener(WebInspector.Spectrum.Events.SizeChanged, this._spectrumResized, this);
@@ -210,7 +211,7 @@ WebInspector.CSSSourceFrame.prototype = {
         this._muteColorProcessing = true;
         var colorString = /** @type {string} */ (event.data);
         this._currentSwatch.setColorText(colorString);
-        this._textEditor.editRange(this._currentColorPosition.textRange, colorString);
+        this._textEditor.editRange(this._currentColorPosition.textRange, colorString, "*color-text-changed");
         this._currentColorPosition.color = WebInspector.Color.parse(colorString);
         this._currentColorPosition.textRange.endColumn = this._currentColorPosition.textRange.startColumn + colorString.length;
     },

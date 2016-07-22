@@ -632,11 +632,10 @@
     right: 0;
 }
 
-.styles-section:not(.read-only) .style-properties .webkit-css-property.styles-panel-hovered,
-.styles-section:not(.read-only) .style-properties .value .styles-panel-hovered,
-.styles-section:not(.read-only) .style-properties .value.styles-panel-hovered,
-.styles-section:not(.read-only) span.simple-selector.styles-panel-hovered,
-.styles-section:not(.read-only) .media-text.styles-panel-hovered {
+.styles-section.styles-panel-hovered:not(.read-only) .style-properties .webkit-css-property:hover,
+.styles-section.styles-panel-hovered:not(.read-only) .style-properties .value:hover,
+.styles-section.styles-panel-hovered:not(.read-only) span.simple-selector:hover,
+.styles-section.styles-panel-hovered:not(.read-only) .media-text :hover{
     text-decoration: underline;
     cursor: default;
 }

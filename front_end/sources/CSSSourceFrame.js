@@ -182,9 +182,10 @@ WebInspector.CSSSourceFrame.prototype = {
     {
         event.consume(true);
         if (this._swatchPopoverHelper.isShowing()) {
-            this._swatchPopoverHelper.hide();
+            this._swatchPopoverHelper.hide(true);
             return;
         }
+        this._hadSpectrumChange = false;
         this._currentSwatch = swatch;
         this._currentColorPosition = colorPosition;
         this.textEditor.setSelection(WebInspector.TextRange.createFromLocation(colorPosition.textRange.startLine, colorPosition.textRange.startColumn));
@@ -209,19 +210,27 @@ WebInspector.CSSSourceFrame.prototype = {
     _spectrumChanged: function(event)
     {
         this._muteColorProcessing = true;
+        this._hadSpectrumChange = true;
         var colorString = /** @type {string} */ (event.data);
         this._currentSwatch.setColorText(colorString);
-        this._textEditor.editRange(this._currentColorPosition.textRange, colorString, "*color-text-changed");
+        this.textEditor.editRange(this._currentColorPosition.textRange, colorString, "*color-text-changed");
         this._currentColorPosition.color = WebInspector.Color.parse(colorString);
         this._currentColorPosition.textRange.endColumn = this._currentColorPosition.textRange.startColumn + colorString.length;
     },
 
-    _spectrumHidden: function()
+    /**
+     * @param {boolean} commitEdit
+     */
+    _spectrumHidden: function(commitEdit)
     {
-        this._muteColorProcessing = false;
         this._spectrum.removeEventListener(WebInspector.Spectrum.Events.SizeChanged, this._spectrumResized, this);
         this._spectrum.removeEventListener(WebInspector.Spectrum.Events.ColorChanged, this._spectrumChanged, this);
+        if (!commitEdit && this._hadSpectrumChange)
+            this.textEditor.undo();
         delete this._spectrum;
+        delete this._currentSwatch;
+        delete this._currentColorPosition;
+        this._muteColorProcessing = false;
         this._updateColorSwatches();
     },
 
@@ -258,7 +267,7 @@ WebInspector.CSSSourceFrame.prototype = {
     {
         WebInspector.UISourceCodeFrame.prototype.scrollChanged.call(this, lineNumber);
         if (this._swatchPopoverHelper.isShowing())
-            this._swatchPopoverHelper.hide();
+            this._swatchPopoverHelper.hide(true);
     },
 
     __proto__: WebInspector.UISourceCodeFrame.prototype

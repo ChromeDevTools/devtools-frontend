@@ -32,6 +32,7 @@
         "../cm/javascript.js",
         "../cm/simple.js",
         "../cm/xml.js",
+        "../cm/multiplex.js",
         "../cm/htmlmixed.js",
         "../cm/htmlembedded.js",
 
@@ -57,6 +58,7 @@
         "../cm/javascript.js",
         "../cm/simple.js",
         "../cm/xml.js",
+        "../cm/multiplex.js",
         "../cm/htmlmixed.js",
         "../cm/htmlembedded.js",
 

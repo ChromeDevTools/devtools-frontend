@@ -1206,10 +1206,13 @@ WebInspector.CodeMirrorTextEditor.prototype = {
         var lineHandle = this._codeMirror.getLineHandle(lineNumber);
         if (!lineHandle)
             return;
-        if (toggled)
+        if (toggled) {
+            this._codeMirror.addLineClass(lineHandle, "gutter", className);
             this._codeMirror.addLineClass(lineHandle, "wrap", className);
-        else
+        } else {
+            this._codeMirror.removeLineClass(lineHandle, "gutter", className);
             this._codeMirror.removeLineClass(lineHandle, "wrap", className);
+        }
     },
 
     /**

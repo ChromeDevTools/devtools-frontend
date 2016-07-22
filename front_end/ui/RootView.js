@@ -23,7 +23,7 @@ WebInspector.RootView.prototype = {
         document.defaultView.addEventListener("resize", this.doResize.bind(this), false);
         this._window = document.defaultView;
         this.doResize();
-        this.show(document.body);
+        this.show(/** @type {!Element} */ (document.body));
     },
 
     doResize: function()

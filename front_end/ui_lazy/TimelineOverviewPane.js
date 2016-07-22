@@ -476,8 +476,8 @@ WebInspector.TimelineOverview = function()
 
 WebInspector.TimelineOverview.prototype = {
     /**
-     * @param {?Element} parentElement
-     * @param {!Element=} insertBefore
+     * @param {!Element} parentElement
+     * @param {?Element=} insertBefore
      */
     show: function(parentElement, insertBefore) { },
 

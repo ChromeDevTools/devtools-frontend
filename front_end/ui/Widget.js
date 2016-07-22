@@ -41,12 +41,13 @@ WebInspector.Widget = function(isWebComponent)
     }
     this._isWebComponent = isWebComponent;
     this.element.__widget = this;
-    this._visible = true;
+    this._visible = false;
     this._isRoot = false;
     this._isShowing = false;
     this._children = [];
     this._hideOnDetach = false;
     this._notificationDepth = 0;
+    this._invalidationsSuspended = 0;
 }
 
 WebInspector.Widget.prototype = {
@@ -119,7 +120,7 @@ WebInspector.Widget.prototype = {
     {
         if (this._isRoot)
             return true;
-        return this._parentWidget && this._parentWidget.isShowing();
+        return !!this._parentWidget && this._parentWidget.isShowing();
     },
 
     /**
@@ -205,32 +206,56 @@ WebInspector.Widget.prototype = {
     },
 
     /**
-     * @param {?Element} parentElement
+     * @param {!Element} parentElement
      * @param {?Element=} insertBefore
      */
     show: function(parentElement, insertBefore)
     {
         WebInspector.Widget.__assert(parentElement, "Attempt to attach widget with no parent element");
 
-        // Update widget hierarchy.
-        if (this.element.parentElement !== parentElement) {
-            if (this.element.parentElement)
-                this.detach();
-
+        if (!this._isRoot) {
+            // Update widget hierarchy.
             var currentParent = parentElement;
             while (currentParent && !currentParent.__widget)
                 currentParent = currentParent.parentElementOrShadowHost();
-
-            if (currentParent) {
-                this._parentWidget = currentParent.__widget;
-                this._parentWidget._children.push(this);
-                this._isRoot = false;
-            } else
-                WebInspector.Widget.__assert(this._isRoot, "Attempt to attach widget to orphan node");
-        } else if (this._visible) {
-            return;
+            WebInspector.Widget.__assert(currentParent, "Attempt to attach widget to orphan node");
+            this.attach(currentParent.__widget);
         }
 
+        this.showWidget(parentElement, insertBefore);
+    },
+
+    /**
+     * @param {!WebInspector.Widget} parentWidget
+     */
+    attach: function(parentWidget)
+    {
+        if (parentWidget === this._parentWidget)
+            return;
+        if (this._parentWidget)
+            this.detach();
+        this._parentWidget = parentWidget;
+        this._parentWidget._children.push(this);
+        this._isRoot = false;
+    },
+
+    /**
+     * @param {!Element} parentElement
+     * @param {?Element=} insertBefore
+     */
+    showWidget: function(parentElement, insertBefore)
+    {
+        var currentParent = parentElement;
+        while (currentParent && !currentParent.__widget)
+            currentParent = currentParent.parentElementOrShadowHost();
+
+        if (this._isRoot)
+            WebInspector.Widget.__assert(!currentParent, "Attempt to show root widget under another widget");
+        else
+            WebInspector.Widget.__assert(currentParent && currentParent.__widget === this._parentWidget, "Attempt to show under node belonging to alien widget");
+
+        if (this._visible)
+            return;
         this._visible = true;
 
         if (this._parentIsShowing())
@@ -256,35 +281,47 @@ WebInspector.Widget.prototype = {
             this._processOnResize();
     },
 
+    hideWidget: function()
+    {
+        if (!this._parentWidget)
+            return;
+        this._hideWidget();
+    },
+
     /**
      * @param {boolean=} overrideHideOnDetach
      */
-    detach: function(overrideHideOnDetach)
+    _hideWidget: function(overrideHideOnDetach)
     {
-        var parentElement = this.element.parentElement;
-        if (!parentElement)
+        if (!this._visible)
             return;
+        this._visible = false;
+        var parentElement = this.element.parentElement;
 
         if (this._parentIsShowing())
             this._processWillHide();
 
         if (!overrideHideOnDetach && this.shouldHideOnDetach()) {
             this.element.classList.add("hidden");
-            this._visible = false;
-            if (this._parentIsShowing())
-                this._processWasHidden();
-            if (this._parentWidget && this._hasNonZeroConstraints())
-                this._parentWidget.invalidateConstraints();
-            return;
+        } else {
+            // Force legal removal
+            WebInspector.Widget._decrementWidgetCounter(parentElement, this.element);
+            WebInspector.Widget._originalRemoveChild.call(parentElement, this.element);
         }
 
-        // Force legal removal
-        WebInspector.Widget._decrementWidgetCounter(parentElement, this.element);
-        WebInspector.Widget._originalRemoveChild.call(parentElement, this.element);
-
-        this._visible = false;
         if (this._parentIsShowing())
             this._processWasHidden();
+        if (this._parentWidget && this._hasNonZeroConstraints())
+            this._parentWidget.invalidateConstraints();
+    },
+
+    detach: function()
+    {
+        if (!this._parentWidget && !this._isRoot)
+            return;
+
+        if (this._visible)
+            this._hideWidget(true);
 
         // Update widget hierarchy.
         if (this._parentWidget) {
@@ -294,10 +331,9 @@ WebInspector.Widget.prototype = {
             this._parentWidget.childWasDetached(this);
             var parent = this._parentWidget;
             this._parentWidget = null;
-            if (this._hasNonZeroConstraints())
-                parent.invalidateConstraints();
-        } else
+        } else {
             WebInspector.Widget.__assert(this._isRoot, "Removing non-root widget from DOM");
+        }
     },
 
     detachChildWidgets: function()
@@ -479,8 +515,25 @@ WebInspector.Widget.prototype = {
         return !!(constraints.minimum.width || constraints.minimum.height || constraints.preferred.width || constraints.preferred.height);
     },
 
+    suspendInvalidations()
+    {
+        ++this._invalidationsSuspended;
+    },
+
+    resumeInvalidations()
+    {
+        --this._invalidationsSuspended;
+        if (!this._invalidationsSuspended && this._invalidationsRequested)
+            this.invalidateConstraints();
+    },
+
     invalidateConstraints: function()
     {
+        if (this._invalidationsSuspended) {
+            this._invalidationsRequested = true;
+            return;
+        }
+        this._invalidationsRequested = false;
         var cached = this._cachedConstraints;
         delete this._cachedConstraints;
         var actual = this.constraints();

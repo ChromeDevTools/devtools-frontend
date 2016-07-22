@@ -120,7 +120,7 @@ WebInspector.CallStackSidebarPane.prototype = {
     },
 
     /**
-     * @param {!Array.<!RuntimeAgent.CallFrame>} callFrames
+     * @param {!Array<!RuntimeAgent.CallFrame>} callFrames
      * @param {!WebInspector.UIList.Item} asyncCallFrameItem
      * @return {!Array<!WebInspector.CallStackSidebarPane.CallFrame>}
      */

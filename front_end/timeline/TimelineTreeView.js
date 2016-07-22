@@ -92,9 +92,7 @@ WebInspector.TimelineTreeView.prototype = {
         var frame = WebInspector.TimelineProfileTree.eventStackFrame(event);
         if (!frame)
             return null;
-        return event.name === WebInspector.TimelineModel.RecordType.JSFrame
-            ? this._linkifier.maybeLinkifyConsoleCallFrame(target, frame)
-            : this._linkifier.maybeLinkifyConsoleCallFrameForTracing(target, frame);
+        return this._linkifier.maybeLinkifyConsoleCallFrame(target, frame);
     },
 
     /**

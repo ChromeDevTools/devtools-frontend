@@ -831,8 +831,16 @@ WebInspector.TimelineModel.prototype = {
             this._currentScriptEvent = null;
 
         var eventData = event.args["data"] || event.args["beginData"] || {};
-        if (eventData && eventData["stackTrace"])
+        if (eventData["stackTrace"])
             event.stackTrace = eventData["stackTrace"];
+        if (event.stackTrace && event.name !== recordTypes.JSSample) {
+            // TraceEvents come with 1-based line & column numbers. The frontend code
+            // requires 0-based ones. Adjust the values.
+            for (var i = 0; i < event.stackTrace.length; ++i) {
+                --event.stackTrace[i].lineNumber;
+                --event.stackTrace[i].columnNumber;
+            }
+        }
 
         if (eventStack.length && eventStack.peekLast().name === recordTypes.EventDispatch)
             eventStack.peekLast().hasChildren = true;
@@ -842,12 +850,12 @@ WebInspector.TimelineModel.prototype = {
         switch (event.name) {
         case recordTypes.ResourceSendRequest:
         case recordTypes.WebSocketCreate:
-            event.url = event.args["data"]["url"];
+            event.url = eventData["url"];
             event.initiator = eventStack.peekLast() || null;
             break;
 
         case recordTypes.ScheduleStyleRecalculation:
-            this._lastScheduleStyleRecalculation[event.args["data"]["frame"]] = event;
+            this._lastScheduleStyleRecalculation[eventData["frame"]] = event;
             break;
 
         case recordTypes.UpdateLayoutTree:
@@ -874,7 +882,7 @@ WebInspector.TimelineModel.prototype = {
             // Consider style recalculation as a reason for layout invalidation,
             // but only if we had no earlier layout invalidation records.
             var layoutInitator = event;
-            var frameId = event.args["data"]["frame"];
+            var frameId = eventData["frame"];
             if (!this._layoutInvalidate[frameId] && this._lastRecalculateStylesEvent && this._lastRecalculateStylesEvent.endTime >  event.startTime)
                 layoutInitator = this._lastRecalculateStylesEvent.initiator;
             this._layoutInvalidate[frameId] = layoutInitator;
@@ -894,8 +902,19 @@ WebInspector.TimelineModel.prototype = {
                 event.warning = WebInspector.TimelineModel.WarningType.ForcedLayout;
             break;
 
-        case recordTypes.EvaluateScript:
         case recordTypes.FunctionCall:
+            // Compatibility with old format.
+            if (typeof eventData["scriptName"] === "string")
+                eventData["url"] = eventData["scriptName"];
+            if (typeof eventData["scriptLine"] === "number")
+                eventData["lineNumber"] = eventData["scriptLine"];
+            // Fallthrough.
+        case recordTypes.EvaluateScript:
+        case recordTypes.CompileScript:
+            if (typeof eventData["lineNumber"] === "number")
+                --eventData["lineNumber"];
+            if (typeof eventData["columnNumber"] === "number")
+                --eventData["columnNumber"];
             if (!this._currentScriptEvent)
                 this._currentScriptEvent = event;
             break;
@@ -906,12 +925,12 @@ WebInspector.TimelineModel.prototype = {
 
         case recordTypes.Paint:
             this._invalidationTracker.didPaint(event);
-            event.highlightQuad = event.args["data"]["clip"];
-            event.backendNodeId = event.args["data"]["nodeId"];
+            event.highlightQuad = eventData["clip"];
+            event.backendNodeId = eventData["nodeId"];
             // Only keep layer paint events, skip paints for subframes that get painted to the same layer as parent.
-            if (!event.args["data"]["layerId"])
+            if (!eventData["layerId"])
                 break;
-            var layerId = event.args["data"]["layerId"];
+            var layerId = eventData["layerId"];
             this._lastPaintForLayer[layerId] = event;
             break;
 
@@ -926,12 +945,12 @@ WebInspector.TimelineModel.prototype = {
             break;
 
         case recordTypes.ScrollLayer:
-            event.backendNodeId = event.args["data"]["nodeId"];
+            event.backendNodeId = eventData["nodeId"];
             break;
 
         case recordTypes.PaintImage:
-            event.backendNodeId = event.args["data"]["nodeId"];
-            event.url = event.args["data"]["url"];
+            event.backendNodeId = eventData["nodeId"];
+            event.url = eventData["url"];
             break;
 
         case recordTypes.DecodeImage:
@@ -1447,7 +1466,7 @@ WebInspector.InvalidationTrackingEvent = function(event)
         this.cause.reason = "Layout forced";
 }
 
-/** @typedef {{reason: string, stackTrace: ?Array.<!RuntimeAgent.CallFrame>}} */
+/** @typedef {{reason: string, stackTrace: ?Array<!RuntimeAgent.CallFrame>}} */
 WebInspector.InvalidationCause;
 
 /**

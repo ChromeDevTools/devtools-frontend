@@ -404,8 +404,8 @@ WebInspector.TimelineUIUtils.buildDetailsTextForTraceEvent = function(event, tar
         break;
     case recordType.FunctionCall:
         // Omit internally generated script names.
-        if (eventData && eventData["scriptName"])
-            detailsText = linkifyLocationAsText(eventData["scriptId"], eventData["scriptLine"], 0);
+        if (eventData)
+            detailsText = linkifyLocationAsText(eventData["scriptId"], eventData["lineNumber"], 0);
         break;
     case recordType.JSFrame:
         detailsText = WebInspector.beautifyFunctionName(eventData["functionName"]);
@@ -429,7 +429,7 @@ WebInspector.TimelineUIUtils.buildDetailsTextForTraceEvent = function(event, tar
     case recordType.EvaluateScript:
         var url = eventData["url"];
         if (url)
-            detailsText = WebInspector.displayNameForURL(url) + ":" + eventData["lineNumber"];
+            detailsText = WebInspector.displayNameForURL(url) + ":" + (eventData["lineNumber"] + 1);
         break;
     case recordType.ParseScriptOnBackground:
     case recordType.XHRReadyStateChange:
@@ -491,14 +491,15 @@ WebInspector.TimelineUIUtils.buildDetailsTextForTraceEvent = function(event, tar
     /**
      * @param {string} scriptId
      * @param {number} lineNumber
-     * @param {number=} columnNumber
+     * @param {number} columnNumber
      * @return {?string}
      */
     function linkifyLocationAsText(scriptId, lineNumber, columnNumber)
     {
-        // FIXME(62725): stack trace line/column numbers are one-based.
         var debuggerModel = WebInspector.DebuggerModel.fromTarget(target);
-        var rawLocation = target && !target.isDetached() && scriptId && debuggerModel ? debuggerModel.createRawLocationByScriptId(scriptId, lineNumber - 1, (columnNumber || 1) - 1) : null;
+        if (!target || target.isDetached() || !scriptId || !debuggerModel)
+            return null;
+        var rawLocation = debuggerModel.createRawLocationByScriptId(scriptId, lineNumber, columnNumber);
         if (!rawLocation)
             return null;
         var uiLocation = WebInspector.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
@@ -511,8 +512,10 @@ WebInspector.TimelineUIUtils.buildDetailsTextForTraceEvent = function(event, tar
     function linkifyTopCallFrameAsText()
     {
         var frame = WebInspector.TimelineUIUtils.topStackFrame(event);
-        var text = frame ? linkifyLocationAsText(frame.scriptId, frame.lineNumber, frame.columnNumber) : null;
-        if (frame && !text) {
+        if (!frame)
+            return null;
+        var text = linkifyLocationAsText(frame.scriptId, frame.lineNumber, frame.columnNumber);
+        if (!text) {
             text = frame.url;
             if (typeof frame.lineNumber === "number")
                 text += ":" + (frame.lineNumber + 1);
@@ -565,8 +568,6 @@ WebInspector.TimelineUIUtils.buildDetailsNodeForTraceEvent = function(event, tar
             details = WebInspector.linkifyResourceAsNode(event.url);
         break;
     case recordType.FunctionCall:
-        details = linkifyLocation(eventData["scriptId"], eventData["scriptName"], eventData["scriptLine"] - 1, 0);
-        break;
     case recordType.JSFrame:
         details = createElement("span");
         details.createTextChild(WebInspector.beautifyFunctionName(eventData["functionName"]));
@@ -580,7 +581,7 @@ WebInspector.TimelineUIUtils.buildDetailsNodeForTraceEvent = function(event, tar
     case recordType.EvaluateScript:
         var url = eventData["url"];
         if (url)
-            details = linkifyLocation("", url, eventData["lineNumber"] - 1, 0);
+            details = linkifyLocation("", url, eventData["lineNumber"], 0);
         break;
     case recordType.ParseScriptOnBackground:
         var url = eventData["url"];
@@ -617,7 +618,7 @@ WebInspector.TimelineUIUtils.buildDetailsNodeForTraceEvent = function(event, tar
     function linkifyTopCallFrame()
     {
         var frame = WebInspector.TimelineUIUtils.topStackFrame(event);
-        return frame ? linkifier.maybeLinkifyConsoleCallFrameForTracing(target, frame, "timeline-details") : null;
+        return frame ? linkifier.maybeLinkifyConsoleCallFrame(target, frame, "timeline-details") : null;
     }
 }
 
@@ -720,6 +721,7 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
         contentHelper.appendTextRow(WebInspector.UIString("Collected"), Number.bytesToString(delta));
         break;
     case recordTypes.JSFrame:
+    case recordTypes.FunctionCall:
         var detailsNode = WebInspector.TimelineUIUtils.buildDetailsNodeForTraceEvent(event, model.targetByEvent(event), linkifier);
         if (detailsNode)
             contentHelper.appendElementRow(WebInspector.UIString("Function"), detailsNode);
@@ -735,12 +737,6 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
         break;
     case recordTypes.FireAnimationFrame:
         contentHelper.appendTextRow(WebInspector.UIString("Callback ID"), eventData["id"]);
-        break;
-    case recordTypes.FunctionCall:
-        if (typeof eventData["functionName"] === "string")
-            contentHelper.appendTextRow(WebInspector.UIString("Function"), WebInspector.beautifyFunctionName(eventData["functionName"]));
-        if (eventData["scriptName"])
-            contentHelper.appendLocationRow(WebInspector.UIString("Location"), eventData["scriptName"], eventData["scriptLine"]);
         break;
     case recordTypes.ResourceSendRequest:
     case recordTypes.ResourceReceiveResponse:
@@ -829,8 +825,8 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
     case recordTypes.ParseHTML:
         var beginData = event.args["beginData"];
         var url = beginData["url"];
-        var startLine = beginData["startLine"] + 1;
-        var endLine = event.args["endData"] ? event.args["endData"]["endLine"] + 1 : 0;
+        var startLine = beginData["startLine"] - 1;
+        var endLine = event.args["endData"] ? event.args["endData"]["endLine"] - 1 : undefined;
         if (url)
             contentHelper.appendLocationRange(WebInspector.UIString("Range"), url, startLine, endLine);
         break;
@@ -994,7 +990,7 @@ WebInspector.TimelineUIUtils.buildNetworkRequestDetails = function(request, mode
     var sendRequest = request.children[0];
     var topFrame = WebInspector.TimelineUIUtils.topStackFrame(sendRequest);
     if (topFrame) {
-        var link = linkifier.maybeLinkifyConsoleCallFrameForTracing(target, topFrame);
+        var link = linkifier.maybeLinkifyConsoleCallFrame(target, topFrame);
         if (link)
             contentHelper.appendElementRow(title, link);
     } else if (sendRequest.initiator) {
@@ -1245,7 +1241,7 @@ WebInspector.TimelineUIUtils.InvalidationsGroupElement.prototype = {
             title.createTextChild(WebInspector.UIString(". "));
             var stack = title.createChild("span", "monospace");
             stack.createChild("span").textContent = WebInspector.beautifyFunctionName(topFrame.functionName);
-            var link = this._contentHelper.linkifier().maybeLinkifyConsoleCallFrameForTracing(target, topFrame);
+            var link = this._contentHelper.linkifier().maybeLinkifyConsoleCallFrame(target, topFrame);
             if (link) {
                 stack.createChild("span").textContent = " @ ";
                 stack.createChild("span").appendChild(link);
@@ -2057,9 +2053,7 @@ WebInspector.TimelineDetailsContentHelper.prototype = {
     {
         if (!this._linkifier || !this._target)
             return;
-        if (startColumn)
-            --startColumn;
-        var link = this._linkifier.maybeLinkifyScriptLocation(this._target, null, url, startLine - 1, startColumn);
+        var link = this._linkifier.maybeLinkifyScriptLocation(this._target, null, url, startLine, startColumn);
         if (!link)
             return;
         this.appendElementRow(title, link);
@@ -2076,11 +2070,11 @@ WebInspector.TimelineDetailsContentHelper.prototype = {
         if (!this._linkifier || !this._target)
             return;
         var locationContent = createElement("span");
-        var link = this._linkifier.maybeLinkifyScriptLocation(this._target, null, url, startLine - 1);
+        var link = this._linkifier.maybeLinkifyScriptLocation(this._target, null, url, startLine);
         if (!link)
             return;
         locationContent.appendChild(link);
-        locationContent.createTextChild(String.sprintf(" [%s\u2026%s]", startLine, endLine || ""));
+        locationContent.createTextChild(String.sprintf(" [%s\u2026%s]", startLine + 1, endLine + 1 || ""));
         this.appendElementRow(title, locationContent);
     },
 

@@ -224,18 +224,6 @@ WebInspector.Linkifier.prototype = {
     },
 
     /**
-     * @param {?WebInspector.Target} target
-     * @param {!RuntimeAgent.CallFrame} callFrame
-     * @param {string=} classes
-     * @return {?Element}
-     */
-    maybeLinkifyConsoleCallFrameForTracing: function(target, callFrame, classes)
-    {
-        // TODO(kozyatinskiy): remove this when tracing will migrate to 0-based lineNumber and columnNumber.
-        return this.linkifyScriptLocation(target, callFrame.scriptId, callFrame.url, callFrame.lineNumber - 1, callFrame.columnNumber - 1, classes);
-    },
-
-    /**
      * @param {!WebInspector.Target} target
      * @param {!RuntimeAgent.StackTrace} stackTrace
      * @param {string=} classes

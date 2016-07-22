@@ -221,18 +221,15 @@ WebInspector.SamplingHeapProfileHeader.prototype = {
  */
 WebInspector.SamplingHeapProfileNode = function(node)
 {
-    if (node.callFrame) {
-        WebInspector.ProfileNode.call(this, node.callFrame);
-    } else {
-        // Backward compatibility for old SamplingHeapProfileNode format.
-        var frame = /** @type {!RuntimeAgent.CallFrame} */(node);
-        WebInspector.ProfileNode.call(this, {
-            functionName: frame.functionName,
-            scriptId: frame.scriptId, url: frame.url,
-            lineNumber: frame.lineNumber - 1,
-            columnNumber: frame.columnNumber - 1
-        });
-    }
+    var callFrame = node.callFrame || /** @type {!RuntimeAgent.CallFrame} */ ({
+        // Backward compatibility for old CpuProfileNode format.
+        functionName: node["functionName"],
+        scriptId: node["scriptId"],
+        url: node["url"],
+        lineNumber: node["lineNumber"] - 1,
+        columnNumber: node["columnNumber"] - 1
+    });
+    WebInspector.ProfileNode.call(this, callFrame);
     this.self = node.selfSize;
 }
 

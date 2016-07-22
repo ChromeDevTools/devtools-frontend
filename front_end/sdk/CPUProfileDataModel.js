@@ -5,27 +5,24 @@
 /**
  * @constructor
  * @extends {WebInspector.ProfileNode}
- * @param {!ProfilerAgent.CPUProfileNode} sourceNode
+ * @param {!ProfilerAgent.CPUProfileNode} node
  * @param {number} sampleTime
  */
-WebInspector.CPUProfileNode = function(sourceNode, sampleTime)
+WebInspector.CPUProfileNode = function(node, sampleTime)
 {
-    if (sourceNode.callFrame) {
-        WebInspector.ProfileNode.call(this, sourceNode.callFrame);
-    } else {
-        // Backward compatibility for old CPUProfileNode format.
-        var frame = /** @type {!RuntimeAgent.CallFrame} */(sourceNode);
-        WebInspector.ProfileNode.call(this, {
-            functionName: frame.functionName,
-            scriptId: frame.scriptId, url: frame.url,
-            lineNumber: frame.lineNumber - 1,
-            columnNumber: frame.columnNumber - 1
-        });
-    }
-    this.id = sourceNode.id;
-    this.self = sourceNode.hitCount * sampleTime;
-    this.positionTicks = sourceNode.positionTicks;
-    this.deoptReason = sourceNode.deoptReason;
+    var callFrame = node.callFrame || /** @type {!RuntimeAgent.CallFrame} */ ({
+        // Backward compatibility for old SamplingHeapProfileNode format.
+        functionName: node["functionName"],
+        scriptId: node["scriptId"],
+        url: node["url"],
+        lineNumber: node["lineNumber"] - 1,
+        columnNumber: node["columnNumber"] - 1
+    });
+    WebInspector.ProfileNode.call(this, callFrame);
+    this.id = node.id;
+    this.self = node.hitCount * sampleTime;
+    this.positionTicks = node.positionTicks;
+    this.deoptReason = node.deoptReason;
 }
 
 WebInspector.CPUProfileNode.prototype = {

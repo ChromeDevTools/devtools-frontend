@@ -94,6 +94,8 @@ WebInspector.Widget.prototype = {
      */
     shouldHideOnDetach: function()
     {
+        if (!this.element.parentElement)
+            return false;
         if (this._hideOnDetach)
             return true;
         for (var child of this._children) {
@@ -694,6 +696,7 @@ WebInspector.VBoxWithResizeCallback.prototype = {
 WebInspector.View = function(title, isWebComponent)
 {
     WebInspector.VBox.call(this, isWebComponent);
+    this.element.classList.add("view");
     this._title = title;
     /** @type {!Array<!WebInspector.ToolbarItem>} */
     this._toolbarItems = [];

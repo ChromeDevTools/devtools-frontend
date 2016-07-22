@@ -27,10 +27,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-.sidebar-pane-container {
-    overflow: auto;
-}
-
 .sidebar-pane-container .info {
     text-align: center;
     font-style: italic;
@@ -84,10 +80,6 @@
 
 .sidebar-pane-title.expanded::before {
     -webkit-mask-position: -20px -96px;
-}
-
-.sidebar-pane-container .toolbar {
-    border-bottom: 1px solid #eee;
 }
 
 .sidebar-pane-container .toolbar > * {

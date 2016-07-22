@@ -171,6 +171,10 @@
     border-top: 0 none;
 }
 
+.style-panes-wrapper {
+    overflow: auto;
+}
+
 .styles-section.read-only {
     background-color: #eee;
 }
@@ -738,6 +742,10 @@ li.editing .enabled-button {
     background-color: #eee;
     border-bottom: 1px solid rgb(163, 163, 163);
     padding-left: 10px;
+}
+
+.view > .toolbar {
+    border-bottom: 1px solid #eee;
 }
 
 .events-pane .section:not(:first-of-type) {

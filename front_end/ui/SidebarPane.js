@@ -132,17 +132,22 @@ WebInspector.SidebarTabbedPane = function()
     this.element.classList.add("sidebar-pane-container", "sidebar-tabbed-pane");
 }
 
+WebInspector.SidebarTabbedPane._toolbarSymbol = Symbol("toolbar");
+
 WebInspector.SidebarTabbedPane.prototype = {
     /**
      * @param {!WebInspector.View} pane
      */
     addPane: function(pane)
     {
-        var title = pane.title();
+        // Detach first to trigger toolbar cleanup.
+        pane.detach();
 
+        var title = pane.title();
         var toolbarItems = pane.toolbarItems();
         if (toolbarItems.length) {
             var toolbar = new WebInspector.Toolbar("");
+            pane[WebInspector.SidebarTabbedPane._toolbarSymbol] = toolbar;
             pane.element.insertBefore(toolbar.element, pane.element.firstChild);
             for (var item of toolbarItems)
                 toolbar.appendToolbarItem(item);
@@ -150,6 +155,19 @@ WebInspector.SidebarTabbedPane.prototype = {
         this.appendTab(title, title, pane);
         pane.setRequestVisibleCallback(this._setPaneVisible.bind(this, pane));
         pane.setRevealCallback(this.selectTab.bind(this, title));
+    },
+
+    /**
+     * @param {!WebInspector.Widget} widget
+     * @override
+     */
+    childWasDetached: function(widget)
+    {
+        WebInspector.TabbedPane.prototype.childWasDetached.call(this, widget);
+
+        var toolbar = widget[WebInspector.SidebarTabbedPane._toolbarSymbol];
+        if (toolbar)
+            toolbar.element.remove();
     },
 
     /**

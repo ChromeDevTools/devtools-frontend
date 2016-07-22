@@ -634,7 +634,9 @@ WebInspector.SourceFrame.prototype = {
      */
     scrollChanged: function(lineNumber)
     {
-        this.dispatchEventToListeners(WebInspector.SourceFrame.Events.ScrollChanged, lineNumber);
+        if (this._scrollTimer)
+            clearTimeout(this._scrollTimer);
+        this._scrollTimer = setTimeout(this.dispatchEventToListeners.bind(this, WebInspector.SourceFrame.Events.ScrollChanged, lineNumber), 100);
     },
 
     _handleKeyDown: function(e)

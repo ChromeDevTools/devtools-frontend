@@ -1438,10 +1438,8 @@ WebInspector.CodeMirrorTextEditor.prototype = {
 
     _scroll: function()
     {
-        if (this._scrollTimer)
-            clearTimeout(this._scrollTimer);
         var topmostLineNumber = this._codeMirror.lineAtHeight(this._codeMirror.getScrollInfo().top, "local");
-        this._scrollTimer = setTimeout(this._delegate.scrollChanged.bind(this._delegate, topmostLineNumber), 100);
+        this._delegate.scrollChanged(topmostLineNumber);
     },
 
     _focus: function()

@@ -503,7 +503,7 @@ WebInspector.RemoteObjectImpl.prototype = {
         /**
          * @param {function(?)} fulfill
          * @param {function(*)} reject
-         * @this {WebInspector.RemoteObject}
+         * @this {WebInspector.RemoteObjectImpl}
          */
         function eventListeners(fulfill, reject)
         {
@@ -521,7 +521,7 @@ WebInspector.RemoteObjectImpl.prototype = {
             this.target().domdebuggerAgent().getEventListeners(this._objectId, mycallback.bind(this));
 
             /**
-             * @this {!WebInspector.RemoteObject}
+             * @this {WebInspector.RemoteObjectImpl}
              * @param {?Protocol.Error} error
              * @param {!Array<!DOMDebuggerAgent.EventListener>} payloads
              */
@@ -535,7 +535,7 @@ WebInspector.RemoteObjectImpl.prototype = {
             }
 
             /**
-             * @this {!WebInspector.RemoteObject}
+             * @this {WebInspector.RemoteObjectImpl}
              * @param {!DOMDebuggerAgent.EventListener} payload
              */
             function createEventListener(payload)
@@ -547,7 +547,7 @@ WebInspector.RemoteObjectImpl.prototype = {
                                                       payload.passive,
                                                       payload.handler ? this.target().runtimeModel.createRemoteObject(payload.handler) : null,
                                                       payload.originalHandler ? this.target().runtimeModel.createRemoteObject(payload.originalHandler) : null,
-                                                      WebInspector.DebuggerModel.Location.fromPayload(this._debuggerModel, payload.location),
+                                                      /** @type {!WebInspector.DebuggerModel.Location} */ (this._debuggerModel.createRawLocationByScriptId(payload.scriptId, payload.lineNumber, payload.columnNumber)),
                                                       payload.removeFunction ? this.target().runtimeModel.createRemoteObject(payload.removeFunction) : null);
             }
         }

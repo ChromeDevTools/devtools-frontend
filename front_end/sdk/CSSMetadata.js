@@ -176,10 +176,15 @@ WebInspector.CSSMetadata._bezierAwareProperties = [
 ].keySet();
 
 WebInspector.CSSMetadata._colorAwareProperties = [
-    "background", "background-color", "background-image", "border", "border-color", "border-top", "border-right", "border-bottom",
-    "border-left", "border-top-color", "border-right-color", "border-bottom-color", "border-left-color", "box-shadow", "color",
-    "fill", "outline", "outline-color", "stroke", "text-shadow", "-webkit-box-shadow", "-webkit-column-rule-color",
-    "-webkit-text-decoration-color", "-webkit-text-emphasis", "-webkit-text-emphasis-color"
+    "backdrop-filter", "background", "background-color", "background-image", "border", "border-color", "border-image",
+    "border-image-source", "border-bottom", "border-bottom-color", "border-left", "border-left-color", "border-right",
+    "border-right-color", "border-top", "border-top-color", "box-shadow", "color", "column-rule", "column-rule-color", "fill",
+    "list-style", "list-style-image", "outline", "outline-color", "stroke", "text-decoration-color", "text-shadow",
+    "-webkit-border-after", "-webkit-border-after-color", "-webkit-border-before", "-webkit-border-before-color", "-webkit-border-end",
+    "-webkit-border-end-color", "-webkit-border-start", "-webkit-border-start-color", "-webkit-box-reflect", "-webkit-box-shadow",
+    "-webkit-column-rule-color", "-webkit-filter", "-webkit-mask", "-webkit-mask-box-image", "-webkit-mask-box-image-source",
+    "-webkit-mask-image", "-webkit-tap-highlight-color", "-webkit-text-decoration-color", "-webkit-text-emphasis",
+    "-webkit-text-emphasis-color", "-webkit-text-fill-color", "-webkit-text-stroke", "-webkit-text-stroke-color"
 ].keySet();
 
 WebInspector.CSSMetadata._propertyDataMap = {

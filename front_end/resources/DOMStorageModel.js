@@ -110,11 +110,13 @@ WebInspector.DOMStorage.prototype = {
  * @constructor
  * @extends {WebInspector.SDKModel}
  * @param {!WebInspector.Target} target
+ * @param {!WebInspector.SecurityOriginManager} securityOriginManager
  */
-WebInspector.DOMStorageModel = function(target)
+WebInspector.DOMStorageModel = function(target, securityOriginManager)
 {
     WebInspector.SDKModel.call(this, WebInspector.DOMStorageModel, target);
 
+    this._securityOriginManager = securityOriginManager;
     /** @type {!Object.<string, !WebInspector.DOMStorage>} */
     this._storages = {};
     this._agent = target.domstorageAgent();
@@ -132,13 +134,12 @@ WebInspector.DOMStorageModel.prototype = {
             return;
 
         this.target().registerDOMStorageDispatcher(new WebInspector.DOMStorageDispatcher(this));
-        this.target().resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.SecurityOriginAdded, this._securityOriginAdded, this);
-        this.target().resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.SecurityOriginRemoved, this._securityOriginRemoved, this);
-        this._agent.enable();
+        this._securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.EventTypes.SecurityOriginAdded, this._securityOriginAdded, this);
+        this._securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.EventTypes.SecurityOriginRemoved, this._securityOriginRemoved, this);
 
-        var securityOrigins = this.target().resourceTreeModel.securityOrigins();
-        for (var i = 0; i < securityOrigins.length; ++i)
-            this._addOrigin(securityOrigins[i]);
+        for (var securityOrigin of this._securityOriginManager.securityOrigins())
+            this._addOrigin(securityOrigin);
+        this._agent.enable();
 
         this._enabled = true;
     },
@@ -353,14 +354,16 @@ WebInspector.DOMStorageDispatcher.prototype = {
 }
 
 WebInspector.DOMStorageModel._symbol = Symbol("DomStorage");
+
 /**
  * @param {!WebInspector.Target} target
  * @return {!WebInspector.DOMStorageModel}
  */
 WebInspector.DOMStorageModel.fromTarget = function(target)
 {
-    if (!target[WebInspector.DOMStorageModel._symbol])
-        target[WebInspector.DOMStorageModel._symbol] = new WebInspector.DOMStorageModel(target);
-
-    return target[WebInspector.DOMStorageModel._symbol];
+    var model = /** @type {?WebInspector.DOMStorageModel} */ (target.model(WebInspector.DOMStorageModel));
+    if (!model) {
+        model = new WebInspector.DOMStorageModel(target, WebInspector.SecurityOriginManager.fromTarget(target));
+    }
+    return model;
 }

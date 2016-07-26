@@ -106,6 +106,7 @@
         "RemoteObject.js",
         "Resource.js",
         "ResourceTreeModel.js",
+        "SecurityOriginManager.js",
         "SourceMap.js",
         "NetworkManager.js",
         "NetworkRequest.js",

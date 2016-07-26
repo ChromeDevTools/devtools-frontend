@@ -42,7 +42,7 @@ WebInspector.ClearStorageView = function(resourcesPanel)
     this._appendItem(caches, WebInspector.UIString("Cache storage"), "cache_storage");
     this._appendItem(caches, WebInspector.UIString("Application cache"), "appcache");
 
-    WebInspector.targetManager.observeTargets(this);
+    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.Browser);
     var footer = this._reportView.appendSection("", "clear-storage-button").appendRow();
     this._clearButton = createTextButton(WebInspector.UIString("Clear site data"), this._clear.bind(this), WebInspector.UIString("Clear site data"));
     footer.appendChild(this._clearButton);
@@ -70,17 +70,18 @@ WebInspector.ClearStorageView.prototype = {
         if (this._target)
             return;
         this._target = target;
-        this._updateOrigin(target.resourceTreeModel.mainFrame ? target.resourceTreeModel.mainFrame.url : "");
-        WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.MainFrameNavigated, this._updateFrame, this);
+        var securityOriginManager = WebInspector.SecurityOriginManager.fromTarget(target);
+        this._updateOrigin(securityOriginManager.mainSecurityOrigin());
+        securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.EventTypes.MainSecurityOriginChanged, this._originChanged, this);
     },
 
     /**
      * @param {!WebInspector.Event} event
      */
-    _updateFrame: function(event)
+    _originChanged: function(event)
     {
-        var frame = /** *@type {!WebInspector.ResourceTreeFrame} */ (event.data);
-        this._updateOrigin(frame.url);
+        var origin = /** *@type {string} */ (event.data);
+        this._updateOrigin(origin);
     },
 
     /**
@@ -131,11 +132,9 @@ WebInspector.ClearStorageView.prototype = {
 
         if (set.has(StorageAgent.StorageType.Cache_storage) || hasAll) {
             var target = WebInspector.targetManager.mainTarget();
-            if (target) {
-                var model = WebInspector.ServiceWorkerCacheModel.fromTarget(target);
-                if (model)
-                    model.clearForOrigin(this._securityOrigin);
-            }
+            var model = target && WebInspector.ServiceWorkerCacheModel.fromTarget(target);
+            if (model)
+                model.clearForOrigin(this._securityOrigin);
         }
 
         if (set.has(StorageAgent.StorageType.Appcache) || hasAll) {

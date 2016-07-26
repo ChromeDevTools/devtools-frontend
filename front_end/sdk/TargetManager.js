@@ -203,8 +203,9 @@ WebInspector.TargetManager.prototype = {
         if (target.hasNetworkCapability())
             networkManager = new WebInspector.NetworkManager(target);
 
+        var securityOriginManager = WebInspector.SecurityOriginManager.fromTarget(target);
         /** @type {!WebInspector.ResourceTreeModel} */
-        target.resourceTreeModel = new WebInspector.ResourceTreeModel(target, networkManager);
+        target.resourceTreeModel = new WebInspector.ResourceTreeModel(target, networkManager, securityOriginManager);
 
         if (networkManager)
             new WebInspector.NetworkLog(target, networkManager);

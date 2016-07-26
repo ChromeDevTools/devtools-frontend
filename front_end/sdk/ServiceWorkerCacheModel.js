@@ -6,8 +6,10 @@
  * Invariant: This model can only be constructed on a ServiceWorker target.
  * @constructor
  * @extends {WebInspector.SDKModel}
+ * @param {!WebInspector.Target} target
+ * @param {!WebInspector.SecurityOriginManager} securityOriginManager
  */
-WebInspector.ServiceWorkerCacheModel = function(target)
+WebInspector.ServiceWorkerCacheModel = function(target, securityOriginManager)
 {
     WebInspector.SDKModel.call(this, WebInspector.ServiceWorkerCacheModel, target);
 
@@ -15,6 +17,8 @@ WebInspector.ServiceWorkerCacheModel = function(target)
     this._caches = new Map();
 
     this._agent = target.cacheStorageAgent();
+
+    this._securityOriginManager = securityOriginManager;
 
     /** @type {boolean} */
     this._enabled = false;
@@ -31,12 +35,11 @@ WebInspector.ServiceWorkerCacheModel.prototype = {
         if (this._enabled)
             return;
 
-        this.target().resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.SecurityOriginAdded, this._securityOriginAdded, this);
-        this.target().resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.SecurityOriginRemoved, this._securityOriginRemoved, this);
+        this._securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.EventTypes.SecurityOriginAdded, this._securityOriginAdded, this);
+        this._securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.EventTypes.SecurityOriginRemoved, this._securityOriginRemoved, this);
 
-        var securityOrigins = this.target().resourceTreeModel.securityOrigins();
-        for (var i = 0; i < securityOrigins.length; ++i)
-            this._addOrigin(securityOrigins[i]);
+        for (var securityOrigin of this._securityOriginManager.securityOrigins())
+            this._addOrigin(securityOrigin);
         this._enabled = true;
     },
 
@@ -54,7 +57,7 @@ WebInspector.ServiceWorkerCacheModel.prototype = {
         for (var cache of this._caches.values())
             this._cacheRemoved(cache);
         this._caches.clear();
-        var securityOrigins = this.target().resourceTreeModel.securityOrigins();
+        var securityOrigins = this._securityOriginManager.securityOrigins();
         for (var securityOrigin of securityOrigins)
             this._loadCacheNames(securityOrigin);
     },
@@ -129,8 +132,8 @@ WebInspector.ServiceWorkerCacheModel.prototype = {
             this._cacheRemoved(cache);
         this._caches.clear();
         if (this._enabled) {
-            this.target().resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.EventTypes.SecurityOriginAdded, this._securityOriginAdded, this);
-            this.target().resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.EventTypes.SecurityOriginRemoved, this._securityOriginRemoved, this);
+            this._securityOriginManager.removeEventListener(WebInspector.SecurityOriginManager.EventTypes.SecurityOriginAdded, this._securityOriginAdded, this);
+            this._securityOriginManager.removeEventListener(WebInspector.SecurityOriginManager.EventTypes.SecurityOriginRemoved, this._securityOriginRemoved, this);
         }
     },
 
@@ -321,16 +324,17 @@ WebInspector.ServiceWorkerCacheModel.Cache.prototype = {
     }
 }
 
-
-WebInspector.ServiceWorkerCacheModel._symbol = Symbol("CacheStorageModel");
 /**
  * @param {!WebInspector.Target} target
- * @return {!WebInspector.ServiceWorkerCacheModel}
+ * @return {?WebInspector.ServiceWorkerCacheModel}
  */
 WebInspector.ServiceWorkerCacheModel.fromTarget = function(target)
 {
-    if (!target[WebInspector.ServiceWorkerCacheModel._symbol])
-        target[WebInspector.ServiceWorkerCacheModel._symbol] = new WebInspector.ServiceWorkerCacheModel(target);
-
-    return target[WebInspector.ServiceWorkerCacheModel._symbol];
+    if (!target.hasBrowserCapability())
+        return null;
+    var instance = /** @type {?WebInspector.ServiceWorkerCacheModel} */ (target.model(WebInspector.ServiceWorkerCacheModel));
+    if (!instance)
+        instance = new WebInspector.ServiceWorkerCacheModel(target, WebInspector.SecurityOriginManager.fromTarget(target));
+    return instance;
 }
+

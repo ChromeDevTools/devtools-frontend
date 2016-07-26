@@ -31,10 +31,13 @@
 /**
  * @constructor
  * @extends {WebInspector.SDKModel}
+ * @param {!WebInspector.Target} target
+ * @param {!WebInspector.SecurityOriginManager} securityOriginManager
  */
-WebInspector.IndexedDBModel = function(target)
+WebInspector.IndexedDBModel = function(target, securityOriginManager)
 {
     WebInspector.SDKModel.call(this, WebInspector.IndexedDBModel, target);
+    this._securityOriginManager = securityOriginManager;
     this._agent = target.indexedDBAgent();
 
     /** @type {!Map.<!WebInspector.IndexedDBModel.DatabaseId, !WebInspector.IndexedDBModel.Database>} */
@@ -58,43 +61,52 @@ WebInspector.IndexedDBModel.KeyPathTypes = {
 
 /**
  * @param {*} idbKey
- * @return {?Object}
+ * @return {({
+ *   array: (!Array<?>|undefined),
+ *   date: (number|undefined),
+ *   number: (number|undefined),
+ *   string: (string|undefined),
+ *   type: !IndexedDBAgent.KeyType<string>
+ * }|undefined)}
  */
 WebInspector.IndexedDBModel.keyFromIDBKey = function(idbKey)
 {
     if (typeof(idbKey) === "undefined" || idbKey === null)
-        return null;
+        return undefined;
 
+    var type;
     var key = {};
     switch (typeof(idbKey)) {
     case "number":
         key.number = idbKey;
-        key.type = WebInspector.IndexedDBModel.KeyTypes.NumberType;
+        type = WebInspector.IndexedDBModel.KeyTypes.NumberType;
         break;
     case "string":
         key.string = idbKey;
-        key.type = WebInspector.IndexedDBModel.KeyTypes.StringType;
+        type = WebInspector.IndexedDBModel.KeyTypes.StringType;
         break;
     case "object":
         if (idbKey instanceof Date) {
             key.date = idbKey.getTime();
-            key.type = WebInspector.IndexedDBModel.KeyTypes.DateType;
+            type = WebInspector.IndexedDBModel.KeyTypes.DateType;
         } else if (Array.isArray(idbKey)) {
             key.array = [];
             for (var i = 0; i < idbKey.length; ++i)
                 key.array.push(WebInspector.IndexedDBModel.keyFromIDBKey(idbKey[i]));
-            key.type = WebInspector.IndexedDBModel.KeyTypes.ArrayType;
+            type = WebInspector.IndexedDBModel.KeyTypes.ArrayType;
         }
         break;
     default:
-        return null;
+        return undefined;
     }
+    key.type = /** @type {!IndexedDBAgent.KeyType<string>} */ (type);
     return key;
 }
 
 /**
  * @param {?IDBKeyRange=} idbKeyRange
- * @return {?{lower: ?Object, upper: ?Object, lowerOpen: *, upperOpen: *}}
+ * @return {?IndexedDBAgent.KeyRange}
+ * eturn {?{lower: ?Object, upper: ?Object, lowerOpen: *, upperOpen: *}}
  */
 WebInspector.IndexedDBModel.keyRangeFromIDBKeyRange = function(idbKeyRange)
 {
@@ -104,8 +116,8 @@ WebInspector.IndexedDBModel.keyRangeFromIDBKeyRange = function(idbKeyRange)
     var keyRange = {};
     keyRange.lower = WebInspector.IndexedDBModel.keyFromIDBKey(idbKeyRange.lower);
     keyRange.upper = WebInspector.IndexedDBModel.keyFromIDBKey(idbKeyRange.upper);
-    keyRange.lowerOpen = idbKeyRange.lowerOpen;
-    keyRange.upperOpen = idbKeyRange.upperOpen;
+    keyRange.lowerOpen = !!idbKeyRange.lowerOpen;
+    keyRange.upperOpen = !!idbKeyRange.upperOpen;
     return keyRange;
 }
 
@@ -156,13 +168,11 @@ WebInspector.IndexedDBModel.prototype = {
             return;
 
         this._agent.enable();
+        this._securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.EventTypes.SecurityOriginAdded, this._securityOriginAdded, this);
+        this._securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.EventTypes.SecurityOriginRemoved, this._securityOriginRemoved, this);
 
-        this.target().resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.SecurityOriginAdded, this._securityOriginAdded, this);
-        this.target().resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.SecurityOriginRemoved, this._securityOriginRemoved, this);
-
-        var securityOrigins = this.target().resourceTreeModel.securityOrigins();
-        for (var i = 0; i < securityOrigins.length; ++i)
-            this._addOrigin(securityOrigins[i]);
+        for (var securityOrigin of this._securityOriginManager.securityOrigins())
+            this._addOrigin(securityOrigin);
 
         this._enabled = true;
     },
@@ -531,12 +541,12 @@ WebInspector.IndexedDBModel.Index.prototype = {
 
 /**
  * @param {!WebInspector.Target} target
- * @return {?WebInspector.IndexedDBModel}
+ * @return {!WebInspector.IndexedDBModel}
  */
 WebInspector.IndexedDBModel.fromTarget = function(target)
 {
     var model = /** @type {?WebInspector.IndexedDBModel} */ (target.model(WebInspector.IndexedDBModel));
     if (!model)
-        model = new WebInspector.IndexedDBModel(target);
+        model = new WebInspector.IndexedDBModel(target, WebInspector.SecurityOriginManager.fromTarget(target));
     return model;
 }

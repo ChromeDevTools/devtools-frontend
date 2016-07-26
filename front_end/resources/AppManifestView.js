@@ -42,7 +42,7 @@ WebInspector.AppManifestView = function()
     this._orientationField = this._presentationSection.appendField(WebInspector.UIString("Orientation"));
     this._displayField = this._presentationSection.appendField(WebInspector.UIString("Display"));
 
-    WebInspector.targetManager.observeTargets(this);
+    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.DOM);
 }
 
 WebInspector.AppManifestView.prototype = {
@@ -52,12 +52,12 @@ WebInspector.AppManifestView.prototype = {
      */
     targetAdded: function(target)
     {
-        if (this._target)
+        if (this._resourceTreeModel)
             return;
-        this._target = target;
-
+        var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(target);
+        this._resourceTreeModel = resourceTreeModel;
         this._updateManifest();
-        WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.MainFrameNavigated, this._updateManifest, this);
+        resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._updateManifest, this);
     },
 
     /**
@@ -70,7 +70,7 @@ WebInspector.AppManifestView.prototype = {
 
     _updateManifest: function()
     {
-        this._target.resourceTreeModel.fetchAppManifest(this._renderManifest.bind(this));
+        this._resourceTreeModel.fetchAppManifest(this._renderManifest.bind(this));
     },
 
     /**

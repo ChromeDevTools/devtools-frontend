@@ -170,6 +170,7 @@
             'front_end/sdk/ResourceTreeModel.js',
             'front_end/sdk/RuntimeModel.js',
             'front_end/sdk/Script.js',
+            'front_end/sdk/SecurityOriginManager.js',
             'front_end/sdk/ServiceWorkerCacheModel.js',
             'front_end/sdk/ServiceWorkerManager.js',
             'front_end/sdk/SourceMap.js',

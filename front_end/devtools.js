@@ -1000,6 +1000,8 @@ function sanitizeRemoteFrontendUrl()
             location.search = "";
         if (name === "remoteBase" && !remoteBaseRegexp.test(value))
             location.search = "";
+        if (name === "settings")
+            location.search = "";
     }
 }
 

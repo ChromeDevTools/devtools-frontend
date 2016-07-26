@@ -77,18 +77,6 @@ WebInspector.Main.prototype = {
      */
     _createSettings: function(prefs)
     {
-        // Patch settings from the URL param (for tests).
-        var settingsParam = Runtime.queryParam("settings");
-        if (settingsParam) {
-            try {
-                var settings = JSON.parse(window.decodeURI(settingsParam));
-                for (var key in settings)
-                    prefs[key] = settings[key];
-            } catch (e) {
-                // Ignore malformed settings.
-            }
-        }
-
         this._initializeExperiments(prefs);
         WebInspector.settings = new WebInspector.Settings(new WebInspector.SettingsStorage(prefs,
             InspectorFrontendHost.setPreference, InspectorFrontendHost.removePreference, InspectorFrontendHost.clearPreferences));

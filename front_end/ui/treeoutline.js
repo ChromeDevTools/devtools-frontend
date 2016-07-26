@@ -524,6 +524,8 @@ TreeElement.prototype = {
         this._childrenListNode.insertBefore(child._childrenListNode, nextSibling);
         if (child.selected)
             child.select();
+        if (child.expanded)
+            child.expand();
     },
 
     /**
@@ -881,7 +883,7 @@ TreeElement.prototype = {
 
     expand: function()
     {
-        if (!this._expandable || this.expanded)
+        if (!this._expandable || (this.expanded && this._children))
             return;
 
         // Set this before onpopulate. Since onpopulate can add elements, this makes

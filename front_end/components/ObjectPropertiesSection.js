@@ -584,9 +584,11 @@ WebInspector.ObjectPropertyTreeElement.populateWithProperties = function(treeNod
         for (var i = 0; i < internalProperties.length; i++) {
             internalProperties[i].parentObject = value;
             var treeElement = new WebInspector.ObjectPropertyTreeElement(internalProperties[i], linkifier);
-            treeNode.appendChild(treeElement);
-            if (internalProperties[i].name === "[[Entries]]")
+            if (internalProperties[i].name === "[[Entries]]") {
+                treeElement.setExpandable(true);
                 treeElement.expand();
+            }
+            treeNode.appendChild(treeElement);
         }
     }
     WebInspector.ObjectPropertyTreeElement._appendEmptyPlaceholderIfNeeded(treeNode, emptyPlaceholder);

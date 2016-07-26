@@ -276,15 +276,6 @@ WebInspector.SourcesPanel.prototype = {
         this.sidebarPanes.callstack.update(details);
 
         /**
-         * @param {!Element} element
-         * @this {WebInspector.SourcesPanel}
-         */
-        function didCreateBreakpointHitStatusMessage(element)
-        {
-            this.sidebarPanes.callstack.setStatus(element);
-        }
-
-        /**
          * @param {!WebInspector.LiveLocation} liveLocation
          * @this {WebInspector.SourcesPanel}
          */
@@ -302,7 +293,7 @@ WebInspector.SourcesPanel.prototype = {
 
         if (details.reason === WebInspector.DebuggerModel.BreakReason.DOM) {
             WebInspector.domBreakpointsSidebarPane.highlightBreakpoint(details.auxData);
-            WebInspector.domBreakpointsSidebarPane.createBreakpointHitStatusMessage(details, didCreateBreakpointHitStatusMessage.bind(this));
+            this.sidebarPanes.callstack.setStatus(WebInspector.domBreakpointsSidebarPane.createBreakpointHitStatusMessage(details));
         } else if (details.reason === WebInspector.DebuggerModel.BreakReason.EventListener) {
             var eventName = details.auxData["eventName"];
             var targetName = details.auxData["targetName"];

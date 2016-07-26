@@ -134,51 +134,28 @@ WebInspector.DOMBreakpointsSidebarPane.prototype = {
 
     /**
      * @param {!WebInspector.DebuggerPausedDetails} details
-     * @param {function(!Element)} callback
+     * @return {!Element}
      */
-    createBreakpointHitStatusMessage: function(details, callback)
+    createBreakpointHitStatusMessage: function(details)
     {
         var auxData = /** @type {!Object} */ (details.auxData);
+        var message = "Paused on a \"%s\" breakpoint.";
+        var substitutions = [];
+        substitutions.push(this._breakpointTypeLabels[auxData["type"]]);
+
         var domModel = WebInspector.DOMModel.fromTarget(details.target());
         if (!domModel)
-            return;
-        if (auxData.type === this._breakpointTypes.SubtreeModified) {
-            var targetNodeObject = details.target().runtimeModel.createRemoteObject(auxData["targetNode"]);
-            domModel.pushObjectAsNodeToFrontend(targetNodeObject, didPushNodeToFrontend.bind(this));
-        } else {
-            this._doCreateBreakpointHitStatusMessage(auxData, domModel.nodeForId(auxData.nodeId), null, callback);
-        }
+            return WebInspector.formatLocalized(message, substitutions);
 
-        /**
-         * @param {?WebInspector.DOMNode} targetNode
-         * @this {WebInspector.DOMBreakpointsSidebarPane}
-         */
-        function didPushNodeToFrontend(targetNode)
-        {
-            if (targetNode)
-                targetNodeObject.release();
-            this._doCreateBreakpointHitStatusMessage(auxData, domModel.nodeForId(auxData.nodeId), targetNode, callback);
-        }
-    },
-
-    /**
-     * @param {!Object} auxData
-     * @param {?WebInspector.DOMNode} node
-     * @param {?WebInspector.DOMNode} targetNode
-     * @param {function(!Element)} callback
-     */
-    _doCreateBreakpointHitStatusMessage: function(auxData, node, targetNode, callback)
-    {
-        var message;
-        var typeLabel = this._breakpointTypeLabels[auxData.type];
+        var node = domModel.nodeForId(auxData["nodeId"]);
         var linkifiedNode = WebInspector.DOMPresentationUtils.linkifyNodeReference(node);
-        var substitutions = [typeLabel, linkifiedNode];
-        var targetNodeLink = "";
-        if (targetNode)
-            targetNodeLink = WebInspector.DOMPresentationUtils.linkifyNodeReference(targetNode);
+        substitutions.push(linkifiedNode);
+
+        var targetNode = auxData["targetNodeId"] ? domModel.nodeForId(auxData["targetNodeId"]) : null;
+        var targetNodeLink = targetNode ? WebInspector.DOMPresentationUtils.linkifyNodeReference(targetNode) : "";
 
         if (auxData.type === this._breakpointTypes.SubtreeModified) {
-            if (auxData.insertion) {
+            if (auxData["insertion"]) {
                 if (targetNode !== node) {
                     message = "Paused on a \"%s\" breakpoint set on %s, because a new child was added to its descendant %s.";
                     substitutions.push(targetNodeLink);
@@ -188,12 +165,11 @@ WebInspector.DOMBreakpointsSidebarPane.prototype = {
                 message = "Paused on a \"%s\" breakpoint set on %s, because its descendant %s was removed.";
                 substitutions.push(targetNodeLink);
             }
-        } else
+        } else {
             message = "Paused on a \"%s\" breakpoint set on %s.";
+        }
 
-        var element = WebInspector.formatLocalized(message, substitutions);
-
-        callback(element);
+        return WebInspector.formatLocalized(message, substitutions);
     },
 
     _nodeRemoved: function(event)

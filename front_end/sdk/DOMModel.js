@@ -142,6 +142,9 @@ WebInspector.DOMNode.ShadowRootTypes = {
     Closed: "closed"
 }
 
+/** @typedef {{name: string, value: string, _node: WebInspector.DOMNode}} */
+WebInspector.DOMNode.Attribute;
+
 WebInspector.DOMNode.prototype = {
     /**
      * @return {!WebInspector.DOMModel}
@@ -427,7 +430,7 @@ WebInspector.DOMNode.prototype = {
     },
 
     /**
-     * @return {!Object}
+     * @return {!Array<!WebInspector.DOMNode.Attribute>}
      */
     attributes: function()
     {

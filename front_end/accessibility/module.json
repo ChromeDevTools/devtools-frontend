@@ -12,7 +12,8 @@
         "AccessibilityModel.js",
         "AccessibilitySidebarView.js",
         "AccessibilityNodeView.js",
-        "AccessibilityStrings.js"
+        "AccessibilityStrings.js",
+        "ARIAAttributesView.js"
     ],
     "resources": [
         "accessibilityNode.css"

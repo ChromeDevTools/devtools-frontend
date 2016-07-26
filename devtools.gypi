@@ -383,6 +383,7 @@
             'front_end/accessibility/AccessibilitySidebarView.js',
             'front_end/accessibility/AccessibilityNodeView.js',
             'front_end/accessibility/AccessibilityStrings.js',
+            'front_end/accessibility/ARIAAttributesView.js',
         ],
         'devtools_animation_js_files': [
             'front_end/animation/animationScreenshotPopover.css',

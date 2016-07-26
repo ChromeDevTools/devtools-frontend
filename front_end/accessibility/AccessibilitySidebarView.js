@@ -9,9 +9,10 @@
 WebInspector.AccessibilitySidebarView = function()
 {
     WebInspector.ThrottledView.call(this, WebInspector.UIString("Accessibility"));
-    this._axNodeSubPane = null;
     this._node = null;
     this._sidebarPaneStack = new WebInspector.View.ExpandableStackContainer();
+    this._ariaSubPane = new WebInspector.ARIAAttributesPane();
+    this._sidebarPaneStack.appendView(this._ariaSubPane, true);
     this._axNodeSubPane = new WebInspector.AXNodeSubPane();
     this._sidebarPaneStack.appendView(this._axNodeSubPane, true);
     this._sidebarPaneStack.show(this.element);
@@ -43,10 +44,16 @@ WebInspector.AccessibilitySidebarView.prototype = {
         {
             if (this._axNodeSubPane)
                 this._axNodeSubPane.setAXNode(accessibilityNode);
+            this._accessibilityNodeUpdatedForTest();
         }
         var node = this.node();
         return WebInspector.AccessibilityModel.fromTarget(node.target()).getAXNode(node.id)
             .then(accessibilityNodeCallback.bind(this))
+    },
+
+    _accessibilityNodeUpdatedForTest: function()
+    {
+         // For sniffing in tests.
     },
 
     /**
@@ -57,6 +64,7 @@ WebInspector.AccessibilitySidebarView.prototype = {
         WebInspector.ThrottledView.prototype.wasShown.call(this);
 
         this._axNodeSubPane.setNode(this.node());
+        this._ariaSubPane.setNode(this.node());
 
         WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.AttrModified, this._onAttrChange, this);
         WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.AttrRemoved, this._onAttrChange, this);
@@ -78,6 +86,7 @@ WebInspector.AccessibilitySidebarView.prototype = {
     _pullNode: function()
     {
         this._node = WebInspector.context.flavor(WebInspector.DOMNode);
+        this._ariaSubPane.setNode(this._node);
         this._axNodeSubPane.setNode(this._node);
         this.update();
     },

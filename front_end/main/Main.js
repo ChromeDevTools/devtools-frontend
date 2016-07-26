@@ -125,6 +125,8 @@ WebInspector.Main.prototype = {
                 Runtime.experiments.enableForTest("layersPanel");
             if (testPath.indexOf("security/") !== -1)
                 Runtime.experiments.enableForTest("securityPanel");
+            if (testPath.indexOf("accessibility/") !== -1)
+                Runtime.experiments.enableForTest("accessibilityInspection");
         }
 
         Runtime.experiments.setDefaultExperiments([

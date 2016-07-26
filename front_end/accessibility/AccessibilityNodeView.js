@@ -15,6 +15,8 @@ WebInspector.AXNodeSubPane = function()
 
     this._treeOutline = this.createTreeOutline();
     this._ignoredReasonsTree = this.createTreeOutline();
+
+    this.element.classList.add("accessibility-computed");
 };
 
 
@@ -103,6 +105,16 @@ WebInspector.AXNodeSubPane.prototype = {
                     addProperty(propertyMap[property]);
             }
         }
+    },
+
+    /**
+     * @override
+     * @param {?WebInspector.DOMNode} node
+     */
+    setNode: function(node)
+    {
+        WebInspector.AccessibilitySubPane.prototype.setNode.call(this, node);
+        this._axNode = null;
     },
 
     __proto__: WebInspector.AccessibilitySubPane.prototype

@@ -4,6 +4,10 @@
  * found in the LICENSE file.
  */
 
+.sidebar-pane.accessibility-computed {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
 .ax-computed-text {
     background-image: url(Images/speech.png);
     background-repeat: no-repeat;

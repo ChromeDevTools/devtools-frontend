@@ -977,7 +977,7 @@ WebInspector.ObjectPropertiesSection.createNameElement = function(name)
 WebInspector.ObjectPropertiesSection.valueTextForFunctionDescription = function(description)
 {
     var text = description.replace(/^function [gs]et /, "function ");
-    var matches = /function\s([^)]*)/.exec(text);
+    var matches = /^function\s([^)]*)/.exec(text);
     if (!matches) {
         // process shorthand methods
         matches = /[^(]*(\([^)]*)/.exec(text);

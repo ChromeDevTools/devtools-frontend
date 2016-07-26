@@ -132,6 +132,7 @@ WebInspector.CodeMirrorUtils.prototype = {
         var codeMirror = new window.CodeMirror(element, {
             mode: config.mode,
             lineWrapping: config.lineWrapping,
+            lineWiseCopyCut: false,
             smartIndent: config.smartIndent,
             autofocus: true,
             theme: config.theme,

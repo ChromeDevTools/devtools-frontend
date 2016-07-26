@@ -113,7 +113,7 @@ WebInspector.JavaScriptBreakpointsSidebarPane.prototype = {
         var breakpointItem = { element: element, checkbox: checkboxLabel.checkboxElement };
         this._items.set(breakpoint, breakpointItem);
 
-        this.requestReveal();
+        this.revealWidget();
     },
 
     /**

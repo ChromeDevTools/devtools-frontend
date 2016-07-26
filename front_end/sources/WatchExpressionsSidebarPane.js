@@ -75,7 +75,7 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
      */
     addExpression: function(expressionString)
     {
-        this.requestReveal();
+        this.revealWidget();
         if (this._requiresUpdate) {
             this._rebuildWatchExpressions();
             delete this._requiresUpdate;
@@ -87,7 +87,7 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
     expandIfNecessary: function()
     {
         if (this._watchExpressionsSetting.get().length)
-            this.requestReveal();
+            this.revealWidget();
     },
 
     _saveExpressions: function()
@@ -116,7 +116,7 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
     {
         if (event)
             event.consume(true);
-        this.requestReveal();
+        this.revealWidget();
         this._createWatchExpression(null).startEditing();
     },
 
@@ -134,7 +134,7 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
         this._linkifier.reset();
         this._bodyElement.removeChildren();
         this._watchExpressions = [];
-        this._emptyElement = this._bodyElement.createChild("div", "info");
+        this._emptyElement = this._bodyElement.createChild("div", "gray-info-message");
         this._emptyElement.textContent = WebInspector.UIString("No Watch Expressions");
         var watchExpressionStrings = this._watchExpressionsSetting.get();
         for (var i = 0; i < watchExpressionStrings.length; ++i) {

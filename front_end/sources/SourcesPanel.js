@@ -28,6 +28,7 @@
  * @constructor
  * @extends {WebInspector.Panel}
  * @implements {WebInspector.ContextMenu.Provider}
+ * @implements {WebInspector.TargetManager.Observer}
  * @param {!WebInspector.Workspace=} workspaceForTest
  */
 WebInspector.SourcesPanel = function(workspaceForTest)
@@ -74,7 +75,7 @@ WebInspector.SourcesPanel = function(workspaceForTest)
     this.editorView.setMainWidget(this._sourcesView);
 
     this.sidebarPanes = {};
-    this.sidebarPanes.threads = new WebInspector.ThreadsSidebarPane();
+    this.sidebarPanes.threads = null;
     this.sidebarPanes.watchExpressions = new WebInspector.WatchExpressionsSidebarPane();
     this.sidebarPanes.callstack = new WebInspector.CallStackSidebarPane();
     this.sidebarPanes.callstack.addEventListener(WebInspector.CallStackSidebarPane.Events.CallFrameSelected, this._callFrameSelectedInSidebar.bind(this));
@@ -112,6 +113,7 @@ WebInspector.SourcesPanel = function(workspaceForTest)
     new WebInspector.WorkspaceMappingTip(this, this._workspace);
     WebInspector.extensionServer.addEventListener(WebInspector.ExtensionServer.Events.SidebarPaneAdded, this._extensionSidebarPaneAdded, this);
     WebInspector.DataSaverInfobar.maybeShowInPanel(this);
+    WebInspector.targetManager.observeTargets(this);
 }
 
 WebInspector.SourcesPanel._lastModificationTimeout = 200;
@@ -119,6 +121,29 @@ WebInspector.SourcesPanel._lastModificationTimeout = 200;
 WebInspector.SourcesPanel.minToolbarWidth = 215;
 
 WebInspector.SourcesPanel.prototype = {
+    /**
+     * @override
+     * @param {!WebInspector.Target} target
+     */
+    targetAdded: function(target)
+    {
+        var hasThreads = WebInspector.targetManager.targets(WebInspector.Target.Capability.JS).length > 1;
+        if (hasThreads && !this.sidebarPanes.threads) {
+            this.sidebarPanes.threads = new WebInspector.ThreadsSidebarPane();
+            if (this._sidebarPaneStack) {
+                this._sidebarPaneStack.insertViewBefore(this.sidebarPanes.threads, this._splitWidget.isVertical() ? this.sidebarPanes.watchExpressions : this.sidebarPanes.callstack, true);
+            }
+        }
+    },
+
+    /**
+     * @override
+     * @param {!WebInspector.Target} target
+     */
+    targetRemoved: function(target)
+    {
+    },
+
     /**
      * @param {?WebInspector.Target} target
      */
@@ -1092,39 +1117,41 @@ WebInspector.SourcesPanel.prototype = {
         var vbox = new WebInspector.VBox();
         vbox.element.appendChild(this._debugToolbarDrawer);
         vbox.setMinimumAndPreferredSizes(25, 25, WebInspector.SourcesPanel.minToolbarWidth, 100);
-        var sidebarPaneStack = new WebInspector.SidebarPaneStack();
-        sidebarPaneStack.element.classList.add("flex-auto");
-        sidebarPaneStack.show(vbox.element);
+        this._sidebarPaneStack = new WebInspector.View.ExpandableStackContainer();
+        this._sidebarPaneStack.show(vbox.element);
         vbox.element.appendChild(this._debugToolbar.element);
 
         if (!vertically) {
             // Populate the only stack.
-            for (var pane in this.sidebarPanes)
-                sidebarPaneStack.addPane(this.sidebarPanes[pane]);
-            this._extensionSidebarPanesContainer = sidebarPaneStack;
+            for (var pane in this.sidebarPanes) {
+                if (this.sidebarPanes[pane])
+                    this._sidebarPaneStack.appendView(this.sidebarPanes[pane]);
+            }
+            this._extensionSidebarPanesContainer = this._sidebarPaneStack;
             this.sidebarPaneView = vbox;
 
-            this.sidebarPanes.scopechain.requestReveal();
+            this.sidebarPanes.scopechain.revealWidget();
             this.sidebarPanes.watchExpressions.expandIfNecessary();
         } else {
             var splitWidget = new WebInspector.SplitWidget(true, true, "sourcesPanelDebuggerSidebarSplitViewState", 0.5);
             splitWidget.setMainWidget(vbox);
 
             // Populate the left stack.
-            sidebarPaneStack.addPane(this.sidebarPanes.threads);
-            sidebarPaneStack.addPane(this.sidebarPanes.callstack);
-            sidebarPaneStack.addPane(this.sidebarPanes.jsBreakpoints);
-            sidebarPaneStack.addPane(this.sidebarPanes.domBreakpoints);
-            sidebarPaneStack.addPane(this.sidebarPanes.xhrBreakpoints);
-            sidebarPaneStack.addPane(this.sidebarPanes.eventListenerBreakpoints);
-            sidebarPaneStack.addPane(this.sidebarPanes.objectEventListeners);
+            if (this.sidebarPanes.threads)
+                this._sidebarPaneStack.appendView(this.sidebarPanes.threads);
+            this._sidebarPaneStack.appendView(this.sidebarPanes.callstack);
+            this._sidebarPaneStack.appendView(this.sidebarPanes.jsBreakpoints);
+            this._sidebarPaneStack.appendView(this.sidebarPanes.domBreakpoints);
+            this._sidebarPaneStack.appendView(this.sidebarPanes.xhrBreakpoints);
+            this._sidebarPaneStack.appendView(this.sidebarPanes.eventListenerBreakpoints);
+            this._sidebarPaneStack.appendView(this.sidebarPanes.objectEventListeners);
 
-            var tabbedPane = new WebInspector.SidebarTabbedPane();
+            var tabbedPane = new WebInspector.View.TabbedPaneContainer();
             splitWidget.setSidebarWidget(tabbedPane);
-            tabbedPane.addPane(this.sidebarPanes.scopechain);
-            tabbedPane.addPane(this.sidebarPanes.watchExpressions);
+            tabbedPane.appendView(this.sidebarPanes.scopechain);
+            tabbedPane.appendView(this.sidebarPanes.watchExpressions);
             if (this.sidebarPanes.serviceWorkers)
-                tabbedPane.addPane(this.sidebarPanes.serviceWorkers);
+                tabbedPane.appendView(this.sidebarPanes.serviceWorkers);
             tabbedPane.selectTab(this._lastSelectedTabSetting.get());
             tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, this._tabSelected, this);
             this._extensionSidebarPanesContainer = tabbedPane;
@@ -1136,9 +1163,10 @@ WebInspector.SourcesPanel.prototype = {
             this._addExtensionSidebarPane(extensionSidebarPanes[i]);
 
         this._splitWidget.setSidebarWidget(this.sidebarPaneView);
-        this.sidebarPanes.threads.requestReveal();
-        this.sidebarPanes.jsBreakpoints.requestReveal();
-        this.sidebarPanes.callstack.requestReveal();
+        if (this.sidebarPanes.threads)
+            this.sidebarPanes.threads.revealWidget();
+        this.sidebarPanes.jsBreakpoints.revealWidget();
+        this.sidebarPanes.callstack.revealWidget();
     },
 
     /**
@@ -1164,7 +1192,7 @@ WebInspector.SourcesPanel.prototype = {
     _addExtensionSidebarPane: function(pane)
     {
         if (pane.panelName() === this.name)
-            this._extensionSidebarPanesContainer.addPane(pane);
+            this._extensionSidebarPanesContainer.appendView(pane);
     },
 
     /**

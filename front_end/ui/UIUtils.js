@@ -1278,8 +1278,6 @@ WebInspector.initializeUIUtils = function(document, themeSetting)
     var body = /** @type {!Element} */ (document.body);
     WebInspector.appendStyle(body, "ui/inspectorStyle.css");
     WebInspector.appendStyle(body, "ui/popover.css");
-    WebInspector.appendStyle(body, "ui/sidebarPane.css");
-
 }
 
 /**

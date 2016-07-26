@@ -102,12 +102,6 @@
     width: 14px;
 }
 
-.audit-result-view {
-    overflow: auto;
-    display: block;
-    flex: auto;
-}
-
 .audit-result-tree {
     margin: 0 0 3px;
 }

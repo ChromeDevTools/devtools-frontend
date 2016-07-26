@@ -600,7 +600,7 @@ WebInspector.ObjectPropertyTreeElement._appendEmptyPlaceholderIfNeeded = functio
 {
     if (treeNode.childCount())
         return;
-    var title = createElementWithClass("div", "info");
+    var title = createElementWithClass("div", "gray-info-message");
     title.textContent = emptyPlaceholder || WebInspector.UIString("No Properties");
     var infoElement = new TreeElement(title);
     treeNode.appendChild(infoElement);

@@ -855,6 +855,25 @@ WebInspector.TabbedPane.prototype = {
         this._automaticReorder = automatic;
     },
 
+    /**
+     * @override
+     * @param {!WebInspector.Widget} child
+     * @return {boolean}
+     */
+    revealChild: function(child)
+    {
+        if (this._currentTabLocked)
+            return false;
+
+        for (var tabId of this.tabIds()) {
+            if (this.tabView(tabId) === child) {
+                this.selectTab(tabId);
+                return true;
+            }
+        }
+        return false;
+    },
+
     __proto__: WebInspector.VBox.prototype
 }
 

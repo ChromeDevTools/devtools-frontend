@@ -233,10 +233,6 @@
     white-space: normal;
 }
 
-.scope-chain-sidebar-pane-section {
-    padding: 2px 4px 2px 4px;
-}
-
 .scope-chain-sidebar-pane-section-subtitle {
     float: right;
     margin-left: 5px;
@@ -253,7 +249,6 @@
 
 .scope-chain-sidebar-pane-section {
     padding: 2px 4px 2px 4px;
-    overflow: hidden;
 }
 
 .hidden-callframes-message {

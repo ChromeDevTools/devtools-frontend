@@ -23,7 +23,7 @@ WebInspector.EventListenersView = function(element, changeCallback)
     this._treeOutline.setComparator(WebInspector.EventListenersTreeElement.comparator);
     this._treeOutline.element.classList.add("monospace");
     this._element.appendChild(this._treeOutline.element)
-    this._emptyHolder = createElementWithClass("div", "info");
+    this._emptyHolder = createElementWithClass("div", "gray-info-message");
     this._emptyHolder.textContent = WebInspector.UIString("No Event Listeners");
     this._linkifier = new WebInspector.Linkifier();
     /** @type {!Map<string, !WebInspector.EventListenersTreeElement>} */

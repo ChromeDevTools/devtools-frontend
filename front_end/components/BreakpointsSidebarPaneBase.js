@@ -42,7 +42,7 @@ WebInspector.BreakpointsSidebarPaneBase = function(title)
     this.listElement.className = "breakpoint-list";
 
     this.emptyElement = createElement("div");
-    this.emptyElement.className = "info";
+    this.emptyElement.className = "gray-info-message";
     this.emptyElement.textContent = WebInspector.UIString("No Breakpoints");
 
     this.element.appendChild(this.emptyElement);

@@ -551,6 +551,25 @@ WebInspector.Widget.prototype = {
             this._parentWidget.doLayout();
     },
 
+    /**
+     * @return {boolean}
+     */
+    revealWidget: function()
+    {
+        if (!this._parentWidget)
+            return this._isRoot;
+        if (!this._parentWidget.revealChild(this))
+            return false;
+        return this._parentWidget.revealWidget();
+    },
+
+    /**
+     * @param {!WebInspector.Widget} widget
+     * @return {boolean}
+     * @protected
+     */
+    revealChild: function(widget) { return true; },
+
     __proto__: WebInspector.Object.prototype
 }
 
@@ -696,7 +715,6 @@ WebInspector.VBoxWithResizeCallback.prototype = {
 WebInspector.View = function(title, isWebComponent)
 {
     WebInspector.VBox.call(this, isWebComponent);
-    this.element.classList.add("view");
     this._title = title;
     /** @type {!Array<!WebInspector.ToolbarItem>} */
     this._toolbarItems = [];
@@ -709,49 +727,6 @@ WebInspector.View.prototype = {
     title: function()
     {
         return this._title;
-    },
-
-    /**
-     * @param {function()} callback
-     */
-    setRevealCallback: function(callback)
-    {
-        this._revealCallback = callback;
-        if (this._setRevealRequested) {
-            callback();
-            delete this._setRevealRequested;
-        }
-    },
-
-    /**
-     * @param {function(boolean)} callback
-     */
-    setRequestVisibleCallback: function(callback)
-    {
-        this._requestVisibleCallback = callback;
-        if (this._setVisibleRequested !== undefined) {
-            callback(this._setVisibleRequested);
-            delete this._setVisibleRequested;
-        }
-    },
-
-    requestReveal: function()
-    {
-        if (this._revealCallback)
-            this._revealCallback();
-        else
-            this._setRevealRequested = true;
-    },
-
-    /**
-     * @param {boolean} visible
-     */
-    requestSetVisible: function(visible)
-    {
-        if (this._requestVisibleCallback)
-            this._requestVisibleCallback(visible);
-        else
-            this._setVisibleRequested = visible;
     },
 
     /**

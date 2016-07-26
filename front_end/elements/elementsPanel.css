@@ -217,7 +217,7 @@
     z-index: 1;
 }
 
-.styles-section .sidebar-pane-closing-brace {
+.sidebar-pane-closing-brace {
     clear: both;
 }
 
@@ -558,10 +558,6 @@
     -webkit-user-drag: auto;
 }
 
-.sidebar-pane.composite {
-    position: absolute;
-}
-
 .metrics {
     border-bottom: 1px solid #ccc;
 }
@@ -579,7 +575,7 @@
     border-bottom: none;
 }
 
-.sidebar-pane.composite .metrics {
+.metrics {
     min-height: 190px;
     display: flex;
     flex-direction: column;
@@ -587,17 +583,10 @@
     -webkit-justify-content: center;
 }
 
-.sidebar-pane .metrics-and-styles,
-.sidebar-pane .metrics-and-computed {
+.metrics-and-styles,
+.metrics-and-computed {
     display: flex !important;
     flex-direction: column !important;
-    position: relative;
-}
-
-.sidebar-pane .style-panes-wrapper {
-    transform: translateZ(0);
-    flex: 1;
-    overflow-y: auto;
     position: relative;
 }
 
@@ -626,14 +615,6 @@
 
 .sidebar-pane.composite .metrics-and-styles .metrics {
     border-bottom: none;
-}
-
-.sidebar-pane > .split-widget {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
 }
 
 .styles-section.styles-panel-hovered:not(.read-only) .style-properties .webkit-css-property:hover,

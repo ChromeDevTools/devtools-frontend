@@ -45,8 +45,8 @@
         "Tooltip.js",
         "SuggestBox.js",
         "TabbedPane.js",
-        "SidebarPane.js",
         "UIUtils.js",
+        "ViewContainers.js",
         "ViewportControl.js",
         "ZoomManager.js"
     ],
@@ -71,7 +71,7 @@
         "radioButton.css",
         "reportView.css",
         "searchableView.css",
-        "sidebarPane.css",
+        "viewContainers.css",
         "smallIcon.css",
         "softContextMenu.css",
         "splitWidget.css",

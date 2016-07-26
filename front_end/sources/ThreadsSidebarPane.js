@@ -10,7 +10,6 @@
 WebInspector.ThreadsSidebarPane = function()
 {
     WebInspector.View.call(this, WebInspector.UIString("Threads"));
-    this.requestSetVisible(false);
 
     /** @type {!Map.<!WebInspector.DebuggerModel, !WebInspector.UIList.Item>} */
     this._debuggerModelToListItems = new Map();
@@ -35,10 +34,8 @@ WebInspector.ThreadsSidebarPane.prototype = {
     targetAdded: function(target)
     {
         var debuggerModel = WebInspector.DebuggerModel.fromTarget(target)
-        if (!debuggerModel) {
-            this._updateVisibility();
+        if (!debuggerModel)
             return;
-        }
 
         var executionContext = target.runtimeModel.defaultExecutionContext();
         var label = executionContext && executionContext.label() ? executionContext.label() : target.name();
@@ -52,13 +49,6 @@ WebInspector.ThreadsSidebarPane.prototype = {
         this._listItemsToTargets.set(listItem, target);
         this.threadList.addItem(listItem);
         this._updateDebuggerState(debuggerModel);
-        this._updateVisibility();
-    },
-
-    _updateVisibility: function()
-    {
-        this._wasVisibleAtLeastOnce = this._wasVisibleAtLeastOnce || this._debuggerModelToListItems.size > 1;
-        this.requestSetVisible(this._wasVisibleAtLeastOnce);
     },
 
     /**
@@ -75,7 +65,6 @@ WebInspector.ThreadsSidebarPane.prototype = {
             this._listItemsToTargets.remove(listItem);
             this.threadList.removeItem(listItem);
         }
-        this._updateVisibility();
     },
 
     /**

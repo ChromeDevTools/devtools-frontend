@@ -348,7 +348,7 @@ WebInspector.DOMBreakpointsSidebarPane.prototype = {
         var element = this._breakpointElements[breakpointId];
         if (!element)
             return;
-        this.requestReveal();
+        this.revealWidget();
         element.classList.add("breakpoint-hit");
         this._highlightedElement = element;
     },

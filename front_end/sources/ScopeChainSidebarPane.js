@@ -58,7 +58,7 @@ WebInspector.ScopeChainSidebarPane.prototype = {
 
         if (!callFrame) {
             var infoElement = createElement("div");
-            infoElement.className = "info";
+            infoElement.className = "gray-info-message";
             infoElement.textContent = WebInspector.UIString("Not Paused");
             this.element.appendChild(infoElement);
             return;

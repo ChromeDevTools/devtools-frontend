@@ -67,7 +67,7 @@ WebInspector.PresentationConsoleMessageHelper.prototype = {
      */
     _consoleMessageAdded: function(message)
     {
-        if (!message.url || !message.isErrorOrWarning())
+        if (!message.isErrorOrWarning())
             return;
 
         var rawLocation = this._rawLocation(message);
@@ -86,14 +86,14 @@ WebInspector.PresentationConsoleMessageHelper.prototype = {
         var debuggerModel = WebInspector.DebuggerModel.fromTarget(message.target());
         if (!debuggerModel)
             return null;
-        var callFrame = message.stackTrace && message.stackTrace.callFrames ? message.stackTrace.callFrames[0] : null;
-        var lineNumber = callFrame ? callFrame.lineNumber : message.line;
-        var columnNumber = callFrame ? callFrame.columnNumber : message.column;
-        if (callFrame)
-            columnNumber = callFrame.columnNumber;
         if (message.scriptId)
-            return debuggerModel.createRawLocationByScriptId(message.scriptId, lineNumber, columnNumber);
-        return debuggerModel.createRawLocationByURL(message.url || "", lineNumber, columnNumber);
+            return debuggerModel.createRawLocationByScriptId(message.scriptId, message.line, message.column);
+        var callFrame = message.stackTrace && message.stackTrace.callFrames ? message.stackTrace.callFrames[0] : null;
+        if (callFrame)
+            return debuggerModel.createRawLocationByScriptId(callFrame.scriptId, callFrame.lineNumber, callFrame.columnNumber);
+        if (message.url)
+            return debuggerModel.createRawLocationByURL(message.url, message.line, message.column);
+        return null;
     },
 
     /**

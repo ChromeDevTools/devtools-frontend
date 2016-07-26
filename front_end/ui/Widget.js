@@ -256,11 +256,13 @@ WebInspector.Widget.prototype = {
         else
             WebInspector.Widget.__assert(currentParent && currentParent.__widget === this._parentWidget, "Attempt to show under node belonging to alien widget");
 
-        if (this._visible)
+        var wasVisible = this._visible;
+        if (wasVisible && this.element.parentElement === parentElement)
             return;
+
         this._visible = true;
 
-        if (this._parentIsShowing())
+        if (!wasVisible && this._parentIsShowing())
             this._processWillShow();
 
         this.element.classList.remove("hidden");
@@ -274,7 +276,7 @@ WebInspector.Widget.prototype = {
                 WebInspector.Widget._originalAppendChild.call(parentElement, this.element);
         }
 
-        if (this._parentIsShowing())
+        if (!wasVisible && this._parentIsShowing())
             this._processWasShown();
 
         if (this._parentWidget && this._hasNonZeroConstraints())

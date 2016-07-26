@@ -4,10 +4,6 @@
  * found in the LICENSE file.
  */
 
-.devices-view {
-    padding-top: 15px;
-}
-
 .devices-container {
     overflow: hidden;
     flex: auto;
@@ -18,6 +14,7 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
+    padding-top: 15px;
 }
 
 .devices-sidebar-list {
@@ -87,6 +84,7 @@
 
 .discovery-view {
     overflow: auto;
+    padding: 15px 15px 0px 0px;
 }
 
 .discovery-view > * {

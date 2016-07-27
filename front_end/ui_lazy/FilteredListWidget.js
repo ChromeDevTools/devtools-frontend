@@ -151,15 +151,13 @@ WebInspector.FilteredListWidget.prototype = {
 
     /**
      * @param {!Element} proxyElement
-     * @param {string} query
-     * @param {number} cursorOffset
      * @param {!Range} wordRange
      * @param {boolean} force
      * @param {function(!Array.<string>, number=)} completionsReadyCallback
      */
-    _autocomplete: function(proxyElement, query, cursorOffset, wordRange, force, completionsReadyCallback)
+    _autocomplete: function(proxyElement, wordRange, force, completionsReadyCallback)
     {
-        var completions = wordRange.startOffset === 0 ? [this._delegate.autocomplete(query)] : [];
+        var completions = wordRange.startOffset === 0 ? [this._delegate.autocomplete(wordRange.toString())] : [];
         completionsReadyCallback.call(null, completions);
         this._autocompletedForTests();
     },

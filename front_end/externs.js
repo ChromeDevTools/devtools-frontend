@@ -408,6 +408,7 @@ CodeMirror.prototype = {
     eachLine: function(from, to, op) { },
     execCommand: function(cmd) { },
     extendSelection: function(from, to) { },
+    findMarks: function(from, to) { },
     findMarksAt: function(pos) { },
     /**
      * @param {!CodeMirror.Pos} from
@@ -588,7 +589,8 @@ CodeMirror.StringStream.prototype = {
 /** @constructor */
 CodeMirror.TextMarker = function(doc, type) { }
 CodeMirror.TextMarker.prototype = {
-    clear: function() { }
+    clear: function() { },
+    find: function() { }
 }
 
 /** @type {Object.<string, !Object.<string, string>>} */

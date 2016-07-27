@@ -38,13 +38,12 @@ WebInspector.CSSSourceFrame = function(uiSourceCode)
     WebInspector.UISourceCodeFrame.call(this, uiSourceCode);
     this.textEditor.setAutocompleteDelegate(new WebInspector.CSSSourceFrame.AutocompleteDelegate());
     this._registerShortcuts();
-    this._colorBookmarks = [];
     this._swatchPopoverHelper = new WebInspector.SwatchPopoverHelper();
     this._muteColorProcessing = false;
 }
 
 /** @type {number} */
-WebInspector.CSSSourceFrame.UpdateTimeout = 200;
+WebInspector.CSSSourceFrame.maxSwatchProcessingLength = 300;
 
 WebInspector.CSSSourceFrame.prototype = {
     _registerShortcuts: function()
@@ -103,36 +102,21 @@ WebInspector.CSSSourceFrame.prototype = {
         return true;
     },
 
-    _updateColorSwatches: function()
-    {
-        if (this._updateTimeout)
-            clearTimeout(this._updateTimeout);
-        this._updateTimeout = null;
-
-        var colorPositions = this._extractColorPositions(this.textEditor.text());
-        this.textEditor.operation(this._putColorSwatchesInline.bind(this, colorPositions));
-    },
-
     /**
-     * @param {string} content
-     * @return {?Array<!WebInspector.CSSSourceFrame.ColorPosition>}
+     * @param {number} startLine
+     * @param {number} endLine
      */
-    _extractColorPositions: function(content)
+    _updateColorSwatches: function(startLine, endLine)
     {
-        if (!content)
-            return null;
-
         var colorPositions = [];
-        var text = new WebInspector.Text(content);
-        var numberOfLines = text.lineCount();
+
         var colorRegex = /[\s:;,(){}]((?:rgb|hsl)a?\([^)]+\)|#[0-9a-f]{8}|#[0-9a-f]{6}|#[0-9a-f]{3,4}|[a-z]+)(?=[\s;,(){}])/gi;
-        for (var lineNumber = 0; lineNumber < numberOfLines; lineNumber++) {
-            var line = text.lineAt(lineNumber) + "\n";
+        for (var lineNumber = startLine; lineNumber <= endLine; lineNumber++) {
+            var line = this.textEditor.line(lineNumber).substring(0, WebInspector.CSSSourceFrame.maxSwatchProcessingLength) + "\n";
             var match;
             while ((match = colorRegex.exec(line)) !== null) {
                 if (match.length < 2)
                     continue;
-
                 var colorText = match[1];
                 var color = WebInspector.Color.parse(colorText);
                 if (color)
@@ -140,45 +124,45 @@ WebInspector.CSSSourceFrame.prototype = {
             }
         }
 
-        return colorPositions;
-    },
+        this.textEditor.operation(putColorSwatchesInline.bind(this));
 
-    /**
-     * @param {?Array<!WebInspector.CSSSourceFrame.ColorPosition>} colorPositions
-     */
-    _putColorSwatchesInline: function(colorPositions)
-    {
-        this._clearColorBookmarks();
-        if (!colorPositions)
-            return;
+        /**
+         * @this {WebInspector.CSSSourceFrame}
+         */
+        function putColorSwatchesInline()
+        {
+            this._clearBookmarks(startLine, endLine);
 
-        for (var i = 0; i < colorPositions.length; i++) {
-            var colorPosition = colorPositions[i];
-
-            var swatch = WebInspector.ColorSwatch.create();
-            swatch.setColorText(colorPosition.color.asString(WebInspector.Color.Format.Original));
-            swatch.iconElement().title = WebInspector.UIString("Open color picker.");
-            swatch.iconElement().addEventListener("click", this._showSpectrum.bind(this, swatch, colorPosition), true);
-            swatch.hideText(true);
-
-            var bookmark = this.textEditor.addBookmark(colorPosition.textRange.startLine, colorPosition.textRange.startColumn, swatch);
-            this._colorBookmarks.push(bookmark);
+            for (var i = 0; i < colorPositions.length; i++) {
+                var colorPosition = colorPositions[i];
+                var swatch = WebInspector.ColorSwatch.create();
+                swatch.setColorText(colorPosition.color.asString(WebInspector.Color.Format.Original));
+                swatch.iconElement().title = WebInspector.UIString("Open color picker.");
+                swatch.hideText(true);
+                var bookmark = this.textEditor.addBookmark(colorPosition.textRange.startLine, colorPosition.textRange.startColumn, swatch);
+                swatch.iconElement().addEventListener("click", this._showSpectrum.bind(this, swatch, bookmark), true);
+            }
         }
     },
 
-    _clearColorBookmarks: function()
+    /**
+     * @param {number} startLine
+     * @param {number} endLine
+     */
+    _clearBookmarks: function(startLine, endLine)
     {
-        for (var i = 0; i < this._colorBookmarks.length; i++)
-            this._colorBookmarks[i].clear();
-        this._colorBookmarks = [];
+        var range = new WebInspector.TextRange(startLine, 0, endLine, this.textEditor.line(endLine).length);
+        var markers = this.textEditor.bookmarks(range);
+        for (var i = 0; i < markers.length; i++)
+            markers[i].clear();
     },
 
     /**
      * @param {!WebInspector.ColorSwatch} swatch
-     * @param {!WebInspector.CSSSourceFrame.ColorPosition} colorPosition
+     * @param {!CodeMirror.TextMarker} bookmark
      * @param {!Event} event
      */
-    _showSpectrum: function(swatch, colorPosition, event)
+    _showSpectrum: function(swatch, bookmark, event)
     {
         event.consume(true);
         if (this._swatchPopoverHelper.isShowing()) {
@@ -186,9 +170,11 @@ WebInspector.CSSSourceFrame.prototype = {
             return;
         }
         this._hadSpectrumChange = false;
+        var position = bookmark.find();
+        var colorText = swatch.color().asString(WebInspector.Color.Format.Original);
+        this._currentColorTextRange = new WebInspector.TextRange(position.line, position.ch, position.line, position.ch + colorText.length);
         this._currentSwatch = swatch;
-        this._currentColorPosition = colorPosition;
-        this.textEditor.setSelection(WebInspector.TextRange.createFromLocation(colorPosition.textRange.startLine, colorPosition.textRange.startColumn));
+        this.textEditor.setSelection(WebInspector.TextRange.createFromLocation(position.line, position.ch));
         this._spectrum = new WebInspector.Spectrum();
         this._spectrum.setColor(swatch.color(), swatch.format());
         this._spectrum.addEventListener(WebInspector.Spectrum.Events.SizeChanged, this._spectrumResized, this);
@@ -213,9 +199,8 @@ WebInspector.CSSSourceFrame.prototype = {
         this._hadSpectrumChange = true;
         var colorString = /** @type {string} */ (event.data);
         this._currentSwatch.setColorText(colorString);
-        this.textEditor.editRange(this._currentColorPosition.textRange, colorString, "*color-text-changed");
-        this._currentColorPosition.color = WebInspector.Color.parse(colorString);
-        this._currentColorPosition.textRange.endColumn = this._currentColorPosition.textRange.startColumn + colorString.length;
+        this._textEditor.editRange(this._currentColorTextRange, colorString, "*color-text-changed");
+        this._currentColorTextRange.endColumn = this._currentColorTextRange.startColumn + colorString.length;
     },
 
     /**
@@ -229,9 +214,8 @@ WebInspector.CSSSourceFrame.prototype = {
             this.textEditor.undo();
         delete this._spectrum;
         delete this._currentSwatch;
-        delete this._currentColorPosition;
+        delete this._currentColorTextRange;
         this._muteColorProcessing = false;
-        this._updateColorSwatches();
     },
 
     /**
@@ -241,7 +225,7 @@ WebInspector.CSSSourceFrame.prototype = {
     {
         WebInspector.UISourceCodeFrame.prototype.onTextEditorContentSet.call(this);
         if (!this._muteColorProcessing && Runtime.experiments.isEnabled("sourceColorPicker"))
-            this._updateColorSwatches();
+            this._updateColorSwatches(0, this.textEditor.linesCount - 1);
     },
 
     /**
@@ -252,11 +236,8 @@ WebInspector.CSSSourceFrame.prototype = {
     onTextChanged: function(oldRange, newRange)
     {
         WebInspector.UISourceCodeFrame.prototype.onTextChanged.call(this, oldRange, newRange);
-        if (!this._muteColorProcessing && Runtime.experiments.isEnabled("sourceColorPicker")) {
-            if (this._updateTimeout)
-                clearTimeout(this._updateTimeout);
-            this._updateTimeout = setTimeout(this._updateColorSwatches.bind(this), WebInspector.CSSSourceFrame.UpdateTimeout);
-        }
+        if (!this._muteColorProcessing && Runtime.experiments.isEnabled("sourceColorPicker"))
+            this._updateColorSwatches(newRange.startLine, newRange.endLine);
     },
 
     /**

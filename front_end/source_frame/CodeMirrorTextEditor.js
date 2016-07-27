@@ -1019,6 +1019,17 @@ WebInspector.CodeMirrorTextEditor.prototype = {
     },
 
     /**
+     * @param {!WebInspector.TextRange} range
+     * @return {!Array.<!CodeMirror.TextMarker>}
+     */
+    bookmarks: function(range)
+    {
+        var pos = WebInspector.CodeMirrorUtils.toPos(range);
+        var markers = this._codeMirror.findMarks(pos.start, pos.end);
+        return markers.filter(marker => marker.type === "bookmark");
+    },
+
+    /**
      * @override
      * @return {!Element}
      */

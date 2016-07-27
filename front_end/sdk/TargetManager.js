@@ -78,28 +78,6 @@ WebInspector.TargetManager.prototype = {
     },
 
     /**
-     * @return {string}
-     */
-    inspectedPageURL: function()
-    {
-        if (!this._targets.length)
-            return "";
-
-        return this._targets[0].resourceTreeModel.inspectedPageURL();
-    },
-
-    /**
-     * @return {string}
-     */
-    inspectedPageDomain: function()
-    {
-        if (!this._targets.length)
-            return "";
-
-        return this._targets[0].resourceTreeModel.inspectedPageDomain();
-    },
-
-    /**
      * @param {!WebInspector.Event} event
      */
     _redispatchEvent: function(event)
@@ -250,7 +228,6 @@ WebInspector.TargetManager.prototype = {
     {
         this._targets.push(target);
         if (this._targets.length === 1) {
-            target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.InspectedURLChanged, this._redispatchEvent, this);
             target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._redispatchEvent, this);
             target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.Load, this._redispatchEvent, this);
             target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.PageReloadRequested, this._redispatchEvent, this);
@@ -277,7 +254,6 @@ WebInspector.TargetManager.prototype = {
     {
         this._targets.remove(target);
         if (this._targets.length === 0) {
-            target.resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.EventTypes.InspectedURLChanged, this._redispatchEvent, this);
             target.resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._redispatchEvent, this);
             target.resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.EventTypes.Load, this._redispatchEvent, this);
             target.resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.EventTypes.WillReloadPage, this._redispatchEvent, this);

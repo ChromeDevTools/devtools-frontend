@@ -561,7 +561,8 @@ WebInspector.NetworkRequest.prototype = {
             this._path = "";
         } else {
             this._path = this._parsedURL.host + this._parsedURL.folderPathComponents;
-            this._path = this._path.trimURL(this.target().resourceTreeModel.inspectedPageDomain());
+
+            this._path = this._path.trimURL(this.target().inspectedURL().asParsedURL().host);
             if (this._parsedURL.lastPathComponent || this._parsedURL.queryParams)
                 this._name = this._parsedURL.lastPathComponent + (this._parsedURL.queryParams ? "?" + this._parsedURL.queryParams : "");
             else if (this._parsedURL.folderPathComponents) {

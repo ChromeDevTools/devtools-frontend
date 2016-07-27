@@ -53,7 +53,6 @@ WebInspector.ResourceTreeModel = function(target, networkManager, securityOrigin
 
     target.registerPageDispatcher(new WebInspector.PageDispatcher(this));
 
-    this._inspectedPageURL = "";
     this._pendingReloadOptions = null;
     this._reloadSuspensionCount = 0;
 
@@ -74,7 +73,6 @@ WebInspector.ResourceTreeModel.EventTypes = {
     Load: "Load",
     PageReloadRequested: "PageReloadRequested",
     WillReloadPage: "WillReloadPage",
-    InspectedURLChanged: "InspectedURLChanged",
     ScreencastFrame: "ScreencastFrame",
     ScreencastVisibilityChanged: "ScreencastVisibilityChanged",
     ColorPicked: "ColorPicked"
@@ -128,29 +126,11 @@ WebInspector.ResourceTreeModel.prototype = {
     {
         if (!error) {
             this.dispatchEventToListeners(WebInspector.ResourceTreeModel.EventTypes.WillLoadCachedResources);
-            this._inspectedPageURL = mainFramePayload.frame.url;
             this._addFramesRecursively(null, mainFramePayload);
-            this._dispatchInspectedURLChanged();
+            this.target().setInspectedURL(mainFramePayload.frame.url);
         }
         this._cachedResourcesProcessed = true;
         this.dispatchEventToListeners(WebInspector.ResourceTreeModel.EventTypes.CachedResourcesLoaded);
-    },
-
-    /**
-     * @return {string}
-     */
-    inspectedPageURL: function()
-    {
-        return this._inspectedPageURL;
-    },
-
-    /**
-     * @return {string}
-     */
-    inspectedPageDomain: function()
-    {
-        var parsedURL = this._inspectedPageURL ? this._inspectedPageURL.asParsedURL() : null;
-        return parsedURL ? parsedURL.host : "";
     },
 
     /**
@@ -159,12 +139,6 @@ WebInspector.ResourceTreeModel.prototype = {
     cachedResourcesLoaded: function()
     {
         return this._cachedResourcesProcessed;
-    },
-
-    _dispatchInspectedURLChanged: function()
-    {
-        InspectorFrontendHost.inspectedURLChanged(this._inspectedPageURL);
-        this.dispatchEventToListeners(WebInspector.ResourceTreeModel.EventTypes.InspectedURLChanged, this._inspectedPageURL);
     },
 
     /**
@@ -248,9 +222,6 @@ WebInspector.ResourceTreeModel.prototype = {
         frame._navigate(framePayload);
         var addedOrigin = frame.securityOrigin;
 
-        if (frame.isMainFrame())
-            this._inspectedPageURL = frame.url;
-
         this.dispatchEventToListeners(WebInspector.ResourceTreeModel.EventTypes.FrameNavigated, frame);
         if (frame.isMainFrame()) {
             this.dispatchEventToListeners(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, frame);
@@ -268,7 +239,7 @@ WebInspector.ResourceTreeModel.prototype = {
             this.dispatchEventToListeners(WebInspector.ResourceTreeModel.EventTypes.ResourceAdded, resources[i]);
 
         if (frame.isMainFrame())
-            this._dispatchInspectedURLChanged();
+            this.target().setInspectedURL(frame.url);
     },
 
     /**
@@ -378,8 +349,6 @@ WebInspector.ResourceTreeModel.prototype = {
         this._addFrame(frame);
 
         var frameResource = this._createResourceFromFramePayload(framePayload, framePayload.url, WebInspector.resourceTypes.Document, framePayload.mimeType);
-        if (frame.isMainFrame())
-            this._inspectedPageURL = frameResource.url;
         frame.addResource(frameResource);
 
         for (var i = 0; frameTreePayload.childFrames && i < frameTreePayload.childFrames.length; ++i)

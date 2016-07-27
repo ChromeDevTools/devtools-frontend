@@ -323,7 +323,7 @@ WebInspector.CompilerScriptMapping.prototype = {
     {
         // script.sourceURL can be a random string, but is generally an absolute path -> complete it to inspected page url for
         // relative links.
-        var scriptURL = WebInspector.ParsedURL.completeURL(this._target.resourceTreeModel.inspectedPageURL(), script.sourceURL);
+        var scriptURL = WebInspector.ParsedURL.completeURL(this._target.inspectedURL(), script.sourceURL);
         if (!scriptURL)
             return Promise.resolve(/** @type {?WebInspector.TextSourceMap} */(null));
 

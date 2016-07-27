@@ -61,7 +61,7 @@ WebInspector.AuditController.prototype = {
         }
 
         var results = [];
-        var mainResourceURL = target.resourceTreeModel.inspectedPageURL();
+        var mainResourceURL = target.inspectedURL();
         var categoriesDone = 0;
 
         function categoryDoneCallback()

@@ -64,10 +64,12 @@ WebInspector.DOMBreakpointsSidebarPane.Marker = "breakpoint-marker";
 WebInspector.DOMBreakpointsSidebarPane.prototype = {
     _inspectedURLChanged: function(event)
     {
+        var target = /** @type {!WebInspector.Target} */ (event.data);
+        if (target !== WebInspector.targetManager.mainTarget())
+            return;
         this._breakpointElements = {};
         this.reset();
-        var url = /** @type {string} */ (event.data);
-        this._inspectedURL = url.removeURLFragment();
+        this._inspectedURL = target.inspectedURL().removeURLFragment();
     },
 
     /**

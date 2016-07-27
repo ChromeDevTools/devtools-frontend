@@ -18,6 +18,7 @@ WebInspector.Target = function(targetManager, name, capabilitiesMask, connection
     Protocol.Agents.call(this, connection.agentsMap());
     this._targetManager = targetManager;
     this._name = name;
+    this._inspectedURL = "";
     this._capabilitiesMask = capabilitiesMask;
     this._connection = connection;
     this._parentTarget = parentTarget;
@@ -187,6 +188,24 @@ WebInspector.Target.prototype = {
     models: function()
     {
         return this._modelByConstructor.valuesArray();
+    },
+
+    /**
+     * @return {string}
+     */
+    inspectedURL: function()
+    {
+        return this._inspectedURL;
+    },
+
+    /**
+     * @param {string} inspectedURL
+     */
+    setInspectedURL: function(inspectedURL)
+    {
+        this._inspectedURL = inspectedURL;
+        InspectorFrontendHost.inspectedURLChanged(inspectedURL || "");
+        this._targetManager.dispatchEventToListeners(WebInspector.TargetManager.Events.InspectedURLChanged, this);
     },
 
     __proto__: Protocol.Agents.prototype

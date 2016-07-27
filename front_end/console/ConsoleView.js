@@ -599,7 +599,8 @@ WebInspector.ConsoleView.prototype = {
 
     _saveConsole: function()
     {
-        var filename = String.sprintf("%s-%d.log", WebInspector.targetManager.inspectedPageDomain(), Date.now());
+        var url = WebInspector.targetManager.mainTarget().inspectedURL();
+        var filename = String.sprintf("%s-%d.log", url.asParsedURL().host, Date.now());
         var stream = new WebInspector.FileOutputStream();
 
         var progressIndicator = new WebInspector.ProgressIndicator();

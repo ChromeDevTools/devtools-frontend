@@ -146,8 +146,10 @@ WebInspector.ExtensionServer.prototype = {
 
     _inspectedURLChanged: function(event)
     {
+        if (event.data !== WebInspector.targetManager.mainTarget())
+            return;
         this._requests = {};
-        var url = event.data;
+        var url = event.data.inspectedURL();
         this._postNotification(WebInspector.extensionAPI.Events.InspectedURLChanged, url);
     },
 

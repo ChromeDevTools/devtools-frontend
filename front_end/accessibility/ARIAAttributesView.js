@@ -229,13 +229,11 @@ WebInspector.ARIAAttributesPane.ARIAAttributePrompt = function(treeElement)
 WebInspector.ARIAAttributesPane.ARIAAttributePrompt.prototype = {
     /**
      * @param {!Element} proxyElement
-     * @param {string} text
-     * @param {number} cursorOffset
      * @param {!Range} wordRange
      * @param {boolean} force
      * @param {function(!Array.<string>, number=)} completionsReadyCallback
      */
-    _buildPropertyCompletions: function(proxyElement, text, cursorOffset, wordRange, force, completionsReadyCallback)
+    _buildPropertyCompletions: function(proxyElement, wordRange, force, completionsReadyCallback)
     {
         // TODO(aboxhall): replace placeholder implementation with real implementation
         completionsReadyCallback([], 0);

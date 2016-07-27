@@ -445,9 +445,7 @@ WebInspector.TimelinePanel.prototype = {
     _contextMenu: function(event)
     {
         var contextMenu = new WebInspector.ContextMenu(event);
-        var disabled = this._state !== WebInspector.TimelinePanel.State.Idle;
-        contextMenu.appendItem(WebInspector.UIString.capitalize("Save Timeline ^data\u2026"), this._saveToFile.bind(this), disabled);
-        contextMenu.appendItem(WebInspector.UIString.capitalize("Load Timeline ^data\u2026"), this._selectFileToLoad.bind(this), disabled);
+        contextMenu.appendItemsAtLocation("timelineMenu");
         contextMenu.show();
     },
 
@@ -457,6 +455,8 @@ WebInspector.TimelinePanel.prototype = {
     _saveToFile: function()
     {
         if (this._state !== WebInspector.TimelinePanel.State.Idle)
+            return true;
+        if (this._model.isEmpty())
             return true;
 
         var now = new Date();

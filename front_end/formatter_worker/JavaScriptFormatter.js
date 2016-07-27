@@ -299,7 +299,7 @@ WebInspector.JavaScriptFormatter.prototype = {
                 if (node.consequent.type !== "BlockStatement")
                     return "<";
             }
-        } else if (node.type === "BreakStatement" || node.type === "ThrowStatement" || node.type === "ReturnStatement" || node.type === "ExpressionStatement") {
+        } else if (node.type === "BreakStatement" || node.type === "ContinueStatement" || node.type === "ThrowStatement" || node.type === "ReturnStatement" || node.type === "ExpressionStatement") {
             return "n";
         }
         return "";

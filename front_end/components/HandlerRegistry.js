@@ -117,10 +117,11 @@ WebInspector.HandlerRegistry.prototype = {
             contextMenu.appendItem(WebInspector.UIString.capitalize("Open ^using %s", handler),
                 this.dispatchToHandler.bind(this, handler, { url: contentProvider.contentURL() }));
         }
-        contextMenu.appendItem(WebInspector.copyLinkAddressLabel(), InspectorFrontendHost.copyText.bind(InspectorFrontendHost, contentProvider.contentURL()));
 
-        if (!contentProvider.contentURL())
+        if (!contentProvider.contentURL() || contentProvider instanceof WebInspector.NetworkRequest)
             return;
+
+        contextMenu.appendItem(WebInspector.copyLinkAddressLabel(), InspectorFrontendHost.copyText.bind(InspectorFrontendHost, contentProvider.contentURL()));
 
         if (!contentProvider.contentType().isDocumentOrScriptOrStyleSheet())
             return;

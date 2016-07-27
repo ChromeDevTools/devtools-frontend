@@ -841,23 +841,32 @@ WebInspector.NetworkLogView.prototype = {
             InspectorFrontendHost.openInNewTab(url);
         }
 
+        contextMenu.appendApplicableItems(request);
+        var copyMenu = contextMenu.appendSubMenuItem(WebInspector.UIString("Copy"));
         if (request) {
-            contextMenu.appendApplicableItems(request);
+            copyMenu.appendItem(WebInspector.copyLinkAddressLabel(), InspectorFrontendHost.copyText.bind(InspectorFrontendHost, request.contentURL()));
+            copyMenu.appendSeparator();
+
             if (request.requestHeadersText())
-                contextMenu.appendItem(WebInspector.UIString.capitalize("Copy ^request ^headers"), this._copyRequestHeaders.bind(this, request));
+                copyMenu.appendItem(WebInspector.UIString.capitalize("Copy ^request ^headers"), this._copyRequestHeaders.bind(this, request));
             if (request.responseHeadersText)
-                contextMenu.appendItem(WebInspector.UIString.capitalize("Copy ^response ^headers"), this._copyResponseHeaders.bind(this, request));
+                copyMenu.appendItem(WebInspector.UIString.capitalize("Copy ^response ^headers"), this._copyResponseHeaders.bind(this, request));
             if (request.finished)
-                contextMenu.appendItem(WebInspector.UIString.capitalize("Copy ^response"), this._copyResponse.bind(this, request));
+                copyMenu.appendItem(WebInspector.UIString.capitalize("Copy ^response"), this._copyResponse.bind(this, request));
 
             if (WebInspector.isWin()) {
-                contextMenu.appendItem(WebInspector.UIString("Copy as cURL (cmd)"), this._copyCurlCommand.bind(this, request, "win"));
-                contextMenu.appendItem(WebInspector.UIString("Copy as cURL (bash)"), this._copyCurlCommand.bind(this, request, "unix"));
+                copyMenu.appendItem(WebInspector.UIString("Copy as cURL (cmd)"), this._copyCurlCommand.bind(this, request, "win"));
+                copyMenu.appendItem(WebInspector.UIString("Copy as cURL (bash)"), this._copyCurlCommand.bind(this, request, "unix"));
+                copyMenu.appendItem(WebInspector.UIString("Copy All as cURL (cmd)"), this._copyAllCurlCommand.bind(this, "win"));
+                copyMenu.appendItem(WebInspector.UIString("Copy All as cURL (bash)"), this._copyAllCurlCommand.bind(this, "unix"));
             } else {
-                contextMenu.appendItem(WebInspector.UIString("Copy as cURL"), this._copyCurlCommand.bind(this, request, "unix"));
+                copyMenu.appendItem(WebInspector.UIString("Copy as cURL"), this._copyCurlCommand.bind(this, request, "unix"));
+                copyMenu.appendItem(WebInspector.UIString("Copy All as cURL"), this._copyAllCurlCommand.bind(this, "unix"));
             }
+        } else {
+            copyMenu = contextMenu.appendSubMenuItem(WebInspector.UIString("Copy"));
         }
-        contextMenu.appendItem(WebInspector.UIString.capitalize("Copy ^all as HAR"), this._copyAll.bind(this));
+        copyMenu.appendItem(WebInspector.UIString.capitalize("Copy ^all as HAR"), this._copyAll.bind(this));
 
         contextMenu.appendSeparator();
         contextMenu.appendItem(WebInspector.UIString.capitalize("Save as HAR with ^content"), this._exportAll.bind(this));
@@ -951,6 +960,21 @@ WebInspector.NetworkLogView.prototype = {
     _copyCurlCommand: function(request, platform)
     {
         InspectorFrontendHost.copyText(this._generateCurlCommand(request, platform));
+    },
+
+    /**
+     * @param {string} platform
+     */
+    _copyAllCurlCommand: function(platform)
+    {
+        var requests = this._nodesByRequestId.valuesArray().map(node => node.request());
+        var commands = [];
+        for (var request of requests)
+            commands.push(this._generateCurlCommand(request, platform));
+        if (platform === "win")
+            InspectorFrontendHost.copyText(commands.join(" &\r\n"));
+        else
+            InspectorFrontendHost.copyText(commands.join(" ;\n"));
     },
 
     _exportAll: function()

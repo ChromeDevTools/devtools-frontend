@@ -1,8 +1,8 @@
 {
   "name": "chrome-devtools-frontend",
-  "version": "1.0.XXXXXX",
   "description": "Chrome DevTools UI",
   "scripts": {
+    "server": "node scripts/hosted_mode/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

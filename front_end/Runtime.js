@@ -238,14 +238,6 @@ Runtime.loadResourceIntoCache = function(url, appendSourceURL)
 }
 
 /**
- * @return {boolean}
- */
-Runtime.isReleaseMode = function()
-{
-    return !!allDescriptors.length;
-}
-
-/**
  * @param {string} appName
  * @return {!Promise.<undefined>}
  */
@@ -254,7 +246,7 @@ Runtime.startApplication = function(appName)
     console.timeStamp("Runtime.startApplication");
 
     var allDescriptorsByName = {};
-    for (var i = 0; Runtime.isReleaseMode() && i < allDescriptors.length; ++i) {
+    for (var i = 0; i < allDescriptors.length; ++i) {
         var d = allDescriptors[i];
         allDescriptorsByName[d["name"]] = d;
     }
@@ -296,9 +288,10 @@ Runtime.startApplication = function(appName)
          */
         function instantiateRuntime(moduleDescriptors)
         {
-            for (var i = 0; !Runtime.isReleaseMode() && i < moduleDescriptors.length; ++i) {
-                moduleDescriptors[i]["name"] = configuration[i]["name"];
-                moduleDescriptors[i]["condition"] = configuration[i]["condition"];
+            for (var i = 0; i < moduleDescriptors.length; ++i) {
+                moduleDescriptors[i].name = configuration[i]["name"];
+                moduleDescriptors[i].condition = configuration[i]["condition"];
+                moduleDescriptors[i].remote = configuration[i]["type"] === "remote";
             }
             self.runtime = new Runtime(moduleDescriptors);
             if (coreModuleNames)
@@ -497,12 +490,8 @@ Runtime.prototype = {
     _loadAutoStartModules: function(moduleNames)
     {
         var promises = [];
-        for (var i = 0; i < moduleNames.length; ++i) {
-            if (Runtime.isReleaseMode())
-                this._modulesMap[moduleNames[i]]._loaded = true;
-            else
-                promises.push(this.loadModulePromise(moduleNames[i]));
-        }
+        for (var i = 0; i < moduleNames.length; ++i)
+            promises.push(this.loadModulePromise(moduleNames[i]));
         return Promise.all(promises);
     },
 
@@ -698,6 +687,11 @@ Runtime.ModuleDescriptor = function()
     this.scripts;
 
     /**
+     * @type {string|undefined}
+     */
+    this.condition;
+
+    /**
      * @type {boolean|undefined}
      */
     this.remote;
@@ -777,9 +771,6 @@ Runtime.Module.prototype = {
      */
     _loadPromise: function()
     {
-        if (this._loaded)
-            return Promise.resolve();
-
         if (!this.enabled())
             return Promise.reject(new Error("Module " + this._name + " is not enabled"));
 
@@ -794,18 +785,9 @@ Runtime.Module.prototype = {
         this._pendingLoadPromise = Promise.all(dependencyPromises)
             .then(this._loadResources.bind(this))
             .then(this._loadScripts.bind(this))
-            .then(markAsLoaded.bind(this));
+            .then(() => this._loadedForTest = true);
 
         return this._pendingLoadPromise;
-
-        /**
-         * @this {Runtime.Module}
-         */
-        function markAsLoaded()
-        {
-            delete this._pendingLoadPromise;
-            this._loaded = true;
-        }
     },
 
     /**
@@ -815,7 +797,7 @@ Runtime.Module.prototype = {
     _loadResources: function()
     {
         var resources = this._descriptor["resources"];
-        if (!resources)
+        if (!resources || !resources.length)
             return Promise.resolve();
         var promises = [];
         for (var i = 0; i < resources.length; ++i) {
@@ -830,13 +812,9 @@ Runtime.Module.prototype = {
      */
     _loadScripts: function()
     {
-        if (!this._descriptor.scripts)
+        if (!this._descriptor.scripts || !this._descriptor.scripts.length)
             return Promise.resolve();
-
-        if (Runtime.isReleaseMode())
-            return loadScriptsPromise([this._name + "_module.js"], this._remoteBase());
-
-        return loadScriptsPromise(this._descriptor.scripts.map(this._modularizeURL, this));
+        return loadScriptsPromise(this._descriptor.scripts.map(this._modularizeURL, this), this._remoteBase());
     },
 
     /**

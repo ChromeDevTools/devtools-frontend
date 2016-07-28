@@ -25,7 +25,7 @@
         { "name": "security", "condition": "!v8only" },
         { "name": "console" },
         { "name": "source_frame" },
-        { "name": "cm_modes", "type": "remote" },
+        { "name": "cm_modes", "type": "remoteInRelease" },
         { "name": "settings" },
         { "name": "layers", "condition": "!v8only" },
         { "name": "snippets" },
@@ -34,8 +34,8 @@
         { "name": "accessibility", "condition": "!v8only" },
         { "name": "animation", "condition": "!v8only" },
         { "name": "es_tree" },
-        { "name": "screencast", "condition": "remoteFrontend", "type": "remote" },
-        { "name": "emulated_devices", "condition": "!v8only" , "type": "remote" }
+        { "name": "screencast", "condition": "remoteFrontend", "type": "remoteInRelease" },
+        { "name": "emulated_devices", "condition": "!v8only" , "type": "remoteInRelease" }
     ],
 
     "has_html": true

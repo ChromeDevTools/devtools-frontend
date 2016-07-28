@@ -42,7 +42,7 @@ def minify_js(javascript):
 
 
 def concatenated_module_filename(module_name, output_dir):
-    return join(output_dir, module_name + '_module.js')
+    return join(output_dir, module_name + '/' + module_name + '_module.js')
 
 
 def symlink_or_copy_file(src, dest, safe=False):
@@ -100,6 +100,9 @@ class ReleaseBuilder(AppBuilder):
         AppBuilder.__init__(self, application_name, descriptors, application_dir, output_dir)
 
     def build_app(self):
+        for module in self.descriptors.application.values():
+            if 'type' in module and module['type'] == 'remoteInRelease':
+                module['type'] = 'remote'
         if self.descriptors.has_html:
             self._build_html()
         self._build_app_script()
@@ -138,20 +141,20 @@ class ReleaseBuilder(AppBuilder):
         result = []
         for name in module_descriptors:
             module = copy.copy(module_descriptors[name])
+            module_type = self.descriptors.application[name].get('type')
             # Clear scripts, as they are not used at runtime
             # (only the fact of their presence is important).
             resources = module.get('resources', None)
             if module.get('scripts') or resources:
-                module['scripts'] = []
-            # Resources list is not used at runtime.
+                if module_type == 'autostart':
+                    # Autostart modules are already baked in.
+                    del module['scripts']
+                else:
+                    # Non-autostart modules are vulcanized.
+                    module['scripts'] = [name + '_module.js']
+            # Resources are already baked into scripts.
             if resources is not None:
                 del module['resources']
-            condition = self.descriptors.application[name].get('condition')
-            if condition:
-                module['condition'] = condition
-            type = self.descriptors.application[name].get('type')
-            if type == 'remote':
-                module['remote'] = True
             result.append(module)
         return json.dumps(result)
 

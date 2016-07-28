@@ -64,24 +64,13 @@ WebInspector.Drawer.prototype = {
     /**
      * @param {string} id
      * @param {boolean=} immediate
-     * @return {!Promise.<?WebInspector.Widget>}
      */
     showView: function(id, immediate)
     {
-        /**
-         * @param {?WebInspector.Widget} view
-         * @return {?WebInspector.Widget} view
-         * @this {WebInspector.Drawer}
-         */
-        function tabViewLoaded(view)
-        {
-            this.focus();
-            return view;
-        }
-
         this._innerShow(immediate);
         WebInspector.userMetrics.drawerShown(id);
-        return this._extensibleTabbedPaneController.showTab(id).then(tabViewLoaded.bind(this));
+        this._tabbedPane.focus();
+        this._extensibleTabbedPaneController.showTab(id);
     },
 
     showDrawer: function()

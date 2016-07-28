@@ -64,17 +64,9 @@ WebInspector.RevisionHistoryView = function()
  */
 WebInspector.RevisionHistoryView.showHistory = function(uiSourceCode)
 {
-    /**
-     * @param {?WebInspector.Widget} view
-     */
-    function revealSource(view)
-    {
-        console.assert(view && view instanceof WebInspector.RevisionHistoryView);
-        var historyView = /** @type {!WebInspector.RevisionHistoryView} */(view);
-        historyView._revealUISourceCode(uiSourceCode);
-    }
-
-    WebInspector.inspectorView.showViewInDrawer("sources.history").then(revealSource);
+    WebInspector.inspectorView.showViewInDrawer("sources.history");
+    var historyView = /** @type {!WebInspector.RevisionHistoryView} */ (self.runtime.sharedInstance(WebInspector.RevisionHistoryView));
+    historyView._revealUISourceCode(uiSourceCode);
 }
 
 WebInspector.RevisionHistoryView.prototype = {

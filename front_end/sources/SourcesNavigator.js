@@ -83,11 +83,8 @@ WebInspector.SourcesNavigator.prototype = {
      */
     revealUISourceCode: function(uiSourceCode)
     {
-        var ids = this._tabbedPaneController.viewIds();
-        var promises = [];
-        for (var i = 0; i < ids.length; ++i)
-            promises.push(this._tabbedPaneController.viewForId(ids[i]));
-        Promise.all(promises).then(filterNavigators.bind(this));
+        var extensions = self.runtime.extensions("navigator-view");
+        Promise.all(extensions.map(extension => extension.instance())).then(filterNavigators.bind(this));
 
         /**
          * @param {!Array.<!Object>} objects
@@ -98,11 +95,12 @@ WebInspector.SourcesNavigator.prototype = {
             for (var i = 0; i < objects.length; ++i) {
                 var navigatorView = /** @type {!WebInspector.NavigatorView} */ (objects[i]);
                 if (navigatorView.accept(uiSourceCode)) {
-                    this._tabbedPane.selectTab(ids[i]);
+                    this._tabbedPane.selectTab(extensions[i].descriptor()["name"]);
                     navigatorView.revealUISourceCode(uiSourceCode, true);
                 }
             }
         }
+
     },
 
     /**

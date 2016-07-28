@@ -362,11 +362,10 @@ WebInspector.InspectorView.prototype = {
     /**
      * @param {string} id
      * @param {boolean=} immediate
-     * @return {!Promise.<?WebInspector.Widget>}
      */
     showViewInDrawer: function(id, immediate)
     {
-        return this._drawer.showView(id, immediate);
+        this._drawer.showView(id, immediate);
     },
 
     /**

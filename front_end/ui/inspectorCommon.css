@@ -165,7 +165,7 @@ input {
     background-color: white;
 }
 
-:host-context(.-theme-with-dark-background) input[type="checkbox"] {
+:host-context(.-theme-with-dark-background) input[type="checkbox"]::not(.-theme-preserve) {
     -webkit-filter: invert(80%);
 }
 
@@ -173,7 +173,6 @@ input[type="search"]:focus,
 input[type="text"]:focus {
     outline: auto rgb(56, 121, 217);
 }
-
 
 .highlighted-search-result.current-search-result {
     border-radius: 1px;

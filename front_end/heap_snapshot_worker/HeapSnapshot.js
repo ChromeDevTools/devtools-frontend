@@ -1663,7 +1663,7 @@ WebInspector.HeapSnapshot.prototype = {
 
             if (postOrderIndex === nodeCount || iteration > 1)
                 break;
-            var errors = new WebInspector.HeapSnapshotProblemReport("Heap snapshot: " + (nodeCount - postOrderIndex) + " nodes are unreachable from the root. Following nodes have only weak retainers:");
+            var errors = new WebInspector.HeapSnapshotProblemReport(`Heap snapshot: ${nodeCount - postOrderIndex} nodes are unreachable from the root. Following nodes have only weak retainers:`);
             var dumpNode = this.rootNode();
             // Remove root from the result (last node in the array) and put it at the bottom of the stack so that it is
             // visited after all orphan nodes and their subgraphs.
@@ -1672,16 +1672,19 @@ WebInspector.HeapSnapshot.prototype = {
             stackNodes[0] = rootNodeOrdinal;
             stackCurrentEdge[0] = firstEdgeIndexes[rootNodeOrdinal + 1]; // no need to reiterate its edges
             for (var i = 0; i < nodeCount; ++i) {
-                if (!visited[i]) {
-                    dumpNode.nodeIndex = i * nodeFieldCount;
-                    // Add all nodes that have only weak retainers to traverse their subgraphs.
-                    if (this._hasOnlyWeakRetainers(i)) {
-                        stackNodes[++stackTop] = i;
-                        stackCurrentEdge[stackTop] = firstEdgeIndexes[i];
-                        visited[i] = 1;
-                        errors.addError(dumpNode.name() + " @" + dumpNode.id());
-                    }
-                }
+                if (visited[i] || !this._hasOnlyWeakRetainers(i))
+                    continue;
+
+                // Add all nodes that have only weak retainers to traverse their subgraphs.
+                stackNodes[++stackTop] = i;
+                stackCurrentEdge[stackTop] = firstEdgeIndexes[i];
+                visited[i] = 1;
+
+                dumpNode.nodeIndex = i * nodeFieldCount;
+                var retainers = [];
+                for (var it = dumpNode.retainers(); it.hasNext(); it.next())
+                    retainers.push(`${it.item().node().name()}@${it.item().node().id()}.${it.item().name()}`);
+                errors.addError(`${dumpNode.name()} @${dumpNode.id()}  weak retainers: ${retainers.join(", ")}`);
             }
             console.warn(errors.toString());
         }

@@ -18,7 +18,7 @@ WebInspector.JavaScriptBreakpointsSidebarPane = function(breakpointManager, show
 
     this.listElement = createElementWithClass("ol", "breakpoint-list");
 
-    this.emptyElement = this.element.createChild("div", "info");
+    this.emptyElement = this.element.createChild("div", "gray-info-message");
     this.emptyElement.textContent = WebInspector.UIString("No Breakpoints");
 
     this._items = new Map();
@@ -112,8 +112,6 @@ WebInspector.JavaScriptBreakpointsSidebarPane.prototype = {
 
         var breakpointItem = { element: element, checkbox: checkboxLabel.checkboxElement };
         this._items.set(breakpoint, breakpointItem);
-
-        this.revealWidget();
     },
 
     /**
@@ -146,6 +144,7 @@ WebInspector.JavaScriptBreakpointsSidebarPane.prototype = {
             return;
         breakpointItem.element.classList.add("breakpoint-hit");
         this._highlightedBreakpointItem = breakpointItem;
+        this.revealWidget();
     },
 
     clearBreakpointHighlight: function()

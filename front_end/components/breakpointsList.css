@@ -78,7 +78,7 @@ ol.breakpoint-list {
     margin: 2px 0 0 20px;
 }
 
-.sidebar-pane .breakpoint-hit {
+.breakpoint-hit {
     background-color: rgb(255, 255, 194);
 }
 

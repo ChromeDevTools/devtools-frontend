@@ -194,32 +194,18 @@ WebInspector.PanelDescriptor.prototype = {
 }
 
 /**
- * @interface
- */
-WebInspector.PanelFactory = function()
-{
-}
-
-WebInspector.PanelFactory.prototype = {
-    /**
-     * @return {!WebInspector.Panel}
-     */
-    createPanel: function() { }
-}
-
-/**
  * @constructor
  * @param {!Runtime.Extension} extension
  * @implements {WebInspector.PanelDescriptor}
  */
-WebInspector.RuntimeExtensionPanelDescriptor = function(extension)
+WebInspector.ExtensionPanelDescriptor = function(extension)
 {
     this._name = extension.descriptor()["name"];
     this._title = WebInspector.UIString(extension.descriptor()["title"]);
     this._extension = extension;
 }
 
-WebInspector.RuntimeExtensionPanelDescriptor.prototype = {
+WebInspector.ExtensionPanelDescriptor.prototype = {
     /**
      * @override
      * @return {string}
@@ -244,15 +230,6 @@ WebInspector.RuntimeExtensionPanelDescriptor.prototype = {
      */
     panel: function()
     {
-        return this._extension.instancePromise().then(createPanel);
-
-        /**
-         * @param {!Object} panelFactory
-         * @return {!WebInspector.Panel}
-         */
-        function createPanel(panelFactory)
-        {
-            return /** @type {!WebInspector.PanelFactory} */ (panelFactory).createPanel();
-        }
+        return  /** @type {!Promise<!WebInspector.Panel>} */(this._extension.instance());
     }
 }

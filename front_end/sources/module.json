@@ -1,11 +1,11 @@
 {
     "extensions": [
         {
-            "type": "@WebInspector.PanelFactory",
+            "type": "@WebInspector.Panel",
             "name": "sources",
             "title": "Sources",
             "order": 30,
-            "className": "WebInspector.SourcesPanelFactory"
+            "className": "WebInspector.SourcesPanel"
         },
         {
             "type": "@WebInspector.ContextMenu.Provider",

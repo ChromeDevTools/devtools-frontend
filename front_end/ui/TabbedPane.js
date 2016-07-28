@@ -1436,7 +1436,7 @@ WebInspector.ExtensibleTabbedPaneController.prototype = {
         if (this._promiseForId[id])
             return this._promiseForId[id];
 
-        var promise = this._extensions.get(id).instancePromise();
+        var promise = this._extensions.get(id).instance();
         this._promiseForId[id] = /** @type {!Promise.<?WebInspector.Widget>} */ (promise);
         return promise.then(cacheView.bind(this));
 

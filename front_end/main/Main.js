@@ -210,8 +210,7 @@ WebInspector.Main.prototype = {
         this._registerForwardedShortcuts();
         this._registerMessageSinkListener();
 
-        var appExtension = self.runtime.extensions(WebInspector.AppProvider)[0];
-        appExtension.instancePromise().then(this._showAppUI.bind(this));
+        self.runtime.extension(WebInspector.AppProvider).instance().then(this._showAppUI.bind(this));
     },
 
     /**
@@ -237,7 +236,7 @@ WebInspector.Main.prototype = {
         for (var extension of extensions) {
             var value = Runtime.queryParam(extension.descriptor()["name"]);
             if (value !== null)
-                extension.instancePromise().then(handleQueryParam.bind(null, value));
+                extension.instance().then(handleQueryParam.bind(null, value));
         }
 
         /**

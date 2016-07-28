@@ -15,7 +15,7 @@ WebInspector.CommandMenu.prototype = {
     _loadCommands: function()
     {
         // Populate panels.
-        var panelExtensions = self.runtime.extensions(WebInspector.PanelFactory);
+        var panelExtensions = self.runtime.extensions(WebInspector.Panel);
         for (var extension of panelExtensions)
             this._commands.push(WebInspector.CommandMenu.createRevealPanelCommand(extension));
 

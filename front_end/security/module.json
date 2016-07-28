@@ -1,11 +1,11 @@
 {
     "extensions": [
         {
-            "type": "@WebInspector.PanelFactory",
+            "type": "@WebInspector.Panel",
             "name": "security",
             "title": "Security",
             "order": 80,
-            "className": "WebInspector.SecurityPanelFactory"
+            "className": "WebInspector.SecurityPanel"
         }
     ],
     "dependencies": ["network", "platform", "ui", "sdk"],

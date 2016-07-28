@@ -238,7 +238,7 @@ WebInspector.GenericSettingsTab.prototype = {
     {
         var descriptor = extension.descriptor();
         var sectionName = descriptor["category"] || "";
-        extension.instancePromise().then(appendCustomSetting.bind(this));
+        extension.instance().then(appendCustomSetting.bind(this));
 
         /**
          * @param {!Object} object

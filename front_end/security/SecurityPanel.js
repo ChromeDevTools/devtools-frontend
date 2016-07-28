@@ -301,9 +301,7 @@ WebInspector.SecurityPanel.prototype = {
  */
 WebInspector.SecurityPanel._instance = function()
 {
-    if (!WebInspector.SecurityPanel._instanceObject)
-        WebInspector.SecurityPanel._instanceObject = new WebInspector.SecurityPanel();
-    return WebInspector.SecurityPanel._instanceObject;
+    return /** @type {!WebInspector.SecurityPanel} */ (self.runtime.sharedInstance(WebInspector.SecurityPanel));
 }
 
 /**
@@ -518,25 +516,6 @@ WebInspector.SecurityPanelSidebarTreeElement.prototype = {
 WebInspector.SecurityPanelSidebarTreeElement.SecurityStateComparator = function(a, b)
 {
     return WebInspector.SecurityModel.SecurityStateComparator(a.securityState(), b.securityState());
-}
-
-/**
- * @constructor
- * @implements {WebInspector.PanelFactory}
- */
-WebInspector.SecurityPanelFactory = function()
-{
-}
-
-WebInspector.SecurityPanelFactory.prototype = {
-    /**
-     * @override
-     * @return {!WebInspector.Panel}
-     */
-    createPanel: function()
-    {
-        return WebInspector.SecurityPanel._instance();
-    }
 }
 
 /**

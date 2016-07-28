@@ -1,11 +1,11 @@
 {
     "extensions": [
         {
-            "type": "@WebInspector.PanelFactory",
+            "type": "@WebInspector.Panel",
             "name": "layers",
             "title": "Layers",
             "order": 100,
-            "className": "WebInspector.LayersPanelFactory"
+            "className": "WebInspector.LayersPanel"
         },
         {
             "type": "@WebInspector.Revealer",

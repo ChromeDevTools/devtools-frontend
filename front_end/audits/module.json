@@ -1,11 +1,11 @@
 {
     "extensions": [
         {
-            "type": "@WebInspector.PanelFactory",
+            "type": "@WebInspector.Panel",
             "name": "audits",
             "title": "Audits",
             "order": 90,
-            "className": "WebInspector.AuditsPanelFactory"
+            "className": "WebInspector.AuditsPanel"
         }
     ],
     "dependencies": [

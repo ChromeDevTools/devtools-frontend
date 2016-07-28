@@ -29,15 +29,14 @@
  * @extends {WebInspector.Panel}
  * @implements {WebInspector.ContextMenu.Provider}
  * @implements {WebInspector.TargetManager.Observer}
- * @param {!WebInspector.Workspace=} workspaceForTest
  */
-WebInspector.SourcesPanel = function(workspaceForTest)
+WebInspector.SourcesPanel = function()
 {
     WebInspector.Panel.call(this, "sources");
     this.registerRequiredCSS("sources/sourcesPanel.css");
     new WebInspector.DropTarget(this.element, [WebInspector.DropTarget.Types.Files], WebInspector.UIString("Drop workspace folder here"), this._handleDrop.bind(this));
 
-    this._workspace = workspaceForTest || WebInspector.workspace;
+    this._workspace = WebInspector.workspace;
     this._networkMapping = WebInspector.networkMapping;
 
     this._runSnippetAction = /** @type {!WebInspector.Action }*/ (WebInspector.actionRegistry.action("debugger.run-snippet"));
@@ -1404,9 +1403,7 @@ WebInspector.SourcesPanel.show = function()
  */
 WebInspector.SourcesPanel.instance = function()
 {
-    if (!WebInspector.SourcesPanel._instanceObject)
-        WebInspector.SourcesPanel._instanceObject = new WebInspector.SourcesPanel();
-    return WebInspector.SourcesPanel._instanceObject;
+    return /** @type {!WebInspector.SourcesPanel} */ (self.runtime.sharedInstance(WebInspector.SourcesPanel));
 }
 
 /**
@@ -1418,25 +1415,6 @@ WebInspector.SourcesPanel.updateResizer = function(panel)
         panel._splitWidget.uninstallResizer(panel._sourcesView.toolbarContainerElement());
     else
         panel._splitWidget.installResizer(panel._sourcesView.toolbarContainerElement());
-}
-
-/**
- * @constructor
- * @implements {WebInspector.PanelFactory}
- */
-WebInspector.SourcesPanelFactory = function()
-{
-}
-
-WebInspector.SourcesPanelFactory.prototype = {
-    /**
-     * @override
-     * @return {!WebInspector.Panel}
-     */
-    createPanel: function()
-    {
-        return WebInspector.SourcesPanel.instance();
-    }
 }
 
 /**

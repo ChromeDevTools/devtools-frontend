@@ -176,27 +176,15 @@ function loadScriptsPromise(scriptNames, base)
  */
 function Runtime(descriptors)
 {
-    /**
-     * @type {!Array.<!Runtime.Module>}
-     */
+    /** @type {!Array<!Runtime.Module>} */
     this._modules = [];
-    /**
-     * @type {!Object.<string, !Runtime.Module>}
-     */
+    /** @type {!Object<string, !Runtime.Module>} */
     this._modulesMap = {};
-    /**
-     * @type {!Array.<!Runtime.Extension>}
-     */
+    /** @type {!Array<!Runtime.Extension>} */
     this._extensions = [];
-
-    /**
-     * @type {!Object.<string, !function(new:Object)>}
-     */
+    /** @type {!Object<string, !function(new:Object)>} */
     this._cachedTypeClasses = {};
-
-    /**
-     * @type {!Object.<string, !Runtime.ModuleDescriptor>}
-     */
+    /** @type {!Object<string, !Runtime.ModuleDescriptor>} */
     this._descriptorsMap = {};
 
     for (var i = 0; i < descriptors.length; ++i)
@@ -207,6 +195,9 @@ function Runtime(descriptors)
  * @type {!Object.<string, string>}
  */
 Runtime._queryParamsObject = { __proto__: null };
+
+Runtime._instanceSymbol = Symbol("instance");
+Runtime._extensionSymbol = Symbol("extension");
 
 /**
  * @type {!Object.<string, string>}
@@ -395,50 +386,6 @@ Runtime._experimentsSetting = function()
     }
 }
 
-/**
- * @param {!Array.<!Promise.<T, !Error>>} promises
- * @return {!Promise.<!Array.<T>>}
- * @template T
- */
-Runtime._some = function(promises)
-{
-    var all = [];
-    var wasRejected = [];
-    for (var i = 0; i < promises.length; ++i) {
-        // Workaround closure compiler bug.
-        var handlerFunction = /** @type {function()} */ (handler.bind(promises[i], i));
-        all.push(promises[i].catch(handlerFunction));
-    }
-
-    return Promise.all(all).then(filterOutFailuresResults);
-
-    /**
-     * @param {!Array.<T>} results
-     * @return {!Array.<T>}
-     * @template T
-     */
-    function filterOutFailuresResults(results)
-    {
-        var filtered = [];
-        for (var i = 0; i < results.length; ++i) {
-            if (!wasRejected[i])
-                filtered.push(results[i]);
-        }
-        return filtered;
-    }
-
-    /**
-     * @this {!Promise}
-     * @param {number} index
-     * @param {!Error} e
-     */
-    function handler(index, e)
-    {
-        wasRejected[index] = true;
-        console.error(e.stack);
-    }
-}
-
 Runtime._console = console;
 Runtime._originalAssert = console.assert;
 Runtime._assert = function(value, message)
@@ -622,26 +569,9 @@ Runtime.prototype = {
      * @param {?Object=} context
      * @return {!Promise.<!Array.<!Object>>}
      */
-    instancesPromise: function(type, context)
+    allInstances: function(type, context)
     {
-        var extensions = this.extensions(type, context);
-        var promises = [];
-        for (var i = 0; i < extensions.length; ++i)
-            promises.push(extensions[i].instancePromise());
-        return Runtime._some(promises);
-    },
-
-    /**
-     * @param {*} type
-     * @param {?Object=} context
-     * @return {!Promise.<!Object>}
-     */
-    instancePromise: function(type, context)
-    {
-        var extension = this.extension(type, context);
-        if (!extension)
-            return Promise.reject(new Error("No such extension: " + type + " in given context."));
-        return extension.instancePromise();
+        return Promise.all(this.extensions(type, context).map(extension => extension.instance()));
     },
 
     /**
@@ -658,6 +588,16 @@ Runtime.prototype = {
                 this._cachedTypeClasses[typeName] = /** @type function(new:Object) */(object);
         }
         return this._cachedTypeClasses[typeName] || null;
+    },
+
+    /**
+     * @param {!Function} constructorFunction
+     * @return {!Object}
+     */
+    sharedInstance: function(constructorFunction)
+    {
+        var extension = constructorFunction[Runtime._extensionSymbol];
+        return extension._syncInstance();
     }
 }
 
@@ -728,12 +668,18 @@ Runtime.Module = function(manager, descriptor)
     this._manager = manager;
     this._descriptor = descriptor;
     this._name = descriptor.name;
-    /** @type {!Object.<string, ?Object>} */
-    this._instanceMap = {};
+    /** @type {!Array<!Runtime.Extension>} */
+    this._extensions = [];
+
+    /** @type {!Map<string, !Array<!Runtime.Extension>>} */
+    this._extensionsByClassName = new Map();
     var extensions = /** @type {?Array.<!Runtime.ExtensionDescriptor>} */ (descriptor.extensions);
-    for (var i = 0; extensions && i < extensions.length; ++i)
-        this._manager._extensions.push(new Runtime.Extension(this, extensions[i]));
-    this._loaded = false;
+    for (var i = 0; extensions && i < extensions.length; ++i) {
+        var extension = new Runtime.Extension(this, extensions[i]);
+        this._manager._extensions.push(extension);
+        this._extensions.push(extension);
+    }
+    this._loadedForTest = false;
 }
 
 Runtime.Module.prototype = {
@@ -785,7 +731,7 @@ Runtime.Module.prototype = {
         this._pendingLoadPromise = Promise.all(dependencyPromises)
             .then(this._loadResources.bind(this))
             .then(this._loadScripts.bind(this))
-            .then(() => this._loadedForTest = true);
+            .then(this._resolveExtensionClasses.bind(this));
 
         return this._pendingLoadPromise;
     },
@@ -817,6 +763,18 @@ Runtime.Module.prototype = {
         return loadScriptsPromise(this._descriptor.scripts.map(this._modularizeURL, this), this._remoteBase());
     },
 
+    _resolveExtensionClasses: function()
+    {
+        for (var i = 0; i < this._extensions.length; ++i) {
+            var extension = this._extensions[i];
+            if (extension._className) {
+                extension._constructorFunction = self.eval(extension._className);
+                extension._constructorFunction[Runtime._extensionSymbol] = extension;
+            }
+        }
+        this._loadedForTest = true;
+    },
+
     /**
      * @param {string} resourceName
      */
@@ -846,27 +804,6 @@ Runtime.Module.prototype = {
         {
             return base + this._modularizeURL(url);
         }
-    },
-
-    /**
-     * @param {string} className
-     * @param {!Runtime.Extension} extension
-     * @return {?Object}
-     */
-    _instance: function(className, extension)
-    {
-        if (className in this._instanceMap)
-            return this._instanceMap[className];
-
-        var constructorFunction = self.eval(className);
-        if (!(constructorFunction instanceof Function)) {
-            this._instanceMap[className] = null;
-            return null;
-        }
-
-        var instance = new constructorFunction(extension);
-        this._instanceMap[className] = instance;
-        return instance;
     }
 }
 
@@ -955,27 +892,28 @@ Runtime.Extension.prototype = {
     /**
      * @return {!Promise.<!Object>}
      */
-    instancePromise: function()
+    instance: function()
     {
         if (!this._className)
             return Promise.reject(new Error("No class name in extension"));
         var className = this._className;
-        if (this._instance)
-            return Promise.resolve(this._instance);
+        return this._module._loadPromise().then(this._syncInstance.bind(this));
+    },
 
-        return this._module._loadPromise().then(constructInstance.bind(this));
-
-        /**
-         * @return {!Object}
-         * @this {Runtime.Extension}
-         */
-        function constructInstance()
-        {
-            var result = this._module._instance(className, this);
-            if (!result)
-                return Promise.reject("Could not instantiate: " + className);
-            return result;
-        }
+    /**
+     * @return {!Object}
+     */
+    _syncInstance: function()
+    {
+        if (!this._constructorFunction)
+            throw new Error("Could not instantiate extension with no class");
+        if (!(this._constructorFunction instanceof Function))
+            throw new Error("Could not instantiate: " + this._className);
+        if (Runtime._instanceSymbol in this._constructorFunction)
+            return this._constructorFunction[Runtime._instanceSymbol];
+        var instance = new this._constructorFunction(this);
+        this._constructorFunction[Runtime._instanceSymbol] = instance;
+        return instance;
     },
 
     /**

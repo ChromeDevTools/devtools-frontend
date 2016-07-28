@@ -2212,26 +2212,5 @@ WebInspector.ResourcesPanel.show = function()
  */
 WebInspector.ResourcesPanel._instance = function()
 {
-    if (!WebInspector.ResourcesPanel._instanceObject)
-        WebInspector.ResourcesPanel._instanceObject = new WebInspector.ResourcesPanel();
-    return WebInspector.ResourcesPanel._instanceObject;
-}
-
-/**
- * @constructor
- * @implements {WebInspector.PanelFactory}
- */
-WebInspector.ResourcesPanelFactory = function()
-{
-}
-
-WebInspector.ResourcesPanelFactory.prototype = {
-    /**
-     * @override
-     * @return {!WebInspector.Panel}
-     */
-    createPanel: function()
-    {
-        return WebInspector.ResourcesPanel._instance();
-    }
+    return /** @type {!WebInspector.ResourcesPanel} */ (self.runtime.sharedInstance(WebInspector.ResourcesPanel));
 }

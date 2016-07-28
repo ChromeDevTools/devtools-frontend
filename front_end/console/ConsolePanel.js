@@ -175,26 +175,5 @@ WebInspector.ConsolePanel.show = function()
  */
 WebInspector.ConsolePanel._instance = function()
 {
-    if (!WebInspector.ConsolePanel._instanceObject)
-        WebInspector.ConsolePanel._instanceObject = new WebInspector.ConsolePanel();
-    return WebInspector.ConsolePanel._instanceObject;
-}
-
-/**
- * @constructor
- * @implements {WebInspector.PanelFactory}
- */
-WebInspector.ConsolePanelFactory = function()
-{
-}
-
-WebInspector.ConsolePanelFactory.prototype = {
-    /**
-     * @override
-     * @return {!WebInspector.Panel}
-     */
-    createPanel: function()
-    {
-        return WebInspector.ConsolePanel._instance();
-    }
+    return /** @type {!WebInspector.ConsolePanel} */ (self.runtime.sharedInstance(WebInspector.ConsolePanel));
 }

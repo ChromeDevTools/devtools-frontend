@@ -960,7 +960,7 @@ WebInspector.ExtensibleToolbar.prototype = {
                 var action = WebInspector.actionRegistry.action(descriptor["actionId"]);
                 return Promise.resolve(/** @type {?WebInspector.ToolbarItem} */(action ? WebInspector.Toolbar.createActionButton(action) : null));
             }
-            return extension.instancePromise().then(fetchItemFromProvider);
+            return extension.instance().then(fetchItemFromProvider);
 
             /**
              * @param {!Object} provider

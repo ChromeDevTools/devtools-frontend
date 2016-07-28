@@ -385,7 +385,7 @@ WebInspector.UISourceCodeFrame.prototype = {
         if (this._typeDecorationsPending.has(type))
             return;
         this._typeDecorationsPending.add(type);
-        self.runtime.extensions(WebInspector.UISourceCodeFrame.LineDecorator).find(extension => extension.descriptor()["decoratorType"] === type).instancePromise().then(decorator => {
+        self.runtime.extensions(WebInspector.UISourceCodeFrame.LineDecorator).find(extension => extension.descriptor()["decoratorType"] === type).instance().then(decorator => {
             this._typeDecorationsPending.delete(type);
             decorator.decorate(this.uiSourceCode(), this._textEditor);
         });

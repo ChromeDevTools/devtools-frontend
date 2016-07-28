@@ -654,28 +654,7 @@ WebInspector.NetworkPanel.revealAndFilter = function(filters)
  */
 WebInspector.NetworkPanel._instance = function()
 {
-    if (!WebInspector.NetworkPanel._instanceObject)
-        WebInspector.NetworkPanel._instanceObject = new WebInspector.NetworkPanel();
-    return WebInspector.NetworkPanel._instanceObject;
-}
-
-/**
- * @constructor
- * @implements {WebInspector.PanelFactory}
- */
-WebInspector.NetworkPanelFactory = function()
-{
-}
-
-WebInspector.NetworkPanelFactory.prototype = {
-    /**
-     * @override
-     * @return {!WebInspector.Panel}
-     */
-    createPanel: function()
-    {
-        return WebInspector.NetworkPanel._instance();
-    }
+    return /** @type {!WebInspector.NetworkPanel} */ (self.runtime.sharedInstance(WebInspector.NetworkPanel));
 }
 
 /**

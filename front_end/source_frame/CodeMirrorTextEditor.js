@@ -2326,7 +2326,7 @@ WebInspector.CodeMirrorTextEditor._loadMimeTypeModes = function(mimeType, callba
 
     var promises = [];
     for (var extension of modesToLoad)
-        promises.push(extension.instancePromise().then(installMode.bind(null, extension)));
+        promises.push(extension.instance().then(installMode.bind(null, extension)));
     if (promises.length)
         Promise.all(promises).then(callback);
 

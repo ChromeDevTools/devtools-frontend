@@ -40,7 +40,7 @@ WebInspector.SourcesView = function(workspace, sourcesPanel)
     this._toolbarContainerElement = this.element.createChild("div", "sources-toolbar");
     this._toolbarEditorActions = new WebInspector.Toolbar("", this._toolbarContainerElement);
 
-    self.runtime.instancesPromise(WebInspector.SourcesView.EditorAction).then(appendButtonsForExtensions.bind(this));
+    self.runtime.allInstances(WebInspector.SourcesView.EditorAction).then(appendButtonsForExtensions.bind(this));
     /**
      * @param {!Array.<!WebInspector.SourcesView.EditorAction>} actions
      * @this {WebInspector.SourcesView}

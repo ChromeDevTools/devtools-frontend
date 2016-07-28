@@ -104,7 +104,7 @@ WebInspector.InspectorView.prototype = {
          */
         function processPanelExtensions(extension)
         {
-            var descriptor = new WebInspector.RuntimeExtensionPanelDescriptor(extension);
+            var descriptor = new WebInspector.ExtensionPanelDescriptor(extension);
             var weight = this._tabOrderSetting.get()[descriptor.name()];
             if (weight === undefined)
                 weight = extension.descriptor()["order"];
@@ -125,7 +125,7 @@ WebInspector.InspectorView.prototype = {
         WebInspector.startBatchUpdate();
         /** @type {!Map<!WebInspector.PanelDescriptor, number>} */
         var panelWeights = new Map();
-        self.runtime.extensions(WebInspector.PanelFactory).forEach(processPanelExtensions.bind(this));
+        self.runtime.extensions(WebInspector.Panel).forEach(processPanelExtensions.bind(this));
         var sortedPanels = panelWeights.keysArray().sort(orderComparator);
         for (var panelDescriptor of sortedPanels)
             this._innerAddPanel(panelDescriptor);

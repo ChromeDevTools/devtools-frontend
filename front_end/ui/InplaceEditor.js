@@ -33,7 +33,7 @@ WebInspector.InplaceEditor.startEditing = function(element, config)
  */
 WebInspector.InplaceEditor.startMultilineEditing = function(element, config)
 {
-    return self.runtime.instancePromise(WebInspector.InplaceEditor).then(startEditing);
+    return self.runtime.extension(WebInspector.InplaceEditor).instance().then(startEditing);
 
     /**
      * @param {!Object} inplaceEditor

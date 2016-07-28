@@ -65,7 +65,7 @@ WebInspector.DOMSyntaxHighlighter.prototype = {
         var plainTextStart;
         var line;
 
-        return self.runtime.instancePromise(WebInspector.TokenizerFactory).then(processTokens.bind(this));
+        return self.runtime.extension(WebInspector.TokenizerFactory).instance().then(processTokens.bind(this));
 
         /**
          * @param {!WebInspector.TokenizerFactory} tokenizerFactory

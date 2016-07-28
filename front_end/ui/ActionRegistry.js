@@ -106,7 +106,7 @@ WebInspector.Action.prototype = {
      */
     execute: function()
     {
-        return this._extension.instancePromise().then(handleAction.bind(this));
+        return this._extension.instance().then(handleAction.bind(this));
 
         /**
          * @param {!Object} actionDelegate

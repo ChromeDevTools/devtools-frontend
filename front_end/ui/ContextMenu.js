@@ -484,7 +484,7 @@ WebInspector.ContextMenu.prototype = {
      */
     appendApplicableItems: function(target)
     {
-        this._pendingPromises.push(self.runtime.instancesPromise(WebInspector.ContextMenu.Provider, target));
+        this._pendingPromises.push(self.runtime.allInstances(WebInspector.ContextMenu.Provider, target));
         this._pendingTargets.push(target);
     },
 

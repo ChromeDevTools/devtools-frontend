@@ -208,7 +208,7 @@ WebInspector.ElementsPanel.prototype = {
                 continue;
 
             var title = WebInspector.UIString(descriptor["title"]);
-            promises.push(extensions[i].instancePromise().then(addSidebarView.bind(this, title)));
+            promises.push(extensions[i].instance().then(addSidebarView.bind(this, title)));
         }
 
         Promise.all(promises).then(this._sidebarViewsLoadedForTest.bind(this));
@@ -1115,28 +1115,7 @@ WebInspector.ElementsPanel.show = function()
  */
 WebInspector.ElementsPanel.instance = function()
 {
-    if (!WebInspector.ElementsPanel._instanceObject)
-        WebInspector.ElementsPanel._instanceObject = new WebInspector.ElementsPanel();
-    return WebInspector.ElementsPanel._instanceObject;
-}
-
-/**
- * @constructor
- * @implements {WebInspector.PanelFactory}
- */
-WebInspector.ElementsPanelFactory = function()
-{
-}
-
-WebInspector.ElementsPanelFactory.prototype = {
-    /**
-     * @override
-     * @return {!WebInspector.Panel}
-     */
-    createPanel: function()
-    {
-        return WebInspector.ElementsPanel.instance();
-    }
+    return /** @type {!WebInspector.ElementsPanel} */ (self.runtime.sharedInstance(WebInspector.ElementsPanel));
 }
 
 /**

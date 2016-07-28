@@ -1,11 +1,11 @@
 {
     "extensions": [
         {
-            "type": "@WebInspector.PanelFactory",
+            "type": "@WebInspector.Panel",
             "name": "resources",
             "title": "Application",
             "order": 70,
-            "className": "WebInspector.ResourcesPanelFactory"
+            "className": "WebInspector.ResourcesPanel"
         },
         {
             "type": "@WebInspector.Revealer",

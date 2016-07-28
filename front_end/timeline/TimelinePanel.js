@@ -1774,28 +1774,7 @@ WebInspector.TimelinePanel.show = function()
  */
 WebInspector.TimelinePanel.instance = function()
 {
-    if (!WebInspector.TimelinePanel._instanceObject)
-        WebInspector.TimelinePanel._instanceObject = new WebInspector.TimelinePanel();
-    return WebInspector.TimelinePanel._instanceObject;
-}
-
-/**
- * @constructor
- * @implements {WebInspector.PanelFactory}
- */
-WebInspector.TimelinePanelFactory = function()
-{
-}
-
-WebInspector.TimelinePanelFactory.prototype = {
-    /**
-     * @override
-     * @return {!WebInspector.Panel}
-     */
-    createPanel: function()
-    {
-        return WebInspector.TimelinePanel.instance();
-    }
+    return /** @type {!WebInspector.TimelinePanel} */ (self.runtime.sharedInstance(WebInspector.TimelinePanel));
 }
 
 /**

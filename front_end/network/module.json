@@ -1,11 +1,11 @@
 {
     "extensions": [
         {
-            "type": "@WebInspector.PanelFactory",
+            "type": "@WebInspector.Panel",
             "name": "network",
             "title": "Network",
             "order": 40,
-            "className": "WebInspector.NetworkPanelFactory"
+            "className": "WebInspector.NetworkPanel"
         },
         {
             "type": "@WebInspector.ContextMenu.Provider",

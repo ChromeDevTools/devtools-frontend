@@ -253,7 +253,7 @@ WebInspector.FormatterWorkerContentParser.parse = function(content, mimeType)
 {
     var extension = self.runtime.extensions(WebInspector.FormatterWorkerContentParser).find(findExtension);
     console.assert(extension);
-    extension.instancePromise()
+    extension.instance()
         .then(instance => instance.parse(content))
         .catchException(null)
         .then(postMessage);

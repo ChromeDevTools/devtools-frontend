@@ -1129,7 +1129,7 @@ WebInspector.ObjectPropertiesSection.formatObjectAsFunction = function(func, ele
         }
 
         // Now parse description and get the real params and title.
-        self.runtime.instancePromise(WebInspector.TokenizerFactory).then(processTokens);
+        self.runtime.extension(WebInspector.TokenizerFactory).instance().then(processTokens);
 
         var params = null;
         var functionName = response ? response.functionName : "";

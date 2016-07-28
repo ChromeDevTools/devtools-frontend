@@ -176,7 +176,7 @@ WebInspector.CSSProperty.prototype = {
         var text = new WebInspector.Text(this.ownerStyle.cssText || "");
         var newStyleText = text.replaceRange(range, String.sprintf(";%s;", propertyText));
 
-        return self.runtime.instancePromise(WebInspector.TokenizerFactory)
+        return self.runtime.extension(WebInspector.TokenizerFactory).instance()
             .then(this._formatStyle.bind(this, newStyleText, indentation, endIndentation))
             .then(setStyleText.bind(this));
 

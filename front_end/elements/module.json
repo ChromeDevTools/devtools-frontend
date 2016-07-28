@@ -120,7 +120,7 @@
         },
         {
             "type": "@WebInspector.DOMPresentationUtils.MarkerDecorator",
-            "className": "WebInspector.DOMPresentationUtils.GenericDecorator",
+            "factoryName": "WebInspector.DOMPresentationUtils.GenericDecorator",
             "marker": "hidden-marker",
             "title": "Element is hidden",
             "color": "#555"

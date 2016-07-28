@@ -596,8 +596,11 @@ Runtime.prototype = {
      */
     sharedInstance: function(constructorFunction)
     {
-        var extension = constructorFunction[Runtime._extensionSymbol];
-        return extension._syncInstance();
+        if (Runtime._instanceSymbol in constructorFunction)
+            return constructorFunction[Runtime._instanceSymbol];
+        var instance = new constructorFunction();
+        constructorFunction[Runtime._instanceSymbol] = instance;
+        return instance;
     }
 }
 
@@ -651,6 +654,11 @@ Runtime.ExtensionDescriptor = function()
      * @type {string|undefined}
      */
     this.className;
+
+    /**
+     * @type {string|undefined}
+     */
+    this.factoryName;
 
     /**
      * @type {!Array.<string>|undefined}
@@ -731,7 +739,7 @@ Runtime.Module.prototype = {
         this._pendingLoadPromise = Promise.all(dependencyPromises)
             .then(this._loadResources.bind(this))
             .then(this._loadScripts.bind(this))
-            .then(this._resolveExtensionClasses.bind(this));
+            .then(() => this._loadedForTest = true);
 
         return this._pendingLoadPromise;
     },
@@ -761,18 +769,6 @@ Runtime.Module.prototype = {
         if (!this._descriptor.scripts || !this._descriptor.scripts.length)
             return Promise.resolve();
         return loadScriptsPromise(this._descriptor.scripts.map(this._modularizeURL, this), this._remoteBase());
-    },
-
-    _resolveExtensionClasses: function()
-    {
-        for (var i = 0; i < this._extensions.length; ++i) {
-            var extension = this._extensions[i];
-            if (extension._className) {
-                extension._constructorFunction = self.eval(extension._className);
-                extension._constructorFunction[Runtime._extensionSymbol] = extension;
-            }
-        }
-        this._loadedForTest = true;
     },
 
     /**
@@ -843,6 +839,7 @@ Runtime.Extension = function(module, descriptor)
      * @type {?string}
      */
     this._className = descriptor.className || null;
+    this._factoryName = descriptor.factoryName || null;
 }
 
 Runtime.Extension.prototype = {
@@ -894,26 +891,23 @@ Runtime.Extension.prototype = {
      */
     instance: function()
     {
-        if (!this._className)
-            return Promise.reject(new Error("No class name in extension"));
-        var className = this._className;
-        return this._module._loadPromise().then(this._syncInstance.bind(this));
+        return this._module._loadPromise().then(this._createInstance.bind(this));
     },
 
     /**
      * @return {!Object}
      */
-    _syncInstance: function()
+    _createInstance: function()
     {
-        if (!this._constructorFunction)
+        var className = this._className || this._factoryName;
+        if (!className)
             throw new Error("Could not instantiate extension with no class");
-        if (!(this._constructorFunction instanceof Function))
-            throw new Error("Could not instantiate: " + this._className);
-        if (Runtime._instanceSymbol in this._constructorFunction)
-            return this._constructorFunction[Runtime._instanceSymbol];
-        var instance = new this._constructorFunction(this);
-        this._constructorFunction[Runtime._instanceSymbol] = instance;
-        return instance;
+        var constructorFunction = self.eval(/** @type {string} */(className));
+        if (!(constructorFunction instanceof Function))
+            throw new Error("Could not instantiate: " + className);
+        if (this._className)
+            return this._module._manager.sharedInstance(constructorFunction);
+        return new constructorFunction(this);
     },
 
     /**

@@ -839,14 +839,14 @@ WebInspector.HeapSnapshotView.prototype = {
             if (dataGrid === this._diffDataGrid) {
                 if (!this._baseProfile)
                     this._baseProfile = this._profiles()[this._baseSelect.selectedIndex()];
-                this._baseProfile._loadPromise.then(didLoadBaseSnaphot.bind(this));
+                this._baseProfile._loadPromise.then(didLoadBaseSnapshot.bind(this));
             }
         }
 
         /**
          * @this {WebInspector.HeapSnapshotView}
          */
-        function didLoadBaseSnaphot(baseSnapshotProxy)
+        function didLoadBaseSnapshot(baseSnapshotProxy)
         {
             if (this._diffDataGrid.baseSnapshot !== baseSnapshotProxy)
                 this._diffDataGrid.setBaseDataSource(baseSnapshotProxy);

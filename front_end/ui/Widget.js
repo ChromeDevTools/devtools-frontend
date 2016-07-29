@@ -460,11 +460,18 @@ WebInspector.Widget.prototype = {
     measurePreferredSize: function()
     {
         var document = this.element.ownerDocument;
+        var oldParent = this.element.parentElement;
+        var oldNextSibling = this.element.nextSibling;
+
         WebInspector.Widget._originalAppendChild.call(document.body, this.element);
         this.element.positionAt(0, 0);
         var result = new Size(this.element.offsetWidth, this.element.offsetHeight);
+
         this.element.positionAt(undefined, undefined);
-        WebInspector.Widget._originalRemoveChild.call(document.body, this.element);
+        if (oldParent)
+            WebInspector.Widget._originalInsertBefore.call(oldParent, this.element, oldNextSibling);
+        else
+            WebInspector.Widget._originalRemoveChild.call(document.body, this.element);
         return result;
     },
 

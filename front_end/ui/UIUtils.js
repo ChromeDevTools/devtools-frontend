@@ -1049,12 +1049,18 @@ WebInspector.revertDomChanges = function(domChanges)
  */
 WebInspector.measurePreferredSize = function(element, containerElement)
 {
+    var oldParent = element.parentElement;
+    var oldNextSibling = element.nextSibling;
     containerElement = containerElement || element.ownerDocument.body;
     containerElement.appendChild(element);
     element.positionAt(0, 0);
     var result = new Size(element.offsetWidth, element.offsetHeight);
+
     element.positionAt(undefined, undefined);
-    element.remove();
+    if (oldParent)
+        oldParent.insertBefore(element, oldNextSibling);
+    else
+        element.remove();
     return result;
 }
 

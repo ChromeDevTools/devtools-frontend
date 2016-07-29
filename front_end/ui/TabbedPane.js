@@ -1377,6 +1377,9 @@ WebInspector.ExtensibleTabbedPaneController.prototype = {
     _tabSelected: function(event)
     {
         var tabId = /** @type {string} */ (event.data.tabId);
+        if (!this._extensions.has(tabId))
+            return;
+
         this._viewForId(tabId);
 
         var descriptor = this._extensions.get(tabId).descriptor();

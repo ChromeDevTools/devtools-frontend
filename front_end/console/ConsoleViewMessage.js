@@ -228,7 +228,7 @@ WebInspector.ConsoleViewMessage.prototype = {
             this._formattedMessage.insertBefore(this._anchorElement, this._formattedMessage.firstChild);
         }
 
-        var dumpStackTrace = !!consoleMessage.stackTrace && (consoleMessage.source === WebInspector.ConsoleMessage.MessageSource.Network || consoleMessage.level === WebInspector.ConsoleMessage.MessageLevel.Error || consoleMessage.level === WebInspector.ConsoleMessage.MessageLevel.RevokedError || consoleMessage.type === WebInspector.ConsoleMessage.MessageType.Trace);
+        var dumpStackTrace = !!consoleMessage.stackTrace && (consoleMessage.source === WebInspector.ConsoleMessage.MessageSource.Network || consoleMessage.level === WebInspector.ConsoleMessage.MessageLevel.Error || consoleMessage.level === WebInspector.ConsoleMessage.MessageLevel.RevokedError || consoleMessage.type === WebInspector.ConsoleMessage.MessageType.Trace || consoleMessage.level === WebInspector.ConsoleMessage.MessageLevel.Warning);
         if (dumpStackTrace) {
             var treeOutline = new TreeOutline();
             treeOutline.element.classList.add("outline-disclosure", "outline-disclosure-no-padding");

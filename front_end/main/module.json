@@ -222,12 +222,16 @@
         },
         {
             "type": "setting",
-            "category": "",
+            "category": "Debugger",
             "title": "Disable JavaScript",
             "settingName": "javaScriptDisabled",
             "settingType": "boolean",
             "order": 1,
-            "defaultValue": false
+            "defaultValue": false,
+            "options": [
+                { "value": true, "title": "Disable JavaScript" },
+                { "value": false, "title": "Enable JavaScript" }
+            ]
         },
         {
             "type": "setting",

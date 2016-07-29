@@ -1025,8 +1025,12 @@ WebInspector.CodeMirrorTextEditor.prototype = {
     bookmarks: function(range)
     {
         var pos = WebInspector.CodeMirrorUtils.toPos(range);
-        var markers = this._codeMirror.findMarks(pos.start, pos.end);
-        return markers.filter(marker => marker.type === "bookmark");
+        if (range.isEmpty())
+            return this._codeMirror.findMarksAt(pos.start).filter(marker => marker.type === "bookmark");
+        var startMarkers = this._codeMirror.findMarksAt(pos.start);
+        var middleMarkers = this._codeMirror.findMarks(pos.start, pos.end);
+        var endMarkers = this._codeMirror.findMarksAt(pos.end);
+        return startMarkers.concat(middleMarkers, endMarkers).filter(marker => marker.type === "bookmark");
     },
 
     /**

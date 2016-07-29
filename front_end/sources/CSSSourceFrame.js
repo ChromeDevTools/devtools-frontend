@@ -112,7 +112,7 @@ WebInspector.CSSSourceFrame.prototype = {
 
         var colorRegex = /[\s:;,(){}]((?:rgb|hsl)a?\([^)]+\)|#[0-9a-f]{8}|#[0-9a-f]{6}|#[0-9a-f]{3,4}|[a-z]+)(?=[\s;,(){}])/gi;
         for (var lineNumber = startLine; lineNumber <= endLine; lineNumber++) {
-            var line = this.textEditor.line(lineNumber).substring(0, WebInspector.CSSSourceFrame.maxSwatchProcessingLength) + "\n";
+            var line = "\n" + this.textEditor.line(lineNumber).substring(0, WebInspector.CSSSourceFrame.maxSwatchProcessingLength) + "\n";
             var match;
             while ((match = colorRegex.exec(line)) !== null) {
                 if (match.length < 2)
@@ -120,7 +120,7 @@ WebInspector.CSSSourceFrame.prototype = {
                 var colorText = match[1];
                 var color = WebInspector.Color.parse(colorText);
                 if (color)
-                    colorPositions.push(new WebInspector.CSSSourceFrame.ColorPosition(color, lineNumber, match.index + 1, colorText.length));
+                    colorPositions.push(new WebInspector.CSSSourceFrame.ColorPosition(color, lineNumber, match.index, colorText.length));
             }
         }
 

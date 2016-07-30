@@ -7,35 +7,37 @@
  */
 WebInspector.OverlayController = function()
 {
-    WebInspector.moduleSetting("disablePausedStateOverlay").addChangeListener(this._updateAllOverlayMessages, this);
-    WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.DebuggerPaused, this._updateOverlayMessage, this);
-    WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.DebuggerResumed, this._updateOverlayMessage, this);
-    WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._updateOverlayMessage, this);
+    WebInspector.moduleSetting("disablePausedStateOverlay").addChangeListener(this._updateAllOverlays, this);
+    WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.DebuggerPaused, this._updateOverlay, this);
+    WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.DebuggerResumed, this._updateOverlay, this);
+    // TODO(dgozman): we should get DebuggerResumed on navigations instead of listening to GlobalObjectCleared.
+    WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._updateOverlay, this);
+    WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.SuspendStateChanged, this._updateAllOverlays, this);
 }
 
 WebInspector.OverlayController.prototype = {
-    _updateAllOverlayMessages: function()
+    _updateAllOverlays: function()
     {
         for (var target of WebInspector.targetManager.targets(WebInspector.Target.Capability.Browser))
-            this._updateTargetOverlayMessage(/** @type {!WebInspector.DebuggerModel} */ (WebInspector.DebuggerModel.fromTarget(target)));
+            this._updateTargetOverlay(/** @type {!WebInspector.DebuggerModel} */ (WebInspector.DebuggerModel.fromTarget(target)));
     },
 
     /**
      * @param {!WebInspector.Event} event
      */
-    _updateOverlayMessage: function(event)
+    _updateOverlay: function(event)
     {
-        this._updateTargetOverlayMessage(/** @type {!WebInspector.DebuggerModel} */ (event.target));
+        this._updateTargetOverlay(/** @type {!WebInspector.DebuggerModel} */ (event.target));
     },
 
     /**
      * @param {!WebInspector.DebuggerModel} debuggerModel
      */
-    _updateTargetOverlayMessage: function(debuggerModel)
+    _updateTargetOverlay: function(debuggerModel)
     {
         if (!debuggerModel.target().hasBrowserCapability())
             return;
         var message = debuggerModel.isPaused() && !WebInspector.moduleSetting("disablePausedStateOverlay").get() ? WebInspector.UIString("Paused in debugger") : undefined;
-        debuggerModel.target().pageAgent().setOverlayMessage(message);
+        debuggerModel.target().pageAgent().configureOverlay(WebInspector.targetManager.allTargetsSuspended(), message);
     }
 }

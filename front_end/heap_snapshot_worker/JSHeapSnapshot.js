@@ -33,20 +33,15 @@
  * @extends {WebInspector.HeapSnapshot}
  * @param {!Object} profile
  * @param {!WebInspector.HeapSnapshotProgress} progress
- * @param {boolean} showHiddenData
  */
-WebInspector.JSHeapSnapshot = function(profile, progress, showHiddenData)
+WebInspector.JSHeapSnapshot = function(profile, progress)
 {
     this._nodeFlags = { // bit flags
         canBeQueried: 1,
         detachedDOMTreeNode: 2,
-        pageObject: 4, // The idea is to track separately the objects owned by the page and the objects owned by debugger.
-
-        visitedMarkerMask: 0x0ffff,
-        visitedMarker:     0x10000
+        pageObject: 4 // The idea is to track separately the objects owned by the page and the objects owned by debugger.
     };
-    this._lazyStringCache = { };
-    this._showHiddenData = showHiddenData;
+    this._lazyStringCache = {};
     WebInspector.HeapSnapshot.call(this, profile, progress);
 }
 
@@ -109,16 +104,7 @@ WebInspector.JSHeapSnapshot.prototype = {
      */
     containmentEdgesFilter: function()
     {
-        var showHiddenData = this._showHiddenData;
-        function filter(edge)
-        {
-            if (edge.isInvisible())
-                return false;
-            if (showHiddenData)
-                return true;
-            return !edge.isHidden() && !edge.node().isHidden();
-        }
-        return filter;
+        return edge => !edge.isInvisible();
     },
 
     /**
@@ -251,12 +237,16 @@ WebInspector.JSHeapSnapshot.prototype = {
      */
     userObjectsMapAndFlag: function()
     {
-        return this._showHiddenData ? null : {
+        return {
             map: this._flags,
             flag: this._nodeFlags.pageObject
         };
     },
 
+    /**
+     * @param {!WebInspector.HeapSnapshotNode} node
+     * @return {number}
+     */
     _flagsOfNode: function(node)
     {
         return this._flags[node.nodeIndex / this._nodeFieldCount];
@@ -346,16 +336,15 @@ WebInspector.JSHeapSnapshot.prototype = {
         var nodesCount = this.nodeCount;
 
         var flags = this._flags;
-        var flag = this._nodeFlags.pageObject;
-        var visitedMarker = this._nodeFlags.visitedMarker;
-        var visitedMarkerMask = this._nodeFlags.visitedMarkerMask;
-        var markerAndFlag = visitedMarker | flag;
+        var pageObjectFlag = this._nodeFlags.pageObject;
 
         var nodesToVisit = new Uint32Array(nodesCount);
         var nodesToVisitLength = 0;
 
         var rootNodeOrdinal = this._rootNodeIndex / nodeFieldCount;
         var node = this.rootNode();
+
+        // Populate the entry points. They are Window objects and DOM Tree Roots.
         for (var edgeIndex = firstEdgeIndexes[rootNodeOrdinal], endEdgeIndex = firstEdgeIndexes[rootNodeOrdinal + 1];
              edgeIndex < endEdgeIndex;
              edgeIndex += edgeFieldsCount) {
@@ -369,25 +358,24 @@ WebInspector.JSHeapSnapshot.prototype = {
                 continue;
             var nodeOrdinal = nodeIndex / nodeFieldCount;
             nodesToVisit[nodesToVisitLength++] = nodeOrdinal;
-            flags[nodeOrdinal] |= visitedMarker;
+            flags[nodeOrdinal] |= pageObjectFlag;
         }
 
+        // Mark everything reachable with the pageObject flag.
         while (nodesToVisitLength) {
             var nodeOrdinal = nodesToVisit[--nodesToVisitLength];
-            flags[nodeOrdinal] |= flag;
-            flags[nodeOrdinal] &= visitedMarkerMask;
             var beginEdgeIndex = firstEdgeIndexes[nodeOrdinal];
             var endEdgeIndex = firstEdgeIndexes[nodeOrdinal + 1];
             for (var edgeIndex = beginEdgeIndex; edgeIndex < endEdgeIndex; edgeIndex += edgeFieldsCount) {
                 var childNodeIndex = containmentEdges[edgeIndex + edgeToNodeOffset];
                 var childNodeOrdinal = childNodeIndex / nodeFieldCount;
-                if (flags[childNodeOrdinal] & markerAndFlag)
+                if (flags[childNodeOrdinal] & pageObjectFlag)
                     continue;
                 var type = containmentEdges[edgeIndex + edgeTypeOffset];
                 if (type === edgeWeakType)
                     continue;
                 nodesToVisit[nodesToVisitLength++] = childNodeOrdinal;
-                flags[childNodeOrdinal] |= visitedMarker;
+                flags[childNodeOrdinal] |= pageObjectFlag;
             }
         }
     },

@@ -15,14 +15,6 @@
         {
             "type": "setting",
             "category": "Profiler",
-            "title": "Show advanced heap snapshot properties",
-            "settingName": "showAdvancedHeapSnapshotProperties",
-            "settingType": "boolean",
-            "defaultValue": false
-        },
-        {
-            "type": "setting",
-            "category": "Profiler",
             "title": "Record heap allocation stack traces",
             "settingName": "recordAllocationStacks",
             "settingType": "boolean",

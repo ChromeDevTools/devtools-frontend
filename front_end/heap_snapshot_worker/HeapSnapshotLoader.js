@@ -58,13 +58,12 @@ WebInspector.HeapSnapshotLoader.prototype = {
     },
 
     /**
-     * @param {boolean} showHiddenData
      * @return {!WebInspector.JSHeapSnapshot}
      */
-    buildSnapshot: function(showHiddenData)
+    buildSnapshot: function()
     {
         this._progress.updateStatus("Processing snapshot\u2026");
-        var result = new WebInspector.JSHeapSnapshot(this._snapshot, this._progress, showHiddenData);
+        var result = new WebInspector.JSHeapSnapshot(this._snapshot, this._progress);
         this._reset();
         return result;
     },

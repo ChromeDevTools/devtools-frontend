@@ -2280,10 +2280,10 @@ WebInspector.StylePropertyTreeElement.prototype = {
         if (section && !section.editable)
             return;
 
-        if (!selectElement)
-            selectElement = this.nameElement; // No arguments passed in - edit the name element by default.
-        else
+        if (selectElement)
             selectElement = selectElement.enclosingNodeOrSelfWithClass("webkit-css-property") || selectElement.enclosingNodeOrSelfWithClass("value");
+        if (!selectElement)
+            selectElement = this.nameElement;
 
         if (WebInspector.isBeingEdited(selectElement))
             return;

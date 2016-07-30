@@ -1030,7 +1030,7 @@ WebInspector.HeapSnapshot.prototype = {
         this._dominatorsTree = this._buildDominatorTree(result.postOrderIndex2NodeOrdinal, result.nodeOrdinal2PostOrderIndex);
         this._progress.updateStatus("Calculating retained sizes\u2026");
         this._calculateRetainedSizes(result.postOrderIndex2NodeOrdinal);
-        this._progress.updateStatus("Buiding dominated nodes\u2026");
+        this._progress.updateStatus("Building dominated nodes\u2026");
         this._buildDominatedNodes();
         this._progress.updateStatus("Calculating statistics\u2026");
         this._calculateStatistics();
@@ -1596,6 +1596,20 @@ WebInspector.HeapSnapshot.prototype = {
                 });
     },
 
+    /**
+     * The function checks is the edge should be considered during building
+     * postorder iterator and dominator tree.
+     *
+     * @param {number} nodeIndex
+     * @param {number} edgeType
+     * @return {boolean}
+     */
+    _isEssentialEdge: function(nodeIndex, edgeType)
+    {
+        // Shortcuts at the root node have special meaning of marking user global objects.
+        return edgeType !== this._edgeWeakType && (edgeType !== this._edgeShortcutType || nodeIndex === this._rootNodeIndex);
+    },
+
     _buildPostOrderIndex: function()
     {
         var nodeFieldCount = this._nodeFieldCount;
@@ -1605,8 +1619,6 @@ WebInspector.HeapSnapshot.prototype = {
         var edgeFieldsCount = this._edgeFieldsCount;
         var edgeTypeOffset = this._edgeTypeOffset;
         var edgeToNodeOffset = this._edgeToNodeOffset;
-        var edgeShortcutType = this._edgeShortcutType;
-        var edgeWeakType = this._edgeWeakType;
         var firstEdgeIndexes = this._firstEdgeIndexes;
         var containmentEdges = this.containmentEdges;
 
@@ -1637,7 +1649,7 @@ WebInspector.HeapSnapshot.prototype = {
                 if (edgeIndex < edgesEnd) {
                     stackCurrentEdge[stackTop] += edgeFieldsCount;
                     var edgeType = containmentEdges[edgeIndex + edgeTypeOffset];
-                    if (edgeType === edgeWeakType || edgeType === edgeShortcutType)
+                    if (!this._isEssentialEdge(nodeOrdinal * nodeFieldCount, edgeType))
                         continue;
                     var childNodeIndex = containmentEdges[edgeIndex + edgeToNodeOffset];
                     var childNodeOrdinal = childNodeIndex / nodeFieldCount;
@@ -1751,8 +1763,6 @@ WebInspector.HeapSnapshot.prototype = {
         var edgeFieldsCount = this._edgeFieldsCount;
         var edgeTypeOffset = this._edgeTypeOffset;
         var edgeToNodeOffset = this._edgeToNodeOffset;
-        var edgeShortcutType = this._edgeShortcutType;
-        var edgeWeakType = this._edgeWeakType;
         var firstEdgeIndexes = this._firstEdgeIndexes;
         var containmentEdges = this.containmentEdges;
         var rootNodeIndex = this._rootNodeIndex;
@@ -1777,11 +1787,9 @@ WebInspector.HeapSnapshot.prototype = {
         { // Mark the root direct children as affected.
             nodeOrdinal = this._rootNodeIndex / nodeFieldCount;
             var endEdgeIndex = firstEdgeIndexes[nodeOrdinal + 1];
-            for (var edgeIndex = firstEdgeIndexes[nodeOrdinal];
-                 edgeIndex < endEdgeIndex;
-                 edgeIndex += edgeFieldsCount) {
+            for (var edgeIndex = firstEdgeIndexes[nodeOrdinal]; edgeIndex < endEdgeIndex; edgeIndex += edgeFieldsCount) {
                 var edgeType = containmentEdges[edgeIndex + edgeTypeOffset];
-                if (edgeType === edgeWeakType || edgeType === edgeShortcutType)
+                if (!this._isEssentialEdge(this._rootNodeIndex, edgeType))
                     continue;
                 var childNodeOrdinal = containmentEdges[edgeIndex + edgeToNodeOffset] / nodeFieldCount;
                 affected[nodeOrdinal2PostOrderIndex[childNodeOrdinal]] = 1;
@@ -1808,10 +1816,10 @@ WebInspector.HeapSnapshot.prototype = {
                 for (var retainerIndex = beginRetainerIndex; retainerIndex < endRetainerIndex; ++retainerIndex) {
                     var retainerEdgeIndex = retainingEdges[retainerIndex];
                     var retainerEdgeType = containmentEdges[retainerEdgeIndex + edgeTypeOffset];
-                    if (retainerEdgeType === edgeWeakType || retainerEdgeType === edgeShortcutType)
+                    var retainerNodeIndex = retainingNodes[retainerIndex];
+                    if (!this._isEssentialEdge(retainerNodeIndex, retainerEdgeType))
                         continue;
                     orphanNode = false;
-                    var retainerNodeIndex = retainingNodes[retainerIndex];
                     var retainerNodeOrdinal = retainerNodeIndex / nodeFieldCount;
                     var retainerNodeFlag = !flags || (flags[retainerNodeOrdinal] & flag);
                     // We are skipping the edges from non-page-owned nodes to page-owned nodes.

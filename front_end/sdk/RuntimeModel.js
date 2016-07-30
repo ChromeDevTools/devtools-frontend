@@ -377,7 +377,7 @@ WebInspector.RuntimeDispatcher.prototype = {
             details.lineNumber,
             details.columnNumber,
             undefined,
-            exception ? ["Uncaught (in promise)", exception] : undefined,
+            exception ? [WebInspector.RemoteObject.fromLocalObject(details.text), exception] : undefined,
             details.stackTrace,
             timestamp,
             executionContextId,

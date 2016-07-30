@@ -70,6 +70,7 @@ WebInspector.ComputedStyleModel.prototype = {
                 this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetAdded, this._onComputedStyleChanged, this),
                 this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetRemoved, this._onComputedStyleChanged, this),
                 this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetChanged, this._onComputedStyleChanged, this),
+                this._cssModel.addEventListener(WebInspector.CSSModel.Events.FontsUpdated, this._onComputedStyleChanged, this),
                 this._cssModel.addEventListener(WebInspector.CSSModel.Events.MediaQueryResultChanged, this._onComputedStyleChanged, this),
                 this._cssModel.addEventListener(WebInspector.CSSModel.Events.PseudoStateForced, this._onComputedStyleChanged, this),
                 this._cssModel.addEventListener(WebInspector.CSSModel.Events.ModelWasEnabled, this._onComputedStyleChanged, this),

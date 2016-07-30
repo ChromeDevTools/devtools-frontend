@@ -678,7 +678,9 @@ WebInspector.ElementsTreeElement.prototype = {
             WebInspector.handleElementValueModifications(event, attribute);
             return "";
         }
-        config.setPostKeydownFinishHandler(postKeyDownFinishHandler);
+
+        if (!attributeValueElement.textContent.asParsedURL())
+            config.setPostKeydownFinishHandler(postKeyDownFinishHandler);
 
         this._editing = WebInspector.InplaceEditor.startEditing(attribute, config);
 

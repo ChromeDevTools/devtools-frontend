@@ -157,7 +157,7 @@ WebInspector.DebuggerWorkspaceBinding.prototype = {
     createCallFrameLiveLocation: function(location, updateDelegate, locationPool)
     {
         var target = location.target();
-        this._ensureInfoForScript(location.script());
+        this._ensureInfoForScript(/** @type {!WebInspector.Script} */(location.script()));
         var liveLocation = this.createLiveLocation(location, updateDelegate, locationPool);
         this._registerCallFrameLiveLocation(target, liveLocation);
         return liveLocation;

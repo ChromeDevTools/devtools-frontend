@@ -447,7 +447,8 @@ WebInspector.CallStackSidebarPane.CallFrame = function(functionName, location, l
     this._asyncCallFrame = asyncCallFrame;
 
     if (asyncCallFrame) {
-        var locationElement = linkifier.linkifyRawLocation(location, location.script().sourceURL);
+        var script = location.script();
+        var locationElement = linkifier.linkifyRawLocation(location, script ? script.sourceURL : "");
         this.subtitleElement.appendChild(locationElement);
     } else {
         this._liveLocationPool = new WebInspector.LiveLocationPool();

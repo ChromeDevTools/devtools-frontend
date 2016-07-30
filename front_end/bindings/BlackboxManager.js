@@ -85,9 +85,12 @@ WebInspector.BlackboxManager.prototype = {
      */
     isBlackboxedRawLocation: function(location)
     {
-        var positions = this._scriptPositions(location.script());
+        var script = location.script();
+        if (!script)
+            return false;
+        var positions = this._scriptPositions(script);
         if (!positions)
-            return this._isBlackboxedScript(location.script());
+            return this._isBlackboxedScript(script);
         var index = positions.lowerBound(location, comparator);
         return !!(index % 2);
 

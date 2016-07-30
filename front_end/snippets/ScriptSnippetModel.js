@@ -248,7 +248,8 @@ WebInspector.ScriptSnippetModel.prototype = {
             if (mapping.evaluationIndex(uiSourceCode) !== evaluationIndex)
                 return;
 
-            mapping._addScript(executionContext.debuggerModel.scriptForId(scriptId || exceptionDetails.scriptId), uiSourceCode);
+            var script = /** @type {!WebInspector.Script} */(executionContext.debuggerModel.scriptForId(scriptId || exceptionDetails.scriptId));
+            mapping._addScript(script, uiSourceCode);
             if (!scriptId) {
                 this._printRunOrCompileScriptResultFailure(target, exceptionDetails, evaluationUrl);
                 return;

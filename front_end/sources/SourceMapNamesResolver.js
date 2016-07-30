@@ -263,6 +263,8 @@ WebInspector.SourceMapNamesResolver._resolveExpression = function(callFrame, uiS
         return Promise.resolve("");
 
     var script = rawLocation.script();
+    if (!script)
+        return Promise.resolve("");
     var sourceMap = WebInspector.debuggerWorkspaceBinding.sourceMapForScript(script);
     if (!sourceMap)
         return Promise.resolve("");

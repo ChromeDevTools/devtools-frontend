@@ -24,6 +24,8 @@ WebInspector.FormatterScriptMapping.prototype = {
     {
         var debuggerModelLocation = /** @type {!WebInspector.DebuggerModel.Location} */ (rawLocation);
         var script = debuggerModelLocation.script();
+        if (!script)
+            return null;
         var uiSourceCode = this._editorAction._uiSourceCodes.get(script);
         if (!uiSourceCode)
             return null;

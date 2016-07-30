@@ -337,7 +337,7 @@ WebInspector.DebuggerModel.prototype = {
 
     /**
      * @param {!RuntimeAgent.ScriptId} scriptId
-     * @return {!WebInspector.Script}
+     * @return {?WebInspector.Script}
      */
     scriptForId: function(scriptId)
     {
@@ -933,7 +933,7 @@ WebInspector.DebuggerModel.Location.prototype = {
     },
 
     /**
-     * @return {!WebInspector.Script}
+     * @return {?WebInspector.Script}
      */
     script: function()
     {

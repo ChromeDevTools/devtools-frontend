@@ -839,7 +839,7 @@ WebInspector.Main.MainMenuItem.prototype = {
             contextMenu.discard();
         }
 
-        contextMenu.appendAction("main.toggle-drawer", WebInspector.inspectorView.drawerVisible() ? WebInspector.UIString("Hide console") : WebInspector.UIString("Show console"));
+        contextMenu.appendAction("main.toggle-drawer", WebInspector.inspectorView.drawerVisible() ? WebInspector.UIString("Hide console drawer") : WebInspector.UIString("Show console drawer"));
         contextMenu.appendItemsAtLocation("mainMenu");
         var moreTools = contextMenu.namedSubMenu("mainMenuMoreTools");
         var extensions = self.runtime.extensions("drawer-view", undefined, true);

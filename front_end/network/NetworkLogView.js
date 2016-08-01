@@ -1388,24 +1388,39 @@ WebInspector.NetworkLogView.prototype = {
 
         function escapeStringWin(str)
         {
-            /* Replace quote by double quote (but not by \") because it is
-               recognized by both cmd.exe and MS Crt arguments parser.
+            /* If there are no new line characters do not escape the " characters
+               since it only uglifies the command.
 
-               Replace % by "%" because it could be expanded to an environment
-               variable value. So %% becomes "%""%". Even if an env variable ""
-               (2 doublequotes) is declared, the cmd.exe will not
-               substitute it with its value.
+               Because cmd.exe parser and MS Crt arguments parsers use some of the
+               same escape characters, they can interact with each other in
+               horrible ways, the order of operations is critical.
 
-               Replace each backslash with double backslash to make sure
-               MS Crt arguments parser won't collapse them.
+               Replace \ with \\ first because it is an escape character for certain
+               conditions in both parsers.
 
-               Replace new line outside of quotes since cmd.exe doesn't let
-               to do it inside.
+               Replace all " with \" to ensure the first parser does not remove it.
+
+               Then escape all characters we are not sure about with ^ to ensure it
+               gets to MS Crt parser safely.
+
+               The % character is special because MS Crt parser will try and look for
+               ENV variables and fill them in it's place. We cannot escape them with %
+               and cannot escape them with ^ (because it's cmd.exe's escape not MS Crt
+               parser); So we can get cmd.exe parser to escape the character after it,
+               if it is followed by a valid beginning character of an ENV variable.
+               This ensures we do not try and double escape another ^ if it was placed
+               by the previous replace.
+
+               Lastly we replace new lines with ^ and TWO new lines because the first
+               new line is there to enact the escape command the second is the character
+               to escape (in this case new line).
             */
-            return "\"" + str.replace(/"/g, "\"\"")
-                             .replace(/%/g, "\"%\"")
-                             .replace(/\\/g, "\\\\")
-                             .replace(/[\r\n]+/g, "\"^$&\"") + "\"";
+            var encapsChars = /[\r\n]/.test(str) ? "^\"" : "\"";
+            return encapsChars + str.replace(/\\/g, "\\\\")
+                             .replace(/"/g, "\\\"")
+                             .replace(/[^a-zA-Z0-9\s_\-:=+~'\/.',?;()*`]/g, "^$&")
+                             .replace(/%(?=[a-zA-Z0-9_])/g, "%^")
+                             .replace(/\r\n|[\n\r]/g, "^\n\n") + encapsChars;
         }
 
         function escapeStringPosix(str)

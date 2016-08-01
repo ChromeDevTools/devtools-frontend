@@ -1411,12 +1411,23 @@ WebInspector.CodeMirrorTextEditor.prototype = {
             this._codeMirror.removeLineWidget(widgets[i]);
         this._elementToWidget.clear();
 
+        if (this._muteTextChangedEvent)
+            return;
+        var edits = [];
+        var currentEdit;
         for (var changeIndex = 0; changeIndex < changes.length; ++changeIndex) {
             var changeObject = changes[changeIndex];
-
-            var editInfo = WebInspector.CodeMirrorUtils.changeObjectToEditOperation(changeObject);
-            if (!this._muteTextChangedEvent)
-                this._delegate.onTextChanged(editInfo.oldRange, editInfo.newRange);
+            var edit = WebInspector.CodeMirrorUtils.changeObjectToEditOperation(changeObject);
+            if (currentEdit && edit.oldRange.equal(currentEdit.newRange)) {
+                currentEdit.newRange = edit.newRange;
+            } else {
+                currentEdit = edit;
+                edits.push(currentEdit);
+            }
+        }
+        for (var i = 0; i < edits.length; ++i) {
+            var edit = edits[i];
+            this._delegate.onTextChanged(edit.oldRange, edit.newRange);
         }
     },
 

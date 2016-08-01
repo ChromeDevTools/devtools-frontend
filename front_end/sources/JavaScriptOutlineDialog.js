@@ -25,7 +25,8 @@ WebInspector.JavaScriptOutlineDialog = function(uiSourceCode, selectItemCallback
  */
 WebInspector.JavaScriptOutlineDialog.show = function(uiSourceCode, selectItemCallback)
 {
-    new WebInspector.FilteredListWidget(new WebInspector.JavaScriptOutlineDialog(uiSourceCode, selectItemCallback)).showAsDialog();
+    WebInspector.JavaScriptOutlineDialog._instanceForTests = new WebInspector.JavaScriptOutlineDialog(uiSourceCode, selectItemCallback);
+    new WebInspector.FilteredListWidget(WebInspector.JavaScriptOutlineDialog._instanceForTests).showAsDialog();
 }
 
 WebInspector.JavaScriptOutlineDialog.prototype = {
@@ -79,7 +80,10 @@ WebInspector.JavaScriptOutlineDialog.prototype = {
     itemScoreAt: function(itemIndex, query)
     {
         var item = this._functionItems[itemIndex];
-        return -item.line;
+        var methodName = query.split("(")[0];
+        if (methodName.toLowerCase() === item.name.toLowerCase())
+            return 1 / (1 + item.line);
+        return -item.line - 1;
     },
 
     /**

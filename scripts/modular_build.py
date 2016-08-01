@@ -25,6 +25,9 @@ def read_file(filename):
 def write_file(filename, content):
     if path.exists(filename):
         os.remove(filename)
+    directory = path.dirname(filename)
+    if not path.exists(directory):
+        os.makedirs(directory)
     with open(filename, 'wt') as output:
         output.write(content)
 

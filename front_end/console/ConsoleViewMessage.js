@@ -813,8 +813,7 @@ WebInspector.ConsoleViewMessage.prototype = {
             buffer.setAttribute("style", obj.description);
             for (var i = 0; i < buffer.style.length; i++) {
                 var property = buffer.style[i];
-                var value = buffer.style.getPropertyValue(property);
-                if (!value.startsWith("url(") && isWhitelistedProperty(property))
+                if (isWhitelistedProperty(property))
                     currentStyle[property] = buffer.style[property];
             }
         }

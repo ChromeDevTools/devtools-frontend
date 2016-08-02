@@ -33,6 +33,7 @@
 WebInspector.SourcesPanel = function()
 {
     WebInspector.Panel.call(this, "sources");
+    WebInspector.SourcesPanel._instance = this;
     this.registerRequiredCSS("sources/sourcesPanel.css");
     new WebInspector.DropTarget(this.element, [WebInspector.DropTarget.Types.Files], WebInspector.UIString("Drop workspace folder here"), this._handleDrop.bind(this));
 
@@ -61,13 +62,11 @@ WebInspector.SourcesPanel = function()
     this.editorView.element.tabIndex = 0;
     this._splitWidget.setMainWidget(this.editorView);
 
-    this._navigator = new WebInspector.SourcesNavigator(this._workspace);
+    this._navigator = new WebInspector.SourcesNavigator();
     this._navigator.view.setMinimumSize(100, 25);
     this.editorView.setSidebarWidget(this._navigator.view);
-    this._navigator.addEventListener(WebInspector.SourcesNavigator.Events.SourceSelected, this._sourceSelected, this);
-    this._navigator.addEventListener(WebInspector.SourcesNavigator.Events.SourceRenamed, this._sourceRenamed, this);
 
-    this._sourcesView = new WebInspector.SourcesView(this._workspace, this);
+    this._sourcesView = new WebInspector.SourcesView();
     this._sourcesView.addEventListener(WebInspector.SourcesView.Events.EditorSelected, this._editorSelected.bind(this));
     this._sourcesView.addEventListener(WebInspector.SourcesView.Events.EditorClosed, this._editorClosed.bind(this));
     this._sourcesView.registerShortcuts(this.registerShortcuts.bind(this));
@@ -470,24 +469,6 @@ WebInspector.SourcesPanel.prototype = {
         this.sidebarPanes.watchExpressions.refreshExpressions();
         this.sidebarPanes.callstack.setSelectedCallFrame(callFrame);
         WebInspector.debuggerWorkspaceBinding.createCallFrameLiveLocation(callFrame.location(), this._executionLineChanged.bind(this), this._liveLocationPool);
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _sourceSelected: function(event)
-    {
-        var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data.uiSourceCode);
-        this._sourcesView.showSourceLocation(uiSourceCode, undefined, undefined, !event.data.focusSource)
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _sourceRenamed: function(event)
-    {
-        var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data);
-        this._sourcesView.sourceRenamed(uiSourceCode);
     },
 
     _pauseOnExceptionEnabledChanged: function()
@@ -1403,6 +1384,8 @@ WebInspector.SourcesPanel.show = function()
  */
 WebInspector.SourcesPanel.instance = function()
 {
+    if (WebInspector.SourcesPanel._instance)
+        return WebInspector.SourcesPanel._instance;
     return /** @type {!WebInspector.SourcesPanel} */ (self.runtime.sharedInstance(WebInspector.SourcesPanel));
 }
 

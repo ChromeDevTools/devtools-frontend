@@ -1278,13 +1278,11 @@ WebInspector.TabbedPaneTabDelegate.prototype = {
  * @constructor
  * @param {!WebInspector.TabbedPane} tabbedPane
  * @param {string} extensionPoint
- * @param {function(string, !WebInspector.Widget)=} viewCallback
  */
-WebInspector.ExtensibleTabbedPaneController = function(tabbedPane, extensionPoint, viewCallback)
+WebInspector.ExtensibleTabbedPaneController = function(tabbedPane, extensionPoint)
 {
     this._tabbedPane = tabbedPane;
     this._extensionPoint = extensionPoint;
-    this._viewCallback = viewCallback;
     /** @type {!Object.<string, !Promise.<?WebInspector.Widget>>} */
     this._promiseForId = {};
 
@@ -1426,8 +1424,6 @@ WebInspector.ExtensibleTabbedPaneController.prototype = {
         function cacheView(object)
         {
             var view = /** @type {!WebInspector.Widget} */ (object);
-            if (this._viewCallback && view)
-                this._viewCallback(id, view);
             this._tabbedPane.changeTabView(id, view);
             return view;
         }

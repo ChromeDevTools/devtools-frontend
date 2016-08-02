@@ -61,11 +61,7 @@ WebInspector.NavigatorView = function()
     WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.EventTypes.FrameNavigated, this._frameNavigated, this);
     WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.EventTypes.FrameDetached, this._frameDetached, this);
     WebInspector.targetManager.observeTargets(this);
-}
-
-WebInspector.NavigatorView.Events = {
-    ItemSelected: "ItemSelected",
-    ItemRenamed: "ItemRenamed",
+    this._resetWorkspace(WebInspector.workspace);
 }
 
 WebInspector.NavigatorView.Types = {
@@ -158,7 +154,7 @@ WebInspector.NavigatorView.prototype = {
     /**
      * @param {!WebInspector.Workspace} workspace
      */
-    setWorkspace: function(workspace)
+    _resetWorkspace: function(workspace)
     {
         this._workspace = workspace;
         this._workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
@@ -448,8 +444,7 @@ WebInspector.NavigatorView.prototype = {
     _sourceSelected: function(uiSourceCode, focusSource)
     {
         this._lastSelectedUISourceCode = uiSourceCode;
-        var data = { uiSourceCode: uiSourceCode, focusSource: focusSource};
-        this.dispatchEventToListeners(WebInspector.NavigatorView.Events.ItemSelected, data);
+        WebInspector.Revealer.reveal(uiSourceCode, !focusSource);
     },
 
     /**
@@ -648,7 +643,6 @@ WebInspector.NavigatorView.prototype = {
                 return;
             }
 
-            this.dispatchEventToListeners(WebInspector.NavigatorView.Events.ItemRenamed, uiSourceCode);
             this._sourceSelected(uiSourceCode, true);
         }
     },

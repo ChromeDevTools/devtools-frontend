@@ -189,14 +189,14 @@ WebInspector.UISourceCode.prototype = {
      */
     _updateName: function(name, url, contentType)
     {
-        var oldURД = this.url();
+        var oldURL = this.url();
         this._url = this._url.substring(0, this._url.length - this._name.length) + name;
         this._name = name;
         if (url)
             this._url = url;
         if (contentType)
             this._contentType = contentType;
-        this.dispatchEventToListeners(WebInspector.UISourceCode.Events.TitleChanged, oldURД);
+        this.dispatchEventToListeners(WebInspector.UISourceCode.Events.TitleChanged, oldURL);
     },
 
     /**

@@ -31,19 +31,18 @@
 /**
  * @constructor
  * @extends {WebInspector.UISourceCodeFrame}
- * @param {!WebInspector.SourcesPanel} scriptsPanel
  * @param {!WebInspector.UISourceCode} uiSourceCode
  */
-WebInspector.JavaScriptSourceFrame = function(scriptsPanel, uiSourceCode)
+WebInspector.JavaScriptSourceFrame = function(uiSourceCode)
 {
-    this._scriptsPanel = scriptsPanel;
+    this._scriptsPanel = WebInspector.SourcesPanel.instance();
     this._breakpointManager = WebInspector.breakpointManager;
 
     WebInspector.UISourceCodeFrame.call(this, uiSourceCode);
     if (uiSourceCode.project().type() === WebInspector.projectTypes.Debugger)
         this.element.classList.add("source-frame-debugger-script");
 
-    this._popoverHelper = new WebInspector.ObjectPopoverHelper(scriptsPanel.element,
+    this._popoverHelper = new WebInspector.ObjectPopoverHelper(this._scriptsPanel.element,
         this._getPopoverAnchor.bind(this), this._resolveObjectForPopover.bind(this), this._onHidePopover.bind(this), true);
     this._popoverHelper.setTimeout(250, 250);
 

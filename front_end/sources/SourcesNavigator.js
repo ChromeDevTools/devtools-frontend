@@ -29,19 +29,15 @@
 /**
  * @constructor
  * @extends {WebInspector.Object}
- * @param {!WebInspector.Workspace} workspace
  */
-WebInspector.SourcesNavigator = function(workspace)
+WebInspector.SourcesNavigator = function()
 {
     WebInspector.Object.call(this);
-    this._workspace = workspace;
 
     this._tabbedPane = new WebInspector.TabbedPane();
     this._tabbedPane.setShrinkableTabs(true);
     this._tabbedPane.element.classList.add("navigator-tabbed-pane");
-    this._tabbedPaneController = new WebInspector.ExtensibleTabbedPaneController(this._tabbedPane, "navigator-view", this._navigatorViewCreated.bind(this));
-    /** @type {!Map.<string, ?WebInspector.NavigatorView>} */
-    this._navigatorViews = new Map();
+    this._tabbedPaneController = new WebInspector.ExtensibleTabbedPaneController(this._tabbedPane, "navigator-view");
 
     var toolbar = new WebInspector.Toolbar("");
     var menuButton = new WebInspector.ToolbarMenuButton(this._populateMenu.bind(this), true);
@@ -51,25 +47,7 @@ WebInspector.SourcesNavigator = function(workspace)
     this._tabbedPane.appendAfterTabStrip(toolbar.element);
 }
 
-WebInspector.SourcesNavigator.Events = {
-    SourceSelected: "SourceSelected",
-    SourceRenamed: "SourceRenamed"
-}
-
 WebInspector.SourcesNavigator.prototype = {
-    /**
-     * @param {string} id
-     * @param {!WebInspector.Widget} view
-     */
-    _navigatorViewCreated: function(id, view)
-    {
-        var navigatorView = /** @type {!WebInspector.NavigatorView} */ (view);
-        navigatorView.addEventListener(WebInspector.NavigatorView.Events.ItemSelected, this._sourceSelected, this);
-        navigatorView.addEventListener(WebInspector.NavigatorView.Events.ItemRenamed, this._sourceRenamed, this);
-        this._navigatorViews.set(id, navigatorView);
-        navigatorView.setWorkspace(this._workspace);
-    },
-
     /**
      * @return {!WebInspector.Widget}
      */
@@ -101,22 +79,6 @@ WebInspector.SourcesNavigator.prototype = {
             }
         }
 
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _sourceSelected: function(event)
-    {
-        this.dispatchEventToListeners(WebInspector.SourcesNavigator.Events.SourceSelected, event.data);
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _sourceRenamed: function(event)
-    {
-        this.dispatchEventToListeners(WebInspector.SourcesNavigator.Events.SourceRenamed, event.data);
     },
 
     /**

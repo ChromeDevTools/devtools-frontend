@@ -68,7 +68,7 @@
             "type": "setting",
             "category": "Elements",
             "order": 4,
-            "title": "Reveal DOM node on hover.",
+            "title": "Reveal DOM node on hover",
             "settingName": "highlightNodeOnHoverInOverlay",
             "settingType": "boolean",
             "defaultValue": true

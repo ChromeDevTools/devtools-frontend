@@ -194,9 +194,21 @@ WebInspector.AnimationTimeline.prototype = {
         var screenshots = animGroup.screenshots();
         if (!screenshots.length)
             return;
-        var content = new WebInspector.AnimationScreenshotPopover(screenshots);
-        popover.setNoMargins(true);
-        popover.showView(content, anchor);
+
+        if (!screenshots[0].complete)
+            screenshots[0].onload = onFirstScreenshotLoaded.bind(null, screenshots);
+        else
+            onFirstScreenshotLoaded(screenshots);
+
+        /**
+         * @param  {!Array.<!Image>} screenshots
+         */
+        function onFirstScreenshotLoaded(screenshots)
+        {
+            var content = new WebInspector.AnimationScreenshotPopover(screenshots);
+            popover.setNoMargins(true);
+            popover.showView(content, anchor);
+        }
     },
 
     _onHidePopover: function()

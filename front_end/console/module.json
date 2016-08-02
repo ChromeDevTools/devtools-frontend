@@ -8,7 +8,8 @@
             "className": "WebInspector.ConsolePanel"
         },
         {
-            "type": "drawer-view",
+            "type": "view",
+            "location": "drawer-view",
             "name": "console",
             "title": "Console",
             "persistence": "permanent",

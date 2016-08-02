@@ -20,9 +20,12 @@ WebInspector.CommandMenu.prototype = {
             this._commands.push(WebInspector.CommandMenu.createRevealPanelCommand(extension));
 
         // Populate drawers.
-        var drawerExtensions = self.runtime.extensions("drawer-view");
-        for (var extension of drawerExtensions)
+        var drawerExtensions = self.runtime.extensions("view");
+        for (var extension of drawerExtensions) {
+            if (extension.descriptor()["location"] !== "drawer-view")
+                continue;
             this._commands.push(WebInspector.CommandMenu.createRevealDrawerCommand(extension));
+        }
 
         // Populate whitelisted settings.
         var settingExtensions = self.runtime.extensions("setting");

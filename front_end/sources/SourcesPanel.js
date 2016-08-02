@@ -62,9 +62,18 @@ WebInspector.SourcesPanel = function()
     this.editorView.element.tabIndex = 0;
     this._splitWidget.setMainWidget(this.editorView);
 
-    this._navigator = new WebInspector.SourcesNavigator();
-    this._navigator.view.setMinimumSize(100, 25);
-    this.editorView.setSidebarWidget(this._navigator.view);
+    // Create navigator tabbed pane with toolbar.
+    this._navigatorTabbedPane = new WebInspector.TabbedPane();
+    this._navigatorTabbedPane.setMinimumSize(100, 25);
+    this._navigatorTabbedPane.setShrinkableTabs(true);
+    this._navigatorTabbedPane.element.classList.add("navigator-tabbed-pane");
+    this._navigatorTabbedPaneController = new WebInspector.ExtensibleTabbedPaneController(this._navigatorTabbedPane, "navigator-view");
+    var navigatorToolbar = new WebInspector.Toolbar("");
+    var navigatorMenuButton = new WebInspector.ToolbarMenuButton(this._populateNavigatorMenu.bind(this), true);
+    navigatorMenuButton.setTitle(WebInspector.UIString("More options"));
+    navigatorToolbar.appendToolbarItem(navigatorMenuButton);
+    this._navigatorTabbedPane.appendAfterTabStrip(navigatorToolbar.element);
+    this.editorView.setSidebarWidget(this._navigatorTabbedPane);
 
     this._sourcesView = new WebInspector.SourcesView();
     this._sourcesView.addEventListener(WebInspector.SourcesView.Events.EditorSelected, this._editorSelected.bind(this));
@@ -406,7 +415,33 @@ WebInspector.SourcesPanel.prototype = {
      */
     _revealInNavigator: function(uiSourceCode)
     {
-        this._navigator.revealUISourceCode(uiSourceCode);
+        var extensions = self.runtime.extensions("view").filter(extension => extension.descriptor()["location"] === "navigator-view");
+        Promise.all(extensions.map(extension => extension.instance())).then(filterNavigators);
+
+        /**
+         * @param {!Array.<!Object>} objects
+         */
+        function filterNavigators(objects)
+        {
+            for (var i = 0; i < objects.length; ++i) {
+                var navigatorView = /** @type {!WebInspector.NavigatorView} */ (objects[i]);
+                if (navigatorView.accept(uiSourceCode)) {
+                    navigatorView.revealWidget();
+                    navigatorView.revealUISourceCode(uiSourceCode, true);
+                }
+            }
+        }
+    },
+
+    /**
+     * @param {!WebInspector.ContextMenu} contextMenu
+     */
+    _populateNavigatorMenu: function(contextMenu)
+    {
+        var groupByFolderSetting = WebInspector.moduleSetting("navigatorGroupByFolder");
+        contextMenu.appendItemsAtLocation("navigatorMenu");
+        contextMenu.appendSeparator();
+        contextMenu.appendCheckboxItem(WebInspector.UIString("Group by folder"), () => groupByFolderSetting.set(!groupByFolderSetting.get()), groupByFolderSetting.get());
     },
 
     /**
@@ -892,7 +927,7 @@ WebInspector.SourcesPanel.prototype = {
         var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (target);
         var projectType = uiSourceCode.project().type();
 
-        if (projectType !== WebInspector.projectTypes.Debugger && !event.target.isSelfOrDescendant(this._navigator.view.element)) {
+        if (projectType !== WebInspector.projectTypes.Debugger && !event.target.isSelfOrDescendant(this._navigatorTabbedPane.element)) {
             contextMenu.appendItem(WebInspector.UIString.capitalize("Reveal in ^navigator"), this._handleContextMenuReveal.bind(this, uiSourceCode));
             contextMenu.appendSeparator();
         }

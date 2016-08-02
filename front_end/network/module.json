@@ -59,7 +59,8 @@
             ]
         },
         {
-            "type": "drawer-view",
+            "type": "view",
+            "location": "drawer-view",
             "name": "network.blocked-urls",
             "title": "Request blocking",
             "persistence": "closeable",
@@ -68,7 +69,8 @@
             "experiment": "requestBlocking"
         },
         {
-            "type": "drawer-view",
+            "type": "view",
+            "location": "drawer-view",
             "name": "network.config",
             "title": "Network conditions",
             "persistence": "closeable",

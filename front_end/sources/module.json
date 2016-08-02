@@ -184,7 +184,8 @@
             "className": "WebInspector.ScriptFormatterEditorAction"
         },
         {
-            "type": "navigator-view",
+            "type": "view",
+            "location": "navigator-view",
             "name": "sources",
             "title": "Sources",
             "order": 1,
@@ -192,7 +193,8 @@
             "className": "WebInspector.SourcesNavigatorView"
         },
         {
-            "type": "navigator-view",
+            "type": "view",
+            "location": "navigator-view",
             "name": "contentScripts",
             "title": "Content scripts",
             "order": 2,
@@ -200,7 +202,8 @@
             "className": "WebInspector.ContentScriptsNavigatorView"
         },
         {
-            "type": "navigator-view",
+            "type": "view",
+            "location": "navigator-view",
             "name": "snippets",
             "title": "Snippets",
             "order": 3,
@@ -311,7 +314,8 @@
             "defaultValue": true
         },
         {
-            "type": "drawer-view",
+            "type": "view",
+            "location": "drawer-view",
             "name": "sources.search",
             "title": "Search",
             "persistence": "closeable",
@@ -319,14 +323,16 @@
             "className": "WebInspector.AdvancedSearchView"
         },
         {
-            "type": "drawer-view",
+            "type": "view",
+            "location": "drawer-view",
             "name": "sources.history",
             "title": "History",
             "persistence": "temporary",
             "className": "WebInspector.RevisionHistoryView"
         },
         {
-            "type": "drawer-view",
+            "type": "view",
+            "location": "drawer-view",
             "name": "sources.quick",
             "title": "Quick source",
             "persistence": "closeable",

@@ -1277,18 +1277,18 @@ WebInspector.TabbedPaneTabDelegate.prototype = {
 /**
  * @constructor
  * @param {!WebInspector.TabbedPane} tabbedPane
- * @param {string} extensionPoint
+ * @param {string} location
  */
-WebInspector.ExtensibleTabbedPaneController = function(tabbedPane, extensionPoint)
+WebInspector.ExtensibleTabbedPaneController = function(tabbedPane, location)
 {
     this._tabbedPane = tabbedPane;
-    this._extensionPoint = extensionPoint;
+    this._location = location;
     /** @type {!Object.<string, !Promise.<?WebInspector.Widget>>} */
     this._promiseForId = {};
 
     this._tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, this._tabSelected, this);
     this._tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabClosed, this._tabClosed, this);
-    this._closeableTabSetting = WebInspector.settings.createSetting(extensionPoint + "-closeableTabs", {});
+    this._closeableTabSetting = WebInspector.settings.createSetting(location + "-closeableTabs", {});
     this._initialize();
 }
 
@@ -1297,9 +1297,12 @@ WebInspector.ExtensibleTabbedPaneController.prototype = {
     {
         /** @type {!Map.<string, !Runtime.Extension>} */
         this._extensions = new Map();
-        var extensions = self.runtime.extensions(this._extensionPoint);
+        var extensions = self.runtime.extensions("view");
 
         for (var i = 0; i < extensions.length; ++i) {
+            var location = extensions[i].descriptor()["location"];
+            if (location !== this._location)
+                continue;
             var id = extensions[i].descriptor()["name"];
             this._extensions.set(id, extensions[i]);
             if (this._isPermanentTab(id))
@@ -1340,8 +1343,10 @@ WebInspector.ExtensibleTabbedPaneController.prototype = {
      */
     _appendTabsToMenu: function(contextMenu)
     {
-        var extensions = self.runtime.extensions(this._extensionPoint, undefined, true);
+        var extensions = self.runtime.extensions("view", undefined, true);
         for (var extension of extensions) {
+            if (extension.descriptor()["location"] !== this._location)
+                continue;
             var title = WebInspector.UIString(extension.title());
             contextMenu.appendItem(title, this.showTab.bind(this, extension.descriptor()["name"]));
         }

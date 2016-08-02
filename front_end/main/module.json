@@ -323,7 +323,8 @@
             "order": 80
         },
         {
-            "type": "drawer-view",
+            "type": "view",
+            "location": "drawer-view",
             "name": "rendering",
             "title": "Rendering",
             "persistence": "closeable",

@@ -546,7 +546,7 @@ WebInspector.SettingsController.Revealer.prototype = {
 
         self.runtime.extensions("setting").forEach(revealModuleSetting);
         self.runtime.extensions(WebInspector.SettingUI).forEach(revealSettingUI);
-        self.runtime.extensions("settings-view").forEach(revealSettingsView);
+        self.runtime.extensions("view").forEach(revealSettingsView);
 
         return success ? Promise.resolve() : Promise.reject();
 
@@ -582,6 +582,9 @@ WebInspector.SettingsController.Revealer.prototype = {
          */
         function revealSettingsView(extension)
         {
+            var location = extension.descriptor()["location"];
+            if (location !== "settings-view")
+                return;
             var settings = extension.descriptor()["settings"];
             if (settings && settings.indexOf(setting.name) !== -1) {
                 InspectorFrontendHost.bringToFront();

@@ -38,7 +38,8 @@
             "tags": "device"
         },
         {
-            "type": "settings-view",
+            "type": "view",
+            "location": "settings-view",
             "name": "network-conditions",
             "title": "Throttling",
             "order": "35",

@@ -224,7 +224,7 @@ WebInspector.CSSSourceFrame.prototype = {
     onTextEditorContentSet: function()
     {
         WebInspector.UISourceCodeFrame.prototype.onTextEditorContentSet.call(this);
-        if (!this._muteColorProcessing && Runtime.experiments.isEnabled("sourceColorPicker"))
+        if (!this._muteColorProcessing)
             this._updateColorSwatches(0, this.textEditor.linesCount - 1);
     },
 
@@ -236,7 +236,7 @@ WebInspector.CSSSourceFrame.prototype = {
     onTextChanged: function(oldRange, newRange)
     {
         WebInspector.UISourceCodeFrame.prototype.onTextChanged.call(this, oldRange, newRange);
-        if (!this._muteColorProcessing && Runtime.experiments.isEnabled("sourceColorPicker"))
+        if (!this._muteColorProcessing)
             this._updateColorSwatches(newRange.startLine, newRange.endLine);
     },
 

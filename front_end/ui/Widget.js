@@ -421,14 +421,6 @@ WebInspector.Widget.prototype = {
     },
 
     /**
-     * @return {!Element}
-     */
-    defaultFocusedElement: function()
-    {
-        return this._defaultFocusedElement || this.element;
-    },
-
-    /**
      * @param {!Element} element
      */
     setDefaultFocusedElement: function(element)
@@ -438,11 +430,14 @@ WebInspector.Widget.prototype = {
 
     focus: function()
     {
-        var element = this.defaultFocusedElement();
-        if (!element || element.isAncestor(this.element.ownerDocument.activeElement))
+        var element = this._defaultFocusedElement;
+        if (element && !element.isAncestor(this.element.ownerDocument.activeElement)) {
+            WebInspector.setCurrentFocusElement(element);
             return;
+        }
 
-        WebInspector.setCurrentFocusElement(element);
+        if (this._children.length)
+            this._children[0].focus();
     },
 
     /**

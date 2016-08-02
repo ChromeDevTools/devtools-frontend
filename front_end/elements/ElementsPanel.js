@@ -287,11 +287,11 @@ WebInspector.ElementsPanel.prototype = {
 
     /**
      * @override
-     * @return {!Element}
      */
-    defaultFocusedElement: function()
+    focus: function()
     {
-        return this._treeOutlines.length ? this._treeOutlines[0].element : this.element;
+        if (this._treeOutlines.length)
+            this._treeOutlines[0].focus();
     },
 
     /**
@@ -326,7 +326,7 @@ WebInspector.ElementsPanel.prototype = {
                 else
                     treeOutline.domModel().requestDocument();
         }
-
+        this.focus();
     },
 
     willHide: function()

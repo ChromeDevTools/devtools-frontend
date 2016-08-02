@@ -43,17 +43,18 @@ WebInspector.SettingsScreen = function()
     var settingsLabelElement = createElementWithClass("div", "help-window-label");
     settingsLabelElement.createTextChild(WebInspector.UIString("Settings"));
 
-    this._tabbedPane = new WebInspector.TabbedPane();
-    this._tabbedPane.insertBeforeTabStrip(settingsLabelElement);
-    this._tabbedPane.setShrinkableTabs(false);
-    this._tabbedPane.setVerticalTabLayout(true);
-    this._tabbedPane.appendTab("preferences", WebInspector.UIString("Preferences"), new WebInspector.GenericSettingsTab());
-    this._tabbedPane.appendTab("workspace", WebInspector.UIString("Workspace"), new WebInspector.WorkspaceSettingsTab());
-    this._tabbedPane.appendTab("blackbox", WebInspector.manageBlackboxingSettingsTabLabel(), new WebInspector.FrameworkBlackboxSettingsTab());
+    this._extensibleTabbedPane = new WebInspector.ExtensibleTabbedPane("settings-view");
+    var tabbedPane = this._extensibleTabbedPane.tabbedPane();
+    tabbedPane.insertBeforeTabStrip(settingsLabelElement);
+    tabbedPane.setShrinkableTabs(false);
+    tabbedPane.setVerticalTabLayout(true);
+    tabbedPane.appendTab("preferences", WebInspector.UIString("Preferences"), new WebInspector.GenericSettingsTab());
+    tabbedPane.appendTab("workspace", WebInspector.UIString("Workspace"), new WebInspector.WorkspaceSettingsTab());
+    tabbedPane.appendTab("blackbox", WebInspector.manageBlackboxingSettingsTabLabel(), new WebInspector.FrameworkBlackboxSettingsTab());
     if (Runtime.experiments.supportEnabled())
-        this._tabbedPane.appendTab("experiments", WebInspector.UIString("Experiments"), new WebInspector.ExperimentsSettingsTab());
-    this._tabbedPaneController = new WebInspector.ExtensibleTabbedPaneController(this._tabbedPane, "settings-view");
-    this._tabbedPane.appendTab("shortcuts", WebInspector.UIString("Shortcuts"), WebInspector.shortcutsScreen.createShortcutsTabView());
+        tabbedPane.appendTab("experiments", WebInspector.UIString("Experiments"), new WebInspector.ExperimentsSettingsTab());
+    tabbedPane.appendTab("shortcuts", WebInspector.UIString("Shortcuts"), WebInspector.shortcutsScreen.createShortcutsTabView());
+    this._extensibleTabbedPane.show(this.contentElement);
 
     this.element.addEventListener("keydown", this._keyDown.bind(this), false);
     this._developerModeCounter = 0;
@@ -62,21 +63,11 @@ WebInspector.SettingsScreen = function()
 
 WebInspector.SettingsScreen.prototype = {
     /**
-     * @override
-     */
-    wasShown: function()
-    {
-        this._tabbedPane.selectTab("preferences");
-        this._tabbedPane.show(this.contentElement);
-        WebInspector.VBox.prototype.wasShown.call(this);
-    },
-
-    /**
      * @param {string} name
      */
     selectTab: function(name)
     {
-        this._tabbedPane.selectTab(name);
+        this._extensibleTabbedPane.showTab(name);
     },
 
     /**

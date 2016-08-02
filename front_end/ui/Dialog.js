@@ -76,7 +76,7 @@ WebInspector.Dialog.prototype = {
 
         // When a dialog closes, focus should be restored to the previous focused element when
         // possible, otherwise the default inspector view element.
-        WebInspector.Dialog._previousFocusedElement = WebInspector.currentFocusElement() || WebInspector.Dialog._modalHostView.defaultFocusedElement();
+        WebInspector.Dialog._previousFocusedElement = WebInspector.currentFocusElement();
 
         WebInspector.Widget.prototype.show.call(this, this._glassPane.element);
 
@@ -241,18 +241,6 @@ WebInspector.Dialog.prototype = {
             event.consume(true);
             this.detach();
         }
-    },
-
-    /**
-     * @override
-     * @return {!Element}
-     */
-    defaultFocusedElement: function()
-    {
-        var children = this.children();
-        if (children.length)
-            return children[0].defaultFocusedElement();
-        return this.element;
     },
 
     __proto__: WebInspector.Widget.prototype

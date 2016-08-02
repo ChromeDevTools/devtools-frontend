@@ -39,23 +39,6 @@ WebInspector.ConsolePanel = function()
 WebInspector.ConsolePanel.prototype = {
     /**
      * @override
-     * @return {!Element}
-     */
-    defaultFocusedElement: function()
-    {
-        return this._view.defaultFocusedElement();
-    },
-
-    /**
-     * @override
-     */
-    focus: function()
-    {
-        this._view.focus();
-    },
-
-    /**
-     * @override
      */
     wasShown: function()
     {
@@ -115,20 +98,6 @@ WebInspector.ConsolePanel.WrapperView.prototype = {
     willHide: function()
     {
         WebInspector.inspectorView.setDrawerMinimized(false);
-    },
-
-    /**
-     * @override
-     * @return {!Element}
-     */
-    defaultFocusedElement: function()
-    {
-        return this._view.defaultFocusedElement();
-    },
-
-    focus: function()
-    {
-        this._view.focus();
     },
 
     _showViewInWrapper: function()

@@ -63,16 +63,16 @@ WebInspector.SourcesPanel = function()
     this._splitWidget.setMainWidget(this.editorView);
 
     // Create navigator tabbed pane with toolbar.
-    this._navigatorTabbedPane = new WebInspector.TabbedPane();
-    this._navigatorTabbedPane.setMinimumSize(100, 25);
-    this._navigatorTabbedPane.setShrinkableTabs(true);
-    this._navigatorTabbedPane.element.classList.add("navigator-tabbed-pane");
-    this._navigatorTabbedPaneController = new WebInspector.ExtensibleTabbedPaneController(this._navigatorTabbedPane, "navigator-view");
+    this._navigatorTabbedPane = new WebInspector.ExtensibleTabbedPane("navigator-view");
+    var tabbedPane = this._navigatorTabbedPane.tabbedPane();
+    tabbedPane.setMinimumSize(100, 25);
+    tabbedPane.setShrinkableTabs(true);
+    tabbedPane.element.classList.add("navigator-tabbed-pane");
     var navigatorToolbar = new WebInspector.Toolbar("");
     var navigatorMenuButton = new WebInspector.ToolbarMenuButton(this._populateNavigatorMenu.bind(this), true);
     navigatorMenuButton.setTitle(WebInspector.UIString("More options"));
     navigatorToolbar.appendToolbarItem(navigatorMenuButton);
-    this._navigatorTabbedPane.appendAfterTabStrip(navigatorToolbar.element);
+    tabbedPane.appendAfterTabStrip(navigatorToolbar.element);
     this.editorView.setSidebarWidget(this._navigatorTabbedPane);
 
     this._sourcesView = new WebInspector.SourcesView();
@@ -182,16 +182,6 @@ WebInspector.SourcesPanel.prototype = {
         var target = /** @type {?WebInspector.Target} */ (event.data);
         this._setTarget(target);
     },
-
-    /**
-     * @override
-     * @return {!Element}
-     */
-    defaultFocusedElement: function()
-    {
-        return this._sourcesView.defaultFocusedElement();
-    },
-
     /**
      * @return {boolean}
      */
@@ -1461,20 +1451,6 @@ WebInspector.SourcesPanel.WrapperView.prototype = {
     {
         WebInspector.inspectorView.setDrawerMinimized(false);
         setImmediate(() => WebInspector.SourcesPanel.updateResizer(WebInspector.SourcesPanel.instance()));
-    },
-
-    /**
-     * @override
-     * @return {!Element}
-     */
-    defaultFocusedElement: function()
-    {
-        return this._view.defaultFocusedElement();
-    },
-
-    focus: function()
-    {
-        this._view.focus();
     },
 
     _showViewInWrapper: function()

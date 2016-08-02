@@ -50,19 +50,9 @@ WebInspector.ExtensionPanel = function(server, panelName, id, pageURL)
 
     var extensionView = new WebInspector.ExtensionView(server, this._id, pageURL, "extension");
     extensionView.show(this._searchableView.element);
-    this.setDefaultFocusedElement(extensionView.defaultFocusedElement());
 }
 
 WebInspector.ExtensionPanel.prototype = {
-    /**
-     * @override
-     * @return {!Element}
-     */
-    defaultFocusedElement: function()
-    {
-        return WebInspector.Widget.prototype.defaultFocusedElement.call(this);
-    },
-
     /**
      * @param {!WebInspector.ToolbarItem} item
      */

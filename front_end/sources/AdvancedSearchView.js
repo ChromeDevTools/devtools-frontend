@@ -274,15 +274,6 @@ WebInspector.AdvancedSearchView.prototype = {
         this._searchMessageElement.textContent = finished ? WebInspector.UIString("Search finished.") : WebInspector.UIString("Search interrupted.");
     },
 
-    /**
-     * @override
-     * @return {!Element}
-     */
-    defaultFocusedElement: function()
-    {
-        return this._search;
-    },
-
     focus: function()
     {
         WebInspector.setCurrentFocusElement(this._search);

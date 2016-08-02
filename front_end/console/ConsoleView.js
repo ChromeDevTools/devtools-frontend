@@ -313,15 +313,6 @@ WebInspector.ConsoleView.prototype = {
         });
     },
 
-    /**
-     * @override
-     * @return {!Element}
-     */
-    defaultFocusedElement: function()
-    {
-        return this._promptElement;
-    },
-
     _executionContextChanged: function()
     {
         this._prompt.clearAutoComplete(true);

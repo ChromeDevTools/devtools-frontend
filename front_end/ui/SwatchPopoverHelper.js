@@ -16,6 +16,7 @@ WebInspector.SwatchPopoverHelper = function()
     this._hideProxy = this.hide.bind(this, true);
     this._boundOnKeyDown = this._onKeyDown.bind(this);
     this._boundFocusOut = this._onFocusOut.bind(this);
+    this._isHidden = true;
 }
 
 WebInspector.SwatchPopoverHelper.prototype = {

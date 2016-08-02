@@ -111,15 +111,6 @@ WebInspector.SourceFrame.prototype = {
         return [this._sourcePosition];
     },
 
-    /**
-     * @override
-     * @return {!Element}
-     */
-    defaultFocusedElement: function()
-    {
-        return this._textEditor.defaultFocusedElement();
-    },
-
     get loaded()
     {
         return this._loaded;

@@ -142,15 +142,6 @@ WebInspector.TabbedPane.prototype = {
         this._closeableTabs = closeableTabs;
     },
 
-    /**
-     * @override
-     * @return {!Element}
-     */
-    defaultFocusedElement: function()
-    {
-        return this.visibleView ? this.visibleView.defaultFocusedElement() : this.contentElement;
-    },
-
     focus: function()
     {
         if (this.visibleView)
@@ -1276,12 +1267,15 @@ WebInspector.TabbedPaneTabDelegate.prototype = {
 
 /**
  * @constructor
- * @param {!WebInspector.TabbedPane} tabbedPane
+ * @extends {WebInspector.VBox}
  * @param {string} location
  */
-WebInspector.ExtensibleTabbedPaneController = function(tabbedPane, location)
+WebInspector.ExtensibleTabbedPane = function(location)
 {
-    this._tabbedPane = tabbedPane;
+    WebInspector.VBox.call(this);
+    this.element.classList.add("flex-auto");
+    this._tabbedPane = new WebInspector.TabbedPane();
+    this._tabbedPane.show(this.contentElement);
     this._location = location;
     /** @type {!Object.<string, !Promise.<?WebInspector.Widget>>} */
     this._promiseForId = {};
@@ -1289,10 +1283,19 @@ WebInspector.ExtensibleTabbedPaneController = function(tabbedPane, location)
     this._tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, this._tabSelected, this);
     this._tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabClosed, this._tabClosed, this);
     this._closeableTabSetting = WebInspector.settings.createSetting(location + "-closeableTabs", {});
+    this._lastSelectedTabSetting = WebInspector.settings.createSetting(location + "-selectedTab", "");
     this._initialize();
 }
 
-WebInspector.ExtensibleTabbedPaneController.prototype = {
+WebInspector.ExtensibleTabbedPane.prototype = {
+    /**
+     * @return {!WebInspector.TabbedPane}
+     */
+    tabbedPane: function()
+    {
+        return this._tabbedPane;
+    },
+
     _initialize: function()
     {
         /** @type {!Map.<string, !Runtime.Extension>} */
@@ -1310,6 +1313,15 @@ WebInspector.ExtensibleTabbedPaneController.prototype = {
             else if (this._isCloseableTab(id) && this._closeableTabSetting.get()[id])
                 this._appendTab(extensions[i]);
         }
+    },
+
+    wasShown: function()
+    {
+        if (this._wasAlreadyShown)
+            return;
+        this._wasAlreadyShown = true;
+        if (this._tabbedPane.hasTab(this._lastSelectedTabSetting.get()))
+            this._tabbedPane.selectTab(this._lastSelectedTabSetting.get());
     },
 
     /**
@@ -1380,6 +1392,8 @@ WebInspector.ExtensibleTabbedPaneController.prototype = {
     _tabSelected: function(event)
     {
         var tabId = /** @type {string} */ (event.data.tabId);
+        if (event.data["isUserGesture"])
+            this._lastSelectedTabSetting.set(tabId);
         if (!this._extensions.has(tabId))
             return;
 
@@ -1424,7 +1438,7 @@ WebInspector.ExtensibleTabbedPaneController.prototype = {
 
         /**
          * @param {!Object} object
-         * @this {WebInspector.ExtensibleTabbedPaneController}
+         * @this {WebInspector.ExtensibleTabbedPane}
          */
         function cacheView(object)
         {
@@ -1432,5 +1446,7 @@ WebInspector.ExtensibleTabbedPaneController.prototype = {
             this._tabbedPane.changeTabView(id, view);
             return view;
         }
-    }
+    },
+
+    __proto__: WebInspector.VBox.prototype
 }

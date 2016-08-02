@@ -290,7 +290,6 @@ WebInspector.InspectorView.prototype = {
     {
         this._tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, this._tabSelected, this);
         this._tabSelected();
-        this._drawer.initialPanelShown();
     },
 
     /**
@@ -300,7 +299,6 @@ WebInspector.InspectorView.prototype = {
     {
         this._tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, this._tabSelected, this);
         this.setCurrentPanel(this._panels[panelName]);
-        this._drawer.initialPanelShown();
     },
 
     _tabSelected: function()
@@ -368,14 +366,6 @@ WebInspector.InspectorView.prototype = {
         this._drawer.showView(id, immediate);
     },
 
-    /**
-     * @return {?string}
-     */
-    selectedViewInDrawer: function()
-    {
-        return this._drawer.selectedViewId();
-    },
-
     closeDrawer: function()
     {
         this._drawer.closeDrawer();
@@ -396,17 +386,6 @@ WebInspector.InspectorView.prototype = {
     isDrawerMinimized: function()
     {
         return this._drawerSplitWidget.isSidebarMinimized();
-    },
-
-    /**
-     * @override
-     * @return {!Element}
-     */
-    defaultFocusedElement: function()
-    {
-        if (this._drawer.hasFocus())
-            return this._drawer.defaultFocusedElement();
-        return this._currentPanel ? this._currentPanel.defaultFocusedElement() : null;
     },
 
     _keyPress: function(event)

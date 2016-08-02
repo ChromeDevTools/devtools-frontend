@@ -1033,15 +1033,6 @@ WebInspector.CodeMirrorTextEditor.prototype = {
         return startMarkers.concat(middleMarkers, endMarkers).filter(marker => marker.type === "bookmark");
     },
 
-    /**
-     * @override
-     * @return {!Element}
-     */
-    defaultFocusedElement: function()
-    {
-        return this.element;
-    },
-
     focus: function()
     {
         this._codeMirror.focus();

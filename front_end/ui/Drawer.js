@@ -42,22 +42,18 @@ WebInspector.Drawer = function(splitWidget)
     splitWidget.setSidebarWidget(this);
     this.setMinimumSize(0, 27);
 
-    this._tabbedPane = new WebInspector.TabbedPane();
-    this._tabbedPane.element.id = "drawer-tabbed-pane";
-    this._tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, this._tabSelected, this);
+    this._extensibleTabbedPane = new WebInspector.ExtensibleTabbedPane("drawer-view");
+    this._extensibleTabbedPane.enableMoreTabsButton();
+    var tabbedPane = this._extensibleTabbedPane.tabbedPane();
 
     var toolbar = new WebInspector.Toolbar("drawer-close-toolbar");
     var closeButton = new WebInspector.ToolbarButton(WebInspector.UIString("Close drawer"), "delete-toolbar-item");
     closeButton.addEventListener("click", this.closeDrawer.bind(this));
     toolbar.appendToolbarItem(closeButton);
-    this._tabbedPane.appendAfterTabStrip(toolbar.element);
+    tabbedPane.appendAfterTabStrip(toolbar.element);
 
-    this._extensibleTabbedPaneController = new WebInspector.ExtensibleTabbedPaneController(this._tabbedPane, "drawer-view");
-    this._extensibleTabbedPaneController.enableMoreTabsButton();
-
-    splitWidget.installResizer(this._tabbedPane.headerElement());
-    this._lastSelectedViewSetting = WebInspector.settings.createSetting("WebInspector.Drawer.lastSelectedView", "console");
-    this._tabbedPane.show(this.element);
+    splitWidget.installResizer(tabbedPane.headerElement());
+    this._extensibleTabbedPane.show(this.element);
 }
 
 WebInspector.Drawer.prototype = {
@@ -67,90 +63,32 @@ WebInspector.Drawer.prototype = {
      */
     showView: function(id, immediate)
     {
-        this._innerShow(immediate);
+        this._innerShow(immediate || false);
         WebInspector.userMetrics.drawerShown(id);
-        this._tabbedPane.focus();
-        this._extensibleTabbedPaneController.showTab(id);
+        this._extensibleTabbedPane.showTab(id);
     },
 
     showDrawer: function()
     {
-        this._innerShow();
-    },
-
-    wasShown: function()
-    {
-        var id = this._lastSelectedViewSetting.get();
-        if (!this._firstTabSelected && this._tabbedPane.hasTab(id))
-            this.showView(id);
-    },
-
-    willHide: function()
-    {
+        this._innerShow(false);
     },
 
     /**
-     * @param {boolean=} immediate
+     * @param {boolean} immediate
      */
     _innerShow: function(immediate)
     {
-        if (this.isShowing())
-            return;
-
-        this._splitWidget.showBoth(!immediate);
-
-        if (this._visibleView())
-            this._visibleView().focus();
+        if (!this.isShowing())
+            this._splitWidget.showBoth(!immediate);
+        this._extensibleTabbedPane.focus();
     },
 
     closeDrawer: function()
     {
         if (!this.isShowing())
             return;
-
         WebInspector.restoreFocusFromElement(this.element);
         this._splitWidget.hideSidebar(true);
-    },
-
-    /**
-     * @return {?WebInspector.Widget} view
-     */
-    _visibleView: function()
-    {
-        return this._tabbedPane.visibleView;
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _tabSelected: function(event)
-    {
-        this._firstTabSelected = true;
-        var tabId = this._tabbedPane.selectedTabId;
-        if (tabId && event.data["isUserGesture"])
-            this._lastSelectedViewSetting.set(tabId);
-    },
-
-    /**
-     * @override
-     * @return {!Element}
-     */
-    defaultFocusedElement: function()
-    {
-        return this._tabbedPane.defaultFocusedElement();
-    },
-
-    /**
-     * @return {?string}
-     */
-    selectedViewId: function()
-    {
-        return this._tabbedPane.selectedTabId;
-    },
-
-    initialPanelShown: function()
-    {
-        this._initialPanelWasShown = true;
     },
 
     __proto__: WebInspector.VBox.prototype

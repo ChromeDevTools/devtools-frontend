@@ -148,15 +148,6 @@ WebInspector.SourcesView.prototype = {
     },
 
     /**
-     * @override
-     * @return {!Element}
-     */
-    defaultFocusedElement: function()
-    {
-        return this._editorContainer.view.defaultFocusedElement();
-    },
-
-    /**
      * @return {!WebInspector.SearchableView}
      */
     searchableView: function()

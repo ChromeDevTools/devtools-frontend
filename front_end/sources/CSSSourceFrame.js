@@ -208,6 +208,7 @@ WebInspector.CSSSourceFrame.prototype = {
      */
     _spectrumHidden: function(commitEdit)
     {
+        this._muteColorProcessing = false;
         this._spectrum.removeEventListener(WebInspector.Spectrum.Events.SizeChanged, this._spectrumResized, this);
         this._spectrum.removeEventListener(WebInspector.Spectrum.Events.ColorChanged, this._spectrumChanged, this);
         if (!commitEdit && this._hadSpectrumChange)
@@ -215,7 +216,6 @@ WebInspector.CSSSourceFrame.prototype = {
         delete this._spectrum;
         delete this._currentSwatch;
         delete this._currentColorTextRange;
-        this._muteColorProcessing = false;
     },
 
     /**

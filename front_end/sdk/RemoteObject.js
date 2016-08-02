@@ -694,7 +694,7 @@ WebInspector.RemoteObjectImpl.prototype = {
         var setPropertyValueFunction = "function(a, b) { this[a] = b; }";
 
         var argv = [name, WebInspector.RemoteObject.toCallArgument(result)];
-        this._runtimeAgent.callFunctionOn(this._objectId, setPropertyValueFunction, argv, true, undefined, undefined, undefined, propertySetCallback);
+        this._runtimeAgent.callFunctionOn(this._objectId, setPropertyValueFunction, argv, true, undefined, undefined, undefined, undefined, propertySetCallback);
 
         /**
          * @param {?Protocol.Error} error
@@ -724,7 +724,7 @@ WebInspector.RemoteObjectImpl.prototype = {
         }
 
         var deletePropertyFunction = "function(a) { delete this[a]; return !(a in this); }";
-        this._runtimeAgent.callFunctionOn(this._objectId, deletePropertyFunction, [name], true, undefined, undefined, undefined, deletePropertyCallback);
+        this._runtimeAgent.callFunctionOn(this._objectId, deletePropertyFunction, [name], true, undefined, undefined, undefined, undefined, deletePropertyCallback);
 
         /**
          * @param {?Protocol.Error} error
@@ -768,7 +768,7 @@ WebInspector.RemoteObjectImpl.prototype = {
                 callback(this.target().runtimeModel.createRemoteObject(result), wasThrown);
         }
 
-        this._runtimeAgent.callFunctionOn(this._objectId, functionDeclaration.toString(), args, true, undefined, undefined, undefined, mycallback.bind(this));
+        this._runtimeAgent.callFunctionOn(this._objectId, functionDeclaration.toString(), args, true, undefined, undefined, undefined, undefined, mycallback.bind(this));
     },
 
     /**
@@ -789,7 +789,7 @@ WebInspector.RemoteObjectImpl.prototype = {
             callback((error || wasThrown) ? null : result.value);
         }
 
-        this._runtimeAgent.callFunctionOn(this._objectId, functionDeclaration.toString(), args, true, true, false, undefined, mycallback);
+        this._runtimeAgent.callFunctionOn(this._objectId, functionDeclaration.toString(), args, true, true, false, undefined, undefined, mycallback);
     },
 
     release: function()

@@ -399,7 +399,7 @@ WebInspector.VersionController = function()
 }
 
 WebInspector.VersionController._currentVersionName = "inspectorVersion";
-WebInspector.VersionController.currentVersion = 18;
+WebInspector.VersionController.currentVersion = 19;
 
 WebInspector.VersionController.prototype = {
     updateVersion: function()
@@ -698,6 +698,33 @@ WebInspector.VersionController.prototype = {
             newValue[newKey] = oldValue[oldKey];
         }
         setting.set(newValue);
+    },
+
+    _updateVersionFrom18To19: function()
+    {
+        var defaultColumns = {
+            status: true,
+            type: true,
+            initiator: true,
+            size: true,
+            time: true
+        };
+        var visibleColumnSettings = WebInspector.settings.createSetting("networkLogColumnsVisibility", defaultColumns);
+        var visibleColumns = visibleColumnSettings.get();
+        visibleColumns.name = true;
+        visibleColumns.timeline = true;
+
+        var configs = {};
+        for (var columnId in visibleColumns) {
+            if (!visibleColumns.hasOwnProperty(columnId))
+                continue;
+            configs[columnId.toLowerCase()] = {
+                visible: visibleColumns[columnId]
+            };
+        }
+        var newSetting = WebInspector.settings.createSetting("networkLogColumns", {});
+        newSetting.set(configs);
+        visibleColumnSettings.remove();
     },
 
     _migrateSettingsFromLocalStorage: function()

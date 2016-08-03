@@ -229,18 +229,22 @@ WebInspector.RuntimeModel.prototype = {
      * @param {string=} objectGroup
      * @param {boolean=} doNotPauseOnExceptionsAndMuteConsole
      * @param {boolean=} includeCommandLineAPI
+     * @param {boolean=} returnByValue
+     * @param {boolean=} generatePreview
+     * @param {boolean=} awaitPromise
      * @param {function(?RuntimeAgent.RemoteObject, ?RuntimeAgent.ExceptionDetails=)=} callback
      */
-    runScript: function(scriptId, executionContextId, objectGroup, doNotPauseOnExceptionsAndMuteConsole, includeCommandLineAPI, callback)
+    runScript: function(scriptId, executionContextId, objectGroup, doNotPauseOnExceptionsAndMuteConsole, includeCommandLineAPI, returnByValue, generatePreview, awaitPromise, callback)
     {
-        this._agent.runScript(scriptId, executionContextId, objectGroup, doNotPauseOnExceptionsAndMuteConsole, includeCommandLineAPI, innerCallback);
+        this._agent.runScript(scriptId, executionContextId, objectGroup, doNotPauseOnExceptionsAndMuteConsole, includeCommandLineAPI, returnByValue, generatePreview, awaitPromise, innerCallback);
 
         /**
          * @param {?Protocol.Error} error
          * @param {?RuntimeAgent.RemoteObject} result
+         * @param {boolean=} wasThrown
          * @param {?RuntimeAgent.ExceptionDetails=} exceptionDetails
          */
-        function innerCallback(error, result, exceptionDetails)
+        function innerCallback(error, result, wasThrown, exceptionDetails)
         {
             if (error) {
                 console.error(error);

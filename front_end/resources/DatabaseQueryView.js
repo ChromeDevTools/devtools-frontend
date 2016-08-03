@@ -133,7 +133,7 @@ WebInspector.DatabaseQueryView.prototype = {
         if (!query.length)
             return;
 
-        this._prompt.pushHistoryItem(query);
+        this._prompt.history().pushHistoryItem(query);
         this._prompt.setText("");
 
         this.database.executeSql(query, this._queryFinished.bind(this, query), this._queryError.bind(this, query));

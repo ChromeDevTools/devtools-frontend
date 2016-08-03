@@ -79,6 +79,8 @@ WebInspector.KeyboardShortcut.Keys = {
     Delete: { code: 46, name: "Del" },
     Zero: { code: 48, name: "0" },
     H: { code: 72, name: "H" },
+    N: { code: 78, name: "N" },
+    P: { code: 80, name: "P" },
     Meta: { code: 91, name: "Meta" },
     F1: { code: 112, name: "F1" },
     F2: { code: 113, name: "F2" },

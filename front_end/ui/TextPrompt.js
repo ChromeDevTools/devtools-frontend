@@ -831,30 +831,11 @@ WebInspector.TextPromptWithHistory = function(completions, stopCharacters)
 {
     WebInspector.TextPrompt.call(this, completions, stopCharacters);
 
-    /**
-     * @type {!Array.<string>}
-     */
-    this._data = [];
-
-    /**
-     * 1-based entry in the history stack.
-     * @type {number}
-     */
-    this._historyOffset = 1;
-
+    this._history = new WebInspector.HistoryManager();
     this._addCompletionsFromHistory = true;
 }
 
 WebInspector.TextPromptWithHistory.prototype = {
-    /**
-     * @return {!Array.<string>}
-     */
-    historyData: function()
-    {
-        // FIXME: do we need to copy this?
-        return this._data;
-    },
-
     /**
      * @override
      * @param {string} prefix
@@ -867,8 +848,9 @@ WebInspector.TextPromptWithHistory.prototype = {
         var result = [];
         var text = this.text();
         var set = new Set();
-        for (var i = this._data.length - 1; i >= 0 && result.length < 50; --i) {
-            var item = this._data[i];
+        var data =  this._history.historyData();
+        for (var i = data.length - 1; i >= 0 && result.length < 50; --i) {
+            var item = data[i];
             if (!item.startsWith(text))
                 continue;
             if (set.has(item))
@@ -880,84 +862,6 @@ WebInspector.TextPromptWithHistory.prototype = {
     },
 
     /**
-     * @param {!Array.<string>} data
-     */
-    setHistoryData: function(data)
-    {
-        this._data = [].concat(data);
-        this._historyOffset = 1;
-    },
-
-    /**
-     * @param {boolean} value
-     */
-    setAddCompletionsFromHistory: function(value)
-    {
-        this._addCompletionsFromHistory = value;
-    },
-
-    /**
-     * Pushes a committed text into the history.
-     * @param {string} text
-     */
-    pushHistoryItem: function(text)
-    {
-        if (this._uncommittedIsTop) {
-            this._data.pop();
-            delete this._uncommittedIsTop;
-        }
-
-        this._historyOffset = 1;
-        if (text === this._currentHistoryItem())
-            return;
-        this._data.push(text);
-    },
-
-    /**
-     * Pushes the current (uncommitted) text into the history.
-     */
-    _pushCurrentText: function()
-    {
-        if (this._uncommittedIsTop)
-            this._data.pop(); // Throw away obsolete uncommitted text.
-        this._uncommittedIsTop = true;
-        this.clearAutoComplete(true);
-        this._data.push(this.text());
-    },
-
-    /**
-     * @return {string|undefined}
-     */
-    _previous: function()
-    {
-        if (this._historyOffset > this._data.length)
-            return undefined;
-        if (this._historyOffset === 1)
-            this._pushCurrentText();
-        ++this._historyOffset;
-        return this._currentHistoryItem();
-    },
-
-    /**
-     * @return {string|undefined}
-     */
-    _next: function()
-    {
-        if (this._historyOffset === 1)
-            return undefined;
-        --this._historyOffset;
-        return this._currentHistoryItem();
-    },
-
-    /**
-     * @return {string|undefined}
-     */
-    _currentHistoryItem: function()
-    {
-        return this._data[this._data.length - this._historyOffset];
-    },
-
-    /**
      * @override
      */
     onKeyDown: function(event)
@@ -965,35 +869,35 @@ WebInspector.TextPromptWithHistory.prototype = {
         var newText;
         var isPrevious;
 
-        switch (event.key) {
-        case "ArrowUp":
+        switch (event.keyCode) {
+        case WebInspector.KeyboardShortcut.Keys.Up.code:
             if (!this.isCaretOnFirstLine() || this.isSuggestBoxVisible())
                 break;
-            newText = this._previous();
+            debugger;
+            newText = this._history.previous(this.text());
             isPrevious = true;
             break;
-        case "ArrowDown":
+        case WebInspector.KeyboardShortcut.Keys.Down.code:
             if (!this.isCaretOnLastLine() || this.isSuggestBoxVisible())
                 break;
-            newText = this._next();
+            newText = this._history.next();
             break;
-        case "P": // Ctrl+P = Previous
-        case "p":
+        case WebInspector.KeyboardShortcut.Keys.P.code: // Ctrl+P = Previous
             if (WebInspector.isMac() && event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey) {
-                newText = this._previous();
+                newText = this._history.previous(this.text());
                 isPrevious = true;
             }
             break;
-        case "N": // Ctrl+N = Next
-        case "n":
+        case WebInspector.KeyboardShortcut.Keys.N.code: // Ctrl+N = Next
             if (WebInspector.isMac() && event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey)
-                newText = this._next();
+                newText = this._history.next();
             break;
         }
 
         if (newText !== undefined) {
             event.consume(true);
             this.setText(newText);
+            this.clearAutoComplete(true);
 
             if (isPrevious) {
                 var firstNewlineIndex = this.text().indexOf("\n");
@@ -1017,6 +921,119 @@ WebInspector.TextPromptWithHistory.prototype = {
         WebInspector.TextPrompt.prototype.onKeyDown.apply(this, arguments);
     },
 
+    /**
+     * @param {boolean} value
+     */
+    setAddCompletionsFromHistory: function(value)
+    {
+        this._addCompletionsFromHistory = value;
+    },
+
+    /**
+     * @return {!WebInspector.HistoryManager}
+     */
+    history: function()
+    {
+        return this._history;
+    },
+
     __proto__: WebInspector.TextPrompt.prototype
 }
 
+/**
+ * @constructor
+ */
+WebInspector.HistoryManager = function()
+{
+    /**
+     * @type {!Array.<string>}
+     */
+    this._data = [];
+
+    /**
+     * 1-based entry in the history stack.
+     * @type {number}
+     */
+    this._historyOffset = 1;
+}
+
+WebInspector.HistoryManager.prototype = {
+    /**
+     * @return {!Array.<string>}
+     */
+    historyData: function()
+    {
+        return this._data;
+    },
+
+    /**
+     * @param {!Array.<string>} data
+     */
+    setHistoryData: function(data)
+    {
+        this._data = data.slice();
+        this._historyOffset = 1;
+    },
+
+    /**
+     * Pushes a committed text into the history.
+     * @param {string} text
+     */
+    pushHistoryItem: function(text)
+    {
+        if (this._uncommittedIsTop) {
+            this._data.pop();
+            delete this._uncommittedIsTop;
+        }
+
+        this._historyOffset = 1;
+        if (text === this._currentHistoryItem())
+            return;
+        this._data.push(text);
+    },
+
+    /**
+     * Pushes the current (uncommitted) text into the history.
+     * @param {string} currentText
+     */
+    _pushCurrentText: function(currentText)
+    {
+        if (this._uncommittedIsTop)
+            this._data.pop(); // Throw away obsolete uncommitted text.
+        this._uncommittedIsTop = true;
+        this._data.push(currentText);
+    },
+
+    /**
+     * @param {string} currentText
+     * @return {string|undefined}
+     */
+    previous: function(currentText)
+    {
+        if (this._historyOffset > this._data.length)
+            return undefined;
+        if (this._historyOffset === 1)
+            this._pushCurrentText(currentText);
+        ++this._historyOffset;
+        return this._currentHistoryItem();
+    },
+
+    /**
+     * @return {string|undefined}
+     */
+    next: function()
+    {
+        if (this._historyOffset === 1)
+            return undefined;
+        --this._historyOffset;
+        return this._currentHistoryItem();
+    },
+
+    /**
+     * @return {string|undefined}
+     */
+    _currentHistoryItem: function()
+    {
+        return this._data[this._data.length - this._historyOffset];
+    }
+};

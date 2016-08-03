@@ -139,7 +139,7 @@ WebInspector.ConsoleView = function()
 
     this._consoleHistorySetting = WebInspector.settings.createLocalSetting("consoleHistory", []);
     var historyData = this._consoleHistorySetting.get();
-    this._prompt.setHistoryData(historyData);
+    this._prompt.history().setHistoryData(historyData);
 
     this._consoleHistoryAutocompleteSetting = WebInspector.moduleSetting("consoleHistoryAutocomplete");
     this._consoleHistoryAutocompleteSetting.addChangeListener(this._consoleHistoryAutocompleteChanged, this);
@@ -170,7 +170,7 @@ WebInspector.ConsoleView.prototype = {
     _clearHistory: function()
     {
         this._consoleHistorySetting.set([]);
-        this._prompt.setHistoryData([]);
+        this._prompt.history().setHistoryData([]);
     },
 
     _consoleHistoryAutocompleteChanged: function()
@@ -814,8 +814,8 @@ WebInspector.ConsoleView.prototype = {
     _commandEvaluated: function(event)
     {
         var data = /** @type {{result: ?WebInspector.RemoteObject, wasThrown: boolean, text: string, commandMessage: !WebInspector.ConsoleMessage, exceptionDetails: (?RuntimeAgent.ExceptionDetails|undefined)}} */ (event.data);
-        this._prompt.pushHistoryItem(data.text);
-        this._consoleHistorySetting.set(this._prompt.historyData().slice(-WebInspector.ConsoleView.persistedHistorySize));
+        this._prompt.history().pushHistoryItem(data.text);
+        this._consoleHistorySetting.set(this._prompt.history().historyData().slice(-WebInspector.ConsoleView.persistedHistorySize));
         this._printResult(data.result, data.wasThrown, data.commandMessage, data.exceptionDetails);
     },
 

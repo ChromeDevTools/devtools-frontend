@@ -873,7 +873,6 @@ WebInspector.TextPromptWithHistory.prototype = {
         case WebInspector.KeyboardShortcut.Keys.Up.code:
             if (!this.isCaretOnFirstLine() || this.isSuggestBoxVisible())
                 break;
-            debugger;
             newText = this._history.previous(this.text());
             isPrevious = true;
             break;

@@ -48,11 +48,6 @@ WebInspector.SettingsScreen = function()
     tabbedPane.insertBeforeTabStrip(settingsLabelElement);
     tabbedPane.setShrinkableTabs(false);
     tabbedPane.setVerticalTabLayout(true);
-    tabbedPane.appendTab("preferences", WebInspector.UIString("Preferences"), new WebInspector.GenericSettingsTab());
-    tabbedPane.appendTab("workspace", WebInspector.UIString("Workspace"), new WebInspector.WorkspaceSettingsTab());
-    tabbedPane.appendTab("blackbox", WebInspector.manageBlackboxingSettingsTabLabel(), new WebInspector.FrameworkBlackboxSettingsTab());
-    if (Runtime.experiments.supportEnabled())
-        tabbedPane.appendTab("experiments", WebInspector.UIString("Experiments"), new WebInspector.ExperimentsSettingsTab());
     tabbedPane.appendTab("shortcuts", WebInspector.UIString("Shortcuts"), WebInspector.shortcutsScreen.createShortcutsTabView());
     this._extensibleTabbedPane.show(this.contentElement);
 
@@ -480,10 +475,8 @@ WebInspector.SettingsController.prototype = {
         var dialog = new WebInspector.Dialog();
         dialog.addCloseButton();
         this._settingsScreen.show(dialog.element);
+        this._settingsScreen.selectTab(name || "preferences");
         dialog.show();
-
-        if (name)
-            this._settingsScreen.selectTab(name);
     }
 }
 

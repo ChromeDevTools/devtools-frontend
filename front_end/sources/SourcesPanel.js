@@ -63,7 +63,7 @@ WebInspector.SourcesPanel = function()
     this._splitWidget.setMainWidget(this.editorView);
 
     // Create navigator tabbed pane with toolbar.
-    this._navigatorTabbedPane = new WebInspector.ExtensibleTabbedPane("navigator-view");
+    this._navigatorTabbedPane = new WebInspector.ExtensibleTabbedPane("navigator-view", true);
     var tabbedPane = this._navigatorTabbedPane.tabbedPane();
     tabbedPane.setMinimumSize(100, 25);
     tabbedPane.setShrinkableTabs(true);

@@ -169,7 +169,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
         infobar.createDetailsRowMessage();
         infobar.createDetailsRowMessage(WebInspector.UIString("Possible ways to cancel this behavior are:"));
 
-        infobar.createDetailsRowMessage(" - ").createTextChild(WebInspector.UIString("Go to \"%s\" tab in settings", WebInspector.manageBlackboxingSettingsTabLabel()));
+        infobar.createDetailsRowMessage(" - ").createTextChild(WebInspector.UIString("Go to \"%s\" tab in settings", WebInspector.UIString("Blackboxing")));
         var unblackboxLink = infobar.createDetailsRowMessage(" - ").createChild("span", "link");
         unblackboxLink.textContent = WebInspector.UIString("Unblackbox this script");
         unblackboxLink.addEventListener("click", unblackbox, false);

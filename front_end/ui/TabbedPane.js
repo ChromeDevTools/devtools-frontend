@@ -1269,8 +1269,9 @@ WebInspector.TabbedPaneTabDelegate.prototype = {
  * @constructor
  * @extends {WebInspector.VBox}
  * @param {string} location
+ * @param {boolean=} restoreSelection
  */
-WebInspector.ExtensibleTabbedPane = function(location)
+WebInspector.ExtensibleTabbedPane = function(location, restoreSelection)
 {
     WebInspector.VBox.call(this);
     this.element.classList.add("flex-auto");
@@ -1283,7 +1284,8 @@ WebInspector.ExtensibleTabbedPane = function(location)
     this._tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, this._tabSelected, this);
     this._tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabClosed, this._tabClosed, this);
     this._closeableTabSetting = WebInspector.settings.createSetting(location + "-closeableTabs", {});
-    this._lastSelectedTabSetting = WebInspector.settings.createSetting(location + "-selectedTab", "");
+    if (restoreSelection)
+        this._lastSelectedTabSetting = WebInspector.settings.createSetting(location + "-selectedTab", "");
     this._initialize();
 }
 
@@ -1317,7 +1319,7 @@ WebInspector.ExtensibleTabbedPane.prototype = {
 
     wasShown: function()
     {
-        if (this._wasAlreadyShown)
+        if (this._wasAlreadyShown || !this._lastSelectedTabSetting)
             return;
         this._wasAlreadyShown = true;
         if (this._tabbedPane.hasTab(this._lastSelectedTabSetting.get()))
@@ -1392,7 +1394,7 @@ WebInspector.ExtensibleTabbedPane.prototype = {
     _tabSelected: function(event)
     {
         var tabId = /** @type {string} */ (event.data.tabId);
-        if (event.data["isUserGesture"])
+        if (this._lastSelectedTabSetting && event.data["isUserGesture"])
             this._lastSelectedTabSetting.set(tabId);
         if (!this._extensions.has(tabId))
             return;

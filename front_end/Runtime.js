@@ -810,6 +810,8 @@ Runtime.Module.prototype = {
 Runtime._isDescriptorEnabled = function(descriptor)
 {
     var activatorExperiment = descriptor["experiment"];
+    if (activatorExperiment === "*")
+        return Runtime.experiments.supportEnabled();
     if (activatorExperiment && activatorExperiment.startsWith("!") && Runtime.experiments.isEnabled(activatorExperiment.substring(1)))
         return false;
     if (activatorExperiment && !activatorExperiment.startsWith("!") && !Runtime.experiments.isEnabled(activatorExperiment))

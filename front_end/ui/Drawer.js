@@ -42,7 +42,7 @@ WebInspector.Drawer = function(splitWidget)
     splitWidget.setSidebarWidget(this);
     this.setMinimumSize(0, 27);
 
-    this._extensibleTabbedPane = new WebInspector.ExtensibleTabbedPane("drawer-view");
+    this._extensibleTabbedPane = new WebInspector.ExtensibleTabbedPane("drawer-view", true);
     this._extensibleTabbedPane.enableMoreTabsButton();
     var tabbedPane = this._extensibleTabbedPane.tabbedPane();
 

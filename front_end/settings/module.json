@@ -48,6 +48,40 @@
             "location": "mainMenu/footer",
             "order": 30,
             "actionId": "settings.help"
+        },
+        {
+            "type": "view",
+            "location": "settings-view",
+            "name": "preferences",
+            "title": "Preferences",
+            "order": "0",
+            "className": "WebInspector.GenericSettingsTab"
+        },
+        {
+            "type": "view",
+            "location": "settings-view",
+            "name": "workspace",
+            "title": "Workspace",
+            "order": "1",
+            "className": "WebInspector.WorkspaceSettingsTab"
+        },
+        {
+            "type": "view",
+            "location": "settings-view",
+            "name": "experiments",
+            "title": "Experiments",
+            "order": "2",
+            "experiment": "*",
+            "className": "WebInspector.ExperimentsSettingsTab"
+        },
+        {
+            "type": "view",
+            "location": "settings-view",
+            "name": "blackbox",
+            "title": "Blackboxing",
+            "order": "3",
+            "experiment": "*",
+            "className": "WebInspector.FrameworkBlackboxSettingsTab"
         }
     ],
     "dependencies": [

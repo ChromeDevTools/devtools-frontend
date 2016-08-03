@@ -743,14 +743,6 @@ WebInspector.asyncStackTraceLabel = function(description)
 }
 
 /**
- * @return {string}
- */
-WebInspector.manageBlackboxingSettingsTabLabel = function()
-{
-    return WebInspector.UIString("Blackboxing");
-}
-
-/**
  * @param {!Element} element
  */
 WebInspector.installComponentRootStyles = function(element)

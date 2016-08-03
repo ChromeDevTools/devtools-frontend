@@ -67,6 +67,19 @@
         {
             "type": "setting",
             "category": "Elements",
+            "order": 3,
+            "title": "Show HTML comments",
+            "settingName": "showHTMLComments",
+            "settingType": "boolean",
+            "defaultValue": true,
+            "options": [
+                { "value": true, "title": "Show HTML comments" },
+                { "value": false, "title": "Hide HTML comments" }
+            ]
+        },
+        {
+            "type": "setting",
+            "category": "Elements",
             "order": 4,
             "title": "Reveal DOM node on hover",
             "settingName": "highlightNodeOnHoverInOverlay",

@@ -83,6 +83,7 @@ WebInspector.ElementsTreeOutline = function(domModel, omitRootDOMNode, selectEna
     this._treeElementsBeingUpdated = new Set();
 
     this._domModel.addEventListener(WebInspector.DOMModel.Events.MarkersChanged, this._markersChanged, this);
+    WebInspector.moduleSetting("showHTMLComments").addChangeListener(this._onShowHTMLCommentsChange.bind(this));
 }
 
 WebInspector.ElementsTreeOutline._treeOutlineSymbol = Symbol("treeOutline");
@@ -133,6 +134,14 @@ WebInspector.ElementsTreeOutline.MappedCharToEntity = {
 }
 
 WebInspector.ElementsTreeOutline.prototype = {
+    _onShowHTMLCommentsChange: function()
+    {
+        var selectedNode = this.selectedDOMNode();
+        if (selectedNode && selectedNode.nodeType() === Node.COMMENT_NODE && !WebInspector.moduleSetting("showHTMLComments").get())
+            this.selectDOMNode(selectedNode.parentNode);
+        this.update();
+    },
+
     /**
      * @return {symbol}
      */
@@ -434,28 +443,20 @@ WebInspector.ElementsTreeOutline.prototype = {
 
     update: function()
     {
-        var selectedTreeElement = this.selectedTreeElement;
-        if (!(selectedTreeElement instanceof WebInspector.ElementsTreeElement))
-            selectedTreeElement = null;
-
-        var selectedNode = selectedTreeElement ? selectedTreeElement.node() : null;
-
+        var selectedNode = this.selectedDOMNode();
         this.removeChildren();
-
         if (!this.rootDOMNode)
             return;
 
-        var treeElement;
         if (this._includeRootDOMNode) {
-            treeElement = this._createElementTreeElement(this.rootDOMNode);
+            var treeElement = this._createElementTreeElement(this.rootDOMNode);
             this.appendChild(treeElement);
         } else {
             // FIXME: this could use findTreeElement to reuse a tree element if it already exists
-            var node = this.rootDOMNode.firstChild;
-            while (node) {
-                treeElement = this._createElementTreeElement(node);
+            var children = this._visibleChildren(this.rootDOMNode);
+            for (var child of children) {
+                var treeElement = this._createElementTreeElement(child);
                 this.appendChild(treeElement);
-                node = node.nextSibling;
             }
         }
 
@@ -1348,8 +1349,12 @@ WebInspector.ElementsTreeOutline.prototype = {
         if (beforePseudoElement)
             visibleChildren.push(beforePseudoElement);
 
-        if (node.childNodeCount())
-            visibleChildren = visibleChildren.concat(node.children());
+        if (node.childNodeCount()) {
+            var children = node.children();
+            if (!WebInspector.moduleSetting("showHTMLComments").get())
+                children = children.filter(n => n.nodeType() !== Node.COMMENT_NODE);
+            visibleChildren = visibleChildren.concat(children);
+        }
 
         var afterPseudoElement = node.afterPseudoElement();
         if (afterPseudoElement)

@@ -75,10 +75,21 @@ WebInspector.AdvancedSearchView.prototype = {
     {
         if (queryCandidate)
             this._search.value = queryCandidate;
+
         if (this.isShowing())
             this.focus();
+        else
+            this._focusOnShow = true;
 
         this._startIndexing();
+    },
+
+    wasShown: function()
+    {
+        if (this._focusOnShow) {
+            this.focus();
+            delete this._focusOnShow;
+        }
     },
 
     _onIndexingFinished: function()

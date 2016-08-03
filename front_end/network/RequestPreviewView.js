@@ -55,17 +55,20 @@ WebInspector.RequestPreviewView.prototype = {
                 delete this._emptyWidget;
             }
 
-            if (!this._previewView)
+            if (!this._previewView) {
                 this._createPreviewView(handlePreviewView.bind(this));
-            else
+            } else {
                 this.innerView = this._previewView;
+                handlePreviewView.call(this, this.innerView);
+            }
         }
 
         /**
          * @param {!WebInspector.Widget} view
          * @this {WebInspector.RequestPreviewView}
          */
-        function handlePreviewView(view) {
+        function handlePreviewView(view)
+        {
             this._previewView = view;
             this._previewView.show(this.element);
             if (this._previewView instanceof WebInspector.View) {

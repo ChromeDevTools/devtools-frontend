@@ -304,7 +304,7 @@ WebInspector.BlockedURLsPane.ActionDelegate.prototype = {
      */
     handleAction: function(context, actionId)
     {
-        WebInspector.inspectorView.showViewInDrawer("network.blocked-urls");
+        WebInspector.viewManager.showView("network.blocked-urls");
         return true;
     }
 }

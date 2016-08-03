@@ -350,7 +350,7 @@ WebInspector.AdvancedSearchView.prototype = {
  */
 WebInspector.AdvancedSearchView.openSearch = function(query, filePath)
 {
-    WebInspector.inspectorView.showViewInDrawer("sources.search");
+    WebInspector.viewManager.showView("sources.search");
     var searchView = /** @type {!WebInspector.AdvancedSearchView} */ (self.runtime.sharedInstance(WebInspector.AdvancedSearchView));
     var fileMask = filePath ? " file:" + filePath : "";
     searchView._toggle(query + fileMask);

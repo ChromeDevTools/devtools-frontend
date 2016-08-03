@@ -325,7 +325,7 @@
         {
             "type": "view",
             "location": "drawer-view",
-            "name": "rendering",
+            "id": "rendering",
             "title": "Rendering",
             "persistence": "closeable",
             "order": 50,
@@ -342,6 +342,11 @@
                 { "value": "bottom", "title": "Dock to bottom" },
                 { "value": "undocked", "title": "Undock into separate window" }
             ]
+        },
+        {
+            "type": "@WebInspector.ViewLocationResolver",
+            "name": "drawer-view",
+            "className": "WebInspector.InspectorView"
         }
     ],
     "dependencies": [

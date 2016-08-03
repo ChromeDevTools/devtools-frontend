@@ -711,48 +711,6 @@ WebInspector.VBoxWithResizeCallback.prototype = {
 }
 
 /**
- * @constructor
- * @extends {WebInspector.VBox}
- * @param {string} title
- * @param {boolean=} isWebComponent
- */
-WebInspector.View = function(title, isWebComponent)
-{
-    WebInspector.VBox.call(this, isWebComponent);
-    this._title = title;
-    /** @type {!Array<!WebInspector.ToolbarItem>} */
-    this._toolbarItems = [];
-}
-
-WebInspector.View.prototype = {
-    /**
-     * @return {string}
-     */
-    title: function()
-    {
-        return this._title;
-    },
-
-    /**
-     * @param {!WebInspector.ToolbarItem} item
-     */
-    addToolbarItem: function(item)
-    {
-        this._toolbarItems.push(item);
-    },
-
-    /**
-     * @return {!Array<!WebInspector.ToolbarItem>}
-     */
-    toolbarItems: function()
-    {
-        return this._toolbarItems;
-    },
-
-    __proto__: WebInspector.VBox.prototype
-}
-
-/**
  * @override
  * @param {?Node} child
  * @return {?Node}

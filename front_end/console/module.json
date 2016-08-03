@@ -10,7 +10,7 @@
         {
             "type": "view",
             "location": "drawer-view",
-            "name": "console",
+            "id": "console",
             "title": "Console",
             "persistence": "permanent",
             "order": 0,

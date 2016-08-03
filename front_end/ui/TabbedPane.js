@@ -1268,6 +1268,7 @@ WebInspector.TabbedPaneTabDelegate.prototype = {
 /**
  * @constructor
  * @extends {WebInspector.VBox}
+ * @implements {WebInspector.ViewLocation}
  * @param {string} location
  * @param {boolean=} restoreSelection
  */
@@ -1308,7 +1309,7 @@ WebInspector.ExtensibleTabbedPane.prototype = {
             var location = extensions[i].descriptor()["location"];
             if (location !== this._location)
                 continue;
-            var id = extensions[i].descriptor()["name"];
+            var id = extensions[i].descriptor()["id"];
             this._extensions.set(id, extensions[i]);
             if (this._isPermanentTab(id))
                 this._appendTab(extensions[i]);
@@ -1362,7 +1363,7 @@ WebInspector.ExtensibleTabbedPane.prototype = {
             if (extension.descriptor()["location"] !== this._location)
                 continue;
             var title = WebInspector.UIString(extension.title());
-            contextMenu.appendItem(title, this.showTab.bind(this, extension.descriptor()["name"]));
+            contextMenu.appendItem(title, this.showView.bind(this, extension.descriptor()["id"]));
         }
     },
 
@@ -1372,19 +1373,21 @@ WebInspector.ExtensibleTabbedPane.prototype = {
     _appendTab: function(extension)
     {
         var descriptor = extension.descriptor();
-        var id = descriptor["name"];
+        var id = descriptor["id"];
         var title = WebInspector.UIString(extension.title());
         var closeable = descriptor["persistence"] === "closeable" || descriptor["persistence"] === "temporary";
         this._tabbedPane.appendTab(id, title, new WebInspector.Widget(), undefined, false, closeable);
     },
 
     /**
+     * @override
      * @param {string} id
      */
-    showTab: function(id)
+    showView: function(id)
     {
         if (!this._tabbedPane.hasTab(id))
             this._appendTab(/** @type {!Runtime.Extension} */(this._extensions.get(id)));
+        this._tabbedPane.focus();
         this._tabbedPane.selectTab(id);
     },
 

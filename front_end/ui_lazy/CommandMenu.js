@@ -332,8 +332,8 @@ WebInspector.CommandMenu.createRevealPanelCommand = function(extension)
  */
 WebInspector.CommandMenu.createRevealDrawerCommand = function(extension)
 {
-    var drawerId = extension.descriptor()["name"];
-    var executeHandler = WebInspector.inspectorView.showViewInDrawer.bind(WebInspector.inspectorView, drawerId);
+    var drawerId = extension.descriptor()["id"];
+    var executeHandler = WebInspector.viewManager.showView.bind(WebInspector.viewManager, drawerId);
     var tags = extension.descriptor()["tags"] || "";
     return WebInspector.CommandMenu.createCommand(WebInspector.UIString("Drawer"), tags, WebInspector.UIString("Show %s", extension.title()), "", executeHandler);
 }

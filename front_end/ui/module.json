@@ -6,8 +6,8 @@
     ],
     "scripts": [
         "Widget.js",
+        "View.js",
         "treeoutline.js",
-        "Drawer.js",
         "InspectorView.js",
         "ActionRegistry.js",
         "ShortcutRegistry.js",

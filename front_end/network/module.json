@@ -61,7 +61,7 @@
         {
             "type": "view",
             "location": "drawer-view",
-            "name": "network.blocked-urls",
+            "id": "network.blocked-urls",
             "title": "Request blocking",
             "persistence": "closeable",
             "order": 60,
@@ -71,7 +71,7 @@
         {
             "type": "view",
             "location": "drawer-view",
-            "name": "network.config",
+            "id": "network.config",
             "title": "Network conditions",
             "persistence": "closeable",
             "order": 40,

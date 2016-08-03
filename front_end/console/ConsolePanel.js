@@ -129,7 +129,7 @@ WebInspector.ConsolePanel.ConsoleRevealer.prototype = {
             consoleView.focus();
             return Promise.resolve();
         }
-        WebInspector.inspectorView.showViewInDrawer("console");
+        WebInspector.viewManager.showView("console");
         return Promise.resolve();
     }
 }

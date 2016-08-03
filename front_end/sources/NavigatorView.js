@@ -152,6 +152,14 @@ WebInspector.NavigatorView.appendSearchItem = function(contextMenu, path)
 
 WebInspector.NavigatorView.prototype = {
     /**
+     * @override
+     */
+    focus: function()
+    {
+        this._scriptsTree.focus();
+    },
+
+    /**
      * @param {!WebInspector.Workspace} workspace
      */
     _resetWorkspace: function(workspace)

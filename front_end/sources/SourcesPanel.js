@@ -29,6 +29,7 @@
  * @extends {WebInspector.Panel}
  * @implements {WebInspector.ContextMenu.Provider}
  * @implements {WebInspector.TargetManager.Observer}
+ * @implements {WebInspector.ViewLocationResolver}
  */
 WebInspector.SourcesPanel = function()
 {
@@ -211,6 +212,17 @@ WebInspector.SourcesPanel.prototype = {
             WebInspector.inspectorView.setDrawerMinimized(false);
             WebInspector.SourcesPanel.updateResizer(this);
         }
+    },
+
+    /**
+     * @override
+     * @param {string} locationName
+     * @return {?WebInspector.ViewLocation}
+     */
+    resolveLocation: function(locationName)
+    {
+        WebInspector.inspectorView.setCurrentPanel(WebInspector.SourcesPanel.instance());
+        return this._navigatorTabbedPane;
     },
 
     /**
@@ -405,7 +417,7 @@ WebInspector.SourcesPanel.prototype = {
      */
     _revealInNavigator: function(uiSourceCode)
     {
-        var extensions = self.runtime.extensions("view").filter(extension => extension.descriptor()["location"] === "navigator-view");
+        var extensions = self.runtime.extensions(WebInspector.NavigatorView);
         Promise.all(extensions.map(extension => extension.instance())).then(filterNavigators);
 
         /**
@@ -416,8 +428,8 @@ WebInspector.SourcesPanel.prototype = {
             for (var i = 0; i < objects.length; ++i) {
                 var navigatorView = /** @type {!WebInspector.NavigatorView} */ (objects[i]);
                 if (navigatorView.accept(uiSourceCode)) {
-                    navigatorView.revealWidget();
                     navigatorView.revealUISourceCode(uiSourceCode, true);
+                    WebInspector.viewManager.showView(extensions[i].descriptor()["viewId"]);
                 }
             }
         }

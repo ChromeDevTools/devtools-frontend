@@ -31,6 +31,7 @@
 /**
  * @constructor
  * @extends {WebInspector.VBox}
+ * @implements {WebInspector.ViewLocationResolver}
  */
 WebInspector.InspectorView = function()
 {
@@ -41,9 +42,23 @@ WebInspector.InspectorView = function()
     // DevTools sidebar is a vertical split of panels tabbed pane and a drawer.
     this._drawerSplitWidget = new WebInspector.SplitWidget(false, true, "Inspector.drawerSplitViewState", 200, 200);
     this._drawerSplitWidget.hideSidebar();
+    this._drawerSplitWidget.hideDefaultResizer();
     this._drawerSplitWidget.enableShowModeSaving();
     this._drawerSplitWidget.show(this.element);
 
+    // Create drawer tabbed pane.
+    this._drawerTabbedPane = new WebInspector.ExtensibleTabbedPane("drawer-view", true);
+    this._drawerTabbedPane.setMinimumSize(0, 27);
+    this._drawerTabbedPane.enableMoreTabsButton();
+    var drawerToolbar = new WebInspector.Toolbar("drawer-close-toolbar");
+    var closeDrawerButton = new WebInspector.ToolbarButton(WebInspector.UIString("Close drawer"), "delete-toolbar-item");
+    closeDrawerButton.addEventListener("click", this.closeDrawer.bind(this));
+    drawerToolbar.appendToolbarItem(closeDrawerButton);
+    this._drawerTabbedPane.tabbedPane().appendAfterTabStrip(drawerToolbar.element);
+    this._drawerSplitWidget.installResizer(this._drawerTabbedPane.tabbedPane().headerElement());
+    this._drawerSplitWidget.setSidebarWidget(this._drawerTabbedPane);
+
+    // Create main area tabbed pane.
     this._tabbedPane = new WebInspector.TabbedPane();
     this._tabbedPane.registerRequiredCSS("ui/inspectorViewTabbedPane.css");
     this._tabbedPane.element.classList.add("inspector-view-tabbed-pane");
@@ -52,7 +67,6 @@ WebInspector.InspectorView = function()
     this._tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabOrderChanged, this._persistPanelOrder, this);
     this._tabOrderSetting = WebInspector.settings.createSetting("InspectorView.panelOrder", {});
     this._drawerSplitWidget.setMainWidget(this._tabbedPane);
-    this._drawer = new WebInspector.Drawer(this._drawerSplitWidget);
 
     this._panels = {};
     // Used by tests.
@@ -81,7 +95,15 @@ WebInspector.InspectorView = function()
         var panelName = /** @type {string} */ (event.data);
         this.showPanel(panelName);
     }
-};
+}
+
+/**
+ * @return {!WebInspector.InspectorView}
+ */
+WebInspector.InspectorView.instance = function()
+{
+    return /** @type {!WebInspector.InspectorView} */ (self.runtime.sharedInstance(WebInspector.InspectorView));
+}
 
 WebInspector.InspectorView.prototype = {
     wasShown: function()
@@ -94,6 +116,17 @@ WebInspector.InspectorView.prototype = {
     {
         this.element.ownerDocument.removeEventListener("keydown", this._keyDownBound, false);
         this.element.ownerDocument.removeEventListener("keypress", this._keyPressBound, false);
+    },
+
+    /**
+     * @override
+     * @param {string} locationName
+     * @return {?WebInspector.ViewLocation}
+     */
+    resolveLocation: function(locationName)
+    {
+        this.showDrawer();
+        return this._drawerTabbedPane;
     },
 
     _loadPanelDesciptors: function()
@@ -346,7 +379,9 @@ WebInspector.InspectorView.prototype = {
 
     showDrawer: function()
     {
-        this._drawer.showDrawer();
+        if (!this._drawerTabbedPane.isShowing())
+            this._drawerSplitWidget.showBoth();
+        this._drawerTabbedPane.focus();
     },
 
     /**
@@ -354,21 +389,15 @@ WebInspector.InspectorView.prototype = {
      */
     drawerVisible: function()
     {
-        return this._drawer.isShowing();
-    },
-
-    /**
-     * @param {string} id
-     * @param {boolean=} immediate
-     */
-    showViewInDrawer: function(id, immediate)
-    {
-        this._drawer.showView(id, immediate);
+        return this._drawerTabbedPane.isShowing();
     },
 
     closeDrawer: function()
     {
-        this._drawer.closeDrawer();
+        if (!this._drawerTabbedPane.isShowing())
+            return;
+        WebInspector.restoreFocusFromElement(this._drawerTabbedPane.element);
+        this._drawerSplitWidget.hideSidebar(true);
     },
 
     /**

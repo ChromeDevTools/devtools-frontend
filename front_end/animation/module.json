@@ -3,7 +3,7 @@
         {
             "type": "view",
             "location": "drawer-view",
-            "name": "animations",
+            "id": "animations",
             "title": "Animations",
             "persistence": "closeable",
             "order": 0,

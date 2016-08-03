@@ -3,7 +3,7 @@
         {
             "type": "view",
             "location": "drawer-view",
-            "name": "remote-devices",
+            "id": "remote-devices",
             "title": "Remote devices",
             "persistence": "closeable",
             "order": 50,

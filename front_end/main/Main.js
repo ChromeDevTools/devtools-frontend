@@ -31,26 +31,15 @@
 /**
  * @constructor
  * @implements {InspectorAgent.Dispatcher}
- * @implements {WebInspector.Console.UIDelegate}
  * @suppressGlobalPropertiesCheck
  */
 WebInspector.Main = function()
 {
-    WebInspector.console.setUIDelegate(this);
     WebInspector.Main._instanceForTest = this;
     runOnWindowLoad(this._loaded.bind(this));
 }
 
 WebInspector.Main.prototype = {
-    /**
-     * @override
-     * @return {!Promise.<undefined>}
-     */
-    showConsole: function()
-    {
-        return WebInspector.Revealer.revealPromise(WebInspector.console);
-    },
-
     _loaded: function()
     {
         console.timeStamp("Main._loaded");
@@ -156,7 +145,7 @@ WebInspector.Main.prototype = {
 
         var canDock = !!Runtime.queryParam("can_dock");
         WebInspector.zoomManager = new WebInspector.ZoomManager(window, InspectorFrontendHost);
-        WebInspector.inspectorView = new WebInspector.InspectorView();
+        WebInspector.inspectorView = WebInspector.InspectorView.instance();
         WebInspector.ContextMenu.initialize();
         WebInspector.ContextMenu.installHandler(document);
         WebInspector.Tooltip.installHandler(document);
@@ -846,7 +835,7 @@ WebInspector.Main.MainMenuItem.prototype = {
             var descriptor = extension.descriptor();
             if (descriptor["location"] !== "drawer-view")
                 continue;
-            moreTools.appendItem(extension.title(), WebInspector.inspectorView.showViewInDrawer.bind(WebInspector.inspectorView, descriptor["name"]));
+            moreTools.appendItem(extension.title(), WebInspector.viewManager.showView.bind(WebInspector.viewManager, descriptor["id"]));
         }
 
         contextMenu.show();

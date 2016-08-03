@@ -64,7 +64,7 @@ WebInspector.RevisionHistoryView = function()
  */
 WebInspector.RevisionHistoryView.showHistory = function(uiSourceCode)
 {
-    WebInspector.inspectorView.showViewInDrawer("sources.history");
+    WebInspector.viewManager.showView("sources.history");
     var historyView = /** @type {!WebInspector.RevisionHistoryView} */ (self.runtime.sharedInstance(WebInspector.RevisionHistoryView));
     historyView._revealUISourceCode(uiSourceCode);
 }

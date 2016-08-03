@@ -186,7 +186,7 @@
         {
             "type": "view",
             "location": "navigator-view",
-            "name": "sources",
+            "id": "sources",
             "title": "Sources",
             "order": 1,
             "persistence": "permanent",
@@ -195,7 +195,7 @@
         {
             "type": "view",
             "location": "navigator-view",
-            "name": "contentScripts",
+            "id": "contentScripts",
             "title": "Content scripts",
             "order": 2,
             "persistence": "permanent",
@@ -204,10 +204,25 @@
         {
             "type": "view",
             "location": "navigator-view",
-            "name": "snippets",
+            "id": "snippets",
             "title": "Snippets",
             "order": 3,
             "persistence": "permanent",
+            "className": "WebInspector.SnippetsNavigatorView"
+        },
+        {
+            "type": "@WebInspector.NavigatorView",
+            "viewId": "sources",
+            "className": "WebInspector.SourcesNavigatorView"
+        },
+        {
+            "type": "@WebInspector.NavigatorView",
+            "viewId": "contentScripts",
+            "className": "WebInspector.ContentScriptsNavigatorView"
+        },
+        {
+            "type": "@WebInspector.NavigatorView",
+            "viewId": "snippets",
             "className": "WebInspector.SnippetsNavigatorView"
         },
         {
@@ -316,7 +331,7 @@
         {
             "type": "view",
             "location": "drawer-view",
-            "name": "sources.search",
+            "id": "sources.search",
             "title": "Search",
             "persistence": "closeable",
             "order": 100,
@@ -325,7 +340,7 @@
         {
             "type": "view",
             "location": "drawer-view",
-            "name": "sources.history",
+            "id": "sources.history",
             "title": "History",
             "persistence": "temporary",
             "className": "WebInspector.RevisionHistoryView"
@@ -333,7 +348,7 @@
         {
             "type": "view",
             "location": "drawer-view",
-            "name": "sources.quick",
+            "id": "sources.quick",
             "title": "Quick source",
             "persistence": "closeable",
             "order": 1000,
@@ -345,6 +360,11 @@
             "actionId": "sources.close-all",
             "className": "WebInspector.SourcesView.CloseAllActionDelegate",
             "title": "Close All"
+        },
+        {
+            "type": "@WebInspector.ViewLocationResolver",
+            "name": "navigator-view",
+            "className": "WebInspector.SourcesPanel"
         }
     ],
     "dependencies": [

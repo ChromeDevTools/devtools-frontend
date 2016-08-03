@@ -503,7 +503,7 @@ WebInspector.SensorsView.ShowActionDelegate.prototype = {
      */
     handleAction: function(context, actionId)
     {
-        WebInspector.inspectorView.showViewInDrawer("sensors");
+        WebInspector.viewManager.showView("sensors");
         return true;
     }
 }

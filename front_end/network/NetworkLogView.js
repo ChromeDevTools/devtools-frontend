@@ -893,7 +893,7 @@ WebInspector.NetworkLogView.prototype = {
                 var list = blockedSetting.get();
                 list.push(url);
                 blockedSetting.set(list);
-                WebInspector.inspectorView.showViewInDrawer("network.blocked-urls");
+                WebInspector.viewManager.showView("network.blocked-urls");
             }
         }
 

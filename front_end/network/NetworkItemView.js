@@ -118,19 +118,6 @@ WebInspector.RequestContentView = function(request)
 }
 
 WebInspector.RequestContentView.prototype = {
-    /**
-     * @return {!WebInspector.Widget}
-     */
-    get innerView()
-    {
-        return this._innerView;
-    },
-
-    set innerView(innerView)
-    {
-        this._innerView = innerView;
-    },
-
     wasShown: function()
     {
         this._ensureInnerViewShown();

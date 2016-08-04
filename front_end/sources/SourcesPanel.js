@@ -64,8 +64,8 @@ WebInspector.SourcesPanel = function()
     this._splitWidget.setMainWidget(this.editorView);
 
     // Create navigator tabbed pane with toolbar.
-    this._navigatorTabbedPane = new WebInspector.ExtensibleTabbedPane("navigator-view", true);
-    var tabbedPane = this._navigatorTabbedPane.tabbedPane();
+    this._navigatorTabbedLocation = WebInspector.viewManager.createTabbedLocation("navigator-view", true);
+    var tabbedPane = this._navigatorTabbedLocation.tabbedPane();
     tabbedPane.setMinimumSize(100, 25);
     tabbedPane.setShrinkableTabs(true);
     tabbedPane.element.classList.add("navigator-tabbed-pane");
@@ -74,7 +74,7 @@ WebInspector.SourcesPanel = function()
     navigatorMenuButton.setTitle(WebInspector.UIString("More options"));
     navigatorToolbar.appendToolbarItem(navigatorMenuButton);
     tabbedPane.appendAfterTabStrip(navigatorToolbar.element);
-    this.editorView.setSidebarWidget(this._navigatorTabbedPane);
+    this.editorView.setSidebarWidget(tabbedPane);
 
     this._sourcesView = new WebInspector.SourcesView();
     this._sourcesView.addEventListener(WebInspector.SourcesView.Events.EditorSelected, this._editorSelected.bind(this));
@@ -219,10 +219,10 @@ WebInspector.SourcesPanel.prototype = {
      * @param {string} locationName
      * @return {?WebInspector.ViewLocation}
      */
-    resolveLocation: function(locationName)
+    revealLocation: function(locationName)
     {
         WebInspector.inspectorView.setCurrentPanel(WebInspector.SourcesPanel.instance());
-        return this._navigatorTabbedPane;
+        return this._navigatorTabbedLocation;
     },
 
     /**
@@ -929,7 +929,7 @@ WebInspector.SourcesPanel.prototype = {
         var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (target);
         var projectType = uiSourceCode.project().type();
 
-        if (projectType !== WebInspector.projectTypes.Debugger && !event.target.isSelfOrDescendant(this._navigatorTabbedPane.element)) {
+        if (projectType !== WebInspector.projectTypes.Debugger && !event.target.isSelfOrDescendant(this._navigatorTabbedLocation.widget().element)) {
             contextMenu.appendItem(WebInspector.UIString.capitalize("Reveal in ^navigator"), this._handleContextMenuReveal.bind(this, uiSourceCode));
             contextMenu.appendSeparator();
         }

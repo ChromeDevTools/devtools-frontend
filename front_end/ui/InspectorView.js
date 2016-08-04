@@ -47,15 +47,15 @@ WebInspector.InspectorView = function()
     this._drawerSplitWidget.show(this.element);
 
     // Create drawer tabbed pane.
-    this._drawerTabbedPane = new WebInspector.ExtensibleTabbedPane("drawer-view", true);
+    this._drawerTabbedLocation = WebInspector.viewManager.createTabbedLocation("drawer-view", true, true);
+    this._drawerTabbedPane = this._drawerTabbedLocation.tabbedPane();
     this._drawerTabbedPane.setMinimumSize(0, 27);
-    this._drawerTabbedPane.enableMoreTabsButton();
     var drawerToolbar = new WebInspector.Toolbar("drawer-close-toolbar");
     var closeDrawerButton = new WebInspector.ToolbarButton(WebInspector.UIString("Close drawer"), "delete-toolbar-item");
     closeDrawerButton.addEventListener("click", this.closeDrawer.bind(this));
     drawerToolbar.appendToolbarItem(closeDrawerButton);
-    this._drawerTabbedPane.tabbedPane().appendAfterTabStrip(drawerToolbar.element);
-    this._drawerSplitWidget.installResizer(this._drawerTabbedPane.tabbedPane().headerElement());
+    this._drawerTabbedPane.appendAfterTabStrip(drawerToolbar.element);
+    this._drawerSplitWidget.installResizer(this._drawerTabbedPane.headerElement());
     this._drawerSplitWidget.setSidebarWidget(this._drawerTabbedPane);
 
     // Create main area tabbed pane.
@@ -123,10 +123,10 @@ WebInspector.InspectorView.prototype = {
      * @param {string} locationName
      * @return {?WebInspector.ViewLocation}
      */
-    resolveLocation: function(locationName)
+    revealLocation: function(locationName)
     {
         this.showDrawer();
-        return this._drawerTabbedPane;
+        return this._drawerTabbedLocation;
     },
 
     _loadPanelDesciptors: function()

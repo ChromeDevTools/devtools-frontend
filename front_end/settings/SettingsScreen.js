@@ -44,13 +44,13 @@ WebInspector.SettingsScreen = function()
     var settingsLabelElement = createElementWithClass("div", "help-window-label");
     settingsLabelElement.createTextChild(WebInspector.UIString("Settings"));
 
-    this._extensibleTabbedPane = new WebInspector.ExtensibleTabbedPane("settings-view");
-    var tabbedPane = this._extensibleTabbedPane.tabbedPane();
+    this._tabbedLocation = WebInspector.viewManager.createTabbedLocation("settings-view");
+    var tabbedPane = this._tabbedLocation.tabbedPane();
     tabbedPane.insertBeforeTabStrip(settingsLabelElement);
     tabbedPane.setShrinkableTabs(false);
     tabbedPane.setVerticalTabLayout(true);
     tabbedPane.appendTab("shortcuts", WebInspector.UIString("Shortcuts"), WebInspector.shortcutsScreen.createShortcutsTabView());
-    this._extensibleTabbedPane.show(this.contentElement);
+    tabbedPane.show(this.contentElement);
 
     this.element.addEventListener("keydown", this._keyDown.bind(this), false);
     this._developerModeCounter = 0;
@@ -77,10 +77,10 @@ WebInspector.SettingsScreen.prototype = {
      * @param {string} locationName
      * @return {?WebInspector.ViewLocation}
      */
-    resolveLocation: function(locationName)
+    revealLocation: function(locationName)
     {
         WebInspector.SettingsScreen._showSettingsScreen();
-        return this._extensibleTabbedPane;
+        return this._tabbedLocation;
     },
 
     /**
@@ -88,7 +88,7 @@ WebInspector.SettingsScreen.prototype = {
      */
     selectTab: function(name)
     {
-        this._extensibleTabbedPane.showView(name);
+        this._tabbedLocation.showView(name);
     },
 
     /**

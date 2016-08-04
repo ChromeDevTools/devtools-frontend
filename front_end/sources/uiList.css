@@ -7,8 +7,10 @@
 .list-item {
     padding: 2px 8px 3px 8px;
     position: relative;
-    min-height: 18px;
+    min-height: 26px;
     white-space: nowrap;
+    align-items: center;
+    display: flex;
 }
 
 .list-item:nth-of-type(2n) {

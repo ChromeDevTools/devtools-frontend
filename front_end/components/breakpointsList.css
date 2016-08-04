@@ -98,7 +98,7 @@ li.breakpoint-hit .breakpoint-hit-marker {
 }
 
 .event-listener-breakpoints {
-    margin-top: 0;
+    margin: 0;
     padding: 2px 6px;
     list-style: none;
     min-height: 18px;

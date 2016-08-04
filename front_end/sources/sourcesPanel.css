@@ -112,6 +112,9 @@
     padding: 6px;
     color: #888;
     pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .callstack-info.status {
@@ -133,6 +136,7 @@
     background-repeat: no-repeat;
     border: 0 none transparent;
     position: absolute;
+    top: 4px;
     right: 3px;
     display: none;
 }
@@ -143,6 +147,7 @@
 
 .watch-expressions {
     overflow-x: hidden;
+    min-height: 26px;
 }
 
 .watch-expressions .dimmed {
@@ -153,7 +158,7 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    line-height: 12px;
+    line-height: 16px;
     margin-left: 11px;
 }
 

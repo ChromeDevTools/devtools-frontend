@@ -477,8 +477,9 @@ WebInspector.SplitWidget.prototype = {
         this._removeAllLayoutProperties();
 
         // this._totalSizeDIP is available below since we successfully applied constraints.
-        var sidebarSizeValue = WebInspector.zoomManager.dipToCSS(sizeDIP) + "px";
-        var mainSizeValue = (this._totalSizeCSS - WebInspector.zoomManager.dipToCSS(sizeDIP)) + "px";
+        var roundSizeCSS = Math.round(WebInspector.zoomManager.dipToCSS(sizeDIP));
+        var sidebarSizeValue = roundSizeCSS + "px";
+        var mainSizeValue = (this._totalSizeCSS - roundSizeCSS) + "px";
         this._sidebarElement.style.flexBasis = sidebarSizeValue;
 
         // Make both sides relayout boundaries.

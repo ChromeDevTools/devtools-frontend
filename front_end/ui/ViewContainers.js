@@ -44,12 +44,13 @@ WebInspector.View._ExpandableContainerWidget = function(view, expanded)
     this._titleElement.addEventListener("click", this._toggleExpanded.bind(this), false);
     this._titleElement.addEventListener("keydown", this._onTitleKeyDown.bind(this), false);
     this.contentElement.insertBefore(this._titleElement, this.contentElement.firstChild);
+
     var toolbarElement = this.contentElement.createChild("div");
     var toolbarItems = view.toolbarItems();
     if (toolbarItems.length) {
-        var toolbar = new WebInspector.Toolbar("", this._titleElement);
+        this._toolbar = new WebInspector.Toolbar("");
         for (var item of toolbarItems)
-            toolbar.appendToolbarItem(item);
+            this._toolbar.appendToolbarItem(item);
     }
 
     this.contentElement.createChild("content");
@@ -72,6 +73,8 @@ WebInspector.View._ExpandableContainerWidget.prototype = {
     {
         if (this._titleElement.classList.contains("expanded"))
             return true;
+        if (this._toolbar)
+            this._titleElement.appendChild(this._toolbar.element);
         this._titleElement.classList.add("expanded");
         this._view.showWidget(this.element);
         return true;
@@ -81,6 +84,8 @@ WebInspector.View._ExpandableContainerWidget.prototype = {
     {
         if (!this._titleElement.classList.contains("expanded"))
             return;
+        if (this._toolbar)
+            this._toolbar.element.remove();
         this._titleElement.classList.remove("expanded");
         this._view.hideWidget();
     },

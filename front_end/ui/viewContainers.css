@@ -35,12 +35,13 @@
     display: flex;
     align-items: center;
     background-color: #eee;
-    height: 20px;
+    height: 26px;
     padding: 0 5px;
     border-top: 1px solid #dadada;
     white-space: nowrap;
     overflow: hidden;
     position: relative;
+    border-bottom: 1px solid transparent;
 }
 
 .expandable-view-title.expanded,
@@ -78,7 +79,7 @@
 .expandable-view-title > .toolbar {
     position: absolute;
     right: 0;
-    top: -3px;
+    top: 0;
 }
 
 .sidebar-pane-container .toolbar {

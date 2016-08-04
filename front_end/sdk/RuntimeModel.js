@@ -686,7 +686,7 @@ WebInspector.ExecutionContext.prototype = {
                 var resultSet = {};
                 try {
                     for (var o = object; o; o = Object.getPrototypeOf(o)) {
-                        if (type === "array" && o === object && ArrayBuffer.isView(o) && o.length > 9999)
+                        if ((type === "array" || type === "typedarray") && o === object && ArrayBuffer.isView(o) && o.length > 9999)
                             continue;
                         var names = Object.getOwnPropertyNames(o);
                         var isArray = Array.isArray(o);

@@ -21,7 +21,7 @@ WebInspector.RemoteObjectPreviewFormatter.prototype = {
             parentElement.appendChild(this.renderPropertyPreview(preview.type, preview.subtype, description));
             return;
         }
-        if (description && preview.subtype !== "array") {
+        if (description && preview.subtype !== "array" && preview.subtype !== "typedarray") {
             var text = preview.subtype ? description : this._abbreviateFullQualifiedClassName(description);
             parentElement.createTextChildren(text, " ");
         }
@@ -49,7 +49,7 @@ WebInspector.RemoteObjectPreviewFormatter.prototype = {
      */
     _appendPropertiesPreview: function(parentElement, preview)
     {
-        var isArray = preview.subtype === "array";
+        var isArray = preview.subtype === "array" || preview.subtype === "typedarray";
         var arrayLength = WebInspector.RemoteObject.arrayLength(preview);
         var properties = preview.properties;
         if (isArray)

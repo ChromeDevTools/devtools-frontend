@@ -39,11 +39,13 @@
 }
 
 .object-value-object,
+.object-value-promise,
 .object-value-map,
 .object-value-set,
 .object-value-iterator,
 .object-value-generator,
 .object-value-node,
+.object-value-typedarray,
 .object-value-array {
     position: relative;
     vertical-align: baseline;
@@ -84,20 +86,25 @@
 }
 
 .object-value-object .section,
+.object-value-promise .section,
 .object-formatted-map .section,
 .object-value-set .section,
 .object-value-iterator .section,
 .object-value-generator .section,
 .object-value-node .section,
+.object-value-typedarray .section,
 .object-value-array .section {
     position: static;
 }
-.object-value-object .section > .header::before {
+
+.object-value-object .section > .header::before,
+.object-value-promise .section > .header::before {
     margin-top: 0;
 }
 
 
 .object-value-object .properties-tree,
+.object-value-promise .properties-tree,
 .object-value-map .properties-tree,
 .object-value-set .properties-tree,
 .object-value-iterator .properties-tree,

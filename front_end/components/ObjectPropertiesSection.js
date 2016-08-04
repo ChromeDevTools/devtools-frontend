@@ -229,7 +229,8 @@ WebInspector.ObjectPropertyTreeElement.prototype = {
      * @param {string=} additionalCssClassName
      * @return {boolean}
      */
-    setSearchRegex: function(regex, additionalCssClassName) {
+    setSearchRegex: function(regex, additionalCssClassName)
+    {
         var cssClasses = WebInspector.highlightedSearchResultClassName;
         if (additionalCssClassName)
             cssClasses += " " + additionalCssClassName;
@@ -237,7 +238,7 @@ WebInspector.ObjectPropertyTreeElement.prototype = {
 
         this._applySearch(regex, this.nameElement, cssClasses);
         var valueType = this.property.value.type;
-        if (valueType !== "object" && valueType !== "array")
+        if (valueType !== "object")
             this._applySearch(regex, this.valueElement, cssClasses);
 
         return !!this._highlightChanges.length;

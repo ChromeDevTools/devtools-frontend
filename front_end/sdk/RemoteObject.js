@@ -315,7 +315,7 @@ WebInspector.RemoteObject.type = function(remoteObject)
  */
 WebInspector.RemoteObject.arrayLength = function(object)
 {
-    if (object.subtype !== "array")
+    if (object.subtype !== "array" && object.subtype !== "typedarray")
         return 0;
     var matches = object.description.match(/\[([0-9]+)\]/);
     if (!matches)
@@ -1327,7 +1327,7 @@ WebInspector.RemoteArray = function(object)
  */
 WebInspector.RemoteArray.objectAsArray = function(object)
 {
-    if (!object || object.type !== "object" || object.subtype !== "array")
+    if (!object || object.type !== "object" || (object.subtype !== "array" && object.subtype !== "typedarray"))
         throw new Error("Object is empty or not an array");
     return new WebInspector.RemoteArray(object);
 }

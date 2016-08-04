@@ -7,17 +7,20 @@ var http = require("http");
 var https = require("https");
 var path = require("path");
 var parseURL = require("url").parse;
+var Stream = require("stream").Transform;
 
-var port = parseInt(process.env.PORT, 10) || 8090;
+var remoteDebuggingPort = parseInt(process.env.REMOTE_DEBUGGING_PORT, 10) || 9222;
+var serverPort = parseInt(process.env.PORT, 10) || 8090;
 
-http.createServer(requestHandler).listen(port);
-console.log("Started hosted mode server at http://localhost:" + port);
+http.createServer(requestHandler).listen(serverPort);
+console.log("Started hosted mode server at http://localhost:" + serverPort);
 
 function requestHandler(request, response)
 {
     var filePath = parseURL(request.url).pathname;
-    if (filePath === "/front_end/InspectorBackendCommands.js") {
-        sendResponse(200, " ");
+    if (filePath === "/") {
+        sendResponse(200, `<html>Please go to <a href="http://localhost:${remoteDebuggingPort}#http://localhost:${serverPort}/front_end/inspector.html?experiments=true">
+            http://localhost:${remoteDebuggingPort}#http://localhost:${serverPort}/front_end/inspector.html?experiments=true</a></html>`);
         return;
     }
 
@@ -32,6 +35,7 @@ function requestHandler(request, response)
     function handleProxyError(err)
     {
         console.log(`Error fetching over the internet file ${filePath}:`, err);
+        console.log(`Make sure you opened Chrome with the flag "--remote-debugging-port=${remoteDebuggingPort}"`);
         sendResponse(500, "500 - Internal Server Error");
     }
 
@@ -67,25 +71,14 @@ function requestHandler(request, response)
 }
 
 var proxyFilePathToURL = {
-    "/front_end/sdk/protocol/js_protocol.json": getWebKitURL.bind(null, "platform/v8_inspector/js_protocol.json"),
-    "/front_end/sdk/protocol/browser_protocol.json": getWebKitURL.bind(null, "core/inspector/browser_protocol.json"),
-    "/front_end/SupportedCSSProperties.js": getFrontendURL.bind(null, "SupportedCSSProperties.js")
+    "/front_end/SupportedCSSProperties.js": cloudURL.bind(null, "SupportedCSSProperties.js"),
+    "/front_end/InspectorBackendCommands.js": cloudURL.bind(null, "InspectorBackendCommands.js"),
+    "/favicon.ico": () => "https://chrome-devtools-frontend.appspot.com/favicon.ico"
 };
 
-function getWebKitURL(path, commitHash)
+function cloudURL(path, commitHash)
 {
-    return {
-        url: `https://chromium.googlesource.com/chromium/src/+/${commitHash}/third_party/WebKit/Source/${path}?format=TEXT`,
-        isBase64: true
-    }
-}
-
-function getFrontendURL(path, commitHash)
-{
-    return {
-        url: `https://chrome-devtools-frontend.appspot.com/serve_file/@${commitHash}/${path}`,
-        isBase64: false
-    }
+    return `https://chrome-devtools-frontend.appspot.com/serve_file/@${commitHash}/${path}`;
 }
 
 var proxyFileCache = new Map();
@@ -94,7 +87,7 @@ function proxy(filePath)
 {
     if (!(filePath in proxyFilePathToURL))
         return null;
-    return fetch("http://localhost:9222/json/version")
+    return fetch(`http://localhost:${remoteDebuggingPort}/json/version`)
         .then(onBrowserMetadata);
 
     function onBrowserMetadata(metadata)
@@ -102,12 +95,10 @@ function proxy(filePath)
         var metadataObject = JSON.parse(metadata);
         var match = metadataObject["WebKit-Version"].match(/\s\(@(\b[0-9a-f]{5,40}\b)/);
         var commitHash = match[1];
-        var proxyFile = proxyFilePathToURL[filePath](commitHash);
-        var proxyFileURL = proxyFile.url;
+        var proxyFileURL = proxyFilePathToURL[filePath](commitHash);
         if (proxyFileCache.has(proxyFileURL))
             return proxyFileCache.get(proxyFileURL);
         return fetch(proxyFileURL)
-            .then(text => proxyFile.isBase64 ? new Buffer(text, "base64").toString("binary") : text)
             .then(cacheProxyFile.bind(null, proxyFileURL));
     }
 
@@ -122,7 +113,8 @@ function fetch(url)
 {
     return new Promise(fetchPromise);
 
-    function fetchPromise(resolve, reject) {
+    function fetchPromise(resolve, reject)
+    {
         var request;
         var protocol = parseURL(url).protocol;
         var handleResponse = getCallback.bind(null, resolve, reject);
@@ -143,9 +135,9 @@ function fetch(url)
             reject(new Error(`Request error: + ${response.statusCode}`));
             return;
         }
-        var body = "";
-        response.on("data", chunk => body += chunk);
-        response.on("end", () => resolve(body));
+        var body = new Stream();
+        response.on("data", chunk => body.push(chunk));
+        response.on("end", () => resolve(body.read()));
     }
 }
 

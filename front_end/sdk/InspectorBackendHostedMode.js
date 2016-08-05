@@ -48,9 +48,15 @@ WebInspector.InspectorBackendHostedMode.generateCommands = function(schema)
         var members = [];
         for (var m = 0; m < items.length; ++m) {
             var value = items[m];
-            var name = value.replace(/-(\w)/g, toUpperCase.bind(null, 1)).toTitleCase();
+            var name = value;
+            var prefix = "";
+            if (name[0] === "-") {
+                prefix = "Negative";
+                name = name.substring(1);
+            }
+            name = name.replace(/-(\w)/g, toUpperCase.bind(null, 1)).toTitleCase();
             name = name.replace(/HTML|XML|WML|API/ig, toUpperCase.bind(null, 0));
-            members.push(name + ": \"" + value + "\"");
+            members.push(prefix + name + ": \"" + value + "\"");
         }
         return "InspectorBackend.registerEnum(\"" + enumName + "\", {" + members.join(", ") + "});";
     }

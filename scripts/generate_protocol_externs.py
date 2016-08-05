@@ -61,9 +61,13 @@ def full_qualified_type_id(domain_name, type_id):
 
 
 def fix_camel_case(name):
+    prefix = ""
+    if name[0] == "-":
+        prefix = "Negative"
+        name = name[1:]
     refined = re.sub(r'-(\w)', lambda pat: pat.group(1).upper(), name)
     refined = to_title_case(refined)
-    return re.sub(r'(?i)HTML|XML|WML|API', lambda pat: pat.group(0).upper(), refined)
+    return prefix + re.sub(r'(?i)HTML|XML|WML|API', lambda pat: pat.group(0).upper(), refined)
 
 
 def to_title_case(name):

@@ -9,8 +9,7 @@
     position: relative;
     min-height: 26px;
     white-space: nowrap;
-    align-items: center;
-    display: flex;
+    line-height: 21px;
 }
 
 .list-item:nth-of-type(2n) {

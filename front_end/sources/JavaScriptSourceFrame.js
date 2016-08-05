@@ -149,7 +149,6 @@ WebInspector.JavaScriptSourceFrame.prototype = {
             return;
         var networkURL = WebInspector.networkMapping.networkURL(uiSourceCode);
         var url = projectType === WebInspector.projectTypes.Formatter ? uiSourceCode.url() : networkURL;
-        var isContentScript = projectType === WebInspector.projectTypes.ContentScripts;
         if (!WebInspector.blackboxManager.isBlackboxedUISourceCode(uiSourceCode)) {
             this._hideBlackboxInfobar();
             return;

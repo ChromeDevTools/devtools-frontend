@@ -63,7 +63,7 @@ WebInspector.StylesSidebarPane.createExclamationMark = function(property)
     exclamationElement.className = "exclamation-mark";
     if (!WebInspector.StylesSidebarPane.ignoreErrorsForProperty(property))
         exclamationElement.type = "warning-icon";
-    exclamationElement.title = WebInspector.CSSMetadata.cssPropertiesMetainfo.keySet()[property.name.toLowerCase()] ? WebInspector.UIString("Invalid property value") : WebInspector.UIString("Unknown property name");
+    exclamationElement.title = WebInspector.CSSMetadata.isCSSPropertyName(property.name) ? WebInspector.UIString("Invalid property value") : WebInspector.UIString("Unknown property name");
     return exclamationElement;
 }
 
@@ -2387,7 +2387,8 @@ WebInspector.StylePropertyTreeElement.prototype = {
             selectElement.parentElement.scrollIntoViewIfNeeded(false);
 
         var applyItemCallback = !isEditingName ? this._applyFreeFlowStyleTextEdit.bind(this) : undefined;
-        this._prompt = new WebInspector.StylesSidebarPane.CSSPropertyPrompt(isEditingName ? WebInspector.CSSMetadata.cssPropertiesMetainfo : WebInspector.CSSMetadata.keywordsForProperty(this.nameElement.textContent), this, isEditingName);
+        var cssCompletions = isEditingName ? WebInspector.CSSMetadata.cssPropertiesMetainfo.allProperties() : WebInspector.CSSMetadata.propertyValues(this.nameElement.textContent);
+        this._prompt = new WebInspector.StylesSidebarPane.CSSPropertyPrompt(cssCompletions, this, isEditingName);
         this._prompt.setAutocompletionTimeout(0);
         if (applyItemCallback) {
             this._prompt.addEventListener(WebInspector.TextPrompt.Events.ItemApplied, applyItemCallback, this);
@@ -2798,7 +2799,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
 /**
  * @constructor
  * @extends {WebInspector.TextPrompt}
- * @param {!WebInspector.CSSMetadata} cssCompletions
+ * @param {!Array<string>} cssCompletions
  * @param {!WebInspector.StylePropertyTreeElement} treeElement
  * @param {boolean} isEditingName
  */
@@ -2944,7 +2945,7 @@ WebInspector.StylesSidebarPane.CSSPropertyPrompt.prototype = {
             return;
         }
 
-        var results = this._cssCompletions.startsWith(prefix);
+        var results = this._cssCompletions.filter(completion => completion.startsWith(prefix));
         if (!this._isEditingName && !results.length && prefix.length > 1 && "!important".startsWith(prefix))
             results.push("!important");
         var userEnteredText = wordRange.toString().replace("-", "");
@@ -2952,7 +2953,7 @@ WebInspector.StylesSidebarPane.CSSPropertyPrompt.prototype = {
             for (var i = 0; i < results.length; ++i)
                 results[i] = results[i].toUpperCase();
         }
-        var selectedIndex = this._cssCompletions.mostUsedOf(results);
+        var selectedIndex = this._isEditingName ? WebInspector.CSSMetadata.mostUsedProperty(results) : 0;
         completionsReadyCallback(results, selectedIndex);
     },
 

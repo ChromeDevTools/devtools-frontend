@@ -1,7 +1,6 @@
 // Copyright (c) 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
 var fs = require("fs");
 var http = require("http");
 var https = require("https");
@@ -11,6 +10,7 @@ var Stream = require("stream").Transform;
 
 var remoteDebuggingPort = parseInt(process.env.REMOTE_DEBUGGING_PORT, 10) || 9222;
 var serverPort = parseInt(process.env.PORT, 10) || 8090;
+var devtoolsFolder = path.resolve(path.join(__dirname, "../.."));
 
 http.createServer(requestHandler).listen(serverPort);
 console.log("Started hosted mode server at http://localhost:" + serverPort);
@@ -19,8 +19,8 @@ function requestHandler(request, response)
 {
     var filePath = parseURL(request.url).pathname;
     if (filePath === "/") {
-        sendResponse(200, `<html>Please go to <a href="http://localhost:${remoteDebuggingPort}#http://localhost:${serverPort}/front_end/inspector.html?experiments=true">
-            http://localhost:${remoteDebuggingPort}#http://localhost:${serverPort}/front_end/inspector.html?experiments=true</a></html>`);
+        var landingURL = `http://localhost:${remoteDebuggingPort}#http://localhost:${serverPort}/front_end/inspector.html?experiments=true`;
+        sendResponse(200, `<html>Please go to <a href="${landingURL}">${landingURL}</a></html>`);
         return;
     }
 
@@ -40,6 +40,12 @@ function requestHandler(request, response)
     }
 
     var absoluteFilePath = path.join(process.cwd(), filePath);
+    if (!path.resolve(absoluteFilePath).startsWith(devtoolsFolder)) {
+        console.log(`File requested is outside of devtools folder: ${devtoolsFolder}`);
+        sendResponse(403, "`403 - Access denied. File requested is outside of devtools folder: ${devtoolsFolder}`");
+        return;
+    }
+
     fs.exists(absoluteFilePath, fsExistsCallback);
 
     function fsExistsCallback(fileExists)

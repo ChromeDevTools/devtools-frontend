@@ -33,7 +33,7 @@ except ImportError:
     import json
 
 import sys
-
+import re
 
 def properties_from_file(file_name):
     properties = []
@@ -43,8 +43,12 @@ def properties_from_file(file_name):
             line = line.strip()
             if not line or line.startswith("//") or "alias_for" in line:
                 continue
-            name = line.partition(" ")[0]
+            partition = re.split("[, ]", line)
+            name = partition[0]
+            attributes = partition[1:]
             entry = {"name": name}
+            if "inherited" in attributes:
+                entry["inherited"] = True
             propertyNames.add(name)
             longhands = line.partition("longhands=")[2].partition(",")[0]
             if longhands:

@@ -37,8 +37,12 @@
 WebInspector.CSSMetadata = function(properties)
 {
     this._values = /** !Array.<string> */ ([]);
-    this._longhands = {};
-    this._shorthands = {};
+    /** @type {!Map<string, !Array<string>>} */
+    this._longhands = new Map();
+    /** @type {!Map<string, !Array<string>>} */
+    this._shorthands = new Map();
+    /** @type {!Set<string>} */
+    this._inherited = new Set();
     for (var i = 0; i < properties.length; ++i) {
         var property = properties[i];
         var propertyName = property.name;
@@ -46,15 +50,18 @@ WebInspector.CSSMetadata = function(properties)
             continue;
         this._values.push(propertyName);
 
+        if (property.inherited)
+            this._inherited.add(propertyName);
+
         var longhands = properties[i].longhands;
         if (longhands) {
-            this._longhands[propertyName] = longhands;
+            this._longhands.set(propertyName, longhands);
             for (var j = 0; j < longhands.length; ++j) {
                 var longhandName = longhands[j];
-                var shorthands = this._shorthands[longhandName];
+                var shorthands = this._shorthands.get(longhandName);
                 if (!shorthands) {
                     shorthands = [];
-                    this._shorthands[longhandName] = shorthands;
+                    this._shorthands.set(longhandName, shorthands);
                 }
                 shorthands.push(propertyName);
             }
@@ -104,21 +111,6 @@ WebInspector.CSSMetadata.isCustomProperty = function(propertyName)
     return propertyName.startsWith("--");
 }
 
-// Originally taken from http://www.w3.org/TR/CSS21/propidx.html and augmented.
-WebInspector.CSSMetadata.InheritedProperties = [
-    "azimuth", "border-collapse", "border-spacing", "caption-side", "color", "cursor", "direction", "elevation",
-    "empty-cells", "font-family", "font-size", "font-style", "font-variant", "font-weight", "font", "letter-spacing",
-    "line-height", "list-style-image", "list-style-position", "list-style-type", "list-style", "orphans", "overflow-wrap", "pitch-range",
-    "pitch", "quotes", "resize", "richness", "speak-header", "speak-numeral", "speak-punctuation", "speak", "speech-rate", "stress",
-    "text-align", "text-indent", "text-transform", "text-shadow", "-webkit-user-select", "visibility", "voice-family", "volume", "white-space", "widows",
-    "word-spacing", "word-wrap", "zoom"
-].keySet();
-
-// These non-standard Blink-specific properties augment the InheritedProperties.
-WebInspector.CSSMetadata.NonStandardInheritedProperties = [
-    "-webkit-font-smoothing"
-].keySet();
-
 /**
  * @param {string} name
  * @return {string}
@@ -152,8 +144,8 @@ WebInspector.CSSMetadata.isCSSPropertyName = function(propertyName)
  */
 WebInspector.CSSMetadata.isPropertyInherited = function(propertyName)
 {
-    return !!(WebInspector.CSSMetadata.InheritedProperties[WebInspector.CSSMetadata.canonicalPropertyName(propertyName)]
-            || WebInspector.CSSMetadata.NonStandardInheritedProperties[propertyName.toLowerCase()]);
+    var metadata = WebInspector.CSSMetadata.cssPropertiesMetainfo;
+    return metadata.inherited(WebInspector.CSSMetadata.canonicalPropertyName(propertyName)) || metadata.inherited(propertyName.toLowerCase());
 }
 
 WebInspector.CSSMetadata._distanceProperties = [
@@ -966,7 +958,7 @@ WebInspector.CSSMetadata.prototype = {
      */
     longhands: function(shorthand)
     {
-        return this._longhands[shorthand];
+        return this._longhands.get(shorthand);
     },
 
     /**
@@ -975,7 +967,16 @@ WebInspector.CSSMetadata.prototype = {
      */
     shorthands: function(longhand)
     {
-        return this._shorthands[longhand];
+        return this._shorthands.get(longhand);
+    },
+
+    /**
+     * @param {string} propertyName
+     * @return {boolean}
+     */
+    inherited: function(propertyName)
+    {
+        return this._inherited.has(propertyName);
     }
 }
 

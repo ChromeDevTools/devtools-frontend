@@ -83,7 +83,8 @@ WebInspector.ElementsTreeOutline = function(domModel, omitRootDOMNode, selectEna
     this._treeElementsBeingUpdated = new Set();
 
     this._domModel.addEventListener(WebInspector.DOMModel.Events.MarkersChanged, this._markersChanged, this);
-    WebInspector.moduleSetting("showHTMLComments").addChangeListener(this._onShowHTMLCommentsChange.bind(this));
+    this._showHTMLCommentsSetting = WebInspector.moduleSetting("showHTMLComments");
+    this._showHTMLCommentsSetting.addChangeListener(this._onShowHTMLCommentsChange.bind(this));
 }
 
 WebInspector.ElementsTreeOutline._treeOutlineSymbol = Symbol("treeOutline");
@@ -137,7 +138,7 @@ WebInspector.ElementsTreeOutline.prototype = {
     _onShowHTMLCommentsChange: function()
     {
         var selectedNode = this.selectedDOMNode();
-        if (selectedNode && selectedNode.nodeType() === Node.COMMENT_NODE && !WebInspector.moduleSetting("showHTMLComments").get())
+        if (selectedNode && selectedNode.nodeType() === Node.COMMENT_NODE && !this._showHTMLCommentsSetting.get())
             this.selectDOMNode(selectedNode.parentNode);
         this.update();
     },
@@ -1351,7 +1352,7 @@ WebInspector.ElementsTreeOutline.prototype = {
 
         if (node.childNodeCount()) {
             var children = node.children();
-            if (!WebInspector.moduleSetting("showHTMLComments").get())
+            if (!this._showHTMLCommentsSetting.get())
                 children = children.filter(n => n.nodeType() !== Node.COMMENT_NODE);
             visibleChildren = visibleChildren.concat(children);
         }

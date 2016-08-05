@@ -453,10 +453,6 @@
     content: "i";
 }
 
-.console-view-object-properties-section:not(.expanded) .info-note {
-    display: none;
-}
-
 .console-view-object-properties-section {
     padding: 0px;
 }

@@ -43,10 +43,22 @@ WebInspector.ObjectPropertiesSection = function(object, title, linkifier, emptyP
     this.setFocusable(false);
     this._objectTreeElement = new WebInspector.ObjectPropertiesSection.RootElement(object, linkifier, emptyPlaceholder, ignoreHasOwnProperty, extraProperties);
     this.appendChild(this._objectTreeElement);
-    if (typeof title === "string" || !title)
-        this.element.createChild("span").textContent = title || "";
-    else
+    if (typeof title === "string" || !title) {
+        this.titleElement = this.element.createChild("span");
+        this.titleElement.textContent = title || "";
+    } else {
+        this.titleElement = title;
         this.element.appendChild(title);
+    }
+
+    if (object.description && WebInspector.ObjectPropertiesSection._needsAlternateTitle(object)) {
+        this.expandedTitleElement = createElement("span");
+        this.expandedTitleElement.createTextChild(object.description);
+
+        var note = this.expandedTitleElement.createChild("span", "object-state-note");
+        note.classList.add("info-note");
+        note.title = WebInspector.UIString("Value below was evaluated just now.");
+    }
 
     this.element._section = this;
     this.registerRequiredCSS("components/objectValue.css");
@@ -173,17 +185,39 @@ WebInspector.ObjectPropertiesSection.RootElement = function(object, linkifier, e
 }
 
 WebInspector.ObjectPropertiesSection.RootElement.prototype = {
-
+    /**
+     * @override
+     */
     onexpand: function()
     {
-        if (this.treeOutline)
+        if (this.treeOutline) {
             this.treeOutline.element.classList.add("expanded");
+            this._showExpandedTitleElement(true);
+        }
     },
 
+    /**
+     * @override
+     */
     oncollapse: function()
     {
-        if (this.treeOutline)
+        if (this.treeOutline) {
             this.treeOutline.element.classList.remove("expanded");
+            this._showExpandedTitleElement(false);
+        }
+    },
+
+    /**
+     * @param {boolean} value
+     */
+    _showExpandedTitleElement: function(value)
+    {
+        if (!this.treeOutline.expandedTitleElement)
+            return;
+        if (value)
+            this.treeOutline.element.replaceChild(this.treeOutline.expandedTitleElement, this.treeOutline.titleElement);
+        else
+            this.treeOutline.element.replaceChild(this.treeOutline.titleElement, this.treeOutline.expandedTitleElement);
     },
 
     /**
@@ -284,8 +318,8 @@ WebInspector.ObjectPropertyTreeElement.prototype = {
      */
     ondblclick: function(event)
     {
-        var editableElement = this.valueElement;
-        if (!this.property.value.customPreview() && (this.property.writable || this.property.setter) && event.target.isSelfOrDescendant(editableElement))
+        var inEditableElement = event.target.isSelfOrDescendant(this.valueElement) || (this.expandedValueElement && event.target.isSelfOrDescendant(this.expandedValueElement));
+        if (!this.property.value.customPreview() && inEditableElement && (this.property.writable || this.property.setter))
             this._startEditing();
         return false;
     },
@@ -297,6 +331,51 @@ WebInspector.ObjectPropertyTreeElement.prototype = {
     {
         this.update();
         this._updateExpandable();
+    },
+
+    /**
+     * @override
+     */
+    onexpand: function()
+    {
+        this._showExpandedValueElement(true);
+    },
+
+    /**
+     * @override
+     */
+    oncollapse: function()
+    {
+        this._showExpandedValueElement(false);
+    },
+
+    /**
+     * @param {boolean} value
+     */
+    _showExpandedValueElement: function(value)
+    {
+        if (!this.expandedValueElement)
+            return;
+        if (value)
+            this.listItemElement.replaceChild(this.expandedValueElement, this.valueElement);
+        else
+            this.listItemElement.replaceChild(this.valueElement, this.expandedValueElement);
+    },
+
+    /**
+     * @param {!WebInspector.RemoteObject} value
+     * @return {?Element}
+     */
+    _createExpandedValueElement: function(value)
+    {
+        if (!WebInspector.ObjectPropertiesSection._needsAlternateTitle(value))
+            return null;
+
+        var valueElement = createElementWithClass("span", "value");
+        valueElement.setTextContentTruncatedIfNeeded(value.description || "");
+        valueElement.classList.add("object-value-" + (value.subtype || value.type));
+        valueElement.title = value.description || "";
+        return valueElement;
     },
 
     update: function()
@@ -325,6 +404,10 @@ WebInspector.ObjectPropertyTreeElement.prototype = {
             this.valueElement.textContent = WebInspector.UIString("<unreadable>");
             this.valueElement.title = WebInspector.UIString("No property getter");
         }
+
+        var valueText = this.valueElement.textContent;
+        if (this.property.value && valueText && !this.property.wasThrown)
+            this.expandedValueElement = this._createExpandedValueElement(this.property.value);
 
         this.listItemElement.removeChildren();
         this.listItemElement.appendChildren(this.nameElement, separatorElement, this.valueElement);
@@ -377,11 +460,10 @@ WebInspector.ObjectPropertyTreeElement.prototype = {
         this._editableDiv.setTextContentTruncatedIfNeeded(text, WebInspector.UIString("<string is too large to edit>"));
         var originalContent = this._editableDiv.textContent;
 
-        this.valueElement.classList.add("hidden");
-
         // Lie about our children to prevent expanding on double click and to collapse subproperties.
         this.setExpandable(false);
         this.listItemElement.classList.add("editing-sub-part");
+        this.valueElement.classList.add("hidden");
 
         this._prompt = new WebInspector.ObjectPropertyPrompt();
 
@@ -469,7 +551,7 @@ WebInspector.ObjectPropertyTreeElement.prototype = {
                 // Call updateSiblings since their value might be based on the value that just changed.
                 var parent = this.parent;
                 parent.invalidateChildren();
-                parent.expand();
+                parent.onpopulate();
             }
         }
     },
@@ -1092,6 +1174,15 @@ WebInspector.ObjectPropertiesSection.createValueElement = function(value, wasThr
     }
 
     return valueElement;
+}
+
+/**
+ * @param {!WebInspector.RemoteObject} object
+ * @return {boolean}
+ */
+WebInspector.ObjectPropertiesSection._needsAlternateTitle = function(object)
+{
+    return object && object.hasChildren && !object.customPreview() && object.subtype !== "node" && object.type !== "function" && (object.type !== "object" || object.preview);
 }
 
 /**

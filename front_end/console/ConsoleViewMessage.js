@@ -417,25 +417,10 @@ WebInspector.ConsoleViewMessage.prototype = {
             }
         }
 
-        var section = this._buildExpandableObjectSection(obj, titleElement);
-        elem.appendChild(section.element);
-    },
-
-    /**
-     * @param {!WebInspector.RemoteObject} obj
-     * @param {!Element} titleElement
-     * @return {!WebInspector.ObjectPropertiesSection}
-     */
-    _buildExpandableObjectSection: function(obj, titleElement)
-    {
-        var note = titleElement.createChild("span", "object-state-note");
-        note.classList.add("info-note");
-        note.title = WebInspector.UIString("Object value at left was snapshotted when logged, value below was evaluated just now.");
-
         var section = new WebInspector.ObjectPropertiesSection(obj, titleElement, this._linkifier);
         section.element.classList.add("console-view-object-properties-section");
         section.enableContextMenu();
-        return section;
+        elem.appendChild(section.element);
     },
 
     /**
@@ -701,7 +686,9 @@ WebInspector.ConsoleViewMessage.prototype = {
 
         titleElement.createTextChild("]");
 
-        var section = this._buildExpandableObjectSection(array, titleElement);
+        var section = new WebInspector.ObjectPropertiesSection(array, titleElement, this._linkifier);
+        section.element.classList.add("console-view-object-properties-section");
+        section.enableContextMenu();
         elem.appendChild(section.element);
     },
 

@@ -68,11 +68,6 @@ WebInspector.CSSMetadata = function(properties)
 }
 
 /**
- * @type {!WebInspector.CSSMetadata}
- */
-WebInspector.CSSMetadata.cssPropertiesMetainfo = new WebInspector.CSSMetadata([]);
-
-/**
  * @param {string} propertyName
  * @return {boolean}
  */
@@ -136,7 +131,7 @@ WebInspector.CSSMetadata.canonicalPropertyName = function(name)
     if (!name || name.length < 9 || name.charAt(0) !== "-")
         return name.toLowerCase();
     var match = name.match(/(?:-webkit-)(.+)/);
-    var propertiesSet = WebInspector.CSSMetadata.cssPropertiesMetainfoKeySet();
+    var propertiesSet = WebInspector.CSSMetadata.cssPropertiesMetainfo.keySet();
     var hasSupportedProperties = WebInspector.CSSMetadata.cssPropertiesMetainfo._values.length > 0;
     if (!match || (hasSupportedProperties && !propertiesSet.hasOwnProperty(match[1].toLowerCase())))
         return name.toLowerCase();
@@ -152,7 +147,7 @@ WebInspector.CSSMetadata.isCSSPropertyName = function(propertyName)
     if (propertyName.startsWith("-moz-") || propertyName.startsWith("-o-") || propertyName.startsWith("-webkit-") || propertyName.startsWith("-ms-"))
         return true;
     var hasSupportedProperties = WebInspector.CSSMetadata.cssPropertiesMetainfo._values.length > 0;
-    return !hasSupportedProperties || WebInspector.CSSMetadata.cssPropertiesMetainfoKeySet().hasOwnProperty(propertyName);
+    return !hasSupportedProperties || WebInspector.CSSMetadata.cssPropertiesMetainfo.keySet().hasOwnProperty(propertyName);
 }
 
 /**
@@ -683,16 +678,6 @@ WebInspector.CSSMetadata.descriptor = function(propertyName)
 WebInspector.CSSMetadata.initializeWithSupportedProperties = function(properties)
 {
     WebInspector.CSSMetadata.cssPropertiesMetainfo = new WebInspector.CSSMetadata(properties);
-}
-
-/**
- * @return {!Object.<string, boolean>}
- */
-WebInspector.CSSMetadata.cssPropertiesMetainfoKeySet = function()
-{
-    if (!WebInspector.CSSMetadata._cssPropertiesMetainfoKeySet)
-        WebInspector.CSSMetadata._cssPropertiesMetainfoKeySet = WebInspector.CSSMetadata.cssPropertiesMetainfo.keySet();
-    return WebInspector.CSSMetadata._cssPropertiesMetainfoKeySet;
 }
 
 // Weight of CSS properties based on their usage from https://www.chromestatus.com/metrics/css/popularity

@@ -70,6 +70,9 @@ WebInspector.CSSMetadata = function(properties)
     this._values.sort();
 }
 
+WebInspector.CSSMetadata.VariableRegex = /(var\(--.*?\))/g;
+WebInspector.CSSMetadata.URLRegex = /url\(\s*('.+?'|".+?"|[^)]+)\s*\)/g;
+
 /**
  * @param {string} propertyName
  * @return {boolean}

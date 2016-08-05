@@ -148,6 +148,63 @@ WebInspector.TextUtils = {
     isLowerCase: function(text)
     {
         return text === text.toLowerCase();
+    },
+
+    /**
+     * @param {string} text
+     * @param {!Array<!RegExp>} regexes
+     * @return {!Array<{value: string, position: number, regexIndex: number}>}
+     */
+    splitStringByRegexes(text, regexes)
+    {
+        var matches = [];
+        var globalRegexes = [];
+        for (var i = 0; i < regexes.length; i++) {
+            var regex = regexes[i];
+            if (!regex.global)
+                globalRegexes.push(new RegExp(regex.source, regex.flags ? regex.flags + "g" : "g"));
+            else
+                globalRegexes.push(regex);
+        }
+        doSplit(text, 0, 0);
+        return matches;
+
+        /**
+         * @param {string} text
+         * @param {number} regexIndex
+         * @param {number} startIndex
+         */
+        function doSplit(text, regexIndex, startIndex)
+        {
+            if (regexIndex >= globalRegexes.length) {
+                // Set regexIndex as -1 if text did not match with any regular expression
+                matches.push({
+                    value: text,
+                    position: startIndex,
+                    regexIndex: -1
+                });
+                return;
+            }
+            var regex = globalRegexes[regexIndex];
+            var currentIndex = 0;
+            var result;
+            regex.lastIndex = 0;
+            while ((result = regex.exec(text)) !== null) {
+                var stringBeforeMatch = text.substring(currentIndex, result.index);
+                if (stringBeforeMatch)
+                    doSplit(stringBeforeMatch, regexIndex + 1, startIndex + currentIndex);
+                var match = result[0];
+                matches.push({
+                    value: match,
+                    position: startIndex + result.index,
+                    regexIndex: regexIndex
+                });
+                currentIndex = result.index + match.length;
+            }
+            var stringAfterMatches = text.substring(currentIndex);
+            if (stringAfterMatches)
+                doSplit(stringAfterMatches, regexIndex + 1, startIndex + currentIndex);
+        }
     }
 }
 

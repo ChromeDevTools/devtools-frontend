@@ -2975,24 +2975,6 @@ WebInspector.StylesSidebarPropertyRenderer = function(rule, node, name, value)
     this._propertyValue = value;
 }
 
-WebInspector.StylesSidebarPropertyRenderer._variableRegex = /(var\(--.*?\))/g;
-WebInspector.StylesSidebarPropertyRenderer._colorRegex = /((?:rgb|hsl)a?\([^)]+\)|#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|\b\w+\b(?!-))/g;
-WebInspector.StylesSidebarPropertyRenderer._bezierRegex = /((cubic-bezier\([^)]+\))|\b(linear|ease-in-out|ease-in|ease-out|ease)\b)/g;
-
-/**
- * @param {string} value
- * @return {!RegExp}
- */
-WebInspector.StylesSidebarPropertyRenderer._urlRegex = function(value)
-{
-    // Heuristically choose between single-quoted, double-quoted or plain URL regex.
-    if (/url\(\s*'.*\s*'\s*\)/.test(value))
-        return /url\(\s*('.+?')\s*\)/g;
-    if (/url\(\s*".*\s*"\s*\)/.test(value))
-        return /url\(\s*(".+?")\s*\)/g;
-    return /url\(\s*([^)]+)\s*\)/g;
-}
-
 WebInspector.StylesSidebarPropertyRenderer.prototype = {
     /**
      * @param {function(string):!Node} handler
@@ -3029,29 +3011,37 @@ WebInspector.StylesSidebarPropertyRenderer.prototype = {
     {
         var valueElement = createElement("span");
         valueElement.className = "value";
-
         if (!this._propertyValue)
             return valueElement;
 
-        var formatter = new WebInspector.StringFormatter();
-        formatter.addProcessor(WebInspector.StylesSidebarPropertyRenderer._variableRegex, createTextNode);
-        formatter.addProcessor(WebInspector.StylesSidebarPropertyRenderer._urlRegex(this._propertyValue), this._processURL.bind(this));
-        if (this._bezierHandler && WebInspector.CSSMetadata.isBezierAwareProperty(this._propertyName))
-            formatter.addProcessor(WebInspector.StylesSidebarPropertyRenderer._bezierRegex, this._bezierHandler);
-        if (this._colorHandler && WebInspector.CSSMetadata.isColorAwareProperty(this._propertyName))
-            formatter.addProcessor(WebInspector.StylesSidebarPropertyRenderer._colorRegex, this._colorHandler);
-
-        valueElement.appendChild(formatter.formatText(this._propertyValue));
+        var regexes = [WebInspector.CSSMetadata.VariableRegex, WebInspector.CSSMetadata.URLRegex];
+        var processors = [createTextNode, this._processURL.bind(this)];
+        if (this._bezierHandler && WebInspector.CSSMetadata.isBezierAwareProperty(this._propertyName)) {
+            regexes.push(WebInspector.Geometry.CubicBezier.Regex);
+            processors.push(this._bezierHandler);
+        }
+        if (this._colorHandler && WebInspector.CSSMetadata.isColorAwareProperty(this._propertyName)) {
+            regexes.push(WebInspector.Color.Regex);
+            processors.push(this._colorHandler);
+        }
+        var results = WebInspector.TextUtils.splitStringByRegexes(this._propertyValue, regexes);
+        for (var i = 0; i < results.length; i++) {
+            var result = results[i];
+            var processor = result.regexIndex === -1 ? createTextNode : processors[result.regexIndex];
+            valueElement.appendChild(processor(result.value));
+        }
         valueElement.normalize();
         return valueElement;
     },
 
     /**
-     * @param {string} url
+     * @param {string} text
      * @return {!Node}
      */
-    _processURL: function(url)
+    _processURL: function(text)
     {
+        // Strip "url(" and ")" along with whitespace.
+        var url = text.substring(4, text.length - 1).trim();
         var isQuoted = /^'.*'$/.test(url) || /^".*"$/.test(url);
         if (isQuoted)
             url = url.substring(1, url.length - 1);

@@ -109,6 +109,9 @@ WebInspector.Geometry.CubicBezier = function(point1, point2)
     this.controlPoints = [point1, point2];
 }
 
+/** @type {!RegExp} */
+WebInspector.Geometry.CubicBezier.Regex = /((cubic-bezier\([^)]+\))|\b(linear|ease-in-out|ease-in|ease-out|ease)\b)/g;
+
 WebInspector.Geometry.CubicBezier.KeywordValues = {
     "linear": "cubic-bezier(0, 0, 1, 1)",
     "ease": "cubic-bezier(0.25, 0.1, 0.25, 1)",

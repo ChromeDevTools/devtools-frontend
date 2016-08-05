@@ -54,6 +54,9 @@ WebInspector.Color = function(rgba, format, originalText)
     }
 }
 
+/** @type {!RegExp} */
+WebInspector.Color.Regex = /((?:rgb|hsl)a?\([^)]+\)|#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|\b[a-zA-Z]+\b(?!-))/g;
+
 /**
  * @enum {string}
  */

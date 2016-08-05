@@ -1636,60 +1636,6 @@ WebInspector.bindInput = function(input, apply, validate, numeric)
 
 /**
  * @constructor
- */
-WebInspector.StringFormatter = function()
-{
-    this._processors = [];
-    this._regexes = [];
-}
-
-WebInspector.StringFormatter.prototype = {
-    /**
-     * @param {!RegExp} regex
-     * @param {function(string):!Node} handler
-     */
-    addProcessor: function(regex, handler)
-    {
-        this._regexes.push(regex);
-        this._processors.push(handler);
-    },
-
-    /**
-     * @param {string} text
-     * @return {!Node}
-     */
-    formatText: function(text)
-    {
-        return this._runProcessor(0, text);
-    },
-
-    /**
-     * @param {number} processorIndex
-     * @param {string} text
-     * @return {!Node}
-     */
-    _runProcessor: function(processorIndex, text)
-    {
-        if (processorIndex >= this._processors.length)
-            return createTextNode(text);
-
-        var container = createDocumentFragment();
-        var regex = this._regexes[processorIndex];
-        var processor = this._processors[processorIndex];
-
-        // Due to the nature of regex, |items| array has matched elements on its even indexes.
-        var items = text.replace(regex, "\0$1\0").split("\0");
-        for (var i = 0; i < items.length; ++i) {
-            var processedNode = i % 2 ? processor(items[i]) : this._runProcessor(processorIndex + 1, items[i]);
-            container.appendChild(processedNode);
-        }
-
-        return container;
-    }
-}
-
-/**
- * @constructor
  * @param {!WebInspector.Setting} setting
  */
 WebInspector.ThemeSupport = function(setting)
@@ -1867,10 +1813,9 @@ WebInspector.ThemeSupport.prototype = {
         if (name.indexOf("background") === -1)
             colorUsage |= WebInspector.ThemeSupport.ColorUsage.Foreground;
 
-        var colorRegex = /((?:rgb|hsl)a?\([^)]+\)|#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|\b\w+\b(?!-))/g;
         output.push(name);
         output.push(":");
-        var items = value.replace(colorRegex, "\0$1\0").split("\0");
+        var items = value.replace(WebInspector.Color.Regex, "\0$1\0").split("\0");
         for (var i = 0; i < items.length; ++i)
             output.push(this.patchColor(items[i], colorUsage));
         if (style.getPropertyPriority(name))

@@ -10,12 +10,12 @@ WebInspector.AccessibilitySidebarView = function()
 {
     WebInspector.ThrottledView.call(this, WebInspector.UIString("Accessibility"));
     this._node = null;
-    this._sidebarPaneStack = new WebInspector.View.ExpandableStackContainer();
+    this._sidebarPaneStack = WebInspector.viewManager.createStackLocation();
     this._ariaSubPane = new WebInspector.ARIAAttributesPane();
-    this._sidebarPaneStack.appendView(this._ariaSubPane, true);
+    this._sidebarPaneStack.showView(this._ariaSubPane);
     this._axNodeSubPane = new WebInspector.AXNodeSubPane();
-    this._sidebarPaneStack.appendView(this._axNodeSubPane, true);
-    this._sidebarPaneStack.show(this.element);
+    this._sidebarPaneStack.showView(this._axNodeSubPane);
+    this._sidebarPaneStack.widget().show(this.element);
     WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this._pullNode, this);
     this._pullNode();
 }
@@ -123,12 +123,12 @@ WebInspector.AccessibilitySidebarView.prototype = {
 
 /**
  * @constructor
- * @extends {WebInspector.View}
+ * @extends {WebInspector.SimpleView}
  * @param {string} name
  */
 WebInspector.AccessibilitySubPane = function(name)
 {
-    WebInspector.View.call(this, name);
+    WebInspector.SimpleView.call(this, name);
 
     this._axNode = null;
     this.registerRequiredCSS("accessibility/accessibilityNode.css");
@@ -186,5 +186,5 @@ WebInspector.AccessibilitySubPane.prototype = {
         return treeOutline;
     },
 
-    __proto__: WebInspector.View.prototype
+    __proto__: WebInspector.SimpleView.prototype
 }

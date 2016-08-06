@@ -129,14 +129,14 @@ WebInspector.AuditsPanel.prototype = {
      */
     showResults: function(categoryResults)
     {
-        if (!categoryResults._resultView) {
+        if (!categoryResults._resultLocation) {
             categoryResults.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
-            var resultView = new WebInspector.View.ExpandableStackContainer();
+            var resultView = WebInspector.viewManager.createStackLocation();
             for (var i = 0; i < categoryResults.length; ++i)
-                resultView.appendView(new WebInspector.AuditCategoryResultPane(categoryResults[i]), true);
-            categoryResults._resultView = resultView;
+                resultView.showView(new WebInspector.AuditCategoryResultPane(categoryResults[i]));
+            categoryResults._resultLocation = resultView;
         }
-        this.visibleView = categoryResults._resultView;
+        this.visibleView = categoryResults._resultLocation.widget();
     },
 
     showLauncherView: function()

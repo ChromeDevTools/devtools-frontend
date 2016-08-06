@@ -83,9 +83,9 @@ WebInspector.JavaScriptSourceFrame.prototype = {
      * @override
      * @return {!Array<!WebInspector.ToolbarItem>}
      */
-    toolbarItems: function()
+    syncToolbarItems: function()
     {
-        var result = WebInspector.UISourceCodeFrame.prototype.toolbarItems.call(this);
+        var result = WebInspector.UISourceCodeFrame.prototype.syncToolbarItems.call(this);
         var originURL = WebInspector.CompilerScriptMapping.uiSourceCodeOrigin(this.uiSourceCode());
         if (originURL) {
             var parsedURL = originURL.asParsedURL();

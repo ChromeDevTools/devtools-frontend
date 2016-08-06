@@ -4,13 +4,13 @@
 
 /**
  * @constructor
- * @extends {WebInspector.View}
+ * @extends {WebInspector.SimpleView}
  * @param {!WebInspector.ServiceWorkerCacheModel} model
  * @param {!WebInspector.ServiceWorkerCacheModel.Cache} cache
  */
 WebInspector.ServiceWorkerCacheView = function(model, cache)
 {
-    WebInspector.View.call(this, WebInspector.UIString("Cache"));
+    WebInspector.SimpleView.call(this, WebInspector.UIString("Cache"));
     this.registerRequiredCSS("resources/serviceWorkerCacheViews.css");
 
     this._model = model;
@@ -148,7 +148,7 @@ WebInspector.ServiceWorkerCacheView.prototype = {
      * @override
      * @return {!Array.<!WebInspector.ToolbarItem>}
      */
-    toolbarItems: function()
+    syncToolbarItems: function()
     {
         return [this._refreshButton];
     },
@@ -159,5 +159,5 @@ WebInspector.ServiceWorkerCacheView.prototype = {
         this._entries = [];
     },
 
-    __proto__: WebInspector.View.prototype
+    __proto__: WebInspector.SimpleView.prototype
 }

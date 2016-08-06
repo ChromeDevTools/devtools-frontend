@@ -101,7 +101,7 @@ WebInspector.ElementsPanel.prototype = {
     _revealProperty: function(cssProperty)
     {
         var stylesSidebarPane = this.sidebarPanes.styles;
-        this.sidebarPaneView.selectTab(WebInspector.UIString("Styles"));
+        this.sidebarPaneView.showView(stylesSidebarPane);
         stylesSidebarPane.revealProperty(/** @type {!WebInspector.CSSProperty} */(cssProperty));
         return Promise.resolve();
     },
@@ -863,21 +863,19 @@ WebInspector.ElementsPanel.prototype = {
         if (this.sidebarPaneView && horizontally === !this._splitWidget.isVertical())
             return;
 
-        if (this.sidebarPaneView && this.sidebarPaneView.shouldHideOnDetach())
+        if (this.sidebarPaneView && this.sidebarPaneView.tabbedPane().shouldHideOnDetach())
             return; // We can't reparent extension iframes.
-
-        var selectedTabId = this.sidebarPaneView ? this.sidebarPaneView.selectedTabId : null;
 
         var extensionSidebarPanes = WebInspector.extensionServer.sidebarPanes();
         if (this.sidebarPaneView) {
-            this.sidebarPaneView.detach();
-            this._splitWidget.uninstallResizer(this.sidebarPaneView.headerElement());
+            this.sidebarPaneView.tabbedPane().detach();
+            this._splitWidget.uninstallResizer(this.sidebarPaneView.tabbedPane().headerElement());
         }
 
         this._splitWidget.setVertical(!horizontally);
         this.showToolbarPane(null);
 
-        var computedPane = new WebInspector.View(WebInspector.UIString("Computed"));
+        var computedPane = new WebInspector.SimpleView(WebInspector.UIString("Computed"));
         computedPane.element.classList.add("composite");
         computedPane.element.classList.add("fill");
         computedPane.element.classList.add("metrics-and-computed");
@@ -915,17 +913,18 @@ WebInspector.ElementsPanel.prototype = {
                 showMetrics.call(this, false);
         }
 
-        this.sidebarPaneView = new WebInspector.View.TabbedPaneContainer();
-        this.sidebarPaneView.element.addEventListener("contextmenu", this._sidebarContextMenuEventFired.bind(this), false);
+        this.sidebarPaneView = WebInspector.viewManager.createTabbedLocation(() => WebInspector.inspectorView.setCurrentPanel(this), "elements-sidebar");
+        var tabbedPane = this.sidebarPaneView.tabbedPane();
+        tabbedPane.element.addEventListener("contextmenu", this._sidebarContextMenuEventFired.bind(this), false);
         if (this._popoverHelper)
             this._popoverHelper.hidePopover();
-        this._popoverHelper = new WebInspector.PopoverHelper(this.sidebarPaneView.element, this._getPopoverAnchor.bind(this), this._showPopover.bind(this));
+        this._popoverHelper = new WebInspector.PopoverHelper(tabbedPane.element, this._getPopoverAnchor.bind(this), this._showPopover.bind(this));
         this._popoverHelper.setTimeout(0);
 
         if (horizontally) {
-            this._splitWidget.installResizer(this.sidebarPaneView.headerElement());
+            this._splitWidget.installResizer(tabbedPane.headerElement());
 
-            var compositePane = new WebInspector.View(WebInspector.UIString("Styles"));
+            var compositePane = new WebInspector.SimpleView(WebInspector.UIString("Styles"));
             compositePane.element.classList.add("flex-auto");
 
             var splitWidget = new WebInspector.SplitWidget(true, true, "stylesPaneSplitViewState", 215);
@@ -936,16 +935,26 @@ WebInspector.ElementsPanel.prototype = {
 
             computedPane.show(computedStylePanesWrapper.element);
             this.sidebarPaneView.appendView(compositePane);
+
+            // TODO: remove
+            this.sidebarPanes.styles.setParentViewForReveal(compositePane);
+            this.sidebarPanes.computedStyle.setParentViewForReveal(compositePane);
+            this.sidebarPanes.metrics.setParentViewForReveal(compositePane);
         } else {
-            var stylesPane = new WebInspector.View(WebInspector.UIString("Styles"));
+            var stylesPane = new WebInspector.SimpleView(WebInspector.UIString("Styles"));
             stylesPane.element.classList.add("flex-auto", "metrics-and-styles");
 
             matchedStylesContainer.show(stylesPane.element);
             computedStylePanesWrapper.show(computedPane.element);
 
-            this.sidebarPaneView.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, tabSelected, this);
+            tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, tabSelected, this);
             this.sidebarPaneView.appendView(stylesPane);
             this.sidebarPaneView.appendView(computedPane);
+
+            // TODO: remove
+            this.sidebarPanes.styles.setParentViewForReveal(stylesPane);
+            this.sidebarPanes.computedStyle.setParentViewForReveal(computedPane);
+            this.sidebarPanes.metrics.setParentViewForReveal(computedPane);
         }
 
         this.sidebarPanes.styles.show(matchedStylePanesWrapper.element);
@@ -964,10 +973,7 @@ WebInspector.ElementsPanel.prototype = {
         for (var i = 0; i < extensionSidebarPanes.length; ++i)
             this._addExtensionSidebarPane(extensionSidebarPanes[i]);
 
-        this._splitWidget.setSidebarWidget(this.sidebarPaneView);
-
-        if (selectedTabId)
-            this.sidebarPaneView.selectTab(selectedTabId);
+        this._splitWidget.setSidebarWidget(this.sidebarPaneView.tabbedPane());
     },
 
     /**

@@ -30,12 +30,12 @@
 
 /**
  * @constructor
- * @extends {WebInspector.View}
+ * @extends {WebInspector.SimpleView}
  * @param {!WebInspector.AuditCategoryResult} categoryResult
  */
 WebInspector.AuditCategoryResultPane = function(categoryResult)
 {
-    WebInspector.View.call(this, categoryResult.title);
+    WebInspector.SimpleView.call(this, categoryResult.title);
     this._treeOutline = new TreeOutlineInShadow();
     this._treeOutline.registerRequiredCSS("audits/auditResultTree.css");
     this._treeOutline.element.classList.add("audit-result-tree");
@@ -57,7 +57,7 @@ WebInspector.AuditCategoryResultPane = function(categoryResult)
         var treeElement = this._appendResult(this._treeOutline.rootElement(), ruleResult, ruleResult.severity);
         treeElement.listItemElement.classList.add("audit-result");
     }
-    this.revealWidget();
+    this.revealView();
 }
 
 WebInspector.AuditCategoryResultPane.prototype = {
@@ -105,5 +105,5 @@ WebInspector.AuditCategoryResultPane.prototype = {
         return treeElement;
     },
 
-    __proto__: WebInspector.View.prototype
+    __proto__: WebInspector.SimpleView.prototype
 }

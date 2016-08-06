@@ -46,7 +46,6 @@
         "SuggestBox.js",
         "TabbedPane.js",
         "UIUtils.js",
-        "ViewContainers.js",
         "ViewportControl.js",
         "ZoomManager.js"
     ],

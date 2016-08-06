@@ -4,13 +4,13 @@
 
 /**
  * @constructor
- * @extends {WebInspector.View}
+ * @extends {WebInspector.SimpleView}
  * @param {!WebInspector.BreakpointManager} breakpointManager
  * @param {function(!WebInspector.UISourceCode, number=, number=, boolean=)} showSourceLineDelegate
  */
 WebInspector.JavaScriptBreakpointsSidebarPane = function(breakpointManager, showSourceLineDelegate)
 {
-    WebInspector.View.call(this, WebInspector.UIString("Breakpoints"));
+    WebInspector.SimpleView.call(this, WebInspector.UIString("Breakpoints"));
     this.registerRequiredCSS("components/breakpointsList.css");
 
     this._breakpointManager = breakpointManager;
@@ -144,7 +144,7 @@ WebInspector.JavaScriptBreakpointsSidebarPane.prototype = {
             return;
         breakpointItem.element.classList.add("breakpoint-hit");
         this._highlightedBreakpointItem = breakpointItem;
-        this.revealWidget();
+        this.revealView();
     },
 
     clearBreakpointHighlight: function()
@@ -255,5 +255,5 @@ WebInspector.JavaScriptBreakpointsSidebarPane.prototype = {
         this._items.clear();
     },
 
-    __proto__: WebInspector.View.prototype
+    __proto__: WebInspector.SimpleView.prototype
 }

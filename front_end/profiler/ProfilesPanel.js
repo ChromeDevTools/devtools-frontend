@@ -815,7 +815,7 @@ WebInspector.ProfilesPanel.prototype = {
 
         this._profileViewToolbar.removeToolbarItems();
 
-        var toolbarItems = view.toolbarItems();
+        var toolbarItems = view.syncToolbarItems();
         for (var i = 0; i < toolbarItems.length; ++i)
             this._profileViewToolbar.appendToolbarItem(toolbarItems[i]);
 

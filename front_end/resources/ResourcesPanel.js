@@ -662,7 +662,7 @@ WebInspector.ResourcesPanel.prototype = {
         this.visibleView = view;
 
         this._storageViewToolbar.removeToolbarItems();
-        var toolbarItems = view.toolbarItems ? view.toolbarItems() : null;
+        var toolbarItems = view instanceof WebInspector.SimpleView ? view.syncToolbarItems() : null;
         for (var i = 0; toolbarItems && i < toolbarItems.length; ++i)
             this._storageViewToolbar.appendToolbarItem(toolbarItems[i]);
     },

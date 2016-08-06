@@ -514,7 +514,7 @@ WebInspector.RemoteObjectImpl.prototype = {
             }
 
             if (!this._objectId) {
-                reject(null);
+                reject(new Error("No object id specified"));
                 return;
             }
 
@@ -528,7 +528,7 @@ WebInspector.RemoteObjectImpl.prototype = {
             function mycallback(error, payloads)
             {
                 if (error) {
-                    reject(null);
+                    reject(new Error(error));
                     return;
                 }
                 fulfill(payloads.map(createEventListener.bind(this)));

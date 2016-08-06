@@ -30,11 +30,11 @@
 
 /**
  * @constructor
- * @extends {WebInspector.View}
+ * @extends {WebInspector.SimpleView}
  */
 WebInspector.WatchExpressionsSidebarPane = function()
 {
-    WebInspector.View.call(this, WebInspector.UIString("Watch"));
+    WebInspector.SimpleView.call(this, WebInspector.UIString("Watch"));
     this.registerRequiredCSS("components/objectValue.css");
 
     this._requiresUpdate = true;
@@ -75,7 +75,7 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
      */
     addExpression: function(expressionString)
     {
-        this.revealWidget();
+        this.revealView();
         if (this._requiresUpdate) {
             this._rebuildWatchExpressions();
             delete this._requiresUpdate;
@@ -84,10 +84,12 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
         this._saveExpressions();
     },
 
-    expandIfNecessary: function()
+    /**
+     * @return {boolean}
+     */
+    hasExpressions: function()
     {
-        if (this._watchExpressionsSetting.get().length)
-            this.revealWidget();
+        return !!this._watchExpressionsSetting.get().length;
     },
 
     _saveExpressions: function()
@@ -116,7 +118,7 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
     {
         if (event)
             event.consume(true);
-        this.revealWidget();
+        this.revealView();
         this._createWatchExpression(null).startEditing();
     },
 
@@ -213,7 +215,7 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
         this._rebuildWatchExpressions();
     },
 
-    __proto__: WebInspector.View.prototype
+    __proto__: WebInspector.SimpleView.prototype
 }
 
 /**

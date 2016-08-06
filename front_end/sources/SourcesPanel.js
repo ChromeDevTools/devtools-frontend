@@ -64,7 +64,7 @@ WebInspector.SourcesPanel = function()
     this._splitWidget.setMainWidget(this.editorView);
 
     // Create navigator tabbed pane with toolbar.
-    this._navigatorTabbedLocation = WebInspector.viewManager.createTabbedLocation("navigator-view", true);
+    this._navigatorTabbedLocation = WebInspector.viewManager.createTabbedLocation(this._setAsCurrentPanel.bind(this), "navigator-view", true);
     var tabbedPane = this._navigatorTabbedLocation.tabbedPane();
     tabbedPane.setMinimumSize(100, 25);
     tabbedPane.setShrinkableTabs(true);
@@ -95,8 +95,6 @@ WebInspector.SourcesPanel = function()
     this.sidebarPanes.xhrBreakpoints = new WebInspector.XHRBreakpointsSidebarPane();
     this.sidebarPanes.eventListenerBreakpoints = new WebInspector.EventListenerBreakpointsSidebarPane();
     this.sidebarPanes.objectEventListeners = new WebInspector.ObjectEventListenersSidebarPane();
-
-    this._lastSelectedTabSetting = WebInspector.settings.createLocalSetting("lastSelectedSourcesSidebarPaneTab", WebInspector.UIString("Scope"));
 
     this._installDebuggerSidebarController();
 
@@ -139,7 +137,7 @@ WebInspector.SourcesPanel.prototype = {
         if (hasThreads && !this.sidebarPanes.threads) {
             this.sidebarPanes.threads = new WebInspector.ThreadsSidebarPane();
             if (this._sidebarPaneStack) {
-                this._sidebarPaneStack.insertViewBefore(this.sidebarPanes.threads, this._splitWidget.isVertical() ? this.sidebarPanes.watchExpressions : this.sidebarPanes.callstack, true);
+                this._sidebarPaneStack.showView(this.sidebarPanes.threads, this._splitWidget.isVertical() ? this.sidebarPanes.watchExpressions : this.sidebarPanes.callstack);
             }
         }
     },
@@ -219,9 +217,8 @@ WebInspector.SourcesPanel.prototype = {
      * @param {string} locationName
      * @return {?WebInspector.ViewLocation}
      */
-    revealLocation: function(locationName)
+    resolveLocation: function(locationName)
     {
-        WebInspector.inspectorView.setCurrentPanel(WebInspector.SourcesPanel.instance());
         return this._navigatorTabbedLocation;
     },
 
@@ -1125,44 +1122,47 @@ WebInspector.SourcesPanel.prototype = {
         var vbox = new WebInspector.VBox();
         vbox.element.appendChild(this._debugToolbarDrawer);
         vbox.setMinimumAndPreferredSizes(25, 25, WebInspector.SourcesPanel.minToolbarWidth, 100);
-        this._sidebarPaneStack = new WebInspector.View.ExpandableStackContainer();
-        this._sidebarPaneStack.show(vbox.element);
+        this._sidebarPaneStack = WebInspector.viewManager.createStackLocation(this._setAsCurrentPanel.bind(this), "sources-sidebar");
+        this._sidebarPaneStack.widget().show(vbox.element);
         vbox.element.appendChild(this._debugToolbar.element);
 
+        if (this.sidebarPanes.threads)
+            this._sidebarPaneStack.showView(this.sidebarPanes.threads);
+
         if (!vertically) {
-            // Populate the only stack.
+            if (this.sidebarPanes.watchExpressions.hasExpressions())
+                this._sidebarPaneStack.showView(this.sidebarPanes.watchExpressions);
+            else
+                this._sidebarPaneStack.appendView(this.sidebarPanes.watchExpressions);
+        }
+
+        this._sidebarPaneStack.showView(this.sidebarPanes.callstack);
+        this._sidebarPaneStack.showView(this.sidebarPanes.scopechain);
+        this._sidebarPaneStack.showView(this.sidebarPanes.jsBreakpoints);
+
+        if (!vertically) {
+            // Populate the rest of the stack.
             for (var pane in this.sidebarPanes) {
                 if (this.sidebarPanes[pane])
                     this._sidebarPaneStack.appendView(this.sidebarPanes[pane]);
             }
             this._extensionSidebarPanesContainer = this._sidebarPaneStack;
             this.sidebarPaneView = vbox;
-
-            this.sidebarPanes.scopechain.revealWidget();
-            this.sidebarPanes.watchExpressions.expandIfNecessary();
         } else {
             var splitWidget = new WebInspector.SplitWidget(true, true, "sourcesPanelDebuggerSidebarSplitViewState", 0.5);
             splitWidget.setMainWidget(vbox);
 
             // Populate the left stack.
-            if (this.sidebarPanes.threads)
-                this._sidebarPaneStack.appendView(this.sidebarPanes.threads);
-            this._sidebarPaneStack.appendView(this.sidebarPanes.callstack);
-            this._sidebarPaneStack.appendView(this.sidebarPanes.jsBreakpoints);
             this._sidebarPaneStack.appendView(this.sidebarPanes.domBreakpoints);
             this._sidebarPaneStack.appendView(this.sidebarPanes.xhrBreakpoints);
             this._sidebarPaneStack.appendView(this.sidebarPanes.eventListenerBreakpoints);
             this._sidebarPaneStack.appendView(this.sidebarPanes.objectEventListeners);
 
-            var tabbedPane = new WebInspector.View.TabbedPaneContainer();
-            splitWidget.setSidebarWidget(tabbedPane);
-            tabbedPane.appendView(this.sidebarPanes.scopechain);
-            tabbedPane.appendView(this.sidebarPanes.watchExpressions);
-            if (this.sidebarPanes.serviceWorkers)
-                tabbedPane.appendView(this.sidebarPanes.serviceWorkers);
-            tabbedPane.selectTab(this._lastSelectedTabSetting.get());
-            tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, this._tabSelected, this);
-            this._extensionSidebarPanesContainer = tabbedPane;
+            var tabbedLocation = WebInspector.viewManager.createTabbedLocation(this._setAsCurrentPanel.bind(this), "sources-sidebar-tabs");
+            splitWidget.setSidebarWidget(tabbedLocation.tabbedPane());
+            tabbedLocation.appendView(this.sidebarPanes.scopechain);
+            tabbedLocation.appendView(this.sidebarPanes.watchExpressions);
+            this._extensionSidebarPanesContainer = tabbedLocation;
             this.sidebarPaneView = splitWidget;
         }
 
@@ -1171,18 +1171,11 @@ WebInspector.SourcesPanel.prototype = {
             this._addExtensionSidebarPane(extensionSidebarPanes[i]);
 
         this._splitWidget.setSidebarWidget(this.sidebarPaneView);
-        if (this.sidebarPanes.threads)
-            this.sidebarPanes.threads.revealWidget();
-        this.sidebarPanes.jsBreakpoints.revealWidget();
-        this.sidebarPanes.callstack.revealWidget();
     },
 
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _tabSelected: function(event)
+    _setAsCurrentPanel: function()
     {
-        this._lastSelectedTabSetting.set(event.data.tabId);
+        WebInspector.inspectorView.setCurrentPanel(this);
     },
 
     /**

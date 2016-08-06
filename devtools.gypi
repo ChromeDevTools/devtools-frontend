@@ -307,7 +307,6 @@
             'front_end/ui/ThrottledView.js',
             'front_end/ui/UIUtils.js',
             'front_end/ui/View.js',
-            'front_end/ui/ViewContainers.js',
             'front_end/ui/ViewportControl.js',
             'front_end/ui/Widget.js',
             'front_end/ui/ZoomManager.js',

@@ -4,13 +4,13 @@
 
 /**
  * @constructor
- * @extends {WebInspector.View}
+ * @extends {WebInspector.SimpleView}
  * @param {string} title
  * @param {boolean=} isWebComponent
  */
 WebInspector.ThrottledView = function(title, isWebComponent)
 {
-    WebInspector.View.call(this, title, isWebComponent);
+    WebInspector.SimpleView.call(this, title, isWebComponent);
     this._updateThrottler = new WebInspector.Throttler(100);
     this._updateWhenVisible = false;
 }
@@ -52,10 +52,10 @@ WebInspector.ThrottledView.prototype = {
      */
     wasShown: function()
     {
-        WebInspector.View.prototype.wasShown.call(this);
+        WebInspector.SimpleView.prototype.wasShown.call(this);
         if (this._updateWhenVisible)
             this.update();
     },
 
-    __proto__: WebInspector.View.prototype
+    __proto__: WebInspector.SimpleView.prototype
 }

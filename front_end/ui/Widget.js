@@ -555,25 +555,6 @@ WebInspector.Widget.prototype = {
             this._parentWidget.doLayout();
     },
 
-    /**
-     * @return {boolean}
-     */
-    revealWidget: function()
-    {
-        if (!this._parentWidget)
-            return this._isRoot;
-        if (!this._parentWidget.revealChild(this))
-            return false;
-        return this._parentWidget.revealWidget();
-    },
-
-    /**
-     * @param {!WebInspector.Widget} widget
-     * @return {boolean}
-     * @protected
-     */
-    revealChild: function(widget) { return true; },
-
     __proto__: WebInspector.Object.prototype
 }
 

@@ -97,7 +97,7 @@ WebInspector.IDBDatabaseView.prototype = {
 
 /**
  * @constructor
- * @extends {WebInspector.View}
+ * @extends {WebInspector.SimpleView}
  * @param {!WebInspector.IndexedDBModel} model
  * @param {!WebInspector.IndexedDBModel.DatabaseId} databaseId
  * @param {!WebInspector.IndexedDBModel.ObjectStore} objectStore
@@ -105,7 +105,7 @@ WebInspector.IDBDatabaseView.prototype = {
  */
 WebInspector.IDBDataView = function(model, databaseId, objectStore, index)
 {
-    WebInspector.View.call(this, WebInspector.UIString("IDB"));
+    WebInspector.SimpleView.call(this, WebInspector.UIString("IDB"));
     this.registerRequiredCSS("resources/indexedDBViews.css");
 
     this._model = model;
@@ -337,7 +337,7 @@ WebInspector.IDBDataView.prototype = {
      * @override
      * @return {!Array.<!WebInspector.ToolbarItem>}
      */
-    toolbarItems: function()
+    syncToolbarItems: function()
     {
         return [this._refreshButton, this._clearButton];
     },
@@ -348,7 +348,7 @@ WebInspector.IDBDataView.prototype = {
         this._entries = [];
     },
 
-    __proto__: WebInspector.View.prototype
+    __proto__: WebInspector.SimpleView.prototype
 }
 
 /**

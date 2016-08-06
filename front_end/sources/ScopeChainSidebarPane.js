@@ -26,11 +26,11 @@
 
 /**
  * @constructor
- * @extends {WebInspector.View}
+ * @extends {WebInspector.SimpleView}
  */
 WebInspector.ScopeChainSidebarPane = function()
 {
-    WebInspector.View.call(this, WebInspector.UIString("Scope"));
+    WebInspector.SimpleView.call(this, WebInspector.UIString("Scope"));
     this._expandController = new WebInspector.ObjectPropertiesSectionExpandController();
     this._linkifier = new WebInspector.Linkifier();
 }
@@ -138,5 +138,5 @@ WebInspector.ScopeChainSidebarPane.prototype = {
 
     _sidebarPaneUpdatedForTest: function() { },
 
-    __proto__: WebInspector.View.prototype
+    __proto__: WebInspector.SimpleView.prototype
 }

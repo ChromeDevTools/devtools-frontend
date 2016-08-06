@@ -342,7 +342,7 @@
             "location": "drawer-view",
             "id": "sources.history",
             "title": "History",
-            "persistence": "temporary",
+            "persistence": "transient",
             "className": "WebInspector.RevisionHistoryView"
         },
         {

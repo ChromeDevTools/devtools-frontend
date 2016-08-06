@@ -25,11 +25,11 @@
 
 /**
  * @constructor
- * @extends {WebInspector.View}
+ * @extends {WebInspector.SimpleView}
  */
 WebInspector.DatabaseTableView = function(database, tableName)
 {
-    WebInspector.View.call(this, WebInspector.UIString("Database"));
+    WebInspector.SimpleView.call(this, WebInspector.UIString("Database"));
 
     this.database = database;
     this.tableName = tableName;
@@ -54,7 +54,7 @@ WebInspector.DatabaseTableView.prototype = {
      * @override
      * @return {!Array.<!WebInspector.ToolbarItem>}
      */
-    toolbarItems: function()
+    syncToolbarItems: function()
     {
         return [this.refreshButton, this._visibleColumnsInput];
     },
@@ -143,5 +143,5 @@ WebInspector.DatabaseTableView.prototype = {
         this.update();
     },
 
-    __proto__: WebInspector.View.prototype
+    __proto__: WebInspector.SimpleView.prototype
 }

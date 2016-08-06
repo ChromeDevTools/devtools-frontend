@@ -326,7 +326,7 @@ WebInspector.DOMBreakpointsSidebarPane.prototype = {
         var element = this._breakpointElements[breakpointId];
         if (!element)
             return;
-        this.revealWidget();
+        this.revealView();
         element.classList.add("breakpoint-hit");
         this._highlightedElement = element;
     },
@@ -419,13 +419,13 @@ WebInspector.DOMBreakpointsSidebarPane.prototype = {
 
 /**
  * @constructor
- * @extends {WebInspector.View}
+ * @extends {WebInspector.SimpleView}
  * @param {!WebInspector.DOMBreakpointsSidebarPane} pane
  * @param {!WebInspector.Panel} panel
  */
 WebInspector.DOMBreakpointsSidebarPane.Proxy = function(pane, panel)
 {
-    WebInspector.View.call(this, WebInspector.UIString("DOM Breakpoints"));
+    WebInspector.SimpleView.call(this, WebInspector.UIString("DOM Breakpoints"));
     this.registerRequiredCSS("components/breakpointsList.css");
 
     this._wrappedPane = pane;
@@ -435,7 +435,7 @@ WebInspector.DOMBreakpointsSidebarPane.Proxy = function(pane, panel)
 WebInspector.DOMBreakpointsSidebarPane.Proxy.prototype = {
     wasShown: function()
     {
-        WebInspector.View.prototype.wasShown.call(this);
+        WebInspector.SimpleView.prototype.wasShown.call(this);
         this._reattachBody();
     },
 
@@ -445,7 +445,7 @@ WebInspector.DOMBreakpointsSidebarPane.Proxy.prototype = {
             this._wrappedPane.show(this.element);
     },
 
-    __proto__: WebInspector.View.prototype
+    __proto__: WebInspector.SimpleView.prototype
 }
 
 /**

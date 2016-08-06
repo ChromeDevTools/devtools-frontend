@@ -3,12 +3,52 @@
 // found in the LICENSE file.
 
 /**
+ * @interface
+ */
+WebInspector.View = function()
+{
+}
+
+WebInspector.View.prototype = {
+    /**
+     * @return {string}
+     */
+    viewId: function() { },
+
+    /**
+     * @return {string}
+     */
+    title: function() { },
+
+    /**
+     * @return {boolean}
+     */
+    isCloseable: function() { },
+
+    /**
+     * @return {boolean}
+     */
+    isTransient: function() { },
+
+    /**
+     * @return {!Promise<!Array<!WebInspector.ToolbarItem>>}
+     */
+    toolbarItems: function() { },
+
+    /**
+     * @return {!Promise<!WebInspector.Widget>}
+     */
+    widget: function() { }
+}
+
+/**
  * @constructor
  * @extends {WebInspector.VBox}
+ * @implements {WebInspector.View}
  * @param {string} title
  * @param {boolean=} isWebComponent
  */
-WebInspector.View = function(title, isWebComponent)
+WebInspector.SimpleView = function(title, isWebComponent)
 {
     WebInspector.VBox.call(this, isWebComponent);
     this._title = title;
@@ -16,13 +56,67 @@ WebInspector.View = function(title, isWebComponent)
     this._toolbarItems = [];
 }
 
-WebInspector.View.prototype = {
+WebInspector.SimpleView.prototype = {
     /**
+     * @override
+     * @return {string}
+     */
+    viewId: function()
+    {
+        return this._title;
+    },
+
+    /**
+     * @override
      * @return {string}
      */
     title: function()
     {
         return this._title;
+    },
+
+    /**
+     * @override
+     * @return {boolean}
+     */
+    isCloseable: function()
+    {
+        return false;
+    },
+
+    /**
+     * @override
+     * @return {boolean}
+     */
+    isTransient: function()
+    {
+        return false;
+    },
+
+    /**
+     * @override
+     * @return {!Promise<!Array<!WebInspector.ToolbarItem>>}
+     */
+    toolbarItems: function()
+    {
+        return Promise.resolve(this.syncToolbarItems());
+    },
+
+    /**
+     * @return {!Array<!WebInspector.ToolbarItem>}
+     */
+    syncToolbarItems: function()
+    {
+        return this._toolbarItems;
+    },
+
+    /**
+     * @override
+     * @return {!Promise<!WebInspector.Widget>}
+     */
+    widget: function()
+    {
+        return /** @type {!Promise<!WebInspector.Widget>} */ (Promise.resolve(this));
     },
 
     /**
@@ -34,14 +128,88 @@ WebInspector.View.prototype = {
     },
 
     /**
-     * @return {!Array<!WebInspector.ToolbarItem>}
+     * @return {!Promise}
      */
-    toolbarItems: function()
+    revealView: function()
     {
-        return this._toolbarItems;
+        return WebInspector.viewManager.revealView(this._parentViewToReveal || this);
+    },
+
+    /**
+     * @param {!WebInspector.View} view
+     */
+    setParentViewForReveal: function(view)
+    {
+        this._parentViewToReveal = view;
     },
 
     __proto__: WebInspector.VBox.prototype
+}
+
+/**
+ * @constructor
+ * @implements {WebInspector.View}
+ * @param {!Runtime.Extension} extension
+ */
+WebInspector.ProvidedView = function(extension)
+{
+    this._extension = extension;
+}
+
+WebInspector.ProvidedView.prototype = {
+    /**
+     * @override
+     * @return {string}
+     */
+    viewId: function()
+    {
+        return this._extension.descriptor()["id"];
+    },
+
+    /**
+     * @override
+     * @return {string}
+     */
+    title: function()
+    {
+        return this._extension.title();
+    },
+
+    /**
+     * @override
+     * @return {boolean}
+     */
+    isCloseable: function()
+    {
+        return this._extension.descriptor()["persistence"] === "closeable";
+    },
+
+    /**
+     * @override
+     * @return {boolean}
+     */
+    isTransient: function()
+    {
+        return this._extension.descriptor()["persistence"] === "transient";
+    },
+
+    /**
+     * @override
+     * @return {!Promise<!Array<!WebInspector.ToolbarItem>>}
+     */
+    toolbarItems: function()
+    {
+        return Promise.resolve([]);
+    },
+
+    /**
+     * @override
+     * @return {!Promise<!WebInspector.Widget>}
+     */
+    widget: function()
+    {
+        return  /** @type {!Promise<!WebInspector.Widget>} */ (this._extension.instance());
+    }
 }
 
 /**
@@ -51,9 +219,17 @@ WebInspector.ViewLocation = function() { }
 
 WebInspector.ViewLocation.prototype = {
     /**
-     * @param {string} viewId
+     * @param {!WebInspector.View} view
+     * @param {?WebInspector.View=} insertBefore
      */
-    showView: function(viewId) { },
+    appendView: function(view, insertBefore) { },
+
+    /**
+     * @param {!WebInspector.View} view
+     * @param {?WebInspector.View=} insertBefore
+     * @return {!Promise}
+     */
+    showView: function(view, insertBefore) { },
 
     /**
      * @return {!WebInspector.Widget}
@@ -72,6 +248,8 @@ WebInspector.TabbedViewLocation.prototype = {
      * @return {!WebInspector.TabbedPane}
      */
     tabbedPane: function() { },
+
+    enableMoreTabsButton: function() { }
 }
 
 /**
@@ -84,7 +262,7 @@ WebInspector.ViewLocationResolver.prototype = {
      * @param {string} location
      * @return {?WebInspector.ViewLocation}
      */
-    revealLocation: function(location) { }
+    resolveLocation: function(location) { }
 }
 
 /**
@@ -92,91 +270,290 @@ WebInspector.ViewLocationResolver.prototype = {
  */
 WebInspector.ViewManager = function()
 {
+    /** @type {!Map<string, !WebInspector.View>} */
+    this._views = new Map();
+    /** @type {!Map<string, string>} */
+    this._locationNameByViewId = new Map();
+
+    for (var extension of self.runtime.extensions("view")) {
+        var descriptor = extension.descriptor();
+        this._views.set(descriptor["id"], new WebInspector.ProvidedView(extension));
+        this._locationNameByViewId.set(descriptor["id"], descriptor["location"]);
+    }
 }
 
 WebInspector.ViewManager.prototype = {
     /**
+     * @param {!WebInspector.View} view
+     * @return {!Promise}
+     */
+    revealView: function(view)
+    {
+        var location = /** @type {?WebInspector.ViewManager._Location} */ (view[WebInspector.ViewManager._Location.symbol]);
+        if (!location)
+            return Promise.resolve();
+        location._reveal();
+        return location.showView(view);
+    },
+
+    /**
      * @param {string} viewId
+     * @return {!Promise}
      */
     showView: function(viewId)
     {
-        var extensions = self.runtime.extensions("view").filter(extension => extension.descriptor()["id"] === viewId);
-        if (!extensions.length) {
-            console.error("Could not find view for id: '" + viewId + "'");
-            return;
+        var view = this._views.get(viewId);
+        if (!view) {
+            console.error("Could not find view for id: '" + viewId + "' " + new Error().stack);
+            return Promise.resolve();
         }
-        var extension = extensions[0];
-        var location = extensions[0].descriptor()["location"];
-        if (location === "drawer-view")
+        var locationName = this._locationNameByViewId.get(viewId);
+        if (locationName === "drawer-view")
             WebInspector.userMetrics.drawerShown(viewId);
+
+        return this._resolveLocation(locationName).then(location => {
+            if (!location)
+                return;
+            location._reveal();
+            return location.showView(view);
+        });
+    },
+
+    /**
+     * @param {string=} location
+     * @return {!Promise<?WebInspector.ViewManager._Location>}
+     */
+    _resolveLocation: function(location)
+    {
+        if (!location)
+            return /** @type {!Promise<?WebInspector.ViewManager._Location>} */ (Promise.resolve(null));
+
         var resolverExtensions = self.runtime.extensions(WebInspector.ViewLocationResolver).filter(extension => extension.descriptor()["name"] === location);
         if (!resolverExtensions.length)
-            return;
+            return /** @type {!Promise<?WebInspector.ViewManager._Location>} */ (Promise.resolve(null));
         var resolverExtension = resolverExtensions[0];
-        resolverExtension.instance().then(this._revealLocation.bind(this, viewId, location));
+        return resolverExtension.instance().then(resolver => /** @type {?WebInspector.ViewManager._Location} */(resolver.resolveLocation(location)));
     },
 
     /**
-     * @param {string} location
+     * @param {function()=} revealCallback
+     * @param {string=} location
      * @param {boolean=} restoreSelection
-     * @param {boolean=} enableMoreTabsButton
      * @return {!WebInspector.TabbedViewLocation}
      */
-    createTabbedLocation: function(location, restoreSelection, enableMoreTabsButton)
+    createTabbedLocation: function(revealCallback, location, restoreSelection)
     {
-        return new WebInspector.ViewManager._TabbedLocation(this, location, restoreSelection, enableMoreTabsButton);
+        return new WebInspector.ViewManager._TabbedLocation(this, revealCallback, location, restoreSelection);
     },
 
     /**
-     * @param {string} viewId
-     * @param {string} location
-     * @param {!WebInspector.ViewLocationResolver} resolver
+     * @param {function()=} revealCallback
+     * @param {string=} location
+     * @return {!WebInspector.ViewLocation}
      */
-    _revealLocation: function(viewId, location, resolver)
+    createStackLocation: function(revealCallback, location)
     {
-        var viewLocation = resolver.revealLocation(location);
-        if (viewLocation)
-            viewLocation.showView(viewId);
+        return new WebInspector.ViewManager._StackLocation(this, revealCallback, location);
     },
 
     /**
      * @param {string} location
-     * @return {!Array<!Runtime.Extension>}
+     * @return {!Array<!WebInspector.View>}
      */
     _viewsForLocation: function(location)
     {
-        return self.runtime.extensions("view").filter(extension => extension.descriptor()["location"] === location);
+        var result = [];
+        for (var id of this._views.keys()) {
+            if (this._locationNameByViewId.get(id) === location)
+                result.push(this._views.get(id));
+        }
+        return result;
+    }
+}
+
+
+/**
+ * @param {!Element} element
+ * @param {!Array<!WebInspector.ToolbarItem>} toolbarItems
+ */
+WebInspector.ViewManager._populateToolbar = function(element, toolbarItems)
+{
+    if (!toolbarItems.length)
+        return;
+    var toolbar = new WebInspector.Toolbar("");
+    element.insertBefore(toolbar.element, element.firstChild);
+    for (var item of toolbarItems)
+        toolbar.appendToolbarItem(item);
+}
+
+/**
+ * @constructor
+ * @extends {WebInspector.VBox}
+ * @param {!WebInspector.View} view
+ */
+WebInspector.ViewManager._ContainerWidget = function(view)
+{
+    WebInspector.VBox.call(this);
+    this.element.classList.add("flex-auto", "view-container", "overflow-auto");
+    this._view = view;
+}
+
+WebInspector.ViewManager._ContainerWidget.prototype = {
+    /**
+     * @return {!Promise}
+     */
+    _materialize: function()
+    {
+        if (this._materializePromise)
+            return this._materializePromise;
+        var promises = [];
+        promises.push(this._view.toolbarItems().then(WebInspector.ViewManager._populateToolbar.bind(WebInspector.ViewManager, this.element)));
+        promises.push(this._view.widget().then(widget => widget.show(this.element)));
+        this._materializePromise = Promise.all(promises);
+        return this._materializePromise;
+    },
+
+    __proto__: WebInspector.VBox.prototype
+}
+
+/**
+ * @constructor
+ * @extends {WebInspector.VBox}
+ * @param {!WebInspector.View} view
+ */
+WebInspector.ViewManager._ExpandableContainerWidget = function(view)
+{
+    WebInspector.VBox.call(this, true);
+    this.element.classList.add("flex-none");
+    this.registerRequiredCSS("ui/viewContainers.css");
+
+    this._titleElement = createElementWithClass("div", "expandable-view-title");
+    this._titleElement.textContent = view.title();
+    this._titleElement.tabIndex = 0;
+    this._titleElement.addEventListener("click", this._toggleExpanded.bind(this), false);
+    this._titleElement.addEventListener("keydown", this._onTitleKeyDown.bind(this), false);
+    this.contentElement.insertBefore(this._titleElement, this.contentElement.firstChild);
+
+    this.contentElement.createChild("content");
+    this._view = view;
+    view[WebInspector.ViewManager._ExpandableContainerWidget._symbol] = this;
+}
+
+WebInspector.ViewManager._ExpandableContainerWidget._symbol = Symbol("container");
+
+WebInspector.ViewManager._ExpandableContainerWidget.prototype = {
+    /**
+     * @return {!Promise}
+     */
+    _materialize: function()
+    {
+        if (this._materializePromise)
+            return this._materializePromise;
+        var promises = [];
+        promises.push(this._view.toolbarItems().then(WebInspector.ViewManager._populateToolbar.bind(WebInspector.ViewManager, this._titleElement)));
+        promises.push(this._view.widget().then(widget => {
+            this._widget = widget;
+            widget.show(this.element);
+        }));
+        this._materializePromise = Promise.all(promises);
+        return this._materializePromise;
+    },
+
+    /**
+     * @return {!Promise}
+     */
+    _expand: function()
+    {
+        if (this._titleElement.classList.contains("expanded"))
+            return this._materialize();
+        this._titleElement.classList.add("expanded");
+        return this._materialize().then(() => this._widget.show(this.element));
+    },
+
+    _collapse: function()
+    {
+        if (!this._titleElement.classList.contains("expanded"))
+            return;
+        this._titleElement.classList.remove("expanded");
+        this._materialize().then(() => this._widget.detach());
+    },
+
+    _toggleExpanded: function()
+    {
+        if (this._titleElement.classList.contains("expanded"))
+            this._collapse();
+        else
+            this._expand();
+    },
+
+    /**
+     * @param {!Event} event
+     */
+    _onTitleKeyDown: function(event)
+    {
+        if (isEnterKey(event) || event.keyCode === WebInspector.KeyboardShortcut.Keys.Space.code)
+            this._toggleExpanded();
+    },
+
+    __proto__: WebInspector.VBox.prototype
+}
+
+/**
+ * @constructor
+ * @param {!WebInspector.ViewManager} manager
+ * @param {!WebInspector.Widget} widget
+ * @param {function()=} revealCallback
+ * @param {string=} location
+ */
+WebInspector.ViewManager._Location = function(manager, widget, revealCallback, location)
+{
+    this._manager = manager;
+    this._revealCallback = revealCallback;
+    this._location = location;
+    this._widget = widget;
+}
+
+WebInspector.ViewManager._Location.symbol = Symbol("location");
+
+WebInspector.ViewManager._Location.prototype = {
+    /**
+     * @return {!WebInspector.Widget}
+     */
+    widget: function()
+    {
+        return this._widget;
+    },
+
+    _reveal: function()
+    {
+        if (this._revealCallback)
+            this._revealCallback();
     }
 }
 
 /**
  * @constructor
+ * @extends {WebInspector.ViewManager._Location}
  * @implements {WebInspector.TabbedViewLocation}
  * @param {!WebInspector.ViewManager} manager
- * @param {string} location
+ * @param {function()=} revealCallback
+ * @param {string=} location
  * @param {boolean=} restoreSelection
- * @param {boolean=} enableMoreTabsButton
  */
-WebInspector.ViewManager._TabbedLocation = function(manager, location, restoreSelection, enableMoreTabsButton)
+WebInspector.ViewManager._TabbedLocation = function(manager, revealCallback, location, restoreSelection)
 {
-    this._manager = manager;
     this._tabbedPane = new WebInspector.TabbedPane();
-    this._location = location;
-    /** @type {!Object.<string, !Promise.<?WebInspector.Widget>>} */
-    this._promiseForId = {};
+    WebInspector.ViewManager._Location.call(this, manager, this._tabbedPane, revealCallback, location);
 
     this._tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, this._tabSelected, this);
     this._tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabClosed, this._tabClosed, this);
     this._closeableTabSetting = WebInspector.settings.createSetting(location + "-closeableTabs", {});
     if (restoreSelection)
         this._lastSelectedTabSetting = WebInspector.settings.createSetting(location + "-selectedTab", "");
-    this._initialize();
-    if (enableMoreTabsButton) {
-        var toolbar = new WebInspector.Toolbar("drawer-toolbar");
-        toolbar.appendToolbarItem(new WebInspector.ToolbarMenuButton(this._appendTabsToMenu.bind(this)));
-        this._tabbedPane.insertBeforeTabStrip(toolbar.element);
-        this._tabbedPane.disableOverflowMenu();
-    }
+
+    /** @type {!Map.<string, !WebInspector.View>} */
+    this._views = new Map();
+    this._populateLocation();
 }
 
 WebInspector.ViewManager._TabbedLocation.prototype = {
@@ -198,19 +575,31 @@ WebInspector.ViewManager._TabbedLocation.prototype = {
         return this._tabbedPane;
     },
 
-    _initialize: function()
+    /**
+     * @override
+     */
+    enableMoreTabsButton: function()
     {
-        /** @type {!Map.<string, !Runtime.Extension>} */
-        this._extensions = new Map();
-        var extensions = this._manager._viewsForLocation(this._location);
+        var toolbar = new WebInspector.Toolbar("drawer-toolbar");
+        toolbar.appendToolbarItem(new WebInspector.ToolbarMenuButton(this._appendTabsToMenu.bind(this)));
+        this._tabbedPane.insertBeforeTabStrip(toolbar.element);
+        this._tabbedPane.disableOverflowMenu();
+    },
 
-        for (var i = 0; i < extensions.length; ++i) {
-            var id = extensions[i].descriptor()["id"];
-            this._extensions.set(id, extensions[i]);
-            if (this._isPermanentTab(id))
-                this._appendTab(extensions[i]);
-            else if (this._isCloseableTab(id) && this._closeableTabSetting.get()[id])
-                this._appendTab(extensions[i]);
+    _populateLocation: function()
+    {
+        if (!this._location)
+            return;
+        for (var view of this._manager._viewsForLocation(this._location)) {
+            var id = view.viewId();
+            this._views.set(id, view);
+            view[WebInspector.ViewManager._Location.symbol] = this;
+            if (view.isTransient())
+                continue;
+            if (!view.isCloseable())
+                this._appendTab(view);
+            else if (this._closeableTabSetting.get()[id])
+                this._appendTab(view);
         }
     },
 
@@ -224,59 +613,52 @@ WebInspector.ViewManager._TabbedLocation.prototype = {
     },
 
     /**
-     * @param {string} id
-     * @return {boolean}
-     */
-    _isPermanentTab: function(id)
-    {
-        return this._extensions.get(id).descriptor()["persistence"] === "permanent" || !this._extensions.get(id).descriptor()["persistence"];
-    },
-
-    /**
-     * @param {string} id
-     * @return {boolean}
-     */
-    _isCloseableTab: function(id)
-    {
-        return this._extensions.get(id).descriptor()["persistence"] === "closeable";
-    },
-
-    /**
      * @param {!WebInspector.ContextMenu} contextMenu
      */
     _appendTabsToMenu: function(contextMenu)
     {
-        var extensions = self.runtime.extensions("view", undefined, true);
-        for (var extension of extensions) {
-            if (extension.descriptor()["location"] !== this._location)
-                continue;
-            var title = WebInspector.UIString(extension.title());
-            contextMenu.appendItem(title, this.showView.bind(this, extension.descriptor()["id"]));
+        for (var view of this._views.values()) {
+            var title = WebInspector.UIString(view.title());
+            contextMenu.appendItem(title, this.showView.bind(this, view));
         }
     },
 
     /**
-     * @param {!Runtime.Extension} extension
+     * @param {!WebInspector.View} view
      */
-    _appendTab: function(extension)
+    _appendTab: function(view)
     {
-        var descriptor = extension.descriptor();
-        var id = descriptor["id"];
-        var title = WebInspector.UIString(extension.title());
-        var closeable = descriptor["persistence"] === "closeable" || descriptor["persistence"] === "temporary";
-        this._tabbedPane.appendTab(id, title, new WebInspector.Widget(), undefined, false, closeable);
+        this._tabbedPane.appendTab(view.viewId(), view.title(), new WebInspector.ViewManager._ContainerWidget(view), undefined, false, view.isCloseable() || view.isTransient());
     },
 
     /**
      * @override
-     * @param {string} id
+     * @param {!WebInspector.View} view
+     * @param {?WebInspector.View=} insertBefore
      */
-    showView: function(id)
+    appendView: function(view, insertBefore)
     {
-        if (!this._tabbedPane.hasTab(id))
-            this._appendTab(/** @type {!Runtime.Extension} */(this._extensions.get(id)));
+        if (insertBefore)
+            throw new Error("Insert before in tabbed pane is not supported");
+        if (!this._tabbedPane.hasTab(view.viewId())) {
+            view[WebInspector.ViewManager._Location.symbol] = this;
+            this._views.set(view.viewId(), view);
+            this._appendTab(view);
+        }
+    },
+
+    /**
+     * @override
+     * @param {!WebInspector.View} view
+     * @param {?WebInspector.View=} insertBefore
+     * @return {!Promise}
+     */
+    showView: function(view, insertBefore)
+    {
+        this.appendView(view, insertBefore);
         this._tabbedPane.focus();
-        this._tabbedPane.selectTab(id);
+        this._tabbedPane.selectTab(view.viewId());
+        return this._materializeWidget(view);
     },
 
     /**
@@ -287,13 +669,13 @@ WebInspector.ViewManager._TabbedLocation.prototype = {
         var tabId = /** @type {string} */ (event.data.tabId);
         if (this._lastSelectedTabSetting && event.data["isUserGesture"])
             this._lastSelectedTabSetting.set(tabId);
-        if (!this._extensions.has(tabId))
+        var view = this._views.get(tabId);
+        if (!view)
             return;
 
-        this._viewForId(tabId);
+        this._materializeWidget(view);
 
-        var descriptor = this._extensions.get(tabId).descriptor();
-        if (descriptor["persistence"] === "closeable") {
+        if (view.isCloseable()) {
             var tabs = this._closeableTabSetting.get();
             if (!tabs[tabId]) {
                 tabs[tabId] = true;
@@ -313,33 +695,87 @@ WebInspector.ViewManager._TabbedLocation.prototype = {
             delete tabs[id];
             this._closeableTabSetting.set(tabs);
         }
-        delete this._promiseForId[id];
     },
 
     /**
-     * @param {string} id
-     * @return {!Promise.<?WebInspector.Widget>}
+     * @param {!WebInspector.View} view
+     * @return {!Promise}
      */
-    _viewForId: function(id)
+    _materializeWidget: function(view)
     {
-        if (this._promiseForId[id])
-            return this._promiseForId[id];
+        var widget = /** @type {!WebInspector.ViewManager._ContainerWidget} */ (this._tabbedPane.tabView(view.viewId()));
+        return widget._materialize();
+    },
 
-        var promise = this._extensions.get(id).instance();
-        this._promiseForId[id] = /** @type {!Promise.<?WebInspector.Widget>} */ (promise);
-        return promise.then(cacheView.bind(this));
-
-        /**
-         * @param {!Object} object
-         * @this {WebInspector.ViewManager._TabbedLocation}
-         */
-        function cacheView(object)
-        {
-            var view = /** @type {!WebInspector.Widget} */ (object);
-            this._tabbedPane.changeTabView(id, view);
-            return view;
-        }
-    }
+    __proto__: WebInspector.ViewManager._Location.prototype
 }
 
-WebInspector.viewManager = new WebInspector.ViewManager();
+/**
+ * @constructor
+ * @extends {WebInspector.ViewManager._Location}
+ * @implements {WebInspector.ViewLocation}
+ * @param {!WebInspector.ViewManager} manager
+ * @param {function()=} revealCallback
+ * @param {string=} location
+ */
+WebInspector.ViewManager._StackLocation = function(manager, revealCallback, location)
+{
+    this._vbox = new WebInspector.VBox();
+    WebInspector.ViewManager._Location.call(this, manager, this._vbox, revealCallback, location);
+
+    /** @type {!Map<string, !WebInspector.ViewManager._ExpandableContainerWidget>} */
+    this._expandableContainers = new Map();
+    this._populateLocation();
+}
+
+WebInspector.ViewManager._StackLocation.prototype = {
+
+    /**
+     * @override
+     * @param {!WebInspector.View} view
+     * @param {?WebInspector.View=} insertBefore
+     */
+    appendView: function(view, insertBefore)
+    {
+        var container = this._expandableContainers.get(view.viewId());
+        if (!container) {
+            view[WebInspector.ViewManager._Location.symbol] = this;
+            container = new WebInspector.ViewManager._ExpandableContainerWidget(view);
+            var beforeElement = null;
+            if (insertBefore) {
+                var beforeContainer = insertBefore[WebInspector.ViewManager._ExpandableContainerWidget._symbol];
+                beforeElement = beforeContainer ? beforeContainer.element : null;
+            }
+            container.show(this._vbox.contentElement, beforeElement);
+            this._expandableContainers.set(view.viewId(), container);
+        }
+    },
+
+    /**
+     * @override
+     * @param {!WebInspector.View} view
+     * @param {?WebInspector.View=} insertBefore
+     * @return {!Promise}
+     */
+    showView: function(view, insertBefore)
+    {
+        this.appendView(view, insertBefore);
+        var container = this._expandableContainers.get(view.viewId());
+        return container._expand();
+    },
+
+    _populateLocation: function()
+    {
+        if (!this._location)
+            return;
+        for (var view of this._manager._viewsForLocation(this._location))
+            this.appendView(view);
+    },
+
+    __proto__: WebInspector.ViewManager._Location.prototype
+}
+
+/**
+ * @type {!WebInspector.ViewManager}
+ */
+WebInspector.viewManager;

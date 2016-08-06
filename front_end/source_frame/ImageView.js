@@ -27,14 +27,14 @@
  */
 
 /**
- * @extends {WebInspector.View}
+ * @extends {WebInspector.SimpleView}
  * @constructor
  * @param {string} mimeType
  * @param {!WebInspector.ContentProvider} contentProvider
  */
 WebInspector.ImageView = function(mimeType, contentProvider)
 {
-    WebInspector.View.call(this, WebInspector.UIString("Image"));
+    WebInspector.SimpleView.call(this, WebInspector.UIString("Image"));
     this.registerRequiredCSS("source_frame/imageView.css");
     this.element.classList.add("image-view");
     this._url = contentProvider.contentURL();
@@ -51,7 +51,7 @@ WebInspector.ImageView.prototype = {
      * @override
      * @return {!Array<!WebInspector.ToolbarItem>}
      */
-    toolbarItems: function()
+    syncToolbarItems: function()
     {
         return [this._sizeLabel, new WebInspector.ToolbarSeparator(), this._dimensionsLabel, new WebInspector.ToolbarSeparator(), this._mimeTypeLabel];
     },
@@ -136,5 +136,5 @@ WebInspector.ImageView.prototype = {
         InspectorFrontendHost.openInNewTab(this._url);
     },
 
-    __proto__: WebInspector.View.prototype
+    __proto__: WebInspector.SimpleView.prototype
 }

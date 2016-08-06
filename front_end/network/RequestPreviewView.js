@@ -72,9 +72,9 @@ WebInspector.RequestPreviewView.prototype = {
         {
             this._previewView = view;
             view.show(this.element);
-            if (view instanceof WebInspector.View) {
+            if (view instanceof WebInspector.SimpleView) {
                 var toolbar = new WebInspector.Toolbar("network-item-preview-toolbar", this.element);
-                for (var item of /** @type {!WebInspector.View} */ (view).toolbarItems())
+                for (var item of /** @type {!WebInspector.SimpleView} */ (this._previewView).syncToolbarItems())
                     toolbar.appendToolbarItem(item);
             }
             this._previewViewHandledForTest(view);

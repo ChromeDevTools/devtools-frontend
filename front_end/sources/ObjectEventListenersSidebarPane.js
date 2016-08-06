@@ -4,11 +4,11 @@
 
 /**
  * @constructor
- * @extends {WebInspector.View}
+ * @extends {WebInspector.SimpleView}
  */
 WebInspector.ObjectEventListenersSidebarPane = function()
 {
-    WebInspector.View.call(this, "Event Listeners");
+    WebInspector.SimpleView.call(this, "Event Listeners");
     this.element.classList.add("event-listeners-sidebar-pane");
 
     this._refreshButton = new WebInspector.ToolbarButton(WebInspector.UIString("Refresh"), "refresh-toolbar-item");
@@ -40,7 +40,7 @@ WebInspector.ObjectEventListenersSidebarPane.prototype = {
 
     wasShown: function()
     {
-        WebInspector.View.prototype.wasShown.call(this);
+        WebInspector.SimpleView.prototype.wasShown.call(this);
         WebInspector.context.addFlavorChangeListener(WebInspector.ExecutionContext, this.update, this);
         this._refreshButton.setEnabled(true);
         this.update();
@@ -48,7 +48,7 @@ WebInspector.ObjectEventListenersSidebarPane.prototype = {
 
     willHide: function()
     {
-        WebInspector.View.prototype.willHide.call(this);
+        WebInspector.SimpleView.prototype.willHide.call(this);
         WebInspector.context.removeFlavorChangeListener(WebInspector.ExecutionContext, this.update, this);
         this._refreshButton.setEnabled(false);
     },
@@ -89,5 +89,5 @@ WebInspector.ObjectEventListenersSidebarPane.prototype = {
         this.update();
     },
 
-    __proto__: WebInspector.View.prototype
+    __proto__: WebInspector.SimpleView.prototype
 }

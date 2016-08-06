@@ -49,6 +49,10 @@
     border-bottom: 1px solid #ddd;
 }
 
+.expandable-view-title:not(.expanded) .toolbar {
+    display: none;
+}
+
 .expandable-view-title::before {
     -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
     -webkit-mask-size: 352px 168px;

@@ -131,6 +131,8 @@ WebInspector.Main.prototype = {
     {
         console.timeStamp("Main._createApp");
 
+        WebInspector.viewManager = new WebInspector.ViewManager();
+
         // Request filesystems early, we won't create connections until callback is fired. Things will happen in parallel.
         WebInspector.isolatedFileSystemManager = new WebInspector.IsolatedFileSystemManager();
         WebInspector.isolatedFileSystemManager.initialize(this._didInitializeFileSystemManager.bind(this));

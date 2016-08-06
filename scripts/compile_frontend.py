@@ -87,8 +87,8 @@ runtime_module_name = '_runtime'
 type_checked_jsdoc_tags_list = ['param', 'return', 'type', 'enum']
 type_checked_jsdoc_tags_or = '|'.join(type_checked_jsdoc_tags_list)
 
-# Basic regex for invalid JsDoc types: an object type name ([A-Z][A-Za-z0-9.]+[A-Za-z0-9]) not preceded by '!', '?', ':' (this, new), or '.' (object property).
-invalid_type_regex = re.compile(r'@(?:' + type_checked_jsdoc_tags_or + r')\s*\{.*(?<![!?:.A-Za-z0-9])([A-Z][A-Za-z0-9.]+[A-Za-z0-9])[^/]*\}')
+# Basic regex for invalid JsDoc types: an object type name ([A-Z][_A-Za-z0-9.]+[A-Za-z0-9]) not preceded by '!', '?', ':' (this, new), or '.' (object property).
+invalid_type_regex = re.compile(r'@(?:' + type_checked_jsdoc_tags_or + r')\s*\{.*(?<![!?:._A-Za-z0-9])([A-Z][_A-Za-z0-9.]+[A-Za-z0-9])[^/]*\}')
 invalid_type_designator_regex = re.compile(r'@(?:' + type_checked_jsdoc_tags_or + r')\s*.*(?<![{: ])([?!])=?\}')
 invalid_non_object_type_regex = re.compile(r'@(?:' + type_checked_jsdoc_tags_or + r')\s*\{.*(![a-z]+)[^/]*\}')
 error_warning_regex = re.compile(r'WARNING|ERROR')

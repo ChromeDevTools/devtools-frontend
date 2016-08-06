@@ -44,7 +44,7 @@ WebInspector.SettingsScreen = function()
     var settingsLabelElement = createElementWithClass("div", "help-window-label");
     settingsLabelElement.createTextChild(WebInspector.UIString("Settings"));
 
-    this._tabbedLocation = WebInspector.viewManager.createTabbedLocation("settings-view");
+    this._tabbedLocation = WebInspector.viewManager.createTabbedLocation(() => WebInspector.SettingsScreen._showSettingsScreen(), "settings-view");
     var tabbedPane = this._tabbedLocation.tabbedPane();
     tabbedPane.insertBeforeTabStrip(settingsLabelElement);
     tabbedPane.setShrinkableTabs(false);
@@ -63,10 +63,12 @@ WebInspector.SettingsScreen = function()
 WebInspector.SettingsScreen._showSettingsScreen = function(name)
 {
     var settingsScreen = /** @type {!WebInspector.SettingsScreen} */ (self.runtime.sharedInstance(WebInspector.SettingsScreen));
+    if (settingsScreen.isShowing())
+        return;
     var dialog = new WebInspector.Dialog();
     dialog.addCloseButton();
     settingsScreen.show(dialog.element);
-    settingsScreen.selectTab(name || "preferences");
+    settingsScreen._selectTab(name || "preferences");
     dialog.show();
 }
 
@@ -77,18 +79,17 @@ WebInspector.SettingsScreen.prototype = {
      * @param {string} locationName
      * @return {?WebInspector.ViewLocation}
      */
-    revealLocation: function(locationName)
+    resolveLocation: function(locationName)
     {
-        WebInspector.SettingsScreen._showSettingsScreen();
         return this._tabbedLocation;
     },
 
     /**
      * @param {string} name
      */
-    selectTab: function(name)
+    _selectTab: function(name)
     {
-        this._tabbedLocation.showView(name);
+        WebInspector.viewManager.showView(name);
     },
 
     /**

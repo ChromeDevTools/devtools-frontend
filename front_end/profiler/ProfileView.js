@@ -5,13 +5,13 @@
 /**
  * @constructor
  * @implements {WebInspector.Searchable}
- * @extends {WebInspector.View}
+ * @extends {WebInspector.SimpleView}
  * @param {!WebInspector.ProfileDataGridNode.Formatter} nodeFormatter
  * @param {!Array<string>=} viewTypes
  */
 WebInspector.ProfileView = function(nodeFormatter, viewTypes)
 {
-    WebInspector.View.call(this, WebInspector.UIString("Profile"));
+    WebInspector.SimpleView.call(this, WebInspector.UIString("Profile"));
 
     this._searchableView = new WebInspector.SearchableView(this);
     this._searchableView.setPlaceholder(WebInspector.UIString("Find by cost (>50ms), name or file"));
@@ -113,7 +113,7 @@ WebInspector.ProfileView.prototype = {
      * @override
      * @return {!Array.<!WebInspector.ToolbarItem>}
      */
-    toolbarItems: function()
+    syncToolbarItems: function()
     {
         return [this.viewSelectComboBox, this.focusButton, this.excludeButton, this.resetButton];
     },
@@ -367,7 +367,7 @@ WebInspector.ProfileView.prototype = {
         this.refresh();
     },
 
-    __proto__: WebInspector.View.prototype
+    __proto__: WebInspector.SimpleView.prototype
 }
 
 /**

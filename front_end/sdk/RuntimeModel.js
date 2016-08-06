@@ -115,7 +115,8 @@ WebInspector.RuntimeModel.prototype = {
         if (context.name === WebInspector.RuntimeModel._privateScript && !context.origin && !Runtime.experiments.isEnabled("privateScriptInspection")) {
             return;
         }
-        var executionContext = new WebInspector.ExecutionContext(this.target(), context.id, context.name, context.origin, context.isDefault, context.frameId);
+        var data = context.auxData || { isDefault: true };
+        var executionContext = new WebInspector.ExecutionContext(this.target(), context.id, context.name, context.origin, data["isDefault"], data["frameId"]);
         this._executionContextById.set(executionContext.id, executionContext);
         this.dispatchEventToListeners(WebInspector.RuntimeModel.Events.ExecutionContextCreated, executionContext);
     },

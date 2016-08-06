@@ -1009,12 +1009,14 @@ WebInspector.CodeMirrorTextEditor.prototype = {
      * @param {number} lineNumber
      * @param {number} columnNumber
      * @param {!Element} element
+     * @param {boolean=} insertBefore
      * @return {!CodeMirror.TextMarker}
      */
-    addBookmark: function(lineNumber, columnNumber, element)
+    addBookmark: function(lineNumber, columnNumber, element, insertBefore)
     {
         return this._codeMirror.setBookmark(new CodeMirror.Pos(lineNumber, columnNumber), {
-            widget: element
+            widget: element,
+            insertLeft: insertBefore
         });
     },
 

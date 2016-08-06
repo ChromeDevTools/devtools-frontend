@@ -1,6 +1,7 @@
 .CodeMirror {
     line-height: 1.2em !important;
     background-color: transparent !important;
+    color: #222;
 }
 
 .CodeMirror-linewidget {
@@ -351,4 +352,8 @@
 
 .-theme-with-dark-background .CodeMirror .CodeMirror-selected {
     background-color: #454545;
+}
+
+.CodeMirror .auto-complete-text{
+    color: rgb(128,128,128);
 }

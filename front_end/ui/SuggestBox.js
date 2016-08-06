@@ -181,6 +181,11 @@ WebInspector.SuggestBox.prototype = {
      */
     _applySuggestion: function(isIntermediateSuggestion)
     {
+        if (this._onlyCompletion) {
+            this._suggestBoxDelegate.applySuggestion(this._onlyCompletion, isIntermediateSuggestion);
+            return true;
+        }
+
         if (!this.visible() || !this._selectedElement)
             return false;
 
@@ -380,14 +385,18 @@ WebInspector.SuggestBox.prototype = {
      */
     updateSuggestions: function(anchorBox, completions, selectedIndex, canShowForSingleItem, userEnteredText, asyncDetails)
     {
+        delete this._onlyCompletion;
         if (this._canShowBox(completions, canShowForSingleItem, userEnteredText)) {
             this._updateItems(completions, userEnteredText, asyncDetails);
             this._show();
             this._updateBoxPosition(anchorBox);
             this._selectItem(selectedIndex, selectedIndex > 0);
             delete this._rowCountPerViewport;
-        } else
+        } else {
+            if (completions.length === 1)
+                this._onlyCompletion = completions[0].title;
             this.hide();
+        }
     },
 
     /**
@@ -450,7 +459,7 @@ WebInspector.SuggestBox.prototype = {
      */
     enterKeyPressed: function()
     {
-        var hasSelectedItem = !!this._selectedElement;
+        var hasSelectedItem = !!this._selectedElement || this._onlyCompletion;
         this.acceptSuggestion();
 
         // Report the event as non-handled if there is no selected item,

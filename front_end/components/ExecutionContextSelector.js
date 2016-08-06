@@ -195,32 +195,48 @@ WebInspector.ExecutionContextSelector.prototype = {
  */
 WebInspector.ExecutionContextSelector.completionsForTextPromptInCurrentContext = function(proxyElement, wordRange, force, completionsReadyCallback)
 {
+    var expressionRange = wordRange.cloneRange();
+    expressionRange.collapse(true);
+    expressionRange.setStartBefore(proxyElement);
+    WebInspector.ExecutionContextSelector.completionsForTextInCurrentContext(expressionRange.toString(), wordRange.toString(), force, completionsReadyCallback);
+}
+/**
+ * @param {string} text
+ * @param {string} completionsPrefix
+ * @param {boolean} force
+ * @param {function(!Array.<string>, number=)} completionsReadyCallback
+ */
+WebInspector.ExecutionContextSelector.completionsForTextInCurrentContext = function(text, completionsPrefix, force, completionsReadyCallback)
+{
     var executionContext = WebInspector.context.flavor(WebInspector.ExecutionContext);
     if (!executionContext) {
         completionsReadyCallback([]);
         return;
     }
-
-    // Pass less stop characters to rangeOfWord so the range will be a more complete expression.
-    var expressionRange = wordRange.startContainer.rangeOfWord(wordRange.startOffset, " =:({;,!+-*/&|^<>`", proxyElement, "backward");
-    var expressionString = expressionRange.toString();
-
+    var index;
+    var stopChars = new Set(" =:({;,!+-*/&|^<>`".split(""));
+    for (index = text.length - 1; index >= 0; index--) {
+        // Pass less stop characters to rangeOfWord so the range will be a more complete expression.
+        if (stopChars.has(text.charAt(index)))
+            break;
+    }
+    var clippedExpression = text.substring(index + 1);
     var bracketCount = 0;
-    var index = expressionString.length - 1;
+
+    index = clippedExpression.length - 1;
     while (index >= 0) {
-        var character = expressionString.charAt(index);
+        var character = clippedExpression.charAt(index);
         if (character === "]")
             bracketCount++;
         // Allow an open bracket at the end for property completion.
-        if (character === "[" && index < expressionString.length - 1) {
+        if (character === "[" && index < clippedExpression.length - 1) {
             bracketCount--;
             if (bracketCount < 0)
                 break;
         }
         index--;
     }
-    expressionString = expressionString.substring(index + 1);
+    clippedExpression = clippedExpression.substring(index + 1);
 
-    var prefix = wordRange.toString();
-    executionContext.completionsForExpression(expressionString, prefix, force, completionsReadyCallback);
+    executionContext.completionsForExpression(clippedExpression, completionsPrefix, force, completionsReadyCallback);
 }

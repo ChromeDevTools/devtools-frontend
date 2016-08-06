@@ -21,6 +21,7 @@ WebInspector.TextEditorAutocompleteController = function(textEditor, codeMirror)
 
     this._enabled = true;
     this._initialized = false;
+    this._hintElement = createElementWithClass("span", "auto-complete-text");
 }
 
 WebInspector.TextEditorAutocompleteController.prototype = {
@@ -31,6 +32,7 @@ WebInspector.TextEditorAutocompleteController.prototype = {
         this._initialized = true;
         this._codeMirror.on("scroll", this._onScroll);
         this._codeMirror.on("cursorActivity", this._onCursorActivity);
+        this._codeMirror.on("mousedown", this.finishAutocomplete.bind(this));
         this._codeMirror.on("blur", this._blur);
         this._delegate.initialize(this._textEditor);
     },
@@ -69,15 +71,40 @@ WebInspector.TextEditorAutocompleteController.prototype = {
     {
         if (!changes.length || !this._enabled || !this._delegate)
             return;
-
         var singleCharInput = false;
+        var singleCharDelete = false;
+        var cursor = this._codeMirror.getCursor("head");
         for (var changeIndex = 0; changeIndex < changes.length; ++changeIndex) {
             var changeObject = changes[changeIndex];
-            singleCharInput = (changeObject.origin === "+input" && changeObject.text.length === 1 && changeObject.text[0].length === 1) ||
-                (this._suggestBox && changeObject.origin === "+delete" && changeObject.removed.length === 1 && changeObject.removed[0].length === 1);
+            if (changeObject.origin === "+input"
+                && changeObject.text.length === 1
+                && changeObject.text[0].length === 1
+                && changeObject.to.line === cursor.line
+                && changeObject.to.ch + 1 === cursor.ch) {
+                singleCharInput = true;
+                break;
+            }
+            if (this._suggestBox
+                && changeObject.origin === "+delete"
+                && changeObject.removed.length === 1
+                && changeObject.removed[0].length === 1
+                && changeObject.to.line === cursor.line
+                && changeObject.to.ch - 1 === cursor.ch) {
+                singleCharDelete = true;
+                break;
+            }
         }
-        if (singleCharInput)
+        if (singleCharInput && this._hintMarker)
+            this._hintElement.textContent = this._hintElement.textContent.substring(1);
+
+        if (singleCharDelete && this._hintMarker && this._lastPrefix) {
+            this._hintElement.textContent = this._lastPrefix.charAt(this._lastPrefix.length - 1) + this._hintElement.textContent;
+            this._lastPrefix = this._lastPrefix.substring(0, this._lastPrefix.length - 1);
+        }
+        if (singleCharInput || singleCharDelete)
             setImmediate(this.autocomplete.bind(this));
+        else
+            this.finishAutocomplete();
     },
 
     _blur: function()
@@ -125,27 +152,62 @@ WebInspector.TextEditorAutocompleteController.prototype = {
 
         var prefixRange = substituteRange.clone();
         prefixRange.endColumn = cursor.ch;
+        var prefix = this._textEditor.copyRange(prefixRange);
+        var hadSuggestBox = false;
+        if (this._suggestBox)
+            hadSuggestBox = true;
 
-        var wordsWithPrefix = this._delegate.wordsWithPrefix(this._textEditor, prefixRange, substituteRange);
-        if (!wordsWithPrefix.length) {
-            this.finishAutocomplete();
-            return;
+        this._delegate.wordsWithPrefix(this._textEditor, prefixRange, substituteRange).then(wordsAcquired.bind(this));
+
+        /**
+         * @param {!WebInspector.SuggestBox.Suggestions} wordsWithPrefix
+         * @this {WebInspector.TextEditorAutocompleteController}
+         */
+        function wordsAcquired(wordsWithPrefix)
+        {
+            if (!wordsWithPrefix.length || (wordsWithPrefix.length === 1 && prefix === wordsWithPrefix[0].title) || (!this._suggestBox && hadSuggestBox)) {
+                this.finishAutocomplete();
+                this._onSuggestionsShownForTest([]);
+                return;
+            }
+            if (!this._suggestBox)
+                this._suggestBox = new WebInspector.SuggestBox(this, 6);
+
+            var oldPrefixRange = this._prefixRange;
+            this._prefixRange = prefixRange;
+            if (!oldPrefixRange || prefixRange.startLine !== oldPrefixRange.startLine || prefixRange.startColumn !== oldPrefixRange.startColumn)
+                this._updateAnchorBox();
+            this._suggestBox.updateSuggestions(this._anchorBox, wordsWithPrefix, 0, !this._isCursorAtEndOfLine(), prefix);
+            this._onSuggestionsShownForTest(wordsWithPrefix);
+            this._addHintMarker(wordsWithPrefix[0].title);
         }
-
-        if (!this._suggestBox)
-            this._suggestBox = new WebInspector.SuggestBox(this, 6);
-        var oldPrefixRange = this._prefixRange;
-        this._prefixRange = prefixRange;
-        if (!oldPrefixRange || prefixRange.startLine !== oldPrefixRange.startLine || prefixRange.startColumn !== oldPrefixRange.startColumn)
-            this._updateAnchorBox();
-        this._suggestBox.updateSuggestions(this._anchorBox, wordsWithPrefix.map(item => ({title: item})), 0, true, this._textEditor.copyRange(prefixRange));
-        if (!this._suggestBox.visible())
-            this.finishAutocomplete();
-        this._onSuggestionsShownForTest(wordsWithPrefix);
     },
 
     /**
-     * @param {!Array.<string>} suggestions
+     * @param {string} hint
+     */
+    _addHintMarker: function(hint)
+    {
+        this._clearHintMarker();
+        if (!this._isCursorAtEndOfLine())
+            return;
+        var prefix = this._textEditor.copyRange(this._prefixRange);
+        this._lastPrefix = prefix;
+        this._hintElement.textContent = hint.substring(prefix.length).split("\n")[0];
+        var cursor = this._codeMirror.getCursor("to");
+        this._hintMarker = this._textEditor.addBookmark(cursor.line, cursor.ch, this._hintElement, true);
+    },
+
+    _clearHintMarker: function()
+    {
+        if (!this._hintMarker)
+            return;
+        this._hintMarker.clear();
+        delete this._hintMarker;
+    },
+
+    /**
+     * @param {!Array<{className: (string|undefined), title: string}>} suggestions
      */
     _onSuggestionsShownForTest: function(suggestions) { },
 
@@ -157,26 +219,50 @@ WebInspector.TextEditorAutocompleteController.prototype = {
         this._suggestBox = null;
         this._prefixRange = null;
         this._anchorBox = null;
+        this._clearHintMarker();
     },
 
     /**
-     * @param {!Event} e
+     * @param {!Event} event
      * @return {boolean}
      */
-    keyDown: function(e)
+    keyDown: function(event)
     {
         if (!this._suggestBox)
             return false;
-        if (e.keyCode === WebInspector.KeyboardShortcut.Keys.Esc.code) {
-            this.finishAutocomplete();
-            return true;
-        }
-        if (e.keyCode === WebInspector.KeyboardShortcut.Keys.Tab.code) {
+        switch (event.keyCode) {
+        case WebInspector.KeyboardShortcut.Keys.Tab.code:
             this._suggestBox.acceptSuggestion();
             this.finishAutocomplete();
             return true;
+        case WebInspector.KeyboardShortcut.Keys.End.code:
+        case WebInspector.KeyboardShortcut.Keys.Right.code:
+            if (this._isCursorAtEndOfLine()) {
+                this._suggestBox.acceptSuggestion();
+                this.finishAutocomplete();
+                return true;
+            } else {
+                this.finishAutocomplete();
+                return false;
+            }
+        case WebInspector.KeyboardShortcut.Keys.Left.code:
+        case WebInspector.KeyboardShortcut.Keys.Home.code:
+            this.finishAutocomplete();
+            return false;
+        case WebInspector.KeyboardShortcut.Keys.Esc.code:
+            this.finishAutocomplete();
+            return true;
         }
-        return this._suggestBox.keyPressed(e);
+        return this._suggestBox.keyPressed(event);
+    },
+
+    /**
+     * @return {boolean}
+     */
+    _isCursorAtEndOfLine: function()
+    {
+        var cursor = this._codeMirror.getCursor("to");
+        return cursor.ch === this._codeMirror.getLine(cursor.line).length;
     },
 
     /**
@@ -187,6 +273,7 @@ WebInspector.TextEditorAutocompleteController.prototype = {
     applySuggestion: function(suggestion, isIntermediateSuggestion)
     {
         this._currentSuggestion = suggestion;
+        this._addHintMarker(suggestion);
     },
 
     /**
@@ -227,7 +314,7 @@ WebInspector.TextEditorAutocompleteController.prototype = {
         if (!this._suggestBox)
             return;
         var cursor = this._codeMirror.getCursor();
-        if (cursor.line !== this._prefixRange.startLine || cursor.ch > this._prefixRange.endColumn || cursor.ch <= this._prefixRange.startColumn)
+        if (cursor.line !== this._prefixRange.startLine || cursor.ch > this._prefixRange.endColumn + 1 || cursor.ch <= this._prefixRange.startColumn)
             this.finishAutocomplete();
     },
 
@@ -258,7 +345,7 @@ WebInspector.TextEditorAutocompleteDelegate.prototype = {
      * @param {!WebInspector.CodeMirrorTextEditor} editor
      * @param {!WebInspector.TextRange} prefixRange
      * @param {!WebInspector.TextRange} substituteRange
-     * @return {!Array.<string>}
+     * @return {!Promise.<!WebInspector.SuggestBox.Suggestions>}
      */
     wordsWithPrefix: function(editor, prefixRange, substituteRange) {},
 
@@ -320,12 +407,12 @@ WebInspector.SimpleAutocompleteDelegate.prototype = {
      * @param {!WebInspector.CodeMirrorTextEditor} editor
      * @param {!WebInspector.TextRange} prefixRange
      * @param {!WebInspector.TextRange} substituteRange
-     * @return {!Array.<string>}
+     * @return {!Promise.<!WebInspector.SuggestBox.Suggestions>}
      */
     wordsWithPrefix: function(editor, prefixRange, substituteRange)
     {
         if (prefixRange.startColumn === prefixRange.endColumn)
-            return [];
+            return Promise.resolve([]);
 
         var dictionary = this._dictionary;
         var completions = dictionary.wordsWithPrefix(editor.copyRange(prefixRange));
@@ -334,7 +421,7 @@ WebInspector.SimpleAutocompleteDelegate.prototype = {
             completions = completions.filter(excludeFilter.bind(null, substituteWord));
 
         completions.sort(sortSuggestions);
-        return completions;
+        return Promise.resolve(completions.map(item => ({ title: item })));
 
         function sortSuggestions(a, b)
         {

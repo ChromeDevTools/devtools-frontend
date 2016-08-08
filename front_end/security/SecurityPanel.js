@@ -267,24 +267,23 @@ WebInspector.SecurityPanel.prototype = {
     {
     },
 
-    _clearOrigins: function()
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _onMainFrameNavigated: function(event)
     {
+        var frame = /** type {!PageAgent.Frame}*/ (event.data);
+        var request = this._lastResponseReceivedForLoaderId.get(frame.loaderId);
+
+        // Clear the origins list.
         this.selectAndSwitchToMainView();
         this._sidebarTree.clearOrigins();
         this._origins.clear();
         this._lastResponseReceivedForLoaderId.clear();
         this._filterRequestCounts.clear();
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _onMainFrameNavigated: function(event) {
-
-        var frame = /** type {!PageAgent.Frame}*/ (event.data);
-        var request = this._lastResponseReceivedForLoaderId.get(frame.loaderId);
-        this._clearOrigins();
-
+        // After clearing the filtered request counts, refresh the
+        // explanations to reflect the new counts.
+        this._mainView.refreshExplanations();
 
         if (request) {
             var origin = WebInspector.ParsedURL.extractOrigin(request.url);

@@ -255,7 +255,7 @@ WebInspector.CSSProperty.prototype = {
             if (colon === -1)
                 return false;
             var propertyName = text.substring(2, colon).trim();
-            return WebInspector.CSSMetadata.isCSSPropertyName(propertyName);
+            return WebInspector.cssMetadata().isCSSPropertyName(propertyName);
         }
     },
 

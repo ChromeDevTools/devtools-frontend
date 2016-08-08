@@ -359,7 +359,7 @@ WebInspector.CSSSourceFrame.AutocompleteDelegate.prototype = {
 
         var line = editor.line(prefixRange.startLine);
         var tokenContent = line.substring(propertyToken.startColumn, propertyToken.endColumn);
-        var propertyValues = WebInspector.CSSMetadata.propertyValues(tokenContent);
+        var propertyValues = WebInspector.cssMetadata().propertyValues(tokenContent);
         return Promise.resolve(propertyValues.filter(value => value.startsWith(prefix)).map(value => ({title: value})));
     }
 }

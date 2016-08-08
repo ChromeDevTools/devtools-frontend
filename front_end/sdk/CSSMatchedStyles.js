@@ -295,7 +295,7 @@ WebInspector.CSSMatchedStyles.prototype = {
         for (var i = 0; i < properties.length; ++i) {
             var property = properties[i];
             // Does this style contain non-overridden inherited property?
-            if (property.activeInStyle() && WebInspector.CSSMetadata.isPropertyInherited(property.name))
+            if (property.activeInStyle() && WebInspector.cssMetadata().isPropertyInherited(property.name))
                 return true;
         }
         return false;
@@ -370,7 +370,7 @@ WebInspector.CSSMatchedStyles.prototype = {
 
                 // Do not pick non-inherited properties from inherited styles.
                 var inherited = this.isInherited(style);
-                if (inherited && !WebInspector.CSSMetadata.isPropertyInherited(property.name))
+                if (inherited && !WebInspector.cssMetadata().isPropertyInherited(property.name))
                     continue;
 
                 if (!property.activeInStyle()) {
@@ -378,7 +378,7 @@ WebInspector.CSSMatchedStyles.prototype = {
                     continue;
                 }
 
-                var canonicalName = WebInspector.CSSMetadata.canonicalPropertyName(property.name);
+                var canonicalName = WebInspector.cssMetadata().canonicalPropertyName(property.name);
                 if (foundImportantProperties.has(canonicalName)) {
                     result.set(property, WebInspector.CSSMatchedStyles.PropertyState.Overloaded);
                     continue;
@@ -416,7 +416,7 @@ WebInspector.CSSMatchedStyles.prototype = {
 
             // If every longhand of the shorthand is not active, then the shorthand is not active too.
             for (var property of style.leadingProperties()) {
-                var canonicalName = WebInspector.CSSMetadata.canonicalPropertyName(property.name);
+                var canonicalName = WebInspector.cssMetadata().canonicalPropertyName(property.name);
                 if (!styleActiveProperties.has(canonicalName))
                     continue;
                 var longhands = style.longhandProperties(property.name);
@@ -424,7 +424,7 @@ WebInspector.CSSMatchedStyles.prototype = {
                     continue;
                 var notUsed = true;
                 for (var longhand of longhands) {
-                    var longhandCanonicalName = WebInspector.CSSMetadata.canonicalPropertyName(longhand.name);
+                    var longhandCanonicalName = WebInspector.cssMetadata().canonicalPropertyName(longhand.name);
                     notUsed = notUsed && !styleActiveProperties.has(longhandCanonicalName);
                 }
                 if (!notUsed)

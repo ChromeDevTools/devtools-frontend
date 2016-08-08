@@ -63,7 +63,7 @@ WebInspector.StylesSidebarPane.createExclamationMark = function(property)
     exclamationElement.className = "exclamation-mark";
     if (!WebInspector.StylesSidebarPane.ignoreErrorsForProperty(property))
         exclamationElement.type = "warning-icon";
-    exclamationElement.title = WebInspector.CSSMetadata.isCSSPropertyName(property.name) ? WebInspector.UIString("Invalid property value") : WebInspector.UIString("Unknown property name");
+    exclamationElement.title = WebInspector.cssMetadata().isCSSPropertyName(property.name) ? WebInspector.UIString("Invalid property value") : WebInspector.UIString("Unknown property name");
     return exclamationElement;
 }
 
@@ -978,7 +978,7 @@ WebInspector.StylePropertiesSection.prototype = {
         if (this._matchedStyles.isInherited(this._style)) {
             // While rendering inherited stylesheet, reverse meaning of this property.
             // Render truly inherited properties with black, i.e. return them as non-inherited.
-            return !WebInspector.CSSMetadata.isPropertyInherited(propertyName);
+            return !WebInspector.cssMetadata().isPropertyInherited(propertyName);
         }
         return false;
     },
@@ -2387,7 +2387,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
             selectElement.parentElement.scrollIntoViewIfNeeded(false);
 
         var applyItemCallback = !isEditingName ? this._applyFreeFlowStyleTextEdit.bind(this) : undefined;
-        var cssCompletions = isEditingName ? WebInspector.CSSMetadata.cssPropertiesMetainfo.allProperties() : WebInspector.CSSMetadata.propertyValues(this.nameElement.textContent);
+        var cssCompletions = isEditingName ? WebInspector.cssMetadata().allProperties() : WebInspector.cssMetadata().propertyValues(this.nameElement.textContent);
         this._prompt = new WebInspector.StylesSidebarPane.CSSPropertyPrompt(cssCompletions, this, isEditingName);
         this._prompt.setAutocompletionTimeout(0);
         if (applyItemCallback) {
@@ -2907,7 +2907,7 @@ WebInspector.StylesSidebarPane.CSSPropertyPrompt.prototype = {
          */
         function customNumberHandler(prefix, number, suffix)
         {
-            if (number !== 0 && !suffix.length && WebInspector.CSSMetadata.isLengthProperty(this._treeElement.property.name))
+            if (number !== 0 && !suffix.length && WebInspector.cssMetadata().isLengthProperty(this._treeElement.property.name))
                 suffix = "px";
             return prefix + number + suffix;
         }
@@ -2953,7 +2953,7 @@ WebInspector.StylesSidebarPane.CSSPropertyPrompt.prototype = {
             for (var i = 0; i < results.length; ++i)
                 results[i] = results[i].toUpperCase();
         }
-        var selectedIndex = this._isEditingName ? WebInspector.CSSMetadata.mostUsedProperty(results) : 0;
+        var selectedIndex = this._isEditingName ? WebInspector.cssMetadata().mostUsedProperty(results) : 0;
         completionsReadyCallback(results, selectedIndex);
     },
 
@@ -3016,11 +3016,11 @@ WebInspector.StylesSidebarPropertyRenderer.prototype = {
 
         var regexes = [WebInspector.CSSMetadata.VariableRegex, WebInspector.CSSMetadata.URLRegex];
         var processors = [createTextNode, this._processURL.bind(this)];
-        if (this._bezierHandler && WebInspector.CSSMetadata.isBezierAwareProperty(this._propertyName)) {
+        if (this._bezierHandler && WebInspector.cssMetadata().isBezierAwareProperty(this._propertyName)) {
             regexes.push(WebInspector.Geometry.CubicBezier.Regex);
             processors.push(this._bezierHandler);
         }
-        if (this._colorHandler && WebInspector.CSSMetadata.isColorAwareProperty(this._propertyName)) {
+        if (this._colorHandler && WebInspector.cssMetadata().isColorAwareProperty(this._propertyName)) {
             regexes.push(WebInspector.Color.Regex);
             processors.push(this._colorHandler);
         }

@@ -163,7 +163,7 @@ WebInspector.ComputedStyleWidget.prototype = {
         for (var i = 0; i < uniqueProperties.length; ++i) {
             var propertyName = uniqueProperties[i];
             var propertyValue = nodeStyle.computedStyle.get(propertyName);
-            var canonicalName = WebInspector.CSSMetadata.canonicalPropertyName(propertyName);
+            var canonicalName = WebInspector.cssMetadata().canonicalPropertyName(propertyName);
             var inherited = !inhertiedProperties.has(canonicalName);
             if (!showInherited && inherited && !(propertyName in this._alwaysShowComputedProperties))
                 continue;
@@ -228,8 +228,9 @@ WebInspector.ComputedStyleWidget.prototype = {
         {
             if (a.startsWith("-webkit") ^ b.startsWith("-webkit"))
                 return a.startsWith("-webkit") ? 1 : -1;
-            var canonicalName = WebInspector.CSSMetadata.canonicalPropertyName;
-            return canonicalName(a).compareTo(canonicalName(b));
+            var canonical1 = WebInspector.cssMetadata().canonicalPropertyName(a);
+            var canonical2 = WebInspector.cssMetadata().canonicalPropertyName(b);
+            return canonical1.compareTo(canonical2);
         }
 
         /**
@@ -336,7 +337,7 @@ WebInspector.ComputedStyleWidget.prototype = {
             for (var property of style.allProperties) {
                 if (!matchedStyles.propertyState(property))
                     continue;
-                result.add(WebInspector.CSSMetadata.canonicalPropertyName(property.name));
+                result.add(WebInspector.cssMetadata().canonicalPropertyName(property.name));
             }
         }
         return result;

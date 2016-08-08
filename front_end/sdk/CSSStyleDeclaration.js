@@ -96,7 +96,7 @@ WebInspector.CSSStyleDeclaration.prototype = {
         // For style-based properties, generate shorthands with values when possible.
         for (var property of this._allProperties) {
             // For style-based properties, try generating shorthands.
-            var shorthands = WebInspector.CSSMetadata.cssPropertiesMetainfo.shorthands(property.name) || [];
+            var shorthands = WebInspector.cssMetadata().shorthands(property.name) || [];
             for (var shorthand of shorthands) {
                 if (propertiesSet.has(shorthand))
                     continue;  // There already is a shorthand this longhands falls under.
@@ -133,7 +133,7 @@ WebInspector.CSSStyleDeclaration.prototype = {
 
         var leadingProperties = [];
         for (var property of this._allProperties) {
-            var shorthands = WebInspector.CSSMetadata.cssPropertiesMetainfo.shorthands(property.name) || [];
+            var shorthands = WebInspector.cssMetadata().shorthands(property.name) || [];
             var belongToAnyShorthand = false;
             for (var shorthand of shorthands) {
                 if (this._shorthandValues.get(shorthand)) {
@@ -183,7 +183,7 @@ WebInspector.CSSStyleDeclaration.prototype = {
                 property._setActive(false);
                 continue;
             }
-            var canonicalName = WebInspector.CSSMetadata.canonicalPropertyName(property.name);
+            var canonicalName = WebInspector.cssMetadata().canonicalPropertyName(property.name);
             var activeProperty = activeProperties[canonicalName];
             if (!activeProperty) {
                 activeProperties[canonicalName] = property;
@@ -227,7 +227,7 @@ WebInspector.CSSStyleDeclaration.prototype = {
      */
     longhandProperties: function(name)
     {
-        var longhands = WebInspector.CSSMetadata.cssPropertiesMetainfo.longhands(name);
+        var longhands = WebInspector.cssMetadata().longhands(name);
         var result = [];
         for (var i = 0; longhands && i < longhands.length; ++i) {
             var property = this._activePropertyMap.get(longhands[i]);

@@ -69,4 +69,4 @@ def properties_from_file(file_name):
 
 properties = properties_from_file(sys.argv[1])
 with open(sys.argv[2], "w") as f:
-    f.write("WebInspector.CSSMetadata.initializeWithSupportedProperties(%s);" % json.dumps(properties))
+    f.write("WebInspector.CSSMetadata._generatedProperties = %s;" % json.dumps(properties))

@@ -68,93 +68,171 @@ WebInspector.CSSMetadata = function(properties)
         }
     }
     this._values.sort();
+    this._valuesSet = new Set(this._values);
 }
 
 WebInspector.CSSMetadata.VariableRegex = /(var\(--.*?\))/g;
 WebInspector.CSSMetadata.URLRegex = /url\(\s*('.+?'|".+?"|[^)]+)\s*\)/g;
 
-/**
- * @param {string} propertyName
- * @return {boolean}
- */
-WebInspector.CSSMetadata.isColorAwareProperty = function(propertyName)
-{
-    return !!WebInspector.CSSMetadata._colorAwareProperties[propertyName.toLowerCase()] || WebInspector.CSSMetadata.isCustomProperty(propertyName.toLowerCase());
+WebInspector.CSSMetadata.prototype = {
+    /**
+     * @return {!Array<string>}
+     */
+    allProperties: function()
+    {
+        return this._values;
+    },
+
+    /**
+     * @param {string} shorthand
+     * @return {?Array.<string>}
+     */
+    longhands: function(shorthand)
+    {
+        return this._longhands.get(shorthand) || null;
+    },
+
+    /**
+     * @param {string} longhand
+     * @return {?Array.<string>}
+     */
+    shorthands: function(longhand)
+    {
+        return this._shorthands.get(longhand) || null;
+    },
+
+    /**
+     * @param {string} propertyName
+     * @return {boolean}
+     */
+    isColorAwareProperty: function(propertyName)
+    {
+        return !!WebInspector.CSSMetadata._colorAwareProperties[propertyName.toLowerCase()] || this.isCustomProperty(propertyName.toLowerCase());
+    },
+
+    /**
+     * @param {string} propertyName
+     * @return {boolean}
+     */
+    isLengthProperty: function(propertyName)
+    {
+        propertyName = propertyName.toLowerCase();
+        if (propertyName === "line-height")
+            return false;
+        return WebInspector.CSSMetadata._distanceProperties[propertyName] || propertyName.startsWith("margin") || propertyName.startsWith("padding") || propertyName.indexOf("width") !== -1 || propertyName.indexOf("height") !== -1;
+    },
+
+    /**
+     * @param {string} propertyName
+     * @return {boolean}
+     */
+    isBezierAwareProperty: function(propertyName)
+    {
+        propertyName = propertyName.toLowerCase();
+        return !!WebInspector.CSSMetadata._bezierAwareProperties[propertyName] || this.isCustomProperty(propertyName);
+    },
+
+    /**
+     * @param {string} propertyName
+     * @return {boolean}
+     */
+    isCustomProperty: function(propertyName)
+    {
+        return propertyName.startsWith("--");
+    },
+
+    /**
+     * @param {string} name
+     * @return {string}
+     */
+    canonicalPropertyName: function(name)
+    {
+        name = name.toLowerCase();
+        if (!name || name.length < 9 || name.charAt(0) !== "-")
+            return name;
+        var match = name.match(/(?:-webkit-)(.+)/);
+        if (!match || !this._valuesSet.has(match[1]))
+            return name;
+        return match[1];
+    },
+
+    /**
+     * @param {string} propertyName
+     * @return {boolean}
+     */
+    isCSSPropertyName: function(propertyName)
+    {
+        propertyName = propertyName.toLowerCase();
+        if (propertyName.startsWith("-moz-") || propertyName.startsWith("-o-") || propertyName.startsWith("-webkit-") || propertyName.startsWith("-ms-"))
+            return true;
+        return this._valuesSet.has(propertyName);
+    },
+
+    /**
+     * @param {string} propertyName
+     * @return {boolean}
+     */
+    isPropertyInherited: function(propertyName)
+    {
+        propertyName = propertyName.toLowerCase();
+        return this._inherited.has(this.canonicalPropertyName(propertyName)) || this._inherited.has(propertyName);
+    },
+
+    /**
+     * @param {string} propertyName
+     * @return {!Array<string>}
+     */
+    propertyValues: function(propertyName)
+    {
+        var acceptedKeywords = ["inherit", "initial"];
+        propertyName = propertyName.toLowerCase();
+        var unprefixedName = propertyName.replace(/^-webkit-/, "");
+        var entry = WebInspector.CSSMetadata._propertyDataMap[propertyName] || WebInspector.CSSMetadata._propertyDataMap[unprefixedName];
+        if (entry && entry.values)
+            acceptedKeywords.pushAll(entry.values);
+        if (this.isColorAwareProperty(propertyName)) {
+            acceptedKeywords.push("currentColor");
+            for (var color in WebInspector.Color.Nicknames)
+                acceptedKeywords.push(color);
+        }
+        return acceptedKeywords.sort();
+    },
+
+    /**
+     * @param {!Array.<string>} properties
+     * @return {number}
+     */
+    mostUsedProperty: function(properties)
+    {
+        var maxWeight = 0;
+        var index = 0;
+        for (var i = 0; i < properties.length; i++) {
+            var weight = WebInspector.CSSMetadata.Weight[properties[i]];
+            if (!weight)
+                weight = WebInspector.CSSMetadata.Weight[this.canonicalPropertyName(properties[i])];
+            if (weight > maxWeight) {
+                maxWeight = weight;
+                index = i;
+            }
+        }
+        return index;
+    }
 }
 
 /**
- * @param {string} propertyName
- * @return {boolean}
+ * @return {!WebInspector.CSSMetadata}
  */
-WebInspector.CSSMetadata.isLengthProperty = function(propertyName)
+WebInspector.cssMetadata = function()
 {
-    propertyName = propertyName.toLowerCase();
-    if (propertyName === "line-height")
-        return false;
-    if (!WebInspector.CSSMetadata._distancePropertiesKeySet)
-        WebInspector.CSSMetadata._distancePropertiesKeySet = WebInspector.CSSMetadata._distanceProperties.keySet();
-    return WebInspector.CSSMetadata._distancePropertiesKeySet[propertyName] || propertyName.startsWith("margin") || propertyName.startsWith("padding") || propertyName.indexOf("width") !== -1 || propertyName.indexOf("height") !== -1;
-}
-
-/**
- * @param {string} propertyName
- * @return {boolean}
- */
-WebInspector.CSSMetadata.isBezierAwareProperty = function(propertyName)
-{
-    return !!WebInspector.CSSMetadata._bezierAwareProperties[propertyName.toLowerCase()] || WebInspector.CSSMetadata.isCustomProperty(propertyName.toLowerCase());
-}
-
-/**
- * @param {string} propertyName
- * @return {boolean}
- */
-WebInspector.CSSMetadata.isCustomProperty = function(propertyName)
-{
-    return propertyName.startsWith("--");
-}
-
-/**
- * @param {string} name
- * @return {string}
- */
-WebInspector.CSSMetadata.canonicalPropertyName = function(name)
-{
-    name = name.toLowerCase();
-    if (!name || name.length < 9 || name.charAt(0) !== "-")
-        return name;
-    var match = name.match(/(?:-webkit-)(.+)/);
-    if (!match || !WebInspector.CSSMetadata.cssPropertiesMetainfo.hasProperty(match[1]))
-        return name;
-    return match[1];
-}
-
-/**
- * @param {string} propertyName
- * @return {boolean}
- */
-WebInspector.CSSMetadata.isCSSPropertyName = function(propertyName)
-{
-    propertyName = propertyName.toLowerCase();
-    if (propertyName.startsWith("-moz-") || propertyName.startsWith("-o-") || propertyName.startsWith("-webkit-") || propertyName.startsWith("-ms-"))
-        return true;
-    return WebInspector.CSSMetadata.cssPropertiesMetainfo.hasProperty(propertyName);
-}
-
-/**
- * @param {string} propertyName
- * @return {boolean}
- */
-WebInspector.CSSMetadata.isPropertyInherited = function(propertyName)
-{
-    var metadata = WebInspector.CSSMetadata.cssPropertiesMetainfo;
-    return metadata.inherited(WebInspector.CSSMetadata.canonicalPropertyName(propertyName)) || metadata.inherited(propertyName.toLowerCase());
+    if (!WebInspector.CSSMetadata._instance)
+        WebInspector.CSSMetadata._instance = new WebInspector.CSSMetadata(WebInspector.CSSMetadata._generatedProperties || []);
+    return WebInspector.CSSMetadata._instance;
 }
 
 WebInspector.CSSMetadata._distanceProperties = [
     "background-position", "border-spacing", "bottom", "font-size", "height", "left", "letter-spacing", "max-height", "max-width", "min-height",
     "min-width", "right", "text-indent", "top", "width", "word-spacing"
-];
+].keySet();
 
 WebInspector.CSSMetadata._bezierAwareProperties = [
     "animation", "animation-timing-function", "transition", "transition-timing-function", "-webkit-animation", "-webkit-animation-timing-function",
@@ -632,31 +710,6 @@ WebInspector.CSSMetadata._propertyDataMap = {
     ] },
 }
 
-/**
- * @param {string} propertyName
- * @return {!Array<string>}
- */
-WebInspector.CSSMetadata.propertyValues = function(propertyName)
-{
-    var acceptedKeywords = ["inherit", "initial"];
-    propertyName = propertyName.toLowerCase();
-    var unprefixedName = propertyName.replace(/^-webkit-/, "");
-    var entry = WebInspector.CSSMetadata._propertyDataMap[propertyName] || WebInspector.CSSMetadata._propertyDataMap[unprefixedName];
-    if (entry && entry.values)
-        acceptedKeywords.pushAll(entry.values);
-    if (WebInspector.CSSMetadata.isColorAwareProperty(propertyName)) {
-        acceptedKeywords.push("currentColor");
-        for (var color in WebInspector.Color.Nicknames)
-            acceptedKeywords.push(color);
-    }
-    return acceptedKeywords.sort();
-}
-
-WebInspector.CSSMetadata.initializeWithSupportedProperties = function(properties)
-{
-    WebInspector.CSSMetadata.cssPropertiesMetainfo = new WebInspector.CSSMetadata(properties);
-}
-
 // Weight of CSS properties based on their usage from https://www.chromestatus.com/metrics/css/popularity
 WebInspector.CSSMetadata.Weight = {
     "align-content": 57,
@@ -914,73 +967,3 @@ WebInspector.CSSMetadata.Weight = {
     "z-index": 239,
     "zoom": 200
 };
-
-/**
- * @param {!Array.<string>} properties
- * @return {number}
- */
-WebInspector.CSSMetadata.mostUsedProperty = function(properties)
-{
-    var maxWeight = 0;
-    var index = 0;
-    for (var i = 0; i < properties.length; i++) {
-        var weight = WebInspector.CSSMetadata.Weight[properties[i]];
-        if (!weight)
-            weight = WebInspector.CSSMetadata.Weight[WebInspector.CSSMetadata.canonicalPropertyName(properties[i])];
-        if (weight > maxWeight) {
-            maxWeight = weight;
-            index = i;
-        }
-    }
-    return index;
-}
-
-WebInspector.CSSMetadata.prototype = {
-    /**
-     * @return {!Array<string>}
-     */
-    allProperties: function()
-    {
-        return this._values;
-    },
-
-    /**
-     * @param {string} propertyName
-     * @return {boolean}
-     */
-    hasProperty: function(propertyName)
-    {
-        if (!this._valuesSet)
-            this._valuesSet = new Set(this._values);
-        return this._valuesSet.has(propertyName);
-    },
-
-    /**
-     * @param {string} shorthand
-     * @return {?Array.<string>}
-     */
-    longhands: function(shorthand)
-    {
-        return this._longhands.get(shorthand);
-    },
-
-    /**
-     * @param {string} longhand
-     * @return {?Array.<string>}
-     */
-    shorthands: function(longhand)
-    {
-        return this._shorthands.get(longhand);
-    },
-
-    /**
-     * @param {string} propertyName
-     * @return {boolean}
-     */
-    inherited: function(propertyName)
-    {
-        return this._inherited.has(propertyName);
-    }
-}
-
-WebInspector.CSSMetadata.initializeWithSupportedProperties([]);

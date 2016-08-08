@@ -93,7 +93,7 @@
 }
 
 @media (-webkit-min-device-pixel-ratio: 1.5) {
-.cm-breakpoint .CodeMirror-linenumber {
+.cm-breakpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
     -webkit-border-image: url(Images/breakpoint_2x.png) 2 8 2 2;
 }
 .cm-breakpoint.cm-breakpoint-conditional .CodeMirror-linenumber {

@@ -253,6 +253,7 @@
                 'helper_scripts': [
                     'scripts/modular_build.py',
                     'scripts/concatenate_application_code.py',
+                    "scripts/rjsmin.py",
                 ],
                 'inputs': [
                     '<@(_script_name)',

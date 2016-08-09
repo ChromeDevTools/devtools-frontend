@@ -99,7 +99,8 @@ def _make_jsmin(python_only=False):
     string1 = \
         r'(?:\047[^\047\\\r\n]*(?:\\(?:[^\r\n]|\r?\n|\r)[^\047\\\r\n]*)*\047)'
     string2 = r'(?:"[^"\\\r\n]*(?:\\(?:[^\r\n]|\r?\n|\r)[^"\\\r\n]*)*")'
-    strings = r'(?:%s|%s)' % (string1, string2)
+    string3 = r'(?:`(?:[^`\\]|\\.)*`)'
+    strings = r'(?:%s|%s|%s)' % (string1, string2, string3)
 
     charclass = r'(?:\[[^\\\]\r\n]*(?:\\[^\r\n][^\\\]\r\n]*)*\])'
     nospecial = r'[^/\\\[\r\n]'
@@ -162,7 +163,7 @@ def _make_jsmin(python_only=False):
     id_literal_open = id_literal_(r'[a-zA-Z0-9_${\[(!+-]')
     id_literal_close = id_literal_(r'[a-zA-Z0-9_$}\])"\047+-]')
 
-    dull = r'[^\047"/\000-\040]'
+    dull = r'[^\047"`/\000-\040]'
 
     space_sub = _re.compile((
         r'(%(dull)s+)'

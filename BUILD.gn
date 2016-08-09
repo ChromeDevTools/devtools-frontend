@@ -246,6 +246,7 @@ action("build_applications") {
   helper_scripts = [
     "scripts/modular_build.py",
     "scripts/concatenate_application_code.py",
+    "scripts/rjsmin.py",
   ]
 
   inputs = helper_scripts + all_devtools_files + generated_scripts + [

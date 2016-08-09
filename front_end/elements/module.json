@@ -87,6 +87,12 @@
             "defaultValue": true
         },
         {
+            "type": "setting",
+            "settingName": "showEventListenersForAncestors",
+            "settingType": "boolean",
+            "defaultValue": true
+        },
+        {
             "type": "@WebInspector.ToolbarItem.Provider",
             "className": "WebInspector.ElementStatePaneWidget.ButtonProvider",
             "order": 1,
@@ -167,6 +173,38 @@
             "order": 4,
             "location": "styles-sidebarpane-toolbar",
             "experiment": "layoutEditor"
+        },
+        {
+            "type": "@WebInspector.ViewLocationResolver",
+            "name": "elements-sidebar",
+            "className": "WebInspector.ElementsPanel"
+        },
+        {
+            "type": "view",
+            "location": "elements-sidebar",
+            "id": "elements.eventListeners",
+            "title": "Event Listeners",
+            "order": 5,
+            "persistence": "permanent",
+            "className": "WebInspector.EventListenersWidget"
+        },
+        {
+            "type": "view",
+            "location": "elements-sidebar",
+            "id": "elements.domBreakpoints",
+            "title": "DOM Breakpoints",
+            "order": 6,
+            "persistence": "permanent",
+            "factoryName": "WebInspector.DOMBreakpointsSidebarPane.Proxy"
+        },
+        {
+            "type": "view",
+            "location": "elements-sidebar",
+            "id": "elements.domProperties",
+            "title": "Properties",
+            "order": 7,
+            "persistence": "permanent",
+            "className": "WebInspector.PropertiesWidget"
         }
     ],
     "dependencies": [

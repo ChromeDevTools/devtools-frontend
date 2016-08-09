@@ -304,7 +304,7 @@
             'front_end/ui/SuggestBox.js',
             'front_end/ui/TabbedPane.js',
             'front_end/ui/TextPrompt.js',
-            'front_end/ui/ThrottledView.js',
+            'front_end/ui/ThrottledWidget.js',
             'front_end/ui/UIUtils.js',
             'front_end/ui/View.js',
             'front_end/ui/ViewportControl.js',

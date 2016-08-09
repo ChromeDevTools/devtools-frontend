@@ -4,12 +4,11 @@
 
 /**
  * @constructor
- * @extends {WebInspector.SimpleView}
- * @param {string} title
+ * @extends {WebInspector.VBox}
  */
-WebInspector.ElementsSidebarPane = function(title)
+WebInspector.ElementsSidebarPane = function()
 {
-    WebInspector.SimpleView.call(this, title);
+    WebInspector.VBox.call(this);
     this.element.classList.add("flex-none");
     this._computedStyleModel = new WebInspector.ComputedStyleModel();
     this._computedStyleModel.addEventListener(WebInspector.ComputedStyleModel.Events.ComputedStyleChanged, this.onCSSModelChanged, this);
@@ -63,7 +62,7 @@ WebInspector.ElementsSidebarPane.prototype = {
 
     wasShown: function()
     {
-        WebInspector.SimpleView.prototype.wasShown.call(this);
+        WebInspector.VBox.prototype.wasShown.call(this);
         if (this._updateWhenVisible)
             this.update();
     },
@@ -73,5 +72,5 @@ WebInspector.ElementsSidebarPane.prototype = {
      */
     onCSSModelChanged: function(event) { },
 
-    __proto__: WebInspector.SimpleView.prototype
+    __proto__: WebInspector.VBox.prototype
 }

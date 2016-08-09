@@ -33,7 +33,7 @@
  */
 WebInspector.StylesSidebarPane = function()
 {
-    WebInspector.ElementsSidebarPane.call(this, WebInspector.UIString("Styles"));
+    WebInspector.ElementsSidebarPane.call(this);
     this.setMinimumSize(96, 26);
 
     WebInspector.moduleSetting("colorFormat").addChangeListener(this.update.bind(this));
@@ -425,7 +425,6 @@ WebInspector.StylesSidebarPane.prototype = {
      */
     _addBlankSection: function(insertAfterSection, styleSheetId, ruleLocation)
     {
-        this.revealView();
         var node = this.node();
         var blankSection = new WebInspector.BlankStylePropertiesSection(this, insertAfterSection._matchedStyles, node ? WebInspector.DOMPresentationUtils.simpleSelector(node) : "", styleSheetId, ruleLocation, insertAfterSection._style);
 

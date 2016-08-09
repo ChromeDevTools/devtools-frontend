@@ -365,6 +365,20 @@
             "type": "@WebInspector.ViewLocationResolver",
             "name": "navigator-view",
             "className": "WebInspector.SourcesPanel"
+        },
+        {
+            "type": "@WebInspector.ViewLocationResolver",
+            "name": "sources-sidebar",
+            "className": "WebInspector.SourcesPanel"
+        },
+        {
+            "type": "view",
+            "location": "sources-sidebar",
+            "id": "sources.domBreakpoints",
+            "title": "DOM Breakpoints",
+            "order": 7,
+            "persistence": "permanent",
+            "factoryName": "WebInspector.DOMBreakpointsSidebarPane.Proxy"
         }
     ],
     "dependencies": [

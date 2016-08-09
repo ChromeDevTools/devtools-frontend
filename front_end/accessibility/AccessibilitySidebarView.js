@@ -4,11 +4,11 @@
 
 /**
  * @constructor
- * @extends {WebInspector.ThrottledView}
+ * @extends {WebInspector.ThrottledWidget}
  */
 WebInspector.AccessibilitySidebarView = function()
 {
-    WebInspector.ThrottledView.call(this, WebInspector.UIString("Accessibility"));
+    WebInspector.ThrottledWidget.call(this);
     this._node = null;
     this._sidebarPaneStack = WebInspector.viewManager.createStackLocation();
     this._ariaSubPane = new WebInspector.ARIAAttributesPane();
@@ -44,16 +44,10 @@ WebInspector.AccessibilitySidebarView.prototype = {
         {
             if (this._axNodeSubPane)
                 this._axNodeSubPane.setAXNode(accessibilityNode);
-            this._accessibilityNodeUpdatedForTest();
         }
         var node = this.node();
         return WebInspector.AccessibilityModel.fromTarget(node.target()).getAXNode(node.id)
             .then(accessibilityNodeCallback.bind(this))
-    },
-
-    _accessibilityNodeUpdatedForTest: function()
-    {
-         // For sniffing in tests.
     },
 
     /**
@@ -61,7 +55,7 @@ WebInspector.AccessibilitySidebarView.prototype = {
      */
     wasShown: function()
     {
-        WebInspector.ThrottledView.prototype.wasShown.call(this);
+        WebInspector.ThrottledWidget.prototype.wasShown.call(this);
 
         this._axNodeSubPane.setNode(this.node());
         this._ariaSubPane.setNode(this.node());
@@ -118,7 +112,7 @@ WebInspector.AccessibilitySidebarView.prototype = {
     },
 
 
-    __proto__: WebInspector.ThrottledView.prototype
+    __proto__: WebInspector.ThrottledWidget.prototype
 };
 
 /**

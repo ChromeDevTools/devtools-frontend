@@ -401,51 +401,29 @@ WebInspector.DOMBreakpointsSidebarPane.prototype = {
         }
     },
 
-    /**
-     * @param {!WebInspector.Panel} panel
-     * @return {!WebInspector.DOMBreakpointsSidebarPane.Proxy}
-     */
-    createProxy: function(panel)
-    {
-        var proxy = new WebInspector.DOMBreakpointsSidebarPane.Proxy(this, panel);
-        if (!this._proxies)
-            this._proxies = [];
-        this._proxies.push(proxy);
-        return proxy;
-    },
-
     __proto__: WebInspector.BreakpointsSidebarPaneBase.prototype
 }
 
 /**
  * @constructor
- * @extends {WebInspector.SimpleView}
- * @param {!WebInspector.DOMBreakpointsSidebarPane} pane
- * @param {!WebInspector.Panel} panel
+ * @extends {WebInspector.VBox}
  */
-WebInspector.DOMBreakpointsSidebarPane.Proxy = function(pane, panel)
+WebInspector.DOMBreakpointsSidebarPane.Proxy = function()
 {
-    WebInspector.SimpleView.call(this, WebInspector.UIString("DOM Breakpoints"));
+    WebInspector.VBox.call(this);
     this.registerRequiredCSS("components/breakpointsList.css");
-
-    this._wrappedPane = pane;
-    this._panel = panel;
 }
 
 WebInspector.DOMBreakpointsSidebarPane.Proxy.prototype = {
     wasShown: function()
     {
         WebInspector.SimpleView.prototype.wasShown.call(this);
-        this._reattachBody();
+        var pane = WebInspector.domBreakpointsSidebarPane;
+        if (pane.element.parentNode !== this.element)
+            pane.show(this.element);
     },
 
-    _reattachBody: function()
-    {
-        if (this._wrappedPane.element.parentNode !== this.element)
-            this._wrappedPane.show(this.element);
-    },
-
-    __proto__: WebInspector.SimpleView.prototype
+    __proto__: WebInspector.VBox.prototype
 }
 
 /**

@@ -132,15 +132,7 @@ WebInspector.SimpleView.prototype = {
      */
     revealView: function()
     {
-        return WebInspector.viewManager.revealView(this._parentViewToReveal || this);
-    },
-
-    /**
-     * @param {!WebInspector.View} view
-     */
-    setParentViewForReveal: function(view)
-    {
-        this._parentViewToReveal = view;
+        return WebInspector.viewManager.revealView(this);
     },
 
     __proto__: WebInspector.VBox.prototype
@@ -218,6 +210,11 @@ WebInspector.ProvidedView.prototype = {
 WebInspector.ViewLocation = function() { }
 
 WebInspector.ViewLocation.prototype = {
+    /**
+     * @param {string} locationName
+     */
+    appendApplicableItems: function(locationName) { },
+
     /**
      * @param {!WebInspector.View} view
      * @param {?WebInspector.View=} insertBefore
@@ -330,7 +327,7 @@ WebInspector.ViewManager.prototype = {
 
         var resolverExtensions = self.runtime.extensions(WebInspector.ViewLocationResolver).filter(extension => extension.descriptor()["name"] === location);
         if (!resolverExtensions.length)
-            return /** @type {!Promise<?WebInspector.ViewManager._Location>} */ (Promise.resolve(null));
+            throw new Error("Unresolved location: " + location);
         var resolverExtension = resolverExtensions[0];
         return resolverExtension.instance().then(resolver => /** @type {?WebInspector.ViewManager._Location} */(resolver.resolveLocation(location)));
     },
@@ -503,13 +500,11 @@ WebInspector.ViewManager._ExpandableContainerWidget.prototype = {
  * @param {!WebInspector.ViewManager} manager
  * @param {!WebInspector.Widget} widget
  * @param {function()=} revealCallback
- * @param {string=} location
  */
-WebInspector.ViewManager._Location = function(manager, widget, revealCallback, location)
+WebInspector.ViewManager._Location = function(manager, widget, revealCallback)
 {
     this._manager = manager;
     this._revealCallback = revealCallback;
-    this._location = location;
     this._widget = widget;
 }
 
@@ -543,7 +538,7 @@ WebInspector.ViewManager._Location.prototype = {
 WebInspector.ViewManager._TabbedLocation = function(manager, revealCallback, location, restoreSelection)
 {
     this._tabbedPane = new WebInspector.TabbedPane();
-    WebInspector.ViewManager._Location.call(this, manager, this._tabbedPane, revealCallback, location);
+    WebInspector.ViewManager._Location.call(this, manager, this._tabbedPane, revealCallback);
 
     this._tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, this._tabSelected, this);
     this._tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabClosed, this._tabClosed, this);
@@ -553,7 +548,9 @@ WebInspector.ViewManager._TabbedLocation = function(manager, revealCallback, loc
 
     /** @type {!Map.<string, !WebInspector.View>} */
     this._views = new Map();
-    this._populateLocation();
+
+    if (location)
+        this.appendApplicableItems(location);
 }
 
 WebInspector.ViewManager._TabbedLocation.prototype = {
@@ -586,11 +583,13 @@ WebInspector.ViewManager._TabbedLocation.prototype = {
         this._tabbedPane.disableOverflowMenu();
     },
 
-    _populateLocation: function()
+    /**
+     * @override
+     * @param {string} locationName
+     */
+    appendApplicableItems: function(locationName)
     {
-        if (!this._location)
-            return;
-        for (var view of this._manager._viewsForLocation(this._location)) {
+        for (var view of this._manager._viewsForLocation(locationName)) {
             var id = view.viewId();
             this._views.set(id, view);
             view[WebInspector.ViewManager._Location.symbol] = this;
@@ -721,11 +720,13 @@ WebInspector.ViewManager._TabbedLocation.prototype = {
 WebInspector.ViewManager._StackLocation = function(manager, revealCallback, location)
 {
     this._vbox = new WebInspector.VBox();
-    WebInspector.ViewManager._Location.call(this, manager, this._vbox, revealCallback, location);
+    WebInspector.ViewManager._Location.call(this, manager, this._vbox, revealCallback);
 
     /** @type {!Map<string, !WebInspector.ViewManager._ExpandableContainerWidget>} */
     this._expandableContainers = new Map();
-    this._populateLocation();
+
+    if (location)
+        this.appendApplicableItems(location);
 }
 
 WebInspector.ViewManager._StackLocation.prototype = {
@@ -764,11 +765,13 @@ WebInspector.ViewManager._StackLocation.prototype = {
         return container._expand();
     },
 
-    _populateLocation: function()
+    /**
+     * @override
+     * @param {string} locationName
+     */
+    appendApplicableItems: function(locationName)
     {
-        if (!this._location)
-            return;
-        for (var view of this._manager._viewsForLocation(this._location))
+        for (var view of this._manager._viewsForLocation(locationName))
             this.appendView(view);
     },
 

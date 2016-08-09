@@ -30,12 +30,12 @@
 
 /**
  * @constructor
- * @extends {WebInspector.ThrottledView}
+ * @extends {WebInspector.ThrottledWidget}
  * @param {!WebInspector.ComputedStyleModel} sharedModel
  */
 WebInspector.PlatformFontsWidget = function(sharedModel)
 {
-    WebInspector.ThrottledView.call(this, WebInspector.UIString("Fonts"), true);
+    WebInspector.ThrottledWidget.call(this, true);
     this.registerRequiredCSS("elements/platformFontsWidget.css");
 
     this._sharedModel = sharedModel;
@@ -102,5 +102,5 @@ WebInspector.PlatformFontsWidget.prototype = {
         }
     },
 
-    __proto__: WebInspector.ThrottledView.prototype
+    __proto__: WebInspector.ThrottledWidget.prototype
 }

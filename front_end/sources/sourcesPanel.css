@@ -263,3 +263,7 @@
     color: #888;
     background-color: #FFFFC2;
 }
+
+.event-listeners-sidebar-pane .toolbar {
+    border-bottom: 1px solid #eee;
+}

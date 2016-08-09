@@ -40,7 +40,7 @@
         "StackView.js",
         "SwatchPopoverHelper.js",
         "TextPrompt.js",
-        "ThrottledView.js",
+        "ThrottledWidget.js",
         "Toolbar.js",
         "Tooltip.js",
         "SuggestBox.js",

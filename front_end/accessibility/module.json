@@ -1,8 +1,12 @@
 {
     "extensions": [
         {
-            "type": "@WebInspector.View",
-            "location": "elements-panel",
+            "type": "view",
+            "location": "elements-sidebar",
+            "id": "accessibility.view",
+            "title": "Accessibility",
+            "order": 10,
+            "persistence": "permanent",
             "className": "WebInspector.AccessibilitySidebarView"
         }
     ],

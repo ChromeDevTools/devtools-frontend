@@ -32,7 +32,7 @@
  */
 WebInspector.MetricsSidebarPane = function()
 {
-    WebInspector.ElementsSidebarPane.call(this, WebInspector.UIString("Metrics"));
+    WebInspector.ElementsSidebarPane.call(this);
 }
 
 WebInspector.MetricsSidebarPane.prototype = {

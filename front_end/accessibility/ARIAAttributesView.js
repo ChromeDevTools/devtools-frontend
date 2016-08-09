@@ -38,12 +38,6 @@ WebInspector.ARIAAttributesPane.prototype = {
         var foundAttributes = (this._treeOutline.rootElement().childCount() !== 0);
         this._noPropertiesInfo.classList.toggle("hidden", foundAttributes);
         this._treeOutline.element.classList.toggle("hidden", !foundAttributes);
-        this._gotNodeForTest();
-    },
-
-    _gotNodeForTest: function()
-    {
-        // For sniffing in tests.
     },
 
     __proto__: WebInspector.AccessibilitySubPane.prototype

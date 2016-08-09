@@ -29,11 +29,11 @@
 
 /**
  * @constructor
- * @extends {WebInspector.ThrottledView}
+ * @extends {WebInspector.ThrottledWidget}
  */
 WebInspector.ComputedStyleWidget = function()
 {
-    WebInspector.ThrottledView.call(this, WebInspector.UIString("Computed Style"));
+    WebInspector.ThrottledWidget.call(this);
     this.element.classList.add("computed-style-sidebar-pane");
 
     this.registerRequiredCSS("elements/computedStyleSidebarPane.css");
@@ -356,5 +356,5 @@ WebInspector.ComputedStyleWidget.prototype = {
         }
     },
 
-    __proto__: WebInspector.ThrottledView.prototype
+    __proto__: WebInspector.ThrottledWidget.prototype
 }

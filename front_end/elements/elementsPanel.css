@@ -737,6 +737,10 @@ li.editing .enabled-button {
     margin: 0;
 }
 
+.events-pane .toolbar {
+    border-bottom: 1px solid #eee;
+}
+
 .style-properties li.editing {
     margin-left: 10px;
     text-overflow: clip;

@@ -91,7 +91,6 @@ WebInspector.SourcesPanel = function()
 
     this.sidebarPanes.scopechain = new WebInspector.ScopeChainSidebarPane();
     this.sidebarPanes.jsBreakpoints = new WebInspector.JavaScriptBreakpointsSidebarPane(WebInspector.breakpointManager, this.showUISourceCode.bind(this));
-    this.sidebarPanes.domBreakpoints = WebInspector.domBreakpointsSidebarPane.createProxy(this);
     this.sidebarPanes.xhrBreakpoints = new WebInspector.XHRBreakpointsSidebarPane();
     this.sidebarPanes.eventListenerBreakpoints = new WebInspector.EventListenerBreakpointsSidebarPane();
     this.sidebarPanes.objectEventListeners = new WebInspector.ObjectEventListenersSidebarPane();
@@ -227,7 +226,10 @@ WebInspector.SourcesPanel.prototype = {
      */
     resolveLocation: function(locationName)
     {
-        return this._navigatorTabbedLocation;
+        if (locationName === "sources-sidebar")
+            return this._sidebarPaneStack;
+        else
+            return this._navigatorTabbedLocation;
     },
 
     /**
@@ -1130,7 +1132,8 @@ WebInspector.SourcesPanel.prototype = {
         var vbox = new WebInspector.VBox();
         vbox.element.appendChild(this._debugToolbarDrawer);
         vbox.setMinimumAndPreferredSizes(25, 25, WebInspector.SourcesPanel.minToolbarWidth, 100);
-        this._sidebarPaneStack = WebInspector.viewManager.createStackLocation(this._setAsCurrentPanel.bind(this), "sources-sidebar");
+        this._sidebarPaneStack = WebInspector.viewManager.createStackLocation(this._setAsCurrentPanel.bind(this));
+        this._sidebarPaneStack.widget().element.classList.add("overflow-auto");
         this._sidebarPaneStack.widget().show(vbox.element);
         vbox.element.appendChild(this._debugToolbar.element);
 
@@ -1145,11 +1148,11 @@ WebInspector.SourcesPanel.prototype = {
         }
 
         this._sidebarPaneStack.showView(this.sidebarPanes.callstack);
-        this._sidebarPaneStack.showView(this.sidebarPanes.scopechain);
-        this._sidebarPaneStack.showView(this.sidebarPanes.jsBreakpoints);
 
         if (!vertically) {
             // Populate the rest of the stack.
+            this._sidebarPaneStack.showView(this.sidebarPanes.scopechain);
+            this._sidebarPaneStack.showView(this.sidebarPanes.jsBreakpoints);
             for (var pane in this.sidebarPanes) {
                 if (this.sidebarPanes[pane])
                     this._sidebarPaneStack.appendView(this.sidebarPanes[pane]);
@@ -1161,12 +1164,12 @@ WebInspector.SourcesPanel.prototype = {
             splitWidget.setMainWidget(vbox);
 
             // Populate the left stack.
-            this._sidebarPaneStack.appendView(this.sidebarPanes.domBreakpoints);
+            this._sidebarPaneStack.showView(this.sidebarPanes.jsBreakpoints);
             this._sidebarPaneStack.appendView(this.sidebarPanes.xhrBreakpoints);
             this._sidebarPaneStack.appendView(this.sidebarPanes.eventListenerBreakpoints);
             this._sidebarPaneStack.appendView(this.sidebarPanes.objectEventListeners);
 
-            var tabbedLocation = WebInspector.viewManager.createTabbedLocation(this._setAsCurrentPanel.bind(this), "sources-sidebar-tabs");
+            var tabbedLocation = WebInspector.viewManager.createTabbedLocation(this._setAsCurrentPanel.bind(this));
             splitWidget.setSidebarWidget(tabbedLocation.tabbedPane());
             tabbedLocation.appendView(this.sidebarPanes.scopechain);
             tabbedLocation.appendView(this.sidebarPanes.watchExpressions);
@@ -1174,6 +1177,7 @@ WebInspector.SourcesPanel.prototype = {
             this.sidebarPaneView = splitWidget;
         }
 
+        this._sidebarPaneStack.appendApplicableItems("sources-sidebar");
         var extensionSidebarPanes = WebInspector.extensionServer.sidebarPanes();
         for (var i = 0; i < extensionSidebarPanes.length; ++i)
             this._addExtensionSidebarPane(extensionSidebarPanes[i]);

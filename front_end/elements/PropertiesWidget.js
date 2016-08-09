@@ -29,17 +29,19 @@
 
 /**
  * @constructor
- * @extends {WebInspector.ThrottledView}
+ * @extends {WebInspector.ThrottledWidget}
  */
 WebInspector.PropertiesWidget = function()
 {
-    WebInspector.ThrottledView.call(this, WebInspector.UIString("Properties"));
+    WebInspector.ThrottledWidget.call(this);
 
     WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.AttrModified, this._onNodeChange, this);
     WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.AttrRemoved, this._onNodeChange, this);
     WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.CharacterDataModified, this._onNodeChange, this);
     WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.ChildNodeCountUpdated, this._onNodeChange, this);
     WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this._setNode, this);
+    this._node = WebInspector.context.flavor(WebInspector.DOMNode);
+    this.update();
 }
 
 WebInspector.PropertiesWidget._objectGroupName = "properties-sidebar-pane";
@@ -180,5 +182,5 @@ WebInspector.PropertiesWidget.prototype = {
         this.update();
     },
 
-    __proto__: WebInspector.ThrottledView.prototype
+    __proto__: WebInspector.ThrottledWidget.prototype
 }

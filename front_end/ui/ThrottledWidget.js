@@ -4,18 +4,17 @@
 
 /**
  * @constructor
- * @extends {WebInspector.SimpleView}
- * @param {string} title
+ * @extends {WebInspector.VBox}
  * @param {boolean=} isWebComponent
  */
-WebInspector.ThrottledView = function(title, isWebComponent)
+WebInspector.ThrottledWidget = function(isWebComponent)
 {
-    WebInspector.SimpleView.call(this, title, isWebComponent);
+    WebInspector.VBox.call(this, isWebComponent);
     this._updateThrottler = new WebInspector.Throttler(100);
     this._updateWhenVisible = false;
 }
 
-WebInspector.ThrottledView.prototype = {
+WebInspector.ThrottledWidget.prototype = {
     /**
      * @protected
      * @return {!Promise.<?>}
@@ -33,7 +32,7 @@ WebInspector.ThrottledView.prototype = {
         this._updateThrottler.schedule(innerUpdate.bind(this));
 
         /**
-         * @this {WebInspector.ThrottledView}
+         * @this {WebInspector.ThrottledWidget}
          * @return {!Promise.<?>}
          */
         function innerUpdate()
@@ -52,10 +51,10 @@ WebInspector.ThrottledView.prototype = {
      */
     wasShown: function()
     {
-        WebInspector.SimpleView.prototype.wasShown.call(this);
+        WebInspector.VBox.prototype.wasShown.call(this);
         if (this._updateWhenVisible)
             this.update();
     },
 
-    __proto__: WebInspector.SimpleView.prototype
+    __proto__: WebInspector.VBox.prototype
 }

@@ -381,7 +381,10 @@ WebInspector.NetworkDataGridNode.prototype = {
             cell.setTextAndTitle(WebInspector.UIString("(from ServiceWorker)"));
             cell.classList.add("network-dim-cell");
         } else if (this._request.cached()) {
-            cell.setTextAndTitle(WebInspector.UIString("(from cache)"));
+            if (this._request.cachedInMemory())
+                cell.setTextAndTitle(WebInspector.UIString("(from memory cache)"));
+            else
+                cell.setTextAndTitle(WebInspector.UIString("(from disk cache)"));
             cell.classList.add("network-dim-cell");
         } else {
             var resourceSize = Number.bytesToString(this._request.resourceSize);

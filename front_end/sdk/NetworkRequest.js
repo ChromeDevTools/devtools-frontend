@@ -463,6 +463,14 @@ WebInspector.NetworkRequest.prototype = {
         return (!!this._fromMemoryCache || !!this._fromDiskCache) && !this._transferSize;
     },
 
+    /**
+     * @return {boolean}
+     */
+    cachedInMemory: function()
+    {
+        return !!this._fromMemoryCache && !this._transferSize;
+    },
+
     setFromMemoryCache: function()
     {
         this._fromMemoryCache = true;

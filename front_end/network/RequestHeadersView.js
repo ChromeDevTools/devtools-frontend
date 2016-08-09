@@ -370,7 +370,10 @@ WebInspector.RequestHeadersView.prototype = {
                 statusText += " " + WebInspector.UIString("(from ServiceWorker)");
                 statusTextElement.classList.add("status-from-cache");
             } else if (this._request.cached()) {
-                statusText += " " + WebInspector.UIString("(from cache)");
+                if (this._request.cachedInMemory())
+                    statusText += " " + WebInspector.UIString("(from memory cache)");
+                else
+                    statusText += " " + WebInspector.UIString("(from disk cache)");
                 statusTextElement.classList.add("status-from-cache");
             }
             statusTextElement.textContent = statusText;

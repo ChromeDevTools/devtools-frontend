@@ -33,9 +33,9 @@ WebInspector.BezierPopoverIcon.prototype = {
     _createDOM: function(text)
     {
         this._element = createElement("nobr");
-        this._element.title = WebInspector.UIString("Open cubic bezier editor");
 
         this._iconElement = this._element.createChild("div", "popover-icon bezier-icon");
+        this._iconElement.title = WebInspector.UIString("Open cubic bezier editor");
         var svg = this._iconElement.createSVGChild("svg");
         svg.setAttribute("height", 10);
         svg.setAttribute("width", 10);

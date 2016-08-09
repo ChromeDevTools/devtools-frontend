@@ -35,7 +35,7 @@
     display: flex;
     align-items: center;
     background-color: #eee;
-    height: 26px;
+    height: 22px;
     padding: 0 5px;
     border-top: 1px solid #dadada;
     white-space: nowrap;
@@ -47,6 +47,10 @@
 .expandable-view-title.expanded,
 .expandable-view-title:last-child {
     border-bottom: 1px solid #ddd;
+}
+
+.expandable-view-title .toolbar {
+    margin-top: -3px;
 }
 
 .expandable-view-title:not(.expanded) .toolbar {

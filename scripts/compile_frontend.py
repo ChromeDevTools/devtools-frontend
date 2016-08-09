@@ -30,7 +30,6 @@
 from modular_build import read_file, write_file
 import os
 import os.path as path
-import generate_injected_script_externs
 import generate_protocol_externs
 import modular_build
 import re

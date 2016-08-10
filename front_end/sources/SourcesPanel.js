@@ -81,6 +81,7 @@ WebInspector.SourcesPanel = function()
     this._sourcesView.addEventListener(WebInspector.SourcesView.Events.EditorClosed, this._editorClosed.bind(this));
     this._sourcesView.registerShortcuts(this.registerShortcuts.bind(this));
     this.editorView.setMainWidget(this._sourcesView);
+    this._editorChanged(this._sourcesView.currentUISourceCode());
 
     this.sidebarPanes = {};
     this.sidebarPanes.threads = null;

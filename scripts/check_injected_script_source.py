@@ -49,7 +49,7 @@ def validate_injected_script(fileName):
 
     global_functions = "|".join([
         "eval", "uneval", "isFinite", "isNaN", "parseFloat", "parseInt", "decodeURI", "decodeURIComponent",
-        "encodeURI", "encodeURIComponent", "escape", "unescape",
+        "encodeURI", "encodeURIComponent", "escape", "unescape", "Map", "Set"
     ])
 
     # Black list:
@@ -63,7 +63,7 @@ def validate_injected_script(fileName):
 
     errors_found = False
     for i, line in enumerate(lines):
-        if line.find("suppressBlacklist"):
+        if line.find("suppressBlacklist") != -1:
             continue
         for match in re.finditer(black_list_call_regex, line):
             errors_found = True

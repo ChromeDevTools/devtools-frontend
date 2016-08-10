@@ -33,7 +33,8 @@
  */
 WebInspector.TextDictionary = function()
 {
-    this._words = {};
+    /** @type {!Map<string, number>} */
+    this._words = new Map();
 }
 
 WebInspector.TextDictionary.prototype = {
@@ -42,10 +43,9 @@ WebInspector.TextDictionary.prototype = {
      */
     addWord: function(word)
     {
-        if (!this._words[word])
-            this._words[word] = 1;
-        else
-            ++this._words[word];
+        var count = this._words.get(word) || 0;
+        ++count;
+        this._words.set(word, count);
     },
 
     /**
@@ -53,12 +53,15 @@ WebInspector.TextDictionary.prototype = {
      */
     removeWord: function(word)
     {
-        if (!this._words[word])
+        var count = this._words.get(word) || 0;
+        if (!count)
             return;
-        if (this._words[word] === 1)
-            delete this._words[word];
-        else
-            --this._words[word];
+        if (count === 1) {
+            this._words.delete(word);
+            return;
+        }
+        --count;
+        this._words.set(word, count);
     },
 
     /**
@@ -68,9 +71,9 @@ WebInspector.TextDictionary.prototype = {
     wordsWithPrefix: function(prefix)
     {
         var words = [];
-        for (var i in this._words) {
-            if (i.startsWith(prefix))
-                words.push(i);
+        for (var word of this._words.keys()) {
+            if (word.startsWith(prefix))
+                words.push(word);
         }
         return words;
     },
@@ -81,7 +84,7 @@ WebInspector.TextDictionary.prototype = {
      */
     hasWord: function(word)
     {
-        return !!this._words[word];
+        return this._words.has(word);
     },
 
     /**
@@ -90,11 +93,11 @@ WebInspector.TextDictionary.prototype = {
      */
     wordCount: function(word)
     {
-        return this._words[word] ? this._words[word] : 0;
+        return this._words.get(word) || 0;
     },
 
     reset: function()
     {
-        this._words = {};
+        this._words.clear();
     }
 }

@@ -38,7 +38,11 @@ WebInspector.UISourceCodeFrame = function(uiSourceCode)
 
     if (Runtime.experiments.isEnabled("sourceDiff"))
         this._diff = new WebInspector.SourceCodeDiff(uiSourceCode.requestOriginalContent(), this.textEditor);
-    this.textEditor.setAutocompleteDelegate(new WebInspector.SimpleAutocompleteDelegate());
+
+    /** @type {?WebInspector.AutocompleteConfig} */
+    this._autocompleteConfig = {isWordChar: WebInspector.TextUtils.isWordChar};
+    WebInspector.moduleSetting("textEditorAutocompletion").addChangeListener(this._updateAutocomplete, this);
+    this._updateAutocomplete();
 
     this._rowMessageBuckets = {};
     /** @type {!Set<string>} */
@@ -195,6 +199,20 @@ WebInspector.UISourceCodeFrame.prototype = {
     {
     },
 
+    _updateAutocomplete: function()
+    {
+        this._textEditor.configureAutocomplete(WebInspector.moduleSetting("textEditorAutocompletion").get() ? this._autocompleteConfig : null);
+    },
+
+    /**
+     * @param {?WebInspector.AutocompleteConfig} config
+     */
+    configureAutocomplete: function(config)
+    {
+        this._autocompleteConfig = config;
+        this._updateAutocomplete();
+    },
+
     /**
      * @param {string} content
      */
@@ -249,6 +267,7 @@ WebInspector.UISourceCodeFrame.prototype = {
     dispose: function()
     {
         this._textEditor.dispose();
+        WebInspector.moduleSetting("textEditorAutocompletion").removeChangeListener(this._updateAutocomplete, this);
         this.detach();
     },
 

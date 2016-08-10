@@ -653,7 +653,6 @@
             'front_end/source_frame/cmdevtools.css',
             'front_end/source_frame/fontView.css',
             'front_end/source_frame/imageView.css',
-            'front_end/source_frame/CodeMirrorDictionary.js',
             'front_end/source_frame/CodeMirrorTextEditor.js',
             'front_end/source_frame/CodeMirrorUtils.js',
             'front_end/source_frame/FontView.js',

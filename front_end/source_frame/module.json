@@ -44,7 +44,6 @@
         "../cm/activeline.js",
 
         "CodeMirrorUtils.js",
-        "CodeMirrorDictionary.js",
         "TextEditorAutocompleteController.js",
         "CodeMirrorTextEditor.js",
         "FontView.js",

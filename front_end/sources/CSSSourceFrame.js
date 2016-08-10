@@ -36,10 +36,13 @@
 WebInspector.CSSSourceFrame = function(uiSourceCode)
 {
     WebInspector.UISourceCodeFrame.call(this, uiSourceCode);
-    this.textEditor.setAutocompleteDelegate(new WebInspector.CSSSourceFrame.AutocompleteDelegate());
     this._registerShortcuts();
     this._swatchPopoverHelper = new WebInspector.SwatchPopoverHelper();
     this._muteColorProcessing = false;
+    this.configureAutocomplete({
+        suggestionsCallback: this._cssSuggestions.bind(this),
+        isWordChar: this._isWordChar.bind(this)
+    });
 }
 
 /** @type {number} */
@@ -251,6 +254,68 @@ WebInspector.CSSSourceFrame.prototype = {
             this._swatchPopoverHelper.hide(true);
     },
 
+    /**
+     * @param {string} char
+     * @return {boolean}
+     */
+    _isWordChar: function(char)
+    {
+        return WebInspector.TextUtils.isWordChar(char) || char === "." || char === "-" || char === "$";
+    },
+
+    /**
+     * @param {!WebInspector.TextRange} prefixRange
+     * @param {!WebInspector.TextRange} substituteRange
+     * @return {?Promise.<!WebInspector.SuggestBox.Suggestions>}
+     */
+    _cssSuggestions: function(prefixRange, substituteRange)
+    {
+        var prefix = this._textEditor.copyRange(prefixRange);
+        if (prefix.startsWith("$"))
+            return null;
+
+        var propertyToken = this._backtrackPropertyToken(prefixRange.startLine, prefixRange.startColumn - 1);
+        if (!propertyToken)
+            return null;
+
+        var line = this._textEditor.line(prefixRange.startLine);
+        var tokenContent = line.substring(propertyToken.startColumn, propertyToken.endColumn);
+        var propertyValues = WebInspector.cssMetadata().propertyValues(tokenContent);
+        return Promise.resolve(propertyValues.filter(value => value.startsWith(prefix)).map(value => ({title: value})));
+    },
+
+    /**
+     * @param {number} lineNumber
+     * @param {number} columnNumber
+     * @return {?{startColumn: number, endColumn: number, type: string}}
+     */
+    _backtrackPropertyToken: function(lineNumber, columnNumber)
+    {
+        var backtrackDepth = 10;
+        var tokenPosition = columnNumber;
+        var line = this._textEditor.line(lineNumber);
+        var seenColon = false;
+
+        for (var i = 0; i < backtrackDepth && tokenPosition >= 0; ++i) {
+            var token = this._textEditor.tokenAtTextPosition(lineNumber, tokenPosition);
+            if (!token)
+                return null;
+            if (token.type === "css-property")
+                return seenColon ? token : null;
+            if (token.type && !(token.type.indexOf("whitespace") !== -1 || token.type.startsWith("css-comment")))
+                return null;
+
+            if (!token.type && line.substring(token.startColumn, token.endColumn) === ":") {
+                if (!seenColon)
+                    seenColon = true;
+                else
+                    return null;
+            }
+            tokenPosition = token.startColumn - 1;
+        }
+        return null;
+    },
+
     __proto__: WebInspector.UISourceCodeFrame.prototype
 }
 
@@ -265,101 +330,4 @@ WebInspector.CSSSourceFrame.ColorPosition = function(color, lineNumber, startCol
 {
     this.color = color;
     this.textRange = new WebInspector.TextRange(lineNumber, startColumn, lineNumber, startColumn + textLength);
-}
-
-/**
- * @constructor
- * @implements {WebInspector.TextEditorAutocompleteDelegate}
- */
-WebInspector.CSSSourceFrame.AutocompleteDelegate = function()
-{
-    this._simpleDelegate = new WebInspector.SimpleAutocompleteDelegate(".-$");
-}
-
-WebInspector.CSSSourceFrame._backtrackDepth = 10;
-
-WebInspector.CSSSourceFrame.AutocompleteDelegate.prototype = {
-    /**
-     * @override
-     * @param {!WebInspector.CodeMirrorTextEditor} editor
-     */
-    initialize: function(editor)
-    {
-        this._simpleDelegate.initialize(editor);
-    },
-
-    /**
-     * @override
-     */
-    dispose: function()
-    {
-        this._simpleDelegate.dispose();
-    },
-
-    /**
-     * @override
-     * @param {!WebInspector.CodeMirrorTextEditor} editor
-     * @param {number} lineNumber
-     * @param {number} columnNumber
-     * @return {?WebInspector.TextRange}
-     */
-    substituteRange: function(editor, lineNumber, columnNumber)
-    {
-        return this._simpleDelegate.substituteRange(editor, lineNumber, columnNumber);
-    },
-
-    /**
-     * @param {!WebInspector.CodeMirrorTextEditor} editor
-     * @param {number} lineNumber
-     * @param {number} columnNumber
-     * @return {?{startColumn: number, endColumn: number, type: string}}
-     */
-    _backtrackPropertyToken: function(editor, lineNumber, columnNumber)
-    {
-        var tokenPosition = columnNumber;
-        var line = editor.line(lineNumber);
-        var seenColumn = false;
-
-        for (var i = 0; i < WebInspector.CSSSourceFrame._backtrackDepth && tokenPosition >= 0; ++i) {
-            var token = editor.tokenAtTextPosition(lineNumber, tokenPosition);
-            if (!token)
-                return null;
-            if (token.type === "css-property")
-                return seenColumn ? token : null;
-            if (token.type && !(token.type.indexOf("whitespace") !== -1 || token.type.startsWith("css-comment")))
-                return null;
-
-            if (!token.type && line.substring(token.startColumn, token.endColumn) === ":") {
-                if (!seenColumn)
-                    seenColumn = true;
-                else
-                    return null;
-            }
-            tokenPosition = token.startColumn - 1;
-        }
-        return null;
-    },
-
-    /**
-     * @override
-     * @param {!WebInspector.CodeMirrorTextEditor} editor
-     * @param {!WebInspector.TextRange} prefixRange
-     * @param {!WebInspector.TextRange} substituteRange
-     * @return {!Promise.<!WebInspector.SuggestBox.Suggestions>}
-     */
-    wordsWithPrefix: function(editor, prefixRange, substituteRange)
-    {
-        var prefix = editor.copyRange(prefixRange);
-        if (prefix.startsWith("$"))
-            return this._simpleDelegate.wordsWithPrefix(editor, prefixRange, substituteRange);
-
-        var propertyToken = this._backtrackPropertyToken(editor, prefixRange.startLine, prefixRange.startColumn - 1);
-        if (!propertyToken)
-            return this._simpleDelegate.wordsWithPrefix(editor, prefixRange, substituteRange);
-
-        var line = editor.line(prefixRange.startLine);
-        var tokenContent = line.substring(propertyToken.startColumn, propertyToken.endColumn);
-        var propertyValues = WebInspector.cssMetadata().propertyValues(tokenContent);
-        return Promise.resolve(propertyValues.filter(value => value.startsWith(prefix)).map(value => ({title: value})));
-    }
 }

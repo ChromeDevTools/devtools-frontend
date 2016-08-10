@@ -148,14 +148,10 @@ WebInspector.CodeMirrorTextEditor = function(url, delegate)
     this._shouldClearHistory = true;
     this._lineSeparator = "\n";
 
-    this._autocompleteController = new WebInspector.TextEditorAutocompleteController(this, this._codeMirror);
     this._tokenHighlighter = new WebInspector.CodeMirrorTextEditor.TokenHighlighter(this, this._codeMirror);
     this._blockIndentController = new WebInspector.CodeMirrorTextEditor.BlockIndentController(this._codeMirror);
     this._fixWordMovement = new WebInspector.CodeMirrorTextEditor.FixWordMovement(this._codeMirror);
     this._selectNextOccurrenceController = new WebInspector.CodeMirrorTextEditor.SelectNextOccurrenceController(this, this._codeMirror);
-
-    WebInspector.moduleSetting("textEditorAutocompletion").addChangeListener(this._enableAutocompletionIfNeeded, this);
-    this._enableAutocompletionIfNeeded();
 
     this._codeMirror.on("changes", this._changes.bind(this));
     this._codeMirror.on("gutterClick", this._gutterClick.bind(this));
@@ -196,7 +192,9 @@ WebInspector.CodeMirrorTextEditor.maxHighlightLength = 1000;
  */
 WebInspector.CodeMirrorTextEditor.autocompleteCommand = function(codeMirror)
 {
-    codeMirror._codeMirrorTextEditor._autocompleteController.autocomplete();
+    var autocompleteController = codeMirror._codeMirrorTextEditor._autocompleteController;
+    if (autocompleteController)
+        autocompleteController.autocomplete();
 }
 CodeMirror.commands.autocomplete = WebInspector.CodeMirrorTextEditor.autocompleteCommand;
 
@@ -296,7 +294,9 @@ CodeMirror.commands.undoAndReveal = function(codemirror)
     codemirror.execCommand("undo");
     var cursor = codemirror.getCursor("start");
     codemirror._codeMirrorTextEditor._innerRevealLine(cursor.line, scrollInfo);
-    codemirror._codeMirrorTextEditor._autocompleteController.finishAutocomplete();
+    var autocompleteController = codemirror._codeMirrorTextEditor._autocompleteController;
+    if (autocompleteController)
+        autocompleteController.finishAutocomplete();
 }
 
 /**
@@ -308,7 +308,9 @@ CodeMirror.commands.redoAndReveal = function(codemirror)
     codemirror.execCommand("redo");
     var cursor = codemirror.getCursor("start");
     codemirror._codeMirrorTextEditor._innerRevealLine(cursor.line, scrollInfo);
-    codemirror._codeMirrorTextEditor._autocompleteController.finishAutocomplete();
+    var autocompleteController = codemirror._codeMirrorTextEditor._autocompleteController;
+    if (autocompleteController)
+        autocompleteController.finishAutocomplete();
 }
 
 /**
@@ -409,20 +411,6 @@ WebInspector.CodeMirrorTextEditor._guessIndentationLevel = function(lines)
 
 
 WebInspector.CodeMirrorTextEditor.prototype = {
-    /**
-     * @param {string=} additionalWordChars
-     * @return {!WebInspector.CodeMirrorDictionary}
-     */
-    createTextDictionary: function(additionalWordChars)
-    {
-        return new WebInspector.CodeMirrorDictionary(this._codeMirror, additionalWordChars);
-    },
-
-    _enableAutocompletionIfNeeded: function()
-    {
-        this._autocompleteController.setEnabled(WebInspector.moduleSetting("textEditorAutocompletion").get());
-    },
-
     _onKeyHandled: function()
     {
         WebInspector.shortcutRegistry.dismissPendingShortcutAction();
@@ -601,7 +589,6 @@ WebInspector.CodeMirrorTextEditor.prototype = {
         WebInspector.moduleSetting("textEditorAutoDetectIndent").removeChangeListener(this._onUpdateEditorIndentation, this);
         WebInspector.moduleSetting("showWhitespacesInEditor").removeChangeListener(this._updateCodeMirrorMode, this);
         WebInspector.moduleSetting("textEditorBracketMatching").removeChangeListener(this._enableBracketMatchingIfNeeded, this);
-        WebInspector.moduleSetting("textEditorAutocompletion").removeChangeListener(this._enableAutocompletionIfNeeded, this);
     },
 
     _enableBracketMatchingIfNeeded: function()
@@ -742,7 +729,7 @@ WebInspector.CodeMirrorTextEditor.prototype = {
 
     _handleKeyDown: function(e)
     {
-        if (this._autocompleteController.keyDown(e))
+        if (this._autocompleteController && this._autocompleteController.keyDown(e))
             e.consume(true);
     },
 
@@ -753,11 +740,17 @@ WebInspector.CodeMirrorTextEditor.prototype = {
     },
 
     /**
-     * @param {!WebInspector.TextEditorAutocompleteDelegate} delegate
+     * @param {?WebInspector.AutocompleteConfig} config
      */
-    setAutocompleteDelegate: function(delegate)
+    configureAutocomplete: function(config)
     {
-        this._autocompleteController.setDelegate(delegate);
+        if (this._autocompleteController) {
+            this._autocompleteController.dispose();
+            delete this._autocompleteController;
+        }
+
+        if (config)
+            this._autocompleteController = new WebInspector.TextEditorAutocompleteController(this, this._codeMirror, config);
     },
 
     /**
@@ -1339,7 +1332,8 @@ WebInspector.CodeMirrorTextEditor.prototype = {
      */
     onResize: function()
     {
-        this._autocompleteController.finishAutocomplete();
+        if (this._autocompleteController)
+            this._autocompleteController.finishAutocomplete();
         this._resizeEditor();
         this._editorSizeInSync = true;
         if (this._selectionSetScheduled) {
@@ -1593,7 +1587,7 @@ WebInspector.CodeMirrorTextEditor.prototype = {
     {
         this._muteTextChangedEvent = true;
         if (text.length > WebInspector.CodeMirrorTextEditor.MaxEditableTextSize) {
-            this._autocompleteController.setEnabled(false);
+            this.configureAutocomplete(null);
             this.setReadOnly(true);
         }
 

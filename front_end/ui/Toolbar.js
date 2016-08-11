@@ -622,6 +622,16 @@ WebInspector.Toolbar.createActionButton = function(action, toggledOptions, untog
 }
 
 /**
+ * @param {string} actionId
+ * @return {?WebInspector.ToolbarItem}
+ */
+WebInspector.Toolbar.createActionButtonForId = function(actionId)
+{
+    var action = WebInspector.actionRegistry.action(actionId);
+    return /** @type {?WebInspector.ToolbarItem} */(action ? WebInspector.Toolbar.createActionButton(action) : null);
+}
+
+/**
  * @constructor
  * @extends {WebInspector.ToolbarButton}
  * @param {function(!WebInspector.ContextMenu)} contextMenuHandler
@@ -744,6 +754,20 @@ WebInspector.ToolbarItem.Provider.prototype = {
      * @return {?WebInspector.ToolbarItem}
      */
     item: function() {}
+}
+
+/**
+ * @interface
+ */
+WebInspector.ToolbarItem.ItemsProvider = function()
+{
+}
+
+WebInspector.ToolbarItem.ItemsProvider.prototype = {
+    /**
+     * @return {!Array<!WebInspector.ToolbarItem>}
+     */
+    toolbarItems: function() {}
 }
 
 /**
@@ -956,10 +980,8 @@ WebInspector.ExtensibleToolbar.prototype = {
             var descriptor = extension.descriptor();
             if (descriptor["separator"])
                 return Promise.resolve(/** @type {?WebInspector.ToolbarItem} */(new WebInspector.ToolbarSeparator()));
-            if (descriptor["actionId"]) {
-                var action = WebInspector.actionRegistry.action(descriptor["actionId"]);
-                return Promise.resolve(/** @type {?WebInspector.ToolbarItem} */(action ? WebInspector.Toolbar.createActionButton(action) : null));
-            }
+            if (descriptor["actionId"])
+                return Promise.resolve(WebInspector.Toolbar.createActionButtonForId(descriptor["actionId"]));
             return extension.instance().then(fetchItemFromProvider);
 
             /**

@@ -34,7 +34,7 @@
  */
 WebInspector.DOMBreakpointsSidebarPane = function()
 {
-    WebInspector.BreakpointsSidebarPaneBase.call(this, WebInspector.UIString("DOM Breakpoints"));
+    WebInspector.BreakpointsSidebarPaneBase.call(this);
     this._domBreakpointsSetting = WebInspector.settings.createLocalSetting("domBreakpoints", []);
     this.listElement.classList.add("dom-breakpoints-list");
 
@@ -320,23 +320,27 @@ WebInspector.DOMBreakpointsSidebarPane.prototype = {
         this._saveBreakpoints();
     },
 
-    highlightBreakpoint: function(auxData)
+    /**
+     * @override
+     * @param {?WebInspector.DebuggerPausedDetails} details
+     */
+    highlightDetails: function(details)
     {
+        if (!details || details.reason !== WebInspector.DebuggerModel.BreakReason.DOM) {
+            if (this._highlightedElement) {
+                this._highlightedElement.classList.remove("breakpoint-hit");
+                delete this._highlightedElement;
+            }
+            return;
+        }
+        var auxData = details.auxData;
         var breakpointId = this._createBreakpointId(auxData.nodeId, auxData.type);
         var element = this._breakpointElements[breakpointId];
         if (!element)
             return;
-        this.revealView();
+        WebInspector.viewManager.revealViewWithWidget(this);
         element.classList.add("breakpoint-hit");
         this._highlightedElement = element;
-    },
-
-    clearBreakpointHighlight: function()
-    {
-        if (this._highlightedElement) {
-            this._highlightedElement.classList.remove("breakpoint-hit");
-            delete this._highlightedElement;
-        }
     },
 
     /**

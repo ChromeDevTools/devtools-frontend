@@ -374,11 +374,40 @@
         {
             "type": "view",
             "location": "sources-sidebar",
+            "id": "sources.xhrBreakpoints",
+            "title": "XHR Breakpoints",
+            "order": 5,
+            "hasToolbar": "true",
+            "persistence": "permanent",
+            "className": "WebInspector.XHRBreakpointsSidebarPane"
+        },
+        {
+            "type": "view",
+            "location": "sources-sidebar",
             "id": "sources.domBreakpoints",
             "title": "DOM Breakpoints",
             "order": 7,
             "persistence": "permanent",
             "factoryName": "WebInspector.DOMBreakpointsSidebarPane.Proxy"
+        },
+        {
+            "type": "view",
+            "location": "sources-sidebar",
+            "id": "sources.globalListeners",
+            "title": "Global Listeners",
+            "order": 8,
+            "hasToolbar": "true",
+            "persistence": "permanent",
+            "className": "WebInspector.ObjectEventListenersSidebarPane"
+        },
+        {
+            "type": "view",
+            "location": "sources-sidebar",
+            "id": "sources.eventListenerBreakpoints",
+            "title": "Event Listener Breakpoints",
+            "order": 9,
+            "persistence": "permanent",
+            "className": "WebInspector.EventListenerBreakpointsSidebarPane"
         }
     ],
     "dependencies": [

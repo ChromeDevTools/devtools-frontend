@@ -30,12 +30,11 @@
 
 /**
  * @constructor
- * @extends {WebInspector.SimpleView}
- * @param {string} title
+ * @extends {WebInspector.VBox}
  */
-WebInspector.BreakpointsSidebarPaneBase = function(title)
+WebInspector.BreakpointsSidebarPaneBase = function()
 {
-    WebInspector.SimpleView.call(this, title);
+    WebInspector.VBox.call(this);
     this.registerRequiredCSS("components/breakpointsList.css");
 
     this.listElement = createElement("ol");
@@ -46,6 +45,9 @@ WebInspector.BreakpointsSidebarPaneBase = function(title)
     this.emptyElement.textContent = WebInspector.UIString("No Breakpoints");
 
     this.element.appendChild(this.emptyElement);
+    WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.DebuggerPaused, this._update, this);
+    WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.DebuggerResumed, this._update, this);
+    WebInspector.context.addFlavorChangeListener(WebInspector.Target, this._update, this);
 }
 
 WebInspector.BreakpointsSidebarPaneBase.prototype = {
@@ -92,5 +94,19 @@ WebInspector.BreakpointsSidebarPaneBase.prototype = {
         }
     },
 
-    __proto__: WebInspector.SimpleView.prototype
+    _update: function()
+    {
+        var target = WebInspector.context.flavor(WebInspector.Target);
+        var debuggerModel = WebInspector.DebuggerModel.fromTarget(target);
+        var details = debuggerModel ? debuggerModel.debuggerPausedDetails() : null;
+        this.highlightDetails(details);
+    },
+
+    /**
+     * @param {?WebInspector.DebuggerPausedDetails} details
+     * @protected
+     */
+    highlightDetails: function(details) { },
+
+    __proto__: WebInspector.VBox.prototype
 }

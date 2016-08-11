@@ -4,12 +4,12 @@
 
 /**
  * @constructor
- * @extends {WebInspector.SimpleView}
+ * @extends {WebInspector.VBox}
  * @implements {WebInspector.TargetManager.Observer}
  */
 WebInspector.EventListenerBreakpointsSidebarPane = function()
 {
-    WebInspector.SimpleView.call(this, WebInspector.UIString("Event Listener Breakpoints"));
+    WebInspector.VBox.call(this);
     this.registerRequiredCSS("components/breakpointsList.css");
 
     this._eventListenerBreakpointsSetting = WebInspector.settings.createLocalSetting("eventListenerBreakpoints", []);
@@ -43,6 +43,9 @@ WebInspector.EventListenerBreakpointsSidebarPane = function()
     this._createCategory(WebInspector.UIString("XHR"), ["readystatechange", "load", "loadstart", "loadend", "abort", "error", "progress", "timeout"], false, ["XMLHttpRequest", "XMLHttpRequestUpload"]);
 
     WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.DOM);
+    WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.DebuggerPaused, this._update, this);
+    WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.DebuggerResumed, this._update, this);
+    WebInspector.context.addFlavorChangeListener(WebInspector.Target, this._update, this);
 }
 
 WebInspector.EventListenerBreakpointsSidebarPane.categoryListener = "listener:";
@@ -144,6 +147,32 @@ WebInspector.EventListenerBreakpointsSidebarPane.prototype = {
             categoryItem.children[eventName] = breakpointItem;
         }
         this._categoryItems.push(categoryItem);
+    },
+
+    _update: function()
+    {
+        var target = WebInspector.context.flavor(WebInspector.Target);
+        var debuggerModel = WebInspector.DebuggerModel.fromTarget(target);
+        var details = debuggerModel ? debuggerModel.debuggerPausedDetails() : null;
+
+        if (!details || details.reason !== WebInspector.DebuggerModel.BreakReason.EventListener) {
+            if (this._highlightedElement) {
+                this._highlightedElement.classList.remove("breakpoint-hit");
+                delete this._highlightedElement;
+            }
+            return;
+        }
+        var eventName = details.auxData["eventName"];
+        var targetName = details.auxData["targetName"];
+        var breakpointItem = this._findBreakpointItem(eventName, targetName);
+        if (!breakpointItem || !breakpointItem.checkbox.checked)
+            breakpointItem = this._findBreakpointItem(eventName, WebInspector.EventListenerBreakpointsSidebarPane.eventTargetAny);
+        if (!breakpointItem)
+            return;
+        WebInspector.viewManager.revealViewWithWidget(this);
+        breakpointItem.parent.element.expand();
+        breakpointItem.element.listItemElement.classList.add("breakpoint-hit");
+        this._highlightedElement = breakpointItem.element.listItemElement;
     },
 
     /**
@@ -292,31 +321,6 @@ WebInspector.EventListenerBreakpointsSidebarPane.prototype = {
         return null;
     },
 
-    /**
-     * @param {string} eventName
-     * @param {string=} targetName
-     */
-    highlightBreakpoint: function(eventName, targetName)
-    {
-        var breakpointItem = this._findBreakpointItem(eventName, targetName);
-        if (!breakpointItem || !breakpointItem.checkbox.checked)
-            breakpointItem = this._findBreakpointItem(eventName, WebInspector.EventListenerBreakpointsSidebarPane.eventTargetAny);
-        if (!breakpointItem)
-            return;
-        this.revealView();
-        breakpointItem.parent.element.expand();
-        breakpointItem.element.listItemElement.classList.add("breakpoint-hit");
-        this._highlightedElement = breakpointItem.element.listItemElement;
-    },
-
-    clearBreakpointHighlight: function()
-    {
-        if (this._highlightedElement) {
-            this._highlightedElement.classList.remove("breakpoint-hit");
-            delete this._highlightedElement;
-        }
-    },
-
     _saveBreakpoints: function()
     {
         var breakpoints = [];
@@ -344,5 +348,5 @@ WebInspector.EventListenerBreakpointsSidebarPane.prototype = {
         }
     },
 
-    __proto__: WebInspector.SimpleView.prototype
+    __proto__: WebInspector.VBox.prototype
 }

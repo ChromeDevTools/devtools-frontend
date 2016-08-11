@@ -30,12 +30,13 @@
 /**
  * @constructor
  * @extends {WebInspector.ThrottledWidget}
+ * @implements {WebInspector.ToolbarItem.ItemsProvider}
  */
 WebInspector.EventListenersWidget = function()
 {
     WebInspector.ThrottledWidget.call(this);
     this.element.classList.add("events-pane");
-    var toolbar = new WebInspector.Toolbar("", this.contentElement);
+    this._toolbarItems = [];
 
     this._showForAncestorsSetting = WebInspector.settings.moduleSetting("showEventListenersForAncestors");
     this._showForAncestorsSetting.addChangeListener(this.update.bind(this));
@@ -49,8 +50,8 @@ WebInspector.EventListenersWidget = function()
 
     var refreshButton = new WebInspector.ToolbarButton(WebInspector.UIString("Refresh"), "refresh-toolbar-item");
     refreshButton.addEventListener("click", this.update.bind(this));
-    toolbar.appendToolbarItem(refreshButton);
-    toolbar.appendToolbarItem(new WebInspector.ToolbarCheckbox(WebInspector.UIString("Ancestors"), WebInspector.UIString("Show listeners on the ancestors"), this._showForAncestorsSetting));
+    this._toolbarItems.push(refreshButton);
+    this._toolbarItems.push(new WebInspector.ToolbarCheckbox(WebInspector.UIString("Ancestors"), WebInspector.UIString("Show listeners on the ancestors"), this._showForAncestorsSetting));
     var dispatchFilter = new WebInspector.ToolbarComboBox(this._onDispatchFilterTypeChanged.bind(this));
 
     /**
@@ -68,8 +69,8 @@ WebInspector.EventListenersWidget = function()
     addDispatchFilterOption.call(this, WebInspector.UIString("Passive"), WebInspector.EventListenersWidget.DispatchFilterBy.Passive);
     addDispatchFilterOption.call(this, WebInspector.UIString("Blocking"), WebInspector.EventListenersWidget.DispatchFilterBy.Blocking);
     dispatchFilter.setMaxWidth(200);
-    toolbar.appendToolbarItem(dispatchFilter);
-    toolbar.appendToolbarItem(new WebInspector.ToolbarCheckbox(WebInspector.UIString("Framework listeners"), WebInspector.UIString("Resolve event listeners bound with framework"), this._showFrameworkListenersSetting));
+    this._toolbarItems.push(dispatchFilter);
+    this._toolbarItems.push(new WebInspector.ToolbarCheckbox(WebInspector.UIString("Framework listeners"), WebInspector.UIString("Resolve event listeners bound with framework"), this._showFrameworkListenersSetting));
 
     WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this.update, this);
     this.update();
@@ -115,6 +116,15 @@ WebInspector.EventListenersWidget.prototype = {
             promises.push(this._windowObjectInNodeContext(node));
         }
         return Promise.all(promises).then(this._eventListenersView.addObjects.bind(this._eventListenersView)).then(this._showFrameworkListenersChanged.bind(this));
+    },
+
+    /**
+     * @override
+     * @return {!Array<!WebInspector.ToolbarItem>}
+     */
+    toolbarItems: function()
+    {
+        return this._toolbarItems;
     },
 
     /**

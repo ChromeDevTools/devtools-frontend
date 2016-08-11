@@ -185,6 +185,7 @@
             "id": "elements.eventListeners",
             "title": "Event Listeners",
             "order": 5,
+            "hasToolbar": true,
             "persistence": "permanent",
             "className": "WebInspector.EventListenersWidget"
         },

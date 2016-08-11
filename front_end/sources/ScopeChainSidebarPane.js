@@ -33,16 +33,15 @@ WebInspector.ScopeChainSidebarPane = function()
     WebInspector.SimpleView.call(this, WebInspector.UIString("Scope"));
     this._expandController = new WebInspector.ObjectPropertiesSectionExpandController();
     this._linkifier = new WebInspector.Linkifier();
+    WebInspector.context.addFlavorChangeListener(WebInspector.DebuggerModel.CallFrame, this._update, this);
 }
 
 WebInspector.ScopeChainSidebarPane._pathSymbol = Symbol("path");
 
 WebInspector.ScopeChainSidebarPane.prototype = {
-    /**
-     * @param {?WebInspector.DebuggerModel.CallFrame} callFrame
-     */
-    update: function(callFrame)
+    _update: function()
     {
+        var callFrame = WebInspector.context.flavor(WebInspector.DebuggerModel.CallFrame);
         this._linkifier.reset();
         WebInspector.SourceMapNamesResolver.resolveThisObject(callFrame)
             .then(this._innerUpdate.bind(this, callFrame));

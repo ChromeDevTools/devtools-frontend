@@ -87,14 +87,10 @@ WebInspector.SourcesPanel = function()
     this.sidebarPanes.threads = null;
     this.sidebarPanes.watchExpressions = new WebInspector.WatchExpressionsSidebarPane();
     this.sidebarPanes.callstack = new WebInspector.CallStackSidebarPane();
-    this.sidebarPanes.callstack.addEventListener(WebInspector.CallStackSidebarPane.Events.CallFrameSelected, this._callFrameSelectedInSidebar.bind(this));
     this.sidebarPanes.callstack.registerShortcuts(this.registerShortcuts.bind(this));
 
     this.sidebarPanes.scopechain = new WebInspector.ScopeChainSidebarPane();
     this.sidebarPanes.jsBreakpoints = new WebInspector.JavaScriptBreakpointsSidebarPane(WebInspector.breakpointManager, this.showUISourceCode.bind(this));
-    this.sidebarPanes.xhrBreakpoints = new WebInspector.XHRBreakpointsSidebarPane();
-    this.sidebarPanes.eventListenerBreakpoints = new WebInspector.EventListenerBreakpointsSidebarPane();
-    this.sidebarPanes.objectEventListeners = new WebInspector.ObjectEventListenersSidebarPane();
 
     this._installDebuggerSidebarController();
 
@@ -113,8 +109,7 @@ WebInspector.SourcesPanel = function()
     WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.DebuggerWasEnabled, this._debuggerWasEnabled, this);
     WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.DebuggerPaused, this._debuggerPaused, this);
     WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.DebuggerResumed, this._debuggerResumed, this);
-    WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.CallFrameSelected, this._callFrameSelected, this);
-    WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.ConsoleCommandEvaluatedInSelectedCallFrame, this._consoleCommandEvaluatedInSelectedCallFrame, this);
+    WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.CallFrameSelected, this._callFrameSelectedOnModel, this);
     WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this);
     new WebInspector.WorkspaceMappingTip(this, this._workspace);
     WebInspector.extensionServer.addEventListener(WebInspector.ExtensionServer.Events.SidebarPaneAdded, this._extensionSidebarPaneAdded, this);
@@ -173,7 +168,7 @@ WebInspector.SourcesPanel.prototype = {
             this._showDebuggerPausedDetails(/** @type {!WebInspector.DebuggerPausedDetails} */ (debuggerModel.debuggerPausedDetails()));
             var callFrame = debuggerModel.selectedCallFrame();
             if (callFrame)
-                this._selectCallFrame(callFrame);
+                this._selectCallFrameInUI(callFrame);
         } else {
             this._paused = false;
             this._clearInterface();
@@ -258,15 +253,6 @@ WebInspector.SourcesPanel.prototype = {
         return this._sourcesView.searchableView();
     },
 
-    _consoleCommandEvaluatedInSelectedCallFrame: function(event)
-    {
-        var debuggerModel =  /** @type {!WebInspector.DebuggerModel} */  (event.target);
-        var target = debuggerModel.target();
-        if (WebInspector.context.flavor(WebInspector.Target) !== target)
-            return;
-        this.sidebarPanes.scopechain.update(debuggerModel.selectedCallFrame());
-    },
-
     /**
      * @param {!WebInspector.Event} event
      */
@@ -290,8 +276,6 @@ WebInspector.SourcesPanel.prototype = {
         this._paused = true;
         this._updateDebuggerButtons();
 
-        this.sidebarPanes.callstack.update(details);
-
         /**
          * @param {!WebInspector.LiveLocation} liveLocation
          * @this {WebInspector.SourcesPanel}
@@ -309,16 +293,12 @@ WebInspector.SourcesPanel.prototype = {
         }
 
         if (details.reason === WebInspector.DebuggerModel.BreakReason.DOM) {
-            WebInspector.domBreakpointsSidebarPane.highlightBreakpoint(details.auxData);
             this.sidebarPanes.callstack.setStatus(WebInspector.domBreakpointsSidebarPane.createBreakpointHitStatusMessage(details));
         } else if (details.reason === WebInspector.DebuggerModel.BreakReason.EventListener) {
             var eventName = details.auxData["eventName"];
-            var targetName = details.auxData["targetName"];
-            this.sidebarPanes.eventListenerBreakpoints.highlightBreakpoint(eventName, targetName);
             var eventNameForUI = WebInspector.EventListenerBreakpointsSidebarPane.eventNameForUI(eventName, details.auxData);
             this.sidebarPanes.callstack.setStatus(WebInspector.UIString("Paused on a \"%s\" Event Listener.", eventNameForUI));
         } else if (details.reason === WebInspector.DebuggerModel.BreakReason.XHR) {
-            this.sidebarPanes.xhrBreakpoints.highlightBreakpoint(details.auxData["breakpointURL"]);
             this.sidebarPanes.callstack.setStatus(WebInspector.UIString("Paused on a XMLHttpRequest."));
         } else if (details.reason === WebInspector.DebuggerModel.BreakReason.Exception) {
             var description = details.auxData["description"] || "";
@@ -495,24 +475,20 @@ WebInspector.SourcesPanel.prototype = {
     /**
      * @param {!WebInspector.Event} event
      */
-    _callFrameSelected: function(event)
+    _callFrameSelectedOnModel: function(event)
     {
         var callFrame = /** @type {?WebInspector.DebuggerModel.CallFrame} */ (event.data);
-
         if (!callFrame || callFrame.target() !== WebInspector.context.flavor(WebInspector.Target))
             return;
-
-        this._selectCallFrame(callFrame);
+        this._selectCallFrameInUI(callFrame);
     },
 
     /**
      * @param {!WebInspector.DebuggerModel.CallFrame}  callFrame
      */
-    _selectCallFrame: function(callFrame)
+    _selectCallFrameInUI: function(callFrame)
     {
-        this.sidebarPanes.scopechain.update(callFrame);
-        this.sidebarPanes.watchExpressions.refreshExpressions();
-        this.sidebarPanes.callstack.setSelectedCallFrame(callFrame);
+        WebInspector.context.setFlavor(WebInspector.DebuggerModel.CallFrame, callFrame);
         WebInspector.debuggerWorkspaceBinding.createCallFrameLiveLocation(callFrame.location(), this._executionLineChanged.bind(this), this._liveLocationPool);
     },
 
@@ -550,14 +526,7 @@ WebInspector.SourcesPanel.prototype = {
 
     _clearInterface: function()
     {
-        this.sidebarPanes.callstack.update(null);
-        this.sidebarPanes.scopechain.update(null);
         this.sidebarPanes.jsBreakpoints.clearBreakpointHighlight();
-        WebInspector.domBreakpointsSidebarPane.clearBreakpointHighlight();
-        this.sidebarPanes.eventListenerBreakpoints.clearBreakpointHighlight();
-        this.sidebarPanes.xhrBreakpoints.clearBreakpointHighlight();
-        if (this.sidebarPanes.asyncOperationBreakpoints)
-            this.sidebarPanes.asyncOperationBreakpoints.clearBreakpointHighlight();
 
         this._sourcesView.clearCurrentExecutionLine();
         this._updateDebuggerButtons();
@@ -727,15 +696,6 @@ WebInspector.SourcesPanel.prototype = {
 
         debuggerModel.stepOut();
         return true;
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _callFrameSelectedInSidebar: function(event)
-    {
-        var callFrame = /** @type {!WebInspector.DebuggerModel.CallFrame} */ (event.data);
-        callFrame.debuggerModel.setSelectedCallFrame(callFrame);
     },
 
     /**
@@ -1166,9 +1126,6 @@ WebInspector.SourcesPanel.prototype = {
 
             // Populate the left stack.
             this._sidebarPaneStack.showView(this.sidebarPanes.jsBreakpoints);
-            this._sidebarPaneStack.appendView(this.sidebarPanes.xhrBreakpoints);
-            this._sidebarPaneStack.appendView(this.sidebarPanes.eventListenerBreakpoints);
-            this._sidebarPaneStack.appendView(this.sidebarPanes.objectEventListeners);
 
             var tabbedLocation = WebInspector.viewManager.createTabbedLocation(this._setAsCurrentPanel.bind(this));
             splitWidget.setSidebarWidget(tabbedLocation.tabbedPane());

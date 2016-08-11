@@ -53,8 +53,8 @@ WebInspector.WatchExpressionsSidebarPane = function()
     this._bodyElement.addEventListener("contextmenu", this._contextMenu.bind(this), false);
     this._expandController = new WebInspector.ObjectPropertiesSectionExpandController();
 
-    WebInspector.context.addFlavorChangeListener(WebInspector.ExecutionContext, this.refreshExpressions, this);
-
+    WebInspector.context.addFlavorChangeListener(WebInspector.ExecutionContext, this._refreshExpressions, this);
+    WebInspector.context.addFlavorChangeListener(WebInspector.DebuggerModel.CallFrame, this._refreshExpressions, this);
     this._linkifier = new WebInspector.Linkifier();
 }
 
@@ -64,7 +64,7 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
         this._refreshExpressionsIfNeeded();
     },
 
-    refreshExpressions: function()
+    _refreshExpressions: function()
     {
         this._requiresUpdate = true;
         this._refreshExpressionsIfNeeded();
@@ -128,7 +128,7 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
     _refreshButtonClicked: function(event)
     {
         event.consume();
-        this.refreshExpressions();
+        this._refreshExpressions();
     },
 
     _rebuildWatchExpressions: function()

@@ -41,6 +41,8 @@ WebInspector.View.prototype = {
     widget: function() { }
 }
 
+WebInspector.View._symbol = Symbol("view");
+
 /**
  * @constructor
  * @extends {WebInspector.VBox}
@@ -54,6 +56,7 @@ WebInspector.SimpleView = function(title, isWebComponent)
     this._title = title;
     /** @type {!Array<!WebInspector.ToolbarItem>} */
     this._toolbarItems = [];
+    this[WebInspector.View._symbol] = this;
 }
 
 WebInspector.SimpleView.prototype = {
@@ -191,6 +194,19 @@ WebInspector.ProvidedView.prototype = {
      */
     toolbarItems: function()
     {
+        var actionIds = this._extension.descriptor()["actionIds"];
+        if (actionIds) {
+            var result = []
+            for (var id of actionIds.split(",")) {
+                var item = WebInspector.Toolbar.createActionButtonForId(id.trim());
+                if (item)
+                    result.push(item);
+            }
+            return Promise.resolve(result);
+        }
+
+        if (this._extension.descriptor()["hasToolbar"])
+            return this.widget().then(widget => /** @type {!WebInspector.ToolbarItem.ItemsProvider} */ (widget).toolbarItems());
         return Promise.resolve([]);
     },
 
@@ -200,7 +216,12 @@ WebInspector.ProvidedView.prototype = {
      */
     widget: function()
     {
-        return  /** @type {!Promise<!WebInspector.Widget>} */ (this._extension.instance());
+        return this._extension.instance().then(widget => {
+            if (!(widget instanceof WebInspector.Widget))
+                throw new Error("view className should point to a WebInspector.Widget");
+            widget[WebInspector.View._symbol] = this;
+            return  /** @type {!WebInspector.Widget} */ (widget);
+        });
     }
 }
 
@@ -280,6 +301,16 @@ WebInspector.ViewManager = function()
 }
 
 WebInspector.ViewManager.prototype = {
+    /**
+     * @param {!WebInspector.Widget} widget
+     */
+    revealViewWithWidget: function(widget)
+    {
+        var view = widget[WebInspector.View._symbol];
+        if (view)
+            this.revealView(view);
+    },
+
     /**
      * @param {!WebInspector.View} view
      * @return {!Promise}

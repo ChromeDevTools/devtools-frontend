@@ -642,9 +642,6 @@ WebInspector.DebuggerModel.prototype = {
                 callback(null, !!wasThrown, wasThrown ? null : result, exceptionDetails);
             else
                 callback(this.target().runtimeModel.createRemoteObject(result), !!wasThrown, undefined, exceptionDetails);
-
-            if (objectGroup === "console")
-                this.dispatchEventToListeners(WebInspector.DebuggerModel.Events.ConsoleCommandEvaluatedInSelectedCallFrame);
         }
 
         this.selectedCallFrame().evaluate(code, objectGroup, includeCommandLineAPI, doNotPauseOnExceptionsAndMuteConsole, returnByValue, generatePreview, didEvaluate.bind(this));

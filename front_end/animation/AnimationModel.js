@@ -467,14 +467,6 @@ WebInspector.AnimationModel.AnimationEffect.prototype = {
     /**
      * @return {number}
      */
-    playbackRate: function()
-    {
-        return this._payload.playbackRate;
-    },
-
-    /**
-     * @return {number}
-     */
     iterationStart: function()
     {
         return this._payload.iterationStart;

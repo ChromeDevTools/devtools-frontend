@@ -452,21 +452,18 @@ WebInspector.DOMPresentationUtils._cssPathStep = function(node, optimized, isTar
             continue;
 
         needsClassNames = true;
-        var ownClassNames = prefixedOwnClassNamesArray.keySet();
-        var ownClassNameCount = 0;
-        for (var name in ownClassNames)
-            ++ownClassNameCount;
-        if (ownClassNameCount === 0) {
+        var ownClassNames = new Set(prefixedOwnClassNamesArray);
+        if (!ownClassNames.size) {
             needsNthChild = true;
             continue;
         }
         var siblingClassNamesArray = prefixedElementClassNames(sibling);
         for (var j = 0; j < siblingClassNamesArray.length; ++j) {
             var siblingClass = siblingClassNamesArray[j];
-            if (!ownClassNames.hasOwnProperty(siblingClass))
+            if (!ownClassNames.has(siblingClass))
                 continue;
-            delete ownClassNames[siblingClass];
-            if (!--ownClassNameCount) {
+            ownClassNames.delete(siblingClass);
+            if (!ownClassNames.size) {
                 needsNthChild = true;
                 break;
             }
@@ -479,7 +476,7 @@ WebInspector.DOMPresentationUtils._cssPathStep = function(node, optimized, isTar
     if (needsNthChild) {
         result += ":nth-child(" + (ownIndex + 1) + ")";
     } else if (needsClassNames) {
-        for (var prefixedName in prefixedOwnClassNamesArray.keySet())
+        for (var prefixedName of prefixedOwnClassNamesArray)
             result += "." + escapeIdentifierIfNeeded(prefixedName.substr(1));
     }
 

@@ -486,20 +486,6 @@ Object.defineProperty(Array.prototype, "remove", {
     }
 });
 
-Object.defineProperty(Array.prototype, "keySet", {
-    /**
-     * @return {!Object.<string, boolean>}
-     * @this {Array.<*>}
-     */
-    value: function()
-    {
-        var keys = {};
-        for (var i = 0; i < this.length; ++i)
-            keys[this[i]] = true;
-        return keys;
-    }
-});
-
 Object.defineProperty(Array.prototype, "pushAll", {
     /**
      * @param {!Array.<!T>} array

@@ -89,14 +89,14 @@ WebInspector.RequestTimeRangeNames = {
     Waiting: "waiting"
 };
 
-WebInspector.RequestTimingView.ConnectionSetupRangeNames = [
+WebInspector.RequestTimingView.ConnectionSetupRangeNames = new Set([
     WebInspector.RequestTimeRangeNames.Queueing,
     WebInspector.RequestTimeRangeNames.Blocking,
     WebInspector.RequestTimeRangeNames.Connecting,
     WebInspector.RequestTimeRangeNames.DNS,
     WebInspector.RequestTimeRangeNames.Proxy,
     WebInspector.RequestTimeRangeNames.SSL
-].keySet();
+]);
 
 /** @typedef {{name: !WebInspector.RequestTimeRangeNames, start: number, end: number}} */
 WebInspector.RequestTimeRange;
@@ -248,7 +248,7 @@ WebInspector.RequestTimingView.createTimingTable = function(request, navigationS
         }
         if (rangeName === WebInspector.RequestTimeRangeNames.Push) {
             createHeader(WebInspector.UIString("Server Push"));
-        } else if (WebInspector.RequestTimingView.ConnectionSetupRangeNames[rangeName]) {
+        } else if (WebInspector.RequestTimingView.ConnectionSetupRangeNames.has(rangeName)) {
             if (!connectionHeader)
                 connectionHeader = createHeader(WebInspector.UIString("Connection Setup"));
         } else {

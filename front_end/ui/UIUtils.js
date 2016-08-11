@@ -826,11 +826,11 @@ WebInspector._documentBlurred = function(document, event)
         WebInspector.setCurrentFocusElement(null);
 }
 
-WebInspector._textInputTypes = ["text", "search", "tel", "url", "email", "password"].keySet();
+WebInspector._textInputTypes = new Set(["text", "search", "tel", "url", "email", "password"]);
 WebInspector._isTextEditingElement = function(element)
 {
     if (element instanceof HTMLInputElement)
-        return element.type in WebInspector._textInputTypes;
+        return WebInspector._textInputTypes.has(element.type);
 
     if (element instanceof HTMLTextAreaElement)
         return true;

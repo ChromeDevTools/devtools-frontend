@@ -2927,7 +2927,7 @@ WebInspector.StylesSidebarPane.CSSPropertyPrompt.prototype = {
         if (!word)
             return false;
         word = word.toLowerCase();
-        return this._cssCompletions.keySet().hasOwnProperty(word);
+        return this._cssCompletions.indexOf(word) !== -1;
     },
 
     /**

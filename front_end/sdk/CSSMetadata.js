@@ -107,7 +107,7 @@ WebInspector.CSSMetadata.prototype = {
      */
     isColorAwareProperty: function(propertyName)
     {
-        return !!WebInspector.CSSMetadata._colorAwareProperties[propertyName.toLowerCase()] || this.isCustomProperty(propertyName.toLowerCase());
+        return !!WebInspector.CSSMetadata._colorAwareProperties.has(propertyName.toLowerCase()) || this.isCustomProperty(propertyName.toLowerCase());
     },
 
     /**
@@ -119,7 +119,7 @@ WebInspector.CSSMetadata.prototype = {
         propertyName = propertyName.toLowerCase();
         if (propertyName === "line-height")
             return false;
-        return WebInspector.CSSMetadata._distanceProperties[propertyName] || propertyName.startsWith("margin") || propertyName.startsWith("padding") || propertyName.indexOf("width") !== -1 || propertyName.indexOf("height") !== -1;
+        return WebInspector.CSSMetadata._distanceProperties.has(propertyName) || propertyName.startsWith("margin") || propertyName.startsWith("padding") || propertyName.indexOf("width") !== -1 || propertyName.indexOf("height") !== -1;
     },
 
     /**
@@ -129,7 +129,7 @@ WebInspector.CSSMetadata.prototype = {
     isBezierAwareProperty: function(propertyName)
     {
         propertyName = propertyName.toLowerCase();
-        return !!WebInspector.CSSMetadata._bezierAwareProperties[propertyName] || this.isCustomProperty(propertyName);
+        return !!WebInspector.CSSMetadata._bezierAwareProperties.has(propertyName) || this.isCustomProperty(propertyName);
     },
 
     /**
@@ -229,17 +229,17 @@ WebInspector.cssMetadata = function()
     return WebInspector.CSSMetadata._instance;
 }
 
-WebInspector.CSSMetadata._distanceProperties = [
+WebInspector.CSSMetadata._distanceProperties = new Set([
     "background-position", "border-spacing", "bottom", "font-size", "height", "left", "letter-spacing", "max-height", "max-width", "min-height",
     "min-width", "right", "text-indent", "top", "width", "word-spacing"
-].keySet();
+]);
 
-WebInspector.CSSMetadata._bezierAwareProperties = [
+WebInspector.CSSMetadata._bezierAwareProperties = new Set([
     "animation", "animation-timing-function", "transition", "transition-timing-function", "-webkit-animation", "-webkit-animation-timing-function",
     "-webkit-transition", "-webkit-transition-timing-function"
-].keySet();
+]);
 
-WebInspector.CSSMetadata._colorAwareProperties = [
+WebInspector.CSSMetadata._colorAwareProperties = new Set([
     "backdrop-filter", "background", "background-color", "background-image", "border", "border-color", "border-image",
     "border-image-source", "border-bottom", "border-bottom-color", "border-left", "border-left-color", "border-right",
     "border-right-color", "border-top", "border-top-color", "box-shadow", "color", "column-rule", "column-rule-color", "fill",
@@ -249,7 +249,7 @@ WebInspector.CSSMetadata._colorAwareProperties = [
     "-webkit-column-rule-color", "-webkit-filter", "-webkit-mask", "-webkit-mask-box-image", "-webkit-mask-box-image-source",
     "-webkit-mask-image", "-webkit-tap-highlight-color", "-webkit-text-decoration-color", "-webkit-text-emphasis",
     "-webkit-text-emphasis-color", "-webkit-text-fill-color", "-webkit-text-stroke", "-webkit-text-stroke-color"
-].keySet();
+]);
 
 WebInspector.CSSMetadata._propertyDataMap = {
     "table-layout": { values: [

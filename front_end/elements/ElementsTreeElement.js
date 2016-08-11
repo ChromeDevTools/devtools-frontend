@@ -56,15 +56,15 @@ WebInspector.ElementsTreeElement.InitialChildrenLimit = 500;
 
 // A union of HTML4 and HTML5-Draft elements that explicitly
 // or implicitly (for HTML5) forbid the closing tag.
-WebInspector.ElementsTreeElement.ForbiddenClosingTagElements = [
+WebInspector.ElementsTreeElement.ForbiddenClosingTagElements = new Set([
     "area", "base", "basefont", "br", "canvas", "col", "command", "embed", "frame",
     "hr", "img", "input", "keygen", "link", "menuitem", "meta", "param", "source", "track", "wbr"
-].keySet();
+]);
 
 // These tags we do not allow editing their tag name.
-WebInspector.ElementsTreeElement.EditTagBlacklist = [
+WebInspector.ElementsTreeElement.EditTagBlacklist = new Set([
     "html", "head", "body"
-].keySet();
+]);
 
 /**
  * @param {!WebInspector.ElementsTreeElement} treeElement
@@ -725,7 +725,7 @@ WebInspector.ElementsTreeElement.prototype = {
         }
 
         var tagName = tagNameElement.textContent;
-        if (WebInspector.ElementsTreeElement.EditTagBlacklist[tagName.toLowerCase()])
+        if (WebInspector.ElementsTreeElement.EditTagBlacklist.has(tagName.toLowerCase()))
             return false;
 
         if (WebInspector.isBeingEdited(tagNameElement))
@@ -1438,7 +1438,7 @@ WebInspector.ElementsTreeElement.prototype = {
                 break;
             }
 
-            if (this.treeOutline.isXMLMimeType || !WebInspector.ElementsTreeElement.ForbiddenClosingTagElements[tagName])
+            if (this.treeOutline.isXMLMimeType || !WebInspector.ElementsTreeElement.ForbiddenClosingTagElements.has(tagName))
                 this._buildTagDOM(titleDOM, tagName, true, false, updateRecord);
             break;
 

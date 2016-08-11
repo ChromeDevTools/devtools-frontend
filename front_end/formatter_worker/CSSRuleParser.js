@@ -33,7 +33,7 @@ WebInspector._innerParseCSS = function(text, chunkCallback)
     var state = WebInspector.CSSParserStates.Initial;
     var rule;
     var property;
-    var UndefTokenType = {};
+    var UndefTokenType = new Set();
 
     var disabledRules = [];
     function disabledRulesCallback(chunk)
@@ -49,10 +49,10 @@ WebInspector._innerParseCSS = function(text, chunkCallback)
      */
     function processToken(tokenValue, tokenTypes, column, newColumn)
     {
-        var tokenType = tokenTypes ? tokenTypes.split(" ").keySet() : UndefTokenType;
+        var tokenType = tokenTypes ? new Set(tokenTypes.split(" ")) : UndefTokenType;
         switch (state) {
         case WebInspector.CSSParserStates.Initial:
-            if (tokenType["qualifier"] || tokenType["builtin"] || tokenType["tag"]) {
+            if (tokenType.has("qualifier") || tokenType.has("builtin") || tokenType.has("tag")) {
                 rule = {
                     selectorText: tokenValue,
                     lineNumber: lineNumber,
@@ -60,7 +60,7 @@ WebInspector._innerParseCSS = function(text, chunkCallback)
                     properties: [],
                 };
                 state = WebInspector.CSSParserStates.Selector;
-            } else if (tokenType["def"]) {
+            } else if (tokenType.has("def")) {
                 rule = {
                     atRule: tokenValue,
                     lineNumber: lineNumber,
@@ -88,7 +88,7 @@ WebInspector._innerParseCSS = function(text, chunkCallback)
             }
             break;
         case WebInspector.CSSParserStates.Style:
-            if (tokenType["meta"] || tokenType["property"]) {
+            if (tokenType.has("meta") || tokenType.has("property")) {
                 property = {
                     name: tokenValue,
                     value: "",
@@ -101,7 +101,7 @@ WebInspector._innerParseCSS = function(text, chunkCallback)
                 rule.styleRange.endColumn = column;
                 rules.push(rule);
                 state = WebInspector.CSSParserStates.Initial;
-            } else if (tokenType["comment"]) {
+            } else if (tokenType.has("comment")) {
                 // The |processToken| is called per-line, so no token spans more than one line.
                 // Support only a one-line comments.
                 if (tokenValue.substring(0, 2) !== "/*" || tokenValue.substring(tokenValue.length - 2) !== "*/")
@@ -136,7 +136,7 @@ WebInspector._innerParseCSS = function(text, chunkCallback)
                 property.nameRange.endColumn = column;
                 property.valueRange = createRange(lineNumber, newColumn);
                 state = WebInspector.CSSParserStates.PropertyValue;
-            } else if (tokenType["property"]) {
+            } else if (tokenType.has("property")) {
                 property.name += tokenValue;
             }
             break;
@@ -156,7 +156,7 @@ WebInspector._innerParseCSS = function(text, chunkCallback)
                 } else {
                     state = WebInspector.CSSParserStates.Style;
                 }
-            } else if (!tokenType["comment"]) {
+            } else if (!tokenType.has("comment")) {
                 property.value += tokenValue;
             }
             break;

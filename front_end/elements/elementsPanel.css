@@ -657,15 +657,10 @@
     fill: none;
 }
 
-.swatch {
-    background-image: url(Images/checker.png);
-}
-
 li.child-editing .styles-clipboard-only {
     display: none;
 }
 
-li.editing .swatch,
 li.editing .enabled-button {
     display: none !important;
 }
@@ -687,17 +682,6 @@ li.editing .enabled-button {
     padding: 0px 3px;
     border-radius: 2px;
     border: 1px solid #C1C1C1;
-}
-
-.swatch-inner {
-    width: 100%;
-    height: 100%;
-    display: inline-block;
-    border: 1px solid rgba(128, 128, 128, 0.6);
-}
-
-.swatch-inner:hover {
-    border: 1px solid rgba(64, 64, 64, 0.8);
 }
 
 .animation-section-body {

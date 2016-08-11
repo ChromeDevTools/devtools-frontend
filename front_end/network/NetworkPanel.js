@@ -644,7 +644,7 @@ WebInspector.NetworkPanel.revealAndFilter = function(filters)
     var panel = WebInspector.NetworkPanel._instance();
     var filterString = "";
     for (var filter of filters)
-        filterString += filter.filterType + ":" + filter.filterValue + " ";
+        filterString += `${filter.filterType}:${filter.filterValue} `;
     panel._networkLogView.setTextFilterValue(filterString);
     WebInspector.inspectorView.setCurrentPanel(panel);
 }

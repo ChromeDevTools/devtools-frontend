@@ -38,6 +38,7 @@
     ],
     "resources": [
         "dataGrid.css",
+        "dialog.css",
         "filteredListWidget.css",
         "flameChart.css",
         "overviewGrid.css",

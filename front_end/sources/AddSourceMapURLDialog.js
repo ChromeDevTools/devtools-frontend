@@ -10,7 +10,7 @@
 WebInspector.AddSourceMapURLDialog = function(callback)
 {
     WebInspector.HBox.call(this, true);
-    this.registerRequiredCSS("sources/addSourceMapURLDialog.css");
+    this.registerRequiredCSS("ui_lazy/dialog.css");
     this.contentElement.createChild("label").textContent = WebInspector.UIString("Source map URL: ");
 
     this._input = this.contentElement.createChild("input");

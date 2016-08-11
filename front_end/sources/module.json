@@ -427,7 +427,6 @@
         "ObjectEventListenersSidebarPane.js"
     ],
     "resources": [
-        "addSourceMapURLDialog.css",
         "uiList.css",
         "navigatorView.css",
         "revisionHistory.css",

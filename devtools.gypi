@@ -662,7 +662,6 @@
             'front_end/source_frame/TextEditorAutocompleteController.js',
         ],
         'devtools_sources_js_files': [
-            'front_end/sources/addSourceMapURLDialog.css',
             'front_end/sources/navigatorView.css',
             'front_end/sources/revisionHistory.css',
             'front_end/sources/serviceWorkersSidebar.css',
@@ -747,6 +746,7 @@
         ],
         'devtools_ui_lazy_js_files': [
             'front_end/ui_lazy/dataGrid.css',
+            'front_end/ui_lazy/dialog.css',
             'front_end/ui_lazy/filteredListWidget.css',
             'front_end/ui_lazy/flameChart.css',
             'front_end/ui_lazy/overviewGrid.css',

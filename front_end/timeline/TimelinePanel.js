@@ -406,23 +406,41 @@ WebInspector.TimelinePanel.prototype = {
         if (Runtime.experiments.isEnabled("cpuThrottling")) {
             this._panelToolbar.appendSeparator();
             this._cpuThrottlingCombobox = new WebInspector.ToolbarComboBox(this._onCPUThrottlingChanged.bind(this));
-            /**
-             * @param {string} name
-             * @param {number} value
-             * @this {WebInspector.TimelinePanel}
-             */
-            function addGroupingOption(name, value)
-            {
-                var option = this._cpuThrottlingCombobox.createOption(name, "", String(value));
-                this._cpuThrottlingCombobox.addOption(option);
-                if (value === this._cpuThrottlingManager.rate())
-                    this._cpuThrottlingCombobox.select(option);
-            }
-            addGroupingOption.call(this, WebInspector.UIString("No CPU throttling"), 1);
-            addGroupingOption.call(this, WebInspector.UIString("High end device\u2003(2x slowdown)"), 2);
-            addGroupingOption.call(this, WebInspector.UIString("Low end device\u2003(5x slowdown)"), 5);
             this._panelToolbar.appendToolbarItem(this._cpuThrottlingCombobox);
+            this._populateCPUThrottingCombobox();
         }
+    },
+
+    _populateCPUThrottingCombobox: function()
+    {
+        var cpuThrottlingCombobox = this._cpuThrottlingCombobox;
+        cpuThrottlingCombobox.removeOptions();
+        var currentRate = this._cpuThrottlingManager.rate();
+        var hasSelection = false;
+        /**
+         * @param {string} name
+         * @param {number} value
+         */
+        function addGroupingOption(name, value)
+        {
+            var option = cpuThrottlingCombobox.createOption(name, "", String(value));
+            cpuThrottlingCombobox.addOption(option);
+            if (hasSelection || (value && value !== currentRate))
+                return;
+            cpuThrottlingCombobox.select(option);
+            hasSelection = true;
+        }
+        var predefinedRates = new Map([
+            [1, WebInspector.UIString("No CPU throttling")],
+            [2, WebInspector.UIString("High end device (2\xD7 slowdown)")],
+            [5, WebInspector.UIString("Low end device (5\xD7 slowdown)")]
+        ]);
+        for (var rate of predefinedRates)
+            addGroupingOption(rate[1], rate[0]);
+        var customRateText = predefinedRates.has(currentRate)
+            ? WebInspector.UIString("Custom rate\u2026")
+            : WebInspector.UIString("Custom rate (%d\xD7 slowdown)", currentRate);
+        addGroupingOption(customRateText, 0);
     },
 
     _prepareToLoadTimeline: function()
@@ -558,8 +576,16 @@ WebInspector.TimelinePanel.prototype = {
     {
         if (!this._cpuThrottlingManager)
             return;
-        var value = Number.parseFloat(this._cpuThrottlingCombobox.selectedOption().value);
-        this._cpuThrottlingManager.setRate(value);
+        var value = this._cpuThrottlingCombobox.selectedOption().value;
+        var isLastOption = this._cpuThrottlingCombobox.selectedIndex() === this._cpuThrottlingCombobox.size() - 1;
+        this._populateCPUThrottingCombobox();
+        var resultPromise = isLastOption
+            ? WebInspector.TimelinePanel.CustomCPUThrottlingRateDialog.show(this._cpuThrottlingCombobox.element)
+            : Promise.resolve(value);
+        resultPromise.then(text => {
+            this._cpuThrottlingManager.setRate(Number.parseFloat(text));
+            this._populateCPUThrottingCombobox();
+        });
     },
 
     /**
@@ -2022,4 +2048,72 @@ WebInspector.CPUThrottlingManager.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
+}
+
+/**
+ * @constructor
+ * @extends {WebInspector.HBox}
+ */
+WebInspector.TimelinePanel.CustomCPUThrottlingRateDialog = function()
+{
+    WebInspector.HBox.call(this, true);
+    this.registerRequiredCSS("ui_lazy/dialog.css");
+    this.contentElement.createChild("label").textContent = WebInspector.UIString("CPU Slowdown Rate: ");
+
+    this._input = this.contentElement.createChild("input");
+    this._input.setAttribute("type", "text");
+    this._input.style.width = "64px";
+    this._input.addEventListener("keydown", this._onKeyDown.bind(this), false);
+
+    var addButton = this.contentElement.createChild("button");
+    addButton.textContent = WebInspector.UIString("Set");
+    addButton.addEventListener("click", this._apply.bind(this), false);
+
+    this.setDefaultFocusedElement(this._input);
+    this.contentElement.tabIndex = 0;
+    this._resultPromise = new Promise(fulfill => this._callback = fulfill);
+}
+
+/**
+ * @param {!Element=} anchor
+ * @return {!Promise<string>}
+ */
+WebInspector.TimelinePanel.CustomCPUThrottlingRateDialog.show = function(anchor)
+{
+    var dialog = new WebInspector.Dialog();
+    var dialogContent = new WebInspector.TimelinePanel.CustomCPUThrottlingRateDialog();
+    dialogContent.show(dialog.element);
+    dialog.setWrapsContent(true);
+    if (anchor)
+        dialog.setPosition(anchor.totalOffsetLeft() - 32, anchor.totalOffsetTop() + anchor.offsetHeight);
+    dialog.show();
+    return dialogContent.result().then(value => (dialog.detach(), value));
+}
+
+WebInspector.TimelinePanel.CustomCPUThrottlingRateDialog.prototype = {
+    /**
+     * @return {!Promise<string>}
+     */
+    result: function()
+    {
+        return this._resultPromise;
+    },
+
+    _apply: function()
+    {
+        this._callback(this._input.value);
+    },
+
+    /**
+     * @param {!Event} event
+     */
+    _onKeyDown: function(event)
+    {
+        if (event.keyCode === WebInspector.KeyboardShortcut.Keys.Enter.code) {
+            event.preventDefault();
+            this._apply();
+        }
+    },
+
+    __proto__: WebInspector.HBox.prototype
 }

@@ -1021,7 +1021,9 @@ WebInspector.NetworkLogView.prototype = {
         var re = this._searchRegex;
         if (!re)
             return false;
-        return re.test(request.name()) || (this._networkLogLargeRowsSetting.get() && re.test(request.path()));
+
+        var text = this._networkLogLargeRowsSetting.get() ? request.path() + "/" + request.name() : request.name();
+        return re.test(text);
     },
 
     _clearSearchMatchedList: function()
@@ -1216,7 +1218,7 @@ WebInspector.NetworkLogView.prototype = {
             regex = this._textFilterUI.regex();
         }
 
-        var filter = WebInspector.NetworkLogView._requestNameOrPathFilter.bind(null, regex);
+        var filter = WebInspector.NetworkLogView._requestPathFilter.bind(null, regex);
         if (negative)
             filter = WebInspector.NetworkLogView._negativeFilter.bind(null, filter);
         return filter;
@@ -1514,11 +1516,12 @@ WebInspector.NetworkLogView._negativeFilter = function(filter, request)
  * @param {!WebInspector.NetworkRequest} request
  * @return {boolean}
  */
-WebInspector.NetworkLogView._requestNameOrPathFilter = function(regex, request)
+WebInspector.NetworkLogView._requestPathFilter = function(regex, request)
 {
     if (!regex)
         return false;
-    return regex.test(request.name()) || regex.test(request.path());
+
+    return regex.test(request.path() + "/" + request.name());
 }
 
 /**

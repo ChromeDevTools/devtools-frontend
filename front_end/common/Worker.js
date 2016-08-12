@@ -49,14 +49,18 @@ WebInspector.Worker = function(appName, workerName)
     var isSharedWorker = !!workerName;
     if (isSharedWorker) {
         worker = new SharedWorker(url, workerName);
-        worker.port.onmessage = onMessage;
+        worker.port.onmessage = onMessage.bind(this);
     } else {
         worker = new Worker(url);
-        worker.onmessage = onMessage;
+        worker.onmessage = onMessage.bind(this);
     }
+    // Hold a reference to worker until the promise is resolved.
+    // Otherwise the worker could be GCed.
+    this._workerProtect = worker;
 
     /**
      * @param {!Event} event
+     * @this {WebInspector.Worker}
      */
     function onMessage(event)
     {
@@ -66,6 +70,7 @@ WebInspector.Worker = function(appName, workerName)
         else
             worker.onmessage = null;
         callback(worker);
+        this._workerProtect = null;
     }
 }
 

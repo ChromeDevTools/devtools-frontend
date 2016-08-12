@@ -68,7 +68,7 @@ WebInspector.JavaScriptSourceFrame = function(uiSourceCode)
             this._updateScriptFile(targets[i]);
     }
 
-    if (this._scriptFileForTarget.size || uiSourceCode.extension() === "js")
+    if (this._scriptFileForTarget.size || uiSourceCode.extension() === "js" || uiSourceCode.project().type() === WebInspector.projectTypes.Snippets)
         this._compiler = new WebInspector.JavaScriptCompiler(this);
 
     WebInspector.moduleSetting("skipStackFramesPattern").addChangeListener(this._showBlackboxInfobarIfNeeded, this);

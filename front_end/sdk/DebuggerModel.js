@@ -467,11 +467,10 @@ WebInspector.DebuggerModel.prototype = {
      * @param {boolean} isLiveEdit
      * @param {string=} sourceMapURL
      * @param {boolean=} hasSourceURL
-     * @param {boolean=} deprecatedCommentWasUsed
      * @param {boolean=} hasSyntaxError
      * @return {!WebInspector.Script}
      */
-    _parsedScriptSource: function(scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData, isInternalScript, isLiveEdit, sourceMapURL, hasSourceURL, deprecatedCommentWasUsed, hasSyntaxError)
+    _parsedScriptSource: function(scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData, isInternalScript, isLiveEdit, sourceMapURL, hasSourceURL, hasSyntaxError)
     {
         var isContentScript = false;
         if (executionContextAuxData && ("isDefault" in executionContextAuxData))
@@ -482,14 +481,6 @@ WebInspector.DebuggerModel.prototype = {
             this.dispatchEventToListeners(WebInspector.DebuggerModel.Events.ParsedScriptSource, script);
         else
             this.dispatchEventToListeners(WebInspector.DebuggerModel.Events.FailedToParseScriptSource, script);
-
-        if (deprecatedCommentWasUsed) {
-            var text = WebInspector.UIString("'//@ sourceURL' and '//@ sourceMappingURL' are deprecated, please use '//# sourceURL=' and '//# sourceMappingURL=' instead.");
-            var msg = new WebInspector.ConsoleMessage(this.target(), WebInspector.ConsoleMessage.MessageSource.JS, WebInspector.ConsoleMessage.MessageLevel.Warning, text, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, scriptId);
-            var consoleModel = this.target().consoleModel;
-            if (consoleModel)
-                consoleModel.addMessage(msg);
-        }
         return script;
     },
 
@@ -857,11 +848,10 @@ WebInspector.DebuggerDispatcher.prototype = {
      * @param {boolean=} isLiveEdit
      * @param {string=} sourceMapURL
      * @param {boolean=} hasSourceURL
-     * @param {boolean=} deprecatedCommentWasUsed
      */
-    scriptParsed: function(scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData, isInternalScript, isLiveEdit, sourceMapURL, hasSourceURL, deprecatedCommentWasUsed)
+    scriptParsed: function(scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData, isInternalScript, isLiveEdit, sourceMapURL, hasSourceURL)
     {
-        this._debuggerModel._parsedScriptSource(scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData, !!isInternalScript, !!isLiveEdit, sourceMapURL, hasSourceURL, deprecatedCommentWasUsed, false);
+        this._debuggerModel._parsedScriptSource(scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData, !!isInternalScript, !!isLiveEdit, sourceMapURL, hasSourceURL, false);
     },
 
     /**
@@ -878,11 +868,10 @@ WebInspector.DebuggerDispatcher.prototype = {
      * @param {boolean=} isInternalScript
      * @param {string=} sourceMapURL
      * @param {boolean=} hasSourceURL
-     * @param {boolean=} deprecatedCommentWasUsed
      */
-    scriptFailedToParse: function(scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData, isInternalScript, sourceMapURL, hasSourceURL, deprecatedCommentWasUsed)
+    scriptFailedToParse: function(scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData, isInternalScript, sourceMapURL, hasSourceURL)
     {
-        this._debuggerModel._parsedScriptSource(scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData, !!isInternalScript, false, sourceMapURL, hasSourceURL, deprecatedCommentWasUsed, true);
+        this._debuggerModel._parsedScriptSource(scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData, !!isInternalScript, false, sourceMapURL, hasSourceURL, true);
     },
 
     /**

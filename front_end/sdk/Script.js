@@ -89,6 +89,31 @@ WebInspector.Script._trimSourceURLComment = function(source)
     return source.substr(0, sourceURLLineIndex) + source.substr(sourceURLLineIndex + sourceURLLine.length + 1);
 }
 
+/**
+ * @param {!WebInspector.Script} script
+ * @param {string} source
+ */
+WebInspector.Script._reportDeprecatedCommentIfNeeded = function(script, source)
+{
+    var consoleModel = script.target().consoleModel;
+    if (!consoleModel)
+        return;
+    var linesToCheck = 5;
+    var offset = source.lastIndexOf("\n");
+    while (linesToCheck && offset !== -1) {
+        offset = source.lastIndexOf("\n", offset - 1);
+        --linesToCheck;
+    }
+    offset = offset !== -1 ? offset : 0;
+    var sourceTail = source.substr(offset);
+    if (sourceTail.length > 5000)
+        return;
+    if (sourceTail.search(/^[\040\t]*\/\/@ source(mapping)?url=/mi) === -1)
+        return;
+    var text = WebInspector.UIString("'//@ sourceURL' and '//@ sourceMappingURL' are deprecated, please use '//# sourceURL=' and '//# sourceMappingURL=' instead.");
+    var msg = new WebInspector.ConsoleMessage(script.target(), WebInspector.ConsoleMessage.MessageSource.JS, WebInspector.ConsoleMessage.MessageLevel.Warning, text, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, script.scriptId);
+    consoleModel.addMessage(msg);
+}
 
 WebInspector.Script.prototype = {
     /**
@@ -164,6 +189,7 @@ WebInspector.Script.prototype = {
          */
         function didGetScriptSource(error, source)
         {
+            WebInspector.Script._reportDeprecatedCommentIfNeeded(this, source);
             this._source = WebInspector.Script._trimSourceURLComment(error ? "" : source);
             callback(this._source);
         }

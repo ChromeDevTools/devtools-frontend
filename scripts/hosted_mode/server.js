@@ -13,7 +13,10 @@ var serverPort = parseInt(process.env.PORT, 10) || 8090;
 var devtoolsFolder = path.resolve(path.join(__dirname, "../.."));
 
 http.createServer(requestHandler).listen(serverPort);
-console.log("Started hosted mode server at http://localhost:" + serverPort);
+console.log(`Started hosted mode server at http://localhost:${serverPort}\n`);
+console.log("For info on using the hosted mode server, see our contributing docs:");
+console.log("https://bit.ly/devtools-contribution-guide");
+console.log("Tip: Look for the 'Hosted Mode Server Options' section");
 
 function requestHandler(request, response)
 {
@@ -42,7 +45,7 @@ function requestHandler(request, response)
     var absoluteFilePath = path.join(process.cwd(), filePath);
     if (!path.resolve(absoluteFilePath).startsWith(devtoolsFolder)) {
         console.log(`File requested is outside of devtools folder: ${devtoolsFolder}`);
-        sendResponse(403, "`403 - Access denied. File requested is outside of devtools folder: ${devtoolsFolder}`");
+        sendResponse(403, `403 - Access denied. File requested is outside of devtools folder: ${devtoolsFolder}`);
         return;
     }
 
@@ -93,8 +96,11 @@ function proxy(filePath)
 {
     if (!(filePath in proxyFilePathToURL))
         return null;
+    if (process.env.CHROMIUM_COMMIT)
+        return onProxyFileURL(proxyFilePathToURL[filePath](process.env.CHROMIUM_COMMIT));
     return fetch(`http://localhost:${remoteDebuggingPort}/json/version`)
-        .then(onBrowserMetadata);
+        .then(onBrowserMetadata)
+        .then(onProxyFileURL);
 
     function onBrowserMetadata(metadata)
     {
@@ -102,8 +108,13 @@ function proxy(filePath)
         var match = metadataObject["WebKit-Version"].match(/\s\(@(\b[0-9a-f]{5,40}\b)/);
         var commitHash = match[1];
         var proxyFileURL = proxyFilePathToURL[filePath](commitHash);
+        return proxyFileURL;
+    }
+
+    function onProxyFileURL(proxyFileURL)
+    {
         if (proxyFileCache.has(proxyFileURL))
-            return proxyFileCache.get(proxyFileURL);
+            return Promise.resolve(proxyFileCache.get(proxyFileURL));
         return fetch(proxyFileURL)
             .then(cacheProxyFile.bind(null, proxyFileURL));
     }

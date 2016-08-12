@@ -992,15 +992,15 @@ WebInspector.ExtensionServer.prototype = {
         /**
          * @param {?Protocol.Error} error
          * @param {!RuntimeAgent.RemoteObject} result
-         * @param {boolean=} wasThrown
+         * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
          */
-        function onEvalute(error, result, wasThrown)
+        function onEvalute(error, result, exceptionDetails)
         {
             if (error) {
-                callback(error, null, wasThrown);
+                callback(error, null, !!exceptionDetails);
                 return;
             }
-            callback(error, target.runtimeModel.createRemoteObject(result), wasThrown);
+            callback(error, target.runtimeModel.createRemoteObject(result), !!exceptionDetails);
         }
     },
 

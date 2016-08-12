@@ -256,11 +256,10 @@ WebInspector.RuntimeModel.prototype = {
 
         /**
          * @param {?Protocol.Error} error
-         * @param {?RuntimeAgent.RemoteObject} result
-         * @param {boolean=} wasThrown
-         * @param {?RuntimeAgent.ExceptionDetails=} exceptionDetails
+         * @param {!RuntimeAgent.RemoteObject} result
+         * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
          */
-        function innerCallback(error, result, wasThrown, exceptionDetails)
+        function innerCallback(error, result, exceptionDetails)
         {
             if (error) {
                 console.error(error);
@@ -596,10 +595,9 @@ WebInspector.ExecutionContext.prototype = {
          * @this {WebInspector.ExecutionContext}
          * @param {?Protocol.Error} error
          * @param {!RuntimeAgent.RemoteObject} result
-         * @param {boolean=} wasThrown
-         * @param {?RuntimeAgent.ExceptionDetails=} exceptionDetails
+         * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
          */
-        function evalCallback(error, result, wasThrown, exceptionDetails)
+        function evalCallback(error, result, exceptionDetails)
         {
             if (error) {
                 console.error(error);
@@ -607,6 +605,7 @@ WebInspector.ExecutionContext.prototype = {
                 return;
             }
 
+            var wasThrown = !!exceptionDetails;
             if (returnByValue)
                 callback(null, !!wasThrown, wasThrown ? null : result, exceptionDetails);
             else

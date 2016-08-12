@@ -660,12 +660,12 @@ WebInspector.RemoteObjectImpl.prototype = {
         /**
          * @param {?Protocol.Error} error
          * @param {!RuntimeAgent.RemoteObject} result
-         * @param {boolean=} wasThrown
+         * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
          * @this {WebInspector.RemoteObject}
          */
-        function evaluatedCallback(error, result, wasThrown)
+        function evaluatedCallback(error, result, exceptionDetails)
         {
-            if (error || wasThrown) {
+            if (error || !!exceptionDetails) {
                 callback(error || (result.type !== "string" ? result.description : /** @type {string} */(result.value)));
                 return;
             }
@@ -699,11 +699,11 @@ WebInspector.RemoteObjectImpl.prototype = {
         /**
          * @param {?Protocol.Error} error
          * @param {!RuntimeAgent.RemoteObject} result
-         * @param {boolean=} wasThrown
+         * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
          */
-        function propertySetCallback(error, result, wasThrown)
+        function propertySetCallback(error, result, exceptionDetails)
         {
-            if (error || wasThrown) {
+            if (error || !!exceptionDetails) {
                 callback(error || result.description);
                 return;
             }
@@ -729,11 +729,11 @@ WebInspector.RemoteObjectImpl.prototype = {
         /**
          * @param {?Protocol.Error} error
          * @param {!RuntimeAgent.RemoteObject} result
-         * @param {boolean=} wasThrown
+         * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
          */
-        function deletePropertyCallback(error, result, wasThrown)
+        function deletePropertyCallback(error, result, exceptionDetails)
         {
-            if (error || wasThrown) {
+            if (error || !!exceptionDetails) {
                 callback(error || result.description);
                 return;
             }
@@ -755,17 +755,17 @@ WebInspector.RemoteObjectImpl.prototype = {
         /**
          * @param {?Protocol.Error} error
          * @param {!RuntimeAgent.RemoteObject} result
-         * @param {boolean=} wasThrown
+         * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
          * @this {WebInspector.RemoteObjectImpl}
          */
-        function mycallback(error, result, wasThrown)
+        function mycallback(error, result, exceptionDetails)
         {
             if (!callback)
                 return;
             if (error)
                 callback(null, false);
             else
-                callback(this.target().runtimeModel.createRemoteObject(result), wasThrown);
+                callback(this.target().runtimeModel.createRemoteObject(result), !!exceptionDetails);
         }
 
         this._runtimeAgent.callFunctionOn(this._objectId, functionDeclaration.toString(), args, true, undefined, undefined, undefined, undefined, mycallback.bind(this));
@@ -782,11 +782,11 @@ WebInspector.RemoteObjectImpl.prototype = {
         /**
          * @param {?Protocol.Error} error
          * @param {!RuntimeAgent.RemoteObject} result
-         * @param {boolean=} wasThrown
+         * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
          */
-        function mycallback(error, result, wasThrown)
+        function mycallback(error, result, exceptionDetails)
         {
-            callback((error || wasThrown) ? null : result.value);
+            callback((error || !!exceptionDetails) ? null : result.value);
         }
 
         this._runtimeAgent.callFunctionOn(this._objectId, functionDeclaration.toString(), args, true, true, false, undefined, undefined, mycallback);

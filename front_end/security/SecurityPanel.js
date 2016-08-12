@@ -248,8 +248,11 @@ WebInspector.SecurityPanel.prototype = {
 
         this._target = target;
 
-        if (target.hasBrowserCapability())
+        if (target.hasBrowserCapability()) {
             target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._onMainFrameNavigated, this);
+            target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.InterstitialShown, this._onInterstitialShown, this);
+            target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.InterstitialHidden, this._onInterstitialHidden, this);
+        }
 
         var networkManager = WebInspector.NetworkManager.fromTarget(target);
         networkManager.addEventListener(WebInspector.NetworkManager.EventTypes.ResponseReceived, this._onResponseReceived, this);
@@ -275,7 +278,6 @@ WebInspector.SecurityPanel.prototype = {
         var frame = /** type {!PageAgent.Frame}*/ (event.data);
         var request = this._lastResponseReceivedForLoaderId.get(frame.loaderId);
 
-        // Clear the origins list.
         this.selectAndSwitchToMainView();
         this._sidebarTree.clearOrigins();
         this._origins.clear();
@@ -290,6 +292,16 @@ WebInspector.SecurityPanel.prototype = {
             this._sidebarTree.setMainOrigin(origin);
             this._processRequest(request);
         }
+    },
+
+    _onInterstitialShown: function()
+    {
+        this._sidebarTree.toggleOriginsList(true /* hidden */);
+    },
+
+    _onInterstitialHidden: function()
+    {
+        this._sidebarTree.toggleOriginsList(false /* hidden */);
     },
 
     __proto__: WebInspector.PanelWithSidebar.prototype
@@ -363,6 +375,19 @@ WebInspector.SecurityPanelSidebarTree = function(mainViewElement, showOriginInPa
 }
 
 WebInspector.SecurityPanelSidebarTree.prototype = {
+    /**
+     * @param {boolean} hidden
+     */
+    toggleOriginsList: function(hidden)
+    {
+        for (var key in WebInspector.SecurityPanelSidebarTree.OriginGroupName) {
+            var originGroupName = WebInspector.SecurityPanelSidebarTree.OriginGroupName[key];
+            var group = this._originGroups.get(originGroupName);
+            if (group)
+                group.hidden = hidden;
+        }
+    },
+
     /**
      * @param {!WebInspector.SecurityPanel.Origin} origin
      * @param {!SecurityAgent.SecurityState} securityState

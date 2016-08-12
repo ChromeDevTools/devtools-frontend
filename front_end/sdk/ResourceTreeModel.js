@@ -75,7 +75,9 @@ WebInspector.ResourceTreeModel.EventTypes = {
     WillReloadPage: "WillReloadPage",
     ScreencastFrame: "ScreencastFrame",
     ScreencastVisibilityChanged: "ScreencastVisibilityChanged",
-    ColorPicked: "ColorPicked"
+    ColorPicked: "ColorPicked",
+    InterstitialShown: "InterstitialShown",
+    InterstitialHidden: "InterstitialHidden"
 }
 
 /**
@@ -917,7 +919,7 @@ WebInspector.PageDispatcher.prototype = {
      */
     interstitialShown: function()
     {
-        // Frontend is not interested in interstitials.
+        this._resourceTreeModel.dispatchEventToListeners(WebInspector.ResourceTreeModel.EventTypes.InterstitialShown);
     },
 
     /**
@@ -925,7 +927,7 @@ WebInspector.PageDispatcher.prototype = {
      */
     interstitialHidden: function()
     {
-        // Frontend is not interested in interstitials.
+        this._resourceTreeModel.dispatchEventToListeners(WebInspector.ResourceTreeModel.EventTypes.InterstitialHidden);
     },
 
     /**
@@ -933,7 +935,7 @@ WebInspector.PageDispatcher.prototype = {
      */
     navigationRequested: function()
     {
-       // Frontend is not interested in interstitials.
+       // Frontend is not interested in when navigations are requested.
     }
 
 }

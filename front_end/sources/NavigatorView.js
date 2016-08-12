@@ -486,6 +486,8 @@ WebInspector.NavigatorView.prototype = {
                 break;
             if (!(node instanceof WebInspector.NavigatorGroupTreeNode || node instanceof WebInspector.NavigatorFolderTreeNode))
                 break;
+            if (node._type === WebInspector.NavigatorView.Types.Frame)
+                break;
 
             var folderId = this._folderNodeId(project, target, frame, uiSourceCode.origin(), node._folderPath);
             this._subfolderNodes.delete(folderId);
@@ -904,7 +906,6 @@ WebInspector.NavigatorSourceTreeElement = function(navigatorView, uiSourceCode, 
     this.listItemElement.classList.add("navigator-" + uiSourceCode.contentType().name() + "-tree-item", "navigator-file-tree-item");
     this.tooltip = uiSourceCode.url();
     this.createIcon();
-
 
     this._navigatorView = navigatorView;
     this._uiSourceCode = uiSourceCode;

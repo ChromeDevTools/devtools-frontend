@@ -11,7 +11,6 @@
     white-space: nowrap;
     line-height: 20px;
     border-bottom: 1px solid #eee;
-    background-position: -235px -107px;
 }
 
 .list-item:not(.ignore-hover):hover {
@@ -53,9 +52,9 @@
 }
 
 .list-item.selected::before {
-    background-image: url(Images/toolbarButtonGlyphs.png);
-    background-size: 352px 168px;
-    background-position: -235px -107px;
+    background-image: url(Images/smallIcons.png);
+    background-size: 190px 30px;
+    background-position: -180px 0;
     content: "";
     position: absolute;
     top: 5px;
@@ -66,6 +65,6 @@
 
 @media (-webkit-min-device-pixel-ratio: 1.5) {
 .list-item.selected::before {
-    background-image: url(Images/toolbarButtonGlyphs_2x.png);
+    background-image: url(Images/smallIcons_2x.png);
 }
 } /* media */

@@ -65,11 +65,11 @@
 }
 
 #console-prompt::before {
-    background-position: -192px -96px;
+    background-position: -20px -20px;
 }
 
 .console-log-level .console-user-command-result::before {
-    background-position: -202px -96px;
+    background-position: -40px -20px;
 }
 
 .console-message,
@@ -109,8 +109,8 @@
     height: 10px;
     margin-top: -4px;
     -webkit-user-select: none;
-    background-image: url(Images/toolbarButtonGlyphs.png);
-    background-size: 352px 168px;
+    background-image: url(Images/smallIcons.png);
+    background-size: 190px 30px;
 }
 
 @media (-webkit-min-device-pixel-ratio: 1.5) {
@@ -118,7 +118,7 @@
 .console-user-command::before,
 #console-prompt::before,
 .console-group-title::before {
-    background-image: url(Images/toolbarButtonGlyphs_2x.png);
+    background-image: url(Images/smallIcons_2x.png);
 }
 } /* media */
 
@@ -312,8 +312,8 @@
 .console-warning-level .console-message::before,
 .console-debug-level .console-message::before,
 .console-info-level .console-message::before {
-    background-image: url(Images/toolbarButtonGlyphs.png);
-    background-size: 352px 168px;
+    background-image: url(Images/smallIcons.png);
+    background-size: 190px 30px;
     width: 10px;
     height: 10px;
 }
@@ -324,24 +324,24 @@
 .console-warning-level .console-message::before,
 .console-debug-level .console-message::before,
 .console-info-level .console-message::before {
-    background-image: url(Images/toolbarButtonGlyphs_2x.png);
+    background-image: url(Images/smallIcons_2x.png);
 }
 } /* media */
 
 .console-warning-level .console-message::before {
-    background-position: -202px -107px;
+    background-position: -60px 0;
 }
 
 .console-error-level .console-message::before {
-    background-position: -213px -96px;
+    background-position: -20px 0;
 }
 
 .console-revokedError-level .console-message::before {
-    background-position: -245px -107px;
+    background-position: -40px 0;
 }
 
 .console-info-level .console-message::before {
-    background-position: -213px -107px;
+    background-position: -80px 0;
 }
 
 .console-user-command .console-message {
@@ -351,7 +351,7 @@
 }
 
 .console-user-command::before {
-    background-position: -192px -107px;
+    background-position: 0 -20px;
 }
 
 #console-messages .link {

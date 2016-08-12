@@ -890,6 +890,8 @@
             'front_end/Images/securityStateSecure.svg',
             'front_end/Images/settingsListRemove.png',
             'front_end/Images/settingsListRemove_2x.png',
+            'front_end/Images/smallIcons.png',
+            'front_end/Images/smallIcons_2x.png',
             'front_end/Images/speech.png',
             'front_end/Images/toolbarButtonGlyphs.png',
             'front_end/Images/toolbarButtonGlyphs_2x.png',

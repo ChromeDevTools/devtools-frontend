@@ -5,8 +5,8 @@
  */
 
 .severity {
-    background-image: url(Images/toolbarButtonGlyphs.png);
-    background-size: 352px 168px;
+    background-image: url(Images/smallIcons.png);
+    background-size: 190px 30px;
     display: inline-block;
     width: 11px;
     height: 11px;
@@ -21,20 +21,20 @@ li {
 
 @media (-webkit-min-device-pixel-ratio: 1.5) {
 .severity {
-    background-image: url(Images/toolbarButtonGlyphs_2x.png);
+    background-image: url(Images/smallIcons_2x.png);
 }
 } /* media */
 
 .severity.severe {
-    background-position: -224px -96px;
+    background-position: -120px 0;
 }
 
 .severity.warning {
-    background-position: -246px -96px;
+    background-position: -160px 0;
 }
 
 .severity.info {
-    background-position: -235px -96px;
+    background-position: -140px 0;
 }
 .audit-result {
     font-weight: bold;

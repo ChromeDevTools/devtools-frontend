@@ -94,19 +94,19 @@
     display: inline-block;
     content: "";
     -webkit-user-select: none;
-    background-image: url(Images/toolbarButtonGlyphs.png);
-    background-size: 352px 168px;
+    background-image: url(Images/smallIcons.png);
+    background-size: 190px 30px;
     width: 10px;
     height: 10px;
     position: relative;
     top: 2px;
     margin-right: 4px;
-    background-position: -192px -96px;
+    background-position: -20px -20px;
 }
 
 @media (-webkit-min-device-pixel-ratio: 1.5) {
 .suggest-box .suggest-box-content-item.additional::before {
-    background-image: url(Images/toolbarButtonGlyphs_2x.png);
+    background-image: url(Images/smallIcons_2x.png);
 }
 } /* media */
 

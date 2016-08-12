@@ -130,9 +130,9 @@
 }
 
 .profile-warn-marker {
-    background-image: url(Images/toolbarButtonGlyphs.png);
-    background-size: 352px 168px;
-    background-position: -202px -107px;
+    background-image: url(Images/smallIcons.png);
+    background-size: 190px 30px;
+    background-position: -60px 0;
     width: 10px;
     height: 10px;
     vertical-align: -1px;

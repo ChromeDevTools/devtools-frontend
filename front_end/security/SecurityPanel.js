@@ -569,9 +569,7 @@ WebInspector.SecurityMainView = function(panel)
 
     var lockSpectrum = this._summarySection.createChild("div", "lock-spectrum");
     lockSpectrum.createChild("div", "lock-icon lock-icon-secure").title = WebInspector.UIString("Secure");
-    lockSpectrum.createChild("div", "security-summary-lock-spacer");
     lockSpectrum.createChild("div", "lock-icon lock-icon-neutral").title = WebInspector.UIString("Not Secure");
-    lockSpectrum.createChild("div", "security-summary-lock-spacer");
     lockSpectrum.createChild("div", "lock-icon lock-icon-insecure").title = WebInspector.UIString("Insecure (Broken)");
 
     this._summarySection.createChild("div", "triangle-pointer-container").createChild("div", "triangle-pointer-wrapper").createChild("div", "triangle-pointer");

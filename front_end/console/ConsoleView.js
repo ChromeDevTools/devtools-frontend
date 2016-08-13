@@ -801,18 +801,17 @@ WebInspector.ConsoleView.prototype = {
 
     /**
      * @param {?WebInspector.RemoteObject} result
-     * @param {boolean} wasThrown
      * @param {!WebInspector.ConsoleMessage} originatingConsoleMessage
-     * @param {?RuntimeAgent.ExceptionDetails=} exceptionDetails
+     * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
      */
-    _printResult: function(result, wasThrown, originatingConsoleMessage, exceptionDetails)
+    _printResult: function(result, originatingConsoleMessage, exceptionDetails)
     {
         if (!result)
             return;
 
-        var level = wasThrown ? WebInspector.ConsoleMessage.MessageLevel.Error : WebInspector.ConsoleMessage.MessageLevel.Log;
+        var level = !!exceptionDetails ? WebInspector.ConsoleMessage.MessageLevel.Error : WebInspector.ConsoleMessage.MessageLevel.Log;
         var message;
-        if (!wasThrown)
+        if (!exceptionDetails)
             message = new WebInspector.ConsoleMessage(result.target(), WebInspector.ConsoleMessage.MessageSource.JS, level, "", WebInspector.ConsoleMessage.MessageType.Result, undefined, undefined, undefined, undefined, [result]);
         else
             message = new WebInspector.ConsoleMessage(result.target(), WebInspector.ConsoleMessage.MessageSource.JS, level, exceptionDetails.text, WebInspector.ConsoleMessage.MessageType.Result, undefined, exceptionDetails.lineNumber, exceptionDetails.columnNumber, undefined, [WebInspector.UIString("Uncaught"), result], exceptionDetails.stackTrace, undefined, undefined, exceptionDetails.scriptId);
@@ -840,10 +839,10 @@ WebInspector.ConsoleView.prototype = {
      */
     _commandEvaluated: function(event)
     {
-        var data = /** @type {{result: ?WebInspector.RemoteObject, wasThrown: boolean, text: string, commandMessage: !WebInspector.ConsoleMessage, exceptionDetails: (?RuntimeAgent.ExceptionDetails|undefined)}} */ (event.data);
+        var data = /** @type {{result: ?WebInspector.RemoteObject, text: string, commandMessage: !WebInspector.ConsoleMessage, exceptionDetails: (!RuntimeAgent.ExceptionDetails|undefined)}} */ (event.data);
         this._prompt.history().pushHistoryItem(data.text);
         this._consoleHistorySetting.set(this._prompt.history().historyData().slice(-WebInspector.ConsoleView.persistedHistorySize));
-        this._printResult(data.result, data.wasThrown, data.commandMessage, data.exceptionDetails);
+        this._printResult(data.result, data.commandMessage, data.exceptionDetails);
     },
 
     /**

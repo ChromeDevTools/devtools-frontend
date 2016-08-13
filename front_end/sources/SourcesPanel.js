@@ -978,12 +978,12 @@ WebInspector.SourcesPanel.prototype = {
         if (!currentExecutionContext)
             return;
 
-        currentExecutionContext.globalObject("", false, false, didGetGlobalObject);
+        currentExecutionContext.globalObject("", false, didGetGlobalObject);
         /**
          * @param {?WebInspector.RemoteObject} global
-         * @param {boolean=} wasThrown
+         * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
          */
-        function didGetGlobalObject(global, wasThrown)
+        function didGetGlobalObject(global, exceptionDetails)
         {
             /**
              * @suppressReceiverCheck
@@ -1000,7 +1000,7 @@ WebInspector.SourcesPanel.prototype = {
                 return name;
             }
 
-            if (wasThrown || !global)
+            if (!!exceptionDetails || !global)
                 failedToSave(global);
             else
                 global.callFunction(remoteFunction, [WebInspector.RemoteObject.toCallArgument(remoteObject)], didSave.bind(null, global));

@@ -393,8 +393,9 @@ WebInspector.RemoteObjectImpl = function(target, objectId, type, subtype, value,
         this._hasChildren = (type !== "symbol");
         this._preview = preview;
     } else {
-        // Primitive or null object.
-        this._description = description || (value + "");
+        this._description = description;
+        if (!this._description && (typeof value !== "object" || value === null))
+            this._description = value + "";
         this._hasChildren = false;
         if (typeof unserializableValue !== "undefined") {
             this._unserializableValue = unserializableValue;

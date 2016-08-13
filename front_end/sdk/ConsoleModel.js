@@ -190,11 +190,9 @@ WebInspector.ConsoleModel.evaluateCommandInConsole = function(executionContext, 
 
     /**
      * @param {?WebInspector.RemoteObject} result
-     * @param {boolean} wasThrown
-     * @param {?RuntimeAgent.RemoteObject=} valueResult
-     * @param {?RuntimeAgent.ExceptionDetails=} exceptionDetails
+     * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
      */
-    function printResult(result, wasThrown, valueResult, exceptionDetails)
+    function printResult(result, exceptionDetails)
     {
         if (!result)
             return;
@@ -202,7 +200,7 @@ WebInspector.ConsoleModel.evaluateCommandInConsole = function(executionContext, 
         WebInspector.console.showPromise().then(reportUponEvaluation);
         function reportUponEvaluation()
         {
-            target.consoleModel.dispatchEventToListeners(WebInspector.ConsoleModel.Events.CommandEvaluated, {result: result, wasThrown: wasThrown, text: requestedText, commandMessage: commandMessage, exceptionDetails: exceptionDetails});
+            target.consoleModel.dispatchEventToListeners(WebInspector.ConsoleModel.Events.CommandEvaluated, {result: result, text: requestedText, commandMessage: commandMessage, exceptionDetails: exceptionDetails});
         }
     }
 

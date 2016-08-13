@@ -583,10 +583,10 @@ WebInspector.JavaScriptSourceFrame.prototype = {
 
         /**
          * @param {?RuntimeAgent.RemoteObject} result
-         * @param {boolean=} wasThrown
+         * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
          * @this {WebInspector.JavaScriptSourceFrame}
          */
-        function showObjectPopover(result, wasThrown)
+        function showObjectPopover(result, exceptionDetails)
         {
             var target = WebInspector.context.flavor(WebInspector.Target);
             if (selectedCallFrame.target() !== target || !debuggerModel.isPaused() || !result) {
@@ -594,7 +594,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
                 return;
             }
             this._popoverAnchorBox = anchorBox;
-            showCallback(target.runtimeModel.createRemoteObject(result), wasThrown, this._popoverAnchorBox);
+            showCallback(target.runtimeModel.createRemoteObject(result), !!exceptionDetails, this._popoverAnchorBox);
             // Popover may have been removed by showCallback().
             if (this._popoverAnchorBox) {
                 var highlightRange = new WebInspector.TextRange(lineNumber, startHighlight, lineNumber, endHighlight);

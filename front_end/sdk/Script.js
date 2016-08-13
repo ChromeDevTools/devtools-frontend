@@ -37,12 +37,11 @@
  * @param {!RuntimeAgent.ExecutionContextId} executionContextId
  * @param {string} hash
  * @param {boolean} isContentScript
- * @param {boolean} isInternalScript
  * @param {boolean} isLiveEdit
  * @param {string=} sourceMapURL
  * @param {boolean=} hasSourceURL
  */
-WebInspector.Script = function(debuggerModel, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, isContentScript, isInternalScript, isLiveEdit, sourceMapURL, hasSourceURL)
+WebInspector.Script = function(debuggerModel, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, isContentScript, isLiveEdit, sourceMapURL, hasSourceURL)
 {
     WebInspector.SDKObject.call(this, debuggerModel.target());
     this.debuggerModel = debuggerModel;
@@ -55,7 +54,6 @@ WebInspector.Script = function(debuggerModel, scriptId, sourceURL, startLine, st
     this._executionContextId = executionContextId;
     this.hash = hash;
     this._isContentScript = isContentScript;
-    this._isInternalScript = isInternalScript;
     this._isLiveEdit = isLiveEdit;
     this.sourceMapURL = sourceMapURL;
     this.hasSourceURL = hasSourceURL;
@@ -122,14 +120,6 @@ WebInspector.Script.prototype = {
     isContentScript: function()
     {
         return this._isContentScript;
-    },
-
-    /**
-     * @return {boolean}
-     */
-    isInternalScript: function()
-    {
-        return this._isInternalScript;
     },
 
     /**

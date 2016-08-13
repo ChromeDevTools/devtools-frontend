@@ -178,7 +178,7 @@ WebInspector.SourcesSearchScope.prototype = {
             var uiSourceCode = project.uiSourceCodeForURL(files[i]);
             if (uiSourceCode) {
                 var script = WebInspector.DefaultScriptMapping.scriptForUISourceCode(uiSourceCode);
-                if (script && (script.isInternalScript() || !script.isAnonymousScript()))
+                if (script && !script.isAnonymousScript())
                     continue;
                 uiSourceCodes.push(uiSourceCode);
             }

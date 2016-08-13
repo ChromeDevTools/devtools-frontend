@@ -583,8 +583,11 @@ WebInspector.TimelinePanel.prototype = {
             ? WebInspector.TimelinePanel.CustomCPUThrottlingRateDialog.show(this._cpuThrottlingCombobox.element)
             : Promise.resolve(value);
         resultPromise.then(text => {
-            this._cpuThrottlingManager.setRate(Number.parseFloat(text));
-            this._populateCPUThrottingCombobox();
+            var value = Number.parseFloat(text);
+            if (value >= 1) {
+                this._cpuThrottlingManager.setRate(value);
+                this._populateCPUThrottingCombobox();
+            }
         });
     },
 
@@ -2018,6 +2021,10 @@ WebInspector.CPUThrottlingManager.prototype = {
     {
         this._throttlingRate = value;
         this._targets.forEach(target => target.emulationAgent().setCPUThrottlingRate(value));
+        if (value !== 1)
+            WebInspector.inspectorView.setPanelIcon("timeline", "warning-icon", WebInspector.UIString("CPU throttling is enabled"));
+        else
+            WebInspector.inspectorView.setPanelIcon("timeline", "", "");
     },
 
     /**

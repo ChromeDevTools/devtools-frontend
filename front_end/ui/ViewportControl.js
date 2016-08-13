@@ -59,9 +59,13 @@ WebInspector.ViewportControl = function(provider)
     this._renderedItems = [];
     this._anchorSelection = null;
     this._headSelection = null;
-    this._stickToBottom = false;
-    this._scrolledToBottom = true;
     this._itemCount = 0;
+
+    // Listen for any changes to descendants and trigger a refresh. This ensures
+    // that items updated asynchronously will not break stick-to-bottom behavior
+    // if they change the scroll height.
+    this._observer = new MutationObserver(this.refresh.bind(this));
+    this._observerConfig = { childList: true, subtree: true };
 }
 
 /**
@@ -145,9 +149,9 @@ WebInspector.ViewportControl.prototype = {
     /**
      * @return {boolean}
      */
-    scrolledToBottom: function()
+    stickToBottom: function()
     {
-        return this._scrolledToBottom;
+        return this._stickToBottom;
     },
 
     /**
@@ -156,6 +160,10 @@ WebInspector.ViewportControl.prototype = {
     setStickToBottom: function(value)
     {
         this._stickToBottom = value;
+        if (this._stickToBottom)
+            this._observer.observe(this._contentElement, this._observerConfig);
+        else
+            this._observer.disconnect();
     },
 
     /**
@@ -376,6 +384,14 @@ WebInspector.ViewportControl.prototype = {
 
     refresh: function()
     {
+        this._observer.disconnect();
+        this._innerRefresh();
+        if (this._stickToBottom)
+            this._observer.observe(this._contentElement, this._observerConfig);
+    },
+
+    _innerRefresh: function()
+    {
         if (!this._visibleHeight())
             return;  // Do nothing for invisible controls.
 
@@ -396,7 +412,6 @@ WebInspector.ViewportControl.prototype = {
 
         var visibleFrom = this.element.scrollTop;
         var visibleHeight = this._visibleHeight();
-        this._scrolledToBottom = this.element.isScrolledToBottom();
         var isInvalidating = !this._cumulativeHeights;
 
         for (var i = 0; i < this._renderedItems.length; ++i) {
@@ -408,17 +423,19 @@ WebInspector.ViewportControl.prototype = {
         var oldFirstVisibleIndex = this._firstVisibleIndex;
         var oldLastVisibleIndex = this._lastVisibleIndex;
 
-        var shouldStickToBottom = this._stickToBottom && this._scrolledToBottom;
-
-        if (shouldStickToBottom) {
-            this._lastVisibleIndex = this._itemCount - 1;
+        // When the viewport is scrolled to the bottom, using the cumulative heights estimate is not
+        // precise enough to determine next visible indices. This stickToBottom check avoids extra
+        // calls to refresh in those cases.
+        if (this._stickToBottom) {
             this._firstVisibleIndex = Math.max(this._itemCount - Math.ceil(visibleHeight / this._provider.minimumRowHeight()), 0);
+            this._lastVisibleIndex = this._itemCount - 1;
         } else {
             this._firstVisibleIndex = Math.max(Array.prototype.lowerBound.call(this._cumulativeHeights, visibleFrom + 1), 0);
             // Proactively render more rows in case some of them will be collapsed without triggering refresh. @see crbug.com/390169
             this._lastVisibleIndex = this._firstVisibleIndex + Math.ceil(visibleHeight / this._provider.minimumRowHeight()) - 1;
             this._lastVisibleIndex = Math.min(this._lastVisibleIndex, this._itemCount - 1);
         }
+
         var topGapHeight = this._cumulativeHeights[this._firstVisibleIndex - 1] || 0;
         var bottomGapHeight = this._cumulativeHeights[this._cumulativeHeights.length - 1] - this._cumulativeHeights[this._lastVisibleIndex];
 
@@ -442,7 +459,7 @@ WebInspector.ViewportControl.prototype = {
         // Should be the last call in the method as it might force layout.
         if (shouldRestoreSelection)
             this._restoreSelection(selection);
-        if (shouldStickToBottom)
+        if (this._stickToBottom)
             this.element.scrollTop = 10000000;
     },
 
@@ -612,8 +629,11 @@ WebInspector.ViewportControl.prototype = {
      */
     forceScrollItemToBeFirst: function(index)
     {
+        this.setStickToBottom(false);
         this._rebuildCumulativeHeightsIfNeeded();
         this.element.scrollTop = index > 0 ? this._cumulativeHeights[index - 1] : 0;
+        if (this.element.isScrolledToBottom())
+            this.setStickToBottom(true);
         this.refresh();
     },
 
@@ -622,8 +642,11 @@ WebInspector.ViewportControl.prototype = {
      */
     forceScrollItemToBeLast: function(index)
     {
+        this.setStickToBottom(false);
         this._rebuildCumulativeHeightsIfNeeded();
         this.element.scrollTop = this._cumulativeHeights[index] - this._visibleHeight();
+        if (this.element.isScrolledToBottom())
+            this.setStickToBottom(true);
         this.refresh();
     },
 

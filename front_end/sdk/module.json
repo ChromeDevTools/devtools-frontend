@@ -81,6 +81,7 @@
         "ContentProviders.js",
         "CookieParser.js",
         "ProfileTreeModel.js",
+        "ServerTiming.js",
         "CPUProfileDataModel.js",
         "CPUProfilerModel.js",
         "CSSMatchedStyles.js",

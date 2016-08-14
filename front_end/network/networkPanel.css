@@ -97,6 +97,12 @@
     padding: 2px 0;
 }
 
+.network-timing-table hr.break {
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, #eee, #bbb, #eee);
+}
+
 .network-timing-footer td {
     border-top: 8px solid transparent;
 }
@@ -166,6 +172,17 @@
 
 .network-timing-bar.push, -theme-preserve {
     background-color: #8CDBff;
+}
+
+.network-timing-bar.server-timing, -theme-preserve {
+    background-color: #ddd;
+}
+
+.network-timing-table td.network-timing-metric {
+    white-space: nowrap;
+    max-width: 150px;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
 }
 
 .network-timing-bar.proxy,

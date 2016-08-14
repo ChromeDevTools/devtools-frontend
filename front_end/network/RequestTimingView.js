@@ -284,7 +284,56 @@ WebInspector.RequestTimingView.createTimingTable = function(request, navigationS
     note.appendChild(WebInspector.linkifyDocumentationURLAsNode("profile/network-performance/resource-loading#view-network-timing-details-for-a-specific-resource", WebInspector.UIString("Explanation")));
     footer.createChild("td").createTextChild(Number.secondsToString(totalDuration, true));
 
+    var serverTimings = request.serverTimings;
+    if (!serverTimings)
+        return tableElement;
+
+    var lastTimingRightEdge = right === undefined ? 100 : right;
+
+    var breakElement = tableElement.createChild("tr", "network-timing-table-header").createChild("td");
+    breakElement.colSpan = 3;
+    breakElement.createChild("hr", "break");
+
+    var serverHeader = tableElement.createChild("tr", "network-timing-table-header");
+    serverHeader.createChild("td").createTextChild(WebInspector.UIString("Server Timing"));
+    serverHeader.createChild("td");
+    serverHeader.createChild("td").createTextChild(WebInspector.UIString("TIME"));
+
+    serverTimings.filter(item => item.metric.toLowerCase() !== "total").forEach(item => addTiming(item, lastTimingRightEdge));
+    serverTimings.filter(item => item.metric.toLowerCase() === "total").forEach(item => addTiming(item, lastTimingRightEdge));
+
     return tableElement;
+
+
+    /**
+     * @param {!WebInspector.ServerTiming} serverTiming
+     * @param {number} right
+     */
+    function addTiming(serverTiming, right)
+    {
+        var colorGenerator = new WebInspector.FlameChart.ColorGenerator(
+            { min: 0, max: 360, count:36 },
+            { min: 50, max: 80 },
+            80
+        );
+        var isTotal = serverTiming.metric.toLowerCase() === "total";
+        var tr = tableElement.createChild("tr", isTotal ? "network-timing-footer" : "");
+        var metric = tr.createChild("td", "network-timing-metric");
+        metric.createTextChild(serverTiming.description || serverTiming.metric);
+        var row = tr.createChild("td").createChild("div", "network-timing-row");
+        var left = scale * (endTime - startTime - serverTiming.value);
+        if (serverTiming.value && left >= 0) { // don't chart values too big or too small
+            var bar = row.createChild("span", "network-timing-bar server-timing");
+            bar.style.left = left + "%";
+            bar.style.right = right + "%";
+            bar.textContent = "\u200B"; // Important for 0-time items to have 0 width.
+            if (!isTotal)
+                bar.style.backgroundColor = colorGenerator.colorForID(serverTiming.metric);
+        }
+        var label = tr.createChild("td").createChild("div", "network-timing-bar-title");
+        if (typeof serverTiming.value === "number") // a metric timing value is optional
+            label.textContent = Number.secondsToString(serverTiming.value, true);
+    }
 
     /**
      * param {string} title

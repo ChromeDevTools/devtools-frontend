@@ -739,6 +739,7 @@ WebInspector.NetworkRequest.prototype = {
     {
         this._responseHeaders = x;
         delete this._sortedResponseHeaders;
+        delete this._serverTimings;
         delete this._responseCookies;
         this._responseHeaderValues = {};
 
@@ -795,6 +796,16 @@ WebInspector.NetworkRequest.prototype = {
         if (!this._responseCookies)
             this._responseCookies = WebInspector.CookieParser.parseSetCookie(this.target(), this.responseHeaderValue("Set-Cookie"));
         return this._responseCookies;
+    },
+
+    /**
+     * @return {?Array.<!WebInspector.ServerTiming>}
+     */
+    get serverTimings()
+    {
+        if (typeof this._serverTimings === "undefined")
+            this._serverTimings = WebInspector.ServerTiming.parseHeaders(this.responseHeaders);
+        return this._serverTimings;
     },
 
     /**

@@ -49,6 +49,7 @@ WebInspector.TimelinePanel = function()
     this._windowEndTime = Infinity;
     this._millisecondsToRecordAfterLoadEvent = 3000;
     this._toggleRecordAction = /** @type {!WebInspector.Action }*/ (WebInspector.actionRegistry.action("timeline.toggle-recording"));
+    this._customCPUThrottlingRate = 0;
 
     /** @type {!Array<!WebInspector.TimelineModel.Filter>} */
     this._filters = [];
@@ -437,10 +438,9 @@ WebInspector.TimelinePanel.prototype = {
         ]);
         for (var rate of predefinedRates)
             addGroupingOption(rate[1], rate[0]);
-        var customRateText = predefinedRates.has(currentRate)
-            ? WebInspector.UIString("Custom rate\u2026")
-            : WebInspector.UIString("Custom rate (%d\xD7 slowdown)", currentRate);
-        addGroupingOption(customRateText, 0);
+        if (this._customCPUThrottlingRate && !predefinedRates.has(this._customCPUThrottlingRate))
+            addGroupingOption(WebInspector.UIString("Custom rate (%d\xD7 slowdown)", this._customCPUThrottlingRate), this._customCPUThrottlingRate);
+        addGroupingOption(WebInspector.UIString("Set custom rate\u2026"), 0);
     },
 
     _prepareToLoadTimeline: function()
@@ -585,6 +585,8 @@ WebInspector.TimelinePanel.prototype = {
         resultPromise.then(text => {
             var value = Number.parseFloat(text);
             if (value >= 1) {
+                if (isLastOption)
+                    this._customCPUThrottlingRate = value;
                 this._cpuThrottlingManager.setRate(value);
                 this._populateCPUThrottingCombobox();
             }

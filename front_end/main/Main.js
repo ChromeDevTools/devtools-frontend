@@ -303,7 +303,7 @@ WebInspector.Main.prototype = {
         InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.ReloadInspectedPage, this._reloadInspectedPage, this);
         InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.EvaluateForTestInFrontend, this._evaluateForTestInFrontend, this);
 
-        this._mainTarget.runtimeAgent().runIfWaitingForDebugger();
+        this._mainTarget.runtimeAgent().run();
 
         if (this._mainTarget.hasBrowserCapability())
             this._mainTarget.inspectorAgent().enable();

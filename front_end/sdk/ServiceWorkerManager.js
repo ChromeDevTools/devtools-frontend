@@ -439,7 +439,7 @@ WebInspector.ServiceWorker = function(manager, workerId, url, versionId)
     this._target = WebInspector.targetManager.createTarget(this._name, capabilities, this._connection, manager.target());
     this._target[WebInspector.ServiceWorker.Symbol] = this;
     this._manager.dispatchEventToListeners(WebInspector.ServiceWorkerManager.Events.WorkersUpdated);
-    this._target.runtimeAgent().runIfWaitingForDebugger();
+    this._target.runtimeAgent().run();
 }
 
 WebInspector.ServiceWorker.Symbol = Symbol("serviceWorker");

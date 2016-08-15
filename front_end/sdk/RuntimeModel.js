@@ -243,16 +243,16 @@ WebInspector.RuntimeModel.prototype = {
      * @param {!RuntimeAgent.ScriptId} scriptId
      * @param {number} executionContextId
      * @param {string=} objectGroup
-     * @param {boolean=} silent
+     * @param {boolean=} doNotPauseOnExceptionsAndMuteConsole
      * @param {boolean=} includeCommandLineAPI
      * @param {boolean=} returnByValue
      * @param {boolean=} generatePreview
      * @param {boolean=} awaitPromise
      * @param {function(?RuntimeAgent.RemoteObject, ?RuntimeAgent.ExceptionDetails=)=} callback
      */
-    runScript: function(scriptId, executionContextId, objectGroup, silent, includeCommandLineAPI, returnByValue, generatePreview, awaitPromise, callback)
+    runScript: function(scriptId, executionContextId, objectGroup, doNotPauseOnExceptionsAndMuteConsole, includeCommandLineAPI, returnByValue, generatePreview, awaitPromise, callback)
     {
-        this._agent.runScript(scriptId, executionContextId, objectGroup, silent, includeCommandLineAPI, returnByValue, generatePreview, awaitPromise, innerCallback);
+        this._agent.runScript(scriptId, executionContextId, objectGroup, doNotPauseOnExceptionsAndMuteConsole, includeCommandLineAPI, returnByValue, generatePreview, awaitPromise, innerCallback);
 
         /**
          * @param {?Protocol.Error} error
@@ -547,17 +547,17 @@ WebInspector.ExecutionContext.prototype = {
      * @param {string} expression
      * @param {string} objectGroup
      * @param {boolean} includeCommandLineAPI
-     * @param {boolean} silent
+     * @param {boolean} doNotPauseOnExceptionsAndMuteConsole
      * @param {boolean} returnByValue
      * @param {boolean} generatePreview
      * @param {boolean} userGesture
      * @param {function(?WebInspector.RemoteObject, !RuntimeAgent.ExceptionDetails=)} callback
      */
-    evaluate: function(expression, objectGroup, includeCommandLineAPI, silent, returnByValue, generatePreview, userGesture, callback)
+    evaluate: function(expression, objectGroup, includeCommandLineAPI, doNotPauseOnExceptionsAndMuteConsole, returnByValue, generatePreview, userGesture, callback)
     {
         // FIXME: It will be moved to separate ExecutionContext.
         if (this.debuggerModel.selectedCallFrame()) {
-            this.debuggerModel.evaluateOnSelectedCallFrame(expression, objectGroup, includeCommandLineAPI, silent, returnByValue, generatePreview, callback);
+            this.debuggerModel.evaluateOnSelectedCallFrame(expression, objectGroup, includeCommandLineAPI, doNotPauseOnExceptionsAndMuteConsole, returnByValue, generatePreview, callback);
             return;
         }
         this._evaluateGlobal.apply(this, arguments);
@@ -577,13 +577,13 @@ WebInspector.ExecutionContext.prototype = {
      * @param {string} expression
      * @param {string} objectGroup
      * @param {boolean} includeCommandLineAPI
-     * @param {boolean} silent
+     * @param {boolean} doNotPauseOnExceptionsAndMuteConsole
      * @param {boolean} returnByValue
      * @param {boolean} generatePreview
      * @param {boolean} userGesture
      * @param {function(?WebInspector.RemoteObject, !RuntimeAgent.ExceptionDetails=)} callback
      */
-    _evaluateGlobal: function(expression, objectGroup, includeCommandLineAPI, silent, returnByValue, generatePreview, userGesture, callback)
+    _evaluateGlobal: function(expression, objectGroup, includeCommandLineAPI, doNotPauseOnExceptionsAndMuteConsole, returnByValue, generatePreview, userGesture, callback)
     {
         if (!expression) {
             // There is no expression, so the completion should happen against global properties.
@@ -605,7 +605,7 @@ WebInspector.ExecutionContext.prototype = {
             }
             callback(this.runtimeModel.createRemoteObject(result), exceptionDetails);
         }
-        this.target().runtimeAgent().evaluate(expression, objectGroup, includeCommandLineAPI, silent, this.id, returnByValue, generatePreview, userGesture, false, evalCallback.bind(this));
+        this.target().runtimeAgent().evaluate(expression, objectGroup, includeCommandLineAPI, doNotPauseOnExceptionsAndMuteConsole, this.id, returnByValue, generatePreview, userGesture, false, evalCallback.bind(this));
     },
 
     /**

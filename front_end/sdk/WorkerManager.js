@@ -109,7 +109,7 @@ WebInspector.WorkerManager.prototype = {
         var mainIsServiceWorker = WebInspector.targetManager.mainTarget().hasWorkerCapability() && !WebInspector.targetManager.mainTarget().hasBrowserCapability();
         if (mainIsServiceWorker && waitingForDebugger)
             target.debuggerAgent().pause();
-        target.runtimeAgent().run();
+        target.runtimeAgent().runIfWaitingForDebugger();
     },
 
     /**

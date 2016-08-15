@@ -13,7 +13,7 @@
 .filtered-list-widget-prompt-element {
     flex: 0 0 36px;
     border: 0;
-    box-shadow: rgba(140, 140, 140, 0.2) 0 2px 2px;
+    border-bottom:1px solid rgba(0, 0, 0, 0.2);
     margin: 0;
     padding: 0 6px;
     z-index: 1;

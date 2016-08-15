@@ -86,7 +86,9 @@
     background-color: white;
     pointer-events: none;
     padding: 2px;
-    box-shadow: hsla(0, 0%, 0%, 0.4) 1px 1px 8px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05),
+                0 2px 4px rgba(0, 0, 0, 0.2),
+                0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .flame-chart-entry-info table tr td:empty {

@@ -174,8 +174,9 @@
 }
 
 .CodeMirror {
-    box-shadow: rgba(0, 0, 0, .5) 3px 3px 4px;
-    outline: 1px solid rgb(66%, 66%, 66%) !important;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2),
+                0 2px 4px rgba(0, 0, 0, 0.2),
+                0 2px 6px rgba(0, 0, 0, 0.1);
     background-color: white;
 }
 
@@ -194,8 +195,9 @@ button, input, select {
 
 .editing {
     -webkit-user-select: text;
-    box-shadow: rgba(0, 0, 0, .5) 3px 3px 4px;
-    outline: 1px solid rgb(66%, 66%, 66%) !important;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2),
+                0 2px 4px rgba(0, 0, 0, 0.2),
+                0 2px 6px rgba(0, 0, 0, 0.1);
     background-color: white;
     -webkit-user-modify: read-write-plaintext-only;
     text-overflow: clip !important;

@@ -1053,6 +1053,7 @@ WebInspector.TabbedPaneTab.prototype = {
             tabElement.classList.add("measuring");
         } else {
             tabElement.addEventListener("click", this._tabClicked.bind(this), false);
+            tabElement.addEventListener("auxclick", this._tabClicked.bind(this), false);
             tabElement.addEventListener("mousedown", this._tabMouseDown.bind(this), false);
             tabElement.addEventListener("mouseup", this._tabMouseUp.bind(this), false);
 

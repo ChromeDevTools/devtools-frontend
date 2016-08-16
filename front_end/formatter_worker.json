@@ -1,7 +1,7 @@
 {
     "modules": [
         { "name": "formatter_worker", "type": "autostart" },
-        { "name": "gonzales", "type": "remote" }
+        { "name": "gonzales", "type": "remoteInRelease" }
     ],
 
     "has_html": false

@@ -60,7 +60,6 @@ WebInspector.JavaScriptSourceFrame = function(uiSourceCode)
 
     /** @type {!Map.<!WebInspector.Target, !WebInspector.ResourceScriptFile>}*/
     this._scriptFileForTarget = new Map();
-    this._registerShortcuts();
     var targets = WebInspector.targetManager.targets();
     for (var i = 0; i < targets.length; ++i) {
         var scriptFile = WebInspector.debuggerWorkspaceBinding.scriptFile(uiSourceCode, targets[i]);
@@ -191,57 +190,6 @@ WebInspector.JavaScriptSourceFrame.prototype = {
         delete this._blackboxInfobar;
     },
 
-    _registerShortcuts: function()
-    {
-        var shortcutKeys = WebInspector.ShortcutsScreen.SourcesPanelShortcuts;
-        for (var i = 0; i < shortcutKeys.EvaluateSelectionInConsole.length; ++i) {
-            var keyDescriptor = shortcutKeys.EvaluateSelectionInConsole[i];
-            this.addShortcut(keyDescriptor.key, this._evaluateSelectionInConsole.bind(this));
-        }
-        for (var i = 0; i < shortcutKeys.AddSelectionToWatch.length; ++i) {
-            var keyDescriptor = shortcutKeys.AddSelectionToWatch[i];
-            this.addShortcut(keyDescriptor.key, this._addCurrentSelectionToWatch.bind(this));
-        }
-    },
-
-    _addCurrentSelectionToWatch: function()
-    {
-        var textSelection = this.textEditor.selection();
-        if (textSelection && !textSelection.isEmpty())
-            this._innerAddToWatch(this.textEditor.copyRange(textSelection));
-        return true;
-    },
-
-    /**
-     * @param {string} expression
-     */
-    _innerAddToWatch: function(expression)
-    {
-        this._scriptsPanel.addToWatch(expression);
-    },
-
-    /**
-     * @return {boolean}
-     */
-    _evaluateSelectionInConsole: function()
-    {
-        var selection = this.textEditor.selection();
-        if (!selection || selection.isEmpty())
-            return true;
-        this._evaluateInConsole(this.textEditor.copyRange(selection));
-        return true;
-    },
-
-    /**
-     * @param {string} expression
-     */
-    _evaluateInConsole: function(expression)
-    {
-        var currentExecutionContext = WebInspector.context.flavor(WebInspector.ExecutionContext);
-        if (currentExecutionContext)
-            WebInspector.ConsoleModel.evaluateCommandInConsole(currentExecutionContext, expression);
-    },
-
     /**
      * @override
      */
@@ -316,16 +264,6 @@ WebInspector.JavaScriptSourceFrame.prototype = {
      */
     populateTextAreaContextMenu: function(contextMenu, lineNumber, columnNumber)
     {
-        var textSelection = this.textEditor.selection();
-        if (textSelection && !textSelection.isEmpty()) {
-            var selection = this.textEditor.copyRange(textSelection);
-            var addToWatchLabel = WebInspector.UIString.capitalize("Add to ^watch");
-            contextMenu.appendItem(addToWatchLabel, this._innerAddToWatch.bind(this, selection));
-            var evaluateLabel = WebInspector.UIString.capitalize("Evaluate in ^console");
-            contextMenu.appendItem(evaluateLabel, this._evaluateInConsole.bind(this, selection));
-            contextMenu.appendSeparator();
-        }
-
         /**
          * @param {!WebInspector.ResourceScriptFile} scriptFile
          */
@@ -548,8 +486,8 @@ WebInspector.JavaScriptSourceFrame.prototype = {
     _resolveObjectForPopover: function(anchorBox, showCallback, objectGroupName)
     {
         var target = WebInspector.context.flavor(WebInspector.Target);
-        var debuggerModel = WebInspector.DebuggerModel.fromTarget(target);
-        if (!debuggerModel || !debuggerModel.isPaused()) {
+        var selectedCallFrame = WebInspector.context.flavor(WebInspector.DebuggerModel.CallFrame);
+        if (!selectedCallFrame) {
             this._popoverHelper.hidePopover();
             return;
         }
@@ -568,8 +506,6 @@ WebInspector.JavaScriptSourceFrame.prototype = {
             }
         }
         var evaluationText = line.substring(startHighlight, endHighlight + 1);
-        var selectedCallFrame = /** @type {!WebInspector.DebuggerModel.CallFrame}*/ (debuggerModel.selectedCallFrame());
-
         WebInspector.SourceMapNamesResolver.resolveExpression(selectedCallFrame, evaluationText, this.uiSourceCode(), lineNumber, startHighlight, endHighlight).then(onResolve.bind(this));
 
         /**
@@ -589,7 +525,8 @@ WebInspector.JavaScriptSourceFrame.prototype = {
         function showObjectPopover(result, exceptionDetails)
         {
             var target = WebInspector.context.flavor(WebInspector.Target);
-            if (selectedCallFrame.target() !== target || !debuggerModel.isPaused() || !result) {
+            var potentiallyUpdatedCallFrame = WebInspector.context.flavor(WebInspector.DebuggerModel.CallFrame);
+            if (selectedCallFrame !== potentiallyUpdatedCallFrame || !result) {
                 this._popoverHelper.hidePopover();
                 return;
             }
@@ -720,7 +657,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
         var executionContext = WebInspector.context.flavor(WebInspector.ExecutionContext);
         if (!executionContext)
             return;
-        var callFrame = executionContext.debuggerModel.selectedCallFrame();
+        var callFrame = WebInspector.context.flavor(WebInspector.DebuggerModel.CallFrame);
         if (!callFrame)
             return;
 

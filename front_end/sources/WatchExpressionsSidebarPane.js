@@ -30,58 +30,43 @@
 
 /**
  * @constructor
- * @extends {WebInspector.SimpleView}
+ * @extends {WebInspector.ThrottledWidget}
+ * @implements {WebInspector.ActionDelegate}
+ * @implements {WebInspector.ToolbarItem.ItemsProvider}
+ * @implements {WebInspector.ContextMenu.Provider}
  */
 WebInspector.WatchExpressionsSidebarPane = function()
 {
-    WebInspector.SimpleView.call(this, WebInspector.UIString("Watch"));
+    WebInspector.ThrottledWidget.call(this);
     this.registerRequiredCSS("components/objectValue.css");
 
-    this._requiresUpdate = true;
     /** @type {!Array.<!WebInspector.WatchExpression>} */
     this._watchExpressions = [];
     this._watchExpressionsSetting = WebInspector.settings.createLocalSetting("watchExpressions", []);
 
-    var addButton = new WebInspector.ToolbarButton(WebInspector.UIString("Add expression"), "add-toolbar-item");
-    addButton.addEventListener("click", this._addButtonClicked.bind(this));
-    this.addToolbarItem(addButton);
-    var refreshButton = new WebInspector.ToolbarButton(WebInspector.UIString("Refresh"), "refresh-toolbar-item");
-    refreshButton.addEventListener("click", this._refreshButtonClicked.bind(this));
-    this.addToolbarItem(refreshButton);
+    this._addButton = new WebInspector.ToolbarButton(WebInspector.UIString("Add expression"), "add-toolbar-item");
+    this._addButton.addEventListener("click", this._addButtonClicked.bind(this));
+    this._refreshButton = new WebInspector.ToolbarButton(WebInspector.UIString("Refresh"), "refresh-toolbar-item");
+    this._refreshButton.addEventListener("click", this._refreshButtonClicked.bind(this));
 
     this._bodyElement = this.element.createChild("div", "vbox watch-expressions");
     this._bodyElement.addEventListener("contextmenu", this._contextMenu.bind(this), false);
     this._expandController = new WebInspector.ObjectPropertiesSectionExpandController();
 
-    WebInspector.context.addFlavorChangeListener(WebInspector.ExecutionContext, this._refreshExpressions, this);
-    WebInspector.context.addFlavorChangeListener(WebInspector.DebuggerModel.CallFrame, this._refreshExpressions, this);
+    WebInspector.context.addFlavorChangeListener(WebInspector.ExecutionContext, this.update, this);
+    WebInspector.context.addFlavorChangeListener(WebInspector.DebuggerModel.CallFrame, this.update, this);
     this._linkifier = new WebInspector.Linkifier();
+    this.update();
 }
 
 WebInspector.WatchExpressionsSidebarPane.prototype = {
-    wasShown: function()
-    {
-        this._refreshExpressionsIfNeeded();
-    },
-
-    _refreshExpressions: function()
-    {
-        this._requiresUpdate = true;
-        this._refreshExpressionsIfNeeded();
-    },
-
     /**
-     * @param {string} expressionString
+     * @override
+     * @return {!Array<!WebInspector.ToolbarItem>}
      */
-    addExpression: function(expressionString)
+    toolbarItems: function()
     {
-        this.revealView();
-        if (this._requiresUpdate) {
-            this._rebuildWatchExpressions();
-            delete this._requiresUpdate;
-        }
-        this._createWatchExpression(expressionString);
-        this._saveExpressions();
+        return [this._addButton, this._refreshButton];
     },
 
     /**
@@ -102,15 +87,6 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
         this._watchExpressionsSetting.set(toSave);
     },
 
-    _refreshExpressionsIfNeeded: function()
-    {
-        if (this._requiresUpdate && this.isShowing()) {
-            this._rebuildWatchExpressions();
-            delete this._requiresUpdate;
-        } else
-            this._requiresUpdate = true;
-    },
-
     /**
      * @param {!WebInspector.Event=} event
      */
@@ -118,7 +94,7 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
     {
         if (event)
             event.consume(true);
-        this.revealView();
+        WebInspector.viewManager.showView("sources.watch");
         this._createWatchExpression(null).startEditing();
     },
 
@@ -128,10 +104,14 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
     _refreshButtonClicked: function(event)
     {
         event.consume();
-        this._refreshExpressions();
+        this.update();
     },
 
-    _rebuildWatchExpressions: function()
+    /**
+     * @override
+     * @return {!Promise.<?>}
+     */
+    doUpdate: function()
     {
         this._linkifier.reset();
         this._bodyElement.removeChildren();
@@ -146,6 +126,7 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
 
             this._createWatchExpression(expression);
         }
+        return Promise.resolve();
     },
 
     /**
@@ -212,10 +193,40 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
     {
         this._watchExpressions = [];
         this._saveExpressions();
-        this._rebuildWatchExpressions();
+        this.update();
     },
 
-    __proto__: WebInspector.SimpleView.prototype
+    /**
+     * @override
+     * @param {!WebInspector.Context} context
+     * @param {string} actionId
+     * @return {boolean}
+     */
+    handleAction: function(context, actionId)
+    {
+        var frame = WebInspector.context.flavor(WebInspector.UISourceCodeFrame);
+        if (!frame)
+            return false;
+        var text = frame.textEditor.copyRange(frame.textEditor.selection());
+        WebInspector.viewManager.showView("sources.watch");
+        this.doUpdate();
+        this._createWatchExpression(text);
+        this._saveExpressions();
+        return true;
+    },
+
+    /**
+     * @override
+     * @param {!Event} event
+     * @param {!WebInspector.ContextMenu} contextMenu
+     * @param {!Object} target
+     */
+    appendApplicableItems: function(event, contextMenu, target)
+    {
+        contextMenu.appendAction("sources.add-to-watch");
+    },
+
+    __proto__: WebInspector.ThrottledWidget.prototype
 }
 
 /**

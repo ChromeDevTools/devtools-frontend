@@ -31,6 +31,7 @@
 /**
  * @constructor
  * @extends {WebInspector.BreakpointsSidebarPaneBase}
+ * @implements {WebInspector.ContextFlavorListener}
  */
 WebInspector.DOMBreakpointsSidebarPane = function()
 {
@@ -55,21 +56,20 @@ WebInspector.DOMBreakpointsSidebarPane = function()
     this._contextMenuLabels[this._breakpointTypes.AttributeModified] = WebInspector.UIString.capitalize("Attributes ^modifications");
     this._contextMenuLabels[this._breakpointTypes.NodeRemoved] = WebInspector.UIString.capitalize("Node ^removal");
 
-    WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
     WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
+    WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
+    this._inspectedURL = WebInspector.targetManager.inspectedURL();
+    this._update();
 }
 
 WebInspector.DOMBreakpointsSidebarPane.Marker = "breakpoint-marker";
 
 WebInspector.DOMBreakpointsSidebarPane.prototype = {
-    _inspectedURLChanged: function(event)
+    _inspectedURLChanged: function()
     {
-        var target = /** @type {!WebInspector.Target} */ (event.data);
-        if (target !== WebInspector.targetManager.mainTarget())
-            return;
         this._breakpointElements = {};
         this.reset();
-        this._inspectedURL = target.inspectedURL().removeURLFragment();
+        this._inspectedURL = WebInspector.targetManager.inspectedURL();
     },
 
     /**
@@ -322,10 +322,16 @@ WebInspector.DOMBreakpointsSidebarPane.prototype = {
 
     /**
      * @override
-     * @param {?WebInspector.DebuggerPausedDetails} details
+     * @param {?Object} object
      */
-    highlightDetails: function(details)
+    flavorChanged: function(object)
     {
+        this._update();
+    },
+
+    _update: function()
+    {
+        var details = WebInspector.context.flavor(WebInspector.DebuggerPausedDetails);
         if (!details || details.reason !== WebInspector.DebuggerModel.BreakReason.DOM) {
             if (this._highlightedElement) {
                 this._highlightedElement.classList.remove("breakpoint-hit");
@@ -338,7 +344,7 @@ WebInspector.DOMBreakpointsSidebarPane.prototype = {
         var element = this._breakpointElements[breakpointId];
         if (!element)
             return;
-        WebInspector.viewManager.revealViewWithWidget(this);
+        WebInspector.viewManager.showView("sources.domBreakpoints");
         element.classList.add("breakpoint-hit");
         this._highlightedElement = element;
     },

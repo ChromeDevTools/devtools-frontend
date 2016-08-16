@@ -9,8 +9,8 @@
         },
         {
             "type": "@WebInspector.ContextMenu.Provider",
-            "contextTypes": ["WebInspector.UISourceCode", "WebInspector.UILocation", "WebInspector.RemoteObject", "WebInspector.NetworkRequest"],
-            "className": "WebInspector.SourcesPanel.ContextMenuProvider"
+            "contextTypes": ["WebInspector.UISourceCode", "WebInspector.UILocation", "WebInspector.RemoteObject", "WebInspector.NetworkRequest", "WebInspector.UISourceCodeFrame"],
+            "className": "WebInspector.SourcesPanel"
         },
         {
             "type": "@WebInspector.ActionDelegate",
@@ -142,6 +142,35 @@
                 {
                     "platform": "mac",
                     "shortcut": "Meta+F8"
+                }
+            ]
+        },
+        {
+            "type": "@WebInspector.ActionDelegate",
+            "actionId": "sources.add-to-watch",
+            "className": "WebInspector.WatchExpressionsSidebarPane",
+            "title": "Add selected text to watches",
+            "contextTypes": ["WebInspector.UISourceCodeFrame"],
+            "bindings": [
+                {
+                    "shortcut": "Ctrl+Shift+A'"
+                }
+            ]
+        },
+        {
+            "type": "@WebInspector.ContextMenu.Provider",
+            "contextTypes": ["WebInspector.CodeMirrorTextEditor"],
+            "className": "WebInspector.WatchExpressionsSidebarPane"
+        },
+        {
+            "type": "@WebInspector.ActionDelegate",
+            "actionId": "debugger.evaluate-selection",
+            "className": "WebInspector.SourcesPanel.DebuggingActionDelegate",
+            "title": "Evaluate in console",
+            "contextTypes": ["WebInspector.UISourceCodeFrame"],
+            "bindings": [
+                {
+                    "shortcut": "Ctrl+E'"
                 }
             ]
         },
@@ -408,6 +437,60 @@
             "order": 9,
             "persistence": "permanent",
             "className": "WebInspector.EventListenerBreakpointsSidebarPane"
+        },
+        {
+            "type": "view",
+            "id": "sources.threads",
+            "title": "Threads",
+            "persistence": "permanent",
+            "className": "WebInspector.ThreadsSidebarPane"
+        },
+        {
+            "type": "view",
+            "id": "sources.scopeChain",
+            "title": "Scope",
+            "persistence": "permanent",
+            "className": "WebInspector.ScopeChainSidebarPane"
+        },
+        {
+            "type": "view",
+            "id": "sources.watch",
+            "title": "Watch",
+            "hasToolbar": true,
+            "persistence": "permanent",
+            "className": "WebInspector.WatchExpressionsSidebarPane"
+        },
+        {
+            "type": "view",
+            "id": "sources.jsBreakpoints",
+            "title": "Breakpoints",
+            "persistence": "permanent",
+            "className": "WebInspector.JavaScriptBreakpointsSidebarPane"
+        },
+        {
+            "type": "@WebInspector.ContextFlavorListener",
+            "contextTypes": ["WebInspector.DebuggerPausedDetails"],
+            "className": "WebInspector.JavaScriptBreakpointsSidebarPane"
+        },
+        {
+            "type": "@WebInspector.ContextFlavorListener",
+            "contextTypes": ["WebInspector.DebuggerPausedDetails"],
+            "className": "WebInspector.XHRBreakpointsSidebarPane"
+        },
+        {
+            "type": "@WebInspector.ContextFlavorListener",
+            "contextTypes": ["WebInspector.DebuggerPausedDetails"],
+            "className": "WebInspector.DOMBreakpointsSidebarPane"
+        },
+        {
+            "type": "@WebInspector.ContextFlavorListener",
+            "contextTypes": ["WebInspector.DebuggerPausedDetails"],
+            "className": "WebInspector.CallStackSidebarPane"
+        },
+        {
+            "type": "@WebInspector.ContextFlavorListener",
+            "contextTypes": ["WebInspector.DebuggerModel.CallFrame"],
+            "className": "WebInspector.ScopeChainSidebarPane"
         }
     ],
     "dependencies": [

@@ -169,7 +169,7 @@ WebInspector.EventListenerBreakpointsSidebarPane.prototype = {
             breakpointItem = this._findBreakpointItem(eventName, WebInspector.EventListenerBreakpointsSidebarPane.eventTargetAny);
         if (!breakpointItem)
             return;
-        WebInspector.viewManager.revealViewWithWidget(this);
+        WebInspector.viewManager.showView("sources.eventListenerBreakpoints");
         breakpointItem.parent.element.expand();
         breakpointItem.element.listItemElement.classList.add("breakpoint-hit");
         this._highlightedElement = breakpointItem.element.listItemElement;

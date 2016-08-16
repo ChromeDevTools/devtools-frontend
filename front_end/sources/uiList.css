@@ -10,6 +10,9 @@
     min-height: 18px;
     white-space: nowrap;
     line-height: 20px;
+}
+
+.list-item:not(:last-child) {
     border-bottom: 1px solid #eee;
 }
 

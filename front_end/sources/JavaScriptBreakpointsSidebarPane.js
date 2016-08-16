@@ -4,19 +4,17 @@
 
 /**
  * @constructor
- * @extends {WebInspector.SimpleView}
- * @param {!WebInspector.BreakpointManager} breakpointManager
- * @param {function(!WebInspector.UISourceCode, number=, number=, boolean=)} showSourceLineDelegate
+ * @extends {WebInspector.VBox}
+ * @implements {WebInspector.ContextFlavorListener}
  */
-WebInspector.JavaScriptBreakpointsSidebarPane = function(breakpointManager, showSourceLineDelegate)
+WebInspector.JavaScriptBreakpointsSidebarPane = function()
 {
-    WebInspector.SimpleView.call(this, WebInspector.UIString("Breakpoints"));
+    WebInspector.VBox.call(this);
     this.registerRequiredCSS("components/breakpointsList.css");
 
-    this._breakpointManager = breakpointManager;
-    this._showSourceLineDelegate = showSourceLineDelegate;
+    this._breakpointManager = WebInspector.breakpointManager;
 
-    this.listElement = createElementWithClass("ol", "breakpoint-list");
+    this._listElement = createElementWithClass("ol", "breakpoint-list");
 
     this.emptyElement = this.element.createChild("div", "gray-info-message");
     this.emptyElement.textContent = WebInspector.UIString("No Breakpoints");
@@ -31,6 +29,9 @@ WebInspector.JavaScriptBreakpointsSidebarPane = function(breakpointManager, show
     this._breakpointManager.addEventListener(WebInspector.BreakpointManager.Events.BreakpointRemoved, this._breakpointRemoved, this);
 
     this.emptyElement.addEventListener("contextmenu", this._emptyElementContextMenu.bind(this), true);
+    this._breakpointManager.addEventListener(WebInspector.BreakpointManager.Events.BreakpointsActiveStateChanged, this._breakpointsActiveStateChanged, this);
+    this._breakpointsActiveStateChanged();
+    this._update();
 }
 
 WebInspector.JavaScriptBreakpointsSidebarPane.prototype = {
@@ -102,7 +103,7 @@ WebInspector.JavaScriptBreakpointsSidebarPane.prototype = {
         uiLocation.uiSourceCode.requestContent().then(didRequestContent.bind(this));
 
         element._data = uiLocation;
-        var currentElement = this.listElement.firstChild;
+        var currentElement = this._listElement.firstChild;
         while (currentElement) {
             if (currentElement._data && this._compareBreakpoints(currentElement._data, element._data) > 0)
                 break;
@@ -135,29 +136,44 @@ WebInspector.JavaScriptBreakpointsSidebarPane.prototype = {
     },
 
     /**
-     * @param {!WebInspector.BreakpointManager.Breakpoint} breakpoint
+     * @override
+     * @param {?Object} object
      */
-    highlightBreakpoint: function(breakpoint)
+    flavorChanged: function(object)
     {
+        this._update();
+    },
+
+    _update: function()
+    {
+        var details = WebInspector.context.flavor(WebInspector.DebuggerPausedDetails);
+        var uiLocation = details && details.callFrames.length ? WebInspector.debuggerWorkspaceBinding.rawLocationToUILocation(details.callFrames[0].location()) : null;
+        var breakpoint = uiLocation ? this._breakpointManager.findBreakpointOnLine(uiLocation.uiSourceCode, uiLocation.lineNumber) : null;
         var breakpointItem = this._items.get(breakpoint);
-        if (!breakpointItem)
+        if (!breakpointItem) {
+            if (this._highlightedBreakpointItem) {
+                this._highlightedBreakpointItem.element.classList.remove("breakpoint-hit");
+                delete this._highlightedBreakpointItem;
+            }
             return;
+        }
+
         breakpointItem.element.classList.add("breakpoint-hit");
         this._highlightedBreakpointItem = breakpointItem;
-        this.revealView();
+        WebInspector.viewManager.showView("sources.jsBreakpoints");
     },
 
-    clearBreakpointHighlight: function()
+    _breakpointsActiveStateChanged: function()
     {
-        if (this._highlightedBreakpointItem) {
-            this._highlightedBreakpointItem.element.classList.remove("breakpoint-hit");
-            delete this._highlightedBreakpointItem;
-        }
+        this._listElement.classList.toggle("breakpoints-list-deactivated", !this._breakpointManager.breakpointsActive());
     },
 
-    _breakpointClicked: function(uiLocation, event)
+    /**
+     * @param {!WebInspector.UILocation} uiLocation
+     */
+    _breakpointClicked: function(uiLocation)
     {
-        this._showSourceLineDelegate(uiLocation.uiSourceCode, uiLocation.lineNumber);
+        WebInspector.Revealer.reveal(uiLocation);
     },
 
     /**
@@ -214,21 +230,21 @@ WebInspector.JavaScriptBreakpointsSidebarPane.prototype = {
     _addListElement: function(element, beforeElement)
     {
         if (beforeElement)
-            this.listElement.insertBefore(element, beforeElement);
+            this._listElement.insertBefore(element, beforeElement);
         else {
-            if (!this.listElement.firstChild) {
+            if (!this._listElement.firstChild) {
                 this.element.removeChild(this.emptyElement);
-                this.element.appendChild(this.listElement);
+                this.element.appendChild(this._listElement);
             }
-            this.listElement.appendChild(element);
+            this._listElement.appendChild(element);
         }
     },
 
     _removeListElement: function(element)
     {
-        this.listElement.removeChild(element);
-        if (!this.listElement.firstChild) {
-            this.element.removeChild(this.listElement);
+        this._listElement.removeChild(element);
+        if (!this._listElement.firstChild) {
+            this.element.removeChild(this._listElement);
             this.element.appendChild(this.emptyElement);
         }
     },
@@ -247,13 +263,13 @@ WebInspector.JavaScriptBreakpointsSidebarPane.prototype = {
 
     reset: function()
     {
-        this.listElement.removeChildren();
-        if (this.listElement.parentElement) {
-            this.element.removeChild(this.listElement);
+        this._listElement.removeChildren();
+        if (this._listElement.parentElement) {
+            this.element.removeChild(this._listElement);
             this.element.appendChild(this.emptyElement);
         }
         this._items.clear();
     },
 
-    __proto__: WebInspector.SimpleView.prototype
+    __proto__: WebInspector.VBox.prototype
 }

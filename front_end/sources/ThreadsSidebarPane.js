@@ -4,12 +4,12 @@
 
 /**
  * @constructor
- * @extends {WebInspector.SimpleView}
+ * @extends {WebInspector.VBox}
  * @implements {WebInspector.TargetManager.Observer}
  */
 WebInspector.ThreadsSidebarPane = function()
 {
-    WebInspector.SimpleView.call(this, WebInspector.UIString("Threads"));
+    WebInspector.VBox.call(this);
 
     /** @type {!Map.<!WebInspector.DebuggerModel, !WebInspector.UIList.Item>} */
     this._debuggerModelToListItems = new Map();
@@ -137,5 +137,5 @@ WebInspector.ThreadsSidebarPane.prototype = {
     },
 
 
-    __proto__: WebInspector.SimpleView.prototype
+    __proto__: WebInspector.VBox.prototype
 }

@@ -302,16 +302,6 @@ WebInspector.ViewManager = function()
 
 WebInspector.ViewManager.prototype = {
     /**
-     * @param {!WebInspector.Widget} widget
-     */
-    revealViewWithWidget: function(widget)
-    {
-        var view = widget[WebInspector.View._symbol];
-        if (view)
-            this.revealView(view);
-    },
-
-    /**
      * @param {!WebInspector.View} view
      * @return {!Promise}
      */
@@ -326,6 +316,15 @@ WebInspector.ViewManager.prototype = {
 
     /**
      * @param {string} viewId
+     * @return {?WebInspector.View}
+     */
+    view: function(viewId)
+    {
+        return this._views.get(viewId);
+    },
+
+    /**
+     * @param {string} viewId
      * @return {!Promise}
      */
     showView: function(viewId)
@@ -335,13 +334,20 @@ WebInspector.ViewManager.prototype = {
             console.error("Could not find view for id: '" + viewId + "' " + new Error().stack);
             return Promise.resolve();
         }
+
         var locationName = this._locationNameByViewId.get(viewId);
         if (locationName === "drawer-view")
             WebInspector.userMetrics.drawerShown(viewId);
 
+        var location = view[WebInspector.ViewManager._Location.symbol];
+        if (location) {
+            location._reveal();
+            return location.showView(view);
+        }
+
         return this._resolveLocation(locationName).then(location => {
             if (!location)
-                return;
+                throw new Error("Could not resolve location for view: " + viewId);
             location._reveal();
             return location.showView(view);
         });
@@ -672,6 +678,7 @@ WebInspector.ViewManager._TabbedLocation.prototype = {
             throw new Error("Insert before in tabbed pane is not supported");
         if (!this._tabbedPane.hasTab(view.viewId())) {
             view[WebInspector.ViewManager._Location.symbol] = this;
+            this._manager._views.set(view.viewId(), view);
             this._views.set(view.viewId(), view);
             this._appendTab(view);
         }
@@ -772,6 +779,7 @@ WebInspector.ViewManager._StackLocation.prototype = {
         var container = this._expandableContainers.get(view.viewId());
         if (!container) {
             view[WebInspector.ViewManager._Location.symbol] = this;
+            this._manager._views.set(view.viewId(), view);
             container = new WebInspector.ViewManager._ExpandableContainerWidget(view);
             var beforeElement = null;
             if (insertBefore) {

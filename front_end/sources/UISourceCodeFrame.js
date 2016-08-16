@@ -242,7 +242,6 @@ WebInspector.UISourceCodeFrame.prototype = {
         {
             contextMenu.appendApplicableItems(this._uiSourceCode);
             contextMenu.appendApplicableItems(new WebInspector.UILocation(this._uiSourceCode, lineNumber, columnNumber));
-            contextMenu.appendSeparator();
         }
 
         return WebInspector.SourceFrame.prototype.populateTextAreaContextMenu.call(this, contextMenu, lineNumber, columnNumber)

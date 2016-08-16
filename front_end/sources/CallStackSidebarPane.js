@@ -26,6 +26,7 @@
 /**
  * @constructor
  * @extends {WebInspector.SimpleView}
+ * @implements {WebInspector.ContextFlavorListener}
  */
 WebInspector.CallStackSidebarPane = function()
 {
@@ -40,18 +41,22 @@ WebInspector.CallStackSidebarPane = function()
     /** @type {!Array<!WebInspector.CallStackSidebarPane.CallFrame>} */
     this.callFrames = [];
     this._locationPool = new WebInspector.LiveLocationPool();
-    WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.DebuggerPaused, this._update, this);
-    WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.DebuggerResumed, this._update, this);
-    WebInspector.context.addFlavorChangeListener(WebInspector.Target, this._update, this);
-    WebInspector.context.addFlavorChangeListener(WebInspector.DebuggerModel.CallFrame, this._updateCallFrame, this);
+    this._update();
 }
 
 WebInspector.CallStackSidebarPane.prototype = {
+    /**
+     * @override
+     * @param {?Object} object
+     */
+    flavorChanged: function(object)
+    {
+        this._update();
+    },
+
     _update: function()
     {
-        var target = WebInspector.context.flavor(WebInspector.Target);
-        var debuggerModel = WebInspector.DebuggerModel.fromTarget(target);
-        var details = debuggerModel ? debuggerModel.debuggerPausedDetails() : null;
+        var details = WebInspector.context.flavor(WebInspector.DebuggerPausedDetails);
 
         this.callFrameList.detach();
         this.callFrameList.clear();
@@ -59,20 +64,19 @@ WebInspector.CallStackSidebarPane.prototype = {
         this.element.removeChildren();
         this._locationPool.disposeAll();
 
-        if (!details) {
-            var infoElement = this.element.createChild("div", "callstack-info");
-            infoElement.textContent = WebInspector.UIString("Not Paused");
-            return;
-        }
-
         this.callFrameList.show(this.element);
-        this._debuggerModel = details.debuggerModel;
-        var asyncStackTrace = details.asyncStackTrace;
-
-        delete this._statusMessageElement;
         delete this._hiddenCallFramesMessageElement;
         this.callFrames = [];
         this._hiddenCallFrames = 0;
+
+        this._updateStatusMessage(details);
+
+        if (!details) {
+            WebInspector.context.setFlavor(WebInspector.DebuggerModel.CallFrame, null);
+            return;
+        }
+        this._debuggerModel = details.debuggerModel;
+        var asyncStackTrace = details.asyncStackTrace;
 
         this._appendSidebarCallFrames(this._callFramesFromDebugger(details.callFrames));
         var topStackHidden = (this._hiddenCallFrames === this.callFrames.length);
@@ -101,7 +105,54 @@ WebInspector.CallStackSidebarPane.prototype = {
             this.element.insertBefore(element, this.element.firstChild);
             this._hiddenCallFramesMessageElement = element;
         }
-        WebInspector.viewManager.revealViewWithWidget(this);
+        this._selectNextVisibleCallFrame(0);
+        this.revealView();
+    },
+
+    /**
+     * @param {?WebInspector.DebuggerPausedDetails} details
+     */
+    _updateStatusMessage: function(details)
+    {
+        var status = this.contentElement.createChild("div", "callstack-info");
+        status.removeChildren();
+
+        if (!details) {
+            status.textContent = WebInspector.UIString("Not Paused");
+            status.classList.toggle("status", false);
+            return;
+        }
+
+        if (details.reason === WebInspector.DebuggerModel.BreakReason.DOM) {
+            status.appendChild(WebInspector.domBreakpointsSidebarPane.createBreakpointHitStatusMessage(details));
+        } else if (details.reason === WebInspector.DebuggerModel.BreakReason.EventListener) {
+            var eventName = details.auxData["eventName"];
+            var eventNameForUI = WebInspector.EventListenerBreakpointsSidebarPane.eventNameForUI(eventName, details.auxData);
+            status.textContent = WebInspector.UIString("Paused on a \"%s\" Event Listener.", eventNameForUI);
+        } else if (details.reason === WebInspector.DebuggerModel.BreakReason.XHR) {
+            status.textContent = WebInspector.UIString("Paused on a XMLHttpRequest.");
+        } else if (details.reason === WebInspector.DebuggerModel.BreakReason.Exception) {
+            var description = details.auxData["description"] || "";
+            status.textContent = WebInspector.UIString("Paused on exception: '%s'.", description.split("\n", 1)[0]);
+        } else if (details.reason === WebInspector.DebuggerModel.BreakReason.PromiseRejection) {
+            var description = details.auxData["description"] || "";
+            status.textContent = WebInspector.UIString("Paused on promise rejection: '%s'.", description.split("\n", 1)[0]);
+        } else if (details.reason === WebInspector.DebuggerModel.BreakReason.Assert) {
+            status.textContent = WebInspector.UIString("Paused on assertion.");
+        } else if (details.reason === WebInspector.DebuggerModel.BreakReason.DebugCommand) {
+            status.textContent = WebInspector.UIString("Paused on a debugged function.");
+        } else {
+            if (details.callFrames.length) {
+                var uiLocation = details && details.callFrames.length ? WebInspector.debuggerWorkspaceBinding.rawLocationToUILocation(details.callFrames[0].location()) : null;
+                var breakpoint = uiLocation ? WebInspector.breakpointManager.findBreakpointOnLine(uiLocation.uiSourceCode, uiLocation.lineNumber) : null;
+                if (breakpoint) {
+                    status.textContent = WebInspector.UIString("Paused on a JavaScript breakpoint.");
+                }
+            } else {
+                console.warn("ScriptsPanel paused, but callFrames.length is zero."); // TODO remove this once we understand this case better
+            }
+        }
+        status.classList.toggle("hidden", !status.firstChild);
     },
 
     /**
@@ -276,17 +327,6 @@ WebInspector.CallStackSidebarPane.prototype = {
             this._selectNextVisibleCallFrame(0);
     },
 
-    _updateCallFrame: function()
-    {
-        var selectedCallFrame = WebInspector.context.flavor(WebInspector.DebuggerModel.CallFrame);
-        for (var i = 0; i < this.callFrames.length; ++i) {
-            var callFrame = this.callFrames[i];
-            callFrame.setSelected(callFrame._debuggerCallFrame === selectedCallFrame);
-            if (callFrame.isSelected() && callFrame.isHidden())
-                this._revealHiddenCallFrames();
-        }
-    },
-
     /**
      * @return {boolean}
      */
@@ -354,14 +394,22 @@ WebInspector.CallStackSidebarPane.prototype = {
     },
 
     /**
-     * @param {!WebInspector.CallStackSidebarPane.CallFrame} callFrameItem
+     * @param {!WebInspector.CallStackSidebarPane.CallFrame} selectedCallFrame
      */
-    _callFrameSelected: function(callFrameItem)
+    _callFrameSelected: function(selectedCallFrame)
     {
-        callFrameItem.element.scrollIntoViewIfNeeded();
-        var callFrame = callFrameItem._debuggerCallFrame;
-        if (callFrame)
-            callFrame.debuggerModel.setSelectedCallFrame(callFrame);
+        selectedCallFrame.element.scrollIntoViewIfNeeded();
+        var callFrame = selectedCallFrame._debuggerCallFrame;
+
+        for (var i = 0; i < this.callFrames.length; ++i) {
+            var callFrameItem = this.callFrames[i];
+            callFrameItem.setSelected(callFrameItem === selectedCallFrame);
+            if (callFrameItem.isSelected() && callFrameItem.isHidden())
+                this._revealHiddenCallFrames();
+        }
+
+        WebInspector.context.setFlavor(WebInspector.DebuggerModel.CallFrame, callFrame);
+        callFrame.debuggerModel.setSelectedCallFrame(callFrame);
     },
 
     _copyStackTrace: function()
@@ -387,21 +435,6 @@ WebInspector.CallStackSidebarPane.prototype = {
     {
         registerShortcutDelegate(WebInspector.ShortcutsScreen.SourcesPanelShortcuts.NextCallFrame, this._selectNextCallFrameOnStack.bind(this));
         registerShortcutDelegate(WebInspector.ShortcutsScreen.SourcesPanelShortcuts.PrevCallFrame, this._selectPreviousCallFrameOnStack.bind(this));
-    },
-
-    /**
-     * @param {!Element|string} status
-     */
-    setStatus: function(status)
-    {
-        if (!this._statusMessageElement)
-            this._statusMessageElement = this.element.createChild("div", "callstack-info status");
-        if (typeof status === "string") {
-            this._statusMessageElement.textContent = status;
-        } else {
-            this._statusMessageElement.removeChildren();
-            this._statusMessageElement.appendChild(status);
-        }
     },
 
     _keyDown: function(event)

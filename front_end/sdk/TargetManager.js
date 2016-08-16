@@ -78,6 +78,14 @@ WebInspector.TargetManager.prototype = {
     },
 
     /**
+     * @return {string}
+     */
+    inspectedURL: function()
+    {
+        return this._targets[0] ? this._targets[0].inspectedURL() : "";
+    },
+
+    /**
      * @param {!WebInspector.Event} event
      */
     _redispatchEvent: function(event)

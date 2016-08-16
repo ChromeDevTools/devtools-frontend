@@ -45,9 +45,6 @@ WebInspector.BreakpointsSidebarPaneBase = function()
     this.emptyElement.textContent = WebInspector.UIString("No Breakpoints");
 
     this.element.appendChild(this.emptyElement);
-    WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.DebuggerPaused, this._update, this);
-    WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.DebuggerResumed, this._update, this);
-    WebInspector.context.addFlavorChangeListener(WebInspector.Target, this._update, this);
 }
 
 WebInspector.BreakpointsSidebarPaneBase.prototype = {
@@ -93,20 +90,6 @@ WebInspector.BreakpointsSidebarPaneBase.prototype = {
             this.element.appendChild(this.emptyElement);
         }
     },
-
-    _update: function()
-    {
-        var target = WebInspector.context.flavor(WebInspector.Target);
-        var debuggerModel = WebInspector.DebuggerModel.fromTarget(target);
-        var details = debuggerModel ? debuggerModel.debuggerPausedDetails() : null;
-        this.highlightDetails(details);
-    },
-
-    /**
-     * @param {?WebInspector.DebuggerPausedDetails} details
-     * @protected
-     */
-    highlightDetails: function(details) { },
 
     __proto__: WebInspector.VBox.prototype
 }

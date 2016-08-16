@@ -5,6 +5,7 @@
 /**
  * @constructor
  * @extends {WebInspector.BreakpointsSidebarPaneBase}
+ * @implements {WebInspector.ContextFlavorListener}
  * @implements {WebInspector.TargetManager.Observer}
  * @implements {WebInspector.ToolbarItem.ItemsProvider}
  */
@@ -20,8 +21,8 @@ WebInspector.XHRBreakpointsSidebarPane = function()
     this._addButton.addEventListener("click", this._addButtonClicked.bind(this));
 
     this.emptyElement.addEventListener("contextmenu", this._emptyElementContextMenu.bind(this), true);
-
     WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.Browser);
+    this._update();
 }
 
 WebInspector.XHRBreakpointsSidebarPane.prototype = {
@@ -61,7 +62,7 @@ WebInspector.XHRBreakpointsSidebarPane.prototype = {
         if (event)
             event.consume();
 
-        WebInspector.viewManager.revealViewWithWidget(this);
+        WebInspector.viewManager.showView("sources.xhrBreakpoints");
 
         var inputElementContainer = createElementWithClass("p", "breakpoint-condition");
         inputElementContainer.textContent = WebInspector.UIString("Break when URL contains:");
@@ -223,10 +224,16 @@ WebInspector.XHRBreakpointsSidebarPane.prototype = {
 
     /**
      * @override
-     * @param {?WebInspector.DebuggerPausedDetails} details
+     * @param {?Object} object
      */
-    highlightDetails: function(details)
+    flavorChanged: function(object)
     {
+        this._update();
+    },
+
+    _update: function()
+    {
+        var details = WebInspector.context.flavor(WebInspector.DebuggerPausedDetails);
         if (!details || details.reason !== WebInspector.DebuggerModel.BreakReason.XHR) {
             if (this._highlightedElement) {
                 this._highlightedElement.classList.remove("breakpoint-hit");
@@ -238,7 +245,7 @@ WebInspector.XHRBreakpointsSidebarPane.prototype = {
         var element = this._breakpointElements.get(url);
         if (!element)
             return;
-        WebInspector.viewManager.revealViewWithWidget(this);
+        WebInspector.viewManager.showView("sources.xhrBreakpoints");
         element.classList.add("breakpoint-hit");
         this._highlightedElement = element;
     },

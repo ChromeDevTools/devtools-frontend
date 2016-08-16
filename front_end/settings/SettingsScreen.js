@@ -49,7 +49,9 @@ WebInspector.SettingsScreen = function()
     tabbedPane.insertBeforeTabStrip(settingsLabelElement);
     tabbedPane.setShrinkableTabs(false);
     tabbedPane.setVerticalTabLayout(true);
-    tabbedPane.appendTab("shortcuts", WebInspector.UIString("Shortcuts"), WebInspector.shortcutsScreen.createShortcutsTabView());
+    var shortcutsView = new WebInspector.SimpleView(WebInspector.UIString("Shortcuts"));
+    WebInspector.shortcutsScreen.createShortcutsTabView().show(shortcutsView.element);
+    this._tabbedLocation.appendView(shortcutsView);
     tabbedPane.show(this.contentElement);
 
     this.element.addEventListener("keydown", this._keyDown.bind(this), false);
@@ -68,12 +70,11 @@ WebInspector.SettingsScreen._showSettingsScreen = function(name)
     var dialog = new WebInspector.Dialog();
     dialog.addCloseButton();
     settingsScreen.show(dialog.element);
-    settingsScreen._selectTab(name || "preferences");
     dialog.show();
+    settingsScreen._selectTab(name || "preferences");
 }
 
 WebInspector.SettingsScreen.prototype = {
-
     /**
      * @override
      * @param {string} locationName
@@ -504,7 +505,7 @@ WebInspector.SettingsScreen.ActionDelegate.prototype = {
             InspectorFrontendHost.openInNewTab("https://developers.google.com/web/tools/chrome-devtools/");
             return true;
         case "settings.shortcuts":
-            WebInspector.SettingsScreen._showSettingsScreen("shortcuts");
+            WebInspector.SettingsScreen._showSettingsScreen(WebInspector.UIString("Shortcuts"));
             return true;
         }
         return false;

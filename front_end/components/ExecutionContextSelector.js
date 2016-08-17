@@ -16,6 +16,7 @@ WebInspector.ExecutionContextSelector = function(targetManager, context)
 
     targetManager.addModelListener(WebInspector.RuntimeModel, WebInspector.RuntimeModel.Events.ExecutionContextCreated, this._onExecutionContextCreated, this);
     targetManager.addModelListener(WebInspector.RuntimeModel, WebInspector.RuntimeModel.Events.ExecutionContextDestroyed, this._onExecutionContextDestroyed, this);
+    targetManager.addModelListener(WebInspector.RuntimeModel, WebInspector.RuntimeModel.Events.ExecutionContextOrderChanged, this._onExecutionContextOrderChanged, this);
     this._targetManager = targetManager;
     this._context = context;
 }
@@ -141,12 +142,7 @@ WebInspector.ExecutionContextSelector.prototype = {
      */
     _onExecutionContextCreated: function(event)
     {
-        var executionContext = /** @type {!WebInspector.ExecutionContext} */ (event.data);
-        if (!this._context.flavor(WebInspector.ExecutionContext) || this._shouldSwitchToContext(executionContext)) {
-            this._ignoreContextChanged = true;
-            this._context.setFlavor(WebInspector.ExecutionContext, executionContext);
-            this._ignoreContextChanged = false;
-        }
+        this._switchContextIfNecessary(/** @type {!WebInspector.ExecutionContext} */ (event.data));
     },
 
     /**
@@ -157,6 +153,34 @@ WebInspector.ExecutionContextSelector.prototype = {
         var executionContext = /** @type {!WebInspector.ExecutionContext}*/ (event.data);
         if (this._context.flavor(WebInspector.ExecutionContext) === executionContext)
             this._currentExecutionContextGone();
+    },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _onExecutionContextOrderChanged: function(event)
+    {
+        var runtimeModel = /** @type {!WebInspector.RuntimeModel} */ (event.data);
+        var executionContexts = runtimeModel.executionContexts();
+        for (var i = 0; i < executionContexts.length; i++) {
+            if (this._switchContextIfNecessary(executionContexts[i]))
+                break;
+        }
+    },
+
+    /**
+     * @param {!WebInspector.ExecutionContext} executionContext
+     * @return {boolean}
+     */
+    _switchContextIfNecessary: function(executionContext)
+    {
+        if (!this._context.flavor(WebInspector.ExecutionContext) || this._shouldSwitchToContext(executionContext)) {
+            this._ignoreContextChanged = true;
+            this._context.setFlavor(WebInspector.ExecutionContext, executionContext);
+            this._ignoreContextChanged = false;
+            return true;
+        }
+        return false;
     },
 
     _currentExecutionContextGone: function()

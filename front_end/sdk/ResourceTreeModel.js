@@ -55,6 +55,7 @@ WebInspector.ResourceTreeModel = function(target, networkManager, securityOrigin
 
     this._pendingReloadOptions = null;
     this._reloadSuspensionCount = 0;
+    this._fireExecutionContextOrderChanged = target.runtimeModel.fireExecutionContextOrderChanged.bind(target.runtimeModel);
 
     target.runtimeModel.setExecutionContextComparator(this._executionContextComparator.bind(this));
 }
@@ -132,6 +133,7 @@ WebInspector.ResourceTreeModel.prototype = {
             this.target().setInspectedURL(mainFramePayload.frame.url);
         }
         this._cachedResourcesProcessed = true;
+        this._fireExecutionContextOrderChanged();
         this.dispatchEventToListeners(WebInspector.ResourceTreeModel.EventTypes.CachedResourcesLoaded);
     },
 

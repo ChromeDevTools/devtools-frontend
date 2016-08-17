@@ -54,7 +54,8 @@ WebInspector.RuntimeModel = function(target)
 WebInspector.RuntimeModel.Events = {
     ExecutionContextCreated: "ExecutionContextCreated",
     ExecutionContextDestroyed: "ExecutionContextDestroyed",
-    ExecutionContextChanged: "ExecutionContextChanged"
+    ExecutionContextChanged: "ExecutionContextChanged",
+    ExecutionContextOrderChanged: "ExecutionContextOrderChanged"
 }
 
 WebInspector.RuntimeModel._privateScript = "private script";
@@ -131,6 +132,11 @@ WebInspector.RuntimeModel.prototype = {
             return;
         this._executionContextById.delete(executionContextId);
         this.dispatchEventToListeners(WebInspector.RuntimeModel.Events.ExecutionContextDestroyed, executionContext);
+    },
+
+    fireExecutionContextOrderChanged: function()
+    {
+        this.dispatchEventToListeners(WebInspector.RuntimeModel.Events.ExecutionContextOrderChanged, this);
     },
 
     _executionContextsCleared: function()

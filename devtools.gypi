@@ -237,6 +237,7 @@
             'front_end/emulation/TouchModel.js',
         ],
         'devtools_ui_js_files': [
+            'front_end/ui/bezierSwatch.css',
             'front_end/ui/checkboxTextLabel.css',
             'front_end/ui/closeButton.css',
             'front_end/ui/colorSwatch.css',

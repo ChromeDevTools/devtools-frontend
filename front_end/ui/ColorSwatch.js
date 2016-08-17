@@ -163,3 +163,16 @@ WebInspector.ColorSwatch._nextColorFormat = function(color, curFormat)
         return cf.RGBA;
     }
 }
+
+WebInspector.BezierSwatch = {}
+
+/**
+ * @return {!Element}
+ */
+WebInspector.BezierSwatch.create = function()
+{
+    var element = createElementWithClass("span", "bezier-icon");
+    var root = WebInspector.createShadowRootWithCoreStyles(element, "ui/bezierSwatch.css");
+    root.createChild("span", "bezier-swatch");
+    return element;
+}

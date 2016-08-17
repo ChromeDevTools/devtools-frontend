@@ -12,7 +12,14 @@ WebInspector.BezierPopoverIcon = function(treeElement, swatchPopoverHelper, text
 {
     this._treeElement = treeElement;
     this._swatchPopoverHelper = swatchPopoverHelper;
-    this._createDOM(text);
+
+    this._element = createElement("span");
+    this._iconElement = WebInspector.BezierSwatch.create();
+    this._iconElement.title = WebInspector.UIString("Open cubic bezier editor");
+    this._iconElement.addEventListener("click", this._iconClick.bind(this), false);
+    this._element.appendChild(this._iconElement);
+    this._bezierValueElement = this._element.createChild("span");
+    this._bezierValueElement.textContent = text;
 
     this._boundBezierChanged = this._bezierChanged.bind(this);
     this._boundOnScroll = this._onScroll.bind(this);
@@ -25,27 +32,6 @@ WebInspector.BezierPopoverIcon.prototype = {
     element: function()
     {
         return this._element;
-    },
-
-    /**
-     * @param {string} text
-     */
-    _createDOM: function(text)
-    {
-        this._element = createElement("nobr");
-
-        this._iconElement = this._element.createChild("div", "popover-icon bezier-icon");
-        this._iconElement.title = WebInspector.UIString("Open cubic bezier editor");
-        var svg = this._iconElement.createSVGChild("svg");
-        svg.setAttribute("height", 10);
-        svg.setAttribute("width", 10);
-        this._iconElement.addEventListener("click", this._iconClick.bind(this), false);
-        var g = svg.createSVGChild("g");
-        var path = g.createSVGChild("path");
-        path.setAttribute("d", "M2,8 C2,3 8,7 8,2");
-
-        this._bezierValueElement = this._element.createChild("span");
-        this._bezierValueElement.textContent = text;
     },
 
     /**

@@ -50,6 +50,7 @@
         "ZoomManager.js"
     ],
     "resources": [
+        "bezierSwatch.css",
         "checkboxTextLabel.css",
         "closeButton.css",
         "colorSwatch.css",

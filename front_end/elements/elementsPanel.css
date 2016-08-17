@@ -633,30 +633,6 @@
     white-space: pre;
 }
 
-.popover-icon {
-    margin-left: 1px;
-    margin-right: 2px;
-    width: 10px;
-    height: 10px;
-    position: relative;
-    top: 1px;
-    display: inline-block;
-    line-height: 1px;
-    -webkit-user-select: none;
-}
-
-.bezier-icon {
-    background-color: #9C27B0;
-    border-radius: 2px;
-}
-
-.bezier-icon path {
-    stroke: white;
-    stroke-width: 1.5;
-    stroke-linecap: square;
-    fill: none;
-}
-
 li.child-editing .styles-clipboard-only {
     display: none;
 }

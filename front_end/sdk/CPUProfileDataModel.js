@@ -42,7 +42,7 @@ WebInspector.CPUProfileDataModel = function(profile)
     this.profileStartTime = profile.startTime * 1000;
     this.profileEndTime = profile.endTime * 1000;
     this.totalHitCount = 0;
-    this.profileHead = this._translateProfileTree(profile.head);
+    this.profileHead = this._translateProfileTree(profile.nodes);
     WebInspector.ProfileTreeModel.call(this, this.profileHead);
     this._extractMetaNodes();
     if (this.samples) {
@@ -54,19 +54,11 @@ WebInspector.CPUProfileDataModel = function(profile)
 
 WebInspector.CPUProfileDataModel.prototype = {
     /**
-     * @param {!ProfilerAgent.CPUProfileNode} root
+     * @param {!Array<!ProfilerAgent.CPUProfileNode>} nodes
      * @return {!WebInspector.CPUProfileNode}
      */
-    _translateProfileTree: function(root)
+    _translateProfileTree: function(nodes)
     {
-        /**
-         * @param  {!ProfilerAgent.CPUProfileNode} node
-         * @return {number}
-         */
-        function computeHitCountForSubtree(node)
-        {
-            return node.children.reduce((acc, node) => acc + computeHitCountForSubtree(node), node.hitCount);
-        }
         /**
          * @param {!ProfilerAgent.CPUProfileNode} node
          * @return {boolean}
@@ -77,14 +69,21 @@ WebInspector.CPUProfileDataModel.prototype = {
                 return !!node.callFrame.url && node.callFrame.url.startsWith("native ");
             return !!node.url && node.url.startsWith("native ");
         }
-        this.totalHitCount = computeHitCountForSubtree(root);
+        /** @type {!Map<number, !ProfilerAgent.CPUProfileNode>} */
+        var nodeByIdMap = new Map();
+        for (var i = 0; i < nodes.length; ++i) {
+            var node = nodes[i];
+            nodeByIdMap.set(node.id, node);
+        }
+        this.totalHitCount = nodes.reduce((acc, node) => acc + node.hitCount, 0);
         var sampleTime = (this.profileEndTime - this.profileStartTime) / this.totalHitCount;
         var keepNatives = !!WebInspector.moduleSetting("showNativeFunctionsInJSProfile").get();
+        var root = nodes[0];
         /** @type {!Map<number, number>} */
         var idMap = new Map([[root.id, root.id]]);
         var resultRoot = new WebInspector.CPUProfileNode(root, sampleTime);
         var parentNodeStack = root.children.map(() => resultRoot);
-        var sourceNodeStack = root.children;
+        var sourceNodeStack = root.children.map(id => nodeByIdMap.get(id));
         while (sourceNodeStack.length) {
             var parentNode = parentNodeStack.pop();
             var sourceNode = sourceNodeStack.pop();
@@ -97,7 +96,7 @@ WebInspector.CPUProfileDataModel.prototype = {
             }
             idMap.set(sourceNode.id, parentNode.id);
             parentNodeStack.push.apply(parentNodeStack, sourceNode.children.map(() => parentNode));
-            sourceNodeStack.push.apply(sourceNodeStack, sourceNode.children);
+            sourceNodeStack.push.apply(sourceNodeStack, sourceNode.children.map(id => nodeByIdMap.get(id)));
         }
         if (this.samples)
             this.samples = this.samples.map(id => idMap.get(id));

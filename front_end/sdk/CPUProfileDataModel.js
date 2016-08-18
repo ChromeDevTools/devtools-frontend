@@ -42,6 +42,7 @@ WebInspector.CPUProfileDataModel = function(profile)
     this.profileStartTime = profile.startTime * 1000;
     this.profileEndTime = profile.endTime * 1000;
     this.totalHitCount = 0;
+    this._compatibilityConversionHeadToNodes(profile);
     this.profileHead = this._translateProfileTree(profile.nodes);
     WebInspector.ProfileTreeModel.call(this, this.profileHead);
     this._extractMetaNodes();
@@ -53,6 +54,30 @@ WebInspector.CPUProfileDataModel = function(profile)
 }
 
 WebInspector.CPUProfileDataModel.prototype = {
+    /**
+     * @param {!ProfilerAgent.CPUProfile} profile
+     */
+    _compatibilityConversionHeadToNodes: function(profile)
+    {
+        if (!profile.head || profile.nodes)
+            return;
+        /** @type {!Array<!ProfilerAgent.CPUProfileNode>} */
+        var nodes = [];
+        convertNodesTree(profile.head);
+        profile.nodes = nodes;
+        profile.head = null;
+        /**
+         * @param {!ProfilerAgent.CPUProfileNode} node
+         * @return {number}
+         */
+        function convertNodesTree(node)
+        {
+            nodes.push(node);
+            node.children = (/** @type {!Array<!ProfilerAgent.CPUProfileNode>} */(node.children)).map(convertNodesTree);
+            return node.id;
+        }
+    },
+
     /**
      * @param {!Array<!ProfilerAgent.CPUProfileNode>} nodes
      * @return {!WebInspector.CPUProfileNode}

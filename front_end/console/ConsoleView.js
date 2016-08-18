@@ -770,8 +770,10 @@ WebInspector.ConsoleView.prototype = {
 
     _promptKeyDown: function(event)
     {
-        this._updateStickToBottomOnWheel();
-        if (isEnterKey(event)) {
+        if (event.key === "PageUp") {
+            this._updateStickToBottomOnWheel();
+            return;
+        } else if (isEnterKey(event)) {
             this._enterKeyPressed(event);
             return;
         }

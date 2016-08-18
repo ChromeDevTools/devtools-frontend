@@ -68,10 +68,14 @@ WebInspector.TimelineLoader._createFileReader = function(file, delegate)
     return new WebInspector.ChunkedFileReader(file, WebInspector.TimelineLoader.TransferChunkLengthBytes, delegate);
 }
 
+/**
+ * @enum {symbol}
+ */
 WebInspector.TimelineLoader.State = {
-    Initial: "Initial",
-    LookingForEvents: "LookingForEvents",
-    ReadingEvents: "ReadingEvents"
+    Initial: Symbol("Initial"),
+    LookingForEvents: Symbol("LookingForEvents"),
+    ReadingEvents: Symbol("ReadingEvents"),
+    SkippingTail: Symbol("SkippingTail")
 }
 
 WebInspector.TimelineLoader.prototype = {
@@ -118,7 +122,15 @@ WebInspector.TimelineLoader.prototype = {
             this._state = WebInspector.TimelineLoader.State.ReadingEvents;
         }
 
-        this._jsonTokenizer.write(chunk);
+        if (this._state !== WebInspector.TimelineLoader.State.ReadingEvents)
+            return;
+        if (this._jsonTokenizer.write(chunk))
+            return;
+        this._state = WebInspector.TimelineLoader.State.SkippingTail;
+        if (this._firstChunk) {
+            this._reportErrorAndCancelLoading(WebInspector.UIString("Malformed timeline input, wrong JSON brackets balance"));
+            return;
+        }
     },
 
     /**
@@ -215,13 +227,13 @@ WebInspector.TimelineLoader.prototype = {
     onError: function(reader, event)
     {
         switch (event.target.error.name) {
-        case 'NotFoundError':
+        case "NotFoundError":
             this._reportErrorAndCancelLoading(WebInspector.UIString("File \"%s\" not found.", reader.fileName()));
             break;
-        case 'NotReadableError':
+        case "NotReadableError":
             this._reportErrorAndCancelLoading(WebInspector.UIString("File \"%s\" is not readable", reader.fileName()));
             break;
-        case 'AbortError':
+        case "AbortError":
             break;
         default:
             this._reportErrorAndCancelLoading(WebInspector.UIString("An error occurred while reading the file \"%s\"", reader.fileName()));

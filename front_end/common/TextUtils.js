@@ -238,6 +238,7 @@ WebInspector.TextUtils.BalancedJSONTokenizer = function(callback, findMultiple)
 WebInspector.TextUtils.BalancedJSONTokenizer.prototype = {
     /**
      * @param {string} chunk
+     * @return {boolean}
      */
     write: function(chunk)
     {
@@ -254,15 +255,24 @@ WebInspector.TextUtils.BalancedJSONTokenizer.prototype = {
             } else if (character === "{") {
                 ++this._balance;
             } else if (character === "}") {
-                if (--this._balance === 0) {
+                --this._balance;
+                if (this._balance < 0) {
+                    this._reportBalanced();
+                    return false;
+                }
+                if (!this._balance) {
                     this._lastBalancedIndex = index + 1;
                     if (!this._findMultiple)
                         break;
                 }
+            } else if (character === "]" && !this._balance) {
+                this._reportBalanced();
+                return false;
             }
         }
         this._index = index;
         this._reportBalanced();
+        return true;
     },
 
     _reportBalanced: function()

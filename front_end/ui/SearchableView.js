@@ -558,6 +558,8 @@ WebInspector.SearchableView.prototype = {
 
     _onValueChanged: function()
     {
+        if (!this._searchIsVisible)
+            return;
         delete this._valueChangedTimeoutId;
         this._performSearch(false, true);
     },

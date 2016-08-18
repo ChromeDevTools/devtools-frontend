@@ -32,14 +32,15 @@
  * @constructor
  * @extends {WebInspector.SDKModel}
  * @param {!WebInspector.Target} target
+ * @param {!WebInspector.DOMModel} domModel
  */
-WebInspector.CSSModel = function(target)
+WebInspector.CSSModel = function(target, domModel)
 {
     WebInspector.SDKModel.call(this, WebInspector.CSSModel, target);
-    this._domModel = WebInspector.DOMModel.fromTarget(target);
+    this._domModel = domModel;
     this._agent = target.cssAgent();
     this._styleLoader = new WebInspector.CSSModel.ComputedStyleLoader(this);
-    target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._mainFrameNavigated, this);
+    WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.MainFrameNavigated, this._mainFrameNavigated, this);
     target.registerCSSDispatcher(new WebInspector.CSSDispatcher(this));
     this._agent.enable().then(this._wasEnabled.bind(this));
     /** @type {!Map.<string, !WebInspector.CSSStyleSheetHeader>} */
@@ -237,7 +238,7 @@ WebInspector.CSSModel.prototype = {
      */
     domModel: function()
     {
-        return /** @type {!WebInspector.DOMModel} */(this._domModel);
+        return this._domModel;
     },
 
     /**
@@ -728,7 +729,7 @@ WebInspector.CSSModel.prototype = {
      */
     requestViaInspectorStylesheet: function(node, userCallback)
     {
-        var frameId = node.frameId() || this.target().resourceTreeModel.mainFrame.id;
+        var frameId = node.frameId() || WebInspector.ResourceTreeModel.fromTarget(this.target()).mainFrame.id;
         var headers = this._styleSheetIdToHeader.valuesArray();
         for (var i = 0; i < headers.length; ++i) {
             var styleSheetHeader = headers[i];
@@ -945,8 +946,13 @@ WebInspector.CSSModel.prototype = {
             .catchException(/** @type {string} */(""));
     },
 
-    _mainFrameNavigated: function()
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _mainFrameNavigated: function(event)
     {
+        if (event.data.target() !== this.target())
+            return;
         this._resetStyleSheets();
     },
 

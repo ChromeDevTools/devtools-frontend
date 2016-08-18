@@ -30,8 +30,9 @@
  * @constructor
  * @extends {WebInspector.SDKModel}
  * @param {!WebInspector.Target} target
+ * @param {!WebInspector.ResourceTreeModel} resourceTreeModel
  */
-WebInspector.ApplicationCacheModel = function(target)
+WebInspector.ApplicationCacheModel = function(target, resourceTreeModel)
 {
     WebInspector.SDKModel.call(this, WebInspector.ApplicationCacheModel, target);
 
@@ -39,8 +40,8 @@ WebInspector.ApplicationCacheModel = function(target)
     this._agent = target.applicationCacheAgent();
     this._agent.enable();
 
-    target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.FrameNavigated, this._frameNavigated, this);
-    target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.FrameDetached, this._frameDetached, this);
+    resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.FrameNavigated, this._frameNavigated, this);
+    resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.FrameDetached, this._frameDetached, this);
 
     this._statuses = {};
     this._manifestURLsByFrame = {};

@@ -57,7 +57,7 @@ WebInspector.WorkerManager.prototype = {
         this._enabled = true;
 
         this.target().workerAgent().enable();
-        this.target().resourceTreeModel.addEventListener(WebInspector.TargetManager.Events.MainFrameNavigated, this._mainFrameNavigated, this);
+        WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.MainFrameNavigated, this._mainFrameNavigated, this);
     },
 
     disable: function()
@@ -67,7 +67,7 @@ WebInspector.WorkerManager.prototype = {
         this._enabled = false;
         this._reset();
         this.target().workerAgent().disable();
-        this.target().resourceTreeModel.removeEventListener(WebInspector.TargetManager.Events.MainFrameNavigated, this._mainFrameNavigated, this);
+        WebInspector.targetManager.removeEventListener(WebInspector.TargetManager.Events.MainFrameNavigated, this._mainFrameNavigated, this);
     },
 
     dispose: function()
@@ -140,7 +140,9 @@ WebInspector.WorkerManager.prototype = {
      */
     _mainFrameNavigated: function(event)
     {
-        this._reset();
+        if (event.data.target() !== this.target())
+            return;
+        this._reset(); // TODO (dgozman): Probably, unnecessary. Consider removal.
     },
 
     /**

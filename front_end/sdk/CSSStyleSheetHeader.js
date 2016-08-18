@@ -77,7 +77,8 @@ WebInspector.CSSStyleSheetHeader.prototype = {
      */
     _viaInspectorResourceURL: function()
     {
-        var frame = this._cssModel.target().resourceTreeModel.frameForId(this.frameId);
+        var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(this.target());
+        var frame = resourceTreeModel.frameForId(this.frameId);
         console.assert(frame);
         var parsedURL = new WebInspector.ParsedURL(frame.url);
         var fakeURL = "inspector://" + parsedURL.host + parsedURL.folderPathComponents;

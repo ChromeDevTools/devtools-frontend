@@ -695,9 +695,8 @@ WebInspector.NetworkPanel.FilmStripRecorder.prototype = {
         if (!this._tracingModel)
             return;
         this._tracingModel.tracingComplete();
-        var resourceTreeModel = this._target.resourceTreeModel;
+        WebInspector.targetManager.resumeReload(this._target);
         this._target = null;
-        setImmediate(resourceTreeModel.resumeReload.bind(resourceTreeModel));
         this._callback(new WebInspector.FilmStripModel(this._tracingModel, this._timeCalculator.minimumBoundary() * 1000));
         delete this._callback;
     },
@@ -749,7 +748,7 @@ WebInspector.NetworkPanel.FilmStripRecorder.prototype = {
             return;
 
         this._target.tracingManager.stop();
-        this._target.resourceTreeModel.suspendReload();
+        WebInspector.targetManager.suspendReload(this._target);
         this._callback = callback;
         this._filmStripView.setStatusText(WebInspector.UIString("Fetching frames..."));
     }

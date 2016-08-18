@@ -194,14 +194,14 @@ WebInspector.TargetManager.prototype = {
         target.resourceTreeModel = new WebInspector.ResourceTreeModel(target, networkManager, securityOriginManager);
 
         if (networkManager)
-            new WebInspector.NetworkLog(target, networkManager);
+            new WebInspector.NetworkLog(target, target.resourceTreeModel, networkManager);
 
         if (target.hasJSCapability())
             new WebInspector.DebuggerModel(target);
 
         if (target.hasDOMCapability()) {
-            new WebInspector.DOMModel(target);
-            new WebInspector.CSSModel(target);
+            var domModel = new WebInspector.DOMModel(target);
+            new WebInspector.CSSModel(target, domModel);
         }
 
         /** @type {?WebInspector.WorkerManager} */
@@ -312,6 +312,26 @@ WebInspector.TargetManager.prototype = {
     mainTarget: function()
     {
         return this._targets[0] || null;
+    },
+
+    /**
+     * @param {!WebInspector.Target} target
+     */
+    suspendReload: function(target)
+    {
+        var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(target);
+        if (resourceTreeModel)
+            resourceTreeModel.suspendReload();
+    },
+
+    /**
+     * @param {!WebInspector.Target} target
+     */
+    resumeReload: function(target)
+    {
+        var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(target);
+        if (resourceTreeModel)
+            setImmediate(resourceTreeModel.resumeReload.bind(resourceTreeModel));
     },
 
     __proto__: WebInspector.Object.prototype

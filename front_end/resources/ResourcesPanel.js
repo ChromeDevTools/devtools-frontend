@@ -173,14 +173,14 @@ WebInspector.ResourcesPanel.prototype = {
         var cacheStorageModel = WebInspector.ServiceWorkerCacheModel.fromTarget(this._target);
         if (cacheStorageModel)
             cacheStorageModel.enable();
-
-        if (this._target.hasBrowserCapability())
-            this._populateResourceTree();
-
+        var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(this._target);
+        if (resourceTreeModel) {
+            this._populateResourceTree(resourceTreeModel);
+            this._populateApplicationCacheTree(resourceTreeModel);
+        }
         var domStorageModel = WebInspector.DOMStorageModel.fromTarget(this._target);
         if (domStorageModel)
             this._populateDOMStorageTree(domStorageModel);
-        this._populateApplicationCacheTree();
         this.indexedDBListTreeElement._initialize();
         this.cacheStorageListTreeElement._initialize();
         this._initDefaultSelection();
@@ -287,15 +287,12 @@ WebInspector.ResourcesPanel.prototype = {
             this._sidebarTree.selectedTreeElement.deselect();
     },
 
-    _populateResourceTree: function()
+    /**
+     * @param {!WebInspector.ResourceTreeModel} resourceTreeModel
+     */
+    _populateResourceTree: function(resourceTreeModel)
     {
         this._treeElementForFrameId = {};
-
-        var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(this._target);
-
-        if (!resourceTreeModel)
-            return;
-
         resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.FrameAdded, this._frameAdded, this);
         resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.FrameNavigated, this._frameNavigated, this);
         resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.FrameDetached, this._frameDetached, this);
@@ -722,9 +719,12 @@ WebInspector.ResourcesPanel.prototype = {
         domStorageModel.addEventListener(WebInspector.DOMStorageModel.Events.DOMStorageRemoved, this._domStorageRemoved, this);
     },
 
-    _populateApplicationCacheTree: function()
+    /**
+     * @param {!WebInspector.ResourceTreeModel} resourceTreeModel
+     */
+    _populateApplicationCacheTree: function(resourceTreeModel)
     {
-        this._applicationCacheModel = new WebInspector.ApplicationCacheModel(this._target);
+        this._applicationCacheModel = new WebInspector.ApplicationCacheModel(this._target, resourceTreeModel);
 
         this._applicationCacheViews = {};
         this._applicationCacheFrameElements = {};

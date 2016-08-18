@@ -248,10 +248,11 @@ WebInspector.SecurityPanel.prototype = {
 
         this._target = target;
 
-        if (target.hasBrowserCapability()) {
-            target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._onMainFrameNavigated, this);
-            target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.InterstitialShown, this._onInterstitialShown, this);
-            target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.InterstitialHidden, this._onInterstitialHidden, this);
+        var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(this._target);
+        if (resourceTreeModel) {
+            resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._onMainFrameNavigated, this);
+            resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.InterstitialShown, this._onInterstitialShown, this);
+            resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.InterstitialHidden, this._onInterstitialHidden, this);
         }
 
         var networkManager = WebInspector.NetworkManager.fromTarget(target);

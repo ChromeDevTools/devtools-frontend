@@ -32,18 +32,19 @@
  * @constructor
  * @extends {WebInspector.SDKModel}
  * @param {!WebInspector.Target} target
+ * @param {!WebInspector.ResourceTreeModel} resourceTreeModel
  * @param {!WebInspector.NetworkManager} networkManager
  */
-WebInspector.NetworkLog = function(target, networkManager)
+WebInspector.NetworkLog = function(target, resourceTreeModel, networkManager)
 {
     WebInspector.SDKModel.call(this, WebInspector.NetworkLog, target);
 
     this._requests = [];
     this._requestForId = {};
     networkManager.addEventListener(WebInspector.NetworkManager.EventTypes.RequestStarted, this._onRequestStarted, this);
-    target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._onMainFrameNavigated, this);
-    target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.Load, this._onLoad, this);
-    target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.DOMContentLoaded, this._onDOMContentLoaded, this);
+    resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._onMainFrameNavigated, this);
+    resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.Load, this._onLoad, this);
+    resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.DOMContentLoaded, this._onDOMContentLoaded, this);
 }
 
 /**

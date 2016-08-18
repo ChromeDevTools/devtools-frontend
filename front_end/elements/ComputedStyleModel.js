@@ -62,7 +62,7 @@ WebInspector.ComputedStyleModel.prototype = {
         if (target) {
             this._cssModel = WebInspector.CSSModel.fromTarget(target);
             domModel = WebInspector.DOMModel.fromTarget(target);
-            resourceTreeModel = target.resourceTreeModel;
+            resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(target);
         }
 
         if (this._cssModel && domModel && resourceTreeModel) {

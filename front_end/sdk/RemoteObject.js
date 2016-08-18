@@ -605,8 +605,7 @@ WebInspector.RemoteObjectImpl.prototype = {
                 return;
             }
             if (exceptionDetails) {
-                var msg = new WebInspector.ConsoleMessage(this._target, WebInspector.ConsoleMessage.MessageSource.JS, WebInspector.ConsoleMessage.MessageLevel.Error, exceptionDetails.text);
-                this._target.consoleModel.addMessage(msg);
+                this._target.consoleModel.addMessage(WebInspector.ConsoleMessage.fromException(this._target, exceptionDetails, undefined, undefined, undefined));
                 callback(null, null);
                 return;
             }

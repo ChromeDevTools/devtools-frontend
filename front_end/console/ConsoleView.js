@@ -814,7 +814,7 @@ WebInspector.ConsoleView.prototype = {
         if (!exceptionDetails)
             message = new WebInspector.ConsoleMessage(result.target(), WebInspector.ConsoleMessage.MessageSource.JS, level, "", WebInspector.ConsoleMessage.MessageType.Result, undefined, undefined, undefined, undefined, [result]);
         else
-            message = new WebInspector.ConsoleMessage(result.target(), WebInspector.ConsoleMessage.MessageSource.JS, level, exceptionDetails.text, WebInspector.ConsoleMessage.MessageType.Result, undefined, exceptionDetails.lineNumber, exceptionDetails.columnNumber, undefined, [WebInspector.UIString("Uncaught"), result], exceptionDetails.stackTrace, undefined, undefined, exceptionDetails.scriptId);
+            message = WebInspector.ConsoleMessage.fromException(result.target(), exceptionDetails, WebInspector.ConsoleMessage.MessageType.Result, undefined, undefined);
         message.setOriginatingMessage(originatingConsoleMessage);
         result.target().consoleModel.addMessage(message);
     },

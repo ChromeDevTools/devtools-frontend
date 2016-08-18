@@ -244,14 +244,14 @@ WebInspector.Script.prototype = {
          * @param {!Array.<!DebuggerAgent.CallFrame>=} callFrames
          * @param {boolean=} stackChanged
          * @param {!RuntimeAgent.StackTrace=} asyncStackTrace
-         * @param {!RuntimeAgent.ExceptionDetails=} compileError
+         * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
          */
-        function didEditScriptSource(error, callFrames, stackChanged, asyncStackTrace, compileError)
+        function didEditScriptSource(error, callFrames, stackChanged, asyncStackTrace, exceptionDetails)
         {
-            if (!error && !compileError)
+            if (!error && !exceptionDetails)
                 this._source = newSource;
             var needsStepIn = !!stackChanged;
-            callback(error, compileError, callFrames, asyncStackTrace, needsStepIn);
+            callback(error, exceptionDetails, callFrames, asyncStackTrace, needsStepIn);
         }
 
         newSource = WebInspector.Script._trimSourceURLComment(newSource);

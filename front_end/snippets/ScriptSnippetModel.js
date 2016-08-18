@@ -248,10 +248,10 @@ WebInspector.ScriptSnippetModel.prototype = {
             if (mapping.evaluationIndex(uiSourceCode) !== evaluationIndex)
                 return;
 
-            var script = /** @type {!WebInspector.Script} */(executionContext.debuggerModel.scriptForId(scriptId || exceptionDetails.scriptId));
+            var script = /** @type {!WebInspector.Script} */(executionContext.debuggerModel.scriptForId(/** @type {string} */ (scriptId || exceptionDetails.scriptId)));
             mapping._addScript(script, uiSourceCode);
             if (!scriptId) {
-                this._printRunOrCompileScriptResultFailure(target, exceptionDetails, evaluationUrl);
+                this._printRunOrCompileScriptResultFailure(target, /** @type {!RuntimeAgent.ExceptionDetails} */ (exceptionDetails), evaluationUrl);
                 return;
             }
 
@@ -315,27 +315,12 @@ WebInspector.ScriptSnippetModel.prototype = {
 
     /**
      * @param {!WebInspector.Target} target
-     * @param {?RuntimeAgent.ExceptionDetails=} exceptionDetails
+     * @param {!RuntimeAgent.ExceptionDetails} exceptionDetails
      * @param {?string=} sourceURL
      */
     _printRunOrCompileScriptResultFailure: function(target, exceptionDetails, sourceURL)
     {
-        var consoleMessage = new WebInspector.ConsoleMessage(
-            target,
-            exceptionDetails.source,
-            WebInspector.ConsoleMessage.MessageLevel.Error,
-            exceptionDetails.text,
-            undefined,
-            sourceURL,
-            exceptionDetails.lineNumber,
-            exceptionDetails.columnNumber,
-            undefined,
-            undefined,
-            exceptionDetails.stackTrace,
-            undefined,
-            undefined,
-            exceptionDetails.stackTrace ? undefined : exceptionDetails.scriptId);
-        target.consoleModel.addMessage(consoleMessage);
+        target.consoleModel.addMessage(WebInspector.ConsoleMessage.fromException(target, exceptionDetails, undefined, undefined, sourceURL || undefined));
     },
 
     /**

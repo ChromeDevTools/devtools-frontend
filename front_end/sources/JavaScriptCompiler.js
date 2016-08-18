@@ -71,7 +71,8 @@ WebInspector.JavaScriptCompiler.prototype = {
             }
             if (!exceptionDetails)
                 return;
-            this._sourceFrame.uiSourceCode().addLineMessage(WebInspector.UISourceCode.Message.Level.Error, exceptionDetails.text, exceptionDetails.lineNumber, exceptionDetails.columnNumber);
+            var text = WebInspector.ConsoleMessage.simpleTextFromException(exceptionDetails);
+            this._sourceFrame.uiSourceCode().addLineMessage(WebInspector.UISourceCode.Message.Level.Error, text, exceptionDetails.lineNumber, exceptionDetails.columnNumber);
             this._compilationFinishedForTest();
         }
     },

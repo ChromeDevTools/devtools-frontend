@@ -498,6 +498,49 @@ WebInspector.ConsoleMessage.timestampComparator = function(a, b)
 }
 
 /**
+ * @param {!RuntimeAgent.ExceptionDetails} exceptionDetails
+ * @return {string}
+ */
+WebInspector.ConsoleMessage.simpleTextFromException = function(exceptionDetails)
+{
+    var text = exceptionDetails.text;
+    if (exceptionDetails.exception && exceptionDetails.exception.description) {
+        var description = exceptionDetails.exception.description;
+        if (description.indexOf("\n") !== -1)
+            description = description.substring(0, description.indexOf("\n"));
+        text += " " + description;
+    }
+    return text;
+}
+
+/**
+ * @param {!WebInspector.Target} target
+ * @param {!RuntimeAgent.ExceptionDetails} exceptionDetails
+ * @param {string=} messageType
+ * @param {number=} timestamp
+ * @param {string=} forceUrl
+ * @return {!WebInspector.ConsoleMessage}
+ */
+WebInspector.ConsoleMessage.fromException = function(target, exceptionDetails, messageType, timestamp, forceUrl)
+{
+    return new WebInspector.ConsoleMessage(
+        target,
+        WebInspector.ConsoleMessage.MessageSource.JS,
+        WebInspector.ConsoleMessage.MessageLevel.Error,
+        WebInspector.ConsoleMessage.simpleTextFromException(exceptionDetails),
+        messageType,
+        forceUrl || exceptionDetails.url,
+        exceptionDetails.lineNumber,
+        exceptionDetails.columnNumber,
+        undefined,
+        exceptionDetails.exception ? [WebInspector.RemoteObject.fromLocalObject(exceptionDetails.text), exceptionDetails.exception] : undefined,
+        exceptionDetails.stackTrace,
+        timestamp,
+        exceptionDetails.executionContextId,
+        exceptionDetails.scriptId);
+}
+
+/**
  * @constructor
  * @implements {LogAgent.Dispatcher}
  * @param {!WebInspector.ConsoleModel} console

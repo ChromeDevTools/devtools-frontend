@@ -384,45 +384,28 @@ WebInspector.RuntimeDispatcher.prototype = {
 
     /**
      * @override
-     * @param {number} exceptionId
      * @param {number} timestamp
-     * @param {!RuntimeAgent.ExceptionDetails} details
-     * @param {!RuntimeAgent.RemoteObject=} exception
-     * @param {number=} executionContextId
+     * @param {!RuntimeAgent.ExceptionDetails} exceptionDetails
      */
-    exceptionThrown: function(exceptionId, timestamp, details, exception, executionContextId)
+    exceptionThrown: function(timestamp, exceptionDetails)
     {
-        var consoleMessage = new WebInspector.ConsoleMessage(
-            this._runtimeModel.target(),
-            WebInspector.ConsoleMessage.MessageSource.JS,
-            WebInspector.ConsoleMessage.MessageLevel.Error,
-            details.text,
-            undefined,
-            details.url,
-            details.lineNumber,
-            details.columnNumber,
-            undefined,
-            exception ? [WebInspector.RemoteObject.fromLocalObject(details.text), exception] : undefined,
-            details.stackTrace,
-            timestamp,
-            executionContextId,
-            details.scriptId);
-        consoleMessage.setExceptionId(exceptionId);
+        var consoleMessage = WebInspector.ConsoleMessage.fromException(this._runtimeModel.target(), exceptionDetails, undefined, timestamp, undefined);
+        consoleMessage.setExceptionId(exceptionDetails.exceptionId);
         this._runtimeModel.target().consoleModel.addMessage(consoleMessage);
     },
 
     /**
      * @override
-     * @param {string} message
+     * @param {string} reason
      * @param {number} exceptionId
      */
-    exceptionRevoked: function(message, exceptionId)
+    exceptionRevoked: function(reason, exceptionId)
     {
         var consoleMessage = new WebInspector.ConsoleMessage(
             this._runtimeModel.target(),
             WebInspector.ConsoleMessage.MessageSource.JS,
             WebInspector.ConsoleMessage.MessageLevel.RevokedError,
-            message,
+            reason,
             undefined,
             undefined,
             undefined,

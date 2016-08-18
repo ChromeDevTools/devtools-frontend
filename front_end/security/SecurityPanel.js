@@ -297,6 +297,10 @@ WebInspector.SecurityPanel.prototype = {
 
     _onInterstitialShown: function()
     {
+        // The panel might have been displaying the origin view on the
+        // previously loaded page. When showing an interstitial, switch
+        // back to the Overview view.
+        this.selectAndSwitchToMainView();
         this._sidebarTree.toggleOriginsList(true /* hidden */);
     },
 

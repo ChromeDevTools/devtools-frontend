@@ -40,38 +40,34 @@ WebInspector.Worker = function(appName, workerName)
     if (remoteBase)
         url += "?remoteBase=" + remoteBase;
 
-    var callback;
     /** @type {!Promise<!Worker|!SharedWorker>} */
-    this._workerPromise = new Promise(fulfill => callback = fulfill);
+    this._workerPromise = new Promise(fulfill => {
+        var isSharedWorker = !!workerName;
+        if (isSharedWorker) {
+            this._worker = new SharedWorker(url, workerName);
+            this._worker.port.onmessage = onMessage.bind(this);
+        } else {
+            this._worker = new Worker(url);
+            this._worker.onmessage = onMessage.bind(this);
+        }
 
-    /** @type {!Worker|!SharedWorker} */
-    var worker;
-    var isSharedWorker = !!workerName;
-    if (isSharedWorker) {
-        worker = new SharedWorker(url, workerName);
-        worker.port.onmessage = onMessage.bind(this);
-    } else {
-        worker = new Worker(url);
-        worker.onmessage = onMessage.bind(this);
-    }
-    // Hold a reference to worker until the promise is resolved.
-    // Otherwise the worker could be GCed.
-    this._workerProtect = worker;
-
-    /**
-     * @param {!Event} event
-     * @this {WebInspector.Worker}
-     */
-    function onMessage(event)
-    {
-        console.assert(event.data === "workerReady");
-        if (isSharedWorker)
-            worker.port.onmessage = null;
-        else
-            worker.onmessage = null;
-        callback(worker);
-        this._workerProtect = null;
-    }
+        /**
+         * @param {!Event} event
+         * @this {WebInspector.Worker}
+         */
+        function onMessage(event)
+        {
+            console.assert(event.data === "workerReady");
+            if (isSharedWorker)
+                this._worker.port.onmessage = null;
+            else
+                this._worker.onmessage = null;
+            fulfill(this._worker);
+            // No need to hold a reference to worker anymore as it's stored in
+            // the resolved promise.
+            this._worker = null;
+        }
+    });
 }
 
 WebInspector.Worker.prototype = {
@@ -80,31 +76,16 @@ WebInspector.Worker.prototype = {
      */
     postMessage: function(message)
     {
-        this._workerPromise.then(postToWorker.bind(this));
-
-        /**
-         * @param {!Worker|!SharedWorker} worker
-         * @this {WebInspector.Worker}
-         */
-        function postToWorker(worker)
-        {
+        this._workerPromise.then(worker => {
             if (!this._disposed)
                 worker.postMessage(message);
-        }
+        });
     },
 
     dispose: function()
     {
         this._disposed = true;
-        this._workerPromise.then(terminate);
-
-        /**
-         * @param {!Worker|!SharedWorker} worker
-         */
-        function terminate(worker)
-        {
-            worker.terminate();
-        }
+        this._workerPromise.then(worker => worker.terminate());
     },
 
     terminate: function()
@@ -113,22 +94,11 @@ WebInspector.Worker.prototype = {
     },
 
     /**
-     * @param {?function(!MessageEvent.<*>)} listener
+     * @param {?function(!MessageEvent<*>)} listener
      */
     set onmessage(listener)
     {
-        this._workerPromise.then(setOnMessage);
-
-        /**
-         * @param {!Worker|!SharedWorker} worker
-         */
-        function setOnMessage(worker)
-        {
-            if (worker.port)
-                worker.port.onmessage = listener;
-            else
-                worker.onmessage = listener;
-        }
+        this._workerPromise.then(worker => (worker.port || worker).onmessage = listener);
     },
 
     /**
@@ -136,17 +106,6 @@ WebInspector.Worker.prototype = {
      */
     set onerror(listener)
     {
-        this._workerPromise.then(setOnError);
-
-        /**
-         * @param {!Worker|!SharedWorker} worker
-         */
-        function setOnError(worker)
-        {
-            if (worker.port)
-                worker.port.onerror = listener;
-            else
-                worker.onerror = listener;
-        }
+        this._workerPromise.then(worker => (worker.port || worker).onerror = listener);
     }
 }

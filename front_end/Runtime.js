@@ -61,7 +61,7 @@ function loadResourcePromise(url)
          */
         function onreadystatechange(e)
         {
-            if (xhr.readyState !== 4)
+            if (xhr.readyState !== XMLHttpRequest.DONE)
                 return;
 
             if ([0, 200, 304].indexOf(xhr.status) === -1)  // Testing harness file:/// results in 0.

@@ -42,6 +42,7 @@ WebInspector.NetworkLogViewColumns._initialSortColumn = "timeline";
  * @typedef {{
  *     id: string,
  *     title: string,
+ *     titleDOMFragment: (!DocumentFragment|undefined),
  *     subtitle: (string|null),
  *     visible: boolean,
  *     weight: number,
@@ -50,7 +51,8 @@ WebInspector.NetworkLogViewColumns._initialSortColumn = "timeline";
  *     sortable: boolean,
  *     align: (?WebInspector.DataGrid.Align|undefined),
  *     isResponseHeader: boolean,
- *     sortConfig: !WebInspector.NetworkLogViewColumns.SortConfig
+ *     sortConfig: !WebInspector.NetworkLogViewColumns.SortConfig,
+ *     isCustomHeader: boolean
  * }}
  */
 WebInspector.NetworkLogViewColumns.Descriptor;
@@ -80,7 +82,8 @@ WebInspector.NetworkLogViewColumns._defaultColumnConfig = {
     hideable: true,
     nonSelectable: true,
     isResponseHeader: false,
-    alwaysVisible: false
+    alwaysVisible: false,
+    isCustomHeader: false
 };
 
 /**
@@ -335,6 +338,22 @@ WebInspector.NetworkLogViewColumns._defaultColumns = [
     },
 ];
 
+/**
+ * @param {!WebInspector.NetworkLogViewColumns.Descriptor} columnConfig
+ * @return {!WebInspector.DataGrid.ColumnDescriptor}
+ */
+WebInspector.NetworkLogViewColumns._convertToDataGridDescriptor = function(columnConfig)
+{
+    return /** @type {!WebInspector.DataGrid.ColumnDescriptor} */ ({
+        id: columnConfig.id,
+        title: columnConfig.title,
+        sortable: columnConfig.sortable,
+        align: columnConfig.align,
+        nonSelectable: columnConfig.nonSelectable,
+        weight: columnConfig.weight
+    });
+};
+
 WebInspector.NetworkLogViewColumns.prototype = {
     willHide: function()
     {
@@ -376,7 +395,7 @@ WebInspector.NetworkLogViewColumns.prototype = {
 
         this._popoverHelper = new WebInspector.PopoverHelper(this._networkLogView.element, this._getPopoverAnchor.bind(this), this._showPopover.bind(this), this._onHidePopover.bind(this));
 
-        this._dataGrid = new WebInspector.SortableDataGrid(convertToDataGridDescriptor(this._columns));
+        this._dataGrid = new WebInspector.SortableDataGrid(this._columns.map(WebInspector.NetworkLogViewColumns._convertToDataGridDescriptor));
 
         this._dataGrid.asWidget().show(this._networkLogView.element);
 
@@ -394,27 +413,6 @@ WebInspector.NetworkLogViewColumns.prototype = {
         this._updateRowsSize();
 
         return this._dataGrid;
-
-        /**
-         * @param {!Array<!WebInspector.NetworkLogViewColumns.Descriptor>} columns
-         * @return {!Array<!WebInspector.DataGrid.ColumnDescriptor>}
-         */
-        function convertToDataGridDescriptor(columns)
-        {
-            var dataGridColumns = /** @type {!Array<!WebInspector.DataGrid.ColumnDescriptor>} */ ([]);
-            for (var columnConfig of columns) {
-                dataGridColumns.push({
-                    id: columnConfig.id,
-                    title: columnConfig.title,
-                    sortable: columnConfig.sortable,
-                    align: columnConfig.align,
-                    nonSelectable: columnConfig.nonSelectable,
-                    weight: columnConfig.weight
-                });
-            }
-            return dataGridColumns;
-        }
-
     },
 
     _setupDropdownColumns: function()
@@ -551,8 +549,7 @@ WebInspector.NetworkLogViewColumns.prototype = {
             var setting = savedSettings[columnId];
             var columnConfig = this._columns.find(columnConfig => columnConfig.id === columnId);
             if (!columnConfig)
-                continue;
-
+                columnConfig = this._addCustomHeader(setting.title, columnId);
             if (columnConfig.hideable && typeof setting.visible === "boolean")
                 columnConfig.visible = !!setting.visible;
             if (typeof setting.title === "string")
@@ -596,7 +593,99 @@ WebInspector.NetworkLogViewColumns.prototype = {
         for (var columnConfig of responseHeaders)
             responseSubMenu.appendCheckboxItem(columnConfig.title, this._toggleColumnVisibility.bind(this, columnConfig), columnConfig.visible);
 
+        responseSubMenu.appendSeparator();
+        responseSubMenu.appendItem(WebInspector.UIString("Manage Header Columns\u2026"), this._manageCustomHeaderDialog.bind(this));
+
         contextMenu.show();
+        return true;
+    },
+
+    _manageCustomHeaderDialog: function()
+    {
+        var customHeaders = [];
+        for (var columnConfig of this._columns) {
+            if (columnConfig.isResponseHeader)
+                customHeaders.push({title: columnConfig.title, editable: columnConfig.isCustomHeader});
+        }
+        var manageCustomHeaders = new WebInspector.NetworkManageCustomHeadersView(customHeaders, headerTitle => !!this._addCustomHeader(headerTitle), this._changeCustomHeader.bind(this), this._removeCustomHeader.bind(this));
+        var dialog = new WebInspector.Dialog();
+        manageCustomHeaders.show(dialog.element);
+        dialog.setWrapsContent(true);
+        dialog.show();
+    },
+
+    /**
+     * @param {string} headerId
+     * @return {boolean}
+     */
+    _removeCustomHeader: function(headerId)
+    {
+        headerId = headerId.toLowerCase();
+        var index = this._columns.findIndex(columnConfig => columnConfig.id === headerId);
+        if (index === -1)
+            return false;
+        var columnConfig = this._columns.splice(index, 1);
+        this._dataGrid.removeColumn(headerId);
+        this._saveColumns();
+        this._updateColumns();
+        return true;
+    },
+
+    /**
+     * @param {string} headerTitle
+     * @param {string=} headerId
+     * @param {number=} index
+     * @return {?WebInspector.NetworkLogViewColumns.Descriptor}
+     */
+    _addCustomHeader: function(headerTitle, headerId, index)
+    {
+        if (!headerId)
+            headerId = headerTitle.toLowerCase();
+        if (index === undefined)
+            index = this._columns.length - 1;
+
+        var currentColumnConfig = this._columns.find(columnConfig => columnConfig.id === headerId);
+        if (currentColumnConfig)
+            return null;
+
+        var columnConfig =  /** @type {!WebInspector.NetworkLogViewColumns.Descriptor} */ (Object.assign(/** @type {!Object} */ ({}), WebInspector.NetworkLogViewColumns._defaultColumnConfig, {
+            id: headerId,
+            title: headerTitle,
+            isResponseHeader: true,
+            isCustomHeader: true,
+            visible: true,
+            sortConfig: {
+                sortingFunction: WebInspector.NetworkDataGridNode.ResponseHeaderStringComparator.bind(null, headerId)
+            }
+        }));
+        this._columns.splice(index, 0, columnConfig);
+        if (this._dataGrid)
+            this._dataGrid.addColumn(WebInspector.NetworkLogViewColumns._convertToDataGridDescriptor(columnConfig), index);
+        this._saveColumns();
+        this._updateColumns();
+        return columnConfig;
+    },
+
+    /**
+     * @param {string} oldHeaderId
+     * @param {string} newHeaderTitle
+     * @param {string=} newHeaderId
+     * @return {boolean}
+     */
+    _changeCustomHeader: function(oldHeaderId, newHeaderTitle, newHeaderId)
+    {
+        if (!newHeaderId)
+            newHeaderId = newHeaderTitle.toLowerCase();
+        oldHeaderId = oldHeaderId.toLowerCase();
+
+        var oldIndex = this._columns.findIndex(columnConfig => columnConfig.id === oldHeaderId);
+        var oldColumnConfig = this._columns[oldIndex];
+        var currentColumnConfig = this._columns.find(columnConfig => columnConfig.id === newHeaderId);
+        if (!oldColumnConfig || (currentColumnConfig && oldHeaderId !== newHeaderId))
+            return false;
+
+        this._removeCustomHeader(oldHeaderId);
+        this._addCustomHeader(newHeaderTitle, newHeaderId, oldIndex);
         return true;
     },
 

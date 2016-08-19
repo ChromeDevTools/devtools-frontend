@@ -112,6 +112,8 @@ WebInspector.CPUProfileDataModel.prototype = {
         while (sourceNodeStack.length) {
             var parentNode = parentNodeStack.pop();
             var sourceNode = sourceNodeStack.pop();
+            if (!sourceNode.children)
+                sourceNode.children = [];
             var targetNode = new WebInspector.CPUProfileNode(sourceNode, sampleTime);
             if (keepNatives || !isNativeNode(sourceNode)) {
                 parentNode.children.push(targetNode);

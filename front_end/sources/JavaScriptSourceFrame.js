@@ -593,14 +593,14 @@ WebInspector.JavaScriptSourceFrame.prototype = {
     _editBreakpointCondition: function(lineNumber, breakpoint)
     {
         this._conditionElement = this._createConditionElement(lineNumber);
-        this.textEditor.addDecoration(lineNumber, this._conditionElement);
+        this.textEditor.addDecoration(this._conditionElement, lineNumber);
 
         /**
          * @this {WebInspector.JavaScriptSourceFrame}
          */
         function finishEditing(committed, element, newText)
         {
-            this.textEditor.removeDecoration(lineNumber, this._conditionElement);
+            this.textEditor.removeDecoration(this._conditionElement, lineNumber);
             delete this._conditionEditorElement;
             delete this._conditionElement;
             if (!committed)
@@ -753,7 +753,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
             if (!names) {
                 if (oldWidget) {
                     this._valueWidgets.delete(i);
-                    this.textEditor.removeDecoration(i, oldWidget);
+                    this.textEditor.removeDecoration(oldWidget, i);
                 }
                 continue;
             }
@@ -765,7 +765,6 @@ WebInspector.JavaScriptSourceFrame.prototype = {
             var left = offset.x - base.x + codeMirrorLinesLeftPadding;
             widget.style.left = left + "px";
             widget.__nameToToken = new Map();
-            widget.__lineNumber = i;
 
             var renderedNameCount = 0;
             for (var name of names) {
@@ -802,12 +801,12 @@ WebInspector.JavaScriptSourceFrame.prototype = {
                 }
                 if (widgetChanged) {
                     this._valueWidgets.delete(i);
-                    this.textEditor.removeDecoration(i, oldWidget);
+                    this.textEditor.removeDecoration(oldWidget, i);
                 }
             }
             if (widgetChanged) {
                 this._valueWidgets.set(i, widget);
-                this.textEditor.addDecoration(i, widget);
+                this.textEditor.addDecoration(widget, i);
             }
         }
     },
@@ -824,7 +823,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
     {
         delete this._clearValueWidgetsTimer;
         for (var line of this._valueWidgets.keys())
-            this.textEditor.removeDecoration(line, this._valueWidgets.get(line));
+            this.textEditor.removeDecoration(this._valueWidgets.get(line), line);
         this._valueWidgets.clear();
     },
 

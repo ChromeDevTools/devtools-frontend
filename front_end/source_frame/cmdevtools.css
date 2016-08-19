@@ -262,6 +262,8 @@
 .CodeMirror .text-editor-line-decoration-wave {
     position: absolute;
     top: -2px;
+    right: -4px;
+    left: 4px;
     cursor: pointer;
     height: 4px;
 }

@@ -508,8 +508,7 @@ WebInspector.UISourceCodeFrame.RowMessageBucket = function(sourceFrame, textEdit
     this._decoration._messageBucket = this;
     this._wave = this._decoration.createChild("div", "text-editor-line-decoration-wave");
     this._icon = this._wave.createChild("label", "text-editor-line-decoration-icon", "dt-icon-label");
-
-    this._textEditor.addDecoration(lineNumber, this._decoration);
+    this._hasDecoration = false;
 
     this._messagesDescriptionElement = createElementWithClass("div", "text-editor-messages-description-container");
     /** @type {!Array.<!WebInspector.UISourceCodeFrame.RowMessage>} */
@@ -529,14 +528,10 @@ WebInspector.UISourceCodeFrame.RowMessageBucket.prototype = {
         var lineText = this._textEditor.line(lineNumber);
         columnNumber = Math.min(columnNumber, lineText.length);
         var lineIndent = WebInspector.TextUtils.lineIndent(lineText).length;
-        var base = this._textEditor.cursorPositionToCoordinates(lineNumber, 0);
-
-        var start = this._textEditor.cursorPositionToCoordinates(lineNumber, Math.max(columnNumber - 1, lineIndent));
-        var end = this._textEditor.cursorPositionToCoordinates(lineNumber, lineText.length);
-        /** @const */
-        var codeMirrorLinesLeftPadding = 4;
-        this._wave.style.left = (start.x - base.x + codeMirrorLinesLeftPadding) + "px";
-        this._wave.style.width = (end.x - start.x) + "px";
+        if (this._hasDecoration)
+            this._textEditor.removeDecoration(this._decoration, lineNumber);
+        this._hasDecoration = true;
+        this._textEditor.addDecoration(this._decoration, lineNumber, Math.max(columnNumber - 1, lineIndent));
     },
 
     /**
@@ -559,7 +554,9 @@ WebInspector.UISourceCodeFrame.RowMessageBucket.prototype = {
         var lineNumber = position.lineNumber;
         if (this._level)
             this._textEditor.toggleLineClass(lineNumber, WebInspector.UISourceCodeFrame._lineClassPerLevel[this._level], false);
-        this._textEditor.removeDecoration(lineNumber, this._decoration);
+        if (this._hasDecoration)
+            this._textEditor.removeDecoration(this._decoration, lineNumber);
+        this._hasDecoration = false;
     },
 
     /**

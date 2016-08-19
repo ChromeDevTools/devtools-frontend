@@ -48,6 +48,8 @@ WebInspector.CSSSourceFrame = function(uiSourceCode)
 /** @type {number} */
 WebInspector.CSSSourceFrame.maxSwatchProcessingLength = 300;
 
+WebInspector.CSSSourceFrame.SwatchBookmark = Symbol("swatch");
+
 WebInspector.CSSSourceFrame.prototype = {
     _registerShortcuts: function()
     {
@@ -142,7 +144,7 @@ WebInspector.CSSSourceFrame.prototype = {
                 swatch.setColorText(colorPosition.color.asString(WebInspector.Color.Format.Original));
                 swatch.iconElement().title = WebInspector.UIString("Open color picker.");
                 swatch.hideText(true);
-                var bookmark = this.textEditor.addBookmark(colorPosition.textRange.startLine, colorPosition.textRange.startColumn, swatch);
+                var bookmark = this.textEditor.addBookmark(colorPosition.textRange.startLine, colorPosition.textRange.startColumn, swatch, WebInspector.CSSSourceFrame.SwatchBookmark);
                 swatch.iconElement().addEventListener("click", this._showSpectrum.bind(this, swatch, bookmark), true);
             }
         }
@@ -155,14 +157,12 @@ WebInspector.CSSSourceFrame.prototype = {
     _clearBookmarks: function(startLine, endLine)
     {
         var range = new WebInspector.TextRange(startLine, 0, endLine, this.textEditor.line(endLine).length);
-        var markers = this.textEditor.bookmarks(range);
-        for (var i = 0; i < markers.length; i++)
-            markers[i].clear();
+        this.textEditor.bookmarks(range, WebInspector.CSSSourceFrame.SwatchBookmark).forEach(marker => marker.clear());
     },
 
     /**
      * @param {!WebInspector.ColorSwatch} swatch
-     * @param {!CodeMirror.TextMarker} bookmark
+     * @param {!WebInspector.TextEditorBookMark} bookmark
      * @param {!Event} event
      */
     _showSpectrum: function(swatch, bookmark, event)
@@ -173,11 +173,13 @@ WebInspector.CSSSourceFrame.prototype = {
             return;
         }
         this._hadSpectrumChange = false;
-        var position = bookmark.find();
+        var position = bookmark.position();
         var colorText = swatch.color().asString(WebInspector.Color.Format.Original);
-        this._currentColorTextRange = new WebInspector.TextRange(position.line, position.ch, position.line, position.ch + colorText.length);
+        this.textEditor.setSelection(position);
+        this._currentColorTextRange = position.clone();
+        this._currentColorTextRange.endColumn += colorText.length;
         this._currentSwatch = swatch;
-        this.textEditor.setSelection(WebInspector.TextRange.createFromLocation(position.line, position.ch));
+
         this._spectrum = new WebInspector.Spectrum();
         this._spectrum.setColor(swatch.color(), swatch.format());
         this._spectrum.addEventListener(WebInspector.Spectrum.Events.SizeChanged, this._spectrumResized, this);

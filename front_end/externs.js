@@ -382,7 +382,10 @@ CodeMirror.prototype = {
     doc: null,
     addKeyMap: function(map) { },
     addLineClass: function(handle, where, cls) { },
-    /** @param {?Object=} options */
+    /**
+     * @param {?Object=} options
+     * @return {!CodeMirror.LineWidget}
+     */
     addLineWidget: function(handle, node, options) { },
     /**
      * @param {string|!Object} spec
@@ -592,6 +595,13 @@ CodeMirror.TextMarker.prototype = {
     clear: function() { },
     find: function() { }
 }
+
+/** @constructor */
+CodeMirror.LineWidget = function() { }
+CodeMirror.LineWidget.prototype = {
+    clear: function() { }
+}
+
 
 /** @type {Object.<string, !Object.<string, string>>} */
 CodeMirror.keyMap;

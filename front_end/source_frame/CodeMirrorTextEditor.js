@@ -174,7 +174,9 @@ WebInspector.CodeMirrorTextEditor = function(url, delegate)
     this.element.style.overflow = "hidden";
     this._codeMirrorElement.classList.add("source-code");
     this._codeMirrorElement.classList.add("fill");
-    this._elementToWidget = new Map();
+
+    /** @type {!Multimap<number, !WebInspector.CodeMirrorTextEditor.Decoration>} */
+    this._decorations = new Multimap();
     this._nestedUpdatesCounter = 0;
 
     this.element.addEventListener("focus", this._handleElementFocus.bind(this), false);
@@ -762,9 +764,7 @@ WebInspector.CodeMirrorTextEditor.prototype = {
     {
         if (lineNumber >= this._codeMirror.lineCount() || lineNumber < 0 || column < 0 || column > this._codeMirror.getLine(lineNumber).length)
             return null;
-
         var metrics = this._codeMirror.cursorCoords(new CodeMirror.Pos(lineNumber, column));
-
         return {
             x: metrics.left,
             y: metrics.top,
@@ -1002,30 +1002,41 @@ WebInspector.CodeMirrorTextEditor.prototype = {
      * @param {number} lineNumber
      * @param {number} columnNumber
      * @param {!Element} element
+     * @param {symbol} type
      * @param {boolean=} insertBefore
-     * @return {!CodeMirror.TextMarker}
+     * @return {!WebInspector.TextEditorBookMark}
      */
-    addBookmark: function(lineNumber, columnNumber, element, insertBefore)
+    addBookmark: function(lineNumber, columnNumber, element, type, insertBefore)
     {
-        return this._codeMirror.setBookmark(new CodeMirror.Pos(lineNumber, columnNumber), {
+        var bookmark = new WebInspector.TextEditorBookMark(this._codeMirror.setBookmark(new CodeMirror.Pos(lineNumber, columnNumber), {
             widget: element,
             insertLeft: insertBefore
-        });
+        }), type, this);
+        this._updateDecorations(lineNumber);
+        return bookmark;
     },
 
     /**
      * @param {!WebInspector.TextRange} range
-     * @return {!Array.<!CodeMirror.TextMarker>}
+     * @param {symbol=} type
+     * @return {!Array.<!WebInspector.TextEditorBookMark>}
      */
-    bookmarks: function(range)
+    bookmarks: function(range, type)
     {
         var pos = WebInspector.CodeMirrorUtils.toPos(range);
-        if (range.isEmpty())
-            return this._codeMirror.findMarksAt(pos.start).filter(marker => marker.type === "bookmark");
-        var startMarkers = this._codeMirror.findMarksAt(pos.start);
-        var middleMarkers = this._codeMirror.findMarks(pos.start, pos.end);
-        var endMarkers = this._codeMirror.findMarksAt(pos.end);
-        return startMarkers.concat(middleMarkers, endMarkers).filter(marker => marker.type === "bookmark");
+        var markers = this._codeMirror.findMarksAt(pos.start);
+        if (!range.isEmpty()) {
+            var middleMarkers = this._codeMirror.findMarks(pos.start, pos.end);
+            var endMarkers = this._codeMirror.findMarksAt(pos.end);
+            markers = markers.concat(middleMarkers, endMarkers);
+        }
+        var bookmarks = [];
+        for (var i = 0; i < markers.length; i++) {
+            var bookmark = markers[i][WebInspector.TextEditorBookMark._symbol];
+            if (bookmark && (!type || bookmark.type() === type))
+                bookmarks.push(bookmark);
+        }
+        return bookmarks;
     },
 
     focus: function()
@@ -1229,25 +1240,82 @@ WebInspector.CodeMirrorTextEditor.prototype = {
         return classNames.indexOf(className) !== -1;
     },
 
+
     /**
-     * @param {number} lineNumber
      * @param {!Element} element
+     * @param {number} lineNumber
+     * @param {number=} startColumn
+     * @param {number=} endColumn
      */
-    addDecoration: function(lineNumber, element)
+    addDecoration: function(element, lineNumber, startColumn, endColumn)
     {
         var widget = this._codeMirror.addLineWidget(lineNumber, element);
-        this._elementToWidget.set(element, widget);
+        var update = null;
+        if (typeof startColumn !== "undefined") {
+            if (typeof endColumn === "undefined")
+                endColumn = Infinity;
+            update = this._updateFloatingDecoration.bind(this, element, lineNumber, startColumn, endColumn);
+            update();
+        }
+
+        this._decorations.set(lineNumber, {
+            element: element,
+            update: update,
+            widget: widget
+        });
+    },
+
+    /**
+     * @param {!Element} element
+     * @param {number} lineNumber
+     * @param {number} startColumn
+     * @param {number} endColumn
+     */
+    _updateFloatingDecoration: function(element, lineNumber, startColumn, endColumn)
+    {
+        var base = this._codeMirror.cursorCoords(new CodeMirror.Pos(lineNumber, 0), "page");
+        var start = this._codeMirror.cursorCoords(new CodeMirror.Pos(lineNumber, startColumn), "page");
+        var end = this._codeMirror.charCoords(new CodeMirror.Pos(lineNumber, endColumn), "page");
+        element.style.width = (end.right - start.left) + "px";
+        element.style.left = (start.left - base.left) + "px";
     },
 
     /**
      * @param {number} lineNumber
-     * @param {!Element} element
      */
-    removeDecoration: function(lineNumber, element)
+    _updateDecorations: function(lineNumber)
     {
-        var widget = this._elementToWidget.remove(element);
-        if (widget)
-            this._codeMirror.removeLineWidget(widget);
+        this._decorations.get(lineNumber).forEach(innerUpdateDecorations);
+
+        /**
+         * @param {!WebInspector.CodeMirrorTextEditor.Decoration} decoration
+         */
+        function innerUpdateDecorations(decoration)
+        {
+            if (decoration.update)
+                decoration.update()
+        }
+    },
+
+    /**
+     * @param {!Element} element
+     * @param {number} lineNumber
+     */
+    removeDecoration: function(element, lineNumber)
+    {
+        this._decorations.get(lineNumber).forEach(innerRemoveDecoration.bind(this));
+
+        /**
+         * @this {WebInspector.CodeMirrorTextEditor}
+         * @param {!WebInspector.CodeMirrorTextEditor.Decoration} decoration
+         */
+        function innerRemoveDecoration(decoration)
+        {
+            if (decoration.element !== element)
+                return;
+            this._codeMirror.removeLineWidget(decoration.widget);
+            this._decorations.remove(lineNumber, decoration)
+        }
     },
 
     /**
@@ -1393,10 +1461,9 @@ WebInspector.CodeMirrorTextEditor.prototype = {
         if (hasOneLine !== this._hasOneLine)
             this._resizeEditor();
         this._hasOneLine = hasOneLine;
-        var widgets = this._elementToWidget.valuesArray();
-        for (var i = 0; i < widgets.length; ++i)
-            this._codeMirror.removeLineWidget(widgets[i]);
-        this._elementToWidget.clear();
+
+        this._decorations.valuesArray().forEach(decoration => this._codeMirror.removeLineWidget(decoration.widget));
+        this._decorations.clear();
 
         if (this._muteTextChangedEvent)
             return;
@@ -2359,3 +2426,56 @@ WebInspector.CodeMirrorMimeMode.prototype = {
      */
     install: function(extension) { }
 }
+
+/**
+ * @constructor
+ * @param {!CodeMirror.TextMarker} marker
+ * @param {symbol} type
+ * @param {!WebInspector.CodeMirrorTextEditor} editor
+ */
+WebInspector.TextEditorBookMark = function(marker, type, editor)
+{
+    marker[WebInspector.TextEditorBookMark._symbol] = this;
+
+    this._marker = marker;
+    this._type = type;
+    this._editor = editor;
+}
+
+WebInspector.TextEditorBookMark._symbol = Symbol("WebInspector.TextEditorBookMark");
+
+WebInspector.TextEditorBookMark.prototype = {
+    clear: function()
+    {
+        var position = this._marker.find();
+        this._marker.clear();
+        if (position)
+            this._editor._updateDecorations(position.line);
+    },
+
+    /**
+     * @return {symbol}
+     */
+    type: function()
+    {
+        return this._type;
+    },
+
+    /**
+     * @return {!WebInspector.TextRange}
+     */
+    position: function()
+    {
+        var pos = this._marker.find();
+        return WebInspector.TextRange.createFromLocation(pos.line, pos.ch);
+    }
+}
+
+/**
+ * @typedef {{
+ *  element: !Element,
+ *  widget: !CodeMirror.LineWidget,
+ *  update: ?function()
+ * }}
+ */
+WebInspector.CodeMirrorTextEditor.Decoration;

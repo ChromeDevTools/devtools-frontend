@@ -27,6 +27,8 @@ WebInspector.TextEditorAutocompleteController = function(textEditor, codeMirror,
     this._hintElement = createElementWithClass("span", "auto-complete-text");
 }
 
+WebInspector.TextEditorAutocompleteController.HintBookmark = Symbol("hint");
+
 WebInspector.TextEditorAutocompleteController.prototype = {
     _initializeIfNeeded: function()
     {
@@ -279,7 +281,7 @@ WebInspector.TextEditorAutocompleteController.prototype = {
         this._lastPrefix = prefix;
         this._hintElement.textContent = hint.substring(prefix.length).split("\n")[0];
         var cursor = this._codeMirror.getCursor("to");
-        this._hintMarker = this._textEditor.addBookmark(cursor.line, cursor.ch, this._hintElement, true);
+        this._hintMarker = this._textEditor.addBookmark(cursor.line, cursor.ch, this._hintElement, WebInspector.TextEditorAutocompleteController.HintBookmark, true);
     },
 
     _clearHintMarker: function()

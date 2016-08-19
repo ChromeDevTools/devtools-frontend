@@ -336,24 +336,20 @@ WebInspector.ElementsPanel.prototype = {
 
         WebInspector.context.setFlavor(WebInspector.DOMNode, selectedNode);
 
-        if (selectedNode) {
-            selectedNode.setAsInspectedNode();
-            this._lastValidSelectedNode = selectedNode;
+        if (!selectedNode)
+            return;
+        selectedNode.setAsInspectedNode();
+        this._lastValidSelectedNode = selectedNode;
 
-            var executionContexts = selectedNode.target().runtimeModel.executionContexts();
-            var nodeFrameId = selectedNode.frameId();
-            for (var context of executionContexts) {
-                if (context.frameId === nodeFrameId) {
-                    WebInspector.context.setFlavor(WebInspector.ExecutionContext, context);
-                    break;
-                }
+        var executionContexts = selectedNode.target().runtimeModel.executionContexts();
+        var nodeFrameId = selectedNode.frameId();
+        for (var context of executionContexts) {
+            if (context.frameId === nodeFrameId) {
+                WebInspector.context.setFlavor(WebInspector.ExecutionContext, context);
+                break;
             }
         }
-        WebInspector.notifications.dispatchEventToListeners(WebInspector.NotificationService.Events.SelectedNodeChanged);
-        this._selectedNodeChangedForTest();
     },
-
-    _selectedNodeChangedForTest: function() { },
 
     _reset: function()
     {

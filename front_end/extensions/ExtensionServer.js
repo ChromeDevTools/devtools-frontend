@@ -690,7 +690,7 @@ WebInspector.ExtensionServer.prototype = {
          */
         function onElementsSubscriptionStarted()
         {
-            WebInspector.notifications.addEventListener(WebInspector.NotificationService.Events.SelectedNodeChanged, this._notifyElementsSelectionChanged, this);
+            WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this._notifyElementsSelectionChanged, this);
         }
 
         /**
@@ -698,7 +698,7 @@ WebInspector.ExtensionServer.prototype = {
          */
         function onElementsSubscriptionStopped()
         {
-            WebInspector.notifications.removeEventListener(WebInspector.NotificationService.Events.SelectedNodeChanged, this._notifyElementsSelectionChanged, this);
+            WebInspector.context.removeFlavorChangeListener(WebInspector.DOMNode, this._notifyElementsSelectionChanged, this);
         }
 
         this._registerSubscriptionHandler(WebInspector.extensionAPI.Events.PanelObjectSelected + "elements",

@@ -594,7 +594,6 @@ WebInspector.SourceFrame.prototype = {
     {
         this._updateSourcePosition();
         this.dispatchEventToListeners(WebInspector.SourceFrame.Events.SelectionChanged, textRange);
-        WebInspector.notifications.dispatchEventToListeners(WebInspector.SourceFrame.Events.SelectionChanged, textRange);
     },
 
     _updateSourcePosition: function()

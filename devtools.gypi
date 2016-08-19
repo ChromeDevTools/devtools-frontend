@@ -72,7 +72,6 @@
             'front_end/common/FormatterWorkerPool.js',
             'front_end/common/Geometry.js',
             'front_end/common/ModuleExtensionInterfaces.js',
-            'front_end/common/NotificationService.js',
             'front_end/common/Object.js',
             'front_end/common/OutputStream.js',
             'front_end/common/ParsedURL.js',

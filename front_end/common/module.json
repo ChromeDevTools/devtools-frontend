@@ -7,7 +7,6 @@
         "Worker.js",
         "TextDictionary.js",
         "Object.js",
-        "NotificationService.js",
         "Color.js",
         "Geometry.js",
         "Console.js",

@@ -36,13 +36,21 @@ WebInspector.CPUProfileNode.prototype = {
  */
 WebInspector.CPUProfileDataModel = function(profile)
 {
+    var isLegacyFormat = !!profile.head;
+    if (isLegacyFormat) {
+        // Legacy format contains raw timestamps and start/stop times are in seconds.
+        this.profileStartTime = profile.startTime * 1000;
+        this.profileEndTime = profile.endTime * 1000;
+        this.timestamps = profile.timestamps;
+        this._compatibilityConversionHeadToNodes(profile);
+    } else {
+        // Current format encodes timestamps as deltas. Start/stop times are in microseconds.
+        this.profileStartTime = profile.startTime / 1000;
+        this.profileEndTime = profile.endTime / 1000;
+        this.timestamps = this._convertTimestampDeltas(profile);
+    }
     this.samples = profile.samples;
-    this.timestamps = profile.timestamps;
-    // Convert times from sec to msec.
-    this.profileStartTime = profile.startTime * 1000;
-    this.profileEndTime = profile.endTime * 1000;
     this.totalHitCount = 0;
-    this._compatibilityConversionHeadToNodes(profile);
     this.profileHead = this._translateProfileTree(profile.nodes);
     WebInspector.ProfileTreeModel.call(this, this.profileHead);
     this._extractMetaNodes();
@@ -76,6 +84,23 @@ WebInspector.CPUProfileDataModel.prototype = {
             node.children = (/** @type {!Array<!ProfilerAgent.CPUProfileNode>} */(node.children)).map(convertNodesTree);
             return node.id;
         }
+    },
+
+    /**
+     * @param {!ProfilerAgent.CPUProfile} profile
+     * @return {?Array<number>}
+     */
+    _convertTimestampDeltas: function(profile)
+    {
+        if (!profile.timestampDeltas)
+            return null;
+        var lastTimeUsec = profile.startTime;
+        var timestamps = new Array(profile.timestampDeltas.length);
+        for (var i = 0; i < timestamps.length; ++i) {
+            lastTimeUsec += profile.timestampDeltas[i];
+            timestamps[i] = lastTimeUsec;
+        }
+        return timestamps;
     },
 
     /**

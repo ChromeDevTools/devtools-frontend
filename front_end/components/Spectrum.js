@@ -189,9 +189,10 @@ WebInspector.Spectrum._ChangeSource = {
     Other: "Other"
 }
 
+/** @enum {symbol} */
 WebInspector.Spectrum.Events = {
-    ColorChanged: "ColorChanged",
-    SizeChanged: "SizeChanged"
+    ColorChanged: Symbol("ColorChanged"),
+    SizeChanged: Symbol("SizeChanged")
 };
 
 WebInspector.Spectrum._colorChipSize = 24;

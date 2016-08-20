@@ -179,9 +179,10 @@ WebInspector.OverviewGrid.Window = function(parentElement, dividersLabelBarEleme
     this.setEnabled(true);
 }
 
+/** @enum {symbol} */
 WebInspector.OverviewGrid.Events = {
-    WindowChanged: "WindowChanged",
-    Click: "Click"
+    WindowChanged: Symbol("WindowChanged"),
+    Click: Symbol("Click")
 }
 
 WebInspector.OverviewGrid.Window.prototype = {

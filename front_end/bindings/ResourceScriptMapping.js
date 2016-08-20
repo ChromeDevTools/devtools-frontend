@@ -296,9 +296,10 @@ WebInspector.ResourceScriptFile = function(resourceScriptMapping, uiSourceCode, 
     this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.WorkingCopyCommitted, this._workingCopyCommitted, this);
 }
 
+/** @enum {symbol} */
 WebInspector.ResourceScriptFile.Events = {
-    DidMergeToVM: "DidMergeToVM",
-    DidDivergeFromVM: "DidDivergeFromVM",
+    DidMergeToVM: Symbol("DidMergeToVM"),
+    DidDivergeFromVM: Symbol("DidDivergeFromVM"),
 }
 
 WebInspector.ResourceScriptFile.prototype = {

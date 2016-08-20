@@ -61,18 +61,19 @@ WebInspector.CSSModel = function(target, domModel)
     WebInspector.moduleSetting("cssSourceMapsEnabled").addChangeListener(this._toggleSourceMapSupport, this);
 }
 
+/** @enum {symbol} */
 WebInspector.CSSModel.Events = {
-    LayoutEditorChange: "LayoutEditorChange",
-    FontsUpdated: "FontsUpdated",
-    MediaQueryResultChanged: "MediaQueryResultChanged",
-    ModelWasEnabled: "ModelWasEnabled",
-    PseudoStateForced: "PseudoStateForced",
-    StyleSheetAdded: "StyleSheetAdded",
-    StyleSheetChanged: "StyleSheetChanged",
-    StyleSheetRemoved: "StyleSheetRemoved",
-    SourceMapAttached: "SourceMapAttached",
-    SourceMapDetached: "SourceMapDetached",
-    SourceMapChanged: "SourceMapChanged"
+    LayoutEditorChange: Symbol("LayoutEditorChange"),
+    FontsUpdated: Symbol("FontsUpdated"),
+    MediaQueryResultChanged: Symbol("MediaQueryResultChanged"),
+    ModelWasEnabled: Symbol("ModelWasEnabled"),
+    PseudoStateForced: Symbol("PseudoStateForced"),
+    StyleSheetAdded: Symbol("StyleSheetAdded"),
+    StyleSheetChanged: Symbol("StyleSheetChanged"),
+    StyleSheetRemoved: Symbol("StyleSheetRemoved"),
+    SourceMapAttached: Symbol("SourceMapAttached"),
+    SourceMapDetached: Symbol("SourceMapDetached"),
+    SourceMapChanged: Symbol("SourceMapChanged")
 }
 
 WebInspector.CSSModel.MediaTypes = ["all", "braille", "embossed", "handheld", "print", "projection", "screen", "speech", "tty", "tv"];

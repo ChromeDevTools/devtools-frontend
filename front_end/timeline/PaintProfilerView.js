@@ -59,8 +59,9 @@ WebInspector.PaintProfilerView = function(showImageCallback)
     this._reset();
 }
 
+/** @enum {symbol} */
 WebInspector.PaintProfilerView.Events = {
-    WindowChanged: "WindowChanged"
+    WindowChanged: Symbol("WindowChanged")
 };
 
 WebInspector.PaintProfilerView.prototype = {

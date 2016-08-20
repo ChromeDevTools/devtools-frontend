@@ -146,9 +146,10 @@ WebInspector.DatabaseModel = function(target)
     this.target().registerDatabaseDispatcher(new WebInspector.DatabaseDispatcher(this));
 }
 
+/** @enum {symbol} */
 WebInspector.DatabaseModel.Events = {
-    DatabaseAdded: "DatabaseAdded",
-    DatabasesRemoved: "DatabasesRemoved"
+    DatabaseAdded: Symbol("DatabaseAdded"),
+    DatabasesRemoved: Symbol("DatabasesRemoved")
 }
 
 WebInspector.DatabaseModel.prototype = {

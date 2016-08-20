@@ -43,8 +43,9 @@ WebInspector.BezierEditor = function()
     this._label = this._header.createChild("span", "source-code bezier-display-value");
 }
 
+/** @enum {symbol} */
 WebInspector.BezierEditor.Events = {
-    BezierChanged: "BezierChanged"
+    BezierChanged: Symbol("BezierChanged")
 }
 
 WebInspector.BezierEditor.Presets = [

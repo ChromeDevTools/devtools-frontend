@@ -49,9 +49,10 @@ WebInspector.TextPrompt = function(completions, stopCharacters)
 
 WebInspector.TextPrompt.DefaultAutocompletionTimeout = 250;
 
+/** @enum {symbol} */
 WebInspector.TextPrompt.Events = {
-    ItemApplied: "text-prompt-item-applied",
-    ItemAccepted: "text-prompt-item-accepted"
+    ItemApplied: Symbol("text-prompt-item-applied"),
+    ItemAccepted: Symbol("text-prompt-item-accepted")
 };
 
 WebInspector.TextPrompt.prototype = {

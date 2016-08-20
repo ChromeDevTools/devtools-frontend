@@ -87,9 +87,10 @@ WebInspector.Action = function(extension)
     this._toggled = false;
 }
 
+/** @enum {symbol} */
 WebInspector.Action.Events = {
-    Enabled: "Enabled",
-    Toggled: "Toggled"
+    Enabled: Symbol("Enabled"),
+    Toggled: Symbol("Toggled")
 }
 
 WebInspector.Action.prototype = {

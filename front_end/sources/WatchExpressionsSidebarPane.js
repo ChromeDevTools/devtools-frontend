@@ -250,8 +250,9 @@ WebInspector.WatchExpression = function(expression, expandController, linkifier)
 
 WebInspector.WatchExpression._watchObjectGroupId = "watch-group";
 
+/** @enum {symbol} */
 WebInspector.WatchExpression.Events = {
-    ExpressionUpdated: "ExpressionUpdated"
+    ExpressionUpdated: Symbol("ExpressionUpdated")
 }
 
 WebInspector.WatchExpression.prototype = {

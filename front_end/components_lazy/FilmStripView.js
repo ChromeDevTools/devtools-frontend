@@ -16,10 +16,11 @@ WebInspector.FilmStripView = function()
     this.setMode(WebInspector.FilmStripView.Modes.TimeBased);
 }
 
+/** @enum {symbol} */
 WebInspector.FilmStripView.Events = {
-    FrameSelected: "FrameSelected",
-    FrameEnter: "FrameEnter",
-    FrameExit: "FrameExit",
+    FrameSelected: Symbol("FrameSelected"),
+    FrameEnter: Symbol("FrameEnter"),
+    FrameExit: Symbol("FrameExit"),
 }
 
 WebInspector.FilmStripView.Modes = {

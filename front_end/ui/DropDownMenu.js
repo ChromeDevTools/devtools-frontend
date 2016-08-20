@@ -18,9 +18,9 @@ WebInspector.DropDownMenu = function(element)
 /** @typedef {{id: string, title: string}} */
 WebInspector.DropDownMenu.Item;
 
-/** @enum {string} */
+/** @enum {symbol} */
 WebInspector.DropDownMenu.Events = {
-    ItemSelected: "ItemSelected"
+    ItemSelected: Symbol("ItemSelected")
 }
 
 WebInspector.DropDownMenu.prototype = {

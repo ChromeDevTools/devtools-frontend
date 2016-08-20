@@ -47,8 +47,9 @@ WebInspector.LayerDetailsView = function(layerViewHost)
 /**
  * @enum {string}
  */
+/** @enum {symbol} */
 WebInspector.LayerDetailsView.Events = {
-    PaintProfilerRequested: "PaintProfilerRequested"
+    PaintProfilerRequested: Symbol("PaintProfilerRequested")
 }
 
 /**

@@ -62,18 +62,16 @@ WebInspector.UISourceCode = function(project, url, contentType)
     this._messages = [];
 }
 
-/**
- * @enum {string}
- */
+/** @enum {symbol} */
 WebInspector.UISourceCode.Events = {
-    WorkingCopyChanged: "WorkingCopyChanged",
-    WorkingCopyCommitted: "WorkingCopyCommitted",
-    TitleChanged: "TitleChanged",
-    SourceMappingChanged: "SourceMappingChanged",
-    MessageAdded: "MessageAdded",
-    MessageRemoved: "MessageRemoved",
-    LineDecorationAdded: "LineDecorationAdded",
-    LineDecorationRemoved: "LineDecorationRemoved"
+    WorkingCopyChanged: Symbol("WorkingCopyChanged"),
+    WorkingCopyCommitted: Symbol("WorkingCopyCommitted"),
+    TitleChanged: Symbol("TitleChanged"),
+    SourceMappingChanged: Symbol("SourceMappingChanged"),
+    MessageAdded: Symbol("MessageAdded"),
+    MessageRemoved: Symbol("MessageRemoved"),
+    LineDecorationAdded: Symbol("LineDecorationAdded"),
+    LineDecorationRemoved: Symbol("LineDecorationRemoved")
 }
 
 WebInspector.UISourceCode.prototype = {

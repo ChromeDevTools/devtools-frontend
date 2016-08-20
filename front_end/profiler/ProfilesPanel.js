@@ -45,14 +45,12 @@ WebInspector.ProfileType = function(id, name)
         window.addEventListener("unload", this._clearTempStorage.bind(this), false);
 }
 
-/**
- * @enum {string}
- */
+/** @enum {symbol} */
 WebInspector.ProfileType.Events = {
-    AddProfileHeader: "add-profile-header",
-    ProfileComplete: "profile-complete",
-    RemoveProfileHeader: "remove-profile-header",
-    ViewUpdated: "view-updated"
+    AddProfileHeader: Symbol("add-profile-header"),
+    ProfileComplete: Symbol("profile-complete"),
+    RemoveProfileHeader: Symbol("remove-profile-header"),
+    ViewUpdated: Symbol("view-updated")
 }
 
 WebInspector.ProfileType.prototype = {
@@ -331,9 +329,10 @@ WebInspector.ProfileHeader.StatusUpdate = function(subtitle, wait)
     this.wait = wait;
 }
 
+/** @enum {symbol} */
 WebInspector.ProfileHeader.Events = {
-    UpdateStatus: "UpdateStatus",
-    ProfileReceived: "ProfileReceived"
+    UpdateStatus: Symbol("UpdateStatus"),
+    ProfileReceived: Symbol("ProfileReceived")
 }
 
 WebInspector.ProfileHeader.prototype = {

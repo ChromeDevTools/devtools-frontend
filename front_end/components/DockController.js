@@ -65,10 +65,12 @@ WebInspector.DockController.State = {
 // Use BeforeDockSideChanged to do something before all the UI bits are updated,
 // DockSideChanged to update UI, and AfterDockSideChanged to perform actions
 // after frontend is docked/undocked in the browser.
+
+/** @enum {symbol} */
 WebInspector.DockController.Events = {
-    BeforeDockSideChanged: "BeforeDockSideChanged",
-    DockSideChanged: "DockSideChanged",
-    AfterDockSideChanged: "AfterDockSideChanged"
+    BeforeDockSideChanged: Symbol("BeforeDockSideChanged"),
+    DockSideChanged: Symbol("DockSideChanged"),
+    AfterDockSideChanged: Symbol("AfterDockSideChanged")
 }
 
 WebInspector.DockController.prototype = {

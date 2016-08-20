@@ -49,6 +49,7 @@ function defineCommonExtensionSymbols(apiPrivate)
         PreviousSearchResult: "previousSearchResult"
     };
 
+    /** @enum {string} */
     apiPrivate.Events = {
         AuditStarted: "audit-started-",
         ButtonClicked: "button-clicked-",
@@ -62,6 +63,7 @@ function defineCommonExtensionSymbols(apiPrivate)
         ViewHidden: "view-hidden-"
     };
 
+    /** @enum {string} */
     apiPrivate.Commands = {
         AddAuditCategory: "addAuditCategory",
         AddAuditResult: "addAuditResult",

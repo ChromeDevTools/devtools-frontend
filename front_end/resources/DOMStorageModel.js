@@ -51,11 +51,12 @@ WebInspector.DOMStorage.storageId = function(securityOrigin, isLocalStorage)
     return { securityOrigin: securityOrigin, isLocalStorage: isLocalStorage };
 }
 
+/** @enum {symbol} */
 WebInspector.DOMStorage.Events = {
-    DOMStorageItemsCleared: "DOMStorageItemsCleared",
-    DOMStorageItemRemoved: "DOMStorageItemRemoved",
-    DOMStorageItemAdded: "DOMStorageItemAdded",
-    DOMStorageItemUpdated: "DOMStorageItemUpdated"
+    DOMStorageItemsCleared: Symbol("DOMStorageItemsCleared"),
+    DOMStorageItemRemoved: Symbol("DOMStorageItemRemoved"),
+    DOMStorageItemAdded: Symbol("DOMStorageItemAdded"),
+    DOMStorageItemUpdated: Symbol("DOMStorageItemUpdated")
 }
 
 WebInspector.DOMStorage.prototype = {
@@ -122,9 +123,10 @@ WebInspector.DOMStorageModel = function(target, securityOriginManager)
     this._agent = target.domstorageAgent();
 }
 
+/** @enum {symbol} */
 WebInspector.DOMStorageModel.Events = {
-    DOMStorageAdded: "DOMStorageAdded",
-    DOMStorageRemoved: "DOMStorageRemoved"
+    DOMStorageAdded: Symbol("DOMStorageAdded"),
+    DOMStorageRemoved: Symbol("DOMStorageRemoved")
 }
 
 WebInspector.DOMStorageModel.prototype = {

@@ -47,11 +47,9 @@ WebInspector.TransformController = function(element, disableRotate)
     this._reset();
 }
 
-/**
- * @enum {string}
- */
+/** @enum {symbol} */
 WebInspector.TransformController.Events = {
-    TransformChanged: "TransformChanged"
+    TransformChanged: Symbol("TransformChanged")
 }
 
 /**

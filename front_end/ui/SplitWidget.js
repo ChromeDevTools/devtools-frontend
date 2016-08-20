@@ -78,9 +78,10 @@ WebInspector.SplitWidget.ShowMode = {
     OnlySidebar: "OnlySidebar"
 }
 
+/** @enum {symbol} */
 WebInspector.SplitWidget.Events = {
-    SidebarSizeChanged: "SidebarSizeChanged",
-    ShowModeChanged: "ShowModeChanged"
+    SidebarSizeChanged: Symbol("SidebarSizeChanged"),
+    ShowModeChanged: Symbol("ShowModeChanged")
 }
 
 WebInspector.SplitWidget.MinPadding = 20;

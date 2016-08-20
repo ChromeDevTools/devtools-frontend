@@ -94,14 +94,15 @@ WebInspector.NetworkRequest = function(target, requestId, url, documentURL, fram
     this.connectionId = "0";
 }
 
+/** @enum {symbol} */
 WebInspector.NetworkRequest.Events = {
-    FinishedLoading: "FinishedLoading",
-    TimingChanged: "TimingChanged",
-    RemoteAddressChanged: "RemoteAddressChanged",
-    RequestHeadersChanged: "RequestHeadersChanged",
-    ResponseHeadersChanged: "ResponseHeadersChanged",
-    WebsocketFrameAdded: "WebsocketFrameAdded",
-    EventSourceMessageAdded: "EventSourceMessageAdded",
+    FinishedLoading: Symbol("FinishedLoading"),
+    TimingChanged: Symbol("TimingChanged"),
+    RemoteAddressChanged: Symbol("RemoteAddressChanged"),
+    RequestHeadersChanged: Symbol("RequestHeadersChanged"),
+    ResponseHeadersChanged: Symbol("ResponseHeadersChanged"),
+    WebsocketFrameAdded: Symbol("WebsocketFrameAdded"),
+    EventSourceMessageAdded: Symbol("EventSourceMessageAdded")
 }
 
 /** @enum {string} */

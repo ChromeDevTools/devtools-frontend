@@ -149,11 +149,12 @@ WebInspector.DataGrid.CornerWidth = 14;
  */
 WebInspector.DataGrid.ColumnDescriptor;
 
+/** @enum {symbol} */
 WebInspector.DataGrid.Events = {
-    SelectedNode: "SelectedNode",
-    DeselectedNode: "DeselectedNode",
-    SortingChanged: "SortingChanged",
-    ColumnsResized: "ColumnsResized"
+    SelectedNode: Symbol("SelectedNode"),
+    DeselectedNode: Symbol("DeselectedNode"),
+    SortingChanged: Symbol("SortingChanged"),
+    ColumnsResized: Symbol("ColumnsResized")
 }
 
 /** @enum {string} */

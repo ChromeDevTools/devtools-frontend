@@ -395,9 +395,10 @@ WebInspector.EmulatedDevicesList = function()
         this.saveCustomDevices();
 }
 
+/** @enum {symbol} */
 WebInspector.EmulatedDevicesList.Events = {
-    CustomDevicesUpdated: "CustomDevicesUpdated",
-    StandardDevicesUpdated: "StandardDevicesUpdated"
+    CustomDevicesUpdated: Symbol("CustomDevicesUpdated"),
+    StandardDevicesUpdated: Symbol("StandardDevicesUpdated")
 }
 
 WebInspector.EmulatedDevicesList.prototype = {

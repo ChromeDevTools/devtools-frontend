@@ -53,8 +53,9 @@ WebInspector.HeapSnapshotGridNode = function(tree, hasChildren)
     this._providerObject = null;
 }
 
+/** @enum {symbol} */
 WebInspector.HeapSnapshotGridNode.Events = {
-    PopulateComplete: "PopulateComplete"
+    PopulateComplete: Symbol("PopulateComplete")
 }
 
 /**

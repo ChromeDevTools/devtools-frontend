@@ -14,8 +14,9 @@ WebInspector.CSSParser = function()
     this._terminated = false;
 }
 
+/** @enum {symbol} */
 WebInspector.CSSParser.Events = {
-    RulesParsed: "RulesParsed"
+    RulesParsed: Symbol("RulesParsed")
 }
 
 WebInspector.CSSParser.prototype = {

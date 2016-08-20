@@ -57,10 +57,11 @@ WebInspector.BreakpointManager = function(breakpointsSetting, workspace, network
     this._workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
 }
 
+/** @enum {symbol} */
 WebInspector.BreakpointManager.Events = {
-    BreakpointAdded: "breakpoint-added",
-    BreakpointRemoved: "breakpoint-removed",
-    BreakpointsActiveStateChanged: "BreakpointsActiveStateChanged"
+    BreakpointAdded: Symbol("breakpoint-added"),
+    BreakpointRemoved: Symbol("breakpoint-removed"),
+    BreakpointsActiveStateChanged: Symbol("BreakpointsActiveStateChanged")
 }
 
 /**

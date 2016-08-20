@@ -60,25 +60,26 @@ WebInspector.ResourceTreeModel = function(target, networkManager, securityOrigin
     target.runtimeModel.setExecutionContextComparator(this._executionContextComparator.bind(this));
 }
 
+/** @enum {symbol} */
 WebInspector.ResourceTreeModel.EventTypes = {
-    FrameAdded: "FrameAdded",
-    FrameNavigated: "FrameNavigated",
-    FrameDetached: "FrameDetached",
-    FrameResized: "FrameResized",
-    FrameWillNavigate: "FrameWillNavigate",
-    MainFrameNavigated: "MainFrameNavigated",
-    ResourceAdded: "ResourceAdded",
-    WillLoadCachedResources: "WillLoadCachedResources",
-    CachedResourcesLoaded: "CachedResourcesLoaded",
-    DOMContentLoaded: "DOMContentLoaded",
-    Load: "Load",
-    PageReloadRequested: "PageReloadRequested",
-    WillReloadPage: "WillReloadPage",
-    ScreencastFrame: "ScreencastFrame",
-    ScreencastVisibilityChanged: "ScreencastVisibilityChanged",
-    ColorPicked: "ColorPicked",
-    InterstitialShown: "InterstitialShown",
-    InterstitialHidden: "InterstitialHidden"
+    FrameAdded: Symbol("FrameAdded"),
+    FrameNavigated: Symbol("FrameNavigated"),
+    FrameDetached: Symbol("FrameDetached"),
+    FrameResized: Symbol("FrameResized"),
+    FrameWillNavigate: Symbol("FrameWillNavigate"),
+    MainFrameNavigated: WebInspector.TargetManager.Events.MainFrameNavigated,
+    ResourceAdded: Symbol("ResourceAdded"),
+    WillLoadCachedResources: Symbol("WillLoadCachedResources"),
+    CachedResourcesLoaded: Symbol("CachedResourcesLoaded"),
+    DOMContentLoaded: Symbol("DOMContentLoaded"),
+    Load: WebInspector.TargetManager.Events.Load,
+    PageReloadRequested: WebInspector.TargetManager.Events.PageReloadRequested,
+    WillReloadPage: WebInspector.TargetManager.Events.WillReloadPage,
+    ScreencastFrame: Symbol("ScreencastFrame"),
+    ScreencastVisibilityChanged: Symbol("ScreencastVisibilityChanged"),
+    ColorPicked: Symbol("ColorPicked"),
+    InterstitialShown: Symbol("InterstitialShown"),
+    InterstitialHidden: Symbol("InterstitialHidden")
 }
 
 /**

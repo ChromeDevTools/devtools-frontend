@@ -86,9 +86,10 @@ WebInspector.Layers3DView.OutlineType = {
 /**
  * @enum {string}
  */
+/** @enum {symbol} */
 WebInspector.Layers3DView.Events = {
-    LayerSnapshotRequested: "LayerSnapshotRequested",
-    PaintProfilerRequested: "PaintProfilerRequested",
+    LayerSnapshotRequested: Symbol("LayerSnapshotRequested"),
+    PaintProfilerRequested: Symbol("PaintProfilerRequested")
 }
 
 /**
@@ -813,8 +814,9 @@ WebInspector.LayerTextureManager = function()
     this.reset();
 }
 
+/** @enum {symbol} */
 WebInspector.LayerTextureManager.Events = {
-    TextureUpdated: "TextureUpated"
+    TextureUpdated: Symbol("TextureUpated")
 }
 
 WebInspector.LayerTextureManager.prototype = {

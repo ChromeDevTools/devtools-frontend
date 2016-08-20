@@ -12,11 +12,9 @@ WebInspector.Console = function()
     this._messages = [];
 }
 
-/**
- * @enum {string}
- */
+/** @enum {symbol} */
 WebInspector.Console.Events = {
-    MessageAdded: "messageAdded"
+    MessageAdded: Symbol("messageAdded")
 }
 
 /**

@@ -77,9 +77,10 @@ WebInspector.SourcesView = function()
     this.element.addEventListener("keydown", this._handleKeyDown.bind(this), false);
 }
 
+/** @enum {symbol} */
 WebInspector.SourcesView.Events = {
-    EditorClosed: "EditorClosed",
-    EditorSelected: "EditorSelected",
+    EditorClosed: Symbol("EditorClosed"),
+    EditorSelected: Symbol("EditorSelected"),
 }
 
 WebInspector.SourcesView.prototype = {

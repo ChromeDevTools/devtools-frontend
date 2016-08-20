@@ -86,9 +86,10 @@ WebInspector.ExtensionServer = function()
     this._initExtensions();
 }
 
+/** @enum {symbol} */
 WebInspector.ExtensionServer.Events = {
-    SidebarPaneAdded: "SidebarPaneAdded",
-    AuditCategoryAdded: "AuditCategoryAdded"
+    SidebarPaneAdded: Symbol("SidebarPaneAdded"),
+    AuditCategoryAdded: Symbol("AuditCategoryAdded")
 }
 
 WebInspector.ExtensionServer.prototype = {

@@ -15,8 +15,9 @@ WebInspector.InspectedPagePlaceholder = function()
     this.restoreMinimumSizeAndMargins();
 };
 
+/** @enum {symbol} */
 WebInspector.InspectedPagePlaceholder.Events = {
-    Update: "Update"
+    Update: Symbol("Update")
 };
 
 WebInspector.InspectedPagePlaceholder.MarginValue = 3;

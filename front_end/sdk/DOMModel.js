@@ -1112,6 +1112,7 @@ WebInspector.DOMModel = function(target) {
     this._agent.enable();
 }
 
+/** @enum {string} */
 WebInspector.DOMModel.Events = {
     AttrModified: "AttrModified",
     AttrRemoved: "AttrRemoved",
@@ -1130,7 +1131,6 @@ WebInspector.DOMModel.Events = {
     InspectModeWillBeToggled: "InspectModeWillBeToggled",
     MarkersChanged: "MarkersChanged"
 }
-
 
 /**
  * @param {!WebInspector.RemoteObject} object

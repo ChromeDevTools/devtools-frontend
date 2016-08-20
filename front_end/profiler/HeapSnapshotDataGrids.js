@@ -60,9 +60,10 @@ WebInspector.HeapSnapshotSortableDataGrid = function(dataDisplayDelegate, column
     this.addEventListener(WebInspector.DataGrid.Events.SortingChanged, this.sortingChanged, this);
 }
 
+/** @enum {symbol} */
 WebInspector.HeapSnapshotSortableDataGrid.Events = {
-    ContentShown: "ContentShown",
-    SortingComplete: "SortingComplete"
+    ContentShown: Symbol("ContentShown"),
+    SortingComplete: Symbol("SortingComplete")
 }
 
 WebInspector.HeapSnapshotSortableDataGrid.prototype = {
@@ -655,8 +656,9 @@ WebInspector.HeapSnapshotRetainmentDataGrid = function(dataDisplayDelegate)
     WebInspector.HeapSnapshotContainmentDataGrid.call(this, dataDisplayDelegate, columns);
 }
 
+/** @enum {symbol} */
 WebInspector.HeapSnapshotRetainmentDataGrid.Events = {
-    ExpandRetainersComplete: "ExpandRetainersComplete"
+    ExpandRetainersComplete: Symbol("ExpandRetainersComplete")
 }
 
 WebInspector.HeapSnapshotRetainmentDataGrid.prototype = {

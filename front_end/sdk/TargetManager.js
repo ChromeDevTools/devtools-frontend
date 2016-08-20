@@ -21,14 +21,15 @@ WebInspector.TargetManager = function()
     this._isSuspended = false;
 }
 
+/** @enum {symbol} */
 WebInspector.TargetManager.Events = {
-    InspectedURLChanged: "InspectedURLChanged",
-    MainFrameNavigated: "MainFrameNavigated",
-    Load: "Load",
-    PageReloadRequested: "PageReloadRequested",
-    WillReloadPage: "WillReloadPage",
-    TargetDisposed: "TargetDisposed",
-    SuspendStateChanged: "SuspendStateChanged"
+    InspectedURLChanged: Symbol("InspectedURLChanged"),
+    MainFrameNavigated: Symbol("MainFrameNavigated"),
+    Load: Symbol("Load"),
+    PageReloadRequested: Symbol("PageReloadRequested"),
+    WillReloadPage: Symbol("WillReloadPage"),
+    TargetDisposed: Symbol("TargetDisposed"),
+    SuspendStateChanged: Symbol("SuspendStateChanged")
 }
 
 WebInspector.TargetManager.prototype = {

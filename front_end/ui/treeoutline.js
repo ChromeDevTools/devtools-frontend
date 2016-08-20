@@ -48,11 +48,12 @@ function TreeOutline(nonFocusable)
     this.element = this.contentElement;
 }
 
+/** @enum {symbol} */
 TreeOutline.Events = {
-    ElementAttached: "ElementAttached",
-    ElementExpanded: "ElementExpanded",
-    ElementCollapsed: "ElementCollapsed",
-    ElementSelected: "ElementSelected"
+    ElementAttached: Symbol("ElementAttached"),
+    ElementExpanded: Symbol("ElementExpanded"),
+    ElementCollapsed: Symbol("ElementCollapsed"),
+    ElementSelected: Symbol("ElementSelected")
 }
 
 TreeOutline.prototype = {

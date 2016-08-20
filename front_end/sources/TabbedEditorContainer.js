@@ -70,9 +70,10 @@ WebInspector.TabbedEditorContainer = function(delegate, setting, placeholderText
     this._history = WebInspector.TabbedEditorContainer.History.fromObject(this._previouslyViewedFilesSetting.get());
 }
 
+/** @enum {symbol} */
 WebInspector.TabbedEditorContainer.Events = {
-    EditorSelected: "EditorSelected",
-    EditorClosed: "EditorClosed"
+    EditorSelected: Symbol("EditorSelected"),
+    EditorClosed: Symbol("EditorClosed")
 }
 
 WebInspector.TabbedEditorContainer._tabId = 0;

@@ -26,6 +26,7 @@ InspectorFrontendHostAPI.ContextMenuDescriptor;
 }} */
 InspectorFrontendHostAPI.LoadNetworkResourceResult;
 
+/** @enum {string} */
 InspectorFrontendHostAPI.Events = {
     AddExtensions: "addExtensions",
     AppendedToURL: "appendedToURL",

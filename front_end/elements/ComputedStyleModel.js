@@ -13,8 +13,9 @@ WebInspector.ComputedStyleModel = function()
     WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this._onNodeChanged, this);
 }
 
+/** @enum {symbol} */
 WebInspector.ComputedStyleModel.Events = {
-    ComputedStyleChanged: "ComputedStyleChanged"
+    ComputedStyleChanged: Symbol("ComputedStyleChanged")
 }
 
 WebInspector.ComputedStyleModel.prototype = {

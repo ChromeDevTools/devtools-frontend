@@ -51,11 +51,12 @@ WebInspector.RuntimeModel = function(target)
     WebInspector.moduleSetting("customFormatters").addChangeListener(this._customFormattersStateChanged.bind(this));
 }
 
+/** @enum {symbol} */
 WebInspector.RuntimeModel.Events = {
-    ExecutionContextCreated: "ExecutionContextCreated",
-    ExecutionContextDestroyed: "ExecutionContextDestroyed",
-    ExecutionContextChanged: "ExecutionContextChanged",
-    ExecutionContextOrderChanged: "ExecutionContextOrderChanged"
+    ExecutionContextCreated: ("ExecutionContextCreated"),
+    ExecutionContextDestroyed: ("ExecutionContextDestroyed"),
+    ExecutionContextChanged: ("ExecutionContextChanged"),
+    ExecutionContextOrderChanged: ("ExecutionContextOrderChanged")
 }
 
 WebInspector.RuntimeModel._privateScript = "private script";

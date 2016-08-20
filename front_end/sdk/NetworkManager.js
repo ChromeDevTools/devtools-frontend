@@ -733,9 +733,10 @@ WebInspector.MultitargetNetworkManager = function()
     this._networkConditions = WebInspector.NetworkManager.NoThrottlingConditions;
 }
 
+/** @enum {symbol} */
 WebInspector.MultitargetNetworkManager.Events = {
-    ConditionsChanged: "ConditionsChanged",
-    UserAgentChanged: "UserAgentChanged"
+    ConditionsChanged: Symbol("ConditionsChanged"),
+    UserAgentChanged: Symbol("UserAgentChanged")
 }
 
 WebInspector.MultitargetNetworkManager.prototype = {

@@ -41,9 +41,10 @@ WebInspector.FileSystemMapping = function()
     this._loadFromSettings();
 }
 
+/** @enum {symbol} */
 WebInspector.FileSystemMapping.Events = {
-    FileMappingAdded: "FileMappingAdded",
-    FileMappingRemoved: "FileMappingRemoved"
+    FileMappingAdded: Symbol("FileMappingAdded"),
+    FileMappingRemoved: Symbol("FileMappingRemoved")
 }
 
 WebInspector.FileSystemMapping.prototype = {

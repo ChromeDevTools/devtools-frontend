@@ -215,8 +215,9 @@ InspectorBackendClass.Connection = function()
     this._isConnected = true;
 }
 
+/** @enum {symbol} */
 InspectorBackendClass.Connection.Events = {
-    Disconnected: "Disconnected",
+    Disconnected: Symbol("Disconnected")
 }
 
 InspectorBackendClass.Connection.prototype = {

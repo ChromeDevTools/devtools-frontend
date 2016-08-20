@@ -11,11 +11,9 @@ WebInspector.Context = function()
     this._eventDispatchers = new Map();
 }
 
-/**
- * @enum {string}
- */
+/** @enum {symbol} */
 WebInspector.Context.Events = {
-    FlavorChanged: "FlavorChanged"
+    FlavorChanged: Symbol("FlavorChanged")
 }
 
 WebInspector.Context.prototype = {

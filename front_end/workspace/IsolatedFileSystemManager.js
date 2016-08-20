@@ -56,13 +56,14 @@ WebInspector.IsolatedFileSystemManager = function()
 /** @typedef {!{fileSystemName: string, rootURL: string, fileSystemPath: string}} */
 WebInspector.IsolatedFileSystemManager.FileSystem;
 
+/** @enum {symbol} */
 WebInspector.IsolatedFileSystemManager.Events = {
-    FileSystemAdded: "FileSystemAdded",
-    FileSystemRemoved: "FileSystemRemoved",
-    FileSystemsLoaded: "FileSystemsLoaded",
-    FileSystemFilesChanged: "FileSystemFilesChanged",
-    ExcludedFolderAdded: "ExcludedFolderAdded",
-    ExcludedFolderRemoved: "ExcludedFolderRemoved"
+    FileSystemAdded: Symbol("FileSystemAdded"),
+    FileSystemRemoved: Symbol("FileSystemRemoved"),
+    FileSystemsLoaded: Symbol("FileSystemsLoaded"),
+    FileSystemFilesChanged: Symbol("FileSystemFilesChanged"),
+    ExcludedFolderAdded: Symbol("ExcludedFolderAdded"),
+    ExcludedFolderRemoved: Symbol("ExcludedFolderRemoved")
 }
 
 WebInspector.IsolatedFileSystemManager._lastRequestId = 0;

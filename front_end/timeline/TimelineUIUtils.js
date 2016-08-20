@@ -1771,8 +1771,9 @@ WebInspector.TimelineCategory = function(name, title, visible, childColor, color
     this.hidden = false;
 }
 
+/** @enum {symbol} */
 WebInspector.TimelineCategory.Events = {
-    VisibilityChanged: "VisibilityChanged"
+    VisibilityChanged: Symbol("VisibilityChanged")
 };
 
 WebInspector.TimelineCategory.prototype = {

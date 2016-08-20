@@ -17,9 +17,9 @@ WebInspector.ElementsBreadcrumbs = function()
     this._nodeSymbol = Symbol("node");
 }
 
-/** @enum {string} */
+/** @enum {symbol} */
 WebInspector.ElementsBreadcrumbs.Events = {
-    NodeSelected: "NodeSelected"
+    NodeSelected: Symbol("NodeSelected")
 }
 
 WebInspector.ElementsBreadcrumbs.prototype = {

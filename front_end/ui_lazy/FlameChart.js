@@ -322,8 +322,9 @@ WebInspector.FlameChartMarker.prototype = {
     draw: function(context, x, height, pixelsPerMillisecond) { },
 }
 
+/** @enum {symbol} */
 WebInspector.FlameChart.Events = {
-    EntrySelected: "EntrySelected"
+    EntrySelected: Symbol("EntrySelected")
 }
 
 

@@ -33,7 +33,7 @@ WebInspector.Object = function() {
 WebInspector.Object.prototype = {
     /**
      * @override
-     * @param {string} eventType
+     * @param {string|symbol} eventType
      * @param {function(!WebInspector.Event)} listener
      * @param {!Object=} thisObject
      * @return {!WebInspector.EventTarget.EventDescriptor}
@@ -53,7 +53,7 @@ WebInspector.Object.prototype = {
 
     /**
      * @override
-     * @param {string} eventType
+     * @param {string|symbol} eventType
      * @param {function(!WebInspector.Event)} listener
      * @param {!Object=} thisObject
      */
@@ -83,19 +83,17 @@ WebInspector.Object.prototype = {
 
     /**
      * @override
-     * @param {string} eventType
+     * @param {string|symbol} eventType
      * @return {boolean}
      */
     hasEventListeners: function(eventType)
     {
-        if (!this._listeners || !this._listeners.has(eventType))
-            return false;
-        return true;
+        return this._listeners && this._listeners.has(eventType);
     },
 
     /**
      * @override
-     * @param {string} eventType
+     * @param {string|symbol} eventType
      * @param {*=} eventData
      * @return {boolean}
      */
@@ -119,7 +117,7 @@ WebInspector.Object.prototype = {
 /**
  * @constructor
  * @param {!WebInspector.EventTarget} target
- * @param {string} type
+ * @param {string|symbol} type
  * @param {*=} data
  */
 WebInspector.Event = function(target, type, data)
@@ -173,7 +171,7 @@ WebInspector.EventTarget.removeEventListeners = function(eventList)
 
 WebInspector.EventTarget.prototype = {
     /**
-     * @param {string} eventType
+     * @param {string|symbol} eventType
      * @param {function(!WebInspector.Event)} listener
      * @param {!Object=} thisObject
      * @return {!WebInspector.EventTarget.EventDescriptor}
@@ -181,7 +179,7 @@ WebInspector.EventTarget.prototype = {
     addEventListener: function(eventType, listener, thisObject) { },
 
     /**
-     * @param {string} eventType
+     * @param {string|symbol} eventType
      * @param {function(!WebInspector.Event)} listener
      * @param {!Object=} thisObject
      */
@@ -190,13 +188,13 @@ WebInspector.EventTarget.prototype = {
     removeAllListeners: function() { },
 
     /**
-     * @param {string} eventType
+     * @param {string|symbol} eventType
      * @return {boolean}
      */
     hasEventListeners: function(eventType) { },
 
     /**
-     * @param {string} eventType
+     * @param {string|symbol} eventType
      * @param {*=} eventData
      * @return {boolean}
      */
@@ -206,7 +204,7 @@ WebInspector.EventTarget.prototype = {
 /**
  * @constructor
  * @param {!WebInspector.EventTarget} eventTarget
- * @param {string} eventType
+ * @param {string|symbol} eventType
  * @param {(!Object|undefined)} receiver
  * @param {function(?):?} method
  */

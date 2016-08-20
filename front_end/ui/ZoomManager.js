@@ -15,8 +15,9 @@ WebInspector.ZoomManager = function(window, frontendHost)
     window.addEventListener("resize", this._onWindowResize.bind(this), true);
 };
 
+/** @enum {symbol} */
 WebInspector.ZoomManager.Events = {
-    ZoomChanged: "ZoomChanged"
+    ZoomChanged: Symbol("ZoomChanged")
 };
 
 WebInspector.ZoomManager.prototype = {

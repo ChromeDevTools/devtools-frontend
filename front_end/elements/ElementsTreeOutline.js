@@ -101,12 +101,10 @@ WebInspector.ElementsTreeOutline.forDOMModel = function(domModel)
 /** @typedef {{node: !WebInspector.DOMNode, isCut: boolean}} */
 WebInspector.ElementsTreeOutline.ClipboardData;
 
-/**
- * @enum {string}
- */
+/** @enum {symbol} */
 WebInspector.ElementsTreeOutline.Events = {
-    SelectedNodeChanged: "SelectedNodeChanged",
-    ElementsTreeUpdated: "ElementsTreeUpdated"
+    SelectedNodeChanged: Symbol("SelectedNodeChanged"),
+    ElementsTreeUpdated: Symbol("ElementsTreeUpdated")
 }
 
 /**

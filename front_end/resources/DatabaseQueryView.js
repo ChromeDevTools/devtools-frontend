@@ -48,8 +48,9 @@ WebInspector.DatabaseQueryView = function(database)
     this.element.addEventListener("click", this._messagesClicked.bind(this), true);
 }
 
+/** @enum {symbol} */
 WebInspector.DatabaseQueryView.Events = {
-    SchemaUpdated: "SchemaUpdated"
+    SchemaUpdated: Symbol("SchemaUpdated")
 }
 
 WebInspector.DatabaseQueryView.prototype = {

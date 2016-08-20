@@ -59,9 +59,10 @@ WebInspector.Script = function(debuggerModel, scriptId, sourceURL, startLine, st
     this.hasSourceURL = hasSourceURL;
 }
 
+/** @enum {symbol} */
 WebInspector.Script.Events = {
-    ScriptEdited: "ScriptEdited",
-    SourceMapURLAdded: "SourceMapURLAdded"
+    ScriptEdited: Symbol("ScriptEdited"),
+    SourceMapURLAdded: Symbol("SourceMapURLAdded")
 }
 
 WebInspector.Script.sourceURLRegex = /^[\040\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/m;

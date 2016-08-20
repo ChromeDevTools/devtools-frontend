@@ -59,10 +59,11 @@ WebInspector.TabbedPane = function()
     WebInspector.zoomManager.addEventListener(WebInspector.ZoomManager.Events.ZoomChanged, this._zoomChanged, this);
 }
 
+/** @enum {symbol} */
 WebInspector.TabbedPane.EventTypes = {
-    TabSelected: "TabSelected",
-    TabClosed: "TabClosed",
-    TabOrderChanged: "TabOrderChanged"
+    TabSelected: Symbol("TabSelected"),
+    TabClosed: Symbol("TabClosed"),
+    TabOrderChanged: Symbol("TabOrderChanged")
 }
 
 WebInspector.TabbedPane.prototype = {

@@ -213,9 +213,9 @@ WebInspector.HandlerRegistry.prototype = {
     __proto__: WebInspector.Object.prototype
 }
 
-
+/** @enum {symbol} */
 WebInspector.HandlerRegistry.EventTypes = {
-    HandlersUpdated: "HandlersUpdated"
+    HandlersUpdated: Symbol("HandlersUpdated")
 }
 
 /**

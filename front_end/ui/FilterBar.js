@@ -57,8 +57,9 @@ WebInspector.FilterBar.FilterBarState = {
     Shown : "on"
 };
 
+/** @enum {symbol} */
 WebInspector.FilterBar.Events = {
-    Toggled: "Toggled"
+    Toggled: Symbol("Toggled")
 };
 
 WebInspector.FilterBar.prototype = {
@@ -188,8 +189,9 @@ WebInspector.FilterUI = function()
 {
 }
 
+/** @enum {symbol} */
 WebInspector.FilterUI.Events = {
-    FilterChanged: "FilterChanged"
+    FilterChanged: Symbol("FilterChanged")
 }
 
 WebInspector.FilterUI.prototype = {

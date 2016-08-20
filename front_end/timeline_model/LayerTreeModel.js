@@ -66,9 +66,10 @@ WebInspector.LayerTreeModel = function(target)
     this._layerTree = null;
 }
 
+/** @enum {symbol} */
 WebInspector.LayerTreeModel.Events = {
-    LayerTreeChanged: "LayerTreeChanged",
-    LayerPainted: "LayerPainted",
+    LayerTreeChanged: Symbol("LayerTreeChanged"),
+    LayerPainted: Symbol("LayerPainted"),
 }
 
 WebInspector.LayerTreeModel.ScrollRectType = {

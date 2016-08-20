@@ -24,9 +24,10 @@ WebInspector.AnimationModel = function(target)
     this._screenshotCapture = new WebInspector.AnimationModel.ScreenshotCapture(target, this);
 }
 
+/** @enum {symbol} */
 WebInspector.AnimationModel.Events = {
-    AnimationGroupStarted: "AnimationGroupStarted",
-    ModelReset: "ModelReset"
+    AnimationGroupStarted: Symbol("AnimationGroupStarted"),
+    ModelReset: Symbol("ModelReset")
 }
 
 WebInspector.AnimationModel.prototype = {

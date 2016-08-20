@@ -51,11 +51,12 @@ WebInspector.ServiceWorkerManager = function(target)
     WebInspector.targetManager.addModelListener(WebInspector.RuntimeModel, WebInspector.RuntimeModel.Events.ExecutionContextCreated, this._executionContextCreated, this);
 }
 
+/** @enum {symbol} */
 WebInspector.ServiceWorkerManager.Events = {
-    WorkersUpdated: "WorkersUpdated",
-    RegistrationUpdated: "RegistrationUpdated",
-    RegistrationErrorAdded: "RegistrationErrorAdded",
-    RegistrationDeleted: "RegistrationDeleted"
+    WorkersUpdated: Symbol("WorkersUpdated"),
+    RegistrationUpdated: Symbol("RegistrationUpdated"),
+    RegistrationErrorAdded: Symbol("RegistrationErrorAdded"),
+    RegistrationDeleted: Symbol("RegistrationDeleted")
 }
 
 WebInspector.ServiceWorkerManager.prototype = {

@@ -1881,6 +1881,7 @@ WebInspector.TimelineFilters = function()
     this._createFilterBar();
 }
 
+/** @enum {symbol} */
 WebInspector.TimelineFilters.Events = {
     FilterChanged: Symbol("FilterChanged")
 };

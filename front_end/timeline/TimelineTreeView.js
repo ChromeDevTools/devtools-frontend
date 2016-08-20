@@ -845,9 +845,7 @@ WebInspector.TimelineStackView = function(treeView)
     this._dataGrid.asWidget().show(this.element);
 }
 
-/**
- * @enum {symbol}
- */
+/** @enum {symbol} */
 WebInspector.TimelineStackView.Events = {
     SelectionChanged: Symbol("SelectionChanged")
 }

@@ -16,10 +16,11 @@ WebInspector.ResizerWidget = function()
     this._cursor = "nwse-resize";
 };
 
+/** @enum {symbol} */
 WebInspector.ResizerWidget.Events = {
-    ResizeStart: "ResizeStart",
-    ResizeUpdate: "ResizeUpdate",
-    ResizeEnd: "ResizeEnd"
+    ResizeStart: Symbol("ResizeStart"),
+    ResizeUpdate: Symbol("ResizeUpdate"),
+    ResizeEnd: Symbol("ResizeEnd")
 };
 
 WebInspector.ResizerWidget.prototype = {

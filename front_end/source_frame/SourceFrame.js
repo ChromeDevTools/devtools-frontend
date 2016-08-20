@@ -63,10 +63,11 @@ WebInspector.SourceFrame = function(url, lazyContent)
     this._searchableView = null;
 }
 
+/** @enum {symbol} */
 WebInspector.SourceFrame.Events = {
-    ScrollChanged: "ScrollChanged",
-    SelectionChanged: "SelectionChanged",
-    JumpHappened: "JumpHappened"
+    ScrollChanged: Symbol("ScrollChanged"),
+    SelectionChanged: Symbol("SelectionChanged"),
+    JumpHappened: Symbol("JumpHappened")
 }
 
 WebInspector.SourceFrame.prototype = {

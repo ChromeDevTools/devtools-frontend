@@ -2358,8 +2358,9 @@ WebInspector.CodeMirrorTextEditor._overrideModeWithPrefixedTokens("xml", "xml-")
 WebInspector.CodeMirrorTextEditor.GutterClickEventData;
 
 /** @enum {string} */
+/** @enum {symbol} */
 WebInspector.CodeMirrorTextEditor.Events = {
-    GutterClick: "GutterClick"
+    GutterClick: Symbol("GutterClick")
 }
 
 /** @type {!Set<!Runtime.Extension>} */

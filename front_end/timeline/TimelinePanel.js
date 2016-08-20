@@ -65,8 +65,7 @@ WebInspector.TimelinePanel = function()
     this._frameModel = new WebInspector.TimelineFrameModel(event => WebInspector.TimelineUIUtils.eventStyle(event).category.name);
     this._irModel = new WebInspector.TimelineIRModel();
 
-    if (Runtime.experiments.isEnabled("cpuThrottling"))
-        this._cpuThrottlingManager = new WebInspector.CPUThrottlingManager();
+    this._cpuThrottlingManager = new WebInspector.CPUThrottlingManager();
 
     /** @type {!Array.<!WebInspector.TimelineModeView>} */
     this._currentViews = [];
@@ -404,12 +403,10 @@ WebInspector.TimelinePanel.prototype = {
         garbageCollectButton.addEventListener("click", this._garbageCollectButtonClicked, this);
         this._panelToolbar.appendToolbarItem(garbageCollectButton);
 
-        if (Runtime.experiments.isEnabled("cpuThrottling")) {
-            this._panelToolbar.appendSeparator();
-            this._cpuThrottlingCombobox = new WebInspector.ToolbarComboBox(this._onCPUThrottlingChanged.bind(this));
-            this._panelToolbar.appendToolbarItem(this._cpuThrottlingCombobox);
-            this._populateCPUThrottingCombobox();
-        }
+        this._panelToolbar.appendSeparator();
+        this._cpuThrottlingCombobox = new WebInspector.ToolbarComboBox(this._onCPUThrottlingChanged.bind(this));
+        this._panelToolbar.appendToolbarItem(this._cpuThrottlingCombobox);
+        this._populateCPUThrottingCombobox();
     },
 
     _populateCPUThrottingCombobox: function()

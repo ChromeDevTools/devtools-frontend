@@ -1653,10 +1653,10 @@ WebInspector.InvalidationTracker.prototype = {
         var layerId = paintEvent.args["data"]["layerId"];
         if (layerId)
             this._lastPaintWithLayer = paintEvent;
-        if (!this._lastPaintWithLayer) {
-            console.error("Failed to find a paint container for a paint event.");
+        // Quietly discard top-level paints without layerId, as these are likely
+        // to come from overlay.
+        if (!this._lastPaintWithLayer)
             return;
-        }
 
         var effectivePaintId = this._lastPaintWithLayer.args["data"]["nodeId"];
         var paintFrameId = paintEvent.args["data"]["frame"];

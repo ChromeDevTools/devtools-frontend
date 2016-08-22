@@ -45,7 +45,7 @@ WebInspector.ProfileDataGridNode = function(profileNode, owningTree, hasChildren
     this.self = profileNode.self;
     this.total = profileNode.total;
     this.functionName = WebInspector.beautifyFunctionName(profileNode.functionName);
-    this._deoptReason = profileNode.deoptReason && profileNode.deoptReason !== "no reason" ? profileNode.deoptReason : "";
+    this._deoptReason = profileNode.deoptReason || "";
     this.url = profileNode.url;
 }
 

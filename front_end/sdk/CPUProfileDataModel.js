@@ -22,7 +22,8 @@ WebInspector.CPUProfileNode = function(node, sampleTime)
     this.id = node.id;
     this.self = node.hitCount * sampleTime;
     this.positionTicks = node.positionTicks;
-    this.deoptReason = node.deoptReason;
+    // Compatibility: legacy backends could provide "no reason" for optimized functions.
+    this.deoptReason = node.deoptReason && node.deoptReason !== "no reason" ? node.deoptReason : null;
 }
 
 WebInspector.CPUProfileNode.prototype = {
@@ -36,7 +37,7 @@ WebInspector.CPUProfileNode.prototype = {
  */
 WebInspector.CPUProfileDataModel = function(profile)
 {
-    var isLegacyFormat = !!profile.head;
+    var isLegacyFormat = !!profile["head"];
     if (isLegacyFormat) {
         // Legacy format contains raw timestamps and start/stop times are in seconds.
         this.profileStartTime = profile.startTime * 1000;
@@ -73,7 +74,7 @@ WebInspector.CPUProfileDataModel.prototype = {
         var nodes = [];
         convertNodesTree(profile.head);
         profile.nodes = nodes;
-        profile.head = null;
+        delete profile.head;
         /**
          * @param {!ProfilerAgent.CPUProfileNode} node
          * @return {number}

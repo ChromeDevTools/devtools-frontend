@@ -345,7 +345,7 @@ WebInspector.TimelineTreeView.GridNode.prototype = {
         } else if (event) {
             var data = event.args["data"];
             var deoptReason = data && data["deoptReason"];
-            if (deoptReason && deoptReason !== "no reason")
+            if (deoptReason)
                 container.createChild("div", "activity-warning").title = WebInspector.UIString("Not optimized: %s", deoptReason);
             name.textContent = event.name === WebInspector.TimelineModel.RecordType.JSFrame
                 ? WebInspector.beautifyFunctionName(event.args["data"]["functionName"])

@@ -491,7 +491,7 @@ WebInspector.CPUFlameChartDataProvider.prototype = {
         linkifier.dispose();
         pushEntryInfoRow(WebInspector.UIString("Aggregated self time"), Number.secondsToString(node.self / 1000, true));
         pushEntryInfoRow(WebInspector.UIString("Aggregated total time"), Number.secondsToString(node.total / 1000, true));
-        if (node.deoptReason && node.deoptReason !== "no reason")
+        if (node.deoptReason)
             pushEntryInfoRow(WebInspector.UIString("Not optimized"), node.deoptReason);
 
         return entryInfo;

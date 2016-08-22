@@ -702,11 +702,8 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
 
     if (event.warning)
         contentHelper.appendWarningRow(event);
-    if (event.name === recordTypes.JSFrame) {
-        var deoptReason = eventData["deoptReason"];
-        if (deoptReason && deoptReason !== "no reason")
-            contentHelper.appendWarningRow(event, WebInspector.TimelineModel.WarningType.V8Deopt);
-    }
+    if (event.name === recordTypes.JSFrame && eventData["deoptReason"])
+        contentHelper.appendWarningRow(event, WebInspector.TimelineModel.WarningType.V8Deopt);
 
     if (detailed) {
         contentHelper.appendTextRow(WebInspector.UIString("Self Time"), Number.millisToString(event.selfTime, true));

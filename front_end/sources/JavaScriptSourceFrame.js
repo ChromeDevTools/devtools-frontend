@@ -48,7 +48,7 @@ WebInspector.JavaScriptSourceFrame = function(uiSourceCode)
 
     this.textEditor.element.addEventListener("keydown", this._onKeyDown.bind(this), true);
 
-    this.textEditor.addEventListener(WebInspector.CodeMirrorTextEditor.Events.GutterClick, this._handleGutterClick.bind(this), this);
+    this.textEditor.addEventListener(WebInspector.SourcesTextEditor.Events.GutterClick, this._handleGutterClick.bind(this), this);
 
     this._breakpointManager.addEventListener(WebInspector.BreakpointManager.Events.BreakpointAdded, this._breakpointAdded, this);
     this._breakpointManager.addEventListener(WebInspector.BreakpointManager.Events.BreakpointRemoved, this._breakpointRemoved, this);
@@ -197,7 +197,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
     {
         WebInspector.UISourceCodeFrame.prototype.wasShown.call(this);
         if (this._executionLocation && this.loaded) {
-            // We need CodeMirrorTextEditor to be initialized prior to this call. @see crbug.com/499889
+            // We need SourcesTextEditor to be initialized prior to this call. @see crbug.com/499889
             setImmediate(this._generateValuesInSource.bind(this));
         }
     },
@@ -648,7 +648,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
 
         this.textEditor.setExecutionLocation(uiLocation.lineNumber, uiLocation.columnNumber);
         if (this.isShowing()) {
-            // We need CodeMirrorTextEditor to be initialized prior to this call. @see crbug.com/506566
+            // We need SourcesTextEditor to be initialized prior to this call. @see crbug.com/506566
             setImmediate(this._generateValuesInSource.bind(this));
         }
     },
@@ -997,7 +997,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
         if (this._muted)
             return;
 
-        var eventData = /** @type {!WebInspector.CodeMirrorTextEditor.GutterClickEventData} */ (event.data);
+        var eventData = /** @type {!WebInspector.SourcesTextEditor.GutterClickEventData} */ (event.data);
         var lineNumber = eventData.lineNumber;
         var eventObject = eventData.event;
 

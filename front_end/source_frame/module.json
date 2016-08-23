@@ -46,6 +46,7 @@
         "CodeMirrorUtils.js",
         "TextEditorAutocompleteController.js",
         "CodeMirrorTextEditor.js",
+        "SourcesTextEditor.js",
         "FontView.js",
         "ImageView.js",
         "SourceFrame.js",

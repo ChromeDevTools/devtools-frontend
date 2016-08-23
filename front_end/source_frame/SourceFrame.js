@@ -33,7 +33,7 @@
  * @extends {WebInspector.SimpleView}
  * @implements {WebInspector.Searchable}
  * @implements {WebInspector.Replaceable}
- * @implements {WebInspector.TextEditorDelegate}
+ * @implements {WebInspector.SourcesTextEditorDelegate}
  * @param {string} url
  * @param {function(): !Promise<?string>} lazyContent
  */
@@ -44,7 +44,7 @@ WebInspector.SourceFrame = function(url, lazyContent)
     this._url = url;
     this._lazyContent = lazyContent;
 
-    this._textEditor = new WebInspector.CodeMirrorTextEditor(this);
+    this._textEditor = new WebInspector.SourcesTextEditor(this);
 
     this._currentSearchResultIndex = -1;
     this._searchResults = [];

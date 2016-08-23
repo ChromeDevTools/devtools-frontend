@@ -657,6 +657,7 @@
             'front_end/source_frame/fontView.css',
             'front_end/source_frame/imageView.css',
             'front_end/source_frame/CodeMirrorTextEditor.js',
+            'front_end/source_frame/SourcesTextEditor.js',
             'front_end/source_frame/CodeMirrorUtils.js',
             'front_end/source_frame/FontView.js',
             'front_end/source_frame/ImageView.js',

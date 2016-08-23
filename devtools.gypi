@@ -69,6 +69,7 @@
             'front_end/common/Color.js',
             'front_end/common/Console.js',
             'front_end/common/ContentProvider.js',
+            'front_end/common/CSSShadowModel.js',
             'front_end/common/FormatterWorkerPool.js',
             'front_end/common/Geometry.js',
             'front_end/common/ModuleExtensionInterfaces.js',

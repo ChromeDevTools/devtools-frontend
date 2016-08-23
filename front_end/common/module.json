@@ -11,6 +11,7 @@
         "Geometry.js",
         "Console.js",
         "ContentProvider.js",
+        "CSSShadowModel.js",
         "ParsedURL.js",
         "Progress.js",
         "ResourceType.js",

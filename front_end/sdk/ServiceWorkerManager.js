@@ -433,7 +433,7 @@ WebInspector.ServiceWorker = function(manager, workerId, url, versionId)
     this._versionId = versionId;
     var parsedURL = url.asParsedURL();
     this._name = parsedURL ? parsedURL.lastPathComponentWithFragment()  : "#" + (++WebInspector.ServiceWorker._lastAnonymousTargetId);
-    this._scope = parsedURL.host + parsedURL.folderPathComponents;
+    this._scope = parsedURL ? parsedURL.host + parsedURL.folderPathComponents : "";
 
     this._manager._workers.set(workerId, this);
     var capabilities = WebInspector.Target.Capability.Network | WebInspector.Target.Capability.Worker;
@@ -680,7 +680,8 @@ WebInspector.ServiceWorkerVersion.prototype = {
     {
         this.id = payload.versionId;
         this.scriptURL = payload.scriptURL;
-        this.securityOrigin = payload.scriptURL.asParsedURL().securityOrigin();
+        var parsedURL = new WebInspector.ParsedURL(payload.scriptURL);
+        this.securityOrigin = parsedURL.securityOrigin();
         this.runningStatus = payload.runningStatus;
         this.status = payload.status;
         this.scriptLastModified = payload.scriptLastModified;
@@ -824,7 +825,8 @@ WebInspector.ServiceWorkerRegistration.prototype = {
         this._fingerprint = Symbol("fingerprint");
         this.id = payload.registrationId;
         this.scopeURL = payload.scopeURL;
-        this.securityOrigin = payload.scopeURL.asParsedURL().securityOrigin();
+        var parsedURL = new WebInspector.ParsedURL(payload.scopeURL);
+        this.securityOrigin = parsedURL.securityOrigin();
         this.isDeleted = payload.isDeleted;
         this.forceUpdateOnPageLoad = payload.forceUpdateOnPageLoad;
     },

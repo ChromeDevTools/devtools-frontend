@@ -987,9 +987,10 @@ WebInspector.NetworkLogView.prototype = {
     _exportAll: function()
     {
         var url = WebInspector.targetManager.mainTarget().inspectedURL();
-        var filename = url.asParsedURL().host + ".har";
+        var parsedURL = url.asParsedURL();
+        var filename = parsedURL ? parsedURL.host : "network-log";
         var stream = new WebInspector.FileOutputStream();
-        stream.open(filename, openCallback.bind(this));
+        stream.open(filename + ".har", openCallback.bind(this));
 
         /**
          * @param {boolean} accepted

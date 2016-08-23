@@ -217,6 +217,9 @@ WebInspector.JavaScriptSourceFrame.prototype = {
         WebInspector.UISourceCodeFrame.prototype.onUISourceCodeContentChanged.call(this);
     },
 
+    /**
+     * @override
+     */
     onTextChanged: function(oldRange, newRange)
     {
         this._scriptsPanel.updateLastModificationTime();

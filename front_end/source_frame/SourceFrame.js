@@ -33,6 +33,7 @@
  * @extends {WebInspector.SimpleView}
  * @implements {WebInspector.Searchable}
  * @implements {WebInspector.Replaceable}
+ * @implements {WebInspector.TextEditorDelegate}
  * @param {string} url
  * @param {function(): !Promise<?string>} lazyContent
  */
@@ -43,9 +44,7 @@ WebInspector.SourceFrame = function(url, lazyContent)
     this._url = url;
     this._lazyContent = lazyContent;
 
-    var textEditorDelegate = new WebInspector.TextEditorDelegateForSourceFrame(this);
-
-    this._textEditor = new WebInspector.CodeMirrorTextEditor(this._url, textEditorDelegate);
+    this._textEditor = new WebInspector.CodeMirrorTextEditor(this);
 
     this._currentSearchResultIndex = -1;
     this._searchResults = [];
@@ -80,6 +79,9 @@ WebInspector.SourceFrame.prototype = {
         this._shortcuts[key] = handler;
     },
 
+    /**
+     * @override
+     */
     wasShown: function()
     {
         this._ensureContentLoaded();
@@ -224,6 +226,7 @@ WebInspector.SourceFrame.prototype = {
     },
 
     /**
+     * @override
      * @param {!WebInspector.TextRange} oldRange
      * @param {!WebInspector.TextRange} newRange
      */
@@ -354,7 +357,10 @@ WebInspector.SourceFrame.prototype = {
         this._ensureContentLoaded();
     },
 
-    _editorFocused: function()
+    /**
+     * @override
+     */
+    editorFocused: function()
     {
         this._resetCurrentSearchResultIndex();
     },
@@ -553,6 +559,7 @@ WebInspector.SourceFrame.prototype = {
     },
 
     /**
+     * @override
      * @return {!Promise}
      */
     populateLineGutterContextMenu: function(contextMenu, lineNumber)
@@ -561,6 +568,7 @@ WebInspector.SourceFrame.prototype = {
     },
 
     /**
+     * @override
      * @return {!Promise}
      */
     populateTextAreaContextMenu: function(contextMenu, lineNumber, columnNumber)
@@ -569,6 +577,7 @@ WebInspector.SourceFrame.prototype = {
     },
 
     /**
+     * @override
      * @param {?WebInspector.TextRange} from
      * @param {?WebInspector.TextRange} to
      */
@@ -589,6 +598,7 @@ WebInspector.SourceFrame.prototype = {
     },
 
     /**
+     * @override
      * @param {!WebInspector.TextRange} textRange
      */
     selectionChanged: function(textRange)
@@ -621,6 +631,7 @@ WebInspector.SourceFrame.prototype = {
     },
 
     /**
+     * @override
      * @param {number} lineNumber
      */
     scrollChanged: function(lineNumber)
@@ -639,84 +650,4 @@ WebInspector.SourceFrame.prototype = {
     },
 
     __proto__: WebInspector.SimpleView.prototype
-}
-
-/**
- * @implements {WebInspector.TextEditorDelegate}
- * @constructor
- */
-WebInspector.TextEditorDelegateForSourceFrame = function(sourceFrame)
-{
-    this._sourceFrame = sourceFrame;
-}
-
-WebInspector.TextEditorDelegateForSourceFrame.prototype = {
-    /**
-     * @override
-     * @param {!WebInspector.TextRange} oldRange
-     * @param {!WebInspector.TextRange} newRange
-     */
-    onTextChanged: function(oldRange, newRange)
-    {
-        this._sourceFrame.onTextChanged(oldRange, newRange);
-    },
-
-    /**
-     * @override
-     * @param {!WebInspector.TextRange} textRange
-     */
-    selectionChanged: function(textRange)
-    {
-        this._sourceFrame.selectionChanged(textRange);
-    },
-
-    /**
-     * @override
-     * @param {number} lineNumber
-     */
-    scrollChanged: function(lineNumber)
-    {
-        this._sourceFrame.scrollChanged(lineNumber);
-    },
-
-    /**
-     * @override
-     */
-    editorFocused: function()
-    {
-        this._sourceFrame._editorFocused();
-    },
-
-    /**
-     * @override
-     * @param {!WebInspector.ContextMenu} contextMenu
-     * @param {number} lineNumber
-     * @return {!Promise}
-     */
-    populateLineGutterContextMenu: function(contextMenu, lineNumber)
-    {
-        return this._sourceFrame.populateLineGutterContextMenu(contextMenu, lineNumber);
-    },
-
-    /**
-     * @override
-     * @param {!WebInspector.ContextMenu} contextMenu
-     * @param {number} lineNumber
-     * @param {number} columnNumber
-     * @return {!Promise}
-     */
-    populateTextAreaContextMenu: function(contextMenu, lineNumber, columnNumber)
-    {
-        return this._sourceFrame.populateTextAreaContextMenu(contextMenu, lineNumber, columnNumber);
-    },
-
-    /**
-     * @override
-     * @param {?WebInspector.TextRange} from
-     * @param {?WebInspector.TextRange} to
-     */
-    onJumpToPosition: function(from, to)
-    {
-        this._sourceFrame.onJumpToPosition(from, to);
-    }
 }

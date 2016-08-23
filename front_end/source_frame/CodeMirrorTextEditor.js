@@ -31,14 +31,12 @@
 /**
  * @constructor
  * @extends {WebInspector.VBox}
- * @param {?string} url
  * @param {!WebInspector.TextEditorDelegate} delegate
  */
-WebInspector.CodeMirrorTextEditor = function(url, delegate)
+WebInspector.CodeMirrorTextEditor = function(delegate)
 {
     WebInspector.VBox.call(this);
     this._delegate = delegate;
-    this._url = url;
     /** @type {!Array<string>} */
     this._gutters = ["CodeMirror-linenumbers"];
 
@@ -75,7 +73,7 @@ WebInspector.CodeMirrorTextEditor = function(url, delegate)
         "Shift-Tab": "indentLess",
         "Enter": "smartNewlineAndIndent",
         "Ctrl-Space": "autocomplete",
-        "Esc": "dismissMultipleSelections",
+        "Esc": "dismiss",
         "Ctrl-M": "gotoMatchingBracket"
     };
 
@@ -128,7 +126,7 @@ WebInspector.CodeMirrorTextEditor = function(url, delegate)
     WebInspector.moduleSetting("textEditorIndent").addChangeListener(this._onUpdateEditorIndentation, this);
     WebInspector.moduleSetting("textEditorAutoDetectIndent").addChangeListener(this._onUpdateEditorIndentation, this);
     this._onUpdateEditorIndentation();
-    WebInspector.moduleSetting("showWhitespacesInEditor").addChangeListener(this._updateCodeMirrorMode, this);
+    WebInspector.moduleSetting("showWhitespacesInEditor").addChangeListener(this._updateWhitespace, this);
     WebInspector.moduleSetting("textEditorBracketMatching").addChangeListener(this._enableBracketMatchingIfNeeded, this);
     this._enableBracketMatchingIfNeeded();
 
@@ -161,6 +159,7 @@ WebInspector.CodeMirrorTextEditor = function(url, delegate)
     this._codeMirror.on("focus", this._focus.bind(this));
     this._codeMirror.on("keyHandled", this._onKeyHandled.bind(this));
     this.element.addEventListener("contextmenu", this._contextMenu.bind(this), false);
+
     /**
      * @this {WebInspector.CodeMirrorTextEditor}
      */
@@ -318,7 +317,7 @@ CodeMirror.commands.redoAndReveal = function(codemirror)
 /**
  * @return {!Object|undefined}
  */
-CodeMirror.commands.dismissMultipleSelections = function(codemirror)
+CodeMirror.commands.dismiss = function(codemirror)
 {
     var selections = codemirror.listSelections();
     var selection = selections[0];
@@ -328,12 +327,12 @@ CodeMirror.commands.dismissMultipleSelections = function(codemirror)
         if (WebInspector.CodeMirrorUtils.toRange(selection.anchor, selection.head).isEmpty())
             return CodeMirror.Pass;
         codemirror.setSelection(selection.anchor, selection.anchor, {scroll: false});
-        codemirror._codeMirrorTextEditor._revealLine(selection.anchor.line);
+        codemirror._codeMirrorTextEditor.scrollLineIntoView(selection.anchor.line);
         return;
     }
 
     codemirror.setSelection(selection.anchor, selection.head, {scroll: false});
-    codemirror._codeMirrorTextEditor._revealLine(selection.anchor.line);
+    codemirror._codeMirrorTextEditor.scrollLineIntoView(selection.anchor.line);
 }
 
 /**
@@ -413,6 +412,15 @@ WebInspector.CodeMirrorTextEditor._guessIndentationLevel = function(lines)
 
 
 WebInspector.CodeMirrorTextEditor.prototype = {
+    /**
+     * @protected
+     * @return {!CodeMirror}
+     */
+    codeMirror: function()
+    {
+        return this._codeMirror;
+    },
+
     _onKeyHandled: function()
     {
         WebInspector.shortcutRegistry.dismissPendingShortcutAction();
@@ -589,7 +597,7 @@ WebInspector.CodeMirrorTextEditor.prototype = {
     {
         WebInspector.moduleSetting("textEditorIndent").removeChangeListener(this._onUpdateEditorIndentation, this);
         WebInspector.moduleSetting("textEditorAutoDetectIndent").removeChangeListener(this._onUpdateEditorIndentation, this);
-        WebInspector.moduleSetting("showWhitespacesInEditor").removeChangeListener(this._updateCodeMirrorMode, this);
+        WebInspector.moduleSetting("showWhitespacesInEditor").removeChangeListener(this._updateWhitespace, this);
         WebInspector.moduleSetting("textEditorBracketMatching").removeChangeListener(this._enableBracketMatchingIfNeeded, this);
     },
 
@@ -677,7 +685,7 @@ WebInspector.CodeMirrorTextEditor.prototype = {
         function innerHighlightRegex()
         {
             if (range) {
-                this._revealLine(range.startLine);
+                this.scrollLineIntoView(range.startLine);
                 if (range.endColumn > WebInspector.CodeMirrorTextEditor.maxHighlightLength)
                     this.setSelection(range);
                 else
@@ -923,25 +931,26 @@ WebInspector.CodeMirrorTextEditor.prototype = {
         this._codeMirror.setOption("styleSelectedText", true);
     },
 
-    _updateCodeMirrorMode: function()
+    /**
+     * @param {string} mimeType
+     */
+    _updateCodeMirrorMode: function(mimeType)
     {
-        this._setupWhitespaceHighlight();
-        var whitespaceMode = WebInspector.moduleSetting("showWhitespacesInEditor").get();
-        this.element.classList.toggle("show-whitespaces", whitespaceMode === "all");
-        var mimeType = this._mimeType;
-        if (whitespaceMode === "all")
-            mimeType = this._allWhitespaceOverlayMode(this._mimeType);
-        else if (whitespaceMode === "trailing")
-            mimeType = this._trailingWhitespaceOverlayMode(this._mimeType);
         this._codeMirror.setOption("mode", mimeType);
-        WebInspector.CodeMirrorTextEditor._loadMimeTypeModes(this._mimeType, this._mimeTypeModesLoaded.bind(this));
+        WebInspector.CodeMirrorTextEditor._loadMimeTypeModes(mimeType, innerUpdateCodeMirrorMode.bind(this));
+
+        /**
+         * @this WebInspector.CodeMirrorTextEditor
+         */
+        function innerUpdateCodeMirrorMode()
+        {
+            this._mimeTypeModesLoadedForTest();
+            this._updateCodeMirrorMode(mimeType);
+        }
     },
 
-    _mimeTypeModesLoaded: function()
-    {
-        // Do not remove, this function is sniffed in tests.
-        this._updateCodeMirrorMode();
-    },
+    // Do not remove, this function is sniffed in tests.
+    _mimeTypeModesLoadedForTest: function() { },
 
     /**
      * @param {string} mimeType
@@ -953,7 +962,29 @@ WebInspector.CodeMirrorTextEditor.prototype = {
             this._enableLongLinesMode();
         else
             this._disableLongLinesMode();
-        this._updateCodeMirrorMode();
+        this._updateCodeMirrorMode(this._applyWhitespaceMimetype(mimeType));
+    },
+
+    /**
+     * @param {string} mimeType
+     * @return {string}
+     */
+    _applyWhitespaceMimetype: function(mimeType)
+    {
+        this._setupWhitespaceHighlight();
+        var whitespaceMode = WebInspector.moduleSetting("showWhitespacesInEditor").get();
+        this.element.classList.toggle("show-whitespaces", whitespaceMode === "all");
+        if (whitespaceMode === "all")
+            return this._allWhitespaceOverlayMode(mimeType);
+        else if (whitespaceMode === "trailing")
+            return this._trailingWhitespaceOverlayMode(mimeType);
+        return mimeType;
+    },
+
+    _updateWhitespace: function()
+    {
+        if (this._mimeType)
+            this.setMimeType(this._mimeType);
     },
 
     /**
@@ -1060,7 +1091,7 @@ WebInspector.CodeMirrorTextEditor.prototype = {
     /**
      * @param {number} lineNumber
      */
-    _revealLine: function(lineNumber)
+    scrollLineIntoView: function(lineNumber)
     {
         this._innerRevealLine(lineNumber, this._codeMirror.getScrollInfo());
     },
@@ -1334,7 +1365,7 @@ WebInspector.CodeMirrorTextEditor.prototype = {
         this._highlightedLine = this._codeMirror.getLineHandle(lineNumber);
         if (!this._highlightedLine)
             return;
-        this._revealLine(lineNumber);
+        this.scrollLineIntoView(lineNumber);
         if (shouldHighlight) {
             this._codeMirror.addLineClass(this._highlightedLine, null, "cm-highlight");
             this._clearHighlightTimeout = setTimeout(this.clearPositionHighlight.bind(this), 2000);
@@ -2182,7 +2213,7 @@ WebInspector.CodeMirrorTextEditor.SelectNextOccurrenceController.prototype = {
         this._textEditor.setSelections(selections, selections.length - 1);
         delete this._muteSelectionListener;
 
-        this._textEditor._revealLine(next.startLine);
+        this._textEditor.scrollLineIntoView(next.startLine);
     },
 
     /**

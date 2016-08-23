@@ -46,8 +46,9 @@ WebInspector.ScreencastApp.prototype = {
             return;
         this._target = target;
 
-        if (target.hasBrowserCapability()) {
-            this._screencastView = new WebInspector.ScreencastView(target);
+        var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(target);
+        if (resourceTreeModel) {
+            this._screencastView = new WebInspector.ScreencastView(target, resourceTreeModel);
             this._rootSplitWidget.setMainWidget(this._screencastView);
             this._screencastView.initialize();
         } else {

@@ -39,18 +39,19 @@ WebInspector.StylesSourceMapping = function(cssModel, workspace, networkMapping)
 {
     this._cssModel = cssModel;
     this._workspace = workspace;
-    this._workspace.addEventListener(WebInspector.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
-    this._workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAddedToWorkspace, this);
-    this._workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
     this._networkMapping = networkMapping;
 
-    cssModel.target().resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._unbindAllUISourceCodes, this);
-
-    this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetChanged, this._styleSheetChanged, this);
     /** @type {!Map<string, !Map<string, !Map<string, !WebInspector.CSSStyleSheetHeader>>>} */
     this._urlToHeadersByFrameId = new Map();
     /** @type {!Map.<!WebInspector.UISourceCode, !WebInspector.StyleFile>} */
     this._styleFiles = new Map();
+
+    this._workspace.addEventListener(WebInspector.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
+    this._workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAddedToWorkspace, this);
+    this._workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
+    this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetChanged, this._styleSheetChanged, this);
+    WebInspector.ResourceTreeModel.fromTarget(cssModel.target()).addEventListener(
+        WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._unbindAllUISourceCodes, this);
 }
 
 WebInspector.StylesSourceMapping.ChangeUpdateTimeoutMs = 200;
@@ -180,8 +181,13 @@ WebInspector.StylesSourceMapping.prototype = {
         this._styleFiles.delete(uiSourceCode);
     },
 
-    _unbindAllUISourceCodes: function()
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _unbindAllUISourceCodes: function(event)
     {
+        if (event.data.target() !== this.target())
+            return;
         for (var styleFile of this._styleFiles.values())
             styleFile.dispose();
         this._styleFiles.clear();

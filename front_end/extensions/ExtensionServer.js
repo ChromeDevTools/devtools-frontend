@@ -498,8 +498,8 @@ WebInspector.ExtensionServer.prototype = {
         var uiSourceCodes = WebInspector.workspace.uiSourceCodesForProjectType(WebInspector.projectTypes.Network);
         uiSourceCodes = uiSourceCodes.concat(WebInspector.workspace.uiSourceCodesForProjectType(WebInspector.projectTypes.ContentScripts));
         uiSourceCodes.forEach(pushResourceData.bind(this));
-        for (var target of WebInspector.targetManager.targets())
-            target.resourceTreeModel.forAllResources(pushResourceData.bind(this));
+        for (var target of WebInspector.targetManager.targets(WebInspector.Target.Capability.DOM))
+            WebInspector.ResourceTreeModel.fromTarget(target).forAllResources(pushResourceData.bind(this));
         return resources.valuesArray();
     },
 
@@ -943,7 +943,14 @@ WebInspector.ExtensionServer.prototype = {
         }
 
         if (typeof options === "object") {
-            var frame = options.frameURL ? resolveURLToFrame(options.frameURL) : WebInspector.targetManager.mainTarget().resourceTreeModel.mainFrame;
+            var frame;
+            if (options.frameURL) {
+                frame = resolveURLToFrame(options.frameURL);
+            } else {
+                var target = WebInspector.targetManager.mainTarget();
+                var resourceTreeModel = target && WebInspector.ResourceTreeModel.fromTarget(target);
+                frame = resourceTreeModel && resourceTreeModel.mainFrame;
+            }
             if (!frame) {
                 if (options.frameURL)
                     console.warn("evaluate: there is no frame with URL " + options.frameURL);

@@ -34,7 +34,8 @@ WebInspector.ConsoleContextSelector.prototype = {
         var result;
         if (executionContext.isDefault) {
             if (executionContext.frameId) {
-                var frame = executionContext.target().resourceTreeModel.frameForId(executionContext.frameId);
+                var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(executionContext.target());
+                var frame = resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
                 result =  frame ? frame.displayName() : executionContext.label();
             } else {
                 result = executionContext.target().decorateLabel(executionContext.label());

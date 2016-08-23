@@ -159,11 +159,16 @@ WebInspector.DOMPresentationUtils.linkifyDeferredNodeReference = function(deferr
  */
 WebInspector.DOMPresentationUtils.buildImagePreviewContents = function(target, originalImageURL, showDimensions, userCallback, precomputedFeatures)
 {
-    var resource = target.resourceTreeModel.resourceForURL(originalImageURL);
+    var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(target);
+    if (!resourceTreeModel) {
+        userCallback();
+        return;
+    }
+    var resource = resourceTreeModel.resourceForURL(originalImageURL);
     var imageURL = originalImageURL;
     if (!isImageResource(resource) && precomputedFeatures && precomputedFeatures.currentSrc) {
         imageURL = precomputedFeatures.currentSrc;
-        resource = target.resourceTreeModel.resourceForURL(imageURL);
+        resource = resourceTreeModel.resourceForURL(imageURL);
     }
     if (!isImageResource(resource)) {
         userCallback();

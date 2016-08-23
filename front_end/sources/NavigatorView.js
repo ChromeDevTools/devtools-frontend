@@ -193,10 +193,13 @@ WebInspector.NavigatorView.prototype = {
      */
     _uiSourceCodeFrame: function(uiSourceCode)
     {
-        var target = WebInspector.NetworkProject.targetForProject(uiSourceCode.project());
-        if (!target)
-            return null;
-        return WebInspector.NetworkProject.frameForProject(uiSourceCode.project()) || target.resourceTreeModel.mainFrame;
+        var frame = WebInspector.NetworkProject.frameForProject(uiSourceCode.project());
+        if (!frame) {
+            var target = WebInspector.NetworkProject.targetForProject(uiSourceCode.project());
+            var resourceTreeModel = target && WebInspector.ResourceTreeModel.fromTarget(target);
+            frame = resourceTreeModel && resourceTreeModel.mainFrame;
+        }
+        return frame;
     },
 
     /**

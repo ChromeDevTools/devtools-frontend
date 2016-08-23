@@ -187,7 +187,9 @@ WebInspector.ConsoleView.prototype = {
     _initConsoleMessages: function()
     {
         var mainTarget = WebInspector.targetManager.mainTarget();
-        if (!mainTarget || !mainTarget.resourceTreeModel.cachedResourcesLoaded()) {
+        var resourceTreeModel = mainTarget && WebInspector.ResourceTreeModel.fromTarget(mainTarget);
+        var resourcesLoaded = !resourceTreeModel || resourceTreeModel.cachedResourcesLoaded();
+        if (!mainTarget || !resourcesLoaded) {
             WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.EventTypes.CachedResourcesLoaded, this._onResourceTreeModelLoaded, this);
             return;
         }

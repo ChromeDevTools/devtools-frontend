@@ -172,14 +172,14 @@ WebInspector.TimelineController.prototype = {
         var options = "sampling-frequency=" + samplingFrequencyHz;
         var target = this._target;
         var tracingManager = target.tracingManager;
-        target.resourceTreeModel.suspendReload();
+        WebInspector.targetManager.suspendReload(target);
         profilingStartedPromise.then(tracingManager.start.bind(tracingManager, this, categories, options, onTraceStarted));
         /**
          * @param {?string} error
          */
         function onTraceStarted(error)
         {
-            target.resourceTreeModel.resumeReload();
+            WebInspector.targetManager.resumeReload(target);
             if (callback)
                 callback(error);
         }

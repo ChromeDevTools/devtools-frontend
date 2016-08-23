@@ -33,12 +33,14 @@
  * @extends {WebInspector.VBox}
  * @implements {WebInspector.DOMNodeHighlighter}
  * @param {!WebInspector.Target} target
+ * @param {!WebInspector.ResourceTreeModel} resourceTreeModel
  */
-WebInspector.ScreencastView = function(target)
+WebInspector.ScreencastView = function(target, resourceTreeModel)
 {
     WebInspector.VBox.call(this);
     this._target = target;
     this._domModel = WebInspector.DOMModel.fromTarget(target);
+    this._resourceTreeModel = resourceTreeModel;
 
     this.setMinimumSize(150, 150);
     this.registerRequiredCSS("screencast/screencastView.css");
@@ -97,8 +99,8 @@ WebInspector.ScreencastView.prototype = {
         this._shortcuts = /** !Object.<number, function(Event=):boolean> */ ({});
         this._shortcuts[WebInspector.KeyboardShortcut.makeKey("l", WebInspector.KeyboardShortcut.Modifiers.Ctrl)] = this._focusNavigationBar.bind(this);
 
-        this._target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.ScreencastFrame, this._screencastFrame, this);
-        this._target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.ScreencastVisibilityChanged, this._screencastVisibilityChanged, this);
+        this._resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.ScreencastFrame, this._screencastFrame, this);
+        this._resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.ScreencastVisibilityChanged, this._screencastVisibilityChanged, this);
 
         WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChange, this);
         this._updateGlasspane();
@@ -741,7 +743,7 @@ WebInspector.ScreencastView.prototype = {
 
     _navigateReload: function()
     {
-        this._target.resourceTreeModel.reloadPage();
+        this._resourceTreeModel.reloadPage();
     },
 
     _navigationUrlKeyUp: function(event)

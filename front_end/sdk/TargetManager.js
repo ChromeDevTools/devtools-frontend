@@ -32,6 +32,8 @@ WebInspector.TargetManager.Events = {
     SuspendStateChanged: Symbol("SuspendStateChanged")
 }
 
+WebInspector.TargetManager._listenersSymbol = Symbol("WebInspector.TargetManager.Listeners");
+
 WebInspector.TargetManager.prototype = {
     suspendAllTargets: function()
     {
@@ -100,8 +102,14 @@ WebInspector.TargetManager.prototype = {
      */
     reloadPage: function(bypassCache, injectedScript)
     {
-        if (this._targets.length)
-            this._targets[0].resourceTreeModel.reloadPage(bypassCache, injectedScript);
+        if (!this._targets.length)
+            return;
+
+        var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(this._targets[0]);
+        if (!resourceTreeModel)
+            return;
+
+        resourceTreeModel.reloadPage(bypassCache, injectedScript);
     },
 
     /**
@@ -187,21 +195,20 @@ WebInspector.TargetManager.prototype = {
         target.runtimeModel = new WebInspector.RuntimeModel(target);
 
         var networkManager = null;
+        var resourceTreeModel = null;
         if (target.hasNetworkCapability())
             networkManager = new WebInspector.NetworkManager(target);
-
-        var securityOriginManager = WebInspector.SecurityOriginManager.fromTarget(target);
-        /** @type {!WebInspector.ResourceTreeModel} */
-        target.resourceTreeModel = new WebInspector.ResourceTreeModel(target, networkManager, securityOriginManager);
-
-        if (networkManager)
-            new WebInspector.NetworkLog(target, target.resourceTreeModel, networkManager);
+        if (networkManager && target.hasDOMCapability()) {
+            resourceTreeModel = new WebInspector.ResourceTreeModel(target, networkManager, WebInspector.SecurityOriginManager.fromTarget(target));
+            new WebInspector.NetworkLog(target, resourceTreeModel, networkManager);
+        }
 
         if (target.hasJSCapability())
             new WebInspector.DebuggerModel(target);
 
-        if (target.hasDOMCapability()) {
+        if (resourceTreeModel) {
             var domModel = new WebInspector.DOMModel(target);
+            // TODO(eostroukhov) CSSModel should not depend on RTM
             new WebInspector.CSSModel(target, domModel);
         }
 
@@ -236,11 +243,16 @@ WebInspector.TargetManager.prototype = {
     addTarget: function(target)
     {
         this._targets.push(target);
-        if (this._targets.length === 1) {
-            target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._redispatchEvent, this);
-            target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.Load, this._redispatchEvent, this);
-            target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.PageReloadRequested, this._redispatchEvent, this);
-            target.resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.WillReloadPage, this._redispatchEvent, this);
+        var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(target);
+        if (this._targets.length === 1 && resourceTreeModel) {
+            var events = [
+                WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated,
+                WebInspector.ResourceTreeModel.EventTypes.Load,
+                WebInspector.ResourceTreeModel.EventTypes.PageReloadRequested,
+                WebInspector.ResourceTreeModel.EventTypes.WillReloadPage
+            ];
+            resourceTreeModel[WebInspector.TargetManager._listenersSymbol] =
+                events.map((event) => resourceTreeModel.addEventListener(event, this._redispatchEvent, this));
         }
         var copy = this._observersForTarget(target);
         for (var i = 0; i < copy.length; ++i)
@@ -262,11 +274,11 @@ WebInspector.TargetManager.prototype = {
     removeTarget: function(target)
     {
         this._targets.remove(target);
-        if (this._targets.length === 0) {
-            target.resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._redispatchEvent, this);
-            target.resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.EventTypes.Load, this._redispatchEvent, this);
-            target.resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.EventTypes.WillReloadPage, this._redispatchEvent, this);
-        }
+        var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(target);
+        var treeModelListeners = resourceTreeModel && resourceTreeModel[WebInspector.TargetManager._listenersSymbol];
+        if (treeModelListeners)
+            WebInspector.EventTarget.removeEventListeners(treeModelListeners);
+
         var copy = this._observersForTarget(target);
         for (var i = 0; i < copy.length; ++i)
             copy[i].targetRemoved(target);

@@ -102,7 +102,7 @@ WebInspector.ExecutionContextSelector.prototype = {
                 newContext = executionContexts[i];
         }
         for (var i = 0; i < executionContexts.length && !newContext; ++i) {
-            if (this._isMainFrameContext(executionContexts[i]))
+            if (this._isDefaultContext(executionContexts[i]))
                 newContext = executionContexts[i];
         }
         this._ignoreContextChanged = true;
@@ -118,7 +118,7 @@ WebInspector.ExecutionContextSelector.prototype = {
     {
         if (this._lastSelectedContextId && this._lastSelectedContextId === this._contextPersistentId(executionContext))
             return true;
-        if (!this._lastSelectedContextId && this._isMainFrameContext(executionContext))
+        if (!this._lastSelectedContextId && this._isDefaultContext(executionContext))
             return true;
         return false;
     },
@@ -127,11 +127,14 @@ WebInspector.ExecutionContextSelector.prototype = {
      * @param {!WebInspector.ExecutionContext} executionContext
      * @return {boolean}
      */
-    _isMainFrameContext: function(executionContext)
+    _isDefaultContext: function(executionContext)
     {
-        if (!executionContext.isDefault)
+        if (!executionContext.isDefault || !executionContext.frameId)
             return false;
-        var frame = executionContext.target().resourceTreeModel.frameForId(executionContext.frameId);
+        if (executionContext.target().parentTarget())
+            return false;
+        var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(executionContext.target());
+        var frame = resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
         if (frame && frame.isMainFrame())
             return true;
         return false;
@@ -190,7 +193,7 @@ WebInspector.ExecutionContextSelector.prototype = {
         for (var i = 0; i < targets.length && !newContext; ++i) {
             var executionContexts = targets[i].runtimeModel.executionContexts();
             for (var executionContext of executionContexts) {
-                if (this._isMainFrameContext(executionContext)) {
+                if (this._isDefaultContext(executionContext)) {
                     newContext = executionContext;
                     break;
                 }

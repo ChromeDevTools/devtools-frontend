@@ -419,6 +419,7 @@ print 'Compiling devtools.js...'
 command = spawned_compiler_command + [
     '--externs', to_platform_path(global_externs_file),
     '--externs', to_platform_path(path.join(devtools_frontend_path, 'host', 'InspectorFrontendHostAPI.js')),
+    '--jscomp_off=externsValidation',
     '--module', jsmodule_name_prefix + 'devtools_js' + ':1',
     '--js', to_platform_path(path.join(devtools_frontend_path, 'devtools.js'))
 ]

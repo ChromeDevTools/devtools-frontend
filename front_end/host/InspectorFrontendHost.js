@@ -494,12 +494,12 @@ window.InspectorFrontendHost = InspectorFrontendHost;
 
         var descriptors = InspectorFrontendHostAPI.EventDescriptors;
         for (var i = 0; i < descriptors.length; ++i)
-            this[descriptors[i][0]] = this._dispatch.bind(this, descriptors[i][0], descriptors[i][1], descriptors[i][2]);
+            this[descriptors[i][1]] = this._dispatch.bind(this, descriptors[i][0], descriptors[i][2], descriptors[i][3]);
     }
 
     InspectorFrontendAPIImpl.prototype = {
         /**
-         * @param {string} name
+         * @param {symbol} name
          * @param {!Array.<string>} signature
          * @param {boolean} runOnceLoaded
          */

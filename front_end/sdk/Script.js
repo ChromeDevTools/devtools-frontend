@@ -180,8 +180,12 @@ WebInspector.Script.prototype = {
          */
         function didGetScriptSource(error, source)
         {
-            WebInspector.Script._reportDeprecatedCommentIfNeeded(this, source);
-            this._source = WebInspector.Script._trimSourceURLComment(error ? "" : source);
+            if (!error) {
+                WebInspector.Script._reportDeprecatedCommentIfNeeded(this, source);
+                this._source = WebInspector.Script._trimSourceURLComment(source);
+            } else {
+                this._source = "";
+            }
             callback(this._source);
         }
     },

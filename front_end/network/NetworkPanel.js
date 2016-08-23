@@ -95,12 +95,12 @@ WebInspector.NetworkPanel = function()
     this._toggleRecordFilmStrip();
     this._updateUI();
 
-    WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.EventTypes.WillReloadPage, this._willReloadPage, this);
-    WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.EventTypes.Load, this._load, this);
-    this._networkLogView.addEventListener(WebInspector.NetworkLogView.EventTypes.RequestSelected, this._onRequestSelected, this);
-    this._networkLogView.addEventListener(WebInspector.NetworkLogView.EventTypes.SearchCountUpdated, this._onSearchCountUpdated, this);
-    this._networkLogView.addEventListener(WebInspector.NetworkLogView.EventTypes.SearchIndexUpdated, this._onSearchIndexUpdated, this);
-    this._networkLogView.addEventListener(WebInspector.NetworkLogView.EventTypes.UpdateRequest, this._onUpdateRequest, this);
+    WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.Events.WillReloadPage, this._willReloadPage, this);
+    WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.Events.Load, this._load, this);
+    this._networkLogView.addEventListener(WebInspector.NetworkLogView.Events.RequestSelected, this._onRequestSelected, this);
+    this._networkLogView.addEventListener(WebInspector.NetworkLogView.Events.SearchCountUpdated, this._onSearchCountUpdated, this);
+    this._networkLogView.addEventListener(WebInspector.NetworkLogView.Events.SearchIndexUpdated, this._onSearchIndexUpdated, this);
+    this._networkLogView.addEventListener(WebInspector.NetworkLogView.Events.UpdateRequest, this._onUpdateRequest, this);
 
     WebInspector.DataSaverInfobar.maybeShowInPanel(this);
 }

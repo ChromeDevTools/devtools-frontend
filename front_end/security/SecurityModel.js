@@ -16,8 +16,9 @@ WebInspector.SecurityModel = function(target)
     this._securityAgent.enable();
 }
 
-WebInspector.SecurityModel.EventTypes = {
-    SecurityStateChanged: "SecurityStateChanged"
+/** @enum {symbol} */
+WebInspector.SecurityModel.Events = {
+    SecurityStateChanged: Symbol("SecurityStateChanged")
 }
 
 WebInspector.SecurityModel.prototype = {
@@ -102,6 +103,6 @@ WebInspector.SecurityDispatcher.prototype = {
     securityStateChanged: function(securityState, explanations, mixedContentStatus, schemeIsCryptographic)
     {
         var pageSecurityState = new WebInspector.PageSecurityState(securityState, explanations || [], mixedContentStatus || null, schemeIsCryptographic || false);
-        this._model.dispatchEventToListeners(WebInspector.SecurityModel.EventTypes.SecurityStateChanged, pageSecurityState);
+        this._model.dispatchEventToListeners(WebInspector.SecurityModel.Events.SecurityStateChanged, pageSecurityState);
     }
 }

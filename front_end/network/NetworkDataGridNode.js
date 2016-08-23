@@ -169,7 +169,7 @@ WebInspector.NetworkDataGridNode.prototype = {
     select: function()
     {
         WebInspector.SortableDataGridNode.prototype.select.apply(this, arguments);
-        this._parentView.dispatchEventToListeners(WebInspector.NetworkLogView.EventTypes.RequestSelected, this._request);
+        this._parentView.dispatchEventToListeners(WebInspector.NetworkLogView.Events.RequestSelected, this._request);
     },
 
     /**

@@ -43,9 +43,10 @@ WebInspector.FileManager = function()
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.AppendedToURL, this._appendedToURL, this);
 }
 
-WebInspector.FileManager.EventTypes = {
-    SavedURL: "SavedURL",
-    AppendedToURL: "AppendedToURL"
+/** @enum {symbol} */
+WebInspector.FileManager.Events = {
+    SavedURL: Symbol("SavedURL"),
+    AppendedToURL: Symbol("AppendedToURL")
 }
 
 WebInspector.FileManager.prototype = {
@@ -74,7 +75,7 @@ WebInspector.FileManager.prototype = {
         var savedURLs = this._savedURLsSetting.get();
         savedURLs[url] = true;
         this._savedURLsSetting.set(savedURLs);
-        this.dispatchEventToListeners(WebInspector.FileManager.EventTypes.SavedURL, url);
+        this.dispatchEventToListeners(WebInspector.FileManager.Events.SavedURL, url);
         this._invokeSaveCallback(url, true);
     },
 
@@ -132,7 +133,7 @@ WebInspector.FileManager.prototype = {
     _appendedToURL: function(event)
     {
         var url = /** @type {string} */ (event.data);
-        this.dispatchEventToListeners(WebInspector.FileManager.EventTypes.AppendedToURL, url);
+        this.dispatchEventToListeners(WebInspector.FileManager.Events.AppendedToURL, url);
     },
 
     __proto__: WebInspector.Object.prototype

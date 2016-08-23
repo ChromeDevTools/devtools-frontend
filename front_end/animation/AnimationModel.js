@@ -21,7 +21,7 @@ WebInspector.AnimationModel = function(target)
     this._pendingAnimations = [];
     this._playbackRate = 1;
     var resourceTreeModel = /** @type {!WebInspector.ResourceTreeModel} */ (WebInspector.ResourceTreeModel.fromTarget(target));
-    resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._reset, this);
+    resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.MainFrameNavigated, this._reset, this);
     this._screenshotCapture = new WebInspector.AnimationModel.ScreenshotCapture(target, this, resourceTreeModel);
 }
 
@@ -880,7 +880,7 @@ WebInspector.AnimationModel.ScreenshotCapture = function(target, model, resource
     this._target = target;
     /** @type {!Array<!WebInspector.AnimationModel.ScreenshotCapture.Request>} */
     this._requests = [];
-    resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.ScreencastFrame, this._screencastFrame, this);
+    resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.ScreencastFrame, this._screencastFrame, this);
     this._model = model;
     this._model.addEventListener(WebInspector.AnimationModel.Events.ModelReset, this._stopScreencast, this);
 }

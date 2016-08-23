@@ -57,7 +57,7 @@ WebInspector.AppManifestView.prototype = {
         var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(target);
         this._resourceTreeModel = resourceTreeModel;
         this._updateManifest();
-        resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._updateManifest, this);
+        resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.MainFrameNavigated, this._updateManifest, this);
     },
 
     /**

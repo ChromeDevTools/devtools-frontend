@@ -246,13 +246,13 @@ WebInspector.TargetManager.prototype = {
         var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(target);
         if (this._targets.length === 1 && resourceTreeModel) {
             var events = [
-                WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated,
-                WebInspector.ResourceTreeModel.EventTypes.Load,
-                WebInspector.ResourceTreeModel.EventTypes.PageReloadRequested,
-                WebInspector.ResourceTreeModel.EventTypes.WillReloadPage
+                WebInspector.ResourceTreeModel.Events.MainFrameNavigated,
+                WebInspector.ResourceTreeModel.Events.Load,
+                WebInspector.ResourceTreeModel.Events.PageReloadRequested,
+                WebInspector.ResourceTreeModel.Events.WillReloadPage
             ];
             resourceTreeModel[WebInspector.TargetManager._listenersSymbol] =
-                events.map((event) => resourceTreeModel.addEventListener(event, this._redispatchEvent, this));
+                events.map(event => resourceTreeModel.addEventListener(event, this._redispatchEvent, this));
         }
         var copy = this._observersForTarget(target);
         for (var i = 0; i < copy.length; ++i)

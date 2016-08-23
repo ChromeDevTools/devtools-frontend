@@ -15,10 +15,11 @@ WebInspector.SecurityOriginManager = function(target)
     this._mainSecurityOrigin = "";
 }
 
-WebInspector.SecurityOriginManager.EventTypes = {
-    SecurityOriginAdded: "SecurityOriginAdded",
-    SecurityOriginRemoved: "SecurityOriginRemoved",
-    MainSecurityOriginChanged: "MainSecurityOriginChanged",
+/** @enum {symbol} */
+WebInspector.SecurityOriginManager.Events = {
+    SecurityOriginAdded: Symbol("SecurityOriginAdded"),
+    SecurityOriginRemoved: Symbol("SecurityOriginRemoved"),
+    MainSecurityOriginChanged: Symbol("MainSecurityOriginChanged")
 }
 
 /**
@@ -42,7 +43,7 @@ WebInspector.SecurityOriginManager.prototype = {
         var currentCount = this._securityOriginCounter.get(securityOrigin);
         if (!currentCount) {
             this._securityOriginCounter.set(securityOrigin, 1);
-            this.dispatchEventToListeners(WebInspector.SecurityOriginManager.EventTypes.SecurityOriginAdded, securityOrigin);
+            this.dispatchEventToListeners(WebInspector.SecurityOriginManager.Events.SecurityOriginAdded, securityOrigin);
             return;
         }
         this._securityOriginCounter.set(securityOrigin, currentCount + 1);
@@ -56,7 +57,7 @@ WebInspector.SecurityOriginManager.prototype = {
         var currentCount = this._securityOriginCounter.get(securityOrigin);
         if (currentCount === 1) {
             this._securityOriginCounter.delete(securityOrigin);
-            this.dispatchEventToListeners(WebInspector.SecurityOriginManager.EventTypes.SecurityOriginRemoved, securityOrigin);
+            this.dispatchEventToListeners(WebInspector.SecurityOriginManager.Events.SecurityOriginRemoved, securityOrigin);
             return;
         }
         this._securityOriginCounter.set(securityOrigin, currentCount - 1);
@@ -84,7 +85,7 @@ WebInspector.SecurityOriginManager.prototype = {
     setMainSecurityOrigin: function(securityOrigin)
     {
         this._mainSecurityOrigin = securityOrigin;
-        this.dispatchEventToListeners(WebInspector.SecurityOriginManager.EventTypes.MainSecurityOriginChanged, securityOrigin);
+        this.dispatchEventToListeners(WebInspector.SecurityOriginManager.Events.MainSecurityOriginChanged, securityOrigin);
     },
 
     __proto__: WebInspector.SDKModel.prototype

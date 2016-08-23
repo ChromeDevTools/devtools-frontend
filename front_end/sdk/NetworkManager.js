@@ -62,12 +62,13 @@ WebInspector.NetworkManager = function(target)
     WebInspector.moduleSetting("cacheDisabled").addChangeListener(this._cacheDisabledSettingChanged, this);
 }
 
-WebInspector.NetworkManager.EventTypes = {
-    RequestStarted: "RequestStarted",
-    RequestUpdated: "RequestUpdated",
-    RequestFinished: "RequestFinished",
-    RequestUpdateDropped: "RequestUpdateDropped",
-    ResponseReceived: "ResponseReceived"
+/** @enum {symbol} */
+WebInspector.NetworkManager.Events = {
+    RequestStarted: Symbol("RequestStarted"),
+    RequestUpdated: Symbol("RequestUpdated"),
+    RequestFinished: Symbol("RequestFinished"),
+    RequestUpdateDropped: Symbol("RequestUpdateDropped"),
+    ResponseReceived: Symbol("ResponseReceived")
 }
 
 WebInspector.NetworkManager._MIMETypes = {
@@ -404,7 +405,7 @@ WebInspector.NetworkDispatcher.prototype = {
             eventData.loaderId = loaderId;
             eventData.resourceType = resourceType;
             eventData.mimeType = response.mimeType;
-            this._manager.dispatchEventToListeners(WebInspector.NetworkManager.EventTypes.RequestUpdateDropped, eventData);
+            this._manager.dispatchEventToListeners(WebInspector.NetworkManager.Events.RequestUpdateDropped, eventData);
             return;
         }
 
@@ -414,7 +415,7 @@ WebInspector.NetworkDispatcher.prototype = {
         this._updateNetworkRequestWithResponse(networkRequest, response);
 
         this._updateNetworkRequest(networkRequest);
-        this._manager.dispatchEventToListeners(WebInspector.NetworkManager.EventTypes.ResponseReceived, networkRequest);
+        this._manager.dispatchEventToListeners(WebInspector.NetworkManager.Events.ResponseReceived, networkRequest);
     },
 
     /**
@@ -658,7 +659,7 @@ WebInspector.NetworkDispatcher.prototype = {
     {
         this._inflightRequestsById[networkRequest.requestId] = networkRequest;
         this._inflightRequestsByURL[networkRequest.url] = networkRequest;
-        this._dispatchEventToListeners(WebInspector.NetworkManager.EventTypes.RequestStarted, networkRequest);
+        this._dispatchEventToListeners(WebInspector.NetworkManager.Events.RequestStarted, networkRequest);
     },
 
     /**
@@ -666,7 +667,7 @@ WebInspector.NetworkDispatcher.prototype = {
      */
     _updateNetworkRequest: function(networkRequest)
     {
-        this._dispatchEventToListeners(WebInspector.NetworkManager.EventTypes.RequestUpdated, networkRequest);
+        this._dispatchEventToListeners(WebInspector.NetworkManager.Events.RequestUpdated, networkRequest);
     },
 
     /**
@@ -680,7 +681,7 @@ WebInspector.NetworkDispatcher.prototype = {
         networkRequest.finished = true;
         if (encodedDataLength >= 0)
             networkRequest.setTransferSize(encodedDataLength);
-        this._dispatchEventToListeners(WebInspector.NetworkManager.EventTypes.RequestFinished, networkRequest);
+        this._dispatchEventToListeners(WebInspector.NetworkManager.Events.RequestFinished, networkRequest);
         delete this._inflightRequestsById[networkRequest.requestId];
         delete this._inflightRequestsByURL[networkRequest.url];
     },

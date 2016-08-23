@@ -250,17 +250,17 @@ WebInspector.SecurityPanel.prototype = {
 
         var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(this._target);
         if (resourceTreeModel) {
-            resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._onMainFrameNavigated, this);
-            resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.InterstitialShown, this._onInterstitialShown, this);
-            resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.InterstitialHidden, this._onInterstitialHidden, this);
+            resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this);
+            resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.InterstitialShown, this._onInterstitialShown, this);
+            resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.InterstitialHidden, this._onInterstitialHidden, this);
         }
 
         var networkManager = WebInspector.NetworkManager.fromTarget(target);
-        networkManager.addEventListener(WebInspector.NetworkManager.EventTypes.ResponseReceived, this._onResponseReceived, this);
-        networkManager.addEventListener(WebInspector.NetworkManager.EventTypes.RequestFinished, this._onRequestFinished, this);
+        networkManager.addEventListener(WebInspector.NetworkManager.Events.ResponseReceived, this._onResponseReceived, this);
+        networkManager.addEventListener(WebInspector.NetworkManager.Events.RequestFinished, this._onRequestFinished, this);
 
         var securityModel = WebInspector.SecurityModel.fromTarget(target);
-        securityModel.addEventListener(WebInspector.SecurityModel.EventTypes.SecurityStateChanged, this._onSecurityStateChanged, this);
+        securityModel.addEventListener(WebInspector.SecurityModel.Events.SecurityStateChanged, this._onSecurityStateChanged, this);
     },
 
     /**

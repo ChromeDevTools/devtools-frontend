@@ -51,7 +51,7 @@ WebInspector.StylesSourceMapping = function(cssModel, workspace, networkMapping)
     this._workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
     this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetChanged, this._styleSheetChanged, this);
     WebInspector.ResourceTreeModel.fromTarget(cssModel.target()).addEventListener(
-        WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._unbindAllUISourceCodes, this);
+        WebInspector.ResourceTreeModel.Events.MainFrameNavigated, this._unbindAllUISourceCodes, this);
 }
 
 WebInspector.StylesSourceMapping.ChangeUpdateTimeoutMs = 200;

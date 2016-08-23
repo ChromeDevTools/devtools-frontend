@@ -65,7 +65,7 @@ WebInspector.InspectorView = function()
     this._tabbedPane.element.classList.add("inspector-view-tabbed-pane");
     this._tabbedPane.setTabSlider(true);
     this._tabbedPane.setAllowTabReorder(true, false);
-    this._tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabOrderChanged, this._persistPanelOrder, this);
+    this._tabbedPane.addEventListener(WebInspector.TabbedPane.Events.TabOrderChanged, this._persistPanelOrder, this);
     this._tabOrderSetting = WebInspector.settings.createSetting("InspectorView.panelOrder", {});
     this._drawerSplitWidget.setMainWidget(this._tabbedPane);
 
@@ -321,7 +321,7 @@ WebInspector.InspectorView.prototype = {
 
     _showInitialPanel: function()
     {
-        this._tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, this._tabSelected, this);
+        this._tabbedPane.addEventListener(WebInspector.TabbedPane.Events.TabSelected, this._tabSelected, this);
         this._tabSelected();
     },
 
@@ -330,7 +330,7 @@ WebInspector.InspectorView.prototype = {
      */
     showInitialPanelForTest: function(panelName)
     {
-        this._tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, this._tabSelected, this);
+        this._tabbedPane.addEventListener(WebInspector.TabbedPane.Events.TabSelected, this._tabSelected, this);
         this.setCurrentPanel(this._panels[panelName]);
     },
 
@@ -365,9 +365,9 @@ WebInspector.InspectorView.prototype = {
         if (!this._panels[panel.name])
             this._panels[panel.name] = panel;
         this._tabbedPane.changeTabView(panel.name, panel);
-        this._tabbedPane.removeEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, this._tabSelected, this);
+        this._tabbedPane.removeEventListener(WebInspector.TabbedPane.Events.TabSelected, this._tabSelected, this);
         this._tabbedPane.selectTab(panel.name);
-        this._tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, this._tabSelected, this);
+        this._tabbedPane.addEventListener(WebInspector.TabbedPane.Events.TabSelected, this._tabSelected, this);
 
         this._lastActivePanelSetting.set(panel.name);
         this._pushToHistory(panel.name);

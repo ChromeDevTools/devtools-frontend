@@ -18,7 +18,7 @@ WebInspector.CSSWorkspaceBinding = function(targetManager, workspace, networkMap
     this._modelToTargetInfo = new Map();
     targetManager.observeTargets(this);
 
-    targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._mainFrameCreatedOrNavigated, this);
+    targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.Events.MainFrameNavigated, this._mainFrameCreatedOrNavigated, this);
 }
 
 WebInspector.CSSWorkspaceBinding.prototype = {

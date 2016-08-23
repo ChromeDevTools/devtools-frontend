@@ -1345,7 +1345,7 @@ WebInspector.TimelineDetailsView = function(timelineModel, filters, delegate)
     this.appendTab(tabIds.Events, WebInspector.UIString("Event Log"), eventsView);
     this._rangeDetailViews.set(tabIds.Events, eventsView);
 
-    this.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, this._tabSelected, this);
+    this.addEventListener(WebInspector.TabbedPane.Events.TabSelected, this._tabSelected, this);
 }
 
 WebInspector.TimelineDetailsView.prototype = {

@@ -76,7 +76,7 @@ WebInspector.ComputedStyleModel.prototype = {
                 this._cssModel.addEventListener(WebInspector.CSSModel.Events.PseudoStateForced, this._onComputedStyleChanged, this),
                 this._cssModel.addEventListener(WebInspector.CSSModel.Events.ModelWasEnabled, this._onComputedStyleChanged, this),
                 domModel.addEventListener(WebInspector.DOMModel.Events.DOMMutated, this._onDOMModelChanged, this),
-                resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.FrameResized, this._onFrameResized, this),
+                resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.FrameResized, this._onFrameResized, this),
             ];
         }
     },

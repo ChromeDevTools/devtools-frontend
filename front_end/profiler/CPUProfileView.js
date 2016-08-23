@@ -89,8 +89,8 @@ WebInspector.CPUProfileType = function()
     this._anonymousConsoleProfileIdToTitle = {};
 
     WebInspector.CPUProfileType.instance = this;
-    WebInspector.targetManager.addModelListener(WebInspector.CPUProfilerModel, WebInspector.CPUProfilerModel.EventTypes.ConsoleProfileStarted, this._consoleProfileStarted, this);
-    WebInspector.targetManager.addModelListener(WebInspector.CPUProfilerModel, WebInspector.CPUProfilerModel.EventTypes.ConsoleProfileFinished, this._consoleProfileFinished, this);
+    WebInspector.targetManager.addModelListener(WebInspector.CPUProfilerModel, WebInspector.CPUProfilerModel.Events.ConsoleProfileStarted, this._consoleProfileStarted, this);
+    WebInspector.targetManager.addModelListener(WebInspector.CPUProfilerModel, WebInspector.CPUProfilerModel.Events.ConsoleProfileFinished, this._consoleProfileFinished, this);
 }
 
 WebInspector.CPUProfileType.TypeId = "CPU";

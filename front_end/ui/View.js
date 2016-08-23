@@ -577,8 +577,8 @@ WebInspector.ViewManager._TabbedLocation = function(manager, revealCallback, loc
     this._tabbedPane = new WebInspector.TabbedPane();
     WebInspector.ViewManager._Location.call(this, manager, this._tabbedPane, revealCallback);
 
-    this._tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, this._tabSelected, this);
-    this._tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabClosed, this._tabClosed, this);
+    this._tabbedPane.addEventListener(WebInspector.TabbedPane.Events.TabSelected, this._tabSelected, this);
+    this._tabbedPane.addEventListener(WebInspector.TabbedPane.Events.TabClosed, this._tabClosed, this);
     this._closeableTabSetting = WebInspector.settings.createSetting(location + "-closeableTabs", {});
     if (restoreSelection)
         this._lastSelectedTabSetting = WebInspector.settings.createSetting(location + "-selectedTab", "");

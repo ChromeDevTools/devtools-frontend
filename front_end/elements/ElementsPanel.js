@@ -906,7 +906,7 @@ WebInspector.ElementsPanel.prototype = {
             computedView.element.classList.add("composite", "fill", "metrics-and-computed");
             computedStylePanesWrapper.show(computedView.element);
 
-            tabbedPane.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, tabSelected, this);
+            tabbedPane.addEventListener(WebInspector.TabbedPane.Events.TabSelected, tabSelected, this);
             this.sidebarPaneView.appendView(stylesView);
             this.sidebarPaneView.appendView(computedView);
             this._stylesViewToReveal = stylesView;

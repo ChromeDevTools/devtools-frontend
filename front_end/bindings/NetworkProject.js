@@ -84,9 +84,9 @@ WebInspector.NetworkProject = function(target, workspace, networkMapping, resour
 
     if (resourceTreeModel) {
         this._eventListeners.push(
-            resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.ResourceAdded, this._resourceAdded, this),
-            resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.FrameWillNavigate, this._frameWillNavigate, this),
-            resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._mainFrameNavigated, this))
+            resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.ResourceAdded, this._resourceAdded, this),
+            resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.FrameWillNavigate, this._frameWillNavigate, this),
+            resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.MainFrameNavigated, this._mainFrameNavigated, this))
     }
 
     var debuggerModel = WebInspector.DebuggerModel.fromTarget(target);

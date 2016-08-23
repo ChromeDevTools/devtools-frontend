@@ -684,7 +684,7 @@ WebInspector.ExtensionServer.prototype = {
         this._registerAutosubscriptionHandler(WebInspector.extensionAPI.Events.ResourceAdded,
             WebInspector.workspace, WebInspector.Workspace.Events.UISourceCodeAdded, this._notifyResourceAdded);
         this._registerAutosubscriptionTargetManagerHandler(WebInspector.extensionAPI.Events.NetworkRequestFinished,
-            WebInspector.NetworkManager, WebInspector.NetworkManager.EventTypes.RequestFinished, this._notifyRequestFinished);
+            WebInspector.NetworkManager, WebInspector.NetworkManager.Events.RequestFinished, this._notifyRequestFinished);
 
         /**
          * @this {WebInspector.ExtensionServer}

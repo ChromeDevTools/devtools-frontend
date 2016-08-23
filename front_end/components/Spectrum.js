@@ -863,13 +863,13 @@ WebInspector.Spectrum.prototype = {
         this._colorDragElementHeight = this._colorDragElement.offsetHeight / 2;
         this._innerSetColor(undefined, undefined, undefined, WebInspector.Spectrum._ChangeSource.Model);
         this._toggleColorPicker(true);
-        WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.EventTypes.ColorPicked, this._colorPicked, this);
+        WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.Events.ColorPicked, this._colorPicked, this);
     },
 
     willHide: function()
     {
         this._toggleColorPicker(false);
-        WebInspector.targetManager.removeModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.EventTypes.ColorPicked, this._colorPicked, this);
+        WebInspector.targetManager.removeModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.Events.ColorPicked, this._colorPicked, this);
     },
 
     /**

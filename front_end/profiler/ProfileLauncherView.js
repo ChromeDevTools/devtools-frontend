@@ -182,8 +182,9 @@ WebInspector.MultiProfileLauncherView = function(profilesPanel)
     this._typeIdToOptionElement = {};
 }
 
-WebInspector.MultiProfileLauncherView.EventTypes = {
-    ProfileTypeSelected: "profile-type-selected"
+/** @enum {symbol} */
+WebInspector.MultiProfileLauncherView.Events = {
+    ProfileTypeSelected: Symbol("ProfileTypeSelected")
 }
 
 WebInspector.MultiProfileLauncherView.prototype = {
@@ -214,7 +215,7 @@ WebInspector.MultiProfileLauncherView.prototype = {
             typeId = Object.keys(this._typeIdToOptionElement)[0];
         this._typeIdToOptionElement[typeId].checked = true;
         var type = this._typeIdToOptionElement[typeId]._profileType;
-        this.dispatchEventToListeners(WebInspector.MultiProfileLauncherView.EventTypes.ProfileTypeSelected, type);
+        this.dispatchEventToListeners(WebInspector.MultiProfileLauncherView.Events.ProfileTypeSelected, type);
     },
 
     _controlButtonClicked: function()
@@ -237,7 +238,7 @@ WebInspector.MultiProfileLauncherView.prototype = {
      */
     _profileTypeChanged: function(profileType)
     {
-        this.dispatchEventToListeners(WebInspector.MultiProfileLauncherView.EventTypes.ProfileTypeSelected, profileType);
+        this.dispatchEventToListeners(WebInspector.MultiProfileLauncherView.Events.ProfileTypeSelected, profileType);
         this._isInstantProfile = profileType.isInstantProfile();
         this._isEnabled = profileType.isEnabled();
         this._updateControls();

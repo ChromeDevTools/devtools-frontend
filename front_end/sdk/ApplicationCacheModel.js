@@ -40,8 +40,8 @@ WebInspector.ApplicationCacheModel = function(target, resourceTreeModel)
     this._agent = target.applicationCacheAgent();
     this._agent.enable();
 
-    resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.FrameNavigated, this._frameNavigated, this);
-    resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.FrameDetached, this._frameDetached, this);
+    resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
+    resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this);
 
     this._statuses = {};
     this._manifestURLsByFrame = {};
@@ -50,12 +50,13 @@ WebInspector.ApplicationCacheModel = function(target, resourceTreeModel)
     this._onLine = true;
 }
 
-WebInspector.ApplicationCacheModel.EventTypes = {
-    FrameManifestStatusUpdated: "FrameManifestStatusUpdated",
-    FrameManifestAdded: "FrameManifestAdded",
-    FrameManifestRemoved: "FrameManifestRemoved",
-    FrameManifestsReset: "FrameManifestsReset",
-    NetworkStateChanged: "NetworkStateChanged"
+/** @enum {symbol} */
+WebInspector.ApplicationCacheModel.Events = {
+    FrameManifestStatusUpdated: Symbol("FrameManifestStatusUpdated"),
+    FrameManifestAdded: Symbol("FrameManifestAdded"),
+    FrameManifestRemoved: Symbol("FrameManifestRemoved"),
+    FrameManifestsReset: Symbol("FrameManifestsReset"),
+    NetworkStateChanged: Symbol("NetworkStateChanged")
 }
 
 WebInspector.ApplicationCacheModel.prototype = {
@@ -83,7 +84,7 @@ WebInspector.ApplicationCacheModel.prototype = {
     {
         this._statuses = {};
         this._manifestURLsByFrame = {};
-        this.dispatchEventToListeners(WebInspector.ApplicationCacheModel.EventTypes.FrameManifestsReset);
+        this.dispatchEventToListeners(WebInspector.ApplicationCacheModel.Events.FrameManifestsReset);
     },
 
     _mainFrameNavigated: function()
@@ -145,11 +146,11 @@ WebInspector.ApplicationCacheModel.prototype = {
 
         if (!this._manifestURLsByFrame[frameId]) {
             this._manifestURLsByFrame[frameId] = manifestURL;
-            this.dispatchEventToListeners(WebInspector.ApplicationCacheModel.EventTypes.FrameManifestAdded, frameId);
+            this.dispatchEventToListeners(WebInspector.ApplicationCacheModel.Events.FrameManifestAdded, frameId);
         }
 
         if (statusChanged)
-            this.dispatchEventToListeners(WebInspector.ApplicationCacheModel.EventTypes.FrameManifestStatusUpdated, frameId);
+            this.dispatchEventToListeners(WebInspector.ApplicationCacheModel.Events.FrameManifestStatusUpdated, frameId);
     },
 
     /**
@@ -163,7 +164,7 @@ WebInspector.ApplicationCacheModel.prototype = {
         delete this._manifestURLsByFrame[frameId];
         delete this._statuses[frameId];
 
-        this.dispatchEventToListeners(WebInspector.ApplicationCacheModel.EventTypes.FrameManifestRemoved, frameId);
+        this.dispatchEventToListeners(WebInspector.ApplicationCacheModel.Events.FrameManifestRemoved, frameId);
     },
 
     /**
@@ -232,7 +233,7 @@ WebInspector.ApplicationCacheModel.prototype = {
     _networkStateUpdated: function(isNowOnline)
     {
         this._onLine = isNowOnline;
-        this.dispatchEventToListeners(WebInspector.ApplicationCacheModel.EventTypes.NetworkStateChanged, isNowOnline);
+        this.dispatchEventToListeners(WebInspector.ApplicationCacheModel.Events.NetworkStateChanged, isNowOnline);
     },
 
     __proto__: WebInspector.SDKModel.prototype

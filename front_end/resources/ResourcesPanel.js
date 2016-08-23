@@ -137,8 +137,8 @@ WebInspector.ResourcesPanel.prototype = {
         if (resourceTreeModel.cachedResourcesLoaded())
             this._initialize();
 
-        resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.CachedResourcesLoaded, this._initialize, this);
-        resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.WillLoadCachedResources, this._resetWithFrames, this);
+        resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.CachedResourcesLoaded, this._initialize, this);
+        resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.WillLoadCachedResources, this._resetWithFrames, this);
     },
 
     /**
@@ -153,8 +153,8 @@ WebInspector.ResourcesPanel.prototype = {
 
         var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(target);
         if (resourceTreeModel) {
-            resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.EventTypes.CachedResourcesLoaded, this._initialize, this);
-            resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.EventTypes.WillLoadCachedResources, this._resetWithFrames, this);
+            resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.Events.CachedResourcesLoaded, this._initialize, this);
+            resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.Events.WillLoadCachedResources, this._resetWithFrames, this);
         }
         this._databaseModel.removeEventListener(WebInspector.DatabaseModel.Events.DatabaseAdded, this._databaseAdded, this);
         this._databaseModel.removeEventListener(WebInspector.DatabaseModel.Events.DatabasesRemoved, this._resetWebSQL, this);
@@ -293,10 +293,10 @@ WebInspector.ResourcesPanel.prototype = {
     _populateResourceTree: function(resourceTreeModel)
     {
         this._treeElementForFrameId = {};
-        resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.FrameAdded, this._frameAdded, this);
-        resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.FrameNavigated, this._frameNavigated, this);
-        resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.FrameDetached, this._frameDetached, this);
-        resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.ResourceAdded, this._resourceAdded, this);
+        resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.FrameAdded, this._frameAdded, this);
+        resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
+        resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this);
+        resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.ResourceAdded, this._resourceAdded, this);
 
         /**
          * @param {!WebInspector.ResourceTreeFrame} frame
@@ -730,12 +730,12 @@ WebInspector.ResourcesPanel.prototype = {
         this._applicationCacheFrameElements = {};
         this._applicationCacheManifestElements = {};
 
-        this._applicationCacheModel.addEventListener(WebInspector.ApplicationCacheModel.EventTypes.FrameManifestAdded, this._applicationCacheFrameManifestAdded, this);
-        this._applicationCacheModel.addEventListener(WebInspector.ApplicationCacheModel.EventTypes.FrameManifestRemoved, this._applicationCacheFrameManifestRemoved, this);
-        this._applicationCacheModel.addEventListener(WebInspector.ApplicationCacheModel.EventTypes.FrameManifestsReset, this._resetAppCache, this);
+        this._applicationCacheModel.addEventListener(WebInspector.ApplicationCacheModel.Events.FrameManifestAdded, this._applicationCacheFrameManifestAdded, this);
+        this._applicationCacheModel.addEventListener(WebInspector.ApplicationCacheModel.Events.FrameManifestRemoved, this._applicationCacheFrameManifestRemoved, this);
+        this._applicationCacheModel.addEventListener(WebInspector.ApplicationCacheModel.Events.FrameManifestsReset, this._resetAppCache, this);
 
-        this._applicationCacheModel.addEventListener(WebInspector.ApplicationCacheModel.EventTypes.FrameManifestStatusUpdated, this._applicationCacheFrameManifestStatusChanged, this);
-        this._applicationCacheModel.addEventListener(WebInspector.ApplicationCacheModel.EventTypes.NetworkStateChanged, this._applicationCacheNetworkStateChanged, this);
+        this._applicationCacheModel.addEventListener(WebInspector.ApplicationCacheModel.Events.FrameManifestStatusUpdated, this._applicationCacheFrameManifestStatusChanged, this);
+        this._applicationCacheModel.addEventListener(WebInspector.ApplicationCacheModel.Events.NetworkStateChanged, this._applicationCacheNetworkStateChanged, this);
     },
 
     _applicationCacheFrameManifestAdded: function(event)
@@ -1304,8 +1304,8 @@ WebInspector.ServiceWorkerCacheTreeElement.prototype = {
             for (var cache of model.caches())
                 this._addCache(model, cache);
         }
-        WebInspector.targetManager.addModelListener(WebInspector.ServiceWorkerCacheModel, WebInspector.ServiceWorkerCacheModel.EventTypes.CacheAdded, this._cacheAdded, this);
-        WebInspector.targetManager.addModelListener(WebInspector.ServiceWorkerCacheModel, WebInspector.ServiceWorkerCacheModel.EventTypes.CacheRemoved, this._cacheRemoved, this);
+        WebInspector.targetManager.addModelListener(WebInspector.ServiceWorkerCacheModel, WebInspector.ServiceWorkerCacheModel.Events.CacheAdded, this._cacheAdded, this);
+        WebInspector.targetManager.addModelListener(WebInspector.ServiceWorkerCacheModel, WebInspector.ServiceWorkerCacheModel.Events.CacheRemoved, this._cacheRemoved, this);
     },
 
     onattach: function()
@@ -1583,9 +1583,9 @@ WebInspector.IndexedDBTreeElement = function(storagePanel)
 WebInspector.IndexedDBTreeElement.prototype = {
     _initialize: function()
     {
-        WebInspector.targetManager.addModelListener(WebInspector.IndexedDBModel, WebInspector.IndexedDBModel.EventTypes.DatabaseAdded, this._indexedDBAdded, this);
-        WebInspector.targetManager.addModelListener(WebInspector.IndexedDBModel, WebInspector.IndexedDBModel.EventTypes.DatabaseRemoved, this._indexedDBRemoved, this);
-        WebInspector.targetManager.addModelListener(WebInspector.IndexedDBModel, WebInspector.IndexedDBModel.EventTypes.DatabaseLoaded, this._indexedDBLoaded, this);
+        WebInspector.targetManager.addModelListener(WebInspector.IndexedDBModel, WebInspector.IndexedDBModel.Events.DatabaseAdded, this._indexedDBAdded, this);
+        WebInspector.targetManager.addModelListener(WebInspector.IndexedDBModel, WebInspector.IndexedDBModel.Events.DatabaseRemoved, this._indexedDBRemoved, this);
+        WebInspector.targetManager.addModelListener(WebInspector.IndexedDBModel, WebInspector.IndexedDBModel.Events.DatabaseLoaded, this._indexedDBLoaded, this);
         /** @type {!Array.<!WebInspector.IDBDatabaseTreeElement>} */
         this._idbDatabaseTreeElements = [];
 

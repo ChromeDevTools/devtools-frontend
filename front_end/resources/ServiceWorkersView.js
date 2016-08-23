@@ -54,8 +54,8 @@ WebInspector.ServiceWorkersView.prototype = {
         this._manager.addEventListener(WebInspector.ServiceWorkerManager.Events.RegistrationUpdated, this._registrationUpdated, this);
         this._manager.addEventListener(WebInspector.ServiceWorkerManager.Events.RegistrationDeleted, this._registrationDeleted, this);
         this._manager.addEventListener(WebInspector.ServiceWorkerManager.Events.RegistrationErrorAdded, this._registrationErrorAdded, this);
-        securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.EventTypes.SecurityOriginAdded, this._updateSectionVisibility, this);
-        securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.EventTypes.SecurityOriginRemoved, this._updateSectionVisibility, this);
+        securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.Events.SecurityOriginAdded, this._updateSectionVisibility, this);
+        securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.Events.SecurityOriginRemoved, this._updateSectionVisibility, this);
     },
 
     /**

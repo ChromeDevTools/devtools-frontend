@@ -44,7 +44,7 @@ WebInspector.CPUProfilerModel = function(target)
 }
 
 /** @enum {symbol} */
-WebInspector.CPUProfilerModel.EventTypes = {
+WebInspector.CPUProfilerModel.Events = {
     ConsoleProfileStarted: Symbol("ConsoleProfileStarted"),
     ConsoleProfileFinished: Symbol("ConsoleProfileFinished")
 };
@@ -67,7 +67,7 @@ WebInspector.CPUProfilerModel.prototype = {
      */
     consoleProfileStarted: function(id, scriptLocation, title)
     {
-        this._dispatchProfileEvent(WebInspector.CPUProfilerModel.EventTypes.ConsoleProfileStarted, id, scriptLocation, title);
+        this._dispatchProfileEvent(WebInspector.CPUProfilerModel.Events.ConsoleProfileStarted, id, scriptLocation, title);
     },
 
     /**
@@ -79,7 +79,7 @@ WebInspector.CPUProfilerModel.prototype = {
      */
     consoleProfileFinished: function(id, scriptLocation, cpuProfile, title)
     {
-        this._dispatchProfileEvent(WebInspector.CPUProfilerModel.EventTypes.ConsoleProfileFinished, id, scriptLocation, title, cpuProfile);
+        this._dispatchProfileEvent(WebInspector.CPUProfilerModel.Events.ConsoleProfileFinished, id, scriptLocation, title, cpuProfile);
     },
 
     /**

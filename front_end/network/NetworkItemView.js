@@ -45,7 +45,7 @@ WebInspector.NetworkItemView = function(request, calculator)
     var headersView = new WebInspector.RequestHeadersView(request);
     this.appendTab("headers", WebInspector.UIString("Headers"), headersView);
 
-    this.addEventListener(WebInspector.TabbedPane.EventTypes.TabSelected, this._tabSelected, this);
+    this.addEventListener(WebInspector.TabbedPane.Events.TabSelected, this._tabSelected, this);
 
     if (request.resourceType() === WebInspector.resourceTypes.WebSocket) {
         var frameView = new WebInspector.ResourceWebSocketFrameView(request);

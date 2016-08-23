@@ -24,9 +24,10 @@ WebInspector.ServiceWorkerCacheModel = function(target, securityOriginManager)
     this._enabled = false;
 }
 
-WebInspector.ServiceWorkerCacheModel.EventTypes = {
-    CacheAdded: "CacheAdded",
-    CacheRemoved: "CacheRemoved"
+/** @enum {symbol} */
+WebInspector.ServiceWorkerCacheModel.Events = {
+    CacheAdded: Symbol("CacheAdded"),
+    CacheRemoved: Symbol("CacheRemoved")
 }
 
 WebInspector.ServiceWorkerCacheModel.prototype = {
@@ -35,8 +36,8 @@ WebInspector.ServiceWorkerCacheModel.prototype = {
         if (this._enabled)
             return;
 
-        this._securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.EventTypes.SecurityOriginAdded, this._securityOriginAdded, this);
-        this._securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.EventTypes.SecurityOriginRemoved, this._securityOriginRemoved, this);
+        this._securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.Events.SecurityOriginAdded, this._securityOriginAdded, this);
+        this._securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.Events.SecurityOriginRemoved, this._securityOriginRemoved, this);
 
         for (var securityOrigin of this._securityOriginManager.securityOrigins())
             this._addOrigin(securityOrigin);
@@ -132,8 +133,8 @@ WebInspector.ServiceWorkerCacheModel.prototype = {
             this._cacheRemoved(cache);
         this._caches.clear();
         if (this._enabled) {
-            this._securityOriginManager.removeEventListener(WebInspector.SecurityOriginManager.EventTypes.SecurityOriginAdded, this._securityOriginAdded, this);
-            this._securityOriginManager.removeEventListener(WebInspector.SecurityOriginManager.EventTypes.SecurityOriginRemoved, this._securityOriginRemoved, this);
+            this._securityOriginManager.removeEventListener(WebInspector.SecurityOriginManager.Events.SecurityOriginAdded, this._securityOriginAdded, this);
+            this._securityOriginManager.removeEventListener(WebInspector.SecurityOriginManager.Events.SecurityOriginRemoved, this._securityOriginRemoved, this);
         }
     },
 
@@ -238,7 +239,7 @@ WebInspector.ServiceWorkerCacheModel.prototype = {
      */
     _cacheAdded: function(cache)
     {
-        this.dispatchEventToListeners(WebInspector.ServiceWorkerCacheModel.EventTypes.CacheAdded, cache);
+        this.dispatchEventToListeners(WebInspector.ServiceWorkerCacheModel.Events.CacheAdded, cache);
     },
 
     /**
@@ -246,7 +247,7 @@ WebInspector.ServiceWorkerCacheModel.prototype = {
      */
     _cacheRemoved: function(cache)
     {
-        this.dispatchEventToListeners(WebInspector.ServiceWorkerCacheModel.EventTypes.CacheRemoved, cache);
+        this.dispatchEventToListeners(WebInspector.ServiceWorkerCacheModel.Events.CacheRemoved, cache);
     },
 
     /**

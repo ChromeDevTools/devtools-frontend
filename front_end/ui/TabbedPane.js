@@ -60,7 +60,7 @@ WebInspector.TabbedPane = function()
 }
 
 /** @enum {symbol} */
-WebInspector.TabbedPane.EventTypes = {
+WebInspector.TabbedPane.Events = {
     TabSelected: Symbol("TabSelected"),
     TabClosed: Symbol("TabClosed"),
     TabOrderChanged: Symbol("TabOrderChanged")
@@ -254,7 +254,7 @@ WebInspector.TabbedPane.prototype = {
         tab.view.detach();
 
         var eventData = { tabId: id, view: tab.view, isUserGesture: userGesture };
-        this.dispatchEventToListeners(WebInspector.TabbedPane.EventTypes.TabClosed, eventData);
+        this.dispatchEventToListeners(WebInspector.TabbedPane.Events.TabClosed, eventData);
         return true;
     },
 
@@ -337,7 +337,7 @@ WebInspector.TabbedPane.prototype = {
             this.focus();
 
         var eventData = { tabId: id, view: tab.view, isUserGesture: userGesture };
-        this.dispatchEventToListeners(WebInspector.TabbedPane.EventTypes.TabSelected, eventData);
+        this.dispatchEventToListeners(WebInspector.TabbedPane.Events.TabSelected, eventData);
         return true;
     },
 
@@ -817,7 +817,7 @@ WebInspector.TabbedPane.prototype = {
         if (oldIndex < index)
             --index;
         this._tabs.splice(index, 0, tab);
-        this.dispatchEventToListeners(WebInspector.TabbedPane.EventTypes.TabOrderChanged, this._tabs);
+        this.dispatchEventToListeners(WebInspector.TabbedPane.Events.TabOrderChanged, this._tabs);
     },
 
     /**

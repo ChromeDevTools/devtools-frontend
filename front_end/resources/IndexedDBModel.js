@@ -155,10 +155,11 @@ WebInspector.IndexedDBModel.keyPathStringFromIDBKeyPath = function(idbKeyPath)
     return null;
 }
 
-WebInspector.IndexedDBModel.EventTypes = {
-    DatabaseAdded: "DatabaseAdded",
-    DatabaseRemoved: "DatabaseRemoved",
-    DatabaseLoaded: "DatabaseLoaded"
+/** @enum {symbol} */
+WebInspector.IndexedDBModel.Events = {
+    DatabaseAdded: Symbol("DatabaseAdded"),
+    DatabaseRemoved: Symbol("DatabaseRemoved"),
+    DatabaseLoaded: Symbol("DatabaseLoaded")
 }
 
 WebInspector.IndexedDBModel.prototype = {
@@ -168,8 +169,8 @@ WebInspector.IndexedDBModel.prototype = {
             return;
 
         this._agent.enable();
-        this._securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.EventTypes.SecurityOriginAdded, this._securityOriginAdded, this);
-        this._securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.EventTypes.SecurityOriginRemoved, this._securityOriginRemoved, this);
+        this._securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.Events.SecurityOriginAdded, this._securityOriginAdded, this);
+        this._securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.Events.SecurityOriginRemoved, this._securityOriginRemoved, this);
 
         for (var securityOrigin of this._securityOriginManager.securityOrigins())
             this._addOrigin(securityOrigin);
@@ -295,7 +296,7 @@ WebInspector.IndexedDBModel.prototype = {
     _databaseAdded: function(securityOrigin, databaseName)
     {
         var databaseId = new WebInspector.IndexedDBModel.DatabaseId(securityOrigin, databaseName);
-        this.dispatchEventToListeners(WebInspector.IndexedDBModel.EventTypes.DatabaseAdded, databaseId);
+        this.dispatchEventToListeners(WebInspector.IndexedDBModel.Events.DatabaseAdded, databaseId);
     },
 
     /**
@@ -305,7 +306,7 @@ WebInspector.IndexedDBModel.prototype = {
     _databaseRemoved: function(securityOrigin, databaseName)
     {
         var databaseId = new WebInspector.IndexedDBModel.DatabaseId(securityOrigin, databaseName);
-        this.dispatchEventToListeners(WebInspector.IndexedDBModel.EventTypes.DatabaseRemoved, databaseId);
+        this.dispatchEventToListeners(WebInspector.IndexedDBModel.Events.DatabaseRemoved, databaseId);
     },
 
     /**
@@ -367,7 +368,7 @@ WebInspector.IndexedDBModel.prototype = {
                 databaseModel.objectStores[objectStoreModel.name] = objectStoreModel;
             }
 
-            this.dispatchEventToListeners(WebInspector.IndexedDBModel.EventTypes.DatabaseLoaded, databaseModel);
+            this.dispatchEventToListeners(WebInspector.IndexedDBModel.Events.DatabaseLoaded, databaseModel);
         }
 
         this._agent.requestDatabase(databaseId.securityOrigin, databaseId.name, callback.bind(this));

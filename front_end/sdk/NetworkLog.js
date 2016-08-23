@@ -41,10 +41,10 @@ WebInspector.NetworkLog = function(target, resourceTreeModel, networkManager)
 
     this._requests = [];
     this._requestForId = {};
-    networkManager.addEventListener(WebInspector.NetworkManager.EventTypes.RequestStarted, this._onRequestStarted, this);
-    resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._onMainFrameNavigated, this);
-    resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.Load, this._onLoad, this);
-    resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.DOMContentLoaded, this._onDOMContentLoaded, this);
+    networkManager.addEventListener(WebInspector.NetworkManager.Events.RequestStarted, this._onRequestStarted, this);
+    resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this);
+    resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.Load, this._onLoad, this);
+    resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.DOMContentLoaded, this._onDOMContentLoaded, this);
 }
 
 /**

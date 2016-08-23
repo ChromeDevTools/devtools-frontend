@@ -89,9 +89,9 @@ WebInspector.NetworkLogView = function(filterBar, progressBarContainer, networkL
     this._networkLogLargeRowsSetting.addChangeListener(this._updateRowsSize, this);
 
     WebInspector.targetManager.observeTargets(this);
-    WebInspector.targetManager.addModelListener(WebInspector.NetworkManager, WebInspector.NetworkManager.EventTypes.RequestStarted, this._onRequestStarted, this);
-    WebInspector.targetManager.addModelListener(WebInspector.NetworkManager, WebInspector.NetworkManager.EventTypes.RequestUpdated, this._onRequestUpdated, this);
-    WebInspector.targetManager.addModelListener(WebInspector.NetworkManager, WebInspector.NetworkManager.EventTypes.RequestFinished, this._onRequestUpdated, this);
+    WebInspector.targetManager.addModelListener(WebInspector.NetworkManager, WebInspector.NetworkManager.Events.RequestStarted, this._onRequestStarted, this);
+    WebInspector.targetManager.addModelListener(WebInspector.NetworkManager, WebInspector.NetworkManager.Events.RequestUpdated, this._onRequestUpdated, this);
+    WebInspector.targetManager.addModelListener(WebInspector.NetworkManager, WebInspector.NetworkManager.Events.RequestFinished, this._onRequestUpdated, this);
 }
 
 WebInspector.NetworkLogView._isFilteredOutSymbol = Symbol("isFilteredOut");
@@ -103,6 +103,14 @@ WebInspector.NetworkLogView._defaultRefreshDelay = 200;
 
 WebInspector.NetworkLogView._waterfallMinOvertime = 1;
 WebInspector.NetworkLogView._waterfallMaxOvertime = 3;
+
+/** @enum {symbol} */
+WebInspector.NetworkLogView.Events = {
+    RequestSelected: Symbol("RequestSelected"),
+    SearchCountUpdated: Symbol("SearchCountUpdated"),
+    SearchIndexUpdated: Symbol("SearchIndexUpdated"),
+    UpdateRequest: Symbol("UpdateRequest")
+}
 
 /** @enum {string} */
 WebInspector.NetworkLogView.FilterType = {
@@ -163,9 +171,9 @@ WebInspector.NetworkLogView.prototype = {
         if (!target.parentTarget()) {
             var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(target);
             if (resourceTreeModel) {
-                resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._mainFrameNavigated, this);
-                resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.Load, this._loadEventFired, this);
-                resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.EventTypes.DOMContentLoaded, this._domContentLoadedEventFired, this);
+                resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.MainFrameNavigated, this._mainFrameNavigated, this);
+                resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.Load, this._loadEventFired, this);
+                resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.DOMContentLoaded, this._domContentLoadedEventFired, this);
             }
         }
         var networkLog = WebInspector.NetworkLog.fromTarget(target);
@@ -182,9 +190,9 @@ WebInspector.NetworkLogView.prototype = {
         if (!target.parentTarget()) {
             var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(target);
             if (resourceTreeModel) {
-                resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.EventTypes.MainFrameNavigated, this._mainFrameNavigated, this);
-                resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.EventTypes.Load, this._loadEventFired, this);
-                resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.EventTypes.DOMContentLoaded, this._domContentLoadedEventFired, this);
+                resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.Events.MainFrameNavigated, this._mainFrameNavigated, this);
+                resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.Events.Load, this._loadEventFired, this);
+                resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.Events.DOMContentLoaded, this._domContentLoadedEventFired, this);
             }
         }
     },
@@ -639,7 +647,7 @@ WebInspector.NetworkLogView.prototype = {
     reset: function()
     {
         this._requestWithHighlightedInitiators = null;
-        this.dispatchEventToListeners(WebInspector.NetworkLogView.EventTypes.RequestSelected, null);
+        this.dispatchEventToListeners(WebInspector.NetworkLogView.Events.RequestSelected, null);
 
         this._clearSearchMatchedList();
 
@@ -763,7 +771,7 @@ WebInspector.NetworkLogView.prototype = {
         }
 
         this._staleRequestIds[request.requestId] = true;
-        this.dispatchEventToListeners(WebInspector.NetworkLogView.EventTypes.UpdateRequest, request);
+        this.dispatchEventToListeners(WebInspector.NetworkLogView.Events.UpdateRequest, request);
         this.scheduleRefresh();
     },
 
@@ -1087,7 +1095,7 @@ WebInspector.NetworkLogView.prototype = {
 
         this._currentMatchedRequestNode = node;
         this._currentMatchedRequestIndex = n;
-        this.dispatchEventToListeners(WebInspector.NetworkLogView.EventTypes.SearchIndexUpdated, n);
+        this.dispatchEventToListeners(WebInspector.NetworkLogView.Events.SearchIndexUpdated, n);
     },
 
     /**
@@ -1150,7 +1158,7 @@ WebInspector.NetworkLogView.prototype = {
         }
         if (this._matchedRequestCount !== matchCount) {
             this._matchedRequestCount = matchCount;
-            this.dispatchEventToListeners(WebInspector.NetworkLogView.EventTypes.SearchCountUpdated, matchCount);
+            this.dispatchEventToListeners(WebInspector.NetworkLogView.Events.SearchCountUpdated, matchCount);
         }
         return matchIndex;
     },
@@ -1351,7 +1359,7 @@ WebInspector.NetworkLogView.prototype = {
     {
         delete this._searchRegex;
         this._clearSearchMatchedList();
-        this.dispatchEventToListeners(WebInspector.NetworkLogView.EventTypes.SearchCountUpdated, 0);
+        this.dispatchEventToListeners(WebInspector.NetworkLogView.Events.SearchCountUpdated, 0);
     },
 
     /**
@@ -1739,10 +1747,3 @@ WebInspector.NetworkLogView._requestTimeFilter = function(windowStart, windowEnd
         return false;
     return true;
 }
-
-WebInspector.NetworkLogView.EventTypes = {
-    RequestSelected: "RequestSelected",
-    SearchCountUpdated: "SearchCountUpdated",
-    SearchIndexUpdated: "SearchIndexUpdated",
-    UpdateRequest: "UpdateRequest"
-};

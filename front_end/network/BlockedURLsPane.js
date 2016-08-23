@@ -38,7 +38,7 @@ WebInspector.BlockedURLsPane = function()
 
     /** @type {!Map<string, number>} */
     this._blockedCountForUrl = new Map();
-    WebInspector.targetManager.addModelListener(WebInspector.NetworkManager, WebInspector.NetworkManager.EventTypes.RequestFinished, this._onRequestFinished, this);
+    WebInspector.targetManager.addModelListener(WebInspector.NetworkManager, WebInspector.NetworkManager.Events.RequestFinished, this._onRequestFinished, this);
 
     this._updateThrottler = new WebInspector.Throttler(200);
 

@@ -81,13 +81,13 @@ WebInspector.HandlerRegistry.prototype = {
     registerHandler: function(name, handler)
     {
         this._handlers[name] = handler;
-        this.dispatchEventToListeners(WebInspector.HandlerRegistry.EventTypes.HandlersUpdated);
+        this.dispatchEventToListeners(WebInspector.HandlerRegistry.Events.HandlersUpdated);
     },
 
     unregisterHandler: function(name)
     {
         delete this._handlers[name];
-        this.dispatchEventToListeners(WebInspector.HandlerRegistry.EventTypes.HandlersUpdated);
+        this.dispatchEventToListeners(WebInspector.HandlerRegistry.Events.HandlersUpdated);
     },
 
     /**
@@ -214,7 +214,7 @@ WebInspector.HandlerRegistry.prototype = {
 }
 
 /** @enum {symbol} */
-WebInspector.HandlerRegistry.EventTypes = {
+WebInspector.HandlerRegistry.Events = {
     HandlersUpdated: Symbol("HandlersUpdated")
 }
 
@@ -227,7 +227,7 @@ WebInspector.HandlerSelector = function(handlerRegistry)
     this.element = createElementWithClass("select", "chrome-select");
     this.element.addEventListener("change", this._onChange.bind(this), false);
     this._update();
-    this._handlerRegistry.addEventListener(WebInspector.HandlerRegistry.EventTypes.HandlersUpdated, this._update.bind(this));
+    this._handlerRegistry.addEventListener(WebInspector.HandlerRegistry.Events.HandlersUpdated, this._update.bind(this));
 }
 
 WebInspector.HandlerSelector.prototype =

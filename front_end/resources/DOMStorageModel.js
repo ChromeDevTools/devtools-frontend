@@ -136,8 +136,8 @@ WebInspector.DOMStorageModel.prototype = {
             return;
 
         this.target().registerDOMStorageDispatcher(new WebInspector.DOMStorageDispatcher(this));
-        this._securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.EventTypes.SecurityOriginAdded, this._securityOriginAdded, this);
-        this._securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.EventTypes.SecurityOriginRemoved, this._securityOriginRemoved, this);
+        this._securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.Events.SecurityOriginAdded, this._securityOriginAdded, this);
+        this._securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.Events.SecurityOriginRemoved, this._securityOriginRemoved, this);
 
         for (var securityOrigin of this._securityOriginManager.securityOrigins())
             this._addOrigin(securityOrigin);

@@ -230,7 +230,7 @@ WebInspector.FileOutputStream.prototype = {
         function callbackWrapper(accepted)
         {
             if (accepted)
-                WebInspector.fileManager.addEventListener(WebInspector.FileManager.EventTypes.AppendedToURL, this._onAppendDone, this);
+                WebInspector.fileManager.addEventListener(WebInspector.FileManager.Events.AppendedToURL, this._onAppendDone, this);
             callback(accepted);
         }
         WebInspector.fileManager.save(this._fileName, "", true, callbackWrapper.bind(this));
@@ -255,7 +255,7 @@ WebInspector.FileOutputStream.prototype = {
         this._closed = true;
         if (this._writeCallbacks.length)
             return;
-        WebInspector.fileManager.removeEventListener(WebInspector.FileManager.EventTypes.AppendedToURL, this._onAppendDone, this);
+        WebInspector.fileManager.removeEventListener(WebInspector.FileManager.Events.AppendedToURL, this._onAppendDone, this);
         WebInspector.fileManager.close(this._fileName);
     },
 
@@ -271,7 +271,7 @@ WebInspector.FileOutputStream.prototype = {
             callback(this);
         if (!this._writeCallbacks.length) {
             if (this._closed) {
-                WebInspector.fileManager.removeEventListener(WebInspector.FileManager.EventTypes.AppendedToURL, this._onAppendDone, this);
+                WebInspector.fileManager.removeEventListener(WebInspector.FileManager.Events.AppendedToURL, this._onAppendDone, this);
                 WebInspector.fileManager.close(this._fileName);
             }
         }

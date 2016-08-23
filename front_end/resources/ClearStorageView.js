@@ -72,7 +72,7 @@ WebInspector.ClearStorageView.prototype = {
         this._target = target;
         var securityOriginManager = WebInspector.SecurityOriginManager.fromTarget(target);
         this._updateOrigin(securityOriginManager.mainSecurityOrigin());
-        securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.EventTypes.MainSecurityOriginChanged, this._originChanged, this);
+        securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.Events.MainSecurityOriginChanged, this._originChanged, this);
     },
 
     /**

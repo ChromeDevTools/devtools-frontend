@@ -37,7 +37,7 @@ WebInspector.HeapProfilerModel.prototype = {
     },
 
     /**
-     * @return {!Promise.<?ProfilerAgent.CPUProfile>}
+     * @return {!Promise.<?ProfilerAgent.Profile>}
      */
     stopSampling: function()
     {

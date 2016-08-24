@@ -5,7 +5,7 @@
 /**
  * @constructor
  * @extends {WebInspector.ProfileNode}
- * @param {!ProfilerAgent.CPUProfileNode} node
+ * @param {!ProfilerAgent.ProfileNode} node
  * @param {number} sampleTime
  */
 WebInspector.CPUProfileNode = function(node, sampleTime)
@@ -33,7 +33,7 @@ WebInspector.CPUProfileNode.prototype = {
 /**
  * @constructor
  * @extends {WebInspector.ProfileTreeModel}
- * @param {!ProfilerAgent.CPUProfile} profile
+ * @param {!ProfilerAgent.Profile} profile
  */
 WebInspector.CPUProfileDataModel = function(profile)
 {
@@ -48,7 +48,7 @@ WebInspector.CPUProfileDataModel = function(profile)
         // Current format encodes timestamps as deltas. Start/stop times are in microseconds.
         this.profileStartTime = profile.startTime / 1000;
         this.profileEndTime = profile.endTime / 1000;
-        this.timestamps = this._convertTimestampDeltas(profile);
+        this.timestamps = this._convertTimeDeltas(profile);
     }
     this.samples = profile.samples;
     this.totalHitCount = 0;
@@ -64,54 +64,54 @@ WebInspector.CPUProfileDataModel = function(profile)
 
 WebInspector.CPUProfileDataModel.prototype = {
     /**
-     * @param {!ProfilerAgent.CPUProfile} profile
+     * @param {!ProfilerAgent.Profile} profile
      */
     _compatibilityConversionHeadToNodes: function(profile)
     {
         if (!profile.head || profile.nodes)
             return;
-        /** @type {!Array<!ProfilerAgent.CPUProfileNode>} */
+        /** @type {!Array<!ProfilerAgent.ProfileNode>} */
         var nodes = [];
         convertNodesTree(profile.head);
         profile.nodes = nodes;
         delete profile.head;
         /**
-         * @param {!ProfilerAgent.CPUProfileNode} node
+         * @param {!ProfilerAgent.ProfileNode} node
          * @return {number}
          */
         function convertNodesTree(node)
         {
             nodes.push(node);
-            node.children = (/** @type {!Array<!ProfilerAgent.CPUProfileNode>} */(node.children)).map(convertNodesTree);
+            node.children = (/** @type {!Array<!ProfilerAgent.ProfileNode>} */(node.children)).map(convertNodesTree);
             return node.id;
         }
     },
 
     /**
-     * @param {!ProfilerAgent.CPUProfile} profile
+     * @param {!ProfilerAgent.Profile} profile
      * @return {?Array<number>}
      */
-    _convertTimestampDeltas: function(profile)
+    _convertTimeDeltas: function(profile)
     {
-        if (!profile.timestampDeltas)
+        if (!profile.timeDeltas)
             return null;
         var lastTimeUsec = profile.startTime;
-        var timestamps = new Array(profile.timestampDeltas.length);
+        var timestamps = new Array(profile.timeDeltas.length);
         for (var i = 0; i < timestamps.length; ++i) {
-            lastTimeUsec += profile.timestampDeltas[i];
+            lastTimeUsec += profile.timeDeltas[i];
             timestamps[i] = lastTimeUsec;
         }
         return timestamps;
     },
 
     /**
-     * @param {!Array<!ProfilerAgent.CPUProfileNode>} nodes
+     * @param {!Array<!ProfilerAgent.ProfileNode>} nodes
      * @return {!WebInspector.CPUProfileNode}
      */
     _translateProfileTree: function(nodes)
     {
         /**
-         * @param {!ProfilerAgent.CPUProfileNode} node
+         * @param {!ProfilerAgent.ProfileNode} node
          * @return {boolean}
          */
         function isNativeNode(node)
@@ -120,7 +120,7 @@ WebInspector.CPUProfileDataModel.prototype = {
                 return !!node.callFrame.url && node.callFrame.url.startsWith("native ");
             return !!node.url && node.url.startsWith("native ");
         }
-        /** @type {!Map<number, !ProfilerAgent.CPUProfileNode>} */
+        /** @type {!Map<number, !ProfilerAgent.ProfileNode>} */
         var nodeByIdMap = new Map();
         for (var i = 0; i < nodes.length; ++i) {
             var node = nodes[i];

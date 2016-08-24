@@ -135,7 +135,7 @@ WebInspector.TimelineController.prototype = {
     /**
      * @param {number} targetId
      * @param {?Protocol.Error} error
-     * @param {?ProfilerAgent.CPUProfile} cpuProfile
+     * @param {?ProfilerAgent.Profile} cpuProfile
      */
     _addCpuProfile: function(targetId, error, cpuProfile)
     {
@@ -222,7 +222,7 @@ WebInspector.TimelineController.prototype = {
     /**
      * @param {number} pid
      * @param {number} tid
-     * @param {?ProfilerAgent.CPUProfile} cpuProfile
+     * @param {?ProfilerAgent.Profile} cpuProfile
      */
     _injectCpuProfileEvent: function(pid, tid, cpuProfile)
     {

@@ -49,7 +49,7 @@ WebInspector.CPUProfilerModel.Events = {
     ConsoleProfileFinished: Symbol("ConsoleProfileFinished")
 };
 
-/** @typedef {!{id: string, scriptLocation: !WebInspector.DebuggerModel.Location, title: (string|undefined), cpuProfile: (!ProfilerAgent.CPUProfile|undefined)}} */
+/** @typedef {!{id: string, scriptLocation: !WebInspector.DebuggerModel.Location, title: (string|undefined), cpuProfile: (!ProfilerAgent.Profile|undefined)}} */
 WebInspector.CPUProfilerModel.EventData;
 
 WebInspector.CPUProfilerModel.prototype = {
@@ -74,7 +74,7 @@ WebInspector.CPUProfilerModel.prototype = {
      * @override
      * @param {string} id
      * @param {!DebuggerAgent.Location} scriptLocation
-     * @param {!ProfilerAgent.CPUProfile} cpuProfile
+     * @param {!ProfilerAgent.Profile} cpuProfile
      * @param {string=} title
      */
     consoleProfileFinished: function(id, scriptLocation, cpuProfile, title)
@@ -87,7 +87,7 @@ WebInspector.CPUProfilerModel.prototype = {
      * @param {string} id
      * @param {!DebuggerAgent.Location} scriptLocation
      * @param {string=} title
-     * @param {!ProfilerAgent.CPUProfile=} cpuProfile
+     * @param {!ProfilerAgent.Profile=} cpuProfile
      */
     _dispatchProfileEvent: function(eventName, id, scriptLocation, title, cpuProfile)
     {
@@ -117,14 +117,14 @@ WebInspector.CPUProfilerModel.prototype = {
     },
 
     /**
-     * @return {!Promise.<?ProfilerAgent.CPUProfile>}
+     * @return {!Promise.<?ProfilerAgent.Profile>}
      */
     stopRecording: function()
     {
         /**
          * @param {?Protocol.Error} error
-         * @param {?ProfilerAgent.CPUProfile} profile
-         * @return {?ProfilerAgent.CPUProfile}
+         * @param {?ProfilerAgent.Profile} profile
+         * @return {?ProfilerAgent.Profile}
          */
         function extractProfile(error, profile)
         {

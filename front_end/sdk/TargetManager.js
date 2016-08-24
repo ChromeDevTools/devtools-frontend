@@ -89,11 +89,12 @@ WebInspector.TargetManager.prototype = {
     },
 
     /**
+     * @param {!WebInspector.TargetManager.Events} eventName
      * @param {!WebInspector.Event} event
      */
-    _redispatchEvent: function(event)
+    _redispatchEvent: function(eventName, event)
     {
-        this.dispatchEventToListeners(event.type, event.data);
+        this.dispatchEventToListeners(eventName, event.data);
     },
 
     /**
@@ -245,14 +246,12 @@ WebInspector.TargetManager.prototype = {
         this._targets.push(target);
         var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(target);
         if (this._targets.length === 1 && resourceTreeModel) {
-            var events = [
-                WebInspector.ResourceTreeModel.Events.MainFrameNavigated,
-                WebInspector.ResourceTreeModel.Events.Load,
-                WebInspector.ResourceTreeModel.Events.PageReloadRequested,
-                WebInspector.ResourceTreeModel.Events.WillReloadPage
+            resourceTreeModel[WebInspector.TargetManager._listenersSymbol] = [
+                setupRedispatch.call(this, WebInspector.ResourceTreeModel.Events.MainFrameNavigated, WebInspector.TargetManager.Events.MainFrameNavigated),
+                setupRedispatch.call(this, WebInspector.ResourceTreeModel.Events.Load, WebInspector.TargetManager.Events.Load),
+                setupRedispatch.call(this, WebInspector.ResourceTreeModel.Events.PageReloadRequested, WebInspector.TargetManager.Events.PageReloadRequested),
+                setupRedispatch.call(this, WebInspector.ResourceTreeModel.Events.WillReloadPage, WebInspector.TargetManager.Events.WillReloadPage)
             ];
-            resourceTreeModel[WebInspector.TargetManager._listenersSymbol] =
-                events.map(event => resourceTreeModel.addEventListener(event, this._redispatchEvent, this));
         }
         var copy = this._observersForTarget(target);
         for (var i = 0; i < copy.length; ++i)
@@ -265,6 +264,17 @@ WebInspector.TargetManager.prototype = {
                 if (model)
                     model.addEventListener(eventType, listeners[i].listener, listeners[i].thisObject);
             }
+        }
+
+        /**
+         * @param {!WebInspector.ResourceTreeModel.Events} sourceEvent
+         * @param {!WebInspector.TargetManager.Events} targetEvent
+         * @return {!WebInspector.EventTarget.EventDescriptor}
+         * @this {WebInspector.TargetManager}
+         */
+        function setupRedispatch(sourceEvent, targetEvent)
+        {
+            return resourceTreeModel.addEventListener(sourceEvent, this._redispatchEvent.bind(this, targetEvent));
         }
     },
 

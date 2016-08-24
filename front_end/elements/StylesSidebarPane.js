@@ -1989,7 +1989,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
             swatchIcon.setContrastColor(bgColor);
         }
 
-        if (this.property.name === "color" && this._parentPane.cssModel() && this.node()) {
+        if (Runtime.experiments.isEnabled("colorContrastRatio") && this.property.name === "color" && this._parentPane.cssModel() && this.node()) {
             var cssModel = this._parentPane.cssModel();
             cssModel.backgroundColorsPromise(this.node().id).then(computedCallback);
         }

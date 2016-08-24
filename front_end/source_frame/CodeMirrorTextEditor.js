@@ -144,22 +144,8 @@ WebInspector.CodeMirrorTextEditor = function()
     this._selectNextOccurrenceController = new WebInspector.CodeMirrorTextEditor.SelectNextOccurrenceController(this, this._codeMirror);
 
     this._codeMirror.on("changes", this._changes.bind(this));
-    this._codeMirror.on("gutterClick", this._gutterClick.bind(this));
     this._codeMirror.on("beforeSelectionChange", this._beforeSelectionChange.bind(this));
-    this._codeMirror.on("scroll", this._scroll.bind(this));
-    this._codeMirror.on("focus", this._focus.bind(this));
     this._codeMirror.on("keyHandled", this._onKeyHandled.bind(this));
-    this.element.addEventListener("contextmenu", this._contextMenu.bind(this), false);
-
-    /**
-     * @this {WebInspector.CodeMirrorTextEditor}
-     */
-    function updateAnticipateJumpFlag(value)
-    {
-        this._isHandlingMouseDownEvent = value;
-    }
-    this.element.addEventListener("mousedown", updateAnticipateJumpFlag.bind(this, true), true);
-    this.element.addEventListener("mousedown", updateAnticipateJumpFlag.bind(this, false), false);
 
     this.element.style.overflow = "hidden";
     this._codeMirrorElement.classList.add("source-code");

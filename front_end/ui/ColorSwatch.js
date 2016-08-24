@@ -164,6 +164,7 @@ WebInspector.ColorSwatch._nextColorFormat = function(color, curFormat)
     }
 }
 
+
 WebInspector.BezierSwatch = {}
 
 /**
@@ -175,4 +176,80 @@ WebInspector.BezierSwatch.create = function()
     var root = WebInspector.createShadowRootWithCoreStyles(element, "ui/bezierSwatch.css");
     root.createChild("span", "bezier-swatch");
     return element;
+}
+
+
+/**
+ * @constructor
+ * @extends {HTMLSpanElement}
+ */
+WebInspector.CSSShadowSwatch = function()
+{
+}
+
+/**
+ * @return {!WebInspector.CSSShadowSwatch}
+ */
+WebInspector.CSSShadowSwatch.create = function()
+{
+    if (!WebInspector.CSSShadowSwatch._constructor)
+        WebInspector.CSSShadowSwatch._constructor = registerCustomElement("span", "css-shadow-swatch", WebInspector.CSSShadowSwatch.prototype);
+
+    return /** @type {!WebInspector.CSSShadowSwatch} */(new WebInspector.CSSShadowSwatch._constructor());
+}
+
+WebInspector.CSSShadowSwatch.prototype = {
+    /**
+     * @param {!WebInspector.CSSShadowModel} cssShadowModel
+     */
+    setCSSShadow: function(cssShadowModel)
+    {
+        this._cssShadowModel = cssShadowModel;
+        this._contentElement.removeChildren();
+        var results = WebInspector.TextUtils.splitStringByRegexes(cssShadowModel.asCSSText(), [/inset/g, WebInspector.Color.Regex]);
+        for (var i = 0; i < results.length; i++) {
+            var result = results[i];
+            if (result.regexIndex === 1) {
+                this._colorSwatch = WebInspector.ColorSwatch.create();
+                this._colorSwatch.setColorText(result.value);
+                this._contentElement.appendChild(this._colorSwatch);
+            } else {
+                this._contentElement.appendChild(createTextNode(result.value));
+            }
+        }
+    },
+
+    /**
+     * @param {boolean} hide
+     */
+    setTextHidden: function(hide)
+    {
+        this._contentElement.hidden = hide;
+    },
+
+    /**
+     * @return {!Element}
+     */
+    iconElement: function()
+    {
+        return this._iconElement;
+    },
+
+    /**
+     * @return {!WebInspector.ColorSwatch}
+     */
+    colorSwatch: function()
+    {
+        return this._colorSwatch;
+    },
+
+    createdCallback: function()
+    {
+        var root = WebInspector.createShadowRootWithCoreStyles(this, "ui/cssShadowSwatch.css");
+        this._iconElement = root.createChild("span", "shadow-swatch-icon");
+        root.createChild("content");
+        this._contentElement = this.createChild("span");
+    },
+
+    __proto__: HTMLSpanElement.prototype
 }

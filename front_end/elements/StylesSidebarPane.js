@@ -2018,6 +2018,35 @@ WebInspector.StylePropertyTreeElement.prototype = {
         return new WebInspector.BezierPopoverIcon(this, swatchPopoverHelper, text).element();
     },
 
+    /**
+     * @param {string} propertyValue
+     * @param {string} propertyName
+     * @return {!Node}
+     */
+    _processShadow: function(propertyValue, propertyName)
+    {
+        if (!this._editable())
+            return createTextNode(propertyValue);
+        var shadows;
+        if (propertyName === "text-shadow")
+            shadows = WebInspector.CSSShadowModel.parseTextShadow(propertyValue);
+        else
+            shadows = WebInspector.CSSShadowModel.parseBoxShadow(propertyValue);
+        if (!shadows.length)
+            return createTextNode(propertyValue);
+        var container = createDocumentFragment();
+        var swatchPopoverHelper = this._parentPane._swatchPopoverHelper;
+        for (var i = 0; i < shadows.length; i++) {
+            if (i !== 0)
+                container.appendChild(createTextNode(", ")); // Add back commas and spaces between each shadow.
+            // TODO(flandy): editing the property value should use the original value with all spaces.
+            var cssShadowSwatch = WebInspector.CSSShadowSwatch.create();
+            cssShadowSwatch.setCSSShadow(shadows[i]);
+            container.appendChild(cssShadowSwatch);
+        }
+        return container;
+    },
+
     _updateState: function()
     {
         if (!this.listItemElement)
@@ -2181,6 +2210,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
         if (this.property.parsedOk) {
             propertyRenderer.setColorHandler(this._processColor.bind(this));
             propertyRenderer.setBezierHandler(this._processBezier.bind(this));
+            propertyRenderer.setShadowHandler(this._processShadow.bind(this));
         }
 
         this.listItemElement.removeChildren();
@@ -2992,6 +3022,14 @@ WebInspector.StylesSidebarPropertyRenderer.prototype = {
     },
 
     /**
+     * @param {function(string, string):!Node} handler
+     */
+    setShadowHandler: function(handler)
+    {
+        this._shadowHandler = handler;
+    },
+
+    /**
      * @return {!Element}
      */
     renderName: function()
@@ -3012,6 +3050,13 @@ WebInspector.StylesSidebarPropertyRenderer.prototype = {
         valueElement.className = "value";
         if (!this._propertyValue)
             return valueElement;
+
+        if (this._shadowHandler && (this._propertyName === "box-shadow" || this._propertyName === "text-shadow" || this._propertyName === "-webkit-box-shadow")
+                && !WebInspector.CSSMetadata.VariableRegex.test(this._propertyValue) && Runtime.experiments.isEnabled("shadowEditor")) {
+            valueElement.appendChild(this._shadowHandler(this._propertyValue, this._propertyName));
+            valueElement.normalize();
+            return valueElement;
+        }
 
         var regexes = [WebInspector.CSSMetadata.VariableRegex, WebInspector.CSSMetadata.URLRegex];
         var processors = [createTextNode, this._processURL.bind(this)];

@@ -95,6 +95,7 @@ WebInspector.Main.prototype = {
         Runtime.experiments.register("resolveVariableNames", "Resolve variable names");
         Runtime.experiments.register("timelineShowAllEvents", "Show all events on Timeline", true);
         Runtime.experiments.register("securityPanel", "Security panel");
+        Runtime.experiments.register("shadowEditor", "Shadow editor", true);
         Runtime.experiments.register("sourceDiff", "Source diff");
         Runtime.experiments.register("timelineFlowEvents", "Timeline flow events", true);
         Runtime.experiments.register("timelineInvalidationTracking", "Timeline invalidation tracking", true);

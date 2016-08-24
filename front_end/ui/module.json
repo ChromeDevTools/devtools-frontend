@@ -54,6 +54,7 @@
         "checkboxTextLabel.css",
         "closeButton.css",
         "colorSwatch.css",
+        "cssShadowSwatch.css",
         "dialog.css",
         "dropTarget.css",
         "emptyWidget.css",

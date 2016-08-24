@@ -613,16 +613,6 @@ WebInspector.CodeMirrorTextEditor.prototype = {
     },
 
     /**
-     * @param {!WebInspector.TextRange} textRange
-     * @return {string}
-     */
-    copyRange: function(textRange)
-    {
-        var pos = WebInspector.CodeMirrorUtils.toPos(textRange.normalize());
-        return this._codeMirror.getRange(pos.start, pos.end);
-    },
-
-    /**
      * @return {boolean}
      */
     isClean: function()
@@ -1157,11 +1147,15 @@ WebInspector.CodeMirrorTextEditor.prototype = {
     },
 
     /**
+     * @param {!WebInspector.TextRange=} textRange
      * @return {string}
      */
-    text: function()
+    text: function(textRange)
     {
-        return this._codeMirror.getValue().replace(/\n/g, this._lineSeparator);
+        if (!textRange)
+            return this._codeMirror.getValue().replace(/\n/g, this._lineSeparator);
+        var pos = WebInspector.CodeMirrorUtils.toPos(textRange.normalize());
+        return this._codeMirror.getRange(pos.start, pos.end).replace(/\n/g, this._lineSeparator);
     },
 
     /**
@@ -1435,7 +1429,7 @@ WebInspector.CodeMirrorTextEditor.SelectNextOccurrenceController.prototype = {
         range = range.normalize();
         var matchedLineNumber;
         var matchedColumnNumber;
-        var textToFind = this._textEditor.copyRange(range);
+        var textToFind = this._textEditor.text(range);
         function findWordInLine(wordRegex, lineNumber, lineText, from, to)
         {
             if (typeof matchedLineNumber === "number")

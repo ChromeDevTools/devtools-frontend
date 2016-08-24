@@ -125,8 +125,8 @@ WebInspector.TextEditorAutocompleteController.prototype = {
         if (!this._dictionary || prefixRange.startColumn === prefixRange.endColumn)
             return Promise.resolve([]);
 
-        var completions = this._dictionary.wordsWithPrefix(this._textEditor.copyRange(prefixRange));
-        var substituteWord = this._textEditor.copyRange(substituteRange);
+        var completions = this._dictionary.wordsWithPrefix(this._textEditor.text(prefixRange));
+        var substituteWord = this._textEditor.text(substituteRange);
         if (this._dictionary.wordCount(substituteWord) === 1)
             completions = completions.filter((word) => word !== substituteWord);
 
@@ -209,12 +209,12 @@ WebInspector.TextEditorAutocompleteController.prototype = {
         var selections = this._codeMirror.listSelections();
         if (selections.length <= 1)
             return true;
-        var mainSelectionContext = this._textEditor.copyRange(mainSelection);
+        var mainSelectionContext = this._textEditor.text(mainSelection);
         for (var i = 0; i < selections.length; ++i) {
             var wordRange = this._substituteRange(selections[i].head.line, selections[i].head.ch);
             if (!wordRange)
                 return false;
-            var context = this._textEditor.copyRange(wordRange);
+            var context = this._textEditor.text(wordRange);
             if (context !== mainSelectionContext)
                 return false;
         }
@@ -238,7 +238,7 @@ WebInspector.TextEditorAutocompleteController.prototype = {
 
         var prefixRange = substituteRange.clone();
         prefixRange.endColumn = cursor.ch;
-        var prefix = this._textEditor.copyRange(prefixRange);
+        var prefix = this._textEditor.text(prefixRange);
         var hadSuggestBox = false;
         if (this._suggestBox)
             hadSuggestBox = true;
@@ -277,7 +277,7 @@ WebInspector.TextEditorAutocompleteController.prototype = {
         this._clearHintMarker();
         if (!this._isCursorAtEndOfLine())
             return;
-        var prefix = this._textEditor.copyRange(this._prefixRange);
+        var prefix = this._textEditor.text(this._prefixRange);
         this._lastPrefix = prefix;
         this._hintElement.textContent = hint.substring(prefix.length).split("\n")[0];
         var cursor = this._codeMirror.getCursor("to");

@@ -488,7 +488,7 @@ WebInspector.SourceFrame.prototype = {
             return;
         this._textEditor.highlightSearchResults(this._searchRegex, null);
 
-        var oldText = this._textEditor.copyRange(range);
+        var oldText = this._textEditor.text(range);
         var regex = searchConfig.toSearchRegex();
         var text;
         if (regex.__fromRegExpQuery)
@@ -623,7 +623,7 @@ WebInspector.SourceFrame.prototype = {
         }
         textRange = textRange.normalize();
 
-        var selectedText = this._textEditor.copyRange(textRange);
+        var selectedText = this._textEditor.text(textRange);
         if (textRange.startLine === textRange.endLine)
             this._sourcePosition.setText(WebInspector.UIString("%d characters selected", selectedText.length));
         else

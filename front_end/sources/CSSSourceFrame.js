@@ -96,7 +96,7 @@ WebInspector.CSSSourceFrame.prototype = {
             return false;
 
         var cssUnitRange = new WebInspector.TextRange(selection.startLine, token.startColumn, selection.startLine, token.endColumn);
-        var cssUnitText = this.textEditor.copyRange(cssUnitRange);
+        var cssUnitText = this.textEditor.text(cssUnitRange);
         var newUnitText = this._modifyUnit(cssUnitText, change);
         if (!newUnitText)
             return false;
@@ -272,7 +272,7 @@ WebInspector.CSSSourceFrame.prototype = {
      */
     _cssSuggestions: function(prefixRange, substituteRange)
     {
-        var prefix = this._textEditor.copyRange(prefixRange);
+        var prefix = this._textEditor.text(prefixRange);
         if (prefix.startsWith("$"))
             return null;
 

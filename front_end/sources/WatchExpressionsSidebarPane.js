@@ -207,7 +207,7 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
         var frame = WebInspector.context.flavor(WebInspector.UISourceCodeFrame);
         if (!frame)
             return false;
-        var text = frame.textEditor.copyRange(frame.textEditor.selection());
+        var text = frame.textEditor.text(frame.textEditor.selection());
         WebInspector.viewManager.showView("sources.watch");
         this.doUpdate();
         this._createWatchExpression(text);

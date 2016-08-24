@@ -1294,7 +1294,7 @@ WebInspector.SourcesPanel.DebuggingActionDelegate.prototype = {
         case "debugger.evaluate-selection":
             var frame = WebInspector.context.flavor(WebInspector.UISourceCodeFrame);
             if (frame) {
-                var text = frame.textEditor.copyRange(frame.textEditor.selection());
+                var text = frame.textEditor.text(frame.textEditor.selection());
                 var executionContext = WebInspector.context.flavor(WebInspector.ExecutionContext);
                 if (executionContext)
                     WebInspector.ConsoleModel.evaluateCommandInConsole(executionContext, text);

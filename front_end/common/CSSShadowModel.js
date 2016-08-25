@@ -4,9 +4,11 @@
 
 /**
  * @constructor
+ * @param {boolean} isBoxShadow
  */
-WebInspector.CSSShadowModel = function()
+WebInspector.CSSShadowModel = function(isBoxShadow)
 {
+    this._isBoxShadow = isBoxShadow;
     this._inset = false;
     this._offsetX = WebInspector.CSSLength.zero();
     this._offsetY = WebInspector.CSSLength.zero();
@@ -59,11 +61,17 @@ WebInspector.CSSShadowModel.prototype = {
 
     /**
      * @param {!WebInspector.CSSLength} offsetX
-     * @param {!WebInspector.CSSLength} offsetY
      */
-    setOffset: function(offsetX, offsetY)
+    setOffsetX: function(offsetX)
     {
         this._offsetX = offsetX;
+    },
+
+    /**
+     * @param {!WebInspector.CSSLength} offsetY
+     */
+    setOffsetY: function(offsetY)
+    {
         this._offsetY = offsetY;
     },
 
@@ -100,6 +108,14 @@ WebInspector.CSSShadowModel.prototype = {
         this._color = color;
         if (this._format.indexOf(WebInspector.CSSShadowModel._Part.Color) === -1)
             this._format.push(WebInspector.CSSShadowModel._Part.Color);
+    },
+
+    /**
+     * @return {boolean}
+     */
+    isBoxShadow: function()
+    {
+        return this._isBoxShadow;
     },
 
     /**
@@ -197,7 +213,7 @@ WebInspector.CSSShadowModel._parseShadow = function(text, isBoxShadow)
 
     var shadows = [];
     for (var i = 0; i < shadowTexts.length; i++) {
-        var shadow = new WebInspector.CSSShadowModel();
+        var shadow = new WebInspector.CSSShadowModel(isBoxShadow);
         shadow._format = [];
         var nextPartAllowed = true;
         var regexes = [/inset/gi, WebInspector.Color.Regex, WebInspector.CSSLength.Regex];

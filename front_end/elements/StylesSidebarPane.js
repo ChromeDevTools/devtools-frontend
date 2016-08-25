@@ -2045,6 +2045,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
             // TODO(flandy): editing the property value should use the original value with all spaces.
             var cssShadowSwatch = WebInspector.CSSShadowSwatch.create();
             cssShadowSwatch.setCSSShadow(shadows[i]);
+            new WebInspector.ShadowSwatchPopoverHelper(this, swatchPopoverHelper, cssShadowSwatch);
             if (cssShadowSwatch.colorSwatch())
                 var colorSwatchIcon = new WebInspector.ColorSwatchPopoverIcon(this, swatchPopoverHelper, cssShadowSwatch.colorSwatch());
             container.appendChild(cssShadowSwatch);

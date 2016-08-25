@@ -1371,6 +1371,20 @@ function createCheckboxLabel(title, checked, subtitle)
 }
 
 /**
+ * @return {!Element}
+ * @param {number} min
+ * @param {number} max
+ */
+function createSliderLabel(min, max)
+{
+    var element = createElement("label", "dt-slider");
+    element.sliderElement.min = min;
+    element.sliderElement.max = max;
+    element.sliderElement.step = 1;
+    return element;
+}
+
+/**
  * @param {!Node} node
  * @param {string} cssFile
  * @suppressGlobalPropertiesCheck
@@ -1530,6 +1544,38 @@ WebInspector.appendStyle = function(node, cssFile)
         set type(type)
         {
             this._iconElement.className = type;
+        },
+
+        __proto__: HTMLLabelElement.prototype
+    });
+
+    registerCustomElement("label", "dt-slider", {
+        /**
+         * @this {Element}
+         */
+        createdCallback: function()
+        {
+            var root = WebInspector.createShadowRootWithCoreStyles(this, "ui/slider.css");
+            this.sliderElement = createElementWithClass("input", "dt-range-input");
+            this.sliderElement.type = "range";
+            root.appendChild(this.sliderElement);
+        },
+
+        /**
+         * @param {number} amount
+         * @this {Element}
+         */
+        set value(amount)
+        {
+            this.sliderElement.value = amount;
+        },
+
+        /**
+         * @this {Element}
+         */
+        get value()
+        {
+            return this.sliderElement.value;
         },
 
         __proto__: HTMLLabelElement.prototype

@@ -1960,7 +1960,10 @@ WebInspector.StylePropertyTreeElement.prototype = {
         }
 
         var swatchPopoverHelper = this._parentPane._swatchPopoverHelper;
-        var swatchIcon = new WebInspector.ColorSwatchPopoverIcon(this, swatchPopoverHelper, text);
+        var swatch = WebInspector.ColorSwatch.create();
+        swatch.setColorText(text);
+        swatch.setFormat(WebInspector.Color.detectColorFormat(swatch.color()));
+        var swatchIcon = new WebInspector.ColorSwatchPopoverIcon(this, swatchPopoverHelper, swatch);
 
         /**
          * @param {?Array<string>} backgroundColors
@@ -1994,7 +1997,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
             cssModel.backgroundColorsPromise(this.node().id).then(computedCallback);
         }
 
-        return swatchIcon.element();
+        return swatch;
     },
 
     /**
@@ -2042,6 +2045,8 @@ WebInspector.StylePropertyTreeElement.prototype = {
             // TODO(flandy): editing the property value should use the original value with all spaces.
             var cssShadowSwatch = WebInspector.CSSShadowSwatch.create();
             cssShadowSwatch.setCSSShadow(shadows[i]);
+            if (cssShadowSwatch.colorSwatch())
+                var colorSwatchIcon = new WebInspector.ColorSwatchPopoverIcon(this, swatchPopoverHelper, cssShadowSwatch.colorSwatch());
             container.appendChild(cssShadowSwatch);
         }
         return container;

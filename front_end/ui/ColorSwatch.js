@@ -205,6 +205,7 @@ WebInspector.CSSShadowSwatch.prototype = {
     setCSSShadow: function(cssShadowModel)
     {
         this._cssShadowModel = cssShadowModel;
+        this._colorSwatch = null;
         this._contentElement.removeChildren();
         var results = WebInspector.TextUtils.splitStringByRegexes(cssShadowModel.asCSSText(), [/inset/g, WebInspector.Color.Regex]);
         for (var i = 0; i < results.length; i++) {

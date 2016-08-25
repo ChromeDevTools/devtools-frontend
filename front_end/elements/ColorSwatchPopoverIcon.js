@@ -100,17 +100,15 @@ WebInspector.BezierPopoverIcon.prototype = {
  * @constructor
  * @param {!WebInspector.StylePropertyTreeElement} treeElement
  * @param {!WebInspector.SwatchPopoverHelper} swatchPopoverHelper
- * @param {string} colorText
+ * @param {!WebInspector.ColorSwatch} swatch
  */
-WebInspector.ColorSwatchPopoverIcon = function(treeElement, swatchPopoverHelper, colorText)
+WebInspector.ColorSwatchPopoverIcon = function(treeElement, swatchPopoverHelper, swatch)
 {
     this._treeElement = treeElement;
     this._treeElement[WebInspector.ColorSwatchPopoverIcon._treeElementSymbol] = this;
     this._swatchPopoverHelper = swatchPopoverHelper;
+    this._swatch = swatch;
 
-    this._swatch = WebInspector.ColorSwatch.create();
-    this._swatch.setColorText(colorText);
-    this._swatch.setFormat(WebInspector.Color.detectColorFormat(this._swatch.color()));
     var shiftClickMessage = WebInspector.UIString("Shift + Click to change color format.");
     this._swatch.iconElement().title = WebInspector.UIString("Open color picker. %s", shiftClickMessage);
     this._swatch.iconElement().addEventListener("click", this._iconClick.bind(this));
@@ -132,14 +130,6 @@ WebInspector.ColorSwatchPopoverIcon.forTreeElement = function(treeElement)
 }
 
 WebInspector.ColorSwatchPopoverIcon.prototype = {
-    /**
-     * @return {!Element}
-     */
-    element: function()
-    {
-        return this._swatch;
-    },
-
     /**
      * @param {!WebInspector.Color} color
      */

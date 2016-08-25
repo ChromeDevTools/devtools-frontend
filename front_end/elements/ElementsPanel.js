@@ -382,7 +382,7 @@ WebInspector.ElementsPanel.prototype = {
             return;
         }
 
-        WebInspector.domBreakpointsSidebarPane.restoreBreakpoints(domModel);
+        WebInspector.domBreakpointsSidebarPane.restoreBreakpoints(inspectedRootDocument);
 
         /**
          * @this {WebInspector.ElementsPanel}

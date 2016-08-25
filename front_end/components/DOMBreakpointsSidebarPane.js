@@ -57,21 +57,12 @@ WebInspector.DOMBreakpointsSidebarPane = function()
     this._contextMenuLabels[this._breakpointTypes.NodeRemoved] = WebInspector.UIString.capitalize("Node ^removal");
 
     WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
-    WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
-    this._inspectedURL = WebInspector.targetManager.inspectedURL();
     this._update();
 }
 
 WebInspector.DOMBreakpointsSidebarPane.Marker = "breakpoint-marker";
 
 WebInspector.DOMBreakpointsSidebarPane.prototype = {
-    _inspectedURLChanged: function()
-    {
-        this._breakpointElements = {};
-        this.reset();
-        this._inspectedURL = WebInspector.targetManager.inspectedURL();
-    },
-
     /**
      * @param {!WebInspector.DOMNode} node
      * @param {!WebInspector.ContextMenu} contextMenu
@@ -375,10 +366,14 @@ WebInspector.DOMBreakpointsSidebarPane.prototype = {
     },
 
     /**
-     * @param {!WebInspector.DOMModel} domModel
+     * @param {!WebInspector.DOMDocument} domDocument
      */
-    restoreBreakpoints: function(domModel)
+    restoreBreakpoints: function(domDocument)
     {
+        this._breakpointElements = {};
+        this.reset();
+        this._inspectedURL = domDocument.documentURL;
+        var domModel = domDocument.domModel();
         var pathToBreakpoints = {};
 
         /**

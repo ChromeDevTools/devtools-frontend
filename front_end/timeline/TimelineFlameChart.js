@@ -562,10 +562,10 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
         for (var groupIndex = 0; groupIndex < groupArray.length; ++groupIndex) {
             var group = groupArray[groupIndex];
             var events = asyncEvents.get(group);
-            if (events) {
-                var title = WebInspector.TimelineUIUtils.titleForAsyncEventGroup(groups.input);
-                this._appendAsyncEventsGroup(title, events, this._headerLevel1);
-            }
+            if (!events)
+                continue;
+            var title = WebInspector.TimelineUIUtils.titleForAsyncEventGroup(group);
+            this._appendAsyncEventsGroup(title, events, this._headerLevel1);
         }
     },
 

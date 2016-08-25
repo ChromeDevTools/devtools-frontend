@@ -297,7 +297,7 @@ WebInspector.TracingModel.prototype = {
 
     _processPendingAsyncEvents: function()
     {
-        this._asyncEvents.sort(WebInspector.TracingModel.Event.compareStartTime);
+        this._asyncEvents.stableSort(WebInspector.TracingModel.Event.compareStartTime);
         for (var i = 0; i < this._asyncEvents.length; ++i) {
             var event = this._asyncEvents[i];
             if (WebInspector.TracingModel.isNestableAsyncPhase(event.phase))

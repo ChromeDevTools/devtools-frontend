@@ -72,17 +72,6 @@ fieldset[disabled] label:hover input {
     display: inline-block;
 }
 
-.inspected-page-placeholder {
-    background-color: white;
-}
-
-.toolbar-background {
-    padding-left: 1px;
-    border-bottom: 1px solid rgb(64%, 64%, 64%);
-    background-origin: padding-box;
-    background-clip: padding-box;
-}
-
 .error-message {
     color: red;
 }
@@ -238,21 +227,6 @@ ol.outline-disclosure:focus li.selected * {
     background-color: #f3f3f3;
 }
 
-.pane-title-button {
-    color: rgb(6, 6, 6);
-    background-color: transparent;
-    border: 1px solid rgb(165, 165, 165);
-    background-color: #eee;
-    background-image: linear-gradient(to bottom, rgb(252, 252, 252), rgb(223, 223, 223));
-    border-radius: 12px;
-    -webkit-appearance: none;
-}
-
-.pane-title-button:active {
-    background-color: rgb(215, 215, 215);
-    background-image: linear-gradient(to bottom, rgb(194, 194, 194), rgb(239, 239, 239));
-}
-
 .sidebar-tree,
 .sidebar-tree .children {
     position: relative;
@@ -360,7 +334,6 @@ ol.outline-disclosure:focus li.selected * {
     content: none;
 }
 
-.spinner-icon::before,
 .sidebar-tree-item.wait .icon::before {
     display: block;
     width: 24px;
@@ -375,7 +348,6 @@ ol.outline-disclosure:focus li.selected * {
     box-sizing: border-box;
 }
 
-.spinner-icon.small::before,
 .sidebar-tree-item.wait.small .icon::before {
     width: 14px;
     height: 14px;
@@ -485,20 +457,6 @@ body.inactive .sidebar-tree-item.selected {
 
 .sidebar-tree-item.selected .subtitle {
     color: white;
-}
-
-.soft-context-menu-glass-pane {
-    z-index: 20000;
-}
-
-.root-view {
-    background-color: white;
-    overflow: hidden;
-    position: absolute !important;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
 }
 
 .drawer-toolbar {

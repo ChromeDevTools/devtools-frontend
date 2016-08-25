@@ -37,6 +37,10 @@
     display: flex;
     flex: 24px 0 0;
     position: relative;
+    padding-left: 1px;
+    border-bottom: 1px solid rgb(64%, 64%, 64%);
+    background-origin: padding-box;
+    background-clip: padding-box;
 }
 
 .screencast-navigation button {

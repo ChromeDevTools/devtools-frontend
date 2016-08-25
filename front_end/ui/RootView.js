@@ -11,6 +11,7 @@ WebInspector.RootView = function()
     WebInspector.VBox.call(this);
     this.markAsRoot();
     this.element.classList.add("root-view");
+    this.registerRequiredCSS("ui/rootView.css");
     this.element.setAttribute("spellcheck", false);
 }
 

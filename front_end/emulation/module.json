@@ -136,6 +136,7 @@
         "devicesSettingsTab.css",
         "deviceModeToolbar.css",
         "deviceModeView.css",
+        "inspectedPagePlaceholder.css",
         "mediaQueryInspector.css",
         "sensors.css"
     ]

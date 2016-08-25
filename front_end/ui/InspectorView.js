@@ -62,7 +62,6 @@ WebInspector.InspectorView = function()
     // Create main area tabbed pane.
     this._tabbedPane = new WebInspector.TabbedPane();
     this._tabbedPane.registerRequiredCSS("ui/inspectorViewTabbedPane.css");
-    this._tabbedPane.element.classList.add("inspector-view-tabbed-pane");
     this._tabbedPane.setTabSlider(true);
     this._tabbedPane.setAllowTabReorder(true, false);
     this._tabbedPane.addEventListener(WebInspector.TabbedPane.Events.TabOrderChanged, this._persistPanelOrder, this);

@@ -8,8 +8,8 @@
  */
 WebInspector.InspectedPagePlaceholder = function()
 {
-    WebInspector.Widget.call(this);
-    this.element.classList.add("inspected-page-placeholder");
+    WebInspector.Widget.call(this, true);
+    this.registerRequiredCSS("emulation/inspectedPagePlaceholder.css");
     WebInspector.zoomManager.addEventListener(WebInspector.ZoomManager.Events.ZoomChanged, this._scheduleUpdate, this);
     this._margins = { top: 0, right: 0, bottom: 0, left: 0 };
     this.restoreMinimumSizeAndMargins();

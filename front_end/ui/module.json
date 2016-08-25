@@ -71,6 +71,7 @@
         "progressIndicator.css",
         "radioButton.css",
         "reportView.css",
+        "rootView.css",
         "searchableView.css",
         "viewContainers.css",
         "smallBubble.css",

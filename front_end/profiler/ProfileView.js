@@ -26,8 +26,8 @@ WebInspector.ProfileView = function(nodeFormatter, viewTypes)
     this._nodeFormatter = nodeFormatter;
 
     var columns = [];
-    columns.push({id: "self", title: this.columnHeader("self"), width: "120px", sort: WebInspector.DataGrid.Order.Descending, sortable: true});
-    columns.push({id: "total", title: this.columnHeader("total"), width: "120px", sortable: true});
+    columns.push({id: "self", title: this.columnHeader("self"), width: "120px", fixedWidth: true, sortable: true, sort: WebInspector.DataGrid.Order.Descending});
+    columns.push({id: "total", title: this.columnHeader("total"), width: "120px", fixedWidth: true, sortable: true});
     columns.push({id: "function", title: WebInspector.UIString("Function"), disclosure: true, sortable: true});
 
     this.dataGrid = new WebInspector.DataGrid(columns);

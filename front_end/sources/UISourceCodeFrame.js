@@ -422,6 +422,10 @@ WebInspector.UISourceCodeFrame._iconClassPerLevel = {};
 WebInspector.UISourceCodeFrame._iconClassPerLevel[WebInspector.UISourceCode.Message.Level.Error] = "error-icon";
 WebInspector.UISourceCodeFrame._iconClassPerLevel[WebInspector.UISourceCode.Message.Level.Warning] = "warning-icon";
 
+WebInspector.UISourceCodeFrame._bubbleTypePerLevel = {};
+WebInspector.UISourceCodeFrame._bubbleTypePerLevel[WebInspector.UISourceCode.Message.Level.Error] = "error";
+WebInspector.UISourceCodeFrame._bubbleTypePerLevel[WebInspector.UISourceCode.Message.Level.Warning] = "warning";
+
 WebInspector.UISourceCodeFrame._lineClassPerLevel = {};
 WebInspector.UISourceCodeFrame._lineClassPerLevel[WebInspector.UISourceCode.Message.Level.Error] = "text-editor-line-with-error";
 WebInspector.UISourceCodeFrame._lineClassPerLevel[WebInspector.UISourceCode.Message.Level.Warning] = "text-editor-line-with-warning";
@@ -450,7 +454,8 @@ WebInspector.UISourceCodeFrame.RowMessage = function(message)
     this.element = createElementWithClass("div", "text-editor-row-message");
     this._icon = this.element.createChild("label", "", "dt-icon-label");
     this._icon.type = WebInspector.UISourceCodeFrame._iconClassPerLevel[message.level()];
-    this._repeatCountElement = this.element.createChild("span", "bubble-repeat-count hidden error");
+    this._repeatCountElement = this.element.createChild("label", "message-repeat-count hidden", "dt-small-bubble");
+    this._repeatCountElement.type = WebInspector.UISourceCodeFrame._bubbleTypePerLevel[message.level()];
     var linesContainer = this.element.createChild("div", "text-editor-row-message-lines");
     var lines = this._message.text().split("\n");
     for (var i = 0; i < lines.length; ++i) {

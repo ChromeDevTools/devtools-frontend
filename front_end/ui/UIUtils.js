@@ -1535,6 +1535,30 @@ WebInspector.appendStyle = function(node, cssFile)
         __proto__: HTMLLabelElement.prototype
     });
 
+    registerCustomElement("label", "dt-small-bubble", {
+        /**
+         * @this {Element}
+         */
+        createdCallback: function()
+        {
+            var root = WebInspector.createShadowRootWithCoreStyles(this, "ui/smallBubble.css");
+            this._textElement = root.createChild("div");
+            this._textElement.className = "info";
+            this._textElement.createChild("content");
+        },
+
+        /**
+         * @param {string} type
+         * @this {Element}
+         */
+        set type(type)
+        {
+            this._textElement.className = type;
+        },
+
+        __proto__: HTMLLabelElement.prototype
+    });
+
     registerCustomElement("div", "dt-close-button", {
         /**
          * @this {Element}

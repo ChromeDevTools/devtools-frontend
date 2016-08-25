@@ -301,11 +301,12 @@
     line-height: 1.2;
     white-space: nowrap;
     display: flex;
+    align-items: center;
+    justify-content: flex-start;
 }
 
-.text-editor-row-message .bubble-repeat-count {
-    margin-right: 1ex;
-    margin-top: -1px;
+.text-editor-row-message .message-repeat-count {
+    margin-right: 0.5em;
 }
 
 .CodeMirror .text-editor-line-decoration-icon {

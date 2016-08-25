@@ -888,7 +888,6 @@ WebInspector.ConsoleViewMessage.prototype = {
         if (show && !this.timestampElement) {
             this.timestampElement = createElementWithClass("span", "console-timestamp");
             this.timestampElement.textContent = (new Date(this._message.timestamp)).toConsoleTime() + " ";
-            var afterRepeatCountChild = this._repeatCountElement && this._repeatCountElement.nextSibling;
             this._formattedMessage.insertBefore(this.timestampElement, this._formattedMessage.firstChild);
             return;
         }
@@ -1042,9 +1041,20 @@ WebInspector.ConsoleViewMessage.prototype = {
             return;
 
         if (!this._repeatCountElement) {
-            this._repeatCountElement = createElement("span");
-            this._repeatCountElement.className = "bubble-repeat-count";
-
+            this._repeatCountElement = createElementWithClass("label", "console-message-repeat-count", "dt-small-bubble");
+            switch (this._message.level) {
+            case WebInspector.ConsoleMessage.MessageLevel.Warning:
+                this._repeatCountElement.type = "warning";
+                break;
+            case WebInspector.ConsoleMessage.MessageLevel.Error:
+                this._repeatCountElement.type = "error";
+                break;
+            case WebInspector.ConsoleMessage.MessageLevel.Debug:
+                this._repeatCountElement.type = "debug";
+                break;
+            default:
+                this._repeatCountElement.type = "info";
+            }
             this._element.insertBefore(this._repeatCountElement, this._element.firstChild);
             this._element.classList.add("repeated-message");
         }

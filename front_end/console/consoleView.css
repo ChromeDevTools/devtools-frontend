@@ -130,27 +130,10 @@
     top: 0;
 }
 
-.bubble-repeat-count {
-    display: inline-block;
-    height: 14px;
-    background-color: rgb(128, 151, 189);
-    vertical-align: middle;
-    white-space: nowrap;
-    padding: 1px 4px;
-    text-align: left;
-    font-size: 11px;
-    line-height: normal;
-    font-weight: bold;
-    text-shadow: none;
-    color: white;
-    margin-top: -1px;
-    border-radius: 7px;
-    flex: none;
-}
-
-.console-message .bubble-repeat-count {
+.console-message .console-message-repeat-count {
     margin-right: 4px;
     margin-left: -18px;
+    flex: none;
 }
 
 .console-error-level .repeated-message::before,

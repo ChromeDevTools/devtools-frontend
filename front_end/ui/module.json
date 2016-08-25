@@ -73,6 +73,7 @@
         "reportView.css",
         "searchableView.css",
         "viewContainers.css",
+        "smallBubble.css",
         "smallIcon.css",
         "softContextMenu.css",
         "splitWidget.css",

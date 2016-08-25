@@ -260,6 +260,7 @@
             'front_end/ui/reportView.css',
             'front_end/ui/searchableView.css',
             'front_end/ui/softContextMenu.css',
+            'front_end/ui/smallBubble.css',
             'front_end/ui/smallIcon.css',
             'front_end/ui/splitWidget.css',
             'front_end/ui/toolbar.css',

@@ -83,23 +83,6 @@ fieldset[disabled] label:hover input {
     background-clip: padding-box;
 }
 
-.bubble-repeat-count {
-    display: inline-block;
-    height: 14px;
-    background-color: rgb(128, 151, 189);
-    vertical-align: middle;
-    white-space: nowrap;
-    padding: 1px 4px;
-    text-align: left;
-    font-size: 11px;
-    line-height: normal;
-    font-weight: bold;
-    text-shadow: none;
-    color: white;
-    margin-top: -1px;
-    border-radius: 7px;
-}
-
 .error-message {
     color: red;
 }
@@ -422,23 +405,6 @@ li .status:empty {
     display: none;
 }
 
-li .status .bubble-repeat-count:empty {
-    display: none;
-}
-
-li.selected .status .bubble-repeat-count {
-    background-color: white !important;
-    color: rgb(132, 154, 190) !important;
-}
-
-:focus li.selected .status .bubble-repeat-count {
-    color: rgb(36, 98, 172) !important;
-}
-
-body.inactive li.selected .status .bubble-repeat-count {
-    color: rgb(159, 159, 159) !important;
-}
-
 .sidebar-tree.small .sidebar-tree-item,
 .sidebar-tree .children.small .sidebar-tree-item,
 .sidebar-tree-item.small {
@@ -519,21 +485,6 @@ body.inactive .sidebar-tree-item.selected {
 
 .sidebar-tree-item.selected .subtitle {
     color: white;
-}
-
-.bubble-repeat-count.debug,
-.console-debug-level .bubble-repeat-count {
-    background-color: rgb(0, 0, 255) !important;
-}
-
-.bubble-repeat-count.warning,
-.console-warning-level .bubble-repeat-count {
-    background-color: rgb(232, 164, 0) !important;
-}
-
-.bubble-repeat-count.error,
-.console-error-level .bubble-repeat-count {
-    background-color: rgb(216, 35, 35) !important;
 }
 
 .soft-context-menu-glass-pane {

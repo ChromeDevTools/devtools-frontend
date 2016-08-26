@@ -39,7 +39,7 @@ WebInspector.CodeMirrorTextEditor = function()
     this._gutters = ["CodeMirror-linenumbers"];
 
     this.registerRequiredCSS("cm/codemirror.css");
-    this.registerRequiredCSS("source_frame/cmdevtools.css");
+    this.registerRequiredCSS("text_editor/cmdevtools.css");
 
     WebInspector.CodeMirrorUtils.appendThemeStyle(this.element);
 

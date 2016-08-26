@@ -367,6 +367,7 @@
             'front_end/sources/module.json',
             'front_end/snippets/module.json',
             'front_end/temp_storage_shared_worker/module.json',
+            'front_end/text_editor/module.json',
             'front_end/timeline_model/module.json',
             'front_end/timeline/module.json',
             'front_end/toolbox_bootstrap/module.json',
@@ -660,17 +661,13 @@
             'front_end/settings/SettingsScreen.js',
         ],
         'devtools_source_frame_js_files': [
-            'front_end/source_frame/cmdevtools.css',
             'front_end/source_frame/fontView.css',
             'front_end/source_frame/imageView.css',
-            'front_end/source_frame/CodeMirrorTextEditor.js',
             'front_end/source_frame/SourcesTextEditor.js',
-            'front_end/source_frame/CodeMirrorUtils.js',
             'front_end/source_frame/FontView.js',
             'front_end/source_frame/ImageView.js',
             'front_end/source_frame/ResourceSourceFrame.js',
             'front_end/source_frame/SourceFrame.js',
-            'front_end/source_frame/TextEditorAutocompleteController.js',
         ],
         'devtools_sources_js_files': [
             'front_end/sources/navigatorView.css',
@@ -723,6 +720,12 @@
         ],
         'devtools_temp_storage_shared_worker_js_files': [
             'front_end/temp_storage_shared_worker/TempStorageSharedWorker.js',
+        ],
+        'devtools_text_editor_js_files':[
+            'front_end/text_editor/cmdevtools.css',
+            'front_end/text_editor/CodeMirrorTextEditor.js',
+            'front_end/text_editor/CodeMirrorUtils.js',
+            'front_end/text_editor/TextEditorAutocompleteController.js'
         ],
         'devtools_timeline_model_js_files': [
             'front_end/timeline_model/LayerTreeModel.js',
@@ -829,6 +832,7 @@
             '<@(devtools_sources_js_files)',
             '<@(devtools_snippets_js_files)',
             '<@(devtools_temp_storage_shared_worker_js_files)',
+            '<@(devtools_text_editor_js_files)',
             '<@(devtools_timeline_model_js_files)',
             '<@(devtools_timeline_js_files)',
             '<@(devtools_ui_lazy_js_files)',

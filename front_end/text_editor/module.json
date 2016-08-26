@@ -1,0 +1,54 @@
+{
+    "extensions": [
+        {
+            "type": "@WebInspector.InplaceEditor",
+            "className": "WebInspector.CodeMirrorUtils"
+        },
+        {
+            "type": "@WebInspector.TokenizerFactory",
+            "className": "WebInspector.CodeMirrorUtils.TokenizerFactory"
+        }
+    ],
+    "dependencies": [
+        "components"
+    ],
+    "scripts": [
+        "../cm/codemirror.js",
+        "../cm/css.js",
+        "../cm/javascript.js",
+        "../cm/simple.js",
+        "../cm/xml.js",
+        "../cm/multiplex.js",
+        "../cm/htmlmixed.js",
+        "../cm/htmlembedded.js",
+        "../cm/matchbrackets.js",
+        "../cm/closebrackets.js",
+        "../cm/markselection.js",
+        "../cm/comment.js",
+        "../cm/overlay.js",
+        "../cm/activeline.js",
+        "CodeMirrorUtils.js",
+        "TextEditorAutocompleteController.js",
+        "CodeMirrorTextEditor.js"
+    ],
+    "skip_compilation": [
+        "../cm/codemirror.js",
+        "../cm/css.js",
+        "../cm/javascript.js",
+        "../cm/simple.js",
+        "../cm/xml.js",
+        "../cm/multiplex.js",
+        "../cm/htmlmixed.js",
+        "../cm/htmlembedded.js",
+        "../cm/matchbrackets.js",
+        "../cm/closebrackets.js",
+        "../cm/markselection.js",
+        "../cm/comment.js",
+        "../cm/overlay.js",
+        "../cm/activeline.js"
+    ],
+    "resources": [
+        "../cm/codemirror.css",
+        "cmdevtools.css"
+    ]
+}

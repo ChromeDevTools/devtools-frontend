@@ -25,6 +25,7 @@
         { "name": "security", "condition": "!v8only" },
         { "name": "console" },
         { "name": "source_frame" },
+        { "name": "text_editor" },
         { "name": "cm_modes", "type": "remoteInRelease" },
         { "name": "settings" },
         { "name": "layers", "condition": "!v8only" },

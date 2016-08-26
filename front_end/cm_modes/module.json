@@ -89,7 +89,7 @@
         }
     ],
     "dependencies": [
-        "source_frame"
+        "text_editor"
     ],
     "scripts": [
         "DefaultCodeMirrorMimeMode.js"

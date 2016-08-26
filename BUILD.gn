@@ -53,6 +53,7 @@ devtools_modules_js_files =
     gypi_values.devtools_source_frame_js_files +
     gypi_values.devtools_sources_js_files +
     gypi_values.devtools_temp_storage_shared_worker_js_files +
+    gypi_values.devtools_text_editor_js_files +
     gypi_values.devtools_timeline_model_js_files +
     gypi_values.devtools_timeline_js_files +
     gypi_values.devtools_ui_lazy_js_files
@@ -161,6 +162,7 @@ action("generate_devtools_grd") {
       resources_out_dir + "snippets/snippets_module.js",
       resources_out_dir + "source_frame/source_frame_module.js",
       resources_out_dir + "sources/sources_module.js",
+      resources_out_dir + "text_editor/text_editor_module.js",
       resources_out_dir + "timeline_model/timeline_model_module.js",
       resources_out_dir + "timeline/timeline_module.js",
       resources_out_dir + "ui_lazy/ui_lazy_module.js",
@@ -298,6 +300,7 @@ action("build_applications") {
       resources_out_dir + "snippets/snippets_module.js",
       resources_out_dir + "source_frame/source_frame_module.js",
       resources_out_dir + "sources/sources_module.js",
+      resources_out_dir + "text_editor/text_editor_module.js",
       resources_out_dir + "timeline_model/timeline_model_module.js",
       resources_out_dir + "timeline/timeline_module.js",
       resources_out_dir + "ui_lazy/ui_lazy_module.js",

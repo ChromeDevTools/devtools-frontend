@@ -16,8 +16,8 @@ WebInspector.TargetManager = function()
     /** @type {!Array.<!WebInspector.TargetManager.Observer>} */
     this._observers = [];
     this._observerCapabiliesMaskSymbol = Symbol("observerCapabilitiesMask");
-    /** @type {!Object.<string, !Array.<{modelClass: !Function, thisObject: (!Object|undefined), listener: function(!WebInspector.Event)}>>} */
-    this._modelListeners = {};
+    /** @type {!Map<symbol, !Array<{modelClass: !Function, thisObject: (!Object|undefined), listener: function(!WebInspector.Event)}>>} */
+    this._modelListeners = new Map();
     this._isSuspended = false;
 }
 
@@ -115,7 +115,7 @@ WebInspector.TargetManager.prototype = {
 
     /**
      * @param {!Function} modelClass
-     * @param {string} eventType
+     * @param {symbol} eventType
      * @param {function(!WebInspector.Event)} listener
      * @param {!Object=} thisObject
      */
@@ -126,20 +126,20 @@ WebInspector.TargetManager.prototype = {
             if (model)
                 model.addEventListener(eventType, listener, thisObject);
         }
-        if (!this._modelListeners[eventType])
-            this._modelListeners[eventType] = [];
-        this._modelListeners[eventType].push({ modelClass: modelClass, thisObject: thisObject, listener: listener });
+        if (!this._modelListeners.has(eventType))
+            this._modelListeners.set(eventType, []);
+        this._modelListeners.get(eventType).push({ modelClass: modelClass, thisObject: thisObject, listener: listener });
     },
 
     /**
      * @param {!Function} modelClass
-     * @param {string} eventType
+     * @param {symbol} eventType
      * @param {function(!WebInspector.Event)} listener
      * @param {!Object=} thisObject
      */
     removeModelListener: function(modelClass, eventType, listener, thisObject)
     {
-        if (!this._modelListeners[eventType])
+        if (!this._modelListeners.has(eventType))
             return;
 
         for (var i = 0; i < this._targets.length; ++i) {
@@ -148,13 +148,13 @@ WebInspector.TargetManager.prototype = {
                 model.removeEventListener(eventType, listener, thisObject);
         }
 
-        var listeners = this._modelListeners[eventType];
+        var listeners = this._modelListeners.get(eventType);
         for (var i = 0; i < listeners.length; ++i) {
             if (listeners[i].modelClass === modelClass && listeners[i].listener === listener && listeners[i].thisObject === thisObject)
                 listeners.splice(i--, 1);
         }
         if (!listeners.length)
-            delete this._modelListeners[eventType];
+            this._modelListeners.delete(eventType);
     },
 
     /**
@@ -257,12 +257,12 @@ WebInspector.TargetManager.prototype = {
         for (var i = 0; i < copy.length; ++i)
             copy[i].targetAdded(target);
 
-        for (var eventType in this._modelListeners) {
-            var listeners = this._modelListeners[eventType];
+        for (var pair of this._modelListeners) {
+            var listeners = pair[1];
             for (var i = 0; i < listeners.length; ++i) {
                 var model = target.model(listeners[i].modelClass);
                 if (model)
-                    model.addEventListener(eventType, listeners[i].listener, listeners[i].thisObject);
+                    model.addEventListener(pair[0], listeners[i].listener, listeners[i].thisObject);
             }
         }
 
@@ -293,12 +293,12 @@ WebInspector.TargetManager.prototype = {
         for (var i = 0; i < copy.length; ++i)
             copy[i].targetRemoved(target);
 
-        for (var eventType in this._modelListeners) {
-            var listeners = this._modelListeners[eventType];
+        for (var pair of this._modelListeners) {
+            var listeners = pair[1];
             for (var i = 0; i < listeners.length; ++i) {
                 var model = target.model(listeners[i].modelClass);
                 if (model)
-                    model.removeEventListener(eventType, listeners[i].listener, listeners[i].thisObject);
+                    model.removeEventListener(pair[0], listeners[i].listener, listeners[i].thisObject);
             }
         }
     },

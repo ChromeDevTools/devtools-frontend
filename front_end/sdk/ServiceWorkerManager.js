@@ -640,7 +640,7 @@ WebInspector.TargetInfo.prototype = {
      */
     isWebContents: function()
     {
-        return this.type === "web_contents";
+        return this.type === "page";
     },
     /**
      * @return {boolean}

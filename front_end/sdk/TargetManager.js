@@ -262,7 +262,7 @@ WebInspector.TargetManager.prototype = {
             for (var i = 0; i < listeners.length; ++i) {
                 var model = target.model(listeners[i].modelClass);
                 if (model)
-                    model.addEventListener(pair[0], listeners[i].listener, listeners[i].thisObject);
+                    model.addEventListener(/** @type {symbol} */ (pair[0]), listeners[i].listener, listeners[i].thisObject);
             }
         }
 
@@ -298,7 +298,7 @@ WebInspector.TargetManager.prototype = {
             for (var i = 0; i < listeners.length; ++i) {
                 var model = target.model(listeners[i].modelClass);
                 if (model)
-                    model.removeEventListener(pair[0], listeners[i].listener, listeners[i].thisObject);
+                    model.removeEventListener(/** @type {symbol} */ (pair[0]), listeners[i].listener, listeners[i].thisObject);
             }
         }
     },

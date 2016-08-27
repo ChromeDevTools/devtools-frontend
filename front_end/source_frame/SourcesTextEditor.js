@@ -593,10 +593,11 @@ WebInspector.SourcesTextEditor.prototype = {
 /** @typedef {{lineNumber: number, event: !Event}} */
 WebInspector.SourcesTextEditor.GutterClickEventData;
 
-/** @enum {string} */
+/** @enum {symbol} */
 WebInspector.SourcesTextEditor.Events = {
-    GutterClick: "GutterClick"
+    GutterClick: Symbol("GutterClick")
 }
+
 /**
  * @interface
  */

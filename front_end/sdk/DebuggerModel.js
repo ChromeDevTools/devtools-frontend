@@ -72,18 +72,18 @@ WebInspector.DebuggerModel.PauseOnExceptionsState = {
     PauseOnUncaughtExceptions: "uncaught"
 };
 
-/** @enum {string} */
+/** @enum {symbol} */
 WebInspector.DebuggerModel.Events = {
-    DebuggerWasEnabled: "DebuggerWasEnabled",
-    DebuggerWasDisabled: "DebuggerWasDisabled",
-    BeforeDebuggerPaused: "BeforeDebuggerPaused",
-    DebuggerPaused: "DebuggerPaused",
-    DebuggerResumed: "DebuggerResumed",
-    ParsedScriptSource: "ParsedScriptSource",
-    FailedToParseScriptSource: "FailedToParseScriptSource",
-    GlobalObjectCleared: "GlobalObjectCleared",
-    CallFrameSelected: "CallFrameSelected",
-    ConsoleCommandEvaluatedInSelectedCallFrame: "ConsoleCommandEvaluatedInSelectedCallFrame"
+    DebuggerWasEnabled: Symbol("DebuggerWasEnabled"),
+    DebuggerWasDisabled: Symbol("DebuggerWasDisabled"),
+    BeforeDebuggerPaused: Symbol("BeforeDebuggerPaused"),
+    DebuggerPaused: Symbol("DebuggerPaused"),
+    DebuggerResumed: Symbol("DebuggerResumed"),
+    ParsedScriptSource: Symbol("ParsedScriptSource"),
+    FailedToParseScriptSource: Symbol("FailedToParseScriptSource"),
+    GlobalObjectCleared: Symbol("GlobalObjectCleared"),
+    CallFrameSelected: Symbol("CallFrameSelected"),
+    ConsoleCommandEvaluatedInSelectedCallFrame: Symbol("ConsoleCommandEvaluatedInSelectedCallFrame")
 }
 
 /** @enum {string} */

@@ -49,12 +49,12 @@ WebInspector.ConsoleModel = function(target)
     this._logAgent.enable();
 }
 
-/** @enum {string} */
+/** @enum {symbol} */
 WebInspector.ConsoleModel.Events = {
-    ConsoleCleared: "ConsoleCleared",
-    MessageAdded: "MessageAdded",
-    MessageUpdated: "MessageUpdated",
-    CommandEvaluated: "CommandEvaluated"
+    ConsoleCleared: Symbol("ConsoleCleared"),
+    MessageAdded: Symbol("MessageAdded"),
+    MessageUpdated: Symbol("MessageUpdated"),
+    CommandEvaluated: Symbol("CommandEvaluated")
 }
 
 WebInspector.ConsoleModel.prototype = {

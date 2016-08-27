@@ -1112,24 +1112,24 @@ WebInspector.DOMModel = function(target) {
     this._agent.enable();
 }
 
-/** @enum {string} */
+/** @enum {symbol} */
 WebInspector.DOMModel.Events = {
-    AttrModified: "AttrModified",
-    AttrRemoved: "AttrRemoved",
-    CharacterDataModified: "CharacterDataModified",
-    DOMMutated: "DOMMutated",
-    NodeInserted: "NodeInserted",
-    NodeInspected: "NodeInspected",
-    NodeHighlightedInOverlay: "NodeHighlightedInOverlay",
-    NodeRemoved: "NodeRemoved",
-    DocumentUpdated: "DocumentUpdated",
-    ChildNodeCountUpdated: "ChildNodeCountUpdated",
-    UndoRedoRequested: "UndoRedoRequested",
-    UndoRedoCompleted: "UndoRedoCompleted",
-    DistributedNodesChanged: "DistributedNodesChanged",
-    ModelSuspended: "ModelSuspended",
-    InspectModeWillBeToggled: "InspectModeWillBeToggled",
-    MarkersChanged: "MarkersChanged"
+    AttrModified: Symbol("AttrModified"),
+    AttrRemoved: Symbol("AttrRemoved"),
+    CharacterDataModified: Symbol("CharacterDataModified"),
+    DOMMutated: Symbol("DOMMutated"),
+    NodeInserted: Symbol("NodeInserted"),
+    NodeInspected: Symbol("NodeInspected"),
+    NodeHighlightedInOverlay: Symbol("NodeHighlightedInOverlay"),
+    NodeRemoved: Symbol("NodeRemoved"),
+    DocumentUpdated: Symbol("DocumentUpdated"),
+    ChildNodeCountUpdated: Symbol("ChildNodeCountUpdated"),
+    UndoRedoRequested: Symbol("UndoRedoRequested"),
+    UndoRedoCompleted: Symbol("UndoRedoCompleted"),
+    DistributedNodesChanged: Symbol("DistributedNodesChanged"),
+    ModelSuspended: Symbol("ModelSuspended"),
+    InspectModeWillBeToggled: Symbol("InspectModeWillBeToggled"),
+    MarkersChanged: Symbol("MarkersChanged")
 }
 
 /**

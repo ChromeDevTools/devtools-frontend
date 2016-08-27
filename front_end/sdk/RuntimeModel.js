@@ -53,10 +53,10 @@ WebInspector.RuntimeModel = function(target)
 
 /** @enum {symbol} */
 WebInspector.RuntimeModel.Events = {
-    ExecutionContextCreated: ("ExecutionContextCreated"),
-    ExecutionContextDestroyed: ("ExecutionContextDestroyed"),
-    ExecutionContextChanged: ("ExecutionContextChanged"),
-    ExecutionContextOrderChanged: ("ExecutionContextOrderChanged")
+    ExecutionContextCreated: Symbol("ExecutionContextCreated"),
+    ExecutionContextDestroyed: Symbol("ExecutionContextDestroyed"),
+    ExecutionContextChanged: Symbol("ExecutionContextChanged"),
+    ExecutionContextOrderChanged: Symbol("ExecutionContextOrderChanged")
 }
 
 WebInspector.RuntimeModel._privateScript = "private script";

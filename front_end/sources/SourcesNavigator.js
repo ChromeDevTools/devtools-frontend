@@ -152,6 +152,8 @@ WebInspector.SnippetsNavigatorView.prototype = {
         contextMenu.appendItem(WebInspector.UIString("Remove"), this._handleRemoveSnippet.bind(this, uiSourceCode));
         contextMenu.appendSeparator();
         contextMenu.appendItem(WebInspector.UIString("New"), this._handleCreateSnippet.bind(this));
+        contextMenu.appendSeparator();
+        contextMenu.appendItem(WebInspector.UIString("Save as..."), this._handleSaveAs.bind(this, uiSourceCode));
         contextMenu.show();
     },
 
@@ -164,6 +166,16 @@ WebInspector.SnippetsNavigatorView.prototype = {
         if (uiSourceCode.project().type() !== WebInspector.projectTypes.Snippets || !executionContext)
             return;
         WebInspector.scriptSnippetModel.evaluateScriptSnippet(executionContext, uiSourceCode);
+    },
+
+    /**
+     * @param {!WebInspector.UISourceCode} uiSourceCode
+     */
+    _handleSaveAs: function(uiSourceCode)
+    {
+        if (uiSourceCode.project().type() !== WebInspector.projectTypes.Snippets)
+            return;
+        uiSourceCode.saveAs();
     },
 
     /**

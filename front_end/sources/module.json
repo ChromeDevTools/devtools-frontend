@@ -299,6 +299,14 @@
         {
             "type": "setting",
             "category": "Sources",
+            "title": "Automatically reveal files in navigator",
+            "settingName": "autoRevealInNavigator",
+            "settingType": "boolean",
+            "defaultValue": false
+        },
+        {
+            "type": "setting",
+            "category": "Sources",
             "title": "Enable JavaScript source maps",
             "settingName": "jsSourceMapsEnabled",
             "settingType": "boolean",

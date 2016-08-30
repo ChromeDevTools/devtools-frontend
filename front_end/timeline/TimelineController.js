@@ -109,7 +109,7 @@ WebInspector.TimelineController.prototype = {
      */
     _startProfilingOnTarget: function(target)
     {
-        return target.profilerAgent().start();
+        return target.hasJSCapability() ? target.profilerAgent().start() : Promise.resolve();
     },
 
     /**
@@ -129,7 +129,7 @@ WebInspector.TimelineController.prototype = {
      */
     _stopProfilingOnTarget: function(target)
     {
-        return target.profilerAgent().stop(this._addCpuProfile.bind(this, target.id()));
+        return target.hasJSCapability() ? target.profilerAgent().stop(this._addCpuProfile.bind(this, target.id())) : Promise.resolve();
     },
 
     /**

@@ -26,12 +26,13 @@ WebInspector.NetworkMapping = function(targetManager, workspace, fileSystemWorks
     if (fileSystemManager.fileSystemsLoaded())
         this._fileSystemsLoaded();
 
-    fileSystemManager.addEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemAdded, this._fileSystemAdded, this);
-    fileSystemManager.addEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemRemoved, this._fileSystemRemoved, this);
-    fileSystemManager.addEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemsLoaded, this._fileSystemsLoaded, this);
-
-    this._fileSystemMapping.addEventListener(WebInspector.FileSystemMapping.Events.FileMappingAdded, this._fileSystemMappingChanged, this);
-    this._fileSystemMapping.addEventListener(WebInspector.FileSystemMapping.Events.FileMappingRemoved, this._fileSystemMappingChanged, this);
+    this._eventListeners = [
+        fileSystemManager.addEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemAdded, this._fileSystemAdded, this),
+        fileSystemManager.addEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemRemoved, this._fileSystemRemoved, this),
+        fileSystemManager.addEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemsLoaded, this._fileSystemsLoaded, this),
+        this._fileSystemMapping.addEventListener(WebInspector.FileSystemMapping.Events.FileMappingAdded, this._fileSystemMappingChanged, this),
+        this._fileSystemMapping.addEventListener(WebInspector.FileSystemMapping.Events.FileMappingRemoved, this._fileSystemMappingChanged, this)
+    ];
 }
 
 WebInspector.NetworkMapping.prototype = {
@@ -245,10 +246,7 @@ WebInspector.NetworkMapping.prototype = {
 
     dispose: function()
     {
-        this._fileSystemWorkspaceBinding.fileSystemManager().removeEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemAdded, this._fileSystemAdded, this);
-        this._fileSystemWorkspaceBinding.fileSystemManager().removeEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemRemoved, this._fileSystemRemoved, this);
-        this._fileSystemMapping.removeEventListener(WebInspector.FileSystemMapping.Events.FileMappingAdded, this._fileSystemMappingChanged, this);
-        this._fileSystemMapping.removeEventListener(WebInspector.FileSystemMapping.Events.FileMappingRemoved, this._fileSystemMappingChanged, this);
+        WebInspector.EventTarget.removeEventListeners(this._eventListeners);
     }
 }
 

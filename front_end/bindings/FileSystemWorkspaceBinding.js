@@ -37,9 +37,11 @@ WebInspector.FileSystemWorkspaceBinding = function(isolatedFileSystemManager, wo
 {
     this._isolatedFileSystemManager = isolatedFileSystemManager;
     this._workspace = workspace;
-    this._isolatedFileSystemManager.addEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemAdded, this._fileSystemAdded, this);
-    this._isolatedFileSystemManager.addEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemRemoved, this._fileSystemRemoved, this);
-    this._isolatedFileSystemManager.addEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemFilesChanged, this._fileSystemFilesChanged, this);
+    this._eventListeners = [
+        this._isolatedFileSystemManager.addEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemAdded, this._fileSystemAdded, this),
+        this._isolatedFileSystemManager.addEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemRemoved, this._fileSystemRemoved, this),
+        this._isolatedFileSystemManager.addEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemFilesChanged, this._fileSystemFilesChanged, this)
+    ];
     /** @type {!Map.<string, !WebInspector.FileSystemWorkspaceBinding.FileSystem>} */
     this._boundFileSystems = new Map();
 }
@@ -153,9 +155,7 @@ WebInspector.FileSystemWorkspaceBinding.prototype = {
 
     dispose: function()
     {
-        this._isolatedFileSystemManager.removeEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemAdded, this._fileSystemAdded, this);
-        this._isolatedFileSystemManager.removeEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemRemoved, this._fileSystemRemoved, this);
-        this._isolatedFileSystemManager.dispose();
+        WebInspector.EventTarget.removeEventListeners(this._eventListeners);
         for (var fileSystem of this._boundFileSystems.values()) {
             fileSystem.dispose();
             this._boundFileSystems.remove(fileSystem._fileSystem.path());

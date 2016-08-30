@@ -356,14 +356,6 @@ WebInspector.IsolatedFileSystemManager.prototype = {
         this._callbacks.delete(requestId);
     },
 
-    dispose: function()
-    {
-        InspectorFrontendHost.events.removeEventListener(InspectorFrontendHostAPI.Events.IndexingTotalWorkCalculated, this._onIndexingTotalWorkCalculated, this);
-        InspectorFrontendHost.events.removeEventListener(InspectorFrontendHostAPI.Events.IndexingWorked, this._onIndexingWorked, this);
-        InspectorFrontendHost.events.removeEventListener(InspectorFrontendHostAPI.Events.IndexingDone, this._onIndexingDone, this);
-        InspectorFrontendHost.events.removeEventListener(InspectorFrontendHostAPI.Events.SearchCompleted, this._onSearchCompleted, this);
-    },
-
     __proto__: WebInspector.Object.prototype
 }
 

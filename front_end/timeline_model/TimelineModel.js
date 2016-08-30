@@ -495,24 +495,32 @@ WebInspector.TimelineModel.prototype = {
         this._maximumRecordTime = tracingModel.maximumRecordTime();
 
         var metadataEvents = this._processMetadataEvents(tracingModel, !!produceTraceStartedInPage);
-        var startTime = 0;
-        for (var i = 0, length = metadataEvents.page.length; i < length; i++) {
-            var metaEvent = metadataEvents.page[i];
-            var process = metaEvent.thread.process();
-            var endTime = i + 1 < length ? metadataEvents.page[i + 1].startTime : Infinity;
-            this._currentPage = metaEvent.args["data"] && metaEvent.args["data"]["page"];
-            for (var thread of process.sortedThreads()) {
-                if (thread.name() === WebInspector.TimelineModel.WorkerThreadName) {
-                    var workerMetaEvent = metadataEvents.workers.find(e => e.args["data"]["workerThreadId"] === thread.id());
-                    if (!workerMetaEvent)
-                        continue;
-                    var workerId = workerMetaEvent.args["data"]["workerId"];
-                    if (workerId)
-                        this._workerIdByThread.set(thread, workerId);
-                }
-                this._processThreadEvents(startTime, endTime, thread, thread === metaEvent.thread);
+        if (Runtime.experiments.isEnabled("timelineShowAllProcesses")) {
+            var lastPageMetaEvent = metadataEvents.page.peekLast();
+            for (var process of tracingModel.sortedProcesses()) {
+                for (var thread of process.sortedThreads())
+                    this._processThreadEvents(0, Infinity, thread, thread === lastPageMetaEvent.thread);
             }
-            startTime = endTime;
+        } else {
+            var startTime = 0;
+            for (var i = 0, length = metadataEvents.page.length; i < length; i++) {
+                var metaEvent = metadataEvents.page[i];
+                var process = metaEvent.thread.process();
+                var endTime = i + 1 < length ? metadataEvents.page[i + 1].startTime : Infinity;
+                this._currentPage = metaEvent.args["data"] && metaEvent.args["data"]["page"];
+                for (var thread of process.sortedThreads()) {
+                    if (thread.name() === WebInspector.TimelineModel.WorkerThreadName) {
+                        var workerMetaEvent = metadataEvents.workers.find(e => e.args["data"]["workerThreadId"] === thread.id());
+                        if (!workerMetaEvent)
+                            continue;
+                        var workerId = workerMetaEvent.args["data"]["workerId"];
+                        if (workerId)
+                            this._workerIdByThread.set(thread, workerId);
+                    }
+                    this._processThreadEvents(startTime, endTime, thread, thread === metaEvent.thread);
+                }
+                startTime = endTime;
+            }
         }
         this._inspectedTargetEvents.sort(WebInspector.TracingModel.Event.compareStartTime);
 

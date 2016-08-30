@@ -62,6 +62,8 @@ WebInspector.CSSShadowEditor.prototype = {
         var textInput = field.createChild("input", "shadow-editor-text-input");
         textInput.type = "text";
         textInput.id = propertyName;
+        textInput.addEventListener("keydown", this._handleValueModification.bind(this), false);
+        textInput.addEventListener("mousewheel", this._handleValueModification.bind(this), false);
         textInput.addEventListener("input", this._onTextInput.bind(this), false);
         textInput.addEventListener("blur", this._onTextBlur.bind(this), false);
         var halfRange = WebInspector.CSSShadowEditor.maxRange / 2;
@@ -120,6 +122,39 @@ WebInspector.CSSShadowEditor.prototype = {
         this._model.setInset(insetClicked);
         this._updateButtons();
         this.dispatchEventToListeners(WebInspector.CSSShadowEditor.Events.ShadowChanged, this._model);
+    },
+
+    /**
+     * @param {!Event} event
+     */
+    _handleValueModification: function(event)
+    {
+        var modifiedValue = WebInspector.createReplacementString(event.currentTarget.value, event, customNumberHandler);
+        if (!modifiedValue)
+            return;
+        var length = WebInspector.CSSLength.parse(modifiedValue);
+        if (!length)
+            return;
+        if (event.currentTarget === this._blurInput && length.amount < 0)
+            length.amount = 0;
+        event.currentTarget.value = length.asCSSText();
+        event.currentTarget.selectionStart = 0;
+        event.currentTarget.selectionEnd = event.currentTarget.value.length;
+        this._onTextInput(event);
+        event.consume(true);
+
+        /**
+         * @param {string} prefix
+         * @param {number} number
+         * @param {string} suffix
+         * @return {string}
+         */
+        function customNumberHandler(prefix, number, suffix)
+        {
+            if (!suffix.length)
+                suffix = WebInspector.CSSShadowEditor.defaultUnit;
+            return prefix + number + suffix;
+        }
     },
 
     /**

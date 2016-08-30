@@ -387,24 +387,25 @@ WebInspector._valueModificationDirection = function(event)
 /**
  * @param {string} hexString
  * @param {!Event} event
+ * @return {?string}
  */
 WebInspector._modifiedHexValue = function(hexString, event)
 {
     var direction = WebInspector._valueModificationDirection(event);
     if (!direction)
-        return hexString;
+        return null;
 
     var mouseEvent = /** @type {!MouseEvent} */(event);
     var number = parseInt(hexString, 16);
     if (isNaN(number) || !isFinite(number))
-        return hexString;
+        return null;
 
     var hexStrLen = hexString.length;
     var channelLen = hexStrLen / 3;
 
     // Colors are either rgb or rrggbb.
     if (channelLen !== 1 && channelLen !== 2)
-        return hexString;
+        return null;
 
     // Precision modifier keys work with both mousewheel and up/down keys.
     // When ctrl is pressed, increase R by 1.
@@ -438,12 +439,13 @@ WebInspector._modifiedHexValue = function(hexString, event)
 /**
  * @param {number} number
  * @param {!Event} event
+ * @return {?number}
  */
 WebInspector._modifiedFloatNumber = function(number, event)
 {
     var direction = WebInspector._valueModificationDirection(event);
     if (!direction)
-        return number;
+        return null;
 
     var mouseEvent = /** @type {!MouseEvent} */(event);
 
@@ -480,32 +482,28 @@ WebInspector._modifiedFloatNumber = function(number, event)
  */
 WebInspector.createReplacementString = function(wordString, event, customNumberHandler)
 {
-    var replacementString;
-    var prefix, suffix, number;
-
-    var matches;
-    matches = /(.*#)([\da-fA-F]+)(.*)/.exec(wordString);
+    var prefix;
+    var suffix;
+    var number;
+    var replacementString = null;
+    var matches = /(.*#)([\da-fA-F]+)(.*)/.exec(wordString);
     if (matches && matches.length) {
         prefix = matches[1];
         suffix = matches[3];
         number = WebInspector._modifiedHexValue(matches[2], event);
-
-        replacementString = customNumberHandler ? customNumberHandler(prefix, number, suffix) : prefix + number + suffix;
+        if (number !== null)
+            replacementString = prefix + number + suffix;
     } else {
         matches = /(.*?)(-?(?:\d+(?:\.\d+)?|\.\d+))(.*)/.exec(wordString);
         if (matches && matches.length) {
             prefix = matches[1];
             suffix = matches[3];
             number = WebInspector._modifiedFloatNumber(parseFloat(matches[2]), event);
-
-            // Need to check for null explicitly.
-            if (number === null)
-                return null;
-
-            replacementString = customNumberHandler ? customNumberHandler(prefix, number, suffix) : prefix + number + suffix;
+            if (number !== null)
+                replacementString = customNumberHandler ? customNumberHandler(prefix, number, suffix) : prefix + number + suffix;
         }
     }
-    return replacementString || null;
+    return replacementString;
 }
 
 /**

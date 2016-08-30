@@ -823,15 +823,11 @@ WebInspector.Spectrum.prototype = {
         }
 
         var inputElement = /** @type {!Element} */(event.currentTarget);
-        var arrowKeyOrMouseWheelEvent = (event.key === "ArrowUp" || event.key === "ArrowDown" || event.type === "mousewheel");
-        var pageKeyPressed = (event.key === "PageUp" || event.key === "PageDown");
-        if (arrowKeyOrMouseWheelEvent || pageKeyPressed) {
-            var newValue = WebInspector.createReplacementString(inputElement.value, event);
-            if (newValue) {
-                inputElement.value = newValue;
-                inputElement.selectionStart = 0;
-                inputElement.selectionEnd = newValue.length;
-            }
+        var newValue = WebInspector.createReplacementString(inputElement.value, event);
+        if (newValue) {
+            inputElement.value = newValue;
+            inputElement.selectionStart = 0;
+            inputElement.selectionEnd = newValue.length;
             event.consume(true);
         }
 
@@ -841,7 +837,7 @@ WebInspector.Spectrum.prototype = {
             colorString = this._hexValue.value;
         } else {
             var format = this._colorFormat === cf.RGB ? "rgba" : "hsla";
-            var values = this._textValues.map(elementValue).join(",");
+            var values = this._textValues.map(elementValue).join(", ");
             colorString = String.sprintf("%s(%s)", format, values);
         }
 

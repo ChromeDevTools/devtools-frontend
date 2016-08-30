@@ -584,6 +584,9 @@ Number.preciseMillisToString = function(ms, precision)
 }
 
 /** @type {!WebInspector.UIStringFormat} */
+WebInspector._microsFormat = new WebInspector.UIStringFormat("%.0f\u2009\u03bcs");
+
+/** @type {!WebInspector.UIStringFormat} */
 WebInspector._subMillisFormat = new WebInspector.UIStringFormat("%.2f\u2009ms");
 
 /** @type {!WebInspector.UIStringFormat} */
@@ -614,9 +617,11 @@ Number.millisToString = function(ms, higherResolution)
     if (ms === 0)
         return "0";
 
+    if (higherResolution && ms < 0.1)
+        return WebInspector._microsFormat.format(ms * 1000);
     if (higherResolution && ms < 1000)
         return WebInspector._subMillisFormat.format(ms);
-    else if (ms < 1000)
+    if (ms < 1000)
         return WebInspector._millisFormat.format(ms);
 
     var seconds = ms / 1000;

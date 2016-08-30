@@ -180,7 +180,6 @@ WebInspector.ConsoleViewMessage.prototype = {
                 default:
                     if (consoleMessage.parameters && consoleMessage.parameters.length === 1 && consoleMessage.parameters[0].type === "string")
                         this._messageElement = this._tryFormatAsError(/** @type {string} */(consoleMessage.parameters[0].value));
-
                     var args = consoleMessage.parameters || [consoleMessage.messageText];
                     this._messageElement = this._messageElement || this._format(args);
                 }
@@ -612,22 +611,8 @@ WebInspector.ConsoleViewMessage.prototype = {
     _formatParameterAsError: function(output, elem)
     {
         var span = elem.createChild("span", "object-value-error source-code");
-        var text = output.description || "";
-        var lines = text.split("\n", 2);
-        span.appendChild(WebInspector.linkifyStringAsFragment(lines[0]));
-        if (lines.length > 1) {
-            var detailedLink = elem.createChild("a");
-            detailedLink.textContent = "(\u2026)";
-            function showDetailed(event)
-            {
-                span.removeChildren();
-                detailedLink.remove();
-                span.appendChild(WebInspector.linkifyStringAsFragment(text));
-                event.consume(true);
-            }
-            detailedLink._showDetailedForTest = showDetailed.bind(null, new MouseEvent("click"));
-            detailedLink.addEventListener("click", showDetailed, false);
-        }
+        var errorSpan = this._tryFormatAsError(output.description || "");
+        span.appendChild(errorSpan ? errorSpan : WebInspector.linkifyStringAsFragment(output.description || ""));
     },
 
     /**

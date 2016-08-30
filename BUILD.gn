@@ -143,7 +143,6 @@ action("generate_devtools_grd") {
       resources_out_dir + "formatter_worker.js",
       resources_out_dir + "heap_snapshot_worker.js",
       resources_out_dir + "temp_storage_shared_worker.js",
-      resources_out_dir + "accessibility/accessibility_module.js",
       resources_out_dir + "audits/audits_module.js",
       resources_out_dir + "animation/animation_module.js",
       resources_out_dir + "components_lazy/components_lazy_module.js",

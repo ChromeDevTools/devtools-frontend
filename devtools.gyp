@@ -105,7 +105,6 @@
                             '<(PRODUCT_DIR)/resources/inspector/formatter_worker.js',
                             '<(PRODUCT_DIR)/resources/inspector/heap_snapshot_worker.js',
                             '<(PRODUCT_DIR)/resources/inspector/temp_storage_shared_worker.js',
-                            '<(PRODUCT_DIR)/resources/inspector/accessibility/accessibility_module.js',
                             '<(PRODUCT_DIR)/resources/inspector/animation/animation_module.js',
                             '<(PRODUCT_DIR)/resources/inspector/audits/audits_module.js',
                             '<(PRODUCT_DIR)/resources/inspector/components_lazy/components_lazy_module.js',

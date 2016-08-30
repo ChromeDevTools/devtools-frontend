@@ -32,7 +32,7 @@
         { "name": "snippets" },
         { "name": "diff" },
         { "name": "sass", "condition": "!v8only" },
-        { "name": "accessibility", "condition": "!v8only" },
+        { "name": "accessibility", "condition": "!v8only", "type": "remoteInRelease" },
         { "name": "animation", "condition": "!v8only" },
         { "name": "es_tree" },
         { "name": "screencast", "condition": "remoteFrontend", "type": "remoteInRelease" },

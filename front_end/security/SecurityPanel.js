@@ -63,13 +63,13 @@ WebInspector.SecurityPanel.prototype = {
     /**
      * @param {!SecurityAgent.SecurityState} newSecurityState
      * @param {!Array<!SecurityAgent.SecurityStateExplanation>} explanations
-     * @param {?SecurityAgent.MixedContentStatus} mixedContentStatus
+     * @param {?SecurityAgent.InsecureContentStatus} insecureContentStatus
      * @param {boolean} schemeIsCryptographic
      */
-    _updateSecurityState: function(newSecurityState, explanations, mixedContentStatus, schemeIsCryptographic)
+    _updateSecurityState: function(newSecurityState, explanations, insecureContentStatus, schemeIsCryptographic)
     {
         this._sidebarMainViewElement.setSecurityState(newSecurityState);
-        this._mainView.updateSecurityState(newSecurityState, explanations, mixedContentStatus, schemeIsCryptographic);
+        this._mainView.updateSecurityState(newSecurityState, explanations, insecureContentStatus, schemeIsCryptographic);
     },
 
     /**
@@ -80,9 +80,9 @@ WebInspector.SecurityPanel.prototype = {
         var data = /** @type {!WebInspector.PageSecurityState} */ (event.data);
         var securityState = /** @type {!SecurityAgent.SecurityState} */ (data.securityState);
         var explanations = /** @type {!Array<!SecurityAgent.SecurityStateExplanation>} */ (data.explanations);
-        var mixedContentStatus = /** @type {?SecurityAgent.MixedContentStatus} */ (data.mixedContentStatus);
+        var insecureContentStatus = /** @type {?SecurityAgent.InsecureContentStatus} */ (data.insecureContentStatus);
         var schemeIsCryptographic = /** @type {boolean} */ (data.schemeIsCryptographic);
-        this._updateSecurityState(securityState, explanations, mixedContentStatus, schemeIsCryptographic);
+        this._updateSecurityState(securityState, explanations, insecureContentStatus, schemeIsCryptographic);
     },
 
     selectAndSwitchToMainView: function()
@@ -608,10 +608,10 @@ WebInspector.SecurityMainView.prototype = {
     /**
      * @param {!SecurityAgent.SecurityState} newSecurityState
      * @param {!Array<!SecurityAgent.SecurityStateExplanation>} explanations
-     * @param {?SecurityAgent.MixedContentStatus} mixedContentStatus
+     * @param {?SecurityAgent.InsecureContentStatus} insecureContentStatus
      * @param {boolean} schemeIsCryptographic
      */
-    updateSecurityState: function(newSecurityState, explanations, mixedContentStatus, schemeIsCryptographic)
+    updateSecurityState: function(newSecurityState, explanations, insecureContentStatus, schemeIsCryptographic)
     {
         // Remove old state.
         // It's safe to call this even when this._securityState is undefined.
@@ -629,11 +629,11 @@ WebInspector.SecurityMainView.prototype = {
         this._summaryText.textContent = summaryExplanationStrings[this._securityState];
 
         this._explanations = explanations,
-        this._mixedContentStatus = mixedContentStatus;
+        this._insecureContentStatus = insecureContentStatus;
         this._schemeIsCryptographic = schemeIsCryptographic;
 
-        this._panel.setRanInsecureContentStyle(mixedContentStatus.ranInsecureContentStyle);
-        this._panel.setDisplayedInsecureContentStyle(mixedContentStatus.displayedInsecureContentStyle);
+        this._panel.setRanInsecureContentStyle(insecureContentStatus.ranInsecureContentStyle);
+        this._panel.setDisplayedInsecureContentStyle(insecureContentStatus.displayedInsecureContentStyle);
 
         this.refreshExplanations();
     },
@@ -651,6 +651,16 @@ WebInspector.SecurityMainView.prototype = {
         }
 
         this._addMixedContentExplanations();
+        this._addContentWithCertErrorsExplanations();
+
+        // If all resources were served securely, add a Secure explanation.
+        if (this._schemeIsCryptographic && this._insecureContentStatus && (!this._insecureContentStatus.displayedMixedContent && !this._insecureContentStatus.ranMixedContent && !this._insecureContentStatus.displayedContentWithCertErrors && !this._insecureContentStatus.ranContentWithCertErrors)) {
+            this._addExplanation(this._securityExplanationsMain, /** @type {!SecurityAgent.SecurityStateExplanation} */ ({
+                "securityState": SecurityAgent.SecurityState.Secure,
+                "summary": WebInspector.UIString("Secure Resources"),
+                "description": WebInspector.UIString("All resources on this page are served securely.")
+            }));
+        }
     },
 
     _addMixedContentExplanations: function()
@@ -658,19 +668,11 @@ WebInspector.SecurityMainView.prototype = {
         if (!this._schemeIsCryptographic)
             return;
 
-        if (this._mixedContentStatus && (this._mixedContentStatus.ranInsecureContent || this._mixedContentStatus.displayedInsecureContent)) {
-            if (this._mixedContentStatus.ranInsecureContent)
-                this._addMixedContentExplanation(this._securityExplanationsMain, this._mixedContentStatus.ranInsecureContentStyle, WebInspector.UIString("Active Mixed Content"), WebInspector.UIString("You have recently allowed insecure content (such as scripts or iframes) to run on this site."), WebInspector.NetworkLogView.MixedContentFilterValues.BlockOverridden, showBlockOverriddenMixedContentInNetworkPanel);
-            if (this._mixedContentStatus.displayedInsecureContent)
-                this._addMixedContentExplanation(this._securityExplanationsMain, this._mixedContentStatus.displayedInsecureContentStyle, WebInspector.UIString("Mixed Content"), WebInspector.UIString("The site includes HTTP resources."), WebInspector.NetworkLogView.MixedContentFilterValues.Displayed, showDisplayedMixedContentInNetworkPanel);
-        }
-
-        if (this._mixedContentStatus && (!this._mixedContentStatus.displayedInsecureContent && !this._mixedContentStatus.ranInsecureContent)) {
-            this._addExplanation(this._securityExplanationsMain, /** @type {!SecurityAgent.SecurityStateExplanation} */ ({
-                "securityState": SecurityAgent.SecurityState.Secure,
-                "summary": WebInspector.UIString("Secure Resources"),
-                "description": WebInspector.UIString("All resources on this page are served securely.")
-            }));
+        if (this._insecureContentStatus && (this._insecureContentStatus.ranMixedContent || this._insecureContentStatus.displayedMixedContent)) {
+            if (this._insecureContentStatus.ranMixedContent)
+                this._addMixedContentExplanation(this._securityExplanationsMain, this._insecureContentStatus.ranInsecureContentStyle, WebInspector.UIString("Active Mixed Content"), WebInspector.UIString("You have recently allowed insecure content (such as scripts or iframes) to run on this site."), WebInspector.NetworkLogView.MixedContentFilterValues.BlockOverridden, showBlockOverriddenMixedContentInNetworkPanel);
+            if (this._insecureContentStatus.displayedMixedContent)
+                this._addMixedContentExplanation(this._securityExplanationsMain, this._insecureContentStatus.displayedInsecureContentStyle, WebInspector.UIString("Mixed Content"), WebInspector.UIString("The site includes HTTP resources."), WebInspector.NetworkLogView.MixedContentFilterValues.Displayed, showDisplayedMixedContentInNetworkPanel);
         }
 
         if (this._panel.filterRequestCount(WebInspector.NetworkLogView.MixedContentFilterValues.Blocked) > 0)
@@ -746,6 +748,32 @@ WebInspector.SecurityMainView.prototype = {
         requestsAnchor.href = "";
         requestsAnchor.addEventListener("click", networkFilterFn);
     },
+
+    _addContentWithCertErrorsExplanations: function()
+    {
+        if (!this._schemeIsCryptographic)
+            return;
+
+        if (!this._insecureContentStatus)
+            return;
+
+        if (this._insecureContentStatus.ranContentWithCertErrors) {
+            this._addExplanation(this._securityExplanationsMain, /** @type {!SecurityAgent.SecurityStateExplanation} */ ({
+                "securityState": this._insecureContentStatus.ranInsecureContentStyle,
+                "summary": WebInspector.UIString("Active content with certificate errors"),
+                "description": WebInspector.UIString("You have recently allowed content loaded with certificate errors (such as scripts or iframes) to run on this site.")
+            }));
+        }
+
+        if (this._insecureContentStatus.displayedContentWithCertErrors) {
+            this._addExplanation(this._securityExplanationsMain, /** @type {!SecurityAgent.SecurityStateExplanation} */ ({
+                "securityState": this._insecureContentStatus.displayedInsecureContentStyle,
+                "summary": WebInspector.UIString("Content with certificate errors"),
+                "description": WebInspector.UIString("This site includes resources that were loaded with certificate errors.")
+            }));
+        }
+      },
+
 
     __proto__: WebInspector.VBox.prototype
 }

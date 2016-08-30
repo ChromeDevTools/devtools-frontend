@@ -73,13 +73,13 @@ WebInspector.SecurityModel.SecurityStateComparator = function(a, b)
  * @constructor
  * @param {!SecurityAgent.SecurityState} securityState
  * @param {!Array<!SecurityAgent.SecurityStateExplanation>} explanations
- * @param {?SecurityAgent.MixedContentStatus} mixedContentStatus
+ * @param {?SecurityAgent.InsecureContentStatus} insecureContentStatus
  * @param {boolean} schemeIsCryptographic
  */
-WebInspector.PageSecurityState = function(securityState, explanations, mixedContentStatus, schemeIsCryptographic) {
+WebInspector.PageSecurityState = function(securityState, explanations, insecureContentStatus, schemeIsCryptographic) {
     this.securityState = securityState;
     this.explanations = explanations;
-    this.mixedContentStatus = mixedContentStatus;
+    this.insecureContentStatus = insecureContentStatus;
     this.schemeIsCryptographic = schemeIsCryptographic;
 }
 
@@ -97,12 +97,12 @@ WebInspector.SecurityDispatcher.prototype = {
      * @override
      * @param {!SecurityAgent.SecurityState} securityState
      * @param {!Array<!SecurityAgent.SecurityStateExplanation>=} explanations
-     * @param {!SecurityAgent.MixedContentStatus=} mixedContentStatus
+     * @param {!SecurityAgent.InsecureContentStatus=} insecureContentStatus
      * @param {boolean=} schemeIsCryptographic
      */
-    securityStateChanged: function(securityState, explanations, mixedContentStatus, schemeIsCryptographic)
+    securityStateChanged: function(securityState, explanations, insecureContentStatus, schemeIsCryptographic)
     {
-        var pageSecurityState = new WebInspector.PageSecurityState(securityState, explanations || [], mixedContentStatus || null, schemeIsCryptographic || false);
+        var pageSecurityState = new WebInspector.PageSecurityState(securityState, explanations || [], insecureContentStatus || null, schemeIsCryptographic || false);
         this._model.dispatchEventToListeners(WebInspector.SecurityModel.Events.SecurityStateChanged, pageSecurityState);
     }
 }

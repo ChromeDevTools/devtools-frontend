@@ -17,7 +17,12 @@
         "AccessibilitySidebarView.js",
         "AccessibilityNodeView.js",
         "AccessibilityStrings.js",
-        "ARIAAttributesView.js"
+        "ARIAAttributesView.js",
+        "ARIAMetadata.js",
+        "ARIAConfig.js"
+    ],
+    "skip_compilation": [
+        "ARIAConfig.js"
     ],
     "resources": [
         "accessibilityNode.css"

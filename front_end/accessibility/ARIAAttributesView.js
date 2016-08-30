@@ -134,7 +134,7 @@ WebInspector.ARIAAttributesTreeElement.prototype = {
             this._editingCommitted(text, previousContent);
         }
 
-        this._prompt = new WebInspector.ARIAAttributesPane.ARIAAttributePrompt(this);
+        this._prompt = new WebInspector.ARIAAttributesPane.ARIAAttributePrompt(WebInspector.ariaMetadata().valuesForProperty(this._nameElement.textContent), this);
         this._prompt.setAutocompletionTimeout(0);
         var proxyElement = this._prompt.attachAndStartEditing(valueElement, blurListener.bind(this, previousContent));
 
@@ -209,14 +209,17 @@ WebInspector.ARIAAttributesTreeElement.createARIAValueElement = function(value)
 
 /**
  * @constructor
- * TODO: completions; see StylesSidebarPane.js
  * @extends {WebInspector.TextPrompt}
+ * @param {!Array<string>} ariaCompletions
  * @param {!WebInspector.ARIAAttributesTreeElement} treeElement
  */
-WebInspector.ARIAAttributesPane.ARIAAttributePrompt = function(treeElement)
+WebInspector.ARIAAttributesPane.ARIAAttributePrompt = function(ariaCompletions, treeElement)
 {
     WebInspector.TextPrompt.call(this, this._buildPropertyCompletions.bind(this));
 
+    this.setSuggestBoxEnabled(true);
+
+    this._ariaCompletions = ariaCompletions;
     this._treeElement = treeElement;
 };
 
@@ -229,8 +232,15 @@ WebInspector.ARIAAttributesPane.ARIAAttributePrompt.prototype = {
      */
     _buildPropertyCompletions: function(proxyElement, wordRange, force, completionsReadyCallback)
     {
-        // TODO(aboxhall): replace placeholder implementation with real implementation
-        completionsReadyCallback([], 0);
+        var prefix = wordRange.toString().toLowerCase();
+        if (!prefix && !force && (this._isEditingName || proxyElement.textContent.length)) {
+            completionsReadyCallback([]);
+            return;
+        }
+
+        var results = this._ariaCompletions.filter((value) => value.startsWith(prefix));
+
+        completionsReadyCallback(results, 0);
     },
 
     __proto__: WebInspector.TextPrompt.prototype

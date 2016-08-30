@@ -457,9 +457,13 @@ WebInspector.TextSourceMap.prototype = {
             }
             sourceLineNumber += this._decodeVLQ(stringCharIterator);
             sourceColumnNumber += this._decodeVLQ(stringCharIterator);
-            if (!this._isSeparator(stringCharIterator.peek()))
-                nameIndex += this._decodeVLQ(stringCharIterator);
 
+            if (!stringCharIterator.hasNext() || this._isSeparator(stringCharIterator.peek())) {
+                this._mappings.push(new WebInspector.SourceMapEntry(lineNumber, columnNumber, sourceURL, sourceLineNumber, sourceColumnNumber));
+                continue;
+            }
+
+            nameIndex += this._decodeVLQ(stringCharIterator);
             this._mappings.push(new WebInspector.SourceMapEntry(lineNumber, columnNumber, sourceURL, sourceLineNumber, sourceColumnNumber, names[nameIndex]));
         }
 

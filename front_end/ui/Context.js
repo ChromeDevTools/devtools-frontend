@@ -42,10 +42,10 @@ WebInspector.Context.prototype = {
      */
     _dispatchFlavorChange: function(flavorType, flavorValue)
     {
-        self.runtime.extensions(WebInspector.ContextFlavorListener, flavorValue).map(extension => {
-            extension.instance().then(instance => /** @type {!WebInspector.ContextFlavorListener} */ (instance).flavorChanged(flavorValue));
-        });
-
+        for (var extension of self.runtime.extensions(WebInspector.ContextFlavorListener)) {
+            if (extension.hasContextType(flavorType))
+                extension.instance().then(instance => /** @type {!WebInspector.ContextFlavorListener} */ (instance).flavorChanged(flavorValue));
+        }
         var dispatcher = this._eventDispatchers.get(flavorType);
         if (!dispatcher)
             return;

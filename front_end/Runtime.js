@@ -409,6 +409,8 @@ Runtime.prototype = {
     useTestBase: function()
     {
         Runtime._remoteBase = "http://localhost:8000/inspector-sources/";
+        if (Runtime.queryParam("debugFrontend"))
+            Runtime._remoteBase += "debug/";
     },
 
     /**

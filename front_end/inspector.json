@@ -26,17 +26,17 @@
         { "name": "console" },
         { "name": "source_frame" },
         { "name": "text_editor" },
-        { "name": "cm_modes", "type": "remoteInRelease" },
+        { "name": "cm_modes", "type": "remote" },
         { "name": "settings" },
         { "name": "layers", "condition": "!v8only" },
         { "name": "snippets" },
         { "name": "diff" },
         { "name": "sass", "condition": "!v8only" },
-        { "name": "accessibility", "condition": "!v8only", "type": "remoteInRelease" },
+        { "name": "accessibility", "condition": "!v8only", "type": "remote" },
         { "name": "animation", "condition": "!v8only" },
         { "name": "es_tree" },
-        { "name": "screencast", "condition": "remoteFrontend", "type": "remoteInRelease" },
-        { "name": "emulated_devices", "condition": "!v8only" , "type": "remoteInRelease" }
+        { "name": "screencast", "condition": "remoteFrontend", "type": "remote" },
+        { "name": "emulated_devices", "condition": "!v8only" , "type": "remote" }
     ],
 
     "has_html": true

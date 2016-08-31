@@ -100,9 +100,6 @@ class ReleaseBuilder(AppBuilder):
         AppBuilder.__init__(self, application_name, descriptors, application_dir, output_dir)
 
     def build_app(self):
-        for module in self.descriptors.application.values():
-            if 'type' in module and module['type'] == 'remoteInRelease':
-                module['type'] = 'remote'
         if self.descriptors.has_html:
             self._build_html()
         self._build_app_script()

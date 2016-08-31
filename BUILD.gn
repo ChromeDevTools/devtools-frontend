@@ -860,13 +860,59 @@ generated_scripts = [
   "$resources_out_dir/SupportedCSSProperties.js",
 ]
 
+generated_entry_files = [
+  "$resources_out_dir/inspector.html",
+  "$resources_out_dir/inspector.js",
+  "$resources_out_dir/toolbox.html",
+  "$resources_out_dir/toolbox.js",
+]
+
+generated_workers = [
+  "$resources_out_dir/formatter_worker.js",
+  "$resources_out_dir/heap_snapshot_worker.js",
+  "$resources_out_dir/temp_storage_shared_worker.js",
+]
+
+generated_bundled_modules = [
+  "$resources_out_dir/animation/animation_module.js",
+  "$resources_out_dir/audits/audits_module.js",
+  "$resources_out_dir/components_lazy/components_lazy_module.js",
+  "$resources_out_dir/console/console_module.js",
+  "$resources_out_dir/devices/devices_module.js",
+  "$resources_out_dir/diff/diff_module.js",
+  "$resources_out_dir/elements/elements_module.js",
+  "$resources_out_dir/es_tree/es_tree_module.js",
+  "$resources_out_dir/layers/layers_module.js",
+  "$resources_out_dir/network/network_module.js",
+  "$resources_out_dir/profiler/profiler_module.js",
+  "$resources_out_dir/resources/resources_module.js",
+  "$resources_out_dir/sass/sass_module.js",
+  "$resources_out_dir/security/security_module.js",
+  "$resources_out_dir/settings/settings_module.js",
+  "$resources_out_dir/snippets/snippets_module.js",
+  "$resources_out_dir/source_frame/source_frame_module.js",
+  "$resources_out_dir/sources/sources_module.js",
+  "$resources_out_dir/text_editor/text_editor_module.js",
+  "$resources_out_dir/timeline_model/timeline_model_module.js",
+  "$resources_out_dir/timeline/timeline_module.js",
+  "$resources_out_dir/ui_lazy/ui_lazy_module.js",
+]
+
+generated_remote_modules = [
+  "$resources_out_dir/accessibility/accessibility_module.js",
+  "$resources_out_dir/cm_modes/cm_modes_module.js",
+  "$resources_out_dir/emulated_devices/emulated_devices_module.js",
+  "$resources_out_dir/gonzales/gonzales_module.js",
+  "$resources_out_dir/screencast/screencast_module.js",
+]
+
 #-------------------------------------------------------------------------------
 
 visibility = [ "//third_party/WebKit/*" ]
 
 group("devtools_frontend_resources") {
   public_deps = [
-    ":build_applications",
+    ":build_release_devtools",
     ":copy_embedder_scripts",
     ":copy_emulated_devices_images",
     ":copy_inspector_images",
@@ -874,6 +920,9 @@ group("devtools_frontend_resources") {
     ":frontend_protocol_sources",
     ":supported_css_properties",
   ]
+  if (debug_devtools) {
+    public_deps += [ ":build_debug_devtools" ]
+  }
 }
 
 copy("copy_embedder_scripts") {
@@ -906,57 +955,9 @@ action("generate_devtools_grd") {
   inputs = devtools_image_files + all_devtools_files
   inputs += devtools_embedder_scripts
 
-  if (debug_devtools) {
-    # Debug: all files are picked as-is.
-    generated_files = generated_scripts + [
-                        "$resources_out_dir/inspector.html",
-                        "$resources_out_dir/toolbox.html",
-                      ]
-
-    # Use a response file since the static files can be too long for the
-    # command line. The args here will be added to the command line.
-    static_files = all_devtools_files + [ "front_end/Runtime.js" ]
-    response_file_contents = rebase_path(static_files, root_build_dir)
-    static_files_args = [
-      "--static_files_args",
-      "{{response_file_name}}",
-    ]
-  } else {
-    # Release: pick compiled non-remote modules and concatenated app files.
-    generated_files = [
-      "$resources_out_dir/inspector.html",
-      "$resources_out_dir/inspector.js",
-      "$resources_out_dir/toolbox.html",
-      "$resources_out_dir/toolbox.js",
-      "$resources_out_dir/formatter_worker.js",
-      "$resources_out_dir/heap_snapshot_worker.js",
-      "$resources_out_dir/temp_storage_shared_worker.js",
-      "$resources_out_dir/audits/audits_module.js",
-      "$resources_out_dir/animation/animation_module.js",
-      "$resources_out_dir/components_lazy/components_lazy_module.js",
-      "$resources_out_dir/console/console_module.js",
-      "$resources_out_dir/devices/devices_module.js",
-      "$resources_out_dir/diff/diff_module.js",
-      "$resources_out_dir/elements/elements_module.js",
-      "$resources_out_dir/es_tree/es_tree_module.js",
-      "$resources_out_dir/layers/layers_module.js",
-      "$resources_out_dir/network/network_module.js",
-      "$resources_out_dir/profiler/profiler_module.js",
-      "$resources_out_dir/resources/resources_module.js",
-      "$resources_out_dir/sass/sass_module.js",
-      "$resources_out_dir/security/security_module.js",
-      "$resources_out_dir/settings/settings_module.js",
-      "$resources_out_dir/snippets/snippets_module.js",
-      "$resources_out_dir/source_frame/source_frame_module.js",
-      "$resources_out_dir/sources/sources_module.js",
-      "$resources_out_dir/text_editor/text_editor_module.js",
-      "$resources_out_dir/timeline_model/timeline_model_module.js",
-      "$resources_out_dir/timeline/timeline_module.js",
-      "$resources_out_dir/ui_lazy/ui_lazy_module.js",
-      "$resources_out_dir/devtools_extension_api.js",
-    ]
-    static_files_args = []  # Nothing needed for this
-  }
+  generated_files =
+      generated_entry_files + generated_workers + generated_bundled_modules +
+      [ "$resources_out_dir/devtools_extension_api.js" ]
 
   images_path = "front_end/Images"
 
@@ -975,7 +976,7 @@ action("generate_devtools_grd") {
   args = rebase_path(generated_files, root_build_dir) +
          rebase_path(generated_files, root_build_dir) +
          rebase_path(devtools_embedder_scripts, root_build_dir) +
-         static_files_args + [ "--relative_path_dirs" ] +
+         [ "--relative_path_dirs" ] +
          rebase_path(relative_path_dirs, root_build_dir) +
          [
            "--images",
@@ -1030,8 +1031,14 @@ action("frontend_protocol_sources") {
          ]
 }
 
-action("build_applications") {
+action("build_release_devtools") {
   script = "scripts/build_applications.py"
+
+  deps = [
+    ":frontend_protocol_sources",
+    ":supported_css_properties",
+  ]
+
   helper_scripts = [
     "scripts/modular_build.py",
     "scripts/concatenate_application_code.py",
@@ -1043,58 +1050,10 @@ action("build_applications") {
              "front_end/toolbox.html",
            ]
 
-  outputs = [
-    "$resources_out_dir/inspector.html",
-    "$resources_out_dir/toolbox.html",
-  ]
+  outputs = generated_entry_files + generated_workers +
+            generated_bundled_modules + generated_remote_modules
 
-  deps = [
-    ":frontend_protocol_sources",
-    ":supported_css_properties",
-  ]
-
-  if (debug_devtools) {
-    deps += [ ":copy_debug_non_modules" ]
-
-    debug_mode = "1"
-  } else {
-    outputs += [
-      "$resources_out_dir/inspector.js",
-      "$resources_out_dir/toolbox.js",
-      "$resources_out_dir/formatter_worker.js",
-      "$resources_out_dir/heap_snapshot_worker.js",
-      "$resources_out_dir/temp_storage_shared_worker.js",
-      "$resources_out_dir/accessibility/accessibility_module.js",
-      "$resources_out_dir/animation/animation_module.js",
-      "$resources_out_dir/audits/audits_module.js",
-      "$resources_out_dir/cm_modes/cm_modes_module.js",
-      "$resources_out_dir/components_lazy/components_lazy_module.js",
-      "$resources_out_dir/console/console_module.js",
-      "$resources_out_dir/devices/devices_module.js",
-      "$resources_out_dir/diff/diff_module.js",
-      "$resources_out_dir/elements/elements_module.js",
-      "$resources_out_dir/emulated_devices/emulated_devices_module.js",
-      "$resources_out_dir/es_tree/es_tree_module.js",
-      "$resources_out_dir/gonzales/gonzales_module.js",
-      "$resources_out_dir/layers/layers_module.js",
-      "$resources_out_dir/network/network_module.js",
-      "$resources_out_dir/profiler/profiler_module.js",
-      "$resources_out_dir/resources/resources_module.js",
-      "$resources_out_dir/sass/sass_module.js",
-      "$resources_out_dir/screencast/screencast_module.js",
-      "$resources_out_dir/security/security_module.js",
-      "$resources_out_dir/settings/settings_module.js",
-      "$resources_out_dir/snippets/snippets_module.js",
-      "$resources_out_dir/source_frame/source_frame_module.js",
-      "$resources_out_dir/sources/sources_module.js",
-      "$resources_out_dir/text_editor/text_editor_module.js",
-      "$resources_out_dir/timeline_model/timeline_model_module.js",
-      "$resources_out_dir/timeline/timeline_module.js",
-      "$resources_out_dir/ui_lazy/ui_lazy_module.js",
-    ]
-
-    debug_mode = "0"
-  }
+  debug_mode = "0"
 
   args = [
     "inspector",
@@ -1112,11 +1071,49 @@ action("build_applications") {
 }
 
 if (debug_devtools) {
-  # Debug: copy non-module directories and core into resources_out_dir as-is.
-  group("copy_debug_non_modules") {
+  resources_out_debug_dir = "$root_out_dir/resources/inspector/debug"
+
+  action("build_debug_devtools") {
+    script = "scripts/build_applications.py"
+
+    deps = [
+      ":copy_debug_files",
+    ]
+
+    inputs = all_devtools_files + [
+               "front_end/inspector.html",
+               "front_end/toolbox.html",
+             ]
+
+    outputs = [
+      "$resources_out_debug_dir/inspector.html",
+      "$resources_out_debug_dir/toolbox.html",
+    ]
+
+    debug_mode = "1"
+
+    args = [
+      "inspector",
+      "toolbox",
+      "formatter_worker",
+      "heap_snapshot_worker",
+      "temp_storage_shared_worker",
+      "--input_path",
+      rebase_path("front_end", root_build_dir),
+      "--output_path",
+      rebase_path(resources_out_debug_dir, root_build_dir),
+      "--debug",
+      debug_mode,
+    ]
+  }
+
+  group("copy_debug_files") {
     public_deps = [
       ":copy_acorn_js_files",
       ":copy_codemirror_files",
+      ":copy_emulated_devices_images_debug",
+      ":copy_generated_scripts",
+      ":copy_inspector_images_debug",
       ":copy_runtime_core",
     ]
   }
@@ -1124,21 +1121,45 @@ if (debug_devtools) {
   copy("copy_runtime_core") {
     sources = devtools_core_base_files
     outputs = [
-      "$resources_out_dir//{{source_file_part}}",
+      "$resources_out_debug_dir/{{source_file_part}}",
     ]
   }
 
   copy("copy_acorn_js_files") {
     sources = devtools_acorn_files
     outputs = [
-      "$resources_out_dir/acorn/{{source_file_part}}",
+      "$resources_out_debug_dir/acorn/{{source_file_part}}",
     ]
   }
 
   copy("copy_codemirror_files") {
     sources = devtools_cm_js_files + devtools_cm_css_files
     outputs = [
-      "$resources_out_dir/cm/{{source_file_part}}",
+      "$resources_out_debug_dir/cm/{{source_file_part}}",
+    ]
+  }
+
+  copy("copy_generated_scripts") {
+    deps = [
+      ":frontend_protocol_sources",
+      ":supported_css_properties",
+    ]
+    sources = generated_scripts
+    outputs = [
+      "$resources_out_debug_dir/{{source_file_part}}",
+    ]
+  }
+  copy("copy_inspector_images_debug") {
+    sources = devtools_image_files
+    outputs = [
+      "$resources_out_debug_dir/Images/{{source_file_part}}",
+    ]
+  }
+
+  copy("copy_emulated_devices_images_debug") {
+    sources = devtools_emulated_devices_images
+    outputs = [
+      "$resources_out_debug_dir/emulated_devices/{{source_file_part}}",
     ]
   }
 }

@@ -309,9 +309,9 @@ WebInspector.WorkspaceSettingsTab = function()
     /** @type {!Map<string, !WebInspector.EditFileSystemView>} */
     this._mappingViewByPath = new Map();
 
-    var fileSystemPaths = WebInspector.isolatedFileSystemManager.fileSystemPaths();
-    for (var i = 0; i < fileSystemPaths.length; ++i)
-        this._addItem(/** @type {!WebInspector.IsolatedFileSystem} */ (WebInspector.isolatedFileSystemManager.fileSystem(fileSystemPaths[i])));
+    var fileSystems = WebInspector.isolatedFileSystemManager.fileSystems();
+    for (var i = 0; i < fileSystems.length; ++i)
+        this._addItem(fileSystems[i]);
 }
 
 WebInspector.WorkspaceSettingsTab.prototype = {

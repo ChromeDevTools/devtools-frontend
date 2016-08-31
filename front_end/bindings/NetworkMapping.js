@@ -19,10 +19,8 @@ WebInspector.NetworkMapping = function(targetManager, workspace, fileSystemWorks
 
     // For now, following block is here primarily for testing since in the real life, network manager is created early enough to capture those events.
     var fileSystemManager = fileSystemWorkspaceBinding.fileSystemManager();
-    for (var path of fileSystemManager.fileSystemPaths()) {
-        var fileSystem = fileSystemManager.fileSystem(path);
-        this._fileSystemAdded(new WebInspector.Event(fileSystemManager, WebInspector.IsolatedFileSystemManager.Events.FileSystemAdded, fileSystem));
-    }
+    for (var fileSystem of fileSystemManager.fileSystems())
+        this._addMappingsForFilesystem(fileSystem);
     if (fileSystemManager.fileSystemsLoaded())
         this._fileSystemsLoaded();
 
@@ -41,8 +39,17 @@ WebInspector.NetworkMapping.prototype = {
      */
     _fileSystemAdded: function(event)
     {
-        this._addingFileSystem = true;
         var fileSystem = /** @type {!WebInspector.IsolatedFileSystem} */ (event.data);
+        this._addMappingsForFilesystem(fileSystem);
+        this._fileSystemMappingChanged();
+    },
+
+    /**
+     * @param {!WebInspector.IsolatedFileSystem} fileSystem
+     */
+    _addMappingsForFilesystem: function(fileSystem)
+    {
+        this._addingFileSystem = true;
         this._fileSystemMapping.addFileSystem(fileSystem.path());
 
         var mappings = fileSystem.projectProperty("mappings");
@@ -57,7 +64,6 @@ WebInspector.NetworkMapping.prototype = {
             this._fileSystemMapping.addNonConfigurableFileMapping(fileSystem.path(), url, folder);
         }
         this._addingFileSystem = false;
-        this._fileSystemMappingChanged();
     },
 
     /**

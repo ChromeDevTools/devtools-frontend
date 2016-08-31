@@ -208,11 +208,11 @@ WebInspector.IsolatedFileSystemManager.prototype = {
     },
 
     /**
-     * @return {!Array<string>}
+     * @return {!Array<!WebInspector.IsolatedFileSystem>}
      */
-    fileSystemPaths: function()
+    fileSystems: function()
     {
-        return this._fileSystems.keysArray();
+        return this._fileSystems.valuesArray();
     },
 
     /**

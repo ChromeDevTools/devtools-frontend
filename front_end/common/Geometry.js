@@ -90,6 +90,15 @@ WebInspector.Geometry.Point.prototype = {
     },
 
     /**
+     * @param {number} scalar
+     * @return {!WebInspector.Geometry.Point}
+     */
+    scale: function(scalar)
+    {
+        return new WebInspector.Geometry.Point(this.x * scalar, this.y * scalar);
+    },
+
+    /**
      * @override
      * @return {string}
      */

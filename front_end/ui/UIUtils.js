@@ -1377,13 +1377,15 @@ function createCheckboxLabel(title, checked, subtitle)
  * @return {!Element}
  * @param {number} min
  * @param {number} max
+ * @param {number} tabIndex
  */
-function createSliderLabel(min, max)
+function createSliderLabel(min, max, tabIndex)
 {
     var element = createElement("label", "dt-slider");
     element.sliderElement.min = min;
     element.sliderElement.max = max;
     element.sliderElement.step = 1;
+    element.sliderElement.tabIndex = tabIndex;
     return element;
 }
 

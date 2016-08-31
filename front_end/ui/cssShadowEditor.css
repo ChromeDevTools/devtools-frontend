@@ -10,8 +10,23 @@
 }
 
 .shadow-editor-field {
+    height: 24px;
     margin-top: 8px;
     font-size: 12px;
+}
+
+.shadow-editor-blur-field {
+    height: 24px;
+    margin-top: 40px;
+    font-size: 12px;
+}
+
+.shadow-editor-2D-slider {
+    position: absolute;
+    height: 88px;
+    width: 88px;
+    border: 1px solid rgba(0, 0, 0, 0.14);
+    border-radius: 2px;
 }
 
 .shadow-editor-label {
@@ -69,7 +84,6 @@
     line-height: 16px;
     border: 1px solid rgba(0, 0, 0, 0.14);
     border-radius: 2px;
-    border-color: rgba(0, 0, 0, 0.14);
     background-color: #ffffff;
     color: #333;
     text-align: right;

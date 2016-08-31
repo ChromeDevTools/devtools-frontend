@@ -45,9 +45,11 @@ WebInspector.ConsoleModel = function(target, logAgent)
     this._warnings = 0;
     this._errors = 0;
     this._revokedErrors = 0;
-    target.registerLogDispatcher(new WebInspector.LogDispatcher(this));
     this._logAgent = logAgent;
-    this._logAgent && this._logAgent.enable();
+    if (this._logAgent) {
+        target.registerLogDispatcher(new WebInspector.LogDispatcher(this));
+        this._logAgent.enable();
+    }
 }
 
 /** @enum {symbol} */

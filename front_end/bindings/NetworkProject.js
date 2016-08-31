@@ -400,7 +400,6 @@ WebInspector.NetworkProject.prototype = {
     {
         this._reset();
         WebInspector.EventTarget.removeEventListeners(this._eventListeners);
-        this._eventListeners = [];
         delete this.target()[WebInspector.NetworkProject._networkProjectSymbol];
     },
 

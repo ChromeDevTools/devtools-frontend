@@ -52,10 +52,8 @@ WebInspector.ComputedStyleModel.prototype = {
     {
         if (this._target === target)
             return;
-        if (this._targetEvents) {
+        if (this._targetEvents)
             WebInspector.EventTarget.removeEventListeners(this._targetEvents);
-            this._targetEvents = null;
-        }
         this._target = target;
 
         var domModel = null;

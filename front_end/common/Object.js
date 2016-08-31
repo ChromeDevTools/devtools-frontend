@@ -167,6 +167,8 @@ WebInspector.EventTarget.removeEventListeners = function(eventList)
         var eventInfo = eventList[i];
         eventInfo.eventTarget.removeEventListener(eventInfo.eventType, eventInfo.method, eventInfo.receiver);
     }
+    // Do not hold references on unused event descriptors.
+    eventList.splice(0, eventList.length);
 }
 
 WebInspector.EventTarget.prototype = {

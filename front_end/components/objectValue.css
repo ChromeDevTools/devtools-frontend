@@ -53,9 +53,11 @@
     display: inline-block;
 }
 
-.object-value-number,
-.object-value-boolean {
+.object-value-number {
     color: rgb(28, 0, 207);
+}
+.object-value-boolean {
+    color: rgb(170, 13, 145);
 }
 
 .object-value-string,

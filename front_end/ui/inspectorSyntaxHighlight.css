@@ -30,6 +30,7 @@
 .cm-js-comment {color: rgb(0, 116, 0);}
 .cm-js-string {color: rgb(196, 26, 22);}
 .cm-js-string-2 {color: rgb(196, 26, 22);}
+.cm-js-atom {color: rgb(170, 13, 145);}
 
 .cm-css-keyword { color: rgb(7, 144, 154);}
 .cm-css-number {color: rgb(50, 0, 255);}

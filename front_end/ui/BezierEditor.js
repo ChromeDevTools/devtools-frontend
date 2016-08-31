@@ -9,7 +9,7 @@
 WebInspector.BezierEditor = function()
 {
     WebInspector.VBox.call(this, true);
-    this.registerRequiredCSS("elements/bezierEditor.css");
+    this.registerRequiredCSS("ui/bezierEditor.css");
     this.contentElement.tabIndex = 0;
 
     // Preview UI

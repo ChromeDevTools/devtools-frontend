@@ -11,6 +11,8 @@
         "InspectorView.js",
         "ActionRegistry.js",
         "ShortcutRegistry.js",
+        "BezierEditor.js",
+        "BezierUI.js",
         "ColorSwatch.js",
         "Context.js",
         "ContextMenu.js",
@@ -51,6 +53,7 @@
         "ZoomManager.js"
     ],
     "resources": [
+        "bezierEditor.css",
         "bezierSwatch.css",
         "checkboxTextLabel.css",
         "closeButton.css",

@@ -194,6 +194,7 @@ devtools_emulation_js_files = [
   "front_end/emulation/TouchModel.js",
 ]
 devtools_ui_js_files = [
+  "front_end/ui/bezierEditor.css",
   "front_end/ui/bezierSwatch.css",
   "front_end/ui/checkboxTextLabel.css",
   "front_end/ui/closeButton.css",
@@ -232,6 +233,8 @@ devtools_ui_js_files = [
   "front_end/ui/treeoutline.css",
   "front_end/ui/viewContainers.css",
   "front_end/ui/ActionRegistry.js",
+  "front_end/ui/BezierEditor.js",
+  "front_end/ui/BezierUI.js",
   "front_end/ui/ColorSwatch.js",
   "front_end/ui/Context.js",
   "front_end/ui/ContextMenu.js",
@@ -399,14 +402,11 @@ devtools_diff_js_files = [
   "front_end/diff/diff_match_patch.js",
 ]
 devtools_elements_js_files = [
-  "front_end/elements/bezierEditor.css",
   "front_end/elements/breadcrumbs.css",
   "front_end/elements/computedStyleSidebarPane.css",
   "front_end/elements/elementsPanel.css",
   "front_end/elements/elementsTreeOutline.css",
   "front_end/elements/platformFontsWidget.css",
-  "front_end/elements/BezierEditor.js",
-  "front_end/elements/BezierUI.js",
   "front_end/elements/ClassesPaneWidget.js",
   "front_end/elements/ColorSwatchPopoverIcon.js",
   "front_end/elements/ComputedStyleModel.js",

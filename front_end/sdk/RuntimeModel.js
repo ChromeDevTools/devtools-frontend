@@ -496,8 +496,10 @@ WebInspector.ExecutionContext = function(target, id, name, origin, isDefault, fr
     this.debuggerModel = WebInspector.DebuggerModel.fromTarget(target);
     this.frameId = frameId;
 
+    this._label = name;
     var parsedUrl = origin.asParsedURL();
-    this._label = parsedUrl ? parsedUrl.lastPathComponentWithFragment() : name;
+    if (!this._label && parsedUrl)
+        this._label = parsedUrl.lastPathComponentWithFragment();
 }
 
 /**

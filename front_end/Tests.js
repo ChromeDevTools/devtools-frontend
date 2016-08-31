@@ -922,6 +922,25 @@ TestSuite.prototype.testWindowInitializedOnNavigateBack = function()
         this.fail(text);
 };
 
+TestSuite.prototype.testConsoleContextNames = function()
+{
+    var test = this;
+    test.takeControl();
+    this.showPanel("console").then(() => this._waitForExecutionContexts(2, onExecutionContexts.bind(this)));
+
+    function onExecutionContexts()
+    {
+        var consoleView = WebInspector.ConsoleView.instance();
+        var options = consoleView._consoleContextSelector._selectElement.options;
+        var values = [];
+        for (var i = 0; i < options.length; ++i)
+            values.push(options[i].value.trim());
+        test.assertEquals("top", values[0]);
+        test.assertEquals("Simple content script", values[1]);
+        test.releaseControl();
+    }
+}
+
 TestSuite.prototype.waitForTestResultsInConsole = function()
 {
     var messages = WebInspector.multitargetConsoleModel.messages();
@@ -1173,6 +1192,20 @@ TestSuite.prototype._waitForTargets = function(n, callback)
             callback.call(null);
         else
             this.addSniffer(WebInspector.TargetManager.prototype, "addTarget", checkTargets.bind(this));
+    }
+}
+
+TestSuite.prototype._waitForExecutionContexts = function(n, callback)
+{
+    var runtimeModel = WebInspector.targetManager.mainTarget().runtimeModel;
+    checkForExecutionContexts.call(this);
+
+    function checkForExecutionContexts()
+    {
+        if (runtimeModel.executionContexts().length >= n)
+            callback.call(null);
+        else
+            this.addSniffer(WebInspector.RuntimeModel.prototype, "_executionContextCreated", checkForExecutionContexts.bind(this));
     }
 }
 

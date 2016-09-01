@@ -17,23 +17,28 @@ WebInspector.NetworkMapping = function(targetManager, workspace, fileSystemWorks
     this._fileSystemMapping = fileSystemMapping;
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.RevealSourceLine, this._revealSourceLine, this);
 
-    // For now, following block is here primarily for testing since in the real life, network manager is created early enough to capture those events.
     var fileSystemManager = fileSystemWorkspaceBinding.fileSystemManager();
-    for (var fileSystem of fileSystemManager.fileSystems())
-        this._addMappingsForFilesystem(fileSystem);
-    if (fileSystemManager.fileSystemsLoaded())
-        this._fileSystemsLoaded();
-
     this._eventListeners = [
         fileSystemManager.addEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemAdded, this._fileSystemAdded, this),
         fileSystemManager.addEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemRemoved, this._fileSystemRemoved, this),
-        fileSystemManager.addEventListener(WebInspector.IsolatedFileSystemManager.Events.FileSystemsLoaded, this._fileSystemsLoaded, this),
         this._fileSystemMapping.addEventListener(WebInspector.FileSystemMapping.Events.FileMappingAdded, this._fileSystemMappingChanged, this),
         this._fileSystemMapping.addEventListener(WebInspector.FileSystemMapping.Events.FileMappingRemoved, this._fileSystemMappingChanged, this)
     ];
+
+    fileSystemManager.waitForFileSystems()
+        .then(this._fileSystemsLoaded.bind(this));
 }
 
 WebInspector.NetworkMapping.prototype = {
+    /**
+     * @param {!Array<!WebInspector.IsolatedFileSystem>} fileSystems
+     */
+    _fileSystemsLoaded: function(fileSystems)
+    {
+        for (var fileSystem of fileSystems)
+            this._addMappingsForFilesystem(fileSystem);
+    },
+
     /**
      * @param {!WebInspector.Event} event
      */
@@ -238,14 +243,9 @@ WebInspector.NetworkMapping.prototype = {
         this._workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeAdded, listener, this);
     },
 
-    _fileSystemsLoaded: function()
-    {
-        this._fileSystemsReady = true;
-    },
-
     _fileSystemMappingChanged: function()
     {
-        if (!this._fileSystemsReady || this._addingFileSystem)
+        if (this._addingFileSystem)
             return;
         this._targetManager.suspendAndResumeAllTargets();
     },

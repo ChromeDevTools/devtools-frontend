@@ -41,7 +41,6 @@ WebInspector.IsolatedFileSystemManager = function()
     /** @type {!Map<number, !WebInspector.Progress>} */
     this._progresses = new Map();
 
-    InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.FileSystemsLoaded, this._onFileSystemsLoaded, this);
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.FileSystemRemoved, this._onFileSystemRemoved, this);
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.FileSystemAdded, this._onFileSystemAdded, this);
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.FileSystemFilesChanged, this._onFileSystemFilesChanged, this);
@@ -51,6 +50,8 @@ WebInspector.IsolatedFileSystemManager = function()
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.SearchCompleted, this._onSearchCompleted, this);
 
     this._initExcludePatterSetting();
+
+    this._fileSystemsLoadedPromise = this._requestFileSystems();
 }
 
 /** @typedef {!{fileSystemName: string, rootURL: string, fileSystemPath: string}} */
@@ -60,7 +61,6 @@ WebInspector.IsolatedFileSystemManager.FileSystem;
 WebInspector.IsolatedFileSystemManager.Events = {
     FileSystemAdded: Symbol("FileSystemAdded"),
     FileSystemRemoved: Symbol("FileSystemRemoved"),
-    FileSystemsLoaded: Symbol("FileSystemsLoaded"),
     FileSystemFilesChanged: Symbol("FileSystemFilesChanged"),
     ExcludedFolderAdded: Symbol("ExcludedFolderAdded"),
     ExcludedFolderRemoved: Symbol("ExcludedFolderRemoved")
@@ -86,12 +86,36 @@ WebInspector.IsolatedFileSystemManager.normalizePath = function(fileSystemPath)
 
 WebInspector.IsolatedFileSystemManager.prototype = {
     /**
-     * @param {function()} callback
+     * @return {!Promise<!Array<!WebInspector.IsolatedFileSystem>>}
      */
-    initialize: function(callback)
+    _requestFileSystems: function()
     {
-        this._initializeCallback = callback;
+        var fulfill;
+        var promise = new Promise(f => fulfill = f);
         InspectorFrontendHost.requestFileSystems();
+        InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.FileSystemsLoaded, onFileSystemsLoaded, this);
+        return promise;
+
+        /**
+         * @param {!WebInspector.Event} event
+         * @this {WebInspector.IsolatedFileSystemManager}
+         */
+        function onFileSystemsLoaded(event)
+        {
+            var fileSystems = /** @type {!Array.<!WebInspector.IsolatedFileSystemManager.FileSystem>} */ (event.data);
+            var promises = [];
+            for (var i = 0; i < fileSystems.length; ++i)
+                promises.push(this._innerAddFileSystem(fileSystems[i], false));
+            Promise.all(promises).then(onFileSystemsAdded);
+        }
+
+        /**
+         * @param {!Array<?WebInspector.IsolatedFileSystem>} fileSystems
+         */
+        function onFileSystemsAdded(fileSystems)
+        {
+            fulfill(fileSystems.filter(fs => !!fs));
+        }
     },
 
     addFileSystem: function()
@@ -104,45 +128,23 @@ WebInspector.IsolatedFileSystemManager.prototype = {
      */
     removeFileSystem: function(fileSystem)
     {
-
         InspectorFrontendHost.removeFileSystem(fileSystem.embedderPath());
     },
 
     /**
-     * @param {!WebInspector.Event} event
+     * @return {!Promise<!Array<!WebInspector.IsolatedFileSystem>>}
      */
-    _onFileSystemsLoaded: function(event)
+    waitForFileSystems: function()
     {
-        var fileSystems = /** @type {!Array.<!WebInspector.IsolatedFileSystemManager.FileSystem>} */ (event.data);
-        var promises = [];
-        for (var i = 0; i < fileSystems.length; ++i)
-            promises.push(this._innerAddFileSystem(fileSystems[i]));
-        Promise.all(promises).then(fireFileSystemsLoaded.bind(this));
-
-        /**
-         * @this {WebInspector.IsolatedFileSystemManager}
-         */
-        function fireFileSystemsLoaded()
-        {
-            this._initializeCallback();
-            delete this._initializeCallback;
-            this.dispatchEventToListeners(WebInspector.IsolatedFileSystemManager.Events.FileSystemsLoaded);
-        }
-    },
-
-    /**
-     * @return {boolean}
-     */
-    fileSystemsLoaded: function()
-    {
-        return !this._initializeCallback;
+        return this._fileSystemsLoadedPromise;
     },
 
     /**
      * @param {!WebInspector.IsolatedFileSystemManager.FileSystem} fileSystem
-     * @return {!Promise}
+     * @param {boolean} dispatchEvent
+     * @return {!Promise<?WebInspector.IsolatedFileSystem>}
      */
-    _innerAddFileSystem: function(fileSystem)
+    _innerAddFileSystem: function(fileSystem, dispatchEvent)
     {
         var embedderPath = fileSystem.fileSystemPath;
         var fileSystemPath = WebInspector.IsolatedFileSystemManager.normalizePath(fileSystem.fileSystemPath);
@@ -156,9 +158,11 @@ WebInspector.IsolatedFileSystemManager.prototype = {
         function storeFileSystem(fileSystem)
         {
             if (!fileSystem)
-                return;
+                return null;
             this._fileSystems.set(fileSystemPath, fileSystem);
-            this.dispatchEventToListeners(WebInspector.IsolatedFileSystemManager.Events.FileSystemAdded, fileSystem);
+            if (dispatchEvent)
+                this.dispatchEventToListeners(WebInspector.IsolatedFileSystemManager.Events.FileSystemAdded, fileSystem);
+            return fileSystem;
         }
     },
 
@@ -172,7 +176,7 @@ WebInspector.IsolatedFileSystemManager.prototype = {
         if (errorMessage)
             WebInspector.console.error(errorMessage);
         else if (fileSystem)
-            this._innerAddFileSystem(fileSystem);
+            this._innerAddFileSystem(fileSystem, true);
     },
 
     /**
@@ -180,7 +184,14 @@ WebInspector.IsolatedFileSystemManager.prototype = {
      */
     _onFileSystemRemoved: function(event)
     {
-        this._fileSystemRemoved(/** @type {string} */ (event.data));
+        var embedderPath = /** @type {string} */ (event.data);
+        var fileSystemPath = WebInspector.IsolatedFileSystemManager.normalizePath(embedderPath);
+        var isolatedFileSystem = this._fileSystems.get(fileSystemPath);
+        if (!isolatedFileSystem)
+            return;
+        this._fileSystems.delete(fileSystemPath);
+        isolatedFileSystem.fileSystemRemoved();
+        this.dispatchEventToListeners(WebInspector.IsolatedFileSystemManager.Events.FileSystemRemoved, isolatedFileSystem);
     },
 
     /**
@@ -191,20 +202,6 @@ WebInspector.IsolatedFileSystemManager.prototype = {
         var embedderPaths = /** @type {!Array<string>} */ (event.data);
         var paths = embedderPaths.map(embedderPath => WebInspector.IsolatedFileSystemManager.normalizePath(embedderPath));
         this.dispatchEventToListeners(WebInspector.IsolatedFileSystemManager.Events.FileSystemFilesChanged, paths);
-    },
-
-    /**
-     * @param {string} embedderPath
-     */
-    _fileSystemRemoved: function(embedderPath)
-    {
-        var fileSystemPath = WebInspector.IsolatedFileSystemManager.normalizePath(embedderPath);
-        var isolatedFileSystem = this._fileSystems.get(fileSystemPath);
-        if (!isolatedFileSystem)
-            return;
-        this._fileSystems.delete(fileSystemPath);
-        isolatedFileSystem.fileSystemRemoved();
-        this.dispatchEventToListeners(WebInspector.IsolatedFileSystemManager.Events.FileSystemRemoved, isolatedFileSystem);
     },
 
     /**

@@ -136,7 +136,8 @@ WebInspector.Main.prototype = {
 
         // Request filesystems early, we won't create connections until callback is fired. Things will happen in parallel.
         WebInspector.isolatedFileSystemManager = new WebInspector.IsolatedFileSystemManager();
-        WebInspector.isolatedFileSystemManager.initialize(this._didInitializeFileSystemManager.bind(this));
+        WebInspector.isolatedFileSystemManager.waitForFileSystems()
+            .then(this._didInitializeFileSystemManager.bind(this));
 
         var themeSetting = WebInspector.settings.createSetting("uiTheme", "default");
         WebInspector.initializeUIUtils(document, themeSetting);

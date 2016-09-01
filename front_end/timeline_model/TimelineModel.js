@@ -105,6 +105,7 @@ WebInspector.TimelineModel.RecordType = {
     ResourceReceivedData: "ResourceReceivedData",
     ResourceFinish: "ResourceFinish",
 
+    RunMicrotasks: "RunMicrotasks",
     FunctionCall: "FunctionCall",
     GCEvent: "GCEvent", // For backwards compatibility only, now replaced by MinorGC/MajorGC.
     MajorGC: "MajorGC",

@@ -77,6 +77,7 @@ WebInspector.TimelineJSProfileProcessor.generateJSFrameEvents = function(events)
     function isJSInvocationEvent(e)
     {
         switch (e.name) {
+        case WebInspector.TimelineModel.RecordType.RunMicrotasks:
         case WebInspector.TimelineModel.RecordType.FunctionCall:
         case WebInspector.TimelineModel.RecordType.EvaluateScript:
             return true;

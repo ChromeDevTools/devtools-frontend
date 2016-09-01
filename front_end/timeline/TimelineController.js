@@ -36,6 +36,7 @@ WebInspector.TimelineController.prototype = {
         var categoriesArray = [
             "-*",
             "devtools.timeline",
+            "v8.execute",
             disabledByDefault("devtools.timeline"),
             disabledByDefault("devtools.timeline.frame"),
             WebInspector.TracingModel.TopLevelEventCategory,

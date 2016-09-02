@@ -92,8 +92,8 @@ WebInspector.IsolatedFileSystemManager.prototype = {
     {
         var fulfill;
         var promise = new Promise(f => fulfill = f);
-        InspectorFrontendHost.requestFileSystems();
         InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.FileSystemsLoaded, onFileSystemsLoaded, this);
+        InspectorFrontendHost.requestFileSystems();
         return promise;
 
         /**

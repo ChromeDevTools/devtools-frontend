@@ -643,6 +643,7 @@ var acorn = {
     tokTypes: {
         _true: new Acorn.TokenType(),
         _false: new Acorn.TokenType(),
+        _null: new Acorn.TokenType(),
         num: new Acorn.TokenType(),
         regexp: new Acorn.TokenType(),
         string: new Acorn.TokenType(),

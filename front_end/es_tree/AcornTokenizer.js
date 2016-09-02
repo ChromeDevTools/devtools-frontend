@@ -41,7 +41,7 @@ WebInspector.AcornTokenizer.punctuator = function(token, values)
 WebInspector.AcornTokenizer.keyword = function(token, keyword)
 {
     return !!token.type.keyword && token.type !== acorn.tokTypes._true && token.type !== acorn.tokTypes._false &&
-        (!keyword || token.type.keyword === keyword);
+        token.type !== acorn.tokTypes._null && (!keyword || token.type.keyword === keyword);
 }
 
 /**

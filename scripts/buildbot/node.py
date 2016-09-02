@@ -13,8 +13,8 @@ import urllib2
 
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 
-DEFAULT_VERSION = '0.12.2'
-BUCKET = 'chromium-infra-bins'
+DEFAULT_VERSION = '4.5.0'
+BUCKET = 'chromium-nodejs'
 
 
 def install_latest_node_js(version, tmp_dir):
@@ -46,7 +46,7 @@ def install_latest_node_js(version, tmp_dir):
         raise Exception('Unrecognized platform %s' % sys.platform)
 
     dest = os.path.join(tmp_dir, 'node_download')
-    url = 'https://storage.googleapis.com/%s/node/%s/%s' % (
+    url = 'https://storage.googleapis.com/%s/%s/%s' % (
         BUCKET, version, target)
     print('Fetching %s' % url)
     u = urllib2.urlopen(url)

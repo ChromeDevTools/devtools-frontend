@@ -670,6 +670,14 @@ InspectorFrontendHostImpl.prototype = {
     },
 
     /**
+     * @param {!Array<string>} certChain
+     */
+    showCertificateViewer: function(certChain)
+    {
+        DevToolsAPI.sendMessageToEmbedder("showCertificateViewer", [JSON.stringify(certChain)], null);
+    },
+
+    /**
      * @override
      * @return {boolean}
      */

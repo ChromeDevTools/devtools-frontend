@@ -126,6 +126,11 @@ InspectorFrontendHostAPI.prototype = {
     setInspectedPageBounds: function(bounds) { },
 
     /**
+     * @param {!Array<string>} certChain
+     */
+    showCertificateViewer: function(certChain) { },
+
+    /**
      * @param {string} shortcuts
      */
     setWhitelistedShortcuts: function(shortcuts) { },

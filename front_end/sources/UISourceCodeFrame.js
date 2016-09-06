@@ -81,7 +81,6 @@ WebInspector.UISourceCodeFrame.prototype = {
     wasShown: function()
     {
         WebInspector.SourceFrame.prototype.wasShown.call(this);
-        WebInspector.context.setFlavor(WebInspector.UISourceCodeFrame, this);
         this._boundWindowFocused = this._windowFocused.bind(this);
         this.element.ownerDocument.defaultView.addEventListener("focus", this._boundWindowFocused, false);
         this._checkContentUpdated();
@@ -92,7 +91,6 @@ WebInspector.UISourceCodeFrame.prototype = {
     willHide: function()
     {
         WebInspector.SourceFrame.prototype.willHide.call(this);
-        WebInspector.context.setFlavor(WebInspector.UISourceCodeFrame, null);
         this.element.ownerDocument.defaultView.removeEventListener("focus", this._boundWindowFocused, false);
         delete this._boundWindowFocused;
         this._uiSourceCode.removeWorkingCopyGetter();

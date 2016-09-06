@@ -453,7 +453,7 @@ Runtime.prototype = {
     {
         if (!predicate)
             return false;
-        var contextTypes = extension.descriptor().contextTypes;
+        var contextTypes = /** @type {!Array.<string>|undefined} */ (extension.descriptor().contextTypes);
         if (!contextTypes)
             return true;
         for (var i = 0; i < contextTypes.length; ++i) {
@@ -921,22 +921,6 @@ Runtime.Extension.prototype = {
     {
         // FIXME: should be WebInspector.UIString() but runtime is not l10n aware yet.
         return this._descriptor["title-" + Runtime._platform] || this._descriptor["title"];
-    },
-
-    /**
-     * @param {function(new:Object)} contextType
-     * @return {boolean}
-     */
-    hasContextType: function(contextType)
-    {
-        var contextTypes = this.descriptor().contextTypes;
-        if (!contextTypes)
-            return false;
-        for (var i = 0; i < contextTypes.length; ++i) {
-            if (contextType === this._module._manager._resolve(contextTypes[i]))
-                return true;
-        }
-        return false;
     }
 }
 

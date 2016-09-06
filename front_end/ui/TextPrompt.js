@@ -120,7 +120,7 @@ WebInspector.TextPrompt.prototype = {
         this._boundOnInput = this.onInput.bind(this);
         this._boundOnMouseWheel = this.onMouseWheel.bind(this);
         this._boundSelectStart = this._selectStart.bind(this);
-        this._boundRemoveSuggestionAids = this._removeSuggestionAids.bind(this);
+        this._boundClearAutocomplete = this.clearAutoComplete.bind(this);
         this._proxyElement = element.ownerDocument.createElement("span");
         var shadowRoot = WebInspector.createShadowRootWithCoreStyles(this._proxyElement, "ui/textPrompt.css");
         this._contentElement = shadowRoot.createChild("div");
@@ -133,8 +133,8 @@ WebInspector.TextPrompt.prototype = {
         this._element.addEventListener("input", this._boundOnInput, false);
         this._element.addEventListener("mousewheel", this._boundOnMouseWheel, false);
         this._element.addEventListener("selectstart", this._boundSelectStart, false);
-        this._element.addEventListener("blur", this._boundRemoveSuggestionAids, false);
-        this._element.ownerDocument.defaultView.addEventListener("resize", this._boundRemoveSuggestionAids, false);
+        this._element.addEventListener("blur", this._boundClearAutocomplete, false);
+        this._element.ownerDocument.defaultView.addEventListener("resize", this._boundClearAutocomplete, false);
 
         if (this._suggestBoxEnabled)
             this._suggestBox = new WebInspector.SuggestBox(this);
@@ -181,7 +181,7 @@ WebInspector.TextPrompt.prototype = {
      */
     setText: function(x)
     {
-        this._removeSuggestionAids();
+        this.clearAutoComplete();
         if (!x) {
             // Append a break element instead of setting textContent to make sure the selection is inside the prompt.
             this._element.removeChildren();
@@ -214,12 +214,12 @@ WebInspector.TextPrompt.prototype = {
 
     _removeFromElement: function()
     {
-        this.clearAutoComplete(true);
+        this.clearAutoComplete();
         this._element.removeEventListener("keydown", this._boundOnKeyDown, false);
         this._element.removeEventListener("input", this._boundOnInput, false);
         this._element.removeEventListener("selectstart", this._boundSelectStart, false);
-        this._element.removeEventListener("blur", this._boundRemoveSuggestionAids, false);
-        this._element.ownerDocument.defaultView.removeEventListener("resize", this._boundRemoveSuggestionAids, false);
+        this._element.removeEventListener("blur", this._boundClearAutocomplete, false);
+        this._element.ownerDocument.defaultView.removeEventListener("resize", this._boundClearAutocomplete, false);
         if (this._isEditing)
             this._stopEditing();
         if (this._suggestBox)
@@ -254,18 +254,12 @@ WebInspector.TextPrompt.prototype = {
         delete this._isEditing;
     },
 
-    _removeSuggestionAids: function()
-    {
-        this.clearAutoComplete();
-        this.hideSuggestBox();
-    },
-
     _selectStart: function()
     {
         if (this._selectionTimeout)
             clearTimeout(this._selectionTimeout);
 
-        this._removeSuggestionAids();
+        this.clearAutoComplete();
 
         /**
          * @this {WebInspector.TextPrompt}
@@ -316,18 +310,18 @@ WebInspector.TextPrompt.prototype = {
             break;
         case "ArrowLeft":
         case "Home":
-            this._removeSuggestionAids();
+            this.clearAutoComplete();
             break;
         case "ArrowRight":
         case "End":
             if (this.isCaretAtEndOfPrompt())
                 handled = this.acceptAutoComplete();
             else
-                this._removeSuggestionAids();
+                this.clearAutoComplete();
             break;
         case "Escape":
             if (this.isSuggestBoxVisible()) {
-                this._removeSuggestionAids();
+                this.clearAutoComplete();
                 handled = true;
             }
             break;
@@ -377,12 +371,12 @@ WebInspector.TextPrompt.prototype = {
         return result;
     },
 
-    /**
-     * @param {boolean=} includeTimeout
-     */
-    clearAutoComplete: function(includeTimeout)
+    clearAutoComplete: function()
     {
-        if (includeTimeout && this._completeTimeout) {
+        if (this.isSuggestBoxVisible())
+            this._suggestBox.hide();
+
+        if (this._completeTimeout) {
             clearTimeout(this._completeTimeout);
             delete this._completeTimeout;
         }
@@ -413,7 +407,7 @@ WebInspector.TextPrompt.prototype = {
      */
     complete: function(force, reverse)
     {
-        this.clearAutoComplete(true);
+        this.clearAutoComplete();
         var selection = this._element.getComponentSelection();
         var selectionRange = selection && selection.rangeCount ? selection.getRangeAt(0) : null;
         if (!selectionRange)
@@ -432,7 +426,7 @@ WebInspector.TextPrompt.prototype = {
                 shouldExit = true;
         }
         if (shouldExit) {
-            this.hideSuggestBox();
+            this.clearAutoComplete();
             return;
         }
 
@@ -526,7 +520,7 @@ WebInspector.TextPrompt.prototype = {
         }
 
         if (!this._waitingForCompletions || !annotatedCompletions.length) {
-            this.hideSuggestBox();
+            this.clearAutoComplete();
             return;
         }
 
@@ -671,18 +665,12 @@ WebInspector.TextPrompt.prototype = {
         selection.addRange(finalSelectionRange);
 
         if (!prefixAccepted) {
-            this.hideSuggestBox();
+            this.clearAutoComplete();
             this.dispatchEventToListeners(WebInspector.TextPrompt.Events.ItemAccepted);
         } else
             this.autoCompleteSoon(true);
 
         return true;
-    },
-
-    hideSuggestBox: function()
-    {
-        if (this.isSuggestBoxVisible())
-            this._suggestBox.hide();
     },
 
     /**
@@ -897,7 +885,7 @@ WebInspector.TextPromptWithHistory.prototype = {
         if (newText !== undefined) {
             event.consume(true);
             this.setText(newText);
-            this.clearAutoComplete(true);
+            this.clearAutoComplete();
 
             if (isPrevious) {
                 var firstNewlineIndex = this.text().indexOf("\n");

@@ -323,7 +323,7 @@ WebInspector.ConsoleView.prototype = {
 
     _executionContextChanged: function()
     {
-        this._prompt.clearAutoComplete(true);
+        this._prompt.clearAutoComplete();
         if (!this._showAllMessagesCheckbox.checked())
             this._updateMessageList();
     },
@@ -370,8 +370,7 @@ WebInspector.ConsoleView.prototype = {
 
     _hidePromptSuggestBox: function()
     {
-        this._prompt.hideSuggestBox();
-        this._prompt.clearAutoComplete(true);
+        this._prompt.clearAutoComplete();
     },
 
     _scheduleViewportRefresh: function()
@@ -796,7 +795,7 @@ WebInspector.ConsoleView.prototype = {
 
         event.consume(true);
 
-        this._prompt.clearAutoComplete(true);
+        this._prompt.clearAutoComplete();
 
         var str = this._prompt.text();
         if (!str.length)

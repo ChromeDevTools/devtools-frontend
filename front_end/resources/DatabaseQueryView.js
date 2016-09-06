@@ -128,7 +128,7 @@ WebInspector.DatabaseQueryView.prototype = {
     {
         event.consume(true);
 
-        this._prompt.clearAutoComplete(true);
+        this._prompt.clearAutoComplete();
 
         var query = this._prompt.text();
         if (!query.length)

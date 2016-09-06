@@ -113,7 +113,7 @@
     background-size: 190px 30px;
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.5) {
+@media (-webkit-min-device-pixel-ratio: 1.1) {
 .console-message::before,
 .console-user-command::before,
 #console-prompt::before,
@@ -184,7 +184,7 @@
     margin-top: -7px;
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.5) {
+@media (-webkit-min-device-pixel-ratio: 1.1) {
 .console-group-title::before {
     -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
 }
@@ -301,7 +301,7 @@
     height: 10px;
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.5) {
+@media (-webkit-min-device-pixel-ratio: 1.1) {
 .console-error-level .console-message::before,
 .console-revokedError-level .console-message::before,
 .console-warning-level .console-message::before,

@@ -158,7 +158,7 @@
     width: 24px;
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.5) {
+@media (-webkit-min-device-pixel-ratio: 1.1) {
 .tabbed-pane-header-tabs-drop-down-container > .glyph {
     -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
 }
@@ -250,7 +250,7 @@
     border-top: 1px solid hsl(218, 82%, 78%);
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.5) {
+@media (-webkit-min-device-pixel-ratio: 1.1) {
     .tabbed-pane-tab-slider {
         border-top: none;
     }

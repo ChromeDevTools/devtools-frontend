@@ -189,7 +189,7 @@ ol.outline-disclosure:focus li.selected * {
     background-color: transparent;
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.5) {
+@media (-webkit-min-device-pixel-ratio: 1.1) {
 .outline-disclosure li::before {
     -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
 }
@@ -298,7 +298,7 @@ ol.outline-disclosure:focus li.selected * {
     top: 10px;
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.5) {
+@media (-webkit-min-device-pixel-ratio: 1.1) {
 .sidebar-tree-item .disclosure-button {
     -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
 }

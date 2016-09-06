@@ -60,7 +60,7 @@
     flex: none;
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.5) {
+@media (-webkit-min-device-pixel-ratio: 1.1) {
     .toolbar-dropdown-arrow {
         -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
     }
@@ -127,7 +127,7 @@
     transform: translateX(-2px);
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.5) {
+@media (-webkit-min-device-pixel-ratio: 1.1) {
 .toolbar-glyph {
     -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
 }
@@ -252,7 +252,7 @@ input.toolbar-item.hover {
     left:  0;
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.5) {
+@media (-webkit-min-device-pixel-ratio: 1.1) {
 .long-click-glyph {
     -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
 }

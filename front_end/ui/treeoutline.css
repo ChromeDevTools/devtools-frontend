@@ -103,7 +103,7 @@ ol.tree-outline:focus li.selected * {
     background-color: transparent;
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.5) {
+@media (-webkit-min-device-pixel-ratio: 1.1) {
 .tree-outline li::before {
     -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
 }

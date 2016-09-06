@@ -120,7 +120,7 @@
     box-sizing: border-box;
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.5) {
+@media (-webkit-min-device-pixel-ratio: 1.1) {
 .search-drawer-header .search-icon {
     background-image: url(Images/toolbarButtonGlyphs_2x.png);
 }

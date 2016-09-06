@@ -44,7 +44,7 @@ li.storage-group-list-item::before {
     margin-left: -9px;
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.5) {
+@media (-webkit-min-device-pixel-ratio: 1.1) {
 .navigator-tree-item .icon {
     -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
 }
@@ -94,7 +94,7 @@ li.storage-group-list-item::before {
     background: rgba(90, 90, 90, .7);
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.5) {
+@media (-webkit-min-device-pixel-ratio: 1.1) {
 .resource-tree-item .icon {
     -webkit-mask-image: url(Images/resourceGlyphs_2x.png);
 }

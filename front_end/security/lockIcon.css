@@ -14,7 +14,7 @@
     background-color: #888;
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.5) {
+@media (-webkit-min-device-pixel-ratio: 1.1) {
     .lock-icon,
     .security-property {
         -webkit-mask-image: url(Images/securityIcons_2x.png);
@@ -32,7 +32,7 @@
     background-color: #000000; /* Black for clarity on lower DPI screens */
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.5) {
+@media (-webkit-min-device-pixel-ratio: 1.1) {
     .lock-icon-unknown,
     .lock-icon-neutral {
         background-color: #5A5A5A; /* Gray for hiDPI screens */

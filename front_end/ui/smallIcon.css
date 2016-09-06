@@ -24,7 +24,7 @@ div.orange-ball {
     background-size: 190px 30px;
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.5) {
+@media (-webkit-min-device-pixel-ratio: 1.1) {
 div.error-icon,
 div.revokedError-icon,
 div.warning-icon,

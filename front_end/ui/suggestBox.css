@@ -106,7 +106,7 @@
     background-position: -20px -20px;
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.5) {
+@media (-webkit-min-device-pixel-ratio: 1.1) {
 .suggest-box .suggest-box-content-item.additional::before {
     background-image: url(Images/smallIcons_2x.png);
 }

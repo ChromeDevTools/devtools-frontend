@@ -66,7 +66,7 @@
     height: 10px;
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.5) {
+@media (-webkit-min-device-pixel-ratio: 1.1) {
 .list-item.selected::before {
     background-image: url(Images/smallIcons_2x.png);
 }

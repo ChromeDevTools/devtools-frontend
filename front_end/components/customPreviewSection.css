@@ -22,7 +22,7 @@
     text-shadow: none;
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.5) {
+@media (-webkit-min-device-pixel-ratio: 1.1) {
     .custom-expandable-section-header::before {
         background-image: url(Images/toolbarButtonGlyphs_2x.png);
     }

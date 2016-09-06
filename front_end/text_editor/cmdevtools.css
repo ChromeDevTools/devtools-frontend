@@ -92,7 +92,7 @@
     -webkit-border-image: url(Images/breakpointConditional.png) 1 4 1 1;
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.5) {
+@media (-webkit-min-device-pixel-ratio: 1.1) {
 .cm-breakpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
     -webkit-border-image: url(Images/breakpoint_2x.png) 2 8 2 2;
 }
@@ -330,7 +330,7 @@
     background-size: contain;
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.5) {
+@media (-webkit-min-device-pixel-ratio: 1.1) {
 .CodeMirror .text-editor-line-decoration-wave {
     background-image: url(Images/errorWave_2x.png);
 }

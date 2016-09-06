@@ -19,7 +19,7 @@ li {
     -webkit-user-select: text;
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.5) {
+@media (-webkit-min-device-pixel-ratio: 1.1) {
 .severity {
     background-image: url(Images/smallIcons_2x.png);
 }

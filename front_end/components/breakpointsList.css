@@ -139,7 +139,7 @@ li.breakpoint-hit .breakpoint-hit-marker {
     text-shadow: none;
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.5) {
+@media (-webkit-min-device-pixel-ratio: 1.1) {
 .event-listener-breakpoints li.parent::before {
     background-image: url(Images/toolbarButtonGlyphs_2x.png);
 }

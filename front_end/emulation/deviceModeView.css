@@ -230,7 +230,7 @@
     transform: rotate(90deg);
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.5) {
+@media (-webkit-min-device-pixel-ratio: 1.1) {
     .device-mode-right-resizer > div {
         content: url(Images/resizeHorizontal_2x.png);
     }

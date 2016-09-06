@@ -37,7 +37,7 @@ WebInspector.SecurityPanel.Origin;
  * @typedef {Object}
  * @property {!SecurityAgent.SecurityState} securityState - Current security state of the origin.
  * @property {?NetworkAgent.SecurityDetails} securityDetails - Security details of the origin, if available.
- * @property {?Promise<!NetworkAgent.CertificateDetails>} certificateDetailsPromise - Certificate details of the origin. Only available if securityDetails are available.
+ * @property {?Promise<>} certificateDetailsPromise - Certificate details of the origin.
  * @property {?WebInspector.SecurityOriginView} originView - Current SecurityOriginView corresponding to origin.
  */
 WebInspector.SecurityPanel.OriginState;
@@ -172,7 +172,6 @@ WebInspector.SecurityPanel.prototype = {
             var securityDetails = request.securityDetails();
             if (securityDetails) {
                 originState.securityDetails = securityDetails;
-                originState.certificateDetailsPromise = request.networkManager().certificateDetailsPromise(securityDetails.certificateId);
             }
 
             this._origins.set(origin, originState);
@@ -225,6 +224,15 @@ WebInspector.SecurityPanel.prototype = {
     filterRequestCount: function(filterKey)
     {
         return this._filterRequestCounts.get(filterKey) || 0;
+    },
+
+    /**
+     * @param {!SecurityAgent.CertificateId} certificateId
+     */
+    showCertificateViewer: function(certificateId)
+    {
+        var securityModel = WebInspector.SecurityModel.fromTarget(this._target);
+        securityModel.showCertificateViewer(certificateId);
     },
 
     /**
@@ -323,9 +331,10 @@ WebInspector.SecurityPanel._instance = function()
 /**
  * @param {string} text
  * @param {!SecurityAgent.CertificateId} certificateId
+ * @param {!WebInspector.SecurityPanel} panel
  * @return {!Element}
  */
-WebInspector.SecurityPanel.createCertificateViewerButton = function(text, certificateId)
+WebInspector.SecurityPanel.createCertificateViewerButton = function(text, certificateId, panel)
 {
     /**
      * @param {!Event} e
@@ -333,7 +342,31 @@ WebInspector.SecurityPanel.createCertificateViewerButton = function(text, certif
     function showCertificateViewer(e)
     {
         e.consume();
-        WebInspector.multitargetNetworkManager.showCertificateViewer(/** @type {number} */ (certificateId));
+        panel.showCertificateViewer(certificateId);
+    }
+
+    return createTextButton(text, showCertificateViewer, "security-certificate-button");
+}
+
+/**
+ * @param {string} text
+ * @param {string} origin
+ * @return {!Element}
+ */
+WebInspector.SecurityPanel.createCertificateViewerButton2 = function(text, origin)
+{
+    /**
+     * @param {!Event} e
+     */
+    function showCertificateViewer(e)
+    {
+        function certificateCallback(names)
+        {
+            InspectorFrontendHost.showCertificateViewer(names);
+        }
+
+        e.consume();
+        WebInspector.multitargetNetworkManager.getCertificate(origin, certificateCallback);
     }
 
     return createTextButton(text, showCertificateViewer, "security-certificate-button");
@@ -599,7 +632,7 @@ WebInspector.SecurityMainView.prototype = {
         text.createChild("div").textContent = explanation.description;
 
         if (explanation.certificateId) {
-            text.appendChild(WebInspector.SecurityPanel.createCertificateViewerButton(WebInspector.UIString("View certificate"), explanation.certificateId));
+            text.appendChild(WebInspector.SecurityPanel.createCertificateViewerButton(WebInspector.UIString("View certificate"), explanation.certificateId, this._panel));
         }
 
         return text;
@@ -840,79 +873,65 @@ WebInspector.SecurityOriginView = function(panel, origin, originState)
             sctSection.createChild("div", "origin-view-section-title").textContent = WebInspector.UIString("Certificate Transparency");
         }
 
-        /**
-         * @this {WebInspector.SecurityOriginView}
-         * @param {?NetworkAgent.CertificateDetails} certificateDetails
-         */
-        function displayCertificateDetails(certificateDetails)
+        var sanDiv = this._createSanDiv(originState.securityDetails.sanList);
+        var validFromString = new Date(1000 * originState.securityDetails.validFrom).toUTCString();
+        var validUntilString = new Date(1000 * originState.securityDetails.validTo).toUTCString();
+
+        table = new WebInspector.SecurityDetailsTable();
+        certificateSection.appendChild(table.element());
+        table.addRow(WebInspector.UIString("Subject"), originState.securityDetails.subjectName);
+        table.addRow(WebInspector.UIString("SAN"), sanDiv);
+        table.addRow(WebInspector.UIString("Valid From"), validFromString);
+        table.addRow(WebInspector.UIString("Valid Until"), validUntilString);
+        table.addRow(WebInspector.UIString("Issuer"), originState.securityDetails.issuer);
+        table.addRow("", WebInspector.SecurityPanel.createCertificateViewerButton2(WebInspector.UIString("Open full certificate details"), origin));
+
+        if (!originState.securityDetails.signedCertificateTimestampList.length)
+            return;
+
+        // Show summary of SCT(s) of Certificate Transparency.
+        var sctSummaryTable = new WebInspector.SecurityDetailsTable();
+        sctSummaryTable.element().classList.add("sct-summary");
+        sctSection.appendChild(sctSummaryTable.element());
+        for (var i = 0; i < originState.securityDetails.signedCertificateTimestampList.length; i++)
         {
-            var sanDiv = this._createSanDiv(certificateDetails.subject);
-            var validFromString = new Date(1000 * certificateDetails.validFrom).toUTCString();
-            var validUntilString = new Date(1000 * certificateDetails.validTo).toUTCString();
-
-            var table = new WebInspector.SecurityDetailsTable();
-            certificateSection.appendChild(table.element());
-            table.addRow(WebInspector.UIString("Subject"), certificateDetails.subject.name);
-            table.addRow(WebInspector.UIString("SAN"), sanDiv);
-            table.addRow(WebInspector.UIString("Valid From"), validFromString);
-            table.addRow(WebInspector.UIString("Valid Until"), validUntilString);
-            table.addRow(WebInspector.UIString("Issuer"), certificateDetails.issuer);
-            table.addRow("", WebInspector.SecurityPanel.createCertificateViewerButton(WebInspector.UIString("Open full certificate details"), originState.securityDetails.certificateId));
-
-            if (!originState.securityDetails.signedCertificateTimestampList.length)
-                return;
-
-            // Show summary of SCT(s) of Certificate Transparency.
-            var sctSummaryTable = new WebInspector.SecurityDetailsTable();
-            sctSummaryTable.element().classList.add("sct-summary");
-            sctSection.appendChild(sctSummaryTable.element());
-            for (var i = 0; i < originState.securityDetails.signedCertificateTimestampList.length; i++)
-            {
-                var sct = originState.securityDetails.signedCertificateTimestampList[i];
-                sctSummaryTable.addRow(WebInspector.UIString("SCT"), sct.logDescription + " (" + sct.origin + ", " + sct.status + ")");
-            }
-
-            // Show detailed SCT(s) of Certificate Transparency.
-            var sctTableWrapper = sctSection.createChild("div", "sct-details");
-            sctTableWrapper.classList.add("hidden");
-            for (var i = 0; i < originState.securityDetails.signedCertificateTimestampList.length; i++)
-            {
-                var sctTable = new WebInspector.SecurityDetailsTable();
-                sctTableWrapper.appendChild(sctTable.element());
-                var sct = originState.securityDetails.signedCertificateTimestampList[i];
-                sctTable.addRow(WebInspector.UIString("Log Name"), sct.logDescription);
-                sctTable.addRow(WebInspector.UIString("Log ID"), sct.logId.replace(/(.{2})/g,"$1 "));
-                sctTable.addRow(WebInspector.UIString("Validation Status"), sct.status);
-                sctTable.addRow(WebInspector.UIString("Source"), sct.origin);
-                sctTable.addRow(WebInspector.UIString("Issued At"), new Date(sct.timestamp).toUTCString());
-                sctTable.addRow(WebInspector.UIString("Hash Algorithm"), sct.hashAlgorithm);
-                sctTable.addRow(WebInspector.UIString("Signature Algorithm"), sct.signatureAlgorithm);
-                sctTable.addRow(WebInspector.UIString("Signature Data"), sct.signatureData.replace(/(.{2})/g,"$1 "));
-            }
-
-            // Add link to toggle between displaying of the summary of the SCT(s) and the detailed SCT(s).
-            var toggleSctsDetailsLink = sctSection.createChild("div", "link");
-            toggleSctsDetailsLink.classList.add("sct-toggle");
-            toggleSctsDetailsLink.textContent = WebInspector.UIString("Show full details");
-            function toggleSctDetailsDisplay()
-            {
-                var isDetailsShown = !sctTableWrapper.classList.contains("hidden");
-                if (isDetailsShown)
-                    toggleSctsDetailsLink.textContent = WebInspector.UIString("Show full details");
-                else
-                    toggleSctsDetailsLink.textContent = WebInspector.UIString("Hide full details");
-                sctSummaryTable.element().classList.toggle("hidden");
-                sctTableWrapper.classList.toggle("hidden");
-            }
-            toggleSctsDetailsLink.addEventListener("click", toggleSctDetailsDisplay, false);
+            var sct = originState.securityDetails.signedCertificateTimestampList[i];
+            sctSummaryTable.addRow(WebInspector.UIString("SCT"), sct.logDescription + " (" + sct.origin + ", " + sct.status + ")");
         }
 
-        function displayCertificateDetailsUnavailable()
+        // Show detailed SCT(s) of Certificate Transparency.
+        var sctTableWrapper = sctSection.createChild("div", "sct-details");
+        sctTableWrapper.classList.add("hidden");
+        for (var i = 0; i < originState.securityDetails.signedCertificateTimestampList.length; i++)
         {
-            certificateSection.createChild("div").textContent = WebInspector.UIString("Certificate details unavailable.");
+            var sctTable = new WebInspector.SecurityDetailsTable();
+            sctTableWrapper.appendChild(sctTable.element());
+            var sct = originState.securityDetails.signedCertificateTimestampList[i];
+            sctTable.addRow(WebInspector.UIString("Log Name"), sct.logDescription);
+            sctTable.addRow(WebInspector.UIString("Log ID"), sct.logId.replace(/(.{2})/g,"$1 "));
+            sctTable.addRow(WebInspector.UIString("Validation Status"), sct.status);
+            sctTable.addRow(WebInspector.UIString("Source"), sct.origin);
+            sctTable.addRow(WebInspector.UIString("Issued At"), new Date(sct.timestamp).toUTCString());
+            sctTable.addRow(WebInspector.UIString("Hash Algorithm"), sct.hashAlgorithm);
+            sctTable.addRow(WebInspector.UIString("Signature Algorithm"), sct.signatureAlgorithm);
+            sctTable.addRow(WebInspector.UIString("Signature Data"), sct.signatureData.replace(/(.{2})/g,"$1 "));
         }
 
-        originState.certificateDetailsPromise.then(displayCertificateDetails.bind(this), displayCertificateDetailsUnavailable);
+        // Add link to toggle between displaying of the summary of the SCT(s) and the detailed SCT(s).
+        var toggleSctsDetailsLink = sctSection.createChild("div", "link");
+        toggleSctsDetailsLink.classList.add("sct-toggle");
+        toggleSctsDetailsLink.textContent = WebInspector.UIString("Show full details");
+        function toggleSctDetailsDisplay()
+        {
+            var isDetailsShown = !sctTableWrapper.classList.contains("hidden");
+            if (isDetailsShown)
+                toggleSctsDetailsLink.textContent = WebInspector.UIString("Show full details");
+            else
+                toggleSctsDetailsLink.textContent = WebInspector.UIString("Hide full details");
+            sctSummaryTable.element().classList.toggle("hidden");
+            sctTableWrapper.classList.toggle("hidden");
+        }
+        toggleSctsDetailsLink.addEventListener("click", toggleSctDetailsDisplay, false);
 
         var noteSection = this.element.createChild("div", "origin-view-section");
         // TODO(lgarron): Fix the issue and then remove this section. See comment in SecurityPanel._processRequest().
@@ -931,13 +950,12 @@ WebInspector.SecurityOriginView = function(panel, origin, originState)
 WebInspector.SecurityOriginView.prototype = {
 
     /**
-     * @param {!NetworkAgent.CertificateSubject} certificateSubject
+     * @param {!Array<string>} sanList
      * *return {!Element}
      */
-    _createSanDiv: function(certificateSubject)
+    _createSanDiv: function(sanList)
     {
         var sanDiv = createElement("div");
-        var sanList = certificateSubject.sanDnsNames.concat(certificateSubject.sanIpAddresses);
         if (sanList.length === 0) {
             sanDiv.textContent = WebInspector.UIString("(N/A)");
             sanDiv.classList.add("empty-san");

@@ -22,7 +22,15 @@ WebInspector.SecurityModel.Events = {
 }
 
 WebInspector.SecurityModel.prototype = {
-    __proto__: WebInspector.SDKModel.prototype
+    __proto__: WebInspector.SDKModel.prototype,
+
+    /**
+     * @param {!SecurityAgent.CertificateId} certificateId
+     */
+    showCertificateViewer: function(certificateId)
+    {
+        this._securityAgent.showCertificateViewer(certificateId);
+    }
 }
 
 /**

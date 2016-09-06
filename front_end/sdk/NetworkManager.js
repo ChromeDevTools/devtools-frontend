@@ -51,9 +51,6 @@ WebInspector.NetworkManager = function(target)
     else
         this._networkAgent.enable();
 
-    /** @type {!Map<!SecurityAgent.CertificateId, !Promise<!NetworkAgent.CertificateDetails>>} */
-    this._certificateDetailsCache = new Map();
-
     this._bypassServiceWorkerSetting = WebInspector.settings.createSetting("bypassServiceWorker", false);
     if (this._bypassServiceWorkerSetting.get())
         this._bypassServiceWorkerChanged();
@@ -147,44 +144,6 @@ WebInspector.NetworkManager.prototype = {
     dispose: function()
     {
         WebInspector.moduleSetting("cacheDisabled").removeChangeListener(this._cacheDisabledSettingChanged, this);
-    },
-
-    /**
-     * @param {!SecurityAgent.CertificateId} certificateId
-     * @return {!Promise<!NetworkAgent.CertificateDetails>}
-     */
-    certificateDetailsPromise: function(certificateId)
-    {
-        var cachedPromise = this._certificateDetailsCache.get(certificateId);
-        if (cachedPromise)
-            return cachedPromise;
-
-        /**
-         * @this {WebInspector.NetworkManager}
-         * @param {function(?NetworkAgent.CertificateDetails)} resolve
-         * @param {function()} reject
-         */
-        function executor(resolve, reject) {
-            /**
-             * @param {?Protocol.Error} error
-             * @param {?NetworkAgent.CertificateDetails} certificateDetails
-             */
-            function innerCallback(error, certificateDetails)
-            {
-                if (error) {
-                    console.error("Unable to get certificate details from the browser (for certificate ID ", certificateId, "): ", error);
-                    reject();
-                } else {
-                    resolve(certificateDetails);
-                }
-            }
-            this._networkAgent.getCertificateDetails(certificateId, innerCallback);
-        }
-
-        var promise = new Promise(executor.bind(this));
-
-        this._certificateDetailsCache.set(certificateId, promise);
-        return promise;
     },
 
     /**
@@ -918,13 +877,22 @@ WebInspector.MultitargetNetworkManager.prototype = {
     },
 
     /**
-     * @param {!SecurityAgent.CertificateId} certificateId
+     * @param {string} origin
+     * @param {function(!Array<string>)} callback
      */
-    showCertificateViewer: function(certificateId)
+    getCertificate: function(origin, callback)
     {
         var target = WebInspector.targetManager.mainTarget();
-        if (target)
-            target.networkAgent().showCertificateViewer(certificateId);
+        target.networkAgent().getCertificate(origin, mycallback);
+
+        /**
+         * @param {?Protocol.Error} error
+         * @param {!Array<string>} certificate
+         */
+        function mycallback(error, certificate)
+        {
+            callback(error ? [] : certificate);
+        }
     },
 
     /**

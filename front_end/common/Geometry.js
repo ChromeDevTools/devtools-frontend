@@ -90,6 +90,17 @@ WebInspector.Geometry.Point.prototype = {
     },
 
     /**
+     * @param {!WebInspector.Geometry.Point} line
+     * @return {!WebInspector.Geometry.Point}
+     */
+    projectOn: function(line)
+    {
+        if (line.x === 0 && line.y === 0)
+            return new WebInspector.Geometry.Point(0, 0);
+        return line.scale((this.x * line.x + this.y * line.y) / (Math.pow(line.x, 2) + Math.pow(line.y, 2)));
+    },
+
+    /**
      * @param {number} scalar
      * @return {!WebInspector.Geometry.Point}
      */

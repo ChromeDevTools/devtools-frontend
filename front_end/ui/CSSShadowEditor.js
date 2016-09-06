@@ -297,7 +297,7 @@ WebInspector.CSSShadowEditor.prototype = {
     },
 
     /**
-     * @param {!Event} event
+     * @param {!MouseEvent} event
      * @return {boolean}
      */
     _dragStart: function(event)
@@ -313,16 +313,26 @@ WebInspector.CSSShadowEditor.prototype = {
     },
 
     /**
-     * @param {!Event} event
+     * @param {!MouseEvent} event
      */
     _dragMove: function(event)
     {
         var point = new WebInspector.Geometry.Point(event.x - this._canvasOrigin.x, event.y - this._canvasOrigin.y);
+        if (event.shiftKey)
+            point = this._snapToClosestDirection(point);
         var constrainedPoint = this._constrainPoint(point, this._innerCanvasSize);
         var newX = Math.round((constrainedPoint.x / this._innerCanvasSize) * WebInspector.CSSShadowEditor.maxRange);
         var newY = Math.round((constrainedPoint.y / this._innerCanvasSize) * WebInspector.CSSShadowEditor.maxRange);
-        this._model.setOffsetX(new WebInspector.CSSLength(newX, this._model.offsetX().unit || WebInspector.CSSShadowEditor.defaultUnit));
-        this._model.setOffsetY(new WebInspector.CSSLength(newY, this._model.offsetY().unit || WebInspector.CSSShadowEditor.defaultUnit));
+
+        if (event.shiftKey) {
+            this._model.setOffsetX(new WebInspector.CSSLength(newX, this._model.offsetX().unit || WebInspector.CSSShadowEditor.defaultUnit));
+            this._model.setOffsetY(new WebInspector.CSSLength(newY, this._model.offsetY().unit || WebInspector.CSSShadowEditor.defaultUnit));
+        } else {
+            if (!event.altKey)
+                this._model.setOffsetX(new WebInspector.CSSLength(newX, this._model.offsetX().unit || WebInspector.CSSShadowEditor.defaultUnit));
+            if (!WebInspector.KeyboardShortcut.eventHasCtrlOrMeta(event))
+                this._model.setOffsetY(new WebInspector.CSSLength(newY, this._model.offsetY().unit || WebInspector.CSSShadowEditor.defaultUnit));
+        }
         this._xInput.value = this._model.offsetX().asCSSText();
         this._yInput.value = this._model.offsetY().asCSSText();
         this._xInput.classList.remove("invalid");
@@ -388,6 +398,34 @@ WebInspector.CSSShadowEditor.prototype = {
         if (Math.abs(point.x) <= max && Math.abs(point.y) <= max)
             return new WebInspector.Geometry.Point(point.x, point.y);
         return point.scale(max / Math.max(Math.abs(point.x), Math.abs(point.y)));
+    },
+
+    /**
+     * @param {!WebInspector.Geometry.Point} point
+     * @return {!WebInspector.Geometry.Point}
+     */
+    _snapToClosestDirection: function(point)
+    {
+        var minDistance = Number.MAX_VALUE;
+        var closestPoint = point;
+
+        var directions = [
+            new WebInspector.Geometry.Point(0, -1), // North
+            new WebInspector.Geometry.Point(1, -1), // Northeast
+            new WebInspector.Geometry.Point(1, 0),  // East
+            new WebInspector.Geometry.Point(1, 1)   // Southeast
+        ];
+
+        for (var direction of directions) {
+            var projection = point.projectOn(direction);
+            var distance = point.distanceTo(projection);
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestPoint = projection;
+            }
+        }
+
+        return closestPoint;
     },
 
     /**

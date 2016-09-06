@@ -7,6 +7,10 @@
         {
             "type": "@WebInspector.TokenizerFactory",
             "className": "WebInspector.CodeMirrorUtils.TokenizerFactory"
+        },
+        {
+            "type": "@WebInspector.TextEditorFactory",
+            "className": "WebInspector.CodeMirrorTextEditorFactory"
         }
     ],
     "dependencies": [

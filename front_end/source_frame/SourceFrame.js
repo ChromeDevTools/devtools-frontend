@@ -510,7 +510,7 @@ WebInspector.SourceFrame.prototype = {
         this._resetCurrentSearchResultIndex();
 
         var text = this._textEditor.text();
-        var range = this._textEditor.range();
+        var range = this._textEditor.fullRange();
 
         var regex = searchConfig.toSearchRegex(true);
         if (regex.__fromRegExpQuery)

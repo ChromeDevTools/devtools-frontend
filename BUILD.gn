@@ -249,6 +249,7 @@ devtools_ui_js_files = [
   "front_end/ui/HistoryInput.js",
   "front_end/ui/Infobar.js",
   "front_end/ui/InplaceEditor.js",
+  "front_end/ui/TextEditor.js",
   "front_end/ui/InspectorView.js",
   "front_end/ui/KeyboardShortcut.js",
   "front_end/ui/ListWidget.js",

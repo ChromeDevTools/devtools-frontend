@@ -27,6 +27,7 @@
         "HistoryInput.js",
         "Infobar.js",
         "InplaceEditor.js",
+        "TextEditor.js",
         "KeyboardShortcut.js",
         "ListWidget.js",
         "Panel.js",

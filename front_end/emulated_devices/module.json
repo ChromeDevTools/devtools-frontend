@@ -829,6 +829,43 @@
         },
         {
             "type": "emulated-device",
+            "order": 80,
+            "device": {
+                "show-by-default": true,
+                "title": "iPad Pro",
+                "screen": {
+                    "horizontal": {
+                        "width": 1366,
+                        "height": 1024
+                    },
+                    "device-pixel-ratio": 2,
+                    "vertical": {
+                        "width": 1024,
+                        "height": 1366
+                    }
+                },
+                "capabilities": [
+                    "touch",
+                    "mobile"
+                ],
+                "user-agent": "Mozilla/5.0 (iPad; CPU OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1",
+                "type": "tablet",
+                "modes": [
+                    {
+                        "title": "default",
+                        "orientation": "vertical",
+                        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+                    },
+                    {
+                        "title": "default",
+                        "orientation": "horizontal",
+                        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "emulated-device",
             "device": {
                 "show-by-default": false,
                 "title": "Blackberry PlayBook",

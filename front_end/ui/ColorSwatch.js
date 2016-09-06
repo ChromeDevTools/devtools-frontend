@@ -164,20 +164,68 @@ WebInspector.ColorSwatch._nextColorFormat = function(color, curFormat)
     }
 }
 
-
-WebInspector.BezierSwatch = {}
+/**
+ * @constructor
+ * @extends {HTMLSpanElement}
+ */
+WebInspector.BezierSwatch = function()
+{
+}
 
 /**
- * @return {!Element}
+ * @return {!WebInspector.BezierSwatch}
  */
 WebInspector.BezierSwatch.create = function()
 {
-    var element = createElementWithClass("span", "bezier-icon");
-    var root = WebInspector.createShadowRootWithCoreStyles(element, "ui/bezierSwatch.css");
-    root.createChild("span", "bezier-swatch");
-    return element;
+    if (!WebInspector.BezierSwatch._constructor)
+        WebInspector.BezierSwatch._constructor = registerCustomElement("span", "bezier-swatch", WebInspector.BezierSwatch.prototype);
+
+    return /** @type {!WebInspector.BezierSwatch} */(new WebInspector.BezierSwatch._constructor());
 }
 
+WebInspector.BezierSwatch.prototype = {
+    /**
+     * @return {string}
+     */
+    bezierText: function()
+    {
+        return this._textElement.textContent;
+    },
+
+    /**
+     * @param {string} text
+     */
+    setBezierText: function(text)
+    {
+        this._textElement.textContent = text;
+    },
+
+    /**
+     * @param {boolean} hide
+     */
+    hideText: function(hide)
+    {
+        this._textElement.hidden = hide;
+    },
+
+    /**
+     * @return {!Element}
+     */
+    iconElement: function()
+    {
+        return this._iconElement;
+    },
+
+    createdCallback: function()
+    {
+        var root = WebInspector.createShadowRootWithCoreStyles(this, "ui/bezierSwatch.css");
+        this._iconElement = root.createChild("span", "bezier-swatch-icon");
+        this._textElement = this.createChild("span");
+        root.createChild("content");
+    },
+
+    __proto__: HTMLSpanElement.prototype
+}
 
 /**
  * @constructor
@@ -231,7 +279,7 @@ WebInspector.CSSShadowSwatch.prototype = {
     /**
      * @param {boolean} hide
      */
-    setTextHidden: function(hide)
+    hideText: function(hide)
     {
         this._contentElement.hidden = hide;
     },

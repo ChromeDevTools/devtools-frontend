@@ -5,7 +5,7 @@
  */
 
 :host {
-  white-space: nowrap;
+    white-space: nowrap;
 }
 
 .color-swatch {

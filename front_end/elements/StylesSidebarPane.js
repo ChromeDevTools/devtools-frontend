@@ -2014,11 +2014,13 @@ WebInspector.StylePropertyTreeElement.prototype = {
      */
     _processBezier: function(text)
     {
-        var geometry = WebInspector.Geometry.CubicBezier.parse(text);
-        if (!geometry || !this._editable())
+        if (!this._editable() || !WebInspector.Geometry.CubicBezier.parse(text))
             return createTextNode(text);
         var swatchPopoverHelper = this._parentPane._swatchPopoverHelper;
-        return new WebInspector.BezierPopoverIcon(this, swatchPopoverHelper, text).element();
+        var swatch = WebInspector.BezierSwatch.create();
+        swatch.setBezierText(text);
+        new WebInspector.BezierPopoverIcon(this, swatchPopoverHelper, swatch);
+        return swatch;
     },
 
     /**

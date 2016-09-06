@@ -6,34 +6,22 @@
  * @constructor
  * @param {!WebInspector.StylePropertyTreeElement} treeElement
  * @param {!WebInspector.SwatchPopoverHelper} swatchPopoverHelper
- * @param {string} text
+ * @param {!WebInspector.BezierSwatch} swatch
  */
-WebInspector.BezierPopoverIcon = function(treeElement, swatchPopoverHelper, text)
+WebInspector.BezierPopoverIcon = function(treeElement, swatchPopoverHelper, swatch)
 {
     this._treeElement = treeElement;
     this._swatchPopoverHelper = swatchPopoverHelper;
+    this._swatch = swatch;
 
-    this._element = createElement("span");
-    this._iconElement = WebInspector.BezierSwatch.create();
-    this._iconElement.title = WebInspector.UIString("Open cubic bezier editor");
-    this._iconElement.addEventListener("click", this._iconClick.bind(this), false);
-    this._element.appendChild(this._iconElement);
-    this._bezierValueElement = this._element.createChild("span");
-    this._bezierValueElement.textContent = text;
+    this._swatch.iconElement().title = WebInspector.UIString("Open cubic bezier editor.");
+    this._swatch.iconElement().addEventListener("click", this._iconClick.bind(this), false);
 
     this._boundBezierChanged = this._bezierChanged.bind(this);
     this._boundOnScroll = this._onScroll.bind(this);
 }
 
 WebInspector.BezierPopoverIcon.prototype = {
-    /**
-     * @return {!Element}
-     */
-    element: function()
-    {
-        return this._element;
-    },
-
     /**
      * @param {!Event} event
      */
@@ -46,11 +34,13 @@ WebInspector.BezierPopoverIcon.prototype = {
         }
 
         this._bezierEditor = new WebInspector.BezierEditor();
-        var geometry = WebInspector.Geometry.CubicBezier.parse(this._bezierValueElement.textContent);
-        this._bezierEditor.setBezier(geometry);
+        var cubicBezier = WebInspector.Geometry.CubicBezier.parse(this._swatch.bezierText());
+        if (!cubicBezier)
+            cubicBezier = /** @type {!WebInspector.Geometry.CubicBezier} */ (WebInspector.Geometry.CubicBezier.parse("linear"));
+        this._bezierEditor.setBezier(cubicBezier);
         this._bezierEditor.addEventListener(WebInspector.BezierEditor.Events.BezierChanged, this._boundBezierChanged);
-        this._swatchPopoverHelper.show(this._bezierEditor, this._iconElement, this._onPopoverHidden.bind(this));
-        this._scrollerElement = this._iconElement.enclosingNodeOrSelfWithClass("style-panes-wrapper");
+        this._swatchPopoverHelper.show(this._bezierEditor, this._swatch.iconElement(), this._onPopoverHidden.bind(this));
+        this._scrollerElement = this._swatch.enclosingNodeOrSelfWithClass("style-panes-wrapper");
         if (this._scrollerElement)
             this._scrollerElement.addEventListener("scroll", this._boundOnScroll, false);
 
@@ -66,7 +56,7 @@ WebInspector.BezierPopoverIcon.prototype = {
      */
     _bezierChanged: function(event)
     {
-        this._bezierValueElement.textContent = /** @type {string} */ (event.data);
+        this._swatch.setBezierText(/** @type {string} */ (event.data));
         this._treeElement.applyStyleText(this._treeElement.renderedPropertyText(), false);
     },
 

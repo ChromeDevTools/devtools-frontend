@@ -139,7 +139,7 @@ WebInspector.CSSShadowEditor.prototype = {
         // Draw dashed axes.
         context.save();
         context.setLineDash([1, 1]);
-        context.strokeStyle = "rgba(0, 0, 0, 0.2)";
+        context.strokeStyle = "rgba(210, 210, 210, 0.8)";
         context.beginPath();
         context.moveTo(this._halfCanvasSize, 0);
         context.lineTo(this._halfCanvasSize, WebInspector.CSSShadowEditor.canvasSize);
@@ -153,7 +153,7 @@ WebInspector.CSSShadowEditor.prototype = {
         context.save();
         context.translate(this._halfCanvasSize, this._halfCanvasSize);
         context.lineWidth = 2;
-        context.strokeStyle = "rgba(0, 0, 0, 0.3)";
+        context.strokeStyle = "rgba(130, 130, 130, 0.75)";
         context.beginPath();
         context.moveTo(0, 0);
         context.lineTo(thumbPoint.x, thumbPoint.y);

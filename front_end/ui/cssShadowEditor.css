@@ -65,12 +65,12 @@
     background-color: #eeeeee;
 }
 
-.shadow-editor-button-left.enabled, .shadow-editor-button-right.enabled {
+.shadow-editor-button-left.enabled, .shadow-editor-button-right.enabled, -theme-preserve {
     background-color: #4285F4;
     color: #ffffff;
 }
 
-.shadow-editor-button-left.enabled:focus, .shadow-editor-button-right.enabled:focus {
+.shadow-editor-button-left.enabled:focus, .shadow-editor-button-right.enabled:focus, -theme-preserve  {
     background-color: #3B78E7;
 }
 
@@ -89,7 +89,7 @@
     text-align: right;
 }
 
-.shadow-editor-text-input:focus {
+.shadow-editor-text-input:focus, -theme-preserve {
     border-color: #4285F4;
 }
 

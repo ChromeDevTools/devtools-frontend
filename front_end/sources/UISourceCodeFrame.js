@@ -91,9 +91,28 @@ WebInspector.UISourceCodeFrame.prototype = {
     willHide: function()
     {
         WebInspector.SourceFrame.prototype.willHide.call(this);
+        WebInspector.context.setFlavor(WebInspector.UISourceCodeFrame, null);
         this.element.ownerDocument.defaultView.removeEventListener("focus", this._boundWindowFocused, false);
         delete this._boundWindowFocused;
         this._uiSourceCode.removeWorkingCopyGetter();
+    },
+
+    /**
+     * @override
+     */
+    editorFocused: function()
+    {
+        WebInspector.SourceFrame.prototype.editorFocused.call(this);
+        WebInspector.context.setFlavor(WebInspector.UISourceCodeFrame, this);
+    },
+
+    /**
+     * @override
+     */
+    editorBlurred: function()
+    {
+        WebInspector.context.setFlavor(WebInspector.UISourceCodeFrame, null);
+        WebInspector.SourceFrame.prototype.editorBlurred.call(this);
     },
 
     /**

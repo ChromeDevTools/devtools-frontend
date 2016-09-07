@@ -215,7 +215,6 @@ WebInspector.TabbedEditorContainer.prototype = {
 
         var previousView = this._currentView;
         this._currentView = this.visibleView;
-        WebInspector.context.setFlavor(WebInspector.UISourceCodeFrame, this._currentView instanceof WebInspector.UISourceCodeFrame ? this._currentView : null);
         this._addViewListeners();
 
         var eventData = {
@@ -255,8 +254,6 @@ WebInspector.TabbedEditorContainer.prototype = {
             if (nextTabId)
                 this._tabbedPane.selectTab(nextTabId, true);
             this._tabbedPane.closeTab(id, true);
-            if (WebInspector.context.flavor(WebInspector.UISourceCodeFrame) === previousView)
-                WebInspector.context.setFlavor(WebInspector.UISourceCodeFrame, null);
             return true;
         }
         return false;

@@ -27,6 +27,7 @@ WebInspector.SourcesTextEditor = function(delegate)
     this.codeMirror().on("gutterClick", this._gutterClick.bind(this));
     this.codeMirror().on("scroll", this._scroll.bind(this));
     this.codeMirror().on("focus", this._focus.bind(this));
+    this.codeMirror().on("blur", this._blur.bind(this));
     this.codeMirror().on("beforeSelectionChange", this._beforeSelectionChangeForDelegate.bind(this));
     this.element.addEventListener("contextmenu", this._contextMenu.bind(this), false);
 
@@ -432,6 +433,11 @@ WebInspector.SourcesTextEditor.prototype = {
         this._delegate.editorFocused();
     },
 
+    _blur: function()
+    {
+        this._delegate.editorBlurred();
+    },
+
     /**
      * @param {!CodeMirror} codeMirror
      * @param {{ranges: !Array.<{head: !CodeMirror.Pos, anchor: !CodeMirror.Pos}>}} selection
@@ -626,6 +632,8 @@ WebInspector.SourcesTextEditorDelegate.prototype = {
     scrollChanged: function(lineNumber) { },
 
     editorFocused: function() { },
+
+    editorBlurred: function() { },
 
     /**
      * @param {!WebInspector.ContextMenu} contextMenu

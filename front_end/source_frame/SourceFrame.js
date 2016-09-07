@@ -365,6 +365,13 @@ WebInspector.SourceFrame.prototype = {
         this._resetCurrentSearchResultIndex();
     },
 
+    /**
+     * @override
+     */
+    editorBlurred: function()
+    {
+    },
+
     _resetCurrentSearchResultIndex: function()
     {
         if (!this._searchResults.length)

@@ -302,7 +302,7 @@
             "title": "Automatically reveal files in navigator",
             "settingName": "autoRevealInNavigator",
             "settingType": "boolean",
-            "defaultValue": false
+            "defaultValue": true
         },
         {
             "type": "setting",

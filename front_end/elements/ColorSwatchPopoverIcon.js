@@ -79,8 +79,9 @@ WebInspector.BezierPopoverIcon.prototype = {
         this._bezierEditor.removeEventListener(WebInspector.BezierEditor.Events.BezierChanged, this._boundBezierChanged);
         delete this._bezierEditor;
 
-        var propertyText = commitEdit ? this._treeElement.renderedPropertyText() : this._originalPropertyText;
-        this._treeElement.applyStyleText(propertyText, true);
+        // Clicking between swatches in the same section should open each swatch popover. crbug.com/644779
+        if (!commitEdit)
+            this._treeElement.applyStyleText(this._originalPropertyText, true);
         this._treeElement.parentPane().setEditingStyle(false);
         delete this._originalPropertyText;
     }
@@ -206,8 +207,9 @@ WebInspector.ColorSwatchPopoverIcon.prototype = {
         this._spectrum.removeEventListener(WebInspector.Spectrum.Events.ColorChanged, this._boundSpectrumChanged);
         delete this._spectrum;
 
-        var propertyText = commitEdit ? this._treeElement.renderedPropertyText() : this._originalPropertyText;
-        this._treeElement.applyStyleText(propertyText, true);
+        // Clicking between swatches in the same section should open each swatch popover. crbug.com/644779
+        if (!commitEdit)
+            this._treeElement.applyStyleText(this._originalPropertyText, true);
         this._treeElement.parentPane().setEditingStyle(false);
         delete this._originalPropertyText;
     }
@@ -288,8 +290,9 @@ WebInspector.ShadowSwatchPopoverHelper.prototype = {
         this._cssShadowEditor.removeEventListener(WebInspector.CSSShadowEditor.Events.ShadowChanged, this._boundShadowChanged);
         delete this._cssShadowEditor;
 
-        var propertyText = commitEdit ? this._treeElement.renderedPropertyText() : this._originalPropertyText;
-        this._treeElement.applyStyleText(propertyText, true);
+        // Clicking between swatches in the same section should open each swatch popover. crbug.com/644779
+        if (!commitEdit)
+            this._treeElement.applyStyleText(this._originalPropertyText, true);
         this._treeElement.parentPane().setEditingStyle(false);
         delete this._originalPropertyText;
     }

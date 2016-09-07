@@ -261,13 +261,13 @@ WebInspector.CSSShadowSwatch.prototype = {
     setCSSShadow: function(model)
     {
         this._model = model;
-        this._colorSwatch = null;
         this._contentElement.removeChildren();
         var results = WebInspector.TextUtils.splitStringByRegexes(model.asCSSText(), [/inset/g, WebInspector.Color.Regex]);
         for (var i = 0; i < results.length; i++) {
             var result = results[i];
             if (result.regexIndex === 1) {
-                this._colorSwatch = WebInspector.ColorSwatch.create();
+                if (!this._colorSwatch)
+                    this._colorSwatch = WebInspector.ColorSwatch.create();
                 this._colorSwatch.setColorText(result.value);
                 this._contentElement.appendChild(this._colorSwatch);
             } else {
@@ -293,7 +293,7 @@ WebInspector.CSSShadowSwatch.prototype = {
     },
 
     /**
-     * @return {!WebInspector.ColorSwatch}
+     * @return {?WebInspector.ColorSwatch}
      */
     colorSwatch: function()
     {

@@ -2048,8 +2048,9 @@ WebInspector.StylePropertyTreeElement.prototype = {
             var cssShadowSwatch = WebInspector.CSSShadowSwatch.create();
             cssShadowSwatch.setCSSShadow(shadows[i]);
             new WebInspector.ShadowSwatchPopoverHelper(this, swatchPopoverHelper, cssShadowSwatch);
-            if (cssShadowSwatch.colorSwatch())
-                var colorSwatchIcon = new WebInspector.ColorSwatchPopoverIcon(this, swatchPopoverHelper, cssShadowSwatch.colorSwatch());
+            var colorSwatch = cssShadowSwatch.colorSwatch();
+            if (colorSwatch)
+                new WebInspector.ColorSwatchPopoverIcon(this, swatchPopoverHelper, colorSwatch);
             container.appendChild(cssShadowSwatch);
         }
         return container;

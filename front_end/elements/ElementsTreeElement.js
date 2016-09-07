@@ -1445,13 +1445,15 @@ WebInspector.ElementsTreeElement.prototype = {
         case Node.TEXT_NODE:
             if (node.parentNode && node.parentNode.nodeName().toLowerCase() === "script") {
                 var newNode = titleDOM.createChild("span", "webkit-html-text-node webkit-html-js-node");
-                newNode.textContent = node.nodeValue();
+                var text = node.nodeValue();
+                newNode.textContent = text.startsWith("\n") ? text.substring(1) : text;
 
                 var javascriptSyntaxHighlighter = new WebInspector.DOMSyntaxHighlighter("text/javascript", true);
                 javascriptSyntaxHighlighter.syntaxHighlightNode(newNode).then(updateSearchHighlight.bind(this));
             } else if (node.parentNode && node.parentNode.nodeName().toLowerCase() === "style") {
                 var newNode = titleDOM.createChild("span", "webkit-html-text-node webkit-html-css-node");
-                newNode.textContent = node.nodeValue();
+                var text = node.nodeValue();
+                newNode.textContent = text.startsWith("\n") ? text.substring(1) : text;
 
                 var cssSyntaxHighlighter = new WebInspector.DOMSyntaxHighlighter("text/css", true);
                 cssSyntaxHighlighter.syntaxHighlightNode(newNode).then(updateSearchHighlight.bind(this));

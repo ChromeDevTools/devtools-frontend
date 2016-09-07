@@ -75,7 +75,7 @@ WebInspector.DOMSyntaxHighlighter.prototype = {
         {
             node.removeChildren();
             var tokenize = tokenizerFactory.createTokenizer(this._mimeType);
-            for (var i = lines[0].length ? 0 : 1; i < lines.length; ++i) {
+            for (var i = 0; i < lines.length; ++i) {
                 line = lines[i];
                 plainTextStart = 0;
                 tokenize(line, processToken.bind(this));

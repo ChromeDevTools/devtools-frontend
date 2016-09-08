@@ -786,7 +786,7 @@ Runtime.Module.prototype = {
      */
     _remoteBase: function()
     {
-        return this._descriptor.remote && Runtime._remoteBase || undefined;
+        return !Runtime.queryParam("debugFrontend") && this._descriptor.remote && Runtime._remoteBase || undefined;
     },
 
     /**

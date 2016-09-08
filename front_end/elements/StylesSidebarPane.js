@@ -3060,7 +3060,7 @@ WebInspector.StylesSidebarPropertyRenderer.prototype = {
             return valueElement;
 
         if (this._shadowHandler && (this._propertyName === "box-shadow" || this._propertyName === "text-shadow" || this._propertyName === "-webkit-box-shadow")
-                && !WebInspector.CSSMetadata.VariableRegex.test(this._propertyValue) && Runtime.experiments.isEnabled("shadowEditor")) {
+                && !WebInspector.CSSMetadata.VariableRegex.test(this._propertyValue)) {
             valueElement.appendChild(this._shadowHandler(this._propertyValue, this._propertyName));
             valueElement.normalize();
             return valueElement;

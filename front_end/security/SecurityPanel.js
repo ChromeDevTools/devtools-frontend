@@ -805,7 +805,7 @@ WebInspector.SecurityMainView.prototype = {
                 "description": WebInspector.UIString("This site includes resources that were loaded with certificate errors.")
             }));
         }
-      },
+    },
 
 
     __proto__: WebInspector.VBox.prototype

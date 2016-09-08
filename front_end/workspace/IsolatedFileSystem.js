@@ -216,7 +216,7 @@ WebInspector.IsolatedFileSystem.prototype = {
              */
             function fileCreationError(error)
             {
-                if (error.name === 'InvalidModificationError') {
+                if (error.name === "InvalidModificationError") {
                     dirEntryLoaded.call(this, dirEntry);
                     return;
                 }
@@ -324,7 +324,7 @@ WebInspector.IsolatedFileSystem.prototype = {
          */
         function errorHandler(error)
         {
-            if (error.name === 'NotFoundError') {
+            if (error.name === "NotFoundError") {
                 callback(null);
                 return;
             }
@@ -438,7 +438,7 @@ WebInspector.IsolatedFileSystem.prototype = {
          */
         function newFileEntryLoadErrorHandler(error)
         {
-            if (error.name !== 'NotFoundError') {
+            if (error.name !== "NotFoundError") {
                 callback(false);
                 return;
             }

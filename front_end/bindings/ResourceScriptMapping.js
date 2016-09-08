@@ -40,9 +40,6 @@ WebInspector.ResourceScriptMapping = function(debuggerModel, workspace, networkM
 {
     this._target = debuggerModel.target();
     this._debuggerModel = debuggerModel;
-    this._workspace = workspace;
-    this._workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
-    this._workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
     this._networkMapping = networkMapping;
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
     /** @type {!Array.<!WebInspector.UISourceCode>} */
@@ -51,7 +48,11 @@ WebInspector.ResourceScriptMapping = function(debuggerModel, workspace, networkM
     /** @type {!Map.<!WebInspector.UISourceCode, !WebInspector.ResourceScriptFile>} */
     this._uiSourceCodeToScriptFile = new Map();
 
-    debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this);
+    this._eventListeners = [
+        debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this),
+        workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this),
+        workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this)
+    ];
 }
 
 WebInspector.ResourceScriptMapping.prototype = {
@@ -267,11 +268,9 @@ WebInspector.ResourceScriptMapping.prototype = {
 
     dispose: function()
     {
+        WebInspector.EventTarget.removeEventListeners(this._eventListeners);
         this._debuggerReset();
-        this._workspace.removeEventListener(WebInspector.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
-        this._workspace.removeEventListener(WebInspector.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
     }
-
 }
 
 /**

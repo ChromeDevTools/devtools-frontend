@@ -55,7 +55,6 @@ WebInspector.ScriptSnippetModel.snippetSourceURLPrefix = "snippets:///";
 
 
 WebInspector.ScriptSnippetModel.prototype = {
-
     /**
      * @override
      * @param {!WebInspector.Target} target

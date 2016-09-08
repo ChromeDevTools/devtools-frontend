@@ -39,11 +39,15 @@ WebInspector.DefaultScriptMapping = function(debuggerModel, workspace, debuggerW
 {
     this._debuggerModel = debuggerModel;
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
-    this._workspace = workspace;
-    this._projectId = WebInspector.DefaultScriptMapping.projectIdForTarget(debuggerModel.target());
-    this._project = new WebInspector.ContentProviderBasedProject(this._workspace, this._projectId, WebInspector.projectTypes.Debugger, "");
-    debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this);
-    this._debuggerReset();
+    var projectId = WebInspector.DefaultScriptMapping.projectIdForTarget(debuggerModel.target());
+    this._project = new WebInspector.ContentProviderBasedProject(workspace, projectId, WebInspector.projectTypes.Debugger, "");
+    /** @type {!Map.<string, !WebInspector.UISourceCode>} */
+    this._uiSourceCodeForScriptId = new Map();
+    /** @type {!Map.<!WebInspector.UISourceCode, string>} */
+    this._scriptIdForUISourceCode = new Map();
+    this._eventListeners = [
+        debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this)
+    ];
 }
 
 WebInspector.DefaultScriptMapping._scriptSymbol = Symbol("symbol");
@@ -131,14 +135,15 @@ WebInspector.DefaultScriptMapping.prototype = {
 
     _debuggerReset: function()
     {
-        /** @type {!Map.<string, !WebInspector.UISourceCode>} */
-        this._uiSourceCodeForScriptId = new Map();
-        this._scriptIdForUISourceCode = new Map();
+        this._uiSourceCodeForScriptId.clear();
+        this._scriptIdForUISourceCode.clear();
         this._project.reset();
     },
 
     dispose: function()
     {
+        WebInspector.EventTarget.removeEventListeners(this._eventListeners);
+        this._debuggerReset();
         this._project.dispose();
     }
 }

@@ -79,7 +79,6 @@ WebInspector.FormatterScriptMapping.prototype = {
     {
         return true;
     }
-
 }
 
 /**

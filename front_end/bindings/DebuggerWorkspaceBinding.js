@@ -385,8 +385,10 @@ WebInspector.DebuggerWorkspaceBinding.TargetData = function(debuggerModel, debug
     /** @type {!Map.<!WebInspector.UISourceCode, !WebInspector.DebuggerSourceMapping>} */
     this._uiSourceCodeToSourceMapping = new Map();
 
-    debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this);
-    debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.FailedToParseScriptSource, this._parsedScriptSource, this);
+    this._eventListeners = [
+        debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this),
+        debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.FailedToParseScriptSource, this._parsedScriptSource, this)
+    ];
 }
 
 WebInspector.DebuggerWorkspaceBinding.TargetData.prototype = {
@@ -453,6 +455,7 @@ WebInspector.DebuggerWorkspaceBinding.TargetData.prototype = {
 
     _dispose: function()
     {
+        WebInspector.EventTarget.removeEventListeners(this._eventListeners);
         this._compilerMapping.dispose();
         this._resourceMapping.dispose();
         this._defaultMapping.dispose();

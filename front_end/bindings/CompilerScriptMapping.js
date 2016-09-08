@@ -41,8 +41,6 @@ WebInspector.CompilerScriptMapping = function(debuggerModel, workspace, networkM
 {
     this._target = debuggerModel.target();
     this._debuggerModel = debuggerModel;
-    this._workspace = workspace;
-    this._workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAddedToWorkspace, this);
     this._networkMapping = networkMapping;
     this._networkProject = networkProject;
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
@@ -58,12 +56,13 @@ WebInspector.CompilerScriptMapping = function(debuggerModel, workspace, networkM
     /** @type {!Map.<string, !WebInspector.UISourceCode>} */
     this._stubUISourceCodes = new Map();
 
-    this._stubProjectID = "compiler-script-project";
-    this._stubProject = new WebInspector.ContentProviderBasedProject(this._workspace, this._stubProjectID, WebInspector.projectTypes.Service, "");
-    debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this);
+    var projectId = WebInspector.CompilerScriptMapping.projectIdForTarget(this._target);
+    this._stubProject = new WebInspector.ContentProviderBasedProject(workspace, projectId, WebInspector.projectTypes.Service, "");
+    this._eventListeners = [
+        workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAddedToWorkspace, this),
+        debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this)
+    ];
 }
-
-WebInspector.CompilerScriptMapping.StubProjectID = "compiler-script-project";
 
 WebInspector.CompilerScriptMapping._originSymbol = Symbol("origin");
 
@@ -389,6 +388,17 @@ WebInspector.CompilerScriptMapping.prototype = {
 
     dispose: function()
     {
-        this._workspace.removeEventListener(WebInspector.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAddedToWorkspace, this);
+        WebInspector.EventTarget.removeEventListeners(this._eventListeners);
+        this._debuggerReset();
+        this._stubProject.dispose();
     }
+}
+
+/**
+ * @param {!WebInspector.Target} target
+ * @return {string}
+ */
+WebInspector.CompilerScriptMapping.projectIdForTarget = function(target)
+{
+    return "compiler-script-project:" + target.id();
 }

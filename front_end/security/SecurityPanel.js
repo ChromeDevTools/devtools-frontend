@@ -226,13 +226,10 @@ WebInspector.SecurityPanel.prototype = {
         return this._filterRequestCounts.get(filterKey) || 0;
     },
 
-    /**
-     * @param {!SecurityAgent.CertificateId} certificateId
-     */
-    showCertificateViewer: function(certificateId)
+    showCertificateViewer: function()
     {
         var securityModel = WebInspector.SecurityModel.fromTarget(this._target);
-        securityModel.showCertificateViewer(certificateId);
+        securityModel.showCertificateViewer();
     },
 
     /**
@@ -330,11 +327,10 @@ WebInspector.SecurityPanel._instance = function()
 
 /**
  * @param {string} text
- * @param {!SecurityAgent.CertificateId} certificateId
  * @param {!WebInspector.SecurityPanel} panel
  * @return {!Element}
  */
-WebInspector.SecurityPanel.createCertificateViewerButton = function(text, certificateId, panel)
+WebInspector.SecurityPanel.createCertificateViewerButton = function(text, panel)
 {
     /**
      * @param {!Event} e
@@ -342,7 +338,7 @@ WebInspector.SecurityPanel.createCertificateViewerButton = function(text, certif
     function showCertificateViewer(e)
     {
         e.consume();
-        panel.showCertificateViewer(certificateId);
+        panel.showCertificateViewer();
     }
 
     return createTextButton(text, showCertificateViewer, "security-certificate-button");
@@ -631,8 +627,8 @@ WebInspector.SecurityMainView.prototype = {
         text.createChild("div", "security-explanation-title").textContent = explanation.summary;
         text.createChild("div").textContent = explanation.description;
 
-        if (explanation.certificateId) {
-            text.appendChild(WebInspector.SecurityPanel.createCertificateViewerButton(WebInspector.UIString("View certificate"), explanation.certificateId, this._panel));
+        if (explanation.hasCertificate) {
+            text.appendChild(WebInspector.SecurityPanel.createCertificateViewerButton(WebInspector.UIString("View certificate"), this._panel));
         }
 
         return text;

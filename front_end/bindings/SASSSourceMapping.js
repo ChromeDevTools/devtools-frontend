@@ -39,9 +39,11 @@ WebInspector.SASSSourceMapping = function(cssModel, networkMapping, networkProje
     this._cssModel = cssModel;
     this._networkProject = networkProject;
     this._networkMapping = networkMapping;
-    this._cssModel.addEventListener(WebInspector.CSSModel.Events.SourceMapAttached, this._sourceMapAttached, this);
-    this._cssModel.addEventListener(WebInspector.CSSModel.Events.SourceMapDetached, this._sourceMapDetached, this);
-    this._cssModel.addEventListener(WebInspector.CSSModel.Events.SourceMapChanged, this._sourceMapChanged, this);
+    this._eventListeners = [
+        this._cssModel.addEventListener(WebInspector.CSSModel.Events.SourceMapAttached, this._sourceMapAttached, this),
+        this._cssModel.addEventListener(WebInspector.CSSModel.Events.SourceMapDetached, this._sourceMapDetached, this),
+        this._cssModel.addEventListener(WebInspector.CSSModel.Events.SourceMapChanged, this._sourceMapChanged, this)
+    ];
 }
 
 WebInspector.SASSSourceMapping.prototype = {
@@ -97,26 +99,6 @@ WebInspector.SASSSourceMapping.prototype = {
     },
 
     /**
-     * @param {!WebInspector.CSSStyleSheetHeader} header
-     */
-    addHeader: function(header)
-    {
-        if (!header.sourceMapURL)
-            return;
-        WebInspector.cssWorkspaceBinding.updateLocations(header);
-    },
-
-    /**
-     * @param {!WebInspector.CSSStyleSheetHeader} header
-     */
-    removeHeader: function(header)
-    {
-        if (!header.sourceMapURL)
-            return;
-        WebInspector.cssWorkspaceBinding.updateLocations(header);
-    },
-
-    /**
      * @param {!WebInspector.CSSLocation} rawLocation
      * @return {?WebInspector.UILocation}
      */
@@ -133,4 +115,9 @@ WebInspector.SASSSourceMapping.prototype = {
             return null;
         return uiSourceCode.uiLocation(entry.sourceLineNumber || 0, entry.sourceColumnNumber);
     },
+
+    dispose: function()
+    {
+        WebInspector.EventTarget.removeEventListeners(this._eventListeners);
+    }
 }

@@ -159,32 +159,9 @@ WebInspector.CSSWorkspaceBinding.TargetInfo = function(cssModel, workspace, netw
 
     /** @type {!Multimap<!WebInspector.CSSStyleSheetHeader, !WebInspector.LiveLocation>} */
     this._locations = new Multimap();
-
-    cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetAdded, this._styleSheetAdded, this);
-    cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this);
 }
 
 WebInspector.CSSWorkspaceBinding.TargetInfo.prototype = {
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _styleSheetAdded: function(event)
-    {
-        var header = /** @type {!WebInspector.CSSStyleSheetHeader} */ (event.data);
-        this._stylesSourceMapping.addHeader(header);
-        this._sassSourceMapping.addHeader(header);
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _styleSheetRemoved: function(event)
-    {
-        var header = /** @type {!WebInspector.CSSStyleSheetHeader} */ (event.data);
-        this._stylesSourceMapping.removeHeader(header);
-        this._sassSourceMapping.removeHeader(header);
-    },
-
     /**
      * @param {!WebInspector.CSSWorkspaceBinding.LiveLocation} location
      */
@@ -229,8 +206,8 @@ WebInspector.CSSWorkspaceBinding.TargetInfo.prototype = {
 
     _dispose: function()
     {
-        this._cssModel.removeEventListener(WebInspector.CSSModel.Events.StyleSheetAdded, this._styleSheetAdded, this);
-        this._cssModel.removeEventListener(WebInspector.CSSModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this);
+        this._stylesSourceMapping.dispose();
+        this._sassSourceMapping.dispose();
     }
 }
 

@@ -45,12 +45,16 @@ WebInspector.StylesSourceMapping = function(cssModel, workspace, networkMapping)
     /** @type {!Map.<!WebInspector.UISourceCode, !WebInspector.StyleFile>} */
     this._styleFiles = new Map();
 
-    this._workspace.addEventListener(WebInspector.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
-    this._workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAddedToWorkspace, this);
-    this._workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
-    this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetChanged, this._styleSheetChanged, this);
-    WebInspector.ResourceTreeModel.fromTarget(cssModel.target()).addEventListener(
-        WebInspector.ResourceTreeModel.Events.MainFrameNavigated, this._unbindAllUISourceCodes, this);
+    this._eventListeners = [
+        this._workspace.addEventListener(WebInspector.Workspace.Events.ProjectRemoved, this._projectRemoved, this),
+        this._workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAddedToWorkspace, this),
+        this._workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this),
+        this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetAdded, this._styleSheetAdded, this),
+        this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this),
+        this._cssModel.addEventListener(WebInspector.CSSModel.Events.StyleSheetChanged, this._styleSheetChanged, this),
+        WebInspector.ResourceTreeModel.fromTarget(cssModel.target()).addEventListener(
+            WebInspector.ResourceTreeModel.Events.MainFrameNavigated, this._unbindAllUISourceCodes, this)
+    ];
 }
 
 WebInspector.StylesSourceMapping.ChangeUpdateTimeoutMs = 200;
@@ -76,10 +80,11 @@ WebInspector.StylesSourceMapping.prototype = {
     },
 
     /**
-     * @param {!WebInspector.CSSStyleSheetHeader} header
+     * @param {!WebInspector.Event} event
      */
-    addHeader: function(header)
+    _styleSheetAdded: function(event)
     {
+        var header = /** @type {!WebInspector.CSSStyleSheetHeader} */(event.data);
         var url = header.resourceURL();
         if (!url)
             return;
@@ -101,10 +106,11 @@ WebInspector.StylesSourceMapping.prototype = {
     },
 
     /**
-     * @param {!WebInspector.CSSStyleSheetHeader} header
+     * @param {!WebInspector.Event} event
      */
-    removeHeader: function(header)
+    _styleSheetRemoved: function(event)
     {
+        var header = /** @type {!WebInspector.CSSStyleSheetHeader} */(event.data);
         var url = header.resourceURL();
         if (!url)
             return;
@@ -282,6 +288,11 @@ WebInspector.StylesSourceMapping.prototype = {
             if (styleFile)
                 styleFile.addRevision(content || "");
         }
+    },
+
+    dispose: function()
+    {
+        WebInspector.EventTarget.removeEventListeners(this._eventListeners);
     }
 }
 

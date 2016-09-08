@@ -38,7 +38,7 @@ WebInspector.CSSSourceFrame = function(uiSourceCode)
     WebInspector.UISourceCodeFrame.call(this, uiSourceCode);
     this._registerShortcuts();
     this._swatchPopoverHelper = new WebInspector.SwatchPopoverHelper();
-    this._muteColorProcessing = false;
+    this._muteSwatchProcessing = false;
     this.configureAutocomplete({
         suggestionsCallback: this._cssSuggestions.bind(this),
         isWordChar: this._isWordChar.bind(this)
@@ -47,7 +47,7 @@ WebInspector.CSSSourceFrame = function(uiSourceCode)
 
 /** @type {number} */
 WebInspector.CSSSourceFrame.maxSwatchProcessingLength = 300;
-
+/** @type {symbol} */
 WebInspector.CSSSourceFrame.SwatchBookmark = Symbol("swatch");
 
 WebInspector.CSSSourceFrame.prototype = {
@@ -111,80 +111,120 @@ WebInspector.CSSSourceFrame.prototype = {
      * @param {number} startLine
      * @param {number} endLine
      */
-    _updateColorSwatches: function(startLine, endLine)
+    _updateSwatches: function(startLine, endLine)
     {
-        var colorPositions = [];
+        var swatches = [];
+        var swatchPositions = [];
 
-        var colorRegex = /[\s:;,(){}]((?:rgb|hsl)a?\([^)]+\)|#[0-9a-f]{8}|#[0-9a-f]{6}|#[0-9a-f]{3,4}|[a-z]+)(?=[\s;,(){}])/gi;
+        var regexes = [WebInspector.CSSMetadata.VariableRegex, WebInspector.CSSMetadata.URLRegex, WebInspector.Geometry.CubicBezier.Regex, WebInspector.Color.Regex];
+        var handlers = new Map();
+        handlers.set(WebInspector.Color.Regex, this._createColorSwatch.bind(this));
+        handlers.set(WebInspector.Geometry.CubicBezier.Regex, this._createBezierSwatch.bind(this));
+
         for (var lineNumber = startLine; lineNumber <= endLine; lineNumber++) {
-            var line = "\n" + this.textEditor.line(lineNumber).substring(0, WebInspector.CSSSourceFrame.maxSwatchProcessingLength) + "\n";
-            var match;
-            while ((match = colorRegex.exec(line)) !== null) {
-                if (match.length < 2)
+            var line = this.textEditor.line(lineNumber).substring(0, WebInspector.CSSSourceFrame.maxSwatchProcessingLength);
+            var results = WebInspector.TextUtils.splitStringByRegexes(line, regexes);
+            for (var i = 0; i < results.length; i++) {
+                var result = results[i];
+                if (result.regexIndex === -1 || !handlers.has(regexes[result.regexIndex]))
                     continue;
-                var colorText = match[1];
-                var color = WebInspector.Color.parse(colorText);
-                if (color)
-                    colorPositions.push(new WebInspector.CSSSourceFrame.ColorPosition(color, lineNumber, match.index, colorText.length));
+                var delimiters = /[\s:;,(){}]/;
+                var positionBefore = result.position - 1;
+                var positionAfter = result.position + result.value.length;
+                if (positionBefore >= 0 && !delimiters.test(line.charAt(positionBefore))
+                    || positionAfter < line.length && !delimiters.test(line.charAt(positionAfter)))
+                    continue;
+                var swatch = handlers.get(regexes[result.regexIndex])(result.value);
+                if (!swatch)
+                    continue;
+                swatches.push(swatch);
+                swatchPositions.push(WebInspector.TextRange.createFromLocation(lineNumber, result.position));
             }
         }
-
-        this.textEditor.operation(putColorSwatchesInline.bind(this));
+        this.textEditor.operation(putSwatchesInline.bind(this));
 
         /**
          * @this {WebInspector.CSSSourceFrame}
          */
-        function putColorSwatchesInline()
+        function putSwatchesInline()
         {
-            this._clearBookmarks(startLine, endLine);
+            var clearRange = new WebInspector.TextRange(startLine, 0, endLine, this.textEditor.line(endLine).length);
+            this.textEditor.bookmarks(clearRange, WebInspector.CSSSourceFrame.SwatchBookmark).forEach(marker => marker.clear());
 
-            for (var i = 0; i < colorPositions.length; i++) {
-                var colorPosition = colorPositions[i];
-                var swatch = WebInspector.ColorSwatch.create();
-                swatch.setColorText(colorPosition.color.asString(WebInspector.Color.Format.Original));
-                swatch.iconElement().title = WebInspector.UIString("Open color picker.");
-                swatch.hideText(true);
-                var bookmark = this.textEditor.addBookmark(colorPosition.textRange.startLine, colorPosition.textRange.startColumn, swatch, WebInspector.CSSSourceFrame.SwatchBookmark);
-                swatch.iconElement().addEventListener("click", this._showSpectrum.bind(this, swatch, bookmark), true);
+            for (var i = 0; i < swatches.length; i++) {
+                var swatch = swatches[i];
+                var swatchPosition = swatchPositions[i];
+                var bookmark = this.textEditor.addBookmark(swatchPosition.startLine, swatchPosition.startColumn, swatch, WebInspector.CSSSourceFrame.SwatchBookmark);
+                swatch[WebInspector.CSSSourceFrame.SwatchBookmark] = bookmark;
             }
         }
     },
 
     /**
-     * @param {number} startLine
-     * @param {number} endLine
+     * @param {string} text
+     * @return {?WebInspector.ColorSwatch}
      */
-    _clearBookmarks: function(startLine, endLine)
+    _createColorSwatch: function(text)
     {
-        var range = new WebInspector.TextRange(startLine, 0, endLine, this.textEditor.line(endLine).length);
-        this.textEditor.bookmarks(range, WebInspector.CSSSourceFrame.SwatchBookmark).forEach(marker => marker.clear());
+        if (!WebInspector.Color.parse(text))
+            return null;
+        var swatch = WebInspector.ColorSwatch.create();
+        swatch.setColorText(text);
+        swatch.iconElement().title = WebInspector.UIString("Open color picker.");
+        swatch.iconElement().addEventListener("click", this._swatchIconClicked.bind(this, swatch), false);
+        swatch.hideText(true);
+        return swatch;
+    },
+
+    /**
+     * @param {string} text
+     * @return {?WebInspector.BezierSwatch}
+     */
+    _createBezierSwatch: function(text)
+    {
+        if (!WebInspector.Geometry.CubicBezier.parse(text))
+            return null;
+        var swatch = WebInspector.BezierSwatch.create();
+        swatch.setBezierText(text);
+        swatch.iconElement().title = WebInspector.UIString("Open cubic bezier editor.");
+        swatch.iconElement().addEventListener("click", this._swatchIconClicked.bind(this, swatch), false);
+        swatch.hideText(true);
+        return swatch;
+    },
+
+    /**
+     * @param {!Element} swatch
+     * @param {!Event} event
+     */
+    _swatchIconClicked: function(swatch, event)
+    {
+        event.consume(true);
+        this._hadSwatchChange = false;
+        this._muteSwatchProcessing = true;
+        var swatchPosition = swatch[WebInspector.CSSSourceFrame.SwatchBookmark].position();
+        this.textEditor.setSelection(swatchPosition);
+        this._editedSwatchTextRange = swatchPosition.clone();
+        this._editedSwatchTextRange.endColumn += swatch.textContent.length;
+        this._currentSwatch = swatch;
+
+        if (swatch instanceof WebInspector.ColorSwatch)
+            this._showSpectrum(swatch);
+        else if (swatch instanceof WebInspector.BezierSwatch)
+            this._showBezierEditor(swatch);
     },
 
     /**
      * @param {!WebInspector.ColorSwatch} swatch
-     * @param {!WebInspector.TextEditorBookMark} bookmark
-     * @param {!Event} event
      */
-    _showSpectrum: function(swatch, bookmark, event)
+    _showSpectrum: function(swatch)
     {
-        event.consume(true);
-        if (this._swatchPopoverHelper.isShowing()) {
-            this._swatchPopoverHelper.hide(true);
-            return;
+        if (!this._spectrum) {
+            this._spectrum = new WebInspector.Spectrum();
+            this._spectrum.addEventListener(WebInspector.Spectrum.Events.SizeChanged, this._spectrumResized, this);
+            this._spectrum.addEventListener(WebInspector.Spectrum.Events.ColorChanged, this._spectrumChanged, this);
         }
-        this._hadSpectrumChange = false;
-        var position = bookmark.position();
-        var colorText = swatch.color().asString(WebInspector.Color.Format.Original);
-        this.textEditor.setSelection(position);
-        this._currentColorTextRange = position.clone();
-        this._currentColorTextRange.endColumn += colorText.length;
-        this._currentSwatch = swatch;
-
-        this._spectrum = new WebInspector.Spectrum();
         this._spectrum.setColor(swatch.color(), swatch.format());
-        this._spectrum.addEventListener(WebInspector.Spectrum.Events.SizeChanged, this._spectrumResized, this);
-        this._spectrum.addEventListener(WebInspector.Spectrum.Events.ColorChanged, this._spectrumChanged, this);
-        this._swatchPopoverHelper.show(this._spectrum, swatch.iconElement(), this._spectrumHidden.bind(this));
+        this._swatchPopoverHelper.show(this._spectrum, swatch.iconElement(), this._swatchPopoverHidden.bind(this));
     },
 
     /**
@@ -200,27 +240,55 @@ WebInspector.CSSSourceFrame.prototype = {
      */
     _spectrumChanged: function(event)
     {
-        this._muteColorProcessing = true;
-        this._hadSpectrumChange = true;
         var colorString = /** @type {string} */ (event.data);
         this._currentSwatch.setColorText(colorString);
-        this._textEditor.editRange(this._currentColorTextRange, colorString, "*color-text-changed");
-        this._currentColorTextRange.endColumn = this._currentColorTextRange.startColumn + colorString.length;
+        this._changeSwatchText(colorString);
+    },
+
+    /**
+     * @param {!WebInspector.BezierSwatch} swatch
+     */
+    _showBezierEditor: function(swatch)
+    {
+        if (!this._bezierEditor) {
+            this._bezierEditor = new WebInspector.BezierEditor();
+            this._bezierEditor.addEventListener(WebInspector.BezierEditor.Events.BezierChanged, this._bezierChanged, this);
+        }
+        var cubicBezier = WebInspector.Geometry.CubicBezier.parse(swatch.bezierText());
+        if (!cubicBezier)
+            cubicBezier = /** @type {!WebInspector.Geometry.CubicBezier} */ (WebInspector.Geometry.CubicBezier.parse("linear"));
+        this._bezierEditor.setBezier(cubicBezier);
+        this._swatchPopoverHelper.show(this._bezierEditor, swatch.iconElement(), this._swatchPopoverHidden.bind(this));
+    },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _bezierChanged: function(event)
+    {
+        var bezierString = /** @type {string} */ (event.data);
+        this._currentSwatch.setBezierText(bezierString);
+        this._changeSwatchText(bezierString);
+    },
+
+    /**
+     * @param {string} text
+     */
+    _changeSwatchText: function(text)
+    {
+        this._hadSwatchChange = true;
+        this._textEditor.editRange(this._editedSwatchTextRange, text, "*swatch-text-changed");
+        this._editedSwatchTextRange.endColumn = this._editedSwatchTextRange.startColumn + text.length;
     },
 
     /**
      * @param {boolean} commitEdit
      */
-    _spectrumHidden: function(commitEdit)
+    _swatchPopoverHidden: function(commitEdit)
     {
-        this._muteColorProcessing = false;
-        this._spectrum.removeEventListener(WebInspector.Spectrum.Events.SizeChanged, this._spectrumResized, this);
-        this._spectrum.removeEventListener(WebInspector.Spectrum.Events.ColorChanged, this._spectrumChanged, this);
-        if (!commitEdit && this._hadSpectrumChange)
+        this._muteSwatchProcessing = false;
+        if (!commitEdit && this._hadSwatchChange)
             this.textEditor.undo();
-        delete this._spectrum;
-        delete this._currentSwatch;
-        delete this._currentColorTextRange;
     },
 
     /**
@@ -229,8 +297,8 @@ WebInspector.CSSSourceFrame.prototype = {
     onTextEditorContentSet: function()
     {
         WebInspector.UISourceCodeFrame.prototype.onTextEditorContentSet.call(this);
-        if (!this._muteColorProcessing)
-            this._updateColorSwatches(0, this.textEditor.linesCount - 1);
+        if (!this._muteSwatchProcessing)
+            this._updateSwatches(0, this.textEditor.linesCount - 1);
     },
 
     /**
@@ -241,8 +309,8 @@ WebInspector.CSSSourceFrame.prototype = {
     onTextChanged: function(oldRange, newRange)
     {
         WebInspector.UISourceCodeFrame.prototype.onTextChanged.call(this, oldRange, newRange);
-        if (!this._muteColorProcessing)
-            this._updateColorSwatches(newRange.startLine, newRange.endLine);
+        if (!this._muteSwatchProcessing)
+            this._updateSwatches(newRange.startLine, newRange.endLine);
     },
 
     /**
@@ -319,17 +387,4 @@ WebInspector.CSSSourceFrame.prototype = {
     },
 
     __proto__: WebInspector.UISourceCodeFrame.prototype
-}
-
-/**
- * @constructor
- * @param {!WebInspector.Color} color
- * @param {number} lineNumber
- * @param {number} startColumn
- * @param {number} textLength
- */
-WebInspector.CSSSourceFrame.ColorPosition = function(color, lineNumber, startColumn, textLength)
-{
-    this.color = color;
-    this.textRange = new WebInspector.TextRange(lineNumber, startColumn, lineNumber, startColumn + textLength);
 }

@@ -30,7 +30,6 @@
 
 /**
  * @constructor
- * @implements {WebInspector.CSSSourceMapping}
  * @param {!WebInspector.CSSModel} cssModel
  * @param {!WebInspector.NetworkMapping} networkMapping
  * @param {!WebInspector.NetworkProject} networkProject
@@ -104,7 +103,7 @@ WebInspector.SASSSourceMapping.prototype = {
     {
         if (!header.sourceMapURL)
             return;
-        WebInspector.cssWorkspaceBinding.pushSourceMapping(header, this);
+        WebInspector.cssWorkspaceBinding.updateLocations(header);
     },
 
     /**
@@ -118,7 +117,6 @@ WebInspector.SASSSourceMapping.prototype = {
     },
 
     /**
-     * @override
      * @param {!WebInspector.CSSLocation} rawLocation
      * @return {?WebInspector.UILocation}
      */
@@ -135,44 +133,4 @@ WebInspector.SASSSourceMapping.prototype = {
             return null;
         return uiSourceCode.uiLocation(entry.sourceLineNumber || 0, entry.sourceColumnNumber);
     },
-
-    /**
-     * @override
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     * @param {number} lineNumber
-     * @param {number} columnNumber
-     * @return {?WebInspector.CSSLocation}
-     */
-    uiLocationToRawLocation: function(uiSourceCode, lineNumber, columnNumber)
-    {
-        return null;
-    },
-
-    /**
-     * @override
-     * @return {boolean}
-     */
-    isIdentity: function()
-    {
-        return false;
-    },
-
-    /**
-     * @override
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     * @param {number} lineNumber
-     * @return {boolean}
-     */
-    uiLineHasMapping: function(uiSourceCode, lineNumber)
-    {
-        return true;
-    },
-
-    /**
-     * @return {!WebInspector.Target}
-     */
-    target: function()
-    {
-        return this._cssModel.target();
-    }
 }

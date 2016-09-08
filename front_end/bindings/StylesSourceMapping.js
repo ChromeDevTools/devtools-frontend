@@ -30,7 +30,6 @@
 
 /**
  * @constructor
- * @implements {WebInspector.CSSSourceMapping}
  * @param {!WebInspector.CSSModel} cssModel
  * @param {!WebInspector.Workspace} workspace
  * @param {!WebInspector.NetworkMapping} networkMapping
@@ -58,7 +57,6 @@ WebInspector.StylesSourceMapping.ChangeUpdateTimeoutMs = 200;
 
 WebInspector.StylesSourceMapping.prototype = {
     /**
-     * @override
      * @param {!WebInspector.CSSLocation} rawLocation
      * @return {?WebInspector.UILocation}
      */
@@ -78,46 +76,6 @@ WebInspector.StylesSourceMapping.prototype = {
     },
 
     /**
-     * @override
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     * @param {number} lineNumber
-     * @param {number} columnNumber
-     * @return {?WebInspector.CSSLocation}
-     */
-    uiLocationToRawLocation: function(uiSourceCode, lineNumber, columnNumber)
-    {
-        return null;
-    },
-
-    /**
-     * @override
-     * @return {boolean}
-     */
-    isIdentity: function()
-    {
-        return true;
-    },
-
-    /**
-     * @override
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     * @param {number} lineNumber
-     * @return {boolean}
-     */
-    uiLineHasMapping: function(uiSourceCode, lineNumber)
-    {
-        return true;
-    },
-
-    /**
-     * @return {!WebInspector.Target}
-     */
-    target: function()
-    {
-        return this._cssModel.target();
-    },
-
-    /**
      * @param {!WebInspector.CSSStyleSheetHeader} header
      */
     addHeader: function(header)
@@ -126,7 +84,6 @@ WebInspector.StylesSourceMapping.prototype = {
         if (!url)
             return;
 
-        WebInspector.cssWorkspaceBinding.pushSourceMapping(header, this);
         var map = this._urlToHeadersByFrameId.get(url);
         if (!map) {
             map = /** @type {!Map.<string, !Map.<string, !WebInspector.CSSStyleSheetHeader>>} */ (new Map());
@@ -186,7 +143,7 @@ WebInspector.StylesSourceMapping.prototype = {
      */
     _unbindAllUISourceCodes: function(event)
     {
-        if (event.data.target() !== this.target())
+        if (event.data.target() !== this._cssModel.target())
             return;
         for (var styleFile of this._styleFiles.values())
             styleFile.dispose();

@@ -71,7 +71,8 @@ def to_platform_path_exact(filepath):
 scripts_path = path.dirname(path.abspath(__file__))
 devtools_path = path.dirname(scripts_path)
 inspector_path = path.join(path.dirname(devtools_path), 'core', 'inspector')
-v8_inspector_path = path.join(path.dirname(devtools_path), 'platform', 'v8_inspector')
+# TODO(dgozman): move these checks to v8.
+v8_inspector_path = path.normpath(path.join(path.dirname(devtools_path), os.pardir, os.pardir, os.pardir, 'v8', 'src', 'inspector'))
 devtools_frontend_path = path.join(devtools_path, 'front_end')
 global_externs_file = to_platform_path(path.join(devtools_frontend_path, 'externs.js'))
 protocol_externs_file = path.join(devtools_frontend_path, 'protocol_externs.js')

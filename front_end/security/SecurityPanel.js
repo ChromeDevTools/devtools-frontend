@@ -857,6 +857,8 @@ WebInspector.SecurityOriginView = function(panel, origin, originState)
         connectionSection.appendChild(table.element());
         table.addRow("Protocol", originState.securityDetails.protocol);
         table.addRow("Key Exchange", originState.securityDetails.keyExchange);
+        if (originState.securityDetails.keyExchangeGroup)
+            table.addRow("Key Exchange Group", originState.securityDetails.keyExchangeGroup);
         table.addRow("Cipher Suite", originState.securityDetails.cipher + (originState.securityDetails.mac ? " with " + originState.securityDetails.mac : ""));
 
         // Create the certificate section outside the callback, so that it appears in the right place.

@@ -13,7 +13,8 @@ WebInspector.XMLView = function(parsedXML)
     WebInspector.Widget.call(this, true);
     this.registerRequiredCSS("network/xmlView.css");
     this.contentElement.classList.add("shadow-xml-view", "source-code");
-    this._treeOutline = new TreeOutline();
+    this._treeOutline = new TreeOutlineInShadow();
+    this._treeOutline.registerRequiredCSS("network/xmlTree.css");
     this.contentElement.appendChild(this._treeOutline.element);
 
     /** @type {?WebInspector.SearchableView} */
@@ -271,7 +272,8 @@ WebInspector.XMLView.Node.prototype = {
      * @param {string=} additionalCssClassName
      * @return {boolean}
      */
-    setSearchRegex: function(regex, additionalCssClassName) {
+    setSearchRegex: function(regex, additionalCssClassName)
+    {
         this.revertHighlightChanges();
         if (!regex)
             return false;

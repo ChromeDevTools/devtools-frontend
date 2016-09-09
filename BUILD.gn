@@ -509,6 +509,7 @@ devtools_network_js_files = [
   "front_end/network/requestCookiesView.css",
   "front_end/network/requestHeadersView.css",
   "front_end/network/webSocketFrameView.css",
+  "front_end/network/xmlTree.css",
   "front_end/network/xmlView.css",
   "front_end/network/BlockedURLsPane.js",
   "front_end/network/EventSourceMessagesView.js",

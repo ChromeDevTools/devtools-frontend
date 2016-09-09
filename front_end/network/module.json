@@ -120,6 +120,7 @@
         "requestCookiesView.css",
         "requestHeadersView.css",
         "webSocketFrameView.css",
+        "xmlTree.css",
         "xmlView.css"
     ]
 }

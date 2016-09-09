@@ -120,12 +120,30 @@ WebInspector.CPUProfileDataModel.prototype = {
                 return !!node.callFrame.url && node.callFrame.url.startsWith("native ");
             return !!node.url && node.url.startsWith("native ");
         }
+        /**
+         * @param {!Array<!ProfilerAgent.ProfileNode>} nodes
+         */
+        function buildChildrenFromParents(nodes)
+        {
+            if (nodes[0].children)
+                return;
+            nodes[0].children = [];
+            for (var i = 1; i < nodes.length; ++i) {
+                var node = nodes[i];
+                var parentNode = nodeByIdMap.get(node.parent);
+                if (parentNode.children)
+                    parentNode.children.push(node.id);
+                else
+                    parentNode.children = [node.id];
+            }
+        }
         /** @type {!Map<number, !ProfilerAgent.ProfileNode>} */
         var nodeByIdMap = new Map();
         for (var i = 0; i < nodes.length; ++i) {
             var node = nodes[i];
             nodeByIdMap.set(node.id, node);
         }
+        buildChildrenFromParents(nodes);
         this.totalHitCount = nodes.reduce((acc, node) => acc + node.hitCount, 0);
         var sampleTime = (this.profileEndTime - this.profileStartTime) / this.totalHitCount;
         var keepNatives = !!WebInspector.moduleSetting("showNativeFunctionsInJSProfile").get();

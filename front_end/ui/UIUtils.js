@@ -1287,7 +1287,7 @@ WebInspector.initializeUIUtils = function(document, themeSetting)
  */
 WebInspector.beautifyFunctionName = function(name)
 {
-    return name || WebInspector.UIString("(anonymous function)");
+    return name || WebInspector.UIString("(anonymous)");
 }
 
 /**

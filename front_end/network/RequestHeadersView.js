@@ -44,8 +44,11 @@ WebInspector.RequestHeadersView = function(request)
     this._showRequestHeadersText = false;
     this._showResponseHeadersText = false;
 
-    var root = new TreeOutline(true);
-    root.element.classList.add("outline-disclosure");
+    var root = new TreeOutlineInShadow();
+    root.registerRequiredCSS("network/requestHeadersTree.css");
+    root.element.classList.add("request-headers-tree");
+    root.setFocusable(false);
+    root.makeDense();
     root.expandTreeElementsWhenArrowing = true;
     this.element.appendChild(root.element);
 

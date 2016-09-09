@@ -342,6 +342,11 @@ TreeOutlineInShadow.prototype = {
         this._disclosureElement.classList.add("tree-outline-disclosure-hide-overflow");
     },
 
+    makeDense: function()
+    {
+        this.contentElement.classList.add("tree-outline-dense");
+    },
+
     __proto__: TreeOutline.prototype
 }
 

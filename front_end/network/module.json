@@ -118,6 +118,7 @@
         "networkManageCustomHeadersView.css",
         "networkPanel.css",
         "requestCookiesView.css",
+        "requestHeadersTree.css",
         "requestHeadersView.css",
         "webSocketFrameView.css",
         "xmlTree.css",

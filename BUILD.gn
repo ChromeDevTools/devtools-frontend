@@ -507,6 +507,7 @@ devtools_network_js_files = [
   "front_end/network/networkManageCustomHeadersView.css",
   "front_end/network/networkPanel.css",
   "front_end/network/requestCookiesView.css",
+  "front_end/network/requestHeadersTree.css",
   "front_end/network/requestHeadersView.css",
   "front_end/network/webSocketFrameView.css",
   "front_end/network/xmlTree.css",

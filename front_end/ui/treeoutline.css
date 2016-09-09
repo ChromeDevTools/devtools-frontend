@@ -125,3 +125,20 @@ ol.tree-outline:focus li.selected * {
 .tree-outline ol.children.expanded {
     display: block;
 }
+
+.tree-outline.tree-outline-dense li {
+    margin-top: 1px;
+    min-height: 12px;
+}
+
+.tree-outline.tree-outline-dense li.parent {
+    margin-top: 0;
+}
+
+.tree-outline.tree-outline-dense li.parent::before {
+    top: 0;
+}
+
+.tree-outline.tree-outline-dense ol {
+    padding-left: 10px;
+}

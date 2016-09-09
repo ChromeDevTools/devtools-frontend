@@ -45,6 +45,7 @@ WebInspector.TextPrompt = function(completions, stopCharacters)
     this._completionStopCharacters = stopCharacters || " =:[({;,!+-*/&|^<>.";
     this._autocompletionTimeout = WebInspector.TextPrompt.DefaultAutocompletionTimeout;
     this._title = "";
+    this._completionRequestId = 0;
 }
 
 WebInspector.TextPrompt.DefaultAutocompletionTimeout = 250;
@@ -380,7 +381,6 @@ WebInspector.TextPrompt.prototype = {
             clearTimeout(this._completeTimeout);
             delete this._completeTimeout;
         }
-        delete this._waitingForCompletions;
 
         if (!this.autoCompleteElement)
             return;
@@ -431,8 +431,7 @@ WebInspector.TextPrompt.prototype = {
         }
 
         var wordPrefixRange = selectionRange.startContainer.rangeOfWord(selectionRange.startOffset, this._completionStopCharacters, this._element, "backward");
-        this._waitingForCompletions = true;
-        this._loadCompletions(/** @type {!Element} */ (this._proxyElement), wordPrefixRange, force || false, this._completionsReady.bind(this, selection, wordPrefixRange, !!reverse, !!force));
+        this._loadCompletions(/** @type {!Element} */ (this._proxyElement), wordPrefixRange, force || false, this._completionsReady.bind(this, ++this._completionRequestId, selection, wordPrefixRange, !!reverse, !!force));
     },
 
     disableDefaultSuggestionForEmptyInput: function()
@@ -496,6 +495,7 @@ WebInspector.TextPrompt.prototype = {
     },
 
     /**
+     * @param {number} completionRequestId
      * @param {!Selection} selection
      * @param {!Range} originalWordPrefixRange
      * @param {boolean} reverse
@@ -503,8 +503,11 @@ WebInspector.TextPrompt.prototype = {
      * @param {!Array.<string>} completions
      * @param {number=} selectedIndex
      */
-    _completionsReady: function(selection, originalWordPrefixRange, reverse, force, completions, selectedIndex)
+    _completionsReady: function(completionRequestId, selection, originalWordPrefixRange, reverse, force, completions, selectedIndex)
     {
+        if (this._completionRequestId !== completionRequestId)
+            return;
+
         var prefix = originalWordPrefixRange.toString();
 
         // Filter out dupes.
@@ -519,12 +522,10 @@ WebInspector.TextPrompt.prototype = {
                 annotatedCompletions = this.additionalCompletions(prefix).concat(annotatedCompletions);
         }
 
-        if (!this._waitingForCompletions || !annotatedCompletions.length) {
+        if (!annotatedCompletions.length) {
             this.clearAutoComplete();
             return;
         }
-
-        delete this._waitingForCompletions;
 
         var selectionRange = selection.getRangeAt(0);
 

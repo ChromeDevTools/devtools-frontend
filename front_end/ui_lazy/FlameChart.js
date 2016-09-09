@@ -215,7 +215,7 @@ WebInspector.FlameChartDataProvider.prototype = {
 
     /**
      * @param {number} entryIndex
-     * @return {?Array.<!{title: string, value: (string|!Element)}>}
+     * @return {?Element}
      */
     prepareHighlightedEntryInfo: function(entryIndex) { },
 
@@ -813,12 +813,20 @@ WebInspector.FlameChart.prototype = {
      */
     _updatePopover: function(entryIndex)
     {
-        if (entryIndex !== this._highlightedEntryIndex) {
-            this._entryInfo.removeChildren();
-            var entryInfo = this._dataProvider.prepareHighlightedEntryInfo(entryIndex);
-            if (entryInfo)
-                this._entryInfo.appendChild(this._buildEntryInfo(entryInfo));
+        if (entryIndex === this._highlightedEntryIndex) {
+            this._updatePopoverOffset();
+            return;
         }
+        this._entryInfo.removeChildren();
+        var popoverElement = this._dataProvider.prepareHighlightedEntryInfo(entryIndex);
+        if (popoverElement) {
+            this._entryInfo.appendChild(popoverElement);
+            this._updatePopoverOffset();
+        }
+    },
+
+    _updatePopoverOffset: function()
+    {
         var mouseX = this._lastMouseOffsetX;
         var mouseY = this._lastMouseOffsetY;
         var parentWidth = this._entryInfo.parentElement.clientWidth;
@@ -1839,24 +1847,6 @@ WebInspector.FlameChart.prototype = {
     _levelToHeight: function(level)
     {
         return this._visibleLevelOffsets[level];
-    },
-
-    /**
-     * @param {!Array<!{title: string, value: (string|!Element)}>} entryInfo
-     * @return {!Element}
-     */
-    _buildEntryInfo: function(entryInfo)
-    {
-        var infoTable = createElementWithClass("table", "info-table");
-        for (var entry of entryInfo) {
-            var row = infoTable.createChild("tr");
-            row.createChild("td", "title").textContent = entry.title;
-            if (typeof entry.value === "string")
-                row.createChild("td").textContent = entry.value;
-            else
-                row.createChild("td").appendChild(entry.value);
-        }
-        return infoTable;
     },
 
     /**

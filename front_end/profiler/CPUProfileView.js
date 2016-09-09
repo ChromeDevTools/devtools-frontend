@@ -448,7 +448,7 @@ WebInspector.CPUFlameChartDataProvider.prototype = {
     /**
      * @override
      * @param {number} entryIndex
-     * @return {?Array<!{title: string, value: (string|!Element)}>}
+     * @return {?Element}
      */
     prepareHighlightedEntryInfo: function(entryIndex)
     {
@@ -494,7 +494,7 @@ WebInspector.CPUFlameChartDataProvider.prototype = {
         if (node.deoptReason)
             pushEntryInfoRow(WebInspector.UIString("Not optimized"), node.deoptReason);
 
-        return entryInfo;
+        return WebInspector.ProfileView.buildPopoverTable(entryInfo);
     },
 
     __proto__: WebInspector.ProfileFlameChartDataProvider.prototype

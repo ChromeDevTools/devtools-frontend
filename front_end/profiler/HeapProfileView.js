@@ -409,7 +409,7 @@ WebInspector.HeapFlameChartDataProvider.prototype = {
     /**
      * @override
      * @param {number} entryIndex
-     * @return {?Array<!{title: string, value: (string|!Element)}>}
+     * @return {?Element}
      */
     prepareHighlightedEntryInfo: function(entryIndex)
     {
@@ -433,7 +433,7 @@ WebInspector.HeapFlameChartDataProvider.prototype = {
         if (link)
             pushEntryInfoRow(WebInspector.UIString("URL"), link.textContent);
         linkifier.dispose();
-        return entryInfo;
+        return WebInspector.ProfileView.buildPopoverTable(entryInfo);
     },
 
     __proto__: WebInspector.ProfileFlameChartDataProvider.prototype

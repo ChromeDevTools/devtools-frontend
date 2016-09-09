@@ -72,6 +72,21 @@ WebInspector.ProfileView.ViewTypes = {
     Heavy: "Heavy"
 }
 
+/**
+ * @param {!Array<!{title: string, value: string}>} entryInfo
+ * @return {!Element}
+ */
+WebInspector.ProfileView.buildPopoverTable = function(entryInfo)
+{
+    var table = createElement("table");
+    for (var entry of entryInfo) {
+        var row = table.createChild("tr");
+        row.createChild("td").textContent = entry.title;
+        row.createChild("td").textContent = entry.value;
+    }
+    return table;
+}
+
 WebInspector.ProfileView.prototype = {
     focus: function()
     {

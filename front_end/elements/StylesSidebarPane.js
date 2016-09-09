@@ -1955,13 +1955,13 @@ WebInspector.StylePropertyTreeElement.prototype = {
 
         if (!this._editable()) {
             var swatch = WebInspector.ColorSwatch.create();
-            swatch.setColorText(text);
+            swatch.setColor(color);
             return swatch;
         }
 
         var swatchPopoverHelper = this._parentPane._swatchPopoverHelper;
         var swatch = WebInspector.ColorSwatch.create();
-        swatch.setColorText(text);
+        swatch.setColor(color);
         swatch.setFormat(WebInspector.Color.detectColorFormat(swatch.color()));
         var swatchIcon = new WebInspector.ColorSwatchPopoverIcon(this, swatchPopoverHelper, swatch);
 
@@ -2048,8 +2048,9 @@ WebInspector.StylePropertyTreeElement.prototype = {
             var cssShadowSwatch = WebInspector.CSSShadowSwatch.create();
             cssShadowSwatch.setCSSShadow(shadows[i]);
             new WebInspector.ShadowSwatchPopoverHelper(this, swatchPopoverHelper, cssShadowSwatch);
-            if (cssShadowSwatch.colorSwatch())
-                var colorSwatchIcon = new WebInspector.ColorSwatchPopoverIcon(this, swatchPopoverHelper, cssShadowSwatch.colorSwatch());
+            var colorSwatch = cssShadowSwatch.colorSwatch();
+            if (colorSwatch)
+                new WebInspector.ColorSwatchPopoverIcon(this, swatchPopoverHelper, colorSwatch);
             container.appendChild(cssShadowSwatch);
         }
         return container;

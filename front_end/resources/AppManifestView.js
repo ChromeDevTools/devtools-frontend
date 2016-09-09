@@ -98,9 +98,11 @@ WebInspector.AppManifestView.prototype = {
             this._startURLField.appendChild(WebInspector.linkifyResourceAsNode(/** @type {string} */(WebInspector.ParsedURL.completeURL(url, startURL)), undefined, undefined, undefined, undefined, startURL));
 
         this._themeColorSwatch.classList.toggle("hidden", !stringProperty("theme_color"));
-        this._themeColorSwatch.setColorText(stringProperty("theme_color") || "white");
+        var themeColor = WebInspector.Color.parse(stringProperty("theme_color") || "white") || WebInspector.Color.parse("white");
+        this._themeColorSwatch.setColor(/** @type {!WebInspector.Color} */ (themeColor));
         this._backgroundColorSwatch.classList.toggle("hidden", !stringProperty("background_color"));
-        this._backgroundColorSwatch.setColorText(stringProperty("background_color") || "white");
+        var backgroundColor = WebInspector.Color.parse(stringProperty("background_color") || "white") || WebInspector.Color.parse("white");
+        this._backgroundColorSwatch.setColor(/** @type {!WebInspector.Color} */ (backgroundColor));
 
         this._orientationField.textContent = stringProperty("orientation");
         this._displayField.textContent = stringProperty("display");

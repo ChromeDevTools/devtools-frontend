@@ -182,8 +182,10 @@ WebInspector.ColorSwatchPopoverIcon.prototype = {
      */
     _spectrumChanged: function(event)
     {
-        var colorString = /** @type {string} */ (event.data);
-        this._swatch.setColorText(colorString);
+        var color = WebInspector.Color.parse(/** @type {string} */ (event.data));
+        if (!color)
+            return;
+        this._swatch.setColor(color);
         this._treeElement.applyStyleText(this._treeElement.renderedPropertyText(), false);
     },
 

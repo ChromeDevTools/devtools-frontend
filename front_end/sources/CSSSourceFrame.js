@@ -166,10 +166,11 @@ WebInspector.CSSSourceFrame.prototype = {
      */
     _createColorSwatch: function(text)
     {
-        if (!WebInspector.Color.parse(text))
+        var color = WebInspector.Color.parse(text);
+        if (!color)
             return null;
         var swatch = WebInspector.ColorSwatch.create();
-        swatch.setColorText(text);
+        swatch.setColor(color);
         swatch.iconElement().title = WebInspector.UIString("Open color picker.");
         swatch.iconElement().addEventListener("click", this._swatchIconClicked.bind(this, swatch), false);
         swatch.hideText(true);
@@ -241,7 +242,10 @@ WebInspector.CSSSourceFrame.prototype = {
     _spectrumChanged: function(event)
     {
         var colorString = /** @type {string} */ (event.data);
-        this._currentSwatch.setColorText(colorString);
+        var color = WebInspector.Color.parse(colorString);
+        if (!color)
+            return;
+        this._currentSwatch.setColor(color);
         this._changeSwatchText(colorString);
     },
 

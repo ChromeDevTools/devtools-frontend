@@ -406,7 +406,7 @@ WebInspector.NetworkProject.prototype = {
     _reset: function()
     {
         for (var project of this._workspaceProjects.values())
-            project.reset();
+            project.removeProject();
         this._workspaceProjects.clear();
     },
 

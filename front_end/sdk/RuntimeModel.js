@@ -686,7 +686,7 @@ WebInspector.ExecutionContext.prototype = {
                 else
                     object = this;
 
-                var resultSet = {};
+                var resultSet = { __proto__: null };
                 try {
                     for (var o = object; o; o = Object.getPrototypeOf(o)) {
                         if ((type === "array" || type === "typedarray") && o === object && ArrayBuffer.isView(o) && o.length > 9999)

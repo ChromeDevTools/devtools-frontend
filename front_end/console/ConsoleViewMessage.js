@@ -230,20 +230,45 @@ WebInspector.ConsoleViewMessage.prototype = {
         }
 
         var dumpStackTrace = !!consoleMessage.stackTrace && (consoleMessage.source === WebInspector.ConsoleMessage.MessageSource.Network || consoleMessage.level === WebInspector.ConsoleMessage.MessageLevel.Error || consoleMessage.level === WebInspector.ConsoleMessage.MessageLevel.RevokedError || consoleMessage.type === WebInspector.ConsoleMessage.MessageType.Trace || consoleMessage.level === WebInspector.ConsoleMessage.MessageLevel.Warning);
-        if (dumpStackTrace) {
-            var treeOutline = new TreeOutline();
-            treeOutline.element.classList.add("outline-disclosure", "outline-disclosure-no-padding");
-            var content = this._formattedMessage;
-            var root = new TreeElement(content);
-            root.toggleOnClick = true;
-            root.selectable = false;
-            content.treeElementForTest = root;
-            treeOutline.appendChild(root);
-            if (consoleMessage.type === WebInspector.ConsoleMessage.MessageType.Trace)
-                root.expand();
+        var target = this._target();
+        if (dumpStackTrace && target) {
+            var toggleElement = createElementWithClass("div", "console-message-stack-trace-toggle");
+            var triangleElement = toggleElement.createChild("div", "console-message-stack-trace-triangle");
+            var contentElement = toggleElement.createChild("div", "console-message-stack-trace-wrapper");
 
-            this._populateStackTraceTreeElement(root);
-            this._formattedMessage = treeOutline.element;
+            var clickableElement = contentElement.createChild("div");
+            clickableElement.appendChild(this._formattedMessage);
+            var stackTraceElement = contentElement.createChild("div");
+            stackTraceElement.appendChild(WebInspector.DOMPresentationUtils.buildStackTracePreviewContents(target, this._linkifier, this._message.stackTrace));
+            stackTraceElement.classList.add("hidden");
+
+            /**
+             * @param {boolean} expand
+             */
+            function expandStackTrace(expand)
+            {
+                stackTraceElement.classList.toggle("hidden", !expand);
+                toggleElement.classList.toggle("expanded", expand);
+            }
+
+            /**
+             * @param {?Event} event
+             */
+            function toggleStackTrace(event)
+            {
+                if (event.target.hasSelection())
+                    return;
+                expandStackTrace(stackTraceElement.classList.contains("hidden"));
+                event.consume();
+            }
+
+            clickableElement.addEventListener("click", toggleStackTrace, false);
+            triangleElement.addEventListener("click", toggleStackTrace, false);
+            if (consoleMessage.type === WebInspector.ConsoleMessage.MessageType.Trace)
+                expandStackTrace(true);
+
+            toggleElement._expandStackTraceForTest = expandStackTrace.bind(null, true);
+            this._formattedMessage = toggleElement;
         }
     },
 
@@ -988,20 +1013,6 @@ WebInspector.ConsoleViewMessage.prototype = {
         }
 
         this._wrapperElement.appendChild(this.contentElement());
-    },
-
-    /**
-     * @param {!TreeElement} parentTreeElement
-     */
-    _populateStackTraceTreeElement: function(parentTreeElement)
-    {
-        var target = this._target();
-        if (!target)
-            return;
-        var content = WebInspector.DOMPresentationUtils.buildStackTracePreviewContents(target, this._linkifier, this._message.stackTrace);
-        var treeElement = new TreeElement(content);
-        treeElement.selectable = false;
-        parentTreeElement.appendChild(treeElement);
     },
 
     resetIncrementRepeatCount: function()

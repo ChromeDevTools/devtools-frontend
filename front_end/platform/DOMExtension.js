@@ -306,6 +306,16 @@ Node.prototype.isComponentSelectionCollapsed = function()
 }
 
 /**
+ * @return {boolean}
+ */
+Node.prototype.hasSelection = function()
+{
+    if (this.isComponentSelectionCollapsed())
+        return false;
+    return this.getComponentSelection().containsNode(this, true);
+}
+
+/**
  * @return {!Selection}
  */
 Node.prototype.getDeepSelection = function()

@@ -122,14 +122,6 @@
 }
 } /* media */
 
-.console-message > .outline-disclosure li.parent {
-    margin-top: 0;
-}
-
-.console-message > .outline-disclosure li.parent::before {
-    top: 0;
-}
-
 .console-message .console-message-repeat-count {
     margin-right: 4px;
     margin-left: -18px;
@@ -144,7 +136,7 @@
     visibility: hidden;
 }
 
-.repeated-message .outline-disclosure,
+.repeated-message .console-message-stack-trace-toggle,
 .repeated-message > .console-message-text {
     flex: 1;
 }
@@ -438,4 +430,45 @@
 
 .console-view-object-properties-section {
     padding: 0px;
+}
+
+.console-message-stack-trace-toggle {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.console-message-stack-trace-wrapper {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.console-message-stack-trace-wrapper > * {
+    flex: none;
+}
+
+.console-message-stack-trace-triangle {
+    -webkit-user-select: none;
+    -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
+    -webkit-mask-size: 352px 168px;
+    color: transparent;
+    text-shadow: none;
+    margin-right: 0;
+    height: 12px;
+    background-color: rgb(110, 110, 110);
+    width: 12px;
+    flex: none;
+    -webkit-mask-position: -4px -96px;
+}
+
+@media (-webkit-min-device-pixel-ratio: 1.1) {
+.console-message-stack-trace-triangle {
+    -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
+}
+} /* media */
+
+.console-message-stack-trace-toggle.expanded .console-message-stack-trace-triangle {
+    -webkit-mask-position: -20px -96px;
 }

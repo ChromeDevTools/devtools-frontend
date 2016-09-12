@@ -357,6 +357,12 @@
     background-color: #454545;
 }
 
-.CodeMirror .auto-complete-text{
+.CodeMirror .auto-complete-text {
     color: rgb(128,128,128);
+}
+
+/** Prevent the codemirror textarea from stealing PageUp events **/
+.CodeMirror textarea {
+    resize: none;
+    overflow: hidden;
 }

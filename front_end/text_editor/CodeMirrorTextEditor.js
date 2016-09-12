@@ -64,8 +64,8 @@ WebInspector.CodeMirrorTextEditor = function(options)
         "Down": "goLineDown",
         "End": "goLineEnd",
         "Home": "goLineStartSmart",
-        "PageUp": "goPageUp",
-        "PageDown": "goPageDown",
+        "PageUp": "smartPageUp",
+        "PageDown": "smartPageDown",
         "Delete": "delCharAfter",
         "Backspace": "delCharBefore",
         "Tab": "defaultTab",
@@ -286,6 +286,26 @@ CodeMirror.commands.dismiss = function(codemirror)
 
     codemirror.setSelection(selection.anchor, selection.head, {scroll: false});
     codemirror._codeMirrorTextEditor.scrollLineIntoView(selection.anchor.line);
+}
+
+/**
+ * @return {!Object|undefined}
+ */
+CodeMirror.commands.smartPageUp = function(codemirror)
+{
+    if (codemirror._codeMirrorTextEditor.selection().equal(WebInspector.TextRange.createFromLocation(0, 0)))
+        return CodeMirror.Pass;
+    codemirror.execCommand("goPageUp");
+}
+
+/**
+ * @return {!Object|undefined}
+ */
+CodeMirror.commands.smartPageDown = function(codemirror)
+{
+    if (codemirror._codeMirrorTextEditor.selection().equal(codemirror._codeMirrorTextEditor.fullRange().collapseToEnd()))
+        return CodeMirror.Pass;
+    codemirror.execCommand("goPageDown");
 }
 
 /**

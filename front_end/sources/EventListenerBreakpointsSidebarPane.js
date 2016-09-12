@@ -14,9 +14,10 @@ WebInspector.EventListenerBreakpointsSidebarPane = function()
 
     this._eventListenerBreakpointsSetting = WebInspector.settings.createLocalSetting("eventListenerBreakpoints", []);
 
-    this._categoriesTreeOutline = new TreeOutline();
+    this._categoriesTreeOutline = new TreeOutlineInShadow();
     this._categoriesTreeOutline.element.tabIndex = 0;
     this._categoriesTreeOutline.element.classList.add("event-listener-breakpoints");
+    this._categoriesTreeOutline.registerRequiredCSS("sources/eventListenerBreakpoints.css");
     this.element.appendChild(this._categoriesTreeOutline.element);
 
     this._categoryItems = [];
@@ -116,8 +117,7 @@ WebInspector.EventListenerBreakpointsSidebarPane.prototype = {
         var categoryItem = {};
         categoryItem.element = new TreeElement(labelNode);
         this._categoriesTreeOutline.appendChild(categoryItem.element);
-        categoryItem.element.listItemElement.classList.add("event-category");
-        categoryItem.element.selectable = true;
+        categoryItem.element.selectable = false;
 
         categoryItem.checkbox = labelNode.checkboxElement;
         categoryItem.checkbox.addEventListener("click", this._categoryCheckboxClicked.bind(this, categoryItem), true);

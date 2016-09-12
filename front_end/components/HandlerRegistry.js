@@ -204,7 +204,7 @@ WebInspector.HandlerRegistry.prototype = {
                 InspectorFrontendHost.openInNewTab(resourceURL);
         }
         if (!targetNode.enclosingNodeOrSelfWithClassList(["resources", "panel"]) && WebInspector.resourceForURL(resourceURL))
-            contextMenu.appendItem(WebInspector.UIString.capitalize("Open ^link in Resources ^panel"), openInResourcesPanel.bind(null, resourceURL));
+            contextMenu.appendItem(WebInspector.UIString.capitalize("Open ^link in Application ^panel"), openInResourcesPanel.bind(null, resourceURL));
 
 
         contextMenu.appendItem(WebInspector.copyLinkAddressLabel(), InspectorFrontendHost.copyText.bind(InspectorFrontendHost, resourceURL));

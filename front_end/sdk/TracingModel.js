@@ -861,6 +861,8 @@ WebInspector.TracingModel.Thread.prototype = {
                 break;
             }
         }
+        while (stack.length)
+            stack.pop().setEndTime(this._model.maximumRecordTime());
         this._events.remove(null, false);
     },
 

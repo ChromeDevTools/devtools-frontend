@@ -33,15 +33,12 @@
     margin-top: 5px;
 }
 
-.indexed-db-database-view .outline-disclosure {
-    padding-left: 0;
-}
-
-.indexed-db-database-view .outline-disclosure li {
+.indexed-db-database-view .header-row {
     white-space: nowrap;
+    margin: 0 0 2px 10px;
 }
 
-.indexed-db-database-view .outline-disclosure .attribute-name {
+.indexed-db-database-view .header-row .attribute-name {
     color: rgb(33%, 33%, 33%);
     display: inline-block;
     margin-right: 0.5em;
@@ -49,7 +46,7 @@
     vertical-align: top;
 }
 
-.indexed-db-database-view .outline-disclosure .attribute-value {
+.indexed-db-database-view .header-row .attribute-value {
     display: inline;
     margin-top: 1px;
 }

@@ -122,14 +122,6 @@ WebInspector.SourcesPanel.minToolbarWidth = 215;
 WebInspector.SourcesPanel.prototype = {
     /**
      * @override
-     */
-    focus: function()
-    {
-        this._sourcesView.focus();
-    },
-
-    /**
-     * @override
      * @param {!WebInspector.Target} target
      */
     targetAdded: function(target)

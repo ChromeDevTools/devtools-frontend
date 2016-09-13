@@ -163,6 +163,7 @@ WebInspector.SplitWidget.prototype = {
             widget.attach(this);
             if (this._showMode === WebInspector.SplitWidget.ShowMode.OnlyMain || this._showMode === WebInspector.SplitWidget.ShowMode.Both)
                 widget.showWidget(this.element);
+            this.setDefaultFocusedChild(widget);
         }
         this.resumeInvalidations();
     },

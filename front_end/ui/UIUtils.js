@@ -813,6 +813,7 @@ WebInspector.currentFocusElement = function()
 WebInspector._focusChanged = function(event)
 {
     var node = event.deepActiveElement();
+    WebInspector.Widget.focusWidgetForNode(node);
     WebInspector.setCurrentFocusElement(node);
 }
 

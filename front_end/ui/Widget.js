@@ -48,6 +48,7 @@ WebInspector.Widget = function(isWebComponent)
     this._hideOnDetach = false;
     this._notificationDepth = 0;
     this._invalidationsSuspended = 0;
+    this._defaultFocusedChild = null;
 }
 
 WebInspector.Widget.prototype = {
@@ -332,6 +333,8 @@ WebInspector.Widget.prototype = {
             var childIndex = this._parentWidget._children.indexOf(this);
             WebInspector.Widget.__assert(childIndex >= 0, "Attempt to remove non-child widget");
             this._parentWidget._children.splice(childIndex, 1);
+            if (this._parentWidget._defaultFocusedChild === this)
+                this._parentWidget._defaultFocusedChild = null;
             this._parentWidget.childWasDetached(this);
             var parent = this._parentWidget;
             this._parentWidget = null;
@@ -428,6 +431,15 @@ WebInspector.Widget.prototype = {
         this._defaultFocusedElement = element;
     },
 
+    /**
+     * @param {!WebInspector.Widget} child
+     */
+    setDefaultFocusedChild: function(child)
+    {
+        WebInspector.Widget.__assert(child._parentWidget === this, "Attempt to set non-child widget as default focused.");
+        this._defaultFocusedChild = child;
+    },
+
     focus: function()
     {
         var element = this._defaultFocusedElement;
@@ -436,8 +448,17 @@ WebInspector.Widget.prototype = {
             return;
         }
 
-        if (this._children.length)
-            this._children[0].focus();
+        if (this._defaultFocusedChild && this._defaultFocusedChild._visible) {
+            this._defaultFocusedChild.focus();
+        } else {
+            for (var child of this._children) {
+                if (child._visible) {
+                    child.focus();
+                    break;
+                }
+            }
+        }
+
     },
 
     /**
@@ -592,6 +613,26 @@ WebInspector.Widget.__assert = function(condition, message)
     if (!condition) {
         console.trace();
         throw new Error(message);
+    }
+}
+
+/**
+ * @param {?Node} node
+ */
+WebInspector.Widget.focusWidgetForNode = function(node)
+{
+    while (node) {
+        if (node.__widget)
+            break;
+        node = node.parentNodeOrShadowHost();
+    }
+    if (!node)
+        return;
+
+    var widget = node.__widget;
+    while (widget._parentWidget) {
+        widget._parentWidget._defaultFocusedChild = widget;
+        widget = widget._parentWidget;
     }
 }
 

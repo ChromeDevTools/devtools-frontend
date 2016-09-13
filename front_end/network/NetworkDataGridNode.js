@@ -118,11 +118,11 @@ WebInspector.NetworkDataGridNode.prototype = {
         case "protocol": cell.setTextAndTitle(this._request.protocol); break;
         case "scheme": cell.setTextAndTitle(this._request.scheme); break;
         case "domain": cell.setTextAndTitle(this._request.domain); break;
-        case "remoteAddress": cell.setTextAndTitle(this._request.remoteAddress()); break;
+        case "remoteaddress": cell.setTextAndTitle(this._request.remoteAddress()); break;
         case "cookies": cell.setTextAndTitle(this._arrayLength(this._request.requestCookies)); break;
-        case "setCookies": cell.setTextAndTitle(this._arrayLength(this._request.responseCookies)); break;
+        case "setcookies": cell.setTextAndTitle(this._arrayLength(this._request.responseCookies)); break;
         case "priority": cell.setTextAndTitle(WebInspector.uiLabelForPriority(this._request.initialPriority())); break;
-        case "connectionId": cell.setTextAndTitle(this._request.connectionId); break;
+        case "connectionid": cell.setTextAndTitle(this._request.connectionId); break;
         case "type": this._renderTypeCell(cell); break;
         case "initiator": this._renderInitiatorCell(cell); break;
         case "size": this._renderSizeCell(cell); break;

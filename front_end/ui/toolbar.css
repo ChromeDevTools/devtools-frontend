@@ -492,3 +492,9 @@ input.toolbar-item.hover {
 :host-context(.-theme-with-dark-background) .toolbar-state-on .record-toolbar-item.toolbar-glyph {
     background-color: hsl(0, 100%, 65%) !important;
 }
+
+span.toolbar-select-container.toolbar-item.warning {
+    background: #ffd7d7;
+    padding: 0 5px 0 0;
+    margin-right: 1px;
+}

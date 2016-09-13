@@ -87,6 +87,7 @@ WebInspector.ConsoleContextSelector.prototype = {
     {
         var executionContext = /** @type {!WebInspector.ExecutionContext} */ (event.data);
         this._executionContextCreated(executionContext);
+        this._updateSelectionWarning();
     },
 
     /**
@@ -98,6 +99,7 @@ WebInspector.ConsoleContextSelector.prototype = {
         var option = this._optionByExecutionContext.get(executionContext);
         if (option)
             option.text = this._titleFor(executionContext);
+        this._updateSelectionWarning();
     },
 
     /**
@@ -116,6 +118,7 @@ WebInspector.ConsoleContextSelector.prototype = {
     {
         var executionContext = /** @type {!WebInspector.ExecutionContext} */ (event.data);
         this._executionContextDestroyed(executionContext);
+        this._updateSelectionWarning();
     },
 
     /**
@@ -139,6 +142,41 @@ WebInspector.ConsoleContextSelector.prototype = {
         var option = this._selectedOption();
         var newContext = option ? option.__executionContext : null;
         WebInspector.context.setFlavor(WebInspector.ExecutionContext, newContext);
+        this._updateSelectionWarning();
+    },
+
+    _updateSelectionWarning: function()
+    {
+        var executionContext = WebInspector.context.flavor(WebInspector.ExecutionContext);
+        this._selectElement.parentElement.classList.toggle("warning", !this._isTopContext(executionContext) && this._hasTopContext())
+    },
+
+    /**
+     * @param {?WebInspector.ExecutionContext} executionContext
+     * @return {boolean}
+     */
+    _isTopContext: function(executionContext)
+    {
+        if (!executionContext || !executionContext.isDefault)
+            return false;
+        var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(executionContext.target());
+        var frame = executionContext.frameId && resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
+        if (!frame)
+            return false;
+        return frame.isMainFrame();
+    },
+
+    /**
+     * @return {boolean}
+     */
+    _hasTopContext: function()
+    {
+        var options = this._selectElement.options;
+        for (var i = 0; i < options.length; i++){
+            if (this._isTopContext(options[i].__executionContext))
+                return true;
+        }
+        return false;
     },
 
     /**

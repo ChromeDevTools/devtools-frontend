@@ -100,7 +100,7 @@ WebInspector.DatabaseQueryView.prototype = {
         if (this._selectionTimeout)
             clearTimeout(this._selectionTimeout);
 
-        this._prompt.clearAutoComplete();
+        this._prompt.clearAutocomplete();
 
         /**
          * @this {WebInspector.DatabaseQueryView}
@@ -128,7 +128,7 @@ WebInspector.DatabaseQueryView.prototype = {
     {
         event.consume(true);
 
-        this._prompt.clearAutoComplete();
+        this._prompt.clearAutocomplete();
 
         var query = this._prompt.text();
         if (!query.length)

@@ -91,6 +91,11 @@ fieldset[disabled] label:hover input {
     z-index: 0;
 }
 
+.panel-sidebar {
+    overflow-x: hidden;
+    background-color: #f3f3f3;
+}
+
 iframe.extension {
     flex: auto;
     width: 100%;
@@ -220,11 +225,6 @@ ol.outline-disclosure:focus li.selected * {
     color: #222 !important;
     text-decoration: none !important;
     overflow: visible !important;
-}
-
-.sidebar {
-    overflow-x: hidden;
-    background-color: #f3f3f3;
 }
 
 .sidebar-tree,

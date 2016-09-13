@@ -27,42 +27,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-.resources.panel .sidebar {
-    padding-left: 0;
-    z-index: 10;
-    display: block;
-}
-
-.resources.panel .sidebar li {
-    height: 18px;
-    white-space: nowrap;
-    padding-top: 1px;
-    padding: 16px 0;
-}
-
-.resources.panel .sidebar li.selected {
-    color: white;
-}
-
-.resources.panel .sidebar li.selected .selection {
-    background-color: rgb(160, 160, 160);
-    border-top: 1px solid #979797;
-}
-
-.resources.panel .sidebar :focus li.selected .selection {
-    background-color: rgb(56, 121, 217);
-    border-top: 1px solid rgb(68, 128, 200);
-}
-
-.resources.panel .sidebar .icon {
-    width: 16px;
-    height: 16px;
-    position: relative;
-    top: 3px;
-    margin-top: -3px;
-    display: inline-block;
-}
-
 .resources-toolbar {
     border-top: 1px solid #ccc;
     background-color: #eee;

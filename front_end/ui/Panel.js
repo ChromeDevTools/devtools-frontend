@@ -138,7 +138,7 @@ WebInspector.PanelWithSidebar = function(name, defaultWidth)
     this._sidebarWidget.setMinimumSize(100, 25);
     this._panelSplitWidget.setSidebarWidget(this._sidebarWidget);
 
-    this._sidebarWidget.element.classList.add("sidebar");
+    this._sidebarWidget.element.classList.add("panel-sidebar");
 }
 
 WebInspector.PanelWithSidebar.prototype = {

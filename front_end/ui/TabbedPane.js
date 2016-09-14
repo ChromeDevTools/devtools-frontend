@@ -42,10 +42,13 @@ WebInspector.TabbedPane = function()
     this._headerElement = this.contentElement.createChild("div", "tabbed-pane-header");
     this._headerElement.createChild("content").select = ".tabbed-pane-header-before";
     this._headerContentsElement = this._headerElement.createChild("div", "tabbed-pane-header-contents");
+    this._headerContentsElement.setAttribute("aria-label", WebInspector.UIString("Panels"));
     this._tabSlider = createElementWithClass("div", "tabbed-pane-tab-slider");
     this._headerElement.createChild("content").select = ".tabbed-pane-header-after";
     this._tabsElement = this._headerContentsElement.createChild("div", "tabbed-pane-header-tabs");
+    this._tabsElement.setAttribute("role", "tablist");
     this._contentElement = this.contentElement.createChild("div", "tabbed-pane-content");
+    this._contentElement.setAttribute("role", "tabpanel");
     this._contentElement.createChild("content");
     /** @type {!Array.<!WebInspector.TabbedPaneTab>} */
     this._tabs = [];
@@ -767,6 +770,7 @@ WebInspector.TabbedPane.prototype = {
     _showTab: function(tab)
     {
         tab.tabElement.classList.add("selected");
+        tab.tabElement.setAttribute("aria-selected", "true");
         tab.view.showWidget(this.element);
         this._updateTabSlider();
     },
@@ -793,6 +797,7 @@ WebInspector.TabbedPane.prototype = {
     _hideTab: function(tab)
     {
         tab.tabElement.classList.remove("selected");
+        tab.tabElement.setAttribute("aria-selected", "false");
         tab.view.hideWidget();
     },
 
@@ -1038,6 +1043,8 @@ WebInspector.TabbedPaneTab.prototype = {
         var tabElement = createElementWithClass("div", "tabbed-pane-header-tab");
         tabElement.id = "tab-" + this._id;
         tabElement.tabIndex = -1;
+        tabElement.setAttribute("role", "tab");
+        tabElement.setAttribute("aria-selected", "false");
         tabElement.selectTabForTest = this._tabbedPane.selectTab.bind(this._tabbedPane, this.id, true);
 
         var titleElement = tabElement.createChild("span", "tabbed-pane-header-tab-title");

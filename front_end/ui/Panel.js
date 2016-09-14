@@ -35,6 +35,8 @@ WebInspector.Panel = function(name)
     WebInspector.VBox.call(this);
 
     this.element.classList.add("panel");
+    this.element.setAttribute("role", "tabpanel");
+    this.element.setAttribute("aria-label", name);
     this.element.classList.add(name);
     this._panelName = name;
 

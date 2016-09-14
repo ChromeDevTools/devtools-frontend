@@ -762,11 +762,11 @@ WebInspector.AnimationTimeline.StepTimingFunction = function(steps, stepAtPositi
  * @return {?WebInspector.AnimationTimeline.StepTimingFunction}
  */
 WebInspector.AnimationTimeline.StepTimingFunction.parse = function(text) {
-    var match = text.match(/^step-(start|middle|end)$/);
-    if (match)
-        return new WebInspector.AnimationTimeline.StepTimingFunction(1, match[1]);
-    match = text.match(/^steps\((\d+), (start|middle|end)\)$/);
+    var match = text.match(/^steps\((\d+), (start|middle)\)$/);
     if (match)
         return new WebInspector.AnimationTimeline.StepTimingFunction(parseInt(match[1], 10), match[2]);
+    match = text.match(/^steps\((\d+)\)$/);
+    if (match)
+        return new WebInspector.AnimationTimeline.StepTimingFunction(parseInt(match[1], 10), "end");
     return null;
 }

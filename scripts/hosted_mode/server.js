@@ -16,7 +16,7 @@ http.createServer(requestHandler).listen(serverPort);
 console.log(`Started hosted mode server at http://localhost:${serverPort}\n`);
 console.log("For info on using the hosted mode server, see our contributing docs:");
 console.log("https://bit.ly/devtools-contribution-guide");
-console.log("Tip: Look for the 'Hosted Mode Server Options' section");
+console.log("Tip: Look for the 'Hosted Mode Server Options' section\n");
 
 function requestHandler(request, response)
 {

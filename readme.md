@@ -7,11 +7,29 @@ It is available on NPM as the [chrome-devtools-frontend](https://www.npmjs.com/p
 #### Package versioning
 The version number of the npm package (e.g. `1.0.373466`) refers to the Chromium commit position of latest frontend git commit. It's incremented with every Chromium commit, however the package is updated roughly daily.
 
-
 ### Source code
 The frontend is available through a git subtree mirror on [chromium.googlesource.com](https://chromium.googlesource.com/chromium/src/third_party/WebKit/Source/devtools/), with a regularly updating GitHub mirror at [github.com/ChromeDevTools/devtools-frontend](https://github.com/ChromeDevTools/devtools-frontend). The codebase's true location is in `third_party/WebKit/Source/devtools/` in [Chromium's git repo](https://chromium.googlesource.com/chromium/src/).
 
+### Getting Started
 
+1. Clone the repo
+2. Go to repo root and run:  `npm start`
+    - This launches Chrome Canary and starts the dev server with 1 command
+3. Go to http://localhost:8090
+
+> **Power user tips:**
+>
+> You can customize the port for the dev server: e.g. `PORT=8888 npm start`.
+>
+> You can also launch chrome and start the server separately:
+> - `npm run chrome`
+> - `npm run server`
+>
+> When you start Chrome separately, you can pass extra args to Chrome:
+> ```
+> npm run chrome -- https://news.ycombinator.com
+> ```
+> (e.g. this launches Hacker News on startup)
 
 ### Hacking
 * DevTools documentation: [devtools.chrome.com](https://devtools.chrome.com)

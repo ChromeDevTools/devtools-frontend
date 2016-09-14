@@ -2,6 +2,8 @@
   "name": "chrome-devtools-frontend",
   "description": "Chrome DevTools UI",
   "scripts": {
+    "start": "node scripts/start_chrome_and_server.js",
+    "chrome": "node scripts/chrome_debug_launcher/launch_chrome.js",
     "server": "node scripts/hosted_mode/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint -c front_end/.eslintrc.js --ignore-path front_end/.eslintignore front_end"

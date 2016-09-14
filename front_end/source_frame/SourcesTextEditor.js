@@ -174,7 +174,7 @@ WebInspector.SourcesTextEditor.prototype = {
             this._gutters.push(type);
 
         this.codeMirror().setOption("gutters", this._gutters.slice());
-        this.codeMirror().refresh();
+        this.refresh();
     },
 
     /**
@@ -182,9 +182,12 @@ WebInspector.SourcesTextEditor.prototype = {
      */
     uninstallGutter: function(type)
     {
-        this._gutters = this._gutters.filter(gutter => gutter !== type);
+        var index = this._gutters.indexOf(type);
+        if (index === -1)
+            return;
+        this._gutters.splice(index,1);
         this.codeMirror().setOption("gutters", this._gutters.slice());
-        this.codeMirror().refresh();
+        this.refresh();
     },
 
     /**

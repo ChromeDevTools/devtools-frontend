@@ -160,6 +160,9 @@ WebInspector.CodeMirrorTextEditor = function(options)
     this.element.addEventListener("keydown", this._handleKeyDown.bind(this), true);
     this.element.addEventListener("keydown", this._handlePostKeyDown.bind(this), false);
     this.element.tabIndex = 0;
+
+    this._needsRefresh = true;
+
     if (options.mimeType)
         this.setMimeType(options.mimeType);
 }
@@ -527,10 +530,21 @@ WebInspector.CodeMirrorTextEditor.prototype = {
      */
     wasShown: function()
     {
-        if (this._wasOnceShown)
+        if (this._needsRefresh)
+            this.refresh();
+    },
+
+    /**
+     * @protected
+     */
+    refresh: function()
+    {
+        if (this.isShowing()) {
+            this._codeMirror.refresh();
+            this._needsRefresh = false;
             return;
-        this._wasOnceShown = true;
-        this._codeMirror.refresh();
+        }
+        this._needsRefresh = true;
     },
 
     /**

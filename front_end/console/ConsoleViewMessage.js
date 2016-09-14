@@ -118,7 +118,9 @@ WebInspector.ConsoleViewMessage.prototype = {
     {
         if (this._cachedHeight)
             return this._cachedHeight;
-        const defaultConsoleRowHeight = 18;  // Sync with consoleView.css
+        // This value reflects the 18px min-height of .console-message, plus the
+        // 1px border of .console-message-wrapper. Keep in sync with consoleView.css.
+        const defaultConsoleRowHeight = 19;
         if (this._message.type === WebInspector.ConsoleMessage.MessageType.Table) {
             var table = this._message.parameters[0];
             if (table && table.preview)

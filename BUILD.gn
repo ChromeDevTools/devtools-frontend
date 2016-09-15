@@ -1038,7 +1038,7 @@ action("frontend_protocol_sources") {
 }
 
 action("build_release_devtools") {
-  script = "scripts/build_applications.py"
+  script = "scripts/build_release_applications.py"
 
   deps = [
     ":frontend_protocol_sources",
@@ -1047,7 +1047,6 @@ action("build_release_devtools") {
 
   helper_scripts = [
     "scripts/modular_build.py",
-    "scripts/concatenate_application_code.py",
     "scripts/rjsmin.py",
   ]
 
@@ -1080,10 +1079,10 @@ if (debug_devtools) {
   resources_out_debug_dir = "$root_out_dir/resources/inspector/debug"
 
   action("build_debug_devtools") {
-    script = "scripts/build_applications.py"
+    script = "scripts/build_debug_applications.py"
 
     deps = [
-      ":copy_debug_files",
+      ":copy_generated_scripts",
     ]
 
     inputs = all_devtools_files + [
@@ -1113,38 +1112,6 @@ if (debug_devtools) {
     ]
   }
 
-  group("copy_debug_files") {
-    public_deps = [
-      ":copy_acorn_js_files",
-      ":copy_codemirror_files",
-      ":copy_emulated_devices_images_debug",
-      ":copy_generated_scripts",
-      ":copy_inspector_images_debug",
-      ":copy_runtime_core",
-    ]
-  }
-
-  copy("copy_runtime_core") {
-    sources = devtools_core_base_files
-    outputs = [
-      "$resources_out_debug_dir/{{source_file_part}}",
-    ]
-  }
-
-  copy("copy_acorn_js_files") {
-    sources = devtools_acorn_files
-    outputs = [
-      "$resources_out_debug_dir/acorn/{{source_file_part}}",
-    ]
-  }
-
-  copy("copy_codemirror_files") {
-    sources = devtools_cm_js_files + devtools_cm_css_files
-    outputs = [
-      "$resources_out_debug_dir/cm/{{source_file_part}}",
-    ]
-  }
-
   copy("copy_generated_scripts") {
     deps = [
       ":frontend_protocol_sources",
@@ -1153,19 +1120,6 @@ if (debug_devtools) {
     sources = generated_scripts
     outputs = [
       "$resources_out_debug_dir/{{source_file_part}}",
-    ]
-  }
-  copy("copy_inspector_images_debug") {
-    sources = devtools_image_files
-    outputs = [
-      "$resources_out_debug_dir/Images/{{source_file_part}}",
-    ]
-  }
-
-  copy("copy_emulated_devices_images_debug") {
-    sources = devtools_emulated_devices_images
-    outputs = [
-      "$resources_out_debug_dir/emulated_devices/{{source_file_part}}",
     ]
   }
 }

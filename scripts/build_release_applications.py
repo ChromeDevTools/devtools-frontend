@@ -1,17 +1,15 @@
 #!/usr/bin/env python
+# -*- coding: UTF-8 -*-
 #
-# Copyright 2014 The Chromium Authors. All rights reserved.
+# Copyright 2016 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
 """
-Release:
-  - Concatenates autostart modules, application modules' module.json descriptors,
-    and the application loader into a single script.
-  - Builds app.html referencing the application script.
-Debug:
-  - Copies the module directories into their destinations.
-  - Copies app.html as-is.
+Builds applications in release mode:
+- Concatenates autostart modules, application modules' module.json descriptors,
+and the application loader into a single script.
+- Builds app.html referencing the application script.
 """
 
 from cStringIO import StringIO
@@ -31,6 +29,24 @@ except ImportError:
     import json
 
 import rjsmin
+
+
+def main(argv):
+    try:
+        input_path_flag_index = argv.index('--input_path')
+        input_path = argv[input_path_flag_index + 1]
+        output_path_flag_index = argv.index('--output_path')
+        output_path = argv[output_path_flag_index + 1]
+        application_names = argv[1:input_path_flag_index]
+    except:
+        print('Usage: %s app_1 app_2 ... app_N --input_path <input_path> --output_path <output_path>' % argv[0])
+        raise
+
+    loader = modular_build.DescriptorLoader(input_path)
+    for app in application_names:
+        descriptors = loader.load_application(app + '.json')
+        builder = ReleaseBuilder(app, descriptors, input_path, output_path)
+        builder.build_app()
 
 
 def resource_source_url(url):
@@ -67,7 +83,11 @@ def symlink_or_copy_dir(src, dest):
             symlink_or_copy_file(src_name, dest_name)
 
 
-class AppBuilder:
+# Outputs:
+#   <app_name>.html
+#   <app_name>.js
+#   <module_name>_module.js
+class ReleaseBuilder(object):
     def __init__(self, application_name, descriptors, application_dir, output_dir):
         self.application_name = application_name
         self.descriptors = descriptors
@@ -89,15 +109,6 @@ class AppBuilder:
             for resource_name in resources:
                 result.append(path.join(module, resource_name))
         return result
-
-
-# Outputs:
-#   <app_name>.html
-#   <app_name>.js
-#   <module_name>_module.js
-class ReleaseBuilder(AppBuilder):
-    def __init__(self, application_name, descriptors, application_dir, output_dir):
-        AppBuilder.__init__(self, application_name, descriptors, application_dir, output_dir)
 
     def build_app(self):
         if self.descriptors.has_html:
@@ -128,7 +139,7 @@ class ReleaseBuilder(AppBuilder):
         output.close()
 
     def _generate_include_tag(self, resource_path):
-        if (resource_path.endswith('.js')):
+        if resource_path.endswith('.js'):
             return '    <script type="text/javascript" src="%s"></script>\n' % resource_path
         else:
             assert resource_path
@@ -213,35 +224,5 @@ class ReleaseBuilder(AppBuilder):
         output.close()
 
 
-# Outputs:
-#   <app_name>.html as-is
-#   <app_name>.js as-is
-#   <module_name>/<all_files>
-class DebugBuilder(AppBuilder):
-    def __init__(self, application_name, descriptors, application_dir, output_dir):
-        AppBuilder.__init__(self, application_name, descriptors, application_dir, output_dir)
-
-    def build_app(self):
-        if self.descriptors.has_html:
-            self._build_html()
-        js_name = self.app_file('js')
-        src_name = join(os.getcwd(), self.application_dir, js_name)
-        symlink_or_copy_file(src_name, join(self.output_dir, js_name), True)
-        for module_name in self.descriptors.modules:
-            module = self.descriptors.modules[module_name]
-            input_module_dir = join(self.application_dir, module_name)
-            output_module_dir = join(self.output_dir, module_name)
-            symlink_or_copy_dir(input_module_dir, output_module_dir)
-
-    def _build_html(self):
-        html_name = self.app_file('html')
-        symlink_or_copy_file(join(os.getcwd(), self.application_dir, html_name), join(self.output_dir, html_name), True)
-
-
-def build_application(application_name, loader, application_dir, output_dir, release_mode):
-    descriptors = loader.load_application(application_name + '.json')
-    if release_mode:
-        builder = ReleaseBuilder(application_name, descriptors, application_dir, output_dir)
-    else:
-        builder = DebugBuilder(application_name, descriptors, application_dir, output_dir)
-    builder.build_app()
+if __name__ == '__main__':
+    sys.exit(main(sys.argv))

@@ -190,10 +190,8 @@ WebInspector.TargetManager.prototype = {
     {
         var target = new WebInspector.Target(this, name, capabilitiesMask, connection, parentTarget);
 
-        var logAgent = target.hasBrowserCapability() ? target.logAgent() : null;
-
         /** @type {!WebInspector.ConsoleModel} */
-        target.consoleModel = new WebInspector.ConsoleModel(target, logAgent);
+        target.consoleModel = new WebInspector.ConsoleModel(target);
         /** @type {!WebInspector.RuntimeModel} */
         target.runtimeModel = new WebInspector.RuntimeModel(target);
 

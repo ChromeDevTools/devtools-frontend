@@ -29,14 +29,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-.heap-snapshot-sidebar-tree-item .icon {
-    content: url(Images/profileIcon.png);
-}
-
-.heap-snapshot-sidebar-tree-item.small .icon {
-    content: url(Images/profileSmallIcon.png);
-}
-
 .heap-snapshot-view {
     overflow: hidden;
 }

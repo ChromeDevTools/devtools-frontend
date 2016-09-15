@@ -79,6 +79,7 @@
     ],
     "resources": [
         "heapProfiler.css",
-        "profilesPanel.css"
+        "profilesPanel.css",
+        "profilesSidebarTree.css"
     ]
 }

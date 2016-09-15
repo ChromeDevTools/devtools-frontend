@@ -72,41 +72,9 @@
     border-bottom: 1px solid rgb(202, 202, 202);
 }
 
-.profile-launcher-view-tree-item > .icon {
-    width: 4px !important;
-    visibility: hidden;
-}
-
 .profiles-sidebar-tree-box {
     overflow: auto;
     flex: auto;
-}
-
-.profiles-sidebar-tree-box > ol {
-    overflow: auto;
-    flex: auto;
-}
-
-.profile-sidebar-tree-item .icon {
-    content: url(Images/profileIcon.png);
-}
-
-.profile-sidebar-tree-item.small .icon {
-    content: url(Images/profileSmallIcon.png);
-}
-
-.profile-group-sidebar-tree-item .icon {
-    content: url(Images/profileGroupIcon.png);
-}
-
-.sidebar-tree-item .title-container > .save-link {
-    text-decoration: underline;
-    margin-left: auto;
-    display: none;
-}
-
-.sidebar-tree-item.selected .title-container > .save-link {
-    display: block;
 }
 
 .profile-view {

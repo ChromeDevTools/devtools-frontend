@@ -539,6 +539,7 @@ devtools_network_js_files = [
 devtools_profiler_js_files = [
   "front_end/profiler/heapProfiler.css",
   "front_end/profiler/profilesPanel.css",
+  "front_end/profiler/profilesSidebarTree.css",
   "front_end/profiler/BottomUpProfileDataGrid.js",
   "front_end/profiler/CPUProfileFlameChart.js",
   "front_end/profiler/CPUProfileView.js",

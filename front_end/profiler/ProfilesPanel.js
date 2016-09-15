@@ -445,8 +445,8 @@ WebInspector.ProfilesPanel = function()
 
     this.profilesItemTreeElement = new WebInspector.ProfilesSidebarTreeElement(this);
 
-    this._sidebarTree = new TreeOutline();
-    this._sidebarTree.element.classList.add("sidebar-tree");
+    this._sidebarTree = new TreeOutlineInShadow();
+    this._sidebarTree.registerRequiredCSS("profiler/profilesSidebarTree.css");
     this.panelSidebarElement().appendChild(this._sidebarTree.element);
     this.setDefaultFocusedElement(this._sidebarTree.element);
 
@@ -490,7 +490,7 @@ WebInspector.ProfilesPanel = function()
     this._showLauncherView();
 
     this._createFileSelectorElement();
-    this.element.addEventListener("contextmenu", this._handleContextMenuEvent.bind(this), true);
+    this.element.addEventListener("contextmenu", this._handleContextMenuEvent.bind(this), false);
 
     this.contentElement.addEventListener("keydown", this._onKeyDown.bind(this), false);
 
@@ -526,6 +526,7 @@ WebInspector.ProfilesPanel.prototype = {
         if (this._fileSelectorElement)
             this.element.removeChild(this._fileSelectorElement);
         this._fileSelectorElement = WebInspector.createFileSelectorElement(this._loadFromFile.bind(this));
+        WebInspector.ProfilesPanel._fileSelectorElement = this._fileSelectorElement;
         this.element.appendChild(this._fileSelectorElement);
     },
 
@@ -682,7 +683,7 @@ WebInspector.ProfilesPanel.prototype = {
         var profileTypeSection = new WebInspector.ProfileTypeSidebarSection(this, profileType);
         this._typeIdToSidebarSection[profileType.id] = profileTypeSection;
         this._sidebarTree.appendChild(profileTypeSection);
-        profileTypeSection.childrenListElement.addEventListener("contextmenu", this._handleContextMenuEvent.bind(this), true);
+        profileTypeSection.childrenListElement.addEventListener("contextmenu", this._handleContextMenuEvent.bind(this), false);
 
         /**
          * @param {!WebInspector.Event} event
@@ -726,23 +727,12 @@ WebInspector.ProfilesPanel.prototype = {
      */
     _handleContextMenuEvent: function(event)
     {
-        var element = event.srcElement;
-        while (element && !element.treeElement && element !== this.element)
-            element = element.parentElement;
-        if (!element)
-            return;
-        if (element.treeElement && element.treeElement.handleContextMenuEvent) {
-            element.treeElement.handleContextMenuEvent(event, this);
-            return;
-        }
-
         var contextMenu = new WebInspector.ContextMenu(event);
         if (this.visibleView instanceof WebInspector.HeapSnapshotView) {
             this.visibleView.populateContextMenu(contextMenu, event);
         }
-        if (element !== this.element || event.srcElement === this.panelSidebarElement()) {
+        if (this.panelSidebarElement().isSelfOrAncestor(event.srcElement))
             contextMenu.appendItem(WebInspector.UIString("Load\u2026"), this._fileSelectorElement.click.bind(this._fileSelectorElement));
-        }
         contextMenu.show();
     },
 
@@ -943,6 +933,7 @@ WebInspector.ProfilesPanel.prototype = {
 WebInspector.ProfileTypeSidebarSection = function(dataDisplayDelegate, profileType)
 {
     TreeElement.call(this, profileType.treeItemTitle.escapeHTML(), true);
+    this.selectable = false;
     this._dataDisplayDelegate = dataDisplayDelegate;
     /** @type {!Array<!WebInspector.ProfileSidebarTreeElement>} */
     this._profileTreeElements = [];
@@ -1084,7 +1075,7 @@ WebInspector.ProfileTypeSidebarSection.prototype = {
      */
     onattach: function()
     {
-        this.listItemElement.classList.add("sidebar-tree-section");
+        this.listItemElement.classList.add("profiles-tree-section");
     },
 
     __proto__: TreeElement.prototype
@@ -1198,24 +1189,23 @@ WebInspector.ProfileSidebarTreeElement.prototype = {
      */
     onattach: function()
     {
-        this.listItemElement.classList.add("sidebar-tree-item");
         if (this._className)
             this.listItemElement.classList.add(this._className);
         if (this._small)
             this.listItemElement.classList.add("small");
         this.listItemElement.appendChildren(this._iconElement, this._titlesElement);
+        this.listItemElement.addEventListener("contextmenu", this._handleContextMenuEvent.bind(this), true);
     },
 
     /**
      * @param {!Event} event
-     * @param {!WebInspector.ProfilesPanel} panel
      */
-    handleContextMenuEvent: function(event, panel)
+    _handleContextMenuEvent: function(event)
     {
         var profile = this.profile;
         var contextMenu = new WebInspector.ContextMenu(event);
         // FIXME: use context menu provider
-        contextMenu.appendItem(WebInspector.UIString("Load\u2026"), panel._fileSelectorElement.click.bind(panel._fileSelectorElement));
+        contextMenu.appendItem(WebInspector.UIString("Load\u2026"), WebInspector.ProfilesPanel._fileSelectorElement.click.bind(WebInspector.ProfilesPanel._fileSelectorElement));
         if (profile.canSaveToFile())
             contextMenu.appendItem(WebInspector.UIString("Save\u2026"), profile.saveToFile.bind(profile));
         contextMenu.appendItem(WebInspector.UIString("Delete"), this.ondelete.bind(this));
@@ -1260,6 +1250,8 @@ WebInspector.ProfileGroupSidebarTreeElement = function(dataDisplayDelegate, titl
     this.selectable = false;
     this._dataDisplayDelegate = dataDisplayDelegate;
     this._title = title;
+    this.expand();
+    this.toggleOnClick = true;
 }
 
 WebInspector.ProfileGroupSidebarTreeElement.prototype = {
@@ -1280,20 +1272,9 @@ WebInspector.ProfileGroupSidebarTreeElement.prototype = {
      */
     onattach: function()
     {
-        this.listItemElement.classList.add("sidebar-tree-item", "profile-group-sidebar-tree-item");
-        this._disclosureButton = this.listItemElement.createChild("button", "disclosure-button");
+        this.listItemElement.classList.add("profile-group-sidebar-tree-item");
         this.listItemElement.createChild("div", "icon");
         this.listItemElement.createChild("div", "titles no-subtitle").createChild("span", "title-container").createChild("span", "title").textContent = this._title;
-    },
-
-    /**
-     * @override
-     * @param {!Event} event
-     * @return {boolean}
-     */
-    isEventWithinDisclosureTriangle: function(event)
-    {
-        return event.target === this._disclosureButton;
     },
 
     __proto__: TreeElement.prototype
@@ -1327,7 +1308,7 @@ WebInspector.ProfilesSidebarTreeElement.prototype = {
      */
     onattach: function()
     {
-        this.listItemElement.classList.add("sidebar-tree-item", "profile-launcher-view-tree-item");
+        this.listItemElement.classList.add("profile-launcher-view-tree-item");
         this.listItemElement.createChild("div", "icon");
         this.listItemElement.createChild("div", "titles no-subtitle").createChild("span", "title-container").createChild("span", "title").textContent = WebInspector.UIString("Profiles");
     },

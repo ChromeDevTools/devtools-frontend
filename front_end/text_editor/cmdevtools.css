@@ -113,13 +113,24 @@
     opacity: 0.3;
 }
 
-.CodeMirror-matchingbracket {
-    border-bottom: 1px solid black;
-    color: #222 !important;
+div.CodeMirror span.CodeMirror-matchingbracket {
+    background-color: rgba(0, 0, 0, 0.13);
+    color: unset;
 }
 
-.CodeMirror-nonmatchingbracket {
-    color: #222 !important;
+div.CodeMirror span.CodeMirror-nonmatchingbracket {
+    background-color: rgba(255, 0, 0, 0.13);
+    color: unset;
+}
+
+.-theme-with-dark-background div.CodeMirror span.CodeMirror-matchingbracket {
+    border-bottom: 1px solid rgb(217,217,217);
+    background-color:initial;
+}
+
+.-theme-with-dark-background div.CodeMirror span.CodeMirror-nonmatchingbracket {
+    border-bottom: 1px solid rgb(255, 26, 26);
+    background-color:initial;
 }
 
 .cm-whitespace::before {

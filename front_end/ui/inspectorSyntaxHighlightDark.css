@@ -7,7 +7,7 @@
 .cm-js-atom{color:rgb(161, 247, 181);}
 .cm-js-attribute{color:rgb(97, 148, 198);}
 .cm-js-builtin{color:rgb(159, 180, 214);}
-.cm-js-comment{color:rgb(116, 116, 116);}
+.cm-js-comment{color:rgb(116, 116, 116) !important;}
 .cm-js-def{color:rgb(93, 176, 215);}
 .cm-js-keyword{color:rgb(154, 127, 213);}
 .cm-js-link{color:rgb(159, 180, 214);}
@@ -15,42 +15,42 @@
 .cm-js-number{color:rgb(161, 247, 181);}
 .cm-js-operator{color:rgb(210, 192, 87);}
 .cm-js-property{color:rgb(210, 192, 87);}
-.cm-js-string{color:rgb(242, 139, 84);}
-.cm-js-string-2{color:rgb(242, 139, 84);}
+.cm-js-string{color:rgb(242, 139, 84) !important;}
+.cm-js-string-2{color:rgb(242, 139, 84) !important;}
 .cm-js-tag{color:rgb(93, 176, 215);}
 .cm-js-variable{color:rgb(217, 217, 217);}
 .cm-js-variable-2{color:rgb(217, 217, 217);}
 .cm-atom{color:rgb(161, 247, 181);}
-.cm-comment{color:rgb(116, 116, 116);}
+.cm-comment{color:rgb(116, 116, 116) !important;}
 .cm-variable{color:rgb(217, 217, 217);}
-.cm-string{color:rgb(242, 139, 84);}
+.cm-string{color:rgb(242, 139, 84) !important;}
 .cm-keyword{color:rgb(154, 127, 213);}
 .cm-number{color:rgb(161, 247, 181);}
 .cm-operator{color:rgb(210, 192, 87);}
 .cm-css-atom{color:rgb(217, 217, 217);}
 .cm-css-builtin{color:rgb(255, 163, 79);}
 .cm-css-def{color:rgb(255, 163, 79);}
-.cm-css-comment{color:rgb(116, 116, 116);}
+.cm-css-comment{color:rgb(116, 116, 116) !important;}
 .cm-css-meta{color:rgb(132, 240, 255);}
 .cm-css-number{color:rgb(217, 217, 217);}
 .cm-css-operator{color:rgb(217, 217, 217);}
 .cm-css-property{color:rgb(132, 240, 255);}
 .cm-css-qualifier{color:rgb(255, 163, 79);}
-.cm-css-string{color:rgb(231, 194, 111);}
-.cm-css-string-2{color:rgb(217, 217, 217);}
+.cm-css-string{color:rgb(231, 194, 111) !important;}
+.cm-css-string-2{color:rgb(217, 217, 217) !important;}
 .cm-css-tag{color:rgb(255, 163, 79);}
 .cm-css-variable{color:rgb(255, 163, 79);}
 .cm-css-variable-2{color:rgb(255, 163, 79);}
-.cm-xml-comment{color:rgb(137, 137, 137);}
+.cm-xml-comment{color:rgb(137, 137, 137) !important;}
 .cm-xml-error{color:rgb(198, 95, 95);}
-.cm-xml-string{color:rgb(242, 151, 102);}
+.cm-xml-string{color:rgb(242, 151, 102) !important;}
 .cm-xml-tag{color:rgb(93, 176, 215);}
 .cm-xml-attribute{color:rgb(155, 187, 220);}
 .cm-xml-link{color:rgb(231, 194, 111);}
 
 .webkit-html-attribute-name{color:rgb(155, 187, 220);}
 .webkit-html-attribute-value{color:rgb(242, 151, 102);}
-.webkit-html-comment{color:rgb(137, 137, 137);}
+.webkit-html-comment{color:rgb(137, 137, 137) !important;}
 .webkit-html-resource-link{color:rgb(231, 194, 111);}
 .webkit-html-external-link{color:rgb(231, 194, 111);}
 .webkit-html-tag{color:rgb(93, 176, 215);}
@@ -68,5 +68,5 @@
 .webkit-css-keyword{color:rgb(255, 163, 79);}
 .webkit-css-number{color:rgb(217, 217, 217);}
 .webkit-css-property{color: rgb(53, 212, 199);}
-.webkit-css-string{color:rgb(231, 194, 111);}
+.webkit-css-string{color:rgb(231, 194, 111) !important;}
 .webkit-css-url{color:rgb(231, 194, 111);}

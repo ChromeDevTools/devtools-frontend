@@ -1,0 +1,98 @@
+/*
+ * Copyright 2016 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+    padding: 0;
+    margin: 0;
+}
+
+.tree-outline {
+    padding: 0;
+}
+
+.tree-outline ol {
+    padding: 0;
+}
+
+li.search-result {
+    font-size: 11px;
+    padding: 2px 0 2px 4px;
+    word-wrap: normal;
+    white-space: pre;
+    cursor: pointer;
+}
+
+li.search-result:hover {
+    background-color: rgba(121, 121, 121, 0.1);
+}
+
+li.search-result .search-result-file-name {
+    font-weight: bold;
+    color: #222;
+}
+
+li.search-result .search-result-matches-count {
+    margin-left: 5px;
+    color: #222;
+}
+
+li.show-more-matches {
+    padding: 4px 0;
+    color: #222;
+    cursor: pointer;
+    font-size: 11px;
+    margin-left: 20px;
+}
+
+li.show-more-matches:hover {
+    text-decoration: underline;
+}
+
+li.search-match {
+    word-wrap: normal;
+    white-space: pre;
+    min-height: 12px;
+}
+
+li.search-match::before {
+    display: none;
+}
+
+li.search-match .search-match-line-number {
+    color: rgb(128, 128, 128);
+    text-align: right;
+    vertical-align: top;
+    word-break: normal;
+    padding-right: 4px;
+    padding-left: 6px;
+    margin-right: 5px;
+    border-right: 1px solid #BBB;
+}
+
+li.search-match:not(:hover) .search-match-line-number {
+    background-color: #F0F0F0;
+}
+
+li.search-match:hover {
+    background-color: rgba(56, 121, 217, 0.1);
+}
+
+li.search-match .highlighted-match {
+    background-color: #F1EA00;
+}
+
+:host-context(.-theme-with-dark-background) li.search-match .highlighted-match {
+    background-color: hsl(133, 100%, 30%) !important;
+}
+
+.tree-outline a {
+    text-decoration: none;
+    display: block;
+}
+
+li.search-match .search-match-content {
+    color: #000;
+}

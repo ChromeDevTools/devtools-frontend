@@ -12,10 +12,8 @@ WebInspector.FileBasedSearchResultsPane = function(searchConfig)
     WebInspector.SearchResultsPane.call(this, searchConfig);
 
     this._searchResults = [];
-
-    this.element.id = "search-results-pane-file-based";
-    this._treeOutline = new TreeOutline();
-    this._treeOutline.element.classList.add("search-results-outline-disclosure");
+    this._treeOutline = new TreeOutlineInShadow();
+    this._treeOutline.registerRequiredCSS("sources/fileBasedSearchResultsPane.css");
     this.element.appendChild(this._treeOutline.element);
 
     this._matchesExpandedCount = 0;

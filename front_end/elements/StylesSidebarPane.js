@@ -710,6 +710,15 @@ WebInspector.StylePropertiesSection.prototype = {
         if (!this.editable)
             return;
         var items = [];
+
+        var textShadowButton = new WebInspector.ToolbarButton(WebInspector.UIString("Add text-shadow"), "text-shadow-toolbar-item");
+        textShadowButton.addEventListener("click", this._onInsertShadowPropertyClick.bind(this, "text-shadow"));
+        items.push(textShadowButton);
+
+        var boxShadowButton = new WebInspector.ToolbarButton(WebInspector.UIString("Add box-shadow"), "box-shadow-toolbar-item");
+        boxShadowButton.addEventListener("click", this._onInsertShadowPropertyClick.bind(this, "box-shadow"));
+        items.push(boxShadowButton);
+
         var colorButton = new WebInspector.ToolbarButton(WebInspector.UIString("Add color"), "foreground-color-toolbar-item");
         colorButton.addEventListener("click", this._onInsertColorPropertyClick.bind(this));
         items.push(colorButton);
@@ -879,6 +888,22 @@ WebInspector.StylePropertiesSection.prototype = {
         var rule = this._style.parentRule;
         var range = WebInspector.TextRange.createFromLocation(rule.style.range.endLine, rule.style.range.endColumn + 1);
         this._parentPane._addBlankSection(this, /** @type {string} */(rule.styleSheetId), range);
+    },
+
+    /**
+     * @param {string} propertyName
+     * @param {!WebInspector.Event} event
+     */
+    _onInsertShadowPropertyClick: function(propertyName, event)
+    {
+        event.consume(true);
+        var treeElement = this.addNewBlankProperty();
+        treeElement.property.name = propertyName;
+        treeElement.property.value = "0 0 black";
+        treeElement.updateTitle();
+        var shadowSwatchPopoverHelper = WebInspector.ShadowSwatchPopoverHelper.forTreeElement(treeElement);
+        if (shadowSwatchPopoverHelper)
+            shadowSwatchPopoverHelper.showPopover();
     },
 
     /**

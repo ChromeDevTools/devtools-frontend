@@ -224,6 +224,7 @@ WebInspector.ColorSwatchPopoverIcon.prototype = {
 WebInspector.ShadowSwatchPopoverHelper = function(treeElement, swatchPopoverHelper, shadowSwatch)
 {
     this._treeElement = treeElement;
+    this._treeElement[WebInspector.ShadowSwatchPopoverHelper._treeElementSymbol] = this;
     this._swatchPopoverHelper = swatchPopoverHelper;
     this._shadowSwatch = shadowSwatch;
     this._iconElement = shadowSwatch.iconElement();
@@ -235,6 +236,17 @@ WebInspector.ShadowSwatchPopoverHelper = function(treeElement, swatchPopoverHelp
     this._boundOnScroll = this._onScroll.bind(this);
 }
 
+WebInspector.ShadowSwatchPopoverHelper._treeElementSymbol = Symbol("WebInspector.ShadowSwatchPopoverHelper._treeElementSymbol");
+
+/**
+ * @param {!WebInspector.StylePropertyTreeElement} treeElement
+ * @return {?WebInspector.ShadowSwatchPopoverHelper}
+ */
+WebInspector.ShadowSwatchPopoverHelper.forTreeElement = function(treeElement)
+{
+    return treeElement[WebInspector.ShadowSwatchPopoverHelper._treeElementSymbol] || null;
+}
+
 WebInspector.ShadowSwatchPopoverHelper.prototype = {
     /**
      * @param {!Event} event
@@ -242,6 +254,11 @@ WebInspector.ShadowSwatchPopoverHelper.prototype = {
     _iconClick: function(event)
     {
         event.consume(true);
+        this.showPopover();
+    },
+
+    showPopover: function()
+    {
         if (this._swatchPopoverHelper.isShowing()) {
             this._swatchPopoverHelper.hide(true);
             return;

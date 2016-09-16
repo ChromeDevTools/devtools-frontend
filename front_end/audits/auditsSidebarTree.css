@@ -1,0 +1,50 @@
+/*
+ * Copyright 2016 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.tree-outline {
+    padding: 0;
+}
+
+.tree-outline li::before {
+    display: none;
+}
+
+.tree-outline ol {
+    padding-left: 0;
+}
+
+.tree-outline li .tree-element-title {
+    margin-left: 4px;
+}
+
+li.audits-sidebar-header {
+    padding-left: 10px;
+    height: 36px;
+}
+
+.audits-sidebar-header .icon {
+    content: url(Images/resourcesTimeGraphIcon.png);
+}
+
+li.audits-sidebar-results {
+    height: 18px;
+    padding: 1px 10px;
+    margin-top: 1px;
+    color: rgb(92, 110, 129);
+    text-shadow: rgba(255, 255, 255, 0.75) 0 1px 0;
+}
+
+li.audit-result-sidebar-tree-item {
+    padding-left: 10px;
+    height: 36px;
+    margin-top: 1px;
+    line-height: 34px;
+    border-top: 1px solid transparent;
+}
+
+.audit-result-sidebar-tree-item .icon {
+    content: url(Images/resourceDocumentIcon.png);
+}

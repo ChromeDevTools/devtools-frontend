@@ -359,6 +359,7 @@ devtools_animation_js_files = [
 devtools_audits_js_files = [
   "front_end/audits/auditResultTree.css",
   "front_end/audits/auditsPanel.css",
+  "front_end/audits/auditsSidebarTree.css",
   "front_end/audits/AuditCategories.js",
   "front_end/audits/AuditCategory.js",
   "front_end/audits/AuditController.js",

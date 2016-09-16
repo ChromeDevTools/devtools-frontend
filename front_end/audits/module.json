@@ -25,6 +25,7 @@
     ],
     "resources": [
         "auditsPanel.css",
+        "auditsSidebarTree.css",
         "auditResultTree.css"
     ]
 }

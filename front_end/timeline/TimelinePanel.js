@@ -63,6 +63,7 @@ WebInspector.TimelinePanel = function()
     this._tracingModel = new WebInspector.TracingModel(this._tracingModelBackingStorage);
     this._model = new WebInspector.TimelineModel(WebInspector.TimelineUIUtils.visibleEventsFilter());
     this._frameModel = new WebInspector.TimelineFrameModel(event => WebInspector.TimelineUIUtils.eventStyle(event).category.name);
+    this._filmStripModel = new WebInspector.FilmStripModel(this._tracingModel);
     this._irModel = new WebInspector.TimelineIRModel();
 
     this._cpuThrottlingManager = new WebInspector.CPUThrottlingManager();
@@ -545,7 +546,7 @@ WebInspector.TimelinePanel.prototype = {
         this._overviewControls.push(new WebInspector.TimelineEventOverview.CPUActivity(this._model));
         this._overviewControls.push(new WebInspector.TimelineEventOverview.Network(this._model));
         if (this._captureFilmStripSetting.get())
-            this._overviewControls.push(new WebInspector.TimelineFilmStripOverview(this._model, this._tracingModel));
+            this._overviewControls.push(new WebInspector.TimelineFilmStripOverview(this._model, this._filmStripModel));
         if (this._captureMemorySetting.get())
             this._overviewControls.push(new WebInspector.TimelineEventOverview.Memory(this._model));
         this._overviewPane.setOverviewControls(this._overviewControls);
@@ -683,13 +684,13 @@ WebInspector.TimelinePanel.prototype = {
         this.requestWindowTimes(0, Infinity);
         delete this._selection;
         this._frameModel.reset();
+        this._filmStripModel.reset(this._tracingModel);
         this._overviewPane.reset();
         for (var i = 0; i < this._currentViews.length; ++i)
             this._currentViews[i].reset();
         for (var i = 0; i < this._overviewControls.length; ++i)
             this._overviewControls[i].reset();
         this.select(null);
-        delete this._filmStripModel;
         this._detailsSplitWidget.hideSidebar();
     },
 
@@ -803,7 +804,7 @@ WebInspector.TimelinePanel.prototype = {
         this._model.setEvents(this._tracingModel, loadedFromFile);
         this._frameModel.reset();
         this._frameModel.addTraceEvents(WebInspector.targetManager.mainTarget(), this._model.inspectedTargetEvents(), this._model.sessionId() || "");
-
+        this._filmStripModel.reset(this._tracingModel);
         var groups = WebInspector.TimelineModel.AsyncEventGroup;
         var asyncEventsByGroup = this._model.mainThreadAsyncEvents();
         this._irModel.populate(asyncEventsByGroup.get(groups.input), asyncEventsByGroup.get(groups.animation));
@@ -1035,10 +1036,8 @@ WebInspector.TimelinePanel.prototype = {
             break;
         case WebInspector.TimelineSelection.Type.Frame:
             var frame = /** @type {!WebInspector.TimelineFrame} */ (this._selection.object());
-            if (!this._filmStripModel)
-                this._filmStripModel = new WebInspector.FilmStripModel(this._tracingModel);
             var screenshotTime = frame.idle ? frame.startTime : frame.endTime; // For idle frames, look at the state at the beginning of the frame.
-            var filmStripFrame = this._filmStripModel && this._filmStripModel.frameByTimestamp(screenshotTime);
+            var filmStripFrame = filmStripFrame = this._filmStripModel.frameByTimestamp(screenshotTime);
             if (filmStripFrame && filmStripFrame.timestamp - frame.endTime > 10)
                 filmStripFrame = null;
             this.showInDetails(WebInspector.TimelineUIUtils.generateDetailsContentForFrame(this._frameModel, frame, filmStripFrame));

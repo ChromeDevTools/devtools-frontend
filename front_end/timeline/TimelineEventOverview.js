@@ -432,12 +432,12 @@ WebInspector.TimelineEventOverview.Responsiveness.prototype = {
  * @constructor
  * @extends {WebInspector.TimelineEventOverview}
  * @param {!WebInspector.TimelineModel} model
- * @param {!WebInspector.TracingModel} tracingModel
+ * @param {!WebInspector.FilmStripModel} filmStripModel
  */
-WebInspector.TimelineFilmStripOverview = function(model, tracingModel)
+WebInspector.TimelineFilmStripOverview = function(model, filmStripModel)
 {
     WebInspector.TimelineEventOverview.call(this, "filmstrip", null, model);
-    this._tracingModel = tracingModel;
+    this._filmStripModel = filmStripModel;
     this.reset();
 }
 
@@ -450,8 +450,6 @@ WebInspector.TimelineFilmStripOverview.prototype = {
     update: function()
     {
         WebInspector.TimelineEventOverview.prototype.update.call(this);
-        if (!this._filmStripModel)
-            return;
         var frames = this._filmStripModel.frames();
         if (!frames.length)
             return;
@@ -503,14 +501,14 @@ WebInspector.TimelineFilmStripOverview.prototype = {
      */
     _drawFrames: function(imageWidth, imageHeight)
     {
-        if (!this._filmStripModel || !imageWidth)
+        if (!imageWidth)
             return;
         if (!this._filmStripModel.frames().length)
             return;
         var padding = WebInspector.TimelineFilmStripOverview.Padding;
         var width = this._canvas.width;
-        var zeroTime = this._tracingModel.minimumRecordTime();
-        var spanTime = this._tracingModel.maximumRecordTime() - zeroTime;
+        var zeroTime = this._filmStripModel.zeroTime();
+        var spanTime = this._filmStripModel.spanTime();
         var scale = spanTime / width;
         var context = this._canvas.getContext("2d");
         var drawGeneration = this._drawGeneration;
@@ -548,7 +546,7 @@ WebInspector.TimelineFilmStripOverview.prototype = {
      */
     popoverElementPromise: function(x)
     {
-        if (!this._filmStripModel || !this._filmStripModel.frames().length)
+        if (!this._filmStripModel.frames().length)
             return Promise.resolve(/** @type {?Element} */ (null));
 
         var time = this._calculator.positionToTime(x);
@@ -581,7 +579,6 @@ WebInspector.TimelineFilmStripOverview.prototype = {
     {
         this._lastFrame = undefined;
         this._lastElement = null;
-        this._filmStripModel = new WebInspector.FilmStripModel(this._tracingModel);
         /** @type {!Map<!WebInspector.FilmStripModel.Frame,!Promise<!HTMLImageElement>>} */
         this._frameToImagePromise = new Map();
         this._imageWidth = 0;

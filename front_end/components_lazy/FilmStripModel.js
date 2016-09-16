@@ -11,34 +11,7 @@
  */
 WebInspector.FilmStripModel = function(tracingModel, zeroTime)
 {
-    this._tracingModel = tracingModel;
-    this._zeroTime = zeroTime || tracingModel.minimumRecordTime();
-
-    /** @type {!Array<!WebInspector.FilmStripModel.Frame>} */
-    this._frames = [];
-
-    var browserProcess = tracingModel.processByName("Browser");
-    if (!browserProcess)
-        return;
-    var mainThread = browserProcess.threadByName("CrBrowserMain");
-    if (!mainThread)
-        return;
-
-    var events = mainThread.events();
-    for (var i = 0; i < events.length; ++i) {
-        var event = events[i];
-        if (event.startTime < this._zeroTime)
-            continue;
-        if (!event.hasCategory(WebInspector.FilmStripModel._category))
-            continue;
-        if (event.name === WebInspector.FilmStripModel.TraceEvents.CaptureFrame) {
-            var data = event.args["data"];
-            if (data)
-                this._frames.push(WebInspector.FilmStripModel.Frame._fromEvent(this, event, this._frames.length));
-        } else if (event.name === WebInspector.FilmStripModel.TraceEvents.Screenshot) {
-            this._frames.push(WebInspector.FilmStripModel.Frame._fromSnapshot(this, /** @type {!WebInspector.TracingModel.ObjectSnapshot} */ (event), this._frames.length));
-        }
-    }
+    this.reset(tracingModel, zeroTime);
 }
 
 WebInspector.FilmStripModel._category = "disabled-by-default-devtools.screenshot";
@@ -49,6 +22,42 @@ WebInspector.FilmStripModel.TraceEvents = {
 }
 
 WebInspector.FilmStripModel.prototype = {
+    /**
+     * @param {!WebInspector.TracingModel} tracingModel
+     * @param {number=} zeroTime
+     */
+    reset: function(tracingModel, zeroTime)
+    {
+        this._zeroTime = zeroTime || tracingModel.minimumRecordTime();
+        this._spanTime = tracingModel.maximumRecordTime() - this._zeroTime;
+
+        /** @type {!Array<!WebInspector.FilmStripModel.Frame>} */
+        this._frames = [];
+
+        var browserProcess = tracingModel.processByName("Browser");
+        if (!browserProcess)
+            return;
+        var mainThread = browserProcess.threadByName("CrBrowserMain");
+        if (!mainThread)
+            return;
+
+        var events = mainThread.events();
+        for (var i = 0; i < events.length; ++i) {
+            var event = events[i];
+            if (event.startTime < this._zeroTime)
+                continue;
+            if (!event.hasCategory(WebInspector.FilmStripModel._category))
+                continue;
+            if (event.name === WebInspector.FilmStripModel.TraceEvents.CaptureFrame) {
+                var data = event.args["data"];
+                if (data)
+                    this._frames.push(WebInspector.FilmStripModel.Frame._fromEvent(this, event, this._frames.length));
+            } else if (event.name === WebInspector.FilmStripModel.TraceEvents.Screenshot) {
+                this._frames.push(WebInspector.FilmStripModel.Frame._fromSnapshot(this, /** @type {!WebInspector.TracingModel.ObjectSnapshot} */ (event), this._frames.length));
+            }
+        }
+    },
+
     /**
      * @return {!Array<!WebInspector.FilmStripModel.Frame>}
      */
@@ -63,6 +72,14 @@ WebInspector.FilmStripModel.prototype = {
     zeroTime: function()
     {
         return this._zeroTime;
+    },
+
+    /**
+     * @return {number}
+     */
+    spanTime: function()
+    {
+        return this._spanTime;
     },
 
     /**

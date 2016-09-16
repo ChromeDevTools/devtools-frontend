@@ -381,18 +381,19 @@ WebInspector.SecurityPanelSidebarTree = function(mainViewElement, showOriginInPa
     this._mainOrigin = null;
 
     TreeOutlineInShadow.call(this);
-    this.element.classList.add("sidebar-tree");
     this.registerRequiredCSS("security/sidebar.css");
     this.registerRequiredCSS("security/lockIcon.css");
 
     this.appendChild(mainViewElement);
 
-    /** @type {!Map<!WebInspector.SecurityPanelSidebarTree.OriginGroupName, !WebInspector.SidebarSectionTreeElement>} */
+    /** @type {!Map<!WebInspector.SecurityPanelSidebarTree.OriginGroupName, !TreeElement>} */
     this._originGroups = new Map();
 
     for (var key in WebInspector.SecurityPanelSidebarTree.OriginGroupName) {
         var originGroupName = WebInspector.SecurityPanelSidebarTree.OriginGroupName[key];
-        var originGroup = new WebInspector.SidebarSectionTreeElement(WebInspector.UIString(originGroupName));
+        var originGroup = new TreeElement(originGroupName, true);
+        originGroup.selectable = false;
+        originGroup.expand();
         originGroup.listItemElement.classList.add("security-sidebar-origins");
         this._originGroups.set(originGroupName, originGroup);
         this.appendChild(originGroup);
@@ -400,8 +401,9 @@ WebInspector.SecurityPanelSidebarTree = function(mainViewElement, showOriginInPa
     this._clearOriginGroups();
 
     // This message will be removed by clearOrigins() during the first new page load after the panel was opened.
-    var mainViewReloadMessage = new WebInspector.SidebarTreeElement("security-main-view-reload-message", WebInspector.UIString("Reload to view details"));
+    var mainViewReloadMessage = new TreeElement(WebInspector.UIString("Reload to view details"));
     mainViewReloadMessage.selectable = false;
+    mainViewReloadMessage.listItemElement.classList.add("security-main-view-reload-message");
     this._originGroups.get(WebInspector.SecurityPanelSidebarTree.OriginGroupName.MainOrigin).appendChild(mainViewReloadMessage);
 
     /** @type {!Map<!WebInspector.SecurityPanel.Origin, !WebInspector.SecurityPanelSidebarTreeElement>} */
@@ -506,16 +508,16 @@ WebInspector.SecurityPanelSidebarTree.prototype = {
  * @enum {string}
  */
 WebInspector.SecurityPanelSidebarTree.OriginGroupName = {
-    MainOrigin: "Main Origin",
-    NonSecure: "Non-Secure Origins",
-    Secure: "Secure Origins",
-    Unknown: "Unknown / Canceled"
+    MainOrigin: WebInspector.UIString("Main Origin"),
+    NonSecure: WebInspector.UIString("Non-Secure Origins"),
+    Secure: WebInspector.UIString("Secure Origins"),
+    Unknown: WebInspector.UIString("Unknown / Canceled")
 }
 
 
 /**
  * @constructor
- * @extends {WebInspector.SidebarTreeElement}
+ * @extends {TreeElement}
  * @param {string} text
  * @param {function()} selectCallback
  * @param {string} className
@@ -523,12 +525,13 @@ WebInspector.SecurityPanelSidebarTree.OriginGroupName = {
  */
 WebInspector.SecurityPanelSidebarTreeElement = function(text, selectCallback, className, cssPrefix)
 {
+    TreeElement.call(this, "", false);
     this._selectCallback = selectCallback;
     this._cssPrefix = cssPrefix;
-
-    WebInspector.SidebarTreeElement.call(this, className, text);
-    this.iconElement.classList.add(this._cssPrefix);
-
+    this.listItemElement.classList.add(className);
+    this._iconElement = this.listItemElement.createChild("div", "icon");
+    this._iconElement.classList.add(this._cssPrefix);
+    this.listItemElement.createChild("span", "title").textContent = text;
     this.setSecurityState(SecurityAgent.SecurityState.Unknown);
 }
 
@@ -539,10 +542,10 @@ WebInspector.SecurityPanelSidebarTreeElement.prototype = {
     setSecurityState: function(newSecurityState)
     {
         if (this._securityState)
-            this.iconElement.classList.remove(this._cssPrefix + "-" + this._securityState)
+            this._iconElement.classList.remove(this._cssPrefix + "-" + this._securityState);
 
         this._securityState = newSecurityState;
-        this.iconElement.classList.add(this._cssPrefix + "-" + newSecurityState);
+        this._iconElement.classList.add(this._cssPrefix + "-" + newSecurityState);
     },
 
     /**
@@ -563,7 +566,7 @@ WebInspector.SecurityPanelSidebarTreeElement.prototype = {
         return true;
     },
 
-    __proto__: WebInspector.SidebarTreeElement.prototype
+    __proto__: TreeElement.prototype
 }
 
 /**

@@ -11,6 +11,11 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    padding: 2px 5px;
+    overflow: hidden;
+    margin: 2px 0;
+    border-top: 1px solid transparent;
+    white-space: nowrap;
 }
 
 .tree-outline:focus li.selected .lock-icon,
@@ -24,11 +29,14 @@
     padding: 16px 0;
 }
 
-.tree-outline .security-sidebar-origins {
-    padding: 1px 8px 6px 8px;
+.tree-outline li.security-sidebar-origins {
+    padding: 1px 8px 1px 13px;
     margin-top: 1em;
     margin-bottom: 0.5em;
     color: rgb(90, 90, 90);
+    border-top: none;
+    line-height: 16px;
+    text-shadow: rgba(255, 255, 255, 0.75) 0 1px 0;
 }
 
 .tree-outline ol {
@@ -41,12 +49,12 @@
 
 .tree-outline .security-main-view-sidebar-tree-item,
 .tree-outline .security-sidebar-origins,
-.tree-outline .sidebar-tree-section + .children > .sidebar-tree-item {
+.tree-outline li.security-sidebar-origins + .children > li {
     padding-left: 16px;
 }
 
-.tree-outline .sidebar-tree-item .lock-icon,
-.tree-outline .sidebar-tree-item .security-property {
+.tree-outline .lock-icon,
+.tree-outline .security-property {
     margin-right: 4px;
     flex: none;
 }
@@ -55,12 +63,12 @@
     padding: 2px 0;
 }
 
-.security-sidebar-tree-item .titles {
+.security-sidebar-tree-item .title {
     overflow: hidden;
     margin-right: 5px;
 }
 
-.sidebar-tree-item.security-main-view-reload-message .title {
+.security-main-view-reload-message .tree-element-title {
     color: rgba(0, 0, 0, 0.5);
     padding-left: 8px;
 }

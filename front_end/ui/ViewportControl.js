@@ -287,7 +287,7 @@ WebInspector.ViewportControl.prototype = {
     _updateSelectionModel: function(selection)
     {
         var range = selection && selection.rangeCount ? selection.getRangeAt(0) : null;
-        if (!range || selection.isCollapsed) {
+        if (!range || selection.isCollapsed || !this.element.hasSelection()) {
             this._headSelection = null;
             this._anchorSelection = null;
             return false;

@@ -240,6 +240,7 @@ WebInspector.DOMPresentationUtils.buildStackTracePreviewContents = function(targ
     {
         for (var stackFrame of stackTrace.callFrames) {
             var row = createElement("tr");
+            row.createChild("td").textContent = "\n";
             row.createChild("td", "function-name").textContent = WebInspector.beautifyFunctionName(stackFrame.functionName);
             var link = linkifier.maybeLinkifyConsoleCallFrame(target, stackFrame);
             if (link) {
@@ -262,6 +263,7 @@ WebInspector.DOMPresentationUtils.buildStackTracePreviewContents = function(targ
             continue;
         }
         var row = contentElement.createChild("tr");
+        row.createChild("td").textContent = "\n";
         row.createChild("td", "stack-preview-async-description").textContent = WebInspector.asyncStackTraceLabel(asyncStackTrace.description);
         row.createChild("td");
         row.createChild("td");

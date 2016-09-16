@@ -165,6 +165,8 @@ WebInspector.CodeMirrorTextEditor = function(options)
 
     if (options.mimeType)
         this.setMimeType(options.mimeType);
+    if (options.autoHeight)
+        this._codeMirror.setSize(null, "auto");
 }
 
 WebInspector.CodeMirrorTextEditor.maxHighlightLength = 1000;
@@ -993,8 +995,12 @@ WebInspector.CodeMirrorTextEditor.prototype = {
         var scrollTop = this._codeMirror.doc.scrollTop;
         var width = parentElement.offsetWidth;
         var height = parentElement.offsetHeight - this.element.offsetTop;
-        this._codeMirror.setSize(width, height);
-        this._updatePaddingBottom(width, height);
+        if (this._options.autoHeight) {
+            this._codeMirror.setSize(width, "auto");
+        } else {
+            this._codeMirror.setSize(width, height);
+            this._updatePaddingBottom(width, height);
+        }
         this._codeMirror.scrollTo(scrollLeft, scrollTop);
     },
 

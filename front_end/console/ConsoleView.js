@@ -103,9 +103,7 @@ WebInspector.ConsoleView = function()
 
     this._promptElement = this._messagesElement.createChild("div", "source-code");
     this._promptElement.id = "console-prompt";
-    this._promptElement.spellcheck = false;
-
-    this._searchableView.setDefaultFocusedElement(this._promptElement);
+    this._promptElement.addEventListener("input", this._promptInput.bind(this), false);
 
     // FIXME: This is a workaround for the selection machinery bug. See crbug.com/410899
     var selectAllFixer = this._messagesElement.createChild("div", "console-view-fix-select-all");
@@ -130,20 +128,17 @@ WebInspector.ConsoleView = function()
     this._consoleMessages = [];
     this._viewMessageSymbol = Symbol("viewMessage");
 
-    this._prompt = new WebInspector.TextPromptWithHistory(WebInspector.ExecutionContextSelector.completionsForTextPromptInCurrentContext);
-    this._prompt.setSuggestBoxEnabled(true);
-    this._prompt.setAutocompletionTimeout(0);
-    this._prompt.renderAsBlock();
-    var proxyElement = this._prompt.attach(this._promptElement);
-    proxyElement.addEventListener("keydown", this._promptKeyDown.bind(this), false);
-    proxyElement.addEventListener("input", this._promptInput.bind(this), false);
-
     this._consoleHistorySetting = WebInspector.settings.createLocalSetting("consoleHistory", []);
-    var historyData = this._consoleHistorySetting.get();
-    this._prompt.history().setHistoryData(historyData);
+
+    this._prompt = new WebInspector.ConsolePrompt();
+    this._prompt.show(this._promptElement);
+    this._prompt.element.addEventListener("keydown", this._promptKeyDown.bind(this), true);
 
     this._consoleHistoryAutocompleteSetting = WebInspector.moduleSetting("consoleHistoryAutocomplete");
     this._consoleHistoryAutocompleteSetting.addChangeListener(this._consoleHistoryAutocompleteChanged, this);
+
+    var historyData = this._consoleHistorySetting.get();
+    this._prompt.history().setHistoryData(historyData);
     this._consoleHistoryAutocompleteChanged();
 
     this._updateFilterStatus();
@@ -215,6 +210,7 @@ WebInspector.ConsoleView.prototype = {
         WebInspector.multitargetConsoleModel.addEventListener(WebInspector.ConsoleModel.Events.MessageUpdated, this._onConsoleMessageUpdated, this);
         WebInspector.multitargetConsoleModel.addEventListener(WebInspector.ConsoleModel.Events.CommandEvaluated, this._commandEvaluated, this);
         WebInspector.multitargetConsoleModel.messages().forEach(this._addConsoleMessage, this);
+        this._viewport.invalidate();
     },
 
     /**
@@ -336,18 +332,17 @@ WebInspector.ConsoleView.prototype = {
     wasShown: function()
     {
         this._viewport.refresh();
-        if (!this._prompt.isCaretInsidePrompt())
-            this._prompt.moveCaretToEndOfPrompt();
+        this.focus();
     },
 
     focus: function()
     {
-        if (this._promptElement === WebInspector.currentFocusElement())
+        if (this._prompt.hasFocus())
             return;
         // Set caret position before setting focus in order to avoid scrolling
         // by focus().
         this._prompt.moveCaretToEndOfPrompt();
-        WebInspector.setCurrentFocusElement(this._promptElement);
+        this._prompt.focus();
     },
 
     restoreScrollPositions: function()
@@ -557,6 +552,7 @@ WebInspector.ConsoleView.prototype = {
         this._consoleMessages = [];
         this._updateMessageList();
         this._hidePromptSuggestBox();
+        this._viewport.setStickToBottom(true);
         this._linkifier.reset();
     },
 
@@ -716,8 +712,8 @@ WebInspector.ConsoleView.prototype = {
     _messagesClicked: function(event)
     {
         var targetElement = event.deepElementFromPoint();
-        if (!this._prompt.isCaretInsidePrompt() && (!targetElement || targetElement.isComponentSelectionCollapsed()))
-            this._prompt.moveCaretToEndOfPrompt();
+        if (!targetElement || targetElement.isComponentSelectionCollapsed())
+            this.focus();
         var groupMessage = event.target.enclosingNodeOrSelfWithClass("console-group-title");
         if (!groupMessage)
             return;
@@ -770,21 +766,25 @@ WebInspector.ConsoleView.prototype = {
         this._prompt.setText("");
     },
 
+    /**
+     * @param {!Event} event
+     */
     _promptKeyDown: function(event)
     {
-        if (event.key === "PageUp") {
+        var keyboardEvent = /** @type {!KeyboardEvent} */ (event);
+        if (keyboardEvent.key === "PageUp") {
             this._updateStickToBottomOnWheel();
             return;
-        } else if (isEnterKey(event)) {
-            this._enterKeyPressed(event);
+        } else if (isEnterKey(keyboardEvent)) {
+            this._enterKeyPressed(keyboardEvent);
             return;
         }
 
-        var shortcut = WebInspector.KeyboardShortcut.makeKeyFromEvent(event);
+        var shortcut = WebInspector.KeyboardShortcut.makeKeyFromEvent(keyboardEvent);
         var handler = this._shortcuts[shortcut];
         if (handler) {
             handler();
-            event.preventDefault();
+            keyboardEvent.preventDefault();
         }
     },
 

@@ -1,3 +1,7 @@
+// Copyright 2016 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 /**
  * @interface
  */
@@ -77,7 +81,8 @@ WebInspector.TextEditor.prototype = {
  *  bracketMatchingSetting: (!WebInspector.Setting|undefined),
  *  lineNumbers: boolean,
  *  lineWrapping: boolean,
- *  mimeType: (string|undefined)
+ *  mimeType: (string|undefined),
+ *  autoHeight: (boolean|undefined)
  * }}
  **/
 WebInspector.TextEditor.Options;
@@ -86,7 +91,8 @@ WebInspector.TextEditor.Options;
  * @typedef {{
  *     substituteRangeCallback: ((function(number, number):?WebInspector.TextRange)|undefined),
  *     suggestionsCallback: ((function(!WebInspector.TextRange, !WebInspector.TextRange):?Promise.<!WebInspector.SuggestBox.Suggestions>)|undefined),
- *     isWordChar: ((function(string):boolean)|undefined)
+ *     isWordChar: ((function(string):boolean)|undefined),
+ *     captureEnter: (boolean|undefined)
  * }}
  **/
 WebInspector.AutocompleteConfig;

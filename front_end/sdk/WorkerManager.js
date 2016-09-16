@@ -101,7 +101,7 @@ WebInspector.WorkerManager.prototype = {
 
         var parsedURL = url.asParsedURL();
         var workerName = parsedURL ? parsedURL.lastPathComponentWithFragment() : "#" + (++this._lastAnonymousTargetId);
-        var target = WebInspector.targetManager.createTarget(workerName, WebInspector.Target.Capability.JS, connection, this.target());
+        var target = WebInspector.targetManager.createTarget(workerName, WebInspector.Target.Capability.JS | WebInspector.Target.Capability.Log, connection, this.target());
         this._targetsByWorkerId.set(workerId, target);
 
         // Only pause new worker if debugging SW - we are going through the

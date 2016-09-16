@@ -290,9 +290,14 @@ WebInspector.Main.prototype = {
             WebInspector.RemoteDebuggingTerminatedScreen.show(event.data.reason);
         }
 
-        var capabilities = WebInspector.Target.Capability.Browser | WebInspector.Target.Capability.JS | WebInspector.Target.Capability.Network | WebInspector.Target.Capability.Worker | WebInspector.Target.Capability.DOM;
+        var capabilities =
+            WebInspector.Target.Capability.Browser | WebInspector.Target.Capability.DOM |
+            WebInspector.Target.Capability.JS | WebInspector.Target.Capability.Log |
+            WebInspector.Target.Capability.Network | WebInspector.Target.Capability.Worker;
         if (Runtime.queryParam("isSharedWorker"))
-            capabilities = WebInspector.Target.Capability.Browser | WebInspector.Target.Capability.Network | WebInspector.Target.Capability.Worker;
+            capabilities =
+                WebInspector.Target.Capability.Browser | WebInspector.Target.Capability.Log |
+                WebInspector.Target.Capability.Network | WebInspector.Target.Capability.Worker;
         else if (Runtime.queryParam("v8only"))
             capabilities = WebInspector.Target.Capability.JS;
 

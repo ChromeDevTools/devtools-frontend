@@ -34,11 +34,12 @@ WebInspector.Target = function(targetManager, name, capabilitiesMask, connection
  */
 WebInspector.Target.Capability = {
     Browser: 1,
-    JS: 2,
-    Network: 4,
-    Worker: 8,
-    DOM: 16
-}
+    DOM: 2,
+    JS: 4,
+    Log: 8,
+    Network: 16,
+    Worker: 32
+};
 
 WebInspector.Target._nextId = 1;
 
@@ -118,6 +119,14 @@ WebInspector.Target.prototype = {
     hasJSCapability: function()
     {
         return this.hasAllCapabilities(WebInspector.Target.Capability.JS);
+    },
+
+    /**
+     * @return {boolean}
+     */
+    hasLogCapability: function()
+    {
+        return this.hasAllCapabilities(WebInspector.Target.Capability.Log);
     },
 
     /**

@@ -43,7 +43,7 @@ WebInspector.ResourcesPanel = function()
     this._sidebarTree = new TreeOutlineInShadow();
     this._sidebarTree.element.classList.add("resources-sidebar");
     this._sidebarTree.registerRequiredCSS("resources/resourcesSidebar.css");
-    this._sidebarTree.element.classList.add("filter-all", "outline-disclosure");
+    this._sidebarTree.element.classList.add("filter-all");
     this.panelSidebarElement().appendChild(this._sidebarTree.element);
     this.setDefaultFocusedElement(this._sidebarTree.element);
 

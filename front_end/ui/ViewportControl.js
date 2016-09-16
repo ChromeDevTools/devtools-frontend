@@ -567,7 +567,7 @@ WebInspector.ViewportControl.prototype = {
     {
         var chars = 0;
         var node = itemElement;
-        while ((node = node.traverseNextTextNode()) && node !== container)
+        while ((node = node.traverseNextTextNode()) && !node.isSelfOrDescendant(container))
             chars += node.textContent.length;
         return chars + offset;
     },

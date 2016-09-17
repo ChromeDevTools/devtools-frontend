@@ -17,21 +17,22 @@ WebInspector.AccessibilityModel = function(target)
 WebInspector.AccessibilityModel.prototype = {
     /**
      * @param {!DOMAgent.NodeId} nodeId
-     * @return {!Promise.<?AccessibilityAgent.AXNode>}
+     * @return {!Promise.<?Array<!AccessibilityAgent.AXNode>>}
      */
-    getAXNode: function(nodeId)
+    getAXNodeChain: function(nodeId)
     {
         /**
          * @param {?string} error
-         * @param {!AccessibilityAgent.AXNode=} value
+         * @param {!Array<!AccessibilityAgent.AXNode>=} nodes
+         * @return {?Array<!AccessibilityAgent.AXNode>}
          */
-        function parsePayload(error, value)
+        function parsePayload(error, nodes)
         {
             if (error)
-                console.error("AccessibilityAgent.getAXNode(): " + error);
-            return value || null;
+                console.error("AccessibilityAgent.getAXNodeChain(): " + error);
+            return nodes || null;
         }
-        return this._agent.getAXNode(nodeId, parsePayload);
+        return this._agent.getAXNodeChain(nodeId, true, parsePayload);
     },
 
     __proto__: WebInspector.SDKModel.prototype

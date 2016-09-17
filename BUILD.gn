@@ -305,7 +305,6 @@ devtools_module_json_files = [
   "front_end/elements/module.json",
   "front_end/emulated_devices/module.json",
   "front_end/emulation/module.json",
-  "front_end/es_tree/module.json",
   "front_end/extensions/module.json",
   "front_end/gonzales/module.json",
   "front_end/heap_snapshot_worker/module.json",
@@ -467,10 +466,6 @@ devtools_emulated_devices_images = [
   "front_end/emulated_devices/Nexus6P-landscape.svg",
   "front_end/emulated_devices/Nexus6P-portrait.svg",
 ]
-devtools_es_tree_js_files = [
-  "front_end/es_tree/ESTreeWalker.js",
-  "front_end/es_tree/AcornTokenizer.js",
-]
 devtools_extension_api_files = [ "front_end/extensions/ExtensionAPI.js" ]
 devtools_extensions_js_files =
     [
@@ -594,10 +589,10 @@ devtools_formatter_worker_js_files = [
   "front_end/cm/css.js",
   "front_end/cm/headlesscodemirror.js",
   "front_end/cm/xml.js",
-  "front_end/es_tree/AcornTokenizer.js",
-  "front_end/es_tree/ESTreeWalker.js",
   "front_end/platform/utilities.js",
+  "front_end/formatter_worker/AcornTokenizer.js",
   "front_end/formatter_worker/CSSFormatter.js",
+  "front_end/formatter_worker/ESTreeWalker.js",
   "front_end/formatter_worker/FormattedContentBuilder.js",
   "front_end/formatter_worker/JavaScriptFormatter.js",
   "front_end/formatter_worker/CSSRuleParser.js",
@@ -844,15 +839,14 @@ devtools_modules_js_files =
     devtools_components_lazy_js_files + devtools_console_js_files +
     devtools_devices_js_files + devtools_diff_js_files +
     devtools_elements_js_files + devtools_emulated_devices_js_files +
-    devtools_es_tree_js_files + devtools_extensions_js_files +
-    devtools_gonzales_js_files + devtools_heap_snapshot_worker_js_files +
-    devtools_layers_js_files + devtools_network_js_files +
-    devtools_profiler_js_files + devtools_resources_js_files +
-    devtools_sass_js_files + devtools_security_js_files +
-    devtools_screencast_js_files + devtools_formatter_worker_js_files +
-    devtools_settings_js_files + devtools_snippets_js_files +
-    devtools_source_frame_js_files + devtools_sources_js_files +
-    devtools_temp_storage_shared_worker_js_files +
+    devtools_extensions_js_files + devtools_gonzales_js_files +
+    devtools_heap_snapshot_worker_js_files + devtools_layers_js_files +
+    devtools_network_js_files + devtools_profiler_js_files +
+    devtools_resources_js_files + devtools_sass_js_files +
+    devtools_security_js_files + devtools_screencast_js_files +
+    devtools_formatter_worker_js_files + devtools_settings_js_files +
+    devtools_snippets_js_files + devtools_source_frame_js_files +
+    devtools_sources_js_files + devtools_temp_storage_shared_worker_js_files +
     devtools_text_editor_js_files + devtools_timeline_model_js_files +
     devtools_timeline_js_files + devtools_ui_lazy_js_files
 
@@ -888,7 +882,6 @@ generated_bundled_modules = [
   "$resources_out_dir/devices/devices_module.js",
   "$resources_out_dir/diff/diff_module.js",
   "$resources_out_dir/elements/elements_module.js",
-  "$resources_out_dir/es_tree/es_tree_module.js",
   "$resources_out_dir/layers/layers_module.js",
   "$resources_out_dir/network/network_module.js",
   "$resources_out_dir/profiler/profiler_module.js",

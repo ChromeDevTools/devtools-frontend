@@ -58,11 +58,8 @@ span.ax-internal-role {
 }
 
 .ax-ignored-node-pane {
+    background-color: hsl(0, 0%, 96%);
     flex: none;
-}
-
-.ax-tree-ignored-node {
-    font-style: italic;
 }
 
 .tree-outline li {

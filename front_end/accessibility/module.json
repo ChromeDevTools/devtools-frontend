@@ -19,8 +19,7 @@
         "AccessibilityStrings.js",
         "ARIAAttributesView.js",
         "ARIAMetadata.js",
-        "ARIAConfig.js",
-        "AXTreePane.js"
+        "ARIAConfig.js"
     ],
     "skip_compilation": [
         "ARIAConfig.js"

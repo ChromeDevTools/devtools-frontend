@@ -907,6 +907,14 @@ generated_remote_modules = [
   "$resources_out_dir/screencast/screencast_module.js",
 ]
 
+devtools_applications = [
+  "inspector",
+  "toolbox",
+  "formatter_worker",
+  "heap_snapshot_worker",
+  "temp_storage_shared_worker",
+]
+
 #-------------------------------------------------------------------------------
 
 visibility = [ "//third_party/WebKit/*" ]
@@ -1053,21 +1061,12 @@ action("build_release_devtools") {
   outputs = generated_entry_files + generated_workers +
             generated_bundled_modules + generated_remote_modules
 
-  debug_mode = "0"
-
-  args = [
-    "inspector",
-    "toolbox",
-    "formatter_worker",
-    "heap_snapshot_worker",
-    "temp_storage_shared_worker",
-    "--input_path",
-    rebase_path("front_end", root_build_dir),
-    "--output_path",
-    rebase_path(resources_out_dir, root_build_dir),
-    "--debug",
-    debug_mode,
-  ]
+  args = devtools_applications + [
+           "--input_path",
+           rebase_path("front_end", root_build_dir),
+           "--output_path",
+           rebase_path(resources_out_dir, root_build_dir),
+         ]
 }
 
 if (debug_devtools) {
@@ -1090,21 +1089,12 @@ if (debug_devtools) {
       "$resources_out_debug_dir/toolbox.html",
     ]
 
-    debug_mode = "1"
-
-    args = [
-      "inspector",
-      "toolbox",
-      "formatter_worker",
-      "heap_snapshot_worker",
-      "temp_storage_shared_worker",
-      "--input_path",
-      rebase_path("front_end", root_build_dir),
-      "--output_path",
-      rebase_path(resources_out_debug_dir, root_build_dir),
-      "--debug",
-      debug_mode,
-    ]
+    args = devtools_applications + [
+             "--input_path",
+             rebase_path("front_end", root_build_dir),
+             "--output_path",
+             rebase_path(resources_out_debug_dir, root_build_dir),
+           ]
   }
 
   copy("copy_generated_scripts") {

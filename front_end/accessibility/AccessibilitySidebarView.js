@@ -11,6 +11,8 @@ WebInspector.AccessibilitySidebarView = function()
     WebInspector.ThrottledWidget.call(this);
     this._node = null;
     this._sidebarPaneStack = WebInspector.viewManager.createStackLocation();
+    this._treeSubPane = new WebInspector.AXTreePane();
+    this._sidebarPaneStack.showView(this._treeSubPane);
     this._ariaSubPane = new WebInspector.ARIAAttributesPane();
     this._sidebarPaneStack.showView(this._ariaSubPane);
     this._axNodeSubPane = new WebInspector.AXNodeSubPane();
@@ -30,25 +32,39 @@ WebInspector.AccessibilitySidebarView.prototype = {
     },
 
     /**
+     * @param {?Array<!AccessibilityAgent.AXNode>} nodes
+     */
+    accessibilityNodeCallback: function(nodes)
+    {
+        if (!nodes)
+            return;
+
+        var currentAXNode = nodes[0];
+        // TODO(aboxhall): implement hideView() in WebInspector.ViewLocation and use it here.
+        if (currentAXNode.ignored)
+            this._ariaSubPane.parentWidget().contentElement.classList.add("sidebar-hidden-override");
+        else
+            this._ariaSubPane.parentWidget().contentElement.classList.remove("sidebar-hidden-override");
+
+        if (this._axNodeSubPane)
+            this._axNodeSubPane.setAXNode(currentAXNode);
+        if (this._treeSubPane)
+            this._treeSubPane.setAXNodeAndAncestors(nodes);
+    },
+
+    /**
      * @override
      * @protected
      * @return {!Promise.<?>}
      */
     doUpdate: function()
     {
-        /**
-         * @param {?AccessibilityAgent.AXNode} accessibilityNode
-         * @this {WebInspector.AccessibilitySidebarView}
-         */
-        function accessibilityNodeCallback(accessibilityNode)
-        {
-            if (this._axNodeSubPane)
-                this._axNodeSubPane.setAXNode(accessibilityNode);
-        }
         var node = this.node();
+        this._treeSubPane.setNode(node);
+        this._axNodeSubPane.setNode(node);
         this._ariaSubPane.setNode(node);
-        return WebInspector.AccessibilityModel.fromTarget(node.target()).getAXNode(node.id)
-            .then(accessibilityNodeCallback.bind(this));
+        return WebInspector.AccessibilityModel.fromTarget(node.target()).getAXNodeChain(node.id)
+            .then((nodes) => { this.accessibilityNodeCallback(nodes); });
     },
 
     /**
@@ -58,6 +74,7 @@ WebInspector.AccessibilitySidebarView.prototype = {
     {
         WebInspector.ThrottledWidget.prototype.wasShown.call(this);
 
+        this._treeSubPane.setNode(this.node());
         this._axNodeSubPane.setNode(this.node());
         this._ariaSubPane.setNode(this.node());
 

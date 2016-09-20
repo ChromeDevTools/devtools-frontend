@@ -3,10 +3,10 @@
 // found in the LICENSE file.
 var fs = require("fs");
 var http = require("http");
-var https = require("https");
 var path = require("path");
 var parseURL = require("url").parse;
-var Stream = require("stream").Transform;
+
+var utils = require("../utils");
 
 var remoteDebuggingPort = parseInt(process.env.REMOTE_DEBUGGING_PORT, 10) || 9222;
 var serverPort = parseInt(process.env.PORT, 10) || 8090;
@@ -98,7 +98,7 @@ function proxy(filePath)
         return null;
     if (process.env.CHROMIUM_COMMIT)
         return onProxyFileURL(proxyFilePathToURL[filePath](process.env.CHROMIUM_COMMIT));
-    return fetch(`http://localhost:${remoteDebuggingPort}/json/version`)
+    return utils.fetch(`http://localhost:${remoteDebuggingPort}/json/version`)
         .then(onBrowserMetadata)
         .then(onProxyFileURL);
 
@@ -115,7 +115,7 @@ function proxy(filePath)
     {
         if (proxyFileCache.has(proxyFileURL))
             return Promise.resolve(proxyFileCache.get(proxyFileURL));
-        return fetch(proxyFileURL)
+        return utils.fetch(proxyFileURL)
             .then(cacheProxyFile.bind(null, proxyFileURL));
     }
 
@@ -125,36 +125,3 @@ function proxy(filePath)
         return data;
     }
 }
-
-function fetch(url)
-{
-    return new Promise(fetchPromise);
-
-    function fetchPromise(resolve, reject)
-    {
-        var request;
-        var protocol = parseURL(url).protocol;
-        var handleResponse = getCallback.bind(null, resolve, reject);
-        if (protocol === "https:") {
-            request = https.get(url, handleResponse);
-        } else if (protocol === "http:") {
-            request = http.get(url, handleResponse);
-        } else {
-            reject(new Error(`Invalid protocol for url: ${url}`));
-            return;
-        }
-        request.on("error", err => reject(err));
-    }
-
-    function getCallback(resolve, reject, response)
-    {
-        if (response.statusCode !== 200) {
-            reject(new Error(`Request error: + ${response.statusCode}`));
-            return;
-        }
-        var body = new Stream();
-        response.on("data", chunk => body.push(chunk));
-        response.on("end", () => resolve(body.read()));
-    }
-}
-

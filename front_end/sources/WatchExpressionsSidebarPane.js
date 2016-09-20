@@ -367,7 +367,7 @@ WebInspector.WatchExpression.prototype = {
         var titleElement = headerElement.createChild("div", "watch-expression-title");
         this._nameElement = WebInspector.ObjectPropertiesSection.createNameElement(this._expression);
         if (!!exceptionDetails || !result) {
-            this._valueElement = createElementWithClass("span", "error-message value");
+            this._valueElement = createElementWithClass("span", "watch-expression-error value");
             titleElement.classList.add("dimmed");
             this._valueElement.textContent = WebInspector.UIString("<not available>");
         } else {

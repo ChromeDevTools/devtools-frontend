@@ -129,7 +129,7 @@ WebInspector.RequestHeadersView.prototype = {
         if (value === "")
             div.classList.add("empty-value");
         if (errorDecoding)
-            div.createChild("span", "error-message").textContent = WebInspector.UIString("(unable to decode value)");
+            div.createChild("span", "header-decode-error").textContent = WebInspector.UIString("(unable to decode value)");
         else
             div.textContent = value;
         return div;

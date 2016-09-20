@@ -74,6 +74,10 @@
     transform: rotate(-90deg);
 }
 
+.object-popover-container {
+    display: inline-block;
+}
+
 .function-popover-title {
     border-bottom: 1px solid #AAA;
     margin-bottom: 3px;
@@ -179,6 +183,14 @@
     white-space: nowrap;
     text-overflow: ellipsis ;
     overflow: hidden;
+}
+
+.watch-expression-error {
+    color: red;
+}
+
+.-theme-with-dark-background .watch-expression-error {
+    color: hsl(0, 100%, 65%);
 }
 
 .watch-expressions-separator {

@@ -28,3 +28,11 @@
     overflow-y: auto;
     margin: 0;
 }
+
+.header-decode-error {
+    color: red;
+}
+
+.-theme-with-dark-background .header-decode-error {
+    color: hsl(0, 100%, 65%);
+}

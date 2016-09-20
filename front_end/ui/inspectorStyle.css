@@ -60,26 +60,6 @@ body {
     font-family: 'Segoe UI', Tahoma, sans-serif;
 }
 
-label:hover input {
-    box-shadow: 0 0 3px highlight;
-}
-
-fieldset[disabled] label:hover input {
-    box-shadow: none;
-}
-
-.object-popover-container {
-    display: inline-block;
-}
-
-.error-message {
-    color: red;
-}
-
-.-theme-with-dark-background .error-message {
-    color: hsl(0, 100%, 65%);
-}
-
 .panel {
     display: flex;
     overflow: hidden;
@@ -105,16 +85,6 @@ iframe.extension {
 iframe.panel.extension {
     display: block;
     height: 100%;
-}
-
-.properties-accessor-property-name {
-    font-style: italic;
-}
-
-.child-editing {
-    color: #222 !important;
-    text-decoration: none !important;
-    overflow: visible !important;
 }
 
 .drawer-toolbar {

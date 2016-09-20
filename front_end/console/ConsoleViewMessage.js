@@ -1017,6 +1017,14 @@ WebInspector.ConsoleViewMessage.prototype = {
         this._wrapperElement.appendChild(this.contentElement());
     },
 
+    /**
+     * @return {number}
+     */
+    repeatCount: function()
+    {
+        return this._repeatCount || 1;
+    },
+
     resetIncrementRepeatCount: function()
     {
         this._repeatCount = 1;

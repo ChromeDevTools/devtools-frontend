@@ -655,7 +655,9 @@ WebInspector.ConsoleView.prototype = {
             var lines = [];
             for (var i = 0; i < chunkSize && i + messageIndex < this.itemCount(); ++i) {
                 var message = this.itemElement(messageIndex + i);
-                lines.push(message.formattedMessage().deepTextContent());
+                var messageContent = message.formattedMessage().deepTextContent();
+                for (var j = 0; j < message.repeatCount(); ++j)
+                    lines.push(messageContent);
             }
             messageIndex += i;
             stream.write(lines.join("\n") + "\n", writeNextChunk.bind(this));

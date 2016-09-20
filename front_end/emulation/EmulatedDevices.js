@@ -139,7 +139,8 @@ WebInspector.EmulatedDevice.fromJSONV1 = function(json)
         var result = new WebInspector.EmulatedDevice();
         result.title = /** @type {string} */ (parseValue(json, "title", "string"));
         result.type = /** @type {string} */ (parseValue(json, "type", "string"));
-        result.userAgent = /** @type {string} */ (parseValue(json, "user-agent", "string"));
+        var rawUserAgent = /** @type {string} */ (parseValue(json, "user-agent", "string"));
+        result.userAgent = WebInspector.MultitargetNetworkManager.patchUserAgentWithChromeVersion(rawUserAgent);
 
         var capabilities = parseValue(json, "capabilities", "object", []);
         if (!Array.isArray(capabilities))

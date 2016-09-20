@@ -699,6 +699,20 @@ WebInspector.MultitargetNetworkManager.Events = {
     UserAgentChanged: Symbol("UserAgentChanged")
 }
 
+/**
+ * @param {string} uaString
+ * @return {string}
+ */
+WebInspector.MultitargetNetworkManager.patchUserAgentWithChromeVersion = function(uaString)
+{
+    // Patches Chrome/CriOS version from user agent ("1.2.3.4" when user agent is: "Chrome/1.2.3.4").
+    var chromeRegex = new RegExp("(?:^|\\W)Chrome/(\\S+)");
+    var chromeMatch = navigator.userAgent.match(chromeRegex);
+    if (chromeMatch && chromeMatch.length > 1)
+        return String.sprintf(uaString, chromeMatch[1]);
+    return uaString;
+}
+
 WebInspector.MultitargetNetworkManager.prototype = {
     /**
      * @override

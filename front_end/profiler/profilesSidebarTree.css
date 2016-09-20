@@ -47,6 +47,10 @@ ol.tree-outline {
     display: none;
 }
 
+.tree-outline ol {
+    overflow: hidden;
+}
+
 /* Generic items styling */
 
 .title-container > .save-link {

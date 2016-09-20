@@ -409,6 +409,7 @@ devtools_elements_js_files = [
   "front_end/elements/elementsPanel.css",
   "front_end/elements/elementsTreeOutline.css",
   "front_end/elements/platformFontsWidget.css",
+  "front_end/elements/stylesSectionTree.css",
   "front_end/elements/ClassesPaneWidget.js",
   "front_end/elements/ColorSwatchPopoverIcon.js",
   "front_end/elements/ComputedStyleModel.js",

@@ -237,6 +237,7 @@
         "computedStyleSidebarPane.css",
         "elementsPanel.css",
         "elementsTreeOutline.css",
-        "platformFontsWidget.css"
+        "platformFontsWidget.css",
+        "stylesSectionTree.css"
     ]
 }

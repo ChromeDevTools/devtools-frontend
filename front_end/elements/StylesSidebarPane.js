@@ -623,8 +623,9 @@ WebInspector.StylePropertiesSection = function(parentPane, matchedStyles, style)
 
     this._titleElement = this.element.createChild("div", "styles-section-title " + (rule ? "styles-selector" : ""));
 
-    this.propertiesTreeOutline = new TreeOutline();
-    this.propertiesTreeOutline.element.classList.add("style-properties", "monospace");
+    this.propertiesTreeOutline = new TreeOutlineInShadow();
+    this.propertiesTreeOutline.registerRequiredCSS("elements/stylesSectionTree.css");
+    this.propertiesTreeOutline.element.classList.add("style-properties", "matched-styles", "monospace");
     this.propertiesTreeOutline.section = this;
     this.element.appendChild(this.propertiesTreeOutline.element);
 
@@ -673,8 +674,10 @@ WebInspector.StylePropertiesSection = function(parentPane, matchedStyles, style)
     if (this.navigable)
         this.element.classList.add("navigable");
 
-    if (!this.editable)
+    if (!this.editable) {
         this.element.classList.add("read-only");
+        this.propertiesTreeOutline.element.classList.add("read-only");
+    }
 
     this._markSelectorMatches();
     this.onpopulate();
@@ -687,6 +690,7 @@ WebInspector.StylePropertiesSection.prototype = {
     _setSectionHovered: function(isHovered)
     {
         this.element.classList.toggle("styles-panel-hovered", isHovered);
+        this.propertiesTreeOutline.element.classList.toggle("styles-panel-hovered", isHovered);
         if (this._hoverableSelectorsMode !== isHovered) {
             this._hoverableSelectorsMode = isHovered;
             this._markSelectorMatches();
@@ -1109,7 +1113,7 @@ WebInspector.StylePropertiesSection.prototype = {
             hasMatchingChild |= child._updateFilter();
 
         var regex = this._parentPane.filterRegex();
-        var hideRule = !hasMatchingChild && !!regex && !regex.test(this.element.textContent);
+        var hideRule = !hasMatchingChild && !!regex && !regex.test(this.element.deepTextContent());
         this.element.classList.toggle("hidden", hideRule);
         if (!hideRule && this._style.parentRule)
             this._markSelectorHighlights();
@@ -1251,6 +1255,10 @@ WebInspector.StylePropertiesSection.prototype = {
     _handleEmptySpaceClick: function(event)
     {
         if (!this.editable)
+            return;
+
+        var targetElement = event.deepElementFromPoint();
+        if (targetElement && !targetElement.isComponentSelectionCollapsed())
             return;
 
         if (!event.target.isComponentSelectionCollapsed())
@@ -1535,7 +1543,7 @@ WebInspector.StylePropertiesSection.prototype = {
         function updateSourceRanges(rule)
         {
             var doesAffectSelectedNode = this._matchedStyles.matchingSelectors(rule).length > 0;
-            this.element.classList.toggle("no-affect", !doesAffectSelectedNode);
+            this.propertiesTreeOutline.element.classList.toggle("no-affect", !doesAffectSelectedNode);
             this._matchedStyles.resetActiveProperties();
             this._parentPane._refreshUpdate(this);
         }
@@ -1721,7 +1729,7 @@ WebInspector.BlankStylePropertiesSection.prototype = {
             this._makeNormal(newRule);
 
             if (!doesSelectorAffectSelectedNode)
-                this.element.classList.add("no-affect");
+                this.propertiesTreeOutline.element.classList.add("no-affect");
 
             this._updateRuleOrigin();
             if (this.element.parentElement) // Might have been detached already.

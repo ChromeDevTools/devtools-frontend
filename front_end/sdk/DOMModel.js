@@ -275,7 +275,7 @@ WebInspector.DOMNode.prototype = {
      */
     isInsertionPoint: function()
     {
-        return !this.isXMLNode() && (this._nodeName === "SHADOW" || this._nodeName === "CONTENT");
+        return !this.isXMLNode() && (this._nodeName === "SHADOW" || this._nodeName === "CONTENT" || this._nodeName === "SLOT");
     },
 
     /**

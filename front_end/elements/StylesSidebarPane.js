@@ -1144,7 +1144,7 @@ WebInspector.StylePropertiesSection.prototype = {
     _renderHoverableSelectors: function(selectors, matchingSelectors)
     {
         var fragment = createDocumentFragment();
-        for (var i = 0; i < selectors.length; ++i) {
+        for (var i = 0; i < selectors.length ; ++i) {
             if (i)
                 fragment.createTextChild(", ");
             fragment.appendChild(this._createSelectorElement(selectors[i], matchingSelectors[i], i));

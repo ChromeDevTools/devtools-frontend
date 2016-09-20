@@ -109,6 +109,8 @@ WebInspector.CodeMirrorTextEditor = function(options)
         "Alt-Right": "goGroupRight",
         "Ctrl-Left": "moveCamelLeft",
         "Ctrl-Right": "moveCamelRight",
+        "Ctrl-A": "goLineLeft",
+        "Ctrl-E": "goLineRight",
         "Shift-Ctrl-Left": "selectCamelLeft",
         "Shift-Ctrl-Right": "selectCamelRight",
         "Cmd-Left": "goLineStartSmart",

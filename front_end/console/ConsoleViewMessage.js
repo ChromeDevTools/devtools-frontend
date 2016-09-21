@@ -958,9 +958,6 @@ WebInspector.ConsoleViewMessage.prototype = {
 
         element.appendChild(this.formattedMessage());
 
-        if (this._repeatCount > 1)
-            this._showRepeatCountElement();
-
         this.updateTimestamp(WebInspector.moduleSetting("consoleTimestampsEnabled").get());
 
         return this._element;
@@ -1015,6 +1012,8 @@ WebInspector.ConsoleViewMessage.prototype = {
         }
 
         this._wrapperElement.appendChild(this.contentElement());
+        if (this._repeatCount > 1)
+            this._showRepeatCountElement();
     },
 
     /**
@@ -1061,7 +1060,7 @@ WebInspector.ConsoleViewMessage.prototype = {
             default:
                 this._repeatCountElement.type = "info";
             }
-            this._element.insertBefore(this._repeatCountElement, this._element.firstChild);
+            this._wrapperElement.insertBefore(this._repeatCountElement, this._element);
             this._element.classList.add("repeated-message");
         }
         this._repeatCountElement.textContent = this._repeatCount;

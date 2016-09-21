@@ -132,10 +132,13 @@
 }
 } /* media */
 
-.console-message .console-message-repeat-count {
-    margin-right: 4px;
-    margin-left: -18px;
+.console-message-repeat-count {
+    margin: 2px 0 0 10px;
     flex: none;
+}
+
+.repeated-message {
+    margin-left: 4px;
 }
 
 .console-error-level .repeated-message::before,

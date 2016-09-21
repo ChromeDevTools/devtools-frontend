@@ -98,10 +98,6 @@
     pointer-events: none;
 }
 
-.heap-snapshot-view .heap-object-details-header {
-    background-color: #eee;
-}
-
 .heap-snapshot-view tr:not(.selected) td.object-column span.highlight {
     background-color: rgb(255, 255, 200);
 }

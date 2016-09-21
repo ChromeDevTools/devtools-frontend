@@ -41,12 +41,13 @@ WebInspector.SettingsScreen = function()
     this.contentElement.tabIndex = 0;
     this.contentElement.classList.add("help-window-main");
     this.contentElement.classList.add("vbox");
-    var settingsLabelElement = createElementWithClass("div", "help-window-label");
-    settingsLabelElement.createTextChild(WebInspector.UIString("Settings"));
+
+    var settingsLabelElement = createElement("div");
+    WebInspector.createShadowRootWithCoreStyles(settingsLabelElement, "settings/settingsScreen.css").createChild("div", "settings-window-title").textContent = WebInspector.UIString("Settings");
 
     this._tabbedLocation = WebInspector.viewManager.createTabbedLocation(() => WebInspector.SettingsScreen._showSettingsScreen(), "settings-view");
     var tabbedPane = this._tabbedLocation.tabbedPane();
-    tabbedPane.insertBeforeTabStrip(settingsLabelElement);
+    tabbedPane.leftToolbar().appendToolbarItem(new WebInspector.ToolbarItem(settingsLabelElement));
     tabbedPane.setShrinkableTabs(false);
     tabbedPane.setVerticalTabLayout(true);
     var shortcutsView = new WebInspector.SimpleView(WebInspector.UIString("Shortcuts"));

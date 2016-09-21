@@ -489,6 +489,22 @@ input.toolbar-item.hover {
     -webkit-mask-position: 0 -120px;
 }
 
+.toolbar-state-left-show .sidebar-toolbar-item.toolbar-glyph {
+    -webkit-mask-position: -168px -76px;
+}
+
+.toolbar-state-left-hide .sidebar-toolbar-item.toolbar-glyph {
+    -webkit-mask-position: -199px -76px;
+}
+
+.toolbar-state-right-show .sidebar-toolbar-item.toolbar-glyph {
+    -webkit-mask-position: -288px -72px;
+}
+
+.toolbar-state-right-hide .sidebar-toolbar-item.toolbar-glyph {
+    -webkit-mask-position: -256px -72px;
+}
+
 .toolbar-state-on .record-toolbar-item.toolbar-glyph,
 .toolbar-state-active .filter-toolbar-item.toolbar-glyph,
 .toolbar-state-active .block-toolbar-item.toolbar-glyph {

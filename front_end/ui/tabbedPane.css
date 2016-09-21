@@ -268,3 +268,13 @@
 .tabbed-pane-header.tabbed-pane-no-header-background {
     background-color: transparent;
 }
+
+.tabbed-pane-left-toolbar {
+    margin-right: -4px;
+    flex: none;
+}
+
+.tabbed-pane-right-toolbar {
+    margin-left: -4px;
+    flex: none;
+}

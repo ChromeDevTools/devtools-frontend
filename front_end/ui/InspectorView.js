@@ -51,11 +51,9 @@ WebInspector.InspectorView = function()
     this._drawerTabbedLocation.enableMoreTabsButton();
     this._drawerTabbedPane = this._drawerTabbedLocation.tabbedPane();
     this._drawerTabbedPane.setMinimumSize(0, 27);
-    var drawerToolbar = new WebInspector.Toolbar("drawer-close-toolbar");
     var closeDrawerButton = new WebInspector.ToolbarButton(WebInspector.UIString("Close drawer"), "delete-toolbar-item");
     closeDrawerButton.addEventListener("click", this.closeDrawer.bind(this));
-    drawerToolbar.appendToolbarItem(closeDrawerButton);
-    this._drawerTabbedPane.appendAfterTabStrip(drawerToolbar.element);
+    this._drawerTabbedPane.rightToolbar().appendToolbarItem(closeDrawerButton);
     this._drawerSplitWidget.installResizer(this._drawerTabbedPane.headerElement());
     this._drawerSplitWidget.setSidebarWidget(this._drawerTabbedPane);
 
@@ -166,17 +164,8 @@ WebInspector.InspectorView.prototype = {
 
     createToolbars: function()
     {
-        this._leftToolbar = new WebInspector.ExtensibleToolbar("main-toolbar-left");
-        this._leftToolbar.element.classList.add("inspector-view-toolbar", "inspector-view-toolbar-left");
-
-        this._tabbedPane.insertBeforeTabStrip(this._leftToolbar.element);
-
-        var rightToolbarContainer = createElementWithClass("div", "hbox flex-none flex-centered");
-        this._tabbedPane.appendAfterTabStrip(rightToolbarContainer);
-
-        this._rightToolbar = new WebInspector.ExtensibleToolbar("main-toolbar-right");
-        this._rightToolbar.element.classList.add("inspector-view-toolbar", "flex-none");
-        rightToolbarContainer.appendChild(this._rightToolbar.element);
+        this._tabbedPane.leftToolbar().appendLocationItems("main-toolbar-left");
+        this._tabbedPane.rightToolbar().appendLocationItems("main-toolbar-right");
     },
 
     /**
@@ -253,10 +242,8 @@ WebInspector.InspectorView.prototype = {
     {
         this._currentPanelLocked = allTargetsSuspended;
         this._tabbedPane.setCurrentTabLocked(this._currentPanelLocked);
-        if (this._leftToolbar)
-            this._leftToolbar.setEnabled(!this._currentPanelLocked);
-        if (this._rightToolbar)
-            this._rightToolbar.setEnabled(!this._currentPanelLocked);
+        this._tabbedPane.leftToolbar().setEnabled(!this._currentPanelLocked);
+        this._tabbedPane.rightToolbar().setEnabled(!this._currentPanelLocked);
     },
 
     /**

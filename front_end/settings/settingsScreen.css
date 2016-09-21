@@ -180,11 +180,10 @@ fieldset {
     color: #222;
 }
 
-.help-window-label {
+.settings-window-title {
     font-size: 18px;
-    color: inherit;
-    padding: 1px 0 15px 17px;
-    flex: none;
+    color: rgb(48, 57, 66);
+    padding: 0 0 5px 13px;
 }
 
 .help-container-wrapper {

@@ -69,11 +69,9 @@ WebInspector.SourcesPanel = function()
     tabbedPane.setMinimumSize(100, 25);
     tabbedPane.setShrinkableTabs(true);
     tabbedPane.element.classList.add("navigator-tabbed-pane");
-    var navigatorToolbar = new WebInspector.Toolbar("");
     var navigatorMenuButton = new WebInspector.ToolbarMenuButton(this._populateNavigatorMenu.bind(this), true);
     navigatorMenuButton.setTitle(WebInspector.UIString("More options"));
-    navigatorToolbar.appendToolbarItem(navigatorMenuButton);
-    tabbedPane.appendAfterTabStrip(navigatorToolbar.element);
+    tabbedPane.rightToolbar().appendToolbarItem(navigatorMenuButton);
     this.editorView.setSidebarWidget(tabbedPane);
 
     this._sourcesView = new WebInspector.SourcesView();
@@ -90,7 +88,9 @@ WebInspector.SourcesPanel = function()
     this._callstackPane = self.runtime.sharedInstance(WebInspector.CallStackSidebarPane);
     this._callstackPane.registerShortcuts(this.registerShortcuts.bind(this));
 
-    this._installDebuggerSidebarController();
+    this._sourcesView.leftToolbar().appendToolbarItem(this.editorView.createShowHideSidebarButton("navigator"));
+    this._toggleDebuggerSidebarButton = this._splitWidget.createShowHideSidebarButton("debugger");
+    this._sourcesView.rightToolbar().appendToolbarItem(this._toggleDebuggerSidebarButton);
 
     WebInspector.moduleSetting("sidebarPosition").addChangeListener(this._updateSidebarPosition.bind(this));
     this._updateSidebarPosition();
@@ -159,7 +159,7 @@ WebInspector.SourcesPanel.prototype = {
         } else {
             this._paused = false;
             this._clearInterface();
-            this._toggleDebuggerSidebarButton.disabled = false;
+            this._toggleDebuggerSidebarButton.setEnabled(true);
         }
     },
 
@@ -263,7 +263,7 @@ WebInspector.SourcesPanel.prototype = {
         this._paused = true;
         this._updateDebuggerButtons();
         WebInspector.context.setFlavor(WebInspector.DebuggerPausedDetails, details);
-        this._toggleDebuggerSidebarButton.disabled = true;
+        this._toggleDebuggerSidebarButton.setEnabled(false);
         window.focus();
         InspectorFrontendHost.bringToFront();
     },
@@ -279,7 +279,7 @@ WebInspector.SourcesPanel.prototype = {
             return;
         this._paused = false;
         this._clearInterface();
-        this._toggleDebuggerSidebarButton.disabled = false;
+        this._toggleDebuggerSidebarButton.setEnabled(true);
         this._switchToPausedTargetTimeout = setTimeout(this._switchToPausedTarget.bind(this, debuggerModel), 500);
     },
 
@@ -712,12 +712,6 @@ WebInspector.SourcesPanel.prototype = {
         debugToolbarDrawer.appendChild(WebInspector.SettingsUI.createSettingCheckbox(label, setting, true));
 
         return debugToolbarDrawer;
-    },
-
-    _installDebuggerSidebarController: function()
-    {
-        this.editorView.displayShowHideSidebarButton("navigator");
-        this._toggleDebuggerSidebarButton = this._splitWidget.displayShowHideSidebarButton("debugger", "scripts-debugger-show-hide-button");
     },
 
     /**

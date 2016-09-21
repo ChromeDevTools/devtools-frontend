@@ -111,6 +111,22 @@ WebInspector.SourcesView.prototype = {
     },
 
     /**
+     * @return {!WebInspector.Toolbar}
+     */
+    leftToolbar: function()
+    {
+        return this._editorContainer.leftToolbar();
+    },
+
+    /**
+     * @return {!WebInspector.Toolbar}
+     */
+    rightToolbar: function()
+    {
+        return this._editorContainer.rightToolbar();
+    },
+
+    /**
      * @param {!Array.<!WebInspector.KeyboardShortcut.Descriptor>} keys
      * @param {function(!Event=):boolean} handler
      */

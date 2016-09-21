@@ -40,11 +40,9 @@ WebInspector.TabbedPane = function()
     this.contentElement.classList.add("tabbed-pane-shadow");
     this.contentElement.tabIndex = -1;
     this._headerElement = this.contentElement.createChild("div", "tabbed-pane-header");
-    this._headerElement.createChild("content").select = ".tabbed-pane-header-before";
     this._headerContentsElement = this._headerElement.createChild("div", "tabbed-pane-header-contents");
     this._headerContentsElement.setAttribute("aria-label", WebInspector.UIString("Panels"));
     this._tabSlider = createElementWithClass("div", "tabbed-pane-tab-slider");
-    this._headerElement.createChild("content").select = ".tabbed-pane-header-after";
     this._tabsElement = this._headerContentsElement.createChild("div", "tabbed-pane-header-tabs");
     this._tabsElement.setAttribute("role", "tablist");
     this._contentElement = this.contentElement.createChild("div", "tabbed-pane-content");
@@ -826,21 +824,27 @@ WebInspector.TabbedPane.prototype = {
     },
 
     /**
-     * @param {!Element} element
+     * @return {!WebInspector.Toolbar}
      */
-    insertBeforeTabStrip: function(element)
+    leftToolbar: function()
     {
-        element.classList.add("tabbed-pane-header-before");
-        this.element.appendChild(element);
+        if (!this._leftToolbar) {
+            this._leftToolbar = new WebInspector.Toolbar("tabbed-pane-left-toolbar");
+            this._headerElement.insertBefore(this._leftToolbar.element, this._headerElement.firstChild);
+        }
+        return this._leftToolbar;
     },
 
     /**
-     * @param {!Element} element
+     * @return {!WebInspector.Toolbar}
      */
-    appendAfterTabStrip: function(element)
+    rightToolbar: function()
     {
-        element.classList.add("tabbed-pane-header-after");
-        this.element.appendChild(element);
+        if (!this._rightToolbar) {
+            this._rightToolbar = new WebInspector.Toolbar("tabbed-pane-right-toolbar");
+            this._headerElement.appendChild(this._rightToolbar.element);
+        }
+        return this._rightToolbar;
     },
 
     renderWithNoHeaderBackground: function()

@@ -22,3 +22,7 @@
 .tabbed-pane-header-contents {
     margin-left: 0;
 }
+
+.tabbed-pane-left-toolbar {
+    margin-right: 0 !important;
+}

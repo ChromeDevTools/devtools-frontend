@@ -173,6 +173,55 @@ WebInspector.Toolbar.prototype = {
             lastSeparator.setVisible(false);
 
         this.element.classList.toggle("hidden", !!lastSeparator && lastSeparator.visible() && !nonSeparatorVisible);
+    },
+
+    /**
+     * @param {string} location
+     */
+    appendLocationItems: function(location)
+    {
+        var extensions = self.runtime.extensions(WebInspector.ToolbarItem.Provider);
+        var promises = [];
+        for (var i = 0; i < extensions.length; ++i) {
+            if (extensions[i].descriptor()["location"] === location)
+                promises.push(resolveItem(extensions[i]));
+        }
+        Promise.all(promises).then(appendItemsInOrder.bind(this));
+
+        /**
+         * @param {!Runtime.Extension} extension
+         * @return {!Promise.<?WebInspector.ToolbarItem>}
+         */
+        function resolveItem(extension)
+        {
+            var descriptor = extension.descriptor();
+            if (descriptor["separator"])
+                return Promise.resolve(/** @type {?WebInspector.ToolbarItem} */(new WebInspector.ToolbarSeparator()));
+            if (descriptor["actionId"])
+                return Promise.resolve(WebInspector.Toolbar.createActionButtonForId(descriptor["actionId"]));
+            return extension.instance().then(fetchItemFromProvider);
+
+            /**
+             * @param {!Object} provider
+             */
+            function fetchItemFromProvider(provider)
+            {
+                return /** @type {!WebInspector.ToolbarItem.Provider} */ (provider).item();
+            }
+        }
+
+        /**
+         * @param {!Array.<?WebInspector.ToolbarItem>} items
+         * @this {WebInspector.Toolbar}
+         */
+        function appendItemsInOrder(items)
+        {
+            for (var i = 0; i < items.length; ++i) {
+                var item = items[i];
+                if (item)
+                    this.appendToolbarItem(item);
+            }
+        }
     }
 }
 
@@ -945,67 +994,3 @@ WebInspector.ToolbarCheckbox.prototype = {
     __proto__: WebInspector.ToolbarItem.prototype
 }
 
-/**
- * @constructor
- * @extends {WebInspector.Toolbar}
- * @param {string} location
- * @param {!Element=} parentElement
- */
-WebInspector.ExtensibleToolbar = function(location, parentElement)
-{
-    WebInspector.Toolbar.call(this, "", parentElement);
-    this._loadItems(location);
-}
-
-WebInspector.ExtensibleToolbar.prototype = {
-    /**
-     * @param {string} location
-     */
-    _loadItems: function(location)
-    {
-        var extensions = self.runtime.extensions(WebInspector.ToolbarItem.Provider);
-        var promises = [];
-        for (var i = 0; i < extensions.length; ++i) {
-            if (extensions[i].descriptor()["location"] === location)
-                promises.push(resolveItem(extensions[i]));
-        }
-        Promise.all(promises).then(appendItemsInOrder.bind(this));
-
-        /**
-         * @param {!Runtime.Extension} extension
-         * @return {!Promise.<?WebInspector.ToolbarItem>}
-         */
-        function resolveItem(extension)
-        {
-            var descriptor = extension.descriptor();
-            if (descriptor["separator"])
-                return Promise.resolve(/** @type {?WebInspector.ToolbarItem} */(new WebInspector.ToolbarSeparator()));
-            if (descriptor["actionId"])
-                return Promise.resolve(WebInspector.Toolbar.createActionButtonForId(descriptor["actionId"]));
-            return extension.instance().then(fetchItemFromProvider);
-
-            /**
-             * @param {!Object} provider
-             */
-            function fetchItemFromProvider(provider)
-            {
-                return /** @type {!WebInspector.ToolbarItem.Provider} */ (provider).item();
-            }
-        }
-
-        /**
-         * @param {!Array.<?WebInspector.ToolbarItem>} items
-         * @this {WebInspector.ExtensibleToolbar}
-         */
-        function appendItemsInOrder(items)
-        {
-            for (var i = 0; i < items.length; ++i) {
-                var item = items[i];
-                if (item)
-                    this.appendToolbarItem(item);
-            }
-        }
-    },
-
-    __proto__: WebInspector.Toolbar.prototype
-}

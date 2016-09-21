@@ -57,8 +57,6 @@ WebInspector.TabbedEditorContainer = function(delegate, setting, placeholderText
 
     this._tabbedPane.setCloseableTabs(true);
     this._tabbedPane.setAllowTabReorder(true, true);
-    this._tabbedPane.insertBeforeTabStrip(createElementWithClass("div", "sources-editor-tabstrip-left"));
-    this._tabbedPane.appendAfterTabStrip(createElementWithClass("div", "sources-editor-tabstrip-right"));
 
     this._tabbedPane.addEventListener(WebInspector.TabbedPane.Events.TabClosed, this._tabClosed, this);
     this._tabbedPane.addEventListener(WebInspector.TabbedPane.Events.TabSelected, this._tabSelected, this);
@@ -103,6 +101,22 @@ WebInspector.TabbedEditorContainer.prototype = {
     fileViews: function()
     {
         return /** @type {!Array.<!WebInspector.Widget>} */ (this._tabbedPane.tabViews());
+    },
+
+    /**
+     * @return {!WebInspector.Toolbar}
+     */
+    leftToolbar: function()
+    {
+        return this._tabbedPane.leftToolbar();
+    },
+
+    /**
+     * @return {!WebInspector.Toolbar}
+     */
+    rightToolbar: function()
+    {
+        return this._tabbedPane.rightToolbar();
     },
 
     /**

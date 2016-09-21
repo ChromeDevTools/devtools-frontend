@@ -585,11 +585,7 @@ WebInspector.ViewportControl.prototype = {
      */
     firstVisibleIndex: function()
     {
-        var firstVisibleIndex;
-        if (this._stickToBottom)
-            firstVisibleIndex = Math.max(this._itemCount - Math.ceil(this._visibleHeight() / this._provider.minimumRowHeight()), 0);
-        else
-            firstVisibleIndex = Math.max(Array.prototype.lowerBound.call(this._cumulativeHeights, this.element.scrollTop + 1), 0);
+        var firstVisibleIndex = Math.max(Array.prototype.lowerBound.call(this._cumulativeHeights, this.element.scrollTop + 1), 0);
         return Math.max(firstVisibleIndex, this._firstActiveIndex);
     },
 
@@ -624,13 +620,15 @@ WebInspector.ViewportControl.prototype = {
      */
     scrollItemIntoView: function(index, makeLast)
     {
-        if (index > this._firstActiveIndex && index < this._lastActiveIndex)
+        var firstVisibleIndex = this.firstVisibleIndex();
+        var lastVisibleIndex = this.lastVisibleIndex();
+        if (index > firstVisibleIndex && index < lastVisibleIndex)
             return;
         if (makeLast)
             this.forceScrollItemToBeLast(index);
-        else if (index <= this._firstActiveIndex)
+        else if (index <= firstVisibleIndex)
             this.forceScrollItemToBeFirst(index);
-        else if (index >= this._lastActiveIndex)
+        else if (index >= lastVisibleIndex)
             this.forceScrollItemToBeLast(index);
     },
 

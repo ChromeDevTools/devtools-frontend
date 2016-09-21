@@ -16,7 +16,6 @@ WebInspector.ConsolePrompt = function()
     this._editor = null;
 
     this.element.tabIndex = 0;
-    this.element.addEventListener("keydown", this._editorKeyDown.bind(this), true);
 
     self.runtime.extension(WebInspector.TextEditorFactory).instance().then(gotFactory.bind(this));
 
@@ -38,6 +37,7 @@ WebInspector.ConsolePrompt = function()
             suggestionsCallback: this._wordsWithPrefix.bind(this),
             captureEnter: true
         });
+        this._editor.widget().element.addEventListener("keydown", this._editorKeyDown.bind(this), true);
         this._editor.widget().show(this.element);
 
         this.setText(this._initialText);

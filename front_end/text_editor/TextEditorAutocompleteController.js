@@ -257,7 +257,7 @@ WebInspector.TextEditorAutocompleteController.prototype = {
                 return;
             }
             if (!this._suggestBox)
-                this._suggestBox = new WebInspector.SuggestBox(this, 6, this._config.captureEnter);
+                this._suggestBox = new WebInspector.SuggestBox(this, 20, this._config.captureEnter);
 
             var oldPrefixRange = this._prefixRange;
             this._prefixRange = prefixRange;

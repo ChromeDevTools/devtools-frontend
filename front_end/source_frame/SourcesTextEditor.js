@@ -38,6 +38,9 @@ WebInspector.SourcesTextEditor = function(delegate)
     this._gutters = ["CodeMirror-linenumbers"];
     this.codeMirror().setOption("gutters", this._gutters.slice());
 
+    this.codeMirror().setOption("electricChars", false);
+    this.codeMirror().setOption("smartIndent", false);
+
     /**
      * @this {WebInspector.SourcesTextEditor}
      */

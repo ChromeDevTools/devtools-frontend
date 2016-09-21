@@ -47,10 +47,11 @@ WebInspector.CodeMirrorTextEditor = function(options)
     this._codeMirror = new window.CodeMirror(this.element, {
         lineNumbers: options.lineNumbers,
         matchBrackets: true,
-        smartIndent: false,
+        smartIndent: true,
         styleSelectedText: true,
-        electricChars: false,
+        electricChars: true,
         styleActiveLine: true,
+        indentUnit: 4,
         lineWrapping: options.lineWrapping
     });
     this._codeMirrorElement = this.element.lastElementChild;
@@ -1267,6 +1268,14 @@ WebInspector.CodeMirrorTextEditor.prototype = {
     get linesCount()
     {
         return this._codeMirror.lineCount();
+    },
+
+    /**
+     * @override
+     */
+    newlineAndIndent: function()
+    {
+        this._codeMirror.execCommand("newlineAndIndent");
     },
 
     /**

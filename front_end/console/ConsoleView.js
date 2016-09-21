@@ -802,7 +802,31 @@ WebInspector.ConsoleView.prototype = {
         var str = this._prompt.text();
         if (!str.length)
             return;
-        this._appendCommand(str, true);
+
+        var target = WebInspector.targetManager.mainTarget();
+        var currentExecutionContext = WebInspector.context.flavor(WebInspector.ExecutionContext);
+        if (!this._prompt.isCaretAtEndOfPrompt() || !target || !currentExecutionContext) {
+            this._appendCommand(str, true);
+            return;
+        }
+        target.runtimeModel.compileScript(str, "", false, currentExecutionContext.id, compileCallback.bind(this));
+
+        /**
+         * @param {!RuntimeAgent.ScriptId=} scriptId
+         * @param {?RuntimeAgent.ExceptionDetails=} exceptionDetails
+         * @this {WebInspector.ConsoleView}
+         */
+        function compileCallback(scriptId, exceptionDetails)
+        {
+            if (str !== this._prompt.text())
+                return;
+            if (exceptionDetails && (exceptionDetails.exception.description === "SyntaxError: Unexpected end of input"
+                || exceptionDetails.exception.description === "SyntaxError: Unterminated template literal")) {
+                this._prompt.newlineAndIndent();
+                return;
+            }
+            this._appendCommand(str, true);
+        }
     },
 
     /**

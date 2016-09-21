@@ -63,6 +63,8 @@ WebInspector.TextEditor.prototype = {
      */
     line: function(lineNumber) { },
 
+    newlineAndIndent: function() { },
+
     /**
      * @param {function(!KeyboardEvent)} handler
      */

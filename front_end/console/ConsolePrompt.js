@@ -37,7 +37,7 @@ WebInspector.ConsolePrompt = function()
             substituteRangeCallback: this._substituteRange.bind(this),
             suggestionsCallback: this._wordsWithPrefix.bind(this),
             captureEnter: true
-        })
+        });
         this._editor.widget().show(this.element);
 
         this.setText(this._initialText);
@@ -45,6 +45,8 @@ WebInspector.ConsolePrompt = function()
         if (this.hasFocus())
             this.focus();
         this.element.tabIndex = -1;
+
+        this._editorSetForTest();
     }
 }
 
@@ -124,6 +126,11 @@ WebInspector.ConsolePrompt.prototype = {
     text: function()
     {
         return this._editor ? this._editor.text() : this._initialText;
+    },
+
+    newlineAndIndent: function()
+    {
+        this._editor.newlineAndIndent();
     },
 
     /**
@@ -252,6 +259,8 @@ WebInspector.ConsolePrompt.prototype = {
             fulfill(words.map(item => ({title:item})).concat(historyWords));
         }
     },
+
+    _editorSetForTest: function() { },
 
     __proto__: WebInspector.Widget.prototype
 }

@@ -252,7 +252,7 @@ WebInspector.InspectorFrontendHostStub.prototype = {
      */
     loadNetworkResource: function(url, headers, streamId, callback)
     {
-        loadResourcePromise(url).then(function(text) {
+        Runtime.loadResourcePromise(url).then(function(text) {
             WebInspector.ResourceLoader.streamWrite(streamId, text);
             callback({statusCode : 200});
         }).catch(function() {

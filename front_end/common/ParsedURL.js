@@ -223,7 +223,7 @@ WebInspector.ParsedURL.completeURL = function(baseURL, href)
             // href starts with "//" which is a full URL with the protocol dropped (use the baseURL protocol).
             return parsedURL.scheme + ":" + path + postfix;
         }  // else absolute path
-        return parsedURL.scheme + "://" + parsedURL.host + (parsedURL.port ? (":" + parsedURL.port) : "") + normalizePath(path) + postfix;
+        return parsedURL.scheme + "://" + parsedURL.host + (parsedURL.port ? (":" + parsedURL.port) : "") + Runtime.normalizePath(path) + postfix;
     }
     return null;
 }

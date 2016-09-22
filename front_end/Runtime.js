@@ -38,11 +38,37 @@ var _loadedScripts = {};
 // once Closure provides standard externs for Map et al.
 for (var k of []) {}
 
+(function() {
+    var baseUrl = self.location ? self.location.origin + self.location.pathname : "";
+    self._importScriptPathPrefix = baseUrl.substring(0, baseUrl.lastIndexOf("/") + 1);
+})();
+
+/**
+ * @constructor
+ * @param {!Array.<!Runtime.ModuleDescriptor>} descriptors
+ */
+function Runtime(descriptors)
+{
+    /** @type {!Array<!Runtime.Module>} */
+    this._modules = [];
+    /** @type {!Object<string, !Runtime.Module>} */
+    this._modulesMap = {};
+    /** @type {!Array<!Runtime.Extension>} */
+    this._extensions = [];
+    /** @type {!Object<string, !function(new:Object)>} */
+    this._cachedTypeClasses = {};
+    /** @type {!Object<string, !Runtime.ModuleDescriptor>} */
+    this._descriptorsMap = {};
+
+    for (var i = 0; i < descriptors.length; ++i)
+        this._registerModule(descriptors[i]);
+}
+
 /**
  * @param {string} url
  * @return {!Promise.<string>}
  */
-function loadResourcePromise(url)
+Runtime.loadResourcePromise = function(url)
 {
     return new Promise(load);
 
@@ -78,7 +104,7 @@ function loadResourcePromise(url)
  * @param {string} path
  * @return {string}
  */
-function normalizePath(path)
+Runtime.normalizePath = function(path)
 {
     if (path.indexOf("..") === -1 && path.indexOf(".") === -1)
         return path;
@@ -110,7 +136,7 @@ function normalizePath(path)
  * @param {string=} base
  * @return {!Promise.<undefined>}
  */
-function loadScriptsPromise(scriptNames, base)
+Runtime._loadScriptsPromise = function(scriptNames, base)
 {
     /** @type {!Array<!Promise<undefined>>} */
     var promises = [];
@@ -126,12 +152,12 @@ function loadScriptsPromise(scriptNames, base)
         var pathIndex = sourceURL.indexOf("/", schemaIndex);
         if (pathIndex === -1)
             pathIndex = sourceURL.length;
-        sourceURL = sourceURL.substring(0, pathIndex) + normalizePath(sourceURL.substring(pathIndex));
+        sourceURL = sourceURL.substring(0, pathIndex) + Runtime.normalizePath(sourceURL.substring(pathIndex));
 
         if (_loadedScripts[sourceURL])
             continue;
         urls.push(sourceURL);
-        promises.push(loadResourcePromise(sourceURL).then(scriptSourceLoaded.bind(null, i), scriptSourceLoaded.bind(null, i, undefined)));
+        promises.push(Runtime.loadResourcePromise(sourceURL).then(scriptSourceLoaded.bind(null, i), scriptSourceLoaded.bind(null, i, undefined)));
     }
     return Promise.all(promises).then(undefined);
 
@@ -165,32 +191,6 @@ function loadScriptsPromise(scriptNames, base)
     }
 }
 
-(function() {
-    var baseUrl = self.location ? self.location.origin + self.location.pathname : "";
-    self._importScriptPathPrefix = baseUrl.substring(0, baseUrl.lastIndexOf("/") + 1);
-})();
-
-/**
- * @constructor
- * @param {!Array.<!Runtime.ModuleDescriptor>} descriptors
- */
-function Runtime(descriptors)
-{
-    /** @type {!Array<!Runtime.Module>} */
-    this._modules = [];
-    /** @type {!Object<string, !Runtime.Module>} */
-    this._modulesMap = {};
-    /** @type {!Array<!Runtime.Extension>} */
-    this._extensions = [];
-    /** @type {!Object<string, !function(new:Object)>} */
-    this._cachedTypeClasses = {};
-    /** @type {!Object<string, !Runtime.ModuleDescriptor>} */
-    this._descriptorsMap = {};
-
-    for (var i = 0; i < descriptors.length; ++i)
-        this._registerModule(descriptors[i]);
-}
-
 /**
  * @type {!Object.<string, string>}
  */
@@ -211,7 +211,7 @@ Runtime.cachedResources = { __proto__: null };
  */
 Runtime.loadResourceIntoCache = function(url, appendSourceURL)
 {
-    return loadResourcePromise(url).then(cacheResource.bind(this, url), cacheResource.bind(this, url, undefined));
+    return Runtime.loadResourcePromise(url).then(cacheResource.bind(this, url), cacheResource.bind(this, url, undefined));
 
     /**
      * @param {string} path
@@ -246,7 +246,7 @@ Runtime.startApplication = function(appName)
     if (applicationDescriptor)
         applicationPromise = Promise.resolve(applicationDescriptor);
     else
-        applicationPromise = loadResourcePromise(appName + ".json").then(JSON.parse.bind(JSON));
+        applicationPromise = Runtime.loadResourcePromise(appName + ".json").then(JSON.parse.bind(JSON));
 
     return applicationPromise.then(parseModuleDescriptors);
 
@@ -266,7 +266,7 @@ Runtime.startApplication = function(appName)
             if (moduleJSON)
                 moduleJSONPromises.push(Promise.resolve(moduleJSON));
             else
-                moduleJSONPromises.push(loadResourcePromise(name + "/module.json").then(JSON.parse.bind(JSON)));
+                moduleJSONPromises.push(Runtime.loadResourcePromise(name + "/module.json").then(JSON.parse.bind(JSON)));
             if (descriptor["type"] === "autostart")
                 coreModuleNames.push(name);
         }
@@ -770,7 +770,7 @@ Runtime.Module.prototype = {
     {
         if (!this._descriptor.scripts || !this._descriptor.scripts.length)
             return Promise.resolve();
-        return loadScriptsPromise(this._descriptor.scripts.map(this._modularizeURL, this), this._remoteBase());
+        return Runtime._loadScriptsPromise(this._descriptor.scripts.map(this._modularizeURL, this), this._remoteBase());
     },
 
     /**
@@ -778,7 +778,7 @@ Runtime.Module.prototype = {
      */
     _modularizeURL: function(resourceName)
     {
-        return normalizePath(this._name + "/" + resourceName);
+        return Runtime.normalizePath(this._name + "/" + resourceName);
     },
 
     /**

@@ -69,7 +69,6 @@ WebInspector.ImageView.prototype = {
         this._container = this.element.createChild("div", "image");
         var imagePreviewElement = this._container.createChild("img", "resource-image-view");
         imagePreviewElement.addEventListener("contextmenu", this._contextMenu.bind(this), true);
-        WebInspector.Resource.populateImageSource(this._url, this._mimeType, this._contentProvider, imagePreviewElement);
 
         this._contentProvider.requestContent().then(onContentAvailable.bind(this));
 
@@ -79,6 +78,10 @@ WebInspector.ImageView.prototype = {
          */
         function onContentAvailable(content)
         {
+            var imageSrc = WebInspector.ContentProvider.contentAsDataURL(content, this._mimeType, true);
+            if (imageSrc === null)
+                imageSrc = this._url;
+            imagePreviewElement.src = imageSrc;
             this._sizeLabel.setText(Number.bytesToString(this._base64ToSize(content)));
             this._dimensionsLabel.setText(WebInspector.UIString("%d × %d", imagePreviewElement.naturalWidth, imagePreviewElement.naturalHeight));
         }

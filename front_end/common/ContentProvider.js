@@ -89,3 +89,19 @@ WebInspector.ContentProvider.performSearchInContent = function(content, query, c
     }
     return result;
 }
+
+/**
+ * @param {?string} content
+ * @param {string} mimeType
+ * @param {boolean} contentEncoded
+ * @param {?string=} charset
+ * @return {?string}
+ */
+WebInspector.ContentProvider.contentAsDataURL = function(content, mimeType, contentEncoded, charset)
+{
+    const maxDataUrlSize = 1024 * 1024;
+    if (content === null || content.length > maxDataUrlSize)
+        return null;
+
+    return "data:" + mimeType + (charset ? ";charset=" + charset : "") + (contentEncoded ? ";base64" : "") + "," + content;
+}

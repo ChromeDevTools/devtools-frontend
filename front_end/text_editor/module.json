@@ -14,7 +14,9 @@
         }
     ],
     "dependencies": [
-        "components"
+        "ui",
+        "platform",
+        "common"
     ],
     "scripts": [
         "../cm/codemirror.js",

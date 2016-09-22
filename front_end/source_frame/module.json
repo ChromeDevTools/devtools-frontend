@@ -16,8 +16,9 @@
         }
     ],
     "dependencies": [
-        "components",
-        "text_editor"
+        "text_editor",
+        "ui",
+        "platform"
     ],
     "scripts": [
         "SourcesTextEditor.js",

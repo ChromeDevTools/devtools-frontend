@@ -1049,7 +1049,19 @@ WebInspector.NetworkRequest.prototype = {
      */
     populateImageSource: function(image)
     {
-        WebInspector.Resource.populateImageSource(this._url, this._mimeType, this, image);
+        /**
+         * @param {?string} content
+         * @this {WebInspector.NetworkRequest}
+         */
+        function onResourceContent(content)
+        {
+            var imageSrc = WebInspector.ContentProvider.contentAsDataURL(content, this._mimeType, true);
+            if (imageSrc === null)
+                imageSrc = this._url;
+            image.src = imageSrc;
+        }
+
+        this.requestContent().then(onResourceContent.bind(this));
     },
 
     /**
@@ -1063,7 +1075,7 @@ WebInspector.NetworkRequest.prototype = {
             content = content.toBase64();
             charset = "utf-8";
         }
-        return WebInspector.Resource.contentAsDataURL(content, this.mimeType, true, charset);
+        return WebInspector.ContentProvider.contentAsDataURL(content, this.mimeType, true, charset);
     },
 
     _innerRequestContent: function()

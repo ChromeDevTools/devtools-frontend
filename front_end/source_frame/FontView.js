@@ -65,7 +65,7 @@ WebInspector.FontView.prototype = {
      */
     _onFontContentLoaded: function(uniqueFontName, content)
     {
-        var url = content ? WebInspector.Resource.contentAsDataURL(content, this._mimeType, true) : this._url;
+        var url = content ? WebInspector.ContentProvider.contentAsDataURL(content, this._mimeType, true) : this._url;
         this.fontStyleElement.textContent = String.sprintf("@font-face { font-family: \"%s\"; src: url(%s); }", uniqueFontName, url);
     },
 

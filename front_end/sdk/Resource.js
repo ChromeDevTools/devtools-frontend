@@ -59,44 +59,6 @@ WebInspector.Resource = function(target, request, url, documentURL, frameId, loa
         this._request.addEventListener(WebInspector.NetworkRequest.Events.FinishedLoading, this._requestFinished, this);
 }
 
-/**
- * @param {?string} content
- * @param {string} mimeType
- * @param {boolean} contentEncoded
- * @param {?string=} charset
- * @return {?string}
- */
-WebInspector.Resource.contentAsDataURL = function(content, mimeType, contentEncoded, charset)
-{
-    const maxDataUrlSize = 1024 * 1024;
-    if (content === null || content.length > maxDataUrlSize)
-        return null;
-
-    return "data:" + mimeType + (charset ? ";charset=" + charset : "") + (contentEncoded ? ";base64" : "") + "," + content;
-}
-
-/**
- * @param {string} url
- * @param {string} mimeType
- * @param {!WebInspector.ContentProvider} contentProvider
- * @param {!Element} image
- */
-WebInspector.Resource.populateImageSource = function(url, mimeType, contentProvider, image)
-{
-    /**
-     * @param {?string} content
-     */
-    function onResourceContent(content)
-    {
-        var imageSrc = WebInspector.Resource.contentAsDataURL(content, mimeType, true);
-        if (imageSrc === null)
-            imageSrc = url;
-        image.src = imageSrc;
-    }
-
-    contentProvider.requestContent().then(onResourceContent);
-}
-
 WebInspector.Resource.prototype = {
     /**
      * @return {?WebInspector.NetworkRequest}
@@ -263,7 +225,19 @@ WebInspector.Resource.prototype = {
      */
     populateImageSource: function(image)
     {
-        WebInspector.Resource.populateImageSource(this._url, this._mimeType, this, image);
+        /**
+         * @param {?string} content
+         * @this {WebInspector.Resource}
+         */
+        function onResourceContent(content)
+        {
+            var imageSrc = WebInspector.ContentProvider.contentAsDataURL(content, this._mimeType, true);
+            if (imageSrc === null)
+                imageSrc = this._url;
+            image.src = imageSrc;
+        }
+
+        this.requestContent().then(onResourceContent.bind(this));
     },
 
     _requestFinished: function()

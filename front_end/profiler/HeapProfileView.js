@@ -372,7 +372,7 @@ WebInspector.HeapFlameChartDataProvider.prototype = {
         var count = nodesCount(this._profile.root);
         /** @type {!Array<!WebInspector.ProfileNode>} */
         var entryNodes = new Array(count);
-        var entryLevels = new Uint8Array(count);
+        var entryLevels = new Uint16Array(count);
         var entryTotalTimes = new Float32Array(count);
         var entryStartTimes = new Float64Array(count);
         var depth = 0;

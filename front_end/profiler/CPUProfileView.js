@@ -419,7 +419,7 @@ WebInspector.CPUFlameChartDataProvider.prototype = {
 
         /** @type {!Array<!WebInspector.CPUProfileNode>} */
         var entryNodes = new Array(entries.length);
-        var entryLevels = new Uint8Array(entries.length);
+        var entryLevels = new Uint16Array(entries.length);
         var entryTotalTimes = new Float32Array(entries.length);
         var entrySelfTimes = new Float32Array(entries.length);
         var entryStartTimes = new Float64Array(entries.length);

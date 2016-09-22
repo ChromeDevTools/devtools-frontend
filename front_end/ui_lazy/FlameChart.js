@@ -154,7 +154,7 @@ WebInspector.FlameChart.GroupStyle;
 
 /**
  * @constructor
- * @param {!Array<number>|!Uint8Array} entryLevels
+ * @param {!Array<number>|!Uint16Array} entryLevels
  * @param {!Array<number>|!Float32Array} entryTotalTimes
  * @param {!Array<number>|!Float64Array} entryStartTimes
  * @param {?Array<!WebInspector.FlameChart.Group>} groups
@@ -1720,7 +1720,7 @@ WebInspector.FlameChart.prototype = {
         var levelCount = this._dataProvider.maxStackDepth();
         var groups = this._rawTimelineData.groups || [];
         this._visibleLevelOffsets = new Uint32Array(levelCount + 1);
-        this._visibleLevels = new Uint8Array(levelCount);
+        this._visibleLevels = new Uint16Array(levelCount);
         this._groupOffsets = new Uint32Array(groups.length + 1);
 
         var groupIndex = -1;

@@ -76,9 +76,9 @@ v8_inspector_path = path.normpath(path.join(path.dirname(devtools_path), os.pard
 devtools_frontend_path = path.join(devtools_path, 'front_end')
 global_externs_file = to_platform_path(path.join(devtools_frontend_path, 'externs.js'))
 protocol_externs_file = path.join(devtools_frontend_path, 'protocol_externs.js')
-injected_script_source_name = path.join(v8_inspector_path, 'InjectedScriptSource.js')
+injected_script_source_name = path.join(v8_inspector_path, 'injected-script-source.js')
 injected_script_externs_file = path.join(v8_inspector_path, 'injected_script_externs.js')
-debugger_script_source_name = path.join(v8_inspector_path, 'DebuggerScript.js')
+debugger_script_source_name = path.join(v8_inspector_path, 'debugger-script.js')
 debugger_script_externs_file = path.join(v8_inspector_path, 'debugger_script_externs.js')
 
 jsmodule_name_prefix = 'jsmodule_'

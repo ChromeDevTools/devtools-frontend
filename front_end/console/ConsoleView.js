@@ -803,13 +803,12 @@ WebInspector.ConsoleView.prototype = {
         if (!str.length)
             return;
 
-        var target = WebInspector.targetManager.mainTarget();
         var currentExecutionContext = WebInspector.context.flavor(WebInspector.ExecutionContext);
-        if (!this._prompt.isCaretAtEndOfPrompt() || !target || !currentExecutionContext) {
+        if (!this._prompt.isCaretAtEndOfPrompt() || !currentExecutionContext) {
             this._appendCommand(str, true);
             return;
         }
-        target.runtimeModel.compileScript(str, "", false, currentExecutionContext.id, compileCallback.bind(this));
+        currentExecutionContext.target().runtimeModel.compileScript(str, "", false, currentExecutionContext.id, compileCallback.bind(this));
 
         /**
          * @param {!RuntimeAgent.ScriptId=} scriptId

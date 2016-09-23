@@ -91,6 +91,7 @@ li.search-match .highlighted-match {
 .tree-outline a {
     text-decoration: none;
     display: block;
+    flex: auto;
 }
 
 li.search-match .search-match-content {

@@ -105,6 +105,10 @@
     flex: auto;
 }
 
+.search-view .search-results > div {
+    flex: auto;
+}
+
 .search-results .empty-view {
     pointer-events: none;
 }

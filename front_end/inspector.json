@@ -29,6 +29,7 @@
         { "name": "cm_modes", "type": "remote" },
         { "name": "settings" },
         { "name": "layers", "condition": "!v8only" },
+        { "name": "layer_viewer", "condition": "!v8only" },
         { "name": "snippets" },
         { "name": "diff" },
         { "name": "sass", "condition": "!v8only" },

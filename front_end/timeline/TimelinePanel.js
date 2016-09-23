@@ -743,7 +743,7 @@ WebInspector.TimelinePanel.prototype = {
         hintText.createChild("br");
         hintText.appendChild(WebInspector.formatLocalized("Then, zoom and pan the timeline with the mousewheel and %s keys.", [navigateNode]));
         this._hideRecordingHelpMessage();
-        this._helpMessageElement = this._searchableView.element.createChild("div", "banner timeline-status-pane");
+        this._helpMessageElement = this._searchableView.element.createChild("div", "full-widget-dimmed-banner timeline-status-pane");
         this._helpMessageElement.appendChild(hintText);
     },
 

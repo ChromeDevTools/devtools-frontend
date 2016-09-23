@@ -35,14 +35,15 @@
  */
 WebInspector.PaintProfilerView = function(showImageCallback)
 {
-    WebInspector.HBox.call(this);
-    this.element.classList.add("paint-profiler-overview", "hbox");
-    this._canvasContainer = this.element.createChild("div", "paint-profiler-canvas-container");
-    this._progressBanner = this.element.createChild("div", "banner hidden");
+    WebInspector.HBox.call(this, true);
+    this.registerRequiredCSS("layer_viewer/paintProfiler.css");
+    this.contentElement.classList.add("paint-profiler-overview");
+    this._canvasContainer = this.contentElement.createChild("div", "paint-profiler-canvas-container");
+    this._progressBanner = this.contentElement.createChild("div", "full-widget-dimmed-banner hidden");
     this._progressBanner.textContent = WebInspector.UIString("Profiling\u2026");
     this._pieChart = new WebInspector.PieChart(55, this._formatPieChartTime.bind(this), true);
     this._pieChart.element.classList.add("paint-profiler-pie-chart");
-    this.element.appendChild(this._pieChart.element);
+    this.contentElement.appendChild(this._pieChart.element);
 
     this._showImageCallback = showImageCallback;
 
@@ -259,7 +260,7 @@ WebInspector.PaintProfilerCommandLogView = function()
 {
     WebInspector.VBox.call(this);
     this.setMinimumSize(100, 25);
-    this.element.classList.add("profiler-log-view");
+    this.element.classList.add("overflow-auto");
 
     this._treeOutline = new TreeOutlineInShadow();
     this.element.appendChild(this._treeOutline.element);

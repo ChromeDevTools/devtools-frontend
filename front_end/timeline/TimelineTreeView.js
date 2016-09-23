@@ -239,7 +239,7 @@ WebInspector.TimelineTreeView.prototype = {
         this._detailsView.detachChildWidgets();
         this._detailsView.element.removeChildren();
         if (!selectedNode || !this._showDetailsForNode(selectedNode)) {
-            var banner = this._detailsView.element.createChild("div", "banner");
+            var banner = this._detailsView.element.createChild("div", "full-widget-dimmed-banner");
             banner.createTextChild(WebInspector.UIString("Select item for details."));
         }
     },

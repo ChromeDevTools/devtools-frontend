@@ -310,6 +310,7 @@ devtools_module_json_files = [
   "front_end/heap_snapshot_worker/module.json",
   "front_end/host/module.json",
   "front_end/layers/module.json",
+  "front_end/layer_viewer/module.json",
   "front_end/main/module.json",
   "front_end/network/module.json",
   "front_end/platform/module.json",
@@ -688,18 +689,24 @@ devtools_timeline_model_js_files = [
   "front_end/timeline_model/TimelineModel.js",
   "front_end/timeline_model/TimelineProfileTree.js",
 ]
+devtools_layer_viewer_js_files = [
+  "front_end/layer_viewer/LayerDetailsView.js",
+  "front_end/layer_viewer/LayerTreeOutline.js",
+  "front_end/layer_viewer/LayerViewHost.js",
+  "front_end/layer_viewer/Layers3DView.js",
+  "front_end/layer_viewer/PaintProfilerView.js",
+  "front_end/layer_viewer/TransformController.js",
+  "front_end/layer_viewer/layerDetailsView.css",
+  "front_end/layer_viewer/layers3DView.css",
+  "front_end/layer_viewer/paintProfiler.css",
+]
 devtools_timeline_js_files = [
   "front_end/timeline/invalidationsTree.css",
   "front_end/timeline/timelineFlamechartPopover.css",
   "front_end/timeline/timelinePanel.css",
   "front_end/timeline/timelineStatusDialog.css",
   "front_end/timeline/CountersGraph.js",
-  "front_end/timeline/LayerDetailsView.js",
-  "front_end/timeline/LayerTreeOutline.js",
-  "front_end/timeline/LayerViewHost.js",
-  "front_end/timeline/Layers3DView.js",
   "front_end/timeline/MemoryCountersGraph.js",
-  "front_end/timeline/PaintProfilerView.js",
   "front_end/timeline/TimelineController.js",
   "front_end/timeline/TimelineEventOverview.js",
   "front_end/timeline/TimelineFlameChart.js",
@@ -709,7 +716,6 @@ devtools_timeline_js_files = [
   "front_end/timeline/TimelinePanel.js",
   "front_end/timeline/TimelineTreeView.js",
   "front_end/timeline/TimelineUIUtils.js",
-  "front_end/timeline/TransformController.js",
 ]
 devtools_ui_lazy_js_files = [
   "front_end/ui_lazy/dataGrid.css",
@@ -850,7 +856,8 @@ devtools_modules_js_files =
     devtools_snippets_js_files + devtools_source_frame_js_files +
     devtools_sources_js_files + devtools_temp_storage_shared_worker_js_files +
     devtools_text_editor_js_files + devtools_timeline_model_js_files +
-    devtools_timeline_js_files + devtools_ui_lazy_js_files
+    devtools_timeline_js_files + devtools_ui_lazy_js_files +
+    devtools_layer_viewer_js_files
 
 all_devtools_files = devtools_cm_css_files + devtools_cm_js_files +
                      devtools_core_files + devtools_module_json_files +

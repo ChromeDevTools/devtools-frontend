@@ -114,15 +114,12 @@
     "dependencies": [
         "components",
         "components_lazy",
+        "layer_viewer",
         "timeline_model",
         "ui_lazy"
     ],
     "scripts": [
         "CountersGraph.js",
-        "LayerDetailsView.js",
-        "LayerTreeOutline.js",
-        "LayerViewHost.js",
-        "Layers3DView.js",
         "MemoryCountersGraph.js",
         "TimelineController.js",
         "TimelineLoader.js",
@@ -132,8 +129,6 @@
         "TimelineUIUtils.js",
         "TimelineLayersView.js",
         "TimelinePaintProfilerView.js",
-        "TransformController.js",
-        "PaintProfilerView.js",
         "TimelinePanel.js"
     ],
     "resources": [

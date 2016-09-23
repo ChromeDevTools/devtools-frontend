@@ -41,7 +41,7 @@ WebInspector.LayerTreeOutline = function(layerViewHost)
     this._layerViewHost.registerView(this);
 
     this._treeOutline = new TreeOutlineInShadow();
-    this._treeOutline.element.classList.add("layer-tree");
+    this._treeOutline.element.classList.add("layer-tree", "overflow-auto");
     this._treeOutline.element.addEventListener("mousemove", this._onMouseMove.bind(this), false);
     this._treeOutline.element.addEventListener("mouseout", this._onMouseMove.bind(this), false);
     this._treeOutline.element.addEventListener("contextmenu", this._onContextMenu.bind(this), true);

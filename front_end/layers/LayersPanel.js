@@ -36,7 +36,6 @@
 WebInspector.LayersPanel = function()
 {
     WebInspector.PanelWithSidebar.call(this, "layers", 225);
-    this.registerRequiredCSS("timeline/timelinePanel.css");
 
     /** @type {?WebInspector.LayerTreeModel} */
     this._model = null;

@@ -36,20 +36,21 @@
  */
 WebInspector.Layers3DView = function(layerViewHost)
 {
-    WebInspector.VBox.call(this);
-    this.element.classList.add("layers-3d-view");
+    WebInspector.VBox.call(this, true);
+    this.registerRequiredCSS("layer_viewer/layers3DView.css");
+    this.contentElement.classList.add("layers-3d-view");
     this._failBanner = new WebInspector.VBox();
-    this._failBanner.element.classList.add("banner");
+    this._failBanner.element.classList.add("full-widget-dimmed-banner");
     this._failBanner.element.createTextChild(WebInspector.UIString("Layer information is not yet available."));
 
     this._layerViewHost = layerViewHost;
     this._layerViewHost.registerView(this);
 
-    this._transformController = new WebInspector.TransformController(this.element);
+    this._transformController = new WebInspector.TransformController(this.contentElement);
     this._transformController.addEventListener(WebInspector.TransformController.Events.TransformChanged, this._update, this);
     this._initToolbar();
 
-    this._canvasElement = this.element.createChild("canvas");
+    this._canvasElement = this.contentElement.createChild("canvas");
     this._canvasElement.tabIndex = 0;
     this._canvasElement.addEventListener("dblclick", this._onDoubleClick.bind(this), false);
     this._canvasElement.addEventListener("mousedown", this._onMouseDown.bind(this), false);
@@ -646,14 +647,14 @@ WebInspector.Layers3DView.prototype = {
             return;
         }
         if (!this._layerTree || !this._layerTree.root()) {
-            this._failBanner.show(this.element);
+            this._failBanner.show(this.contentElement);
             return;
         }
         var gl = this._initGLIfNecessary();
         if (!gl) {
             this._failBanner.element.removeChildren();
             this._failBanner.element.appendChild(this._webglDisabledBanner());
-            this._failBanner.show(this.element);
+            this._failBanner.show(this.contentElement);
             return;
         }
         this._failBanner.detach();
@@ -677,7 +678,7 @@ WebInspector.Layers3DView.prototype = {
      */
     _webglDisabledBanner: function()
     {
-        var fragment = this.element.ownerDocument.createDocumentFragment();
+        var fragment = this.contentElement.ownerDocument.createDocumentFragment();
         fragment.createChild("div").textContent = WebInspector.UIString("Can't display layers,");
         fragment.createChild("div").textContent = WebInspector.UIString("WebGL support is disabled in your browser.");
         fragment.appendChild(WebInspector.formatLocalized("Check %s for possible reasons.", [WebInspector.linkifyURLAsNode("about:gpu", undefined, undefined, true)]));
@@ -736,7 +737,7 @@ WebInspector.Layers3DView.prototype = {
     _initToolbar: function()
     {
         this._panelToolbar = this._transformController.toolbar();
-        this.element.appendChild(this._panelToolbar.element);
+        this.contentElement.appendChild(this._panelToolbar.element);
         this._showSlowScrollRectsSetting = this._createVisibilitySetting("Slow scroll rects", "frameViewerShowSlowScrollRects", true, this._panelToolbar);
         this._showPaintsSetting = this._createVisibilitySetting("Paints", "frameViewerShowPaints", true, this._panelToolbar);
         WebInspector.moduleSetting("frameViewerHideChromeWindow").addChangeListener(this._update, this);

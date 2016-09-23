@@ -36,8 +36,8 @@
  */
 WebInspector.LayerDetailsView = function(layerViewHost)
 {
-    WebInspector.Widget.call(this);
-    this.element.classList.add("layer-details-view");
+    WebInspector.Widget.call(this, true);
+    this.registerRequiredCSS("layer_viewer/layerDetailsView.css");
     this._layerViewHost = layerViewHost;
     this._layerViewHost.registerView(this);
     this._emptyWidget = new WebInspector.EmptyWidget(WebInspector.UIString("Select a layer to see its details"));
@@ -158,12 +158,12 @@ WebInspector.LayerDetailsView.prototype = {
         if (!layer) {
             this._tableElement.remove();
             this._paintProfilerButton.remove();
-            this._emptyWidget.show(this.element);
+            this._emptyWidget.show(this.contentElement);
             return;
         }
         this._emptyWidget.detach();
-        this.element.appendChild(this._tableElement);
-        this.element.appendChild(this._paintProfilerButton);
+        this.contentElement.appendChild(this._tableElement);
+        this.contentElement.appendChild(this._paintProfilerButton);
         this._sizeCell.textContent = WebInspector.UIString("%d × %d (at %d,%d)", layer.width(), layer.height(), layer.offsetX(), layer.offsetY());
         this._paintCountCell.parentElement.classList.toggle("hidden", !layer.paintCount());
         this._paintCountCell.textContent = layer.paintCount();
@@ -177,14 +177,14 @@ WebInspector.LayerDetailsView.prototype = {
 
     _buildContent: function()
     {
-        this._tableElement = this.element.createChild("table");
+        this._tableElement = this.contentElement.createChild("table");
         this._tbodyElement = this._tableElement.createChild("tbody");
         this._sizeCell = this._createRow(WebInspector.UIString("Size"));
         this._compositingReasonsCell = this._createRow(WebInspector.UIString("Compositing Reasons"));
         this._memoryEstimateCell = this._createRow(WebInspector.UIString("Memory estimate"));
         this._paintCountCell = this._createRow(WebInspector.UIString("Paint count"));
         this._scrollRectsCell = this._createRow(WebInspector.UIString("Slow scroll regions"));
-        this._paintProfilerButton = this.element.createChild("a", "hidden link");
+        this._paintProfilerButton = this.contentElement.createChild("a", "hidden link");
         this._paintProfilerButton.textContent = WebInspector.UIString("Paint Profiler");
         this._paintProfilerButton.addEventListener("click", this._onPaintProfilerButtonClicked.bind(this));
     },

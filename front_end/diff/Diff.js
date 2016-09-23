@@ -17,16 +17,31 @@ WebInspector.Diff = {
     /**
      * @param {!Array.<string>} lines1
      * @param {!Array.<string>} lines2
-     * @return {!Array.<!{0: number, 1: string}>}
+     * @return {!Array.<!{0: number, 1: !Array.<string>}>}
      */
     lineDiff: function(lines1, lines2)
     {
+        /** @type {!Map.<string, string>} */
         var lineToChar = new Map();
+        /** @type {!Map.<string, string>} */
+        var charToLine = new Map();
         var charCode = 33;
         var text1 = encode(lines1);
         var text2 = encode(lines2);
 
-        return WebInspector.Diff.charDiff(text1, text2);
+        var diff = WebInspector.Diff.charDiff(text1, text2);
+        var lineDiff = [];
+        for (var i = 0; i < diff.length; i++) {
+            var lines = [];
+            for (var j = 0; j < diff[i][1].length; j++)
+                lines.push(charToLine.get(diff[i][1][j]));
+
+            lineDiff.push({
+                0: diff[i][0],
+                1: lines
+            });
+        }
+        return lineDiff;
 
         /**
          * @param {!Array.<string>} lines
@@ -41,6 +56,7 @@ WebInspector.Diff = {
                 if (!character) {
                     character = String.fromCharCode(charCode++);
                     lineToChar.set(line, character);
+                    charToLine.set(character, line);
                 }
                 text += character;
             }
@@ -49,7 +65,7 @@ WebInspector.Diff = {
     },
 
     /**
-     * @param {!Array.<!{0: number, 1: string}>} diff
+     * @param {!Array.<!{0: number, 1: !Array.<string>}>} diff
      * @return {!Array<!Array<number>>}
      */
     convertToEditDiff: function(diff)

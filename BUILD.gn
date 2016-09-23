@@ -287,6 +287,7 @@ devtools_main_js_files = [
   "front_end/main/Connections.js",
   "front_end/main/Main.js",
   "front_end/main/OverlayController.js",
+  "front_end/main/RemoteLocationManager.js",
   "front_end/main/RenderingOptions.js",
   "front_end/main/SimpleApp.js",
 ]

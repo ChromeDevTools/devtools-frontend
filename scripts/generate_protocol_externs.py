@@ -47,6 +47,7 @@ type_traits = {
 promisified_domains = {
     "Accessibility",
     "Animation",
+    "Browser",
     "CSS",
     "Emulation",
     "Profiler"

@@ -90,6 +90,7 @@ WebInspector.Main.prototype = {
         Runtime.experiments.register("layoutEditor", "Layout editor", true);
         Runtime.experiments.register("inspectTooltip", "Dark inspect element tooltip");
         Runtime.experiments.register("liveSASS", "Live SASS");
+        Runtime.experiments.register("nodeDebugging", "Node debugging", true);
         Runtime.experiments.register("privateScriptInspection", "Private script inspection");
         Runtime.experiments.register("requestBlocking", "Request blocking", true);
         Runtime.experiments.register("resolveVariableNames", "Resolve variable names");
@@ -316,12 +317,17 @@ WebInspector.Main.prototype = {
         InspectorFrontendHost.readyForTest();
 
         // Asynchronously run the extensions.
-        setTimeout(lateInitialization, 0);
+        setTimeout(lateInitialization.bind(this), 0);
 
+        /**
+         * @this {WebInspector.Main}
+         */
         function lateInitialization()
         {
             console.timeStamp("Main.lateInitialization");
             WebInspector.extensionServer.initializeExtensions();
+            if (Runtime.experiments.isEnabled("nodeDebugging"))
+                new WebInspector.RemoteLocationManager(this._mainTarget);
         }
     },
 

@@ -1276,13 +1276,13 @@ WebInspector.ConsoleCommand.prototype = {
      */
     contentElement: function()
     {
-        if (!this._element) {
-            this._element = createElementWithClass("div", "console-user-command");
-            this._element.message = this;
+        if (!this._contentElement) {
+            this._contentElement = createElementWithClass("div", "console-user-command");
+            this._contentElement.message = this;
 
             this._formattedCommand = createElementWithClass("span", "console-message-text source-code");
             this._formattedCommand.textContent = this.text.replaceControlCharacters();
-            this._element.appendChild(this._formattedCommand);
+            this._contentElement.appendChild(this._formattedCommand);
 
             if (this._formattedCommand.textContent.length < WebInspector.ConsoleCommand.MaxLengthToIgnoreHighlighter) {
                 var javascriptSyntaxHighlighter = new WebInspector.DOMSyntaxHighlighter("text/javascript", true);
@@ -1291,7 +1291,7 @@ WebInspector.ConsoleCommand.prototype = {
                 this._updateSearch();
             }
         }
-        return this._element;
+        return this._contentElement;
     },
 
     _updateSearch: function()

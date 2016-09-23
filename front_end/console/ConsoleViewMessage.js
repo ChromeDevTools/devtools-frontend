@@ -947,20 +947,20 @@ WebInspector.ConsoleViewMessage.prototype = {
      */
     contentElement: function()
     {
-        if (this._element)
-            return this._element;
+        if (this._contentElement)
+            return this._contentElement;
 
-        var element = createElementWithClass("div", "console-message");
-        this._element = element;
+        var contentElement = createElementWithClass("div", "console-message");
+        this._contentElement = contentElement;
 
         if (this._message.type === WebInspector.ConsoleMessage.MessageType.StartGroup || this._message.type === WebInspector.ConsoleMessage.MessageType.StartGroupCollapsed)
-            element.classList.add("console-group-title");
+            contentElement.classList.add("console-group-title");
 
-        element.appendChild(this.formattedMessage());
+        contentElement.appendChild(this.formattedMessage());
 
         this.updateTimestamp(WebInspector.moduleSetting("consoleTimestampsEnabled").get());
 
-        return this._element;
+        return this._contentElement;
     },
 
     /**
@@ -968,50 +968,50 @@ WebInspector.ConsoleViewMessage.prototype = {
      */
     toMessageElement: function()
     {
-        if (this._wrapperElement)
-            return this._wrapperElement;
+        if (this._element)
+            return this._element;
 
-        this._wrapperElement = createElement("div");
+        this._element = createElement("div");
         this.updateMessageElement();
-        return this._wrapperElement;
+        return this._element;
     },
 
     updateMessageElement: function()
     {
-        if (!this._wrapperElement)
+        if (!this._element)
             return;
 
-        this._wrapperElement.className = "console-message-wrapper";
-        this._wrapperElement.removeChildren();
+        this._element.className = "console-message-wrapper";
+        this._element.removeChildren();
 
         this._nestingLevelMarkers = [];
         for (var i = 0; i < this._nestingLevel; ++i)
-            this._nestingLevelMarkers.push(this._wrapperElement.createChild("div", "nesting-level-marker"));
+            this._nestingLevelMarkers.push(this._element.createChild("div", "nesting-level-marker"));
         this._updateCloseGroupDecorations();
-        this._wrapperElement.message = this;
+        this._element.message = this;
 
         switch (this._message.level) {
         case WebInspector.ConsoleMessage.MessageLevel.Log:
-            this._wrapperElement.classList.add("console-log-level");
+            this._element.classList.add("console-log-level");
             break;
         case WebInspector.ConsoleMessage.MessageLevel.Debug:
-            this._wrapperElement.classList.add("console-debug-level");
+            this._element.classList.add("console-debug-level");
             break;
         case WebInspector.ConsoleMessage.MessageLevel.Warning:
-            this._wrapperElement.classList.add("console-warning-level");
+            this._element.classList.add("console-warning-level");
             break;
         case WebInspector.ConsoleMessage.MessageLevel.Error:
-            this._wrapperElement.classList.add("console-error-level");
+            this._element.classList.add("console-error-level");
             break;
         case WebInspector.ConsoleMessage.MessageLevel.RevokedError:
-            this._wrapperElement.classList.add("console-revokedError-level");
+            this._element.classList.add("console-revokedError-level");
             break;
         case WebInspector.ConsoleMessage.MessageLevel.Info:
-            this._wrapperElement.classList.add("console-info-level");
+            this._element.classList.add("console-info-level");
             break;
         }
 
-        this._wrapperElement.appendChild(this.contentElement());
+        this._element.appendChild(this.contentElement());
         if (this._repeatCount > 1)
             this._showRepeatCountElement();
     },
@@ -1042,7 +1042,7 @@ WebInspector.ConsoleViewMessage.prototype = {
 
     _showRepeatCountElement: function()
     {
-        if (!this._element)
+        if (!this._contentElement)
             return;
 
         if (!this._repeatCountElement) {
@@ -1060,8 +1060,8 @@ WebInspector.ConsoleViewMessage.prototype = {
             default:
                 this._repeatCountElement.type = "info";
             }
-            this._wrapperElement.insertBefore(this._repeatCountElement, this._element);
-            this._element.classList.add("repeated-message");
+            this._element.insertBefore(this._repeatCountElement, this._contentElement);
+            this._contentElement.classList.add("repeated-message");
         }
         this._repeatCountElement.textContent = this._repeatCount;
     },
@@ -1230,8 +1230,8 @@ WebInspector.ConsoleGroupViewMessage.prototype = {
     setCollapsed: function(collapsed)
     {
         this._collapsed = collapsed;
-        if (this._wrapperElement)
-            this._wrapperElement.classList.toggle("collapsed", this._collapsed);
+        if (this._element)
+            this._element.classList.toggle("collapsed", this._collapsed);
     },
 
     /**
@@ -1248,11 +1248,11 @@ WebInspector.ConsoleGroupViewMessage.prototype = {
      */
     toMessageElement: function()
     {
-        if (!this._wrapperElement) {
+        if (!this._element) {
             WebInspector.ConsoleViewMessage.prototype.toMessageElement.call(this);
-            this._wrapperElement.classList.toggle("collapsed", this._collapsed);
+            this._element.classList.toggle("collapsed", this._collapsed);
         }
-        return this._wrapperElement;
+        return this._element;
     },
 
     __proto__: WebInspector.ConsoleViewMessage.prototype

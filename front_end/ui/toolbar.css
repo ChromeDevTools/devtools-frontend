@@ -490,11 +490,11 @@ input.toolbar-item.hover {
 }
 
 .toolbar-state-left-show .sidebar-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -168px -76px;
+    -webkit-mask-position: -160px -72px;
 }
 
 .toolbar-state-left-hide .sidebar-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -199px -76px;
+    -webkit-mask-position: -192px -72px;
 }
 
 .toolbar-state-right-show .sidebar-toolbar-item.toolbar-glyph {

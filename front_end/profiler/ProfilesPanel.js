@@ -448,7 +448,6 @@ WebInspector.ProfilesPanel = function()
     this._sidebarTree = new TreeOutlineInShadow();
     this._sidebarTree.registerRequiredCSS("profiler/profilesSidebarTree.css");
     this.panelSidebarElement().appendChild(this._sidebarTree.element);
-    this.setDefaultFocusedElement(this._sidebarTree.element);
 
     this._sidebarTree.appendChild(this.profilesItemTreeElement);
 
@@ -913,6 +912,14 @@ WebInspector.ProfilesPanel.prototype = {
     wasShown: function()
     {
         WebInspector.context.setFlavor(WebInspector.ProfilesPanel, this);
+    },
+
+    /**
+     * @override
+     */
+    focus: function()
+    {
+        this._sidebarTree.focus();
     },
 
     willHide: function()

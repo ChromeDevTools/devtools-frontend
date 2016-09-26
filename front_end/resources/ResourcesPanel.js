@@ -45,7 +45,6 @@ WebInspector.ResourcesPanel = function()
     this._sidebarTree.registerRequiredCSS("resources/resourcesSidebar.css");
     this._sidebarTree.element.classList.add("filter-all");
     this.panelSidebarElement().appendChild(this._sidebarTree.element);
-    this.setDefaultFocusedElement(this._sidebarTree.element);
 
     this._applicationTreeElement = this._addSidebarSection(WebInspector.UIString("Application"));
     this._manifestTreeElement = new WebInspector.AppManifestTreeElement(this);
@@ -160,6 +159,14 @@ WebInspector.ResourcesPanel.prototype = {
         this._databaseModel.removeEventListener(WebInspector.DatabaseModel.Events.DatabasesRemoved, this._resetWebSQL, this);
 
         this._resetWithFrames();
+    },
+
+    /**
+     * @override
+     */
+    focus: function()
+    {
+        this._sidebarTree.focus();
     },
 
     _initialize: function()

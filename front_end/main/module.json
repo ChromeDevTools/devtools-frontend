@@ -353,7 +353,8 @@
         "extensions",
         "host",
         "platform",
-        "sdk"
+        "sdk",
+        "persistence"
     ],
     "scripts": [
         "RenderingOptions.js",

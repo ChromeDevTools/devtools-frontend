@@ -61,6 +61,9 @@ WebInspector.TabbedEditorContainer = function(delegate, setting, placeholderText
     this._tabbedPane.addEventListener(WebInspector.TabbedPane.Events.TabClosed, this._tabClosed, this);
     this._tabbedPane.addEventListener(WebInspector.TabbedPane.Events.TabSelected, this._tabSelected, this);
 
+    WebInspector.persistence.addEventListener(WebInspector.Persistence.Events.BindingCreated, this._onBindingCreated, this);
+    WebInspector.persistence.addEventListener(WebInspector.Persistence.Events.BindingRemoved, this._onBindingRemoved, this);
+
     this._tabIds = new Map();
     this._files = {};
 
@@ -79,6 +82,42 @@ WebInspector.TabbedEditorContainer._tabId = 0;
 WebInspector.TabbedEditorContainer.maximalPreviouslyViewedFilesCount = 30;
 
 WebInspector.TabbedEditorContainer.prototype = {
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _onBindingCreated: function(event)
+    {
+        var binding = /** @type {!WebInspector.PersistenceBinding} */(event.data);
+        var fileSystemTabId = this._tabIds.get(binding.fileSystem);
+        if (!fileSystemTabId)
+            return;
+
+        var isSelected = this._currentFile === binding.fileSystem;
+        var tabIndex = this._tabbedPane.tabIndex(fileSystemTabId);
+        this._closeTabs([fileSystemTabId]);
+        var networkTabId = this._tabIds.get(binding.network);
+        if (networkTabId) {
+            if (isSelected)
+                this._tabbedPane.selectTab(networkTabId, false);
+            return;
+        }
+        var tabId = this._appendFileTab(binding.network, false, tabIndex);
+        if (isSelected)
+            this._tabbedPane.selectTab(tabId, false);
+    },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _onBindingRemoved: function(event)
+    {
+        var binding = /** @type {!WebInspector.PersistenceBinding} */(event.data);
+        var networkTabId = this._tabIds.get(binding.network);
+        if (!networkTabId)
+            return;
+        this._appendFileTab(binding.fileSystem, false);
+    },
+
     /**
      * @return {!WebInspector.Widget}
      */
@@ -215,6 +254,8 @@ WebInspector.TabbedEditorContainer.prototype = {
      */
     _innerShowFile: function(uiSourceCode, userGesture)
     {
+        var binding = WebInspector.persistence.binding(uiSourceCode);
+        uiSourceCode = binding ? binding.network : uiSourceCode;
         if (this._currentFile === uiSourceCode)
             return;
 
@@ -248,7 +289,7 @@ WebInspector.TabbedEditorContainer.prototype = {
     {
         var maxDisplayNameLength = 30;
         var title = uiSourceCode.displayName(true).trimMiddle(maxDisplayNameLength);
-        if (uiSourceCode.isDirty() || uiSourceCode.hasUnsavedCommittedChanges())
+        if (uiSourceCode.isDirty() || WebInspector.persistence.hasUnsavedCommittedChanges(uiSourceCode))
             title += "*";
         return title;
     },
@@ -403,9 +444,10 @@ WebInspector.TabbedEditorContainer.prototype = {
     /**
      * @param {!WebInspector.UISourceCode} uiSourceCode
      * @param {boolean=} userGesture
+     * @param {number=} index
      * @return {string}
      */
-    _appendFileTab: function(uiSourceCode, userGesture)
+    _appendFileTab: function(uiSourceCode, userGesture, index)
     {
         var view = this._delegate.viewForFile(uiSourceCode);
         var sourceFrame = view instanceof WebInspector.SourceFrame ? /** @type {!WebInspector.SourceFrame} */ (view) : null;
@@ -423,7 +465,7 @@ WebInspector.TabbedEditorContainer.prototype = {
         if (sourceFrame && savedScrollLineNumber)
             sourceFrame.scrollToLine(savedScrollLineNumber);
 
-        this._tabbedPane.appendTab(tabId, title, view, tooltip, userGesture);
+        this._tabbedPane.appendTab(tabId, title, view, tooltip, userGesture, undefined, index);
 
         this._updateFileTitle(uiSourceCode);
         this._addUISourceCodeListeners(uiSourceCode);
@@ -496,7 +538,7 @@ WebInspector.TabbedEditorContainer.prototype = {
         if (tabId) {
             var title = this._titleForFile(uiSourceCode);
             this._tabbedPane.changeTabTitle(tabId, title);
-            if (uiSourceCode.hasUnsavedCommittedChanges())
+            if (WebInspector.persistence.hasUnsavedCommittedChanges(uiSourceCode))
                 this._tabbedPane.setTabIcon(tabId, "warning-icon", WebInspector.UIString("Changes to this file were not saved to file system."));
             else
                 this._tabbedPane.setTabIcon(tabId, "");

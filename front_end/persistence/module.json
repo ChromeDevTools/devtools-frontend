@@ -1,0 +1,6 @@
+{
+    "dependencies": ["bindings", "workspace"],
+    "scripts": [
+        "Persistence.js"
+    ]
+}

@@ -22,6 +22,9 @@ WebInspector.FilteredUISourceCodeListDelegate = function(defaultScores, history)
 }
 
 WebInspector.FilteredUISourceCodeListDelegate.prototype = {
+    /**
+     * @param {!WebInspector.Event} event
+     */
     _projectRemoved: function(event)
     {
         var project = /** @type {!WebInspector.Project} */ (event.data);
@@ -40,8 +43,19 @@ WebInspector.FilteredUISourceCodeListDelegate.prototype = {
         for (var i = 0; i < projects.length; ++i) {
             if (skipProject && projects[i] === skipProject)
                 continue;
-            this._uiSourceCodes = this._uiSourceCodes.concat(projects[i].uiSourceCodes());
+            var uiSourceCodes = projects[i].uiSourceCodes().filter(this._filterUISourceCode.bind(this));
+            this._uiSourceCodes = this._uiSourceCodes.concat(uiSourceCodes);
         }
+    },
+
+    /**
+     * @param {!WebInspector.UISourceCode} uiSourceCode
+     * @return {boolean}
+     */
+    _filterUISourceCode: function(uiSourceCode)
+    {
+        var binding = WebInspector.persistence.binding(uiSourceCode);
+        return !binding || binding.network === uiSourceCode;
     },
 
     /**
@@ -196,7 +210,7 @@ WebInspector.FilteredUISourceCodeListDelegate.prototype = {
     _uiSourceCodeAdded: function(event)
     {
         var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data);
-        if (!this.filterProject(uiSourceCode.project()))
+        if (!this._filterUISourceCode(uiSourceCode) || !this.filterProject(uiSourceCode.project()))
             return;
         this._uiSourceCodes.push(uiSourceCode);
         this.refresh();

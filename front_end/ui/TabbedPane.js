@@ -94,6 +94,15 @@ WebInspector.TabbedPane.prototype = {
     },
 
     /**
+     * @param {string} tabId
+     * @return {number}
+     */
+    tabIndex: function(tabId)
+    {
+        return this._tabs.findIndex(tab => tab.id === tabId);
+    },
+
+    /**
      * @return {!Array.<!WebInspector.Widget>}
      */
     tabViews: function()

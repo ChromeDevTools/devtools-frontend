@@ -74,7 +74,8 @@ WebInspector.OpenResourceDialog.prototype = {
  */
 WebInspector.OpenResourceDialog.show = function(sourcesView, query, defaultScores, history)
 {
-    var filteredItemSelectionDialog = new WebInspector.FilteredListWidget(new WebInspector.OpenResourceDialog(sourcesView, defaultScores, history));
+    WebInspector.OpenResourceDialog._instanceForTest = new WebInspector.OpenResourceDialog(sourcesView, defaultScores, history);
+    var filteredItemSelectionDialog = new WebInspector.FilteredListWidget(WebInspector.OpenResourceDialog._instanceForTest);
     filteredItemSelectionDialog.showAsDialog();
     filteredItemSelectionDialog.setQuery(query);
 }

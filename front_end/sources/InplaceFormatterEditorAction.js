@@ -70,6 +70,8 @@ WebInspector.InplaceFormatterEditorAction.prototype = {
             return false;
         if (uiSourceCode.project().type() === WebInspector.projectTypes.FileSystem)
             return true;
+        if (WebInspector.persistence.binding(uiSourceCode))
+            return true;
         return uiSourceCode.contentType().isStyleSheet()
             || uiSourceCode.project().type() === WebInspector.projectTypes.Snippets;
     },

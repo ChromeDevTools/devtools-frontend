@@ -53,6 +53,8 @@ WebInspector.UISourceCodeFrame = function(uiSourceCode)
     this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.MessageRemoved, this._onMessageRemoved, this);
     this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.LineDecorationAdded, this._onLineDecorationAdded, this);
     this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.LineDecorationRemoved, this._onLineDecorationRemoved, this);
+    WebInspector.persistence.addEventListener(WebInspector.Persistence.Events.BindingCreated, this._onBindingChanged, this);
+    WebInspector.persistence.addEventListener(WebInspector.Persistence.Events.BindingRemoved, this._onBindingChanged, this);
     this._updateStyle();
 
     this._errorPopoverHelper = new WebInspector.PopoverHelper(this.element, this._getErrorAnchor.bind(this), this._showErrorPopover.bind(this));
@@ -121,6 +123,8 @@ WebInspector.UISourceCodeFrame.prototype = {
      */
     canEditSource: function()
     {
+        if (WebInspector.persistence.binding(this._uiSourceCode))
+            return true;
         var projectType = this._uiSourceCode.project().type();
         if (projectType === WebInspector.projectTypes.Service || projectType === WebInspector.projectTypes.Debugger || projectType === WebInspector.projectTypes.Formatter)
             return false;
@@ -209,9 +213,20 @@ WebInspector.UISourceCodeFrame.prototype = {
         this._updateStyle();
     },
 
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _onBindingChanged: function(event)
+    {
+        var binding = /** @type {!WebInspector.PersistenceBinding} */(event.data);
+        if (binding.network === this._uiSourceCode || binding.fileSystem === this._uiSourceCode)
+            this._updateStyle();
+    },
+
     _updateStyle: function()
     {
-        this.element.classList.toggle("source-frame-unsaved-committed-changes", this._uiSourceCode.hasUnsavedCommittedChanges());
+        this.element.classList.toggle("source-frame-unsaved-committed-changes", WebInspector.persistence.hasUnsavedCommittedChanges(this._uiSourceCode));
+        this._textEditor.setReadOnly(!this.canEditSource());
     },
 
     onUISourceCodeContentChanged: function()

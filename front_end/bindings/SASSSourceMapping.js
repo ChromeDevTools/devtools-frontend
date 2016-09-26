@@ -55,10 +55,8 @@ WebInspector.SASSSourceMapping.prototype = {
         var header = /** @type {!WebInspector.CSSStyleSheetHeader} */ (event.data);
         var sourceMap = this._cssModel.sourceMapForHeader(header);
         for (var sassURL of sourceMap.sourceURLs()) {
-            if (!this._networkMapping.hasMappingForNetworkURL(sassURL)) {
-                var contentProvider = sourceMap.sourceContentProvider(sassURL, WebInspector.resourceTypes.SourceMapStyleSheet);
-                this._networkProject.addFile(contentProvider, WebInspector.ResourceTreeFrame.fromStyleSheet(header));
-            }
+            var contentProvider = sourceMap.sourceContentProvider(sassURL, WebInspector.resourceTypes.SourceMapStyleSheet);
+            this._networkProject.addFile(contentProvider, WebInspector.ResourceTreeFrame.fromStyleSheet(header));
         }
         WebInspector.cssWorkspaceBinding.updateLocations(header);
     },

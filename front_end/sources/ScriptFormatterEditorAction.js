@@ -214,6 +214,8 @@ WebInspector.ScriptFormatterEditorAction.prototype = {
     {
         if (!uiSourceCode)
             return false;
+        if (WebInspector.persistence.binding(uiSourceCode))
+            return false;
         var supportedProjectTypes = [WebInspector.projectTypes.Network, WebInspector.projectTypes.Debugger, WebInspector.projectTypes.ContentScripts];
         if (supportedProjectTypes.indexOf(uiSourceCode.project().type()) === -1)
             return false;

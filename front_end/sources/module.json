@@ -506,7 +506,8 @@
         "source_frame",
         "snippets",
         "ui_lazy",
-        "extensions"
+        "extensions",
+        "persistence"
     ],
     "scripts": [
         "UIList.js",

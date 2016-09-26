@@ -10,6 +10,7 @@
         { "name": "emulation", "type": "autostart" },
         { "name": "workspace", "type": "autostart" },
         { "name": "bindings", "type": "autostart" },
+        { "name": "persistence", "type": "autostart" },
         { "name": "extensions", "type": "autostart" },
         { "name": "ui_lazy" },
         { "name": "components_lazy" },

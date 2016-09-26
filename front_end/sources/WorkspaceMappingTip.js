@@ -20,11 +20,24 @@ WebInspector.WorkspaceMappingTip = function(sourcesPanel, workspace)
     if (this._workspaceInfobarDisabledSetting.get() && this._workspaceMappingInfobarDisabledSetting.get())
         return;
     this._sourcesView.addEventListener(WebInspector.SourcesView.Events.EditorSelected, this._editorSelected.bind(this));
+    WebInspector.persistence.addEventListener(WebInspector.Persistence.Events.BindingCreated, this._bindingCreated, this);
 }
 
 WebInspector.WorkspaceMappingTip._infobarSymbol = Symbol("infobar");
 
 WebInspector.WorkspaceMappingTip.prototype = {
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _bindingCreated: function(event)
+    {
+        var binding = /** @type {!WebInspector.PersistenceBinding} */(event.data);
+        if (binding.network[WebInspector.WorkspaceMappingTip._infobarSymbol])
+            binding.network[WebInspector.WorkspaceMappingTip._infobarSymbol].dispose();
+        if (binding.fileSystem[WebInspector.WorkspaceMappingTip._infobarSymbol])
+            binding.fileSystem[WebInspector.WorkspaceMappingTip._infobarSymbol].dispose();
+    },
+
     /**
      * @param {!WebInspector.Event} event
      */
@@ -50,9 +63,7 @@ WebInspector.WorkspaceMappingTip.prototype = {
 
         // First try mapping filesystem -> network.
         if (!this._workspaceMappingInfobarDisabledSetting.get() && uiSourceCode.project().type() === WebInspector.projectTypes.FileSystem) {
-            var networkURL = WebInspector.networkMapping.networkURL(uiSourceCode);
-            var hasMappings = !!networkURL;
-            if (hasMappings)
+            if (WebInspector.persistence.binding(uiSourceCode))
                 return;
 
             var networkProjects = this._workspace.projectsForType(WebInspector.projectTypes.Network);
@@ -72,10 +83,7 @@ WebInspector.WorkspaceMappingTip.prototype = {
         // Then map network -> filesystem.
         if (uiSourceCode.project().type() === WebInspector.projectTypes.Network || uiSourceCode.project().type() === WebInspector.projectTypes.ContentScripts) {
             // Suggest for localhost only.
-            if (!this._isLocalHost(uiSourceCode.url()))
-                return;
-            var networkURL = WebInspector.networkMapping.networkURL(uiSourceCode);
-            if (WebInspector.networkMapping.uiSourceCodeForURLForAnyTarget(networkURL) !== uiSourceCode)
+            if (!this._isLocalHost(uiSourceCode.url()) || WebInspector.persistence.binding(uiSourceCode))
                 return;
 
             var filesystemProjects = this._workspace.projectsForType(WebInspector.projectTypes.FileSystem);

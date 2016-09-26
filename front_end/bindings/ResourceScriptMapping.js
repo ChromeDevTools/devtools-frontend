@@ -286,7 +286,6 @@ WebInspector.ResourceScriptFile = function(resourceScriptMapping, uiSourceCode, 
 
     this._resourceScriptMapping = resourceScriptMapping;
     this._uiSourceCode = uiSourceCode;
-    this._uiSourceCode.forceLoadOnCheckContent();
 
     if (this._uiSourceCode.contentType().isScript())
         this._script = scripts[0];
@@ -325,19 +324,10 @@ WebInspector.ResourceScriptFile.prototype = {
         var workingCopy = this._uiSourceCode.workingCopy();
 
         // Match ignoring sourceURL.
-        if (workingCopy.startsWith(this._scriptSource.trimRight())) {
-            var suffix = this._uiSourceCode.workingCopy().substr(this._scriptSource.length);
-            return !!suffix.length && !suffix.match(WebInspector.Script.sourceURLRegex);
-        }
-
-        // Match ignoring Node wrapper.
-        var nodePrefix = "(function (exports, require, module, __filename, __dirname) { \n";
-        var nodeSuffix = "\n});";
-        if (workingCopy.startsWith("#!/usr/bin/env node\n"))
-            workingCopy = workingCopy.substring("#!/usr/bin/env node\n".length);
-        if (this._scriptSource === nodePrefix + workingCopy + nodeSuffix)
-            return false;
-        return true;
+        if (!workingCopy.startsWith(this._scriptSource.trimRight()))
+            return true;
+        var suffix = this._uiSourceCode.workingCopy().substr(this._scriptSource.length);
+        return !!suffix.length && !suffix.match(WebInspector.Script.sourceURLRegex);
     },
 
     /**

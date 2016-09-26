@@ -145,6 +145,9 @@ WebInspector.SourcesSearchScope.prototype = {
         var uiSourceCodes = project.uiSourceCodes();
         for (var i = 0; i < uiSourceCodes.length; ++i) {
             var uiSourceCode = uiSourceCodes[i];
+            var binding = WebInspector.persistence.binding(uiSourceCode);
+            if (binding && binding.fileSystem === uiSourceCode)
+                continue;
             if (dirtyOnly && !uiSourceCode.isDirty())
                 continue;
             if (this._searchConfig.filePathMatchesFileQuery(uiSourceCode.fullDisplayName()))

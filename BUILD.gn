@@ -166,6 +166,7 @@ devtools_bindings_js_files = [
   "front_end/bindings/StylesSourceMapping.js",
   "front_end/bindings/TempFile.js",
 ]
+devtools_persistence_js_files = [ "front_end/persistence/Persistence.js" ]
 devtools_platform_js_files = [
   "front_end/platform/DOMExtension.js",
   "front_end/platform/utilities.js",
@@ -840,7 +841,8 @@ devtools_core_files =
     devtools_emulation_js_files + devtools_host_js_files +
     devtools_main_js_files + devtools_platform_js_files +
     devtools_sdk_js_files + devtools_toolbox_bootstrap_js_files +
-    devtools_ui_js_files + devtools_workspace_js_files
+    devtools_ui_js_files + devtools_workspace_js_files +
+    devtools_persistence_js_files
 
 devtools_modules_js_files =
     devtools_accessibility_js_files + devtools_audits_js_files +

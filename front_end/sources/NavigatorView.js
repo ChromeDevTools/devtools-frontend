@@ -61,6 +61,8 @@ WebInspector.NavigatorView = function()
     WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
     WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this);
     WebInspector.targetManager.observeTargets(this);
+    WebInspector.persistence.addEventListener(WebInspector.Persistence.Events.BindingCreated, this._onBindingCreated, this);
+    WebInspector.persistence.addEventListener(WebInspector.Persistence.Events.BindingRemoved, this._onBindingRemoved, this);
     this._resetWorkspace(WebInspector.workspace);
 }
 
@@ -152,6 +154,25 @@ WebInspector.NavigatorView.appendSearchItem = function(contextMenu, path)
 
 WebInspector.NavigatorView.prototype = {
     /**
+     * @param {!WebInspector.Event} event
+     */
+    _onBindingCreated: function(event)
+    {
+        var binding = /** @type {!WebInspector.PersistenceBinding} */(event.data);
+        // TODO(lushnikov): show network UISourceCodes in navigator.
+        this._removeUISourceCode(binding.network);
+    },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _onBindingRemoved: function(event)
+    {
+        var binding = /** @type {!WebInspector.PersistenceBinding} */(event.data);
+        this._addUISourceCode(binding.network);
+    },
+
+    /**
      * @override
      */
     focus: function()
@@ -208,6 +229,10 @@ WebInspector.NavigatorView.prototype = {
     _addUISourceCode: function(uiSourceCode)
     {
         if (!this.accept(uiSourceCode))
+            return;
+
+        var binding = WebInspector.persistence.binding(uiSourceCode);
+        if (binding && binding.network === uiSourceCode)
             return;
 
         var isFromSourceMap = uiSourceCode.contentType().isFromSourceMap();
@@ -439,6 +464,9 @@ WebInspector.NavigatorView.prototype = {
      */
     revealUISourceCode: function(uiSourceCode, select)
     {
+        var binding = WebInspector.persistence.binding(uiSourceCode);
+        if (binding && binding.network === uiSourceCode)
+            uiSourceCode = binding.fileSystem;
         var node = this._uiSourceCodeNodes.get(uiSourceCode);
         if (!node)
             return;
@@ -1262,7 +1290,7 @@ WebInspector.NavigatorUISourceCodeTreeNode.prototype = {
             return;
 
         var titleText = this._uiSourceCode.displayName();
-        if (!ignoreIsDirty && (this._uiSourceCode.isDirty() || this._uiSourceCode.hasUnsavedCommittedChanges()))
+        if (!ignoreIsDirty && (this._uiSourceCode.isDirty() || WebInspector.persistence.hasUnsavedCommittedChanges(this._uiSourceCode)))
             titleText = "*" + titleText;
         this._treeElement.title = titleText;
 

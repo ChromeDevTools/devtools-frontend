@@ -40,11 +40,10 @@ WebInspector.AccessibilitySidebarView.prototype = {
             return;
 
         var currentAXNode = nodes[0];
-        // TODO(aboxhall): implement hideView() in WebInspector.ViewLocation and use it here.
         if (currentAXNode.ignored)
-            this._ariaSubPane.parentWidget().contentElement.classList.add("sidebar-hidden-override");
+            this._sidebarPaneStack.removeView(this._ariaSubPane);
         else
-            this._ariaSubPane.parentWidget().contentElement.classList.remove("sidebar-hidden-override");
+            this._sidebarPaneStack.showView(this._ariaSubPane, this._axNodeSubPane);
 
         if (this._axNodeSubPane)
             this._axNodeSubPane.setAXNode(currentAXNode);

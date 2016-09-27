@@ -300,6 +300,7 @@ var extensionServer;
 function ExtensionDescriptor() {
     this.startPage = "";
     this.name = "";
+    this.exposeExperimentalAPIs = false;
 }
 
 /**

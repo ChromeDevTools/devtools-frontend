@@ -53,6 +53,8 @@ WebInspector.TracingManager = function(target)
         args: !Object,
         dur: number,
         id: string,
+        id2: (!{global: (string|undefined), local: (string|undefined)}|undefined),
+        scope: string,
         bind_id: string,
         s: string
     }}

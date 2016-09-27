@@ -1263,15 +1263,6 @@ WebInspector.ConsoleCommand = function(message, linkifier, nestingLevel)
 WebInspector.ConsoleCommand.prototype = {
     /**
      * @override
-     * @return {!Element})
-     */
-    searchableElement: function()
-    {
-        return this.contentElement();
-    },
-
-    /**
-     * @override
      * @return {!Element}
      */
     contentElement: function()

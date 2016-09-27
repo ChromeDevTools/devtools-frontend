@@ -154,6 +154,7 @@ WebInspector.ConsoleViewMessage.prototype = {
         }
 
         var consoleMessage = this._message;
+        var anchorElement;
         if (!this._messageElement) {
             if (consoleMessage.source === WebInspector.ConsoleMessage.MessageSource.ConsoleAPI) {
                 switch (consoleMessage.type) {
@@ -203,7 +204,7 @@ WebInspector.ConsoleViewMessage.prototype = {
                     var url = consoleMessage.url;
                     if (url) {
                         var isExternal = !WebInspector.resourceForURL(url) && !WebInspector.networkMapping.uiSourceCodeForURLForAnyTarget(url);
-                        this._anchorElement = WebInspector.linkifyURLAsNode(url, url, "console-message-url", isExternal);
+                        anchorElement = WebInspector.linkifyURLAsNode(url, url, "console-message-url", isExternal);
                     }
                     this._messageElement = this._format([consoleMessage.messageText]);
                 }
@@ -215,20 +216,20 @@ WebInspector.ConsoleViewMessage.prototype = {
 
         if (consoleMessage.source !== WebInspector.ConsoleMessage.MessageSource.Network || consoleMessage.request) {
             if (consoleMessage.scriptId) {
-                this._anchorElement = this._linkifyScriptId(consoleMessage.scriptId, consoleMessage.url || "", consoleMessage.line, consoleMessage.column);
+                anchorElement = this._linkifyScriptId(consoleMessage.scriptId, consoleMessage.url || "", consoleMessage.line, consoleMessage.column);
             } else {
                 if (consoleMessage.stackTrace && consoleMessage.stackTrace.callFrames.length)
-                    this._anchorElement = this._linkifyStackTraceTopFrame(consoleMessage.stackTrace);
+                    anchorElement = this._linkifyStackTraceTopFrame(consoleMessage.stackTrace);
                 else if (consoleMessage.url && consoleMessage.url !== "undefined")
-                    this._anchorElement = this._linkifyLocation(consoleMessage.url, consoleMessage.line, consoleMessage.column);
+                    anchorElement = this._linkifyLocation(consoleMessage.url, consoleMessage.line, consoleMessage.column);
             }
         }
 
         this._formattedMessage.appendChild(this._messageElement);
-        if (this._anchorElement) {
+        if (anchorElement) {
             // Append a space to prevent the anchor text from being glued to the console message when the user selects and copies the console messages.
-            this._anchorElement.appendChild(createTextNode(" "));
-            this._formattedMessage.insertBefore(this._anchorElement, this._formattedMessage.firstChild);
+            anchorElement.appendChild(createTextNode(" "));
+            this._formattedMessage.insertBefore(anchorElement, this._formattedMessage.firstChild);
         }
 
         var dumpStackTrace = !!consoleMessage.stackTrace && (consoleMessage.source === WebInspector.ConsoleMessage.MessageSource.Network || consoleMessage.level === WebInspector.ConsoleMessage.MessageLevel.Error || consoleMessage.level === WebInspector.ConsoleMessage.MessageLevel.RevokedError || consoleMessage.type === WebInspector.ConsoleMessage.MessageType.Trace || consoleMessage.level === WebInspector.ConsoleMessage.MessageLevel.Warning);
@@ -883,9 +884,7 @@ WebInspector.ConsoleViewMessage.prototype = {
     matchesFilterRegex: function(regexObject)
     {
         regexObject.lastIndex = 0;
-        var text = this.searchableElement().deepTextContent();
-        if (this._anchorElement)
-            text += " " + this._anchorElement.textContent;
+        var text = this.contentElement().deepTextContent();
         return regexObject.test(text);
     },
 
@@ -1084,15 +1083,15 @@ WebInspector.ConsoleViewMessage.prototype = {
         if (!this._searchRegex)
             return;
 
-        var text = this.searchableElement().deepTextContent();
+        var text = this.contentElement().deepTextContent();
         var match;
         this._searchRegex.lastIndex = 0;
         var sourceRanges = [];
         while ((match = this._searchRegex.exec(text)) && match[0])
             sourceRanges.push(new WebInspector.SourceRange(match.index, match[0].length));
 
-        if (sourceRanges.length && this.searchableElement())
-            this._searchHighlightNodes = WebInspector.highlightSearchResults(this.searchableElement(), sourceRanges, this._searchHiglightNodeChanges);
+        if (sourceRanges.length)
+            this._searchHighlightNodes = WebInspector.highlightSearchResults(this.contentElement(), sourceRanges, this._searchHiglightNodeChanges);
     },
 
     /**
@@ -1117,15 +1116,6 @@ WebInspector.ConsoleViewMessage.prototype = {
     searchHighlightNode: function(index)
     {
         return this._searchHighlightNodes[index];
-    },
-
-    /**
-     * @return {!Element}
-     */
-    searchableElement: function()
-    {
-        this.formattedMessage();
-        return this._messageElement;
     },
 
     /**

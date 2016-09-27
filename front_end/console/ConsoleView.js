@@ -777,9 +777,6 @@ WebInspector.ConsoleView.prototype = {
         if (keyboardEvent.key === "PageUp") {
             this._updateStickToBottomOnWheel();
             return;
-        } else if (isEnterKey(keyboardEvent)) {
-            this._enterKeyPressed(keyboardEvent);
-            return;
         }
 
         var shortcut = WebInspector.KeyboardShortcut.makeKeyFromEvent(keyboardEvent);
@@ -787,44 +784,6 @@ WebInspector.ConsoleView.prototype = {
         if (handler) {
             handler();
             keyboardEvent.preventDefault();
-        }
-    },
-
-    _enterKeyPressed: function(event)
-    {
-        if (event.altKey || event.ctrlKey || event.shiftKey)
-            return;
-
-        event.consume(true);
-
-        this._prompt.clearAutocomplete();
-
-        var str = this._prompt.text();
-        if (!str.length)
-            return;
-
-        var currentExecutionContext = WebInspector.context.flavor(WebInspector.ExecutionContext);
-        if (!this._prompt.isCaretAtEndOfPrompt() || !currentExecutionContext) {
-            this._appendCommand(str, true);
-            return;
-        }
-        currentExecutionContext.target().runtimeModel.compileScript(str, "", false, currentExecutionContext.id, compileCallback.bind(this));
-
-        /**
-         * @param {!RuntimeAgent.ScriptId=} scriptId
-         * @param {?RuntimeAgent.ExceptionDetails=} exceptionDetails
-         * @this {WebInspector.ConsoleView}
-         */
-        function compileCallback(scriptId, exceptionDetails)
-        {
-            if (str !== this._prompt.text())
-                return;
-            if (exceptionDetails && (exceptionDetails.exception.description === "SyntaxError: Unexpected end of input"
-                || exceptionDetails.exception.description === "SyntaxError: Unterminated template literal")) {
-                this._prompt.newlineAndIndent();
-                return;
-            }
-            this._appendCommand(str, true);
         }
     },
 
@@ -846,21 +805,6 @@ WebInspector.ConsoleView.prototype = {
             message = WebInspector.ConsoleMessage.fromException(result.target(), exceptionDetails, WebInspector.ConsoleMessage.MessageType.Result, undefined, undefined);
         message.setOriginatingMessage(originatingConsoleMessage);
         result.target().consoleModel.addMessage(message);
-    },
-
-    /**
-     * @param {string} text
-     * @param {boolean} useCommandLineAPI
-     */
-    _appendCommand: function(text, useCommandLineAPI)
-    {
-        this._prompt.setText("");
-        var currentExecutionContext = WebInspector.context.flavor(WebInspector.ExecutionContext);
-        if (currentExecutionContext) {
-            WebInspector.ConsoleModel.evaluateCommandInConsole(currentExecutionContext, text, useCommandLineAPI);
-            if (WebInspector.inspectorView.currentPanel() && WebInspector.inspectorView.currentPanel().name === "console")
-                WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.CommandEvaluatedInConsolePanel);
-        }
     },
 
     /**

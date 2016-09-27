@@ -68,45 +68,15 @@ WebInspector.ConsolePrompt.prototype = {
     /**
      * @return {boolean}
      */
-    isCaretInsidePrompt: function()
-    {
-        return this.hasFocus();
-    },
-
-    /**
-     * @return {boolean}
-     */
-    isCaretAtEndOfPrompt: function()
+    _isCaretAtEndOfPrompt: function()
     {
         return !!this._editor && this._editor.selection().collapseToEnd().equal(this._editor.fullRange().collapseToEnd());
-    },
-
-    /**
-     * @return {boolean}
-     */
-    isCaretOnLastLine: function()
-    {
-        return !!this._editor && this._editor.selection().endLine === this._editor.fullRange().endLine;
-    },
-
-    /**
-     * @return {boolean}
-     */
-    isCaretOnFirstLine: function()
-    {
-        return !!this._editor && this._editor.selection().endLine === 0;
     },
 
     moveCaretToEndOfPrompt: function()
     {
         if (this._editor)
             this._editor.setSelection(WebInspector.TextRange.createFromLocation(Infinity,Infinity));
-    },
-
-    moveCaretToEndOfFirstLine: function()
-    {
-        if (this._editor)
-            this._editor.setSelection(WebInspector.TextRange.createFromLocation(0,Infinity));
     },
 
     /**
@@ -128,11 +98,6 @@ WebInspector.ConsolePrompt.prototype = {
         return this._editor ? this._editor.text() : this._initialText;
     },
 
-    newlineAndIndent: function()
-    {
-        this._editor.newlineAndIndent();
-    },
-
     /**
      * @param {boolean} value
      */
@@ -152,13 +117,13 @@ WebInspector.ConsolePrompt.prototype = {
 
         switch (keyboardEvent.keyCode) {
         case WebInspector.KeyboardShortcut.Keys.Up.code:
-            if (!this.isCaretOnFirstLine())
+            if (this._editor.selection().endLine > 0)
                 break;
             newText = this._history.previous(this.text());
             isPrevious = true;
             break;
         case WebInspector.KeyboardShortcut.Keys.Down.code:
-            if (!this.isCaretOnLastLine())
+            if (this._editor.selection().endLine < this._editor.fullRange().endLine)
                 break;
             newText = this._history.next();
             break;
@@ -172,6 +137,9 @@ WebInspector.ConsolePrompt.prototype = {
             if (WebInspector.isMac() && keyboardEvent.ctrlKey && !keyboardEvent.metaKey && !keyboardEvent.altKey && !keyboardEvent.shiftKey)
                 newText = this._history.next();
             break;
+        case WebInspector.KeyboardShortcut.Keys.Enter.code:
+            this._enterKeyPressed(keyboardEvent);
+            break;
         }
 
         if (newText === undefined)
@@ -180,10 +148,70 @@ WebInspector.ConsolePrompt.prototype = {
         this.setText(newText);
 
         if (isPrevious)
-            this.moveCaretToEndOfFirstLine();
+            this._editor.setSelection(WebInspector.TextRange.createFromLocation(0,Infinity));
         else
             this.moveCaretToEndOfPrompt();
     },
+
+    /**
+     * @param {!KeyboardEvent} event
+     */
+    _enterKeyPressed: function(event)
+    {
+        if (event.altKey || event.ctrlKey || event.shiftKey)
+            return;
+
+        event.consume(true);
+
+        this.clearAutocomplete();
+
+        var str = this.text();
+        if (!str.length)
+            return;
+
+        var currentExecutionContext = WebInspector.context.flavor(WebInspector.ExecutionContext);
+        if (!this._isCaretAtEndOfPrompt() || !currentExecutionContext) {
+            this._appendCommand(str, true);
+            return;
+        }
+        currentExecutionContext.target().runtimeModel.compileScript(str, "", false, currentExecutionContext.id, compileCallback.bind(this));
+
+        /**
+         * @param {!RuntimeAgent.ScriptId=} scriptId
+         * @param {?RuntimeAgent.ExceptionDetails=} exceptionDetails
+         * @this {WebInspector.ConsolePrompt}
+         */
+        function compileCallback(scriptId, exceptionDetails)
+        {
+            if (str !== this.text())
+                return;
+            if (exceptionDetails && (exceptionDetails.exception.description === "SyntaxError: Unexpected end of input"
+                || exceptionDetails.exception.description === "SyntaxError: Unterminated template literal")) {
+                this._editor.newlineAndIndent();
+                this._enterProcessedForTest();
+                return;
+            }
+            this._appendCommand(str, true);
+            this._enterProcessedForTest();
+        }
+    },
+
+    /**
+     * @param {string} text
+     * @param {boolean} useCommandLineAPI
+     */
+    _appendCommand: function(text, useCommandLineAPI)
+    {
+        this.setText("");
+        var currentExecutionContext = WebInspector.context.flavor(WebInspector.ExecutionContext);
+        if (currentExecutionContext) {
+            WebInspector.ConsoleModel.evaluateCommandInConsole(currentExecutionContext, text, useCommandLineAPI);
+            if (WebInspector.inspectorView.currentPanel() && WebInspector.inspectorView.currentPanel().name === "console")
+                WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.CommandEvaluatedInConsolePanel);
+        }
+    },
+
+    _enterProcessedForTest: function() { },
 
     /**
      * @param {string} prefix
@@ -191,7 +219,7 @@ WebInspector.ConsolePrompt.prototype = {
      */
     _historyCompletions: function(prefix)
     {
-        if (!this._addCompletionsFromHistory || !this.isCaretAtEndOfPrompt())
+        if (!this._addCompletionsFromHistory || !this._isCaretAtEndOfPrompt())
             return [];
         var result = [];
         var text = this.text();

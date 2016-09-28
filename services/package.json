@@ -1,0 +1,10 @@
+{
+    "name": "devtools-backend",
+    "version": "1.0.0",
+    "ignore": [
+        ".gitignore"
+    ],
+    "devDependencies": {
+        "pty.js": "0.3.1"
+    }
+}

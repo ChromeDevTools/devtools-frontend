@@ -14,6 +14,7 @@
         { "name": "extensions", "type": "autostart" },
         { "name": "ui_lazy" },
         { "name": "components_lazy" },
+        { "name": "services" },
         { "name": "elements", "condition": "!v8only" },
         { "name": "network", "condition": "!v8only" },
         { "name": "sources" },

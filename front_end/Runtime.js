@@ -359,21 +359,6 @@ Runtime.queryParam = function(name)
 }
 
 /**
- * @param {!Array.<string>} banned
- * @return {string}
- */
-Runtime.constructQueryParams = function(banned)
-{
-    var params = [];
-    for (var key in Runtime._queryParamsObject) {
-        if (!key || banned.indexOf(key) !== -1)
-            continue;
-        params.push(key + "=" + Runtime._queryParamsObject[key]);
-    }
-    return params.length ? "?" + params.join("&") : "";
-}
-
-/**
  * @return {!Object}
  */
 Runtime._experimentsSetting = function()
@@ -1115,6 +1100,17 @@ Runtime.Experiment.prototype = {
         var pair = params[i].split("=");
         var name = pair.shift();
         Runtime._queryParamsObject[name] = pair.join("=");
+    }
+    var flags = Runtime._queryParamsObject["flags"];
+    delete Runtime._queryParamsObject["flags"];
+    if (flags) {
+        try {
+            var parsedFlags = JSON.parse(window.decodeURIComponent(flags));
+            for (var key in parsedFlags)
+                Runtime._queryParamsObject[key] = parsedFlags[key];
+        } catch(e) {
+            console.error("Invalid startup flag: " + e);
+        }
     }
 })();}
 

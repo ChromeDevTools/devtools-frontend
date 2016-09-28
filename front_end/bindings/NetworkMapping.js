@@ -77,17 +77,6 @@ WebInspector.NetworkMapping.prototype = {
     },
 
     /**
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     * @return {string}
-     */
-    networkURL: function(uiSourceCode)
-    {
-        if (uiSourceCode.project().type() === WebInspector.projectTypes.FileSystem)
-            return "";
-        return uiSourceCode.url();
-    },
-
-    /**
      * @param {!WebInspector.Target} target
      * @param {?WebInspector.ResourceTreeFrame} frame
      * @param {string} url
@@ -157,10 +146,8 @@ WebInspector.NetworkMapping.prototype = {
      */
     addMapping: function(networkUISourceCode, uiSourceCode)
     {
-        var url = this.networkURL(networkUISourceCode);
-        var path = uiSourceCode.url();
         var fileSystemPath = WebInspector.FileSystemWorkspaceBinding.fileSystemPath(uiSourceCode.project().id());
-        this._fileSystemMapping.addMappingForResource(url, fileSystemPath, path);
+        this._fileSystemMapping.addMappingForResource(networkUISourceCode.url(), fileSystemPath, uiSourceCode.url());
     },
 
     /**
@@ -168,8 +155,7 @@ WebInspector.NetworkMapping.prototype = {
      */
     removeMapping: function(uiSourceCode)
     {
-        var networkURL = this.networkURL(uiSourceCode);
-        this._fileSystemMapping.removeMappingForURL(networkURL);
+        this._fileSystemMapping.removeMappingForURL(uiSourceCode.url());
     },
 
     /**
@@ -194,7 +180,7 @@ WebInspector.NetworkMapping.prototype = {
         function listener(event)
         {
             var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data);
-            if (this.networkURL(uiSourceCode) === url) {
+            if (uiSourceCode.url() === url) {
                 WebInspector.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, columnNumber));
                 this._workspace.removeEventListener(WebInspector.Workspace.Events.UISourceCodeAdded, listener, this);
             }

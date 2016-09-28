@@ -163,10 +163,9 @@ WebInspector.StylesSourceMapping.prototype = {
     _uiSourceCodeAddedToWorkspace: function(event)
     {
         var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data);
-        var networkURL = this._networkMapping.networkURL(uiSourceCode);
-        if (!networkURL || !this._urlToHeadersByFrameId.has(networkURL))
+        if (!this._urlToHeadersByFrameId.has(uiSourceCode.url()))
             return;
-        this._bindUISourceCode(uiSourceCode, this._urlToHeadersByFrameId.get(networkURL).valuesArray()[0].valuesArray()[0]);
+        this._bindUISourceCode(uiSourceCode, this._urlToHeadersByFrameId.get(uiSourceCode.url()).valuesArray()[0].valuesArray()[0]);
     },
 
     /**
@@ -209,10 +208,9 @@ WebInspector.StylesSourceMapping.prototype = {
      */
     _setStyleContent: function(uiSourceCode, content, majorChange)
     {
-        var networkURL = this._networkMapping.networkURL(uiSourceCode);
-        var styleSheetIds = this._cssModel.styleSheetIdsForURL(networkURL);
+        var styleSheetIds = this._cssModel.styleSheetIdsForURL(uiSourceCode.url());
         if (!styleSheetIds.length)
-            return Promise.resolve(/** @type {?string} */("No stylesheet found: " + networkURL));
+            return Promise.resolve(/** @type {?string} */("No stylesheet found: " + uiSourceCode.url()));
 
         this._isSettingContent = true;
 

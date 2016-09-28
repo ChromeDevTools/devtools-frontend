@@ -300,8 +300,7 @@ WebInspector.Linkifier.prototype = {
                 return;
 
             event.consume(true);
-            var networkURL = WebInspector.networkMapping.networkURL(uiLocation.uiSourceCode);
-            if (WebInspector.Linkifier.handleLink(networkURL, uiLocation.lineNumber))
+            if (WebInspector.Linkifier.handleLink(uiLocation.uiSourceCode.url(), uiLocation.lineNumber))
                 return;
             WebInspector.Revealer.reveal(uiLocation);
         }

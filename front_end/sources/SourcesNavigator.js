@@ -62,7 +62,7 @@ WebInspector.SourcesNavigatorView.prototype = {
             return
         for (var node of this._uiSourceCodeNodes.valuesArray()) {
             var uiSourceCode = node.uiSourceCode();
-            if (WebInspector.networkMapping.networkURL(uiSourceCode) === inspectedURL)
+            if (uiSourceCode.url() === inspectedURL)
                 this.revealUISourceCode(uiSourceCode, true);
         }
     },
@@ -74,7 +74,7 @@ WebInspector.SourcesNavigatorView.prototype = {
     uiSourceCodeAdded: function(uiSourceCode)
     {
         var inspectedPageURL = WebInspector.targetManager.mainTarget().inspectedURL();
-        if (inspectedPageURL && WebInspector.networkMapping.networkURL(uiSourceCode) === inspectedPageURL)
+        if (uiSourceCode.url() === inspectedPageURL)
             this.revealUISourceCode(uiSourceCode, true);
     },
 

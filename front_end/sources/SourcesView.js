@@ -267,16 +267,6 @@ WebInspector.SourcesView.prototype = {
         if (uiSourceCode.isFromServiceProject())
             return;
         this._editorContainer.addUISourceCode(uiSourceCode);
-        // Replace debugger script-based uiSourceCode with a network-based one.
-        var currentUISourceCode = this._editorContainer.currentFile();
-        if (!currentUISourceCode)
-            return;
-        var networkURL = WebInspector.networkMapping.networkURL(uiSourceCode);
-        var currentNetworkURL = WebInspector.networkMapping.networkURL(currentUISourceCode);
-        if (currentUISourceCode.isFromServiceProject() && currentUISourceCode !== uiSourceCode && currentNetworkURL === networkURL && networkURL) {
-            this._editorContainer.showFile(uiSourceCode);
-            this._editorContainer.removeUISourceCode(currentUISourceCode);
-        }
     },
 
     _uiSourceCodeRemoved: function(event)

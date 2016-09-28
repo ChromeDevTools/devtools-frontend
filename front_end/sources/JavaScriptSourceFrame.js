@@ -114,7 +114,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
         infobar.createDetailsRowMessage(WebInspector.UIString("The content of this file on the file system:\u00a0")).appendChild(
             WebInspector.linkifyURLAsNode(fileURL, fileURL, "source-frame-infobar-details-url", true));
 
-        var scriptURL = WebInspector.networkMapping.networkURL(this.uiSourceCode());
+        var scriptURL = this.uiSourceCode().url();
         infobar.createDetailsRowMessage(WebInspector.UIString("does not match the loaded script:\u00a0")).appendChild(
             WebInspector.linkifyURLAsNode(scriptURL, scriptURL, "source-frame-infobar-details-url", true));
 
@@ -146,8 +146,6 @@ WebInspector.JavaScriptSourceFrame.prototype = {
         var projectType = uiSourceCode.project().type();
         if (projectType === WebInspector.projectTypes.Snippets)
             return;
-        var networkURL = WebInspector.networkMapping.networkURL(uiSourceCode);
-        var url = projectType === WebInspector.projectTypes.Formatter ? uiSourceCode.url() : networkURL;
         if (!WebInspector.blackboxManager.isBlackboxedUISourceCode(uiSourceCode)) {
             this._hideBlackboxInfobar();
             return;

@@ -357,9 +357,8 @@ TestSuite.prototype.testNoScriptDuplicatesOnPanelSwitch = function()
     function checkNoDuplicates() {
         var uiSourceCodes = test.nonAnonymousUISourceCodes_();
         for (var i = 0; i < uiSourceCodes.length; i++) {
-            var scriptName = WebInspector.networkMapping.networkURL(uiSourceCodes[i]);
             for (var j = i + 1; j < uiSourceCodes.length; j++)
-                test.assertTrue(scriptName !== WebInspector.networkMapping.networkURL(uiSourceCodes[j]), "Found script duplicates: " + test.uiSourceCodesToString_(uiSourceCodes));
+                test.assertTrue(uiSourceCodes[i].url() !== uiSourceCodes[j].url(), "Found script duplicates: " + test.uiSourceCodesToString_(uiSourceCodes));
         }
     }
 
@@ -1070,7 +1069,7 @@ TestSuite.prototype.uiSourceCodesToString_ = function(uiSourceCodes)
 {
     var names = [];
     for (var i = 0; i < uiSourceCodes.length; i++)
-        names.push('"' + WebInspector.networkMapping.networkURL(uiSourceCodes[i]) + '"');
+        names.push('"' + uiSourceCodes[i].url() + '"');
     return names.join(",");
 };
 
@@ -1081,19 +1080,16 @@ TestSuite.prototype.uiSourceCodesToString_ = function(uiSourceCodes)
  */
 TestSuite.prototype.nonAnonymousUISourceCodes_ = function()
 {
-    function filterOutAnonymous(uiSourceCode)
-    {
-        return !!WebInspector.networkMapping.networkURL(uiSourceCode);
-    }
-
+    /**
+     * @param {!WebInspector.UISourceCode} uiSourceCode
+     */
     function filterOutService(uiSourceCode)
     {
         return !uiSourceCode.isFromServiceProject();
     }
 
     var uiSourceCodes = WebInspector.workspace.uiSourceCodes();
-    uiSourceCodes = uiSourceCodes.filter(filterOutService);
-    return uiSourceCodes.filter(filterOutAnonymous);
+    return uiSourceCodes.filter(filterOutService);
 };
 
 

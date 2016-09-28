@@ -172,18 +172,18 @@ WebInspector.Main.prototype = {
 
         var fileSystemWorkspaceBinding = new WebInspector.FileSystemWorkspaceBinding(WebInspector.isolatedFileSystemManager, WebInspector.workspace);
         WebInspector.networkMapping = new WebInspector.NetworkMapping(WebInspector.targetManager, WebInspector.workspace, fileSystemWorkspaceBinding, WebInspector.fileSystemMapping);
-        WebInspector.networkProjectManager = new WebInspector.NetworkProjectManager(WebInspector.targetManager, WebInspector.workspace, WebInspector.networkMapping);
+        WebInspector.networkProjectManager = new WebInspector.NetworkProjectManager(WebInspector.targetManager, WebInspector.workspace);
         WebInspector.presentationConsoleMessageHelper = new WebInspector.PresentationConsoleMessageHelper(WebInspector.workspace);
         WebInspector.cssWorkspaceBinding = new WebInspector.CSSWorkspaceBinding(WebInspector.targetManager, WebInspector.workspace, WebInspector.networkMapping);
         WebInspector.debuggerWorkspaceBinding = new WebInspector.DebuggerWorkspaceBinding(WebInspector.targetManager, WebInspector.workspace, WebInspector.networkMapping);
-        WebInspector.breakpointManager = new WebInspector.BreakpointManager(null, WebInspector.workspace, WebInspector.networkMapping, WebInspector.targetManager, WebInspector.debuggerWorkspaceBinding);
+        WebInspector.breakpointManager = new WebInspector.BreakpointManager(null, WebInspector.workspace, WebInspector.targetManager, WebInspector.debuggerWorkspaceBinding);
         WebInspector.extensionServer = new WebInspector.ExtensionServer();
 
         WebInspector.persistence = new WebInspector.Persistence(WebInspector.workspace, WebInspector.breakpointManager, WebInspector.fileSystemMapping);
 
         new WebInspector.OverlayController();
         new WebInspector.ExecutionContextSelector(WebInspector.targetManager, WebInspector.context);
-        WebInspector.blackboxManager = new WebInspector.BlackboxManager(WebInspector.debuggerWorkspaceBinding, WebInspector.networkMapping);
+        WebInspector.blackboxManager = new WebInspector.BlackboxManager(WebInspector.debuggerWorkspaceBinding);
 
         var autoselectPanel = WebInspector.UIString("auto");
         var openAnchorLocationSetting = WebInspector.settings.createSetting("openLinkHandler", autoselectPanel);

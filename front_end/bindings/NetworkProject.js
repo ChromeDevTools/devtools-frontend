@@ -32,13 +32,11 @@
  * @constructor
  * @param {!WebInspector.TargetManager} targetManager
  * @param {!WebInspector.Workspace} workspace
- * @param {!WebInspector.NetworkMapping} networkMapping
  * @implements {WebInspector.TargetManager.Observer}
  */
-WebInspector.NetworkProjectManager = function(targetManager, workspace, networkMapping)
+WebInspector.NetworkProjectManager = function(targetManager, workspace)
 {
     this._workspace = workspace;
-    this._networkMapping = networkMapping;
     targetManager.observeTargets(this);
 }
 
@@ -49,7 +47,7 @@ WebInspector.NetworkProjectManager.prototype = {
      */
     targetAdded: function(target)
     {
-        new WebInspector.NetworkProject(target, this._workspace, this._networkMapping, WebInspector.ResourceTreeModel.fromTarget(target));
+        new WebInspector.NetworkProject(target, this._workspace, WebInspector.ResourceTreeModel.fromTarget(target));
     },
 
     /**
@@ -67,14 +65,12 @@ WebInspector.NetworkProjectManager.prototype = {
  * @extends {WebInspector.SDKObject}
  * @param {!WebInspector.Target} target
  * @param {!WebInspector.Workspace} workspace
- * @param {!WebInspector.NetworkMapping} networkMapping
  * @param {?WebInspector.ResourceTreeModel} resourceTreeModel
  */
-WebInspector.NetworkProject = function(target, workspace, networkMapping, resourceTreeModel)
+WebInspector.NetworkProject = function(target, workspace, resourceTreeModel)
 {
     WebInspector.SDKObject.call(this, target);
     this._workspace = workspace;
-    this._networkMapping = networkMapping;
     /** @type {!Map<string, !WebInspector.ContentProviderBasedProject>} */
     this._workspaceProjects = new Map();
     this._resourceTreeModel = resourceTreeModel;

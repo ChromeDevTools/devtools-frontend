@@ -791,11 +791,11 @@ WebInspector.SourcesPanel.prototype = {
     {
         WebInspector.NavigatorView.appendAddFolderItem(contextMenu);
         if (uiSourceCode.project().type() === WebInspector.projectTypes.FileSystem) {
-            var hasMappings = !!this._networkMapping.networkURL(uiSourceCode);
-            if (!hasMappings)
+            var binding = WebInspector.persistence.binding(uiSourceCode);
+            if (!binding)
                 contextMenu.appendItem(WebInspector.UIString.capitalize("Map to ^network ^resource\u2026"), this.mapFileSystemToNetwork.bind(this, uiSourceCode));
             else
-                contextMenu.appendItem(WebInspector.UIString.capitalize("Remove ^network ^mapping"), this._removeNetworkMapping.bind(this, uiSourceCode));
+                contextMenu.appendItem(WebInspector.UIString.capitalize("Remove ^network ^mapping"), this._removeNetworkMapping.bind(this, binding.network));
         }
 
         /**
@@ -809,8 +809,7 @@ WebInspector.SourcesPanel.prototype = {
         if (uiSourceCode.project().type() === WebInspector.projectTypes.Network || uiSourceCode.project().type() === WebInspector.projectTypes.ContentScripts) {
             if (!this._workspace.projects().filter(filterProject).length)
                 return;
-            var networkURL = this._networkMapping.networkURL(uiSourceCode);
-            if (this._networkMapping.uiSourceCodeForURLForAnyTarget(networkURL) === uiSourceCode)
+            if (this._networkMapping.uiSourceCodeForURLForAnyTarget(uiSourceCode.url()) === uiSourceCode)
                 contextMenu.appendItem(WebInspector.UIString.capitalize("Map to ^file ^system ^resource\u2026"), this.mapNetworkToFileSystem.bind(this, uiSourceCode));
         }
     },

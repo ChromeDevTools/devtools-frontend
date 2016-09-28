@@ -281,6 +281,11 @@ WebInspector.CallStackSidebarPane.prototype = {
      */
     appendBlackboxURLContextMenuItems: function(contextMenu, uiSourceCode)
     {
+        var binding = WebInspector.persistence.binding(uiSourceCode);
+        if (binding)
+            uiSourceCode = binding.network;
+        if (uiSourceCode.project().type() === WebInspector.projectTypes.FileSystem)
+            return;
         var canBlackbox = WebInspector.blackboxManager.canBlackboxUISourceCode(uiSourceCode);
         var isBlackboxed = WebInspector.blackboxManager.isBlackboxedUISourceCode(uiSourceCode);
         var isContentScript = uiSourceCode.project().type() === WebInspector.projectTypes.ContentScripts;

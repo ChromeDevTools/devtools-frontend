@@ -34,15 +34,13 @@
  * @implements {WebInspector.TargetManager.Observer}
  * @param {?WebInspector.Setting} breakpointsSetting
  * @param {!WebInspector.Workspace} workspace
- * @param {!WebInspector.NetworkMapping} networkMapping
  * @param {!WebInspector.TargetManager} targetManager
  * @param {!WebInspector.DebuggerWorkspaceBinding} debuggerWorkspaceBinding
  */
-WebInspector.BreakpointManager = function(breakpointsSetting, workspace, networkMapping, targetManager, debuggerWorkspaceBinding)
+WebInspector.BreakpointManager = function(breakpointsSetting, workspace, targetManager, debuggerWorkspaceBinding)
 {
     this._storage = new WebInspector.BreakpointManager.Storage(this, breakpointsSetting);
     this._workspace = workspace;
-    this._networkMapping = networkMapping;
     this._targetManager = targetManager;
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
 
@@ -84,9 +82,7 @@ WebInspector.BreakpointManager.prototype = {
      */
     _sourceFileId: function(uiSourceCode)
     {
-        var networkURL = this._networkMapping.networkURL(uiSourceCode)
-        if (!networkURL)
-            return "";
+        // TODO(lushnikov): _sourceFileId is not needed any more.
         return uiSourceCode.url();
     },
 
@@ -510,9 +506,8 @@ WebInspector.BreakpointManager.Breakpoint.prototype = {
         var debuggerModel = WebInspector.DebuggerModel.fromTarget(target);
         if (!debuggerModel)
             return;
-        var networkMapping = this._breakpointManager._networkMapping;
         var debuggerWorkspaceBinding = this._breakpointManager._debuggerWorkspaceBinding;
-        this._targetBreakpoints.set(target, new WebInspector.BreakpointManager.TargetBreakpoint(debuggerModel, this, networkMapping, debuggerWorkspaceBinding));
+        this._targetBreakpoints.set(target, new WebInspector.BreakpointManager.TargetBreakpoint(debuggerModel, this, debuggerWorkspaceBinding));
     },
 
     /**
@@ -732,15 +727,13 @@ WebInspector.BreakpointManager.Breakpoint.prototype = {
  * @extends {WebInspector.SDKObject}
  * @param {!WebInspector.DebuggerModel} debuggerModel
  * @param {!WebInspector.BreakpointManager.Breakpoint} breakpoint
- * @param {!WebInspector.NetworkMapping} networkMapping
  * @param {!WebInspector.DebuggerWorkspaceBinding} debuggerWorkspaceBinding
  */
-WebInspector.BreakpointManager.TargetBreakpoint = function(debuggerModel, breakpoint, networkMapping, debuggerWorkspaceBinding)
+WebInspector.BreakpointManager.TargetBreakpoint = function(debuggerModel, breakpoint, debuggerWorkspaceBinding)
 {
     WebInspector.SDKObject.call(this, debuggerModel.target());
     this._debuggerModel = debuggerModel;
     this._breakpoint = breakpoint;
-    this._networkMapping = networkMapping;
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
 
     this._liveLocations = new WebInspector.LiveLocationPool();
@@ -830,9 +823,7 @@ WebInspector.BreakpointManager.TargetBreakpoint.prototype = {
             var position = this._breakpoint._currentState;
             newState = new WebInspector.BreakpointManager.Breakpoint.State(position.url, null, position.lineNumber, position.columnNumber, condition);
         } else if (uiSourceCode) {
-            var networkURL = this._networkMapping.networkURL(uiSourceCode);
-            if (networkURL)
-                newState = new WebInspector.BreakpointManager.Breakpoint.State(networkURL, null, lineNumber, columnNumber, condition);
+            newState = new WebInspector.BreakpointManager.Breakpoint.State(uiSourceCode.url(), null, lineNumber, columnNumber, condition);
         }
         if (this._debuggerId && WebInspector.BreakpointManager.Breakpoint.State.equals(newState, this._currentState)) {
             callback();

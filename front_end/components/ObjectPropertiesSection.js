@@ -1051,6 +1051,8 @@ WebInspector.ObjectPropertiesSection.createNameElement = function(name)
     return nameElement;
 }
 
+WebInspector.ObjectPropertiesSection._functionPrefixSource = /^(?:async\s)?function\*?\s/;
+
 /**
  * @param {?string=} description
  * @return {string} valueText
@@ -1058,7 +1060,8 @@ WebInspector.ObjectPropertiesSection.createNameElement = function(name)
 WebInspector.ObjectPropertiesSection.valueTextForFunctionDescription = function(description)
 {
     var text = description.replace(/^function [gs]et /, "function ");
-    var matches = /^function\s([^)]*)/.exec(text);
+    var functionPrefixWithArguments = new RegExp(WebInspector.ObjectPropertiesSection._functionPrefixSource.source + "([^)]*)");
+    var matches = functionPrefixWithArguments.exec(text);
     if (!matches) {
         // process shorthand methods
         matches = /[^(]*(\([^)]*)/.exec(text);
@@ -1204,6 +1207,13 @@ WebInspector.ObjectPropertiesSection.formatObjectAsFunction = function(func, ele
             return;
         }
 
+        var matched = func.description.match(WebInspector.ObjectPropertiesSection._functionPrefixSource);
+        if (matched) {
+            var prefix = createElementWithClass("span", "object-value-function-prefix");
+            prefix.textContent = matched[0];
+            element.appendChild(prefix);
+        }
+
         if (linkify && response && response.location) {
             var anchor = createElement("span");
             element.classList.add("linkified");
@@ -1214,7 +1224,7 @@ WebInspector.ObjectPropertiesSection.formatObjectAsFunction = function(func, ele
 
         var text = func.description.substring(0, 200);
         if (includePreview) {
-            element.textContent = text.replace(/^function /, "") + (func.description.length > 200 ? "\u2026" : "");
+            element.createTextChild(text.replace(WebInspector.ObjectPropertiesSection._functionPrefixSource, "") + (func.description.length > 200 ? "\u2026" : ""));
             return;
         }
 
@@ -1231,7 +1241,7 @@ WebInspector.ObjectPropertiesSection.formatObjectAsFunction = function(func, ele
         {
             var tokenize = tokenizerFactory.createTokenizer("text/javascript");
             tokenize(text, processToken);
-            element.textContent = (functionName || "anonymous") + "(" + (params || []).join(", ") + ")";
+            element.createTextChild((functionName || "anonymous") + "(" + (params || []).join(", ") + ")");
         }
 
         var doneProcessing = false;

@@ -23,10 +23,8 @@
     background-color: rgba(56, 121, 217, 0.1);
 }
 
-.object-value-function::before {
-    content: "function";
+.object-value-function-prefix {
     color: rgb(170, 13, 145);
-    padding-right: 5px;
 }
 
 .object-value-function {

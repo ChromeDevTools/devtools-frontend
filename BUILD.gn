@@ -131,6 +131,7 @@ devtools_sdk_js_files = [
   "front_end/sdk/ServiceWorkerCacheModel.js",
   "front_end/sdk/ServiceWorkerManager.js",
   "front_end/sdk/SourceMap.js",
+  "front_end/sdk/SubTargetsManager.js",
   "front_end/sdk/Target.js",
   "front_end/sdk/TargetManager.js",
   "front_end/sdk/TracingManager.js",

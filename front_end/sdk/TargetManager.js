@@ -224,8 +224,10 @@ WebInspector.TargetManager.prototype = {
 
         target.tracingManager = new WebInspector.TracingManager(target);
 
-        if (target.hasBrowserCapability())
-            target.serviceWorkerManager = new WebInspector.ServiceWorkerManager(target);
+        if (target.hasBrowserCapability()) {
+            target.subTargetsManager = new WebInspector.SubTargetsManager(target);
+            target.serviceWorkerManager = new WebInspector.ServiceWorkerManager(target, target.subTargetsManager);
+        }
 
         this.addTarget(target);
         return target;

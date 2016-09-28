@@ -17,6 +17,10 @@ WebInspector.Persistence = function(workspace, breakpointManager, fileSystemMapp
     this._fileSystemMapping = fileSystemMapping;
     /** @type {!Set<!WebInspector.PersistenceBinding>} */
     this._bindings = new Set();
+
+    /** @type {!Map<string, number>} */
+    this._filePathPrefixesToBindingCount = new Map();
+
     this._eventListeners = [
         workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeAdded, this._onUISourceCodeAdded, this),
         workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeRemoved, this._onUISourceCodeRemoved, this),
@@ -123,6 +127,8 @@ WebInspector.Persistence.prototype = {
         binding.fileSystem.addEventListener(WebInspector.UISourceCode.Events.WorkingCopyCommitted, this._onWorkingCopyCommitted, this);
         binding.fileSystem.addEventListener(WebInspector.UISourceCode.Events.TitleChanged, this._onFileSystemUISourceCodeRenamed, this);
 
+        this._addFilePathBindingPrefixes(binding.fileSystem.url());
+
         this._moveBreakpoints(binding.fileSystem, binding.network);
         this.dispatchEventToListeners(WebInspector.Persistence.Events.BindingCreated, binding);
     },
@@ -142,6 +148,8 @@ WebInspector.Persistence.prototype = {
         binding.network.removeEventListener(WebInspector.UISourceCode.Events.WorkingCopyCommitted, this._onWorkingCopyCommitted, this);
         binding.fileSystem.removeEventListener(WebInspector.UISourceCode.Events.WorkingCopyCommitted, this._onWorkingCopyCommitted, this);
         binding.fileSystem.removeEventListener(WebInspector.UISourceCode.Events.TitleChanged, this._onFileSystemUISourceCodeRenamed, this);
+
+        this._removeFilePathBindingPrefixes(binding.fileSystem.url());
 
         this._copyBreakpoints(binding.network, binding.fileSystem);
         this.dispatchEventToListeners(WebInspector.Persistence.Events.BindingRemoved, binding);
@@ -254,6 +262,46 @@ WebInspector.Persistence.prototype = {
     binding: function(uiSourceCode)
     {
         return uiSourceCode[WebInspector.Persistence._binding] || null;
+    },
+
+    /**
+     * @param {string} filePath
+     */
+    _addFilePathBindingPrefixes: function(filePath)
+    {
+        var relative = "";
+        for (var token of filePath.split("/")) {
+            relative += token + "/";
+            var count = this._filePathPrefixesToBindingCount.get(relative) || 0;
+            this._filePathPrefixesToBindingCount.set(relative, count + 1);
+        }
+    },
+
+    /**
+     * @param {string} filePath
+     */
+    _removeFilePathBindingPrefixes: function(filePath)
+    {
+        var relative = "";
+        for (var token of filePath.split("/")) {
+            relative += token + "/";
+            var count = this._filePathPrefixesToBindingCount.get(relative);
+            if (count === 1)
+                this._filePathPrefixesToBindingCount.delete(relative);
+            else
+                this._filePathPrefixesToBindingCount.set(relative, count - 1);
+        }
+    },
+
+    /**
+     * @param {string} filePath
+     * @return {boolean}
+     */
+    filePathHasBindings: function(filePath)
+    {
+        if (!filePath.endsWith("/"))
+            filePath += "/";
+        return this._filePathPrefixesToBindingCount.has(filePath);
     },
 
     dispose: function()

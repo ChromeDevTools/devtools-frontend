@@ -289,8 +289,6 @@ function Panel() {}
 function PanelWithSidebar() {}
 /** @constructor */
 function Resource() {}
-/** @constructor */
-function Timeline() {}
 
 var extensionServer;
 

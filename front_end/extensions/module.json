@@ -6,6 +6,7 @@
         "ExtensionAPI.js",
         "ExtensionAuditCategory.js",
         "ExtensionRegistryStub.js",
+        "ExtensionTraceProvider.js",
         "ExtensionServer.js",
         "ExtensionPanel.js",
         "ExtensionView.js"

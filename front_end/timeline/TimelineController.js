@@ -29,6 +29,8 @@ WebInspector.TimelineController.prototype = {
      */
     startRecording: function(captureCauses, enableJSSampling, captureMemory, capturePictures, captureFilmStrip)
     {
+        this._extensionTraceProviders = WebInspector.extensionServer.traceProviders().slice();
+
         function disabledByDefault(category)
         {
             return "disabled-by-default-" + category;
@@ -66,6 +68,9 @@ WebInspector.TimelineController.prototype = {
         if (captureFilmStrip)
             categoriesArray.push(disabledByDefault("devtools.screenshot"));
 
+        for (var traceProvider of this._extensionTraceProviders)
+            traceProvider.start();
+
         var categories = categoriesArray.join(",");
         this._startRecordingWithCategories(categories, enableJSSampling);
     },
@@ -80,6 +85,9 @@ WebInspector.TimelineController.prototype = {
         Promise.all(tracingStoppedPromises).then(() => this._allSourcesFinished());
 
         this._delegate.loadingStarted();
+
+        for (var traceProvider of this._extensionTraceProviders)
+            traceProvider.stop();
     },
 
     /**

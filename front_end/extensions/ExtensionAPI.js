@@ -57,6 +57,8 @@ function defineCommonExtensionSymbols(apiPrivate)
         NetworkRequestFinished: "network-request-finished",
         OpenResource: "open-resource",
         PanelSearch: "panel-search-",
+        RecordingStarted: "trace-recording-started-",
+        RecordingStopped: "trace-recording-stopped-",
         ResourceAdded: "resource-added",
         ResourceContentCommitted: "resource-content-committed",
         ViewShown: "view-shown-",
@@ -68,6 +70,7 @@ function defineCommonExtensionSymbols(apiPrivate)
         AddAuditCategory: "addAuditCategory",
         AddAuditResult: "addAuditResult",
         AddRequestHeaders: "addRequestHeaders",
+        AddTraceProvider: "addTraceProvider",
         ApplyStyleSheet: "applyStyleSheet",
         CreatePanel: "createPanel",
         CreateSidebarPane: "createSidebarPane",
@@ -183,6 +186,7 @@ function InspectorExtensionAPI()
     this.inspectedWindow = new InspectedWindow();
     this.panels = new Panels();
     this.network = new Network();
+    this.timeline = new Timeline();
     defineDeprecatedProperty(this, "webInspector", "resources", "network");
 }
 
@@ -545,6 +549,37 @@ ButtonImpl.prototype = {
         extensionServer.sendRequest(request);
     }
 };
+
+/**
+ * @constructor
+ */
+function Timeline()
+{
+}
+
+Timeline.prototype = {
+    /**
+     * @param {string} categoryName
+     * @param {string} categoryTooltip
+     * @return {!TraceProvider}
+     */
+    addTraceProvider: function(categoryName, categoryTooltip)
+    {
+        var id = "extension-trace-provider-" + extensionServer.nextObjectId();
+        extensionServer.sendRequest({ command: commands.AddTraceProvider, id: id, categoryName: categoryName, categoryTooltip: categoryTooltip});
+        return new TraceProvider(id);
+    }
+}
+
+/**
+ * @constructor
+ * @param {string} id
+ */
+function TraceProvider(id)
+{
+    this.onRecordingStarted = new EventSink(events.RecordingStarted + id);
+    this.onRecordingStopped = new EventSink(events.RecordingStopped + id);
+}
 
 /**
  * @constructor

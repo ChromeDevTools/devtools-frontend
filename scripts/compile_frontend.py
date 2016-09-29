@@ -76,10 +76,6 @@ v8_inspector_path = path.normpath(path.join(path.dirname(devtools_path), os.pard
 devtools_frontend_path = path.join(devtools_path, 'front_end')
 global_externs_file = to_platform_path(path.join(devtools_frontend_path, 'externs.js'))
 protocol_externs_file = path.join(devtools_frontend_path, 'protocol_externs.js')
-injected_script_source_name = path.join(v8_inspector_path, 'injected-script-source.js')
-injected_script_externs_file = path.join(v8_inspector_path, 'injected_script_externs.js')
-debugger_script_source_name = path.join(v8_inspector_path, 'debugger-script.js')
-debugger_script_externs_file = path.join(v8_inspector_path, 'debugger_script_externs.js')
 
 jsmodule_name_prefix = 'jsmodule_'
 runtime_module_name = '_runtime'
@@ -136,8 +132,8 @@ def hasErrors(output):
     return re.search(error_warning_regex, output) != None
 
 
-def verify_jsdoc_extra(additional_files):
-    files = [to_platform_path(file) for file in descriptors.all_compiled_files() + additional_files]
+def verify_jsdoc_extra():
+    files = [to_platform_path(compiled_file) for compiled_file in descriptors.all_compiled_files()]
     file_list = tempfile.NamedTemporaryFile(mode='wt', delete=False)
     try:
         file_list.write('\n'.join(files))
@@ -146,9 +142,9 @@ def verify_jsdoc_extra(additional_files):
     return popen(java_exec + ['-jar', jsdoc_validator_jar, '--files-list-name', to_platform_path_exact(file_list.name)]), file_list
 
 
-def verify_jsdoc(additional_files):
+def verify_jsdoc():
     def file_list():
-        return descriptors.all_compiled_files() + additional_files
+        return descriptors.all_compiled_files()
 
     errors_found = False
     for full_file_name in file_list():
@@ -367,53 +363,10 @@ finally:
 
 modular_compiler_proc = popen(java_exec + ['-jar', closure_runner_jar, '--compiler-args-file', to_platform_path_exact(compiler_args_file.name)])
 
-def unclosure_injected_script(sourceFileName, outFileName):
-
-    source = read_file(sourceFileName)
-
-    def replace_function(matchobj):
-        return re.sub(r'@param', 'param', matchobj.group(1) or '') + '\n//' + matchobj.group(2)
-
-    # Comment out the closure function and its jsdocs
-    source = re.sub(r'(/\*\*(?:[\s\n]*\*\s*@param[^\n]+\n)+\s*\*/\s*)?\n(\(function)', replace_function, source, count=1)
-
-    # Comment out its return statement
-    source = re.sub(r'\n(\s*return\s+[^;]+;\s*\n\}\)\s*)$', '\n/*\\1*/', source)
-
-    # Replace the "var Object" override with a "self.Object" one
-    source = re.sub(r'\nvar Object =', '\nself.Object =', source, count=1)
-
-    write_file(outFileName, source)
-
-injectedScriptSourceTmpFile = to_platform_path(path.join(inspector_path, 'InjectedScriptSourceTmp.js'))
-
-unclosure_injected_script(injected_script_source_name, injectedScriptSourceTmpFile)
-
-print 'Compiling InjectedScriptSource.js...'
-
 spawned_compiler_command = java_exec + [
     '-jar',
     closure_compiler_jar
 ] + common_closure_args
-
-command = spawned_compiler_command + [
-    '--externs', to_platform_path_exact(injected_script_externs_file),
-    '--externs', to_platform_path_exact(protocol_externs_file),
-    '--module', jsmodule_name_prefix + 'injected_script' + ':1',
-    '--js', to_platform_path(injectedScriptSourceTmpFile)
-]
-
-injectedScriptCompileProc = popen(command)
-
-print 'Compiling DebuggerScript.js...'
-
-command = spawned_compiler_command + [
-    '--externs', to_platform_path_exact(debugger_script_externs_file),
-    '--module', jsmodule_name_prefix + 'debugger_script' + ':1',
-    '--js', to_platform_path(debugger_script_source_name)
-]
-
-debuggerScriptCompileProc = popen(command)
 
 print 'Compiling devtools.js...'
 
@@ -427,13 +380,8 @@ command = spawned_compiler_command + [
 devtoolsJSCompileProc = popen(command)
 
 print 'Verifying JSDoc comments...'
-additional_jsdoc_check_files = [injectedScriptSourceTmpFile]
-errors_found |= verify_jsdoc(additional_jsdoc_check_files)
-jsdocValidatorProc, jsdocValidatorFileList = verify_jsdoc_extra(additional_jsdoc_check_files)
-
-print 'Validating InjectedScriptSource.js...'
-injectedscript_check_script_path = path.join(scripts_path, "check_injected_script_source.py")
-validateInjectedScriptProc = popen([sys.executable, injectedscript_check_script_path, injected_script_source_name])
+errors_found |= verify_jsdoc()
+(jsdocValidatorProc, jsdocValidatorFileList) = verify_jsdoc_extra()
 
 print
 
@@ -501,26 +449,13 @@ if error_count:
     print 'Total Closure errors: %d%s' % (error_count, os.linesep)
     errors_found = True
 
-(injectedScriptCompileOut, _) = injectedScriptCompileProc.communicate()
-print 'InjectedScriptSource.js compilation output:%s' % os.linesep, injectedScriptCompileOut
-errors_found |= hasErrors(injectedScriptCompileOut)
-
-(debuggerScriptCompilerOut, _) = debuggerScriptCompileProc.communicate()
-print 'DebuggerScript.js compilation output:%s' % os.linesep, debuggerScriptCompilerOut
-errors_found |= hasErrors(debuggerScriptCompilerOut)
-
 (devtoolsJSCompileOut, _) = devtoolsJSCompileProc.communicate()
 print 'devtools.js compilation output:%s' % os.linesep, devtoolsJSCompileOut
 errors_found |= hasErrors(devtoolsJSCompileOut)
 
-(validateInjectedScriptOut, _) = validateInjectedScriptProc.communicate()
-print 'Validate InjectedScriptSource.js output:%s' % os.linesep, (validateInjectedScriptOut if validateInjectedScriptOut else '<empty>')
-errors_found |= hasErrors(validateInjectedScriptOut)
-
 if errors_found:
     print 'ERRORS DETECTED'
 
-os.remove(injectedScriptSourceTmpFile)
 os.remove(compiler_args_file.name)
 os.remove(protocol_externs_file)
 shutil.rmtree(modules_dir, True)

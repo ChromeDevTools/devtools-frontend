@@ -117,6 +117,35 @@ WebInspector.TracingModel._extractId = function(payload)
 }
 
 /**
+ * @param {!WebInspector.TracingModel} tracingModel
+ * @return {?WebInspector.TracingModel.Thread}
+ *
+ * TODO: Move this to a better place. This is here just for convenience o
+ * re-use between modules. This really belongs to a higher level, since it
+ * is specific to chrome's usage of tracing.
+ */
+WebInspector.TracingModel.browserMainThread = function(tracingModel)
+{
+    var processes = tracingModel.sortedProcesses();
+    var browserProcesses = [];
+    var crRendererMainThreads = [];
+    for (var process of processes) {
+        if (process.name().toLowerCase().endsWith("browser"))
+            browserProcesses.push(process);
+        crRendererMainThreads.push(...process.sortedThreads().filter(t => t.name() === "CrBrowserMain"));
+    }
+    if (crRendererMainThreads.length === 1)
+        return crRendererMainThreads[0];
+    if (browserProcesses.length === 1)
+        return browserProcesses[0].threadByName("CrBrowserMain");
+    var tracingStartedInBrowser = tracingModel.devToolsMetadataEvents().filter(e => e.name === "TracingStartedInBrowser");
+    if (tracingStartedInBrowser.length === 1)
+        return tracingStartedInBrowser[0].thread;
+    WebInspector.console.error("Failed to find browser main thread in trace, some timeline features may be unavailable");
+    return null;
+}
+
+/**
  * @interface
  */
 WebInspector.BackingStorage = function()

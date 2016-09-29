@@ -33,15 +33,11 @@ WebInspector.FilmStripModel.prototype = {
 
         /** @type {!Array<!WebInspector.FilmStripModel.Frame>} */
         this._frames = [];
-
-        var browserProcess = tracingModel.processByName("Browser");
-        if (!browserProcess)
-            return;
-        var mainThread = browserProcess.threadByName("CrBrowserMain");
-        if (!mainThread)
+        var browserMain = WebInspector.TracingModel.browserMainThread(tracingModel);
+        if (!browserMain)
             return;
 
-        var events = mainThread.events();
+        var events = browserMain.events();
         for (var i = 0; i < events.length; ++i) {
             var event = events[i];
             if (event.startTime < this._zeroTime)

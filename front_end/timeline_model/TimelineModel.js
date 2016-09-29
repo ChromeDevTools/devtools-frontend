@@ -635,9 +635,10 @@ WebInspector.TimelineModel.prototype = {
      */
     _processBrowserEvents: function(tracingModel)
     {
-        var browserMain = tracingModel.threadByName("Browser", "CrBrowserMain");
+        var browserMain = WebInspector.TracingModel.browserMainThread(tracingModel);
         if (!browserMain)
             return;
+
         // Disregard regular events, we don't need them yet, but still process to get proper metadata.
         browserMain.events().forEach(this._processBrowserEvent, this);
         /** @type {!Map<!WebInspector.TimelineModel.AsyncEventGroup, !Array<!WebInspector.TracingModel.AsyncEvent>>} */

@@ -77,6 +77,10 @@
     margin: 0 5px 0 0;
 }
 
+.audit-result-view {
+    overflow: auto;
+}
+
 .panel-enabler-view.audit-launcher-view label {
     padding: 0 0 5px 0;
     margin: 0;

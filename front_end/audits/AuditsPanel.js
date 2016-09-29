@@ -129,6 +129,7 @@ WebInspector.AuditsPanel.prototype = {
         if (!categoryResults._resultLocation) {
             categoryResults.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
             var resultView = WebInspector.viewManager.createStackLocation();
+            resultView.widget().element.classList.add("audit-result-view");
             for (var i = 0; i < categoryResults.length; ++i)
                 resultView.showView(new WebInspector.AuditCategoryResultPane(categoryResults[i]));
             categoryResults._resultLocation = resultView;

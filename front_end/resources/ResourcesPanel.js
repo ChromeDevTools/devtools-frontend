@@ -1043,8 +1043,6 @@ WebInspector.FrameTreeElement.prototype = {
      */
     appendResource: function(resource)
     {
-        if (resource.isHidden())
-            return;
         var resourceType = resource.resourceType();
         var categoryName = resourceType.name();
         var categoryElement = resourceType === WebInspector.resourceTypes.Document ? this : this._categoryElements[categoryName];

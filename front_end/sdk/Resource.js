@@ -38,9 +38,8 @@
  * @param {!NetworkAgent.LoaderId} loaderId
  * @param {!WebInspector.ResourceType} type
  * @param {string} mimeType
- * @param {boolean=} isHidden
  */
-WebInspector.Resource = function(target, request, url, documentURL, frameId, loaderId, type, mimeType, isHidden)
+WebInspector.Resource = function(target, request, url, documentURL, frameId, loaderId, type, mimeType)
 {
     WebInspector.SDKObject.call(this, target);
     this._request = request;
@@ -50,7 +49,6 @@ WebInspector.Resource = function(target, request, url, documentURL, frameId, loa
     this._loaderId = loaderId;
     this._type = type || WebInspector.resourceTypes.Other;
     this._mimeType = mimeType;
-    this._isHidden = isHidden;
 
     /** @type {?string} */ this._content;
     /** @type {boolean} */ this._contentEncoded;
@@ -312,15 +310,6 @@ WebInspector.Resource.prototype = {
 
         this.target().pageAgent().getResourceContent(this.frameId, this.url, resourceContentLoaded.bind(this));
     },
-
-    /**
-     * @return {boolean}
-     */
-    isHidden: function()
-    {
-        return !!this._isHidden;
-    },
-
 
     /**
      * @return {boolean}

@@ -685,6 +685,13 @@ devtools_text_editor_js_files = [
   "front_end/text_editor/CodeMirrorUtils.js",
   "front_end/text_editor/TextEditorAutocompleteController.js",
 ]
+devtools_terminal_js_files = [
+  "front_end/terminal/terminal.css",
+  "front_end/terminal/TerminalWidget.js",
+  "front_end/terminal/xterm.js/addons/fit/fit.js",
+  "front_end/terminal/xterm.js/build/xterm.css",
+  "front_end/terminal/xterm.js/build/xterm.js",
+]
 devtools_timeline_model_js_files = [
   "front_end/timeline_model/LayerTreeModel.js",
   "front_end/timeline_model/TimelineFrameModel.js",
@@ -861,9 +868,9 @@ devtools_modules_js_files =
     devtools_services_js_files + devtools_snippets_js_files +
     devtools_source_frame_js_files + devtools_sources_js_files +
     devtools_temp_storage_shared_worker_js_files +
-    devtools_text_editor_js_files + devtools_timeline_model_js_files +
-    devtools_timeline_js_files + devtools_ui_lazy_js_files +
-    devtools_layer_viewer_js_files
+    devtools_text_editor_js_files + devtools_terminal_js_files +
+    devtools_timeline_model_js_files + devtools_timeline_js_files +
+    devtools_ui_lazy_js_files + devtools_layer_viewer_js_files
 
 all_devtools_files = devtools_cm_css_files + devtools_cm_js_files +
                      devtools_core_files + devtools_module_json_files +
@@ -908,6 +915,7 @@ generated_bundled_modules = [
   "$resources_out_dir/snippets/snippets_module.js",
   "$resources_out_dir/source_frame/source_frame_module.js",
   "$resources_out_dir/sources/sources_module.js",
+  "$resources_out_dir/terminal/terminal_module.js",
   "$resources_out_dir/text_editor/text_editor_module.js",
   "$resources_out_dir/timeline_model/timeline_model_module.js",
   "$resources_out_dir/timeline/timeline_module.js",

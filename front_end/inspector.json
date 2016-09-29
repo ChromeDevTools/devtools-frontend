@@ -34,6 +34,7 @@
         { "name": "layer_viewer", "condition": "!v8only" },
         { "name": "snippets" },
         { "name": "diff" },
+        { "name": "terminal", "type": "remote" },
         { "name": "sass", "condition": "!v8only" },
         { "name": "accessibility", "condition": "!v8only", "type": "remote" },
         { "name": "animation", "condition": "!v8only" },

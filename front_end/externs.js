@@ -776,3 +776,18 @@ Gonzales.Node = function()
  * TODO(jsbell): DOMException should be a subclass of Error.
  */
 DOMException.prototype.message;
+
+/**
+ * @constructor
+ * @param {!Object} params
+ */
+var Terminal = function(params) { }
+
+Terminal.prototype = {
+    fit: function() { },
+    linkify: function() { },
+    /** @param {!Element} element */
+    open: function(element) { },
+    /** @param {string} eventName * @param {!Function} handler */
+    on: function(eventName, handler) { }
+}

@@ -153,6 +153,14 @@ WebInspector.Widget.prototype = {
         this._callOnVisibleChildren(this._processWasShown);
     },
 
+    _processWasDetachedFromHierarchy: function()
+    {
+        this._notify(this.wasDetachedFromHierarchy);
+        var copy = this._children.slice();
+        for (var widget of copy)
+            widget._processWasDetachedFromHierarchy();
+    },
+
     _processWillHide: function()
     {
         if (this._inNotification())
@@ -197,6 +205,10 @@ WebInspector.Widget.prototype = {
     },
 
     willHide: function()
+    {
+    },
+
+    wasDetachedFromHierarchy: function()
     {
     },
 
@@ -338,6 +350,7 @@ WebInspector.Widget.prototype = {
             this._parentWidget.childWasDetached(this);
             var parent = this._parentWidget;
             this._parentWidget = null;
+            this._processWasDetachedFromHierarchy();
         } else {
             WebInspector.Widget.__assert(this._isRoot, "Removing non-root widget from DOM");
         }

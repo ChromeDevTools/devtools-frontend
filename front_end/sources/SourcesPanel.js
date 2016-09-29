@@ -78,7 +78,10 @@ WebInspector.SourcesPanel = function()
     this._sourcesView.addEventListener(WebInspector.SourcesView.Events.EditorSelected, this._editorSelected.bind(this));
     this._sourcesView.addEventListener(WebInspector.SourcesView.Events.EditorClosed, this._editorClosed.bind(this));
     this._sourcesView.registerShortcuts(this.registerShortcuts.bind(this));
-    this.editorView.setMainWidget(this._sourcesView);
+
+    this._toggleNavigatorSidebarButton = this.editorView.createShowHideSidebarButton("navigator");
+    this._toggleDebuggerSidebarButton = this._splitWidget.createShowHideSidebarButton("debugger");
+    this._showSourcesViewInPanel();
     this._editorChanged(this._sourcesView.currentUISourceCode());
 
     this._threadsSidebarPane = null;
@@ -87,10 +90,6 @@ WebInspector.SourcesPanel = function()
     self.runtime.sharedInstance(WebInspector.XHRBreakpointsSidebarPane);
     this._callstackPane = self.runtime.sharedInstance(WebInspector.CallStackSidebarPane);
     this._callstackPane.registerShortcuts(this.registerShortcuts.bind(this));
-
-    this._sourcesView.leftToolbar().appendToolbarItem(this.editorView.createShowHideSidebarButton("navigator"));
-    this._toggleDebuggerSidebarButton = this._splitWidget.createShowHideSidebarButton("debugger");
-    this._sourcesView.rightToolbar().appendToolbarItem(this._toggleDebuggerSidebarButton);
 
     WebInspector.moduleSetting("sidebarPosition").addChangeListener(this._updateSidebarPosition.bind(this));
     this._updateSidebarPosition();
@@ -188,7 +187,7 @@ WebInspector.SourcesPanel.prototype = {
             WebInspector.inspectorView.setDrawerMinimized(true);
             WebInspector.SourcesPanel.updateResizer(this);
         }
-        this.editorView.setMainWidget(this._sourcesView);
+        this._showSourcesViewInPanel();
     },
 
     willHide: function()
@@ -200,6 +199,15 @@ WebInspector.SourcesPanel.prototype = {
             WebInspector.inspectorView.setDrawerMinimized(false);
             WebInspector.SourcesPanel.updateResizer(this);
         }
+    },
+
+    _showSourcesViewInPanel: function()
+    {
+        this._sourcesView.leftToolbar().removeToolbarItems();
+        this._sourcesView.leftToolbar().appendToolbarItem(this._toggleNavigatorSidebarButton);
+        this._sourcesView.rightToolbar().removeToolbarItems();
+        this._sourcesView.rightToolbar().appendToolbarItem(this._toggleDebuggerSidebarButton);
+        this.editorView.setMainWidget(this._sourcesView);
     },
 
     /**
@@ -1354,6 +1362,8 @@ WebInspector.SourcesPanel.WrapperView.prototype = {
 
     _showViewInWrapper: function()
     {
+        this._view.leftToolbar().removeToolbarItems();
+        this._view.rightToolbar().removeToolbarItems();
         this._view.show(this.element);
     },
 

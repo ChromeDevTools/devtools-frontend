@@ -705,10 +705,6 @@ WebInspector.ConsoleViewMessage.prototype = {
      */
     _formatAsArrayEntry: function(output)
     {
-        if (this._message.type === WebInspector.ConsoleMessage.MessageType.DirXML) {
-            // Prevent infinite expansion of cross-referencing arrays.
-            return this._formatParameter(output, output.subtype === "array" || output.subtype === "typedarray", false);
-        }
         return this._previewFormatter.renderPropertyPreview(output.type, output.subtype, output.description);
     },
 

@@ -575,6 +575,10 @@
     color: blue;
 }
 
+.-theme-with-dark-background .network-summary-bar .summary-blue {
+    color: #03A9F4;
+}
+
 .network-log-grid.data-grid .resources-dividers {
     z-index: 0;
 }

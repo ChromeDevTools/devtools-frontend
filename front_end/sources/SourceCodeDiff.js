@@ -227,11 +227,11 @@ WebInspector.SourceCodeDiff.prototype = {
     },
 }
 
-/** @enum {string} */
+/** @enum {symbol} */
 WebInspector.SourceCodeDiff.GutterDecorationType = {
-    Insert: "Insert",
-    Delete: "Delete",
-    Modify: "Modify",
+    Insert: Symbol("Insert"),
+    Delete: Symbol("Delete"),
+    Modify: Symbol("Modify"),
 }
 
 /**

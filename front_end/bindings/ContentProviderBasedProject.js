@@ -119,17 +119,6 @@ WebInspector.ContentProviderBasedProject.prototype = {
     /**
      * @override
      * @param {string} path
-     * @param {function()=} callback
-     */
-    refresh: function(path, callback)
-    {
-        if (callback)
-            callback();
-    },
-
-    /**
-     * @override
-     * @param {string} path
      */
     excludeFolder: function(path)
     {

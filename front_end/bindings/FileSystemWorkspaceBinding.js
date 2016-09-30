@@ -417,16 +417,6 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
 
     /**
      * @override
-     * @param {string} path
-     * @param {function()=} callback
-     */
-    refresh: function(path, callback)
-    {
-        this._fileSystem.requestFilesRecursive(path, this._addFile.bind(this), callback);
-    },
-
-    /**
-     * @override
      * @param {string} url
      */
     excludeFolder: function(url)

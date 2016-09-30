@@ -128,12 +128,6 @@ WebInspector.Project.prototype = {
 
     /**
      * @param {string} path
-     * @param {function()=} callback
-     */
-    refresh: function(path, callback) { },
-
-    /**
-     * @param {string} path
      */
     excludeFolder: function(path) { },
 

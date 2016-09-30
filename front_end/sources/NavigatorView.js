@@ -564,15 +564,6 @@ WebInspector.NavigatorView.prototype = {
     /**
      * @param {!WebInspector.Project} project
      * @param {string} path
-     */
-    _handleContextMenuRefresh: function(project, path)
-    {
-        project.refresh(path);
-    },
-
-    /**
-     * @param {!WebInspector.Project} project
-     * @param {string} path
      * @param {!WebInspector.UISourceCode=} uiSourceCode
      */
     _handleContextMenuCreate: function(project, path, uiSourceCode)
@@ -649,7 +640,6 @@ WebInspector.NavigatorView.prototype = {
         contextMenu.appendSeparator();
 
         if (project && project.type() === WebInspector.projectTypes.FileSystem) {
-            contextMenu.appendItem(WebInspector.UIString.capitalize("Refresh"), this._handleContextMenuRefresh.bind(this, project, path));
             contextMenu.appendItem(WebInspector.UIString.capitalize("New ^file"), this._handleContextMenuCreate.bind(this, project, path));
             if (node instanceof WebInspector.NavigatorFolderTreeNode)
                 contextMenu.appendItem(WebInspector.UIString.capitalize("Exclude ^folder"), this._handleContextMenuExclude.bind(this, project, path));

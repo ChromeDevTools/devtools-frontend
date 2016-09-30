@@ -739,10 +739,10 @@ WebInspector.SourcesPanel.prototype = {
     appendApplicableItems: function(event, contextMenu, target)
     {
         this._appendUISourceCodeItems(event, contextMenu, target);
+        this._appendUISourceCodeFrameItems(event, contextMenu, target);
         this.appendUILocationItems(contextMenu, target);
         this._appendRemoteObjectItems(contextMenu, target);
         this._appendNetworkRequestItems(contextMenu, target);
-        contextMenu.appendAction("debugger.evaluate-selection");
     },
 
     /**
@@ -842,6 +842,18 @@ WebInspector.SourcesPanel.prototype = {
         this._appendUISourceCodeMappingItems(contextMenu, uiSourceCode);
         if (projectType !== WebInspector.projectTypes.FileSystem)
             contextMenu.appendItem(WebInspector.UIString.capitalize("Local ^modifications\u2026"), this._showLocalHistory.bind(this, uiSourceCode));
+    },
+
+    /**
+     * @param {!Event} event
+     * @param {!WebInspector.ContextMenu} contextMenu
+     * @param {!Object} target
+     */
+    _appendUISourceCodeFrameItems: function(event, contextMenu, target)
+    {
+        if (!(target instanceof WebInspector.UISourceCodeFrame))
+            return;
+        contextMenu.appendAction("debugger.evaluate-selection");
     },
 
     /**

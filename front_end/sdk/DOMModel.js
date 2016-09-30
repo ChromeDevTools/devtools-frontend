@@ -1738,6 +1738,36 @@ WebInspector.DOMModel.prototype = {
 
     /**
      * @param {!DOMAgent.NodeId} nodeId
+     * @return {!Promise<!Array<string>>}
+     */
+    classNamesPromise: function(nodeId)
+    {
+        return new Promise(promiseBody.bind(this));
+
+        /**
+         * @param {function(!Array<string>)} fulfill
+         * @this {WebInspector.DOMModel}
+         */
+        function promiseBody(fulfill)
+        {
+            this._agent.collectClassNamesFromSubtree(nodeId, classNamesCallback);
+
+            /**
+             * @param {?string} error
+             * @param {?Array<string>} classNames
+             */
+            function classNamesCallback(error, classNames)
+            {
+                if (!error && classNames)
+                    fulfill(classNames);
+                else
+                    fulfill([]);
+            }
+        }
+    },
+
+    /**
+     * @param {!DOMAgent.NodeId} nodeId
      * @param {string} selectors
      * @param {function(?DOMAgent.NodeId)=} callback
      */

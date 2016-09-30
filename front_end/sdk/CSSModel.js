@@ -534,6 +534,24 @@ WebInspector.CSSModel.prototype = {
     },
 
     /**
+     * @param {!CSSAgent.StyleSheetId} styleSheetId
+     * @return {!Promise<!Array<string>>}
+     */
+    classNamesPromise: function(styleSheetId)
+    {
+        /**
+         * @param {?string} error
+         * @param {?Array<string>} classNames
+         * @return {!Array<string>}
+         */
+        function classNamesCallback(error, classNames)
+        {
+            return !error && classNames ? classNames : [];
+        }
+        return this._agent.collectClassNames(styleSheetId, classNamesCallback);
+    },
+
+    /**
      * @param {!DOMAgent.NodeId} nodeId
      * @return {!Promise.<?Map.<string, string>>}
      */

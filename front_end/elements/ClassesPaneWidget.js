@@ -11,12 +11,17 @@ WebInspector.ClassesPaneWidget = function()
     WebInspector.Widget.call(this);
     this.element.className = "styles-element-classes-pane";
     var container = this.element.createChild("div", "title-container");
-    this._input = container.createChild("input", "new-class-input monospace");
-    this._input.placeholder = WebInspector.UIString("Add new class");
-    this._input.addEventListener("keydown", this._onKeyDown.bind(this), false);
+    this._input = container.createChild("div", "new-class-input monospace");
+    this._input.setAttribute("placeholder", WebInspector.UIString("Add new class"));
     this.setDefaultFocusedElement(this._input);
     this._classesContainer = this.element.createChild("div", "source-code");
     this._classesContainer.classList.add("styles-element-classes-container");
+    this._prompt = new WebInspector.ClassesPaneWidget.ClassNamePrompt();
+    this._prompt.setAutocompletionTimeout(0);
+    this._prompt.renderAsBlock();
+
+    var proxyElement = this._prompt.attach(this._input);
+    proxyElement.addEventListener("keydown", this._onKeyDown.bind(this), false);
 
     WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.DOMMutated, this._onDOMMutated, this);
     /** @type {!Set<!WebInspector.DOMNode>} */
@@ -32,9 +37,9 @@ WebInspector.ClassesPaneWidget.prototype = {
      */
     _onKeyDown: function(event)
     {
-        var text = event.target.value;
+        var text = event.target.textContent;
         if (isEscKey(event)) {
-            event.target.value = "";
+            event.target.textContent = "";
             if (!text.isWhitespace())
                 event.consume(true);
             return;
@@ -46,7 +51,8 @@ WebInspector.ClassesPaneWidget.prototype = {
         if (!node)
             return;
 
-        event.target.value = "";
+        this._prompt.clearAutocomplete();
+        event.target.textContent = "";
         var classNames = text.split(/[.,\s]/);
         for (var className of classNames) {
             var className = className.trim();
@@ -210,4 +216,74 @@ WebInspector.ClassesPaneWidget.ButtonProvider.prototype = {
     {
         return this._button;
     }
+}
+
+/**
+ * @constructor
+ * @extends {WebInspector.TextPrompt}
+ */
+WebInspector.ClassesPaneWidget.ClassNamePrompt = function()
+{
+    WebInspector.TextPrompt.call(this, this._buildClassNameCompletions.bind(this), " ");
+    this.setSuggestBoxEnabled(true);
+    this.disableDefaultSuggestionForEmptyInput();
+    this._selectedFrameId = "";
+    this._classNamesPromise = null;
+}
+
+WebInspector.ClassesPaneWidget.ClassNamePrompt.prototype = {
+    /**
+     * @param {!WebInspector.DOMNode} selectedNode
+     * @return {!Promise.<!Array.<string>>}
+     */
+    _getClassNames: function(selectedNode)
+    {
+        var promises = [];
+        var completions = new Set();
+        this._selectedFrameId = selectedNode.frameId();
+
+        var cssModel = WebInspector.CSSModel.fromTarget(selectedNode.target());
+        var allStyleSheets = cssModel.allStyleSheets();
+        for (var stylesheet of allStyleSheets) {
+            if (stylesheet.frameId !== this._selectedFrameId)
+                continue;
+            var cssPromise = cssModel.classNamesPromise(stylesheet.id).then(classes => completions.addAll(classes));
+            promises.push(cssPromise);
+        }
+
+        var domPromise = selectedNode.domModel().classNamesPromise(selectedNode.ownerDocument.id).then(classes => completions.addAll(classes));
+        promises.push(domPromise);
+        return Promise.all(promises).then(() => completions.valuesArray());
+    },
+
+    /**
+     * @param {!Element} proxyElement
+     * @param {!Range} wordRange
+     * @param {boolean} force
+     * @param {function(!Array.<string>, number=)} completionsReadyCallback
+     */
+    _buildClassNameCompletions: function(proxyElement, wordRange, force, completionsReadyCallback)
+    {
+        var prefix = wordRange.toString();
+        if (!prefix || force)
+            this._classNamesPromise = null;
+
+        var selectedNode = WebInspector.context.flavor(WebInspector.DOMNode);
+        if (!selectedNode || (!prefix && !force && !proxyElement.textContent.length)) {
+            completionsReadyCallback([]);
+            return;
+        }
+
+        if (!this._classNamesPromise || this._selectedFrameId !== selectedNode.frameId())
+            this._classNamesPromise = this._getClassNames(selectedNode);
+
+        this._classNamesPromise.then(completions => {
+            if (prefix[0] === ".")
+                completions = completions.map(value => "." + value);
+            var results = completions.filter(value => value.startsWith(prefix));
+            completionsReadyCallback(results, 0);
+        });
+    },
+
+    __proto__: WebInspector.TextPrompt.prototype
 }

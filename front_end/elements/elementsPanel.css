@@ -328,6 +328,14 @@
     line-height: 15px;
     margin-left: 3px;
     width: calc(100% - 7px);
+    -webkit-user-modify: read-write-plaintext-only;
+    background-color: #fff;
+    cursor: text;
+}
+
+.styles-element-classes-pane .new-class-input:empty:before {
+    content: attr(placeholder);
+    color: darkgray;
 }
 
 .styles-element-state-pane > div {

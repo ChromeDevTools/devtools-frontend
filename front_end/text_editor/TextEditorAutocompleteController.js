@@ -297,6 +297,8 @@ WebInspector.TextEditorAutocompleteController.prototype = {
      */
     _onSuggestionsShownForTest: function(suggestions) { },
 
+    _onSuggestionsHiddenForTest: function() { },
+
     clearAutocomplete: function()
     {
         if (!this._suggestBox)
@@ -306,6 +308,7 @@ WebInspector.TextEditorAutocompleteController.prototype = {
         this._prefixRange = null;
         this._anchorBox = null;
         this._clearHintMarker();
+        this._onSuggestionsHiddenForTest();
     },
 
     /**
@@ -400,7 +403,15 @@ WebInspector.TextEditorAutocompleteController.prototype = {
         if (!this._suggestBox)
             return;
         var cursor = this._codeMirror.getCursor();
-        if (cursor.line !== this._prefixRange.startLine || cursor.ch > this._prefixRange.endColumn + 1 || cursor.ch <= this._prefixRange.startColumn)
+        // Hide autocomplete for smart braces.
+        if (cursor.line === this._prefixRange.startLine && cursor.ch === this._prefixRange.endColumn + 1) {
+            var line = this._codeMirror.getLine(cursor.line);
+            var isWordChar = this._config.isWordChar(line.charAt(cursor.ch - 1));
+            if (!isWordChar)
+                this.clearAutocomplete();
+            return;
+        }
+        if (cursor.line !== this._prefixRange.startLine || cursor.ch > this._prefixRange.endColumn || cursor.ch <= this._prefixRange.startColumn)
             this.clearAutocomplete();
     },
 

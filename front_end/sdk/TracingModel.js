@@ -127,6 +127,9 @@ WebInspector.TracingModel._extractId = function(payload)
 WebInspector.TracingModel.browserMainThread = function(tracingModel)
 {
     var processes = tracingModel.sortedProcesses();
+    // Avoid warning for an empty model.
+    if (!processes.length)
+        return null;
     var browserProcesses = [];
     var crRendererMainThreads = [];
     for (var process of processes) {

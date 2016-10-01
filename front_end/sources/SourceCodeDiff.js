@@ -224,7 +224,13 @@ WebInspector.SourceCodeDiff.prototype = {
 
         this._decorations = decorationDiff.equal.concat(addedDecorations);
         this._updateDecorations(decorationDiff.removed, addedDecorations);
+        this._decorationsSetForTest(newDecorations);
     },
+
+    /**
+     * @param {!Map<number, !{lineNumber: number, type: !WebInspector.SourceCodeDiff.GutterDecorationType}>} decorations
+     */
+    _decorationsSetForTest: function(decorations) { }
 }
 
 /** @enum {symbol} */

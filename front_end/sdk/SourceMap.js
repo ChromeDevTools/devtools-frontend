@@ -172,13 +172,14 @@ WebInspector.TextSourceMap = function(compiledURL, sourceMappingURL, payload)
             WebInspector.TextSourceMap.prototype._base64Map[base64Digits.charAt(i)] = i;
     }
 
+    this._json = payload;
     this._compiledURL = compiledURL;
     this._sourceMappingURL = sourceMappingURL;
-    this._reverseMappingsBySourceURL = new Map();
-    this._mappings = [];
-    this._sources = {};
-    this._sourceContentByURL = {};
-    this._parseMappingPayload(payload);
+    /** @type {?Array<!WebInspector.SourceMapEntry>} */
+    this._mappings = null;
+    /** @type {!Map<string, !WebInspector.TextSourceMap.SourceInfo>} */
+    this._sourceInfos = new Map();
+    this._eachSection(this._parseSources.bind(this));
 }
 
 /**
@@ -211,7 +212,6 @@ WebInspector.TextSourceMap.load = function(sourceMapURL, compiledURL)
         try {
             var payload = /** @type {!SourceMapV3} */ (JSON.parse(content));
             var baseURL = sourceMapURL.startsWith("data:") ? compiledURL : sourceMapURL;
-
             callback(new WebInspector.TextSourceMap(compiledURL, baseURL, payload));
         } catch (e) {
             console.error(e);
@@ -246,7 +246,7 @@ WebInspector.TextSourceMap.prototype = {
      */
     sourceURLs: function()
     {
-        return Object.keys(this._sources);
+        return this._sourceInfos.keysArray();
     },
 
     /**
@@ -257,9 +257,9 @@ WebInspector.TextSourceMap.prototype = {
      */
     sourceContentProvider: function(sourceURL, contentType)
     {
-        var sourceContent = this._sourceContentByURL[sourceURL];
-        if (sourceContent)
-            return WebInspector.StaticContentProvider.fromString(sourceURL, contentType, sourceContent);
+        var info = this._sourceInfos.get(sourceURL);
+        if (info.content)
+            return WebInspector.StaticContentProvider.fromString(sourceURL, contentType, info.content);
         return new WebInspector.CompilerSourceMappingContentProvider(sourceURL, contentType);
     },
 
@@ -284,28 +284,6 @@ WebInspector.TextSourceMap.prototype = {
     },
 
     /**
-     * @param {!SourceMapV3} mappingPayload
-     */
-    _parseMappingPayload: function(mappingPayload)
-    {
-        if (mappingPayload.sections)
-            this._parseSections(mappingPayload.sections);
-        else
-            this._parseMap(mappingPayload, 0, 0);
-    },
-
-    /**
-     * @param {!Array.<!SourceMapV3.Section>} sections
-     */
-    _parseSections: function(sections)
-    {
-        for (var i = 0; i < sections.length; ++i) {
-            var section = sections[i];
-            this._parseMap(section.map, section.offset.line, section.offset.column);
-        }
-    },
-
-    /**
      * @override
      * @param {number} lineNumber in compiled resource
      * @param {number} columnNumber in compiled resource
@@ -314,11 +292,12 @@ WebInspector.TextSourceMap.prototype = {
     findEntry: function(lineNumber, columnNumber)
     {
         var first = 0;
-        var count = this._mappings.length;
+        var mappings = this.mappings();
+        var count = mappings.length;
         while (count > 1) {
             var step = count >> 1;
             var middle = first + step;
-            var mapping = this._mappings[middle];
+            var mapping = mappings[middle];
             if (lineNumber < mapping.lineNumber || (lineNumber === mapping.lineNumber && columnNumber < mapping.columnNumber)) {
                 count = step;
             } else {
@@ -326,7 +305,7 @@ WebInspector.TextSourceMap.prototype = {
                 count -= step;
             }
         }
-        var entry = this._mappings[first];
+        var entry = mappings[first];
         if (!first && entry && (lineNumber < entry.lineNumber || (lineNumber === entry.lineNumber && columnNumber < entry.columnNumber)))
             return null;
         return entry;
@@ -361,7 +340,12 @@ WebInspector.TextSourceMap.prototype = {
      */
     mappings: function()
     {
-        return this._mappings;
+        if (this._mappings === null) {
+            this._mappings = [];
+            this._eachSection(this._parseMap.bind(this));
+            this._json = null;
+        }
+        return /** @type {!Array<!WebInspector.SourceMapEntry>} */ (this._mappings);
     },
 
     /**
@@ -370,14 +354,13 @@ WebInspector.TextSourceMap.prototype = {
      */
     _reversedMappings: function(sourceURL)
     {
-        var mappings = this._reverseMappingsBySourceURL.get(sourceURL);
-        if (!mappings)
+        if (!this._sourceInfos.has(sourceURL))
             return [];
-        if (!mappings._sorted) {
-            mappings.sort(sourceMappingComparator);
-            mappings._sorted = true;
-        }
-        return mappings;
+        var mappings = this.mappings();
+        var info = this._sourceInfos.get(sourceURL);
+        if (info.reverseMappings === null)
+            info.reverseMappings = mappings.filter((mapping) => mapping.sourceURL === sourceURL).sort(sourceMappingComparator);
+        return info.reverseMappings;
 
         /**
          * @param {!WebInspector.SourceMapEntry} a
@@ -399,6 +382,38 @@ WebInspector.TextSourceMap.prototype = {
     },
 
     /**
+     * @param {function(!SourceMapV3, number, number)} callback
+     */
+    _eachSection: function(callback) {
+        if (!this._json.sections) {
+            callback(this._json, 0, 0);
+            return;
+        }
+        for (var section of this._json.sections)
+            callback(section.map, section.offset.line, section.offset.column);
+    },
+
+    /**
+     * @param {!SourceMapV3} sourceMap
+     */
+    _parseSources: function(sourceMap) {
+        var sourcesList = [];
+        var sourceRoot = sourceMap.sourceRoot || "";
+        if (sourceRoot && !sourceRoot.endsWith("/"))
+            sourceRoot += "/";
+        for (var i = 0; i < sourceMap.sources.length; ++i) {
+            var href = sourceRoot + sourceMap.sources[i];
+            var url = WebInspector.ParsedURL.completeURL(this._sourceMappingURL, href) || href;
+            var source = sourceMap.sourcesContent && sourceMap.sourcesContent[i];
+            if (url === this._compiledURL && source)
+                url += WebInspector.UIString(" [sm]");
+            this._sourceInfos.set(url, new WebInspector.TextSourceMap.SourceInfo(source, null));
+            sourcesList.push(url);
+        }
+        sourceMap[WebInspector.TextSourceMap._sourcesListSymbol] = sourcesList;
+    },
+
+    /**
      * @param {!SourceMapV3} map
      * @param {number} lineNumber
      * @param {number} columnNumber
@@ -409,25 +424,8 @@ WebInspector.TextSourceMap.prototype = {
         var sourceLineNumber = 0;
         var sourceColumnNumber = 0;
         var nameIndex = 0;
-
-        var sources = [];
+        var sources = map[WebInspector.TextSourceMap._sourcesListSymbol];
         var names = map.names || [];
-        var sourceRoot = map.sourceRoot || "";
-        if (sourceRoot && !sourceRoot.endsWith("/"))
-            sourceRoot += "/";
-        for (var i = 0; i < map.sources.length; ++i) {
-            var href = sourceRoot + map.sources[i];
-            var url = WebInspector.ParsedURL.completeURL(this._sourceMappingURL, href) || href;
-            var hasSource = map.sourcesContent && map.sourcesContent[i];
-            if (url === this._compiledURL && hasSource)
-                url += WebInspector.UIString(" [sm]");
-            sources.push(url);
-            this._sources[url] = true;
-
-            if (hasSource)
-                this._sourceContentByURL[url] = map.sourcesContent[i];
-        }
-
         var stringCharIterator = new WebInspector.TextSourceMap.StringCharIterator(map.mappings);
         var sourceURL = sources[sourceIndex];
 
@@ -465,17 +463,6 @@ WebInspector.TextSourceMap.prototype = {
 
             nameIndex += this._decodeVLQ(stringCharIterator);
             this._mappings.push(new WebInspector.SourceMapEntry(lineNumber, columnNumber, sourceURL, sourceLineNumber, sourceColumnNumber, names[nameIndex]));
-        }
-
-        for (var i = 0; i < this._mappings.length; ++i) {
-            var mapping = this._mappings[i];
-            var url = mapping.sourceURL;
-            if (!url)
-                continue;
-            if (!this._reverseMappingsBySourceURL.has(url))
-                this._reverseMappingsBySourceURL.set(url, []);
-            var reverseMappings = this._reverseMappingsBySourceURL.get(url);
-            reverseMappings.push(mapping);
         }
     },
 
@@ -578,3 +565,15 @@ WebInspector.TextSourceMap.StringCharIterator.prototype = {
         return this._position < this._string.length;
     }
 }
+
+/**
+ * @constructor
+ * @param {?string} content
+ * @param {?Array<!WebInspector.SourceMapEntry>} reverseMappings
+ */
+WebInspector.TextSourceMap.SourceInfo = function(content, reverseMappings) {
+    this.content = content;
+    this.reverseMappings = reverseMappings;
+}
+
+WebInspector.TextSourceMap._sourcesListSymbol = Symbol("sourcesList");

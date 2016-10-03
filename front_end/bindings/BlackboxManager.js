@@ -149,14 +149,14 @@ WebInspector.BlackboxManager.prototype = {
         if (!previousScriptState)
             return Promise.resolve();
 
-        var mappings = sourceMap.mappings().slice();
-        mappings.sort(mappingComparator);
-
+        var hasBlackboxedMappings = sourceMap.sourceURLs().some((url) => this.isBlackboxedURL(url));
+        var mappings = hasBlackboxedMappings ? sourceMap.mappings().slice() : [];
         if (!mappings.length) {
             if (previousScriptState.length > 0)
                 return this._setScriptState(script, []);
             return Promise.resolve();
         }
+        mappings.sort(mappingComparator);
 
         var currentBlackboxed = false;
         var isBlackboxed = false;

@@ -97,7 +97,7 @@ WebInspector.JavaScriptBreakpointsSidebarPane.prototype = {
                 var snippetStartIndex = columnNumber > 100 ? columnNumber : 0;
                 snippetElement.textContent = lineText.substr(snippetStartIndex).trimEnd(maxSnippetLength);
             }
-            this.didReceiveBreakpointLineForTest(uiLocation.uiSourceCode);
+            this.didReceiveBreakpointLineForTest(uiLocation.uiSourceCode, lineNumber,  columnNumber);
         }
 
         uiLocation.uiSourceCode.requestContent().then(didRequestContent.bind(this));
@@ -117,8 +117,10 @@ WebInspector.JavaScriptBreakpointsSidebarPane.prototype = {
 
     /**
      * @param {!WebInspector.UISourceCode} uiSourceCode
+     * @param {number} lineNumber
+     * @param {number} columnNumber
      */
-    didReceiveBreakpointLineForTest: function(uiSourceCode)
+    didReceiveBreakpointLineForTest: function(uiSourceCode, lineNumber, columnNumber)
     {
     },
 

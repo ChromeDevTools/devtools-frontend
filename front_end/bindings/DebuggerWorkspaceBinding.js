@@ -152,12 +152,15 @@ WebInspector.DebuggerWorkspaceBinding.prototype = {
      * @param {!WebInspector.DebuggerModel.Location} location
      * @param {function(!WebInspector.LiveLocation)} updateDelegate
      * @param {!WebInspector.LiveLocationPool} locationPool
-     * @return {!WebInspector.DebuggerWorkspaceBinding.Location}
+     * @return {?WebInspector.DebuggerWorkspaceBinding.Location}
      */
     createCallFrameLiveLocation: function(location, updateDelegate, locationPool)
     {
+        var script = location.script();
+        if (!script)
+            return null;
         var target = location.target();
-        this._ensureInfoForScript(/** @type {!WebInspector.Script} */(location.script()));
+        this._ensureInfoForScript(script);
         var liveLocation = this.createLiveLocation(location, updateDelegate, locationPool);
         this._registerCallFrameLiveLocation(target, liveLocation);
         return liveLocation;
@@ -601,7 +604,7 @@ WebInspector.DebuggerWorkspaceBinding.StackTraceTopFrameLocation = function(rawL
     /** @type {!Set<!WebInspector.LiveLocation>} */
     this._locations = new Set();
     for (var location of rawLocations)
-        this._locations.add(binding.createCallFrameLiveLocation(location, this._scheduleUpdate.bind(this), locationPool));
+        this._locations.add(binding.createLiveLocation(location, this._scheduleUpdate.bind(this), locationPool));
     this._updateLocation();
 }
 

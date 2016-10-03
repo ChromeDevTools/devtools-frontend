@@ -100,8 +100,10 @@ WebInspector.XHRBreakpointsSidebarPane.prototype = {
         if (enabled)
             this._updateBreakpointOnTarget(url, true, target);
 
-        if (this._breakpointElements.has(url))
+        if (this._breakpointElements.has(url)) {
+            this._breakpointElements.get(url)._checkboxElement.checked = enabled;
             return;
+        }
 
         var element = createElement("li");
         element._url = url;

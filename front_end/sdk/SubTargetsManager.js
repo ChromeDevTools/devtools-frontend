@@ -20,6 +20,7 @@ WebInspector.SubTargetsManager = function(target)
     this._connections = new Map();
 
     this._agent.setWaitForDebuggerOnStart(true);
+    this._agent.setAttachToFrames(Runtime.experiments.isEnabled("autoAttachToCrossProcessSubframes"));
     this._agent.enable();
 }
 
@@ -138,6 +139,10 @@ WebInspector.SubTargetsManager.prototype = {
             return WebInspector.Target.Capability.JS | WebInspector.Target.Capability.Log;
         if (type === "service_worker")
             return WebInspector.Target.Capability.Log | WebInspector.Target.Capability.Network | WebInspector.Target.Capability.Worker;
+        if (type === "iframe")
+            return WebInspector.Target.Capability.Browser | WebInspector.Target.Capability.DOM |
+                WebInspector.Target.Capability.JS | WebInspector.Target.Capability.Log |
+                WebInspector.Target.Capability.Network | WebInspector.Target.Capability.Worker;
         return 0;
     },
 
@@ -152,8 +157,11 @@ WebInspector.SubTargetsManager.prototype = {
         var connection = new WebInspector.SubTargetConnection(this._agent, targetId);
         this._connections.set(targetId, connection);
 
-        var parsedURL = url.asParsedURL();
-        var targetName = parsedURL ? parsedURL.lastPathComponentWithFragment() : "#" + (++this._lastAnonymousTargetId);
+        var targetName = "";
+        if (type !== "iframe") {
+            var parsedURL = url.asParsedURL();
+            targetName = parsedURL ? parsedURL.lastPathComponentWithFragment() : "#" + (++this._lastAnonymousTargetId);
+        }
         var target = WebInspector.targetManager.createTarget(targetName, this._capabilitiesForType(type), connection, this.target());
         target[WebInspector.SubTargetsManager._TypeSymbol] = type;
         target[WebInspector.SubTargetsManager._IdSymbol] = targetId;
@@ -278,7 +286,7 @@ WebInspector.TargetInfo = function(payload)
 {
     this.id = payload.targetId;
     this.url = payload.url;
-    if (payload.type !== "page" && payload.type !== "frame") {
+    if (payload.type !== "page" && payload.type !== "iframe") {
         this.title = WebInspector.UIString("Worker: %s", this.url);
         this.canActivate = false;
     } else {

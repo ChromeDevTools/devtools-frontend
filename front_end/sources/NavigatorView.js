@@ -62,6 +62,7 @@ WebInspector.NavigatorView = function()
     WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this);
     WebInspector.persistence.addEventListener(WebInspector.Persistence.Events.BindingCreated, this._onBindingChanged, this);
     WebInspector.persistence.addEventListener(WebInspector.Persistence.Events.BindingRemoved, this._onBindingChanged, this);
+    WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.NameChanged, this._targetNameChanged, this);
 
     WebInspector.targetManager.observeTargets(this);
     this._resetWorkspace(WebInspector.workspace);
@@ -814,6 +815,17 @@ WebInspector.NavigatorView.prototype = {
             this._rootNode.removeChild(targetNode);
     },
 
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _targetNameChanged: function(event)
+    {
+        var target = /** @type {!WebInspector.Target} */ (event.data);
+        var targetNode = this._rootNode.child("target:" + target.id());
+        if (targetNode)
+            targetNode.setTitle(target.name());
+    },
+
     __proto__: WebInspector.VBox.prototype
 }
 
@@ -1108,6 +1120,14 @@ WebInspector.NavigatorTreeNode.prototype = {
 
     onattach: function()
     {
+    },
+
+    /**
+     * @param {string} title
+     */
+    setTitle: function(title)
+    {
+        throw "Not implemented";
     },
 
     populate: function()
@@ -1636,6 +1656,17 @@ WebInspector.NavigatorGroupTreeNode.prototype = {
             this._treeElement.expand();
         else
             this._treeElement.collapse();
+    },
+
+    /**
+     * @param {string} title
+     * @override
+     */
+    setTitle: function(title)
+    {
+        this._title = title;
+        if (this._treeElement)
+            this._treeElement.title = this._title;
     },
 
     __proto__: WebInspector.NavigatorTreeNode.prototype

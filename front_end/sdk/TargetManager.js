@@ -24,8 +24,9 @@ WebInspector.TargetManager = function()
 /** @enum {symbol} */
 WebInspector.TargetManager.Events = {
     InspectedURLChanged: Symbol("InspectedURLChanged"),
-    MainFrameNavigated: Symbol("MainFrameNavigated"),
     Load: Symbol("Load"),
+    MainFrameNavigated: Symbol("MainFrameNavigated"),
+    NameChanged: Symbol("NameChanged"),
     PageReloadRequested: Symbol("PageReloadRequested"),
     WillReloadPage: Symbol("WillReloadPage"),
     TargetDisposed: Symbol("TargetDisposed"),

@@ -57,7 +57,7 @@ WebInspector.Target.prototype = {
      */
     name: function()
     {
-        return this._name;
+        return this._name || this._inspectedURLName;
     },
 
     /**
@@ -213,8 +213,13 @@ WebInspector.Target.prototype = {
     setInspectedURL: function(inspectedURL)
     {
         this._inspectedURL = inspectedURL;
-        InspectorFrontendHost.inspectedURLChanged(inspectedURL || "");
+        var parsedURL = inspectedURL.asParsedURL();
+        this._inspectedURLName = parsedURL ? parsedURL.lastPathComponentWithFragment() : "#" + this._id;
+        if (!this.parentTarget())
+            InspectorFrontendHost.inspectedURLChanged(inspectedURL || "");
         this._targetManager.dispatchEventToListeners(WebInspector.TargetManager.Events.InspectedURLChanged, this);
+        if (!this._name)
+            this._targetManager.dispatchEventToListeners(WebInspector.TargetManager.Events.NameChanged, this);
     },
 
     __proto__: Protocol.Agents.prototype

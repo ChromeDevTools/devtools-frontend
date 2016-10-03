@@ -277,6 +277,7 @@ devtools_ui_js_files = [
   "front_end/ui/UIUtils.js",
   "front_end/ui/View.js",
   "front_end/ui/ViewportControl.js",
+  "front_end/ui/StaticViewportControl.js",
   "front_end/ui/Widget.js",
   "front_end/ui/ZoomManager.js",
   "front_end/ui/treeoutline.js",

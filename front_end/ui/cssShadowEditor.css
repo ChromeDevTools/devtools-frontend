@@ -93,6 +93,6 @@
     border-color: #4285F4;
 }
 
-.shadow-editor-text-input.invalid {
+.shadow-editor-text-input.invalid:not(:focus) {
     border-color: #E67C73;
 }

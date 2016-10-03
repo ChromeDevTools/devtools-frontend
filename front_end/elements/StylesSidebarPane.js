@@ -2427,7 +2427,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
             this.nameElement.normalize();
             this.valueElement.normalize();
 
-            this.editingCommitted(event.target.textContent, context, "forward");
+            this._editingCommitted(event.target.textContent, context, "forward");
         }
 
         /**
@@ -2448,7 +2448,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
             var text = event.target.textContent;
             if (!context.isEditingName)
                 text = this.value || text;
-            this.editingCommitted(text, context, moveDirection);
+            this._editingCommitted(text, context, moveDirection);
         }
 
         this._originalPropertyText = this.property.propertyText;
@@ -2512,7 +2512,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
                 break;
             case "forward":
             case "backward":
-                this.editingCommitted(event.target.textContent, context, result);
+                this._editingCommitted(event.target.textContent, context, result);
                 break;
             }
 
@@ -2553,7 +2553,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
         if (isFieldInputTerminated) {
             // Enter or colon (for name)/semicolon outside of string (for value).
             event.consume(true);
-            this.editingCommitted(event.target.textContent, context, "forward");
+            this._editingCommitted(event.target.textContent, context, "forward");
             return;
         }
     },
@@ -2642,7 +2642,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
      * @param {!WebInspector.StylePropertyTreeElement.Context} context
      * @param {string} moveDirection
      */
-    editingCommitted: function(userInput, context, moveDirection)
+    _editingCommitted: function(userInput, context, moveDirection)
     {
         this._removePrompt();
         this.editingEnded(context);

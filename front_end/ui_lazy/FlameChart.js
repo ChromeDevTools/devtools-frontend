@@ -430,7 +430,7 @@ WebInspector.FlameChart.Calculator.prototype = {
         this._minimumBoundaries = this._zeroTime + mainPane._windowLeft * this._totalTime;
         this._maximumBoundaries = this._zeroTime + mainPane._windowRight * this._totalTime;
         this._paddingLeft = mainPane._paddingLeft;
-        this._width = mainPane._canvas.width / window.devicePixelRatio - this._paddingLeft;
+        this._width = mainPane._offsetWidth - this._paddingLeft;
         this._timeToPixel = this._width / this.boundarySpan();
     },
 
@@ -1244,7 +1244,6 @@ WebInspector.FlameChart.prototype = {
         var nextMarkerIndex = 0;
         var textPadding = this._dataProvider.textPadding();
         var minTextWidth = 2 * textPadding + this._measureWidth(context, "\u2026");
-        var unclippedWidth = width - (WebInspector.isMac() ? 0 : this._vScrollElement.offsetWidth);
         var barHeight = this._barHeight;
         var top = this._scrollTop;
         var minVisibleBarLevel = Math.max(this._visibleLevelOffsets.upperBound(top) - 1, 0);
@@ -1339,7 +1338,7 @@ WebInspector.FlameChart.prototype = {
             var entryIndex = titleIndices[i];
             var entryStartTime = entryStartTimes[entryIndex];
             var barX = this._timeToPositionClipped(entryStartTime);
-            var barRight = Math.min(this._timeToPositionClipped(entryStartTime + entryTotalTimes[entryIndex]), unclippedWidth) + 1;
+            var barRight = Math.min(this._timeToPositionClipped(entryStartTime + entryTotalTimes[entryIndex]), width) + 1;
             var barWidth = barRight - barX;
             var barLevel = entryLevels[entryIndex];
             var barY = this._levelToHeight(barLevel);
@@ -1807,7 +1806,7 @@ WebInspector.FlameChart.prototype = {
         var timelineData = this._timelineData();
         var barX = this._timeToPositionClipped(timeRange.startTime);
         var barRight = this._timeToPositionClipped(timeRange.endTime);
-        if (barRight === 0 || barX === this._canvas.width)
+        if (barRight === 0 || barX === this._offsetWidth)
             return;
         var barWidth = barRight - barX;
         var barCenter = barX + barWidth / 2;
@@ -1828,7 +1827,7 @@ WebInspector.FlameChart.prototype = {
      */
     _timeToPositionClipped: function(time)
     {
-        return Number.constrain(this._timeToPosition(time), 0, this._canvas.width);
+        return Number.constrain(this._timeToPosition(time), 0, this._offsetWidth);
     },
 
     /**
@@ -1965,7 +1964,10 @@ WebInspector.FlameChart.prototype = {
 
     _updateContentElementSize: function()
     {
-        this._offsetWidth = this.contentElement.offsetWidth;
+        var offsetWidth = this._vScrollElement.offsetLeft;
+        if (!offsetWidth)
+            offsetWidth = this.contentElement.offsetWidth;
+        this._offsetWidth = offsetWidth;
         this._offsetHeight = this.contentElement.offsetHeight;
     },
 

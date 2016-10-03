@@ -30,19 +30,18 @@
 
 .flame-chart-v-scroll {
     position: absolute;
-    width: 14px;
     top: 0;
     right: 0;
     bottom: 0;
     overflow-x: hidden;
     z-index: 200;
+    padding-left: 1px;
 }
 
 :host-context(.platform-mac) .flame-chart-v-scroll {
     right: 2px;
     top: 3px;
     bottom: 3px;
-    width: 15px;
 }
 
 /* force non-overlay scrollbars */

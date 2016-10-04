@@ -611,9 +611,10 @@ WebInspector.ServiceWorkerContextNamer.prototype = {
         var parent = target.parentTarget();
         if (!parent || parent.parentTarget() !== this._target)
             return null;
-        if (this._subTargetsManager.targetType(parent) !== "service_worker")
+        var targetInfo = this._subTargetsManager.targetInfo(parent);
+        if (!targetInfo || targetInfo.type !== "service_worker")
             return null;
-        return this._subTargetsManager.targetId(parent);
+        return targetInfo.id;
     },
 
     _updateAllContextLabels: function()

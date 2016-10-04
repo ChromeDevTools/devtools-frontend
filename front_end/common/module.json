@@ -23,6 +23,7 @@
         "TextRange.js",
         "TextUtils.js",
         "Throttler.js",
+        "Trie.js",
         "UIString.js",
         "ModuleExtensionInterfaces.js",
         "FormatterWorkerPool.js"

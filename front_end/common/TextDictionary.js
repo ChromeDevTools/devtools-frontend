@@ -35,6 +35,7 @@ WebInspector.TextDictionary = function()
 {
     /** @type {!Map<string, number>} */
     this._words = new Map();
+    this._index = new WebInspector.Trie();
 }
 
 WebInspector.TextDictionary.prototype = {
@@ -46,6 +47,7 @@ WebInspector.TextDictionary.prototype = {
         var count = this._words.get(word) || 0;
         ++count;
         this._words.set(word, count);
+        this._index.add(word);
     },
 
     /**
@@ -56,6 +58,7 @@ WebInspector.TextDictionary.prototype = {
         var count = this._words.get(word) || 0;
         if (!count)
             return;
+        this._index.remove(word);
         if (count === 1) {
             this._words.delete(word);
             return;
@@ -70,12 +73,7 @@ WebInspector.TextDictionary.prototype = {
      */
     wordsWithPrefix: function(prefix)
     {
-        var words = [];
-        for (var word of this._words.keys()) {
-            if (word.startsWith(prefix))
-                words.push(word);
-        }
-        return words;
+        return this._index.words(prefix);
     },
 
     /**
@@ -99,5 +97,6 @@ WebInspector.TextDictionary.prototype = {
     reset: function()
     {
         this._words.clear();
+        this._index.clear();
     }
 }

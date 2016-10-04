@@ -485,11 +485,13 @@ WebInspector.SourcesTextEditor.prototype = {
     /**
      * @override
      * @param {string} mimeType
+     * @return {!Promise}
      */
     setMimeType: function(mimeType)
     {
         this._mimeType = mimeType;
-        WebInspector.CodeMirrorTextEditor.prototype.setMimeType.call(this, this._applyWhitespaceMimetype(mimeType));
+        return WebInspector.CodeMirrorTextEditor.prototype.setMimeType.call(this, mimeType)
+            .then(() => this._codeMirror.setOption("mode", this._applyWhitespaceMimetype(mimeType)));
     },
 
     _updateWhitespace: function()

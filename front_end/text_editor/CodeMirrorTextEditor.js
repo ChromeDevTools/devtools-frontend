@@ -698,27 +698,7 @@ WebInspector.CodeMirrorTextEditor.prototype = {
 
     /**
      * @param {string} mimeType
-     */
-    _updateCodeMirrorMode: function(mimeType)
-    {
-        this._codeMirror.setOption("mode", mimeType);
-        WebInspector.CodeMirrorTextEditor._loadMimeTypeModes(mimeType, innerUpdateCodeMirrorMode.bind(this));
-
-        /**
-         * @this WebInspector.CodeMirrorTextEditor
-         */
-        function innerUpdateCodeMirrorMode()
-        {
-            this._mimeTypeModesLoadedForTest();
-            this._updateCodeMirrorMode(mimeType);
-        }
-    },
-
-    // Do not remove, this function is sniffed in tests.
-    _mimeTypeModesLoadedForTest: function() { },
-
-    /**
-     * @param {string} mimeType
+     * @return {!Promise}
      */
     setMimeType: function(mimeType)
     {
@@ -726,7 +706,7 @@ WebInspector.CodeMirrorTextEditor.prototype = {
             this._enableLongLinesMode();
         else
             this._disableLongLinesMode();
-        this._updateCodeMirrorMode(mimeType);
+        return WebInspector.CodeMirrorTextEditor._loadMimeTypeModes(mimeType).then(() => this._codeMirror.setOption("mode", mimeType));
     },
 
     /**
@@ -1621,9 +1601,9 @@ WebInspector.CodeMirrorTextEditor._loadedMimeModeExtensions = new Set();
 
 /**
  * @param {string} mimeType
- * @param {function()} callback
+ * @return {!Promise}
  */
-WebInspector.CodeMirrorTextEditor._loadMimeTypeModes = function(mimeType, callback)
+WebInspector.CodeMirrorTextEditor._loadMimeTypeModes = function(mimeType)
 {
     var installed = WebInspector.CodeMirrorTextEditor._loadedMimeModeExtensions;
 
@@ -1650,8 +1630,7 @@ WebInspector.CodeMirrorTextEditor._loadMimeTypeModes = function(mimeType, callba
     var promises = [];
     for (var extension of modesToLoad)
         promises.push(extension.instance().then(installMode.bind(null, extension)));
-    if (promises.length)
-        Promise.all(promises).then(callback);
+    return Promise.all(promises);
 
     /**
      * @param {!Runtime.Extension} extension

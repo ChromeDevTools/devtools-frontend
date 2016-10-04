@@ -613,12 +613,11 @@ WebInspector.ConsoleViewMessage.prototype = {
     },
 
     /**
-     * @param {!WebInspector.RemoteObject} array
      * @return {boolean}
      */
-    useArrayPreviewInFormatter: function(array)
+    _usePrintedArrayFormatter: function()
     {
-        return this._message.type !== WebInspector.ConsoleMessage.MessageType.DirXML;
+        return this._message.type !== WebInspector.ConsoleMessage.MessageType.DirXML && this._message.type !== WebInspector.ConsoleMessage.MessageType.Result;
     },
 
     /**
@@ -628,8 +627,8 @@ WebInspector.ConsoleViewMessage.prototype = {
     _formatParameterAsArray: function(array, elem)
     {
         var maxFlatArrayLength = 100;
-        if (this.useArrayPreviewInFormatter(array) || array.arrayLength() > maxFlatArrayLength)
-            this._formatParameterAsArrayOrObject(array, elem, this.useArrayPreviewInFormatter(array) || array.arrayLength() <= maxFlatArrayLength);
+        if (this._usePrintedArrayFormatter() || array.arrayLength() > maxFlatArrayLength)
+            this._formatParameterAsArrayOrObject(array, elem, this._usePrintedArrayFormatter() || array.arrayLength() <= maxFlatArrayLength);
         else
             array.getAllProperties(false, this._printArrayResult.bind(this, array, elem));
     },

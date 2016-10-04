@@ -1259,16 +1259,6 @@ WebInspector.ConsoleCommandResult = function(message, linkifier, nestingLevel)
 WebInspector.ConsoleCommandResult.prototype = {
     /**
      * @override
-     * @param {!WebInspector.RemoteObject} array
-     * @return {boolean}
-     */
-    useArrayPreviewInFormatter: function(array)
-    {
-        return false;
-    },
-
-    /**
-     * @override
      * @return {!Element}
      */
     contentElement: function()

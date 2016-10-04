@@ -403,17 +403,18 @@ WebInspector.TextEditorAutocompleteController.prototype = {
         if (!this._suggestBox)
             return;
         var cursor = this._codeMirror.getCursor();
-        // Hide autocomplete for smart braces.
+        var shouldCloseAutocomplete = !(cursor.line === this._prefixRange.startLine && this._prefixRange.startColumn <= cursor.ch && cursor.ch <= this._prefixRange.endColumn);
+        // Try not to hide autocomplete when user types in.
         if (cursor.line === this._prefixRange.startLine && cursor.ch === this._prefixRange.endColumn + 1) {
             var line = this._codeMirror.getLine(cursor.line);
-            var isWordChar = this._config.isWordChar(line.charAt(cursor.ch - 1));
-            if (!isWordChar)
-                this.clearAutocomplete();
-            return;
+            shouldCloseAutocomplete = this._config.isWordChar ? !this._config.isWordChar(line.charAt(cursor.ch - 1)) : false;
         }
-        if (cursor.line !== this._prefixRange.startLine || cursor.ch > this._prefixRange.endColumn || cursor.ch <= this._prefixRange.startColumn)
+        if (shouldCloseAutocomplete)
             this.clearAutocomplete();
+        this._onCursorActivityHandledForTest();
     },
+
+    _onCursorActivityHandledForTest: function() { },
 
     _updateAnchorBox: function()
     {

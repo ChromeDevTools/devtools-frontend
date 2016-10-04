@@ -194,9 +194,12 @@ DevToolsAPIImpl.prototype = {
         this._dispatchOnInspectorFrontendAPI("fileSystemAdded", ["", fileSystem]);
     },
 
-    fileSystemFilesChanged: function(path)
+    /**
+     * @param {!Array<string>} changedPaths
+     */
+    fileSystemFilesChanged: function(changedPaths)
     {
-        this._dispatchOnInspectorFrontendAPI("fileSystemFilesChanged", [path]);
+        this._dispatchOnInspectorFrontendAPI("fileSystemFilesChanged", [changedPaths]);
     },
 
     /**

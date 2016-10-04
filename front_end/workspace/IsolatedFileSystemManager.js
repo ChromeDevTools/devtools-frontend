@@ -34,6 +34,8 @@
  */
 WebInspector.IsolatedFileSystemManager = function()
 {
+    WebInspector.Object.call(this);
+
     /** @type {!Map<string, !WebInspector.IsolatedFileSystem>} */
     this._fileSystems = new Map();
     /** @type {!Map<number, function(!Array.<string>)>} */

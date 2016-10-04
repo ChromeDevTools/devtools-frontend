@@ -58,9 +58,9 @@ WebInspector.TextDictionary.prototype = {
         var count = this._words.get(word) || 0;
         if (!count)
             return;
-        this._index.remove(word);
         if (count === 1) {
             this._words.delete(word);
+            this._index.remove(word);
             return;
         }
         --count;

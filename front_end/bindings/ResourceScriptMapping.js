@@ -91,7 +91,7 @@ WebInspector.ResourceScriptMapping.prototype = {
     {
         var scripts = this._scriptsForUISourceCode(uiSourceCode);
         console.assert(scripts.length);
-        var script = scripts[0];
+        var script = scripts[scripts.length - 1];
         if (script.isInlineScriptWithSourceURL())
             return this._debuggerModel.createRawLocation(script, lineNumber + script.lineOffset, lineNumber ? columnNumber : columnNumber + script.columnOffset);
         return this._debuggerModel.createRawLocation(script, lineNumber, columnNumber);
@@ -281,7 +281,7 @@ WebInspector.ResourceScriptFile = function(resourceScriptMapping, uiSourceCode, 
     this._uiSourceCode = uiSourceCode;
 
     if (this._uiSourceCode.contentType().isScript())
-        this._script = scripts[0];
+        this._script = scripts[scripts.length - 1];
 
     this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.WorkingCopyChanged, this._workingCopyChanged, this);
     this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.WorkingCopyCommitted, this._workingCopyCommitted, this);

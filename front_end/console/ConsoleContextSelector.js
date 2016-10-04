@@ -207,6 +207,7 @@ WebInspector.ConsoleContextSelector.prototype = {
     _select: function(option)
     {
         this._selectElement.selectedIndex = Array.prototype.indexOf.call(/** @type {?} */ (this._selectElement), option);
+        this._updateSelectionWarning();
     },
 
     /**

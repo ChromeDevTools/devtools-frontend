@@ -43,8 +43,8 @@ WebInspector.ConsoleViewMessage = function(consoleMessage, linkifier, nestingLev
     this._closeGroupDecorationCount = 0;
     this._nestingLevel = nestingLevel;
 
-    /** @type {!Array.<!WebInspector.DataGrid>} */
-    this._dataGrids = [];
+    /** @type {?WebInspector.DataGrid} */
+    this._dataGrid = null;
 
     /** @type {!Object.<string, function(!WebInspector.RemoteObject, !Element, boolean=)>} */
     this._customFormatters = {
@@ -89,8 +89,8 @@ WebInspector.ConsoleViewMessage.prototype = {
      */
     wasShown: function()
     {
-        for (var i = 0; this._dataGrids && i < this._dataGrids.length; ++i)
-            this._dataGrids[i].updateWidths();
+        if (this._dataGrid)
+            this._dataGrid.updateWidths();
         this._isVisible = true;
     },
 
@@ -98,8 +98,8 @@ WebInspector.ConsoleViewMessage.prototype = {
     {
         if (!this._isVisible)
             return;
-        for (var i = 0; this._dataGrids && i < this._dataGrids.length; ++i)
-            this._dataGrids[i].onResize();
+        if (this._dataGrid)
+            this._dataGrid.onResize();
     },
 
     /**
@@ -135,6 +135,79 @@ WebInspector.ConsoleViewMessage.prototype = {
     consoleMessage: function()
     {
         return this._message;
+    },
+
+    /**
+     * @param {!WebInspector.ConsoleMessage} consoleMessage
+     * @return {!Element}
+     */
+    _buildTableMessage: function(consoleMessage)
+    {
+        var formattedMessage = createElement("span");
+        WebInspector.appendStyle(formattedMessage, "components/objectValue.css");
+        formattedMessage.className = "console-message-text source-code";
+        var anchorElement = this._buildMessageAnchor(consoleMessage);
+        if (anchorElement)
+            formattedMessage.appendChild(anchorElement);
+
+        var table = consoleMessage.parameters && consoleMessage.parameters.length ? consoleMessage.parameters[0] : null;
+        if (table)
+            table = this._parameterToRemoteObject(table, this._target());
+        if (!table || !table.preview)
+            return formattedMessage;
+
+        var columnNames = [];
+        var preview = table.preview;
+        var rows = [];
+        for (var i = 0; i < preview.properties.length; ++i) {
+            var rowProperty = preview.properties[i];
+            var rowPreview = rowProperty.valuePreview;
+            if (!rowPreview)
+                continue;
+
+            var rowValue = {};
+            const maxColumnsToRender = 20;
+            for (var j = 0; j < rowPreview.properties.length; ++j) {
+                var cellProperty = rowPreview.properties[j];
+                var columnRendered = columnNames.indexOf(cellProperty.name) !== -1;
+                if (!columnRendered) {
+                    if (columnNames.length === maxColumnsToRender)
+                        continue;
+                    columnRendered = true;
+                    columnNames.push(cellProperty.name);
+                }
+
+                if (columnRendered) {
+                    var cellElement = this._renderPropertyPreviewOrAccessor(table, [rowProperty, cellProperty]);
+                    cellElement.classList.add("console-message-nowrap-below");
+                    rowValue[cellProperty.name] = cellElement;
+                }
+            }
+            rows.push([rowProperty.name, rowValue]);
+        }
+
+        var flatValues = [];
+        for (var i = 0; i < rows.length; ++i) {
+            var rowName = rows[i][0];
+            var rowValue = rows[i][1];
+            flatValues.push(rowName);
+            for (var j = 0; j < columnNames.length; ++j)
+                flatValues.push(rowValue[columnNames[j]]);
+        }
+        columnNames.unshift(WebInspector.UIString("(index)"));
+
+        if (flatValues.length) {
+            this._dataGrid = WebInspector.SortableDataGrid.create(columnNames, flatValues);
+
+            var formattedResult = createElement("span");
+            var tableElement = formattedResult.createChild("div", "console-message-formatted-table");
+            var dataGridContainer = tableElement.createChild("span");
+            tableElement.appendChild(this._formatParameter(table, true, false));
+            dataGridContainer.appendChild(this._dataGrid.element);
+            formattedMessage.appendChild(formattedResult);
+            this._dataGrid.renderInline();
+        }
+        return formattedMessage;
     },
 
     /**
@@ -379,11 +452,6 @@ WebInspector.ConsoleViewMessage.prototype = {
                 formattedResult.createTextChild(" ");
         }
 
-        if (this._message.type === WebInspector.ConsoleMessage.MessageType.Table) {
-            formattedResult.appendChild(this._formatParameterAsTable(parameters));
-            return formattedResult;
-        }
-
         // Single parameter, or unused substitutions from above.
         for (var i = 0; i < parameters.length; ++i) {
             // Inline strings when formatting.
@@ -564,69 +632,6 @@ WebInspector.ConsoleViewMessage.prototype = {
             this._formatParameterAsArrayOrObject(array, elem, this.useArrayPreviewInFormatter(array) || array.arrayLength() <= maxFlatArrayLength);
         else
             array.getAllProperties(false, this._printArrayResult.bind(this, array, elem));
-    },
-
-    /**
-     * @param {!Array.<!WebInspector.RemoteObject>} parameters
-     * @return {!Element}
-     */
-    _formatParameterAsTable: function(parameters)
-    {
-        var element = createElementWithClass("div", "console-message-formatted-table");
-        var table = parameters[0];
-        if (!table || !table.preview)
-            return element;
-
-        var columnNames = [];
-        var preview = table.preview;
-        var rows = [];
-        for (var i = 0; i < preview.properties.length; ++i) {
-            var rowProperty = preview.properties[i];
-            var rowPreview = rowProperty.valuePreview;
-            if (!rowPreview)
-                continue;
-
-            var rowValue = {};
-            const maxColumnsToRender = 20;
-            for (var j = 0; j < rowPreview.properties.length; ++j) {
-                var cellProperty = rowPreview.properties[j];
-                var columnRendered = columnNames.indexOf(cellProperty.name) !== -1;
-                if (!columnRendered) {
-                    if (columnNames.length === maxColumnsToRender)
-                        continue;
-                    columnRendered = true;
-                    columnNames.push(cellProperty.name);
-                }
-
-                if (columnRendered) {
-                    var cellElement = this._renderPropertyPreviewOrAccessor(table, [rowProperty, cellProperty]);
-                    cellElement.classList.add("console-message-nowrap-below");
-                    rowValue[cellProperty.name] = cellElement;
-                }
-            }
-            rows.push([rowProperty.name, rowValue]);
-        }
-
-        var flatValues = [];
-        for (var i = 0; i < rows.length; ++i) {
-            var rowName = rows[i][0];
-            var rowValue = rows[i][1];
-            flatValues.push(rowName);
-            for (var j = 0; j < columnNames.length; ++j)
-                flatValues.push(rowValue[columnNames[j]]);
-        }
-
-        var dataGridContainer = element.createChild("span");
-        element.appendChild(this._formatParameter(table, true, false));
-        if (!flatValues.length)
-            return element;
-
-        columnNames.unshift(WebInspector.UIString("(index)"));
-        var dataGrid = WebInspector.SortableDataGrid.create(columnNames, flatValues);
-        dataGrid.renderInline();
-        dataGridContainer.appendChild(dataGrid.element);
-        this._dataGrids.push(dataGrid);
-        return element;
     },
 
     /**
@@ -970,6 +975,8 @@ WebInspector.ConsoleViewMessage.prototype = {
         var shouldIncludeTrace = !!consoleMessage.stackTrace && (consoleMessage.source === WebInspector.ConsoleMessage.MessageSource.Network || consoleMessage.level === WebInspector.ConsoleMessage.MessageLevel.Error || consoleMessage.level === WebInspector.ConsoleMessage.MessageLevel.RevokedError || consoleMessage.type === WebInspector.ConsoleMessage.MessageType.Trace || consoleMessage.level === WebInspector.ConsoleMessage.MessageLevel.Warning);
         if (target && shouldIncludeTrace)
             formattedMessage = this._buildMessageWithStackTrace(consoleMessage, target, this._linkifier);
+        else if (this._message.type === WebInspector.ConsoleMessage.MessageType.Table)
+            formattedMessage = this._buildTableMessage(this._message);
         else
             formattedMessage = this._buildMessage(consoleMessage);
         contentElement.appendChild(formattedMessage);

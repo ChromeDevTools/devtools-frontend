@@ -60,8 +60,14 @@ WebInspector.NavigatorView = function()
     this._initGrouping();
     WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
     WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this);
-    WebInspector.persistence.addEventListener(WebInspector.Persistence.Events.BindingCreated, this._onBindingChanged, this);
-    WebInspector.persistence.addEventListener(WebInspector.Persistence.Events.BindingRemoved, this._onBindingChanged, this);
+
+    if (Runtime.experiments.isEnabled("persistence2")) {
+        WebInspector.persistence.addEventListener(WebInspector.Persistence.Events.BindingCreated, this._onBindingChanged, this);
+        WebInspector.persistence.addEventListener(WebInspector.Persistence.Events.BindingRemoved, this._onBindingChanged, this);
+    } else {
+        WebInspector.persistence.addEventListener(WebInspector.Persistence.Events.BindingCreated, this._onBindingCreated, this);
+        WebInspector.persistence.addEventListener(WebInspector.Persistence.Events.BindingRemoved, this._onBindingRemoved, this);
+    }
     WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.NameChanged, this._targetNameChanged, this);
 
     WebInspector.targetManager.observeTargets(this);
@@ -159,6 +165,24 @@ WebInspector.NavigatorView.prototype = {
     /**
      * @param {!WebInspector.Event} event
      */
+    _onBindingCreated: function(event)
+    {
+        var binding = /** @type {!WebInspector.PersistenceBinding} */(event.data);
+        this._removeUISourceCode(binding.network);
+    },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _onBindingRemoved: function(event)
+    {
+        var binding = /** @type {!WebInspector.PersistenceBinding} */(event.data);
+        this._addUISourceCode(binding.network);
+    },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
     _onBindingChanged: function(event)
     {
         var binding = /** @type {!WebInspector.PersistenceBinding} */(event.data);
@@ -238,6 +262,10 @@ WebInspector.NavigatorView.prototype = {
     _addUISourceCode: function(uiSourceCode)
     {
         if (!this.accept(uiSourceCode))
+            return;
+
+        var binding = WebInspector.persistence.binding(uiSourceCode);
+        if (!Runtime.experiments.isEnabled("persistence2") && binding && binding.network === uiSourceCode)
             return;
 
         var isFromSourceMap = uiSourceCode.contentType().isFromSourceMap();
@@ -1301,7 +1329,7 @@ WebInspector.NavigatorUISourceCodeTreeNode.prototype = {
             titleText = "*" + titleText;
 
         var binding = WebInspector.persistence.binding(this._uiSourceCode);
-        if (binding) {
+        if (binding && Runtime.experiments.isEnabled("persistence2")) {
             var titleElement = createElement("span");
             titleElement.textContent = titleText;
             var status = titleElement.createChild("span");
@@ -1454,7 +1482,8 @@ WebInspector.NavigatorFolderTreeNode.prototype = {
         if (!this._treeElement || this._project.type() !== WebInspector.projectTypes.FileSystem)
             return;
         var absoluteFileSystemPath = WebInspector.FileSystemWorkspaceBinding.fileSystemPath(this._project.id()) + "/" + this._folderPath;
-        this._treeElement.listItemElement.classList.toggle("has-mapped-files", WebInspector.persistence.filePathHasBindings(absoluteFileSystemPath));
+        var hasMappedFiles = Runtime.experiments.isEnabled("persistence2") ? WebInspector.persistence.filePathHasBindings(absoluteFileSystemPath) : true;
+        this._treeElement.listItemElement.classList.toggle("has-mapped-files", hasMappedFiles);
     },
 
     /**
@@ -1631,6 +1660,10 @@ WebInspector.NavigatorGroupTreeNode.prototype = {
     {
         if (!this._treeElement || this._project.type() !== WebInspector.projectTypes.FileSystem)
             return;
+        if (!Runtime.experiments.isEnabled("persistence2")) {
+            this._treeElement.listItemElement.classList.add("has-mapped-files");
+            return;
+        }
         var fileSystemPath = WebInspector.FileSystemWorkspaceBinding.fileSystemPath(this._project.id());
         var wasActive = this._treeElement.listItemElement.classList.contains("has-mapped-files");
         var isActive = WebInspector.persistence.filePathHasBindings(fileSystemPath);

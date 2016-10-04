@@ -90,23 +90,18 @@ WebInspector.TabbedEditorContainer.prototype = {
         var binding = /** @type {!WebInspector.PersistenceBinding} */(event.data);
         var networkTabId = this._tabIds.get(binding.network);
         var fileSystemTabId = this._tabIds.get(binding.fileSystem);
-        var wasSelectedInFileSystem = this._currentFile === binding.fileSystem;
 
-        if (fileSystemTabId) {
-            var tabIndex = this._tabbedPane.tabIndex(fileSystemTabId);
-            this._closeTabs([fileSystemTabId]);
-        }
-
-        if (networkTabId) {
-            if (wasSelectedInFileSystem)
-                this._tabbedPane.selectTab(networkTabId, false);
+        if (networkTabId)
             this._tabbedPane.changeTabTitle(networkTabId, this._titleForFile(binding.fileSystem), this._tooltipForFile(binding.fileSystem));
+        if (!fileSystemTabId)
             return;
-        }
-
-        var tabId = this._appendFileTab(binding.network, false, tabIndex);
+        var wasSelectedInFileSystem = this._currentFile === binding.fileSystem;
+        var tabIndex = this._tabbedPane.tabIndex(fileSystemTabId);
+        this._closeTabs([fileSystemTabId]);
+        if (!networkTabId)
+            networkTabId = this._appendFileTab(binding.network, false, tabIndex);
         if (wasSelectedInFileSystem)
-            this._tabbedPane.selectTab(tabId, false);
+            this._tabbedPane.selectTab(networkTabId, false);
     },
 
     /**

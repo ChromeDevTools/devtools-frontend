@@ -67,7 +67,6 @@ WebInspector.SourcesPanel = function()
     this._navigatorTabbedLocation = WebInspector.viewManager.createTabbedLocation(this._revealNavigatorSidebar.bind(this), "navigator-view", true);
     var tabbedPane = this._navigatorTabbedLocation.tabbedPane();
     tabbedPane.setMinimumSize(100, 25);
-    tabbedPane.setShrinkableTabs(true);
     tabbedPane.element.classList.add("navigator-tabbed-pane");
     var navigatorMenuButton = new WebInspector.ToolbarMenuButton(this._populateNavigatorMenu.bind(this), true);
     navigatorMenuButton.setTitle(WebInspector.UIString("More options"));
@@ -359,6 +358,10 @@ WebInspector.SourcesPanel.prototype = {
      */
     _revealInNavigator: function(uiSourceCode, skipReveal)
     {
+        var binding = WebInspector.persistence.binding(uiSourceCode);
+        if (binding && binding.network === uiSourceCode)
+            uiSourceCode = binding.fileSystem;
+
         var extensions = self.runtime.extensions(WebInspector.NavigatorView);
         Promise.all(extensions.map(extension => extension.instance())).then(filterNavigators.bind(this));
 

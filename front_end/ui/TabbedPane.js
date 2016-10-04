@@ -412,14 +412,17 @@ WebInspector.TabbedPane.prototype = {
     /**
      * @param {string} id
      * @param {string} tabTitle
+     * @param {string=} tabTooltip
      */
-    changeTabTitle: function(id, tabTitle)
+    changeTabTitle: function(id, tabTitle, tabTooltip)
     {
         var tab = this._tabsById[id];
-        if (tab.title === tabTitle)
-            return;
-        tab.title = tabTitle;
-        this._updateTabElements();
+        if (tabTooltip !== undefined)
+            tab.tooltip = tabTooltip;
+        if (tab.title !== tabTitle) {
+            tab.title = tabTitle;
+            this._updateTabElements();
+        }
     },
 
     /**

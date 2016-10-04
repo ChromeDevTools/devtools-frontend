@@ -215,43 +215,77 @@
         {
             "type": "view",
             "location": "navigator-view",
-            "id": "sources",
+            "id": "navigator-sources",
             "title": "Sources",
             "order": 1,
             "persistence": "permanent",
-            "className": "WebInspector.SourcesNavigatorView"
+            "className": "WebInspector.SourcesNavigatorView",
+            "experiment": "!persistence2"
         },
         {
             "type": "view",
             "location": "navigator-view",
-            "id": "contentScripts",
-            "title": "Content scripts",
+            "id": "navigator-network",
+            "title": "Network",
             "order": 2,
+            "persistence": "permanent",
+            "className": "WebInspector.NetworkNavigatorView",
+            "experiment": "persistence2"
+        },
+        {
+            "type": "view",
+            "location": "navigator-view",
+            "id": "navigator-files",
+            "title": "Filesystem",
+            "order": 3,
+            "persistence": "permanent",
+            "className": "WebInspector.FilesNavigatorView",
+            "experiment": "persistence2"
+        },
+        {
+            "type": "view",
+            "location": "navigator-view",
+            "id": "navigator-contentScripts",
+            "title": "Content scripts",
+            "order": 4,
             "persistence": "permanent",
             "className": "WebInspector.ContentScriptsNavigatorView"
         },
         {
             "type": "view",
             "location": "navigator-view",
-            "id": "snippets",
+            "id": "navigator-snippets",
             "title": "Snippets",
-            "order": 3,
+            "order": 5,
             "persistence": "permanent",
             "className": "WebInspector.SnippetsNavigatorView"
         },
         {
             "type": "@WebInspector.NavigatorView",
-            "viewId": "sources",
-            "className": "WebInspector.SourcesNavigatorView"
+            "viewId": "navigator-sources",
+            "className": "WebInspector.SourcesNavigatorView",
+            "experiment": "!persistence2"
         },
         {
             "type": "@WebInspector.NavigatorView",
-            "viewId": "contentScripts",
+            "viewId": "navigator-network",
+            "className": "WebInspector.NetworkNavigatorView",
+            "experiment": "persistence2"
+        },
+        {
+            "type": "@WebInspector.NavigatorView",
+            "viewId": "navigator-files",
+            "className": "WebInspector.FilesNavigatorView",
+            "experiment": "persistence2"
+        },
+        {
+            "type": "@WebInspector.NavigatorView",
+            "viewId": "navigator-contentScripts",
             "className": "WebInspector.ContentScriptsNavigatorView"
         },
         {
             "type": "@WebInspector.NavigatorView",
-            "viewId": "snippets",
+            "viewId": "navigator-snippets",
             "className": "WebInspector.SnippetsNavigatorView"
         },
         {

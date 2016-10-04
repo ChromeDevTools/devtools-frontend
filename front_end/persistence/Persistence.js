@@ -265,6 +265,16 @@ WebInspector.Persistence.prototype = {
     },
 
     /**
+     * @param {!WebInspector.UISourceCode} uiSourceCode
+     * @return {?WebInspector.UISourceCode}
+     */
+    fileSystem: function(uiSourceCode)
+    {
+        var binding = this.binding(uiSourceCode);
+        return binding ? binding.fileSystem : null;
+    },
+
+    /**
      * @param {string} filePath
      */
     _addFilePathBindingPrefixes: function(filePath)

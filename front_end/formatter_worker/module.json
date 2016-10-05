@@ -9,7 +9,7 @@
         "../common/TextRange.js",
         "ESTreeWalker.js",
         "FormatterWorker.js",
-        "../acorn/acorn.js",
+        "acorn/acorn.js",
         "CSSFormatter.js",
         "AcornTokenizer.js",
         "JavaScriptFormatter.js",
@@ -21,7 +21,7 @@
         "RelaxedJSONParser.js"
     ],
     "skip_compilation": [
-        "../acorn/acorn.js",
+        "acorn/acorn.js",
         "../cm/headlesscodemirror.js",
         "../cm/css.js",
         "../cm/xml.js"

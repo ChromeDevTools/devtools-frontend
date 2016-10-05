@@ -596,7 +596,6 @@ devtools_security_js_files = [
   "front_end/security/SecurityPanel.js",
 ]
 devtools_formatter_worker_js_files = [
-  "front_end/acorn/acorn.js",
   "front_end/cm/css.js",
   "front_end/cm/headlesscodemirror.js",
   "front_end/cm/xml.js",
@@ -612,6 +611,7 @@ devtools_formatter_worker_js_files = [
   "front_end/formatter_worker/JavaScriptOutline.js",
   "front_end/formatter_worker/FormatterWorker.js",
   "front_end/formatter_worker/RelaxedJSONParser.js",
+  "front_end/formatter_worker/acorn/acorn.js",
 ]
 devtools_services_js_files = [ "front_end/services/ServiceManager.js" ]
 devtools_settings_js_files = [
@@ -773,7 +773,7 @@ devtools_cm_js_files = [
   "front_end/cm/simple.js",
   "front_end/cm/xml.js",
 ]
-devtools_acorn_files = [ "front_end/acorn/acorn.js" ]
+devtools_acorn_files = [ "front_end/formatter_worker/acorn/acorn.js" ]
 
 devtools_image_files = [
   "front_end/Images/accelerometer-back.png",

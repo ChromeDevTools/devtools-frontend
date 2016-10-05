@@ -14,21 +14,10 @@ WebInspector.Persistence = function(workspace, breakpointManager, fileSystemMapp
     WebInspector.Object.call(this);
     this._workspace = workspace;
     this._breakpointManager = breakpointManager;
-    this._fileSystemMapping = fileSystemMapping;
-    /** @type {!Set<!WebInspector.PersistenceBinding>} */
-    this._bindings = new Set();
-
     /** @type {!Map<string, number>} */
     this._filePathPrefixesToBindingCount = new Map();
 
-    this._eventListeners = [
-        workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeAdded, this._onUISourceCodeAdded, this),
-        workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeRemoved, this._onUISourceCodeRemoved, this),
-        workspace.addEventListener(WebInspector.Workspace.Events.ProjectRemoved, this._onProjectRemoved, this),
-        this._fileSystemMapping.addEventListener(WebInspector.FileSystemMapping.Events.FileMappingAdded, this._remap, this),
-        this._fileSystemMapping.addEventListener(WebInspector.FileSystemMapping.Events.FileMappingRemoved, this._remap, this)
-    ];
-    this._remap();
+    this._mapping = new WebInspector.DefaultMapping(workspace, fileSystemMapping, this._onBindingCreated.bind(this), this._onBindingRemoved.bind(this));
 }
 
 WebInspector.Persistence._binding = Symbol("Persistence.Binding");
@@ -44,80 +33,15 @@ WebInspector.Persistence.Events = {
 }
 
 WebInspector.Persistence.prototype = {
-    _remap: function()
-    {
-        for (var binding of this._bindings.valuesArray())
-            this._unbind(binding.network);
-        var networkProjects = this._workspace.projectsForType(WebInspector.projectTypes.Network);
-        for (var networkProject of networkProjects) {
-            for (var uiSourceCode of networkProject.uiSourceCodes())
-                this._bind(uiSourceCode);
-        }
-    },
-
     /**
-     * @param {!WebInspector.Event} event
+     * @param {!WebInspector.PersistenceBinding} binding
      */
-    _onUISourceCodeAdded: function(event)
+    _onBindingCreated: function(binding)
     {
-        var uiSourceCode = /** @type {!WebInspector.UISourceCode} */(event.data);
-        this._bind(uiSourceCode);
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _onUISourceCodeRemoved: function(event)
-    {
-        var uiSourceCode = /** @type {!WebInspector.UISourceCode} */(event.data);
-        this._unbind(uiSourceCode);
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _onProjectRemoved: function(event)
-    {
-        var project = /** @type {!WebInspector.Project} */(event.data);
-        for (var uiSourceCode of project.uiSourceCodes())
-            this._unbind(uiSourceCode);
-    },
-
-    /**
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     * @return {?WebInspector.PersistenceBinding}
-     */
-    _createBinding: function(uiSourceCode)
-    {
-        if (uiSourceCode.project().type() === WebInspector.projectTypes.FileSystem) {
-            var fileSystemPath = WebInspector.FileSystemWorkspaceBinding.fileSystemPath(uiSourceCode.project().id());
-            var networkURL = this._fileSystemMapping.networkURLForFileSystemURL(fileSystemPath, uiSourceCode.url());
-            var networkSourceCode = networkURL ? this._workspace.uiSourceCodeForURL(networkURL) : null;
-            return networkSourceCode ? new WebInspector.PersistenceBinding(networkSourceCode, uiSourceCode) : null;
-        }
-        if (uiSourceCode.project().type() === WebInspector.projectTypes.Network) {
-            var file = this._fileSystemMapping.fileForURL(uiSourceCode.url());
-            var projectId = file ? WebInspector.FileSystemWorkspaceBinding.projectId(file.fileSystemPath) : null;
-            var fileSourceCode = file && projectId ? this._workspace.uiSourceCode(projectId, file.fileURL) : null;
-            return fileSourceCode ? new WebInspector.PersistenceBinding(uiSourceCode, fileSourceCode) : null;
-        }
-        return null;
-    },
-
-    /**
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     */
-    _bind: function(uiSourceCode)
-    {
-        console.assert(!uiSourceCode[WebInspector.Persistence._binding], "Cannot bind already bound UISourceCode!");
-        var binding = this._createBinding(uiSourceCode);
-        if (!binding)
-            return;
         if (binding.network.isDirty() || binding.fileSystem.isDirty()) {
             WebInspector.console.log(WebInspector.UIString("%s can not be persisted to file system due to unsaved changes.", binding.network.name()));
             return;
         }
-        this._bindings.add(binding);
         binding.network[WebInspector.Persistence._binding] = binding;
         binding.fileSystem[WebInspector.Persistence._binding] = binding;
 
@@ -125,7 +49,6 @@ WebInspector.Persistence.prototype = {
 
         binding.network.addEventListener(WebInspector.UISourceCode.Events.WorkingCopyCommitted, this._onWorkingCopyCommitted, this);
         binding.fileSystem.addEventListener(WebInspector.UISourceCode.Events.WorkingCopyCommitted, this._onWorkingCopyCommitted, this);
-        binding.fileSystem.addEventListener(WebInspector.UISourceCode.Events.TitleChanged, this._onFileSystemUISourceCodeRenamed, this);
 
         this._addFilePathBindingPrefixes(binding.fileSystem.url());
 
@@ -134,36 +57,20 @@ WebInspector.Persistence.prototype = {
     },
 
     /**
-     * @param {!WebInspector.UISourceCode} uiSourceCode
+     * @param {!WebInspector.PersistenceBinding} binding
      */
-    _unbind: function(uiSourceCode)
+    _onBindingRemoved: function(binding)
     {
-        var binding = uiSourceCode[WebInspector.Persistence._binding];
-        if (!binding)
-            return;
-        this._bindings.delete(binding);
         binding.network[WebInspector.Persistence._binding] = null;
         binding.fileSystem[WebInspector.Persistence._binding] = null;
 
         binding.network.removeEventListener(WebInspector.UISourceCode.Events.WorkingCopyCommitted, this._onWorkingCopyCommitted, this);
         binding.fileSystem.removeEventListener(WebInspector.UISourceCode.Events.WorkingCopyCommitted, this._onWorkingCopyCommitted, this);
-        binding.fileSystem.removeEventListener(WebInspector.UISourceCode.Events.TitleChanged, this._onFileSystemUISourceCodeRenamed, this);
 
         this._removeFilePathBindingPrefixes(binding.fileSystem.url());
 
         this._copyBreakpoints(binding.network, binding.fileSystem);
         this.dispatchEventToListeners(WebInspector.Persistence.Events.BindingRemoved, binding);
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _onFileSystemUISourceCodeRenamed: function(event)
-    {
-        var uiSourceCode = /** @type {!WebInspector.UISourceCode} */(event.target);
-        var binding = uiSourceCode[WebInspector.Persistence._binding];
-        this._unbind(binding.network);
-        this._bind(binding.network);
     },
 
     /**
@@ -316,7 +223,7 @@ WebInspector.Persistence.prototype = {
 
     dispose: function()
     {
-        WebInspector.EventTarget.removeEventListeners(this._eventListeners);
+        this._mapping.dispose();
     },
 
     __proto__: WebInspector.Object.prototype

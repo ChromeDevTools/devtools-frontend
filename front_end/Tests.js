@@ -940,6 +940,12 @@ TestSuite.prototype.testConsoleContextNames = function()
     }
 }
 
+TestSuite.prototype.testDevToolsSharedWorker = function()
+{
+    this.takeControl();
+    WebInspector.TempFile.ensureTempStorageCleared().then(() => this.releaseControl());
+}
+
 TestSuite.prototype.waitForTestResultsInConsole = function()
 {
     var messages = WebInspector.multitargetConsoleModel.messages();

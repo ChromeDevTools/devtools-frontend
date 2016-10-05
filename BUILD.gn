@@ -910,6 +910,7 @@ generated_bundled_modules = [
   "$resources_out_dir/diff/diff_module.js",
   "$resources_out_dir/elements/elements_module.js",
   "$resources_out_dir/layers/layers_module.js",
+  "$resources_out_dir/layer_viewer/layer_viewer_module.js",
   "$resources_out_dir/network/network_module.js",
   "$resources_out_dir/profiler/profiler_module.js",
   "$resources_out_dir/resources/resources_module.js",

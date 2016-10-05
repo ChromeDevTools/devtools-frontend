@@ -35,124 +35,114 @@
  * @param {!WebInspector.Workspace} workspace
  * @param {!WebInspector.DebuggerWorkspaceBinding} debuggerWorkspaceBinding
  */
-WebInspector.DefaultScriptMapping = function(debuggerModel, workspace, debuggerWorkspaceBinding)
-{
-    this._debuggerModel = debuggerModel;
-    this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
-    var projectId = WebInspector.DefaultScriptMapping.projectIdForTarget(debuggerModel.target());
-    this._project = new WebInspector.ContentProviderBasedProject(workspace, projectId, WebInspector.projectTypes.Debugger, "");
-    /** @type {!Map.<string, !WebInspector.UISourceCode>} */
-    this._uiSourceCodeForScriptId = new Map();
-    /** @type {!Map.<!WebInspector.UISourceCode, string>} */
-    this._scriptIdForUISourceCode = new Map();
-    this._eventListeners = [
-        debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this)
-    ];
+WebInspector.DefaultScriptMapping = function(debuggerModel, workspace, debuggerWorkspaceBinding) {
+  this._debuggerModel = debuggerModel;
+  this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
+  var projectId = WebInspector.DefaultScriptMapping.projectIdForTarget(debuggerModel.target());
+  this._project = new WebInspector.ContentProviderBasedProject(
+      workspace, projectId, WebInspector.projectTypes.Debugger, '');
+  /** @type {!Map.<string, !WebInspector.UISourceCode>} */
+  this._uiSourceCodeForScriptId = new Map();
+  /** @type {!Map.<!WebInspector.UISourceCode, string>} */
+  this._scriptIdForUISourceCode = new Map();
+  this._eventListeners = [debuggerModel.addEventListener(
+      WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this)];
 };
 
-WebInspector.DefaultScriptMapping._scriptSymbol = Symbol("symbol");
+WebInspector.DefaultScriptMapping._scriptSymbol = Symbol('symbol');
 
 /**
  * @param {!WebInspector.UISourceCode} uiSourceCode
  * @return {?WebInspector.Script}
  */
-WebInspector.DefaultScriptMapping.scriptForUISourceCode = function(uiSourceCode)
-{
-    return uiSourceCode[WebInspector.DefaultScriptMapping._scriptSymbol] || null;
+WebInspector.DefaultScriptMapping.scriptForUISourceCode = function(uiSourceCode) {
+  return uiSourceCode[WebInspector.DefaultScriptMapping._scriptSymbol] || null;
 };
 
 WebInspector.DefaultScriptMapping.prototype = {
-    /**
+  /**
      * @override
      * @param {!WebInspector.DebuggerModel.Location} rawLocation
      * @return {!WebInspector.UILocation}
      */
-    rawLocationToUILocation: function(rawLocation)
-    {
-        var debuggerModelLocation = /** @type {!WebInspector.DebuggerModel.Location} */ (rawLocation);
-        var script = debuggerModelLocation.script();
-        var uiSourceCode = this._uiSourceCodeForScriptId.get(script.scriptId);
-        var lineNumber = debuggerModelLocation.lineNumber - (script.isInlineScriptWithSourceURL() ? script.lineOffset : 0);
-        var columnNumber = debuggerModelLocation.columnNumber || 0;
-        if (script.isInlineScriptWithSourceURL() && !lineNumber && columnNumber)
-            columnNumber -= script.columnOffset;
-        return uiSourceCode.uiLocation(lineNumber, columnNumber);
-    },
+  rawLocationToUILocation: function(rawLocation) {
+    var debuggerModelLocation = /** @type {!WebInspector.DebuggerModel.Location} */ (rawLocation);
+    var script = debuggerModelLocation.script();
+    var uiSourceCode = this._uiSourceCodeForScriptId.get(script.scriptId);
+    var lineNumber = debuggerModelLocation.lineNumber -
+        (script.isInlineScriptWithSourceURL() ? script.lineOffset : 0);
+    var columnNumber = debuggerModelLocation.columnNumber || 0;
+    if (script.isInlineScriptWithSourceURL() && !lineNumber && columnNumber)
+      columnNumber -= script.columnOffset;
+    return uiSourceCode.uiLocation(lineNumber, columnNumber);
+  },
 
-    /**
+  /**
      * @override
      * @param {!WebInspector.UISourceCode} uiSourceCode
      * @param {number} lineNumber
      * @param {number} columnNumber
      * @return {?WebInspector.DebuggerModel.Location}
      */
-    uiLocationToRawLocation: function(uiSourceCode, lineNumber, columnNumber)
-    {
-        var scriptId = this._scriptIdForUISourceCode.get(uiSourceCode);
-        var script = this._debuggerModel.scriptForId(scriptId);
-        if (script.isInlineScriptWithSourceURL())
-            return this._debuggerModel.createRawLocation(script, lineNumber + script.lineOffset, lineNumber ? columnNumber : columnNumber + script.columnOffset);
-        return this._debuggerModel.createRawLocation(script, lineNumber, columnNumber);
-    },
+  uiLocationToRawLocation: function(uiSourceCode, lineNumber, columnNumber) {
+    var scriptId = this._scriptIdForUISourceCode.get(uiSourceCode);
+    var script = this._debuggerModel.scriptForId(scriptId);
+    if (script.isInlineScriptWithSourceURL())
+      return this._debuggerModel.createRawLocation(
+          script, lineNumber + script.lineOffset,
+          lineNumber ? columnNumber : columnNumber + script.columnOffset);
+    return this._debuggerModel.createRawLocation(script, lineNumber, columnNumber);
+  },
 
-    /**
-     * @param {!WebInspector.Script} script
-     */
-    addScript: function(script)
-    {
-        var name = WebInspector.ParsedURL.extractName(script.sourceURL);
-        var url = "debugger:///VM" + script.scriptId + (name ? " " + name : "");
+  /**
+   * @param {!WebInspector.Script} script
+   */
+  addScript: function(script) {
+    var name = WebInspector.ParsedURL.extractName(script.sourceURL);
+    var url = 'debugger:///VM' + script.scriptId + (name ? ' ' + name : '');
 
-        var uiSourceCode = this._project.createUISourceCode(url, WebInspector.resourceTypes.Script);
-        uiSourceCode[WebInspector.DefaultScriptMapping._scriptSymbol] = script;
-        this._uiSourceCodeForScriptId.set(script.scriptId, uiSourceCode);
-        this._scriptIdForUISourceCode.set(uiSourceCode, script.scriptId);
-        this._project.addUISourceCodeWithProvider(uiSourceCode, script);
+    var uiSourceCode = this._project.createUISourceCode(url, WebInspector.resourceTypes.Script);
+    uiSourceCode[WebInspector.DefaultScriptMapping._scriptSymbol] = script;
+    this._uiSourceCodeForScriptId.set(script.scriptId, uiSourceCode);
+    this._scriptIdForUISourceCode.set(uiSourceCode, script.scriptId);
+    this._project.addUISourceCodeWithProvider(uiSourceCode, script);
 
-        this._debuggerWorkspaceBinding.setSourceMapping(this._debuggerModel.target(), uiSourceCode, this);
-        this._debuggerWorkspaceBinding.pushSourceMapping(script, this);
-    },
+    this._debuggerWorkspaceBinding.setSourceMapping(
+        this._debuggerModel.target(), uiSourceCode, this);
+    this._debuggerWorkspaceBinding.pushSourceMapping(script, this);
+  },
 
-    /**
+  /**
      * @override
      * @return {boolean}
      */
-    isIdentity: function()
-    {
-        return true;
-    },
+  isIdentity: function() { return true; },
 
-    /**
+  /**
      * @override
      * @param {!WebInspector.UISourceCode} uiSourceCode
      * @param {number} lineNumber
      * @return {boolean}
      */
-    uiLineHasMapping: function(uiSourceCode, lineNumber)
-    {
-        return true;
-    },
+  uiLineHasMapping: function(uiSourceCode, lineNumber) { return true; },
 
-    _debuggerReset: function()
-    {
-        this._uiSourceCodeForScriptId.clear();
-        this._scriptIdForUISourceCode.clear();
-        this._project.reset();
-    },
+  _debuggerReset: function() {
+    this._uiSourceCodeForScriptId.clear();
+    this._scriptIdForUISourceCode.clear();
+    this._project.reset();
+  },
 
-    dispose: function()
-    {
-        WebInspector.EventTarget.removeEventListeners(this._eventListeners);
-        this._debuggerReset();
-        this._project.dispose();
-    }
+  dispose: function() {
+    WebInspector.EventTarget.removeEventListeners(this._eventListeners);
+    this._debuggerReset();
+    this._project.dispose();
+  }
 };
 
 /**
  * @param {!WebInspector.Target} target
  * @return {string}
  */
-WebInspector.DefaultScriptMapping.projectIdForTarget = function(target)
-{
-    return "debugger:" + target.id();
+WebInspector.DefaultScriptMapping.projectIdForTarget = function(target) {
+  return 'debugger:' + target.id();
 };

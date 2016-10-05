@@ -9,11 +9,10 @@
  * @param {!WebInspector.ResourceType} contentType
  * @param {function():!Promise<string>} lazyContent
  */
-WebInspector.StaticContentProvider = function(contentURL, contentType, lazyContent)
-{
-    this._contentURL = contentURL;
-    this._contentType = contentType;
-    this._lazyContent = lazyContent;
+WebInspector.StaticContentProvider = function(contentURL, contentType, lazyContent) {
+  this._contentURL = contentURL;
+  this._contentType = contentType;
+  this._lazyContent = lazyContent;
 };
 
 /**
@@ -22,57 +21,46 @@ WebInspector.StaticContentProvider = function(contentURL, contentType, lazyConte
  * @param {string} content
  * @return {!WebInspector.StaticContentProvider}
  */
-WebInspector.StaticContentProvider.fromString = function(contentURL, contentType, content)
-{
-    var lazyContent = () => Promise.resolve(content);
-    return new WebInspector.StaticContentProvider(contentURL, contentType, lazyContent);
+WebInspector.StaticContentProvider.fromString = function(contentURL, contentType, content) {
+  var lazyContent = () => Promise.resolve(content);
+  return new WebInspector.StaticContentProvider(contentURL, contentType, lazyContent);
 };
 
 WebInspector.StaticContentProvider.prototype = {
-    /**
+  /**
      * @override
      * @return {string}
      */
-    contentURL: function()
-    {
-        return this._contentURL;
-    },
+  contentURL: function() { return this._contentURL; },
 
-    /**
+  /**
      * @override
      * @return {!WebInspector.ResourceType}
      */
-    contentType: function()
-    {
-        return this._contentType;
-    },
+  contentType: function() { return this._contentType; },
 
-    /**
+  /**
      * @override
      * @return {!Promise<?string>}
      */
-    requestContent: function()
-    {
-        return /** @type {!Promise<?string>} */(this._lazyContent());
-    },
+  requestContent: function() { return /** @type {!Promise<?string>} */ (this._lazyContent()); },
 
+  /**
+   * @override
+   * @param {string} query
+   * @param {boolean} caseSensitive
+   * @param {boolean} isRegex
+   * @param {function(!Array.<!WebInspector.ContentProvider.SearchMatch>)} callback
+   */
+  searchInContent: function(query, caseSensitive, isRegex, callback) {
     /**
-     * @override
-     * @param {string} query
-     * @param {boolean} caseSensitive
-     * @param {boolean} isRegex
-     * @param {function(!Array.<!WebInspector.ContentProvider.SearchMatch>)} callback
+     * @param {string} content
      */
-    searchInContent: function(query, caseSensitive, isRegex, callback)
-    {
-        /**
-         * @param {string} content
-         */
-        function performSearch(content)
-        {
-            callback(WebInspector.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex));
-        }
-
-        this._lazyContent().then(performSearch);
+    function performSearch(content) {
+      callback(WebInspector.ContentProvider.performSearchInContent(
+          content, query, caseSensitive, isRegex));
     }
+
+    this._lazyContent().then(performSearch);
+  }
 };

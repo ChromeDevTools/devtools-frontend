@@ -33,53 +33,54 @@
  * @param {function(string, *)} eventHandler
  * @extends {WebInspector.Object}
  */
-WebInspector.HeapSnapshotWorkerProxy = function(eventHandler)
-{
-    this._eventHandler = eventHandler;
-    this._nextObjectId = 1;
-    this._nextCallId = 1;
-    /** @type {!Map<number, function(*)>} */
-    this._callbacks = new Map();
-    /** @type {!Set<number>} */
-    this._previousCallbacks = new Set();
-    this._worker = new WebInspector.Worker("heap_snapshot_worker");
-    this._worker.onmessage = this._messageReceived.bind(this);
+WebInspector.HeapSnapshotWorkerProxy = function(eventHandler) {
+  this._eventHandler = eventHandler;
+  this._nextObjectId = 1;
+  this._nextCallId = 1;
+  /** @type {!Map<number, function(*)>} */
+  this._callbacks = new Map();
+  /** @type {!Set<number>} */
+  this._previousCallbacks = new Set();
+  this._worker = new WebInspector.Worker('heap_snapshot_worker');
+  this._worker.onmessage = this._messageReceived.bind(this);
 };
 
 WebInspector.HeapSnapshotWorkerProxy.prototype = {
-    /**
+  /**
      * @param {number} profileUid
      * @param {function(!WebInspector.HeapSnapshotProxy)} snapshotReceivedCallback
      * @return {!WebInspector.HeapSnapshotLoaderProxy}
      */
-    createLoader: function(profileUid, snapshotReceivedCallback)
-    {
-        var objectId = this._nextObjectId++;
-        var proxy = new WebInspector.HeapSnapshotLoaderProxy(this, objectId, profileUid, snapshotReceivedCallback);
-        this._postMessage({callId: this._nextCallId++, disposition: "create", objectId: objectId, methodName: "WebInspector.HeapSnapshotLoader"});
-        return proxy;
-    },
+  createLoader: function(profileUid, snapshotReceivedCallback) {
+    var objectId = this._nextObjectId++;
+    var proxy = new WebInspector.HeapSnapshotLoaderProxy(
+        this, objectId, profileUid, snapshotReceivedCallback);
+    this._postMessage({
+      callId: this._nextCallId++,
+      disposition: 'create',
+      objectId: objectId,
+      methodName: 'WebInspector.HeapSnapshotLoader'
+    });
+    return proxy;
+  },
 
-    dispose: function()
-    {
-        this._worker.terminate();
-        if (this._interval)
-            clearInterval(this._interval);
-    },
+  dispose: function() {
+    this._worker.terminate();
+    if (this._interval)
+      clearInterval(this._interval);
+  },
 
-    disposeObject: function(objectId)
-    {
-        this._postMessage({callId: this._nextCallId++, disposition: "dispose", objectId: objectId});
-    },
+  disposeObject: function(objectId) {
+    this._postMessage({callId: this._nextCallId++, disposition: 'dispose', objectId: objectId});
+  },
 
-    evaluateForTest: function(script, callback)
-    {
-        var callId = this._nextCallId++;
-        this._callbacks.set(callId, callback);
-        this._postMessage({callId: callId, disposition: "evaluateForTest", source: script});
-    },
+  evaluateForTest: function(script, callback) {
+    var callId = this._nextCallId++;
+    this._callbacks.set(callId, callback);
+    this._postMessage({callId: callId, disposition: 'evaluateForTest', source: script});
+  },
 
-    /**
+  /**
      * @param {?function(...?)} callback
      * @param {string} objectId
      * @param {string} methodName
@@ -87,94 +88,106 @@ WebInspector.HeapSnapshotWorkerProxy.prototype = {
      * @return {?Object}
      * @template T
      */
-    callFactoryMethod: function(callback, objectId, methodName, proxyConstructor)
-    {
-        var callId = this._nextCallId++;
-        var methodArguments = Array.prototype.slice.call(arguments, 4);
-        var newObjectId = this._nextObjectId++;
-
-        /**
-         * @this {WebInspector.HeapSnapshotWorkerProxy}
-         */
-        function wrapCallback(remoteResult)
-        {
-            callback(remoteResult ? new proxyConstructor(this, newObjectId) : null);
-        }
-
-        if (callback) {
-            this._callbacks.set(callId, wrapCallback.bind(this));
-            this._postMessage({callId: callId, disposition: "factory", objectId: objectId, methodName: methodName, methodArguments: methodArguments, newObjectId: newObjectId});
-            return null;
-        } else {
-            this._postMessage({callId: callId, disposition: "factory", objectId: objectId, methodName: methodName, methodArguments: methodArguments, newObjectId: newObjectId});
-            return new proxyConstructor(this, newObjectId);
-        }
-    },
+  callFactoryMethod: function(callback, objectId, methodName, proxyConstructor) {
+    var callId = this._nextCallId++;
+    var methodArguments = Array.prototype.slice.call(arguments, 4);
+    var newObjectId = this._nextObjectId++;
 
     /**
-     * @param {function(*)} callback
-     * @param {string} objectId
-     * @param {string} methodName
+     * @this {WebInspector.HeapSnapshotWorkerProxy}
      */
-    callMethod: function(callback, objectId, methodName)
-    {
-        var callId = this._nextCallId++;
-        var methodArguments = Array.prototype.slice.call(arguments, 3);
-        if (callback)
-            this._callbacks.set(callId, callback);
-        this._postMessage({callId: callId, disposition: "method", objectId: objectId, methodName: methodName, methodArguments: methodArguments});
-    },
+    function wrapCallback(remoteResult) {
+      callback(remoteResult ? new proxyConstructor(this, newObjectId) : null);
+    }
 
-    startCheckingForLongRunningCalls: function()
-    {
-        if (this._interval)
-            return;
-        this._checkLongRunningCalls();
-        this._interval = setInterval(this._checkLongRunningCalls.bind(this), 300);
-    },
+    if (callback) {
+      this._callbacks.set(callId, wrapCallback.bind(this));
+      this._postMessage({
+        callId: callId,
+        disposition: 'factory',
+        objectId: objectId,
+        methodName: methodName,
+        methodArguments: methodArguments,
+        newObjectId: newObjectId
+      });
+      return null;
+    } else {
+      this._postMessage({
+        callId: callId,
+        disposition: 'factory',
+        objectId: objectId,
+        methodName: methodName,
+        methodArguments: methodArguments,
+        newObjectId: newObjectId
+      });
+      return new proxyConstructor(this, newObjectId);
+    }
+  },
 
-    _checkLongRunningCalls: function()
-    {
-        for (var callId of this._previousCallbacks)
-            if (!this._callbacks.has(callId))
-                this._previousCallbacks.delete(callId);
-        var hasLongRunningCalls = !!this._previousCallbacks.size;
-        this.dispatchEventToListeners("wait", hasLongRunningCalls);
-        for (var callId of this._callbacks.keysArray())
-            this._previousCallbacks.add(callId);
-    },
+  /**
+   * @param {function(*)} callback
+   * @param {string} objectId
+   * @param {string} methodName
+   */
+  callMethod: function(callback, objectId, methodName) {
+    var callId = this._nextCallId++;
+    var methodArguments = Array.prototype.slice.call(arguments, 3);
+    if (callback)
+      this._callbacks.set(callId, callback);
+    this._postMessage({
+      callId: callId,
+      disposition: 'method',
+      objectId: objectId,
+      methodName: methodName,
+      methodArguments: methodArguments
+    });
+  },
 
-    /**
-     * @param {!MessageEvent} event
-     */
-    _messageReceived: function(event)
-    {
-        var data = event.data;
-        if (data.eventName) {
-            if (this._eventHandler)
-                this._eventHandler(data.eventName, data.data);
-            return;
-        }
-        if (data.error) {
-            if (data.errorMethodName)
-                WebInspector.console.error(WebInspector.UIString("An error occurred when a call to method '%s' was requested", data.errorMethodName));
-            WebInspector.console.error(data["errorCallStack"]);
-            this._callbacks.delete(data.callId);
-            return;
-        }
-        if (!this._callbacks.has(data.callId))
-            return;
-        var callback = this._callbacks.get(data.callId);
-        this._callbacks.delete(data.callId);
-        callback(data.result);
-    },
+  startCheckingForLongRunningCalls: function() {
+    if (this._interval)
+      return;
+    this._checkLongRunningCalls();
+    this._interval = setInterval(this._checkLongRunningCalls.bind(this), 300);
+  },
 
-    _postMessage: function(message)
-    {
-        this._worker.postMessage(message);
-    },
+  _checkLongRunningCalls: function() {
+    for (var callId of this._previousCallbacks)
+      if (!this._callbacks.has(callId))
+        this._previousCallbacks.delete(callId);
+    var hasLongRunningCalls = !!this._previousCallbacks.size;
+    this.dispatchEventToListeners('wait', hasLongRunningCalls);
+    for (var callId of this._callbacks.keysArray())
+      this._previousCallbacks.add(callId);
+  },
 
-    __proto__: WebInspector.Object.prototype
+  /**
+   * @param {!MessageEvent} event
+   */
+  _messageReceived: function(event) {
+    var data = event.data;
+    if (data.eventName) {
+      if (this._eventHandler)
+        this._eventHandler(data.eventName, data.data);
+      return;
+    }
+    if (data.error) {
+      if (data.errorMethodName)
+        WebInspector.console.error(WebInspector.UIString(
+            'An error occurred when a call to method \'%s\' was requested', data.errorMethodName));
+      WebInspector.console.error(data['errorCallStack']);
+      this._callbacks.delete(data.callId);
+      return;
+    }
+    if (!this._callbacks.has(data.callId))
+      return;
+    var callback = this._callbacks.get(data.callId);
+    this._callbacks.delete(data.callId);
+    callback(data.result);
+  },
+
+  _postMessage: function(message) { this._worker.postMessage(message); },
+
+  __proto__: WebInspector.Object.prototype
 };
 
 
@@ -183,34 +196,26 @@ WebInspector.HeapSnapshotWorkerProxy.prototype = {
  * @param {!WebInspector.HeapSnapshotWorkerProxy} worker
  * @param {number} objectId
  */
-WebInspector.HeapSnapshotProxyObject = function(worker, objectId)
-{
-    this._worker = worker;
-    this._objectId = objectId;
+WebInspector.HeapSnapshotProxyObject = function(worker, objectId) {
+  this._worker = worker;
+  this._objectId = objectId;
 };
 
 WebInspector.HeapSnapshotProxyObject.prototype = {
-    /**
-     * @param {string} workerMethodName
-     * @param {!Array.<*>} args
-     */
-    _callWorker: function(workerMethodName, args)
-    {
-        args.splice(1, 0, this._objectId);
-        return this._worker[workerMethodName].apply(this._worker, args);
-    },
+  /**
+   * @param {string} workerMethodName
+   * @param {!Array.<*>} args
+   */
+  _callWorker: function(workerMethodName, args) {
+    args.splice(1, 0, this._objectId);
+    return this._worker[workerMethodName].apply(this._worker, args);
+  },
 
-    dispose: function()
-    {
-        this._worker.disposeObject(this._objectId);
-    },
+  dispose: function() { this._worker.disposeObject(this._objectId); },
 
-    disposeWorker: function()
-    {
-        this._worker.dispose();
-    },
+  disposeWorker: function() { this._worker.dispose(); },
 
-    /**
+  /**
      * @param {?function(...?)} callback
      * @param {string} methodName
      * @param {function (new:T, ...?)} proxyConstructor
@@ -218,43 +223,37 @@ WebInspector.HeapSnapshotProxyObject.prototype = {
      * @return {!T}
      * @template T
      */
-    callFactoryMethod: function(callback, methodName, proxyConstructor, var_args)
-    {
-        return this._callWorker("callFactoryMethod", Array.prototype.slice.call(arguments, 0));
-    },
+  callFactoryMethod: function(callback, methodName, proxyConstructor, var_args) {
+    return this._callWorker('callFactoryMethod', Array.prototype.slice.call(arguments, 0));
+  },
 
-    /**
+  /**
      * @param {function(T)|undefined} callback
      * @param {string} methodName
      * @param {...*} var_args
      * @return {*}
      * @template T
      */
-    callMethod: function(callback, methodName, var_args)
-    {
-        return this._callWorker("callMethod", Array.prototype.slice.call(arguments, 0));
-    },
+  callMethod: function(callback, methodName, var_args) {
+    return this._callWorker('callMethod', Array.prototype.slice.call(arguments, 0));
+  },
 
-    /**
+  /**
      * @param {string} methodName
      * @param {...*} var_args
      * @return {!Promise.<?T>}
      * @template T
      */
-    _callMethodPromise: function(methodName, var_args)
-    {
-        /**
-         * @param {!Array.<*>} args
-         * @param {function(?T)} fulfill
-         * @this {WebInspector.HeapSnapshotProxyObject}
-         * @template T
-         */
-        function action(args, fulfill)
-        {
-            this._callWorker("callMethod", [fulfill].concat(args));
-        }
-        return new Promise(action.bind(this, Array.prototype.slice.call(arguments)));
-    }
+  _callMethodPromise: function(methodName, var_args) {
+    /**
+     * @param {!Array.<*>} args
+     * @param {function(?T)} fulfill
+     * @this {WebInspector.HeapSnapshotProxyObject}
+     * @template T
+     */
+    function action(args, fulfill) { this._callWorker('callMethod', [fulfill].concat(args)); }
+    return new Promise(action.bind(this, Array.prototype.slice.call(arguments)));
+  }
 };
 
 /**
@@ -266,55 +265,50 @@ WebInspector.HeapSnapshotProxyObject.prototype = {
  * @param {number} profileUid
  * @param {function(!WebInspector.HeapSnapshotProxy)} snapshotReceivedCallback
  */
-WebInspector.HeapSnapshotLoaderProxy = function(worker, objectId, profileUid, snapshotReceivedCallback)
-{
-    WebInspector.HeapSnapshotProxyObject.call(this, worker, objectId);
-    this._profileUid = profileUid;
-    this._snapshotReceivedCallback = snapshotReceivedCallback;
+WebInspector.HeapSnapshotLoaderProxy = function(
+    worker, objectId, profileUid, snapshotReceivedCallback) {
+  WebInspector.HeapSnapshotProxyObject.call(this, worker, objectId);
+  this._profileUid = profileUid;
+  this._snapshotReceivedCallback = snapshotReceivedCallback;
 };
 
 WebInspector.HeapSnapshotLoaderProxy.prototype = {
+  /**
+   * @override
+   * @param {string} chunk
+   * @param {function(!WebInspector.OutputStream)=} callback
+   */
+  write: function(chunk, callback) { this.callMethod(callback, 'write', chunk); },
+
+  /**
+   * @override
+   * @param {function()=} callback
+   */
+  close: function(callback) {
     /**
-     * @override
-     * @param {string} chunk
-     * @param {function(!WebInspector.OutputStream)=} callback
+     * @this {WebInspector.HeapSnapshotLoaderProxy}
      */
-    write: function(chunk, callback)
-    {
-        this.callMethod(callback, "write", chunk);
-    },
+    function buildSnapshot() {
+      if (callback)
+        callback();
+      this.callFactoryMethod(
+          updateStaticData.bind(this), 'buildSnapshot', WebInspector.HeapSnapshotProxy);
+    }
 
     /**
-     * @override
-     * @param {function()=} callback
+     * @param {!WebInspector.HeapSnapshotProxy} snapshotProxy
+     * @this {WebInspector.HeapSnapshotLoaderProxy}
      */
-    close: function(callback)
-    {
-        /**
-         * @this {WebInspector.HeapSnapshotLoaderProxy}
-         */
-        function buildSnapshot()
-        {
-            if (callback)
-                callback();
-            this.callFactoryMethod(updateStaticData.bind(this), "buildSnapshot", WebInspector.HeapSnapshotProxy);
-        }
+    function updateStaticData(snapshotProxy) {
+      this.dispose();
+      snapshotProxy.setProfileUid(this._profileUid);
+      snapshotProxy.updateStaticData(this._snapshotReceivedCallback.bind(this));
+    }
 
-        /**
-         * @param {!WebInspector.HeapSnapshotProxy} snapshotProxy
-         * @this {WebInspector.HeapSnapshotLoaderProxy}
-         */
-        function updateStaticData(snapshotProxy)
-        {
-            this.dispose();
-            snapshotProxy.setProfileUid(this._profileUid);
-            snapshotProxy.updateStaticData(this._snapshotReceivedCallback.bind(this));
-        }
+    this.callMethod(buildSnapshot.bind(this), 'close');
+  },
 
-        this.callMethod(buildSnapshot.bind(this), "close");
-    },
-
-    __proto__: WebInspector.HeapSnapshotProxyObject.prototype
+  __proto__: WebInspector.HeapSnapshotProxyObject.prototype
 };
 
 
@@ -324,200 +318,160 @@ WebInspector.HeapSnapshotLoaderProxy.prototype = {
  * @param {!WebInspector.HeapSnapshotWorkerProxy} worker
  * @param {number} objectId
  */
-WebInspector.HeapSnapshotProxy = function(worker, objectId)
-{
-    WebInspector.HeapSnapshotProxyObject.call(this, worker, objectId);
-    /** @type {?WebInspector.HeapSnapshotCommon.StaticData} */
-    this._staticData = null;
+WebInspector.HeapSnapshotProxy = function(worker, objectId) {
+  WebInspector.HeapSnapshotProxyObject.call(this, worker, objectId);
+  /** @type {?WebInspector.HeapSnapshotCommon.StaticData} */
+  this._staticData = null;
 };
 
 WebInspector.HeapSnapshotProxy.prototype = {
-    /**
+  /**
      * @param {!WebInspector.HeapSnapshotCommon.SearchConfig} searchConfig
      * @param {!WebInspector.HeapSnapshotCommon.NodeFilter} filter
      * @return {!Promise<!Array<number>>}
      */
-    search: function(searchConfig, filter)
-    {
-        return this._callMethodPromise("search", searchConfig, filter);
-    },
+  search: function(searchConfig, filter) {
+    return this._callMethodPromise('search', searchConfig, filter);
+  },
 
-    /**
-     * @param {!WebInspector.HeapSnapshotCommon.NodeFilter} filter
-     * @param {function(!Object.<string, !WebInspector.HeapSnapshotCommon.Aggregate>)} callback
-     */
-    aggregatesWithFilter: function(filter, callback)
-    {
-        this.callMethod(callback, "aggregatesWithFilter", filter);
-    },
+  /**
+   * @param {!WebInspector.HeapSnapshotCommon.NodeFilter} filter
+   * @param {function(!Object.<string, !WebInspector.HeapSnapshotCommon.Aggregate>)} callback
+   */
+  aggregatesWithFilter: function(filter, callback) {
+    this.callMethod(callback, 'aggregatesWithFilter', filter);
+  },
 
-    aggregatesForDiff: function(callback)
-    {
-        this.callMethod(callback, "aggregatesForDiff");
-    },
+  aggregatesForDiff: function(callback) { this.callMethod(callback, 'aggregatesForDiff'); },
 
-    calculateSnapshotDiff: function(baseSnapshotId, baseSnapshotAggregates, callback)
-    {
-        this.callMethod(callback, "calculateSnapshotDiff", baseSnapshotId, baseSnapshotAggregates);
-    },
+  calculateSnapshotDiff: function(baseSnapshotId, baseSnapshotAggregates, callback) {
+    this.callMethod(callback, 'calculateSnapshotDiff', baseSnapshotId, baseSnapshotAggregates);
+  },
 
-    /**
+  /**
      * @param {number} snapshotObjectId
      * @return {!Promise<?string>}
      */
-    nodeClassName: function(snapshotObjectId)
-    {
-        return this._callMethodPromise("nodeClassName", snapshotObjectId);
-    },
+  nodeClassName: function(snapshotObjectId) {
+    return this._callMethodPromise('nodeClassName', snapshotObjectId);
+  },
 
-    /**
+  /**
      * @param {number} nodeIndex
      * @return {!WebInspector.HeapSnapshotProviderProxy}
      */
-    createEdgesProvider: function(nodeIndex)
-    {
-        return this.callFactoryMethod(null, "createEdgesProvider", WebInspector.HeapSnapshotProviderProxy, nodeIndex);
-    },
+  createEdgesProvider: function(nodeIndex) {
+    return this.callFactoryMethod(
+        null, 'createEdgesProvider', WebInspector.HeapSnapshotProviderProxy, nodeIndex);
+  },
 
-    /**
+  /**
      * @param {number} nodeIndex
      * @return {!WebInspector.HeapSnapshotProviderProxy}
      */
-    createRetainingEdgesProvider: function(nodeIndex)
-    {
-        return this.callFactoryMethod(null, "createRetainingEdgesProvider", WebInspector.HeapSnapshotProviderProxy, nodeIndex);
-    },
+  createRetainingEdgesProvider: function(nodeIndex) {
+    return this.callFactoryMethod(
+        null, 'createRetainingEdgesProvider', WebInspector.HeapSnapshotProviderProxy, nodeIndex);
+  },
 
-    /**
+  /**
      * @param {string} baseSnapshotId
      * @param {string} className
      * @return {?WebInspector.HeapSnapshotProviderProxy}
      */
-    createAddedNodesProvider: function(baseSnapshotId, className)
-    {
-        return this.callFactoryMethod(null, "createAddedNodesProvider", WebInspector.HeapSnapshotProviderProxy, baseSnapshotId, className);
-    },
+  createAddedNodesProvider: function(baseSnapshotId, className) {
+    return this.callFactoryMethod(
+        null, 'createAddedNodesProvider', WebInspector.HeapSnapshotProviderProxy, baseSnapshotId,
+        className);
+  },
 
-    /**
+  /**
      * @param {!Array.<number>} nodeIndexes
      * @return {?WebInspector.HeapSnapshotProviderProxy}
      */
-    createDeletedNodesProvider: function(nodeIndexes)
-    {
-        return this.callFactoryMethod(null, "createDeletedNodesProvider", WebInspector.HeapSnapshotProviderProxy, nodeIndexes);
-    },
+  createDeletedNodesProvider: function(nodeIndexes) {
+    return this.callFactoryMethod(
+        null, 'createDeletedNodesProvider', WebInspector.HeapSnapshotProviderProxy, nodeIndexes);
+  },
 
-    /**
+  /**
      * @param {function(*):boolean} filter
      * @return {?WebInspector.HeapSnapshotProviderProxy}
      */
-    createNodesProvider: function(filter)
-    {
-        return this.callFactoryMethod(null, "createNodesProvider", WebInspector.HeapSnapshotProviderProxy, filter);
-    },
+  createNodesProvider: function(filter) {
+    return this.callFactoryMethod(
+        null, 'createNodesProvider', WebInspector.HeapSnapshotProviderProxy, filter);
+  },
 
-    /**
+  /**
      * @param {string} className
      * @param {!WebInspector.HeapSnapshotCommon.NodeFilter} nodeFilter
      * @return {?WebInspector.HeapSnapshotProviderProxy}
      */
-    createNodesProviderForClass: function(className, nodeFilter)
-    {
-        return this.callFactoryMethod(null, "createNodesProviderForClass", WebInspector.HeapSnapshotProviderProxy, className, nodeFilter);
-    },
+  createNodesProviderForClass: function(className, nodeFilter) {
+    return this.callFactoryMethod(
+        null, 'createNodesProviderForClass', WebInspector.HeapSnapshotProviderProxy, className,
+        nodeFilter);
+  },
 
-    allocationTracesTops: function(callback)
-    {
-        this.callMethod(callback, "allocationTracesTops");
-    },
+  allocationTracesTops: function(callback) { this.callMethod(callback, 'allocationTracesTops'); },
 
+  /**
+   * @param {number} nodeId
+   * @param {function(!WebInspector.HeapSnapshotCommon.AllocationNodeCallers)} callback
+   */
+  allocationNodeCallers: function(nodeId, callback) {
+    this.callMethod(callback, 'allocationNodeCallers', nodeId);
+  },
+
+  /**
+   * @param {number} nodeIndex
+   * @param {function(?Array.<!WebInspector.HeapSnapshotCommon.AllocationStackFrame>)} callback
+   */
+  allocationStack: function(nodeIndex, callback) {
+    this.callMethod(callback, 'allocationStack', nodeIndex);
+  },
+
+  dispose: function() { throw new Error('Should never be called'); },
+
+  get nodeCount() { return this._staticData.nodeCount; },
+
+  get rootNodeIndex() { return this._staticData.rootNodeIndex; },
+
+  updateStaticData: function(callback) {
     /**
-     * @param {number} nodeId
-     * @param {function(!WebInspector.HeapSnapshotCommon.AllocationNodeCallers)} callback
+     * @param {!WebInspector.HeapSnapshotCommon.StaticData} staticData
+     * @this {WebInspector.HeapSnapshotProxy}
      */
-    allocationNodeCallers: function(nodeId, callback)
-    {
-        this.callMethod(callback, "allocationNodeCallers", nodeId);
-    },
+    function dataReceived(staticData) {
+      this._staticData = staticData;
+      callback(this);
+    }
+    this.callMethod(dataReceived.bind(this), 'updateStaticData');
+  },
 
-    /**
-     * @param {number} nodeIndex
-     * @param {function(?Array.<!WebInspector.HeapSnapshotCommon.AllocationStackFrame>)} callback
-     */
-    allocationStack: function(nodeIndex, callback)
-    {
-        this.callMethod(callback, "allocationStack", nodeIndex);
-    },
-
-    dispose: function()
-    {
-        throw new Error("Should never be called");
-    },
-
-    get nodeCount()
-    {
-        return this._staticData.nodeCount;
-    },
-
-    get rootNodeIndex()
-    {
-        return this._staticData.rootNodeIndex;
-    },
-
-    updateStaticData: function(callback)
-    {
-        /**
-         * @param {!WebInspector.HeapSnapshotCommon.StaticData} staticData
-         * @this {WebInspector.HeapSnapshotProxy}
-         */
-        function dataReceived(staticData)
-        {
-            this._staticData = staticData;
-            callback(this);
-        }
-        this.callMethod(dataReceived.bind(this), "updateStaticData");
-    },
-
-    /**
+  /**
      * @return {!Promise.<!WebInspector.HeapSnapshotCommon.Statistics>}
      */
-    getStatistics: function()
-    {
-        return this._callMethodPromise("getStatistics");
-    },
+  getStatistics: function() { return this._callMethodPromise('getStatistics'); },
 
-    /**
+  /**
      * @return {!Promise.<?WebInspector.HeapSnapshotCommon.Samples>}
      */
-    getSamples: function()
-    {
-        return this._callMethodPromise("getSamples");
-    },
+  getSamples: function() { return this._callMethodPromise('getSamples'); },
 
-    get totalSize()
-    {
-        return this._staticData.totalSize;
-    },
+  get totalSize() { return this._staticData.totalSize; },
 
-    get uid()
-    {
-        return this._profileUid;
-    },
+  get uid() { return this._profileUid; },
 
-    setProfileUid: function(profileUid)
-    {
-        this._profileUid = profileUid;
-    },
+  setProfileUid: function(profileUid) { this._profileUid = profileUid; },
 
-    /**
+  /**
      * @return {number}
      */
-    maxJSObjectId: function()
-    {
-        return this._staticData.maxJSObjectId;
-    },
+  maxJSObjectId: function() { return this._staticData.maxJSObjectId; },
 
-    __proto__: WebInspector.HeapSnapshotProxyObject.prototype
+  __proto__: WebInspector.HeapSnapshotProxyObject.prototype
 };
 
 
@@ -528,51 +482,44 @@ WebInspector.HeapSnapshotProxy.prototype = {
  * @param {!WebInspector.HeapSnapshotWorkerProxy} worker
  * @param {number} objectId
  */
-WebInspector.HeapSnapshotProviderProxy = function(worker, objectId)
-{
-    WebInspector.HeapSnapshotProxyObject.call(this, worker, objectId);
+WebInspector.HeapSnapshotProviderProxy = function(worker, objectId) {
+  WebInspector.HeapSnapshotProxyObject.call(this, worker, objectId);
 };
 
 WebInspector.HeapSnapshotProviderProxy.prototype = {
-    /**
+  /**
      * @override
      * @param {number} snapshotObjectId
      * @return {!Promise<number>}
      */
-    nodePosition: function(snapshotObjectId)
-    {
-        return this._callMethodPromise("nodePosition", snapshotObjectId);
-    },
+  nodePosition: function(snapshotObjectId) {
+    return this._callMethodPromise('nodePosition', snapshotObjectId);
+  },
 
-    /**
-     * @override
-     * @param {function(boolean)} callback
-     */
-    isEmpty: function(callback)
-    {
-        this.callMethod(callback, "isEmpty");
-    },
+  /**
+   * @override
+   * @param {function(boolean)} callback
+   */
+  isEmpty: function(callback) { this.callMethod(callback, 'isEmpty'); },
 
-    /**
-     * @override
-     * @param {number} startPosition
-     * @param {number} endPosition
-     * @param {function(!WebInspector.HeapSnapshotCommon.ItemsRange)} callback
-     */
-    serializeItemsRange: function(startPosition, endPosition, callback)
-    {
-        this.callMethod(callback, "serializeItemsRange", startPosition, endPosition);
-    },
+  /**
+   * @override
+   * @param {number} startPosition
+   * @param {number} endPosition
+   * @param {function(!WebInspector.HeapSnapshotCommon.ItemsRange)} callback
+   */
+  serializeItemsRange: function(startPosition, endPosition, callback) {
+    this.callMethod(callback, 'serializeItemsRange', startPosition, endPosition);
+  },
 
-    /**
+  /**
      * @override
      * @param {!WebInspector.HeapSnapshotCommon.ComparatorConfig} comparator
      * @return {!Promise<?>}
      */
-    sortAndRewind: function(comparator)
-    {
-        return this._callMethodPromise("sortAndRewind", comparator);
-    },
+  sortAndRewind: function(comparator) {
+    return this._callMethodPromise('sortAndRewind', comparator);
+  },
 
-    __proto__: WebInspector.HeapSnapshotProxyObject.prototype
+  __proto__: WebInspector.HeapSnapshotProxyObject.prototype
 };

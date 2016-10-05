@@ -28,283 +28,247 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- /**
- * @constructor
- * @extends {WebInspector.ProjectStore}
- * @implements {WebInspector.Project}
- * @param {!WebInspector.Workspace} workspace
- * @param {string} id
- * @param {!WebInspector.projectTypes} type
- * @param {string} displayName
- */
-WebInspector.ContentProviderBasedProject = function(workspace, id, type, displayName)
-{
-    WebInspector.ProjectStore.call(this, workspace, id, type, displayName);
-    /** @type {!Object.<string, !WebInspector.ContentProvider>} */
-    this._contentProviders = {};
-    workspace.addProject(this);
+/**
+* @constructor
+* @extends {WebInspector.ProjectStore}
+* @implements {WebInspector.Project}
+* @param {!WebInspector.Workspace} workspace
+* @param {string} id
+* @param {!WebInspector.projectTypes} type
+* @param {string} displayName
+*/
+WebInspector.ContentProviderBasedProject = function(workspace, id, type, displayName) {
+  WebInspector.ProjectStore.call(this, workspace, id, type, displayName);
+  /** @type {!Object.<string, !WebInspector.ContentProvider>} */
+  this._contentProviders = {};
+  workspace.addProject(this);
 };
 
 WebInspector.ContentProviderBasedProject.prototype = {
-    /**
-     * @override
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     * @param {function(?string)} callback
-     */
-    requestFileContent: function(uiSourceCode, callback)
-    {
-        var contentProvider = this._contentProviders[uiSourceCode.url()];
-        contentProvider.requestContent().then(callback);
-    },
+  /**
+   * @override
+   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {function(?string)} callback
+   */
+  requestFileContent: function(uiSourceCode, callback) {
+    var contentProvider = this._contentProviders[uiSourceCode.url()];
+    contentProvider.requestContent().then(callback);
+  },
 
-    /**
-     * @override
-     * @return {boolean}
-     */
-    canSetFileContent: function()
-    {
-        return false;
-    },
-
-    /**
-     * @override
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     * @param {string} newContent
-     * @param {function(?string)} callback
-     */
-    setFileContent: function(uiSourceCode, newContent, callback)
-    {
-        callback(null);
-    },
-
-    /**
+  /**
      * @override
      * @return {boolean}
      */
-    canRename: function()
-    {
-        return false;
-    },
+  canSetFileContent: function() { return false; },
 
-    /**
+  /**
+   * @override
+   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {string} newContent
+   * @param {function(?string)} callback
+   */
+  setFileContent: function(uiSourceCode, newContent, callback) { callback(null); },
+
+  /**
      * @override
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     * @param {string} newName
-     * @param {function(boolean, string=, string=, !WebInspector.ResourceType=)} callback
+     * @return {boolean}
      */
-    rename: function(uiSourceCode, newName, callback)
-    {
-        var path = uiSourceCode.url();
-        this.performRename(path, newName, innerCallback.bind(this));
+  canRename: function() { return false; },
 
-        /**
-         * @param {boolean} success
-         * @param {string=} newName
-         * @this {WebInspector.ContentProviderBasedProject}
-         */
-        function innerCallback(success, newName)
-        {
-            if (success && newName) {
-                var copyOfPath = path.split("/");
-                copyOfPath[copyOfPath.length - 1] = newName;
-                var newPath = copyOfPath.join("/");
-                this._contentProviders[newPath] = this._contentProviders[path];
-                delete this._contentProviders[path];
-                this.renameUISourceCode(uiSourceCode, newName);
-            }
-            callback(success, newName);
-        }
-    },
+  /**
+   * @override
+   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {string} newName
+   * @param {function(boolean, string=, string=, !WebInspector.ResourceType=)} callback
+   */
+  rename: function(uiSourceCode, newName, callback) {
+    var path = uiSourceCode.url();
+    this.performRename(path, newName, innerCallback.bind(this));
 
     /**
-     * @override
+     * @param {boolean} success
+     * @param {string=} newName
+     * @this {WebInspector.ContentProviderBasedProject}
+     */
+    function innerCallback(success, newName) {
+      if (success && newName) {
+        var copyOfPath = path.split('/');
+        copyOfPath[copyOfPath.length - 1] = newName;
+        var newPath = copyOfPath.join('/');
+        this._contentProviders[newPath] = this._contentProviders[path];
+        delete this._contentProviders[path];
+        this.renameUISourceCode(uiSourceCode, newName);
+      }
+      callback(success, newName);
+    }
+  },
+
+  /**
+   * @override
+   * @param {string} path
+   */
+  excludeFolder: function(path) {},
+
+  /**
+   * @override
+   * @param {string} path
+   * @param {?string} name
+   * @param {string} content
+   * @param {function(?WebInspector.UISourceCode)} callback
+   */
+  createFile: function(path, name, content, callback) {},
+
+  /**
+   * @override
+   * @param {string} path
+   */
+  deleteFile: function(path) {},
+
+  /**
+   * @override
+   */
+  remove: function() {},
+
+  /**
+   * @param {string} path
+   * @param {string} newName
+   * @param {function(boolean, string=)} callback
+   */
+  performRename: function(path, newName, callback) { callback(false); },
+
+  /**
+   * @override
+   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {string} query
+   * @param {boolean} caseSensitive
+   * @param {boolean} isRegex
+   * @param {function(!Array.<!WebInspector.ContentProvider.SearchMatch>)} callback
+   */
+  searchInFileContent: function(uiSourceCode, query, caseSensitive, isRegex, callback) {
+    var contentProvider = this._contentProviders[uiSourceCode.url()];
+    contentProvider.searchInContent(query, caseSensitive, isRegex, callback);
+  },
+
+  /**
+   * @override
+   * @param {!WebInspector.ProjectSearchConfig} searchConfig
+   * @param {!Array.<string>} filesMathingFileQuery
+   * @param {!WebInspector.Progress} progress
+   * @param {function(!Array.<string>)} callback
+   */
+  findFilesMatchingSearchRequest: function(
+      searchConfig, filesMathingFileQuery, progress, callback) {
+    var result = [];
+    var paths = filesMathingFileQuery;
+    var totalCount = paths.length;
+    if (totalCount === 0) {
+      // searchInContent should call back later.
+      setTimeout(doneCallback, 0);
+      return;
+    }
+
+    var barrier = new CallbackBarrier();
+    progress.setTotalWork(paths.length);
+    for (var i = 0; i < paths.length; ++i)
+      searchInContent.call(
+          this, paths[i], barrier.createCallback(searchInContentCallback.bind(null, paths[i])));
+    barrier.callWhenDone(doneCallback);
+
+    /**
      * @param {string} path
+     * @param {function(boolean)} callback
+     * @this {WebInspector.ContentProviderBasedProject}
      */
-    excludeFolder: function(path)
-    {
-    },
+    function searchInContent(path, callback) {
+      var queriesToRun = searchConfig.queries().slice();
+      searchNextQuery.call(this);
+
+      /**
+       * @this {WebInspector.ContentProviderBasedProject}
+       */
+      function searchNextQuery() {
+        if (!queriesToRun.length) {
+          callback(true);
+          return;
+        }
+        var query = queriesToRun.shift();
+        this._contentProviders[path].searchInContent(
+            query, !searchConfig.ignoreCase(), searchConfig.isRegex(), contentCallback.bind(this));
+      }
+
+      /**
+       * @param {!Array.<!WebInspector.ContentProvider.SearchMatch>} searchMatches
+       * @this {WebInspector.ContentProviderBasedProject}
+       */
+      function contentCallback(searchMatches) {
+        if (!searchMatches.length) {
+          callback(false);
+          return;
+        }
+        searchNextQuery.call(this);
+      }
+    }
 
     /**
-     * @override
      * @param {string} path
-     * @param {?string} name
-     * @param {string} content
-     * @param {function(?WebInspector.UISourceCode)} callback
+     * @param {boolean} matches
      */
-    createFile: function(path, name, content, callback)
-    {
-    },
+    function searchInContentCallback(path, matches) {
+      if (matches)
+        result.push(path);
+      progress.worked(1);
+    }
 
-    /**
-     * @override
-     * @param {string} path
-     */
-    deleteFile: function(path)
-    {
-    },
+    function doneCallback() {
+      callback(result);
+      progress.done();
+    }
+  },
 
-    /**
-     * @override
-     */
-    remove: function()
-    {
-    },
+  /**
+   * @override
+   * @param {!WebInspector.Progress} progress
+   */
+  indexContent: function(progress) { setImmediate(progress.done.bind(progress)); },
 
-    /**
-     * @param {string} path
-     * @param {string} newName
-     * @param {function(boolean, string=)} callback
-     */
-    performRename: function(path, newName, callback)
-    {
-        callback(false);
-    },
+  /**
+   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!WebInspector.ContentProvider} contentProvider
+   */
+  addUISourceCodeWithProvider: function(uiSourceCode, contentProvider) {
+    this._contentProviders[uiSourceCode.url()] = contentProvider;
+    this.addUISourceCode(uiSourceCode, true);
+  },
 
-    /**
-     * @override
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     * @param {string} query
-     * @param {boolean} caseSensitive
-     * @param {boolean} isRegex
-     * @param {function(!Array.<!WebInspector.ContentProvider.SearchMatch>)} callback
-     */
-    searchInFileContent: function(uiSourceCode, query, caseSensitive, isRegex, callback)
-    {
-        var contentProvider = this._contentProviders[uiSourceCode.url()];
-        contentProvider.searchInContent(query, caseSensitive, isRegex, callback);
-    },
-
-    /**
-     * @override
-     * @param {!WebInspector.ProjectSearchConfig} searchConfig
-     * @param {!Array.<string>} filesMathingFileQuery
-     * @param {!WebInspector.Progress} progress
-     * @param {function(!Array.<string>)} callback
-     */
-    findFilesMatchingSearchRequest: function(searchConfig, filesMathingFileQuery, progress, callback)
-    {
-        var result = [];
-        var paths = filesMathingFileQuery;
-        var totalCount = paths.length;
-        if (totalCount === 0) {
-            // searchInContent should call back later.
-            setTimeout(doneCallback, 0);
-            return;
-        }
-
-        var barrier = new CallbackBarrier();
-        progress.setTotalWork(paths.length);
-        for (var i = 0; i < paths.length; ++i)
-            searchInContent.call(this, paths[i], barrier.createCallback(searchInContentCallback.bind(null, paths[i])));
-        barrier.callWhenDone(doneCallback);
-
-        /**
-         * @param {string} path
-         * @param {function(boolean)} callback
-         * @this {WebInspector.ContentProviderBasedProject}
-         */
-        function searchInContent(path, callback)
-        {
-            var queriesToRun = searchConfig.queries().slice();
-            searchNextQuery.call(this);
-
-            /**
-             * @this {WebInspector.ContentProviderBasedProject}
-             */
-            function searchNextQuery()
-            {
-                if (!queriesToRun.length) {
-                    callback(true);
-                    return;
-                }
-                var query = queriesToRun.shift();
-                this._contentProviders[path].searchInContent(query, !searchConfig.ignoreCase(), searchConfig.isRegex(), contentCallback.bind(this));
-            }
-
-            /**
-             * @param {!Array.<!WebInspector.ContentProvider.SearchMatch>} searchMatches
-             * @this {WebInspector.ContentProviderBasedProject}
-             */
-            function contentCallback(searchMatches)
-            {
-                if (!searchMatches.length) {
-                    callback(false);
-                    return;
-                }
-                searchNextQuery.call(this);
-            }
-        }
-
-        /**
-         * @param {string} path
-         * @param {boolean} matches
-         */
-        function searchInContentCallback(path, matches)
-        {
-            if (matches)
-                result.push(path);
-            progress.worked(1);
-        }
-
-        function doneCallback()
-        {
-            callback(result);
-            progress.done();
-        }
-    },
-
-    /**
-     * @override
-     * @param {!WebInspector.Progress} progress
-     */
-    indexContent: function(progress)
-    {
-        setImmediate(progress.done.bind(progress));
-    },
-
-    /**
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     * @param {!WebInspector.ContentProvider} contentProvider
-     */
-    addUISourceCodeWithProvider: function(uiSourceCode, contentProvider)
-    {
-        this._contentProviders[uiSourceCode.url()] = contentProvider;
-        this.addUISourceCode(uiSourceCode, true);
-    },
-
-    /**
+  /**
      * @param {string} url
      * @param {!WebInspector.ContentProvider} contentProvider
      * @return {!WebInspector.UISourceCode}
      */
-    addContentProvider: function(url, contentProvider)
-    {
-        var uiSourceCode = this.createUISourceCode(url, contentProvider.contentType());
-        this.addUISourceCodeWithProvider(uiSourceCode, contentProvider);
-        return uiSourceCode;
-    },
+  addContentProvider: function(url, contentProvider) {
+    var uiSourceCode = this.createUISourceCode(url, contentProvider.contentType());
+    this.addUISourceCodeWithProvider(uiSourceCode, contentProvider);
+    return uiSourceCode;
+  },
 
-    /**
-     * @param {string} path
-     */
-    removeFile: function(path)
-    {
-        delete this._contentProviders[path];
-        this.removeUISourceCode(path);
-    },
+  /**
+   * @param {string} path
+   */
+  removeFile: function(path) {
+    delete this._contentProviders[path];
+    this.removeUISourceCode(path);
+  },
 
-    reset: function()
-    {
-        this._contentProviders = {};
-        this.removeProject();
-        this.workspace().addProject(this);
-    },
+  reset: function() {
+    this._contentProviders = {};
+    this.removeProject();
+    this.workspace().addProject(this);
+  },
 
-    dispose: function()
-    {
-        this._contentProviders = {};
-        this.removeProject();
-    },
+  dispose: function() {
+    this._contentProviders = {};
+    this.removeProject();
+  },
 
-    __proto__: WebInspector.ProjectStore.prototype
+  __proto__: WebInspector.ProjectStore.prototype
 };

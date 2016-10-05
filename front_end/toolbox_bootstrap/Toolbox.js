@@ -4,16 +4,15 @@
 
 
 (function() {
-    /**
-     * @suppressGlobalPropertiesCheck
-     */
-    function toolboxLoaded()
-    {
-        if (!window.opener)
-            return;
-        var app = window.opener.WebInspector["AdvancedApp"]["_instance"]();
-        app["toolboxLoaded"](document);
-    }
+  /**
+   * @suppressGlobalPropertiesCheck
+   */
+  function toolboxLoaded() {
+    if (!window.opener)
+      return;
+    var app = window.opener.WebInspector['AdvancedApp']['_instance']();
+    app['toolboxLoaded'](document);
+  }
 
-    runOnWindowLoad(toolboxLoaded);
+  runOnWindowLoad(toolboxLoaded);
 })();

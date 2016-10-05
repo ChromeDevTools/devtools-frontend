@@ -24,7 +24,7 @@ function CompositionHelper(textarea, compositionView, terminal) {
   this.compositionText = null;
 
   // The position within the input textarea's value of the current composition.
-  this.compositionPosition = { start: null, end: null };
+  this.compositionPosition = {start: null, end: null};
 
   // Whether a composition is in the process of being sent, setting this to false will cancel
   // any in-progress composition.
@@ -49,9 +49,7 @@ CompositionHelper.prototype.compositionupdate = function(ev) {
   this.compositionView.textContent = ev.data;
   this.updateCompositionElements();
   var self = this;
-  setTimeout(function() {
-    self.compositionPosition.end = self.textarea.value.length;
-  }, 0);
+  setTimeout(function() { self.compositionPosition.end = self.textarea.value.length; }, 0);
 };
 
 /**
@@ -107,7 +105,8 @@ CompositionHelper.prototype.finalizeComposition = function(waitForPropogation) {
   if (!waitForPropogation) {
     // Cancel any delayed composition send requests and send the input immediately.
     this.isSendingComposition = false;
-    var input = this.textarea.value.substring(this.compositionPosition.start, this.compositionPosition.end);
+    var input =
+        this.textarea.value.substring(this.compositionPosition.start, this.compositionPosition.end);
     this.terminal.handler(input);
   } else {
     // Make a deep copy of the composition position here as a new compositionstart event may
@@ -127,14 +126,15 @@ CompositionHelper.prototype.finalizeComposition = function(waitForPropogation) {
     //   the following character if the following input is a vowel.
     var self = this;
     this.isSendingComposition = true;
-    setTimeout(function () {
+    setTimeout(function() {
       // Ensure that the input has not already been sent
       if (self.isSendingComposition) {
         self.isSendingComposition = false;
         var input;
         if (self.isComposing) {
           // Use the end position to get the string if a new composition has started.
-          input = self.textarea.value.substring(currentCompositionPosition.start, currentCompositionPosition.end);
+          input = self.textarea.value.substring(
+              currentCompositionPosition.start, currentCompositionPosition.end);
         } else {
           // Don't use the end position here in order to pick up any characters after the
           // composition has finished, for example when typing a non-composition character
@@ -198,4 +198,4 @@ CompositionHelper.prototype.clearTextareaPosition = function() {
   this.textarea.style.top = '';
 };
 
-export { CompositionHelper };
+export {CompositionHelper};

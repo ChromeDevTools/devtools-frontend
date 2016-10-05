@@ -6,80 +6,73 @@
  * @constructor
  * @param {?Object} config
  */
-WebInspector.ARIAMetadata = function(config)
-{
-    /** @type {!Map<string, !WebInspector.ARIAMetadata.Attribute>} */
-    this._attributes = new Map();
+WebInspector.ARIAMetadata = function(config) {
+  /** @type {!Map<string, !WebInspector.ARIAMetadata.Attribute>} */
+  this._attributes = new Map();
 
-    if (config)
-        this._initialize(config);
+  if (config)
+    this._initialize(config);
 };
 
 /**
  * @return {!WebInspector.ARIAMetadata}
  */
-WebInspector.ariaMetadata = function()
-{
-    if (!WebInspector.ARIAMetadata._instance)
-        WebInspector.ARIAMetadata._instance = new WebInspector.ARIAMetadata(WebInspector.ARIAMetadata._config || null);
-    return WebInspector.ARIAMetadata._instance;
+WebInspector.ariaMetadata = function() {
+  if (!WebInspector.ARIAMetadata._instance)
+    WebInspector.ARIAMetadata._instance =
+        new WebInspector.ARIAMetadata(WebInspector.ARIAMetadata._config || null);
+  return WebInspector.ARIAMetadata._instance;
 };
 
 WebInspector.ARIAMetadata.prototype = {
-    /**
-     * @param {!Object} config
-     */
-    _initialize: function(config)
-    {
-        var attributes = config["attributes"];
+  /**
+   * @param {!Object} config
+   */
+  _initialize: function(config) {
+    var attributes = config['attributes'];
 
-        var booleanEnum = ["true", "false"];
-        for (var name in attributes) {
-            var attributeConfig = attributes[name];
-            if (attributeConfig.type === "boolean")
-                attributeConfig.enum = booleanEnum;
-            this._attributes.set(name, new WebInspector.ARIAMetadata.Attribute(attributeConfig));
-        }
+    var booleanEnum = ['true', 'false'];
+    for (var name in attributes) {
+      var attributeConfig = attributes[name];
+      if (attributeConfig.type === 'boolean')
+        attributeConfig.enum = booleanEnum;
+      this._attributes.set(name, new WebInspector.ARIAMetadata.Attribute(attributeConfig));
+    }
 
-        /** @type {!Array<string>} */
-        this._roleNames = Object.keys(config["roles"]);
-    },
+    /** @type {!Array<string>} */
+    this._roleNames = Object.keys(config['roles']);
+  },
 
-    /**
+  /**
      * @param {string} property
      * @return {!Array<string>}
      */
-    valuesForProperty: function(property)
-    {
-        if (this._attributes.has(property))
-            return this._attributes.get(property).enum();
+  valuesForProperty: function(property) {
+    if (this._attributes.has(property))
+      return this._attributes.get(property).enum();
 
-        if (property === "role")
-            return this._roleNames;
+    if (property === 'role')
+      return this._roleNames;
 
-        return [];
-    }
+    return [];
+  }
 };
 
 /**
  * @constructor
  * @param {!Object} config
  */
-WebInspector.ARIAMetadata.Attribute = function(config)
-{
-    /** @type {!Array<string>} */
-    this._enum = [];
+WebInspector.ARIAMetadata.Attribute = function(config) {
+  /** @type {!Array<string>} */
+  this._enum = [];
 
-    if ("enum" in config)
-        this._enum = config.enum;
+  if ('enum' in config)
+    this._enum = config.enum;
 };
 
 WebInspector.ARIAMetadata.Attribute.prototype = {
-    /**
+  /**
      * @return {!Array<string>}
      */
-    enum: function()
-    {
-        return this._enum;
-    }
+  enum: function() { return this._enum; }
 };

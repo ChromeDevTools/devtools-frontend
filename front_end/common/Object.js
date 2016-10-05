@@ -27,91 +27,83 @@
  * @constructor
  * @implements {WebInspector.EventTarget}
  */
-WebInspector.Object = function() {
-};
+WebInspector.Object = function() {};
 
 WebInspector.Object.prototype = {
-    /**
+  /**
      * @override
      * @param {string|symbol} eventType
      * @param {function(!WebInspector.Event)} listener
      * @param {!Object=} thisObject
      * @return {!WebInspector.EventTarget.EventDescriptor}
      */
-    addEventListener: function(eventType, listener, thisObject)
-    {
-        if (!listener)
-            console.assert(false);
+  addEventListener: function(eventType, listener, thisObject) {
+    if (!listener)
+      console.assert(false);
 
-        if (!this._listeners)
-            this._listeners = new Map();
-        if (!this._listeners.has(eventType))
-            this._listeners.set(eventType, []);
-        this._listeners.get(eventType).push({ thisObject: thisObject, listener: listener });
-        return new WebInspector.EventTarget.EventDescriptor(this, eventType, thisObject, listener);
-    },
+    if (!this._listeners)
+      this._listeners = new Map();
+    if (!this._listeners.has(eventType))
+      this._listeners.set(eventType, []);
+    this._listeners.get(eventType).push({thisObject: thisObject, listener: listener});
+    return new WebInspector.EventTarget.EventDescriptor(this, eventType, thisObject, listener);
+  },
 
-    /**
-     * @override
-     * @param {string|symbol} eventType
-     * @param {function(!WebInspector.Event)} listener
-     * @param {!Object=} thisObject
-     */
-    removeEventListener: function(eventType, listener, thisObject)
-    {
-        console.assert(listener);
+  /**
+   * @override
+   * @param {string|symbol} eventType
+   * @param {function(!WebInspector.Event)} listener
+   * @param {!Object=} thisObject
+   */
+  removeEventListener: function(eventType, listener, thisObject) {
+    console.assert(listener);
 
-        if (!this._listeners || !this._listeners.has(eventType))
-            return;
-        var listeners = this._listeners.get(eventType);
-        for (var i = 0; i < listeners.length; ++i) {
-            if (listeners[i].listener === listener && listeners[i].thisObject === thisObject)
-                listeners.splice(i--, 1);
-        }
+    if (!this._listeners || !this._listeners.has(eventType))
+      return;
+    var listeners = this._listeners.get(eventType);
+    for (var i = 0; i < listeners.length; ++i) {
+      if (listeners[i].listener === listener && listeners[i].thisObject === thisObject)
+        listeners.splice(i--, 1);
+    }
 
-        if (!listeners.length)
-            this._listeners.delete(eventType);
-    },
+    if (!listeners.length)
+      this._listeners.delete(eventType);
+  },
 
-    /**
-     * @override
-     */
-    removeAllListeners: function()
-    {
-        delete this._listeners;
-    },
+  /**
+   * @override
+   */
+  removeAllListeners: function() { delete this._listeners; },
 
-    /**
+  /**
      * @override
      * @param {string|symbol} eventType
      * @return {boolean}
      */
-    hasEventListeners: function(eventType)
-    {
-        return this._listeners && this._listeners.has(eventType);
-    },
+  hasEventListeners: function(eventType) {
+    return this._listeners && this._listeners.has(eventType);
+  },
 
-    /**
+  /**
      * @override
      * @param {string|symbol} eventType
      * @param {*=} eventData
      * @return {boolean}
      */
-    dispatchEventToListeners: function(eventType, eventData)
-    {
-        if (!this._listeners || !this._listeners.has(eventType))
-            return false;
+  dispatchEventToListeners: function(eventType, eventData) {
+    if (!this._listeners || !this._listeners.has(eventType))
+      return false;
 
-        var event = new WebInspector.Event(this, eventType, eventData);
-        var listeners = this._listeners.get(eventType).slice(0);
-        for (var i = 0; i < listeners.length; ++i) {
-            listeners[i].listener.call(listeners[i].thisObject, event);
-            if (event._stoppedPropagation)
-                break;
-        }
-
-        return event.defaultPrevented;
+    var event = new WebInspector.Event(this, eventType, eventData);
+    var listeners = this._listeners.get(eventType).slice(0);
+    for (var i = 0; i < listeners.length; ++i) {
+      listeners[i].listener.call(listeners[i].thisObject, event);
+      if (event._stoppedPropagation)
+        break;
     }
+
+    return event.defaultPrevented;
+  }
 };
 
 /**
@@ -120,87 +112,77 @@ WebInspector.Object.prototype = {
  * @param {string|symbol} type
  * @param {*=} data
  */
-WebInspector.Event = function(target, type, data)
-{
-    this.target = target;
-    this.type = type;
-    this.data = data;
-    this.defaultPrevented = false;
-    this._stoppedPropagation = false;
+WebInspector.Event = function(target, type, data) {
+  this.target = target;
+  this.type = type;
+  this.data = data;
+  this.defaultPrevented = false;
+  this._stoppedPropagation = false;
 };
 
 WebInspector.Event.prototype = {
-    stopPropagation: function()
-    {
-        this._stoppedPropagation = true;
-    },
+  stopPropagation: function() { this._stoppedPropagation = true; },
 
-    preventDefault: function()
-    {
-        this.defaultPrevented = true;
-    },
+  preventDefault: function() { this.defaultPrevented = true; },
 
-    /**
-     * @param {boolean=} preventDefault
-     */
-    consume: function(preventDefault)
-    {
-        this.stopPropagation();
-        if (preventDefault)
-            this.preventDefault();
-    }
+  /**
+   * @param {boolean=} preventDefault
+   */
+  consume: function(preventDefault) {
+    this.stopPropagation();
+    if (preventDefault)
+      this.preventDefault();
+  }
 };
 
 /**
  * @interface
  */
-WebInspector.EventTarget = function()
-{
-};
+WebInspector.EventTarget = function() {};
 
 /**
  * @param {!Array<!WebInspector.EventTarget.EventDescriptor>} eventList
  */
-WebInspector.EventTarget.removeEventListeners = function(eventList)
-{
-    for (var i = 0; i < eventList.length; ++i) {
-        var eventInfo = eventList[i];
-        eventInfo.eventTarget.removeEventListener(eventInfo.eventType, eventInfo.method, eventInfo.receiver);
-    }
-    // Do not hold references on unused event descriptors.
-    eventList.splice(0, eventList.length);
+WebInspector.EventTarget.removeEventListeners = function(eventList) {
+  for (var i = 0; i < eventList.length; ++i) {
+    var eventInfo = eventList[i];
+    eventInfo.eventTarget.removeEventListener(
+        eventInfo.eventType, eventInfo.method, eventInfo.receiver);
+  }
+  // Do not hold references on unused event descriptors.
+  eventList.splice(0, eventList.length);
 };
 
 WebInspector.EventTarget.prototype = {
-    /**
+  /**
      * @param {string|symbol} eventType
      * @param {function(!WebInspector.Event)} listener
      * @param {!Object=} thisObject
      * @return {!WebInspector.EventTarget.EventDescriptor}
      */
-    addEventListener: function(eventType, listener, thisObject) { },
+  addEventListener: function(eventType, listener, thisObject) {},
 
-    /**
-     * @param {string|symbol} eventType
-     * @param {function(!WebInspector.Event)} listener
-     * @param {!Object=} thisObject
-     */
-    removeEventListener: function(eventType, listener, thisObject) { },
+  /**
+   * @param {string|symbol} eventType
+   * @param {function(!WebInspector.Event)} listener
+   * @param {!Object=} thisObject
+   */
+  removeEventListener: function(eventType, listener, thisObject) {},
 
-    removeAllListeners: function() { },
+  removeAllListeners: function() {},
 
-    /**
+  /**
      * @param {string|symbol} eventType
      * @return {boolean}
      */
-    hasEventListeners: function(eventType) { },
+  hasEventListeners: function(eventType) {},
 
-    /**
+  /**
      * @param {string|symbol} eventType
      * @param {*=} eventData
      * @return {boolean}
      */
-    dispatchEventToListeners: function(eventType, eventData) { },
+  dispatchEventToListeners: function(eventType, eventData) {},
 };
 
 /**
@@ -210,10 +192,9 @@ WebInspector.EventTarget.prototype = {
  * @param {(!Object|undefined)} receiver
  * @param {function(?):?} method
  */
-WebInspector.EventTarget.EventDescriptor = function(eventTarget, eventType, receiver, method)
-{
-    this.eventTarget = eventTarget;
-    this.eventType = eventType;
-    this.receiver = receiver;
-    this.method = method;
+WebInspector.EventTarget.EventDescriptor = function(eventTarget, eventType, receiver, method) {
+  this.eventTarget = eventTarget;
+  this.eventType = eventType;
+  this.receiver = receiver;
+  this.method = method;
 };

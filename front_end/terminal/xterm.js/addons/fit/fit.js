@@ -11,7 +11,7 @@
  *               terminal row and truncate its width with the current number
  *               of columns)
  */
-(function (fit) {
+(function(fit) {
   if (typeof exports === 'object' && typeof module === 'object') {
     /*
      * CommonJS environment
@@ -28,7 +28,7 @@
      */
     fit(window.Terminal);
   }
-})(function (Xterm) {
+})(function(Xterm) {
   /**
    * This module provides methods for fitting a terminal's size to a parent container.
    *
@@ -36,28 +36,24 @@
    */
   var exports = {};
 
-  exports.proposeGeometry = function (term) {
+  exports.proposeGeometry = function(term) {
     var parentElementStyle = window.getComputedStyle(term.element.parentElement),
         parentElementHeight = parseInt(parentElementStyle.getPropertyValue('height')),
         parentElementWidth = parseInt(parentElementStyle.getPropertyValue('width')),
         elementStyle = window.getComputedStyle(term.element),
-        elementPaddingVer = parseInt(elementStyle.getPropertyValue('padding-top')) + parseInt(elementStyle.getPropertyValue('padding-bottom')),
-        elementPaddingHor = parseInt(elementStyle.getPropertyValue('padding-right')) + parseInt(elementStyle.getPropertyValue('padding-left')),
+        elementPaddingVer = parseInt(elementStyle.getPropertyValue('padding-top')) +
+        parseInt(elementStyle.getPropertyValue('padding-bottom')),
+        elementPaddingHor = parseInt(elementStyle.getPropertyValue('padding-right')) +
+        parseInt(elementStyle.getPropertyValue('padding-left')),
         availableHeight = parentElementHeight - elementPaddingVer,
-        availableWidth = parentElementWidth - elementPaddingHor,
-        container = term.rowContainer,
-        subjectRow = term.rowContainer.firstElementChild,
-        contentBuffer = subjectRow.innerHTML,
-        characterHeight,
-        rows,
-        characterWidth,
-        cols,
-        geometry;
+        availableWidth = parentElementWidth - elementPaddingHor, container = term.rowContainer,
+        subjectRow = term.rowContainer.firstElementChild, contentBuffer = subjectRow.innerHTML,
+        characterHeight, rows, characterWidth, cols, geometry;
 
     subjectRow.style.display = 'inline';
-    subjectRow.innerHTML = 'W'; // Common character for measuring width, although on monospace
+    subjectRow.innerHTML = 'W';  // Common character for measuring width, although on monospace
     characterWidth = subjectRow.getBoundingClientRect().width;
-    subjectRow.style.display = ''; // Revert style before calculating height, since they differ.
+    subjectRow.style.display = '';  // Revert style before calculating height, since they differ.
     characterHeight = parseInt(subjectRow.offsetHeight);
     subjectRow.innerHTML = contentBuffer;
 
@@ -68,19 +64,15 @@
     return geometry;
   };
 
-  exports.fit = function (term) {
+  exports.fit = function(term) {
     var geometry = exports.proposeGeometry(term);
 
     term.resize(geometry.cols, geometry.rows);
   };
 
-  Xterm.prototype.proposeGeometry = function () {
-    return exports.proposeGeometry(this);
-  };
+  Xterm.prototype.proposeGeometry = function() { return exports.proposeGeometry(this); };
 
-  Xterm.prototype.fit = function () {
-    return exports.fit(this);
-  };
+  Xterm.prototype.fit = function() { return exports.fit(this); };
 
   return exports;
 });

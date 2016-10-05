@@ -30,235 +30,220 @@
  * @param {!WebInspector.ProfileDataGridTree} owningTree
  * @param {boolean} hasChildren
  */
-WebInspector.ProfileDataGridNode = function(profileNode, owningTree, hasChildren)
-{
-    this.profileNode = profileNode;
+WebInspector.ProfileDataGridNode = function(profileNode, owningTree, hasChildren) {
+  this.profileNode = profileNode;
 
-    WebInspector.DataGridNode.call(this, null, hasChildren);
+  WebInspector.DataGridNode.call(this, null, hasChildren);
 
-    this.tree = owningTree;
-    /** @type {!Map<string, !WebInspector.ProfileDataGridNode>} */
-    this.childrenByCallUID = new Map();
-    this.lastComparator = null;
+  this.tree = owningTree;
+  /** @type {!Map<string, !WebInspector.ProfileDataGridNode>} */
+  this.childrenByCallUID = new Map();
+  this.lastComparator = null;
 
-    this.callUID = profileNode.callUID;
-    this.self = profileNode.self;
-    this.total = profileNode.total;
-    this.functionName = WebInspector.beautifyFunctionName(profileNode.functionName);
-    this._deoptReason = profileNode.deoptReason || "";
-    this.url = profileNode.url;
+  this.callUID = profileNode.callUID;
+  this.self = profileNode.self;
+  this.total = profileNode.total;
+  this.functionName = WebInspector.beautifyFunctionName(profileNode.functionName);
+  this._deoptReason = profileNode.deoptReason || '';
+  this.url = profileNode.url;
 };
 
 WebInspector.ProfileDataGridNode.prototype = {
-    /**
+  /**
      * @override
      * @param {string} columnId
      * @return {!Element}
      */
-    createCell: function(columnId)
-    {
-        var cell;
-        switch (columnId) {
-        case "self":
-            cell = this._createValueCell(this.self, this.selfPercent);
-            cell.classList.toggle("highlight", this._searchMatchedSelfColumn);
-            break;
+  createCell: function(columnId) {
+    var cell;
+    switch (columnId) {
+      case 'self':
+        cell = this._createValueCell(this.self, this.selfPercent);
+        cell.classList.toggle('highlight', this._searchMatchedSelfColumn);
+        break;
 
-        case "total":
-            cell = this._createValueCell(this.total, this.totalPercent);
-            cell.classList.toggle("highlight", this._searchMatchedTotalColumn);
-            break;
+      case 'total':
+        cell = this._createValueCell(this.total, this.totalPercent);
+        cell.classList.toggle('highlight', this._searchMatchedTotalColumn);
+        break;
 
-        case "function":
-            cell = this.createTD(columnId);
-            cell.classList.toggle("highlight", this._searchMatchedFunctionColumn);
-            if (this._deoptReason) {
-                cell.classList.add("not-optimized");
-                cell.createChild("span", "profile-warn-marker").title = WebInspector.UIString("Not optimized: %s", this._deoptReason);
-            }
-            cell.createTextChild(this.functionName);
-            if (this.profileNode.scriptId === "0")
-                break;
-            var urlElement = this.tree._formatter.linkifyNode(this);
-            if (!urlElement)
-                break;
-            urlElement.style.maxWidth = "75%";
-            cell.appendChild(urlElement);
-            break;
-
-        default:
-            cell = WebInspector.DataGridNode.prototype.createCell.call(this, columnId);
-            break;
+      case 'function':
+        cell = this.createTD(columnId);
+        cell.classList.toggle('highlight', this._searchMatchedFunctionColumn);
+        if (this._deoptReason) {
+          cell.classList.add('not-optimized');
+          cell.createChild('span', 'profile-warn-marker').title =
+              WebInspector.UIString('Not optimized: %s', this._deoptReason);
         }
-        return cell;
-    },
+        cell.createTextChild(this.functionName);
+        if (this.profileNode.scriptId === '0')
+          break;
+        var urlElement = this.tree._formatter.linkifyNode(this);
+        if (!urlElement)
+          break;
+        urlElement.style.maxWidth = '75%';
+        cell.appendChild(urlElement);
+        break;
 
-    /**
+      default:
+        cell = WebInspector.DataGridNode.prototype.createCell.call(this, columnId);
+        break;
+    }
+    return cell;
+  },
+
+  /**
      * @param {number} value
      * @param {number} percent
      * @return {!Element}
      */
-    _createValueCell: function(value, percent)
-    {
-        var cell = createElementWithClass("td", "numeric-column");
-        var div = cell.createChild("div", "profile-multiple-values");
-        div.createChild("span").textContent = this.tree._formatter.formatValue(value, this);
-        div.createChild("span", "percent-column").textContent = this.tree._formatter.formatPercent(percent, this);
-        return cell;
-    },
+  _createValueCell: function(value, percent) {
+    var cell = createElementWithClass('td', 'numeric-column');
+    var div = cell.createChild('div', 'profile-multiple-values');
+    div.createChild('span').textContent = this.tree._formatter.formatValue(value, this);
+    div.createChild('span', 'percent-column').textContent =
+        this.tree._formatter.formatPercent(percent, this);
+    return cell;
+  },
 
-    /**
-     * @param {function(!T, !T)} comparator
-     * @param {boolean} force
-     * @template T
-     */
-    sort: function(comparator, force)
-    {
-        var gridNodeGroups = [[this]];
+  /**
+   * @param {function(!T, !T)} comparator
+   * @param {boolean} force
+   * @template T
+   */
+  sort: function(comparator, force) {
+    var gridNodeGroups = [[this]];
 
-        for (var gridNodeGroupIndex = 0; gridNodeGroupIndex < gridNodeGroups.length; ++gridNodeGroupIndex) {
-            var gridNodes = gridNodeGroups[gridNodeGroupIndex];
-            var count = gridNodes.length;
+    for (var gridNodeGroupIndex = 0; gridNodeGroupIndex < gridNodeGroups.length;
+         ++gridNodeGroupIndex) {
+      var gridNodes = gridNodeGroups[gridNodeGroupIndex];
+      var count = gridNodes.length;
 
-            for (var index = 0; index < count; ++index) {
-                var gridNode = gridNodes[index];
+      for (var index = 0; index < count; ++index) {
+        var gridNode = gridNodes[index];
 
-                // If the grid node is collapsed, then don't sort children (save operation for later).
-                // If the grid node has the same sorting as previously, then there is no point in sorting it again.
-                if (!force && (!gridNode.expanded || gridNode.lastComparator === comparator)) {
-                    if (gridNode.children.length)
-                        gridNode.shouldRefreshChildren = true;
-                    continue;
-                }
-
-                gridNode.lastComparator = comparator;
-
-                var children = gridNode.children;
-                var childCount = children.length;
-
-                if (childCount) {
-                    children.sort(comparator);
-
-                    for (var childIndex = 0; childIndex < childCount; ++childIndex)
-                        children[childIndex].recalculateSiblings(childIndex);
-
-                    gridNodeGroups.push(children);
-                }
-            }
+        // If the grid node is collapsed, then don't sort children (save operation for later).
+        // If the grid node has the same sorting as previously, then there is no point in sorting it
+        // again.
+        if (!force && (!gridNode.expanded || gridNode.lastComparator === comparator)) {
+          if (gridNode.children.length)
+            gridNode.shouldRefreshChildren = true;
+          continue;
         }
-    },
 
-    /**
-     * @override
-     * @param {!WebInspector.DataGridNode} profileDataGridNode
-     * @param {number} index
-     */
-    insertChild: function(profileDataGridNode, index)
-    {
-        WebInspector.DataGridNode.prototype.insertChild.call(this, profileDataGridNode, index);
+        gridNode.lastComparator = comparator;
 
-        this.childrenByCallUID.set(profileDataGridNode.callUID, /** @type {!WebInspector.ProfileDataGridNode} */ (profileDataGridNode));
-    },
+        var children = gridNode.children;
+        var childCount = children.length;
 
-    /**
-     * @override
-     * @param {!WebInspector.DataGridNode} profileDataGridNode
-     */
-    removeChild: function(profileDataGridNode)
-    {
-        WebInspector.DataGridNode.prototype.removeChild.call(this, profileDataGridNode);
+        if (childCount) {
+          children.sort(comparator);
 
-        this.childrenByCallUID.delete((/** @type {!WebInspector.ProfileDataGridNode} */ (profileDataGridNode)).callUID);
-    },
+          for (var childIndex = 0; childIndex < childCount; ++childIndex)
+            children[childIndex].recalculateSiblings(childIndex);
 
-    removeChildren: function()
-    {
-        WebInspector.DataGridNode.prototype.removeChildren.call(this);
+          gridNodeGroups.push(children);
+        }
+      }
+    }
+  },
 
-        this.childrenByCallUID.clear();
-    },
+  /**
+   * @override
+   * @param {!WebInspector.DataGridNode} profileDataGridNode
+   * @param {number} index
+   */
+  insertChild: function(profileDataGridNode, index) {
+    WebInspector.DataGridNode.prototype.insertChild.call(this, profileDataGridNode, index);
 
-    /**
+    this.childrenByCallUID.set(
+        profileDataGridNode.callUID,
+        /** @type {!WebInspector.ProfileDataGridNode} */ (profileDataGridNode));
+  },
+
+  /**
+   * @override
+   * @param {!WebInspector.DataGridNode} profileDataGridNode
+   */
+  removeChild: function(profileDataGridNode) {
+    WebInspector.DataGridNode.prototype.removeChild.call(this, profileDataGridNode);
+
+    this.childrenByCallUID.delete(
+        (/** @type {!WebInspector.ProfileDataGridNode} */ (profileDataGridNode)).callUID);
+  },
+
+  removeChildren: function() {
+    WebInspector.DataGridNode.prototype.removeChildren.call(this);
+
+    this.childrenByCallUID.clear();
+  },
+
+  /**
      * @param {!WebInspector.ProfileDataGridNode} node
      * @return {?WebInspector.ProfileDataGridNode}
      */
-    findChild: function(node)
-    {
-        if (!node)
-            return null;
-        return this.childrenByCallUID.get(node.callUID);
-    },
+  findChild: function(node) {
+    if (!node)
+      return null;
+    return this.childrenByCallUID.get(node.callUID);
+  },
 
-    get selfPercent()
-    {
-        return this.self / this.tree.total * 100.0;
-    },
+  get selfPercent() { return this.self / this.tree.total * 100.0; },
 
-    get totalPercent()
-    {
-        return this.total / this.tree.total * 100.0;
-    },
+  get totalPercent() { return this.total / this.tree.total * 100.0; },
 
-    populate: function()
-    {
-        WebInspector.ProfileDataGridNode.populate(this);
-    },
+  populate: function() { WebInspector.ProfileDataGridNode.populate(this); },
 
-    /**
-     * @protected
-     */
-    populateChildren: function()
-    {
-    },
+  /**
+   * @protected
+   */
+  populateChildren: function() {},
 
-    // When focusing and collapsing we modify lots of nodes in the tree.
-    // This allows us to restore them all to their original state when we revert.
+  // When focusing and collapsing we modify lots of nodes in the tree.
+  // This allows us to restore them all to their original state when we revert.
 
-    save: function()
-    {
-        if (this._savedChildren)
-            return;
+  save: function() {
+    if (this._savedChildren)
+      return;
 
-        this._savedSelf = this.self;
-        this._savedTotal = this.total;
+    this._savedSelf = this.self;
+    this._savedTotal = this.total;
 
-        this._savedChildren = this.children.slice();
-    },
+    this._savedChildren = this.children.slice();
+  },
 
-    /**
-     * When focusing and collapsing we modify lots of nodes in the tree.
-     * This allows us to restore them all to their original state when we revert.
-     * @protected
-     */
-    restore: function()
-    {
-        if (!this._savedChildren)
-            return;
+  /**
+   * When focusing and collapsing we modify lots of nodes in the tree.
+   * This allows us to restore them all to their original state when we revert.
+   * @protected
+   */
+  restore: function() {
+    if (!this._savedChildren)
+      return;
 
-        this.self = this._savedSelf;
-        this.total = this._savedTotal;
+    this.self = this._savedSelf;
+    this.total = this._savedTotal;
 
-        this.removeChildren();
+    this.removeChildren();
 
-        var children = this._savedChildren;
-        var count = children.length;
+    var children = this._savedChildren;
+    var count = children.length;
 
-        for (var index = 0; index < count; ++index) {
-            children[index].restore();
-            this.appendChild(children[index]);
-        }
-    },
+    for (var index = 0; index < count; ++index) {
+      children[index].restore();
+      this.appendChild(children[index]);
+    }
+  },
 
-    /**
-     * @param {!WebInspector.ProfileDataGridNode} child
-     * @param {boolean} shouldAbsorb
-     */
-    merge: function(child, shouldAbsorb)
-    {
-        WebInspector.ProfileDataGridNode.merge(this, child, shouldAbsorb);
-    },
+  /**
+   * @param {!WebInspector.ProfileDataGridNode} child
+   * @param {boolean} shouldAbsorb
+   */
+  merge: function(child, shouldAbsorb) {
+    WebInspector.ProfileDataGridNode.merge(this, child, shouldAbsorb);
+  },
 
-    __proto__: WebInspector.DataGridNode.prototype
+  __proto__: WebInspector.DataGridNode.prototype
 };
 
 /**
@@ -266,53 +251,51 @@ WebInspector.ProfileDataGridNode.prototype = {
  * @param {!WebInspector.ProfileDataGridNode} child
  * @param {boolean} shouldAbsorb
  */
-WebInspector.ProfileDataGridNode.merge = function(container, child, shouldAbsorb)
-{
-    container.self += child.self;
+WebInspector.ProfileDataGridNode.merge = function(container, child, shouldAbsorb) {
+  container.self += child.self;
 
-    if (!shouldAbsorb)
-        container.total += child.total;
+  if (!shouldAbsorb)
+    container.total += child.total;
 
-    var children = container.children.slice();
+  var children = container.children.slice();
 
-    container.removeChildren();
+  container.removeChildren();
 
-    var count = children.length;
+  var count = children.length;
 
-    for (var index = 0; index < count; ++index) {
-        if (!shouldAbsorb || children[index] !== child)
-            container.appendChild(children[index]);
-    }
+  for (var index = 0; index < count; ++index) {
+    if (!shouldAbsorb || children[index] !== child)
+      container.appendChild(children[index]);
+  }
 
-    children = child.children.slice();
-    count = children.length;
+  children = child.children.slice();
+  count = children.length;
 
-    for (var index = 0; index < count; ++index) {
-        var orphanedChild = children[index];
-        var existingChild = container.childrenByCallUID.get(orphanedChild.callUID);
+  for (var index = 0; index < count; ++index) {
+    var orphanedChild = children[index];
+    var existingChild = container.childrenByCallUID.get(orphanedChild.callUID);
 
-        if (existingChild)
-            existingChild.merge(/** @type{!WebInspector.ProfileDataGridNode} */(orphanedChild), false);
-        else
-            container.appendChild(orphanedChild);
-    }
+    if (existingChild)
+      existingChild.merge(/** @type{!WebInspector.ProfileDataGridNode} */ (orphanedChild), false);
+    else
+      container.appendChild(orphanedChild);
+  }
 };
 
 /**
  * @param {!WebInspector.ProfileDataGridNode|!WebInspector.ProfileDataGridTree} container
  */
-WebInspector.ProfileDataGridNode.populate = function(container)
-{
-    if (container._populated)
-        return;
-    container._populated = true;
+WebInspector.ProfileDataGridNode.populate = function(container) {
+  if (container._populated)
+    return;
+  container._populated = true;
 
-    container.populateChildren();
+  container.populateChildren();
 
-    var currentComparator = container.tree.lastComparator;
+  var currentComparator = container.tree.lastComparator;
 
-    if (currentComparator)
-        container.sort(currentComparator, true);
+  if (currentComparator)
+    container.sort(currentComparator, true);
 };
 
 /**
@@ -322,268 +305,246 @@ WebInspector.ProfileDataGridNode.populate = function(container)
  * @param {!WebInspector.SearchableView} searchableView
  * @param {number} total
  */
-WebInspector.ProfileDataGridTree = function(formatter, searchableView, total)
-{
-    this.tree = this;
-    this.children = [];
-    this._formatter = formatter;
-    this._searchableView = searchableView;
-    this.total = total;
-    this.lastComparator = null;
-    this.childrenByCallUID = new Map();
+WebInspector.ProfileDataGridTree = function(formatter, searchableView, total) {
+  this.tree = this;
+  this.children = [];
+  this._formatter = formatter;
+  this._searchableView = searchableView;
+  this.total = total;
+  this.lastComparator = null;
+  this.childrenByCallUID = new Map();
 };
 
 WebInspector.ProfileDataGridTree.prototype = {
-    get expanded()
-    {
-        return true;
-    },
+  get expanded() { return true; },
 
-    appendChild: function(child)
-    {
-        this.insertChild(child, this.children.length);
-    },
+  appendChild: function(child) { this.insertChild(child, this.children.length); },
 
-    insertChild: function(child, index)
-    {
-        this.children.splice(index, 0, child);
-        this.childrenByCallUID.set(child.callUID, child);
-    },
+  insertChild: function(child, index) {
+    this.children.splice(index, 0, child);
+    this.childrenByCallUID.set(child.callUID, child);
+  },
 
-    removeChildren: function()
-    {
-        this.children = [];
-        this.childrenByCallUID.clear();
-    },
+  removeChildren: function() {
+    this.children = [];
+    this.childrenByCallUID.clear();
+  },
 
-    populateChildren: function()
-    {
-    },
+  populateChildren: function() {},
 
-    findChild: WebInspector.ProfileDataGridNode.prototype.findChild,
-    sort: WebInspector.ProfileDataGridNode.prototype.sort,
+  findChild: WebInspector.ProfileDataGridNode.prototype.findChild,
+  sort: WebInspector.ProfileDataGridNode.prototype.sort,
 
-    /**
-     * @protected
-     */
-    save: function()
-    {
-        if (this._savedChildren)
-            return;
+  /**
+   * @protected
+   */
+  save: function() {
+    if (this._savedChildren)
+      return;
 
-        this._savedTotal = this.total;
-        this._savedChildren = this.children.slice();
-    },
+    this._savedTotal = this.total;
+    this._savedChildren = this.children.slice();
+  },
 
-    restore: function()
-    {
-        if (!this._savedChildren)
-            return;
+  restore: function() {
+    if (!this._savedChildren)
+      return;
 
-        this.children = this._savedChildren;
-        this.total = this._savedTotal;
+    this.children = this._savedChildren;
+    this.total = this._savedTotal;
 
-        var children = this.children;
-        var count = children.length;
+    var children = this.children;
+    var count = children.length;
 
-        for (var index = 0; index < count; ++index)
-            children[index].restore();
+    for (var index = 0; index < count; ++index)
+      children[index].restore();
 
-        this._savedChildren = null;
-    },
+    this._savedChildren = null;
+  },
 
-    /**
+  /**
      * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
      * @return {?function(!WebInspector.ProfileDataGridNode):boolean}
      */
-    _matchFunction: function(searchConfig)
-    {
-        var query = searchConfig.query.trim();
-        if (!query.length)
-            return null;
+  _matchFunction: function(searchConfig) {
+    var query = searchConfig.query.trim();
+    if (!query.length)
+      return null;
 
-        var greaterThan = (query.startsWith(">"));
-        var lessThan = (query.startsWith("<"));
-        var equalTo = (query.startsWith("=") || ((greaterThan || lessThan) && query.indexOf("=") === 1));
-        var percentUnits = (query.endsWith("%"));
-        var millisecondsUnits = (query.length > 2 && query.endsWith("ms"));
-        var secondsUnits = (!millisecondsUnits && query.endsWith("s"));
+    var greaterThan = (query.startsWith('>'));
+    var lessThan = (query.startsWith('<'));
+    var equalTo =
+        (query.startsWith('=') || ((greaterThan || lessThan) && query.indexOf('=') === 1));
+    var percentUnits = (query.endsWith('%'));
+    var millisecondsUnits = (query.length > 2 && query.endsWith('ms'));
+    var secondsUnits = (!millisecondsUnits && query.endsWith('s'));
 
-        var queryNumber = parseFloat(query);
-        if (greaterThan || lessThan || equalTo) {
-            if (equalTo && (greaterThan || lessThan))
-                queryNumber = parseFloat(query.substring(2));
-            else
-                queryNumber = parseFloat(query.substring(1));
-        }
+    var queryNumber = parseFloat(query);
+    if (greaterThan || lessThan || equalTo) {
+      if (equalTo && (greaterThan || lessThan))
+        queryNumber = parseFloat(query.substring(2));
+      else
+        queryNumber = parseFloat(query.substring(1));
+    }
 
-        var queryNumberMilliseconds = (secondsUnits ? (queryNumber * 1000) : queryNumber);
+    var queryNumberMilliseconds = (secondsUnits ? (queryNumber * 1000) : queryNumber);
 
-        // Make equalTo implicitly true if it wasn't specified there is no other operator.
-        if (!isNaN(queryNumber) && !(greaterThan || lessThan))
-            equalTo = true;
+    // Make equalTo implicitly true if it wasn't specified there is no other operator.
+    if (!isNaN(queryNumber) && !(greaterThan || lessThan))
+      equalTo = true;
 
-        var matcher = createPlainTextSearchRegex(query, "i");
+    var matcher = createPlainTextSearchRegex(query, 'i');
 
-       /**
+    /**
         * @param {!WebInspector.ProfileDataGridNode} profileDataGridNode
         * @return {boolean}
         */
-        function matchesQuery(profileDataGridNode)
-        {
-            delete profileDataGridNode._searchMatchedSelfColumn;
-            delete profileDataGridNode._searchMatchedTotalColumn;
-            delete profileDataGridNode._searchMatchedFunctionColumn;
+    function matchesQuery(profileDataGridNode) {
+      delete profileDataGridNode._searchMatchedSelfColumn;
+      delete profileDataGridNode._searchMatchedTotalColumn;
+      delete profileDataGridNode._searchMatchedFunctionColumn;
 
-            if (percentUnits) {
-                if (lessThan) {
-                    if (profileDataGridNode.selfPercent < queryNumber)
-                        profileDataGridNode._searchMatchedSelfColumn = true;
-                    if (profileDataGridNode.totalPercent < queryNumber)
-                        profileDataGridNode._searchMatchedTotalColumn = true;
-                } else if (greaterThan) {
-                    if (profileDataGridNode.selfPercent > queryNumber)
-                        profileDataGridNode._searchMatchedSelfColumn = true;
-                    if (profileDataGridNode.totalPercent > queryNumber)
-                        profileDataGridNode._searchMatchedTotalColumn = true;
-                }
-
-                if (equalTo) {
-                    if (profileDataGridNode.selfPercent === queryNumber)
-                        profileDataGridNode._searchMatchedSelfColumn = true;
-                    if (profileDataGridNode.totalPercent === queryNumber)
-                        profileDataGridNode._searchMatchedTotalColumn = true;
-                }
-            } else if (millisecondsUnits || secondsUnits) {
-                if (lessThan) {
-                    if (profileDataGridNode.self < queryNumberMilliseconds)
-                        profileDataGridNode._searchMatchedSelfColumn = true;
-                    if (profileDataGridNode.total < queryNumberMilliseconds)
-                        profileDataGridNode._searchMatchedTotalColumn = true;
-                } else if (greaterThan) {
-                    if (profileDataGridNode.self > queryNumberMilliseconds)
-                        profileDataGridNode._searchMatchedSelfColumn = true;
-                    if (profileDataGridNode.total > queryNumberMilliseconds)
-                        profileDataGridNode._searchMatchedTotalColumn = true;
-                }
-
-                if (equalTo) {
-                    if (profileDataGridNode.self === queryNumberMilliseconds)
-                        profileDataGridNode._searchMatchedSelfColumn = true;
-                    if (profileDataGridNode.total === queryNumberMilliseconds)
-                        profileDataGridNode._searchMatchedTotalColumn = true;
-                }
-            }
-
-            if (profileDataGridNode.functionName.match(matcher) || (profileDataGridNode.url && profileDataGridNode.url.match(matcher)))
-                profileDataGridNode._searchMatchedFunctionColumn = true;
-
-            if (profileDataGridNode._searchMatchedSelfColumn ||
-                profileDataGridNode._searchMatchedTotalColumn ||
-                profileDataGridNode._searchMatchedFunctionColumn) {
-                profileDataGridNode.refresh();
-                return true;
-            }
-
-            return false;
-        }
-        return matchesQuery;
-    },
-
-    /**
-     * @override
-     * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
-     * @param {boolean} shouldJump
-     * @param {boolean=} jumpBackwards
-     */
-    performSearch: function(searchConfig, shouldJump, jumpBackwards)
-    {
-        this.searchCanceled();
-        var matchesQuery = this._matchFunction(searchConfig);
-        if (!matchesQuery)
-            return;
-
-        this._searchResults = [];
-        for (var current = this.children[0]; current; current = current.traverseNextNode(false, null, false)) {
-            if (matchesQuery(current))
-                this._searchResults.push({ profileNode: current });
-        }
-        this._searchResultIndex = jumpBackwards ? 0 : this._searchResults.length - 1;
-        this._searchableView.updateSearchMatchesCount(this._searchResults.length);
-        this._searchableView.updateCurrentMatchIndex(this._searchResultIndex);
-    },
-
-    /**
-     * @override
-     */
-    searchCanceled: function()
-    {
-        if (this._searchResults) {
-            for (var i = 0; i < this._searchResults.length; ++i) {
-                var profileNode = this._searchResults[i].profileNode;
-                delete profileNode._searchMatchedSelfColumn;
-                delete profileNode._searchMatchedTotalColumn;
-                delete profileNode._searchMatchedFunctionColumn;
-                profileNode.refresh();
-            }
+      if (percentUnits) {
+        if (lessThan) {
+          if (profileDataGridNode.selfPercent < queryNumber)
+            profileDataGridNode._searchMatchedSelfColumn = true;
+          if (profileDataGridNode.totalPercent < queryNumber)
+            profileDataGridNode._searchMatchedTotalColumn = true;
+        } else if (greaterThan) {
+          if (profileDataGridNode.selfPercent > queryNumber)
+            profileDataGridNode._searchMatchedSelfColumn = true;
+          if (profileDataGridNode.totalPercent > queryNumber)
+            profileDataGridNode._searchMatchedTotalColumn = true;
         }
 
-        this._searchResults = [];
-        this._searchResultIndex = -1;
-    },
+        if (equalTo) {
+          if (profileDataGridNode.selfPercent === queryNumber)
+            profileDataGridNode._searchMatchedSelfColumn = true;
+          if (profileDataGridNode.totalPercent === queryNumber)
+            profileDataGridNode._searchMatchedTotalColumn = true;
+        }
+      } else if (millisecondsUnits || secondsUnits) {
+        if (lessThan) {
+          if (profileDataGridNode.self < queryNumberMilliseconds)
+            profileDataGridNode._searchMatchedSelfColumn = true;
+          if (profileDataGridNode.total < queryNumberMilliseconds)
+            profileDataGridNode._searchMatchedTotalColumn = true;
+        } else if (greaterThan) {
+          if (profileDataGridNode.self > queryNumberMilliseconds)
+            profileDataGridNode._searchMatchedSelfColumn = true;
+          if (profileDataGridNode.total > queryNumberMilliseconds)
+            profileDataGridNode._searchMatchedTotalColumn = true;
+        }
 
-    /**
-     * @override
-     */
-    jumpToNextSearchResult: function()
-    {
-        if (!this._searchResults || !this._searchResults.length)
-            return;
-        this._searchResultIndex = (this._searchResultIndex + 1) % this._searchResults.length;
-        this._jumpToSearchResult(this._searchResultIndex);
-    },
+        if (equalTo) {
+          if (profileDataGridNode.self === queryNumberMilliseconds)
+            profileDataGridNode._searchMatchedSelfColumn = true;
+          if (profileDataGridNode.total === queryNumberMilliseconds)
+            profileDataGridNode._searchMatchedTotalColumn = true;
+        }
+      }
 
-    /**
-     * @override
-     */
-    jumpToPreviousSearchResult: function()
-    {
-        if (!this._searchResults || !this._searchResults.length)
-            return;
-        this._searchResultIndex = (this._searchResultIndex - 1 + this._searchResults.length) % this._searchResults.length;
-        this._jumpToSearchResult(this._searchResultIndex);
-    },
+      if (profileDataGridNode.functionName.match(matcher) ||
+          (profileDataGridNode.url && profileDataGridNode.url.match(matcher)))
+        profileDataGridNode._searchMatchedFunctionColumn = true;
 
-    /**
-     * @override
-     * @return {boolean}
-     */
-    supportsCaseSensitiveSearch: function()
-    {
+      if (profileDataGridNode._searchMatchedSelfColumn ||
+          profileDataGridNode._searchMatchedTotalColumn ||
+          profileDataGridNode._searchMatchedFunctionColumn) {
+        profileDataGridNode.refresh();
         return true;
-    },
+      }
 
-    /**
+      return false;
+    }
+    return matchesQuery;
+  },
+
+  /**
+   * @override
+   * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
+   * @param {boolean} shouldJump
+   * @param {boolean=} jumpBackwards
+   */
+  performSearch: function(searchConfig, shouldJump, jumpBackwards) {
+    this.searchCanceled();
+    var matchesQuery = this._matchFunction(searchConfig);
+    if (!matchesQuery)
+      return;
+
+    this._searchResults = [];
+    for (var current = this.children[0]; current;
+         current = current.traverseNextNode(false, null, false)) {
+      if (matchesQuery(current))
+        this._searchResults.push({profileNode: current});
+    }
+    this._searchResultIndex = jumpBackwards ? 0 : this._searchResults.length - 1;
+    this._searchableView.updateSearchMatchesCount(this._searchResults.length);
+    this._searchableView.updateCurrentMatchIndex(this._searchResultIndex);
+  },
+
+  /**
+   * @override
+   */
+  searchCanceled: function() {
+    if (this._searchResults) {
+      for (var i = 0; i < this._searchResults.length; ++i) {
+        var profileNode = this._searchResults[i].profileNode;
+        delete profileNode._searchMatchedSelfColumn;
+        delete profileNode._searchMatchedTotalColumn;
+        delete profileNode._searchMatchedFunctionColumn;
+        profileNode.refresh();
+      }
+    }
+
+    this._searchResults = [];
+    this._searchResultIndex = -1;
+  },
+
+  /**
+   * @override
+   */
+  jumpToNextSearchResult: function() {
+    if (!this._searchResults || !this._searchResults.length)
+      return;
+    this._searchResultIndex = (this._searchResultIndex + 1) % this._searchResults.length;
+    this._jumpToSearchResult(this._searchResultIndex);
+  },
+
+  /**
+   * @override
+   */
+  jumpToPreviousSearchResult: function() {
+    if (!this._searchResults || !this._searchResults.length)
+      return;
+    this._searchResultIndex =
+        (this._searchResultIndex - 1 + this._searchResults.length) % this._searchResults.length;
+    this._jumpToSearchResult(this._searchResultIndex);
+  },
+
+  /**
      * @override
      * @return {boolean}
      */
-    supportsRegexSearch: function()
-    {
-        return false;
-    },
+  supportsCaseSensitiveSearch: function() { return true; },
 
-    /**
-     * @param {number} index
+  /**
+     * @override
+     * @return {boolean}
      */
-    _jumpToSearchResult: function(index)
-    {
-        var searchResult = this._searchResults[index];
-        if (!searchResult)
-            return;
-        var profileNode = searchResult.profileNode;
-        profileNode.revealAndSelect();
-        this._searchableView.updateCurrentMatchIndex(index);
-    }
+  supportsRegexSearch: function() { return false; },
+
+  /**
+   * @param {number} index
+   */
+  _jumpToSearchResult: function(index) {
+    var searchResult = this._searchResults[index];
+    if (!searchResult)
+      return;
+    var profileNode = searchResult.profileNode;
+    profileNode.revealAndSelect();
+    this._searchableView.updateCurrentMatchIndex(index);
+  }
 };
 
 WebInspector.ProfileDataGridTree.propertyComparators = [{}, {}];
@@ -593,64 +554,63 @@ WebInspector.ProfileDataGridTree.propertyComparators = [{}, {}];
  * @param {boolean} isAscending
  * @return {function(!Object.<string, *>, !Object.<string, *>)}
  */
-WebInspector.ProfileDataGridTree.propertyComparator = function(property, isAscending)
-{
-    var comparator = WebInspector.ProfileDataGridTree.propertyComparators[(isAscending ? 1 : 0)][property];
+WebInspector.ProfileDataGridTree.propertyComparator = function(property, isAscending) {
+  var comparator =
+      WebInspector.ProfileDataGridTree.propertyComparators[(isAscending ? 1 : 0)][property];
 
-    if (!comparator) {
-        if (isAscending) {
-            comparator = function(lhs, rhs)
-            {
-                if (lhs[property] < rhs[property])
-                    return -1;
+  if (!comparator) {
+    if (isAscending) {
+      comparator = function(lhs, rhs) {
+        if (lhs[property] < rhs[property])
+          return -1;
 
-                if (lhs[property] > rhs[property])
-                    return 1;
+        if (lhs[property] > rhs[property])
+          return 1;
 
-                return 0;
-            };
-        } else {
-            comparator = function(lhs, rhs)
-            {
-                if (lhs[property] > rhs[property])
-                    return -1;
+        return 0;
+      };
+    } else {
+      comparator = function(lhs, rhs) {
+        if (lhs[property] > rhs[property])
+          return -1;
 
-                if (lhs[property] < rhs[property])
-                    return 1;
+        if (lhs[property] < rhs[property])
+          return 1;
 
-                return 0;
-            };
-        }
-
-        WebInspector.ProfileDataGridTree.propertyComparators[(isAscending ? 1 : 0)][property] = comparator;
+        return 0;
+      };
     }
 
-    return comparator;
+    WebInspector.ProfileDataGridTree.propertyComparators[(isAscending ? 1 : 0)][property] =
+        comparator;
+  }
+
+  return comparator;
 };
 
 /**
  * @interface
  */
-WebInspector.ProfileDataGridNode.Formatter = function() { };
+WebInspector.ProfileDataGridNode.Formatter = function() {};
 
 WebInspector.ProfileDataGridNode.Formatter.prototype = {
-    /**
+  /**
      * @param {number} value
      * @param {!WebInspector.ProfileDataGridNode} node
      * @return {string}
      */
-    formatValue: function(value, node) { },
+  formatValue: function(value, node) {},
 
-    /**
+  /**
      * @param {number} value
      * @param {!WebInspector.ProfileDataGridNode} node
      * @return {string}
      */
-    formatPercent: function(value, node) { },
+  formatPercent: function(value, node) {},
 
-    /**
+  /**
      * @param  {!WebInspector.ProfileDataGridNode} node
      * @return {?Element}
      */
-    linkifyNode: function(node) { }
+  linkifyNode: function(node) {}
 };

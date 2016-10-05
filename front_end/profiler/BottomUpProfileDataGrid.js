@@ -24,9 +24,12 @@
  */
 
 // Bottom Up Profiling shows the entire callstack backwards:
-// The root node is a representation of each individual function called, and each child of that node represents
-// a reverse-callstack showing how many of those calls came from it. So, unlike top-down, the statistics in
-// each child still represent the root node. We have to be particularly careful of recursion with this mode
+// The root node is a representation of each individual function called, and each child of that node
+// represents
+// a reverse-callstack showing how many of those calls came from it. So, unlike top-down, the
+// statistics in
+// each child still represent the root node. We have to be particularly careful of recursion with
+// this mode
 // because a root node can represent itself AND an ancestor.
 
 /**
@@ -35,141 +38,133 @@
  * @param {!WebInspector.ProfileNode} profileNode
  * @param {!WebInspector.TopDownProfileDataGridTree} owningTree
  */
-WebInspector.BottomUpProfileDataGridNode = function(profileNode, owningTree)
-{
-    WebInspector.ProfileDataGridNode.call(this, profileNode, owningTree, this._willHaveChildren(profileNode));
-    this._remainingNodeInfos = [];
+WebInspector.BottomUpProfileDataGridNode = function(profileNode, owningTree) {
+  WebInspector.ProfileDataGridNode.call(
+      this, profileNode, owningTree, this._willHaveChildren(profileNode));
+  this._remainingNodeInfos = [];
 };
 
 WebInspector.BottomUpProfileDataGridNode.prototype = {
-    /**
-     * @param {!WebInspector.ProfileDataGridNode} profileDataGridNode
-     */
-    _takePropertiesFromProfileDataGridNode: function(profileDataGridNode)
-    {
-        this.save();
-        this.self = profileDataGridNode.self;
-        this.total = profileDataGridNode.total;
-    },
+  /**
+   * @param {!WebInspector.ProfileDataGridNode} profileDataGridNode
+   */
+  _takePropertiesFromProfileDataGridNode: function(profileDataGridNode) {
+    this.save();
+    this.self = profileDataGridNode.self;
+    this.total = profileDataGridNode.total;
+  },
 
-    /**
-     * When focusing, we keep just the members of the callstack.
-     * @param {!WebInspector.ProfileDataGridNode} child
-     */
-    _keepOnlyChild: function(child)
-    {
-        this.save();
+  /**
+   * When focusing, we keep just the members of the callstack.
+   * @param {!WebInspector.ProfileDataGridNode} child
+   */
+  _keepOnlyChild: function(child) {
+    this.save();
 
-        this.removeChildren();
-        this.appendChild(child);
-    },
+    this.removeChildren();
+    this.appendChild(child);
+  },
 
-    /**
-     * @param {string} aCallUID
-     */
-    _exclude: function(aCallUID)
-    {
-        if (this._remainingNodeInfos)
-            this.populate();
+  /**
+   * @param {string} aCallUID
+   */
+  _exclude: function(aCallUID) {
+    if (this._remainingNodeInfos)
+      this.populate();
 
-        this.save();
+    this.save();
 
-        var children = this.children;
-        var index = this.children.length;
+    var children = this.children;
+    var index = this.children.length;
 
-        while (index--)
-            children[index]._exclude(aCallUID);
+    while (index--)
+      children[index]._exclude(aCallUID);
 
-        var child = this.childrenByCallUID.get(aCallUID);
+    var child = this.childrenByCallUID.get(aCallUID);
 
-        if (child)
-            this.merge(child, true);
-    },
+    if (child)
+      this.merge(child, true);
+  },
 
-    /**
-     * @override
-     */
-    restore: function()
-    {
-        WebInspector.ProfileDataGridNode.prototype.restore.call(this);
+  /**
+   * @override
+   */
+  restore: function() {
+    WebInspector.ProfileDataGridNode.prototype.restore.call(this);
 
-        if (!this.children.length)
-            this.hasChildren = this._willHaveChildren(this.profileNode);
-    },
+    if (!this.children.length)
+      this.hasChildren = this._willHaveChildren(this.profileNode);
+  },
 
-    /**
-     * @override
-     * @param {!WebInspector.ProfileDataGridNode} child
-     * @param {boolean} shouldAbsorb
-     */
-    merge: function(child, shouldAbsorb)
-    {
-        this.self -= child.self;
-        WebInspector.ProfileDataGridNode.prototype.merge.call(this, child, shouldAbsorb);
-    },
+  /**
+   * @override
+   * @param {!WebInspector.ProfileDataGridNode} child
+   * @param {boolean} shouldAbsorb
+   */
+  merge: function(child, shouldAbsorb) {
+    this.self -= child.self;
+    WebInspector.ProfileDataGridNode.prototype.merge.call(this, child, shouldAbsorb);
+  },
 
-    /**
-     * @override
-     */
-    populateChildren: function()
-    {
-        WebInspector.BottomUpProfileDataGridNode._sharedPopulate(this);
-    },
+  /**
+   * @override
+   */
+  populateChildren: function() { WebInspector.BottomUpProfileDataGridNode._sharedPopulate(this); },
 
-    _willHaveChildren: function(profileNode)
-    {
-        // In bottom up mode, our parents are our children since we display an inverted tree.
-        // However, we don't want to show the very top parent since it is redundant.
-        return !!(profileNode.parent && profileNode.parent.parent);
-    },
+  _willHaveChildren: function(profileNode) {
+    // In bottom up mode, our parents are our children since we display an inverted tree.
+    // However, we don't want to show the very top parent since it is redundant.
+    return !!(profileNode.parent && profileNode.parent.parent);
+  },
 
-    __proto__: WebInspector.ProfileDataGridNode.prototype
+  __proto__: WebInspector.ProfileDataGridNode.prototype
 };
 
 /**
- * @param {!WebInspector.BottomUpProfileDataGridNode|!WebInspector.BottomUpProfileDataGridTree} container
+ * @param {!WebInspector.BottomUpProfileDataGridNode|!WebInspector.BottomUpProfileDataGridTree}
+ * container
  */
-WebInspector.BottomUpProfileDataGridNode._sharedPopulate = function(container)
-{
-    var remainingNodeInfos = container._remainingNodeInfos;
-    var count = remainingNodeInfos.length;
+WebInspector.BottomUpProfileDataGridNode._sharedPopulate = function(container) {
+  var remainingNodeInfos = container._remainingNodeInfos;
+  var count = remainingNodeInfos.length;
 
-    for (var index = 0; index < count; ++index) {
-        var nodeInfo = remainingNodeInfos[index];
-        var ancestor = nodeInfo.ancestor;
-        var focusNode = nodeInfo.focusNode;
-        var child = container.findChild(ancestor);
+  for (var index = 0; index < count; ++index) {
+    var nodeInfo = remainingNodeInfos[index];
+    var ancestor = nodeInfo.ancestor;
+    var focusNode = nodeInfo.focusNode;
+    var child = container.findChild(ancestor);
 
-        // If we already have this child, then merge the data together.
-        if (child) {
-            var totalAccountedFor = nodeInfo.totalAccountedFor;
+    // If we already have this child, then merge the data together.
+    if (child) {
+      var totalAccountedFor = nodeInfo.totalAccountedFor;
 
-            child.self += focusNode.self;
+      child.self += focusNode.self;
 
-            if (!totalAccountedFor)
-                child.total += focusNode.total;
-        } else {
-            // If not, add it as a true ancestor.
-            // In heavy mode, we take our visual identity from ancestor node...
-            child = new WebInspector.BottomUpProfileDataGridNode(ancestor, /** @type {!WebInspector.TopDownProfileDataGridTree} */ (container.tree));
+      if (!totalAccountedFor)
+        child.total += focusNode.total;
+    } else {
+      // If not, add it as a true ancestor.
+      // In heavy mode, we take our visual identity from ancestor node...
+      child = new WebInspector.BottomUpProfileDataGridNode(
+          ancestor, /** @type {!WebInspector.TopDownProfileDataGridTree} */ (container.tree));
 
-            if (ancestor !== focusNode) {
-                // But the actual statistics from the "root" node (bottom of the callstack).
-                child.self = focusNode.self;
-                child.total = focusNode.total;
-            }
+      if (ancestor !== focusNode) {
+        // But the actual statistics from the "root" node (bottom of the callstack).
+        child.self = focusNode.self;
+        child.total = focusNode.total;
+      }
 
-            container.appendChild(child);
-        }
-
-        var parent = ancestor.parent;
-        if (parent && parent.parent) {
-            nodeInfo.ancestor = parent;
-            child._remainingNodeInfos.push(nodeInfo);
-        }
+      container.appendChild(child);
     }
 
-    delete container._remainingNodeInfos;
+    var parent = ancestor.parent;
+    if (parent && parent.parent) {
+      nodeInfo.ancestor = parent;
+      child._remainingNodeInfos.push(nodeInfo);
+    }
+  }
+
+  delete container._remainingNodeInfos;
 };
 
 /**
@@ -180,155 +175,154 @@ WebInspector.BottomUpProfileDataGridNode._sharedPopulate = function(container)
  * @param {!WebInspector.ProfileNode} rootProfileNode
  * @param {number} total
  */
-WebInspector.BottomUpProfileDataGridTree = function(formatter, searchableView, rootProfileNode, total)
-{
-    WebInspector.ProfileDataGridTree.call(this, formatter, searchableView, total);
+WebInspector.BottomUpProfileDataGridTree = function(
+    formatter, searchableView, rootProfileNode, total) {
+  WebInspector.ProfileDataGridTree.call(this, formatter, searchableView, total);
 
-    // Iterate each node in pre-order.
-    var profileNodeUIDs = 0;
-    var profileNodeGroups = [[], [rootProfileNode]];
-    /** @type {!Map<string, !Set<number>>} */
-    var visitedProfileNodesForCallUID = new Map();
+  // Iterate each node in pre-order.
+  var profileNodeUIDs = 0;
+  var profileNodeGroups = [[], [rootProfileNode]];
+  /** @type {!Map<string, !Set<number>>} */
+  var visitedProfileNodesForCallUID = new Map();
 
-    this._remainingNodeInfos = [];
+  this._remainingNodeInfos = [];
 
-    for (var profileNodeGroupIndex = 0; profileNodeGroupIndex < profileNodeGroups.length; ++profileNodeGroupIndex) {
-        var parentProfileNodes = profileNodeGroups[profileNodeGroupIndex];
-        var profileNodes = profileNodeGroups[++profileNodeGroupIndex];
-        var count = profileNodes.length;
+  for (var profileNodeGroupIndex = 0; profileNodeGroupIndex < profileNodeGroups.length;
+       ++profileNodeGroupIndex) {
+    var parentProfileNodes = profileNodeGroups[profileNodeGroupIndex];
+    var profileNodes = profileNodeGroups[++profileNodeGroupIndex];
+    var count = profileNodes.length;
 
-        for (var index = 0; index < count; ++index) {
-            var profileNode = profileNodes[index];
+    for (var index = 0; index < count; ++index) {
+      var profileNode = profileNodes[index];
 
-            if (!profileNode.UID)
-                profileNode.UID = ++profileNodeUIDs;
+      if (!profileNode.UID)
+        profileNode.UID = ++profileNodeUIDs;
 
-            if (profileNode.parent) {
-                // The total time of this ancestor is accounted for if we're in any form of recursive cycle.
-                var visitedNodes = visitedProfileNodesForCallUID.get(profileNode.callUID);
-                var totalAccountedFor = false;
+      if (profileNode.parent) {
+        // The total time of this ancestor is accounted for if we're in any form of recursive cycle.
+        var visitedNodes = visitedProfileNodesForCallUID.get(profileNode.callUID);
+        var totalAccountedFor = false;
 
-                if (!visitedNodes) {
-                    visitedNodes = new Set();
-                    visitedProfileNodesForCallUID.set(profileNode.callUID, visitedNodes);
-                } else {
-                    // The total time for this node has already been accounted for iff one of it's parents has already been visited.
-                    // We can do this check in this style because we are traversing the tree in pre-order.
-                    var parentCount = parentProfileNodes.length;
-                    for (var parentIndex = 0; parentIndex < parentCount; ++parentIndex) {
-                        if (visitedNodes.has(parentProfileNodes[parentIndex].UID)) {
-                            totalAccountedFor = true;
-                            break;
-                        }
-                    }
-                }
-
-                visitedNodes.add(profileNode.UID);
-
-                this._remainingNodeInfos.push({ ancestor: profileNode, focusNode: profileNode, totalAccountedFor: totalAccountedFor });
+        if (!visitedNodes) {
+          visitedNodes = new Set();
+          visitedProfileNodesForCallUID.set(profileNode.callUID, visitedNodes);
+        } else {
+          // The total time for this node has already been accounted for iff one of it's parents has
+          // already been visited.
+          // We can do this check in this style because we are traversing the tree in pre-order.
+          var parentCount = parentProfileNodes.length;
+          for (var parentIndex = 0; parentIndex < parentCount; ++parentIndex) {
+            if (visitedNodes.has(parentProfileNodes[parentIndex].UID)) {
+              totalAccountedFor = true;
+              break;
             }
-
-            var children = profileNode.children;
-            if (children.length) {
-                profileNodeGroups.push(parentProfileNodes.concat([profileNode]));
-                profileNodeGroups.push(children);
-            }
+          }
         }
+
+        visitedNodes.add(profileNode.UID);
+
+        this._remainingNodeInfos.push(
+            {ancestor: profileNode, focusNode: profileNode, totalAccountedFor: totalAccountedFor});
+      }
+
+      var children = profileNode.children;
+      if (children.length) {
+        profileNodeGroups.push(parentProfileNodes.concat([profileNode]));
+        profileNodeGroups.push(children);
+      }
     }
+  }
 
-    // Populate the top level nodes.
-    WebInspector.ProfileDataGridNode.populate(this);
+  // Populate the top level nodes.
+  WebInspector.ProfileDataGridNode.populate(this);
 
-    return this;
+  return this;
 };
 
 WebInspector.BottomUpProfileDataGridTree.prototype = {
-    /**
-     * When focusing, we keep the entire callstack up to this ancestor.
-     * @param {!WebInspector.ProfileDataGridNode} profileDataGridNode
-     */
-    focus: function(profileDataGridNode)
-    {
-        if (!profileDataGridNode)
-            return;
+  /**
+   * When focusing, we keep the entire callstack up to this ancestor.
+   * @param {!WebInspector.ProfileDataGridNode} profileDataGridNode
+   */
+  focus: function(profileDataGridNode) {
+    if (!profileDataGridNode)
+      return;
 
-        this.save();
+    this.save();
 
-        var currentNode = profileDataGridNode;
-        var focusNode = profileDataGridNode;
+    var currentNode = profileDataGridNode;
+    var focusNode = profileDataGridNode;
 
-        while (currentNode.parent && (currentNode instanceof WebInspector.ProfileDataGridNode)) {
-            currentNode._takePropertiesFromProfileDataGridNode(profileDataGridNode);
+    while (currentNode.parent && (currentNode instanceof WebInspector.ProfileDataGridNode)) {
+      currentNode._takePropertiesFromProfileDataGridNode(profileDataGridNode);
 
-            focusNode = currentNode;
-            currentNode = currentNode.parent;
+      focusNode = currentNode;
+      currentNode = currentNode.parent;
 
-            if (currentNode instanceof WebInspector.ProfileDataGridNode)
-                currentNode._keepOnlyChild(focusNode);
-        }
+      if (currentNode instanceof WebInspector.ProfileDataGridNode)
+        currentNode._keepOnlyChild(focusNode);
+    }
 
-        this.children = [focusNode];
-        this.total = profileDataGridNode.total;
-    },
+    this.children = [focusNode];
+    this.total = profileDataGridNode.total;
+  },
 
-    /**
-     * @param {!WebInspector.ProfileDataGridNode} profileDataGridNode
-     */
-    exclude: function(profileDataGridNode)
-    {
-        if (!profileDataGridNode)
-            return;
+  /**
+   * @param {!WebInspector.ProfileDataGridNode} profileDataGridNode
+   */
+  exclude: function(profileDataGridNode) {
+    if (!profileDataGridNode)
+      return;
 
-        this.save();
+    this.save();
 
-        var excludedCallUID = profileDataGridNode.callUID;
-        var excludedTopLevelChild = this.childrenByCallUID.get(excludedCallUID);
+    var excludedCallUID = profileDataGridNode.callUID;
+    var excludedTopLevelChild = this.childrenByCallUID.get(excludedCallUID);
 
-        // If we have a top level node that is excluded, get rid of it completely (not keeping children),
-        // since bottom up data relies entirely on the root node.
-        if (excludedTopLevelChild)
-            this.children.remove(excludedTopLevelChild);
+    // If we have a top level node that is excluded, get rid of it completely (not keeping
+    // children),
+    // since bottom up data relies entirely on the root node.
+    if (excludedTopLevelChild)
+      this.children.remove(excludedTopLevelChild);
 
-        var children = this.children;
-        var count = children.length;
+    var children = this.children;
+    var count = children.length;
 
-        for (var index = 0; index < count; ++index)
-            children[index]._exclude(excludedCallUID);
+    for (var index = 0; index < count; ++index)
+      children[index]._exclude(excludedCallUID);
 
-        if (this.lastComparator)
-            this.sort(this.lastComparator, true);
-    },
+    if (this.lastComparator)
+      this.sort(this.lastComparator, true);
+  },
 
-    /**
-     * @override
-     * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
-     * @param {boolean} shouldJump
-     * @param {boolean=} jumpBackwards
-     */
-    performSearch: function(searchConfig, shouldJump, jumpBackwards)
-    {
-        this.searchCanceled();
-        var matchesQuery = this._matchFunction(searchConfig);
-        if (!matchesQuery)
-            return;
+  /**
+   * @override
+   * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
+   * @param {boolean} shouldJump
+   * @param {boolean=} jumpBackwards
+   */
+  performSearch: function(searchConfig, shouldJump, jumpBackwards) {
+    this.searchCanceled();
+    var matchesQuery = this._matchFunction(searchConfig);
+    if (!matchesQuery)
+      return;
 
-        this._searchResults = [];
-        for (var current = this.children[0]; current; current = current.traverseNextNode(true, null, true)) {
-            if (matchesQuery(current))
-                this._searchResults.push({ profileNode: current });
-        }
-        this._searchResultIndex = jumpBackwards ? 0 : this._searchResults.length - 1;
-        this._searchableView.updateSearchMatchesCount(this._searchResults.length);
-        this._searchableView.updateCurrentMatchIndex(this._searchResultIndex);
-    },
+    this._searchResults = [];
+    for (var current = this.children[0]; current;
+         current = current.traverseNextNode(true, null, true)) {
+      if (matchesQuery(current))
+        this._searchResults.push({profileNode: current});
+    }
+    this._searchResultIndex = jumpBackwards ? 0 : this._searchResults.length - 1;
+    this._searchableView.updateSearchMatchesCount(this._searchResults.length);
+    this._searchableView.updateCurrentMatchIndex(this._searchResultIndex);
+  },
 
-    /**
-     * @override
-     */
-    populateChildren: function()
-    {
-        WebInspector.BottomUpProfileDataGridNode._sharedPopulate(this);
-    },
+  /**
+   * @override
+   */
+  populateChildren: function() { WebInspector.BottomUpProfileDataGridNode._sharedPopulate(this); },
 
-    __proto__: WebInspector.ProfileDataGridTree.prototype
+  __proto__: WebInspector.ProfileDataGridTree.prototype
 };

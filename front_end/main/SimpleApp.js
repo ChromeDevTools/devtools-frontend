@@ -6,39 +6,31 @@
  * @constructor
  * @implements {WebInspector.App}
  */
-WebInspector.SimpleApp = function()
-{
-};
+WebInspector.SimpleApp = function() {};
 
 WebInspector.SimpleApp.prototype = {
-    /**
-     * @override
-     * @param {!Document} document
-     */
-    presentUI: function(document)
-    {
-        var rootView = new WebInspector.RootView();
-        WebInspector.inspectorView.show(rootView.element);
-        WebInspector.inspectorView.showInitialPanel();
-        rootView.attachToDocument(document);
-    }
+  /**
+   * @override
+   * @param {!Document} document
+   */
+  presentUI: function(document) {
+    var rootView = new WebInspector.RootView();
+    WebInspector.inspectorView.show(rootView.element);
+    WebInspector.inspectorView.showInitialPanel();
+    rootView.attachToDocument(document);
+  }
 };
 
 /**
  * @constructor
  * @implements {WebInspector.AppProvider}
  */
-WebInspector.SimpleAppProvider = function()
-{
-};
+WebInspector.SimpleAppProvider = function() {};
 
 WebInspector.SimpleAppProvider.prototype = {
-    /**
+  /**
      * @override
      * @return {!WebInspector.App}
      */
-    createApp: function()
-    {
-        return new WebInspector.SimpleApp();
-    }
+  createApp: function() { return new WebInspector.SimpleApp(); }
 };

@@ -31,51 +31,47 @@
 /**
  * @interface
  */
-WebInspector.OutputStreamDelegate = function()
-{
-};
+WebInspector.OutputStreamDelegate = function() {};
 
 WebInspector.OutputStreamDelegate.prototype = {
-    onTransferStarted: function() { },
+  onTransferStarted: function() {},
 
-    onTransferFinished: function() { },
+  onTransferFinished: function() {},
 
-    /**
-     * @param {!WebInspector.ChunkedReader} reader
-     */
-    onChunkTransferred: function(reader) { },
+  /**
+   * @param {!WebInspector.ChunkedReader} reader
+   */
+  onChunkTransferred: function(reader) {},
 
-    /**
-     * @param {!WebInspector.ChunkedReader} reader
-     * @param {!Event} event
-     */
-    onError: function(reader, event) { },
+  /**
+   * @param {!WebInspector.ChunkedReader} reader
+   * @param {!Event} event
+   */
+  onError: function(reader, event) {},
 };
 
 /**
  * @interface
  */
-WebInspector.ChunkedReader = function()
-{
-};
+WebInspector.ChunkedReader = function() {};
 
 WebInspector.ChunkedReader.prototype = {
-    /**
+  /**
      * @return {number}
      */
-    fileSize: function() { },
+  fileSize: function() {},
 
-    /**
+  /**
      * @return {number}
      */
-    loadedSize: function() { },
+  loadedSize: function() {},
 
-    /**
+  /**
      * @return {string}
      */
-    fileName: function() { },
+  fileName: function() {},
 
-    cancel: function() { }
+  cancel: function() {}
 };
 
 /**
@@ -85,195 +81,171 @@ WebInspector.ChunkedReader.prototype = {
  * @param {number} chunkSize
  * @param {!WebInspector.OutputStreamDelegate} delegate
  */
-WebInspector.ChunkedFileReader = function(file, chunkSize, delegate)
-{
-    this._file = file;
-    this._fileSize = file.size;
-    this._loadedSize = 0;
-    this._chunkSize = chunkSize;
-    this._delegate = delegate;
-    this._decoder = new TextDecoder();
-    this._isCanceled = false;
+WebInspector.ChunkedFileReader = function(file, chunkSize, delegate) {
+  this._file = file;
+  this._fileSize = file.size;
+  this._loadedSize = 0;
+  this._chunkSize = chunkSize;
+  this._delegate = delegate;
+  this._decoder = new TextDecoder();
+  this._isCanceled = false;
 };
 
 WebInspector.ChunkedFileReader.prototype = {
-    /**
-     * @param {!WebInspector.OutputStream} output
-     */
-    start: function(output)
-    {
-        this._output = output;
+  /**
+   * @param {!WebInspector.OutputStream} output
+   */
+  start: function(output) {
+    this._output = output;
 
-        this._reader = new FileReader();
-        this._reader.onload = this._onChunkLoaded.bind(this);
-        this._reader.onerror = this._delegate.onError.bind(this._delegate, this);
-        this._delegate.onTransferStarted();
-        this._loadChunk();
-    },
+    this._reader = new FileReader();
+    this._reader.onload = this._onChunkLoaded.bind(this);
+    this._reader.onerror = this._delegate.onError.bind(this._delegate, this);
+    this._delegate.onTransferStarted();
+    this._loadChunk();
+  },
 
-    /**
-     * @override
-     */
-    cancel: function()
-    {
-        this._isCanceled = true;
-    },
+  /**
+   * @override
+   */
+  cancel: function() { this._isCanceled = true; },
 
-    /**
+  /**
      * @override
      * @return {number}
      */
-    loadedSize: function()
-    {
-        return this._loadedSize;
-    },
+  loadedSize: function() { return this._loadedSize; },
 
-    /**
+  /**
      * @override
      * @return {number}
      */
-    fileSize: function()
-    {
-        return this._fileSize;
-    },
+  fileSize: function() { return this._fileSize; },
 
-    /**
+  /**
      * @override
      * @return {string}
      */
-    fileName: function()
-    {
-        return this._file.name;
-    },
+  fileName: function() { return this._file.name; },
 
-    /**
-     * @param {!Event} event
-     */
-    _onChunkLoaded: function(event)
-    {
-        if (this._isCanceled)
-            return;
+  /**
+   * @param {!Event} event
+   */
+  _onChunkLoaded: function(event) {
+    if (this._isCanceled)
+      return;
 
-        if (event.target.readyState !== FileReader.DONE)
-            return;
+    if (event.target.readyState !== FileReader.DONE)
+      return;
 
-        var buffer = event.target.result;
-        this._loadedSize += buffer.byteLength;
-        var endOfFile = this._loadedSize === this._fileSize;
-        var decodedString = this._decoder.decode(buffer, {stream: !endOfFile});
-        this._output.write(decodedString);
-        if (this._isCanceled)
-            return;
-        this._delegate.onChunkTransferred(this);
+    var buffer = event.target.result;
+    this._loadedSize += buffer.byteLength;
+    var endOfFile = this._loadedSize === this._fileSize;
+    var decodedString = this._decoder.decode(buffer, {stream: !endOfFile});
+    this._output.write(decodedString);
+    if (this._isCanceled)
+      return;
+    this._delegate.onChunkTransferred(this);
 
-        if (endOfFile) {
-            this._file = null;
-            this._reader = null;
-            this._output.close();
-            this._delegate.onTransferFinished();
-            return;
-        }
-
-        this._loadChunk();
-    },
-
-    _loadChunk: function()
-    {
-        var chunkStart = this._loadedSize;
-        var chunkEnd = Math.min(this._fileSize, chunkStart + this._chunkSize);
-        var nextPart = this._file.slice(chunkStart, chunkEnd);
-        this._reader.readAsArrayBuffer(nextPart);
+    if (endOfFile) {
+      this._file = null;
+      this._reader = null;
+      this._output.close();
+      this._delegate.onTransferFinished();
+      return;
     }
+
+    this._loadChunk();
+  },
+
+  _loadChunk: function() {
+    var chunkStart = this._loadedSize;
+    var chunkEnd = Math.min(this._fileSize, chunkStart + this._chunkSize);
+    var nextPart = this._file.slice(chunkStart, chunkEnd);
+    this._reader.readAsArrayBuffer(nextPart);
+  }
 };
 
 /**
  * @param {function(!File)} callback
  * @return {!Node}
  */
-WebInspector.createFileSelectorElement = function(callback)
-{
-    var fileSelectorElement = createElement("input");
-    fileSelectorElement.type = "file";
-    fileSelectorElement.style.display = "none";
-    fileSelectorElement.setAttribute("tabindex", -1);
-    fileSelectorElement.onchange = onChange;
-    function onChange(event)
-    {
-        callback(fileSelectorElement.files[0]);
-    }
-    return fileSelectorElement;
+WebInspector.createFileSelectorElement = function(callback) {
+  var fileSelectorElement = createElement('input');
+  fileSelectorElement.type = 'file';
+  fileSelectorElement.style.display = 'none';
+  fileSelectorElement.setAttribute('tabindex', -1);
+  fileSelectorElement.onchange = onChange;
+  function onChange(event) { callback(fileSelectorElement.files[0]); }
+  return fileSelectorElement;
 };
 
 /**
  * @constructor
  * @implements {WebInspector.OutputStream}
  */
-WebInspector.FileOutputStream = function()
-{
-};
+WebInspector.FileOutputStream = function() {};
 
 WebInspector.FileOutputStream.prototype = {
-    /**
-     * @param {string} fileName
-     * @param {function(boolean)} callback
-     */
-    open: function(fileName, callback)
-    {
-        this._closed = false;
-        this._writeCallbacks = [];
-        this._fileName = fileName;
-
-        /**
-         * @param {boolean} accepted
-         * @this {WebInspector.FileOutputStream}
-         */
-        function callbackWrapper(accepted)
-        {
-            if (accepted)
-                WebInspector.fileManager.addEventListener(WebInspector.FileManager.Events.AppendedToURL, this._onAppendDone, this);
-            callback(accepted);
-        }
-        WebInspector.fileManager.save(this._fileName, "", true, callbackWrapper.bind(this));
-    },
+  /**
+   * @param {string} fileName
+   * @param {function(boolean)} callback
+   */
+  open: function(fileName, callback) {
+    this._closed = false;
+    this._writeCallbacks = [];
+    this._fileName = fileName;
 
     /**
-     * @override
-     * @param {string} data
-     * @param {function(!WebInspector.OutputStream)=} callback
+     * @param {boolean} accepted
+     * @this {WebInspector.FileOutputStream}
      */
-    write: function(data, callback)
-    {
-        this._writeCallbacks.push(callback);
-        WebInspector.fileManager.append(this._fileName, data);
-    },
-
-    /**
-     * @override
-     */
-    close: function()
-    {
-        this._closed = true;
-        if (this._writeCallbacks.length)
-            return;
-        WebInspector.fileManager.removeEventListener(WebInspector.FileManager.Events.AppendedToURL, this._onAppendDone, this);
-        WebInspector.fileManager.close(this._fileName);
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _onAppendDone: function(event)
-    {
-        if (event.data !== this._fileName)
-            return;
-        var callback = this._writeCallbacks.shift();
-        if (callback)
-            callback(this);
-        if (!this._writeCallbacks.length) {
-            if (this._closed) {
-                WebInspector.fileManager.removeEventListener(WebInspector.FileManager.Events.AppendedToURL, this._onAppendDone, this);
-                WebInspector.fileManager.close(this._fileName);
-            }
-        }
+    function callbackWrapper(accepted) {
+      if (accepted)
+        WebInspector.fileManager.addEventListener(
+            WebInspector.FileManager.Events.AppendedToURL, this._onAppendDone, this);
+      callback(accepted);
     }
+    WebInspector.fileManager.save(this._fileName, '', true, callbackWrapper.bind(this));
+  },
+
+  /**
+   * @override
+   * @param {string} data
+   * @param {function(!WebInspector.OutputStream)=} callback
+   */
+  write: function(data, callback) {
+    this._writeCallbacks.push(callback);
+    WebInspector.fileManager.append(this._fileName, data);
+  },
+
+  /**
+   * @override
+   */
+  close: function() {
+    this._closed = true;
+    if (this._writeCallbacks.length)
+      return;
+    WebInspector.fileManager.removeEventListener(
+        WebInspector.FileManager.Events.AppendedToURL, this._onAppendDone, this);
+    WebInspector.fileManager.close(this._fileName);
+  },
+
+  /**
+   * @param {!WebInspector.Event} event
+   */
+  _onAppendDone: function(event) {
+    if (event.data !== this._fileName)
+      return;
+    var callback = this._writeCallbacks.shift();
+    if (callback)
+      callback(this);
+    if (!this._writeCallbacks.length) {
+      if (this._closed) {
+        WebInspector.fileManager.removeEventListener(
+            WebInspector.FileManager.Events.AppendedToURL, this._onAppendDone, this);
+        WebInspector.fileManager.close(this._fileName);
+      }
+    }
+  }
 };

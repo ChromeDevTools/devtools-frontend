@@ -7,113 +7,107 @@
  * @constructor
  * @implements {WebInspector.SourcesView.EditorAction}
  */
-WebInspector.InplaceFormatterEditorAction = function()
-{
-};
+WebInspector.InplaceFormatterEditorAction = function() {};
 
 WebInspector.InplaceFormatterEditorAction.prototype = {
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _editorSelected: function(event)
-    {
-        var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data);
-        this._updateButton(uiSourceCode);
-    },
+  /**
+   * @param {!WebInspector.Event} event
+   */
+  _editorSelected: function(event) {
+    var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data);
+    this._updateButton(uiSourceCode);
+  },
 
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _editorClosed: function(event)
-    {
-        var wasSelected = /** @type {boolean} */ (event.data.wasSelected);
-        if (wasSelected)
-            this._updateButton(null);
-    },
+  /**
+   * @param {!WebInspector.Event} event
+   */
+  _editorClosed: function(event) {
+    var wasSelected = /** @type {boolean} */ (event.data.wasSelected);
+    if (wasSelected)
+      this._updateButton(null);
+  },
 
-    /**
-     * @param {?WebInspector.UISourceCode} uiSourceCode
-     */
-    _updateButton: function(uiSourceCode)
-    {
-        this._button.element.classList.toggle("hidden", !this._isFormattable(uiSourceCode));
-    },
+  /**
+   * @param {?WebInspector.UISourceCode} uiSourceCode
+   */
+  _updateButton: function(uiSourceCode) {
+    this._button.element.classList.toggle('hidden', !this._isFormattable(uiSourceCode));
+  },
 
-    /**
+  /**
      * @override
      * @param {!WebInspector.SourcesView} sourcesView
      * @return {!WebInspector.ToolbarButton}
      */
-    button: function(sourcesView)
-    {
-        if (this._button)
-            return this._button;
+  button: function(sourcesView) {
+    if (this._button)
+      return this._button;
 
-        this._sourcesView = sourcesView;
-        this._sourcesView.addEventListener(WebInspector.SourcesView.Events.EditorSelected, this._editorSelected.bind(this));
-        this._sourcesView.addEventListener(WebInspector.SourcesView.Events.EditorClosed, this._editorClosed.bind(this));
+    this._sourcesView = sourcesView;
+    this._sourcesView.addEventListener(
+        WebInspector.SourcesView.Events.EditorSelected, this._editorSelected.bind(this));
+    this._sourcesView.addEventListener(
+        WebInspector.SourcesView.Events.EditorClosed, this._editorClosed.bind(this));
 
-        this._button = new WebInspector.ToolbarButton(WebInspector.UIString("Format"), "format-toolbar-item");
-        this._button.addEventListener("click", this._formatSourceInPlace, this);
-        this._updateButton(sourcesView.currentUISourceCode());
+    this._button =
+        new WebInspector.ToolbarButton(WebInspector.UIString('Format'), 'format-toolbar-item');
+    this._button.addEventListener('click', this._formatSourceInPlace, this);
+    this._updateButton(sourcesView.currentUISourceCode());
 
-        return this._button;
-    },
+    return this._button;
+  },
 
-    /**
+  /**
      * @param {?WebInspector.UISourceCode} uiSourceCode
      * @return {boolean}
      */
-    _isFormattable: function(uiSourceCode)
-    {
-        if (!uiSourceCode)
-            return false;
-        if (uiSourceCode.project().type() === WebInspector.projectTypes.FileSystem)
-            return true;
-        if (WebInspector.persistence.binding(uiSourceCode))
-            return true;
-        return uiSourceCode.contentType().isStyleSheet()
-            || uiSourceCode.project().type() === WebInspector.projectTypes.Snippets;
-    },
+  _isFormattable: function(uiSourceCode) {
+    if (!uiSourceCode)
+      return false;
+    if (uiSourceCode.project().type() === WebInspector.projectTypes.FileSystem)
+      return true;
+    if (WebInspector.persistence.binding(uiSourceCode))
+      return true;
+    return uiSourceCode.contentType().isStyleSheet() ||
+        uiSourceCode.project().type() === WebInspector.projectTypes.Snippets;
+  },
 
-    _formatSourceInPlace: function()
-    {
-        var uiSourceCode = this._sourcesView.currentUISourceCode();
-        if (!this._isFormattable(uiSourceCode))
-            return;
+  _formatSourceInPlace: function() {
+    var uiSourceCode = this._sourcesView.currentUISourceCode();
+    if (!this._isFormattable(uiSourceCode))
+      return;
 
-        if (uiSourceCode.isDirty())
-            contentLoaded.call(this, uiSourceCode.workingCopy());
-        else
-            uiSourceCode.requestContent().then(contentLoaded.bind(this));
+    if (uiSourceCode.isDirty())
+      contentLoaded.call(this, uiSourceCode.workingCopy());
+    else
+      uiSourceCode.requestContent().then(contentLoaded.bind(this));
 
-        /**
-         * @this {WebInspector.InplaceFormatterEditorAction}
-         * @param {?string} content
-         */
-        function contentLoaded(content)
-        {
-            var highlighterType = WebInspector.NetworkProject.uiSourceCodeMimeType(uiSourceCode);
-            WebInspector.Formatter.format(uiSourceCode.contentType(), highlighterType, content || "", innerCallback.bind(this));
-        }
+    /**
+     * @this {WebInspector.InplaceFormatterEditorAction}
+     * @param {?string} content
+     */
+    function contentLoaded(content) {
+      var highlighterType = WebInspector.NetworkProject.uiSourceCodeMimeType(uiSourceCode);
+      WebInspector.Formatter.format(
+          uiSourceCode.contentType(), highlighterType, content || '', innerCallback.bind(this));
+    }
 
-        /**
-         * @this {WebInspector.InplaceFormatterEditorAction}
-         * @param {string} formattedContent
-         * @param {!WebInspector.FormatterSourceMapping} formatterMapping
-         */
-        function innerCallback(formattedContent, formatterMapping)
-        {
-            if (uiSourceCode.workingCopy() === formattedContent)
-                return;
-            var sourceFrame = this._sourcesView.viewForFile(uiSourceCode);
-            var start = [0, 0];
-            if (sourceFrame) {
-                var selection = sourceFrame.selection();
-                start = formatterMapping.originalToFormatted(selection.startLine, selection.startColumn);
-            }
-            uiSourceCode.setWorkingCopy(formattedContent);
-            this._sourcesView.showSourceLocation(uiSourceCode, start[0], start[1]);
-        }
-    },
+    /**
+     * @this {WebInspector.InplaceFormatterEditorAction}
+     * @param {string} formattedContent
+     * @param {!WebInspector.FormatterSourceMapping} formatterMapping
+     */
+    function innerCallback(formattedContent, formatterMapping) {
+      if (uiSourceCode.workingCopy() === formattedContent)
+        return;
+      var sourceFrame = this._sourcesView.viewForFile(uiSourceCode);
+      var start = [0, 0];
+      if (sourceFrame) {
+        var selection = sourceFrame.selection();
+        start = formatterMapping.originalToFormatted(selection.startLine, selection.startColumn);
+      }
+      uiSourceCode.setWorkingCopy(formattedContent);
+      this._sourcesView.showSourceLocation(uiSourceCode, start[0], start[1]);
+    }
+  },
 };

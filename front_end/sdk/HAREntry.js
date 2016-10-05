@@ -38,251 +38,239 @@
  * @constructor
  * @param {!WebInspector.NetworkRequest} request
  */
-WebInspector.HAREntry = function(request)
-{
-    this._request = request;
+WebInspector.HAREntry = function(request) {
+  this._request = request;
 };
 
 WebInspector.HAREntry.prototype = {
-    /**
+  /**
      * @return {!Object}
      */
-    build: function()
-    {
-        var ipAddress = this._request.remoteAddress();
-        var portPositionInString = ipAddress.lastIndexOf(":");
-        if (portPositionInString !== -1)
-            ipAddress = ipAddress.substr(0, portPositionInString);
+  build: function() {
+    var ipAddress = this._request.remoteAddress();
+    var portPositionInString = ipAddress.lastIndexOf(':');
+    if (portPositionInString !== -1)
+      ipAddress = ipAddress.substr(0, portPositionInString);
 
-        var entry = {
-            startedDateTime: WebInspector.HARLog.pseudoWallTime(this._request, this._request.startTime),
-            time: this._request.timing ? WebInspector.HAREntry._toMilliseconds(this._request.duration) : 0,
-            request: this._buildRequest(),
-            response: this._buildResponse(),
-            cache: { }, // Not supported yet.
-            timings: this._buildTimings(),
-            serverIPAddress: ipAddress
-        };
+    var entry = {
+      startedDateTime: WebInspector.HARLog.pseudoWallTime(this._request, this._request.startTime),
+      time: this._request.timing ? WebInspector.HAREntry._toMilliseconds(this._request.duration) :
+                                   0,
+      request: this._buildRequest(),
+      response: this._buildResponse(),
+      cache: {},  // Not supported yet.
+      timings: this._buildTimings(),
+      serverIPAddress: ipAddress
+    };
 
-        if (this._request.connectionId !== "0")
-            entry.connection = this._request.connectionId;
-        var page = this._request.networkLog().pageLoadForRequest(this._request);
-        if (page)
-            entry.pageref = "page_" + page.id;
-        return entry;
-    },
+    if (this._request.connectionId !== '0')
+      entry.connection = this._request.connectionId;
+    var page = this._request.networkLog().pageLoadForRequest(this._request);
+    if (page)
+      entry.pageref = 'page_' + page.id;
+    return entry;
+  },
 
-    /**
+  /**
      * @return {!Object}
      */
-    _buildRequest: function()
-    {
-        var headersText = this._request.requestHeadersText();
-        var res = {
-            method: this._request.requestMethod,
-            url: this._buildRequestURL(this._request.url),
-            httpVersion: this._request.requestHttpVersion(),
-            headers: this._request.requestHeaders(),
-            queryString: this._buildParameters(this._request.queryParameters || []),
-            cookies: this._buildCookies(this._request.requestCookies || []),
-            headersSize: headersText ? headersText.length : -1,
-            bodySize: this.requestBodySize
-        };
-        if (this._request.requestFormData)
-            res.postData = this._buildPostData();
+  _buildRequest: function() {
+    var headersText = this._request.requestHeadersText();
+    var res = {
+      method: this._request.requestMethod,
+      url: this._buildRequestURL(this._request.url),
+      httpVersion: this._request.requestHttpVersion(),
+      headers: this._request.requestHeaders(),
+      queryString: this._buildParameters(this._request.queryParameters || []),
+      cookies: this._buildCookies(this._request.requestCookies || []),
+      headersSize: headersText ? headersText.length : -1,
+      bodySize: this.requestBodySize
+    };
+    if (this._request.requestFormData)
+      res.postData = this._buildPostData();
 
-        return res;
-    },
+    return res;
+  },
 
-    /**
+  /**
      * @return {!Object}
      */
-    _buildResponse: function()
-    {
-        var headersText = this._request.responseHeadersText;
-        return {
-            status: this._request.statusCode,
-            statusText: this._request.statusText,
-            httpVersion: this._request.responseHttpVersion(),
-            headers: this._request.responseHeaders,
-            cookies: this._buildCookies(this._request.responseCookies || []),
-            content: this._buildContent(),
-            redirectURL: this._request.responseHeaderValue("Location") || "",
-            headersSize: headersText ? headersText.length : -1,
-            bodySize: this.responseBodySize,
-            _transferSize: this._request.transferSize,
-            _error: this._request.localizedFailDescription
-        };
-    },
+  _buildResponse: function() {
+    var headersText = this._request.responseHeadersText;
+    return {
+      status: this._request.statusCode,
+      statusText: this._request.statusText,
+      httpVersion: this._request.responseHttpVersion(),
+      headers: this._request.responseHeaders,
+      cookies: this._buildCookies(this._request.responseCookies || []),
+      content: this._buildContent(),
+      redirectURL: this._request.responseHeaderValue('Location') || '',
+      headersSize: headersText ? headersText.length : -1,
+      bodySize: this.responseBodySize,
+      _transferSize: this._request.transferSize,
+      _error: this._request.localizedFailDescription
+    };
+  },
 
-    /**
+  /**
      * @return {!Object}
      */
-    _buildContent: function()
-    {
-        var content = {
-            size: this._request.resourceSize,
-            mimeType: this._request.mimeType || "x-unknown",
-            // text: this._request.content // TODO: pull out into a boolean flag, as content can be huge (and needs to be requested with an async call)
-        };
-        var compression = this.responseCompression;
-        if (typeof compression === "number")
-            content.compression = compression;
-        return content;
-    },
+  _buildContent: function() {
+    var content = {
+      size: this._request.resourceSize,
+      mimeType: this._request.mimeType || 'x-unknown',
+      // text: this._request.content // TODO: pull out into a boolean flag, as content can be huge
+      // (and needs to be requested with an async call)
+    };
+    var compression = this.responseCompression;
+    if (typeof compression === 'number')
+      content.compression = compression;
+    return content;
+  },
 
-    /**
+  /**
      * @return {!Object}
      */
-    _buildTimings: function()
-    {
-        // Order of events: request_start = 0, [proxy], [dns], [connect [ssl]], [send], receive_headers_end
-        // HAR 'blocked' time is time before first network activity.
+  _buildTimings: function() {
+    // Order of events: request_start = 0, [proxy], [dns], [connect [ssl]], [send],
+    // receive_headers_end
+    // HAR 'blocked' time is time before first network activity.
 
-        var timing = this._request.timing;
-        if (!timing)
-            return {blocked: -1, dns: -1, connect: -1, send: 0, wait: 0, receive: 0, ssl: -1};
+    var timing = this._request.timing;
+    if (!timing)
+      return {blocked: -1, dns: -1, connect: -1, send: 0, wait: 0, receive: 0, ssl: -1};
 
-        function firstNonNegative(values)
-        {
-            for (var i = 0; i < values.length; ++i) {
-                if (values[i] >= 0)
-                    return values[i];
-            }
-            console.assert(false, "Incomplete request timing information.");
-        }
+    function firstNonNegative(values) {
+      for (var i = 0; i < values.length; ++i) {
+        if (values[i] >= 0)
+          return values[i];
+      }
+      console.assert(false, 'Incomplete request timing information.');
+    }
 
-        var blocked = firstNonNegative([timing.dnsStart, timing.connectStart, timing.sendStart]);
+    var blocked = firstNonNegative([timing.dnsStart, timing.connectStart, timing.sendStart]);
 
-        var dns = -1;
-        if (timing.dnsStart >= 0)
-            dns = firstNonNegative([timing.connectStart, timing.sendStart]) - timing.dnsStart;
+    var dns = -1;
+    if (timing.dnsStart >= 0)
+      dns = firstNonNegative([timing.connectStart, timing.sendStart]) - timing.dnsStart;
 
-        var connect = -1;
-        if (timing.connectStart >= 0)
-            connect = timing.sendStart - timing.connectStart;
+    var connect = -1;
+    if (timing.connectStart >= 0)
+      connect = timing.sendStart - timing.connectStart;
 
-        var send = timing.sendEnd - timing.sendStart;
-        var wait = timing.receiveHeadersEnd - timing.sendEnd;
-        var receive = WebInspector.HAREntry._toMilliseconds(this._request.duration) - timing.receiveHeadersEnd;
+    var send = timing.sendEnd - timing.sendStart;
+    var wait = timing.receiveHeadersEnd - timing.sendEnd;
+    var receive =
+        WebInspector.HAREntry._toMilliseconds(this._request.duration) - timing.receiveHeadersEnd;
 
-        var ssl = -1;
-        if (timing.sslStart >= 0 && timing.sslEnd >= 0)
-            ssl = timing.sslEnd - timing.sslStart;
+    var ssl = -1;
+    if (timing.sslStart >= 0 && timing.sslEnd >= 0)
+      ssl = timing.sslEnd - timing.sslStart;
 
-        return {blocked: blocked, dns: dns, connect: connect, send: send, wait: wait, receive: receive, ssl: ssl};
-    },
+    return {
+      blocked: blocked,
+      dns: dns,
+      connect: connect,
+      send: send,
+      wait: wait,
+      receive: receive,
+      ssl: ssl
+    };
+  },
 
-    /**
+  /**
      * @return {!Object}
      */
-    _buildPostData: function()
-    {
-        var res = {
-            mimeType: this._request.requestContentType(),
-            text: this._request.requestFormData
-        };
-        if (this._request.formParameters)
-            res.params = this._buildParameters(this._request.formParameters);
-        return res;
-    },
+  _buildPostData: function() {
+    var res = {mimeType: this._request.requestContentType(), text: this._request.requestFormData};
+    if (this._request.formParameters)
+      res.params = this._buildParameters(this._request.formParameters);
+    return res;
+  },
 
-    /**
+  /**
      * @param {!Array.<!Object>} parameters
      * @return {!Array.<!Object>}
      */
-    _buildParameters: function(parameters)
-    {
-        return parameters.slice();
-    },
+  _buildParameters: function(parameters) { return parameters.slice(); },
 
-    /**
+  /**
      * @param {string} url
      * @return {string}
      */
-    _buildRequestURL: function(url)
-    {
-        return url.split("#", 2)[0];
-    },
+  _buildRequestURL: function(url) { return url.split('#', 2)[0]; },
 
-    /**
+  /**
      * @param {!Array.<!WebInspector.Cookie>} cookies
      * @return {!Array.<!Object>}
      */
-    _buildCookies: function(cookies)
-    {
-        return cookies.map(this._buildCookie.bind(this));
-    },
+  _buildCookies: function(cookies) { return cookies.map(this._buildCookie.bind(this)); },
 
-    /**
+  /**
      * @param {!WebInspector.Cookie} cookie
      * @return {!Object}
      */
-    _buildCookie: function(cookie)
-    {
-        var c = {
-            name: cookie.name(),
-            value: cookie.value(),
-            path: cookie.path(),
-            domain: cookie.domain(),
-            expires: cookie.expiresDate(WebInspector.HARLog.pseudoWallTime(this._request, this._request.startTime)),
-            httpOnly: cookie.httpOnly(),
-            secure: cookie.secure()
-        };
-        if (cookie.sameSite())
-            c.sameSite = cookie.sameSite();
-        return c;
-    },
+  _buildCookie: function(cookie) {
+    var c = {
+      name: cookie.name(),
+      value: cookie.value(),
+      path: cookie.path(),
+      domain: cookie.domain(),
+      expires: cookie.expiresDate(
+          WebInspector.HARLog.pseudoWallTime(this._request, this._request.startTime)),
+      httpOnly: cookie.httpOnly(),
+      secure: cookie.secure()
+    };
+    if (cookie.sameSite())
+      c.sameSite = cookie.sameSite();
+    return c;
+  },
 
-    /**
+  /**
      * @return {number}
      */
-    get requestBodySize()
-    {
-        return !this._request.requestFormData ? 0 : this._request.requestFormData.length;
-    },
+  get requestBodySize() {
+    return !this._request.requestFormData ? 0 : this._request.requestFormData.length;
+  },
 
-    /**
+  /**
      * @return {number}
      */
-    get responseBodySize()
-    {
-        if (this._request.cached() || this._request.statusCode === 304)
-            return 0;
-        if (!this._request.responseHeadersText)
-            return -1;
-        return this._request.transferSize - this._request.responseHeadersText.length;
-    },
+  get responseBodySize() {
+    if (this._request.cached() || this._request.statusCode === 304)
+      return 0;
+    if (!this._request.responseHeadersText)
+      return -1;
+    return this._request.transferSize - this._request.responseHeadersText.length;
+  },
 
-    /**
+  /**
      * @return {number|undefined}
      */
-    get responseCompression()
-    {
-        if (this._request.cached() || this._request.statusCode === 304 || this._request.statusCode === 206)
-            return;
-        if (!this._request.responseHeadersText)
-            return;
-        return this._request.resourceSize - this.responseBodySize;
-    }
+  get responseCompression() {
+    if (this._request.cached() || this._request.statusCode === 304 ||
+        this._request.statusCode === 206)
+      return;
+    if (!this._request.responseHeadersText)
+      return;
+    return this._request.resourceSize - this.responseBodySize;
+  }
 };
 
 /**
  * @param {number} time
  * @return {number}
  */
-WebInspector.HAREntry._toMilliseconds = function(time)
-{
-    return time === -1 ? -1 : time * 1000;
+WebInspector.HAREntry._toMilliseconds = function(time) {
+  return time === -1 ? -1 : time * 1000;
 };
 
 /**
  * @constructor
  * @param {!Array.<!WebInspector.NetworkRequest>} requests
  */
-WebInspector.HARLog = function(requests)
-{
-    this._requests = requests;
+WebInspector.HARLog = function(requests) {
+  this._requests = requests;
 };
 
 /**
@@ -290,90 +278,79 @@ WebInspector.HARLog = function(requests)
  * @param {number} monotonicTime
  * @return {!Date}
  */
-WebInspector.HARLog.pseudoWallTime = function(request, monotonicTime)
-{
-    return new Date(request.pseudoWallTime(monotonicTime) * 1000);
+WebInspector.HARLog.pseudoWallTime = function(request, monotonicTime) {
+  return new Date(request.pseudoWallTime(monotonicTime) * 1000);
 };
 
 WebInspector.HARLog.prototype = {
-    /**
+  /**
      * @return {!Object}
      */
-    build: function()
-    {
-        return {
-            version: "1.2",
-            creator: this._creator(),
-            pages: this._buildPages(),
-            entries: this._requests.map(this._convertResource.bind(this))
-        };
-    },
+  build: function() {
+    return {
+      version: '1.2',
+      creator: this._creator(),
+      pages: this._buildPages(),
+      entries: this._requests.map(this._convertResource.bind(this))
+    };
+  },
 
-    _creator: function()
-    {
-        var webKitVersion = /AppleWebKit\/([^ ]+)/.exec(window.navigator.userAgent);
+  _creator: function() {
+    var webKitVersion = /AppleWebKit\/([^ ]+)/.exec(window.navigator.userAgent);
 
-        return {
-            name: "WebInspector",
-            version: webKitVersion ? webKitVersion[1] : "n/a"
-        };
-    },
+    return {name: 'WebInspector', version: webKitVersion ? webKitVersion[1] : 'n/a'};
+  },
 
-    /**
+  /**
      * @return {!Array.<!Object>}
      */
-    _buildPages: function()
-    {
-        var seenIdentifiers = {};
-        var pages = [];
-        for (var i = 0; i < this._requests.length; ++i) {
-            var request = this._requests[i];
-            var page = request.networkLog().pageLoadForRequest(request);
-            if (!page || seenIdentifiers[page.id])
-                continue;
-            seenIdentifiers[page.id] = true;
-            pages.push(this._convertPage(page, request));
-        }
-        return pages;
-    },
+  _buildPages: function() {
+    var seenIdentifiers = {};
+    var pages = [];
+    for (var i = 0; i < this._requests.length; ++i) {
+      var request = this._requests[i];
+      var page = request.networkLog().pageLoadForRequest(request);
+      if (!page || seenIdentifiers[page.id])
+        continue;
+      seenIdentifiers[page.id] = true;
+      pages.push(this._convertPage(page, request));
+    }
+    return pages;
+  },
 
-    /**
+  /**
      * @param {!WebInspector.PageLoad} page
      * @param {!WebInspector.NetworkRequest} request
      * @return {!Object}
      */
-    _convertPage: function(page, request)
-    {
-        return {
-            startedDateTime: WebInspector.HARLog.pseudoWallTime(request, page.startTime),
-            id: "page_" + page.id,
-            title: page.url, // We don't have actual page title here. URL is probably better than nothing.
-            pageTimings: {
-                onContentLoad: this._pageEventTime(page, page.contentLoadTime),
-                onLoad: this._pageEventTime(page, page.loadTime)
-            }
-        };
-    },
+  _convertPage: function(page, request) {
+    return {
+      startedDateTime: WebInspector.HARLog.pseudoWallTime(request, page.startTime),
+      id: 'page_' + page.id,
+      title:
+          page.url,  // We don't have actual page title here. URL is probably better than nothing.
+      pageTimings: {
+        onContentLoad: this._pageEventTime(page, page.contentLoadTime),
+        onLoad: this._pageEventTime(page, page.loadTime)
+      }
+    };
+  },
 
-    /**
+  /**
      * @param {!WebInspector.NetworkRequest} request
      * @return {!Object}
      */
-    _convertResource: function(request)
-    {
-        return (new WebInspector.HAREntry(request)).build();
-    },
+  _convertResource: function(request) { return (new WebInspector.HAREntry(request)).build(); },
 
-    /**
+  /**
      * @param {!WebInspector.PageLoad} page
      * @param {number} time
      * @return {number}
      */
-    _pageEventTime: function(page, time)
-    {
-        var startTime = page.startTime;
-        if (time === -1 || startTime === -1)
-            return -1;
-        return WebInspector.HAREntry._toMilliseconds(time - startTime);
-    }
+  _pageEventTime: function(page, time) {
+    var startTime = page.startTime;
+    if (time === -1 || startTime === -1)
+      return -1;
+    return WebInspector.HAREntry._toMilliseconds(time - startTime);
+  }
 };

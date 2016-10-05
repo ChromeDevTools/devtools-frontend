@@ -36,45 +36,41 @@
  * @param {string} src
  * @param {string} className
  */
-WebInspector.ExtensionView = function(server, id, src, className)
-{
-    WebInspector.Widget.call(this);
-    this.setHideOnDetach();
-    this.element.className = "vbox flex-auto"; // Override
+WebInspector.ExtensionView = function(server, id, src, className) {
+  WebInspector.Widget.call(this);
+  this.setHideOnDetach();
+  this.element.className = 'vbox flex-auto';  // Override
 
-    this._server = server;
-    this._id = id;
-    this._iframe = createElement("iframe");
-    this._iframe.addEventListener("load", this._onLoad.bind(this), false);
-    this._iframe.src = src;
-    this._iframe.className = className;
-    this.setDefaultFocusedElement(this._iframe);
+  this._server = server;
+  this._id = id;
+  this._iframe = createElement('iframe');
+  this._iframe.addEventListener('load', this._onLoad.bind(this), false);
+  this._iframe.src = src;
+  this._iframe.className = className;
+  this.setDefaultFocusedElement(this._iframe);
 
-    this.element.appendChild(this._iframe);
+  this.element.appendChild(this._iframe);
 };
 
 WebInspector.ExtensionView.prototype = {
-    wasShown: function()
-    {
-        if (typeof this._frameIndex === "number")
-            this._server.notifyViewShown(this._id, this._frameIndex);
-    },
+  wasShown: function() {
+    if (typeof this._frameIndex === 'number')
+      this._server.notifyViewShown(this._id, this._frameIndex);
+  },
 
-    willHide: function()
-    {
-        if (typeof this._frameIndex === "number")
-            this._server.notifyViewHidden(this._id);
-    },
+  willHide: function() {
+    if (typeof this._frameIndex === 'number')
+      this._server.notifyViewHidden(this._id);
+  },
 
-    _onLoad: function()
-    {
-        var frames = /** @type {!Array.<!Window>} */ (window.frames);
-        this._frameIndex = Array.prototype.indexOf.call(frames, this._iframe.contentWindow);
-        if (this.isShowing())
-            this._server.notifyViewShown(this._id, this._frameIndex);
-    },
+  _onLoad: function() {
+    var frames = /** @type {!Array.<!Window>} */ (window.frames);
+    this._frameIndex = Array.prototype.indexOf.call(frames, this._iframe.contentWindow);
+    if (this.isShowing())
+      this._server.notifyViewShown(this._id, this._frameIndex);
+  },
 
-    __proto__: WebInspector.Widget.prototype
+  __proto__: WebInspector.Widget.prototype
 };
 
 /**
@@ -83,24 +79,17 @@ WebInspector.ExtensionView.prototype = {
  * @param {!WebInspector.ExtensionServer} server
  * @param {string} id
  */
-WebInspector.ExtensionNotifierView = function(server, id)
-{
-    WebInspector.VBox.call(this);
+WebInspector.ExtensionNotifierView = function(server, id) {
+  WebInspector.VBox.call(this);
 
-    this._server = server;
-    this._id = id;
+  this._server = server;
+  this._id = id;
 };
 
 WebInspector.ExtensionNotifierView.prototype = {
-    wasShown: function()
-    {
-        this._server.notifyViewShown(this._id);
-    },
+  wasShown: function() { this._server.notifyViewShown(this._id); },
 
-    willHide: function()
-    {
-        this._server.notifyViewHidden(this._id);
-    },
+  willHide: function() { this._server.notifyViewHidden(this._id); },
 
-    __proto__: WebInspector.VBox.prototype
+  __proto__: WebInspector.VBox.prototype
 };

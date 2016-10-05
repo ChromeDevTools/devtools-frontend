@@ -31,72 +31,59 @@
 /**
  * @constructor
  */
-WebInspector.TextDictionary = function()
-{
-    /** @type {!Map<string, number>} */
-    this._words = new Map();
-    this._index = new WebInspector.Trie();
+WebInspector.TextDictionary = function() {
+  /** @type {!Map<string, number>} */
+  this._words = new Map();
+  this._index = new WebInspector.Trie();
 };
 
 WebInspector.TextDictionary.prototype = {
-    /**
-     * @param {string} word
-     */
-    addWord: function(word)
-    {
-        var count = this._words.get(word) || 0;
-        ++count;
-        this._words.set(word, count);
-        this._index.add(word);
-    },
+  /**
+   * @param {string} word
+   */
+  addWord: function(word) {
+    var count = this._words.get(word) || 0;
+    ++count;
+    this._words.set(word, count);
+    this._index.add(word);
+  },
 
-    /**
-     * @param {string} word
-     */
-    removeWord: function(word)
-    {
-        var count = this._words.get(word) || 0;
-        if (!count)
-            return;
-        this._index.remove(word);
-        if (count === 1) {
-            this._words.delete(word);
-            return;
-        }
-        --count;
-        this._words.set(word, count);
-    },
+  /**
+   * @param {string} word
+   */
+  removeWord: function(word) {
+    var count = this._words.get(word) || 0;
+    if (!count)
+      return;
+    this._index.remove(word);
+    if (count === 1) {
+      this._words.delete(word);
+      return;
+    }
+    --count;
+    this._words.set(word, count);
+  },
 
-    /**
+  /**
      * @param {string} prefix
      * @return {!Array.<string>}
      */
-    wordsWithPrefix: function(prefix)
-    {
-        return this._index.words(prefix);
-    },
+  wordsWithPrefix: function(prefix) { return this._index.words(prefix); },
 
-    /**
+  /**
      * @param {string} word
      * @return {boolean}
      */
-    hasWord: function(word)
-    {
-        return this._words.has(word);
-    },
+  hasWord: function(word) { return this._words.has(word); },
 
-    /**
+  /**
      * @param {string} word
      * @return {number}
      */
-    wordCount: function(word)
-    {
-        return this._words.get(word) || 0;
-    },
+  wordCount: function(word) { return this._words.get(word) || 0; },
 
-    reset: function()
-    {
-        this._words.clear();
-        this._index.clear();
-    }
+  reset: function() {
+    this._words.clear();
+    this._index.clear();
+  }
 };

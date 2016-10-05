@@ -34,102 +34,76 @@
  * @param {string} name
  * @param {string} version
  */
-WebInspector.Database = function(model, id, domain, name, version)
-{
-    this._model = model;
-    this._id = id;
-    this._domain = domain;
-    this._name = name;
-    this._version = version;
+WebInspector.Database = function(model, id, domain, name, version) {
+  this._model = model;
+  this._id = id;
+  this._domain = domain;
+  this._name = name;
+  this._version = version;
 };
 
 WebInspector.Database.prototype = {
-    /** @return {string} */
-    get id()
-    {
-        return this._id;
-    },
+  /** @return {string} */
+  get id() { return this._id; },
 
-    /** @return {string} */
-    get name()
-    {
-        return this._name;
-    },
+  /** @return {string} */
+  get name() { return this._name; },
 
-    set name(x)
-    {
-        this._name = x;
-    },
+  set name(x) { this._name = x; },
 
-    /** @return {string} */
-    get version()
-    {
-        return this._version;
-    },
+  /** @return {string} */
+  get version() { return this._version; },
 
-    set version(x)
-    {
-        this._version = x;
-    },
+  set version(x) { this._version = x; },
 
-    /** @return {string} */
-    get domain()
-    {
-        return this._domain;
-    },
+  /** @return {string} */
+  get domain() { return this._domain; },
 
-    set domain(x)
-    {
-        this._domain = x;
-    },
+  set domain(x) { this._domain = x; },
 
-    /**
-     * @param {function(!Array.<string>)} callback
-     */
-    getTableNames: function(callback)
-    {
-        function sortingCallback(error, names)
-        {
-            if (!error)
-                callback(names.sort());
-        }
-        this._model._agent.getDatabaseTableNames(this._id, sortingCallback);
-    },
-
-    /**
-     * @param {string} query
-     * @param {function(!Array.<string>=, !Array.<*>=)} onSuccess
-     * @param {function(string)} onError
-     */
-    executeSql: function(query, onSuccess, onError)
-    {
-        /**
-         * @param {?Protocol.Error} error
-         * @param {!Array.<string>=} columnNames
-         * @param {!Array.<*>=} values
-         * @param {!DatabaseAgent.Error=} errorObj
-         */
-        function callback(error, columnNames, values, errorObj)
-        {
-            if (error) {
-                onError(error);
-                return;
-            }
-            if (errorObj) {
-                var message;
-                if (errorObj.message)
-                    message = errorObj.message;
-                else if (errorObj.code === 2)
-                    message = WebInspector.UIString("Database no longer has expected version.");
-                else
-                    message = WebInspector.UIString("An unexpected error %s occurred.", errorObj.code);
-                onError(message);
-                return;
-            }
-            onSuccess(columnNames, values);
-        }
-        this._model._agent.executeSQL(this._id, query, callback);
+  /**
+   * @param {function(!Array.<string>)} callback
+   */
+  getTableNames: function(callback) {
+    function sortingCallback(error, names) {
+      if (!error)
+        callback(names.sort());
     }
+    this._model._agent.getDatabaseTableNames(this._id, sortingCallback);
+  },
+
+  /**
+   * @param {string} query
+   * @param {function(!Array.<string>=, !Array.<*>=)} onSuccess
+   * @param {function(string)} onError
+   */
+  executeSql: function(query, onSuccess, onError) {
+    /**
+     * @param {?Protocol.Error} error
+     * @param {!Array.<string>=} columnNames
+     * @param {!Array.<*>=} values
+     * @param {!DatabaseAgent.Error=} errorObj
+     */
+    function callback(error, columnNames, values, errorObj) {
+      if (error) {
+        onError(error);
+        return;
+      }
+      if (errorObj) {
+        var message;
+        if (errorObj.message)
+          message = errorObj.message;
+        else if (errorObj.code === 2)
+          message = WebInspector.UIString('Database no longer has expected version.');
+        else
+          message = WebInspector.UIString('An unexpected error %s occurred.', errorObj.code);
+        onError(message);
+        return;
+      }
+      onSuccess(columnNames, values);
+    }
+    this._model._agent.executeSQL(this._id, query, callback);
+  }
 };
 
 /**
@@ -137,61 +111,56 @@ WebInspector.Database.prototype = {
  * @extends {WebInspector.SDKModel}
  * @param {!WebInspector.Target} target
  */
-WebInspector.DatabaseModel = function(target)
-{
-    WebInspector.SDKModel.call(this, WebInspector.DatabaseModel, target);
+WebInspector.DatabaseModel = function(target) {
+  WebInspector.SDKModel.call(this, WebInspector.DatabaseModel, target);
 
-    this._databases = [];
-    this._agent = target.databaseAgent();
-    this.target().registerDatabaseDispatcher(new WebInspector.DatabaseDispatcher(this));
+  this._databases = [];
+  this._agent = target.databaseAgent();
+  this.target().registerDatabaseDispatcher(new WebInspector.DatabaseDispatcher(this));
 };
 
 /** @enum {symbol} */
 WebInspector.DatabaseModel.Events = {
-    DatabaseAdded: Symbol("DatabaseAdded"),
-    DatabasesRemoved: Symbol("DatabasesRemoved")
+  DatabaseAdded: Symbol('DatabaseAdded'),
+  DatabasesRemoved: Symbol('DatabasesRemoved')
 };
 
 WebInspector.DatabaseModel.prototype = {
-    enable: function()
-    {
-        if (this._enabled)
-            return;
-        this._agent.enable();
-        this._enabled = true;
-    },
+  enable: function() {
+    if (this._enabled)
+      return;
+    this._agent.enable();
+    this._enabled = true;
+  },
 
-    disable: function()
-    {
-        if (!this._enabled)
-            return;
-        this._enabled = false;
-        this._databases = [];
-        this._agent.disable();
-        this.dispatchEventToListeners(WebInspector.DatabaseModel.Events.DatabasesRemoved);
-    },
+  disable: function() {
+    if (!this._enabled)
+      return;
+    this._enabled = false;
+    this._databases = [];
+    this._agent.disable();
+    this.dispatchEventToListeners(WebInspector.DatabaseModel.Events.DatabasesRemoved);
+  },
 
-    /**
+  /**
      * @return {!Array.<!WebInspector.Database>}
      */
-    databases: function()
-    {
-        var result = [];
-        for (var database of this._databases)
-            result.push(database);
-        return result;
-    },
+  databases: function() {
+    var result = [];
+    for (var database of this._databases)
+      result.push(database);
+    return result;
+  },
 
-    /**
-     * @param {!WebInspector.Database} database
-     */
-    _addDatabase: function(database)
-    {
-        this._databases.push(database);
-        this.dispatchEventToListeners(WebInspector.DatabaseModel.Events.DatabaseAdded, database);
-    },
+  /**
+   * @param {!WebInspector.Database} database
+   */
+  _addDatabase: function(database) {
+    this._databases.push(database);
+    this.dispatchEventToListeners(WebInspector.DatabaseModel.Events.DatabaseAdded, database);
+  },
 
-    __proto__: WebInspector.SDKModel.prototype
+  __proto__: WebInspector.SDKModel.prototype
 };
 
 /**
@@ -199,36 +168,29 @@ WebInspector.DatabaseModel.prototype = {
  * @implements {DatabaseAgent.Dispatcher}
  * @param {!WebInspector.DatabaseModel} model
  */
-WebInspector.DatabaseDispatcher = function(model)
-{
-    this._model = model;
+WebInspector.DatabaseDispatcher = function(model) {
+  this._model = model;
 };
 
 WebInspector.DatabaseDispatcher.prototype = {
-    /**
-     * @override
-     * @param {!DatabaseAgent.Database} payload
-     */
-    addDatabase: function(payload)
-    {
-        this._model._addDatabase(new WebInspector.Database(
-            this._model,
-            payload.id,
-            payload.domain,
-            payload.name,
-            payload.version));
-    }
+  /**
+   * @override
+   * @param {!DatabaseAgent.Database} payload
+   */
+  addDatabase: function(payload) {
+    this._model._addDatabase(new WebInspector.Database(
+        this._model, payload.id, payload.domain, payload.name, payload.version));
+  }
 };
 
-WebInspector.DatabaseModel._symbol = Symbol("DatabaseModel");
+WebInspector.DatabaseModel._symbol = Symbol('DatabaseModel');
 /**
  * @param {!WebInspector.Target} target
  * @return {!WebInspector.DatabaseModel}
  */
-WebInspector.DatabaseModel.fromTarget = function(target)
-{
-    if (!target[WebInspector.DatabaseModel._symbol])
-        target[WebInspector.DatabaseModel._symbol] = new WebInspector.DatabaseModel(target);
+WebInspector.DatabaseModel.fromTarget = function(target) {
+  if (!target[WebInspector.DatabaseModel._symbol])
+    target[WebInspector.DatabaseModel._symbol] = new WebInspector.DatabaseModel(target);
 
-    return target[WebInspector.DatabaseModel._symbol];
+  return target[WebInspector.DatabaseModel._symbol];
 };

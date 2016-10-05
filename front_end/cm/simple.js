@@ -2,90 +2,110 @@
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
 (function(mod) {
-  if (typeof exports == "object" && typeof module == "object") // CommonJS
-    mod(require("../../lib/codemirror"));
-  else if (typeof define == "function" && define.amd) // AMD
-    define(["../../lib/codemirror"], mod);
-  else // Plain browser env
+  if (typeof exports == 'object' && typeof module == 'object')  // CommonJS
+    mod(require('../../lib/codemirror'));
+  else if (typeof define == 'function' && define.amd)  // AMD
+    define(['../../lib/codemirror'], mod);
+  else  // Plain browser env
     mod(CodeMirror);
 })(function(CodeMirror) {
-  "use strict";
+  'use strict';
 
   CodeMirror.defineSimpleMode = function(name, states) {
-    CodeMirror.defineMode(name, function(config) {
-      return CodeMirror.simpleMode(config, states);
-    });
+    CodeMirror.defineMode(name, function(config) { return CodeMirror.simpleMode(config, states); });
   };
 
   CodeMirror.simpleMode = function(config, states) {
-    ensureState(states, "start");
+    ensureState(states, 'start');
     var states_ = {}, meta = states.meta || {}, hasIndentation = false;
-    for (var state in states) if (state != meta && states.hasOwnProperty(state)) {
-      var list = states_[state] = [], orig = states[state];
-      for (var i = 0; i < orig.length; i++) {
-        var data = orig[i];
-        list.push(new Rule(data, states));
-        if (data.indent || data.dedent) hasIndentation = true;
+    for (var state in states)
+      if (state != meta && states.hasOwnProperty(state)) {
+        var list = states_[state] = [], orig = states[state];
+        for (var i = 0; i < orig.length; i++) {
+          var data = orig[i];
+          list.push(new Rule(data, states));
+          if (data.indent || data.dedent)
+            hasIndentation = true;
+        }
       }
-    }
     var mode = {
       startState: function() {
-        return {state: "start", pending: null,
-                local: null, localState: null,
-                indent: hasIndentation ? [] : null};
+        return {
+          state: 'start',
+          pending: null,
+          local: null,
+          localState: null,
+          indent: hasIndentation ? [] : null
+        };
       },
       copyState: function(state) {
-        var s = {state: state.state, pending: state.pending,
-                 local: state.local, localState: null,
-                 indent: state.indent && state.indent.slice(0)};
+        var s = {
+          state: state.state,
+          pending: state.pending,
+          local: state.local,
+          localState: null,
+          indent: state.indent && state.indent.slice(0)
+        };
         if (state.localState)
           s.localState = CodeMirror.copyState(state.local.mode, state.localState);
         if (state.stack)
           s.stack = state.stack.slice(0);
         for (var pers = state.persistentStates; pers; pers = pers.next)
-          s.persistentStates = {mode: pers.mode,
-                                spec: pers.spec,
-                                state: pers.state == state.localState ? s.localState : CodeMirror.copyState(pers.mode, pers.state),
-                                next: s.persistentStates};
+          s.persistentStates = {
+            mode: pers.mode,
+            spec: pers.spec,
+            state: pers.state == state.localState ? s.localState :
+                                                    CodeMirror.copyState(pers.mode, pers.state),
+            next: s.persistentStates
+          };
         return s;
       },
       token: tokenFunction(states_, config),
-      innerMode: function(state) { return state.local && {mode: state.local.mode, state: state.localState}; },
+      innerMode: function(state) {
+        return state.local && {mode: state.local.mode, state: state.localState};
+      },
       indent: indentFunction(states_, meta)
     };
-    if (meta) for (var prop in meta) if (meta.hasOwnProperty(prop))
-      mode[prop] = meta[prop];
+    if (meta)
+      for (var prop in meta)
+        if (meta.hasOwnProperty(prop))
+          mode[prop] = meta[prop];
     return mode;
   };
 
   function ensureState(states, name) {
     if (!states.hasOwnProperty(name))
-      throw new Error("Undefined state " + name + " in simple mode");
+      throw new Error('Undefined state ' + name + ' in simple mode');
   }
 
   function toRegex(val, caret) {
-    if (!val) return /(?:)/;
-    var flags = "";
+    if (!val)
+      return /(?:)/;
+    var flags = '';
     if (val instanceof RegExp) {
-      if (val.ignoreCase) flags = "i";
+      if (val.ignoreCase)
+        flags = 'i';
       val = val.source;
     } else {
       val = String(val);
     }
-    return new RegExp((caret === false ? "" : "^") + "(?:" + val + ")", flags);
+    return new RegExp((caret === false ? '' : '^') + '(?:' + val + ')', flags);
   }
 
   function asToken(val) {
-    if (!val) return null;
-    if (typeof val == "string") return val.replace(/\./g, " ");
+    if (!val)
+      return null;
+    if (typeof val == 'string')
+      return val.replace(/\./g, ' ');
     var result = [];
     for (var i = 0; i < val.length; i++)
-      result.push(val[i] && val[i].replace(/\./g, " "));
+      result.push(val[i] && val[i].replace(/\./g, ' '));
     return result;
   }
 
   function Rule(data, states) {
-    if (data.next || data.push) ensureState(states, data.next || data.push);
+    if (data.next || data.push)
+      ensureState(states, data.next || data.push);
     this.regex = toRegex(data.regex);
     this.token = asToken(data.token);
     this.data = data;
@@ -95,7 +115,8 @@
     return function(stream, state) {
       if (state.pending) {
         var pend = state.pending.shift();
-        if (state.pending.length == 0) state.pending = null;
+        if (state.pending.length == 0)
+          state.pending = null;
         stream.pos += pend.text.length;
         return pend.token;
       }
@@ -153,42 +174,56 @@
   }
 
   function cmp(a, b) {
-    if (a === b) return true;
-    if (!a || typeof a != "object" || !b || typeof b != "object") return false;
+    if (a === b)
+      return true;
+    if (!a || typeof a != 'object' || !b || typeof b != 'object')
+      return false;
     var props = 0;
-    for (var prop in a) if (a.hasOwnProperty(prop)) {
-      if (!b.hasOwnProperty(prop) || !cmp(a[prop], b[prop])) return false;
-      props++;
-    }
-    for (var prop in b) if (b.hasOwnProperty(prop)) props--;
+    for (var prop in a)
+      if (a.hasOwnProperty(prop)) {
+        if (!b.hasOwnProperty(prop) || !cmp(a[prop], b[prop]))
+          return false;
+        props++;
+      }
+    for (var prop in b)
+      if (b.hasOwnProperty(prop))
+        props--;
     return props == 0;
   }
 
   function enterLocalMode(config, state, spec, token) {
     var pers;
-    if (spec.persistent) for (var p = state.persistentStates; p && !pers; p = p.next)
-      if (spec.spec ? cmp(spec.spec, p.spec) : spec.mode == p.mode) pers = p;
+    if (spec.persistent)
+      for (var p = state.persistentStates; p && !pers; p = p.next)
+        if (spec.spec ? cmp(spec.spec, p.spec) : spec.mode == p.mode)
+          pers = p;
     var mode = pers ? pers.mode : spec.mode || CodeMirror.getMode(config, spec.spec);
     var lState = pers ? pers.state : CodeMirror.startState(mode);
     if (spec.persistent && !pers)
-      state.persistentStates = {mode: mode, spec: spec.spec, state: lState, next: state.persistentStates};
+      state.persistentStates =
+          {mode: mode, spec: spec.spec, state: lState, next: state.persistentStates};
 
     state.localState = lState;
-    state.local = {mode: mode,
-                   end: spec.end && toRegex(spec.end),
-                   endScan: spec.end && spec.forceEnd !== false && toRegex(spec.end, false),
-                   endToken: token && token.join ? token[token.length - 1] : token};
+    state.local = {
+      mode: mode,
+      end: spec.end && toRegex(spec.end),
+      endScan: spec.end && spec.forceEnd !== false && toRegex(spec.end, false),
+      endToken: token && token.join ? token[token.length - 1] : token
+    };
   }
 
   function indexOf(val, arr) {
-    for (var i = 0; i < arr.length; i++) if (arr[i] === val) return true;
+    for (var i = 0; i < arr.length; i++)
+      if (arr[i] === val)
+        return true;
   }
 
   function indentFunction(states, meta) {
     return function(state, textAfter, line) {
       if (state.local && state.local.mode.indent)
         return state.local.mode.indent(state.localState, textAfter, line);
-      if (state.indent == null || state.local || meta.dontIndentStates && indexOf(state.state, meta.dontIndentStates) > -1)
+      if (state.indent == null || state.local ||
+          meta.dontIndentStates && indexOf(state.state, meta.dontIndentStates) > -1)
         return CodeMirror.Pass;
 
       var pos = state.indent.length - 1, rules = states[state.state];
@@ -199,7 +234,8 @@
             var m = rule.regex.exec(textAfter);
             if (m && m[0]) {
               pos--;
-              if (rule.next || rule.push) rules = states[rule.next || rule.push];
+              if (rule.next || rule.push)
+                rules = states[rule.next || rule.push];
               textAfter = textAfter.slice(m[0].length);
               continue scan;
             }

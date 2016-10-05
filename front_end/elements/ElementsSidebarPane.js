@@ -6,71 +6,57 @@
  * @constructor
  * @extends {WebInspector.VBox}
  */
-WebInspector.ElementsSidebarPane = function()
-{
-    WebInspector.VBox.call(this);
-    this.element.classList.add("flex-none");
-    this._computedStyleModel = new WebInspector.ComputedStyleModel();
-    this._computedStyleModel.addEventListener(WebInspector.ComputedStyleModel.Events.ComputedStyleChanged, this.onCSSModelChanged, this);
+WebInspector.ElementsSidebarPane = function() {
+  WebInspector.VBox.call(this);
+  this.element.classList.add('flex-none');
+  this._computedStyleModel = new WebInspector.ComputedStyleModel();
+  this._computedStyleModel.addEventListener(
+      WebInspector.ComputedStyleModel.Events.ComputedStyleChanged, this.onCSSModelChanged, this);
 
-    this._updateThrottler = new WebInspector.Throttler(100);
-    this._updateWhenVisible = false;
+  this._updateThrottler = new WebInspector.Throttler(100);
+  this._updateWhenVisible = false;
 };
 
 WebInspector.ElementsSidebarPane.prototype = {
-    /**
+  /**
      * @return {?WebInspector.DOMNode}
      */
-    node: function()
-    {
-        return this._computedStyleModel.node();
-    },
+  node: function() { return this._computedStyleModel.node(); },
 
-    /**
+  /**
      * @return {?WebInspector.CSSModel}
      */
-    cssModel: function()
-    {
-        return this._computedStyleModel.cssModel();
-    },
+  cssModel: function() { return this._computedStyleModel.cssModel(); },
 
-    /**
+  /**
      * @protected
      * @return {!Promise.<?>}
      */
-    doUpdate: function()
-    {
-        return Promise.resolve();
-    },
+  doUpdate: function() { return Promise.resolve(); },
 
-    update: function()
-    {
-        this._updateWhenVisible = !this.isShowing();
-        if (this._updateWhenVisible)
-            return;
-        this._updateThrottler.schedule(innerUpdate.bind(this));
+  update: function() {
+    this._updateWhenVisible = !this.isShowing();
+    if (this._updateWhenVisible)
+      return;
+    this._updateThrottler.schedule(innerUpdate.bind(this));
 
-        /**
+    /**
          * @return {!Promise.<?>}
          * @this {WebInspector.ElementsSidebarPane}
          */
-        function innerUpdate()
-        {
-            return this.isShowing() ? this.doUpdate() : Promise.resolve();
-        }
-    },
+    function innerUpdate() { return this.isShowing() ? this.doUpdate() : Promise.resolve(); }
+  },
 
-    wasShown: function()
-    {
-        WebInspector.VBox.prototype.wasShown.call(this);
-        if (this._updateWhenVisible)
-            this.update();
-    },
+  wasShown: function() {
+    WebInspector.VBox.prototype.wasShown.call(this);
+    if (this._updateWhenVisible)
+      this.update();
+  },
 
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    onCSSModelChanged: function(event) { },
+  /**
+   * @param {!WebInspector.Event} event
+   */
+  onCSSModelChanged: function(event) {},
 
-    __proto__: WebInspector.VBox.prototype
+  __proto__: WebInspector.VBox.prototype
 };

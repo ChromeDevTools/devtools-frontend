@@ -28,9 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-function postMessageWrapper(message)
-{
-    postMessage(message);
+function postMessageWrapper(message) {
+  postMessage(message);
 }
 
 var dispatcher = new WebInspector.HeapSnapshotWorkerDispatcher(this, postMessageWrapper);
@@ -39,9 +38,8 @@ var dispatcher = new WebInspector.HeapSnapshotWorkerDispatcher(this, postMessage
  * @param {function(!Event)} listener
  * @suppressGlobalPropertiesCheck
  */
-function installMessageEventListener(listener)
-{
-    self.addEventListener("message", listener, false);
+function installMessageEventListener(listener) {
+  self.addEventListener('message', listener, false);
 }
 
 installMessageEventListener(dispatcher.dispatchMessage.bind(dispatcher));

@@ -24,7 +24,6 @@ WebInspector.SubTargetsManager = function(target)
 
     this._agent.setAutoAttach(true /* autoAttach */, true /* waitForDebuggerOnStart */);
     this._agent.setAttachToFrames(Runtime.experiments.isEnabled("autoAttachToCrossProcessSubframes"));
-    this._agent.enable();
 }
 
 /** @enum {symbol} */

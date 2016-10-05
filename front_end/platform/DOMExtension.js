@@ -122,7 +122,7 @@ Node.prototype.rangeOfWord = function(offset, stopCharacters, stayWithinNode, di
     result.setEnd(endNode, endOffset);
 
     return result;
-}
+};
 
 /**
  * @param {!Node=} stayWithin
@@ -138,7 +138,7 @@ Node.prototype.traverseNextTextNode = function(stayWithin)
         node = node.traverseNextNode(stayWithin);
 
     return node;
-}
+};
 
 /**
  * @param {number|undefined} x
@@ -165,7 +165,7 @@ Element.prototype.positionAt = function(x, y, relativeTo)
         this.style.setProperty("position", "absolute");
     else
         this.style.removeProperty("position");
-}
+};
 
 /**
  * @return {boolean}
@@ -178,7 +178,7 @@ Element.prototype.isScrolledToBottom = function()
     // round, ceil or floor functions) or left intouch.
     // This adds up a total error up to 2.
     return Math.abs(this.scrollTop + this.clientHeight - this.scrollHeight) <= 2;
-}
+};
 
 /**
  * @param {!Node} fromNode
@@ -202,7 +202,7 @@ Element.prototype.containsEventPoint = function(event)
     var box = this.getBoundingClientRect();
     return box.left < event.x  && event.x < box.right &&
            box.top < event.y && event.y < box.bottom;
-}
+};
 
 /**
  * @param {!Array.<string>} nameArray
@@ -217,7 +217,7 @@ Node.prototype.enclosingNodeOrSelfWithNodeNameInArray = function(nameArray)
         }
     }
     return null;
-}
+};
 
 /**
  * @param {string} nodeName
@@ -226,7 +226,7 @@ Node.prototype.enclosingNodeOrSelfWithNodeNameInArray = function(nameArray)
 Node.prototype.enclosingNodeOrSelfWithNodeName = function(nodeName)
 {
     return this.enclosingNodeOrSelfWithNodeNameInArray([nodeName]);
-}
+};
 
 /**
  * @param {string} className
@@ -236,7 +236,7 @@ Node.prototype.enclosingNodeOrSelfWithNodeName = function(nodeName)
 Node.prototype.enclosingNodeOrSelfWithClass = function(className, stayWithin)
 {
     return this.enclosingNodeOrSelfWithClassList([className], stayWithin);
-}
+};
 
 /**
  * @param {!Array.<string>} classNames
@@ -257,7 +257,7 @@ Node.prototype.enclosingNodeOrSelfWithClassList = function(classNames, stayWithi
         }
     }
     return null;
-}
+};
 
 /**
  * @return {?Element}
@@ -272,7 +272,7 @@ Node.prototype.parentElementOrShadowHost = function()
     if (node.nodeType === Node.DOCUMENT_FRAGMENT_NODE)
         return /** @type {!Element} */ (node.host);
     return null;
-}
+};
 
 /**
  * @return {?Node}
@@ -280,7 +280,7 @@ Node.prototype.parentElementOrShadowHost = function()
 Node.prototype.parentNodeOrShadowHost = function()
 {
     return this.parentNode || this.host || null;
-}
+};
 
 /**
  * @return {?Selection}
@@ -291,7 +291,7 @@ Node.prototype.getComponentSelection = function()
     while (parent && parent.nodeType !== Node.DOCUMENT_FRAGMENT_NODE)
         parent = parent.parentNode;
     return parent instanceof ShadowRoot ? parent.getSelection() : this.window().getSelection();
-}
+};
 
 
 /**
@@ -303,7 +303,7 @@ Node.prototype.isComponentSelectionCollapsed = function()
     var selection = this.getComponentSelection();
     var range = selection && selection.rangeCount ? selection.getRangeAt(0) : null;
     return range ? range.collapsed : true;
-}
+};
 
 /**
  * @return {boolean}
@@ -313,7 +313,7 @@ Node.prototype.hasSelection = function()
     if (this.isComponentSelectionCollapsed())
         return false;
     return this.getComponentSelection().containsNode(this, true);
-}
+};
 
 /**
  * @return {!Selection}
@@ -328,7 +328,7 @@ Node.prototype.getDeepSelection = function()
     }
 
     return shadowRoot ? shadowRoot.getSelection() : this.window().getSelection();
-}
+};
 
 /**
  * @return {!Window}
@@ -336,7 +336,7 @@ Node.prototype.getDeepSelection = function()
 Node.prototype.window = function()
 {
     return this.ownerDocument.defaultView;
-}
+};
 
 /**
  * @param {string} query
@@ -345,13 +345,13 @@ Node.prototype.window = function()
 Element.prototype.query = function(query)
 {
     return this.ownerDocument.evaluate(query, this, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-}
+};
 
 Element.prototype.removeChildren = function()
 {
     if (this.firstChild)
         this.textContent = "";
-}
+};
 
 /**
  * @return {boolean}
@@ -364,7 +364,7 @@ Element.prototype.isInsertionCaretInside = function()
     if (!selectionRange || !selection.isCollapsed)
         return false;
     return selectionRange.startContainer.isSelfOrDescendant(this);
-}
+};
 
 /**
  * @param {string} tagName
@@ -413,7 +413,7 @@ Document.prototype.createElementWithClass = function(elementName, className, cus
     if (className)
         element.className = className;
     return element;
-}
+};
 
 /**
  * @param {string} elementName
@@ -438,7 +438,7 @@ Document.prototype.createSVGElement = function(childType, className)
     if (className)
         element.setAttribute("class", className);
     return element;
-}
+};
 
 /**
  * @param {string} childType
@@ -471,7 +471,7 @@ Element.prototype.createChild = function(elementName, className, customElementTy
     var element = this.ownerDocument.createElementWithClass(elementName, className, customElementType);
     this.appendChild(element);
     return element;
-}
+};
 
 DocumentFragment.prototype.createChild = Element.prototype.createChild;
 
@@ -484,7 +484,7 @@ Element.prototype.createTextChild = function(text)
     var element = this.ownerDocument.createTextNode(text);
     this.appendChild(element);
     return element;
-}
+};
 
 DocumentFragment.prototype.createTextChild = Element.prototype.createTextChild;
 
@@ -495,7 +495,7 @@ Element.prototype.createTextChildren = function(var_args)
 {
     for (var i = 0, n = arguments.length; i < n; ++i)
         this.createTextChild(arguments[i]);
-}
+};
 
 DocumentFragment.prototype.createTextChildren = Element.prototype.createTextChildren;
 
@@ -505,7 +505,7 @@ DocumentFragment.prototype.createTextChildren = Element.prototype.createTextChil
 Element.prototype.totalOffsetLeft = function()
 {
     return this.totalOffset().left;
-}
+};
 
 /**
  * @return {number}
@@ -513,7 +513,7 @@ Element.prototype.totalOffsetLeft = function()
 Element.prototype.totalOffsetTop = function()
 {
     return this.totalOffset().top;
-}
+};
 
 /**
  * @return {!{left: number, top: number}}
@@ -522,7 +522,7 @@ Element.prototype.totalOffset = function()
 {
     var rect = this.getBoundingClientRect();
     return { left: rect.left, top: rect.top };
-}
+};
 
 /**
  * @return {!{left: number, top: number}}
@@ -536,7 +536,7 @@ Element.prototype.scrollOffset = function()
         curTop += element.scrollTop;
     }
     return { left: curLeft, top: curTop };
-}
+};
 
 /**
  * @param {string} childType
@@ -548,7 +548,7 @@ Element.prototype.createSVGChild = function(childType, className)
     var child = this.ownerDocument.createSVGElement(childType, className);
     this.appendChild(child);
     return child;
-}
+};
 
 /**
  * @constructor
@@ -573,7 +573,7 @@ AnchorBox.prototype.relativeTo = function(box)
 {
     return new AnchorBox(
         this.x - box.x, this.y - box.y, this.width, this.height);
-}
+};
 
 /**
  * @param {!Element} element
@@ -582,7 +582,7 @@ AnchorBox.prototype.relativeTo = function(box)
 AnchorBox.prototype.relativeToElement = function(element)
 {
     return this.relativeTo(element.boxInWindow(element.ownerDocument.defaultView));
-}
+};
 
 /**
  * @param {?AnchorBox} anchorBox
@@ -591,7 +591,7 @@ AnchorBox.prototype.relativeToElement = function(element)
 AnchorBox.prototype.equals = function(anchorBox)
 {
     return !!anchorBox && this.x === anchorBox.x && this.y === anchorBox.y && this.width === anchorBox.width && this.height === anchorBox.height;
-}
+};
 
 /**
  * @param {!Window} targetWindow
@@ -613,7 +613,7 @@ Element.prototype.offsetRelativeToWindow = function(targetWindow)
     }
 
     return elementOffset;
-}
+};
 
 /**
  * @param {!Window=} targetWindow
@@ -628,7 +628,7 @@ Element.prototype.boxInWindow = function(targetWindow)
     anchorBox.height = Math.min(this.offsetHeight, window.innerHeight - anchorBox.y);
 
     return anchorBox;
-}
+};
 
 /**
  * @param {string} text
@@ -637,7 +637,7 @@ Element.prototype.setTextAndTitle = function(text)
 {
     this.textContent = text;
     this.title = text;
-}
+};
 
 /**
  * @param {boolean=} preventDefault
@@ -648,7 +648,7 @@ Event.prototype.consume = function(preventDefault)
     if (preventDefault)
         this.preventDefault();
     this.handled = true;
-}
+};
 
 /**
  * @param {number=} start
@@ -670,7 +670,7 @@ Text.prototype.select = function(start, end)
     range.setEnd(this, end);
     selection.addRange(range);
     return this;
-}
+};
 
 /**
  * @return {?number}
@@ -695,7 +695,7 @@ Element.prototype.selectionLeftOffset = function()
     }
 
     return leftOffset;
-}
+};
 
 /**
  * @this {!HTMLImageElement} element
@@ -721,7 +721,7 @@ HTMLImageElement.prototype.completePromise = function()
             resolve(element);
         }
     }
-}
+};
 
 /**
  * @param {...!Node} var_args
@@ -730,7 +730,7 @@ Node.prototype.appendChildren = function(var_args)
 {
     for (var i = 0, n = arguments.length; i < n; ++i)
         this.appendChild(arguments[i]);
-}
+};
 
 /**
  * @return {string}
@@ -738,7 +738,7 @@ Node.prototype.appendChildren = function(var_args)
 Node.prototype.deepTextContent = function()
 {
     return this.childTextNodes().map(function(node) { return node.textContent; }).join("");
-}
+};
 
 /**
  * @return {!Array.<!Node>}
@@ -754,7 +754,7 @@ Node.prototype.childTextNodes = function()
         node = node.traverseNextTextNode(this);
     }
     return result;
-}
+};
 
 /**
  * @param {?Node} node
@@ -772,7 +772,7 @@ Node.prototype.isAncestor = function(node)
         currentNode = currentNode.parentNodeOrShadowHost();
     }
     return false;
-}
+};
 
 /**
  * @param {?Node} descendant
@@ -781,7 +781,7 @@ Node.prototype.isAncestor = function(node)
 Node.prototype.isDescendant = function(descendant)
 {
     return !!descendant && descendant.isAncestor(this);
-}
+};
 
 /**
  * @param {?Node} node
@@ -790,7 +790,7 @@ Node.prototype.isDescendant = function(descendant)
 Node.prototype.isSelfOrAncestor = function(node)
 {
     return !!node && (node === this || this.isAncestor(node));
-}
+};
 
 /**
  * @param {?Node} node
@@ -799,7 +799,7 @@ Node.prototype.isSelfOrAncestor = function(node)
 Node.prototype.isSelfOrDescendant = function(node)
 {
     return !!node && (node === this || this.isDescendant(node));
-}
+};
 
 /**
  * @param {!Node=} stayWithin
@@ -858,7 +858,7 @@ Node.prototype.traverseNextNode = function(stayWithin)
     }
 
     return null;
-}
+};
 
 /**
  * @param {!Node=} stayWithin
@@ -874,7 +874,7 @@ Node.prototype.traversePreviousNode = function(stayWithin)
     if (node)
         return node;
     return this.parentNodeOrShadowHost();
-}
+};
 
 /**
  * @param {*} text
@@ -895,7 +895,7 @@ Node.prototype.setTextContentTruncatedIfNeeded = function(text, placeholder)
 
     this.textContent = text;
     return false;
-}
+};
 
 /**
  * @return {?Node}
@@ -915,7 +915,7 @@ Event.prototype.deepElementFromPoint = function()
     while (node && node.shadowRoot)
         node = node.shadowRoot.elementFromPoint(this.pageX, this.pageY);
     return node;
-}
+};
 
 /**
  * @return {?Element}
@@ -926,7 +926,7 @@ Event.prototype.deepActiveElement = function()
     while (activeElement && activeElement.shadowRoot && activeElement.shadowRoot.activeElement)
         activeElement = activeElement.shadowRoot.activeElement;
     return activeElement;
-}
+};
 
 /**
  * @param {number} x
@@ -939,7 +939,7 @@ Document.prototype.deepElementFromPoint = function(x, y)
     while (node && node.shadowRoot)
         node = node.shadowRoot.elementFromPoint(x, y);
     return node;
-}
+};
 
 /**
  * @param {!Event} event

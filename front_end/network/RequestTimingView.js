@@ -41,7 +41,7 @@ WebInspector.RequestTimingView = function(request, calculator)
 
     this._request = request;
     this._calculator = calculator;
-}
+};
 
 WebInspector.RequestTimingView.prototype = {
     wasShown: function()
@@ -69,7 +69,7 @@ WebInspector.RequestTimingView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /** @enum {string} */
 WebInspector.RequestTimeRangeNames = {
@@ -124,7 +124,7 @@ WebInspector.RequestTimingView._timeRangeTitle = function(name)
     case WebInspector.RequestTimeRangeNames.Waiting: return WebInspector.UIString("Waiting (TTFB)");
     default: return WebInspector.UIString(name);
     }
-}
+};
 
 /**
  * @param {!WebInspector.NetworkRequest} request
@@ -215,7 +215,7 @@ WebInspector.RequestTimingView.calculateRequestTimeRanges = function(request, na
         addRange(timing.pushStart ? WebInspector.RequestTimeRangeNames.ReceivingPush : WebInspector.RequestTimeRangeNames.Receiving, request.responseReceivedTime, endTime);
 
     return result;
-}
+};
 
 /**
  * @param {!WebInspector.NetworkRequest} request
@@ -346,4 +346,4 @@ WebInspector.RequestTimingView.createTimingTable = function(request, navigationS
         dataHeader.createChild("td").createTextChild(WebInspector.UIString("TIME"));
         return dataHeader;
     }
-}
+};

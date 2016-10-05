@@ -7,7 +7,7 @@
  */
 WebInspector.OutputStream = function()
 {
-}
+};
 
 WebInspector.OutputStream.prototype = {
     /**
@@ -17,7 +17,7 @@ WebInspector.OutputStream.prototype = {
     write: function(data, callback) { },
 
     close: function() { }
-}
+};
 
 /**
  * @constructor
@@ -26,7 +26,7 @@ WebInspector.OutputStream.prototype = {
 WebInspector.StringOutputStream = function()
 {
     this._data = "";
-}
+};
 
 WebInspector.StringOutputStream.prototype = {
     /**
@@ -53,4 +53,4 @@ WebInspector.StringOutputStream.prototype = {
     {
         return this._data;
     }
-}
+};

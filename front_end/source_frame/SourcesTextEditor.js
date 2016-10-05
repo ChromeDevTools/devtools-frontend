@@ -57,7 +57,7 @@ WebInspector.SourcesTextEditor = function(delegate)
 
     this._onUpdateEditorIndentation();
     this._setupWhitespaceHighlight();
-}
+};
 WebInspector.SourcesTextEditor.prototype = {
     /**
      * @return {boolean}
@@ -200,7 +200,7 @@ WebInspector.SourcesTextEditor.prototype = {
      */
     setGutterDecoration: function(lineNumber, type, element)
     {
-        console.assert(this._gutters.indexOf(type) !== -1, "Cannot decorate unexisting gutter.")
+        console.assert(this._gutters.indexOf(type) !== -1, "Cannot decorate unexisting gutter.");
         this.codeMirror().setGutterMarker(lineNumber, type, element);
     },
 
@@ -343,7 +343,7 @@ WebInspector.SourcesTextEditor.prototype = {
                     return CodeMirror.Pass;
                 var pos = codeMirror.getCursor("head");
                 codeMirror.replaceRange(indent.substring(pos.ch % indent.length), codeMirror.getCursor());
-            }
+            };
         }
 
         this.codeMirror().setOption("extraKeys", extraKeys);
@@ -605,7 +605,7 @@ WebInspector.SourcesTextEditor.prototype = {
     },
 
     __proto__: WebInspector.CodeMirrorTextEditor.prototype
-}
+};
 
 /** @typedef {{lineNumber: number, event: !Event}} */
 WebInspector.SourcesTextEditor.GutterClickEventData;
@@ -613,12 +613,12 @@ WebInspector.SourcesTextEditor.GutterClickEventData;
 /** @enum {symbol} */
 WebInspector.SourcesTextEditor.Events = {
     GutterClick: Symbol("GutterClick")
-}
+};
 
 /**
  * @interface
  */
-WebInspector.SourcesTextEditorDelegate = function() { }
+WebInspector.SourcesTextEditorDelegate = function() { };
 WebInspector.SourcesTextEditorDelegate.prototype = {
 
     /**
@@ -661,7 +661,7 @@ WebInspector.SourcesTextEditorDelegate.prototype = {
      * @param {?WebInspector.TextRange} to
      */
     onJumpToPosition: function(from, to) { }
-}
+};
 
 /**
  * @param {!CodeMirror} codeMirror
@@ -683,7 +683,7 @@ CodeMirror.commands.smartNewlineAndIndent = function(codeMirror)
         codeMirror.replaceSelections(replacements);
         codeMirror._codeMirrorTextEditor._onAutoAppendedSpaces();
     }
-}
+};
 
 /**
  * @return {!Object|undefined}
@@ -693,7 +693,7 @@ CodeMirror.commands.sourcesDismiss = function(codemirror)
     if (codemirror.listSelections().length === 1 && codemirror._codeMirrorTextEditor._isSearchActive())
         return CodeMirror.Pass;
     return CodeMirror.commands.dismiss(codemirror);
-}
+};
 
 /**
  * @constructor
@@ -702,7 +702,7 @@ CodeMirror.commands.sourcesDismiss = function(codemirror)
 WebInspector.SourcesTextEditor.BlockIndentController = function(codeMirror)
 {
     codeMirror.addKeyMap(this);
-}
+};
 
 WebInspector.SourcesTextEditor.BlockIndentController.prototype = {
     name: "blockIndentKeymap",
@@ -791,7 +791,7 @@ WebInspector.SourcesTextEditor.BlockIndentController.prototype = {
         codeMirror.setSelections(updatedSelections);
         codeMirror.replaceSelections(replacements);
     }
-}
+};
 
 /**
  * @param {!Array.<string>} lines
@@ -831,7 +831,7 @@ WebInspector.SourcesTextEditor._guessIndentationLevel = function(lines)
     if (minimumIndent === Infinity)
         return WebInspector.moduleSetting("textEditorIndent").get();
     return " ".repeat(minimumIndent);
-}
+};
 
 /**
  * @constructor
@@ -842,7 +842,7 @@ WebInspector.SourcesTextEditor.TokenHighlighter = function(textEditor, codeMirro
 {
     this._textEditor = textEditor;
     this._codeMirror = codeMirror;
-}
+};
 
 WebInspector.SourcesTextEditor.TokenHighlighter.prototype = {
     /**
@@ -994,7 +994,7 @@ WebInspector.SourcesTextEditor.TokenHighlighter.prototype = {
             selectionStart: selectionStart
         };
     }
-}
+};
 
 WebInspector.SourcesTextEditor.LinesToScanForIndentationGuessing = 1000;
 WebInspector.SourcesTextEditor.MaximumNumberOfWhitespacesPerSingleSpan = 16;

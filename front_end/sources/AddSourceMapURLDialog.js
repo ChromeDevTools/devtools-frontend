@@ -24,7 +24,7 @@ WebInspector.AddSourceMapURLDialog = function(callback)
     this.setDefaultFocusedElement(this._input);
     this._callback = callback;
     this.contentElement.tabIndex = 0;
-}
+};
 
 /**
  * @param {function(string)} callback
@@ -45,7 +45,7 @@ WebInspector.AddSourceMapURLDialog.show = function(callback)
         dialog.detach();
         callback(value);
     }
-}
+};
 
 WebInspector.AddSourceMapURLDialog.prototype = {
     _apply: function()
@@ -65,4 +65,4 @@ WebInspector.AddSourceMapURLDialog.prototype = {
     },
 
     __proto__: WebInspector.HBox.prototype
-}
+};

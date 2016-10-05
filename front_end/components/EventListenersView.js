@@ -22,13 +22,13 @@ WebInspector.EventListenersView = function(element, changeCallback)
     this._treeOutline.registerRequiredCSS("components/eventListenersView.css");
     this._treeOutline.setComparator(WebInspector.EventListenersTreeElement.comparator);
     this._treeOutline.element.classList.add("monospace");
-    this._element.appendChild(this._treeOutline.element)
+    this._element.appendChild(this._treeOutline.element);
     this._emptyHolder = createElementWithClass("div", "gray-info-message");
     this._emptyHolder.textContent = WebInspector.UIString("No Event Listeners");
     this._linkifier = new WebInspector.Linkifier();
     /** @type {!Map<string, !WebInspector.EventListenersTreeElement>} */
     this._treeItemMap = new Map();
-}
+};
 
 WebInspector.EventListenersView.prototype = {
     /**
@@ -211,7 +211,7 @@ WebInspector.EventListenersView.prototype = {
     _eventListenersArrivedForTest: function()
     {
     }
-}
+};
 
 /**
  * @constructor
@@ -227,7 +227,7 @@ WebInspector.EventListenersTreeElement = function(type, linkifier, changeCallbac
     this.selectable = false;
     this._linkifier = linkifier;
     this._changeCallback = changeCallback;
-}
+};
 
 /**
  * @param {!TreeElement} element1
@@ -238,7 +238,7 @@ WebInspector.EventListenersTreeElement.comparator = function(element1, element2)
     if (element1.title === element2.title)
         return 0;
     return element1.title > element2.title ? 1 : -1;
-}
+};
 
 WebInspector.EventListenersTreeElement.prototype = {
     /**
@@ -252,7 +252,7 @@ WebInspector.EventListenersTreeElement.prototype = {
     },
 
     __proto__: TreeElement.prototype
-}
+};
 
 /**
  * @constructor
@@ -270,7 +270,7 @@ WebInspector.ObjectEventListenerBar = function(eventListener, object, linkifier,
     this.selectable = false;
     this._setTitle(object, linkifier);
     this._changeCallback = changeCallback;
-}
+};
 
 WebInspector.ObjectEventListenerBar.prototype = {
     onpopulate: function()
@@ -360,4 +360,4 @@ WebInspector.ObjectEventListenerBar.prototype = {
     },
 
     __proto__: TreeElement.prototype
-}
+};

@@ -34,7 +34,7 @@ WebInspector.SourcesSearchScope = function()
 {
     // FIXME: Add title once it is used by search controller.
     this._searchId = 0;
-}
+};
 
 /**
  * @param {!WebInspector.UISourceCode} uiSourceCode1
@@ -54,7 +54,7 @@ WebInspector.SourcesSearchScope._filesComparator = function(uiSourceCode1, uiSou
     if (!url1 && url2)
         return 1;
     return String.naturalOrderComparator(uiSourceCode1.fullDisplayName(), uiSourceCode2.fullDisplayName());
-}
+};
 
 
 WebInspector.SourcesSearchScope.prototype = {
@@ -311,4 +311,4 @@ WebInspector.SourcesSearchScope.prototype = {
     {
         return new WebInspector.FileBasedSearchResultsPane(searchConfig);
     }
-}
+};

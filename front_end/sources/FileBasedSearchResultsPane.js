@@ -17,7 +17,7 @@ WebInspector.FileBasedSearchResultsPane = function(searchConfig)
     this.element.appendChild(this._treeOutline.element);
 
     this._matchesExpandedCount = 0;
-}
+};
 
 WebInspector.FileBasedSearchResultsPane.matchesExpandedByDefaultCount = 20;
 WebInspector.FileBasedSearchResultsPane.fileMatchesShownAtOnce = 20;
@@ -50,7 +50,7 @@ WebInspector.FileBasedSearchResultsPane.prototype = {
     },
 
     __proto__: WebInspector.SearchResultsPane.prototype
-}
+};
 
 /**
  * @constructor
@@ -66,7 +66,7 @@ WebInspector.FileBasedSearchResultsPane.FileTreeElement = function(searchConfig,
 
     this.toggleOnClick = true;
     this.selectable = false;
-}
+};
 
 WebInspector.FileBasedSearchResultsPane.FileTreeElement.prototype = {
     onexpand: function()
@@ -224,4 +224,4 @@ WebInspector.FileBasedSearchResultsPane.FileTreeElement.prototype = {
     },
 
     __proto__: TreeElement.prototype
-}
+};

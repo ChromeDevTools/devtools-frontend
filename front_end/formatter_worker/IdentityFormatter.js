@@ -9,7 +9,7 @@
 WebInspector.IdentityFormatter = function(builder)
 {
     this._builder = builder;
-}
+};
 
 WebInspector.IdentityFormatter.prototype = {
     /**
@@ -23,5 +23,5 @@ WebInspector.IdentityFormatter.prototype = {
         var content = text.substring(fromOffset, toOffset);
         this._builder.addToken(content, fromOffset);
     }
-}
+};
 

@@ -28,7 +28,7 @@ WebInspector.ServiceWorkerCacheView = function(model, cache)
 
     this.update(cache);
     this._entries = [];
-}
+};
 
 WebInspector.ServiceWorkerCacheView.prototype = {
     /**
@@ -160,4 +160,4 @@ WebInspector.ServiceWorkerCacheView.prototype = {
     },
 
     __proto__: WebInspector.SimpleView.prototype
-}
+};

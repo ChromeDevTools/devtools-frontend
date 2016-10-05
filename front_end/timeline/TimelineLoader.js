@@ -25,7 +25,7 @@ WebInspector.TimelineLoader = function(model, delegate)
     /** @type {number} */
     this._totalSize;
     this._jsonTokenizer = new WebInspector.TextUtils.BalancedJSONTokenizer(this._writeBalancedJSON.bind(this), true);
-}
+};
 
 /**
  * @param {!WebInspector.TracingModel} model
@@ -41,7 +41,7 @@ WebInspector.TimelineLoader.loadFromFile = function(model, file, delegate)
     loader._totalSize = file.size;
     fileReader.start(loader);
     return loader;
-}
+};
 
 /**
  * @param {!WebInspector.TracingModel} model
@@ -54,7 +54,7 @@ WebInspector.TimelineLoader.loadFromURL = function(model, url, delegate)
     var stream = new WebInspector.TimelineLoader(model, delegate);
     WebInspector.ResourceLoader.loadAsStream(url, null, stream);
     return stream;
-}
+};
 
 WebInspector.TimelineLoader.TransferChunkLengthBytes = 5000000;
 
@@ -66,7 +66,7 @@ WebInspector.TimelineLoader.TransferChunkLengthBytes = 5000000;
 WebInspector.TimelineLoader._createFileReader = function(file, delegate)
 {
     return new WebInspector.ChunkedFileReader(file, WebInspector.TimelineLoader.TransferChunkLengthBytes, delegate);
-}
+};
 
 /**
  * @enum {symbol}
@@ -76,7 +76,7 @@ WebInspector.TimelineLoader.State = {
     LookingForEvents: Symbol("LookingForEvents"),
     ReadingEvents: Symbol("ReadingEvents"),
     SkippingTail: Symbol("SkippingTail")
-}
+};
 
 WebInspector.TimelineLoader.prototype = {
     cancel: function()
@@ -118,7 +118,7 @@ WebInspector.TimelineLoader.prototype = {
             var pos = this._buffer.indexOf(objectName, startPos);
             if (pos === -1)
                 return;
-            chunk = this._buffer.slice(pos + objectName.length)
+            chunk = this._buffer.slice(pos + objectName.length);
             this._state = WebInspector.TimelineLoader.State.ReadingEvents;
         }
 
@@ -239,7 +239,7 @@ WebInspector.TimelineLoader.prototype = {
             this._reportErrorAndCancelLoading(WebInspector.UIString("An error occurred while reading the file \"%s\"", reader.fileName()));
         }
     }
-}
+};
 
 /**
  * @constructor
@@ -247,7 +247,7 @@ WebInspector.TimelineLoader.prototype = {
  */
 WebInspector.TracingTimelineSaver = function()
 {
-}
+};
 
 WebInspector.TracingTimelineSaver.prototype = {
     /**
@@ -276,4 +276,4 @@ WebInspector.TracingTimelineSaver.prototype = {
         var error = event.target.error;
         WebInspector.console.error(WebInspector.UIString("Failed to save timeline: %s (%s, %s)", error.message, error.name, error.code));
     }
-}
+};

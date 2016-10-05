@@ -22,7 +22,7 @@ WebInspector.TimelineProfileTree.Node = function()
     /** @type {?WebInspector.TimelineProfileTree.Node} */
     this.parent;
     this._isGroupNode = false;
-}
+};
 
 WebInspector.TimelineProfileTree.Node.prototype = {
     /**
@@ -32,7 +32,7 @@ WebInspector.TimelineProfileTree.Node.prototype = {
     {
         return this._isGroupNode;
     }
-}
+};
 
 /**
  * @param {!Array<!WebInspector.TracingModel.Event>} events
@@ -100,7 +100,7 @@ WebInspector.TimelineProfileTree.buildTopDown = function(events, filters, startT
     root.totalTime -= root.selfTime;
     root.selfTime = 0;
     return root;
-}
+};
 
 /**
  * @param {!WebInspector.TimelineProfileTree.Node} topDownTree
@@ -180,7 +180,7 @@ WebInspector.TimelineProfileTree.buildBottomUp = function(topDownTree, groupingC
     }
 
     return buRoot;
-}
+};
 
 /**
  * @param {!WebInspector.TracingModel.Event} event
@@ -199,7 +199,7 @@ WebInspector.TimelineProfileTree.eventURL = function(event)
         frame = frame.parent;
     }
     return null;
-}
+};
 
 /**
  * @param {!WebInspector.TracingModel.Event} event
@@ -214,7 +214,7 @@ WebInspector.TimelineProfileTree.eventStackFrame = function(event)
         return /** @type {!RuntimeAgent.CallFrame} */ (topFrame);
     var initiator = event.initiator;
     return /** @type {?RuntimeAgent.CallFrame} */ (initiator && initiator.stackTrace && initiator.stackTrace[0] || null);
-}
+};
 
 /**
  * @constructor
@@ -227,7 +227,7 @@ WebInspector.TimelineAggregator = function(titleMapper, categoryMapper)
     this._categoryMapper = categoryMapper;
     /** @type {!Map<string, !WebInspector.TimelineProfileTree.Node>} */
     this._groupNodes = new Map();
-}
+};
 
 /**
  * @enum {string}
@@ -239,7 +239,7 @@ WebInspector.TimelineAggregator.GroupBy = {
     Domain: "Domain",
     Subdomain: "Subdomain",
     URL: "URL"
-}
+};
 
 /**
  * @param {!WebInspector.TracingModel.Event} event
@@ -252,7 +252,7 @@ WebInspector.TimelineAggregator.eventId = function(event)
         return "f:" + data["functionName"] + "@" + (data["scriptId"] || data["url"] || "");
     }
     return event.name + ":@" + WebInspector.TimelineProfileTree.eventURL(event);
-}
+};
 
 WebInspector.TimelineAggregator._extensionInternalPrefix = "extensions::";
 WebInspector.TimelineAggregator._groupNodeFlag = Symbol("groupNode");
@@ -264,7 +264,7 @@ WebInspector.TimelineAggregator._groupNodeFlag = Symbol("groupNode");
 WebInspector.TimelineAggregator.isExtensionInternalURL = function(url)
 {
     return url.startsWith(WebInspector.TimelineAggregator._extensionInternalPrefix);
-}
+};
 
 WebInspector.TimelineAggregator.prototype = {
     /**
@@ -376,4 +376,4 @@ WebInspector.TimelineAggregator.prototype = {
         var id = nodeToGroupId(node);
         return this._groupNodes.get(id) || this._buildGroupNode(id, node.event);
     },
-}
+};

@@ -43,7 +43,7 @@ WebInspector.JSHeapSnapshot = function(profile, progress)
     };
     this._lazyStringCache = {};
     WebInspector.HeapSnapshot.call(this, profile, progress);
-}
+};
 
 WebInspector.JSHeapSnapshot.prototype = {
     /**
@@ -481,7 +481,7 @@ WebInspector.JSHeapSnapshot.prototype = {
 WebInspector.JSHeapSnapshotNode = function(snapshot, nodeIndex)
 {
     WebInspector.HeapSnapshotNode.call(this, snapshot, nodeIndex);
-}
+};
 
 WebInspector.JSHeapSnapshotNode.prototype = {
     /**
@@ -677,7 +677,7 @@ WebInspector.JSHeapSnapshotNode.prototype = {
 WebInspector.JSHeapSnapshotEdge = function(snapshot, edgeIndex)
 {
     WebInspector.HeapSnapshotEdge.call(this, snapshot, edgeIndex);
-}
+};
 
 WebInspector.JSHeapSnapshotEdge.prototype = {
     /**
@@ -835,7 +835,7 @@ WebInspector.JSHeapSnapshotEdge.prototype = {
 WebInspector.JSHeapSnapshotRetainerEdge = function(snapshot, retainerIndex)
 {
     WebInspector.HeapSnapshotRetainerEdge.call(this, snapshot, retainerIndex);
-}
+};
 
 WebInspector.JSHeapSnapshotRetainerEdge.prototype = {
     /**
@@ -889,5 +889,5 @@ WebInspector.JSHeapSnapshotRetainerEdge.prototype = {
     },
 
     __proto__: WebInspector.HeapSnapshotRetainerEdge.prototype
-}
+};
 

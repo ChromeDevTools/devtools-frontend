@@ -8,7 +8,7 @@
  */
 WebInspector.RequestAppBannerActionDelegate = function()
 {
-}
+};
 
 WebInspector.RequestAppBannerActionDelegate.prototype = {
     /**
@@ -26,4 +26,4 @@ WebInspector.RequestAppBannerActionDelegate.prototype = {
         }
         return true;
     }
-}
+};

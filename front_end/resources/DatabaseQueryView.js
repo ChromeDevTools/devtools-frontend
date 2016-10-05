@@ -46,12 +46,12 @@ WebInspector.DatabaseQueryView = function(database)
     this._proxyElement = this._prompt.attach(this._promptElement);
 
     this.element.addEventListener("click", this._messagesClicked.bind(this), true);
-}
+};
 
 /** @enum {symbol} */
 WebInspector.DatabaseQueryView.Events = {
     SchemaUpdated: Symbol("SchemaUpdated")
-}
+};
 
 WebInspector.DatabaseQueryView.prototype = {
     _messagesClicked: function()
@@ -202,4 +202,4 @@ WebInspector.DatabaseQueryView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

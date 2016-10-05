@@ -17,7 +17,7 @@ WebInspector.JavaScriptOutlineDialog = function(uiSourceCode, selectItemCallback
     this._functionItems = [];
     this._selectItemCallback = selectItemCallback;
     WebInspector.formatterWorkerPool.runChunkedTask("javaScriptOutline", {content: uiSourceCode.workingCopy() }, this._didBuildOutlineChunk.bind(this));
-}
+};
 
 /**
  * @param {!WebInspector.UISourceCode} uiSourceCode
@@ -27,7 +27,7 @@ WebInspector.JavaScriptOutlineDialog.show = function(uiSourceCode, selectItemCal
 {
     WebInspector.JavaScriptOutlineDialog._instanceForTests = new WebInspector.JavaScriptOutlineDialog(uiSourceCode, selectItemCallback);
     new WebInspector.FilteredListWidget(WebInspector.JavaScriptOutlineDialog._instanceForTests).showAsDialog();
-}
+};
 
 WebInspector.JavaScriptOutlineDialog.prototype = {
     /**
@@ -120,7 +120,7 @@ WebInspector.JavaScriptOutlineDialog.prototype = {
     },
 
     __proto__: WebInspector.FilteredListWidget.Delegate.prototype
-}
+};
 
 /**
  * @typedef {{isLastChunk: boolean, chunk: !Array.<!{selectorText: string, lineNumber: number, columnNumber: number}>}}

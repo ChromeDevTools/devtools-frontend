@@ -9,7 +9,7 @@
 WebInspector.SASSSourceMapFactory = function()
 {
     this._astService = new WebInspector.ASTService();
-}
+};
 
 WebInspector.SASSSourceMapFactory.prototype = {
     /**
@@ -101,4 +101,4 @@ WebInspector.SASSSourceMapFactory.prototype = {
             WebInspector.console.error(text);
         }
     },
-}
+};

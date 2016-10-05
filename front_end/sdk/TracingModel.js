@@ -14,7 +14,7 @@ WebInspector.TracingModel = function(backingStorage)
     // Avoid extra reset of the storage as it's expensive.
     this._firstWritePending = true;
     this.reset();
-}
+};
 
 /**
  * @enum {string}
@@ -47,7 +47,7 @@ WebInspector.TracingModel.MetadataEvent = {
     ProcessName: "process_name",
     ThreadSortIndex: "thread_sort_index",
     ThreadName: "thread_name"
-}
+};
 
 WebInspector.TracingModel.TopLevelEventCategory = "toplevel";
 WebInspector.TracingModel.DevToolsMetadataEventCategory = "disabled-by-default-devtools.timeline";
@@ -62,7 +62,7 @@ WebInspector.TracingModel.FrameLifecycleEventCategory = "cc,devtools";
 WebInspector.TracingModel.isNestableAsyncPhase = function(phase)
 {
     return phase === "b" || phase === "e" || phase === "n";
-}
+};
 
 /**
  * @param {string} phase
@@ -71,7 +71,7 @@ WebInspector.TracingModel.isNestableAsyncPhase = function(phase)
 WebInspector.TracingModel.isAsyncBeginPhase = function(phase)
 {
     return phase === "S" || phase === "b";
-}
+};
 
 /**
  * @param {string} phase
@@ -80,7 +80,7 @@ WebInspector.TracingModel.isAsyncBeginPhase = function(phase)
 WebInspector.TracingModel.isAsyncPhase = function(phase)
 {
     return WebInspector.TracingModel.isNestableAsyncPhase(phase) || phase === "S" || phase === "T" || phase === "F" || phase === "p";
-}
+};
 
 /**
  * @param {string} phase
@@ -89,7 +89,7 @@ WebInspector.TracingModel.isAsyncPhase = function(phase)
 WebInspector.TracingModel.isFlowPhase = function(phase)
 {
     return phase === "s" || phase === "t" || phase === "f";
-}
+};
 
 /**
  * @param {!WebInspector.TracingModel.Event} event
@@ -99,7 +99,7 @@ WebInspector.TracingModel.isTopLevelEvent = function(event)
 {
     return event.hasCategory(WebInspector.TracingModel.TopLevelEventCategory) ||
         event.hasCategory(WebInspector.TracingModel.DevToolsMetadataEventCategory) && event.name === "Program"; // Older timelines may have this instead of toplevel.
-}
+};
 
 /**
  * @param {!WebInspector.TracingManager.EventPayload} payload
@@ -114,7 +114,7 @@ WebInspector.TracingModel._extractId = function(payload)
     if (typeof id2 === "object" && ("global" in id2) !== ("local" in id2))
         return typeof id2["global"] !== "undefined" ? `:${scope}:${id2["global"]}` : `:${scope}:${payload.pid}:${id2["local"]}`;
     console.error(`Unexpected id2 field at ${payload.ts / 1000}, one and only one of 'local' and 'global' should be present.`);
-}
+};
 
 /**
  * @param {!WebInspector.TracingModel} tracingModel
@@ -146,14 +146,14 @@ WebInspector.TracingModel.browserMainThread = function(tracingModel)
         return tracingStartedInBrowser[0].thread;
     WebInspector.console.error("Failed to find browser main thread in trace, some timeline features may be unavailable");
     return null;
-}
+};
 
 /**
  * @interface
  */
 WebInspector.BackingStorage = function()
 {
-}
+};
 
 WebInspector.BackingStorage.prototype = {
     /**
@@ -170,7 +170,7 @@ WebInspector.BackingStorage.prototype = {
     finishWriting: function() { },
 
     reset: function() { },
-}
+};
 
 
 WebInspector.TracingModel.prototype = {
@@ -463,7 +463,7 @@ WebInspector.TracingModel.prototype = {
         }
         return parsedCategories;
     }
-}
+};
 
 /**
  * @constructor
@@ -505,7 +505,7 @@ WebInspector.TracingModel.Event = function(categories, name, phase, startTime, t
 
     /** @type {number} */
     this.selfTime = 0;
-}
+};
 
 /**
  * @param {!WebInspector.TracingManager.EventPayload} payload
@@ -528,7 +528,7 @@ WebInspector.TracingModel.Event.fromPayload = function(payload, thread)
         event.bind_id = payload.bind_id;
 
     return event;
-}
+};
 
 WebInspector.TracingModel.Event.prototype = {
     /**
@@ -584,7 +584,7 @@ WebInspector.TracingModel.Event.prototype = {
     _setBackingStorage: function(backingStorage)
     {
     }
-}
+};
 
 /**
  * @param {!WebInspector.TracingModel.Event} a
@@ -594,7 +594,7 @@ WebInspector.TracingModel.Event.prototype = {
 WebInspector.TracingModel.Event.compareStartTime = function(a, b)
 {
     return a.startTime - b.startTime;
-}
+};
 
 /**
  * @param {!WebInspector.TracingModel.Event} a
@@ -604,7 +604,7 @@ WebInspector.TracingModel.Event.compareStartTime = function(a, b)
 WebInspector.TracingModel.Event.compareStartAndEndTime = function(a, b)
 {
     return a.startTime - b.startTime || (b.endTime !== undefined && a.endTime !== undefined && b.endTime - a.endTime) || 0;
-}
+};
 
 /**
  * @param {!WebInspector.TracingModel.Event} a
@@ -617,7 +617,7 @@ WebInspector.TracingModel.Event.orderedCompareStartTime = function(a, b)
     // To change this behavior this comparator return -1 in the case events
     // startTime's are equal, so both events got placed into the result array.
     return a.startTime - b.startTime || a.ordinal - b.ordinal || -1;
-}
+};
 
 /**
  * @constructor
@@ -630,7 +630,7 @@ WebInspector.TracingModel.Event.orderedCompareStartTime = function(a, b)
 WebInspector.TracingModel.ObjectSnapshot = function(category, name, startTime, thread)
 {
     WebInspector.TracingModel.Event.call(this, category, name, WebInspector.TracingModel.Phase.SnapshotObject, startTime, thread);
-}
+};
 
 /**
  * @param {!WebInspector.TracingManager.EventPayload} payload
@@ -650,7 +650,7 @@ WebInspector.TracingModel.ObjectSnapshot.fromPayload = function(payload, thread)
     if (payload.args)
         snapshot.addArgs(payload.args);
     return snapshot;
-}
+};
 
 WebInspector.TracingModel.ObjectSnapshot.prototype = {
     /**
@@ -706,7 +706,7 @@ WebInspector.TracingModel.ObjectSnapshot.prototype = {
     },
 
     __proto__: WebInspector.TracingModel.Event.prototype
-}
+};
 
 /**
  * @constructor
@@ -715,10 +715,10 @@ WebInspector.TracingModel.ObjectSnapshot.prototype = {
  */
 WebInspector.TracingModel.AsyncEvent = function(startEvent)
 {
-    WebInspector.TracingModel.Event.call(this, startEvent.categoriesString, startEvent.name, startEvent.phase, startEvent.startTime, startEvent.thread)
+    WebInspector.TracingModel.Event.call(this, startEvent.categoriesString, startEvent.name, startEvent.phase, startEvent.startTime, startEvent.thread);
     this.addArgs(startEvent.args);
     this.steps = [startEvent];
-}
+};
 
 WebInspector.TracingModel.AsyncEvent.prototype = {
     /**
@@ -736,14 +736,14 @@ WebInspector.TracingModel.AsyncEvent.prototype = {
     },
 
     __proto__: WebInspector.TracingModel.Event.prototype
-}
+};
 
 /**
  * @constructor
  */
 WebInspector.TracingModel.NamedObject = function()
 {
-}
+};
 
 WebInspector.TracingModel.NamedObject.prototype =
 {
@@ -770,7 +770,7 @@ WebInspector.TracingModel.NamedObject.prototype =
     {
         this._sortIndex = sortIndex;
     },
-}
+};
 
 /**
  * @param {!Array.<!WebInspector.TracingModel.NamedObject>} array
@@ -786,7 +786,7 @@ WebInspector.TracingModel.NamedObject._sort = function(array)
         return a._sortIndex !== b._sortIndex ? a._sortIndex - b._sortIndex : a.name().localeCompare(b.name());
     }
     return array.sort(comparator);
-}
+};
 
 /**
  * @constructor
@@ -803,7 +803,7 @@ WebInspector.TracingModel.Process = function(model, id)
     this._threads = new Map();
     this._threadByName = new Map();
     this._model = model;
-}
+};
 
 WebInspector.TracingModel.Process.prototype = {
     /**
@@ -864,7 +864,7 @@ WebInspector.TracingModel.Process.prototype = {
     },
 
     __proto__: WebInspector.TracingModel.NamedObject.prototype
-}
+};
 
 /**
  * @constructor
@@ -881,7 +881,7 @@ WebInspector.TracingModel.Thread = function(process, id)
     this._asyncEvents = [];
     this._id = id;
     this._model = process._model;
-}
+};
 
 WebInspector.TracingModel.Thread.prototype = {
     tracingComplete: function()
@@ -985,4 +985,4 @@ WebInspector.TracingModel.Thread.prototype = {
     },
 
     __proto__: WebInspector.TracingModel.NamedObject.prototype
-}
+};

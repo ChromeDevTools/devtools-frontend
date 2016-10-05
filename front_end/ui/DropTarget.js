@@ -18,12 +18,12 @@ WebInspector.DropTarget = function(element, transferTypes, messageText, handleDr
     this._messageText = messageText;
     this._handleDrop = handleDrop;
     this._enabled = true;
-}
+};
 
 WebInspector.DropTarget.Types = {
     Files: "Files",
     URIList: "text/uri-list"
-}
+};
 
 WebInspector.DropTarget.prototype = {
     /**
@@ -99,4 +99,4 @@ WebInspector.DropTarget.prototype = {
         this._dragMaskElement.remove();
         delete this._dragMaskElement;
     }
-}
+};

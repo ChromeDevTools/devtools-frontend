@@ -16,7 +16,7 @@ WebInspector.TerminalWidget = function()
     this._init();
     this._linkifier = new WebInspector.Linkifier();
     this._linkifyFunction = this._linkifyURL.bind(this);
-}
+};
 
 WebInspector.TerminalWidget.prototype = {
     _init: function()
@@ -136,4 +136,4 @@ WebInspector.TerminalWidget.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

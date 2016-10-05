@@ -62,14 +62,14 @@ WebInspector.DeviceModeModel = function(updateCallback)
     /** @type {?function()} */
     this._onTargetAvailable = null;
     WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.Browser);
-}
+};
 
 /** @enum {string} */
 WebInspector.DeviceModeModel.Type = {
     None: "None",
     Responsive: "Responsive",
     Device: "Device"
-}
+};
 
 /** @enum {string} */
 WebInspector.DeviceModeModel.UA = {
@@ -77,7 +77,7 @@ WebInspector.DeviceModeModel.UA = {
     MobileNoTouch: WebInspector.UIString("Mobile (no touch)"),
     Desktop: WebInspector.UIString("Desktop"),
     DesktopTouch: WebInspector.UIString("Desktop (touch)")
-}
+};
 
 WebInspector.DeviceModeModel.MinDeviceSize = 50;
 WebInspector.DeviceModeModel.MaxDeviceSize = 9999;
@@ -91,7 +91,7 @@ WebInspector.DeviceModeModel.deviceSizeValidator = function(value)
     if (/^[\d]+$/.test(value) && value >= WebInspector.DeviceModeModel.MinDeviceSize && value <= WebInspector.DeviceModeModel.MaxDeviceSize)
         return true;
     return false;
-}
+};
 
 /**
  * @param {string} value
@@ -102,7 +102,7 @@ WebInspector.DeviceModeModel.deviceScaleFactorValidator = function(value)
     if (!value || (/^[\d]+(\.\d+)?|\.\d+$/.test(value) && value >= 0 && value <= 10))
         return true;
     return false;
-}
+};
 
 WebInspector.DeviceModeModel._defaultMobileUserAgent = "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36";
 WebInspector.DeviceModeModel._defaultMobileUserAgent = WebInspector.MultitargetNetworkManager.patchUserAgentWithChromeVersion(WebInspector.DeviceModeModel._defaultMobileUserAgent);
@@ -636,4 +636,4 @@ WebInspector.DeviceModeModel.prototype = {
     {
         WebInspector.MultitargetTouchModel.instance().setTouchEnabled(touchEnabled, mobile);
     }
-}
+};

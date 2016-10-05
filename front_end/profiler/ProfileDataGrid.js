@@ -47,7 +47,7 @@ WebInspector.ProfileDataGridNode = function(profileNode, owningTree, hasChildren
     this.functionName = WebInspector.beautifyFunctionName(profileNode.functionName);
     this._deoptReason = profileNode.deoptReason || "";
     this.url = profileNode.url;
-}
+};
 
 WebInspector.ProfileDataGridNode.prototype = {
     /**
@@ -259,7 +259,7 @@ WebInspector.ProfileDataGridNode.prototype = {
     },
 
     __proto__: WebInspector.DataGridNode.prototype
-}
+};
 
 /**
  * @param {!WebInspector.ProfileDataGridNode|!WebInspector.ProfileDataGridTree} container
@@ -296,7 +296,7 @@ WebInspector.ProfileDataGridNode.merge = function(container, child, shouldAbsorb
         else
             container.appendChild(orphanedChild);
     }
-}
+};
 
 /**
  * @param {!WebInspector.ProfileDataGridNode|!WebInspector.ProfileDataGridTree} container
@@ -313,7 +313,7 @@ WebInspector.ProfileDataGridNode.populate = function(container)
 
     if (currentComparator)
         container.sort(currentComparator, true);
-}
+};
 
 /**
  * @constructor
@@ -331,7 +331,7 @@ WebInspector.ProfileDataGridTree = function(formatter, searchableView, total)
     this.total = total;
     this.lastComparator = null;
     this.childrenByCallUID = new Map();
-}
+};
 
 WebInspector.ProfileDataGridTree.prototype = {
     get expanded()
@@ -584,7 +584,7 @@ WebInspector.ProfileDataGridTree.prototype = {
         profileNode.revealAndSelect();
         this._searchableView.updateCurrentMatchIndex(index);
     }
-}
+};
 
 WebInspector.ProfileDataGridTree.propertyComparators = [{}, {}];
 
@@ -626,12 +626,12 @@ WebInspector.ProfileDataGridTree.propertyComparator = function(property, isAscen
     }
 
     return comparator;
-}
+};
 
 /**
  * @interface
  */
-WebInspector.ProfileDataGridNode.Formatter = function() { }
+WebInspector.ProfileDataGridNode.Formatter = function() { };
 
 WebInspector.ProfileDataGridNode.Formatter.prototype = {
     /**
@@ -653,4 +653,4 @@ WebInspector.ProfileDataGridNode.Formatter.prototype = {
      * @return {?Element}
      */
     linkifyNode: function(node) { }
-}
+};

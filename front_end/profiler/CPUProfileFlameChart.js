@@ -39,7 +39,7 @@ WebInspector.ProfileFlameChartDataProvider = function(target)
     WebInspector.FlameChartDataProvider.call(this);
     this._target = target;
     this._colorGenerator = WebInspector.ProfileFlameChartDataProvider.colorGenerator();
-}
+};
 
 WebInspector.ProfileFlameChartDataProvider.prototype = {
     /**
@@ -252,7 +252,7 @@ WebInspector.ProfileFlameChartDataProvider.prototype = {
     {
         return "#333";
     }
-}
+};
 
 
 /**
@@ -272,7 +272,7 @@ WebInspector.ProfileFlameChartDataProvider.colorGenerator = function()
         WebInspector.ProfileFlameChartDataProvider._colorGenerator = colorGenerator;
     }
     return WebInspector.ProfileFlameChartDataProvider._colorGenerator;
-}
+};
 
 
 /**
@@ -297,7 +297,7 @@ WebInspector.CPUProfileFlameChart = function(searchableView, dataProvider)
     this._overviewPane.addEventListener(WebInspector.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
     this._dataProvider = dataProvider;
     this._searchResults = [];
-}
+};
 
 WebInspector.CPUProfileFlameChart.prototype = {
     focus: function()
@@ -426,7 +426,7 @@ WebInspector.CPUProfileFlameChart.prototype = {
 WebInspector.CPUProfileFlameChart.OverviewCalculator = function(dataProvider)
 {
     this._dataProvider = dataProvider;
-}
+};
 
 WebInspector.CPUProfileFlameChart.OverviewCalculator.prototype = {
     /**
@@ -505,7 +505,7 @@ WebInspector.CPUProfileFlameChart.OverviewCalculator.prototype = {
     {
         return this._maximumBoundaries - this._minimumBoundaries;
     }
-}
+};
 
 /**
  * @constructor
@@ -525,7 +525,7 @@ WebInspector.CPUProfileFlameChart.OverviewPane = function(dataProvider)
     this._overviewCalculator = new WebInspector.CPUProfileFlameChart.OverviewCalculator(dataProvider);
     this._dataProvider = dataProvider;
     this._overviewGrid.addEventListener(WebInspector.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
-}
+};
 
 WebInspector.CPUProfileFlameChart.OverviewPane.prototype = {
     /**
@@ -672,4 +672,4 @@ WebInspector.CPUProfileFlameChart.OverviewPane.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

@@ -39,7 +39,7 @@ WebInspector.RequestHTMLView = function(request, dataURL)
     WebInspector.RequestView.call(this, request);
     this._dataURL = dataURL;
     this.element.classList.add("html");
-}
+};
 
 WebInspector.RequestHTMLView.prototype = {
     wasShown: function()
@@ -64,4 +64,4 @@ WebInspector.RequestHTMLView.prototype = {
     },
 
     __proto__: WebInspector.RequestView.prototype
-}
+};

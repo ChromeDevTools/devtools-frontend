@@ -29,7 +29,7 @@ WebInspector.EventSourceMessagesView = function(request)
 
     this._dataGrid.setName("EventSourceMessagesView");
     this._dataGrid.asWidget().show(this.element);
-}
+};
 
 WebInspector.EventSourceMessagesView.prototype = {
     wasShown: function()
@@ -68,7 +68,7 @@ WebInspector.EventSourceMessagesView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @constructor
@@ -84,11 +84,11 @@ WebInspector.EventSourceMessageNode = function(message)
     timeNode.createTextChild(timeText);
     timeNode.title = time.toLocaleString();
     WebInspector.SortableDataGridNode.call(this, {id: message.eventId, type: message.eventName, data: message.data, time: timeNode});
-}
+};
 
 WebInspector.EventSourceMessageNode.prototype = {
     __proto__: WebInspector.SortableDataGridNode.prototype
-}
+};
 
 /**
  * @param {string} field
@@ -101,7 +101,7 @@ WebInspector.EventSourceMessageNodeComparator = function(field, a, b)
     var aValue = a._message[field];
     var bValue = b._message[field];
     return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
-}
+};
 
 /** @type {!Object.<string, !WebInspector.SortableDataGrid.NodeComparator>} */
 WebInspector.EventSourceMessageNode.Comparators = {

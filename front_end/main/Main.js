@@ -37,7 +37,7 @@ WebInspector.Main = function()
 {
     WebInspector.Main._instanceForTest = this;
     runOnWindowLoad(this._loaded.bind(this));
-}
+};
 
 WebInspector.Main.prototype = {
     _loaded: function()
@@ -583,7 +583,7 @@ WebInspector.Main.prototype = {
 
         this._mainConnection.deprecatedRunAfterPendingDispatches(invokeMethod);
     }
-}
+};
 
 /**
  * @constructor
@@ -591,7 +591,7 @@ WebInspector.Main.prototype = {
  */
 WebInspector.Main.ReloadActionDelegate = function()
 {
-}
+};
 
 WebInspector.Main.ReloadActionDelegate.prototype = {
     /**
@@ -615,7 +615,7 @@ WebInspector.Main.ReloadActionDelegate.prototype = {
         }
         return false;
     }
-}
+};
 
 /**
  * @constructor
@@ -623,7 +623,7 @@ WebInspector.Main.ReloadActionDelegate.prototype = {
  */
 WebInspector.Main.ZoomActionDelegate = function()
 {
-}
+};
 
 WebInspector.Main.ZoomActionDelegate.prototype = {
     /**
@@ -650,7 +650,7 @@ WebInspector.Main.ZoomActionDelegate.prototype = {
         }
         return false;
     }
-}
+};
 
 /**
  * @constructor
@@ -658,7 +658,7 @@ WebInspector.Main.ZoomActionDelegate.prototype = {
  */
 WebInspector.Main.SearchActionDelegate = function()
 {
-}
+};
 
 WebInspector.Main.SearchActionDelegate.prototype = {
     /**
@@ -684,7 +684,7 @@ WebInspector.Main.SearchActionDelegate.prototype = {
         }
         return false;
     }
-}
+};
 
 /**
  * @param {boolean} hard
@@ -694,7 +694,7 @@ WebInspector.Main._reloadPage = function(hard)
     var mainTarget = WebInspector.targetManager.mainTarget();
     if (mainTarget && mainTarget.hasBrowserCapability())
         WebInspector.targetManager.reloadPage(hard);
-}
+};
 
 /**
  * @constructor
@@ -718,7 +718,7 @@ WebInspector.Main.WarningErrorCounter = function()
     WebInspector.multitargetConsoleModel.addEventListener(WebInspector.ConsoleModel.Events.MessageAdded, this._update, this);
     WebInspector.multitargetConsoleModel.addEventListener(WebInspector.ConsoleModel.Events.MessageUpdated, this._update, this);
     this._update();
-}
+};
 
 WebInspector.Main.WarningErrorCounter.prototype = {
     /**
@@ -780,7 +780,7 @@ WebInspector.Main.WarningErrorCounter.prototype = {
     {
         return this._toolbarItem;
     }
-}
+};
 
 /**
  * @constructor
@@ -790,7 +790,7 @@ WebInspector.Main.MainMenuItem = function()
 {
     this._item = new WebInspector.ToolbarButton(WebInspector.UIString("Customize and control DevTools"), "menu-toolbar-item");
     this._item.addEventListener("mousedown", this._mouseDown, this);
-}
+};
 
 WebInspector.Main.MainMenuItem.prototype = {
     /**
@@ -859,7 +859,7 @@ WebInspector.Main.MainMenuItem.prototype = {
 
         contextMenu.show();
     }
-}
+};
 
 /**
  * @constructor
@@ -885,7 +885,7 @@ WebInspector.NetworkPanelIndicator = function()
             WebInspector.inspectorView.setPanelIcon("network", "", "");
         }
     }
-}
+};
 
 /**
  * @constructor
@@ -904,7 +904,7 @@ WebInspector.SourcesPanelIndicator = function()
             WebInspector.inspectorView.setPanelIcon("sources", "", "");
         }
     }
-}
+};
 
 /**
  * @constructor
@@ -912,7 +912,7 @@ WebInspector.SourcesPanelIndicator = function()
 WebInspector.Main.PauseListener = function()
 {
     WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.DebuggerPaused, this._debuggerPaused, this);
-}
+};
 
 WebInspector.Main.PauseListener.prototype = {
     /**
@@ -926,7 +926,7 @@ WebInspector.Main.PauseListener.prototype = {
         WebInspector.context.setFlavor(WebInspector.Target, debuggerModel.target());
         WebInspector.Revealer.reveal(debuggerPausedDetails);
     }
-}
+};
 
 /**
  * @constructor
@@ -934,7 +934,7 @@ WebInspector.Main.PauseListener.prototype = {
 WebInspector.Main.InspectedNodeRevealer = function()
 {
     WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.NodeInspected, this._inspectNode, this);
-}
+};
 
 WebInspector.Main.InspectedNodeRevealer.prototype = {
     /**
@@ -945,7 +945,7 @@ WebInspector.Main.InspectedNodeRevealer.prototype = {
         var deferredNode = /** @type {!WebInspector.DeferredDOMNode} */ (event.data);
         WebInspector.Revealer.reveal(deferredNode);
     }
-}
+};
 
 /**
  * @param {string} method
@@ -962,7 +962,7 @@ WebInspector.sendOverProtocol = function(method, params)
             return resolve(result);
         });
     });
-}
+};
 
 /**
  * @constructor
@@ -979,7 +979,7 @@ WebInspector.RemoteDebuggingTerminatedScreen = function(reason)
     this.contentElement.createChild("div", "message").textContent = WebInspector.UIString("Reconnect when ready by reopening DevTools.");
     var button = createTextButton(WebInspector.UIString("Reconnect DevTools"), () => window.location.reload());
     this.contentElement.createChild("div", "button").appendChild(button);
-}
+};
 
 /**
  * @param {string} reason
@@ -992,11 +992,11 @@ WebInspector.RemoteDebuggingTerminatedScreen.show = function(reason)
     dialog.setDimmed(true);
     new WebInspector.RemoteDebuggingTerminatedScreen(reason).show(dialog.element);
     dialog.show();
-}
+};
 
 WebInspector.RemoteDebuggingTerminatedScreen.prototype = {
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @constructor
@@ -1010,7 +1010,7 @@ WebInspector.TargetCrashedScreen = function(hideCallback)
     this.contentElement.createChild("div", "message").textContent = WebInspector.UIString("DevTools was disconnected from the page.");
     this.contentElement.createChild("div", "message").textContent = WebInspector.UIString("Once page is reloaded, DevTools will automatically reconnect.");
     this._hideCallback = hideCallback;
-}
+};
 
 /**
  * @param {!WebInspector.DebuggerModel} debuggerModel
@@ -1031,7 +1031,7 @@ WebInspector.TargetCrashedScreen.show = function(debuggerModel)
     {
         debuggerModel.removeEventListener(WebInspector.DebuggerModel.Events.GlobalObjectCleared, hideBound);
     }
-}
+};
 
 WebInspector.TargetCrashedScreen.prototype = {
     /**
@@ -1043,7 +1043,7 @@ WebInspector.TargetCrashedScreen.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @constructor
@@ -1058,7 +1058,7 @@ WebInspector.BackendSettingsSync = function()
     this._blockedEventsWarningSetting = WebInspector.settings.moduleSetting("blockedEventsWarningEnabled");
     this._blockedEventsWarningSetting.addChangeListener(this._update, this);
     WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.Browser);
-}
+};
 
 WebInspector.BackendSettingsSync.prototype = {
     /**
@@ -1094,7 +1094,7 @@ WebInspector.BackendSettingsSync.prototype = {
     targetRemoved: function(target)
     {
     }
-}
+};
 
 /**
  * @constructor
@@ -1102,7 +1102,7 @@ WebInspector.BackendSettingsSync.prototype = {
  */
 WebInspector.ShowMetricsRulersSettingUI = function()
 {
-}
+};
 
 WebInspector.ShowMetricsRulersSettingUI.prototype = {
     /**
@@ -1113,6 +1113,6 @@ WebInspector.ShowMetricsRulersSettingUI.prototype = {
     {
         return WebInspector.SettingsUI.createSettingCheckbox(WebInspector.UIString("Show rulers"), WebInspector.moduleSetting("showMetricsRulers"));
     }
-}
+};
 
 new WebInspector.Main();

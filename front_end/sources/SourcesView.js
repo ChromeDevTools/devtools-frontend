@@ -96,13 +96,13 @@ WebInspector.SourcesView = function()
 
     this._shortcuts = {};
     this.element.addEventListener("keydown", this._handleKeyDown.bind(this), false);
-}
+};
 
 /** @enum {symbol} */
 WebInspector.SourcesView.Events = {
     EditorClosed: Symbol("EditorClosed"),
     EditorSelected: Symbol("EditorSelected"),
-}
+};
 
 WebInspector.SourcesView.prototype = {
     /**
@@ -297,7 +297,7 @@ WebInspector.SourcesView.prototype = {
     _updateScriptViewToolbarItems: function()
     {
         this._scriptViewToolbar.removeToolbarItems();
-        var view = this.visibleView()
+        var view = this.visibleView();
         if (view instanceof WebInspector.SimpleView) {
             for (var item of (/** @type {?WebInspector.SimpleView} */(view)).syncToolbarItems())
                 this._scriptViewToolbar.appendToolbarItem(item);
@@ -314,7 +314,7 @@ WebInspector.SourcesView.prototype = {
     showSourceLocation: function(uiSourceCode, lineNumber, columnNumber, omitFocus, omitHighlight)
     {
         this._historyManager.updateCurrentState();
-        this._editorContainer.showFile(uiSourceCode)
+        this._editorContainer.showFile(uiSourceCode);
         var currentSourceFrame = this.currentSourceFrame();
         if (currentSourceFrame && typeof lineNumber === "number")
             currentSourceFrame.revealPosition(lineNumber, columnNumber, !omitHighlight);
@@ -703,14 +703,14 @@ WebInspector.SourcesView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @interface
  */
 WebInspector.SourcesView.EditorAction = function()
 {
-}
+};
 
 WebInspector.SourcesView.EditorAction.prototype = {
     /**
@@ -718,7 +718,7 @@ WebInspector.SourcesView.EditorAction.prototype = {
      * @return {!WebInspector.ToolbarButton}
      */
     button: function(sourcesView) { }
-}
+};
 
 /**
  * @constructor
@@ -726,7 +726,7 @@ WebInspector.SourcesView.EditorAction.prototype = {
  */
 WebInspector.SourcesView.SwitchFileActionDelegate = function()
 {
-}
+};
 
 /**
  * @param {!WebInspector.UISourceCode} currentUISourceCode
@@ -762,7 +762,7 @@ WebInspector.SourcesView.SwitchFileActionDelegate._nextFile = function(currentUI
     var fullURL = (url ? url + "/" : "") + candidates[index];
     var nextUISourceCode = currentUISourceCode.project().uiSourceCodeForURL(fullURL);
     return nextUISourceCode !== currentUISourceCode ? nextUISourceCode : null;
-}
+};
 
 
 WebInspector.SourcesView.SwitchFileActionDelegate.prototype = {
@@ -784,7 +784,7 @@ WebInspector.SourcesView.SwitchFileActionDelegate.prototype = {
         sourcesView.showSourceLocation(nextUISourceCode);
         return true;
     }
-}
+};
 
 /**
  * @constructor
@@ -792,7 +792,7 @@ WebInspector.SourcesView.SwitchFileActionDelegate.prototype = {
  */
 WebInspector.SourcesView.CloseAllActionDelegate = function()
 {
-}
+};
 
 WebInspector.SourcesView.CloseAllActionDelegate.prototype = {
     /**
@@ -809,4 +809,4 @@ WebInspector.SourcesView.CloseAllActionDelegate.prototype = {
         sourcesView._editorContainer.closeAllFiles();
         return true;
     }
-}
+};

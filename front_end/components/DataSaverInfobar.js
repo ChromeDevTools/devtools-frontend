@@ -13,7 +13,7 @@ WebInspector.DataSaverInfobar = function()
     message.createTextChild("More information about  ");
     message.appendChild(WebInspector.linkifyURLAsNode("https://support.google.com/chrome/answer/2392284?hl=en", "Chrome Data Saver", undefined, true));
     message.createTextChild(".");
-}
+};
 
 WebInspector.DataSaverInfobar._infobars = [];
 
@@ -27,7 +27,7 @@ WebInspector.DataSaverInfobar.maybeShowInPanel = function(panel)
         WebInspector.DataSaverInfobar._infobars.push(infobar);
         panel.showInfobar(infobar);
     }
-}
+};
 
 WebInspector.DataSaverInfobar.prototype = {
     /**
@@ -40,4 +40,4 @@ WebInspector.DataSaverInfobar.prototype = {
     },
 
     __proto__: WebInspector.Infobar.prototype
-}
+};

@@ -43,7 +43,7 @@ WebInspector.ProfileType = function(id, name)
 
     if (!window.opener)
         window.addEventListener("unload", this._clearTempStorage.bind(this), false);
-}
+};
 
 /** @enum {symbol} */
 WebInspector.ProfileType.Events = {
@@ -51,7 +51,7 @@ WebInspector.ProfileType.Events = {
     ProfileComplete: Symbol("profile-complete"),
     RemoveProfileHeader: Symbol("remove-profile-header"),
     ViewUpdated: Symbol("view-updated")
-}
+};
 
 WebInspector.ProfileType.prototype = {
     /**
@@ -277,14 +277,14 @@ WebInspector.ProfileType.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
  * @interface
  */
 WebInspector.ProfileType.DataDisplayDelegate = function()
 {
-}
+};
 
 WebInspector.ProfileType.DataDisplayDelegate.prototype = {
     /**
@@ -298,7 +298,7 @@ WebInspector.ProfileType.DataDisplayDelegate.prototype = {
      * @param {string} perspectiveName
      */
     showObject: function(snapshotObjectId, perspectiveName) { }
-}
+};
 
 /**
  * @constructor
@@ -314,7 +314,7 @@ WebInspector.ProfileHeader = function(target, profileType, title)
     this.title = title;
     this.uid = profileType._nextProfileUid++;
     this._fromFile = false;
-}
+};
 
 /**
  * @constructor
@@ -327,13 +327,13 @@ WebInspector.ProfileHeader.StatusUpdate = function(subtitle, wait)
     this.subtitle = subtitle;
     /** @type {boolean|undefined} */
     this.wait = wait;
-}
+};
 
 /** @enum {symbol} */
 WebInspector.ProfileHeader.Events = {
     UpdateStatus: Symbol("UpdateStatus"),
     ProfileReceived: Symbol("ProfileReceived")
-}
+};
 
 WebInspector.ProfileHeader.prototype = {
     /**
@@ -425,7 +425,7 @@ WebInspector.ProfileHeader.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
  * @constructor
@@ -494,7 +494,7 @@ WebInspector.ProfilesPanel = function()
     this.contentElement.addEventListener("keydown", this._onKeyDown.bind(this), false);
 
     WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
-}
+};
 
 WebInspector.ProfilesPanel.prototype = {
     /**
@@ -928,7 +928,7 @@ WebInspector.ProfilesPanel.prototype = {
     },
 
     __proto__: WebInspector.PanelWithSidebar.prototype
-}
+};
 
 
 /**
@@ -948,7 +948,7 @@ WebInspector.ProfileTypeSidebarSection = function(dataDisplayDelegate, profileTy
     this._profileGroups = {};
     this.expand();
     this.hidden = true;
-}
+};
 
 /**
  * @constructor
@@ -959,7 +959,7 @@ WebInspector.ProfileTypeSidebarSection.ProfileGroup = function()
     this.profileSidebarTreeElements = [];
     /** @type {?WebInspector.ProfileGroupSidebarTreeElement} */
     this.sidebarTreeElement = null;
-}
+};
 
 WebInspector.ProfileTypeSidebarSection.prototype = {
     /**
@@ -1086,7 +1086,7 @@ WebInspector.ProfileTypeSidebarSection.prototype = {
     },
 
     __proto__: TreeElement.prototype
-}
+};
 
 
 /**
@@ -1095,7 +1095,7 @@ WebInspector.ProfileTypeSidebarSection.prototype = {
  */
 WebInspector.ProfilesPanel.ContextMenuProvider = function()
 {
-}
+};
 
 WebInspector.ProfilesPanel.ContextMenuProvider.prototype = {
     /**
@@ -1108,7 +1108,7 @@ WebInspector.ProfilesPanel.ContextMenuProvider.prototype = {
     {
         WebInspector.ProfilesPanel._instance().appendApplicableItems(event, contextMenu, target);
     }
-}
+};
 
 /**
  * @constructor
@@ -1136,7 +1136,7 @@ WebInspector.ProfileSidebarTreeElement = function(dataDisplayDelegate, profile, 
         this._createSaveLink();
     else
         profile.addEventListener(WebInspector.ProfileHeader.Events.ProfileReceived, this._onProfileReceived, this);
-}
+};
 
 WebInspector.ProfileSidebarTreeElement.prototype = {
     _createSaveLink: function()
@@ -1243,7 +1243,7 @@ WebInspector.ProfileSidebarTreeElement.prototype = {
     },
 
     __proto__: TreeElement.prototype
-}
+};
 
 /**
  * @constructor
@@ -1259,7 +1259,7 @@ WebInspector.ProfileGroupSidebarTreeElement = function(dataDisplayDelegate, titl
     this._title = title;
     this.expand();
     this.toggleOnClick = true;
-}
+};
 
 WebInspector.ProfileGroupSidebarTreeElement.prototype = {
     /**
@@ -1285,7 +1285,7 @@ WebInspector.ProfileGroupSidebarTreeElement.prototype = {
     },
 
     __proto__: TreeElement.prototype
-}
+};
 
 /**
  * @constructor
@@ -1297,7 +1297,7 @@ WebInspector.ProfilesSidebarTreeElement = function(panel)
     TreeElement.call(this, "", false);
     this.selectable = true;
     this._panel = panel;
-}
+};
 
 WebInspector.ProfilesSidebarTreeElement.prototype = {
     /**
@@ -1321,12 +1321,12 @@ WebInspector.ProfilesSidebarTreeElement.prototype = {
     },
 
     __proto__: TreeElement.prototype
-}
+};
 
 WebInspector.ProfilesPanel.show = function()
 {
     WebInspector.inspectorView.setCurrentPanel(WebInspector.ProfilesPanel._instance());
-}
+};
 
 /**
  * @return {!WebInspector.ProfilesPanel}
@@ -1334,7 +1334,7 @@ WebInspector.ProfilesPanel.show = function()
 WebInspector.ProfilesPanel._instance = function()
 {
     return /** @type {!WebInspector.ProfilesPanel} */ (self.runtime.sharedInstance(WebInspector.ProfilesPanel));
-}
+};
 
 /**
  * @constructor
@@ -1342,7 +1342,7 @@ WebInspector.ProfilesPanel._instance = function()
  */
 WebInspector.ProfilesPanel.RecordActionDelegate = function()
 {
-}
+};
 
 WebInspector.ProfilesPanel.RecordActionDelegate.prototype = {
     /**
@@ -1358,4 +1358,4 @@ WebInspector.ProfilesPanel.RecordActionDelegate.prototype = {
         panel.toggleRecord();
         return true;
     }
-}
+};

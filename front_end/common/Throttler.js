@@ -14,7 +14,7 @@ WebInspector.Throttler = function(timeout)
     /** @type {?function():(!Promise.<?>)} */
     this._process = null;
     this._lastCompleteTime = 0;
-}
+};
 
 WebInspector.Throttler.prototype = {
     _processCompleted: function()
@@ -103,7 +103,7 @@ WebInspector.Throttler.prototype = {
     {
         return setTimeout(operation, timeout);
     }
-}
+};
 
 /** @typedef {function(!Error=)} */
 WebInspector.Throttler.FinishCallback;

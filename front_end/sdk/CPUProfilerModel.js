@@ -41,7 +41,7 @@ WebInspector.CPUProfilerModel = function(target)
 
     this._configureCpuProfilerSamplingInterval();
     WebInspector.moduleSetting("highResolutionCpuProfiling").addChangeListener(this._configureCpuProfilerSamplingInterval, this);
-}
+};
 
 /** @enum {symbol} */
 WebInspector.CPUProfilerModel.Events = {
@@ -140,4 +140,4 @@ WebInspector.CPUProfilerModel.prototype = {
     },
 
     __proto__: WebInspector.SDKModel.prototype
-}
+};

@@ -18,7 +18,7 @@ WebInspector.SourceMapNamesResolver.Identifier = function(name, lineNumber, colu
     this.name = name;
     this.lineNumber = lineNumber;
     this.columnNumber = columnNumber;
-}
+};
 
 /**
  * @param {!WebInspector.DebuggerModel.Scope} scope
@@ -45,7 +45,7 @@ WebInspector.SourceMapNamesResolver._scopeIdentifiers = function(scope)
             return Promise.resolve(/** @type {!Array<!WebInspector.SourceMapNamesResolver.Identifier>}*/([]));
 
         var text = new WebInspector.Text(content);
-        var scopeRange = new WebInspector.TextRange(startLocation.lineNumber, startLocation.columnNumber, endLocation.lineNumber, endLocation.columnNumber)
+        var scopeRange = new WebInspector.TextRange(startLocation.lineNumber, startLocation.columnNumber, endLocation.lineNumber, endLocation.columnNumber);
         var scopeText = text.extract(scopeRange);
         var scopeStart = text.toSourceRange(scopeRange).offset;
         var prefix = "function fui";
@@ -76,7 +76,7 @@ WebInspector.SourceMapNamesResolver._scopeIdentifiers = function(scope)
         }
         return result;
     }
-}
+};
 
 /**
  * @param {!WebInspector.DebuggerModel.Scope} scope
@@ -125,7 +125,7 @@ WebInspector.SourceMapNamesResolver._resolveScope = function(scope)
         }
         return Promise.all(promises)
             .then(() => WebInspector.SourceMapNamesResolver._scopeResolvedForTest())
-            .then(() => namesMapping)
+            .then(() => namesMapping);
     }
 
     /**
@@ -178,9 +178,9 @@ WebInspector.SourceMapNamesResolver._resolveScope = function(scope)
         var originalIdentifier = text.extract(sourceTextRange).trim();
         return /[a-zA-Z0-9_$]+/.test(originalIdentifier) ? originalIdentifier : null;
     }
-}
+};
 
-WebInspector.SourceMapNamesResolver._scopeResolvedForTest = function() { }
+WebInspector.SourceMapNamesResolver._scopeResolvedForTest = function() { };
 
 /**
  * @param {!WebInspector.DebuggerModel.CallFrame} callFrame
@@ -216,7 +216,7 @@ WebInspector.SourceMapNamesResolver._allVariablesInCallFrame = function(callFram
         callFrame[WebInspector.SourceMapNamesResolver._cachedMapSymbol] = reverseMapping;
         return reverseMapping;
     }
-}
+};
 
 /**
  * @param {!WebInspector.DebuggerModel.CallFrame} callFrame
@@ -245,7 +245,7 @@ WebInspector.SourceMapNamesResolver.resolveExpression = function(callFrame, orig
 
         return WebInspector.SourceMapNamesResolver._resolveExpression(callFrame, uiSourceCode, lineNumber, startColumnNumber, endColumnNumber);
     }
-}
+};
 
 /**
  * @param {!WebInspector.DebuggerModel.CallFrame} callFrame
@@ -297,7 +297,7 @@ WebInspector.SourceMapNamesResolver._resolveExpression = function(callFrame, uiS
     {
         return event ? /** @type {string} */(event.data) : "";
     }
-}
+};
 
 /**
  * @param {?WebInspector.DebuggerModel.CallFrame} callFrame
@@ -339,7 +339,7 @@ WebInspector.SourceMapNamesResolver.resolveThisObject = function(callFrame)
         var remoteObject = evaluateResult ? callFrame.target().runtimeModel.createRemoteObject(evaluateResult) : callFrame.thisObject();
         callback(remoteObject);
     }
-}
+};
 
 /**
  * @param {!WebInspector.DebuggerModel.Scope} scope
@@ -357,7 +357,7 @@ WebInspector.SourceMapNamesResolver.resolveScopeInObject = function(scope)
         return scope.object();
 
     return new WebInspector.SourceMapNamesResolver.RemoteObject(scope);
-}
+};
 
 /**
  * @constructor
@@ -449,7 +449,7 @@ WebInspector.SourceMapNamesResolver.RemoteObject.prototype = {
          */
         function wrappedCallback(properties, internalProperties)
         {
-            WebInspector.SourceMapNamesResolver._resolveScope(this._scope).then(resolveNames.bind(null, properties, internalProperties))
+            WebInspector.SourceMapNamesResolver._resolveScope(this._scope).then(resolveNames.bind(null, properties, internalProperties));
         }
 
         /**
@@ -576,5 +576,5 @@ WebInspector.SourceMapNamesResolver.RemoteObject.prototype = {
     },
 
     __proto__: WebInspector.RemoteObject.prototype
-}
+};
 

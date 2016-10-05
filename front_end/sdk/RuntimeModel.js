@@ -49,7 +49,7 @@ WebInspector.RuntimeModel = function(target)
         this._agent.setCustomObjectFormatterEnabled(true);
 
     WebInspector.moduleSetting("customFormatters").addChangeListener(this._customFormattersStateChanged.bind(this));
-}
+};
 
 /** @enum {symbol} */
 WebInspector.RuntimeModel.Events = {
@@ -57,7 +57,7 @@ WebInspector.RuntimeModel.Events = {
     ExecutionContextDestroyed: Symbol("ExecutionContextDestroyed"),
     ExecutionContextChanged: Symbol("ExecutionContextChanged"),
     ExecutionContextOrderChanged: Symbol("ExecutionContextOrderChanged")
-}
+};
 
 WebInspector.RuntimeModel._privateScript = "private script";
 
@@ -344,7 +344,7 @@ WebInspector.RuntimeModel.prototype = {
     },
 
     __proto__: WebInspector.SDKModel.prototype
-}
+};
 
 /**
  * @constructor
@@ -354,7 +354,7 @@ WebInspector.RuntimeModel.prototype = {
 WebInspector.RuntimeDispatcher = function(runtimeModel)
 {
     this._runtimeModel = runtimeModel;
-}
+};
 
 WebInspector.RuntimeDispatcher.prototype = {
     /**
@@ -473,7 +473,7 @@ WebInspector.RuntimeDispatcher.prototype = {
     {
         this._runtimeModel._inspectRequested(payload, hints);
     }
-}
+};
 
 /**
  * @constructor
@@ -500,7 +500,7 @@ WebInspector.ExecutionContext = function(target, id, name, origin, isDefault, fr
     var parsedUrl = origin.asParsedURL();
     if (!this._label && parsedUrl)
         this._label = parsedUrl.lastPathComponentWithFragment();
-}
+};
 
 /**
  * @param {!WebInspector.ExecutionContext} a
@@ -532,7 +532,7 @@ WebInspector.ExecutionContext.comparator = function(a, b)
     if (b.isDefault)
         return +1;
     return a.name.localeCompare(b.name);
-}
+};
 
 WebInspector.ExecutionContext.prototype = {
     /**
@@ -826,7 +826,7 @@ WebInspector.ExecutionContext.prototype = {
     },
 
     __proto__: WebInspector.SDKObject.prototype
-}
+};
 
 /**
  * @constructor
@@ -856,7 +856,7 @@ WebInspector.EventListener = function(target, eventTarget, type, useCapture, pas
     this._sourceURL = script ? script.contentURL() : "";
     this._removeFunction = removeFunction;
     this._listenerType = listenerType || "normal";
-}
+};
 
 WebInspector.EventListener.prototype = {
     /**
@@ -1020,4 +1020,4 @@ WebInspector.EventListener.prototype = {
     },
 
     __proto__: WebInspector.SDKObject.prototype
-}
+};

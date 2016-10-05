@@ -26,7 +26,7 @@ WebInspector.FormattedContentBuilder = function(indentString)
     this._softSpace = false;
     this._hardSpaces = 0;
     this._enforceSpaceBetweenWords = true;
-}
+};
 
 WebInspector.FormattedContentBuilder.prototype = {
     /**
@@ -133,7 +133,7 @@ WebInspector.FormattedContentBuilder.prototype = {
      */
     _indent: function()
     {
-        var cachedValue = this._cachedIndents.get(this._nestingLevel)
+        var cachedValue = this._cachedIndents.get(this._nestingLevel);
         if (cachedValue)
             return cachedValue;
 
@@ -168,5 +168,5 @@ WebInspector.FormattedContentBuilder.prototype = {
         this._mapping.formatted.push(this._formattedContentLength);
         this._lastFormattedPosition = this._formattedContentLength;
     }
-}
+};
 

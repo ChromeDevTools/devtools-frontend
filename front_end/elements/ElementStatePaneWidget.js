@@ -53,7 +53,7 @@ WebInspector.ElementStatePaneWidget = function()
 
     this.element.appendChild(table);
     WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this._update, this);
-}
+};
 
 WebInspector.ElementStatePaneWidget.prototype = {
     /**
@@ -66,12 +66,12 @@ WebInspector.ElementStatePaneWidget.prototype = {
 
         if (this._target) {
             var cssModel = WebInspector.CSSModel.fromTarget(this._target);
-            cssModel.removeEventListener(WebInspector.CSSModel.Events.PseudoStateForced, this._update, this)
+            cssModel.removeEventListener(WebInspector.CSSModel.Events.PseudoStateForced, this._update, this);
         }
         this._target = target;
         if (target) {
             var cssModel = WebInspector.CSSModel.fromTarget(target);
-            cssModel.addEventListener(WebInspector.CSSModel.Events.PseudoStateForced, this._update, this)
+            cssModel.addEventListener(WebInspector.CSSModel.Events.PseudoStateForced, this._update, this);
         }
     },
 
@@ -108,7 +108,7 @@ WebInspector.ElementStatePaneWidget.prototype = {
     },
 
     __proto__: WebInspector.Widget.prototype
-}
+};
 
 /**
  * @constructor
@@ -120,7 +120,7 @@ WebInspector.ElementStatePaneWidget.ButtonProvider = function()
     this._button.addEventListener("click", this._clicked, this);
     this._button.element.classList.add("monospace");
     this._view = new WebInspector.ElementStatePaneWidget();
-}
+};
 
 WebInspector.ElementStatePaneWidget.ButtonProvider.prototype = {
     _clicked: function()
@@ -136,4 +136,4 @@ WebInspector.ElementStatePaneWidget.ButtonProvider.prototype = {
     {
         return this._button;
     }
-}
+};

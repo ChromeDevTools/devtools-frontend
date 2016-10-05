@@ -44,7 +44,7 @@ WebInspector.ImageView = function(mimeType, contentProvider)
     this._sizeLabel = new WebInspector.ToolbarText();
     this._dimensionsLabel = new WebInspector.ToolbarText();
     this._mimeTypeLabel = new WebInspector.ToolbarText(mimeType);
-}
+};
 
 WebInspector.ImageView.prototype = {
     /**
@@ -140,4 +140,4 @@ WebInspector.ImageView.prototype = {
     },
 
     __proto__: WebInspector.SimpleView.prototype
-}
+};

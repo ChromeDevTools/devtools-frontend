@@ -64,20 +64,20 @@ WebInspector.LayerTreeModel = function(target)
     WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.MainFrameNavigated, this._onMainFrameNavigated, this);
     /** @type {?WebInspector.LayerTreeBase} */
     this._layerTree = null;
-}
+};
 
 /** @enum {symbol} */
 WebInspector.LayerTreeModel.Events = {
     LayerTreeChanged: Symbol("LayerTreeChanged"),
     LayerPainted: Symbol("LayerPainted"),
-}
+};
 
 WebInspector.LayerTreeModel.ScrollRectType = {
     NonFastScrollable: {name: "NonFastScrollable", description: "Non fast scrollable"},
     TouchEventHandler: {name: "TouchEventHandler", description: "Touch event handler"},
     WheelEventHandler: {name: "WheelEventHandler", description: "Wheel event handler"},
     RepaintsOnScroll: {name: "RepaintsOnScroll", description: "Repaints on scroll"}
-}
+};
 
 WebInspector.LayerTreeModel.prototype = {
     disable: function()
@@ -174,7 +174,7 @@ WebInspector.LayerTreeModel.prototype = {
     },
 
     __proto__: WebInspector.SDKModel.prototype
-}
+};
 
 /**
   * @constructor
@@ -188,7 +188,7 @@ WebInspector.LayerTreeBase = function(target)
     /** @type Map<number, ?WebInspector.DOMNode> */
     this._backendNodeIdToNode = new Map();
     this._reset();
-}
+};
 
 WebInspector.LayerTreeBase.prototype = {
     _reset: function()
@@ -305,7 +305,7 @@ WebInspector.LayerTreeBase.prototype = {
     {
         return this._domModel ? this._domModel.nodeForId(id) : null;
     }
-}
+};
 
 /**
   * @constructor
@@ -317,7 +317,7 @@ WebInspector.TracingLayerTree = function(target)
     WebInspector.LayerTreeBase.call(this, target);
     /** @type {!Map.<string, !WebInspector.TracingLayerTile>} */
     this._tileById = new Map();
-}
+};
 
 WebInspector.TracingLayerTree.prototype = {
     /**
@@ -417,7 +417,7 @@ WebInspector.TracingLayerTree.prototype = {
     },
 
     __proto__: WebInspector.LayerTreeBase.prototype
-}
+};
 
 /**
   * @constructor
@@ -427,7 +427,7 @@ WebInspector.TracingLayerTree.prototype = {
 WebInspector.AgentLayerTree = function(target)
 {
     WebInspector.LayerTreeBase.call(this, target);
-}
+};
 
 WebInspector.AgentLayerTree.prototype = {
     /**
@@ -501,14 +501,14 @@ WebInspector.AgentLayerTree.prototype = {
     },
 
     __proto__: WebInspector.LayerTreeBase.prototype
-}
+};
 
 /**
  * @interface
  */
 WebInspector.Layer = function()
 {
-}
+};
 
 WebInspector.Layer.prototype = {
     /**
@@ -620,7 +620,7 @@ WebInspector.Layer.prototype = {
      * @return {boolean}
      */
     drawsContent: function() { }
-}
+};
 
 /**
  * @constructor
@@ -632,7 +632,7 @@ WebInspector.AgentLayer = function(target, layerPayload)
 {
     this._target = target;
     this._reset(layerPayload);
-}
+};
 
 WebInspector.AgentLayer.prototype = {
     /**
@@ -962,7 +962,7 @@ WebInspector.AgentLayer.prototype = {
 
         this._children.forEach(calculateQuadForLayer);
     }
-}
+};
 
 /**
  * @constructor
@@ -972,7 +972,7 @@ WebInspector.AgentLayer.prototype = {
 WebInspector.TracingLayer = function(payload)
 {
     this._reset(payload);
-}
+};
 
 WebInspector.TracingLayer.prototype = {
     /**
@@ -1237,7 +1237,7 @@ WebInspector.TracingLayer.prototype = {
     {
         return this._drawsContent;
     }
-}
+};
 
 /**
  * @constructor
@@ -1246,7 +1246,7 @@ WebInspector.TracingLayer.prototype = {
 WebInspector.DeferredLayerTree = function(target)
 {
     this._target = target;
-}
+};
 
 WebInspector.DeferredLayerTree.prototype = {
     /**
@@ -1271,7 +1271,7 @@ WebInspector.DeferredLayerTree.prototype = {
 WebInspector.LayerTreeDispatcher = function(layerTreeModel)
 {
     this._layerTreeModel = layerTreeModel;
-}
+};
 
 WebInspector.LayerTreeDispatcher.prototype = {
     /**
@@ -1292,7 +1292,7 @@ WebInspector.LayerTreeDispatcher.prototype = {
     {
         this._layerTreeModel._layerPainted(layerId, clipRect);
     }
-}
+};
 
 /**
  * @param {!WebInspector.Target} target
@@ -1307,4 +1307,4 @@ WebInspector.LayerTreeModel.fromTarget = function(target)
     if (!model)
         model = new WebInspector.LayerTreeModel(target);
     return model;
-}
+};

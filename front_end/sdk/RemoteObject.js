@@ -38,7 +38,7 @@ WebInspector.CallFunctionResult;
  *
  * @constructor
  */
-WebInspector.RemoteObject = function() { }
+WebInspector.RemoteObject = function() { };
 
 WebInspector.RemoteObject.prototype = {
 
@@ -282,7 +282,7 @@ WebInspector.RemoteObject.prototype = {
     {
         return false;
     }
-}
+};
 
 /**
  * @param {*} value
@@ -291,7 +291,7 @@ WebInspector.RemoteObject.prototype = {
 WebInspector.RemoteObject.fromLocalObject = function(value)
 {
     return new WebInspector.LocalJSONObject(value);
-}
+};
 
 /**
  * @param {!WebInspector.RemoteObject} remoteObject
@@ -307,7 +307,7 @@ WebInspector.RemoteObject.type = function(remoteObject)
         return type;
 
     return remoteObject.type;
-}
+};
 
 /**
  * @param {!WebInspector.RemoteObject|!RuntimeAgent.RemoteObject|!RuntimeAgent.ObjectPreview} object
@@ -321,7 +321,7 @@ WebInspector.RemoteObject.arrayLength = function(object)
     if (!matches)
         return 0;
     return parseInt(matches[1], 10);
-}
+};
 
 /**
  * @param {!RuntimeAgent.RemoteObject|!WebInspector.RemoteObject|number|string|boolean|undefined|null} object
@@ -361,7 +361,7 @@ WebInspector.RemoteObject.toCallArgument = function(object)
         return { objectId: object._objectId };
 
     return { value: object.value };
-}
+};
 
 /**
  * @constructor
@@ -412,7 +412,7 @@ WebInspector.RemoteObjectImpl = function(target, objectId, type, subtype, value,
         }
     }
     this._customPreview = customPreview || null;
-}
+};
 
 WebInspector.RemoteObjectImpl.prototype = {
 
@@ -1015,7 +1015,7 @@ WebInspector.ScopeRef = function(number, callFrameId)
 {
     this.number = number;
     this.callFrameId = callFrameId;
-}
+};
 
 /**
  * @constructor
@@ -1040,7 +1040,7 @@ WebInspector.RemoteObjectProperty = function(name, value, enumerable, writable, 
     if (symbol)
         this.symbol = symbol;
     this.synthetic = !!synthetic;
-}
+};
 
 WebInspector.RemoteObjectProperty.prototype = {
     /**
@@ -1067,7 +1067,7 @@ WebInspector.LocalJSONObject = function(value)
 {
     WebInspector.RemoteObject.call(this);
     this._value = value;
-}
+};
 
 WebInspector.LocalJSONObject.prototype = {
     /**
@@ -1311,7 +1311,7 @@ WebInspector.LocalJSONObject.prototype = {
     },
 
     __proto__: WebInspector.RemoteObject.prototype
-}
+};
 
 /**
  * @constructor
@@ -1331,7 +1331,7 @@ WebInspector.RemoteArray.objectAsArray = function(object)
     if (!object || object.type !== "object" || (object.subtype !== "array" && object.subtype !== "typedarray"))
         throw new Error("Object is empty or not an array");
     return new WebInspector.RemoteArray(object);
-}
+};
 
 /**
  * @param {!Array<!WebInspector.RemoteObject>} objects
@@ -1343,7 +1343,7 @@ WebInspector.RemoteArray.createFromRemoteObjects = function(objects)
         throw new Error("Input array is empty");
     var objectArguments = [];
     for (var i = 0; i < objects.length; ++i)
-        objectArguments.push(WebInspector.RemoteObject.toCallArgument(objects[i]))
+        objectArguments.push(WebInspector.RemoteObject.toCallArgument(objects[i]));
     return objects[0].callFunctionPromise(createArray, objectArguments).then(returnRemoteArray);
 
     /**
@@ -1366,7 +1366,7 @@ WebInspector.RemoteArray.createFromRemoteObjects = function(objects)
             throw new Error("Call function throws exceptions or returns empty value");
         return WebInspector.RemoteArray.objectAsArray(result.object);
     }
-}
+};
 
 WebInspector.RemoteArray.prototype = {
     /**
@@ -1430,7 +1430,7 @@ WebInspector.RemoteArray.prototype = {
     {
         return this._object;
     }
-}
+};
 
 /**
  * @constructor
@@ -1439,7 +1439,7 @@ WebInspector.RemoteArray.prototype = {
 WebInspector.RemoteFunction = function(object)
 {
     this._object = object;
-}
+};
 
 /**
  * @param {?WebInspector.RemoteObject} object
@@ -1450,7 +1450,7 @@ WebInspector.RemoteFunction.objectAsFunction = function(object)
     if (!object || object.type !== "function")
         throw new Error("Object is empty or not a function");
     return new WebInspector.RemoteFunction(object);
-}
+};
 
 WebInspector.RemoteFunction.prototype = {
     /**
@@ -1516,4 +1516,4 @@ WebInspector.RemoteFunction.prototype = {
     {
         return this._object;
     }
-}
+};

@@ -34,7 +34,7 @@ WebInspector.SourcesNavigatorView = function()
 {
     WebInspector.NavigatorView.call(this);
     WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
-}
+};
 
 WebInspector.SourcesNavigatorView.prototype = {
     /**
@@ -59,7 +59,7 @@ WebInspector.SourcesNavigatorView.prototype = {
             return;
         var inspectedURL = mainTarget && mainTarget.inspectedURL();
         if (!inspectedURL)
-            return
+            return;
         for (var node of this._uiSourceCodeNodes.valuesArray()) {
             var uiSourceCode = node.uiSourceCode();
             if (uiSourceCode.url() === inspectedURL)
@@ -90,7 +90,7 @@ WebInspector.SourcesNavigatorView.prototype = {
     },
 
     __proto__: WebInspector.NavigatorView.prototype
-}
+};
 
 /**
  * @constructor
@@ -100,7 +100,7 @@ WebInspector.NetworkNavigatorView = function()
 {
     WebInspector.NavigatorView.call(this);
     WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
-}
+};
 
 WebInspector.NetworkNavigatorView.prototype = {
     /**
@@ -123,7 +123,7 @@ WebInspector.NetworkNavigatorView.prototype = {
             return;
         var inspectedURL = mainTarget && mainTarget.inspectedURL();
         if (!inspectedURL)
-            return
+            return;
         for (var node of this._uiSourceCodeNodes.valuesArray()) {
             var uiSourceCode = node.uiSourceCode();
             if (uiSourceCode.url() === inspectedURL)
@@ -143,7 +143,7 @@ WebInspector.NetworkNavigatorView.prototype = {
     },
 
     __proto__: WebInspector.NavigatorView.prototype
-}
+};
 
 /**
  * @constructor
@@ -152,7 +152,7 @@ WebInspector.NetworkNavigatorView.prototype = {
 WebInspector.FilesNavigatorView = function()
 {
     WebInspector.NavigatorView.call(this);
-}
+};
 
 WebInspector.FilesNavigatorView.prototype = {
     /**
@@ -177,7 +177,7 @@ WebInspector.FilesNavigatorView.prototype = {
     },
 
     __proto__: WebInspector.NavigatorView.prototype
-}
+};
 
 /**
  * @constructor
@@ -186,7 +186,7 @@ WebInspector.FilesNavigatorView.prototype = {
 WebInspector.ContentScriptsNavigatorView = function()
 {
     WebInspector.NavigatorView.call(this);
-}
+};
 
 WebInspector.ContentScriptsNavigatorView.prototype = {
     /**
@@ -200,7 +200,7 @@ WebInspector.ContentScriptsNavigatorView.prototype = {
     },
 
     __proto__: WebInspector.NavigatorView.prototype
-}
+};
 
 /**
  * @constructor
@@ -209,7 +209,7 @@ WebInspector.ContentScriptsNavigatorView.prototype = {
 WebInspector.SnippetsNavigatorView = function()
 {
     WebInspector.NavigatorView.call(this);
-}
+};
 
 WebInspector.SnippetsNavigatorView.prototype = {
     /**
@@ -296,4 +296,4 @@ WebInspector.SnippetsNavigatorView.prototype = {
     },
 
     __proto__: WebInspector.NavigatorView.prototype
-}
+};

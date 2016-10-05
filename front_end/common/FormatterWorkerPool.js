@@ -10,7 +10,7 @@ WebInspector.FormatterWorkerPool = function()
     this._taskQueue = [];
     /** @type {!Map<!WebInspector.Worker, ?WebInspector.FormatterWorkerPool.Task>} */
     this._workerTasks = new Map();
-}
+};
 
 WebInspector.FormatterWorkerPool.MaxWorkers = 2;
 
@@ -105,7 +105,7 @@ WebInspector.FormatterWorkerPool.prototype = {
         this._processNextTask();
         return promise;
     },
-}
+};
 
 /**
  * @constructor
@@ -120,7 +120,7 @@ WebInspector.FormatterWorkerPool.Task = function(method, params, callback, isChu
     this.params = params;
     this.callback = callback;
     this.isChunked = isChunked;
-}
+};
 
 /** @type {!WebInspector.FormatterWorkerPool} */
 WebInspector.formatterWorkerPool;

@@ -48,7 +48,7 @@ WebInspector.DefaultScriptMapping = function(debuggerModel, workspace, debuggerW
     this._eventListeners = [
         debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this)
     ];
-}
+};
 
 WebInspector.DefaultScriptMapping._scriptSymbol = Symbol("symbol");
 
@@ -59,7 +59,7 @@ WebInspector.DefaultScriptMapping._scriptSymbol = Symbol("symbol");
 WebInspector.DefaultScriptMapping.scriptForUISourceCode = function(uiSourceCode)
 {
     return uiSourceCode[WebInspector.DefaultScriptMapping._scriptSymbol] || null;
-}
+};
 
 WebInspector.DefaultScriptMapping.prototype = {
     /**
@@ -146,7 +146,7 @@ WebInspector.DefaultScriptMapping.prototype = {
         this._debuggerReset();
         this._project.dispose();
     }
-}
+};
 
 /**
  * @param {!WebInspector.Target} target
@@ -155,4 +155,4 @@ WebInspector.DefaultScriptMapping.prototype = {
 WebInspector.DefaultScriptMapping.projectIdForTarget = function(target)
 {
     return "debugger:" + target.id();
-}
+};

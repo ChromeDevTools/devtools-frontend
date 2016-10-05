@@ -36,7 +36,7 @@ WebInspector.HeapSnapshotLoader = function(dispatcher)
 {
     this._reset();
     this._progress = new WebInspector.HeapSnapshotProgress(dispatcher);
-}
+};
 
 WebInspector.HeapSnapshotLoader.prototype = {
     dispose: function()
@@ -312,4 +312,4 @@ WebInspector.HeapSnapshotLoader.prototype = {
         this._state = "find-nodes";
         this._snapshot.snapshot = /** @type {!HeapSnapshotHeader} */ (JSON.parse(data));
     }
-}
+};

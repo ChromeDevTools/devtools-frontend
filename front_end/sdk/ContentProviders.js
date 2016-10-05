@@ -38,7 +38,7 @@ WebInspector.CompilerSourceMappingContentProvider = function(sourceURL, contentT
 {
     this._sourceURL = sourceURL;
     this._contentType = contentType;
-}
+};
 
 WebInspector.CompilerSourceMappingContentProvider.prototype = {
     /**
@@ -112,4 +112,4 @@ WebInspector.CompilerSourceMappingContentProvider.prototype = {
             callback(WebInspector.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex));
         }
     }
-}
+};

@@ -199,4 +199,4 @@ WebInspector.ObjectPopoverHelper.prototype = {
     },
 
     __proto__: WebInspector.PopoverHelper.prototype
-}
+};

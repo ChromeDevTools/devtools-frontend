@@ -29,7 +29,7 @@
 /**
  * @interface
  */
-WebInspector.TabbedEditorContainerDelegate = function() { }
+WebInspector.TabbedEditorContainerDelegate = function() { };
 
 WebInspector.TabbedEditorContainerDelegate.prototype = {
     /**
@@ -37,7 +37,7 @@ WebInspector.TabbedEditorContainerDelegate.prototype = {
      * @return {!WebInspector.Widget}
      */
     viewForFile: function(uiSourceCode) { },
-}
+};
 
 /**
  * @constructor
@@ -69,13 +69,13 @@ WebInspector.TabbedEditorContainer = function(delegate, setting, placeholderText
 
     this._previouslyViewedFilesSetting = setting;
     this._history = WebInspector.TabbedEditorContainer.History.fromObject(this._previouslyViewedFilesSetting.get());
-}
+};
 
 /** @enum {symbol} */
 WebInspector.TabbedEditorContainer.Events = {
     EditorSelected: Symbol("EditorSelected"),
     EditorClosed: Symbol("EditorClosed")
-}
+};
 
 WebInspector.TabbedEditorContainer._tabId = 0;
 
@@ -581,7 +581,7 @@ WebInspector.TabbedEditorContainer.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
  * @constructor
@@ -595,7 +595,7 @@ WebInspector.TabbedEditorContainer.HistoryItem = function(url, selectionRange, s
     /** @const */ this._isSerializable = url.length < WebInspector.TabbedEditorContainer.HistoryItem.serializableUrlLengthLimit;
     this.selectionRange = selectionRange;
     this.scrollLineNumber = scrollLineNumber;
-}
+};
 
 WebInspector.TabbedEditorContainer.HistoryItem.serializableUrlLengthLimit = 4096;
 
@@ -607,7 +607,7 @@ WebInspector.TabbedEditorContainer.HistoryItem.fromObject = function(serializedH
 {
     var selectionRange = serializedHistoryItem.selectionRange ? WebInspector.TextRange.fromObject(serializedHistoryItem.selectionRange) : undefined;
     return new WebInspector.TabbedEditorContainer.HistoryItem(serializedHistoryItem.url, selectionRange, serializedHistoryItem.scrollLineNumber);
-}
+};
 
 WebInspector.TabbedEditorContainer.HistoryItem.prototype = {
     /**
@@ -623,7 +623,7 @@ WebInspector.TabbedEditorContainer.HistoryItem.prototype = {
         serializedHistoryItem.scrollLineNumber = this.scrollLineNumber;
         return serializedHistoryItem;
     }
-}
+};
 
 /**
  * @constructor
@@ -633,7 +633,7 @@ WebInspector.TabbedEditorContainer.History = function(items)
 {
     this._items = items;
     this._rebuildItemIndex();
-}
+};
 
 /**
  * @param {!Array.<!Object>} serializedHistory
@@ -645,7 +645,7 @@ WebInspector.TabbedEditorContainer.History.fromObject = function(serializedHisto
     for (var i = 0; i < serializedHistory.length; ++i)
         items.push(WebInspector.TabbedEditorContainer.HistoryItem.fromObject(serializedHistory[i]));
     return new WebInspector.TabbedEditorContainer.History(items);
-}
+};
 
 WebInspector.TabbedEditorContainer.History.prototype = {
     /**
@@ -778,7 +778,7 @@ WebInspector.TabbedEditorContainer.History.prototype = {
             result.push(this._items[i].url);
         return result;
     }
-}
+};
 
 /**
  * @constructor
@@ -788,7 +788,7 @@ WebInspector.TabbedEditorContainer.History.prototype = {
 WebInspector.EditorContainerTabDelegate = function(editorContainer)
 {
     this._editorContainer = editorContainer;
-}
+};
 
 WebInspector.EditorContainerTabDelegate.prototype = {
     /**
@@ -810,4 +810,4 @@ WebInspector.EditorContainerTabDelegate.prototype = {
     {
         this._editorContainer._onContextMenu(tabId, contextMenu);
     }
-}
+};

@@ -41,7 +41,7 @@ WebInspector.InspectElementModeController = function()
     this._mode = DOMAgent.InspectMode.None;
     WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
     WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.DOM);
-}
+};
 
 WebInspector.InspectElementModeController.prototype = {
     /**
@@ -136,7 +136,7 @@ WebInspector.InspectElementModeController.prototype = {
         if (this._layoutEditorButton)
             this._layoutEditorButton.setToggled(false);
     }
-}
+};
 
 /**
  * @constructor
@@ -144,7 +144,7 @@ WebInspector.InspectElementModeController.prototype = {
  */
 WebInspector.InspectElementModeController.ToggleSearchActionDelegate = function()
 {
-}
+};
 
 WebInspector.InspectElementModeController.ToggleSearchActionDelegate.prototype = {
     /**
@@ -160,7 +160,7 @@ WebInspector.InspectElementModeController.ToggleSearchActionDelegate.prototype =
         WebInspector.inspectElementModeController._toggleInspectMode();
         return true;
     }
-}
+};
 
 /**
  * @constructor
@@ -168,7 +168,7 @@ WebInspector.InspectElementModeController.ToggleSearchActionDelegate.prototype =
  */
 WebInspector.InspectElementModeController.LayoutEditorButtonProvider = function()
 {
-}
+};
 
 WebInspector.InspectElementModeController.LayoutEditorButtonProvider.prototype = {
     /**
@@ -182,7 +182,7 @@ WebInspector.InspectElementModeController.LayoutEditorButtonProvider.prototype =
 
         return WebInspector.inspectElementModeController._layoutEditorButton;
     }
-}
+};
 
 /** @type {?WebInspector.InspectElementModeController} */
 WebInspector.inspectElementModeController = Runtime.queryParam("isSharedWorker") ? null : new WebInspector.InspectElementModeController();

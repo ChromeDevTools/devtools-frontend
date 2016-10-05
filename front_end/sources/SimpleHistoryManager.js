@@ -31,7 +31,7 @@
 /**
  * @interface
  */
-WebInspector.HistoryEntry = function() { }
+WebInspector.HistoryEntry = function() { };
 
 WebInspector.HistoryEntry.prototype = {
     /**
@@ -52,7 +52,7 @@ WebInspector.SimpleHistoryManager = function(historyDepth)
     this._activeEntryIndex = -1;
     this._coalescingReadonly = 0;
     this._historyDepth = historyDepth;
-}
+};
 
 WebInspector.SimpleHistoryManager.prototype = {
     readOnlyLock: function()

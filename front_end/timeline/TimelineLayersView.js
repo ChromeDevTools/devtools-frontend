@@ -38,7 +38,7 @@ WebInspector.TimelineLayersView = function(model, showEventDetailsCallback)
     var layerDetailsView = new WebInspector.LayerDetailsView(this._layerViewHost);
     this._rightSplitWidget.setSidebarWidget(layerDetailsView);
     layerDetailsView.addEventListener(WebInspector.LayerDetailsView.Events.PaintProfilerRequested, this._jumpToPaintEvent, this);
-}
+};
 
 WebInspector.TimelineLayersView.prototype = {
     /**
@@ -129,4 +129,4 @@ WebInspector.TimelineLayersView.prototype = {
     },
 
     __proto__: WebInspector.SplitWidget.prototype
-}
+};

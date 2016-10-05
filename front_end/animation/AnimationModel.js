@@ -23,13 +23,13 @@ WebInspector.AnimationModel = function(target)
     var resourceTreeModel = /** @type {!WebInspector.ResourceTreeModel} */ (WebInspector.ResourceTreeModel.fromTarget(target));
     resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.MainFrameNavigated, this._reset, this);
     this._screenshotCapture = new WebInspector.AnimationModel.ScreenshotCapture(target, this, resourceTreeModel);
-}
+};
 
 /** @enum {symbol} */
 WebInspector.AnimationModel.Events = {
     AnimationGroupStarted: Symbol("AnimationGroupStarted"),
     ModelReset: Symbol("ModelReset")
-}
+};
 
 WebInspector.AnimationModel.prototype = {
     _reset: function()
@@ -198,7 +198,7 @@ WebInspector.AnimationModel.prototype = {
     },
 
     __proto__: WebInspector.SDKModel.prototype
-}
+};
 
 WebInspector.AnimationModel._symbol = Symbol("AnimationModel");
 
@@ -214,7 +214,7 @@ WebInspector.AnimationModel.fromTarget = function(target)
         target[WebInspector.AnimationModel._symbol] = new WebInspector.AnimationModel(target);
 
     return target[WebInspector.AnimationModel._symbol];
-}
+};
 
 /**
  * @constructor
@@ -227,7 +227,7 @@ WebInspector.AnimationModel.Animation = function(target, payload)
     WebInspector.SDKObject.call(this, target);
     this._payload = payload;
     this._source = new WebInspector.AnimationModel.AnimationEffect(this.target(), this._payload.source);
-}
+};
 
 /**
  * @param {!WebInspector.Target} target
@@ -237,14 +237,14 @@ WebInspector.AnimationModel.Animation = function(target, payload)
 WebInspector.AnimationModel.Animation.parsePayload = function(target, payload)
 {
     return new WebInspector.AnimationModel.Animation(target, payload);
-}
+};
 
 /** @enum {string} */
 WebInspector.AnimationModel.Animation.Type = {
     CSSTransition: "CSSTransition",
     CSSAnimation: "CSSAnimation",
     WebAnimation: "WebAnimation"
-}
+};
 
 WebInspector.AnimationModel.Animation.prototype = {
     /**
@@ -431,7 +431,7 @@ WebInspector.AnimationModel.Animation.prototype = {
     },
 
     __proto__: WebInspector.SDKObject.prototype
-}
+};
 
 /**
  * @constructor
@@ -447,7 +447,7 @@ WebInspector.AnimationModel.AnimationEffect = function(target, payload)
         this._keyframesRule = new WebInspector.AnimationModel.KeyframesRule(target, payload.keyframesRule);
     this._delay = this._payload.delay;
     this._duration = this._payload.duration;
-}
+};
 
 WebInspector.AnimationModel.AnimationEffect.prototype = {
     /**
@@ -552,7 +552,7 @@ WebInspector.AnimationModel.AnimationEffect.prototype = {
     },
 
     __proto__: WebInspector.SDKObject.prototype
-}
+};
 
 /**
  * @constructor
@@ -567,7 +567,7 @@ WebInspector.AnimationModel.KeyframesRule = function(target, payload)
     this._keyframes = this._payload.keyframes.map(function(keyframeStyle) {
         return new WebInspector.AnimationModel.KeyframeStyle(target, keyframeStyle);
     });
-}
+};
 
 WebInspector.AnimationModel.KeyframesRule.prototype = {
     /**
@@ -597,7 +597,7 @@ WebInspector.AnimationModel.KeyframesRule.prototype = {
     },
 
     __proto__: WebInspector.SDKObject.prototype
-}
+};
 
 /**
  * @constructor
@@ -610,7 +610,7 @@ WebInspector.AnimationModel.KeyframeStyle = function(target, payload)
     WebInspector.SDKObject.call(this, target);
     this._payload = payload;
     this._offset = this._payload.offset;
-}
+};
 
 WebInspector.AnimationModel.KeyframeStyle.prototype = {
     /**
@@ -646,7 +646,7 @@ WebInspector.AnimationModel.KeyframeStyle.prototype = {
     },
 
     __proto__: WebInspector.SDKObject.prototype
-}
+};
 
 /**
  * @constructor
@@ -664,7 +664,7 @@ WebInspector.AnimationModel.AnimationGroup = function(model, id, animations)
     this._paused = false;
     this._screenshots = [];
     this._screenshotImages = [];
-}
+};
 
 WebInspector.AnimationModel.AnimationGroup.prototype = {
     /**
@@ -828,7 +828,7 @@ WebInspector.AnimationModel.AnimationGroup.prototype = {
     },
 
     __proto__: WebInspector.SDKObject.prototype
-}
+};
 
 
 /**
@@ -838,7 +838,7 @@ WebInspector.AnimationModel.AnimationGroup.prototype = {
 WebInspector.AnimationDispatcher = function(animationModel)
 {
     this._animationModel = animationModel;
-}
+};
 
 WebInspector.AnimationDispatcher.prototype = {
     /**
@@ -867,7 +867,7 @@ WebInspector.AnimationDispatcher.prototype = {
     {
         this._animationModel.animationStarted(payload);
     }
-}
+};
 
 /**
  * @constructor
@@ -883,7 +883,7 @@ WebInspector.AnimationModel.ScreenshotCapture = function(target, model, resource
     resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.ScreencastFrame, this._screencastFrame, this);
     this._model = model;
     this._model.addEventListener(WebInspector.AnimationModel.Events.ModelReset, this._stopScreencast, this);
-}
+};
 
 /** @typedef {{ endTime: number, screenshots: !Array.<string>}} */
 WebInspector.AnimationModel.ScreenshotCapture.Request;
@@ -946,4 +946,4 @@ WebInspector.AnimationModel.ScreenshotCapture.prototype = {
         this._capturing = false;
         this._target.pageAgent().stopScreencast();
     }
-}
+};

@@ -42,7 +42,7 @@ WebInspector.PaintProfilerSnapshot = function(target, snapshotId)
 {
     this._target = target;
     this._id = snapshotId;
-}
+};
 
 /**
  * @param {!WebInspector.Target} target
@@ -53,7 +53,7 @@ WebInspector.PaintProfilerSnapshot.loadFromFragments = function(target, fragment
 {
     var wrappedCallback = InspectorBackend.wrapClientCallback(callback, "LayerTreeAgent.loadSnapshot(): ", WebInspector.PaintProfilerSnapshot.bind(null, target));
     target.layerTreeAgent().loadSnapshot(fragments, wrappedCallback);
-}
+};
 
 /**
  * @param {!WebInspector.Target} target
@@ -68,7 +68,7 @@ WebInspector.PaintProfilerSnapshot.load = function(target, encodedPicture, callb
         picture: encodedPicture
     };
     WebInspector.PaintProfilerSnapshot.loadFromFragments(target, [fragment], callback);
-}
+};
 
 WebInspector.PaintProfilerSnapshot.prototype = {
     dispose: function()
@@ -145,4 +145,4 @@ WebInspector.PaintProfilerLogItem = function(rawEntry, commandIndex)
     this.method = rawEntry.method;
     this.params = rawEntry.params;
     this.commandIndex = commandIndex;
-}
+};

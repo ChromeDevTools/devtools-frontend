@@ -24,7 +24,7 @@ WebInspector.CSSStyleSheetHeader = function(cssModel, payload)
     if (payload.ownerNode)
         this.ownerNode = new WebInspector.DeferredDOMNode(cssModel.target(), payload.ownerNode);
     this.setSourceMapURL(payload.sourceMapURL);
-}
+};
 
 WebInspector.CSSStyleSheetHeader.prototype = {
     /**
@@ -159,7 +159,7 @@ WebInspector.CSSStyleSheetHeader.prototype = {
     {
         return this.origin === "inspector";
     }
-}
+};
 
 /**
  * @constructor
@@ -169,7 +169,7 @@ WebInspector.CSSStyleSheetHeader.prototype = {
 WebInspector.CSSStyleSheetHeader.OriginalContentProvider = function(header)
 {
     this._header = header;
-}
+};
 
 WebInspector.CSSStyleSheetHeader.OriginalContentProvider.prototype = {
     /**
@@ -219,4 +219,4 @@ WebInspector.CSSStyleSheetHeader.OriginalContentProvider.prototype = {
 
         this.requestContent().then(performSearch);
     }
-}
+};

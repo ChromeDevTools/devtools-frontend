@@ -22,13 +22,13 @@ WebInspector.ServiceWorkerCacheModel = function(target, securityOriginManager)
 
     /** @type {boolean} */
     this._enabled = false;
-}
+};
 
 /** @enum {symbol} */
 WebInspector.ServiceWorkerCacheModel.Events = {
     CacheAdded: Symbol("CacheAdded"),
     CacheRemoved: Symbol("CacheRemoved")
-}
+};
 
 WebInspector.ServiceWorkerCacheModel.prototype = {
     enable: function()
@@ -279,7 +279,7 @@ WebInspector.ServiceWorkerCacheModel.prototype = {
     },
 
     __proto__: WebInspector.SDKModel.prototype
-}
+};
 
 /**
  * @constructor
@@ -290,7 +290,7 @@ WebInspector.ServiceWorkerCacheModel.Entry = function(request, response)
 {
     this.request = request;
     this.response = response;
-}
+};
 
 /**
  * @constructor
@@ -303,7 +303,7 @@ WebInspector.ServiceWorkerCacheModel.Cache = function(securityOrigin, cacheName,
     this.securityOrigin = securityOrigin;
     this.cacheName = cacheName;
     this.cacheId = cacheId;
-}
+};
 
 WebInspector.ServiceWorkerCacheModel.Cache.prototype = {
     /**
@@ -323,7 +323,7 @@ WebInspector.ServiceWorkerCacheModel.Cache.prototype = {
     {
         return this.securityOrigin + this.cacheName;
     }
-}
+};
 
 /**
  * @param {!WebInspector.Target} target
@@ -337,5 +337,5 @@ WebInspector.ServiceWorkerCacheModel.fromTarget = function(target)
     if (!instance)
         instance = new WebInspector.ServiceWorkerCacheModel(target, WebInspector.SecurityOriginManager.fromTarget(target));
     return instance;
-}
+};
 

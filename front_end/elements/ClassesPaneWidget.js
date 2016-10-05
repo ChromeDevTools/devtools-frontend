@@ -27,7 +27,7 @@ WebInspector.ClassesPaneWidget = function()
     /** @type {!Set<!WebInspector.DOMNode>} */
     this._mutatingNodes = new Set();
     WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this._update, this);
-}
+};
 
 WebInspector.ClassesPaneWidget._classesSymbol = Symbol("WebInspector.ClassesPaneWidget._classesSymbol");
 
@@ -187,7 +187,7 @@ WebInspector.ClassesPaneWidget.prototype = {
     },
 
     __proto__: WebInspector.Widget.prototype
-}
+};
 
 /**
  * @constructor
@@ -200,7 +200,7 @@ WebInspector.ClassesPaneWidget.ButtonProvider = function()
     this._button.element.classList.add("monospace");
     this._button.addEventListener("click", this._clicked, this);
     this._view = new WebInspector.ClassesPaneWidget();
-}
+};
 
 WebInspector.ClassesPaneWidget.ButtonProvider.prototype = {
     _clicked: function()
@@ -216,7 +216,7 @@ WebInspector.ClassesPaneWidget.ButtonProvider.prototype = {
     {
         return this._button;
     }
-}
+};
 
 /**
  * @constructor
@@ -229,7 +229,7 @@ WebInspector.ClassesPaneWidget.ClassNamePrompt = function()
     this.disableDefaultSuggestionForEmptyInput();
     this._selectedFrameId = "";
     this._classNamesPromise = null;
-}
+};
 
 WebInspector.ClassesPaneWidget.ClassNamePrompt.prototype = {
     /**
@@ -286,4 +286,4 @@ WebInspector.ClassesPaneWidget.ClassNamePrompt.prototype = {
     },
 
     __proto__: WebInspector.TextPrompt.prototype
-}
+};

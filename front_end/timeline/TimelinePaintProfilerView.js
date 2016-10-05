@@ -27,7 +27,7 @@ WebInspector.TimelinePaintProfilerView = function(frameModel)
 
     this._logTreeView = new WebInspector.PaintProfilerCommandLogView();
     this._logAndImageSplitWidget.setSidebarWidget(this._logTreeView);
-}
+};
 
 WebInspector.TimelinePaintProfilerView.prototype = {
     wasShown: function()
@@ -69,7 +69,7 @@ WebInspector.TimelinePaintProfilerView.prototype = {
         if (this._event.name === WebInspector.TimelineModel.RecordType.Paint)
             this._event.picture.requestObject(onDataAvailable.bind(this));
         else if (this._event.name === WebInspector.TimelineModel.RecordType.RasterTask)
-            this._frameModel.requestRasterTile(this._event, onSnapshotLoaded.bind(this))
+            this._frameModel.requestRasterTile(this._event, onSnapshotLoaded.bind(this));
         else
             console.assert(false, "Unexpected event type: " + this._event.name);
 
@@ -144,7 +144,7 @@ WebInspector.TimelinePaintImageView = function()
 
     this._transformController = new WebInspector.TransformController(this.element, true);
     this._transformController.addEventListener(WebInspector.TransformController.Events.TransformChanged, this._updateImagePosition, this);
-}
+};
 
 WebInspector.TimelinePaintImageView.prototype = {
     onResize: function()

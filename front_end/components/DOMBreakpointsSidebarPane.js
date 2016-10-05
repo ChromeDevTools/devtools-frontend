@@ -59,7 +59,7 @@ WebInspector.DOMBreakpointsSidebarPane = function()
 
     WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
     this._update();
-}
+};
 
 WebInspector.DOMBreakpointsSidebarPane.Marker = "breakpoint-marker";
 
@@ -404,7 +404,7 @@ WebInspector.DOMBreakpointsSidebarPane.prototype = {
     },
 
     __proto__: WebInspector.BreakpointsSidebarPaneBase.prototype
-}
+};
 
 /**
  * @constructor
@@ -414,7 +414,7 @@ WebInspector.DOMBreakpointsSidebarPane.Proxy = function()
 {
     WebInspector.VBox.call(this);
     this.registerRequiredCSS("components/breakpointsList.css");
-}
+};
 
 WebInspector.DOMBreakpointsSidebarPane.Proxy.prototype = {
     wasShown: function()
@@ -426,7 +426,7 @@ WebInspector.DOMBreakpointsSidebarPane.Proxy.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @type {!WebInspector.DOMBreakpointsSidebarPane}

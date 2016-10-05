@@ -44,7 +44,7 @@ WebInspector.SASSSourceMapping = function(cssModel, networkMapping, networkProje
         this._cssModel.addEventListener(WebInspector.CSSModel.Events.SourceMapDetached, this._sourceMapDetached, this),
         this._cssModel.addEventListener(WebInspector.CSSModel.Events.SourceMapChanged, this._sourceMapChanged, this)
     ];
-}
+};
 
 WebInspector.SASSSourceMapping.prototype = {
     /**
@@ -118,4 +118,4 @@ WebInspector.SASSSourceMapping.prototype = {
     {
         WebInspector.EventTarget.removeEventListeners(this._eventListeners);
     }
-}
+};

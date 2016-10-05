@@ -40,7 +40,7 @@ WebInspector.RequestCookiesView = function(request)
     this.element.classList.add("request-cookies-view");
 
     this._request = request;
-}
+};
 
 WebInspector.RequestCookiesView.prototype = {
     wasShown: function()
@@ -92,4 +92,4 @@ WebInspector.RequestCookiesView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

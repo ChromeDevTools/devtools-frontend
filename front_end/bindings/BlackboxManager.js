@@ -22,7 +22,7 @@ WebInspector.BlackboxManager = function(debuggerWorkspaceBinding)
     this._isBlackboxedURLCache = new Map();
 
     WebInspector.targetManager.observeTargets(this);
-}
+};
 
 WebInspector.BlackboxManager.prototype = {
     /**
@@ -449,7 +449,7 @@ WebInspector.BlackboxManager.prototype = {
         }
         return prefix + name.escapeForRegExp() + (url.endsWith(name) ? "$" : "\\b");
     }
-}
+};
 
 /** @type {!WebInspector.BlackboxManager} */
 WebInspector.blackboxManager;

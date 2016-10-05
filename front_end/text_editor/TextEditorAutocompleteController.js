@@ -25,7 +25,7 @@ WebInspector.TextEditorAutocompleteController = function(textEditor, codeMirror,
     this._codeMirror.on("changes", this._changes);
 
     this._hintElement = createElementWithClass("span", "auto-complete-text");
-}
+};
 
 WebInspector.TextEditorAutocompleteController.HintBookmark = Symbol("hint");
 
@@ -422,4 +422,4 @@ WebInspector.TextEditorAutocompleteController.prototype = {
         var metrics = this._textEditor.cursorPositionToCoordinates(line, column);
         this._anchorBox = metrics ? new AnchorBox(metrics.x, metrics.y, 0, metrics.height) : null;
     },
-}
+};

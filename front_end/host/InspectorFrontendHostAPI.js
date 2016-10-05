@@ -56,7 +56,7 @@ InspectorFrontendHostAPI.Events = {
     SetInspectedTabId: Symbol("setInspectedTabId"),
     SetUseSoftMenu: Symbol("setUseSoftMenu"),
     ShowPanel: Symbol("showPanel")
-}
+};
 
 InspectorFrontendHostAPI.EventDescriptors = [
     [InspectorFrontendHostAPI.Events.AddExtensions, "addExtensions", ["extensions"]],
@@ -300,4 +300,4 @@ InspectorFrontendHostAPI.prototype = {
      * @return {boolean}
      */
     isHostedMode: function() { }
-}
+};

@@ -15,7 +15,7 @@ WebInspector.PropertyChangeHighlighter = function(ssp, cssModel, styleSheetId, r
     this._target = cssModel.target();
     this._styleSheetId = styleSheetId;
     this._range = range;
-}
+};
 
 WebInspector.PropertyChangeHighlighter.prototype = {
     /**
@@ -89,7 +89,7 @@ WebInspector.PropertyChangeHighlighter.prototype = {
         var endsAfter = outterRange.endLine > innerRange.endLine || (outterRange.endLine === innerRange.endLine && outterRange.endColumn + eps >= innerRange.endColumn);
         return startsBefore && endsAfter;
     }
-}
+};
 
 /**
  * @constructor
@@ -100,7 +100,7 @@ WebInspector.PropertyRevealHighlighter = function(ssp, cssProperty)
 {
     this._styleSidebarPane = ssp;
     this._cssProperty = cssProperty;
-}
+};
 
 WebInspector.PropertyRevealHighlighter.prototype = {
     perform: function()
@@ -135,4 +135,4 @@ WebInspector.PropertyRevealHighlighter.prototype = {
                 { offset: 1, backgroundColor: "transparent"}
         ], { duration : 2000, easing: "cubic-bezier(0, 0, 0.2, 1)" });
     },
-}
+};

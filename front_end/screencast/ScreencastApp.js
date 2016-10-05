@@ -114,7 +114,7 @@ WebInspector.ScreencastApp._instance = function()
  */
 WebInspector.ScreencastApp.ToolbarButtonProvider = function()
 {
-}
+};
 
 WebInspector.ScreencastApp.ToolbarButtonProvider.prototype = {
     /**
@@ -125,7 +125,7 @@ WebInspector.ScreencastApp.ToolbarButtonProvider.prototype = {
     {
         return WebInspector.ScreencastApp._instance()._toggleButton;
     }
-}
+};
 
 /**
  * @constructor

@@ -41,14 +41,14 @@ WebInspector.ExtensionAuditCategory = function(extensionOrigin, id, displayName,
     this.id = id;
     this.displayName = displayName;
     this.ruleCount  = ruleCount;
-}
+};
 
 /**
  * @interface
  */
 WebInspector.ExtensionAuditCategoryResults = function()
 {
-}
+};
 
 WebInspector.ExtensionAuditCategoryResults.prototype = {
     /**
@@ -70,4 +70,4 @@ WebInspector.ExtensionAuditCategoryResults.prototype = {
     updateProgress: function(progress) { },
 
     done: function() { }
-}
+};

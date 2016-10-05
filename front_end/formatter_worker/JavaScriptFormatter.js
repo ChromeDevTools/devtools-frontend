@@ -35,7 +35,7 @@
 WebInspector.JavaScriptFormatter = function(builder)
 {
     this._builder = builder;
-}
+};
 
 WebInspector.JavaScriptFormatter.prototype = {
     /**
@@ -304,5 +304,5 @@ WebInspector.JavaScriptFormatter.prototype = {
         }
         return "";
     }
-}
+};
 

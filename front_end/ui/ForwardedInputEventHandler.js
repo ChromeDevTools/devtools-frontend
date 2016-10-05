@@ -8,7 +8,7 @@
 WebInspector.ForwardedInputEventHandler = function()
 {
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.KeyEventUnhandled, this._onKeyEventUnhandled, this);
-}
+};
 
 WebInspector.ForwardedInputEventHandler.prototype = {
     /**
@@ -29,7 +29,7 @@ WebInspector.ForwardedInputEventHandler.prototype = {
         WebInspector.shortcutRegistry.handleKey(WebInspector.KeyboardShortcut.makeKey(keyCode, modifiers), key);
         WebInspector.context.setFlavor(WebInspector.ShortcutRegistry.ForwardedShortcut, null);
     }
-}
+};
 
 /** @type {!WebInspector.ForwardedInputEventHandler} */
 WebInspector.forwardedEventHandler = new WebInspector.ForwardedInputEventHandler();

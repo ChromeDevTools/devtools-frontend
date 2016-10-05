@@ -27,7 +27,7 @@ WebInspector.XMLView = function(parsedXML)
     this._searchConfig;
 
     WebInspector.XMLView.Node.populate(this._treeOutline, parsedXML, this);
-}
+};
 
 /**
  * @param {!Document} parsedXML
@@ -42,7 +42,7 @@ WebInspector.XMLView.createSearchableView = function(parsedXML)
     xmlView.show(searchableView.element);
     xmlView.contentElement.setAttribute("tabIndex", 0);
     return searchableView;
-}
+};
 
 /**
  * @param {string} text
@@ -60,7 +60,7 @@ WebInspector.XMLView.parseXML = function(text, mimeType)
     if (parsedXML.body)
         return null;
     return parsedXML;
-}
+};
 
 WebInspector.XMLView.prototype = {
     /**
@@ -223,7 +223,7 @@ WebInspector.XMLView.prototype = {
     },
 
     __proto__: WebInspector.Widget.prototype
-}
+};
 
 /**
  * @constructor
@@ -242,7 +242,7 @@ WebInspector.XMLView.Node = function(node, closeTag, xmlView)
     this._highlightChanges = [];
     this._xmlView = xmlView;
     this._updateTitle();
-}
+};
 
 /**
  * @param {!TreeOutline|!TreeElement} root
@@ -264,7 +264,7 @@ WebInspector.XMLView.Node.populate = function(root, xmlNode, xmlView)
             continue;
         root.appendChild(new WebInspector.XMLView.Node(currentNode, false, xmlView));
     }
-}
+};
 
 WebInspector.XMLView.Node.prototype = {
     /**
@@ -320,7 +320,7 @@ WebInspector.XMLView.Node.prototype = {
                     attributeNode.name, "shadow-xml-view-attribute-name",
                     "=\"", "shadow-xml-view-tag",
                     attributeNode.value, "shadow-xml-view-attribute-value",
-                    "\"", "shadow-xml-view-tag")
+                    "\"", "shadow-xml-view-tag");
             }
             if (!this.expanded) {
                 if (node.childElementCount) {
@@ -392,4 +392,4 @@ WebInspector.XMLView.Node.prototype = {
     },
 
     __proto__: TreeElement.prototype
-}
+};

@@ -9,7 +9,7 @@
  */
 WebInspector.InplaceFormatterEditorAction = function()
 {
-}
+};
 
 WebInspector.InplaceFormatterEditorAction.prototype = {
     /**
@@ -116,4 +116,4 @@ WebInspector.InplaceFormatterEditorAction.prototype = {
             this._sourcesView.showSourceLocation(uiSourceCode, start[0], start[1]);
         }
     },
-}
+};

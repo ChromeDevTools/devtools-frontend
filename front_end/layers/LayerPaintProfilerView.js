@@ -18,7 +18,7 @@ WebInspector.LayerPaintProfilerView = function(showImageForLayerCallback)
     this.setMainWidget(this._paintProfilerView);
 
     this._paintProfilerView.addEventListener(WebInspector.PaintProfilerView.Events.WindowChanged, this._onWindowChanged, this);
-}
+};
 
 WebInspector.LayerPaintProfilerView.prototype = {
     /**

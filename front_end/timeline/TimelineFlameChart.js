@@ -43,7 +43,7 @@ WebInspector.TimelineFlameChartDataProviderBase = function(model, filters)
     this._timelineData;
     this._font = "11px " + WebInspector.fontFamily();
     this._filters = filters;
-}
+};
 
 WebInspector.TimelineFlameChartDataProviderBase.prototype = {
     /**
@@ -264,7 +264,7 @@ WebInspector.TimelineFlameChartDataProviderBase.prototype = {
     {
         return this._filters.every(function(filter) { return filter.accept(event); });
     }
-}
+};
 
 /**
  * @enum {symbol}
@@ -336,7 +336,7 @@ WebInspector.TimelineFlameChartDataProvider = function(model, frameModel, irMode
         nestingLevel: 1,
         shareHeaderLine: true
     };
-}
+};
 
 WebInspector.TimelineFlameChartDataProvider.InstantEventVisibleDurationMs = 0.001;
 
@@ -941,7 +941,7 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
         var type = this._entryType(entryIndex);
         var timelineSelection = null;
         if (type === WebInspector.TimelineFlameChartEntryType.Event)
-            timelineSelection = WebInspector.TimelineSelection.fromTraceEvent(/** @type {!WebInspector.TracingModel.Event} */ (this._entryData[entryIndex]))
+            timelineSelection = WebInspector.TimelineSelection.fromTraceEvent(/** @type {!WebInspector.TracingModel.Event} */ (this._entryData[entryIndex]));
         else if (type === WebInspector.TimelineFlameChartEntryType.Frame)
             timelineSelection = WebInspector.TimelineSelection.fromFrame(/** @type {!WebInspector.TimelineFrame} */ (this._entryData[entryIndex]));
         if (timelineSelection)
@@ -967,7 +967,7 @@ WebInspector.TimelineFlameChartDataProvider.prototype = {
     },
 
     __proto__: WebInspector.TimelineFlameChartDataProviderBase.prototype
-}
+};
 
 /**
  * @constructor
@@ -980,7 +980,7 @@ WebInspector.TimelineFlameChartNetworkDataProvider = function(model)
     var loadingCategory = WebInspector.TimelineUIUtils.categories()["loading"];
     this._waitingColor = loadingCategory.childColor;
     this._processingColor = loadingCategory.color;
-}
+};
 
 WebInspector.TimelineFlameChartNetworkDataProvider.prototype = {
     /**
@@ -1230,7 +1230,7 @@ WebInspector.TimelineFlameChartNetworkDataProvider.prototype = {
     },
 
     __proto__: WebInspector.TimelineFlameChartDataProviderBase.prototype
-}
+};
 
 /**
  * @constructor
@@ -1244,7 +1244,7 @@ WebInspector.TimelineFlameChartMarker = function(startTime, startOffset, style)
     this._startTime = startTime;
     this._startOffset = startOffset;
     this._style = style;
-}
+};
 
 WebInspector.TimelineFlameChartMarker.prototype = {
     /**
@@ -1311,7 +1311,7 @@ WebInspector.TimelineFlameChartMarker.prototype = {
         }
         context.restore();
     }
-}
+};
 
 /**
  * @constructor
@@ -1349,7 +1349,7 @@ WebInspector.TimelineFlameChartView = function(delegate, timelineModel, frameMod
     this._mainView.addEventListener(WebInspector.FlameChart.Events.EntrySelected, this._onMainEntrySelected, this);
     this._networkView.addEventListener(WebInspector.FlameChart.Events.EntrySelected, this._onNetworkEntrySelected, this);
     WebInspector.blackboxManager.addChangeListener(this.refreshRecords, this);
-}
+};
 
 WebInspector.TimelineFlameChartView.prototype = {
     /**
@@ -1511,7 +1511,7 @@ WebInspector.TimelineFlameChartView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
   * @constructor
@@ -1522,4 +1522,4 @@ WebInspector.TimelineFlameChartView.Selection = function(selection, entryIndex)
 {
     this.timelineSelection = selection;
     this.entryIndex = entryIndex;
-}
+};

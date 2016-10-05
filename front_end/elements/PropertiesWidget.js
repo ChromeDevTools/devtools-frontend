@@ -42,7 +42,7 @@ WebInspector.PropertiesWidget = function()
     WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this._setNode, this);
     this._node = WebInspector.context.flavor(WebInspector.DOMNode);
     this.update();
-}
+};
 
 WebInspector.PropertiesWidget._objectGroupName = "properties-sidebar-pane";
 
@@ -76,7 +76,7 @@ WebInspector.PropertiesWidget.prototype = {
 
         this._lastRequestedNode = this._node;
         return this._node.resolveToObjectPromise(WebInspector.PropertiesWidget._objectGroupName)
-            .then(nodeResolved.bind(this))
+            .then(nodeResolved.bind(this));
 
         /**
          * @param {?WebInspector.RemoteObject} object
@@ -183,4 +183,4 @@ WebInspector.PropertiesWidget.prototype = {
     },
 
     __proto__: WebInspector.ThrottledWidget.prototype
-}
+};

@@ -206,7 +206,7 @@ WebInspector.TextUtils = {
                 doSplit(stringAfterMatches, regexIndex + 1, startIndex + currentIndex);
         }
     }
-}
+};
 
 WebInspector.TextUtils._SpaceCharRegex = /\s/;
 
@@ -218,7 +218,7 @@ WebInspector.TextUtils.Indent = {
     FourSpaces: "    ",
     EightSpaces: "        ",
     TabCharacter: "\t"
-}
+};
 
 /**
  * @constructor
@@ -233,7 +233,7 @@ WebInspector.TextUtils.BalancedJSONTokenizer = function(callback, findMultiple)
     this._buffer = "";
     this._findMultiple = findMultiple || false;
     this._closingDoubleQuoteRegex = /[^\\](?:\\\\)*"/g;
-}
+};
 
 WebInspector.TextUtils.BalancedJSONTokenizer.prototype = {
     /**
@@ -292,12 +292,12 @@ WebInspector.TextUtils.BalancedJSONTokenizer.prototype = {
     {
         return this._buffer;
     }
-}
+};
 
 /**
  * @interface
  */
-WebInspector.TokenizerFactory = function() { }
+WebInspector.TokenizerFactory = function() { };
 
 WebInspector.TokenizerFactory.prototype = {
     /**
@@ -305,4 +305,4 @@ WebInspector.TokenizerFactory.prototype = {
      * @return {function(string, function(string, ?string, number, number))}
      */
     createTokenizer: function(mimeType) { }
-}
+};

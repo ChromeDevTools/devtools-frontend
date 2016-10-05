@@ -33,7 +33,7 @@
  */
 WebInspector.UserMetrics = function()
 {
-}
+};
 
 // Codes below are used to collect UMA histograms in the Chromium port.
 // Do not change the values below, additional actions are needed on the Chromium side
@@ -58,7 +58,7 @@ WebInspector.UserMetrics.Action = {
     CommandEvaluatedInConsolePanel: 15,
     DOMPropertiesExpanded: 16,
     ResizedViewInResponsiveMode: 17
-}
+};
 
 WebInspector.UserMetrics._PanelCodes = {
     elements: 1,
@@ -77,7 +77,7 @@ WebInspector.UserMetrics._PanelCodes = {
     "drawer-sensors": 14,
     "drawer-sources.search": 15,
     security: 16
-}
+};
 
 WebInspector.UserMetrics.prototype = {
     /**
@@ -106,7 +106,7 @@ WebInspector.UserMetrics.prototype = {
         var size = Object.keys(WebInspector.UserMetrics.Action).length + 1;
         InspectorFrontendHost.recordEnumeratedHistogram("DevTools.ActionTaken", action, size);
     }
-}
+};
 
 /** @type {!WebInspector.UserMetrics} */
 WebInspector.userMetrics = new WebInspector.UserMetrics();

@@ -27,7 +27,7 @@ WebInspector.SecurityPanel = function()
     this._filterRequestCounts = new Map();
 
     WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.Network);
-}
+};
 
 /** @typedef {string} */
 WebInspector.SecurityPanel.Origin;
@@ -321,7 +321,7 @@ WebInspector.SecurityPanel.prototype = {
     },
 
     __proto__: WebInspector.PanelWithSidebar.prototype
-}
+};
 
 /**
  * @return {!WebInspector.SecurityPanel}
@@ -329,7 +329,7 @@ WebInspector.SecurityPanel.prototype = {
 WebInspector.SecurityPanel._instance = function()
 {
     return /** @type {!WebInspector.SecurityPanel} */ (self.runtime.sharedInstance(WebInspector.SecurityPanel));
-}
+};
 
 /**
  * @param {string} text
@@ -348,7 +348,7 @@ WebInspector.SecurityPanel.createCertificateViewerButton = function(text, panel)
     }
 
     return createTextButton(text, showCertificateViewer, "security-certificate-button");
-}
+};
 
 /**
  * @param {string} text
@@ -372,7 +372,7 @@ WebInspector.SecurityPanel.createCertificateViewerButton2 = function(text, origi
     }
 
     return createTextButton(text, showCertificateViewer, "security-certificate-button");
-}
+};
 
 /**
  * @constructor
@@ -414,7 +414,7 @@ WebInspector.SecurityPanelSidebarTree = function(mainViewElement, showOriginInPa
 
     /** @type {!Map<!WebInspector.SecurityPanel.Origin, !WebInspector.SecurityPanelSidebarTreeElement>} */
     this._elementsByOrigin = new Map();
-}
+};
 
 WebInspector.SecurityPanelSidebarTree.prototype = {
     /**
@@ -505,7 +505,7 @@ WebInspector.SecurityPanelSidebarTree.prototype = {
     },
 
     __proto__: TreeOutlineInShadow.prototype
-}
+};
 
 
 /**
@@ -518,7 +518,7 @@ WebInspector.SecurityPanelSidebarTree.OriginGroupName = {
     NonSecure: WebInspector.UIString("Non-Secure Origins"),
     Secure: WebInspector.UIString("Secure Origins"),
     Unknown: WebInspector.UIString("Unknown / Canceled")
-}
+};
 
 
 /**
@@ -539,7 +539,7 @@ WebInspector.SecurityPanelSidebarTreeElement = function(text, selectCallback, cl
     this._iconElement.classList.add(this._cssPrefix);
     this.listItemElement.createChild("span", "title").textContent = text;
     this.setSecurityState(SecurityAgent.SecurityState.Unknown);
-}
+};
 
 WebInspector.SecurityPanelSidebarTreeElement.prototype = {
     /**
@@ -573,7 +573,7 @@ WebInspector.SecurityPanelSidebarTreeElement.prototype = {
     },
 
     __proto__: TreeElement.prototype
-}
+};
 
 /**
  * @param {!WebInspector.SecurityPanelSidebarTreeElement} a
@@ -583,7 +583,7 @@ WebInspector.SecurityPanelSidebarTreeElement.prototype = {
 WebInspector.SecurityPanelSidebarTreeElement.SecurityStateComparator = function(a, b)
 {
     return WebInspector.SecurityModel.SecurityStateComparator(a.securityState(), b.securityState());
-}
+};
 
 /**
  * @constructor
@@ -618,7 +618,7 @@ WebInspector.SecurityMainView = function(panel)
     this._summarySection.createChild("div", "triangle-pointer-container").createChild("div", "triangle-pointer-wrapper").createChild("div", "triangle-pointer");
 
     this._summaryText = this._summarySection.createChild("div", "security-summary-text");
-}
+};
 
 WebInspector.SecurityMainView.prototype = {
     /**
@@ -663,7 +663,7 @@ WebInspector.SecurityMainView.prototype = {
             "insecure": WebInspector.UIString("This page is insecure (broken HTTPS)."),
             "neutral":  WebInspector.UIString("This page is not secure."),
             "secure":   WebInspector.UIString("This page is secure (valid HTTPS).")
-        }
+        };
         this._summaryText.textContent = summaryExplanationStrings[this._securityState];
 
         this._explanations = explanations,
@@ -814,7 +814,7 @@ WebInspector.SecurityMainView.prototype = {
 
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @constructor
@@ -952,7 +952,7 @@ WebInspector.SecurityOriginView = function(panel, origin, originState)
         noInfoSection.createChild("div", "origin-view-section-title").textContent = WebInspector.UIString("No Security Information");
         noInfoSection.createChild("div").textContent = WebInspector.UIString("No security details are available for this origin.");
     }
-}
+};
 
 WebInspector.SecurityOriginView.prototype = {
 
@@ -982,7 +982,7 @@ WebInspector.SecurityOriginView.prototype = {
                 function toggleSANTruncation()
                 {
                     if (sanDiv.classList.contains("truncated-san")) {
-                        sanDiv.classList.remove("truncated-san")
+                        sanDiv.classList.remove("truncated-san");
                         truncatedSANToggle.textContent = WebInspector.UIString("Show less");
                     } else {
                         sanDiv.classList.add("truncated-san");
@@ -1010,7 +1010,7 @@ WebInspector.SecurityOriginView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @constructor
@@ -1019,7 +1019,7 @@ WebInspector.SecurityDetailsTable = function()
 {
     this._element = createElement("table");
     this._element.classList.add("details-table");
-}
+};
 
 WebInspector.SecurityDetailsTable.prototype = {
 
@@ -1047,4 +1047,4 @@ WebInspector.SecurityDetailsTable.prototype = {
             valueDiv.appendChild(value);
         }
     }
-}
+};

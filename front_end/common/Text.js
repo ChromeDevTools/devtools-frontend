@@ -9,7 +9,7 @@
 WebInspector.Text = function(value)
 {
     this._value = value;
-}
+};
 
 WebInspector.Text.prototype = {
     /**
@@ -113,7 +113,7 @@ WebInspector.Text.prototype = {
         var sourceRange = this.toSourceRange(range);
         return this._value.substr(sourceRange.offset, sourceRange.length);
     }
-}
+};
 
 /**
  * @constructor
@@ -125,7 +125,7 @@ WebInspector.TextCursor = function(lineEndings)
     this._offset = 0;
     this._lineNumber = 0;
     this._columnNumber = 0;
-}
+};
 
 WebInspector.TextCursor.prototype = {
     /**
@@ -172,4 +172,4 @@ WebInspector.TextCursor.prototype = {
     {
         return this._columnNumber;
     }
-}
+};

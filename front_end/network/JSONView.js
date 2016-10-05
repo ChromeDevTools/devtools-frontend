@@ -50,7 +50,7 @@ WebInspector.JSONView = function(parsedJSON)
     this._currentSearchTreeElements = [];
     /** @type {?RegExp} */
     this._searchRegex = null;
-}
+};
 
 /**
  * @param {!WebInspector.ParsedJSON} parsedJSON
@@ -65,7 +65,7 @@ WebInspector.JSONView.createSearchableView = function(parsedJSON)
     jsonView.show(searchableView.element);
     jsonView.element.setAttribute("tabIndex", 0);
     return searchableView;
-}
+};
 
 /**
  * @param {?string} text
@@ -79,7 +79,7 @@ WebInspector.JSONView.parseJSON = function(text)
     if (!returnObj)
         return Promise.resolve(/** @type {?WebInspector.ParsedJSON} */ (null));
     return WebInspector.formatterWorkerPool.runTask("relaxedJSONParser", {content: returnObj.data})
-        .then(handleReturnedJSON)
+        .then(handleReturnedJSON);
 
     /**
      * @param {?MessageEvent} event
@@ -92,7 +92,7 @@ WebInspector.JSONView.parseJSON = function(text)
         returnObj.data = event.data;
         return returnObj;
     }
-}
+};
 
 /**
  * @param {string} text
@@ -120,7 +120,7 @@ WebInspector.JSONView._extractJSON = function(text)
         return null;
 
     return new WebInspector.ParsedJSON(text, prefix, suffix);
-}
+};
 
 /**
  * @param {string} text
@@ -136,7 +136,7 @@ WebInspector.JSONView._findBrackets = function(text, open, close)
     if (start === -1 || end === -1 || end < start)
         length = -1;
     return {start: start, end: end, length: length};
-}
+};
 
 WebInspector.JSONView.prototype = {
     wasShown: function()
@@ -296,7 +296,7 @@ WebInspector.JSONView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @constructor
@@ -309,4 +309,4 @@ WebInspector.ParsedJSON = function(data, prefix, suffix)
     this.data = data;
     this.prefix = prefix;
     this.suffix = suffix;
-}
+};

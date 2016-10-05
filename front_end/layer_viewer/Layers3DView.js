@@ -68,7 +68,7 @@ WebInspector.Layers3DView = function(layerViewHost)
     this._rects = [];
 
     this._layerViewHost.showInternalLayersSetting().addChangeListener(this._update, this);
-}
+};
 
 /** @typedef {{borderColor: !Array.<number>, borderWidth: number}} */
 WebInspector.Layers3DView.LayerStyle;
@@ -82,7 +82,7 @@ WebInspector.Layers3DView.PaintTile;
 WebInspector.Layers3DView.OutlineType = {
     Hovered: "hovered",
     Selected: "selected"
-}
+};
 
 /**
  * @enum {string}
@@ -91,7 +91,7 @@ WebInspector.Layers3DView.OutlineType = {
 WebInspector.Layers3DView.Events = {
     LayerSnapshotRequested: Symbol("LayerSnapshotRequested"),
     PaintProfilerRequested: Symbol("PaintProfilerRequested")
-}
+};
 
 /**
  * @enum {number}
@@ -100,7 +100,7 @@ WebInspector.Layers3DView.ChromeTexture = {
     Left: 0,
     Middle: 1,
     Right: 2
-}
+};
 
 /**
  * @enum {string}
@@ -109,7 +109,7 @@ WebInspector.Layers3DView.ScrollRectTitles = {
     RepaintsOnScroll: WebInspector.UIString("repaints on scroll"),
     TouchEventHandler: WebInspector.UIString("touch event listener"),
     WheelEventHandler: WebInspector.UIString("mousewheel event listener")
-}
+};
 
 WebInspector.Layers3DView.FragmentShader = "" +
     "precision mediump float;\n" +
@@ -803,7 +803,7 @@ WebInspector.Layers3DView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @constructor
@@ -813,12 +813,12 @@ WebInspector.LayerTextureManager = function()
 {
     WebInspector.Object.call(this);
     this.reset();
-}
+};
 
 /** @enum {symbol} */
 WebInspector.LayerTextureManager.Events = {
     TextureUpdated: Symbol("TextureUpated")
-}
+};
 
 WebInspector.LayerTextureManager.prototype = {
     reset: function()
@@ -971,7 +971,7 @@ WebInspector.LayerTextureManager.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
  * @constructor
@@ -988,7 +988,7 @@ WebInspector.Layers3DView.Rectangle = function(relatedObject)
     this.fillColor = null;
     /** @type {?WebGLTexture} */
     this.texture = null;
-}
+};
 
 WebInspector.Layers3DView.Rectangle.prototype = {
     /**
@@ -1082,7 +1082,7 @@ WebInspector.Layers3DView.Rectangle.prototype = {
         }
         return t;
     }
-}
+};
 
 /**
  * @constructor
@@ -1098,4 +1098,4 @@ WebInspector.LayerTextureManager.Tile = function(snapshot, rect, traceEvent)
     this.scale = 0;
     /** @type {?WebGLTexture} */
     this.texture = null;
-}
+};

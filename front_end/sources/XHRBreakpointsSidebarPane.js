@@ -23,7 +23,7 @@ WebInspector.XHRBreakpointsSidebarPane = function()
     this.emptyElement.addEventListener("contextmenu", this._emptyElementContextMenu.bind(this), true);
     WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.Browser);
     this._update();
-}
+};
 
 WebInspector.XHRBreakpointsSidebarPane.prototype = {
     /**
@@ -274,4 +274,4 @@ WebInspector.XHRBreakpointsSidebarPane.prototype = {
     },
 
     __proto__: WebInspector.BreakpointsSidebarPaneBase.prototype
-}
+};

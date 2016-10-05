@@ -16,7 +16,7 @@ WebInspector.NetworkConditionsSelector = function(populateCallback, selectCallba
     this._manager = WebInspector.multitargetNetworkManager;
     this._manager.addEventListener(WebInspector.MultitargetNetworkManager.Events.ConditionsChanged, this._conditionsChanged, this);
     this._populateOptions();
-}
+};
 
 /** @typedef {!{title: string, items: !Array<!WebInspector.NetworkManager.Conditions>}} */
 WebInspector.NetworkConditionsGroup;
@@ -37,7 +37,7 @@ WebInspector.NetworkConditionsSelector._throughputText = function(throughput, pl
     if (throughputInKbps < 1024 * 10)
         return WebInspector.UIString("%.1f%sMb/s", throughputInKbps / 1024, delimiter);
     return WebInspector.UIString("%d%sMb/s", (throughputInKbps / 1024) | 0, delimiter);
-}
+};
 
 /** @type {!Array.<!WebInspector.NetworkManager.Conditions>} */
 WebInspector.NetworkConditionsSelector._presets = [
@@ -71,7 +71,7 @@ WebInspector.NetworkConditionsSelector._conditionsTitle = function(conditions, p
     var pattern = plainText ? "%s (%dms, %s, %s)" : "%s (%dms RTT, %s\u2b07, %s\u2b06)";
     var title = WebInspector.UIString(pattern, conditionTitle, conditions.latency, downloadText, uploadText);
     return {text: title, title: WebInspector.UIString("Maximum download throughput: %s.\r\nMaximum upload throughput: %s.\r\nMinimum round-trip time: %dms.", downloadText, uploadText, conditions.latency)};
-}
+};
 
 WebInspector.NetworkConditionsSelector.prototype = {
     _populateOptions: function()
@@ -119,7 +119,7 @@ WebInspector.NetworkConditionsSelector.prototype = {
         }
         return false;
     }
-}
+};
 
 /**
  * @param {!HTMLSelectElement} selectElement
@@ -173,7 +173,7 @@ WebInspector.NetworkConditionsSelector.decorateSelect = function(selectElement)
         if (selectElement.selectedIndex !== index)
             selectElement.selectedIndex = index;
     }
-}
+};
 
 /**
  * @return {!WebInspector.ToolbarMenuButton}
@@ -228,7 +228,7 @@ WebInspector.NetworkConditionsSelector.createToolbarMenuButton = function()
         selectedIndex = index;
         button.setText(options[index].title);
     }
-}
+};
 
 /**
  * @return {!WebInspector.ToolbarCheckbox}
@@ -259,7 +259,7 @@ WebInspector.NetworkConditionsSelector.createOfflineToolbarCheckbox = function()
         checkbox.setChecked(conditions === WebInspector.NetworkManager.OfflineConditions);
     }
     return checkbox;
-}
+};
 
 /**
  * @constructor
@@ -286,7 +286,7 @@ WebInspector.NetworkConditionsSettingsTab = function()
 
     this.setDefaultFocusedElement(addButton);
     this.contentElement.tabIndex = 0;
-}
+};
 
 WebInspector.NetworkConditionsSettingsTab.prototype = {
     wasShown: function()
@@ -468,7 +468,7 @@ WebInspector.NetworkConditionsSettingsTab.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @constructor
@@ -476,7 +476,7 @@ WebInspector.NetworkConditionsSettingsTab.prototype = {
  */
 WebInspector.NetworkConditionsActionDelegate = function()
 {
-}
+};
 
 WebInspector.NetworkConditionsActionDelegate.prototype = {
     /**
@@ -497,4 +497,4 @@ WebInspector.NetworkConditionsActionDelegate.prototype = {
         }
         return false;
     }
-}
+};

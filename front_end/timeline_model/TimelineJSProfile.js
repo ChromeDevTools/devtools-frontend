@@ -43,7 +43,7 @@ WebInspector.TimelineJSProfileProcessor.generateTracingEventsFromCpuProfile = fu
         jsEvents.push(jsSampleEvent);
     }
     return jsEvents;
-}
+};
 
 /**
  * @param {!Array<!WebInspector.TracingModel.Event>} events
@@ -213,7 +213,7 @@ WebInspector.TimelineJSProfileProcessor.generateJSFrameEvents = function(events)
     if (firstTopLevelEvent)
         WebInspector.TimelineModel.forEachEvent(events, onStartEvent, onEndEvent, onInstantEvent, firstTopLevelEvent.startTime);
     return jsFrameEvents;
-}
+};
 
 /**
  * @constructor
@@ -222,7 +222,7 @@ WebInspector.TimelineJSProfileProcessor.CodeMap = function()
 {
     /** @type {!Map<string, !WebInspector.TimelineJSProfileProcessor.CodeMap.Bank>} */
     this._banks = new Map();
-}
+};
 
 /**
  * @constructor
@@ -235,7 +235,7 @@ WebInspector.TimelineJSProfileProcessor.CodeMap.Entry = function(address, size, 
     this.address = address;
     this.size = size;
     this.callFrame = callFrame;
-}
+};
 
 /**
  * @param {number} address
@@ -245,7 +245,7 @@ WebInspector.TimelineJSProfileProcessor.CodeMap.Entry = function(address, size, 
 WebInspector.TimelineJSProfileProcessor.CodeMap.comparator = function(address, entry)
 {
     return address - entry.address;
-}
+};
 
 WebInspector.TimelineJSProfileProcessor.CodeMap.prototype = {
     /**
@@ -325,7 +325,7 @@ WebInspector.TimelineJSProfileProcessor.CodeMap.prototype = {
         addressHex = addressHex.slice(2);  // cut 0x prefix.
         return parseInt(addressHex.slice(-bankSizeHexDigits), 16);
     }
-}
+};
 
 /**
  * @constructor
@@ -334,7 +334,7 @@ WebInspector.TimelineJSProfileProcessor.CodeMap.Bank = function()
 {
     /** @type {!Array<!WebInspector.TimelineJSProfileProcessor.CodeMap.Entry>} */
     this._entries = [];
-}
+};
 
 WebInspector.TimelineJSProfileProcessor.CodeMap.Bank.prototype = {
     /**
@@ -379,7 +379,7 @@ WebInspector.TimelineJSProfileProcessor.CodeMap.Bank.prototype = {
         ++index;
         this._entries.splice(index, lastIndex - index, newEntry);
     }
-}
+};
 
 /**
  * @param {string} name
@@ -435,7 +435,7 @@ WebInspector.TimelineJSProfileProcessor._buildCallFrame = function(name, scriptI
     var line = urlData.lineNumber || 0;
     var column = urlData.columnNumber || 0;
     return createFrame(functionName, url, String(scriptId), line, column, isNative);
-}
+};
 
 /**
  * @param {!Array<!WebInspector.TracingModel.Event>} events
@@ -495,4 +495,4 @@ WebInspector.TimelineJSProfileProcessor.processRawV8Samples = function(events)
     }
 
     return samples;
-}
+};

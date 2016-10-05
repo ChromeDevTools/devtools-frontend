@@ -58,7 +58,7 @@ WebInspector.ApplicationCacheItemsView = function(model, frameId)
     // FIXME: Status bar items don't work well enough yet, so they are being hidden.
     // http://webkit.org/b/41637 Web Inspector: Give Semantics to "Refresh" and "Delete" Buttons in ApplicationCache DataGrid
     this._deleteButton.element.style.display = "none";
-}
+};
 
 WebInspector.ApplicationCacheItemsView.prototype = {
     /**
@@ -259,5 +259,5 @@ WebInspector.ApplicationCacheItemsView.prototype = {
     },
 
     __proto__: WebInspector.SimpleView.prototype
-}
+};
 

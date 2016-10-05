@@ -122,7 +122,7 @@ WebInspector.CSSMatchedStyles = function(cssModel, node, inlinePayload, attribut
             this._setSelectorMatches(node, selector.text, true);
         }
     }
-}
+};
 
 WebInspector.CSSMatchedStyles.prototype = {
     /**
@@ -435,10 +435,10 @@ WebInspector.CSSMatchedStyles.prototype = {
             }
         }
     }
-}
+};
 
 /** @enum {string} */
 WebInspector.CSSMatchedStyles.PropertyState = {
     Active: "Active",
     Overloaded: "Overloaded"
-}
+};

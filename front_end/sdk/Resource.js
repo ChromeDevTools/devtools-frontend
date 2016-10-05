@@ -55,7 +55,7 @@ WebInspector.Resource = function(target, request, url, documentURL, frameId, loa
     this._pendingContentCallbacks = [];
     if (this._request && !this._request.finished)
         this._request.addEventListener(WebInspector.NetworkRequest.Events.FinishedLoading, this._requestFinished, this);
-}
+};
 
 WebInspector.Resource.prototype = {
     /**
@@ -324,5 +324,5 @@ WebInspector.Resource.prototype = {
     },
 
     __proto__: WebInspector.SDKObject.prototype
-}
+};
 

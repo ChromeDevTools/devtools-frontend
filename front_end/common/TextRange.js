@@ -41,7 +41,7 @@ WebInspector.TextRange = function(startLine, startColumn, endLine, endColumn)
     this.startColumn = startColumn;
     this.endLine = endLine;
     this.endColumn = endColumn;
-}
+};
 
 /**
  * @param {number} line
@@ -51,7 +51,7 @@ WebInspector.TextRange = function(startLine, startColumn, endLine, endColumn)
 WebInspector.TextRange.createFromLocation = function(line, column)
 {
     return new WebInspector.TextRange(line, column, line, column);
-}
+};
 
 /**
  * @param {!Object} serializedTextRange
@@ -60,7 +60,7 @@ WebInspector.TextRange.createFromLocation = function(line, column)
 WebInspector.TextRange.fromObject = function(serializedTextRange)
 {
     return new WebInspector.TextRange(serializedTextRange.startLine, serializedTextRange.startColumn, serializedTextRange.endLine, serializedTextRange.endColumn);
-}
+};
 
 /**
  * @param {!WebInspector.TextRange} range1
@@ -70,7 +70,7 @@ WebInspector.TextRange.fromObject = function(serializedTextRange)
 WebInspector.TextRange.comparator = function(range1, range2)
 {
     return range1.compareTo(range2);
-}
+};
 
 WebInspector.TextRange.prototype = {
     /**
@@ -276,7 +276,7 @@ WebInspector.TextRange.prototype = {
             return columnNumber <= this.endColumn;
         return this.startLine < lineNumber && lineNumber < this.endLine;
     }
-}
+};
 
 /**
  * @param {!WebInspector.TextRange} oldRange
@@ -298,7 +298,7 @@ WebInspector.TextRange.fromEdit = function(oldRange, newText)
         oldRange.startColumn,
         endLine,
         endColumn);
-}
+};
 
 /**
  * @constructor
@@ -309,7 +309,7 @@ WebInspector.SourceRange = function(offset, length)
 {
     this.offset = offset;
     this.length = length;
-}
+};
 
 /**
  * @constructor
@@ -322,7 +322,7 @@ WebInspector.SourceEdit = function(sourceURL, oldRange, newText)
     this.sourceURL = sourceURL;
     this.oldRange = oldRange;
     this.newText = newText;
-}
+};
 
 WebInspector.SourceEdit.prototype = {
     /**
@@ -332,7 +332,7 @@ WebInspector.SourceEdit.prototype = {
     {
         return WebInspector.TextRange.fromEdit(this.oldRange, this.newText);
     },
-}
+};
 
 /**
  * @param {!WebInspector.SourceEdit} edit1
@@ -342,4 +342,4 @@ WebInspector.SourceEdit.prototype = {
 WebInspector.SourceEdit.comparator = function(edit1, edit2)
 {
     return WebInspector.TextRange.comparator(edit1.oldRange, edit2.oldRange);
-}
+};

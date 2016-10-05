@@ -49,7 +49,7 @@ InspectorBackendClass.DevToolsStubErrorCode = -32015;
 InspectorBackendClass.reportProtocolError = function(error, messageObject)
 {
     console.error(error + ": " + JSON.stringify(messageObject));
-}
+};
 
 InspectorBackendClass.prototype = {
     /**
@@ -99,7 +99,7 @@ InspectorBackendClass.prototype = {
          */
         function registerDispatcher(dispatcher)
         {
-            this.registerDispatcher(domain, dispatcher)
+            this.registerDispatcher(domain, dispatcher);
         }
 
         window.Protocol.Agents.prototype["register" + domain + "Dispatcher"] = registerDispatcher;
@@ -198,7 +198,7 @@ InspectorBackendClass.prototype = {
         }
         return callbackWrapper;
     }
-}
+};
 
 /**
  *  @constructor
@@ -213,12 +213,12 @@ InspectorBackendClass.Connection = function()
     this._callbacks = {};
     this._initialize(InspectorBackend._agentPrototypes, InspectorBackend._dispatcherPrototypes);
     this._isConnected = true;
-}
+};
 
 /** @enum {symbol} */
 InspectorBackendClass.Connection.Events = {
     Disconnected: Symbol("Disconnected")
-}
+};
 
 InspectorBackendClass.Connection.prototype = {
     /**
@@ -471,7 +471,7 @@ InspectorBackendClass.Connection.prototype = {
 
     __proto__: WebInspector.Object.prototype
 
-}
+};
 
 /**
  * @constructor
@@ -483,7 +483,7 @@ InspectorBackendClass.AgentPrototype = function(domain)
     this._hasErrorData = {};
     this._domain = domain;
     this._suppressErrorLogging = false;
-}
+};
 
 InspectorBackendClass.AgentPrototype.prototype = {
     /**
@@ -580,7 +580,7 @@ InspectorBackendClass.AgentPrototype.prototype = {
             return null;
         }
 
-        return hasParams ? params : null
+        return hasParams ? params : null;
     },
 
     /**
@@ -667,7 +667,7 @@ InspectorBackendClass.AgentPrototype.prototype = {
     {
         this._suppressErrorLogging = true;
     }
-}
+};
 
 /**
  * @constructor
@@ -676,7 +676,7 @@ InspectorBackendClass.DispatcherPrototype = function()
 {
     this._eventArgs = {};
     this._dispatcher = null;
-}
+};
 
 InspectorBackendClass.DispatcherPrototype.prototype = {
 
@@ -732,12 +732,12 @@ InspectorBackendClass.DispatcherPrototype.prototype = {
         if (InspectorBackendClass.Options.dumpInspectorTimeStats)
             console.log("time-stats: " + messageObject.method + " = " + (Date.now() - processingStartTime));
     }
-}
+};
 
 InspectorBackendClass.Options = {
     dumpInspectorTimeStats: false,
     dumpInspectorProtocolMessages: false,
     suppressRequestErrors: false
-}
+};
 
 InspectorBackend = new InspectorBackendClass();

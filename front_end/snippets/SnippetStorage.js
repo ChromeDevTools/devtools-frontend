@@ -42,7 +42,7 @@ WebInspector.SnippetStorage = function(settingPrefix, namePrefix)
     this._namePrefix = namePrefix;
 
     this._loadSettings();
-}
+};
 
 WebInspector.SnippetStorage.prototype = {
     get namePrefix()
@@ -127,7 +127,7 @@ WebInspector.SnippetStorage.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
  * @constructor
@@ -143,7 +143,7 @@ WebInspector.Snippet = function(storage, id, name, content)
     this._id = id;
     this._name = name || storage.namePrefix + id;
     this._content = content || "";
-}
+};
 
 /**
  * @param {!WebInspector.SnippetStorage} storage
@@ -153,7 +153,7 @@ WebInspector.Snippet = function(storage, id, name, content)
 WebInspector.Snippet.fromObject = function(storage, serializedSnippet)
 {
     return new WebInspector.Snippet(storage, serializedSnippet.id, serializedSnippet.name, serializedSnippet.content);
-}
+};
 
 WebInspector.Snippet.prototype = {
     /**
@@ -211,4 +211,4 @@ WebInspector.Snippet.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};

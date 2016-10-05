@@ -73,7 +73,7 @@ WebInspector.ComputedStyleWidget = function()
 
     var fontsWidget = new WebInspector.PlatformFontsWidget(this._computedStyleModel);
     fontsWidget.show(this.element);
-}
+};
 
 WebInspector.ComputedStyleWidget._propertySymbol = Symbol("property");
 
@@ -357,4 +357,4 @@ WebInspector.ComputedStyleWidget.prototype = {
     },
 
     __proto__: WebInspector.ThrottledWidget.prototype
-}
+};

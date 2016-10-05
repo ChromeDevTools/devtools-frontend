@@ -57,7 +57,7 @@ WebInspector.AdvancedSearchView = function()
     this._load();
     /** @type {!WebInspector.SearchScope} */
     this._searchScope = new WebInspector.SourcesSearchScope();
-}
+};
 
 WebInspector.AdvancedSearchView.prototype = {
     /**
@@ -342,7 +342,7 @@ WebInspector.AdvancedSearchView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @param {string} query
@@ -354,7 +354,7 @@ WebInspector.AdvancedSearchView.openSearch = function(query, filePath)
     var searchView = /** @type {!WebInspector.AdvancedSearchView} */ (self.runtime.sharedInstance(WebInspector.AdvancedSearchView));
     var fileMask = filePath ? " file:" + filePath : "";
     searchView._toggle(query + fileMask);
-}
+};
 
 /**
  * @constructor
@@ -364,7 +364,7 @@ WebInspector.SearchResultsPane = function(searchConfig)
 {
     this._searchConfig = searchConfig;
     this.element = createElement("div");
-}
+};
 
 WebInspector.SearchResultsPane.prototype = {
     /**
@@ -379,7 +379,7 @@ WebInspector.SearchResultsPane.prototype = {
      * @param {!WebInspector.FileBasedSearchResult} searchResult
      */
     addSearchResult: function(searchResult) { }
-}
+};
 
 /**
  * @constructor
@@ -387,7 +387,7 @@ WebInspector.SearchResultsPane.prototype = {
  */
 WebInspector.AdvancedSearchView.ActionDelegate = function()
 {
-}
+};
 
 WebInspector.AdvancedSearchView.ActionDelegate.prototype = {
     /**
@@ -410,7 +410,7 @@ WebInspector.AdvancedSearchView.ActionDelegate.prototype = {
             queryCandidate = selection.toString().replace(/\r?\n.*/, "");
         WebInspector.AdvancedSearchView.openSearch(queryCandidate);
     },
-}
+};
 
 /**
  * @constructor
@@ -420,14 +420,14 @@ WebInspector.AdvancedSearchView.ActionDelegate.prototype = {
 WebInspector.FileBasedSearchResult = function(uiSourceCode, searchMatches) {
     this.uiSourceCode = uiSourceCode;
     this.searchMatches = searchMatches;
-}
+};
 
 /**
  * @interface
  */
 WebInspector.SearchScope = function()
 {
-}
+};
 
 WebInspector.SearchScope.prototype = {
     /**
@@ -450,4 +450,4 @@ WebInspector.SearchScope.prototype = {
      * @return {!WebInspector.SearchResultsPane}
      */
     createSearchResultsPane: function(searchConfig) { }
-}
+};

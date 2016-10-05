@@ -11,7 +11,7 @@ WebInspector.MainConnection = function()
     InspectorBackendClass.Connection.call(this);
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.DispatchMessage, this._dispatchMessage, this);
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.DispatchMessageChunk, this._dispatchMessageChunk, this);
-}
+};
 
 WebInspector.MainConnection.prototype = {
     /**
@@ -52,7 +52,7 @@ WebInspector.MainConnection.prototype = {
     },
 
     __proto__: InspectorBackendClass.Connection.prototype
-}
+};
 
 /**
  * @constructor
@@ -68,7 +68,7 @@ WebInspector.WebSocketConnection = function(url, onConnectionReady)
     this._socket.onerror = this._onError.bind(this);
     this._socket.onopen = onConnectionReady.bind(null, this);
     this._socket.onclose = this.connectionClosed.bind(this, "websocket_closed");
-}
+};
 
 /**
  * @param {string} url
@@ -77,7 +77,7 @@ WebInspector.WebSocketConnection = function(url, onConnectionReady)
 WebInspector.WebSocketConnection.Create = function(url, onConnectionReady)
 {
     new WebInspector.WebSocketConnection(url, onConnectionReady);
-}
+};
 
 WebInspector.WebSocketConnection.prototype = {
 
@@ -109,7 +109,7 @@ WebInspector.WebSocketConnection.prototype = {
     },
 
     __proto__: InspectorBackendClass.Connection.prototype
-}
+};
 
 /**
  * @constructor
@@ -118,7 +118,7 @@ WebInspector.WebSocketConnection.prototype = {
 WebInspector.StubConnection = function()
 {
     InspectorBackendClass.Connection.call(this);
-}
+};
 
 WebInspector.StubConnection.prototype = {
     /**
@@ -140,4 +140,4 @@ WebInspector.StubConnection.prototype = {
     },
 
     __proto__: InspectorBackendClass.Connection.prototype
-}
+};

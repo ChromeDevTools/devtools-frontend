@@ -48,14 +48,14 @@ WebInspector.ServiceWorkerManager = function(target, subTargetsManager)
         this._forceUpdateSettingChanged();
     this._forceUpdateSetting.addChangeListener(this._forceUpdateSettingChanged, this);
     new WebInspector.ServiceWorkerContextNamer(target, this, subTargetsManager);
-}
+};
 
 /** @enum {symbol} */
 WebInspector.ServiceWorkerManager.Events = {
     RegistrationUpdated: Symbol("RegistrationUpdated"),
     RegistrationErrorAdded: Symbol("RegistrationErrorAdded"),
     RegistrationDeleted: Symbol("RegistrationDeleted")
-}
+};
 
 WebInspector.ServiceWorkerManager.prototype = {
     enable: function()
@@ -268,7 +268,7 @@ WebInspector.ServiceWorkerManager.prototype = {
     },
 
     __proto__: WebInspector.SDKObject.prototype
-}
+};
 
 /**
  * @constructor
@@ -278,7 +278,7 @@ WebInspector.ServiceWorkerManager.prototype = {
 WebInspector.ServiceWorkerDispatcher = function(manager)
 {
     this._manager = manager;
-}
+};
 
 WebInspector.ServiceWorkerDispatcher.prototype = {
     /**
@@ -307,7 +307,7 @@ WebInspector.ServiceWorkerDispatcher.prototype = {
     {
         this._manager._workerErrorReported(errorMessage);
     }
-}
+};
 
 /**
  * @constructor
@@ -318,7 +318,7 @@ WebInspector.ServiceWorkerVersion = function(registration, payload)
 {
     this.registration = registration;
     this._update(payload);
-}
+};
 
 /**
  * @enum {string}
@@ -328,7 +328,7 @@ WebInspector.ServiceWorkerVersion.Modes = {
     Waiting: "waiting",
     Active: "active",
     Redundant: "redundant"
-}
+};
 
 WebInspector.ServiceWorkerVersion.prototype = {
     /**
@@ -459,7 +459,7 @@ WebInspector.ServiceWorkerVersion.prototype = {
             return WebInspector.ServiceWorkerVersion.Modes.Active;
         return WebInspector.ServiceWorkerVersion.Modes.Redundant;
     }
-}
+};
 
 /**
 * @constructor
@@ -473,7 +473,7 @@ WebInspector.ServiceWorkerRegistration = function(payload)
     this._deleting = false;
     /** @type {!Array<!ServiceWorkerAgent.ServiceWorkerErrorMessage>} */
     this.errors = [];
-}
+};
 
 WebInspector.ServiceWorkerRegistration.prototype = {
     /**
@@ -552,7 +552,7 @@ WebInspector.ServiceWorkerRegistration.prototype = {
         this._fingerprint = Symbol("fingerprint");
         this.errors = [];
     }
-}
+};
 
 /**
  * @constructor
@@ -570,7 +570,7 @@ WebInspector.ServiceWorkerContextNamer = function(target, serviceWorkerManager, 
     serviceWorkerManager.addEventListener(WebInspector.ServiceWorkerManager.Events.RegistrationUpdated, this._registrationsUpdated, this);
     serviceWorkerManager.addEventListener(WebInspector.ServiceWorkerManager.Events.RegistrationDeleted, this._registrationsUpdated, this);
     WebInspector.targetManager.addModelListener(WebInspector.RuntimeModel, WebInspector.RuntimeModel.Events.ExecutionContextCreated, this._executionContextCreated, this);
-}
+};
 
 WebInspector.ServiceWorkerContextNamer.prototype = {
     /**
@@ -642,4 +642,4 @@ WebInspector.ServiceWorkerContextNamer.prototype = {
         else
             context.setLabel(label);
     },
-}
+};

@@ -8,7 +8,7 @@
 WebInspector.Trie = function()
 {
     this.clear();
-}
+};
 
 WebInspector.Trie.prototype = {
     /**
@@ -141,4 +141,4 @@ WebInspector.Trie.prototype = {
         /** @type {!Array<number>} */
         this._freeNodes = [];
     }
-}
+};

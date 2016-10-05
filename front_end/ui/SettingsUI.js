@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-WebInspector.SettingsUI = {}
+WebInspector.SettingsUI = {};
 
 /**
  * @param {string} name
@@ -53,7 +53,7 @@ WebInspector.SettingsUI.createSettingCheckbox = function(name, setting, omitPara
     var p = createElement("p");
     p.appendChild(label);
     return p;
-}
+};
 
 /**
  * @param {!Element} input
@@ -75,7 +75,7 @@ WebInspector.SettingsUI.bindCheckbox = function(input, setting)
             setting.set(input.checked);
     }
     input.addEventListener("change", inputChanged, false);
-}
+};
 
 /**
  * @param {string} name
@@ -89,7 +89,7 @@ WebInspector.SettingsUI.createCustomSetting = function(name, element)
     fieldsetElement.createChild("label").textContent = name;
     fieldsetElement.appendChild(element);
     return p;
-}
+};
 
 /**
  * @param {!WebInspector.Setting} setting
@@ -106,18 +106,18 @@ WebInspector.SettingsUI.createSettingFieldset = function(setting)
     {
         fieldset.disabled = !setting.get();
     }
-}
+};
 
 /**
  * @interface
  */
 WebInspector.SettingUI = function()
 {
-}
+};
 
 WebInspector.SettingUI.prototype = {
     /**
      * @return {?Element}
      */
     settingElement: function() { }
-}
+};

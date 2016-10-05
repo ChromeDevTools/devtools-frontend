@@ -44,7 +44,7 @@ WebInspector.HeapSnapshotWorkerProxy = function(eventHandler)
     this._previousCallbacks = new Set();
     this._worker = new WebInspector.Worker("heap_snapshot_worker");
     this._worker.onmessage = this._messageReceived.bind(this);
-}
+};
 
 WebInspector.HeapSnapshotWorkerProxy.prototype = {
     /**
@@ -175,7 +175,7 @@ WebInspector.HeapSnapshotWorkerProxy.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 
 /**
@@ -187,7 +187,7 @@ WebInspector.HeapSnapshotProxyObject = function(worker, objectId)
 {
     this._worker = worker;
     this._objectId = objectId;
-}
+};
 
 WebInspector.HeapSnapshotProxyObject.prototype = {
     /**
@@ -271,7 +271,7 @@ WebInspector.HeapSnapshotLoaderProxy = function(worker, objectId, profileUid, sn
     WebInspector.HeapSnapshotProxyObject.call(this, worker, objectId);
     this._profileUid = profileUid;
     this._snapshotReceivedCallback = snapshotReceivedCallback;
-}
+};
 
 WebInspector.HeapSnapshotLoaderProxy.prototype = {
     /**
@@ -315,7 +315,7 @@ WebInspector.HeapSnapshotLoaderProxy.prototype = {
     },
 
     __proto__: WebInspector.HeapSnapshotProxyObject.prototype
-}
+};
 
 
 /**
@@ -329,7 +329,7 @@ WebInspector.HeapSnapshotProxy = function(worker, objectId)
     WebInspector.HeapSnapshotProxyObject.call(this, worker, objectId);
     /** @type {?WebInspector.HeapSnapshotCommon.StaticData} */
     this._staticData = null;
-}
+};
 
 WebInspector.HeapSnapshotProxy.prototype = {
     /**
@@ -518,7 +518,7 @@ WebInspector.HeapSnapshotProxy.prototype = {
     },
 
     __proto__: WebInspector.HeapSnapshotProxyObject.prototype
-}
+};
 
 
 /**
@@ -531,7 +531,7 @@ WebInspector.HeapSnapshotProxy.prototype = {
 WebInspector.HeapSnapshotProviderProxy = function(worker, objectId)
 {
     WebInspector.HeapSnapshotProxyObject.call(this, worker, objectId);
-}
+};
 
 WebInspector.HeapSnapshotProviderProxy.prototype = {
     /**
@@ -575,4 +575,4 @@ WebInspector.HeapSnapshotProviderProxy.prototype = {
     },
 
     __proto__: WebInspector.HeapSnapshotProxyObject.prototype
-}
+};

@@ -43,7 +43,7 @@ WebInspector.CSSSourceFrame = function(uiSourceCode)
         suggestionsCallback: this._cssSuggestions.bind(this),
         isWordChar: this._isWordChar.bind(this)
     });
-}
+};
 
 /** @type {number} */
 WebInspector.CSSSourceFrame.maxSwatchProcessingLength = 300;
@@ -391,4 +391,4 @@ WebInspector.CSSSourceFrame.prototype = {
     },
 
     __proto__: WebInspector.UISourceCodeFrame.prototype
-}
+};

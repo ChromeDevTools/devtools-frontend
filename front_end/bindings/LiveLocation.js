@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /** @interface */
-WebInspector.LiveLocation = function() {}
+WebInspector.LiveLocation = function() {};
 
 WebInspector.LiveLocation.prototype = {
     update: function() {},
@@ -19,7 +19,7 @@ WebInspector.LiveLocation.prototype = {
      * @return {boolean}
      */
     isBlackboxed: function() {}
-}
+};
 
 /**
  * @constructor
@@ -32,7 +32,7 @@ WebInspector.LiveLocationWithPool = function(updateDelegate, locationPool)
     this._updateDelegate = updateDelegate;
     this._locationPool = locationPool;
     this._locationPool._add(this);
-}
+};
 
 WebInspector.LiveLocationWithPool.prototype = {
     /**
@@ -69,7 +69,7 @@ WebInspector.LiveLocationWithPool.prototype = {
     {
         throw "Not implemented";
     }
-}
+};
 
 /**
  * @constructor
@@ -77,7 +77,7 @@ WebInspector.LiveLocationWithPool.prototype = {
 WebInspector.LiveLocationPool = function()
 {
     this._locations = new Set();
-}
+};
 
 WebInspector.LiveLocationPool.prototype = {
     /**
@@ -101,4 +101,4 @@ WebInspector.LiveLocationPool.prototype = {
         for (var location of this._locations)
             location.dispose();
     }
-}
+};

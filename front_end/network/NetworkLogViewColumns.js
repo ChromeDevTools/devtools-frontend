@@ -35,7 +35,7 @@ WebInspector.NetworkLogViewColumns = function(networkLogView, networkLogLargeRow
 
     /** @type {!WebInspector.Linkifier} */
     this._popupLinkifier = new WebInspector.Linkifier();
-}
+};
 WebInspector.NetworkLogViewColumns._initialSortColumn = "timeline";
 
 /**
@@ -800,4 +800,4 @@ WebInspector.NetworkLogViewColumns.prototype = {
     {
         this._timelineGrid.element.classList.toggle("small", !this._networkLogLargeRowsSetting.get());
     }
-}
+};

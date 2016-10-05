@@ -33,7 +33,7 @@
  */
 WebInspector.LinkifierFormatter = function()
 {
-}
+};
 
 WebInspector.LinkifierFormatter.prototype = {
     /**
@@ -42,7 +42,7 @@ WebInspector.LinkifierFormatter.prototype = {
      * @param {boolean} isBlackboxed
      */
     formatLiveAnchor: function(anchor, uiLocation, isBlackboxed) { }
-}
+};
 
 /**
  * @constructor
@@ -57,7 +57,7 @@ WebInspector.Linkifier = function(formatter)
     /** @type {!Map<!WebInspector.Target, !WebInspector.LiveLocationPool>} */
     this._locationPoolByTarget = new Map();
     WebInspector.targetManager.observeTargets(this);
-}
+};
 
 /**
  * @param {?WebInspector.Linkifier.LinkHandler} handler
@@ -65,7 +65,7 @@ WebInspector.Linkifier = function(formatter)
 WebInspector.Linkifier.setLinkHandler = function(handler)
 {
     WebInspector.Linkifier._linkHandler = handler;
-}
+};
 
 /**
  * @param {string} url
@@ -77,7 +77,7 @@ WebInspector.Linkifier.handleLink = function(url, lineNumber)
     if (!WebInspector.Linkifier._linkHandler)
         return false;
     return WebInspector.Linkifier._linkHandler.handleLink(url, lineNumber);
-}
+};
 
 /**
  * @param {!Object} revealable
@@ -113,7 +113,7 @@ WebInspector.Linkifier.linkifyUsingRevealer = function(revealable, text, fallbac
     }
     a.addEventListener("click", clickHandler.bind(revealable), false);
     return a;
-}
+};
 
 WebInspector.Linkifier._uiLocationSymbol = Symbol("uiLocation");
 WebInspector.Linkifier._fallbackAnchorSymbol = Symbol("fallbackAnchor");
@@ -335,7 +335,7 @@ WebInspector.Linkifier.prototype = {
         anchor[WebInspector.Linkifier._uiLocationSymbol] = uiLocation;
         this._formatter.formatLiveAnchor(anchor, uiLocation, liveLocation.isBlackboxed());
     }
-}
+};
 
 /**
  * @param {!Element} anchor
@@ -344,7 +344,7 @@ WebInspector.Linkifier.prototype = {
 WebInspector.Linkifier.uiLocationByAnchor = function(anchor)
 {
     return anchor[WebInspector.Linkifier._uiLocationSymbol];
-}
+};
 
 /**
  * @constructor
@@ -354,7 +354,7 @@ WebInspector.Linkifier.uiLocationByAnchor = function(anchor)
 WebInspector.Linkifier.DefaultFormatter = function(maxLength)
 {
     this._maxLength = maxLength;
-}
+};
 
 WebInspector.Linkifier.DefaultFormatter.prototype = {
     /**
@@ -378,7 +378,7 @@ WebInspector.Linkifier.DefaultFormatter.prototype = {
 
         anchor.classList.toggle("webkit-html-blackbox-link", isBlackboxed);
     }
-}
+};
 
 /**
  * @constructor
@@ -387,7 +387,7 @@ WebInspector.Linkifier.DefaultFormatter.prototype = {
 WebInspector.Linkifier.DefaultCSSFormatter = function()
 {
     WebInspector.Linkifier.DefaultFormatter.call(this, WebInspector.Linkifier.DefaultCSSFormatter.MaxLengthForDisplayedURLs);
-}
+};
 
 WebInspector.Linkifier.DefaultCSSFormatter.MaxLengthForDisplayedURLs = 30;
 
@@ -406,7 +406,7 @@ WebInspector.Linkifier.DefaultCSSFormatter.prototype = {
         anchor.textContent = "";
     },
     __proto__: WebInspector.Linkifier.DefaultFormatter.prototype
-}
+};
 
 /**
  * The maximum number of characters to display in a URL.
@@ -427,7 +427,7 @@ WebInspector.Linkifier.MaxLengthToIgnoreLinkifier = 10000;
  */
 WebInspector.Linkifier.LinkHandler = function()
 {
-}
+};
 
 WebInspector.Linkifier.LinkHandler.prototype = {
     /**
@@ -436,7 +436,7 @@ WebInspector.Linkifier.LinkHandler.prototype = {
      * @return {boolean}
      */
     handleLink: function(url, lineNumber) {}
-}
+};
 
 /**
  * @param {!WebInspector.Target} target
@@ -456,7 +456,7 @@ WebInspector.Linkifier.liveLocationText = function(target, scriptId, lineNumber,
     var location = /** @type {!WebInspector.DebuggerModel.Location} */ (debuggerModel.createRawLocation(script, lineNumber, columnNumber || 0));
     var uiLocation = /** @type {!WebInspector.UILocation} */ (WebInspector.debuggerWorkspaceBinding.rawLocationToUILocation(location));
     return uiLocation.linkText();
-}
+};
 
 /**
  * @param {string} string
@@ -496,7 +496,7 @@ WebInspector.linkifyStringAsFragmentWithCustomLinkifier = function(string, linki
         container.appendChild(createTextNode(string));
 
     return container;
-}
+};
 
 /**
  * @param {string} string
@@ -525,7 +525,7 @@ WebInspector.linkifyStringAsFragment = function(string)
     }
 
     return WebInspector.linkifyStringAsFragmentWithCustomLinkifier(string, linkifier);
-}
+};
 
 /**
  * @param {string} url
@@ -550,7 +550,7 @@ WebInspector.linkifyResourceAsNode = function(url, lineNumber, columnNumber, cla
     anchor.lineNumber = lineNumber;
     anchor.columnNumber = columnNumber;
     return anchor;
-}
+};
 
 /**
  * @param {!WebInspector.NetworkRequest} request
@@ -561,4 +561,4 @@ WebInspector.linkifyRequestAsNode = function(request)
     var anchor = WebInspector.linkifyURLAsNode(request.url);
     anchor.requestId = request.requestId;
     return anchor;
-}
+};

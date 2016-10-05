@@ -32,11 +32,11 @@ if (!window.InspectorExtensionRegistry) {
     /**
      * @constructor
      */
-    WebInspector.InspectorExtensionRegistryStub = function() { }
+    WebInspector.InspectorExtensionRegistryStub = function() { };
 
     WebInspector.InspectorExtensionRegistryStub.prototype = {
         getExtensionsAsync: function() { }
-    }
+    };
 
     var InspectorExtensionRegistry = new WebInspector.InspectorExtensionRegistryStub();
 }

@@ -46,7 +46,7 @@ WebInspector.AllocationProfile = function(profile, liveObjectStats)
 
     this._buildFunctionAllocationInfos(profile);
     this._traceTree = this._buildAllocationTree(profile, liveObjectStats);
-}
+};
 
 WebInspector.AllocationProfile.prototype = {
     _buildFunctionAllocationInfos: function(profile)
@@ -260,7 +260,7 @@ WebInspector.AllocationProfile.prototype = {
             hasChildren
         );
     }
-}
+};
 
 
 /**
@@ -283,7 +283,7 @@ WebInspector.TopDownAllocationNode = function(id, functionInfo, count, size, liv
     this.liveSize = liveSize;
     this.parent = parent;
     this.children = [];
-}
+};
 
 
 /**
@@ -299,7 +299,7 @@ WebInspector.BottomUpAllocationNode = function(functionInfo)
     this.liveSize = 0;
     this.traceTopIds = [];
     this._callers = [];
-}
+};
 
 
 WebInspector.BottomUpAllocationNode.prototype = {
@@ -340,7 +340,7 @@ WebInspector.BottomUpAllocationNode.prototype = {
     {
         return this._callers.length > 0;
     }
-}
+};
 
 
 /**
@@ -363,7 +363,7 @@ WebInspector.FunctionAllocationInfo = function(functionName, scriptName, scriptI
     this.totalLiveCount = 0;
     this.totalLiveSize = 0;
     this._traceTops = [];
-}
+};
 
 WebInspector.FunctionAllocationInfo.prototype = {
     /**
@@ -418,4 +418,4 @@ WebInspector.FunctionAllocationInfo.prototype = {
             }
         }
     }
-}
+};

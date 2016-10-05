@@ -15,7 +15,7 @@ WebInspector.ElementsTreeElementHighlighter = function(treeOutline)
     this._treeOutline.addEventListener(WebInspector.ElementsTreeOutline.Events.SelectedNodeChanged, this._clearState, this);
     WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.NodeHighlightedInOverlay, this._highlightNode, this);
     this._treeOutline.domModel().addEventListener(WebInspector.DOMModel.Events.InspectModeWillBeToggled, this._clearState, this);
-}
+};
 
 WebInspector.ElementsTreeElementHighlighter.prototype = {
     /**
@@ -90,4 +90,4 @@ WebInspector.ElementsTreeElementHighlighter.prototype = {
         delete this._pendingHighlightNode;
     }
 
-}
+};

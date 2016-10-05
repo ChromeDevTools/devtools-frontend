@@ -41,7 +41,7 @@ WebInspector.Database = function(model, id, domain, name, version)
     this._domain = domain;
     this._name = name;
     this._version = version;
-}
+};
 
 WebInspector.Database.prototype = {
     /** @return {string} */
@@ -130,7 +130,7 @@ WebInspector.Database.prototype = {
         }
         this._model._agent.executeSQL(this._id, query, callback);
     }
-}
+};
 
 /**
  * @constructor
@@ -144,13 +144,13 @@ WebInspector.DatabaseModel = function(target)
     this._databases = [];
     this._agent = target.databaseAgent();
     this.target().registerDatabaseDispatcher(new WebInspector.DatabaseDispatcher(this));
-}
+};
 
 /** @enum {symbol} */
 WebInspector.DatabaseModel.Events = {
     DatabaseAdded: Symbol("DatabaseAdded"),
     DatabasesRemoved: Symbol("DatabasesRemoved")
-}
+};
 
 WebInspector.DatabaseModel.prototype = {
     enable: function()
@@ -192,7 +192,7 @@ WebInspector.DatabaseModel.prototype = {
     },
 
     __proto__: WebInspector.SDKModel.prototype
-}
+};
 
 /**
  * @constructor
@@ -202,7 +202,7 @@ WebInspector.DatabaseModel.prototype = {
 WebInspector.DatabaseDispatcher = function(model)
 {
     this._model = model;
-}
+};
 
 WebInspector.DatabaseDispatcher.prototype = {
     /**
@@ -218,7 +218,7 @@ WebInspector.DatabaseDispatcher.prototype = {
             payload.name,
             payload.version));
     }
-}
+};
 
 WebInspector.DatabaseModel._symbol = Symbol("DatabaseModel");
 /**
@@ -231,4 +231,4 @@ WebInspector.DatabaseModel.fromTarget = function(target)
         target[WebInspector.DatabaseModel._symbol] = new WebInspector.DatabaseModel(target);
 
     return target[WebInspector.DatabaseModel._symbol];
-}
+};

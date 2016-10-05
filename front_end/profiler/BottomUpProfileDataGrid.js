@@ -39,7 +39,7 @@ WebInspector.BottomUpProfileDataGridNode = function(profileNode, owningTree)
 {
     WebInspector.ProfileDataGridNode.call(this, profileNode, owningTree, this._willHaveChildren(profileNode));
     this._remainingNodeInfos = [];
-}
+};
 
 WebInspector.BottomUpProfileDataGridNode.prototype = {
     /**
@@ -124,7 +124,7 @@ WebInspector.BottomUpProfileDataGridNode.prototype = {
     },
 
     __proto__: WebInspector.ProfileDataGridNode.prototype
-}
+};
 
 /**
  * @param {!WebInspector.BottomUpProfileDataGridNode|!WebInspector.BottomUpProfileDataGridTree} container
@@ -170,7 +170,7 @@ WebInspector.BottomUpProfileDataGridNode._sharedPopulate = function(container)
     }
 
     delete container._remainingNodeInfos;
-}
+};
 
 /**
  * @constructor
@@ -240,7 +240,7 @@ WebInspector.BottomUpProfileDataGridTree = function(formatter, searchableView, r
     WebInspector.ProfileDataGridNode.populate(this);
 
     return this;
-}
+};
 
 WebInspector.BottomUpProfileDataGridTree.prototype = {
     /**
@@ -331,4 +331,4 @@ WebInspector.BottomUpProfileDataGridTree.prototype = {
     },
 
     __proto__: WebInspector.ProfileDataGridTree.prototype
-}
+};

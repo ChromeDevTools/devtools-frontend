@@ -36,7 +36,7 @@ WebInspector.HeapSnapshotWorkerDispatcher = function(globalObject, postMessage)
     this._objects = [];
     this._global = globalObject;
     this._postMessage = postMessage;
-}
+};
 
 WebInspector.HeapSnapshotWorkerDispatcher.prototype = {
     _findFunction: function(name)

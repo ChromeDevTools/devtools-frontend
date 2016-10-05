@@ -46,7 +46,7 @@ WebInspector.PlatformFontsWidget = function(sharedModel)
     this.contentElement.appendChild(this._sectionTitle);
     this._sectionTitle.textContent = WebInspector.UIString("Rendered Fonts");
     this._fontStatsSection = this.contentElement.createChild("div", "stats-section");
-}
+};
 
 WebInspector.PlatformFontsWidget.prototype = {
     /**
@@ -62,7 +62,7 @@ WebInspector.PlatformFontsWidget.prototype = {
             return Promise.resolve();
 
         return cssModel.platformFontsPromise(node.id)
-            .then(this._refreshUI.bind(this, node))
+            .then(this._refreshUI.bind(this, node));
     },
 
     /**
@@ -103,4 +103,4 @@ WebInspector.PlatformFontsWidget.prototype = {
     },
 
     __proto__: WebInspector.ThrottledWidget.prototype
-}
+};

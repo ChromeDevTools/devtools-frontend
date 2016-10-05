@@ -304,7 +304,7 @@ WebInspector.AXNodePropertyTreePropertyElement = function(property, target)
 
     WebInspector.AXNodePropertyTreeElement.call(this, target);
     this.listItemElement.classList.add("property");
-}
+};
 
 WebInspector.AXNodePropertyTreePropertyElement.prototype = {
     /**
@@ -342,7 +342,7 @@ WebInspector.AXValueSourceTreeElement = function(source, target)
     this._source = source;
     WebInspector.AXNodePropertyTreeElement.call(this, target);
     this.selectable = false;
-}
+};
 
 WebInspector.AXValueSourceTreeElement.prototype = {
     /**
@@ -604,7 +604,7 @@ WebInspector.AXNodeIgnoredReasonTreeElement = function(property, axNode, target)
     WebInspector.AXNodePropertyTreeElement.call(this, target);
     this.toggleOnClick = true;
     this.selectable = false;
-}
+};
 
 WebInspector.AXNodeIgnoredReasonTreeElement.prototype = {
     /**

@@ -36,7 +36,7 @@ WebInspector.TimelineFrameModel = function(categoryMapper)
 {
     this._categoryMapper = categoryMapper;
     this.reset();
-}
+};
 
 WebInspector.TimelineFrameModel._mainFrameMarkers = [
     WebInspector.TimelineModel.RecordType.ScheduleStyleRecalculation,
@@ -458,7 +458,7 @@ WebInspector.TimelineFrameModel.prototype = {
         var categoryName = this._categoryMapper(event);
         timeByCategory[categoryName] = (timeByCategory[categoryName] || 0) + event.selfTime;
     },
-}
+};
 
 /**
  * @constructor
@@ -470,7 +470,7 @@ WebInspector.DeferredTracingLayerTree = function(snapshot, target)
 {
     WebInspector.DeferredLayerTree.call(this, target);
     this._snapshot = snapshot;
-}
+};
 
 WebInspector.DeferredTracingLayerTree.prototype = {
     /**
@@ -523,7 +523,7 @@ WebInspector.TimelineFrame = function(startTime, startTimeOffset)
     this.paints = [];
     /** @type {number|undefined} */
     this._mainFrameId = undefined;
-}
+};
 
 WebInspector.TimelineFrame.prototype = {
     /**
@@ -570,7 +570,7 @@ WebInspector.TimelineFrame.prototype = {
         this.timeByCategory[category] = (this.timeByCategory[category] || 0) + time;
         this.cpuTime += time;
     },
-}
+};
 
 /**
  * @constructor
@@ -581,7 +581,7 @@ WebInspector.LayerPaintEvent = function(event, target)
 {
     this._event = event;
     this._target = target;
-}
+};
 
 WebInspector.LayerPaintEvent.prototype = {
     /**
@@ -656,4 +656,4 @@ WebInspector.PendingFrame = function(triggerTime, timeByCategory)
     /** @type {number|undefined} */
     this.mainFrameId = undefined;
     this.triggerTime = triggerTime;
-}
+};

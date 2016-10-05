@@ -58,14 +58,14 @@ WebInspector.TabbedPane = function()
 
     this._dropDownButton = this._createDropDownButton();
     WebInspector.zoomManager.addEventListener(WebInspector.ZoomManager.Events.ZoomChanged, this._zoomChanged, this);
-}
+};
 
 /** @enum {symbol} */
 WebInspector.TabbedPane.Events = {
     TabSelected: Symbol("TabSelected"),
     TabClosed: Symbol("TabClosed"),
     TabOrderChanged: Symbol("TabOrderChanged")
-}
+};
 
 WebInspector.TabbedPane.prototype = {
     /**
@@ -875,7 +875,7 @@ WebInspector.TabbedPane.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @constructor
@@ -897,7 +897,7 @@ WebInspector.TabbedPaneTab = function(tabbedPane, id, title, closeable, view, to
     this._shown = false;
     /** @type {number} */ this._measuredWidth;
     /** @type {!Element|undefined} */ this._tabElement;
-}
+};
 
 WebInspector.TabbedPaneTab.prototype = {
     /**
@@ -1248,14 +1248,14 @@ WebInspector.TabbedPaneTab.prototype = {
         delete this._dragStartX;
         this._tabbedPane._updateTabSlider();
     }
-}
+};
 
 /**
  * @interface
  */
 WebInspector.TabbedPaneTabDelegate = function()
 {
-}
+};
 
 WebInspector.TabbedPaneTabDelegate.prototype = {
     /**
@@ -1269,4 +1269,4 @@ WebInspector.TabbedPaneTabDelegate.prototype = {
      * @param {!WebInspector.ContextMenu} contextMenu
      */
     onContextMenu: function(tabId, contextMenu) { }
-}
+};

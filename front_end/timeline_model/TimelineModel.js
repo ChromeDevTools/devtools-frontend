@@ -36,7 +36,7 @@ WebInspector.TimelineModel = function(eventFilter)
 {
     this._eventFilter = eventFilter;
     this.reset();
-}
+};
 
 /**
  * @enum {string}
@@ -162,7 +162,7 @@ WebInspector.TimelineModel.RecordType = {
     // CpuProfile is a virtual event created on frontend to support
     // serialization of CPU Profiles within tracing timeline data.
     CpuProfile: "CpuProfile"
-}
+};
 
 WebInspector.TimelineModel.Category = {
     Console: "blink.console",
@@ -178,7 +178,7 @@ WebInspector.TimelineModel.WarningType = {
     ForcedLayout: "ForcedLayout",
     IdleDeadlineExceeded: "IdleDeadlineExceeded",
     V8Deopt: "V8Deopt"
-}
+};
 
 WebInspector.TimelineModel.MainThreadName = "main";
 WebInspector.TimelineModel.WorkerThreadName = "DedicatedWorker Thread";
@@ -226,7 +226,7 @@ WebInspector.TimelineModel.forEachEvent = function(events, onStartEvent, onEndEv
     }
     while (stack.length)
         onEndEvent(stack.pop());
-}
+};
 
 WebInspector.TimelineModel.DevToolsMetadataEvent = {
     TracingStartedInBrowser: "TracingStartedInBrowser",
@@ -245,7 +245,7 @@ WebInspector.TimelineModel.VirtualThread = function(name)
     this.events = [];
     /** @type {!Map<!WebInspector.TimelineModel.AsyncEventGroup, !Array<!WebInspector.TracingModel.AsyncEvent>>} */
     this.asyncEventsByGroup = new Map();
-}
+};
 
 WebInspector.TimelineModel.VirtualThread.prototype = {
     /**
@@ -255,7 +255,7 @@ WebInspector.TimelineModel.VirtualThread.prototype = {
     {
         return this.name === WebInspector.TimelineModel.WorkerThreadName;
     }
-}
+};
 
 /**
  * @constructor
@@ -265,7 +265,7 @@ WebInspector.TimelineModel.Record = function(traceEvent)
 {
     this._event = traceEvent;
     this._children = [];
-}
+};
 
 /**
  * @param {!WebInspector.TimelineModel.Record} a
@@ -276,7 +276,7 @@ WebInspector.TimelineModel.Record._compareStartTime = function(a, b)
 {
     // Never return 0 as otherwise equal records would be merged.
     return a.startTime() <= b.startTime() ? -1 : 1;
-}
+};
 
 WebInspector.TimelineModel.Record.prototype = {
     /**
@@ -369,7 +369,7 @@ WebInspector.TimelineModel.Record.prototype = {
         this._children.push(child);
         child.parent = this;
     }
-}
+};
 
 /** @typedef {!{page: !Array<!WebInspector.TracingModel.Event>, workers: !Array<!WebInspector.TracingModel.Event>}} */
 WebInspector.TimelineModel.MetadataEvents;
@@ -386,7 +386,7 @@ WebInspector.TimelineModel._eventType = function(event)
     if (event.hasCategory(WebInspector.TimelineModel.Category.LatencyInfo))
         return WebInspector.TimelineModel.RecordType.LatencyInfo;
     return /** @type !WebInspector.TimelineModel.RecordType */ (event.name);
-}
+};
 
 WebInspector.TimelineModel.prototype = {
     /**
@@ -781,7 +781,7 @@ WebInspector.TimelineModel.prototype = {
         }
 
         this._eventStack = [];
-        var i = events.lowerBound(startTime, function(time, event) { return time - event.startTime });
+        var i = events.lowerBound(startTime, function(time, event) { return time - event.startTime; });
         var length = events.length;
         for (; i < length; i++) {
             var event = events[i];
@@ -808,7 +808,7 @@ WebInspector.TimelineModel.prototype = {
      */
     _processAsyncEvents: function(asyncEventsByGroup, asyncEvents, startTime, endTime)
     {
-        var i = startTime ? asyncEvents.lowerBound(startTime, function(time, asyncEvent) { return time - asyncEvent.startTime }) : 0;
+        var i = startTime ? asyncEvents.lowerBound(startTime, function(time, asyncEvent) { return time - asyncEvent.startTime; }) : 0;
         for (; i < asyncEvents.length; ++i) {
             var asyncEvent = asyncEvents[i];
             if (endTime && asyncEvent.startTime >= endTime)
@@ -1263,7 +1263,7 @@ WebInspector.TimelineModel.prototype = {
         }
         return zeroStartRequestsList.concat(requestsList);
     },
-}
+};
 
 /**
  * @param {!Array<!WebInspector.TimelineModel.Filter>} filters
@@ -1277,7 +1277,7 @@ WebInspector.TimelineModel.isVisible = function(filters, event)
             return false;
     }
     return true;
-}
+};
 
 /**
  * @param {!WebInspector.TracingModel.Event} event
@@ -1296,7 +1296,7 @@ WebInspector.TimelineModel.isMarkerEvent = function(event)
     default:
         return false;
     }
-}
+};
 
 /**
  * @constructor
@@ -1309,7 +1309,7 @@ WebInspector.TimelineModel.NetworkRequest = function(event)
     /** @type {!Array<!WebInspector.TracingModel.Event>} */
     this.children = [];
     this.addEvent(event);
-}
+};
 
 WebInspector.TimelineModel.NetworkRequest.prototype = {
     /**
@@ -1334,14 +1334,14 @@ WebInspector.TimelineModel.NetworkRequest.prototype = {
         if (!this.requestMethod)
             this.requestMethod = eventData["requestMethod"];
     }
-}
+};
 
 /**
  * @constructor
  */
 WebInspector.TimelineModel.Filter = function()
 {
-}
+};
 
 WebInspector.TimelineModel.Filter.prototype = {
     /**
@@ -1352,7 +1352,7 @@ WebInspector.TimelineModel.Filter.prototype = {
     {
         return true;
     }
-}
+};
 
 /**
  * @constructor
@@ -1363,7 +1363,7 @@ WebInspector.TimelineVisibleEventsFilter = function(visibleTypes)
 {
     WebInspector.TimelineModel.Filter.call(this);
     this._visibleTypes = new Set(visibleTypes);
-}
+};
 
 WebInspector.TimelineVisibleEventsFilter.prototype = {
     /**
@@ -1377,7 +1377,7 @@ WebInspector.TimelineVisibleEventsFilter.prototype = {
     },
 
     __proto__: WebInspector.TimelineModel.Filter.prototype
-}
+};
 
 /**
  * @constructor
@@ -1388,7 +1388,7 @@ WebInspector.ExclusiveNameFilter = function(excludeNames)
 {
     WebInspector.TimelineModel.Filter.call(this);
     this._excludeNames = new Set(excludeNames);
-}
+};
 
 WebInspector.ExclusiveNameFilter.prototype = {
     /**
@@ -1402,7 +1402,7 @@ WebInspector.ExclusiveNameFilter.prototype = {
     },
 
     __proto__: WebInspector.TimelineModel.Filter.prototype
-}
+};
 
 /**
  * @constructor
@@ -1411,7 +1411,7 @@ WebInspector.ExclusiveNameFilter.prototype = {
 WebInspector.ExcludeTopLevelFilter = function()
 {
     WebInspector.TimelineModel.Filter.call(this);
-}
+};
 
 WebInspector.ExcludeTopLevelFilter.prototype = {
     /**
@@ -1425,7 +1425,7 @@ WebInspector.ExcludeTopLevelFilter.prototype = {
     },
 
     __proto__: WebInspector.TimelineModel.Filter.prototype
-}
+};
 
 /**
  * @constructor
@@ -1474,7 +1474,7 @@ WebInspector.InvalidationTrackingEvent = function(event)
     // FIXME: Move this to TimelineUIUtils.js.
     if (!this.cause.reason && this.cause.stackTrace && this.type === WebInspector.TimelineModel.RecordType.LayoutInvalidationTracking)
         this.cause.reason = "Layout forced";
-}
+};
 
 /** @typedef {{reason: string, stackTrace: ?Array<!RuntimeAgent.CallFrame>}} */
 WebInspector.InvalidationCause;
@@ -1485,7 +1485,7 @@ WebInspector.InvalidationCause;
 WebInspector.InvalidationTracker = function()
 {
     this._initializePerFrameState();
-}
+};
 
 WebInspector.InvalidationTracker.prototype = {
     /**
@@ -1734,7 +1734,7 @@ WebInspector.InvalidationTracker.prototype = {
         this._lastPaintWithLayer = undefined;
         this._didPaint = false;
     }
-}
+};
 
 /**
  * @constructor
@@ -1746,7 +1746,7 @@ WebInspector.TimelineAsyncEventTracker = function()
     this._initiatorByType = new Map();
     for (var initiator of WebInspector.TimelineAsyncEventTracker._asyncEvents.keys())
         this._initiatorByType.set(initiator, new Map());
-}
+};
 
 WebInspector.TimelineAsyncEventTracker._initialize = function()
 {
@@ -1769,7 +1769,7 @@ WebInspector.TimelineAsyncEventTracker._initialize = function()
         for (type of types)
             WebInspector.TimelineAsyncEventTracker._typeToInitiator.set(type, entry[0]);
     }
-}
+};
 
 WebInspector.TimelineAsyncEventTracker.prototype = {
     /**
@@ -1794,4 +1794,4 @@ WebInspector.TimelineAsyncEventTracker.prototype = {
         else
             event.initiator = initiatorMap.get(id) || null;
     }
-}
+};

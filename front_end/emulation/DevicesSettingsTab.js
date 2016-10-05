@@ -33,7 +33,7 @@ WebInspector.DevicesSettingsTab = function()
     this._emulatedDevicesList.addEventListener(WebInspector.EmulatedDevicesList.Events.StandardDevicesUpdated, this._devicesUpdated, this);
 
     this.setDefaultFocusedElement(this._addCustomButton);
-}
+};
 
 WebInspector.DevicesSettingsTab.prototype = {
     wasShown: function()
@@ -255,4 +255,4 @@ WebInspector.DevicesSettingsTab.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

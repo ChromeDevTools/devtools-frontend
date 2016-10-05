@@ -18,7 +18,7 @@ WebInspector.RemoteLocationManager = function(target)
 
     this._throttler = new WebInspector.Throttler(1000);
     this._throttler.schedule(this._discoverTargets.bind(this));
-}
+};
 
 WebInspector.RemoteLocationManager.prototype = {
     /**
@@ -115,7 +115,7 @@ WebInspector.RemoteLocationManager.prototype = {
     },
 
     __proto__: WebInspector.SDKObject.prototype
-}
+};
 
 /**
  * @constructor
@@ -128,7 +128,7 @@ WebInspector.RemoteLocationConnection = function(agent, targetId)
     InspectorBackendClass.Connection.call(this);
     this._agent = agent;
     this._targetId = targetId;
-}
+};
 
 WebInspector.RemoteLocationConnection.prototype = {
     /**
@@ -146,4 +146,4 @@ WebInspector.RemoteLocationConnection.prototype = {
     },
 
     __proto__: InspectorBackendClass.Connection.prototype
-}
+};

@@ -103,7 +103,7 @@ WebInspector.NetworkPanel = function()
     this._networkLogView.addEventListener(WebInspector.NetworkLogView.Events.UpdateRequest, this._onUpdateRequest, this);
 
     WebInspector.DataSaverInfobar.maybeShowInPanel(this);
-}
+};
 
 WebInspector.NetworkPanel.prototype = {
     /**
@@ -582,7 +582,7 @@ WebInspector.NetworkPanel.prototype = {
     },
 
     __proto__: WebInspector.Panel.prototype
-}
+};
 
 /**
  * @constructor
@@ -590,7 +590,7 @@ WebInspector.NetworkPanel.prototype = {
  */
 WebInspector.NetworkPanel.ContextMenuProvider = function()
 {
-}
+};
 
 WebInspector.NetworkPanel.ContextMenuProvider.prototype = {
     /**
@@ -603,7 +603,7 @@ WebInspector.NetworkPanel.ContextMenuProvider.prototype = {
     {
         WebInspector.NetworkPanel._instance().appendApplicableItems(event, contextMenu, target);
     }
-}
+};
 
 /**
  * @constructor
@@ -611,7 +611,7 @@ WebInspector.NetworkPanel.ContextMenuProvider.prototype = {
  */
 WebInspector.NetworkPanel.RequestRevealer = function()
 {
-}
+};
 
 WebInspector.NetworkPanel.RequestRevealer.prototype = {
     /**
@@ -628,13 +628,13 @@ WebInspector.NetworkPanel.RequestRevealer.prototype = {
         panel.revealAndHighlightRequest(request);
         return Promise.resolve();
     }
-}
+};
 
 
 WebInspector.NetworkPanel.show = function()
 {
     WebInspector.inspectorView.setCurrentPanel(WebInspector.NetworkPanel._instance());
-}
+};
 
 /**
  * @param {!Array<{filterType: !WebInspector.NetworkLogView.FilterType, filterValue: string}>} filters
@@ -647,7 +647,7 @@ WebInspector.NetworkPanel.revealAndFilter = function(filters)
         filterString += `${filter.filterType}:${filter.filterValue} `;
     panel._networkLogView.setTextFilterValue(filterString);
     WebInspector.inspectorView.setCurrentPanel(panel);
-}
+};
 
 /**
  * @return {!WebInspector.NetworkPanel}
@@ -655,7 +655,7 @@ WebInspector.NetworkPanel.revealAndFilter = function(filters)
 WebInspector.NetworkPanel._instance = function()
 {
     return /** @type {!WebInspector.NetworkPanel} */ (self.runtime.sharedInstance(WebInspector.NetworkPanel));
-}
+};
 
 /**
  * @constructor
@@ -667,7 +667,7 @@ WebInspector.NetworkPanel.FilmStripRecorder = function(timeCalculator, filmStrip
 {
     this._timeCalculator = timeCalculator;
     this._filmStripView = filmStripView;
-}
+};
 
 WebInspector.NetworkPanel.FilmStripRecorder.prototype = {
     /**
@@ -752,7 +752,7 @@ WebInspector.NetworkPanel.FilmStripRecorder.prototype = {
         this._callback = callback;
         this._filmStripView.setStatusText(WebInspector.UIString("Fetching frames..."));
     }
-}
+};
 
 /**
  * @constructor
@@ -760,7 +760,7 @@ WebInspector.NetworkPanel.FilmStripRecorder.prototype = {
  */
 WebInspector.NetworkPanel.RecordActionDelegate = function()
 {
-}
+};
 WebInspector.NetworkPanel.RecordActionDelegate.prototype = {
     /**
      * @override
@@ -775,4 +775,4 @@ WebInspector.NetworkPanel.RecordActionDelegate.prototype = {
         panel._toggleRecording();
         return true;
     }
-}
+};

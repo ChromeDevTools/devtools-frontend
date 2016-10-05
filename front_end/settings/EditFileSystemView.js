@@ -71,7 +71,7 @@ WebInspector.EditFileSystemView = function(fileSystemPath)
 
     this.contentElement.tabIndex = 0;
     this._update();
-}
+};
 
 WebInspector.EditFileSystemView.prototype = {
     dispose: function()
@@ -322,4 +322,4 @@ WebInspector.EditFileSystemView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

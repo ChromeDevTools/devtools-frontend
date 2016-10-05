@@ -19,7 +19,7 @@ WebInspector.HeapProfileView = function(profileHeader)
         WebInspector.ProfileView.ViewTypes.Tree
     ];
     WebInspector.ProfileView.call(this, new WebInspector.HeapProfileView.NodeFormatter(this), views);
-}
+};
 
 WebInspector.HeapProfileView.prototype = {
     /**
@@ -46,7 +46,7 @@ WebInspector.HeapProfileView.prototype = {
     },
 
     __proto__: WebInspector.ProfileView.prototype
-}
+};
 
 /**
  * @constructor
@@ -57,7 +57,7 @@ WebInspector.SamplingHeapProfileType = function()
     WebInspector.ProfileType.call(this, WebInspector.SamplingHeapProfileType.TypeId, WebInspector.UIString("Record Allocation Profile"));
     this._recording = false;
     WebInspector.SamplingHeapProfileType.instance = this;
-}
+};
 
 WebInspector.SamplingHeapProfileType.TypeId = "SamplingHeap";
 
@@ -179,7 +179,7 @@ WebInspector.SamplingHeapProfileType.prototype = {
     },
 
     __proto__: WebInspector.ProfileType.prototype
-}
+};
 
 /**
  * @constructor
@@ -191,7 +191,7 @@ WebInspector.SamplingHeapProfileType.prototype = {
 WebInspector.SamplingHeapProfileHeader = function(target, type, title)
 {
     WebInspector.WritableProfileHeader.call(this, target, type, title || WebInspector.UIString("Profile %d", type.nextProfileUid()));
-}
+};
 
 WebInspector.SamplingHeapProfileHeader.prototype = {
     /**
@@ -212,7 +212,7 @@ WebInspector.SamplingHeapProfileHeader.prototype = {
     },
 
     __proto__: WebInspector.WritableProfileHeader.prototype
-}
+};
 
 /**
  * @constructor
@@ -231,11 +231,11 @@ WebInspector.SamplingHeapProfileNode = function(node)
     });
     WebInspector.ProfileNode.call(this, callFrame);
     this.self = node.selfSize;
-}
+};
 
 WebInspector.SamplingHeapProfileNode.prototype = {
     __proto__: WebInspector.ProfileNode.prototype
-}
+};
 
 /**
  * @constructor
@@ -245,7 +245,7 @@ WebInspector.SamplingHeapProfileNode.prototype = {
 WebInspector.SamplingHeapProfileModel = function(profile)
 {
     WebInspector.ProfileTreeModel.call(this, this._translateProfileTree(profile.head));
-}
+};
 
 WebInspector.SamplingHeapProfileModel.prototype = {
     /**
@@ -268,7 +268,7 @@ WebInspector.SamplingHeapProfileModel.prototype = {
     },
 
     __proto__: WebInspector.ProfileTreeModel.prototype
-}
+};
 
 /**
  * @constructor
@@ -278,7 +278,7 @@ WebInspector.SamplingHeapProfileModel.prototype = {
 WebInspector.HeapProfileView.NodeFormatter = function(profileView)
 {
     this._profileView = profileView;
-}
+};
 
 WebInspector.HeapProfileView.NodeFormatter.prototype = {
     /**
@@ -311,7 +311,7 @@ WebInspector.HeapProfileView.NodeFormatter.prototype = {
     {
         return this._profileView.linkifier().maybeLinkifyConsoleCallFrame(this._profileView.target(), node.profileNode.callFrame, "profile-node-file");
     }
-}
+};
 
 /**
  * @constructor
@@ -323,7 +323,7 @@ WebInspector.HeapFlameChartDataProvider = function(profile, target)
 {
     WebInspector.ProfileFlameChartDataProvider.call(this, target);
     this._profile = profile;
-}
+};
 
 WebInspector.HeapFlameChartDataProvider.prototype = {
     /**
@@ -437,4 +437,4 @@ WebInspector.HeapFlameChartDataProvider.prototype = {
     },
 
     __proto__: WebInspector.ProfileFlameChartDataProvider.prototype
-}
+};

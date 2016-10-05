@@ -12,7 +12,7 @@ WebInspector.ServiceManager = function()
     this._callbacks = new Map();
     /** @type {!Map<string, !WebInspector.ServiceManager.Service>}*/
     this._services = new Map();
-}
+};
 
 WebInspector.ServiceManager.prototype = {
     /**
@@ -124,7 +124,7 @@ WebInspector.ServiceManager.prototype = {
         this._services.clear();
         delete this._connectionPromise;
     }
-}
+};
 
 /**
  * @constructor
@@ -139,7 +139,7 @@ WebInspector.ServiceManager.Service = function(manager, serviceName, objectId)
     this._objectId = objectId;
     /** @type {!Map<string, function(!Object=)>}*/
     this._notificationHandlers = new Map();
-}
+};
 
 WebInspector.ServiceManager.Service.prototype = {
     /**
@@ -186,6 +186,6 @@ WebInspector.ServiceManager.Service.prototype = {
         }
         handler(params);
     }
-}
+};
 
 WebInspector.serviceManager = new WebInspector.ServiceManager();

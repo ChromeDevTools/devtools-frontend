@@ -39,7 +39,7 @@ WebInspector.EmptyWidget = function(text)
     this.element.classList.add("empty-view");
     this.textElement = this.element.createChild("span");
     this._text = text;
-}
+};
 
 WebInspector.EmptyWidget.prototype = {
     wasShown: function()
@@ -55,5 +55,5 @@ WebInspector.EmptyWidget.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 

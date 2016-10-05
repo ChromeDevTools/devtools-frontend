@@ -87,13 +87,13 @@ WebInspector.ExtensionServer = function()
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.SetInspectedTabId, this._setInspectedTabId, this);
 
     this._initExtensions();
-}
+};
 
 /** @enum {symbol} */
 WebInspector.ExtensionServer.Events = {
     SidebarPaneAdded: Symbol("SidebarPaneAdded"),
     AuditCategoryAdded: Symbol("AuditCategoryAdded")
-}
+};
 
 WebInspector.ExtensionServer.prototype = {
     initializeExtensions: function()
@@ -1013,8 +1013,8 @@ WebInspector.ExtensionServer.prototype = {
 
                 }
                 if (!context) {
-                    console.warn("The JavaScript context " + contextSecurityOrigin + " was not found in the frame " + frame.url)
-                    return this._status.E_NOTFOUND(contextSecurityOrigin)
+                    console.warn("The JavaScript context " + contextSecurityOrigin + " was not found in the frame " + frame.url);
+                    return this._status.E_NOTFOUND(contextSecurityOrigin);
                 }
             } else {
                 for (var i = 0; i < executionContexts.length; ++i) {
@@ -1051,7 +1051,7 @@ WebInspector.ExtensionServer.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
  * @constructor
@@ -1065,7 +1065,7 @@ WebInspector.ExtensionServerPanelDescriptor = function(name, title, panel)
     this._name = name;
     this._title = title;
     this._panel = panel;
-}
+};
 
 WebInspector.ExtensionServerPanelDescriptor.prototype = {
     /**
@@ -1094,7 +1094,7 @@ WebInspector.ExtensionServerPanelDescriptor.prototype = {
     {
         return Promise.resolve(this._panel);
     }
-}
+};
 
 /**
  * @constructor
@@ -1125,7 +1125,7 @@ WebInspector.ExtensionStatus = function()
     this.E_NOTSUPPORTED = makeStatus.bind(null, "E_NOTSUPPORTED", "Object does not support requested operation: %s");
     this.E_PROTOCOLERROR = makeStatus.bind(null, "E_PROTOCOLERROR", "Inspector protocol error: %s");
     this.E_FAILED = makeStatus.bind(null, "E_FAILED", "Operation failed: %s");
-}
+};
 
 /**
  * @typedef {{code: string, description: string, details: !Array.<*>}}

@@ -15,7 +15,7 @@ WebInspector.SourceCodeDiff = function(diffBaseline, textEditor)
     this._diffBaseline = diffBaseline;
     /** @type {!Array<!WebInspector.TextEditorPositionHandle>}*/
     this._animatedLines = [];
-}
+};
 
 /** @type {number} */
 WebInspector.SourceCodeDiff.UpdateTimeout = 200;
@@ -231,14 +231,14 @@ WebInspector.SourceCodeDiff.prototype = {
      * @param {!Map<number, !{lineNumber: number, type: !WebInspector.SourceCodeDiff.GutterDecorationType}>} decorations
      */
     _decorationsSetForTest: function(decorations) { }
-}
+};
 
 /** @enum {symbol} */
 WebInspector.SourceCodeDiff.GutterDecorationType = {
     Insert: Symbol("Insert"),
     Delete: Symbol("Delete"),
     Modify: Symbol("Modify"),
-}
+};
 
 /**
  * @constructor
@@ -258,7 +258,7 @@ WebInspector.SourceCodeDiff.GutterDecoration = function(textEditor, lineNumber, 
     else if (type === WebInspector.SourceCodeDiff.GutterDecorationType.Modify)
         this._className = "diff-entry-modify";
     this.type = type;
-}
+};
 
 WebInspector.SourceCodeDiff.GutterDecoration.prototype = {
     /**
@@ -291,4 +291,4 @@ WebInspector.SourceCodeDiff.GutterDecoration.prototype = {
         this._textEditor.setGutterDecoration(location.lineNumber, WebInspector.SourceCodeDiff.DiffGutterType, null);
         this._textEditor.toggleLineClass(location.lineNumber, this._className, false);
     }
-}
+};

@@ -175,7 +175,7 @@ EventSinkImpl.prototype = {
          else
              this._fire.apply(this, request.arguments);
     }
-}
+};
 
 /**
  * @constructor
@@ -228,7 +228,7 @@ Network.prototype = {
     {
         extensionServer.sendRequest({ command: commands.AddRequestHeaders, headers: headers, extensionId: window.location.hostname });
     }
-}
+};
 
 /**
  * @constructor
@@ -247,7 +247,7 @@ RequestImpl.prototype = {
         }
         extensionServer.sendRequest({ command: commands.GetRequestContent, id: this._id }, callback && callbackWrapper);
     }
-}
+};
 
 /**
  * @constructor
@@ -316,7 +316,7 @@ Panels.prototype = {
     {
         return apiPrivate.panels.SearchAction;
     }
-}
+};
 
 /**
  * @constructor
@@ -373,7 +373,7 @@ PanelWithSidebarImpl.prototype = {
     },
 
     __proto__: ExtensionViewImpl.prototype
-}
+};
 
 function declareInterfaceClass(implConstructor)
 {
@@ -426,7 +426,7 @@ function ElementsPanel()
 
 ElementsPanel.prototype = {
     __proto__: PanelWithSidebar.prototype
-}
+};
 
 /**
  * @constructor
@@ -439,7 +439,7 @@ function SourcesPanel()
 
 SourcesPanel.prototype = {
     __proto__: PanelWithSidebar.prototype
-}
+};
 
 /**
  * @constructor
@@ -483,7 +483,7 @@ ExtensionPanelImpl.prototype = {
     },
 
     __proto__: ExtensionViewImpl.prototype
-}
+};
 
 /**
  * @constructor
@@ -525,7 +525,7 @@ ExtensionSidebarPaneImpl.prototype = {
     },
 
     __proto__: ExtensionViewImpl.prototype
-}
+};
 
 /**
  * @constructor
@@ -569,7 +569,7 @@ Timeline.prototype = {
         extensionServer.sendRequest({ command: commands.AddTraceProvider, id: id, categoryName: categoryName, categoryTooltip: categoryTooltip});
         return new TraceProvider(id);
     }
-}
+};
 
 /**
  * @constructor
@@ -600,7 +600,7 @@ Audits.prototype = {
         extensionServer.sendRequest({ command: commands.AddAuditCategory, id: id, displayName: displayName, resultCount: resultCount });
         return new AuditCategory(id);
     }
-}
+};
 
 /**
  * @constructor
@@ -703,7 +703,7 @@ AuditResultImpl.prototype = {
             arguments: Array.prototype.slice.call(arguments, 1)
         };
     }
-}
+};
 
 /**
  * @constructor
@@ -801,7 +801,7 @@ InspectedWindow.prototype = {
         }
         extensionServer.sendRequest({ command: commands.GetPageResources }, callback && callbackWrapper);
     }
-}
+};
 
 /**
  * @constructor
@@ -837,7 +837,7 @@ ResourceImpl.prototype = {
     {
         extensionServer.sendRequest({ command: commands.SetResourceContent, url: this._url, content: content, commit: commit }, callback);
     }
-}
+};
 
 function getTabId()
 {
@@ -963,7 +963,7 @@ ExtensionServerClient.prototype = {
         if (handler)
             handler.call(this, request);
     }
-}
+};
 
 function populateInterfaceClass(interfaze, implementation)
 {

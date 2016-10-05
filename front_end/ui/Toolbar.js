@@ -44,7 +44,7 @@ WebInspector.Toolbar = function(className, parentElement)
     this._shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element, "ui/toolbar.css");
     this._contentElement = this._shadowRoot.createChild("div", "toolbar-shadow");
     this._insertionPoint = this._contentElement.createChild("content");
-}
+};
 
 WebInspector.Toolbar.prototype = {
     /**
@@ -223,7 +223,7 @@ WebInspector.Toolbar.prototype = {
             }
         }
     }
-}
+};
 
 /**
  * @constructor
@@ -238,7 +238,7 @@ WebInspector.ToolbarItem = function(element)
     this._enabled = true;
     this.element.addEventListener("mouseenter", this._mouseEnter.bind(this), false);
     this.element.addEventListener("mouseleave", this._mouseLeave.bind(this), false);
-}
+};
 
 WebInspector.ToolbarItem.prototype = {
     /**
@@ -300,7 +300,7 @@ WebInspector.ToolbarItem.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
  * @constructor
@@ -312,7 +312,7 @@ WebInspector.ToolbarText = function(text)
     WebInspector.ToolbarItem.call(this, createElementWithClass("div", "toolbar-text"));
     this.element.classList.add("toolbar-text");
     this.setText(text || "");
-}
+};
 
 WebInspector.ToolbarText.prototype = {
      /**
@@ -324,7 +324,7 @@ WebInspector.ToolbarText.prototype = {
     },
 
     __proto__: WebInspector.ToolbarItem.prototype
-}
+};
 
 /**
  * @constructor
@@ -349,7 +349,7 @@ WebInspector.ToolbarButton = function(title, glyph, text)
     this.setText(text || "");
     this._state = "";
     this._title = "";
-}
+};
 
 WebInspector.ToolbarButton.prototype = {
     /**
@@ -445,7 +445,7 @@ WebInspector.ToolbarButton.prototype = {
     },
 
     __proto__: WebInspector.ToolbarItem.prototype
-}
+};
 
 /**
  * @constructor
@@ -462,7 +462,7 @@ WebInspector.ToolbarInput = function(placeholder, growFactor)
     if (placeholder)
         this.element.setAttribute("placeholder", placeholder);
     this._value = "";
-}
+};
 
 WebInspector.ToolbarInput.Event = {
     TextChanged: "TextChanged"
@@ -492,7 +492,7 @@ WebInspector.ToolbarInput.prototype = {
     },
 
     __proto__: WebInspector.ToolbarItem.prototype
-}
+};
 
 /**
  * @constructor
@@ -506,7 +506,7 @@ WebInspector.ToolbarToggle = function(title, glyph, text)
     WebInspector.ToolbarButton.call(this, title, glyph, text);
     this._toggled = false;
     this.setState("off");
-}
+};
 
 WebInspector.ToolbarToggle.prototype = {
     /**
@@ -529,7 +529,7 @@ WebInspector.ToolbarToggle.prototype = {
     },
 
     __proto__: WebInspector.ToolbarButton.prototype
-}
+};
 
 /**
  * @param {!WebInspector.Action} action
@@ -668,7 +668,7 @@ WebInspector.Toolbar.createActionButton = function(action, toggledOptions, untog
             }
         }
     }
-}
+};
 
 /**
  * @param {string} actionId
@@ -678,7 +678,7 @@ WebInspector.Toolbar.createActionButtonForId = function(actionId)
 {
     var action = WebInspector.actionRegistry.action(actionId);
     return /** @type {?WebInspector.ToolbarItem} */(action ? WebInspector.Toolbar.createActionButton(action) : null);
-}
+};
 
 /**
  * @constructor
@@ -691,7 +691,7 @@ WebInspector.ToolbarMenuButton = function(contextMenuHandler, useSoftMenu)
     WebInspector.ToolbarButton.call(this, "", "menu-toolbar-item");
     this._contextMenuHandler = contextMenuHandler;
     this._useSoftMenu = !!useSoftMenu;
-}
+};
 
 WebInspector.ToolbarMenuButton.prototype = {
     /**
@@ -736,7 +736,7 @@ WebInspector.ToolbarMenuButton.prototype = {
     },
 
     __proto__: WebInspector.ToolbarButton.prototype
-}
+};
 
 /**
  * @constructor
@@ -754,7 +754,7 @@ WebInspector.ToolbarSettingToggle = function(setting, glyph, title, toggledTitle
     this._setting = setting;
     this._settingChanged();
     this._setting.addChangeListener(this._settingChanged, this);
-}
+};
 
 WebInspector.ToolbarSettingToggle.prototype = {
     _settingChanged: function()
@@ -775,7 +775,7 @@ WebInspector.ToolbarSettingToggle.prototype = {
     },
 
     __proto__: WebInspector.ToolbarToggle.prototype
-}
+};
 
 /**
  * @constructor
@@ -785,39 +785,39 @@ WebInspector.ToolbarSettingToggle.prototype = {
 WebInspector.ToolbarSeparator = function(spacer)
 {
     WebInspector.ToolbarItem.call(this, createElementWithClass("div", spacer ? "toolbar-spacer" : "toolbar-divider"));
-}
+};
 
 WebInspector.ToolbarSeparator.prototype = {
     __proto__: WebInspector.ToolbarItem.prototype
-}
+};
 
 /**
  * @interface
  */
 WebInspector.ToolbarItem.Provider = function()
 {
-}
+};
 
 WebInspector.ToolbarItem.Provider.prototype = {
     /**
      * @return {?WebInspector.ToolbarItem}
      */
     item: function() {}
-}
+};
 
 /**
  * @interface
  */
 WebInspector.ToolbarItem.ItemsProvider = function()
 {
-}
+};
 
 WebInspector.ToolbarItem.ItemsProvider.prototype = {
     /**
      * @return {!Array<!WebInspector.ToolbarItem>}
      */
     toolbarItems: function() {}
-}
+};
 
 /**
  * @constructor
@@ -835,7 +835,7 @@ WebInspector.ToolbarComboBox = function(changeHandler, className)
         this._selectElement.addEventListener("change", changeHandler, false);
     if (className)
         this._selectElement.classList.add(className);
-}
+};
 
 WebInspector.ToolbarComboBox.prototype = {
     /**
@@ -951,7 +951,7 @@ WebInspector.ToolbarComboBox.prototype = {
     },
 
     __proto__: WebInspector.ToolbarItem.prototype
-}
+};
 
 /**
  * @constructor
@@ -972,7 +972,7 @@ WebInspector.ToolbarCheckbox = function(text, title, setting, listener)
         WebInspector.SettingsUI.bindCheckbox(this.inputElement, setting);
     if (listener)
         this.inputElement.addEventListener("click", listener, false);
-}
+};
 
 WebInspector.ToolbarCheckbox.prototype = {
     /**
@@ -992,5 +992,5 @@ WebInspector.ToolbarCheckbox.prototype = {
     },
 
     __proto__: WebInspector.ToolbarItem.prototype
-}
+};
 

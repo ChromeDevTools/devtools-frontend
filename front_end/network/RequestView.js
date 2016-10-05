@@ -39,11 +39,11 @@ WebInspector.RequestView = function(request)
 
     this.element.classList.add("request-view");
     this.request = request;
-}
+};
 
 WebInspector.RequestView.prototype = {
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @param {!WebInspector.NetworkRequest} request
@@ -56,7 +56,7 @@ WebInspector.RequestView.hasTextContent = function(request)
     if (request.resourceType() === WebInspector.resourceTypes.Other || request.hasErrorStatusCode())
         return !!request.content && !request.contentEncoded;
     return false;
-}
+};
 
 /**
  * @param {!WebInspector.NetworkRequest} request
@@ -72,4 +72,4 @@ WebInspector.RequestView.nonSourceViewForRequest = function(request)
     default:
         return new WebInspector.RequestView(request);
     }
-}
+};

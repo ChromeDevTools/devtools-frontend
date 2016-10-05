@@ -37,7 +37,7 @@ WebInspector.NetworkTimeBoundary = function(minimum, maximum)
 {
     this.minimum = minimum;
     this.maximum = maximum;
-}
+};
 
 WebInspector.NetworkTimeBoundary.prototype = {
     /**
@@ -48,7 +48,7 @@ WebInspector.NetworkTimeBoundary.prototype = {
     {
         return (this.minimum === other.minimum) && (this.maximum === other.maximum);
     }
-}
+};
 
 /**
  * @constructor
@@ -61,12 +61,12 @@ WebInspector.NetworkTimeCalculator = function(startAtZero)
     this._boundryChangedEventThrottler = new WebInspector.Throttler(0);
     /** @type {?WebInspector.NetworkTimeBoundary} */
     this._window = null;
-}
+};
 
 /** @enum {symbol} */
 WebInspector.NetworkTimeCalculator.Events = {
     BoundariesChanged: Symbol("BoundariesChanged")
-}
+};
 
 /** @type {!WebInspector.UIStringFormat} */
 WebInspector.NetworkTimeCalculator._latencyDownloadTotalFormat = new WebInspector.UIStringFormat("%s latency, %s download (%s total)");
@@ -367,7 +367,7 @@ WebInspector.NetworkTimeCalculator.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
  * @constructor
@@ -376,7 +376,7 @@ WebInspector.NetworkTimeCalculator.prototype = {
 WebInspector.NetworkTransferTimeCalculator = function()
 {
     WebInspector.NetworkTimeCalculator.call(this, false);
-}
+};
 
 WebInspector.NetworkTransferTimeCalculator.prototype = {
     /**
@@ -411,7 +411,7 @@ WebInspector.NetworkTransferTimeCalculator.prototype = {
     },
 
     __proto__: WebInspector.NetworkTimeCalculator.prototype
-}
+};
 
 /**
  * @constructor
@@ -420,7 +420,7 @@ WebInspector.NetworkTransferTimeCalculator.prototype = {
 WebInspector.NetworkTransferDurationCalculator = function()
 {
     WebInspector.NetworkTimeCalculator.call(this, true);
-}
+};
 
 WebInspector.NetworkTransferDurationCalculator.prototype = {
     /**
@@ -445,4 +445,4 @@ WebInspector.NetworkTransferDurationCalculator.prototype = {
     },
 
     __proto__: WebInspector.NetworkTimeCalculator.prototype
-}
+};

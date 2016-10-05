@@ -28,7 +28,7 @@
  * @implements {WebInspector.EventTarget}
  */
 WebInspector.Object = function() {
-}
+};
 
 WebInspector.Object.prototype = {
     /**
@@ -112,7 +112,7 @@ WebInspector.Object.prototype = {
 
         return event.defaultPrevented;
     }
-}
+};
 
 /**
  * @constructor
@@ -127,7 +127,7 @@ WebInspector.Event = function(target, type, data)
     this.data = data;
     this.defaultPrevented = false;
     this._stoppedPropagation = false;
-}
+};
 
 WebInspector.Event.prototype = {
     stopPropagation: function()
@@ -149,14 +149,14 @@ WebInspector.Event.prototype = {
         if (preventDefault)
             this.preventDefault();
     }
-}
+};
 
 /**
  * @interface
  */
 WebInspector.EventTarget = function()
 {
-}
+};
 
 /**
  * @param {!Array<!WebInspector.EventTarget.EventDescriptor>} eventList
@@ -169,7 +169,7 @@ WebInspector.EventTarget.removeEventListeners = function(eventList)
     }
     // Do not hold references on unused event descriptors.
     eventList.splice(0, eventList.length);
-}
+};
 
 WebInspector.EventTarget.prototype = {
     /**
@@ -201,7 +201,7 @@ WebInspector.EventTarget.prototype = {
      * @return {boolean}
      */
     dispatchEventToListeners: function(eventType, eventData) { },
-}
+};
 
 /**
  * @constructor
@@ -216,4 +216,4 @@ WebInspector.EventTarget.EventDescriptor = function(eventTarget, eventType, rece
     this.eventType = eventType;
     this.receiver = receiver;
     this.method = method;
-}
+};

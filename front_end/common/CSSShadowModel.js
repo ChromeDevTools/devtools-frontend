@@ -16,7 +16,7 @@ WebInspector.CSSShadowModel = function(isBoxShadow)
     this._spreadRadius = WebInspector.CSSLength.zero();
     this._color = /** @type {!WebInspector.Color} */ (WebInspector.Color.parse("black"));
     this._format = [WebInspector.CSSShadowModel._Part.OffsetX, WebInspector.CSSShadowModel._Part.OffsetY];
-}
+};
 
 /**
  * @enum {string}
@@ -28,7 +28,7 @@ WebInspector.CSSShadowModel._Part = {
     BlurRadius: "B",
     SpreadRadius: "S",
     Color: "C"
-}
+};
 
 /**
  * @param {string} text
@@ -37,7 +37,7 @@ WebInspector.CSSShadowModel._Part = {
 WebInspector.CSSShadowModel.parseTextShadow = function(text)
 {
     return WebInspector.CSSShadowModel._parseShadow(text, false);
-}
+};
 
 /**
  * @param {string} text
@@ -46,7 +46,7 @@ WebInspector.CSSShadowModel.parseTextShadow = function(text)
 WebInspector.CSSShadowModel.parseBoxShadow = function(text)
 {
     return WebInspector.CSSShadowModel._parseShadow(text, true);
-}
+};
 
 WebInspector.CSSShadowModel.prototype = {
     /**
@@ -189,7 +189,7 @@ WebInspector.CSSShadowModel.prototype = {
         }
         return parts.join(" ");
     }
-}
+};
 
 /**
  * @param {string} text
@@ -287,7 +287,7 @@ WebInspector.CSSShadowModel._parseShadow = function(text, isBoxShadow)
         }
         return count < min || count > max;
     }
-}
+};
 
 /**
  * @constructor
@@ -298,7 +298,7 @@ WebInspector.CSSLength = function(amount, unit)
 {
     this.amount = amount;
     this.unit = unit;
-}
+};
 
 /** @type {!RegExp} */
 WebInspector.CSSLength.Regex = (function()
@@ -322,7 +322,7 @@ WebInspector.CSSLength.parse = function(text)
     if (match.length > 2 && match[2])
         return new WebInspector.CSSLength(parseFloat(match[1]), match[2]);
     return WebInspector.CSSLength.zero();
-}
+};
 
 /**
  * @return {!WebInspector.CSSLength}
@@ -330,7 +330,7 @@ WebInspector.CSSLength.parse = function(text)
 WebInspector.CSSLength.zero = function()
 {
     return new WebInspector.CSSLength(0, "");
-}
+};
 
 WebInspector.CSSLength.prototype = {
     /**
@@ -340,4 +340,4 @@ WebInspector.CSSLength.prototype = {
     {
         return this.amount + this.unit;
     }
-}
+};

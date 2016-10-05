@@ -51,7 +51,7 @@ WebInspector.PieChart = function(size, formatter, showTotal)
     this._slices = [];
     this._lastAngle = -Math.PI / 2;
     this._setSize(size);
-}
+};
 
 WebInspector.PieChart.prototype = {
     /**
@@ -116,4 +116,4 @@ WebInspector.PieChart.prototype = {
         parent.appendChild(child);
         return child;
     }
-}
+};

@@ -41,7 +41,7 @@ WebInspector.Panel = function(name)
     this._panelName = name;
 
     this._shortcuts = /** !Object.<number, function(Event=):boolean> */ ({});
-}
+};
 
 // Should by in sync with style declarations.
 WebInspector.Panel.counterRightMargin = 25;
@@ -118,7 +118,7 @@ WebInspector.Panel.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @extends {WebInspector.Panel}
@@ -141,7 +141,7 @@ WebInspector.PanelWithSidebar = function(name, defaultWidth)
     this._panelSplitWidget.setSidebarWidget(this._sidebarWidget);
 
     this._sidebarWidget.element.classList.add("panel-sidebar");
-}
+};
 
 WebInspector.PanelWithSidebar.prototype = {
     /**
@@ -169,14 +169,14 @@ WebInspector.PanelWithSidebar.prototype = {
     },
 
     __proto__: WebInspector.Panel.prototype
-}
+};
 
 /**
  * @interface
  */
 WebInspector.PanelDescriptor = function()
 {
-}
+};
 
 WebInspector.PanelDescriptor.prototype = {
     /**
@@ -193,7 +193,7 @@ WebInspector.PanelDescriptor.prototype = {
      * @return {!Promise.<!WebInspector.Panel>}
      */
     panel: function() {}
-}
+};
 
 /**
  * @constructor
@@ -205,7 +205,7 @@ WebInspector.ExtensionPanelDescriptor = function(extension)
     this._name = extension.descriptor()["name"];
     this._title = WebInspector.UIString(extension.descriptor()["title"]);
     this._extension = extension;
-}
+};
 
 WebInspector.ExtensionPanelDescriptor.prototype = {
     /**
@@ -234,4 +234,4 @@ WebInspector.ExtensionPanelDescriptor.prototype = {
     {
         return  /** @type {!Promise<!WebInspector.Panel>} */(this._extension.instance());
     }
-}
+};

@@ -12,7 +12,7 @@ WebInspector.ESTreeWalker = function(beforeVisit, afterVisit)
     this._beforeVisit = beforeVisit;
     this._afterVisit = afterVisit || new Function();
     this._walkNulls = false;
-}
+};
 
 /** @typedef {!Object} WebInspector.ESTreeWalker.SkipSubtree */
 WebInspector.ESTreeWalker.SkipSubtree = {};
@@ -93,7 +93,7 @@ WebInspector.ESTreeWalker.prototype = {
         for (var i = 0; i < nodeArray.length; ++i)
             this._innerWalk(nodeArray[i], parentNode);
     },
-}
+};
 
 /** @enum {!Array.<string>} */
 WebInspector.ESTreeWalker._walkOrder = {
@@ -148,4 +148,4 @@ WebInspector.ESTreeWalker._walkOrder = {
     "WhileStatement": ["test", "body"],
     "WithStatement": ["object", "body"],
     "YieldExpression": ["argument"]
-}
+};

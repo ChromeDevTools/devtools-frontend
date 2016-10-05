@@ -68,7 +68,7 @@ WebInspector.Worker = function(appName, workerName)
             this._worker = null;
         }
     });
-}
+};
 
 WebInspector.Worker.prototype = {
     /**
@@ -108,4 +108,4 @@ WebInspector.Worker.prototype = {
     {
         this._workerPromise.then(worker => (worker.port || worker).onerror = listener);
     }
-}
+};

@@ -57,7 +57,7 @@ WebInspector.WatchExpressionsSidebarPane = function()
     WebInspector.context.addFlavorChangeListener(WebInspector.DebuggerModel.CallFrame, this.update, this);
     this._linkifier = new WebInspector.Linkifier();
     this.update();
-}
+};
 
 WebInspector.WatchExpressionsSidebarPane.prototype = {
     /**
@@ -227,7 +227,7 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
     },
 
     __proto__: WebInspector.ThrottledWidget.prototype
-}
+};
 
 /**
  * @constructor
@@ -246,14 +246,14 @@ WebInspector.WatchExpression = function(expression, expandController, linkifier)
 
     this._createWatchExpression(null);
     this.update();
-}
+};
 
 WebInspector.WatchExpression._watchObjectGroupId = "watch-group";
 
 /** @enum {symbol} */
 WebInspector.WatchExpression.Events = {
     ExpressionUpdated: Symbol("ExpressionUpdated")
-}
+};
 
 WebInspector.WatchExpression.prototype = {
 
@@ -456,4 +456,4 @@ WebInspector.WatchExpression.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};

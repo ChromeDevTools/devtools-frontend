@@ -45,7 +45,7 @@ WebInspector.NetworkLog = function(target, resourceTreeModel, networkManager)
     resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this);
     resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.Load, this._onLoad, this);
     resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.DOMContentLoaded, this._onDOMContentLoaded, this);
-}
+};
 
 /**
  * @param {!WebInspector.Target} target
@@ -54,7 +54,7 @@ WebInspector.NetworkLog = function(target, resourceTreeModel, networkManager)
 WebInspector.NetworkLog.fromTarget = function(target)
 {
     return /** @type {?WebInspector.NetworkLog} */ (target.model(WebInspector.NetworkLog));
-}
+};
 
 /**
  * @param {string} url
@@ -69,7 +69,7 @@ WebInspector.NetworkLog.requestForURL = function(url)
             return result;
     }
     return null;
-}
+};
 
 /**
  * @return {!Array.<!WebInspector.NetworkRequest>}
@@ -83,7 +83,7 @@ WebInspector.NetworkLog.requests = function()
             result = result.concat(networkLog.requests());
     }
     return result;
-}
+};
 
 WebInspector.NetworkLog.prototype = {
     /**
@@ -177,7 +177,7 @@ WebInspector.NetworkLog.prototype = {
     },
 
     __proto__: WebInspector.SDKModel.prototype
-}
+};
 
 /**
  * @constructor
@@ -188,6 +188,6 @@ WebInspector.PageLoad = function(mainRequest)
     this.id = ++WebInspector.PageLoad._lastIdentifier;
     this.url = mainRequest.url;
     this.startTime = mainRequest.startTime;
-}
+};
 
 WebInspector.PageLoad._lastIdentifier = 0;

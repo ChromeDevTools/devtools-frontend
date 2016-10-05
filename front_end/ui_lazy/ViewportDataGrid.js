@@ -39,7 +39,7 @@ WebInspector.ViewportDataGrid = function(columnsArray, editCallback, deleteCallb
     this._lastScrollTop = 0;
 
     this.setRootNode(new WebInspector.ViewportDataGridNode());
-}
+};
 
 WebInspector.ViewportDataGrid.prototype = {
     /**
@@ -273,7 +273,7 @@ WebInspector.ViewportDataGrid.prototype = {
     },
 
     __proto__: WebInspector.DataGrid.prototype
-}
+};
 
 /**
  * @constructor
@@ -286,7 +286,7 @@ WebInspector.ViewportDataGridNode = function(data, hasChildren)
     WebInspector.DataGridNode.call(this, data, hasChildren);
     /** @type {boolean} */
     this._stale = false;
-}
+};
 
 WebInspector.ViewportDataGridNode.prototype = {
     /**
@@ -463,4 +463,4 @@ WebInspector.ViewportDataGridNode.prototype = {
     },
 
     __proto__: WebInspector.DataGridNode.prototype
-}
+};

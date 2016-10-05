@@ -49,7 +49,7 @@ WebInspector.LayerTreeOutline = function(layerViewHost)
     this._lastHoveredNode = null;
     this.element = this._treeOutline.element;
     this._layerViewHost.showInternalLayersSetting().addChangeListener(this._update, this);
-}
+};
 
 WebInspector.LayerTreeOutline.prototype = {
     focus: function()
@@ -211,7 +211,7 @@ WebInspector.LayerTreeOutline.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
   * @constructor
@@ -226,7 +226,7 @@ WebInspector.LayerTreeElement = function(tree, layer)
     this._layer = layer;
     this._layer[WebInspector.LayerTreeElement._symbol] = this;
     this._update();
-}
+};
 
 WebInspector.LayerTreeElement._symbol = Symbol("layer");
 
@@ -260,4 +260,4 @@ WebInspector.LayerTreeElement.prototype = {
     },
 
     __proto__: TreeElement.prototype
-}
+};

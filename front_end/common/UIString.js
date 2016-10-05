@@ -37,7 +37,7 @@
 WebInspector.UIString = function(string, vararg)
 {
     return String.vsprintf(WebInspector.localize(string), Array.prototype.slice.call(arguments, 1));
-}
+};
 
 /**
  * @param {string} string
@@ -56,7 +56,7 @@ WebInspector.UIString.capitalize = function(string, vararg)
     else
         capitalized = localized.replace(/\^(.)/g, function(str, char) { return char.toUpperCase(); });
     return String.vsprintf(capitalized, Array.prototype.slice.call(arguments, 1));
-}
+};
 
 /**
  * @param {string} platform
@@ -64,7 +64,7 @@ WebInspector.UIString.capitalize = function(string, vararg)
 WebInspector.setLocalizationPlatform = function(platform)
 {
     WebInspector._useLowerCaseMenuTitles = platform === "windows";
-}
+};
 
 /**
  * @param {string} string
@@ -73,7 +73,7 @@ WebInspector.setLocalizationPlatform = function(platform)
 WebInspector.localize = function(string)
 {
     return string;
-}
+};
 
 /**
  * @constructor
@@ -85,7 +85,7 @@ WebInspector.UIStringFormat = function(format)
     this._localizedFormat = WebInspector.localize(format);
     /** @type {!Array.<!Object>} */
     this._tokenizedFormat = String.tokenizeFormatString(this._localizedFormat, String.standardFormatters);
-}
+};
 
 /**
  * @param {string} a
@@ -95,7 +95,7 @@ WebInspector.UIStringFormat = function(format)
 WebInspector.UIStringFormat._append = function(a, b)
 {
     return a + b;
-}
+};
 
 WebInspector.UIStringFormat.prototype = {
     /**
@@ -107,4 +107,4 @@ WebInspector.UIStringFormat.prototype = {
         return String.format(this._localizedFormat, arguments,
             String.standardFormatters, "", WebInspector.UIStringFormat._append, this._tokenizedFormat).formattedResult;
     }
-}
+};

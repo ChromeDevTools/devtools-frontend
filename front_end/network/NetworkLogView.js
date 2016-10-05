@@ -92,7 +92,7 @@ WebInspector.NetworkLogView = function(filterBar, progressBarContainer, networkL
     WebInspector.targetManager.addModelListener(WebInspector.NetworkManager, WebInspector.NetworkManager.Events.RequestStarted, this._onRequestStarted, this);
     WebInspector.targetManager.addModelListener(WebInspector.NetworkManager, WebInspector.NetworkManager.Events.RequestUpdated, this._onRequestUpdated, this);
     WebInspector.targetManager.addModelListener(WebInspector.NetworkManager, WebInspector.NetworkManager.Events.RequestFinished, this._onRequestUpdated, this);
-}
+};
 
 WebInspector.NetworkLogView._isFilteredOutSymbol = Symbol("isFilteredOut");
 WebInspector.NetworkLogView._isMatchingSearchQuerySymbol = Symbol("isMatchingSearchQuery");
@@ -110,7 +110,7 @@ WebInspector.NetworkLogView.Events = {
     SearchCountUpdated: Symbol("SearchCountUpdated"),
     SearchIndexUpdated: Symbol("SearchIndexUpdated"),
     UpdateRequest: Symbol("UpdateRequest")
-}
+};
 
 /** @enum {string} */
 WebInspector.NetworkLogView.FilterType = {
@@ -134,7 +134,7 @@ WebInspector.NetworkLogView.MixedContentFilterValues = {
     Displayed: "displayed",
     Blocked: "blocked",
     BlockOverridden: "block-overridden"
-}
+};
 
 /** @enum {string} */
 WebInspector.NetworkLogView.IsFilterType = {
@@ -1511,7 +1511,7 @@ WebInspector.NetworkLogView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /** @typedef {function(!WebInspector.NetworkRequest): boolean} */
 WebInspector.NetworkLogView.Filter;
@@ -1524,7 +1524,7 @@ WebInspector.NetworkLogView.Filter;
 WebInspector.NetworkLogView._negativeFilter = function(filter, request)
 {
     return !filter(request);
-}
+};
 
 /**
  * @param {?RegExp} regex
@@ -1537,7 +1537,7 @@ WebInspector.NetworkLogView._requestPathFilter = function(regex, request)
         return false;
 
     return regex.test(request.path() + "/" + request.name());
-}
+};
 
 /**
  * @param {string} domain
@@ -1552,7 +1552,7 @@ WebInspector.NetworkLogView._subdomains = function(domain)
         indexOfPeriod = domain.indexOf(".", indexOfPeriod + 1);
     }
     return result;
-}
+};
 
 /**
  * @param {string} value
@@ -1570,7 +1570,7 @@ WebInspector.NetworkLogView._createRequestDomainFilter = function(value)
     }
     var escapedPattern = value.split("*").map(escapeForRegExp).join(".*");
     return WebInspector.NetworkLogView._requestDomainFilter.bind(null, new RegExp("^" + escapedPattern + "$", "i"));
-}
+};
 
 /**
  * @param {!RegExp} regex
@@ -1580,7 +1580,7 @@ WebInspector.NetworkLogView._createRequestDomainFilter = function(value)
 WebInspector.NetworkLogView._requestDomainFilter = function(regex, request)
 {
     return regex.test(request.domain);
-}
+};
 
 /**
  * @param {!WebInspector.NetworkRequest} request
@@ -1589,7 +1589,7 @@ WebInspector.NetworkLogView._requestDomainFilter = function(regex, request)
 WebInspector.NetworkLogView._runningRequestFilter = function(request)
 {
     return !request.finished;
-}
+};
 
 /**
  * @param {string} value
@@ -1599,7 +1599,7 @@ WebInspector.NetworkLogView._runningRequestFilter = function(request)
 WebInspector.NetworkLogView._requestResponseHeaderFilter = function(value, request)
 {
     return request.responseHeaderValue(value) !== undefined;
-}
+};
 
 /**
  * @param {string} value
@@ -1609,7 +1609,7 @@ WebInspector.NetworkLogView._requestResponseHeaderFilter = function(value, reque
 WebInspector.NetworkLogView._requestMethodFilter = function(value, request)
 {
     return request.requestMethod === value;
-}
+};
 
 /**
  * @param {string} value
@@ -1619,7 +1619,7 @@ WebInspector.NetworkLogView._requestMethodFilter = function(value, request)
 WebInspector.NetworkLogView._requestMimeTypeFilter = function(value, request)
 {
     return request.mimeType === value;
-}
+};
 
 /**
  * @param {!WebInspector.NetworkLogView.MixedContentFilterValues} value
@@ -1638,7 +1638,7 @@ WebInspector.NetworkLogView._requestMixedContentFilter = function(value, request
         return request.mixedContentType !== "none";
     }
     return false;
-}
+};
 
 /**
  * @param {string} value
@@ -1648,7 +1648,7 @@ WebInspector.NetworkLogView._requestMixedContentFilter = function(value, request
 WebInspector.NetworkLogView._requestSchemeFilter = function(value, request)
 {
     return request.scheme === value;
-}
+};
 
 /**
  * @param {string} value
@@ -1663,7 +1663,7 @@ WebInspector.NetworkLogView._requestSetCookieDomainFilter = function(value, requ
             return true;
     }
     return false;
-}
+};
 
 /**
  * @param {string} value
@@ -1678,7 +1678,7 @@ WebInspector.NetworkLogView._requestSetCookieNameFilter = function(value, reques
             return true;
     }
     return false;
-}
+};
 
 /**
  * @param {string} value
@@ -1693,7 +1693,7 @@ WebInspector.NetworkLogView._requestSetCookieValueFilter = function(value, reque
             return true;
     }
     return false;
-}
+};
 
 /**
  * @param {number} value
@@ -1703,7 +1703,7 @@ WebInspector.NetworkLogView._requestSetCookieValueFilter = function(value, reque
 WebInspector.NetworkLogView._requestSizeLargerThanFilter = function(value, request)
 {
     return request.transferSize >= value;
-}
+};
 
 /**
  * @param {string} value
@@ -1713,7 +1713,7 @@ WebInspector.NetworkLogView._requestSizeLargerThanFilter = function(value, reque
 WebInspector.NetworkLogView._statusCodeFilter = function(value, request)
 {
     return ("" + request.statusCode) === value;
-}
+};
 
 /**
  * @param {!WebInspector.NetworkRequest} request
@@ -1722,7 +1722,7 @@ WebInspector.NetworkLogView._statusCodeFilter = function(value, request)
 WebInspector.NetworkLogView.HTTPRequestsFilter = function(request)
 {
     return request.parsedURL.isValid && (request.scheme in WebInspector.NetworkLogView.HTTPSchemas);
-}
+};
 
 /**
  * @param {!WebInspector.NetworkRequest} request
@@ -1731,7 +1731,7 @@ WebInspector.NetworkLogView.HTTPRequestsFilter = function(request)
 WebInspector.NetworkLogView.FinishedRequestsFilter = function(request)
 {
     return request.finished;
-}
+};
 
 /**
  * @param {number} windowStart
@@ -1746,4 +1746,4 @@ WebInspector.NetworkLogView._requestTimeFilter = function(windowStart, windowEnd
     if (request.endTime !== -1 && request.endTime < windowStart)
         return false;
     return true;
-}
+};

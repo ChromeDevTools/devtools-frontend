@@ -56,7 +56,7 @@ WebInspector.ProfileLauncherView = function(profilesPanel)
     this._loadButton = createTextButton(WebInspector.UIString("Load"), this._loadButtonClicked.bind(this), "load-profile");
     this._contentElement.appendChild(this._loadButton);
     WebInspector.targetManager.observeTargets(this);
-}
+};
 
 WebInspector.ProfileLauncherView.prototype = {
     /**
@@ -158,7 +158,7 @@ WebInspector.ProfileLauncherView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 
 /**
@@ -180,12 +180,12 @@ WebInspector.MultiProfileLauncherView = function(profilesPanel)
     this._innerContentElement.createChild("div", "flexible-space");
 
     this._typeIdToOptionElement = {};
-}
+};
 
 /** @enum {symbol} */
 WebInspector.MultiProfileLauncherView.Events = {
     ProfileTypeSelected: Symbol("ProfileTypeSelected")
-}
+};
 
 WebInspector.MultiProfileLauncherView.prototype = {
     /**
@@ -258,4 +258,4 @@ WebInspector.MultiProfileLauncherView.prototype = {
     },
 
     __proto__: WebInspector.ProfileLauncherView.prototype
-}
+};

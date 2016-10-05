@@ -15,12 +15,12 @@ WebInspector.ElementsBreadcrumbs = function()
     this.crumbsElement.addEventListener("mousemove", this._mouseMovedInCrumbs.bind(this), false);
     this.crumbsElement.addEventListener("mouseleave", this._mouseMovedOutOfCrumbs.bind(this), false);
     this._nodeSymbol = Symbol("node");
-}
+};
 
 /** @enum {symbol} */
 WebInspector.ElementsBreadcrumbs.Events = {
     NodeSelected: Symbol("NodeSelected")
-}
+};
 
 WebInspector.ElementsBreadcrumbs.prototype = {
     wasShown: function()
@@ -433,4 +433,4 @@ WebInspector.ElementsBreadcrumbs.prototype = {
     },
 
     __proto__: WebInspector.HBox.prototype
-}
+};

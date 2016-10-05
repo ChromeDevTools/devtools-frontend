@@ -330,7 +330,7 @@ DevToolsAPIImpl.prototype = {
             return "";
         }
     }
-}
+};
 
 var DevToolsAPI = new DevToolsAPIImpl();
 window.DevToolsAPI = DevToolsAPI;
@@ -887,7 +887,7 @@ InspectorFrontendHostImpl.prototype = {
     {
         this.recordEnumeratedHistogram("DevTools.PanelShown", panelCode, 20);
     }
-}
+};
 
 window.InspectorFrontendHost = new InspectorFrontendHostImpl();
 
@@ -1185,5 +1185,5 @@ if (!DOMTokenList.prototype.__originalDOMTokenListToggle) {
         if (arguments.length === 1)
             force = !this.contains(token);
         return this.__originalDOMTokenListToggle(token, !!force);
-    }
+    };
 }

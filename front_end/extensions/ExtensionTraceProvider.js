@@ -11,7 +11,7 @@ WebInspector.ExtensionTraceProvider = function(extensionOrigin, id, categoryName
     this._id = id;
     this._categoryName = categoryName;
     this._categoryTooltip = categoryTooltip;
-}
+};
 
 WebInspector.ExtensionTraceProvider.prototype = {
     start: function()
@@ -23,4 +23,4 @@ WebInspector.ExtensionTraceProvider.prototype = {
     {
         WebInspector.extensionServer.stopTraceRecording(this._id);
     }
-}
+};

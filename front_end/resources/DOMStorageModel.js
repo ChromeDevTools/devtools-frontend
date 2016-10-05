@@ -39,7 +39,7 @@ WebInspector.DOMStorage = function(model, securityOrigin, isLocalStorage)
     this._model = model;
     this._securityOrigin = securityOrigin;
     this._isLocalStorage = isLocalStorage;
-}
+};
 
 /**
  * @param {string} securityOrigin
@@ -49,7 +49,7 @@ WebInspector.DOMStorage = function(model, securityOrigin, isLocalStorage)
 WebInspector.DOMStorage.storageId = function(securityOrigin, isLocalStorage)
 {
     return { securityOrigin: securityOrigin, isLocalStorage: isLocalStorage };
-}
+};
 
 /** @enum {symbol} */
 WebInspector.DOMStorage.Events = {
@@ -57,7 +57,7 @@ WebInspector.DOMStorage.Events = {
     DOMStorageItemRemoved: Symbol("DOMStorageItemRemoved"),
     DOMStorageItemAdded: Symbol("DOMStorageItemAdded"),
     DOMStorageItemUpdated: Symbol("DOMStorageItemUpdated")
-}
+};
 
 WebInspector.DOMStorage.prototype = {
 
@@ -105,7 +105,7 @@ WebInspector.DOMStorage.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
  * @constructor
@@ -121,13 +121,13 @@ WebInspector.DOMStorageModel = function(target, securityOriginManager)
     /** @type {!Object.<string, !WebInspector.DOMStorage>} */
     this._storages = {};
     this._agent = target.domstorageAgent();
-}
+};
 
 /** @enum {symbol} */
 WebInspector.DOMStorageModel.Events = {
     DOMStorageAdded: Symbol("DOMStorageAdded"),
     DOMStorageRemoved: Symbol("DOMStorageRemoved")
-}
+};
 
 WebInspector.DOMStorageModel.prototype = {
     enable: function()
@@ -298,7 +298,7 @@ WebInspector.DOMStorageModel.prototype = {
     },
 
     __proto__: WebInspector.SDKModel.prototype
-}
+};
 
 /**
  * @constructor
@@ -308,7 +308,7 @@ WebInspector.DOMStorageModel.prototype = {
 WebInspector.DOMStorageDispatcher = function(model)
 {
     this._model = model;
-}
+};
 
 WebInspector.DOMStorageDispatcher.prototype = {
 
@@ -353,7 +353,7 @@ WebInspector.DOMStorageDispatcher.prototype = {
     {
         this._model._domStorageItemUpdated(storageId, key, oldValue, value);
     },
-}
+};
 
 WebInspector.DOMStorageModel._symbol = Symbol("DomStorage");
 
@@ -368,4 +368,4 @@ WebInspector.DOMStorageModel.fromTarget = function(target)
         model = new WebInspector.DOMStorageModel(target, WebInspector.SecurityOriginManager.fromTarget(target));
     }
     return model;
-}
+};

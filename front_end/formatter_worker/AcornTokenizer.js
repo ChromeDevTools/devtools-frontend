@@ -16,7 +16,7 @@ WebInspector.AcornTokenizer = function(content)
     this._tokenLineStart = 0;
     this._tokenLineEnd = 0;
     this._nextTokenInternal();
-}
+};
 
 /**
  * @param {!Acorn.TokenOrComment} token
@@ -31,7 +31,7 @@ WebInspector.AcornTokenizer.punctuator = function(token, values)
         token.type !== acorn.tokTypes.name &&
         !token.type.keyword &&
         (!values || (token.type.label.length === 1 && values.indexOf(token.type.label) !== -1));
-}
+};
 
 /**
  * @param {!Acorn.TokenOrComment} token
@@ -42,7 +42,7 @@ WebInspector.AcornTokenizer.keyword = function(token, keyword)
 {
     return !!token.type.keyword && token.type !== acorn.tokTypes._true && token.type !== acorn.tokTypes._false &&
         token.type !== acorn.tokTypes._null && (!keyword || token.type.keyword === keyword);
-}
+};
 
 /**
  * @param {!Acorn.TokenOrComment} token
@@ -52,7 +52,7 @@ WebInspector.AcornTokenizer.keyword = function(token, keyword)
 WebInspector.AcornTokenizer.identifier = function(token, identifier)
 {
     return token.type === acorn.tokTypes.name && (!identifier || token.value === identifier);
-}
+};
 
 /**
  * @param {!Acorn.TokenOrComment} token
@@ -61,7 +61,7 @@ WebInspector.AcornTokenizer.identifier = function(token, identifier)
 WebInspector.AcornTokenizer.lineComment = function(token)
 {
     return token.type === "Line";
-}
+};
 
 /**
  * @param {!Acorn.TokenOrComment} token
@@ -70,7 +70,7 @@ WebInspector.AcornTokenizer.lineComment = function(token)
 WebInspector.AcornTokenizer.blockComment = function(token)
 {
     return token.type === "Block";
-}
+};
 
 WebInspector.AcornTokenizer.prototype = {
     /**
@@ -145,4 +145,4 @@ WebInspector.AcornTokenizer.prototype = {
     {
         return this._tokenColumnStart;
     }
-}
+};

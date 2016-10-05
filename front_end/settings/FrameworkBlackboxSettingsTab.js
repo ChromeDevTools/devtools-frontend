@@ -36,7 +36,7 @@ WebInspector.FrameworkBlackboxSettingsTab = function()
 
     this.setDefaultFocusedElement(addPatternButton);
     this.contentElement.tabIndex = 0;
-}
+};
 
 WebInspector.FrameworkBlackboxSettingsTab.prototype = {
     wasShown: function()
@@ -180,4 +180,4 @@ WebInspector.FrameworkBlackboxSettingsTab.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

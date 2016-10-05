@@ -7,7 +7,7 @@
  */
 WebInspector.Renderer = function()
 {
-}
+};
 
 WebInspector.Renderer.prototype = {
     /**
@@ -15,7 +15,7 @@ WebInspector.Renderer.prototype = {
      * @return {!Promise.<!Element>}
      */
     render: function(object) {}
-}
+};
 
 /**
  * @param {!Object} object
@@ -35,14 +35,14 @@ WebInspector.Renderer.renderPromise = function(object)
     {
         return renderer.render(object);
     }
-}
+};
 
 /**
  * @interface
  */
 WebInspector.Revealer = function()
 {
-}
+};
 
 /**
  * @param {?Object} revealable
@@ -51,7 +51,7 @@ WebInspector.Revealer = function()
 WebInspector.Revealer.reveal = function(revealable, omitFocus)
 {
     WebInspector.Revealer.revealPromise(revealable, omitFocus);
-}
+};
 
 /**
  * @param {?Object} revealable
@@ -75,7 +75,7 @@ WebInspector.Revealer.revealPromise = function(revealable, omitFocus)
             promises.push(revealers[i].reveal(/** @type {!Object} */ (revealable), omitFocus));
         return Promise.race(promises);
     }
-}
+};
 
 WebInspector.Revealer.prototype = {
     /**
@@ -84,46 +84,46 @@ WebInspector.Revealer.prototype = {
      * @return {!Promise}
      */
     reveal: function(object, omitFocus) {}
-}
+};
 
 /**
  * @interface
  */
 WebInspector.App = function()
 {
-}
+};
 
 WebInspector.App.prototype = {
     /**
      * @param {!Document} document
      */
     presentUI: function(document) { }
-}
+};
 
 /**
  * @interface
  */
 WebInspector.AppProvider = function()
 {
-}
+};
 
 WebInspector.AppProvider.prototype = {
     /**
      * @return {!WebInspector.App}
      */
     createApp: function() { }
-}
+};
 
 /**
  * @interface
  */
 WebInspector.QueryParamHandler = function()
 {
-}
+};
 
 WebInspector.QueryParamHandler.prototype = {
     /**
      * @param {string} value
      */
     handleQueryParam: function(value) { }
-}
+};

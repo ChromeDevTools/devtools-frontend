@@ -24,7 +24,7 @@ WebInspector.DebuggerWorkspaceBinding = function(targetManager, workspace, netwo
     targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.DebuggerResumed, this._debuggerResumed, this);
     workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
     workspace.addEventListener(WebInspector.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
-}
+};
 
 WebInspector.DebuggerWorkspaceBinding.prototype = {
     /**
@@ -361,7 +361,7 @@ WebInspector.DebuggerWorkspaceBinding.prototype = {
             event.preventDefault();
         }
     }
-}
+};
 
 /**
  * @constructor
@@ -392,7 +392,7 @@ WebInspector.DebuggerWorkspaceBinding.TargetData = function(debuggerModel, debug
         debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this),
         debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.FailedToParseScriptSource, this._parsedScriptSource, this)
     ];
-}
+};
 
 WebInspector.DebuggerWorkspaceBinding.TargetData.prototype = {
     /**
@@ -464,7 +464,7 @@ WebInspector.DebuggerWorkspaceBinding.TargetData.prototype = {
         this._defaultMapping.dispose();
         this._uiSourceCodeToSourceMapping.clear();
     }
-}
+};
 
 /**
  * @constructor
@@ -479,7 +479,7 @@ WebInspector.DebuggerWorkspaceBinding.ScriptInfo = function(script)
 
     /** @type {!Set<!WebInspector.LiveLocation>} */
     this._locations = new Set();
-}
+};
 
 WebInspector.DebuggerWorkspaceBinding.ScriptInfo.prototype = {
     /**
@@ -536,7 +536,7 @@ WebInspector.DebuggerWorkspaceBinding.ScriptInfo.prototype = {
         console.assert(uiLocation, "Script raw location cannot be mapped to any UI location.");
         return /** @type {!WebInspector.UILocation} */ (uiLocation);
     }
-}
+};
 
 
 /**
@@ -554,7 +554,7 @@ WebInspector.DebuggerWorkspaceBinding.Location = function(script, rawLocation, b
     this._script = script;
     this._rawLocation = rawLocation;
     this._binding = binding;
-}
+};
 
 WebInspector.DebuggerWorkspaceBinding.Location.prototype = {
     /**
@@ -586,7 +586,7 @@ WebInspector.DebuggerWorkspaceBinding.Location.prototype = {
     },
 
     __proto__: WebInspector.LiveLocationWithPool.prototype
-}
+};
 
 /**
  * @constructor
@@ -606,7 +606,7 @@ WebInspector.DebuggerWorkspaceBinding.StackTraceTopFrameLocation = function(rawL
     for (var location of rawLocations)
         this._locations.add(binding.createLiveLocation(location, this._scheduleUpdate.bind(this), locationPool));
     this._updateLocation();
-}
+};
 
 WebInspector.DebuggerWorkspaceBinding.StackTraceTopFrameLocation.prototype = {
     /**
@@ -659,14 +659,14 @@ WebInspector.DebuggerWorkspaceBinding.StackTraceTopFrameLocation.prototype = {
     },
 
     __proto__: WebInspector.LiveLocationWithPool.prototype
-}
+};
 
 /**
  * @interface
  */
 WebInspector.DebuggerSourceMapping = function()
 {
-}
+};
 
 WebInspector.DebuggerSourceMapping.prototype = {
     /**
@@ -694,7 +694,7 @@ WebInspector.DebuggerSourceMapping.prototype = {
      * @return {boolean}
      */
     uiLineHasMapping: function(uiSourceCode, lineNumber) { }
-}
+};
 
 /**
  * @type {!WebInspector.DebuggerWorkspaceBinding}

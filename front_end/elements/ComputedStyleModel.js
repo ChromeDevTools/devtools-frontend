@@ -11,12 +11,12 @@ WebInspector.ComputedStyleModel = function()
     WebInspector.Object.call(this);
     this._node = WebInspector.context.flavor(WebInspector.DOMNode);
     WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this._onNodeChanged, this);
-}
+};
 
 /** @enum {symbol} */
 WebInspector.ComputedStyleModel.Events = {
     ComputedStyleChanged: Symbol("ComputedStyleChanged")
-}
+};
 
 WebInspector.ComputedStyleModel.prototype = {
     /**
@@ -156,7 +156,7 @@ WebInspector.ComputedStyleModel.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
  * @constructor
@@ -167,4 +167,4 @@ WebInspector.ComputedStyleModel.ComputedStyle = function(node, computedStyle)
 {
     this.node = node;
     this.computedStyle = computedStyle;
-}
+};

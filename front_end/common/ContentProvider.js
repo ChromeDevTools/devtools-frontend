@@ -31,7 +31,7 @@
 /**
  * @interface
  */
-WebInspector.ContentProvider = function() { }
+WebInspector.ContentProvider = function() { };
 
 WebInspector.ContentProvider.prototype = {
     /**
@@ -56,7 +56,7 @@ WebInspector.ContentProvider.prototype = {
      * @param {function(!Array.<!WebInspector.ContentProvider.SearchMatch>)} callback
      */
     searchInContent: function(query, caseSensitive, isRegex, callback) { }
-}
+};
 
 /**
  * @constructor
@@ -66,7 +66,7 @@ WebInspector.ContentProvider.prototype = {
 WebInspector.ContentProvider.SearchMatch = function(lineNumber, lineContent) {
     this.lineNumber = lineNumber;
     this.lineContent = lineContent;
-}
+};
 
 /**
  * @param {string} content
@@ -88,7 +88,7 @@ WebInspector.ContentProvider.performSearchInContent = function(content, query, c
             result.push(new WebInspector.ContentProvider.SearchMatch(i, lineContent));
     }
     return result;
-}
+};
 
 /**
  * @param {?string} content
@@ -104,4 +104,4 @@ WebInspector.ContentProvider.contentAsDataURL = function(content, mimeType, cont
         return null;
 
     return "data:" + mimeType + (charset ? ";charset=" + charset : "") + (contentEncoded ? ";base64" : "") + "," + content;
-}
+};

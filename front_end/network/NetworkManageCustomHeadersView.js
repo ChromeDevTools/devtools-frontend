@@ -40,7 +40,7 @@ WebInspector.NetworkManageCustomHeadersView = function(columnData, addHeaderColu
     this._removeHeaderColumnCallback = removeHeaderColumnCallback;
 
     this.contentElement.tabIndex = 0;
-}
+};
 
 WebInspector.NetworkManageCustomHeadersView.prototype = {
     /**

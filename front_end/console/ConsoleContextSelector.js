@@ -22,7 +22,7 @@ WebInspector.ConsoleContextSelector = function(selectElement)
 
     this._selectElement.addEventListener("change", this._executionContextChanged.bind(this), false);
     WebInspector.context.addFlavorChangeListener(WebInspector.ExecutionContext, this._executionContextChangedExternally, this);
-}
+};
 
 WebInspector.ConsoleContextSelector.prototype = {
     /**
@@ -64,7 +64,7 @@ WebInspector.ConsoleContextSelector.prototype = {
         this._optionByExecutionContext.set(executionContext, newOption);
         var options = this._selectElement.options;
         var contexts = Array.prototype.map.call(options, mapping);
-        var index = contexts.lowerBound(executionContext, executionContext.runtimeModel.executionContextComparator())
+        var index = contexts.lowerBound(executionContext, executionContext.runtimeModel.executionContextComparator());
         this._selectElement.insertBefore(newOption, options[index]);
 
         if (executionContext === WebInspector.context.flavor(WebInspector.ExecutionContext))
@@ -148,7 +148,7 @@ WebInspector.ConsoleContextSelector.prototype = {
     _updateSelectionWarning: function()
     {
         var executionContext = WebInspector.context.flavor(WebInspector.ExecutionContext);
-        this._selectElement.parentElement.classList.toggle("warning", !this._isTopContext(executionContext) && this._hasTopContext())
+        this._selectElement.parentElement.classList.toggle("warning", !this._isTopContext(executionContext) && this._hasTopContext());
     },
 
     /**
@@ -219,4 +219,4 @@ WebInspector.ConsoleContextSelector.prototype = {
             return this._selectElement[this._selectElement.selectedIndex];
         return null;
     }
-}
+};

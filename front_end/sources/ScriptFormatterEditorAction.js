@@ -12,7 +12,7 @@ WebInspector.FormatterScriptMapping = function(debuggerModel, editorAction)
 {
     this._debuggerModel = debuggerModel;
     this._editorAction = editorAction;
-}
+};
 
 WebInspector.FormatterScriptMapping.prototype = {
     /**
@@ -79,7 +79,7 @@ WebInspector.FormatterScriptMapping.prototype = {
     {
         return true;
     }
-}
+};
 
 /**
  * @constructor
@@ -94,7 +94,7 @@ WebInspector.FormatterScriptMapping.FormatData = function(projectId, path, mappi
     this.path = path;
     this.mapping = mapping;
     this.scripts = scripts;
-}
+};
 
 /**
  * @constructor
@@ -120,7 +120,7 @@ WebInspector.ScriptFormatterEditorAction = function()
     this._scriptMappingByTarget = new Map();
     this._workspace = WebInspector.workspace;
     WebInspector.targetManager.observeTargets(this);
-}
+};
 
 WebInspector.ScriptFormatterEditorAction.prototype = {
     /**
@@ -391,4 +391,4 @@ WebInspector.ScriptFormatterEditorAction.prototype = {
             this._showIfNeeded(uiSourceCode, formattedUISourceCode, formatterMapping);
         }
     }
-}
+};

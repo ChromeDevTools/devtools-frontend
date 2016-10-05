@@ -55,7 +55,7 @@ WebInspector.StylesSourceMapping = function(cssModel, workspace, networkMapping)
         WebInspector.ResourceTreeModel.fromTarget(cssModel.target()).addEventListener(
             WebInspector.ResourceTreeModel.Events.MainFrameNavigated, this._unbindAllUISourceCodes, this)
     ];
-}
+};
 
 WebInspector.StylesSourceMapping.ChangeUpdateTimeoutMs = 200;
 
@@ -292,7 +292,7 @@ WebInspector.StylesSourceMapping.prototype = {
     {
         WebInspector.EventTarget.removeEventListeners(this._eventListeners);
     }
-}
+};
 
 /**
  * @constructor
@@ -309,7 +309,7 @@ WebInspector.StyleFile = function(uiSourceCode, mapping)
     ];
     this._commitThrottler = new WebInspector.Throttler(WebInspector.StyleFile.updateTimeout);
     this._terminated = false;
-}
+};
 
 WebInspector.StyleFile.updateTimeout = 200;
 
@@ -342,7 +342,7 @@ WebInspector.StyleFile.prototype = {
         if (this._terminated)
             return;
         var promise = this._mapping._setStyleContent(this._uiSourceCode, this._uiSourceCode.workingCopy(), this._isMajorChangePending)
-            .then(this._styleContentSet.bind(this))
+            .then(this._styleContentSet.bind(this));
         this._isMajorChangePending = false;
         return promise;
     },
@@ -373,4 +373,4 @@ WebInspector.StyleFile.prototype = {
         this._terminated = true;
         WebInspector.EventTarget.removeEventListeners(this._eventListeners);
     }
-}
+};

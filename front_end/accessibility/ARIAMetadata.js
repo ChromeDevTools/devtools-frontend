@@ -13,7 +13,7 @@ WebInspector.ARIAMetadata = function(config)
 
     if (config)
         this._initialize(config);
-}
+};
 
 /**
  * @return {!WebInspector.ARIAMetadata}

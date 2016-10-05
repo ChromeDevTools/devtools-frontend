@@ -35,7 +35,7 @@
 WebInspector.CodeMirrorUtils = function()
 {
     WebInspector.InplaceEditor.call(this);
-}
+};
 
 /**
  * @param {!WebInspector.TextRange} range
@@ -47,7 +47,7 @@ WebInspector.CodeMirrorUtils.toPos = function(range)
         start: new CodeMirror.Pos(range.startLine, range.startColumn),
         end: new CodeMirror.Pos(range.endLine, range.endColumn)
     };
-}
+};
 
 /**
  * @param {!CodeMirror.Pos} start
@@ -57,7 +57,7 @@ WebInspector.CodeMirrorUtils.toPos = function(range)
 WebInspector.CodeMirrorUtils.toRange = function(start, end)
 {
     return new WebInspector.TextRange(start.line, start.ch, end.line, end.ch);
-}
+};
 
 /**
  * @param {!CodeMirror.ChangeObject} changeObject
@@ -82,7 +82,7 @@ WebInspector.CodeMirrorUtils.changeObjectToEditOperation = function(changeObject
         oldRange: oldRange,
         newRange: newRange
     };
-}
+};
 
 /**
  * @param {!CodeMirror} codeMirror
@@ -102,7 +102,7 @@ WebInspector.CodeMirrorUtils.pullLines = function(codeMirror, linesCount)
     {
         lines.push(lineHandle.text);
     }
-}
+};
 
 WebInspector.CodeMirrorUtils.prototype = {
     /**
@@ -171,13 +171,13 @@ WebInspector.CodeMirrorUtils.prototype = {
     },
 
     __proto__: WebInspector.InplaceEditor.prototype
-}
+};
 
 /**
  * @constructor
  * @implements {WebInspector.TokenizerFactory}
  */
-WebInspector.CodeMirrorUtils.TokenizerFactory = function() { }
+WebInspector.CodeMirrorUtils.TokenizerFactory = function() { };
 
 WebInspector.CodeMirrorUtils.TokenizerFactory.prototype = {
     /**
@@ -201,7 +201,7 @@ WebInspector.CodeMirrorUtils.TokenizerFactory.prototype = {
         }
         return tokenize;
     }
-}
+};
 
 /**
  * This bogus view is needed to load/unload CodeMirror-related CSS on demand.
@@ -216,11 +216,11 @@ WebInspector.CodeMirrorCSSLoadView = function()
     this.registerRequiredCSS("cm/codemirror.css");
     this.registerRequiredCSS("text_editor/cmdevtools.css");
     WebInspector.CodeMirrorUtils.appendThemeStyle(this.element);
-}
+};
 
 WebInspector.CodeMirrorCSSLoadView.prototype = {
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 
 /**
@@ -238,4 +238,4 @@ WebInspector.CodeMirrorUtils.appendThemeStyle = function(element)
     if (foregroundColorRule || backgroundColorRule)
         style.textContent = backgroundColorRule + foregroundColorRule;
     element.appendChild(style);
-}
+};

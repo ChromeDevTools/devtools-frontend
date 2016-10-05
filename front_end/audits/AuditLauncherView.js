@@ -66,7 +66,7 @@ WebInspector.AuditLauncherView = function(auditController)
     var defaultSelectedAuditCategory = {};
     defaultSelectedAuditCategory[WebInspector.AuditLauncherView.AllCategoriesKey] = true;
     this._selectedCategoriesSetting = WebInspector.settings.createSetting("selectedAuditCategories", defaultSelectedAuditCategory);
-}
+};
 
 WebInspector.AuditLauncherView.AllCategoriesKey = "__AllCategories";
 
@@ -307,4 +307,4 @@ WebInspector.AuditLauncherView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

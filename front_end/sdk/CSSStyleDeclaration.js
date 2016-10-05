@@ -15,14 +15,14 @@ WebInspector.CSSStyleDeclaration = function(cssModel, parentRule, payload, type)
     this.parentRule = parentRule;
     this._reinitialize(payload);
     this.type = type;
-}
+};
 
 /** @enum {string} */
 WebInspector.CSSStyleDeclaration.Type = {
     Regular: "Regular",
     Inline: "Inline",
     Attributes: "Attributes"
-}
+};
 
 WebInspector.CSSStyleDeclaration.prototype = {
     /**
@@ -286,7 +286,7 @@ WebInspector.CSSStyleDeclaration.prototype = {
      */
     setText: function(text, majorChange)
     {
-        return this._cssModel.setStyleText(this.styleSheetId, this.range, text, majorChange)
+        return this._cssModel.setStyleText(this.styleSheetId, this.range, text, majorChange);
     },
 
     /**
@@ -310,4 +310,4 @@ WebInspector.CSSStyleDeclaration.prototype = {
     {
         this.insertPropertyAt(this.allProperties.length, name, value, userCallback);
     }
-}
+};

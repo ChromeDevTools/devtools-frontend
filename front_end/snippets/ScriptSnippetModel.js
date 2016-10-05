@@ -49,7 +49,7 @@ WebInspector.ScriptSnippetModel = function(workspace)
     this._project = new WebInspector.SnippetsProject(workspace, this);
     this._loadSnippets();
     WebInspector.targetManager.observeTargets(this);
-}
+};
 
 WebInspector.ScriptSnippetModel.snippetSourceURLPrefix = "snippets:///";
 
@@ -370,7 +370,7 @@ WebInspector.ScriptSnippetModel.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
  * @constructor
@@ -390,7 +390,7 @@ WebInspector.SnippetScriptMapping = function(debuggerModel, scriptSnippetModel)
     /** @type {!Map.<!WebInspector.UISourceCode, number>} */
     this._evaluationIndexForUISourceCode = new Map();
     debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._reset, this);
-}
+};
 
 WebInspector.SnippetScriptMapping.prototype = {
     /**
@@ -521,7 +521,7 @@ WebInspector.SnippetScriptMapping.prototype = {
     {
         return true;
     }
-}
+};
 
 /**
  * @constructor
@@ -531,7 +531,7 @@ WebInspector.SnippetScriptMapping.prototype = {
 WebInspector.SnippetContentProvider = function(snippet)
 {
     this._snippet = snippet;
-}
+};
 
 WebInspector.SnippetContentProvider.prototype = {
     /**
@@ -581,7 +581,7 @@ WebInspector.SnippetContentProvider.prototype = {
         // searchInContent should call back later.
         window.setTimeout(performSearch.bind(this), 0);
     }
-}
+};
 
 /**
  * @constructor
@@ -593,7 +593,7 @@ WebInspector.SnippetsProject = function(workspace, model)
 {
     WebInspector.ContentProviderBasedProject.call(this, workspace, "snippets:", WebInspector.projectTypes.Snippets, "");
     this._model = model;
-}
+};
 
 WebInspector.SnippetsProject.prototype = {
     /**
@@ -669,7 +669,7 @@ WebInspector.SnippetsProject.prototype = {
     },
 
     __proto__: WebInspector.ContentProviderBasedProject.prototype
-}
+};
 
 /**
  * @type {!WebInspector.ScriptSnippetModel}

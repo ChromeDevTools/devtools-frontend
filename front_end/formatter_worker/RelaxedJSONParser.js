@@ -193,7 +193,7 @@ WebInspector.RelaxedJSONParser.parse = function(content)
         }
         return value;
     }
-}
+};
 
 /**
  * @typedef {!{key: (number|string), tip: (!Array|!Object), state: ?WebInspector.RelaxedJSONParser.States, parentIsArray: boolean}}

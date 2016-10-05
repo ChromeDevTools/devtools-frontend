@@ -58,7 +58,7 @@ WebInspector.ResourceTreeModel = function(target, networkManager, securityOrigin
     this._fireExecutionContextOrderChanged = target.runtimeModel.fireExecutionContextOrderChanged.bind(target.runtimeModel);
 
     target.runtimeModel.setExecutionContextComparator(this._executionContextComparator.bind(this));
-}
+};
 
 /** @enum {symbol} */
 WebInspector.ResourceTreeModel.Events = {
@@ -80,7 +80,7 @@ WebInspector.ResourceTreeModel.Events = {
     ColorPicked: Symbol("ColorPicked"),
     InterstitialShown: Symbol("InterstitialShown"),
     InterstitialHidden: Symbol("InterstitialHidden")
-}
+};
 
 /**
  * @param {!WebInspector.Target} target
@@ -89,7 +89,7 @@ WebInspector.ResourceTreeModel.Events = {
 WebInspector.ResourceTreeModel.fromTarget = function(target)
 {
     return /** @type {?WebInspector.ResourceTreeModel} */ (target.model(WebInspector.ResourceTreeModel));
-}
+};
 
 /**
  * @return {!Array.<!WebInspector.ResourceTreeFrame>}
@@ -100,7 +100,7 @@ WebInspector.ResourceTreeModel.frames = function()
     for (var target of WebInspector.targetManager.targets(WebInspector.Target.Capability.DOM))
         result = result.concat(WebInspector.ResourceTreeModel.fromTarget(target)._frames.valuesArray());
     return result;
-}
+};
 
 /**
  * @param {string} url
@@ -115,7 +115,7 @@ WebInspector.ResourceTreeModel.resourceForURL = function(url)
             return result;
     }
     return null;
-}
+};
 
 WebInspector.ResourceTreeModel.prototype = {
     _fetchResourceTree: function()
@@ -475,7 +475,7 @@ WebInspector.ResourceTreeModel.prototype = {
     },
 
     __proto__: WebInspector.SDKModel.prototype
-}
+};
 
 /**
  * @constructor
@@ -511,7 +511,7 @@ WebInspector.ResourceTreeFrame = function(model, parentFrame, frameId, payload)
 
     if (this._parentFrame)
         this._parentFrame._childFrames.push(this);
-}
+};
 
 /**
  * @param {!WebInspector.ExecutionContext|!WebInspector.CSSStyleSheetHeader|!WebInspector.Resource} object
@@ -524,7 +524,7 @@ WebInspector.ResourceTreeFrame._fromObject = function(object)
     if (!resourceTreeModel || !frameId)
         return null;
     return resourceTreeModel.frameForId(frameId);
-}
+};
 
 /**
  * @param {!WebInspector.Script} script
@@ -536,7 +536,7 @@ WebInspector.ResourceTreeFrame.fromScript = function(script)
     if (!executionContext)
         return null;
     return WebInspector.ResourceTreeFrame._fromObject(executionContext);
-}
+};
 
 /**
  * @param {!WebInspector.CSSStyleSheetHeader} header
@@ -545,7 +545,7 @@ WebInspector.ResourceTreeFrame.fromScript = function(script)
 WebInspector.ResourceTreeFrame.fromStyleSheet = function(header)
 {
     return WebInspector.ResourceTreeFrame._fromObject(header);
-}
+};
 
 /**
  * @param {!WebInspector.Resource} resource
@@ -554,7 +554,7 @@ WebInspector.ResourceTreeFrame.fromStyleSheet = function(header)
 WebInspector.ResourceTreeFrame.fromResource = function(resource)
 {
     return WebInspector.ResourceTreeFrame._fromObject(resource);
-}
+};
 
 WebInspector.ResourceTreeFrame.prototype = {
     /**
@@ -771,7 +771,7 @@ WebInspector.ResourceTreeFrame.prototype = {
         }
         return WebInspector.UIString("<iframe>");
     }
-}
+};
 
 /**
  * @constructor
@@ -780,7 +780,7 @@ WebInspector.ResourceTreeFrame.prototype = {
 WebInspector.PageDispatcher = function(resourceTreeModel)
 {
     this._resourceTreeModel = resourceTreeModel;
-}
+};
 
 WebInspector.PageDispatcher.prototype = {
     /**
@@ -941,4 +941,4 @@ WebInspector.PageDispatcher.prototype = {
        // Frontend is not interested in when navigations are requested.
     }
 
-}
+};

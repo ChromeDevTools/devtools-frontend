@@ -27,7 +27,7 @@ WebInspector.Target = function(targetManager, name, capabilitiesMask, connection
 
     /** @type {!Map.<!Function, !WebInspector.SDKModel>} */
     this._modelByConstructor = new Map();
-}
+};
 
 /**
  * @enum {number}
@@ -223,7 +223,7 @@ WebInspector.Target.prototype = {
     },
 
     __proto__: Protocol.Agents.prototype
-}
+};
 
 /**
  * @constructor
@@ -234,7 +234,7 @@ WebInspector.SDKObject = function(target)
 {
     WebInspector.Object.call(this);
     this._target = target;
-}
+};
 
 WebInspector.SDKObject.prototype = {
     /**
@@ -246,7 +246,7 @@ WebInspector.SDKObject.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
  * @constructor
@@ -259,7 +259,7 @@ WebInspector.SDKModel = function(modelClass, target)
     WebInspector.SDKObject.call(this, target);
     target._modelByConstructor.set(modelClass, this);
     WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.TargetDisposed, this._targetDisposed, this);
-}
+};
 
 WebInspector.SDKModel.prototype = {
     /**
@@ -293,4 +293,4 @@ WebInspector.SDKModel.prototype = {
     },
 
     __proto__: WebInspector.SDKObject.prototype
-}
+};

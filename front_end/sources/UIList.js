@@ -35,7 +35,7 @@ WebInspector.UIList = function()
 
     /** @type {!Array.<!WebInspector.UIList.Item>} */
     this._items = [];
-}
+};
 
 WebInspector.UIList._Key = Symbol("ownerList");
 
@@ -73,7 +73,7 @@ WebInspector.UIList.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @constructor
@@ -95,7 +95,7 @@ WebInspector.UIList.Item = function(title, subtitle, isLabel)
     this.setTitle(title);
     this.setSubtitle(subtitle);
     this.setSelected(false);
-}
+};
 
 WebInspector.UIList.Item.prototype = {
     /**
@@ -233,4 +233,4 @@ WebInspector.UIList.Item.prototype = {
     {
         this.element.classList.toggle("ignore-hover", !hoverable);
     },
-}
+};

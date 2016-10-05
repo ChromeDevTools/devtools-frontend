@@ -53,7 +53,7 @@ WebInspector.ResourceScriptMapping = function(debuggerModel, workspace, networkM
         workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this),
         workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this)
     ];
-}
+};
 
 WebInspector.ResourceScriptMapping.prototype = {
     /**
@@ -264,7 +264,7 @@ WebInspector.ResourceScriptMapping.prototype = {
         WebInspector.EventTarget.removeEventListeners(this._eventListeners);
         this._debuggerReset();
     }
-}
+};
 
 /**
  * @constructor
@@ -285,13 +285,13 @@ WebInspector.ResourceScriptFile = function(resourceScriptMapping, uiSourceCode, 
 
     this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.WorkingCopyChanged, this._workingCopyChanged, this);
     this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.WorkingCopyCommitted, this._workingCopyCommitted, this);
-}
+};
 
 /** @enum {symbol} */
 WebInspector.ResourceScriptFile.Events = {
     DidMergeToVM: Symbol("DidMergeToVM"),
     DidDivergeFromVM: Symbol("DidDivergeFromVM"),
-}
+};
 
 WebInspector.ResourceScriptFile.prototype = {
     /**
@@ -470,4 +470,4 @@ WebInspector.ResourceScriptFile.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};

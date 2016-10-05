@@ -13,7 +13,7 @@ WebInspector.MultitargetTouchModel = function()
     this._customTouchEnabled = false;
 
     WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.Browser);
-}
+};
 
 WebInspector.MultitargetTouchModel._symbol = Symbol("MultitargetTouchModel.symbol");
 
@@ -132,7 +132,7 @@ WebInspector.MultitargetTouchModel.prototype = {
         if (domModel)
             domModel.removeEventListener(WebInspector.DOMModel.Events.InspectModeWillBeToggled, this._inspectModeToggled, this);
     }
-}
+};
 
 
 /** @type {?WebInspector.MultitargetTouchModel} */
@@ -146,4 +146,4 @@ WebInspector.MultitargetTouchModel.instance = function()
     if (!WebInspector.MultitargetTouchModel._instance)
         WebInspector.MultitargetTouchModel._instance = new WebInspector.MultitargetTouchModel();
     return /** @type {!WebInspector.MultitargetTouchModel} */ (WebInspector.MultitargetTouchModel._instance);
-}
+};

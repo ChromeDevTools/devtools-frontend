@@ -69,7 +69,7 @@ WebInspector.CookiesTable = function(expandable, refreshCallback, selectedCallba
 
     this._dataGrid.asWidget().show(this.element);
     this._data = [];
-}
+};
 
 WebInspector.CookiesTable.prototype = {
     /**
@@ -286,4 +286,4 @@ WebInspector.CookiesTable.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

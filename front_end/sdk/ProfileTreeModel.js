@@ -22,7 +22,7 @@ WebInspector.ProfileNode = function(callFrame)
     this.parent = null;
     /** @type {!Array<!WebInspector.ProfileNode>} */
     this.children = [];
-}
+};
 
 WebInspector.ProfileNode.prototype = {
     /**
@@ -64,7 +64,7 @@ WebInspector.ProfileNode.prototype = {
     {
         return this.callFrame.columnNumber;
     }
-}
+};
 
 /**
  * @constructor
@@ -75,7 +75,7 @@ WebInspector.ProfileTreeModel = function(root)
     this.root = root;
     this._assignDepthsAndParents();
     this.total = this._calculateTotals(this.root);
-}
+};
 
 WebInspector.ProfileTreeModel.prototype = {
     _assignDepthsAndParents: function()
@@ -122,4 +122,4 @@ WebInspector.ProfileTreeModel.prototype = {
         }
         return root.total;
     }
-}
+};

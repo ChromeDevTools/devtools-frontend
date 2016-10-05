@@ -32,7 +32,7 @@ WebInspector.CustomPreviewSection = function(object)
     }
 
     this._sectionElement.appendChild(this._header);
-}
+};
 
 /**
  * @constructor
@@ -46,7 +46,7 @@ WebInspector.CustomPreviewComponent = function(object)
     var shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element, "components/customPreviewSection.css");
     this.element.addEventListener("contextmenu", this._contextMenuEventFired.bind(this), false);
     shadowRoot.appendChild(this._customPreviewSection.element());
-}
+};
 
 WebInspector.CustomPreviewComponent.prototype = {
     expandIfPossible: function()
@@ -73,7 +73,7 @@ WebInspector.CustomPreviewComponent.prototype = {
         this._customPreviewSection = null;
         this.element.shadowRoot.appendChild(WebInspector.ObjectPropertiesSection.defaultObjectPresentation(this._object));
     }
-}
+};
 
 WebInspector.CustomPreviewSection._tagsWhiteList = new Set(["span", "div", "ol", "li","table", "tr", "td"]);
 
@@ -248,4 +248,4 @@ WebInspector.CustomPreviewSection.prototype = {
             this._toggleExpand();
         }
     }
-}
+};

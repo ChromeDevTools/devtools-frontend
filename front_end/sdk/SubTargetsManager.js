@@ -25,13 +25,13 @@ WebInspector.SubTargetsManager = function(target)
     this._agent.setAutoAttach(true /* autoAttach */, true /* waitForDebuggerOnStart */);
     this._agent.setAttachToFrames(Runtime.experiments.isEnabled("autoAttachToCrossProcessSubframes"));
     this._agent.enable();
-}
+};
 
 /** @enum {symbol} */
 WebInspector.SubTargetsManager.Events = {
     SubTargetAdded: Symbol("SubTargetAdded"),
     SubTargetRemoved: Symbol("SubTargetRemoved"),
-}
+};
 
 WebInspector.SubTargetsManager._InfoSymbol = Symbol("SubTargetInfo");
 
@@ -99,7 +99,7 @@ WebInspector.SubTargetsManager.prototype = {
             if (targetInfo)
                 callback(new WebInspector.TargetInfo(targetInfo));
             else
-                callback(null)
+                callback(null);
         }
         this._agent.getTargetInfo(targetId, innerCallback);
     },
@@ -214,7 +214,7 @@ WebInspector.SubTargetsManager.prototype = {
     },
 
     __proto__: WebInspector.SDKModel.prototype
-}
+};
 
 /**
  * @constructor
@@ -224,7 +224,7 @@ WebInspector.SubTargetsManager.prototype = {
 WebInspector.SubTargetsDispatcher = function(manager)
 {
     this._manager = manager;
-}
+};
 
 WebInspector.SubTargetsDispatcher.prototype = {
     /**
@@ -273,7 +273,7 @@ WebInspector.SubTargetsDispatcher.prototype = {
     {
         this._manager._receivedMessageFromTarget(targetId, message);
     }
-}
+};
 
 /**
  * @constructor
@@ -286,7 +286,7 @@ WebInspector.SubTargetConnection = function(agent, targetId)
     InspectorBackendClass.Connection.call(this);
     this._agent = agent;
     this._targetId = targetId;
-}
+};
 
 WebInspector.SubTargetConnection.prototype = {
     /**
@@ -304,7 +304,7 @@ WebInspector.SubTargetConnection.prototype = {
     },
 
     __proto__: InspectorBackendClass.Connection.prototype
-}
+};
 
 /**
  * @constructor
@@ -322,4 +322,4 @@ WebInspector.TargetInfo = function(payload)
         this.title = payload.title;
         this.canActivate = true;
     }
-}
+};

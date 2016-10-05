@@ -40,7 +40,7 @@ WebInspector.RequestPreviewView = function(request, responseView)
     this._responseView = responseView;
     /** @type {?WebInspector.Widget} */
     this._previewView = null;
-}
+};
 
 WebInspector.RequestPreviewView.prototype = {
     contentLoaded: function()
@@ -196,4 +196,4 @@ WebInspector.RequestPreviewView.prototype = {
     },
 
     __proto__: WebInspector.RequestContentView.prototype
-}
+};

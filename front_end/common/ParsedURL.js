@@ -84,7 +84,7 @@ WebInspector.ParsedURL = function(url)
         this.lastPathComponent = path.substring(lastSlashIndex + 1);
     } else
         this.lastPathComponent = path;
-}
+};
 
 /**
  * @param {string} url
@@ -120,7 +120,7 @@ WebInspector.ParsedURL.splitURLIntoPathComponents = function(url)
     }
     result.push(name);
     return result;
-}
+};
 
 /**
  * @param {string} url
@@ -136,7 +136,7 @@ WebInspector.ParsedURL.extractOrigin = function(url)
     if (parsedURL.port)
         origin += ":" + parsedURL.port;
     return origin;
-}
+};
 
 /**
  * @param {string} url
@@ -150,7 +150,7 @@ WebInspector.ParsedURL.extractExtension = function(url)
     if (indexOfQuestionMark !== -1)
         extension = extension.substr(0, indexOfQuestionMark);
     return extension;
-}
+};
 
 /**
  * @param {string} url
@@ -160,7 +160,7 @@ WebInspector.ParsedURL.extractName = function(url)
 {
     var index = url.lastIndexOf("/");
     return index !== -1 ? url.substr(index + 1) : url;
-}
+};
 
 /**
  * @param {string} baseURL
@@ -226,7 +226,7 @@ WebInspector.ParsedURL.completeURL = function(baseURL, href)
         return parsedURL.scheme + "://" + parsedURL.host + (parsedURL.port ? (":" + parsedURL.port) : "") + Runtime.normalizePath(path) + postfix;
     }
     return null;
-}
+};
 
 WebInspector.ParsedURL.prototype = {
     get displayName()
@@ -313,7 +313,7 @@ WebInspector.ParsedURL.prototype = {
             return this.url.substring(this.scheme.length + 3);
         return this.url;
     },
-}
+};
 
 /**
  * @param {string} string
@@ -338,7 +338,7 @@ WebInspector.ParsedURL.splitLineAndColumn = function(string)
     }
 
     return {url: string.substring(0, string.length - lineColumnMatch[0].length), lineNumber: lineNumber, columnNumber: columnNumber};
-}
+};
 
 /**
  * @param {string} url
@@ -347,7 +347,7 @@ WebInspector.ParsedURL.splitLineAndColumn = function(string)
 WebInspector.ParsedURL.isRelativeURL = function(url)
 {
     return !(/^[A-Za-z][A-Za-z0-9+.-]*:/.test(url));
-}
+};
 
 /**
  * @return {?WebInspector.ParsedURL}
@@ -358,4 +358,4 @@ String.prototype.asParsedURL = function()
     if (parsedURL.isValid)
         return parsedURL;
     return null;
-}
+};

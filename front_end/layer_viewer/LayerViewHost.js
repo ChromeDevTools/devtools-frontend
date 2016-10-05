@@ -9,7 +9,7 @@
  */
 WebInspector.LayerView = function()
 {
-}
+};
 
 WebInspector.LayerView.prototype = {
     /**
@@ -26,7 +26,7 @@ WebInspector.LayerView.prototype = {
      * @param {?WebInspector.LayerTreeBase} layerTree
      */
     setLayerTree: function(layerTree) { }
-}
+};
 
 
 /**
@@ -38,7 +38,7 @@ WebInspector.LayerView.Selection = function(type, layer)
 {
     this._type = type;
     this._layer = layer;
-}
+};
 
 /**
  * @enum {string}
@@ -47,7 +47,7 @@ WebInspector.LayerView.Selection.Type = {
     Layer: "Layer",
     ScrollRect: "ScrollRect",
     Tile: "Tile",
-}
+};
 
 /**
  * @param {?WebInspector.LayerView.Selection} a
@@ -57,7 +57,7 @@ WebInspector.LayerView.Selection.Type = {
 WebInspector.LayerView.Selection.isEqual = function(a, b)
 {
     return a && b ? a._isEqual(b) : a === b;
-}
+};
 
 WebInspector.LayerView.Selection.prototype = {
     /**
@@ -84,7 +84,7 @@ WebInspector.LayerView.Selection.prototype = {
     {
         return false;
     }
-}
+};
 
 /**
  * @constructor
@@ -95,7 +95,7 @@ WebInspector.LayerView.LayerSelection = function(layer)
 {
     console.assert(layer, "LayerSelection with empty layer");
     WebInspector.LayerView.Selection.call(this, WebInspector.LayerView.Selection.Type.Layer, layer);
-}
+};
 
 WebInspector.LayerView.LayerSelection.prototype = {
     /**
@@ -109,7 +109,7 @@ WebInspector.LayerView.LayerSelection.prototype = {
     },
 
     __proto__: WebInspector.LayerView.Selection.prototype
-}
+};
 
 /**
  * @constructor
@@ -121,7 +121,7 @@ WebInspector.LayerView.ScrollRectSelection = function(layer, scrollRectIndex)
 {
     WebInspector.LayerView.Selection.call(this, WebInspector.LayerView.Selection.Type.ScrollRect, layer);
     this.scrollRectIndex = scrollRectIndex;
-}
+};
 
 WebInspector.LayerView.ScrollRectSelection.prototype = {
     /**
@@ -136,7 +136,7 @@ WebInspector.LayerView.ScrollRectSelection.prototype = {
     },
 
     __proto__: WebInspector.LayerView.Selection.prototype
-}
+};
 
 /**
  * @constructor
@@ -148,7 +148,7 @@ WebInspector.LayerView.TileSelection = function(layer, traceEvent)
 {
     WebInspector.LayerView.Selection.call(this, WebInspector.LayerView.Selection.Type.Tile, layer);
     this._traceEvent = traceEvent;
-}
+};
 
 WebInspector.LayerView.TileSelection.prototype = {
     /**
@@ -171,7 +171,7 @@ WebInspector.LayerView.TileSelection.prototype = {
     },
 
     __proto__: WebInspector.LayerView.Selection.prototype
-}
+};
 
 /**
  * @constructor
@@ -183,7 +183,7 @@ WebInspector.LayerViewHost = function()
     this._selectedObject = null;
     this._hoveredObject = null;
     this._showInternalLayersSetting = WebInspector.settings.createSetting("layersShowInternalLayers", false);
-}
+};
 
 WebInspector.LayerViewHost.prototype = {
     /**
@@ -281,5 +281,5 @@ WebInspector.LayerViewHost.prototype = {
         }
         WebInspector.DOMModel.hideDOMNodeHighlight();
     }
-}
+};
 

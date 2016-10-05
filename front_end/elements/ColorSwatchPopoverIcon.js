@@ -19,7 +19,7 @@ WebInspector.BezierPopoverIcon = function(treeElement, swatchPopoverHelper, swat
 
     this._boundBezierChanged = this._bezierChanged.bind(this);
     this._boundOnScroll = this._onScroll.bind(this);
-}
+};
 
 WebInspector.BezierPopoverIcon.prototype = {
     /**
@@ -84,7 +84,7 @@ WebInspector.BezierPopoverIcon.prototype = {
         this._treeElement.parentPane().setEditingStyle(false);
         delete this._originalPropertyText;
     }
-}
+};
 
 /**
  * @constructor
@@ -106,7 +106,7 @@ WebInspector.ColorSwatchPopoverIcon = function(treeElement, swatchPopoverHelper,
 
     this._boundSpectrumChanged = this._spectrumChanged.bind(this);
     this._boundOnScroll = this._onScroll.bind(this);
-}
+};
 
 WebInspector.ColorSwatchPopoverIcon._treeElementSymbol = Symbol("WebInspector.ColorSwatchPopoverIcon._treeElementSymbol");
 
@@ -117,7 +117,7 @@ WebInspector.ColorSwatchPopoverIcon._treeElementSymbol = Symbol("WebInspector.Co
 WebInspector.ColorSwatchPopoverIcon.forTreeElement = function(treeElement)
 {
     return treeElement[WebInspector.ColorSwatchPopoverIcon._treeElementSymbol] || null;
-}
+};
 
 WebInspector.ColorSwatchPopoverIcon.prototype = {
     /**
@@ -213,7 +213,7 @@ WebInspector.ColorSwatchPopoverIcon.prototype = {
         this._treeElement.parentPane().setEditingStyle(false);
         delete this._originalPropertyText;
     }
-}
+};
 
 /**
  * @constructor
@@ -234,7 +234,7 @@ WebInspector.ShadowSwatchPopoverHelper = function(treeElement, swatchPopoverHelp
 
     this._boundShadowChanged = this._shadowChanged.bind(this);
     this._boundOnScroll = this._onScroll.bind(this);
-}
+};
 
 WebInspector.ShadowSwatchPopoverHelper._treeElementSymbol = Symbol("WebInspector.ShadowSwatchPopoverHelper._treeElementSymbol");
 
@@ -245,7 +245,7 @@ WebInspector.ShadowSwatchPopoverHelper._treeElementSymbol = Symbol("WebInspector
 WebInspector.ShadowSwatchPopoverHelper.forTreeElement = function(treeElement)
 {
     return treeElement[WebInspector.ShadowSwatchPopoverHelper._treeElementSymbol] || null;
-}
+};
 
 WebInspector.ShadowSwatchPopoverHelper.prototype = {
     /**
@@ -312,4 +312,4 @@ WebInspector.ShadowSwatchPopoverHelper.prototype = {
         this._treeElement.parentPane().setEditingStyle(false);
         delete this._originalPropertyText;
     }
-}
+};

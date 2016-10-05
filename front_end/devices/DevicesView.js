@@ -46,7 +46,7 @@ WebInspector.DevicesView = function()
 
     this.contentElement.tabIndex = 0;
     this.setDefaultFocusedElement(this.contentElement);
-}
+};
 
 WebInspector.DevicesView.prototype = {
     /**
@@ -188,7 +188,7 @@ WebInspector.DevicesView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @return {!WebInspector.DevicesView}
@@ -198,7 +198,7 @@ WebInspector.DevicesView._instance = function()
     if (!WebInspector.DevicesView._instanceObject)
         WebInspector.DevicesView._instanceObject = new WebInspector.DevicesView();
     return WebInspector.DevicesView._instanceObject;
-}
+};
 
 
 /**
@@ -247,7 +247,7 @@ WebInspector.DevicesView.DiscoveryView = function()
 
     /** @type {!Array<!Adb.PortForwardingRule>} */
     this._portForwardingConfig = [];
-}
+};
 
 WebInspector.DevicesView.DiscoveryView.prototype = {
     _addRuleButtonClicked: function()
@@ -399,7 +399,7 @@ WebInspector.DevicesView.DiscoveryView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 
 /**
@@ -429,7 +429,7 @@ WebInspector.DevicesView.DeviceView = function()
     this._browserById = new Map();
 
     this._device = null;
-}
+};
 
 /** @typedef {!{browser: ?Adb.Browser, element: !Element, title: !Element, pages: !Element, viewMore: !Element, newTab: !Element, pageSections: !Map<string, !WebInspector.DevicesView.PageSection>}} */
 WebInspector.DevicesView.BrowserSection;
@@ -693,4 +693,4 @@ WebInspector.DevicesView.DeviceView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

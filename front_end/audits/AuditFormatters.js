@@ -33,7 +33,7 @@
  */
 WebInspector.AuditFormatters = function()
 {
-}
+};
 
 WebInspector.AuditFormatters.Registry = {
 
@@ -141,6 +141,6 @@ WebInspector.AuditFormatters.prototype = {
             return formatters[value.type].apply(thisArgument, value.arguments);
         return value;
     }
-}
+};
 
 WebInspector.auditFormatters = new WebInspector.AuditFormatters();

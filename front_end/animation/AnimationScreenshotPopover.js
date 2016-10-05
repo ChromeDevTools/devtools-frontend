@@ -21,7 +21,7 @@ WebInspector.AnimationScreenshotPopover = function(images)
     this._currentFrame = 0;
     this._frames[0].style.display = "block";
     this._progressBar = this.contentElement.createChild("div", "animation-progress");
-}
+};
 
 WebInspector.AnimationScreenshotPopover.prototype = {
     wasShown: function()
@@ -57,4 +57,4 @@ WebInspector.AnimationScreenshotPopover.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

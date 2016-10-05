@@ -46,7 +46,7 @@ WebInspector.Geometry.Vector = function(x, y, z)
     this.x = x;
     this.y = y;
     this.z = z;
-}
+};
 
 WebInspector.Geometry.Vector.prototype = {
     /**
@@ -67,7 +67,7 @@ WebInspector.Geometry.Vector.prototype = {
         this.y /= length;
         this.z /= length;
     }
-}
+};
 
 /**
  * @constructor
@@ -77,7 +77,7 @@ WebInspector.Geometry.Vector.prototype = {
 WebInspector.Geometry.Point = function(x, y) {
     this.x = x;
     this.y = y;
-}
+};
 
 WebInspector.Geometry.Point.prototype = {
     /**
@@ -117,7 +117,7 @@ WebInspector.Geometry.Point.prototype = {
     {
         return Math.round(this.x * 100) / 100 + ", " + Math.round(this.y * 100) / 100;
     }
-}
+};
 
 /**
  * @constructor
@@ -127,7 +127,7 @@ WebInspector.Geometry.Point.prototype = {
 WebInspector.Geometry.CubicBezier = function(point1, point2)
 {
     this.controlPoints = [point1, point2];
-}
+};
 
 /** @type {!RegExp} */
 WebInspector.Geometry.CubicBezier.Regex = /((cubic-bezier\([^)]+\))|\b(linear|ease-in-out|ease-in|ease-out|ease)\b)/g;
@@ -138,7 +138,7 @@ WebInspector.Geometry.CubicBezier.KeywordValues = {
     "ease-in": "cubic-bezier(0.42, 0, 1, 1)",
     "ease-in-out": "cubic-bezier(0.42, 0, 0.58, 1)",
     "ease-out": "cubic-bezier(0, 0, 0.58, 1)"
-}
+};
 
 /**
  * @param {string} text
@@ -158,7 +158,7 @@ WebInspector.Geometry.CubicBezier.parse = function(text)
         return new WebInspector.Geometry.CubicBezier(control1, control2);
     }
     return null;
-}
+};
 
 
 WebInspector.Geometry.CubicBezier.prototype = {
@@ -196,7 +196,7 @@ WebInspector.Geometry.CubicBezier.prototype = {
         }
         return raw;
     }
-}
+};
 
 /**
  * @constructor
@@ -209,7 +209,7 @@ WebInspector.Geometry.EulerAngles = function(alpha, beta, gamma)
     this.alpha = alpha;
     this.beta = beta;
     this.gamma = gamma;
-}
+};
 
 /**
  * @param {!CSSMatrix} rotationMatrix
@@ -221,7 +221,7 @@ WebInspector.Geometry.EulerAngles.fromRotationMatrix = function(rotationMatrix)
     var gamma = Math.atan2(-rotationMatrix.m13, Math.sqrt(rotationMatrix.m11 * rotationMatrix.m11 + rotationMatrix.m12 * rotationMatrix.m12));
     var alpha = Math.atan2(rotationMatrix.m12, rotationMatrix.m11);
     return new WebInspector.Geometry.EulerAngles(WebInspector.Geometry.radiansToDegrees(alpha), WebInspector.Geometry.radiansToDegrees(beta), WebInspector.Geometry.radiansToDegrees(gamma));
-}
+};
 
 WebInspector.Geometry.EulerAngles.prototype = {
     /**
@@ -240,7 +240,7 @@ WebInspector.Geometry.EulerAngles.prototype = {
             + "rotate3d(" + axis.beta.join(",") + "," + this.beta + "deg) "
             + "rotate3d(" + axis.gamma.join(",") + "," + this.gamma + "deg)";
     }
-}
+};
 
 /**
  * @param {!WebInspector.Geometry.Vector} u
@@ -250,7 +250,7 @@ WebInspector.Geometry.EulerAngles.prototype = {
 WebInspector.Geometry.scalarProduct = function(u, v)
 {
     return u.x * v.x + u.y * v.y + u.z * v.z;
-}
+};
 
 /**
  * @param {!WebInspector.Geometry.Vector} u
@@ -263,7 +263,7 @@ WebInspector.Geometry.crossProduct = function(u, v)
     var y = u.z * v.x - u.x * v.z;
     var z = u.x * v.y - u.y * v.x;
     return new WebInspector.Geometry.Vector(x, y, z);
-}
+};
 
 /**
  * @param {!WebInspector.Geometry.Vector} u
@@ -276,7 +276,7 @@ WebInspector.Geometry.subtract = function(u, v)
     var y = u.y - v.y;
     var z = u.z - v.z;
     return new WebInspector.Geometry.Vector(x, y, z);
-}
+};
 
 /**
  * @param {!WebInspector.Geometry.Vector} v
@@ -290,7 +290,7 @@ WebInspector.Geometry.multiplyVectorByMatrixAndNormalize = function(v, m)
     var y = (v.x * m.m12 + v.y * m.m22 + v.z * m.m32 + m.m42) / t;
     var z = (v.x * m.m13 + v.y * m.m23 + v.z * m.m33 + m.m43) / t;
     return new WebInspector.Geometry.Vector(x, y, z);
-}
+};
 
 /**
  * @param {!WebInspector.Geometry.Vector} u
@@ -307,7 +307,7 @@ WebInspector.Geometry.calculateAngle = function(u, v)
     if (Math.abs(cos) > 1)
         return 0;
     return WebInspector.Geometry.radiansToDegrees(Math.acos(cos));
-}
+};
 
 /**
  * @param {number} deg
@@ -316,7 +316,7 @@ WebInspector.Geometry.calculateAngle = function(u, v)
 WebInspector.Geometry.degreesToRadians = function(deg)
 {
     return deg * Math.PI / 180;
-}
+};
 
 /**
  * @param {number} rad
@@ -325,7 +325,7 @@ WebInspector.Geometry.degreesToRadians = function(deg)
 WebInspector.Geometry.radiansToDegrees = function(rad)
 {
     return rad * 180 / Math.PI;
-}
+};
 
 /**
  * @param {!CSSMatrix} matrix
@@ -348,7 +348,7 @@ WebInspector.Geometry.boundsForTransformedPoints = function(matrix, points, aggr
         aggregateBounds.maxY = Math.max(aggregateBounds.maxY, vector.y);
     }
     return aggregateBounds;
-}
+};
 
 /**
  * @constructor
@@ -431,7 +431,7 @@ Insets.prototype = {
     {
         return !!insets && this.left === insets.left && this.top === insets.top && this.right === insets.right && this.bottom === insets.bottom;
     }
-}
+};
 
 
 /**
@@ -447,7 +447,7 @@ WebInspector.Rect = function(left, top, width, height)
     this.top = top;
     this.width = width;
     this.height = height;
-}
+};
 
 WebInspector.Rect.prototype = {
     /**
@@ -475,7 +475,7 @@ WebInspector.Rect.prototype = {
     {
         return new Size(this.width, this.height);
     }
-}
+};
 
 
 /**
@@ -506,7 +506,7 @@ function Constraints(minimum, preferred)
 Constraints.prototype.isEqual = function(constraints)
 {
     return !!constraints && this.minimum.isEqual(constraints.minimum) && this.preferred.isEqual(constraints.preferred);
-}
+};
 
 /**
  * @param {!Constraints|number} value
@@ -517,7 +517,7 @@ Constraints.prototype.widthToMax = function(value)
     if (typeof value === "number")
         return new Constraints(this.minimum.widthToMax(value), this.preferred.widthToMax(value));
     return new Constraints(this.minimum.widthToMax(value.minimum), this.preferred.widthToMax(value.preferred));
-}
+};
 
 /**
  * @param {!Constraints|number} value
@@ -528,7 +528,7 @@ Constraints.prototype.addWidth = function(value)
     if (typeof value === "number")
         return new Constraints(this.minimum.addWidth(value), this.preferred.addWidth(value));
     return new Constraints(this.minimum.addWidth(value.minimum), this.preferred.addWidth(value.preferred));
-}
+};
 
 /**
  * @param {!Constraints|number} value
@@ -539,7 +539,7 @@ Constraints.prototype.heightToMax = function(value)
     if (typeof value === "number")
         return new Constraints(this.minimum.heightToMax(value), this.preferred.heightToMax(value));
     return new Constraints(this.minimum.heightToMax(value.minimum), this.preferred.heightToMax(value.preferred));
-}
+};
 
 /**
  * @param {!Constraints|number} value
@@ -550,4 +550,4 @@ Constraints.prototype.addHeight = function(value)
     if (typeof value === "number")
         return new Constraints(this.minimum.addHeight(value), this.preferred.addHeight(value));
     return new Constraints(this.minimum.addHeight(value.minimum), this.preferred.addHeight(value.preferred));
-}
+};

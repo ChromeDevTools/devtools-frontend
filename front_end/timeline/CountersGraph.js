@@ -72,7 +72,7 @@ WebInspector.CountersGraph = function(delegate, model, filters)
 
     this._counters = [];
     this._counterUI = [];
-}
+};
 
 WebInspector.CountersGraph.prototype = {
     _createCurrentValuesBar: function()
@@ -272,7 +272,7 @@ WebInspector.CountersGraph.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @constructor
@@ -281,7 +281,7 @@ WebInspector.CountersGraph.Counter = function()
 {
     this.times = [];
     this.values = [];
-}
+};
 
 WebInspector.CountersGraph.Counter.prototype = {
     /**
@@ -367,7 +367,7 @@ WebInspector.CountersGraph.Counter.prototype = {
         for (var i = this._minimumIndex + 1; i <= this._maximumIndex; i++)
             this.x[i] = xFactor * (this.times[i] - this._minTime);
     }
-}
+};
 
 /**
  * @constructor
@@ -408,7 +408,7 @@ WebInspector.CountersGraph.CounterUI = function(memoryCountersPane, title, curre
     this._marker = memoryCountersPane._canvasContainer.createChild("div", "memory-counter-marker");
     this._marker.style.backgroundColor = graphColor;
     this._clearCurrentValueAndMarker();
-}
+};
 
 WebInspector.CountersGraph.CounterUI.prototype = {
     reset: function()
@@ -538,7 +538,7 @@ WebInspector.CountersGraph.CounterUI.prototype = {
     {
         return this._filter.checked();
     }
-}
+};
 
 /**
  * @constructor
@@ -548,7 +548,7 @@ WebInspector.CountersGraph.CounterUI.prototype = {
 WebInspector.CounterGraphCalculator = function(model)
 {
     this._model = model;
-}
+};
 
 WebInspector.CounterGraphCalculator._minWidth = 5;
 
@@ -634,4 +634,4 @@ WebInspector.CounterGraphCalculator.prototype = {
     {
         return this._maximumBoundary - this._minimumBoundary;
     }
-}
+};

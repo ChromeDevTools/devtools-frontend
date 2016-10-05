@@ -99,8 +99,6 @@ WebInspector.NetworkLogView._isMatchingSearchQuerySymbol = Symbol("isMatchingSea
 
 WebInspector.NetworkLogView.HTTPSchemas = {"http": true, "https": true, "ws": true, "wss": true};
 
-WebInspector.NetworkLogView._defaultRefreshDelay = 200;
-
 WebInspector.NetworkLogView._waterfallMinOvertime = 1;
 WebInspector.NetworkLogView._waterfallMaxOvertime = 3;
 
@@ -462,8 +460,8 @@ WebInspector.NetworkLogView.prototype = {
 
         this._needsRefresh = true;
 
-        if (this.isShowing() && !this._refreshTimeout)
-            this._refreshTimeout = setTimeout(this.refresh.bind(this), WebInspector.NetworkLogView._defaultRefreshDelay);
+        if (this.isShowing() && !this._refreshRequestId)
+            this._refreshRequestId = this.element.window().requestAnimationFrame(this.refresh.bind(this));
     },
 
     /**
@@ -580,9 +578,10 @@ WebInspector.NetworkLogView.prototype = {
     refresh: function()
     {
         this._needsRefresh = false;
-        if (this._refreshTimeout) {
-            clearTimeout(this._refreshTimeout);
-            delete this._refreshTimeout;
+
+        if (this._refreshRequestId) {
+            this.element.window().cancelAnimationFrame(this._refreshRequestId);
+            delete this._refreshRequestId;
         }
 
         this.removeAllNodeHighlights();

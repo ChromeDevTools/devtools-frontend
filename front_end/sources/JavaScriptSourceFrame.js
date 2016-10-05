@@ -712,6 +712,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
 
         /** @type {!Map.<number, !Set<string>>} */
         var namesPerLine = new Map();
+        var skipObjectProperty = false;
         var tokenizer = new WebInspector.CodeMirrorUtils.TokenizerFactory().createTokenizer("text/javascript");
         tokenizer(this.textEditor.line(fromLine).substring(fromColumn), processToken.bind(this, fromLine));
         for (var i = fromLine + 1; i < toLine; ++i)
@@ -727,7 +728,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
          */
         function processToken(lineNumber, tokenValue, tokenType, column, newColumn)
         {
-            if (tokenType && this._isIdentifier(tokenType) && valuesMap.get(tokenValue)) {
+            if (!skipObjectProperty && tokenType && this._isIdentifier(tokenType) && valuesMap.get(tokenValue)) {
                 var names = namesPerLine.get(lineNumber);
                 if (!names) {
                     names = new Set();
@@ -735,6 +736,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
                 }
                 names.add(tokenValue);
             }
+            skipObjectProperty = tokenValue === ".";
         }
         this.textEditor.operation(this._renderDecorations.bind(this, valuesMap, namesPerLine, fromLine, toLine));
     },

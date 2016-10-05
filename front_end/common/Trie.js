@@ -119,11 +119,11 @@ WebInspector.Trie.prototype = {
         var node = this._root;
         var wordIndex = 0;
         for (var i = 0; i < word.length; ++i) {
-            if (!fullWordOnly || this._isWord[node])
-                wordIndex = i;
             node = this._edges[node][word[i]];
             if (!node)
                 break;
+            if (!fullWordOnly || this._isWord[node])
+                wordIndex = i + 1;
         }
         return word.substring(0, wordIndex);
     },

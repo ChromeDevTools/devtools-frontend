@@ -67,7 +67,7 @@ WebInspector.installDragHandle = function(element, elementDragStart, elementDrag
         element.addEventListener("mouseup", onMouseUp, false);
     if (hoverCursor !== null)
         element.style.cursor = hoverCursor || cursor;
-}
+};
 
 /**
  * @param {!Element} targetElement
@@ -120,14 +120,14 @@ WebInspector.elementDragStart = function(targetElement, elementDragStart, elemen
         WebInspector._restoreCursorAfterDrag = null;
     }
     event.preventDefault();
-}
+};
 
 WebInspector._mouseOutWhileDragging = function()
 {
     var document = WebInspector._mouseOutWhileDraggingTargetDocument;
     WebInspector._unregisterMouseOutWhileDragging();
     WebInspector._elementDraggingGlassPane = new WebInspector.GlassPane(document);
-}
+};
 
 WebInspector._unregisterMouseOutWhileDragging = function()
 {
@@ -135,7 +135,7 @@ WebInspector._unregisterMouseOutWhileDragging = function()
         return;
     WebInspector._mouseOutWhileDraggingTargetDocument.removeEventListener("mouseout", WebInspector._mouseOutWhileDragging, true);
     delete WebInspector._mouseOutWhileDraggingTargetDocument;
-}
+};
 
 WebInspector._unregisterDragEvents = function()
 {
@@ -147,7 +147,7 @@ WebInspector._unregisterDragEvents = function()
         WebInspector._dragEventsTargetDocumentTop.removeEventListener("mouseup", WebInspector._elementDragEnd, true);
     delete WebInspector._dragEventsTargetDocument;
     delete WebInspector._dragEventsTargetDocumentTop;
-}
+};
 
 /**
  * @param {!Event} event
@@ -161,7 +161,7 @@ WebInspector._elementDragMove = function(event)
 
     if (WebInspector._elementDraggingEventListener(/** @type {!MouseEvent} */ (event)))
         WebInspector._cancelDragEvents(event);
-}
+};
 
 /**
  * @param {!Event} event
@@ -180,7 +180,7 @@ WebInspector._cancelDragEvents = function(event)
     delete WebInspector._elementDraggingGlassPane;
     delete WebInspector._elementDraggingEventListener;
     delete WebInspector._elementEndDraggingEventListener;
-}
+};
 
 /**
  * @param {!Event} event
@@ -194,7 +194,7 @@ WebInspector._elementDragEnd = function(event)
     event.preventDefault();
     if (elementDragEnd)
         elementDragEnd(/** @type {!MouseEvent} */ (event));
-}
+};
 
 /**
  * @param {!Element} element
@@ -269,7 +269,7 @@ WebInspector.installInertialDragHandle = function(element, elementDragStart, ele
         velocityY *= k;
         elementDrag(lastX, lastY);
     }
-}
+};
 
 /**
  * @constructor
@@ -284,7 +284,7 @@ WebInspector.GlassPane = function(document, dimmed)
     this.element.style.cssText = "position:absolute;top:0;bottom:0;left:0;right:0;background-color:" + background + ";z-index:" + this._zIndex + ";overflow:hidden;";
     document.body.appendChild(this.element);
     WebInspector._glassPane = this;
-}
+};
 
 WebInspector.GlassPane.prototype = {
     dispose: function()
@@ -292,7 +292,7 @@ WebInspector.GlassPane.prototype = {
         delete WebInspector._glassPane;
         this.element.remove();
     }
-}
+};
 
 /** @type {!WebInspector.GlassPane|undefined} */
 WebInspector._glassPane;
@@ -318,7 +318,7 @@ WebInspector.isBeingEdited = function(node)
         element = element.parentElementOrShadowHost();
     }
     return false;
-}
+};
 
 /**
  * @return {boolean}
@@ -332,7 +332,7 @@ WebInspector.isEditing = function()
     if (!element)
         return false;
     return element.classList.contains("text-prompt") || element.nodeName === "INPUT" || element.nodeName === "TEXTAREA";
-}
+};
 
 /**
  * @param {!Element} element
@@ -355,7 +355,7 @@ WebInspector.markBeingEdited = function(element, value)
         --WebInspector.__editingCount;
     }
     return true;
-}
+};
 
 WebInspector.CSSNumberRegex = /^(-?(?:\d+(?:\.\d+)?|\.\d+))$/;
 
@@ -382,7 +382,7 @@ WebInspector._valueModificationDirection = function(event)
             direction = "Down";
     }
     return direction;
-}
+};
 
 /**
  * @param {string} hexString
@@ -434,7 +434,7 @@ WebInspector._modifiedHexValue = function(hexString, event)
     for (var i = 0, lengthDelta = hexStrLen - resultString.length; i < lengthDelta; ++i)
         resultString = "0" + resultString;
     return resultString;
-}
+};
 
 /**
  * @param {number} number
@@ -472,7 +472,7 @@ WebInspector._modifiedFloatNumber = function(number, event)
         return null;
 
     return result;
-}
+};
 
 /**
  * @param {string} wordString
@@ -504,7 +504,7 @@ WebInspector.createReplacementString = function(wordString, event, customNumberH
         }
     }
     return replacementString;
-}
+};
 
 /**
  * @param {!Event} event
@@ -569,7 +569,7 @@ WebInspector.handleElementValueModifications = function(event, element, finishHa
         return true;
     }
     return false;
-}
+};
 
 /**
  * @param {number} ms
@@ -581,7 +581,7 @@ Number.preciseMillisToString = function(ms, precision)
     precision = precision || 0;
     var format = "%." + precision + "f\u2009ms";
     return WebInspector.UIString(format, ms);
-}
+};
 
 /** @type {!WebInspector.UIStringFormat} */
 WebInspector._microsFormat = new WebInspector.UIStringFormat("%.0f\u2009\u03bcs");
@@ -638,7 +638,7 @@ Number.millisToString = function(ms, higherResolution)
 
     var days = hours / 24;
     return WebInspector._daysFormat.format(days);
-}
+};
 
 /**
  * @param {number} seconds
@@ -650,7 +650,7 @@ Number.secondsToString = function(seconds, higherResolution)
     if (!isFinite(seconds))
         return "-";
     return Number.millisToString(seconds * 1000, higherResolution);
-}
+};
 
 /**
  * @param {number} bytes
@@ -672,7 +672,7 @@ Number.bytesToString = function(bytes)
         return WebInspector.UIString("%.1f\u2009MB", megabytes);
     else
         return WebInspector.UIString("%.0f\u2009MB", megabytes);
-}
+};
 
 /**
  * @param {number} num
@@ -685,7 +685,7 @@ Number.withThousandsSeparator = function(num)
     while (str.match(re))
         str = str.replace(re, "$1\u2009$2"); // \u2009 is a thin space.
     return str;
-}
+};
 
 /**
  * @param {string} format
@@ -708,7 +708,7 @@ WebInspector.formatLocalized = function(format, substitutions)
         return a;
     }
     return String.format(WebInspector.UIString(format), substitutions, formatters, createElement("span"), append).formattedResult;
-}
+};
 
 /**
  * @return {string}
@@ -716,7 +716,7 @@ WebInspector.formatLocalized = function(format, substitutions)
 WebInspector.openLinkExternallyLabel = function()
 {
     return WebInspector.UIString.capitalize("Open ^link in ^new ^tab");
-}
+};
 
 /**
  * @return {string}
@@ -724,7 +724,7 @@ WebInspector.openLinkExternallyLabel = function()
 WebInspector.copyLinkAddressLabel = function()
 {
     return WebInspector.UIString.capitalize("Copy ^link ^address");
-}
+};
 
 /**
  * @return {string}
@@ -732,7 +732,7 @@ WebInspector.copyLinkAddressLabel = function()
 WebInspector.anotherProfilerActiveLabel = function()
 {
     return WebInspector.UIString("Another profiler is already active");
-}
+};
 
 /**
  * @param {string|undefined} description
@@ -743,7 +743,7 @@ WebInspector.asyncStackTraceLabel = function(description)
     if (description)
         return description + " " + WebInspector.UIString("(async)");
     return WebInspector.UIString("Async Call");
-}
+};
 
 /**
  * @param {!Element} element
@@ -753,7 +753,7 @@ WebInspector.installComponentRootStyles = function(element)
     WebInspector.appendStyle(element, "ui/inspectorCommon.css");
     WebInspector.themeSupport.injectHighlightStyleSheets(element);
     element.classList.add("platform-" + WebInspector.platform());
-}
+};
 
 /**
  * @param {!Element} element
@@ -769,7 +769,7 @@ WebInspector.createShadowRootWithCoreStyles = function(element, cssFile)
         WebInspector.appendStyle(shadowRoot, cssFile);
     shadowRoot.addEventListener("focus", WebInspector._focusChanged.bind(WebInspector), true);
     return shadowRoot;
-}
+};
 
 /**
  * @param {!Document} document
@@ -779,7 +779,7 @@ WebInspector._windowFocused = function(document, event)
 {
     if (event.target.document.nodeType === Node.DOCUMENT_NODE)
         document.body.classList.remove("inactive");
-}
+};
 
 /**
  * @param {!Document} document
@@ -789,7 +789,7 @@ WebInspector._windowBlurred = function(document, event)
 {
     if (event.target.document.nodeType === Node.DOCUMENT_NODE)
         document.body.classList.add("inactive");
-}
+};
 
 /**
  * @return {!Element}
@@ -797,7 +797,7 @@ WebInspector._windowBlurred = function(document, event)
 WebInspector.previousFocusElement = function()
 {
     return WebInspector._previousFocusElement;
-}
+};
 
 /**
  * @return {!Element}
@@ -805,7 +805,7 @@ WebInspector.previousFocusElement = function()
 WebInspector.currentFocusElement = function()
 {
     return WebInspector._currentFocusElement;
-}
+};
 
 /**
  * @param {!Event} event
@@ -815,7 +815,7 @@ WebInspector._focusChanged = function(event)
     var node = event.deepActiveElement();
     WebInspector.Widget.focusWidgetForNode(node);
     WebInspector.setCurrentFocusElement(node);
-}
+};
 
 /**
  * @param {!Document} document
@@ -828,7 +828,7 @@ WebInspector._documentBlurred = function(document, event)
     // and document.activeElement is reset to default (this is not a window blur).
     if (!event.relatedTarget && document.activeElement === document.body)
         WebInspector.setCurrentFocusElement(null);
-}
+};
 
 WebInspector._textInputTypes = new Set(["text", "search", "tel", "url", "email", "password"]);
 WebInspector._isTextEditingElement = function(element)
@@ -840,7 +840,7 @@ WebInspector._isTextEditingElement = function(element)
         return true;
 
     return false;
-}
+};
 
 /**
  * @param {?Node} x
@@ -872,13 +872,13 @@ WebInspector.setCurrentFocusElement = function(x)
         }
     } else if (WebInspector._previousFocusElement)
         WebInspector._previousFocusElement.blur();
-}
+};
 
 WebInspector.restoreFocusFromElement = function(element)
 {
     if (element && element.isSelfOrAncestor(WebInspector.currentFocusElement()))
         WebInspector.setCurrentFocusElement(WebInspector.previousFocusElement());
-}
+};
 
 /**
  * @param {!Element} element
@@ -891,7 +891,7 @@ WebInspector.highlightSearchResult = function(element, offset, length, domChange
 {
     var result = WebInspector.highlightSearchResults(element, [new WebInspector.SourceRange(offset, length)], domChanges);
     return result.length ? result[0] : null;
-}
+};
 
 /**
  * @param {!Element} element
@@ -902,7 +902,7 @@ WebInspector.highlightSearchResult = function(element, offset, length, domChange
 WebInspector.highlightSearchResults = function(element, resultRanges, changes)
 {
     return WebInspector.highlightRangesWithStyleClass(element, resultRanges, WebInspector.highlightedSearchResultClassName, changes);
-}
+};
 
 /**
  * @param {!Element} element
@@ -921,7 +921,7 @@ WebInspector.runCSSAnimationOnce = function(element, className)
 
     element.addEventListener("webkitAnimationEnd", animationEndCallback, false);
     element.classList.add(className);
-}
+};
 
 /**
  * @param {!Element} element
@@ -1006,7 +1006,7 @@ WebInspector.highlightRangesWithStyleClass = function(element, resultRanges, sty
 
     }
     return highlightNodes;
-}
+};
 
 WebInspector.applyDomChanges = function(domChanges)
 {
@@ -1021,7 +1021,7 @@ WebInspector.applyDomChanges = function(domChanges)
             break;
         }
     }
-}
+};
 
 WebInspector.revertDomChanges = function(domChanges)
 {
@@ -1036,7 +1036,7 @@ WebInspector.revertDomChanges = function(domChanges)
             break;
         }
     }
-}
+};
 
 /**
  * @param {!Element} element
@@ -1058,7 +1058,7 @@ WebInspector.measurePreferredSize = function(element, containerElement)
     else
         element.remove();
     return result;
-}
+};
 
 /**
  * @constructor
@@ -1068,7 +1068,7 @@ WebInspector.InvokeOnceHandlers = function(autoInvoke)
 {
     this._handlers = null;
     this._autoInvoke = autoInvoke;
-}
+};
 
 WebInspector.InvokeOnceHandlers.prototype = {
     /**
@@ -1111,7 +1111,7 @@ WebInspector.InvokeOnceHandlers.prototype = {
                 methods[j].call(object);
         }
     }
-}
+};
 
 WebInspector._coalescingLevel = 0;
 WebInspector._postUpdateHandlers = null;
@@ -1120,7 +1120,7 @@ WebInspector.startBatchUpdate = function()
 {
     if (!WebInspector._coalescingLevel++)
         WebInspector._postUpdateHandlers = new WebInspector.InvokeOnceHandlers(false);
-}
+};
 
 WebInspector.endBatchUpdate = function()
 {
@@ -1128,7 +1128,7 @@ WebInspector.endBatchUpdate = function()
         return;
     WebInspector._postUpdateHandlers.scheduleInvoke();
     WebInspector._postUpdateHandlers = null;
-}
+};
 
 /**
  * @param {!Object} object
@@ -1139,7 +1139,7 @@ WebInspector.invokeOnceAfterBatchUpdate = function(object, method)
     if (!WebInspector._postUpdateHandlers)
         WebInspector._postUpdateHandlers = new WebInspector.InvokeOnceHandlers(true);
     WebInspector._postUpdateHandlers.add(object, method);
-}
+};
 
 /**
  * @param {!Window} window
@@ -1185,7 +1185,7 @@ WebInspector.animateFunction = function(window, func, params, frames, animationC
     }
 
     return cancelAnimation;
-}
+};
 
 /**
  * @constructor
@@ -1198,7 +1198,7 @@ WebInspector.LongClickController = function(element, callback)
     this._element = element;
     this._callback = callback;
     this._enable();
-}
+};
 
 WebInspector.LongClickController.prototype = {
     reset: function()
@@ -1260,7 +1260,7 @@ WebInspector.LongClickController.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
  * @param {!Document} document
@@ -1280,7 +1280,7 @@ WebInspector.initializeUIUtils = function(document, themeSetting)
     var body = /** @type {!Element} */ (document.body);
     WebInspector.appendStyle(body, "ui/inspectorStyle.css");
     WebInspector.appendStyle(body, "ui/popover.css");
-}
+};
 
 /**
  * @param {string} name
@@ -1289,7 +1289,7 @@ WebInspector.initializeUIUtils = function(document, themeSetting)
 WebInspector.beautifyFunctionName = function(name)
 {
     return name || WebInspector.UIString("(anonymous)");
-}
+};
 
 /**
  * @param {string} localName
@@ -1708,7 +1708,7 @@ WebInspector.bindInput = function(input, apply, validate, numeric)
     }
 
     return setValue;
-}
+};
 
 /**
  * @constructor
@@ -1725,7 +1725,7 @@ WebInspector.ThemeSupport = function(setting)
     /** @type {!Map<string, string>} */
     this._cachedThemePatches = new Map();
     this._setting = setting;
-}
+};
 
 /**
  * @enum {number}
@@ -1930,7 +1930,7 @@ WebInspector.ThemeSupport.prototype = {
         var hue = hsla[0];
         var sat = hsla[1];
         var lit = hsla[2];
-        var alpha = hsla[3]
+        var alpha = hsla[3];
 
         switch (this._themeName) {
         case "dark":
@@ -1951,7 +1951,7 @@ WebInspector.ThemeSupport.prototype = {
         hsla[2] = Number.constrain(lit, 0, 1);
         hsla[3] = Number.constrain(alpha, 0, 1);
     }
-}
+};
 
 /**
  * @param {?NetworkAgent.ResourcePriority} priority
@@ -1971,7 +1971,7 @@ WebInspector.uiLabelForPriority = function(priority)
         WebInspector.uiLabelForPriority._priorityToUILabel = labelMap;
     }
     return labelMap.get(priority) || WebInspector.UIString("Unknown");
-}
+};
 
 /**
  * @param {string} url
@@ -2005,7 +2005,7 @@ WebInspector.linkifyURLAsNode = function(url, linkText, classes, isExternal, too
         a.setAttribute("target", "_blank");
 
     return a;
-}
+};
 
 /**
  * @param {string} article
@@ -2015,7 +2015,7 @@ WebInspector.linkifyURLAsNode = function(url, linkText, classes, isExternal, too
 WebInspector.linkifyDocumentationURLAsNode = function(article, title)
 {
     return WebInspector.linkifyURLAsNode("https://developers.google.com/web/tools/chrome-devtools/" + article, title, undefined, true);
-}
+};
 
 /** @type {!WebInspector.ThemeSupport} */
 WebInspector.themeSupport;

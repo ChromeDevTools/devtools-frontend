@@ -34,34 +34,26 @@
  * @param {!WebInspector.NetworkRequest} request
  * @param {string} dataURL
  */
-WebInspector.RequestHTMLView = function(request, dataURL)
-{
-    WebInspector.RequestView.call(this, request);
-    this._dataURL = dataURL;
-    this.element.classList.add("html");
-}
+WebInspector.RequestHTMLView = function(request, dataURL) {
+  WebInspector.RequestView.call(this, request);
+  this._dataURL = dataURL;
+  this.element.classList.add('html');
+};
 
 WebInspector.RequestHTMLView.prototype = {
-    wasShown: function()
-    {
-        this._createIFrame();
-    },
+  wasShown: function() { this._createIFrame(); },
 
-    willHide: function(parentElement)
-    {
-        this.element.removeChildren();
-    },
+  willHide: function(parentElement) { this.element.removeChildren(); },
 
-    _createIFrame: function()
-    {
-        // We need to create iframe again each time because contentDocument
-        // is deleted when iframe is removed from its parent.
-        this.element.removeChildren();
-        var iframe = createElement("iframe");
-        iframe.setAttribute("sandbox", ""); // Forbid to run JavaScript and set unique origin.
-        iframe.setAttribute("src", this._dataURL);
-        this.element.appendChild(iframe);
-    },
+  _createIFrame: function() {
+    // We need to create iframe again each time because contentDocument
+    // is deleted when iframe is removed from its parent.
+    this.element.removeChildren();
+    var iframe = createElement('iframe');
+    iframe.setAttribute('sandbox', '');  // Forbid to run JavaScript and set unique origin.
+    iframe.setAttribute('src', this._dataURL);
+    this.element.appendChild(iframe);
+  },
 
-    __proto__: WebInspector.RequestView.prototype
-}
+  __proto__: WebInspector.RequestView.prototype
+};

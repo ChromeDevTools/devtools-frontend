@@ -46,7 +46,7 @@ WebInspector.TextPrompt = function(completions, stopCharacters)
     this._autocompletionTimeout = WebInspector.TextPrompt.DefaultAutocompletionTimeout;
     this._title = "";
     this._completionRequestId = 0;
-}
+};
 
 WebInspector.TextPrompt.DefaultAutocompletionTimeout = 250;
 
@@ -808,7 +808,7 @@ WebInspector.TextPrompt.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 
 /**
@@ -823,7 +823,7 @@ WebInspector.TextPromptWithHistory = function(completions, stopCharacters)
 
     this._history = new WebInspector.HistoryManager();
     this._addCompletionsFromHistory = true;
-}
+};
 
 WebInspector.TextPromptWithHistory.prototype = {
     /**
@@ -927,7 +927,7 @@ WebInspector.TextPromptWithHistory.prototype = {
     },
 
     __proto__: WebInspector.TextPrompt.prototype
-}
+};
 
 /**
  * @constructor
@@ -944,7 +944,7 @@ WebInspector.HistoryManager = function()
      * @type {number}
      */
     this._historyOffset = 1;
-}
+};
 
 WebInspector.HistoryManager.prototype = {
     /**

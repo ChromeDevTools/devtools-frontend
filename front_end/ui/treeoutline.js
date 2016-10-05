@@ -54,7 +54,7 @@ TreeOutline.Events = {
     ElementExpanded: Symbol("ElementExpanded"),
     ElementCollapsed: Symbol("ElementCollapsed"),
     ElementSelected: Symbol("ElementSelected")
-}
+};
 
 TreeOutline.prototype = {
     _createRootElement: function()
@@ -309,7 +309,7 @@ TreeOutline.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
  * @constructor
@@ -348,7 +348,7 @@ TreeOutlineInShadow.prototype = {
     },
 
     __proto__: TreeOutline.prototype
-}
+};
 
 /**
  * @constructor
@@ -592,7 +592,7 @@ TreeElement.prototype = {
 
         for (var i = 0; this._children && i < this._children.length; ++i) {
             var child = this._children[i];
-            child.previousSibling = null
+            child.previousSibling = null;
             child.nextSibling = null;
             child.parent = null;
 
@@ -1157,4 +1157,4 @@ TreeElement.prototype = {
         var left = this._listItemNode.totalOffsetLeft() + computedLeftPadding;
         return event.pageX >= left && event.pageX <= left + TreeElement._ArrowToggleWidth && this._expandable;
     }
-}
+};

@@ -30,270 +30,249 @@
  * @constructor
  * @extends {WebInspector.NavigatorView}
  */
-WebInspector.SourcesNavigatorView = function()
-{
-    WebInspector.NavigatorView.call(this);
-    WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
-}
+WebInspector.SourcesNavigatorView = function() {
+  WebInspector.NavigatorView.call(this);
+  WebInspector.targetManager.addEventListener(
+      WebInspector.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
+};
 
 WebInspector.SourcesNavigatorView.prototype = {
-    /**
+  /**
      * @override
      * @param {!WebInspector.UISourceCode} uiSourceCode
      * @return {boolean}
      */
-    accept: function(uiSourceCode)
-    {
-        if (!WebInspector.NavigatorView.prototype.accept(uiSourceCode))
-            return false;
-        return uiSourceCode.project().type() !== WebInspector.projectTypes.ContentScripts && uiSourceCode.project().type() !== WebInspector.projectTypes.Snippets;
-    },
+  accept: function(uiSourceCode) {
+    if (!WebInspector.NavigatorView.prototype.accept(uiSourceCode))
+      return false;
+    return uiSourceCode.project().type() !== WebInspector.projectTypes.ContentScripts &&
+        uiSourceCode.project().type() !== WebInspector.projectTypes.Snippets;
+  },
 
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _inspectedURLChanged: function(event)
-    {
-        var mainTarget = WebInspector.targetManager.mainTarget();
-        if (event.data !== mainTarget)
-            return;
-        var inspectedURL = mainTarget && mainTarget.inspectedURL();
-        if (!inspectedURL)
-            return
-        for (var node of this._uiSourceCodeNodes.valuesArray()) {
-            var uiSourceCode = node.uiSourceCode();
-            if (uiSourceCode.url() === inspectedURL)
-                this.revealUISourceCode(uiSourceCode, true);
-        }
-    },
+  /**
+   * @param {!WebInspector.Event} event
+   */
+  _inspectedURLChanged: function(event) {
+    var mainTarget = WebInspector.targetManager.mainTarget();
+    if (event.data !== mainTarget)
+      return;
+    var inspectedURL = mainTarget && mainTarget.inspectedURL();
+    if (!inspectedURL)
+      return;
+    for (var node of this._uiSourceCodeNodes.valuesArray()) {
+      var uiSourceCode = node.uiSourceCode();
+      if (uiSourceCode.url() === inspectedURL)
+        this.revealUISourceCode(uiSourceCode, true);
+    }
+  },
 
-    /**
-     * @override
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     */
-    uiSourceCodeAdded: function(uiSourceCode)
-    {
-        var inspectedPageURL = WebInspector.targetManager.mainTarget().inspectedURL();
-        if (uiSourceCode.url() === inspectedPageURL)
-            this.revealUISourceCode(uiSourceCode, true);
-    },
+  /**
+   * @override
+   * @param {!WebInspector.UISourceCode} uiSourceCode
+   */
+  uiSourceCodeAdded: function(uiSourceCode) {
+    var inspectedPageURL = WebInspector.targetManager.mainTarget().inspectedURL();
+    if (uiSourceCode.url() === inspectedPageURL)
+      this.revealUISourceCode(uiSourceCode, true);
+  },
 
-    /**
-     * @override
-     * @param {!Event} event
-     */
-    handleContextMenu: function(event)
-    {
-        var contextMenu = new WebInspector.ContextMenu(event);
-        WebInspector.NavigatorView.appendAddFolderItem(contextMenu);
-        contextMenu.show();
-    },
+  /**
+   * @override
+   * @param {!Event} event
+   */
+  handleContextMenu: function(event) {
+    var contextMenu = new WebInspector.ContextMenu(event);
+    WebInspector.NavigatorView.appendAddFolderItem(contextMenu);
+    contextMenu.show();
+  },
 
-    __proto__: WebInspector.NavigatorView.prototype
-}
+  __proto__: WebInspector.NavigatorView.prototype
+};
 
 /**
  * @constructor
  * @extends {WebInspector.NavigatorView}
  */
-WebInspector.NetworkNavigatorView = function()
-{
-    WebInspector.NavigatorView.call(this);
-    WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
-}
+WebInspector.NetworkNavigatorView = function() {
+  WebInspector.NavigatorView.call(this);
+  WebInspector.targetManager.addEventListener(
+      WebInspector.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
+};
 
 WebInspector.NetworkNavigatorView.prototype = {
-    /**
+  /**
      * @override
      * @param {!WebInspector.UISourceCode} uiSourceCode
      * @return {boolean}
      */
-    accept: function(uiSourceCode)
-    {
-        return uiSourceCode.project().type() === WebInspector.projectTypes.Network;
-    },
+  accept: function(uiSourceCode) {
+    return uiSourceCode.project().type() === WebInspector.projectTypes.Network;
+  },
 
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _inspectedURLChanged: function(event)
-    {
-        var mainTarget = WebInspector.targetManager.mainTarget();
-        if (event.data !== mainTarget)
-            return;
-        var inspectedURL = mainTarget && mainTarget.inspectedURL();
-        if (!inspectedURL)
-            return
-        for (var node of this._uiSourceCodeNodes.valuesArray()) {
-            var uiSourceCode = node.uiSourceCode();
-            if (uiSourceCode.url() === inspectedURL)
-                this.revealUISourceCode(uiSourceCode, true);
-        }
-    },
+  /**
+   * @param {!WebInspector.Event} event
+   */
+  _inspectedURLChanged: function(event) {
+    var mainTarget = WebInspector.targetManager.mainTarget();
+    if (event.data !== mainTarget)
+      return;
+    var inspectedURL = mainTarget && mainTarget.inspectedURL();
+    if (!inspectedURL)
+      return;
+    for (var node of this._uiSourceCodeNodes.valuesArray()) {
+      var uiSourceCode = node.uiSourceCode();
+      if (uiSourceCode.url() === inspectedURL)
+        this.revealUISourceCode(uiSourceCode, true);
+    }
+  },
 
-    /**
-     * @override
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     */
-    uiSourceCodeAdded: function(uiSourceCode)
-    {
-        var inspectedPageURL = WebInspector.targetManager.mainTarget().inspectedURL();
-        if (uiSourceCode.url() === inspectedPageURL)
-            this.revealUISourceCode(uiSourceCode, true);
-    },
+  /**
+   * @override
+   * @param {!WebInspector.UISourceCode} uiSourceCode
+   */
+  uiSourceCodeAdded: function(uiSourceCode) {
+    var inspectedPageURL = WebInspector.targetManager.mainTarget().inspectedURL();
+    if (uiSourceCode.url() === inspectedPageURL)
+      this.revealUISourceCode(uiSourceCode, true);
+  },
 
-    __proto__: WebInspector.NavigatorView.prototype
-}
+  __proto__: WebInspector.NavigatorView.prototype
+};
 
 /**
  * @constructor
  * @extends {WebInspector.NavigatorView}
  */
-WebInspector.FilesNavigatorView = function()
-{
-    WebInspector.NavigatorView.call(this);
-}
+WebInspector.FilesNavigatorView = function() {
+  WebInspector.NavigatorView.call(this);
+};
 
 WebInspector.FilesNavigatorView.prototype = {
-    /**
+  /**
      * @override
      * @param {!WebInspector.UISourceCode} uiSourceCode
      * @return {boolean}
      */
-    accept: function(uiSourceCode)
-    {
-        return uiSourceCode.project().type() === WebInspector.projectTypes.FileSystem;
-    },
+  accept: function(uiSourceCode) {
+    return uiSourceCode.project().type() === WebInspector.projectTypes.FileSystem;
+  },
 
-    /**
-     * @override
-     * @param {!Event} event
-     */
-    handleContextMenu: function(event)
-    {
-        var contextMenu = new WebInspector.ContextMenu(event);
-        WebInspector.NavigatorView.appendAddFolderItem(contextMenu);
-        contextMenu.show();
-    },
+  /**
+   * @override
+   * @param {!Event} event
+   */
+  handleContextMenu: function(event) {
+    var contextMenu = new WebInspector.ContextMenu(event);
+    WebInspector.NavigatorView.appendAddFolderItem(contextMenu);
+    contextMenu.show();
+  },
 
-    __proto__: WebInspector.NavigatorView.prototype
-}
+  __proto__: WebInspector.NavigatorView.prototype
+};
 
 /**
  * @constructor
  * @extends {WebInspector.NavigatorView}
  */
-WebInspector.ContentScriptsNavigatorView = function()
-{
-    WebInspector.NavigatorView.call(this);
-}
+WebInspector.ContentScriptsNavigatorView = function() {
+  WebInspector.NavigatorView.call(this);
+};
 
 WebInspector.ContentScriptsNavigatorView.prototype = {
-    /**
+  /**
      * @override
      * @param {!WebInspector.UISourceCode} uiSourceCode
      * @return {boolean}
      */
-    accept: function(uiSourceCode)
-    {
-        return uiSourceCode.project().type() === WebInspector.projectTypes.ContentScripts;
-    },
+  accept: function(uiSourceCode) {
+    return uiSourceCode.project().type() === WebInspector.projectTypes.ContentScripts;
+  },
 
-    __proto__: WebInspector.NavigatorView.prototype
-}
+  __proto__: WebInspector.NavigatorView.prototype
+};
 
 /**
  * @constructor
  * @extends {WebInspector.NavigatorView}
  */
-WebInspector.SnippetsNavigatorView = function()
-{
-    WebInspector.NavigatorView.call(this);
-}
+WebInspector.SnippetsNavigatorView = function() {
+  WebInspector.NavigatorView.call(this);
+};
 
 WebInspector.SnippetsNavigatorView.prototype = {
-    /**
+  /**
      * @override
      * @param {!WebInspector.UISourceCode} uiSourceCode
      * @return {boolean}
      */
-    accept: function(uiSourceCode)
-    {
-        return uiSourceCode.project().type() === WebInspector.projectTypes.Snippets;
-    },
+  accept: function(uiSourceCode) {
+    return uiSourceCode.project().type() === WebInspector.projectTypes.Snippets;
+  },
 
-    /**
-     * @override
-     * @param {!Event} event
-     */
-    handleContextMenu: function(event)
-    {
-        var contextMenu = new WebInspector.ContextMenu(event);
-        contextMenu.appendItem(WebInspector.UIString("New"), this._handleCreateSnippet.bind(this));
-        contextMenu.show();
-    },
+  /**
+   * @override
+   * @param {!Event} event
+   */
+  handleContextMenu: function(event) {
+    var contextMenu = new WebInspector.ContextMenu(event);
+    contextMenu.appendItem(WebInspector.UIString('New'), this._handleCreateSnippet.bind(this));
+    contextMenu.show();
+  },
 
-    /**
-     * @override
-     * @param {!Event} event
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     */
-    handleFileContextMenu: function(event, uiSourceCode)
-    {
-        var contextMenu = new WebInspector.ContextMenu(event);
-        contextMenu.appendItem(WebInspector.UIString("Run"), this._handleEvaluateSnippet.bind(this, uiSourceCode));
-        contextMenu.appendItem(WebInspector.UIString("Rename"), this.rename.bind(this, uiSourceCode));
-        contextMenu.appendItem(WebInspector.UIString("Remove"), this._handleRemoveSnippet.bind(this, uiSourceCode));
-        contextMenu.appendSeparator();
-        contextMenu.appendItem(WebInspector.UIString("New"), this._handleCreateSnippet.bind(this));
-        contextMenu.appendSeparator();
-        contextMenu.appendItem(WebInspector.UIString("Save as..."), this._handleSaveAs.bind(this, uiSourceCode));
-        contextMenu.show();
-    },
+  /**
+   * @override
+   * @param {!Event} event
+   * @param {!WebInspector.UISourceCode} uiSourceCode
+   */
+  handleFileContextMenu: function(event, uiSourceCode) {
+    var contextMenu = new WebInspector.ContextMenu(event);
+    contextMenu.appendItem(
+        WebInspector.UIString('Run'), this._handleEvaluateSnippet.bind(this, uiSourceCode));
+    contextMenu.appendItem(WebInspector.UIString('Rename'), this.rename.bind(this, uiSourceCode));
+    contextMenu.appendItem(
+        WebInspector.UIString('Remove'), this._handleRemoveSnippet.bind(this, uiSourceCode));
+    contextMenu.appendSeparator();
+    contextMenu.appendItem(WebInspector.UIString('New'), this._handleCreateSnippet.bind(this));
+    contextMenu.appendSeparator();
+    contextMenu.appendItem(
+        WebInspector.UIString('Save as...'), this._handleSaveAs.bind(this, uiSourceCode));
+    contextMenu.show();
+  },
 
-    /**
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     */
-    _handleEvaluateSnippet: function(uiSourceCode)
-    {
-        var executionContext = WebInspector.context.flavor(WebInspector.ExecutionContext);
-        if (uiSourceCode.project().type() !== WebInspector.projectTypes.Snippets || !executionContext)
-            return;
-        WebInspector.scriptSnippetModel.evaluateScriptSnippet(executionContext, uiSourceCode);
-    },
+  /**
+   * @param {!WebInspector.UISourceCode} uiSourceCode
+   */
+  _handleEvaluateSnippet: function(uiSourceCode) {
+    var executionContext = WebInspector.context.flavor(WebInspector.ExecutionContext);
+    if (uiSourceCode.project().type() !== WebInspector.projectTypes.Snippets || !executionContext)
+      return;
+    WebInspector.scriptSnippetModel.evaluateScriptSnippet(executionContext, uiSourceCode);
+  },
 
-    /**
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     */
-    _handleSaveAs: function(uiSourceCode)
-    {
-        if (uiSourceCode.project().type() !== WebInspector.projectTypes.Snippets)
-            return;
-        uiSourceCode.saveAs();
-    },
+  /**
+   * @param {!WebInspector.UISourceCode} uiSourceCode
+   */
+  _handleSaveAs: function(uiSourceCode) {
+    if (uiSourceCode.project().type() !== WebInspector.projectTypes.Snippets)
+      return;
+    uiSourceCode.saveAs();
+  },
 
-    /**
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     */
-    _handleRemoveSnippet: function(uiSourceCode)
-    {
-        if (uiSourceCode.project().type() !== WebInspector.projectTypes.Snippets)
-            return;
-        uiSourceCode.remove();
-    },
+  /**
+   * @param {!WebInspector.UISourceCode} uiSourceCode
+   */
+  _handleRemoveSnippet: function(uiSourceCode) {
+    if (uiSourceCode.project().type() !== WebInspector.projectTypes.Snippets)
+      return;
+    uiSourceCode.remove();
+  },
 
-    _handleCreateSnippet: function()
-    {
-        this.create(WebInspector.scriptSnippetModel.project(), "");
-    },
+  _handleCreateSnippet: function() { this.create(WebInspector.scriptSnippetModel.project(), ''); },
 
-    /**
-     * @override
-     */
-    sourceDeleted: function(uiSourceCode)
-    {
-        this._handleRemoveSnippet(uiSourceCode);
-    },
+  /**
+   * @override
+   */
+  sourceDeleted: function(uiSourceCode) { this._handleRemoveSnippet(uiSourceCode); },
 
-    __proto__: WebInspector.NavigatorView.prototype
-}
+  __proto__: WebInspector.NavigatorView.prototype
+};

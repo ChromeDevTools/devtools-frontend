@@ -59,7 +59,7 @@ WebInspector.UISourceCode = function(project, url, contentType)
 
     /** @type {!Array<!WebInspector.UISourceCode.Message>} */
     this._messages = [];
-}
+};
 
 /** @enum {symbol} */
 WebInspector.UISourceCode.Events = {
@@ -71,7 +71,7 @@ WebInspector.UISourceCode.Events = {
     MessageRemoved: Symbol("MessageRemoved"),
     LineDecorationAdded: Symbol("LineDecorationAdded"),
     LineDecorationRemoved: Symbol("LineDecorationRemoved")
-}
+};
 
 WebInspector.UISourceCode.prototype = {
     /**
@@ -697,7 +697,7 @@ WebInspector.UISourceCode.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
  * @constructor
@@ -710,7 +710,7 @@ WebInspector.UILocation = function(uiSourceCode, lineNumber, columnNumber)
     this.uiSourceCode = uiSourceCode;
     this.lineNumber = lineNumber;
     this.columnNumber = columnNumber;
-}
+};
 
 WebInspector.UILocation.prototype = {
     /**
@@ -739,7 +739,7 @@ WebInspector.UILocation.prototype = {
     {
         return this.uiSourceCode.url() + ":" + (this.lineNumber + 1);
     }
-}
+};
 
 /**
  * @constructor
@@ -753,7 +753,7 @@ WebInspector.Revision = function(uiSourceCode, content, timestamp)
     this._uiSourceCode = uiSourceCode;
     this._content = content;
     this._timestamp = timestamp;
-}
+};
 
 WebInspector.Revision.prototype = {
     /**
@@ -836,7 +836,7 @@ WebInspector.Revision.prototype = {
     {
         callback([]);
     }
-}
+};
 
 /**
  * @constructor
@@ -851,7 +851,7 @@ WebInspector.UISourceCode.Message = function(uiSourceCode, level, text, range)
     this._level = level;
     this._text = text;
     this._range = range;
-}
+};
 
 /**
  * @enum {string}
@@ -859,7 +859,7 @@ WebInspector.UISourceCode.Message = function(uiSourceCode, level, text, range)
 WebInspector.UISourceCode.Message.Level = {
     Error: "Error",
     Warning: "Warning"
-}
+};
 
 WebInspector.UISourceCode.Message.prototype = {
     /**
@@ -923,7 +923,7 @@ WebInspector.UISourceCode.Message.prototype = {
     {
         this._uiSourceCode.removeMessage(this);
     }
-}
+};
 
 /**
  * @constructor
@@ -936,7 +936,7 @@ WebInspector.UISourceCode.LineMarker = function(line, type, data)
     this._line = line;
     this._type = type;
     this._data = data;
-}
+};
 
 WebInspector.UISourceCode.LineMarker.prototype = {
     /**
@@ -962,4 +962,4 @@ WebInspector.UISourceCode.LineMarker.prototype = {
     {
         return this._data;
     }
-}
+};

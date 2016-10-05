@@ -41,13 +41,13 @@ WebInspector.FileManager = function()
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.SavedURL, this._savedURL, this);
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.CanceledSaveURL, this._canceledSaveURL, this);
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.AppendedToURL, this._appendedToURL, this);
-}
+};
 
 /** @enum {symbol} */
 WebInspector.FileManager.Events = {
     SavedURL: Symbol("SavedURL"),
     AppendedToURL: Symbol("AppendedToURL")
-}
+};
 
 WebInspector.FileManager.prototype = {
     /**
@@ -137,7 +137,7 @@ WebInspector.FileManager.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
  * @type {?WebInspector.FileManager}

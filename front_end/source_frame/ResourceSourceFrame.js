@@ -32,46 +32,41 @@
  * @constructor
  * @param {!WebInspector.ContentProvider} resource
  */
-WebInspector.ResourceSourceFrame = function(resource)
-{
-    this._resource = resource;
-    WebInspector.SourceFrame.call(this, resource.contentURL(), resource.requestContent.bind(resource));
-}
+WebInspector.ResourceSourceFrame = function(resource) {
+  this._resource = resource;
+  WebInspector.SourceFrame.call(
+      this, resource.contentURL(), resource.requestContent.bind(resource));
+};
 
 /**
  * @param {!WebInspector.ContentProvider} resource
  * @param {string} highlighterType
  * @return {!WebInspector.SearchableView}
  */
-WebInspector.ResourceSourceFrame.createSearchableView = function(resource, highlighterType)
-{
-    var sourceFrame = new WebInspector.ResourceSourceFrame(resource);
-    sourceFrame.setHighlighterType(highlighterType);
-    var searchableView = new WebInspector.SearchableView(sourceFrame);
-    searchableView.setPlaceholder(WebInspector.UIString("Find"));
-    sourceFrame.show(searchableView.element);
-    sourceFrame.setSearchableView(searchableView);
-    return searchableView;
-}
+WebInspector.ResourceSourceFrame.createSearchableView = function(resource, highlighterType) {
+  var sourceFrame = new WebInspector.ResourceSourceFrame(resource);
+  sourceFrame.setHighlighterType(highlighterType);
+  var searchableView = new WebInspector.SearchableView(sourceFrame);
+  searchableView.setPlaceholder(WebInspector.UIString('Find'));
+  sourceFrame.show(searchableView.element);
+  sourceFrame.setSearchableView(searchableView);
+  return searchableView;
+};
 
 WebInspector.ResourceSourceFrame.prototype = {
-    get resource()
-    {
-        return this._resource;
-    },
+  get resource() { return this._resource; },
 
-    /**
+  /**
      * @override
      * @param {!WebInspector.ContextMenu} contextMenu
      * @param {number} lineNumber
      * @param {number} columnNumber
      * @return {!Promise}
      */
-    populateTextAreaContextMenu: function(contextMenu, lineNumber, columnNumber)
-    {
-        contextMenu.appendApplicableItems(this._resource);
-        return Promise.resolve();
-    },
+  populateTextAreaContextMenu: function(contextMenu, lineNumber, columnNumber) {
+    contextMenu.appendApplicableItems(this._resource);
+    return Promise.resolve();
+  },
 
-    __proto__: WebInspector.SourceFrame.prototype
-}
+  __proto__: WebInspector.SourceFrame.prototype
+};

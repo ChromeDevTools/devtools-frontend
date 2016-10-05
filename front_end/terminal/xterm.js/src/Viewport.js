@@ -111,4 +111,4 @@ Viewport.prototype.onWheel = function(ev) {
   ev.preventDefault();
 };
 
-export { Viewport };
+export {Viewport};

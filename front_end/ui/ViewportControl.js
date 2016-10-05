@@ -66,14 +66,14 @@ WebInspector.ViewportControl = function(provider)
     // if they change the scroll height.
     this._observer = new MutationObserver(this.refresh.bind(this));
     this._observerConfig = { childList: true, subtree: true };
-}
+};
 
 /**
  * @interface
  */
 WebInspector.ViewportControl.Provider = function()
 {
-}
+};
 
 WebInspector.ViewportControl.Provider.prototype = {
     /**
@@ -97,12 +97,12 @@ WebInspector.ViewportControl.Provider.prototype = {
      * @return {?WebInspector.ViewportElement}
      */
     itemElement: function(index) { return null; }
-}
+};
 
 /**
  * @interface
  */
-WebInspector.ViewportElement = function() { }
+WebInspector.ViewportElement = function() { };
 WebInspector.ViewportElement.prototype = {
     willHide: function() { },
 
@@ -112,7 +112,7 @@ WebInspector.ViewportElement.prototype = {
      * @return {!Element}
      */
     element: function() { },
-}
+};
 
 /**
  * @constructor
@@ -122,7 +122,7 @@ WebInspector.ViewportElement.prototype = {
 WebInspector.StaticViewportElement = function(element)
 {
     this._element = element;
-}
+};
 
 WebInspector.StaticViewportElement.prototype = {
     /**
@@ -143,7 +143,7 @@ WebInspector.StaticViewportElement.prototype = {
     {
         return this._element;
     },
-}
+};
 
 WebInspector.ViewportControl.prototype = {
     /**
@@ -666,4 +666,4 @@ WebInspector.ViewportControl.prototype = {
         // Use offsetHeight instead of clientHeight to avoid being affected by horizontal scroll.
         return this.element.offsetHeight;
     }
-}
+};

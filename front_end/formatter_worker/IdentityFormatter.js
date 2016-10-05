@@ -6,22 +6,19 @@
  * @constructor
  * @param {!WebInspector.FormattedContentBuilder} builder
  */
-WebInspector.IdentityFormatter = function(builder)
-{
-    this._builder = builder;
-}
+WebInspector.IdentityFormatter = function(builder) {
+  this._builder = builder;
+};
 
 WebInspector.IdentityFormatter.prototype = {
-    /**
-     * @param {string} text
-     * @param {!Array<number>} lineEndings
-     * @param {number} fromOffset
-     * @param {number} toOffset
-     */
-    format: function(text, lineEndings, fromOffset, toOffset)
-    {
-        var content = text.substring(fromOffset, toOffset);
-        this._builder.addToken(content, fromOffset);
-    }
-}
-
+  /**
+   * @param {string} text
+   * @param {!Array<number>} lineEndings
+   * @param {number} fromOffset
+   * @param {number} toOffset
+   */
+  format: function(text, lineEndings, fromOffset, toOffset) {
+    var content = text.substring(fromOffset, toOffset);
+    this._builder.addToken(content, fromOffset);
+  }
+};

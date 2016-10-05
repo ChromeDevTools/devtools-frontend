@@ -8,26 +8,26 @@
 // "CodeMirror-selectedtext" when the value is not a string.
 
 (function(mod) {
-  if (typeof exports == "object" && typeof module == "object") // CommonJS
-    mod(require("../../lib/codemirror"));
-  else if (typeof define == "function" && define.amd) // AMD
-    define(["../../lib/codemirror"], mod);
-  else // Plain browser env
+  if (typeof exports == 'object' && typeof module == 'object')  // CommonJS
+    mod(require('../../lib/codemirror'));
+  else if (typeof define == 'function' && define.amd)  // AMD
+    define(['../../lib/codemirror'], mod);
+  else  // Plain browser env
     mod(CodeMirror);
 })(function(CodeMirror) {
-  "use strict";
+  'use strict';
 
-  CodeMirror.defineOption("styleSelectedText", false, function(cm, val, old) {
+  CodeMirror.defineOption('styleSelectedText', false, function(cm, val, old) {
     var prev = old && old != CodeMirror.Init;
     if (val && !prev) {
       cm.state.markedSelection = [];
-      cm.state.markedSelectionStyle = typeof val == "string" ? val : "CodeMirror-selectedtext";
+      cm.state.markedSelectionStyle = typeof val == 'string' ? val : 'CodeMirror-selectedtext';
       reset(cm);
-      cm.on("cursorActivity", onCursorActivity);
-      cm.on("change", onChange);
+      cm.on('cursorActivity', onCursorActivity);
+      cm.on('change', onChange);
     } else if (!val && prev) {
-      cm.off("cursorActivity", onCursorActivity);
-      cm.off("change", onChange);
+      cm.off('cursorActivity', onCursorActivity);
+      cm.off('change', onChange);
       clear(cm);
       cm.state.markedSelection = cm.state.markedSelectionStyle = null;
     }
@@ -47,7 +47,8 @@
   var cmp = CodeMirror.cmpPos;
 
   function coverRange(cm, from, to, addAt) {
-    if (cmp(from, to) == 0) return;
+    if (cmp(from, to) == 0)
+      return;
     var array = cm.state.markedSelection;
     var cls = cm.state.markedSelectionStyle;
     for (var line = from.line;;) {
@@ -55,16 +56,20 @@
       var endLine = line + CHUNK_SIZE, atEnd = endLine >= to.line;
       var end = atEnd ? to : Pos(endLine, 0);
       var mark = cm.markText(start, end, {className: cls});
-      if (addAt == null) array.push(mark);
-      else array.splice(addAt++, 0, mark);
-      if (atEnd) break;
+      if (addAt == null)
+        array.push(mark);
+      else
+        array.splice(addAt++, 0, mark);
+      if (atEnd)
+        break;
       line = endLine;
     }
   }
 
   function clear(cm) {
     var array = cm.state.markedSelection;
-    for (var i = 0; i < array.length; ++i) array[i].clear();
+    for (var i = 0; i < array.length; ++i)
+      array[i].clear();
     array.length = 0;
   }
 
@@ -76,13 +81,16 @@
   }
 
   function update(cm) {
-    if (!cm.somethingSelected()) return clear(cm);
-    if (cm.listSelections().length > 1) return reset(cm);
+    if (!cm.somethingSelected())
+      return clear(cm);
+    if (cm.listSelections().length > 1)
+      return reset(cm);
 
-    var from = cm.getCursor("start"), to = cm.getCursor("end");
+    var from = cm.getCursor('start'), to = cm.getCursor('end');
 
     var array = cm.state.markedSelection;
-    if (!array.length) return coverRange(cm, from, to);
+    if (!array.length)
+      return coverRange(cm, from, to);
 
     var coverStart = array[0].find(), coverEnd = array[array.length - 1].find();
     if (!coverStart || !coverEnd || to.line - from.line < CHUNK_SIZE ||

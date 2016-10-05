@@ -32,7 +32,7 @@
  */
 WebInspector.KeyboardShortcut = function()
 {
-}
+};
 
 /**
  * Constants for encoding modifier key set as a bit mask.
@@ -143,7 +143,7 @@ WebInspector.KeyboardShortcut.makeKey = function(keyCode, modifiers)
         keyCode = keyCode.charCodeAt(0) - (/^[a-z]/.test(keyCode) ? 32 : 0);
     modifiers = modifiers || WebInspector.KeyboardShortcut.Modifiers.None;
     return WebInspector.KeyboardShortcut._makeKeyFromCodeAndModifiers(keyCode, modifiers);
-}
+};
 
 /**
  * @param {?KeyboardEvent} keyboardEvent
@@ -164,7 +164,7 @@ WebInspector.KeyboardShortcut.makeKeyFromEvent = function(keyboardEvent)
     // Use either a real or a synthetic keyCode (for events originating from extensions).
     var keyCode = keyboardEvent.keyCode || keyboardEvent["__keyCode"];
     return WebInspector.KeyboardShortcut._makeKeyFromCodeAndModifiers(keyCode, modifiers);
-}
+};
 
 /**
  * @param {?KeyboardEvent} keyboardEvent
@@ -174,7 +174,7 @@ WebInspector.KeyboardShortcut.makeKeyFromEventIgnoringModifiers = function(keybo
 {
     var keyCode = keyboardEvent.keyCode || keyboardEvent["__keyCode"];
     return WebInspector.KeyboardShortcut._makeKeyFromCodeAndModifiers(keyCode, WebInspector.KeyboardShortcut.Modifiers.None);
-}
+};
 
 /**
  * @param {(?KeyboardEvent|?MouseEvent)} event
@@ -183,7 +183,7 @@ WebInspector.KeyboardShortcut.makeKeyFromEventIgnoringModifiers = function(keybo
 WebInspector.KeyboardShortcut.eventHasCtrlOrMeta = function(event)
 {
     return WebInspector.isMac() ? event.metaKey && !event.ctrlKey : event.ctrlKey && !event.metaKey;
-}
+};
 
 /**
  * @param {!Event} event
@@ -192,7 +192,7 @@ WebInspector.KeyboardShortcut.eventHasCtrlOrMeta = function(event)
 WebInspector.KeyboardShortcut.hasNoModifiers = function(event)
 {
     return !event.ctrlKey && !event.shiftKey && !event.altKey && !event.metaKey;
-}
+};
 
 /** @typedef {!{key: number, name: string}} */
 WebInspector.KeyboardShortcut.Descriptor;
@@ -208,7 +208,7 @@ WebInspector.KeyboardShortcut.makeDescriptor = function(key, modifiers)
         key: WebInspector.KeyboardShortcut.makeKey(typeof key === "string" ? key : key.code, modifiers),
         name: WebInspector.KeyboardShortcut.shortcutToString(key, modifiers)
     };
-}
+};
 
 /**
  * @param {string} shortcut
@@ -236,7 +236,7 @@ WebInspector.KeyboardShortcut.makeDescriptorFromBindingShortcut = function(short
     if (key && key.shiftKey)
         modifiers |= WebInspector.KeyboardShortcut.Modifiers.Shift;
     return WebInspector.KeyboardShortcut.makeDescriptor(key ? key : keyString, modifiers);
-}
+};
 
 /**
  * @param {string|!WebInspector.KeyboardShortcut.Key} key
@@ -246,7 +246,7 @@ WebInspector.KeyboardShortcut.makeDescriptorFromBindingShortcut = function(short
 WebInspector.KeyboardShortcut.shortcutToString = function(key, modifiers)
 {
     return WebInspector.KeyboardShortcut._modifiersToString(modifiers) + WebInspector.KeyboardShortcut._keyName(key);
-}
+};
 
 /**
  * @param {string|!WebInspector.KeyboardShortcut.Key} key
@@ -259,7 +259,7 @@ WebInspector.KeyboardShortcut._keyName = function(key)
     if (typeof key.name === "string")
         return key.name;
     return key.name[WebInspector.platform()] || key.name.other || "";
-}
+};
 
 /**
  * @param {number} keyCode
@@ -278,7 +278,7 @@ WebInspector.KeyboardShortcut._makeKeyFromCodeAndModifiers = function(keyCode, m
 WebInspector.KeyboardShortcut.keyCodeAndModifiersFromKey = function(key)
 {
     return { keyCode: key & 255, modifiers: key >> 8 };
-}
+};
 
 /**
  * @param {number|undefined} modifiers

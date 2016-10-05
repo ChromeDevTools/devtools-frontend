@@ -7,72 +7,65 @@
  * @extends {WebInspector.SDKModel}
  * @param {!WebInspector.Target} target
  */
-WebInspector.SecurityModel = function(target)
-{
-    WebInspector.SDKModel.call(this, WebInspector.SecurityModel, target);
-    this._dispatcher = new WebInspector.SecurityDispatcher(this);
-    this._securityAgent = target.securityAgent();
-    target.registerSecurityDispatcher(this._dispatcher);
-    this._securityAgent.enable();
-}
+WebInspector.SecurityModel = function(target) {
+  WebInspector.SDKModel.call(this, WebInspector.SecurityModel, target);
+  this._dispatcher = new WebInspector.SecurityDispatcher(this);
+  this._securityAgent = target.securityAgent();
+  target.registerSecurityDispatcher(this._dispatcher);
+  this._securityAgent.enable();
+};
 
 /** @enum {symbol} */
 WebInspector.SecurityModel.Events = {
-    SecurityStateChanged: Symbol("SecurityStateChanged")
-}
+  SecurityStateChanged: Symbol('SecurityStateChanged')
+};
 
 WebInspector.SecurityModel.prototype = {
-    __proto__: WebInspector.SDKModel.prototype,
+  __proto__: WebInspector.SDKModel.prototype,
 
-    showCertificateViewer: function()
-    {
-        this._securityAgent.showCertificateViewer();
-    }
-}
+  showCertificateViewer: function() { this._securityAgent.showCertificateViewer(); }
+};
 
 /**
  * @param {!WebInspector.Target} target
  * @return {?WebInspector.SecurityModel}
  */
-WebInspector.SecurityModel.fromTarget = function(target)
-{
-    var model = /** @type {?WebInspector.SecurityModel} */ (target.model(WebInspector.SecurityModel));
-    if (!model)
-        model = new WebInspector.SecurityModel(target);
-    return model;
-}
+WebInspector.SecurityModel.fromTarget = function(target) {
+  var model = /** @type {?WebInspector.SecurityModel} */ (target.model(WebInspector.SecurityModel));
+  if (!model)
+    model = new WebInspector.SecurityModel(target);
+  return model;
+};
 
 /**
  * @param {!SecurityAgent.SecurityState} a
  * @param {!SecurityAgent.SecurityState} b
  * @return {number}
  */
-WebInspector.SecurityModel.SecurityStateComparator = function(a, b)
-{
-    var securityStateMap;
-    if (WebInspector.SecurityModel._symbolicToNumericSecurityState) {
-        securityStateMap = WebInspector.SecurityModel._symbolicToNumericSecurityState;
-    } else {
-        securityStateMap = new Map();
-        var ordering = [
-            SecurityAgent.SecurityState.Info,
-            SecurityAgent.SecurityState.Insecure,
-            SecurityAgent.SecurityState.Neutral,
-            SecurityAgent.SecurityState.Warning,
-            SecurityAgent.SecurityState.Secure,
-            // Unknown is max so that failed/cancelled requests don't overwrite the origin security state for successful requests,
-            // and so that failed/cancelled requests appear at the bottom of the origins list.
-            SecurityAgent.SecurityState.Unknown
-        ];
-        for (var i = 0; i < ordering.length; i++)
-            securityStateMap.set(ordering[i], i + 1);
-        WebInspector.SecurityModel._symbolicToNumericSecurityState = securityStateMap;
-    }
-    var aScore = securityStateMap.get(a) || 0;
-    var bScore = securityStateMap.get(b) || 0;
+WebInspector.SecurityModel.SecurityStateComparator = function(a, b) {
+  var securityStateMap;
+  if (WebInspector.SecurityModel._symbolicToNumericSecurityState) {
+    securityStateMap = WebInspector.SecurityModel._symbolicToNumericSecurityState;
+  } else {
+    securityStateMap = new Map();
+    var ordering = [
+      SecurityAgent.SecurityState.Info, SecurityAgent.SecurityState.Insecure,
+      SecurityAgent.SecurityState.Neutral, SecurityAgent.SecurityState.Warning,
+      SecurityAgent.SecurityState.Secure,
+      // Unknown is max so that failed/cancelled requests don't overwrite the origin security state
+      // for successful requests,
+      // and so that failed/cancelled requests appear at the bottom of the origins list.
+      SecurityAgent.SecurityState.Unknown
+    ];
+    for (var i = 0; i < ordering.length; i++)
+      securityStateMap.set(ordering[i], i + 1);
+    WebInspector.SecurityModel._symbolicToNumericSecurityState = securityStateMap;
+  }
+  var aScore = securityStateMap.get(a) || 0;
+  var bScore = securityStateMap.get(b) || 0;
 
-    return aScore - bScore;
-}
+  return aScore - bScore;
+};
 
 /**
  * @constructor
@@ -81,33 +74,36 @@ WebInspector.SecurityModel.SecurityStateComparator = function(a, b)
  * @param {?SecurityAgent.InsecureContentStatus} insecureContentStatus
  * @param {boolean} schemeIsCryptographic
  */
-WebInspector.PageSecurityState = function(securityState, explanations, insecureContentStatus, schemeIsCryptographic) {
-    this.securityState = securityState;
-    this.explanations = explanations;
-    this.insecureContentStatus = insecureContentStatus;
-    this.schemeIsCryptographic = schemeIsCryptographic;
-}
+WebInspector.PageSecurityState = function(
+    securityState, explanations, insecureContentStatus, schemeIsCryptographic) {
+  this.securityState = securityState;
+  this.explanations = explanations;
+  this.insecureContentStatus = insecureContentStatus;
+  this.schemeIsCryptographic = schemeIsCryptographic;
+};
 
 /**
  * @constructor
  * @implements {SecurityAgent.Dispatcher}
  */
-WebInspector.SecurityDispatcher = function(model)
-{
-    this._model = model;
-}
+WebInspector.SecurityDispatcher = function(model) {
+  this._model = model;
+};
 
 WebInspector.SecurityDispatcher.prototype = {
-    /**
-     * @override
-     * @param {!SecurityAgent.SecurityState} securityState
-     * @param {!Array<!SecurityAgent.SecurityStateExplanation>=} explanations
-     * @param {!SecurityAgent.InsecureContentStatus=} insecureContentStatus
-     * @param {boolean=} schemeIsCryptographic
-     */
-    securityStateChanged: function(securityState, explanations, insecureContentStatus, schemeIsCryptographic)
-    {
-        var pageSecurityState = new WebInspector.PageSecurityState(securityState, explanations || [], insecureContentStatus || null, schemeIsCryptographic || false);
-        this._model.dispatchEventToListeners(WebInspector.SecurityModel.Events.SecurityStateChanged, pageSecurityState);
-    }
-}
+  /**
+   * @override
+   * @param {!SecurityAgent.SecurityState} securityState
+   * @param {!Array<!SecurityAgent.SecurityStateExplanation>=} explanations
+   * @param {!SecurityAgent.InsecureContentStatus=} insecureContentStatus
+   * @param {boolean=} schemeIsCryptographic
+   */
+  securityStateChanged: function(
+      securityState, explanations, insecureContentStatus, schemeIsCryptographic) {
+    var pageSecurityState = new WebInspector.PageSecurityState(
+        securityState, explanations || [], insecureContentStatus || null,
+        schemeIsCryptographic || false);
+    this._model.dispatchEventToListeners(
+        WebInspector.SecurityModel.Events.SecurityStateChanged, pageSecurityState);
+  }
+};

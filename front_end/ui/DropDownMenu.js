@@ -13,7 +13,7 @@ WebInspector.DropDownMenu = function(element)
     this._items = [];
 
     element.addEventListener("mousedown", this._onMouseDown.bind(this));
-}
+};
 
 /** @typedef {{id: string, title: string}} */
 WebInspector.DropDownMenu.Item;
@@ -21,7 +21,7 @@ WebInspector.DropDownMenu.Item;
 /** @enum {symbol} */
 WebInspector.DropDownMenu.Events = {
     ItemSelected: Symbol("ItemSelected")
-}
+};
 
 WebInspector.DropDownMenu.prototype = {
     /**
@@ -69,4 +69,4 @@ WebInspector.DropDownMenu.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};

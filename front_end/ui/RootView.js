@@ -13,7 +13,7 @@ WebInspector.RootView = function()
     this.element.classList.add("root-view");
     this.registerRequiredCSS("ui/rootView.css");
     this.element.setAttribute("spellcheck", false);
-}
+};
 
 WebInspector.RootView.prototype = {
     /**
@@ -41,4 +41,4 @@ WebInspector.RootView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

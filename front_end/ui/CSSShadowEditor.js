@@ -42,12 +42,12 @@ WebInspector.CSSShadowEditor = function()
     this._spreadField = this.contentElement.createChild("div", "shadow-editor-field");
     this._spreadInput = this._createTextInput(this._spreadField, WebInspector.UIString("Spread"));
     this._spreadSlider = this._createSlider(this._spreadField);
-}
+};
 
 /** @enum {symbol} */
 WebInspector.CSSShadowEditor.Events = {
     ShadowChanged: Symbol("ShadowChanged")
-}
+};
 
 /** @type {number} */
 WebInspector.CSSShadowEditor.maxRange = 20;
@@ -165,7 +165,7 @@ WebInspector.CSSShadowEditor.prototype = {
             context.arc(thumbPoint.x, thumbPoint.y, WebInspector.CSSShadowEditor.sliderThumbRadius + 2, 0, 2 * Math.PI);
             context.fill();
         }
-        context.beginPath()
+        context.beginPath();
         context.fillStyle = "#4285F4";
         context.arc(thumbPoint.x, thumbPoint.y, WebInspector.CSSShadowEditor.sliderThumbRadius, 0, 2 * Math.PI);
         context.fill();
@@ -439,4 +439,4 @@ WebInspector.CSSShadowEditor.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

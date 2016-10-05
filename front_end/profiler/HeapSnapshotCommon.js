@@ -29,12 +29,11 @@
  */
 
 WebInspector.HeapSnapshotProgressEvent = {
-    Update: "ProgressUpdate",
-    BrokenSnapshot: "BrokenSnapshot"
+  Update: 'ProgressUpdate',
+  BrokenSnapshot: 'BrokenSnapshot'
 };
 
-WebInspector.HeapSnapshotCommon = {
-}
+WebInspector.HeapSnapshotCommon = {};
 
 WebInspector.HeapSnapshotCommon.baseSystemDistance = 100000000;
 
@@ -43,13 +42,13 @@ WebInspector.HeapSnapshotCommon.baseSystemDistance = 100000000;
  * @param {!Array.<!WebInspector.HeapSnapshotCommon.SerializedAllocationNode>} branchingCallers
  * @constructor
  */
-WebInspector.HeapSnapshotCommon.AllocationNodeCallers = function(nodesWithSingleCaller, branchingCallers)
-{
-    /** @type {!Array.<!WebInspector.HeapSnapshotCommon.SerializedAllocationNode>} */
-    this.nodesWithSingleCaller = nodesWithSingleCaller;
-    /** @type {!Array.<!WebInspector.HeapSnapshotCommon.SerializedAllocationNode>} */
-    this.branchingCallers = branchingCallers;
-}
+WebInspector.HeapSnapshotCommon.AllocationNodeCallers = function(
+    nodesWithSingleCaller, branchingCallers) {
+  /** @type {!Array.<!WebInspector.HeapSnapshotCommon.SerializedAllocationNode>} */
+  this.nodesWithSingleCaller = nodesWithSingleCaller;
+  /** @type {!Array.<!WebInspector.HeapSnapshotCommon.SerializedAllocationNode>} */
+  this.branchingCallers = branchingCallers;
+};
 
 /**
  * @param {number} nodeId
@@ -65,31 +64,32 @@ WebInspector.HeapSnapshotCommon.AllocationNodeCallers = function(nodesWithSingle
  * @param {boolean} hasChildren
  * @constructor
  */
-WebInspector.HeapSnapshotCommon.SerializedAllocationNode = function(nodeId, functionName, scriptName, scriptId, line, column, count, size, liveCount, liveSize, hasChildren)
-{
-    /** @type {number} */
-    this.id = nodeId;
-    /** @type {string} */
-    this.name = functionName;
-    /** @type {string} */
-    this.scriptName = scriptName;
-    /** @type {number} */
-    this.scriptId = scriptId;
-    /** @type {number} */
-    this.line = line;
-    /** @type {number} */
-    this.column = column;
-    /** @type {number} */
-    this.count = count;
-    /** @type {number} */
-    this.size = size;
-    /** @type {number} */
-    this.liveCount = liveCount;
-    /** @type {number} */
-    this.liveSize = liveSize;
-    /** @type {boolean} */
-    this.hasChildren = hasChildren;
-}
+WebInspector.HeapSnapshotCommon.SerializedAllocationNode = function(
+    nodeId, functionName, scriptName, scriptId, line, column, count, size, liveCount, liveSize,
+    hasChildren) {
+  /** @type {number} */
+  this.id = nodeId;
+  /** @type {string} */
+  this.name = functionName;
+  /** @type {string} */
+  this.scriptName = scriptName;
+  /** @type {number} */
+  this.scriptId = scriptId;
+  /** @type {number} */
+  this.line = line;
+  /** @type {number} */
+  this.column = column;
+  /** @type {number} */
+  this.count = count;
+  /** @type {number} */
+  this.size = size;
+  /** @type {number} */
+  this.liveCount = liveCount;
+  /** @type {number} */
+  this.liveSize = liveSize;
+  /** @type {boolean} */
+  this.hasChildren = hasChildren;
+};
 
 /**
  * @param {string} functionName
@@ -99,19 +99,19 @@ WebInspector.HeapSnapshotCommon.SerializedAllocationNode = function(nodeId, func
  * @param {number} column
  * @constructor
  */
-WebInspector.HeapSnapshotCommon.AllocationStackFrame = function(functionName, scriptName, scriptId, line, column)
-{
-    /** @type {string} */
-    this.functionName = functionName;
-    /** @type {string} */
-    this.scriptName = scriptName;
-    /** @type {number} */
-    this.scriptId = scriptId;
-    /** @type {number} */
-    this.line = line;
-    /** @type {number} */
-    this.column = column;
-}
+WebInspector.HeapSnapshotCommon.AllocationStackFrame = function(
+    functionName, scriptName, scriptId, line, column) {
+  /** @type {string} */
+  this.functionName = functionName;
+  /** @type {string} */
+  this.scriptName = scriptName;
+  /** @type {number} */
+  this.scriptId = scriptId;
+  /** @type {number} */
+  this.line = line;
+  /** @type {number} */
+  this.column = column;
+};
 
 /**
  * @constructor
@@ -123,19 +123,19 @@ WebInspector.HeapSnapshotCommon.AllocationStackFrame = function(functionName, sc
  * @param {number} selfSize
  * @param {string} type
  */
-WebInspector.HeapSnapshotCommon.Node = function(id, name, distance, nodeIndex, retainedSize, selfSize, type)
-{
-    this.id = id;
-    this.name = name;
-    this.distance = distance;
-    this.nodeIndex = nodeIndex;
-    this.retainedSize = retainedSize;
-    this.selfSize = selfSize;
-    this.type = type;
+WebInspector.HeapSnapshotCommon.Node = function(
+    id, name, distance, nodeIndex, retainedSize, selfSize, type) {
+  this.id = id;
+  this.name = name;
+  this.distance = distance;
+  this.nodeIndex = nodeIndex;
+  this.retainedSize = retainedSize;
+  this.selfSize = selfSize;
+  this.type = type;
 
-    this.canBeQueried = false;
-    this.detachedDOMTreeNode = false;
-}
+  this.canBeQueried = false;
+  this.detachedDOMTreeNode = false;
+};
 
 /**
  * @constructor
@@ -144,125 +144,119 @@ WebInspector.HeapSnapshotCommon.Node = function(id, name, distance, nodeIndex, r
  * @param {string} type
  * @param {number} edgeIndex
  */
-WebInspector.HeapSnapshotCommon.Edge = function(name, node, type, edgeIndex)
-{
-    this.name = name;
-    this.node = node;
-    this.type = type;
-    this.edgeIndex = edgeIndex;
+WebInspector.HeapSnapshotCommon.Edge = function(name, node, type, edgeIndex) {
+  this.name = name;
+  this.node = node;
+  this.type = type;
+  this.edgeIndex = edgeIndex;
 };
 
 /**
  * @constructor
  */
-WebInspector.HeapSnapshotCommon.Aggregate = function()
-{
-    /** @type {number} */
-    this.count;
-    /** @type {number} */
-    this.distance;
-    /** @type {number} */
-    this.self;
-    /** @type {number} */
-    this.maxRet;
-    /** @type {number} */
-    this.type;
-    /** @type {string} */
-    this.name;
-    /** @type {!Array.<number>} */
-    this.idxs;
-}
+WebInspector.HeapSnapshotCommon.Aggregate = function() {
+  /** @type {number} */
+  this.count;
+  /** @type {number} */
+  this.distance;
+  /** @type {number} */
+  this.self;
+  /** @type {number} */
+  this.maxRet;
+  /** @type {number} */
+  this.type;
+  /** @type {string} */
+  this.name;
+  /** @type {!Array.<number>} */
+  this.idxs;
+};
 
 /**
  * @constructor
  */
 WebInspector.HeapSnapshotCommon.AggregateForDiff = function() {
-    /** @type {!Array.<number>} */
-    this.indexes = [];
-    /** @type {!Array.<string>} */
-    this.ids = [];
-    /** @type {!Array.<number>} */
-    this.selfSizes = [];
-}
+  /** @type {!Array.<number>} */
+  this.indexes = [];
+  /** @type {!Array.<string>} */
+  this.ids = [];
+  /** @type {!Array.<number>} */
+  this.selfSizes = [];
+};
 
 /**
  * @constructor
  */
-WebInspector.HeapSnapshotCommon.Diff = function()
-{
-    /** @type {number} */
-    this.addedCount = 0;
-    /** @type {number} */
-    this.removedCount = 0;
-    /** @type {number} */
-    this.addedSize = 0;
-    /** @type {number} */
-    this.removedSize = 0;
-    /** @type {!Array.<number>} */
-    this.deletedIndexes = [];
-    /** @type {!Array.<number>} */
-    this.addedIndexes = [];
-}
+WebInspector.HeapSnapshotCommon.Diff = function() {
+  /** @type {number} */
+  this.addedCount = 0;
+  /** @type {number} */
+  this.removedCount = 0;
+  /** @type {number} */
+  this.addedSize = 0;
+  /** @type {number} */
+  this.removedSize = 0;
+  /** @type {!Array.<number>} */
+  this.deletedIndexes = [];
+  /** @type {!Array.<number>} */
+  this.addedIndexes = [];
+};
 
 /**
  * @constructor
  */
-WebInspector.HeapSnapshotCommon.DiffForClass = function()
-{
-    /** @type {number} */
-    this.addedCount;
-    /** @type {number} */
-    this.removedCount;
-    /** @type {number} */
-    this.addedSize;
-    /** @type {number} */
-    this.removedSize;
-    /** @type {!Array.<number>} */
-    this.deletedIndexes;
-    /** @type {!Array.<number>} */
-    this.addedIndexes;
+WebInspector.HeapSnapshotCommon.DiffForClass = function() {
+  /** @type {number} */
+  this.addedCount;
+  /** @type {number} */
+  this.removedCount;
+  /** @type {number} */
+  this.addedSize;
+  /** @type {number} */
+  this.removedSize;
+  /** @type {!Array.<number>} */
+  this.deletedIndexes;
+  /** @type {!Array.<number>} */
+  this.addedIndexes;
 
-    /** @type {number} */
-    this.countDelta;
-    /** @type {number} */
-    this.sizeDelta;
-}
-
-/**
- * @constructor
- */
-WebInspector.HeapSnapshotCommon.ComparatorConfig = function()
-{
-    /** @type {string} */
-    this.fieldName1;
-    /** @type {boolean} */
-    this.ascending1;
-    /** @type {string} */
-    this.fieldName2;
-    /** @type {boolean} */
-    this.ascending2;
-}
+  /** @type {number} */
+  this.countDelta;
+  /** @type {number} */
+  this.sizeDelta;
+};
 
 /**
  * @constructor
  */
-WebInspector.HeapSnapshotCommon.WorkerCommand = function()
-{
-    /** @type {number} */
-    this.callId;
-    /** @type {string} */
-    this.disposition;
-    /** @type {number} */
-    this.objectId;
-    /** @type {number} */
-    this.newObjectId;
-    /** @type {string} */
-    this.methodName;
-    /** @type {!Array.<*>} */
-    this.methodArguments;
-    /** @type {string} */
-    this.source;
-}
+WebInspector.HeapSnapshotCommon.ComparatorConfig = function() {
+  /** @type {string} */
+  this.fieldName1;
+  /** @type {boolean} */
+  this.ascending1;
+  /** @type {string} */
+  this.fieldName2;
+  /** @type {boolean} */
+  this.ascending2;
+};
+
+/**
+ * @constructor
+ */
+WebInspector.HeapSnapshotCommon.WorkerCommand = function() {
+  /** @type {number} */
+  this.callId;
+  /** @type {string} */
+  this.disposition;
+  /** @type {number} */
+  this.objectId;
+  /** @type {number} */
+  this.newObjectId;
+  /** @type {string} */
+  this.methodName;
+  /** @type {!Array.<*>} */
+  this.methodArguments;
+  /** @type {string} */
+  this.source;
+};
 
 /**
  * @constructor
@@ -271,17 +265,17 @@ WebInspector.HeapSnapshotCommon.WorkerCommand = function()
  * @param {number} totalLength
  * @param {!Array.<*>} items
  */
-WebInspector.HeapSnapshotCommon.ItemsRange = function(startPosition, endPosition, totalLength, items)
-{
-    /** @type {number} */
-    this.startPosition = startPosition;
-    /** @type {number} */
-    this.endPosition = endPosition;
-    /** @type {number} */
-    this.totalLength = totalLength;
-    /** @type {!Array.<*>} */
-    this.items = items;
-}
+WebInspector.HeapSnapshotCommon.ItemsRange = function(
+    startPosition, endPosition, totalLength, items) {
+  /** @type {number} */
+  this.startPosition = startPosition;
+  /** @type {number} */
+  this.endPosition = endPosition;
+  /** @type {number} */
+  this.totalLength = totalLength;
+  /** @type {!Array.<*>} */
+  this.items = items;
+};
 
 /**
  * @param {number} nodeCount
@@ -290,38 +284,37 @@ WebInspector.HeapSnapshotCommon.ItemsRange = function(startPosition, endPosition
  * @param {number} maxJSObjectId
  * @constructor
  */
-WebInspector.HeapSnapshotCommon.StaticData = function(nodeCount, rootNodeIndex, totalSize, maxJSObjectId)
-{
-    /** @type {number} */
-    this.nodeCount = nodeCount;
-    /** @type {number} */
-    this.rootNodeIndex = rootNodeIndex;
-    /** @type {number} */
-    this.totalSize = totalSize;
-    /** @type {number} */
-    this.maxJSObjectId = maxJSObjectId;
-}
+WebInspector.HeapSnapshotCommon.StaticData = function(
+    nodeCount, rootNodeIndex, totalSize, maxJSObjectId) {
+  /** @type {number} */
+  this.nodeCount = nodeCount;
+  /** @type {number} */
+  this.rootNodeIndex = rootNodeIndex;
+  /** @type {number} */
+  this.totalSize = totalSize;
+  /** @type {number} */
+  this.maxJSObjectId = maxJSObjectId;
+};
 
 /**
  * @constructor
  */
-WebInspector.HeapSnapshotCommon.Statistics = function()
-{
-    /** @type {number} */
-    this.total;
-    /** @type {number} */
-    this.v8heap;
-    /** @type {number} */
-    this.native;
-    /** @type {number} */
-    this.code;
-    /** @type {number} */
-    this.jsArrays;
-    /** @type {number} */
-    this.strings;
-    /** @type {number} */
-    this.system;
-}
+WebInspector.HeapSnapshotCommon.Statistics = function() {
+  /** @type {number} */
+  this.total;
+  /** @type {number} */
+  this.v8heap;
+  /** @type {number} */
+  this.native;
+  /** @type {number} */
+  this.code;
+  /** @type {number} */
+  this.jsArrays;
+  /** @type {number} */
+  this.strings;
+  /** @type {number} */
+  this.system;
+};
 
 
 /**
@@ -329,27 +322,25 @@ WebInspector.HeapSnapshotCommon.Statistics = function()
  * @param {number=} maxNodeId
  * @constructor
  */
-WebInspector.HeapSnapshotCommon.NodeFilter = function(minNodeId, maxNodeId)
-{
-    /** @type {number|undefined} */
-    this.minNodeId = minNodeId;
-    /** @type {number|undefined} */
-    this.maxNodeId = maxNodeId;
-    /** @type {number|undefined} */
-    this.allocationNodeId;
-}
+WebInspector.HeapSnapshotCommon.NodeFilter = function(minNodeId, maxNodeId) {
+  /** @type {number|undefined} */
+  this.minNodeId = minNodeId;
+  /** @type {number|undefined} */
+  this.maxNodeId = maxNodeId;
+  /** @type {number|undefined} */
+  this.allocationNodeId;
+};
 
-WebInspector.HeapSnapshotCommon.NodeFilter.prototype =
-{
-    /**
+WebInspector.HeapSnapshotCommon.NodeFilter.prototype = {
+  /**
      * @param {!WebInspector.HeapSnapshotCommon.NodeFilter} o
      * @return {boolean}
      */
-    equals: function(o)
-    {
-        return this.minNodeId === o.minNodeId && this.maxNodeId === o.maxNodeId && this.allocationNodeId === o.allocationNodeId;
-    }
-}
+  equals: function(o) {
+    return this.minNodeId === o.minNodeId && this.maxNodeId === o.maxNodeId &&
+        this.allocationNodeId === o.allocationNodeId;
+  }
+};
 
 /**
  * @param {string} query
@@ -359,14 +350,14 @@ WebInspector.HeapSnapshotCommon.NodeFilter.prototype =
  * @param {boolean} jumpBackward
  * @constructor
  */
-WebInspector.HeapSnapshotCommon.SearchConfig = function(query, caseSensitive, isRegex, shouldJump, jumpBackward)
-{
-    this.query = query;
-    this.caseSensitive = caseSensitive;
-    this.isRegex = isRegex;
-    this.shouldJump = shouldJump;
-    this.jumpBackward = jumpBackward;
-}
+WebInspector.HeapSnapshotCommon.SearchConfig = function(
+    query, caseSensitive, isRegex, shouldJump, jumpBackward) {
+  this.query = query;
+  this.caseSensitive = caseSensitive;
+  this.isRegex = isRegex;
+  this.shouldJump = shouldJump;
+  this.jumpBackward = jumpBackward;
+};
 
 /**
  * @constructor
@@ -374,9 +365,8 @@ WebInspector.HeapSnapshotCommon.SearchConfig = function(query, caseSensitive, is
  * @param {!Array.<number>} lastAssignedIds
  * @param {!Array.<number>} sizes
  */
-WebInspector.HeapSnapshotCommon.Samples = function(timestamps, lastAssignedIds, sizes)
-{
-    this.timestamps = timestamps;
-    this.lastAssignedIds = lastAssignedIds;
-    this.sizes = sizes;
-}
+WebInspector.HeapSnapshotCommon.Samples = function(timestamps, lastAssignedIds, sizes) {
+  this.timestamps = timestamps;
+  this.lastAssignedIds = lastAssignedIds;
+  this.sizes = sizes;
+};

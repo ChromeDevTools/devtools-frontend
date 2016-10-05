@@ -41,12 +41,12 @@ WebInspector.BezierEditor = function()
     minus.addEventListener("click", this._presetModifyClicked.bind(this, false));
     plus.addEventListener("click", this._presetModifyClicked.bind(this, true));
     this._label = this._header.createChild("span", "source-code bezier-display-value");
-}
+};
 
 /** @enum {symbol} */
 WebInspector.BezierEditor.Events = {
     BezierChanged: Symbol("BezierChanged")
-}
+};
 
 WebInspector.BezierEditor.Presets = [
     [
@@ -73,7 +73,7 @@ WebInspector.BezierEditor.Presets = [
         { name: "Linear Out, Slow In", value: "cubic-bezier(0, 0, 0.2, 1)" },
         { name: "Out · Back", value: "cubic-bezier(0.18, 0.89, 0.32, 1.28)" }
     ]
-]
+];
 
 /** @typedef {{presets: !Array.<{name: string, value: string}>, icon: !Element, presetIndex: number}} */
 WebInspector.BezierEditor.PresetCategory;
@@ -279,4 +279,4 @@ WebInspector.BezierEditor.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

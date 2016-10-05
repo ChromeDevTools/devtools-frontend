@@ -38,105 +38,88 @@ var tempStorageError;
 /**
  * @param {!MessagePort} newPort
  */
-function onNewPort(newPort)
-{
-    if (isTempStorageCleared) {
-        notifyTempStorageCleared(newPort);
-        return;
-    }
+function onNewPort(newPort) {
+  if (isTempStorageCleared) {
+    notifyTempStorageCleared(newPort);
+    return;
+  }
 
-    newPort.onmessage = handleMessage;
-    newPort.onerror = handleError;
-    ports.push(newPort);
+  newPort.onmessage = handleMessage;
+  newPort.onerror = handleError;
+  ports.push(newPort);
 
-    if (ports.length === 1)
-        clearTempStorage();
+  if (ports.length === 1)
+    clearTempStorage();
 }
 
-function clearTempStorage()
-{
-    function didFail(e)
-    {
-        tempStorageError = "Failed to clear temp storage: " + e.message + " " + e.name;
-        console.error(tempStorageError);
+function clearTempStorage() {
+  function didFail(e) {
+    tempStorageError = 'Failed to clear temp storage: ' + e.message + ' ' + e.name;
+    console.error(tempStorageError);
+    didClearTempStorage();
+  }
+  /**
+   * @param {!FileSystem} fs
+   */
+  function didGetFS(fs) { fs.root.createReader().readEntries(didReadEntries, didFail); }
+  /**
+   * @param {!Array.<!Entry>} entries
+   */
+  function didReadEntries(entries) {
+    var remainingEntries = entries.length;
+    if (!remainingEntries) {
+      didClearTempStorage();
+      return;
+    }
+    function didDeleteEntry() {
+      if (!--remainingEntries)
         didClearTempStorage();
     }
-    /**
-     * @param {!FileSystem} fs
-     */
-    function didGetFS(fs)
-    {
-        fs.root.createReader().readEntries(didReadEntries, didFail);
+    function failedToDeleteEntry(e) {
+      tempStorageError = 'Failed to delete entry: ' + e.message + ' ' + e.name;
+      console.error(tempStorageError);
+      didDeleteEntry();
     }
-    /**
-     * @param {!Array.<!Entry>} entries
-     */
-    function didReadEntries(entries)
-    {
-        var remainingEntries = entries.length;
-        if (!remainingEntries) {
-            didClearTempStorage();
-            return;
-        }
-        function didDeleteEntry()
-        {
-            if (!--remainingEntries)
-                didClearTempStorage();
-        }
-        function failedToDeleteEntry(e)
-        {
-            tempStorageError = "Failed to delete entry: " + e.message + " " + e.name;
-            console.error(tempStorageError);
-            didDeleteEntry();
-        }
-        for (var i = 0; i < entries.length; i++) {
-            var entry = entries[i];
-            if (entry.isFile)
-                entry.remove(didDeleteEntry, failedToDeleteEntry);
-            else
-                entry.removeRecursively(didDeleteEntry, failedToDeleteEntry);
-        }
+    for (var i = 0; i < entries.length; i++) {
+      var entry = entries[i];
+      if (entry.isFile)
+        entry.remove(didDeleteEntry, failedToDeleteEntry);
+      else
+        entry.removeRecursively(didDeleteEntry, failedToDeleteEntry);
     }
-    self.webkitRequestFileSystem(self.TEMPORARY, 10, didGetFS, didFail);
+  }
+  self.webkitRequestFileSystem(self.TEMPORARY, 10, didGetFS, didFail);
 }
 
-function didClearTempStorage()
-{
-    isTempStorageCleared = true;
-    for (var i = 0; i < ports.length; i++)
-        notifyTempStorageCleared(ports[i]);
-    ports = null;
+function didClearTempStorage() {
+  isTempStorageCleared = true;
+  for (var i = 0; i < ports.length; i++)
+    notifyTempStorageCleared(ports[i]);
+  ports = null;
 }
 
 /**
  * @param {!MessagePort} port
  */
-function notifyTempStorageCleared(port)
-{
-    port.postMessage({
-        type: "tempStorageCleared",
-        error: tempStorageError
-    });
+function notifyTempStorageCleared(port) {
+  port.postMessage({type: 'tempStorageCleared', error: tempStorageError});
 }
 
-function handleMessage(event)
-{
-    if (event.data.type === "disconnect")
-        removePort(event.target);
-}
-
-function handleError(event)
-{
-    console.error("Error: " + event.data);
+function handleMessage(event) {
+  if (event.data.type === 'disconnect')
     removePort(event.target);
 }
 
-function removePort(port)
-{
-    if (!ports)
-        return;
-    var index = ports.indexOf(port);
-    ports.splice(index, 1);
+function handleError(event) {
+  console.error('Error: ' + event.data);
+  removePort(event.target);
+}
+
+function removePort(port) {
+  if (!ports)
+    return;
+  var index = ports.indexOf(port);
+  ports.splice(index, 1);
 }
 
 Runtime.setSharedWorkerNewPortCallback(onNewPort);

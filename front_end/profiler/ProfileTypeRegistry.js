@@ -5,36 +5,29 @@
 /**
  * @constructor
  */
-WebInspector.ProfileTypeRegistry = function()
-{
-    this._profileTypes = [];
+WebInspector.ProfileTypeRegistry = function() {
+  this._profileTypes = [];
 
-    this.cpuProfileType = new WebInspector.CPUProfileType();
-    this._addProfileType(this.cpuProfileType);
-    this.heapSnapshotProfileType = new WebInspector.HeapSnapshotProfileType();
-    this._addProfileType(this.heapSnapshotProfileType);
-    this.trackingHeapSnapshotProfileType = new WebInspector.TrackingHeapSnapshotProfileType();
-    this._addProfileType(this.trackingHeapSnapshotProfileType);
-    this.samplingHeapProfileType = new WebInspector.SamplingHeapProfileType();
-    this._addProfileType(this.samplingHeapProfileType);
-}
+  this.cpuProfileType = new WebInspector.CPUProfileType();
+  this._addProfileType(this.cpuProfileType);
+  this.heapSnapshotProfileType = new WebInspector.HeapSnapshotProfileType();
+  this._addProfileType(this.heapSnapshotProfileType);
+  this.trackingHeapSnapshotProfileType = new WebInspector.TrackingHeapSnapshotProfileType();
+  this._addProfileType(this.trackingHeapSnapshotProfileType);
+  this.samplingHeapProfileType = new WebInspector.SamplingHeapProfileType();
+  this._addProfileType(this.samplingHeapProfileType);
+};
 
 WebInspector.ProfileTypeRegistry.prototype = {
-    /**
-     * @param {!WebInspector.ProfileType} profileType
-     */
-    _addProfileType: function(profileType)
-    {
-        this._profileTypes.push(profileType);
-    },
+  /**
+   * @param {!WebInspector.ProfileType} profileType
+   */
+  _addProfileType: function(profileType) { this._profileTypes.push(profileType); },
 
-    /**
+  /**
      * @return {!Array.<!WebInspector.ProfileType>}
      */
-    profileTypes: function()
-    {
-        return this._profileTypes;
-    }
-}
+  profileTypes: function() { return this._profileTypes; }
+};
 
 WebInspector.ProfileTypeRegistry.instance = new WebInspector.ProfileTypeRegistry();

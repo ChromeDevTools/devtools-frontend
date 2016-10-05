@@ -15,7 +15,7 @@ WebInspector.ShortcutRegistry = function(actionRegistry, document)
     /** @type {!Multimap.<string, !WebInspector.KeyboardShortcut.Descriptor>} */
     this._defaultActionToShortcut = new Multimap();
     this._registerBindings(document);
-}
+};
 
 WebInspector.ShortcutRegistry.prototype = {
     /**
@@ -208,14 +208,14 @@ WebInspector.ShortcutRegistry.prototype = {
             return isMatch;
         }
     }
-}
+};
 
 /**
  * @constructor
  */
 WebInspector.ShortcutRegistry.ForwardedShortcut = function()
 {
-}
+};
 
 WebInspector.ShortcutRegistry.ForwardedShortcut.instance = new WebInspector.ShortcutRegistry.ForwardedShortcut();
 

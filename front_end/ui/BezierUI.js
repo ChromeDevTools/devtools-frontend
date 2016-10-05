@@ -17,7 +17,7 @@ WebInspector.BezierUI = function(width, height, marginTop, controlPointRadius, l
     this.marginTop = marginTop;
     this.radius = controlPointRadius;
     this.linearLine = linearLine;
-}
+};
 
 WebInspector.BezierUI.prototype = {
     /**
@@ -98,7 +98,7 @@ WebInspector.BezierUI.prototype = {
         this._drawControlPoints(group, 0, height, bezier.controlPoints[0].x * width, (1 - bezier.controlPoints[0].y) * height);
         this._drawControlPoints(group, width, 0, bezier.controlPoints[1].x * width, (1 - bezier.controlPoints[1].y) * height);
     }
-}
+};
 
 WebInspector.BezierUI.Height = 26;
 
@@ -124,4 +124,4 @@ WebInspector.BezierUI.drawVelocityChart = function(bezier, path, width)
     }
     pathBuilder = pathBuilder.concat(["L", width.toFixed(2), height, "Z"]);
     path.setAttribute("d", pathBuilder.join(" "));
-}
+};

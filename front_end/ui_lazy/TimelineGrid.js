@@ -46,7 +46,7 @@ WebInspector.TimelineGrid = function()
 
     this._leftCurtainElement = this.element.createChild("div", "timeline-curtain-left");
     this._rightCurtainElement = this.element.createChild("div", "timeline-curtain-right");
-}
+};
 
 /**
  * @param {!WebInspector.TimelineGrid.Calculator} calculator
@@ -94,7 +94,7 @@ WebInspector.TimelineGrid.calculateDividerOffsets = function(calculator, freeZon
     }
 
     return {offsets: offsets, precision: Math.max(0, -Math.floor(Math.log(gridSliceTime * 1.01) / Math.LN10))};
-}
+};
 
 /**
  * @param {!Object} canvas
@@ -150,7 +150,7 @@ WebInspector.TimelineGrid.drawCanvasGrid = function(canvas, calculator, dividerO
         lastPosition = position;
     }
     context.restore();
-}
+};
 
 WebInspector.TimelineGrid.prototype = {
     get dividersElement()
@@ -299,12 +299,12 @@ WebInspector.TimelineGrid.prototype = {
         this._leftCurtainElement.style.top = scrollTop + "px";
         this._rightCurtainElement.style.top = scrollTop + "px";
     }
-}
+};
 
 /**
  * @interface
  */
-WebInspector.TimelineGrid.Calculator = function() { }
+WebInspector.TimelineGrid.Calculator = function() { };
 
 WebInspector.TimelineGrid.Calculator.prototype = {
     /**
@@ -336,4 +336,4 @@ WebInspector.TimelineGrid.Calculator.prototype = {
 
     /** @return {number} */
     boundarySpan: function() { }
-}
+};

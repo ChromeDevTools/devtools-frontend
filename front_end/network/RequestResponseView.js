@@ -33,57 +33,54 @@
  * @extends {WebInspector.RequestContentView}
  * @param {!WebInspector.NetworkRequest} request
  */
-WebInspector.RequestResponseView = function(request)
-{
-    WebInspector.RequestContentView.call(this, request);
-}
+WebInspector.RequestResponseView = function(request) {
+  WebInspector.RequestContentView.call(this, request);
+};
 
 WebInspector.RequestResponseView.prototype = {
-    get sourceView()
-    {
-        if (this._sourceView || !WebInspector.RequestView.hasTextContent(this.request))
-            return this._sourceView;
+  get sourceView() {
+    if (this._sourceView || !WebInspector.RequestView.hasTextContent(this.request))
+      return this._sourceView;
 
-        var contentProvider = new WebInspector.RequestResponseView.ContentProvider(this.request);
-        var highlighterType = this.request.resourceType().canonicalMimeType() || this.request.mimeType;
-        this._sourceView = WebInspector.ResourceSourceFrame.createSearchableView(contentProvider, highlighterType);
-        return this._sourceView;
-    },
+    var contentProvider = new WebInspector.RequestResponseView.ContentProvider(this.request);
+    var highlighterType = this.request.resourceType().canonicalMimeType() || this.request.mimeType;
+    this._sourceView =
+        WebInspector.ResourceSourceFrame.createSearchableView(contentProvider, highlighterType);
+    return this._sourceView;
+  },
 
-    /**
+  /**
      * @param {string} message
      * @return {!WebInspector.EmptyWidget}
      */
-    _createMessageView: function(message)
-    {
-        return new WebInspector.EmptyWidget(message);
-    },
+  _createMessageView: function(message) { return new WebInspector.EmptyWidget(message); },
 
-    contentLoaded: function()
-    {
-        if ((!this.request.content || !this.sourceView) && !this.request.contentError()) {
-            if (!this._emptyWidget) {
-                this._emptyWidget = this._createMessageView(WebInspector.UIString("This request has no response data available."));
-                this._emptyWidget.show(this.element);
-            }
-        } else {
-            if (this._emptyWidget) {
-                this._emptyWidget.detach();
-                delete this._emptyWidget;
-            }
+  contentLoaded: function() {
+    if ((!this.request.content || !this.sourceView) && !this.request.contentError()) {
+      if (!this._emptyWidget) {
+        this._emptyWidget = this._createMessageView(
+            WebInspector.UIString('This request has no response data available.'));
+        this._emptyWidget.show(this.element);
+      }
+    } else {
+      if (this._emptyWidget) {
+        this._emptyWidget.detach();
+        delete this._emptyWidget;
+      }
 
-            if (this.request.content && this.sourceView) {
-                this.sourceView.show(this.element);
-            } else {
-                if (!this._errorView)
-                    this._errorView = this._createMessageView(WebInspector.UIString("Failed to load response data"));
-                this._errorView.show(this.element);
-            }
-        }
-    },
+      if (this.request.content && this.sourceView) {
+        this.sourceView.show(this.element);
+      } else {
+        if (!this._errorView)
+          this._errorView =
+              this._createMessageView(WebInspector.UIString('Failed to load response data'));
+        this._errorView.show(this.element);
+      }
+    }
+  },
 
-    __proto__: WebInspector.RequestContentView.prototype
-}
+  __proto__: WebInspector.RequestContentView.prototype
+};
 
 /**
  * @constructor
@@ -91,56 +88,46 @@ WebInspector.RequestResponseView.prototype = {
  * @param {!WebInspector.NetworkRequest} request
  */
 WebInspector.RequestResponseView.ContentProvider = function(request) {
-    this._request = request;
-}
+  this._request = request;
+};
 
 WebInspector.RequestResponseView.ContentProvider.prototype = {
-    /**
+  /**
      * @override
      * @return {string}
      */
-    contentURL: function()
-    {
-        return this._request.contentURL();
-    },
+  contentURL: function() { return this._request.contentURL(); },
 
-    /**
+  /**
      * @override
      * @return {!WebInspector.ResourceType}
      */
-    contentType: function()
-    {
-        return this._request.resourceType();
-    },
+  contentType: function() { return this._request.resourceType(); },
 
-    /**
+  /**
      * @override
      * @return {!Promise<?string>}
      */
-    requestContent: function()
-    {
-        /**
-         * @param {?string} content
-         * @this {WebInspector.RequestResponseView.ContentProvider}
-         */
-        function decodeContent(content)
-        {
-            return this._request.contentEncoded ? window.atob(content || "") : content;
-        }
-
-        return this._request.requestContent()
-            .then(decodeContent.bind(this));
-    },
-
+  requestContent: function() {
     /**
-     * @override
-     * @param {string} query
-     * @param {boolean} caseSensitive
-     * @param {boolean} isRegex
-     * @param {function(!Array.<!WebInspector.ContentProvider.SearchMatch>)} callback
+     * @param {?string} content
+     * @this {WebInspector.RequestResponseView.ContentProvider}
      */
-    searchInContent: function(query, caseSensitive, isRegex, callback)
-    {
-        this._request.searchInContent(query, caseSensitive, isRegex, callback);
+    function decodeContent(content) {
+      return this._request.contentEncoded ? window.atob(content || '') : content;
     }
-}
+
+    return this._request.requestContent().then(decodeContent.bind(this));
+  },
+
+  /**
+   * @override
+   * @param {string} query
+   * @param {boolean} caseSensitive
+   * @param {boolean} isRegex
+   * @param {function(!Array.<!WebInspector.ContentProvider.SearchMatch>)} callback
+   */
+  searchInContent: function(query, caseSensitive, isRegex, callback) {
+    this._request.searchInContent(query, caseSensitive, isRegex, callback);
+  }
+};

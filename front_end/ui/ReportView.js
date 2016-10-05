@@ -17,7 +17,7 @@ WebInspector.ReportView = function(title)
     this._headerElement.createChild("div", "report-title").textContent = title;
 
     this._sectionList = contentBox.createChild("div", "vbox");
-}
+};
 
 WebInspector.ReportView.prototype = {
     /**
@@ -76,7 +76,7 @@ WebInspector.ReportView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @constructor
@@ -96,7 +96,7 @@ WebInspector.ReportView.Section = function(title, className)
     this._fieldList = this.element.createChild("div", "vbox");
     /** @type {!Map.<string, !Element>} */
     this._fieldMap = new Map();
-}
+};
 
 WebInspector.ReportView.Section.prototype = {
     /**
@@ -189,4 +189,4 @@ WebInspector.ReportView.Section.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

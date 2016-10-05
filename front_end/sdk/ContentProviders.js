@@ -34,82 +34,74 @@
  * @param {string} sourceURL
  * @param {!WebInspector.ResourceType} contentType
  */
-WebInspector.CompilerSourceMappingContentProvider = function(sourceURL, contentType)
-{
-    this._sourceURL = sourceURL;
-    this._contentType = contentType;
-}
+WebInspector.CompilerSourceMappingContentProvider = function(sourceURL, contentType) {
+  this._sourceURL = sourceURL;
+  this._contentType = contentType;
+};
 
 WebInspector.CompilerSourceMappingContentProvider.prototype = {
-    /**
+  /**
      * @override
      * @return {string}
      */
-    contentURL: function()
-    {
-        return this._sourceURL;
-    },
+  contentURL: function() { return this._sourceURL; },
 
-    /**
+  /**
      * @override
      * @return {!WebInspector.ResourceType}
      */
-    contentType: function()
-    {
-        return this._contentType;
-    },
+  contentType: function() { return this._contentType; },
 
-    /**
+  /**
      * @override
      * @return {!Promise<?string>}
      */
-    requestContent: function()
-    {
-        var callback;
-        var promise = new Promise(fulfill => callback = fulfill);
-        WebInspector.multitargetNetworkManager.loadResource(this._sourceURL, contentLoaded.bind(this));
-        return promise;
-
-        /**
-         * @param {number} statusCode
-         * @param {!Object.<string, string>} headers
-         * @param {string} content
-         * @this {WebInspector.CompilerSourceMappingContentProvider}
-         */
-        function contentLoaded(statusCode, headers, content)
-        {
-            if (statusCode >= 400) {
-                console.error("Could not load content for " + this._sourceURL + " : " + "HTTP status code: " + statusCode);
-                callback(null);
-                return;
-            }
-
-            callback(content);
-        }
-    },
+  requestContent: function() {
+    var callback;
+    var promise = new Promise(fulfill => callback = fulfill);
+    WebInspector.multitargetNetworkManager.loadResource(this._sourceURL, contentLoaded.bind(this));
+    return promise;
 
     /**
-     * @override
-     * @param {string} query
-     * @param {boolean} caseSensitive
-     * @param {boolean} isRegex
-     * @param {function(!Array.<!WebInspector.ContentProvider.SearchMatch>)} callback
+     * @param {number} statusCode
+     * @param {!Object.<string, string>} headers
+     * @param {string} content
+     * @this {WebInspector.CompilerSourceMappingContentProvider}
      */
-    searchInContent: function(query, caseSensitive, isRegex, callback)
-    {
-        this.requestContent().then(contentLoaded);
+    function contentLoaded(statusCode, headers, content) {
+      if (statusCode >= 400) {
+        console.error(
+            'Could not load content for ' + this._sourceURL + ' : ' +
+            'HTTP status code: ' + statusCode);
+        callback(null);
+        return;
+      }
 
-        /**
-         * @param {?string} content
-         */
-        function contentLoaded(content)
-        {
-            if (typeof content !== "string") {
-                callback([]);
-                return;
-            }
-
-            callback(WebInspector.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex));
-        }
+      callback(content);
     }
-}
+  },
+
+  /**
+   * @override
+   * @param {string} query
+   * @param {boolean} caseSensitive
+   * @param {boolean} isRegex
+   * @param {function(!Array.<!WebInspector.ContentProvider.SearchMatch>)} callback
+   */
+  searchInContent: function(query, caseSensitive, isRegex, callback) {
+    this.requestContent().then(contentLoaded);
+
+    /**
+     * @param {?string} content
+     */
+    function contentLoaded(content) {
+      if (typeof content !== 'string') {
+        callback([]);
+        return;
+      }
+
+      callback(WebInspector.ContentProvider.performSearchInContent(
+          content, query, caseSensitive, isRegex));
+    }
+  }
+};

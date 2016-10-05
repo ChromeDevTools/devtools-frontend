@@ -31,7 +31,7 @@
 /**
  * @interface
  */
-WebInspector.FlameChartDelegate = function() { }
+WebInspector.FlameChartDelegate = function() { };
 
 WebInspector.FlameChartDelegate.prototype = {
     /**
@@ -45,7 +45,7 @@ WebInspector.FlameChartDelegate.prototype = {
      * @param {number} endTime
      */
     updateRangeSelection: function(startTime, endTime) { },
-}
+};
 
 /**
  * @constructor
@@ -119,7 +119,7 @@ WebInspector.FlameChart = function(dataProvider, flameChartDelegate, groupExpans
     this._textWidth = new Map();
 
     this._lastMouseOffsetX = 0;
-}
+};
 
 WebInspector.FlameChart.DividersBarHeight = 18;
 
@@ -130,7 +130,7 @@ WebInspector.FlameChart.MinimalTimeWindowMs = 0.5;
  */
 WebInspector.FlameChartDataProvider = function()
 {
-}
+};
 
 /**
  * @typedef {!{name: string, startLevel: number, expanded: (boolean|undefined), style: !WebInspector.FlameChart.GroupStyle}}
@@ -171,7 +171,7 @@ WebInspector.FlameChart.TimelineData = function(entryLevels, entryTotalTimes, en
     this.flowStartLevels = [];
     this.flowEndTimes = [];
     this.flowEndLevels = [];
-}
+};
 
 WebInspector.FlameChartDataProvider.prototype = {
     /**
@@ -288,14 +288,14 @@ WebInspector.FlameChartDataProvider.prototype = {
      * @return {number}
      */
     paddingLeft: function() { },
-}
+};
 
 /**
  * @interface
  */
 WebInspector.FlameChartMarker = function()
 {
-}
+};
 
 WebInspector.FlameChartMarker.prototype = {
     /**
@@ -320,12 +320,12 @@ WebInspector.FlameChartMarker.prototype = {
      * @param {number} pixelsPerMillisecond
      */
     draw: function(context, x, height, pixelsPerMillisecond) { },
-}
+};
 
 /** @enum {symbol} */
 WebInspector.FlameChart.Events = {
     EntrySelected: Symbol("EntrySelected")
-}
+};
 
 
 /**
@@ -343,7 +343,7 @@ WebInspector.FlameChart.ColorGenerator = function(hueSpace, satSpace, lightnessS
     this._alphaSpace = alphaSpace || 1;
     /** @type {!Map<string, string>} */
     this._colors = new Map();
-}
+};
 
 WebInspector.FlameChart.ColorGenerator.prototype = {
     /**
@@ -396,7 +396,7 @@ WebInspector.FlameChart.ColorGenerator.prototype = {
         index %= count;
         return space.min + Math.floor(index / (count - 1) * (space.max - space.min));
     }
-}
+};
 
 
 /**
@@ -408,7 +408,7 @@ WebInspector.FlameChart.Calculator = function(dataProvider)
 {
     this._dataProvider = dataProvider;
     this._paddingLeft = 0;
-}
+};
 
 WebInspector.FlameChart.Calculator.prototype = {
     /**
@@ -490,7 +490,7 @@ WebInspector.FlameChart.Calculator.prototype = {
     {
         return this._maximumBoundaries - this._minimumBoundaries;
     }
-}
+};
 
 WebInspector.FlameChart.prototype = {
     /**
@@ -1402,7 +1402,7 @@ WebInspector.FlameChart.prototype = {
             context.fillRect(0, offset - paddingHeight + 2, width, paddingHeight - 4);
         });
         if (groups.length && lastGroupOffset < top + height)
-            context.fillRect(0, lastGroupOffset + 2, width, top + height - lastGroupOffset)
+            context.fillRect(0, lastGroupOffset + 2, width, top + height - lastGroupOffset);
 
         context.strokeStyle = WebInspector.themeSupport.patchColor("#bbb", colorUsage.Background);
         context.beginPath();
@@ -1448,7 +1448,7 @@ WebInspector.FlameChart.prototype = {
         context.beginPath();
         forEachGroup.call(this, (offset, index, group) => {
             if (this._isGroupCollapsible(index))
-                drawExpansionArrow.call(this, this._expansionArrowIndent * (group.style.nestingLevel + 1), offset + textBaseHeight - this._arrowSide / 2, !!group.expanded)
+                drawExpansionArrow.call(this, this._expansionArrowIndent * (group.style.nestingLevel + 1), offset + textBaseHeight - this._arrowSide / 2, !!group.expanded);
         });
         context.fill();
 
@@ -2018,4 +2018,4 @@ WebInspector.FlameChart.prototype = {
     },
 
     __proto__: WebInspector.HBox.prototype
-}
+};

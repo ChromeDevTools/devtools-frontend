@@ -6,19 +6,16 @@
  * @constructor
  * @implements {WebInspector.CodeMirrorMimeMode}
  */
-WebInspector.DefaultCodeMirrorMimeMode = function()
-{
-}
+WebInspector.DefaultCodeMirrorMimeMode = function() {}
 
-WebInspector.DefaultCodeMirrorMimeMode.prototype = {
-    /**
-     * @param {!Runtime.Extension} extension
-     * @override
-     */
-    install: function(extension)
-    {
-        var modeFileName = extension.descriptor()["fileName"];
-        var modeContent = extension.module().resource(modeFileName);
-        self.eval(modeContent + "\n//# sourceURL=" + modeFileName);
-    }
+                                         WebInspector.DefaultCodeMirrorMimeMode.prototype = {
+  /**
+   * @param {!Runtime.Extension} extension
+   * @override
+   */
+  install: function(extension) {
+    var modeFileName = extension.descriptor()['fileName'];
+    var modeContent = extension.module().resource(modeFileName);
+    self.eval(modeContent + '\n//# sourceURL=' + modeFileName);
+  }
 }

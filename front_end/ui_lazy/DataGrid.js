@@ -125,7 +125,7 @@ WebInspector.DataGrid = function(columnsArray, editCallback, deleteCallback, ref
     this._cornerWidth = WebInspector.DataGrid.CornerWidth;
     /** @type {!WebInspector.DataGrid.ResizeMethod} */
     this._resizeMethod = WebInspector.DataGrid.ResizeMethod.Nearest;
-}
+};
 
 // Keep in sync with .data-grid col.corner style rule.
 WebInspector.DataGrid.CornerWidth = 14;
@@ -155,19 +155,19 @@ WebInspector.DataGrid.Events = {
     DeselectedNode: Symbol("DeselectedNode"),
     SortingChanged: Symbol("SortingChanged"),
     ColumnsResized: Symbol("ColumnsResized")
-}
+};
 
 /** @enum {string} */
 WebInspector.DataGrid.Order = {
     Ascending: "sort-ascending",
     Descending: "sort-descending"
-}
+};
 
 /** @enum {string} */
 WebInspector.DataGrid.Align = {
     Center: "center",
     Right: "right"
-}
+};
 
 WebInspector.DataGrid._preferredWidthSymbol = Symbol("preferredWidth");
 
@@ -1189,14 +1189,14 @@ WebInspector.DataGrid.prototype = {
     CenterResizerOverBorderAdjustment: 3,
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /** @enum {string} */
 WebInspector.DataGrid.ResizeMethod = {
     Nearest: "nearest",
     First: "first",
     Last: "last"
-}
+};
 
 /**
  * @constructor
@@ -1238,7 +1238,7 @@ WebInspector.DataGridNode = function(data, hasChildren)
     this.nextSibling = null;
     /** @type {number} */
     this.disclosureToggleWidth = 10;
-}
+};
 
 WebInspector.DataGridNode.prototype = {
     /** @type {boolean} */
@@ -1886,7 +1886,7 @@ WebInspector.DataGridNode.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
  * @constructor
@@ -1897,7 +1897,7 @@ WebInspector.CreationDataGridNode = function(data, hasChildren)
     WebInspector.DataGridNode.call(this, data, hasChildren);
     /** @type {boolean} */
     this.isCreationNode = true;
-}
+};
 
 WebInspector.CreationDataGridNode.prototype = {
     makeNormal: function()
@@ -1906,7 +1906,7 @@ WebInspector.CreationDataGridNode.prototype = {
     },
 
     __proto__: WebInspector.DataGridNode.prototype
-}
+};
 
 /**
  * @constructor
@@ -1918,7 +1918,7 @@ WebInspector.DataGridWidget = function(dataGrid)
     WebInspector.VBox.call(this);
     this._dataGrid = dataGrid;
     this.element.appendChild(dataGrid.element);
-}
+};
 
 WebInspector.DataGridWidget.prototype = {
     /**
@@ -1966,4 +1966,4 @@ WebInspector.DataGridWidget.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

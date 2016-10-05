@@ -30,119 +30,102 @@
  * @constructor
  * @extends {WebInspector.Panel}
  */
-WebInspector.ConsolePanel = function()
-{
-    WebInspector.Panel.call(this, "console");
-    this._view = WebInspector.ConsoleView.instance();
-}
+WebInspector.ConsolePanel = function() {
+  WebInspector.Panel.call(this, 'console');
+  this._view = WebInspector.ConsoleView.instance();
+};
 
 WebInspector.ConsolePanel.prototype = {
-    /**
-     * @override
-     */
-    wasShown: function()
-    {
-        WebInspector.Panel.prototype.wasShown.call(this);
-        var wrapper = WebInspector.ConsolePanel.WrapperView._instance;
-        if (wrapper && wrapper.isShowing())
-            WebInspector.inspectorView.setDrawerMinimized(true);
-        this._view.show(this.element);
-    },
+  /**
+   * @override
+   */
+  wasShown: function() {
+    WebInspector.Panel.prototype.wasShown.call(this);
+    var wrapper = WebInspector.ConsolePanel.WrapperView._instance;
+    if (wrapper && wrapper.isShowing())
+      WebInspector.inspectorView.setDrawerMinimized(true);
+    this._view.show(this.element);
+  },
 
-    /**
-     * @override
-     */
-    willHide: function()
-    {
-        WebInspector.Panel.prototype.willHide.call(this);
-        if (WebInspector.ConsolePanel.WrapperView._instance)
-            WebInspector.ConsolePanel.WrapperView._instance._showViewInWrapper();
-        WebInspector.inspectorView.setDrawerMinimized(false);
-    },
+  /**
+   * @override
+   */
+  willHide: function() {
+    WebInspector.Panel.prototype.willHide.call(this);
+    if (WebInspector.ConsolePanel.WrapperView._instance)
+      WebInspector.ConsolePanel.WrapperView._instance._showViewInWrapper();
+    WebInspector.inspectorView.setDrawerMinimized(false);
+  },
 
-    /**
+  /**
      * @override
      * @return {?WebInspector.SearchableView}
      */
-    searchableView: function()
-    {
-        return WebInspector.ConsoleView.instance().searchableView();
-    },
+  searchableView: function() { return WebInspector.ConsoleView.instance().searchableView(); },
 
-    __proto__: WebInspector.Panel.prototype
-}
+  __proto__: WebInspector.Panel.prototype
+};
 
 /**
  * @constructor
  * @extends {WebInspector.VBox}
  */
-WebInspector.ConsolePanel.WrapperView = function()
-{
-    WebInspector.VBox.call(this);
-    this.element.classList.add("console-view-wrapper");
+WebInspector.ConsolePanel.WrapperView = function() {
+  WebInspector.VBox.call(this);
+  this.element.classList.add('console-view-wrapper');
 
-    WebInspector.ConsolePanel.WrapperView._instance = this;
+  WebInspector.ConsolePanel.WrapperView._instance = this;
 
-    this._view = WebInspector.ConsoleView.instance();
-}
+  this._view = WebInspector.ConsoleView.instance();
+};
 
 WebInspector.ConsolePanel.WrapperView.prototype = {
-    wasShown: function()
-    {
-        if (!WebInspector.inspectorView.currentPanel() || WebInspector.inspectorView.currentPanel().name !== "console")
-            this._showViewInWrapper();
-        else
-            WebInspector.inspectorView.setDrawerMinimized(true);
-    },
+  wasShown: function() {
+    if (!WebInspector.inspectorView.currentPanel() ||
+        WebInspector.inspectorView.currentPanel().name !== 'console')
+      this._showViewInWrapper();
+    else
+      WebInspector.inspectorView.setDrawerMinimized(true);
+  },
 
-    willHide: function()
-    {
-        WebInspector.inspectorView.setDrawerMinimized(false);
-    },
+  willHide: function() { WebInspector.inspectorView.setDrawerMinimized(false); },
 
-    _showViewInWrapper: function()
-    {
-        this._view.show(this.element);
-    },
+  _showViewInWrapper: function() { this._view.show(this.element); },
 
-    __proto__: WebInspector.VBox.prototype
-}
+  __proto__: WebInspector.VBox.prototype
+};
 
 /**
  * @constructor
  * @implements {WebInspector.Revealer}
  */
-WebInspector.ConsolePanel.ConsoleRevealer = function()
-{
-}
+WebInspector.ConsolePanel.ConsoleRevealer = function() {};
 
 WebInspector.ConsolePanel.ConsoleRevealer.prototype = {
-    /**
+  /**
      * @override
      * @param {!Object} object
      * @return {!Promise}
      */
-    reveal: function(object)
-    {
-        var consoleView = WebInspector.ConsoleView.instance();
-        if (consoleView.isShowing()) {
-            consoleView.focus();
-            return Promise.resolve();
-        }
-        WebInspector.viewManager.showView("console");
-        return Promise.resolve();
+  reveal: function(object) {
+    var consoleView = WebInspector.ConsoleView.instance();
+    if (consoleView.isShowing()) {
+      consoleView.focus();
+      return Promise.resolve();
     }
-}
+    WebInspector.viewManager.showView('console');
+    return Promise.resolve();
+  }
+};
 
-WebInspector.ConsolePanel.show = function()
-{
-    WebInspector.inspectorView.setCurrentPanel(WebInspector.ConsolePanel._instance());
-}
+WebInspector.ConsolePanel.show = function() {
+  WebInspector.inspectorView.setCurrentPanel(WebInspector.ConsolePanel._instance());
+};
 
 /**
  * @return {!WebInspector.ConsolePanel}
  */
-WebInspector.ConsolePanel._instance = function()
-{
-    return /** @type {!WebInspector.ConsolePanel} */ (self.runtime.sharedInstance(WebInspector.ConsolePanel));
-}
+WebInspector.ConsolePanel._instance = function() {
+  return /** @type {!WebInspector.ConsolePanel} */ (
+      self.runtime.sharedInstance(WebInspector.ConsolePanel));
+};

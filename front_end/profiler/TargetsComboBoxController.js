@@ -8,92 +8,88 @@
  * @param {!Element} selectElement
  * @param {!Element} elementToHide
  */
-WebInspector.TargetsComboBoxController = function(selectElement, elementToHide)
-{
-    elementToHide.classList.add("hidden");
-    selectElement.addEventListener("change", this._onComboBoxSelectionChange.bind(this), false);
-    this._selectElement = selectElement;
-    this._elementToHide = elementToHide;
-    /** @type {!Map.<!WebInspector.Target, !Element>} */
-    this._targetToOption = new Map();
+WebInspector.TargetsComboBoxController = function(selectElement, elementToHide) {
+  elementToHide.classList.add('hidden');
+  selectElement.addEventListener('change', this._onComboBoxSelectionChange.bind(this), false);
+  this._selectElement = selectElement;
+  this._elementToHide = elementToHide;
+  /** @type {!Map.<!WebInspector.Target, !Element>} */
+  this._targetToOption = new Map();
 
-    WebInspector.context.addFlavorChangeListener(WebInspector.Target, this._targetChangedExternally, this);
-    WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.NameChanged, this._targetNameChanged, this);
-    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.JS);
-}
+  WebInspector.context.addFlavorChangeListener(
+      WebInspector.Target, this._targetChangedExternally, this);
+  WebInspector.targetManager.addEventListener(
+      WebInspector.TargetManager.Events.NameChanged, this._targetNameChanged, this);
+  WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.JS);
+};
 
 WebInspector.TargetsComboBoxController.prototype = {
 
-    /**
-     * @override
-     * @param {!WebInspector.Target} target
-     */
-    targetAdded: function(target)
-    {
-        var option = this._selectElement.createChild("option");
-        option.text = target.name();
-        option.__target = target;
-        this._targetToOption.set(target, option);
-        if (WebInspector.context.flavor(WebInspector.Target) === target)
-            this._selectElement.selectedIndex = Array.prototype.indexOf.call(/** @type {?} */ (this._selectElement), option);
+  /**
+   * @override
+   * @param {!WebInspector.Target} target
+   */
+  targetAdded: function(target) {
+    var option = this._selectElement.createChild('option');
+    option.text = target.name();
+    option.__target = target;
+    this._targetToOption.set(target, option);
+    if (WebInspector.context.flavor(WebInspector.Target) === target)
+      this._selectElement.selectedIndex =
+          Array.prototype.indexOf.call(/** @type {?} */ (this._selectElement), option);
 
-        this._updateVisibility();
-    },
+    this._updateVisibility();
+  },
 
-    /**
-     * @override
-     * @param {!WebInspector.Target} target
-     */
-    targetRemoved: function(target)
-    {
-        var option = this._targetToOption.remove(target);
-        this._selectElement.removeChild(option);
-        this._updateVisibility();
-    },
+  /**
+   * @override
+   * @param {!WebInspector.Target} target
+   */
+  targetRemoved: function(target) {
+    var option = this._targetToOption.remove(target);
+    this._selectElement.removeChild(option);
+    this._updateVisibility();
+  },
 
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _targetNameChanged: function(event)
-    {
-        var target = /** @type {!WebInspector.Target} */ (event.data);
-        var option = this._targetToOption.get(target);
-        option.text = target.name();
-    },
+  /**
+   * @param {!WebInspector.Event} event
+   */
+  _targetNameChanged: function(event) {
+    var target = /** @type {!WebInspector.Target} */ (event.data);
+    var option = this._targetToOption.get(target);
+    option.text = target.name();
+  },
 
-    _onComboBoxSelectionChange: function()
-    {
-        var selectedOption = this._selectElement[this._selectElement.selectedIndex];
-        if (!selectedOption)
-            return;
+  _onComboBoxSelectionChange: function() {
+    var selectedOption = this._selectElement[this._selectElement.selectedIndex];
+    if (!selectedOption)
+      return;
 
-        WebInspector.context.setFlavor(WebInspector.Target, selectedOption.__target);
-    },
+    WebInspector.context.setFlavor(WebInspector.Target, selectedOption.__target);
+  },
 
-    _updateVisibility: function()
-    {
-        var hidden = this._selectElement.childElementCount === 1;
-        this._elementToHide.classList.toggle("hidden", hidden);
-    },
+  _updateVisibility: function() {
+    var hidden = this._selectElement.childElementCount === 1;
+    this._elementToHide.classList.toggle('hidden', hidden);
+  },
 
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _targetChangedExternally: function(event)
-    {
-        var target = /** @type {?WebInspector.Target} */ (event.data);
-        if (target) {
-            var option = /** @type {!Element} */ (this._targetToOption.get(target));
-            this._select(option);
-        }
-    },
-
-    /**
-     * @param {!Element} option
-     */
-    _select: function(option)
-    {
-        this._selectElement.selectedIndex = Array.prototype.indexOf.call(/** @type {?} */ (this._selectElement), option);
+  /**
+   * @param {!WebInspector.Event} event
+   */
+  _targetChangedExternally: function(event) {
+    var target = /** @type {?WebInspector.Target} */ (event.data);
+    if (target) {
+      var option = /** @type {!Element} */ (this._targetToOption.get(target));
+      this._select(option);
     }
+  },
 
-}
+  /**
+   * @param {!Element} option
+   */
+  _select: function(option) {
+    this._selectElement.selectedIndex =
+        Array.prototype.indexOf.call(/** @type {?} */ (this._selectElement), option);
+  }
+
+};

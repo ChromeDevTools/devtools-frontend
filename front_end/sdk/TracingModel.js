@@ -231,6 +231,8 @@ WebInspector.TracingModel.prototype = {
         this._openAsyncEvents = new Map();
         /** @type {!Map<string, !Array<!WebInspector.TracingModel.AsyncEvent>>} */
         this._openNestableAsyncEvents = new Map();
+        /** @type {!Map<string, !WebInspector.TracingModel.ProfileEventsGroup>} */
+        this._profileGroups = new Map();
         /** @type {!Map<string, !Set<string>>} */
         this._parsedCategories = new Map();
     },
@@ -268,6 +270,10 @@ WebInspector.TracingModel.prototype = {
         var event = process._addEvent(payload);
         if (!event)
             return;
+        if (payload.ph === WebInspector.TracingModel.Phase.Sample) {
+            this._addSampleEvent(event);
+            return;
+        }
         // Build async event when we've got events from all threads & processes, so we can sort them and process in the
         // chronological order. However, also add individual async events to the thread flow (above), so we can easily
         // display them on the same chart as other events, should we choose so.
@@ -296,6 +302,27 @@ WebInspector.TracingModel.prototype = {
             process.threadById(payload.tid)._setName(payload.args["name"]);
             break;
         }
+    },
+
+    /**
+     * @param {!WebInspector.TracingModel.Event} event
+     */
+    _addSampleEvent: function(event)
+    {
+        var group = this._profileGroups.get(event.id);
+        if (group)
+            group._addChild(event);
+        else
+            this._profileGroups.set(event.id, new WebInspector.TracingModel.ProfileEventsGroup(event));
+    },
+
+    /**
+     * @param {string} id
+     * @return {?WebInspector.TracingModel.ProfileEventsGroup}
+     */
+    profileGroup: function(id)
+    {
+        return this._profileGroups.get(id) || null;
     },
 
     /**
@@ -736,6 +763,26 @@ WebInspector.TracingModel.AsyncEvent.prototype = {
     },
 
     __proto__: WebInspector.TracingModel.Event.prototype
+}
+
+/**
+ * @constructor
+ * @param {!WebInspector.TracingModel.Event} event
+ */
+WebInspector.TracingModel.ProfileEventsGroup = function(event)
+{
+    /** @type {!Array<!WebInspector.TracingModel.Event>} */
+    this.children = [event];
+}
+
+WebInspector.TracingModel.ProfileEventsGroup.prototype = {
+    /**
+     * @param {!WebInspector.TracingModel.Event} event
+     */
+    _addChild: function(event)
+    {
+        this.children.push(event);
+    }
 }
 
 /**

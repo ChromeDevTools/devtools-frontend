@@ -488,13 +488,14 @@ Object.defineProperty(Array.prototype, "remove", {
 
 Object.defineProperty(Array.prototype, "pushAll", {
     /**
-     * @param {!Array.<!T>} array
-     * @this {Array.<!T>}
+     * @param {!Array<!T>} array
+     * @this {Array<!T>}
      * @template T
      */
     value: function(array)
     {
-        Array.prototype.push.apply(this, array);
+        for (var i = 0; i < array.length; ++i)
+            this.push(array[i]);
     }
 });
 

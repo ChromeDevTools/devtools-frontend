@@ -500,7 +500,7 @@ WebInspector.TimelineModel.prototype = {
             var lastPageMetaEvent = metadataEvents.page.peekLast();
             for (var process of tracingModel.sortedProcesses()) {
                 for (var thread of process.sortedThreads())
-                    this._processThreadEvents(0, Infinity, thread, thread === lastPageMetaEvent.thread);
+                    this._processThreadEvents(tracingModel, 0, Infinity, thread, thread === lastPageMetaEvent.thread);
             }
         } else {
             var startTime = 0;
@@ -518,7 +518,7 @@ WebInspector.TimelineModel.prototype = {
                         if (workerId)
                             this._workerIdByThread.set(thread, workerId);
                     }
-                    this._processThreadEvents(startTime, endTime, thread, thread === metaEvent.thread);
+                    this._processThreadEvents(tracingModel, startTime, endTime, thread, thread === metaEvent.thread);
                 }
                 startTime = endTime;
             }
@@ -735,38 +735,100 @@ WebInspector.TimelineModel.prototype = {
     },
 
     /**
+     * @param {!WebInspector.TracingModel} tracingModel
+     * @param {!WebInspector.TracingModel.Thread} thread
+     * @return {?WebInspector.CPUProfileDataModel}
+     */
+    _extractCpuProfile: function(tracingModel, thread)
+    {
+        var events = thread.events();
+        var cpuProfile;
+
+        // Check for legacy CpuProfile event format first.
+        var cpuProfileEvent = events.peekLast();
+        if (cpuProfileEvent && cpuProfileEvent.name === WebInspector.TimelineModel.RecordType.CpuProfile) {
+            var eventData = cpuProfileEvent.args["data"];
+            cpuProfile = /** @type {?ProfilerAgent.Profile} */ (eventData && eventData["cpuProfile"]);
+        }
+
+        if (!cpuProfile) {
+            cpuProfileEvent = events.find(e => e.name === WebInspector.TimelineModel.RecordType.CpuProfile);
+            if (!cpuProfileEvent)
+                return null;
+            var profileGroup = tracingModel.profileGroup(cpuProfileEvent.id);
+            if (!profileGroup) {
+                WebInspector.console.error("Invalid CPU profile format.");
+                return null;
+            }
+            cpuProfile = /** @type {!ProfilerAgent.Profile} */ ({
+                startTime: cpuProfileEvent.args["data"]["startTime"],
+                endTime: 0,
+                nodes: [],
+                samples: [],
+                timeDeltas: []
+            });
+            for (var profileEvent of profileGroup.children) {
+                var eventData = profileEvent.args["data"];
+                if ("startTime" in eventData)
+                     cpuProfile.startTime = eventData["startTime"];
+                if ("endTime" in eventData)
+                     cpuProfile.endTime = eventData["endTime"];
+                cpuProfile.nodes.pushAll(eventData["nodes"] || []);
+                cpuProfile.samples.pushAll(eventData["samples"] || []);
+                cpuProfile.timeDeltas.pushAll(eventData["timeDeltas"] || []);
+            }
+            if (!cpuProfile.endTime)
+                cpuProfile.endTime = cpuProfile.timeDeltas.reduce((x, y) => x + y, cpuProfile.startTime);
+        }
+
+        try {
+            var jsProfileModel = new WebInspector.CPUProfileDataModel(cpuProfile);
+            this._cpuProfiles.push(jsProfileModel);
+            return jsProfileModel;
+        } catch (e) {
+            WebInspector.console.error("Failed to parse CPU profile.");
+        }
+        return null;
+    },
+
+    /**
+     * @param {!WebInspector.TracingModel} tracingModel
+     * @param {!WebInspector.TracingModel.Thread} thread
+     * @return {!Array<!WebInspector.TracingModel.Event>}
+     */
+    _injectJSFrameEvents: function(tracingModel, thread)
+    {
+        var jsProfileModel = this._extractCpuProfile(tracingModel, thread);
+        var events = thread.events();
+        var jsSamples;
+        if (jsProfileModel) {
+            jsSamples = WebInspector.TimelineJSProfileProcessor.generateTracingEventsFromCpuProfile(jsProfileModel, thread);
+        } else {
+            // Try to read the intermediate experimental format.
+            // TODO(alph): Nuke it as soon as the experiment is gone.
+            jsSamples = WebInspector.TimelineJSProfileProcessor.processRawV8Samples(events);
+        }
+        if (jsSamples && jsSamples.length)
+            events = events.mergeOrdered(jsSamples, WebInspector.TracingModel.Event.orderedCompareStartTime);
+        if (jsSamples || events.some(e => e.name === WebInspector.TimelineModel.RecordType.JSSample)) {
+            var jsFrameEvents = WebInspector.TimelineJSProfileProcessor.generateJSFrameEvents(events);
+            if (jsFrameEvents && jsFrameEvents.length)
+                events = jsFrameEvents.mergeOrdered(events, WebInspector.TracingModel.Event.orderedCompareStartTime);
+        }
+        return events;
+    },
+
+    /**
+     * @param {!WebInspector.TracingModel} tracingModel
      * @param {number} startTime
      * @param {number} endTime
      * @param {!WebInspector.TracingModel.Thread} thread
      * @param {boolean} isMainThread
      */
-    _processThreadEvents: function(startTime, endTime, thread, isMainThread)
+    _processThreadEvents: function(tracingModel, startTime, endTime, thread, isMainThread)
     {
-        var events = thread.events();
+        var events = this._injectJSFrameEvents(tracingModel, thread);
         var asyncEvents = thread.asyncEvents();
-
-        var jsSamples;
-        if (Runtime.experiments.isEnabled("timelineTracingJSProfile")) {
-            jsSamples = WebInspector.TimelineJSProfileProcessor.processRawV8Samples(events);
-        } else {
-            var cpuProfileEvent = events.peekLast();
-            if (cpuProfileEvent && cpuProfileEvent.name === WebInspector.TimelineModel.RecordType.CpuProfile) {
-                var cpuProfile = cpuProfileEvent.args["data"]["cpuProfile"];
-                if (cpuProfile) {
-                    var jsProfileModel = new WebInspector.CPUProfileDataModel(cpuProfile);
-                    this._cpuProfiles.push(jsProfileModel);
-                    jsSamples = WebInspector.TimelineJSProfileProcessor.generateTracingEventsFromCpuProfile(jsProfileModel, thread);
-                }
-            }
-        }
-
-        if (jsSamples && jsSamples.length)
-            events = events.mergeOrdered(jsSamples, WebInspector.TracingModel.Event.orderedCompareStartTime);
-        if (jsSamples || events.some(function(e) { return e.name === WebInspector.TimelineModel.RecordType.JSSample; })) {
-            var jsFrameEvents = WebInspector.TimelineJSProfileProcessor.generateJSFrameEvents(events);
-            if (jsFrameEvents && jsFrameEvents.length)
-                events = jsFrameEvents.mergeOrdered(events, WebInspector.TracingModel.Event.orderedCompareStartTime);
-        }
 
         var threadEvents;
         var threadAsyncEventsByGroup;
@@ -781,7 +843,7 @@ WebInspector.TimelineModel.prototype = {
         }
 
         this._eventStack = [];
-        var i = events.lowerBound(startTime, function(time, event) { return time - event.startTime });
+        var i = events.lowerBound(startTime, (time, event) => time - event.startTime);
         var length = events.length;
         for (; i < length; i++) {
             var event = events[i];

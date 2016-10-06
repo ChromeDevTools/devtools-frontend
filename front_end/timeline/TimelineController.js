@@ -52,9 +52,9 @@ WebInspector.TimelineController.prototype = {
                                  disabledByDefault("ipc.flow"));
         }
         if (Runtime.experiments.isEnabled("timelineTracingJSProfile") && enableJSSampling) {
-            categoriesArray.push(disabledByDefault("v8.cpu_profile"));
+            categoriesArray.push(disabledByDefault("v8.cpu_profiler"));
             if (WebInspector.moduleSetting("highResolutionCpuProfiling").get())
-                categoriesArray.push(disabledByDefault("v8.cpu_profile.hires"));
+                categoriesArray.push(disabledByDefault("v8.cpu_profiler.hires"));
         }
         if (captureCauses || enableJSSampling)
             categoriesArray.push(disabledByDefault("devtools.timeline.stack"));

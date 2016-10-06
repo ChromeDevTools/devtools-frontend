@@ -273,7 +273,13 @@ WebInspector.NetworkPanel.prototype = {
     _load: function(event)
     {
         if (this._filmStripRecorder && this._filmStripRecorder.isRecording())
-            this._pendingStopTimer = setTimeout(this._toggleRecord.bind(this, false), 1000);
+            this._pendingStopTimer = setTimeout(this._stopFilmStripRecording.bind(this), 1000);
+    },
+
+    _stopFilmStripRecording: function()
+    {
+        this._filmStripRecorder.stopRecording(this._filmStripAvailable.bind(this));
+        delete this._pendingStopTimer;
     },
 
     _toggleLargerRequests: function()

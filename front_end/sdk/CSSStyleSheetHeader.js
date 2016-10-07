@@ -44,7 +44,7 @@ WebInspector.CSSStyleSheetHeader.prototype = {
      */
     setSourceMapURL: function(sourceMapURL)
     {
-        var completeSourceMapURL = this.sourceURL && sourceMapURL ? WebInspector.ParsedURL.completeURL(this.sourceURL, sourceMapURL) : null;
+        var completeSourceMapURL = this.sourceURL && sourceMapURL ? WebInspector.ParsedURL.completeURL(this.sourceURL, sourceMapURL) : sourceMapURL;
         this.sourceMapURL = completeSourceMapURL;
     },
 

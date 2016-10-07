@@ -48,6 +48,8 @@ WebInspector.SourcesView = function()
             this._toolbarEditorActions.appendToolbarItem(actions[i].button(this));
     }
     this._scriptViewToolbar = new WebInspector.Toolbar("", this._toolbarContainerElement);
+    this._toolbarContainerElement.createChild("div", "sources-toolbar-spacer");
+    this._bottomToolbar = new WebInspector.Toolbar("", this._toolbarContainerElement);
 
     WebInspector.startBatchUpdate();
     workspace.uiSourceCodes().forEach(this._addUISourceCode.bind(this));
@@ -145,6 +147,14 @@ WebInspector.SourcesView.prototype = {
     rightToolbar: function()
     {
         return this._editorContainer.rightToolbar();
+    },
+
+    /**
+     * @return {!WebInspector.Toolbar}
+     */
+    bottomToolbar: function()
+    {
+        return this._bottomToolbar;
     },
 
     /**

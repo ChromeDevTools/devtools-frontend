@@ -887,8 +887,6 @@ WebInspector.SplitWidget.prototype = {
      */
     createShowHideSidebarButton: function(title)
     {
-        console.assert(this.isVertical(), "Buttons for split widget with horizontal split are not supported yet.");
-
         this._showHideSidebarButtonTitle = WebInspector.UIString(title);
         this._showHideSidebarButton = new WebInspector.ToolbarButton("", "sidebar-toolbar-item");
         this._showHideSidebarButton.addEventListener("click", buttonClicked.bind(this));
@@ -914,7 +912,8 @@ WebInspector.SplitWidget.prototype = {
         if (!this._showHideSidebarButton)
             return;
         var sidebarHidden = this._showMode === WebInspector.SplitWidget.ShowMode.OnlyMain;
-        this._showHideSidebarButton.setState((this.isSidebarSecond() ? "right" : "left") + "-" + (sidebarHidden ? "show" : "hide"));
+        var side = this.isVertical() ? (this.isSidebarSecond() ? "right" : "left") : (this.isSidebarSecond() ? "bottom" : "top");
+        this._showHideSidebarButton.setState(side + "-" + (sidebarHidden ? "show" : "hide"));
         this._showHideSidebarButton.setTitle(sidebarHidden ? WebInspector.UIString("Show %s", this._showHideSidebarButtonTitle) : WebInspector.UIString("Hide %s", this._showHideSidebarButtonTitle));
     },
 

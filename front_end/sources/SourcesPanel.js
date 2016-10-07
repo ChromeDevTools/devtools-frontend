@@ -80,7 +80,7 @@ WebInspector.SourcesPanel = function()
 
     this._toggleNavigatorSidebarButton = this.editorView.createShowHideSidebarButton("navigator");
     this._toggleDebuggerSidebarButton = this._splitWidget.createShowHideSidebarButton("debugger");
-    this._showSourcesViewInPanel();
+    this.editorView.setMainWidget(this._sourcesView);
     this._editorChanged(this._sourcesView.currentUISourceCode());
 
     this._threadsSidebarPane = null;
@@ -184,9 +184,9 @@ WebInspector.SourcesPanel.prototype = {
         var wrapper = WebInspector.SourcesPanel.WrapperView._instance;
         if (wrapper && wrapper.isShowing()) {
             WebInspector.inspectorView.setDrawerMinimized(true);
-            WebInspector.SourcesPanel.updateResizer(this);
+            WebInspector.SourcesPanel.updateResizerAndSidebarButtons(this);
         }
-        this._showSourcesViewInPanel();
+        this.editorView.setMainWidget(this._sourcesView);
     },
 
     willHide: function()
@@ -196,17 +196,8 @@ WebInspector.SourcesPanel.prototype = {
         if (WebInspector.SourcesPanel.WrapperView.isShowing()) {
             WebInspector.SourcesPanel.WrapperView._instance._showViewInWrapper();
             WebInspector.inspectorView.setDrawerMinimized(false);
-            WebInspector.SourcesPanel.updateResizer(this);
+            WebInspector.SourcesPanel.updateResizerAndSidebarButtons(this);
         }
-    },
-
-    _showSourcesViewInPanel: function()
-    {
-        this._sourcesView.leftToolbar().removeToolbarItems();
-        this._sourcesView.leftToolbar().appendToolbarItem(this._toggleNavigatorSidebarButton);
-        this._sourcesView.rightToolbar().removeToolbarItems();
-        this._sourcesView.rightToolbar().appendToolbarItem(this._toggleDebuggerSidebarButton);
-        this.editorView.setMainWidget(this._sourcesView);
     },
 
     /**
@@ -1052,7 +1043,7 @@ WebInspector.SourcesPanel.prototype = {
         this._splitWidget.setVertical(!vertically);
         this._splitWidget.element.classList.toggle("sources-split-view-vertical", vertically);
 
-        WebInspector.SourcesPanel.updateResizer(this);
+        WebInspector.SourcesPanel.updateResizerAndSidebarButtons(this);
 
         // Create vertical box with stack.
         var vbox = new WebInspector.VBox();
@@ -1339,12 +1330,23 @@ WebInspector.SourcesPanel.instance = function()
 /**
  * @param {!WebInspector.SourcesPanel} panel
  */
-WebInspector.SourcesPanel.updateResizer = function(panel)
+WebInspector.SourcesPanel.updateResizerAndSidebarButtons = function(panel)
 {
-    if (panel._splitWidget.isVertical() || (WebInspector.SourcesPanel.WrapperView.isShowing() && !WebInspector.inspectorView.isDrawerMinimized()))
+    panel._sourcesView.leftToolbar().removeToolbarItems();
+    panel._sourcesView.rightToolbar().removeToolbarItems();
+    panel._sourcesView.bottomToolbar().removeToolbarItems();
+    var isInWrapper = WebInspector.SourcesPanel.WrapperView.isShowing() && !WebInspector.inspectorView.isDrawerMinimized();
+    if (panel._splitWidget.isVertical() || isInWrapper)
         panel._splitWidget.uninstallResizer(panel._sourcesView.toolbarContainerElement());
     else
         panel._splitWidget.installResizer(panel._sourcesView.toolbarContainerElement());
+    if (!isInWrapper) {
+        panel._sourcesView.leftToolbar().appendToolbarItem(panel._toggleNavigatorSidebarButton);
+        if (panel._splitWidget.isVertical())
+            panel._sourcesView.rightToolbar().appendToolbarItem(panel._toggleDebuggerSidebarButton);
+        else
+            panel._sourcesView.bottomToolbar().appendToolbarItem(panel._toggleDebuggerSidebarButton);
+    }
 }
 
 /**
@@ -1366,19 +1368,17 @@ WebInspector.SourcesPanel.WrapperView.prototype = {
             this._showViewInWrapper();
         else
             WebInspector.inspectorView.setDrawerMinimized(true);
-        WebInspector.SourcesPanel.updateResizer(WebInspector.SourcesPanel.instance());
+        WebInspector.SourcesPanel.updateResizerAndSidebarButtons(WebInspector.SourcesPanel.instance());
     },
 
     willHide: function()
     {
         WebInspector.inspectorView.setDrawerMinimized(false);
-        setImmediate(() => WebInspector.SourcesPanel.updateResizer(WebInspector.SourcesPanel.instance()));
+        setImmediate(() => WebInspector.SourcesPanel.updateResizerAndSidebarButtons(WebInspector.SourcesPanel.instance()));
     },
 
     _showViewInWrapper: function()
     {
-        this._view.leftToolbar().removeToolbarItems();
-        this._view.rightToolbar().removeToolbarItems();
         this._view.show(this.element);
     },
 

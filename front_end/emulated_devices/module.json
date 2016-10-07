@@ -322,7 +322,7 @@
                     "vertical": {
                         "outline" : {
                             "image": "@url(Nexus5X-portrait.svg)",
-                            "insets" : { "left": 20, "top": 92, "right": 22, "bottom": 108 }
+                            "insets" : { "left": 18, "top": 88, "right": 22, "bottom": 98 }
                         },
                         "width": 412,
                         "height": 732
@@ -330,7 +330,7 @@
                     "horizontal": {
                         "outline" : {
                             "image": "@url(Nexus5X-landscape.svg)",
-                            "insets" : { "left": 94, "top": 23, "right": 100, "bottom": 20 }
+                            "insets" : { "left": 88, "top": 21, "right": 98, "bottom": 19 }
                         },
                         "width": 732,
                         "height": 412
@@ -422,7 +422,7 @@
                     "horizontal": {
                         "outline" : {
                             "image": "@url(Nexus6P-landscape.svg)",
-                            "insets" : { "left": 94, "top": 48, "right": 97, "bottom": 48 }
+                            "insets" : { "left": 94, "top": 17, "right": 88, "bottom": 17 }
                         },
                         "width": 732,
                         "height": 412
@@ -431,7 +431,7 @@
                     "vertical": {
                         "outline" : {
                             "image": "@url(Nexus6P-portrait.svg)",
-                            "insets" : { "left": 58, "top": 94, "right": 58, "bottom": 97 }
+                            "insets" : { "left": 16, "top": 94, "right": 16, "bottom": 88 }
                         },
                         "width": 412,
                         "height": 732

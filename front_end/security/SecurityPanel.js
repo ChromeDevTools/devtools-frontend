@@ -868,7 +868,7 @@ WebInspector.SecurityOriginView = function(panel, origin, originState)
         table.addRow("Key Exchange", originState.securityDetails.keyExchange);
         if (originState.securityDetails.keyExchangeGroup)
             table.addRow("Key Exchange Group", originState.securityDetails.keyExchangeGroup);
-        table.addRow("Cipher Suite", originState.securityDetails.cipher + (originState.securityDetails.mac ? " with " + originState.securityDetails.mac : ""));
+        table.addRow("Cipher", originState.securityDetails.cipher + (originState.securityDetails.mac ? " with " + originState.securityDetails.mac : ""));
 
         // Create the certificate section outside the callback, so that it appears in the right place.
         var certificateSection = this.element.createChild("div", "origin-view-section");

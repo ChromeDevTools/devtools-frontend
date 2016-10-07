@@ -45,23 +45,6 @@ WebInspector.ConsoleViewMessage = function(consoleMessage, linkifier, nestingLev
 
     /** @type {?WebInspector.DataGrid} */
     this._dataGrid = null;
-
-    /** @type {!Object.<string, function(!WebInspector.RemoteObject, !Element, boolean=)>} */
-    this._customFormatters = {
-        "array": this._formatParameterAsArray,
-        "typedarray": this._formatParameterAsArray,
-        "error": this._formatParameterAsError,
-        "function": this._formatParameterAsFunction,
-        "generator": this._formatParameterAsObject,
-        "iterator": this._formatParameterAsObject,
-        "map": this._formatParameterAsObject,
-        "node": this._formatParameterAsNode,
-        "object": this._formatParameterAsObject,
-        "promise": this._formatParameterAsObject,
-        "proxy": this._formatParameterAsObject,
-        "set": this._formatParameterAsObject,
-        "string": this._formatParameterAsString
-    };
     this._previewFormatter = new WebInspector.RemoteObjectPreviewFormatter();
     this._searchRegex = null;
 }
@@ -298,14 +281,12 @@ WebInspector.ConsoleViewMessage.prototype = {
     {
         var anchorElement = null;
         if (consoleMessage.source !== WebInspector.ConsoleMessage.MessageSource.Network || consoleMessage.request) {
-            if (consoleMessage.scriptId) {
+            if (consoleMessage.scriptId)
                 anchorElement = this._linkifyScriptId(consoleMessage.scriptId, consoleMessage.url || "", consoleMessage.line, consoleMessage.column);
-            } else {
-                if (consoleMessage.stackTrace && consoleMessage.stackTrace.callFrames.length)
-                    anchorElement = this._linkifyStackTraceTopFrame(consoleMessage.stackTrace);
-                else if (consoleMessage.url && consoleMessage.url !== "undefined")
-                    anchorElement = this._linkifyLocation(consoleMessage.url, consoleMessage.line, consoleMessage.column);
-            }
+            else if (consoleMessage.stackTrace && consoleMessage.stackTrace.callFrames.length)
+                anchorElement = this._linkifyStackTraceTopFrame(consoleMessage.stackTrace);
+            else if (consoleMessage.url && consoleMessage.url !== "undefined")
+                anchorElement = this._linkifyLocation(consoleMessage.url, consoleMessage.line, consoleMessage.column);
         } else if (consoleMessage.url) {
             var url = consoleMessage.url;
             var isExternal = !WebInspector.resourceForURL(url) && !WebInspector.networkMapping.uiSourceCodeForURLForAnyTarget(url);
@@ -473,15 +454,51 @@ WebInspector.ConsoleViewMessage.prototype = {
      */
     _formatParameter: function(output, forceObjectFormat, includePreview)
     {
-        if (output.customPreview()) {
+        if (output.customPreview())
             return (new WebInspector.CustomPreviewComponent(output)).element;
-        }
 
         var type = forceObjectFormat ? "object" : (output.subtype || output.type);
-        var formatter = this._customFormatters[type] || this._formatParameterAsValue;
         var span = createElement("span");
         span.className = "object-value-" + type + " source-code";
-        formatter.call(this, output, span, includePreview);
+        switch (type) {
+        case "array":
+        case "typedarray":
+            this._formatParameterAsArray(output, span);
+            break;
+        case "error":
+            this._formatParameterAsError(output, span);
+            break;
+        case "function":
+        case "generator":
+            this._formatParameterAsFunction(output, span, includePreview);
+            break;
+        case "iterator":
+        case "map":
+        case "object":
+        case "promise":
+        case "proxy":
+        case "set":
+            this._formatParameterAsObject(output, span, includePreview);
+            break;
+        case "node":
+            this._formatParameterAsNode(output, span);
+            break;
+        case "string":
+            this._formatParameterAsString(output, span);
+            break;
+        case "boolean":
+        case "date":
+        case "null":
+        case "number":
+        case "regexp":
+        case "symbol":
+        case "undefined":
+            this._formatParameterAsValue(output, span);
+            break;
+        default:
+            this._formatParameterAsValue(output, span);
+            console.error("Tried to format remote object of unknown type.");
+        }
         return span;
     },
 
@@ -503,27 +520,15 @@ WebInspector.ConsoleViewMessage.prototype = {
      */
     _formatParameterAsObject: function(obj, elem, includePreview)
     {
-        this._formatParameterAsArrayOrObject(obj, elem, includePreview);
-    },
-
-    /**
-     * @param {!WebInspector.RemoteObject} obj
-     * @param {!Element} elem
-     * @param {boolean=} includePreview
-     */
-    _formatParameterAsArrayOrObject: function(obj, elem, includePreview)
-    {
         var titleElement = createElement("span");
         if (includePreview && obj.preview) {
             titleElement.classList.add("console-object-preview");
             this._previewFormatter.appendObjectPreview(titleElement, obj.preview);
+        } else if (obj.type === "function") {
+            WebInspector.ObjectPropertiesSection.formatObjectAsFunction(obj, titleElement, false);
+            titleElement.classList.add("object-value-function");
         } else {
-            if (obj.type === "function") {
-                WebInspector.ObjectPropertiesSection.formatObjectAsFunction(obj, titleElement, false);
-                titleElement.classList.add("object-value-function");
-            } else {
-                titleElement.createTextChild(obj.description || "");
-            }
+            titleElement.createTextChild(obj.description || "");
         }
 
         var section = new WebInspector.ObjectPropertiesSection(obj, titleElement, this._linkifier);
@@ -613,24 +618,78 @@ WebInspector.ConsoleViewMessage.prototype = {
     },
 
     /**
-     * @return {boolean}
-     */
-    _usePrintedArrayFormatter: function()
-    {
-        return this._message.type !== WebInspector.ConsoleMessage.MessageType.DirXML && this._message.type !== WebInspector.ConsoleMessage.MessageType.Result;
-    },
-
-    /**
      * @param {!WebInspector.RemoteObject} array
      * @param {!Element} elem
      */
     _formatParameterAsArray: function(array, elem)
     {
-        var maxFlatArrayLength = 100;
-        if (this._usePrintedArrayFormatter() || array.arrayLength() > maxFlatArrayLength)
-            this._formatParameterAsArrayOrObject(array, elem, this._usePrintedArrayFormatter() || array.arrayLength() <= maxFlatArrayLength);
+        var usePrintedArrayFormat = this._message.type !== WebInspector.ConsoleMessage.MessageType.DirXML && this._message.type !== WebInspector.ConsoleMessage.MessageType.Result;
+        var isLongArray = array.arrayLength() > 100;
+        if (usePrintedArrayFormat || isLongArray)
+            this._formatParameterAsObject(array, elem, usePrintedArrayFormat || !isLongArray);
         else
-            array.getAllProperties(false, this._printArrayResult.bind(this, array, elem));
+            array.getAllProperties(false, printArrayResult.bind(this));
+
+        /**
+         * @param {?Array.<!WebInspector.RemoteObjectProperty>} properties
+         * @this {!WebInspector.ConsoleViewMessage}
+         */
+        function printArrayResult(properties)
+        {
+            if (!properties) {
+                this._formatParameterAsObject(array, elem, false);
+                return;
+            }
+
+            var titleElement = createElement("span");
+            var elements = {};
+            for (var i = 0; i < properties.length; ++i) {
+                var property = properties[i];
+                var name = property.name;
+                if (isNaN(name))
+                    continue;
+                if (property.getter)
+                    elements[name] = this._formatAsAccessorProperty(array, [name], true);
+                else if (property.value)
+                    elements[name] = this._formatAsArrayEntry(property.value);
+            }
+
+            titleElement.createTextChild("[");
+            var lastNonEmptyIndex = -1;
+
+            function appendUndefined(titleElement, index)
+            {
+                if (index - lastNonEmptyIndex <= 1)
+                    return;
+                var span = titleElement.createChild("span", "object-value-undefined");
+                span.textContent = WebInspector.UIString("undefined × %d", index - lastNonEmptyIndex - 1);
+            }
+
+            var length = array.arrayLength();
+            for (var i = 0; i < length; ++i) {
+                var element = elements[i];
+                if (!element)
+                    continue;
+
+                if (i - lastNonEmptyIndex > 1) {
+                    appendUndefined(titleElement, i);
+                    titleElement.createTextChild(", ");
+                }
+
+                titleElement.appendChild(element);
+                lastNonEmptyIndex = i;
+                if (i < length - 1)
+                    titleElement.createTextChild(", ");
+            }
+            appendUndefined(titleElement, length);
+
+            titleElement.createTextChild("]");
+
+            var section = new WebInspector.ObjectPropertiesSection(array, titleElement, this._linkifier);
+            section.element.classList.add("console-view-object-properties-section");
+            section.enableContextMenu();
+            elem.appendChild(section.element);
+        }
     },
 
     /**
@@ -659,68 +718,6 @@ WebInspector.ConsoleViewMessage.prototype = {
         var span = elem.createChild("span", "object-value-error source-code");
         var errorSpan = this._tryFormatAsError(output.description || "");
         span.appendChild(errorSpan ? errorSpan : WebInspector.linkifyStringAsFragment(output.description || ""));
-    },
-
-    /**
-     * @param {!WebInspector.RemoteObject} array
-     * @param {!Element} elem
-     * @param {?Array.<!WebInspector.RemoteObjectProperty>} properties
-     */
-    _printArrayResult: function(array, elem, properties)
-    {
-        if (!properties) {
-            this._formatParameterAsObject(array, elem, false);
-            return;
-        }
-
-        var titleElement = createElement("span");
-        var elements = {};
-        for (var i = 0; i < properties.length; ++i) {
-            var property = properties[i];
-            var name = property.name;
-            if (isNaN(name))
-                continue;
-            if (property.getter)
-                elements[name] = this._formatAsAccessorProperty(array, [name], true);
-            else if (property.value)
-                elements[name] = this._formatAsArrayEntry(property.value);
-        }
-
-        titleElement.createTextChild("[");
-        var lastNonEmptyIndex = -1;
-
-        function appendUndefined(titleElement, index)
-        {
-            if (index - lastNonEmptyIndex <= 1)
-                return;
-            var span = titleElement.createChild("span", "object-value-undefined");
-            span.textContent = WebInspector.UIString("undefined × %d", index - lastNonEmptyIndex - 1);
-        }
-
-        var length = array.arrayLength();
-        for (var i = 0; i < length; ++i) {
-            var element = elements[i];
-            if (!element)
-                continue;
-
-            if (i - lastNonEmptyIndex > 1) {
-                appendUndefined(titleElement, i);
-                titleElement.createTextChild(", ");
-            }
-
-            titleElement.appendChild(element);
-            lastNonEmptyIndex = i;
-            if (i < length - 1)
-                titleElement.createTextChild(", ");
-        }
-        appendUndefined(titleElement, length);
-
-        titleElement.createTextChild("]");
-
-        var section = new WebInspector.ObjectPropertiesSection(array, titleElement, this._linkifier);
-        section.element.classList.add("console-view-object-properties-section");
-        section.enableContextMenu();
-        elem.appendChild(section.element);
     },
 
     /**

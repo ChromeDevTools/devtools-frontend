@@ -48,7 +48,7 @@ WebInspector.EditingLocationHistoryManager.prototype = {
      */
     trackSourceFrameCursorJumps: function(sourceFrame)
     {
-        sourceFrame.addEventListener(WebInspector.SourceFrame.Events.JumpHappened, this._onJumpHappened.bind(this));
+        sourceFrame.textEditor.addEventListener(WebInspector.SourcesTextEditor.Events.JumpHappened, this._onJumpHappened.bind(this));
     },
 
     /**

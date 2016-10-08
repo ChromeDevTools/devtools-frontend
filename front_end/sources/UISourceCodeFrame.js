@@ -55,6 +55,12 @@ WebInspector.UISourceCodeFrame = function(uiSourceCode)
     this._uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.LineDecorationRemoved, this._onLineDecorationRemoved, this);
     WebInspector.persistence.addEventListener(WebInspector.Persistence.Events.BindingCreated, this._onBindingChanged, this);
     WebInspector.persistence.addEventListener(WebInspector.Persistence.Events.BindingRemoved, this._onBindingChanged, this);
+
+    this.textEditor.addEventListener(WebInspector.SourcesTextEditor.Events.EditorBlurred,
+        () => WebInspector.context.setFlavor(WebInspector.UISourceCodeFrame, null));
+    this.textEditor.addEventListener(WebInspector.SourcesTextEditor.Events.EditorFocused,
+        () => WebInspector.context.setFlavor(WebInspector.UISourceCodeFrame, this));
+
     this._updateStyle();
 
     this._errorPopoverHelper = new WebInspector.PopoverHelper(this.element, this._getErrorAnchor.bind(this), this._showErrorPopover.bind(this));
@@ -97,24 +103,6 @@ WebInspector.UISourceCodeFrame.prototype = {
         this.element.ownerDocument.defaultView.removeEventListener("focus", this._boundWindowFocused, false);
         delete this._boundWindowFocused;
         this._uiSourceCode.removeWorkingCopyGetter();
-    },
-
-    /**
-     * @override
-     */
-    editorFocused: function()
-    {
-        WebInspector.SourceFrame.prototype.editorFocused.call(this);
-        WebInspector.context.setFlavor(WebInspector.UISourceCodeFrame, this);
-    },
-
-    /**
-     * @override
-     */
-    editorBlurred: function()
-    {
-        WebInspector.context.setFlavor(WebInspector.UISourceCodeFrame, null);
-        WebInspector.SourceFrame.prototype.editorBlurred.call(this);
     },
 
     /**

@@ -43,6 +43,10 @@ WebInspector.CSSSourceFrame = function(uiSourceCode)
         suggestionsCallback: this._cssSuggestions.bind(this),
         isWordChar: this._isWordChar.bind(this)
     });
+    this.textEditor.addEventListener(WebInspector.SourcesTextEditor.Events.ScrollChanged, () => {
+        if (this._swatchPopoverHelper.isShowing())
+            this._swatchPopoverHelper.hide(true);
+    });
 }
 
 /** @type {number} */
@@ -315,17 +319,6 @@ WebInspector.CSSSourceFrame.prototype = {
         WebInspector.UISourceCodeFrame.prototype.onTextChanged.call(this, oldRange, newRange);
         if (!this._muteSwatchProcessing)
             this._updateSwatches(newRange.startLine, newRange.endLine);
-    },
-
-    /**
-     * @override
-     * @param {number} lineNumber
-     */
-    scrollChanged: function(lineNumber)
-    {
-        WebInspector.UISourceCodeFrame.prototype.scrollChanged.call(this, lineNumber);
-        if (this._swatchPopoverHelper.isShowing())
-            this._swatchPopoverHelper.hide(true);
     },
 
     /**

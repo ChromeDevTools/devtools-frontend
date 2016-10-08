@@ -212,18 +212,18 @@ WebInspector.TabbedEditorContainer.prototype = {
 
     _addViewListeners: function()
     {
-        if (!this._currentView)
+        if (!this._currentView || !this._currentView.textEditor)
             return;
-        this._currentView.addEventListener(WebInspector.SourceFrame.Events.ScrollChanged, this._scrollChanged, this);
-        this._currentView.addEventListener(WebInspector.SourceFrame.Events.SelectionChanged, this._selectionChanged, this);
+        this._currentView.textEditor.addEventListener(WebInspector.SourcesTextEditor.Events.ScrollChanged, this._scrollChanged, this);
+        this._currentView.textEditor.addEventListener(WebInspector.SourcesTextEditor.Events.SelectionChanged, this._selectionChanged, this);
     },
 
     _removeViewListeners: function()
     {
-        if (!this._currentView)
+        if (!this._currentView || !this._currentView.textEditor)
             return;
-        this._currentView.removeEventListener(WebInspector.SourceFrame.Events.ScrollChanged, this._scrollChanged, this);
-        this._currentView.removeEventListener(WebInspector.SourceFrame.Events.SelectionChanged, this._selectionChanged, this);
+        this._currentView.textEditor.removeEventListener(WebInspector.SourcesTextEditor.Events.ScrollChanged, this._scrollChanged, this);
+        this._currentView.textEditor.removeEventListener(WebInspector.SourcesTextEditor.Events.SelectionChanged, this._selectionChanged, this);
     },
 
     /**
@@ -231,9 +231,13 @@ WebInspector.TabbedEditorContainer.prototype = {
      */
     _scrollChanged: function(event)
     {
+        if (this._scrollTimer)
+            clearTimeout(this._scrollTimer);
         var lineNumber = /** @type {number} */ (event.data);
-        this._history.updateScrollLineNumber(this._currentFile.url(), lineNumber);
-        this._history.save(this._previouslyViewedFilesSetting);
+        this._scrollTimer = setTimeout(() => {
+            this._history.updateScrollLineNumber(this._currentFile.url(), lineNumber);
+            this._history.save(this._previouslyViewedFilesSetting);
+        }, 100);
     },
 
     /**

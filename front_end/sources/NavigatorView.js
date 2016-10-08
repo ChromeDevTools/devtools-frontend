@@ -1003,9 +1003,7 @@ WebInspector.NavigatorSourceTreeElement.prototype = {
         if (!this._uiSourceCode.canRename())
             return false;
         var isSelected = this === this.treeOutline.selectedTreeElement;
-        var document = this.treeOutline.element.ownerDocument;
-        var isFocused = this.treeOutline.element.isSelfOrAncestor(document.activeElement);
-        return isSelected && isFocused && !WebInspector.isBeingEdited(this.treeOutline.element);
+        return isSelected && this.treeOutline.element.hasFocus() && !WebInspector.isBeingEdited(this.treeOutline.element);
     },
 
     selectOnMouseDown: function(event)

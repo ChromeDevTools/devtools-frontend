@@ -287,7 +287,7 @@ WebInspector.AdvancedSearchView.prototype = {
 
     focus: function()
     {
-        WebInspector.setCurrentFocusElement(this._search);
+        this._search.focus();
         this._search.select();
     },
 

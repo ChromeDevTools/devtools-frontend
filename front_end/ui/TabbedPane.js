@@ -153,6 +153,9 @@ WebInspector.TabbedPane.prototype = {
         this._closeableTabs = closeableTabs;
     },
 
+    /**
+     * @override
+     */
     focus: function()
     {
         if (this.visibleView)
@@ -435,7 +438,7 @@ WebInspector.TabbedPane.prototype = {
         if (tab.view === view)
             return;
 
-        var shouldFocus = tab.view.element.isSelfOrAncestor(WebInspector.currentFocusElement());
+        var shouldFocus = tab.view.hasFocus();
 
         this.suspendInvalidations();
 

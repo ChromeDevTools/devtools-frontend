@@ -435,6 +435,8 @@ WebInspector.ViewManager._ContainerWidget = function(view)
     WebInspector.VBox.call(this);
     this.element.classList.add("flex-auto", "view-container", "overflow-auto");
     this._view = view;
+    this.element.tabIndex = 0;
+    this.setDefaultFocusedElement(this.element);
 }
 
 WebInspector.ViewManager._ContainerWidget.prototype = {
@@ -447,7 +449,14 @@ WebInspector.ViewManager._ContainerWidget.prototype = {
             return this._materializePromise;
         var promises = [];
         promises.push(this._view.toolbarItems().then(WebInspector.ViewManager._populateToolbar.bind(WebInspector.ViewManager, this.element)));
-        promises.push(this._view.widget().then(widget => widget.show(this.element)));
+        promises.push(this._view.widget().then(widget => {
+            // Move focus from |this| to loaded |widget| if any.
+            var shouldFocus = this.element.hasFocus();
+            this.setDefaultFocusedElement(null);
+            widget.show(this.element);
+            if (shouldFocus)
+                widget.focus();
+        }));
         this._materializePromise = Promise.all(promises);
         return this._materializePromise;
     },
@@ -696,8 +705,8 @@ WebInspector.ViewManager._TabbedLocation.prototype = {
     showView: function(view, insertBefore)
     {
         this.appendView(view, insertBefore);
-        this._tabbedPane.focus();
         this._tabbedPane.selectTab(view.viewId());
+        this._tabbedPane.focus();
         return this._materializeWidget(view);
     },
 

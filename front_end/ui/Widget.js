@@ -437,7 +437,7 @@ WebInspector.Widget.prototype = {
     },
 
     /**
-     * @param {!Element} element
+     * @param {?Element} element
      */
     setDefaultFocusedElement: function(element)
     {
@@ -455,9 +455,13 @@ WebInspector.Widget.prototype = {
 
     focus: function()
     {
+        if (!this.isShowing())
+            return;
+
         var element = this._defaultFocusedElement;
-        if (element && !element.isAncestor(this.element.ownerDocument.activeElement)) {
-            WebInspector.setCurrentFocusElement(element);
+        if (element) {
+            if (!element.hasFocus())
+                element.focus();
             return;
         }
 
@@ -479,8 +483,7 @@ WebInspector.Widget.prototype = {
      */
     hasFocus: function()
     {
-        var activeElement = this.element.ownerDocument.activeElement;
-        return activeElement && activeElement.isSelfOrDescendant(this.element);
+        return this.element.hasFocus();
     },
 
     /**
@@ -743,6 +746,29 @@ WebInspector.VBoxWithResizeCallback.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
+}
+
+/**
+ * @param {!WebInspector.Widget} widget
+ * @constructor
+ */
+WebInspector.WidgetFocusRestorer = function(widget)
+{
+    this._widget = widget;
+    this._previous = widget.element.ownerDocument.deepActiveElement();
+    widget.focus();
+}
+
+WebInspector.WidgetFocusRestorer.prototype = {
+    restore: function()
+    {
+        if (!this._widget)
+            return;
+        if (this._widget.hasFocus() && this._previous)
+            this._previous.focus();
+        this._previous = null;
+        this._widget = null;
+    }
 }
 
 /**

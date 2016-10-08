@@ -68,7 +68,7 @@ WebInspector.InplaceEditor.prototype = {
         var oldTabIndex = element.getAttribute("tabIndex");
         if (typeof oldTabIndex !== "number" || oldTabIndex < 0)
             element.tabIndex = 0;
-        WebInspector.setCurrentFocusElement(element);
+        this._focusRestorer = new WebInspector.ElementFocusRestorer(element);
         editingContext.oldTabIndex = oldTabIndex;
     },
 
@@ -149,7 +149,8 @@ WebInspector.InplaceEditor.prototype = {
             if (pasteCallback)
                 element.removeEventListener("paste", pasteEventListener, true);
 
-            WebInspector.restoreFocusFromElement(element);
+            if (self._focusRestorer)
+                self._focusRestorer.restore();
             self.closeEditor(editingContext);
         }
 

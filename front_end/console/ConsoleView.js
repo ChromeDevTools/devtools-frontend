@@ -332,7 +332,6 @@ WebInspector.ConsoleView.prototype = {
     wasShown: function()
     {
         this._viewport.refresh();
-        this.focus();
     },
 
     focus: function()

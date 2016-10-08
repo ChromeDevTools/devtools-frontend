@@ -284,6 +284,7 @@ WebInspector.GlassPane = function(document, dimmed)
     this.element.style.cssText = "position:absolute;top:0;bottom:0;left:0;right:0;background-color:" + background + ";z-index:" + this._zIndex + ";overflow:hidden;";
     document.body.appendChild(this.element);
     WebInspector._glassPane = this;
+    // TODO(dgozman): disallow focus outside of glass pane?
 }
 
 WebInspector.GlassPane.prototype = {
@@ -322,16 +323,17 @@ WebInspector.isBeingEdited = function(node)
 
 /**
  * @return {boolean}
+ * @suppressGlobalPropertiesCheck
  */
 WebInspector.isEditing = function()
 {
     if (WebInspector.__editingCount)
         return true;
 
-    var element = WebInspector.currentFocusElement();
-    if (!element)
+    var focused = document.deepActiveElement();
+    if (!focused)
         return false;
-    return element.classList.contains("text-prompt") || element.nodeName === "INPUT" || element.nodeName === "TEXTAREA";
+    return focused.classList.contains("text-prompt") || focused.nodeName === "INPUT" || focused.nodeName === "TEXTAREA";
 }
 
 /**
@@ -792,92 +794,35 @@ WebInspector._windowBlurred = function(document, event)
 }
 
 /**
- * @return {!Element}
- */
-WebInspector.previousFocusElement = function()
-{
-    return WebInspector._previousFocusElement;
-}
-
-/**
- * @return {!Element}
- */
-WebInspector.currentFocusElement = function()
-{
-    return WebInspector._currentFocusElement;
-}
-
-/**
  * @param {!Event} event
  */
 WebInspector._focusChanged = function(event)
 {
     var node = event.deepActiveElement();
     WebInspector.Widget.focusWidgetForNode(node);
-    WebInspector.setCurrentFocusElement(node);
 }
 
 /**
- * @param {!Document} document
- * @param {!Event} event
+ * @param {!Element} element
+ * @constructor
  */
-WebInspector._documentBlurred = function(document, event)
+WebInspector.ElementFocusRestorer = function(element)
 {
-    // We want to know when currentFocusElement loses focus to nowhere.
-    // This is the case when event.relatedTarget is null (no element is being focused)
-    // and document.activeElement is reset to default (this is not a window blur).
-    if (!event.relatedTarget && document.activeElement === document.body)
-        WebInspector.setCurrentFocusElement(null);
+    this._element = element;
+    this._previous = element.ownerDocument.deepActiveElement();
+    element.focus();
 }
 
-WebInspector._textInputTypes = new Set(["text", "search", "tel", "url", "email", "password"]);
-WebInspector._isTextEditingElement = function(element)
-{
-    if (element instanceof HTMLInputElement)
-        return WebInspector._textInputTypes.has(element.type);
-
-    if (element instanceof HTMLTextAreaElement)
-        return true;
-
-    return false;
-}
-
-/**
- * @param {?Node} x
- */
-WebInspector.setCurrentFocusElement = function(x)
-{
-    if (WebInspector._glassPane && x && !WebInspector._glassPane.element.isAncestor(x))
-        return;
-    if (x && !x.ownerDocument.isAncestor(x))
-        return;
-    if (WebInspector._currentFocusElement !== x)
-        WebInspector._previousFocusElement = WebInspector._currentFocusElement;
-    WebInspector._currentFocusElement = x;
-
-    if (x) {
-        x.focus();
-
-        // Make a caret selection inside the new element if there isn't a range selection and there isn't already a caret selection inside.
-        // This is needed (at least) to remove caret from console when focus is moved to some element in the panel.
-        // The code below should not be applied to text fields and text areas, hence _isTextEditingElement check.
-        var selection = x.getComponentSelection();
-        if (!WebInspector._isTextEditingElement(x) && selection.isCollapsed && !x.isInsertionCaretInside()) {
-            var selectionRange = x.ownerDocument.createRange();
-            selectionRange.setStart(x, 0);
-            selectionRange.setEnd(x, 0);
-
-            selection.removeAllRanges();
-            selection.addRange(selectionRange);
-        }
-    } else if (WebInspector._previousFocusElement)
-        WebInspector._previousFocusElement.blur();
-}
-
-WebInspector.restoreFocusFromElement = function(element)
-{
-    if (element && element.isSelfOrAncestor(WebInspector.currentFocusElement()))
-        WebInspector.setCurrentFocusElement(WebInspector.previousFocusElement());
+WebInspector.ElementFocusRestorer.prototype = {
+    restore: function()
+    {
+        if (!this._element)
+            return;
+        if (this._element.hasFocus() && this._previous)
+            this._previous.focus();
+        this._previous = null;
+        this._element = null;
+    }
 }
 
 /**
@@ -1271,7 +1216,6 @@ WebInspector.initializeUIUtils = function(document, themeSetting)
     document.defaultView.addEventListener("focus", WebInspector._windowFocused.bind(WebInspector, document), false);
     document.defaultView.addEventListener("blur", WebInspector._windowBlurred.bind(WebInspector, document), false);
     document.addEventListener("focus", WebInspector._focusChanged.bind(WebInspector), true);
-    document.addEventListener("blur", WebInspector._documentBlurred.bind(WebInspector, document), true);
 
     if (!WebInspector.themeSupport)
         WebInspector.themeSupport = new WebInspector.ThemeSupport(themeSetting);

@@ -666,10 +666,11 @@ WebInspector.Main.SearchActionDelegate.prototype = {
      * @param {!WebInspector.Context} context
      * @param {string} actionId
      * @return {boolean}
+     * @suppressGlobalPropertiesCheck
      */
     handleAction: function(context, actionId)
     {
-        var searchableView = WebInspector.SearchableView.fromElement(WebInspector.currentFocusElement()) || WebInspector.inspectorView.currentPanel().searchableView();
+        var searchableView = WebInspector.SearchableView.fromElement(document.deepActiveElement()) || WebInspector.inspectorView.currentPanel().searchableView();
         if (!searchableView)
             return false;
         switch (actionId) {

@@ -94,7 +94,6 @@ WebInspector.SearchableView = function(searchable, settingName)
     this._searchNavigationNextElement.addEventListener("click", this._onNextButtonSearch.bind(this), false);
     this._searchNavigationNextElement.title = WebInspector.UIString("Search Next");
 
-    this._searchInputElement.addEventListener("mousedown", this._onSearchFieldManualFocus.bind(this), false); // when the search field is manually selected
     this._searchInputElement.addEventListener("keydown", this._onSearchKeyDown.bind(this), true);
     this._searchInputElement.addEventListener("input", this._onInput.bind(this), false);
 
@@ -250,7 +249,7 @@ WebInspector.SearchableView.prototype = {
     closeSearch: function()
     {
         this.cancelSearch();
-        if (WebInspector.currentFocusElement() && WebInspector.currentFocusElement().isDescendant(this._footerElementContainer))
+        if (this._footerElementContainer.hasFocus())
             this.focus();
     },
 
@@ -364,7 +363,7 @@ WebInspector.SearchableView.prototype = {
             this.cancelSearch();
 
         var queryCandidate;
-        if (WebInspector.currentFocusElement() !== this._searchInputElement) {
+        if (!this._searchInputElement.hasFocus()) {
             var selection = this._searchInputElement.getComponentSelection();
             if (selection.rangeCount)
                 queryCandidate = selection.toString().replace(/\r?\n.*/, "");
@@ -387,14 +386,6 @@ WebInspector.SearchableView.prototype = {
             this._replaceCheckboxElement.checked = false;
             this._updateSecondRowVisibility();
         }
-    },
-
-    /**
-     * @param {!Event} event
-     */
-    _onSearchFieldManualFocus: function(event)
-    {
-        WebInspector.setCurrentFocusElement(/** @type {?Node} */ (event.target));
     },
 
     /**

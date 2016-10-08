@@ -902,19 +902,8 @@ Node.prototype.setTextContentTruncatedIfNeeded = function(text, placeholder)
  */
 Event.prototype.deepElementFromPoint = function()
 {
-    // 1. climb to the component root.
-    var node = this.target;
-    while (node && node.nodeType !== Node.DOCUMENT_FRAGMENT_NODE && node.nodeType !== Node.DOCUMENT_NODE)
-        node = node.parentNode;
-
-    if (!node)
-        return null;
-
-    // 2. Find deepest node by coordinates.
-    node = node.elementFromPoint(this.pageX, this.pageY);
-    while (node && node.shadowRoot)
-        node = node.shadowRoot.elementFromPoint(this.pageX, this.pageY);
-    return node;
+    var root = this.target && this.target.getComponentRoot();
+    return root ? root.deepElementFromPoint(this.pageX, this.pageY) : null;
 }
 
 /**
@@ -922,10 +911,8 @@ Event.prototype.deepElementFromPoint = function()
  */
 Event.prototype.deepActiveElement = function()
 {
-    var activeElement = this.target && this.target.ownerDocument ? this.target.ownerDocument.activeElement : null;
-    while (activeElement && activeElement.shadowRoot && activeElement.shadowRoot.activeElement)
-        activeElement = activeElement.shadowRoot.activeElement;
-    return activeElement;
+    var document = this.target && this.target.ownerDocument;
+    return document ? document.deepActiveElement() : null;
 }
 
 /**
@@ -939,6 +926,41 @@ Document.prototype.deepElementFromPoint = function(x, y)
     while (node && node.shadowRoot)
         node = node.shadowRoot.elementFromPoint(x, y);
     return node;
+}
+
+DocumentFragment.prototype.deepElementFromPoint = Document.prototype.deepElementFromPoint;
+
+/**
+ * @return {?Element}
+ */
+Document.prototype.deepActiveElement = function()
+{
+    var activeElement = this.activeElement;
+    while (activeElement && activeElement.shadowRoot && activeElement.shadowRoot.activeElement)
+        activeElement = activeElement.shadowRoot.activeElement;
+    return activeElement;
+}
+
+DocumentFragment.prototype.deepActiveElement = Document.prototype.deepActiveElement;
+
+/**
+ * @return {boolean}
+ */
+Element.prototype.hasFocus = function()
+{
+    var root = this.getComponentRoot();
+    return !!root && this.isSelfOrAncestor(root.activeElement);
+}
+
+/**
+ * @return {?Document|?DocumentFragment}
+ */
+Node.prototype.getComponentRoot = function()
+{
+    var node = this;
+    while (node && node.nodeType !== Node.DOCUMENT_FRAGMENT_NODE && node.nodeType !== Node.DOCUMENT_NODE)
+        node = node.parentNode;
+    return /** @type {?Document|?DocumentFragment} */ (node);
 }
 
 /**

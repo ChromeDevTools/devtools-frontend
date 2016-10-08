@@ -48,6 +48,7 @@ WebInspector.Spectrum = function()
     WebInspector.VBox.call(this, true);
     this.registerRequiredCSS("components/spectrum.css");
     this.contentElement.tabIndex = 0;
+    this.setDefaultFocusedElement(this.contentElement);
 
     this._colorElement = this.contentElement.createChild("div", "spectrum-color");
     this._colorDragElement = this._colorElement.createChild("div", "spectrum-sat fill").createChild("div", "spectrum-val fill").createChild("div", "spectrum-dragger");
@@ -228,8 +229,8 @@ WebInspector.Spectrum.prototype = {
 
     _focus: function()
     {
-        if (this.isShowing() && WebInspector.currentFocusElement() !== this.contentElement)
-            WebInspector.setCurrentFocusElement(this.contentElement);
+        if (this.isShowing())
+            this.contentElement.focus();
     },
 
     /**
@@ -328,7 +329,7 @@ WebInspector.Spectrum.prototype = {
             this._shadesContainer.appendChild(shadeElement);
         }
 
-        WebInspector.setCurrentFocusElement(this._shadesContainer);
+        this._shadesContainer.focus();
         this._shadesCloseHandler = closeLightnessShades.bind(this, colorElement);
         this._shadesContainer.ownerDocument.addEventListener("mousedown", this._shadesCloseHandler, true);
     },

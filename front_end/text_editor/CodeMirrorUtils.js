@@ -127,7 +127,7 @@ WebInspector.CodeMirrorUtils.prototype = {
         var config = editingContext.config;
         editingContext.cssLoadView = new WebInspector.CodeMirrorCSSLoadView();
         editingContext.cssLoadView.show(element);
-        WebInspector.setCurrentFocusElement(element);
+        element.focus();
         element.addEventListener("copy", this._consumeCopy, false);
         var codeMirror = new window.CodeMirror(element, {
             mode: config.mode,

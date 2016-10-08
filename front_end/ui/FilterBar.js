@@ -224,7 +224,6 @@ WebInspector.TextFilterUI = function(supportRegex)
     this._filterInputElement = /** @type {!HTMLInputElement} */ (this._filterElement.createChild("input", "filter-input-field"));
     this._filterInputElement.placeholder = WebInspector.UIString("Filter");
     this._filterInputElement.id = "filter-input-field";
-    this._filterInputElement.addEventListener("mousedown", this._onFilterFieldManualFocus.bind(this), false); // when the search field is manually selected
     this._filterInputElement.addEventListener("input", this._onInput.bind(this), false);
     this._filterInputElement.addEventListener("change", this._onChange.bind(this), false);
     this._filterInputElement.addEventListener("keydown", this._onInputKeyDown.bind(this), true);
@@ -306,14 +305,6 @@ WebInspector.TextFilterUI.prototype = {
     regex: function()
     {
         return this._regex;
-    },
-
-    /**
-     * @param {!Event} event
-     */
-    _onFilterFieldManualFocus: function(event)
-    {
-        WebInspector.setCurrentFocusElement(/** @type {?Node} */ (event.target));
     },
 
     /**

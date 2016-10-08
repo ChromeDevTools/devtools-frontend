@@ -83,6 +83,7 @@ WebInspector.Main.prototype = {
         Runtime.experiments.register("applyCustomStylesheet", "Allow custom UI themes");
         Runtime.experiments.register("autoAttachToCrossProcessSubframes", "Auto-attach to cross-process subframes", true);
         Runtime.experiments.register("blackboxJSFramesOnTimeline", "Blackbox JavaScript frames on Timeline", true);
+        Runtime.experiments.register("canvasNetworkTimeline", "Canvas based timeline in Network panel", true);
         Runtime.experiments.register("colorContrastRatio", "Contrast ratio line in color picker", true);
         Runtime.experiments.register("continueToFirstInvocation", "Continue to first invocation", true);
         Runtime.experiments.register("emptySourceMapAutoStepping", "Empty sourcemap auto-stepping");

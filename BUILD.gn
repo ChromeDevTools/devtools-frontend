@@ -534,6 +534,7 @@ devtools_network_js_files = [
   "front_end/network/NetworkOverview.js",
   "front_end/network/NetworkPanel.js",
   "front_end/network/NetworkTimeCalculator.js",
+  "front_end/network/NetworkTimelineColumn.js",
   "front_end/network/RequestCookiesView.js",
   "front_end/network/RequestHeadersView.js",
   "front_end/network/RequestHTMLView.js",

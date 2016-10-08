@@ -100,6 +100,7 @@
         "NetworkLogViewColumns.js",
         "NetworkManageCustomHeadersView.js",
         "NetworkOverview.js",
+        "NetworkTimelineColumn.js",
         "RequestCookiesView.js",
         "RequestHeadersView.js",
         "RequestHTMLView.js",

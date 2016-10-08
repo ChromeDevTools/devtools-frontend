@@ -76,13 +76,13 @@
     height: 21px;
 }
 
-.network-log-grid.data-grid th {
+.network-timeline-header, .network-log-grid.data-grid th {
     border-bottom: 1px solid rgb(205, 205, 205);
     border-left: 1px solid rgb(205, 205, 205);
     background: white;
 }
 
-.network-log-grid.data-grid .header-container {
+.network-timeline-header, .network-log-grid.data-grid .header-container {
     height: 31px;
 }
 
@@ -90,7 +90,7 @@
     top: 31px;
 }
 
-.network-log-grid.data-grid.small .header-container {
+.network-timeline-header.small, .network-log-grid.data-grid.small .header-container {
     height: 27px;
 }
 
@@ -652,4 +652,57 @@
     font-size: 14px;
     text-align: center;
     line-height: 28px;
+}
+
+.network-timeline-header {
+    position: absolute;
+    border-left: 0px;
+    width: 100%;
+    display: table;
+    z-index: 200;
+    background-color:transparent;
+}
+
+.network-timeline-header:hover {
+    background-color:hsla(0, 0%, 80%, .5);
+}
+
+.network-timeline-header div {
+    display: table-cell;
+    line-height: 14px;
+    margin: auto 0px;
+    vertical-align: middle;
+    text-align: left;
+    font-weight: normal;
+    padding: 0px 4px;
+    font-size: 11px;
+}
+
+.network-timeline-header .sort-order-icon-container {
+    position: absolute;
+    top: 1px;
+    right: 0;
+    bottom: 1px;
+    display: flex;
+    align-items: center;
+}
+
+.network-timeline-header .sort-order-icon {
+    margin-right: 4px;
+    background-image: url(Images/toolbarButtonGlyphs.png);
+    background-size: 352px 168px;
+    opacity: 0.5;
+    width: 8px;
+    height: 7px;
+    display: none;
+}
+
+.network-timeline-header .sort-ascending.sort-order-icon {
+    display: block;
+    background-position: -4px -111px;
+}
+
+.network-timeline-header .sort-descending.sort-order-icon {
+    display: block;
+    background-position: -20px -99px;
 }

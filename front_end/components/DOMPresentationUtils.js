@@ -137,7 +137,7 @@ WebInspector.DOMPresentationUtils.linkifyDeferredNodeReference = function(deferr
     var link = shadowRoot.createChild("div", "node-link");
     link.createChild("content");
     link.addEventListener("click", deferredNode.resolve.bind(deferredNode, onDeferredNodeResolved), false);
-    link.addEventListener("mousedown", consumeEvent, false);
+    link.addEventListener("mousedown", (e) => e.consume(), false);
 
     /**
      * @param {?WebInspector.DOMNode} node

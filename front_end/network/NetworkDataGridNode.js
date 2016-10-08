@@ -103,6 +103,16 @@ WebInspector.NetworkDataGridNode.prototype = {
     },
 
     /**
+     * @param {!Element} element
+     * @param {string} text
+     */
+    _setTextAndTitle: function(element, text)
+    {
+        element.textContent = text;
+        element.title = text;
+    },
+
+    /**
      * @override
      * @param {string} columnIdentifier
      * @return {!Element}
@@ -113,21 +123,21 @@ WebInspector.NetworkDataGridNode.prototype = {
         switch (columnIdentifier) {
         case "name": this._renderNameCell(cell); break;
         case "timeline": this._createTimelineBar(cell); break;
-        case "method": cell.setTextAndTitle(this._request.requestMethod); break;
+        case "method": this._setTextAndTitle(cell, this._request.requestMethod); break;
         case "status": this._renderStatusCell(cell); break;
-        case "protocol": cell.setTextAndTitle(this._request.protocol); break;
-        case "scheme": cell.setTextAndTitle(this._request.scheme); break;
-        case "domain": cell.setTextAndTitle(this._request.domain); break;
-        case "remoteaddress": cell.setTextAndTitle(this._request.remoteAddress()); break;
-        case "cookies": cell.setTextAndTitle(this._arrayLength(this._request.requestCookies)); break;
-        case "setcookies": cell.setTextAndTitle(this._arrayLength(this._request.responseCookies)); break;
-        case "priority": cell.setTextAndTitle(WebInspector.uiLabelForPriority(this._request.initialPriority())); break;
-        case "connectionid": cell.setTextAndTitle(this._request.connectionId); break;
-        case "type": this._renderTypeCell(cell); break;
+        case "protocol": this._setTextAndTitle(cell, this._request.protocol); break;
+        case "scheme": this._setTextAndTitle(cell, this._request.scheme); break;
+        case "domain": this._setTextAndTitle(cell, this._request.domain); break;
+        case "remoteaddress": this._setTextAndTitle(cell, this._request.remoteAddress()); break;
+        case "cookies": this._setTextAndTitle(cell, this._arrayLength(this._request.requestCookies)); break;
+        case "setcookies": this._setTextAndTitle(cell, this._arrayLength(this._request.responseCookies)); break;
+        case "priority": this._setTextAndTitle(cell, WebInspector.uiLabelForPriority(this._request.initialPriority())); break;
+        case "connectionid": this._setTextAndTitle(cell, this._request.connectionId); break;
+        case "type": this._setTextAndTitle(cell, this.displayType()); break;
         case "initiator": this._renderInitiatorCell(cell); break;
         case "size": this._renderSizeCell(cell); break;
         case "time": this._renderTimeCell(cell); break;
-        default: cell.setTextAndTitle(this._request.responseHeaderValue(columnIdentifier) || ""); break;
+        default: this._setTextAndTitle(cell, this._request.responseHeaderValue(columnIdentifier) || ""); break;
         }
 
         return cell;
@@ -283,15 +293,15 @@ WebInspector.NetworkDataGridNode.prototype = {
                 this._appendSubtitle(cell, this._request.localizedFailDescription);
                 cell.title = failText + " " + this._request.localizedFailDescription;
             } else
-                cell.setTextAndTitle(failText);
+                this._setTextAndTitle(cell, failText);
         } else if (this._request.statusCode) {
             cell.createTextChild("" + this._request.statusCode);
             this._appendSubtitle(cell, this._request.statusText);
             cell.title = this._request.statusCode + " " + this._request.statusText;
         } else if (this._request.parsedURL.isDataURL()) {
-            cell.setTextAndTitle(WebInspector.UIString("(data)"));
+            this._setTextAndTitle(cell, WebInspector.UIString("(data)"));
         } else if (this._request.canceled) {
-            cell.setTextAndTitle(WebInspector.UIString("(canceled)"));
+            this._setTextAndTitle(cell, WebInspector.UIString("(canceled)"));
         } else if (this._request.wasBlocked()) {
             var reason = WebInspector.UIString("other");
             switch (this._request.blockedReason()) {
@@ -311,20 +321,12 @@ WebInspector.NetworkDataGridNode.prototype = {
                 reason = WebInspector.UIString("other");
                 break;
             }
-            cell.setTextAndTitle(WebInspector.UIString("(blocked:%s)", reason));
+            this._setTextAndTitle(cell, WebInspector.UIString("(blocked:%s)", reason));
         } else if (this._request.finished) {
-            cell.setTextAndTitle(WebInspector.UIString("Finished"));
+            this._setTextAndTitle(cell, WebInspector.UIString("Finished"));
         } else {
-            cell.setTextAndTitle(WebInspector.UIString("(pending)"));
+            this._setTextAndTitle(cell, WebInspector.UIString("(pending)"));
         }
-    },
-
-    /**
-     * @param {!Element} cell
-     */
-    _renderTypeCell: function(cell)
-    {
-        cell.setTextAndTitle(this.displayType());
     },
 
     /**
@@ -378,18 +380,18 @@ WebInspector.NetworkDataGridNode.prototype = {
     _renderSizeCell: function(cell)
     {
         if (this._request.fetchedViaServiceWorker) {
-            cell.setTextAndTitle(WebInspector.UIString("(from ServiceWorker)"));
+            this._setTextAndTitle(cell, WebInspector.UIString("(from ServiceWorker)"));
             cell.classList.add("network-dim-cell");
         } else if (this._request.cached()) {
             if (this._request.cachedInMemory())
-                cell.setTextAndTitle(WebInspector.UIString("(from memory cache)"));
+                this._setTextAndTitle(cell, WebInspector.UIString("(from memory cache)"));
             else
-                cell.setTextAndTitle(WebInspector.UIString("(from disk cache)"));
+                this._setTextAndTitle(cell, WebInspector.UIString("(from disk cache)"));
             cell.classList.add("network-dim-cell");
         } else {
             var resourceSize = Number.bytesToString(this._request.resourceSize);
             var transferSize = Number.bytesToString(this._request.transferSize);
-            cell.setTextAndTitle(transferSize);
+            this._setTextAndTitle(cell, transferSize);
             this._appendSubtitle(cell, resourceSize);
         }
     },
@@ -400,11 +402,11 @@ WebInspector.NetworkDataGridNode.prototype = {
     _renderTimeCell: function(cell)
     {
         if (this._request.duration > 0) {
-            cell.setTextAndTitle(Number.secondsToString(this._request.duration));
+            this._setTextAndTitle(cell, Number.secondsToString(this._request.duration));
             this._appendSubtitle(cell, Number.secondsToString(this._request.latency));
         } else {
             cell.classList.add("network-dim-cell");
-            cell.setTextAndTitle(WebInspector.UIString("Pending"));
+            this._setTextAndTitle(cell, WebInspector.UIString("Pending"));
         }
     },
 

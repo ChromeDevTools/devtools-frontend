@@ -99,28 +99,26 @@ WebInspector.Tooltip.prototype = {
             container = this.element.parentElement;
 
         // Posititon tooltip based on the anchor element.
-        var containerOffset = container.offsetRelativeToWindow(this.element.window());
-        var containerOffsetWidth = container.offsetWidth;
-        var containerOffsetHeight = container.offsetHeight;
+        var containerBox = container.boxInWindow(this.element.window());
         var anchorBox = this._anchorElement.boxInWindow(this.element.window());
         const anchorOffset = 2;
         const pageMargin = 2;
         var cursorOffset = 10;
         this._tooltipElement.classList.toggle("tooltip-breakword", !this._tooltipElement.textContent.match("\\s"));
-        this._tooltipElement.style.maxWidth = (containerOffsetWidth - pageMargin * 2) + "px";
+        this._tooltipElement.style.maxWidth = (containerBox.width - pageMargin * 2) + "px";
         this._tooltipElement.style.maxHeight = "";
         var tooltipWidth = this._tooltipElement.offsetWidth;
         var tooltipHeight = this._tooltipElement.offsetHeight;
         var anchorTooltipAtElement = this._anchorElement.nodeName === "BUTTON" || this._anchorElement.nodeName === "LABEL";
         var tooltipX = anchorTooltipAtElement ? anchorBox.x : event.x + cursorOffset;
         tooltipX = Number.constrain(tooltipX,
-            containerOffset.x + pageMargin,
-            containerOffset.x + containerOffsetWidth - tooltipWidth - pageMargin);
+            containerBox.x + pageMargin,
+            containerBox.x + containerBox.width - tooltipWidth - pageMargin);
         var tooltipY;
         if (!anchorTooltipAtElement) {
-            tooltipY = event.y + cursorOffset + tooltipHeight < containerOffset.y + containerOffsetHeight ? event.y + cursorOffset : event.y - tooltipHeight;
+            tooltipY = event.y + cursorOffset + tooltipHeight < containerBox.y + containerBox.height ? event.y + cursorOffset : event.y - tooltipHeight;
         } else {
-            var onBottom = anchorBox.y + anchorOffset + anchorBox.height + tooltipHeight < containerOffset.y + containerOffsetHeight;
+            var onBottom = anchorBox.y + anchorOffset + anchorBox.height + tooltipHeight < containerBox.y + containerBox.height;
             tooltipY = onBottom ? anchorBox.y + anchorBox.height + anchorOffset : anchorBox.y - tooltipHeight - anchorOffset;
         }
         this._tooltipElement.positionAt(tooltipX, tooltipY);

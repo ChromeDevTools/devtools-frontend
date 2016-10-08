@@ -184,8 +184,11 @@ WebInspector.WatchExpressionsSidebarPane.prototype = {
         if (this._watchExpressions.length > 1)
             contextMenu.appendItem(WebInspector.UIString.capitalize("Delete ^all ^watch ^expressions"), this._deleteAllButtonClicked.bind(this));
 
+        var target = event.deepElementFromPoint();
+        if (!target)
+            return;
         for (var watchExpression of this._watchExpressions)
-            if (watchExpression.element().containsEventPoint(event))
+            if (watchExpression.element().isSelfOrAncestor(target))
                 watchExpression._populateContextMenu(contextMenu, event);
     },
 
@@ -446,7 +449,8 @@ WebInspector.WatchExpression.prototype = {
         if (!this.isEditing() && this._result && (this._result.type === "number" || this._result.type === "string"))
             contextMenu.appendItem(WebInspector.UIString.capitalize("Copy ^value"), this._copyValueButtonClicked.bind(this));
 
-        if (this._valueElement.containsEventPoint(event))
+        var target = event.deepElementFromPoint();
+        if (target && this._valueElement.isSelfOrAncestor(target))
             contextMenu.appendApplicableItems(this._result);
     },
 

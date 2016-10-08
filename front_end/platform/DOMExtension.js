@@ -181,30 +181,6 @@ Element.prototype.isScrolledToBottom = function()
 }
 
 /**
- * @param {!Node} fromNode
- * @param {!Node} toNode
- */
-function removeSubsequentNodes(fromNode, toNode)
-{
-    for (var node = fromNode; node && node !== toNode;) {
-        var nodeToRemove = node;
-        node = node.nextSibling;
-        nodeToRemove.remove();
-    }
-}
-
-/**
- * @param {!Event} event
- * @return {boolean}
- */
-Element.prototype.containsEventPoint = function(event)
-{
-    var box = this.getBoundingClientRect();
-    return box.left < event.x  && event.x < box.right &&
-           box.top < event.y && event.y < box.bottom;
-}
-
-/**
  * @param {!Array.<string>} nameArray
  * @return {?Node}
  */
@@ -338,32 +314,10 @@ Node.prototype.window = function()
     return this.ownerDocument.defaultView;
 }
 
-/**
- * @param {string} query
- * @return {?Node}
- */
-Element.prototype.query = function(query)
-{
-    return this.ownerDocument.evaluate(query, this, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-}
-
 Element.prototype.removeChildren = function()
 {
     if (this.firstChild)
         this.textContent = "";
-}
-
-/**
- * @return {boolean}
- */
-Element.prototype.isInsertionCaretInside = function()
-{
-    var selection = this.getComponentSelection();
-    // @see crbug.com/602541
-    var selectionRange = selection && selection.rangeCount ? selection.getRangeAt(0) : null;
-    if (!selectionRange || !selection.isCollapsed)
-        return false;
-    return selectionRange.startContainer.isSelfOrDescendant(this);
 }
 
 /**
@@ -375,20 +329,6 @@ Element.prototype.isInsertionCaretInside = function()
 function createElement(tagName, customElementType)
 {
     return document.createElement(tagName, customElementType || "");
-}
-
-/**
- * @param {string} type
- * @param {boolean} bubbles
- * @param {boolean} cancelable
- * @return {!Event}
- * @suppressGlobalPropertiesCheck
- */
-function createEvent(type, bubbles, cancelable)
-{
-    var event = document.createEvent("Event");
-    event.initEvent(type, bubbles, cancelable);
-    return event;
 }
 
 /**
@@ -525,20 +465,6 @@ Element.prototype.totalOffset = function()
 }
 
 /**
- * @return {!{left: number, top: number}}
- */
-Element.prototype.scrollOffset = function()
-{
-    var curLeft = 0;
-    var curTop = 0;
-    for (var element = this; element; element = element.scrollParent) {
-        curLeft += element.scrollLeft;
-        curTop += element.scrollTop;
-    }
-    return { left: curLeft, top: curTop };
-}
-
-/**
  * @param {string} childType
  * @param {string=} className
  * @return {!Element}
@@ -594,28 +520,6 @@ AnchorBox.prototype.equals = function(anchorBox)
 }
 
 /**
- * @param {!Window} targetWindow
- * @return {!AnchorBox}
- */
-Element.prototype.offsetRelativeToWindow = function(targetWindow)
-{
-    var elementOffset = new AnchorBox();
-    var curElement = this;
-    var curWindow = this.ownerDocument.defaultView;
-    while (curWindow && curElement) {
-        elementOffset.x += curElement.totalOffsetLeft();
-        elementOffset.y += curElement.totalOffsetTop();
-        if (curWindow === targetWindow)
-            break;
-
-        curElement = curWindow.frameElement;
-        curWindow = curWindow.parent;
-    }
-
-    return elementOffset;
-}
-
-/**
  * @param {!Window=} targetWindow
  * @return {!AnchorBox}
  */
@@ -623,20 +527,21 @@ Element.prototype.boxInWindow = function(targetWindow)
 {
     targetWindow = targetWindow || this.ownerDocument.defaultView;
 
-    var anchorBox = this.offsetRelativeToWindow(window);
-    anchorBox.width = Math.min(this.offsetWidth, window.innerWidth - anchorBox.x);
-    anchorBox.height = Math.min(this.offsetHeight, window.innerHeight - anchorBox.y);
+    var anchorBox = new AnchorBox();
+    var curElement = this;
+    var curWindow = this.ownerDocument.defaultView;
+    while (curWindow && curElement) {
+        anchorBox.x += curElement.totalOffsetLeft();
+        anchorBox.y += curElement.totalOffsetTop();
+        if (curWindow === targetWindow)
+            break;
+        curElement = curWindow.frameElement;
+        curWindow = curWindow.parent;
+    }
 
+    anchorBox.width = Math.min(this.offsetWidth, targetWindow.innerWidth - anchorBox.x);
+    anchorBox.height = Math.min(this.offsetHeight, targetWindow.innerHeight - anchorBox.y);
     return anchorBox;
-}
-
-/**
- * @param {string} text
- */
-Element.prototype.setTextAndTitle = function(text)
-{
-    this.textContent = text;
-    this.title = text;
 }
 
 /**
@@ -695,32 +600,6 @@ Element.prototype.selectionLeftOffset = function()
     }
 
     return leftOffset;
-}
-
-/**
- * @this {!HTMLImageElement} element
- * @return {!Promise<!HTMLImageElement>}
- */
-HTMLImageElement.prototype.completePromise = function()
-{
-    var element = this;
-    if (element.complete)
-        return Promise.resolve(element);
-    return new Promise(promiseBody);
-
-    /**
-     * @param {function(!HTMLImageElement)} resolve
-     */
-    function promiseBody(resolve)
-    {
-        element.addEventListener("load", oncomplete);
-        element.addEventListener("error", oncomplete);
-
-        function oncomplete()
-        {
-            resolve(element);
-        }
-    }
 }
 
 /**
@@ -907,15 +786,6 @@ Event.prototype.deepElementFromPoint = function()
 }
 
 /**
- * @return {?Element}
- */
-Event.prototype.deepActiveElement = function()
-{
-    var document = this.target && this.target.ownerDocument;
-    return document ? document.deepActiveElement() : null;
-}
-
-/**
  * @param {number} x
  * @param {number} y
  * @return {?Node}
@@ -980,11 +850,6 @@ function isEnterKey(event)
 function isEscKey(event)
 {
     return event.keyCode === 27;
-}
-
-function consumeEvent(e)
-{
-    e.consume();
 }
 
 /**

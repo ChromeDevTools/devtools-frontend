@@ -91,8 +91,8 @@ WebInspector.ColorSwatch.prototype = {
         this._iconElement = root.createChild("span", "color-swatch");
         this._iconElement.title = WebInspector.UIString("Shift-click to change color format");
         this._swatchInner = this._iconElement.createChild("span", "color-swatch-inner");
-        this._swatchInner.addEventListener("dblclick", consumeEvent, false);
-        this._swatchInner.addEventListener("mousedown", consumeEvent, false);
+        this._swatchInner.addEventListener("dblclick", (e) => e.consume(), false);
+        this._swatchInner.addEventListener("mousedown", (e) => e.consume(), false);
         this._swatchInner.addEventListener("click", this._handleClick.bind(this), true);
 
         root.createChild("content");

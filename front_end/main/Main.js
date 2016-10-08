@@ -473,7 +473,8 @@ WebInspector.Main.prototype = {
         if (event.handled)
             return;
 
-        var target = event.deepActiveElement();
+        var document = event.target && event.target.ownerDocument;
+        var target = document ? document.deepActiveElement() : null;
         if (target) {
             var anchor = target.enclosingNodeOrSelfWithNodeName("a");
             if (anchor && anchor.preventFollow)
@@ -498,7 +499,10 @@ WebInspector.Main.prototype = {
     {
         var eventCopy = new CustomEvent("clipboard-" + event.type);
         eventCopy["original"] = event;
-        event.deepActiveElement().dispatchEvent(eventCopy);
+        var document = event.target && event.target.ownerDocument;
+        var target = document ? document.deepActiveElement() : null;
+        if (target)
+            target.dispatchEvent(eventCopy);
         if (eventCopy.handled)
             event.preventDefault();
     },

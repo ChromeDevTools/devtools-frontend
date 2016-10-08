@@ -798,8 +798,9 @@ WebInspector._windowBlurred = function(document, event)
  */
 WebInspector._focusChanged = function(event)
 {
-    var node = event.deepActiveElement();
-    WebInspector.Widget.focusWidgetForNode(node);
+    var document = event.target && event.target.ownerDocument;
+    var element = document ? document.deepActiveElement() : null;
+    WebInspector.Widget.focusWidgetForNode(element);
 }
 
 /**

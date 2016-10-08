@@ -691,7 +691,12 @@ WebInspector.TextPrompt.prototype = {
      */
     isCaretInsidePrompt: function()
     {
-        return this._element.isInsertionCaretInside();
+        var selection = this._element.getComponentSelection();
+        // @see crbug.com/602541
+        var selectionRange = selection && selection.rangeCount ? selection.getRangeAt(0) : null;
+        if (!selectionRange || !selection.isCollapsed)
+            return false;
+        return selectionRange.startContainer.isSelfOrDescendant(this._element);
     },
 
     /**

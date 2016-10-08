@@ -207,8 +207,8 @@ WebInspector.ComputedStyleWidget.prototype = {
             var trace = propertyTraces.get(propertyName);
             if (trace) {
                 var activeProperty = this._renderPropertyTrace(cssModel, matchedStyles, nodeStyle.node, treeElement, trace);
-                treeElement.listItemElement.addEventListener("mousedown", consumeEvent, false);
-                treeElement.listItemElement.addEventListener("dblclick", consumeEvent, false);
+                treeElement.listItemElement.addEventListener("mousedown", (e) => e.consume(), false);
+                treeElement.listItemElement.addEventListener("dblclick", (e) => e.consume(), false);
                 treeElement.listItemElement.addEventListener("click", handleClick.bind(null, treeElement), false);
                 var gotoSourceElement = propertyValueElement.createChild("div", "goto-source-icon");
                 gotoSourceElement.addEventListener("click", this._navigateToSource.bind(this, activeProperty));
@@ -243,7 +243,7 @@ WebInspector.ComputedStyleWidget.prototype = {
                 treeElement.expand();
             else
                 treeElement.collapse();
-            consumeEvent(event);
+            event.consume();
         }
     },
 

@@ -18,7 +18,7 @@ WebInspector.BlockedURLsPane = function()
     this._blockedURLsSetting.addChangeListener(this._update, this);
 
     this._toolbar = new WebInspector.Toolbar("", this.contentElement);
-    this._toolbar.element.addEventListener("click", consumeEvent);
+    this._toolbar.element.addEventListener("click", (e) => e.consume());
     var addButton = new WebInspector.ToolbarButton(WebInspector.UIString("Add pattern"), "add-toolbar-item");
     addButton.addEventListener("click", this._addButtonClicked.bind(this));
     this._toolbar.appendToolbarItem(addButton);

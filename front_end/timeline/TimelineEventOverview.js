@@ -488,10 +488,19 @@ WebInspector.TimelineFilmStripOverview.prototype = {
          */
         function createImage(data)
         {
+            var fulfill;
+            var promise = new Promise(f => fulfill = f);
+
             var image = /** @type {!HTMLImageElement} */ (createElement("img"));
             if (data)
                 image.src = "data:image/jpg;base64," + data;
-            return image.completePromise();
+            if (image.complete) {
+                fulfill(image);
+            } else {
+                image.addEventListener("load", () => fulfill(image));
+                image.addEventListener("error", () => fulfill(image));
+            }
+            return promise;
         }
     },
 

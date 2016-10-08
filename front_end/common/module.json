@@ -26,6 +26,7 @@
         "Trie.js",
         "UIString.js",
         "ModuleExtensionInterfaces.js",
-        "FormatterWorkerPool.js"
+        "FormatterWorkerPool.js",
+        "CharacterIdMap.js"
     ]
 }

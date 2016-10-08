@@ -23,6 +23,7 @@ devtools_core_base_files = [
   "front_end/Runtime.js",
 ]
 devtools_common_js_files = [
+  "front_end/common/CharacterIdMap.js",
   "front_end/common/Color.js",
   "front_end/common/Console.js",
   "front_end/common/ContentProvider.js",

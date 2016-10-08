@@ -21,20 +21,17 @@ WebInspector.Diff = {
      */
     lineDiff: function(lines1, lines2)
     {
-        /** @type {!Map.<string, string>} */
-        var lineToChar = new Map();
-        /** @type {!Map.<string, string>} */
-        var charToLine = new Map();
-        var charCode = 33;
-        var text1 = encode(lines1);
-        var text2 = encode(lines2);
+        /** @type {!WebInspector.CharacterIdMap<string>} */
+        var idMap = new WebInspector.CharacterIdMap();
+        var text1 = lines1.map(line => idMap.toChar(line)).join("");
+        var text2 = lines2.map(line => idMap.toChar(line)).join("");
 
         var diff = WebInspector.Diff.charDiff(text1, text2);
         var lineDiff = [];
         for (var i = 0; i < diff.length; i++) {
             var lines = [];
             for (var j = 0; j < diff[i][1].length; j++)
-                lines.push(charToLine.get(diff[i][1][j]));
+                lines.push(idMap.fromChar(diff[i][1][j]));
 
             lineDiff.push({
                 0: diff[i][0],
@@ -42,26 +39,6 @@ WebInspector.Diff = {
             });
         }
         return lineDiff;
-
-        /**
-         * @param {!Array.<string>} lines
-         * @return {string}
-         */
-        function encode(lines)
-        {
-            var text = "";
-            for (var i = 0; i < lines.length; ++i) {
-                var line = lines[i];
-                var character = lineToChar.get(line);
-                if (!character) {
-                    character = String.fromCharCode(charCode++);
-                    lineToChar.set(line, character);
-                    charToLine.set(character, line);
-                }
-                text += character;
-            }
-            return text;
-        }
     },
 
     /**

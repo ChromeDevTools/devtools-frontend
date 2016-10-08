@@ -354,7 +354,18 @@ li.selected {
     z-index: 0;
 }
 
-li.hovered:not(.always-parent) + ol.children, .elements-tree-outline ol.shadow-root, li.selected:not(.always-parent) + ol.children {
+
+li.hovered:not(.always-parent) + ol.children::before {
+    background-color: rgba(56, 121, 217, 0.1);
+    content: "a";
+    position: absolute;
+    top: -1px;
+    bottom: 0;
+    left: -10000px;
+    right: 0;
+}
+
+.elements-tree-outline ol.shadow-root, li.selected:not(.always-parent) + ol.children {
     margin-left: 5px;
     -webkit-padding-start: 6px;
     border-width: 1px;

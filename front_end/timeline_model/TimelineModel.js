@@ -770,9 +770,9 @@ WebInspector.TimelineModel.prototype = {
             for (var profileEvent of profileGroup.children) {
                 var eventData = profileEvent.args["data"];
                 if ("startTime" in eventData)
-                     cpuProfile.startTime = eventData["startTime"];
+                    cpuProfile.startTime = eventData["startTime"];
                 if ("endTime" in eventData)
-                     cpuProfile.endTime = eventData["endTime"];
+                    cpuProfile.endTime = eventData["endTime"];
                 cpuProfile.nodes.pushAll(eventData["nodes"] || []);
                 cpuProfile.samples.pushAll(eventData["samples"] || []);
                 cpuProfile.timeDeltas.pushAll(eventData["timeDeltas"] || []);
@@ -987,6 +987,10 @@ WebInspector.TimelineModel.prototype = {
                 --eventData["lineNumber"];
             if (typeof eventData["columnNumber"] === "number")
                 --eventData["columnNumber"];
+            // Fallthrough intended.
+        case recordTypes.RunMicrotasks:
+            // Microtasks technically are not necessarily scripts, but for purpose of
+            // forced sync style recalc or layout detection they are.
             if (!this._currentScriptEvent)
                 this._currentScriptEvent = event;
             break;

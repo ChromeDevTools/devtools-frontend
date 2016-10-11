@@ -800,14 +800,7 @@ WebInspector.TimelineModel.prototype = {
     {
         var jsProfileModel = this._extractCpuProfile(tracingModel, thread);
         var events = thread.events();
-        var jsSamples;
-        if (jsProfileModel) {
-            jsSamples = WebInspector.TimelineJSProfileProcessor.generateTracingEventsFromCpuProfile(jsProfileModel, thread);
-        } else {
-            // Try to read the intermediate experimental format.
-            // TODO(alph): Nuke it as soon as the experiment is gone.
-            jsSamples = WebInspector.TimelineJSProfileProcessor.processRawV8Samples(events);
-        }
+        var jsSamples = jsProfileModel ? WebInspector.TimelineJSProfileProcessor.generateTracingEventsFromCpuProfile(jsProfileModel, thread) : null;
         if (jsSamples && jsSamples.length)
             events = events.mergeOrdered(jsSamples, WebInspector.TracingModel.Event.orderedCompareStartTime);
         if (jsSamples || events.some(e => e.name === WebInspector.TimelineModel.RecordType.JSSample)) {

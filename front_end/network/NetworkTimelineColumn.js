@@ -27,6 +27,28 @@ WebInspector.NetworkTimelineColumn = function(networkLogView, dataGrid)
 }
 
 WebInspector.NetworkTimelineColumn.prototype = {
+    wasShown: function()
+    {
+        this.scheduleUpdate();
+    },
+
+    scheduleRefreshData: function()
+    {
+        this._needsRefreshData = true;
+    },
+
+    _refreshDataIfNeeded: function()
+    {
+        if (!this._needsRefreshData)
+            return;
+        this._needsRefreshData = false;
+        var currentNode = this._dataGrid.rootNode();
+        this._requestData = [];
+        while (currentNode = currentNode.traverseNextNode(true))
+            this._requestData.push(currentNode.request());
+        this._update();
+    },
+
     scheduleUpdate: function()
     {
         if (this._updateRequestID)
@@ -38,6 +60,8 @@ WebInspector.NetworkTimelineColumn.prototype = {
     {
         this.element.window().cancelAnimationFrame(this._updateRequestID);
         this._updateRequestID = null;
+
+        this._refreshDataIfNeeded();
 
         this._startTime = this._networkLogView.calculator().minimumBoundary();
         this._endTime = this._networkLogView.calculator().maximumBoundary();

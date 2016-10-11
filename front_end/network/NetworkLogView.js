@@ -293,8 +293,8 @@ WebInspector.NetworkLogView.prototype = {
             this._timelineWidget.element.classList.add("network-timeline-view");
             this._splitWidget.setMainWidget(this._timelineWidget);
 
-            var networkTimelineView = new WebInspector.NetworkTimelineColumn(this, this._dataGrid);
-            networkTimelineView.show(this._timelineWidget.element);
+            this._timelineColumn = new WebInspector.NetworkTimelineColumn(this, this._dataGrid);
+            this._timelineColumn.show(this._timelineWidget.element);
             this.switchViewMode(false);
         } else {
             this._createTable();
@@ -671,6 +671,8 @@ WebInspector.NetworkLogView.prototype = {
 
         this._staleRequestIds = {};
         this._updateSummaryBar();
+        if (Runtime.experiments.isEnabled("canvasNetworkTimeline"))
+            this._timelineColumn.scheduleRefreshData();
     },
 
     reset: function()
@@ -1125,13 +1127,15 @@ WebInspector.NetworkLogView.prototype = {
             return;
 
         this._timelineColumnSortIcon.classList.remove("sort-ascending", "sort-descending");
-        if (this._dataGrid.sortColumnIdentifier() !== "timeline")
-            return;
 
-        if (this._dataGrid.sortOrder() === WebInspector.DataGrid.Order.Ascending)
-            this._timelineColumnSortIcon.classList.add("sort-ascending");
-        else
-            this._timelineColumnSortIcon.classList.add("sort-descending");
+        if (this._dataGrid.sortColumnIdentifier() === "timeline") {
+            if (this._dataGrid.sortOrder() === WebInspector.DataGrid.Order.Ascending)
+                this._timelineColumnSortIcon.classList.add("sort-ascending");
+            else
+                this._timelineColumnSortIcon.classList.add("sort-descending");
+        }
+
+        this._timelineColumn.scheduleRefreshData();
     },
 
     /**

@@ -89,6 +89,13 @@ WebInspector.LayerDetailsView.CompositingReasonDetail = {
     "layerForVideoOverlay": WebInspector.UIString("Layer for video overlay."),
 };
 
+WebInspector.LayerDetailsView._slowScrollRectNames = new Map([
+    [WebInspector.Layer.ScrollRectType.NonFastScrollable, WebInspector.UIString("Non fast scrollable")],
+    [WebInspector.Layer.ScrollRectType.TouchEventHandler, WebInspector.UIString("Touch event handler")],
+    [WebInspector.Layer.ScrollRectType.WheelEventHandler,WebInspector.UIString("Wheel event handler")],
+    [WebInspector.Layer.ScrollRectType.RepaintsOnScroll, WebInspector.UIString("Repaints on scroll")]
+]);
+
 WebInspector.LayerDetailsView.prototype = {
     /**
      * @param {?WebInspector.LayerView.Selection} selection
@@ -147,8 +154,9 @@ WebInspector.LayerDetailsView.prototype = {
         var element = this._scrollRectsCell.createChild("span", "scroll-rect");
         if (this._selection.scrollRectIndex === index)
             element.classList.add("active");
-        element.textContent = WebInspector.LayerTreeModel.ScrollRectType[scrollRect.type].description + " (" + scrollRect.rect.x + ", " + scrollRect.rect.y +
-            ", " + scrollRect.rect.width + ", " + scrollRect.rect.height + ")";
+        element.textContent = WebInspector.UIString("%s (%s, %s, %s, %s)",
+            WebInspector.LayerDetailsView._slowScrollRectNames.get(scrollRect.type),
+            scrollRect.rect.x, scrollRect.rect.y, scrollRect.rect.width, scrollRect.rect.height);
         element.addEventListener("click", this._onScrollRectClicked.bind(this, index), false);
     },
 

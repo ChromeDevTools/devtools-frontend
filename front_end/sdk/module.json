@@ -96,6 +96,7 @@
         "DOMModel.js",
         "DebuggerModel.js",
         "HAREntry.js",
+        "LayerTreeBase.js",
         "NetworkLog.js",
         "ServiceWorkerManager.js",
         "SubTargetsManager.js",

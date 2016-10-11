@@ -6,17 +6,13 @@
             "title": "Layers",
             "order": 100,
             "className": "WebInspector.LayersPanel"
-        },
-        {
-            "type": "@WebInspector.Revealer",
-            "contextTypes": ["WebInspector.DeferredLayerTree"],
-            "className": "WebInspector.LayersPanel.LayerTreeRevealer"
         }
     ],
-    "dependencies": ["layer_viewer", "timeline_model"],
+    "dependencies": ["layer_viewer"],
     "experiment": "layersPanel",
     "scripts": [
         "LayerPaintProfilerView.js",
+        "LayerTreeModel.js",
         "LayersPanel.js"
     ]
 }

@@ -120,14 +120,6 @@ WebInspector.LayersPanel.prototype = {
         this._model = null;
     },
 
-    /**
-     * @param {!WebInspector.DeferredLayerTree} deferredLayerTree
-     */
-    _showLayerTree: function(deferredLayerTree)
-    {
-        deferredLayerTree.resolve(this._layerViewHost.setLayerTree.bind(this._layerViewHost));
-    },
-
     _onLayerTreeUpdated: function()
     {
         if (this._model)
@@ -157,29 +149,4 @@ WebInspector.LayersPanel.prototype = {
     },
 
     __proto__: WebInspector.PanelWithSidebar.prototype
-}
-
-/**
- * @constructor
- * @implements {WebInspector.Revealer}
- */
-WebInspector.LayersPanel.LayerTreeRevealer = function()
-{
-}
-
-WebInspector.LayersPanel.LayerTreeRevealer.prototype = {
-    /**
-     * @override
-     * @param {!Object} snapshotData
-     * @return {!Promise}
-     */
-    reveal: function(snapshotData)
-    {
-        if (!(snapshotData instanceof WebInspector.DeferredLayerTree))
-            return Promise.reject(new Error("Internal error: not a WebInspector.DeferredLayerTree"));
-        var panel = /** @type {!WebInspector.LayersPanel} */ (self.runtime.sharedInstance(WebInspector.LayersPanel));
-        WebInspector.inspectorView.setCurrentPanel(panel);
-        panel._showLayerTree(/** @type {!WebInspector.DeferredLayerTree} */ (snapshotData));
-        return Promise.resolve();
-    }
 }

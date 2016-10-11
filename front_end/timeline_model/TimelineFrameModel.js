@@ -385,7 +385,7 @@ WebInspector.TimelineFrameModel.prototype = {
             this._mainThread = event.thread;
         } else if (event.phase === WebInspector.TracingModel.Phase.SnapshotObject && event.name === eventNames.LayerTreeHostImplSnapshot && parseInt(event.id, 0) === this._layerTreeId) {
             var snapshot = /** @type {!WebInspector.TracingModel.ObjectSnapshot} */ (event);
-            this.handleLayerTreeSnapshot(new WebInspector.DeferredTracingLayerTree(snapshot, this._target));
+            this.handleLayerTreeSnapshot(new WebInspector.DeferredLayerTree(snapshot, this._target));
         } else {
             this._processCompositorEvents(event);
             if (event.thread === this._mainThread)
@@ -462,26 +462,24 @@ WebInspector.TimelineFrameModel.prototype = {
 
 /**
  * @constructor
- * @extends {WebInspector.DeferredLayerTree}
  * @param {!WebInspector.TracingModel.ObjectSnapshot} snapshot
  * @param {?WebInspector.Target} target
  */
-WebInspector.DeferredTracingLayerTree = function(snapshot, target)
+WebInspector.DeferredLayerTree = function(snapshot, target)
 {
-    WebInspector.DeferredLayerTree.call(this, target);
+    this._target = target;
     this._snapshot = snapshot;
 }
 
-WebInspector.DeferredTracingLayerTree.prototype = {
+WebInspector.DeferredLayerTree.prototype = {
     /**
-     * @override
      * @param {function(!WebInspector.LayerTreeBase)} callback
      */
     resolve: function(callback)
     {
         this._snapshot.requestObject(onGotObject.bind(this));
         /**
-         * @this {WebInspector.DeferredTracingLayerTree}
+         * @this {WebInspector.DeferredLayerTree}
          * @param {?Object} result
          */
         function onGotObject(result)
@@ -499,7 +497,13 @@ WebInspector.DeferredTracingLayerTree.prototype = {
         }
     },
 
-    __proto__: WebInspector.DeferredLayerTree.prototype
+    /**
+     * @return {?WebInspector.Target}
+     */
+    target: function()
+    {
+        return this._target;
+    }
 };
 
 

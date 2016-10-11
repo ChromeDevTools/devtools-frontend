@@ -119,6 +119,7 @@ devtools_sdk_js_files = [
   "front_end/sdk/HeapProfilerModel.js",
   "front_end/sdk/InspectorBackend.js",
   "front_end/sdk/InspectorBackendHostedMode.js",
+  "front_end/sdk/LayerTreeBase.js",
   "front_end/sdk/NetworkLog.js",
   "front_end/sdk/NetworkManager.js",
   "front_end/sdk/NetworkRequest.js",
@@ -505,6 +506,7 @@ devtools_heap_snapshot_worker_js_files = [
 ]
 devtools_layers_js_files = [
   "front_end/layers/LayerPaintProfilerView.js",
+  "front_end/layers/LayerTreeModel.js",
   "front_end/layers/LayersPanel.js",
 ]
 devtools_network_js_files = [
@@ -700,7 +702,7 @@ devtools_terminal_js_files = [
   "front_end/terminal/xterm.js/build/xterm.js",
 ]
 devtools_timeline_model_js_files = [
-  "front_end/timeline_model/LayerTreeModel.js",
+  "front_end/timeline_model/TracingLayerTree.js",
   "front_end/timeline_model/TimelineFrameModel.js",
   "front_end/timeline_model/TimelineIRModel.js",
   "front_end/timeline_model/TimelineJSProfile.js",

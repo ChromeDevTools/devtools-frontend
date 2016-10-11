@@ -188,9 +188,9 @@ WebInspector.PaintProfilerView.prototype = {
 
     _updatePieChart: function()
     {
-        if (!this._profiles || !this._profiles.length)
+        var window = this.selectionWindow();
+        if (!this._profiles || !this._profiles.length || !window)
             return;
-        var window = this.windowBoundaries();
         var totalTime = 0;
         var timeByCategory = {};
         for (var i = window.left; i < window.right; ++i) {
@@ -218,10 +218,13 @@ WebInspector.PaintProfilerView.prototype = {
     },
 
     /**
-     * @return {{left: number, right: number}}
+     * @return {?{left: number, right: number}}
      */
-    windowBoundaries: function()
+    selectionWindow: function()
     {
+        if (!this._log)
+            return null;
+
         var screenLeft = this._selectionWindow.windowLeft * this._canvas.width;
         var screenRight = this._selectionWindow.windowRight * this._canvas.width;
         var barLeft = Math.floor(screenLeft / this._outerBarWidth);
@@ -235,10 +238,10 @@ WebInspector.PaintProfilerView.prototype = {
     _updateImage: function()
     {
         delete this._updateImageTimer;
-        if (!this._profiles || !this._profiles.length)
+        var window = this.selectionWindow();
+        if (!this._profiles || !this._profiles.length || !window)
             return;
 
-        var window = this.windowBoundaries();
         this._snapshot.requestImage(this._log[window.left].commandIndex, this._log[window.right - 1].commandIndex, 1, this._showImageCallback);
     },
 
@@ -247,6 +250,7 @@ WebInspector.PaintProfilerView.prototype = {
         this._snapshot = null;
         this._profiles = null;
         this._selectionWindow.reset();
+        this._selectionWindow.setEnabled(false);
     },
 
     __proto__: WebInspector.HBox.prototype
@@ -277,7 +281,7 @@ WebInspector.PaintProfilerCommandLogView.prototype = {
     {
         this._target = target;
         this._log = log;
-        this.updateWindow();
+        this.updateWindow({left: 0, right: this._log.length});
     },
 
     /**
@@ -291,17 +295,14 @@ WebInspector.PaintProfilerCommandLogView.prototype = {
     },
 
     /**
-     * @param {number=} stepLeft
-     * @param {number=} stepRight
+     * @param {?{left: number, right: number}} selectionWindow
      */
-    updateWindow: function(stepLeft, stepRight)
+    updateWindow: function(selectionWindow)
     {
         this._treeOutline.removeChildren();
-        if (!this._log.length)
+        if (!selectionWindow || !this._log.length)
             return;
-        stepLeft = stepLeft || 0;
-        stepRight = stepRight || this._log.length;
-        for (var i = stepLeft; i < stepRight; ++i)
+        for (var i = selectionWindow.left; i < selectionWindow.right; ++i)
             this._appendLogItem(this._treeOutline, this._log[i]);
     },
 

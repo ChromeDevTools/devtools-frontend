@@ -122,8 +122,7 @@ WebInspector.TimelinePaintProfilerView.prototype = {
 
     _onWindowChanged: function()
     {
-        var window = this._paintProfilerView.windowBoundaries();
-        this._logTreeView.updateWindow(window.left, window.right);
+        this._logTreeView.updateWindow(this._paintProfilerView.selectionWindow());
     },
 
     __proto__: WebInspector.SplitWidget.prototype

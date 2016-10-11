@@ -234,10 +234,18 @@ WebInspector.TabbedEditorContainer.prototype = {
         if (this._scrollTimer)
             clearTimeout(this._scrollTimer);
         var lineNumber = /** @type {number} */ (event.data);
-        this._scrollTimer = setTimeout(() => {
-            this._history.updateScrollLineNumber(this._currentFile.url(), lineNumber);
+        this._scrollTimer = setTimeout(updateHistory.bind(this, this._currentFile.url(), lineNumber), 100);
+
+        /**
+         * @param {string} url
+         * @param {number} lineNumber
+         * @this {WebInspector.TabbedEditorContainer}
+         */
+        function updateHistory(url, lineNumber)
+        {
+            this._history.updateScrollLineNumber(url, lineNumber);
             this._history.save(this._previouslyViewedFilesSetting);
-        }, 100);
+        }
     },
 
     /**

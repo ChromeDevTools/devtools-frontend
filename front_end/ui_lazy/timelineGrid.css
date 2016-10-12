@@ -65,23 +65,3 @@
     height: 20px;
     pointer-events: none;
 }
-
-.timeline-curtain-left, .timeline-curtain-right {
-    background-color: hsla(0, 0%, 80%, 0.5);
-    position: absolute;
-    top: 0;
-    height: 100%;
-    z-index: 300;
-    pointer-events: none;
-    border: 1px none hsla(0, 0%, 70%, 0.5);
-}
-
-.timeline-curtain-left {
-    left: 0;
-    border-right-style: solid;
-}
-
-.timeline-curtain-right {
-    right: 0;
-    border-left-style: solid;
-}

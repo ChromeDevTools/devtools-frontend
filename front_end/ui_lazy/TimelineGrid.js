@@ -43,9 +43,6 @@ WebInspector.TimelineGrid = function()
     this._eventDividersElement = this._gridHeaderElement.createChild("div", "resources-event-dividers");
     this._dividersLabelBarElement = this._gridHeaderElement.createChild("div", "resources-dividers-label-bar");
     this.element.appendChild(this._gridHeaderElement);
-
-    this._leftCurtainElement = this.element.createChild("div", "timeline-curtain-left");
-    this._rightCurtainElement = this.element.createChild("div", "timeline-curtain-right");
 }
 
 /**
@@ -271,24 +268,6 @@ WebInspector.TimelineGrid.prototype = {
         this._dividersElement.classList.remove("hidden");
     },
 
-    hideCurtains: function()
-    {
-        this._leftCurtainElement.classList.add("hidden");
-        this._rightCurtainElement.classList.add("hidden");
-    },
-
-    /**
-     * @param {number} left
-     * @param {number} right
-     */
-    showCurtains: function(left, right)
-    {
-        this._leftCurtainElement.style.width = (100 * left).toFixed(2) + "%";
-        this._leftCurtainElement.classList.remove("hidden");
-        this._rightCurtainElement.style.width = (100 * (1 - right)).toFixed(2) + "%";
-        this._rightCurtainElement.classList.remove("hidden");
-    },
-
     /**
      * @param {number} scrollTop
      */
@@ -296,8 +275,6 @@ WebInspector.TimelineGrid.prototype = {
     {
         this._dividersLabelBarElement.style.top = scrollTop + "px";
         this._eventDividersElement.style.top = scrollTop + "px";
-        this._leftCurtainElement.style.top = scrollTop + "px";
-        this._rightCurtainElement.style.top = scrollTop + "px";
     }
 }
 

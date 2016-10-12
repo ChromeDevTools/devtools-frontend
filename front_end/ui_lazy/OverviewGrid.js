@@ -44,7 +44,6 @@ WebInspector.OverviewGrid = function(prefix)
     this.element.appendChild(this._grid.element);
 
     this._window = new WebInspector.OverviewGrid.Window(this.element, this._grid.dividersLabelBarElement);
-    this._window.addEventListener(WebInspector.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
 }
 
 WebInspector.OverviewGrid.prototype = {
@@ -133,11 +132,6 @@ WebInspector.OverviewGrid.prototype = {
     setResizeEnabled: function(enabled)
     {
         this._window.setEnabled(enabled);
-    },
-
-    _onWindowChanged: function()
-    {
-        this._grid.showCurtains(this.windowLeft(), this.windowRight());
     }
 }
 
@@ -162,21 +156,18 @@ WebInspector.OverviewGrid.Window = function(parentElement, dividersLabelBarEleme
     if (dividersLabelBarElement)
         WebInspector.installDragHandle(dividersLabelBarElement, this._startWindowDragging.bind(this), this._windowDragging.bind(this), null, "-webkit-grabbing", "-webkit-grab");
 
-    this.windowLeft = 0.0;
-    this.windowRight = 1.0;
-
     this._parentElement.addEventListener("mousewheel", this._onMouseWheel.bind(this), true);
     this._parentElement.addEventListener("dblclick", this._resizeWindowMaximum.bind(this), true);
     WebInspector.appendStyle(this._parentElement, "ui_lazy/overviewGrid.css");
 
     this._leftResizeElement = parentElement.createChild("div", "overview-grid-window-resizer");
-    this._leftResizeElement.style.left = "0";
     WebInspector.installDragHandle(this._leftResizeElement, this._resizerElementStartDragging.bind(this), this._leftResizeElementDragging.bind(this), null, "ew-resize");
-
     this._rightResizeElement = parentElement.createChild("div", "overview-grid-window-resizer");
-    this._rightResizeElement.style.right = "0";
     WebInspector.installDragHandle(this._rightResizeElement, this._resizerElementStartDragging.bind(this), this._rightResizeElementDragging.bind(this), null, "ew-resize");
-    this.setEnabled(true);
+
+    this._leftCurtainElement = parentElement.createChild("div", "window-curtain-left");
+    this._rightCurtainElement = parentElement.createChild("div", "window-curtain-right");
+    this.reset();
 }
 
 /** @enum {symbol} */
@@ -190,9 +181,8 @@ WebInspector.OverviewGrid.Window.prototype = {
     {
         this.windowLeft = 0.0;
         this.windowRight = 1.0;
-        this._leftResizeElement.style.left = "0%";
-        this._rightResizeElement.style.left = "100%";
         this.setEnabled(true);
+        this._updateCurtains();
     },
 
     /**
@@ -344,25 +334,31 @@ WebInspector.OverviewGrid.Window.prototype = {
      */
     _setWindow: function(windowLeft, windowRight)
     {
-        var left = windowLeft;
-        var right = windowRight;
-        var width = windowRight - windowLeft;
+        this.windowLeft = windowLeft;
+        this.windowRight = windowRight;
+        this._updateCurtains();
+        this.dispatchEventToListeners(WebInspector.OverviewGrid.Events.WindowChanged);
+    },
+
+    _updateCurtains: function()
+    {
+        var left = this.windowLeft;
+        var right = this.windowRight;
+        var width = right - left;
 
         // We allow actual time window to be arbitrarily small but don't want the UI window to be too small.
         var widthInPixels = width * this._parentElement.clientWidth;
         var minWidthInPixels = WebInspector.OverviewGrid.MinSelectableSize / 2;
         if (widthInPixels < minWidthInPixels) {
             var factor = minWidthInPixels / widthInPixels;
-            left = ((windowRight + windowLeft) - width * factor) / 2;
-            right = ((windowRight + windowLeft) + width * factor) / 2;
+            left = ((this.windowRight + this.windowLeft) - width * factor) / 2;
+            right = ((this.windowRight + this.windowLeft) + width * factor) / 2;
         }
+        this._leftResizeElement.style.left = (100 * left).toFixed(2) + "%";
+        this._rightResizeElement.style.left = (100 * right).toFixed(2) + "%";
 
-        this.windowLeft = windowLeft;
-        this._leftResizeElement.style.left = left * 100 + "%";
-        this.windowRight = windowRight;
-        this._rightResizeElement.style.left = right * 100 + "%";
-
-        this.dispatchEventToListeners(WebInspector.OverviewGrid.Events.WindowChanged);
+        this._leftCurtainElement.style.width = (100 * left).toFixed(2) + "%";
+        this._rightCurtainElement.style.width = (100 * (1 - right)).toFixed(2) + "%";
     },
 
     /**

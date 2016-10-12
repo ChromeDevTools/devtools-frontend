@@ -135,6 +135,7 @@
         "invalidationsTree.css",
         "timelineFlamechartPopover.css",
         "timelinePanel.css",
+        "timelinePaintProfiler.css",
         "timelineStatusDialog.css"
     ]
 }

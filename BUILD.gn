@@ -723,6 +723,7 @@ devtools_layer_viewer_js_files = [
 devtools_timeline_js_files = [
   "front_end/timeline/invalidationsTree.css",
   "front_end/timeline/timelineFlamechartPopover.css",
+  "front_end/timeline/timelinePaintProfiler.css",
   "front_end/timeline/timelinePanel.css",
   "front_end/timeline/timelineStatusDialog.css",
   "front_end/timeline/CountersGraph.js",

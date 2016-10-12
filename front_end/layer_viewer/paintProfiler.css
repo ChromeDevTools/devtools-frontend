@@ -38,24 +38,3 @@
 .paint-profiler-canvas-container .overview-grid-window-resizer {
     z-index: 2000;
 }
-
-.paint-profiler-image-view {
-    overflow: hidden;
-}
-
-.paint-profiler-image-view .paint-profiler-image-container {
-    -webkit-transform-origin: 0 0;
-}
-
-.paint-profiler-image-view .paint-profiler-image-container div {
-    border-color: rgba(100, 100, 100, 0.4);
-    border-style: solid;
-    z-index: 100;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
-.paint-profiler-image-view img {
-    border: solid 1px black;
-}

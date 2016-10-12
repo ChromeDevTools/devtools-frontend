@@ -412,7 +412,22 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
 
     populate: function()
     {
-        this._fileSystem.requestFilesRecursive("", this._addFile.bind(this));
+        var chunkSize = 1000;
+        var filePaths = this._fileSystem.filePaths();
+        reportFileChunk.call(this, 0);
+
+        /**
+         * @param {number} from
+         * @this {WebInspector.FileSystemWorkspaceBinding.FileSystem}
+         */
+        function reportFileChunk(from)
+        {
+            var to = Math.min(from + chunkSize, filePaths.length);
+            for (var i = from; i < to; ++i)
+                this._addFile(filePaths[i]);
+            if (to < filePaths.length)
+                setTimeout(reportFileChunk.bind(this, to), 100);
+        }
     },
 
     /**
@@ -499,9 +514,6 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
      */
     _addFile: function(filePath)
     {
-        if (!filePath)
-            console.assert(false);
-
         var extension = this._extensionForPath(filePath);
         var contentType = WebInspector.FileSystemWorkspaceBinding._contentTypeForExtension(extension);
 

@@ -46,6 +46,11 @@ WebInspector.IsolatedFileSystem = function(manager, path, embedderPath, domFileS
     this._excludedFolders = new Set(this._excludedFoldersSetting.get()[path] || []);
     /** @type {!Set<string>} */
     this._nonConfigurableExcludedFolders = new Set();
+
+    /** @type {!Set<string>} */
+    this._filePaths = new Set();
+    /** @type {!Set<string>} */
+    this._gitFolders = new Set();
 }
 
 WebInspector.IsolatedFileSystem.ImageExtensions = new Set(["jpeg", "jpg", "svg", "gif", "webp", "png", "ico", "tiff", "tif", "bmp"]);
@@ -61,42 +66,36 @@ WebInspector.IsolatedFileSystem.ImageExtensions = new Set(["jpeg", "jpg", "svg",
  */
 WebInspector.IsolatedFileSystem.create = function(manager, path, embedderPath, name, rootURL)
 {
-    return new Promise(promiseBody);
+    var domFileSystem = InspectorFrontendHost.isolatedFileSystem(name, rootURL);
+    if (!domFileSystem)
+        return Promise.resolve(/** @type {?WebInspector.IsolatedFileSystem} */(null));
+
+    var fileSystem = new WebInspector.IsolatedFileSystem(manager, path, embedderPath, domFileSystem);
+    var fileContentPromise = fileSystem.requestFileContentPromise(".devtools");
+    return fileContentPromise.then(onConfigAvailable)
+        .then(() => fileSystem)
+        .catchException(/** @type {?WebInspector.IsolatedFileSystem} */(null));
 
     /**
-     * @param {function(?WebInspector.IsolatedFileSystem)} resolve
-     * @param {function(!Error)} reject
+     * @param {?string} projectText
+     * @return {!Promise}
      */
-    function promiseBody(resolve, reject)
+    function onConfigAvailable(projectText)
     {
-        var domFileSystem = InspectorFrontendHost.isolatedFileSystem(name, rootURL);
-        if (!domFileSystem) {
-            resolve(null);
-            return;
-        }
-        var fileSystem = new WebInspector.IsolatedFileSystem(manager, path, embedderPath, domFileSystem);
-        fileSystem.requestFileContent(".devtools", onConfigAvailable);
-
-        /**
-         * @param {?string} projectText
-         */
-        function onConfigAvailable(projectText)
-        {
-            if (projectText) {
-                try {
-                    var projectObject = JSON.parse(projectText);
-                    fileSystem._initializeProject(typeof projectObject === "object" ? /** @type {!Object} */ (projectObject) : null);
-                } catch (e) {
-                    WebInspector.console.error("Invalid project file: " + projectText);
-                }
+        if (projectText) {
+            try {
+                var projectObject = JSON.parse(projectText);
+                fileSystem._initializeProject(typeof projectObject === "object" ? /** @type {!Object} */ (projectObject) : null);
+            } catch (e) {
+                WebInspector.console.error("Invalid project file: " + projectText);
             }
-            resolve(fileSystem);
         }
+        return fileSystem._initializeFilePaths();
     }
 }
 
 /**
- * @param {!DOMException} error
+ * @param {!DOMError} error
  * @return {string}
  */
 WebInspector.IsolatedFileSystem.errorMessage = function(error)
@@ -105,6 +104,22 @@ WebInspector.IsolatedFileSystem.errorMessage = function(error)
 }
 
 WebInspector.IsolatedFileSystem.prototype = {
+    /**
+     * @return {!Array<string>}
+     */
+    filePaths: function()
+    {
+        return this._filePaths.valuesArray();
+    },
+
+    /**
+     * @return {!Array<string>}
+     */
+    gitFolders: function()
+    {
+        return this._gitFolders.valuesArray();
+    },
+
     /**
      * @return {string}
      */
@@ -147,14 +162,16 @@ WebInspector.IsolatedFileSystem.prototype = {
     },
 
     /**
-     * @param {string} path
-     * @param {function(string)} fileCallback
-     * @param {function()=} finishedCallback
+     * @return {!Promise}
      */
-    requestFilesRecursive: function(path, fileCallback, finishedCallback)
+    _initializeFilePaths: function()
     {
+        var fulfill;
+        var promise = new Promise(x => fulfill = x);
         var pendingRequests = 1;
-        this._requestEntries(path, innerCallback.bind(this));
+        var boundInnerCallback = innerCallback.bind(this);
+        this._requestEntries("", boundInnerCallback);
+        return promise;
 
         /**
          * @param {!Array.<!FileEntry>} entries
@@ -167,16 +184,21 @@ WebInspector.IsolatedFileSystem.prototype = {
                 if (!entry.isDirectory) {
                     if (this._isFileExcluded(entry.fullPath))
                         continue;
-                    fileCallback(entry.fullPath.substr(1));
+                    this._filePaths.add(entry.fullPath.substr(1));
                 } else {
+                    if (entry.fullPath.endsWith("/.git")) {
+                        var lastSlash = entry.fullPath.lastIndexOf("/");
+                        var parentFolder = entry.fullPath.substring(1, lastSlash);
+                        this._gitFolders.add(parentFolder);
+                    }
                     if (this._isFileExcluded(entry.fullPath + "/"))
                         continue;
                     ++pendingRequests;
-                    this._requestEntries(entry.fullPath, innerCallback.bind(this));
+                    this._requestEntries(entry.fullPath, boundInnerCallback);
                 }
             }
-            if (finishedCallback && (--pendingRequests === 0))
-                finishedCallback();
+            if ((--pendingRequests === 0))
+                fulfill();
         }
     },
 
@@ -272,6 +294,18 @@ WebInspector.IsolatedFileSystem.prototype = {
             var errorMessage = WebInspector.IsolatedFileSystem.errorMessage(error);
             console.error(errorMessage + " when deleting file '" + (this._path + "/" + path) + "'");
         }
+    },
+
+    /**
+     * @param {string} path
+     * @return {!Promise<?string>}
+     */
+    requestFileContentPromise: function(path)
+    {
+        var fulfill;
+        var promise = new Promise(x => fulfill = x);
+        this.requestFileContent(path, fulfill);
+        return promise;
     },
 
     /**
@@ -584,7 +618,6 @@ WebInspector.IsolatedFileSystem.prototype = {
     {
         return this._nonConfigurableExcludedFolders;
     },
-
 
     /**
      * @param {string} query

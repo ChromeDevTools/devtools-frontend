@@ -53,7 +53,6 @@ WebInspector.LayerTreeModel.prototype = {
         if (!this._enabled)
             return;
         this._enabled = false;
-        this._layerTree = null;
         this.target().layerTreeAgent().disable();
     },
 
@@ -67,19 +66,10 @@ WebInspector.LayerTreeModel.prototype = {
 
     _forceEnable: function()
     {
-        this._layerTree = new WebInspector.AgentLayerTree(this.target());
         this._lastPaintRectByLayerId = {};
+        if (!this._layerTree)
+            this._layerTree = new WebInspector.AgentLayerTree(this.target());
         this.target().layerTreeAgent().enable();
-    },
-
-    /**
-     * @param {!WebInspector.LayerTreeBase} layerTree
-     */
-    setLayerTree: function(layerTree)
-    {
-        this.disable();
-        this._layerTree = layerTree;
-        this.dispatchEventToListeners(WebInspector.LayerTreeModel.Events.LayerTreeChanged);
     },
 
     /**
@@ -137,6 +127,7 @@ WebInspector.LayerTreeModel.prototype = {
 
     _onMainFrameNavigated: function()
     {
+        this._layerTree = null;
         if (this._enabled)
             this._forceEnable();
     },

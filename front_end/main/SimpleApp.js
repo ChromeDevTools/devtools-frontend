@@ -19,7 +19,6 @@ WebInspector.SimpleApp.prototype = {
     {
         var rootView = new WebInspector.RootView();
         WebInspector.inspectorView.show(rootView.element);
-        WebInspector.inspectorView.showInitialPanel();
         rootView.attachToDocument(document);
     }
 };

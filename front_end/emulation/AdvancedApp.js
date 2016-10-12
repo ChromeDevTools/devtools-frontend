@@ -35,7 +35,6 @@ WebInspector.AdvancedApp.prototype = {
         WebInspector.dockController.addEventListener(WebInspector.DockController.Events.AfterDockSideChanged, this._onAfterDockSideChange, this);
         this._onDockSideChange();
 
-        WebInspector.inspectorView.showInitialPanel();
         console.timeStamp("AdvancedApp.attachToBody");
         rootView.attachToDocument(document);
         this._inspectedPagePlaceholder.update();

@@ -32,7 +32,6 @@ WebInspector.ScreencastApp.prototype = {
         this._rootSplitWidget.hideMain();
 
         this._rootSplitWidget.setSidebarWidget(WebInspector.inspectorView);
-        WebInspector.inspectorView.showInitialPanel();
         rootView.attachToDocument(document);
     },
 

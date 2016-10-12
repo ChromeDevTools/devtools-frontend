@@ -507,8 +507,7 @@ WebInspector.ElementsPanel.prototype = {
     {
         // Reset search restore.
         this._searchableView.cancelSearch();
-        WebInspector.inspectorView.setCurrentPanel(this);
-        this.selectDOMNode(node, true);
+        WebInspector.viewManager.showView("elements").then(() => this.selectDOMNode(node, true));
     },
 
     /**
@@ -776,6 +775,7 @@ WebInspector.ElementsPanel.prototype = {
 
     /**
      * @param {!WebInspector.DOMNode} node
+     * @return {!Promise}
      */
     revealAndSelectNode: function(node)
     {
@@ -784,18 +784,17 @@ WebInspector.ElementsPanel.prototype = {
 
         this._omitDefaultSelection = true;
 
-        var showLayoutEditor = !!WebInspector.inspectElementModeController && WebInspector.inspectElementModeController.isInLayoutEditorMode();
-        WebInspector.inspectorView.setCurrentPanel(this, showLayoutEditor);
         node = WebInspector.moduleSetting("showUAShadowDOM").get() ? node : this._leaveUserAgentShadowDOM(node);
-        if (!showLayoutEditor)
-            node.highlightForTwoSeconds();
+        node.highlightForTwoSeconds();
 
-        this.selectDOMNode(node, true);
-        delete this._omitDefaultSelection;
+        return WebInspector.viewManager.showView("elements").then(() => {
+            this.selectDOMNode(node, true);
+            delete this._omitDefaultSelection;
 
-        if (!this._notFirstInspectElement)
-            InspectorFrontendHost.inspectElementCompleted();
-        this._notFirstInspectElement = true;
+            if (!this._notFirstInspectElement)
+                InspectorFrontendHost.inspectElementCompleted();
+            this._notFirstInspectElement = true;
+        });
     },
 
     _sidebarContextMenuEventFired: function(event)
@@ -873,7 +872,7 @@ WebInspector.ElementsPanel.prototype = {
                 showMetrics.call(this, false);
         }
 
-        this.sidebarPaneView = WebInspector.viewManager.createTabbedLocation(() => WebInspector.inspectorView.setCurrentPanel(this));
+        this.sidebarPaneView = WebInspector.viewManager.createTabbedLocation(() => WebInspector.viewManager.showView("elements"));
         var tabbedPane = this.sidebarPaneView.tabbedPane();
         tabbedPane.element.addEventListener("contextmenu", this._sidebarContextMenuEventFired.bind(this), false);
         if (this._popoverHelper)
@@ -1027,8 +1026,7 @@ WebInspector.ElementsPanel.DOMNodeRevealer.prototype = {
                 panel._pendingNodeReveal = false;
 
                 if (resolvedNode) {
-                    panel.revealAndSelectNode(resolvedNode);
-                    resolve(undefined);
+                    panel.revealAndSelectNode(resolvedNode).then(resolve);
                     return;
                 }
                 reject(new Error("Could not resolve node to reveal."));
@@ -1054,11 +1052,6 @@ WebInspector.ElementsPanel.CSSPropertyRevealer.prototype = {
         var panel = WebInspector.ElementsPanel.instance();
         return panel._revealProperty(/** @type {!WebInspector.CSSProperty} */ (property));
     }
-}
-
-WebInspector.ElementsPanel.show = function()
-{
-    WebInspector.inspectorView.setCurrentPanel(WebInspector.ElementsPanel.instance());
 }
 
 /**

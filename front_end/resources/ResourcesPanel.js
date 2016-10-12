@@ -866,9 +866,7 @@ WebInspector.ResourcesPanel.ResourceRevealer.prototype = {
         if (!(resource instanceof WebInspector.Resource))
             return Promise.reject(new Error("Internal error: not a resource"));
         var panel = WebInspector.ResourcesPanel._instance();
-        WebInspector.inspectorView.setCurrentPanel(panel);
-        panel.showResource(resource);
-        return Promise.resolve();
+        return WebInspector.viewManager.showView("resources").then(panel.showResource.bind(panel, resource));
     }
 }
 
@@ -2205,11 +2203,6 @@ WebInspector.StorageCategoryView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
-
-WebInspector.ResourcesPanel.show = function()
-{
-    WebInspector.inspectorView.setCurrentPanel(WebInspector.ResourcesPanel._instance());
 }
 
 /**

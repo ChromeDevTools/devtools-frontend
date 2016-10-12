@@ -1,8 +1,9 @@
 {
     "extensions": [
         {
-            "type": "@WebInspector.Panel",
-            "name": "security",
+            "type": "view",
+            "location": "panel",
+            "id": "security",
             "title": "Security",
             "order": 80,
             "className": "WebInspector.SecurityPanel"

@@ -42,6 +42,7 @@ WebInspector.View.prototype = {
 }
 
 WebInspector.View._symbol = Symbol("view");
+WebInspector.View._widgetSymbol = Symbol("widget");
 
 /**
  * @constructor
@@ -330,6 +331,16 @@ WebInspector.ViewManager.prototype = {
 
     /**
      * @param {string} viewId
+     * @return {?WebInspector.Widget}
+     */
+    materializedWidget: function(viewId)
+    {
+        var view = this.view(viewId);
+        return view ? view[WebInspector.View._widgetSymbol] : null;
+    },
+
+    /**
+     * @param {string} viewId
      * @return {!Promise}
      */
     showView: function(viewId)
@@ -378,11 +389,12 @@ WebInspector.ViewManager.prototype = {
      * @param {function()=} revealCallback
      * @param {string=} location
      * @param {boolean=} restoreSelection
+     * @param {boolean=} allowReorder
      * @return {!WebInspector.TabbedViewLocation}
      */
-    createTabbedLocation: function(revealCallback, location, restoreSelection)
+    createTabbedLocation: function(revealCallback, location, restoreSelection, allowReorder)
     {
-        return new WebInspector.ViewManager._TabbedLocation(this, revealCallback, location, restoreSelection);
+        return new WebInspector.ViewManager._TabbedLocation(this, revealCallback, location, restoreSelection, allowReorder);
     },
 
     /**
@@ -453,6 +465,7 @@ WebInspector.ViewManager._ContainerWidget.prototype = {
             // Move focus from |this| to loaded |widget| if any.
             var shouldFocus = this.element.hasFocus();
             this.setDefaultFocusedElement(null);
+            this._view[WebInspector.View._widgetSymbol] = widget;
             widget.show(this.element);
             if (shouldFocus)
                 widget.focus();
@@ -501,6 +514,7 @@ WebInspector.ViewManager._ExpandableContainerWidget.prototype = {
         promises.push(this._view.toolbarItems().then(WebInspector.ViewManager._populateToolbar.bind(WebInspector.ViewManager, this._titleElement)));
         promises.push(this._view.widget().then(widget => {
             this._widget = widget;
+            this._view[WebInspector.View._widgetSymbol] = widget;
             widget.show(this.element);
         }));
         this._materializePromise = Promise.all(promises);
@@ -585,15 +599,21 @@ WebInspector.ViewManager._Location.prototype = {
  * @param {function()=} revealCallback
  * @param {string=} location
  * @param {boolean=} restoreSelection
+ * @param {boolean=} allowReorder
  */
-WebInspector.ViewManager._TabbedLocation = function(manager, revealCallback, location, restoreSelection)
+WebInspector.ViewManager._TabbedLocation = function(manager, revealCallback, location, restoreSelection, allowReorder)
 {
     this._tabbedPane = new WebInspector.TabbedPane();
+    if (allowReorder)
+        this._tabbedPane.setAllowTabReorder(true);
+    this._allowReorder = allowReorder;
     WebInspector.ViewManager._Location.call(this, manager, this._tabbedPane, revealCallback);
 
     this._tabbedPane.addEventListener(WebInspector.TabbedPane.Events.TabSelected, this._tabSelected, this);
     this._tabbedPane.addEventListener(WebInspector.TabbedPane.Events.TabClosed, this._tabClosed, this);
     this._closeableTabSetting = WebInspector.settings.createSetting(location + "-closeableTabs", {});
+    this._tabOrderSetting = WebInspector.settings.createSetting(location + "-tabOrder", {});
+    this._tabbedPane.addEventListener(WebInspector.TabbedPane.Events.TabOrderChanged, this._persistTabOrder, this);
     if (restoreSelection)
         this._lastSelectedTabSetting = WebInspector.settings.createSetting(location + "-selectedTab", "");
 
@@ -603,6 +623,8 @@ WebInspector.ViewManager._TabbedLocation = function(manager, revealCallback, loc
     if (location)
         this.appendApplicableItems(location);
 }
+
+WebInspector.ViewManager._TabbedLocation.orderStep = 10;  // Keep in sync with descriptors.
 
 WebInspector.ViewManager._TabbedLocation.prototype = {
     /**
@@ -638,7 +660,17 @@ WebInspector.ViewManager._TabbedLocation.prototype = {
      */
     appendApplicableItems: function(locationName)
     {
-        for (var view of this._manager._viewsForLocation(locationName)) {
+        var views = this._manager._viewsForLocation(locationName);
+        if (this._allowReorder) {
+            var i = 0;
+            var persistedOrders = this._tabOrderSetting.get();
+            var orders = new Map();
+            for (var view of views)
+                orders.set(view.viewId(), persistedOrders[view.viewId()] || (++i) * WebInspector.ViewManager._TabbedLocation.orderStep);
+            views.sort((a, b) => orders.get(a.viewId()) - orders.get(b.viewId()));
+        }
+
+        for (var view of views) {
             var id = view.viewId();
             this._views.set(id, view);
             view[WebInspector.ViewManager._Location.symbol] = this;
@@ -673,10 +705,11 @@ WebInspector.ViewManager._TabbedLocation.prototype = {
 
     /**
      * @param {!WebInspector.View} view
+     * @param {number=} index
      */
-    _appendTab: function(view)
+    _appendTab: function(view, index)
     {
-        this._tabbedPane.appendTab(view.viewId(), view.title(), new WebInspector.ViewManager._ContainerWidget(view), undefined, false, view.isCloseable() || view.isTransient());
+        this._tabbedPane.appendTab(view.viewId(), view.title(), new WebInspector.ViewManager._ContainerWidget(view), undefined, false, view.isCloseable() || view.isTransient(), index);
     },
 
     /**
@@ -686,14 +719,32 @@ WebInspector.ViewManager._TabbedLocation.prototype = {
      */
     appendView: function(view, insertBefore)
     {
-        if (insertBefore)
-            throw new Error("Insert before in tabbed pane is not supported");
-        if (!this._tabbedPane.hasTab(view.viewId())) {
-            view[WebInspector.ViewManager._Location.symbol] = this;
-            this._manager._views.set(view.viewId(), view);
-            this._views.set(view.viewId(), view);
-            this._appendTab(view);
+        if (this._tabbedPane.hasTab(view.viewId()))
+            return;
+        view[WebInspector.ViewManager._Location.symbol] = this;
+        this._manager._views.set(view.viewId(), view);
+        this._views.set(view.viewId(), view);
+
+        var index = undefined;
+        var tabIds = this._tabbedPane.tabIds();
+        if (this._allowReorder) {
+            var orderSetting = this._tabOrderSetting.get();
+            var order = orderSetting[view.viewId()];
+            for (var i = 0; order && i < tabIds.length; ++i) {
+                if (orderSetting[tabIds[i]] && orderSetting[tabIds[i]] > order) {
+                    index = i;
+                    break;
+                }
+            }
+        } else if (insertBefore) {
+            for (var i = 0; i < tabIds.length; ++i) {
+                if (tabIds[i] === insertBefore.viewId()) {
+                    index = i;
+                    break;
+                }
+            }
         }
+        this._appendTab(view, index);
     },
 
     /**
@@ -770,6 +821,18 @@ WebInspector.ViewManager._TabbedLocation.prototype = {
     {
         var widget = /** @type {!WebInspector.ViewManager._ContainerWidget} */ (this._tabbedPane.tabView(view.viewId()));
         return widget._materialize();
+    },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _persistTabOrder: function(event)
+    {
+        var tabIds = this._tabbedPane.tabIds();
+        var tabOrders = {};
+        for (var i = 0; i < tabIds.length; i++)
+            tabOrders[tabIds[i]] = (i + 1) * WebInspector.ViewManager._TabbedLocation.orderStep;
+        this._tabOrderSetting.set(tabOrders);
     },
 
     __proto__: WebInspector.ViewManager._Location.prototype

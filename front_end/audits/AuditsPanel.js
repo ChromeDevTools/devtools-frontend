@@ -531,11 +531,6 @@ WebInspector.AuditResultSidebarTreeElement.prototype = {
     __proto__: TreeElement.prototype
 }
 
-WebInspector.AuditsPanel.show = function()
-{
-    WebInspector.inspectorView.setCurrentPanel(WebInspector.AuditsPanel.instance());
-}
-
 /**
  * @return {!WebInspector.AuditsPanel}
  */

@@ -1,10 +1,12 @@
 {
     "extensions": [
         {
-            "type": "@WebInspector.Panel",
-            "name": "layers",
+            "type": "view",
+            "location": "panel",
+            "id": "layers",
             "title": "Layers",
             "order": 100,
+            "persistence": "closeable",
             "className": "WebInspector.LayersPanel"
         }
     ],

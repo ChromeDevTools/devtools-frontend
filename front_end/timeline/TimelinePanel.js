@@ -1791,11 +1791,6 @@ WebInspector.TimelinePanel.StatusPane.prototype = {
     __proto__: WebInspector.VBox.prototype
 }
 
-WebInspector.TimelinePanel.show = function()
-{
-    WebInspector.inspectorView.setCurrentPanel(WebInspector.TimelinePanel.instance());
-}
-
 /**
  * @return {!WebInspector.TimelinePanel}
  */
@@ -1819,8 +1814,9 @@ WebInspector.LoadTimelineHandler.prototype = {
      */
     handleQueryParam: function(value)
     {
-        WebInspector.TimelinePanel.show();
-        WebInspector.TimelinePanel.instance()._loadFromURL(window.decodeURIComponent(value));
+        WebInspector.viewManager.showView("timeline").then(() => {
+            WebInspector.TimelinePanel.instance()._loadFromURL(window.decodeURIComponent(value));
+        });
     }
 }
 

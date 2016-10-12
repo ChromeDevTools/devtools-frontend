@@ -220,7 +220,10 @@ WebInspector.SourcesPanel.prototype = {
     {
         if (WebInspector.SourcesPanel.WrapperView.isShowing())
             return true;
-        return this === WebInspector.inspectorView.setCurrentPanel(this);
+        if (!WebInspector.inspectorView.canSelectPanel("sources"))
+            return false;
+        WebInspector.viewManager.showView("sources");
+        return true;
     },
 
     onResize: function()
@@ -245,7 +248,7 @@ WebInspector.SourcesPanel.prototype = {
     {
         var details = /** @type {!WebInspector.DebuggerPausedDetails} */ (event.data);
         if (!this._paused)
-            WebInspector.inspectorView.setCurrentPanel(this);
+            this._setAsCurrentPanel();
 
         if (WebInspector.context.flavor(WebInspector.Target) === details.target())
             this._showDebuggerPausedDetails(details);
@@ -331,7 +334,7 @@ WebInspector.SourcesPanel.prototype = {
     {
         if (WebInspector.SourcesPanel.WrapperView._instance && WebInspector.SourcesPanel.WrapperView._instance.isShowing())
             return;
-        WebInspector.inspectorView.setCurrentPanel(this);
+        this._setAsCurrentPanel();
     },
 
     /**
@@ -1093,9 +1096,12 @@ WebInspector.SourcesPanel.prototype = {
         this._splitWidget.setSidebarWidget(this.sidebarPaneView);
     },
 
+    /**
+     * @return {!Promise}
+     */
     _setAsCurrentPanel: function()
     {
-        WebInspector.inspectorView.setCurrentPanel(this);
+        return WebInspector.viewManager.showView("sources");
     },
 
     /**
@@ -1229,8 +1235,7 @@ WebInspector.SourcesPanel.DebuggerPausedDetailsRevealer.prototype = {
      */
     reveal: function(object)
     {
-        WebInspector.inspectorView.setCurrentPanel(WebInspector.SourcesPanel.instance());
-        return Promise.resolve();
+        return WebInspector.SourcesPanel.instance()._setAsCurrentPanel();
     }
 }
 
@@ -1312,11 +1317,6 @@ WebInspector.SourcesPanel.DebuggingActionDelegate.prototype = {
     }
 }
 
-WebInspector.SourcesPanel.show = function()
-{
-    WebInspector.inspectorView.setCurrentPanel(WebInspector.SourcesPanel.instance());
-}
-
 /**
  * @return {!WebInspector.SourcesPanel}
  */
@@ -1364,7 +1364,7 @@ WebInspector.SourcesPanel.WrapperView = function()
 WebInspector.SourcesPanel.WrapperView.prototype = {
     wasShown: function()
     {
-        if (WebInspector.inspectorView.currentPanel() && WebInspector.inspectorView.currentPanel().name !== "sources")
+        if (!WebInspector.SourcesPanel.instance().isShowing())
             this._showViewInWrapper();
         else
             WebInspector.inspectorView.setDrawerMinimized(true);

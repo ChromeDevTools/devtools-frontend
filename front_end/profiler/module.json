@@ -1,8 +1,9 @@
 {
     "extensions": [
         {
-            "type": "@WebInspector.Panel",
-            "name": "profiles",
+            "type": "view",
+            "location": "panel",
+            "id": "profiles",
             "title": "Profiles",
             "order": 60,
             "className": "WebInspector.ProfilesPanel"

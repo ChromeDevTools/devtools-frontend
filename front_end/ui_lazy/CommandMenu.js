@@ -317,12 +317,12 @@ WebInspector.CommandMenu.createRevealPanelCommand = function(extension)
      */
     function availableHandler()
     {
-        return WebInspector.inspectorView.currentPanel().name !== panelName;
+        return true;
     }
 
     function executeHandler()
     {
-        WebInspector.inspectorView.panel(panelName).then(WebInspector.inspectorView.setCurrentPanel.bind(WebInspector.inspectorView));
+        WebInspector.viewManager.showView(panelName);
     }
 }
 

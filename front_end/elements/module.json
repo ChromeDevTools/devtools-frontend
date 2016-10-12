@@ -1,8 +1,9 @@
 {
     "extensions": [
         {
-            "type": "@WebInspector.Panel",
-            "name": "elements",
+            "type": "view",
+            "location": "panel",
+            "id": "elements",
             "title": "Elements",
             "order": 10,
             "className": "WebInspector.ElementsPanel"

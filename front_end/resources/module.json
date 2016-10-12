@@ -1,8 +1,9 @@
 {
     "extensions": [
         {
-            "type": "@WebInspector.Panel",
-            "name": "resources",
+            "type": "view",
+            "location": "panel",
+            "id": "resources",
             "title": "Application",
             "order": 70,
             "className": "WebInspector.ResourcesPanel"

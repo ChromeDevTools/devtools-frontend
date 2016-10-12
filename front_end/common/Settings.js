@@ -399,7 +399,7 @@ WebInspector.VersionController = function()
 }
 
 WebInspector.VersionController._currentVersionName = "inspectorVersion";
-WebInspector.VersionController.currentVersion = 19;
+WebInspector.VersionController.currentVersion = 20;
 
 WebInspector.VersionController.prototype = {
     updateVersion: function()
@@ -407,8 +407,7 @@ WebInspector.VersionController.prototype = {
         var localStorageVersion = window.localStorage ? window.localStorage[WebInspector.VersionController._currentVersionName] : 0;
         var versionSetting = WebInspector.settings.createSetting(WebInspector.VersionController._currentVersionName, 0);
         var currentVersion = WebInspector.VersionController.currentVersion;
-        // While localStorage version exists, treat it as the main one. It'll be erased once migrated to prefs.
-        var oldVersion = parseInt(localStorageVersion || "0", 10) || versionSetting.get();
+        var oldVersion = versionSetting.get() || parseInt(localStorageVersion || "0", 10);
         if (oldVersion === 0) {
             // First run, no need to do anything.
             versionSetting.set(currentVersion);
@@ -725,6 +724,14 @@ WebInspector.VersionController.prototype = {
         var newSetting = WebInspector.settings.createSetting("networkLogColumns", {});
         newSetting.set(configs);
         visibleColumnSettings.remove();
+    },
+
+    _updateVersionFrom19To20: function()
+    {
+        var oldSetting = WebInspector.settings.createSetting("InspectorView.panelOrder", {});
+        var newSetting = WebInspector.settings.createSetting("panel-tabOrder", {});
+        newSetting.set(oldSetting.get());
+        oldSetting.remove();
     },
 
     _migrateSettingsFromLocalStorage: function()

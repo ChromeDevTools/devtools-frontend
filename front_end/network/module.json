@@ -1,8 +1,9 @@
 {
     "extensions": [
         {
-            "type": "@WebInspector.Panel",
-            "name": "network",
+            "type": "view",
+            "location": "panel",
+            "id": "network",
             "title": "Network",
             "order": 40,
             "className": "WebInspector.NetworkPanel"

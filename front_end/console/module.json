@@ -1,8 +1,9 @@
 {
     "extensions": [
         {
-            "type": "@WebInspector.Panel",
-            "name": "console",
+            "type": "view",
+            "location": "panel",
+            "id": "console",
             "title": "Console",
             "order": 20,
             "className": "WebInspector.ConsolePanel"
@@ -10,7 +11,7 @@
         {
             "type": "view",
             "location": "drawer-view",
-            "id": "console",
+            "id": "console-view",
             "title": "Console",
             "persistence": "permanent",
             "order": 0,

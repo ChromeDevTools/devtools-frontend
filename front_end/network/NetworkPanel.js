@@ -510,8 +510,7 @@ WebInspector.NetworkPanel.prototype = {
          */
         function reveal(request)
         {
-            WebInspector.inspectorView.setCurrentPanel(this);
-            this.revealAndHighlightRequest(request);
+            WebInspector.viewManager.showView("network").then(this.revealAndHighlightRequest.bind(this, request));
         }
 
         /**
@@ -632,16 +631,8 @@ WebInspector.NetworkPanel.RequestRevealer.prototype = {
         if (!(request instanceof WebInspector.NetworkRequest))
             return Promise.reject(new Error("Internal error: not a network request"));
         var panel = WebInspector.NetworkPanel._instance();
-        WebInspector.inspectorView.setCurrentPanel(panel);
-        panel.revealAndHighlightRequest(request);
-        return Promise.resolve();
+        return WebInspector.viewManager.showView("network").then(panel.revealAndHighlightRequest.bind(panel, request));
     }
-}
-
-
-WebInspector.NetworkPanel.show = function()
-{
-    WebInspector.inspectorView.setCurrentPanel(WebInspector.NetworkPanel._instance());
 }
 
 /**
@@ -654,7 +645,7 @@ WebInspector.NetworkPanel.revealAndFilter = function(filters)
     for (var filter of filters)
         filterString += `${filter.filterType}:${filter.filterValue} `;
     panel._networkLogView.setTextFilterValue(filterString);
-    WebInspector.inspectorView.setCurrentPanel(panel);
+    WebInspector.viewManager.showView("network");
 }
 
 /**

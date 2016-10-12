@@ -26,6 +26,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// For testing.
+WebInspector.panels = [];
+
 /**
  * @extends {WebInspector.VBox}
  * @constructor
@@ -39,6 +42,9 @@ WebInspector.Panel = function(name)
     this.element.setAttribute("aria-label", name);
     this.element.classList.add(name);
     this._panelName = name;
+
+    // For testing.
+    WebInspector.panels[name] = this;
 
     this._shortcuts = /** !Object.<number, function(Event=):boolean> */ ({});
 }

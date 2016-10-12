@@ -481,8 +481,8 @@ WebInspector.Main.prototype = {
                 event.preventDefault();
         }
 
-        if (!WebInspector.Dialog.hasInstance() && WebInspector.inspectorView.currentPanel()) {
-            WebInspector.inspectorView.currentPanel().handleShortcut(event);
+        if (!WebInspector.Dialog.hasInstance() && WebInspector.inspectorView.currentPanelDeprecated()) {
+            WebInspector.inspectorView.currentPanelDeprecated().handleShortcut(event);
             if (event.handled) {
                 event.consume(true);
                 return;
@@ -675,7 +675,7 @@ WebInspector.Main.SearchActionDelegate.prototype = {
      */
     handleAction: function(context, actionId)
     {
-        var searchableView = WebInspector.SearchableView.fromElement(document.deepActiveElement()) || WebInspector.inspectorView.currentPanel().searchableView();
+        var searchableView = WebInspector.SearchableView.fromElement(document.deepActiveElement()) || WebInspector.inspectorView.currentPanelDeprecated().searchableView();
         if (!searchableView)
             return false;
         switch (actionId) {
@@ -858,7 +858,9 @@ WebInspector.Main.MainMenuItem.prototype = {
         var extensions = self.runtime.extensions("view", undefined, true);
         for (var extension of extensions) {
             var descriptor = extension.descriptor();
-            if (descriptor["location"] !== "drawer-view")
+            if (descriptor["persistence"] !== "closeable")
+                continue;
+            if (descriptor["location"] !== "drawer-view" && descriptor["location"] !== "panel")
                 continue;
             moreTools.appendItem(extension.title(), WebInspector.viewManager.showView.bind(WebInspector.viewManager, descriptor["id"]));
         }

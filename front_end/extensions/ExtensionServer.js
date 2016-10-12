@@ -290,33 +290,33 @@ WebInspector.ExtensionServer.prototype = {
         var page = this._expandResourcePath(port._extensionOrigin, message.page);
         var persistentId = port._extensionOrigin + message.title;
         persistentId = persistentId.replace(/\s/g, "");
-        var panelDescriptor = new WebInspector.ExtensionServerPanelDescriptor(persistentId, message.title, new WebInspector.ExtensionPanel(this, persistentId, id, page));
-        this._clientObjects[id] = panelDescriptor;
-        WebInspector.inspectorView.addPanel(panelDescriptor);
+        var panelView = new WebInspector.ExtensionServerPanelView(persistentId, message.title, new WebInspector.ExtensionPanel(this, persistentId, id, page));
+        this._clientObjects[id] = panelView;
+        WebInspector.inspectorView.addPanel(panelView);
         return this._status.OK();
     },
 
     _onShowPanel: function(message)
     {
-        var panelName = message.id;
-        var panelDescriptor = this._clientObjects[message.id];
-        if (panelDescriptor && panelDescriptor instanceof WebInspector.ExtensionServerPanelDescriptor)
-            panelName = panelDescriptor.name();
-        WebInspector.inspectorView.showPanel(panelName);
+        var panelViewId = message.id;
+        var panelView = this._clientObjects[message.id];
+        if (panelView && panelView instanceof WebInspector.ExtensionServerPanelView)
+            panelViewId = panelView.viewId();
+        WebInspector.inspectorView.showPanel(panelViewId);
     },
 
     _onCreateToolbarButton: function(message, port)
     {
-        var panelDescriptor = this._clientObjects[message.panel];
-        if (!panelDescriptor || !(panelDescriptor instanceof WebInspector.ExtensionServerPanelDescriptor))
+        var panelView = this._clientObjects[message.panel];
+        if (!panelView || !(panelView instanceof WebInspector.ExtensionServerPanelView))
             return this._status.E_NOTFOUND(message.panel);
         var button = new WebInspector.ExtensionButton(this, message.id, this._expandResourcePath(port._extensionOrigin, message.icon), message.tooltip, message.disabled);
         this._clientObjects[message.id] = button;
 
-        panelDescriptor.panel().then(appendButton);
+        panelView.widget().then(appendButton);
 
         /**
-         * @param {!WebInspector.Panel} panel
+         * @param {!WebInspector.Widget} panel
          */
         function appendButton(panel)
         {
@@ -1058,42 +1058,35 @@ WebInspector.ExtensionServer.prototype = {
  * @param {string} name
  * @param {string} title
  * @param {!WebInspector.Panel} panel
- * @implements {WebInspector.PanelDescriptor}
+ * @extends {WebInspector.SimpleView}
  */
-WebInspector.ExtensionServerPanelDescriptor = function(name, title, panel)
+WebInspector.ExtensionServerPanelView = function(name, title, panel)
 {
+    WebInspector.SimpleView.call(this, title);
     this._name = name;
-    this._title = title;
     this._panel = panel;
 }
 
-WebInspector.ExtensionServerPanelDescriptor.prototype = {
+WebInspector.ExtensionServerPanelView.prototype = {
     /**
      * @override
      * @return {string}
      */
-    name: function()
+    viewId: function()
     {
         return this._name;
     },
 
     /**
      * @override
-     * @return {string}
+     * @return {!Promise.<!WebInspector.Widget>}
      */
-    title: function()
+    widget: function()
     {
-        return this._title;
+        return /** @type {!Promise.<!WebInspector.Widget>} */ (Promise.resolve(this._panel));
     },
 
-    /**
-     * @override
-     * @return {!Promise.<!WebInspector.Panel>}
-     */
-    panel: function()
-    {
-        return Promise.resolve(this._panel);
-    }
+    __proto__: WebInspector.SimpleView.prototype
 }
 
 /**

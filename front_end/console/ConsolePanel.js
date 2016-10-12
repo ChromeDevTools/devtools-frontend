@@ -89,7 +89,7 @@ WebInspector.ConsolePanel.WrapperView = function()
 WebInspector.ConsolePanel.WrapperView.prototype = {
     wasShown: function()
     {
-        if (!WebInspector.inspectorView.currentPanel() || WebInspector.inspectorView.currentPanel().name !== "console")
+        if (!WebInspector.ConsolePanel.instance().isShowing())
             this._showViewInWrapper();
         else
             WebInspector.inspectorView.setDrawerMinimized(true);
@@ -129,20 +129,15 @@ WebInspector.ConsolePanel.ConsoleRevealer.prototype = {
             consoleView.focus();
             return Promise.resolve();
         }
-        WebInspector.viewManager.showView("console");
+        WebInspector.viewManager.showView("console-view");
         return Promise.resolve();
     }
-}
-
-WebInspector.ConsolePanel.show = function()
-{
-    WebInspector.inspectorView.setCurrentPanel(WebInspector.ConsolePanel._instance());
 }
 
 /**
  * @return {!WebInspector.ConsolePanel}
  */
-WebInspector.ConsolePanel._instance = function()
+WebInspector.ConsolePanel.instance = function()
 {
     return /** @type {!WebInspector.ConsolePanel} */ (self.runtime.sharedInstance(WebInspector.ConsolePanel));
 }

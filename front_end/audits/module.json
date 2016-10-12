@@ -1,8 +1,9 @@
 {
     "extensions": [
         {
-            "type": "@WebInspector.Panel",
-            "name": "audits",
+            "type": "view",
+            "location": "panel",
+            "id": "audits",
             "title": "Audits",
             "order": 90,
             "className": "WebInspector.AuditsPanel"

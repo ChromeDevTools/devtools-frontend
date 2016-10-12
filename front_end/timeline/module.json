@@ -1,8 +1,9 @@
 {
     "extensions": [
         {
-            "type": "@WebInspector.Panel",
-            "name": "timeline",
+            "type": "view",
+            "location": "panel",
+            "id": "timeline",
             "title": "Timeline",
             "order": 50,
             "className": "WebInspector.TimelinePanel"

@@ -33,7 +33,7 @@ WebInspector.EventListenerBreakpointsSidebarPane = function()
     this._createCategory(WebInspector.UIString("Keyboard"), ["keydown", "keyup", "keypress", "input"]);
     this._createCategory(WebInspector.UIString("Load"), ["load", "beforeunload", "unload", "abort", "error", "hashchange", "popstate"]);
     this._createCategory(WebInspector.UIString("Media"), ["play", "pause", "playing", "canplay", "canplaythrough", "seeking", "seeked", "timeupdate", "ended", "ratechange", "durationchange", "volumechange", "loadstart", "progress", "suspend", "abort", "error", "emptied", "stalled", "loadedmetadata", "loadeddata", "waiting"], false, ["audio", "video"]);
-    this._createCategory(WebInspector.UIString("Mouse"), ["click", "dblclick", "mousedown", "mouseup", "mouseover", "mousemove", "mouseout", "mouseenter", "mouseleave", "mousewheel", "wheel", "contextmenu"]);
+    this._createCategory(WebInspector.UIString("Mouse"), ["auxclick", "click", "dblclick", "mousedown", "mouseup", "mouseover", "mousemove", "mouseout", "mouseenter", "mouseleave", "mousewheel", "wheel", "contextmenu"]);
     this._createCategory(WebInspector.UIString("Parse"), ["setInnerHTML"], true);
     this._createCategory(WebInspector.UIString("Pointer"), ["pointerover", "pointerout", "pointerenter", "pointerleave", "pointerdown", "pointerup", "pointermove", "pointercancel", "gotpointercapture", "lostpointercapture"]);
     this._createCategory(WebInspector.UIString("Script"), ["scriptFirstStatement", "scriptBlockedByCSP"], true);

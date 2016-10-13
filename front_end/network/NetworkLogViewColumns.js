@@ -815,6 +815,21 @@ WebInspector.NetworkLogViewColumns.prototype = {
         this._timelineGrid.showEventDividers();
     },
 
+    /**
+     * @param {number} time
+     */
+    selectFilmStripFrame: function(time)
+    {
+        for (var divider of this._eventDividers)
+            divider.element.classList.toggle("network-frame-divider-selected", divider.time === time);
+    },
+
+    clearFilmStripFrame: function()
+    {
+        for (var divider of this._eventDividers)
+            divider.element.classList.toggle("network-frame-divider-selected", false);
+    },
+
     _updateRowsSize: function()
     {
         if (Runtime.experiments.isEnabled("canvasNetworkTimeline"))

@@ -507,14 +507,12 @@ WebInspector.NetworkLogView.prototype = {
      */
     selectFilmStripFrame: function(time)
     {
-        for (var divider of this._eventDividers)
-            divider.element.classList.toggle("network-frame-divider-selected", divider.time === time);
+        this._columns.selectFilmStripFrame(time);
     },
 
     clearFilmStripFrame: function()
     {
-        for (var divider of this._eventDividers)
-            divider.element.classList.toggle("network-frame-divider-selected", false);
+        this._columns.clearFilmStripFrame();
     },
 
     _refreshIfNeeded: function()
@@ -699,7 +697,6 @@ WebInspector.NetworkLogView.prototype = {
 
         this._mainRequestLoadTime = -1;
         this._mainRequestDOMContentLoadedTime = -1;
-        this._eventDividers = [];
 
         if (this._dataGrid) {
             this._dataGrid.rootNode().removeChildren();

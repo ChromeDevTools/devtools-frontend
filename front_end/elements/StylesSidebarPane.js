@@ -679,6 +679,7 @@ WebInspector.StylePropertiesSection = function(parentPane, matchedStyles, style)
         this.propertiesTreeOutline.element.classList.add("read-only");
     }
 
+    this._hoverableSelectorsMode = false;
     this._markSelectorMatches();
     this.onpopulate();
 }

@@ -681,14 +681,7 @@ WebInspector.ViewManager._TabbedLocation.prototype = {
             else if (this._closeableTabSetting.get()[id])
                 this._appendTab(view);
         }
-    },
-
-    wasShown: function()
-    {
-        if (this._wasAlreadyShown || !this._lastSelectedTabSetting)
-            return;
-        this._wasAlreadyShown = true;
-        if (this._tabbedPane.hasTab(this._lastSelectedTabSetting.get()))
+        if (this._lastSelectedTabSetting && this._tabbedPane.hasTab(this._lastSelectedTabSetting.get()))
             this._tabbedPane.selectTab(this._lastSelectedTabSetting.get());
     },
 

@@ -639,8 +639,6 @@ WebInspector.ProfilesPanel.prototype = {
 
     _reset: function()
     {
-        WebInspector.Panel.prototype.reset.call(this);
-
         var types = WebInspector.ProfileTypeRegistry.instance.profileTypes();
         for (var i = 0; i < types.length; i++)
             types[i]._reset();

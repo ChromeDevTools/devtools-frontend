@@ -38,7 +38,6 @@ WebInspector.Panel = function(name)
     WebInspector.VBox.call(this);
 
     this.element.classList.add("panel");
-    this.element.setAttribute("role", "tabpanel");
     this.element.setAttribute("aria-label", name);
     this.element.classList.add(name);
     this._panelName = name;
@@ -56,10 +55,6 @@ WebInspector.Panel.prototype = {
     get name()
     {
         return this._panelName;
-    },
-
-    reset: function()
-    {
     },
 
     /**
@@ -175,69 +170,4 @@ WebInspector.PanelWithSidebar.prototype = {
     },
 
     __proto__: WebInspector.Panel.prototype
-}
-
-/**
- * @interface
- */
-WebInspector.PanelDescriptor = function()
-{
-}
-
-WebInspector.PanelDescriptor.prototype = {
-    /**
-     * @return {string}
-     */
-    name: function() {},
-
-    /**
-     * @return {string}
-     */
-    title: function() {},
-
-    /**
-     * @return {!Promise.<!WebInspector.Panel>}
-     */
-    panel: function() {}
-}
-
-/**
- * @constructor
- * @param {!Runtime.Extension} extension
- * @implements {WebInspector.PanelDescriptor}
- */
-WebInspector.ExtensionPanelDescriptor = function(extension)
-{
-    this._name = extension.descriptor()["name"];
-    this._title = WebInspector.UIString(extension.descriptor()["title"]);
-    this._extension = extension;
-}
-
-WebInspector.ExtensionPanelDescriptor.prototype = {
-    /**
-     * @override
-     * @return {string}
-     */
-    name: function()
-    {
-        return this._name;
-    },
-
-    /**
-     * @override
-     * @return {string}
-     */
-    title: function()
-    {
-        return this._title;
-    },
-
-    /**
-     * @override
-     * @return {!Promise.<!WebInspector.Panel>}
-     */
-    panel: function()
-    {
-        return  /** @type {!Promise<!WebInspector.Panel>} */(this._extension.instance());
-    }
 }

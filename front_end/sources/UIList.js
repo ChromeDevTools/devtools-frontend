@@ -87,8 +87,8 @@ WebInspector.UIList.Item = function(title, subtitle, isLabel)
     if (isLabel)
         this.element.classList.add("label");
 
-    this.subtitleElement = this.element.createChild("div", "subtitle");
     this.titleElement = this.element.createChild("div", "title");
+    this.subtitleElement = this.element.createChild("div", "subtitle");
 
     this._hidden = false;
     this._isLabel = !!isLabel;

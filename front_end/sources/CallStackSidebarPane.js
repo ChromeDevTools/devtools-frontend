@@ -469,15 +469,7 @@ WebInspector.CallStackSidebarPane.CallFrame = function(functionName, location, l
     this._location = location;
     this._debuggerCallFrame = debuggerCallFrame;
     this._asyncCallFrame = asyncCallFrame;
-
-    if (asyncCallFrame) {
-        var script = location.script();
-        var locationElement = linkifier.linkifyRawLocation(location, script ? script.sourceURL : "");
-        this.subtitleElement.appendChild(locationElement);
-    } else {
-        this._liveLocationPool = new WebInspector.LiveLocationPool();
-        WebInspector.debuggerWorkspaceBinding.createCallFrameLiveLocation(location, this._update.bind(this), locationPool);
-    }
+    WebInspector.debuggerWorkspaceBinding.createCallFrameLiveLocation(location, this._update.bind(this), locationPool);
 }
 
 WebInspector.CallStackSidebarPane.CallFrame.prototype = {

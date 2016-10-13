@@ -5,48 +5,59 @@
  */
 
 .list-item {
-    padding: 0 8px 0 0;
+    padding: 3px 8px 3px 20px;
     position: relative;
     min-height: 18px;
-    white-space: nowrap;
-    line-height: 20px;
+    line-height: 15px;
+    display: flex;
+    flex-wrap: wrap;
 }
 
-.list-item:not(:last-child) {
-    border-bottom: 1px solid #eee;
+.list-item:not(.label) {
+    border-top: 1px solid #efefef;
+}
+
+.label + .list-item {
+    border-top: 0;
 }
 
 .list-item:not(.ignore-hover):hover {
     background-color: #eee;
 }
 
-.list-item > .title {
-    word-wrap: break-word;
-    white-space: normal;
-    margin-left: 17px;
+.list-item > .title,
+.list-item > .subtitle {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .list-item > .subtitle {
-    margin-left: 5px;
     color: #888;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    float: right;
+    margin-left: auto;
+    padding-left: 10px;
 }
 
 .list-item > .subtitle a {
     color: inherit;
 }
 
-.list-item.label {
-    text-align: center;
+.list-item.label::before {
+    content: " ";
+    width: 100%;
+    border-top: 1px solid #d8d8d8;
+    margin-top: 8px;
+    position: absolute;
+    z-index: -1;
+    left: 0;
 }
 
-.list-item.label .title,
-.list-item.label .subtitle {
-    font-style: italic;
+.list-item.label .title {
     font-weight: bold;
     color: #999;
+    background-color: white;
+    margin-left: -5px;
+    padding: 0 5px;
 }
 
 .list-item.dimmed {

@@ -34,7 +34,7 @@
 .expandable-view-title {
     display: flex;
     align-items: center;
-    background-color: #eee;
+    background-color: #f3f3f3;
     height: 22px;
     padding: 0 5px;
     border-top: 1px solid #dadada;

@@ -969,7 +969,7 @@ WebInspector.SecurityOriginView.prototype = {
             sanDiv.classList.add("empty-san");
         } else {
             var truncatedNumToShow = 2;
-            var listIsTruncated = sanList.length > truncatedNumToShow;
+            var listIsTruncated = sanList.length > truncatedNumToShow + 1;
             for (var i = 0; i < sanList.length; i++) {
                 var span = sanDiv.createChild("span", "san-entry");
                 span.textContent = sanList[i];

@@ -16,8 +16,8 @@ devtools_core_base_files = [
   "front_end/formatter_worker.json",
   "front_end/heap_snapshot_worker.js",
   "front_end/heap_snapshot_worker.json",
-  "front_end/temp_storage_shared_worker.js",
-  "front_end/temp_storage_shared_worker.json",
+  "front_end/utility_shared_worker.js",
+  "front_end/utility_shared_worker.json",
   "front_end/toolbox.js",
   "front_end/toolbox.json",
   "front_end/Runtime.js",
@@ -335,7 +335,7 @@ devtools_module_json_files = [
   "front_end/source_frame/module.json",
   "front_end/sources/module.json",
   "front_end/snippets/module.json",
-  "front_end/temp_storage_shared_worker/module.json",
+  "front_end/utility_shared_worker/module.json",
   "front_end/text_editor/module.json",
   "front_end/timeline_model/module.json",
   "front_end/timeline/module.json",
@@ -686,8 +686,8 @@ devtools_snippets_js_files = [
   "front_end/snippets/ScriptSnippetModel.js",
   "front_end/snippets/SnippetStorage.js",
 ]
-devtools_temp_storage_shared_worker_js_files =
-    [ "front_end/temp_storage_shared_worker/TempStorageSharedWorker.js" ]
+devtools_utility_shared_worker_js_files =
+    [ "front_end/utility_shared_worker/TempStorage.js" ]
 devtools_text_editor_js_files = [
   "front_end/text_editor/cmdevtools.css",
   "front_end/text_editor/CodeMirrorTextEditor.js",
@@ -758,6 +758,8 @@ devtools_ui_lazy_js_files = [
   "front_end/ui_lazy/TimelineOverviewPane.js",
   "front_end/ui_lazy/ViewportDataGrid.js",
 ]
+devtools_worker_service_js_files =
+    [ "front_end/worker_service/ServiceDispatcher.js" ]
 
 # Third-party code.
 devtools_cm_css_files = [ "front_end/cm/codemirror.css" ]
@@ -877,10 +879,10 @@ devtools_modules_js_files =
     devtools_formatter_worker_js_files + devtools_settings_js_files +
     devtools_services_js_files + devtools_snippets_js_files +
     devtools_source_frame_js_files + devtools_sources_js_files +
-    devtools_temp_storage_shared_worker_js_files +
-    devtools_text_editor_js_files + devtools_terminal_js_files +
-    devtools_timeline_model_js_files + devtools_timeline_js_files +
-    devtools_ui_lazy_js_files + devtools_layer_viewer_js_files
+    devtools_utility_shared_worker_js_files + devtools_text_editor_js_files +
+    devtools_terminal_js_files + devtools_timeline_model_js_files +
+    devtools_timeline_js_files + devtools_ui_lazy_js_files +
+    devtools_layer_viewer_js_files + devtools_worker_service_js_files
 
 all_devtools_files = devtools_cm_css_files + devtools_cm_js_files +
                      devtools_core_files + devtools_module_json_files +
@@ -903,7 +905,7 @@ generated_entry_files = [
 generated_workers = [
   "$resources_out_dir/formatter_worker.js",
   "$resources_out_dir/heap_snapshot_worker.js",
-  "$resources_out_dir/temp_storage_shared_worker.js",
+  "$resources_out_dir/utility_shared_worker.js",
 ]
 
 generated_bundled_modules = [
@@ -921,7 +923,6 @@ generated_bundled_modules = [
   "$resources_out_dir/resources/resources_module.js",
   "$resources_out_dir/sass/sass_module.js",
   "$resources_out_dir/security/security_module.js",
-  "$resources_out_dir/services/services_module.js",
   "$resources_out_dir/settings/settings_module.js",
   "$resources_out_dir/snippets/snippets_module.js",
   "$resources_out_dir/source_frame/source_frame_module.js",
@@ -946,7 +947,7 @@ devtools_applications = [
   "toolbox",
   "formatter_worker",
   "heap_snapshot_worker",
-  "temp_storage_shared_worker",
+  "utility_shared_worker",
 ]
 
 #-------------------------------------------------------------------------------

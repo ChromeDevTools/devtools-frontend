@@ -1,7 +1,0 @@
-{
-    "modules": [
-        { "name": "temp_storage_shared_worker", "type": "autostart" }
-    ],
-
-    "has_html": false
-}

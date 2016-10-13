@@ -7,11 +7,6 @@
  */
 WebInspector.ServiceManager = function()
 {
-    this._lastId = 1;
-    /** @type {!Map<number, function(?Object)>}*/
-    this._callbacks = new Map();
-    /** @type {!Map<string, !WebInspector.ServiceManager.Service>}*/
-    this._services = new Map();
 }
 
 WebInspector.ServiceManager.prototype = {
@@ -19,7 +14,54 @@ WebInspector.ServiceManager.prototype = {
      * @param {string} serviceName
      * @return {!Promise<?WebInspector.ServiceManager.Service>}
      */
-    createService: function(serviceName)
+    createRemoteService: function(serviceName)
+    {
+        if (!this._remoteConnection) {
+            var url = Runtime.queryParam("service-backend");
+            if (!url) {
+                console.error("No endpoint address specified");
+                return /** @type {!Promise<?WebInspector.ServiceManager.Service>} */ (Promise.resolve(null));
+            }
+            this._remoteConnection = new WebInspector.ServiceManager.Connection(new WebInspector.ServiceManager.RemoteServicePort(url));
+        }
+        return this._remoteConnection._createService(serviceName);
+    },
+
+    /**
+     * @param {string} appName
+     * @param {string} serviceName
+     * @param {boolean} isShared
+     * @return {!Promise<?WebInspector.ServiceManager.Service>}
+     */
+    createWorkerService: function(appName, serviceName, isShared)
+    {
+        var connection = new WebInspector.ServiceManager.Connection(new WebInspector.ServiceManager.WorkerServicePort(appName, isShared));
+        return connection._createService(serviceName);
+    }
+}
+
+/**
+ * @constructor
+ * @param {!ServicePort} port
+ */
+WebInspector.ServiceManager.Connection = function(port)
+{
+    this._port = port;
+    this._port.setHandlers(this._onMessage.bind(this), this._connectionClosed.bind(this));
+
+    this._lastId = 1;
+    /** @type {!Map<number, function(?Object)>}*/
+    this._callbacks = new Map();
+    /** @type {!Map<string, !WebInspector.ServiceManager.Service>}*/
+    this._services = new Map();
+}
+
+WebInspector.ServiceManager.Connection.prototype = {
+    /**
+     * @param {string} serviceName
+     * @return {!Promise<?WebInspector.ServiceManager.Service>}
+     */
+    _createService: function(serviceName)
     {
         return this._sendCommand(serviceName + ".create").then(result => {
             if (!result)
@@ -31,6 +73,18 @@ WebInspector.ServiceManager.prototype = {
     },
 
     /**
+     * @param {!WebInspector.ServiceManager.Service} service
+     */
+    _serviceDisposed: function(service)
+    {
+        this._services.delete(service._serviceName + ":" + service._objectId);
+        if (!this._services.size) {
+            // Terminate the connection since it is no longer used.
+            this._port.close();
+        }
+    },
+
+    /**
      * @param {string} method
      * @param {!Object=} params
      * @return {!Promise<?Object>}
@@ -39,45 +93,18 @@ WebInspector.ServiceManager.prototype = {
     {
         var id = this._lastId++;
         var message = JSON.stringify({id: id, method: method, params: params || {}});
-        this._connect().then(() => this._socket ? this._socket.send(message) : this._callbacks.get(id)(null));
-        return new Promise(fulfill => this._callbacks.set(id, fulfill));
+        return this._port.send(message).then(success => {
+            if (!success)
+                return Promise.resolve(null);
+            return new Promise(fulfill => this._callbacks.set(id, fulfill));
+        });
     },
 
     /**
-     * @return {!Promise}
+     * @param {string} data
      */
-    _connect: function()
+    _onMessage: function(data)
     {
-        var url = Runtime.queryParam("service-backend");
-        if (!url) {
-            console.error("No endpoint address specified");
-            return Promise.resolve(null);
-        }
-
-        if (!this._connectionPromise)
-            this._connectionPromise = new Promise(promiseBody.bind(this));
-        return this._connectionPromise;
-
-        /**
-         * @param {function()} fulfill
-         * @param {function()} reject
-         * @this {WebInspector.ServiceManager}
-         */
-        function promiseBody(fulfill, reject)
-        {
-            var socket = new WebSocket(/** @type {string} */(url));
-            socket.onmessage = this._onMessage.bind(this);
-            socket.onopen = this._connectionOpened.bind(this, socket, fulfill);
-            socket.onclose = this._connectionClosed.bind(this);
-        }
-    },
-
-    /**
-     * @param {!MessageEvent} message
-     */
-    _onMessage: function(message)
-    {
-        var data = /** @type {string} */ (message.data);
         var object;
         try {
             object = JSON.parse(data);
@@ -104,16 +131,6 @@ WebInspector.ServiceManager.prototype = {
         service._dispatchNotification(methodName, object.params);
     },
 
-    /**
-     * @param {!WebSocket} socket
-     * @param {function()} callback
-     */
-    _connectionOpened: function(socket, callback)
-    {
-        this._socket = socket;
-        callback();
-    },
-
     _connectionClosed: function()
     {
         for (var callback of this._callbacks.values())
@@ -122,19 +139,18 @@ WebInspector.ServiceManager.prototype = {
         for (var service of this._services.values())
             service._dispatchNotification("disposed");
         this._services.clear();
-        delete this._connectionPromise;
     }
 }
 
 /**
  * @constructor
- * @param {!WebInspector.ServiceManager} manager
+ * @param {!WebInspector.ServiceManager.Connection} connection
  * @param {string} serviceName
  * @param {string} objectId
  */
-WebInspector.ServiceManager.Service = function(manager, serviceName, objectId)
+WebInspector.ServiceManager.Service = function(connection, serviceName, objectId)
 {
-    this._manager = manager;
+    this._connection = connection;
     this._serviceName = serviceName;
     this._objectId = objectId;
     /** @type {!Map<string, function(!Object=)>}*/
@@ -148,8 +164,9 @@ WebInspector.ServiceManager.Service.prototype = {
     dispose: function()
     {
         var params = { id: this._objectId };
-        this._manager._services.delete(this._serviceName + ":" + this._objectId);
-        return this._manager._sendCommand(this._serviceName + ".dispose", params);
+        return this._connection._sendCommand(this._serviceName + ".dispose", params).then(() => {
+            this._connection._serviceDisposed(this);
+        });
     },
 
     /**
@@ -170,7 +187,7 @@ WebInspector.ServiceManager.Service.prototype = {
     {
         params = params || {};
         params.id = this._objectId;
-        return this._manager._sendCommand(this._serviceName + "." + methodName, params);
+        return this._connection._sendCommand(this._serviceName + "." + methodName, params);
     },
 
     /**
@@ -185,6 +202,211 @@ WebInspector.ServiceManager.Service.prototype = {
             return;
         }
         handler(params);
+    }
+}
+
+/**
+ * @constructor
+ * @implements {ServicePort}
+ * @param {string} url
+ */
+WebInspector.ServiceManager.RemoteServicePort = function(url)
+{
+    this._url = url;
+}
+
+WebInspector.ServiceManager.RemoteServicePort.prototype = {
+    /**
+     * @override
+     * @param {function(string)} messageHandler
+     * @param {function(string)} closeHandler
+     */
+    setHandlers: function(messageHandler, closeHandler)
+    {
+        this._messageHandler = messageHandler;
+        this._closeHandler = closeHandler;
+    },
+
+    /**
+     * @return {!Promise<boolean>}
+     */
+    _open: function()
+    {
+        if (!this._connectionPromise)
+            this._connectionPromise = new Promise(promiseBody.bind(this));
+        return this._connectionPromise;
+
+        /**
+         * @param {function(boolean)} fulfill
+         * @this {WebInspector.ServiceManager.RemoteServicePort}
+         */
+        function promiseBody(fulfill)
+        {
+            var socket;
+            try {
+                socket = new WebSocket(/** @type {string} */(this._url));
+                socket.onmessage = onMessage.bind(this);
+                socket.onclose = this._closeHandler;
+                socket.onopen = onConnect.bind(this);
+            } catch (e) {
+                fulfill(false);
+            }
+
+            /**
+             * @this {WebInspector.ServiceManager.RemoteServicePort}
+             */
+            function onConnect()
+            {
+                this._socket = socket;
+                fulfill(true);
+            }
+
+            /**
+             * @param {!Event} event
+             * @this {WebInspector.ServiceManager.RemoteServicePort}
+             */
+            function onMessage(event)
+            {
+                this._messageHandler(event.data);
+            }
+        }
+    },
+
+    /**
+     * @override
+     * @param {string} message
+     * @return {!Promise<boolean>}
+     */
+    send: function(message)
+    {
+        return this._open().then(() => {
+            if (this._socket) {
+                this._socket.send(message);
+                return true;
+            }
+            return false;
+        });
+    },
+
+    /**
+     * @override
+     * @return {!Promise}
+     */
+    close: function()
+    {
+        return this._open().then(() => {
+            if (this._socket) {
+                this._socket.close();
+                this._socket = null;
+                delete this._connectionPromise;
+            }
+            return true;
+        });
+    },
+}
+
+/**
+ * @constructor
+ * @implements {ServicePort}
+ * @param {string} appName
+ * @param {boolean} isSharedWorker
+ */
+WebInspector.ServiceManager.WorkerServicePort = function(appName, isSharedWorker)
+{
+    this._appName = appName;
+    this._isSharedWorker = isSharedWorker;
+}
+
+WebInspector.ServiceManager.WorkerServicePort.prototype = {
+    /**
+     * @override
+     * @param {function(string)} messageHandler
+     * @param {function(string)} closeHandler
+     */
+    setHandlers: function(messageHandler, closeHandler)
+    {
+        this._messageHandler = messageHandler;
+        this._closeHandler = closeHandler;
+    },
+
+    /**
+     * @return {!Promise<boolean>}
+     */
+    _open: function()
+    {
+        if (this._workerPromise)
+            return this._workerPromise;
+
+        var url = this._appName + ".js";
+        var remoteBase = Runtime.queryParam("remoteBase");
+        if (remoteBase)
+            url += "?remoteBase=" + remoteBase;
+
+        this._workerPromise = new Promise(promiseBody.bind(this));
+
+        /**
+         * @param {function(boolean)} fulfill
+         * @this {WebInspector.ServiceManager.WorkerServicePort}
+         */
+        function promiseBody(fulfill)
+        {
+            if (this._isSharedWorker) {
+                this._worker = new SharedWorker(url, this._appName);
+                this._worker.port.onmessage = onMessage.bind(this);
+                this._worker.port.onclose = this._closeHandler;
+            } else {
+                this._worker = new Worker(url);
+                this._worker.onmessage = onMessage.bind(this);
+                this._worker.onclose = this._closeHandler;
+            }
+
+            /**
+             * @param {!Event} event
+             * @this {WebInspector.ServiceManager.WorkerServicePort}
+             */
+            function onMessage(event)
+            {
+                if (event.data === "workerReady") {
+                    fulfill(true);
+                    return;
+                }
+                this._messageHandler(event.data);
+            }
+        }
+        return this._workerPromise;
+    },
+
+    /**
+     * @override
+     * @param {string} message
+     * @return {!Promise<boolean>}
+     */
+    send: function(message)
+    {
+        return this._open().then(() => {
+            try {
+                if (this._isSharedWorker)
+                    this._worker.port.postMessage(message);
+                else
+                    this._worker.postMessage(message);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        });
+    },
+
+    /**
+     * @override
+     * @return {!Promise}
+     */
+    close: function()
+    {
+        return this._open().then(() => {
+            if (this._worker)
+                this._worker.terminate();
+            return false;
+        });
     }
 }
 

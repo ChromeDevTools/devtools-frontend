@@ -388,54 +388,16 @@ WebInspector.DeferredTempFile.prototype = {
 }
 
 /**
- * @param {function(?)} fulfill
- * @param {function(*)} reject
- */
-WebInspector.TempFile._clearTempStorage = function(fulfill, reject)
-{
-    /**
-     * @param {!Event} event
-     */
-    function handleError(event)
-    {
-        WebInspector.console.error(WebInspector.UIString("Failed to clear temp storage: %s", event.data));
-        reject(event.data);
-    }
-
-    /**
-     * @param {!Event} event
-     */
-    function handleMessage(event)
-    {
-        if (event.data.type === "tempStorageCleared") {
-            if (event.data.error)
-                WebInspector.console.error(event.data.error);
-            else
-                fulfill(undefined);
-            return;
-        }
-        reject(event.data);
-    }
-
-    try {
-        var worker = new WebInspector.Worker("temp_storage_shared_worker", "TempStorageCleaner");
-        worker.onerror = handleError;
-        worker.onmessage = handleMessage;
-    } catch (e) {
-        if (e.name === "URLMismatchError")
-            console.log("Shared worker wasn't started due to url difference. " + e);
-        else
-            throw e;
-    }
-}
-
-/**
  * @return {!Promise.<undefined>}
  */
 WebInspector.TempFile.ensureTempStorageCleared = function()
 {
-    if (!WebInspector.TempFile._storageCleanerPromise)
-        WebInspector.TempFile._storageCleanerPromise = new Promise(WebInspector.TempFile._clearTempStorage);
+    if (!WebInspector.TempFile._storageCleanerPromise) {
+        WebInspector.TempFile._storageCleanerPromise = WebInspector.serviceManager.createWorkerService("utility_shared_worker", "TempStorage", true).then(service => {
+            if (service)
+                return service.send("clear");
+        });
+    }
     return WebInspector.TempFile._storageCleanerPromise;
 }
 

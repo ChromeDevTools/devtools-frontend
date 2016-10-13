@@ -21,7 +21,7 @@ WebInspector.TerminalWidget = function()
 WebInspector.TerminalWidget.prototype = {
     _init: function()
     {
-        WebInspector.serviceManager.createService("Terminal").then(this._initialized.bind(this));
+        WebInspector.serviceManager.createRemoteService("Terminal").then(this._initialized.bind(this));
     },
 
     /**

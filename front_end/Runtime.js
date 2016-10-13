@@ -1142,5 +1142,29 @@ Runtime.resolveSourceURL = function(path)
     return "\n/*# sourceURL=" + sourceURL + " */";
 }
 
+/**
+ * @interface
+ */
+function ServicePort() { }
+
+ServicePort.prototype = {
+    /**
+     * @param {function(string)} messageHandler
+     * @param {function(string)} closeHandler
+     */
+    setHandlers: function(messageHandler, closeHandler) { },
+
+    /**
+     * @param {string} message
+     * @return {!Promise<boolean>}
+     */
+    send: function(message) { },
+
+    /**
+     * @return {!Promise<boolean>}
+     */
+    close: function() { }
+}
+
 /** @type {!Runtime} */
 var runtime;

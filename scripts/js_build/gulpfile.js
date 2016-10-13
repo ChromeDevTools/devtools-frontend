@@ -37,7 +37,7 @@ function buildTask()
         "toolbox",
         "formatter_worker",
         "heap_snapshot_worker",
-        "temp_storage_shared_worker",
+        "utility_shared_worker",
         "--input_path",
         frontendPath,
         "--output_path",

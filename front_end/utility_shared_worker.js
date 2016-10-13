@@ -5,4 +5,4 @@
 // Release build has Runtime.js bundled.
 if (!self.Runtime)
     self.importScripts("Runtime.js");
-Runtime.startSharedWorker("temp_storage_shared_worker");
+Runtime.startSharedWorker("utility_shared_worker");

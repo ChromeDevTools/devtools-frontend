@@ -31,25 +31,18 @@
 /**
  * @constructor
  * @param {string} appName
- * @param {string=} workerName
  */
-WebInspector.Worker = function(appName, workerName)
+WebInspector.Worker = function(appName)
 {
     var url = appName + ".js";
     var remoteBase = Runtime.queryParam("remoteBase");
     if (remoteBase)
         url += "?remoteBase=" + remoteBase;
 
-    /** @type {!Promise<!Worker|!SharedWorker>} */
+    /** @type {!Promise<!Worker>} */
     this._workerPromise = new Promise(fulfill => {
-        var isSharedWorker = !!workerName;
-        if (isSharedWorker) {
-            this._worker = new SharedWorker(url, workerName);
-            this._worker.port.onmessage = onMessage.bind(this);
-        } else {
-            this._worker = new Worker(url);
-            this._worker.onmessage = onMessage.bind(this);
-        }
+        this._worker = new Worker(url);
+        this._worker.onmessage = onMessage.bind(this);
 
         /**
          * @param {!Event} event
@@ -58,10 +51,7 @@ WebInspector.Worker = function(appName, workerName)
         function onMessage(event)
         {
             console.assert(event.data === "workerReady");
-            if (isSharedWorker)
-                this._worker.port.onmessage = null;
-            else
-                this._worker.onmessage = null;
+            this._worker.onmessage = null;
             fulfill(this._worker);
             // No need to hold a reference to worker anymore as it's stored in
             // the resolved promise.
@@ -98,7 +88,7 @@ WebInspector.Worker.prototype = {
      */
     set onmessage(listener)
     {
-        this._workerPromise.then(worker => (worker.port || worker).onmessage = listener);
+        this._workerPromise.then(worker => worker.onmessage = listener);
     },
 
     /**
@@ -106,6 +96,6 @@ WebInspector.Worker.prototype = {
      */
     set onerror(listener)
     {
-        this._workerPromise.then(worker => (worker.port || worker).onerror = listener);
+        this._workerPromise.then(worker => worker.onerror = listener);
     }
 }

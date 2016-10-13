@@ -258,18 +258,18 @@ WebInspector.PaintProfilerView.prototype = {
 
 /**
  * @constructor
- * @extends {WebInspector.VBox}
+ * @extends {WebInspector.ThrottledWidget}
  */
 WebInspector.PaintProfilerCommandLogView = function()
 {
-    WebInspector.VBox.call(this);
+    WebInspector.ThrottledWidget.call(this);
     this.setMinimumSize(100, 25);
     this.element.classList.add("overflow-auto");
 
     this._treeOutline = new TreeOutlineInShadow();
     this.element.appendChild(this._treeOutline.element);
 
-    this._reset();
+    this._log = [];
 }
 
 WebInspector.PaintProfilerCommandLogView.prototype = {
@@ -299,19 +299,25 @@ WebInspector.PaintProfilerCommandLogView.prototype = {
      */
     updateWindow: function(selectionWindow)
     {
-        this._treeOutline.removeChildren();
-        if (!selectionWindow || !this._log.length)
-            return;
-        for (var i = selectionWindow.left; i < selectionWindow.right; ++i)
-            this._appendLogItem(this._treeOutline, this._log[i]);
+        this._selectionWindow = selectionWindow;
+        this.update();
     },
 
-    _reset: function()
+    /**
+     * @override
+     * @return {!Promise<*>}
+     */
+    doUpdate: function()
     {
-        this._log = [];
+        this._treeOutline.removeChildren();
+        if (!this._selectionWindow || !this._log.length)
+            return Promise.resolve();
+        for (var i = this._selectionWindow.left, right = this._selectionWindow.right; i < right; ++i)
+            this._appendLogItem(this._treeOutline, this._log[i]);
+        return Promise.resolve();
     },
 
-    __proto__: WebInspector.VBox.prototype
+    __proto__: WebInspector.ThrottledWidget.prototype
 };
 
 /**

@@ -61,6 +61,7 @@ WebInspector.LayersPanel = function()
 
     this._paintProfilerView = new WebInspector.LayerPaintProfilerView(this._layers3DView.showImageForLayer.bind(this._layers3DView));
     this._tabbedPane.appendTab(WebInspector.LayersPanel.DetailsViewTabs.Profiler, WebInspector.UIString("Profiler"), this._paintProfilerView);
+    this._updateThrottler = new WebInspector.Throttler(100);
 }
 
 WebInspector.LayersPanel.DetailsViewTabs = {
@@ -122,8 +123,17 @@ WebInspector.LayersPanel.prototype = {
 
     _onLayerTreeUpdated: function()
     {
+        this._updateThrottler.schedule(this._update.bind(this));
+    },
+
+    /**
+     * @return {!Promise<*>}
+     */
+    _update: function()
+    {
         if (this._model)
             this._layerViewHost.setLayerTree(this._model.layerTree());
+        return Promise.resolve();
     },
 
     /**
@@ -133,7 +143,6 @@ WebInspector.LayersPanel.prototype = {
     {
         if (!this._model)
             return;
-        this._layers3DView.setLayerTree(this._model.layerTree());
         if (this._layerViewHost.selection() && this._layerViewHost.selection().layer() === event.data)
             this._layerDetailsView.update();
     },

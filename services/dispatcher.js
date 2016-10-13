@@ -8,8 +8,7 @@ var ws = require("ws");
 function Dispatcher()
 {
     this._constructors = new Map();
-    this._objects = new Map();
-    this._lastObjectId = 1;
+    this._connections = new Set();
 }
 
 Dispatcher.prototype = {
@@ -22,9 +21,8 @@ Dispatcher.prototype = {
         var options = { server: http_server, path: "/endpoint" };
         var wss = new WebSocketServer(options);
         wss.on("connection", (socket) => {
-            this._socket = socket;
-            this._socket.on("message", this._dispatchMessageWrapped.bind(this));
-            this._socket.on("close", this._connectionClosed.bind(this));
+            var connection = new Connection(this, socket);
+            this._connections.add(connection);
         });
     },
 
@@ -33,6 +31,25 @@ Dispatcher.prototype = {
         this._constructors.set(name, constructor);
     },
 
+    _connectionClosed: function(connection)
+    {
+        this._connections.delete(connection);
+    }
+}
+
+exports.Dispatcher = Dispatcher;
+
+function Connection(dispatcher, socket)
+{
+    this._dispatcher = dispatcher;
+    this._objects = new Map();
+    this._lastObjectId = 1;
+    this._socket = socket;
+    this._socket.on("message", this._dispatchMessageWrapped.bind(this));
+    this._socket.on("close", this._connectionClosed.bind(this));
+}
+
+Connection.prototype = {
     _dispatchMessageWrapped: function(data)
     {
         try {
@@ -47,7 +64,7 @@ Dispatcher.prototype = {
     {
         var [objectName, method] = message.method.split(".");
         var result = JSON.stringify({id: message.id});
-        var constructor = this._constructors.get(objectName);
+        var constructor = this._dispatcher._constructors.get(objectName);
         if (!constructor) {
             this._sendErrorResponse(message.id, "Could not resolve service '" + objectName + "'");
             return;
@@ -89,6 +106,7 @@ Dispatcher.prototype = {
         for (var object of this._objects.values())
             object.dispose();
         this._objects.clear();
+        this._dispatcher._connectionClosed(this);
     },
 
     _notify: function(objectId, objectName, method, params)
@@ -110,5 +128,3 @@ Dispatcher.prototype = {
         this._socket.send(JSON.stringify(message));
     },
 }
-
-exports.Dispatcher = Dispatcher;

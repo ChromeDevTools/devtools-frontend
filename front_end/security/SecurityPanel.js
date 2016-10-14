@@ -865,8 +865,7 @@ WebInspector.SecurityOriginView = function(panel, origin, originState)
         var table = new WebInspector.SecurityDetailsTable();
         connectionSection.appendChild(table.element());
         table.addRow("Protocol", originState.securityDetails.protocol);
-        if (originState.securityDetails.keyExchange)
-            table.addRow("Key Exchange", originState.securityDetails.keyExchange);
+        table.addRow("Key Exchange", originState.securityDetails.keyExchange);
         if (originState.securityDetails.keyExchangeGroup)
             table.addRow("Key Exchange Group", originState.securityDetails.keyExchangeGroup);
         table.addRow("Cipher", originState.securityDetails.cipher + (originState.securityDetails.mac ? " with " + originState.securityDetails.mac : ""));

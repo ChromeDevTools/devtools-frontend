@@ -428,7 +428,7 @@ WebInspector.TimelineUIUtils.buildDetailsTextForTraceEvent = function(event, tar
 
     case recordType.CompileScript:
     case recordType.EvaluateScript:
-        var url = eventData["url"];
+        var url = eventData && eventData["url"];
         if (url)
             detailsText = WebInspector.displayNameForURL(url) + ":" + (eventData["lineNumber"] + 1);
         break;
@@ -758,7 +758,7 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
         break;
     case recordTypes.CompileScript:
     case recordTypes.EvaluateScript:
-        var url = eventData["url"];
+        var url = eventData && eventData["url"];
         if (url)
             contentHelper.appendLocationRow(WebInspector.UIString("Script"), url, eventData["lineNumber"], eventData["columnNumber"]);
         break;

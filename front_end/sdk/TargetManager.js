@@ -195,8 +195,6 @@ WebInspector.TargetManager.prototype = {
 
         /** @type {!WebInspector.ConsoleModel} */
         target.consoleModel = new WebInspector.ConsoleModel(target, logAgent);
-        /** @type {!WebInspector.RuntimeModel} */
-        target.runtimeModel = new WebInspector.RuntimeModel(target);
 
         var networkManager = null;
         var resourceTreeModel = null;
@@ -206,6 +204,9 @@ WebInspector.TargetManager.prototype = {
             resourceTreeModel = new WebInspector.ResourceTreeModel(target, networkManager, WebInspector.SecurityOriginManager.fromTarget(target));
             new WebInspector.NetworkLog(target, resourceTreeModel, networkManager);
         }
+
+        /** @type {!WebInspector.RuntimeModel} */
+        target.runtimeModel = new WebInspector.RuntimeModel(target);
 
         if (target.hasJSCapability())
             new WebInspector.DebuggerModel(target);

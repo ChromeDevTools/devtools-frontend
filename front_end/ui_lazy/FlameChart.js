@@ -1238,22 +1238,16 @@ WebInspector.FlameChart.prototype = {
         var entryStartTimes = timelineData.entryStartTimes;
         var entryLevels = timelineData.entryLevels;
 
-        var titleIndices = new Uint32Array(entryTotalTimes.length);
-        var nextTitleIndex = 0;
-        var markerIndices = new Uint32Array(entryTotalTimes.length);
-        var nextMarkerIndex = 0;
+        var titleIndices = [];
+        var markerIndices = [];
         var textPadding = this._dataProvider.textPadding();
         var minTextWidth = 2 * textPadding + this._measureWidth(context, "\u2026");
         var barHeight = this._barHeight;
         var top = this._scrollTop;
         var minVisibleBarLevel = Math.max(this._visibleLevelOffsets.upperBound(top) - 1, 0);
 
-        function comparator(time, entryIndex)
-        {
-            return time - entryStartTimes[entryIndex];
-        }
-
-        var colorBuckets = {};
+        /** @type {!Map<string, !Array<number>>} */
+        var colorBuckets = new Map();
         for (var level = minVisibleBarLevel; level < this._dataProvider.maxStackDepth(); ++level) {
             if (this._levelToHeight(level) > top + height)
                 break;
@@ -1262,12 +1256,12 @@ WebInspector.FlameChart.prototype = {
 
             // Entries are ordered by start time within a level, so find the last visible entry.
             var levelIndexes = this._timelineLevels[level];
-            var rightIndexOnLevel = levelIndexes.lowerBound(timeWindowRight, comparator) - 1;
+            var rightIndexOnLevel = levelIndexes.lowerBound(timeWindowRight, (time, entryIndex) => time - entryStartTimes[entryIndex]) - 1;
             var lastDrawOffset = Infinity;
             for (var entryIndexOnLevel = rightIndexOnLevel; entryIndexOnLevel >= 0; --entryIndexOnLevel) {
                 var entryIndex = levelIndexes[entryIndexOnLevel];
                 var entryStartTime = entryStartTimes[entryIndex];
-                var entryOffsetRight = entryStartTime + (isNaN(entryTotalTimes[entryIndex]) ? 0 : entryTotalTimes[entryIndex]);
+                var entryOffsetRight = entryStartTime + (entryTotalTimes[entryIndex] || 0);
                 if (entryOffsetRight <= timeWindowLeft)
                     break;
 
@@ -1278,49 +1272,47 @@ WebInspector.FlameChart.prototype = {
                 lastDrawOffset = barX;
 
                 var color = this._dataProvider.entryColor(entryIndex);
-                var bucket = colorBuckets[color];
+                var bucket = colorBuckets.get(color);
                 if (!bucket) {
                     bucket = [];
-                    colorBuckets[color] = bucket;
+                    colorBuckets.set(color, bucket);
                 }
                 bucket.push(entryIndex);
             }
         }
 
-        var colors = Object.keys(colorBuckets);
-        // We don't use for-in here because it couldn't be optimized.
+        var colors = colorBuckets.keysArray();
+        // We don't use for-of here because it's slow.
         for (var c = 0; c < colors.length; ++c) {
             var color = colors[c];
-            context.fillStyle = color;
-            context.strokeStyle = color;
-            var indexes = colorBuckets[color];
-
-            // First fill the boxes.
+            var indexes = colorBuckets.get(color);
             context.beginPath();
+            context.fillStyle = color;
             for (var i = 0; i < indexes.length; ++i) {
                 var entryIndex = indexes[i];
                 var entryStartTime = entryStartTimes[entryIndex];
                 var barX = this._timeToPositionClipped(entryStartTime);
-                var barRight = this._timeToPositionClipped(entryStartTime + entryTotalTimes[entryIndex]);
-                var barWidth = Math.max(barRight - barX, 1);
+                var duration = entryTotalTimes[entryIndex];
                 var barLevel = entryLevels[entryIndex];
                 var barY = this._levelToHeight(barLevel);
-                if (isNaN(entryTotalTimes[entryIndex])) {
+                if (isNaN(duration)) {
                     context.moveTo(barX + this._markerRadius, barY + barHeight / 2);
                     context.arc(barX, barY + barHeight / 2, this._markerRadius, 0, Math.PI * 2);
-                    markerIndices[nextMarkerIndex++] = entryIndex;
-                } else {
-                    context.rect(barX, barY, barWidth - 0.4, barHeight - 1);
-                    if (barWidth > minTextWidth || this._dataProvider.forceDecoration(entryIndex))
-                        titleIndices[nextTitleIndex++] = entryIndex;
+                    markerIndices.push(entryIndex);
+                    continue;
                 }
+                var barRight = this._timeToPositionClipped(entryStartTime + duration);
+                var barWidth = Math.max(barRight - barX, 1);
+                context.rect(barX, barY, barWidth - 0.4, barHeight - 1);
+                if (barWidth > minTextWidth || this._dataProvider.forceDecoration(entryIndex))
+                    titleIndices.push(entryIndex);
             }
             context.fill();
         }
 
         context.strokeStyle = "rgba(0, 0, 0, 0.2)";
         context.beginPath();
-        for (var m = 0; m < nextMarkerIndex; ++m) {
+        for (var m = 0; m < markerIndices.length; ++m) {
             var entryIndex = markerIndices[m];
             var entryStartTime = entryStartTimes[entryIndex];
             var barX = this._timeToPositionClipped(entryStartTime);
@@ -1334,7 +1326,7 @@ WebInspector.FlameChart.prototype = {
         context.textBaseline = "alphabetic";
         var textBaseHeight = this._barHeight - this._dataProvider.textBaseline();
 
-        for (var i = 0; i < nextTitleIndex; ++i) {
+        for (var i = 0; i < titleIndices.length; ++i) {
             var entryIndex = titleIndices[i];
             var entryStartTime = entryStartTimes[entryIndex];
             var barX = this._timeToPositionClipped(entryStartTime);

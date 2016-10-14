@@ -98,6 +98,12 @@ WebInspector.Project.prototype = {
 
     /**
      * @param {!WebInspector.UISourceCode} uiSourceCode
+     * @return {!Promise<?WebInspector.UISourceCodeMetadata>}
+     */
+    requestMetadata: function(uiSourceCode) { },
+
+    /**
+     * @param {!WebInspector.UISourceCode} uiSourceCode
      * @param {function(?string)} callback
      */
     requestFileContent: function(uiSourceCode, callback) { },

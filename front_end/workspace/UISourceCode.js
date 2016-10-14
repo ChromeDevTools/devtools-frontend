@@ -75,6 +75,14 @@ WebInspector.UISourceCode.Events = {
 
 WebInspector.UISourceCode.prototype = {
     /**
+     * @return {!Promise<?WebInspector.UISourceCodeMetadata>}
+     */
+    requestMetadata: function()
+    {
+        return this._project.requestMetadata(this);
+    },
+
+    /**
      * @return {string}
      */
     name: function()
@@ -962,4 +970,15 @@ WebInspector.UISourceCode.LineMarker.prototype = {
     {
         return this._data;
     }
+}
+
+/**
+ * @constructor
+ * @param {?Date} modificationTime
+ * @param {?number} contentSize
+ */
+WebInspector.UISourceCodeMetadata = function(modificationTime, contentSize)
+{
+    this.modificationTime = modificationTime;
+    this.contentSize = contentSize;
 }

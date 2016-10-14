@@ -105,6 +105,36 @@ WebInspector.IsolatedFileSystem.errorMessage = function(error)
 
 WebInspector.IsolatedFileSystem.prototype = {
     /**
+     * @param {string} path
+     * @return {!Promise<?{modificationTime: !Date, size: number}>}
+     */
+    getMetadata: function(path)
+    {
+        var fulfill;
+        var promise = new Promise(f => fulfill = f);
+        this._domFileSystem.root.getFile(path, null, fileEntryLoaded, errorHandler);
+        return promise;
+
+        /**
+         * @param {!FileEntry} entry
+         */
+        function fileEntryLoaded(entry)
+        {
+            entry.getMetadata(fulfill, errorHandler);
+        }
+
+        /**
+         * @param {!FileError} error
+         */
+        function errorHandler(error)
+        {
+            var errorMessage = WebInspector.IsolatedFileSystem.errorMessage(error);
+            console.error(errorMessage + " when getting file metadata '" + path);
+            fulfill(null);
+        }
+    },
+
+    /**
      * @return {!Array<string>}
      */
     filePaths: function()

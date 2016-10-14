@@ -207,6 +207,8 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem = function(fileSystemWorkspac
     this.populate();
 }
 
+WebInspector.FileSystemWorkspaceBinding._metadata = Symbol("FileSystemWorkspaceBinding.Metadata");
+
 WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
     /**
      * @return {string}
@@ -223,6 +225,32 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
     _filePathForUISourceCode: function(uiSourceCode)
     {
         return uiSourceCode.url().substring(this._fileSystemPath.length);
+    },
+
+    /**
+     * @override
+     * @param {!WebInspector.UISourceCode} uiSourceCode
+     * @return {!Promise<?WebInspector.UISourceCodeMetadata>}
+     */
+    requestMetadata: function(uiSourceCode)
+    {
+        if (uiSourceCode[WebInspector.FileSystemWorkspaceBinding._metadata])
+            return uiSourceCode[WebInspector.FileSystemWorkspaceBinding._metadata];
+        var relativePath = this._filePathForUISourceCode(uiSourceCode);
+        var promise = this._fileSystem.getMetadata(relativePath).then(onMetadata);
+        uiSourceCode[WebInspector.FileSystemWorkspaceBinding._metadata] = promise;
+        return promise;
+
+        /**
+         * @param {?{modificationTime: !Date, size: number}} metadata
+         * @return {?WebInspector.UISourceCodeMetadata}
+         */
+        function onMetadata(metadata)
+        {
+            if (!metadata)
+                return null;
+            return new WebInspector.UISourceCodeMetadata(metadata.modificationTime, metadata.size);
+        }
     },
 
     /**
@@ -533,6 +561,7 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
             this.addUISourceCode(this.createUISourceCode(path, contentType));
             return;
         }
+        uiSourceCode[WebInspector.FileSystemWorkspaceBinding._metadata] = null;
         uiSourceCode.checkContentUpdated();
     },
 

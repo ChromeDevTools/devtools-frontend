@@ -59,6 +59,16 @@ WebInspector.ContentProviderBasedProject.prototype = {
 
     /**
      * @override
+     * @param {!WebInspector.UISourceCode} uiSourceCode
+     * @return {!Promise<?WebInspector.UISourceCodeMetadata>}
+     */
+    requestMetadata: function(uiSourceCode)
+    {
+        return Promise.resolve(/** @type {?WebInspector.UISourceCodeMetadata} */(null));
+    },
+
+    /**
+     * @override
      * @return {boolean}
      */
     canSetFileContent: function()

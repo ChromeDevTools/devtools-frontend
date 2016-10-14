@@ -226,6 +226,8 @@ WebInspector.IsolatedFileSystemManager.prototype = {
     _initExcludePatterSetting: function()
     {
         var defaultCommonExcludedFolders = [
+            "/node_modules/",
+            "/bower_components/",
             "/\\.devtools",
             "/\\.git/",
             "/\\.sass-cache/",

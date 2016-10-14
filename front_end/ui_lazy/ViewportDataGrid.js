@@ -14,7 +14,11 @@
 WebInspector.ViewportDataGrid = function(columnsArray, editCallback, deleteCallback, refreshCallback, contextMenuCallback)
 {
     WebInspector.DataGrid.call(this, columnsArray, editCallback, deleteCallback, refreshCallback, contextMenuCallback);
-    this._scrollContainer.addEventListener("scroll", this._onScroll.bind(this), true);
+
+    this._onScrollBound = this._onScroll.bind(this);
+    this._scrollContainer.addEventListener("scroll", this._onScrollBound, true);
+
+    // This is not in setScrollContainer because mouse wheel needs to detect events on the content not the scrollbar itself.
     this._scrollContainer.addEventListener("mousewheel", this._onWheel.bind(this), true);
     /** @type {!Array.<!WebInspector.ViewportDataGridNode>} */
     this._visibleNodes = [];
@@ -41,7 +45,21 @@ WebInspector.ViewportDataGrid = function(columnsArray, editCallback, deleteCallb
     this.setRootNode(new WebInspector.ViewportDataGridNode());
 }
 
+WebInspector.ViewportDataGrid.Events = {
+    ViewportCalculated: Symbol("ViewportCalculated")
+}
+
 WebInspector.ViewportDataGrid.prototype = {
+    /**
+     * @param {!Element} scrollContainer
+     */
+    setScrollContainer: function(scrollContainer)
+    {
+        this._scrollContainer.removeEventListener("scroll", this._onScrollBound, true);
+        this._scrollContainer = scrollContainer;
+        this._scrollContainer.addEventListener("scroll", this._onScrollBound, true);
+    },
+
     /**
      * @override
      */
@@ -246,6 +264,7 @@ WebInspector.ViewportDataGrid.prototype = {
             this.updateWidths();
         }
         this._visibleNodes = visibleNodes;
+        this.dispatchEventToListeners(WebInspector.ViewportDataGrid.Events.ViewportCalculated);
     },
 
     /**

@@ -119,6 +119,7 @@
         "networkLogView.css",
         "networkManageCustomHeadersView.css",
         "networkPanel.css",
+        "networkTimelineColumn.css",
         "requestCookiesView.css",
         "requestHeadersTree.css",
         "requestHeadersView.css",

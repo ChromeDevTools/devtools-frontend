@@ -11,6 +11,8 @@
 WebInspector.NetworkTimelineColumn = function(networkLogView, dataGrid)
 {
     WebInspector.VBox.call(this, true);
+    this.registerRequiredCSS("network/networkTimelineColumn.css");
+
     this._canvas = this.contentElement.createChild("canvas");
     this._canvas.tabIndex = 1;
     this.setDefaultFocusedElement(this._canvas);
@@ -22,6 +24,26 @@ WebInspector.NetworkTimelineColumn = function(networkLogView, dataGrid)
 
     this._dataGrid = dataGrid;
     this._networkLogView = networkLogView;
+
+    this._vScrollElement = this.contentElement.createChild("div", "network-timeline-v-scroll");
+    this._vScrollContent = this._vScrollElement.createChild("div");
+    this._vScrollElement.addEventListener("scroll", this._onScroll.bind(this), { passive: true });
+    this._vScrollElement.addEventListener("mousewheel", this._onMouseWheel.bind(this), { passive: true });
+    this._canvas.addEventListener("mousewheel", this._onMouseWheel.bind(this), { passive: true });
+
+    this._dataGridScrollContainer = this._dataGrid.scrollContainer;
+    this._dataGridScrollContainer.addEventListener("mousewheel", event => {
+        event.consume(true);
+        this._onMouseWheel(event);
+    }, true);
+
+    // TODO(allada) When timeline canvas moves out of experiment move this to stylesheet.
+    this._dataGridScrollContainer.style.overflow = "hidden";
+    this._dataGrid.setScrollContainer(this._vScrollElement);
+
+    this._dataGrid.addEventListener(WebInspector.ViewportDataGrid.Events.ViewportCalculated, this._update.bind(this));
+    this._dataGrid.addEventListener(WebInspector.DataGrid.Events.PaddingChanged, this._updateHeight.bind(this));
+
     /** @type {!Array<!WebInspector.NetworkRequest>} */
     this._requestData = [];
 }
@@ -46,7 +68,23 @@ WebInspector.NetworkTimelineColumn.prototype = {
         this._requestData = [];
         while (currentNode = currentNode.traverseNextNode(true))
             this._requestData.push(currentNode.request());
-        this._update();
+    },
+
+    /**
+     * @param {!Event} event
+     */
+    _onMouseWheel: function(event)
+    {
+        this._vScrollElement.scrollTop -= event.wheelDeltaY;
+        this._dataGridScrollContainer.scrollTop = this._vScrollElement.scrollTop;
+    },
+
+    /**
+     * @param {!Event} event
+     */
+    _onScroll: function(event)
+    {
+        this._dataGridScrollContainer.scrollTop = this._vScrollElement.scrollTop;
     },
 
     scheduleUpdate: function()
@@ -67,6 +105,12 @@ WebInspector.NetworkTimelineColumn.prototype = {
         this._endTime = this._networkLogView.calculator().maximumBoundary();
         this._resetCanvas();
         this._draw();
+    },
+
+    _updateHeight: function()
+    {
+        var totalHeight = this._dataGridScrollContainer.scrollHeight;
+        this._vScrollContent.style.height = totalHeight + "px";
     },
 
     _resetCanvas: function()
@@ -124,14 +168,6 @@ WebInspector.NetworkTimelineColumn.prototype = {
     },
 
     /**
-     * @return {number}
-     */
-    _scrollTop: function()
-    {
-        return this._dataGrid.scrollContainer.scrollTop;
-    },
-
-    /**
      * @param {number} time
      * @return {number}
      */
@@ -152,13 +188,12 @@ WebInspector.NetworkTimelineColumn.prototype = {
         context.rect(0, 0, this._offsetWidth, this._offsetHeight);
         context.clip();
         var rowHeight = this._networkLogView.rowHeight();
-        var scrollTop = this._scrollTop();
+        var scrollTop = this._vScrollElement.scrollTop;
         var firstRequestIndex = Math.floor(scrollTop / rowHeight);
         var lastRequestIndex = Math.min(requests.length, firstRequestIndex + Math.ceil(this._offsetHeight / rowHeight));
         for (var i = firstRequestIndex; i < lastRequestIndex; i++) {
             var rowOffset = rowHeight * i;
-            var rowNumber = i - firstRequestIndex;
-            this._decorateRow(context, rowNumber, rowOffset - scrollTop, rowHeight);
+            this._decorateRow(context, i, rowOffset - scrollTop, rowHeight);
             var request = requests[i];
             var ranges = WebInspector.RequestTimingView.calculateRequestTimeRanges(request, 0);
             for (var range of ranges) {

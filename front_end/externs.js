@@ -624,6 +624,15 @@ ArrayBuffer.isView = function(obj) { }
  */
 Element.prototype.animate = function(keyframes, timing) { }
 
+/**
+ * @override
+ * @param {string} type
+ * @param {(!EventListener|!function (!Event): (boolean|undefined)|null)} listener
+ * @param {(boolean|!{capture: (boolean|undefined), once: (boolean|undefined), passive: (boolean|undefined)})=} options
+ * @this {EventTarget}
+ */
+Element.prototype.addEventListener = function(type, listener, options) { }
+
 var acorn = {
     /**
      * @param {string} text

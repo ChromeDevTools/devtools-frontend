@@ -154,7 +154,8 @@ WebInspector.DataGrid.Events = {
     SelectedNode: Symbol("SelectedNode"),
     DeselectedNode: Symbol("DeselectedNode"),
     SortingChanged: Symbol("SortingChanged"),
-    ColumnsResized: Symbol("ColumnsResized")
+    ColumnsResized: Symbol("ColumnsResized"),
+    PaddingChanged: Symbol("PaddingChanged")
 }
 
 /** @enum {string} */
@@ -297,6 +298,7 @@ WebInspector.DataGrid.prototype = {
             this._bottomFillerRow.style.height = bottom + "px";
         else
             this._bottomFillerRow.style.height = "auto";
+        this.dispatchEventToListeners(WebInspector.DataGrid.Events.PaddingChanged);
     },
 
     /**

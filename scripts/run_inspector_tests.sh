@@ -10,8 +10,23 @@ SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd)"
 CHROMIUM_ROOT_PATH=${SCRIPT_PATH}"/../../../../.."
 OUT_PATH=${CHROMIUM_ROOT_PATH}"/out/Release"
 RUN_LAYOUT_TEST_PATH=${CHROMIUM_ROOT_PATH}"/blink/tools/run_layout_tests.py"
+ALL_TESTS=" inspector** http/tests/inspector**"
+DEBUG_FLAG=" --additional-driver-flag='--debug-devtools'"
 
-INSPECTOR_TEST_SUITES="inspector inspector-protocol inspector-enabled http/tests/inspector"
+COMMAND=${RUN_LAYOUT_TEST_PATH}
 
-ninja -C ${OUT_PATH} -j 1000 chrome blink_tests
-${RUN_LAYOUT_TEST_PATH} ${INSPECTOR_TEST_SUITES} --child-processes=16 "$@"
+#ninja -C ${OUT_PATH} devtools_frontend_resources
+if [ $1 == "-d" ]
+then
+    shift
+    COMMAND=${COMMAND}${DEBUG_FLAG}
+fi
+
+if [ $# -eq 0 ]
+then
+    COMMAND=${COMMAND}${ALL_TESTS}
+else
+    COMMAND=${COMMAND}" $@"
+fi
+
+${COMMAND}

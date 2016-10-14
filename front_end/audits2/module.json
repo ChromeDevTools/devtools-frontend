@@ -1,0 +1,22 @@
+{
+    "extensions": [
+        {
+            "type": "view",
+            "location": "panel",
+            "id": "audits2",
+            "title": "Audits 2.0",
+            "order": 90,
+            "persistence": "closeable",
+            "className": "WebInspector.Audits2Panel"
+        }
+    ],
+    "dependencies": [
+        "sdk",
+        "ui",
+        "services"
+    ],
+    "experiment": "audits2",
+    "scripts": [
+        "Audits2Panel.js"
+    ]
+}

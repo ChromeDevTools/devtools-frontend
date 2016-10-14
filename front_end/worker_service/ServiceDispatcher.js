@@ -140,7 +140,7 @@ ServiceDispatcher.prototype = {
 
 /**
  * @constructor
- * @param {!Port} port
+ * @param {!Port|!Worker} port
  * @implements {ServicePort}
  */
 function WorkerServicePort(port)
@@ -195,6 +195,22 @@ var dispatchers = [];
 var portInitialized = false;
 /** @type {!Map<string, function(new:Service)>}*/
 var services = new Map();
+
+/**
+ * @param {string} serviceName
+ * @param {function(new:Service)} constructor
+ */
+function initializeWorkerService(serviceName, constructor)
+{
+    services.set(serviceName, constructor);
+    if (!dispatchers.length) {
+        var worker = /** @type {!Object} */(self);
+        var servicePort = new WorkerServicePort(/** @type {!Worker} */(worker));
+        var dispatcher = new ServiceDispatcher(servicePort);
+        dispatchers.push(dispatcher);
+    }
+    dispatchers[0].registerObject(serviceName, constructor);
+}
 
 /**
  * @param {string} serviceName

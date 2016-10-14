@@ -393,7 +393,7 @@ WebInspector.DeferredTempFile.prototype = {
 WebInspector.TempFile.ensureTempStorageCleared = function()
 {
     if (!WebInspector.TempFile._storageCleanerPromise) {
-        WebInspector.TempFile._storageCleanerPromise = WebInspector.serviceManager.createWorkerService("utility_shared_worker", "TempStorage", true).then(service => {
+        WebInspector.TempFile._storageCleanerPromise = WebInspector.serviceManager.createAppService("utility_shared_worker", "TempStorage", true).then(service => {
             if (service)
                 return service.send("clear");
         });

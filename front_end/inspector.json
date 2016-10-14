@@ -23,6 +23,7 @@
         { "name": "profiler" },
         { "name": "resources", "condition": "!v8only" },
         { "name": "audits", "condition": "!v8only" },
+        { "name": "audits2", "condition": "!v8only" },
         { "name": "devices", "condition": "!v8only" },
         { "name": "security", "condition": "!v8only" },
         { "name": "console" },

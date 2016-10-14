@@ -30,12 +30,18 @@ WebInspector.ServiceManager.prototype = {
     /**
      * @param {string} appName
      * @param {string} serviceName
-     * @param {boolean} isShared
+     * @param {boolean} isSharedWorker
      * @return {!Promise<?WebInspector.ServiceManager.Service>}
      */
-    createWorkerService: function(appName, serviceName, isShared)
+    createAppService: function(appName, serviceName, isSharedWorker)
     {
-        var connection = new WebInspector.ServiceManager.Connection(new WebInspector.ServiceManager.WorkerServicePort(appName, isShared));
+        var url = appName + ".js";
+        var remoteBase = Runtime.queryParam("remoteBase");
+        if (remoteBase)
+            url += "?remoteBase=" + remoteBase;
+
+        var worker = isSharedWorker ? new SharedWorker(url, appName) : new Worker(url);
+        var connection = new WebInspector.ServiceManager.Connection(new WebInspector.ServiceManager.WorkerServicePort(worker));
         return connection._createService(serviceName);
     }
 }
@@ -64,8 +70,10 @@ WebInspector.ServiceManager.Connection.prototype = {
     _createService: function(serviceName)
     {
         return this._sendCommand(serviceName + ".create").then(result => {
-            if (!result)
+            if (!result) {
+                console.error("Could not initialize service: " + serviceName);
                 return null;
+            }
             var service = new WebInspector.ServiceManager.Service(this, serviceName, result.id);
             this._services.set(serviceName + ":" + result.id, service);
             return service;
@@ -308,13 +316,36 @@ WebInspector.ServiceManager.RemoteServicePort.prototype = {
 /**
  * @constructor
  * @implements {ServicePort}
- * @param {string} appName
- * @param {boolean} isSharedWorker
+ * @param {!Worker|!SharedWorker} worker
  */
-WebInspector.ServiceManager.WorkerServicePort = function(appName, isSharedWorker)
+WebInspector.ServiceManager.WorkerServicePort = function(worker)
 {
-    this._appName = appName;
-    this._isSharedWorker = isSharedWorker;
+    this._worker = worker;
+
+    var fulfill;
+    this._workerPromise = new Promise(resolve => fulfill = resolve);
+    this._isSharedWorker = worker instanceof SharedWorker;
+
+    if (this._isSharedWorker) {
+        this._worker.port.onmessage = onMessage.bind(this);
+        this._worker.port.onclose = this._closeHandler;
+    } else {
+        this._worker.onmessage = onMessage.bind(this);
+        this._worker.onclose = this._closeHandler;
+    }
+
+    /**
+     * @param {!Event} event
+     * @this {WebInspector.ServiceManager.WorkerServicePort}
+     */
+    function onMessage(event)
+    {
+        if (event.data === "workerReady") {
+            fulfill(true);
+            return;
+        }
+        this._messageHandler(event.data);
+    }
 }
 
 WebInspector.ServiceManager.WorkerServicePort.prototype = {
@@ -330,60 +361,13 @@ WebInspector.ServiceManager.WorkerServicePort.prototype = {
     },
 
     /**
-     * @return {!Promise<boolean>}
-     */
-    _open: function()
-    {
-        if (this._workerPromise)
-            return this._workerPromise;
-
-        var url = this._appName + ".js";
-        var remoteBase = Runtime.queryParam("remoteBase");
-        if (remoteBase)
-            url += "?remoteBase=" + remoteBase;
-
-        this._workerPromise = new Promise(promiseBody.bind(this));
-
-        /**
-         * @param {function(boolean)} fulfill
-         * @this {WebInspector.ServiceManager.WorkerServicePort}
-         */
-        function promiseBody(fulfill)
-        {
-            if (this._isSharedWorker) {
-                this._worker = new SharedWorker(url, this._appName);
-                this._worker.port.onmessage = onMessage.bind(this);
-                this._worker.port.onclose = this._closeHandler;
-            } else {
-                this._worker = new Worker(url);
-                this._worker.onmessage = onMessage.bind(this);
-                this._worker.onclose = this._closeHandler;
-            }
-
-            /**
-             * @param {!Event} event
-             * @this {WebInspector.ServiceManager.WorkerServicePort}
-             */
-            function onMessage(event)
-            {
-                if (event.data === "workerReady") {
-                    fulfill(true);
-                    return;
-                }
-                this._messageHandler(event.data);
-            }
-        }
-        return this._workerPromise;
-    },
-
-    /**
      * @override
      * @param {string} message
      * @return {!Promise<boolean>}
      */
     send: function(message)
     {
-        return this._open().then(() => {
+        return this._workerPromise.then(() => {
             try {
                 if (this._isSharedWorker)
                     this._worker.port.postMessage(message);
@@ -402,7 +386,7 @@ WebInspector.ServiceManager.WorkerServicePort.prototype = {
      */
     close: function()
     {
-        return this._open().then(() => {
+        return this._workerPromise.then(() => {
             if (this._worker)
                 this._worker.terminate();
             return false;

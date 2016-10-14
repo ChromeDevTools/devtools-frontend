@@ -1,0 +1,8 @@
+{
+    "modules": [
+        { "name": "worker_service", "type": "autostart" },
+        { "name": "audits2_worker", "type": "autostart" }
+    ],
+
+    "has_html": false
+}

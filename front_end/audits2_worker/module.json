@@ -1,0 +1,8 @@
+{
+    "dependencies": [
+        "worker_service"
+    ],
+    "scripts": [
+        "Audits2Service.js"
+    ]
+}

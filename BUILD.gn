@@ -10,6 +10,8 @@ devtools_embedder_scripts = [
   "front_end/Tests.js",
 ]
 devtools_core_base_files = [
+  "front_end/audits2_worker.js",
+  "front_end/audits2_worker.json",
   "front_end/inspector.js",
   "front_end/inspector.json",
   "front_end/formatter_worker.js",
@@ -304,6 +306,8 @@ devtools_module_json_files = [
   "front_end/accessibility/module.json",
   "front_end/animation/module.json",
   "front_end/audits/module.json",
+  "front_end/audits2/module.json",
+  "front_end/audits2_worker/module.json",
   "front_end/bindings/module.json",
   "front_end/cm_modes/module.json",
   "front_end/common/module.json",
@@ -380,6 +384,10 @@ devtools_audits_js_files = [
   "front_end/audits/AuditRules.js",
   "front_end/audits/AuditsPanel.js",
 ]
+devtools_audits2_js_files = [ "front_end/audits2/Audits2Panel.js" ]
+devtools_audits2_worker_js_files =
+    [ "front_end/audits2_worker/Audits2Service.js" ]
+
 devtools_cm_modes_js_files = [
   "front_end/cm_modes/clike.js",
   "front_end/cm_modes/coffeescript.js",
@@ -867,6 +875,7 @@ devtools_core_files =
 
 devtools_modules_js_files =
     devtools_accessibility_js_files + devtools_audits_js_files +
+    devtools_audits2_js_files + devtools_audits2_worker_js_files +
     devtools_animation_js_files + devtools_cm_modes_js_files +
     devtools_components_lazy_js_files + devtools_console_js_files +
     devtools_devices_js_files + devtools_diff_js_files +
@@ -911,6 +920,7 @@ generated_workers = [
 generated_bundled_modules = [
   "$resources_out_dir/animation/animation_module.js",
   "$resources_out_dir/audits/audits_module.js",
+  "$resources_out_dir/audits2/audits2_module.js",
   "$resources_out_dir/components_lazy/components_lazy_module.js",
   "$resources_out_dir/console/console_module.js",
   "$resources_out_dir/devices/devices_module.js",

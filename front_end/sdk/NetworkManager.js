@@ -356,6 +356,8 @@ WebInspector.NetworkDispatcher.prototype = {
             eventData.loaderId = loaderId;
             eventData.resourceType = resourceType;
             eventData.mimeType = response.mimeType;
+            var lastModifiedHeader = response.headers["last-modified"];
+            eventData.lastModified = lastModifiedHeader ? new Date(lastModifiedHeader) : null;
             this._manager.dispatchEventToListeners(WebInspector.NetworkManager.Events.RequestUpdateDropped, eventData);
             return;
         }

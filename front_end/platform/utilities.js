@@ -408,6 +408,14 @@ Number.toFixedIfFloating = function(value)
 }
 
 /**
+ * @return {boolean}
+ */
+Date.prototype.isValid = function()
+{
+    return !isNaN(this.getTime())
+}
+
+/**
  * @return {string}
  */
 Date.prototype.toISO8601Compact = function()

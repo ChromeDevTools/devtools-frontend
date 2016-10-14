@@ -38,8 +38,10 @@
  * @param {!NetworkAgent.LoaderId} loaderId
  * @param {!WebInspector.ResourceType} type
  * @param {string} mimeType
+ * @param {?Date} lastModified
+ * @param {?number} contentSize
  */
-WebInspector.Resource = function(target, request, url, documentURL, frameId, loaderId, type, mimeType)
+WebInspector.Resource = function(target, request, url, documentURL, frameId, loaderId, type, mimeType, lastModified, contentSize)
 {
     WebInspector.SDKObject.call(this, target);
     this._request = request;
@@ -50,6 +52,9 @@ WebInspector.Resource = function(target, request, url, documentURL, frameId, loa
     this._type = type || WebInspector.resourceTypes.Other;
     this._mimeType = mimeType;
 
+    this._lastModified = lastModified && lastModified.isValid() ? lastModified : null;
+    this._contentSize = contentSize;
+
     /** @type {?string} */ this._content;
     /** @type {boolean} */ this._contentEncoded;
     this._pendingContentCallbacks = [];
@@ -58,6 +63,29 @@ WebInspector.Resource = function(target, request, url, documentURL, frameId, loa
 }
 
 WebInspector.Resource.prototype = {
+    /**
+     * @return {?Date}
+     */
+    lastModified: function()
+    {
+        if (this._lastModified || !this._request)
+            return this._lastModified;
+        var lastModifiedHeader = this._request.responseLastModified();
+        var date = lastModifiedHeader ? new Date(lastModifiedHeader) : null;
+        this._lastModified = date && date.isValid() ? date : null;
+        return this._lastModified;
+    },
+
+    /**
+     * @return {?number}
+     */
+    contentSize: function()
+    {
+        if (typeof this._contentSize === "number" || !this._request)
+            return this._contentSize;
+        return this._request.resourceSize;
+    },
+
     /**
      * @return {?WebInspector.NetworkRequest}
      */

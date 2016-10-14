@@ -801,6 +801,14 @@ WebInspector.NetworkRequest.prototype = {
     },
 
     /**
+     * @return {string|undefined}
+     */
+    responseLastModified: function()
+    {
+        return this.responseHeaderValue("last-modified");
+    },
+
+    /**
      * @return {?Array.<!WebInspector.ServerTiming>}
      */
     get serverTimings()

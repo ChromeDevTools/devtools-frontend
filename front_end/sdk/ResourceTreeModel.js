@@ -301,7 +301,7 @@ WebInspector.ResourceTreeModel.prototype = {
         if (frame._resourcesMap[url])
             return;
 
-        var resource = new WebInspector.Resource(this.target(), null, url, frame.url, frameId, event.data.loaderId, WebInspector.resourceTypes[event.data.resourceType], event.data.mimeType);
+        var resource = new WebInspector.Resource(this.target(), null, url, frame.url, frameId, event.data.loaderId, WebInspector.resourceTypes[event.data.resourceType], event.data.mimeType, event.data.lastModified, null);
         frame.addResource(resource);
     },
 
@@ -353,7 +353,7 @@ WebInspector.ResourceTreeModel.prototype = {
         var frame = new WebInspector.ResourceTreeFrame(this, parentFrame, framePayload.id, framePayload);
         this._addFrame(frame);
 
-        var frameResource = this._createResourceFromFramePayload(framePayload, framePayload.url, WebInspector.resourceTypes.Document, framePayload.mimeType);
+        var frameResource = this._createResourceFromFramePayload(framePayload, framePayload.url, WebInspector.resourceTypes.Document, framePayload.mimeType, null, null);
         frame.addResource(frameResource);
 
         for (var i = 0; frameTreePayload.childFrames && i < frameTreePayload.childFrames.length; ++i)
@@ -361,7 +361,7 @@ WebInspector.ResourceTreeModel.prototype = {
 
         for (var i = 0; i < frameTreePayload.resources.length; ++i) {
             var subresource = frameTreePayload.resources[i];
-            var resource = this._createResourceFromFramePayload(framePayload, subresource.url, WebInspector.resourceTypes[subresource.type], subresource.mimeType);
+            var resource = this._createResourceFromFramePayload(framePayload, subresource.url, WebInspector.resourceTypes[subresource.type], subresource.mimeType, subresource.lastModified || null, subresource.contentSize || null);
             frame.addResource(resource);
         }
     },
@@ -371,11 +371,14 @@ WebInspector.ResourceTreeModel.prototype = {
      * @param {string} url
      * @param {!WebInspector.ResourceType} type
      * @param {string} mimeType
+     * @param {?number} lastModifiedTime
+     * @param {?number} contentSize
      * @return {!WebInspector.Resource}
      */
-    _createResourceFromFramePayload: function(frame, url, type, mimeType)
+    _createResourceFromFramePayload: function(frame, url, type, mimeType, lastModifiedTime, contentSize)
     {
-        return new WebInspector.Resource(this.target(), null, url, frame.url, frame.id, frame.loaderId, type, mimeType);
+        var lastModified = typeof lastModifiedTime === "number" ? new Date(lastModifiedTime * 1000) : null;
+        return new WebInspector.Resource(this.target(), null, url, frame.url, frame.id, frame.loaderId, type, mimeType, lastModified, contentSize);
     },
 
     suspendReload: function()
@@ -694,19 +697,17 @@ WebInspector.ResourceTreeFrame.prototype = {
 
     /**
      * @param {!WebInspector.NetworkRequest} request
-     * @return {!WebInspector.Resource}
      */
     _addRequest: function(request)
     {
         var resource = this._resourcesMap[request.url];
         if (resource && resource.request === request) {
             // Already in the tree, we just got an extra update.
-            return resource;
+            return;
         }
-        resource = new WebInspector.Resource(this.target(), request, request.url, request.documentURL, request.frameId, request.loaderId, request.resourceType(), request.mimeType);
+        resource = new WebInspector.Resource(this.target(), request, request.url, request.documentURL, request.frameId, request.loaderId, request.resourceType(), request.mimeType, null, null);
         this._resourcesMap[resource.url] = resource;
         this._model.dispatchEventToListeners(WebInspector.ResourceTreeModel.Events.ResourceAdded, resource);
-        return resource;
     },
 
     /**

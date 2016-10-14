@@ -56,6 +56,8 @@ WebInspector.PaintProfilerView = function(showImageCallback)
     this._minBarHeight = window.devicePixelRatio;
     this._barPaddingWidth = 2 * window.devicePixelRatio;
     this._outerBarWidth = this._innerBarWidth + this._barPaddingWidth;
+    this._pendingScale = 1;
+    this._scale = this._pendingScale;
 
     this._reset();
 }
@@ -91,7 +93,7 @@ WebInspector.PaintProfilerView.prototype = {
         }
         this._selectionWindow.setEnabled(true);
         this._progressBanner.classList.remove("hidden");
-        snapshot.requestImage(null, null, 1, this._showImageCallback);
+        this._updateImage();
         snapshot.profile(clipRect, onProfileDone.bind(this));
         /**
          * @param {!Array.<!LayerTreeAgent.PaintProfile>=} profiles
@@ -104,6 +106,18 @@ WebInspector.PaintProfilerView.prototype = {
             this._update();
             this._updatePieChart();
         }
+    },
+
+    /**
+     * @param {number} scale
+     */
+    setScale: function(scale)
+    {
+        var needsUpdate = scale > this._scale;
+        var predictiveGrowthFactor = 2;
+        this._pendingScale = Math.min(1, scale * predictiveGrowthFactor);
+        if (needsUpdate)
+            this._updateImage();
     },
 
     _update: function()
@@ -238,11 +252,15 @@ WebInspector.PaintProfilerView.prototype = {
     _updateImage: function()
     {
         delete this._updateImageTimer;
+        var left = null;
+        var right = null;
         var window = this.selectionWindow();
-        if (!this._profiles || !this._profiles.length || !window)
-            return;
-
-        this._snapshot.requestImage(this._log[window.left].commandIndex, this._log[window.right - 1].commandIndex, 1, this._showImageCallback);
+        if (this._profiles && this._profiles.length && window) {
+            left = this._log[window.left].commandIndex;
+            right = this._log[window.right - 1].commandIndex;
+        }
+        var scale = this._pendingScale;
+        this._snapshot.requestImage(left, right, scale, image => { this._scale = scale; this._showImageCallback(image); });
     },
 
     _reset: function()
@@ -281,17 +299,24 @@ WebInspector.PaintProfilerCommandLogView.prototype = {
     {
         this._target = target;
         this._log = log;
+        /** @type {!Map<!WebInspector.PaintProfilerLogItem>} */
+        this._treeItemCache = new Map();
         this.updateWindow({left: 0, right: this._log.length});
     },
 
     /**
-      * @param {!TreeOutline} treeOutline
       * @param {!WebInspector.PaintProfilerLogItem} logItem
       */
-    _appendLogItem: function(treeOutline, logItem)
+    _appendLogItem: function(logItem)
     {
-        var treeElement = new WebInspector.LogTreeElement(this, logItem);
-        treeOutline.appendChild(treeElement);
+        var treeElement = this._treeItemCache.get(logItem);
+        if (!treeElement) {
+            treeElement = new WebInspector.LogTreeElement(this, logItem);
+            this._treeItemCache.set(logItem, treeElement);
+        } else if (treeElement.parent) {
+            return;
+        }
+        this._treeOutline.appendChild(treeElement);
     },
 
     /**
@@ -309,11 +334,25 @@ WebInspector.PaintProfilerCommandLogView.prototype = {
      */
     doUpdate: function()
     {
-        this._treeOutline.removeChildren();
-        if (!this._selectionWindow || !this._log.length)
+        if (!this._selectionWindow || !this._log.length) {
+            this._treeOutline.removeChildren();
             return Promise.resolve();
+        }
+        var root = this._treeOutline.rootElement();
+        for (;;) {
+            var child = root.firstChild();
+            if (!child || child._logItem.commandIndex >= this._selectionWindow.left)
+                break;
+            root.removeChildAtIndex(0);
+        }
+        for (;;) {
+            var child = root.lastChild();
+            if (!child || child._logItem.commandIndex < this._selectionWindow.right)
+                break;
+            root.removeChildAtIndex(root.children().length - 1);
+        }
         for (var i = this._selectionWindow.left, right = this._selectionWindow.right; i < right; ++i)
-            this._appendLogItem(this._treeOutline, this._log[i]);
+            this._appendLogItem(this._log[i]);
         return Promise.resolve();
     },
 

@@ -52,6 +52,7 @@ WebInspector.LayersPanel = function()
     this._layers3DView = new WebInspector.Layers3DView(this._layerViewHost);
     this._rightSplitWidget.setMainWidget(this._layers3DView);
     this._layers3DView.addEventListener(WebInspector.Layers3DView.Events.LayerSnapshotRequested, this._onSnapshotRequested, this);
+    this._layers3DView.addEventListener(WebInspector.Layers3DView.Events.ScaleChanged, this._onScaleChanged, this);
 
     this._tabbedPane = new WebInspector.TabbedPane();
     this._rightSplitWidget.setSidebarWidget(this._tabbedPane);
@@ -155,6 +156,14 @@ WebInspector.LayersPanel.prototype = {
         var layer = /** @type {!WebInspector.Layer} */ (event.data);
         this._tabbedPane.selectTab(WebInspector.LayersPanel.DetailsViewTabs.Profiler);
         this._paintProfilerView.profileLayer(layer);
+    },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _onScaleChanged: function(event)
+    {
+        this._paintProfilerView.setScale(/** @type {number} */(event.data));
     },
 
     __proto__: WebInspector.PanelWithSidebar.prototype

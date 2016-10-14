@@ -52,6 +52,14 @@ WebInspector.LayerPaintProfilerView.prototype = {
         }
     },
 
+    /**
+     * @param {number} scale
+     */
+    setScale: function(scale)
+    {
+        this._paintProfilerView.setScale(scale);
+    },
+
     _onWindowChanged: function()
     {
         this._logTreeView.updateWindow(this._paintProfilerView.selectionWindow());

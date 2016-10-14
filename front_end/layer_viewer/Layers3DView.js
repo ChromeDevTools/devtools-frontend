@@ -90,7 +90,8 @@ WebInspector.Layers3DView.OutlineType = {
 /** @enum {symbol} */
 WebInspector.Layers3DView.Events = {
     LayerSnapshotRequested: Symbol("LayerSnapshotRequested"),
-    PaintProfilerRequested: Symbol("PaintProfilerRequested")
+    PaintProfilerRequested: Symbol("PaintProfilerRequested"),
+    ScaleChanged: Symbol("ScaleChanged")
 }
 
 /**
@@ -156,6 +157,7 @@ WebInspector.Layers3DView.prototype = {
     setLayerTree: function(layerTree)
     {
         this._layerTree = layerTree;
+        delete this._oldTextureScale;
         this._textureManager.reset();
         this._update();
     },
@@ -305,7 +307,14 @@ WebInspector.Layers3DView.prototype = {
         var scale = this._transformController.scale();
         var rotateX = this._transformController.rotateX();
         var rotateY = this._transformController.rotateY();
+
         this._scale = scale * viewScale;
+        var textureScale = Number.constrain(this._scale, 0.1, 1);
+        if (textureScale !== this._oldTextureScale) {
+            this._oldTextureScale = textureScale;
+            this._textureManager.setScale(textureScale);
+            this.dispatchEventToListeners(WebInspector.Layers3DView.Events.ScaleChanged, textureScale);
+        }
         var scaleAndRotationMatrix = new WebKitCSSMatrix().scale(scale, scale, scale).translate(canvasWidth / 2, canvasHeight / 2, 0)
             .rotate(rotateX, rotateY, 0).scale(viewScale, viewScale, viewScale).translate(-baseWidth / 2, -baseHeight / 2, 0);
 
@@ -665,7 +674,6 @@ WebInspector.Layers3DView.prototype = {
         this._calculateRects();
         this._updateTransformAndConstraints();
 
-        this._textureManager.setScale(Number.constrain(0.1, 1, this._scale));
         gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 

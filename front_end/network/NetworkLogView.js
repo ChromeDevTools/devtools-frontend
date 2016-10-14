@@ -294,6 +294,7 @@ WebInspector.NetworkLogView.prototype = {
             this._splitWidget.setMainWidget(this._timelineWidget);
 
             this._timelineColumn = new WebInspector.NetworkTimelineColumn(this, this._dataGrid);
+            this._timelineColumn.addEventListener(WebInspector.NetworkTimelineColumn.Events.RequestHovered, requestHovered.bind(this));
             this._timelineColumn.show(this._timelineWidget.element);
             this.switchViewMode(false);
         } else {
@@ -304,6 +305,17 @@ WebInspector.NetworkLogView.prototype = {
 
         this._columns.sortByCurrentColumn();
         this._updateRowsSize();
+
+        /**
+         * @param {!WebInspector.Event} event
+         * @this {WebInspector.NetworkLogView}
+         */
+        function requestHovered(event)
+        {
+            var request = /** @type {?WebInspector.NetworkRequest} */ (event.data);
+            var node = request ? this._nodesByRequestId.get(request.requestId) : null;
+            this._setHoveredNode(node || null);
+        }
     },
 
     _showRecordingHint: function()
@@ -354,7 +366,36 @@ WebInspector.NetworkLogView.prototype = {
         this._dataGrid.element.addEventListener("contextmenu", this._contextMenu.bind(this), true);
         this._dataGrid.element.addEventListener("mousedown", this._dataGridMouseDown.bind(this), true);
         this._dataGrid.element.addEventListener("mousemove", this._dataGridMouseMove.bind(this), true);
-        this._dataGrid.element.addEventListener("mouseleave", this._highlightInitiatorChain.bind(this, null), true);
+        this._dataGrid.element.addEventListener("mouseleave", this._dataGridMouseLeave.bind(this), true);
+    },
+
+    /**
+     * @param {!Event} event
+     */
+    _dataGridMouseMove: function(event)
+    {
+        var node = this._dataGrid.dataGridNodeFromNode(event.target);
+        this._setHoveredNode(node);
+        this._highlightInitiatorChain((event.shiftKey && node) ? node.request() : null);
+    },
+
+    _dataGridMouseLeave: function()
+    {
+        this._setHoveredNode(null);
+        this._highlightInitiatorChain(null);
+    },
+
+    /**
+     * @param {?WebInspector.NetworkDataGridNode} node
+     */
+    _setHoveredNode: function(node)
+    {
+        if (this._hoveredNode)
+            this._hoveredNode.element().classList.remove("hover");
+        this._hoveredNode = node;
+        if (this._hoveredNode)
+            this._hoveredNode.element().classList.add("hover");
+        this._timelineColumn.setHoveredRequest(this._hoveredNode ? this._hoveredNode.request() : null);
     },
 
     /**
@@ -364,15 +405,6 @@ WebInspector.NetworkLogView.prototype = {
     {
         if ((!this._dataGrid.selectedNode && event.button) || event.target.enclosingNodeOrSelfWithNodeName("a"))
             event.consume();
-    },
-
-    /**
-     * @param {!Event} event
-     */
-    _dataGridMouseMove: function(event)
-    {
-        var node = event.shiftKey ? this._dataGrid.dataGridNodeFromNode(event.target) : null;
-        this._highlightInitiatorChain(node ? node.request() : null);
     },
 
     /**

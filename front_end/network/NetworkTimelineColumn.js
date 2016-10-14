@@ -30,6 +30,8 @@ WebInspector.NetworkTimelineColumn = function(networkLogView, dataGrid)
     this._vScrollElement.addEventListener("scroll", this._onScroll.bind(this), { passive: true });
     this._vScrollElement.addEventListener("mousewheel", this._onMouseWheel.bind(this), { passive: true });
     this._canvas.addEventListener("mousewheel", this._onMouseWheel.bind(this), { passive: true });
+    this._canvas.addEventListener("mousemove", this._onMouseMove.bind(this), true);
+    this._canvas.addEventListener("mouseleave", this.setHoveredRequest.bind(this, null), true);
 
     this._dataGridScrollContainer = this._dataGrid.scrollContainer;
     this._dataGridScrollContainer.addEventListener("mousewheel", event => {
@@ -46,6 +48,16 @@ WebInspector.NetworkTimelineColumn = function(networkLogView, dataGrid)
 
     /** @type {!Array<!WebInspector.NetworkRequest>} */
     this._requestData = [];
+
+    /** @type {?WebInspector.NetworkRequest} */
+    this._hoveredRequest = null;
+
+    this._rowStripeColor = WebInspector.themeSupport.patchColor("#f5f5f5", WebInspector.ThemeSupport.ColorUsage.Background);
+    this._rowHoverColor = WebInspector.themeSupport.patchColor("#ebf2fc", WebInspector.ThemeSupport.ColorUsage.Background);
+}
+
+WebInspector.NetworkTimelineColumn.Events = {
+    RequestHovered: Symbol("RequestHovered")
 }
 
 WebInspector.NetworkTimelineColumn.prototype = {
@@ -71,12 +83,32 @@ WebInspector.NetworkTimelineColumn.prototype = {
     },
 
     /**
+     * @param {?WebInspector.NetworkRequest} request
+     */
+    setHoveredRequest: function(request)
+    {
+        this._hoveredRequest = request;
+        this.scheduleUpdate();
+    },
+
+    /**
+     * @param {!Event} event
+     */
+    _onMouseMove: function(event)
+    {
+        var request = this._getRequestFromPoint(event.offsetX, event.offsetY);
+        this.dispatchEventToListeners(WebInspector.NetworkTimelineColumn.Events.RequestHovered, request);
+    },
+
+    /**
      * @param {!Event} event
      */
     _onMouseWheel: function(event)
     {
         this._vScrollElement.scrollTop -= event.wheelDeltaY;
         this._dataGridScrollContainer.scrollTop = this._vScrollElement.scrollTop;
+        var request = this._getRequestFromPoint(event.offsetX, event.offsetY);
+        this.dispatchEventToListeners(WebInspector.NetworkTimelineColumn.Events.RequestHovered, request);
     },
 
     /**
@@ -85,6 +117,18 @@ WebInspector.NetworkTimelineColumn.prototype = {
     _onScroll: function(event)
     {
         this._dataGridScrollContainer.scrollTop = this._vScrollElement.scrollTop;
+    },
+
+    /**
+     * @param {number} x
+     * @param {number} y
+     * @return {?WebInspector.NetworkRequest}
+     */
+    _getRequestFromPoint: function(x, y)
+    {
+        var rowHeight = this._networkLogView.rowHeight();
+        var scrollTop = this._vScrollElement.scrollTop;
+        return this._requestData[Math.floor((scrollTop + y - this._networkLogView.headerHeight()) / rowHeight)] || null;
     },
 
     scheduleUpdate: function()
@@ -193,8 +237,8 @@ WebInspector.NetworkTimelineColumn.prototype = {
         var lastRequestIndex = Math.min(requests.length, firstRequestIndex + Math.ceil(this._offsetHeight / rowHeight));
         for (var i = firstRequestIndex; i < lastRequestIndex; i++) {
             var rowOffset = rowHeight * i;
-            this._decorateRow(context, i, rowOffset - scrollTop, rowHeight);
             var request = requests[i];
+            this._decorateRow(context, request, i, rowOffset - scrollTop, rowHeight);
             var ranges = WebInspector.RequestTimingView.calculateRequestTimeRanges(request, 0);
             for (var range of ranges) {
                 if (range.name === WebInspector.RequestTimeRangeNames.Total ||
@@ -271,18 +315,22 @@ WebInspector.NetworkTimelineColumn.prototype = {
 
     /**
      * @param {!CanvasRenderingContext2D} context
+     * @param {!WebInspector.NetworkRequest} request
      * @param {number} rowNumber
      * @param {number} y
      * @param {number} rowHeight
      */
-    _decorateRow: function(context, rowNumber, y, rowHeight)
+    _decorateRow: function(context, request, rowNumber, y, rowHeight)
     {
-        context.save();
-        if (rowNumber % 2 === 1)
+        if (rowNumber % 2 === 1 && this._hoveredRequest !== request)
             return;
-
+        context.save();
         context.beginPath();
-        context.fillStyle = WebInspector.themeSupport.patchColor("#f5f5f5", WebInspector.ThemeSupport.ColorUsage.Background);
+        var color = this._rowStripeColor;
+        if (this._hoveredRequest === request)
+            color = this._rowHoverColor;
+
+        context.fillStyle = color;
         context.rect(0, y, this._offsetWidth, rowHeight);
         context.fill();
         context.restore();

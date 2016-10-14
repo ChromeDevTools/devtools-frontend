@@ -624,8 +624,8 @@
     display: none;
 }
 
-.network-log-grid.data-grid .data-container tr:not(.data-grid-filler-row):not(.selected):hover {
-    background-color: rgba(56, 121, 217, 0.1);
+.network-log-grid.data-grid .data-container tr:not(.data-grid-filler-row):not(.selected).hover {
+    background-color: #ebf2fc;
 }
 
 .network-log-grid .network-node-on-initiator-path {

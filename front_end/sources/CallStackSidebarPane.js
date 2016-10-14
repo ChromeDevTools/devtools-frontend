@@ -413,6 +413,13 @@ WebInspector.CallStackSidebarPane.prototype = {
                 this._revealHiddenCallFrames();
         }
 
+        var oldCallFrame = WebInspector.context.flavor(WebInspector.DebuggerModel.CallFrame);
+        if (oldCallFrame === callFrame) {
+            var uiLocation = WebInspector.debuggerWorkspaceBinding.rawLocationToUILocation(callFrame.location());
+            WebInspector.Revealer.reveal(uiLocation);
+            return;
+        }
+
         WebInspector.context.setFlavor(WebInspector.DebuggerModel.CallFrame, callFrame);
         callFrame.debuggerModel.setSelectedCallFrame(callFrame);
     },

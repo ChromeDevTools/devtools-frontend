@@ -76,6 +76,18 @@ WebInspector.ClearStorageView.prototype = {
     },
 
     /**
+     * @override
+     * @param {!WebInspector.Target} target
+     */
+    targetRemoved: function(target)
+    {
+        if (this._target !== target)
+            return;
+        var securityOriginManager = WebInspector.SecurityOriginManager.fromTarget(target);
+        securityOriginManager.removeEventListener(WebInspector.SecurityOriginManager.Events.MainSecurityOriginChanged, this._originChanged, this);
+    },
+
+    /**
      * @param {!WebInspector.Event} event
      */
     _originChanged: function(event)
@@ -149,14 +161,6 @@ WebInspector.ClearStorageView.prototype = {
             this._clearButton.disabled = false;
             this._clearButton.textContent = WebInspector.UIString("Clear selected");
         }, 500);
-    },
-
-    /**
-     * @override
-     * @param {!WebInspector.Target} target
-     */
-    targetRemoved: function(target)
-    {
     },
 
     __proto__: WebInspector.VBox.prototype

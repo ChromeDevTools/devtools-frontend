@@ -230,6 +230,9 @@ WebInspector.Main.prototype = {
         WebInspector.inspectorView.createToolbars();
         InspectorFrontendHost.loadCompleted();
 
+        InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.EvaluateForTestInFrontend, this._evaluateForTestInFrontend, this);
+        InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.ReloadInspectedPage, this._reloadInspectedPage, this);
+
         var extensions = self.runtime.extensions(WebInspector.QueryParamHandler);
         for (var extension of extensions) {
             var value = Runtime.queryParam(extension.descriptor()["name"]);
@@ -297,6 +300,14 @@ WebInspector.Main.prototype = {
             WebInspector.RemoteDebuggingTerminatedScreen.show(event.data.reason);
         }
 
+        this._createMainTarget();
+        InspectorFrontendHost.readyForTest();
+        // Asynchronously run the extensions.
+        setTimeout(this._lateInitialization.bind(this), 100);
+    },
+
+    _createMainTarget: function()
+    {
         var capabilities =
             WebInspector.Target.Capability.Browser | WebInspector.Target.Capability.DOM |
             WebInspector.Target.Capability.JS | WebInspector.Target.Capability.Log |
@@ -308,33 +319,21 @@ WebInspector.Main.prototype = {
         else if (Runtime.queryParam("v8only"))
             capabilities = WebInspector.Target.Capability.JS;
 
-        this._mainTarget = WebInspector.targetManager.createTarget(WebInspector.UIString("Main"), capabilities, connection, null);
-        console.timeStamp("Main._mainTargetCreated");
-        this._registerShortcuts();
-
+        this._mainTarget = WebInspector.targetManager.createTarget(WebInspector.UIString("Main"), capabilities, this._mainConnection, null);
         this._mainTarget.registerInspectorDispatcher(this);
-        InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.ReloadInspectedPage, this._reloadInspectedPage, this);
-        InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.EvaluateForTestInFrontend, this._evaluateForTestInFrontend, this);
-
         this._mainTarget.runtimeAgent().runIfWaitingForDebugger();
-
         if (this._mainTarget.hasBrowserCapability())
             this._mainTarget.inspectorAgent().enable();
-        InspectorFrontendHost.readyForTest();
+        console.timeStamp("Main._mainTargetCreated");
+    },
 
-        // Asynchronously run the extensions.
-        setTimeout(lateInitialization.bind(this), 0);
-
-        /**
-         * @this {WebInspector.Main}
-         */
-        function lateInitialization()
-        {
-            console.timeStamp("Main.lateInitialization");
-            WebInspector.extensionServer.initializeExtensions();
-            if (Runtime.experiments.isEnabled("nodeDebugging"))
-                new WebInspector.RemoteLocationManager(this._mainTarget);
-        }
+    _lateInitialization: function()
+    {
+        console.timeStamp("Main._lateInitialization");
+        this._registerShortcuts();
+        WebInspector.extensionServer.initializeExtensions();
+        if (Runtime.experiments.isEnabled("nodeDebugging"))
+            new WebInspector.RemoteLocationManager(this._mainTarget);
     },
 
     _registerForwardedShortcuts: function()

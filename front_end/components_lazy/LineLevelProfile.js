@@ -71,14 +71,18 @@ WebInspector.LineLevelProfile.prototype = {
 
     _doUpdate: function()
     {
+        // TODO(alph): use scriptId instead of urls for the target.
         this._locationPool.disposeAll();
         WebInspector.workspace.uiSourceCodes().forEach(uiSourceCode => uiSourceCode.removeAllLineDecorations(WebInspector.LineLevelProfile.LineDecorator.type));
-        var debuggerModel = WebInspector.DebuggerModel.fromTarget(WebInspector.targetManager.mainTarget());
-        if (!debuggerModel)
-            return;
         for (var fileInfo of this._files) {
             var url = /** @type {string} */ (fileInfo[0]);
             var uiSourceCode = WebInspector.workspace.uiSourceCodeForURL(url);
+            if (!uiSourceCode)
+                continue;
+            var target = WebInspector.NetworkProject.targetForUISourceCode(uiSourceCode) || WebInspector.targetManager.mainTarget();
+            var debuggerModel = target ? WebInspector.DebuggerModel.fromTarget(target) : null;
+            if (!debuggerModel)
+                continue;
             for (var lineInfo of fileInfo[1]) {
                 var line = lineInfo[0] - 1;
                 var time = lineInfo[1];

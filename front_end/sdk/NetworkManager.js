@@ -146,14 +146,6 @@ WebInspector.NetworkManager.prototype = {
         WebInspector.moduleSetting("cacheDisabled").removeChangeListener(this._cacheDisabledSettingChanged, this);
     },
 
-    /**
-     * @return {!WebInspector.Setting}
-     */
-    bypassServiceWorkerSetting: function()
-    {
-        return this._bypassServiceWorkerSetting;
-    },
-
     _bypassServiceWorkerChanged: function()
     {
         this._networkAgent.setBypassServiceWorker(this._bypassServiceWorkerSetting.get());

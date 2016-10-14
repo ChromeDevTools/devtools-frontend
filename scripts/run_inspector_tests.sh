@@ -15,7 +15,7 @@ DEBUG_FLAG=" --additional-driver-flag='--debug-devtools'"
 
 COMMAND=${RUN_LAYOUT_TEST_PATH}
 
-#ninja -C ${OUT_PATH} devtools_frontend_resources
+ninja -C ${OUT_PATH} devtools_frontend_resources
 if [ $1 == "-d" ]
 then
     shift

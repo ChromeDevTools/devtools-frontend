@@ -19,6 +19,18 @@ WebInspector.ServiceWorkersView = function()
     /** @type {!Map<!WebInspector.ServiceWorkerRegistration, !WebInspector.ServiceWorkersView.Section>} */
     this._sections = new Map();
 
+    this._toolbar.appendToolbarItem(WebInspector.NetworkConditionsSelector.createOfflineToolbarCheckbox());
+    var forceUpdate = new WebInspector.ToolbarCheckbox(WebInspector.UIString("Update on reload"), WebInspector.UIString("Force update Service Worker on page reload"), WebInspector.settings.createSetting("serviceWorkerUpdateOnReload", false));
+    this._toolbar.appendToolbarItem(forceUpdate);
+    var fallbackToNetwork = new WebInspector.ToolbarCheckbox(WebInspector.UIString("Bypass for network"), WebInspector.UIString("Bypass Service Worker and load resources from the network"), WebInspector.settings.createSetting("bypassServiceWorker", false));
+    this._toolbar.appendToolbarItem(fallbackToNetwork);
+    this._toolbar.appendSpacer();
+    this._showAllCheckbox = new WebInspector.ToolbarCheckbox(WebInspector.UIString("Show all"), WebInspector.UIString("Show all Service Workers regardless of the origin"));
+    this._showAllCheckbox.inputElement.addEventListener("change", this._updateSectionVisibility.bind(this), false);
+    this._toolbar.appendToolbarItem(this._showAllCheckbox);
+
+    /** @type {!Map<!WebInspector.Target, !Array<!WebInspector.EventTarget.EventDescriptor>>}*/
+    this._eventListeners = new Map();
     WebInspector.targetManager.observeTargets(this);
 }
 
@@ -29,34 +41,22 @@ WebInspector.ServiceWorkersView.prototype = {
      */
     targetAdded: function(target)
     {
-        var securityOriginManager = WebInspector.SecurityOriginManager.fromTarget(target);
-        if (this._manager || !target.serviceWorkerManager || !securityOriginManager)
+        if (this._manager || !target.serviceWorkerManager)
             return;
         this._manager = target.serviceWorkerManager;
         this._subTargetsManager = target.subTargetsManager;
-        this._securityOriginManager = securityOriginManager;
-
-        this._toolbar.appendToolbarItem(WebInspector.NetworkConditionsSelector.createOfflineToolbarCheckbox());
-        var forceUpdate = new WebInspector.ToolbarCheckbox(WebInspector.UIString("Update on reload"), WebInspector.UIString("Force update Service Worker on page reload"), this._manager.forceUpdateOnReloadSetting());
-        this._toolbar.appendToolbarItem(forceUpdate);
-        var networkManager = target && WebInspector.NetworkManager.fromTarget(target);
-        if (networkManager) {
-            var fallbackToNetwork = new WebInspector.ToolbarCheckbox(WebInspector.UIString("Bypass for network"), WebInspector.UIString("Bypass Service Worker and load resources from the network"), networkManager.bypassServiceWorkerSetting());
-            this._toolbar.appendToolbarItem(fallbackToNetwork);
-            this._toolbar.appendSpacer();
-        }
-        this._showAllCheckbox = new WebInspector.ToolbarCheckbox(WebInspector.UIString("Show all"), WebInspector.UIString("Show all Service Workers regardless of the origin"));
-        this._showAllCheckbox.inputElement.addEventListener("change", this._updateSectionVisibility.bind(this), false);
-        this._toolbar.appendToolbarItem(this._showAllCheckbox);
+        this._securityOriginManager = WebInspector.SecurityOriginManager.fromTarget(target);
 
         for (var registration of this._manager.registrations().values())
             this._updateRegistration(registration);
 
-        this._manager.addEventListener(WebInspector.ServiceWorkerManager.Events.RegistrationUpdated, this._registrationUpdated, this);
-        this._manager.addEventListener(WebInspector.ServiceWorkerManager.Events.RegistrationDeleted, this._registrationDeleted, this);
-        this._manager.addEventListener(WebInspector.ServiceWorkerManager.Events.RegistrationErrorAdded, this._registrationErrorAdded, this);
-        securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.Events.SecurityOriginAdded, this._updateSectionVisibility, this);
-        securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.Events.SecurityOriginRemoved, this._updateSectionVisibility, this);
+        this._eventListeners.set(target, [
+            this._manager.addEventListener(WebInspector.ServiceWorkerManager.Events.RegistrationUpdated, this._registrationUpdated, this),
+            this._manager.addEventListener(WebInspector.ServiceWorkerManager.Events.RegistrationDeleted, this._registrationDeleted, this),
+            this._manager.addEventListener(WebInspector.ServiceWorkerManager.Events.RegistrationErrorAdded, this._registrationErrorAdded, this),
+            this._securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.Events.SecurityOriginAdded, this._updateSectionVisibility, this),
+            this._securityOriginManager.addEventListener(WebInspector.SecurityOriginManager.Events.SecurityOriginRemoved, this._updateSectionVisibility, this),
+        ]);
     },
 
     /**
@@ -65,9 +65,13 @@ WebInspector.ServiceWorkersView.prototype = {
      */
     targetRemoved: function(target)
     {
-        if (this._manager !== target.serviceWorkerManager)
+        if (!this._manager || this._manager !== target.serviceWorkerManager)
             return;
+
+        WebInspector.EventTarget.removeEventListeners(this._eventListeners.get(target));
+        this._eventListeners.delete(target);
         this._manager = null;
+        this._subTargetsManager = null;
         this._securityOriginManager = null;
     },
 

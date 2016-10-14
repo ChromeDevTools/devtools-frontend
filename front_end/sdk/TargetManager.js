@@ -308,6 +308,14 @@ WebInspector.TargetManager.prototype = {
         }
     },
 
+    removeAllTargets: function()
+    {
+        var targets = this._targets.slice();
+        for (var i = targets.length - 1; i >=0 ; --i)
+            this.removeTarget(targets[i]);
+        this._targets = [];
+    },
+
     /**
      * @param {number=} capabilitiesMask
      * @return {!Array.<!WebInspector.Target>}

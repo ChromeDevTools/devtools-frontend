@@ -55,6 +55,8 @@ WebInspector.AppManifestView.prototype = {
         if (this._resourceTreeModel)
             return;
         var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(target);
+        if (!resourceTreeModel)
+            return;
         this._resourceTreeModel = resourceTreeModel;
         this._updateManifest();
         resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.MainFrameNavigated, this._updateManifest, this);
@@ -66,6 +68,11 @@ WebInspector.AppManifestView.prototype = {
      */
     targetRemoved: function(target)
     {
+        var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(target);
+        if (!this._resourceTreeModel || this._resourceTreeModel !== resourceTreeModel)
+            return;
+        resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.Events.MainFrameNavigated, this._updateManifest, this);
+        delete this._resourceTreeModel;
     },
 
     _updateManifest: function()

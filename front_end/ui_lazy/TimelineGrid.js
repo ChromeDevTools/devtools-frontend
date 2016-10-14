@@ -52,6 +52,7 @@ WebInspector.TimelineGrid = function()
  */
 WebInspector.TimelineGrid.calculateDividerOffsets = function(calculator, freeZoneAtLeft)
 {
+    // TODO(allada) Remove this code out when timeline canvas experiment is over.
     /** @const */ var minGridSlicePx = 64; // minimal distance between grid lines.
 
     var clientWidth = calculator.computePosition(calculator.maximumBoundary());

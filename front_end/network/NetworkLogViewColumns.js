@@ -700,6 +700,7 @@ WebInspector.NetworkLogViewColumns.prototype = {
 
     updateDividersIfNeeded: function()
     {
+        // TODO(allada) Remove this code out when timeline canvas experiment is over.
         if (Runtime.experiments.isEnabled("canvasNetworkTimeline"))
             return;
         if (!this._networkLogView.isShowing()) {

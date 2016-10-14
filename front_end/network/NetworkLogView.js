@@ -395,7 +395,8 @@ WebInspector.NetworkLogView.prototype = {
         this._hoveredNode = node;
         if (this._hoveredNode)
             this._hoveredNode.element().classList.add("hover");
-        this._timelineColumn.setHoveredRequest(this._hoveredNode ? this._hoveredNode.request() : null);
+        if (Runtime.experiments.isEnabled("canvasNetworkTimeline"))
+            this._timelineColumn.setHoveredRequest(this._hoveredNode ? this._hoveredNode.request() : null);
     },
 
     /**

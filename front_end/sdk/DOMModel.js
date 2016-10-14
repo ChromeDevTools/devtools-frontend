@@ -1241,7 +1241,7 @@ WebInspector.DOMModel.prototype = {
             delete this._pendingDocumentRequestCallbacks;
         }
 
-        this._agent.getDocument(onDocumentAvailable.bind(this));
+        this._agent.getDocument(undefined, undefined, onDocumentAvailable.bind(this));
     },
 
     /**

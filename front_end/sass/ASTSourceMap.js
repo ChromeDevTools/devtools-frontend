@@ -66,6 +66,17 @@ WebInspector.ASTSourceMap.prototype = {
 
     /**
      * @override
+     * @param {string} sourceURL
+     * @return {?string}
+     */
+    embeddedContentByURL: function(sourceURL)
+    {
+        var model = this.modelForURL(sourceURL);
+        return model ? model.document.text.value() : "";
+    },
+
+    /**
+     * @override
      * @param {number} lineNumber
      * @param {number=} columnNumber
      * @return {?WebInspector.SourceMapEntry}

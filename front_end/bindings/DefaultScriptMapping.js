@@ -107,7 +107,7 @@ WebInspector.DefaultScriptMapping.prototype = {
         uiSourceCode[WebInspector.DefaultScriptMapping._scriptSymbol] = script;
         this._uiSourceCodeForScriptId.set(script.scriptId, uiSourceCode);
         this._scriptIdForUISourceCode.set(uiSourceCode, script.scriptId);
-        this._project.addUISourceCodeWithProvider(uiSourceCode, script);
+        this._project.addUISourceCodeWithProvider(uiSourceCode, script, null);
 
         this._debuggerWorkspaceBinding.setSourceMapping(this._debuggerModel.target(), uiSourceCode, this);
         this._debuggerWorkspaceBinding.pushSourceMapping(script, this);

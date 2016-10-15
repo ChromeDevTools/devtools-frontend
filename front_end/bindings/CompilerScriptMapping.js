@@ -237,7 +237,9 @@ WebInspector.CompilerScriptMapping.prototype = {
             var uiSourceCode = this._networkMapping.uiSourceCodeForScriptURL(sourceURL, script);
             if (!uiSourceCode) {
                 var contentProvider = sourceMap.sourceContentProvider(sourceURL, WebInspector.resourceTypes.SourceMapScript);
-                uiSourceCode = this._networkProject.addFile(contentProvider, WebInspector.ResourceTreeFrame.fromScript(script), script.isContentScript());
+                var embeddedContent = sourceMap.embeddedContentByURL(sourceURL);
+                var embeddedContentLength = typeof embeddedContent === "string" ? embeddedContent.length : null;
+                uiSourceCode = this._networkProject.addFile(contentProvider, WebInspector.ResourceTreeFrame.fromScript(script), script.isContentScript(), embeddedContentLength);
                 uiSourceCode[WebInspector.CompilerScriptMapping._originSymbol] = script.sourceURL;
             }
             if (uiSourceCode) {

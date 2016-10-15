@@ -725,16 +725,12 @@ WebInspector.ResourceTreeFrame.prototype = {
      */
     resourceForURL: function(url)
     {
-        var result;
-        function filter(resource)
-        {
-            if (resource.url === url) {
-                result = resource;
-                return true;
-            }
-        }
-        this._callForFrameResources(filter);
-        return result || null;
+        var resource = this._resourcesMap[url] || null;
+        if (resource)
+            return resource;
+        for (var i = 0; !resource && i < this._childFrames.length; ++i)
+            resource = this._childFrames[i].resourceForURL(url);
+        return resource;
     },
 
     /**

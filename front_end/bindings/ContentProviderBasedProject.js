@@ -45,6 +45,8 @@ WebInspector.ContentProviderBasedProject = function(workspace, id, type, display
     workspace.addProject(this);
 }
 
+WebInspector.ContentProviderBasedProject._metadata = Symbol("ContentProviderBasedProject.Metadata");
+
 WebInspector.ContentProviderBasedProject.prototype = {
     /**
      * @override
@@ -64,7 +66,7 @@ WebInspector.ContentProviderBasedProject.prototype = {
      */
     requestMetadata: function(uiSourceCode)
     {
-        return Promise.resolve(/** @type {?WebInspector.UISourceCodeMetadata} */(null));
+        return Promise.resolve(uiSourceCode[WebInspector.ContentProviderBasedProject._metadata]);
     },
 
     /**
@@ -275,10 +277,12 @@ WebInspector.ContentProviderBasedProject.prototype = {
     /**
      * @param {!WebInspector.UISourceCode} uiSourceCode
      * @param {!WebInspector.ContentProvider} contentProvider
+     * @param {?WebInspector.UISourceCodeMetadata} metadata
      */
-    addUISourceCodeWithProvider: function(uiSourceCode, contentProvider)
+    addUISourceCodeWithProvider: function(uiSourceCode, contentProvider, metadata)
     {
         this._contentProviders[uiSourceCode.url()] = contentProvider;
+        uiSourceCode[WebInspector.ContentProviderBasedProject._metadata] = metadata;
         this.addUISourceCode(uiSourceCode, true);
     },
 
@@ -290,7 +294,7 @@ WebInspector.ContentProviderBasedProject.prototype = {
     addContentProvider: function(url, contentProvider)
     {
         var uiSourceCode = this.createUISourceCode(url, contentProvider.contentType());
-        this.addUISourceCodeWithProvider(uiSourceCode, contentProvider);
+        this.addUISourceCodeWithProvider(uiSourceCode, contentProvider, null);
         return uiSourceCode;
     },
 

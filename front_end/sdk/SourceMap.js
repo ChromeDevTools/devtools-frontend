@@ -108,6 +108,12 @@ WebInspector.SourceMap.prototype = {
     sourceContentProvider: function(sourceURL, contentType) { },
 
     /**
+     * @param {string} sourceURL
+     * @return {?string}
+     */
+    embeddedContentByURL: function(sourceURL) { },
+
+    /**
      * @param {number} lineNumber in compiled resource
      * @param {number} columnNumber in compiled resource
      * @return {?WebInspector.SourceMapEntry}
@@ -261,6 +267,18 @@ WebInspector.TextSourceMap.prototype = {
         if (info.content)
             return WebInspector.StaticContentProvider.fromString(sourceURL, contentType, info.content);
         return new WebInspector.CompilerSourceMappingContentProvider(sourceURL, contentType);
+    },
+
+    /**
+     * @override
+     * @param {string} sourceURL
+     * @return {?string}
+     */
+    embeddedContentByURL: function(sourceURL)
+    {
+        if (!this._sourceInfos.has(sourceURL))
+            return null;
+        return this._sourceInfos.get(sourceURL).content;
     },
 
     /**

@@ -23,7 +23,7 @@ WebInspector.TextEditorAutocompleteController = function(textEditor, codeMirror,
     this._beforeChange = this._beforeChange.bind(this);
     this._mouseDown = this.clearAutocomplete.bind(this);
     this._codeMirror.on("changes", this._changes);
-
+    this._lastHintText = "";
     this._hintElement = createElementWithClass("span", "auto-complete-text");
 }
 
@@ -182,13 +182,15 @@ WebInspector.TextEditorAutocompleteController.prototype = {
                 break;
             }
         }
-        if (singleCharInput && this._hintMarker)
-            this._hintElement.textContent = this._hintElement.textContent.substring(1);
-
-        if (singleCharDelete && this._hintMarker && this._lastPrefix) {
-            this._hintElement.textContent = this._lastPrefix.charAt(this._lastPrefix.length - 1) + this._hintElement.textContent;
-            this._lastPrefix = this._lastPrefix.substring(0, this._lastPrefix.length - 1);
+        if (this._prefixRange) {
+            if (singleCharInput)
+                this._prefixRange.endColumn++;
+            else if (singleCharDelete)
+                this._prefixRange.endColumn--;
+            if (singleCharDelete || singleCharInput)
+                this._setHint(this._lastHintText);
         }
+
         if (singleCharInput || singleCharDelete)
             setImmediate(this.autocomplete.bind(this));
         else
@@ -265,31 +267,44 @@ WebInspector.TextEditorAutocompleteController.prototype = {
                 this._updateAnchorBox();
             this._suggestBox.updateSuggestions(this._anchorBox, wordsWithPrefix, 0, !this._isCursorAtEndOfLine(), prefix);
             this._onSuggestionsShownForTest(wordsWithPrefix);
-            this._addHintMarker(wordsWithPrefix[0].title);
+            this._setHint(wordsWithPrefix[0].title);
         }
     },
 
     /**
      * @param {string} hint
      */
-    _addHintMarker: function(hint)
+    _setHint: function(hint)
     {
-        this._clearHintMarker();
-        if (!this._isCursorAtEndOfLine())
+        if (!this._isCursorAtEndOfLine()) {
+            this._clearHint();
             return;
+        }
         var prefix = this._textEditor.text(this._prefixRange);
-        this._lastPrefix = prefix;
-        this._hintElement.textContent = hint.substring(prefix.length).split("\n")[0];
+        var suffix = hint.substring(prefix.length).split("\n")[0];
+        this._hintElement.textContent = suffix;
         var cursor = this._codeMirror.getCursor("to");
-        this._hintMarker = this._textEditor.addBookmark(cursor.line, cursor.ch, this._hintElement, WebInspector.TextEditorAutocompleteController.HintBookmark, true);
+        if (this._hintMarker) {
+            var position = this._hintMarker.position();
+            if (!position || !position.equal(WebInspector.TextRange.createFromLocation(cursor.line, cursor.ch))) {
+                this._hintMarker.clear();
+                this._hintMarker = null;
+            }
+        }
+
+        if (!this._hintMarker)
+            this._hintMarker = this._textEditor.addBookmark(cursor.line, cursor.ch, this._hintElement, WebInspector.TextEditorAutocompleteController.HintBookmark, true);
+        else if (this._lastHintText !== hint)
+            this._hintMarker.refresh();
+        this._lastHintText = hint;
     },
 
-    _clearHintMarker: function()
+    _clearHint: function()
     {
-        if (!this._hintMarker)
-            return;
-        this._hintMarker.clear();
-        delete this._hintMarker;
+        this._lastHintText = "";
+        this._hintElement.textContent = "";
+        if (this._hintMarker)
+            this._hintMarker.refresh();
     },
 
     /**
@@ -307,7 +322,7 @@ WebInspector.TextEditorAutocompleteController.prototype = {
         this._suggestBox = null;
         this._prefixRange = null;
         this._anchorBox = null;
-        this._clearHintMarker();
+        this._clearHint();
         this._onSuggestionsHiddenForTest();
     },
 
@@ -362,7 +377,7 @@ WebInspector.TextEditorAutocompleteController.prototype = {
     applySuggestion: function(suggestion, isIntermediateSuggestion)
     {
         this._currentSuggestion = suggestion;
-        this._addHintMarker(suggestion);
+        this._setHint(suggestion);
     },
 
     /**

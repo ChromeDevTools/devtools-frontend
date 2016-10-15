@@ -1686,6 +1686,14 @@ WebInspector.TextEditorBookMark.prototype = {
             this._editor._updateDecorations(position.line);
     },
 
+    refresh: function()
+    {
+        this._marker.changed();
+        var position = this._marker.find();
+        if (position)
+            this._editor._updateDecorations(position.line);
+    },
+
     /**
      * @return {symbol}
      */
@@ -1695,12 +1703,12 @@ WebInspector.TextEditorBookMark.prototype = {
     },
 
     /**
-     * @return {!WebInspector.TextRange}
+     * @return {?WebInspector.TextRange}
      */
     position: function()
     {
         var pos = this._marker.find();
-        return WebInspector.TextRange.createFromLocation(pos.line, pos.ch);
+        return pos ? WebInspector.TextRange.createFromLocation(pos.line, pos.ch) : null;
     }
 }
 

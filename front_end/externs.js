@@ -592,7 +592,8 @@ CodeMirror.StringStream.prototype = {
 CodeMirror.TextMarker = function(doc, type) { }
 CodeMirror.TextMarker.prototype = {
     clear: function() { },
-    find: function() { }
+    find: function() { },
+    changed: function() { }
 }
 
 /** @constructor */

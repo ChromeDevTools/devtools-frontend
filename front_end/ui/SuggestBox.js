@@ -50,6 +50,7 @@ WebInspector.SuggestBoxDelegate.prototype = {
 
 /**
  * @constructor
+ * @implements {WebInspector.StaticViewportControl.Provider}
  * @param {!WebInspector.SuggestBoxDelegate} suggestBoxDelegate
  * @param {number=} maxItemsHeight
  * @param {boolean=} captureEnter
@@ -63,7 +64,10 @@ WebInspector.SuggestBox = function(suggestBoxDelegate, maxItemsHeight, captureEn
     this._maxItemsHeight = maxItemsHeight;
     this._maybeHideBound = this._maybeHide.bind(this);
     this._container = createElementWithClass("div", "suggest-box-container");
-    this._element = this._container.createChild("div", "suggest-box");
+    this._viewport = new WebInspector.StaticViewportControl(this);
+    this._element = this._viewport.element;
+    this._element.classList.add("suggest-box");
+    this._container.appendChild(this._element);
     this._element.addEventListener("mousedown", this._onBoxMouseDown.bind(this), true);
     this._detailsPopup = this._container.createChild("div", "suggest-box details-popup monospace");
     this._detailsPopup.classList.add("hidden");
@@ -72,6 +76,14 @@ WebInspector.SuggestBox = function(suggestBoxDelegate, maxItemsHeight, captureEn
     this._asyncDetailsPromises = new Map();
     this._userInteracted = false;
     this._captureEnter = captureEnter;
+    /** @type {!Array<!Element>} */
+    this._elementList = [];
+    this._rowHeight = 17;
+    this._viewportWidth = "100vw";
+    this._hasVerticalScroll = false;
+    this._userEnteredText = "";
+    /** @type {!WebInspector.SuggestBox.Suggestions} */
+    this._items = [];
 }
 
 /**
@@ -102,8 +114,9 @@ WebInspector.SuggestBox.prototype = {
     _updateBoxPosition: function(anchorBox)
     {
         console.assert(this._overlay);
-        if (this._lastAnchorBox && this._lastAnchorBox.equals(anchorBox))
+        if (this._lastAnchorBox && this._lastAnchorBox.equals(anchorBox) && this._lastItemCount === this.itemCount())
             return;
+        this._lastItemCount = this.itemCount();
         this._lastAnchorBox = anchorBox;
 
         // Position relative to main DevTools element.
@@ -121,10 +134,27 @@ WebInspector.SuggestBox.prototype = {
         else
             this._overlay.setVerticalOffset(totalHeight - anchorBox.y, false);
 
-        /** const */ var rowHeight = 17;
-        /** const */ var spacer = 6;
-        var maxHeight = this._maxItemsHeight ? this._maxItemsHeight * rowHeight : Math.max(underHeight, aboveHeight) - spacer;
-        this._element.style.maxHeight = maxHeight + "px";
+        var spacer = 6;
+        var maxHeight = this._maxItemsHeight ? this._maxItemsHeight * this._rowHeight : Math.max(underHeight, aboveHeight) - spacer;
+        var height = this._rowHeight * this._items.length;
+        this._hasVerticalScroll = height > maxHeight;
+        this._element.style.height = Math.min(maxHeight, height) + "px";
+    },
+
+    _updateWidth: function()
+    {
+        if (this._hasVerticalScroll) {
+            this._element.style.width = "100vw";
+            return;
+        }
+        // If there are no scrollbars, set the width to the width of the largest row.
+        var maxIndex = 0;
+        for (var i = 0; i < this._items.length; i++) {
+            if (this._items[i].title.length > this._items[maxIndex].title.length)
+                maxIndex = i;
+        }
+        var element = /** @type {!Element} */ (this.itemElement(maxIndex));
+        this._element.style.width = WebInspector.measurePreferredSize(element, this._element).width + "px";
     },
 
     /**
@@ -157,6 +187,10 @@ WebInspector.SuggestBox.prototype = {
         this._bodyElement.addEventListener("mousedown", this._maybeHideBound, true);
         this._overlay = new WebInspector.SuggestBox.Overlay();
         this._overlay.setContentElement(this._container);
+        var measuringElement = this._createItemElement("1", "12");
+        this._viewport.element.appendChild(measuringElement);
+        this._rowHeight = measuringElement.getBoundingClientRect().height;
+        measuringElement.remove();
     },
 
     hide: function()
@@ -182,6 +216,7 @@ WebInspector.SuggestBox.prototype = {
 
     /**
      * @param {boolean=} isIntermediateSuggestion
+     * @return {boolean}
      */
     _applySuggestion: function(isIntermediateSuggestion)
     {
@@ -256,10 +291,10 @@ WebInspector.SuggestBox.prototype = {
     /**
      * @param {string} prefix
      * @param {string} text
-     * @param {string|undefined} className
-     * @param {number} index
+     * @param {string=} className
+     * @return {!Element}
      */
-    _createItemElement: function(prefix, text, className, index)
+    _createItemElement: function(prefix, text, className)
     {
         var element = createElementWithClass("div", "suggest-box-content-item source-code " + (className || ""));
         element.tabIndex = -1;
@@ -285,14 +320,11 @@ WebInspector.SuggestBox.prototype = {
         this._length = items.length;
         this._asyncDetailsPromises.clear();
         this._asyncDetailsCallback = asyncDetails;
-        this._element.removeChildren();
+        this._elementList = [];
         delete this._selectedElement;
 
-        for (var i = 0; i < items.length; ++i) {
-            var item = items[i];
-            var currentItemElement = this._createItemElement(userEnteredText, item.title, item.className, i);
-            this._element.appendChild(currentItemElement);
-        }
+        this._userEnteredText = userEnteredText;
+        this._items = items;
     },
 
     /**
@@ -334,14 +366,14 @@ WebInspector.SuggestBox.prototype = {
         if (index < 0)
             return;
 
-        this._selectedElement = this._element.children[index];
+        this._selectedElement = this.itemElement(index);
         this._selectedElement.classList.add("selected");
         this._detailsPopup.classList.add("hidden");
         var elem = this._selectedElement;
         this._asyncDetails(index).then(showDetails.bind(this), function(){});
 
         if (scrollIntoView)
-            this._selectedElement.scrollIntoViewIfNeeded(false);
+            this._viewport.scrollItemIntoView(index);
 
         /**
          * @param {?{detail: string, description: string}} details
@@ -358,6 +390,7 @@ WebInspector.SuggestBox.prototype = {
      * @param {!WebInspector.SuggestBox.Suggestions} completions
      * @param {boolean} canShowForSingleItem
      * @param {string} userEnteredText
+     * @return {boolean}
      */
     _canShowBox: function(completions, canShowForSingleItem, userEnteredText)
     {
@@ -375,10 +408,10 @@ WebInspector.SuggestBox.prototype = {
     {
         if (this._rowCountPerViewport)
             return;
-        if (!this._element.firstChild)
+        if (!this._items.length)
             return;
 
-        this._rowCountPerViewport = Math.floor(this._element.offsetHeight / this._element.firstChild.offsetHeight);
+        this._rowCountPerViewport = Math.floor(this._element.getBoundingClientRect().height / this._rowHeight);
     },
 
     /**
@@ -396,6 +429,8 @@ WebInspector.SuggestBox.prototype = {
             this._updateItems(completions, userEnteredText, asyncDetails);
             this._show();
             this._updateBoxPosition(anchorBox);
+            this._updateWidth();
+            this._viewport.refresh();
             this._selectItem(selectedIndex, selectedIndex > 0);
             delete this._rowCountPerViewport;
         } else {
@@ -474,6 +509,37 @@ WebInspector.SuggestBox.prototype = {
         // Report the event as non-handled if there is no selected item,
         // to commit the input or handle it otherwise.
         return hasSelectedItem;
+    },
+
+    /**
+     * @override
+     * @param {number} index
+     * @return {number}
+     */
+    fastItemHeight: function(index)
+    {
+        return this._rowHeight;
+    },
+
+    /**
+     * @override
+     * @return {number}
+     */
+    itemCount: function()
+    {
+        return this._items.length;
+    },
+
+    /**
+     * @override
+     * @param {number} index
+     * @return {?Element}
+     */
+    itemElement: function(index)
+    {
+        if (!this._elementList[index])
+            this._elementList[index] = this._createItemElement(this._userEnteredText, this._items[index].title, this._items[index].className);
+        return this._elementList[index];
     }
 }
 

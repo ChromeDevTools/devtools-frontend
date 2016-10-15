@@ -67,11 +67,6 @@
     background-color: #FFFFFF;
     pointer-events: auto;
     margin-left: -3px;
-    overflow-x: hidden;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    flex: 0 0 auto;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05),
                 0 2px 4px rgba(0, 0, 0, 0.2),
                 0 2px 6px rgba(0, 0, 0, 0.1);
@@ -83,7 +78,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     border: 1px solid transparent;
-    flex: 0 0 auto;
     padding-right: 0;
     white-space: nowrap;
 }

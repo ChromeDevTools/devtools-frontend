@@ -24,5 +24,8 @@
   "bugs": {
     "url": "https://bugs.chromium.org/p/chromium/issues/list?can=2&q=component:Platform%3EDevTools%20&sort=-opened&colspec=ID%20Stars%20Owner%20Summary%20Modified%20Opened"
   },
-  "homepage": "https://devtools.chrome.com"
+  "homepage": "https://devtools.chrome.com",
+  "devDependencies": {
+    "eslint": "3.5.0"
+  }
 }

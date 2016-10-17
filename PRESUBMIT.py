@@ -37,6 +37,18 @@ import sys
 compile_note = "Be sure to run your patch by the compile_frontend.py script prior to committing!"
 
 
+def _CheckNodeAndNPMModules(input_api, output_api):
+    node_script_path = input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts", "install_node_deps.py")
+    process = input_api.subprocess.Popen(
+        [input_api.python_executable, node_script_path],
+        stdout=input_api.subprocess.PIPE,
+        stderr=input_api.subprocess.STDOUT)
+    out, _ = process.communicate()
+    if process.returncode != 0:
+        return [output_api.PresubmitError(out)]
+    return [output_api.PresubmitNotifyResult(out)]
+
+
 def _CheckDevtoolsStyle(input_api, output_api):
     local_paths = [f.AbsoluteLocalPath() for f in input_api.AffectedFiles() if f.Action() != "D"]
 
@@ -54,8 +66,7 @@ def _CheckDevtoolsStyle(input_api, output_api):
         out, _ = process.communicate()
         if process.returncode != 0:
             return [output_api.PresubmitError(out)]
-        if "NOTE" in out:
-            return [output_api.PresubmitNotifyResult(out)]
+        return [output_api.PresubmitNotifyResult(out)]
     return []
 
 
@@ -153,6 +164,7 @@ def _CheckCSSViolations(input_api, output_api):
 
 def CheckChangeOnUpload(input_api, output_api):
     results = []
+    results.extend(_CheckNodeAndNPMModules(input_api, output_api))
     results.extend(_CheckDevtoolsStyle(input_api, output_api))
     results.extend(_CompileDevtoolsFrontend(input_api, output_api))
     results.extend(_CheckConvertSVGToPNGHashes(input_api, output_api))

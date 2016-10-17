@@ -39,7 +39,7 @@ def install_latest_node_js(version, tmp_dir):
     if sys.platform == 'win32':
         target = 'node.exe'
     elif sys.platform == 'darwin':
-        target = 'node-v%s-darwin-x86.tar.gz' % version
+        target = 'node-v%s-darwin-x64.tar.gz' % version
     elif sys.platform == 'linux2':
         target = 'node-v%s-linux-x86.tar.gz' % version
     else:

@@ -1101,17 +1101,6 @@ Runtime.Experiment.prototype = {
         var name = pair.shift();
         Runtime._queryParamsObject[name] = pair.join("=");
     }
-    var flags = Runtime._queryParamsObject["flags"];
-    delete Runtime._queryParamsObject["flags"];
-    if (flags) {
-        try {
-            var parsedFlags = JSON.parse(window.decodeURIComponent(flags));
-            for (var key in parsedFlags)
-                Runtime._queryParamsObject[key] = parsedFlags[key];
-        } catch(e) {
-            console.error("Invalid startup flag: " + e);
-        }
-    }
 })();}
 
 

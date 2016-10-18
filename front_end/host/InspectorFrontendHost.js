@@ -391,6 +391,14 @@ WebInspector.InspectorFrontendHostStub.prototype = {
 
     /**
      * @override
+     * @param {function()} callback
+     */
+    reattach: function(callback)
+    {
+    },
+
+    /**
+     * @override
      */
     readyForTest: function()
     {

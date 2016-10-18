@@ -360,7 +360,6 @@
         "RenderingOptions.js",
         "SimpleApp.js",
         "OverlayController.js",
-        "Connections.js",
         "Main.js",
         "RemoteLocationManager.js"
     ],

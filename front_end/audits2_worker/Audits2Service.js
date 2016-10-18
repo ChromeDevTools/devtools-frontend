@@ -6,8 +6,9 @@
  * @constructor
  * @implements {Service}
  */
-function Audits2Service()
+function Audits2Service(notify)
 {
+    this._notify = notify;
 }
 
 Audits2Service.prototype = {
@@ -16,7 +17,10 @@ Audits2Service.prototype = {
      */
     start: function()
     {
-        console.error("WORKER START");
+        console.error("************ WORKER START *****************");
+        this._notify("sendProtocolMessage", {message: JSON.stringify({id: 1, method: "Page.enable"})});
+        this._notify("sendProtocolMessage", {message: JSON.stringify({id: 2, method: "Runtime.enable"})});
+        this._notify("sendProtocolMessage", {message: JSON.stringify({id: 3, method: "Page.reload"})});
         return Promise.resolve();
     },
 
@@ -25,16 +29,28 @@ Audits2Service.prototype = {
      */
     stop: function()
     {
-        console.error("WORKER STOP");
+        console.error("************ WORKER STOP *****************");
+        return Promise.resolve();
+    },
+
+    /**
+     * @param {!Object=} params
+     * @return {!Promise}
+     */
+    dispatchProtocolMessage: function(params)
+    {
+        console.error("message: " + JSON.stringify(params));
         return Promise.resolve();
     },
 
     /**
      * @override
+     * @return {!Promise}
      */
     dispose: function()
     {
-        console.error("WORKER DISPOSE");
+        console.error("************ WORKER DISPOSE *****************");
+        return Promise.resolve();
     }
 }
 

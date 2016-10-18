@@ -45,7 +45,7 @@ WebInspector.RemoteLocationManager.prototype = {
      * @param {?Protocol.Error} error
      * @return {!Promise}
      */
-    _requestTargets: function (error)
+    _requestTargets: function(error)
     {
         if (error) {
             console.error(error);
@@ -79,7 +79,7 @@ WebInspector.RemoteLocationManager.prototype = {
                 var target = this._connectedTargets.get(targetId);
                 this._connectedTargets.delete(targetId);
                 if (target)
-                    WebInspector.targetManager.removeTarget(target);
+                    target.dispose();
             }
         }
 
@@ -140,9 +140,12 @@ WebInspector.RemoteLocationConnection.prototype = {
         this._agent.sendMessage(this._targetId, JSON.stringify(messageObject));
     },
 
-    _close: function()
+    /**
+     * @override
+     */
+    forceClose: function()
     {
-        this.connectionClosed("node_detached");
+        this._agent.detach(this._targetId, () => {});
     },
 
     __proto__: InspectorBackendClass.Connection.prototype

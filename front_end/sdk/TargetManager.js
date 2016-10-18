@@ -236,6 +236,38 @@ WebInspector.TargetManager.prototype = {
     },
 
     /**
+     * @param {function()} factory
+     */
+    setMainTargetFactory: function(factory)
+    {
+        this._mainTargetFactory = factory;
+    },
+
+    /**
+     * @param {function(string)} dispatch
+     * @return {!Promise<!WebInspector.RawProtocolConnection>}
+     */
+    interceptMainConnection: function(dispatch)
+    {
+        var target = WebInspector.targetManager.mainTarget();
+        if (target)
+            target.connection().close();
+
+        var fulfill;
+        var result = new Promise(resolve => fulfill = resolve);
+        InspectorFrontendHost.reattach(() => fulfill(new WebInspector.RawProtocolConnection(dispatch, yieldCallback.bind(this))));
+        return result;
+
+        /**
+         * @this {WebInspector.TargetManager}
+         */
+        function yieldCallback()
+        {
+            InspectorFrontendHost.reattach(this._mainTargetFactory());
+        }
+    },
+
+    /**
      * @param {!WebInspector.Target} target
      * @return {!Array<!WebInspector.TargetManager.Observer>}
      */
@@ -289,6 +321,8 @@ WebInspector.TargetManager.prototype = {
      */
     removeTarget: function(target)
     {
+        if (!this._targets.includes(target))
+            return;
         this._targets.remove(target);
         var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(target);
         var treeModelListeners = resourceTreeModel && resourceTreeModel[WebInspector.TargetManager._listenersSymbol];
@@ -307,14 +341,6 @@ WebInspector.TargetManager.prototype = {
                     model.removeEventListener(/** @type {symbol} */ (pair[0]), listeners[i].listener, listeners[i].thisObject);
             }
         }
-    },
-
-    removeAllTargets: function()
-    {
-        var targets = this._targets.slice();
-        for (var i = targets.length - 1; i >=0 ; --i)
-            this.removeTarget(targets[i]);
-        this._targets = [];
     },
 
     /**

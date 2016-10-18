@@ -65,7 +65,7 @@ WebInspector.SubTargetsManager.prototype = {
     dispose: function()
     {
         for (var connection of this._connections.values())
-            connection._close();
+            connection.close();
         this._connections.clear();
         this._attachedTargets.clear();
     },
@@ -194,7 +194,7 @@ WebInspector.SubTargetsManager.prototype = {
     {
         var connection = this._connections.get(targetId);
         if (connection)
-            connection._close();
+            connection._reportClosed();
         this._connections.delete(targetId);
         var target = this._attachedTargets.get(targetId);
         this._attachedTargets.delete(targetId);
@@ -297,7 +297,15 @@ WebInspector.SubTargetConnection.prototype = {
         this._agent.sendMessageToTarget(this._targetId, JSON.stringify(messageObject));
     },
 
-    _close: function()
+    /**
+     * @override
+     */
+    forceClose: function()
+    {
+        this._agent.detachFromTarget(this._targetId);
+    },
+
+    _reportClosed: function()
     {
         this.connectionClosed("target_terminated");
     },

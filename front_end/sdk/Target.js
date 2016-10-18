@@ -22,7 +22,7 @@ WebInspector.Target = function(targetManager, name, capabilitiesMask, connection
     this._capabilitiesMask = capabilitiesMask;
     this._connection = connection;
     this._parentTarget = parentTarget;
-    connection.addEventListener(InspectorBackendClass.Connection.Events.Disconnected, this._onDisconnect, this);
+    connection.addEventListener(InspectorBackendClass.Connection.Events.Disconnected, this.dispose, this);
     this._id = WebInspector.Target._nextId++;
 
     /** @type {!Map.<!Function, !WebInspector.SDKModel>} */
@@ -78,7 +78,6 @@ WebInspector.Target.prototype = {
     },
 
     /**
-     *
      * @return {!InspectorBackendClass.Connection}
      */
     connection: function()
@@ -161,15 +160,11 @@ WebInspector.Target.prototype = {
         return this._parentTarget;
     },
 
-    _onDisconnect: function()
+    dispose: function()
     {
         this._targetManager.removeTarget(this);
-        this._dispose();
-    },
-
-    _dispose: function()
-    {
-        this._targetManager.dispatchEventToListeners(WebInspector.TargetManager.Events.TargetDisposed, this);
+        for (var model of this._modelByConstructor.valuesArray())
+            model.dispose();
         if (this.workerManager)
             this.workerManager.dispose();
     },
@@ -258,7 +253,6 @@ WebInspector.SDKModel = function(modelClass, target)
 {
     WebInspector.SDKObject.call(this, target);
     target._modelByConstructor.set(modelClass, this);
-    WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.TargetDisposed, this._targetDisposed, this);
 }
 
 WebInspector.SDKModel.prototype = {
@@ -289,7 +283,6 @@ WebInspector.SDKModel.prototype = {
         if (target !== this._target)
             return;
         this.dispose();
-        WebInspector.targetManager.removeEventListener(WebInspector.TargetManager.Events.TargetDisposed, this._targetDisposed, this);
     },
 
     __proto__: WebInspector.SDKObject.prototype

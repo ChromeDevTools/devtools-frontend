@@ -78,7 +78,7 @@ WebInspector.WorkerManager.prototype = {
     _reset: function()
     {
         for (var connection of this._connections.values())
-            connection._close();
+            connection.close();
         this._connections.clear();
         this._targetsByWorkerId.clear();
     },
@@ -119,7 +119,7 @@ WebInspector.WorkerManager.prototype = {
     {
         var connection = this._connections.get(workerId);
         if (connection)
-            connection._close();
+            connection._reportClosed();
         this._connections.delete(workerId);
         this._targetsByWorkerId.delete(workerId);
     },
@@ -223,7 +223,7 @@ WebInspector.WorkerConnection.prototype = {
         this._agent.sendMessageToWorker(this._workerId, JSON.stringify(messageObject));
     },
 
-    _close: function()
+    _reportClosed: function()
     {
         this.connectionClosed("worker_terminated");
     },

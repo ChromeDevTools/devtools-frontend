@@ -691,6 +691,15 @@ InspectorFrontendHostImpl.prototype = {
 
     /**
      * @override
+     * @param {function()} callback
+     */
+    reattach: function(callback)
+    {
+        DevToolsAPI.sendMessageToEmbedder("reattach", [], callback);
+    },
+
+    /**
+     * @override
      */
     readyForTest: function()
     {

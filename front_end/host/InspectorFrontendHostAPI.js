@@ -290,6 +290,11 @@ InspectorFrontendHostAPI.prototype = {
     showContextMenuAtPoint: function(x, y, items, document) { },
 
     /**
+     * @param {function()} callback
+     */
+    reattach: function(callback) { },
+
+    /**
      * @return {boolean}
      */
     isUnderTest: function() { },

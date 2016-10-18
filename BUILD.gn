@@ -101,6 +101,7 @@ devtools_screencast_js_files = [
 ]
 devtools_sdk_js_files = [
   "front_end/sdk/ApplicationCacheModel.js",
+  "front_end/sdk/Connections.js",
   "front_end/sdk/ConsoleModel.js",
   "front_end/sdk/ContentProviders.js",
   "front_end/sdk/CookieParser.js",
@@ -295,7 +296,6 @@ devtools_main_js_files = [
   "front_end/main/remoteDebuggingTerminatedScreen.css",
   "front_end/main/renderingOptions.css",
   "front_end/main/targetCrashedScreen.css",
-  "front_end/main/Connections.js",
   "front_end/main/Main.js",
   "front_end/main/OverlayController.js",
   "front_end/main/RemoteLocationManager.js",

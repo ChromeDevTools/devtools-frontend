@@ -420,6 +420,19 @@ InspectorBackendClass.Connection.prototype = {
         console.log(message);
     },
 
+    close: function()
+    {
+        this.forceClose();
+        this.connectionClosed("force close");
+    },
+
+    /**
+     * @protected
+     */
+    forceClose: function()
+    {
+    },
+
     /**
      * @protected
      * @param {string} reason

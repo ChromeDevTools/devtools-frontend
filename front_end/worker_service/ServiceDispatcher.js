@@ -8,6 +8,9 @@
 function Service() { }
 
 Service.prototype = {
+    /**
+     * @return {!Promise}
+     */
     dispose: function() { }
 }
 
@@ -46,7 +49,7 @@ ServiceDispatcher.prototype = {
                 return;
             }
             this._dispatchMessage(message);
-        } catch(e) {
+        } catch (e) {
             this._sendErrorResponse(message["id"], e.toString());
         }
     },

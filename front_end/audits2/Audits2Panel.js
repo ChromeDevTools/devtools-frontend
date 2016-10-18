@@ -17,22 +17,44 @@ WebInspector.Audits2Panel = function()
 WebInspector.Audits2Panel.prototype = {
     _start: function()
     {
-        this._backend().then(backend => backend ? backend.send("start") : undefined).then(console.error.bind(console, "STARTED"));
+        WebInspector.targetManager.interceptMainConnection(this._dispatchProtocolMessage.bind(this)).then(rawConnection => {
+            this._rawConnection = rawConnection;
+            this._send("start");
+        });
+    },
+
+    /**
+     * @param {string} message
+     */
+    _dispatchProtocolMessage: function(message)
+    {
+        this._send("dispatchProtocolMessage", {message: message});
     },
 
     _stop: function()
     {
-        this._backend().then(backend => backend ? backend.send("stop") : undefined).then(console.error.bind(console, "STOPPED"));
+        this._send("stop").then(() => {
+            this._rawConnection.yieldConnection();
+            this._backend.dispose();
+            delete this._backend;
+            delete this._backendPromise;
+        });
     },
 
     /**
-     * @return {!Promise<?WebInspector.ServiceManager.Service>}
+     * @param {string} method
+     * @param {!Object=} params
+     * @return {!Promise<!Object|undefined>}
      */
-    _backend: function()
+    _send: function(method, params)
     {
-        if (!this._backendPromise)
-            this._backendPromise = WebInspector.serviceManager.createAppService("audits2_worker", "Audits2Service", false);
-        return this._backendPromise;
+        if (!this._backendPromise) {
+            this._backendPromise = WebInspector.serviceManager.createAppService("audits2_worker", "Audits2Service", false).then(backend => {
+                this._backend = backend;
+                this._backend.on("sendProtocolMessage", result => this._rawConnection.send(result.message));
+            });
+        }
+        return this._backendPromise.then(() => this._backend ? this._backend.send(method, params) : undefined);
     },
 
     __proto__: WebInspector.Panel.prototype

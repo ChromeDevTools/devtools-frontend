@@ -170,8 +170,8 @@ WebInspector.TextPrompt.prototype = {
     userEnteredText: function()
     {
         var text = this.text();
-        if (this.autoCompleteElement) {
-            var addition = this.autoCompleteElement.textContent;
+        if (this._autocompleteElement) {
+            var addition = this._autocompleteElement.textContent;
             text = text.substring(0, text.length - addition.length);
         }
         return text;
@@ -386,11 +386,11 @@ WebInspector.TextPrompt.prototype = {
             delete this._completeTimeout;
         }
 
-        if (!this.autoCompleteElement)
+        if (!this._autocompleteElement)
             return;
 
-        this.autoCompleteElement.remove();
-        delete this.autoCompleteElement;
+        this._autocompleteElement.remove();
+        delete this._autocompleteElement;
         delete this._userEnteredRange;
         delete this._userEnteredText;
     },
@@ -565,10 +565,10 @@ WebInspector.TextPrompt.prototype = {
             var prefixTextNode = createTextNode(prefixText);
             fullWordRange.insertNode(prefixTextNode);
 
-            this.autoCompleteElement = createElementWithClass("span", "auto-complete-text");
-            this.autoCompleteElement.textContent = suffixText;
+            this._autocompleteElement = createElementWithClass("span", "auto-complete-text");
+            this._autocompleteElement.textContent = suffixText;
 
-            prefixTextNode.parentNode.insertBefore(this.autoCompleteElement, prefixTextNode.nextSibling);
+            prefixTextNode.parentNode.insertBefore(this._autocompleteElement, prefixTextNode.nextSibling);
 
             finalSelectionRange.setStart(prefixTextNode, wordPrefixLength);
             finalSelectionRange.setEnd(prefixTextNode, wordPrefixLength);
@@ -580,7 +580,7 @@ WebInspector.TextPrompt.prototype = {
 
     _completeCommonPrefix: function()
     {
-        if (!this.autoCompleteElement || !this._commonPrefix || !this._userEnteredText || !this._commonPrefix.startsWith(this._userEnteredText))
+        if (!this._autocompleteElement || !this._commonPrefix || !this._userEnteredText || !this._commonPrefix.startsWith(this._userEnteredText))
             return;
 
         if (!this.isSuggestBoxVisible()) {
@@ -588,7 +588,7 @@ WebInspector.TextPrompt.prototype = {
             return;
         }
 
-        this.autoCompleteElement.textContent = this._commonPrefix.substring(this._userEnteredText.length);
+        this._autocompleteElement.textContent = this._commonPrefix.substring(this._userEnteredText.length);
         this._acceptSuggestionInternal(true);
     },
 
@@ -620,9 +620,9 @@ WebInspector.TextPrompt.prototype = {
         var finalSelectionRange = this._createRange();
         var completionTextNode = createTextNode(completionText);
         this._userEnteredRange.insertNode(completionTextNode);
-        if (this.autoCompleteElement) {
-            this.autoCompleteElement.remove();
-            delete this.autoCompleteElement;
+        if (this._autocompleteElement) {
+            this._autocompleteElement.remove();
+            delete this._autocompleteElement;
         }
 
         if (isIntermediateSuggestion)
@@ -653,13 +653,13 @@ WebInspector.TextPrompt.prototype = {
      */
     _acceptSuggestionInternal: function(prefixAccepted)
     {
-        if (!this.autoCompleteElement || !this.autoCompleteElement.parentNode)
+        if (!this._autocompleteElement || !this._autocompleteElement.parentNode)
             return false;
 
-        var text = this.autoCompleteElement.textContent;
+        var text = this._autocompleteElement.textContent;
         var textNode = createTextNode(text);
-        this.autoCompleteElement.parentNode.replaceChild(textNode, this.autoCompleteElement);
-        delete this.autoCompleteElement;
+        this._autocompleteElement.parentNode.replaceChild(textNode, this._autocompleteElement);
+        delete this._autocompleteElement;
 
         var finalSelectionRange = this._createRange();
         finalSelectionRange.setStart(textNode, text.length);
@@ -719,7 +719,7 @@ WebInspector.TextPrompt.prototype = {
         var foundNextText = false;
         while (node) {
             if (node.nodeType === Node.TEXT_NODE && node.nodeValue.length) {
-                if (foundNextText && (!this.autoCompleteElement || !this.autoCompleteElement.isAncestor(node)))
+                if (foundNextText && (!this._autocompleteElement || !this._autocompleteElement.isAncestor(node)))
                     return false;
                 foundNextText = true;
             }

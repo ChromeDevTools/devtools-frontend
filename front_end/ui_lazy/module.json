@@ -24,6 +24,7 @@
         "diff"
     ],
     "scripts": [
+        "ChartViewport.js",
         "DataGrid.js",
         "ViewportDataGrid.js",
         "SortableDataGrid.js",

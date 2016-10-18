@@ -49,14 +49,14 @@ WebInspector.FlameChartDelegate.prototype = {
 
 /**
  * @constructor
- * @extends {WebInspector.HBox}
+ * @extends {WebInspector.ChartViewport}
  * @param {!WebInspector.FlameChartDataProvider} dataProvider
  * @param {!WebInspector.FlameChartDelegate} flameChartDelegate
  * @param {!WebInspector.Setting=} groupExpansionSetting
  */
 WebInspector.FlameChart = function(dataProvider, flameChartDelegate, groupExpansionSetting)
 {
-    WebInspector.HBox.call(this, true);
+    WebInspector.ChartViewport.call(this);
     this.registerRequiredCSS("ui_lazy/flameChart.css");
     this.contentElement.classList.add("flame-chart-main-pane");
     this._flameChartDelegate = flameChartDelegate;
@@ -71,23 +71,13 @@ WebInspector.FlameChart = function(dataProvider, flameChartDelegate, groupExpans
     this.setDefaultFocusedElement(this._canvas);
     this._canvas.addEventListener("mousemove", this._onMouseMove.bind(this), false);
     this._canvas.addEventListener("mouseout", this._onMouseOut.bind(this), false);
-    this._canvas.addEventListener("mousewheel", this._onMouseWheel.bind(this), false);
     this._canvas.addEventListener("click", this._onClick.bind(this), false);
     this._canvas.addEventListener("keydown", this._onKeyDown.bind(this), false);
-    WebInspector.installInertialDragHandle(this._canvas, this._startCanvasDragging.bind(this), this._canvasDragging.bind(this), this._endCanvasDragging.bind(this), "-webkit-grabbing", null);
-    WebInspector.installDragHandle(this._canvas, this._startRangeSelection.bind(this), this._rangeSelectionDragging.bind(this), this._endRangeSelection.bind(this), "text", null);
-
-    this._vScrollElement = this.contentElement.createChild("div", "flame-chart-v-scroll");
-    this._vScrollContent = this._vScrollElement.createChild("div");
-    this._vScrollElement.addEventListener("scroll", this._onScroll.bind(this), false);
-    this._scrollTop = 0;
 
     this._entryInfo = this.contentElement.createChild("div", "flame-chart-entry-info");
     this._markerHighlighElement = this.contentElement.createChild("div", "flame-chart-marker-highlight-element");
     this._highlightElement = this.contentElement.createChild("div", "flame-chart-highlight-element");
     this._selectedElement = this.contentElement.createChild("div", "flame-chart-selected-element");
-    this._selectionOverlay = this.contentElement.createChild("div", "flame-chart-selection-overlay hidden");
-    this._selectedTimeSpanLabel = this._selectionOverlay.createChild("div", "time-span");
 
     this._windowLeft = 0.0;
     this._windowRight = 1.0;
@@ -502,15 +492,6 @@ WebInspector.FlameChart.prototype = {
     },
 
     /**
-     * @override
-     * @return {!Array.<!Element>}
-     */
-    elementsToRestoreScrollPositionsFor: function()
-    {
-        return [this._vScrollElement];
-    },
-
-    /**
      * @param {number} entryIndex
      */
     highlightEntry: function(entryIndex)
@@ -543,20 +524,12 @@ WebInspector.FlameChart.prototype = {
      */
     _timelineData: function()
     {
+        if (!this._dataProvider)
+            return null;
         var timelineData = this._dataProvider.timelineData();
         if (timelineData !== this._rawTimelineData || timelineData.entryStartTimes.length !== this._rawTimelineDataLength)
             this._processTimelineData(timelineData);
         return this._rawTimelineData;
-    },
-
-    _cancelAnimation: function()
-    {
-        if (this._cancelWindowTimesAnimation) {
-            this._timeWindowLeft = this._pendingAnimationTimeLeft;
-            this._timeWindowRight = this._pendingAnimationTimeRight;
-            this._cancelWindowTimesAnimation();
-            delete this._cancelWindowTimesAnimation;
-        }
     },
 
     /**
@@ -576,10 +549,7 @@ WebInspector.FlameChart.prototype = {
         var minEntryTimeWindow = Math.min(entryTotalTime, timeRight - timeLeft);
 
         var y = this._levelToHeight(timelineData.entryLevels[entryIndex]);
-        if (this._vScrollElement.scrollTop > y)
-            this._vScrollElement.scrollTop = y;
-        else if (this._vScrollElement.scrollTop < y - this._offsetHeight + this._barHeight)
-            this._vScrollElement.scrollTop = y - this._offsetHeight + this._barHeight;
+        this.setScrollOffset(y, this._barHeight);
 
         if (timeLeft > entryEndTime) {
             var delta = timeLeft - entryEndTime + minEntryTimeWindow;
@@ -591,179 +561,14 @@ WebInspector.FlameChart.prototype = {
     },
 
     /**
+     * @override
      * @param {number} startTime
      * @param {number} endTime
      */
     setWindowTimes: function(startTime, endTime)
     {
-        if (this._muteAnimation || this._timeWindowLeft === 0 || this._timeWindowRight === Infinity || (startTime === 0 && endTime === Infinity) || (startTime === Infinity && endTime === Infinity)) {
-            // Initial setup.
-            this._timeWindowLeft = startTime;
-            this._timeWindowRight = endTime;
-            this.scheduleUpdate();
-            return;
-        }
-
-        this._cancelAnimation();
+        WebInspector.FlameChart.prototype.__proto__.setWindowTimes.call(this, startTime, endTime);
         this._updateHighlight();
-        this._cancelWindowTimesAnimation = WebInspector.animateFunction(this.element.window(), this._animateWindowTimes.bind(this),
-            [{from: this._timeWindowLeft, to: startTime}, {from: this._timeWindowRight, to: endTime}], 5,
-            this._animationCompleted.bind(this));
-        this._pendingAnimationTimeLeft = startTime;
-        this._pendingAnimationTimeRight = endTime;
-    },
-
-    /**
-     * @param {number} startTime
-     * @param {number} endTime
-     */
-    _animateWindowTimes: function(startTime, endTime)
-    {
-        this._timeWindowLeft = startTime;
-        this._timeWindowRight = endTime;
-        this._updateHighlight();
-        this.update();
-    },
-
-    _animationCompleted: function()
-    {
-        delete this._cancelWindowTimesAnimation;
-        this._updateHighlight();
-    },
-
-    /**
-     * @param {!MouseEvent} event
-     */
-    _initMaxDragOffset: function(event)
-    {
-        this._maxDragOffsetSquared = 0;
-        this._dragStartX = event.pageX;
-        this._dragStartY = event.pageY;
-    },
-
-    /**
-     * @param {number} x
-     * @param {number} y
-     */
-    _updateMaxDragOffset: function(x, y)
-    {
-        var dx = x - this._dragStartX;
-        var dy = y - this._dragStartY;
-        var dragOffsetSquared = dx * dx + dy * dy;
-        this._maxDragOffsetSquared = Math.max(this._maxDragOffsetSquared, dragOffsetSquared);
-    },
-
-    /**
-     * @return {number}
-     */
-    _maxDragOffset: function()
-    {
-        return Math.sqrt(this._maxDragOffsetSquared);
-    },
-
-    /**
-     * @param {number} x
-     * @param {number} y
-     * @param {!MouseEvent} event
-     * @return {boolean}
-     */
-    _startCanvasDragging: function(x, y, event)
-    {
-        if (event.shiftKey)
-            return false;
-        if (!this._timelineData() || this._timeWindowRight === Infinity)
-            return false;
-        this._isDragging = true;
-        this._initMaxDragOffset(event);
-        this._dragStartPointX = x;
-        this._dragStartPointY = y;
-        this._dragStartScrollTop = this._vScrollElement.scrollTop;
-        this._canvas.style.cursor = "";
-        this.hideHighlight();
-        return true;
-    },
-
-    /**
-     * @param {number} x
-     * @param {number} y
-     */
-    _canvasDragging: function(x, y)
-    {
-        var pixelShift = this._dragStartPointX - x;
-        this._dragStartPointX = x;
-        this._muteAnimation = true;
-        this._handlePanGesture(pixelShift * this._pixelToTime);
-        this._muteAnimation = false;
-
-        var pixelScroll = this._dragStartPointY - y;
-        this._vScrollElement.scrollTop = this._dragStartScrollTop + pixelScroll;
-        this._updateMaxDragOffset(x, y);
-    },
-
-    _endCanvasDragging: function()
-    {
-        this._isDragging = false;
-        this._updateHighlight();
-    },
-
-    /**
-     * @param {!MouseEvent} event
-     * @return {boolean}
-     */
-    _startRangeSelection: function(event)
-    {
-        if (!event.shiftKey)
-            return false;
-        this._isDragging = true;
-        this._initMaxDragOffset(event);
-        this._selectionOffsetShiftX = event.offsetX - event.pageX;
-        this._selectionOffsetShiftY = event.offsetY - event.pageY;
-        this._selectionStartX = event.offsetX;
-        var style = this._selectionOverlay.style;
-        style.left = this._selectionStartX + "px";
-        style.width = "1px";
-        this._selectedTimeSpanLabel.textContent = "";
-        this._selectionOverlay.classList.remove("hidden");
-        this.hideHighlight();
-        return true;
-    },
-
-    _endRangeSelection: function()
-    {
-        this._isDragging = false;
-        this._updateHighlight();
-    },
-
-    _hideRangeSelection: function()
-    {
-        this._selectionOverlay.classList.add("hidden");
-    },
-
-    /**
-     * @param {!MouseEvent} event
-     */
-    _rangeSelectionDragging: function(event)
-    {
-        this._updateMaxDragOffset(event.pageX, event.pageY);
-        var x = Number.constrain(event.pageX + this._selectionOffsetShiftX, 0, this._offsetWidth);
-        var start = this._cursorTime(this._selectionStartX);
-        var end = this._cursorTime(x);
-        this._rangeSelectionStart = Math.min(start, end);
-        this._rangeSelectionEnd = Math.max(start, end);
-        this._updateRangeSelectionOverlay();
-        this._flameChartDelegate.updateRangeSelection(this._rangeSelectionStart, this._rangeSelectionEnd);
-    },
-
-    _updateRangeSelectionOverlay: function()
-    {
-        var /** @const */ margin = 100;
-        var left = Number.constrain(this._timeToPosition(this._rangeSelectionStart), -margin, this._offsetWidth + margin);
-        var right = Number.constrain(this._timeToPosition(this._rangeSelectionEnd), -margin, this._offsetWidth + margin);
-        var style = this._selectionOverlay.style;
-        style.left = left + "px";
-        style.width = (right - left) + "px";
-        var timeSpan = this._rangeSelectionEnd - this._rangeSelectionStart;
-        this._selectedTimeSpanLabel.textContent = Number.preciseMillisToString(timeSpan, 2);
     },
 
     /**
@@ -775,7 +580,7 @@ WebInspector.FlameChart.prototype = {
         this._lastMouseOffsetY = event.offsetY;
         if (!this._enabled())
             return;
-        if (this._isDragging)
+        if (this.isDragging())
             return;
         if (this._coordinatesToGroupIndex(event.offsetX, event.offsetY) >= 0) {
             this.hideHighlight();
@@ -849,6 +654,9 @@ WebInspector.FlameChart.prototype = {
         this._entryInfo.style.top = y + "px";
     },
 
+    /**
+     * @param {!Event} event
+     */
     _onClick: function(event)
     {
         this.focus();
@@ -856,14 +664,14 @@ WebInspector.FlameChart.prototype = {
         // So if there was drag (mouse move) in the middle of that events
         // we skip the click. Otherwise we jump to the sources.
         const clickThreshold = 5;
-        if (this._maxDragOffset() > clickThreshold)
+        if (this.maxDragOffset() > clickThreshold)
             return;
         var groupIndex = this._coordinatesToGroupIndex(event.offsetX, event.offsetY);
         if (groupIndex >= 0) {
             this._toggleGroupVisibility(groupIndex);
             return;
         }
-        this._hideRangeSelection();
+        this.hideRangeSelection();
         this.dispatchEventToListeners(WebInspector.FlameChart.Events.EntrySelected, this._highlightedEntryIndex);
     },
 
@@ -898,35 +706,8 @@ WebInspector.FlameChart.prototype = {
     /**
      * @param {!Event} e
      */
-    _onMouseWheel: function(e)
-    {
-        if (!this._enabled())
-            return;
-        // Pan vertically when shift down only.
-        var panVertically = e.shiftKey && (e.wheelDeltaY || Math.abs(e.wheelDeltaX) === 120);
-        var panHorizontally = Math.abs(e.wheelDeltaX) > Math.abs(e.wheelDeltaY) && !e.shiftKey;
-        if (panVertically) {
-            this._vScrollElement.scrollTop -= (e.wheelDeltaY || e.wheelDeltaX) / 120 * this._offsetHeight / 8;
-        } else if (panHorizontally) {
-            var shift = -e.wheelDeltaX * this._pixelToTime;
-            this._muteAnimation = true;
-            this._handlePanGesture(shift);
-            this._muteAnimation = false;
-        } else {  // Zoom.
-            const mouseWheelZoomSpeed = 1 / 120;
-            this._handleZoomGesture(Math.pow(1.2, -(e.wheelDeltaY || e.wheelDeltaX) * mouseWheelZoomSpeed) - 1);
-        }
-
-        // Block swipe gesture.
-        e.consume(true);
-    },
-
-    /**
-     * @param {!Event} e
-     */
     _onKeyDown: function(e)
     {
-        this._handleZoomPanKeys(e);
         this._handleSelectionNavigation(e);
     },
 
@@ -997,78 +778,6 @@ WebInspector.FlameChart.prototype = {
     },
 
     /**
-     * @param {!Event} e
-     */
-    _handleZoomPanKeys: function(e)
-    {
-        if (!WebInspector.KeyboardShortcut.hasNoModifiers(e))
-            return;
-        var zoomMultiplier = e.shiftKey ? 0.8 : 0.3;
-        var panMultiplier = e.shiftKey ? 320 : 80;
-        if (e.keyCode === "A".charCodeAt(0)) {
-            this._handlePanGesture(-panMultiplier * this._pixelToTime);
-            e.consume(true);
-        } else if (e.keyCode === "D".charCodeAt(0)) {
-            this._handlePanGesture(panMultiplier * this._pixelToTime);
-            e.consume(true);
-        } else if (e.keyCode === "W".charCodeAt(0)) {
-            this._handleZoomGesture(-zoomMultiplier);
-            e.consume(true);
-        } else if (e.keyCode === "S".charCodeAt(0)) {
-            this._handleZoomGesture(zoomMultiplier);
-            e.consume(true);
-        }
-    },
-
-    /**
-     * @param {number} zoom
-     */
-    _handleZoomGesture: function(zoom)
-    {
-        this._cancelAnimation();
-        var bounds = this._windowForGesture();
-        var cursorTime = this._cursorTime(this._lastMouseOffsetX);
-        bounds.left += (bounds.left - cursorTime) * zoom;
-        bounds.right += (bounds.right - cursorTime) * zoom;
-        this._requestWindowTimes(bounds);
-    },
-
-    /**
-     * @param {number} shift
-     */
-    _handlePanGesture: function(shift)
-    {
-        this._cancelAnimation();
-        var bounds = this._windowForGesture();
-        shift = Number.constrain(shift, this._minimumBoundary - bounds.left, this._totalTime + this._minimumBoundary - bounds.right);
-        bounds.left += shift;
-        bounds.right += shift;
-        this._requestWindowTimes(bounds);
-    },
-
-    /**
-     * @return {{left: number, right: number}}
-     */
-    _windowForGesture: function()
-    {
-        var windowLeft = this._timeWindowLeft ? this._timeWindowLeft : this._dataProvider.minimumBoundary();
-        var windowRight = this._timeWindowRight !== Infinity ? this._timeWindowRight : this._dataProvider.minimumBoundary() + this._dataProvider.totalTime();
-        return {left: windowLeft, right: windowRight};
-    },
-
-    /**
-     * @param {{left: number, right: number}} bounds
-     */
-    _requestWindowTimes: function(bounds)
-    {
-        bounds.left = Number.constrain(bounds.left, this._minimumBoundary, this._totalTime + this._minimumBoundary);
-        bounds.right = Number.constrain(bounds.right, this._minimumBoundary, this._totalTime + this._minimumBoundary);
-        if (bounds.right - bounds.left < WebInspector.FlameChart.MinimalTimeWindowMs)
-            return;
-        this._flameChartDelegate.requestWindowTimes(bounds.left, bounds.right);
-    },
-
-    /**
      * @param {number} x
      * @return {number}
      */
@@ -1086,7 +795,7 @@ WebInspector.FlameChart.prototype = {
     {
         if (x < 0 || y < 0)
             return -1;
-        y += this._scrollTop;
+        y += this.scrollOffset();
         var timelineData = this._timelineData();
         if (!timelineData)
             return -1;
@@ -1153,7 +862,7 @@ WebInspector.FlameChart.prototype = {
     {
         if (x < 0 || y < 0)
             return -1;
-        y += this._scrollTop;
+        y += this.scrollOffset();
         var groups = this._rawTimelineData.groups || [];
         var group = this._groupOffsets.upperBound(y) - 1;
 
@@ -1203,16 +912,7 @@ WebInspector.FlameChart.prototype = {
      */
     _markerIndexBeforeTime: function(time)
     {
-        /**
-         * @param {number} markerTimestamp
-         * @param {!WebInspector.FlameChartMarker} marker
-         * @return {number}
-         */
-        function comparator(markerTimestamp, marker)
-        {
-            return markerTimestamp - marker.startTime();
-        }
-        return this._timelineData().markers.lowerBound(time, comparator);
+        return this._timelineData().markers.lowerBound(time, (markerTimestamp, marker) => markerTimestamp - marker.startTime());
     },
 
     /**
@@ -1228,8 +928,9 @@ WebInspector.FlameChart.prototype = {
         var context = this._canvas.getContext("2d");
         context.save();
         var ratio = window.devicePixelRatio;
+        var top = this.scrollOffset();
         context.scale(ratio, ratio);
-        context.translate(0, -this._scrollTop);
+        context.translate(0, -top);
         context.font = "11px " + WebInspector.fontFamily();
 
         var timeWindowRight = this._timeWindowRight;
@@ -1243,7 +944,6 @@ WebInspector.FlameChart.prototype = {
         var textPadding = this._dataProvider.textPadding();
         var minTextWidth = 2 * textPadding + this._measureWidth(context, "\u2026");
         var barHeight = this._barHeight;
-        var top = this._scrollTop;
         var minVisibleBarLevel = Math.max(this._visibleLevelOffsets.upperBound(top) - 1, 0);
 
         /** @type {!Map<string, !Array<number>>} */
@@ -1360,7 +1060,6 @@ WebInspector.FlameChart.prototype = {
         this._updateElementPosition(this._highlightElement, this._highlightedEntryIndex);
         this._updateElementPosition(this._selectedElement, this._selectedEntryIndex);
         this._updateMarkerHighlight();
-        this._updateRangeSelectionOverlay();
     },
 
     /**
@@ -1370,7 +1069,7 @@ WebInspector.FlameChart.prototype = {
     _drawGroupHeaders: function(width, height)
     {
         var context = this._canvas.getContext("2d");
-        var top = this._scrollTop;
+        var top = this.scrollOffset();
         var ratio = window.devicePixelRatio;
         var barHeight = this._barHeight;
         var textBaseHeight = barHeight - this._dataProvider.textBaseline();
@@ -1772,8 +1471,8 @@ WebInspector.FlameChart.prototype = {
      */
     setSelectedEntry: function(entryIndex)
     {
-        if (entryIndex === -1 && !this._isDragging)
-            this._hideRangeSelection();
+        if (entryIndex === -1 && !this.isDragging())
+            this.hideRangeSelection();
         if (this._selectedEntryIndex === entryIndex)
             return;
         this._selectedEntryIndex = entryIndex;
@@ -1804,7 +1503,7 @@ WebInspector.FlameChart.prototype = {
         var barCenter = barX + barWidth / 2;
         barWidth = Math.max(barWidth, elementMinWidth);
         barX = barCenter - barWidth / 2;
-        var barY = this._levelToHeight(timelineData.entryLevels[entryIndex]) - this._scrollTop;
+        var barY = this._levelToHeight(timelineData.entryLevels[entryIndex]) - this.scrollOffset();
         var style = element.style;
         style.left = barX + "px";
         style.top = barY + "px";
@@ -1924,61 +1623,28 @@ WebInspector.FlameChart.prototype = {
 
         this._timeToPixel = totalPixels / this._totalTime;
         this._pixelToTime = this._totalTime / totalPixels;
-
-        this._updateScrollBar();
     },
 
     _updateHeight: function()
     {
-        this._totalHeight = this._levelToHeight(this._dataProvider.maxStackDepth());
-        this._vScrollContent.style.height = this._totalHeight + "px";
-        if (this._scrollTop + this._offsetHeight > this._totalHeight) {
-            this._scrollTop = Math.max(0, this._totalHeight - this._offsetHeight);
-            this._vScrollElement.scrollTop = this._scrollTop;
-        }
+        var height = this._levelToHeight(this._dataProvider.maxStackDepth());
+        this.setContentHeight(height);
     },
 
+    /**
+     * @override
+     */
     onResize: function()
     {
-        this._updateScrollBar();
-        this._updateContentElementSize();
+        WebInspector.FlameChart.prototype.__proto__.onResize.call(this);
         this.scheduleUpdate();
     },
 
-    _updateScrollBar: function()
-    {
-        var showScroll = this._totalHeight > this._offsetHeight;
-        if (this._vScrollElement.classList.contains("hidden") === showScroll) {
-            this._vScrollElement.classList.toggle("hidden", !showScroll);
-            this._updateContentElementSize();
-        }
-    },
-
-    _updateContentElementSize: function()
-    {
-        var offsetWidth = this._vScrollElement.offsetLeft;
-        if (!offsetWidth)
-            offsetWidth = this.contentElement.offsetWidth;
-        this._offsetWidth = offsetWidth;
-        this._offsetHeight = this.contentElement.offsetHeight;
-    },
-
-    _onScroll: function()
-    {
-        this._scrollTop = this._vScrollElement.scrollTop;
-        this.scheduleUpdate();
-    },
-
-    scheduleUpdate: function()
-    {
-        if (this._updateTimerId || this._cancelWindowTimesAnimation)
-            return;
-        this._updateTimerId = this.element.window().requestAnimationFrame(this.update.bind(this));
-    },
-
+    /**
+     * @override
+     */
     update: function()
     {
-        this._updateTimerId = 0;
         if (!this._timelineData())
             return;
         this._resetCanvas();
@@ -1986,19 +1652,16 @@ WebInspector.FlameChart.prototype = {
         this._updateBoundaries();
         this._calculator._updateBoundaries(this);
         this._draw(this._offsetWidth, this._offsetHeight);
-        if (!this._isDragging)
+        if (!this.isDragging())
             this._updateHighlight();
     },
 
     reset: function()
     {
-        this._vScrollElement.scrollTop = 0;
-        this._scrollTop = 0;
+        WebInspector.FlameChart.prototype.__proto__.reset.call(this);
         this._highlightedMarkerIndex = -1;
         this._highlightedEntryIndex = -1;
         this._selectedEntryIndex = -1;
-        this._rangeSelectionStart = 0;
-        this._rangeSelectionEnd = 0;
         /** @type {!Map<string,!Map<string,number>>} */
         this._textWidth = new Map();
         this.update();
@@ -2009,5 +1672,5 @@ WebInspector.FlameChart.prototype = {
         return this._rawTimelineDataLength !== 0;
     },
 
-    __proto__: WebInspector.HBox.prototype
+    __proto__: WebInspector.ChartViewport.prototype
 }

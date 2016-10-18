@@ -754,6 +754,7 @@ devtools_ui_lazy_js_files = [
   "front_end/ui_lazy/overviewGrid.css",
   "front_end/ui_lazy/pieChart.css",
   "front_end/ui_lazy/timelineGrid.css",
+  "front_end/ui_lazy/ChartViewport.js",
   "front_end/ui_lazy/CommandMenu.js",
   "front_end/ui_lazy/DataGrid.js",
   "front_end/ui_lazy/FilteredListWidget.js",

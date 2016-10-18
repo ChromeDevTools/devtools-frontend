@@ -9,5 +9,6 @@
 node_modules
 config.gypi
 npm-debug.log
+/.test_cache
 /release
 /scripts/local_node/runtimes

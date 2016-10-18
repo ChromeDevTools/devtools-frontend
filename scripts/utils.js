@@ -5,6 +5,7 @@
 var fs = require("fs");
 var http = require("http");
 var https = require("https");
+var path = require("path");
 var parseURL = require("url").parse;
 var Stream = require("stream").Transform;
 
@@ -45,18 +46,88 @@ function atob(str)
     return new Buffer(str, "base64").toString("binary");
 }
 
-
 function isFile(path)
 {
     try {
         return fs.statSync(path).isFile();
-    } catch (e) {
+    } catch (error) {
         return false;
     }
+}
+
+function isDir(path)
+{
+    try {
+        return fs.statSync(path).isDirectory();
+    } catch (error) {
+        return false;
+    }
+}
+
+function copy(src, dest)
+{
+    try {
+        var targetFilePath = path.resolve(dest, path.basename(src));
+        fs.writeFileSync(targetFilePath, fs.readFileSync(src));
+    } catch (error) {
+        throw new Error(`Received an error: [${error}] while trying to copy: ${src} -> ${dest}`);
+    }
+}
+
+function copyRecursive(src, dest)
+{
+    try {
+        var targetDirPath = path.resolve(dest, path.basename(src));
+        if (!fs.existsSync(targetDirPath))
+            fs.mkdirSync(targetDirPath);
+        if (isDir(src)) {
+            var files = fs.readdirSync(src);
+            for (var i = 0; i < files.length; i++) {
+                var childPath = path.resolve(src, files[i]);
+                if (isDir(childPath)) {
+                    copyRecursive(childPath, targetDirPath);
+                } else {
+                    var targetFilePath =  path.resolve(targetDirPath, path.basename(childPath));
+                    fs.writeFileSync(targetFilePath, fs.readFileSync(childPath));
+                }
+            }
+        }
+    } catch (error) {
+        throw new Error(`Received an error: [${error}] while trying to copy: ${src} -> ${dest}`);
+    }
+}
+
+function removeRecursive(filePath)
+{
+    try {
+        if (fs.existsSync(filePath)) {
+            var files = fs.readdirSync(filePath);
+            for (var i = 0; i < files.length; i++) {
+                var childPath = path.resolve(filePath, files[i]);
+                if (isDir(childPath))
+                    removeRecursive(childPath);
+                else
+                    fs.unlinkSync(childPath);
+            }
+            fs.rmdirSync(filePath);
+        }
+    } catch (error) {
+        throw new Error(`Received an error: [${error}] while trying to remove: ${filePath}`);
+    }
+}
+
+function includes(sequence, target)
+{
+    return sequence.indexOf(target) > -1;
 }
 
 module.exports = {
     fetch,
     atob,
     isFile,
+    isDir,
+    copy,
+    copyRecursive,
+    removeRecursive,
+    includes,
 };

@@ -41,10 +41,18 @@ WebInspector.UISourceCode = function(project, url, contentType)
     this._project = project;
     this._url = url;
 
-    var pathComponents = WebInspector.ParsedURL.splitURLIntoPathComponents(url);
-    this._origin = pathComponents[0];
-    this._parentURL = pathComponents.slice(0, -1).join("/");
-    this._name = pathComponents[pathComponents.length - 1];
+    var parsedURL = url.asParsedURL();
+    if (parsedURL) {
+        this._origin = parsedURL.securityOrigin();
+        this._parentURL = this._origin + parsedURL.folderPathComponents;
+        this._name = parsedURL.lastPathComponent;
+        if (parsedURL.queryParams)
+            this._name += "?" + parsedURL.queryParams;
+    } else {
+        this._origin = "";
+        this._parentURL = "";
+        this._name = url;
+    }
 
     this._contentType = contentType;
     /** @type {?function(?string)} */

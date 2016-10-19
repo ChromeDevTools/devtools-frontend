@@ -664,7 +664,7 @@ WebInspector.IsolatedFileSystem.prototype = {
          */
         function innerCallback(files)
         {
-            files = files.map(embedderPath => WebInspector.IsolatedFileSystemManager.normalizePath(embedderPath));
+            files = files.map(embedderPath => WebInspector.ParsedURL.platformPathToURL(embedderPath));
             progress.worked(1);
             callback(files);
         }

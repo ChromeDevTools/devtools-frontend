@@ -70,22 +70,6 @@ WebInspector.IsolatedFileSystemManager.Events = {
 
 WebInspector.IsolatedFileSystemManager._lastRequestId = 0;
 
-/**
- * @param {string} fileSystemPath
- * @return {string}
- */
-WebInspector.IsolatedFileSystemManager.normalizePath = function(fileSystemPath)
-{
-    fileSystemPath = fileSystemPath.replace(/\\/g, "/");
-    if (!fileSystemPath.startsWith("file://")) {
-        if (fileSystemPath.startsWith("/"))
-            fileSystemPath = "file://" + fileSystemPath;
-        else
-            fileSystemPath = "file:///" + fileSystemPath;
-    }
-    return fileSystemPath;
-}
-
 WebInspector.IsolatedFileSystemManager.prototype = {
     /**
      * @return {!Promise<!Array<!WebInspector.IsolatedFileSystem>>}
@@ -149,8 +133,8 @@ WebInspector.IsolatedFileSystemManager.prototype = {
     _innerAddFileSystem: function(fileSystem, dispatchEvent)
     {
         var embedderPath = fileSystem.fileSystemPath;
-        var fileSystemPath = WebInspector.IsolatedFileSystemManager.normalizePath(fileSystem.fileSystemPath);
-        var promise = WebInspector.IsolatedFileSystem.create(this, fileSystemPath, embedderPath, fileSystem.fileSystemName, fileSystem.rootURL);
+        var fileSystemURL = WebInspector.ParsedURL.platformPathToURL(fileSystem.fileSystemPath);
+        var promise = WebInspector.IsolatedFileSystem.create(this, fileSystemURL, embedderPath, fileSystem.fileSystemName, fileSystem.rootURL);
         return promise.then(storeFileSystem.bind(this));
 
         /**
@@ -161,7 +145,7 @@ WebInspector.IsolatedFileSystemManager.prototype = {
         {
             if (!fileSystem)
                 return null;
-            this._fileSystems.set(fileSystemPath, fileSystem);
+            this._fileSystems.set(fileSystemURL, fileSystem);
             if (dispatchEvent)
                 this.dispatchEventToListeners(WebInspector.IsolatedFileSystemManager.Events.FileSystemAdded, fileSystem);
             return fileSystem;
@@ -187,7 +171,7 @@ WebInspector.IsolatedFileSystemManager.prototype = {
     _onFileSystemRemoved: function(event)
     {
         var embedderPath = /** @type {string} */ (event.data);
-        var fileSystemPath = WebInspector.IsolatedFileSystemManager.normalizePath(embedderPath);
+        var fileSystemPath = WebInspector.ParsedURL.platformPathToURL(embedderPath);
         var isolatedFileSystem = this._fileSystems.get(fileSystemPath);
         if (!isolatedFileSystem)
             return;
@@ -202,7 +186,7 @@ WebInspector.IsolatedFileSystemManager.prototype = {
     _onFileSystemFilesChanged: function(event)
     {
         var embedderPaths = /** @type {!Array<string>} */ (event.data);
-        var paths = embedderPaths.map(embedderPath => WebInspector.IsolatedFileSystemManager.normalizePath(embedderPath));
+        var paths = embedderPaths.map(embedderPath => WebInspector.ParsedURL.platformPathToURL(embedderPath));
         this.dispatchEventToListeners(WebInspector.IsolatedFileSystemManager.Events.FileSystemFilesChanged, paths);
     },
 

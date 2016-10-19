@@ -273,7 +273,7 @@ WebInspector.NavigatorView.prototype = {
         if (uiSourceCode.project().type() === WebInspector.projectTypes.FileSystem)
             path = WebInspector.FileSystemWorkspaceBinding.relativePath(uiSourceCode).slice(0, -1);
         else
-            path = WebInspector.ParsedURL.splitURLIntoPathComponents(uiSourceCode.url()).slice(1, -1);
+            path = WebInspector.ParsedURL.extractPath(uiSourceCode.url()).split("/").slice(1, -1);
 
         var project = uiSourceCode.project();
         var target = WebInspector.NetworkProject.targetForUISourceCode(uiSourceCode);

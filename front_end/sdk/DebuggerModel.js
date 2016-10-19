@@ -474,6 +474,9 @@ WebInspector.DebuggerModel.prototype = {
         var isContentScript = false;
         if (executionContextAuxData && ("isDefault" in executionContextAuxData))
             isContentScript = !executionContextAuxData["isDefault"];
+        // Support file URL for node.js.
+        if (this.target().isNodeJS() && sourceURL && sourceURL.startsWith("/"))
+            sourceURL = WebInspector.ParsedURL.platformPathToURL(sourceURL);
         var script = new WebInspector.Script(this, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, isContentScript, isLiveEdit, sourceMapURL, hasSourceURL);
         this._registerScript(script);
         if (!hasSyntaxError)

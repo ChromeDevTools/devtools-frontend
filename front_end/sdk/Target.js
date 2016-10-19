@@ -45,6 +45,20 @@ WebInspector.Target._nextId = 1;
 
 WebInspector.Target.prototype = {
     /**
+     * @return {boolean}
+     */
+    isNodeJS: function()
+    {
+        // TODO(lushnikov): this is an unreliable way to detect Node.js targets.
+        return this._capabilitiesMask === WebInspector.Target.Capability.JS || this._isNodeJSForTest;
+    },
+
+    setIsNodeJSForTest: function()
+    {
+        this._isNodeJSForTest = true;
+    },
+
+    /**
      * @return {number}
      */
     id: function()

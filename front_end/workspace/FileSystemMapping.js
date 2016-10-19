@@ -54,7 +54,7 @@ WebInspector.FileSystemMapping.prototype = {
         this._fileSystemMappings = {};
         for (var fileSystemPath in savedMapping) {
             var savedFileSystemMappings = savedMapping[fileSystemPath];
-            fileSystemPath = WebInspector.IsolatedFileSystemManager.normalizePath(fileSystemPath);
+            fileSystemPath = WebInspector.ParsedURL.platformPathToURL(fileSystemPath);
             this._fileSystemMappings[fileSystemPath] = [];
             var fileSystemMappings = this._fileSystemMappings[fileSystemPath];
 

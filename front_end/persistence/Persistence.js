@@ -84,7 +84,8 @@ WebInspector.Persistence.prototype = {
             return;
         var newContent = /** @type {string} */(event.data.content);
         var other = binding.network === uiSourceCode ? binding.fileSystem : binding.network;
-        if (Runtime.queryParam("v8only")) {
+        var target = WebInspector.NetworkProject.targetForUISourceCode(binding.network);
+        if (target.isNodeJS()) {
             other.requestContent().then(currentContent => this._syncNodeJSContent(binding, other, currentContent, newContent));
             return;
         }

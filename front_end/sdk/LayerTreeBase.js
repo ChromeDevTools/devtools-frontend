@@ -238,7 +238,7 @@ WebInspector.LayerTreeBase.prototype = {
     },
 
     /**
-     * @param {!Object} viewportSize
+     * @param {!{width: number, height: number}} viewportSize
      */
     setViewportSize: function(viewportSize)
     {
@@ -246,7 +246,7 @@ WebInspector.LayerTreeBase.prototype = {
     },
 
     /**
-     * @return {!Object | undefined}
+     * @return {!{width: number, height: number}|undefined}
      */
     viewportSize: function()
     {

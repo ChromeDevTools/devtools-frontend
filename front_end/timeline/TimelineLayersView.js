@@ -42,14 +42,12 @@ WebInspector.TimelineLayersView = function(model, showEventDetailsCallback)
 
 WebInspector.TimelineLayersView.prototype = {
     /**
-     * @param {!WebInspector.DeferredLayerTree} deferredLayerTree
-     * @param {?Array.<!WebInspector.LayerPaintEvent>} paints
+     * @param {!WebInspector.TracingFrameLayerTree} frameLayerTree
      */
-    showLayerTree: function(deferredLayerTree, paints)
+    showLayerTree: function(frameLayerTree)
     {
         this._disposeTiles();
-        this._deferredLayerTree = deferredLayerTree;
-        this._paints = paints;
+        this._frameLayerTree = frameLayerTree;
         if (this.isShowing())
             this._update();
         else
@@ -77,12 +75,10 @@ WebInspector.TimelineLayersView.prototype = {
     {
         var layerTree;
 
-        this._target = this._deferredLayerTree.target();
         var originalTiles = this._paintTiles;
         var tilesReadyBarrier = new CallbackBarrier();
-        this._deferredLayerTree.resolve(tilesReadyBarrier.createCallback(onLayersReady));
-        for (var i = 0; this._paints && i < this._paints.length; ++i)
-            this._paints[i].loadSnapshot(tilesReadyBarrier.createCallback(onSnapshotLoaded.bind(this, this._paints[i])));
+        this._frameLayerTree.resolve(tilesReadyBarrier.createCallback(onLayersReady));
+        this._frameLayerTree.paints().forEach(paint => paint.loadSnapshot(tilesReadyBarrier.createCallback(onSnapshotLoaded.bind(this, paint))));
         tilesReadyBarrier.callWhenDone(onLayersAndTilesReady.bind(this));
 
         /**

@@ -20,7 +20,7 @@ WebInspector.TracingLayerPayload;
 
 /** @typedef {!{
         id: string,
-        layer_id: number,
+        layer_id: string,
         gpu_memory_usage: number,
         content_rect: !Array.<number>
     }}
@@ -41,11 +41,12 @@ WebInspector.TracingLayerTree = function(target)
 
 WebInspector.TracingLayerTree.prototype = {
     /**
-     * @param {!WebInspector.TracingLayerPayload} root
-     * @param {?Array.<!WebInspector.TracingLayerPayload>} layers
+     * @param {?WebInspector.TracingLayerPayload} root
+     * @param {?Array<!WebInspector.TracingLayerPayload>} layers
+     * @param {!Array<!WebInspector.LayerPaintEvent>} paints
      * @param {function()} callback
      */
-    setLayers: function(root, layers, callback)
+    setLayers: function(root, layers, paints, callback)
     {
         var idsToResolve = new Set();
         if (root) {
@@ -78,6 +79,7 @@ WebInspector.TracingLayerTree.prototype = {
                         contentRoot.addChild(processedLayers[i]);
                 }
             }
+            this._setPaints(paints);
             callback();
         }
     },
@@ -93,16 +95,40 @@ WebInspector.TracingLayerTree.prototype = {
     },
 
     /**
-     * @param {string} id
-     * @return {?WebInspector.TracingLayerTile}
+     * @param {string} tileId
+     * @param {function(?DOMAgent.Rect, ?WebInspector.PaintProfilerSnapshot)} callback
      */
-    tileById: function(id)
+    pictureForRasterTile: function(tileId, callback)
     {
-        return this._tileById.get(id) || null;
+        var tile = this._tileById.get("cc::Tile/" + tileId);
+        if (!tile) {
+            WebInspector.console.error(`Tile ${tileId} is missing`);
+            callback(null, null);
+            return;
+        }
+        var layer = this.layerById(tile.layer_id);
+        if (!layer) {
+            WebInspector.console.error(`Layer ${tile.layer_id} for tile ${tileId} is not found`);
+            callback(null, null);
+            return;
+        }
+        layer.pictureForRect(this.target(), tile.content_rect, callback);
     },
 
     /**
-     * @param {!Object.<(string|number), !WebInspector.Layer>} oldLayersById
+     * @param {!Array<!WebInspector.LayerPaintEvent>} paints
+     */
+    _setPaints: function(paints)
+    {
+        for (var i = 0; i < paints.length; ++i) {
+            var layer = this._layersById[paints[i].layerId()];
+            if (layer)
+                layer._addPaintEvent(paints[i]);
+        }
+    },
+
+    /**
+     * @param {!Object<(string|number), !WebInspector.Layer>} oldLayersById
      * @param {!WebInspector.TracingLayerPayload} payload
      * @return {!WebInspector.TracingLayer}
      */
@@ -171,6 +197,7 @@ WebInspector.TracingLayer.prototype = {
         this._compositingReasons = payload.compositing_reasons || [];
         this._drawsContent = !!payload.draws_content;
         this._gpuMemoryUsage = payload.gpu_memory_usage;
+        this._paints = [];
     },
 
     /**
@@ -371,6 +398,71 @@ WebInspector.TracingLayer.prototype = {
     },
 
     /**
+     * @param {!WebInspector.Target} target
+     * @param {!Array<number>} targetRect
+     * @param {function(?DOMAgent.Rect, ?WebInspector.PaintProfilerSnapshot)} callback
+     */
+    pictureForRect: function(target, targetRect, callback)
+    {
+        var fetchPictureFragmentsBarrier = new CallbackBarrier();
+        this._paints.forEach(paint => paint.loadPicture(fetchPictureFragmentsBarrier.createCallback(pictureLoaded)));
+        fetchPictureFragmentsBarrier.callWhenDone(allPicturesLoaded);
+
+        /**
+         * @param {number} a1
+         * @param {number} a2
+         * @param {number} b1
+         * @param {number} b2
+         * @return {boolean}
+         */
+        function segmentsOverlap(a1, a2, b1, b2)
+        {
+            console.assert(a1 <= a2 && b1 <= b2, "segments should be specified as ordered pairs");
+            return a2 > b1 && a1 < b2;
+        }
+        /**
+         * @param {!Array.<number>} a
+         * @param {!Array.<number>} b
+         * @return {boolean}
+         */
+        function rectsOverlap(a, b)
+        {
+            return segmentsOverlap(a[0], a[0] + a[2], b[0], b[0] + b[2]) && segmentsOverlap(a[1], a[1] + a[3], b[1], b[1] + b[3]);
+        }
+
+        var x0 = Infinity;
+        var y0 = Infinity;
+        var fragments = [];
+        /**
+         * @param {?Array.<number>} rect
+         * @param {?string} picture
+         */
+        function pictureLoaded(rect, picture)
+        {
+            if (!rect || !picture)
+                return;
+            if (!rectsOverlap(rect, targetRect))
+                return;
+            var x = rect[0];
+            var y = rect[1];
+            x0 = Math.min(x0, x);
+            y0 = Math.min(y0, y);
+            fragments.push({x: x, y: y, picture: picture});
+        }
+
+        function allPicturesLoaded()
+        {
+            if (!fragments.length) {
+                callback(null, null);
+                return;
+            }
+            // Rect is in layer content coordinates, make it relative to picture by offsetting to the top left corner.
+            var rect = {x: targetRect[0] - x0, y: targetRect[1] - y0, width: targetRect[2], height: targetRect[3]};
+            WebInspector.PaintProfilerSnapshot.loadFromFragments(target, fragments, callback.bind(null, rect));
+        }
+    },
+
+    /**
      * @param {!Array.<number>} params
      * @param {string} type
      * @return {!Object}
@@ -394,6 +486,14 @@ WebInspector.TracingLayer.prototype = {
             this._scrollRects.push(this._scrollRectsFromParams(payload.wheel_event_handler_region, WebInspector.Layer.ScrollRectType.WheelEventHandler.name));
         if (payload.scroll_event_handler_region)
             this._scrollRects.push(this._scrollRectsFromParams(payload.scroll_event_handler_region, WebInspector.Layer.ScrollRectType.RepaintsOnScroll.name));
+    },
+
+    /**
+     * @param {!WebInspector.LayerPaintEvent} paint
+     */
+    _addPaintEvent: function(paint)
+    {
+        this._paints.push(paint);
     },
 
     /**

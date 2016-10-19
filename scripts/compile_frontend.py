@@ -128,7 +128,7 @@ descriptors = loader.load_applications(application_descriptors)
 modules_by_name = descriptors.modules
 
 
-def hasErrors(output):
+def has_errors(output):
     return re.search(error_warning_regex, output) != None
 
 
@@ -148,21 +148,21 @@ def verify_jsdoc():
 
     errors_found = False
     for full_file_name in file_list():
-        lineIndex = 0
+        line_index = 0
         with open(full_file_name, 'r') as sourceFile:
             for line in sourceFile:
                 line = line.rstrip()
-                lineIndex += 1
+                line_index += 1
                 if not line:
                     continue
-                if verify_jsdoc_line(full_file_name, lineIndex, line):
+                if verify_jsdoc_line(full_file_name, line_index, line):
                     errors_found = True
     return errors_found
 
 
-def verify_jsdoc_line(fileName, lineIndex, line):
-    def print_error(message, errorPosition):
-        print '%s:%s: ERROR - %s%s%s%s%s%s' % (fileName, lineIndex, message, os.linesep, line, os.linesep, ' ' * errorPosition + '^', os.linesep)
+def verify_jsdoc_line(file_name, line_index, line):
+    def print_error(message, error_position):
+        print '%s:%s: ERROR - %s%s%s%s%s%s' % (file_name, line_index, message, os.linesep, line, os.linesep, ' ' * error_position + '^', os.linesep)
 
     known_css = {}
     errors_found = False
@@ -265,24 +265,28 @@ for module_name in descriptors.application:
 
 
 def check_conditional_dependencies():
+    errors_found = False
     for name in modules_by_name:
         for dep_name in modules_by_name[name].get('dependencies', []):
             dependency = modules_by_name[dep_name]
             if dependency.get('experiment') or dependency.get('condition'):
                 log_error('Module "%s" may not depend on the conditional module "%s"' % (name, dep_name))
                 errors_found = True
+    return errors_found
 
-check_conditional_dependencies()
+errors_found |= check_conditional_dependencies()
 
 
 def verify_worker_modules():
+    errors_found = False
     for name in modules_by_name:
         for dependency in modules_by_name[name].get('dependencies', []):
             if dependency in worker_modules_by_name:
                 log_error('Module "%s" may not depend on the worker module "%s"' % (name, dependency))
                 errors_found = True
+    return errors_found
 
-verify_worker_modules()
+errors_found |= verify_worker_modules()
 
 
 def check_duplicate_files():
@@ -322,7 +326,6 @@ def dump_module(name, recursively, processed_modules):
         return ''
     processed_modules[name] = True
     module = modules_by_name[name]
-    skipped_scripts = set(module.get('skip_compilation', []))
 
     command = ''
     dependencies = module.get('dependencies', [])
@@ -332,13 +335,13 @@ def dump_module(name, recursively, processed_modules):
     command += module_arg(name) + ':'
     filtered_scripts = descriptors.module_compiled_files(name)
     command += str(len(filtered_scripts))
-    firstDependency = True
+    first_dependency = True
     for dependency in dependencies + [runtime_module_name]:
-        if firstDependency:
+        if first_dependency:
             command += ':'
         else:
             command += ','
-        firstDependency = False
+        first_dependency = False
         command += jsmodule_name_prefix + dependency
     for script in filtered_scripts:
         command += ' --js ' + to_platform_path(path.join(devtools_frontend_path, name, script))
@@ -377,22 +380,22 @@ command = spawned_compiler_command + [
     '--module', jsmodule_name_prefix + 'devtools_js' + ':1',
     '--js', to_platform_path(path.join(devtools_frontend_path, 'devtools.js'))
 ]
-devtoolsJSCompileProc = popen(command)
+devtools_js_compile_proc = popen(command)
 
 print 'Verifying JSDoc comments...'
 errors_found |= verify_jsdoc()
-(jsdocValidatorProc, jsdocValidatorFileList) = verify_jsdoc_extra()
+(jsdoc_validator_proc, jsdoc_validator_file_list) = verify_jsdoc_extra()
 
 print
 
-(jsdocValidatorOut, _) = jsdocValidatorProc.communicate()
-if jsdocValidatorOut:
-    print ('JSDoc validator output:%s%s' % (os.linesep, jsdocValidatorOut))
+(jsdoc_validator_out, _) = jsdoc_validator_proc.communicate()
+if jsdoc_validator_out:
+    print ('JSDoc validator output:%s%s' % (os.linesep, jsdoc_validator_out))
     errors_found = True
 
-os.remove(jsdocValidatorFileList.name)
+os.remove(jsdoc_validator_file_list.name)
 
-(moduleCompileOut, _) = modular_compiler_proc.communicate()
+(module_compile_out, _) = modular_compiler_proc.communicate()
 print 'Modular compilation output:'
 
 start_module_regex = re.compile(r'^@@ START_MODULE:(.+) @@$')
@@ -409,7 +412,7 @@ def skip_dependents(module_name):
 has_module_output = False
 
 # pylint: disable=E1103
-for line in moduleCompileOut.splitlines():
+for line in module_compile_out.splitlines():
     if not in_module:
         match = re.search(start_module_regex, line)
         if not match:
@@ -427,7 +430,7 @@ for line in moduleCompileOut.splitlines():
         if not match:
             if not skip_module:
                 module_output.append(line)
-                if hasErrors(line):
+                if has_errors(line):
                     error_count += 1
                     module_error_count += 1
                     skip_dependents(module_name)
@@ -443,19 +446,20 @@ for line in moduleCompileOut.splitlines():
             print os.linesep.join(module_output)
 
 if not has_module_output:
-    print moduleCompileOut
+    print module_compile_out
 
 if error_count:
     print 'Total Closure errors: %d%s' % (error_count, os.linesep)
     errors_found = True
 
-(devtoolsJSCompileOut, _) = devtoolsJSCompileProc.communicate()
-print 'devtools.js compilation output:%s' % os.linesep, devtoolsJSCompileOut
-errors_found |= hasErrors(devtoolsJSCompileOut)
-
-if errors_found:
-    print 'ERRORS DETECTED'
+(devtools_js_compile_out, _) = devtools_js_compile_proc.communicate()
+print 'devtools.js compilation output:%s' % os.linesep, devtools_js_compile_out
+errors_found |= has_errors(devtools_js_compile_out)
 
 os.remove(compiler_args_file.name)
 os.remove(protocol_externs_file)
 shutil.rmtree(modules_dir, True)
+
+if errors_found:
+    print 'ERRORS DETECTED'
+    sys.exit(1)

@@ -14,9 +14,6 @@ WebInspector.SubTargetsManager = function(target)
     this._lastAnonymousTargetId = 0;
     this._agent = target.targetAgent();
 
-    /** @type {!Map<string, !WebInspector.TargetInfo>} */
-    this._allTargets = new Map();
-
     /** @type {!Map<string, !WebInspector.Target>} */
     this._attachedTargets = new Map();
     /** @type {!Map<string, !WebInspector.SubTargetConnection>} */
@@ -140,34 +137,12 @@ WebInspector.SubTargetsManager.prototype = {
 
     /**
      * @param {!WebInspector.TargetInfo} targetInfo
-     */
-    _targetCreated: function(targetInfo)
-    {
-        console.assert(!this._allTargets.has(targetInfo.id));
-        console.assert(!this._attachedTargets.has(targetInfo.id));
-        this._allTargets.set(targetInfo.id, targetInfo);
-    },
-
-    /**
-     * @param {string} targetId
-     */
-    _targetRemoved: function(targetId)
-    {
-        console.assert(this._allTargets.has(targetId));
-        console.assert(!this._attachedTargets.has(targetId));
-        this._allTargets.delete(targetId);
-    },
-
-    /**
-     * @param {string} targetId
      * @param {boolean} waitingForDebugger
      */
-    _attachedToTarget: function(targetId, waitingForDebugger)
+    _attachedToTarget: function(targetInfo, waitingForDebugger)
     {
-        var targetInfo = /** @type {!WebInspector.TargetInfo} */ (this._allTargets.get(targetId));
-
-        var connection = new WebInspector.SubTargetConnection(this._agent, targetId);
-        this._connections.set(targetId, connection);
+        var connection = new WebInspector.SubTargetConnection(this._agent, targetInfo.id);
+        this._connections.set(targetInfo.id, connection);
 
         var targetName = "";
         if (targetInfo.type !== "iframe") {
@@ -176,7 +151,7 @@ WebInspector.SubTargetsManager.prototype = {
         }
         var target = WebInspector.targetManager.createTarget(targetName, this._capabilitiesForType(targetInfo.type), connection, this.target());
         target[WebInspector.SubTargetsManager._InfoSymbol] = targetInfo;
-        this._attachedTargets.set(targetId, target);
+        this._attachedTargets.set(targetInfo.id, target);
 
         // Only pause new worker if debugging SW - we are going through the pause on start checkbox.
         var mainIsServiceWorker = !this.target().parentTarget() && this.target().hasWorkerCapability() && !this.target().hasBrowserCapability();
@@ -232,26 +207,26 @@ WebInspector.SubTargetsDispatcher.prototype = {
      */
     targetCreated: function(targetInfo)
     {
-        this._manager._targetCreated(new WebInspector.TargetInfo(targetInfo));
+        // Ignored.
     },
 
     /**
      * @override
      * @param {string} targetId
      */
-    targetRemoved: function(targetId)
+    targetDestroyed: function(targetId)
     {
-        this._manager._targetRemoved(targetId);
+        // Ignored.
     },
 
     /**
      * @override
-     * @param {string} targetId
+     * @param {!TargetAgent.TargetInfo} targetInfo
      * @param {boolean} waitingForDebugger
      */
-    attachedToTarget: function(targetId, waitingForDebugger)
+    attachedToTarget: function(targetInfo, waitingForDebugger)
     {
-        this._manager._attachedToTarget(targetId, waitingForDebugger);
+        this._manager._attachedToTarget(new WebInspector.TargetInfo(targetInfo), waitingForDebugger);
     },
 
     /**

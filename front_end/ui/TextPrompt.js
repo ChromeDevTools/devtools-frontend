@@ -461,26 +461,6 @@ WebInspector.TextPrompt.prototype = {
     },
 
     /**
-     * @param {!Array.<string>} completions
-     * @param {number} wordPrefixLength
-     */
-    _buildCommonPrefix: function(completions, wordPrefixLength)
-    {
-        var commonPrefix = completions[0];
-        for (var i = 0; i < completions.length; ++i) {
-            var completion = completions[i];
-            var lastIndex = Math.min(commonPrefix.length, completion.length);
-            for (var j = wordPrefixLength; j < lastIndex; ++j) {
-                if (commonPrefix[j] !== completion[j]) {
-                    commonPrefix = commonPrefix.substr(0, j);
-                    break;
-                }
-            }
-        }
-        return commonPrefix;
-    },
-
-    /**
      * @return {?Range}
      * @suppressGlobalPropertiesCheck
      */
@@ -552,7 +532,6 @@ WebInspector.TextPrompt.prototype = {
             return;
 
         var wordPrefixLength = originalWordPrefixRange.toString().length;
-        this._commonPrefix = this._buildCommonPrefix(completions, wordPrefixLength);
 
         if (this.isCaretAtEndOfPrompt()) {
             var completionText = annotatedCompletions[selectedIndex].title;
@@ -576,20 +555,6 @@ WebInspector.TextPrompt.prototype = {
             selection.addRange(finalSelectionRange);
             this.dispatchEventToListeners(WebInspector.TextPrompt.Events.ItemApplied);
         }
-    },
-
-    _completeCommonPrefix: function()
-    {
-        if (!this._autocompleteElement || !this._commonPrefix || !this._userEnteredText || !this._commonPrefix.startsWith(this._userEnteredText))
-            return;
-
-        if (!this.isSuggestBoxVisible()) {
-            this.acceptAutoComplete();
-            return;
-        }
-
-        this._autocompleteElement.textContent = this._commonPrefix.substring(this._userEnteredText.length);
-        this._acceptSuggestionInternal(true);
     },
 
     /**
@@ -648,10 +613,9 @@ WebInspector.TextPrompt.prototype = {
     },
 
     /**
-     * @param {boolean=} prefixAccepted
      * @return {boolean}
      */
-    _acceptSuggestionInternal: function(prefixAccepted)
+    _acceptSuggestionInternal: function()
     {
         if (!this._autocompleteElement || !this._autocompleteElement.parentNode)
             return false;
@@ -669,11 +633,8 @@ WebInspector.TextPrompt.prototype = {
         selection.removeAllRanges();
         selection.addRange(finalSelectionRange);
 
-        if (!prefixAccepted) {
-            this.clearAutocomplete();
-            this.dispatchEventToListeners(WebInspector.TextPrompt.Events.ItemAccepted);
-        } else
-            this.autoCompleteSoon(true);
+        this.clearAutocomplete();
+        this.dispatchEventToListeners(WebInspector.TextPrompt.Events.ItemAccepted);
 
         return true;
     },

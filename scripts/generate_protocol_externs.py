@@ -140,12 +140,17 @@ Protocol.Error;
                 params = []
                 has_return_value = "returns" in command
                 explicit_parameters = promisified and has_return_value
-                if ("parameters" in command):
+                if "parameters" in command:
                     for in_param in command["parameters"]:
-                        # All parameters are not optional in case of promisified domain with return value.
-                        if (not explicit_parameters and "optional" in in_param):
-                            params.append("opt_%s" % in_param["name"])
-                            output_file.write(" * @param {%s=} opt_%s\n" % (param_type(domain_name, in_param), in_param["name"]))
+                        if "optional" in in_param:
+                            if explicit_parameters:
+                                params.append("%s" % in_param["name"])
+                                output_file.write(" * @param {%s|undefined} %s\n" %
+                                                  (param_type(domain_name, in_param), in_param["name"]))
+                            else:
+                                params.append("opt_%s" % in_param["name"])
+                                output_file.write(" * @param {%s=} opt_%s\n" %
+                                                  (param_type(domain_name, in_param), in_param["name"]))
                         else:
                             params.append(in_param["name"])
                             output_file.write(" * @param {%s} %s\n" % (param_type(domain_name, in_param), in_param["name"]))

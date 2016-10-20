@@ -161,7 +161,8 @@ WebInspector.TimelineModel.RecordType = {
 
     // CpuProfile is a virtual event created on frontend to support
     // serialization of CPU Profiles within tracing timeline data.
-    CpuProfile: "CpuProfile"
+    CpuProfile: "CpuProfile",
+    Profile: "Profile"
 }
 
 WebInspector.TimelineModel.Category = {
@@ -752,7 +753,7 @@ WebInspector.TimelineModel.prototype = {
         }
 
         if (!cpuProfile) {
-            cpuProfileEvent = events.find(e => e.name === WebInspector.TimelineModel.RecordType.CpuProfile);
+            cpuProfileEvent = events.find(e => e.name === WebInspector.TimelineModel.RecordType.Profile);
             if (!cpuProfileEvent)
                 return null;
             var profileGroup = tracingModel.profileGroup(cpuProfileEvent.id);
@@ -773,9 +774,14 @@ WebInspector.TimelineModel.prototype = {
                     cpuProfile.startTime = eventData["startTime"];
                 if ("endTime" in eventData)
                     cpuProfile.endTime = eventData["endTime"];
-                cpuProfile.nodes.pushAll(eventData["nodes"] || []);
-                cpuProfile.samples.pushAll(eventData["samples"] || []);
+                var nodesAndSamples = eventData["cpuProfile"] || {};
+                cpuProfile.nodes.pushAll(nodesAndSamples["nodes"] || []);
+                cpuProfile.samples.pushAll(nodesAndSamples["samples"] || []);
                 cpuProfile.timeDeltas.pushAll(eventData["timeDeltas"] || []);
+                if (cpuProfile.samples.length !== cpuProfile.timeDeltas.length) {
+                    WebInspector.console.error("Failed to parse CPU profile.");
+                    return null;
+                }
             }
             if (!cpuProfile.endTime)
                 cpuProfile.endTime = cpuProfile.timeDeltas.reduce((x, y) => x + y, cpuProfile.startTime);

@@ -172,8 +172,7 @@ WebInspector.TextEditorAutocompleteController.prototype = {
                 singleCharInput = true;
                 break;
             }
-            if (this._suggestBox
-                && changeObject.origin === "+delete"
+            if (changeObject.origin === "+delete"
                 && changeObject.removed.length === 1
                 && changeObject.removed[0].length === 1
                 && changeObject.to.line === cursor.line

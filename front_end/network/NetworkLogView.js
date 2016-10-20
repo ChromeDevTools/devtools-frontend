@@ -664,6 +664,8 @@ WebInspector.NetworkLogView.prototype = {
             if (!node)
                 continue;
             var isFilteredOut = !this._applyFilter(node);
+            if (isFilteredOut && node === this._hoveredNode)
+                this._hoveredNode = null;
             if (node[WebInspector.NetworkLogView._isFilteredOutSymbol] !== isFilteredOut) {
                 if (!node[WebInspector.NetworkLogView._isFilteredOutSymbol])
                     rootNode.removeChild(node);
@@ -714,6 +716,8 @@ WebInspector.NetworkLogView.prototype = {
         this._clearSearchMatchedList();
 
         this._columns.reset();
+
+        this._hoveredNode = null;
 
         this._timeFilter = null;
         this._calculator.reset();

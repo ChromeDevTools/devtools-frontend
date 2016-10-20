@@ -206,7 +206,7 @@ WebInspector.AnimationTimeline.prototype = {
         function onFirstScreenshotLoaded(screenshots)
         {
             var content = new WebInspector.AnimationScreenshotPopover(screenshots);
-            popover.setNoMargins(true);
+            popover.setNoPadding(true);
             popover.showView(content, anchor);
         }
     },

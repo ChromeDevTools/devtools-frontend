@@ -147,12 +147,12 @@ WebInspector.Popover.prototype = {
     },
 
     /**
-     * @param {boolean} noMargins
+     * @param {boolean} noPadding
      */
-    setNoMargins: function(noMargins)
+    setNoPadding: function(noPadding)
     {
-        this._hasNoMargins = noMargins;
-        this._contentDiv.classList.toggle("no-margin", this._hasNoMargins);
+        this._hasNoPadding = noPadding;
+        this._contentDiv.classList.toggle("no-padding", this._hasNoPadding);
     },
 
     /**
@@ -163,9 +163,9 @@ WebInspector.Popover.prototype = {
      */
     positionElement: function(anchorElement, preferredWidth, preferredHeight, arrowDirection)
     {
-        const borderWidth = this._hasNoMargins ? 0 : 8;
+        const borderWidth = this._hasNoPadding ? 0 : 8;
         const scrollerWidth = this._hasFixedHeight ? 0 : 14;
-        const arrowHeight = this._hasNoMargins ? 8 : 15;
+        const arrowHeight = this._hasNoPadding ? 8 : 15;
         const arrowOffset = 10;
         const borderRadius = 4;
         const arrowRadius = 6;

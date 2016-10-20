@@ -19,11 +19,11 @@
     -webkit-user-select: text;
     line-height: 11px;
     flex: auto;
-    margin: 6px;
+    padding: 6px;
 }
 
-.popover .content.no-margin {
-    margin: 0;
+.popover .content.no-padding {
+    padding: 0;
     overflow: hidden;
 }
 

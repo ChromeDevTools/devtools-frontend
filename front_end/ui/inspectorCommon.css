@@ -75,6 +75,7 @@ iframe.fill {
 .widget {
     position: relative;
     flex: auto;
+    contain: layout style;
 }
 
 .hbox {

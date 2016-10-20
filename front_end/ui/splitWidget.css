@@ -39,6 +39,7 @@
     display: flex;
     position: relative;
     flex-direction: column;
+    contain: strict;
 }
 
 .shadow-split-widget-sidebar {

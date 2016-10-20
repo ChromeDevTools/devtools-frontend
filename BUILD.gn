@@ -645,6 +645,7 @@ devtools_source_frame_js_files = [
 devtools_sources_js_files = [
   "front_end/sources/eventListenerBreakpoints.css",
   "front_end/sources/fileBasedSearchResultsPane.css",
+  "front_end/sources/navigatorTree.css",
   "front_end/sources/navigatorView.css",
   "front_end/sources/revisionHistory.css",
   "front_end/sources/serviceWorkersSidebar.css",

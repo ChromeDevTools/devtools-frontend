@@ -80,7 +80,7 @@ WebInspector.ResourceType.prototype = {
      */
     isScript: function()
     {
-        return this._name === "script" || this._name === "sm-script";
+        return this._name === "script" || this._name === "sm-script" || this._name === "snippet";
     },
 
     /**
@@ -180,6 +180,7 @@ WebInspector.resourceTypes = {
     Fetch: new WebInspector.ResourceType("fetch", "Fetch", WebInspector.resourceCategories.XHR, true),
     EventSource: new WebInspector.ResourceType("eventsource", "EventSource", WebInspector.resourceCategories.XHR, true),
     Script: new WebInspector.ResourceType("script", "Script", WebInspector.resourceCategories.Script, true),
+    Snippet: new WebInspector.ResourceType("snippet", "Snippet", WebInspector.resourceCategories.Script, true),
     Stylesheet: new WebInspector.ResourceType("stylesheet", "Stylesheet", WebInspector.resourceCategories.Stylesheet, true),
     Image: new WebInspector.ResourceType("image", "Image", WebInspector.resourceCategories.Image, false),
     Media: new WebInspector.ResourceType("media", "Media", WebInspector.resourceCategories.Media, false),

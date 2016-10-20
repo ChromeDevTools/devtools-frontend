@@ -215,6 +215,11 @@ WebInspector.ContentScriptsNavigatorView.prototype = {
 WebInspector.SnippetsNavigatorView = function()
 {
     WebInspector.NavigatorView.call(this);
+    var toolbar = new WebInspector.Toolbar("snippets-navigator-toolbar");
+    var newButton = new WebInspector.ToolbarButton(WebInspector.UIString("New"), "add-toolbar-item");
+    newButton.addEventListener("click", this._handleCreateSnippet.bind(this));
+    toolbar.appendToolbarItem(newButton);
+    this.element.insertBefore(toolbar.element, this.element.firstChild);
 }
 
 WebInspector.SnippetsNavigatorView.prototype = {

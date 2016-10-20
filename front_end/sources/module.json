@@ -586,6 +586,7 @@
         "uiList.css",
         "eventListenerBreakpoints.css",
         "fileBasedSearchResultsPane.css",
+        "navigatorTree.css",
         "navigatorView.css",
         "revisionHistory.css",
         "serviceWorkersSidebar.css",

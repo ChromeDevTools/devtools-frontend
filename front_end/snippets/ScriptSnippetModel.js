@@ -549,7 +549,7 @@ WebInspector.SnippetContentProvider.prototype = {
      */
     contentType: function()
     {
-        return WebInspector.resourceTypes.Script;
+        return WebInspector.resourceTypes.Snippet;
     },
 
     /**

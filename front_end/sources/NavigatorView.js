@@ -34,9 +34,10 @@
 WebInspector.NavigatorView = function()
 {
     WebInspector.VBox.call(this);
+    this.registerRequiredCSS("sources/navigatorView.css");
 
     this._scriptsTree = new TreeOutlineInShadow();
-    this._scriptsTree.registerRequiredCSS("sources/navigatorView.css");
+    this._scriptsTree.registerRequiredCSS("sources/navigatorTree.css");
     this._scriptsTree.setComparator(WebInspector.NavigatorView._treeElementsCompare);
     this.element.appendChild(this._scriptsTree.element);
     this.setDefaultFocusedElement(this._scriptsTree.element);

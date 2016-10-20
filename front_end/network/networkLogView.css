@@ -377,7 +377,7 @@
 }
 
 /* Resource categories */
-
+/* TODO(allada) Remove these when we remove canvas timeline experiment */
 .network-graph-bar.request-timing.queueing,
 .network-graph-bar.request-timing.total,
 .network-graph-bar.request-timing.proxy,

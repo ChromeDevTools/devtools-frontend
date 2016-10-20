@@ -360,8 +360,7 @@
         "RenderingOptions.js",
         "SimpleApp.js",
         "OverlayController.js",
-        "Main.js",
-        "RemoteLocationManager.js"
+        "Main.js"
     ],
     "resources": [
         "errorWarningCounter.css",

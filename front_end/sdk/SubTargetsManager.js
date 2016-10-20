@@ -21,6 +21,12 @@ WebInspector.SubTargetsManager = function(target)
 
     this._agent.setAutoAttach(true /* autoAttach */, true /* waitForDebuggerOnStart */);
     this._agent.setAttachToFrames(Runtime.experiments.isEnabled("autoAttachToCrossProcessSubframes"));
+
+    if (Runtime.experiments.isEnabled("nodeDebugging") && !target.parentTarget()) {
+        var defaultLocations = [{host: "localhost", port: 9229}];
+        this._agent.setRemoteLocations(defaultLocations);
+        this._agent.setDiscoverTargets(true);
+    }
 }
 
 /** @enum {symbol} */
@@ -132,6 +138,8 @@ WebInspector.SubTargetsManager.prototype = {
             return WebInspector.Target.Capability.Browser | WebInspector.Target.Capability.DOM |
                 WebInspector.Target.Capability.JS | WebInspector.Target.Capability.Log |
                 WebInspector.Target.Capability.Network | WebInspector.Target.Capability.Worker;
+        if (type === "node")
+            return WebInspector.Target.Capability.JS;
         return 0;
     },
 
@@ -145,7 +153,9 @@ WebInspector.SubTargetsManager.prototype = {
         this._connections.set(targetInfo.id, connection);
 
         var targetName = "";
-        if (targetInfo.type !== "iframe") {
+        if (targetInfo.type === "node") {
+            targetName = targetInfo.title;
+        } else if (targetInfo.type !== "iframe") {
             var parsedURL = targetInfo.url.asParsedURL();
             targetName = parsedURL ? parsedURL.lastPathComponentWithFragment() : "#" + (++this._lastAnonymousTargetId);
         }
@@ -187,6 +197,24 @@ WebInspector.SubTargetsManager.prototype = {
             connection.dispatch(message);
     },
 
+    /**
+     * @param {!WebInspector.TargetInfo} targetInfo
+     */
+    _targetCreated: function(targetInfo)
+    {
+        if (targetInfo.type !== "node")
+            return;
+        this._agent.attachToTarget(targetInfo.id);
+    },
+
+    /**
+     * @param {string} targetId
+     */
+    _targetDestroyed: function(targetId)
+    {
+        // All the work is done in _detachedFromTarget.
+    },
+
     __proto__: WebInspector.SDKModel.prototype
 }
 
@@ -207,7 +235,7 @@ WebInspector.SubTargetsDispatcher.prototype = {
      */
     targetCreated: function(targetInfo)
     {
-        // Ignored.
+        this._manager._targetCreated(new WebInspector.TargetInfo(targetInfo));
     },
 
     /**
@@ -216,7 +244,7 @@ WebInspector.SubTargetsDispatcher.prototype = {
      */
     targetDestroyed: function(targetId)
     {
-        // Ignored.
+        this._manager._targetDestroyed(targetId);
     },
 
     /**

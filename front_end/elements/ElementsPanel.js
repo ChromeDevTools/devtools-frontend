@@ -329,6 +329,9 @@ WebInspector.ElementsPanel.prototype = {
                 this._treeOutlines[i].selectDOMNode(null);
         }
 
+        if (!selectedNode && this._lastValidSelectedNode)
+            this._selectedPathOnReset = this._lastValidSelectedNode.path();
+
         this._breadcrumbs.setSelectedNode(selectedNode);
 
         WebInspector.context.setFlavor(WebInspector.DOMNode, selectedNode);
@@ -336,10 +339,7 @@ WebInspector.ElementsPanel.prototype = {
         if (!selectedNode)
             return;
         selectedNode.setAsInspectedNode();
-        if (!this._isSettingDefaultSelectedNode) {
-            this._selectedNodeOnReset = selectedNode;
-            this._hasNonDefaultSelectedNode = true;
-        }
+        this._lastValidSelectedNode = selectedNode;
 
         var executionContexts = selectedNode.target().runtimeModel.executionContexts();
         var nodeFrameId = selectedNode.frameId();
@@ -382,66 +382,53 @@ WebInspector.ElementsPanel.prototype = {
             return;
         }
 
-        this._hasNonDefaultSelectedNode = false;
         WebInspector.domBreakpointsSidebarPane.restoreBreakpoints(inspectedRootDocument);
+
+        /**
+         * @this {WebInspector.ElementsPanel}
+         * @param {?WebInspector.DOMNode} candidateFocusNode
+         */
+        function selectNode(candidateFocusNode)
+        {
+            if (!candidateFocusNode)
+                candidateFocusNode = inspectedRootDocument.body || inspectedRootDocument.documentElement;
+
+            if (!candidateFocusNode)
+                return;
+
+            if (!this._pendingNodeReveal) {
+                this.selectDOMNode(candidateFocusNode);
+                if (treeOutline.selectedTreeElement)
+                    treeOutline.selectedTreeElement.expand();
+            }
+        }
+
+        /**
+         * @param {?DOMAgent.NodeId} nodeId
+         * @this {WebInspector.ElementsPanel}
+         */
+        function selectLastSelectedNode(nodeId)
+        {
+            if (this.selectedDOMNode()) {
+                // Focused node has been explicitly set while reaching out for the last selected node.
+                return;
+            }
+            var node = nodeId ? domModel.nodeForId(nodeId) : null;
+            selectNode.call(this, node);
+            this._lastSelectedNodeSelectedForTest();
+        }
 
         if (this._omitDefaultSelection)
             return;
 
-        var savedSelectedNodeOnReset = this._selectedNodeOnReset;
-        restoreNode.call(this, domModel, this._selectedNodeOnReset);
-
-        /**
-         * @param {!WebInspector.DOMModel} domModel
-         * @param {?WebInspector.DOMNode} staleNode
-         * @this {WebInspector.ElementsPanel}
-         */
-        function restoreNode(domModel, staleNode)
-        {
-            var nodePath = staleNode ? staleNode.path() : null;
-            if (!nodePath) {
-                onNodeRestored.call(this, null);
-                return;
-            }
-            domModel.pushNodeByPathToFrontend(nodePath, onNodeRestored.bind(this));
-        }
-
-        /**
-         * @param {?DOMAgent.NodeId} restoredNodeId
-         * @this {WebInspector.ElementsPanel}
-         */
-        function onNodeRestored(restoredNodeId)
-        {
-            if (savedSelectedNodeOnReset !== this._selectedNodeOnReset)
-                return;
-            var node = restoredNodeId ? domModel.nodeForId(restoredNodeId) : null;
-            if (!node) {
-                var inspectedDocument = domModel.existingDocument();
-                node = inspectedDocument ? inspectedDocument.body || inspectedDocument.documentElement : null;
-            }
-            this._setDefaultSelectedNode(node);
-            this._lastSelectedNodeSelectedForTest();
-        }
+        if (this._selectedPathOnReset)
+            domModel.pushNodeByPathToFrontend(this._selectedPathOnReset, selectLastSelectedNode.bind(this));
+        else
+            selectNode.call(this, null);
+        delete this._selectedPathOnReset;
     },
 
     _lastSelectedNodeSelectedForTest: function() { },
-
-    /**
-     * @param {?WebInspector.DOMNode} node
-     */
-    _setDefaultSelectedNode: function(node)
-    {
-        if (!node || this._hasNonDefaultSelectedNode || this._pendingNodeReveal)
-            return;
-        var treeOutline = WebInspector.ElementsTreeOutline.forDOMModel(node.domModel());
-        if (!treeOutline)
-            return;
-        this._isSettingDefaultSelectedNode = true;
-        this.selectDOMNode(node);
-        this._isSettingDefaultSelectedNode = false;
-        if (treeOutline.selectedTreeElement)
-            treeOutline.selectedTreeElement.expand();
-    },
 
     /**
      * @override
@@ -732,7 +719,7 @@ WebInspector.ElementsPanel.prototype = {
 
         var treeOutline = null;
         for (var i = 0; i < this._treeOutlines.length; ++i) {
-            if (this._treeOutlines[i].selectedDOMNode())
+            if (this._treeOutlines[i].selectedDOMNode() === this._lastValidSelectedNode)
                 treeOutline = this._treeOutlines[i];
         }
         if (!treeOutline)

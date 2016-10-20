@@ -18,7 +18,7 @@ WebInspector.AXTreePane = function()
 
 WebInspector.AXTreePane.prototype = {
     /**
-     * @param {!Array<!AccessibilityAgent.AXNode>} nodes
+     * @param {!Array<!WebInspector.AccessibilityNode>} nodes
      */
     setAXNodeAndAncestors: function(nodes)
     {
@@ -46,12 +46,12 @@ WebInspector.AXTreePane.prototype = {
 /**
  * @constructor
  * @extends {TreeElement}
- * @param {!AccessibilityAgent.AXNode} axNode
+ * @param {!WebInspector.AccessibilityNode} axNode
  * @param {!WebInspector.Target} target
  */
 WebInspector.AXNodeTreeElement = function(axNode, target)
 {
-    /** @type {!AccessibilityAgent.AXNode} */
+    /** @type {!WebInspector.AccessibilityNode} */
     this._axNode = axNode;
 
     /** @type {!WebInspector.Target} */
@@ -82,13 +82,13 @@ WebInspector.AXNodeTreeElement.prototype = {
     {
         this.listItemElement.removeChildren();
 
-        if (this._axNode.ignored) {
+        if (this._axNode.ignored()) {
             this._appendIgnoredNodeElement();
         } else {
-            this._appendRoleElement(this._axNode.role);
-            if ("name" in this._axNode && this._axNode.name.value) {
+            this._appendRoleElement(this._axNode.role());
+            if ("name" in this._axNode && this._axNode.name().value) {
                 this.listItemElement.createChild("span", "separator").textContent = "\u00A0";
-                this._appendNameElement(/** @type {string} */ (this._axNode.name.value));
+                this._appendNameElement(/** @type {string} */ (this._axNode.name().value));
             }
         }
     },
@@ -105,7 +105,7 @@ WebInspector.AXNodeTreeElement.prototype = {
     },
 
     /**
-     * @param {!AccessibilityAgent.AXValue=} role
+     * @param {?AccessibilityAgent.AXValue} role
      */
     _appendRoleElement: function(role)
     {

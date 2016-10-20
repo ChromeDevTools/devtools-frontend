@@ -10,6 +10,7 @@ WebInspector.AccessibilitySidebarView = function()
 {
     WebInspector.ThrottledWidget.call(this);
     this._node = null;
+    this._axNode = null;
     this._sidebarPaneStack = WebInspector.viewManager.createStackLocation();
     this._treeSubPane = new WebInspector.AXTreePane();
     this._sidebarPaneStack.showView(this._treeSubPane);
@@ -32,7 +33,7 @@ WebInspector.AccessibilitySidebarView.prototype = {
     },
 
     /**
-     * @param {?Array<!AccessibilityAgent.AXNode>} nodes
+     * @param {?Array<!WebInspector.AccessibilityNode>} nodes
      */
     accessibilityNodeCallback: function(nodes)
     {
@@ -62,7 +63,7 @@ WebInspector.AccessibilitySidebarView.prototype = {
         this._treeSubPane.setNode(node);
         this._axNodeSubPane.setNode(node);
         this._ariaSubPane.setNode(node);
-        return WebInspector.AccessibilityModel.fromTarget(node.target()).getAXNodeChain(node.id)
+        return WebInspector.AccessibilityModel.fromTarget(node.target()).getAXNodeChain(node)
             .then((nodes) => { this.accessibilityNodeCallback(nodes); });
     },
 
@@ -97,8 +98,6 @@ WebInspector.AccessibilitySidebarView.prototype = {
     _pullNode: function()
     {
         this._node = WebInspector.context.flavor(WebInspector.DOMNode);
-        this._ariaSubPane.setNode(this._node);
-        this._axNodeSubPane.setNode(this._node);
         this.update();
     },
 
@@ -147,7 +146,7 @@ WebInspector.AccessibilitySubPane = function(name)
 
 WebInspector.AccessibilitySubPane.prototype = {
     /**
-     * @param {?AccessibilityAgent.AXNode} axNode
+     * @param {?WebInspector.AccessibilityNode} axNode
      * @protected
      */
     setAXNode: function(axNode)

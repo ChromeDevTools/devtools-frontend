@@ -22,7 +22,7 @@ WebInspector.AXNodeSubPane = function()
 
 WebInspector.AXNodeSubPane.prototype = {
     /**
-     * @param {?AccessibilityAgent.AXNode} axNode
+     * @param {?WebInspector.AccessibilityNode} axNode
      * @override
      */
     setAXNode: function(axNode)
@@ -35,7 +35,6 @@ WebInspector.AXNodeSubPane.prototype = {
         treeOutline.removeChildren();
         var ignoredReasons = this._ignoredReasonsTree;
         ignoredReasons.removeChildren();
-        var target = this.node().target();
 
         if (!axNode) {
             treeOutline.element.classList.add("hidden");
@@ -46,7 +45,9 @@ WebInspector.AXNodeSubPane.prototype = {
             this.element.classList.add("ax-ignored-node-pane");
 
             return;
-        } else if (axNode.ignored) {
+        }
+
+        if (axNode.ignored()) {
             this._noNodeInfo.classList.add("hidden");
             treeOutline.element.classList.add("hidden");
             this.element.classList.add("ax-ignored-node-pane");
@@ -58,9 +59,9 @@ WebInspector.AXNodeSubPane.prototype = {
              */
             function addIgnoredReason(property)
             {
-                ignoredReasons.appendChild(new WebInspector.AXNodeIgnoredReasonTreeElement(property, axNode, target));
+                ignoredReasons.appendChild(new WebInspector.AXNodeIgnoredReasonTreeElement(property, /** @type {!WebInspector.AccessibilityNode} */ (axNode)));
             }
-            var ignoredReasonsArray = /** @type {!Array<!AccessibilityAgent.AXProperty>} */(axNode.ignoredReasons);
+            var ignoredReasonsArray = /** @type {!Array<!AccessibilityAgent.AXProperty>} */(axNode.ignoredReasons());
             for (var reason of ignoredReasonsArray)
                 addIgnoredReason(reason);
             if (!ignoredReasons.firstChild())
@@ -80,21 +81,17 @@ WebInspector.AXNodeSubPane.prototype = {
          */
         function addProperty(property)
         {
-            treeOutline.appendChild(new WebInspector.AXNodePropertyTreePropertyElement(property, target));
+            treeOutline.appendChild(new WebInspector.AXNodePropertyTreePropertyElement(property, /** @type {!WebInspector.AccessibilityNode} */ (axNode)));
         }
 
-        for (var propertyName of ["name", "description", "help", "value"]) {
-            if (propertyName in axNode) {
-                var defaultProperty = /** @type {!AccessibilityAgent.AXProperty} */ ({name: propertyName, value: axNode[propertyName]});
-                addProperty(defaultProperty);
-            }
-        }
+        for (var property of axNode.coreProperties())
+            addProperty(property);
 
-        var roleProperty = /** @type {!AccessibilityAgent.AXProperty} */ ({name: "role", value: axNode.role});
+        var roleProperty = /** @type {!AccessibilityAgent.AXProperty} */ ({name: "role", value: axNode.role()});
         addProperty(roleProperty);
 
         var propertyMap = {};
-        var propertiesArray = /** @type {!Array.<!AccessibilityAgent.AXProperty>} */ (axNode.properties);
+        var propertiesArray = /** @type {!Array.<!AccessibilityAgent.AXProperty>} */ (axNode.properties());
         for (var property of propertiesArray)
             propertyMap[property.name] = property;
 
@@ -122,12 +119,12 @@ WebInspector.AXNodeSubPane.prototype = {
 
 /**
  * @constructor
+ * @param {!WebInspector.AccessibilityNode} axNode
  * @extends {TreeElement}
- * @param {!WebInspector.Target} target
  */
-WebInspector.AXNodePropertyTreeElement = function(target)
+WebInspector.AXNodePropertyTreeElement = function(axNode)
 {
-    this._target = target;
+    this._axNode = axNode;
 
     // Pass an empty title, the title gets made later in onattach.
     TreeElement.call(this, "");
@@ -239,7 +236,7 @@ WebInspector.AXNodePropertyTreeElement.prototype = {
             var sources = value.sources;
             for (var i = 0; i < sources.length; i++) {
                 var source = sources[i];
-                var child = new WebInspector.AXValueSourceTreeElement(source, this._target);
+                var child = new WebInspector.AXValueSourceTreeElement(source, this._axNode);
                 this.appendChild(child);
             }
             this.expand();
@@ -255,7 +252,7 @@ WebInspector.AXNodePropertyTreeElement.prototype = {
      */
     appendRelatedNode: function(relatedNode, index)
     {
-        var deferredNode = new WebInspector.DeferredDOMNode(this._target, relatedNode.backendNodeId);
+        var deferredNode = new WebInspector.DeferredDOMNode(this._axNode.target(), relatedNode.backendNodeId);
         var nodeTreeElement = new WebInspector.AXRelatedNodeSourceTreeElement({ deferredNode: deferredNode }, relatedNode);
         this.appendChild(nodeTreeElement);
     },
@@ -265,7 +262,7 @@ WebInspector.AXNodePropertyTreeElement.prototype = {
      */
     appendRelatedNodeInline: function(relatedNode)
     {
-        var deferredNode = new WebInspector.DeferredDOMNode(this._target, relatedNode.backendNodeId);
+        var deferredNode = new WebInspector.DeferredDOMNode(this._axNode.target(), relatedNode.backendNodeId);
         var linkedNode = new WebInspector.AXRelatedNodeElement({ deferredNode: deferredNode }, relatedNode);
         this.listItemElement.appendChild(linkedNode.render());
     },
@@ -294,15 +291,15 @@ WebInspector.AXNodePropertyTreeElement.prototype = {
  * @constructor
  * @extends {WebInspector.AXNodePropertyTreeElement}
  * @param {!AccessibilityAgent.AXProperty} property
- * @param {!WebInspector.Target} target
+ * @param {!WebInspector.AccessibilityNode} axNode
  */
-WebInspector.AXNodePropertyTreePropertyElement = function(property, target)
+WebInspector.AXNodePropertyTreePropertyElement = function(property, axNode)
 {
     this._property = property;
     this.toggleOnClick = true;
     this.selectable = false;
 
-    WebInspector.AXNodePropertyTreeElement.call(this, target);
+    WebInspector.AXNodePropertyTreeElement.call(this, axNode);
     this.listItemElement.classList.add("property");
 }
 
@@ -335,12 +332,12 @@ WebInspector.AXNodePropertyTreePropertyElement.prototype = {
  * @constructor
  * @extends {WebInspector.AXNodePropertyTreeElement}
  * @param {!AccessibilityAgent.AXValueSource} source
- * @param {!WebInspector.Target} target
+ * @param {!WebInspector.AccessibilityNode} axNode
  */
-WebInspector.AXValueSourceTreeElement = function(source, target)
+WebInspector.AXValueSourceTreeElement = function(source, axNode)
 {
     this._source = source;
-    WebInspector.AXNodePropertyTreeElement.call(this, target);
+    WebInspector.AXNodePropertyTreeElement.call(this, axNode);
     this.selectable = false;
 }
 
@@ -360,7 +357,7 @@ WebInspector.AXValueSourceTreeElement.prototype = {
      */
     appendRelatedNodeWithIdref: function(relatedNode, index, idref)
     {
-        var deferredNode = new WebInspector.DeferredDOMNode(this._target, relatedNode.backendNodeId);
+        var deferredNode = new WebInspector.DeferredDOMNode(this._axNode.target(), relatedNode.backendNodeId);
         var nodeTreeElement = new WebInspector.AXRelatedNodeSourceTreeElement({ deferredNode: deferredNode, idref: idref }, relatedNode);
         this.appendChild(nodeTreeElement);
     },
@@ -593,15 +590,14 @@ WebInspector.AXRelatedNodeElement.prototype = {
  * @constructor
  * @extends {WebInspector.AXNodePropertyTreeElement}
  * @param {!AccessibilityAgent.AXProperty} property
- * @param {?AccessibilityAgent.AXNode} axNode
- * @param {!WebInspector.Target} target
+ * @param {!WebInspector.AccessibilityNode} axNode
  */
-WebInspector.AXNodeIgnoredReasonTreeElement = function(property, axNode, target)
+WebInspector.AXNodeIgnoredReasonTreeElement = function(property, axNode)
 {
     this._property = property;
     this._axNode = axNode;
 
-    WebInspector.AXNodePropertyTreeElement.call(this, target);
+    WebInspector.AXNodePropertyTreeElement.call(this, axNode);
     this.toggleOnClick = true;
     this.selectable = false;
 }
@@ -627,7 +623,7 @@ WebInspector.AXNodeIgnoredReasonTreeElement.prototype = {
 
 /**
  * @param {?string} reason
- * @param {?AccessibilityAgent.AXNode} axNode
+ * @param {?WebInspector.AccessibilityNode} axNode
  * @return {?Element}
  */
 WebInspector.AXNodeIgnoredReasonTreeElement.createReasonElement = function(reason, axNode)
@@ -678,7 +674,7 @@ WebInspector.AXNodeIgnoredReasonTreeElement.createReasonElement = function(reaso
         reasonElement = WebInspector.formatLocalized("Element is not visible.", []);
         break;
     case "presentationalRole":
-        var rolePresentationSpan = createElement("span", "source-code").textContent = "role=" + axNode.role.value;
+        var rolePresentationSpan = createElement("span", "source-code").textContent = "role=" + axNode.role().value;
         reasonElement = WebInspector.formatLocalized("Element has %s.", [ rolePresentationSpan ]);
         break;
     case "probablyPresentational":

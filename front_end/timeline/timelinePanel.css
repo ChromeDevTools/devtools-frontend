@@ -329,6 +329,10 @@
     background-color: #f3f3f3;
 }
 
+.timeline-details-view-body > div {
+    overflow: hidden;
+}
+
 .timeline-details-view-block {
     flex: none;
     display: flex;
@@ -614,4 +618,5 @@
     background-color: white;
     padding: 6px 10px;
     color: #5a5a5a;
+    white-space: nowrap;
 }

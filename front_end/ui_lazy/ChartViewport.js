@@ -343,16 +343,16 @@ WebInspector.ChartViewport.prototype = {
             return;
         var zoomMultiplier = e.shiftKey ? 0.8 : 0.3;
         var panMultiplier = e.shiftKey ? 320 : 80;
-        if (e.keyCode === "A".charCodeAt(0)) {
+        if (e.code === "KeyA") {
             this._handlePanGesture(-panMultiplier * this._pixelToTime);
             e.consume(true);
-        } else if (e.keyCode === "D".charCodeAt(0)) {
+        } else if (e.code === "KeyD") {
             this._handlePanGesture(panMultiplier * this._pixelToTime);
             e.consume(true);
-        } else if (e.keyCode === "W".charCodeAt(0)) {
+        } else if (e.code === "KeyW") {
             this._handleZoomGesture(-zoomMultiplier);
             e.consume(true);
-        } else if (e.keyCode === "S".charCodeAt(0)) {
+        } else if (e.code === "KeyS") {
             this._handleZoomGesture(zoomMultiplier);
             e.consume(true);
         }

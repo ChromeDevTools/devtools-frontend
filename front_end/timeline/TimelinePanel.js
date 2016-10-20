@@ -733,7 +733,7 @@ WebInspector.TimelinePanel.prototype = {
 
         var recordNode = encloseWithTag("b", WebInspector.shortcutRegistry.shortcutDescriptorsForAction("timeline.toggle-recording")[0].name);
         var reloadNode = encloseWithTag("b", WebInspector.shortcutRegistry.shortcutDescriptorsForAction("main.reload")[0].name);
-        var navigateNode = encloseWithTag("b", WebInspector.UIString("WASD"));
+        var navigateNode = encloseWithTag("b", WebInspector.UIString("WASD (ZQSD)"));
         var hintText = createElementWithClass("div");
         hintText.appendChild(WebInspector.formatLocalized("To capture a new timeline, click the record toolbar button or hit %s.", [recordNode]));
         hintText.createChild("br");

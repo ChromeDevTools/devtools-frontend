@@ -25,13 +25,17 @@ WebInspector.NetworkTimelineColumn = function(networkLogView, dataGrid)
     this._dataGrid = dataGrid;
     this._networkLogView = networkLogView;
 
+    this._popoverHelper = new WebInspector.PopoverHelper(this.element, this._getPopoverAnchor.bind(this), this._showPopover.bind(this));
+    this._popoverHelper.setTimeout(300, 300);
+
     this._vScrollElement = this.contentElement.createChild("div", "network-timeline-v-scroll");
-    this._vScrollContent = this._vScrollElement.createChild("div");
     this._vScrollElement.addEventListener("scroll", this._onScroll.bind(this), { passive: true });
     this._vScrollElement.addEventListener("mousewheel", this._onMouseWheel.bind(this), { passive: true });
-    this._canvas.addEventListener("mousewheel", this._onMouseWheel.bind(this), { passive: true });
-    this._canvas.addEventListener("mousemove", this._onMouseMove.bind(this), true);
-    this._canvas.addEventListener("mouseleave", this.setHoveredRequest.bind(this, null), true);
+    this._vScrollContent = this._vScrollElement.createChild("div");
+
+    this.element.addEventListener("mousewheel", this._onMouseWheel.bind(this), { passive: true });
+    this.element.addEventListener("mousemove", this._onMouseMove.bind(this), true);
+    this.element.addEventListener("mouseleave", this.setHoveredRequest.bind(this, null), true);
 
     this._dataGridScrollContainer = this._dataGrid.scrollContainer;
     this._dataGridScrollContainer.addEventListener("mousewheel", event => {
@@ -61,6 +65,59 @@ WebInspector.NetworkTimelineColumn.Events = {
 }
 
 WebInspector.NetworkTimelineColumn.prototype = {
+    /**
+     * @override
+     */
+    willHide: function()
+    {
+        this._popoverHelper.hidePopover();
+    },
+
+    /**
+     * @param {!Element} element
+     * @param {!Event} event
+     * @return {!AnchorBox|undefined}
+     */
+    _getPopoverAnchor: function(element, event)
+    {
+        if (!this._hoveredRequest)
+            return;
+
+        var rowHeight = this._networkLogView.rowHeight();
+        var range = WebInspector.RequestTimingView.calculateRequestTimeRanges(this._hoveredRequest, 0).find(data => data.name === "total");
+        var start = this._timeToPosition(range.start);
+        var end = this._timeToPosition(range.end);
+
+        if (event.offsetX < start || event.offsetX > end)
+            return;
+
+        var rowIndex = this._requestData.findIndex(request => this._hoveredRequest === request);
+        var barHeight = this._getBarHeight(range.name);
+        var y = this._networkLogView.headerHeight() + (rowHeight * rowIndex - this._vScrollElement.scrollTop) + ((rowHeight - barHeight) / 2);
+
+        if (event.offsetY < y || event.offsetY > y + barHeight)
+            return;
+
+        var anchorBox = this.element.boxInWindow();
+        anchorBox.x += start;
+        anchorBox.y += y;
+        anchorBox.width = end - start;
+        anchorBox.height = barHeight;
+        return anchorBox;
+    },
+
+    /**
+     * @param {!Element|!AnchorBox} anchor
+     * @param {!WebInspector.Popover} popover
+     */
+    _showPopover: function(anchor, popover)
+    {
+        if (!this._hoveredRequest)
+            return;
+        var content = WebInspector.RequestTimingView.createTimingTable(this._hoveredRequest, this._networkLogView.timeCalculator().minimumBoundary());
+        popover.showForAnchor(content, anchor);
+    },
+
     wasShown: function()
     {
         this.scheduleUpdate();
@@ -107,6 +164,8 @@ WebInspector.NetworkTimelineColumn.prototype = {
     {
         this._vScrollElement.scrollTop -= event.wheelDeltaY;
         this._dataGridScrollContainer.scrollTop = this._vScrollElement.scrollTop;
+        this._popoverHelper.hidePopover();
+
         var request = this._getRequestFromPoint(event.offsetX, event.offsetY);
         this.dispatchEventToListeners(WebInspector.NetworkTimelineColumn.Events.RequestHovered, request);
     },
@@ -117,6 +176,7 @@ WebInspector.NetworkTimelineColumn.prototype = {
     _onScroll: function(event)
     {
         this._dataGridScrollContainer.scrollTop = this._vScrollElement.scrollTop;
+        this._popoverHelper.hidePopover();
     },
 
     /**

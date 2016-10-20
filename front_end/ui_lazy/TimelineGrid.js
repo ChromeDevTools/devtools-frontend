@@ -95,25 +95,20 @@ WebInspector.TimelineGrid.calculateDividerOffsets = function(calculator, freeZon
 }
 
 /**
- * @param {!Object} canvas
+ * @param {!HTMLCanvasElement} canvas
  * @param {!WebInspector.TimelineGrid.Calculator} calculator
- * @param {?Array.<number>=} dividerOffsets
  */
-WebInspector.TimelineGrid.drawCanvasGrid = function(canvas, calculator, dividerOffsets)
+WebInspector.TimelineGrid.drawCanvasGrid = function(canvas, calculator)
 {
     var context = canvas.getContext("2d");
     context.save();
     var ratio = window.devicePixelRatio;
     context.scale(ratio, ratio);
-    var printDeltas = !!dividerOffsets;
     var width = canvas.width / window.devicePixelRatio;
     var height = canvas.height / window.devicePixelRatio;
-    var precision = 0;
-    if (!dividerOffsets) {
-        var dividersData = WebInspector.TimelineGrid.calculateDividerOffsets(calculator);
-        dividerOffsets = dividersData.offsets;
-        precision = dividersData.precision;
-    }
+    var dividersData = WebInspector.TimelineGrid.calculateDividerOffsets(calculator);
+    var dividerOffsets = dividersData.offsets;
+    var precision = dividersData.precision;
 
     context.fillStyle = "rgba(255, 255, 255, 0.5)";
     context.fillRect(0, 0, width, 15);
@@ -121,32 +116,23 @@ WebInspector.TimelineGrid.drawCanvasGrid = function(canvas, calculator, dividerO
     context.fillStyle = "#333";
     context.strokeStyle = "rgba(0, 0, 0, 0.1)";
     context.textBaseline = "hanging";
-    context.font = (printDeltas ? "italic bold 11px " : " 11px ") + WebInspector.fontFamily();
+    context.font = "11px " + WebInspector.fontFamily();
     context.lineWidth = 1;
 
     context.translate(0.5, 0.5);
-    const minWidthForTitle = 60;
-    var lastPosition = 0;
-    var time = 0;
-    var lastTime = 0;
-    var paddingRight = 4;
-    var paddingTop = 3;
+    const paddingRight = 4;
+    const paddingTop = 3;
     for (var i = 0; i < dividerOffsets.length; ++i) {
-        time = dividerOffsets[i];
+        var time = dividerOffsets[i];
         var position = calculator.computePosition(time);
-        context.beginPath();
-        if (!printDeltas || i !== 0 && position - lastPosition > minWidthForTitle) {
-            var text = printDeltas ? calculator.formatValue(calculator.zeroTime() + time - lastTime) : calculator.formatValue(time, precision);
-            var textWidth = context.measureText(text).width;
-            var textPosition = printDeltas ? (position + lastPosition - textWidth) / 2 : position - textWidth - paddingRight;
-            context.fillText(text, textPosition, paddingTop);
-        }
+        var text = calculator.formatValue(time, precision);
+        var textWidth = context.measureText(text).width;
+        var textPosition = position - textWidth - paddingRight;
+        context.fillText(text, textPosition, paddingTop);
         context.moveTo(position, 0);
         context.lineTo(position, height);
-        context.stroke();
-        lastTime = time;
-        lastPosition = position;
     }
+    context.stroke();
     context.restore();
 }
 

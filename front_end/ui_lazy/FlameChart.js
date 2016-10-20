@@ -66,7 +66,7 @@ WebInspector.FlameChart = function(dataProvider, flameChartDelegate, groupExpans
     this._dataProvider = dataProvider;
     this._calculator = new WebInspector.FlameChart.Calculator(dataProvider);
 
-    this._canvas = this.contentElement.createChild("canvas");
+    this._canvas = /** @type {!HTMLCanvasElement} */ (this.contentElement.createChild("canvas"));
     this._canvas.tabIndex = 1;
     this.setDefaultFocusedElement(this._canvas);
     this._canvas.addEventListener("mousemove", this._onMouseMove.bind(this), false);
@@ -168,13 +168,6 @@ WebInspector.FlameChartDataProvider.prototype = {
      * @return {number}
      */
     barHeight: function() { },
-
-    /**
-     * @param {number} startTime
-     * @param {number} endTime
-     * @return {?Array.<number>}
-     */
-    dividerOffsets: function(startTime, endTime) { },
 
     /**
      * @return {number}
@@ -868,7 +861,7 @@ WebInspector.FlameChart.prototype = {
 
         if (group < 0 || group >= groups.length || y - this._groupOffsets[group] >= groups[group].style.height)
             return -1;
-        var context = this._canvas.getContext("2d");
+        var context = /** @type {!CanvasRenderingContext2D} */ (this._canvas.getContext("2d"));
         context.save();
         context.font = groups[group].style.font;
         var right = this._headerLeftPadding + this._labelWidthForGroup(context, groups[group]);
@@ -925,13 +918,14 @@ WebInspector.FlameChart.prototype = {
         if (!timelineData)
             return;
 
-        var context = this._canvas.getContext("2d");
+        var context = /** @type {!CanvasRenderingContext2D} */ (this._canvas.getContext("2d"));
         context.save();
         var ratio = window.devicePixelRatio;
         var top = this.scrollOffset();
         context.scale(ratio, ratio);
         context.translate(0, -top);
-        context.font = "11px " + WebInspector.fontFamily();
+        var defaultFont = "11px " + WebInspector.fontFamily();
+        context.font = defaultFont;
 
         var timeWindowRight = this._timeWindowRight;
         var timeWindowLeft = this._timeWindowLeft - this._paddingLeft / this._timeToPixel;
@@ -1036,7 +1030,7 @@ WebInspector.FlameChart.prototype = {
             var barY = this._levelToHeight(barLevel);
             var text = this._dataProvider.entryTitle(entryIndex);
             if (text && text.length) {
-                context.font = this._dataProvider.entryFont(entryIndex);
+                context.font = this._dataProvider.entryFont(entryIndex) || defaultFont;
                 text = this._prepareText(context, text, barWidth - 2 * textPadding);
             }
             var unclippedBarX = this._timeToPosition(entryStartTime);
@@ -1052,8 +1046,7 @@ WebInspector.FlameChart.prototype = {
 
         context.restore();
 
-        var offsets = this._dataProvider.dividerOffsets(this._calculator.minimumBoundary(), this._calculator.maximumBoundary());
-        WebInspector.TimelineGrid.drawCanvasGrid(this._canvas, this._calculator, offsets);
+        WebInspector.TimelineGrid.drawCanvasGrid(this._canvas, this._calculator);
         this._drawMarkers();
         this._drawGroupHeaders(width, height);
 
@@ -1068,7 +1061,7 @@ WebInspector.FlameChart.prototype = {
      */
     _drawGroupHeaders: function(width, height)
     {
-        var context = this._canvas.getContext("2d");
+        var context = /** @type {!CanvasRenderingContext2D} */ (this._canvas.getContext("2d"));
         var top = this.scrollOffset();
         var ratio = window.devicePixelRatio;
         var barHeight = this._barHeight;
@@ -1225,7 +1218,7 @@ WebInspector.FlameChart.prototype = {
         var range = new WebInspector.SegmentedRange(mergeCallback);
         var timeWindowRight = this._timeWindowRight;
         var timeWindowLeft = this._timeWindowLeft - this._paddingLeft / this._timeToPixel;
-        var context = this._canvas.getContext("2d");
+        var context = /** @type {!CanvasRenderingContext2D} */ (this._canvas.getContext("2d"));
         var barHeight = this._barHeight - 2;
         var entryStartTimes = this._rawTimelineData.entryStartTimes;
         var entryTotalTimes = this._rawTimelineData.entryTotalTimes;
@@ -1334,7 +1327,7 @@ WebInspector.FlameChart.prototype = {
         var left = this._markerIndexBeforeTime(this._calculator.minimumBoundary());
         var rightBoundary = this._calculator.maximumBoundary();
 
-        var context = this._canvas.getContext("2d");
+        var context = /** @type {!CanvasRenderingContext2D} */ (this._canvas.getContext("2d"));
         context.save();
         var ratio = window.devicePixelRatio;
         context.scale(ratio, ratio);

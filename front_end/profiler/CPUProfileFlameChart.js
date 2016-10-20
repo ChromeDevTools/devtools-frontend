@@ -71,17 +71,6 @@ WebInspector.ProfileFlameChartDataProvider.prototype = {
 
     /**
      * @override
-     * @param {number} startTime
-     * @param {number} endTime
-     * @return {?Array.<number>}
-     */
-    dividerOffsets: function(startTime, endTime)
-    {
-        return null;
-    },
-
-    /**
-     * @override
      * @return {number}
      */
     minimumBoundary: function()

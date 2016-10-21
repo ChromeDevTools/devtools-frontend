@@ -45,6 +45,8 @@ WebInspector.TextPrompt = function(completions, stopCharacters)
     this._completionStopCharacters = stopCharacters || " =:[({;,!+-*/&|^<>.";
     this._autocompletionTimeout = WebInspector.TextPrompt.DefaultAutocompletionTimeout;
     this._title = "";
+    this._previousText = "";
+    this._currentHintText = "";
     this._completionRequestId = 0;
 }
 
@@ -190,6 +192,7 @@ WebInspector.TextPrompt.prototype = {
         } else {
             this._element.textContent = x;
         }
+        this._previousText = this.userEnteredText();
 
         this.moveCaretToEndOfPrompt();
         this._element.scrollIntoView();
@@ -243,7 +246,7 @@ WebInspector.TextPrompt.prototype = {
             this._element.tabIndex = 0;
         this._focusRestorer = new WebInspector.ElementFocusRestorer(this._element);
         if (!this.text())
-            this._updateAutoComplete();
+            this.autoCompleteSoon();
     },
 
     _stopEditing: function()
@@ -277,14 +280,6 @@ WebInspector.TextPrompt.prototype = {
         this._selectionTimeout = setTimeout(moveBackIfOutside.bind(this), 100);
     },
 
-    /**
-     * @param {boolean=} force
-     */
-    _updateAutoComplete: function(force)
-    {
-        this._clearAutocompleteElement();
-        this.autoCompleteSoon(force);
-    },
 
     /**
      * @param {!Event} event
@@ -303,7 +298,6 @@ WebInspector.TextPrompt.prototype = {
             return;
 
         var handled = false;
-        delete this._needUpdateAutocomplete;
 
         switch (event.key) {
         case "Tab":
@@ -328,7 +322,7 @@ WebInspector.TextPrompt.prototype = {
             break;
         case " ": // Space
             if (event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey) {
-                this._updateAutoComplete(true);
+                this.autoCompleteSoon(true);
                 handled = true;
             }
             break;
@@ -342,9 +336,6 @@ WebInspector.TextPrompt.prototype = {
         if (!handled && this.isSuggestBoxVisible())
             handled = this._suggestBox.keyPressed(event);
 
-        if (!handled)
-            this._needUpdateAutocomplete = true;
-
         if (handled)
             event.consume(true);
     },
@@ -354,8 +345,15 @@ WebInspector.TextPrompt.prototype = {
      */
     onInput: function(event)
     {
-        if (this._needUpdateAutocomplete)
-            this._updateAutoComplete();
+        var text = this.userEnteredText();
+        var hasCommonPrefix = text.startsWith(this._previousText) || this._previousText.startsWith(text);
+        if (this._autocompleteElement && hasCommonPrefix)
+            this._autocompleteElement.textContent = this._currentHintText.substring(text.length);
+        else
+            this._clearAutocompleteElement();
+        this._previousText = text;
+
+        this.autoCompleteSoon();
     },
 
     /**
@@ -381,10 +379,7 @@ WebInspector.TextPrompt.prototype = {
 
     _clearAutocompleteElement: function()
     {
-        if (this._completeTimeout) {
-            clearTimeout(this._completeTimeout);
-            delete this._completeTimeout;
-        }
+        this._clearAutocompleteTimeout();
 
         if (!this._autocompleteElement)
             return;
@@ -393,6 +388,15 @@ WebInspector.TextPrompt.prototype = {
         delete this._autocompleteElement;
         delete this._userEnteredRange;
         delete this._userEnteredText;
+    },
+
+    _clearAutocompleteTimeout: function()
+    {
+        if (this._completeTimeout) {
+            clearTimeout(this._completeTimeout);
+            delete this._completeTimeout;
+        }
+        this._completionRequestId++;
     },
 
     /**
@@ -411,7 +415,7 @@ WebInspector.TextPrompt.prototype = {
      */
     complete: function(force, reverse)
     {
-        this.clearAutocomplete();
+        this._clearAutocompleteTimeout();
         var selection = this._element.getComponentSelection();
         var selectionRange = selection && selection.rangeCount ? selection.getRangeAt(0) : null;
         if (!selectionRange)
@@ -426,7 +430,8 @@ WebInspector.TextPrompt.prototype = {
         else if (!force) {
             // BUG72018: Do not show suggest box if caret is followed by a non-stop character.
             var wordSuffixRange = selectionRange.startContainer.rangeOfWord(selectionRange.endOffset, this._completionStopCharacters, this._element, "forward");
-            if (wordSuffixRange.toString().length)
+            var autocompleteTextLength = (this._autocompleteElement && this._autocompleteElement.parentNode) ? this._autocompleteElement.textContent.length : 0;
+            if (wordSuffixRange.toString().length !== autocompleteTextLength)
                 shouldExit = true;
         }
         if (shouldExit) {
@@ -544,8 +549,10 @@ WebInspector.TextPrompt.prototype = {
             var prefixTextNode = createTextNode(prefixText);
             fullWordRange.insertNode(prefixTextNode);
 
-            this._autocompleteElement = createElementWithClass("span", "auto-complete-text");
+            if (!this._autocompleteElement)
+                this._autocompleteElement = createElementWithClass("span", "auto-complete-text");
             this._autocompleteElement.textContent = suffixText;
+            this._currentHintText = completionText;
 
             prefixTextNode.parentNode.insertBefore(this._autocompleteElement, prefixTextNode.nextSibling);
 

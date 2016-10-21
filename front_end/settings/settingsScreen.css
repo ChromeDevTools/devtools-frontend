@@ -175,11 +175,6 @@ fieldset {
     margin: 1px 7px 1px 2px;
 }
 
-.help-content option {
-    background-color: #EEEEEE;
-    color: #222;
-}
-
 .settings-window-title {
     font-size: 18px;
     color: rgb(48, 57, 66);

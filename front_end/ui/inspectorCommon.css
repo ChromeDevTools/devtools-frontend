@@ -266,6 +266,12 @@ body.inactive select.chrome-select,
     color: #aaa;
 }
 
+.chrome-select optgroup,
+.chrome-select option {
+    background-color: #EEEEEE;
+    color: #222;
+}
+
 :not(.platform-mac).-theme-with-dark-background ::-webkit-scrollbar,
 :host-context(:not(.platform-mac).-theme-with-dark-background) ::-webkit-scrollbar {
     width: 14px;

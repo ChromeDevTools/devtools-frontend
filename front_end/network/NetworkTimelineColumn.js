@@ -5,10 +5,12 @@
 /**
  * @constructor
  * @extends {WebInspector.VBox}
- * @param {!WebInspector.NetworkLogView} networkLogView
- * @param {!WebInspector.SortableDataGrid} dataGrid
+ * @param {number} rowHeight
+ * @param {number} headerHeight
+ * @param {!WebInspector.NetworkTransferTimeCalculator} calculator
+ * @param {!Element} scrollContainer
  */
-WebInspector.NetworkTimelineColumn = function(networkLogView, dataGrid)
+WebInspector.NetworkTimelineColumn = function(rowHeight, headerHeight, calculator, scrollContainer)
 {
     WebInspector.VBox.call(this, true);
     this.registerRequiredCSS("network/networkTimelineColumn.css");
@@ -24,8 +26,9 @@ WebInspector.NetworkTimelineColumn = function(networkLogView, dataGrid)
     /** @const */
     this._fontSize = 10;
 
-    this._dataGrid = dataGrid;
-    this._networkLogView = networkLogView;
+    this._rowHeight = rowHeight;
+    this._headerHeight = headerHeight;
+    this._calculator = calculator;
 
     this._popoverHelper = new WebInspector.PopoverHelper(this.element, this._getPopoverAnchor.bind(this), this._showPopover.bind(this));
     this._popoverHelper.setTimeout(300, 300);
@@ -39,18 +42,14 @@ WebInspector.NetworkTimelineColumn = function(networkLogView, dataGrid)
     this.element.addEventListener("mousemove", this._onMouseMove.bind(this), true);
     this.element.addEventListener("mouseleave", this.setHoveredRequest.bind(this, null), true);
 
-    this._dataGridScrollContainer = this._dataGrid.scrollContainer;
-    this._dataGridScrollContainer.addEventListener("mousewheel", event => {
+    this._boundScrollContainer = scrollContainer;
+    this._boundScrollContainer.addEventListener("mousewheel", event => {
         event.consume(true);
         this._onMouseWheel(event);
     }, true);
 
     // TODO(allada) When timeline canvas moves out of experiment move this to stylesheet.
-    this._dataGridScrollContainer.style.overflow = "hidden";
-    this._dataGrid.setScrollContainer(this._vScrollElement);
-
-    this._dataGrid.addEventListener(WebInspector.ViewportDataGrid.Events.ViewportCalculated, this._update.bind(this));
-    this._dataGrid.addEventListener(WebInspector.DataGrid.Events.PaddingChanged, this._updateHeight.bind(this));
+    this._boundScrollContainer.style.overflow = "hidden";
 
     /** @type {!Array<!WebInspector.NetworkRequest>} */
     this._requestData = [];
@@ -103,7 +102,6 @@ WebInspector.NetworkTimelineColumn.prototype = {
         if (!this._hoveredRequest)
             return;
 
-        var rowHeight = this._networkLogView.rowHeight();
         var range = WebInspector.RequestTimingView.calculateRequestTimeRanges(this._hoveredRequest, 0).find(data => data.name === "total");
         var start = this._timeToPosition(range.start);
         var end = this._timeToPosition(range.end);
@@ -113,7 +111,7 @@ WebInspector.NetworkTimelineColumn.prototype = {
 
         var rowIndex = this._requestData.findIndex(request => this._hoveredRequest === request);
         var barHeight = this._getBarHeight(range.name);
-        var y = this._networkLogView.headerHeight() + (rowHeight * rowIndex - this._vScrollElement.scrollTop) + ((rowHeight - barHeight) / 2);
+        var y = this._headerHeight + (this._rowHeight * rowIndex - this._vScrollElement.scrollTop) + ((this._rowHeight - barHeight) / 2);
 
         if (event.offsetY < y || event.offsetY > y + barHeight)
             return;
@@ -134,29 +132,21 @@ WebInspector.NetworkTimelineColumn.prototype = {
     {
         if (!this._hoveredRequest)
             return;
-        var content = WebInspector.RequestTimingView.createTimingTable(this._hoveredRequest, this._networkLogView.calculator().minimumBoundary());
+        var content = WebInspector.RequestTimingView.createTimingTable(this._hoveredRequest, this._calculator.minimumBoundary());
         popover.showForAnchor(content, anchor);
     },
 
     wasShown: function()
     {
-        this.scheduleUpdate();
+        this.scheduleDraw();
     },
 
-    scheduleRefreshData: function()
+    /**
+     * @return {!Element}
+     */
+    getScrollContainer: function()
     {
-        this._needsRefreshData = true;
-    },
-
-    _refreshDataIfNeeded: function()
-    {
-        if (!this._needsRefreshData)
-            return;
-        this._needsRefreshData = false;
-        var currentNode = this._dataGrid.rootNode();
-        this._requestData = [];
-        while (currentNode = currentNode.traverseNextNode(true))
-            this._requestData.push(currentNode.request());
+        return this._vScrollElement;
     },
 
     /**
@@ -165,7 +155,31 @@ WebInspector.NetworkTimelineColumn.prototype = {
     setHoveredRequest: function(request)
     {
         this._hoveredRequest = request;
-        this.scheduleUpdate();
+        this.scheduleDraw();
+    },
+
+    /**
+     * @param {number} height
+     */
+    setRowHeight: function(height)
+    {
+        this._rowHeight = height;
+    },
+
+    /**
+     * @param {number} height
+     */
+    setHeaderHeight: function(height)
+    {
+        this._headerHeight = height;
+    },
+
+    /**
+     * @param {!WebInspector.NetworkTimeCalculator} calculator
+     */
+    setCalculator: function(calculator)
+    {
+        this._calculator = calculator;
     },
 
     /**
@@ -183,7 +197,7 @@ WebInspector.NetworkTimelineColumn.prototype = {
     _onMouseWheel: function(event)
     {
         this._vScrollElement.scrollTop -= event.wheelDeltaY;
-        this._dataGridScrollContainer.scrollTop = this._vScrollElement.scrollTop;
+        this._boundScrollContainer.scrollTop = this._vScrollElement.scrollTop;
         this._popoverHelper.hidePopover();
 
         var request = this._getRequestFromPoint(event.offsetX, event.offsetY);
@@ -195,7 +209,7 @@ WebInspector.NetworkTimelineColumn.prototype = {
      */
     _onScroll: function(event)
     {
-        this._dataGridScrollContainer.scrollTop = this._vScrollElement.scrollTop;
+        this._boundScrollContainer.scrollTop = this._vScrollElement.scrollTop;
         this._popoverHelper.hidePopover();
     },
 
@@ -206,35 +220,39 @@ WebInspector.NetworkTimelineColumn.prototype = {
      */
     _getRequestFromPoint: function(x, y)
     {
-        var rowHeight = this._networkLogView.rowHeight();
         var scrollTop = this._vScrollElement.scrollTop;
-        return this._requestData[Math.floor((scrollTop + y - this._networkLogView.headerHeight()) / rowHeight)] || null;
+        return this._requestData[Math.floor((scrollTop + y - this._headerHeight) / this._rowHeight)] || null;
     },
 
-    scheduleUpdate: function()
+    scheduleDraw: function()
     {
         if (this._updateRequestID)
             return;
-        this._updateRequestID = this.element.window().requestAnimationFrame(this._update.bind(this));
+        this._updateRequestID = this.element.window().requestAnimationFrame(this.update.bind(this, undefined));
     },
 
-    _update: function()
+    /**
+     * @param {!Array<!WebInspector.NetworkRequest>=} requests
+     */
+    update: function(requests)
     {
+        if (requests)
+            this._requestData = requests;
         this.element.window().cancelAnimationFrame(this._updateRequestID);
         this._updateRequestID = null;
 
-        this._refreshDataIfNeeded();
-
-        this._startTime = this._networkLogView.calculator().minimumBoundary();
-        this._endTime = this._networkLogView.calculator().maximumBoundary();
+        this._startTime = this._calculator.minimumBoundary();
+        this._endTime = this._calculator.maximumBoundary();
         this._resetCanvas();
         this._draw();
     },
 
-    _updateHeight: function()
+    /**
+     * @param {number} height
+     */
+    setScrollHeight: function(height)
     {
-        var totalHeight = this._dataGridScrollContainer.scrollHeight;
-        this._vScrollContent.style.height = totalHeight + "px";
+        this._vScrollContent.style.height = height + "px";
     },
 
     _resetCanvas: function()
@@ -254,7 +272,7 @@ WebInspector.NetworkTimelineColumn.prototype = {
         WebInspector.VBox.prototype.onResize.call(this);
         this._offsetWidth = this.contentElement.offsetWidth;
         this._offsetHeight = this.contentElement.offsetHeight;
-        this.scheduleUpdate();
+        this.scheduleDraw();
     },
 
     /**
@@ -304,22 +322,21 @@ WebInspector.NetworkTimelineColumn.prototype = {
 
     _draw: function()
     {
-        var useTimingBars = !WebInspector.moduleSetting("networkColorCodeResourceTypes").get() && !this._networkLogView.calculator().startAtZero;
+        var useTimingBars = !WebInspector.moduleSetting("networkColorCodeResourceTypes").get() && !this._calculator.startAtZero;
         var requests = this._requestData;
         var context = this._canvas.getContext("2d");
         context.save();
         context.scale(window.devicePixelRatio, window.devicePixelRatio);
-        context.translate(0, this._networkLogView.headerHeight());
+        context.translate(0, this._headerHeight);
         context.rect(0, 0, this._offsetWidth, this._offsetHeight);
         context.clip();
-        var rowHeight = this._networkLogView.rowHeight();
         var scrollTop = this._vScrollElement.scrollTop;
-        var firstRequestIndex = Math.floor(scrollTop / rowHeight);
-        var lastRequestIndex = Math.min(requests.length, firstRequestIndex + Math.ceil(this._offsetHeight / rowHeight));
+        var firstRequestIndex = Math.floor(scrollTop / this._rowHeight);
+        var lastRequestIndex = Math.min(requests.length, firstRequestIndex + Math.ceil(this._offsetHeight / this._rowHeight));
         for (var i = firstRequestIndex; i < lastRequestIndex; i++) {
-            var rowOffset = rowHeight * i;
+            var rowOffset = this._rowHeight * i;
             var request = requests[i];
-            this._decorateRow(context, request, i, rowOffset - scrollTop, rowHeight);
+            this._decorateRow(context, request, i, rowOffset - scrollTop);
             if (useTimingBars)
                 this._drawTimingBars(context, request, rowOffset - scrollTop);
             else
@@ -368,7 +385,7 @@ WebInspector.NetworkTimelineColumn.prototype = {
             if (position <= gridSliceTime * pixelsPerTime)
                 continue;
             var textData = Number.secondsToString(position / pixelsPerTime);
-            context.fillText(textData, drawPosition - context.measureText(textData).width - 2, Math.floor(this._networkLogView.headerHeight() - this._fontSize / 2));
+            context.fillText(textData, drawPosition - context.measureText(textData).width - 2, Math.floor(this._headerHeight - this._fontSize / 2));
         }
         context.restore();
     },
@@ -378,7 +395,7 @@ WebInspector.NetworkTimelineColumn.prototype = {
      */
     _timelineDuration: function()
     {
-        return this._networkLogView.calculator().maximumBoundary() - this._networkLogView.calculator().minimumBoundary();
+        return this._calculator.maximumBoundary() - this._calculator.minimumBoundary();
     },
 
     /**
@@ -459,15 +476,14 @@ WebInspector.NetworkTimelineColumn.prototype = {
         var borderWidth = 1;
 
         context.save();
-        var calculator = this._networkLogView.calculator();
-        var percentages = calculator.computeBarGraphPercentages(request);
+        var percentages = this._calculator.computeBarGraphPercentages(request);
         var drawWidth = this._offsetWidth - this._leftPadding - this._rightPadding;
         var borderOffset = borderWidth % 2 === 0 ? 0 : .5;
         var start = this._leftPadding + Math.floor((percentages.start / 100) * drawWidth) + borderOffset;
         var mid = this._leftPadding + Math.floor((percentages.middle / 100) * drawWidth) + borderOffset;
         var end = this._leftPadding + Math.floor((percentages.end / 100) * drawWidth) + borderOffset;
         var height = this._getBarHeight();
-        y += Math.floor(this._networkLogView.rowHeight() / 2 - height / 2 + borderWidth) - borderWidth / 2;
+        y += Math.floor(this._rowHeight / 2 - height / 2 + borderWidth) - borderWidth / 2;
 
         context.translate(0, y);
         context.fillStyle = this._colorForResourceType(context, request);
@@ -488,7 +504,7 @@ WebInspector.NetworkTimelineColumn.prototype = {
         context.stroke();
 
         if (request === this._hoveredRequest) {
-            var labels = calculator.computeBarGraphLabels(request);
+            var labels = this._calculator.computeBarGraphLabels(request);
             this._drawSimplifiedBarDetails(context, labels.left, labels.right, start, mid, mid + barWidth + borderOffset);
         }
 
@@ -572,7 +588,7 @@ WebInspector.NetworkTimelineColumn.prototype = {
                 lineWidth = 2;
             context.fillStyle = color;
             var height = this._getBarHeight(range.name);
-            var middleBarY = y + Math.floor(this._networkLogView.rowHeight() / 2 - height / 2) + lineWidth / 2;
+            var middleBarY = y + Math.floor(this._rowHeight / 2 - height / 2) + lineWidth / 2;
             var start = this._timeToPosition(range.start);
             var end = this._timeToPosition(range.end);
             context.rect(start, middleBarY, end - start, height - lineWidth);
@@ -591,9 +607,8 @@ WebInspector.NetworkTimelineColumn.prototype = {
      * @param {!WebInspector.NetworkRequest} request
      * @param {number} rowNumber
      * @param {number} y
-     * @param {number} rowHeight
      */
-    _decorateRow: function(context, request, rowNumber, y, rowHeight)
+    _decorateRow: function(context, request, rowNumber, y)
     {
         if (rowNumber % 2 === 1 && this._hoveredRequest !== request)
             return;
@@ -604,7 +619,7 @@ WebInspector.NetworkTimelineColumn.prototype = {
             color = this._rowHoverColor;
 
         context.fillStyle = color;
-        context.rect(0, y, this._offsetWidth, rowHeight);
+        context.rect(0, y, this._offsetWidth, this._rowHeight);
         context.fill();
         context.restore();
     },

@@ -83,6 +83,7 @@ WebInspector.NetworkLogView = function(filterBar, progressBarContainer, networkL
 
     this._headerHeight = 0;
     this._timelineHeaderElement = null;
+    this._timelineRequestsAreStale = false;
 
     this._addFilters();
     this._resetSuggestionBuilder();
@@ -293,7 +294,15 @@ WebInspector.NetworkLogView.prototype = {
             this._timelineWidget.element.classList.add("network-timeline-view");
             this._splitWidget.setMainWidget(this._timelineWidget);
 
-            this._timelineColumn = new WebInspector.NetworkTimelineColumn(this, this._dataGrid);
+            this._timelineColumn = new WebInspector.NetworkTimelineColumn(this._rowHeight, this._headerHeight, this._calculator, this._dataGrid.scrollContainer);
+
+            var dataGridScroller = this._dataGrid.scrollContainer;
+            this._dataGrid.setScrollContainer(this._timelineColumn.getScrollContainer());
+            this._dataGrid.addEventListener(WebInspector.DataGrid.Events.PaddingChanged, () => {
+                this._timelineColumn.setScrollHeight(dataGridScroller.scrollHeight)
+            });
+            this._dataGrid.addEventListener(WebInspector.ViewportDataGrid.Events.ViewportCalculated, this._redrawTimelineColumn.bind(this));
+
             this._timelineColumn.addEventListener(WebInspector.NetworkTimelineColumn.Events.RequestHovered, requestHovered.bind(this));
             this._timelineColumn.show(this._timelineWidget.element);
             this.switchViewMode(false);
@@ -316,6 +325,15 @@ WebInspector.NetworkLogView.prototype = {
             var node = request ? this._nodesByRequestId.get(request.requestId) : null;
             this._setHoveredNode(node || null);
         }
+    },
+
+    _redrawTimelineColumn: function()
+    {
+        /** @type {!Array<!WebInspector.NetworkRequest>|undefined} */
+        var requests;
+        if (this._timelineRequestsAreStale)
+            requests = this._getOrderedRequests();
+        this._timelineColumn.update(requests);
     },
 
     _showRecordingHint: function()
@@ -586,7 +604,11 @@ WebInspector.NetworkLogView.prototype = {
         if (!x || this._calculator === x)
             return;
 
-        this._calculator = x;
+        if (this._calculator !== x) {
+            this._calculator = x;
+            if (Runtime.experiments.isEnabled("canvasNetworkTimeline"))
+                this._timelineColumn.setCalculator(this._calculator);
+        }
         this._calculator.reset();
 
         if (this._calculator.startAtZero)
@@ -704,8 +726,18 @@ WebInspector.NetworkLogView.prototype = {
 
         this._staleRequestIds = {};
         this._updateSummaryBar();
+
         if (Runtime.experiments.isEnabled("canvasNetworkTimeline"))
-            this._timelineColumn.scheduleRefreshData();
+            this._timelineRequestsAreStale = true;
+    },
+
+    _getOrderedRequests: function()
+    {
+        var currentNode = this._dataGrid.rootNode();
+        var requestData = [];
+        while (currentNode = currentNode.traverseNextNode(true))
+            requestData.push(currentNode.request());
+        return requestData;
     },
 
     reset: function()
@@ -924,8 +956,19 @@ WebInspector.NetworkLogView.prototype = {
     {
         var largeRows = !!this._networkLogLargeRowsSetting.get();
         // TODO(allada) Make these non-magic numbers.
-        this._rowHeight = largeRows ? 41 : 21;
-        this._headerHeight = largeRows ? 31 : 27;
+        var rowHeight = largeRows ? 41 : 21;
+        var headerHeight = largeRows ? 31 : 27;
+        if (this._rowHeight !== rowHeight) {
+            this._rowHeight = rowHeight;
+            if (Runtime.experiments.isEnabled("canvasNetworkTimeline"))
+                this._timelineColumn.setRowHeight(this._rowHeight);
+        }
+        if (this._headerHeight !== headerHeight) {
+            this._headerHeight = headerHeight;
+            if (Runtime.experiments.isEnabled("canvasNetworkTimeline"))
+                this._timelineColumn.setHeaderHeight(this._headerHeight);
+        }
+
         this._dataGrid.element.classList.toggle("small", !largeRows);
         if (Runtime.experiments.isEnabled("canvasNetworkTimeline"))
             this._timelineHeaderElement.classList.toggle("small", !largeRows);
@@ -1169,7 +1212,7 @@ WebInspector.NetworkLogView.prototype = {
                 this._timelineColumnSortIcon.classList.add("sort-descending");
         }
 
-        this._timelineColumn.scheduleRefreshData();
+        this._timelineRequestsAreStale = true;
     },
 
     /**

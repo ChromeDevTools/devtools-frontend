@@ -73,7 +73,6 @@
 .elements-disclosure li .selection {
     display: none;
     z-index: -1;
-    margin-left: -10000px;
 }
 
 .elements-disclosure li.hovered:not(.selected) .selection {

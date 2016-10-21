@@ -262,6 +262,7 @@ WebInspector.ElementsTreeElement.prototype = {
         if (!this.selectionElement) {
             this.selectionElement = createElement("div");
             this.selectionElement.className = "selection fill";
+            this.selectionElement.style.setProperty("margin-left", this._computeLeftIndent() + "px");
             listItemElement.insertBefore(this.selectionElement, listItemElement.firstChild);
         }
     },
@@ -1079,7 +1080,10 @@ WebInspector.ElementsTreeElement.prototype = {
         this._highlightSearchResults();
     },
 
-    updateDecorations: function()
+    /**
+     * @return {number}
+     */
+    _computeLeftIndent: function()
     {
         var treeElement = this.parent;
         var depth = 0;
@@ -1089,7 +1093,12 @@ WebInspector.ElementsTreeElement.prototype = {
         }
 
         /** Keep it in sync with elementsTreeOutline.css **/
-        this._gutterContainer.style.left = (-12 * (depth - 2) - (this.isExpandable() ? 1 : 12)) + "px";
+        return -12 * (depth - 2) - (this.isExpandable() ? 1 : 12);
+    },
+
+    updateDecorations: function()
+    {
+        this._gutterContainer.style.left = this._computeLeftIndent() + "px";
 
         if (this.isClosingTag())
             return;

@@ -13,17 +13,15 @@ WebInspector.ChartViewport = function()
     this.contentElement.addEventListener("mousewheel", this._onMouseWheel.bind(this), false);
     this.contentElement.addEventListener("keydown", this._handleZoomPanKeys.bind(this), false);
 
-    WebInspector.installInertialDragHandle(this.contentElement, this._startDragging.bind(this), this._dragging.bind(this), this._endDragging.bind(this), "-webkit-grabbing", null);
-    WebInspector.installDragHandle(this.contentElement, this._startRangeSelection.bind(this), this._rangeSelectionDragging.bind(this), this._endRangeSelection.bind(this), "text", null);
+    this.viewportElement = this.contentElement.createChild("div", "fill");
+    WebInspector.installInertialDragHandle(this.viewportElement, this._startDragging.bind(this), this._dragging.bind(this), this._endDragging.bind(this), "-webkit-grabbing", null);
+    WebInspector.installDragHandle(this.viewportElement, this._startRangeSelection.bind(this), this._rangeSelectionDragging.bind(this), this._endRangeSelection.bind(this), "text", null);
 
-    /** @private */
     this._vScrollElement = this.contentElement.createChild("div", "flame-chart-v-scroll");
     this._vScrollContent = this._vScrollElement.createChild("div");
     this._vScrollElement.addEventListener("scroll", this._onScroll.bind(this), false);
 
-    /** @private */
     this._selectionOverlay = this.contentElement.createChild("div", "flame-chart-selection-overlay hidden");
-    /** @private */
     this._selectedTimeSpanLabel = this._selectionOverlay.createChild("div", "time-span");
 
     this.reset();
@@ -53,10 +51,10 @@ WebInspector.ChartViewport.prototype = {
     _updateScrollBar: function()
     {
         var showScroll = this._totalHeight > this._offsetHeight;
-        if (this._vScrollElement.classList.contains("hidden") === showScroll) {
-            this._vScrollElement.classList.toggle("hidden", !showScroll);
-            this._updateContentElementSize();
-        }
+        if (this._vScrollElement.classList.contains("hidden") !== showScroll)
+            return;
+        this._vScrollElement.classList.toggle("hidden", !showScroll);
+        this._updateContentElementSize();
     },
 
     /**
@@ -72,35 +70,19 @@ WebInspector.ChartViewport.prototype = {
     reset: function()
     {
         this._vScrollElement.scrollTop = 0;
-        /** @private */
         this._scrollTop = 0;
-        /** @private */
         this._rangeSelectionStart = 0;
-        /** @private */
         this._rangeSelectionEnd = 0;
-        /** @private */
-        this._scrollTop = 0;
-        /** @private */
         this._isDragging = false;
-        /** @private */
         this._dragStartPointX = 0;
-        /** @private */
         this._dragStartPointY = 0;
-        /** @private */
         this._dragStartScrollTop = 0;
-        /** @private */
         this._timeWindowLeft = 0;
-        /** @private */
         this._timeWindowRight = 0;
-        /** @private */
         this._offsetWidth = 0;
-        /** @private */
         this._offsetHeight = 0;
-        /** @private */
         this._totalHeight = 0;
-        /** @private */
         this._pendingAnimationTimeLeft = 0;
-        /** @private */
         this._pendingAnimationTimeRight = 0;
     },
 
@@ -120,6 +102,7 @@ WebInspector.ChartViewport.prototype = {
     {
         this._totalHeight = totalHeight;
         this._vScrollContent.style.height = totalHeight + "px";
+        this._updateScrollBar();
         if (this._scrollTop + this._offsetHeight <= totalHeight)
             return;
         this._scrollTop = Math.max(0, totalHeight - this._offsetHeight);
@@ -192,7 +175,7 @@ WebInspector.ChartViewport.prototype = {
         this._dragStartPointX = x;
         this._dragStartPointY = y;
         this._dragStartScrollTop = this._vScrollElement.scrollTop;
-        this.contentElement.style.cursor = "";
+        this.viewportElement.style.cursor = "";
         this.hideHighlight();
         return true;
     },
@@ -437,12 +420,12 @@ WebInspector.ChartViewport.prototype = {
      */
     _cancelAnimation: function()
     {
-        if (this._cancelWindowTimesAnimation) {
-            this._timeWindowLeft = this._pendingAnimationTimeLeft;
-            this._timeWindowRight = this._pendingAnimationTimeRight;
-            this._cancelWindowTimesAnimation();
-            delete this._cancelWindowTimesAnimation;
-        }
+        if (!this._cancelWindowTimesAnimation)
+            return;
+        this._timeWindowLeft = this._pendingAnimationTimeLeft;
+        this._timeWindowRight = this._pendingAnimationTimeRight;
+        this._cancelWindowTimesAnimation();
+        delete this._cancelWindowTimesAnimation;
     },
 
     scheduleUpdate: function()
@@ -463,6 +446,7 @@ WebInspector.ChartViewport.prototype = {
      */
     setWindowTimes: function(startTime, endTime)
     {
+        this.hideRangeSelection();
         if (this._muteAnimation || this._timeWindowLeft === 0 || this._timeWindowRight === Infinity || (startTime === 0 && endTime === Infinity) || (startTime === Infinity && endTime === Infinity)) {
             // Initial setup.
             this._timeWindowLeft = startTime;

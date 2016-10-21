@@ -66,7 +66,7 @@ WebInspector.FlameChart = function(dataProvider, flameChartDelegate, groupExpans
     this._dataProvider = dataProvider;
     this._calculator = new WebInspector.FlameChart.Calculator(dataProvider);
 
-    this._canvas = /** @type {!HTMLCanvasElement} */ (this.contentElement.createChild("canvas"));
+    this._canvas = /** @type {!HTMLCanvasElement} */ (this.viewportElement.createChild("canvas"));
     this._canvas.tabIndex = 1;
     this.setDefaultFocusedElement(this._canvas);
     this._canvas.addEventListener("mousemove", this._onMouseMove.bind(this), false);
@@ -74,10 +74,10 @@ WebInspector.FlameChart = function(dataProvider, flameChartDelegate, groupExpans
     this._canvas.addEventListener("click", this._onClick.bind(this), false);
     this._canvas.addEventListener("keydown", this._onKeyDown.bind(this), false);
 
-    this._entryInfo = this.contentElement.createChild("div", "flame-chart-entry-info");
-    this._markerHighlighElement = this.contentElement.createChild("div", "flame-chart-marker-highlight-element");
-    this._highlightElement = this.contentElement.createChild("div", "flame-chart-highlight-element");
-    this._selectedElement = this.contentElement.createChild("div", "flame-chart-selected-element");
+    this._entryInfo = this.viewportElement.createChild("div", "flame-chart-entry-info");
+    this._markerHighlighElement = this.viewportElement.createChild("div", "flame-chart-marker-highlight-element");
+    this._highlightElement = this.viewportElement.createChild("div", "flame-chart-highlight-element");
+    this._selectedElement = this.viewportElement.createChild("div", "flame-chart-selected-element");
 
     this._windowLeft = 0.0;
     this._windowRight = 1.0;
@@ -498,7 +498,6 @@ WebInspector.FlameChart.prototype = {
     hideHighlight: function()
     {
         this._entryInfo.removeChildren();
-        this._canvas.style.cursor = "default";
         this._highlightedEntryIndex = -1;
         this._updateElementPosition(this._highlightElement, this._highlightedEntryIndex);
     },
@@ -577,7 +576,7 @@ WebInspector.FlameChart.prototype = {
             return;
         if (this._coordinatesToGroupIndex(event.offsetX, event.offsetY) >= 0) {
             this.hideHighlight();
-            this._canvas.style.cursor = "pointer";
+            this.viewportElement.style.cursor = "pointer";
             return;
         }
         this._updateHighlight();
@@ -594,8 +593,10 @@ WebInspector.FlameChart.prototype = {
             this.hideHighlight();
             return;
         }
+        if (this.isDragging())
+            return;
         this._updatePopover(entryIndex);
-        this._canvas.style.cursor = this._dataProvider.canJumpToEntry(entryIndex) ? "pointer" : "default";
+        this.viewportElement.style.cursor = this._dataProvider.canJumpToEntry(entryIndex) ? "pointer" : "default";
         this.highlightEntry(entryIndex);
     },
 
@@ -1355,7 +1356,7 @@ WebInspector.FlameChart.prototype = {
         var style = element.style;
         style.left = barX + "px";
         style.backgroundColor = marker.color();
-        this.contentElement.appendChild(element);
+        this.viewportElement.appendChild(element);
     },
 
     /**
@@ -1396,6 +1397,7 @@ WebInspector.FlameChart.prototype = {
                 groups[i].expanded = expanded;
         }
         this._updateLevelPositions();
+        this._updateHeight();
     },
 
     _updateLevelPositions: function()
@@ -1502,7 +1504,7 @@ WebInspector.FlameChart.prototype = {
         style.top = barY + "px";
         style.width = barWidth + "px";
         style.height = this._barHeight - 1 + "px";
-        this.contentElement.appendChild(element);
+        this.viewportElement.appendChild(element);
     },
 
     /**

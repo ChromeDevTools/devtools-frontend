@@ -1408,19 +1408,18 @@ WebInspector.TimelineUIUtils._aggregatedStatsForTraceEvent = function(total, mod
  */
 WebInspector.TimelineUIUtils.buildPicturePreviewContent = function(event, target, callback)
 {
-    new WebInspector.LayerPaintEvent(event, target).loadSnapshot(onSnapshotLoaded);
+    new WebInspector.LayerPaintEvent(event, target).snapshotPromise().then(onSnapshotLoaded);
     /**
-     * @param {?Array.<number>} rect
-     * @param {?WebInspector.PaintProfilerSnapshot} snapshot
+     * @param {?{rect: !Array<number>, snapshot: !WebInspector.PaintProfilerSnapshot}} snapshotWithRect
      */
-    function onSnapshotLoaded(rect, snapshot)
+    function onSnapshotLoaded(snapshotWithRect)
     {
-        if (!snapshot) {
+        if (!snapshotWithRect) {
             callback();
             return;
         }
-        snapshot.requestImage(null, null, 1, onGotImage);
-        snapshot.dispose();
+        snapshotWithRect.snapshot.requestImage(null, null, 1, onGotImage);
+        snapshotWithRect.snapshot.dispose();
     }
 
     /**

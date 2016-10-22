@@ -103,25 +103,20 @@ WebInspector.TimelineFrameModel.prototype = {
 
     /**
      * @param {!WebInspector.TracingModel.Event} rasterTask
-     * @param {function(?DOMAgent.Rect, ?WebInspector.PaintProfilerSnapshot)} callback
+     * @return Promise<?{rect: !DOMAgent.Rect, snapshot: !WebInspector.PaintProfilerSnapshot}>}
      */
-    requestRasterTile: function(rasterTask, callback)
+    rasterTilePromise: function(rasterTask)
     {
-        var target = this._target;
-        if (!target) {
-            callback(null, null);
-            return;
-        }
+        if (!this._target)
+            return Promise.resolve(null);
         var data = rasterTask.args["tileData"];
         var frameId = data["sourceFrameNumber"];
         var tileId = data["tileId"] && data["tileId"]["id_ref"];
         var frame = frameId && this._frameById[frameId];
-        if (!frame || !frame.layerTree || !tileId) {
-            callback(null, null);
-            return;
-        }
+        if (!frame || !frame.layerTree || !tileId)
+            return Promise.resolve(null);
 
-        frame.layerTree.resolve(layerTree => layerTree.pictureForRasterTile(tileId, callback));
+        return frame.layerTree.layerTreePromise().then(layerTree => layerTree && layerTree.pictureForRasterTile(tileId));
     },
 
     reset: function()
@@ -401,19 +396,13 @@ WebInspector.TracingFrameLayerTree = function(target, snapshot)
 
 WebInspector.TracingFrameLayerTree.prototype = {
     /**
-     * @param {function(!WebInspector.LayerTreeBase)} callback
+     * @return {!Promise<?WebInspector.TracingLayerTree>}
      */
-    resolve: function(callback)
+    layerTreePromise: function()
     {
-        this._snapshot.requestObject(onGotObject.bind(this));
-        /**
-         * @this {WebInspector.TracingFrameLayerTree}
-         * @param {?Object} result
-         */
-        function onGotObject(result)
-        {
+        return this._snapshot.objectPromise().then(result => {
             if (!result)
-                return;
+                return null;
             var viewport = result["device_viewport_size"];
             var tiles = result["active_tiles"];
             var rootLayer = result["active_tree"]["root_layer"];
@@ -421,8 +410,8 @@ WebInspector.TracingFrameLayerTree.prototype = {
             var layerTree = new WebInspector.TracingLayerTree(this._target);
             layerTree.setViewportSize(viewport);
             layerTree.setTiles(tiles);
-            layerTree.setLayers(rootLayer, layers, this._paints || [], callback.bind(null, layerTree));
-        }
+            return new Promise(resolve => layerTree.setLayers(rootLayer, layers, this._paints || [], () => resolve(layerTree)));
+        });
     },
 
     /**
@@ -439,7 +428,7 @@ WebInspector.TracingFrameLayerTree.prototype = {
     _setPaints: function(paints)
     {
         this._paints = paints;
-    },
+    }
 };
 
 
@@ -541,44 +530,29 @@ WebInspector.LayerPaintEvent.prototype = {
     },
 
     /**
-     * @param {function(?Array.<number>, ?string)} callback
+     * @return {!Promise<?{rect: !Array<number>, serializedPicture: string}>}
      */
-    loadPicture: function(callback)
+    picturePromise: function()
     {
-        this._event.picture.requestObject(onGotObject);
-        /**
-         * @param {?Object} result
-         */
-        function onGotObject(result)
-        {
-            if (!result || !result["skp64"]) {
-                callback(null, null);
-                return;
-            }
+        return this._event.picture.objectPromise().then(result => {
+            if (!result)
+                return null;
             var rect = result["params"] && result["params"]["layer_rect"];
-            callback(rect, result["skp64"]);
-        }
+            var picture = result["skp64"];
+            return rect && picture ? {rect: rect, serializedPicture: picture} : null;
+        });
     },
 
     /**
-     * @param {function(?Array.<number>, ?WebInspector.PaintProfilerSnapshot)} callback
+     * @return !Promise<?{rect: Array<number>, snapshot: !WebInspector.PaintProfilerSnapshot}>}
      */
-    loadSnapshot: function(callback)
+    snapshotPromise: function()
     {
-        this.loadPicture(onGotPicture.bind(this));
-        /**
-         * @param {?Array.<number>} rect
-         * @param {?string} picture
-         * @this {WebInspector.LayerPaintEvent}
-         */
-        function onGotPicture(rect, picture)
-        {
-            if (!rect || !picture || !this._target) {
-                callback(null, null);
-                return;
-            }
-            WebInspector.PaintProfilerSnapshot.load(this._target, picture, callback.bind(null, rect));
-        }
+        return this.picturePromise().then(picture => {
+            if (!picture || !this._target)
+                return null;
+            return WebInspector.PaintProfilerSnapshot.load(this._target, picture.serializedPicture).then(snapshot => snapshot ? {rect: picture.rect, snapshot: snapshot} : null);
+        });
     }
 };
 

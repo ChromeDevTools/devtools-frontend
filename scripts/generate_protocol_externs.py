@@ -50,7 +50,8 @@ promisified_domains = {
     "Browser",
     "CSS",
     "Emulation",
-    "Profiler"
+    "Profiler",
+    "LayerTree"
 }
 
 ref_types = {}

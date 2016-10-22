@@ -66,38 +66,28 @@ WebInspector.TimelinePaintProfilerView.prototype = {
         this._logTreeView.setCommandLog(null, []);
         this._paintProfilerView.setSnapshotAndLog(null, [], null);
 
-        if (this._event.name === WebInspector.TimelineModel.RecordType.Paint)
-            this._event.picture.requestObject(onDataAvailable.bind(this));
-        else if (this._event.name === WebInspector.TimelineModel.RecordType.RasterTask)
-            this._frameModel.requestRasterTile(this._event, onSnapshotLoaded.bind(this))
-        else
+        var snapshotPromise;
+        if (this._event.name === WebInspector.TimelineModel.RecordType.Paint) {
+            snapshotPromise = this._event.picture.objectPromise()
+                .then(data => WebInspector.PaintProfilerSnapshot.load(this._target, data["skp64"]))
+                .then(snapshot => snapshot && {rect: null, snapshot: snapshot});
+        } else if (this._event.name === WebInspector.TimelineModel.RecordType.RasterTask) {
+            snapshotPromise = this._frameModel.rasterTilePromise(this._event);
+        } else {
             console.assert(false, "Unexpected event type: " + this._event.name);
-
-        /**
-         * @param {!Object} data
-         * @this WebInspector.TimelinePaintProfilerView
-         */
-        function onDataAvailable(data)
-        {
-            if (data)
-                WebInspector.PaintProfilerSnapshot.load(this._target, data["skp64"], onSnapshotLoaded.bind(this, null));
+            return;
         }
-        /**
-         * @param {?DOMAgent.Rect} tileRect
-         * @param {?WebInspector.PaintProfilerSnapshot} snapshot
-         * @this WebInspector.TimelinePaintProfilerView
-         */
-        function onSnapshotLoaded(tileRect, snapshot)
-        {
+        snapshotPromise.then(snapshotWithRect => {
             this._disposeSnapshot();
-            this._lastLoadedSnapshot = snapshot;
-            this._imageView.setMask(tileRect);
-            if (!snapshot) {
+            if (!snapshotWithRect) {
                 this._imageView.showImage();
                 return;
             }
-            snapshot.commandLog(onCommandLogDone.bind(this, snapshot, tileRect));
-        }
+            var snapshot = snapshotWithRect.snapshot;
+            this._lastLoadedSnapshot = snapshot;
+            this._imageView.setMask(snapshotWithRect.rect);
+            snapshot.commandLog(onCommandLogDone.bind(this, snapshot, snapshotWithRect.rect));
+        });
 
         /**
          * @param {!WebInspector.PaintProfilerSnapshot} snapshot

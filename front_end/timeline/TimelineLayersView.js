@@ -74,47 +74,24 @@ WebInspector.TimelineLayersView.prototype = {
     _update: function()
     {
         var layerTree;
-
         var originalTiles = this._paintTiles;
-        var tilesReadyBarrier = new CallbackBarrier();
-        this._frameLayerTree.resolve(tilesReadyBarrier.createCallback(onLayersReady));
-        this._frameLayerTree.paints().forEach(paint => paint.loadSnapshot(tilesReadyBarrier.createCallback(onSnapshotLoaded.bind(this, paint))));
-        tilesReadyBarrier.callWhenDone(onLayersAndTilesReady.bind(this));
-
-        /**
-         * @param {!WebInspector.LayerTreeBase} resolvedLayerTree
-         */
-        function onLayersReady(resolvedLayerTree)
-        {
-            layerTree = resolvedLayerTree;
-        }
-
-        /**
-         * @param {!WebInspector.LayerPaintEvent} paintEvent
-         * @param {?Array.<number>} rect
-         * @param {?WebInspector.PaintProfilerSnapshot} snapshot
-         * @this {WebInspector.TimelineLayersView}
-         */
-        function onSnapshotLoaded(paintEvent, rect, snapshot)
-        {
-            if (!rect || !snapshot)
+        var snapshotPromises = this._frameLayerTree.paints().map(paint => paint.snapshotPromise().then(snapshotWithRect => {
+            if (!snapshotWithRect)
                 return;
             // We're too late and there's a new generation of tiles being loaded.
             if (originalTiles !== this._paintTiles) {
-                snapshot.dispose();
+                snapshotWithRect.snapshot.dispose();
                 return;
             }
-            this._paintTiles.push({layerId: paintEvent.layerId(), rect: rect, snapshot: snapshot, traceEvent: paintEvent.event()});
-        }
-
-        /**
-         * @this {WebInspector.TimelineLayersView}
-         */
-        function onLayersAndTilesReady()
-        {
+            this._paintTiles.push({layerId: paint.layerId(), rect: snapshotWithRect.rect, snapshot: snapshotWithRect.snapshot, traceEvent: paint.event()});
+        }));
+        snapshotPromises.push(this._frameLayerTree.layerTreePromise().then(resolvedTree => layerTree = resolvedTree));
+        Promise.all(snapshotPromises).then(() => {
+            if (!layerTree)
+                return;
             this._layerViewHost.setLayerTree(layerTree);
             this._layers3DView.setTiles(this._paintTiles);
-        }
+        });
     },
 
     _disposeTiles: function()

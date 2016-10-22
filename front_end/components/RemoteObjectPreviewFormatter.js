@@ -154,7 +154,6 @@ WebInspector.RemoteObjectPreviewFormatter.prototype = {
         }
 
         if (type === "object" && subtype === "node" && description) {
-            span.classList.add("object-value-preview-node");
             WebInspector.DOMPresentationUtils.createSpansForNodeTitle(span, description);
             return span;
         }

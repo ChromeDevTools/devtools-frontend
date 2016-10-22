@@ -23,7 +23,8 @@
     background-color: rgba(56, 121, 217, 0.1);
 }
 
-.object-value-function-prefix {
+.object-value-function-prefix,
+.object-value-boolean {
     color: rgb(170, 13, 145);
 }
 
@@ -54,9 +55,6 @@
 .object-value-number {
     color: rgb(28, 0, 207);
 }
-.object-value-boolean {
-    color: rgb(170, 13, 145);
-}
 
 .object-value-string,
 .object-value-regexp,
@@ -83,39 +81,6 @@
 
 .object-value-calculate-value-button:hover {
     text-decoration: underline;
-}
-
-.object-value-object .section,
-.object-value-promise .section,
-.object-formatted-map .section,
-.object-value-set .section,
-.object-value-iterator .section,
-.object-value-generator .section,
-.object-value-node .section,
-.object-value-typedarray .section,
-.object-value-array .section {
-    position: static;
-}
-
-.object-value-object .section > .header::before,
-.object-value-promise .section > .header::before {
-    margin-top: 0;
-}
-
-
-.object-value-object .properties-tree,
-.object-value-promise .properties-tree,
-.object-value-map .properties-tree,
-.object-value-set .properties-tree,
-.object-value-iterator .properties-tree,
-.object-value-generator .properties-tree,
-.object-value-node .properties-tree {
-    padding-left: 0 !important;
-}
-
-.object-value-preview-node,
-.section .object-value-node {
-    color: rgb(136, 18, 128);
 }
 
 .object-properties-section-custom-section {

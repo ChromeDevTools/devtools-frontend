@@ -70,6 +70,14 @@ WebInspector.NetworkDataGridNode.prototype = {
         return this._request;
     },
 
+    /**
+     * @return {boolean}
+     */
+    isNavigationRequest: function()
+    {
+        return this._isNavigationRequest;
+    },
+
     markAsNavigationRequest: function()
     {
         this._isNavigationRequest = true;

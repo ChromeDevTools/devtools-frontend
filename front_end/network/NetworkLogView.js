@@ -329,11 +329,21 @@ WebInspector.NetworkLogView.prototype = {
 
     _redrawTimelineColumn: function()
     {
-        /** @type {!Array<!WebInspector.NetworkRequest>|undefined} */
-        var requests;
-        if (this._timelineRequestsAreStale)
-            requests = this._getOrderedRequests();
-        this._timelineColumn.update(requests);
+        if (!this._timelineRequestsAreStale) {
+            this._timelineColumn.update();
+            return;
+        }
+        var currentNode = this._dataGrid.rootNode();
+        var requestData = {
+            requests: [],
+            navigationRequest: null
+        };
+        while (currentNode = currentNode.traverseNextNode(true)) {
+            if (currentNode.isNavigationRequest())
+                requestData.navigationRequest = currentNode.request();
+            requestData.requests.push(currentNode.request());
+        }
+        this._timelineColumn.update(requestData);
     },
 
     _showRecordingHint: function()
@@ -729,15 +739,6 @@ WebInspector.NetworkLogView.prototype = {
 
         if (Runtime.experiments.isEnabled("canvasNetworkTimeline"))
             this._timelineRequestsAreStale = true;
-    },
-
-    _getOrderedRequests: function()
-    {
-        var currentNode = this._dataGrid.rootNode();
-        var requestData = [];
-        while (currentNode = currentNode.traverseNextNode(true))
-            requestData.push(currentNode.request());
-        return requestData;
     },
 
     reset: function()

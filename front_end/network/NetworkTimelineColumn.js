@@ -57,8 +57,13 @@ WebInspector.NetworkTimelineColumn = function(rowHeight, headerHeight, calculato
     /** @type {?WebInspector.NetworkRequest} */
     this._hoveredRequest = null;
 
-    this._rowStripeColor = WebInspector.themeSupport.patchColor("#f5f5f5", WebInspector.ThemeSupport.ColorUsage.Background);
-    this._rowHoverColor = WebInspector.themeSupport.patchColor("#ebf2fc", WebInspector.ThemeSupport.ColorUsage.Background);
+    /** @type {?WebInspector.NetworkRequest} */
+    this._navigationRequest = null;
+
+    var colorUsage = WebInspector.ThemeSupport.ColorUsage;
+    this._rowNavigationRequestColor = WebInspector.themeSupport.patchColor("#def", colorUsage.Background);
+    this._rowStripeColor = WebInspector.themeSupport.patchColor("#f5f5f5", colorUsage.Background);
+    this._rowHoverColor = WebInspector.themeSupport.patchColor("#ebf2fc", /** @type {!WebInspector.ThemeSupport.ColorUsage} */ (colorUsage.Background | colorUsage.Selection));
 
     /** @type {!Map<!WebInspector.ResourceType, string>} */
     this._borderColorsForResourceTypeCache = new Map();
@@ -228,16 +233,18 @@ WebInspector.NetworkTimelineColumn.prototype = {
     {
         if (this._updateRequestID)
             return;
-        this._updateRequestID = this.element.window().requestAnimationFrame(this.update.bind(this, undefined));
+        this._updateRequestID = this.element.window().requestAnimationFrame(() => this.update());
     },
 
     /**
-     * @param {!Array<!WebInspector.NetworkRequest>=} requests
+     * @param {!{requests: !Array<!WebInspector.NetworkRequest>, navigationRequest: ?WebInspector.NetworkRequest}=} requestData
      */
-    update: function(requests)
+    update: function(requestData)
     {
-        if (requests)
-            this._requestData = requests;
+        if (requestData) {
+            this._requestData = requestData.requests;
+            this._navigationRequest = requestData.navigationRequest;
+        }
         this.element.window().cancelAnimationFrame(this._updateRequestID);
         this._updateRequestID = null;
 
@@ -610,13 +617,15 @@ WebInspector.NetworkTimelineColumn.prototype = {
      */
     _decorateRow: function(context, request, rowNumber, y)
     {
-        if (rowNumber % 2 === 1 && this._hoveredRequest !== request)
+        if (rowNumber % 2 === 1 && this._hoveredRequest !== request && this._navigationRequest !== request)
             return;
         context.save();
         context.beginPath();
         var color = this._rowStripeColor;
         if (this._hoveredRequest === request)
             color = this._rowHoverColor;
+        else if (this._navigationRequest === request)
+            color = this._rowNavigationRequestColor;
 
         context.fillStyle = color;
         context.rect(0, y, this._offsetWidth, this._rowHeight);

@@ -1239,7 +1239,8 @@ WebInspector.DebuggerPausedDetails = function(debuggerModel, callFrames, reason,
     this.reason = reason;
     this.auxData = auxData;
     this.breakpointIds = breakpointIds;
-    this.asyncStackTrace = asyncStackTrace;
+    if (asyncStackTrace)
+        this.asyncStackTrace = this._cleanRedundantFrames(asyncStackTrace);
 }
 
 WebInspector.DebuggerPausedDetails.prototype = {
@@ -1251,6 +1252,26 @@ WebInspector.DebuggerPausedDetails.prototype = {
         if (this.reason !== WebInspector.DebuggerModel.BreakReason.Exception && this.reason !== WebInspector.DebuggerModel.BreakReason.PromiseRejection)
             return null;
         return this.target().runtimeModel.createRemoteObject(/** @type {!RuntimeAgent.RemoteObject} */(this.auxData));
+    },
+
+    /**
+     * @param {!RuntimeAgent.StackTrace} asyncStackTrace
+     * @return {!RuntimeAgent.StackTrace}
+     */
+    _cleanRedundantFrames: function(asyncStackTrace)
+    {
+        var stack = asyncStackTrace;
+        var previous = null;
+        while (stack) {
+            if (stack.description === "async function" && stack.callFrames.length)
+                stack.callFrames.shift();
+            if (previous && !stack.callFrames.length)
+                previous.parent = stack.parent;
+            else
+                previous = stack;
+            stack = stack.parent;
+        }
+        return asyncStackTrace;
     },
 
     __proto__: WebInspector.SDKObject.prototype

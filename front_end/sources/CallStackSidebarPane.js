@@ -81,12 +81,23 @@ WebInspector.CallStackSidebarPane.prototype = {
         this._appendSidebarCallFrames(this._callFramesFromDebugger(details.callFrames));
         var topStackHidden = (this._hiddenCallFrames === this.callFrames.length);
 
+        var peviousStackTrace = details.callFrames;
         while (asyncStackTrace) {
-            var title = WebInspector.asyncStackTraceLabel(asyncStackTrace.description);
+            var title = "";
+            if (asyncStackTrace.description === "async function") {
+                var lastPreviousFrame = peviousStackTrace[peviousStackTrace.length - 1];
+                var topFrame = asyncStackTrace.callFrames[0];
+                var lastPreviousFrameName = WebInspector.beautifyFunctionName(lastPreviousFrame.functionName);
+                var topFrameName = WebInspector.beautifyFunctionName(topFrame.functionName);
+                title = topFrameName + " awaits " + lastPreviousFrameName;
+            } else {
+                title = WebInspector.asyncStackTraceLabel(asyncStackTrace.description);
+            }
             var asyncCallFrame = new WebInspector.UIList.Item(title, "", true);
             asyncCallFrame.setHoverable(false);
             asyncCallFrame.element.addEventListener("contextmenu", this._asyncCallFrameContextMenu.bind(this, this.callFrames.length), true);
             this._appendSidebarCallFrames(this._callFramesFromRuntime(asyncStackTrace.callFrames, asyncCallFrame), asyncCallFrame);
+            peviousStackTrace = asyncStackTrace.callFrames;
             asyncStackTrace = asyncStackTrace.parent;
         }
 

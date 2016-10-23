@@ -36,7 +36,7 @@ WebInspector.NetworkTimelineColumn = function(rowHeight, headerHeight, calculato
     this._vScrollElement = this.contentElement.createChild("div", "network-timeline-v-scroll");
     this._vScrollElement.addEventListener("scroll", this._onScroll.bind(this), { passive: true });
     this._vScrollElement.addEventListener("mousewheel", this._onMouseWheel.bind(this), { passive: true });
-    this._vScrollContent = this._vScrollElement.createChild("div");
+    this._vScrollContent = this._vScrollElement.createChild("div", "network-timeline-v-scroll-content");
 
     this.element.addEventListener("mousewheel", this._onMouseWheel.bind(this), { passive: true });
     this.element.addEventListener("mousemove", this._onMouseMove.bind(this), true);
@@ -177,6 +177,7 @@ WebInspector.NetworkTimelineColumn.prototype = {
     setHeaderHeight: function(height)
     {
         this._headerHeight = height;
+        this._vScrollElement.style.marginTop = height + "px";
     },
 
     /**
@@ -244,6 +245,7 @@ WebInspector.NetworkTimelineColumn.prototype = {
         if (requestData) {
             this._requestData = requestData.requests;
             this._navigationRequest = requestData.navigationRequest;
+            this._calculateCanvasSize();
         }
         this.element.window().cancelAnimationFrame(this._updateRequestID);
         this._updateRequestID = null;
@@ -277,9 +279,18 @@ WebInspector.NetworkTimelineColumn.prototype = {
     onResize: function()
     {
         WebInspector.VBox.prototype.onResize.call(this);
-        this._offsetWidth = this.contentElement.offsetWidth;
-        this._offsetHeight = this.contentElement.offsetHeight;
+        this._calculateCanvasSize();
         this.scheduleDraw();
+    },
+
+    _calculateCanvasSize: function()
+    {
+        var scrollbarWidth = this._vScrollElement.offsetWidth;
+        // Offset by 1 px because css needs 1px to compute height and add scrollbar.
+        if (scrollbarWidth)
+            scrollbarWidth -= 1;
+        this._offsetWidth = this.contentElement.offsetWidth - scrollbarWidth;
+        this._offsetHeight = this.contentElement.offsetHeight;
     },
 
     /**

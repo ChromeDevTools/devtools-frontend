@@ -4,7 +4,6 @@
  */
 .network-timeline-v-scroll {
     position: absolute;
-    width: 14px;
     top: 0;
     right: 0;
     bottom: 0;
@@ -12,6 +11,6 @@
     z-index: 200;
 }
 
-.network-timeline-v-scroll {
-    margin-top: 27px;
+.network-timeline-v-scroll-content {
+    width: 1px;
 }

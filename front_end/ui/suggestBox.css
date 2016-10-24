@@ -90,21 +90,26 @@
     display: inline-block;
     content: "";
     -webkit-user-select: none;
-    background-image: url(Images/smallIcons.png);
-    background-size: 190px 30px;
+    -webkit-mask-image: url(Images/smallIcons.png);
+    -webkit-mask-size: 190px 30px;
     width: 10px;
     height: 10px;
     position: relative;
     top: 2px;
     margin-right: 4px;
-    background-position: -20px -20px;
+    -webkit-mask-position: -20px -20px;
+    background-color: rgb(56, 121, 217);
 }
 
 @media (-webkit-min-device-pixel-ratio: 1.1) {
 .suggest-box .suggest-box-content-item.additional::before {
-    background-image: url(Images/smallIcons_2x.png);
+    -webkit-mask-image: url(Images/smallIcons_2x.png);
 }
 } /* media */
+
+.suggest-box .suggest-box-content-item.additional.selected::before {
+    background-color: #FFF;
+}
 
 .suggest-box .suggest-box-content-item .prefix {
     font-weight: bold;
@@ -116,11 +121,12 @@
 }
 
 .suggest-box .suggest-box-content-item.selected {
-    background-color: rgba(56, 121, 217, 0.1);
+    background-color: rgb(56, 121, 217);
+    color: #FFF;
 }
 
 .suggest-box .suggest-box-content-item:hover:not(.selected) {
-    border: 1px solid rgb(204, 204, 204);
+    background-color: rgba(56, 121, 217, 0.1);
 }
 
 .suggest-box .details-popup {

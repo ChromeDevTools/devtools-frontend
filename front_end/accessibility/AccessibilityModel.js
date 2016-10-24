@@ -199,4 +199,4 @@ WebInspector.AccessibilityModel.fromTarget = function(target)
         target[WebInspector.AccessibilityModel._symbol] = new WebInspector.AccessibilityModel(target);
 
     return target[WebInspector.AccessibilityModel._symbol];
-}
+};

@@ -64,7 +64,7 @@ WebInspector.AuditsPanel = function()
         this.addCategory(new WebInspector.AuditExtensionCategory(category.extensionOrigin, category.id, category.displayName, category.ruleCount));
     }
     WebInspector.extensionServer.addEventListener(WebInspector.ExtensionServer.Events.AuditCategoryAdded, this._extensionAuditCategoryAdded, this);
-}
+};
 
 WebInspector.AuditsPanel.prototype = {
 
@@ -192,7 +192,7 @@ WebInspector.AuditsPanel.prototype = {
     },
 
     __proto__: WebInspector.PanelWithSidebar.prototype
-}
+};
 
 /**
  * @constructor
@@ -203,7 +203,7 @@ WebInspector.AuditCategoryImpl = function(displayName)
 {
     this._displayName = displayName;
     this._rules = [];
-}
+};
 
 WebInspector.AuditCategoryImpl.prototype = {
     /**
@@ -270,7 +270,7 @@ WebInspector.AuditCategoryImpl.prototype = {
             this._initialized = true;
         }
     }
-}
+};
 
 /**
  * @constructor
@@ -281,7 +281,7 @@ WebInspector.AuditRule = function(id, displayName)
 {
     this._id = id;
     this._displayName = displayName;
-}
+};
 
 /**
  * @enum {string}
@@ -290,13 +290,13 @@ WebInspector.AuditRule.Severity = {
     Info: "info",
     Warning: "warning",
     Severe: "severe"
-}
+};
 
 WebInspector.AuditRule.SeverityOrder = {
     "info": 3,
     "warning": 2,
     "severe": 1
-}
+};
 
 WebInspector.AuditRule.prototype = {
     get id()
@@ -344,7 +344,7 @@ WebInspector.AuditRule.prototype = {
     {
         throw new Error("doRun() not implemented");
     }
-}
+};
 
 /**
  * @constructor
@@ -354,7 +354,7 @@ WebInspector.AuditCategoryResult = function(category)
 {
     this.title = category.displayName;
     this.ruleResults = [];
-}
+};
 
 WebInspector.AuditCategoryResult.prototype = {
     /**
@@ -364,7 +364,7 @@ WebInspector.AuditCategoryResult.prototype = {
     {
         this.ruleResults.push(ruleResult);
     }
-}
+};
 
 /**
  * @constructor
@@ -384,7 +384,7 @@ WebInspector.AuditRuleResult = function(value, expanded, className)
     var standardFormatters = Object.keys(String.standardFormatters);
     for (var i = 0; i < standardFormatters.length; ++i)
         this._formatters[standardFormatters[i]] = String.standardFormatters[standardFormatters[i]];
-}
+};
 
 /**
  * @param {string} url
@@ -393,7 +393,7 @@ WebInspector.AuditRuleResult = function(value, expanded, className)
 WebInspector.AuditRuleResult.linkifyDisplayName = function(url)
 {
     return WebInspector.linkifyURLAsNode(url, WebInspector.displayNameForURL(url));
-}
+};
 
 /**
  * @param {string} domain
@@ -402,7 +402,7 @@ WebInspector.AuditRuleResult.linkifyDisplayName = function(url)
 WebInspector.AuditRuleResult.resourceDomain = function(domain)
 {
     return domain || WebInspector.UIString("[empty domain]");
-}
+};
 
 WebInspector.AuditRuleResult.prototype = {
     /**
@@ -468,7 +468,7 @@ WebInspector.AuditRuleResult.prototype = {
             formattedResult.normalize();
         return this.addChild(formattedResult);
     }
-}
+};
 
 /**
  * @constructor
@@ -482,7 +482,7 @@ WebInspector.AuditsSidebarTreeElement = function(panel)
     this._panel = panel;
     this.listItemElement.classList.add("audits-sidebar-header");
     this.listItemElement.insertBefore(createElementWithClass("div", "icon"), this.listItemElement.firstChild);
-}
+};
 
 WebInspector.AuditsSidebarTreeElement.prototype = {
     /**
@@ -496,7 +496,7 @@ WebInspector.AuditsSidebarTreeElement.prototype = {
     },
 
     __proto__: TreeElement.prototype
-}
+};
 
 /**
  * @constructor
@@ -515,7 +515,7 @@ WebInspector.AuditResultSidebarTreeElement = function(panel, results, mainResour
     this.mainResourceURL = mainResourceURL;
     this.listItemElement.classList.add("audit-result-sidebar-tree-item");
     this.listItemElement.insertBefore(createElementWithClass("div", "icon"), this.listItemElement.firstChild);
-}
+};
 
 WebInspector.AuditResultSidebarTreeElement.prototype = {
     /**
@@ -529,7 +529,7 @@ WebInspector.AuditResultSidebarTreeElement.prototype = {
     },
 
     __proto__: TreeElement.prototype
-}
+};
 
 /**
  * @return {!WebInspector.AuditsPanel}
@@ -537,7 +537,7 @@ WebInspector.AuditResultSidebarTreeElement.prototype = {
 WebInspector.AuditsPanel.instance = function()
 {
     return /** @type {!WebInspector.AuditsPanel} */ (self.runtime.sharedInstance(WebInspector.AuditsPanel));
-}
+};
 
 // Contributed audit rules should go into this namespace.
 WebInspector.AuditRules = {};

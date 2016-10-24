@@ -19,7 +19,7 @@ WebInspector.FilteredUISourceCodeListDelegate = function(defaultScores, history)
     this._scorer = new WebInspector.FilePathScoreFunction("");
     WebInspector.workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
     WebInspector.workspace.addEventListener(WebInspector.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
-}
+};
 
 WebInspector.FilteredUISourceCodeListDelegate.prototype = {
     /**
@@ -223,4 +223,4 @@ WebInspector.FilteredUISourceCodeListDelegate.prototype = {
     },
 
     __proto__: WebInspector.FilteredListWidget.Delegate.prototype
-}
+};

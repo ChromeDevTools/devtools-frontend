@@ -31,7 +31,7 @@ WebInspector.AnimationUI = function(animation, timeline, parentElement) {
 
     this._movementInMs = 0;
     this._color = WebInspector.AnimationUI.Color(this._animation);
-}
+};
 
 /**
  * @enum {string}
@@ -41,7 +41,7 @@ WebInspector.AnimationUI.MouseEvents = {
     KeyframeMove: "KeyframeMove",
     StartEndpointMove: "StartEndpointMove",
     FinishEndpointMove: "FinishEndpointMove"
-}
+};
 
 WebInspector.AnimationUI.prototype = {
     /**
@@ -370,7 +370,7 @@ WebInspector.AnimationUI.prototype = {
         this._animation.remoteObjectPromise().then(showContextMenu);
         event.consume(true);
     }
-}
+};
 
 WebInspector.AnimationUI.Options = {
     AnimationHeight: 26,
@@ -378,7 +378,7 @@ WebInspector.AnimationUI.Options = {
     AnimationMargin: 7,
     EndpointsClickRegionSize: 10,
     GridCanvasHeight: 40
-}
+};
 
 WebInspector.AnimationUI.Colors = {
     "Purple": WebInspector.Color.parse("#9C27B0"),
@@ -391,7 +391,7 @@ WebInspector.AnimationUI.Colors = {
     "Green": WebInspector.Color.parse("#0F9D58"),
     "Brown": WebInspector.Color.parse("#795548"),
     "Cyan": WebInspector.Color.parse("#00BCD4")
-}
+};
 
 /**
  * @param {!WebInspector.AnimationModel.Animation} animation
@@ -402,4 +402,4 @@ WebInspector.AnimationUI.Color = function(animation)
     var names = Object.keys(WebInspector.AnimationUI.Colors);
     var color = WebInspector.AnimationUI.Colors[names[String.hashCode(animation.name() || animation.id()) % names.length]];
     return color.asString(WebInspector.Color.Format.RGB);
-}
+};

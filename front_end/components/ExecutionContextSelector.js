@@ -19,7 +19,7 @@ WebInspector.ExecutionContextSelector = function(targetManager, context)
     targetManager.addModelListener(WebInspector.RuntimeModel, WebInspector.RuntimeModel.Events.ExecutionContextOrderChanged, this._onExecutionContextOrderChanged, this);
     this._targetManager = targetManager;
     this._context = context;
-}
+};
 
 WebInspector.ExecutionContextSelector.prototype = {
 
@@ -212,7 +212,7 @@ WebInspector.ExecutionContextSelector.prototype = {
         this._context.setFlavor(WebInspector.ExecutionContext, newContext);
         this._ignoreContextChanged = false;
     }
-}
+};
 
 /**
  * @param {!Element} proxyElement
@@ -226,7 +226,7 @@ WebInspector.ExecutionContextSelector.completionsForTextPromptInCurrentContext =
     expressionRange.collapse(true);
     expressionRange.setStartBefore(proxyElement);
     WebInspector.ExecutionContextSelector.completionsForTextInCurrentContext(expressionRange.toString(), wordRange.toString(), force, completionsReadyCallback);
-}
+};
 /**
  * @param {string} text
  * @param {string} completionsPrefix
@@ -266,4 +266,4 @@ WebInspector.ExecutionContextSelector.completionsForTextInCurrentContext = funct
     clippedExpression = clippedExpression.substring(index + 1);
 
     executionContext.completionsForExpression(clippedExpression, completionsPrefix, force, completionsReadyCallback);
-}
+};

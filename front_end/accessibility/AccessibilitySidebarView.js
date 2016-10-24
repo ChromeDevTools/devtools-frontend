@@ -21,7 +21,7 @@ WebInspector.AccessibilitySidebarView = function()
     this._sidebarPaneStack.widget().show(this.element);
     WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this._pullNode, this);
     this._pullNode();
-}
+};
 
 WebInspector.AccessibilitySidebarView.prototype = {
     /**
@@ -142,7 +142,7 @@ WebInspector.AccessibilitySubPane = function(name)
 
     this._axNode = null;
     this.registerRequiredCSS("accessibility/accessibilityNode.css");
-}
+};
 
 WebInspector.AccessibilitySubPane.prototype = {
     /**
@@ -197,4 +197,4 @@ WebInspector.AccessibilitySubPane.prototype = {
     },
 
     __proto__: WebInspector.SimpleView.prototype
-}
+};

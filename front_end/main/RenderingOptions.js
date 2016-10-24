@@ -83,7 +83,7 @@ WebInspector.RenderingOptionsView = function()
     this._mediaSelect.disabled = true;
 
     WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.Browser);
-}
+};
 
 WebInspector.RenderingOptionsView.prototype = {
     /**
@@ -154,7 +154,7 @@ WebInspector.RenderingOptionsView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @return {!WebInspector.RenderingOptionsView}
@@ -164,4 +164,4 @@ WebInspector.RenderingOptionsView.instance = function()
     if (!WebInspector.RenderingOptionsView._instanceObject)
         WebInspector.RenderingOptionsView._instanceObject = new WebInspector.RenderingOptionsView();
     return WebInspector.RenderingOptionsView._instanceObject;
-}
+};

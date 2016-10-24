@@ -43,7 +43,7 @@ WebInspector.AppManifestView = function()
     this._displayField = this._presentationSection.appendField(WebInspector.UIString("Display"));
 
     WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.DOM);
-}
+};
 
 WebInspector.AppManifestView.prototype = {
     /**
@@ -148,4 +148,4 @@ WebInspector.AppManifestView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

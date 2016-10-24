@@ -52,7 +52,7 @@ WebInspector.Color = function(rgba, format, originalText)
             this._originalTextIsValid = false;
         }
     }
-}
+};
 
 /** @type {!RegExp} */
 WebInspector.Color.Regex = /((?:rgb|hsl)a?\([^)]+\)|#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|\b[a-zA-Z]+\b(?!-))/g;
@@ -69,7 +69,7 @@ WebInspector.Color.Format = {
     RGBA: "rgba",
     HSL: "hsl",
     HSLA: "hsla"
-}
+};
 
 /**
  * @param {string} text
@@ -155,7 +155,7 @@ WebInspector.Color.parse = function(text)
     }
 
     return null;
-}
+};
 
 /**
  * @param {!Array.<number>} rgba
@@ -164,7 +164,7 @@ WebInspector.Color.parse = function(text)
 WebInspector.Color.fromRGBA = function(rgba)
 {
     return new WebInspector.Color([rgba[0] / 255, rgba[1] / 255, rgba[2] / 255, rgba[3]], WebInspector.Color.Format.RGBA);
-}
+};
 
 /**
  * @param {!Array.<number>} hsva
@@ -175,7 +175,7 @@ WebInspector.Color.fromHSVA = function(hsva)
     var rgba = [];
     WebInspector.Color.hsva2rgba(hsva, rgba);
     return new WebInspector.Color(rgba, WebInspector.Color.Format.HSLA);
-}
+};
 
 WebInspector.Color.prototype = {
     /**
@@ -416,7 +416,7 @@ WebInspector.Color.prototype = {
         rgba[3] = alpha;
         return new WebInspector.Color(rgba, WebInspector.Color.Format.RGBA);
     }
-}
+};
 
 /**
  * @param {string} value
@@ -430,7 +430,7 @@ WebInspector.Color._parseRgbNumeric = function(value)
     else
         parsed /= 255;
     return parsed;
-}
+};
 
 /**
  * @param {string} value
@@ -439,7 +439,7 @@ WebInspector.Color._parseRgbNumeric = function(value)
 WebInspector.Color._parseHueNumeric = function(value)
 {
     return isNaN(value) ? 0 : (parseFloat(value) / 360) % 1;
-}
+};
 
 /**
  * @param {string} value
@@ -448,7 +448,7 @@ WebInspector.Color._parseHueNumeric = function(value)
 WebInspector.Color._parseSatLightNumeric = function(value)
 {
     return Math.min(1, parseFloat(value) / 100);
-}
+};
 
 /**
  * @param {string} value
@@ -457,7 +457,7 @@ WebInspector.Color._parseSatLightNumeric = function(value)
 WebInspector.Color._parseAlphaNumeric = function(value)
 {
     return isNaN(value) ? 0 : parseFloat(value);
-}
+};
 
 /**
  * @param {!Array.<number>} hsva
@@ -479,7 +479,7 @@ WebInspector.Color._hsva2hsla = function(hsva, out_hsla)
     out_hsla[1] = s;
     out_hsla[2] = t / 2;
     out_hsla[3] = hsva[3];
-}
+};
 
 /**
  * @param {!Array.<number>} hsl
@@ -526,7 +526,7 @@ WebInspector.Color.hsl2rgb = function(hsl, out_rgb)
     out_rgb[1] = hue2rgb(p, q, tg);
     out_rgb[2] = hue2rgb(p, q, tb);
     out_rgb[3] = hsl[3];
-}
+};
 
 /**
  * @param {!Array<number>} hsva
@@ -562,7 +562,7 @@ WebInspector.Color.luminance = function(rgba)
     var b = bSRGB <= 0.03928 ? bSRGB / 12.92 : Math.pow(((bSRGB + 0.055) / 1.055), 2.4);
 
     return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-}
+};
 
 /**
  * Combine the two given color according to alpha blending.
@@ -578,7 +578,7 @@ WebInspector.Color.blendColors = function(fgRGBA, bgRGBA, out_blended)
     out_blended[1] = ((1 - alpha) * bgRGBA[1]) + (alpha * fgRGBA[1]);
     out_blended[2] = ((1 - alpha) * bgRGBA[2]) + (alpha * fgRGBA[2]);
     out_blended[3] = alpha + (bgRGBA[3] * (1 - alpha));
-}
+};
 
 /**
  * Calculate the contrast ratio between a foreground and a background color.
@@ -601,7 +601,7 @@ WebInspector.Color.calculateContrastRatio = function(fgRGBA, bgRGBA)
         WebInspector.Color.calculateContrastRatio._blendedFg[i] = 0;
 
     return contrastRatio;
-}
+};
 
 WebInspector.Color.calculateContrastRatio._blendedFg = [0, 0, 0, 0];
 
@@ -799,7 +799,7 @@ WebInspector.Color.PageHighlight = {
     EventTarget: WebInspector.Color.fromRGBA([255, 196, 196, .66]),
     Shape: WebInspector.Color.fromRGBA([96, 82, 177, 0.8]),
     ShapeMargin: WebInspector.Color.fromRGBA([96, 82, 127, .6])
-}
+};
 
 /**
  * @param {!WebInspector.Color} color
@@ -822,4 +822,4 @@ WebInspector.Color.detectColorFormat = function(color)
         format = cf.RGBA;
 
     return format;
-}
+};

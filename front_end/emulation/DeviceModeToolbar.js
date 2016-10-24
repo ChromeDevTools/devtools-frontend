@@ -56,7 +56,7 @@ WebInspector.DeviceModeToolbar = function(model, showMediaInspectorSetting, show
     this._emulatedDevicesList.addEventListener(WebInspector.EmulatedDevicesList.Events.StandardDevicesUpdated, this._deviceListChanged, this);
 
     this._persistenceSetting = WebInspector.settings.createSetting("emulation.deviceModeValue", {device: "", orientation: "", mode: ""});
-}
+};
 
 WebInspector.DeviceModeToolbar.prototype = {
     /**
@@ -571,4 +571,4 @@ WebInspector.DeviceModeToolbar.prototype = {
 
         this._model.emulate(WebInspector.DeviceModeModel.Type.Responsive, null, null);
     }
-}
+};

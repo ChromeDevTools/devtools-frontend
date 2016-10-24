@@ -45,7 +45,7 @@ WebInspector.Popover = function(popoverHelper)
 
     this._popoverHelper = popoverHelper;
     this._hideBound = this.hide.bind(this);
-}
+};
 
 WebInspector.Popover._classNamePrefix = "popover";
 
@@ -249,7 +249,7 @@ WebInspector.Popover.prototype = {
     },
 
     __proto__: WebInspector.Widget.prototype
-}
+};
 
 /**
  * @constructor
@@ -269,7 +269,7 @@ WebInspector.PopoverHelper = function(panelElement, getAnchor, showPopover, onHi
     panelElement.addEventListener("mousemove", this._mouseMove.bind(this), false);
     panelElement.addEventListener("mouseout", this._mouseOut.bind(this), false);
     this.setTimeout(1000, 500);
-}
+};
 
 WebInspector.PopoverHelper.prototype = {
     /**
@@ -418,10 +418,10 @@ WebInspector.PopoverHelper.prototype = {
             this._resetHoverTimer();
         }
     }
-}
+};
 
 /** @enum {string} */
 WebInspector.Popover.Orientation = {
     Top: "top",
     Bottom: "bottom"
-}
+};

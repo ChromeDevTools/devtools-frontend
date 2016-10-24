@@ -33,7 +33,7 @@
 WebInspector.MetricsSidebarPane = function()
 {
     WebInspector.ElementsSidebarPane.call(this);
-}
+};
 
 WebInspector.MetricsSidebarPane.prototype = {
     /**
@@ -467,4 +467,4 @@ WebInspector.MetricsSidebarPane.prototype = {
     },
 
     __proto__: WebInspector.ElementsSidebarPane.prototype
-}
+};

@@ -48,7 +48,7 @@ WebInspector.ConsolePrompt = function()
 
         this._editorSetForTest();
     }
-}
+};
 
 WebInspector.ConsolePrompt.prototype = {
     /**
@@ -291,4 +291,4 @@ WebInspector.ConsolePrompt.prototype = {
     _editorSetForTest: function() { },
 
     __proto__: WebInspector.Widget.prototype
-}
+};

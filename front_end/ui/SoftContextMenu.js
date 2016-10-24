@@ -34,7 +34,7 @@ WebInspector.SoftContextMenu = function(items, itemSelectedCallback, parentMenu)
     this._items = items;
     this._itemSelectedCallback = itemSelectedCallback;
     this._parentMenu = parentMenu;
-}
+};
 
 WebInspector.SoftContextMenu.prototype = {
     /**
@@ -397,4 +397,4 @@ WebInspector.SoftContextMenu.prototype = {
         if (this._parentMenu)
             delete this._parentMenu._subMenu;
     }
-}
+};

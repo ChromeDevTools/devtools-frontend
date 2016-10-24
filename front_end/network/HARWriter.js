@@ -33,7 +33,7 @@
  */
 WebInspector.HARWriter = function()
 {
-}
+};
 
 WebInspector.HARWriter.prototype = {
     /**
@@ -120,4 +120,4 @@ WebInspector.HARWriter.prototype = {
         stream.write(text, this._writeNextChunk.bind(this));
         this._writeProgress.setWorked(this._bytesWritten);
     }
-}
+};

@@ -42,7 +42,7 @@
 WebInspector.CookieParser = function(target)
 {
     this._target = target;
-}
+};
 
 /**
  * @constructor
@@ -55,7 +55,7 @@ WebInspector.CookieParser.KeyValue = function(key, value, position)
     this.key = key;
     this.value = value;
     this.position = position;
-}
+};
 
 WebInspector.CookieParser.prototype = {
     /**
@@ -188,7 +188,7 @@ WebInspector.CookieParser.prototype = {
 WebInspector.CookieParser.parseCookie = function(target, header)
 {
     return (new WebInspector.CookieParser(target)).parseCookie(header);
-}
+};
 
 /**
  * @param {!WebInspector.Target} target
@@ -198,7 +198,7 @@ WebInspector.CookieParser.parseCookie = function(target, header)
 WebInspector.CookieParser.parseSetCookie = function(target, header)
 {
     return (new WebInspector.CookieParser(target)).parseSetCookie(header);
-}
+};
 
 /**
  * @constructor
@@ -214,7 +214,7 @@ WebInspector.Cookie = function(target, name, value, type)
     this._value = value;
     this._type = type;
     this._attributes = {};
-}
+};
 
 WebInspector.Cookie.prototype = {
     /**
@@ -372,7 +372,7 @@ WebInspector.Cookie.prototype = {
     {
         this._target.networkAgent().deleteCookie(this.name(), (this.secure() ? "https://" : "http://") + this.domain() + this.path(), callback);
     }
-}
+};
 
 /**
  * @enum {number}
@@ -382,7 +382,7 @@ WebInspector.Cookie.Type = {
     Response: 1
 };
 
-WebInspector.Cookies = {}
+WebInspector.Cookies = {};
 
 /**
  * @param {function(!Array.<!WebInspector.Cookie>)} callback
@@ -409,7 +409,7 @@ WebInspector.Cookies.getCookiesAsync = function(callback)
     for (var target of WebInspector.targetManager.targets(WebInspector.Target.Capability.Network))
         target.networkAgent().getCookies(barrier.createCallback(mycallback.bind(null, target)));
     barrier.callWhenDone(callback.bind(null, allCookies));
-}
+};
 
 /**
  * @param {!WebInspector.Target} target
@@ -432,7 +432,7 @@ WebInspector.Cookies._parseProtocolCookie = function(target, protocolCookie)
         cookie.addAttribute("sameSite", protocolCookie["sameSite"]);
     cookie.setSize(protocolCookie["size"]);
     return cookie;
-}
+};
 
 /**
  * @param {!WebInspector.Cookie} cookie
@@ -447,7 +447,7 @@ WebInspector.Cookies.cookieMatchesResourceURL = function(cookie, resourceURL)
     return (url.path.startsWith(cookie.path())
         && (!cookie.port() || url.port === cookie.port())
         && (!cookie.secure() || url.scheme === "https"));
-}
+};
 
 /**
  * @param {string} cookieDomain
@@ -459,4 +459,4 @@ WebInspector.Cookies.cookieDomainMatchesResourceDomain = function(cookieDomain, 
     if (cookieDomain.charAt(0) !== ".")
         return resourceDomain === cookieDomain;
     return !!resourceDomain.match(new RegExp("^([^\\.]+\\.)*" + cookieDomain.substring(1).escapeForRegExp() + "$", "i"));
-}
+};

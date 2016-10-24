@@ -43,7 +43,7 @@ WebInspector.TimelineGrid = function()
     this._eventDividersElement = this._gridHeaderElement.createChild("div", "resources-event-dividers");
     this._dividersLabelBarElement = this._gridHeaderElement.createChild("div", "resources-dividers-label-bar");
     this.element.appendChild(this._gridHeaderElement);
-}
+};
 
 /**
  * @param {!WebInspector.TimelineGrid.Calculator} calculator
@@ -92,7 +92,7 @@ WebInspector.TimelineGrid.calculateDividerOffsets = function(calculator, freeZon
     }
 
     return {offsets: offsets, precision: Math.max(0, -Math.floor(Math.log(gridSliceTime * 1.01) / Math.LN10))};
-}
+};
 
 /**
  * @param {!HTMLCanvasElement} canvas
@@ -134,7 +134,7 @@ WebInspector.TimelineGrid.drawCanvasGrid = function(canvas, calculator)
     }
     context.stroke();
     context.restore();
-}
+};
 
 WebInspector.TimelineGrid.prototype = {
     get dividersElement()
@@ -263,12 +263,12 @@ WebInspector.TimelineGrid.prototype = {
         this._dividersLabelBarElement.style.top = scrollTop + "px";
         this._eventDividersElement.style.top = scrollTop + "px";
     }
-}
+};
 
 /**
  * @interface
  */
-WebInspector.TimelineGrid.Calculator = function() { }
+WebInspector.TimelineGrid.Calculator = function() { };
 
 WebInspector.TimelineGrid.Calculator.prototype = {
     /**
@@ -300,4 +300,4 @@ WebInspector.TimelineGrid.Calculator.prototype = {
 
     /** @return {number} */
     boundarySpan: function() { }
-}
+};

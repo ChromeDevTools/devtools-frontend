@@ -44,7 +44,7 @@ WebInspector.TracingLayerTree = function(target)
     WebInspector.LayerTreeBase.call(this, target);
     /** @type {!Map.<string, !WebInspector.TracingLayerTile>} */
     this._tileById = new Map();
-}
+};
 
 WebInspector.TracingLayerTree.prototype = {
     /**
@@ -169,7 +169,7 @@ WebInspector.TracingLayerTree.prototype = {
     },
 
     __proto__: WebInspector.LayerTreeBase.prototype
-}
+};
 
 /**
  * @constructor
@@ -179,7 +179,7 @@ WebInspector.TracingLayerTree.prototype = {
 WebInspector.TracingLayer = function(payload)
 {
     this._reset(payload);
-}
+};
 
 WebInspector.TracingLayer.prototype = {
     /**
@@ -496,4 +496,4 @@ WebInspector.TracingLayer.prototype = {
     {
         return this._drawsContent;
     }
-}
+};

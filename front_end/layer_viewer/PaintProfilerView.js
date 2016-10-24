@@ -60,7 +60,7 @@ WebInspector.PaintProfilerView = function(showImageCallback)
     this._scale = this._pendingScale;
 
     this._reset();
-}
+};
 
 /** @enum {symbol} */
 WebInspector.PaintProfilerView.Events = {
@@ -288,7 +288,7 @@ WebInspector.PaintProfilerCommandLogView = function()
     this.element.appendChild(this._treeOutline.element);
 
     this._log = [];
-}
+};
 
 WebInspector.PaintProfilerCommandLogView.prototype = {
     /**
@@ -371,7 +371,7 @@ WebInspector.LogTreeElement = function(ownerView, logItem)
     this._logItem = logItem;
     this._ownerView = ownerView;
     this._filled = false;
-}
+};
 
 WebInspector.LogTreeElement.prototype = {
     onattach: function()
@@ -474,7 +474,7 @@ WebInspector.LogPropertyTreeElement.prototype = {
     },
 
     __proto__: TreeElement.prototype
-}
+};
 
 /**
  * @return {!Object.<string, !WebInspector.PaintProfilerCategory>}
@@ -503,7 +503,7 @@ WebInspector.PaintProfilerCategory = function(name, title, color)
     this.name = name;
     this.title = title;
     this.color = color;
-}
+};
 
 /**
  * @return {!Object.<string, !WebInspector.PaintProfilerCategory>}
@@ -555,7 +555,7 @@ WebInspector.PaintProfilerView._initLogItemCategories = function()
 
     WebInspector.PaintProfilerView._logItemCategoriesMap = logItemCategories;
     return logItemCategories;
-}
+};
 
 /**
  * @param {!Object} logItem
@@ -572,4 +572,4 @@ WebInspector.PaintProfilerView._categoryForLogItem = function(logItem)
         logItemCategories[method] = result;
     }
     return result;
-}
+};

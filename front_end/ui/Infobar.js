@@ -37,7 +37,7 @@ WebInspector.Infobar = function(type, text, disableSetting)
 
     /** @type {?function()} */
     this._closeCallback = null;
-}
+};
 
 /**
  * @param {!WebInspector.Infobar.Type} type
@@ -50,14 +50,14 @@ WebInspector.Infobar.create = function(type, text, disableSetting)
     if (disableSetting && disableSetting.get())
         return null;
     return new WebInspector.Infobar(type, text, disableSetting);
-}
+};
 
 
 /** @enum {string} */
 WebInspector.Infobar.Type = {
     Warning: "warning",
     Info: "info"
-}
+};
 
 WebInspector.Infobar.prototype = {
     dispose: function()
@@ -124,4 +124,4 @@ WebInspector.Infobar.prototype = {
         detailsRowMessage.textContent = message || "";
         return detailsRowMessage;
     }
-}
+};

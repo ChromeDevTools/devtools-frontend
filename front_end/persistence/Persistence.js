@@ -18,19 +18,19 @@ WebInspector.Persistence = function(workspace, breakpointManager, fileSystemMapp
     this._filePathPrefixesToBindingCount = new Map();
 
     this._mapping = new WebInspector.DefaultMapping(workspace, fileSystemMapping, this._onBindingCreated.bind(this), this._onBindingRemoved.bind(this));
-}
+};
 
 WebInspector.Persistence._binding = Symbol("Persistence.Binding");
 WebInspector.Persistence._muteCommit = Symbol("Persistence.MuteCommit");
 
 WebInspector.Persistence._NodePrefix = "(function (exports, require, module, __filename, __dirname) { ";
-WebInspector.Persistence._NodeSuffix = "\n});"
+WebInspector.Persistence._NodeSuffix = "\n});";
 WebInspector.Persistence._NodeShebang = "#!/usr/bin/env node\n";
 
 WebInspector.Persistence.Events = {
     BindingCreated: Symbol("BindingCreated"),
     BindingRemoved: Symbol("BindingRemoved")
-}
+};
 
 WebInspector.Persistence.prototype = {
     /**
@@ -228,7 +228,7 @@ WebInspector.Persistence.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
  * @constructor
@@ -239,7 +239,7 @@ WebInspector.PersistenceBinding = function(network, fileSystem)
 {
     this.network = network;
     this.fileSystem = fileSystem;
-}
+};
 
 /** @type {!WebInspector.Persistence} */
 WebInspector.persistence;

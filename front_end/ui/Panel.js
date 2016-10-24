@@ -46,7 +46,7 @@ WebInspector.Panel = function(name)
     WebInspector.panels[name] = this;
 
     this._shortcuts = /** !Object.<number, function(Event=):boolean> */ ({});
-}
+};
 
 // Should by in sync with style declarations.
 WebInspector.Panel.counterRightMargin = 25;
@@ -119,7 +119,7 @@ WebInspector.Panel.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @extends {WebInspector.Panel}
@@ -142,7 +142,7 @@ WebInspector.PanelWithSidebar = function(name, defaultWidth)
     this._panelSplitWidget.setSidebarWidget(this._sidebarWidget);
 
     this._sidebarWidget.element.classList.add("panel-sidebar");
-}
+};
 
 WebInspector.PanelWithSidebar.prototype = {
     /**
@@ -170,4 +170,4 @@ WebInspector.PanelWithSidebar.prototype = {
     },
 
     __proto__: WebInspector.Panel.prototype
-}
+};

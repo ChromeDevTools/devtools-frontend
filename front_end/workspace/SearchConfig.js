@@ -15,7 +15,7 @@ WebInspector.SearchConfig = function(query, ignoreCase, isRegex)
     this._ignoreCase = ignoreCase;
     this._isRegex = isRegex;
     this._parse();
-}
+};
 
 /** @typedef {!{regex: !RegExp, isNegative: boolean}} */
 WebInspector.SearchConfig.RegexQuery;
@@ -27,7 +27,7 @@ WebInspector.SearchConfig.RegexQuery;
 WebInspector.SearchConfig.fromPlainObject = function(object)
 {
     return new WebInspector.SearchConfig(object.query, object.ignoreCase, object.isRegex);
-}
+};
 
 WebInspector.SearchConfig.prototype = {
     /**
@@ -178,7 +178,7 @@ WebInspector.SearchConfig.prototype = {
         }
         return new WebInspector.SearchConfig.QueryTerm(result, isNegative);
     }
-}
+};
 
 /**
  * @constructor
@@ -189,4 +189,4 @@ WebInspector.SearchConfig.QueryTerm = function(text, isNegative)
 {
     this.text = text;
     this.isNegative = isNegative;
-}
+};

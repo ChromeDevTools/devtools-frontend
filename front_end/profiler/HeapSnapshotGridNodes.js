@@ -51,12 +51,12 @@ WebInspector.HeapSnapshotGridNode = function(tree, hasChildren)
       * @type {?WebInspector.HeapSnapshotGridNode.ChildrenProvider}
       */
     this._providerObject = null;
-}
+};
 
 /** @enum {symbol} */
 WebInspector.HeapSnapshotGridNode.Events = {
     PopulateComplete: Symbol("PopulateComplete")
-}
+};
 
 /**
  * @param {!Array.<string>} fieldNames
@@ -65,13 +65,13 @@ WebInspector.HeapSnapshotGridNode.Events = {
 WebInspector.HeapSnapshotGridNode.createComparator = function(fieldNames)
 {
     return /** @type {!WebInspector.HeapSnapshotCommon.ComparatorConfig} */ ({fieldName1: fieldNames[0], ascending1: fieldNames[1], fieldName2: fieldNames[2], ascending2: fieldNames[3]});
-}
+};
 
 
 /**
  * @interface
  */
-WebInspector.HeapSnapshotGridNode.ChildrenProvider = function() { }
+WebInspector.HeapSnapshotGridNode.ChildrenProvider = function() { };
 
 WebInspector.HeapSnapshotGridNode.ChildrenProvider.prototype = {
     dispose: function() { },
@@ -99,7 +99,7 @@ WebInspector.HeapSnapshotGridNode.ChildrenProvider.prototype = {
      * @return {!Promise<?>}
      */
     sortAndRewind: function(comparator) { }
-}
+};
 
 
 WebInspector.HeapSnapshotGridNode.prototype = {
@@ -488,7 +488,7 @@ WebInspector.HeapSnapshotGridNode.prototype = {
     },
 
     __proto__: WebInspector.DataGridNode.prototype
-}
+};
 
 
 /**
@@ -684,7 +684,7 @@ WebInspector.HeapSnapshotGenericObjectNode.prototype = {
     },
 
     __proto__: WebInspector.HeapSnapshotGridNode.prototype
-}
+};
 
 /**
  * @constructor
@@ -715,7 +715,7 @@ WebInspector.HeapSnapshotObjectNode = function(dataGrid, snapshot, edge, parentO
     data["addedSize"] = "";
     data["removedSize"] = "";
     data["sizeDelta"] = "";
-}
+};
 
 WebInspector.HeapSnapshotObjectNode.prototype = {
     /**
@@ -832,7 +832,7 @@ WebInspector.HeapSnapshotObjectNode.prototype = {
     },
 
     __proto__: WebInspector.HeapSnapshotGenericObjectNode.prototype
-}
+};
 
 /**
  * @constructor
@@ -845,7 +845,7 @@ WebInspector.HeapSnapshotObjectNode.prototype = {
 WebInspector.HeapSnapshotRetainingObjectNode = function(dataGrid, snapshot, edge, parentRetainingObjectNode)
 {
     WebInspector.HeapSnapshotObjectNode.call(this, dataGrid, snapshot, edge, parentRetainingObjectNode);
-}
+};
 
 WebInspector.HeapSnapshotRetainingObjectNode.prototype = {
     /**
@@ -912,7 +912,7 @@ WebInspector.HeapSnapshotRetainingObjectNode.prototype = {
     },
 
     __proto__: WebInspector.HeapSnapshotObjectNode.prototype
-}
+};
 
 /**
  * @constructor
@@ -1012,7 +1012,7 @@ WebInspector.HeapSnapshotInstanceNode.prototype = {
     },
 
     __proto__: WebInspector.HeapSnapshotGenericObjectNode.prototype
-}
+};
 
 /**
  * @constructor
@@ -1047,7 +1047,7 @@ WebInspector.HeapSnapshotConstructorNode = function(dataGrid, className, aggrega
         "shallowSize-percent": this._toPercentString(shallowSizePercent),
         "retainedSize-percent": this._toPercentString(retainedSizePercent)
     };
-}
+};
 
 WebInspector.HeapSnapshotConstructorNode.prototype = {
     /**
@@ -1056,7 +1056,7 @@ WebInspector.HeapSnapshotConstructorNode.prototype = {
      */
     createProvider: function()
     {
-        return this._dataGrid.snapshot.createNodesProviderForClass(this._name, this._nodeFilter)
+        return this._dataGrid.snapshot.createNodesProviderForClass(this._name, this._nodeFilter);
     },
 
     /**
@@ -1178,7 +1178,7 @@ WebInspector.HeapSnapshotConstructorNode.prototype = {
     },
 
     __proto__: WebInspector.HeapSnapshotGridNode.prototype
-}
+};
 
 
 /**
@@ -1195,7 +1195,7 @@ WebInspector.HeapSnapshotDiffNodesProvider = function(addedNodesProvider, delete
     this._deletedNodesProvider = deletedNodesProvider;
     this._addedCount = addedCount;
     this._removedCount = removedCount;
-}
+};
 
 WebInspector.HeapSnapshotDiffNodesProvider.prototype = {
     /**
@@ -1332,7 +1332,7 @@ WebInspector.HeapSnapshotDiffNode = function(dataGrid, className, diffForClass)
         "removedSize": Number.withThousandsSeparator(this._removedSize),
         "sizeDelta": this._signForDelta(this._sizeDelta) + Number.withThousandsSeparator(Math.abs(this._sizeDelta))
     };
-}
+};
 
 WebInspector.HeapSnapshotDiffNode.prototype = {
     /**
@@ -1431,7 +1431,7 @@ WebInspector.HeapSnapshotDiffNode.prototype = {
     },
 
     __proto__: WebInspector.HeapSnapshotGridNode.prototype
-}
+};
 
 
 /**
@@ -1452,7 +1452,7 @@ WebInspector.AllocationGridNode = function(dataGrid, data)
         "size": Number.withThousandsSeparator(data.size),
         "name": data.name
     };
-}
+};
 
 WebInspector.AllocationGridNode.prototype = {
     populate: function()
@@ -1529,4 +1529,4 @@ WebInspector.AllocationGridNode.prototype = {
     },
 
     __proto__: WebInspector.HeapSnapshotGridNode.prototype
-}
+};

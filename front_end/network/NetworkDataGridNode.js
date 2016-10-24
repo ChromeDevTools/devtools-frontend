@@ -42,7 +42,7 @@ WebInspector.NetworkDataGridNode = function(parentView, request)
     this._staleGraph = true;
     this._isNavigationRequest = false;
     this.selectable = true;
-}
+};
 
 WebInspector.NetworkDataGridNode._hoveredRowSymbol = Symbol("hoveredRow");
 
@@ -571,7 +571,7 @@ WebInspector.NetworkDataGridNode.prototype = {
     },
 
     __proto__: WebInspector.SortableDataGridNode.prototype
-}
+};
 
 /**
  * @param {!WebInspector.NetworkDataGridNode} a
@@ -587,7 +587,7 @@ WebInspector.NetworkDataGridNode.NameComparator = function(a, b)
     if (bFileName > aFileName)
         return -1;
     return a._request.indentityCompare(b._request);
-}
+};
 
 /**
  * @param {!WebInspector.NetworkDataGridNode} a
@@ -603,7 +603,7 @@ WebInspector.NetworkDataGridNode.RemoteAddressComparator = function(a, b)
     if (bRemoteAddress > aRemoteAddress)
         return -1;
     return a._request.indentityCompare(b._request);
-}
+};
 
 /**
  * @param {!WebInspector.NetworkDataGridNode} a
@@ -617,7 +617,7 @@ WebInspector.NetworkDataGridNode.SizeComparator = function(a, b)
     if (a._request.cached() && !b._request.cached())
         return -1;
     return (a._request.transferSize - b._request.transferSize) || a._request.indentityCompare(b._request);
-}
+};
 
 /**
  * @param {!WebInspector.NetworkDataGridNode} a
@@ -634,7 +634,7 @@ WebInspector.NetworkDataGridNode.TypeComparator = function(a, b)
     if (bSimpleType > aSimpleType)
         return -1;
     return a._request.indentityCompare(b._request);
-}
+};
 
 /**
  * @param {!WebInspector.NetworkDataGridNode} a
@@ -672,7 +672,7 @@ WebInspector.NetworkDataGridNode.InitiatorComparator = function(a, b)
         return 1;
 
     return a._request.indentityCompare(b._request);
-}
+};
 
 /**
  * @param {!WebInspector.NetworkDataGridNode} a
@@ -684,7 +684,7 @@ WebInspector.NetworkDataGridNode.RequestCookiesCountComparator = function(a, b)
     var aScore = a._request.requestCookies ? a._request.requestCookies.length : 0;
     var bScore = b._request.requestCookies ? b._request.requestCookies.length : 0;
     return (aScore - bScore) || a._request.indentityCompare(b._request);
-}
+};
 
 /**
  * @param {!WebInspector.NetworkDataGridNode} a
@@ -696,7 +696,7 @@ WebInspector.NetworkDataGridNode.ResponseCookiesCountComparator = function(a, b)
     var aScore = a._request.responseCookies ? a._request.responseCookies.length : 0;
     var bScore = b._request.responseCookies ? b._request.responseCookies.length : 0;
     return (aScore - bScore) || a._request.indentityCompare(b._request);
-}
+};
 
 /**
  * @param {!WebInspector.NetworkDataGridNode} a
@@ -719,7 +719,7 @@ WebInspector.NetworkDataGridNode.InitialPriorityComparator = function(a, b)
     var bScore = priorityMap.get(b._request.initialPriority()) || 0;
 
     return aScore - bScore || a._request.indentityCompare(b._request);
-}
+};
 
 /**
  * @param {string} propertyName
@@ -734,7 +734,7 @@ WebInspector.NetworkDataGridNode.RequestPropertyComparator = function(propertyNa
     if (aValue === bValue)
         return a._request.indentityCompare(b._request);
     return aValue > bValue ? 1 : -1;
-}
+};
 
 /**
  * @param {string} propertyName
@@ -747,7 +747,7 @@ WebInspector.NetworkDataGridNode.ResponseHeaderStringComparator = function(prope
     var aValue = String(a._request.responseHeaderValue(propertyName) || "");
     var bValue = String(b._request.responseHeaderValue(propertyName) || "");
     return aValue.localeCompare(bValue) || a._request.indentityCompare(b._request);
-}
+};
 
 /**
  * @param {string} propertyName
@@ -762,7 +762,7 @@ WebInspector.NetworkDataGridNode.ResponseHeaderNumberComparator = function(prope
     if (aValue === bValue)
         return a._request.indentityCompare(b._request);
     return aValue > bValue ? 1 : -1;
-}
+};
 
 /**
  * @param {string} propertyName
@@ -779,4 +779,4 @@ WebInspector.NetworkDataGridNode.ResponseHeaderDateComparator = function(propert
     if (aValue === bValue)
         return a._request.indentityCompare(b._request);
     return aValue > bValue ? 1 : -1;
-}
+};

@@ -44,7 +44,7 @@ WebInspector.OverviewGrid = function(prefix)
     this.element.appendChild(this._grid.element);
 
     this._window = new WebInspector.OverviewGrid.Window(this.element, this._grid.dividersLabelBarElement);
-}
+};
 
 WebInspector.OverviewGrid.prototype = {
     /**
@@ -133,7 +133,7 @@ WebInspector.OverviewGrid.prototype = {
     {
         this._window.setEnabled(enabled);
     }
-}
+};
 
 
 WebInspector.OverviewGrid.MinSelectableSize = 14;
@@ -168,13 +168,13 @@ WebInspector.OverviewGrid.Window = function(parentElement, dividersLabelBarEleme
     this._leftCurtainElement = parentElement.createChild("div", "window-curtain-left");
     this._rightCurtainElement = parentElement.createChild("div", "window-curtain-right");
     this.reset();
-}
+};
 
 /** @enum {symbol} */
 WebInspector.OverviewGrid.Events = {
     WindowChanged: Symbol("WindowChanged"),
     Click: Symbol("Click")
-}
+};
 
 WebInspector.OverviewGrid.Window.prototype = {
     reset: function()
@@ -427,7 +427,7 @@ WebInspector.OverviewGrid.Window.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
  * @constructor
@@ -441,7 +441,7 @@ WebInspector.OverviewGrid.WindowSelector = function(parent, position)
     this._windowSelector.style.left = this._startPosition + "px";
     this._windowSelector.style.right = this._width - this._startPosition + "px";
     parent.appendChild(this._windowSelector);
-}
+};
 
 WebInspector.OverviewGrid.WindowSelector.prototype = {
     _close: function(position)
@@ -462,4 +462,4 @@ WebInspector.OverviewGrid.WindowSelector.prototype = {
             this._windowSelector.style.right = this._width - position + "px";
         }
     }
-}
+};

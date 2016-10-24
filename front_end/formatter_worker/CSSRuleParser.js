@@ -17,7 +17,7 @@ WebInspector.CSSParserStates = {
 WebInspector.parseCSS = function(text)
 {
     WebInspector._innerParseCSS(text, postMessage);
-}
+};
 
 /**
  * @param {string} text
@@ -191,4 +191,4 @@ WebInspector._innerParseCSS = function(text, chunkCallback)
             endColumn: columnNumber
         };
     }
-}
+};

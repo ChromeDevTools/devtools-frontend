@@ -33,7 +33,7 @@
  */
 WebInspector.Formatter = function()
 {
-}
+};
 
 /**
  * @param {!WebInspector.ResourceType} contentType
@@ -47,7 +47,7 @@ WebInspector.Formatter.format = function(contentType, mimeType, content, callbac
         new WebInspector.ScriptFormatter(mimeType, content, callback);
     else
         new WebInspector.IdentityFormatter(mimeType, content, callback);
-}
+};
 
 /**
  * @param {!Array.<number>} lineEndings
@@ -59,7 +59,7 @@ WebInspector.Formatter.locationToPosition = function(lineEndings, lineNumber, co
 {
     var position = lineNumber ? lineEndings[lineNumber - 1] + 1 : 0;
     return position + columnNumber;
-}
+};
 
 /**
  * @param {!Array.<number>} lineEndings
@@ -74,7 +74,7 @@ WebInspector.Formatter.positionToLocation = function(lineEndings, position)
     else
         var columnNumber = position - lineEndings[lineNumber - 1] - 1;
     return [lineNumber, columnNumber];
-}
+};
 
 /**
  * @constructor
@@ -96,7 +96,7 @@ WebInspector.ScriptFormatter = function(mimeType, content, callback)
     };
     WebInspector.formatterWorkerPool.runTask("format", parameters)
         .then(this._didFormatContent.bind(this));
-}
+};
 
 WebInspector.ScriptFormatter.prototype = {
     /**
@@ -113,7 +113,7 @@ WebInspector.ScriptFormatter.prototype = {
         var sourceMapping = new WebInspector.FormatterSourceMappingImpl(this._originalContent.computeLineEndings(), formattedContent.computeLineEndings(), mapping);
         this._callback(formattedContent, sourceMapping);
     }
-}
+};
 
 /**
  * @constructor
@@ -125,7 +125,7 @@ WebInspector.ScriptFormatter.prototype = {
 WebInspector.IdentityFormatter = function(mimeType, content, callback)
 {
     callback(content, new WebInspector.IdentityFormatterSourceMapping());
-}
+};
 
 /**
  * @typedef {{original: !Array.<number>, formatted: !Array.<number>}}
@@ -137,7 +137,7 @@ WebInspector.FormatterMappingPayload;
  */
 WebInspector.FormatterSourceMapping = function()
 {
-}
+};
 
 WebInspector.FormatterSourceMapping.prototype = {
     /**
@@ -153,7 +153,7 @@ WebInspector.FormatterSourceMapping.prototype = {
      * @return {!Array.<number>}
      */
     formattedToOriginal: function(lineNumber, columnNumber) { }
-}
+};
 
 /**
  * @constructor
@@ -161,7 +161,7 @@ WebInspector.FormatterSourceMapping.prototype = {
  */
 WebInspector.IdentityFormatterSourceMapping = function()
 {
-}
+};
 
 WebInspector.IdentityFormatterSourceMapping.prototype = {
     /**
@@ -185,7 +185,7 @@ WebInspector.IdentityFormatterSourceMapping.prototype = {
     {
         return [lineNumber, columnNumber || 0];
     }
-}
+};
 
 /**
  * @constructor
@@ -199,7 +199,7 @@ WebInspector.FormatterSourceMappingImpl = function(originalLineEndings, formatte
     this._originalLineEndings = originalLineEndings;
     this._formattedLineEndings = formattedLineEndings;
     this._mapping = mapping;
-}
+};
 
 WebInspector.FormatterSourceMappingImpl.prototype = {
     /**
@@ -242,4 +242,4 @@ WebInspector.FormatterSourceMappingImpl.prototype = {
             convertedPosition = positions2[index + 1];
         return convertedPosition;
     }
-}
+};

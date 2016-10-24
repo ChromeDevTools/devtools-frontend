@@ -42,7 +42,7 @@ WebInspector.DatabaseTableView = function(database, tableName)
     this.refreshButton.addEventListener("click", this._refreshButtonClicked, this);
     this._visibleColumnsInput = new WebInspector.ToolbarInput(WebInspector.UIString("Visible columns"), 1);
     this._visibleColumnsInput.addEventListener(WebInspector.ToolbarInput.Event.TextChanged, this._onVisibleColumnsChanged, this);
-}
+};
 
 WebInspector.DatabaseTableView.prototype = {
     wasShown: function()
@@ -144,4 +144,4 @@ WebInspector.DatabaseTableView.prototype = {
     },
 
     __proto__: WebInspector.SimpleView.prototype
-}
+};

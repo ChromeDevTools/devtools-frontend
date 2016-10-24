@@ -75,7 +75,7 @@ WebInspector.JavaScriptSourceFrame = function(uiSourceCode)
     this._showBlackboxInfobarIfNeeded();
     /** @type {!Map.<number, !Element>} */
     this._valueWidgets = new Map();
-}
+};
 
 WebInspector.JavaScriptSourceFrame.prototype = {
     /**
@@ -978,7 +978,7 @@ WebInspector.JavaScriptSourceFrame.prototype = {
 
         this._prettyPrintInfobar.setCloseCallback(() => delete this._prettyPrintInfobar);
         var toolbar = new WebInspector.Toolbar("");
-        var button = new WebInspector.ToolbarButton("", "format-toolbar-item")
+        var button = new WebInspector.ToolbarButton("", "format-toolbar-item");
         toolbar.appendToolbarItem(button);
         toolbar.element.style.display = "inline-block";
         toolbar.element.style.verticalAlign = "middle";
@@ -1075,4 +1075,4 @@ WebInspector.JavaScriptSourceFrame.prototype = {
     },
 
     __proto__: WebInspector.UISourceCodeFrame.prototype
-}
+};

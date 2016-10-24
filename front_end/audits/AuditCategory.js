@@ -31,7 +31,7 @@
  */
 WebInspector.AuditCategory = function()
 {
-}
+};
 
 WebInspector.AuditCategory.prototype = {
     /**
@@ -57,4 +57,4 @@ WebInspector.AuditCategory.prototype = {
     run: function(target, requests, ruleResultCallback, progress)
     {
     }
-}
+};

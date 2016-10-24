@@ -36,7 +36,7 @@ WebInspector.TextDictionary = function()
     /** @type {!Map<string, number>} */
     this._words = new Map();
     this._index = new WebInspector.Trie();
-}
+};
 
 WebInspector.TextDictionary.prototype = {
     /**
@@ -99,4 +99,4 @@ WebInspector.TextDictionary.prototype = {
         this._words.clear();
         this._index.clear();
     }
-}
+};

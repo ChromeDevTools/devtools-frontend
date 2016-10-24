@@ -29,7 +29,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-WebInspector.DOMPresentationUtils = {}
+WebInspector.DOMPresentationUtils = {};
 
 /**
  * @param {!WebInspector.DOMNode} node
@@ -84,7 +84,7 @@ WebInspector.DOMPresentationUtils.decorateNodeLabel = function(node, parentEleme
         title += pseudoText;
     }
     parentElement.title = title;
-}
+};
 
 /**
  * @param {!Element} container
@@ -98,7 +98,7 @@ WebInspector.DOMPresentationUtils.createSpansForNodeTitle = function(container, 
         container.createChild("span", "webkit-html-attribute-value").textContent = match[2];
     if (match[3])
         container.createChild("span", "webkit-html-attribute-name").textContent = match[3];
-}
+};
 
 /**
  * @param {?WebInspector.DOMNode} node
@@ -124,7 +124,7 @@ WebInspector.DOMPresentationUtils.linkifyNodeReference = function(node, idref)
     link.addEventListener("mouseleave", WebInspector.DOMModel.hideDOMNodeHighlight.bind(WebInspector.DOMModel), false);
 
     return root;
-}
+};
 
 /**
  * @param {!WebInspector.DeferredDOMNode} deferredNode
@@ -148,7 +148,7 @@ WebInspector.DOMPresentationUtils.linkifyDeferredNodeReference = function(deferr
     }
 
     return root;
-}
+};
 
 /**
  * @param {!WebInspector.Target} target
@@ -218,7 +218,7 @@ WebInspector.DOMPresentationUtils.buildImagePreviewContents = function(target, o
             container.createChild("tr").createChild("td").createChild("span", "description").textContent = String.sprintf("currentSrc: %s", imageURL.trimMiddle(100));
         userCallback(container);
     }
-}
+};
 
 /**
  * @param {!WebInspector.Target} target
@@ -272,7 +272,7 @@ WebInspector.DOMPresentationUtils.buildStackTracePreviewContents = function(targ
     }
 
     return element;
-}
+};
 
 /**
  * @param {!WebInspector.DOMNode} node
@@ -284,7 +284,7 @@ WebInspector.DOMPresentationUtils.fullQualifiedSelector = function(node, justSel
     if (node.nodeType() !== Node.ELEMENT_NODE)
         return node.localName() || node.nodeName().toLowerCase();
     return WebInspector.DOMPresentationUtils.cssPath(node, justSelector);
-}
+};
 
 /**
  * @param {!WebInspector.DOMNode} node
@@ -302,7 +302,7 @@ WebInspector.DOMPresentationUtils.simpleSelector = function(node)
     if (node.getAttribute("class"))
         return (lowerCaseName === "div" ? "" : lowerCaseName) + "." + node.getAttribute("class").trim().replace(/\s+/g, ".");
     return lowerCaseName;
-}
+};
 
 /**
  * @param {!WebInspector.DOMNode} node
@@ -328,7 +328,7 @@ WebInspector.DOMPresentationUtils.cssPath = function(node, optimized)
 
     steps.reverse();
     return steps.join(" > ");
-}
+};
 
 /**
  * @param {!WebInspector.DOMNode} node
@@ -488,7 +488,7 @@ WebInspector.DOMPresentationUtils._cssPathStep = function(node, optimized, isTar
     }
 
     return new WebInspector.DOMNodePathStep(result, false);
-}
+};
 
 /**
  * @param {!WebInspector.DOMNode} node
@@ -514,7 +514,7 @@ WebInspector.DOMPresentationUtils.xPath = function(node, optimized)
 
     steps.reverse();
     return (steps.length && steps[0].optimized ? "" : "/") + steps.join("/");
-}
+};
 
 /**
  * @param {!WebInspector.DOMNode} node
@@ -559,7 +559,7 @@ WebInspector.DOMPresentationUtils._xPathValue = function(node, optimized)
         ownValue += "[" + ownIndex + "]";
 
     return new WebInspector.DOMNodePathStep(ownValue, node.nodeType() === Node.DOCUMENT_NODE);
-}
+};
 
 /**
  * @param {!WebInspector.DOMNode} node
@@ -606,7 +606,7 @@ WebInspector.DOMPresentationUtils._xPathIndex = function(node)
         }
     }
     return -1; // An error occurred: |node| not found in parent's children.
-}
+};
 
 /**
  * @constructor
@@ -617,7 +617,7 @@ WebInspector.DOMNodePathStep = function(value, optimized)
 {
     this.value = value;
     this.optimized = optimized || false;
-}
+};
 
 WebInspector.DOMNodePathStep.prototype = {
     /**
@@ -628,14 +628,14 @@ WebInspector.DOMNodePathStep.prototype = {
     {
         return this.value;
     }
-}
+};
 
 /**
  * @interface
  */
 WebInspector.DOMPresentationUtils.MarkerDecorator = function()
 {
-}
+};
 
 WebInspector.DOMPresentationUtils.MarkerDecorator.prototype = {
     /**
@@ -643,7 +643,7 @@ WebInspector.DOMPresentationUtils.MarkerDecorator.prototype = {
      * @return {?{title: string, color: string}}
      */
     decorate: function(node) { }
-}
+};
 
 /**
  * @constructor
@@ -654,7 +654,7 @@ WebInspector.DOMPresentationUtils.GenericDecorator = function(extension)
 {
     this._title = WebInspector.UIString(extension.title());
     this._color = extension.descriptor()["color"];
-}
+};
 
 WebInspector.DOMPresentationUtils.GenericDecorator.prototype = {
     /**
@@ -666,4 +666,4 @@ WebInspector.DOMPresentationUtils.GenericDecorator.prototype = {
     {
         return { title: this._title, color: this._color };
     }
-}
+};

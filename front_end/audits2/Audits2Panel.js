@@ -12,7 +12,7 @@ WebInspector.Audits2Panel = function()
     this.contentElement.classList.add("vbox");
     this.contentElement.appendChild(createTextButton(WebInspector.UIString("Start"), this._start.bind(this)));
     this.contentElement.appendChild(createTextButton(WebInspector.UIString("Stop"), this._stop.bind(this)));
-}
+};
 
 WebInspector.Audits2Panel.prototype = {
     _start: function()
@@ -58,4 +58,4 @@ WebInspector.Audits2Panel.prototype = {
     },
 
     __proto__: WebInspector.Panel.prototype
-}
+};

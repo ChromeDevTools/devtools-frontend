@@ -83,6 +83,6 @@ TempStorage.prototype = {
             resolve();
         }
     }
-}
+};
 
 initializeSharedWorkerService("TempStorage", TempStorage);

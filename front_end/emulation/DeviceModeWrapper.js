@@ -18,7 +18,7 @@ WebInspector.DeviceModeWrapper = function(inspectedPagePlaceholder)
     this._showDeviceModeSetting = WebInspector.settings.createSetting("emulation.showDeviceMode", false);
     this._showDeviceModeSetting.addChangeListener(this._update.bind(this, false));
     this._update(true);
-}
+};
 
 /** @type {!WebInspector.DeviceModeWrapper} */
 WebInspector.DeviceModeView._wrapperInstance;
@@ -67,7 +67,7 @@ WebInspector.DeviceModeWrapper.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @constructor
@@ -75,7 +75,7 @@ WebInspector.DeviceModeWrapper.prototype = {
  */
 WebInspector.DeviceModeWrapper.ActionDelegate = function()
 {
-}
+};
 
 WebInspector.DeviceModeWrapper.ActionDelegate.prototype = {
     /**
@@ -96,4 +96,4 @@ WebInspector.DeviceModeWrapper.ActionDelegate.prototype = {
         }
         return false;
     }
-}
+};

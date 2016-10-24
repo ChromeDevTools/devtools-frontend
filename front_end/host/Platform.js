@@ -34,7 +34,7 @@ WebInspector.platform = function()
     if (!WebInspector._platform)
         WebInspector._platform = InspectorFrontendHost.platform();
     return WebInspector._platform;
-}
+};
 
 /**
  * @return {boolean}
@@ -45,7 +45,7 @@ WebInspector.isMac = function()
         WebInspector._isMac = WebInspector.platform() === "mac";
 
     return WebInspector._isMac;
-}
+};
 
 /**
  * @return {boolean}
@@ -56,7 +56,7 @@ WebInspector.isWin = function()
         WebInspector._isWin = WebInspector.platform() === "windows";
 
     return WebInspector._isWin;
-}
+};
 
 /**
  * @return {string}
@@ -77,7 +77,7 @@ WebInspector.fontFamily = function()
         break;
     }
     return WebInspector._fontFamily;
-}
+};
 
 /**
  * @return {string}
@@ -98,4 +98,4 @@ WebInspector.monospaceFontFamily = function()
         break;
     }
     return WebInspector._monospaceFontFamily;
-}
+};

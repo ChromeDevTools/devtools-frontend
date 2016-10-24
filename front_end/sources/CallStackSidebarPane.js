@@ -42,7 +42,7 @@ WebInspector.CallStackSidebarPane = function()
     this.callFrames = [];
     this._locationPool = new WebInspector.LiveLocationPool();
     this._update();
-}
+};
 
 WebInspector.CallStackSidebarPane.prototype = {
     /**
@@ -469,7 +469,7 @@ WebInspector.CallStackSidebarPane.prototype = {
     },
 
     __proto__: WebInspector.SimpleView.prototype
-}
+};
 
 /**
  * @constructor
@@ -488,7 +488,7 @@ WebInspector.CallStackSidebarPane.CallFrame = function(functionName, location, l
     this._debuggerCallFrame = debuggerCallFrame;
     this._asyncCallFrame = asyncCallFrame;
     WebInspector.debuggerWorkspaceBinding.createCallFrameLiveLocation(location, this._update.bind(this), locationPool);
-}
+};
 
 WebInspector.CallStackSidebarPane.CallFrame.prototype = {
     /**
@@ -505,4 +505,4 @@ WebInspector.CallStackSidebarPane.CallFrame.prototype = {
     },
 
     __proto__: WebInspector.UIList.Item.prototype
-}
+};

@@ -13,7 +13,7 @@ WebInspector.DeviceOrientation = function(alpha, beta, gamma)
     this.alpha = alpha;
     this.beta = beta;
     this.gamma = gamma;
-}
+};
 
 WebInspector.DeviceOrientation.prototype = {
     /**
@@ -35,7 +35,7 @@ WebInspector.DeviceOrientation.prototype = {
         for (var target of WebInspector.targetManager.targets(WebInspector.Target.Capability.Browser))
             target.deviceOrientationAgent().clearDeviceOrientationOverride();
     }
-}
+};
 
 /**
  * @return {!WebInspector.DeviceOrientation}
@@ -47,7 +47,7 @@ WebInspector.DeviceOrientation.parseSetting = function(value)
         return new WebInspector.DeviceOrientation(jsonObject.alpha, jsonObject.beta, jsonObject.gamma);
     }
     return new WebInspector.DeviceOrientation(0, 0, 0);
-}
+};
 
 /**
  * @return {?WebInspector.DeviceOrientation}
@@ -69,7 +69,7 @@ WebInspector.DeviceOrientation.parseUserInput = function(alphaString, betaString
     var gamma = isGammaValid ? parseFloat(gammaString) : -1;
 
     return new WebInspector.DeviceOrientation(alpha, beta, gamma);
-}
+};
 
 /**
  * @param {string} value
@@ -78,4 +78,4 @@ WebInspector.DeviceOrientation.parseUserInput = function(alphaString, betaString
 WebInspector.DeviceOrientation.validator = function(value)
 {
     return /^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value);
-}
+};

@@ -46,7 +46,7 @@ WebInspector.MemoryCountersGraph = function(delegate, model, filters)
     this._countersByName["jsEventListeners"] = this.createCounter(WebInspector.UIString("Listeners"), WebInspector.UIString("Listeners: %s"), "hsl(38, 90%, 43%)");
     this._gpuMemoryCounter = this.createCounter(WebInspector.UIString("GPU Memory"), WebInspector.UIString("GPU Memory [KB]: %s"), "hsl(300, 90%, 43%)", Number.bytesToString);
     this._countersByName["gpuMemoryUsedKB"] = this._gpuMemoryCounter;
-}
+};
 
 WebInspector.MemoryCountersGraph.prototype = {
     /**
@@ -78,4 +78,4 @@ WebInspector.MemoryCountersGraph.prototype = {
     },
 
     __proto__: WebInspector.CountersGraph.prototype
-}
+};

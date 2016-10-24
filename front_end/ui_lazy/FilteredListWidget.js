@@ -50,7 +50,7 @@ WebInspector.FilteredListWidget = function(delegate)
 
     /** @typedef {!Array.<!Element>} */
     this._elements = [];
-}
+};
 
 /**
  * @param {string} query
@@ -69,7 +69,7 @@ WebInspector.FilteredListWidget.filterRegex = function(query)
         regexString += c;
     }
     return new RegExp(regexString, "i");
-}
+};
 
 WebInspector.FilteredListWidget.prototype = {
     showAsDialog: function()
@@ -401,7 +401,7 @@ WebInspector.FilteredListWidget.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @constructor
@@ -410,7 +410,7 @@ WebInspector.FilteredListWidget.prototype = {
 WebInspector.FilteredListWidget.Delegate = function(promptHistory)
 {
     this._promptHistory = promptHistory;
-}
+};
 
 WebInspector.FilteredListWidget.Delegate.prototype = {
     /**
@@ -583,4 +583,4 @@ WebInspector.FilteredListWidget.Delegate.prototype = {
     dispose: function()
     {
     }
-}
+};

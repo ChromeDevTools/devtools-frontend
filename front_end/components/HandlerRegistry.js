@@ -38,7 +38,7 @@ WebInspector.HandlerRegistry = function(setting)
     this._handlers = {};
     this._setting = setting;
     this._activeHandler = this._setting.get();
-}
+};
 
 WebInspector.HandlerRegistry.prototype = {
     get handlerNames()
@@ -211,12 +211,12 @@ WebInspector.HandlerRegistry.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /** @enum {symbol} */
 WebInspector.HandlerRegistry.Events = {
     HandlersUpdated: Symbol("HandlersUpdated")
-}
+};
 
 /**
  * @constructor
@@ -228,7 +228,7 @@ WebInspector.HandlerSelector = function(handlerRegistry)
     this.element.addEventListener("change", this._onChange.bind(this), false);
     this._update();
     this._handlerRegistry.addEventListener(WebInspector.HandlerRegistry.Events.HandlersUpdated, this._update.bind(this));
-}
+};
 
 WebInspector.HandlerSelector.prototype =
 {
@@ -252,7 +252,7 @@ WebInspector.HandlerSelector.prototype =
         var value = event.target.value;
         this._handlerRegistry.activeHandler = value;
     }
-}
+};
 
 /**
  * @constructor
@@ -260,7 +260,7 @@ WebInspector.HandlerSelector.prototype =
  */
 WebInspector.HandlerRegistry.ContextMenuProvider = function()
 {
-}
+};
 
 WebInspector.HandlerRegistry.ContextMenuProvider.prototype = {
     /**
@@ -274,7 +274,7 @@ WebInspector.HandlerRegistry.ContextMenuProvider.prototype = {
         WebInspector.openAnchorLocationRegistry._appendContentProviderItems(contextMenu, target);
         WebInspector.openAnchorLocationRegistry._appendHrefItems(contextMenu, target);
     }
-}
+};
 
 /**
  * @constructor
@@ -282,7 +282,7 @@ WebInspector.HandlerRegistry.ContextMenuProvider.prototype = {
  */
 WebInspector.HandlerRegistry.LinkHandler = function()
 {
-}
+};
 
 WebInspector.HandlerRegistry.LinkHandler.prototype = {
     /**
@@ -295,7 +295,7 @@ WebInspector.HandlerRegistry.LinkHandler.prototype = {
     {
         return WebInspector.openAnchorLocationRegistry.dispatch({ url: url, lineNumber: lineNumber});
     }
-}
+};
 
 /**
  * @constructor
@@ -303,7 +303,7 @@ WebInspector.HandlerRegistry.LinkHandler.prototype = {
  */
 WebInspector.HandlerRegistry.OpenAnchorLocationSettingUI = function()
 {
-}
+};
 
 WebInspector.HandlerRegistry.OpenAnchorLocationSettingUI.prototype = {
     /**
@@ -318,7 +318,7 @@ WebInspector.HandlerRegistry.OpenAnchorLocationSettingUI.prototype = {
         var handlerSelector = new WebInspector.HandlerSelector(WebInspector.openAnchorLocationRegistry);
         return WebInspector.SettingsUI.createCustomSetting(WebInspector.UIString("Link handling:"), handlerSelector.element);
     }
-}
+};
 
 /**
  * @type {!WebInspector.HandlerRegistry}

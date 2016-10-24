@@ -46,7 +46,7 @@ WebInspector.IDBDatabaseView = function(database)
     this._versionElement = this.element.createChild("div", "header-row");
 
     this.update(database);
-}
+};
 
 WebInspector.IDBDatabaseView.prototype = {
     /**
@@ -78,7 +78,7 @@ WebInspector.IDBDatabaseView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 
 /**
@@ -113,7 +113,7 @@ WebInspector.IDBDataView = function(model, databaseId, objectStore, index)
 
     this.update(objectStore, index);
     this._entries = [];
-}
+};
 
 WebInspector.IDBDataView.prototype = {
     /**
@@ -335,7 +335,7 @@ WebInspector.IDBDataView.prototype = {
     },
 
     __proto__: WebInspector.SimpleView.prototype
-}
+};
 
 /**
  * @constructor
@@ -346,7 +346,7 @@ WebInspector.IDBDataGridNode = function(data)
 {
     WebInspector.DataGridNode.call(this, data, false);
     this.selectable = false;
-}
+};
 
 WebInspector.IDBDataGridNode.prototype = {
     /**
@@ -373,4 +373,4 @@ WebInspector.IDBDataGridNode.prototype = {
     },
 
     __proto__: WebInspector.DataGridNode.prototype
-}
+};

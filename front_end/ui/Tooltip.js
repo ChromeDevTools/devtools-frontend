@@ -18,14 +18,14 @@ WebInspector.Tooltip = function(doc)
     doc.addEventListener("keydown", this._hide.bind(this, true), true);
     WebInspector.zoomManager.addEventListener(WebInspector.ZoomManager.Events.ZoomChanged, this._reset, this);
     doc.defaultView.addEventListener("resize", this._reset.bind(this), false);
-}
+};
 
 WebInspector.Tooltip.Timing = {
     // Max time between tooltips showing that no opening delay is required.
     "InstantThreshold": 300,
     // Wait time before opening a tooltip.
     "OpeningDelay": 600
-}
+};
 
 WebInspector.Tooltip.prototype = {
     /**
@@ -144,7 +144,7 @@ WebInspector.Tooltip.prototype = {
         this._tooltipElement.style.maxWidth = "0";
         this._tooltipElement.style.maxHeight = "0";
     }
-}
+};
 
 WebInspector.Tooltip._symbol = Symbol("Tooltip");
 
@@ -154,7 +154,7 @@ WebInspector.Tooltip._symbol = Symbol("Tooltip");
 WebInspector.Tooltip.installHandler = function(doc)
 {
     new WebInspector.Tooltip(doc);
-}
+};
 
 /**
  * @param {!Element} element
@@ -169,7 +169,7 @@ WebInspector.Tooltip.install = function(element, tooltipContent, actionId, optio
         return;
     }
     element[WebInspector.Tooltip._symbol] = { content: tooltipContent, actionId: actionId, options: options || {} };
-}
+};
 
 /**
  * @param {!Element} element
@@ -177,7 +177,7 @@ WebInspector.Tooltip.install = function(element, tooltipContent, actionId, optio
 WebInspector.Tooltip.addNativeOverrideContainer = function(element)
 {
     WebInspector.Tooltip._nativeOverrideContainer.push(element);
-}
+};
 
 /** @type {!Array.<!Element>} */
 WebInspector.Tooltip._nativeOverrideContainer = [];

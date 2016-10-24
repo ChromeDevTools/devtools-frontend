@@ -789,7 +789,7 @@ WebInspector.ScreencastView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @param {!Element} element
@@ -803,7 +803,7 @@ WebInspector.ScreencastView.ProgressTracker = function(element)
     WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.Events.Load, this._onLoad, this);
     WebInspector.targetManager.addModelListener(WebInspector.NetworkManager, WebInspector.NetworkManager.Events.RequestStarted, this._onRequestStarted, this);
     WebInspector.targetManager.addModelListener(WebInspector.NetworkManager, WebInspector.NetworkManager.Events.RequestFinished, this._onRequestFinished, this);
-}
+};
 
 WebInspector.ScreencastView.ProgressTracker.prototype = {
     _onMainFrameNavigated: function()

@@ -47,7 +47,7 @@ WebInspector.Dialog = function()
     this._dimmed = false;
     /** @type {!Map<!HTMLElement, number>} */
     this._tabIndexMap = new Map();
-}
+};
 
 /**
  * @return {boolean}
@@ -55,7 +55,7 @@ WebInspector.Dialog = function()
 WebInspector.Dialog.hasInstance = function()
 {
     return !!WebInspector.Dialog._instance;
-}
+};
 
 WebInspector.Dialog.prototype = {
     /**

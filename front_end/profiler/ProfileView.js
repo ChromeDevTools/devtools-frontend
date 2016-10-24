@@ -63,14 +63,14 @@ WebInspector.ProfileView = function(nodeFormatter, viewTypes)
     this._changeView();
     if (this._flameChart)
         this._flameChart.update();
-}
+};
 
 /** @enum {string} */
 WebInspector.ProfileView.ViewTypes = {
     Flame: "Flame",
     Tree: "Tree",
     Heavy: "Heavy"
-}
+};
 
 /**
  * @param {!Array<!{title: string, value: string}>} entryInfo
@@ -85,7 +85,7 @@ WebInspector.ProfileView.buildPopoverTable = function(entryInfo)
         row.createChild("td").textContent = entry.value;
     }
     return table;
-}
+};
 
 WebInspector.ProfileView.prototype = {
     focus: function()
@@ -383,7 +383,7 @@ WebInspector.ProfileView.prototype = {
     },
 
     __proto__: WebInspector.SimpleView.prototype
-}
+};
 
 /**
  * @constructor
@@ -399,7 +399,7 @@ WebInspector.WritableProfileHeader = function(target, type, title)
     WebInspector.ProfileHeader.call(this, target, type, title || WebInspector.UIString("Profile %d", type.nextProfileUid()));
     this._debuggerModel = WebInspector.DebuggerModel.fromTarget(target);
     this._tempFile = null;
-}
+};
 
 WebInspector.WritableProfileHeader.prototype = {
     /**
@@ -605,4 +605,4 @@ WebInspector.WritableProfileHeader.prototype = {
     },
 
     __proto__: WebInspector.ProfileHeader.prototype
-}
+};

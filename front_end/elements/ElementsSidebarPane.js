@@ -15,7 +15,7 @@ WebInspector.ElementsSidebarPane = function()
 
     this._updateThrottler = new WebInspector.Throttler(100);
     this._updateWhenVisible = false;
-}
+};
 
 WebInspector.ElementsSidebarPane.prototype = {
     /**
@@ -73,4 +73,4 @@ WebInspector.ElementsSidebarPane.prototype = {
     onCSSModelChanged: function(event) { },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

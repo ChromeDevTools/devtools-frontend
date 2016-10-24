@@ -63,7 +63,7 @@ WebInspector.LayersPanel = function()
     this._paintProfilerView = new WebInspector.LayerPaintProfilerView(this._layers3DView.showImageForLayer.bind(this._layers3DView));
     this._tabbedPane.appendTab(WebInspector.LayersPanel.DetailsViewTabs.Profiler, WebInspector.UIString("Profiler"), this._paintProfilerView);
     this._updateThrottler = new WebInspector.Throttler(100);
-}
+};
 
 WebInspector.LayersPanel.DetailsViewTabs = {
     Details: "details",
@@ -167,4 +167,4 @@ WebInspector.LayersPanel.prototype = {
     },
 
     __proto__: WebInspector.PanelWithSidebar.prototype
-}
+};

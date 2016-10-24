@@ -13,7 +13,7 @@ WebInspector.ServerTiming = function(metric, value, description)
     this.metric = metric;
     this.value = value;
     this.description = description;
-}
+};
 
 /**
  * @param {!Array<!WebInspector.NetworkRequest.NameValue>} headers
@@ -54,4 +54,4 @@ WebInspector.ServerTiming.parseHeaders = function(headers)
     }, []);
     serverTimings.sort((a, b) => a.metric.toLowerCase().compareTo(b.metric.toLowerCase()));
     return serverTimings;
-}
+};

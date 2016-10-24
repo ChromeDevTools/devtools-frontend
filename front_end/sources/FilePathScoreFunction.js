@@ -40,7 +40,7 @@ WebInspector.FilePathScoreFunction = function(query)
     this._sequence = null;
     this._dataUpperCase = "";
     this._fileNameIndex = 0;
-}
+};
 
 WebInspector.FilePathScoreFunction.prototype = {
     /**
@@ -187,5 +187,5 @@ WebInspector.FilePathScoreFunction.prototype = {
         else
             return this._sequenceCharScore(query, data, i, j - consecutiveMatch, consecutiveMatch);
     }
-}
+};
 

@@ -24,7 +24,7 @@ WebInspector.MediaQueryInspector = function(getWidthCallback, setWidthCallback)
 
     WebInspector.targetManager.observeTargets(this);
     WebInspector.zoomManager.addEventListener(WebInspector.ZoomManager.Events.ZoomChanged, this._renderMediaQueries.bind(this), this);
-}
+};
 
 /**
  * @enum {number}
@@ -33,7 +33,7 @@ WebInspector.MediaQueryInspector.Section = {
     Max: 0,
     MinMax: 1,
     Min: 2
-}
+};
 
 WebInspector.MediaQueryInspector.prototype = {
     /**
@@ -158,7 +158,7 @@ WebInspector.MediaQueryInspector.prototype = {
             return Promise.resolve();
 
         return this._cssModel.mediaQueriesPromise()
-            .then(this._rebuildMediaQueries.bind(this))
+            .then(this._rebuildMediaQueries.bind(this));
     },
 
     /**
@@ -344,7 +344,7 @@ WebInspector.MediaQueryInspector.MediaQueryUIModel = function(cssMedia, minWidth
         this._section = WebInspector.MediaQueryInspector.Section.MinMax;
     else
         this._section = WebInspector.MediaQueryInspector.Section.Min;
-}
+};
 
 /**
  * @param {!WebInspector.CSSMedia} cssMedia
@@ -376,7 +376,7 @@ WebInspector.MediaQueryInspector.MediaQueryUIModel.createFromMediaQuery = functi
         return null;
 
     return new WebInspector.MediaQueryInspector.MediaQueryUIModel(cssMedia, minWidthExpression, maxWidthExpression, mediaQuery.active());
-}
+};
 
 WebInspector.MediaQueryInspector.MediaQueryUIModel.prototype = {
     /**
@@ -476,4 +476,4 @@ WebInspector.MediaQueryInspector.MediaQueryUIModel.prototype = {
     {
         return this._active;
     }
-}
+};

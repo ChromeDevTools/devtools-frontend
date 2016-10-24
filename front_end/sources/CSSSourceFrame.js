@@ -47,7 +47,7 @@ WebInspector.CSSSourceFrame = function(uiSourceCode)
         if (this._swatchPopoverHelper.isShowing())
             this._swatchPopoverHelper.hide(true);
     });
-}
+};
 
 /** @type {number} */
 WebInspector.CSSSourceFrame.maxSwatchProcessingLength = 300;
@@ -384,4 +384,4 @@ WebInspector.CSSSourceFrame.prototype = {
     },
 
     __proto__: WebInspector.UISourceCodeFrame.prototype
-}
+};

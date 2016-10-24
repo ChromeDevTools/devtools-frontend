@@ -74,13 +74,13 @@ WebInspector.EventListenersWidget = function()
 
     WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this.update, this);
     this.update();
-}
+};
 
 WebInspector.EventListenersWidget.DispatchFilterBy = {
     All : "All",
     Blocking : "Blocking",
     Passive : "Passive"
-}
+};
 
 WebInspector.EventListenersWidget._objectGroupName = "event-listeners-panel";
 
@@ -177,4 +177,4 @@ WebInspector.EventListenersWidget.prototype = {
     },
 
     __proto__: WebInspector.ThrottledWidget.prototype
-}
+};

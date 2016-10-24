@@ -25,7 +25,7 @@ WebInspector.TimelineTreeView = function(model, filters)
     this._populateToolbar(mainView.element);
     this._dataGrid = new WebInspector.SortableDataGrid(columns);
     this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SortingChanged, this._sortingChanged, this);
-    this._dataGrid.element.addEventListener("mousemove", this._onMouseMove.bind(this), true)
+    this._dataGrid.element.addEventListener("mousemove", this._onMouseMove.bind(this), true);
     this._dataGrid.setResizeMethod(WebInspector.DataGrid.ResizeMethod.Last);
     this._dataGrid.asWidget().show(mainView.element);
 
@@ -40,7 +40,7 @@ WebInspector.TimelineTreeView = function(model, filters)
 
     /** @type {?WebInspector.TimelineProfileTree.Node|undefined} */
     this._lastSelectedNode;
-}
+};
 
 WebInspector.TimelineTreeView.prototype = {
     /**
@@ -152,7 +152,7 @@ WebInspector.TimelineTreeView.prototype = {
      */
     _buildTopDownTree: function(eventIdCallback)
     {
-        return WebInspector.TimelineProfileTree.buildTopDown(this._model.mainThreadEvents(), this._filters, this._startTime, this._endTime, eventIdCallback)
+        return WebInspector.TimelineProfileTree.buildTopDown(this._model.mainThreadEvents(), this._filters, this._startTime, this._endTime, eventIdCallback);
     },
 
     /**
@@ -278,7 +278,7 @@ WebInspector.TimelineTreeView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @param {!WebInspector.TracingModel.Event} event
@@ -291,7 +291,7 @@ WebInspector.TimelineTreeView.eventNameForSorting = function(event)
         return  data["functionName"] + "@" + (data["scriptId"] || data["url"] || "");
     }
     return event.name + ":@" + WebInspector.TimelineProfileTree.eventURL(event);
-}
+};
 
 /**
  * @constructor
@@ -311,7 +311,7 @@ WebInspector.TimelineTreeView.GridNode = function(profileNode, grandTotalTime, m
     this._maxSelfTime = maxSelfTime;
     this._maxTotalTime = maxTotalTime;
     WebInspector.SortableDataGridNode.call(this, null, false);
-}
+};
 
 WebInspector.TimelineTreeView.GridNode.prototype = {
     /**
@@ -402,7 +402,7 @@ WebInspector.TimelineTreeView.GridNode.prototype = {
     },
 
     __proto__: WebInspector.SortableDataGridNode.prototype
-}
+};
 
 /**
  * @constructor
@@ -418,7 +418,7 @@ WebInspector.TimelineTreeView.TreeGridNode = function(profileNode, grandTotalTim
     WebInspector.TimelineTreeView.GridNode.call(this, profileNode, grandTotalTime, maxSelfTime, maxTotalTime, treeView);
     this.hasChildren = this._profileNode.children ? this._profileNode.children.size > 0 : false;
     profileNode[WebInspector.TimelineTreeView.TreeGridNode._gridNodeSymbol] = this;
-}
+};
 
 WebInspector.TimelineTreeView.TreeGridNode._gridNodeSymbol = Symbol("treeGridNode");
 
@@ -461,7 +461,7 @@ WebInspector.AggregatedTimelineTreeView = function(model, filters)
     this._filters.push(new WebInspector.ExclusiveNameFilter(nonessentialEvents));
     this._stackView = new WebInspector.TimelineStackView(this);
     this._stackView.addEventListener(WebInspector.TimelineStackView.Events.SelectionChanged, this._onStackViewSelectionChanged, this);
-}
+};
 
 WebInspector.AggregatedTimelineTreeView.prototype = {
     /**
@@ -641,7 +641,7 @@ WebInspector.CallTreeTimelineTreeView = function(model, filters)
 {
     WebInspector.AggregatedTimelineTreeView.call(this, model, filters);
     this._dataGrid.markColumnAsSortedBy("total", WebInspector.DataGrid.Order.Descending);
-}
+};
 
 WebInspector.CallTreeTimelineTreeView.prototype = {
     /**
@@ -667,7 +667,7 @@ WebInspector.BottomUpTimelineTreeView = function(model, filters)
 {
     WebInspector.AggregatedTimelineTreeView.call(this, model, filters);
     this._dataGrid.markColumnAsSortedBy("self", WebInspector.DataGrid.Order.Descending);
-}
+};
 
 WebInspector.BottomUpTimelineTreeView.prototype = {
     /**
@@ -698,7 +698,7 @@ WebInspector.EventsTimelineTreeView = function(model, filters, delegate)
     this._delegate = delegate;
     this._filters.push.apply(this._filters, this._filtersControl.filters());
     this._dataGrid.markColumnAsSortedBy("startTime", WebInspector.DataGrid.Order.Ascending);
-}
+};
 
 WebInspector.EventsTimelineTreeView.prototype = {
     /**
@@ -823,7 +823,7 @@ WebInspector.EventsTimelineTreeView.prototype = {
     },
 
     __proto__: WebInspector.TimelineTreeView.prototype
-}
+};
 
 /**
  * @constructor
@@ -843,12 +843,12 @@ WebInspector.TimelineStackView = function(treeView)
     this._dataGrid.setResizeMethod(WebInspector.DataGrid.ResizeMethod.Last);
     this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SelectedNode, this._onSelectionChanged, this);
     this._dataGrid.asWidget().show(this.element);
-}
+};
 
 /** @enum {symbol} */
 WebInspector.TimelineStackView.Events = {
     SelectionChanged: Symbol("SelectionChanged")
-}
+};
 
 WebInspector.TimelineStackView.prototype = {
     /**
@@ -885,4 +885,4 @@ WebInspector.TimelineStackView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

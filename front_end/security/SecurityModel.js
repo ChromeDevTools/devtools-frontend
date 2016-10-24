@@ -14,12 +14,12 @@ WebInspector.SecurityModel = function(target)
     this._securityAgent = target.securityAgent();
     target.registerSecurityDispatcher(this._dispatcher);
     this._securityAgent.enable();
-}
+};
 
 /** @enum {symbol} */
 WebInspector.SecurityModel.Events = {
     SecurityStateChanged: Symbol("SecurityStateChanged")
-}
+};
 
 WebInspector.SecurityModel.prototype = {
     __proto__: WebInspector.SDKModel.prototype,
@@ -28,7 +28,7 @@ WebInspector.SecurityModel.prototype = {
     {
         this._securityAgent.showCertificateViewer();
     }
-}
+};
 
 /**
  * @param {!WebInspector.Target} target
@@ -40,7 +40,7 @@ WebInspector.SecurityModel.fromTarget = function(target)
     if (!model)
         model = new WebInspector.SecurityModel(target);
     return model;
-}
+};
 
 /**
  * @param {!SecurityAgent.SecurityState} a
@@ -72,7 +72,7 @@ WebInspector.SecurityModel.SecurityStateComparator = function(a, b)
     var bScore = securityStateMap.get(b) || 0;
 
     return aScore - bScore;
-}
+};
 
 /**
  * @constructor
@@ -86,7 +86,7 @@ WebInspector.PageSecurityState = function(securityState, explanations, insecureC
     this.explanations = explanations;
     this.insecureContentStatus = insecureContentStatus;
     this.schemeIsCryptographic = schemeIsCryptographic;
-}
+};
 
 /**
  * @constructor
@@ -95,7 +95,7 @@ WebInspector.PageSecurityState = function(securityState, explanations, insecureC
 WebInspector.SecurityDispatcher = function(model)
 {
     this._model = model;
-}
+};
 
 WebInspector.SecurityDispatcher.prototype = {
     /**
@@ -110,4 +110,4 @@ WebInspector.SecurityDispatcher.prototype = {
         var pageSecurityState = new WebInspector.PageSecurityState(securityState, explanations || [], insecureContentStatus || null, schemeIsCryptographic || false);
         this._model.dispatchEventToListeners(WebInspector.SecurityModel.Events.SecurityStateChanged, pageSecurityState);
     }
-}
+};

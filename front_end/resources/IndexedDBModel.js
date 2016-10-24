@@ -44,7 +44,7 @@ WebInspector.IndexedDBModel = function(target, securityOriginManager)
     this._databases = new Map();
     /** @type {!Object.<string, !Array.<string>>} */
     this._databaseNamesBySecurityOrigin = {};
-}
+};
 
 WebInspector.IndexedDBModel.KeyTypes = {
     NumberType:  "number",
@@ -101,7 +101,7 @@ WebInspector.IndexedDBModel.keyFromIDBKey = function(idbKey)
     }
     key.type = /** @type {!IndexedDBAgent.KeyType<string>} */ (type);
     return key;
-}
+};
 
 /**
  * @param {?IDBKeyRange=} idbKeyRange
@@ -119,7 +119,7 @@ WebInspector.IndexedDBModel.keyRangeFromIDBKeyRange = function(idbKeyRange)
     keyRange.lowerOpen = !!idbKeyRange.lowerOpen;
     keyRange.upperOpen = !!idbKeyRange.upperOpen;
     return keyRange;
-}
+};
 
 /**
  * @param {!IndexedDBAgent.KeyPath} keyPath
@@ -140,7 +140,7 @@ WebInspector.IndexedDBModel.idbKeyPathFromKeyPath = function(keyPath)
         break;
     }
     return idbKeyPath;
-}
+};
 
 /**
  * @param {?string|!Array.<string>|undefined} idbKeyPath
@@ -153,14 +153,14 @@ WebInspector.IndexedDBModel.keyPathStringFromIDBKeyPath = function(idbKeyPath)
     if (idbKeyPath instanceof Array)
         return "[\"" + idbKeyPath.join("\", \"") + "\"]";
     return null;
-}
+};
 
 /** @enum {symbol} */
 WebInspector.IndexedDBModel.Events = {
     DatabaseAdded: Symbol("DatabaseAdded"),
     DatabaseRemoved: Symbol("DatabaseRemoved"),
     DatabaseLoaded: Symbol("DatabaseLoaded")
-}
+};
 
 WebInspector.IndexedDBModel.prototype = {
     enable: function()
@@ -443,7 +443,7 @@ WebInspector.IndexedDBModel.prototype = {
     },
 
     __proto__: WebInspector.SDKModel.prototype
-}
+};
 
 /**
  * @constructor
@@ -456,7 +456,7 @@ WebInspector.IndexedDBModel.Entry = function(key, primaryKey, value)
     this.key = key;
     this.primaryKey = primaryKey;
     this.value = value;
-}
+};
 
 /**
  * @constructor
@@ -467,7 +467,7 @@ WebInspector.IndexedDBModel.DatabaseId = function(securityOrigin, name)
 {
     this.securityOrigin = securityOrigin;
     this.name = name;
-}
+};
 
 WebInspector.IndexedDBModel.DatabaseId.prototype = {
     /**
@@ -478,7 +478,7 @@ WebInspector.IndexedDBModel.DatabaseId.prototype = {
     {
         return this.name === databaseId.name && this.securityOrigin === databaseId.securityOrigin;
     },
-}
+};
 /**
  * @constructor
  * @param {!WebInspector.IndexedDBModel.DatabaseId} databaseId
@@ -489,7 +489,7 @@ WebInspector.IndexedDBModel.Database = function(databaseId, version)
     this.databaseId = databaseId;
     this.version = version;
     this.objectStores = {};
-}
+};
 
 /**
  * @constructor
@@ -503,7 +503,7 @@ WebInspector.IndexedDBModel.ObjectStore = function(name, keyPath, autoIncrement)
     this.keyPath = keyPath;
     this.autoIncrement = autoIncrement;
     this.indexes = {};
-}
+};
 
 WebInspector.IndexedDBModel.ObjectStore.prototype = {
     /**
@@ -513,7 +513,7 @@ WebInspector.IndexedDBModel.ObjectStore.prototype = {
     {
         return WebInspector.IndexedDBModel.keyPathStringFromIDBKeyPath(this.keyPath);
     }
-}
+};
 
 /**
  * @constructor
@@ -528,7 +528,7 @@ WebInspector.IndexedDBModel.Index = function(name, keyPath, unique, multiEntry)
     this.keyPath = keyPath;
     this.unique = unique;
     this.multiEntry = multiEntry;
-}
+};
 
 WebInspector.IndexedDBModel.Index.prototype = {
     /**
@@ -538,7 +538,7 @@ WebInspector.IndexedDBModel.Index.prototype = {
     {
         return WebInspector.IndexedDBModel.keyPathStringFromIDBKeyPath(this.keyPath);
     }
-}
+};
 
 /**
  * @param {!WebInspector.Target} target
@@ -550,4 +550,4 @@ WebInspector.IndexedDBModel.fromTarget = function(target)
     if (!model)
         model = new WebInspector.IndexedDBModel(target, WebInspector.SecurityOriginManager.fromTarget(target));
     return model;
-}
+};

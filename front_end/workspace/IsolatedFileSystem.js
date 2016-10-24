@@ -51,7 +51,7 @@ WebInspector.IsolatedFileSystem = function(manager, path, embedderPath, domFileS
     this._filePaths = new Set();
     /** @type {!Set<string>} */
     this._gitFolders = new Set();
-}
+};
 
 WebInspector.IsolatedFileSystem.ImageExtensions = new Set(["jpeg", "jpg", "svg", "gif", "webp", "png", "ico", "tiff", "tif", "bmp"]);
 
@@ -92,7 +92,7 @@ WebInspector.IsolatedFileSystem.create = function(manager, path, embedderPath, n
         }
         return fileSystem._initializeFilePaths();
     }
-}
+};
 
 /**
  * @param {!DOMError} error
@@ -101,7 +101,7 @@ WebInspector.IsolatedFileSystem.create = function(manager, path, embedderPath, n
 WebInspector.IsolatedFileSystem.errorMessage = function(error)
 {
     return WebInspector.UIString("File system error: %s", error.message);
-}
+};
 
 WebInspector.IsolatedFileSystem.prototype = {
     /**
@@ -679,4 +679,4 @@ WebInspector.IsolatedFileSystem.prototype = {
         var requestId = this._manager.registerProgress(progress);
         InspectorFrontendHost.indexPath(requestId, this._embedderPath);
     }
-}
+};

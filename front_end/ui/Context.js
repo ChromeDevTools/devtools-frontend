@@ -9,12 +9,12 @@ WebInspector.Context = function()
 {
     this._flavors = new Map();
     this._eventDispatchers = new Map();
-}
+};
 
 /** @enum {symbol} */
 WebInspector.Context.Events = {
     FlavorChanged: Symbol("FlavorChanged")
-}
+};
 
 WebInspector.Context.prototype = {
     /**
@@ -116,18 +116,18 @@ WebInspector.Context.prototype = {
 
         return targetExtensionSet;
     }
-}
+};
 
 /**
  * @interface
  */
-WebInspector.ContextFlavorListener = function() { }
+WebInspector.ContextFlavorListener = function() { };
 
 WebInspector.ContextFlavorListener.prototype = {
     /**
      * @param {?Object} object
      */
     flavorChanged: function(object) { }
-}
+};
 
 WebInspector.context = new WebInspector.Context();

@@ -32,7 +32,7 @@ WebInspector.JavaScriptBreakpointsSidebarPane = function()
     this._breakpointManager.addEventListener(WebInspector.BreakpointManager.Events.BreakpointsActiveStateChanged, this._breakpointsActiveStateChanged, this);
     this._breakpointsActiveStateChanged();
     this._update();
-}
+};
 
 WebInspector.JavaScriptBreakpointsSidebarPane.prototype = {
     _emptyElementContextMenu: function(event)
@@ -88,7 +88,7 @@ WebInspector.JavaScriptBreakpointsSidebarPane.prototype = {
          */
         function didRequestContent(content)
         {
-            var lineNumber = uiLocation.lineNumber
+            var lineNumber = uiLocation.lineNumber;
             var columnNumber = uiLocation.columnNumber;
             var text = new WebInspector.Text(content || "");
             if (lineNumber < text.lineCount()) {
@@ -274,4 +274,4 @@ WebInspector.JavaScriptBreakpointsSidebarPane.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

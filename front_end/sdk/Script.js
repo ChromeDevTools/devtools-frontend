@@ -57,13 +57,13 @@ WebInspector.Script = function(debuggerModel, scriptId, sourceURL, startLine, st
     this._isLiveEdit = isLiveEdit;
     this.sourceMapURL = sourceMapURL;
     this.hasSourceURL = hasSourceURL;
-}
+};
 
 /** @enum {symbol} */
 WebInspector.Script.Events = {
     ScriptEdited: Symbol("ScriptEdited"),
     SourceMapURLAdded: Symbol("SourceMapURLAdded")
-}
+};
 
 WebInspector.Script.sourceURLRegex = /^[\040\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/m;
 
@@ -86,7 +86,7 @@ WebInspector.Script._trimSourceURLComment = function(source)
     if (sourceURLLine.search(WebInspector.Script.sourceURLRegex) === -1)
         return source;
     return source.substr(0, sourceURLLineIndex) + source.substr(sourceURLLineIndex + sourceURLLine.length + 1);
-}
+};
 
 /**
  * @param {!WebInspector.Script} script
@@ -112,7 +112,7 @@ WebInspector.Script._reportDeprecatedCommentIfNeeded = function(script, source)
     var text = WebInspector.UIString("'//@ sourceURL' and '//@ sourceMappingURL' are deprecated, please use '//# sourceURL=' and '//# sourceMappingURL=' instead.");
     var msg = new WebInspector.ConsoleMessage(script.target(), WebInspector.ConsoleMessage.MessageSource.JS, WebInspector.ConsoleMessage.MessageLevel.Warning, text, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, script.scriptId);
     consoleModel.addMessage(msg);
-}
+};
 
 WebInspector.Script.prototype = {
     /**
@@ -344,4 +344,4 @@ WebInspector.Script.prototype = {
     },
 
     __proto__: WebInspector.SDKObject.prototype
-}
+};

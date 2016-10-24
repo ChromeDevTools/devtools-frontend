@@ -13,7 +13,7 @@ WebInspector.OverlayController = function()
     // TODO(dgozman): we should get DebuggerResumed on navigations instead of listening to GlobalObjectCleared.
     WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._updateOverlay, this);
     WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.SuspendStateChanged, this._updateAllOverlays, this);
-}
+};
 
 WebInspector.OverlayController.prototype = {
     _updateAllOverlays: function()
@@ -40,4 +40,4 @@ WebInspector.OverlayController.prototype = {
         var message = debuggerModel.isPaused() && !WebInspector.moduleSetting("disablePausedStateOverlay").get() ? WebInspector.UIString("Paused in debugger") : undefined;
         debuggerModel.target().pageAgent().configureOverlay(WebInspector.targetManager.allTargetsSuspended(), message);
     }
-}
+};

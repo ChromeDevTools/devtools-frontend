@@ -45,7 +45,7 @@ WebInspector.ContextMenuItem = function(topLevelMenu, type, label, disabled, che
     this._contextMenu = topLevelMenu;
     if (type === "item" || type === "checkbox")
         this._id = topLevelMenu._nextId();
-}
+};
 
 WebInspector.ContextMenuItem.prototype = {
     /**
@@ -108,7 +108,7 @@ WebInspector.ContextMenuItem.prototype = {
     {
         this._shortcut = shortcut;
     }
-}
+};
 
 /**
  * @constructor
@@ -122,7 +122,7 @@ WebInspector.ContextSubMenuItem = function(topLevelMenu, label, disabled)
     WebInspector.ContextMenuItem.call(this, topLevelMenu, "subMenu", label, disabled);
     /** @type {!Array.<!WebInspector.ContextMenuItem>} */
     this._items = [];
-}
+};
 
 WebInspector.ContextSubMenuItem.prototype = {
     /**
@@ -289,7 +289,7 @@ WebInspector.ContextSubMenuItem.prototype = {
     },
 
     __proto__: WebInspector.ContextMenuItem.prototype
-}
+};
 
 /**
  * @constructor
@@ -314,7 +314,7 @@ WebInspector.ContextMenu = function(event, useSoftMenu, x, y)
     this._id = 0;
     /** @type {!Map<string, !WebInspector.ContextSubMenuItem>} */
     this._namedSubMenus = new Map();
-}
+};
 
 WebInspector.ContextMenu.initialize = function()
 {
@@ -326,7 +326,7 @@ WebInspector.ContextMenu.initialize = function()
     {
         WebInspector.ContextMenu._useSoftMenu = /** @type {boolean} */ (event.data);
     }
-}
+};
 
 /**
  * @param {!Document} doc
@@ -344,7 +344,7 @@ WebInspector.ContextMenu.installHandler = function(doc)
         contextMenu.appendApplicableItems(/** @type {!Object} */ (event.deepElementFromPoint()));
         contextMenu.show();
     }
-}
+};
 
 WebInspector.ContextMenu.prototype = {
     /**
@@ -498,13 +498,13 @@ WebInspector.ContextMenu.prototype = {
     },
 
     __proto__: WebInspector.ContextSubMenuItem.prototype
-}
+};
 
 /**
  * @interface
  */
 WebInspector.ContextMenu.Provider = function() {
-}
+};
 
 WebInspector.ContextMenu.Provider.prototype = {
     /**
@@ -513,4 +513,4 @@ WebInspector.ContextMenu.Provider.prototype = {
      * @param {!Object} target
      */
     appendApplicableItems: function(event, contextMenu, target) { }
-}
+};

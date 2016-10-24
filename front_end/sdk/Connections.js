@@ -12,7 +12,7 @@ WebInspector.MainConnection = function()
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.DispatchMessage, this._dispatchMessage, this);
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.DispatchMessageChunk, this._dispatchMessageChunk, this);
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.EvaluateForTestInFrontend, this._evaluateForTestInFrontend, this);
-}
+};
 
 WebInspector.MainConnection.prototype = {
     /**
@@ -90,7 +90,7 @@ WebInspector.MainConnection.prototype = {
     },
 
     __proto__: InspectorBackendClass.Connection.prototype
-}
+};
 
 /**
  * @constructor
@@ -106,7 +106,7 @@ WebInspector.WebSocketConnection = function(url, onConnectionReady)
     this._socket.onerror = this._onError.bind(this);
     this._socket.onopen = onConnectionReady.bind(null, this);
     this._socket.onclose = this.connectionClosed.bind(this, "websocket_closed");
-}
+};
 
 /**
  * @param {string} url
@@ -118,7 +118,7 @@ WebInspector.WebSocketConnection.Create = function(url)
     var result = new Promise(resolve => fulfill = resolve);
     new WebInspector.WebSocketConnection(url, fulfill);
     return result;
-}
+};
 
 WebInspector.WebSocketConnection.prototype = {
 
@@ -158,7 +158,7 @@ WebInspector.WebSocketConnection.prototype = {
     },
 
     __proto__: InspectorBackendClass.Connection.prototype
-}
+};
 
 /**
  * @constructor
@@ -167,7 +167,7 @@ WebInspector.WebSocketConnection.prototype = {
 WebInspector.StubConnection = function()
 {
     InspectorBackendClass.Connection.call(this);
-}
+};
 
 WebInspector.StubConnection.prototype = {
     /**
@@ -189,7 +189,7 @@ WebInspector.StubConnection.prototype = {
     },
 
     __proto__: InspectorBackendClass.Connection.prototype
-}
+};
 
 
 /**
@@ -204,7 +204,7 @@ WebInspector.RawProtocolConnection = function(dispatchCallback, yieldCallback)
     this._dispatchCallback = dispatchCallback;
     this._yieldCallback = yieldCallback;
     this._isClosed = false;
-}
+};
 
 WebInspector.RawProtocolConnection.prototype = {
     /**
@@ -252,4 +252,4 @@ WebInspector.RawProtocolConnection.prototype = {
         delete this._dispatchCallback;
         this._yieldCallback();
     }
-}
+};

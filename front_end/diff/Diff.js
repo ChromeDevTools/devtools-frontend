@@ -82,11 +82,11 @@ WebInspector.Diff = {
         }
     }
 
-}
+};
 
 WebInspector.Diff.Operation = {
     Equal: 0,
     Insert: 1,
     Delete: -1,
     Edit: 2
-}
+};

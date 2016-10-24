@@ -12,7 +12,7 @@ WebInspector.ThrottledWidget = function(isWebComponent)
     WebInspector.VBox.call(this, isWebComponent);
     this._updateThrottler = new WebInspector.Throttler(100);
     this._updateWhenVisible = false;
-}
+};
 
 WebInspector.ThrottledWidget.prototype = {
     /**
@@ -55,4 +55,4 @@ WebInspector.ThrottledWidget.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

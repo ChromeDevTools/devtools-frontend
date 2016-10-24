@@ -51,7 +51,7 @@ WebInspector.StylesSidebarPane = function()
 
     WebInspector.targetManager.addModelListener(WebInspector.CSSModel, WebInspector.CSSModel.Events.LayoutEditorChange, this._onLayoutEditorChange, this);
     WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this.forceUpdate, this);
-}
+};
 
 /**
  * @param {!WebInspector.CSSProperty} property
@@ -65,7 +65,7 @@ WebInspector.StylesSidebarPane.createExclamationMark = function(property)
         exclamationElement.type = "warning-icon";
     exclamationElement.title = WebInspector.cssMetadata().isCSSPropertyName(property.name) ? WebInspector.UIString("Invalid property value") : WebInspector.UIString("Unknown property name");
     return exclamationElement;
-}
+};
 
 /**
  * @param {!WebInspector.CSSProperty} property
@@ -105,7 +105,7 @@ WebInspector.StylesSidebarPane.ignoreErrorsForProperty = function(property) {
         return true;
 
     return false;
-}
+};
 
 WebInspector.StylesSidebarPane.prototype = {
     /**
@@ -488,7 +488,7 @@ WebInspector.StylesSidebarPane.prototype = {
     },
 
     __proto__: WebInspector.ElementsSidebarPane.prototype
-}
+};
 
 /**
  * @param {string} placeholder
@@ -535,7 +535,7 @@ WebInspector.StylesSidebarPane.createPropertyFilterElement = function(placeholde
     }
 
     return input;
-}
+};
 
 /**
  * @constructor
@@ -545,7 +545,7 @@ WebInspector.SectionBlock = function(titleElement)
 {
     this._titleElement = titleElement;
     this.sections = [];
-}
+};
 
 /**
  * @param {!DOMAgent.PseudoType} pseudoType
@@ -557,7 +557,7 @@ WebInspector.SectionBlock.createPseudoTypeBlock = function(pseudoType)
     separatorElement.className = "sidebar-separator";
     separatorElement.textContent = WebInspector.UIString("Pseudo ::%s element", pseudoType);
     return new WebInspector.SectionBlock(separatorElement);
-}
+};
 
 /**
  * @param {string} keyframesName
@@ -569,7 +569,7 @@ WebInspector.SectionBlock.createKeyframesBlock = function(keyframesName)
     separatorElement.className = "sidebar-separator";
     separatorElement.textContent = WebInspector.UIString("@keyframes " + keyframesName);
     return new WebInspector.SectionBlock(separatorElement);
-}
+};
 
 /**
  * @param {!WebInspector.DOMNode} node
@@ -583,7 +583,7 @@ WebInspector.SectionBlock.createInheritedNodeBlock = function(node)
     separatorElement.createTextChild(WebInspector.UIString("Inherited from") + " ");
     separatorElement.appendChild(link);
     return new WebInspector.SectionBlock(separatorElement);
-}
+};
 
 WebInspector.SectionBlock.prototype = {
     updateFilter: function()
@@ -602,7 +602,7 @@ WebInspector.SectionBlock.prototype = {
     {
         return this._titleElement;
     }
-}
+};
 
 /**
  * @constructor
@@ -682,7 +682,7 @@ WebInspector.StylePropertiesSection = function(parentPane, matchedStyles, style)
     this._hoverableSelectorsMode = false;
     this._markSelectorMatches();
     this.onpopulate();
-}
+};
 
 WebInspector.StylePropertiesSection.prototype = {
     /**
@@ -801,7 +801,7 @@ WebInspector.StylePropertiesSection.prototype = {
     {
         if (this._hoverTimer)
             clearTimeout(this._hoverTimer);
-        WebInspector.DOMModel.hideDOMNodeHighlight()
+        WebInspector.DOMModel.hideDOMNodeHighlight();
     },
 
     _onMouseEnterSelector: function()
@@ -1579,7 +1579,7 @@ WebInspector.StylePropertiesSection.prototype = {
         // This is overridden by BlankStylePropertiesSection.
         this._markSelectorMatches();
     }
-}
+};
 
 /**
  * @param {!WebInspector.CSSMatchedStyles} matchedStyles
@@ -1619,7 +1619,7 @@ WebInspector.StylePropertiesSection.createRuleOriginNode = function(matchedStyle
     }
 
     return createTextNode("");
-}
+};
 
 /**
  * @param {!WebInspector.CSSModel} cssModel
@@ -1635,7 +1635,7 @@ WebInspector.StylePropertiesSection._linkifyRuleLocation = function(cssModel, li
     var columnNumber = styleSheetHeader.columnNumberInSource(ruleLocation.startLine, ruleLocation.startColumn);
     var matchingSelectorLocation = new WebInspector.CSSLocation(styleSheetHeader, lineNumber, columnNumber);
     return linkifier.linkifyCSSLocation(matchingSelectorLocation);
-}
+};
 
 /**
  * @constructor
@@ -1659,7 +1659,7 @@ WebInspector.BlankStylePropertiesSection = function(stylesPane, matchedStyles, d
     if (insertAfterStyle && insertAfterStyle.parentRule)
         this._createMediaList(insertAfterStyle.parentRule.media);
     this.element.classList.add("blank-section");
-}
+};
 
 WebInspector.BlankStylePropertiesSection.prototype = {
     /**
@@ -1777,7 +1777,7 @@ WebInspector.BlankStylePropertiesSection.prototype = {
     },
 
     __proto__: WebInspector.StylePropertiesSection.prototype
-}
+};
 
 /**
  * @constructor
@@ -1790,7 +1790,7 @@ WebInspector.KeyframePropertiesSection = function(stylesPane, matchedStyles, sty
 {
     WebInspector.StylePropertiesSection.call(this, stylesPane, matchedStyles, style);
     this._selectorElement.className = "keyframe-key";
-}
+};
 
 WebInspector.KeyframePropertiesSection.prototype = {
     /**
@@ -1872,7 +1872,7 @@ WebInspector.KeyframePropertiesSection.prototype = {
     },
 
     __proto__: WebInspector.StylePropertiesSection.prototype
-}
+};
 
 /**
  * @constructor
@@ -1897,7 +1897,7 @@ WebInspector.StylePropertyTreeElement = function(stylesPane, matchedStyles, prop
     this._parentPane = stylesPane;
     this.isShorthand = isShorthand;
     this._applyStyleThrottler = new WebInspector.Throttler(0);
-}
+};
 
 /** @typedef {{expanded: boolean, hasChildren: boolean, isEditingName: boolean, previousContent: string}} */
 WebInspector.StylePropertyTreeElement.Context;
@@ -2866,7 +2866,7 @@ WebInspector.StylePropertyTreeElement.prototype = {
     },
 
     __proto__: TreeElement.prototype
-}
+};
 
 /**
  * @constructor
@@ -2897,7 +2897,7 @@ WebInspector.StylesSidebarPane.CSSPropertyPrompt = function(cssCompletions, tree
         }
 
     }
-}
+};
 
 WebInspector.StylesSidebarPane.CSSPropertyPrompt.prototype = {
     /**
@@ -3030,7 +3030,7 @@ WebInspector.StylesSidebarPane.CSSPropertyPrompt.prototype = {
     },
 
     __proto__: WebInspector.TextPrompt.prototype
-}
+};
 
 /**
  * @constructor
@@ -3045,7 +3045,7 @@ WebInspector.StylesSidebarPropertyRenderer = function(rule, node, name, value)
     this._node = node;
     this._propertyName = name;
     this._propertyValue = value;
-}
+};
 
 WebInspector.StylesSidebarPropertyRenderer.prototype = {
     /**
@@ -3145,7 +3145,7 @@ WebInspector.StylesSidebarPropertyRenderer.prototype = {
         container.createTextChild(")");
         return container;
     }
-}
+};
 
 /**
  * @constructor
@@ -3169,7 +3169,7 @@ WebInspector.StylesSidebarPane.ButtonProvider = function()
         node = node ? node.enclosingElementOrSelf() : null;
         this._button.setEnabled(!!node);
     }
-}
+};
 
 WebInspector.StylesSidebarPane.ButtonProvider.prototype = {
     _clicked: function()
@@ -3193,4 +3193,4 @@ WebInspector.StylesSidebarPane.ButtonProvider.prototype = {
     {
         return this._button;
     }
-}
+};

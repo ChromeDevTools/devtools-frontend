@@ -13,7 +13,7 @@ WebInspector.Geolocation = function(latitude, longitude, error)
     this.latitude = latitude;
     this.longitude = longitude;
     this.error = error;
-}
+};
 
 WebInspector.Geolocation.prototype = {
     /**
@@ -39,7 +39,7 @@ WebInspector.Geolocation.prototype = {
         for (var target of WebInspector.targetManager.targets(WebInspector.Target.Capability.Browser))
             target.emulationAgent().clearGeolocationOverride();
     }
-}
+};
 
 /**
  * @return {!WebInspector.Geolocation}
@@ -55,7 +55,7 @@ WebInspector.Geolocation.parseSetting = function(value)
         }
     }
     return new WebInspector.Geolocation(0, 0, false);
-}
+};
 
 /**
  * @param {string} latitudeString
@@ -77,7 +77,7 @@ WebInspector.Geolocation.parseUserInput = function(latitudeString, longitudeStri
     var latitude = isLatitudeValid ? parseFloat(latitudeString) : -1;
     var longitude = isLongitudeValid ? parseFloat(longitudeString) : -1;
     return new WebInspector.Geolocation(latitude, longitude, !!errorStatus);
-}
+};
 
 /**
  * @param {string} value
@@ -87,7 +87,7 @@ WebInspector.Geolocation.latitudeValidator = function(value)
 {
     var numValue = parseFloat(value);
     return /^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value) && numValue >= -90 && numValue <= 90;
-}
+};
 
 /**
  * @param {string} value
@@ -97,6 +97,6 @@ WebInspector.Geolocation.longitudeValidator = function(value)
 {
     var numValue = parseFloat(value);
     return /^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value) && numValue >= -180 && numValue <= 180;
-}
+};
 
 WebInspector.Geolocation.DefaultMockAccuracy = 150;

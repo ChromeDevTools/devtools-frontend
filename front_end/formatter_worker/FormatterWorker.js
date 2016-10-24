@@ -52,7 +52,7 @@ WebInspector.createTokenizer = function(mimeType)
         }
     }
     return tokenize;
-}
+};
 
 WebInspector.AbortTokenization = {};
 
@@ -95,7 +95,7 @@ self.onmessage = function(event) {
 WebInspector.relaxedJSONParser = function(content)
 {
     postMessage(WebInspector.RelaxedJSONParser.parse(content));
-}
+};
 
 /**
  * @param {string} content
@@ -138,7 +138,7 @@ WebInspector.evaluatableJavaScriptSubstring = function(content)
         console.error(e);
     }
     postMessage(result);
-}
+};
 
 /**
  * @param {string} content
@@ -190,7 +190,7 @@ WebInspector.javaScriptIdentifiers = function(content)
     walker.walk(functionNode.body);
     var reduced = identifiers.map(id => ({name: id.name, offset: id.start}));
     postMessage(reduced);
-}
+};
 
 /**
  * @param {string} mimeType
@@ -230,12 +230,12 @@ WebInspector.format = function(mimeType, text, indentString)
         result.content = text;
     }
     postMessage(result);
-}
+};
 
 /**
  * @interface
  */
-WebInspector.FormatterWorkerContentParser = function() { }
+WebInspector.FormatterWorkerContentParser = function() { };
 
 WebInspector.FormatterWorkerContentParser.prototype = {
     /**
@@ -243,7 +243,7 @@ WebInspector.FormatterWorkerContentParser.prototype = {
      * @return {!Object}
      */
     parse: function(content) { }
-}
+};
 
 /**
  * @param {string} content
@@ -266,4 +266,4 @@ WebInspector.FormatterWorkerContentParser.parse = function(content, mimeType)
     {
         return extension.descriptor()["mimeType"] === mimeType;
     }
-}
+};

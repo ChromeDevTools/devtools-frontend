@@ -14,19 +14,19 @@ WebInspector.FilmStripView = function()
     this._statusLabel = this.contentElement.createChild("div", "label");
     this.reset();
     this.setMode(WebInspector.FilmStripView.Modes.TimeBased);
-}
+};
 
 /** @enum {symbol} */
 WebInspector.FilmStripView.Events = {
     FrameSelected: Symbol("FrameSelected"),
     FrameEnter: Symbol("FrameEnter"),
     FrameExit: Symbol("FrameExit"),
-}
+};
 
 WebInspector.FilmStripView.Modes = {
     TimeBased: "TimeBased",
     FrameBased: "FrameBased"
-}
+};
 
 WebInspector.FilmStripView.prototype = {
     /**
@@ -204,7 +204,7 @@ WebInspector.FilmStripView.prototype = {
     },
 
     __proto__: WebInspector.HBox.prototype
-}
+};
 
 /**
  * @param {!Element} imageElement
@@ -214,7 +214,7 @@ WebInspector.FilmStripView._setImageData = function(imageElement, data)
 {
     if (data)
         imageElement.src = "data:image/jpg;base64," + data;
-}
+};
 
 /**
  * @constructor
@@ -246,7 +246,7 @@ WebInspector.FilmStripView.Dialog = function(filmStripFrame, zeroTime)
     this.contentElement.addEventListener("keydown", this._keyDown.bind(this), false);
     this.setDefaultFocusedElement(this.contentElement);
     this._render();
-}
+};
 
 WebInspector.FilmStripView.Dialog.prototype = {
     _resize: function()
@@ -327,4 +327,4 @@ WebInspector.FilmStripView.Dialog.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

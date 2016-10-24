@@ -25,7 +25,7 @@ WebInspector.ThreadsSidebarPane = function()
     WebInspector.context.addFlavorChangeListener(WebInspector.Target, this._targetChanged, this);
     WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.NameChanged, this._targetNameChanged, this);
     WebInspector.targetManager.observeTargets(this);
-}
+};
 
 WebInspector.ThreadsSidebarPane.prototype = {
     /**
@@ -167,4 +167,4 @@ WebInspector.ThreadsSidebarPane.prototype = {
 
 
     __proto__: WebInspector.VBox.prototype
-}
+};

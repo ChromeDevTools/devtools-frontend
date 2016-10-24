@@ -27,7 +27,7 @@ WebInspector.SensorsView = function()
     this.contentElement.createChild("div").classList.add("panel-section-separator");
 
     this._appendTouchControl();
-}
+};
 
 WebInspector.SensorsView.prototype = {
     /**
@@ -420,7 +420,7 @@ WebInspector.SensorsView.prototype = {
     },
 
     __proto__ : WebInspector.VBox.prototype
-}
+};
 
 /** @enum {string} */
 WebInspector.SensorsView.DeviceOrientationModificationSource = {
@@ -428,14 +428,14 @@ WebInspector.SensorsView.DeviceOrientationModificationSource = {
     UserDrag: "userDrag",
     ResetButton: "resetButton",
     SelectPreset: "selectPreset"
-}
+};
 
 /** {string} */
 WebInspector.SensorsView.NonPresetOptions = {
     "NoOverride": "noOverride",
     "Custom": "custom",
     "Unavailable": "unavailable"
-}
+};
 
 /** @type {!Array.<{title: string, value: !Array.<{title: string, location: string}>}>} */
 WebInspector.SensorsView.PresetLocations = [
@@ -459,7 +459,7 @@ WebInspector.SensorsView.PresetLocations = [
             {title: WebInspector.UIString("Location unavailable"), location: WebInspector.SensorsView.NonPresetOptions.Unavailable}
         ]
     }
-]
+];
 
 /** @type {!Array.<{title: string, value: !Array.<{title: string, orientation: !WebInspector.DeviceOrientation}>}>} */
 WebInspector.SensorsView.PresetOrientations = [
@@ -474,7 +474,7 @@ WebInspector.SensorsView.PresetOrientations = [
             {title: WebInspector.UIString("Display down"), orientation: "[0, 180, 0]"}
         ]
     }
-]
+];
 
 /**
  * @return {!WebInspector.SensorsView}
@@ -484,7 +484,7 @@ WebInspector.SensorsView.instance = function()
     if (!WebInspector.SensorsView._instanceObject)
         WebInspector.SensorsView._instanceObject = new WebInspector.SensorsView();
     return WebInspector.SensorsView._instanceObject;
-}
+};
 
 /**
  * @constructor
@@ -492,7 +492,7 @@ WebInspector.SensorsView.instance = function()
  */
 WebInspector.SensorsView.ShowActionDelegate = function()
 {
-}
+};
 
 WebInspector.SensorsView.ShowActionDelegate.prototype = {
     /**
@@ -506,6 +506,6 @@ WebInspector.SensorsView.ShowActionDelegate.prototype = {
         WebInspector.viewManager.showView("sensors");
         return true;
     }
-}
+};
 
 WebInspector.SensorsView.ShiftDragOrientationSpeed = 16;

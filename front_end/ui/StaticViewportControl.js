@@ -19,7 +19,7 @@ WebInspector.StaticViewportControl = function(provider)
     this.element.addEventListener("scroll", this._update.bind(this), false);
     this._itemCount = 0;
     this._indexSymbol = Symbol("WebInspector.StaticViewportControl._indexSymbol");
-}
+};
 
 WebInspector.StaticViewportControl.prototype = {
     refresh: function()
@@ -138,14 +138,14 @@ WebInspector.StaticViewportControl.prototype = {
     {
         return this.element.offsetHeight;
     }
-}
+};
 
 /**
  * @interface
  */
 WebInspector.StaticViewportControl.Provider = function()
 {
-}
+};
 
 WebInspector.StaticViewportControl.Provider.prototype = {
     /**
@@ -164,4 +164,4 @@ WebInspector.StaticViewportControl.Provider.prototype = {
      * @return {?Element}
      */
     itemElement: function(index) { return null; }
-}
+};

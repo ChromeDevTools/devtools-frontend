@@ -35,7 +35,7 @@ WebInspector.ShortcutsScreen = function()
 {
     /** @type {!Object.<string, !WebInspector.ShortcutsSection>} */
     this._sections = {};
-}
+};
 
 WebInspector.ShortcutsScreen.prototype = {
     /**
@@ -79,7 +79,7 @@ WebInspector.ShortcutsScreen.prototype = {
 
         return widget;
     }
-}
+};
 
 /**
  * We cannot initialize it here as localized strings are not loaded yet.
@@ -207,7 +207,7 @@ WebInspector.ShortcutsSection.prototype = {
         }
         return result;
     }
-}
+};
 
 WebInspector.ShortcutsScreen.registerShortcuts = function()
 {
@@ -301,7 +301,7 @@ WebInspector.ShortcutsScreen.registerShortcuts = function()
         section.addRelatedKeys(WebInspector.ShortcutsScreen.LayersPanelShortcuts.Up.concat(WebInspector.ShortcutsScreen.LayersPanelShortcuts.Down), WebInspector.UIString("Pan or rotate up/down"));
         section.addRelatedKeys(WebInspector.ShortcutsScreen.LayersPanelShortcuts.Left.concat(WebInspector.ShortcutsScreen.LayersPanelShortcuts.Right), WebInspector.UIString("Pan or rotate left/right"));
     }
-}
+};
 
 WebInspector.ShortcutsScreen.ElementsPanelShortcuts = {
     NavigateUp: [
@@ -506,4 +506,4 @@ WebInspector.ShortcutsScreen.LayersPanelShortcuts = {
         WebInspector.KeyboardShortcut.makeDescriptor(WebInspector.KeyboardShortcut.Keys.Right),
         WebInspector.KeyboardShortcut.makeDescriptor("d")
     ]
-}
+};

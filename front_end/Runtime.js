@@ -97,7 +97,7 @@ Runtime.loadResourcePromise = function(url)
         }
         xhr.send(null);
     }
-}
+};
 
 /**
  * http://tools.ietf.org/html/rfc3986#section-5.2.4
@@ -129,7 +129,7 @@ Runtime.normalizePath = function(path)
         normalizedPath = normalizedPath + "/";
 
     return normalizedPath;
-}
+};
 
 /**
  * @param {!Array.<string>} scriptNames
@@ -189,7 +189,7 @@ Runtime._loadScriptsPromise = function(scriptNames, base)
         }
         self.eval(scriptSource + "\n//# sourceURL=" + sourceURL);
     }
-}
+};
 
 /**
  * @type {!Object.<string, string>}
@@ -226,7 +226,7 @@ Runtime.loadResourceIntoCache = function(url, appendSourceURL)
         var sourceURL = appendSourceURL ? Runtime.resolveSourceURL(path) : "";
         Runtime.cachedResources[path] = content + sourceURL;
     }
-}
+};
 
 /**
  * @param {string} appName
@@ -290,7 +290,7 @@ Runtime.startApplication = function(appName)
             return Promise.resolve();
         }
     }
-}
+};
 
 /**
  * @param {string} appName
@@ -304,7 +304,7 @@ Runtime.startWorker = function(appName)
     {
         self.postMessage("workerReady");
     }
-}
+};
 
 /** @type {?function(!MessagePort)} */
 Runtime._sharedWorkerNewPortCallback = null;
@@ -334,8 +334,8 @@ Runtime.startSharedWorker = function(appName)
             else
                 Runtime._sharedWorkerConnectedPorts.push(newPort);
         }
-    }
-}
+    };
+};
 
 /**
  * @param {function(!MessagePort)} callback
@@ -347,7 +347,7 @@ Runtime.setSharedWorkerNewPortCallback = function(callback)
         var port = Runtime._sharedWorkerConnectedPorts.shift();
         callback.call(null, port);
     }
-}
+};
 
 /**
  * @param {string} name
@@ -356,7 +356,7 @@ Runtime.setSharedWorkerNewPortCallback = function(callback)
 Runtime.queryParam = function(name)
 {
     return Runtime._queryParamsObject[name] || null;
-}
+};
 
 /**
  * @return {!Object}
@@ -369,7 +369,7 @@ Runtime._experimentsSetting = function()
         console.error("Failed to parse localStorage['experiments']");
         return {};
     }
-}
+};
 
 Runtime._console = console;
 Runtime._originalAssert = console.assert;
@@ -378,7 +378,7 @@ Runtime._assert = function(value, message)
     if (value)
         return;
     Runtime._originalAssert.call(Runtime._console, value, message + " " + new Error().stack);
-}
+};
 
 Runtime._platform = "";
 
@@ -388,7 +388,7 @@ Runtime._platform = "";
 Runtime.setPlatform = function(platform)
 {
     Runtime._platform = platform;
-}
+};
 
 Runtime.prototype = {
     useTestBase: function()
@@ -589,7 +589,7 @@ Runtime.prototype = {
         constructorFunction[Runtime._instanceSymbol] = instance;
         return instance;
     }
-}
+};
 
 /**
  * @constructor
@@ -625,7 +625,7 @@ Runtime.ModuleDescriptor = function()
      * @type {boolean|undefined}
      */
     this.remote;
-}
+};
 
 /**
  * @constructor
@@ -651,7 +651,7 @@ Runtime.ExtensionDescriptor = function()
      * @type {!Array.<string>|undefined}
      */
     this.contextTypes;
-}
+};
 
 /**
  * @constructor
@@ -675,7 +675,7 @@ Runtime.Module = function(manager, descriptor)
         this._extensions.push(extension);
     }
     this._loadedForTest = false;
-}
+};
 
 Runtime.Module.prototype = {
     /**
@@ -788,7 +788,7 @@ Runtime.Module.prototype = {
             return base + this._modularizeURL(url);
         }
     }
-}
+};
 
 /**
  * @param {!Object} descriptor
@@ -809,7 +809,7 @@ Runtime._isDescriptorEnabled = function(descriptor)
     if (condition && condition.startsWith("!") && Runtime.queryParam(condition.substring(1)))
         return false;
     return true;
-}
+};
 
 /**
  * @constructor
@@ -829,7 +829,7 @@ Runtime.Extension = function(module, descriptor)
      */
     this._className = descriptor.className || null;
     this._factoryName = descriptor.factoryName || null;
-}
+};
 
 Runtime.Extension.prototype = {
     /**
@@ -923,7 +923,7 @@ Runtime.Extension.prototype = {
         }
         return false;
     }
-}
+};
 
 /**
  * @constructor
@@ -934,7 +934,7 @@ Runtime.ExperimentsSupport = function()
     this._experiments = [];
     this._experimentNames = {};
     this._enabledTransiently = {};
-}
+};
 
 Runtime.ExperimentsSupport.prototype = {
     /**
@@ -1055,7 +1055,7 @@ Runtime.ExperimentsSupport.prototype = {
     {
         Runtime._assert(this._experimentNames[experimentName], "Unknown experiment " + experimentName);
     }
-}
+};
 
 /**
  * @constructor
@@ -1070,7 +1070,7 @@ Runtime.Experiment = function(experiments, name, title, hidden)
     this.title = title;
     this.hidden = hidden;
     this._experiments = experiments;
-}
+};
 
 Runtime.Experiment.prototype = {
     /**
@@ -1088,7 +1088,7 @@ Runtime.Experiment.prototype = {
     {
         this._experiments.setEnabled(this.name, enabled);
     }
-}
+};
 
 {(function parseQueryParameters()
 {
@@ -1129,7 +1129,7 @@ Runtime.resolveSourceURL = function(path)
         sourceURL = sourceURL.replace(self.location.search, "");
     sourceURL = sourceURL.substring(0, sourceURL.lastIndexOf("/") + 1) + path;
     return "\n/*# sourceURL=" + sourceURL + " */";
-}
+};
 
 /**
  * @interface
@@ -1153,7 +1153,7 @@ ServicePort.prototype = {
      * @return {!Promise<boolean>}
      */
     close: function() { }
-}
+};
 
 /** @type {!Runtime} */
 var runtime;

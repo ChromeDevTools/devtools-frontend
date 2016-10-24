@@ -67,7 +67,7 @@ WebInspector.NetworkItemView = function(request, calculator)
     this.appendTab("timing", WebInspector.UIString("Timing"), new WebInspector.RequestTimingView(request, calculator));
 
     this._request = request;
-}
+};
 
 WebInspector.NetworkItemView.prototype = {
     wasShown: function()
@@ -105,7 +105,7 @@ WebInspector.NetworkItemView.prototype = {
     },
 
     __proto__: WebInspector.TabbedPane.prototype
-}
+};
 
 /**
  * @constructor
@@ -115,7 +115,7 @@ WebInspector.NetworkItemView.prototype = {
 WebInspector.RequestContentView = function(request)
 {
     WebInspector.RequestView.call(this, request);
-}
+};
 
 WebInspector.RequestContentView.prototype = {
     wasShown: function()
@@ -148,4 +148,4 @@ WebInspector.RequestContentView.prototype = {
     },
 
     __proto__: WebInspector.RequestView.prototype
-}
+};

@@ -19,7 +19,7 @@ WebInspector.TargetManager = function()
     /** @type {!Map<symbol, !Array<{modelClass: !Function, thisObject: (!Object|undefined), listener: function(!WebInspector.Event)}>>} */
     this._modelListeners = new Map();
     this._isSuspended = false;
-}
+};
 
 /** @enum {symbol} */
 WebInspector.TargetManager.Events = {
@@ -31,7 +31,7 @@ WebInspector.TargetManager.Events = {
     WillReloadPage: Symbol("WillReloadPage"),
     TargetDisposed: Symbol("TargetDisposed"),
     SuspendStateChanged: Symbol("SuspendStateChanged")
-}
+};
 
 WebInspector.TargetManager._listenersSymbol = Symbol("WebInspector.TargetManager.Listeners");
 
@@ -398,14 +398,14 @@ WebInspector.TargetManager.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
  * @interface
  */
 WebInspector.TargetManager.Observer = function()
 {
-}
+};
 
 WebInspector.TargetManager.Observer.prototype = {
     /**
@@ -417,7 +417,7 @@ WebInspector.TargetManager.Observer.prototype = {
      * @param {!WebInspector.Target} target
      */
     targetRemoved: function(target) { },
-}
+};
 
 /**
  * @type {!WebInspector.TargetManager}

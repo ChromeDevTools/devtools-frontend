@@ -37,7 +37,7 @@ WebInspector.AnimationTimeline = function()
     WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
     WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.DOM);
     WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this._nodeChanged, this);
-}
+};
 
 WebInspector.AnimationTimeline.GlobalPlaybackRates = [1, 0.25, 0.1];
 
@@ -46,7 +46,7 @@ WebInspector.AnimationTimeline._ControlState = {
     Play: "play-outline",
     Replay: "replay-outline",
     Pause: "pause-outline"
-}
+};
 
 WebInspector.AnimationTimeline.prototype = {
     wasShown: function()
@@ -696,7 +696,7 @@ WebInspector.AnimationTimeline.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @constructor
@@ -707,7 +707,7 @@ WebInspector.AnimationTimeline.NodeUI = function(animationEffect)
     this.element = createElementWithClass("div", "animation-node-row");
     this._description = this.element.createChild("div", "animation-node-description");
     this._timelineElement = this.element.createChild("div", "animation-node-timeline");
-}
+};
 
 WebInspector.AnimationTimeline.NodeUI.prototype = {
     /**
@@ -744,7 +744,7 @@ WebInspector.AnimationTimeline.NodeUI.prototype = {
     {
         this.element.classList.toggle("animation-node-selected", this._node && this._node === WebInspector.context.flavor(WebInspector.DOMNode));
     }
-}
+};
 
 /**
  * @constructor
@@ -755,7 +755,7 @@ WebInspector.AnimationTimeline.StepTimingFunction = function(steps, stepAtPositi
 {
     this.steps = steps;
     this.stepAtPosition = stepAtPosition;
-}
+};
 
 /**
  * @param {string} text
@@ -769,4 +769,4 @@ WebInspector.AnimationTimeline.StepTimingFunction.parse = function(text) {
     if (match)
         return new WebInspector.AnimationTimeline.StepTimingFunction(parseInt(match[1], 10), "end");
     return null;
-}
+};

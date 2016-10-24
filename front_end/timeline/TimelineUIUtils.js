@@ -32,7 +32,7 @@
 /**
  * @constructor
  */
-WebInspector.TimelineUIUtils = function() { }
+WebInspector.TimelineUIUtils = function() { };
 
 /**
  * @constructor
@@ -45,7 +45,7 @@ WebInspector.TimelineRecordStyle = function(title, category, hidden)
     this.title = title;
     this.category = category;
     this.hidden = !!hidden;
-}
+};
 
 /**
  * @return {!Object.<string, !WebInspector.TimelineRecordStyle>}
@@ -129,7 +129,7 @@ WebInspector.TimelineUIUtils._initEventStyles = function()
 
     WebInspector.TimelineUIUtils._eventStylesMap = eventStyles;
     return eventStyles;
-}
+};
 
 /**
  * @param {!WebInspector.TimelineIRModel.InputEvents} inputEventType
@@ -171,7 +171,7 @@ WebInspector.TimelineUIUtils.inputEventDisplayName = function(inputEventType)
         ]);
     }
     return WebInspector.TimelineUIUtils._inputEventToDisplayName.get(inputEventType) || null;
-}
+};
 
 /**
  * @param {!WebInspector.TracingModel.Event} traceEvent
@@ -190,7 +190,7 @@ WebInspector.TimelineUIUtils.testContentMatching = function(traceEvent, regExp)
             tokens.push(argValue[key]);
     }
     return regExp.test(tokens.join("|"));
-}
+};
 
 /**
  * @param {!WebInspector.TimelineModel.Record} record
@@ -199,7 +199,7 @@ WebInspector.TimelineUIUtils.testContentMatching = function(traceEvent, regExp)
 WebInspector.TimelineUIUtils.categoryForRecord = function(record)
 {
     return WebInspector.TimelineUIUtils.eventStyle(record.traceEvent()).category;
-}
+};
 
 
 /**
@@ -225,7 +225,7 @@ WebInspector.TimelineUIUtils.eventStyle = function(event)
         eventStyles[event.name] = result;
     }
     return result;
-}
+};
 
 /**
  * @param {!WebInspector.TracingModel.Event} event
@@ -239,7 +239,7 @@ WebInspector.TimelineUIUtils.eventColor = function(event)
             return WebInspector.TimelineUIUtils.colorForURL(frame.url);
     }
     return WebInspector.TimelineUIUtils.eventStyle(event).category.color;
-}
+};
 
 /**
  * @param {!WebInspector.TracingModel.Event} event
@@ -255,7 +255,7 @@ WebInspector.TimelineUIUtils.eventTitle = function(event)
     if (event.name === WebInspector.TimelineModel.RecordType.Animation && event.args["data"] && event.args["data"]["name"])
         return WebInspector.UIString("%s: %s", title, event.args["data"]["name"]);
     return title;
-}
+};
 
 /**
  * @param {!WebInspector.TracingModel.Event} event
@@ -267,7 +267,7 @@ WebInspector.TimelineUIUtils.eventURL = function(event)
         return event.url;
     var data = event.args["data"] || event.args["beginData"];
     return data && data.url || null;
-}
+};
 
 /**
  * !Map<!WebInspector.TimelineIRModel.Phases, !{color: string, label: string}>
@@ -288,7 +288,7 @@ WebInspector.TimelineUIUtils._interactionPhaseStyles = function()
         WebInspector.TimelineUIUtils._interactionPhaseStylesMap = map;
     }
     return map;
-}
+};
 
 /**
  * @param {!WebInspector.TimelineIRModel.Phases} phase
@@ -297,7 +297,7 @@ WebInspector.TimelineUIUtils._interactionPhaseStyles = function()
 WebInspector.TimelineUIUtils.interactionPhaseColor = function(phase)
 {
     return WebInspector.TimelineUIUtils._interactionPhaseStyles().get(phase).color;
-}
+};
 
 /**
  * @param {!WebInspector.TimelineIRModel.Phases} phase
@@ -306,7 +306,7 @@ WebInspector.TimelineUIUtils.interactionPhaseColor = function(phase)
 WebInspector.TimelineUIUtils.interactionPhaseLabel = function(phase)
 {
     return WebInspector.TimelineUIUtils._interactionPhaseStyles().get(phase).label;
-}
+};
 
 /**
  * @param {!RuntimeAgent.CallFrame} frame
@@ -315,7 +315,7 @@ WebInspector.TimelineUIUtils.interactionPhaseLabel = function(phase)
 WebInspector.TimelineUIUtils.isUserFrame = function(frame)
 {
     return frame.scriptId !== "0" && !(frame.url && frame.url.startsWith("native "));
-}
+};
 
 /**
  * @param {!WebInspector.TracingModel.Event} event
@@ -325,7 +325,7 @@ WebInspector.TimelineUIUtils.topStackFrame = function(event)
 {
     var stackTrace = event.stackTrace || event.initiator && event.initiator.stackTrace;
     return stackTrace && stackTrace.length ? stackTrace[0] : null;
-}
+};
 
 /**
  * @enum {symbol}
@@ -336,7 +336,7 @@ WebInspector.TimelineUIUtils.NetworkCategory = {
     Style: Symbol("Style"),
     Media: Symbol("Media"),
     Other: Symbol("Other")
-}
+};
 
 /**
  * @param {!WebInspector.TimelineModel.NetworkRequest} request
@@ -368,7 +368,7 @@ WebInspector.TimelineUIUtils.networkRequestCategory = function(request)
     default:
         return categories.Other;
     }
-}
+};
 
 /**
  * @param {!WebInspector.TimelineUIUtils.NetworkCategory} category
@@ -384,7 +384,7 @@ WebInspector.TimelineUIUtils.networkCategoryColor = function(category)
     case categories.Media: return "hsl(109, 33%, 55%)";
     default: return "hsl(0, 0%, 70%)";
     }
-}
+};
 
 /**
  * @param {!WebInspector.TracingModel.Event} event
@@ -523,7 +523,7 @@ WebInspector.TimelineUIUtils.buildDetailsTextForTraceEvent = function(event, tar
         }
         return text;
     }
-}
+};
 
 /**
  * @param {!WebInspector.TracingModel.Event} event
@@ -621,7 +621,7 @@ WebInspector.TimelineUIUtils.buildDetailsNodeForTraceEvent = function(event, tar
         var frame = WebInspector.TimelineUIUtils.topStackFrame(event);
         return frame ? linkifier.maybeLinkifyConsoleCallFrame(target, frame, "timeline-details") : null;
     }
-}
+};
 
 /**
  * @param {!WebInspector.TracingModel.Event} event
@@ -677,7 +677,7 @@ WebInspector.TimelineUIUtils.buildTraceEventDetails = function(event, model, lin
     {
         callback(WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously(event, model, linkifier, detailed, relatedNodes));
     }
-}
+};
 
 /**
  * @param {!WebInspector.TracingModel.Event} event
@@ -872,7 +872,7 @@ WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously = function(eve
     }
 
     return contentHelper.fragment;
-}
+};
 
 WebInspector.TimelineUIUtils._aggregatedStatsKey = Symbol("aggregatedStats");
 
@@ -929,7 +929,7 @@ WebInspector.TimelineUIUtils.buildRangeStats = function(model, startTime, endTim
     var pieChart = WebInspector.TimelineUIUtils.generatePieChart(aggregatedStats);
     contentHelper.appendElementRow("", pieChart);
     return contentHelper.fragment;
-}
+};
 
 /**
  * @param {!WebInspector.TimelineModel.Record} record
@@ -956,7 +956,7 @@ WebInspector.TimelineUIUtils._collectAggregatedStatsForRecord = function(record,
     var categoryName = WebInspector.TimelineUIUtils.categoryForRecord(record).name;
     var ownTime = Math.min(endTime, record.endTime()) - Math.max(startTime, record.startTime()) - childrenTime;
     aggregatedStats[categoryName] = (aggregatedStats[categoryName] || 0) + ownTime;
-}
+};
 
 /**
  * @param {!WebInspector.TimelineModel.NetworkRequest} request
@@ -1031,7 +1031,7 @@ WebInspector.TimelineUIUtils.buildNetworkRequestDetails = function(request, mode
         return contentHelper.fragment;
     }
     return previewPromise.then(appendPreview);
-}
+};
 
 /**
  * @param {!Array<!RuntimeAgent.CallFrame>} callFrames
@@ -1040,7 +1040,7 @@ WebInspector.TimelineUIUtils.buildNetworkRequestDetails = function(request, mode
 WebInspector.TimelineUIUtils._stackTraceFromCallFrames = function(callFrames)
 {
     return /** @type {!RuntimeAgent.StackTrace} */ ({ callFrames: callFrames });
-}
+};
 
 /**
  * @param {!WebInspector.TracingModel.Event} event
@@ -1089,7 +1089,7 @@ WebInspector.TimelineUIUtils._generateCauses = function(event, target, relatedNo
     } else if (initiator && initiator.stackTrace) { // Partial invalidation tracking.
         contentHelper.appendStackTrace(callSiteStackLabel || WebInspector.UIString("First Invalidated"), WebInspector.TimelineUIUtils._stackTraceFromCallFrames(initiator.stackTrace));
     }
-}
+};
 
 /**
  * @param {!WebInspector.TracingModel.Event} event
@@ -1114,7 +1114,7 @@ WebInspector.TimelineUIUtils._generateInvalidations = function(event, target, re
         WebInspector.TimelineUIUtils._generateInvalidationsForType(
             type, target, invalidations[type], relatedNodesMap, contentHelper);
     });
-}
+};
 
 /**
  * @param {string} type
@@ -1179,7 +1179,7 @@ WebInspector.TimelineUIUtils._generateInvalidationsForType = function(type, targ
         }
         return causeToInvalidationMap.valuesArray();
     }
-}
+};
 
 /**
  * @param {!Set<number>} nodeIds
@@ -1191,7 +1191,7 @@ WebInspector.TimelineUIUtils._collectInvalidationNodeIds = function(nodeIds, inv
         if (invalidations[i].nodeId)
             nodeIds.add(invalidations[i].nodeId);
     }
-}
+};
 
 /**
   * @constructor
@@ -1213,7 +1213,7 @@ WebInspector.TimelineUIUtils.InvalidationsGroupElement = function(target, relate
     this._contentHelper = contentHelper;
     this._invalidations = invalidations;
     this.title = this._createTitle(target);
-}
+};
 
 WebInspector.TimelineUIUtils.InvalidationsGroupElement.prototype = {
 
@@ -1348,7 +1348,7 @@ WebInspector.TimelineUIUtils.InvalidationsGroupElement.prototype = {
     },
 
     __proto__: TreeElement.prototype
-}
+};
 
 /**
  * @param {!Object} total
@@ -1399,7 +1399,7 @@ WebInspector.TimelineUIUtils._aggregatedStatsForTraceEvent = function(total, mod
         return false;
     }
     return hasChildren;
-}
+};
 
 /**
  * @param {!WebInspector.TracingModel.Event} event
@@ -1445,7 +1445,7 @@ WebInspector.TimelineUIUtils.buildPicturePreviewContent = function(event, target
     {
         WebInspector.TimelinePanel.instance().select(WebInspector.TimelineSelection.fromTraceEvent(event), WebInspector.TimelinePanel.DetailsTab.PaintProfiler);
     }
-}
+};
 
 /**
  * @param {!WebInspector.TimelineModel.RecordType} recordType
@@ -1474,7 +1474,7 @@ WebInspector.TimelineUIUtils.createEventDivider = function(recordType, title, po
         eventDivider.title = title;
     eventDivider.style.left = position + "px";
     return eventDivider;
-}
+};
 
 /**
  * @param {!WebInspector.TimelineModel.Record} record
@@ -1487,7 +1487,7 @@ WebInspector.TimelineUIUtils.createDividerForRecord = function(record, zeroTime,
     var startTime = Number.millisToString(record.startTime() - zeroTime);
     var title = WebInspector.UIString("%s at %s", WebInspector.TimelineUIUtils.eventTitle(record.traceEvent()), startTime);
     return WebInspector.TimelineUIUtils.createEventDivider(record.type(), title, position);
-}
+};
 
 /**
  * @return {!Array.<string>}
@@ -1501,7 +1501,7 @@ WebInspector.TimelineUIUtils._visibleTypes = function()
             result.push(name);
     }
     return result;
-}
+};
 
 /**
  * @return {!WebInspector.TimelineModel.Filter}
@@ -1509,7 +1509,7 @@ WebInspector.TimelineUIUtils._visibleTypes = function()
 WebInspector.TimelineUIUtils.visibleEventsFilter = function()
 {
     return new WebInspector.TimelineVisibleEventsFilter(WebInspector.TimelineUIUtils._visibleTypes());
-}
+};
 
 /**
  * @return {!Object.<string, !WebInspector.TimelineCategory>}
@@ -1546,7 +1546,7 @@ WebInspector.TimelineUIUtils.titleForAsyncEventGroup = function(group)
         ]);
     }
     return WebInspector.TimelineUIUtils._titleForAsyncEventGroupMap.get(group) || "";
-}
+};
 
 /**
  * @param {!Object} aggregatedStats
@@ -1605,7 +1605,7 @@ WebInspector.TimelineUIUtils.generatePieChart = function(aggregatedStats, selfCa
         appendLegendRow(category.name, category.title, aggregatedStats[category.name], category.childColor);
     }
     return element;
-}
+};
 
 /**
  * @param {!WebInspector.TimelineFrameModel} frameModel
@@ -1655,7 +1655,7 @@ WebInspector.TimelineUIUtils.generateDetailsContentForFrame = function(frameMode
     }
 
     return contentHelper.fragment;
-}
+};
 
 /**
  * @param {!WebInspector.TimelineFrame} frame
@@ -1674,7 +1674,7 @@ WebInspector.TimelineUIUtils.frameDuration = function(frame)
                                                       WebInspector.UIString("jank"), undefined, true));
     element.createTextChild(".");
     return element;
-}
+};
 
 /**
  * @param {!CanvasRenderingContext2D} context
@@ -1693,7 +1693,7 @@ WebInspector.TimelineUIUtils.createFillStyle = function(context, width, height, 
     gradient.addColorStop(0.75, color1);
     gradient.addColorStop(1, color2);
     return gradient;
-}
+};
 
 /**
  * @param {!Array.<number>} quad
@@ -1702,7 +1702,7 @@ WebInspector.TimelineUIUtils.createFillStyle = function(context, width, height, 
 WebInspector.TimelineUIUtils.quadWidth = function(quad)
 {
     return Math.round(Math.sqrt(Math.pow(quad[0] - quad[2], 2) + Math.pow(quad[1] - quad[3], 2)));
-}
+};
 
 /**
  * @param {!Array.<number>} quad
@@ -1711,7 +1711,7 @@ WebInspector.TimelineUIUtils.quadWidth = function(quad)
 WebInspector.TimelineUIUtils.quadHeight = function(quad)
 {
     return Math.round(Math.sqrt(Math.pow(quad[0] - quad[6], 2) + Math.pow(quad[1] - quad[7], 2)));
-}
+};
 
 /**
  * @constructor
@@ -1724,7 +1724,7 @@ WebInspector.TimelineUIUtils.EventDispatchTypeDescriptor = function(priority, co
     this.priority = priority;
     this.color = color;
     this.eventTypes = eventTypes;
-}
+};
 
 /**
  * @return {!Array.<!WebInspector.TimelineUIUtils.EventDispatchTypeDescriptor>}
@@ -1747,7 +1747,7 @@ WebInspector.TimelineUIUtils.eventDispatchDesciptors = function()
         new WebInspector.TimelineUIUtils.EventDispatchTypeDescriptor(3, purple, ["keydown", "keyup", "keypress"])
     ];
     return WebInspector.TimelineUIUtils._eventDispatchDesciptors;
-}
+};
 
 /**
  * @constructor
@@ -1766,7 +1766,7 @@ WebInspector.TimelineCategory = function(name, title, visible, childColor, color
     this.childColor = childColor;
     this.color = color;
     this.hidden = false;
-}
+};
 
 /** @enum {symbol} */
 WebInspector.TimelineCategory.Events = {
@@ -1789,7 +1789,7 @@ WebInspector.TimelineCategory.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
  * @typedef {!{
@@ -1815,7 +1815,7 @@ WebInspector.TimelineUIUtils.markerStyleForEvent = function(event)
     var green = "rgb(0, 130, 0)";
     var tallMarkerDashStyle = [10, 5];
 
-    var title = WebInspector.TimelineUIUtils.eventTitle(event)
+    var title = WebInspector.TimelineUIUtils.eventTitle(event);
 
     if (event.hasCategory(WebInspector.TimelineModel.Category.Console) || event.hasCategory(WebInspector.TimelineModel.Category.UserTiming)) {
         return {
@@ -1855,7 +1855,7 @@ WebInspector.TimelineUIUtils.markerStyleForEvent = function(event)
         tall: tall,
         lowPriority: false,
     };
-}
+};
 
 /**
  * @return {!WebInspector.TimelineMarkerStyle}
@@ -1870,7 +1870,7 @@ WebInspector.TimelineUIUtils.markerStyleForFrame = function()
         tall: true,
         lowPriority: true
     };
-}
+};
 
 /**
  * @param {string} url
@@ -1885,7 +1885,7 @@ WebInspector.TimelineUIUtils.colorForURL = function(url)
             85);
     }
     return WebInspector.TimelineUIUtils.colorForURL._colorGenerator.colorForID(url);
-}
+};
 
 /**
  * @constructor
@@ -1899,7 +1899,7 @@ WebInspector.TimelinePopupContentHelper = function(title)
     var titleRow = createElement("tr");
     titleRow.appendChild(titleCell);
     this._contentTable.appendChild(titleRow);
-}
+};
 
 WebInspector.TimelinePopupContentHelper.prototype = {
     /**
@@ -1956,7 +1956,7 @@ WebInspector.TimelinePopupContentHelper.prototype = {
         row.appendChild(cell);
         this._contentTable.appendChild(row);
     }
-}
+};
 
 /**
  * @constructor
@@ -1973,7 +1973,7 @@ WebInspector.TimelineDetailsContentHelper = function(target, linkifier)
     this.element = createElementWithClass("div", "timeline-details-view-block");
     this._tableElement = this.element.createChild("div", "vbox timeline-details-chip-body");
     this.fragment.appendChild(this.element);
-}
+};
 
 WebInspector.TimelineDetailsContentHelper.prototype = {
     /**
@@ -2114,7 +2114,7 @@ WebInspector.TimelineDetailsContentHelper.prototype = {
         if (warning)
             this.appendElementRow(WebInspector.UIString("Warning"), warning, true);
     }
-}
+};
 
 /**
  * @param {!WebInspector.TracingModel.Event} event
@@ -2150,4 +2150,4 @@ WebInspector.TimelineUIUtils.eventWarning = function(event, warningType)
         console.assert(false, "Unhandled TimelineModel.WarningType");
     }
     return span;
-}
+};

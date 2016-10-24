@@ -15,7 +15,7 @@ WebInspector.Segment = function(begin, end, data)
     this.begin = begin;
     this.end = end;
     this.data = data;
-}
+};
 
 WebInspector.Segment.prototype = {
     /**
@@ -37,7 +37,7 @@ WebInspector.SegmentedRange = function(mergeCallback)
     /** @type {!Array<!WebInspector.Segment>} */
     this._segments = [];
     this._mergeCallback = mergeCallback;
-}
+};
 
 WebInspector.SegmentedRange.prototype = {
     /**
@@ -109,4 +109,4 @@ WebInspector.SegmentedRange.prototype = {
         merged.end = Math.max(first.end, second.end);
         return merged;
     }
-}
+};

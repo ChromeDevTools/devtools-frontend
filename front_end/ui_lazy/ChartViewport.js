@@ -25,7 +25,7 @@ WebInspector.ChartViewport = function()
     this._selectedTimeSpanLabel = this._selectionOverlay.createChild("div", "time-span");
 
     this.reset();
-}
+};
 
 WebInspector.ChartViewport.prototype = {
     /**
@@ -463,4 +463,4 @@ WebInspector.ChartViewport.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

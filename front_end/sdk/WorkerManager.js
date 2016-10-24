@@ -47,7 +47,7 @@ WebInspector.WorkerManager = function(target)
     WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
     this._onSuspendStateChanged();
     this.enable();
-}
+};
 
 WebInspector.WorkerManager.prototype = {
     enable: function()
@@ -155,7 +155,7 @@ WebInspector.WorkerManager.prototype = {
     },
 
     __proto__: WebInspector.SDKObject.prototype
-}
+};
 
 /**
  * @constructor
@@ -164,7 +164,7 @@ WebInspector.WorkerManager.prototype = {
 WebInspector.WorkerDispatcher = function(workerManager)
 {
     this._workerManager = workerManager;
-}
+};
 
 WebInspector.WorkerDispatcher.prototype = {
     /**
@@ -196,7 +196,7 @@ WebInspector.WorkerDispatcher.prototype = {
     {
         this._workerManager._dispatchMessageFromWorker(workerId, message);
     }
-}
+};
 
 /**
  * @constructor
@@ -211,7 +211,7 @@ WebInspector.WorkerConnection = function(workerManager, workerId)
     this.suppressErrorsForDomains(["Worker", "Page", "CSS", "DOM", "DOMStorage", "Database", "Network", "IndexedDB"]);
     this._agent = workerManager.target().workerAgent();
     this._workerId = workerId;
-}
+};
 
 WebInspector.WorkerConnection.prototype = {
     /**
@@ -229,4 +229,4 @@ WebInspector.WorkerConnection.prototype = {
     },
 
     __proto__: InspectorBackendClass.Connection.prototype
-}
+};

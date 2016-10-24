@@ -35,7 +35,7 @@ WebInspector.ScopeChainSidebarPane = function()
     this._expandController = new WebInspector.ObjectPropertiesSectionExpandController();
     this._linkifier = new WebInspector.Linkifier();
     this._update();
-}
+};
 
 WebInspector.ScopeChainSidebarPane._pathSymbol = Symbol("path");
 
@@ -149,4 +149,4 @@ WebInspector.ScopeChainSidebarPane.prototype = {
     _sidebarPaneUpdatedForTest: function() { },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

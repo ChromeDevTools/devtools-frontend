@@ -155,7 +155,7 @@ WebInspector.ConsoleView = function()
     this._messagesElement.addEventListener("mouseup", this._updateStickToBottomOnMouseUp.bind(this), false);
     this._messagesElement.addEventListener("mouseleave", this._updateStickToBottomOnMouseUp.bind(this), false);
     this._messagesElement.addEventListener("wheel", this._updateStickToBottomOnWheel.bind(this), false);
-}
+};
 
 WebInspector.ConsoleView.persistedHistorySize = 300;
 
@@ -452,7 +452,7 @@ WebInspector.ConsoleView.prototype = {
             message.timestamp = this._consoleMessages.length ? this._consoleMessages.peekLast().consoleMessage().timestamp : 0;
         var viewMessage = this._createViewMessage(message);
         message[this._viewMessageSymbol] = viewMessage;
-        var insertAt = this._consoleMessages.upperBound(viewMessage, compareTimestamps)
+        var insertAt = this._consoleMessages.upperBound(viewMessage, compareTimestamps);
         var insertedInMiddle = insertAt < this._consoleMessages.length;
         this._consoleMessages.splice(insertAt, 0, viewMessage);
 
@@ -568,7 +568,7 @@ WebInspector.ConsoleView.prototype = {
 
         var contextMenu = new WebInspector.ContextMenu(event);
         if (event.target.isSelfOrDescendant(this._promptElement)) {
-            contextMenu.show()
+            contextMenu.show();
             return;
         }
 
@@ -1054,7 +1054,7 @@ WebInspector.ConsoleView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @constructor
@@ -1207,7 +1207,7 @@ WebInspector.ConsoleViewFilter.prototype = {
 WebInspector.ConsoleCommand = function(message, linkifier, nestingLevel)
 {
     WebInspector.ConsoleViewMessage.call(this, message, linkifier, nestingLevel);
-}
+};
 
 WebInspector.ConsoleCommand.prototype = {
     /**
@@ -1226,7 +1226,7 @@ WebInspector.ConsoleCommand.prototype = {
 
             if (this._formattedCommand.textContent.length < WebInspector.ConsoleCommand.MaxLengthToIgnoreHighlighter) {
                 var javascriptSyntaxHighlighter = new WebInspector.DOMSyntaxHighlighter("text/javascript", true);
-                javascriptSyntaxHighlighter.syntaxHighlightNode(this._formattedCommand).then(this._updateSearch.bind(this))
+                javascriptSyntaxHighlighter.syntaxHighlightNode(this._formattedCommand).then(this._updateSearch.bind(this));
             } else {
                 this._updateSearch();
             }
@@ -1240,7 +1240,7 @@ WebInspector.ConsoleCommand.prototype = {
     },
 
     __proto__: WebInspector.ConsoleViewMessage.prototype
-}
+};
 
 /**
  * The maximum length before strings are considered too long for syntax highlighting.
@@ -1259,7 +1259,7 @@ WebInspector.ConsoleCommand.MaxLengthToIgnoreHighlighter = 10000;
 WebInspector.ConsoleCommandResult = function(message, linkifier, nestingLevel)
 {
     WebInspector.ConsoleViewMessage.call(this, message, linkifier, nestingLevel);
-}
+};
 
 WebInspector.ConsoleCommandResult.prototype = {
     /**
@@ -1275,7 +1275,7 @@ WebInspector.ConsoleCommandResult.prototype = {
     },
 
     __proto__: WebInspector.ConsoleViewMessage.prototype
-}
+};
 
 /**
  * @constructor
@@ -1287,7 +1287,7 @@ WebInspector.ConsoleGroup = function(parentGroup, groupMessage)
     this._parentGroup = parentGroup;
     this._nestingLevel = parentGroup ? parentGroup.nestingLevel() + 1 : 0;
     this._messagesHidden = groupMessage && groupMessage.collapsed() || this._parentGroup && this._parentGroup.messagesHidden();
-}
+};
 
 /**
  * @return {!WebInspector.ConsoleGroup}
@@ -1295,7 +1295,7 @@ WebInspector.ConsoleGroup = function(parentGroup, groupMessage)
 WebInspector.ConsoleGroup.createTopGroup = function()
 {
     return new WebInspector.ConsoleGroup(null, null);
-}
+};
 
 WebInspector.ConsoleGroup.prototype = {
     /**
@@ -1321,7 +1321,7 @@ WebInspector.ConsoleGroup.prototype = {
     {
         return this._parentGroup || this;
     },
-}
+};
 
 /**
  * @return {!WebInspector.ConsoleView}
@@ -1331,7 +1331,7 @@ WebInspector.ConsoleView.instance = function()
     if (!WebInspector.ConsoleView._instance)
         WebInspector.ConsoleView._instance = new WebInspector.ConsoleView();
     return WebInspector.ConsoleView._instance;
-}
+};
 
 WebInspector.ConsoleView.clearConsole = function()
 {
@@ -1339,7 +1339,7 @@ WebInspector.ConsoleView.clearConsole = function()
         target.runtimeModel.discardConsoleEntries();
         target.consoleModel.requestClearMessages();
     }
-}
+};
 
 /**
  * @constructor
@@ -1347,7 +1347,7 @@ WebInspector.ConsoleView.clearConsole = function()
  */
 WebInspector.ConsoleView.ActionDelegate = function()
 {
-}
+};
 
 WebInspector.ConsoleView.ActionDelegate.prototype = {
     /**
@@ -1371,7 +1371,7 @@ WebInspector.ConsoleView.ActionDelegate.prototype = {
         }
         return false;
     }
-}
+};
 
 /**
 * @typedef {{messageIndex: number, matchIndex: number}}

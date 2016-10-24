@@ -13,14 +13,14 @@ WebInspector.SecurityOriginManager = function(target)
 
     this._securityOriginCounter = new Map();
     this._mainSecurityOrigin = "";
-}
+};
 
 /** @enum {symbol} */
 WebInspector.SecurityOriginManager.Events = {
     SecurityOriginAdded: Symbol("SecurityOriginAdded"),
     SecurityOriginRemoved: Symbol("SecurityOriginRemoved"),
     MainSecurityOriginChanged: Symbol("MainSecurityOriginChanged")
-}
+};
 
 /**
  * @param {!WebInspector.Target} target
@@ -32,7 +32,7 @@ WebInspector.SecurityOriginManager.fromTarget = function(target)
     if (!securityOriginManager)
         securityOriginManager = new WebInspector.SecurityOriginManager(target);
     return securityOriginManager;
-}
+};
 
 WebInspector.SecurityOriginManager.prototype = {
     /**
@@ -89,4 +89,4 @@ WebInspector.SecurityOriginManager.prototype = {
     },
 
     __proto__: WebInspector.SDKModel.prototype
-}
+};

@@ -10,7 +10,7 @@ WebInspector.ActionRegistry = function()
     /** @type {!Map.<string, !WebInspector.Action>} */
     this._actionsById = new Map();
     this._registerActions();
-}
+};
 
 WebInspector.ActionRegistry.prototype = {
     _registerActions: function()
@@ -72,7 +72,7 @@ WebInspector.ActionRegistry.prototype = {
     {
         return this._actionsById.get(actionId) || null;
     }
-}
+};
 
 /**
  * @constructor
@@ -85,13 +85,13 @@ WebInspector.Action = function(extension)
     this._extension = extension;
     this._enabled = true;
     this._toggled = false;
-}
+};
 
 /** @enum {symbol} */
 WebInspector.Action.Events = {
     Enabled: Symbol("Enabled"),
     Toggled: Symbol("Toggled")
-}
+};
 
 WebInspector.Action.prototype = {
     /**
@@ -203,14 +203,14 @@ WebInspector.Action.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
  * @interface
  */
 WebInspector.ActionDelegate = function()
 {
-}
+};
 
 WebInspector.ActionDelegate.prototype = {
     /**
@@ -219,7 +219,7 @@ WebInspector.ActionDelegate.prototype = {
      * @return {boolean}
      */
     handleAction: function(context, actionId) {}
-}
+};
 
 /** @type {!WebInspector.ActionRegistry} */
 WebInspector.actionRegistry;

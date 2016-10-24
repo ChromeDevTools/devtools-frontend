@@ -24,7 +24,7 @@ WebInspector.NetworkMapping = function(targetManager, workspace, fileSystemWorks
     ];
     fileSystemManager.waitForFileSystems()
         .then(this._fileSystemsLoaded.bind(this));
-}
+};
 
 WebInspector.NetworkMapping.prototype = {
     /**
@@ -193,7 +193,7 @@ WebInspector.NetworkMapping.prototype = {
     {
         WebInspector.EventTarget.removeEventListeners(this._eventListeners);
     }
-}
+};
 
 /**
  * @type {!WebInspector.NetworkMapping}

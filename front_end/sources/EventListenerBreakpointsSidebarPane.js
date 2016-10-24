@@ -47,7 +47,7 @@ WebInspector.EventListenerBreakpointsSidebarPane = function()
     WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.DebuggerPaused, this._update, this);
     WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.DebuggerResumed, this._update, this);
     WebInspector.context.addFlavorChangeListener(WebInspector.Target, this._update, this);
-}
+};
 
 WebInspector.EventListenerBreakpointsSidebarPane.categoryListener = "listener:";
 WebInspector.EventListenerBreakpointsSidebarPane.categoryInstrumentation = "instrumentation:";
@@ -86,7 +86,7 @@ WebInspector.EventListenerBreakpointsSidebarPane.eventNameForUI = function(event
             return WebInspector.UIString("Script blocked due to Content Security Policy directive: %s", auxData["directiveText"]);
     }
     return WebInspector.EventListenerBreakpointsSidebarPane._eventNamesForUI[eventName] || eventName.substring(eventName.indexOf(":") + 1);
-}
+};
 
 WebInspector.EventListenerBreakpointsSidebarPane.prototype = {
     /**
@@ -349,4 +349,4 @@ WebInspector.EventListenerBreakpointsSidebarPane.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

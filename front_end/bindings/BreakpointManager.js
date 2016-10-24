@@ -53,14 +53,14 @@ WebInspector.BreakpointManager = function(breakpointsSetting, workspace, targetM
     this._workspace.addEventListener(WebInspector.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
     this._workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
     this._workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
-}
+};
 
 /** @enum {symbol} */
 WebInspector.BreakpointManager.Events = {
     BreakpointAdded: Symbol("breakpoint-added"),
     BreakpointRemoved: Symbol("breakpoint-removed"),
     BreakpointsActiveStateChanged: Symbol("BreakpointsActiveStateChanged")
-}
+};
 
 /**
  * @param {string} sourceFileId
@@ -73,7 +73,7 @@ WebInspector.BreakpointManager._breakpointStorageId = function(sourceFileId, lin
     if (!sourceFileId)
         return "";
     return sourceFileId + ":" + lineNumber + ":" + columnNumber;
-}
+};
 
 WebInspector.BreakpointManager.prototype = {
     /**
@@ -457,7 +457,7 @@ WebInspector.BreakpointManager.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
  * @constructor
@@ -494,7 +494,7 @@ WebInspector.BreakpointManager.Breakpoint = function(breakpointManager, projectI
     this._targetBreakpoints = new Map();
     this._updateState(condition, enabled);
     this._breakpointManager._targetManager.observeTargets(this);
-}
+};
 
 WebInspector.BreakpointManager.Breakpoint.prototype = {
     /**
@@ -720,7 +720,7 @@ WebInspector.BreakpointManager.Breakpoint.prototype = {
         for (var i = 0; i < targetBreakpoints.length; ++i)
             targetBreakpoints[i]._resetLocations();
     }
-}
+};
 
 /**
  * @constructor
@@ -748,7 +748,7 @@ WebInspector.BreakpointManager.TargetBreakpoint = function(debuggerModel, breakp
     this._currentState = null;
     if (this._debuggerModel.debuggerEnabled())
         this._scheduleUpdateInDebugger();
-}
+};
 
 WebInspector.BreakpointManager.TargetBreakpoint.prototype = {
 
@@ -956,7 +956,7 @@ WebInspector.BreakpointManager.TargetBreakpoint.prototype = {
     },
 
     __proto__: WebInspector.SDKObject.prototype
-}
+};
 
 /**
  * @constructor
@@ -973,7 +973,7 @@ WebInspector.BreakpointManager.Breakpoint.State = function(url, scriptId, lineNu
     this.lineNumber = lineNumber;
     this.columnNumber = columnNumber;
     this.condition = condition;
-}
+};
 
 /**
  * @param {?WebInspector.BreakpointManager.Breakpoint.State|undefined} stateA
@@ -989,7 +989,7 @@ WebInspector.BreakpointManager.Breakpoint.State.equals = function(stateA, stateB
         return false;
 
     return stateA.url === stateB.url && stateA.lineNumber === stateB.lineNumber && stateA.columnNumber === stateB.columnNumber && stateA.condition === stateB.condition;
-}
+};
 
 /**
  * @constructor
@@ -1008,7 +1008,7 @@ WebInspector.BreakpointManager.Storage = function(breakpointManager, setting)
         breakpoint.columnNumber = breakpoint.columnNumber || 0;
         this._breakpoints[breakpoint.sourceFileId + ":" + breakpoint.lineNumber + ":" + breakpoint.columnNumber] = breakpoint;
     }
-}
+};
 
 WebInspector.BreakpointManager.Storage.prototype = {
     mute: function()
@@ -1065,7 +1065,7 @@ WebInspector.BreakpointManager.Storage.prototype = {
             breakpointsArray.push(this._breakpoints[id]);
         this._setting.set(breakpointsArray);
     }
-}
+};
 
 /**
  * @constructor
@@ -1078,7 +1078,7 @@ WebInspector.BreakpointManager.Storage.Item = function(breakpoint)
     this.columnNumber = breakpoint.columnNumber();
     this.condition = breakpoint.condition();
     this.enabled = breakpoint.enabled();
-}
+};
 
 /** @type {!WebInspector.BreakpointManager} */
 WebInspector.breakpointManager;

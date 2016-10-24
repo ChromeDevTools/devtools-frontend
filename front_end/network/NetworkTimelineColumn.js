@@ -69,11 +69,11 @@ WebInspector.NetworkTimelineColumn = function(rowHeight, headerHeight, calculato
     this._borderColorsForResourceTypeCache = new Map();
     /** @type {!Map<string, !CanvasGradient>} */
     this._colorsForResourceTypeCache = new Map();
-}
+};
 
 WebInspector.NetworkTimelineColumn.Events = {
     RequestHovered: Symbol("RequestHovered")
-}
+};
 
 WebInspector.NetworkTimelineColumn._colorsForResourceType = {
     document: "hsl(215, 100%, 80%)",
@@ -86,7 +86,7 @@ WebInspector.NetworkTimelineColumn._colorsForResourceType = {
     websocket: "hsl(0, 0%, 95%)",
     xhr: "hsl(53, 100%, 80%)",
     other: "hsl(0, 0%, 95%)"
-}
+};
 
 WebInspector.NetworkTimelineColumn.prototype = {
     /**
@@ -391,7 +391,7 @@ WebInspector.NetworkTimelineColumn.prototype = {
         context.lineWidth = 1;
         context.strokeStyle = "rgba(0, 0, 0, .1)";
         context.font = this._fontSize + "px sans-serif";
-        context.fillStyle = "#444"
+        context.fillStyle = "#444";
         gridSliceTime = gridSliceTime;
         for (var position = gridSliceTime * pixelsPerTime; position < drawableWidth; position += gridSliceTime * pixelsPerTime) {
             // Added .5 because canvas drawing points are between pixels.
@@ -645,4 +645,4 @@ WebInspector.NetworkTimelineColumn.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

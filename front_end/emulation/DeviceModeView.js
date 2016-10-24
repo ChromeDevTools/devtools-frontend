@@ -487,7 +487,7 @@ WebInspector.DeviceModeView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @constructor
@@ -505,7 +505,7 @@ WebInspector.DeviceModeView.Ruler = function(horizontal, applyCallback)
     this._count = 0;
     this._throttler = new WebInspector.Throttler(0);
     this._applyCallback = applyCallback;
-}
+};
 
 WebInspector.DeviceModeView.Ruler.prototype = {
     /**
@@ -593,4 +593,4 @@ WebInspector.DeviceModeView.Ruler.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

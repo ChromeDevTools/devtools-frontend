@@ -58,7 +58,7 @@ WebInspector.AuditCategoryResultPane = function(categoryResult)
         treeElement.listItemElement.classList.add("audit-result");
     }
     this.revealView();
-}
+};
 
 WebInspector.AuditCategoryResultPane.prototype = {
     /**
@@ -106,4 +106,4 @@ WebInspector.AuditCategoryResultPane.prototype = {
     },
 
     __proto__: WebInspector.SimpleView.prototype
-}
+};

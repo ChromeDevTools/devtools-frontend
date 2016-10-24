@@ -11,7 +11,7 @@ WebInspector.CSSValue = function(payload)
     this.text = payload.text;
     if (payload.range)
         this.range = WebInspector.TextRange.fromObject(payload.range);
-}
+};
 
 WebInspector.CSSValue.prototype = {
     /**
@@ -23,7 +23,7 @@ WebInspector.CSSValue.prototype = {
             return;
         this.range = this.range.rebaseAfterTextEdit(edit.oldRange, edit.newRange);
     }
-}
+};
 
 /**
  * @constructor
@@ -41,7 +41,7 @@ WebInspector.CSSRule = function(cssModel, payload)
     }
     this.origin = payload.origin;
     this.style = new WebInspector.CSSStyleDeclaration(this._cssModel, this, payload.style, WebInspector.CSSStyleDeclaration.Type.Regular);
-}
+};
 
 WebInspector.CSSRule.prototype = {
     /**
@@ -96,7 +96,7 @@ WebInspector.CSSRule.prototype = {
     {
         return this.origin === CSSAgent.StyleSheetOrigin.Regular;
     }
-}
+};
 
 /**
  * @constructor
@@ -110,7 +110,7 @@ WebInspector.CSSStyleRule = function(cssModel, payload)
 
     this._reinitializeSelectors(payload.selectorList);
     this.media = payload.media ? WebInspector.CSSMedia.parseMediaArrayPayload(cssModel, payload.media) : [];
-}
+};
 
 /**
  * @param {!WebInspector.CSSModel} cssModel
@@ -131,7 +131,7 @@ WebInspector.CSSStyleRule.createDummyRule = function(cssModel, selectorText)
         }
     };
     return new WebInspector.CSSStyleRule(cssModel, /** @type {!CSSAgent.CSSRule} */(dummyPayload));
-}
+};
 
 WebInspector.CSSStyleRule.prototype = {
     /**
@@ -228,7 +228,7 @@ WebInspector.CSSStyleRule.prototype = {
     },
 
     __proto__: WebInspector.CSSRule.prototype
-}
+};
 
 /**
  * @constructor
@@ -240,7 +240,7 @@ WebInspector.CSSKeyframesRule = function(cssModel, payload)
     this._cssModel = cssModel;
     this._animationName = new WebInspector.CSSValue(payload.animationName);
     this._keyframes = payload.keyframes.map(keyframeRule => new WebInspector.CSSKeyframeRule(cssModel, keyframeRule));
-}
+};
 
 WebInspector.CSSKeyframesRule.prototype = {
     /**
@@ -258,7 +258,7 @@ WebInspector.CSSKeyframesRule.prototype = {
     {
         return this._keyframes;
     }
-}
+};
 
 /**
  * @constructor
@@ -270,7 +270,7 @@ WebInspector.CSSKeyframeRule = function(cssModel, payload)
 {
     WebInspector.CSSRule.call(this, cssModel, payload);
     this._reinitializeKey(payload.keyText);
-}
+};
 
 WebInspector.CSSKeyframeRule.prototype = {
     /**
@@ -321,4 +321,4 @@ WebInspector.CSSKeyframeRule.prototype = {
     },
 
     __proto__: WebInspector.CSSRule.prototype
-}
+};

@@ -8,7 +8,7 @@
  */
 WebInspector.HistoryInput = function()
 {
-}
+};
 
 /**
  * @return {!WebInspector.HistoryInput}
@@ -19,7 +19,7 @@ WebInspector.HistoryInput.create = function()
         WebInspector.HistoryInput._constructor = registerCustomElement("input", "history-input", WebInspector.HistoryInput.prototype);
 
     return /** @type {!WebInspector.HistoryInput} */(new WebInspector.HistoryInput._constructor());
-}
+};
 
 WebInspector.HistoryInput.prototype = {
     createdCallback: function()
@@ -69,5 +69,5 @@ WebInspector.HistoryInput.prototype = {
     },
 
     __proto__: HTMLInputElement.prototype
-}
+};
 

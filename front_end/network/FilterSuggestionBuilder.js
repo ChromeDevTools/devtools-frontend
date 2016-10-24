@@ -38,7 +38,7 @@ WebInspector.FilterSuggestionBuilder = function(keys)
     this._keys = keys;
     this._valueSets = {};
     this._valueLists = {};
-}
+};
 
 /** @typedef {{type: string, data: string, negative: boolean}} */
 WebInspector.FilterSuggestionBuilder.Filter;

@@ -60,7 +60,7 @@ WebInspector.TimelineOverviewPane = function(prefix)
     this._cursorEnabled = false;
     this._cursorPosition = 0;
     this._lastWidth = 0;
-}
+};
 
 /** @enum {symbol} */
 WebInspector.TimelineOverviewPane.Events = {
@@ -341,7 +341,7 @@ WebInspector.TimelineOverviewPane.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @constructor
@@ -351,11 +351,11 @@ WebInspector.TimelineOverviewPane.PopoverContents = function()
 {
     WebInspector.VBox.call(this, true);
     this.contentElement.classList.add("timeline-overview-popover");
-}
+};
 
 WebInspector.TimelineOverviewPane.PopoverContents.prototype = {
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @constructor
@@ -364,7 +364,7 @@ WebInspector.TimelineOverviewPane.PopoverContents.prototype = {
 WebInspector.TimelineOverviewCalculator = function()
 {
     this.reset();
-}
+};
 
 WebInspector.TimelineOverviewCalculator.prototype = {
     /**
@@ -466,14 +466,14 @@ WebInspector.TimelineOverviewCalculator.prototype = {
     {
         return this._maximumBoundary - this._minimumBoundary;
     }
-}
+};
 
 /**
  * @interface
  */
 WebInspector.TimelineOverview = function()
 {
-}
+};
 
 WebInspector.TimelineOverview.prototype = {
     /**
@@ -517,7 +517,7 @@ WebInspector.TimelineOverview.prototype = {
     timelineStarted: function() { },
 
     timelineStopped: function() { },
-}
+};
 
 /**
  * @constructor
@@ -531,7 +531,7 @@ WebInspector.TimelineOverviewBase = function()
     this._calculator = null;
     this._canvas = this.element.createChild("canvas", "fill");
     this._context = this._canvas.getContext("2d");
-}
+};
 
 WebInspector.TimelineOverviewBase.prototype = {
     /**
@@ -639,4 +639,4 @@ WebInspector.TimelineOverviewBase.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

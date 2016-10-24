@@ -58,7 +58,7 @@ WebInspector.Worker = function(appName)
             this._worker = null;
         }
     });
-}
+};
 
 WebInspector.Worker.prototype = {
     /**
@@ -98,4 +98,4 @@ WebInspector.Worker.prototype = {
     {
         this._workerPromise.then(worker => worker.onerror = listener);
     }
-}
+};

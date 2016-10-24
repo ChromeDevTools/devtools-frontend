@@ -52,6 +52,6 @@ Audits2Service.prototype = {
         console.error("************ WORKER DISPOSE *****************");
         return Promise.resolve();
     }
-}
+};
 
 initializeWorkerService("Audits2Service", Audits2Service);

@@ -15,7 +15,7 @@ WebInspector.OpenResourceDialog = function(sourcesView, defaultScores, history)
 {
     WebInspector.FilteredUISourceCodeListDelegate.call(this, defaultScores, history);
     this._sourcesView = sourcesView;
-}
+};
 
 WebInspector.OpenResourceDialog.prototype = {
 
@@ -64,7 +64,7 @@ WebInspector.OpenResourceDialog.prototype = {
     },
 
     __proto__: WebInspector.FilteredUISourceCodeListDelegate.prototype
-}
+};
 
 /**
  * @param {!WebInspector.SourcesView} sourcesView
@@ -78,7 +78,7 @@ WebInspector.OpenResourceDialog.show = function(sourcesView, query, defaultScore
     var filteredItemSelectionDialog = new WebInspector.FilteredListWidget(WebInspector.OpenResourceDialog._instanceForTest);
     filteredItemSelectionDialog.showAsDialog();
     filteredItemSelectionDialog.setQuery(query);
-}
+};
 
 /**
  * @constructor
@@ -91,7 +91,7 @@ WebInspector.SelectUISourceCodeForProjectTypesDialog = function(types, callback)
     this._types = types;
     WebInspector.FilteredUISourceCodeListDelegate.call(this);
     this._callback = callback;
-}
+};
 
 WebInspector.SelectUISourceCodeForProjectTypesDialog.prototype = {
     /**
@@ -125,7 +125,7 @@ WebInspector.SelectUISourceCodeForProjectTypesDialog.prototype = {
     },
 
     __proto__: WebInspector.FilteredUISourceCodeListDelegate.prototype
-}
+};
 
 /**
  * @param {string} name
@@ -137,4 +137,4 @@ WebInspector.SelectUISourceCodeForProjectTypesDialog.show = function(name, types
     var filteredItemSelectionDialog = new WebInspector.FilteredListWidget(new WebInspector.SelectUISourceCodeForProjectTypesDialog(types, callback));
     filteredItemSelectionDialog.showAsDialog();
     filteredItemSelectionDialog.setQuery(name);
-}
+};

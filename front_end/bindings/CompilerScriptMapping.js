@@ -62,7 +62,7 @@ WebInspector.CompilerScriptMapping = function(debuggerModel, workspace, networkM
         workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAddedToWorkspace, this),
         debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this)
     ];
-}
+};
 
 WebInspector.CompilerScriptMapping._originSymbol = Symbol("origin");
 
@@ -73,7 +73,7 @@ WebInspector.CompilerScriptMapping._originSymbol = Symbol("origin");
 WebInspector.CompilerScriptMapping.uiSourceCodeOrigin = function(uiSourceCode)
 {
     return uiSourceCode[WebInspector.CompilerScriptMapping._originSymbol] || null;
-}
+};
 
 WebInspector.CompilerScriptMapping.prototype = {
     /**
@@ -373,7 +373,7 @@ WebInspector.CompilerScriptMapping.prototype = {
         this._sourceMapForURL.valuesArray().forEach(unbindSourceMapSources.bind(this));
 
         this._sourceMapLoadingPromises.clear();
-        this._sourceMapForScriptId.clear()
+        this._sourceMapForScriptId.clear();
         this._scriptForSourceMap.clear();
         this._sourceMapForURL.clear();
     },
@@ -384,7 +384,7 @@ WebInspector.CompilerScriptMapping.prototype = {
         this._debuggerReset();
         this._stubProject.dispose();
     }
-}
+};
 
 /**
  * @param {!WebInspector.Target} target
@@ -393,4 +393,4 @@ WebInspector.CompilerScriptMapping.prototype = {
 WebInspector.CompilerScriptMapping.projectIdForTarget = function(target)
 {
     return "compiler-script-project:" + target.id();
-}
+};

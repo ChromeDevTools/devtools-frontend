@@ -36,7 +36,7 @@
 WebInspector.RequestResponseView = function(request)
 {
     WebInspector.RequestContentView.call(this, request);
-}
+};
 
 WebInspector.RequestResponseView.prototype = {
     get sourceView()
@@ -83,7 +83,7 @@ WebInspector.RequestResponseView.prototype = {
     },
 
     __proto__: WebInspector.RequestContentView.prototype
-}
+};
 
 /**
  * @constructor
@@ -92,7 +92,7 @@ WebInspector.RequestResponseView.prototype = {
  */
 WebInspector.RequestResponseView.ContentProvider = function(request) {
     this._request = request;
-}
+};
 
 WebInspector.RequestResponseView.ContentProvider.prototype = {
     /**
@@ -143,4 +143,4 @@ WebInspector.RequestResponseView.ContentProvider.prototype = {
     {
         this._request.searchInContent(query, caseSensitive, isRegex, callback);
     }
-}
+};

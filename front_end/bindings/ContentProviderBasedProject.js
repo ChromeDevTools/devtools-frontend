@@ -43,7 +43,7 @@ WebInspector.ContentProviderBasedProject = function(workspace, id, type, display
     /** @type {!Object.<string, !WebInspector.ContentProvider>} */
     this._contentProviders = {};
     workspace.addProject(this);
-}
+};
 
 WebInspector.ContentProviderBasedProject._metadata = Symbol("ContentProviderBasedProject.Metadata");
 
@@ -321,4 +321,4 @@ WebInspector.ContentProviderBasedProject.prototype = {
     },
 
     __proto__: WebInspector.ProjectStore.prototype
-}
+};

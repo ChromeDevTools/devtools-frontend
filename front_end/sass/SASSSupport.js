@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-WebInspector.SASSSupport = {}
+WebInspector.SASSSupport = {};
 
 /**
  * @param {string} url
@@ -56,7 +56,7 @@ WebInspector.SASSSupport.parseSCSS = function(url, content)
         var value = createTextNode(payload.value);
         return new WebInspector.SASSSupport.Property(document, name, value, WebInspector.TextRange.fromObject(payload.range), payload.disabled);
     }
-}
+};
 
 /**
  * @constructor
@@ -68,7 +68,7 @@ WebInspector.SASSSupport.ASTDocument = function(url, text)
     this.url = url;
     this.text = text;
     this.edits = [];
-}
+};
 
 WebInspector.SASSSupport.ASTDocument.prototype = {
     /**
@@ -115,7 +115,7 @@ WebInspector.SASSSupport.ASTDocument.prototype = {
             return range1.follows(range2) ? 1 : -1;
         }
     },
-}
+};
 
 /**
  * @constructor
@@ -124,7 +124,7 @@ WebInspector.SASSSupport.ASTDocument.prototype = {
 WebInspector.SASSSupport.Node = function(document)
 {
     this.document = document;
-}
+};
 
 /**
  * @constructor
@@ -138,7 +138,7 @@ WebInspector.SASSSupport.TextNode = function(document, text, range)
     WebInspector.SASSSupport.Node.call(this, document);
     this.text = text;
     this.range = range;
-}
+};
 
 WebInspector.SASSSupport.TextNode.prototype = {
     /**
@@ -176,7 +176,7 @@ WebInspector.SASSSupport.TextNode.prototype = {
     },
 
     __proto__: WebInspector.SASSSupport.Node.prototype
-}
+};
 
 /**
  * @constructor
@@ -196,7 +196,7 @@ WebInspector.SASSSupport.Property = function(document, name, value, range, disab
     this.name.parent = this;
     this.value.parent = this;
     this.disabled = disabled;
-}
+};
 
 WebInspector.SASSSupport.Property.prototype = {
     /**
@@ -276,7 +276,7 @@ WebInspector.SASSSupport.Property.prototype = {
     },
 
     __proto__: WebInspector.SASSSupport.Node.prototype
-}
+};
 
 /**
  * @constructor
@@ -302,7 +302,7 @@ WebInspector.SASSSupport.Rule = function(document, selectors, styleRange, proper
         this.properties[i].parent = this;
 
     this._hasTrailingSemicolon = !this.properties.length || this.document.text.extract(this.properties.peekLast().range).endsWith(";");
-}
+};
 
 WebInspector.SASSSupport.Rule.prototype = {
     /**
@@ -359,7 +359,7 @@ WebInspector.SASSSupport.Rule.prototype = {
         if (this._hasTrailingSemicolon || !this.properties)
             return;
         this._hasTrailingSemicolon = true;
-        this.document.edits.push(new WebInspector.SourceEdit(this.document.url, this.properties.peekLast().range.collapseToEnd(), ";"))
+        this.document.edits.push(new WebInspector.SourceEdit(this.document.url, this.properties.peekLast().range.collapseToEnd(), ";"));
     },
 
     /**
@@ -429,7 +429,7 @@ WebInspector.SASSSupport.Rule.prototype = {
     },
 
     __proto__: WebInspector.SASSSupport.Node.prototype
-}
+};
 
 /**
  * @constructor
@@ -443,7 +443,7 @@ WebInspector.SASSSupport.AST = function(document, rules)
     this.rules = rules;
     for (var i = 0; i < rules.length; ++i)
         rules[i].parent = this;
-}
+};
 
 WebInspector.SASSSupport.AST.prototype = {
     /**
@@ -543,7 +543,7 @@ WebInspector.SASSSupport.AST.prototype = {
     },
 
     __proto__: WebInspector.SASSSupport.Node.prototype
-}
+};
 
 /** @enum {string} */
 WebInspector.SASSSupport.PropertyChangeType = {
@@ -552,7 +552,7 @@ WebInspector.SASSSupport.PropertyChangeType = {
     PropertyToggled: "PropertyToggled",
     ValueChanged: "ValueChanged",
     NameChanged: "NameChanged"
-}
+};
 
 /**
  * @constructor
@@ -569,7 +569,7 @@ WebInspector.SASSSupport.PropertyChange = function(type, oldRule, newRule, oldPr
     this.newRule = newRule;
     this.oldPropertyIndex = oldPropertyIndex;
     this.newPropertyIndex = newPropertyIndex;
-}
+};
 
 WebInspector.SASSSupport.PropertyChange.prototype = {
     /**
@@ -587,7 +587,7 @@ WebInspector.SASSSupport.PropertyChange.prototype = {
     {
         return this.newRule.properties[this.newPropertyIndex] || null;
     }
-}
+};
 
 /**
  * @constructor
@@ -604,7 +604,7 @@ WebInspector.SASSSupport.ASTDiff = function(url, oldAST, newAST, mapping, change
     this.changes = changes;
     this.oldAST = oldAST;
     this.newAST = newAST;
-}
+};
 
 /**
  * @param {!WebInspector.SASSSupport.AST} oldAST
@@ -690,4 +690,4 @@ WebInspector.SASSSupport.diffModels = function(oldAST, newAST)
         if (oldProperty.disabled !== newProperty.disabled)
             addChange(T.PropertyToggled, oldRule, newRule, oldPropertyIndex, newPropertyIndex);
     }
-}
+};

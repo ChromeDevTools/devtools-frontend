@@ -243,7 +243,7 @@ WebInspector.ARIAAttributesPane.ARIAAttributePrompt.prototype = {
     },
 
     __proto__: WebInspector.TextPrompt.prototype
-}
+};
 
 
 WebInspector.ARIAAttributesPane._attributes = [

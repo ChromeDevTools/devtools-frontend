@@ -11,7 +11,7 @@ WebInspector.HTMLFormatter = function(builder)
     this._builder = builder;
     this._jsFormatter = new WebInspector.JavaScriptFormatter(builder);
     this._cssFormatter = new WebInspector.CSSFormatter(builder);
-}
+};
 
 WebInspector.HTMLFormatter.SupportedJavaScriptMimeTypes = new Set([
     "text/javascript",
@@ -146,7 +146,7 @@ WebInspector.HTMLFormatter.prototype = {
 
         this._builder.addToken(token.value, token.startOffset);
     }
-}
+};
 
 /**
  * @constructor
@@ -164,7 +164,7 @@ WebInspector.HTMLModel = function(text)
     this._tokens = [];
     this._tokenIndex = 0;
     this._build(text);
-}
+};
 
 WebInspector.HTMLModel.SelfClosingTags = new Set([
     "area",
@@ -213,7 +213,7 @@ WebInspector.HTMLModel.ParseState = {
     Tag: "Tag",
     AttributeName: "AttributeName",
     AttributeValue: "AttributeValue"
-}
+};
 
 WebInspector.HTMLModel.prototype = {
     /**
@@ -418,7 +418,7 @@ WebInspector.HTMLModel.prototype = {
     {
         return this._document;
     }
-}
+};
 
 /**
  * @constructor
@@ -433,7 +433,7 @@ WebInspector.HTMLModel.Token = function(value, type, startOffset, endOffset)
     this.type = type;
     this.startOffset = startOffset;
     this.endOffset = endOffset;
-}
+};
 
 /**
  * @constructor
@@ -452,7 +452,7 @@ WebInspector.HTMLModel.Tag = function(name, startOffset, endOffset, attributes, 
     this.attributes = attributes;
     this.isOpenTag = isOpenTag;
     this.selfClosingTag = selfClosingTag;
-}
+};
 
 /**
  * @constructor
@@ -465,4 +465,4 @@ WebInspector.HTMLModel.Element = function(name)
     this.parent = null;
     this.openTag = null;
     this.closeTag = null;
-}
+};

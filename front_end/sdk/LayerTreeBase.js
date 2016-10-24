@@ -7,7 +7,7 @@
  */
 WebInspector.Layer = function()
 {
-}
+};
 
 WebInspector.Layer.prototype = {
     /**
@@ -119,14 +119,14 @@ WebInspector.Layer.prototype = {
      * @return {boolean}
      */
     drawsContent: function() { }
-}
+};
 
 WebInspector.Layer.ScrollRectType = {
     NonFastScrollable: "NonFastScrollable",
     TouchEventHandler: "TouchEventHandler",
     WheelEventHandler: "WheelEventHandler",
     RepaintsOnScroll: "RepaintsOnScroll"
-}
+};
 
 /**
   * @constructor
@@ -141,7 +141,7 @@ WebInspector.LayerTreeBase = function(target)
     this._contentRoot = null;
     /** @type Map<number, ?WebInspector.DOMNode> */
     this._backendNodeIdToNode = new Map();
-}
+};
 
 WebInspector.LayerTreeBase.prototype = {
     /**
@@ -261,4 +261,4 @@ WebInspector.LayerTreeBase.prototype = {
     {
         return this._domModel ? this._domModel.nodeForId(id) : null;
     }
-}
+};

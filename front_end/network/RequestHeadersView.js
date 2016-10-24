@@ -65,7 +65,7 @@ WebInspector.RequestHeadersView = function(request)
     this._queryStringCategory = new WebInspector.RequestHeadersView.Category(root, "queryString", "");
     this._formDataCategory = new WebInspector.RequestHeadersView.Category(root, "formData", "");
     this._requestPayloadCategory = new WebInspector.RequestHeadersView.Category(root, "requestPayload", WebInspector.UIString("Request Payload"));
-}
+};
 
 WebInspector.RequestHeadersView.prototype = {
     wasShown: function()
@@ -493,7 +493,7 @@ WebInspector.RequestHeadersView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @constructor
@@ -511,7 +511,7 @@ WebInspector.RequestHeadersView.Category = function(root, name, title)
     this._expandedSetting = WebInspector.settings.createSetting("request-info-" + name + "-category-expanded", true);
     this.expanded = this._expandedSetting.get();
     root.appendChild(this);
-}
+};
 
 WebInspector.RequestHeadersView.Category.prototype = {
     /**
@@ -536,4 +536,4 @@ WebInspector.RequestHeadersView.Category.prototype = {
     },
 
     __proto__: TreeElement.prototype
-}
+};

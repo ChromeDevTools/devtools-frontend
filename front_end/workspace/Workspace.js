@@ -31,7 +31,7 @@
 /**
  * @interface
  */
-WebInspector.ProjectSearchConfig = function() {}
+WebInspector.ProjectSearchConfig = function() {};
 
 WebInspector.ProjectSearchConfig.prototype = {
     /**
@@ -59,12 +59,12 @@ WebInspector.ProjectSearchConfig.prototype = {
      * @return {boolean}
      */
     filePathMatchesFileQuery: function(filePath) { }
-}
+};
 
 /**
  * @interface
  */
-WebInspector.Project = function() { }
+WebInspector.Project = function() { };
 
 /**
  * @param {!WebInspector.Project} project
@@ -73,7 +73,7 @@ WebInspector.Project = function() { }
 WebInspector.Project.isServiceProject = function(project)
 {
     return project.type() === WebInspector.projectTypes.Debugger || project.type() === WebInspector.projectTypes.Formatter || project.type() === WebInspector.projectTypes.Service;
-}
+};
 
 WebInspector.Project.prototype = {
     /**
@@ -184,7 +184,7 @@ WebInspector.Project.prototype = {
      * @return {!Array.<!WebInspector.UISourceCode>}
      */
     uiSourceCodes: function() { }
-}
+};
 
 /**
  * @enum {string}
@@ -197,7 +197,7 @@ WebInspector.projectTypes = {
     FileSystem: "filesystem",
     ContentScripts: "contentscripts",
     Service: "service"
-}
+};
 
 /**
  * @constructor
@@ -219,7 +219,7 @@ WebInspector.ProjectStore = function(workspace, id, type, displayName)
     this._uiSourceCodesList = [];
 
     this._project = /** @type {!WebInspector.Project} */(this);
-}
+};
 
 WebInspector.ProjectStore.prototype = {
     /**
@@ -340,7 +340,7 @@ WebInspector.ProjectStore.prototype = {
         this._uiSourceCodesMap.set(newPath, value);
         this._uiSourceCodesMap.delete(oldPath);
     }
-}
+};
 
 /**
  * @constructor
@@ -351,7 +351,7 @@ WebInspector.Workspace = function()
     /** @type {!Map<string, !WebInspector.Project>} */
     this._projects = new Map();
     this._hasResourceContentTrackingExtensions = false;
-}
+};
 
 /** @enum {symbol} */
 WebInspector.Workspace.Events = {
@@ -362,7 +362,7 @@ WebInspector.Workspace.Events = {
     WorkingCopyCommittedByUser: Symbol("WorkingCopyCommittedByUser"),
     ProjectAdded: Symbol("ProjectAdded"),
     ProjectRemoved: Symbol("ProjectRemoved")
-}
+};
 
 WebInspector.Workspace.prototype = {
     /**
@@ -481,7 +481,7 @@ WebInspector.Workspace.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
  * @type {!WebInspector.Workspace}

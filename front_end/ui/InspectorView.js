@@ -80,7 +80,7 @@ WebInspector.InspectorView = function()
         var panelName = /** @type {string} */ (event.data);
         this.showPanel(panelName);
     }
-}
+};
 
 /**
  * @return {!WebInspector.InspectorView}
@@ -88,7 +88,7 @@ WebInspector.InspectorView = function()
 WebInspector.InspectorView.instance = function()
 {
     return /** @type {!WebInspector.InspectorView} */ (self.runtime.sharedInstance(WebInspector.InspectorView));
-}
+};
 
 WebInspector.InspectorView.prototype = {
     wasShown: function()
@@ -324,7 +324,7 @@ WebInspector.inspectorView;
  */
 WebInspector.InspectorView.DrawerToggleActionDelegate = function()
 {
-}
+};
 
 WebInspector.InspectorView.DrawerToggleActionDelegate.prototype = {
     /**
@@ -341,4 +341,4 @@ WebInspector.InspectorView.DrawerToggleActionDelegate.prototype = {
             WebInspector.inspectorView._showDrawer(true);
         return true;
     }
-}
+};

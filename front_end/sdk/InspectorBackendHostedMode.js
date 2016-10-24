@@ -18,7 +18,7 @@ WebInspector.InspectorBackendHostedMode.loadFromJSONIfNeeded = function()
             eval(code);
         }
     }
-}
+};
 
 /**
  * @param {*} schema
@@ -123,6 +123,6 @@ WebInspector.InspectorBackendHostedMode.generateCommands = function(schema)
         }
     }
     return result.join("\n");
-}
+};
 
 WebInspector.InspectorBackendHostedMode.loadFromJSONIfNeeded();

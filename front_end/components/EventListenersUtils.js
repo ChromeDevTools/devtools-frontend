@@ -494,4 +494,4 @@ WebInspector.EventListener.frameworkEventListeners = function(object)
             jQueryFunction(node).off(type, selector, handler);
         }
     }
-}
+};

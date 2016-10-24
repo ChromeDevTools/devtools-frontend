@@ -8,7 +8,7 @@
 WebInspector.TimelineIRModel = function()
 {
     this.reset();
-}
+};
 
 /**
  * @enum {string}
@@ -72,7 +72,7 @@ WebInspector.TimelineIRModel._eventIRPhase = Symbol("eventIRPhase");
 WebInspector.TimelineIRModel.phaseForEvent = function(event)
 {
     return event[WebInspector.TimelineIRModel._eventIRPhase];
-}
+};
 
 WebInspector.TimelineIRModel.prototype = {
     /**

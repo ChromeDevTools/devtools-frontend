@@ -41,7 +41,7 @@ WebInspector.resourceForURL = function(url)
             return resource;
     }
     return null;
-}
+};
 
 /**
  * @param {function(!WebInspector.Resource)} callback
@@ -51,7 +51,7 @@ WebInspector.forAllResources = function(callback)
     var targets = WebInspector.targetManager.targets(WebInspector.Target.Capability.DOM);
     for (var i = 0; i < targets.length; ++i)
         WebInspector.ResourceTreeModel.fromTarget(targets[i]).forAllResources(callback);
-}
+};
 
 /**
  * @param {string} url
@@ -89,4 +89,4 @@ WebInspector.displayNameForURL = function(url)
 
     var displayName = url.trimURL(parsedURL.host);
     return displayName === "/" ? parsedURL.host + "/" : displayName;
-}
+};

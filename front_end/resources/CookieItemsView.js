@@ -55,7 +55,7 @@ WebInspector.CookieItemsView = function(treeElement, cookieDomain)
     this._emptyWidget.show(this.element);
 
     this.element.addEventListener("contextmenu", this._contextMenu.bind(this), true);
-}
+};
 
 WebInspector.CookieItemsView.prototype = {
     /**
@@ -188,4 +188,4 @@ WebInspector.CookieItemsView.prototype = {
     },
 
     __proto__: WebInspector.SimpleView.prototype
-}
+};

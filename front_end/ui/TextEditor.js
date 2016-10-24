@@ -7,7 +7,7 @@
  */
 WebInspector.TextEditorFactory = function()
 {
-}
+};
 
 WebInspector.TextEditorFactory.prototype = {
     /**
@@ -15,14 +15,14 @@ WebInspector.TextEditorFactory.prototype = {
      * @return {!WebInspector.TextEditor}
      */
     createEditor: function(options) { }
-}
+};
 
 /**
  * @interface
  */
 WebInspector.TextEditor = function()
 {
-}
+};
 
 WebInspector.TextEditor.prototype = {
 
@@ -76,7 +76,7 @@ WebInspector.TextEditor.prototype = {
     configureAutocomplete: function(config) { },
 
     clearAutocomplete: function() { }
-}
+};
 
 /**
  * @typedef {{

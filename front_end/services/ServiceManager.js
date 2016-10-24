@@ -7,7 +7,7 @@
  */
 WebInspector.ServiceManager = function()
 {
-}
+};
 
 WebInspector.ServiceManager.prototype = {
     /**
@@ -44,7 +44,7 @@ WebInspector.ServiceManager.prototype = {
         var connection = new WebInspector.ServiceManager.Connection(new WebInspector.ServiceManager.WorkerServicePort(worker));
         return connection._createService(serviceName);
     }
-}
+};
 
 /**
  * @constructor
@@ -60,7 +60,7 @@ WebInspector.ServiceManager.Connection = function(port)
     this._callbacks = new Map();
     /** @type {!Map<string, !WebInspector.ServiceManager.Service>}*/
     this._services = new Map();
-}
+};
 
 WebInspector.ServiceManager.Connection.prototype = {
     /**
@@ -148,7 +148,7 @@ WebInspector.ServiceManager.Connection.prototype = {
             service._dispatchNotification("disposed");
         this._services.clear();
     }
-}
+};
 
 /**
  * @constructor
@@ -163,7 +163,7 @@ WebInspector.ServiceManager.Service = function(connection, serviceName, objectId
     this._objectId = objectId;
     /** @type {!Map<string, function(!Object=)>}*/
     this._notificationHandlers = new Map();
-}
+};
 
 WebInspector.ServiceManager.Service.prototype = {
     /**
@@ -211,7 +211,7 @@ WebInspector.ServiceManager.Service.prototype = {
         }
         handler(params);
     }
-}
+};
 
 /**
  * @constructor
@@ -221,7 +221,7 @@ WebInspector.ServiceManager.Service.prototype = {
 WebInspector.ServiceManager.RemoteServicePort = function(url)
 {
     this._url = url;
-}
+};
 
 WebInspector.ServiceManager.RemoteServicePort.prototype = {
     /**
@@ -311,7 +311,7 @@ WebInspector.ServiceManager.RemoteServicePort.prototype = {
             return true;
         });
     },
-}
+};
 
 /**
  * @constructor
@@ -346,7 +346,7 @@ WebInspector.ServiceManager.WorkerServicePort = function(worker)
         }
         this._messageHandler(event.data);
     }
-}
+};
 
 WebInspector.ServiceManager.WorkerServicePort.prototype = {
     /**
@@ -392,6 +392,6 @@ WebInspector.ServiceManager.WorkerServicePort.prototype = {
             return false;
         });
     }
-}
+};
 
 WebInspector.serviceManager = new WebInspector.ServiceManager();

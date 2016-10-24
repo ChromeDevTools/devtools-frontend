@@ -34,7 +34,7 @@ WebInspector.ConsolePanel = function()
 {
     WebInspector.Panel.call(this, "console");
     this._view = WebInspector.ConsoleView.instance();
-}
+};
 
 WebInspector.ConsolePanel.prototype = {
     /**
@@ -70,7 +70,7 @@ WebInspector.ConsolePanel.prototype = {
     },
 
     __proto__: WebInspector.Panel.prototype
-}
+};
 
 /**
  * @constructor
@@ -84,7 +84,7 @@ WebInspector.ConsolePanel.WrapperView = function()
     WebInspector.ConsolePanel.WrapperView._instance = this;
 
     this._view = WebInspector.ConsoleView.instance();
-}
+};
 
 WebInspector.ConsolePanel.WrapperView.prototype = {
     wasShown: function()
@@ -106,7 +106,7 @@ WebInspector.ConsolePanel.WrapperView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @constructor
@@ -114,7 +114,7 @@ WebInspector.ConsolePanel.WrapperView.prototype = {
  */
 WebInspector.ConsolePanel.ConsoleRevealer = function()
 {
-}
+};
 
 WebInspector.ConsolePanel.ConsoleRevealer.prototype = {
     /**
@@ -132,7 +132,7 @@ WebInspector.ConsolePanel.ConsoleRevealer.prototype = {
         WebInspector.viewManager.showView("console-view");
         return Promise.resolve();
     }
-}
+};
 
 /**
  * @return {!WebInspector.ConsolePanel}
@@ -140,4 +140,4 @@ WebInspector.ConsolePanel.ConsoleRevealer.prototype = {
 WebInspector.ConsolePanel.instance = function()
 {
     return /** @type {!WebInspector.ConsolePanel} */ (self.runtime.sharedInstance(WebInspector.ConsolePanel));
-}
+};

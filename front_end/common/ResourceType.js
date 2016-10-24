@@ -40,7 +40,7 @@ WebInspector.ResourceType = function(name, title, category, isTextType)
     this._title = title;
     this._category = category;
     this._isTextType = isTextType;
-}
+};
 
 WebInspector.ResourceType.prototype = {
     /**
@@ -145,7 +145,7 @@ WebInspector.ResourceType.prototype = {
             return "text/css";
         return "";
     }
-}
+};
 
 /**
  * @constructor
@@ -156,7 +156,7 @@ WebInspector.ResourceCategory = function(title, shortTitle)
 {
     this.title = title;
     this.shortTitle = shortTitle;
-}
+};
 
 WebInspector.resourceCategories = {
     XHR: new WebInspector.ResourceCategory("XHR and Fetch", "XHR"),
@@ -169,7 +169,7 @@ WebInspector.resourceCategories = {
     WebSocket: new WebInspector.ResourceCategory("WebSockets", "WS"),
     Manifest: new WebInspector.ResourceCategory("Manifest", "Manifest"),
     Other: new WebInspector.ResourceCategory("Other", "Other")
-}
+};
 
 /**
  * Keep these in sync with WebCore::InspectorPageAgent::resourceTypeJson
@@ -192,7 +192,7 @@ WebInspector.resourceTypes = {
     SourceMapScript: new WebInspector.ResourceType("sm-script", "Script", WebInspector.resourceCategories.Script, false),
     SourceMapStyleSheet: new WebInspector.ResourceType("sm-stylesheet", "Stylesheet", WebInspector.resourceCategories.Stylesheet, false),
     Manifest: new WebInspector.ResourceType("manifest", "Manifest", WebInspector.resourceCategories.Manifest, true),
-}
+};
 
 /**
  * @param {string} url
@@ -206,7 +206,7 @@ WebInspector.ResourceType.mimeFromURL = function(url)
     }
     var ext = WebInspector.ParsedURL.extractExtension(url).toLowerCase();
     return WebInspector.ResourceType._mimeTypeByExtension.get(ext);
-}
+};
 
 WebInspector.ResourceType._mimeTypeByName = new Map([
     // CoffeeScript

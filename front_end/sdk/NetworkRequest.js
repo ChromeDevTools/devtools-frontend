@@ -92,7 +92,7 @@ WebInspector.NetworkRequest = function(target, requestId, url, documentURL, fram
 
     /** @type {string} */
     this.connectionId = "0";
-}
+};
 
 /** @enum {symbol} */
 WebInspector.NetworkRequest.Events = {
@@ -103,7 +103,7 @@ WebInspector.NetworkRequest.Events = {
     ResponseHeadersChanged: Symbol("ResponseHeadersChanged"),
     WebsocketFrameAdded: Symbol("WebsocketFrameAdded"),
     EventSourceMessageAdded: Symbol("EventSourceMessageAdded")
-}
+};
 
 /** @enum {string} */
 WebInspector.NetworkRequest.InitiatorType = {
@@ -111,7 +111,7 @@ WebInspector.NetworkRequest.InitiatorType = {
     Parser: "parser",
     Redirect: "redirect",
     Script: "script"
-}
+};
 
 /** @typedef {!{name: string, value: string}} */
 WebInspector.NetworkRequest.NameValue;
@@ -121,7 +121,7 @@ WebInspector.NetworkRequest.WebSocketFrameType = {
     Send: "send",
     Receive: "receive",
     Error: "error"
-}
+};
 
 /** @typedef {!{type: WebInspector.NetworkRequest.WebSocketFrameType, time: number, text: string, opCode: number, mask: boolean}} */
 WebInspector.NetworkRequest.WebSocketFrame;
@@ -1268,4 +1268,4 @@ WebInspector.NetworkRequest.prototype = {
     },
 
     __proto__: WebInspector.SDKObject.prototype
-}
+};

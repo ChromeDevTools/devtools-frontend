@@ -33,7 +33,7 @@
  */
 WebInspector.OutputStreamDelegate = function()
 {
-}
+};
 
 WebInspector.OutputStreamDelegate.prototype = {
     onTransferStarted: function() { },
@@ -50,14 +50,14 @@ WebInspector.OutputStreamDelegate.prototype = {
      * @param {!Event} event
      */
     onError: function(reader, event) { },
-}
+};
 
 /**
  * @interface
  */
 WebInspector.ChunkedReader = function()
 {
-}
+};
 
 WebInspector.ChunkedReader.prototype = {
     /**
@@ -76,7 +76,7 @@ WebInspector.ChunkedReader.prototype = {
     fileName: function() { },
 
     cancel: function() { }
-}
+};
 
 /**
  * @constructor
@@ -94,7 +94,7 @@ WebInspector.ChunkedFileReader = function(file, chunkSize, delegate)
     this._delegate = delegate;
     this._decoder = new TextDecoder();
     this._isCanceled = false;
-}
+};
 
 WebInspector.ChunkedFileReader.prototype = {
     /**
@@ -184,7 +184,7 @@ WebInspector.ChunkedFileReader.prototype = {
         var nextPart = this._file.slice(chunkStart, chunkEnd);
         this._reader.readAsArrayBuffer(nextPart);
     }
-}
+};
 
 /**
  * @param {function(!File)} callback
@@ -202,7 +202,7 @@ WebInspector.createFileSelectorElement = function(callback)
         callback(fileSelectorElement.files[0]);
     }
     return fileSelectorElement;
-}
+};
 
 /**
  * @constructor
@@ -210,7 +210,7 @@ WebInspector.createFileSelectorElement = function(callback)
  */
 WebInspector.FileOutputStream = function()
 {
-}
+};
 
 WebInspector.FileOutputStream.prototype = {
     /**
@@ -276,4 +276,4 @@ WebInspector.FileOutputStream.prototype = {
             }
         }
     }
-}
+};

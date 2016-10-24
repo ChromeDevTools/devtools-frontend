@@ -45,7 +45,7 @@ WebInspector.BreakpointsSidebarPaneBase = function()
     this.emptyElement.textContent = WebInspector.UIString("No Breakpoints");
 
     this.element.appendChild(this.emptyElement);
-}
+};
 
 WebInspector.BreakpointsSidebarPaneBase.prototype = {
     /**
@@ -92,4 +92,4 @@ WebInspector.BreakpointsSidebarPaneBase.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

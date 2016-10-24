@@ -7,7 +7,7 @@
  */
 WebInspector.RemoteObjectPreviewFormatter = function()
 {
-}
+};
 
 WebInspector.RemoteObjectPreviewFormatter.prototype = {
     /**
@@ -171,4 +171,4 @@ WebInspector.RemoteObjectPreviewFormatter.prototype = {
         span.textContent = description;
         return span;
     }
-}
+};

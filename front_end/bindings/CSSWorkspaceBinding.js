@@ -17,7 +17,7 @@ WebInspector.CSSWorkspaceBinding = function(targetManager, workspace, networkMap
     /** @type {!Map.<!WebInspector.CSSModel, !WebInspector.CSSWorkspaceBinding.TargetInfo>} */
     this._modelToTargetInfo = new Map();
     targetManager.observeTargets(this);
-}
+};
 
 WebInspector.CSSWorkspaceBinding.prototype = {
     /**
@@ -143,7 +143,7 @@ WebInspector.CSSWorkspaceBinding.prototype = {
         var targetInfo = this._targetInfo(header);
         return targetInfo ? targetInfo._rawLocationToUILocation(header, rawLocation.lineNumber, rawLocation.columnNumber) : null;
     }
-}
+};
 
 /**
  * @constructor
@@ -159,7 +159,7 @@ WebInspector.CSSWorkspaceBinding.TargetInfo = function(cssModel, workspace, netw
 
     /** @type {!Multimap<!WebInspector.CSSStyleSheetHeader, !WebInspector.LiveLocation>} */
     this._locations = new Multimap();
-}
+};
 
 WebInspector.CSSWorkspaceBinding.TargetInfo.prototype = {
     /**
@@ -209,7 +209,7 @@ WebInspector.CSSWorkspaceBinding.TargetInfo.prototype = {
         this._stylesSourceMapping.dispose();
         this._sassSourceMapping.dispose();
     }
-}
+};
 
 /**
  * @constructor
@@ -231,7 +231,7 @@ WebInspector.CSSWorkspaceBinding.LiveLocation = function(cssModel, header, rawLo
         this._clearStyleSheet();
     else
         this._setStyleSheet(header);
-}
+};
 
 WebInspector.CSSWorkspaceBinding.LiveLocation.prototype = {
     /**
@@ -315,7 +315,7 @@ WebInspector.CSSWorkspaceBinding.LiveLocation.prototype = {
     },
 
     __proto__: WebInspector.LiveLocationWithPool.prototype
-}
+};
 
 /**
  * @type {!WebInspector.CSSWorkspaceBinding}

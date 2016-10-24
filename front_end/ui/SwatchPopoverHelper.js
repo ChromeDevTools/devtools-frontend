@@ -17,7 +17,7 @@ WebInspector.SwatchPopoverHelper = function()
     this._boundOnKeyDown = this._onKeyDown.bind(this);
     this._boundFocusOut = this._onFocusOut.bind(this);
     this._isHidden = true;
-}
+};
 
 WebInspector.SwatchPopoverHelper.prototype = {
     /**
@@ -119,4 +119,4 @@ WebInspector.SwatchPopoverHelper.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};

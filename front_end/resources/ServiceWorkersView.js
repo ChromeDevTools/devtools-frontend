@@ -32,7 +32,7 @@ WebInspector.ServiceWorkersView = function()
     /** @type {!Map<!WebInspector.Target, !Array<!WebInspector.EventTarget.EventDescriptor>>}*/
     this._eventListeners = new Map();
     WebInspector.targetManager.observeTargets(this);
-}
+};
 
 WebInspector.ServiceWorkersView.prototype = {
     /**
@@ -133,7 +133,7 @@ WebInspector.ServiceWorkersView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @constructor
@@ -178,7 +178,7 @@ WebInspector.ServiceWorkersView.Section = function(manager, subTargetsManager, s
     for (var error of registration.errors)
         this._addError(error);
     this._throttler = new WebInspector.Throttler(500);
-}
+};
 
 WebInspector.ServiceWorkersView.Section.prototype = {
     _scheduleUpdate: function()
@@ -433,4 +433,4 @@ WebInspector.ServiceWorkersView.Section.prototype = {
         if (this._pendingUpdate)
             clearTimeout(this._pendingUpdate);
     }
-}
+};

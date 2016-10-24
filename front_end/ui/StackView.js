@@ -36,7 +36,7 @@ WebInspector.StackView = function(isVertical)
     WebInspector.VBox.call(this);
     this._isVertical = isVertical;
     this._currentSplitWidget = null;
-}
+};
 
 WebInspector.StackView.prototype = {
     /**
@@ -71,4 +71,4 @@ WebInspector.StackView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

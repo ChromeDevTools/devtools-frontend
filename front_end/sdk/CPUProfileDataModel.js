@@ -24,11 +24,11 @@ WebInspector.CPUProfileNode = function(node, sampleTime)
     this.positionTicks = node.positionTicks;
     // Compatibility: legacy backends could provide "no reason" for optimized functions.
     this.deoptReason = node.deoptReason && node.deoptReason !== "no reason" ? node.deoptReason : null;
-}
+};
 
 WebInspector.CPUProfileNode.prototype = {
     __proto__: WebInspector.ProfileNode.prototype
-}
+};
 
 /**
  * @constructor
@@ -60,7 +60,7 @@ WebInspector.CPUProfileDataModel = function(profile)
         this._sortSamples();
         this._normalizeTimestamps();
     }
-}
+};
 
 WebInspector.CPUProfileDataModel.prototype = {
     /**
@@ -374,4 +374,4 @@ WebInspector.CPUProfileDataModel.prototype = {
     },
 
     __proto__: WebInspector.ProfileTreeModel.prototype
-}
+};

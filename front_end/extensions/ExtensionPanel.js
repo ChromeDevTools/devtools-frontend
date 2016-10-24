@@ -50,7 +50,7 @@ WebInspector.ExtensionPanel = function(server, panelName, id, pageURL)
 
     var extensionView = new WebInspector.ExtensionView(server, this._id, pageURL, "extension");
     extensionView.show(this._searchableView.element);
-}
+};
 
 WebInspector.ExtensionPanel.prototype = {
     /**
@@ -127,7 +127,7 @@ WebInspector.ExtensionPanel.prototype = {
     },
 
     __proto__: WebInspector.Panel.prototype
-}
+};
 
 /**
  * @constructor
@@ -144,7 +144,7 @@ WebInspector.ExtensionButton = function(server, id, iconURL, tooltip, disabled)
     this._toolbarButton = new WebInspector.ToolbarButton("", "");
     this._toolbarButton.addEventListener("click", server.notifyButtonClicked.bind(server, this._id));
     this.update(iconURL, tooltip, disabled);
-}
+};
 
 WebInspector.ExtensionButton.prototype = {
     /**
@@ -169,7 +169,7 @@ WebInspector.ExtensionButton.prototype = {
     {
         return this._toolbarButton;
     }
-}
+};
 
 /**
  * @constructor
@@ -186,7 +186,7 @@ WebInspector.ExtensionSidebarPane = function(server, panelName, title, id)
     this._panelName = panelName;
     this._server = server;
     this._id = id;
-}
+};
 
 WebInspector.ExtensionSidebarPane.prototype = {
     /**
@@ -306,4 +306,4 @@ WebInspector.ExtensionSidebarPane.prototype = {
     },
 
     __proto__: WebInspector.SimpleView.prototype
-}
+};

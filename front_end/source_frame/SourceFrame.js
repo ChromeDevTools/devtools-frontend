@@ -63,7 +63,7 @@ WebInspector.SourceFrame = function(url, lazyContent)
      * @type {?WebInspector.SearchableView}
      */
     this._searchableView = null;
-}
+};
 
 WebInspector.SourceFrame.prototype = {
     /**
@@ -345,7 +345,7 @@ WebInspector.SourceFrame.prototype = {
         this._resetSearch();
         this._searchConfig = searchConfig;
         if (this.loaded)
-            this._doFindSearchMatches(searchConfig, shouldJump, !!jumpBackwards)
+            this._doFindSearchMatches(searchConfig, shouldJump, !!jumpBackwards);
         else
             this._delayedFindSearchMatches = this._doFindSearchMatches.bind(this, searchConfig, shouldJump, !!jumpBackwards);
 
@@ -603,4 +603,4 @@ WebInspector.SourceFrame.prototype = {
     },
 
     __proto__: WebInspector.SimpleView.prototype
-}
+};

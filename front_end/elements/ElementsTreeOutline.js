@@ -85,7 +85,7 @@ WebInspector.ElementsTreeOutline = function(domModel, omitRootDOMNode, selectEna
     this._domModel.addEventListener(WebInspector.DOMModel.Events.MarkersChanged, this._markersChanged, this);
     this._showHTMLCommentsSetting = WebInspector.moduleSetting("showHTMLComments");
     this._showHTMLCommentsSetting.addChangeListener(this._onShowHTMLCommentsChange.bind(this));
-}
+};
 
 WebInspector.ElementsTreeOutline._treeOutlineSymbol = Symbol("treeOutline");
 
@@ -96,7 +96,7 @@ WebInspector.ElementsTreeOutline._treeOutlineSymbol = Symbol("treeOutline");
 WebInspector.ElementsTreeOutline.forDOMModel = function(domModel)
 {
     return domModel[WebInspector.ElementsTreeOutline._treeOutlineSymbol] || null;
-}
+};
 
 /** @typedef {{node: !WebInspector.DOMNode, isCut: boolean}} */
 WebInspector.ElementsTreeOutline.ClipboardData;
@@ -105,7 +105,7 @@ WebInspector.ElementsTreeOutline.ClipboardData;
 WebInspector.ElementsTreeOutline.Events = {
     SelectedNodeChanged: Symbol("SelectedNodeChanged"),
     ElementsTreeUpdated: Symbol("ElementsTreeUpdated")
-}
+};
 
 /**
  * @const
@@ -130,7 +130,7 @@ WebInspector.ElementsTreeOutline.MappedCharToEntity = {
     "\u202d": "#8237", // LRO
     "\u202e": "#8238", // RLO
     "\ufeff": "#65279" // BOM
-}
+};
 
 WebInspector.ElementsTreeOutline.prototype = {
     _onShowHTMLCommentsChange: function()
@@ -1562,14 +1562,14 @@ WebInspector.ElementsTreeOutline.prototype = {
     },
 
     __proto__: TreeOutline.prototype
-}
+};
 
 /**
  * @constructor
  */
 WebInspector.ElementsTreeOutline.UpdateRecord = function()
 {
-}
+};
 
 WebInspector.ElementsTreeOutline.UpdateRecord.prototype = {
     /**
@@ -1660,7 +1660,7 @@ WebInspector.ElementsTreeOutline.UpdateRecord.prototype = {
     {
         return !!this._hasRemovedChildren;
     }
-}
+};
 
 /**
  * @constructor
@@ -1668,7 +1668,7 @@ WebInspector.ElementsTreeOutline.UpdateRecord.prototype = {
  */
 WebInspector.ElementsTreeOutline.Renderer = function()
 {
-}
+};
 
 WebInspector.ElementsTreeOutline.Renderer.prototype = {
     /**
@@ -1719,7 +1719,7 @@ WebInspector.ElementsTreeOutline.Renderer.prototype = {
             }
         }
     }
-}
+};
 
 /**
  * @constructor
@@ -1742,7 +1742,7 @@ WebInspector.ElementsTreeOutline.ShortcutTreeElement = function(nodeShortcut)
     link.textContent = WebInspector.UIString("reveal");
     this.listItemElement.appendChild(link);
     this._nodeShortcut = nodeShortcut;
-}
+};
 
 WebInspector.ElementsTreeOutline.ShortcutTreeElement.prototype = {
     /**
@@ -1795,4 +1795,4 @@ WebInspector.ElementsTreeOutline.ShortcutTreeElement.prototype = {
     },
 
     __proto__: TreeElement.prototype
-}
+};

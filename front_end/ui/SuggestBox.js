@@ -33,7 +33,7 @@
  */
 WebInspector.SuggestBoxDelegate = function()
 {
-}
+};
 
 WebInspector.SuggestBoxDelegate.prototype = {
     /**
@@ -46,7 +46,7 @@ WebInspector.SuggestBoxDelegate.prototype = {
      * acceptSuggestion will be always called after call to applySuggestion with isIntermediateSuggestion being equal to false.
      */
     acceptSuggestion: function() { },
-}
+};
 
 /**
  * @constructor
@@ -84,7 +84,7 @@ WebInspector.SuggestBox = function(suggestBoxDelegate, maxItemsHeight, captureEn
     this._userEnteredText = "";
     /** @type {!WebInspector.SuggestBox.Suggestions} */
     this._items = [];
-}
+};
 
 /**
  * @typedef {!Array.<{title: string, className: (string|undefined)}>}
@@ -541,7 +541,7 @@ WebInspector.SuggestBox.prototype = {
             this._elementList[index] = this._createItemElement(this._userEnteredText, this._items[index].title, this._items[index].className);
         return this._elementList[index];
     }
-}
+};
 
 /**
  * @constructor
@@ -558,7 +558,7 @@ WebInspector.SuggestBox.Overlay = function()
     this._bottomSpacerElement = this._horizontalElement.createChild("div", "suggest-box-bottom-spacer");
     this._resize();
     document.body.appendChild(this.element);
-}
+};
 
 WebInspector.SuggestBox.Overlay.prototype = {
     /**
@@ -609,4 +609,4 @@ WebInspector.SuggestBox.Overlay.prototype = {
     {
         this.element.remove();
     }
-}
+};

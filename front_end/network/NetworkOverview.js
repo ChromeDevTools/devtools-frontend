@@ -30,7 +30,7 @@ WebInspector.NetworkOverview = function()
     WebInspector.targetManager.addModelListener(WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.Events.DOMContentLoaded, this._domContentLoadedEventFired, this);
 
     this.reset();
-}
+};
 
 /** @type {number} */
 WebInspector.NetworkOverview._bandHeight = 3;
@@ -309,4 +309,4 @@ WebInspector.NetworkOverview.prototype = {
     },
 
     __proto__: WebInspector.TimelineOverviewBase.prototype
-}
+};

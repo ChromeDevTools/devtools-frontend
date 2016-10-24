@@ -27,7 +27,7 @@ WebInspector.TimelinePaintProfilerView = function(frameModel)
 
     this._logTreeView = new WebInspector.PaintProfilerCommandLogView();
     this._logAndImageSplitWidget.setSidebarWidget(this._logTreeView);
-}
+};
 
 WebInspector.TimelinePaintProfilerView.prototype = {
     wasShown: function()
@@ -134,7 +134,7 @@ WebInspector.TimelinePaintImageView = function()
 
     this._transformController = new WebInspector.TransformController(this.contentElement, true);
     this._transformController.addEventListener(WebInspector.TransformController.Events.TransformChanged, this._updateImagePosition, this);
-}
+};
 
 WebInspector.TimelinePaintImageView.prototype = {
     onResize: function()

@@ -17,7 +17,7 @@ WebInspector.ObjectEventListenersSidebarPane = function()
     this._refreshButton.setEnabled(false);
 
     this._eventListenersView = new WebInspector.EventListenersView(this.element, this.update.bind(this));
-}
+};
 
 WebInspector.ObjectEventListenersSidebarPane._objectGroupName = "object-event-listeners-sidebar-pane";
 
@@ -99,4 +99,4 @@ WebInspector.ObjectEventListenersSidebarPane.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

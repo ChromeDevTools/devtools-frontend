@@ -43,7 +43,7 @@ WebInspector.TimelineEventOverview = function(id, title, model)
     if (title)
         this.element.createChild("div", "timeline-overview-strip-title").textContent = title;
     this._model = model;
-}
+};
 
 WebInspector.TimelineEventOverview.prototype = {
     /**
@@ -95,7 +95,7 @@ WebInspector.TimelineEventOverview.prototype = {
     },
 
     __proto__: WebInspector.TimelineOverviewBase.prototype
-}
+};
 
 /**
  * @constructor
@@ -105,7 +105,7 @@ WebInspector.TimelineEventOverview.prototype = {
 WebInspector.TimelineEventOverview.Input = function(model)
 {
     WebInspector.TimelineEventOverview.call(this, "input", null, model);
-}
+};
 
 WebInspector.TimelineEventOverview.Input.prototype = {
     /**
@@ -149,7 +149,7 @@ WebInspector.TimelineEventOverview.Input.prototype = {
     },
 
     __proto__: WebInspector.TimelineEventOverview.prototype
-}
+};
 
 /**
  * @constructor
@@ -159,7 +159,7 @@ WebInspector.TimelineEventOverview.Input.prototype = {
 WebInspector.TimelineEventOverview.Network = function(model)
 {
     WebInspector.TimelineEventOverview.call(this, "network", WebInspector.UIString("NET"), model);
-}
+};
 
 WebInspector.TimelineEventOverview.Network.prototype = {
     /**
@@ -232,7 +232,7 @@ WebInspector.TimelineEventOverview.Network.prototype = {
     },
 
     __proto__: WebInspector.TimelineEventOverview.prototype
-}
+};
 
 /**
  * @constructor
@@ -243,7 +243,7 @@ WebInspector.TimelineEventOverview.CPUActivity = function(model)
 {
     WebInspector.TimelineEventOverview.call(this, "cpu-activity", WebInspector.UIString("CPU"), model);
     this._backgroundCanvas = this.element.createChild("canvas", "fill background");
-}
+};
 
 WebInspector.TimelineEventOverview.CPUActivity.prototype = {
     /**
@@ -362,7 +362,7 @@ WebInspector.TimelineEventOverview.CPUActivity.prototype = {
     },
 
     __proto__: WebInspector.TimelineEventOverview.prototype
-}
+};
 
 /**
  * @constructor
@@ -372,9 +372,9 @@ WebInspector.TimelineEventOverview.CPUActivity.prototype = {
  */
 WebInspector.TimelineEventOverview.Responsiveness = function(model, frameModel)
 {
-    WebInspector.TimelineEventOverview.call(this, "responsiveness", null, model)
+    WebInspector.TimelineEventOverview.call(this, "responsiveness", null, model);
     this._frameModel = frameModel;
-}
+};
 
 WebInspector.TimelineEventOverview.Responsiveness.prototype = {
     /**
@@ -426,7 +426,7 @@ WebInspector.TimelineEventOverview.Responsiveness.prototype = {
     },
 
     __proto__: WebInspector.TimelineEventOverview.prototype
-}
+};
 
 /**
  * @constructor
@@ -439,7 +439,7 @@ WebInspector.TimelineFilmStripOverview = function(model, filmStripModel)
     WebInspector.TimelineEventOverview.call(this, "filmstrip", null, model);
     this._filmStripModel = filmStripModel;
     this.reset();
-}
+};
 
 WebInspector.TimelineFilmStripOverview.Padding = 2;
 
@@ -594,7 +594,7 @@ WebInspector.TimelineFilmStripOverview.prototype = {
     },
 
     __proto__: WebInspector.TimelineEventOverview.prototype
-}
+};
 
 /**
  * @constructor
@@ -606,7 +606,7 @@ WebInspector.TimelineEventOverview.Frames = function(model, frameModel)
 {
     WebInspector.TimelineEventOverview.call(this, "framerate", WebInspector.UIString("FPS"), model);
     this._frameModel = frameModel;
-}
+};
 
 WebInspector.TimelineEventOverview.Frames.prototype = {
     /**
@@ -658,7 +658,7 @@ WebInspector.TimelineEventOverview.Frames.prototype = {
     },
 
     __proto__: WebInspector.TimelineEventOverview.prototype
-}
+};
 
 /**
  * @constructor
@@ -669,7 +669,7 @@ WebInspector.TimelineEventOverview.Memory = function(model)
 {
     WebInspector.TimelineEventOverview.call(this, "memory", WebInspector.UIString("HEAP"), model);
     this._heapSizeLabel = this.element.createChild("div", "memory-graph-label");
-}
+};
 
 WebInspector.TimelineEventOverview.Memory.prototype = {
     resetHeapSizeLabels: function()
@@ -779,7 +779,7 @@ WebInspector.TimelineEventOverview.Memory.prototype = {
     },
 
     __proto__: WebInspector.TimelineEventOverview.prototype
-}
+};
 
 /**
  * @constructor
@@ -794,7 +794,7 @@ WebInspector.Quantizer = function(startTime, quantDuration, callback)
     this._callback = callback;
     this._counters = [];
     this._remainder = quantDuration;
-}
+};
 
 WebInspector.Quantizer.prototype = {
     /**
@@ -824,4 +824,4 @@ WebInspector.Quantizer.prototype = {
         this._lastTime = time;
         this._remainder = this._quantDuration - interval;
     }
-}
+};

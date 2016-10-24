@@ -17,7 +17,7 @@ WebInspector.NetworkConfigView = function()
     this._createNetworkThrottlingSection();
     this.contentElement.createChild("div").classList.add("panel-section-separator");
     this._createUserAgentSection();
-}
+};
 
 WebInspector.NetworkConfigView.prototype = {
     /**
@@ -83,7 +83,7 @@ WebInspector.NetworkConfigView.prototype = {
     },
 
     __proto__ : WebInspector.VBox.prototype
-}
+};
 
 
 /**
@@ -159,7 +159,7 @@ WebInspector.NetworkConfigView.createUserAgentSelectAndInput = function()
     }
 
     return { select: userAgentSelectElement, input: otherUserAgentElement };
-}
+};
 
 /** @type {!Array.<{title: string, values: !Array.<{title: string, value: string}>}>} */
 WebInspector.NetworkConfigView._userAgentGroups = [
@@ -252,4 +252,4 @@ WebInspector.NetworkConfigView._userAgentGroups = [
             {title: "UC Browser \u2014 Windows Phone", value: "NokiaX2-02/2.0 (11.79) Profile/MIDP-2.1 Configuration/CLDC-1.1 Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0; SLCC2;.NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; InfoPath.2) UCBrowser8.4.0.159/70/352"}
         ]
     }
-]
+];

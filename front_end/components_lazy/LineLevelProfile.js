@@ -9,7 +9,7 @@ WebInspector.LineLevelProfile = function()
 {
     this._locationPool = new WebInspector.LiveLocationPool();
     this.reset();
-}
+};
 
 /**
  * @return {!WebInspector.LineLevelProfile}
@@ -19,7 +19,7 @@ WebInspector.LineLevelProfile.instance = function()
     if (!WebInspector.LineLevelProfile._instance)
         WebInspector.LineLevelProfile._instance = new WebInspector.LineLevelProfile();
     return WebInspector.LineLevelProfile._instance;
-}
+};
 
 WebInspector.LineLevelProfile.prototype = {
     /**
@@ -94,7 +94,7 @@ WebInspector.LineLevelProfile.prototype = {
             }
         }
     }
-}
+};
 
 /**
  * @constructor
@@ -106,7 +106,7 @@ WebInspector.LineLevelProfile.Presentation = function(rawLocation, time, locatio
 {
     this._time = time;
     WebInspector.debuggerWorkspaceBinding.createLiveLocation(rawLocation, this.updateLocation.bind(this), locationPool);
-}
+};
 
 WebInspector.LineLevelProfile.Presentation.prototype = {
     /**
@@ -120,7 +120,7 @@ WebInspector.LineLevelProfile.Presentation.prototype = {
         if (this._uiLocation)
             this._uiLocation.uiSourceCode.addLineDecoration(this._uiLocation.lineNumber, WebInspector.LineLevelProfile.LineDecorator.type, this._time);
     }
-}
+};
 
 /**
  * @constructor
@@ -128,7 +128,7 @@ WebInspector.LineLevelProfile.Presentation.prototype = {
  */
 WebInspector.LineLevelProfile.LineDecorator = function()
 {
-}
+};
 
 WebInspector.LineLevelProfile.LineDecorator.type = "performance";
 
@@ -156,4 +156,4 @@ WebInspector.LineLevelProfile.LineDecorator.prototype = {
             textEditor.setGutterDecoration(decoration.line(), gutterType, element);
         }
     }
-}
+};

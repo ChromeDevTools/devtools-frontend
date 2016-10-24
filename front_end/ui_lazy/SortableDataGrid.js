@@ -17,7 +17,7 @@ WebInspector.SortableDataGrid = function(columnsArray, editCallback, deleteCallb
     /** @type {!WebInspector.SortableDataGrid.NodeComparator} */
     this._sortingFunction = WebInspector.SortableDataGrid.TrivialComparator;
     this.setRootNode(new WebInspector.SortableDataGridNode());
-}
+};
 
 /** @typedef {function(!WebInspector.DataGridNode, !WebInspector.DataGridNode):number} */
 WebInspector.SortableDataGrid.NodeComparator;
@@ -30,7 +30,7 @@ WebInspector.SortableDataGrid.NodeComparator;
 WebInspector.SortableDataGrid.TrivialComparator = function(a, b)
 {
     return 0;
-}
+};
 
 /**
  * @param {string} columnIdentifier
@@ -45,7 +45,7 @@ WebInspector.SortableDataGrid.NumericComparator = function(columnIdentifier, a, 
     var aNumber = Number(aValue instanceof Node ? aValue.textContent : aValue);
     var bNumber = Number(bValue instanceof Node ? bValue.textContent : bValue);
     return aNumber < bNumber ? -1 : (aNumber > bNumber ? 1 : 0);
-}
+};
 
 /**
  * @param {string} columnIdentifier
@@ -60,7 +60,7 @@ WebInspector.SortableDataGrid.StringComparator = function(columnIdentifier, a, b
     var aString = aValue instanceof Node ? aValue.textContent : String(aValue);
     var bString = bValue instanceof Node ? bValue.textContent : String(bValue);
     return aString < bString ? -1 : (aString > bString ? 1 : 0);
-}
+};
 
 /**
  * @param {!WebInspector.SortableDataGrid.NodeComparator} comparator
@@ -72,7 +72,7 @@ WebInspector.SortableDataGrid.StringComparator = function(columnIdentifier, a, b
 WebInspector.SortableDataGrid.Comparator = function(comparator, reverseMode, a, b)
 {
     return reverseMode ? comparator(b, a) : comparator(a, b);
-}
+};
 
 /**
  * @param {!Array.<string>} columnNames
@@ -128,7 +128,7 @@ WebInspector.SortableDataGrid.create = function(columnNames, values)
         dataGrid.sortNodes(comparator.bind(null, sortColumnIdentifier), !dataGrid.isSortOrderAscending());
     }
     return dataGrid;
-}
+};
 
 WebInspector.SortableDataGrid.prototype = {
     /**
@@ -152,7 +152,7 @@ WebInspector.SortableDataGrid.prototype = {
     },
 
     __proto__: WebInspector.ViewportDataGrid.prototype
-}
+};
 
 /**
  * @constructor
@@ -163,7 +163,7 @@ WebInspector.SortableDataGrid.prototype = {
 WebInspector.SortableDataGridNode = function(data, hasChildren)
 {
     WebInspector.ViewportDataGridNode.call(this, data, hasChildren);
-}
+};
 
 WebInspector.SortableDataGridNode.prototype = {
     /**
@@ -184,4 +184,4 @@ WebInspector.SortableDataGridNode.prototype = {
     },
 
     __proto__: WebInspector.ViewportDataGridNode.prototype
-}
+};

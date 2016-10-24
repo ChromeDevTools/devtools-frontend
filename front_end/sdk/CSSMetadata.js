@@ -69,7 +69,7 @@ WebInspector.CSSMetadata = function(properties)
     }
     this._values.sort();
     this._valuesSet = new Set(this._values);
-}
+};
 
 WebInspector.CSSMetadata.VariableRegex = /(var\(--.*?\))/g;
 WebInspector.CSSMetadata.URLRegex = /url\(\s*('.+?'|".+?"|[^)]+)\s*\)/g;
@@ -217,7 +217,7 @@ WebInspector.CSSMetadata.prototype = {
         }
         return index;
     }
-}
+};
 
 /**
  * @return {!WebInspector.CSSMetadata}
@@ -227,7 +227,7 @@ WebInspector.cssMetadata = function()
     if (!WebInspector.CSSMetadata._instance)
         WebInspector.CSSMetadata._instance = new WebInspector.CSSMetadata(WebInspector.CSSMetadata._generatedProperties || []);
     return WebInspector.CSSMetadata._instance;
-}
+};
 
 WebInspector.CSSMetadata._distanceProperties = new Set([
     "background-position", "border-spacing", "bottom", "font-size", "height", "left", "letter-spacing", "max-height", "max-width", "min-height",
@@ -708,7 +708,7 @@ WebInspector.CSSMetadata._propertyDataMap = {
         "normal", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "hard-light", "soft-light",
         "difference", "exclusion", "hue", "saturation", "color", "luminosity", "unset"
     ] },
-}
+};
 
 // Weight of CSS properties based on their usage from https://www.chromestatus.com/metrics/css/popularity
 WebInspector.CSSMetadata.Weight = {

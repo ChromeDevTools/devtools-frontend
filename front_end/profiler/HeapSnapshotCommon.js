@@ -34,7 +34,7 @@ WebInspector.HeapSnapshotProgressEvent = {
 };
 
 WebInspector.HeapSnapshotCommon = {
-}
+};
 
 WebInspector.HeapSnapshotCommon.baseSystemDistance = 100000000;
 
@@ -49,7 +49,7 @@ WebInspector.HeapSnapshotCommon.AllocationNodeCallers = function(nodesWithSingle
     this.nodesWithSingleCaller = nodesWithSingleCaller;
     /** @type {!Array.<!WebInspector.HeapSnapshotCommon.SerializedAllocationNode>} */
     this.branchingCallers = branchingCallers;
-}
+};
 
 /**
  * @param {number} nodeId
@@ -89,7 +89,7 @@ WebInspector.HeapSnapshotCommon.SerializedAllocationNode = function(nodeId, func
     this.liveSize = liveSize;
     /** @type {boolean} */
     this.hasChildren = hasChildren;
-}
+};
 
 /**
  * @param {string} functionName
@@ -111,7 +111,7 @@ WebInspector.HeapSnapshotCommon.AllocationStackFrame = function(functionName, sc
     this.line = line;
     /** @type {number} */
     this.column = column;
-}
+};
 
 /**
  * @constructor
@@ -135,7 +135,7 @@ WebInspector.HeapSnapshotCommon.Node = function(id, name, distance, nodeIndex, r
 
     this.canBeQueried = false;
     this.detachedDOMTreeNode = false;
-}
+};
 
 /**
  * @constructor
@@ -171,7 +171,7 @@ WebInspector.HeapSnapshotCommon.Aggregate = function()
     this.name;
     /** @type {!Array.<number>} */
     this.idxs;
-}
+};
 
 /**
  * @constructor
@@ -183,7 +183,7 @@ WebInspector.HeapSnapshotCommon.AggregateForDiff = function() {
     this.ids = [];
     /** @type {!Array.<number>} */
     this.selfSizes = [];
-}
+};
 
 /**
  * @constructor
@@ -202,7 +202,7 @@ WebInspector.HeapSnapshotCommon.Diff = function()
     this.deletedIndexes = [];
     /** @type {!Array.<number>} */
     this.addedIndexes = [];
-}
+};
 
 /**
  * @constructor
@@ -226,7 +226,7 @@ WebInspector.HeapSnapshotCommon.DiffForClass = function()
     this.countDelta;
     /** @type {number} */
     this.sizeDelta;
-}
+};
 
 /**
  * @constructor
@@ -241,7 +241,7 @@ WebInspector.HeapSnapshotCommon.ComparatorConfig = function()
     this.fieldName2;
     /** @type {boolean} */
     this.ascending2;
-}
+};
 
 /**
  * @constructor
@@ -262,7 +262,7 @@ WebInspector.HeapSnapshotCommon.WorkerCommand = function()
     this.methodArguments;
     /** @type {string} */
     this.source;
-}
+};
 
 /**
  * @constructor
@@ -281,7 +281,7 @@ WebInspector.HeapSnapshotCommon.ItemsRange = function(startPosition, endPosition
     this.totalLength = totalLength;
     /** @type {!Array.<*>} */
     this.items = items;
-}
+};
 
 /**
  * @param {number} nodeCount
@@ -300,7 +300,7 @@ WebInspector.HeapSnapshotCommon.StaticData = function(nodeCount, rootNodeIndex, 
     this.totalSize = totalSize;
     /** @type {number} */
     this.maxJSObjectId = maxJSObjectId;
-}
+};
 
 /**
  * @constructor
@@ -321,7 +321,7 @@ WebInspector.HeapSnapshotCommon.Statistics = function()
     this.strings;
     /** @type {number} */
     this.system;
-}
+};
 
 
 /**
@@ -337,7 +337,7 @@ WebInspector.HeapSnapshotCommon.NodeFilter = function(minNodeId, maxNodeId)
     this.maxNodeId = maxNodeId;
     /** @type {number|undefined} */
     this.allocationNodeId;
-}
+};
 
 WebInspector.HeapSnapshotCommon.NodeFilter.prototype =
 {
@@ -349,7 +349,7 @@ WebInspector.HeapSnapshotCommon.NodeFilter.prototype =
     {
         return this.minNodeId === o.minNodeId && this.maxNodeId === o.maxNodeId && this.allocationNodeId === o.allocationNodeId;
     }
-}
+};
 
 /**
  * @param {string} query
@@ -366,7 +366,7 @@ WebInspector.HeapSnapshotCommon.SearchConfig = function(query, caseSensitive, is
     this.isRegex = isRegex;
     this.shouldJump = shouldJump;
     this.jumpBackward = jumpBackward;
-}
+};
 
 /**
  * @constructor
@@ -379,4 +379,4 @@ WebInspector.HeapSnapshotCommon.Samples = function(timestamps, lastAssignedIds, 
     this.timestamps = timestamps;
     this.lastAssignedIds = lastAssignedIds;
     this.sizes = sizes;
-}
+};

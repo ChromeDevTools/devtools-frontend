@@ -10,7 +10,7 @@ WebInspector.JavaScriptCompiler = function(sourceFrame)
 {
     this._sourceFrame = sourceFrame;
     this._compiling = false;
-}
+};
 
 WebInspector.JavaScriptCompiler.CompileDelay = 1000;
 
@@ -78,4 +78,4 @@ WebInspector.JavaScriptCompiler.prototype = {
     },
 
     _compilationFinishedForTest: function() {}
-}
+};

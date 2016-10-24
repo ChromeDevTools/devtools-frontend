@@ -47,7 +47,7 @@ WebInspector.ConsoleViewMessage = function(consoleMessage, linkifier, nestingLev
     this._dataGrid = null;
     this._previewFormatter = new WebInspector.RemoteObjectPreviewFormatter();
     this._searchRegex = null;
-}
+};
 
 WebInspector.ConsoleViewMessage.prototype = {
     /**
@@ -1216,7 +1216,7 @@ WebInspector.ConsoleViewMessage.prototype = {
 
         return formattedResult;
     }
-}
+};
 
 /**
  * @constructor
@@ -1230,7 +1230,7 @@ WebInspector.ConsoleGroupViewMessage = function(consoleMessage, linkifier, nesti
     console.assert(consoleMessage.isGroupStartMessage());
     WebInspector.ConsoleViewMessage.call(this, consoleMessage, linkifier, nestingLevel);
     this.setCollapsed(consoleMessage.type === WebInspector.ConsoleMessage.MessageType.StartGroupCollapsed);
-}
+};
 
 WebInspector.ConsoleGroupViewMessage.prototype = {
     /**
@@ -1265,4 +1265,4 @@ WebInspector.ConsoleGroupViewMessage.prototype = {
     },
 
     __proto__: WebInspector.ConsoleViewMessage.prototype
-}
+};

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-WebInspector.ResourceLoader = {}
+WebInspector.ResourceLoader = {};
 
 WebInspector.ResourceLoader._lastStreamId = 0;
 /** @type {!Object.<number, !WebInspector.OutputStream>} */
@@ -16,7 +16,7 @@ WebInspector.ResourceLoader._bindOutputStream = function(stream)
 {
     WebInspector.ResourceLoader._boundStreams[++WebInspector.ResourceLoader._lastStreamId] = stream;
     return WebInspector.ResourceLoader._lastStreamId;
-}
+};
 
 /**
  * @param {number} id
@@ -25,7 +25,7 @@ WebInspector.ResourceLoader._discardOutputStream = function(id)
 {
     WebInspector.ResourceLoader._boundStreams[id].close();
     delete WebInspector.ResourceLoader._boundStreams[id];
-}
+};
 
 /**
  * @param {number} id
@@ -34,7 +34,7 @@ WebInspector.ResourceLoader._discardOutputStream = function(id)
 WebInspector.ResourceLoader.streamWrite = function(id, chunk)
 {
     WebInspector.ResourceLoader._boundStreams[id].write(chunk);
-}
+};
 
 /**
  * @param {string} url
@@ -54,7 +54,7 @@ WebInspector.ResourceLoader.load = function(url, headers, callback)
     {
         callback(statusCode, headers, stream.data());
     }
-}
+};
 
 /**
  * @param {string} url
@@ -103,4 +103,4 @@ WebInspector.ResourceLoader.loadAsStream = function(url, headers, stream, callba
     {
         finishedCallback(/** @type {!InspectorFrontendHostAPI.LoadNetworkResourceResult} */ ({statusCode : 404}));
     }
-}
+};

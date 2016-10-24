@@ -42,7 +42,7 @@ WebInspector.AuditExtensionCategory = function(extensionOrigin, id, displayName,
     this._id = id;
     this._displayName = displayName;
     this._ruleCount  = ruleCount;
-}
+};
 
 WebInspector.AuditExtensionCategory.prototype = {
     /**
@@ -73,7 +73,7 @@ WebInspector.AuditExtensionCategory.prototype = {
         var results = new WebInspector.AuditExtensionCategoryResults(this, target, ruleResultCallback, progress);
         WebInspector.extensionServer.startAuditRun(this.id, results);
     }
-}
+};
 
 /**
  * @constructor
@@ -94,7 +94,7 @@ WebInspector.AuditExtensionCategoryResults = function(category, target, ruleResu
     this._actualResults = 0;
 
     this._id = category.id + "-" + ++WebInspector.AuditExtensionCategoryResults._lastId;
-}
+};
 
 WebInspector.AuditExtensionCategoryResults.prototype = {
     /**
@@ -187,7 +187,7 @@ WebInspector.AuditExtensionCategoryResults.prototype = {
         var evaluateCallback = /** @type {function(?string, ?WebInspector.RemoteObject, boolean=)} */ (onEvaluate.bind(this));
         WebInspector.extensionServer.evaluate(expression, false, false, evaluateOptions, this._category._extensionOrigin, evaluateCallback);
     }
-}
+};
 
 WebInspector.AuditExtensionFormatters = {
     /**
@@ -239,6 +239,6 @@ WebInspector.AuditExtensionFormatters = {
         }
         return parentElement;
     }
-}
+};
 
 WebInspector.AuditExtensionCategoryResults._lastId = 0;

@@ -35,7 +35,7 @@
 WebInspector.CSSFormatter = function(builder)
 {
     this._builder = builder;
-}
+};
 
 WebInspector.CSSFormatter.prototype = {
     /**
@@ -118,4 +118,4 @@ WebInspector.CSSFormatter.prototype = {
             this._builder.addNewLine();
         }
     }
-}
+};

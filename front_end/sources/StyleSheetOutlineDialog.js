@@ -39,7 +39,7 @@ WebInspector.StyleSheetOutlineDialog = function(uiSourceCode, selectItemCallback
     this._cssParser = new WebInspector.CSSParser();
     this._cssParser.addEventListener(WebInspector.CSSParser.Events.RulesParsed, this.refresh.bind(this));
     this._cssParser.parse(uiSourceCode.workingCopy());
-}
+};
 
 /**
  * @param {!WebInspector.UISourceCode} uiSourceCode
@@ -49,7 +49,7 @@ WebInspector.StyleSheetOutlineDialog.show = function(uiSourceCode, selectItemCal
 {
     WebInspector.StyleSheetOutlineDialog._instanceForTests = new WebInspector.StyleSheetOutlineDialog(uiSourceCode, selectItemCallback);
     new WebInspector.FilteredListWidget(WebInspector.StyleSheetOutlineDialog._instanceForTests).showAsDialog();
-}
+};
 
 WebInspector.StyleSheetOutlineDialog.prototype = {
     /**
@@ -118,4 +118,4 @@ WebInspector.StyleSheetOutlineDialog.prototype = {
     },
 
     __proto__: WebInspector.FilteredListWidget.Delegate.prototype
-}
+};

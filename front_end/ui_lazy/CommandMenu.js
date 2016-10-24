@@ -9,7 +9,7 @@ WebInspector.CommandMenu = function()
 {
     this._commands = [];
     this._loadCommands();
-}
+};
 
 WebInspector.CommandMenu.prototype = {
     _loadCommands: function()
@@ -45,7 +45,7 @@ WebInspector.CommandMenu.prototype = {
     {
         return this._commands;
     }
-}
+};
 
 /**
  * @constructor
@@ -56,7 +56,7 @@ WebInspector.CommandMenuDelegate = function()
     WebInspector.FilteredListWidget.Delegate.call(this, []);
     this._commands = [];
     this._appendAvailableCommands();
-}
+};
 
 WebInspector.CommandMenuDelegate.MaterialPaletteColors = ["#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5", "#03A9F4", "#00BCD4", "#009688", "#4CAF50", "#8BC34A", "#CDDC39", "#FFC107", "#FF9800", "#FF5722", "#795548", "#9E9E9E", "#607D8B"];
 
@@ -185,7 +185,7 @@ WebInspector.CommandMenuDelegate.prototype = {
     },
 
     __proto__: WebInspector.FilteredListWidget.Delegate.prototype
-}
+};
 
 /**
  * @constructor
@@ -204,7 +204,7 @@ WebInspector.CommandMenu.Command = function(category, title, key, shortcut, exec
     this._shortcut = shortcut;
     this._executeHandler = executeHandler;
     this._availableHandler = availableHandler;
-}
+};
 
 WebInspector.CommandMenu.Command.prototype = {
     /**
@@ -251,7 +251,7 @@ WebInspector.CommandMenu.Command.prototype = {
     {
         this._executeHandler();
     }
-}
+};
 
 /**
  * @param {string} category
@@ -267,7 +267,7 @@ WebInspector.CommandMenu.createCommand = function(category, keys, title, shortcu
     // Separate keys by null character, to prevent fuzzy matching from matching across them.
     var key = keys.replace(/,/g, "\0");
     return new WebInspector.CommandMenu.Command(category, title, key, shortcut, executeHandler, availableHandler);
-}
+};
 
 /**
  * @param {!Runtime.Extension} extension
@@ -290,7 +290,7 @@ WebInspector.CommandMenu.createSettingCommand = function(extension, title, value
     {
         return setting.get() !== value;
     }
-}
+};
 
 /**
  * @param {!WebInspector.Action} action
@@ -300,7 +300,7 @@ WebInspector.CommandMenu.createActionCommand = function(action)
 {
     var shortcut = WebInspector.shortcutRegistry.shortcutTitleForAction(action.id()) || "";
     return WebInspector.CommandMenu.createCommand(action.category(), action.tags(), action.title(), shortcut, action.execute.bind(action));
-}
+};
 
 /**
  * @param {!Runtime.Extension} extension
@@ -324,7 +324,7 @@ WebInspector.CommandMenu.createRevealPanelCommand = function(extension)
     {
         WebInspector.viewManager.showView(panelName);
     }
-}
+};
 
 /**
  * @param {!Runtime.Extension} extension
@@ -336,7 +336,7 @@ WebInspector.CommandMenu.createRevealDrawerCommand = function(extension)
     var executeHandler = WebInspector.viewManager.showView.bind(WebInspector.viewManager, drawerId);
     var tags = extension.descriptor()["tags"] || "";
     return WebInspector.CommandMenu.createCommand(WebInspector.UIString("Drawer"), tags, WebInspector.UIString("Show %s", extension.title()), "", executeHandler);
-}
+};
 
 /** @type {!WebInspector.CommandMenu} */
 WebInspector.commandMenu = new WebInspector.CommandMenu();
@@ -347,7 +347,7 @@ WebInspector.commandMenu = new WebInspector.CommandMenu();
  */
 WebInspector.CommandMenu.ShowActionDelegate = function()
 {
-}
+};
 
 WebInspector.CommandMenu.ShowActionDelegate.prototype = {
     /**
@@ -362,5 +362,5 @@ WebInspector.CommandMenu.ShowActionDelegate.prototype = {
         InspectorFrontendHost.bringToFront();
         return true;
     }
-}
+};
 

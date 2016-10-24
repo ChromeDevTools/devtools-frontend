@@ -82,5 +82,5 @@ WebInspector.javaScriptOutline = function(content)
     }
 
     postMessage({ chunk: outlineChunk, isLastChunk: true });
-}
+};
 

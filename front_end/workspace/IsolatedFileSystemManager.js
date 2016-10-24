@@ -54,7 +54,7 @@ WebInspector.IsolatedFileSystemManager = function()
     this._initExcludePatterSetting();
 
     this._fileSystemsLoadedPromise = this._requestFileSystems();
-}
+};
 
 /** @typedef {!{fileSystemName: string, rootURL: string, fileSystemPath: string}} */
 WebInspector.IsolatedFileSystemManager.FileSystem;
@@ -66,7 +66,7 @@ WebInspector.IsolatedFileSystemManager.Events = {
     FileSystemFilesChanged: Symbol("FileSystemFilesChanged"),
     ExcludedFolderAdded: Symbol("ExcludedFolderAdded"),
     ExcludedFolderRemoved: Symbol("ExcludedFolderRemoved")
-}
+};
 
 WebInspector.IsolatedFileSystemManager._lastRequestId = 0;
 
@@ -342,7 +342,7 @@ WebInspector.IsolatedFileSystemManager.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
  * @type {!WebInspector.IsolatedFileSystemManager}

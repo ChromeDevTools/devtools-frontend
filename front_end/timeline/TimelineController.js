@@ -17,7 +17,7 @@ WebInspector.TimelineController = function(target, delegate, tracingModel)
     this._tracingModel = tracingModel;
     this._targets = [];
     WebInspector.targetManager.observeTargets(this);
-}
+};
 
 WebInspector.TimelineController.prototype = {
     /**
@@ -45,7 +45,7 @@ WebInspector.TimelineController.prototype = {
             WebInspector.TimelineModel.Category.Console,
             WebInspector.TimelineModel.Category.UserTiming
         ];
-        categoriesArray.push(WebInspector.TimelineModel.Category.LatencyInfo)
+        categoriesArray.push(WebInspector.TimelineModel.Category.LatencyInfo);
 
         if (Runtime.experiments.isEnabled("timelineFlowEvents")) {
             categoriesArray.push(disabledByDefault("toplevel.flow"),
@@ -293,4 +293,4 @@ WebInspector.TimelineController.prototype = {
     {
         this._delegate.loadingProgress(progress);
     }
-}
+};

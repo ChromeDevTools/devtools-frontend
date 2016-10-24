@@ -37,7 +37,7 @@ WebInspector.TempFile = function()
 {
     this._fileEntry = null;
     this._writer = null;
-}
+};
 
 /**
  * @param {string} dirPath
@@ -123,7 +123,7 @@ WebInspector.TempFile.create = function(dirPath, name)
         .then(getFileEntry)
         .then(createFileWriter)
         .then(truncateFile);
-}
+};
 
 WebInspector.TempFile.prototype = {
     /**
@@ -137,11 +137,11 @@ WebInspector.TempFile.prototype = {
         {
             WebInspector.console.error("Failed to write into a temp file: " + e.target.error.message);
             callback(-1);
-        }
+        };
         this._writer.onwriteend = function(e)
         {
             callback(e.target.length);
-        }
+        };
         this._writer.write(blob);
     },
 
@@ -224,7 +224,7 @@ WebInspector.TempFile.prototype = {
         if (this._fileEntry)
             this._fileEntry.remove(function() {});
     }
-}
+};
 
 /**
  * @constructor
@@ -243,7 +243,7 @@ WebInspector.DeferredTempFile = function(dirPath, name)
     this._pendingReads = [];
     WebInspector.TempFile.create(dirPath, name)
         .then(this._didCreateTempFile.bind(this), this._failedToCreateTempFile.bind(this));
-}
+};
 
 WebInspector.DeferredTempFile.prototype = {
     /**
@@ -385,7 +385,7 @@ WebInspector.DeferredTempFile.prototype = {
             this._tempFile.remove();
         this._tempFile = null;
     }
-}
+};
 
 /**
  * @return {!Promise.<undefined>}
@@ -399,7 +399,7 @@ WebInspector.TempFile.ensureTempStorageCleared = function()
         });
     }
     return WebInspector.TempFile._storageCleanerPromise;
-}
+};
 
 /**
  * @constructor
@@ -410,7 +410,7 @@ WebInspector.TempFileBackingStorage = function(dirName)
 {
     this._dirName = dirName;
     this.reset();
-}
+};
 
 /**
  * @typedef {{
@@ -551,4 +551,4 @@ WebInspector.TempFileBackingStorage.prototype = {
     {
         this._file.copyToOutputStream(outputStream, delegate);
     }
-}
+};

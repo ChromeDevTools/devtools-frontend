@@ -12,7 +12,7 @@ Service.prototype = {
      * @return {!Promise}
      */
     dispose: function() { }
-}
+};
 
 /**
  * @constructor
@@ -139,7 +139,7 @@ ServiceDispatcher.prototype = {
         var message = { id: messageId, error: error };
         this._port.send(JSON.stringify(message));
     }
-}
+};
 
 /**
  * @constructor
@@ -192,7 +192,7 @@ WorkerServicePort.prototype = {
     {
         this._messageHandler(event.data);
     }
-}
+};
 
 var dispatchers = [];
 var portInitialized = false;

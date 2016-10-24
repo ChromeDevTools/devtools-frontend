@@ -12,7 +12,7 @@ WebInspector.CSSMediaQuery = function(payload)
     this._expressions = [];
     for (var j = 0; j < payload.expressions.length; ++j)
         this._expressions.push(WebInspector.CSSMediaQueryExpression.parsePayload(payload.expressions[j]));
-}
+};
 
 /**
  * @param {!CSSAgent.MediaQuery} payload
@@ -21,7 +21,7 @@ WebInspector.CSSMediaQuery = function(payload)
 WebInspector.CSSMediaQuery.parsePayload = function(payload)
 {
     return new WebInspector.CSSMediaQuery(payload);
-}
+};
 
 WebInspector.CSSMediaQuery.prototype = {
     /**
@@ -39,7 +39,7 @@ WebInspector.CSSMediaQuery.prototype = {
     {
         return this._expressions;
     }
-}
+};
 
 /**
  * @constructor
@@ -52,7 +52,7 @@ WebInspector.CSSMediaQueryExpression = function(payload)
     this._feature = payload.feature;
     this._valueRange = payload.valueRange ? WebInspector.TextRange.fromObject(payload.valueRange) : null;
     this._computedLength = payload.computedLength || null;
-}
+};
 
 /**
  * @param {!CSSAgent.MediaQueryExpression} payload
@@ -61,7 +61,7 @@ WebInspector.CSSMediaQueryExpression = function(payload)
 WebInspector.CSSMediaQueryExpression.parsePayload = function(payload)
 {
     return new WebInspector.CSSMediaQueryExpression(payload);
-}
+};
 
 WebInspector.CSSMediaQueryExpression.prototype = {
     /**
@@ -103,7 +103,7 @@ WebInspector.CSSMediaQueryExpression.prototype = {
     {
         return this._computedLength;
     }
-}
+};
 
 
 /**
@@ -115,7 +115,7 @@ WebInspector.CSSMedia = function(cssModel, payload)
 {
     this._cssModel = cssModel;
     this._reinitialize(payload);
-}
+};
 
 WebInspector.CSSMedia.Source = {
     LINKED_SHEET: "linkedSheet",
@@ -132,7 +132,7 @@ WebInspector.CSSMedia.Source = {
 WebInspector.CSSMedia.parsePayload = function(cssModel, payload)
 {
     return new WebInspector.CSSMedia(cssModel, payload);
-}
+};
 
 /**
  * @param {!WebInspector.CSSModel} cssModel
@@ -145,7 +145,7 @@ WebInspector.CSSMedia.parseMediaArrayPayload = function(cssModel, payload)
     for (var i = 0; i < payload.length; ++i)
         result.push(WebInspector.CSSMedia.parsePayload(cssModel, payload[i]));
     return result;
-}
+};
 
 WebInspector.CSSMedia.prototype = {
     /**
@@ -249,4 +249,4 @@ WebInspector.CSSMedia.prototype = {
         var lineNumber = Number(this.lineNumberInSource());
         return new WebInspector.CSSLocation(header, lineNumber, this.columnNumberInSource());
     }
-}
+};

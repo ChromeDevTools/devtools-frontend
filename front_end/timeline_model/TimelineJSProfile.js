@@ -43,7 +43,7 @@ WebInspector.TimelineJSProfileProcessor.generateTracingEventsFromCpuProfile = fu
         jsEvents.push(jsSampleEvent);
     }
     return jsEvents;
-}
+};
 
 /**
  * @param {!Array<!WebInspector.TracingModel.Event>} events
@@ -213,4 +213,4 @@ WebInspector.TimelineJSProfileProcessor.generateJSFrameEvents = function(events)
     if (firstTopLevelEvent)
         WebInspector.TimelineModel.forEachEvent(events, onStartEvent, onEndEvent, onInstantEvent, firstTopLevelEvent.startTime);
     return jsFrameEvents;
-}
+};

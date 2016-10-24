@@ -12,12 +12,12 @@ WebInspector.CSSParser = function()
 {
     this._rules = [];
     this._terminated = false;
-}
+};
 
 /** @enum {symbol} */
 WebInspector.CSSParser.Events = {
     RulesParsed: Symbol("RulesParsed")
-}
+};
 
 WebInspector.CSSParser.prototype = {
     /**
@@ -138,7 +138,7 @@ WebInspector.CSSParser.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype,
-}
+};
 
 /**
  * @typedef {{isLastChunk: boolean, chunk: !Array.<!WebInspector.CSSParser.Rule>}}
@@ -160,7 +160,7 @@ WebInspector.CSSParser.StyleRule = function()
     this.columnNumber;
     /** @type {!Array.<!WebInspector.CSSParser.Property>} */
     this.properties;
-}
+};
 
 /**
  * @typedef {{atRule: string, lineNumber: number, columnNumber: number}}
@@ -194,4 +194,4 @@ WebInspector.CSSParser.Property = function()
     this.range;
     /** @type {(boolean|undefined)} */
     this.disabled;
-}
+};

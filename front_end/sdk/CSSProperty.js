@@ -30,7 +30,7 @@ WebInspector.CSSProperty = function(ownerStyle, index, name, value, important, d
     this._active = true;
     this._nameRange = null;
     this._valueRange = null;
-}
+};
 
 /**
  * @param {!WebInspector.CSSStyleDeclaration} ownerStyle
@@ -48,7 +48,7 @@ WebInspector.CSSProperty.parsePayload = function(ownerStyle, index, payload)
     var result = new WebInspector.CSSProperty(
         ownerStyle, index, payload.name, payload.value, payload.important || false, payload.disabled || false, ("parsedOk" in payload) ? !!payload.parsedOk : true, !!payload.implicit, payload.text, payload.range);
     return result;
-}
+};
 
 WebInspector.CSSProperty.prototype = {
     _ensureRanges: function()
@@ -297,4 +297,4 @@ WebInspector.CSSProperty.prototype = {
         var text = disabled ? "/* " + propertyText + " */" : this.text.substring(2, propertyText.length - 2).trim();
         return this.setText(text, true, true);
     }
-}
+};

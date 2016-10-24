@@ -42,7 +42,7 @@ WebInspector.LayerDetailsView = function(layerViewHost)
     this._layerViewHost.registerView(this);
     this._emptyWidget = new WebInspector.EmptyWidget(WebInspector.UIString("Select a layer to see its details"));
     this._buildContent();
-}
+};
 
 /**
  * @enum {string}
@@ -50,7 +50,7 @@ WebInspector.LayerDetailsView = function(layerViewHost)
 /** @enum {symbol} */
 WebInspector.LayerDetailsView.Events = {
     PaintProfilerRequested: Symbol("PaintProfilerRequested")
-}
+};
 
 /**
  * @type {!Object.<string, string>}
@@ -229,4 +229,4 @@ WebInspector.LayerDetailsView.prototype = {
     },
 
     __proto__: WebInspector.Widget.prototype
-}
+};

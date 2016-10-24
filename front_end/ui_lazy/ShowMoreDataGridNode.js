@@ -60,7 +60,7 @@ WebInspector.ShowMoreDataGridNode = function(callback, startPosition, endPositio
 
     this._updateLabels();
     this.selectable = false;
-}
+};
 
 WebInspector.ShowMoreDataGridNode.prototype = {
     _showNextChunk: function()
@@ -151,5 +151,5 @@ WebInspector.ShowMoreDataGridNode.prototype = {
     },
 
     __proto__: WebInspector.DataGridNode.prototype
-}
+};
 

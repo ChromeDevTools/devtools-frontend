@@ -13,7 +13,7 @@ WebInspector.SASSProcessor = function(astService, map, editOperations)
     this._astService = astService;
     this._map = map;
     this._editOperations = editOperations;
-}
+};
 
 WebInspector.SASSProcessor.prototype = {
     /**
@@ -74,7 +74,7 @@ WebInspector.SASSProcessor.prototype = {
         }
         return new WebInspector.SourceMap.EditResult(map, cssEdits, newSASSSources);
     }
-}
+};
 
 /**
  * @param {!WebInspector.ASTSourceMap} map
@@ -85,7 +85,7 @@ WebInspector.SASSProcessor._toSASSProperty = function(map, cssProperty)
 {
     var sassName = map.toSourceNode(cssProperty.name);
     return sassName ? sassName.parent : null;
-}
+};
 
 /**
  * @param {!WebInspector.ASTSourceMap} map
@@ -95,7 +95,7 @@ WebInspector.SASSProcessor._toSASSProperty = function(map, cssProperty)
 WebInspector.SASSProcessor._toCSSProperties = function(map, sassProperty)
 {
     return map.toCompiledNodes(sassProperty.name).map(name => name.parent);
-}
+};
 
 /**
  * @param {!WebInspector.ASTService} astService
@@ -141,7 +141,7 @@ WebInspector.SASSProcessor.processCSSEdits = function(astService, map, ranges, n
 
         return new WebInspector.SASSProcessor(astService, rebasedMap, rebasedEdits)._mutate();
     }
-}
+};
 
 /**
  * @param {!WebInspector.SASSSupport.ASTDiff} cssDiff
@@ -175,7 +175,7 @@ WebInspector.SASSProcessor._editsFromCSSDiff = function(cssDiff, map)
             operations.push(operation);
     }
     return operations;
-}
+};
 
 /**
  * @constructor
@@ -186,7 +186,7 @@ WebInspector.SASSProcessor.EditOperation = function(map, sassURL)
 {
     this.map = map;
     this.sassURL = sassURL;
-}
+};
 
 WebInspector.SASSProcessor.EditOperation.prototype = {
     /**
@@ -215,7 +215,7 @@ WebInspector.SASSProcessor.EditOperation.prototype = {
     {
         return this;
     },
-}
+};
 
 /**
  * @constructor
@@ -229,7 +229,7 @@ WebInspector.SASSProcessor.SetTextOperation = function(map, sassNode, newText)
     WebInspector.SASSProcessor.EditOperation.call(this, map, sassNode.document.url);
     this._sassNode = sassNode;
     this._newText = newText;
-}
+};
 
 /**
  * @param {!WebInspector.SASSSupport.PropertyChange} change
@@ -253,7 +253,7 @@ WebInspector.SASSProcessor.SetTextOperation.fromCSSChange = function(change, map
     if (!sassNode)
         return null;
     return new WebInspector.SASSProcessor.SetTextOperation(map, sassNode, newValue);
-}
+};
 
 WebInspector.SASSProcessor.SetTextOperation.prototype = {
     /**
@@ -296,7 +296,7 @@ WebInspector.SASSProcessor.SetTextOperation.prototype = {
     },
 
     __proto__: WebInspector.SASSProcessor.EditOperation.prototype
-}
+};
 
 /**
  * @constructor
@@ -310,7 +310,7 @@ WebInspector.SASSProcessor.TogglePropertyOperation = function(map, sassProperty,
     WebInspector.SASSProcessor.EditOperation.call(this, map, sassProperty.document.url);
     this._sassProperty = sassProperty;
     this._newDisabled = newDisabled;
-}
+};
 
 /**
  * @param {!WebInspector.SASSSupport.PropertyChange} change
@@ -326,7 +326,7 @@ WebInspector.SASSProcessor.TogglePropertyOperation.fromCSSChange = function(chan
         return null;
     var newDisabled = change.newProperty().disabled;
     return new WebInspector.SASSProcessor.TogglePropertyOperation(map, sassProperty, newDisabled);
-}
+};
 
 WebInspector.SASSProcessor.TogglePropertyOperation.prototype = {
     /**
@@ -369,7 +369,7 @@ WebInspector.SASSProcessor.TogglePropertyOperation.prototype = {
     },
 
     __proto__: WebInspector.SASSProcessor.EditOperation.prototype
-}
+};
 
 /**
  * @constructor
@@ -381,7 +381,7 @@ WebInspector.SASSProcessor.RemovePropertyOperation = function(map, sassProperty)
 {
     WebInspector.SASSProcessor.EditOperation.call(this, map, sassProperty.document.url);
     this._sassProperty = sassProperty;
-}
+};
 
 /**
  * @param {!WebInspector.SASSSupport.PropertyChange} change
@@ -396,7 +396,7 @@ WebInspector.SASSProcessor.RemovePropertyOperation.fromCSSChange = function(chan
     if (!sassProperty)
         return null;
     return new WebInspector.SASSProcessor.RemovePropertyOperation(map, sassProperty);
-}
+};
 
 WebInspector.SASSProcessor.RemovePropertyOperation.prototype = {
     /**
@@ -442,7 +442,7 @@ WebInspector.SASSProcessor.RemovePropertyOperation.prototype = {
     },
 
     __proto__: WebInspector.SASSProcessor.EditOperation.prototype
-}
+};
 
 /**
  * @constructor
@@ -459,11 +459,11 @@ WebInspector.SASSProcessor.InsertPropertiesOperation = function(map, sassRule, a
     console.assert(propertyNames.length === propertyValues.length && propertyValues.length === disabledStates.length);
     WebInspector.SASSProcessor.EditOperation.call(this, map, sassRule.document.url);
     this._sassRule = sassRule;
-    this._afterSASSProperty = afterSASSProperty
+    this._afterSASSProperty = afterSASSProperty;
     this._nameTexts = propertyNames;
     this._valueTexts = propertyValues;
     this._disabledStates = disabledStates;
-}
+};
 
 /**
  * @param {!WebInspector.SASSSupport.PropertyChange} change
@@ -492,7 +492,7 @@ WebInspector.SASSProcessor.InsertPropertiesOperation.fromCSSChange = function(ch
     var values = [insertedProperty.value.text];
     var disabledStates = [insertedProperty.disabled];
     return new WebInspector.SASSProcessor.InsertPropertiesOperation(map, sassRule, afterSASSProperty, names, values, disabledStates);
-}
+};
 
 WebInspector.SASSProcessor.InsertPropertiesOperation.prototype = {
     /**
@@ -559,4 +559,4 @@ WebInspector.SASSProcessor.InsertPropertiesOperation.prototype = {
     },
 
     __proto__: WebInspector.SASSProcessor.EditOperation.prototype
-}
+};

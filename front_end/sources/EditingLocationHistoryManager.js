@@ -38,7 +38,7 @@ WebInspector.EditingLocationHistoryManager = function(sourcesView, currentSource
     this._sourcesView = sourcesView;
     this._historyManager = new WebInspector.SimpleHistoryManager(WebInspector.EditingLocationHistoryManager.HistoryDepth);
     this._currentSourceFrameCallback = currentSourceFrameCallback;
-}
+};
 
 WebInspector.EditingLocationHistoryManager.HistoryDepth = 20;
 
@@ -127,7 +127,7 @@ WebInspector.EditingLocationHistoryManager.prototype = {
 
         this._historyManager.filterOut(filterOut);
     },
-}
+};
 
 
 /**
@@ -148,7 +148,7 @@ WebInspector.EditingLocationHistoryEntry = function(sourcesView, editingLocation
 
     var position = this._positionFromSelection(selection);
     this._positionHandle = sourceFrame.textEditor.textEditorPositionHandle(position.lineNumber, position.columnNumber);
-}
+};
 
 WebInspector.EditingLocationHistoryEntry.prototype = {
     /**
@@ -197,4 +197,4 @@ WebInspector.EditingLocationHistoryEntry.prototype = {
         this._editingLocationManager.updateCurrentState();
         this._sourcesView.showSourceLocation(uiSourceCode, position.lineNumber, position.columnNumber);
     }
-}
+};

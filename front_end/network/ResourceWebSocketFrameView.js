@@ -55,7 +55,7 @@ WebInspector.ResourceWebSocketFrameView = function(request)
 
     /** @type {?WebInspector.ResourceWebSocketFrameNode} */
     this._selectedNode = null;
-}
+};
 
 /** @enum {number} */
 WebInspector.ResourceWebSocketFrameView.OpCodes = {
@@ -91,7 +91,7 @@ WebInspector.ResourceWebSocketFrameView.opCodeDescription = function(opCode, mas
     var rawDescription = WebInspector.ResourceWebSocketFrameView.opCodeDescriptions[opCode] || "";
     var localizedDescription = WebInspector.UIString(rawDescription);
     return WebInspector.UIString("%s (Opcode %d%s)", localizedDescription, opCode, (mask ? ", mask" : ""));
-}
+};
 
 WebInspector.ResourceWebSocketFrameView.prototype = {
     wasShown: function()
@@ -188,7 +188,7 @@ WebInspector.ResourceWebSocketFrameView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @constructor
@@ -213,7 +213,7 @@ WebInspector.ResourceWebSocketFrameNode = function(url, frame)
         this._dataText = WebInspector.ResourceWebSocketFrameView.opCodeDescription(frame.opCode, frame.mask);
 
     WebInspector.SortableDataGridNode.call(this, {data: this._dataText, length: length, time: timeNode});
-}
+};
 
 WebInspector.ResourceWebSocketFrameNode.prototype = {
     /**
@@ -246,7 +246,7 @@ WebInspector.ResourceWebSocketFrameNode.prototype = {
     },
 
     __proto__: WebInspector.SortableDataGridNode.prototype
-}
+};
 
 /**
  * @param {!WebInspector.ResourceWebSocketFrameNode} a
@@ -256,4 +256,4 @@ WebInspector.ResourceWebSocketFrameNode.prototype = {
 WebInspector.ResourceWebSocketFrameNodeTimeComparator = function(a, b)
 {
     return a._frame.time - b._frame.time;
-}
+};

@@ -46,7 +46,7 @@ WebInspector.ProgressIndicator = function()
 
     this._isCanceled = false;
     this._worked = 0;
-}
+};
 
 WebInspector.ProgressIndicator.prototype = {
     /**
@@ -121,4 +121,4 @@ WebInspector.ProgressIndicator.prototype = {
     {
         this.setWorked(this._worked + (worked || 1));
     }
-}
+};

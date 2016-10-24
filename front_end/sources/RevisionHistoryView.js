@@ -56,7 +56,7 @@ WebInspector.RevisionHistoryView = function()
     WebInspector.workspace.addEventListener(WebInspector.Workspace.Events.WorkingCopyCommittedByUser, this._revisionAdded, this);
     WebInspector.workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
     WebInspector.workspace.addEventListener(WebInspector.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
-}
+};
 
 /**
  * @param {!WebInspector.UISourceCode} uiSourceCode
@@ -66,7 +66,7 @@ WebInspector.RevisionHistoryView.showHistory = function(uiSourceCode)
     WebInspector.viewManager.showView("sources.history");
     var historyView = /** @type {!WebInspector.RevisionHistoryView} */ (self.runtime.sharedInstance(WebInspector.RevisionHistoryView));
     historyView._revealUISourceCode(uiSourceCode);
-}
+};
 
 WebInspector.RevisionHistoryView.prototype = {
     /**
@@ -180,7 +180,7 @@ WebInspector.RevisionHistoryView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @constructor
@@ -203,7 +203,7 @@ WebInspector.RevisionHistoryTreeElement = function(revision, baseRevision, allow
     this._revertElement.addEventListener("click", event => {this._revision.revertToThis();}, false);
     if (!allowRevert)
         this._revertElement.classList.add("hidden");
-}
+};
 
 WebInspector.RevisionHistoryTreeElement.prototype = {
     onattach: function()
@@ -301,4 +301,4 @@ WebInspector.RevisionHistoryTreeElement.prototype = {
     },
 
     __proto__: TreeElement.prototype
-}
+};

@@ -21,7 +21,7 @@ WebInspector.WorkspaceMappingTip = function(sourcesPanel, workspace)
         return;
     this._sourcesView.addEventListener(WebInspector.SourcesView.Events.EditorSelected, this._editorSelected.bind(this));
     WebInspector.persistence.addEventListener(WebInspector.Persistence.Events.BindingCreated, this._bindingCreated, this);
-}
+};
 
 WebInspector.WorkspaceMappingTip._infobarSymbol = Symbol("infobar");
 
@@ -177,4 +177,4 @@ WebInspector.WorkspaceMappingTip.prototype = {
         uiSourceCodeFrame.attachInfobars([infobar]);
         WebInspector.runCSSAnimationOnce(infobar.element, "source-frame-infobar-animation");
     }
-}
+};

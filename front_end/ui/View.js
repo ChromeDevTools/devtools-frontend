@@ -7,7 +7,7 @@
  */
 WebInspector.View = function()
 {
-}
+};
 
 WebInspector.View.prototype = {
     /**
@@ -39,7 +39,7 @@ WebInspector.View.prototype = {
      * @return {!Promise<!WebInspector.Widget>}
      */
     widget: function() { }
-}
+};
 
 WebInspector.View._symbol = Symbol("view");
 WebInspector.View._widgetSymbol = Symbol("widget");
@@ -58,7 +58,7 @@ WebInspector.SimpleView = function(title, isWebComponent)
     /** @type {!Array<!WebInspector.ToolbarItem>} */
     this._toolbarItems = [];
     this[WebInspector.View._symbol] = this;
-}
+};
 
 WebInspector.SimpleView.prototype = {
     /**
@@ -140,7 +140,7 @@ WebInspector.SimpleView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @constructor
@@ -150,7 +150,7 @@ WebInspector.SimpleView.prototype = {
 WebInspector.ProvidedView = function(extension)
 {
     this._extension = extension;
-}
+};
 
 WebInspector.ProvidedView.prototype = {
     /**
@@ -197,7 +197,7 @@ WebInspector.ProvidedView.prototype = {
     {
         var actionIds = this._extension.descriptor()["actionIds"];
         if (actionIds) {
-            var result = []
+            var result = [];
             for (var id of actionIds.split(",")) {
                 var item = WebInspector.Toolbar.createActionButtonForId(id.trim());
                 if (item)
@@ -224,12 +224,12 @@ WebInspector.ProvidedView.prototype = {
             return  /** @type {!WebInspector.Widget} */ (widget);
         });
     }
-}
+};
 
 /**
  * @interface
  */
-WebInspector.ViewLocation = function() { }
+WebInspector.ViewLocation = function() { };
 
 WebInspector.ViewLocation.prototype = {
     /**
@@ -259,13 +259,13 @@ WebInspector.ViewLocation.prototype = {
      * @return {!WebInspector.Widget}
      */
     widget: function() { }
-}
+};
 
 /**
  * @interface
  * @extends {WebInspector.ViewLocation}
  */
-WebInspector.TabbedViewLocation = function() { }
+WebInspector.TabbedViewLocation = function() { };
 
 WebInspector.TabbedViewLocation.prototype = {
     /**
@@ -274,12 +274,12 @@ WebInspector.TabbedViewLocation.prototype = {
     tabbedPane: function() { },
 
     enableMoreTabsButton: function() { }
-}
+};
 
 /**
  * @interface
  */
-WebInspector.ViewLocationResolver = function() { }
+WebInspector.ViewLocationResolver = function() { };
 
 WebInspector.ViewLocationResolver.prototype = {
     /**
@@ -287,7 +287,7 @@ WebInspector.ViewLocationResolver.prototype = {
      * @return {?WebInspector.ViewLocation}
      */
     resolveLocation: function(location) { }
-}
+};
 
 /**
  * @constructor
@@ -304,7 +304,7 @@ WebInspector.ViewManager = function()
         this._views.set(descriptor["id"], new WebInspector.ProvidedView(extension));
         this._locationNameByViewId.set(descriptor["id"], descriptor["location"]);
     }
-}
+};
 
 WebInspector.ViewManager.prototype = {
     /**
@@ -420,7 +420,7 @@ WebInspector.ViewManager.prototype = {
         }
         return result;
     }
-}
+};
 
 
 /**
@@ -435,7 +435,7 @@ WebInspector.ViewManager._populateToolbar = function(element, toolbarItems)
     element.insertBefore(toolbar.element, element.firstChild);
     for (var item of toolbarItems)
         toolbar.appendToolbarItem(item);
-}
+};
 
 /**
  * @constructor
@@ -449,7 +449,7 @@ WebInspector.ViewManager._ContainerWidget = function(view)
     this._view = view;
     this.element.tabIndex = 0;
     this.setDefaultFocusedElement(this.element);
-}
+};
 
 WebInspector.ViewManager._ContainerWidget.prototype = {
     /**
@@ -475,7 +475,7 @@ WebInspector.ViewManager._ContainerWidget.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @constructor
@@ -498,7 +498,7 @@ WebInspector.ViewManager._ExpandableContainerWidget = function(view)
     this.contentElement.createChild("content");
     this._view = view;
     view[WebInspector.ViewManager._ExpandableContainerWidget._symbol] = this;
-}
+};
 
 WebInspector.ViewManager._ExpandableContainerWidget._symbol = Symbol("container");
 
@@ -558,7 +558,7 @@ WebInspector.ViewManager._ExpandableContainerWidget.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @constructor
@@ -571,7 +571,7 @@ WebInspector.ViewManager._Location = function(manager, widget, revealCallback)
     this._manager = manager;
     this._revealCallback = revealCallback;
     this._widget = widget;
-}
+};
 
 WebInspector.ViewManager._Location.symbol = Symbol("location");
 
@@ -589,7 +589,7 @@ WebInspector.ViewManager._Location.prototype = {
         if (this._revealCallback)
             this._revealCallback();
     }
-}
+};
 
 /**
  * @constructor
@@ -622,7 +622,7 @@ WebInspector.ViewManager._TabbedLocation = function(manager, revealCallback, loc
 
     if (location)
         this.appendApplicableItems(location);
-}
+};
 
 WebInspector.ViewManager._TabbedLocation.orderStep = 10;  // Keep in sync with descriptors.
 
@@ -829,7 +829,7 @@ WebInspector.ViewManager._TabbedLocation.prototype = {
     },
 
     __proto__: WebInspector.ViewManager._Location.prototype
-}
+};
 
 /**
  * @constructor
@@ -849,7 +849,7 @@ WebInspector.ViewManager._StackLocation = function(manager, revealCallback, loca
 
     if (location)
         this.appendApplicableItems(location);
-}
+};
 
 WebInspector.ViewManager._StackLocation.prototype = {
 
@@ -915,7 +915,7 @@ WebInspector.ViewManager._StackLocation.prototype = {
     },
 
     __proto__: WebInspector.ViewManager._Location.prototype
-}
+};
 
 /**
  * @type {!WebInspector.ViewManager}

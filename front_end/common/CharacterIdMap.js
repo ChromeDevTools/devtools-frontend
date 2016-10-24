@@ -13,7 +13,7 @@ WebInspector.CharacterIdMap = function()
     /** @type {!Map<string, T>} */
     this._characterToElement = new Map();
     this._charCode = 33;
-}
+};
 
 WebInspector.CharacterIdMap.prototype = {
     /**
@@ -41,4 +41,4 @@ WebInspector.CharacterIdMap.prototype = {
     {
         return this._characterToElement.get(character) || null;
     }
-}
+};

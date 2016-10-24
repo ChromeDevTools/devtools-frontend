@@ -58,13 +58,13 @@ WebInspector.HeapSnapshotSortableDataGrid = function(dataDisplayDelegate, column
     this._nodeFilter = new WebInspector.HeapSnapshotCommon.NodeFilter();
     this.addEventListener(WebInspector.HeapSnapshotSortableDataGrid.Events.SortingComplete, this._sortingComplete, this);
     this.addEventListener(WebInspector.DataGrid.Events.SortingChanged, this.sortingChanged, this);
-}
+};
 
 /** @enum {symbol} */
 WebInspector.HeapSnapshotSortableDataGrid.Events = {
     ContentShown: Symbol("ContentShown"),
     SortingComplete: Symbol("SortingComplete")
-}
+};
 
 WebInspector.HeapSnapshotSortableDataGrid.prototype = {
     /**
@@ -193,7 +193,7 @@ WebInspector.HeapSnapshotSortableDataGrid.prototype = {
     _clearCurrentHighlight: function()
     {
         if (!this._highlightedNode)
-            return
+            return;
         this._highlightedNode.element().classList.remove("highlighted-row");
         this._highlightedNode = null;
     },
@@ -318,7 +318,7 @@ WebInspector.HeapSnapshotSortableDataGrid.prototype = {
     },
 
     __proto__: WebInspector.DataGrid.prototype
-}
+};
 
 
 /**
@@ -333,7 +333,7 @@ WebInspector.HeapSnapshotViewportDataGrid = function(dataDisplayDelegate, column
     this.scrollContainer.addEventListener("scroll", this._onScroll.bind(this), true);
     this._topPaddingHeight = 0;
     this._bottomPaddingHeight = 0;
-}
+};
 
 WebInspector.HeapSnapshotViewportDataGrid.prototype = {
     /**
@@ -591,7 +591,7 @@ WebInspector.HeapSnapshotViewportDataGrid.prototype = {
     },
 
     __proto__: WebInspector.HeapSnapshotSortableDataGrid.prototype
-}
+};
 
 /**
  * @constructor
@@ -608,7 +608,7 @@ WebInspector.HeapSnapshotContainmentDataGrid = function(dataDisplayDelegate, col
         {id: "retainedSize", title: WebInspector.UIString("Retained Size"), width: "105px", sortable: true, fixedWidth: true, sort: WebInspector.DataGrid.Order.Descending}
     ];
     WebInspector.HeapSnapshotSortableDataGrid.call(this, dataDisplayDelegate, columns);
-}
+};
 
 WebInspector.HeapSnapshotContainmentDataGrid.prototype = {
     /**
@@ -637,7 +637,7 @@ WebInspector.HeapSnapshotContainmentDataGrid.prototype = {
     },
 
     __proto__: WebInspector.HeapSnapshotSortableDataGrid.prototype
-}
+};
 
 
 /**
@@ -654,12 +654,12 @@ WebInspector.HeapSnapshotRetainmentDataGrid = function(dataDisplayDelegate)
         {id: "retainedSize", title: WebInspector.UIString("Retained Size"), width: "105px", sortable: true, fixedWidth: true}
     ];
     WebInspector.HeapSnapshotContainmentDataGrid.call(this, dataDisplayDelegate, columns);
-}
+};
 
 /** @enum {symbol} */
 WebInspector.HeapSnapshotRetainmentDataGrid.Events = {
     ExpandRetainersComplete: Symbol("ExpandRetainersComplete")
-}
+};
 
 WebInspector.HeapSnapshotRetainmentDataGrid.prototype = {
     _createRootNode: function(snapshot, fakeEdge)
@@ -696,7 +696,7 @@ WebInspector.HeapSnapshotRetainmentDataGrid.prototype = {
     },
 
     __proto__: WebInspector.HeapSnapshotContainmentDataGrid.prototype
-}
+};
 
 /**
  * @constructor
@@ -716,7 +716,7 @@ WebInspector.HeapSnapshotConstructorsDataGrid = function(dataDisplayDelegate)
     this._profileIndex = -1;
 
     this._objectIdToSelect = null;
-}
+};
 
 WebInspector.HeapSnapshotConstructorsDataGrid.prototype = {
     _sortFields: function(sortColumn, sortAscending)
@@ -866,7 +866,7 @@ WebInspector.HeapSnapshotConstructorsDataGrid.prototype = {
     },
 
     __proto__: WebInspector.HeapSnapshotViewportDataGrid.prototype
-}
+};
 
 
 /**
@@ -886,7 +886,7 @@ WebInspector.HeapSnapshotDiffDataGrid = function(dataDisplayDelegate)
         {id: "sizeDelta", title: WebInspector.UIString("Size Delta"), width: "72px", sortable: true, fixedWidth: true}
     ];
     WebInspector.HeapSnapshotViewportDataGrid.call(this, dataDisplayDelegate, columns);
-}
+};
 
 WebInspector.HeapSnapshotDiffDataGrid.prototype = {
     /**
@@ -959,7 +959,7 @@ WebInspector.HeapSnapshotDiffDataGrid.prototype = {
     },
 
     __proto__: WebInspector.HeapSnapshotViewportDataGrid.prototype
-}
+};
 
 
 /**
@@ -980,7 +980,7 @@ WebInspector.AllocationDataGrid = function(target, dataDisplayDelegate)
     WebInspector.HeapSnapshotViewportDataGrid.call(this, dataDisplayDelegate, columns);
     this._target = target;
     this._linkifier = new WebInspector.Linkifier();
-}
+};
 
 WebInspector.AllocationDataGrid.prototype = {
 
@@ -1055,4 +1055,4 @@ WebInspector.AllocationDataGrid.prototype = {
     },
 
     __proto__: WebInspector.HeapSnapshotViewportDataGrid.prototype
-}
+};

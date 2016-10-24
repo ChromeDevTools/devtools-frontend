@@ -26,14 +26,14 @@ WebInspector.ListWidget = function(delegate)
     this._emptyPlaceholder = null;
 
     this.clear();
-}
+};
 
 /**
  * @interface
  */
 WebInspector.ListWidget.Delegate = function()
 {
-}
+};
 
 WebInspector.ListWidget.Delegate.prototype = {
     /**
@@ -61,7 +61,7 @@ WebInspector.ListWidget.Delegate.prototype = {
      * @param {boolean} isNew
      */
     commitEdit: function(item, editor, isNew) { }
-}
+};
 
 WebInspector.ListWidget.prototype = {
     clear: function()
@@ -260,7 +260,7 @@ WebInspector.ListWidget.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @constructor
@@ -308,7 +308,7 @@ WebInspector.ListWidget.Editor = function()
     this._item = null;
     /** @type {number} */
     this._index = -1;
-}
+};
 
 WebInspector.ListWidget.Editor.prototype = {
     /**
@@ -428,4 +428,4 @@ WebInspector.ListWidget.Editor.prototype = {
         this._index = -1;
         cancel();
     }
-}
+};

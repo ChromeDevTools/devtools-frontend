@@ -48,7 +48,7 @@ WebInspector.ApplicationCacheModel = function(target, resourceTreeModel)
 
     this._mainFrameNavigated();
     this._onLine = true;
-}
+};
 
 /** @enum {symbol} */
 WebInspector.ApplicationCacheModel.Events = {
@@ -57,7 +57,7 @@ WebInspector.ApplicationCacheModel.Events = {
     FrameManifestRemoved: Symbol("FrameManifestRemoved"),
     FrameManifestsReset: Symbol("FrameManifestsReset"),
     NetworkStateChanged: Symbol("NetworkStateChanged")
-}
+};
 
 WebInspector.ApplicationCacheModel.prototype = {
     _frameNavigated: function(event)
@@ -237,7 +237,7 @@ WebInspector.ApplicationCacheModel.prototype = {
     },
 
     __proto__: WebInspector.SDKModel.prototype
-}
+};
 
 /**
  * @constructor
@@ -246,7 +246,7 @@ WebInspector.ApplicationCacheModel.prototype = {
 WebInspector.ApplicationCacheDispatcher = function(applicationCacheModel)
 {
     this._applicationCacheModel = applicationCacheModel;
-}
+};
 
 WebInspector.ApplicationCacheDispatcher.prototype = {
     /**
@@ -268,7 +268,7 @@ WebInspector.ApplicationCacheDispatcher.prototype = {
     {
         this._applicationCacheModel._networkStateUpdated(isNowOnline);
     }
-}
+};
 
 /**
  * @param {!WebInspector.Target} target
@@ -277,4 +277,4 @@ WebInspector.ApplicationCacheDispatcher.prototype = {
 WebInspector.ApplicationCacheModel.fromTarget = function(target)
 {
     return /** @type {?WebInspector.ApplicationCacheModel} */ (target.model(WebInspector.ApplicationCacheModel));
-}
+};

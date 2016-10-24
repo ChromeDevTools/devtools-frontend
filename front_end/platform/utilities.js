@@ -36,7 +36,7 @@ console.assert = function(value, message)
     if (value)
         return;
     console.__originalAssert(value, message);
-}
+};
 
 /** @typedef {Array|NodeList|Arguments|{length: number}} */
 var ArrayLike;
@@ -64,7 +64,7 @@ String.prototype.findAll = function(string)
         i = this.indexOf(string, i + string.length);
     }
     return matches;
-}
+};
 
 /**
  * @return {string}
@@ -74,7 +74,7 @@ String.prototype.replaceControlCharacters = function()
     // Replace C0 and C1 control character sets with printable character.
     // Do not replace '\t', \n' and '\r'.
     return this.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u0080-\u009f]/g, "�");
-}
+};
 
 /**
  * @return {boolean}
@@ -82,7 +82,7 @@ String.prototype.replaceControlCharacters = function()
 String.prototype.isWhitespace = function()
 {
     return /^\s*$/.test(this);
-}
+};
 
 /**
  * @return {!Array.<number>}
@@ -92,7 +92,7 @@ String.prototype.computeLineEndings = function()
     var endings = this.findAll("\n");
     endings.push(this.length);
     return endings;
-}
+};
 
 /**
  * @param {string} chars
@@ -119,7 +119,7 @@ String.prototype.escapeCharacters = function(chars)
     }
 
     return result;
-}
+};
 
 /**
  * @return {string}
@@ -127,7 +127,7 @@ String.prototype.escapeCharacters = function(chars)
 String.regexSpecialCharacters = function()
 {
     return "^[]{}()\\.^$*+?|-,";
-}
+};
 
 /**
  * @return {string}
@@ -135,7 +135,7 @@ String.regexSpecialCharacters = function()
 String.prototype.escapeForRegExp = function()
 {
     return this.escapeCharacters(String.regexSpecialCharacters());
-}
+};
 
 /**
  * @return {string}
@@ -143,7 +143,7 @@ String.prototype.escapeForRegExp = function()
 String.prototype.escapeHTML = function()
 {
     return this.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); // " doublequotes just for editor
-}
+};
 
 /**
  * @return {string}
@@ -157,7 +157,7 @@ String.prototype.unescapeHTML = function()
         .replace(/&#60;/g, "<")
         .replace(/&#62;/g, ">")
         .replace(/&amp;/g, "&");
-}
+};
 
 /**
  * @return {string}
@@ -165,7 +165,7 @@ String.prototype.unescapeHTML = function()
 String.prototype.collapseWhitespace = function()
 {
     return this.replace(/[\s\xA0]+/g, " ");
-}
+};
 
 /**
  * @param {number} maxLength
@@ -178,7 +178,7 @@ String.prototype.trimMiddle = function(maxLength)
     var leftHalf = maxLength >> 1;
     var rightHalf = maxLength - leftHalf - 1;
     return this.substr(0, leftHalf) + "\u2026" + this.substr(this.length - rightHalf, rightHalf);
-}
+};
 
 /**
  * @param {number} maxLength
@@ -189,7 +189,7 @@ String.prototype.trimEnd = function(maxLength)
     if (this.length <= maxLength)
         return String(this);
     return this.substr(0, maxLength - 1) + "\u2026";
-}
+};
 
 /**
  * @param {?string=} baseURLDomain
@@ -203,7 +203,7 @@ String.prototype.trimURL = function(baseURLDomain)
             result = result.substr(baseURLDomain.length);
     }
     return result;
-}
+};
 
 /**
  * @return {string}
@@ -211,7 +211,7 @@ String.prototype.trimURL = function(baseURLDomain)
 String.prototype.toTitleCase = function()
 {
     return this.substring(0, 1).toUpperCase() + this.substring(1);
-}
+};
 
 /**
  * @param {string} other
@@ -224,7 +224,7 @@ String.prototype.compareTo = function(other)
     if (this < other)
         return -1;
     return 0;
-}
+};
 
 /**
  * @return {string}
@@ -235,7 +235,7 @@ String.prototype.removeURLFragment = function()
     if (fragmentIndex === -1)
         fragmentIndex = this.length;
     return this.substring(0, fragmentIndex);
-}
+};
 
 /**
  * @param {string|undefined} string
@@ -260,7 +260,7 @@ String.hashCode = function(string)
     }
     s = (s + zi * (p - 1)) % p;
     return Math.abs(s | 0);
-}
+};
 
 /**
  * @param {string} string
@@ -271,7 +271,7 @@ String.isDigitAt = function(string, index)
 {
     var c = string.charCodeAt(index);
     return (48 <= c && c <= 57);
-}
+};
 
 /**
  * @return {string}
@@ -307,7 +307,7 @@ String.prototype.toBase64 = function()
     else if (shift === 1)
         encoded += String.fromCharCode(encodeBits(v >>> 18 & 63), encodeBits(v >>> 12 & 63), encodeBits(v >>> 6 & 63), 61);
     return encoded;
-}
+};
 
 /**
  * @param {string} a
@@ -351,7 +351,7 @@ String.naturalOrderComparator = function(a, b)
         a = a.substring(chunka.length);
         b = b.substring(chunkb.length);
     }
-}
+};
 
 /**
  * @param {string} a
@@ -365,7 +365,7 @@ String.caseInsensetiveComparator = function(a, b)
     if (a === b)
         return 0;
     return a > b ? 1 : -1;
-}
+};
 
 /**
  * @param {number} num
@@ -380,7 +380,7 @@ Number.constrain = function(num, min, max)
     else if (num > max)
         num = max;
     return num;
-}
+};
 
 /**
  * @param {number} a
@@ -393,7 +393,7 @@ Number.gcd = function(a, b)
         return a;
     else
         return Number.gcd(b, a % b);
-}
+};
 
 /**
  * @param {string} value
@@ -405,15 +405,15 @@ Number.toFixedIfFloating = function(value)
         return value;
     var number = Number(value);
     return number % 1 ? number.toFixed(3) : String(number);
-}
+};
 
 /**
  * @return {boolean}
  */
 Date.prototype.isValid = function()
 {
-    return !isNaN(this.getTime())
-}
+    return !isNaN(this.getTime());
+};
 
 /**
  * @return {string}
@@ -434,7 +434,7 @@ Date.prototype.toISO8601Compact = function()
            leadZero(this.getHours()) +
            leadZero(this.getMinutes()) +
            leadZero(this.getSeconds());
-}
+};
 
 /**
  * @return {string}
@@ -466,7 +466,7 @@ Date.prototype.toConsoleTime = function()
            leadZero2(this.getMinutes()) + ":" +
            leadZero2(this.getSeconds()) + "." +
            leadZero3(this.getMilliseconds());
-}
+};
 
 Object.defineProperty(Array.prototype, "remove", {
     /**
@@ -610,7 +610,7 @@ Object.defineProperty(Uint32Array.prototype, "sort", {
                 quickSortRange(this, comparator, leftBound, rightBound, sortWindowLeft, sortWindowRight);
             return this;
         }
-    }
+    };
     Object.defineProperty(Array.prototype, "sortRange", sortRange);
     Object.defineProperty(Uint32Array.prototype, "sortRange", sortRange);
 })();
@@ -679,7 +679,7 @@ Object.defineProperty(Array.prototype, "qselect", {
         if (k < 0 || k >= this.length)
             return;
         if (!comparator)
-            comparator = function(a, b) { return a - b; }
+            comparator = function(a, b) { return a - b; };
 
         var low = 0;
         var high = this.length - 1;
@@ -893,7 +893,7 @@ Object.defineProperty(Array.prototype, "peekLast", {
 String.sprintf = function(format, var_arg)
 {
     return String.vsprintf(format, Array.prototype.slice.call(arguments, 1));
-}
+};
 
 /**
  * @param {string} format
@@ -974,7 +974,7 @@ String.tokenizeFormatString = function(format, formatters)
     addStringToken(format.substring(index));
 
     return tokens;
-}
+};
 
 String.standardFormatters = {
     /**
@@ -1002,7 +1002,7 @@ String.standardFormatters = {
     {
         return substitution;
     }
-}
+};
 
 /**
  * @param {string} format
@@ -1012,7 +1012,7 @@ String.standardFormatters = {
 String.vsprintf = function(format, substitutions)
 {
     return String.format(format, substitutions, String.standardFormatters, "", function(a, b) { return a + b; }).formattedResult;
-}
+};
 
 /**
  * @param {string} format
@@ -1089,7 +1089,7 @@ String.format = function(format, substitutions, formatters, initialValue, append
     }
 
     return { formattedResult: result, unusedSubstitutions: unusedSubstitutions };
-}
+};
 
 /**
  * @param {string} query
@@ -1181,7 +1181,7 @@ function numberToStringWithSpacesPadding(value, symbolsCount)
 Set.prototype.valuesArray = function()
 {
     return Array.from(this.values());
-}
+};
 
 /**
  * @param {!Iterable<T>|!Array<!T>} iterable
@@ -1191,7 +1191,7 @@ Set.prototype.addAll = function(iterable)
 {
     for (var e of iterable)
         this.add(e);
-}
+};
 
 /**
  * @param {!Iterable<T>|!Array<!T>} iterable
@@ -1205,7 +1205,7 @@ Set.prototype.containsAll = function(iterable)
             return false;
     }
     return true;
-}
+};
 
 /**
  * @return {T}
@@ -1216,7 +1216,7 @@ Map.prototype.remove = function(key)
     var value = this.get(key);
     this.delete(key);
     return value;
-}
+};
 
 /**
  * @return {!Array<!VALUE>}
@@ -1224,7 +1224,7 @@ Map.prototype.remove = function(key)
 Map.prototype.valuesArray = function()
 {
     return Array.from(this.values());
-}
+};
 
 /**
  * @return {!Array<!KEY>}
@@ -1232,7 +1232,7 @@ Map.prototype.valuesArray = function()
 Map.prototype.keysArray = function()
 {
     return Array.from(this.keys());
-}
+};
 
 /**
  * @return {!Multimap<!KEY, !VALUE>}
@@ -1245,7 +1245,7 @@ Map.prototype.inverse = function()
         result.set(value, key);
     }
     return result;
-}
+};
 
 /**
  * @constructor
@@ -1255,7 +1255,7 @@ var Multimap = function()
 {
     /** @type {!Map.<K, !Set.<!V>>} */
     this._map = new Map();
-}
+};
 
 Multimap.prototype = {
     /**
@@ -1358,7 +1358,7 @@ Multimap.prototype = {
     {
         this._map.clear();
     }
-}
+};
 
 /**
  * @param {string} url
@@ -1452,7 +1452,7 @@ CallbackBarrier.prototype = {
         if (!--this._pendingIncomingCallbacksCount && this._outgoingCallback)
             this._outgoingCallback();
     }
-}
+};
 
 /**
  * @param {*} value
@@ -1469,7 +1469,7 @@ self.setImmediate = function(callback)
 {
     Promise.resolve().then(callback);
     return 0;
-}
+};
 
 /**
  * @param {function(...?)} callback
@@ -1484,7 +1484,7 @@ Promise.prototype.spread = function(callback)
     {
         return callback.apply(null, arg);
     }
-}
+};
 
 /**
  * @param {T} defaultValue
@@ -1496,7 +1496,7 @@ Promise.prototype.catchException = function(defaultValue) {
         console.error(error);
         return defaultValue;
     });
-}
+};
 
 /**
  * @param {!Map<number, ?>} other
@@ -1545,5 +1545,5 @@ Map.prototype.diff = function(other, isEqual)
         added: added,
         removed: removed,
         equal: equal
-    }
-}
+    };
+};

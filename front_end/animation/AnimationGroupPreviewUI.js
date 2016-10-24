@@ -22,7 +22,7 @@ WebInspector.AnimationGroupPreviewUI = function(model)
     this._svg.setAttribute("viewBox", "0 0 100 " + this._viewBoxHeight);
     this._svg.setAttribute("shape-rendering", "crispEdges");
     this._render();
-}
+};
 
 WebInspector.AnimationGroupPreviewUI.prototype = {
     /**
@@ -73,4 +73,4 @@ WebInspector.AnimationGroupPreviewUI.prototype = {
             line.style.stroke = WebInspector.AnimationUI.Color(this._model.animations()[i]);
         }
     }
-}
+};

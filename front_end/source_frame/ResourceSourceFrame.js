@@ -36,7 +36,7 @@ WebInspector.ResourceSourceFrame = function(resource)
 {
     this._resource = resource;
     WebInspector.SourceFrame.call(this, resource.contentURL(), resource.requestContent.bind(resource));
-}
+};
 
 /**
  * @param {!WebInspector.ContentProvider} resource
@@ -52,7 +52,7 @@ WebInspector.ResourceSourceFrame.createSearchableView = function(resource, highl
     sourceFrame.show(searchableView.element);
     sourceFrame.setSearchableView(searchableView);
     return searchableView;
-}
+};
 
 WebInspector.ResourceSourceFrame.prototype = {
     get resource()
@@ -74,4 +74,4 @@ WebInspector.ResourceSourceFrame.prototype = {
     },
 
     __proto__: WebInspector.SourceFrame.prototype
-}
+};

@@ -41,7 +41,7 @@
 WebInspector.HAREntry = function(request)
 {
     this._request = request;
-}
+};
 
 WebInspector.HAREntry.prototype = {
     /**
@@ -265,7 +265,7 @@ WebInspector.HAREntry.prototype = {
             return;
         return this._request.resourceSize - this.responseBodySize;
     }
-}
+};
 
 /**
  * @param {number} time
@@ -274,7 +274,7 @@ WebInspector.HAREntry.prototype = {
 WebInspector.HAREntry._toMilliseconds = function(time)
 {
     return time === -1 ? -1 : time * 1000;
-}
+};
 
 /**
  * @constructor
@@ -283,7 +283,7 @@ WebInspector.HAREntry._toMilliseconds = function(time)
 WebInspector.HARLog = function(requests)
 {
     this._requests = requests;
-}
+};
 
 /**
  * @param {!WebInspector.NetworkRequest} request
@@ -293,7 +293,7 @@ WebInspector.HARLog = function(requests)
 WebInspector.HARLog.pseudoWallTime = function(request, monotonicTime)
 {
     return new Date(request.pseudoWallTime(monotonicTime) * 1000);
-}
+};
 
 WebInspector.HARLog.prototype = {
     /**
@@ -306,7 +306,7 @@ WebInspector.HARLog.prototype = {
             creator: this._creator(),
             pages: this._buildPages(),
             entries: this._requests.map(this._convertResource.bind(this))
-        }
+        };
     },
 
     _creator: function()
@@ -352,7 +352,7 @@ WebInspector.HARLog.prototype = {
                 onContentLoad: this._pageEventTime(page, page.contentLoadTime),
                 onLoad: this._pageEventTime(page, page.loadTime)
             }
-        }
+        };
     },
 
     /**
@@ -376,4 +376,4 @@ WebInspector.HARLog.prototype = {
             return -1;
         return WebInspector.HAREntry._toMilliseconds(time - startTime);
     }
-}
+};

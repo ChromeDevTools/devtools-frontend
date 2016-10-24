@@ -64,7 +64,7 @@ WebInspector.ObjectPropertiesSection = function(object, title, linkifier, emptyP
     this.registerRequiredCSS("components/objectValue.css");
     this.registerRequiredCSS("components/objectPropertiesSection.css");
     this.rootElement().childrenListElement.classList.add("source-code", "object-properties-section");
-}
+};
 
 /** @const */
 WebInspector.ObjectPropertiesSection._arrayLoadThreshold = 100;
@@ -89,7 +89,7 @@ WebInspector.ObjectPropertiesSection.defaultObjectPresentation = function(object
         objectPropertiesSection.skipProto();
 
     return objectPropertiesSection.element;
-}
+};
 
 WebInspector.ObjectPropertiesSection.prototype = {
     skipProto: function()
@@ -138,7 +138,7 @@ WebInspector.ObjectPropertiesSection.prototype = {
     },
 
     __proto__: TreeOutlineInShadow.prototype
-}
+};
 
 /**
  * @param {!WebInspector.RemoteObjectProperty} propertyA
@@ -158,7 +158,7 @@ WebInspector.ObjectPropertiesSection.CompareProperties = function(propertyA, pro
     if (propertyB.symbol && !propertyA.symbol)
         return -1;
     return String.naturalOrderComparator(a, b);
-}
+};
 
 /**
  * @constructor
@@ -182,7 +182,7 @@ WebInspector.ObjectPropertiesSection.RootElement = function(object, linkifier, e
     this.toggleOnClick = true;
     this.listItemElement.classList.add("object-properties-section-root-element");
     this._linkifier = linkifier;
-}
+};
 
 WebInspector.ObjectPropertiesSection.RootElement.prototype = {
     /**
@@ -236,7 +236,7 @@ WebInspector.ObjectPropertiesSection.RootElement.prototype = {
     },
 
     __proto__: TreeElement.prototype
-}
+};
 
 /**
  * @constructor
@@ -255,7 +255,7 @@ WebInspector.ObjectPropertyTreeElement = function(property, linkifier)
     /** @type {!Array.<!Object>} */
     this._highlightChanges = [];
     this._linkifier = linkifier;
-}
+};
 
 WebInspector.ObjectPropertyTreeElement.prototype = {
     /**
@@ -579,7 +579,7 @@ WebInspector.ObjectPropertyTreeElement.prototype = {
     },
 
     __proto__: TreeElement.prototype
-}
+};
 
 /**
  * @param {!TreeElement} treeElement
@@ -621,7 +621,7 @@ WebInspector.ObjectPropertyTreeElement._populate = function(treeElement, value, 
         value.getAllProperties(false, callback);
     else
         WebInspector.RemoteObject.loadFromObjectPerProto(value, callback);
-}
+};
 
 /**
  * @param {!TreeElement} treeNode
@@ -673,7 +673,7 @@ WebInspector.ObjectPropertyTreeElement.populateWithProperties = function(treeNod
         }
     }
     WebInspector.ObjectPropertyTreeElement._appendEmptyPlaceholderIfNeeded(treeNode, emptyPlaceholder);
-}
+};
 
 /**
  * @param {!TreeElement} treeNode
@@ -687,7 +687,7 @@ WebInspector.ObjectPropertyTreeElement._appendEmptyPlaceholderIfNeeded = functio
     title.textContent = emptyPlaceholder || WebInspector.UIString("No Properties");
     var infoElement = new TreeElement(title);
     treeNode.appendChild(infoElement);
-}
+};
 
 /**
  * @param {?WebInspector.RemoteObject} object
@@ -713,7 +713,7 @@ WebInspector.ObjectPropertyTreeElement.createRemoteObjectAccessorPropertySpan = 
     }
 
     return rootElement;
-}
+};
 
 /**
  * @constructor
@@ -735,7 +735,7 @@ WebInspector.ArrayGroupingTreeElement = function(object, fromIndex, toIndex, pro
     this._readOnly = true;
     this._propertyCount = propertyCount;
     this._linkifier = linkifier;
-}
+};
 
 WebInspector.ArrayGroupingTreeElement._bucketThreshold = 100;
 WebInspector.ArrayGroupingTreeElement._sparseIterationThreshold = 250000;
@@ -751,7 +751,7 @@ WebInspector.ArrayGroupingTreeElement._getOwnPropertyNamesThreshold = 500000;
 WebInspector.ArrayGroupingTreeElement._populateArray = function(treeNode, object, fromIndex, toIndex, linkifier)
 {
     WebInspector.ArrayGroupingTreeElement._populateRanges(treeNode, object, fromIndex, toIndex, true, linkifier);
-}
+};
 
 /**
  * @param {!TreeElement} treeNode
@@ -871,7 +871,7 @@ WebInspector.ArrayGroupingTreeElement._populateRanges = function(treeNode, objec
         if (topLevel)
             WebInspector.ArrayGroupingTreeElement._populateNonIndexProperties(treeNode, object, result.skipGetOwnPropertyNames, linkifier);
     }
-}
+};
 
 /**
  * @param {!TreeElement} treeNode
@@ -938,7 +938,7 @@ WebInspector.ArrayGroupingTreeElement._populateAsFragment = function(treeNode, o
             treeNode.appendChild(childTreeElement);
         }
     }
-}
+};
 
 /**
  * @param {!TreeElement} treeNode
@@ -1003,7 +1003,7 @@ WebInspector.ArrayGroupingTreeElement._populateNonIndexProperties = function(tre
             treeNode.appendChild(childTreeElement);
         }
     }
-}
+};
 
 WebInspector.ArrayGroupingTreeElement.prototype = {
     onpopulate: function()
@@ -1021,7 +1021,7 @@ WebInspector.ArrayGroupingTreeElement.prototype = {
     },
 
     __proto__: TreeElement.prototype
-}
+};
 
 /**
  * @constructor
@@ -1031,11 +1031,11 @@ WebInspector.ObjectPropertyPrompt = function()
 {
     WebInspector.TextPrompt.call(this, WebInspector.ExecutionContextSelector.completionsForTextPromptInCurrentContext);
     this.setSuggestBoxEnabled(true);
-}
+};
 
 WebInspector.ObjectPropertyPrompt.prototype = {
     __proto__: WebInspector.TextPrompt.prototype
-}
+};
 
 /**
  * @param {?string} name
@@ -1049,7 +1049,7 @@ WebInspector.ObjectPropertiesSection.createNameElement = function(name)
     else
         nameElement.textContent = name;
     return nameElement;
-}
+};
 
 WebInspector.ObjectPropertiesSection._functionPrefixSource = /^(?:async\s)?function\*?\s/;
 
@@ -1068,7 +1068,7 @@ WebInspector.ObjectPropertiesSection.valueTextForFunctionDescription = function(
     }
     var match = matches ? matches[1] : null;
     return match ? match.replace(/\n/g, " ") + ")" : (text || "");
-}
+};
 
 /**
  * @param {!WebInspector.RemoteObject} value
@@ -1082,10 +1082,10 @@ WebInspector.ObjectPropertiesSection.createValueElementWithCustomSupport = funct
     if (value.customPreview()) {
         var result = (new WebInspector.CustomPreviewComponent(value)).element;
         result.classList.add("object-properties-section-custom-section");
-        return result
+        return result;
     }
     return WebInspector.ObjectPropertiesSection.createValueElement(value, wasThrown, parentElement, linkifier);
-}
+};
 
 /**
  * @param {!WebInspector.RemoteObject} value
@@ -1175,7 +1175,7 @@ WebInspector.ObjectPropertiesSection.createValueElement = function(value, wasThr
     }
 
     return valueElement;
-}
+};
 
 /**
  * @param {!WebInspector.RemoteObject} object
@@ -1184,7 +1184,7 @@ WebInspector.ObjectPropertiesSection.createValueElement = function(value, wasThr
 WebInspector.ObjectPropertiesSection._needsAlternateTitle = function(object)
 {
     return object && object.hasChildren && !object.customPreview() && object.subtype !== "node" && object.type !== "function" && (object.type !== "object" || object.preview);
-}
+};
 
 /**
  * @param {!WebInspector.RemoteObject} func
@@ -1267,7 +1267,7 @@ WebInspector.ObjectPropertiesSection.formatObjectAsFunction = function(func, ele
                 params.push(token);
         }
     }
-}
+};
 
 /**
  * @constructor
@@ -1276,7 +1276,7 @@ WebInspector.ObjectPropertiesSectionExpandController = function()
 {
     /** @type {!Set.<string>} */
     this._expandedProperties = new Set();
-}
+};
 
 WebInspector.ObjectPropertiesSectionExpandController._cachedPathSymbol = Symbol("cachedPath");
 WebInspector.ObjectPropertiesSectionExpandController._treeOutlineId = Symbol("treeOutlineId");
@@ -1366,4 +1366,4 @@ WebInspector.ObjectPropertiesSectionExpandController.prototype = {
         treeElement[WebInspector.ObjectPropertiesSectionExpandController._cachedPathSymbol] = result;
         return result;
     }
-}
+};

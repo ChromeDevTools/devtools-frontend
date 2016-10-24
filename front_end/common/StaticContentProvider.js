@@ -14,7 +14,7 @@ WebInspector.StaticContentProvider = function(contentURL, contentType, lazyConte
     this._contentURL = contentURL;
     this._contentType = contentType;
     this._lazyContent = lazyContent;
-}
+};
 
 /**
  * @param {string} contentURL
@@ -26,7 +26,7 @@ WebInspector.StaticContentProvider.fromString = function(contentURL, contentType
 {
     var lazyContent = () => Promise.resolve(content);
     return new WebInspector.StaticContentProvider(contentURL, contentType, lazyContent);
-}
+};
 
 WebInspector.StaticContentProvider.prototype = {
     /**
@@ -75,4 +75,4 @@ WebInspector.StaticContentProvider.prototype = {
 
         this._lazyContent().then(performSearch);
     }
-}
+};

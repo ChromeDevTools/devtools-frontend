@@ -47,7 +47,7 @@ WebInspector.DOMStorageItemsView = function(domStorage)
     this.domStorage.addEventListener(WebInspector.DOMStorage.Events.DOMStorageItemRemoved, this._domStorageItemRemoved, this);
     this.domStorage.addEventListener(WebInspector.DOMStorage.Events.DOMStorageItemAdded, this._domStorageItemAdded, this);
     this.domStorage.addEventListener(WebInspector.DOMStorage.Events.DOMStorageItemUpdated, this._domStorageItemUpdated, this);
-}
+};
 
 WebInspector.DOMStorageItemsView.prototype = {
     /**
@@ -260,4 +260,4 @@ WebInspector.DOMStorageItemsView.prototype = {
     },
 
     __proto__: WebInspector.SimpleView.prototype
-}
+};

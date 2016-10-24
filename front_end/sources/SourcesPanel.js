@@ -111,7 +111,7 @@ WebInspector.SourcesPanel = function()
     WebInspector.extensionServer.addEventListener(WebInspector.ExtensionServer.Events.SidebarPaneAdded, this._extensionSidebarPaneAdded, this);
     WebInspector.DataSaverInfobar.maybeShowInPanel(this);
     WebInspector.targetManager.observeTargets(this);
-}
+};
 
 WebInspector.SourcesPanel._lastModificationTimeout = 200;
 
@@ -1145,7 +1145,7 @@ WebInspector.SourcesPanel.prototype = {
     },
 
     __proto__: WebInspector.Panel.prototype
-}
+};
 
 /**
  * @constructor
@@ -1153,7 +1153,7 @@ WebInspector.SourcesPanel.prototype = {
  */
 WebInspector.SourcesPanel.UILocationRevealer = function()
 {
-}
+};
 
 WebInspector.SourcesPanel.UILocationRevealer.prototype = {
     /**
@@ -1169,7 +1169,7 @@ WebInspector.SourcesPanel.UILocationRevealer.prototype = {
         WebInspector.SourcesPanel.instance().showUILocation(uiLocation, omitFocus);
         return Promise.resolve();
     }
-}
+};
 
 /**
  * @constructor
@@ -1177,7 +1177,7 @@ WebInspector.SourcesPanel.UILocationRevealer.prototype = {
  */
 WebInspector.SourcesPanel.DebuggerLocationRevealer = function()
 {
-}
+};
 
 WebInspector.SourcesPanel.DebuggerLocationRevealer.prototype = {
     /**
@@ -1193,7 +1193,7 @@ WebInspector.SourcesPanel.DebuggerLocationRevealer.prototype = {
         WebInspector.SourcesPanel.instance().showUILocation(WebInspector.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation), omitFocus);
         return Promise.resolve();
     }
-}
+};
 
 /**
  * @constructor
@@ -1201,7 +1201,7 @@ WebInspector.SourcesPanel.DebuggerLocationRevealer.prototype = {
  */
 WebInspector.SourcesPanel.UISourceCodeRevealer = function()
 {
-}
+};
 
 WebInspector.SourcesPanel.UISourceCodeRevealer.prototype = {
     /**
@@ -1217,7 +1217,7 @@ WebInspector.SourcesPanel.UISourceCodeRevealer.prototype = {
         WebInspector.SourcesPanel.instance().showUISourceCode(uiSourceCode, undefined, undefined, omitFocus);
         return Promise.resolve();
     }
-}
+};
 
 /**
  * @constructor
@@ -1225,7 +1225,7 @@ WebInspector.SourcesPanel.UISourceCodeRevealer.prototype = {
  */
 WebInspector.SourcesPanel.DebuggerPausedDetailsRevealer = function()
 {
-}
+};
 
 WebInspector.SourcesPanel.DebuggerPausedDetailsRevealer.prototype = {
     /**
@@ -1237,13 +1237,13 @@ WebInspector.SourcesPanel.DebuggerPausedDetailsRevealer.prototype = {
     {
         return WebInspector.SourcesPanel.instance()._setAsCurrentPanel();
     }
-}
+};
 
 /**
  * @constructor
  * @implements {WebInspector.ActionDelegate}
  */
-WebInspector.SourcesPanel.RevealingActionDelegate = function() {}
+WebInspector.SourcesPanel.RevealingActionDelegate = function() {};
 
 WebInspector.SourcesPanel.RevealingActionDelegate.prototype = {
     /**
@@ -1267,7 +1267,7 @@ WebInspector.SourcesPanel.RevealingActionDelegate.prototype = {
         }
         return false;
     }
-}
+};
 
 /**
  * @constructor
@@ -1275,7 +1275,7 @@ WebInspector.SourcesPanel.RevealingActionDelegate.prototype = {
  */
 WebInspector.SourcesPanel.DebuggingActionDelegate = function()
 {
-}
+};
 
 WebInspector.SourcesPanel.DebuggingActionDelegate.prototype = {
     /**
@@ -1315,7 +1315,7 @@ WebInspector.SourcesPanel.DebuggingActionDelegate.prototype = {
         }
         return false;
     }
-}
+};
 
 /**
  * @return {!WebInspector.SourcesPanel}
@@ -1325,7 +1325,7 @@ WebInspector.SourcesPanel.instance = function()
     if (WebInspector.SourcesPanel._instance)
         return WebInspector.SourcesPanel._instance;
     return /** @type {!WebInspector.SourcesPanel} */ (self.runtime.sharedInstance(WebInspector.SourcesPanel));
-}
+};
 
 /**
  * @param {!WebInspector.SourcesPanel} panel
@@ -1347,7 +1347,7 @@ WebInspector.SourcesPanel.updateResizerAndSidebarButtons = function(panel)
         else
             panel._sourcesView.bottomToolbar().appendToolbarItem(panel._toggleDebuggerSidebarButton);
     }
-}
+};
 
 /**
  * @constructor
@@ -1359,7 +1359,7 @@ WebInspector.SourcesPanel.WrapperView = function()
     this.element.classList.add("sources-view-wrapper");
     WebInspector.SourcesPanel.WrapperView._instance = this;
     this._view = WebInspector.SourcesPanel.instance()._sourcesView;
-}
+};
 
 WebInspector.SourcesPanel.WrapperView.prototype = {
     wasShown: function()
@@ -1383,7 +1383,7 @@ WebInspector.SourcesPanel.WrapperView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @return {boolean}
@@ -1391,4 +1391,4 @@ WebInspector.SourcesPanel.WrapperView.prototype = {
 WebInspector.SourcesPanel.WrapperView.isShowing = function()
 {
     return !!WebInspector.SourcesPanel.WrapperView._instance && WebInspector.SourcesPanel.WrapperView._instance.isShowing();
-}
+};

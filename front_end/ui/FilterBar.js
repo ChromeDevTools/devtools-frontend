@@ -49,7 +49,7 @@ WebInspector.FilterBar = function(name, visibleByDefault)
 
     this._stateSetting = WebInspector.settings.createSetting("filterBar-" + name + "-toggled", !!visibleByDefault);
     this._setState(this._stateSetting.get());
-}
+};
 
 WebInspector.FilterBar.FilterBarState = {
     Inactive : "inactive",
@@ -179,7 +179,7 @@ WebInspector.FilterBar.prototype = {
     },
 
     __proto__: WebInspector.HBox.prototype
-}
+};
 
 /**
  * @interface
@@ -187,12 +187,12 @@ WebInspector.FilterBar.prototype = {
  */
 WebInspector.FilterUI = function()
 {
-}
+};
 
 /** @enum {symbol} */
 WebInspector.FilterUI.Events = {
     FilterChanged: Symbol("FilterChanged")
-}
+};
 
 WebInspector.FilterUI.prototype = {
     /**
@@ -204,7 +204,7 @@ WebInspector.FilterUI.prototype = {
      * @return {!Element}
      */
     element: function() { }
-}
+};
 
 /**
  * @constructor
@@ -244,7 +244,7 @@ WebInspector.TextFilterUI = function(supportRegex)
 
         this._regexLabel = this._filterElement.textElement;
     }
-}
+};
 
 WebInspector.TextFilterUI.prototype = {
     /**
@@ -451,14 +451,14 @@ WebInspector.TextFilterUI.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
  * @interface
  */
 WebInspector.TextFilterUI.SuggestionBuilder = function()
 {
-}
+};
 
 WebInspector.TextFilterUI.SuggestionBuilder.prototype = {
     /**
@@ -478,7 +478,7 @@ WebInspector.TextFilterUI.SuggestionBuilder.prototype = {
      * @param {!HTMLInputElement} input
      */
     unapplySuggestion: function(input) { }
-}
+};
 
 /**
  * @constructor
@@ -507,7 +507,7 @@ WebInspector.NamedBitSetFilterUI = function(items, setting)
     } else {
         this._toggleTypeFilter(WebInspector.NamedBitSetFilterUI.ALL_TYPES, false /* allowMultiSelect */);
     }
-}
+};
 
 /** @typedef {{name: string, label: string, title: (string|undefined)}} */
 WebInspector.NamedBitSetFilterUI.Item;
@@ -618,7 +618,7 @@ WebInspector.NamedBitSetFilterUI.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
  * @constructor
@@ -642,7 +642,7 @@ WebInspector.ComboBoxFilterUI = function(options)
         this._filterComboBox.element.title = this._filterComboBox.selectedOption().title;
     }
     this._filterElement.appendChild(this._filterComboBox.element);
-}
+};
 
 WebInspector.ComboBoxFilterUI.prototype = {
     /**
@@ -699,7 +699,7 @@ WebInspector.ComboBoxFilterUI.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};
 
 /**
  * @constructor
@@ -722,7 +722,7 @@ WebInspector.CheckboxFilterUI = function(className, title, activeWhenChecked, se
     else
         this._checkboxElement.checked = true;
     this._checkboxElement.addEventListener("change", this._fireUpdated.bind(this), false);
-}
+};
 
 WebInspector.CheckboxFilterUI.prototype = {
     /**
@@ -783,4 +783,4 @@ WebInspector.CheckboxFilterUI.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};

@@ -33,7 +33,7 @@
  */
 WebInspector.Progress = function()
 {
-}
+};
 
 WebInspector.Progress.prototype = {
     /**
@@ -63,7 +63,7 @@ WebInspector.Progress.prototype = {
      * @return {boolean}
      */
     isCanceled: function() { return false; },
-}
+};
 
 /**
  * @constructor
@@ -76,7 +76,7 @@ WebInspector.CompositeProgress = function(parent)
     this._childrenDone = 0;
     this._parent.setTotalWork(1);
     this._parent.setWorked(0);
-}
+};
 
 WebInspector.CompositeProgress.prototype = {
     _childDone: function()
@@ -110,7 +110,7 @@ WebInspector.CompositeProgress.prototype = {
         }
         this._parent.setWorked(done / totalWeights);
     }
-}
+};
 
 /**
  * @constructor
@@ -123,7 +123,7 @@ WebInspector.SubProgress = function(composite, weight)
     this._composite = composite;
     this._weight = weight || 1;
     this._worked = 0;
-}
+};
 
 WebInspector.SubProgress.prototype = {
     /**
@@ -184,7 +184,7 @@ WebInspector.SubProgress.prototype = {
     {
         this.setWorked(this._worked + (worked || 1));
     }
-}
+};
 
 /**
  * @constructor
@@ -196,7 +196,7 @@ WebInspector.ProgressProxy = function(delegate, doneCallback)
 {
     this._delegate = delegate;
     this._doneCallback = doneCallback;
-}
+};
 
 WebInspector.ProgressProxy.prototype = {
     /**
@@ -259,4 +259,4 @@ WebInspector.ProgressProxy.prototype = {
         if (this._delegate)
             this._delegate.worked(worked);
     }
-}
+};

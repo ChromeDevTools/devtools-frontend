@@ -51,7 +51,7 @@ WebInspector.ExtensionView = function(server, id, src, className)
     this.setDefaultFocusedElement(this._iframe);
 
     this.element.appendChild(this._iframe);
-}
+};
 
 WebInspector.ExtensionView.prototype = {
     wasShown: function()
@@ -75,7 +75,7 @@ WebInspector.ExtensionView.prototype = {
     },
 
     __proto__: WebInspector.Widget.prototype
-}
+};
 
 /**
  * @constructor
@@ -89,7 +89,7 @@ WebInspector.ExtensionNotifierView = function(server, id)
 
     this._server = server;
     this._id = id;
-}
+};
 
 WebInspector.ExtensionNotifierView.prototype = {
     wasShown: function()
@@ -103,4 +103,4 @@ WebInspector.ExtensionNotifierView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

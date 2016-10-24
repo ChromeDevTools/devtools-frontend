@@ -50,7 +50,7 @@ WebInspector.PresentationConsoleMessageHelper = function(workspace)
     WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this);
 
     this._locationPool = new WebInspector.LiveLocationPool();
-}
+};
 
 WebInspector.PresentationConsoleMessageHelper.prototype = {
     /**
@@ -159,7 +159,7 @@ WebInspector.PresentationConsoleMessageHelper.prototype = {
     {
         this._consoleCleared();
     }
-}
+};
 
 /**
  * @constructor
@@ -172,7 +172,7 @@ WebInspector.PresentationConsoleMessage = function(message, rawLocation, locatio
     this._text = message.messageText;
     this._level = message.level === WebInspector.ConsoleMessage.MessageLevel.Error ? WebInspector.UISourceCode.Message.Level.Error : WebInspector.UISourceCode.Message.Level.Warning;
     WebInspector.debuggerWorkspaceBinding.createLiveLocation(rawLocation, this._updateLocation.bind(this), locationPool);
-}
+};
 
 WebInspector.PresentationConsoleMessage.prototype = {
     /**
@@ -193,7 +193,7 @@ WebInspector.PresentationConsoleMessage.prototype = {
         if (this._uiMessage)
             this._uiMessage.remove();
     }
-}
+};
 
 /** @type {!WebInspector.PresentationConsoleMessageHelper} */
 WebInspector.presentationConsoleMessageHelper;

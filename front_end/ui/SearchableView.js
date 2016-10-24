@@ -143,7 +143,7 @@ WebInspector.SearchableView = function(searchable, settingName)
     this._minimalSearchQuerySize = 3;
 
     this._loadSetting();
-}
+};
 
 WebInspector.SearchableView._lastUniqueId = 0;
 
@@ -161,7 +161,7 @@ WebInspector.SearchableView.fromElement = function(element)
         element = element.parentElementOrShadowHost();
     }
     return view;
-}
+};
 
 WebInspector.SearchableView.prototype = {
     _toggleCaseSensitiveSearch: function()
@@ -556,14 +556,14 @@ WebInspector.SearchableView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};
 
 /**
  * @interface
  */
 WebInspector.Searchable = function()
 {
-}
+};
 
 WebInspector.Searchable.prototype = {
     searchCanceled: function() { },
@@ -588,14 +588,14 @@ WebInspector.Searchable.prototype = {
      * @return {boolean}
      */
     supportsRegexSearch: function() { }
-}
+};
 
 /**
  * @interface
  */
 WebInspector.Replaceable = function()
 {
-}
+};
 
 WebInspector.Replaceable.prototype = {
     /**
@@ -609,7 +609,7 @@ WebInspector.Replaceable.prototype = {
      * @param {string} replacement
      */
     replaceAllWith: function(searchConfig, replacement) { }
-}
+};
 
 /**
  * @constructor
@@ -622,7 +622,7 @@ WebInspector.SearchableView.SearchConfig = function(query, caseSensitive, isRege
     this.query = query;
     this.caseSensitive = caseSensitive;
     this.isRegex = isRegex;
-}
+};
 
 WebInspector.SearchableView.SearchConfig.prototype = {
     /**
@@ -654,4 +654,4 @@ WebInspector.SearchableView.SearchConfig.prototype = {
 
         return regex;
     }
-}
+};

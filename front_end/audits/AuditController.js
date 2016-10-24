@@ -38,7 +38,7 @@ WebInspector.AuditController = function(auditsPanel)
     this._auditsPanel = auditsPanel;
     WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.Load, this._didMainResourceLoad, this);
     WebInspector.targetManager.addModelListener(WebInspector.NetworkManager, WebInspector.NetworkManager.Events.RequestFinished, this._didLoadResource, this);
-}
+};
 
 WebInspector.AuditController.prototype = {
     /**
@@ -169,4 +169,4 @@ WebInspector.AuditController.prototype = {
     {
         this._auditsPanel.clearResults();
     }
-}
+};

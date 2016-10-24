@@ -12,14 +12,14 @@
 WebInspector.FilmStripModel = function(tracingModel, zeroTime)
 {
     this.reset(tracingModel, zeroTime);
-}
+};
 
 WebInspector.FilmStripModel._category = "disabled-by-default-devtools.screenshot";
 
 WebInspector.FilmStripModel.TraceEvents = {
     CaptureFrame: "CaptureFrame",
     Screenshot: "Screenshot"
-}
+};
 
 WebInspector.FilmStripModel.prototype = {
     /**
@@ -87,7 +87,7 @@ WebInspector.FilmStripModel.prototype = {
         var index = this._frames.upperBound(timestamp, (timestamp, frame) => timestamp - frame.timestamp) - 1;
         return index >= 0 ? this._frames[index] : null;
     }
-}
+};
 
 /**
  * @constructor
@@ -104,7 +104,7 @@ WebInspector.FilmStripModel.Frame = function(model, timestamp, index)
     this._imageData = null;
     /** @type {?WebInspector.TracingModel.ObjectSnapshot} */
     this._snapshot = null;
-}
+};
 
 /**
  * @param {!WebInspector.FilmStripModel} model
@@ -117,7 +117,7 @@ WebInspector.FilmStripModel.Frame._fromEvent = function(model, event, index)
     var frame = new WebInspector.FilmStripModel.Frame(model, event.startTime, index);
     frame._imageData = event.args["data"];
     return frame;
-}
+};
 
 /**
  * @param {!WebInspector.FilmStripModel} model
@@ -130,7 +130,7 @@ WebInspector.FilmStripModel.Frame._fromSnapshot = function(model, snapshot, inde
     var frame = new WebInspector.FilmStripModel.Frame(model, snapshot.startTime, index);
     frame._snapshot = snapshot;
     return frame;
-}
+};
 
 WebInspector.FilmStripModel.Frame.prototype = {
     /**
@@ -151,4 +151,4 @@ WebInspector.FilmStripModel.Frame.prototype = {
 
         return /** @type {!Promise<?string>} */ (this._snapshot.objectPromise());
     }
-}
+};

@@ -26,7 +26,7 @@ WebInspector.DefaultMapping = function(workspace, fileSystemMapping, onBindingCr
         this._fileSystemMapping.addEventListener(WebInspector.FileSystemMapping.Events.FileMappingRemoved, this._remap, this)
     ];
     this._remap();
-}
+};
 
 WebInspector.DefaultMapping._binding = Symbol("DefaultMapping.Binding");
 
@@ -141,4 +141,4 @@ WebInspector.DefaultMapping.prototype = {
     {
         WebInspector.EventTarget.removeEventListeners(this._eventListeners);
     }
-}
+};

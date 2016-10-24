@@ -67,7 +67,7 @@ WebInspector.SplitWidget = function(isVertical, secondIsSidebar, settingName, de
 
     // Should be called after isVertical has the right value.
     this.installResizer(this._resizerElement);
-}
+};
 
 /** @typedef {{showMode: string, size: number}} */
 WebInspector.SplitWidget.SettingForOrientation;
@@ -76,13 +76,13 @@ WebInspector.SplitWidget.ShowMode = {
     Both: "Both",
     OnlyMain: "OnlyMain",
     OnlySidebar: "OnlySidebar"
-}
+};
 
 /** @enum {symbol} */
 WebInspector.SplitWidget.Events = {
     SidebarSizeChanged: Symbol("SidebarSizeChanged"),
     ShowModeChanged: Symbol("ShowModeChanged")
-}
+};
 
 WebInspector.SplitWidget.MinPadding = 20;
 
@@ -918,4 +918,4 @@ WebInspector.SplitWidget.prototype = {
     },
 
     __proto__: WebInspector.Widget.prototype
-}
+};

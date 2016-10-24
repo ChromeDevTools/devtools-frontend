@@ -37,7 +37,7 @@ WebInspector.DOMSyntaxHighlighter = function(mimeType, stripExtraWhitespace)
 {
     this._mimeType = mimeType;
     this._stripExtraWhitespace = stripExtraWhitespace;
-}
+};
 
 WebInspector.DOMSyntaxHighlighter.prototype = {
     /**
@@ -108,4 +108,4 @@ WebInspector.DOMSyntaxHighlighter.prototype = {
             plainTextStart = newColumn;
         }
     }
-}
+};

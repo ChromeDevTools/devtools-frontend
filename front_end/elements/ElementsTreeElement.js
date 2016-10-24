@@ -50,7 +50,7 @@ WebInspector.ElementsTreeElement = function(node, elementCloseTag)
         this._canAddAttributes = true;
     this._searchQuery = null;
     this._expandedChildrenLimit = WebInspector.ElementsTreeElement.InitialChildrenLimit;
-}
+};
 
 WebInspector.ElementsTreeElement.InitialChildrenLimit = 500;
 
@@ -73,7 +73,7 @@ WebInspector.ElementsTreeElement.animateOnDOMUpdate = function(treeElement)
 {
     var tagName = treeElement.listItemElement.querySelector(".webkit-html-tag-name");
     WebInspector.runCSSAnimationOnce(tagName || treeElement.listItemElement, "dom-update-highlight");
-}
+};
 
 /**
  * @param {!WebInspector.DOMNode} node
@@ -93,7 +93,7 @@ WebInspector.ElementsTreeElement.visibleShadowRoots = function(node)
         return root.shadowRootType() !== WebInspector.DOMNode.ShadowRootTypes.UserAgent;
     }
     return roots;
-}
+};
 
 /**
  * @param {!WebInspector.DOMNode} node
@@ -112,7 +112,7 @@ WebInspector.ElementsTreeElement.canShowInlineText = function(node)
     if (textChild.nodeValue().length < maxInlineTextChildLength)
         return true;
     return false;
-}
+};
 
 /**
  * @param {!WebInspector.ContextSubMenuItem} subMenu
@@ -135,7 +135,7 @@ WebInspector.ElementsTreeElement.populateForcedPseudoStateItems = function(subMe
     {
         WebInspector.CSSModel.fromNode(node).forcePseudoState(node, pseudoState, enabled);
     }
-}
+};
 
 WebInspector.ElementsTreeElement.prototype = {
     /**
@@ -1641,4 +1641,4 @@ WebInspector.ElementsTreeElement.prototype = {
     },
 
     __proto__: TreeElement.prototype
-}
+};

@@ -46,7 +46,7 @@ WebInspector.ClearStorageView = function(resourcesPanel)
     var footer = this._reportView.appendSection("", "clear-storage-button").appendRow();
     this._clearButton = createTextButton(WebInspector.UIString("Clear site data"), this._clear.bind(this), WebInspector.UIString("Clear site data"));
     footer.appendChild(this._clearButton);
-}
+};
 
 WebInspector.ClearStorageView.prototype = {
 
@@ -164,4 +164,4 @@ WebInspector.ClearStorageView.prototype = {
     },
 
     __proto__: WebInspector.VBox.prototype
-}
+};

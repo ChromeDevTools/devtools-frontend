@@ -45,12 +45,12 @@ WebInspector.TransformController = function(element, disableRotate)
     this._controlPanelToolbar.appendToolbarItem(resetButton);
 
     this._reset();
-}
+};
 
 /** @enum {symbol} */
 WebInspector.TransformController.Events = {
     TransformChanged: Symbol("TransformChanged")
-}
+};
 
 /**
  * @enum {string}
@@ -58,7 +58,7 @@ WebInspector.TransformController.Events = {
 WebInspector.TransformController.Modes = {
     Pan: "Pan",
     Rotate: "Rotate",
-}
+};
 
 WebInspector.TransformController.prototype = {
     /**
@@ -330,4 +330,4 @@ WebInspector.TransformController.prototype = {
     },
 
     __proto__: WebInspector.Object.prototype
-}
+};

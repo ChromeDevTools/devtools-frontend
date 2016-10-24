@@ -7,7 +7,7 @@
  */
 WebInspector.ASTService = function()
 {
-}
+};
 
 WebInspector.ASTService.prototype = {
     /**
@@ -29,4 +29,4 @@ WebInspector.ASTService.prototype = {
     {
         return WebInspector.SASSSupport.parseSCSS(url, text);
     },
-}
+};

@@ -34,7 +34,7 @@
  */
 WebInspector.AuditCategories.PagePerformance = function() {
     WebInspector.AuditCategoryImpl.call(this, WebInspector.AuditCategories.PagePerformance.AuditCategoryName);
-}
+};
 
 WebInspector.AuditCategories.PagePerformance.AuditCategoryName = WebInspector.UIString("Web Page Performance");
 
@@ -47,7 +47,7 @@ WebInspector.AuditCategories.PagePerformance.prototype = {
     },
 
     __proto__: WebInspector.AuditCategoryImpl.prototype
-}
+};
 
 /**
  * @constructor
@@ -55,7 +55,7 @@ WebInspector.AuditCategories.PagePerformance.prototype = {
  */
 WebInspector.AuditCategories.NetworkUtilization = function() {
     WebInspector.AuditCategoryImpl.call(this, WebInspector.AuditCategories.NetworkUtilization.AuditCategoryName);
-}
+};
 
 WebInspector.AuditCategories.NetworkUtilization.AuditCategoryName = WebInspector.UIString("Network Utilization");
 
@@ -74,4 +74,4 @@ WebInspector.AuditCategories.NetworkUtilization.prototype = {
     },
 
     __proto__: WebInspector.AuditCategoryImpl.prototype
-}
+};

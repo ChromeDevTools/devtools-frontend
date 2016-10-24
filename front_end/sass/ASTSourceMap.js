@@ -21,7 +21,7 @@ WebInspector.ASTSourceMap = function(compiledURL, sourceMapURL, models, editCall
     this._compiledToSource = new Map();
     /** @type {!Multimap<!WebInspector.SASSSupport.TextNode, !WebInspector.SASSSupport.TextNode>} */
     this._sourceToCompiled = new Multimap();
-}
+};
 
 WebInspector.ASTSourceMap.prototype = {
     /**
@@ -216,4 +216,4 @@ WebInspector.ASTSourceMap.prototype = {
         }
         return newMap;
     }
-}
+};

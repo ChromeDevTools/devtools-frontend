@@ -586,7 +586,7 @@ WebInspector.NetworkLogViewColumns.prototype = {
      */
     contextMenu: function(event)
     {
-        if (!this._gridMode || !event.target.isSelfOrDescendant(this._dataGrid.headerTableBody))
+        if (!this._gridMode || !event.target.isSelfOrDescendant(this._dataGrid.headerTableBody()))
             return false;
 
         var columnConfigs = this._columns.filter(columnConfig => columnConfig.hideable);

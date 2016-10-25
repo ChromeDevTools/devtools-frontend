@@ -252,7 +252,7 @@ WebInspector.Main.prototype = {
         this._appUIShown = true;
         if (this._fileSystemManagerInitialized) {
             // Allow UI cycles to repaint prior to creating connection.
-            setTimeout(this._connectAndCreateTarget.bind(this), 0);
+            setTimeout(this._initializeTarget.bind(this), 0);
         }
         console.timeEnd("Main._showAppUI");
     },
@@ -261,60 +261,22 @@ WebInspector.Main.prototype = {
     {
         this._fileSystemManagerInitialized = true;
         if (this._appUIShown)
-            this._connectAndCreateTarget();
+            this._initializeTarget();
+    },
+
+    _initializeTarget: function()
+    {
+        this._connectAndCreateTarget();
+        InspectorFrontendHost.readyForTest();
+        WebInspector.targetManager.setMainConnectionInterceptor(this._interceptMainConnection.bind(this));
+        // Asynchronously run the extensions.
+        setTimeout(this._lateInitialization.bind(this), 100);
     },
 
     _connectAndCreateTarget: function()
     {
         console.time("Main._connectAndCreateTarget");
-        this._createConnection().then(connection => {
-            this._createMainTarget(connection);
-            InspectorFrontendHost.readyForTest();
-            WebInspector.targetManager.setMainTargetFactory(this._recreateMainTarget.bind(this));
-            // Asynchronously run the extensions.
-            console.timeEnd("Main._connectAndCreateTarget");
-            setTimeout(this._lateInitialization.bind(this), 100);
-        });
-    },
 
-    _recreateMainTarget: function()
-    {
-        this._createConnection().then(this._createMainTarget.bind(this));
-    },
-
-    /**
-     * @return {!Promise<!InspectorBackendClass.Connection>}
-     */
-    _createConnection: function()
-    {
-        if (Runtime.queryParam("ws")) {
-            var ws = "ws://" + Runtime.queryParam("ws");
-            return WebInspector.WebSocketConnection.Create(ws).then(connection => {
-                connection.addEventListener(InspectorBackendClass.Connection.Events.Disconnected, onDisconnected);
-                return connection;
-            });
-        }
-
-        return /** @type {!Promise<!InspectorBackendClass.Connection>} */ (Promise.resolve(InspectorFrontendHost.isHostedMode() ?
-            new WebInspector.StubConnection() : new WebInspector.MainConnection()));
-
-        /**
-         * @param {!WebInspector.Event} event
-         */
-        function onDisconnected(event)
-        {
-            if (WebInspector._disconnectedScreenWithReasonWasShown)
-                return;
-            WebInspector.RemoteDebuggingTerminatedScreen.show(event.data.reason);
-        }
-    },
-
-    /**
-     * @param {!InspectorBackendClass.Connection} connection
-     */
-    _createMainTarget: function(connection)
-    {
-        console.time("Main._createMainTarget");
         var capabilities =
             WebInspector.Target.Capability.Browser | WebInspector.Target.Capability.DOM |
             WebInspector.Target.Capability.JS | WebInspector.Target.Capability.Log |
@@ -327,12 +289,55 @@ WebInspector.Main.prototype = {
             capabilities = WebInspector.Target.Capability.JS;
         }
 
-        var target = WebInspector.targetManager.createTarget(WebInspector.UIString("Main"), capabilities, connection, null);
+        var target = WebInspector.targetManager.createTarget(WebInspector.UIString("Main"), capabilities, this._createMainConnection.bind(this), null);
         target.registerInspectorDispatcher(new WebInspector.Main.InspectorDomainDispatcher(target));
         target.runtimeAgent().runIfWaitingForDebugger();
         if (target.hasBrowserCapability())
             target.inspectorAgent().enable();
-        console.timeEnd("Main._createMainTarget");
+
+        console.timeEnd("Main._connectAndCreateTarget");
+    },
+
+    /**
+     * @param {function(string)} onMessage
+     * @return {!Promise<!InspectorBackendClass.Connection>}
+     */
+    _interceptMainConnection: function(onMessage)
+    {
+        var params = {
+            onMessage: onMessage,
+            onDisconnect: this._connectAndCreateTarget.bind(this)
+        };
+        return this._connection.disconnect().then(this._createMainConnection.bind(this, params));
+    },
+
+    /**
+     * @param {!InspectorBackendClass.Connection.Params} params
+     * @return {!InspectorBackendClass.Connection}
+     */
+    _createMainConnection: function(params)
+    {
+        if (Runtime.queryParam("ws")) {
+            var ws = "ws://" + Runtime.queryParam("ws");
+            params.onDisconnect = onDisconnect.bind(null, params.onDisconnect);
+            this._connection = new WebInspector.WebSocketConnection(ws, params);
+        } else if (InspectorFrontendHost.isHostedMode()) {
+            this._connection = new WebInspector.StubConnection(params);
+        } else {
+            this._connection = new WebInspector.MainConnection(params);
+        }
+        return this._connection;
+
+        /**
+         * @param {function(string)} callback
+         * @param {string} reason
+         */
+        function onDisconnect(callback, reason)
+        {
+            if (!WebInspector._disconnectedScreenWithReasonWasShown)
+                WebInspector.RemoteDebuggingTerminatedScreen.show(reason);
+            callback(reason);
+        }
     },
 
     _lateInitialization: function()
@@ -953,9 +958,8 @@ WebInspector.Main.InspectedNodeRevealer.prototype = {
  */
 WebInspector.sendOverProtocol = function(method, params)
 {
-    var connection = WebInspector.targetManager.mainTarget().connection();
     return new Promise((resolve, reject) => {
-        connection.sendRawMessageForTesting(method, params, (err, result) => {
+        InspectorBackendClass.sendRawMessageForTesting(method, params, (err, result) => {
             if (err)
                 return reject(err);
             return resolve(result);

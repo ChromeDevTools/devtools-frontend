@@ -671,7 +671,6 @@ WebInspector.NetworkDispatcher.prototype = {
 WebInspector.MultitargetNetworkManager = function()
 {
     WebInspector.Object.call(this);
-    WebInspector.targetManager.observeTargets(this);
 
     /** @type {!Set<string>} */
     this._blockedURLs = new Set();
@@ -685,6 +684,8 @@ WebInspector.MultitargetNetworkManager = function()
     this._agents = new Set();
     /** @type {!WebInspector.NetworkManager.Conditions} */
     this._networkConditions = WebInspector.NetworkManager.NoThrottlingConditions;
+
+    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.Network);
 };
 
 /** @enum {symbol} */
@@ -789,8 +790,8 @@ WebInspector.MultitargetNetworkManager.prototype = {
     setExtraHTTPHeaders: function(headers)
     {
         this._extraHeaders = headers;
-        for (var target of WebInspector.targetManager.targets())
-            target.networkAgent().setExtraHTTPHeaders(this._extraHeaders);
+        for (var agent of this._agents)
+            agent.setExtraHTTPHeaders(this._extraHeaders);
     },
 
     /**
@@ -805,8 +806,8 @@ WebInspector.MultitargetNetworkManager.prototype = {
     {
         var userAgent = this._currentUserAgent();
         WebInspector.ResourceLoader.targetUserAgent = userAgent;
-        for (var target of WebInspector.targetManager.targets())
-            target.networkAgent().setUserAgentOverride(userAgent);
+        for (var agent of this._agents)
+            agent.setUserAgentOverride(userAgent);
     },
 
     /**
@@ -858,8 +859,8 @@ WebInspector.MultitargetNetworkManager.prototype = {
     _addBlockedURL: function(url)
     {
         this._blockedURLs.add(url);
-        for (var target of WebInspector.targetManager.targets())
-            target.networkAgent().addBlockedURL(url);
+        for (var agent of this._agents)
+            agent.addBlockedURL(url);
     },
 
     /**
@@ -868,20 +869,20 @@ WebInspector.MultitargetNetworkManager.prototype = {
     _removeBlockedURL: function(url)
     {
         this._blockedURLs.delete(url);
-        for (var target of WebInspector.targetManager.targets())
-            target.networkAgent().removeBlockedURL(url);
+        for (var agent of this._agents)
+            agent.removeBlockedURL(url);
     },
 
     clearBrowserCache: function()
     {
-        for (var target of WebInspector.targetManager.targets())
-            target.networkAgent().clearBrowserCache();
+        for (var agent of this._agents)
+            agent.clearBrowserCache();
     },
 
     clearBrowserCookies: function()
     {
-        for (var target of WebInspector.targetManager.targets())
-            target.networkAgent().clearBrowserCookies();
+        for (var agent of this._agents)
+            agent.clearBrowserCookies();
     },
 
     /**

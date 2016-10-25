@@ -498,7 +498,7 @@ WebInspector.TimelineUIUtils.buildDetailsTextForTraceEvent = function(event, tar
     function linkifyLocationAsText(scriptId, lineNumber, columnNumber)
     {
         var debuggerModel = WebInspector.DebuggerModel.fromTarget(target);
-        if (!target || target.isDetached() || !scriptId || !debuggerModel)
+        if (!target || target.isDisposed() || !scriptId || !debuggerModel)
             return null;
         var rawLocation = debuggerModel.createRawLocationByScriptId(scriptId, lineNumber, columnNumber);
         if (!rawLocation)

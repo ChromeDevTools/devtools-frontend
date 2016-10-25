@@ -165,7 +165,7 @@ WebInspector.Linkifier.prototype = {
     maybeLinkifyScriptLocation: function(target, scriptId, sourceURL, lineNumber, columnNumber, classes)
     {
         var fallbackAnchor = sourceURL ? WebInspector.linkifyResourceAsNode(sourceURL, lineNumber, columnNumber, classes) : null;
-        if (!target || target.isDetached())
+        if (!target || target.isDisposed())
             return fallbackAnchor;
         var debuggerModel = WebInspector.DebuggerModel.fromTarget(target);
         if (!debuggerModel)
@@ -235,7 +235,7 @@ WebInspector.Linkifier.prototype = {
 
         var topFrame = stackTrace.callFrames[0];
         var fallbackAnchor = WebInspector.linkifyResourceAsNode(topFrame.url, topFrame.lineNumber, topFrame.columnNumber, classes);
-        if (target.isDetached())
+        if (target.isDisposed())
             return fallbackAnchor;
 
         var debuggerModel = WebInspector.DebuggerModel.fromTarget(target);

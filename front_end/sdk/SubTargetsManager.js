@@ -67,8 +67,10 @@ WebInspector.SubTargetsManager.prototype = {
      */
     dispose: function()
     {
-        for (var connection of this._connections.values())
-            connection.close();
+        for (var connection of this._connections.values()) {
+            this._agent.detachFromTarget(connection._targetId);
+            connection._onDisconnect.call(null, "disposed");
+        }
         this._connections.clear();
         this._attachedTargets.clear();
     },
@@ -149,9 +151,6 @@ WebInspector.SubTargetsManager.prototype = {
      */
     _attachedToTarget: function(targetInfo, waitingForDebugger)
     {
-        var connection = new WebInspector.SubTargetConnection(this._agent, targetInfo.id);
-        this._connections.set(targetInfo.id, connection);
-
         var targetName = "";
         if (targetInfo.type === "node") {
             targetName = targetInfo.title;
@@ -159,7 +158,7 @@ WebInspector.SubTargetsManager.prototype = {
             var parsedURL = targetInfo.url.asParsedURL();
             targetName = parsedURL ? parsedURL.lastPathComponentWithFragment() : "#" + (++this._lastAnonymousTargetId);
         }
-        var target = WebInspector.targetManager.createTarget(targetName, this._capabilitiesForType(targetInfo.type), connection, this.target());
+        var target = WebInspector.targetManager.createTarget(targetName, this._capabilitiesForType(targetInfo.type), this._createConnection.bind(this, targetInfo.id), this.target());
         target[WebInspector.SubTargetsManager._InfoSymbol] = targetInfo;
         this._attachedTargets.set(targetInfo.id, target);
 
@@ -174,16 +173,28 @@ WebInspector.SubTargetsManager.prototype = {
 
     /**
      * @param {string} targetId
+     * @param {!InspectorBackendClass.Connection.Params} params
+     * @return {!InspectorBackendClass.Connection}
+     */
+    _createConnection: function(targetId, params)
+    {
+        var connection = new WebInspector.SubTargetConnection(this._agent, targetId, params);
+        this._connections.set(targetId, connection);
+        return connection;
+    },
+
+    /**
+     * @param {string} targetId
      */
     _detachedFromTarget: function(targetId)
     {
-        var connection = this._connections.get(targetId);
-        if (connection)
-            connection._reportClosed();
-        this._connections.delete(targetId);
         var target = this._attachedTargets.get(targetId);
         this._attachedTargets.delete(targetId);
         this.dispatchEventToListeners(WebInspector.SubTargetsManager.Events.SubTargetRemoved, target);
+        var connection = this._connections.get(targetId);
+        if (connection)
+            connection._onDisconnect.call(null, "target terminated");
+        this._connections.delete(targetId);
     },
 
     /**
@@ -194,7 +205,7 @@ WebInspector.SubTargetsManager.prototype = {
     {
         var connection = this._connections.get(targetId);
         if (connection)
-            connection.dispatch(message);
+            connection._onMessage.call(null, message);
     },
 
     /**
@@ -279,41 +290,37 @@ WebInspector.SubTargetsDispatcher.prototype = {
 
 /**
  * @constructor
- * @extends {InspectorBackendClass.Connection}
+ * @implements {InspectorBackendClass.Connection}
  * @param {!Protocol.TargetAgent} agent
  * @param {string} targetId
+ * @param {!InspectorBackendClass.Connection.Params} params
  */
-WebInspector.SubTargetConnection = function(agent, targetId)
+WebInspector.SubTargetConnection = function(agent, targetId, params)
 {
-    InspectorBackendClass.Connection.call(this);
     this._agent = agent;
     this._targetId = targetId;
+    this._onMessage = params.onMessage;
+    this._onDisconnect = params.onDisconnect;
 };
 
 WebInspector.SubTargetConnection.prototype = {
     /**
      * @override
-     * @param {!Object} messageObject
+     * @param {string} message
      */
-    sendMessage: function(messageObject)
+    sendMessage: function(message)
     {
-        this._agent.sendMessageToTarget(this._targetId, JSON.stringify(messageObject));
+        this._agent.sendMessageToTarget(this._targetId, message);
     },
 
     /**
      * @override
+     * @return {!Promise}
      */
-    forceClose: function()
+    disconnect: function()
     {
-        this._agent.detachFromTarget(this._targetId);
+        throw new Error("Not implemented");
     },
-
-    _reportClosed: function()
-    {
-        this.connectionClosed("target_terminated");
-    },
-
-    __proto__: InspectorBackendClass.Connection.prototype
 };
 
 /**

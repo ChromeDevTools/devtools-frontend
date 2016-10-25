@@ -798,7 +798,7 @@ WebInspector.BreakpointManager.TargetBreakpoint.prototype = {
      */
     _updateInDebugger: function(callback)
     {
-        if (this.target().isDetached()) {
+        if (this.target().isDisposed()) {
             this._cleanUpAfterDebuggerIsGone();
             callback();
             return;

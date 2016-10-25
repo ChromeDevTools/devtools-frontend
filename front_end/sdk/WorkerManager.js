@@ -78,7 +78,7 @@ WebInspector.WorkerManager.prototype = {
     _reset: function()
     {
         for (var connection of this._connections.values())
-            connection.close();
+            connection._onDisconnect.call(null, "reset");
         this._connections.clear();
         this._targetsByWorkerId.clear();
     },
@@ -96,12 +96,10 @@ WebInspector.WorkerManager.prototype = {
      */
     _workerCreated: function(workerId, url, waitingForDebugger)
     {
-        var connection = new WebInspector.WorkerConnection(this, workerId);
-        this._connections.set(workerId, connection);
-
+        var capabilities = WebInspector.Target.Capability.JS | WebInspector.Target.Capability.Log;
         var parsedURL = url.asParsedURL();
         var workerName = parsedURL ? parsedURL.lastPathComponentWithFragment() : "#" + (++this._lastAnonymousTargetId);
-        var target = WebInspector.targetManager.createTarget(workerName, WebInspector.Target.Capability.JS | WebInspector.Target.Capability.Log, connection, this.target());
+        var target = WebInspector.targetManager.createTarget(workerName, capabilities, this._createConnection.bind(this, workerId), this.target());
         this._targetsByWorkerId.set(workerId, target);
 
         // Only pause new worker if debugging SW - we are going through the
@@ -114,12 +112,24 @@ WebInspector.WorkerManager.prototype = {
 
     /**
      * @param {string} workerId
+     * @param {!InspectorBackendClass.Connection.Params} params
+     * @return {!InspectorBackendClass.Connection}
+     */
+    _createConnection: function(workerId, params)
+    {
+        var connection = new WebInspector.WorkerConnection(this, workerId, params);
+        this._connections.set(workerId, connection);
+        return connection;
+    },
+
+    /**
+     * @param {string} workerId
      */
     _workerTerminated: function(workerId)
     {
         var connection = this._connections.get(workerId);
         if (connection)
-            connection._reportClosed();
+            connection._onDisconnect.call(null, "worker terminated");
         this._connections.delete(workerId);
         this._targetsByWorkerId.delete(workerId);
     },
@@ -132,7 +142,7 @@ WebInspector.WorkerManager.prototype = {
     {
         var connection = this._connections.get(workerId);
         if (connection)
-            connection.dispatch(message);
+            connection._onMessage.call(null, message);
     },
 
     /**
@@ -200,33 +210,35 @@ WebInspector.WorkerDispatcher.prototype = {
 
 /**
  * @constructor
- * @extends {InspectorBackendClass.Connection}
+ * @implements {InspectorBackendClass.Connection}
  * @param {!WebInspector.WorkerManager} workerManager
  * @param {string} workerId
+ * @param {!InspectorBackendClass.Connection.Params} params
  */
-WebInspector.WorkerConnection = function(workerManager, workerId)
+WebInspector.WorkerConnection = function(workerManager, workerId, params)
 {
-    InspectorBackendClass.Connection.call(this);
-    // FIXME: remove resourceTreeModel and others from worker targets
-    this.suppressErrorsForDomains(["Worker", "Page", "CSS", "DOM", "DOMStorage", "Database", "Network", "IndexedDB"]);
     this._agent = workerManager.target().workerAgent();
     this._workerId = workerId;
+    this._onMessage = params.onMessage;
+    this._onDisconnect = params.onDisconnect;
 };
 
 WebInspector.WorkerConnection.prototype = {
     /**
      * @override
-     * @param {!Object} messageObject
+     * @param {string} message
      */
-    sendMessage: function(messageObject)
+    sendMessage: function(message)
     {
-        this._agent.sendMessageToWorker(this._workerId, JSON.stringify(messageObject));
+        this._agent.sendMessageToWorker(this._workerId, message);
     },
 
-    _reportClosed: function()
+    /**
+     * @override
+     * @return {!Promise}
+     */
+    disconnect: function()
     {
-        this.connectionClosed("worker_terminated");
+        throw new Error("Not implemented");
     },
-
-    __proto__: InspectorBackendClass.Connection.prototype
 };

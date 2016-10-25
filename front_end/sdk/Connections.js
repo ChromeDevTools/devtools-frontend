@@ -4,25 +4,31 @@
 
 /**
  * @constructor
- * @extends {InspectorBackendClass.Connection}
+ * @implements {InspectorBackendClass.Connection}
+ * @param {!InspectorBackendClass.Connection.Params} params
  */
-WebInspector.MainConnection = function()
+WebInspector.MainConnection = function(params)
 {
-    InspectorBackendClass.Connection.call(this);
-    InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.DispatchMessage, this._dispatchMessage, this);
-    InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.DispatchMessageChunk, this._dispatchMessageChunk, this);
-    InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.EvaluateForTestInFrontend, this._evaluateForTestInFrontend, this);
-};
+    this._onMessage = params.onMessage;
+    this._onDisconnect = params.onDisconnect;
+    this._disconnected = false;
+    this._eventListeners = [
+        InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.DispatchMessage, this._dispatchMessage, this),
+        InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.DispatchMessageChunk, this._dispatchMessageChunk, this),
+        InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.EvaluateForTestInFrontend, this._evaluateForTestInFrontend, this),
+    ];
+}
 
 WebInspector.MainConnection.prototype = {
+
     /**
      * @override
-     * @param {!Object} messageObject
+     * @param {string} message
      */
-    sendMessage: function(messageObject)
+    sendMessage: function(message)
     {
-        var message = JSON.stringify(messageObject);
-        InspectorFrontendHost.sendMessageToBackend(message);
+        if (!this._disconnected)
+            InspectorFrontendHost.sendMessageToBackend(message);
     },
 
     /**
@@ -30,7 +36,7 @@ WebInspector.MainConnection.prototype = {
      */
     _dispatchMessage: function(event)
     {
-        this.dispatch(/** @type {string} */ (event.data));
+        this._onMessage.call(null, /** @type {string} */ (event.data));
     },
 
     /**
@@ -46,7 +52,7 @@ WebInspector.MainConnection.prototype = {
         }
         this._messageBuffer += messageChunk;
         if (this._messageBuffer.length === this._messageSize) {
-            this.dispatch(this._messageBuffer);
+            this._onMessage.call(null, this._messageBuffer);
             this._messageBuffer = "";
             this._messageSize = 0;
         }
@@ -76,180 +82,141 @@ WebInspector.MainConnection.prototype = {
             }
         }
 
-        this.deprecatedRunAfterPendingDispatches(invokeMethod);
+        InspectorBackendClass.deprecatedRunAfterPendingDispatches(invokeMethod);
     },
 
     /**
      * @override
+     * @return {!Promise}
      */
-    forceClose: function()
+    disconnect: function()
     {
-        InspectorFrontendHost.events.removeEventListener(InspectorFrontendHostAPI.Events.DispatchMessage, this._dispatchMessage, this);
-        InspectorFrontendHost.events.removeEventListener(InspectorFrontendHostAPI.Events.DispatchMessageChunk, this._dispatchMessageChunk, this);
-        InspectorFrontendHost.events.removeEventListener(InspectorFrontendHostAPI.Events.EvaluateForTestInFrontend, this._evaluateForTestInFrontend, this);
-    },
+        var onDisconnect = this._onDisconnect;
+        WebInspector.EventTarget.removeEventListeners(this._eventListeners);
+        this._onDisconnect = null;
+        this._onMessage = null;
+        this._disconnected = true;
 
-    __proto__: InspectorBackendClass.Connection.prototype
+        var fulfill;
+        var promise = new Promise(f => fulfill = f);
+        InspectorFrontendHost.reattach(() => {
+            onDisconnect.call(null, "force disconnect");
+            fulfill();
+        });
+        return promise;
+    },
 };
 
 /**
  * @constructor
- * @extends {InspectorBackendClass.Connection}
+ * @implements {InspectorBackendClass.Connection}
  * @param {string} url
- * @param {function(!InspectorBackendClass.Connection)} onConnectionReady
+ * @param {!InspectorBackendClass.Connection.Params} params
  */
-WebInspector.WebSocketConnection = function(url, onConnectionReady)
+WebInspector.WebSocketConnection = function(url, params)
 {
-    InspectorBackendClass.Connection.call(this);
     this._socket = new WebSocket(url);
-    this._socket.onmessage = this._onMessage.bind(this);
     this._socket.onerror = this._onError.bind(this);
-    this._socket.onopen = onConnectionReady.bind(null, this);
-    this._socket.onclose = this.connectionClosed.bind(this, "websocket_closed");
-};
+    this._socket.onopen = this._onOpen.bind(this);
+    this._socket.onmessage = (messageEvent) => params.onMessage.call(null, /** @type {string} */ (messageEvent.data));
+    this._onDisconnect = params.onDisconnect;
+    this._socket.onclose = params.onDisconnect.bind(null, "websocket closed");
 
-/**
- * @param {string} url
- * @return {!Promise<!InspectorBackendClass.Connection>}
- */
-WebInspector.WebSocketConnection.Create = function(url)
-{
-    var fulfill;
-    var result = new Promise(resolve => fulfill = resolve);
-    new WebInspector.WebSocketConnection(url, fulfill);
-    return result;
+    this._connected = false;
+    this._messages = [];
 };
 
 WebInspector.WebSocketConnection.prototype = {
-
-    /**
-     * @param {!MessageEvent} message
-     */
-    _onMessage: function(message)
+    _onError: function()
     {
-        var data = /** @type {string} */ (message.data);
-        this.dispatch(data);
+        // This is called if error occurred while connecting.
+        this._onDisconnect.call(null, "connection failed");
+        this._close();
     },
 
-    /**
-     * @param {!Event} error
-     */
-    _onError: function(error)
+    _onOpen: function()
     {
-        console.error(error);
+        this._socket.onerror = console.error;
+        this._connected = true;
+        for (var message of this._messages)
+            this._socket.send(message);
+        this._messages = [];
     },
 
-    /**
-     * @override
-     */
-    forceClose: function()
+    _close: function()
     {
+        this._socket.onerror = null;
+        this._socket.onopen = null;
+        this._socket.onclose = null;
+        this._socket.onmessage = null;
         this._socket.close();
+        this._socket = null;
     },
 
     /**
      * @override
-     * @param {!Object} messageObject
+     * @param {string} message
      */
-    sendMessage: function(messageObject)
+    sendMessage: function(message)
     {
-        var message = JSON.stringify(messageObject);
-        this._socket.send(message);
+        if (this._connected)
+            this._socket.send(message);
+        else
+            this._messages.push(message);
     },
 
-    __proto__: InspectorBackendClass.Connection.prototype
+    /**
+     * @override
+     * @return {!Promise}
+     */
+    disconnect: function()
+    {
+        this._onDisconnect.call(null, "force disconnect");
+        this._close();
+        return Promise.resolve();
+    }
 };
 
 /**
  * @constructor
- * @extends {InspectorBackendClass.Connection}
+ * @implements {InspectorBackendClass.Connection}
+ * @param {!InspectorBackendClass.Connection.Params} params
  */
-WebInspector.StubConnection = function()
+WebInspector.StubConnection = function(params)
 {
-    InspectorBackendClass.Connection.call(this);
+    this._onMessage = params.onMessage;
+    this._onDisconnect = params.onDisconnect;
 };
 
 WebInspector.StubConnection.prototype = {
     /**
      * @override
-     * @param {!Object} messageObject
+     * @param {string} message
      */
-    sendMessage: function(messageObject)
+    sendMessage: function(message)
     {
-        setTimeout(this._respondWithError.bind(this, messageObject), 0);
+        setTimeout(this._respondWithError.bind(this, message), 0);
     },
 
-    /**
-     * @param {!Object} messageObject
-     */
-    _respondWithError: function(messageObject)
-    {
-        var error = { message: "This is a stub connection, can't dispatch message.", code:  InspectorBackendClass.DevToolsStubErrorCode, data: messageObject };
-        this.dispatch({ id: messageObject.id, error: error });
-    },
-
-    __proto__: InspectorBackendClass.Connection.prototype
-};
-
-
-/**
- * @constructor
- * @param {function(string)} dispatchCallback
- * @param {function()} yieldCallback
- */
-WebInspector.RawProtocolConnection = function(dispatchCallback, yieldCallback)
-{
-    InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.DispatchMessage, this._dispatchMessage, this);
-    InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.DispatchMessageChunk, this._dispatchMessageChunk, this);
-    this._dispatchCallback = dispatchCallback;
-    this._yieldCallback = yieldCallback;
-    this._isClosed = false;
-};
-
-WebInspector.RawProtocolConnection.prototype = {
     /**
      * @param {string} message
      */
-    send: function(message)
+    _respondWithError: function(message)
     {
-        if (this._isClosed)
-            return;
-        InspectorFrontendHost.sendMessageToBackend(message);
+        var messageObject = JSON.parse(message);
+        var error = { message: "This is a stub connection, can't dispatch message.", code:  InspectorBackendClass.DevToolsStubErrorCode, data: messageObject };
+        this._onMessage.call(null, { id: messageObject.id, error: error });
     },
 
     /**
-     * @param {!WebInspector.Event} event
+     * @override
+     * @return {!Promise}
      */
-    _dispatchMessage: function(event)
+    disconnect: function()
     {
-        this._dispatchCallback(/** @type {string} */ (event.data));
+        this._onDisconnect.call(null, "force disconnect");
+        this._onDisconnect = null;
+        this._onMessage = null;
+        return Promise.resolve();
     },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _dispatchMessageChunk: function(event)
-    {
-        var messageChunk = /** @type {string} */ (event.data["messageChunk"]);
-        var messageSize = /** @type {number} */ (event.data["messageSize"]);
-        if (messageSize) {
-            this._messageBuffer = "";
-            this._messageSize = messageSize;
-        }
-        this._messageBuffer += messageChunk;
-        if (this._messageBuffer.length === this._messageSize) {
-            this._dispatchCallback(this._messageBuffer);
-            this._messageBuffer = "";
-            this._messageSize = 0;
-        }
-    },
-
-    yieldConnection: function()
-    {
-        InspectorFrontendHost.events.removeEventListener(InspectorFrontendHostAPI.Events.DispatchMessage, this._dispatchMessage, this);
-        InspectorFrontendHost.events.removeEventListener(InspectorFrontendHostAPI.Events.DispatchMessageChunk, this._dispatchMessageChunk, this);
-        this._isClosed = true;
-        delete this._dispatchCallback;
-        this._yieldCallback();
-    }
 };

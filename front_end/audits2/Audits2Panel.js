@@ -34,7 +34,7 @@ WebInspector.Audits2Panel.prototype = {
     _stop: function()
     {
         this._send("stop").then(() => {
-            this._rawConnection.yieldConnection();
+            this._rawConnection.disconnect();
             this._backend.dispose();
             delete this._backend;
             delete this._backendPromise;
@@ -51,7 +51,7 @@ WebInspector.Audits2Panel.prototype = {
         if (!this._backendPromise) {
             this._backendPromise = WebInspector.serviceManager.createAppService("audits2_worker", "Audits2Service", false).then(backend => {
                 this._backend = backend;
-                this._backend.on("sendProtocolMessage", result => this._rawConnection.send(result.message));
+                this._backend.on("sendProtocolMessage", result => this._rawConnection.sendMessage(result.message));
             });
         }
         return this._backendPromise.then(() => this._backend ? this._backend.send(method, params) : undefined);

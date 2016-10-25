@@ -608,7 +608,7 @@ TestSuite.prototype.testPauseInSharedWorkerInitialization1 = function()
     function callback()
     {
         var target = WebInspector.targetManager.targets(WebInspector.Target.Capability.JS)[0];
-        target._connection.deprecatedRunAfterPendingDispatches(this.releaseControl.bind(this));
+        InspectorBackendClass.deprecatedRunAfterPendingDispatches(this.releaseControl.bind(this));
     }
 };
 

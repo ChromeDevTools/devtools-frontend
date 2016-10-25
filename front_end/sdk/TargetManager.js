@@ -183,13 +183,13 @@ WebInspector.TargetManager.prototype = {
     /**
      * @param {string} name
      * @param {number} capabilitiesMask
-     * @param {!InspectorBackendClass.Connection} connection
+     * @param {!InspectorBackendClass.Connection.Factory} connectionFactory
      * @param {?WebInspector.Target} parentTarget
      * @return {!WebInspector.Target}
      */
-    createTarget: function(name, capabilitiesMask, connection, parentTarget)
+    createTarget: function(name, capabilitiesMask, connectionFactory, parentTarget)
     {
-        var target = new WebInspector.Target(this, name, capabilitiesMask, connection, parentTarget);
+        var target = new WebInspector.Target(this, name, capabilitiesMask, connectionFactory, parentTarget);
 
         var logAgent = target.hasLogCapability() ? target.logAgent() : null;
 
@@ -236,35 +236,20 @@ WebInspector.TargetManager.prototype = {
     },
 
     /**
-     * @param {function()} factory
+     * @param {function(function(string)):!Promise<!InspectorBackendClass.Connection>} interceptor
      */
-    setMainTargetFactory: function(factory)
+    setMainConnectionInterceptor: function(interceptor)
     {
-        this._mainTargetFactory = factory;
+        this._mainConnectionInterceptor = interceptor;
     },
 
     /**
-     * @param {function(string)} dispatch
-     * @return {!Promise<!WebInspector.RawProtocolConnection>}
+     * @param {function(string)} onMessage
+     * @return {!Promise<!InspectorBackendClass.Connection>}
      */
-    interceptMainConnection: function(dispatch)
+    interceptMainConnection: function(onMessage)
     {
-        var target = WebInspector.targetManager.mainTarget();
-        if (target)
-            target.connection().close();
-
-        var fulfill;
-        var result = new Promise(resolve => fulfill = resolve);
-        InspectorFrontendHost.reattach(() => fulfill(new WebInspector.RawProtocolConnection(dispatch, yieldCallback.bind(this))));
-        return result;
-
-        /**
-         * @this {WebInspector.TargetManager}
-         */
-        function yieldCallback()
-        {
-            InspectorFrontendHost.reattach(this._mainTargetFactory());
-        }
+        return this._mainConnectionInterceptor.call(null, onMessage);
     },
 
     /**

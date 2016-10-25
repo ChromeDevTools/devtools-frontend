@@ -10,20 +10,22 @@
  * @param {!WebInspector.TargetManager} targetManager
  * @param {string} name
  * @param {number} capabilitiesMask
- * @param {!InspectorBackendClass.Connection} connection
+ * @param {!InspectorBackendClass.Connection.Factory} connectionFactory
  * @param {?WebInspector.Target} parentTarget
  */
-WebInspector.Target = function(targetManager, name, capabilitiesMask, connection, parentTarget)
+WebInspector.Target = function(targetManager, name, capabilitiesMask, connectionFactory, parentTarget)
 {
-    Protocol.Agents.call(this, connection.agentsMap());
+    // TODO(dgozman): inherit instead.
+    var targetProto = new InspectorBackendClass.TargetPrototype(connectionFactory, this._dispose.bind(this));
+    Protocol.Agents.call(this, targetProto.agentsMap());
     this._targetManager = targetManager;
     this._name = name;
     this._inspectedURL = "";
     this._capabilitiesMask = capabilitiesMask;
-    this._connection = connection;
+    this._targetProto = targetProto;
     this._parentTarget = parentTarget;
-    connection.addEventListener(InspectorBackendClass.Connection.Events.Disconnected, this.dispose, this);
     this._id = WebInspector.Target._nextId++;
+    this._disposed = false;
 
     /** @type {!Map.<!Function, !WebInspector.SDKModel>} */
     this._modelByConstructor = new Map();
@@ -92,14 +94,6 @@ WebInspector.Target.prototype = {
     },
 
     /**
-     * @return {!InspectorBackendClass.Connection}
-     */
-    connection: function()
-    {
-        return this._connection;
-    },
-
-    /**
      * @param {string} label
      * @return {string}
      */
@@ -115,7 +109,7 @@ WebInspector.Target.prototype = {
      */
     registerDispatcher: function(domain, dispatcher)
     {
-        this._connection.registerDispatcher(domain, dispatcher);
+        this._targetProto.registerDispatcher(domain, dispatcher);
     },
 
     /**
@@ -174,8 +168,9 @@ WebInspector.Target.prototype = {
         return this._parentTarget;
     },
 
-    dispose: function()
+    _dispose: function()
     {
+        this._disposed = true;
         this._targetManager.removeTarget(this);
         for (var model of this._modelByConstructor.valuesArray())
             model.dispose();
@@ -186,9 +181,9 @@ WebInspector.Target.prototype = {
     /**
      * @return {boolean}
      */
-    isDetached: function()
+    isDisposed: function()
     {
-        return this._connection.isClosed();
+        return this._disposed;
     },
 
     /**

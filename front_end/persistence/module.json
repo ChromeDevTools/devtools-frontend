@@ -2,6 +2,7 @@
     "dependencies": ["bindings", "workspace"],
     "scripts": [
         "DefaultMapping.js",
+        "Automapping.js",
         "Persistence.js"
     ]
 }

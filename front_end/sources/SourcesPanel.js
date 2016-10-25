@@ -795,6 +795,9 @@ WebInspector.SourcesPanel.prototype = {
     _appendUISourceCodeMappingItems: function(contextMenu, uiSourceCode)
     {
         WebInspector.NavigatorView.appendAddFolderItem(contextMenu);
+
+        if (Runtime.experiments.isEnabled("persistence2"))
+            return;
         if (uiSourceCode.project().type() === WebInspector.projectTypes.FileSystem) {
             var binding = WebInspector.persistence.binding(uiSourceCode);
             if (!binding)

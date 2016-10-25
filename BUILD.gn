@@ -175,6 +175,7 @@ devtools_bindings_js_files = [
 ]
 devtools_persistence_js_files = [
   "front_end/persistence/DefaultMapping.js",
+  "front_end/persistence/Automapping.js",
   "front_end/persistence/Persistence.js",
 ]
 devtools_platform_js_files = [

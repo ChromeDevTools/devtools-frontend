@@ -47,14 +47,18 @@ WebInspector.EditFileSystemView = function(fileSystemPath)
         WebInspector.isolatedFileSystemManager.addEventListener(WebInspector.IsolatedFileSystemManager.Events.ExcludedFolderRemoved, this._update, this)
     ];
 
-    var mappingsHeader = this.contentElement.createChild("div", "file-system-header");
-    mappingsHeader.createChild("div", "file-system-header-text").textContent = WebInspector.UIString("Mappings");
-    mappingsHeader.appendChild(createTextButton(WebInspector.UIString("Add"), this._addMappingButtonClicked.bind(this), "add-button"));
     this._mappingsList = new WebInspector.ListWidget(this);
     this._mappingsList.element.classList.add("file-system-list");
     this._mappingsList.registerRequiredCSS("settings/editFileSystemView.css");
     var mappingsPlaceholder = createElementWithClass("div", "file-system-list-empty");
-    mappingsPlaceholder.textContent = WebInspector.UIString("No mappings");
+    var mappingsHeader = this.contentElement.createChild("div", "file-system-header");
+    mappingsHeader.createChild("div", "file-system-header-text").textContent = WebInspector.UIString("Mappings");
+    if (Runtime.experiments.isEnabled("persistence2")) {
+        mappingsPlaceholder.textContent = WebInspector.UIString("Mappings are inferred automatically via the 'Persistence 2.0' experiment.");
+    } else {
+        mappingsPlaceholder.textContent = WebInspector.UIString("No mappings");
+        mappingsHeader.appendChild(createTextButton(WebInspector.UIString("Add"), this._addMappingButtonClicked.bind(this), "add-button"));
+    }
     this._mappingsList.setEmptyPlaceholder(mappingsPlaceholder);
     this._mappingsList.show(this.contentElement);
 
@@ -86,6 +90,8 @@ WebInspector.EditFileSystemView.prototype = {
 
         this._mappingsList.clear();
         this._mappings = [];
+        if (Runtime.experiments.isEnabled("persistence2"))
+            return;
         var mappings = WebInspector.fileSystemMapping.mappingEntries(this._fileSystemPath);
         for (var entry of mappings) {
             if (entry.configurable) {

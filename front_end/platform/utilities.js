@@ -69,6 +69,14 @@ String.prototype.findAll = function(string)
 /**
  * @return {string}
  */
+String.prototype.reverse = function()
+{
+    return this.split("").reverse().join("");
+}
+
+/**
+ * @return {string}
+ */
 String.prototype.replaceControlCharacters = function()
 {
     // Replace C0 and C1 control character sets with printable character.

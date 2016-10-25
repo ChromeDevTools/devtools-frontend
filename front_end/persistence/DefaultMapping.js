@@ -80,13 +80,13 @@ WebInspector.DefaultMapping.prototype = {
             var fileSystemPath = WebInspector.FileSystemWorkspaceBinding.fileSystemPath(uiSourceCode.project().id());
             var networkURL = this._fileSystemMapping.networkURLForFileSystemURL(fileSystemPath, uiSourceCode.url());
             var networkSourceCode = networkURL ? this._workspace.uiSourceCodeForURL(networkURL) : null;
-            return networkSourceCode ? new WebInspector.PersistenceBinding(networkSourceCode, uiSourceCode) : null;
+            return networkSourceCode ? new WebInspector.PersistenceBinding(networkSourceCode, uiSourceCode, false) : null;
         }
         if (uiSourceCode.project().type() === WebInspector.projectTypes.Network) {
             var file = this._fileSystemMapping.fileForURL(uiSourceCode.url());
             var projectId = file ? WebInspector.FileSystemWorkspaceBinding.projectId(file.fileSystemPath) : null;
             var fileSourceCode = file && projectId ? this._workspace.uiSourceCode(projectId, file.fileURL) : null;
-            return fileSourceCode ? new WebInspector.PersistenceBinding(uiSourceCode, fileSourceCode) : null;
+            return fileSourceCode ? new WebInspector.PersistenceBinding(uiSourceCode, fileSourceCode, false) : null;
         }
         return null;
     },

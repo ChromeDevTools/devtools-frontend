@@ -17,8 +17,11 @@ WebInspector.Persistence = function(workspace, breakpointManager, fileSystemMapp
     /** @type {!Map<string, number>} */
     this._filePathPrefixesToBindingCount = new Map();
 
-    this._mapping = new WebInspector.DefaultMapping(workspace, fileSystemMapping, this._onBindingCreated.bind(this), this._onBindingRemoved.bind(this));
-};
+    if (Runtime.experiments.isEnabled("persistence2"))
+        this._mapping = new WebInspector.Automapping(workspace, this._onBindingCreated.bind(this), this._onBindingRemoved.bind(this));
+    else
+        this._mapping = new WebInspector.DefaultMapping(workspace, fileSystemMapping, this._onBindingCreated.bind(this), this._onBindingRemoved.bind(this));
+}
 
 WebInspector.Persistence._binding = Symbol("Persistence.Binding");
 WebInspector.Persistence._muteCommit = Symbol("Persistence.MuteCommit");
@@ -240,11 +243,13 @@ WebInspector.Persistence.prototype = {
  * @constructor
  * @param {!WebInspector.UISourceCode} network
  * @param {!WebInspector.UISourceCode} fileSystem
+ * @param {boolean} exactMatch
  */
-WebInspector.PersistenceBinding = function(network, fileSystem)
+WebInspector.PersistenceBinding = function(network, fileSystem, exactMatch)
 {
     this.network = network;
     this.fileSystem = fileSystem;
+    this.exactMatch = exactMatch;
 };
 
 /** @type {!WebInspector.Persistence} */

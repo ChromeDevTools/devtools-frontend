@@ -219,6 +219,14 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem.prototype = {
     },
 
     /**
+     * @return {!Array<string>}
+     */
+    gitFolders: function()
+    {
+        return this._fileSystem.gitFolders().map(folder => this._fileSystemPath + "/" + folder);
+    },
+
+    /**
      * @param {!WebInspector.UISourceCode} uiSourceCode
      * @return {string}
      */

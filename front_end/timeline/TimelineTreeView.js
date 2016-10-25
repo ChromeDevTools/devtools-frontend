@@ -18,7 +18,7 @@ WebInspector.TimelineTreeView = function(model, filters)
 
     this._filters = filters.slice();
 
-    var columns = [];
+    var columns = /** @type {!Array<!WebInspector.DataGrid.ColumnDescriptor>} */ ([]);
     this._populateColumns(columns);
 
     var mainView = new WebInspector.VBox();
@@ -167,11 +167,11 @@ WebInspector.TimelineTreeView.prototype = {
 
     _sortingChanged: function()
     {
-        var columnIdentifier = this._dataGrid.sortColumnIdentifier();
-        if (!columnIdentifier)
+        var columnId = this._dataGrid.sortColumnId();
+        if (!columnId)
             return;
         var sortFunction;
-        switch (columnIdentifier) {
+        switch (columnId) {
         case "startTime":
             sortFunction = compareStartTime;
             break;
@@ -185,7 +185,7 @@ WebInspector.TimelineTreeView.prototype = {
             sortFunction = compareName;
             break;
         default:
-            console.assert(false, "Unknown sort field: " + columnIdentifier);
+            console.assert(false, "Unknown sort field: " + columnId);
             return;
         }
         this._dataGrid.sortNodes(sortFunction, !this._dataGrid.isSortOrderAscending());
@@ -316,23 +316,23 @@ WebInspector.TimelineTreeView.GridNode = function(profileNode, grandTotalTime, m
 WebInspector.TimelineTreeView.GridNode.prototype = {
     /**
      * @override
-     * @param {string} columnIdentifier
+     * @param {string} columnId
      * @return {!Element}
      */
-    createCell: function(columnIdentifier)
+    createCell: function(columnId)
     {
-        if (columnIdentifier === "activity")
-            return this._createNameCell(columnIdentifier);
-        return this._createValueCell(columnIdentifier) || WebInspector.DataGridNode.prototype.createCell.call(this, columnIdentifier);
+        if (columnId === "activity")
+            return this._createNameCell(columnId);
+        return this._createValueCell(columnId) || WebInspector.DataGridNode.prototype.createCell.call(this, columnId);
     },
 
     /**
-     * @param {string} columnIdentifier
+     * @param {string} columnId
      * @return {!Element}
      */
-    _createNameCell: function(columnIdentifier)
+    _createNameCell: function(columnId)
     {
-        var cell = this.createTD(columnIdentifier);
+        var cell = this.createTD(columnId);
         var container = cell.createChild("div", "name-container");
         var icon = container.createChild("div", "activity-icon");
         var name = container.createChild("div", "activity-name");
@@ -359,18 +359,18 @@ WebInspector.TimelineTreeView.GridNode.prototype = {
     },
 
     /**
-     * @param {string} columnIdentifier
+     * @param {string} columnId
      * @return {?Element}
      */
-    _createValueCell: function(columnIdentifier)
+    _createValueCell: function(columnId)
     {
-        if (columnIdentifier !== "self" && columnIdentifier !== "total" && columnIdentifier !== "startTime")
+        if (columnId !== "self" && columnId !== "total" && columnId !== "startTime")
             return null;
 
         var showPercents = false;
         var value;
         var maxTime;
-        switch (columnIdentifier) {
+        switch (columnId) {
         case "startTime":
             value = this._profileNode.event.startTime - this._treeView._model.minimumRecordTime();
             break;
@@ -387,7 +387,7 @@ WebInspector.TimelineTreeView.GridNode.prototype = {
         default:
             return null;
         }
-        var cell = this.createTD(columnIdentifier);
+        var cell = this.createTD(columnId);
         cell.className = "numeric-column";
         var textDiv = cell.createChild("div");
         textDiv.createChild("span").textContent = WebInspector.UIString("%.1f\u2009ms", value);
@@ -835,10 +835,10 @@ WebInspector.TimelineStackView = function(treeView)
     var header = this.element.createChild("div", "timeline-stack-view-header");
     header.textContent = WebInspector.UIString("Heaviest stack");
     this._treeView = treeView;
-    var columns = [
+    var columns = /** @type {!Array<!WebInspector.DataGrid.ColumnDescriptor>} */ ([
         {id: "total", title: WebInspector.UIString("Total Time"), fixedWidth: true, width: "110px"},
         {id: "activity", title: WebInspector.UIString("Activity")}
-    ];
+    ]);
     this._dataGrid = new WebInspector.ViewportDataGrid(columns);
     this._dataGrid.setResizeMethod(WebInspector.DataGrid.ResizeMethod.Last);
     this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SelectedNode, this._onSelectionChanged, this);

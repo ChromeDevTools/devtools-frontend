@@ -153,7 +153,7 @@ WebInspector.HeapSnapshotSortableDataGrid.prototype = {
 
     resetSortingCache: function()
     {
-        delete this._lastSortColumnIdentifier;
+        delete this._lastSortColumnId;
         delete this._lastSortAscending;
     },
 
@@ -211,12 +211,12 @@ WebInspector.HeapSnapshotSortableDataGrid.prototype = {
     sortingChanged: function()
     {
         var sortAscending = this.isSortOrderAscending();
-        var sortColumnIdentifier = this.sortColumnIdentifier();
-        if (this._lastSortColumnIdentifier === sortColumnIdentifier && this._lastSortAscending === sortAscending)
+        var sortColumnId = this.sortColumnId();
+        if (this._lastSortColumnId === sortColumnId && this._lastSortAscending === sortAscending)
             return;
-        this._lastSortColumnIdentifier = sortColumnIdentifier;
+        this._lastSortColumnId = sortColumnId;
         this._lastSortAscending = sortAscending;
-        var sortFields = this._sortFields(sortColumnIdentifier, sortAscending);
+        var sortFields = this._sortFields(sortColumnId, sortAscending);
 
         function SortByTwoFields(nodeA, nodeB)
         {
@@ -601,12 +601,12 @@ WebInspector.HeapSnapshotViewportDataGrid.prototype = {
  */
 WebInspector.HeapSnapshotContainmentDataGrid = function(dataDisplayDelegate, columns)
 {
-    columns = columns || [
+    columns = columns || (/** @type {!Array<!WebInspector.DataGrid.ColumnDescriptor>} */ ([
         {id: "object", title: WebInspector.UIString("Object"), disclosure: true, sortable: true},
         {id: "distance", title: WebInspector.UIString("Distance"), width: "65px", sortable: true, fixedWidth: true},
         {id: "shallowSize", title: WebInspector.UIString("Shallow Size"), width: "105px", sortable: true, fixedWidth: true},
         {id: "retainedSize", title: WebInspector.UIString("Retained Size"), width: "105px", sortable: true, fixedWidth: true, sort: WebInspector.DataGrid.Order.Descending}
-    ];
+    ]));
     WebInspector.HeapSnapshotSortableDataGrid.call(this, dataDisplayDelegate, columns);
 };
 
@@ -647,12 +647,12 @@ WebInspector.HeapSnapshotContainmentDataGrid.prototype = {
  */
 WebInspector.HeapSnapshotRetainmentDataGrid = function(dataDisplayDelegate)
 {
-    var columns = [
+    var columns = /** @type {!Array<!WebInspector.DataGrid.ColumnDescriptor>} */ ([
         {id: "object", title: WebInspector.UIString("Object"), disclosure: true, sortable: true},
         {id: "distance", title: WebInspector.UIString("Distance"), width: "65px", sortable: true, fixedWidth: true, sort: WebInspector.DataGrid.Order.Ascending},
         {id: "shallowSize", title: WebInspector.UIString("Shallow Size"), width: "105px", sortable: true, fixedWidth: true},
         {id: "retainedSize", title: WebInspector.UIString("Retained Size"), width: "105px", sortable: true, fixedWidth: true}
-    ];
+    ]);
     WebInspector.HeapSnapshotContainmentDataGrid.call(this, dataDisplayDelegate, columns);
 };
 
@@ -705,13 +705,13 @@ WebInspector.HeapSnapshotRetainmentDataGrid.prototype = {
  */
 WebInspector.HeapSnapshotConstructorsDataGrid = function(dataDisplayDelegate)
 {
-    var columns = [
+    var columns = /** @type {!Array<!WebInspector.DataGrid.ColumnDescriptor>} */ ([
         {id: "object", title: WebInspector.UIString("Constructor"), disclosure: true, sortable: true},
         {id: "distance", title: WebInspector.UIString("Distance"), width: "65px", sortable: true, fixedWidth: true},
         {id: "count", title: WebInspector.UIString("Objects Count"), width: "90px", sortable: true, fixedWidth: true},
         {id: "shallowSize", title: WebInspector.UIString("Shallow Size"), width: "105px", sortable: true, fixedWidth: true},
         {id: "retainedSize", title: WebInspector.UIString("Retained Size"), width: "105px", sort: WebInspector.DataGrid.Order.Descending, sortable: true, fixedWidth: true}
-    ];
+    ]);
     WebInspector.HeapSnapshotViewportDataGrid.call(this, dataDisplayDelegate, columns);
     this._profileIndex = -1;
 
@@ -876,7 +876,7 @@ WebInspector.HeapSnapshotConstructorsDataGrid.prototype = {
  */
 WebInspector.HeapSnapshotDiffDataGrid = function(dataDisplayDelegate)
 {
-    var columns = [
+    var columns = /** @type {!Array<!WebInspector.DataGrid.ColumnDescriptor>} */ ([
         {id: "object", title: WebInspector.UIString("Constructor"), disclosure: true, sortable: true},
         {id: "addedCount", title: WebInspector.UIString("# New"), width: "72px", sortable: true, fixedWidth: true},
         {id: "removedCount", title: WebInspector.UIString("# Deleted"), width: "72px", sortable: true, fixedWidth: true},
@@ -884,7 +884,7 @@ WebInspector.HeapSnapshotDiffDataGrid = function(dataDisplayDelegate)
         {id: "addedSize", title: WebInspector.UIString("Alloc. Size"), width: "72px", sortable: true, fixedWidth: true, sort: WebInspector.DataGrid.Order.Descending},
         {id: "removedSize", title: WebInspector.UIString("Freed Size"), width: "72px", sortable: true, fixedWidth: true},
         {id: "sizeDelta", title: WebInspector.UIString("Size Delta"), width: "72px", sortable: true, fixedWidth: true}
-    ];
+    ]);
     WebInspector.HeapSnapshotViewportDataGrid.call(this, dataDisplayDelegate, columns);
 };
 
@@ -970,13 +970,13 @@ WebInspector.HeapSnapshotDiffDataGrid.prototype = {
  */
 WebInspector.AllocationDataGrid = function(target, dataDisplayDelegate)
 {
-    var columns = [
+    var columns = /** @type {!Array<!WebInspector.DataGrid.ColumnDescriptor>} */ ([
         {id: "liveCount", title: WebInspector.UIString("Live Count"), width: "72px", sortable: true, fixedWidth: true},
         {id: "count", title: WebInspector.UIString("Count"), width: "60px", sortable: true, fixedWidth: true},
         {id: "liveSize", title: WebInspector.UIString("Live Size"), width: "72px", sortable: true, fixedWidth: true},
         {id: "size", title: WebInspector.UIString("Size"), width: "72px", sortable: true, fixedWidth: true, sort: WebInspector.DataGrid.Order.Descending},
         {id: "name", title: WebInspector.UIString("Function"), disclosure: true, sortable: true},
-    ];
+    ]);
     WebInspector.HeapSnapshotViewportDataGrid.call(this, dataDisplayDelegate, columns);
     this._target = target;
     this._linkifier = new WebInspector.Linkifier();
@@ -1036,7 +1036,7 @@ WebInspector.AllocationDataGrid.prototype = {
      */
     _createComparator: function()
     {
-        var fieldName = this.sortColumnIdentifier();
+        var fieldName = this.sortColumnId();
         var compareResult = (this.sortOrder() === WebInspector.DataGrid.Order.Ascending) ? +1 : -1;
         /**
          * @param {!Object} a

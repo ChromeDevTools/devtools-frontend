@@ -25,7 +25,7 @@ WebInspector.ProfileView = function(nodeFormatter, viewTypes)
     this._viewType = WebInspector.settings.createSetting("profileView", WebInspector.ProfileView.ViewTypes.Heavy);
     this._nodeFormatter = nodeFormatter;
 
-    var columns = [];
+    var columns = /** @type {!Array<!WebInspector.DataGrid.ColumnDescriptor>} */ ([]);
     columns.push({id: "self", title: this.columnHeader("self"), width: "120px", fixedWidth: true, sortable: true, sort: WebInspector.DataGrid.Order.Descending});
     columns.push({id: "total", title: this.columnHeader("total"), width: "120px", fixedWidth: true, sortable: true});
     columns.push({id: "function", title: WebInspector.UIString("Function"), disclosure: true, sortable: true});
@@ -375,8 +375,8 @@ WebInspector.ProfileView.prototype = {
     _sortProfile: function()
     {
         var sortAscending = this.dataGrid.isSortOrderAscending();
-        var sortColumnIdentifier = this.dataGrid.sortColumnIdentifier();
-        var sortProperty = sortColumnIdentifier === "function" ? "functionName" : sortColumnIdentifier || "";
+        var sortColumnId = this.dataGrid.sortColumnId();
+        var sortProperty = sortColumnId === "function" ? "functionName" : sortColumnId || "";
         this.profileDataGridTree.sort(WebInspector.ProfileDataGridTree.propertyComparator(sortProperty, sortAscending));
 
         this.refresh();

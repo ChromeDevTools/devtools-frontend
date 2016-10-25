@@ -1206,7 +1206,7 @@ WebInspector.NetworkLogView.prototype = {
 
         this._timelineColumnSortIcon.classList.remove("sort-ascending", "sort-descending");
 
-        if (this._dataGrid.sortColumnIdentifier() === "timeline") {
+        if (this._dataGrid.sortColumnId() === "timeline") {
             if (this._dataGrid.sortOrder() === WebInspector.DataGrid.Order.Ascending)
                 this._timelineColumnSortIcon.classList.add("sort-ascending");
             else

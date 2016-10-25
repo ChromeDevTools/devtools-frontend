@@ -42,7 +42,7 @@ WebInspector.CookiesTable = function(expandable, refreshCallback, selectedCallba
     var readOnly = expandable;
     this._refreshCallback = refreshCallback;
 
-    var columns = [
+    var columns = /** @type {!Array<!WebInspector.DataGrid.ColumnDescriptor>} */ ([
         {id: "name", title: WebInspector.UIString("Name"), sortable: true, disclosure: expandable, sort: WebInspector.DataGrid.Order.Ascending, longText: true, weight: 24},
         {id: "value", title: WebInspector.UIString("Value"), sortable: true, longText: true, weight: 34},
         {id: "domain", title: WebInspector.UIString("Domain"), sortable: true, weight: 7},
@@ -52,7 +52,7 @@ WebInspector.CookiesTable = function(expandable, refreshCallback, selectedCallba
         {id: "httpOnly", title: WebInspector.UIString("HTTP"), sortable: true, align: WebInspector.DataGrid.Align.Center, weight: 7},
         {id: "secure", title: WebInspector.UIString("Secure"), sortable: true, align: WebInspector.DataGrid.Align.Center, weight: 7},
         {id: "sameSite", title: WebInspector.UIString("SameSite"), sortable: true, align: WebInspector.DataGrid.Align.Center, weight: 7}
-    ];
+    ]);
 
     if (readOnly)
         this._dataGrid = new WebInspector.DataGrid(columns);
@@ -218,7 +218,7 @@ WebInspector.CookiesTable.prototype = {
         }
 
         var comparator;
-        switch (this._dataGrid.sortColumnIdentifier()) {
+        switch (this._dataGrid.sortColumnId()) {
         case "name": comparator = compareTo.bind(null, WebInspector.Cookie.prototype.name); break;
         case "value": comparator = compareTo.bind(null, WebInspector.Cookie.prototype.value); break;
         case "domain": comparator = compareTo.bind(null, WebInspector.Cookie.prototype.domain); break;

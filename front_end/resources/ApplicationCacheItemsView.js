@@ -186,11 +186,11 @@ WebInspector.ApplicationCacheItemsView.prototype = {
 
     _createDataGrid: function()
     {
-        var columns = [
-            {title: WebInspector.UIString("Resource"), sort: WebInspector.DataGrid.Order.Ascending, sortable: true},
-            {title: WebInspector.UIString("Type"), sortable: true},
-            {title: WebInspector.UIString("Size"), align: WebInspector.DataGrid.Align.Right, sortable: true}
-        ];
+        var columns = /** @type {!Array<!WebInspector.DataGrid.ColumnDescriptor>} */ ([
+            {id: "resource", title: WebInspector.UIString("Resource"), sort: WebInspector.DataGrid.Order.Ascending, sortable: true},
+            {id: "type", title: WebInspector.UIString("Type"), sortable: true},
+            {id: "size", title: WebInspector.UIString("Size"), align: WebInspector.DataGrid.Align.Right, sortable: true}
+        ]);
         this._dataGrid = new WebInspector.DataGrid(columns);
         this._dataGrid.asWidget().show(this.element);
         this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SortingChanged, this._populateDataGrid, this);
@@ -211,10 +211,10 @@ WebInspector.ApplicationCacheItemsView.prototype = {
         }
 
         var comparator;
-        switch (parseInt(this._dataGrid.sortColumnIdentifier(), 10)) {
-        case 0: comparator = localeCompare.bind(null, "name"); break;
-        case 1: comparator = localeCompare.bind(null, "type"); break;
-        case 2: comparator = numberCompare.bind(null, "size"); break;
+        switch (this._dataGrid.sortColumnId()) {
+        case "resource": comparator = localeCompare.bind(null, "url"); break;
+        case "type": comparator = localeCompare.bind(null, "type"); break;
+        case "size": comparator = numberCompare.bind(null, "size"); break;
         default: localeCompare.bind(null, "resource"); // FIXME: comparator = ?
         }
 
@@ -225,9 +225,9 @@ WebInspector.ApplicationCacheItemsView.prototype = {
         for (var i = 0; i < this._resources.length; ++i) {
             var data = {};
             var resource = this._resources[i];
-            data[0] = resource.url;
-            data[1] = resource.type;
-            data[2] = Number.bytesToString(resource.size);
+            data.resource = resource.url;
+            data.type = resource.type;
+            data.size = Number.bytesToString(resource.size);
             var node = new WebInspector.DataGridNode(data);
             node.resource = resource;
             node.selectable = true;

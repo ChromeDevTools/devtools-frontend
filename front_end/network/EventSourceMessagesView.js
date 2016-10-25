@@ -14,12 +14,12 @@ WebInspector.EventSourceMessagesView = function(request)
     this.element.classList.add("event-source-messages-view");
     this._request = request;
 
-    var columns = [
+    var columns = /** @type {!Array<!WebInspector.DataGrid.ColumnDescriptor>} */ ([
         {id: "id", title: WebInspector.UIString("Id"), sortable: true, weight: 8},
         {id: "type", title: WebInspector.UIString("Type"), sortable: true, weight: 8},
         {id: "data", title: WebInspector.UIString("Data"), sortable: false, weight: 88},
         {id: "time", title: WebInspector.UIString("Time"), sortable: true, weight: 8}
-    ];
+    ]);
 
     this._dataGrid = new WebInspector.SortableDataGrid(columns);
     this._dataGrid.setStickToBottom(true);
@@ -58,10 +58,10 @@ WebInspector.EventSourceMessagesView.prototype = {
 
     _sortItems: function()
     {
-        var sortColumnIdentifier = this._dataGrid.sortColumnIdentifier();
-        if (!sortColumnIdentifier)
+        var sortColumnId = this._dataGrid.sortColumnId();
+        if (!sortColumnId)
             return;
-        var comparator = WebInspector.EventSourceMessageNode.Comparators[sortColumnIdentifier];
+        var comparator = WebInspector.EventSourceMessageNode.Comparators[sortColumnId];
         if (!comparator)
             return;
         this._dataGrid.sortNodes(comparator, !this._dataGrid.isSortOrderAscending());

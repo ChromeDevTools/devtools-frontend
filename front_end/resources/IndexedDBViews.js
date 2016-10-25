@@ -123,12 +123,12 @@ WebInspector.IDBDataView.prototype = {
     {
         var keyPath = this._isIndex ? this._index.keyPath : this._objectStore.keyPath;
 
-        var columns = [];
-        columns.push({id: "number", title: WebInspector.UIString("#"), width: "50px"});
-        columns.push({id: "key", titleDOMFragment: this._keyColumnHeaderFragment(WebInspector.UIString("Key"), keyPath)});
+        var columns = /** @type {!Array<!WebInspector.DataGrid.ColumnDescriptor>} */ ([]);
+        columns.push({id: "number", title: WebInspector.UIString("#"), sortable: false, width: "50px"});
+        columns.push({id: "key", titleDOMFragment: this._keyColumnHeaderFragment(WebInspector.UIString("Key"), keyPath), sortable: false});
         if (this._isIndex)
-            columns.push({id: "primaryKey", titleDOMFragment: this._keyColumnHeaderFragment(WebInspector.UIString("Primary key"), this._objectStore.keyPath)});
-        columns.push({id: "value", title: WebInspector.UIString("Value")});
+            columns.push({id: "primaryKey", titleDOMFragment: this._keyColumnHeaderFragment(WebInspector.UIString("Primary key"), this._objectStore.keyPath), sortable: false});
+        columns.push({id: "value", title: WebInspector.UIString("Value"), sortable: false});
 
         var dataGrid = new WebInspector.DataGrid(columns);
         return dataGrid;

@@ -31,11 +31,11 @@ WebInspector.ResourceWebSocketFrameView = function(request)
     this._splitWidget = new WebInspector.SplitWidget(false, true, "resourceWebSocketFrameSplitViewState");
     this._splitWidget.show(this.element);
 
-    var columns = [
+    var columns = /** @type {!Array<!WebInspector.DataGrid.ColumnDescriptor>} */ ([
         {id: "data", title: WebInspector.UIString("Data"), sortable: false, weight: 88},
         {id: "length", title: WebInspector.UIString("Length"), sortable: false, align: WebInspector.DataGrid.Align.Right, weight: 5},
         {id: "time", title: WebInspector.UIString("Time"), sortable: true, weight: 7}
-    ];
+    ]);
 
     this._dataGrid = new WebInspector.SortableDataGrid(columns, undefined, undefined, undefined, this._onContextMenu.bind(this));
     this._dataGrid.setStickToBottom(true);

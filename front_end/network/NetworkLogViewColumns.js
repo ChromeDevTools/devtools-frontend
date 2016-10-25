@@ -454,8 +454,8 @@ WebInspector.NetworkLogViewColumns.prototype = {
 
     _sortHandler: function()
     {
-        var columnIdentifier = this._dataGrid.sortColumnIdentifier();
-        var columnConfig = this._columns.find(columnConfig => columnConfig.id === columnIdentifier);
+        var columnId = this._dataGrid.sortColumnId();
+        var columnConfig = this._columns.find(columnConfig => columnConfig.id === columnId);
         if (!columnConfig)
             return;
         if (columnConfig.sortConfig && columnConfig.sortConfig.entries) {

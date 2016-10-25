@@ -262,7 +262,7 @@ WebInspector.ElementsTreeElement.prototype = {
         if (!this.selectionElement) {
             this.selectionElement = createElement("div");
             this.selectionElement.className = "selection fill";
-            this.selectionElement.style.setProperty("margin-left", this._computeLeftIndent() + "px");
+            this.selectionElement.style.setProperty("margin-left", (-this._computeLeftIndent()) + "px");
             listItemElement.insertBefore(this.selectionElement, listItemElement.firstChild);
         }
     },
@@ -858,7 +858,7 @@ WebInspector.ElementsTreeElement.prototype = {
         function markAsBeingEdited(controller)
         {
             this._editing = /** @type {!WebInspector.InplaceEditor.Controller} */ (controller);
-            this._editing.setWidth(this.treeOutline.visibleWidth());
+            this._editing.setWidth(this.treeOutline.visibleWidth() - this._computeLeftIndent());
             this.treeOutline.setMultilineEditing(this._editing);
         }
     },
@@ -1093,12 +1093,12 @@ WebInspector.ElementsTreeElement.prototype = {
         }
 
         /** Keep it in sync with elementsTreeOutline.css **/
-        return -12 * (depth - 2) - (this.isExpandable() ? 1 : 12);
+        return 12 * (depth - 2) + (this.isExpandable() ? 1 : 12);
     },
 
     updateDecorations: function()
     {
-        this._gutterContainer.style.left = this._computeLeftIndent() + "px";
+        this._gutterContainer.style.left = (-this._computeLeftIndent()) + "px";
 
         if (this.isClosingTag())
             return;

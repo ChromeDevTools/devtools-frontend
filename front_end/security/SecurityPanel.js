@@ -796,13 +796,25 @@ WebInspector.SecurityMainView.prototype = {
             "description": description
         });
 
+        var explanation = this._addExplanation(parent, mixedContentExplanation);
+
         var filterRequestCount = this._panel.filterRequestCount(filterKey);
-        var requestsAnchor = this._addExplanation(parent, mixedContentExplanation).createChild("div", "security-mixed-content link");
-        if (filterRequestCount > 0) {
-            requestsAnchor.textContent = WebInspector.UIString("View %d request%s in Network Panel", filterRequestCount, (filterRequestCount > 1 ? "s" : ""));
+        if (!filterRequestCount) {
+            // Network instrumentation might not have been enabled for the page
+            // load, so the security panel does not necessarily know a count of
+            // individual mixed requests at this point. Prompt them to refresh
+            // instead of pointing them to the Network panel to get prompted
+            // to refresh.
+            var refreshPrompt = explanation.createChild("div", "security-mixed-content");
+            refreshPrompt.textContent = WebInspector.UIString("Reload the page to record requests for HTTP resources.");
+            return;
+        }
+
+        var requestsAnchor = explanation.createChild("div", "security-mixed-content link");
+        if (filterRequestCount === 1) {
+            requestsAnchor.textContent = WebInspector.UIString("View %d request in Network Panel", filterRequestCount);
         } else {
-            // Network instrumentation might not have been enabled for the page load, so the security panel does not necessarily know a count of individual mixed requests at this point. Point the user at the Network Panel which prompts them to refresh.
-            requestsAnchor.textContent = WebInspector.UIString("View requests in Network Panel");
+            requestsAnchor.textContent = WebInspector.UIString("View %d requests in Network Panel", filterRequestCount);
         }
         requestsAnchor.href = "";
         requestsAnchor.addEventListener("click", networkFilterFn);

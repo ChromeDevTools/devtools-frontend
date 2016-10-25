@@ -282,3 +282,46 @@ ReceiverTest.prototype = {
 
     memberTwo: function(arg) {}
 }
+
+/**
+ * @constructor
+ */
+function ReceiverWithArrowsTest()
+{
+    this._q = [];
+}
+
+ReceiverWithArrowsTest.prototype = {
+    /**
+     * @param {string} s
+     */
+    memberOne: function(s)
+    {
+        /**
+         * @param {string} a
+         * @this {C}
+         */
+        function testArrowFunctionReferencingThis(a)
+        {
+            (x => this._q.push(x))(a);
+        }
+
+        /**
+         * @param {string} a
+         * @this {C}
+         */
+        function testNestedArrowFunctionReferencingThis(a)
+        {
+            (x => (y => this._q.push(y))(x))(a);
+        }
+
+        /**
+         * @param {string} a
+         */
+        function testArrowFunctionReferencingThisMissingAnnotation(a)
+        {
+            (x => this._q.push(x))(a);
+        }
+
+    }
+};

@@ -99,6 +99,9 @@ public final class FunctionReceiverChecker extends ContextTrackingChecker {
 
     private void handleThis() {
         FunctionRecord function = getState().getCurrentFunctionRecord();
+        while (function != null && function.functionNode.isArrowFunction()) {
+            function = function.enclosingFunctionRecord;
+        }
         if (function == null) {
             return;
         }

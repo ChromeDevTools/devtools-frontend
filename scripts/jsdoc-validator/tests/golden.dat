@@ -262,11 +262,22 @@ DerivedNoSuperCall = function() {
 DerivedBadSuperCall = function() {
 ^
 
-/tests/proto.js:121: ERROR - No __proto__ assigned for type BadSetSubclass having @extends
+/tests/proto.js:107: ERROR - No __proto__ assigned for type GoodSetSubclass = function()
+{
+    Set.call(this);
+} having @extends
  * @extends {Set.<T>}
              ^
 
-/tests/proto.js:124: ERROR - Type BadSetSubclass extends Set but does not properly invoke its constructor
+/tests/proto.js:121: ERROR - No __proto__ assigned for type BadSetSubclass = function()
+{
+} having @extends
+ * @extends {Set.<T>}
+             ^
+
+/tests/proto.js:124: ERROR - Type BadSetSubclass = function()
+{
+} extends Set but does not properly invoke its constructor
 var BadSetSubclass = function()
     ^
 
@@ -406,4 +417,8 @@ NS.BadSubClass = function() {}
         function callbackNotReferencingThisAnnotated()
                  ^
 
-Total errors: 102
+/tests/this.js:321: ERROR - @this annotation is required for functions referencing 'this'
+        function testArrowFunctionReferencingThisMissingAnnotation(a)
+                 ^
+
+Total errors: 104

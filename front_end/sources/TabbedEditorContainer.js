@@ -95,13 +95,22 @@ WebInspector.TabbedEditorContainer.prototype = {
             this._tabbedPane.changeTabTitle(networkTabId, this._titleForFile(binding.fileSystem), this._tooltipForFile(binding.fileSystem));
         if (!fileSystemTabId)
             return;
+
         var wasSelectedInFileSystem = this._currentFile === binding.fileSystem;
+        var currentSelectionRange = this._history.selectionRange(binding.fileSystem.url());
+        var currentScrollLineNumber = this._history.scrollLineNumber(binding.fileSystem.url());
+
         var tabIndex = this._tabbedPane.tabIndex(fileSystemTabId);
-        this._closeTabs([fileSystemTabId]);
+        this._closeTabs([fileSystemTabId], true);
         if (!networkTabId)
             networkTabId = this._appendFileTab(binding.network, false, tabIndex);
+        this._updateHistory();
+
         if (wasSelectedInFileSystem)
             this._tabbedPane.selectTab(networkTabId, false);
+
+        var networkTabView = /** @type {!WebInspector.Widget} */(this._tabbedPane.tabView(networkTabId));
+        this._restoreEditorProperties(networkTabView, currentSelectionRange, currentScrollLineNumber);
     },
 
     /**
@@ -113,7 +122,14 @@ WebInspector.TabbedEditorContainer.prototype = {
         var networkTabId = this._tabIds.get(binding.network);
         if (!networkTabId)
             return;
-        this._appendFileTab(binding.fileSystem, false);
+
+        var fileSystemTabId = this._appendFileTab(binding.fileSystem, false);
+        this._updateHistory();
+
+        var fileSystemTabView = /** @type {!WebInspector.Widget} */(this._tabbedPane.tabView(fileSystemTabId));
+        var savedSelectionRange = this._history.selectionRange(binding.network.url());
+        var savedScrollLineNumber = this._history.scrollLineNumber(binding.network.url());
+        this._restoreEditorProperties(fileSystemTabView, savedSelectionRange, savedScrollLineNumber);
     },
 
     /**
@@ -234,16 +250,14 @@ WebInspector.TabbedEditorContainer.prototype = {
         if (this._scrollTimer)
             clearTimeout(this._scrollTimer);
         var lineNumber = /** @type {number} */ (event.data);
-        this._scrollTimer = setTimeout(updateHistory.bind(this, this._currentFile.url(), lineNumber), 100);
+        this._scrollTimer = setTimeout(saveHistory.bind(this), 100);
+        this._history.updateScrollLineNumber(this._currentFile.url(), lineNumber);
 
         /**
-         * @param {string} url
-         * @param {number} lineNumber
          * @this {WebInspector.TabbedEditorContainer}
          */
-        function updateHistory(url, lineNumber)
+        function saveHistory()
         {
-            this._history.updateScrollLineNumber(url, lineNumber);
             this._history.save(this._previouslyViewedFilesSetting);
         }
     },
@@ -327,15 +341,16 @@ WebInspector.TabbedEditorContainer.prototype = {
 
     /**
      * @param {!Array.<string>} ids
+     * @param {boolean=} forceCloseDirtyTabs
      */
-    _closeTabs: function(ids)
+    _closeTabs: function(ids, forceCloseDirtyTabs)
     {
         var dirtyTabs = [];
         var cleanTabs = [];
         for (var i = 0; i < ids.length; ++i) {
             var id = ids[i];
             var uiSourceCode = this._files[id];
-            if (uiSourceCode.isDirty())
+            if (!forceCloseDirtyTabs && uiSourceCode.isDirty())
                 dirtyTabs.push(id);
             else
                 cleanTabs.push(id);
@@ -462,7 +477,6 @@ WebInspector.TabbedEditorContainer.prototype = {
     _appendFileTab: function(uiSourceCode, userGesture, index)
     {
         var view = this._delegate.viewForFile(uiSourceCode);
-        var sourceFrame = view instanceof WebInspector.SourceFrame ? /** @type {!WebInspector.SourceFrame} */ (view) : null;
         var title = this._titleForFile(uiSourceCode);
         var tooltip = this._tooltipForFile(uiSourceCode);
 
@@ -471,17 +485,30 @@ WebInspector.TabbedEditorContainer.prototype = {
         this._files[tabId] = uiSourceCode;
 
         var savedSelectionRange = this._history.selectionRange(uiSourceCode.url());
-        if (sourceFrame && savedSelectionRange)
-            sourceFrame.setSelection(savedSelectionRange);
         var savedScrollLineNumber = this._history.scrollLineNumber(uiSourceCode.url());
-        if (sourceFrame && savedScrollLineNumber)
-            sourceFrame.scrollToLine(savedScrollLineNumber);
+        this._restoreEditorProperties(view, savedSelectionRange, savedScrollLineNumber);
 
         this._tabbedPane.appendTab(tabId, title, view, tooltip, userGesture, undefined, index);
 
         this._updateFileTitle(uiSourceCode);
         this._addUISourceCodeListeners(uiSourceCode);
         return tabId;
+    },
+
+    /**
+     * @param {!WebInspector.Widget} editorView
+     * @param {!WebInspector.TextRange=} selection
+     * @param {number=} firstLineNumber
+     */
+    _restoreEditorProperties: function(editorView, selection, firstLineNumber)
+    {
+        var sourceFrame = editorView instanceof WebInspector.SourceFrame ? /** @type {!WebInspector.SourceFrame} */ (editorView) : null;
+        if (!sourceFrame)
+            return;
+        if (selection)
+            sourceFrame.setSelection(selection);
+        if (typeof firstLineNumber === "number")
+            sourceFrame.scrollToLine(firstLineNumber);
     },
 
     /**

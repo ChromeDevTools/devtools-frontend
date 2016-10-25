@@ -68,6 +68,16 @@ WebInspector.SourcesTextEditor.prototype = {
     },
 
     /**
+     * @override
+     * @param {number} lineNumber
+     */
+    scrollToLine: function(lineNumber)
+    {
+        WebInspector.CodeMirrorTextEditor.prototype.scrollToLine.call(this, lineNumber);
+        this._scroll();
+    },
+
+    /**
      * @param {!RegExp} regex
      * @param {?WebInspector.TextRange} range
      */

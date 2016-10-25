@@ -38,10 +38,13 @@ WebInspector.Persistence.prototype = {
      */
     _onBindingCreated: function(binding)
     {
-        if (binding.network.isDirty() || binding.fileSystem.isDirty()) {
+        if (binding.network.isDirty()) {
             WebInspector.console.log(WebInspector.UIString("%s can not be persisted to file system due to unsaved changes.", binding.network.name()));
             return;
         }
+        if (binding.fileSystem.isDirty())
+            binding.network.setWorkingCopy(binding.fileSystem.workingCopy());
+
         binding.network[WebInspector.Persistence._binding] = binding;
         binding.fileSystem[WebInspector.Persistence._binding] = binding;
 
@@ -61,6 +64,9 @@ WebInspector.Persistence.prototype = {
      */
     _onBindingRemoved: function(binding)
     {
+        if (binding.network.isDirty())
+            binding.fileSystem.setWorkingCopy(binding.network.workingCopy());
+
         binding.network[WebInspector.Persistence._binding] = null;
         binding.fileSystem[WebInspector.Persistence._binding] = null;
 

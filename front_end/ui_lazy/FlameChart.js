@@ -263,11 +263,6 @@ WebInspector.FlameChartDataProvider.prototype = {
     textPadding: function() { },
 
     /**
-     * @return {?{startTime: number, endTime: number}}
-     */
-    highlightTimeRange: function(entryIndex) { },
-
-    /**
      * @return {number}
      */
     paddingLeft: function() { },
@@ -1481,22 +1476,21 @@ WebInspector.FlameChart.prototype = {
      */
     _updateElementPosition: function(element, entryIndex)
     {
-        /** @const */ var elementMinWidth = 2;
+        const elementMinWidthPx = 2;
         if (element.parentElement)
             element.remove();
         if (entryIndex === -1)
             return;
-        var timeRange = this._dataProvider.highlightTimeRange(entryIndex);
-        if (!timeRange)
-            return;
         var timelineData = this._timelineData();
-        var barX = this._timeToPositionClipped(timeRange.startTime);
-        var barRight = this._timeToPositionClipped(timeRange.endTime);
+        var startTime = timelineData.entryStartTimes[entryIndex];
+        var endTime = startTime + (timelineData.entryTotalTimes[entryIndex] || 0);
+        var barX = this._timeToPositionClipped(startTime);
+        var barRight = this._timeToPositionClipped(endTime);
         if (barRight === 0 || barX === this._offsetWidth)
             return;
         var barWidth = barRight - barX;
         var barCenter = barX + barWidth / 2;
-        barWidth = Math.max(barWidth, elementMinWidth);
+        barWidth = Math.max(barWidth, elementMinWidthPx);
         barX = barCenter - barWidth / 2;
         var barY = this._levelToHeight(timelineData.entryLevels[entryIndex]) - this.scrollOffset();
         var style = element.style;

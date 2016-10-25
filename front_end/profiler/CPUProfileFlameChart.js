@@ -211,20 +211,6 @@ WebInspector.ProfileFlameChartDataProvider.prototype = {
 
     /**
      * @override
-     * @param {number} entryIndex
-     * @return {!{startTime: number, endTime: number}}
-     */
-    highlightTimeRange: function(entryIndex)
-    {
-        var startTime = this._timelineData.entryStartTimes[entryIndex];
-        return {
-            startTime: startTime,
-            endTime: startTime + this._timelineData.entryTotalTimes[entryIndex]
-        };
-    },
-
-    /**
-     * @override
      * @return {number}
      */
     paddingLeft: function()

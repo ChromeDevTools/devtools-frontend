@@ -27,6 +27,9 @@ WebInspector.DeviceModeToolbar = function(model, showMediaInspectorSetting, show
     /** @type {!Map<!WebInspector.EmulatedDevice, !WebInspector.EmulatedDevice.Mode>} */
     this._lastMode = new Map();
 
+    /** @type {!Map<!WebInspector.EmulatedDevice, number>} */
+    this._lastScale = new Map();
+
     this._element = createElementWithClass("div", "device-mode-toolbar");
 
     var leftContainer = this._element.createChild("div", "device-mode-toolbar-spacer");
@@ -196,25 +199,37 @@ WebInspector.DeviceModeToolbar.prototype = {
      */
     _appendScaleMenuItems: function(contextMenu)
     {
-        var scaleSetting = this._model.scaleSetting();
         if (this._model.type() === WebInspector.DeviceModeModel.Type.Device) {
-            contextMenu.appendItem(WebInspector.UIString("Fit to window (%.0f%%)", this._model.fitScale() * 100), scaleSetting.set.bind(scaleSetting, this._model.fitScale()), false);
+            contextMenu.appendItem(WebInspector.UIString("Fit to window (%.0f%%)", this._model.fitScale() * 100), this._onScaleMenuChanged.bind(this, this._model.fitScale()), false);
             contextMenu.appendSeparator();
         }
-        appendScaleItem(WebInspector.UIString("50%"), 0.5);
-        appendScaleItem(WebInspector.UIString("75%"), 0.75);
-        appendScaleItem(WebInspector.UIString("100%"), 1);
-        appendScaleItem(WebInspector.UIString("125%"), 1.25);
-        appendScaleItem(WebInspector.UIString("150%"), 1.5);
+        var boundAppendScaleItem = appendScaleItem.bind(this);
+        boundAppendScaleItem(WebInspector.UIString("50%"), 0.5);
+        boundAppendScaleItem(WebInspector.UIString("75%"), 0.75);
+        boundAppendScaleItem(WebInspector.UIString("100%"), 1);
+        boundAppendScaleItem(WebInspector.UIString("125%"), 1.25);
+        boundAppendScaleItem(WebInspector.UIString("150%"), 1.5);
 
         /**
          * @param {string} title
          * @param {number} value
+         * @this {!WebInspector.DeviceModeToolbar}
          */
         function appendScaleItem(title, value)
         {
-            contextMenu.appendCheckboxItem(title, scaleSetting.set.bind(scaleSetting, value), scaleSetting.get() === value, false);
+            contextMenu.appendCheckboxItem(title, this._onScaleMenuChanged.bind(this, value), this._model.scaleSetting().get() === value, false);
         }
+    },
+
+    /**
+     * @param {number} value
+     */
+    _onScaleMenuChanged: function(value)
+    {
+        var device = this._model.device();
+        if (device)
+            this._lastScale.set(device, value);
+        this._model.scaleSetting().set(value);
     },
 
     /**
@@ -321,7 +336,7 @@ WebInspector.DeviceModeToolbar.prototype = {
      */
     _emulateDevice: function(device)
     {
-        this._model.emulate(WebInspector.DeviceModeModel.Type.Device, device, this._lastMode.get(device) || device.modes[0]);
+        this._model.emulate(WebInspector.DeviceModeModel.Type.Device, device, this._lastMode.get(device) || device.modes[0], this._lastScale.get(device));
     },
 
     _switchToResponsive: function()

@@ -125,19 +125,20 @@ WebInspector.DeviceModeModel.prototype = {
      * @param {!WebInspector.DeviceModeModel.Type} type
      * @param {?WebInspector.EmulatedDevice} device
      * @param {?WebInspector.EmulatedDevice.Mode} mode
+     * @param {number=} scale
      */
-    emulate: function(type, device, mode)
+    emulate: function(type, device, mode, scale)
     {
         var resetPageScaleFactor = this._type !== type || this._device !== device || this._mode !== mode;
         this._type = type;
 
         if (type === WebInspector.DeviceModeModel.Type.Device) {
             console.assert(device && mode, "Must pass device and mode for device emulation");
-            this._device = device;
             this._mode = mode;
+            this._device = device;
             if (this._initialized) {
                 var orientation = device.orientationByName(mode.orientation);
-                this._scaleSetting.set(this._calculateFitScale(orientation.width, orientation.height, this._currentOutline(), this._currentInsets()));
+                this._scaleSetting.set(scale || this._calculateFitScale(orientation.width, orientation.height, this._currentOutline(), this._currentInsets()));
             }
         } else {
             this._device = null;

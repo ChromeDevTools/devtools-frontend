@@ -334,6 +334,10 @@ def dump_module(name, recursively, processed_modules):
             command += dump_module(dependency, recursively, processed_modules)
     command += module_arg(name) + ':'
     filtered_scripts = descriptors.module_compiled_files(name)
+    filtered_scripts = [path.join(devtools_frontend_path, name, script) for script in filtered_scripts]
+    # TODO(dgozman): move to separate module
+    if name == 'sdk':
+        filtered_scripts.append(protocol_externs_file)
     command += str(len(filtered_scripts))
     first_dependency = True
     for dependency in dependencies + [runtime_module_name]:
@@ -344,20 +348,18 @@ def dump_module(name, recursively, processed_modules):
         first_dependency = False
         command += jsmodule_name_prefix + dependency
     for script in filtered_scripts:
-        command += ' --js ' + to_platform_path(path.join(devtools_frontend_path, name, script))
+        command += ' --js ' + to_platform_path(script)
     return command
 
 print 'Compiling frontend...'
 
 compiler_args_file = tempfile.NamedTemporaryFile(mode='wt', delete=False)
 try:
-    platform_protocol_externs_file = to_platform_path(protocol_externs_file)
     runtime_js_path = to_platform_path(path.join(devtools_frontend_path, 'Runtime.js'))
     checked_modules = modules_to_check()
     for name in checked_modules:
         closure_args = ' '.join(common_closure_args)
         closure_args += ' --externs ' + to_platform_path(global_externs_file)
-        closure_args += ' --externs ' + platform_protocol_externs_file
         runtime_module = module_arg(runtime_module_name) + ':1 --js ' + runtime_js_path
         closure_args += runtime_module + dump_module(name, True, {})
         compiler_args_file.write('%s %s%s' % (name, closure_args, os.linesep))

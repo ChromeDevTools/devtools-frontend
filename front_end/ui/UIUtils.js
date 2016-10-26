@@ -1899,26 +1899,6 @@ WebInspector.ThemeSupport.prototype = {
 };
 
 /**
- * @param {?NetworkAgent.ResourcePriority} priority
- * @return {string}
- */
-WebInspector.uiLabelForPriority = function(priority)
-{
-    var labelMap = WebInspector.uiLabelForPriority._priorityToUILabel;
-    if (!labelMap) {
-        labelMap = new Map([
-            [NetworkAgent.ResourcePriority.VeryLow, WebInspector.UIString("Lowest")],
-            [NetworkAgent.ResourcePriority.Low, WebInspector.UIString("Low")],
-            [NetworkAgent.ResourcePriority.Medium, WebInspector.UIString("Medium")],
-            [NetworkAgent.ResourcePriority.High, WebInspector.UIString("High")],
-            [NetworkAgent.ResourcePriority.VeryHigh, WebInspector.UIString("Highest")]
-        ]);
-        WebInspector.uiLabelForPriority._priorityToUILabel = labelMap;
-    }
-    return labelMap.get(priority) || WebInspector.UIString("Unknown");
-};
-
-/**
  * @param {string} url
  * @param {string=} linkText
  * @param {string=} classes

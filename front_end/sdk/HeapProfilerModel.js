@@ -42,9 +42,7 @@ WebInspector.HeapProfilerModel.prototype = {
     stopSampling: function()
     {
         this._isRecording = false;
-        var currentProfile = null;
-        return this._heapProfilerAgent.stopSampling((error, profile) => { currentProfile = !error ? profile : null; })
-            .then(() => currentProfile);
+        return this._heapProfilerAgent.stopSampling((error, profile) => error ? null : profile);
     },
 
     /**

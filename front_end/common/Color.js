@@ -382,7 +382,7 @@ WebInspector.Color.prototype = {
     },
 
     /**
-     * @return {!DOMAgent.RGBA}
+     * @return {!{r: number, g: number, b: number, a: (number|undefined)}}
      */
     toProtocolRGBA: function()
     {

@@ -50,6 +50,7 @@ promisified_domains = {
     "Browser",
     "CSS",
     "Emulation",
+    "HeapProfiler",
     "Profiler",
     "LayerTree"
 }
@@ -111,15 +112,6 @@ def generate_protocol_externs(output_path, file1, file2):
     load_schema(file1, domains)
     load_schema(file2, domains)
     output_file = open(output_path, "w")
-
-    output_file.write(
-"""
-var InspectorBackend = {}
-
-var Protocol = {};
-/** @typedef {string}*/
-Protocol.Error;
-""")
 
     for domain in domains:
         domain_name = domain["domain"]
@@ -226,10 +218,6 @@ Protocol.Error;
                     output_file.write(" */\n")
                 output_file.write("%sAgent.Dispatcher.prototype.%s = function(%s) {};\n" % (domain_name, event["name"], ", ".join(params)))
 
-    output_file.write("\n/** @constructor\n * @param {!Object.<string, !Object>} agentsMap\n */\n")
-    output_file.write("Protocol.Agents = function(agentsMap){this._agentsMap;};\n")
-    output_file.write("/**\n * @param {string} domain\n * @param {!Object} dispatcher\n */\n")
-    output_file.write("Protocol.Agents.prototype.registerDispatcher = function(domain, dispatcher){};\n")
     for domain in domains:
         domain_name = domain["domain"]
         uppercase_length = 0
@@ -237,10 +225,10 @@ Protocol.Error;
             uppercase_length += 1
 
         output_file.write("/** @return {!Protocol.%sAgent}*/\n" % domain_name)
-        output_file.write("Protocol.Agents.prototype.%s = function(){};\n" % (domain_name[:uppercase_length].lower() + domain_name[uppercase_length:] + "Agent"))
+        output_file.write("Protocol.Target.prototype.%s = function(){};\n" % (domain_name[:uppercase_length].lower() + domain_name[uppercase_length:] + "Agent"))
 
         output_file.write("/**\n * @param {!%sAgent.Dispatcher} dispatcher\n */\n" % domain_name)
-        output_file.write("Protocol.Agents.prototype.register%sDispatcher = function(dispatcher) {}\n" % domain_name)
+        output_file.write("Protocol.Target.prototype.register%sDispatcher = function(dispatcher) {}\n" % domain_name)
 
 
     output_file.close()

@@ -6,7 +6,7 @@
 
 /**
  * @constructor
- * @extends {Protocol.Agents}
+ * @extends {Protocol.Target}
  * @param {!WebInspector.TargetManager} targetManager
  * @param {string} name
  * @param {number} capabilitiesMask
@@ -15,17 +15,13 @@
  */
 WebInspector.Target = function(targetManager, name, capabilitiesMask, connectionFactory, parentTarget)
 {
-    // TODO(dgozman): inherit instead.
-    var targetProto = new InspectorBackendClass.TargetPrototype(connectionFactory, this._dispose.bind(this));
-    Protocol.Agents.call(this, targetProto.agentsMap());
+    Protocol.Target.call(this, connectionFactory);
     this._targetManager = targetManager;
     this._name = name;
     this._inspectedURL = "";
     this._capabilitiesMask = capabilitiesMask;
-    this._targetProto = targetProto;
     this._parentTarget = parentTarget;
     this._id = WebInspector.Target._nextId++;
-    this._disposed = false;
 
     /** @type {!Map.<!Function, !WebInspector.SDKModel>} */
     this._modelByConstructor = new Map();
@@ -103,16 +99,6 @@ WebInspector.Target.prototype = {
     },
 
     /**
-     * @override
-     * @param {string} domain
-     * @param {!Object} dispatcher
-     */
-    registerDispatcher: function(domain, dispatcher)
-    {
-        this._targetProto.registerDispatcher(domain, dispatcher);
-    },
-
-    /**
      * @return {boolean}
      */
     hasBrowserCapability: function()
@@ -168,22 +154,16 @@ WebInspector.Target.prototype = {
         return this._parentTarget;
     },
 
-    _dispose: function()
+    /**
+     * @override
+     */
+    dispose: function()
     {
-        this._disposed = true;
         this._targetManager.removeTarget(this);
         for (var model of this._modelByConstructor.valuesArray())
             model.dispose();
         if (this.workerManager)
             this.workerManager.dispose();
-    },
-
-    /**
-     * @return {boolean}
-     */
-    isDisposed: function()
-    {
-        return this._disposed;
     },
 
     /**
@@ -226,7 +206,7 @@ WebInspector.Target.prototype = {
             this._targetManager.dispatchEventToListeners(WebInspector.TargetManager.Events.NameChanged, this);
     },
 
-    __proto__: Protocol.Agents.prototype
+    __proto__: Protocol.Target.prototype
 };
 
 /**

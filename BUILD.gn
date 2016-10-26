@@ -142,7 +142,6 @@ devtools_sdk_js_files = [
   "front_end/sdk/TargetManager.js",
   "front_end/sdk/TracingManager.js",
   "front_end/sdk/TracingModel.js",
-  "front_end/sdk/WorkerManager.js",
 ]
 devtools_workspace_js_files = [
   "front_end/workspace/FileManager.js",

@@ -69,7 +69,7 @@ WebInspector.ConsoleModel.prototype = {
         if (this._isBlacklisted(msg))
             return;
 
-        if (msg.source === WebInspector.ConsoleMessage.MessageSource.Worker && msg.target().workerManager && msg.target().workerManager.targetByWorkerId(msg.workerId))
+        if (msg.source === WebInspector.ConsoleMessage.MessageSource.Worker && msg.target().subTargetsManager && msg.target().subTargetsManager.targetForId(msg.workerId))
             return;
 
         if (msg.source === WebInspector.ConsoleMessage.MessageSource.ConsoleAPI && msg.type === WebInspector.ConsoleMessage.MessageType.Clear)

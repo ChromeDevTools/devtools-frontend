@@ -217,8 +217,8 @@ WebInspector.TargetManager.prototype = {
             new WebInspector.CSSModel(target, domModel);
         }
 
-        /** @type {?WebInspector.WorkerManager} */
-        target.workerManager = target.hasWorkerCapability() ? new WebInspector.WorkerManager(target) : null;
+        /** @type {?WebInspector.SubTargetsManager} */
+        target.subTargetsManager = target.hasTargetCapability() ? new WebInspector.SubTargetsManager(target) : null;
         /** @type {!WebInspector.CPUProfilerModel} */
         target.cpuProfilerModel = new WebInspector.CPUProfilerModel(target);
         /** @type {!WebInspector.HeapProfilerModel} */
@@ -226,10 +226,8 @@ WebInspector.TargetManager.prototype = {
 
         target.tracingManager = new WebInspector.TracingManager(target);
 
-        if (target.hasBrowserCapability()) {
-            target.subTargetsManager = new WebInspector.SubTargetsManager(target);
+        if (target.subTargetsManager && target.hasBrowserCapability())
             target.serviceWorkerManager = new WebInspector.ServiceWorkerManager(target, target.subTargetsManager);
-        }
 
         this.addTarget(target);
         return target;

@@ -280,11 +280,11 @@ WebInspector.Main.prototype = {
         var capabilities =
             WebInspector.Target.Capability.Browser | WebInspector.Target.Capability.DOM |
             WebInspector.Target.Capability.JS | WebInspector.Target.Capability.Log |
-            WebInspector.Target.Capability.Network | WebInspector.Target.Capability.Worker;
+            WebInspector.Target.Capability.Network | WebInspector.Target.Capability.Target;
         if (Runtime.queryParam("isSharedWorker")) {
             capabilities =
                 WebInspector.Target.Capability.Browser | WebInspector.Target.Capability.Log |
-                WebInspector.Target.Capability.Network | WebInspector.Target.Capability.Worker;
+                WebInspector.Target.Capability.Network | WebInspector.Target.Capability.Target;
         } else if (Runtime.queryParam("v8only")) {
             capabilities = WebInspector.Target.Capability.JS;
         }

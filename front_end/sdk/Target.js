@@ -36,7 +36,7 @@ WebInspector.Target.Capability = {
     JS: 4,
     Log: 8,
     Network: 16,
-    Worker: 32
+    Target: 32
 };
 
 WebInspector.Target._nextId = 1;
@@ -133,9 +133,9 @@ WebInspector.Target.prototype = {
     /**
      * @return {boolean}
      */
-    hasWorkerCapability: function()
+    hasTargetCapability: function()
     {
-        return this.hasAllCapabilities(WebInspector.Target.Capability.Worker);
+        return this.hasAllCapabilities(WebInspector.Target.Capability.Target);
     },
 
     /**
@@ -162,8 +162,6 @@ WebInspector.Target.prototype = {
         this._targetManager.removeTarget(this);
         for (var model of this._modelByConstructor.valuesArray())
             model.dispose();
-        if (this.workerManager)
-            this.workerManager.dispose();
     },
 
     /**

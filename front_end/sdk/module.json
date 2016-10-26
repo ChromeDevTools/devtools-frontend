@@ -103,7 +103,6 @@
         "SubTargetsManager.js",
         "TracingManager.js",
         "TracingModel.js",
-        "WorkerManager.js",
         "RuntimeModel.js",
         "Script.js",
         "ServiceWorkerCacheModel.js",

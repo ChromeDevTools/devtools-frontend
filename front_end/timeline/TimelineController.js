@@ -267,7 +267,7 @@ WebInspector.TimelineController.prototype = {
         var workerMetaEvents = metadataEvents.filter(event => event.name === metadataEventTypes.TracingSessionIdForWorker);
         for (var metaEvent of workerMetaEvents) {
             var workerId = metaEvent.args["data"]["workerId"];
-            var workerTarget = this._target.workerManager ? this._target.workerManager.targetByWorkerId(workerId) : null;
+            var workerTarget = this._target.subTargetsManager ? this._target.subTargetsManager.targetForId(workerId) : null;
             if (!workerTarget)
                 continue;
             var cpuProfile = this._cpuProfiles.get(workerTarget.id());

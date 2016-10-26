@@ -481,7 +481,7 @@ WebInspector.TimelineModel.prototype = {
         // FIXME: Consider returning null for loaded traces.
         var workerId = this._workerIdByThread.get(event.thread);
         var mainTarget = WebInspector.targetManager.mainTarget();
-        return workerId ? mainTarget.workerManager.targetByWorkerId(workerId) : mainTarget;
+        return workerId ? mainTarget.subTargetsManager.targetForId(workerId) : mainTarget;
     },
 
     /**

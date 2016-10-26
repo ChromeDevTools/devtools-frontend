@@ -20,13 +20,15 @@ WebInspector.SubTargetsManager = function(target)
     this._connections = new Map();
 
     this._agent.setAutoAttach(true /* autoAttach */, true /* waitForDebuggerOnStart */);
-    this._agent.setAttachToFrames(Runtime.experiments.isEnabled("autoAttachToCrossProcessSubframes"));
+    if (Runtime.experiments.isEnabled("autoAttachToCrossProcessSubframes"))
+        this._agent.setAttachToFrames(true);
 
     if (Runtime.experiments.isEnabled("nodeDebugging") && !target.parentTarget()) {
         var defaultLocations = [{host: "localhost", port: 9229}];
         this._agent.setRemoteLocations(defaultLocations);
         this._agent.setDiscoverTargets(true);
     }
+    WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.MainFrameNavigated, this._mainFrameNavigated, this);
 };
 
 /** @enum {symbol} */
@@ -135,11 +137,11 @@ WebInspector.SubTargetsManager.prototype = {
         if (type === "worker")
             return WebInspector.Target.Capability.JS | WebInspector.Target.Capability.Log;
         if (type === "service_worker")
-            return WebInspector.Target.Capability.Log | WebInspector.Target.Capability.Network | WebInspector.Target.Capability.Worker;
+            return WebInspector.Target.Capability.Log | WebInspector.Target.Capability.Network | WebInspector.Target.Capability.Target;
         if (type === "iframe")
             return WebInspector.Target.Capability.Browser | WebInspector.Target.Capability.DOM |
                 WebInspector.Target.Capability.JS | WebInspector.Target.Capability.Log |
-                WebInspector.Target.Capability.Network | WebInspector.Target.Capability.Worker;
+                WebInspector.Target.Capability.Network | WebInspector.Target.Capability.Target;
         if (type === "node")
             return WebInspector.Target.Capability.JS;
         return 0;
@@ -163,7 +165,7 @@ WebInspector.SubTargetsManager.prototype = {
         this._attachedTargets.set(targetInfo.id, target);
 
         // Only pause new worker if debugging SW - we are going through the pause on start checkbox.
-        var mainIsServiceWorker = !this.target().parentTarget() && this.target().hasWorkerCapability() && !this.target().hasBrowserCapability();
+        var mainIsServiceWorker = !this.target().parentTarget() && this.target().hasTargetCapability() && !this.target().hasBrowserCapability();
         if (mainIsServiceWorker && waitingForDebugger)
             target.debuggerAgent().pause();
         target.runtimeAgent().runIfWaitingForDebugger();
@@ -224,6 +226,24 @@ WebInspector.SubTargetsManager.prototype = {
     _targetDestroyed: function(targetId)
     {
         // All the work is done in _detachedFromTarget.
+    },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _mainFrameNavigated: function(event)
+    {
+        if (event.data.target() !== this.target())
+            return;
+
+        var idsToDetach = [];
+        for (var targetId of this._attachedTargets.keys()) {
+            var target = this._attachedTargets.get(targetId);
+            var targetInfo = this.targetInfo(target);
+            if (targetInfo.type === "worker")
+                idsToDetach.push(targetId);
+        }
+        idsToDetach.forEach(id => this._detachedFromTarget(id));
     },
 
     __proto__: WebInspector.SDKModel.prototype

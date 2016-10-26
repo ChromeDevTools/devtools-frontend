@@ -415,7 +415,7 @@ WebInspector.ElementsTreeOutline.prototype = {
         // avoid calling _selectedNodeChanged() twice, first check if _selectedDOMNode is the same
         // node as the one passed in.
         if (this._selectedDOMNode === node)
-            this._selectedNodeChanged();
+            this._selectedNodeChanged(!!focus);
     },
 
     /**
@@ -455,9 +455,12 @@ WebInspector.ElementsTreeOutline.prototype = {
             this._revealAndSelectNode(selectedNode, true);
     },
 
-    _selectedNodeChanged: function()
+    /**
+     * @param {boolean} focus
+     */
+    _selectedNodeChanged: function(focus)
     {
-        this.dispatchEventToListeners(WebInspector.ElementsTreeOutline.Events.SelectedNodeChanged, this._selectedDOMNode);
+        this.dispatchEventToListeners(WebInspector.ElementsTreeOutline.Events.SelectedNodeChanged, {node: this._selectedDOMNode, focus: focus});
     },
 
     /**

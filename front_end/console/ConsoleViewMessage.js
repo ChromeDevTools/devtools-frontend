@@ -458,19 +458,18 @@ WebInspector.ConsoleViewMessage.prototype = {
             return (new WebInspector.CustomPreviewComponent(output)).element;
 
         var type = forceObjectFormat ? "object" : (output.subtype || output.type);
-        var span = createElement("span");
-        span.className = "object-value-" + type + " source-code";
+        var element;
         switch (type) {
         case "array":
         case "typedarray":
-            this._formatParameterAsArray(output, span);
+            element = this._formatParameterAsArray(output);
             break;
         case "error":
-            this._formatParameterAsError(output, span);
+            element = this._formatParameterAsError(output);
             break;
         case "function":
         case "generator":
-            this._formatParameterAsFunction(output, span, includePreview);
+            element = this._formatParameterAsFunction(output, includePreview);
             break;
         case "iterator":
         case "map":
@@ -478,13 +477,13 @@ WebInspector.ConsoleViewMessage.prototype = {
         case "promise":
         case "proxy":
         case "set":
-            this._formatParameterAsObject(output, span, includePreview);
+            element = this._formatParameterAsObject(output, includePreview);
             break;
         case "node":
-            this._formatParameterAsNode(output, span);
+            element = this._formatParameterAsNode(output);
             break;
         case "string":
-            this._formatParameterAsString(output, span);
+            element = this._formatParameterAsString(output);
             break;
         case "boolean":
         case "date":
@@ -493,32 +492,36 @@ WebInspector.ConsoleViewMessage.prototype = {
         case "regexp":
         case "symbol":
         case "undefined":
-            this._formatParameterAsValue(output, span);
+            element = this._formatParameterAsValue(output);
             break;
         default:
-            this._formatParameterAsValue(output, span);
+            element = this._formatParameterAsValue(output);
             console.error("Tried to format remote object of unknown type.");
         }
-        return span;
+        element.classList.add("object-value-" + type);
+        element.classList.add("source-code");
+        return element;
     },
 
     /**
      * @param {!WebInspector.RemoteObject} obj
-     * @param {!Element} elem
+     * @return {!Element}
      */
-    _formatParameterAsValue: function(obj, elem)
+    _formatParameterAsValue: function(obj)
     {
-        elem.createTextChild(obj.description || "");
+        var result = createElement("span");
+        result.createTextChild(obj.description || "");
         if (obj.objectId)
-            elem.addEventListener("contextmenu", this._contextMenuEventFired.bind(this, obj), false);
+            result.addEventListener("contextmenu", this._contextMenuEventFired.bind(this, obj), false);
+        return result;
     },
 
     /**
      * @param {!WebInspector.RemoteObject} obj
-     * @param {!Element} elem
      * @param {boolean=} includePreview
+     * @return {!Element}
      */
-    _formatParameterAsObject: function(obj, elem, includePreview)
+    _formatParameterAsObject: function(obj, includePreview)
     {
         var titleElement = createElement("span");
         if (includePreview && obj.preview) {
@@ -534,17 +537,19 @@ WebInspector.ConsoleViewMessage.prototype = {
         var section = new WebInspector.ObjectPropertiesSection(obj, titleElement, this._linkifier);
         section.element.classList.add("console-view-object-properties-section");
         section.enableContextMenu();
-        elem.appendChild(section.element);
+        return section.element;
     },
 
     /**
      * @param {!WebInspector.RemoteObject} func
-     * @param {!Element} element
      * @param {boolean=} includePreview
+     * @return {!Element}
      */
-    _formatParameterAsFunction: function(func, element, includePreview)
+    _formatParameterAsFunction: function(func, includePreview)
     {
+        var result = createElement("span");
         WebInspector.RemoteFunction.objectAsFunction(func).targetFunction().then(formatTargetFunction.bind(this));
+        return result;
 
         /**
          * @param {!WebInspector.RemoteObject} targetFunction
@@ -554,12 +559,12 @@ WebInspector.ConsoleViewMessage.prototype = {
         {
             var functionElement = createElement("span");
             WebInspector.ObjectPropertiesSection.formatObjectAsFunction(targetFunction, functionElement, true, includePreview);
-            element.appendChild(functionElement);
+            result.appendChild(functionElement);
             if (targetFunction !== func) {
-                var note = element.createChild("span", "object-info-state-note");
+                var note = result.createChild("span", "object-info-state-note");
                 note.title = WebInspector.UIString("Function was resolved from bound function.");
             }
-            element.addEventListener("contextmenu", this._contextMenuEventFired.bind(this, targetFunction), false);
+            result.addEventListener("contextmenu", this._contextMenuEventFired.bind(this, targetFunction), false);
         }
     },
 
@@ -589,18 +594,21 @@ WebInspector.ConsoleViewMessage.prototype = {
 
     /**
      * @param {!WebInspector.RemoteObject} object
-     * @param {!Element} elem
+     * @return {!Element}
      */
-    _formatParameterAsNode: function(object, elem)
+    _formatParameterAsNode: function(object)
     {
+        var result = createElement("span");
         WebInspector.Renderer.renderPromise(object).then(appendRenderer.bind(this), failedToRender.bind(this));
+        return result;
+
         /**
          * @param {!Element} rendererElement
          * @this {WebInspector.ConsoleViewMessage}
          */
         function appendRenderer(rendererElement)
         {
-            elem.appendChild(rendererElement);
+            result.appendChild(rendererElement);
             this._formattedParameterAsNodeForTest();
         }
 
@@ -609,7 +617,7 @@ WebInspector.ConsoleViewMessage.prototype = {
          */
         function failedToRender()
         {
-            this._formatParameterAsObject(object, elem, false);
+            result.appendChild(this._formatParameterAsObject(object, false));
         }
     },
 
@@ -619,16 +627,17 @@ WebInspector.ConsoleViewMessage.prototype = {
 
     /**
      * @param {!WebInspector.RemoteObject} array
-     * @param {!Element} elem
+     * @return {!Element}
      */
-    _formatParameterAsArray: function(array, elem)
+    _formatParameterAsArray: function(array)
     {
         var usePrintedArrayFormat = this._message.type !== WebInspector.ConsoleMessage.MessageType.DirXML && this._message.type !== WebInspector.ConsoleMessage.MessageType.Result;
         var isLongArray = array.arrayLength() > 100;
         if (usePrintedArrayFormat || isLongArray)
-            this._formatParameterAsObject(array, elem, usePrintedArrayFormat || !isLongArray);
-        else
-            array.getAllProperties(false, printArrayResult.bind(this));
+            return this._formatParameterAsObject(array, usePrintedArrayFormat || !isLongArray);
+        var result = createElement("span");
+        array.getAllProperties(false, printArrayResult.bind(this));
+        return result;
 
         /**
          * @param {?Array.<!WebInspector.RemoteObjectProperty>} properties
@@ -637,7 +646,7 @@ WebInspector.ConsoleViewMessage.prototype = {
         function printArrayResult(properties)
         {
             if (!properties) {
-                this._formatParameterAsObject(array, elem, false);
+                result.appendChild(this._formatParameterAsObject(array, false));
                 return;
             }
 
@@ -688,36 +697,36 @@ WebInspector.ConsoleViewMessage.prototype = {
             var section = new WebInspector.ObjectPropertiesSection(array, titleElement, this._linkifier);
             section.element.classList.add("console-view-object-properties-section");
             section.enableContextMenu();
-            elem.appendChild(section.element);
+            result.appendChild(section.element);
         }
     },
 
     /**
      * @param {!WebInspector.RemoteObject} output
-     * @param {!Element} elem
+     * @return {!Element}
      */
-    _formatParameterAsString: function(output, elem)
+    _formatParameterAsString: function(output)
     {
         var span = createElement("span");
-        span.className = "object-value-string source-code";
         span.appendChild(WebInspector.linkifyStringAsFragment(output.description || ""));
 
-        // Make black quotes.
-        elem.classList.remove("object-value-string");
-        elem.createTextChild("\"");
-        elem.appendChild(span);
-        elem.createTextChild("\"");
+        var result = createElement("span");
+        result.createChild("span", "object-value-string-quote").textContent = "\"";
+        result.appendChild(span);
+        result.createChild("span", "object-value-string-quote").textContent = "\"";
+        return result;
     },
 
     /**
      * @param {!WebInspector.RemoteObject} output
-     * @param {!Element} elem
+     * @return {!Element}
      */
-    _formatParameterAsError: function(output, elem)
+    _formatParameterAsError: function(output)
     {
-        var span = elem.createChild("span", "object-value-error source-code");
+        var result = createElement("span");
         var errorSpan = this._tryFormatAsError(output.description || "");
-        span.appendChild(errorSpan ? errorSpan : WebInspector.linkifyStringAsFragment(output.description || ""));
+        result.appendChild(errorSpan ? errorSpan : WebInspector.linkifyStringAsFragment(output.description || ""));
+        return result;
     },
 
     /**

@@ -59,9 +59,13 @@
 .object-value-string,
 .object-value-regexp,
 .object-value-symbol {
-    color: rgb(196, 26, 22);
     white-space: pre;
     unicode-bidi: -webkit-isolate;
+    color: rgb(196, 26, 22);
+}
+
+.object-value-string-quote {
+    color: #222;
 }
 
 .object-value-node {

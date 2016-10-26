@@ -42,24 +42,27 @@ WebInspector.DOMBreakpointsSidebarPane = function()
     /** @type {!Map<string, !Element>} */
     this._breakpointElements = new Map();
 
-    this._breakpointTypes = {
-        SubtreeModified: "subtree-modified",
-        AttributeModified: "attribute-modified",
-        NodeRemoved: "node-removed"
-    };
-    this._breakpointTypeLabels = {};
-    this._breakpointTypeLabels[this._breakpointTypes.SubtreeModified] = WebInspector.UIString("Subtree Modified");
-    this._breakpointTypeLabels[this._breakpointTypes.AttributeModified] = WebInspector.UIString("Attribute Modified");
-    this._breakpointTypeLabels[this._breakpointTypes.NodeRemoved] = WebInspector.UIString("Node Removed");
-
-    this._contextMenuLabels = {};
-    this._contextMenuLabels[this._breakpointTypes.SubtreeModified] = WebInspector.UIString.capitalize("Subtree ^modifications");
-    this._contextMenuLabels[this._breakpointTypes.AttributeModified] = WebInspector.UIString.capitalize("Attributes ^modifications");
-    this._contextMenuLabels[this._breakpointTypes.NodeRemoved] = WebInspector.UIString.capitalize("Node ^removal");
-
     WebInspector.targetManager.addModelListener(WebInspector.DOMModel, WebInspector.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
     this._update();
 };
+
+WebInspector.DOMBreakpointsSidebarPane.BreakpointTypes = {
+    SubtreeModified: "subtree-modified",
+    AttributeModified: "attribute-modified",
+    NodeRemoved: "node-removed"
+};
+
+WebInspector.DOMBreakpointsSidebarPane.BreakpointTypeLabels = {
+    "subtree-modified": WebInspector.UIString("Subtree Modified"),
+    "attribute-modified": WebInspector.UIString("Attribute Modified"),
+    "node-removed": WebInspector.UIString("Node Removed")
+};
+
+WebInspector.DOMBreakpointsSidebarPane.BreakpointTypeNouns = {
+    "subtree-modified": WebInspector.UIString("subtree modifications"),
+    "attribute-modified": WebInspector.UIString("attribute modifications"),
+    "node-removed": WebInspector.UIString("node removal")
+}
 
 WebInspector.DOMBreakpointsSidebarPane.Marker = "breakpoint-marker";
 
@@ -90,9 +93,9 @@ WebInspector.DOMBreakpointsSidebarPane.prototype = {
         }
 
         var breakpointsMenu = createSubMenu ? contextMenu.appendSubMenuItem(WebInspector.UIString("Break on...")) : contextMenu;
-        for (var key in this._breakpointTypes) {
-            var type = this._breakpointTypes[key];
-            var label = this._contextMenuLabels[type];
+        for (var key in WebInspector.DOMBreakpointsSidebarPane.BreakpointTypes) {
+            var type = WebInspector.DOMBreakpointsSidebarPane.BreakpointTypes[key];
+            var label = WebInspector.DOMBreakpointsSidebarPane.BreakpointTypeNouns[type];
             breakpointsMenu.appendCheckboxItem(label, toggleBreakpoint.bind(this, type), nodeBreakpoints.has(type));
         }
     },
@@ -123,46 +126,6 @@ WebInspector.DOMBreakpointsSidebarPane.prototype = {
                 return true;
         }
         return false;
-    },
-
-    /**
-     * @param {!WebInspector.DebuggerPausedDetails} details
-     * @return {!Element}
-     */
-    createBreakpointHitStatusMessage: function(details)
-    {
-        var auxData = /** @type {!Object} */ (details.auxData);
-        var message = "Paused on a \"%s\" breakpoint.";
-        var substitutions = [];
-        substitutions.push(this._breakpointTypeLabels[auxData["type"]]);
-
-        var domModel = WebInspector.DOMModel.fromTarget(details.target());
-        if (!domModel)
-            return WebInspector.formatLocalized(message, substitutions);
-
-        var node = domModel.nodeForId(auxData["nodeId"]);
-        var linkifiedNode = WebInspector.DOMPresentationUtils.linkifyNodeReference(node);
-        substitutions.push(linkifiedNode);
-
-        var targetNode = auxData["targetNodeId"] ? domModel.nodeForId(auxData["targetNodeId"]) : null;
-        var targetNodeLink = targetNode ? WebInspector.DOMPresentationUtils.linkifyNodeReference(targetNode) : "";
-
-        if (auxData.type === this._breakpointTypes.SubtreeModified) {
-            if (auxData["insertion"]) {
-                if (targetNode !== node) {
-                    message = "Paused on a \"%s\" breakpoint set on %s, because a new child was added to its descendant %s.";
-                    substitutions.push(targetNodeLink);
-                } else
-                    message = "Paused on a \"%s\" breakpoint set on %s, because a new child was added to that node.";
-            } else {
-                message = "Paused on a \"%s\" breakpoint set on %s, because its descendant %s was removed.";
-                substitutions.push(targetNodeLink);
-            }
-        } else {
-            message = "Paused on a \"%s\" breakpoint set on %s.";
-        }
-
-        return WebInspector.formatLocalized(message, substitutions);
     },
 
     _nodeRemoved: function(event)
@@ -235,7 +198,7 @@ WebInspector.DOMBreakpointsSidebarPane.prototype = {
         labelElement.appendChild(linkifiedNode);
 
         var description = createElement("div");
-        description.textContent = this._breakpointTypeLabels[type];
+        description.textContent = WebInspector.DOMBreakpointsSidebarPane.BreakpointTypeLabels[type];
         labelElement.appendChild(description);
 
         var currentElement = this.listElement.firstChild;
@@ -405,6 +368,39 @@ WebInspector.DOMBreakpointsSidebarPane.prototype = {
 
     __proto__: WebInspector.BreakpointsSidebarPaneBase.prototype
 };
+
+/**
+ * @param {!WebInspector.DebuggerPausedDetails} details
+ * @return {!Element}
+ */
+WebInspector.DOMBreakpointsSidebarPane.createBreakpointHitMessage = function(details)
+{
+    var messageWrapper = createElement("span");
+    var mainElement = messageWrapper.createChild("div", "status-main");
+    var auxData = /** @type {!Object} */ (details.auxData);
+    mainElement.textContent = String.sprintf("Paused on %s", WebInspector.DOMBreakpointsSidebarPane.BreakpointTypeNouns[auxData["type"]]);
+
+    var domModel = WebInspector.DOMModel.fromTarget(details.target());
+    if (domModel) {
+        var subElement = messageWrapper.createChild("div", "status-sub monospace");
+        var node = domModel.nodeForId(auxData["nodeId"]);
+        var linkifiedNode = WebInspector.DOMPresentationUtils.linkifyNodeReference(node);
+        subElement.appendChild(linkifiedNode);
+
+        var targetNode = auxData["targetNodeId"] ? domModel.nodeForId(auxData["targetNodeId"]) : null;
+        var targetNodeLink = targetNode ? WebInspector.DOMPresentationUtils.linkifyNodeReference(targetNode) : "";
+        var message;
+        if (auxData.type === WebInspector.DOMBreakpointsSidebarPane.BreakpointTypes.SubtreeModified) {
+            if (auxData["insertion"])
+                message = targetNode === node ? "Child %s added" : "Descendant %s added";
+            else
+                message = "Descendant %s removed";
+            subElement.appendChild(createElement("br"));
+            subElement.appendChild(WebInspector.formatLocalized(message, [targetNodeLink]));
+        }
+    }
+    return messageWrapper;
+}
 
 /**
  * @constructor

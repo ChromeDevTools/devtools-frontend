@@ -1,0 +1,65 @@
+/*
+ * Copyright 2016 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.paused-container {
+    flex: none;
+}
+
+.paused-status {
+    padding: 6px;
+    pointer-events: none;
+    border-bottom: 1px solid transparent;
+    border-top: 1px solid rgb(189, 189, 189);
+    background-color: hsl(50, 100%, 95%);
+    color: rgb(107, 97, 48);
+}
+
+.-theme-with-dark-background .paused-status {
+    background-color: hsl(46, 98%, 22%);
+    color: #ccc;
+}
+
+.paused-status.error-reason {
+    background-color: hsl(0, 100%, 97%);
+    color: #6b3b3b;
+}
+
+.status-main {
+    font-weight: bold;
+    padding-left: 15px;
+    position: relative;
+}
+
+.status-sub:not(:empty) {
+    padding-left: 15px;
+    padding-top: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.paused-status.error-reason .status-sub {
+    color: red;
+    line-height: 11px;
+    max-height: 27px;
+}
+
+.status-main::before {
+    background-position: -80px 0;
+    background-image: url(Images/smallIcons.png);
+    background-size: 190px 30px;
+    width: 10px;
+    height: 10px;
+    content: "";
+    -webkit-filter: hue-rotate(190deg);
+    position: absolute;
+    left: 0;
+    top: 1px;
+}
+
+.paused-status.error-reason .status-main::before {
+    background-position: -20px 0;
+    -webkit-filter: none;
+}

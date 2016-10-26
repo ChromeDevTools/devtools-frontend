@@ -102,27 +102,6 @@
     cursor: auto;
 }
 
-.callstack-info {
-    text-align: center;
-    font-style: italic;
-    padding: 6px;
-    color: #888;
-    pointer-events: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.callstack-info.status {
-    border-top: 1px solid rgb(189, 189, 189);
-    background-color: rgb(255, 255, 194);
-}
-
-.-theme-with-dark-background .callstack-info.status {
-    background-color: hsl(46, 98%, 22%);
-    color: #ccc;
-}
-
 .watch-expression-delete-button {
     width: 10px;
     height: 10px;

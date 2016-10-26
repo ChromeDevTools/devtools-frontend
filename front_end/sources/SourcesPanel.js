@@ -50,6 +50,7 @@ WebInspector.SourcesPanel = function()
 
     this._debugToolbar = this._createDebugToolbar();
     this._debugToolbarDrawer = this._createDebugToolbarDrawer();
+    this._debuggerPausedMessage = new WebInspector.DebuggerPausedMessage();
 
     const initialDebugSidebarWidth = 225;
     this._splitWidget = new WebInspector.SplitWidget(true, true, "sourcesPanelSplitViewState", initialDebugSidebarWidth);
@@ -93,7 +94,7 @@ WebInspector.SourcesPanel = function()
     WebInspector.moduleSetting("sidebarPosition").addChangeListener(this._updateSidebarPosition.bind(this));
     this._updateSidebarPosition();
 
-    this._updateDebuggerButtons();
+    this._updateDebuggerButtonsAndStatus();
     this._pauseOnExceptionEnabledChanged();
     WebInspector.moduleSetting("pauseOnExceptionEnabled").addChangeListener(this._pauseOnExceptionEnabledChanged, this);
 
@@ -262,7 +263,7 @@ WebInspector.SourcesPanel.prototype = {
     _showDebuggerPausedDetails: function(details)
     {
         this._paused = true;
-        this._updateDebuggerButtons();
+        this._updateDebuggerButtonsAndStatus();
         WebInspector.context.setFlavor(WebInspector.DebuggerPausedDetails, details);
         this._toggleDebuggerSidebarButton.setEnabled(false);
         window.focus();
@@ -293,7 +294,7 @@ WebInspector.SourcesPanel.prototype = {
         if (WebInspector.context.flavor(WebInspector.Target) !== target)
             return;
 
-        this._updateDebuggerButtons();
+        this._updateDebuggerButtonsAndStatus();
     },
 
     /**
@@ -446,7 +447,7 @@ WebInspector.SourcesPanel.prototype = {
         this._debugToolbarDrawer.classList.toggle("expanded", enabled);
     },
 
-    _updateDebuggerButtons: function()
+    _updateDebuggerButtonsAndStatus: function()
     {
         var currentTarget = WebInspector.context.flavor(WebInspector.Target);
         var currentDebuggerModel = WebInspector.DebuggerModel.fromTarget(currentTarget);
@@ -468,12 +469,15 @@ WebInspector.SourcesPanel.prototype = {
             this._stepIntoAction.setEnabled(false);
             this._stepOutAction.setEnabled(false);
         }
+
+        var details = currentDebuggerModel ? currentDebuggerModel.debuggerPausedDetails() : null;
+        this._debuggerPausedMessage.render(details, WebInspector.debuggerWorkspaceBinding, WebInspector.breakpointManager);
     },
 
     _clearInterface: function()
     {
         this._sourcesView.clearCurrentExecutionLine();
-        this._updateDebuggerButtons();
+        this._updateDebuggerButtonsAndStatus();
         WebInspector.context.setFlavor(WebInspector.DebuggerPausedDetails, null);
 
         if (this._switchToPausedTargetTimeout)
@@ -1058,6 +1062,7 @@ WebInspector.SourcesPanel.prototype = {
         this._sidebarPaneStack = WebInspector.viewManager.createStackLocation(this._revealDebuggerSidebar.bind(this));
         this._sidebarPaneStack.widget().element.classList.add("overflow-auto");
         this._sidebarPaneStack.widget().show(vbox.element);
+        this._sidebarPaneStack.widget().element.appendChild(this._debuggerPausedMessage.element());
         vbox.element.appendChild(this._debugToolbar.element);
 
         if (this._threadsSidebarPane)

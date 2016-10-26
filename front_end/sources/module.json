@@ -548,6 +548,7 @@
         "UIList.js",
         "AddSourceMapURLDialog.js",
         "CallStackSidebarPane.js",
+        "DebuggerPausedMessage.js",
         "SimpleHistoryManager.js",
         "EditingLocationHistoryManager.js",
         "EventListenerBreakpointsSidebarPane.js",
@@ -584,6 +585,7 @@
     ],
     "resources": [
         "uiList.css",
+        "debuggerPausedMessage.css",
         "eventListenerBreakpoints.css",
         "fileBasedSearchResultsPane.css",
         "navigatorTree.css",

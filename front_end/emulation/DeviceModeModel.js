@@ -509,7 +509,7 @@ WebInspector.DeviceModeModel.prototype = {
         var insetsWidth = insets ? insets.left + insets.right : 0;
         var insetsHeight = insets ? insets.top + insets.bottom : 0;
         var scale = Math.min(screenWidth ? this._preferredSize.width / (screenWidth + outlineWidth) : 1, screenHeight ? this._preferredSize.height / (screenHeight + outlineHeight) : 1);
-        scale = Math.min(Math.ceil(scale * 100), 100);
+        scale = Math.min(Math.floor(scale * 100), 100);
 
         var sharpScale = scale;
         while (sharpScale > scale * 0.7) {

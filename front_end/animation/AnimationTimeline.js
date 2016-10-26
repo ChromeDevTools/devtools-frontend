@@ -145,7 +145,8 @@ WebInspector.AnimationTimeline.prototype = {
         this._updatePlaybackControls();
 
         this._previewContainer = this.contentElement.createChild("div", "animation-timeline-buffer");
-        this._popoverHelper = new WebInspector.PopoverHelper(this._previewContainer, this._getPopoverAnchor.bind(this), this._showPopover.bind(this), this._onHidePopover.bind(this), true);
+        this._popoverHelper = new WebInspector.PopoverHelper(this._previewContainer, true);
+        this._popoverHelper.initializeCallbacks(this._getPopoverAnchor.bind(this), this._showPopover.bind(this), this._onHidePopover.bind(this));
         this._popoverHelper.setTimeout(0);
         var emptyBufferHint = this.contentElement.createChild("div", "animation-timeline-buffer-hint");
         emptyBufferHint.textContent = WebInspector.UIString("Listening for animations...");

@@ -39,7 +39,8 @@
  */
 WebInspector.ObjectPopoverHelper = function(panelElement, getAnchor, queryObject, onHide, disableOnClick)
 {
-    WebInspector.PopoverHelper.call(this, panelElement, getAnchor, this._showObjectPopover.bind(this), this._onHideObjectPopover.bind(this), disableOnClick);
+    WebInspector.PopoverHelper.call(this, panelElement, disableOnClick);
+    this.initializeCallbacks(getAnchor, this._showObjectPopover.bind(this), this._onHideObjectPopover.bind(this));
     this._queryObject = queryObject;
     this._onHideCallback = onHide;
     this._popoverObjectGroup = "popover";

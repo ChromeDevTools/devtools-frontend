@@ -31,11 +31,12 @@
  */
 WebInspector.CPUProfileView = function(profileHeader)
 {
+    WebInspector.ProfileView.call(this);
     this._profileHeader = profileHeader;
     this.profile = new WebInspector.CPUProfileDataModel(profileHeader._profile || profileHeader.protocolProfile());
     this.adjustedTotal = this.profile.profileHead.total;
     this.adjustedTotal -= this.profile.idleNode ? this.profile.idleNode.total : 0;
-    WebInspector.ProfileView.call(this, new WebInspector.CPUProfileView.NodeFormatter(this));
+    this.initialize(new WebInspector.CPUProfileView.NodeFormatter(this));
 };
 
 WebInspector.CPUProfileView.prototype = {

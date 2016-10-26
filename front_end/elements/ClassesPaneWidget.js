@@ -224,7 +224,8 @@ WebInspector.ClassesPaneWidget.ButtonProvider.prototype = {
  */
 WebInspector.ClassesPaneWidget.ClassNamePrompt = function()
 {
-    WebInspector.TextPrompt.call(this, this._buildClassNameCompletions.bind(this), " ");
+    WebInspector.TextPrompt.call(this);
+    this.initialize(this._buildClassNameCompletions.bind(this), " ");
     this.setSuggestBoxEnabled(true);
     this.disableDefaultSuggestionForEmptyInput();
     this._selectedFrameId = "";

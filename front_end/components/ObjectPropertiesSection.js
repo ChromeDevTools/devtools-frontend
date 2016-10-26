@@ -36,9 +36,9 @@
  */
 WebInspector.ObjectPropertiesSection = function(object, title, linkifier, emptyPlaceholder, ignoreHasOwnProperty, extraProperties)
 {
+    TreeOutlineInShadow.call(this);
     this._object = object;
     this._editable = true;
-    TreeOutlineInShadow.call(this);
     this.hideOverflow();
     this.setFocusable(false);
     this._objectTreeElement = new WebInspector.ObjectPropertiesSection.RootElement(object, linkifier, emptyPlaceholder, ignoreHasOwnProperty, extraProperties);
@@ -171,12 +171,14 @@ WebInspector.ObjectPropertiesSection.CompareProperties = function(propertyA, pro
  */
 WebInspector.ObjectPropertiesSection.RootElement = function(object, linkifier, emptyPlaceholder, ignoreHasOwnProperty, extraProperties)
 {
+    var contentElement = createElement("content");
+    TreeElement.call(this, contentElement);
+
     this._object = object;
     this._extraProperties = extraProperties || [];
     this._ignoreHasOwnProperty = !!ignoreHasOwnProperty;
     this._emptyPlaceholder = emptyPlaceholder;
-    var contentElement = createElement("content");
-    TreeElement.call(this, contentElement);
+
     this.setExpandable(true);
     this.selectable = false;
     this.toggleOnClick = true;
@@ -246,10 +248,10 @@ WebInspector.ObjectPropertiesSection.RootElement.prototype = {
  */
 WebInspector.ObjectPropertyTreeElement = function(property, linkifier)
 {
-    this.property = property;
-
     // Pass an empty title, the title gets made later in onattach.
     TreeElement.call(this);
+
+    this.property = property;
     this.toggleOnClick = true;
     this.selectable = false;
     /** @type {!Array.<!Object>} */
@@ -1033,7 +1035,8 @@ WebInspector.ArrayGroupingTreeElement.prototype = {
  */
 WebInspector.ObjectPropertyPrompt = function()
 {
-    WebInspector.TextPrompt.call(this, WebInspector.ExecutionContextSelector.completionsForTextPromptInCurrentContext);
+    WebInspector.TextPrompt.call(this);
+    this.initialize(WebInspector.ExecutionContextSelector.completionsForTextPromptInCurrentContext);
     this.setSuggestBoxEnabled(true);
 };
 

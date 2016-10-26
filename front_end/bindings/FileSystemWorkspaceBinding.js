@@ -192,16 +192,17 @@ WebInspector.FileSystemWorkspaceBinding.fileSystemPath = function(projectId)
  */
 WebInspector.FileSystemWorkspaceBinding.FileSystem = function(fileSystemWorkspaceBinding, isolatedFileSystem, workspace)
 {
-    this._fileSystemWorkspaceBinding = fileSystemWorkspaceBinding;
+    var fileSystemPath = isolatedFileSystem.path();
+    var id = WebInspector.FileSystemWorkspaceBinding.projectId(fileSystemPath);
+    console.assert(!workspace.project(id));
+    var displayName = fileSystemPath.substr(fileSystemPath.lastIndexOf("/") + 1);
+
+    WebInspector.ProjectStore.call(this, workspace, id, WebInspector.projectTypes.FileSystem, displayName);
+
     this._fileSystem = isolatedFileSystem;
     this._fileSystemBaseURL = this._fileSystem.path() + "/";
-    this._fileSystemPath = this._fileSystem.path();
-
-    var id = WebInspector.FileSystemWorkspaceBinding.projectId(this._fileSystemPath);
-    console.assert(!workspace.project(id));
-
-    var displayName = this._fileSystemPath.substr(this._fileSystemPath.lastIndexOf("/") + 1);
-    WebInspector.ProjectStore.call(this, workspace, id, WebInspector.projectTypes.FileSystem, displayName);
+    this._fileSystemWorkspaceBinding = fileSystemWorkspaceBinding;
+    this._fileSystemPath = fileSystemPath;
 
     workspace.addProject(this);
     this.populate();

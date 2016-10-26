@@ -30,7 +30,8 @@ WebInspector.NetworkTimelineColumn = function(rowHeight, headerHeight, calculato
     this._headerHeight = headerHeight;
     this._calculator = calculator;
 
-    this._popoverHelper = new WebInspector.PopoverHelper(this.element, this._getPopoverAnchor.bind(this), this._showPopover.bind(this));
+    this._popoverHelper = new WebInspector.PopoverHelper(this.element);
+    this._popoverHelper.initializeCallbacks(this._getPopoverAnchor.bind(this), this._showPopover.bind(this));
     this._popoverHelper.setTimeout(300, 300);
 
     this._vScrollElement = this.contentElement.createChild("div", "network-timeline-v-scroll");

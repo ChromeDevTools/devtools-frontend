@@ -35,10 +35,10 @@
  */
 WebInspector.JavaScriptSourceFrame = function(uiSourceCode)
 {
+    WebInspector.UISourceCodeFrame.call(this, uiSourceCode);
+
     this._scriptsPanel = WebInspector.SourcesPanel.instance();
     this._breakpointManager = WebInspector.breakpointManager;
-
-    WebInspector.UISourceCodeFrame.call(this, uiSourceCode);
     if (uiSourceCode.project().type() === WebInspector.projectTypes.Debugger)
         this.element.classList.add("source-frame-debugger-script");
 

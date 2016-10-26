@@ -124,10 +124,9 @@ WebInspector.AXNodeSubPane.prototype = {
  */
 WebInspector.AXNodePropertyTreeElement = function(axNode)
 {
-    this._axNode = axNode;
-
     // Pass an empty title, the title gets made later in onattach.
     TreeElement.call(this, "");
+    this._axNode = axNode;
 };
 
 /**
@@ -295,11 +294,12 @@ WebInspector.AXNodePropertyTreeElement.prototype = {
  */
 WebInspector.AXNodePropertyTreePropertyElement = function(property, axNode)
 {
+    WebInspector.AXNodePropertyTreeElement.call(this, axNode);
+
     this._property = property;
     this.toggleOnClick = true;
     this.selectable = false;
 
-    WebInspector.AXNodePropertyTreeElement.call(this, axNode);
     this.listItemElement.classList.add("property");
 };
 
@@ -336,8 +336,8 @@ WebInspector.AXNodePropertyTreePropertyElement.prototype = {
  */
 WebInspector.AXValueSourceTreeElement = function(source, axNode)
 {
-    this._source = source;
     WebInspector.AXNodePropertyTreeElement.call(this, axNode);
+    this._source = source;
     this.selectable = false;
 };
 
@@ -515,11 +515,10 @@ WebInspector.AXValueSourceTreeElement.prototype = {
  */
 WebInspector.AXRelatedNodeSourceTreeElement = function(node, value)
 {
-    this._value = value;
-    this._axRelatedNodeElement = new WebInspector.AXRelatedNodeElement(node, value);
-
     TreeElement.call(this, "");
 
+    this._value = value;
+    this._axRelatedNodeElement = new WebInspector.AXRelatedNodeElement(node, value);
     this.selectable = false;
 };
 
@@ -594,10 +593,9 @@ WebInspector.AXRelatedNodeElement.prototype = {
  */
 WebInspector.AXNodeIgnoredReasonTreeElement = function(property, axNode)
 {
+    WebInspector.AXNodePropertyTreeElement.call(this, axNode);
     this._property = property;
     this._axNode = axNode;
-
-    WebInspector.AXNodePropertyTreeElement.call(this, axNode);
     this.toggleOnClick = true;
     this.selectable = false;
 };

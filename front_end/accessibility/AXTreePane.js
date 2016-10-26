@@ -51,14 +51,14 @@ WebInspector.AXTreePane.prototype = {
  */
 WebInspector.AXNodeTreeElement = function(axNode, target)
 {
+    // Pass an empty title, the title gets made later in onattach.
+    TreeElement.call(this, "");
+
     /** @type {!WebInspector.AccessibilityNode} */
     this._axNode = axNode;
 
     /** @type {!WebInspector.Target} */
     this._target = target;
-
-    // Pass an empty title, the title gets made later in onattach.
-    TreeElement.call(this, "");
 
     this.selectable = false;
 };

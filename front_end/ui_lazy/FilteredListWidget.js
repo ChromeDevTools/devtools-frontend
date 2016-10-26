@@ -25,7 +25,8 @@ WebInspector.FilteredListWidget = function(delegate)
     this._promptElement = this.contentElement.createChild("div", "filtered-list-widget-input");
     this._promptElement.setAttribute("spellcheck", "false");
     this._promptElement.setAttribute("contenteditable", "plaintext-only");
-    this._prompt = new WebInspector.TextPrompt(this._autocomplete.bind(this));
+    this._prompt = new WebInspector.TextPrompt();
+    this._prompt.initialize(this._autocomplete.bind(this));
     this._prompt.renderAsBlock();
     this._prompt.addEventListener(WebInspector.TextPrompt.Events.ItemAccepted, this._onAutocompleted, this);
     var promptProxy = this._prompt.attach(this._promptElement);

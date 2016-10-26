@@ -99,7 +99,7 @@ WebInspector.StylesSidebarPane.ignoreErrorsForProperty = function(property) {
     var value = property.value.toLowerCase();
 
     // IE hack.
-    if (value.endsWith("\9"))
+    if (value.endsWith("\\9"))
         return true;
     if (hasUnknownVendorPrefix(value))
         return true;
@@ -2878,7 +2878,8 @@ WebInspector.StylePropertyTreeElement.prototype = {
 WebInspector.StylesSidebarPane.CSSPropertyPrompt = function(cssCompletions, treeElement, isEditingName)
 {
     // Use the same callback both for applyItemCallback and acceptItemCallback.
-    WebInspector.TextPrompt.call(this, this._buildPropertyCompletions.bind(this), WebInspector.StyleValueDelimiters);
+    WebInspector.TextPrompt.call(this);
+    this.initialize(this._buildPropertyCompletions.bind(this), WebInspector.StyleValueDelimiters);
     this.setSuggestBoxEnabled(true);
     this._cssCompletions = cssCompletions;
     this._treeElement = treeElement;

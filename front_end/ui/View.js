@@ -603,11 +603,13 @@ WebInspector.ViewManager._Location.prototype = {
  */
 WebInspector.ViewManager._TabbedLocation = function(manager, revealCallback, location, restoreSelection, allowReorder)
 {
-    this._tabbedPane = new WebInspector.TabbedPane();
+    var tabbedPane = new WebInspector.TabbedPane();
     if (allowReorder)
-        this._tabbedPane.setAllowTabReorder(true);
+        tabbedPane.setAllowTabReorder(true);
+
+    WebInspector.ViewManager._Location.call(this, manager, tabbedPane, revealCallback);
+    this._tabbedPane = tabbedPane;
     this._allowReorder = allowReorder;
-    WebInspector.ViewManager._Location.call(this, manager, this._tabbedPane, revealCallback);
 
     this._tabbedPane.addEventListener(WebInspector.TabbedPane.Events.TabSelected, this._tabSelected, this);
     this._tabbedPane.addEventListener(WebInspector.TabbedPane.Events.TabClosed, this._tabClosed, this);
@@ -841,8 +843,9 @@ WebInspector.ViewManager._TabbedLocation.prototype = {
  */
 WebInspector.ViewManager._StackLocation = function(manager, revealCallback, location)
 {
-    this._vbox = new WebInspector.VBox();
-    WebInspector.ViewManager._Location.call(this, manager, this._vbox, revealCallback);
+    var vbox = new WebInspector.VBox();
+    WebInspector.ViewManager._Location.call(this, manager, vbox, revealCallback);
+    this._vbox = vbox;
 
     /** @type {!Map<string, !WebInspector.ViewManager._ExpandableContainerWidget>} */
     this._expandableContainers = new Map();

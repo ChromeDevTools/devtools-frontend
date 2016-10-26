@@ -33,8 +33,9 @@
  */
 WebInspector.UISourceCodeFrame = function(uiSourceCode)
 {
-    this._uiSourceCode = uiSourceCode;
     WebInspector.SourceFrame.call(this, uiSourceCode.contentURL(), workingCopy);
+    this._uiSourceCode = uiSourceCode;
+    this.setEditable(this._canEditSource());
 
     if (Runtime.experiments.isEnabled("sourceDiff"))
         this._diff = new WebInspector.SourceCodeDiff(uiSourceCode.requestOriginalContent(), this.textEditor);
@@ -63,7 +64,9 @@ WebInspector.UISourceCodeFrame = function(uiSourceCode)
 
     this._updateStyle();
 
-    this._errorPopoverHelper = new WebInspector.PopoverHelper(this.element, this._getErrorAnchor.bind(this), this._showErrorPopover.bind(this));
+    this._errorPopoverHelper = new WebInspector.PopoverHelper(this.element);
+    this._errorPopoverHelper.initializeCallbacks(this._getErrorAnchor.bind(this), this._showErrorPopover.bind(this));
+
     this._errorPopoverHelper.setTimeout(100, 100);
 
     /**
@@ -106,10 +109,9 @@ WebInspector.UISourceCodeFrame.prototype = {
     },
 
     /**
-     * @override
      * @return {boolean}
      */
-    canEditSource: function()
+    _canEditSource: function()
     {
         if (WebInspector.persistence.binding(this._uiSourceCode))
             return true;
@@ -214,7 +216,7 @@ WebInspector.UISourceCodeFrame.prototype = {
     _updateStyle: function()
     {
         this.element.classList.toggle("source-frame-unsaved-committed-changes", WebInspector.persistence.hasUnsavedCommittedChanges(this._uiSourceCode));
-        this._textEditor.setReadOnly(!this.canEditSource());
+        this.setEditable(!this._canEditSource());
     },
 
     onUISourceCodeContentChanged: function()

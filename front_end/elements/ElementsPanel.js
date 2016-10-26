@@ -889,7 +889,8 @@ WebInspector.ElementsPanel.prototype = {
         tabbedPane.element.addEventListener("contextmenu", this._sidebarContextMenuEventFired.bind(this), false);
         if (this._popoverHelper)
             this._popoverHelper.hidePopover();
-        this._popoverHelper = new WebInspector.PopoverHelper(tabbedPane.element, this._getPopoverAnchor.bind(this), this._showPopover.bind(this));
+        this._popoverHelper = new WebInspector.PopoverHelper(tabbedPane.element);
+        this._popoverHelper.initializeCallbacks(this._getPopoverAnchor.bind(this), this._showPopover.bind(this));
         this._popoverHelper.setTimeout(0);
 
         if (horizontally) {

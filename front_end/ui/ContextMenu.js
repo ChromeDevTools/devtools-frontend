@@ -30,7 +30,7 @@
 
 /**
  * @constructor
- * @param {!WebInspector.ContextMenu} topLevelMenu
+ * @param {?WebInspector.ContextMenu} topLevelMenu
  * @param {string} type
  * @param {string=} label
  * @param {boolean=} disabled
@@ -44,7 +44,7 @@ WebInspector.ContextMenuItem = function(topLevelMenu, type, label, disabled, che
     this._checked = checked;
     this._contextMenu = topLevelMenu;
     if (type === "item" || type === "checkbox")
-        this._id = topLevelMenu._nextId();
+        this._id = topLevelMenu ? topLevelMenu._nextId() : 0;
 };
 
 WebInspector.ContextMenuItem.prototype = {
@@ -113,7 +113,7 @@ WebInspector.ContextMenuItem.prototype = {
 /**
  * @constructor
  * @extends {WebInspector.ContextMenuItem}
- * @param {!WebInspector.ContextMenu} topLevelMenu
+ * @param {?WebInspector.ContextMenu} topLevelMenu
  * @param {string=} label
  * @param {boolean=} disabled
  */
@@ -301,7 +301,8 @@ WebInspector.ContextSubMenuItem.prototype = {
  */
 WebInspector.ContextMenu = function(event, useSoftMenu, x, y)
 {
-    WebInspector.ContextSubMenuItem.call(this, this, "");
+    WebInspector.ContextSubMenuItem.call(this, null, "");
+    this._contextMenu = this;
     /** @type {!Array.<!Promise.<!Array.<!WebInspector.ContextMenu.Provider>>>} */
     this._pendingPromises = [];
     /** @type {!Array<!Object>} */

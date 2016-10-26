@@ -10,6 +10,7 @@
  */
 WebInspector.HeapProfileView = function(profileHeader)
 {
+    WebInspector.ProfileView.call(this);
     this._profileHeader = profileHeader;
     this.profile = new WebInspector.SamplingHeapProfileModel(profileHeader._profile || profileHeader.protocolProfile());
     this.adjustedTotal = this.profile.total;
@@ -18,7 +19,7 @@ WebInspector.HeapProfileView = function(profileHeader)
         WebInspector.ProfileView.ViewTypes.Heavy,
         WebInspector.ProfileView.ViewTypes.Tree
     ];
-    WebInspector.ProfileView.call(this, new WebInspector.HeapProfileView.NodeFormatter(this), views);
+    this.initialize(new WebInspector.HeapProfileView.NodeFormatter(this), views);
 };
 
 WebInspector.HeapProfileView.prototype = {
@@ -244,15 +245,14 @@ WebInspector.SamplingHeapProfileNode.prototype = {
  */
 WebInspector.SamplingHeapProfileModel = function(profile)
 {
-    WebInspector.ProfileTreeModel.call(this, this._translateProfileTree(profile.head));
-};
+    WebInspector.ProfileTreeModel.call(this);
+    this.initialize(translateProfileTree(profile.head));
 
-WebInspector.SamplingHeapProfileModel.prototype = {
     /**
      * @param {!HeapProfilerAgent.SamplingHeapProfileNode} root
      * @return {!WebInspector.SamplingHeapProfileNode}
      */
-    _translateProfileTree: function(root)
+    function translateProfileTree(root)
     {
         var resultRoot = new WebInspector.SamplingHeapProfileNode(root);
         var targetNodeStack = [resultRoot];
@@ -265,7 +265,10 @@ WebInspector.SamplingHeapProfileModel.prototype = {
             targetNodeStack.push.apply(targetNodeStack, parentNode.children);
         }
         return resultRoot;
-    },
+    }
+};
+
+WebInspector.SamplingHeapProfileModel.prototype = {
 
     __proto__: WebInspector.ProfileTreeModel.prototype
 };

@@ -37,15 +37,14 @@
  */
 WebInspector.ElementsTreeOutline = function(domModel, omitRootDOMNode, selectEnabled)
 {
+    TreeOutline.call(this);
+
     this._domModel = domModel;
     this._treeElementSymbol = Symbol("treeElement");
-
-    var element = createElement("div");
-
-    this._shadowRoot = WebInspector.createShadowRootWithCoreStyles(element, "elements/elementsTreeOutline.css");
+    var shadowContainer = createElement("div");
+    this._shadowRoot = WebInspector.createShadowRootWithCoreStyles(shadowContainer, "elements/elementsTreeOutline.css");
     var outlineDisclosureElement = this._shadowRoot.createChild("div", "elements-disclosure");
 
-    TreeOutline.call(this);
     this._element = this.element;
     this._element.classList.add("elements-tree-outline", "source-code");
     this._element.addEventListener("mousedown", this._onmousedown.bind(this), false);
@@ -63,7 +62,7 @@ WebInspector.ElementsTreeOutline = function(domModel, omitRootDOMNode, selectEna
     this._element.addEventListener("clipboard-paste", this._onPaste.bind(this), false);
 
     outlineDisclosureElement.appendChild(this._element);
-    this.element = element;
+    this.element = shadowContainer;
 
     this._includeRootDOMNode = !omitRootDOMNode;
     this._selectEnabled = selectEnabled;
@@ -74,7 +73,8 @@ WebInspector.ElementsTreeOutline = function(domModel, omitRootDOMNode, selectEna
 
     this._visible = false;
 
-    this._popoverHelper = new WebInspector.PopoverHelper(this._element, this._getPopoverAnchor.bind(this), this._showPopover.bind(this));
+    this._popoverHelper = new WebInspector.PopoverHelper(this._element);
+    this._popoverHelper.initializeCallbacks(this._getPopoverAnchor.bind(this), this._showPopover.bind(this));
     this._popoverHelper.setTimeout(0, 100);
 
     /** @type {!Map<!WebInspector.DOMNode, !WebInspector.ElementsTreeOutline.UpdateRecord>} */

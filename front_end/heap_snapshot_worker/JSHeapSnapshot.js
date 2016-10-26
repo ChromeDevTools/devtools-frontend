@@ -36,13 +36,14 @@
  */
 WebInspector.JSHeapSnapshot = function(profile, progress)
 {
+    WebInspector.HeapSnapshot.call(this, profile, progress);
     this._nodeFlags = { // bit flags
         canBeQueried: 1,
         detachedDOMTreeNode: 2,
         pageObject: 4 // The idea is to track separately the objects owned by the page and the objects owned by debugger.
     };
+    this.initialize();
     this._lazyStringCache = {};
-    WebInspector.HeapSnapshot.call(this, profile, progress);
 };
 
 WebInspector.JSHeapSnapshot.prototype = {

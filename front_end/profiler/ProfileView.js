@@ -6,24 +6,14 @@
  * @constructor
  * @implements {WebInspector.Searchable}
  * @extends {WebInspector.SimpleView}
- * @param {!WebInspector.ProfileDataGridNode.Formatter} nodeFormatter
- * @param {!Array<string>=} viewTypes
  */
-WebInspector.ProfileView = function(nodeFormatter, viewTypes)
+WebInspector.ProfileView = function()
 {
     WebInspector.SimpleView.call(this, WebInspector.UIString("Profile"));
 
     this._searchableView = new WebInspector.SearchableView(this);
     this._searchableView.setPlaceholder(WebInspector.UIString("Find by cost (>50ms), name or file"));
     this._searchableView.show(this.element);
-
-    viewTypes = viewTypes || [
-        WebInspector.ProfileView.ViewTypes.Flame,
-        WebInspector.ProfileView.ViewTypes.Heavy,
-        WebInspector.ProfileView.ViewTypes.Tree
-    ];
-    this._viewType = WebInspector.settings.createSetting("profileView", WebInspector.ProfileView.ViewTypes.Heavy);
-    this._nodeFormatter = nodeFormatter;
 
     var columns = /** @type {!Array<!WebInspector.DataGrid.ColumnDescriptor>} */ ([]);
     columns.push({id: "self", title: this.columnHeader("self"), width: "120px", fixedWidth: true, sortable: true, sort: WebInspector.DataGrid.Order.Descending});
@@ -36,15 +26,6 @@ WebInspector.ProfileView = function(nodeFormatter, viewTypes)
     this.dataGrid.addEventListener(WebInspector.DataGrid.Events.DeselectedNode, this._nodeSelected.bind(this, false));
 
     this.viewSelectComboBox = new WebInspector.ToolbarComboBox(this._changeView.bind(this));
-    var optionNames = new Map([
-        [WebInspector.ProfileView.ViewTypes.Flame, WebInspector.UIString("Chart")],
-        [WebInspector.ProfileView.ViewTypes.Heavy, WebInspector.UIString("Heavy (Bottom Up)")],
-        [WebInspector.ProfileView.ViewTypes.Tree, WebInspector.UIString("Tree (Top Down)")],
-    ]);
-    var options = new Map(viewTypes.map(type => [type, this.viewSelectComboBox.createOption(optionNames.get(type), "", type)]));
-    var optionName = this._viewType.get() || viewTypes[0];
-    var option = options.get(optionName) || options.get(viewTypes[0]);
-    this.viewSelectComboBox.select(option);
 
     this.focusButton = new WebInspector.ToolbarButton(WebInspector.UIString("Focus selected function"), "visibility-toolbar-item");
     this.focusButton.setEnabled(false);
@@ -59,10 +40,6 @@ WebInspector.ProfileView = function(nodeFormatter, viewTypes)
     this.resetButton.addEventListener("click", this._resetClicked, this);
 
     this._linkifier = new WebInspector.Linkifier(new WebInspector.Linkifier.DefaultFormatter(30));
-
-    this._changeView();
-    if (this._flameChart)
-        this._flameChart.update();
 };
 
 /** @enum {string} */
@@ -88,6 +65,38 @@ WebInspector.ProfileView.buildPopoverTable = function(entryInfo)
 };
 
 WebInspector.ProfileView.prototype = {
+    /**
+     * @param {!WebInspector.ProfileDataGridNode.Formatter} nodeFormatter
+     * @param {!Array<string>=} viewTypes
+     * @protected
+     */
+    initialize: function(nodeFormatter, viewTypes)
+    {
+        this._nodeFormatter = nodeFormatter;
+
+        this._viewType = WebInspector.settings.createSetting("profileView", WebInspector.ProfileView.ViewTypes.Heavy);
+        viewTypes = viewTypes || [
+            WebInspector.ProfileView.ViewTypes.Flame,
+            WebInspector.ProfileView.ViewTypes.Heavy,
+            WebInspector.ProfileView.ViewTypes.Tree
+        ];
+
+        var optionNames = new Map([
+            [WebInspector.ProfileView.ViewTypes.Flame, WebInspector.UIString("Chart")],
+            [WebInspector.ProfileView.ViewTypes.Heavy, WebInspector.UIString("Heavy (Bottom Up)")],
+            [WebInspector.ProfileView.ViewTypes.Tree, WebInspector.UIString("Tree (Top Down)")],
+        ]);
+
+        var options = new Map(viewTypes.map(type => [type, this.viewSelectComboBox.createOption(optionNames.get(type), "", type)]));
+        var optionName = this._viewType.get() || viewTypes[0];
+        var option = options.get(optionName) || options.get(viewTypes[0]);
+        this.viewSelectComboBox.select(option);
+
+        this._changeView();
+        if (this._flameChart)
+            this._flameChart.update();
+    },
+
     focus: function()
     {
         if (this._flameChart)

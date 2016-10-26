@@ -31,18 +31,14 @@
  * @constructor
  * @extends {WebInspector.Object}
  * @implements {WebInspector.SuggestBoxDelegate}
- * @param {function(!Element, !Range, boolean, function(!Array.<string>, number=))} completions
- * @param {string=} stopCharacters
  */
-WebInspector.TextPrompt = function(completions, stopCharacters)
+WebInspector.TextPrompt = function()
 {
     /**
      * @type {!Element|undefined}
      */
     this._proxyElement;
     this._proxyElementDisplay = "inline-block";
-    this._loadCompletions = completions;
-    this._completionStopCharacters = stopCharacters || " =:[({;,!+-*/&|^<>.";
     this._autocompletionTimeout = WebInspector.TextPrompt.DefaultAutocompletionTimeout;
     this._title = "";
     this._previousText = "";
@@ -59,6 +55,16 @@ WebInspector.TextPrompt.Events = {
 };
 
 WebInspector.TextPrompt.prototype = {
+    /**
+     * @param {function(!Element, !Range, boolean, function(!Array.<string>, number=))} completions
+     * @param {string=} stopCharacters
+     */
+    initialize: function(completions, stopCharacters)
+    {
+        this._loadCompletions = completions;
+        this._completionStopCharacters = stopCharacters || " =:[({;,!+-*/&|^<>.";
+    },
+
     /**
      * @param {number} timeout
      */

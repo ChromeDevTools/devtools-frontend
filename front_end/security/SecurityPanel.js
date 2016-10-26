@@ -403,15 +403,13 @@ WebInspector.SecurityPanel.createCertificateViewerButton2 = function(text, origi
  */
 WebInspector.SecurityPanelSidebarTree = function(mainViewElement, showOriginInPanel)
 {
-    this._showOriginInPanel = showOriginInPanel;
-
-    this._mainOrigin = null;
-
     TreeOutlineInShadow.call(this);
     this.registerRequiredCSS("security/sidebar.css");
     this.registerRequiredCSS("security/lockIcon.css");
-
     this.appendChild(mainViewElement);
+
+    this._showOriginInPanel = showOriginInPanel;
+    this._mainOrigin = null;
 
     /** @type {!Map<!WebInspector.SecurityPanelSidebarTree.OriginGroupName, !TreeElement>} */
     this._originGroups = new Map();
@@ -858,8 +856,8 @@ WebInspector.SecurityMainView.prototype = {
  */
 WebInspector.SecurityOriginView = function(panel, origin, originState)
 {
-    this._panel = panel;
     WebInspector.VBox.call(this);
+    this._panel = panel;
     this.setMinimumSize(200, 100);
 
     this.element.classList.add("security-origin-view");

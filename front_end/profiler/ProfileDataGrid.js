@@ -32,10 +32,9 @@
  */
 WebInspector.ProfileDataGridNode = function(profileNode, owningTree, hasChildren)
 {
-    this.profileNode = profileNode;
-
     WebInspector.DataGridNode.call(this, null, hasChildren);
 
+    this.profileNode = profileNode;
     this.tree = owningTree;
     /** @type {!Map<string, !WebInspector.ProfileDataGridNode>} */
     this.childrenByCallUID = new Map();

@@ -254,16 +254,10 @@ WebInspector.Popover.prototype = {
 /**
  * @constructor
  * @param {!Element} panelElement
- * @param {function(!Element, !Event):(!Element|!AnchorBox|undefined)} getAnchor
- * @param {function(!Element, !WebInspector.Popover):undefined} showPopover
- * @param {function()=} onHide
  * @param {boolean=} disableOnClick
  */
-WebInspector.PopoverHelper = function(panelElement, getAnchor, showPopover, onHide, disableOnClick)
+WebInspector.PopoverHelper = function(panelElement, disableOnClick)
 {
-    this._getAnchor = getAnchor;
-    this._showPopover = showPopover;
-    this._onHide = onHide;
     this._disableOnClick = !!disableOnClick;
     panelElement.addEventListener("mousedown", this._mouseDown.bind(this), false);
     panelElement.addEventListener("mousemove", this._mouseMove.bind(this), false);
@@ -272,6 +266,18 @@ WebInspector.PopoverHelper = function(panelElement, getAnchor, showPopover, onHi
 };
 
 WebInspector.PopoverHelper.prototype = {
+    /**
+     * @param {function(!Element, !Event):(!Element|!AnchorBox|undefined)} getAnchor
+     * @param {function(!Element, !WebInspector.Popover):undefined} showPopover
+     * @param {function()=} onHide
+     */
+    initializeCallbacks:function(getAnchor, showPopover, onHide)
+    {
+        this._getAnchor = getAnchor;
+        this._showPopover = showPopover;
+        this._onHide = onHide;
+    },
+
     /**
      * @param {number} timeout
      * @param {number=} hideTimeout

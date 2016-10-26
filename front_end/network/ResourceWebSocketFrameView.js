@@ -198,9 +198,7 @@ WebInspector.ResourceWebSocketFrameView.prototype = {
  */
 WebInspector.ResourceWebSocketFrameNode = function(url, frame)
 {
-    this._frame = frame;
-    this._dataText = frame.text;
-    this._url = url;
+    var dataText = frame.text;
     var length = frame.text.length;
     var time = new Date(frame.time * 1000);
     var timeText = ("0" + time.getHours()).substr(-2) + ":" + ("0" + time.getMinutes()).substr(-2) + ":" + ("0" + time.getSeconds()).substr(-2) + "." + ("00" + time.getMilliseconds()).substr(-3);
@@ -208,11 +206,16 @@ WebInspector.ResourceWebSocketFrameNode = function(url, frame)
     timeNode.createTextChild(timeText);
     timeNode.title = time.toLocaleString();
 
-    this._isTextFrame = frame.opCode === WebInspector.ResourceWebSocketFrameView.OpCodes.TextFrame;
-    if (!this._isTextFrame)
-        this._dataText = WebInspector.ResourceWebSocketFrameView.opCodeDescription(frame.opCode, frame.mask);
+    var isTextFrame = frame.opCode === WebInspector.ResourceWebSocketFrameView.OpCodes.TextFrame;
+    if (!isTextFrame)
+        dataText = WebInspector.ResourceWebSocketFrameView.opCodeDescription(frame.opCode, frame.mask);
 
-    WebInspector.SortableDataGridNode.call(this, {data: this._dataText, length: length, time: timeNode});
+    WebInspector.SortableDataGridNode.call(this, {data: dataText, length: length, time: timeNode});
+
+    this._url = url;
+    this._frame = frame;
+    this._isTextFrame = isTextFrame;
+    this._dataText = dataText;
 };
 
 WebInspector.ResourceWebSocketFrameNode.prototype = {

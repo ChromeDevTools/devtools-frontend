@@ -37,7 +37,7 @@
  */
 WebInspector.BottomUpProfileDataGridNode = function(profileNode, owningTree)
 {
-    WebInspector.ProfileDataGridNode.call(this, profileNode, owningTree, this._willHaveChildren(profileNode));
+    WebInspector.ProfileDataGridNode.call(this, profileNode, owningTree, !!profileNode.parent && !!profileNode.parent.parent);
     this._remainingNodeInfos = [];
 };
 

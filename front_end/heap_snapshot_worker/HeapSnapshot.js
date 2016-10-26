@@ -912,29 +912,7 @@ WebInspector.HeapSnapshot = function(profile, progress)
     this._aggregatesForDiff = null;
     this._aggregates = {};
     this._aggregatesSortedFlags = {};
-
-    this._init();
-
-    if (profile.snapshot.trace_function_count) {
-        this._progress.updateStatus("Building allocation statistics\u2026");
-        var nodes = this.nodes;
-        var nodesLength = nodes.length;
-        var nodeFieldCount = this._nodeFieldCount;
-        var node = this.rootNode();
-        var liveObjects = {};
-        for (var nodeIndex = 0; nodeIndex < nodesLength; nodeIndex += nodeFieldCount) {
-            node.nodeIndex = nodeIndex;
-            var traceNodeId = node.traceNodeId();
-            var stats = liveObjects[traceNodeId];
-            if (!stats)
-                liveObjects[traceNodeId] = stats = { count: 0, size: 0, ids: [] };
-            stats.count++;
-            stats.size += node.selfSize();
-            stats.ids.push(node.id());
-        }
-        this._allocationProfile = new WebInspector.AllocationProfile(profile, liveObjects);
-        this._progress.updateStatus("Done");
-    }
+    this._profile = profile;
 };
 
 /**
@@ -967,7 +945,10 @@ function HeapSnapshotHeader()
 }
 
 WebInspector.HeapSnapshot.prototype = {
-    _init: function()
+    /**
+     * @protected
+     */
+    initialize: function()
     {
         var meta = this._metaNode;
 
@@ -1037,6 +1018,27 @@ WebInspector.HeapSnapshot.prototype = {
         this._progress.updateStatus("Calculating samples\u2026");
         this._buildSamples();
         this._progress.updateStatus("Finished processing.");
+
+        if (this._profile.snapshot.trace_function_count) {
+            this._progress.updateStatus("Building allocation statistics\u2026");
+            var nodes = this.nodes;
+            var nodesLength = nodes.length;
+            var nodeFieldCount = this._nodeFieldCount;
+            var node = this.rootNode();
+            var liveObjects = {};
+            for (var nodeIndex = 0; nodeIndex < nodesLength; nodeIndex += nodeFieldCount) {
+                node.nodeIndex = nodeIndex;
+                var traceNodeId = node.traceNodeId();
+                var stats = liveObjects[traceNodeId];
+                if (!stats)
+                    liveObjects[traceNodeId] = stats = { count: 0, size: 0, ids: [] };
+                stats.count++;
+                stats.size += node.selfSize();
+                stats.ids.push(node.id());
+            }
+            this._allocationProfile = new WebInspector.AllocationProfile(this._profile, liveObjects);
+            this._progress.updateStatus("Done");
+        }
     },
 
     _buildEdgeIndexes: function()
@@ -2321,9 +2323,9 @@ WebInspector.HeapSnapshotItemProvider.prototype = {
  */
 WebInspector.HeapSnapshotEdgesProvider = function(snapshot, filter, edgesIter, indexProvider)
 {
-    this.snapshot = snapshot;
     var iter = filter ? new WebInspector.HeapSnapshotFilteredIterator(edgesIter, /** @type {function(!WebInspector.HeapSnapshotItem):boolean} */ (filter)) : edgesIter;
     WebInspector.HeapSnapshotItemProvider.call(this, iter, indexProvider);
+    this.snapshot = snapshot;
 };
 
 WebInspector.HeapSnapshotEdgesProvider.prototype = {
@@ -2421,13 +2423,13 @@ WebInspector.HeapSnapshotEdgesProvider.prototype = {
  */
 WebInspector.HeapSnapshotNodesProvider = function(snapshot, filter, nodeIndexes)
 {
-    this.snapshot = snapshot;
     var indexProvider = new WebInspector.HeapSnapshotNodeIndexProvider(snapshot);
     var it = new WebInspector.HeapSnapshotIndexRangeIterator(indexProvider, nodeIndexes);
 
     if (filter)
         it = new WebInspector.HeapSnapshotFilteredIterator(it, /** @type {function(!WebInspector.HeapSnapshotItem):boolean} */ (filter));
     WebInspector.HeapSnapshotItemProvider.call(this, it, indexProvider);
+    this.snapshot = snapshot;
 };
 
 WebInspector.HeapSnapshotNodesProvider.prototype = {

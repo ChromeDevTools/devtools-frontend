@@ -42,7 +42,8 @@ WebInspector.DatabaseQueryView = function(database)
     this._promptElement.addEventListener("keydown", this._promptKeyDown.bind(this), true);
     this.element.appendChild(this._promptElement);
 
-    this._prompt = new WebInspector.TextPrompt(this.completions.bind(this), " ");
+    this._prompt = new WebInspector.TextPrompt();
+    this._prompt.initialize(this.completions.bind(this), " ");
     this._proxyElement = this._prompt.attach(this._promptElement);
 
     this.element.addEventListener("click", this._messagesClicked.bind(this), true);

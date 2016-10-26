@@ -86,7 +86,7 @@ WebInspector.TextEditor.prototype = {
  *  mimeType: (string|undefined),
  *  autoHeight: (boolean|undefined)
  * }}
- **/
+ */
 WebInspector.TextEditor.Options;
 
 /**
@@ -96,5 +96,5 @@ WebInspector.TextEditor.Options;
  *     isWordChar: ((function(string):boolean)|undefined),
  *     captureEnter: (boolean|undefined)
  * }}
- **/
+ */
 WebInspector.AutocompleteConfig;

@@ -52,7 +52,8 @@ WebInspector.TimelineOverviewPane = function(prefix)
     this._overviewControls = [];
     this._markers = new Map();
 
-    this._popoverHelper = new WebInspector.PopoverHelper(this._cursorArea, this._getPopoverAnchor.bind(this), this._showPopover.bind(this), this._onHidePopover.bind(this));
+    this._popoverHelper = new WebInspector.PopoverHelper(this._cursorArea);
+    this._popoverHelper.initializeCallbacks(this._getPopoverAnchor.bind(this), this._showPopover.bind(this), this._onHidePopover.bind(this));
     this._popoverHelper.setTimeout(0);
 
     this._updateThrottler = new WebInspector.Throttler(100);

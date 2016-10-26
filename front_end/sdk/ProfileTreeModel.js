@@ -68,16 +68,23 @@ WebInspector.ProfileNode.prototype = {
 
 /**
  * @constructor
- * @param {!WebInspector.ProfileNode} root
  */
-WebInspector.ProfileTreeModel = function(root)
+WebInspector.ProfileTreeModel = function()
 {
-    this.root = root;
-    this._assignDepthsAndParents();
-    this.total = this._calculateTotals(this.root);
 };
 
 WebInspector.ProfileTreeModel.prototype = {
+    /**
+     * @param {!WebInspector.ProfileNode} root
+     * @protected
+     */
+    initialize: function(root)
+    {
+        this.root = root;
+        this._assignDepthsAndParents();
+        this.total = this._calculateTotals(this.root);
+    },
+
     _assignDepthsAndParents: function()
     {
         var root = this.root;

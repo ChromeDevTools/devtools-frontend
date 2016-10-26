@@ -49,7 +49,6 @@ WebInspector.SourceFrame = function(url, lazyContent)
     this._currentSearchResultIndex = -1;
     this._searchResults = [];
 
-    this._textEditor.setReadOnly(!this.canEditSource());
     this._textEditor.addEventListener(WebInspector.SourcesTextEditor.Events.EditorFocused, this._resetCurrentSearchResultIndex, this);
     this._textEditor.addEventListener(WebInspector.SourcesTextEditor.Events.SelectionChanged, this._updateSourcePosition, this);
     this._textEditor.addEventListener(WebInspector.SourcesTextEditor.Events.TextChanged, event => this.onTextChanged(event.data.oldRange, event.data.newRange));
@@ -63,9 +62,19 @@ WebInspector.SourceFrame = function(url, lazyContent)
      * @type {?WebInspector.SearchableView}
      */
     this._searchableView = null;
+    this._editable = false;
 };
 
 WebInspector.SourceFrame.prototype = {
+    /**
+     * @param {boolean} editable
+     */
+    setEditable: function(editable)
+    {
+        this._editable = editable;
+        this._textEditor.setReadOnly(editable);
+    },
+
     /**
      * @param {number} key
      * @param {function():boolean} handler
@@ -568,7 +577,7 @@ WebInspector.SourceFrame.prototype = {
      */
     canEditSource: function()
     {
-        return false;
+        return this._editable;
     },
 
     _updateSourcePosition: function()

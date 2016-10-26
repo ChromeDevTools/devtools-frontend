@@ -10,7 +10,7 @@ WebInspector.ConsolePrompt = function()
 {
     WebInspector.Widget.call(this);
     this._addCompletionsFromHistory = true;
-    this._history = new WebInspector.HistoryManager();
+    this._history = new WebInspector.ConsoleHistoryManager();
 
     this._initialText = "";
     this._editor = null;
@@ -52,7 +52,7 @@ WebInspector.ConsolePrompt = function()
 
 WebInspector.ConsolePrompt.prototype = {
     /**
-     * @return {!WebInspector.HistoryManager}
+     * @return {!WebInspector.ConsoleHistoryManager}
      */
     history: function()
     {
@@ -291,4 +291,102 @@ WebInspector.ConsolePrompt.prototype = {
     _editorSetForTest: function() { },
 
     __proto__: WebInspector.Widget.prototype
+}
+
+/**
+ * @constructor
+ */
+WebInspector.ConsoleHistoryManager = function()
+{
+    /**
+     * @type {!Array.<string>}
+     */
+    this._data = [];
+
+    /**
+     * 1-based entry in the history stack.
+     * @type {number}
+     */
+    this._historyOffset = 1;
+}
+
+WebInspector.ConsoleHistoryManager.prototype = {
+    /**
+     * @return {!Array.<string>}
+     */
+    historyData: function()
+    {
+        return this._data;
+    },
+
+    /**
+     * @param {!Array.<string>} data
+     */
+    setHistoryData: function(data)
+    {
+        this._data = data.slice();
+        this._historyOffset = 1;
+    },
+
+    /**
+     * Pushes a committed text into the history.
+     * @param {string} text
+     */
+    pushHistoryItem: function(text)
+    {
+        if (this._uncommittedIsTop) {
+            this._data.pop();
+            delete this._uncommittedIsTop;
+        }
+
+        this._historyOffset = 1;
+        if (text === this._currentHistoryItem())
+            return;
+        this._data.push(text);
+    },
+
+    /**
+     * Pushes the current (uncommitted) text into the history.
+     * @param {string} currentText
+     */
+    _pushCurrentText: function(currentText)
+    {
+        if (this._uncommittedIsTop)
+            this._data.pop(); // Throw away obsolete uncommitted text.
+        this._uncommittedIsTop = true;
+        this._data.push(currentText);
+    },
+
+    /**
+     * @param {string} currentText
+     * @return {string|undefined}
+     */
+    previous: function(currentText)
+    {
+        if (this._historyOffset > this._data.length)
+            return undefined;
+        if (this._historyOffset === 1)
+            this._pushCurrentText(currentText);
+        ++this._historyOffset;
+        return this._currentHistoryItem();
+    },
+
+    /**
+     * @return {string|undefined}
+     */
+    next: function()
+    {
+        if (this._historyOffset === 1)
+            return undefined;
+        --this._historyOffset;
+        return this._currentHistoryItem();
+    },
+
+    /**
+     * @return {string|undefined}
+     */
+    _currentHistoryItem: function()
+    {
+        return this._data[this._data.length - this._historyOffset];
+    }
 };

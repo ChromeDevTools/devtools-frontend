@@ -75,7 +75,7 @@ WebInspector.ServiceWorkerCacheView.prototype = {
      */
     _deleteButtonClicked: function(node)
     {
-        this._model.deleteCacheEntry(this._cache, node.data["request"], node.remove.bind(node));
+        this._model.deleteCacheEntry(this._cache, /** @type {string} */ (node.data["request"]), node.remove.bind(node));
     },
 
     /**

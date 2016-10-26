@@ -356,7 +356,7 @@ WebInspector.IDBDataGridNode.prototype = {
     createCell: function(columnIdentifier)
     {
         var cell = WebInspector.DataGridNode.prototype.createCell.call(this, columnIdentifier);
-        var value = this.data[columnIdentifier];
+        var value = /** @type {!WebInspector.RemoteObject} */ (this.data[columnIdentifier]);
 
         switch (columnIdentifier) {
         case "value":

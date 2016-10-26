@@ -409,6 +409,7 @@ WebInspector.NetworkLogViewColumns.prototype = {
         this._updateColumns();
         this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SortingChanged, this._sortHandler, this);
         this._dataGrid.addEventListener(WebInspector.DataGrid.Events.ColumnsResized, this.updateDividersIfNeeded, this);
+        this._dataGrid.setHeaderContextMenuCallback(this._innerHeaderContextMenu.bind(this));
 
         this._timelineGrid = new WebInspector.TimelineGrid();
         this._timelineGrid.element.classList.add("network-timeline-grid");
@@ -581,16 +582,20 @@ WebInspector.NetworkLogViewColumns.prototype = {
     },
 
     /**
-     * @param {!Event} event
-     * @return {boolean}
+     * @param {!MouseEvent} event
      */
-    contextMenu: function(event)
+    headerContextMenuEvent: function(event)
     {
-        if (!this._gridMode || !event.target.isSelfOrDescendant(this._dataGrid.headerTableBody()))
-            return false;
+        // TODO(allada) Remove this entire function when new timeline moves to this file.
+        this._innerHeaderContextMenu(new WebInspector.ContextMenu(event));
+    },
 
+    /**
+     * @param {!WebInspector.ContextMenu} contextMenu
+     */
+    _innerHeaderContextMenu: function(contextMenu)
+    {
         var columnConfigs = this._columns.filter(columnConfig => columnConfig.hideable);
-        var contextMenu = new WebInspector.ContextMenu(event);
         var nonResponseHeaders = columnConfigs.filter(columnConfig => !columnConfig.isResponseHeader);
         for (var columnConfig of nonResponseHeaders)
             contextMenu.appendCheckboxItem(columnConfig.title, this._toggleColumnVisibility.bind(this, columnConfig), columnConfig.visible);
@@ -606,7 +611,6 @@ WebInspector.NetworkLogViewColumns.prototype = {
         responseSubMenu.appendItem(WebInspector.UIString("Manage Header Columns\u2026"), this._manageCustomHeaderDialog.bind(this));
 
         contextMenu.show();
-        return true;
     },
 
     _manageCustomHeaderDialog: function()

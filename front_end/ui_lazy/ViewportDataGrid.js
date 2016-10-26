@@ -9,11 +9,10 @@
  * @param {function(!WebInspector.DataGridNode, string, string, string)=} editCallback
  * @param {function(!WebInspector.DataGridNode)=} deleteCallback
  * @param {function()=} refreshCallback
- * @param {function(!WebInspector.ContextMenu, !WebInspector.DataGridNode)=} contextMenuCallback
  */
-WebInspector.ViewportDataGrid = function(columnsArray, editCallback, deleteCallback, refreshCallback, contextMenuCallback)
+WebInspector.ViewportDataGrid = function(columnsArray, editCallback, deleteCallback, refreshCallback)
 {
-    WebInspector.DataGrid.call(this, columnsArray, editCallback, deleteCallback, refreshCallback, contextMenuCallback);
+    WebInspector.DataGrid.call(this, columnsArray, editCallback, deleteCallback, refreshCallback);
 
     this._onScrollBound = this._onScroll.bind(this);
     this._scrollContainer.addEventListener("scroll", this._onScrollBound, true);

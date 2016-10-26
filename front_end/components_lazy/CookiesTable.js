@@ -54,10 +54,12 @@ WebInspector.CookiesTable = function(expandable, refreshCallback, selectedCallba
         {id: "sameSite", title: WebInspector.UIString("SameSite"), sortable: true, align: WebInspector.DataGrid.Align.Center, weight: 7}
     ]);
 
-    if (readOnly)
+    if (readOnly) {
         this._dataGrid = new WebInspector.DataGrid(columns);
-    else
-        this._dataGrid = new WebInspector.DataGrid(columns, undefined, this._onDeleteCookie.bind(this), refreshCallback, this._onContextMenu.bind(this));
+    } else {
+        this._dataGrid = new WebInspector.DataGrid(columns, undefined, this._onDeleteCookie.bind(this), refreshCallback);
+        this._dataGrid.setRowContextMenuCallback(this._onRowContextMenu.bind(this));
+    }
 
     this._dataGrid.setName("cookiesTable");
     this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SortingChanged, this._rebuildTable, this);
@@ -85,12 +87,11 @@ WebInspector.CookiesTable.prototype = {
      * @param {!WebInspector.ContextMenu} contextMenu
      * @param {!WebInspector.DataGridNode} node
      */
-    _onContextMenu: function(contextMenu, node)
+    _onRowContextMenu: function(contextMenu, node)
     {
         if (node === this._dataGrid.creationNode)
             return;
-        var cookie = node.cookie;
-        var domain = cookie.domain();
+        var domain = node.cookie.domain();
         if (domain)
             contextMenu.appendItem(WebInspector.UIString.capitalize("Clear ^all from \"%s\"", domain), this._clearAndRefresh.bind(this, domain));
         contextMenu.appendItem(WebInspector.UIString.capitalize("Clear ^all"), this._clearAndRefresh.bind(this, null));

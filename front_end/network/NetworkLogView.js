@@ -387,11 +387,11 @@ WebInspector.NetworkLogView.prototype = {
     _createTable: function()
     {
         this._dataGrid = this._columns.createGrid(this._timeCalculator, this._durationCalculator);
+        this._dataGrid.setRowContextMenuCallback(this._onRowContextMenu.bind(this));
         this._dataGrid.setStickToBottom(true);
         this._dataGrid.setName("networkLog");
         this._dataGrid.setResizeMethod(WebInspector.DataGrid.ResizeMethod.Last);
         this._dataGrid.element.classList.add("network-log-grid");
-        this._dataGrid.element.addEventListener("contextmenu", this._contextMenu.bind(this), true);
         this._dataGrid.element.addEventListener("mousedown", this._dataGridMouseDown.bind(this), true);
         this._dataGrid.element.addEventListener("mousemove", this._dataGridMouseMove.bind(this), true);
         this._dataGrid.element.addEventListener("mouseleave", this._dataGridMouseLeave.bind(this), true);
@@ -913,7 +913,7 @@ WebInspector.NetworkLogView.prototype = {
     {
         this._timelineHeaderElement = this._timelineWidget.element.createChild("div", "network-timeline-header");
         this._timelineHeaderElement.addEventListener("click", timelineHeaderClicked.bind(this));
-        this._timelineHeaderElement.addEventListener("contextmenu", this._contextMenu.bind(this));
+        this._timelineHeaderElement.addEventListener("contextmenu", this._columns.headerContextMenuEvent.bind(this._columns));
         var innerElement = this._timelineHeaderElement.createChild("div");
         innerElement.textContent = WebInspector.UIString("Timeline");
         this._timelineColumnSortIcon = this._timelineHeaderElement.createChild("div", "sort-order-icon-container").createChild("div", "sort-order-icon");
@@ -977,25 +977,12 @@ WebInspector.NetworkLogView.prototype = {
     },
 
     /**
-     * @param {!Event} event
+     * @param {!WebInspector.ContextMenu} contextMenu
+     * @param {!WebInspector.DataGridNode} node
      */
-    _contextMenu: function(event)
+    _onRowContextMenu: function(contextMenu, node)
     {
-        // TODO(allada) Fix datagrid's contextmenu so NetworkLogViewColumns can attach it's own contextmenu event
-        if (this._columns.contextMenu(event))
-            return;
-        var contextMenu = new WebInspector.ContextMenu(event);
-
-        var gridNode = this._dataGrid.dataGridNodeFromNode(event.target);
-        var request = gridNode && gridNode.request();
-
-        /**
-         * @param {string} url
-         */
-        function openResourceInNewTab(url)
-        {
-            InspectorFrontendHost.openInNewTab(url);
-        }
+        var request = node.request();
 
         contextMenu.appendApplicableItems(request);
         var copyMenu = contextMenu.appendSubMenuItem(WebInspector.UIString("Copy"));

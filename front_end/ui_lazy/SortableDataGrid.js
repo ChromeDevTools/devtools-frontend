@@ -9,11 +9,10 @@
  * @param {function(!WebInspector.DataGridNode, string, string, string)=} editCallback
  * @param {function(!WebInspector.DataGridNode)=} deleteCallback
  * @param {function()=} refreshCallback
- * @param {function(!WebInspector.ContextMenu, !WebInspector.DataGridNode)=} contextMenuCallback
  */
-WebInspector.SortableDataGrid = function(columnsArray, editCallback, deleteCallback, refreshCallback, contextMenuCallback)
+WebInspector.SortableDataGrid = function(columnsArray, editCallback, deleteCallback, refreshCallback)
 {
-    WebInspector.ViewportDataGrid.call(this, columnsArray, editCallback, deleteCallback, refreshCallback, contextMenuCallback);
+    WebInspector.ViewportDataGrid.call(this, columnsArray, editCallback, deleteCallback, refreshCallback);
     /** @type {!WebInspector.SortableDataGrid.NodeComparator} */
     this._sortingFunction = WebInspector.SortableDataGrid.TrivialComparator;
     this.setRootNode(new WebInspector.SortableDataGridNode());

@@ -12,6 +12,7 @@ WebInspector.Audits2Panel = function()
     this.contentElement.classList.add("vbox");
     this.contentElement.appendChild(createTextButton(WebInspector.UIString("Start"), this._start.bind(this)));
     this.contentElement.appendChild(createTextButton(WebInspector.UIString("Stop"), this._stop.bind(this)));
+    this._resultElement = this.contentElement.createChild("div", "overflow-auto");
 };
 
 WebInspector.Audits2Panel.prototype = {
@@ -19,7 +20,11 @@ WebInspector.Audits2Panel.prototype = {
     {
         WebInspector.targetManager.interceptMainConnection(this._dispatchProtocolMessage.bind(this)).then(rawConnection => {
             this._rawConnection = rawConnection;
-            this._send("start");
+            this._send("start").then(result => {
+                var section = new WebInspector.ObjectPropertiesSection(WebInspector.RemoteObject.fromLocalObject(result), WebInspector.UIString("Audit Results"));
+                this._resultElement.appendChild(section.element);
+                this._stop();
+            });
         });
     },
 

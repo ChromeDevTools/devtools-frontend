@@ -2,6 +2,13 @@
     "dependencies": [
         "worker_service"
     ],
+    "extensions": [
+        {
+            "type": "@Service",
+            "className": "TempStorage",
+            "name": "TempStorage"
+        }
+    ],
     "scripts": [
         "TempStorage.js"
     ]

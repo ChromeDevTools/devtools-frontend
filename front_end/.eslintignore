@@ -1,5 +1,6 @@
 .eslintrc.js
 acorn
+audits2_worker/lighthouse
 cm
 cm_modes
 diff_match_patch.js

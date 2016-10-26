@@ -11,7 +11,12 @@ Service.prototype = {
     /**
      * @return {!Promise}
      */
-    dispose: function() { }
+    dispose: function() { },
+
+    /**
+     * @return {function(string)}
+     */
+    setNotify: function(notify) { }
 };
 
 /**
@@ -20,7 +25,7 @@ Service.prototype = {
  */
 function ServiceDispatcher(port)
 {
-    this._constructors = new Map();
+    /** @type {!Map<string, !Object>} */
     this._objects = new Map();
     this._lastObjectId = 1;
     this._port = port;
@@ -28,15 +33,6 @@ function ServiceDispatcher(port)
 }
 
 ServiceDispatcher.prototype = {
-    /**
-     * @param {string} name
-     * @param {function(new:Object)} constructor
-     */
-    registerObject: function(name, constructor)
-    {
-        this._constructors.set(name, constructor);
-    },
-
     /**
      * @param {string} data
      */
@@ -60,19 +56,21 @@ ServiceDispatcher.prototype = {
     _dispatchMessage: function(message)
     {
         var domainAndMethod = message["method"].split(".");
-        var objectName = domainAndMethod[0];
+        var serviceName = domainAndMethod[0];
         var method = domainAndMethod[1];
 
-        var constructor = this._constructors.get(objectName);
-        if (!constructor) {
-            this._sendErrorResponse(message["id"], "Could not resolve service '" + objectName + "'");
-            return;
-        }
         if (method === "create") {
-            var id = String(this._lastObjectId++);
-            var object = new constructor(this._notify.bind(this, id, objectName));
-            this._objects.set(id, object);
-            this._sendResponse(message["id"], { id: id });
+            var extensions = self.runtime.extensions(Service).filter(extension => extension.descriptor()["name"] === serviceName);
+            if (!extensions.length) {
+                this._sendErrorResponse(message["id"], "Could not resolve service '" + serviceName + "'");
+                return;
+            }
+            extensions[0].instance().then(object => {
+                var id = String(this._lastObjectId++);
+                object.setNotify(this._notify.bind(this, id, serviceName));
+                this._objects.set(id, object);
+                this._sendResponse(message["id"], { id: id });
+            });
         } else if (method === "dispose") {
             var object = this._objects.get(message["params"]["id"]);
             if (!object) {
@@ -109,14 +107,14 @@ ServiceDispatcher.prototype = {
 
     /**
      * @param {string} objectId
-     * @param {string} objectName
+     * @param {string} serviceName
      * @param {string} method
      * @param {!Object} params
      */
-    _notify: function(objectId, objectName, method, params)
+    _notify: function(objectId, serviceName, method, params)
     {
         params["id"] = objectId;
-        var message = { method: objectName + "." + method, params: params };
+        var message = { method: serviceName + "." + method, params: params };
         this._port.send(JSON.stringify(message));
     },
 
@@ -195,48 +193,16 @@ WorkerServicePort.prototype = {
 };
 
 var dispatchers = [];
-var portInitialized = false;
-/** @type {!Map<string, function(new:Service)>}*/
-var services = new Map();
 
-/**
- * @param {string} serviceName
- * @param {function(new:Service)} constructor
- */
-function initializeWorkerService(serviceName, constructor)
-{
-    services.set(serviceName, constructor);
-    if (!dispatchers.length) {
-        var worker = /** @type {!Object} */(self);
-        var servicePort = new WorkerServicePort(/** @type {!Worker} */(worker));
-        var dispatcher = new ServiceDispatcher(servicePort);
-        dispatchers.push(dispatcher);
-    }
-    dispatchers[0].registerObject(serviceName, constructor);
-}
-
-/**
- * @param {string} serviceName
- * @param {function(new:Service)} constructor
- */
-function initializeSharedWorkerService(serviceName, constructor)
-{
-    services.set(serviceName, constructor);
-
-    if (!portInitialized) {
-        portInitialized = true;
-        Runtime.setSharedWorkerNewPortCallback(onNewPort);
-    } else {
-        for (var dispatcher of dispatchers)
-            dispatcher.registerObject(serviceName, constructor);
-    }
-
+if (self instanceof SharedWorkerGlobalScope) {
     function onNewPort(port)
     {
-        var servicePort = new WorkerServicePort(port);
-        var dispatcher = new ServiceDispatcher(servicePort);
+        var dispatcher = new ServiceDispatcher(new WorkerServicePort(port));
         dispatchers.push(dispatcher);
-        for (var name of services.keys())
-            dispatcher.registerObject(name, services.get(name));
     }
+    Runtime.setSharedWorkerNewPortCallback(onNewPort);
+} else {
+    var worker = /** @type {!Object} */(self);
+    var servicePort = new WorkerServicePort(/** @type {!Worker} */(worker));
+    dispatchers.push(new ServiceDispatcher(servicePort));
 }

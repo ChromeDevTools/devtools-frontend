@@ -385,9 +385,10 @@ devtools_audits_js_files = [
   "front_end/audits/AuditsPanel.js",
 ]
 devtools_audits2_js_files = [ "front_end/audits2/Audits2Panel.js" ]
-devtools_audits2_worker_js_files =
-    [ "front_end/audits2_worker/Audits2Service.js" ]
-
+devtools_audits2_worker_js_files = [
+  "front_end/audits2_worker/Audits2Service.js",
+  "front_end/audits2_worker/lighthouse/lighthouse-background.js",
+]
 devtools_cm_modes_js_files = [
   "front_end/cm_modes/clike.js",
   "front_end/cm_modes/coffeescript.js",

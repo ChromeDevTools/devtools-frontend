@@ -11,9 +11,10 @@
         }
     ],
     "dependencies": [
+        "components",
         "sdk",
-        "ui",
-        "services"
+        "services",
+        "ui"
     ],
     "experiment": "audits2",
     "scripts": [

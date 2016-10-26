@@ -635,32 +635,35 @@ WebInspector.ObjectPropertyTreeElement._populate = function(treeElement, value, 
 WebInspector.ObjectPropertyTreeElement.populateWithProperties = function(treeNode, properties, internalProperties, skipProto, value, linkifier, emptyPlaceholder) {
     properties.sort(WebInspector.ObjectPropertiesSection.CompareProperties);
 
+    var tailProperties = [];
+    var protoProperty = null;
     for (var i = 0; i < properties.length; ++i) {
         var property = properties[i];
-        if (skipProto && property.name === "__proto__")
+        property.parentObject = value;
+        if (property.name === "__proto__" && !property.isAccessorProperty()) {
+            protoProperty = property;
             continue;
-        if (property.isAccessorProperty()) {
-            if (property.name !== "__proto__" && property.getter) {
-                property.parentObject = value;
-                treeNode.appendChild(new WebInspector.ObjectPropertyTreeElement(property, linkifier));
-            }
-            if (property.isOwn) {
-                if (property.getter) {
-                    var getterProperty = new WebInspector.RemoteObjectProperty("get " + property.name, property.getter);
-                    getterProperty.parentObject = value;
-                    treeNode.appendChild(new WebInspector.ObjectPropertyTreeElement(getterProperty, linkifier));
-                }
-                if (property.setter) {
-                    var setterProperty = new WebInspector.RemoteObjectProperty("set " + property.name, property.setter);
-                    setterProperty.parentObject = value;
-                    treeNode.appendChild(new WebInspector.ObjectPropertyTreeElement(setterProperty, linkifier));
-                }
-            }
-        } else {
-            property.parentObject = value;
-            treeNode.appendChild(new WebInspector.ObjectPropertyTreeElement(property, linkifier));
         }
+
+        if (property.isOwn && property.getter) {
+            var getterProperty = new WebInspector.RemoteObjectProperty("get " + property.name, property.getter, false);
+            getterProperty.parentObject = value;
+            tailProperties.push(getterProperty);
+        }
+        if (property.isOwn && property.setter) {
+            var setterProperty = new WebInspector.RemoteObjectProperty("set " + property.name, property.setter, false);
+            setterProperty.parentObject = value;
+            tailProperties.push(setterProperty);
+        }
+        var canShowProperty = property.getter || !property.isAccessorProperty();
+        if (canShowProperty && property.name !== "__proto__")
+            treeNode.appendChild(new WebInspector.ObjectPropertyTreeElement(property, linkifier));
     }
+    for (var i = 0; i < tailProperties.length; ++i)
+        treeNode.appendChild(new WebInspector.ObjectPropertyTreeElement(tailProperties[i], linkifier));
+    if (!skipProto && protoProperty)
+        treeNode.appendChild(new WebInspector.ObjectPropertyTreeElement(protoProperty, linkifier));
+
     if (internalProperties) {
         for (var i = 0; i < internalProperties.length; i++) {
             internalProperties[i].parentObject = value;
@@ -672,6 +675,7 @@ WebInspector.ObjectPropertyTreeElement.populateWithProperties = function(treeNod
             treeNode.appendChild(treeElement);
         }
     }
+
     WebInspector.ObjectPropertyTreeElement._appendEmptyPlaceholderIfNeeded(treeNode, emptyPlaceholder);
 };
 

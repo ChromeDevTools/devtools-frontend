@@ -87,7 +87,7 @@ WebInspector.FilteredListWidget.prototype = {
      */
     _value: function()
     {
-        return this._prompt.userEnteredText().trim();
+        return this._prompt.text().trim();
     },
 
     willHide: function()

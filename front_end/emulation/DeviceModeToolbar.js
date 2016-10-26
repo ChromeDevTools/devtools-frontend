@@ -83,7 +83,7 @@ WebInspector.DeviceModeToolbar.prototype = {
         widthInput.maxLength = 4;
         widthInput.type = "text";
         widthInput.title = WebInspector.UIString("Width");
-        this._updateWidthInput = WebInspector.bindInput(widthInput, applyWidth.bind(this), WebInspector.DeviceModeModel.deviceSizeValidator, true);
+        this._updateWidthInput = WebInspector.bindInput(widthInput, this._applyWidth.bind(this), WebInspector.DeviceModeModel.deviceSizeValidator, true);
         this._widthInput = widthInput;
         this._widthItem = this._wrapToolbarItem(widthInput);
         toolbar.appendToolbarItem(this._widthItem);
@@ -97,7 +97,7 @@ WebInspector.DeviceModeToolbar.prototype = {
         heightInput.maxLength = 4;
         heightInput.type = "text";
         heightInput.title = WebInspector.UIString("Height (leave empty for full)");
-        this._updateHeightInput = WebInspector.bindInput(heightInput, applyHeight.bind(this), validateHeight, true);
+        this._updateHeightInput = WebInspector.bindInput(heightInput, this._applyHeight.bind(this), validateHeight, true);
         this._heightInput = heightInput;
         this._heightItem = this._wrapToolbarItem(heightInput);
         toolbar.appendToolbarItem(this._heightItem);
@@ -110,26 +110,24 @@ WebInspector.DeviceModeToolbar.prototype = {
         {
             return !value || WebInspector.DeviceModeModel.deviceSizeValidator(value);
         }
+    },
 
-        /**
-         * @param {string} value
-         * @this {WebInspector.DeviceModeToolbar}
-         */
-        function applyWidth(value)
-        {
-            var width = value ? Number(value) : 0;
-            this._model.setWidthAndScaleToFit(width);
-        }
+    /**
+     * @param {string} value
+     */
+    _applyWidth: function(value)
+    {
+        var width = value ? Number(value) : 0;
+        this._model.setWidthAndScaleToFit(width);
+    },
 
-        /**
-         * @param {string} value
-         * @this {WebInspector.DeviceModeToolbar}
-         */
-        function applyHeight(value)
-        {
-            var height = value ? Number(value) : 0;
-            this._model.setHeightAndScaleToFit(height);
-        }
+    /**
+     * @param {string} value
+     */
+    _applyHeight: function(value)
+    {
+        var height = value ? Number(value) : 0;
+        this._model.setHeightAndScaleToFit(height);
     },
 
     /**

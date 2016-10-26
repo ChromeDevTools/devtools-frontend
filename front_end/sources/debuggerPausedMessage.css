@@ -56,10 +56,16 @@
     -webkit-filter: hue-rotate(190deg);
     position: absolute;
     left: 0;
-    top: 1px;
+    top: calc(50% - 5px);
 }
 
 .paused-status.error-reason .status-main::before {
     background-position: -20px 0;
     -webkit-filter: none;
 }
+
+@media (-webkit-min-device-pixel-ratio: 1.1) {
+.status-main::before {
+    background-image: url(Images/smallIcons_2x.png);
+}
+} /* media */

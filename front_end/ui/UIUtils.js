@@ -48,16 +48,17 @@ WebInspector.installDragHandle = function(element, elementDragStart, elementDrag
      */
     function onMouseDown(event)
     {
-        var dragStart = WebInspector.elementDragStart.bind(WebInspector, element, elementDragStart, elementDrag, elementDragEnd, cursor, event);
-        if (!startDelay)
+        var dragStart = WebInspector.elementDragStart.bind(null, element, elementDragStart, elementDrag, elementDragEnd, cursor, event);
+        if (startDelay)
+            startTimer = setTimeout(dragStart, startDelay);
+        else
             dragStart();
-        startTimer = setTimeout(dragStart, startDelay || 0);
     }
 
     function onMouseUp()
     {
         if (startTimer)
-            clearInterval(startTimer);
+            clearTimeout(startTimer);
         startTimer = null;
     }
 

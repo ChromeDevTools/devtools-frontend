@@ -660,7 +660,7 @@
     width: 100%;
     display: table;
     z-index: 200;
-    background-color:transparent;
+    background-color: transparent;
 }
 
 .network-timeline-header:hover {

@@ -615,6 +615,7 @@ WebInspector.NetworkLogView.prototype = {
     wasShown: function()
     {
         this._refreshIfNeeded();
+        this._columns.wasShown();
     },
 
     willHide: function()

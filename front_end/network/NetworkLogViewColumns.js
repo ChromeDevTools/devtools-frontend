@@ -43,6 +43,7 @@ WebInspector.NetworkLogViewColumns = function(networkLogView, timeCalculator, du
     this._timelineGrid = null;
     this._timelineHeaderElement = null;
     this._timelineRequestsAreStale = false;
+    this._timelineScrollerWidthIsStale = true;
 
     /** @type {!WebInspector.Linkifier} */
     this._popupLinkifier = new WebInspector.Linkifier();
@@ -55,9 +56,8 @@ WebInspector.NetworkLogViewColumns = function(networkLogView, timeCalculator, du
     this._setupDataGrid();
     if (Runtime.experiments.isEnabled("canvasNetworkTimeline"))
         this._setupTimeline();
-
-    this._updateRowsSize();
 };
+
 WebInspector.NetworkLogViewColumns._initialSortColumn = "timeline";
 
 /**
@@ -377,6 +377,11 @@ WebInspector.NetworkLogViewColumns._convertToDataGridDescriptor = function(colum
 };
 
 WebInspector.NetworkLogViewColumns.prototype = {
+    wasShown: function()
+    {
+        this._updateRowsSize();
+    },
+
     willHide: function()
     {
         this._popoverHelper.hidePopover();
@@ -414,6 +419,8 @@ WebInspector.NetworkLogViewColumns.prototype = {
                 event.consume();
         }, true);
 
+        this._dataGridScroller = this._dataGrid.scrollContainer;
+
         this._updateColumns();
         this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SortingChanged, this._sortHandler, this);
         this._dataGrid.addEventListener(WebInspector.DataGrid.Events.ColumnsResized, this.updateDividersIfNeeded, this);
@@ -436,13 +443,24 @@ WebInspector.NetworkLogViewColumns.prototype = {
 
     _setupTimeline: function()
     {
-        var dataGridScroller = this._dataGrid.scrollContainer;
-        this._timelineColumn = new WebInspector.NetworkTimelineColumn(this._networkLogView.rowHeight(), this._networkLogView.calculator(), dataGridScroller);
-        this._dataGrid.setScrollContainer(this._timelineColumn.getScrollContainer());
-        this._dataGrid.addEventListener(WebInspector.DataGrid.Events.PaddingChanged, () => this._timelineColumn.setScrollHeight(dataGridScroller.scrollHeight));
+        this._timelineColumn = new WebInspector.NetworkTimelineColumn(this._networkLogView.rowHeight(), this._networkLogView.calculator());
+
+        this._timelineColumn.element.addEventListener("mousewheel", this._onMouseWheel.bind(this, false), { passive: true });
+        this._dataGridScroller.addEventListener("mousewheel",this._onMouseWheel.bind(this, true), true);
+
+        this._timelineColumn.element.addEventListener("mousemove", event => this._networkLogView.setHoveredRequest(this._timelineColumn.getRequestFromPoint(event.offsetX, event.offsetY + event.target.offsetTop)), true);
+        this._timelineColumn.element.addEventListener("mouseleave", this._networkLogView.setHoveredRequest.bind(this._networkLogView, null), true);
+
+        this._timelineScroller = this._timelineColumn.contentElement.createChild("div", "network-timeline-v-scroll");
+        this._timelineScroller.addEventListener("scroll", this._syncScrollers.bind(this), { passive: true });
+        this._timelineScrollerContent = this._timelineScroller.createChild("div", "network-timeline-v-scroll-content");
+
+        this._dataGrid.addEventListener(WebInspector.DataGrid.Events.PaddingChanged, () => {
+            this._timelineScrollerWidthIsStale = true;
+            this._syncScrollers();
+        });
         this._dataGrid.addEventListener(WebInspector.ViewportDataGrid.Events.ViewportCalculated, this._redrawTimelineColumn.bind(this));
 
-        this._timelineColumn.addEventListener(WebInspector.NetworkTimelineColumn.Events.RequestHovered, event => this._networkLogView.setHoveredRequest(/** @type {?WebInspector.NetworkRequest} */ (event.data)));
 
         this._createTimelineHeader();
         this._timelineColumn.contentElement.classList.add("network-timeline-view");
@@ -452,10 +470,41 @@ WebInspector.NetworkLogViewColumns.prototype = {
         this.switchViewMode(false);
     },
 
+    /**
+     * @param {boolean} shouldConsume
+     * @param {!Event} event
+     */
+    _onMouseWheel: function(shouldConsume, event)
+    {
+        if (shouldConsume)
+            event.consume(true);
+        this._activeScroller.scrollTop -= event.wheelDeltaY;
+        this._syncScrollers();
+        this._networkLogView.setHoveredRequest(this._timelineColumn.getRequestFromPoint(event.offsetX, event.offsetY));
+    },
+
+    _syncScrollers: function()
+    {
+        if (!this._timelineColumn.isShowing())
+            return;
+        this._timelineScrollerContent.style.height = this._dataGridScroller.scrollHeight + "px";
+        this._updateScrollerWidthIfNeeded();
+        this._dataGridScroller.scrollTop = this._timelineScroller.scrollTop;
+    },
+
+    _updateScrollerWidthIfNeeded: function()
+    {
+        if (this._timelineScrollerWidthIsStale) {
+            this._timelineScrollerWidthIsStale = false;
+            this._timelineColumn.setRightPadding(this._timelineScroller.offsetWidth - this._timelineScrollerContent.offsetWidth);
+        }
+    },
+
     _redrawTimelineColumn: function()
     {
         if (!this._timelineRequestsAreStale) {
-            this._timelineColumn.update();
+            this._updateScrollerWidthIfNeeded();
+            this._timelineColumn.update(this._activeScroller.scrollTop);
             return;
         }
         var currentNode = this._dataGrid.rootNode();
@@ -468,7 +517,7 @@ WebInspector.NetworkLogViewColumns.prototype = {
                 requestData.navigationRequest = currentNode.request();
             requestData.requests.push(currentNode.request());
         }
-        this._timelineColumn.update(requestData);
+        this._timelineColumn.update(this._activeScroller.scrollTop, requestData);
     },
 
     /**
@@ -524,11 +573,12 @@ WebInspector.NetworkLogViewColumns.prototype = {
 
         if (!Runtime.experiments.isEnabled("canvasNetworkTimeline"))
             return;
+        this._timelineScrollerWidthIsStale = true;
         this._timelineColumn.setRowHeight(this._networkLogView.rowHeight());
-        // TODO(allada) Make these non-magic numbers.
-        this._timelineColumn.setHeaderHeight(largeRows ? 31 : 27);
+        this._timelineScroller.classList.toggle("small", !largeRows);
         this._timelineHeaderElement.classList.toggle("small", !largeRows);
         this._timelineGrid.element.classList.toggle("small", !this._networkLogLargeRowsSetting.get());
+        this._timelineColumn.setHeaderHeight(this._timelineScroller.offsetTop);
     },
 
     /**
@@ -686,10 +736,18 @@ WebInspector.NetworkLogViewColumns.prototype = {
         if (!Runtime.experiments.isEnabled("canvasNetworkTimeline"))
             return;
         // TODO(allada) Move this code into the code above.
-        if (gridMode)
+        if (gridMode) {
             this._splitWidget.showBoth();
-        else
+            this._activeScroller = this._timelineScroller;
+            this._timelineScroller.scrollTop = this._dataGridScroller.scrollTop;
+            this._dataGridScroller.style.overflow = "hidden";
+            this._dataGrid.setScrollContainer(this._timelineScroller);
+        } else {
             this._splitWidget.hideMain();
+            this._activeScroller = this._dataGridScroller;
+            this._dataGridScroller.style.overflow = "overlay";
+            this._dataGrid.setScrollContainer(this._dataGridScroller);
+        }
     },
 
     /**

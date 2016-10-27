@@ -12,7 +12,8 @@
  */
 WebInspector.NetworkTimelineColumn = function(rowHeight, headerHeight, calculator, scrollContainer)
 {
-    WebInspector.VBox.call(this, true);
+    // TODO(allada) Make this a shadowDOM when the NetworkTimelineColumn gets moved into NetworkLogViewColumns.
+    WebInspector.VBox.call(this, false);
     this.registerRequiredCSS("network/networkTimelineColumn.css");
 
     this._canvas = this.contentElement.createChild("canvas");

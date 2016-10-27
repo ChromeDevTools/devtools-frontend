@@ -5,9 +5,11 @@
 /**
  * @constructor
  * @param {!WebInspector.NetworkLogView} networkLogView
+ * @param {!WebInspector.NetworkTransferTimeCalculator} timeCalculator
+ * @param {!WebInspector.NetworkTransferDurationCalculator} durationCalculator
  * @param {!WebInspector.Setting} networkLogLargeRowsSetting
  */
-WebInspector.NetworkLogViewColumns = function(networkLogView, networkLogLargeRowsSetting)
+WebInspector.NetworkLogViewColumns = function(networkLogView, timeCalculator, durationCalculator, networkLogLargeRowsSetting)
 {
     if (Runtime.experiments.isEnabled("canvasNetworkTimeline")) {
         var timelineColumn = WebInspector.NetworkLogViewColumns._defaultColumns.find(columnConfig => columnConfig.id === "timeline");
@@ -34,8 +36,6 @@ WebInspector.NetworkLogViewColumns = function(networkLogView, networkLogLargeRow
 
     this._gridMode = true;
 
-    /** @type {?WebInspector.DataGrid} */
-    this._dataGrid = null;
     /** @type {!Array.<!WebInspector.NetworkLogViewColumns.Descriptor>} */
     this._columns = [];
 
@@ -44,6 +44,13 @@ WebInspector.NetworkLogViewColumns = function(networkLogView, networkLogLargeRow
 
     /** @type {!WebInspector.Linkifier} */
     this._popupLinkifier = new WebInspector.Linkifier();
+
+    /** @type {!Map<string, !WebInspector.NetworkTimeCalculator>} */
+    this._calculatorsMap = new Map();
+    this._calculatorsMap.set(WebInspector.NetworkLogViewColumns._calculatorTypes.Time, timeCalculator);
+    this._calculatorsMap.set(WebInspector.NetworkLogViewColumns._calculatorTypes.Duration, durationCalculator);
+
+    this._setupDataGrid();
 };
 WebInspector.NetworkLogViewColumns._initialSortColumn = "timeline";
 
@@ -377,12 +384,7 @@ WebInspector.NetworkLogViewColumns.prototype = {
         this.updateDividersIfNeeded();
     },
 
-    /**
-     * @param {!WebInspector.NetworkTransferTimeCalculator} timeCalculator
-     * @param {!WebInspector.NetworkTransferDurationCalculator} durationCalculator
-     * @return {!WebInspector.SortableDataGrid} dataGrid
-     */
-    createGrid: function(timeCalculator, durationCalculator)
+    _setupDataGrid: function()
     {
         var defaultColumns = WebInspector.NetworkLogViewColumns._defaultColumns;
         var defaultColumnConfig = WebInspector.NetworkLogViewColumns._defaultColumnConfig;
@@ -397,13 +399,9 @@ WebInspector.NetworkLogViewColumns.prototype = {
         }
         this._loadColumns();
 
-        /** @type {!Map<string, !WebInspector.NetworkTimeCalculator>} */
-        this._calculatorsMap = new Map();
-        this._calculatorsMap.set(WebInspector.NetworkLogViewColumns._calculatorTypes.Time, timeCalculator);
-        this._calculatorsMap.set(WebInspector.NetworkLogViewColumns._calculatorTypes.Duration, durationCalculator);
-
         this._popoverHelper = new WebInspector.PopoverHelper(this._networkLogView.element);
         this._popoverHelper.initializeCallbacks(this._getPopoverAnchor.bind(this), this._showPopover.bind(this), this._onHidePopover.bind(this));
+
         this._dataGrid = new WebInspector.SortableDataGrid(this._columns.map(WebInspector.NetworkLogViewColumns._convertToDataGridDescriptor));
 
         this._updateColumns();
@@ -422,6 +420,37 @@ WebInspector.NetworkLogViewColumns.prototype = {
 
         this._updateRowsSize();
 
+        if (Runtime.experiments.isEnabled("canvasNetworkTimeline")) {
+            this._splitWidget = new WebInspector.SplitWidget(true, false, "networkPanelSplitViewTimeline");
+            this._splitWidget.setSidebarWidget(this._dataGrid.asWidget());
+        }
+    },
+
+    /**
+     * @param {!Element} element
+     */
+    show: function(element)
+    {
+        if (Runtime.experiments.isEnabled("canvasNetworkTimeline"))
+            this._splitWidget.show(element);
+        else
+            this._dataGrid.asWidget().show(element);
+    },
+
+    /**
+     * @return {!WebInspector.SplitWidget}
+     */
+    splitWidget: function()
+    {
+        // This is a temporary function used until the move of timelinecolumn into NetworkLogViewColumns is done.
+        return this._splitWidget;
+    },
+
+    /**
+     * @return {!WebInspector.SortableDataGrid} dataGrid
+     */
+    dataGrid: function()
+    {
         return this._dataGrid;
     },
 
@@ -526,6 +555,15 @@ WebInspector.NetworkLogViewColumns.prototype = {
 
         this._networkLogView.element.classList.toggle("brief-mode", !gridMode);
         this._updateColumns();
+
+
+        if (!Runtime.experiments.isEnabled("canvasNetworkTimeline"))
+            return;
+        // TODO(allada) Move this code into the code above.
+        if (gridMode)
+            this._splitWidget.showBoth();
+        else
+            this._splitWidget.hideMain();
     },
 
     /**

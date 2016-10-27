@@ -51,7 +51,12 @@ WebInspector.NetworkLogView = function(filterBar, progressBarContainer, networkL
     this._progressBarContainer = progressBarContainer;
     this._networkLogLargeRowsSetting = networkLogLargeRowsSetting;
 
-    this._columns = new WebInspector.NetworkLogViewColumns(this, networkLogLargeRowsSetting);
+    /** @type {!WebInspector.NetworkTransferTimeCalculator} */
+    this._timeCalculator = new WebInspector.NetworkTransferTimeCalculator();
+    /** @type {!WebInspector.NetworkTransferDurationCalculator} */
+    this._durationCalculator = new WebInspector.NetworkTransferDurationCalculator();
+    this._calculator = this._timeCalculator;
+    this._columns = new WebInspector.NetworkLogViewColumns(this, this._timeCalculator, this._durationCalculator, networkLogLargeRowsSetting);
 
     /** @type {!Map.<string, !WebInspector.NetworkDataGridNode>} */
     this._nodesByRequestId = new Map();
@@ -274,43 +279,29 @@ WebInspector.NetworkLogView.prototype = {
     _initializeView: function()
     {
         this.element.id = "network-container";
-
-        /** @type {!WebInspector.NetworkTransferTimeCalculator} */
-        this._timeCalculator = new WebInspector.NetworkTransferTimeCalculator();
-        /** @type {!WebInspector.NetworkTransferDurationCalculator} */
-        this._durationCalculator = new WebInspector.NetworkTransferDurationCalculator();
-        this._calculator = this._timeCalculator;
-
+        this._setupDataGrid();
         if (Runtime.experiments.isEnabled("canvasNetworkTimeline")) {
-            this._splitWidget = new WebInspector.SplitWidget(true, false, "networkPanelSplitViewTimeline");
-            this._splitWidget.show(this.element);
-            this._createTable();
-            this._splitWidget.setSidebarWidget(this._dataGrid.asWidget());
-
-            this._summaryBarElement = this.element.createChild("div", "network-summary-bar");
-
-            this._timelineWidget = new WebInspector.VBox();
-            this._createTimelineHeader();
-            this._timelineWidget.element.classList.add("network-timeline-view");
-            this._splitWidget.setMainWidget(this._timelineWidget);
-
-            this._timelineColumn = new WebInspector.NetworkTimelineColumn(this._rowHeight, this._headerHeight, this._calculator, this._dataGrid.scrollContainer);
-
             var dataGridScroller = this._dataGrid.scrollContainer;
+            this._timelineColumn = new WebInspector.NetworkTimelineColumn(this._rowHeight, this._headerHeight, this._calculator, dataGridScroller);
             this._dataGrid.setScrollContainer(this._timelineColumn.getScrollContainer());
-            this._dataGrid.addEventListener(WebInspector.DataGrid.Events.PaddingChanged, () => {
-                this._timelineColumn.setScrollHeight(dataGridScroller.scrollHeight);
-            });
+            this._dataGrid.addEventListener(WebInspector.DataGrid.Events.PaddingChanged, () => this._timelineColumn.setScrollHeight(dataGridScroller.scrollHeight));
             this._dataGrid.addEventListener(WebInspector.ViewportDataGrid.Events.ViewportCalculated, this._redrawTimelineColumn.bind(this));
 
             this._timelineColumn.addEventListener(WebInspector.NetworkTimelineColumn.Events.RequestHovered, requestHovered.bind(this));
-            this._timelineColumn.show(this._timelineWidget.element);
+
+            // TODO(allada) This code needs to be moved into NetworkLogViewColumns.
+            this._createTimelineHeader();
+            this._timelineColumn.contentElement.classList.add("network-timeline-view");
+
+            this._splitWidget = this._columns.splitWidget();
+            this._splitWidget.setMainWidget(this._timelineColumn);
+
+            this._columns.show(this.element);
             this.switchViewMode(false);
         } else {
-            this._createTable();
-            this._dataGrid.asWidget().show(this.element);
-            this._summaryBarElement = this.element.createChild("div", "network-summary-bar");
+            this._columns.show(this.element);
         }
+        this._summaryBarElement = this.element.createChild("div", "network-summary-bar");
 
         this._columns.sortByCurrentColumn();
         this._updateRowsSize();
@@ -384,9 +375,9 @@ WebInspector.NetworkLogView.prototype = {
         return [this._dataGrid.scrollContainer];
     },
 
-    _createTable: function()
+    _setupDataGrid: function()
     {
-        this._dataGrid = this._columns.createGrid(this._timeCalculator, this._durationCalculator);
+        this._dataGrid = this._columns.dataGrid();
         this._dataGrid.setRowContextMenuCallback(this._onRowContextMenu.bind(this));
         this._dataGrid.setStickToBottom(true);
         this._dataGrid.setName("networkLog");
@@ -911,7 +902,7 @@ WebInspector.NetworkLogView.prototype = {
 
     _createTimelineHeader: function()
     {
-        this._timelineHeaderElement = this._timelineWidget.element.createChild("div", "network-timeline-header");
+        this._timelineHeaderElement = this._timelineColumn.contentElement.createChild("div", "network-timeline-header");
         this._timelineHeaderElement.addEventListener("click", timelineHeaderClicked.bind(this));
         this._timelineHeaderElement.addEventListener("contextmenu", this._columns.headerContextMenuEvent.bind(this._columns));
         var innerElement = this._timelineHeaderElement.createChild("div");
@@ -936,13 +927,6 @@ WebInspector.NetworkLogView.prototype = {
     switchViewMode: function(gridMode)
     {
         this._columns.switchViewMode(gridMode);
-        if (!Runtime.experiments.isEnabled("canvasNetworkTimeline"))
-            return;
-
-        if (gridMode && this._nodesByRequestId.size)
-            this._splitWidget.showBoth();
-        else
-            this._splitWidget.hideMain();
     },
 
     /**

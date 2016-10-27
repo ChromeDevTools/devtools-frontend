@@ -37,10 +37,10 @@ def resolve_node_paths():
         return (local_node_binary_path, local_npm_binary_path)
     if path.isdir(local_node_runtimes_path):
         shutil.rmtree(local_node_runtimes_path)
-    if sys.platform == 'linux2':
+    if sys.platform == 'linux2' or sys.platform == 'darwin':
         install_node()
         return (local_node_binary_path, local_npm_binary_path)
-    print('ERROR: Please install the latest node.js LTS version using the Mac or Windows installer:')
+    print('ERROR: Please install the latest node.js LTS version using the Windows installer:')
     print('https://nodejs.org/en/download/')
     raise
 

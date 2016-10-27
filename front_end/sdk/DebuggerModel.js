@@ -277,8 +277,11 @@ WebInspector.DebuggerModel.prototype = {
         function didSetBreakpoint(error, breakpointId, actualLocation)
         {
             if (callback) {
-                var location = WebInspector.DebuggerModel.Location.fromPayload(this, actualLocation);
-                callback(error ? null : breakpointId, [location]);
+                if (error || !actualLocation) {
+                    callback(null, []);
+                    return;
+                }
+                callback(breakpointId, [WebInspector.DebuggerModel.Location.fromPayload(this, actualLocation)]);
             }
         }
         this._agent.setBreakpoint(rawLocation.payload(), condition, didSetBreakpoint.bind(this));

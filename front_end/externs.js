@@ -786,6 +786,8 @@ Gonzales.Node = function()
  * TODO(jsbell): DOMException should be a subclass of Error.
  */
 DOMException.prototype.message;
+/** @type {number} */
+DOMException.ABORT_ERR;
 
 /**
  * @constructor

@@ -54,12 +54,12 @@ DevToolsAPIImpl.prototype = {
 
     /**
      * @param {string} method
-     * @param {!Array.<*>} args
+     * @param {!Array<*>} args
      */
     _dispatchOnInspectorFrontendAPI: function(method, args)
     {
-        var api = window["InspectorFrontendAPI"];
-        api[method].apply(api, args);
+        const inspectorFrontendAPI = /** @type {!Object<string, function()>} */ (window["InspectorFrontendAPI"]);
+        inspectorFrontendAPI[method].apply(inspectorFrontendAPI, args);
     },
 
     // API methods below this line --------------------------------------------
@@ -70,8 +70,8 @@ DevToolsAPIImpl.prototype = {
     addExtensions: function(extensions)
     {
         // Support for legacy front-ends (<M41).
-        if (window["WebInspector"].addExtensions)
-            window["WebInspector"].addExtensions(extensions);
+        if (window["WebInspector"]["addExtensions"])
+            window["WebInspector"]["addExtensions"](extensions);
         else
             this._dispatchOnInspectorFrontendAPI("addExtensions", [extensions]);
     },
@@ -282,8 +282,8 @@ DevToolsAPIImpl.prototype = {
     setInspectedTabId: function(tabId)
     {
         // Support for legacy front-ends (<M41).
-        if (window["WebInspector"].setInspectedTabId)
-            window["WebInspector"].setInspectedTabId(tabId);
+        if (window["WebInspector"]["setInspectedTabId"])
+            window["WebInspector"]["setInspectedTabId"](tabId);
         else
             this._dispatchOnInspectorFrontendAPI("setInspectedTabId", [tabId]);
     },
@@ -904,6 +904,7 @@ window.InspectorFrontendHost = new InspectorFrontendHostImpl();
 
 function installObjectObserve()
 {
+    /** @type {!Array<string>} */
     var properties = [
         "advancedSearchConfig", "auditsPanelSplitViewState", "auditsSidebarWidth", "blockedURLs", "breakpoints", "cacheDisabled", "colorFormat", "consoleHistory",
         "consoleTimestampsEnabled", "cpuProfilerView", "cssSourceMapsEnabled", "currentDockState", "customColorPalette", "customDevicePresets", "customEmulatedDeviceList",
@@ -942,36 +943,44 @@ function installObjectObserve()
         this._storage[this._name] = undefined;
     }
 
+    /**
+     * @param {!Object} object
+     * @param {function(!Array<!{name: string}>)} observer
+     */
     function objectObserve(object, observer)
     {
         if (window["WebInspector"]) {
-            var settingPrototype = window["WebInspector"]["Setting"]["prototype"];
+            var settingPrototype = /** @type {!Object} */ (window["WebInspector"]["Setting"]["prototype"]);
             if (typeof settingPrototype["remove"] === "function")
                 settingPrototype["remove"] = settingRemove;
         }
-
+        /** @type {!Set<string>} */
         var changedProperties = new Set();
         var scheduled = false;
 
         function scheduleObserver()
         {
-            if (!scheduled) {
-                scheduled = true;
-                setImmediate(callObserver);
-            }
+            if (scheduled)
+                return;
+            scheduled = true;
+            setImmediate(callObserver);
         }
 
         function callObserver()
         {
             scheduled = false;
-            var changes = [];
+            var changes = /** @type {!Array<!{name: string}>} */ ([]);
             changedProperties.forEach(function(name) { changes.push({name: name}); });
             changedProperties.clear();
             observer.call(null, changes);
         }
 
+        /** @type {!Map<string, *>} */
         var storage = new Map();
 
+        /**
+         * @param {string} property
+         */
         function defineProperty(property)
         {
             if (property in object) {
@@ -980,11 +989,17 @@ function installObjectObserve()
             }
 
             Object.defineProperty(object, property, {
+                /**
+                 * @return {*}
+                 */
                 get: function()
                 {
                     return storage.get(property);
                 },
 
+                /**
+                 * @param {*} value
+                 */
                 set: function(value)
                 {
                     storage.set(property, value);
@@ -1001,6 +1016,7 @@ function installObjectObserve()
     window.Object.observe = objectObserve;
 }
 
+/** @type {!Map<number, string>} */
 var staticKeyIdentifiers = new Map([
     [0x12, "Alt"],
     [0x11, "Control"],
@@ -1060,6 +1076,10 @@ var staticKeyIdentifiers = new Map([
     [0xaf, "VolumeUp"],
 ]);
 
+/**
+ * @param {number} keyCode
+ * @return {string}
+ */
 function keyCodeToKeyIdentifier(keyCode)
 {
     var result = staticKeyIdentifiers.get(keyCode);
@@ -1073,10 +1093,6 @@ function keyCodeToKeyIdentifier(keyCode)
     return result;
 }
 
-/**
- * @suppressGlobalPropertiesCheck
- * @suppress {checkTypes}
- */
 function installBackwardsCompatibility()
 {
     if (window.location.search.indexOf("remoteFrontend") === -1)
@@ -1085,6 +1101,10 @@ function installBackwardsCompatibility()
     // Support for legacy (<M53) frontends.
     if (!window.KeyboardEvent.prototype.hasOwnProperty("keyIdentifier")) {
         Object.defineProperty(window.KeyboardEvent.prototype, "keyIdentifier", {
+            /**
+             * @return {string}
+             * @this {KeyboardEvent}
+             */
             get: function()
             {
                 return keyCodeToKeyIdentifier(this.keyCode);
@@ -1096,6 +1116,8 @@ function installBackwardsCompatibility()
     installObjectObserve();
 
     /**
+     * @param {string} property
+     * @return {!CSSValue|null}
      * @this {CSSStyleDeclaration}
      */
     function getValue(property)
@@ -1103,14 +1125,14 @@ function installBackwardsCompatibility()
         // Note that |property| comes from another context, so we can't use === here.
         // eslint-disable-next-line eqeqeq
         if (property == "padding-left") {
-            return {
+            return /** @type {!CSSValue} */ ({
                 /**
-                 * @suppressReceiverCheck
-                 * @this {Object}
+                 * @return {number}
+                 * @this {!{__paddingLeft: number}}
                  */
                 getFloatValue: function() { return this.__paddingLeft; },
                 __paddingLeft: parseFloat(this.paddingLeft)
-            };
+            });
         }
         throw new Error("getPropertyCSSValue is undefined");
     }
@@ -1139,12 +1161,12 @@ function installBackwardsCompatibility()
     Event.prototype.deepPath = undefined;
 
     // Support for legacy (<53) frontends.
-    window.FileError = {
+    window.FileError = /** @type {!function (new: FileError) : ?} */ ({
         NOT_FOUND_ERR: DOMException.NOT_FOUND_ERR,
         ABORT_ERR: DOMException.ABORT_ERR,
         INVALID_MODIFICATION_ERR: DOMException.INVALID_MODIFICATION_ERR,
         NOT_READABLE_ERR: 0  // No matching DOMException, so code will be 0.
-    };
+    });
 }
 
 function windowLoaded()
@@ -1158,8 +1180,16 @@ if (window.document.head && (window.document.readyState === "complete" || window
 else
     window.addEventListener("DOMContentLoaded", windowLoaded, false);
 
+/** @type {(!function(string, boolean=):boolean)|undefined} */
+DOMTokenList.prototype.__originalDOMTokenListToggle;
+
 if (!DOMTokenList.prototype.__originalDOMTokenListToggle) {
     DOMTokenList.prototype.__originalDOMTokenListToggle = DOMTokenList.prototype.toggle;
+    /**
+     * @param {string} token
+     * @param {boolean=} force
+     * @return {boolean}
+     */
     DOMTokenList.prototype.toggle = function(token, force)
     {
         if (arguments.length === 1)

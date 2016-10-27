@@ -6,11 +6,10 @@
  * @constructor
  * @extends {WebInspector.VBox}
  * @param {number} rowHeight
- * @param {number} headerHeight
- * @param {!WebInspector.NetworkTransferTimeCalculator} calculator
+ * @param {!WebInspector.NetworkTimeCalculator} calculator
  * @param {!Element} scrollContainer
  */
-WebInspector.NetworkTimelineColumn = function(rowHeight, headerHeight, calculator, scrollContainer)
+WebInspector.NetworkTimelineColumn = function(rowHeight, calculator, scrollContainer)
 {
     // TODO(allada) Make this a shadowDOM when the NetworkTimelineColumn gets moved into NetworkLogViewColumns.
     WebInspector.VBox.call(this, false);
@@ -28,7 +27,7 @@ WebInspector.NetworkTimelineColumn = function(rowHeight, headerHeight, calculato
     this._fontSize = 10;
 
     this._rowHeight = rowHeight;
-    this._headerHeight = headerHeight;
+    this._headerHeight = 0;
     this._calculator = calculator;
 
     this._popoverHelper = new WebInspector.PopoverHelper(this.element);
@@ -42,7 +41,7 @@ WebInspector.NetworkTimelineColumn = function(rowHeight, headerHeight, calculato
 
     this.element.addEventListener("mousewheel", this._onMouseWheel.bind(this), { passive: true });
     this.element.addEventListener("mousemove", this._onMouseMove.bind(this), true);
-    this.element.addEventListener("mouseleave", this.setHoveredRequest.bind(this, null), true);
+    this.element.addEventListener("mouseleave", this.dispatchEventToListeners.bind(this, WebInspector.NetworkTimelineColumn.Events.RequestHovered, null), true);
 
     this._boundScrollContainer = scrollContainer;
     this._boundScrollContainer.addEventListener("mousewheel", event => {
@@ -162,7 +161,7 @@ WebInspector.NetworkTimelineColumn.prototype = {
     setHoveredRequest: function(request)
     {
         this._hoveredRequest = request;
-        this.scheduleDraw();
+        this.update();
     },
 
     /**
@@ -195,7 +194,7 @@ WebInspector.NetworkTimelineColumn.prototype = {
      */
     _onMouseMove: function(event)
     {
-        var request = this._getRequestFromPoint(event.offsetX, event.offsetY);
+        var request = this._getRequestFromPoint(event.offsetX, event.offsetY + event.target.offsetTop);
         this.dispatchEventToListeners(WebInspector.NetworkTimelineColumn.Events.RequestHovered, request);
     },
 

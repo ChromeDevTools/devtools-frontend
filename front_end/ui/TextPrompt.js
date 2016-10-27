@@ -41,9 +41,11 @@ WebInspector.TextPrompt = function()
     this._proxyElementDisplay = "inline-block";
     this._autocompletionTimeout = WebInspector.TextPrompt.DefaultAutocompletionTimeout;
     this._title = "";
+    this._prefixRange = null;
     this._previousText = "";
     this._currentSuggestion = "";
     this._completionRequestId = 0;
+    this._ghostTextElement = createElementWithClass("span", "auto-complete-text");
 };
 
 WebInspector.TextPrompt.DefaultAutocompletionTimeout = 250;
@@ -145,7 +147,7 @@ WebInspector.TextPrompt.prototype = {
         this._element.ownerDocument.defaultView.addEventListener("resize", this._boundClearAutocomplete, false);
 
         if (this._suggestBoxEnabled)
-            this._suggestBox = new WebInspector.SuggestBox(this);
+            this._suggestBox = new WebInspector.SuggestBox(this, 20, true);
 
         if (this._title)
             this._proxyElement.title = this._title;
@@ -177,7 +179,7 @@ WebInspector.TextPrompt.prototype = {
     text: function()
     {
         var text = this.textWithCurrentSuggestion();
-        if (this._ghostTextElement) {
+        if (this._ghostTextElement.parentNode) {
             var addition = this._ghostTextElement.textContent;
             text = text.substring(0, text.length - addition.length);
         }
@@ -276,9 +278,6 @@ WebInspector.TextPrompt.prototype = {
      */
     onKeyDown: function(event)
     {
-        if (isEnterKey(event))
-            return;
-
         var handled = false;
 
         switch (event.key) {
@@ -329,10 +328,9 @@ WebInspector.TextPrompt.prototype = {
     {
         var text = this.text();
         var hasCommonPrefix = text.startsWith(this._previousText) || this._previousText.startsWith(text);
-        if (this._ghostTextElement && hasCommonPrefix)
-            this._ghostTextElement.textContent = this._currentSuggestion.substring(text.length);
-        else
-            this._clearGhostTextElement();
+        if (this._prefixRange && hasCommonPrefix)
+            this._prefixRange.endColumn += text.length - this._previousText.length;
+        this._refreshGhostText();
         this._previousText = text;
 
         this.autoCompleteSoon();
@@ -356,20 +354,19 @@ WebInspector.TextPrompt.prototype = {
     {
         if (this._isSuggestBoxVisible())
             this._suggestBox.hide();
-        this._clearGhostTextElement();
+        this._clearAutocompleteTimeout();
+        this._prefixRange = null;
+        this._refreshGhostText();
     },
 
-    _clearGhostTextElement: function()
+    _refreshGhostText: function()
     {
-        this._clearAutocompleteTimeout();
-
-        if (!this._ghostTextElement)
-            return;
-
-        this._ghostTextElement.remove();
-        delete this._ghostTextElement;
-        delete this._userEnteredRange;
-        delete this._userEnteredText;
+        if (this._prefixRange && this._isCaretAtEndOfPrompt()) {
+            this._ghostTextElement.textContent = this._currentSuggestion.substring(this._prefixRange.endColumn - this._prefixRange.startColumn);
+            this._element.appendChild(this._ghostTextElement);
+        } else {
+            this._ghostTextElement.remove();
+        }
     },
 
     _clearAutocompleteTimeout: function()
@@ -412,7 +409,7 @@ WebInspector.TextPrompt.prototype = {
         else if (!force) {
             // BUG72018: Do not show suggest box if caret is followed by a non-stop character.
             var wordSuffixRange = selectionRange.startContainer.rangeOfWord(selectionRange.endOffset, this._completionStopCharacters, this._element, "forward");
-            var autocompleteTextLength = (this._ghostTextElement && this._ghostTextElement.parentNode) ? this._ghostTextElement.textContent.length : 0;
+            var autocompleteTextLength = this._ghostTextElement.parentNode ? this._ghostTextElement.textContent.length : 0;
             if (wordSuffixRange.toString().length !== autocompleteTextLength)
                 shouldExit = true;
         }
@@ -509,41 +506,17 @@ WebInspector.TextPrompt.prototype = {
 
         selectedIndex = (this._disableDefaultSuggestionForEmptyInput && !this.text()) ? -1 : (selectedIndex || 0);
 
-        this._userEnteredRange = fullWordRange;
-        this._userEnteredText = fullWordRange.toString();
-
         if (this._suggestBox)
-            this._suggestBox.updateSuggestions(this._boxForAnchorAtStart(selection, fullWordRange), annotatedCompletions, selectedIndex, !this._isCaretAtEndOfPrompt(), this._userEnteredText);
+            this._suggestBox.updateSuggestions(this._boxForAnchorAtStart(selection, fullWordRange), annotatedCompletions, selectedIndex, !this._isCaretAtEndOfPrompt(), this.text());
+
+        var beforeRange = this._createRange();
+        beforeRange.setStart(this._element, 0);
+        beforeRange.setEnd(fullWordRange.startContainer, fullWordRange.startOffset);
+        this._prefixRange = new WebInspector.TextRange(0, beforeRange.toString().length, 0, beforeRange.toString().length + fullWordRange.toString().length);
 
         if (selectedIndex === -1)
             return;
-
-        var wordPrefixLength = originalWordPrefixRange.toString().length;
-
-        if (this._isCaretAtEndOfPrompt()) {
-            var suggestion = annotatedCompletions[selectedIndex].title;
-            var prefixText = this._userEnteredRange.toString();
-            var suffixText = suggestion.substring(wordPrefixLength);
-            this._userEnteredRange.deleteContents();
-            this._element.normalize();
-            var finalSelectionRange = this._createRange();
-
-            var prefixTextNode = createTextNode(prefixText);
-            fullWordRange.insertNode(prefixTextNode);
-
-            if (!this._ghostTextElement)
-                this._ghostTextElement = createElementWithClass("span", "auto-complete-text");
-            this._ghostTextElement.textContent = suffixText;
-            this._currentSuggestion = suggestion;
-
-            prefixTextNode.parentNode.insertBefore(this._ghostTextElement, prefixTextNode.nextSibling);
-
-            finalSelectionRange.setStart(prefixTextNode, wordPrefixLength);
-            finalSelectionRange.setEnd(prefixTextNode, wordPrefixLength);
-            selection.removeAllRanges();
-            selection.addRange(finalSelectionRange);
-            this.dispatchEventToListeners(WebInspector.TextPrompt.Events.ItemApplied);
-        }
+        this.applySuggestion(annotatedCompletions[selectedIndex].title, true);
     },
 
     /**
@@ -553,44 +526,12 @@ WebInspector.TextPrompt.prototype = {
      */
     applySuggestion: function(suggestion, isIntermediateSuggestion)
     {
-        this._applySuggestion(suggestion, isIntermediateSuggestion);
-    },
-
-    /**
-     * @param {string} suggestion
-     * @param {boolean=} isIntermediateSuggestion
-     */
-    _applySuggestion: function(suggestion, isIntermediateSuggestion)
-    {
-        if (!this._userEnteredRange) {
-            // We could have already cleared autocompletion range by the time this is called. (crbug.com/587683)
+        if (!this._prefixRange)
             return;
-        }
-
-        var wordPrefixLength = this._userEnteredText ? this._userEnteredText.length : 0;
-
-        this._userEnteredRange.deleteContents();
-        this._element.normalize();
-        var finalSelectionRange = this._createRange();
-        var suggestionNode = createTextNode(suggestion);
-        this._userEnteredRange.insertNode(suggestionNode);
-        if (this._ghostTextElement) {
-            this._ghostTextElement.remove();
-            delete this._ghostTextElement;
-        }
-
+        this._currentSuggestion = suggestion;
+        this._refreshGhostText();
         if (isIntermediateSuggestion)
-            finalSelectionRange.setStart(suggestionNode, wordPrefixLength);
-        else
-            finalSelectionRange.setStart(suggestionNode, suggestion.length);
-
-        finalSelectionRange.setEnd(suggestionNode, suggestion.length);
-
-        var selection = this._element.getComponentSelection();
-        selection.removeAllRanges();
-        selection.addRange(finalSelectionRange);
-        if (isIntermediateSuggestion)
-            this.dispatchEventToListeners(WebInspector.TextPrompt.Events.ItemApplied, { itemText: suggestion });
+            this.dispatchEventToListeners(WebInspector.TextPrompt.Events.ItemApplied);
     },
 
     /**
@@ -606,26 +547,35 @@ WebInspector.TextPrompt.prototype = {
      */
     _acceptSuggestionInternal: function()
     {
-        if (!this._ghostTextElement || !this._ghostTextElement.parentNode)
+        if (!this._prefixRange)
             return false;
 
-        var text = this._ghostTextElement.textContent;
-        var textNode = createTextNode(text);
-        this._ghostTextElement.parentNode.replaceChild(textNode, this._ghostTextElement);
-        delete this._ghostTextElement;
-
-        var finalSelectionRange = this._createRange();
-        finalSelectionRange.setStart(textNode, text.length);
-        finalSelectionRange.setEnd(textNode, text.length);
-
-        var selection = this._element.getComponentSelection();
-        selection.removeAllRanges();
-        selection.addRange(finalSelectionRange);
+        var text = this.text();
+        this._element.textContent = text.substring(0, this._prefixRange.startColumn) + this._currentSuggestion + text.substring(this._prefixRange.endColumn);
+        this._setDOMSelection(this._prefixRange.startColumn + this._currentSuggestion.length, this._prefixRange.startColumn + this._currentSuggestion.length);
 
         this.clearAutocomplete();
         this.dispatchEventToListeners(WebInspector.TextPrompt.Events.ItemAccepted);
 
         return true;
+    },
+
+    /**
+     * @param {number} startColumn
+     * @param {number} endColumn
+     */
+    _setDOMSelection: function(startColumn, endColumn)
+    {
+        this._element.normalize();
+        var node = this._element.childNodes[0];
+        if (!node || node === this._ghostTextElement)
+            return;
+        var range = this._createRange();
+        range.setStart(node, startColumn);
+        range.setEnd(node, endColumn);
+        var selection = this._element.getComponentSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
     },
 
     /**
@@ -669,7 +619,7 @@ WebInspector.TextPrompt.prototype = {
         var foundNextText = false;
         while (node) {
             if (node.nodeType === Node.TEXT_NODE && node.nodeValue.length) {
-                if (foundNextText && (!this._ghostTextElement || !this._ghostTextElement.isAncestor(node)))
+                if (foundNextText && !this._ghostTextElement.isAncestor(node))
                     return false;
                 foundNextText = true;
             }

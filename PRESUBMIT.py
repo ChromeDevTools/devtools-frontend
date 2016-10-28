@@ -103,7 +103,7 @@ def _CheckConvertSVGToPNGHashes(input_api, output_api):
 
     original_sys_path = sys.path
     try:
-        sys.path = sys.path + [input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts')]
+        sys.path = sys.path + [input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'build')]
         import devtools_file_hashes
     finally:
         sys.path = original_sys_path
@@ -129,7 +129,7 @@ def _CheckOptimizePNGHashes(input_api, output_api):
 
     original_sys_path = sys.path
     try:
-        sys.path = sys.path + [input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts')]
+        sys.path = sys.path + [input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'build')]
         import devtools_file_hashes
     finally:
         sys.path = original_sys_path

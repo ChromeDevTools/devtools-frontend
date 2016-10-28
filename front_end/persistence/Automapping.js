@@ -37,7 +37,7 @@ WebInspector.Automapping = function(workspace, onBindingCreated, onBindingRemove
         this._onProjectAdded(fileSystem);
     for (var uiSourceCode of workspace.uiSourceCodes())
         this._onUISourceCodeAdded(uiSourceCode);
-}
+};
 
 WebInspector.Automapping._binding = Symbol("Automapping.Binding");
 WebInspector.Automapping._processingPromise = Symbol("Automapping.ProcessingPromise");
@@ -274,7 +274,7 @@ WebInspector.Automapping.prototype = {
             return timeMatches && contentMatches;
         });
     }
-}
+};
 
 /**
  * @constructor
@@ -283,7 +283,7 @@ WebInspector.Automapping.PathEncoder = function()
 {
     /** @type {!WebInspector.CharacterIdMap<string>} */
     this._encoder = new WebInspector.CharacterIdMap();
-}
+};
 
 WebInspector.Automapping.PathEncoder.prototype = {
     /**
@@ -303,7 +303,7 @@ WebInspector.Automapping.PathEncoder.prototype = {
     {
         return path.split("").map(token => this._encoder.fromChar(token)).join("/");
     }
-}
+};
 
 /**
  * @constructor
@@ -313,7 +313,7 @@ WebInspector.Automapping.FilePathIndex = function(encoder)
 {
     this._encoder = encoder;
     this._reversedIndex = new WebInspector.Trie();
-}
+};
 
 WebInspector.Automapping.FilePathIndex.prototype = {
     /**
@@ -346,7 +346,7 @@ WebInspector.Automapping.FilePathIndex.prototype = {
             return [];
         return this._reversedIndex.words(longestCommonPrefix).map(encodedPath => this._encoder.decode(encodedPath.reverse()));
     },
-}
+};
 
 /**
  * @constructor
@@ -358,7 +358,7 @@ WebInspector.Automapping.FolderIndex = function(encoder)
     this._index = new WebInspector.Trie();
     /** @type {!Map<string, number>} */
     this._folderCount = new Map();
-}
+};
 
 WebInspector.Automapping.FolderIndex.prototype = {
     /**
@@ -407,4 +407,4 @@ WebInspector.Automapping.FolderIndex.prototype = {
         var commonPrefix = this._index.longestPrefix(encodedPath, true);
         return this._encoder.decode(commonPrefix);
     }
-}
+};

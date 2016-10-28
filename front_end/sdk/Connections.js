@@ -17,7 +17,7 @@ WebInspector.MainConnection = function(params)
         InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.DispatchMessageChunk, this._dispatchMessageChunk, this),
         InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.EvaluateForTestInFrontend, this._evaluateForTestInFrontend, this),
     ];
-}
+};
 
 WebInspector.MainConnection.prototype = {
 

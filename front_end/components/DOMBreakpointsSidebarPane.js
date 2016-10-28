@@ -62,7 +62,7 @@ WebInspector.DOMBreakpointsSidebarPane.BreakpointTypeNouns = {
     "subtree-modified": WebInspector.UIString("subtree modifications"),
     "attribute-modified": WebInspector.UIString("attribute modifications"),
     "node-removed": WebInspector.UIString("node removal")
-}
+};
 
 WebInspector.DOMBreakpointsSidebarPane.Marker = "breakpoint-marker";
 
@@ -400,7 +400,7 @@ WebInspector.DOMBreakpointsSidebarPane.createBreakpointHitMessage = function(det
         }
     }
     return messageWrapper;
-}
+};
 
 /**
  * @constructor

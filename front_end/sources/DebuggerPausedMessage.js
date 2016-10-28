@@ -10,7 +10,7 @@ WebInspector.DebuggerPausedMessage = function()
     this._element = createElementWithClass("div", "paused-message flex-none");
     var root = WebInspector.createShadowRootWithCoreStyles(this._element, "sources/debuggerPausedMessage.css");
     this._contentElement = root.createChild("div", "paused-status");
-}
+};
 
 WebInspector.DebuggerPausedMessage.prototype = {
     /**
@@ -89,4 +89,4 @@ WebInspector.DebuggerPausedMessage.prototype = {
             return messageWrapper;
         }
     }
-}
+};

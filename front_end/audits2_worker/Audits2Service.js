@@ -6,18 +6,18 @@
  * @interface
  */
 class LighthousePort {
-  /**
-   * @param {!string} eventName, 'message', 'close'
-   * @param {function(string|undefined)} cb
-   */
-  on(eventName, cb) { }
+    /**
+     * @param {!string} eventName, 'message', 'close'
+     * @param {function(string|undefined)} cb
+     */
+    on(eventName, cb) { }
 
-  /**
-   * @param {string} message
-   */
-  send(message) { }
+    /**
+     * @param {string} message
+     */
+    send(message) { }
 
-  close() { }
+    close() { }
 }
 
 /**
@@ -136,6 +136,6 @@ Audits2Service.prototype = {
 // Make lighthouse happy.
 global = self;
 global.isVinn = true;
-global.document = {}
-global.document.documentElement = {}
-global.document.documentElement.style = { WebkitAppearance: 'WebkitAppearance'};
+global.document = {};
+global.document.documentElement = {};
+global.document.documentElement.style = { WebkitAppearance: "WebkitAppearance"};

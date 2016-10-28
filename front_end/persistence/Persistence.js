@@ -21,7 +21,7 @@ WebInspector.Persistence = function(workspace, breakpointManager, fileSystemMapp
         this._mapping = new WebInspector.Automapping(workspace, this._onBindingCreated.bind(this), this._onBindingRemoved.bind(this));
     else
         this._mapping = new WebInspector.DefaultMapping(workspace, fileSystemMapping, this._onBindingCreated.bind(this), this._onBindingRemoved.bind(this));
-}
+};
 
 WebInspector.Persistence._binding = Symbol("Persistence.Binding");
 WebInspector.Persistence._muteCommit = Symbol("Persistence.MuteCommit");

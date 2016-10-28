@@ -76,7 +76,7 @@ WebInspector.ConsolePrompt.prototype = {
     moveCaretToEndOfPrompt: function()
     {
         if (this._editor)
-            this._editor.setSelection(WebInspector.TextRange.createFromLocation(Infinity,Infinity));
+            this._editor.setSelection(WebInspector.TextRange.createFromLocation(Infinity, Infinity));
     },
 
     /**
@@ -148,7 +148,7 @@ WebInspector.ConsolePrompt.prototype = {
         this.setText(newText);
 
         if (isPrevious)
-            this._editor.setSelection(WebInspector.TextRange.createFromLocation(0,Infinity));
+            this._editor.setSelection(WebInspector.TextRange.createFromLocation(0, Infinity));
         else
             this.moveCaretToEndOfPrompt();
     },
@@ -232,7 +232,7 @@ WebInspector.ConsolePrompt.prototype = {
             if (set.has(item))
                 continue;
             set.add(item);
-            result.push({title: item.substring(text.length - prefix.length), className: "additional"});
+            result.push({ title: item.substring(text.length - prefix.length), className: "additional" });
         }
         return result;
     },
@@ -284,14 +284,14 @@ WebInspector.ConsolePrompt.prototype = {
          */
         function innerWordsWithPrefix(words)
         {
-            fulfill(words.map(item => ({title:item})).concat(historyWords));
+            fulfill(words.map(item => ({ title: item })).concat(historyWords));
         }
     },
 
     _editorSetForTest: function() { },
 
     __proto__: WebInspector.Widget.prototype
-}
+};
 
 /**
  * @constructor
@@ -308,7 +308,7 @@ WebInspector.ConsoleHistoryManager = function()
      * @type {number}
      */
     this._historyOffset = 1;
-}
+};
 
 WebInspector.ConsoleHistoryManager.prototype = {
     /**

@@ -311,9 +311,10 @@ WebInspector.TabbedEditorContainer.prototype = {
      */
     _titleForFile: function(uiSourceCode)
     {
-        uiSourceCode = WebInspector.persistence.fileSystem(uiSourceCode) || uiSourceCode;
+        var binding = WebInspector.persistence.binding(uiSourceCode);
+        var titleUISourceCode = binding ? binding.fileSystem : uiSourceCode;
         var maxDisplayNameLength = 30;
-        var title = uiSourceCode.displayName(true).trimMiddle(maxDisplayNameLength);
+        var title = titleUISourceCode.displayName(true).trimMiddle(maxDisplayNameLength);
         if (uiSourceCode.isDirty() || WebInspector.persistence.hasUnsavedCommittedChanges(uiSourceCode))
             title += "*";
         return title;

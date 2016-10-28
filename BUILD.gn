@@ -1003,7 +1003,7 @@ copy("copy_emulated_devices_images") {
 }
 
 action("generate_devtools_grd") {
-  script = "scripts/build/generate_devtools_grd.py"
+  script = "scripts/generate_devtools_grd.py"
 
   deps = [
     ":devtools_frontend_resources",
@@ -1043,7 +1043,7 @@ action("generate_devtools_grd") {
 }
 
 action("devtools_extension_api") {
-  script = "scripts/build/generate_devtools_extension_api.py"
+  script = "scripts/generate_devtools_extension_api.py"
 
   inputs = devtools_extension_api_files
   outputs = [
@@ -1055,7 +1055,7 @@ action("devtools_extension_api") {
 }
 
 action("supported_css_properties") {
-  script = "scripts/build/generate_supported_css.py"
+  script = "scripts/generate_supported_css.py"
 
   inputs = [
     "../core/css/CSSProperties.in",
@@ -1070,7 +1070,7 @@ action("supported_css_properties") {
 }
 
 action("frontend_protocol_sources") {
-  script = "scripts/build/code_generator_frontend.py"
+  script = "scripts/CodeGeneratorFrontend.py"
   deps = [
     "../core/inspector:protocol_version",
   ]
@@ -1088,7 +1088,7 @@ action("frontend_protocol_sources") {
 }
 
 action("build_release_devtools") {
-  script = "scripts/build/build_release_applications.py"
+  script = "scripts/build_release_applications.py"
 
   deps = [
     ":frontend_protocol_sources",
@@ -1096,8 +1096,8 @@ action("build_release_devtools") {
   ]
 
   helper_scripts = [
-    "scripts/build/modular_build.py",
-    "scripts/build/rjsmin.py",
+    "scripts/modular_build.py",
+    "scripts/rjsmin.py",
   ]
 
   inputs = helper_scripts + all_devtools_files + generated_scripts + [
@@ -1120,7 +1120,7 @@ if (debug_devtools) {
   resources_out_debug_dir = "$root_out_dir/resources/inspector/debug"
 
   action("build_debug_devtools") {
-    script = "scripts/build/build_debug_applications.py"
+    script = "scripts/build_debug_applications.py"
 
     deps = [
       ":copy_generated_scripts",

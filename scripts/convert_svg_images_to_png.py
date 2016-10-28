@@ -27,12 +27,13 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import devtools_file_hashes
+import hashlib
+import os
 import os.path
 import re
 import subprocess
 import sys
-
-from build import devtools_file_hashes
 
 try:
     import json

@@ -111,17 +111,19 @@ WebInspector.MainConnection.prototype = {
  * @constructor
  * @implements {InspectorBackendClass.Connection}
  * @param {string} url
+ * @param {function()} onWebSocketDisconnect
  * @param {!InspectorBackendClass.Connection.Params} params
  */
-WebInspector.WebSocketConnection = function(url, params)
+WebInspector.WebSocketConnection = function(url, onWebSocketDisconnect, params)
 {
     this._socket = new WebSocket(url);
     this._socket.onerror = this._onError.bind(this);
     this._socket.onopen = this._onOpen.bind(this);
     this._socket.onmessage = (messageEvent) => params.onMessage.call(null, /** @type {string} */ (messageEvent.data));
-    this._onDisconnect = params.onDisconnect;
-    this._socket.onclose = params.onDisconnect.bind(null, "websocket closed");
+    this._socket.onclose = this._onClose.bind(this);
 
+    this._onDisconnect = params.onDisconnect;
+    this._onWebSocketDisconnect = onWebSocketDisconnect;
     this._connected = false;
     this._messages = [];
 };
@@ -129,6 +131,7 @@ WebInspector.WebSocketConnection = function(url, params)
 WebInspector.WebSocketConnection.prototype = {
     _onError: function()
     {
+        this._onWebSocketDisconnect.call(null);
         // This is called if error occurred while connecting.
         this._onDisconnect.call(null, "connection failed");
         this._close();
@@ -143,14 +146,25 @@ WebInspector.WebSocketConnection.prototype = {
         this._messages = [];
     },
 
-    _close: function()
+    _onClose: function()
+    {
+        this._onWebSocketDisconnect.call(null);
+        this._onDisconnect.call(null, "websocket closed");
+        this._close();
+    },
+
+    /**
+     * @param {function()=} callback
+     */
+    _close: function(callback)
     {
         this._socket.onerror = null;
         this._socket.onopen = null;
-        this._socket.onclose = null;
+        this._socket.onclose = callback || null;
         this._socket.onmessage = null;
         this._socket.close();
         this._socket = null;
+        this._onWebSocketDisconnect = null;
     },
 
     /**
@@ -171,9 +185,13 @@ WebInspector.WebSocketConnection.prototype = {
      */
     disconnect: function()
     {
-        this._onDisconnect.call(null, "force disconnect");
-        this._close();
-        return Promise.resolve();
+        var fulfill;
+        var promise = new Promise(f => fulfill = f);
+        this._close(() => {
+            this._onDisconnect.call(null, "force disconnect");
+            fulfill();
+        });
+        return promise;
     }
 };
 

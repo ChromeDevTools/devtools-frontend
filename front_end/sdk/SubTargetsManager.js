@@ -352,11 +352,11 @@ WebInspector.TargetInfo = function(payload)
     this.id = payload.targetId;
     this.url = payload.url;
     this.type = payload.type;
-    if (this.type !== "page" && this.type !== "iframe") {
-        this.title = WebInspector.UIString("Worker: %s", this.url);
-        this.canActivate = false;
-    } else {
+    this.canActivate = this.type === "page" || this.type === "iframe";
+    if (this.type === "node")
+        this.title = WebInspector.UIString("Node: %s", this.url);
+    else if (this.type === "page" || this.type === "iframe")
         this.title = payload.title;
-        this.canActivate = true;
-    }
+    else
+        this.title = WebInspector.UIString("Worker: %s", this.url);
 };

@@ -234,23 +234,6 @@ WebInspector.TargetManager.prototype = {
     },
 
     /**
-     * @param {function(function(string)):!Promise<!InspectorBackendClass.Connection>} interceptor
-     */
-    setMainConnectionInterceptor: function(interceptor)
-    {
-        this._mainConnectionInterceptor = interceptor;
-    },
-
-    /**
-     * @param {function(string)} onMessage
-     * @return {!Promise<!InspectorBackendClass.Connection>}
-     */
-    interceptMainConnection: function(onMessage)
-    {
-        return this._mainConnectionInterceptor.call(null, onMessage);
-    },
-
-    /**
      * @param {!WebInspector.Target} target
      * @return {!Array<!WebInspector.TargetManager.Observer>}
      */
@@ -378,6 +361,63 @@ WebInspector.TargetManager.prototype = {
         var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(target);
         if (resourceTreeModel)
             setImmediate(resourceTreeModel.resumeReload.bind(resourceTreeModel));
+    },
+
+    /**
+     * @param {function()} webSocketConnectionLostCallback
+     */
+    connectToMainTarget: function(webSocketConnectionLostCallback)
+    {
+        this._webSocketConnectionLostCallback = webSocketConnectionLostCallback;
+        this._connectAndCreateMainTarget();
+    },
+
+    _connectAndCreateMainTarget: function()
+    {
+        var capabilities =
+            WebInspector.Target.Capability.Browser | WebInspector.Target.Capability.DOM |
+            WebInspector.Target.Capability.JS | WebInspector.Target.Capability.Log |
+            WebInspector.Target.Capability.Network | WebInspector.Target.Capability.Target;
+        if (Runtime.queryParam("isSharedWorker")) {
+            capabilities =
+                WebInspector.Target.Capability.Browser | WebInspector.Target.Capability.Log |
+                WebInspector.Target.Capability.Network | WebInspector.Target.Capability.Target;
+        } else if (Runtime.queryParam("v8only")) {
+            capabilities = WebInspector.Target.Capability.JS;
+        }
+
+        var target = this.createTarget(WebInspector.UIString("Main"), capabilities, this._createMainConnection.bind(this), null);
+        target.runtimeAgent().runIfWaitingForDebugger();
+    },
+
+    /**
+     * @param {!InspectorBackendClass.Connection.Params} params
+     * @return {!InspectorBackendClass.Connection}
+     */
+    _createMainConnection: function(params)
+    {
+        if (Runtime.queryParam("ws")) {
+            var ws = "ws://" + Runtime.queryParam("ws");
+            this._mainConnection = new WebInspector.WebSocketConnection(ws, this._webSocketConnectionLostCallback, params);
+        } else if (InspectorFrontendHost.isHostedMode()) {
+            this._mainConnection = new WebInspector.StubConnection(params);
+        } else {
+            this._mainConnection = new WebInspector.MainConnection(params);
+        }
+        return this._mainConnection;
+    },
+
+    /**
+     * @param {function(string)} onMessage
+     * @return {!Promise<!InspectorBackendClass.Connection>}
+     */
+    interceptMainConnection: function(onMessage)
+    {
+        var params = {
+            onMessage: onMessage,
+            onDisconnect: this._connectAndCreateMainTarget.bind(this)
+        };
+        return this._mainConnection.disconnect().then(this._createMainConnection.bind(this, params));
     },
 
     __proto__: WebInspector.Object.prototype

@@ -9,4 +9,4 @@ var d = new dispatcher.Dispatcher();
 d.registerObject("Terminal", terminal.Terminal);
 d.start(9022);
 
-console.log("Run chrome as `chrome --devtools-flags='{\"service-backend\": \"ws://localhost:9022/endpoint\"}'`");
+console.log("Run chrome as `chrome --devtools-flags='service-backend=ws://localhost:9022/endpoint'`");

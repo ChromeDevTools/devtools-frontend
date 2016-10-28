@@ -27,16 +27,17 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from modular_build import read_file, write_file
 import os
 import os.path as path
-import generate_protocol_externs
-import modular_build
 import re
 import shutil
 import subprocess
 import sys
 import tempfile
+
+from build import modular_build
+from build import generate_protocol_externs
+
 try:
     import simplejson as json
 except ImportError:
@@ -233,8 +234,8 @@ def find_java():
 java_exec = find_java()
 
 closure_compiler_jar = to_platform_path(path.join(scripts_path, 'closure', 'compiler.jar'))
-closure_runner_jar = to_platform_path(path.join(scripts_path, 'compiler-runner', 'closure-runner.jar'))
-jsdoc_validator_jar = to_platform_path(path.join(scripts_path, 'jsdoc-validator', 'jsdoc-validator.jar'))
+closure_runner_jar = to_platform_path(path.join(scripts_path, 'closure', 'closure_runner', 'closure_runner.jar'))
+jsdoc_validator_jar = to_platform_path(path.join(scripts_path, 'jsdoc_validator', 'jsdoc_validator.jar'))
 
 modules_dir = tempfile.mkdtemp()
 common_closure_args = [

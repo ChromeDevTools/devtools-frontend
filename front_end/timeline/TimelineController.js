@@ -51,6 +51,8 @@ WebInspector.TimelineController.prototype = {
             categoriesArray.push(disabledByDefault("toplevel.flow"),
                                  disabledByDefault("ipc.flow"));
         }
+        if (Runtime.experiments.isEnabled("timelineV8RuntimeCallStats") && enableJSSampling)
+            categoriesArray.push(disabledByDefault("v8.runtime_stats"));
         if (Runtime.experiments.isEnabled("timelineTracingJSProfile") && enableJSSampling) {
             categoriesArray.push(disabledByDefault("v8.cpu_profiler"));
             if (WebInspector.moduleSetting("highResolutionCpuProfiling").get())

@@ -106,6 +106,7 @@ WebInspector.Main.prototype = {
         Runtime.experiments.register("timelineInvalidationTracking", "Timeline invalidation tracking", true);
         Runtime.experiments.register("timelineRecordingPerspectives", "Timeline recording perspectives UI");
         Runtime.experiments.register("timelineTracingJSProfile", "Timeline tracing based JS profiler", true);
+        Runtime.experiments.register("timelineV8RuntimeCallStats", "V8 Runtime Call Stats on Timeline", true);
 
         Runtime.experiments.cleanUpStaleExperiments();
 

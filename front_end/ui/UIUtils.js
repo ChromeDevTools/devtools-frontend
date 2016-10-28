@@ -48,7 +48,8 @@ WebInspector.installDragHandle = function(element, elementDragStart, elementDrag
      */
     function onMouseDown(event)
     {
-        var dragStart = WebInspector.elementDragStart.bind(null, element, elementDragStart, elementDrag, elementDragEnd, cursor, event);
+        var dragHandler = new WebInspector.DragHandler();
+        var dragStart = dragHandler.elementDragStart.bind(dragHandler, element, elementDragStart, elementDrag, elementDragEnd, cursor, event);
         if (startDelay)
             startTimer = setTimeout(dragStart, startDelay);
         else
@@ -80,118 +81,158 @@ WebInspector.installDragHandle = function(element, elementDragStart, elementDrag
  */
 WebInspector.elementDragStart = function(targetElement, elementDragStart, elementDrag, elementDragEnd, cursor, event)
 {
+    var dragHandler = new WebInspector.DragHandler();
+    dragHandler.elementDragStart(targetElement, elementDragStart, elementDrag, elementDragEnd, cursor, event);
+};
+
+/**
+ * @constructor
+ */
+WebInspector.DragHandler = function()
+{
+    this._elementDragMove = this._elementDragMove.bind(this);
+    this._elementDragEnd = this._elementDragEnd.bind(this);
+    this._mouseOutWhileDragging = this._mouseOutWhileDragging.bind(this);
+}
+
+WebInspector.DragHandler._glassPaneUsageCount = 0;
+
+WebInspector.DragHandler.prototype = {
+    _createGlassPane: function()
+    {
+        this._glassPaneInUse = true;
+        if (!WebInspector.DragHandler._glassPaneUsageCount++)
+            WebInspector.DragHandler._glassPane = new WebInspector.GlassPane(WebInspector.DragHandler._documentForMouseOut);
+    },
+
+    _disposeGlassPane: function()
+    {
+        if (!this._glassPaneInUse)
+            return;
+        this._glassPaneInUse = false;
+        if (--WebInspector.DragHandler._glassPaneUsageCount)
+            return;
+        WebInspector.DragHandler._glassPane.dispose();
+        delete WebInspector.DragHandler._glassPane;
+        delete WebInspector.DragHandler._documentForMouseOut;
+    }
+};
+
+/**
+ * @param {!Element} targetElement
+ * @param {?function(!MouseEvent):boolean} elementDragStart
+ * @param {function(!MouseEvent)} elementDrag
+ * @param {?function(!MouseEvent)} elementDragEnd
+ * @param {string} cursor
+ * @param {!Event} event
+ */
+WebInspector.DragHandler.prototype.elementDragStart = function(targetElement, elementDragStart, elementDrag, elementDragEnd, cursor, event)
+{
     // Only drag upon left button. Right will likely cause a context menu. So will ctrl-click on mac.
     if (event.button || (WebInspector.isMac() && event.ctrlKey))
         return;
 
-    if (WebInspector._elementDraggingEventListener)
+    if (this._elementDraggingEventListener)
         return;
 
     if (elementDragStart && !elementDragStart(/** @type {!MouseEvent} */ (event)))
         return;
 
-    if (WebInspector._elementDraggingGlassPane) {
-        WebInspector._elementDraggingGlassPane.dispose();
-        delete WebInspector._elementDraggingGlassPane;
-    }
-
     var targetDocument = event.target.ownerDocument;
+    this._elementDraggingEventListener = elementDrag;
+    this._elementEndDraggingEventListener = elementDragEnd;
+    console.assert((WebInspector.DragHandler._documentForMouseOut || targetDocument) === targetDocument,
+        "Dragging on multiple documents.");
+    WebInspector.DragHandler._documentForMouseOut = targetDocument;
+    this._dragEventsTargetDocument = targetDocument;
+    this._dragEventsTargetDocumentTop = targetDocument.defaultView.top.document;
 
-    WebInspector._elementDraggingEventListener = elementDrag;
-    WebInspector._elementEndDraggingEventListener = elementDragEnd;
-    WebInspector._mouseOutWhileDraggingTargetDocument = targetDocument;
-    WebInspector._dragEventsTargetDocument = targetDocument;
-    WebInspector._dragEventsTargetDocumentTop = targetDocument.defaultView.top.document;
-
-    targetDocument.addEventListener("mousemove", WebInspector._elementDragMove, true);
-    targetDocument.addEventListener("mouseup", WebInspector._elementDragEnd, true);
-    targetDocument.addEventListener("mouseout", WebInspector._mouseOutWhileDragging, true);
-    if (targetDocument !== WebInspector._dragEventsTargetDocumentTop)
-        WebInspector._dragEventsTargetDocumentTop.addEventListener("mouseup", WebInspector._elementDragEnd, true);
+    targetDocument.addEventListener("mousemove", this._elementDragMove, true);
+    targetDocument.addEventListener("mouseup", this._elementDragEnd, true);
+    targetDocument.addEventListener("mouseout", this._mouseOutWhileDragging, true);
+    if (targetDocument !== this._dragEventsTargetDocumentTop)
+        this._dragEventsTargetDocumentTop.addEventListener("mouseup", this._elementDragEnd, true);
 
     if (typeof cursor === "string") {
-        WebInspector._restoreCursorAfterDrag = restoreCursor.bind(null, targetElement.style.cursor);
+        this._restoreCursorAfterDrag = restoreCursor.bind(this, targetElement.style.cursor);
         targetElement.style.cursor = cursor;
         targetDocument.body.style.cursor = cursor;
     }
+    /**
+     * @param {string} oldCursor
+     * @this {WebInspector.DragHandler}
+     */
     function restoreCursor(oldCursor)
     {
         targetDocument.body.style.removeProperty("cursor");
         targetElement.style.cursor = oldCursor;
-        WebInspector._restoreCursorAfterDrag = null;
+        this._restoreCursorAfterDrag = null;
     }
     event.preventDefault();
 };
 
-WebInspector._mouseOutWhileDragging = function()
+WebInspector.DragHandler.prototype._mouseOutWhileDragging = function()
 {
-    var document = WebInspector._mouseOutWhileDraggingTargetDocument;
-    WebInspector._unregisterMouseOutWhileDragging();
-    WebInspector._elementDraggingGlassPane = new WebInspector.GlassPane(document);
+    this._unregisterMouseOutWhileDragging();
+    this._createGlassPane();
 };
 
-WebInspector._unregisterMouseOutWhileDragging = function()
+WebInspector.DragHandler.prototype._unregisterMouseOutWhileDragging = function()
 {
-    if (!WebInspector._mouseOutWhileDraggingTargetDocument)
+    if (!WebInspector.DragHandler._documentForMouseOut)
         return;
-    WebInspector._mouseOutWhileDraggingTargetDocument.removeEventListener("mouseout", WebInspector._mouseOutWhileDragging, true);
-    delete WebInspector._mouseOutWhileDraggingTargetDocument;
+    WebInspector.DragHandler._documentForMouseOut.removeEventListener("mouseout", this._mouseOutWhileDragging, true);
 };
 
-WebInspector._unregisterDragEvents = function()
+WebInspector.DragHandler.prototype._unregisterDragEvents = function()
 {
-    if (!WebInspector._dragEventsTargetDocument)
+    if (!this._dragEventsTargetDocument)
         return;
-    WebInspector._dragEventsTargetDocument.removeEventListener("mousemove", WebInspector._elementDragMove, true);
-    WebInspector._dragEventsTargetDocument.removeEventListener("mouseup", WebInspector._elementDragEnd, true);
-    if (WebInspector._dragEventsTargetDocument !== WebInspector._dragEventsTargetDocumentTop)
-        WebInspector._dragEventsTargetDocumentTop.removeEventListener("mouseup", WebInspector._elementDragEnd, true);
-    delete WebInspector._dragEventsTargetDocument;
-    delete WebInspector._dragEventsTargetDocumentTop;
+    this._dragEventsTargetDocument.removeEventListener("mousemove", this._elementDragMove, true);
+    this._dragEventsTargetDocument.removeEventListener("mouseup", this._elementDragEnd, true);
+    if (this._dragEventsTargetDocument !== this._dragEventsTargetDocumentTop)
+        this._dragEventsTargetDocumentTop.removeEventListener("mouseup", this._elementDragEnd, true);
+    delete this._dragEventsTargetDocument;
+    delete this._dragEventsTargetDocumentTop;
 };
 
 /**
  * @param {!Event} event
  */
-WebInspector._elementDragMove = function(event)
+WebInspector.DragHandler.prototype._elementDragMove = function(event)
 {
     if (event.buttons !== 1) {
-        WebInspector._elementDragEnd(event);
+        this._elementDragEnd(event);
         return;
     }
-
-    if (WebInspector._elementDraggingEventListener(/** @type {!MouseEvent} */ (event)))
-        WebInspector._cancelDragEvents(event);
+    if (this._elementDraggingEventListener(/** @type {!MouseEvent} */ (event)))
+        this._cancelDragEvents(event);
 };
 
 /**
  * @param {!Event} event
  */
-WebInspector._cancelDragEvents = function(event)
+WebInspector.DragHandler.prototype._cancelDragEvents = function(event)
 {
-    WebInspector._unregisterDragEvents();
-    WebInspector._unregisterMouseOutWhileDragging();
+    this._unregisterDragEvents();
+    this._unregisterMouseOutWhileDragging();
 
-    if (WebInspector._restoreCursorAfterDrag)
-        WebInspector._restoreCursorAfterDrag();
+    if (this._restoreCursorAfterDrag)
+        this._restoreCursorAfterDrag();
 
-    if (WebInspector._elementDraggingGlassPane)
-        WebInspector._elementDraggingGlassPane.dispose();
+    this._disposeGlassPane();
 
-    delete WebInspector._elementDraggingGlassPane;
-    delete WebInspector._elementDraggingEventListener;
-    delete WebInspector._elementEndDraggingEventListener;
+    delete this._elementDraggingEventListener;
+    delete this._elementEndDraggingEventListener;
 };
 
 /**
  * @param {!Event} event
  */
-WebInspector._elementDragEnd = function(event)
+WebInspector.DragHandler.prototype._elementDragEnd = function(event)
 {
-    var elementDragEnd = WebInspector._elementEndDraggingEventListener;
-
-    WebInspector._cancelDragEvents(/** @type {!MouseEvent} */ (event));
-
+    var elementDragEnd = this._elementEndDraggingEventListener;
+    this._cancelDragEvents(/** @type {!MouseEvent} */ (event));
     event.preventDefault();
     if (elementDragEnd)
         elementDragEnd(/** @type {!MouseEvent} */ (event));

@@ -278,6 +278,7 @@ WebInspector.OverviewGrid.Window.prototype = {
         this._dragStartPoint = event.pageX;
         this._dragStartLeft = this.windowLeft;
         this._dragStartRight = this.windowRight;
+        event.stopPropagation();
         return true;
     },
 

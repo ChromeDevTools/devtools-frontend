@@ -276,7 +276,7 @@ WebInspector.ConsolePrompt.prototype = {
         var prefix = this._editor.text(prefixRange);
         var before = this._editor.text(new WebInspector.TextRange(0, 0, prefixRange.startLine, prefixRange.startColumn));
         var historyWords = this._historyCompletions(prefix);
-        WebInspector.ExecutionContextSelector.completionsForTextInCurrentContext(before, prefix, false /* Don't force */, innerWordsWithPrefix);
+        WebInspector.ExecutionContextSelector.completionsForTextInCurrentContext(before, prefix, true /* force */, innerWordsWithPrefix);
         return promise;
 
         /**

@@ -42,6 +42,9 @@ WebInspector.NetworkTimelineColumn = function(rowHeight, calculator)
     /** @type {?WebInspector.NetworkRequest} */
     this._navigationRequest = null;
 
+    /** @type {!Map<string, !Array<number>>} */
+    this._eventDividers = new Map();
+
     var colorUsage = WebInspector.ThemeSupport.ColorUsage;
     this._rowNavigationRequestColor = WebInspector.themeSupport.patchColor("#def", colorUsage.Background);
     this._rowStripeColor = WebInspector.themeSupport.patchColor("#f5f5f5", colorUsage.Background);
@@ -188,9 +191,10 @@ WebInspector.NetworkTimelineColumn.prototype = {
 
     /**
      * @param {number=} scrollTop
+     * @param {!Map<string, !Array<number>>=} eventDividers
      * @param {!{requests: !Array<!WebInspector.NetworkRequest>, navigationRequest: ?WebInspector.NetworkRequest}=} requestData
      */
-    update: function(scrollTop, requestData)
+    update: function(scrollTop, eventDividers, requestData)
     {
         if (scrollTop !== undefined)
             this._scrollTop = scrollTop;
@@ -199,6 +203,8 @@ WebInspector.NetworkTimelineColumn.prototype = {
             this._navigationRequest = requestData.navigationRequest;
             this._calculateCanvasSize();
         }
+        if (eventDividers !== undefined)
+            this._eventDividers = eventDividers;
         this.element.window().cancelAnimationFrame(this._updateRequestID);
         this._updateRequestID = null;
 
@@ -285,6 +291,7 @@ WebInspector.NetworkTimelineColumn.prototype = {
         var context = this._canvas.getContext("2d");
         context.save();
         context.scale(window.devicePixelRatio, window.devicePixelRatio);
+        context.save();
         context.translate(0, this._headerHeight);
         context.rect(0, 0, this._offsetWidth, this._offsetHeight);
         context.clip();
@@ -299,10 +306,36 @@ WebInspector.NetworkTimelineColumn.prototype = {
             else
                 this._drawSimplifiedBars(context, request, rowOffset - this._scrollTop);
         }
+        this._drawEventDividers(context);
         context.restore();
+        // This is outside of the save/restore above because it must draw in header.
         this._drawDividers(context);
+        context.restore();
     },
 
+    /**
+     * @param {!CanvasRenderingContext2D} context
+     */
+    _drawEventDividers: function(context)
+    {
+        context.save();
+        context.lineWidth = 1;
+        for (var color of this._eventDividers.keys()) {
+            context.strokeStyle = color;
+            for (var time of this._eventDividers.get(color)) {
+                context.beginPath();
+                var x = this._timeToPosition(time);
+                context.moveTo(x, 0);
+                context.lineTo(x, this._offsetHeight);
+            }
+            context.stroke();
+        }
+        context.restore();
+    },
+
+    /**
+     * @param {!CanvasRenderingContext2D} context
+     */
     _drawDividers: function(context)
     {
         context.save();

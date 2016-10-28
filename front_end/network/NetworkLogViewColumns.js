@@ -34,6 +34,10 @@ WebInspector.NetworkLogViewColumns = function(networkLogView, timeCalculator, du
     /** @type {!Array<{time: number, element: !Element}>} */
     this._eventDividers = [];
 
+    /** @type {!Map<string, !Array<number>>} */
+    this._shownEventDividers = new Map();
+    this._eventDividersShown = false;
+
     this._gridMode = true;
 
     /** @type {!Array.<!WebInspector.NetworkLogViewColumns.Descriptor>} */
@@ -360,6 +364,8 @@ WebInspector.NetworkLogViewColumns._defaultColumns = [
     }
 ];
 
+WebInspector.NetworkLogViewColumns._filmStripDividerColor = "#fccc49";
+
 /**
  * @param {!WebInspector.NetworkLogViewColumns.Descriptor} columnConfig
  * @return {!WebInspector.DataGrid.ColumnDescriptor}
@@ -392,6 +398,7 @@ WebInspector.NetworkLogViewColumns.prototype = {
         if (this._popoverHelper)
             this._popoverHelper.hidePopover();
         this._timelineGrid.removeEventDividers();
+        this._shownEventDividers.clear();
         this.updateDividersIfNeeded();
     },
 
@@ -504,7 +511,7 @@ WebInspector.NetworkLogViewColumns.prototype = {
     {
         if (!this._timelineRequestsAreStale) {
             this._updateScrollerWidthIfNeeded();
-            this._timelineColumn.update(this._activeScroller.scrollTop);
+            this._timelineColumn.update(this._activeScroller.scrollTop, this._eventDividersShown ? this._shownEventDividers : undefined);
             return;
         }
         var currentNode = this._dataGrid.rootNode();
@@ -517,7 +524,7 @@ WebInspector.NetworkLogViewColumns.prototype = {
                 requestData.navigationRequest = currentNode.request();
             requestData.requests.push(currentNode.request());
         }
-        this._timelineColumn.update(this._activeScroller.scrollTop, requestData);
+        this._timelineColumn.update(this._activeScroller.scrollTop, this._shownEventDividers, requestData);
     },
 
     /**
@@ -994,8 +1001,26 @@ WebInspector.NetworkLogViewColumns.prototype = {
      */
     addEventDividers: function(times, className)
     {
-        if (Runtime.experiments.isEnabled("canvasNetworkTimeline"))
+        if (Runtime.experiments.isEnabled("canvasNetworkTimeline")) {
+            // TODO(allada) When we remove old timeline remove this and pass in the color.
+            var color = "transparent";
+            switch (className) {
+            case "network-blue-divider":
+                color = "hsla(240, 100%, 80%, 0.7)";
+                break;
+            case "network-red-divider":
+                color = "rgba(255, 0, 0, 0.5)";
+                break;
+            default:
+                return;
+            }
+            var currentTimes = this._shownEventDividers.get(color) || [];
+            this._shownEventDividers.set(color, currentTimes.concat(times));
+
+            this._networkLogView.scheduleRefresh();
             return;
+        }
+
         for (var i = 0; i < times.length; ++i) {
             var element = createElementWithClass("div", "network-event-divider " + className);
             this._timelineGrid.addEventDivider(element);
@@ -1021,15 +1046,21 @@ WebInspector.NetworkLogViewColumns.prototype = {
 
     hideEventDividers: function()
     {
-        if (Runtime.experiments.isEnabled("canvasNetworkTimeline"))
+        this._eventDividersShown = true;
+        if (Runtime.experiments.isEnabled("canvasNetworkTimeline")) {
+            this._redrawTimelineColumn();
             return;
+        }
         this._timelineGrid.hideEventDividers();
     },
 
     showEventDividers: function()
     {
-        if (Runtime.experiments.isEnabled("canvasNetworkTimeline"))
+        this._eventDividersShown = false;
+        if (Runtime.experiments.isEnabled("canvasNetworkTimeline")) {
+            this._redrawTimelineColumn();
             return;
+        }
         this._timelineGrid.showEventDividers();
     },
 
@@ -1038,12 +1069,22 @@ WebInspector.NetworkLogViewColumns.prototype = {
      */
     selectFilmStripFrame: function(time)
     {
+        if (Runtime.experiments.isEnabled("canvasNetworkTimeline")) {
+            this._shownEventDividers.set(WebInspector.NetworkLogViewColumns._filmStripDividerColor, [time]);
+            this._redrawTimelineColumn();
+            return;
+        }
         for (var divider of this._eventDividers)
             divider.element.classList.toggle("network-frame-divider-selected", divider.time === time);
     },
 
     clearFilmStripFrame: function()
     {
+        if (Runtime.experiments.isEnabled("canvasNetworkTimeline")) {
+            this._shownEventDividers.delete(WebInspector.NetworkLogViewColumns._filmStripDividerColor);
+            this._redrawTimelineColumn();
+            return;
+        }
         for (var divider of this._eventDividers)
             divider.element.classList.toggle("network-frame-divider-selected", false);
     }

@@ -153,7 +153,7 @@ WebInspector.LayersPanel.prototype = {
      */
     _onSnapshotRequested: function(event)
     {
-        var layer = /** @type {!WebInspector.Layer} */ (event.data);
+        var layer = /** @type {!WebInspector.AgentLayer} */ (event.data);
         this._tabbedPane.selectTab(WebInspector.LayersPanel.DetailsViewTabs.Profiler);
         this._paintProfilerView.profileLayer(layer);
     },

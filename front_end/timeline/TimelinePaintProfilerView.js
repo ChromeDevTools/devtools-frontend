@@ -86,7 +86,7 @@ WebInspector.TimelinePaintProfilerView.prototype = {
             var snapshot = snapshotWithRect.snapshot;
             this._lastLoadedSnapshot = snapshot;
             this._imageView.setMask(snapshotWithRect.rect);
-            snapshot.commandLog(onCommandLogDone.bind(this, snapshot, snapshotWithRect.rect));
+            snapshot.commandLog().then(log => onCommandLogDone.call(this, snapshot, snapshotWithRect.rect, log));
         });
 
         /**

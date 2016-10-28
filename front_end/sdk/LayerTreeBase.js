@@ -2,6 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/** @typedef {!{
+        rect: !DOMAgent.Rect,
+        snapshot: !WebInspector.PaintProfilerSnapshot
+    }}
+*/
+WebInspector.SnapshotWithRect;
+
 /**
  * @interface
  */
@@ -118,8 +125,13 @@ WebInspector.Layer.prototype = {
     /**
      * @return {boolean}
      */
-    drawsContent: function() { }
-};
+    drawsContent: function() { },
+
+    /**
+     * @return {!Array<!Promise<?WebInspector.SnapshotWithRect>>}
+     */
+    snapshots: function() { }
+}
 
 WebInspector.Layer.ScrollRectType = {
     NonFastScrollable: "NonFastScrollable",

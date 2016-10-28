@@ -464,17 +464,15 @@ WebInspector.AgentLayer.prototype = {
     },
 
     /**
-     * @param {function(!WebInspector.PaintProfilerSnapshot=)} callback
+     * @override
+     * @return {!Array<!Promise<?WebInspector.SnapshotWithRect>>}
      */
-    requestSnapshot: function(callback)
+    snapshots: function()
     {
-        if (!this._target) {
-            callback();
-            return;
-        }
-
-        var wrappedCallback = InspectorBackend.wrapClientCallback(callback, "LayerTreeAgent.makeSnapshot(): ", WebInspector.PaintProfilerSnapshot.bind(null, this._target));
-        this._target.layerTreeAgent().makeSnapshot(this.id(), wrappedCallback);
+        var rect = {x: 0, y: 0, width: this.width(), height: this.height()};
+        var promise = this._target.layerTreeAgent().makeSnapshot(this.id(),
+            (error, snapshotId) => error || !this._target ? null : {rect: rect, snapshot: new WebInspector.PaintProfilerSnapshot(this._target, snapshotId)});
+        return [promise];
     },
 
     /**

@@ -260,7 +260,12 @@ WebInspector.PaintProfilerView.prototype = {
             right = this._log[window.right - 1].commandIndex;
         }
         var scale = this._pendingScale;
-        this._snapshot.requestImage(left, right, scale, image => { this._scale = scale; this._showImageCallback(image); });
+        this._snapshot.replay(left, right, scale).then(image => {
+            if (!image)
+                return;
+            this._scale = scale;
+            this._showImageCallback(image);
+        });
     },
 
     _reset: function()

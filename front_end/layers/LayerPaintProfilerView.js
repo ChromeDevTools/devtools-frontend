@@ -22,33 +22,33 @@ WebInspector.LayerPaintProfilerView = function(showImageForLayerCallback)
 
 WebInspector.LayerPaintProfilerView.prototype = {
     /**
-     * @param {!WebInspector.Layer} layer
+     * @param {!WebInspector.AgentLayer} layer
      */
     profileLayer: function(layer)
     {
-        this._logTreeView.setCommandLog(null, []);
-        this._paintProfilerView.setSnapshotAndLog(null, [], null);
-        /** @type {!WebInspector.AgentLayer} */ (layer).requestSnapshot(onSnapshotDone.bind(this));
-
-        /**
-         * @param {!WebInspector.PaintProfilerSnapshot=} snapshot
-         * @this {WebInspector.LayerPaintProfilerView}
-         */
-        function onSnapshotDone(snapshot)
-        {
-            this._layer = layer;
-            snapshot.commandLog(onCommandLogDone.bind(this, snapshot));
+        var snapshotPromise = layer.snapshots()[0];
+        if (!snapshotPromise) {
+            setSnapshotAndLog.call(this, null, null);
+            return;
         }
+        snapshotPromise.then(snapshotWithRect => {
+            if (!snapshotWithRect) {
+                setSnapshotAndLog.call(this, null, null);
+                return;
+            }
+            this._layer = layer;
+            snapshotWithRect.snapshot.commandLog().then(log => setSnapshotAndLog.call(this, snapshotWithRect.snapshot, log));
+        });
 
         /**
-         * @param {!WebInspector.PaintProfilerSnapshot=} snapshot
-         * @param {!Array.<!Object>=} log
+         * @param {?WebInspector.PaintProfilerSnapshot} snapshot
+         * @param {?Array<!WebInspector.PaintProfilerLogItem>} log
          * @this {WebInspector.LayerPaintProfilerView}
          */
-        function onCommandLogDone(snapshot, log)
+        function setSnapshotAndLog(snapshot, log)
         {
-            this._logTreeView.setCommandLog(snapshot.target(), log || []);
-            this._paintProfilerView.setSnapshotAndLog(snapshot || null, log || [], null);
+            this._logTreeView.setCommandLog(snapshot && snapshot.target(), log || []);
+            this._paintProfilerView.setSnapshotAndLog(snapshot, log || [], null);
         }
     },
 

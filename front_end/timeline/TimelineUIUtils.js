@@ -1410,7 +1410,7 @@ WebInspector.TimelineUIUtils.buildPicturePreviewContent = function(event, target
 {
     new WebInspector.LayerPaintEvent(event, target).snapshotPromise().then(onSnapshotLoaded);
     /**
-     * @param {?{rect: !Array<number>, snapshot: !WebInspector.PaintProfilerSnapshot}} snapshotWithRect
+     * @param {?WebInspector.SnapshotWithRect} snapshotWithRect
      */
     function onSnapshotLoaded(snapshotWithRect)
     {
@@ -1418,12 +1418,12 @@ WebInspector.TimelineUIUtils.buildPicturePreviewContent = function(event, target
             callback();
             return;
         }
-        snapshotWithRect.snapshot.requestImage(null, null, 1, onGotImage);
+        snapshotWithRect.snapshot.replay(null, null, 1).then(imageURL => onGotImage(imageURL));
         snapshotWithRect.snapshot.dispose();
     }
 
     /**
-     * @param {string=} imageURL
+     * @param {?string} imageURL
      */
     function onGotImage(imageURL)
     {

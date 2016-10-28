@@ -117,7 +117,7 @@ WebInspector.TracingLayerTree.prototype = {
             WebInspector.console.error(`Layer ${tile.layer_id} for tile ${tileId} is not found`);
             return /** @type {!Promise<?WebInspector.SnapshotWithRect>} */ (Promise.resolve(null));
         }
-        return layer.pictureForRect(this.target(), tile.content_rect);
+        return layer._pictureForRect(tile.content_rect);
     },
 
     /**
@@ -143,7 +143,7 @@ WebInspector.TracingLayerTree.prototype = {
         if (layer)
             layer._reset(payload);
         else
-            layer = new WebInspector.TracingLayer(payload);
+            layer = new WebInspector.TracingLayer(this.target(), payload);
         this._layersById[payload.layer_id] = layer;
         if (payload.owner_node)
             layer._setNode(this._backendNodeIdToNode.get(payload.owner_node) || null);
@@ -174,10 +174,12 @@ WebInspector.TracingLayerTree.prototype = {
 /**
  * @constructor
  * @param {!WebInspector.TracingLayerPayload} payload
+ * @param {?WebInspector.Target} target
  * @implements {WebInspector.Layer}
  */
-WebInspector.TracingLayer = function(payload)
+WebInspector.TracingLayer = function(target, payload)
 {
+    this._target = target;
     this._reset(payload);
 };
 
@@ -403,22 +405,30 @@ WebInspector.TracingLayer.prototype = {
     },
 
     /**
-     * @param {!WebInspector.Target} target
-     * @param {!Array<number>} targetRect
-     * @return {!Promise<?{rect: !DOMAgent.Rect, snapshot: !WebInspector.PaintProfilerSnapshot}>}
+     * @override
+     * @return {!Array<!Promise<?WebInspector.SnapshotWithRect>>}
      */
-    pictureForRect: function(target, targetRect)
+    snapshots: function()
+    {
+        return this._paints.map(paint => paint.snapshotPromise());
+    },
+
+    /**
+     * @param {!Array<number>} targetRect
+     * @return {!Promise<?WebInspector.SnapshotWithRect>}
+     */
+    _pictureForRect: function(targetRect)
     {
         return Promise.all(this._paints.map(paint => paint.picturePromise())).then(pictures => {
             var fragments = pictures.filter(picture => picture && rectsOverlap(picture.rect, targetRect))
                 .map(picture => ({x: picture.rect[0], y: picture.rect[1], picture: picture.serializedPicture}));
-            if (!fragments.length)
+            if (!fragments.length || !this._target)
                 return null;
             var x0 = fragments.reduce((min, item) => Math.min(min, item.x), Infinity);
             var y0 = fragments.reduce((min, item) => Math.min(min, item.y), Infinity);
             // Rect is in layer content coordinates, make it relative to picture by offsetting to the top left corner.
             var rect = {x: targetRect[0] - x0, y: targetRect[1] - y0, width: targetRect[2], height: targetRect[3]};
-            return WebInspector.PaintProfilerSnapshot.loadFromFragments(target, fragments).then(snapshot => snapshot ? {rect: rect, snapshot: snapshot} : null);
+            return WebInspector.PaintProfilerSnapshot.loadFromFragments(this._target, fragments).then(snapshot => snapshot ? {rect: rect, snapshot: snapshot} : null);
         });
 
         /**

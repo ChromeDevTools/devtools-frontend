@@ -70,10 +70,10 @@ WebInspector.Layers3DView = function(layerViewHost)
     this._layerViewHost.showInternalLayersSetting().addChangeListener(this._update, this);
 };
 
-/** @typedef {{borderColor: !Array.<number>, borderWidth: number}} */
+/** @typedef {{borderColor: !Array<number>, borderWidth: number}} */
 WebInspector.Layers3DView.LayerStyle;
 
-/** @typedef {{layerId: string, rect: !Array.<number>, snapshot: !WebInspector.PaintProfilerSnapshot, traceEvent: !WebInspector.TracingModel.Event}} */
+/** @typedef {{layerId: string, rect: DOMAgent.Rect, snapshot: !WebInspector.PaintProfilerSnapshot, traceEvent: !WebInspector.TracingModel.Event}} */
 WebInspector.Layers3DView.PaintTile;
 
 /**
@@ -515,7 +515,7 @@ WebInspector.Layers3DView.prototype = {
                 continue;
             var selection = new WebInspector.LayerView.TileSelection(layer, tile.traceEvent);
             var rect = new WebInspector.Layers3DView.Rectangle(selection);
-            rect.calculateVerticesFromRect(layer, {x: tile.rect[0], y: tile.rect[1], width: tile.rect[2], height: tile.rect[3]}, this._depthForLayer(layer) + 1);
+            rect.calculateVerticesFromRect(layer, tile.rect, this._depthForLayer(layer) + 1);
             rect.texture = tile.texture;
             this._appendRect(rect);
         }
@@ -911,17 +911,10 @@ WebInspector.LayerTextureManager.prototype = {
     {
         console.assert(this._scale && this._gl);
         tile.scale = this._scale;
-        tile.snapshot.requestImage(null, null, tile.scale, onGotImage.bind(this));
-
-        /**
-         * @this {WebInspector.LayerTextureManager}
-         * @param {string=} imageURL
-         */
-        function onGotImage(imageURL)
-        {
+        tile.snapshot.replay(null, null, tile.scale).then(imageURL => {
             if (imageURL)
                 this.createTexture(onTextureCreated.bind(this), imageURL);
-        }
+        });
 
         /**
          * @this {WebInspector.LayerTextureManager}
@@ -1095,7 +1088,7 @@ WebInspector.Layers3DView.Rectangle.prototype = {
 /**
  * @constructor
  * @param {!WebInspector.PaintProfilerSnapshot} snapshot
- * @param {!Array.<number>} rect
+ * @param {!DOMAgent.Rect} rect
  * @param {!WebInspector.TracingModel.Event} traceEvent
  */
 WebInspector.LayerTextureManager.Tile = function(snapshot, rect, traceEvent)

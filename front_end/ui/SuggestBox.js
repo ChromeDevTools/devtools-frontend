@@ -135,7 +135,7 @@ WebInspector.SuggestBox.prototype = {
             this._overlay.setVerticalOffset(totalHeight - anchorBox.y, false);
 
         var spacer = 6;
-        var maxHeight = this._maxItemsHeight ? this._maxItemsHeight * this._rowHeight : Math.max(underHeight, aboveHeight) - spacer;
+        var maxHeight = Math.min(Math.max(underHeight, aboveHeight) - spacer, this._maxItemsHeight ? this._maxItemsHeight * this._rowHeight : 0);
         var height = this._rowHeight * this._items.length;
         this._hasVerticalScroll = height > maxHeight;
         this._element.style.height = Math.min(maxHeight, height) + "px";

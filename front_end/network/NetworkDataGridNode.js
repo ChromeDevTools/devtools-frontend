@@ -215,6 +215,8 @@ WebInspector.NetworkDataGridNode.prototype = {
      */
     _createTimelineBar: function(cell)
     {
+        if (Runtime.experiments.isEnabled("canvasNetworkTimeline"))
+            return;
         cell = cell.createChild("div");
         this._timelineCell = cell;
 

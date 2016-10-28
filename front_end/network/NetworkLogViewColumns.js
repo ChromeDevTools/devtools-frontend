@@ -14,10 +14,7 @@ WebInspector.NetworkLogViewColumns = function(networkLogView, timeCalculator, du
     if (Runtime.experiments.isEnabled("canvasNetworkTimeline")) {
         var timelineColumn = WebInspector.NetworkLogViewColumns._defaultColumns.find(columnConfig => columnConfig.id === "timeline");
         timelineColumn.visible = false;
-        timelineColumn.hideable = true;
-        timelineColumn.sortConfig = {
-            sortingFunction: WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, "startTime")
-        };
+        timelineColumn.hideable = false;
     }
 
     this._networkLogView = networkLogView;
@@ -367,6 +364,17 @@ WebInspector.NetworkLogViewColumns._defaultColumns = [
 WebInspector.NetworkLogViewColumns._filmStripDividerColor = "#fccc49";
 
 /**
+ * @enum {string}
+ */
+WebInspector.NetworkLogViewColumns.TimelineSortIds = {
+    StartTime: "startTime",
+    ResponseTime: "responseReceivedTime",
+    EndTime: "endTime",
+    Duration: "duration",
+    Latency: "latency"
+};
+
+/**
  * @param {!WebInspector.NetworkLogViewColumns.Descriptor} columnConfig
  * @return {!WebInspector.DataGrid.ColumnDescriptor}
  */
@@ -440,6 +448,7 @@ WebInspector.NetworkLogViewColumns.prototype = {
 
         this._setupDropdownColumns();
 
+        this._activeTimelineSortId = WebInspector.NetworkLogViewColumns.TimelineSortIds.StartTime;
         this._dataGrid.markColumnAsSortedBy(WebInspector.NetworkLogViewColumns._initialSortColumn, WebInspector.DataGrid.Order.Ascending);
 
         if (Runtime.experiments.isEnabled("canvasNetworkTimeline")) {
@@ -638,6 +647,21 @@ WebInspector.NetworkLogViewColumns.prototype = {
     _sortHandler: function()
     {
         var columnId = this._dataGrid.sortColumnId();
+        this._networkLogView.removeAllNodeHighlights();
+        if (Runtime.experiments.isEnabled("canvasNetworkTimeline") && columnId === "timeline") {
+            this._timelineColumnSortIcon.classList.remove("sort-ascending", "sort-descending");
+
+            if (this._dataGrid.sortOrder() === WebInspector.DataGrid.Order.Ascending)
+                this._timelineColumnSortIcon.classList.add("sort-ascending");
+            else
+                this._timelineColumnSortIcon.classList.add("sort-descending");
+
+            this._timelineRequestsAreStale = true;
+            var sortFunction = WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, this._activeTimelineSortId);
+            this._dataGrid.sortNodes(sortFunction, !this._dataGrid.isSortOrderAscending());
+            return;
+        }
+
         var columnConfig = this._columns.find(columnConfig => columnConfig.id === columnId);
         if (!columnConfig)
             return;
@@ -648,24 +672,8 @@ WebInspector.NetworkLogViewColumns.prototype = {
         if (!columnConfig.sortConfig.sortingFunction)
             return;
 
-        this._networkLogView.removeAllNodeHighlights();
         this._dataGrid.sortNodes(columnConfig.sortConfig.sortingFunction, !this._dataGrid.isSortOrderAscending());
         this._networkLogView.dataGridSorted();
-
-        if (!Runtime.experiments.isEnabled("canvasNetworkTimeline"))
-            return;
-
-        this._timelineColumnSortIcon.classList.remove("sort-ascending", "sort-descending");
-
-        if (this._dataGrid.sortColumnId() === "timeline") {
-            if (this._dataGrid.sortOrder() === WebInspector.DataGrid.Order.Ascending)
-                this._timelineColumnSortIcon.classList.add("sort-ascending");
-            else
-                this._timelineColumnSortIcon.classList.add("sort-descending");
-        }
-
-        this._timelineRequestsAreStale = true;
-
     },
 
     /**
@@ -688,21 +696,6 @@ WebInspector.NetworkLogViewColumns.prototype = {
         columnConfig.selectBox.options[0].label = selectedItemConfig.title;
         columnConfig.selectBox.selectedIndex = 0;
         this._networkLogView.dataGridSorted();
-
-        // TODO(allada) This entire function will be removed when the timeline comes out of exp, so copying code above for now.
-        if (!Runtime.experiments.isEnabled("canvasNetworkTimeline"))
-            return;
-
-        this._timelineColumnSortIcon.classList.remove("sort-ascending", "sort-descending");
-
-        if (this._dataGrid.sortColumnId() === "timeline") {
-            if (this._dataGrid.sortOrder() === WebInspector.DataGrid.Order.Ascending)
-                this._timelineColumnSortIcon.classList.add("sort-ascending");
-            else
-                this._timelineColumnSortIcon.classList.add("sort-descending");
-        }
-
-        this._timelineRequestsAreStale = true;
     },
 
     _updateColumns: function()
@@ -712,7 +705,7 @@ WebInspector.NetworkLogViewColumns.prototype = {
         var visibleColumns = /** @type {!Object.<string, boolean>} */ ({});
         if (this._gridMode) {
             for (var columnConfig of this._columns)
-                visibleColumns[columnConfig.id] = (columnConfig.visible || !columnConfig.hideable);
+                visibleColumns[columnConfig.id] = columnConfig.visible;
         } else {
             visibleColumns.name = true;
         }
@@ -815,6 +808,16 @@ WebInspector.NetworkLogViewColumns.prototype = {
      */
     _innerHeaderContextMenu: function(contextMenu)
     {
+        if (Runtime.experiments.isEnabled("canvasNetworkTimeline")) {
+            var timelineSortIds = WebInspector.NetworkLogViewColumns.TimelineSortIds;
+            var timelineSubMenu = contextMenu.appendSubMenuItem(WebInspector.UIString("Timeline"));
+            timelineSubMenu.appendCheckboxItem(WebInspector.UIString("Start Time"), setTimelineMode.bind(this, timelineSortIds.StartTime), this._activeTimelineSortId === timelineSortIds.StartTime);
+            timelineSubMenu.appendCheckboxItem(WebInspector.UIString("Response Time"), setTimelineMode.bind(this, timelineSortIds.ResponseTime), this._activeTimelineSortId === timelineSortIds.ResponseTime);
+            timelineSubMenu.appendCheckboxItem(WebInspector.UIString("End Time"), setTimelineMode.bind(this, timelineSortIds.EndTime), this._activeTimelineSortId === timelineSortIds.EndTime);
+            timelineSubMenu.appendCheckboxItem(WebInspector.UIString("Total Duration"), setTimelineMode.bind(this, timelineSortIds.Duration), this._activeTimelineSortId === timelineSortIds.Duration);
+            timelineSubMenu.appendCheckboxItem(WebInspector.UIString("Latency"), setTimelineMode.bind(this, timelineSortIds.Latency), this._activeTimelineSortId === timelineSortIds.Latency);
+            contextMenu.appendSeparator();
+        }
         var columnConfigs = this._columns.filter(columnConfig => columnConfig.hideable);
         var nonResponseHeaders = columnConfigs.filter(columnConfig => !columnConfig.isResponseHeader);
         for (var columnConfig of nonResponseHeaders)
@@ -831,6 +834,23 @@ WebInspector.NetworkLogViewColumns.prototype = {
         responseSubMenu.appendItem(WebInspector.UIString("Manage Header Columns\u2026"), this._manageCustomHeaderDialog.bind(this));
 
         contextMenu.show();
+
+        /**
+         * @param {!WebInspector.NetworkLogViewColumns.TimelineSortIds} sortId
+         * @this {WebInspector.NetworkLogViewColumns}
+         */
+        function setTimelineMode(sortId)
+        {
+            var calculator = this._calculatorsMap.get(WebInspector.NetworkLogViewColumns._calculatorTypes.Time);
+            var timelineSortIds = WebInspector.NetworkLogViewColumns.TimelineSortIds;
+            if (sortId === timelineSortIds.Duration || sortId === timelineSortIds.Latency)
+                calculator = this._calculatorsMap.get(WebInspector.NetworkLogViewColumns._calculatorTypes.Duration);
+            this._networkLogView.setCalculator(calculator);
+
+            this._activeTimelineSortId = sortId;
+            this._dataGrid.markColumnAsSortedBy("timeline", WebInspector.DataGrid.Order.Ascending);
+            this._sortHandler();
+        }
     },
 
     _manageCustomHeaderDialog: function()

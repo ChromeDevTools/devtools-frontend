@@ -14,7 +14,6 @@ WebInspector.FilteredUISourceCodeListDelegate = function(defaultScores, history)
 {
     WebInspector.FilteredListWidget.Delegate.call(this, history || []);
 
-    this._populate();
     this._defaultScores = defaultScores;
     this._scorer = new WebInspector.FilePathScoreFunction("");
     WebInspector.workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
@@ -28,14 +27,15 @@ WebInspector.FilteredUISourceCodeListDelegate.prototype = {
     _projectRemoved: function(event)
     {
         var project = /** @type {!WebInspector.Project} */ (event.data);
-        this._populate(project);
+        this.populate(project);
         this.refresh();
     },
 
     /**
+     * @protected
      * @param {!WebInspector.Project=} skipProject
      */
-    _populate: function(skipProject)
+    populate: function(skipProject)
     {
         /** @type {!Array.<!WebInspector.UISourceCode>} */
         this._uiSourceCodes = [];

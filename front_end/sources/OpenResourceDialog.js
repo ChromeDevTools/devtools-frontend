@@ -15,6 +15,7 @@ WebInspector.OpenResourceDialog = function(sourcesView, defaultScores, history)
 {
     WebInspector.FilteredUISourceCodeListDelegate.call(this, defaultScores, history);
     this._sourcesView = sourcesView;
+    this.populate();
 };
 
 WebInspector.OpenResourceDialog.prototype = {
@@ -91,6 +92,7 @@ WebInspector.SelectUISourceCodeForProjectTypesDialog = function(types, callback)
     WebInspector.FilteredUISourceCodeListDelegate.call(this);
     this._types = types;
     this._callback = callback;
+    this.populate();
 };
 
 WebInspector.SelectUISourceCodeForProjectTypesDialog.prototype = {

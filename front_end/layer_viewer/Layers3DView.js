@@ -61,8 +61,9 @@ WebInspector.Layers3DView = function(layerViewHost)
 
     this._lastSelection = {};
     this._layerTree = null;
-    this._textureManager = new WebInspector.LayerTextureManager();
-    this._textureManager.addEventListener(WebInspector.LayerTextureManager.Events.TextureUpdated, this._update, this);
+
+    this._textureManager = new WebInspector.LayerTextureManager(this._update.bind(this));
+
     /** @type Array.<!WebGLTexture|undefined> */
     this._chromeTextures = [];
     this._rects = [];
@@ -72,9 +73,6 @@ WebInspector.Layers3DView = function(layerViewHost)
 
 /** @typedef {{borderColor: !Array<number>, borderWidth: number}} */
 WebInspector.Layers3DView.LayerStyle;
-
-/** @typedef {{layerId: string, rect: DOMAgent.Rect, snapshot: !WebInspector.PaintProfilerSnapshot, traceEvent: !WebInspector.TracingModel.Event}} */
-WebInspector.Layers3DView.PaintTile;
 
 /**
  * @enum {string}
@@ -89,7 +87,6 @@ WebInspector.Layers3DView.OutlineType = {
  */
 /** @enum {symbol} */
 WebInspector.Layers3DView.Events = {
-    LayerSnapshotRequested: Symbol("LayerSnapshotRequested"),
     PaintProfilerRequested: Symbol("PaintProfilerRequested"),
     ScaleChanged: Symbol("ScaleChanged")
 };
@@ -157,17 +154,11 @@ WebInspector.Layers3DView.prototype = {
     setLayerTree: function(layerTree)
     {
         this._layerTree = layerTree;
+        this._layerTexture = null;
         delete this._oldTextureScale;
-        this._textureManager.reset();
+        if (this._showPaints())
+            this._textureManager.setLayerTree(layerTree);
         this._update();
-    },
-
-    /**
-     * @param {?Array.<!WebInspector.Layers3DView.PaintTile>} tiles
-     */
-    setTiles: function(tiles)
-    {
-        this._textureManager.setTiles(tiles);
     },
 
     /**
@@ -176,20 +167,16 @@ WebInspector.Layers3DView.prototype = {
      */
     showImageForLayer: function(layer, imageURL)
     {
-        if (imageURL)
-            this._textureManager.createTexture(onTextureCreated.bind(this), imageURL);
-        else
-            onTextureCreated.call(this, null);
-
-        /**
-         * @this {WebInspector.Layers3DView}
-         * @param {?WebGLTexture} texture
-         */
-        function onTextureCreated(texture)
-        {
-            this._layerTexture = texture ? {layerId: layer.id(), texture: texture} : null;
+        if (!imageURL) {
+            this._layerTexture = null;
             this._update();
+            return;
         }
+        WebInspector.loadImage(imageURL).then(image => {
+            var texture = image && WebInspector.LayerTextureManager._createTextureForImage(this._gl, image);
+            this._layerTexture = texture ? {layer: layer, texture: texture} : null;
+            this._update();
+        });
     },
 
     onResize: function()
@@ -198,12 +185,32 @@ WebInspector.Layers3DView.prototype = {
         this._update();
     },
 
+    /**
+     * @override
+     */
+    willHide: function()
+    {
+        this._textureManager.suspend();
+    },
+
+    /**
+     * @override
+     */
     wasShown: function()
     {
+        this._textureManager.resume();
         if (!this._needsUpdate)
             return;
         this._resizeCanvas();
         this._update();
+    },
+
+    /**
+     * @param {!WebInspector.Layer} layer
+     */
+    updateLayerSnapshot: function(layer)
+    {
+        this._textureManager.layerNeedsUpdate(layer);
     },
 
     /**
@@ -233,6 +240,25 @@ WebInspector.Layers3DView.prototype = {
     {
         this._setOutline(WebInspector.Layers3DView.OutlineType.Hovered, null);
         this._setOutline(WebInspector.Layers3DView.OutlineType.Selected, selection);
+    },
+
+    /**
+     * @param {!WebInspector.LayerView.Selection} selection
+     * @return {!Promise<?WebInspector.SnapshotWithRect>}
+     */
+    snapshotForSelection: function(selection)
+    {
+        if (selection.type() === WebInspector.LayerView.Selection.Type.Snapshot) {
+            var snapshotWithRect = /** @type {!WebInspector.LayerView.SnapshotSelection} */ (selection).snapshot();
+            snapshotWithRect.snapshot.addReference();
+            return /** @type {!Promise<?WebInspector.SnapshotWithRect>} */ (Promise.resolve(snapshotWithRect));
+        }
+        if (selection.layer()) {
+            var promise = selection.layer().snapshots()[0];
+            if (promise)
+                return promise;
+        }
+        return /** @type {!Promise<?WebInspector.SnapshotWithRect>} */ (Promise.resolve(null));
     },
 
     /**
@@ -356,15 +382,17 @@ WebInspector.Layers3DView.prototype = {
         /**
          * @this {WebInspector.Layers3DView}
          * @param {!WebInspector.Layers3DView.ChromeTexture} index
-         * @param {?WebGLTexture} value
+         * @param {string} url
          */
-        function saveChromeTexture(index, value)
+        function loadChromeTexture(index, url)
         {
-            this._chromeTextures[index] = value || undefined;
+            WebInspector.loadImage(url).then(image => {
+                this._chromeTextures[index] = image && WebInspector.LayerTextureManager._createTextureForImage(this._gl, image) || undefined;
+            });
         }
-        this._textureManager.createTexture(saveChromeTexture.bind(this, WebInspector.Layers3DView.ChromeTexture.Left), "Images/chromeLeft.png");
-        this._textureManager.createTexture(saveChromeTexture.bind(this, WebInspector.Layers3DView.ChromeTexture.Middle), "Images/chromeMiddle.png");
-        this._textureManager.createTexture(saveChromeTexture.bind(this, WebInspector.Layers3DView.ChromeTexture.Right), "Images/chromeRight.png");
+        loadChromeTexture.call(this, WebInspector.Layers3DView.ChromeTexture.Left, "Images/chromeLeft.png");
+        loadChromeTexture.call(this, WebInspector.Layers3DView.ChromeTexture.Middle, "Images/chromeMiddle.png");
+        loadChromeTexture.call(this, WebInspector.Layers3DView.ChromeTexture.Right, "Images/chromeRight.png");
     },
 
     /**
@@ -392,10 +420,12 @@ WebInspector.Layers3DView.prototype = {
         var root = showInternalLayers ? this._layerTree.root() : (this._layerTree.contentRoot() || this._layerTree.root());
         var queue = [root];
         this._depthByLayerId[root.id()] = 0;
-        this._visibleLayers = {};
+        /** @type {!Set<!WebInspector.Layer>} */
+        this._visibleLayers = new Set();
         while (queue.length > 0) {
             var layer = queue.shift();
-            this._visibleLayers[layer.id()] = showInternalLayers || layer.drawsContent();
+            if (showInternalLayers || layer.drawsContent())
+                this._visibleLayers.add(layer);
             var children = layer.children();
             for (var i = 0; i < children.length; ++i) {
                 this._depthByLayerId[children[i].id()] = ++depth;
@@ -442,7 +472,7 @@ WebInspector.Layers3DView.prototype = {
      */
     _calculateLayerRect: function(layer)
     {
-        if (!this._visibleLayers[layer.id()])
+        if (!this._visibleLayers.has(layer))
             return;
         var selection = new WebInspector.LayerView.LayerSelection(layer);
         var rect = new WebInspector.Layers3DView.Rectangle(selection);
@@ -491,29 +521,14 @@ WebInspector.Layers3DView.prototype = {
     /**
      * @param {!WebInspector.Layer} layer
      */
-    _calculateLayerImageRect: function(layer)
-    {
-        var layerTexture = this._layerTexture;
-        if (layer.id() !== layerTexture.layerId)
-            return;
-        var selection = new WebInspector.LayerView.LayerSelection(layer);
-        var rect = new WebInspector.Layers3DView.Rectangle(selection);
-        rect.setVertices(layer.quad(), this._depthForLayer(layer));
-        rect.texture = layerTexture.texture;
-        this._appendRect(rect);
-    },
-
-    /**
-     * @param {!WebInspector.Layer} layer
-     */
     _calculateLayerTileRects: function(layer)
     {
-        var tiles = this._textureManager.tilesForLayer(layer.id());
+        var tiles = this._textureManager.tilesForLayer(layer);
         for (var i = 0; i < tiles.length; ++i) {
             var tile = tiles[i];
             if (!tile.texture)
                 continue;
-            var selection = new WebInspector.LayerView.TileSelection(layer, tile.traceEvent);
+            var selection = new WebInspector.LayerView.SnapshotSelection(layer, {rect: tile.rect, snapshot: tile.snapshot});
             var rect = new WebInspector.Layers3DView.Rectangle(selection);
             rect.calculateVerticesFromRect(layer, tile.rect, this._depthForLayer(layer) + 1);
             rect.texture = tile.texture;
@@ -530,11 +545,15 @@ WebInspector.Layers3DView.prototype = {
         if (this._showSlowScrollRectsSetting.get())
             this._layerTree.forEachLayer(this._calculateLayerScrollRects.bind(this));
 
-        if (this._showPaintsSetting.get()) {
-            if (this._layerTexture)
-                this._layerTree.forEachLayer(this._calculateLayerImageRect.bind(this));
-            else
-                this._layerTree.forEachLayer(this._calculateLayerTileRects.bind(this));
+        if (this._layerTexture && this._visibleLayers.has(this._layerTexture.layer)) {
+            var layer = this._layerTexture.layer;
+            var selection = new WebInspector.LayerView.LayerSelection(layer);
+            var rect = new WebInspector.Layers3DView.Rectangle(selection);
+            rect.setVertices(layer.quad(), this._depthForLayer(layer));
+            rect.texture = this._layerTexture.texture;
+            this._appendRect(rect);
+        } else if (this._showPaints()) {
+            this._layerTree.forEachLayer(this._calculateLayerTileRects.bind(this));
         }
     },
 
@@ -748,6 +767,7 @@ WebInspector.Layers3DView.prototype = {
         this.contentElement.appendChild(this._panelToolbar.element);
         this._showSlowScrollRectsSetting = this._createVisibilitySetting("Slow scroll rects", "frameViewerShowSlowScrollRects", true, this._panelToolbar);
         this._showPaintsSetting = this._createVisibilitySetting("Paints", "frameViewerShowPaints", true, this._panelToolbar);
+        this._showPaintsSetting.addChangeListener(this._updatePaints, this);
         WebInspector.moduleSetting("frameViewerHideChromeWindow").addChangeListener(this._update, this);
     },
 
@@ -759,8 +779,8 @@ WebInspector.Layers3DView.prototype = {
         var contextMenu = new WebInspector.ContextMenu(event);
         contextMenu.appendItem(WebInspector.UIString("Reset View"), this._transformController.resetAndNotify.bind(this._transformController), false);
         var selection = this._selectionFromEventPoint(event);
-        if (selection && selection.type() === WebInspector.LayerView.Selection.Type.Tile)
-            contextMenu.appendItem(WebInspector.UIString("Show Paint Profiler"), this.dispatchEventToListeners.bind(this, WebInspector.Layers3DView.Events.PaintProfilerRequested, selection.traceEvent()), false);
+        if (selection && selection.type() === WebInspector.LayerView.Selection.Type.Snapshot)
+            contextMenu.appendItem(WebInspector.UIString("Show Paint Profiler"), this.dispatchEventToListeners.bind(this, WebInspector.Layers3DView.Events.PaintProfilerRequested, selection.snapshot()), false);
         this._layerViewHost.showContextMenu(contextMenu, selection);
     },
 
@@ -801,13 +821,28 @@ WebInspector.Layers3DView.prototype = {
     _onDoubleClick: function(event)
     {
         var selection = this._selectionFromEventPoint(event);
-        if (selection) {
-            if (selection.type() === WebInspector.LayerView.Selection.Type.Tile)
-                this.dispatchEventToListeners(WebInspector.Layers3DView.Events.PaintProfilerRequested, selection.traceEvent());
-            else if (selection.layer())
-                this.dispatchEventToListeners(WebInspector.Layers3DView.Events.LayerSnapshotRequested, selection.layer());
-        }
+        if (selection && (selection.type() === WebInspector.LayerView.Selection.Type.Snapshot || selection.layer()))
+            this.dispatchEventToListeners(WebInspector.Layers3DView.Events.PaintProfilerRequested, selection);
         event.stopPropagation();
+    },
+
+    _updatePaints: function()
+    {
+        if (this._showPaints()) {
+            this._textureManager.setLayerTree(this._layerTree);
+            this._textureManager.forceUpdate();
+        } else {
+            this._textureManager.reset();
+        }
+        this._update();
+    },
+
+    /**
+     * @return {boolean}
+     */
+    _showPaints: function()
+    {
+        return this._showPaintsSetting.get();
     },
 
     __proto__: WebInspector.VBox.prototype
@@ -815,25 +850,27 @@ WebInspector.Layers3DView.prototype = {
 
 /**
  * @constructor
- * @extends {WebInspector.Object}
+ * @param {function()} textureUpdatedCallback
  */
-WebInspector.LayerTextureManager = function()
+WebInspector.LayerTextureManager = function(textureUpdatedCallback)
 {
-    WebInspector.Object.call(this);
+    this._textureUpdatedCallback = textureUpdatedCallback;
+    this._throttler = new WebInspector.Throttler(0);
+    this._scale = 0;
+    this._active = false;
     this.reset();
-};
-
-/** @enum {symbol} */
-WebInspector.LayerTextureManager.Events = {
-    TextureUpdated: Symbol("TextureUpated")
 };
 
 WebInspector.LayerTextureManager.prototype = {
     reset: function()
     {
-        /** @type {!Object.<string, !Array.<!WebInspector.LayerTextureManager.Tile>>} */
-        this._tilesByLayerId = {};
-        this._scale = 0;
+        if (this._tilesByLayer)
+            this.setLayerTree(null);
+
+        /** @type {!Map<!WebInspector.Layer, !Array<!WebInspector.LayerTextureManager.Tile>>} */
+        this._tilesByLayer = new Map();
+        /** @type {!Array<!WebInspector.Layer>} */
+        this._queue = [];
     },
 
     /**
@@ -846,26 +883,71 @@ WebInspector.LayerTextureManager.prototype = {
             this._updateTextures();
     },
 
-    /**
-     * @param {?Array.<!WebInspector.Layers3DView.PaintTile>} paintTiles
-     */
-    setTiles: function(paintTiles)
+    suspend: function()
     {
-        this._tilesByLayerId = {};
-        if (!paintTiles)
-            return;
-        for (var i = 0; i < paintTiles.length; ++i) {
-            var layerId = paintTiles[i].layerId;
-            var tilesForLayer = this._tilesByLayerId[layerId];
-            if (!tilesForLayer) {
-                tilesForLayer = [];
-                this._tilesByLayerId[layerId] = tilesForLayer;
-            }
-            var tile = new WebInspector.LayerTextureManager.Tile(paintTiles[i].snapshot, paintTiles[i].rect, paintTiles[i].traceEvent);
-            tilesForLayer.push(tile);
-            if (this._scale && this._gl)
-                this._updateTile(tile);
+        this._active = false;
+    },
+
+    resume: function()
+    {
+        this._active = true;
+        if (this._queue.length)
+            this._update();
+    },
+
+    /**
+     * @param {?WebInspector.LayerTreeBase} layerTree
+     */
+    setLayerTree: function(layerTree)
+    {
+        var newLayers = new Set();
+        var oldLayers = Array.from(this._tilesByLayer.keys());
+        if (layerTree) {
+            layerTree.forEachLayer(layer => {
+                if (!layer.drawsContent())
+                    return;
+                newLayers.add(layer);
+                if (!this._tilesByLayer.has(layer)) {
+                    this._tilesByLayer.set(layer, []);
+                    this.layerNeedsUpdate(layer);
+                }
+            });
         }
+        if (!oldLayers.length)
+            this.forceUpdate();
+        for (var layer of oldLayers) {
+            if (newLayers.has(layer))
+                continue;
+            this._tilesByLayer.get(layer).forEach(tile => tile.dispose());
+            this._tilesByLayer.delete(layer);
+        }
+    },
+
+    /**
+     * @param {!WebInspector.Layer} layer
+     * @param {!Array<!WebInspector.SnapshotWithRect>} snapshots
+     * @return {!Promise}
+     */
+    _setSnapshotsForLayer: function(layer, snapshots)
+    {
+        var oldSnapshotsToTiles = new Map((this._tilesByLayer.get(layer) || []).map(tile => [tile.snapshot, tile]));
+        var newTiles = [];
+        var reusedTiles = [];
+        for (var snapshot of snapshots) {
+            var oldTile = oldSnapshotsToTiles.get(snapshot);
+            if (oldTile) {
+                reusedTiles.push(oldTile);
+                oldSnapshotsToTiles.delete(oldTile);
+            } else {
+                newTiles.push(new WebInspector.LayerTextureManager.Tile(snapshot));
+            }
+        }
+        this._tilesByLayer.set(layer, reusedTiles.concat(newTiles));
+        for (var tile of oldSnapshotsToTiles.values())
+            tile.dispose();
+        if (!this._gl || !this._scale)
+            return Promise.resolve();
+        return Promise.all(newTiles.map(tile => tile.update(this._gl, this._scale))).then(this._textureUpdatedCallback);
     },
 
     /**
@@ -880,12 +962,53 @@ WebInspector.LayerTextureManager.prototype = {
     },
 
     /**
-     * @param {string} layerId
-     * @return {!Array.<!WebInspector.LayerTextureManager.Tile>}
+     * @param {!WebInspector.Layer} layer
+     * @return {!Array<!WebInspector.LayerTextureManager.Tile>}
      */
-    tilesForLayer: function(layerId)
+    tilesForLayer: function(layer)
     {
-        return this._tilesByLayerId[layerId] || [];
+        return this._tilesByLayer.get(layer) || [];
+    },
+
+    /**
+     * @param {!WebInspector.Layer} layer
+     */
+    layerNeedsUpdate: function(layer)
+    {
+        if (this._queue.indexOf(layer) < 0)
+            this._queue.push(layer);
+        if (this._active)
+            this._throttler.schedule(this._update.bind(this));
+    },
+
+    forceUpdate: function()
+    {
+        this._queue.forEach(layer => this._updateLayer(layer));
+        this._queue = [];
+        this._throttler.flush();
+    },
+
+    /**
+     * @return {!Promise}
+     */
+    _update: function()
+    {
+        var layer = this._queue.shift();
+        if (!layer)
+            return Promise.resolve();
+        if (this._queue.length)
+            this._throttler.schedule(this._update.bind(this));
+        return this._updateLayer(layer);
+    },
+
+    /**
+     * @param {!WebInspector.Layer} layer
+     * @return {!Promise}
+     */
+    _updateLayer: function(layer)
+    {
+        return Promise.all(layer.snapshots()).then(snapshots =>
+            this._setSnapshotsForLayer(layer, snapshots.filter(snapshot => !!snapshot)));
     },
 
     _updateTextures: function()
@@ -895,83 +1018,14 @@ WebInspector.LayerTextureManager.prototype = {
         if (!this._scale)
             return;
 
-        for (var layerId in this._tilesByLayerId) {
-            for (var i = 0; i < this._tilesByLayerId[layerId].length; ++i) {
-                var tile = this._tilesByLayerId[layerId][i];
-                if (!tile.scale || tile.scale < this._scale)
-                    this._updateTile(tile);
+        for (var tiles of this._tilesByLayer.values()) {
+            for (var tile of tiles) {
+                var promise = tile.updateScale(this._gl, this._scale);
+                if (promise)
+                    promise.then(this._textureUpdatedCallback);
             }
         }
-    },
-
-    /**
-     * @param {!WebInspector.LayerTextureManager.Tile} tile
-     */
-    _updateTile: function(tile)
-    {
-        console.assert(this._scale && this._gl);
-        tile.scale = this._scale;
-        tile.snapshot.replay(null, null, tile.scale).then(imageURL => {
-            if (imageURL)
-                this.createTexture(onTextureCreated.bind(this), imageURL);
-        });
-
-        /**
-         * @this {WebInspector.LayerTextureManager}
-         * @param {?WebGLTexture} texture
-         */
-        function onTextureCreated(texture)
-        {
-            tile.texture = texture;
-            this.dispatchEventToListeners(WebInspector.LayerTextureManager.Events.TextureUpdated);
-        }
-    },
-
-    /**
-     * @param {function(?WebGLTexture)} textureCreatedCallback
-     * @param {string} imageURL
-     */
-    createTexture: function(textureCreatedCallback, imageURL)
-    {
-        var image = new Image();
-        image.addEventListener("load", onImageLoaded.bind(this), false);
-        image.addEventListener("error", onImageError, false);
-        image.src = imageURL;
-
-        /**
-         * @this {WebInspector.LayerTextureManager}
-         */
-        function onImageLoaded()
-        {
-            textureCreatedCallback(this._createTextureForImage(image));
-        }
-
-        function onImageError()
-        {
-            textureCreatedCallback(null);
-        }
-    },
-
-    /**
-     * @param {!Image} image
-     * @return {!WebGLTexture} texture
-     */
-    _createTextureForImage: function(image)
-    {
-        var texture = this._gl.createTexture();
-        texture.image = image;
-        this._gl.bindTexture(this._gl.TEXTURE_2D, texture);
-        this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, true);
-        this._gl.texImage2D(this._gl.TEXTURE_2D, 0, this._gl.RGBA, this._gl.RGBA, this._gl.UNSIGNED_BYTE, texture.image);
-        this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MIN_FILTER, this._gl.LINEAR);
-        this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MAG_FILTER, this._gl.LINEAR);
-        this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_S, this._gl.CLAMP_TO_EDGE);
-        this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_T, this._gl.CLAMP_TO_EDGE);
-        this._gl.bindTexture(this._gl.TEXTURE_2D, null);
-        return texture;
-    },
-
-    __proto__: WebInspector.Object.prototype
+    }
 };
 
 /**
@@ -1086,17 +1140,73 @@ WebInspector.Layers3DView.Rectangle.prototype = {
 };
 
 /**
- * @constructor
- * @param {!WebInspector.PaintProfilerSnapshot} snapshot
- * @param {!DOMAgent.Rect} rect
- * @param {!WebInspector.TracingModel.Event} traceEvent
+ * @param {!Image} image
+ * @param {!WebGLRenderingContext} gl
+ * @return {!WebGLTexture} texture
  */
-WebInspector.LayerTextureManager.Tile = function(snapshot, rect, traceEvent)
+WebInspector.LayerTextureManager._createTextureForImage = function(gl, image)
 {
-    this.snapshot = snapshot;
-    this.rect = rect;
-    this.traceEvent = traceEvent;
+    var texture = gl.createTexture();
+    texture.image = image;
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    return texture;
+};
+
+/**
+ * @constructor
+ * @param {!WebInspector.SnapshotWithRect} snapshotWithRect
+ */
+WebInspector.LayerTextureManager.Tile = function(snapshotWithRect)
+{
+    this.snapshot = snapshotWithRect.snapshot;
+    this.rect = snapshotWithRect.rect;
     this.scale = 0;
     /** @type {?WebGLTexture} */
     this.texture = null;
+};
+
+WebInspector.LayerTextureManager.Tile.prototype = {
+    dispose: function()
+    {
+        this.snapshot.release();
+        if (this.texture) {
+            this._gl.deleteTexture(this.texture);
+            this.texture = null;
+        }
+    },
+
+    /**
+     * @param {!WebGLRenderingContext} glContext
+     * @param {number} scale
+     * @return {?Promise}
+     */
+    updateScale: function(glContext, scale)
+    {
+        if (this.texture && this.scale >= scale)
+            return null;
+        return this.update(glContext, scale);
+    },
+
+    /**
+     * @param {!WebGLRenderingContext} glContext
+     * @param {number} scale
+     * @return {!Promise}
+     */
+    update: function(glContext, scale)
+    {
+        this._gl = glContext;
+        this.scale = scale;
+        return this.snapshot.replay(null, null, scale)
+            .then(imageURL => imageURL && WebInspector.loadImage(imageURL))
+            .then(image => {
+                this.texture = image && WebInspector.LayerTextureManager._createTextureForImage(glContext, image);
+            });
+    }
 };

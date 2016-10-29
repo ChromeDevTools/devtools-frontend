@@ -42,6 +42,7 @@ WebInspector.PaintProfilerSnapshot = function(target, snapshotId)
 {
     this._target = target;
     this._id = snapshotId;
+    this._refCount = 1;
 };
 
 /**
@@ -70,9 +71,17 @@ WebInspector.PaintProfilerSnapshot.load = function(target, encodedPicture)
 };
 
 WebInspector.PaintProfilerSnapshot.prototype = {
-    dispose: function()
+    release: function()
     {
-        this._target.layerTreeAgent().releaseSnapshot(this._id);
+        console.assert(this._refCount > 0, "release is already called on the object");
+        if (!--this._refCount)
+            this._target.layerTreeAgent().releaseSnapshot(this._id);
+    },
+
+    addReference: function()
+    {
+        ++this._refCount;
+        console.assert(this._refCount > 0, "Referencing a dead object");
     },
 
     /**

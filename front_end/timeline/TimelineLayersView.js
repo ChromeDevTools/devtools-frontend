@@ -8,20 +8,18 @@
  * @constructor
  * @extends {WebInspector.SplitWidget}
  * @param {!WebInspector.TimelineModel} model
- * @param {function(!WebInspector.TracingModel.Event)} showEventDetailsCallback
+ * @param {function(!WebInspector.PaintProfilerSnapshot)} showPaintProfilerCallback
  */
-WebInspector.TimelineLayersView = function(model, showEventDetailsCallback)
+WebInspector.TimelineLayersView = function(model, showPaintProfilerCallback)
 {
     WebInspector.SplitWidget.call(this, true, false, "timelineLayersView");
     this._model = model;
-    this._showEventDetailsCallback = showEventDetailsCallback;
+    this._showPaintProfilerCallback = showPaintProfilerCallback;
 
     this.element.classList.add("timeline-layers-view");
     this._rightSplitWidget = new WebInspector.SplitWidget(true, true, "timelineLayersViewDetails");
     this._rightSplitWidget.element.classList.add("timeline-layers-view-properties");
     this.setMainWidget(this._rightSplitWidget);
-
-    this._paintTiles = [];
 
     var vbox = new WebInspector.VBox();
     this.setSidebarWidget(vbox);
@@ -32,12 +30,12 @@ WebInspector.TimelineLayersView = function(model, showEventDetailsCallback)
     vbox.element.appendChild(layerTreeOutline.element);
 
     this._layers3DView = new WebInspector.Layers3DView(this._layerViewHost);
-    this._layers3DView.addEventListener(WebInspector.Layers3DView.Events.PaintProfilerRequested, this._jumpToPaintEvent, this);
+    this._layers3DView.addEventListener(WebInspector.Layers3DView.Events.PaintProfilerRequested, this._onPaintProfilerRequested, this);
     this._rightSplitWidget.setMainWidget(this._layers3DView);
 
     var layerDetailsView = new WebInspector.LayerDetailsView(this._layerViewHost);
     this._rightSplitWidget.setSidebarWidget(layerDetailsView);
-    layerDetailsView.addEventListener(WebInspector.LayerDetailsView.Events.PaintProfilerRequested, this._jumpToPaintEvent, this);
+    layerDetailsView.addEventListener(WebInspector.LayerDetailsView.Events.PaintProfilerRequested, this._onPaintProfilerRequested, this);
 };
 
 WebInspector.TimelineLayersView.prototype = {
@@ -46,7 +44,6 @@ WebInspector.TimelineLayersView.prototype = {
      */
     showLayerTree: function(frameLayerTree)
     {
-        this._disposeTiles();
         this._frameLayerTree = frameLayerTree;
         if (this.isShowing())
             this._update();
@@ -65,40 +62,18 @@ WebInspector.TimelineLayersView.prototype = {
     /**
      * @param {!WebInspector.Event} event
      */
-    _jumpToPaintEvent: function(event)
+    _onPaintProfilerRequested: function(event)
     {
-        var traceEvent = /** @type {!WebInspector.TracingModel.Event} */ (event.data);
-        this._showEventDetailsCallback(traceEvent);
+        var selection = /** @type {!WebInspector.LayerView.Selection} */ (event.data);
+        this._layers3DView.snapshotForSelection(selection).then(snapshotWithRect => {
+            if (snapshotWithRect)
+                this._showPaintProfilerCallback(snapshotWithRect.snapshot);
+        });
     },
 
     _update: function()
     {
-        var layerTree;
-        var originalTiles = this._paintTiles;
-        var snapshotPromises = this._frameLayerTree.paints().map(paint => paint.snapshotPromise().then(snapshotWithRect => {
-            if (!snapshotWithRect)
-                return;
-            // We're too late and there's a new generation of tiles being loaded.
-            if (originalTiles !== this._paintTiles) {
-                snapshotWithRect.snapshot.dispose();
-                return;
-            }
-            this._paintTiles.push({layerId: paint.layerId(), rect: snapshotWithRect.rect, snapshot: snapshotWithRect.snapshot, traceEvent: paint.event()});
-        }));
-        snapshotPromises.push(this._frameLayerTree.layerTreePromise().then(resolvedTree => layerTree = resolvedTree));
-        Promise.all(snapshotPromises).then(() => {
-            if (!layerTree)
-                return;
-            this._layerViewHost.setLayerTree(layerTree);
-            this._layers3DView.setTiles(this._paintTiles);
-        });
-    },
-
-    _disposeTiles: function()
-    {
-        for (var i = 0; i < this._paintTiles.length; ++i)
-            this._paintTiles[i].snapshot.dispose();
-        this._paintTiles = [];
+        this._frameLayerTree.layerTreePromise().then(layerTree => this._layerViewHost.setLayerTree(layerTree));
     },
 
     __proto__: WebInspector.SplitWidget.prototype

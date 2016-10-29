@@ -544,15 +544,14 @@ WebInspector.LayerPaintEvent.prototype = {
     },
 
     /**
-     * @return {!Promise<?WebInspector.SnapshotWithRect>}
+     * @return !Promise<?{rect: !Array<number>, snapshot: !WebInspector.PaintProfilerSnapshot}>}
      */
     snapshotPromise: function()
     {
         return this.picturePromise().then(picture => {
             if (!picture || !this._target)
                 return null;
-            var rect = {x: picture.rect[0], y: picture.rect[1], width: picture.rect[2], height: picture.rect[3]};
-            return WebInspector.PaintProfilerSnapshot.load(this._target, picture.serializedPicture).then(snapshot => snapshot ? {rect: rect, snapshot: snapshot} : null);
+            return WebInspector.PaintProfilerSnapshot.load(this._target, picture.serializedPicture).then(snapshot => snapshot ? {rect: picture.rect, snapshot: snapshot} : null);
         });
     }
 };

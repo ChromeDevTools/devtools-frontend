@@ -4,41 +4,34 @@
 
 /**
  * @constructor
- * @param {function(!WebInspector.Layer, string=)} showImageForLayerCallback
  * @extends {WebInspector.SplitWidget}
+ * @param {function(string=)} showImageCallback
  */
-WebInspector.LayerPaintProfilerView = function(showImageForLayerCallback)
+WebInspector.LayerPaintProfilerView = function(showImageCallback)
 {
     WebInspector.SplitWidget.call(this, true, false);
 
-    this._showImageForLayerCallback = showImageForLayerCallback;
     this._logTreeView = new WebInspector.PaintProfilerCommandLogView();
     this.setSidebarWidget(this._logTreeView);
-    this._paintProfilerView = new WebInspector.PaintProfilerView(this._showImage.bind(this));
+    this._paintProfilerView = new WebInspector.PaintProfilerView(showImageCallback);
     this.setMainWidget(this._paintProfilerView);
 
     this._paintProfilerView.addEventListener(WebInspector.PaintProfilerView.Events.WindowChanged, this._onWindowChanged, this);
 };
 
 WebInspector.LayerPaintProfilerView.prototype = {
-    /**
-     * @param {!WebInspector.AgentLayer} layer
-     */
-    profileLayer: function(layer)
+    reset: function()
     {
-        var snapshotPromise = layer.snapshots()[0];
-        if (!snapshotPromise) {
-            setSnapshotAndLog.call(this, null, null);
-            return;
-        }
-        snapshotPromise.then(snapshotWithRect => {
-            if (!snapshotWithRect) {
-                setSnapshotAndLog.call(this, null, null);
-                return;
-            }
-            this._layer = layer;
-            snapshotWithRect.snapshot.commandLog().then(log => setSnapshotAndLog.call(this, snapshotWithRect.snapshot, log));
-        });
+        this._paintProfilerView.setSnapshotAndLog(null, [], null);
+    },
+
+    /**
+     * @param {!WebInspector.PaintProfilerSnapshot} snapshot
+     */
+    profile: function(snapshot)
+    {
+        this._showImageCallback = null;
+        snapshot.commandLog().then(log => setSnapshotAndLog.call(this, snapshot, log));
 
         /**
          * @param {?WebInspector.PaintProfilerSnapshot} snapshot
@@ -49,6 +42,8 @@ WebInspector.LayerPaintProfilerView.prototype = {
         {
             this._logTreeView.setCommandLog(snapshot && snapshot.target(), log || []);
             this._paintProfilerView.setSnapshotAndLog(snapshot, log || [], null);
+            if (snapshot)
+                snapshot.release();
         }
     },
 
@@ -63,14 +58,6 @@ WebInspector.LayerPaintProfilerView.prototype = {
     _onWindowChanged: function()
     {
         this._logTreeView.updateWindow(this._paintProfilerView.selectionWindow());
-    },
-
-    /**
-     * @param {string=} imageURL
-     */
-    _showImage: function(imageURL)
-    {
-        this._showImageForLayerCallback(this._layer, imageURL);
     },
 
     __proto__: WebInspector.SplitWidget.prototype

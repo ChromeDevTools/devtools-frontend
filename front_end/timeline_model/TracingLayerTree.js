@@ -410,7 +410,12 @@ WebInspector.TracingLayer.prototype = {
      */
     snapshots: function()
     {
-        return this._paints.map(paint => paint.snapshotPromise());
+        return this._paints.map(paint => paint.snapshotPromise().then(snapshot => {
+            if (!snapshot)
+                return null;
+            var rect = {x: snapshot.rect[0], y: snapshot.rect[1], width: snapshot.rect[2], height: snapshot.rect[3]};
+            return {rect: rect, snapshot: snapshot.snapshot};
+        }));
     },
 
     /**

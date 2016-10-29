@@ -51,17 +51,18 @@ WebInspector.LayersPanel = function()
 
     this._layers3DView = new WebInspector.Layers3DView(this._layerViewHost);
     this._rightSplitWidget.setMainWidget(this._layers3DView);
-    this._layers3DView.addEventListener(WebInspector.Layers3DView.Events.LayerSnapshotRequested, this._onSnapshotRequested, this);
+    this._layers3DView.addEventListener(WebInspector.Layers3DView.Events.PaintProfilerRequested, this._onPaintProfileRequested, this);
     this._layers3DView.addEventListener(WebInspector.Layers3DView.Events.ScaleChanged, this._onScaleChanged, this);
 
     this._tabbedPane = new WebInspector.TabbedPane();
     this._rightSplitWidget.setSidebarWidget(this._tabbedPane);
 
     this._layerDetailsView = new WebInspector.LayerDetailsView(this._layerViewHost);
+    this._layerDetailsView.addEventListener(WebInspector.LayerDetailsView.Events.PaintProfilerRequested, this._onPaintProfileRequested, this);
     this._tabbedPane.appendTab(WebInspector.LayersPanel.DetailsViewTabs.Details, WebInspector.UIString("Details"), this._layerDetailsView);
 
-    this._paintProfilerView = new WebInspector.LayerPaintProfilerView(this._layers3DView.showImageForLayer.bind(this._layers3DView));
-    this._tabbedPane.appendTab(WebInspector.LayersPanel.DetailsViewTabs.Profiler, WebInspector.UIString("Profiler"), this._paintProfilerView);
+    this._paintProfilerView = new WebInspector.LayerPaintProfilerView(this._showImage.bind(this));
+    this._tabbedPane.addEventListener(WebInspector.TabbedPane.Events.TabClosed, this._onTabClosed, this);
     this._updateThrottler = new WebInspector.Throttler(100);
 };
 
@@ -144,18 +145,46 @@ WebInspector.LayersPanel.prototype = {
     {
         if (!this._model)
             return;
-        if (this._layerViewHost.selection() && this._layerViewHost.selection().layer() === event.data)
+        var layer = /** @type {!WebInspector.Layer} */ (event.data);
+        if (this._layerViewHost.selection() && this._layerViewHost.selection().layer() === layer)
             this._layerDetailsView.update();
+        this._layers3DView.updateLayerSnapshot(layer);
     },
 
     /**
      * @param {!WebInspector.Event} event
      */
-    _onSnapshotRequested: function(event)
+    _onPaintProfileRequested: function(event)
     {
-        var layer = /** @type {!WebInspector.AgentLayer} */ (event.data);
-        this._tabbedPane.selectTab(WebInspector.LayersPanel.DetailsViewTabs.Profiler);
-        this._paintProfilerView.profileLayer(layer);
+        var selection = /** @type {!WebInspector.LayerView.Selection} */ (event.data);
+        this._layers3DView.snapshotForSelection(selection).then(snapshotWithRect => {
+            if (!snapshotWithRect)
+                return;
+            this._layerBeingProfiled = selection.layer();
+            this._tabbedPane.appendTab(WebInspector.LayersPanel.DetailsViewTabs.Profiler, WebInspector.UIString("Profiler"), this._paintProfilerView, undefined, true, true);
+            this._tabbedPane.selectTab(WebInspector.LayersPanel.DetailsViewTabs.Profiler);
+            this._paintProfilerView.profile(snapshotWithRect.snapshot);
+        });
+    },
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    _onTabClosed: function(event)
+    {
+        if (event.data.tabId !== WebInspector.LayersPanel.DetailsViewTabs.Profiler || !this._layerBeingProfiled)
+            return;
+        this._paintProfilerView.reset();
+        this._layers3DView.showImageForLayer(this._layerBeingProfiled, undefined);
+        this._layerBeingProfiled = null;
+    },
+
+    /**
+     * @param {string=} imageURL
+     */
+    _showImage: function(imageURL)
+    {
+        this._layers3DView.showImageForLayer(this._layerBeingProfiled, imageURL);
     },
 
     /**

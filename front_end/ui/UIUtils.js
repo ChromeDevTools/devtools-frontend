@@ -93,7 +93,7 @@ WebInspector.DragHandler = function()
     this._elementDragMove = this._elementDragMove.bind(this);
     this._elementDragEnd = this._elementDragEnd.bind(this);
     this._mouseOutWhileDragging = this._mouseOutWhileDragging.bind(this);
-}
+};
 
 WebInspector.DragHandler._glassPaneUsageCount = 0;
 
@@ -1982,6 +1982,20 @@ WebInspector.linkifyURLAsNode = function(url, linkText, classes, isExternal, too
 WebInspector.linkifyDocumentationURLAsNode = function(article, title)
 {
     return WebInspector.linkifyURLAsNode("https://developers.google.com/web/tools/chrome-devtools/" + article, title, undefined, true);
+};
+
+/**
+ * @param {string} url
+ * @return {!Promise<?Image>}
+ */
+WebInspector.loadImage = function(url)
+{
+    return new Promise(fulfill => {
+        var image = new Image();
+        image.addEventListener("load", () => fulfill(image));
+        image.addEventListener("error", () => fulfill(null));
+        image.src = url;
+    });
 };
 
 /** @type {!WebInspector.ThemeSupport} */

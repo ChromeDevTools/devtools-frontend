@@ -32,10 +32,21 @@ WebInspector.TimelinePaintProfilerView = function(frameModel)
 WebInspector.TimelinePaintProfilerView.prototype = {
     wasShown: function()
     {
-        if (this._updateWhenVisible) {
-            this._updateWhenVisible = false;
+        if (this._needsUpdateWhenVisible) {
+            this._needsUpdateWhenVisible = false;
             this._update();
         }
+    },
+
+    /**
+     * @param {!WebInspector.PaintProfilerSnapshot} snapshot
+     */
+    setSnapshot: function(snapshot)
+    {
+        this._releaseSnapshot();
+        this._pendingSnapshot = snapshot;
+        this._event = null;
+        this._updateWhenVisible();
     },
 
     /**
@@ -45,20 +56,25 @@ WebInspector.TimelinePaintProfilerView.prototype = {
      */
     setEvent: function(target, event)
     {
-        this._disposeSnapshot();
+        this._releaseSnapshot();
         this._target = target;
+        this._pendingSnapshot = null;
         this._event = event;
 
-        if (this.isShowing())
-            this._update();
-        else
-            this._updateWhenVisible = true;
-
+        this._updateWhenVisible();
         if (this._event.name === WebInspector.TimelineModel.RecordType.Paint)
             return !!event.picture;
         if (this._event.name === WebInspector.TimelineModel.RecordType.RasterTask)
             return this._frameModel.hasRasterTile(this._event);
         return false;
+    },
+
+    _updateWhenVisible: function()
+    {
+        if (this.isShowing())
+            this._update();
+        else
+            this._needsUpdateWhenVisible = true;
     },
 
     _update: function()
@@ -67,18 +83,20 @@ WebInspector.TimelinePaintProfilerView.prototype = {
         this._paintProfilerView.setSnapshotAndLog(null, [], null);
 
         var snapshotPromise;
-        if (this._event.name === WebInspector.TimelineModel.RecordType.Paint) {
+        if (this._pendingSnapshot)
+            snapshotPromise = Promise.resolve({rect: null, snapshot: this._pendingSnapshot});
+        else if (this._event.name === WebInspector.TimelineModel.RecordType.Paint) {
             snapshotPromise = this._event.picture.objectPromise()
                 .then(data => WebInspector.PaintProfilerSnapshot.load(this._target, data["skp64"]))
                 .then(snapshot => snapshot && {rect: null, snapshot: snapshot});
         } else if (this._event.name === WebInspector.TimelineModel.RecordType.RasterTask) {
             snapshotPromise = this._frameModel.rasterTilePromise(this._event);
         } else {
-            console.assert(false, "Unexpected event type: " + this._event.name);
+            console.assert(false, "Unexpected event type or no snapshot");
             return;
         }
         snapshotPromise.then(snapshotWithRect => {
-            this._disposeSnapshot();
+            this._releaseSnapshot();
             if (!snapshotWithRect) {
                 this._imageView.showImage();
                 return;
@@ -102,11 +120,11 @@ WebInspector.TimelinePaintProfilerView.prototype = {
         }
     },
 
-    _disposeSnapshot: function()
+    _releaseSnapshot: function()
     {
         if (!this._lastLoadedSnapshot)
             return;
-        this._lastLoadedSnapshot.dispose();
+        this._lastLoadedSnapshot.release();
         this._lastLoadedSnapshot = null;
     },
 

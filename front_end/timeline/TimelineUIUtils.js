@@ -1419,7 +1419,7 @@ WebInspector.TimelineUIUtils.buildPicturePreviewContent = function(event, target
             return;
         }
         snapshotWithRect.snapshot.replay(null, null, 1).then(imageURL => onGotImage(imageURL));
-        snapshotWithRect.snapshot.dispose();
+        snapshotWithRect.snapshot.release();
     }
 
     /**

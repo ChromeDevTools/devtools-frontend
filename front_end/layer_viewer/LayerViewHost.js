@@ -41,12 +41,12 @@ WebInspector.LayerView.Selection = function(type, layer)
 };
 
 /**
- * @enum {string}
+ * @enum {symbol}
  */
 WebInspector.LayerView.Selection.Type = {
-    Layer: "Layer",
-    ScrollRect: "ScrollRect",
-    Tile: "Tile",
+    Layer: Symbol("Layer"),
+    ScrollRect: Symbol("ScrollRect"),
+    Snapshot: Symbol("Snapshot")
 };
 
 /**
@@ -142,15 +142,15 @@ WebInspector.LayerView.ScrollRectSelection.prototype = {
  * @constructor
  * @extends {WebInspector.LayerView.Selection}
  * @param {!WebInspector.Layer} layer
- * @param {!WebInspector.TracingModel.Event} traceEvent
+ * @param {!WebInspector.SnapshotWithRect} snapshot
  */
-WebInspector.LayerView.TileSelection = function(layer, traceEvent)
+WebInspector.LayerView.SnapshotSelection = function(layer, snapshot)
 {
-    WebInspector.LayerView.Selection.call(this, WebInspector.LayerView.Selection.Type.Tile, layer);
-    this._traceEvent = traceEvent;
+    WebInspector.LayerView.Selection.call(this, WebInspector.LayerView.Selection.Type.Snapshot, layer);
+    this._snapshot = snapshot;
 };
 
-WebInspector.LayerView.TileSelection.prototype = {
+WebInspector.LayerView.SnapshotSelection.prototype = {
     /**
      * @override
      * @param {!WebInspector.LayerView.Selection} other
@@ -158,16 +158,16 @@ WebInspector.LayerView.TileSelection.prototype = {
      */
     _isEqual: function(other)
     {
-        return other._type === WebInspector.LayerView.Selection.Type.Tile
-            && this.layer().id() === other.layer().id() && this.traceEvent === other.traceEvent;
+        return other._type === WebInspector.LayerView.Selection.Type.Snapshot
+            && this.layer().id() === other.layer().id() && this._snapshot === other._snapshot;
     },
 
     /**
-     * @return {!WebInspector.TracingModel.Event}
+     * @return {!WebInspector.SnapshotWithRect}
      */
-    traceEvent: function()
+    snapshot: function()
     {
-        return this._traceEvent;
+        return this._snapshot;
     },
 
     __proto__: WebInspector.LayerView.Selection.prototype

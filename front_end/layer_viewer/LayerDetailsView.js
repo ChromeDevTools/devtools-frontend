@@ -139,8 +139,8 @@ WebInspector.LayerDetailsView.prototype = {
 
     _onPaintProfilerButtonClicked: function()
     {
-        var traceEvent = this._selection.type() === WebInspector.LayerView.Selection.Type.Tile ? /** @type {!WebInspector.LayerView.TileSelection} */ (this._selection).traceEvent() : null;
-        this.dispatchEventToListeners(WebInspector.LayerDetailsView.Events.PaintProfilerRequested, traceEvent);
+        if (this._selection.type() === WebInspector.LayerView.Selection.Type.Snapshot || this._selection.layer())
+            this.dispatchEventToListeners(WebInspector.LayerDetailsView.Events.PaintProfilerRequested, this._selection);
     },
 
     /**
@@ -179,8 +179,8 @@ WebInspector.LayerDetailsView.prototype = {
         layer.requestCompositingReasons(this._updateCompositingReasons.bind(this));
         this._scrollRectsCell.removeChildren();
         layer.scrollRects().forEach(this._createScrollRectElement.bind(this));
-        var traceEvent = this._selection.type() === WebInspector.LayerView.Selection.Type.Tile ? /** @type {!WebInspector.LayerView.TileSelection} */ (this._selection).traceEvent() : null;
-        this._paintProfilerButton.classList.toggle("hidden", !traceEvent);
+        var snapshot = this._selection.type() === WebInspector.LayerView.Selection.Type.Snapshot ? /** @type {!WebInspector.LayerView.SnapshotSelection} */ (this._selection).snapshot() : null;
+        this._paintProfilerButton.classList.toggle("hidden", !snapshot);
     },
 
     _buildContent: function()

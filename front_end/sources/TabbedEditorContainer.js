@@ -101,9 +101,11 @@ WebInspector.TabbedEditorContainer.prototype = {
         var currentScrollLineNumber = this._history.scrollLineNumber(binding.fileSystem.url());
 
         var tabIndex = this._tabbedPane.tabIndex(fileSystemTabId);
-        this._closeTabs([fileSystemTabId], true);
-        if (!networkTabId)
-            networkTabId = this._appendFileTab(binding.network, false, tabIndex);
+        var tabsToClose = [fileSystemTabId];
+        if (networkTabId)
+            tabsToClose.push(networkTabId);
+        this._closeTabs(tabsToClose, true);
+        networkTabId = this._appendFileTab(binding.network, false, tabIndex);
         this._updateHistory();
 
         if (wasSelectedInFileSystem)
@@ -122,9 +124,13 @@ WebInspector.TabbedEditorContainer.prototype = {
         var networkTabId = this._tabIds.get(binding.network);
         if (!networkTabId)
             return;
-
-        var fileSystemTabId = this._appendFileTab(binding.fileSystem, false);
+        var tabIndex = this._tabbedPane.tabIndex(networkTabId);
+        var wasSelected = this._currentFile === binding.network;
+        var fileSystemTabId = this._appendFileTab(binding.fileSystem, false, tabIndex);
         this._updateHistory();
+
+        if (wasSelected)
+            this._tabbedPane.selectTab(fileSystemTabId, false);
 
         var fileSystemTabView = /** @type {!WebInspector.Widget} */(this._tabbedPane.tabView(fileSystemTabId));
         var savedSelectionRange = this._history.selectionRange(binding.network.url());

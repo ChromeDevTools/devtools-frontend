@@ -49,6 +49,7 @@ WebInspector.JavaScriptFormatter.prototype = {
         this._fromOffset = fromOffset;
         this._toOffset = toOffset;
         this._content = text.substring(this._fromOffset, this._toOffset);
+        this._lastLineNumber = 0;
         this._tokenizer = new WebInspector.AcornTokenizer(this._content);
         var ast = acorn.parse(this._content, { ranges: false, ecmaVersion: 6 });
         var walker = new WebInspector.ESTreeWalker(this._beforeVisit.bind(this), this._afterVisit.bind(this));
@@ -62,18 +63,22 @@ WebInspector.JavaScriptFormatter.prototype = {
     _push: function(token, format)
     {
         for (var i = 0; i < format.length; ++i) {
-            if (format[i] === "s")
+            if (format[i] === "s") {
                 this._builder.addSoftSpace();
-            else if (format[i] === "S")
+            } else if (format[i] === "S") {
                 this._builder.addHardSpace();
-            else if (format[i] === "n")
+            } else if (format[i] === "n") {
                 this._builder.addNewLine();
-            else if (format[i] === ">")
+            } else if (format[i] === ">") {
                 this._builder.increaseNestingLevel();
-            else if (format[i] === "<")
+            } else if (format[i] === "<") {
                 this._builder.decreaseNestingLevel();
-            else if (format[i] === "t")
+            } else if (format[i] === "t") {
+                if (this._tokenizer.tokenLineStart() - this._lastLineNumber > 1)
+                    this._builder.addNewLine(true);
+                this._lastLineNumber = this._tokenizer.tokenLineEnd();
                 this._builder.addToken(this._content.substring(token.start, token.end), this._fromOffset + token.start);
+            }
         }
     },
 

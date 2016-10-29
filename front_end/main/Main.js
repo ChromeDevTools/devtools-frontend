@@ -141,8 +141,6 @@ WebInspector.Main.prototype = {
 
         // Request filesystems early, we won't create connections until callback is fired. Things will happen in parallel.
         WebInspector.isolatedFileSystemManager = new WebInspector.IsolatedFileSystemManager();
-        WebInspector.isolatedFileSystemManager.waitForFileSystems()
-            .then(this._didInitializeFileSystemManager.bind(this));
 
         var themeSetting = WebInspector.settings.createSetting("uiTheme", "default");
         WebInspector.initializeUIUtils(document, themeSetting);
@@ -251,19 +249,9 @@ WebInspector.Main.prototype = {
             handler.handleQueryParam(value);
         }
 
-        this._appUIShown = true;
-        if (this._fileSystemManagerInitialized) {
-            // Allow UI cycles to repaint prior to creating connection.
-            setTimeout(this._initializeTarget.bind(this), 0);
-        }
+        // Allow UI cycles to repaint prior to creating connection.
+        setTimeout(this._initializeTarget.bind(this), 0);
         console.timeEnd("Main._showAppUI");
-    },
-
-    _didInitializeFileSystemManager: function()
-    {
-        this._fileSystemManagerInitialized = true;
-        if (this._appUIShown)
-            this._initializeTarget();
     },
 
     _initializeTarget: function()

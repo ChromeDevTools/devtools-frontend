@@ -225,21 +225,19 @@ WebInspector.ExecutionContextSelector.completionsForTextPromptInCurrentContext =
     var expressionRange = wordRange.cloneRange();
     expressionRange.collapse(true);
     expressionRange.setStartBefore(proxyElement);
-    WebInspector.ExecutionContextSelector.completionsForTextInCurrentContext(expressionRange.toString(), wordRange.toString(), force, completionsReadyCallback);
+    WebInspector.ExecutionContextSelector.completionsForTextInCurrentContext(expressionRange.toString(), wordRange.toString(), force).then(completionsReadyCallback);
 };
 /**
  * @param {string} text
  * @param {string} completionsPrefix
- * @param {boolean} force
- * @param {function(!Array.<string>, number=)} completionsReadyCallback
+ * @param {boolean=} force
+ * @return {!Promise<!Array<string>>}
  */
-WebInspector.ExecutionContextSelector.completionsForTextInCurrentContext = function(text, completionsPrefix, force, completionsReadyCallback)
+WebInspector.ExecutionContextSelector.completionsForTextInCurrentContext = function(text, completionsPrefix, force)
 {
     var executionContext = WebInspector.context.flavor(WebInspector.ExecutionContext);
-    if (!executionContext) {
-        completionsReadyCallback([]);
-        return;
-    }
+    if (!executionContext)
+        return Promise.resolve([]);
     var index;
     var stopChars = new Set(" =:({;,!+-*/&|^<>`".split(""));
     for (index = text.length - 1; index >= 0; index--) {
@@ -265,5 +263,5 @@ WebInspector.ExecutionContextSelector.completionsForTextInCurrentContext = funct
     }
     clippedExpression = clippedExpression.substring(index + 1);
 
-    executionContext.completionsForExpression(clippedExpression, completionsPrefix, force, completionsReadyCallback);
+    return executionContext.completionsForExpression(clippedExpression, completionsPrefix, force);
 };

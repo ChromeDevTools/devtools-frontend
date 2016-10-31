@@ -267,24 +267,22 @@ WebInspector.ConsolePrompt.prototype = {
     /**
      * @param {!WebInspector.TextRange} prefixRange
      * @param {!WebInspector.TextRange} substituteRange
-     * @return {!Promise.<!Array.<{title: string, className: (string|undefined)}>>}
+     * @return {!Promise<!WebInspector.SuggestBox.Suggestions>}
      */
     _wordsWithPrefix: function(prefixRange, substituteRange)
     {
-        var fulfill;
-        var promise = new Promise(x => fulfill = x);
         var prefix = this._editor.text(prefixRange);
         var before = this._editor.text(new WebInspector.TextRange(0, 0, prefixRange.startLine, prefixRange.startColumn));
         var historyWords = this._historyCompletions(prefix);
-        WebInspector.ExecutionContextSelector.completionsForTextInCurrentContext(before, prefix, true /* force */, innerWordsWithPrefix);
-        return promise;
+        return WebInspector.ExecutionContextSelector.completionsForTextInCurrentContext(before, prefix, true /* force */).then(innerWordsWithPrefix);
 
         /**
-         * @param {!Array.<string>} words
+         * @param {!Array<string>} words
+         * @return {!WebInspector.SuggestBox.Suggestions}
          */
         function innerWordsWithPrefix(words)
         {
-            fulfill(words.map(item => ({ title: item })).concat(historyWords));
+            return words.map(item => ({title:item})).concat(historyWords);
         }
     },
 

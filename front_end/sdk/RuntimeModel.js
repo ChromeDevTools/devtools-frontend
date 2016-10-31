@@ -603,10 +603,10 @@ WebInspector.ExecutionContext.prototype = {
     /**
      * @param {string} expressionString
      * @param {string} prefix
-     * @param {boolean} force
-     * @param {function(!Array.<string>, number=)} completionsReadyCallback
+     * @param {boolean=} force
+     * @return {!Promise<!Array<string>>}
      */
-    completionsForExpression: function(expressionString, prefix, force, completionsReadyCallback)
+    completionsForExpression: function(expressionString, prefix, force)
     {
         var lastIndex = expressionString.length - 1;
 
@@ -616,22 +616,21 @@ WebInspector.ExecutionContext.prototype = {
         if (dotNotation || bracketNotation)
             expressionString = expressionString.substr(0, lastIndex);
 
-        if (expressionString && !isNaN(expressionString)) {
-            // User is entering float value, do not suggest anything.
-            completionsReadyCallback([]);
-            return;
-        }
+        // User is entering float value, do not suggest anything.
+        if (expressionString && !isNaN(expressionString))
+            return Promise.resolve([]);
 
-        if (!prefix && !expressionString && !force) {
-            completionsReadyCallback([]);
-            return;
-        }
+        if (!prefix && !expressionString && !force)
+            return Promise.resolve([]);
 
+        var fufill;
+        var promise = new Promise(x => fufill = x);
         if (!expressionString && this.debuggerModel.selectedCallFrame())
             this.debuggerModel.selectedCallFrame().variableNames(receivedPropertyNames.bind(this));
         else
             this.evaluate(expressionString, "completion", true, true, false, false, false, evaluated.bind(this));
 
+        return promise;
         /**
          * @param {?WebInspector.RemoteObject} result
          * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
@@ -640,7 +639,7 @@ WebInspector.ExecutionContext.prototype = {
         function evaluated(result, exceptionDetails)
         {
             if (!result || !!exceptionDetails) {
-                completionsReadyCallback([]);
+                fufill([]);
                 return;
             }
 
@@ -733,7 +732,7 @@ WebInspector.ExecutionContext.prototype = {
             if (result && !exceptionDetails)
                 receivedPropertyNames.call(this, /** @type {!Object} */(result.value));
             else
-                completionsReadyCallback([]);
+                fufill([]);
         }
 
         /**
@@ -744,7 +743,7 @@ WebInspector.ExecutionContext.prototype = {
         {
             this.target().runtimeAgent().releaseObjectGroup("completion");
             if (!propertyNames) {
-                completionsReadyCallback([]);
+                fufill([]);
                 return;
             }
             var includeCommandLineAPI = (!dotNotation && !bracketNotation);
@@ -754,19 +753,19 @@ WebInspector.ExecutionContext.prototype = {
                 for (var i = 0; i < commandLineAPI.length; ++i)
                     propertyNames[commandLineAPI[i]] = true;
             }
-            this._reportCompletions(completionsReadyCallback, dotNotation, bracketNotation, expressionString, prefix, Object.keys(propertyNames));
+            fufill(this._completionsForPrefix(dotNotation, bracketNotation, expressionString, prefix, Object.keys(propertyNames)));
         }
     },
 
     /**
-     * @param {function(!Array.<string>, number=)} completionsReadyCallback
      * @param {boolean} dotNotation
      * @param {boolean} bracketNotation
      * @param {string} expressionString
      * @param {string} prefix
      * @param {!Array.<string>} properties
+     * @return {!Array<string>}
      */
-    _reportCompletions: function(completionsReadyCallback, dotNotation, bracketNotation, expressionString, prefix, properties) {
+    _completionsForPrefix: function(dotNotation, bracketNotation, expressionString, prefix, properties) {
         if (bracketNotation) {
             if (prefix.length && prefix[0] === "'")
                 var quoteUsed = "'";
@@ -805,7 +804,7 @@ WebInspector.ExecutionContext.prototype = {
             // Substitute actual newlines with newline characters. @see crbug.com/498421
             results.push(property.split("\n").join("\\n"));
         }
-        completionsReadyCallback(results);
+        return results;
     },
 
     /**

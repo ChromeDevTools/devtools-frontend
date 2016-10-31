@@ -17,5 +17,6 @@
 }
 
 .network-timeline-v-scroll-content {
-    width: 1px;
+    width: 15px;
+    pointer-events: none;
 }

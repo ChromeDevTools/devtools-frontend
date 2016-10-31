@@ -17,6 +17,7 @@ WebInspector.NetworkTimelineColumn = function(rowHeight, calculator)
     this._canvas = this.contentElement.createChild("canvas");
     this._canvas.tabIndex = 1;
     this.setDefaultFocusedElement(this._canvas);
+    this._canvasPosition = this._canvas.getBoundingClientRect();
 
     /** @const */
     this._leftPadding = 5;
@@ -100,14 +101,14 @@ WebInspector.NetworkTimelineColumn.prototype = {
         var start = this._timeToPosition(range.start);
         var end = this._timeToPosition(range.end);
 
-        if (event.offsetX < start || event.offsetX > end)
+        if (event.clientX < this._canvasPosition.left + start || event.clientX > this._canvasPosition.left + end)
             return;
 
         var rowIndex = this._requestData.findIndex(request => this._hoveredRequest === request);
         var barHeight = this._getBarHeight(range.name);
         var y = this._headerHeight + (this._rowHeight * rowIndex - this._scrollTop) + ((this._rowHeight - barHeight) / 2);
 
-        if (event.offsetY < y || event.offsetY > y + barHeight)
+        if (event.clientY < this._canvasPosition.top + y || event.clientY > this._canvasPosition.top + y + barHeight)
             return;
 
         var anchorBox = this.element.boxInWindow();
@@ -237,6 +238,7 @@ WebInspector.NetworkTimelineColumn.prototype = {
     {
         this._offsetWidth = this.contentElement.offsetWidth - this._rightPadding;
         this._offsetHeight = this.contentElement.offsetHeight;
+        this._canvasPosition = this._canvas.getBoundingClientRect();
     },
 
     /**

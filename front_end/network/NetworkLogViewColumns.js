@@ -461,6 +461,7 @@ WebInspector.NetworkLogViewColumns.prototype = {
     {
         this._timelineColumn = new WebInspector.NetworkTimelineColumn(this._networkLogView.rowHeight(), this._networkLogView.calculator());
 
+        this._timelineColumn.element.addEventListener("contextmenu", handleContextMenu.bind(this));
         this._timelineColumn.element.addEventListener("mousewheel", this._onMouseWheel.bind(this, false), { passive: true });
         this._dataGridScroller.addEventListener("mousewheel",this._onMouseWheel.bind(this, true), true);
 
@@ -484,6 +485,19 @@ WebInspector.NetworkLogViewColumns.prototype = {
         this._splitWidget.setMainWidget(this._timelineColumn);
 
         this.switchViewMode(false);
+
+        /**
+         * @param {!Event} event
+         * @this {WebInspector.NetworkLogViewColumns}
+         */
+        function handleContextMenu(event)
+        {
+            var request = this._timelineColumn.getRequestFromPoint(event.offsetX, event.offsetY);
+            if (!request)
+                return;
+            var contextMenu = new WebInspector.ContextMenu(event);
+            this._networkLogView.handleContextMenuForRequest(contextMenu, request);
+        }
     },
 
     /**

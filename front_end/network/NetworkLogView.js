@@ -335,7 +335,7 @@ WebInspector.NetworkLogView.prototype = {
     _setupDataGrid: function()
     {
         this._dataGrid = this._columns.dataGrid();
-        this._dataGrid.setRowContextMenuCallback(this._onRowContextMenu.bind(this));
+        this._dataGrid.setRowContextMenuCallback((contextMenu, node) => this.handleContextMenuForRequest(contextMenu, node.request()));
         this._dataGrid.setStickToBottom(true);
         this._dataGrid.setName("networkLog");
         this._dataGrid.setResizeMethod(WebInspector.DataGrid.ResizeMethod.Last);
@@ -880,12 +880,10 @@ WebInspector.NetworkLogView.prototype = {
 
     /**
      * @param {!WebInspector.ContextMenu} contextMenu
-     * @param {!WebInspector.DataGridNode} node
+     * @param {!WebInspector.NetworkRequest} request
      */
-    _onRowContextMenu: function(contextMenu, node)
+    handleContextMenuForRequest: function(contextMenu, request)
     {
-        var request = node.request();
-
         contextMenu.appendApplicableItems(request);
         var copyMenu = contextMenu.appendSubMenuItem(WebInspector.UIString("Copy"));
         if (request) {

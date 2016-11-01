@@ -435,7 +435,7 @@ WebInspector.NetworkLogViewColumns = class {
       this._dataGridScroller.style.overflow = 'hidden';
       this._dataGrid.setScrollContainer(this._timelineScroller);
     } else {
-      this._splitWidget.hideMain();
+      this._splitWidget.hideSidebar();
       this._activeScroller = this._dataGridScroller;
       this._dataGridScroller.style.overflow = 'overlay';
       this._dataGrid.setScrollContainer(this._dataGridScroller);

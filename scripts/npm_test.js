@@ -12,26 +12,42 @@ var utils = require("./utils");
 var Flags = {
     BUILD_ONLY: "--build-only",
     DEBUG_DEVTOOLS: "--debug-devtools",
+    DEBUG_DEVTOOLS_SHORTHAND: "-d",
     TEST_ONLY: "--test-only",
+    FETCH_CONTENT_SHELL: "--fetch-content-shell",
 };
 
-var IS_DEBUG_ENABLED = utils.includes(process.argv, Flags.DEBUG_DEVTOOLS);
+var IS_DEBUG_ENABLED = utils.includes(process.argv, Flags.DEBUG_DEVTOOLS) ||
+    utils.includes(process.argv, Flags.DEBUG_DEVTOOLS_SHORTHAND);
 var IS_BUILD_ONLY = utils.includes(process.argv, Flags.BUILD_ONLY);
 var IS_TEST_ONLY = utils.includes(process.argv, Flags.TEST_ONLY);
+var IS_FETCH_CONTENT_SHELL = utils.includes(process.argv, Flags.FETCH_CONTENT_SHELL);
 
 var CONTENT_SHELL_ZIP = "content-shell.zip";
 var MAX_CONTENT_SHELLS = 10;
 var PLATFORM = getPlatform();
 var PYTHON = process.platform === "win32" ? "python.bat" : "python";
 
-var BLINK_TEST_PATH = path.resolve(__dirname, "..", "..", "..", "..", "..", "blink", "tools", "run_layout_tests.py");
+var CHROMIUM_SRC_PATH = path.resolve(__dirname, "..", "..", "..", "..", "..");
+var RELEASE_PATH = path.resolve(CHROMIUM_SRC_PATH, "out", "Release");
+var BLINK_TEST_PATH = path.resolve(CHROMIUM_SRC_PATH, "blink", "tools", "run_layout_tests.py");
 var CACHE_PATH = path.resolve(__dirname, "..", ".test_cache");
 var SOURCE_PATH = path.resolve(__dirname, "..", "front_end");
 
 function main(){
+    var hasUserCompiledContentShell = utils.isFile(getContentShellBinaryPath(RELEASE_PATH));
+    if (!IS_FETCH_CONTENT_SHELL && hasUserCompiledContentShell) {
+        var outDir = path.resolve(RELEASE_PATH, "..");
+        if (!IS_DEBUG_ENABLED) {
+            console.log("Compiling devtools frontend");
+            shell(`ninja -C ${RELEASE_PATH} devtools_frontend_resources`);
+        }
+        runTests(outDir, {useRelease: !IS_DEBUG_ENABLED});
+        return;
+    }
     if (IS_TEST_ONLY) {
         findPreviousUploadedPosition(findMostRecentChromiumCommit())
-            .then(commitPosition => runTests(path.resolve(CACHE_PATH, commitPosition, "out")));
+            .then(commitPosition => runTests(path.resolve(CACHE_PATH, commitPosition, "out"), {useRelease: false}));
         return;
     }
     if (!utils.isDir(CACHE_PATH))
@@ -204,7 +220,7 @@ function buildAndTest(buildDirectoryPath)
     build(contentShellResourcesPath);
     if (IS_BUILD_ONLY)
         return;
-    runTests(buildDirectoryPath);
+    runTests(buildDirectoryPath, {useRelease: false});
 }
 
 function build(contentShellResourcesPath)
@@ -222,16 +238,17 @@ function build(contentShellResourcesPath)
     utils.copy(supportedCSSPropertiesPath, debugPath);
 }
 
-function runTests(buildDirectoryPath)
+function runTests(buildDirectoryPath, options)
 {
-    var testArgs = [
-        "--additional-drt-flag=--debug-devtools",
+    var testArgs = getInspectorTests().concat([
         "--no-pixel-tests",
         "--build-directory",
         buildDirectoryPath,
-    ].concat(getInspectorTests());
+    ]);
+    if (!options.useRelease)
+        testArgs.push("--additional-driver-flag=--debug-devtools");
     if (IS_DEBUG_ENABLED) {
-        testArgs.push("--additional-drt-flag=--remote-debugging-port=9222");
+        testArgs.push("--additional-driver-flag=--remote-debugging-port=9222");
         testArgs.push("--time-out-ms=6000000");
         console.log("\n=============================================");
         console.log("Go to: http://localhost:9222/");

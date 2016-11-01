@@ -15,6 +15,13 @@ DEBUG_FLAG=" --additional-driver-flag=--debug-devtools --time-out-ms=6000000 --a
 
 COMMAND=${RUN_LAYOUT_TEST_PATH}
 
+echo "===================================================="
+echo "This shell script is DEPRECATED and will be removed"
+echo "Please use 'npm test' instead"
+echo "See README.md on how to use"
+echo "===================================================="
+echo
+
 ninja -C ${OUT_PATH} devtools_frontend_resources
 if [ "$1" == "-d" ]
 then

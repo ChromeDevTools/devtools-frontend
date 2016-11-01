@@ -944,8 +944,6 @@ WebInspector.NetworkLogView.prototype = {
             contextMenu.appendItem(WebInspector.UIString("Replay XHR"), request.replayXHR.bind(request));
             contextMenu.appendSeparator();
         }
-
-        contextMenu.show();
     },
 
     _harRequests: function()

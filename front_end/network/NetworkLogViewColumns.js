@@ -497,6 +497,7 @@ WebInspector.NetworkLogViewColumns.prototype = {
                 return;
             var contextMenu = new WebInspector.ContextMenu(event);
             this._networkLogView.handleContextMenuForRequest(contextMenu, request);
+            contextMenu.show();
         }
     },
 
